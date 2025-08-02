@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="Skill" load_steps=2 format=3 uid="uid://dvgwxvsovsldc"]
+
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_rci34"]
+
+[resource]
+script = ExtResource("1_rci34")
+name = "Stab"
+description = "Plunge you weapon against an enemy."
+icon_path = ""

@@ -1,0 +1,8 @@
+For final image using:
+https://app.leonardo.ai/image-generation
+
+Small size for creates and Medium for vistas.
+
+
+
+Using https://www.pixellab.ai/editor for prototyping prompts.

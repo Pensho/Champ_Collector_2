@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://d4k0cmxa3oy6s"]
+
+[ext_resource type="Texture2D" uid="uid://ci50vt1f4jftx" path="res://Assets/Champ Collector/Creatures/Forest Troll/Flux_Dev_A_tall_lanky_pale_green_and_dirty_troll_in_the_style__1.jpg" id="1_rpqav"]
+
+[node name="CharacterBody2D" type="CharacterBody2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -182)
+scale = Vector2(0.325, 0.325)
+texture = ExtResource("1_rpqav")

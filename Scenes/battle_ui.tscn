@@ -1,0 +1,242 @@
+[gd_scene load_steps=9 format=3 uid="uid://dy5q1foc8kon5"]
+
+[ext_resource type="Script" uid="uid://che4nfxkv8ukc" path="res://Scripts/battle_ui.gd" id="1_gfldn"]
+[ext_resource type="Texture2D" uid="uid://bah4ldrcvcy4q" path="res://Assets/Champ Collector/Creatures/Cleric/Cleric_0009.png" id="1_m5dag"]
+[ext_resource type="Texture2D" uid="uid://bktwgqq7mqxtw" path="res://Assets/Champ Collector/pouch-with-beads.svg" id="2_gfldn"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4blpl"]
+bg_color = Color(0.878332, 0.381641, 0.262662, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+shadow_color = Color(0, 0, 0, 0.294118)
+shadow_size = 13
+shadow_offset = Vector2(0, 4)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6sbxc"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nm010"]
+bg_color = Color(0.711708, 0.267699, 0.243942, 0.768627)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.478431)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+expand_margin_left = 1.0
+expand_margin_top = 1.0
+expand_margin_right = 1.0
+expand_margin_bottom = 1.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_scq05"]
+bg_color = Color(0.968673, 0.515327, 0.410706, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d07u5"]
+bg_color = Color(0.915472, 0.437921, 0.322903, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+shadow_color = Color(0, 0, 0, 0.294118)
+shadow_size = 13
+shadow_offset = Vector2(0, 4)
+
+[node name="Battle UI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_gfldn")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(641, 360)
+
+[node name="PlayerInfoBox" type="Panel" parent="Camera2D"]
+offset_left = -614.0
+offset_top = -330.0
+offset_right = -305.0
+offset_bottom = -219.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_4blpl")
+
+[node name="AvatarFrame" type="Panel" parent="Camera2D/PlayerInfoBox"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 12.0
+offset_top = -43.5
+offset_right = 99.0
+offset_bottom = 43.5
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_6sbxc")
+
+[node name="Avatar" type="TextureRect" parent="Camera2D/PlayerInfoBox/AvatarFrame"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -37.5
+offset_top = -37.5
+offset_right = 37.5
+offset_bottom = 37.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_m5dag")
+expand_mode = 1
+
+[node name="Nickname" type="Label" parent="Camera2D/PlayerInfoBox"]
+layout_mode = 0
+offset_left = 107.0
+offset_top = 14.0
+offset_right = 192.0
+offset_bottom = 53.0
+theme_override_font_sizes/font_size = 28
+text = "Player"
+
+[node name="ExperienceProgress" type="ProgressBar" parent="Camera2D/PlayerInfoBox"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 104.0
+offset_top = -37.0
+offset_right = -8.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/background = SubResource("StyleBoxFlat_nm010")
+theme_override_styles/fill = SubResource("StyleBoxFlat_scq05")
+value = 45.0
+
+[node name="CoinBox" type="Panel" parent="Camera2D"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -284.0
+offset_top = -326.0
+offset_right = 14.0
+offset_bottom = -263.0
+grow_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_d07u5")
+
+[node name="Avatar" type="TextureRect" parent="Camera2D/CoinBox"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -145.0
+offset_top = -26.5
+offset_right = -92.0
+offset_bottom = 26.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_gfldn")
+expand_mode = 1
+
+[node name="CoinsText" type="Label" parent="Camera2D/CoinBox"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -87.0
+offset_top = -15.0
+offset_right = -2.0
+offset_bottom = 15.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 18
+text = "Coins:"
+
+[node name="CoinsValueText" type="Label" parent="Camera2D/CoinBox"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -27.0
+offset_top = -15.0
+offset_right = 58.0
+offset_bottom = 15.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 18
+text = "?"
+
+[node name="Skill 1" type="Button" parent="Camera2D"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 163.0
+offset_top = 270.0
+offset_right = 282.0
+offset_bottom = 326.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Skill 1"
+
+[node name="Skill 2" type="Button" parent="Camera2D"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 293.0
+offset_top = 271.0
+offset_right = 412.0
+offset_bottom = 327.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Skill 2"
+
+[node name="Skill 3" type="Button" parent="Camera2D"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 425.0
+offset_top = 272.0
+offset_right = 544.0
+offset_bottom = 328.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Skill 3"
+
+[connection signal="button_up" from="Camera2D/Skill 1" to="." method="_on_skill_1_button_up"]
+[connection signal="button_up" from="Camera2D/Skill 2" to="." method="_on_skill_2_button_up"]
+[connection signal="button_up" from="Camera2D/Skill 3" to="." method="_on_skill_3_button_up"]

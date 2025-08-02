@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="CharacterData" load_steps=4 format=3 uid="uid://foglcohrhsnh"]
+
+[ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_data.gd" id="1_quq0m"]
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="2_vmxkg"]
+[ext_resource type="Resource" uid="uid://dvgwxvsovsldc" path="res://Data/Character_Skill_Variants/Stab.tres" id="3_evj8v"]
+
+[resource]
+script = ExtResource("1_quq0m")
+name = "Knight Valar"
+rarity = 0
+faction = 0
+role = 3
+skills = Array[ExtResource("2_vmxkg")]([ExtResource("3_evj8v")])

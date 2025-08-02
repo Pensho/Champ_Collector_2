@@ -1,0 +1,13 @@
+[gd_scene load_steps=4 format=3 uid="uid://cc883blynrgq2"]
+
+[ext_resource type="Script" uid="uid://g08boofygabn" path="res://Scripts/battle.gd" id="1_oxf17"]
+[ext_resource type="PackedScene" uid="uid://dy5q1foc8kon5" path="res://Scenes/battle_ui.tscn" id="2_1ruyk"]
+[ext_resource type="PackedScene" uid="uid://d4k0cmxa3oy6s" path="res://Scenes/Player.tscn" id="3_1ruyk"]
+
+[node name="Battle" type="Node2D"]
+script = ExtResource("1_oxf17")
+
+[node name="Battle UI" parent="." instance=ExtResource("2_1ruyk")]
+
+[node name="CharacterBody2D" parent="." instance=ExtResource("3_1ruyk")]
+position = Vector2(978, 469)

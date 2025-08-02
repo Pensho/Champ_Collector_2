@@ -1,0 +1,34 @@
+[remap]
+
+importer="texture"
+type="CompressedTexture2D"
+uid="uid://d36fyhghigvh"
+path="res://.godot/imported/Flux_Dev_A_tall_lanky_pale_green_and_dirty_troll_in_the_style__0.jpg-b0b9596520da108cef65eea0b9a67f3e.ctex"
+metadata={
+"vram_texture": false
+}
+
+[deps]
+
+source_file="res://Assets/Champ Collector/Creatures/Forest Troll/Flux_Dev_A_tall_lanky_pale_green_and_dirty_troll_in_the_style__0.jpg"
+dest_files=["res://.godot/imported/Flux_Dev_A_tall_lanky_pale_green_and_dirty_troll_in_the_style__0.jpg-b0b9596520da108cef65eea0b9a67f3e.ctex"]
+
+[params]
+
+compress/mode=0
+compress/high_quality=false
+compress/lossy_quality=0.7
+compress/hdr_compression=1
+compress/normal_map=0
+compress/channel_pack=0
+mipmaps/generate=false
+mipmaps/limit=-1
+roughness/mode=0
+roughness/src_normal=""
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/normal_map_invert_y=false
+process/hdr_as_srgb=false
+process/hdr_clamp_exposure=false
+process/size_limit=0
+detect_3d/compress_to=1
