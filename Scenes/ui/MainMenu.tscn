@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://c6c1o3oabj0pf"]
+[gd_scene load_steps=5 format=3 uid="uid://c6c1o3oabj0pf"]
 
 [ext_resource type="Script" uid="uid://dg6hmf1j0ygjl" path="res://Scripts/Character/character_collection.gd" id="1_4facs"]
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ Collector/Themes/default_theme.tres" id="1_hnwi1"]
 [ext_resource type="Script" uid="uid://cygusf5metdyh" path="res://Scripts/UI/main_menu.gd" id="2_hnwi1"]
+[ext_resource type="Texture2D" uid="uid://cxe2lffkbra47" path="res://Assets/Champ Collector/Scenery/Grasslands.png" id="3_h3tiw"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -14,15 +15,14 @@ grow_vertical = 2
 theme = ExtResource("1_hnwi1")
 script = ExtResource("2_hnwi1")
 
-[node name="ColorRect" type="ColorRect" parent="."]
-custom_minimum_size = Vector2(1280, 720)
+[node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.0197146, 0.0212166, 0.0646884, 1)
+texture = ExtResource("3_h3tiw")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -43,6 +43,12 @@ alignment = 1
 [node name="Title_Text" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.705882)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 1
+theme_override_constants/shadow_outline_size = 4
 theme_override_font_sizes/font_size = 64
 text = "Jonas Spel"
 horizontal_alignment = 1
@@ -61,6 +67,8 @@ focus_neighbor_top = NodePath("../Button_QuitGame")
 focus_neighbor_bottom = NodePath("../Button_QuitGame")
 focus_next = NodePath("../Button_QuitGame")
 focus_previous = NodePath("../Button_QuitGame")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 1
 text = "Start Game"
 
 [node name="Button_QuitGame" type="Button" parent="MarginContainer/VBoxContainer/ButtonsVBox"]
@@ -71,6 +79,8 @@ focus_neighbor_top = NodePath("../Button_StartGame")
 focus_neighbor_bottom = NodePath("../Button_StartGame")
 focus_next = NodePath("../Button_StartGame")
 focus_previous = NodePath("../Button_StartGame")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 1
 text = "Exit"
 
 [node name="Character_Collection" type="Node" parent="."]
