@@ -1,9 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://c6c1o3oabj0pf"]
-
-[ext_resource type="Script" uid="uid://dg6hmf1j0ygjl" path="res://Scripts/Character/character_collection.gd" id="1_iukft"]
-
-[node name="Game" type="Node2D"]
-script = ExtResource("1_iukft")
-
-[node name="Character_Collection" type="Node" parent="."]
-script = ExtResource("1_iukft")

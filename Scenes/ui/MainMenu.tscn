@@ -1,0 +1,80 @@
+[gd_scene load_steps=4 format=3 uid="uid://c6c1o3oabj0pf"]
+
+[ext_resource type="Script" uid="uid://dg6hmf1j0ygjl" path="res://Scripts/Character/character_collection.gd" id="1_4facs"]
+[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ Collector/Themes/default_theme.tres" id="1_hnwi1"]
+[ext_resource type="Script" uid="uid://cygusf5metdyh" path="res://Scripts/UI/main_menu.gd" id="2_hnwi1"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_hnwi1")
+script = ExtResource("2_hnwi1")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+custom_minimum_size = Vector2(1280, 720)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0197146, 0.0212166, 0.0646884, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 32
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Title_Text" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 64
+text = "Jonas Spel"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ButtonsVBox" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 10
+
+[node name="Button_StartGame" type="Button" parent="MarginContainer/VBoxContainer/ButtonsVBox"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+focus_neighbor_top = NodePath("../Button_QuitGame")
+focus_neighbor_bottom = NodePath("../Button_QuitGame")
+focus_next = NodePath("../Button_QuitGame")
+focus_previous = NodePath("../Button_QuitGame")
+text = "Start Game"
+
+[node name="Button_QuitGame" type="Button" parent="MarginContainer/VBoxContainer/ButtonsVBox"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+focus_neighbor_top = NodePath("../Button_StartGame")
+focus_neighbor_bottom = NodePath("../Button_StartGame")
+focus_next = NodePath("../Button_StartGame")
+focus_previous = NodePath("../Button_StartGame")
+text = "Exit"
+
+[node name="Character_Collection" type="Node" parent="."]
+script = ExtResource("1_4facs")
+
+[connection signal="button_up" from="MarginContainer/VBoxContainer/ButtonsVBox/Button_StartGame" to="." method="_on_start_game_button_pressed"]
+[connection signal="button_up" from="MarginContainer/VBoxContainer/ButtonsVBox/Button_QuitGame" to="." method="_on_quit_button_pressed"]

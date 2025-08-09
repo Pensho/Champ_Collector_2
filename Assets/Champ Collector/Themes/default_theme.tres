@@ -1,0 +1,25 @@
+[gd_resource type="Theme" load_steps=7 format=3 uid="uid://c8irweh6md2jy"]
+
+[ext_resource type="FontFile" uid="uid://yjb867fn5vve" path="res://Assets/Champ Collector/Fonts/alagard.ttf" id="1_dnldn"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dnldn"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tm3gc"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ur2ak"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4h83a"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7nfkc"]
+
+[resource]
+default_font = ExtResource("1_dnldn")
+default_font_size = 32
+Button/colors/font_focus_color = Color(0.392157, 0.380392, 0.94902, 1)
+Button/colors/font_hover_color = Color(0.721569, 0.831373, 1, 1)
+Button/colors/font_pressed_color = Color(0.207843, 0.266667, 0.380392, 1)
+Button/styles/disabled = SubResource("StyleBoxEmpty_dnldn")
+Button/styles/focus = SubResource("StyleBoxEmpty_tm3gc")
+Button/styles/hover = SubResource("StyleBoxEmpty_ur2ak")
+Button/styles/normal = SubResource("StyleBoxEmpty_4h83a")
+Button/styles/pressed = SubResource("StyleBoxEmpty_7nfkc")
