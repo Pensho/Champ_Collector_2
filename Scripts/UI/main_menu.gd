@@ -8,6 +8,7 @@ func _ready() -> void:
 
 func _on_start_game_button_pressed() -> void:
 	start_game.emit()
+	main.change_scene("res://Scenes/battle_ui.tscn")
 	hide()
 
 func _on_quit_button_pressed() -> void:

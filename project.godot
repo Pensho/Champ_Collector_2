@@ -11,10 +11,14 @@ config_version=5
 [application]
 
 config/name="Jonas Spel"
-run/main_scene="uid://c6c1o3oabj0pf"
+run/main_scene="uid://knp34r3jmafv"
 config/features=PackedStringArray("4.4", "Mobile")
 boot_splash/image="uid://cxe2lffkbra47"
 config/icon="uid://cxe2lffkbra47"
+
+[autoload]
+
+main="*res://Scripts/main.gd"
 
 [display]
 
