@@ -6,8 +6,20 @@
 
 [resource]
 script = ExtResource("1_quq0m")
-name = "Knight Valar"
-rarity = 0
-faction = 0
-role = 3
-skills = Array[ExtResource("2_vmxkg")]([ExtResource("3_evj8v")])
+_name = "Knight"
+_texture = "res://Assets/Champ Collector/Creatures/Knight/Knight_0004.png"
+_rarity = 0
+_faction = 0
+_role = 3
+_skills = Array[ExtResource("2_vmxkg")]([ExtResource("3_evj8v")])
+_health = 80
+_speed = 50
+_attack = 50
+_defence = 65
+_accuracy = 35
+_resistance = 40
+_mysticism = 10
+_knowledge = 20
+_pressence = 30
+_critChance = 5
+_critDamage = 0

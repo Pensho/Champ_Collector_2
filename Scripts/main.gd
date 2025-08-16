@@ -1,12 +1,23 @@
 extends Node
 
-# var current_scene = null
-#@export var current_scene: String = ""
 var current_scene = null
+var character_collection: Collection
+
+const KNIGHT = preload("res://Data/Character_Player_Variants/Knight.tres")
 
 func _ready() -> void:
 	# var root = get_tree().root
 	# current_scene = root.get_child(-1)
+	character_collection = Collection.new()
+	add_child(character_collection)
+
+	character_collection.Add(KNIGHT.duplicate(true))
+	character_collection.Add(KNIGHT.duplicate(true))
+	
+	var all_chars = character_collection.GetAllCharacters()
+	for key in all_chars.keys():
+		print("Found character in collection, ID: ", all_chars[key]._instanceID)
+	
 	change_scene("res://Scenes/ui/MainMenu.tscn")
 
 func change_scene(target: String) -> void:

@@ -6,19 +6,14 @@ func Save() -> void:
 func Load() -> void:
 	pass
 
-func Add(character: Character) -> void:
-	#if(there is no character already with the parameter ones instanceID)
-		#Add the new character unless we meet the limit
-	#else
-		#Warn that we already had a character with that instanceID
-	pass
+func Add(character: CharacterData) -> void:
+	if(not IsTheCollectionFull()):
+		character._instanceID = CreateNextInstanceID()
+		m_Characters[character._instanceID] = character
 
-func Remove(character: Character) -> void:
-	#if(there is a character using the instanceID of the parameter)
-		#Remove the character
-	#else
-		#Warn that there was no such character
-	pass
+func Remove(character: CharacterData) -> void:
+	if(!m_Characters.erase(character._instanceID)):
+		print("There was no such character to be removed! ID: ", character._instanceID)
 
 func IncreaseCollectionSize() -> void:
 	if(m_CurrentMaxAmount <= (k_CollectionLimit - k_CollectionSizeIncrement)):
@@ -27,27 +22,33 @@ func IncreaseCollectionSize() -> void:
 		print("The maximum size of a collection has been reached.")
 
 func IsTheCollectionFull() -> bool:
-	return (m_Characters.size() >= m_CurrentMaxAmount)
+	if (m_Characters.size() >= m_CurrentMaxAmount):
+		print("You've reached the current max amount of characters.")
+		return true
+	else:
+		return false
 
 func CreateNextInstanceID() -> int:
 	var nextID: int = 0
 	if(m_Characters.size() == 0):
 		return nextID
-	
-	#for i in range(0, m_Characters.size()):
-		#if(no character is using the instanceID "i"):
-			#nextID = i
-			#break
+
+	while m_Characters.has(nextID):
+		nextID += 1
 
 	return nextID
 
-func GetCharacter(instanceID: int) -> Character:
-	return m_Characters[m_Characters.find(instanceID)]
+func GetCharacter(instanceID: int) -> CharacterData:
+	if(m_Characters.has(instanceID)):
+			return m_Characters[instanceID]
+	else:
+		print("No character found with ID: ", instanceID)
+		return null
 
-func GetAllCharacters() -> Array[Character]:
+func GetAllCharacters() -> Dictionary:
 	return m_Characters
 
-var m_Characters: Array[Character] = []
+var m_Characters: Dictionary = {}
 var m_CurrentMaxAmount: int = 50
 
 const k_CollectionSizeIncrement: int = 10
