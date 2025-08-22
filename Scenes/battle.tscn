@@ -1,13 +1,93 @@
-[gd_scene load_steps=4 format=3 uid="uid://cc883blynrgq2"]
+[gd_scene load_steps=7 format=3 uid="uid://cc883blynrgq2"]
 
 [ext_resource type="Script" uid="uid://g08boofygabn" path="res://Scripts/battle.gd" id="1_oxf17"]
 [ext_resource type="PackedScene" uid="uid://dy5q1foc8kon5" path="res://Scenes/battle_ui.tscn" id="2_1ruyk"]
-[ext_resource type="PackedScene" uid="uid://d4k0cmxa3oy6s" path="res://Scenes/Player.tscn" id="3_1ruyk"]
+[ext_resource type="Texture2D" uid="uid://b31byb3wcg7a3" path="res://Assets/Champ Collector/Scenery/Troll battle area/Troll_battle_area_3.jpg" id="2_f6xt6"]
+[ext_resource type="Texture2D" uid="uid://bnuy5nxtiay74" path="res://Assets/Champ Collector/Creatures/Knight/Knight_0004.png" id="4_1otgo"]
+[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ Collector/Themes/default_theme.tres" id="5_pd5xk"]
+[ext_resource type="Texture2D" uid="uid://ci50vt1f4jftx" path="res://Assets/Champ Collector/Creatures/Forest Troll/Flux_Dev_A_tall_lanky_pale_green_and_dirty_troll_in_the_style__1.jpg" id="6_f6xt6"]
 
 [node name="Battle" type="Node2D"]
 script = ExtResource("1_oxf17")
 
+[node name="Background" type="TextureRect" parent="."]
+offset_right = 1280.0
+offset_bottom = 720.0
+texture = ExtResource("2_f6xt6")
+expand_mode = 1
+
 [node name="Battle UI" parent="." instance=ExtResource("2_1ruyk")]
 
-[node name="CharacterBody2D" parent="." instance=ExtResource("3_1ruyk")]
-position = Vector2(978, 469)
+[node name="Character Position 1" type="Node2D" parent="."]
+position = Vector2(159, 390)
+
+[node name="TextureRect" type="TextureRect" parent="Character Position 1"]
+offset_right = 40.0
+offset_bottom = 40.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("4_1otgo")
+
+[node name="ProgressBar" type="ProgressBar" parent="Character Position 1"]
+offset_top = 200.0
+offset_right = 200.0
+offset_bottom = 227.0
+theme = ExtResource("5_pd5xk")
+step = 1.0
+value = 74.0
+
+[node name="Character Position 2" type="Node2D" parent="."]
+position = Vector2(356, 466)
+
+[node name="TextureRect" type="TextureRect" parent="Character Position 2"]
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("4_1otgo")
+
+[node name="ProgressBar" type="ProgressBar" parent="Character Position 2"]
+offset_top = 200.0
+offset_right = 200.0
+offset_bottom = 227.0
+theme = ExtResource("5_pd5xk")
+
+[node name="Character Position 3" type="Node2D" parent="."]
+position = Vector2(573, 480)
+
+[node name="TextureRect" type="TextureRect" parent="Character Position 3"]
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("4_1otgo")
+
+[node name="ProgressBar" type="ProgressBar" parent="Character Position 3"]
+offset_top = 200.0
+offset_right = 200.0
+offset_bottom = 227.0
+theme = ExtResource("5_pd5xk")
+
+[node name="Boss Position" type="Node2D" parent="."]
+position = Vector2(864, 397)
+
+[node name="TextureRect" type="TextureRect" parent="Boss Position"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -150.0
+offset_top = -300.0
+offset_right = 150.0
+grow_horizontal = 2
+grow_vertical = 0
+texture = ExtResource("6_f6xt6")
+expand_mode = 1
+
+[node name="ProgressBar" type="ProgressBar" parent="Boss Position"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_right = 150.0
+offset_bottom = 27.0
+grow_horizontal = 2
+theme = ExtResource("5_pd5xk")
+value = 43.0

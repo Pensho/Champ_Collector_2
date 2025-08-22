@@ -6,8 +6,8 @@ var character_collection: Collection
 const KNIGHT = preload("res://Data/Character_Player_Variants/Knight.tres")
 
 func _ready() -> void:
-	# var root = get_tree().root
-	# current_scene = root.get_child(-1)
+	current_scene = get_tree().root.get_child(-1)
+	print("current scene is: ", current_scene)
 	character_collection = Collection.new()
 	add_child(character_collection)
 
@@ -24,17 +24,16 @@ func change_scene(target: String) -> void:
 	_deferred_change_scene(target)
 
 func _deferred_change_scene(target: String) -> void:
-	#if null != current_scene:
-	#	current_scene.free()
-	#var s = ResourceLoader.load(target)
-	#current_scene = s.instantiate()
-	#get_tree().root.add_child(current_scene)
-	#get_tree().current_scene = current_scene
-	get_tree().change_scene_to_file(target)
-
-#func change_scene(target: String) -> void:
 	## self.visible = true
 	## Play transition animation
-	#get_tree().change_scene_to_file(target)
+	if(current_scene.name != "Main"):
+		self.remove_child(current_scene)
+		current_scene.call_deferred("free")
+
+	var scene = ResourceLoader.load(target)
+	current_scene = scene.instantiate()
+	add_child(current_scene)
+	print("current scene is: ", current_scene)
+	print(get_tree_string_pretty())
 	## Play transition animation backwards
 	## self.visible = false

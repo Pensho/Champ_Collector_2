@@ -7,6 +7,7 @@ enum Rarity
 	Rare,
 	Unique,
 	Legendary,
+	Relic, # Items only
 }
 
 enum Faction
@@ -30,4 +31,14 @@ enum Role
 	Appraiser,
 	Strategist,
 	Symbiote,
+}
+
+enum Slot
+{
+	Weapon,
+	Helmet,
+	Shield,
+	Gloves,
+	Pants,
+	Boots,
 }

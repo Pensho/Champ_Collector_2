@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=7 format=3 uid="uid://c8irweh6md2jy"]
+[gd_resource type="Theme" load_steps=9 format=3 uid="uid://c8irweh6md2jy"]
 
 [ext_resource type="FontFile" uid="uid://yjb867fn5vve" path="res://Assets/Champ Collector/Fonts/alagard.ttf" id="1_dnldn"]
 
@@ -12,6 +12,27 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7nfkc"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dnldn"]
+bg_color = Color(0.39675, 0.493838, 0.33239, 0.521569)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tm3gc"]
+bg_color = Color(0.294118, 0.701961, 0.27451, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_bottom = 2
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
 [resource]
 default_font = ExtResource("1_dnldn")
 default_font_size = 32
@@ -23,3 +44,5 @@ Button/styles/focus = SubResource("StyleBoxEmpty_tm3gc")
 Button/styles/hover = SubResource("StyleBoxEmpty_ur2ak")
 Button/styles/normal = SubResource("StyleBoxEmpty_4h83a")
 Button/styles/pressed = SubResource("StyleBoxEmpty_7nfkc")
+ProgressBar/styles/background = SubResource("StyleBoxFlat_dnldn")
+ProgressBar/styles/fill = SubResource("StyleBoxFlat_tm3gc")
