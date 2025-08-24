@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="CharacterPreset" load_steps=4 format=3 uid="uid://bkdbytfqe0nwb"]
+
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_cbdx7"]
+[ext_resource type="Resource" uid="uid://dvgwxvsovsldc" path="res://Data/Character_Skill_Variants/Stab.tres" id="2_w75o3"]
+[ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_xxfqe"]
+
+[resource]
+script = ExtResource("2_xxfqe")
+_name = "Troll"
+_texture = "res://Assets/Champ Collector/Creatures/Forest Troll/Forest_Troll_2.jpg"
+_rarity = 2
+_faction = 4
+_role = 11
+_skills = Array[ExtResource("1_cbdx7")]([ExtResource("2_w75o3")])
+_health = 300
+_speed = 50
+_attack = 100
+_defence = 120
+_accuracy = 40
+_resistance = 80
+_mysticism = 10
+_knowledge = 10
+_pressence = 80
+_critChance = 5
+_critDamage = 0
+metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

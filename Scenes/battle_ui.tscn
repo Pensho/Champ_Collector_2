@@ -1,8 +1,11 @@
-[gd_scene load_steps=9 format=3 uid="uid://dy5q1foc8kon5"]
+[gd_scene load_steps=12 format=3 uid="uid://dy5q1foc8kon5"]
 
 [ext_resource type="Script" uid="uid://che4nfxkv8ukc" path="res://Scripts/battle_ui.gd" id="1_gfldn"]
 [ext_resource type="Texture2D" uid="uid://bah4ldrcvcy4q" path="res://Assets/Champ Collector/Creatures/Cleric/Cleric_0009.png" id="1_m5dag"]
 [ext_resource type="Texture2D" uid="uid://bktwgqq7mqxtw" path="res://Assets/Champ Collector/pouch-with-beads.svg" id="2_gfldn"]
+[ext_resource type="Texture2D" uid="uid://dttmv410f1bo5" path="res://Assets/Champ Collector/Icons/Abilities/Stab/Stab_3.jpg" id="4_4blpl"]
+[ext_resource type="Texture2D" uid="uid://ctbnnvhe6erv0" path="res://Assets/Champ Collector/Icons/Abilities/Bolas/Bolas_2.jpg" id="4_nm010"]
+[ext_resource type="Texture2D" uid="uid://desu7vr6la0bf" path="res://Assets/Champ Collector/Icons/Abilities/Smoke_Screen/Smoke_Screen_5.jpg" id="6_scq05"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4blpl"]
 bg_color = Color(0.878332, 0.381641, 0.262662, 1)
@@ -197,48 +200,30 @@ grow_vertical = 2
 theme_override_font_sizes/font_size = 18
 text = "?"
 
-[node name="Skill 1" type="Button" parent="Camera2D"]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = 163.0
-offset_top = 270.0
-offset_right = 282.0
-offset_bottom = 326.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "Skill 1"
+[node name="Skill_1" type="Button" parent="Camera2D"]
+offset_left = 209.0
+offset_top = 186.0
+offset_right = 359.0
+offset_bottom = 336.0
+icon = ExtResource("4_nm010")
+expand_icon = true
 
-[node name="Skill 2" type="Button" parent="Camera2D"]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = 293.0
-offset_top = 271.0
-offset_right = 412.0
-offset_bottom = 327.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "Skill 2"
+[node name="Skill_2" type="Button" parent="Camera2D"]
+offset_left = 423.0
+offset_top = 153.0
+offset_right = 573.0
+offset_bottom = 303.0
+icon = ExtResource("4_4blpl")
+expand_icon = true
 
-[node name="Skill 3" type="Button" parent="Camera2D"]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = 425.0
-offset_top = 272.0
-offset_right = 544.0
-offset_bottom = 328.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "Skill 3"
+[node name="Skill_3" type="Button" parent="Camera2D"]
+offset_left = 447.0
+offset_top = -41.0
+offset_right = 597.0
+offset_bottom = 109.0
+icon = ExtResource("6_scq05")
+expand_icon = true
 
-[connection signal="button_up" from="Camera2D/Skill 1" to="." method="_on_skill_1_button_up"]
-[connection signal="button_up" from="Camera2D/Skill 2" to="." method="_on_skill_2_button_up"]
-[connection signal="button_up" from="Camera2D/Skill 3" to="." method="_on_skill_3_button_up"]
+[connection signal="button_up" from="Camera2D/Skill_1" to="." method="_on_skill_1_button_up"]
+[connection signal="button_up" from="Camera2D/Skill_2" to="." method="_on_skill_2_button_up"]
+[connection signal="button_up" from="Camera2D/Skill_3" to="." method="_on_skill_3_button_up"]

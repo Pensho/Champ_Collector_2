@@ -6,14 +6,15 @@ func Save() -> void:
 func Load() -> void:
 	pass
 
-func Add(character: CharacterData) -> void:
+func Add(preset: CharacterPreset) -> void:
 	if(not IsTheCollectionFull()):
-		character._instanceID = CreateNextInstanceID()
-		m_Characters[character._instanceID] = character
+		var new_character: Character = load("res://Scenes/Characters/Character.tscn").instantiate()
+		new_character.InstantiateNew(preset, CreateNextInstanceID())
+		m_Characters[new_character._instanceID] = new_character
 
-func Remove(character: CharacterData) -> void:
-	if(!m_Characters.erase(character._instanceID)):
-		print("There was no such character to be removed! ID: ", character._instanceID)
+func Remove(instanceID: int) -> void:
+	if(!m_Characters.erase(instanceID)):
+		print("There was no such character to be removed! ID: ", instanceID)
 
 func IncreaseCollectionSize() -> void:
 	if(m_CurrentMaxAmount <= (k_CollectionLimit - k_CollectionSizeIncrement)):
@@ -38,7 +39,7 @@ func CreateNextInstanceID() -> int:
 
 	return nextID
 
-func GetCharacter(instanceID: int) -> CharacterData:
+func GetCharacter(instanceID: int) -> Character:
 	if(m_Characters.has(instanceID)):
 			return m_Characters[instanceID]
 	else:
@@ -47,6 +48,9 @@ func GetCharacter(instanceID: int) -> CharacterData:
 
 func GetAllCharacters() -> Dictionary:
 	return m_Characters
+
+func Size() -> int:
+	return m_Characters.size()
 
 var m_Characters: Dictionary = {}
 var m_CurrentMaxAmount: int = 50

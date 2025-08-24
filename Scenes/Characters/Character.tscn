@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://dvvopn2yuy4wr"]
+
+[ext_resource type="Script" uid="uid://ibw4avxt8h1b" path="res://Scripts/Character/character.gd" id="1_sy4xu"]
+[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ Collector/Themes/default_theme.tres" id="2_6p7dp"]
+
+[node name="Character" type="Node2D"]
+script = ExtResource("1_sy4xu")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+offset_right = 200.0
+offset_bottom = 200.0
+metadata/_edit_use_anchors_ = true
+
+[node name="ProgressBar" type="ProgressBar" parent="."]
+offset_top = 200.0
+offset_right = 200.0
+offset_bottom = 227.0
+theme = ExtResource("2_6p7dp")

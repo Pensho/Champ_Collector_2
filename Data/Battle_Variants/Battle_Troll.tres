@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="Context_Battle" load_steps=4 format=3 uid="uid://c53pc6n0mhj8m"]
+
+[ext_resource type="Script" uid="uid://bjtnao6fgl8go" path="res://Scripts/Worldview/Context_Battle.gd" id="1_3p4dw"]
+[ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="1_bjutu"]
+[ext_resource type="Resource" uid="uid://bkdbytfqe0nwb" path="res://Data/Character_Enemy_Variants/Troll.tres" id="2_gpdaq"]
+
+[resource]
+script = ExtResource("1_3p4dw")
+_enemy_characters = Array[ExtResource("1_bjutu")]([ExtResource("2_gpdaq")])
+_location = "res://Assets/Champ Collector/Scenery/Troll battle area/Troll_battle_area_7.jpg"
+metadata/_custom_type_script = "uid://bjtnao6fgl8go"

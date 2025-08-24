@@ -1,4 +1,4 @@
-class_name CharacterData extends Resource
+class_name CharacterPreset extends Resource
 
 const Types = preload("res://Scripts/Character/character_types.gd")
 
@@ -21,9 +21,3 @@ const Types = preload("res://Scripts/Character/character_types.gd")
 @export var _pressence: int = 0
 @export var _critChance: int = 0
 @export var _critDamage: int = 0
-
-# Context specific
-var _instanceID : int = 0
-var _experience : int = 0
-var _level: int = 1
-var _currentHealth: int = 0

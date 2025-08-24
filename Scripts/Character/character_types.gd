@@ -16,6 +16,7 @@ enum Faction
 	Kingdom2,
 	Renegades,
 	Outcasts,
+	Generic_Enemy,
 }
 
 enum Role
@@ -31,6 +32,9 @@ enum Role
 	Appraiser,
 	Strategist,
 	Symbiote,
+	Jester,
+	Cultist,
+	Generic_Enemy,
 }
 
 enum Slot
