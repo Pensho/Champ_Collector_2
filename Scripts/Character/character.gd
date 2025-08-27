@@ -2,9 +2,6 @@ class_name Character extends Node
 
 const Types = preload("res://Scripts/Character/character_types.gd")
 
-@onready var texture_rect: TextureRect = $TextureRect
-@onready var progress_bar: ProgressBar = $ProgressBar
-
 func InstantiateNew(preset: CharacterPreset, instanceID: int) -> void:
 	_instanceID = instanceID
 	
@@ -24,7 +21,8 @@ func InstantiateNew(preset: CharacterPreset, instanceID: int) -> void:
 	_pressence = preset._pressence
 	_critChance = preset._critChance
 	_critDamage = preset._critDamage
-	_health = preset._health
+	_health = preset._health * 10
+	_currentHealth = _health
 
 # Preset Data
 var _name: String = ""
