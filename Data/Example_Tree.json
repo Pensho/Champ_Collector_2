@@ -1,0 +1,3855 @@
+{
+  "Skills": [
+    {
+      "Skill Name": "Start",
+      "Skill Position": "(7,2)",
+      "Skill Position Exact": {
+        "x": 787,
+        "y": 270
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 0,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [],
+      "Skill Prerequisite": "-",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 10",
+      "Skill Position": "(19,9)",
+      "Skill Position Exact": {
+        "x": 2252,
+        "y": 1075
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 11"
+      ],
+      "Skill Prerequisite": "Start (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 11",
+      "Skill Position": "(18,9)",
+      "Skill Position Exact": {
+        "x": 2132,
+        "y": 1075
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 12",
+        "Skill 13"
+      ],
+      "Skill Prerequisite": "Skill 10 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 12",
+      "Skill Position": "(17,9)",
+      "Skill Position Exact": {
+        "x": 2012,
+        "y": 1015
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 14"
+      ],
+      "Skill Prerequisite": "Skill 11 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 13",
+      "Skill Position": "(17,10)",
+      "Skill Position Exact": {
+        "x": 2012,
+        "y": 1135
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 14"
+      ],
+      "Skill Prerequisite": "Skill 11 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 14",
+      "Skill Position": "(16,9)",
+      "Skill Position Exact": {
+        "x": 1892,
+        "y": 1075
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 15"
+      ],
+      "Skill Prerequisite": "Skill 13 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 15",
+      "Skill Position": "(15,9)",
+      "Skill Position Exact": {
+        "x": 1772,
+        "y": 1075
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/fire-orb.png",
+      "Skill Dependencies": [
+        "Skill 16",
+        "Skill 36",
+        "Skill 35"
+      ],
+      "Skill Prerequisite": "Skill 14 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 16",
+      "Skill Position": "(14,9)",
+      "Skill Position Exact": {
+        "x": 1652,
+        "y": 1075
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 17",
+        "Skill 18"
+      ],
+      "Skill Prerequisite": "Skill 15 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 17",
+      "Skill Position": "(13,9)",
+      "Skill Position Exact": {
+        "x": 1532,
+        "y": 1015
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 19",
+        "Skill 19 copy"
+      ],
+      "Skill Prerequisite": "Skill 16 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 18",
+      "Skill Position": "(13,10)",
+      "Skill Position Exact": {
+        "x": 1532,
+        "y": 1135
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 19 copy",
+        "Skill 19 copy"
+      ],
+      "Skill Prerequisite": "Skill 16 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 19",
+      "Skill Position": "(12,8)",
+      "Skill Position Exact": {
+        "x": 1412,
+        "y": 955
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/fire-orb.png",
+      "Skill Dependencies": [
+        "Skill 22"
+      ],
+      "Skill Prerequisite": "Skill 17 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 19 copy",
+      "Skill Position": "(12,9)",
+      "Skill Position Exact": {
+        "x": 1412,
+        "y": 1075
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/fire-orb.png",
+      "Skill Dependencies": [
+        "Skill 23"
+      ],
+      "Skill Prerequisite": "Skill 18 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 19 copy",
+      "Skill Position": "(12,10)",
+      "Skill Position Exact": {
+        "x": 1412,
+        "y": 1195
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/fire-orb.png",
+      "Skill Dependencies": [
+        "Skill 24",
+        "Skill 31"
+      ],
+      "Skill Prerequisite": "Skill 18 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 22",
+      "Skill Position": "(11,8)",
+      "Skill Position Exact": {
+        "x": 1292,
+        "y": 955
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 25"
+      ],
+      "Skill Prerequisite": "Skill 19 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 23",
+      "Skill Position": "(11,9)",
+      "Skill Position Exact": {
+        "x": 1292,
+        "y": 1075
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 25"
+      ],
+      "Skill Prerequisite": "Skill 19 copy (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 24",
+      "Skill Position": "(11,10)",
+      "Skill Position Exact": {
+        "x": 1292,
+        "y": 1195
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 25"
+      ],
+      "Skill Prerequisite": "Skill 19 copy (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 25",
+      "Skill Position": "(10,9)",
+      "Skill Position Exact": {
+        "x": 1172,
+        "y": 1075
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Trinket_Left"
+      ],
+      "Skill Prerequisite": "Skill 24 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Start",
+      "Skill Position": "(20,9)",
+      "Skill Position Exact": {
+        "x": 2382,
+        "y": 1085
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/skull-blue.png",
+      "Skill Dependencies": [
+        "Skill 10",
+        "Skill 38 copy",
+        "Skill 38 copy copy",
+        "Skill 38 copy copy",
+        "Skill 67",
+        "Skill 76"
+      ],
+      "Skill Prerequisite": "-",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Trinket_Left",
+      "Skill Position": "(9,9)",
+      "Skill Position Exact": {
+        "x": 1002,
+        "y": 1025
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/golden-arrow.png",
+      "Skill Dependencies": [],
+      "Skill Prerequisite": "Skill 25 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 31",
+      "Skill Position": "(12,12)",
+      "Skill Position Exact": {
+        "x": 1412,
+        "y": 1375
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 33"
+      ],
+      "Skill Prerequisite": "Skill 19 copy (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 32",
+      "Skill Position": "(13,13)",
+      "Skill Position Exact": {
+        "x": 1592,
+        "y": 1555
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 33",
+        "Skill 31"
+      ],
+      "Skill Prerequisite": "Skill 38 copy (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 33",
+      "Skill Position": "(13,12)",
+      "Skill Position Exact": {
+        "x": 1592,
+        "y": 1375
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 34"
+      ],
+      "Skill Prerequisite": "Skill 31 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 34",
+      "Skill Position": "(14,11)",
+      "Skill Position Exact": {
+        "x": 1652,
+        "y": 1315
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/fire-orb.png",
+      "Skill Dependencies": [],
+      "Skill Prerequisite": "Skill 33 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 35",
+      "Skill Position": "(15,10)",
+      "Skill Position Exact": {
+        "x": 1832,
+        "y": 1195
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [],
+      "Skill Prerequisite": "Skill 15 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 36",
+      "Skill Position": "(14,10)",
+      "Skill Position Exact": {
+        "x": 1712,
+        "y": 1195
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [],
+      "Skill Prerequisite": "Skill 15 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 37",
+      "Skill Position": "(15,11)",
+      "Skill Position Exact": {
+        "x": 1772,
+        "y": 1315
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 36"
+      ],
+      "Skill Prerequisite": "Skill 15 copy (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 38",
+      "Skill Position": "(16,11)",
+      "Skill Position Exact": {
+        "x": 1892,
+        "y": 1315
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 35"
+      ],
+      "Skill Prerequisite": "Skill 15 copy (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 15 copy",
+      "Skill Position": "(16,12)",
+      "Skill Position Exact": {
+        "x": 1927,
+        "y": 1470
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/fire-orb.png",
+      "Skill Dependencies": [
+        "Skill 37",
+        "Skill 38",
+        "Skill 38 copy"
+      ],
+      "Skill Prerequisite": "Skill 38 copy (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 38 copy",
+      "Skill Position": "(19,10)",
+      "Skill Position Exact": {
+        "x": 2287,
+        "y": 1230
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 38 copy"
+      ],
+      "Skill Prerequisite": "Start (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 38 copy",
+      "Skill Position": "(18,11)",
+      "Skill Position Exact": {
+        "x": 2167,
+        "y": 1350
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 38 copy"
+      ],
+      "Skill Prerequisite": "Skill 38 copy (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 38 copy",
+      "Skill Position": "(17,12)",
+      "Skill Position Exact": {
+        "x": 2047,
+        "y": 1410
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 15 copy"
+      ],
+      "Skill Prerequisite": "Skill 38 copy (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 38 copy",
+      "Skill Position": "(16,13)",
+      "Skill Position Exact": {
+        "x": 1927,
+        "y": 1590
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 38 copy",
+        "Skill 38 copy copy"
+      ],
+      "Skill Prerequisite": "Skill 15 copy (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 38 copy",
+      "Skill Position": "(16,14)",
+      "Skill Position Exact": {
+        "x": 1867,
+        "y": 1710
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 38 copy"
+      ],
+      "Skill Prerequisite": "Skill 38 copy (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 38 copy",
+      "Skill Position": "(15,14)",
+      "Skill Position Exact": {
+        "x": 1747,
+        "y": 1650
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 15 copy copy",
+        "Skill 32"
+      ],
+      "Skill Prerequisite": "Skill 38 copy (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 15 copy copy",
+      "Skill Position": "(15,13)",
+      "Skill Position Exact": {
+        "x": 1807,
+        "y": 1530
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/fire-orb.png",
+      "Skill Dependencies": [],
+      "Skill Prerequisite": "Skill 38 copy (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 38 copy copy",
+      "Skill Position": "(17,14)",
+      "Skill Position Exact": {
+        "x": 1987,
+        "y": 1710
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 38 copy copy"
+      ],
+      "Skill Prerequisite": "Skill 38 copy (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 38 copy copy",
+      "Skill Position": "(18,14)",
+      "Skill Position Exact": {
+        "x": 2107,
+        "y": 1650
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 15 copy copy copy",
+        "Skill 38 copy copy"
+      ],
+      "Skill Prerequisite": "Skill 38 copy copy (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 38 copy copy",
+      "Skill Position": "(18,12)",
+      "Skill Position Exact": {
+        "x": 2167,
+        "y": 1470
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 53"
+      ],
+      "Skill Prerequisite": "Skill 38 copy copy (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 15 copy copy copy",
+      "Skill Position": "(17,13)",
+      "Skill Position Exact": {
+        "x": 2047,
+        "y": 1590
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/fire-orb.png",
+      "Skill Dependencies": [],
+      "Skill Prerequisite": "Skill 38 copy copy (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 53",
+      "Skill Position": "(19,12)",
+      "Skill Position Exact": {
+        "x": 2287,
+        "y": 1470
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Trinket_Bottom"
+      ],
+      "Skill Prerequisite": "Skill 38 copy copy (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Trinket_Bottom",
+      "Skill Position": "(19,13)",
+      "Skill Position Exact": {
+        "x": 2262,
+        "y": 1565
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/golden-arrow.png",
+      "Skill Dependencies": [],
+      "Skill Prerequisite": "Skill 53 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 38 copy copy",
+      "Skill Position": "(20,10)",
+      "Skill Position Exact": {
+        "x": 2407,
+        "y": 1230
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 38 copy copy copy"
+      ],
+      "Skill Prerequisite": "Start (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 38 copy copy",
+      "Skill Position": "(21,10)",
+      "Skill Position Exact": {
+        "x": 2527,
+        "y": 1170
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 38 copy copy copy"
+      ],
+      "Skill Prerequisite": "Start (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 38 copy copy copy",
+      "Skill Position": "(21,11)",
+      "Skill Position Exact": {
+        "x": 2467,
+        "y": 1350
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 38 copy copy copy",
+        "Skill 15 copy copy copy copy"
+      ],
+      "Skill Prerequisite": "Skill 38 copy copy (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 38 copy copy copy",
+      "Skill Position": "(22,11)",
+      "Skill Position Exact": {
+        "x": 2587,
+        "y": 1290
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 38 copy copy copy",
+        "Skill 15 copy copy copy copy"
+      ],
+      "Skill Prerequisite": "Skill 38 copy copy (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 38 copy copy copy",
+      "Skill Position": "(22,12)",
+      "Skill Position Exact": {
+        "x": 2587,
+        "y": 1410
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 38 copy copy copy",
+        "Skill 38 copy copy copy"
+      ],
+      "Skill Prerequisite": "Skill 38 copy copy copy (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 38 copy copy copy",
+      "Skill Position": "(23,12)",
+      "Skill Position Exact": {
+        "x": 2707,
+        "y": 1410
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 15 copy copy copy copy"
+      ],
+      "Skill Prerequisite": "Skill 38 copy copy copy (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 38 copy copy copy",
+      "Skill Position": "(22,13)",
+      "Skill Position Exact": {
+        "x": 2587,
+        "y": 1530
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 15 copy copy copy copy"
+      ],
+      "Skill Prerequisite": "Skill 38 copy copy copy (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 15 copy copy copy copy",
+      "Skill Position": "(21,12)",
+      "Skill Position Exact": {
+        "x": 2467,
+        "y": 1470
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/fire-orb.png",
+      "Skill Dependencies": [],
+      "Skill Prerequisite": "Skill 38 copy copy copy (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 15 copy copy copy copy",
+      "Skill Position": "(23,11)",
+      "Skill Position Exact": {
+        "x": 2707,
+        "y": 1290
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/fire-orb.png",
+      "Skill Dependencies": [],
+      "Skill Prerequisite": "Skill 38 copy copy copy (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 15 copy copy copy copy",
+      "Skill Position": "(22,14)",
+      "Skill Position Exact": {
+        "x": 2647,
+        "y": 1650
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/fire-orb.png",
+      "Skill Dependencies": [],
+      "Skill Prerequisite": "Skill 38 copy copy copy (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 15 copy copy copy copy",
+      "Skill Position": "(24,12)",
+      "Skill Position Exact": {
+        "x": 2827,
+        "y": 1470
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/fire-orb.png",
+      "Skill Dependencies": [],
+      "Skill Prerequisite": "Skill 38 copy copy copy (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 67",
+      "Skill Position": "(20,8)",
+      "Skill Position Exact": {
+        "x": 2347,
+        "y": 930
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 69"
+      ],
+      "Skill Prerequisite": "Start (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 69",
+      "Skill Position": "(21,7)",
+      "Skill Position Exact": {
+        "x": 2467,
+        "y": 810
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 70",
+        "Skill 15 copy copy copy copy copy"
+      ],
+      "Skill Prerequisite": "Skill 67 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 70",
+      "Skill Position": "(19,6)",
+      "Skill Position Exact": {
+        "x": 2287,
+        "y": 750
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 71",
+        "Skill 15 copy copy copy copy copy"
+      ],
+      "Skill Prerequisite": "Skill 69 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 71",
+      "Skill Position": "(20,5)",
+      "Skill Position Exact": {
+        "x": 2407,
+        "y": 630
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 72"
+      ],
+      "Skill Prerequisite": "Skill 70 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 72",
+      "Skill Position": "(20,4)",
+      "Skill Position Exact": {
+        "x": 2407,
+        "y": 510
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Trinket_Top"
+      ],
+      "Skill Prerequisite": "Skill 71 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 15 copy copy copy copy copy",
+      "Skill Position": "(19,7)",
+      "Skill Position Exact": {
+        "x": 2227,
+        "y": 810
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/fire-orb.png",
+      "Skill Dependencies": [],
+      "Skill Prerequisite": "Skill 70 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 15 copy copy copy copy copy",
+      "Skill Position": "(21,7)",
+      "Skill Position Exact": {
+        "x": 2527,
+        "y": 870
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/fire-orb.png",
+      "Skill Dependencies": [],
+      "Skill Prerequisite": "Skill 69 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Trinket_Top",
+      "Skill Position": "(20,3)",
+      "Skill Position Exact": {
+        "x": 2322,
+        "y": 305
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/golden-arrow.png",
+      "Skill Dependencies": [
+        "Skill 98"
+      ],
+      "Skill Prerequisite": "Skill 72 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 76",
+      "Skill Position": "(21,9)",
+      "Skill Position Exact": {
+        "x": 2527,
+        "y": 1050
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 77"
+      ],
+      "Skill Prerequisite": "Start (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 77",
+      "Skill Position": "(22,9)",
+      "Skill Position Exact": {
+        "x": 2647,
+        "y": 1050
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 15 copy copy copy copy copy"
+      ],
+      "Skill Prerequisite": "Skill 76 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 15 copy copy copy copy copy",
+      "Skill Position": "(23,9)",
+      "Skill Position Exact": {
+        "x": 2767,
+        "y": 1050
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/fire-orb.png",
+      "Skill Dependencies": [
+        "Skill 79",
+        "Skill 81"
+      ],
+      "Skill Prerequisite": "Skill 77 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 79",
+      "Skill Position": "(24,8)",
+      "Skill Position Exact": {
+        "x": 2827,
+        "y": 930
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 80"
+      ],
+      "Skill Prerequisite": "Skill 15 copy copy copy copy copy (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 80",
+      "Skill Position": "(25,7)",
+      "Skill Position Exact": {
+        "x": 2947,
+        "y": 810
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 83"
+      ],
+      "Skill Prerequisite": "Skill 79 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 81",
+      "Skill Position": "(24,10)",
+      "Skill Position Exact": {
+        "x": 2827,
+        "y": 1170
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 82"
+      ],
+      "Skill Prerequisite": "Skill 15 copy copy copy copy copy (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 82",
+      "Skill Position": "(25,11)",
+      "Skill Position Exact": {
+        "x": 2947,
+        "y": 1290
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 84"
+      ],
+      "Skill Prerequisite": "Skill 81 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 83",
+      "Skill Position": "(26,7)",
+      "Skill Position Exact": {
+        "x": 3067,
+        "y": 810
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 85"
+      ],
+      "Skill Prerequisite": "Skill 80 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 84",
+      "Skill Position": "(26,11)",
+      "Skill Position Exact": {
+        "x": 3067,
+        "y": 1290
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 86"
+      ],
+      "Skill Prerequisite": "Skill 82 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 85",
+      "Skill Position": "(27,8)",
+      "Skill Position Exact": {
+        "x": 3187,
+        "y": 930
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 15 copy copy copy copy copy copy",
+        "Skill 88"
+      ],
+      "Skill Prerequisite": "Skill 83 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 86",
+      "Skill Position": "(27,10)",
+      "Skill Position Exact": {
+        "x": 3187,
+        "y": 1170
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 15 copy copy copy copy copy copy",
+        "Skill 89"
+      ],
+      "Skill Prerequisite": "Skill 84 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 15 copy copy copy copy copy copy",
+      "Skill Position": "(27,9)",
+      "Skill Position Exact": {
+        "x": 3247,
+        "y": 1050
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/fire-orb.png",
+      "Skill Dependencies": [
+        "Skill 95"
+      ],
+      "Skill Prerequisite": "Skill 85 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 88",
+      "Skill Position": "(28,7)",
+      "Skill Position Exact": {
+        "x": 3307,
+        "y": 810
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 15 copy copy copy copy copy copy copy"
+      ],
+      "Skill Prerequisite": "Skill 85 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 89",
+      "Skill Position": "(28,11)",
+      "Skill Position Exact": {
+        "x": 3307,
+        "y": 1290
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 15 copy copy copy copy copy copy copy"
+      ],
+      "Skill Prerequisite": "Skill 86 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 15 copy copy copy copy copy copy copy",
+      "Skill Position": "(29,6)",
+      "Skill Position Exact": {
+        "x": 3427,
+        "y": 690
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/fire-orb.png",
+      "Skill Dependencies": [
+        "Skill 93",
+        "Skill 97"
+      ],
+      "Skill Prerequisite": "Skill 88 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 15 copy copy copy copy copy copy copy",
+      "Skill Position": "(29,12)",
+      "Skill Position Exact": {
+        "x": 3427,
+        "y": 1410
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/fire-orb.png",
+      "Skill Dependencies": [
+        "Skill 92"
+      ],
+      "Skill Prerequisite": "Skill 89 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 92",
+      "Skill Position": "(30,11)",
+      "Skill Position Exact": {
+        "x": 3547,
+        "y": 1290
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Trinket_Right"
+      ],
+      "Skill Prerequisite": "Skill 15 copy copy copy copy copy copy copy (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 93",
+      "Skill Position": "(30,7)",
+      "Skill Position Exact": {
+        "x": 3547,
+        "y": 810
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Trinket_Right"
+      ],
+      "Skill Prerequisite": "Skill 15 copy copy copy copy copy copy copy (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Trinket_Right",
+      "Skill Position": "(31,8)",
+      "Skill Position Exact": {
+        "x": 3642,
+        "y": 965
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/golden-arrow.png",
+      "Skill Dependencies": [],
+      "Skill Prerequisite": "Skill 96 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 95",
+      "Skill Position": "(29,9)",
+      "Skill Position Exact": {
+        "x": 3427,
+        "y": 1050
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 96"
+      ],
+      "Skill Prerequisite": "Skill 15 copy copy copy copy copy copy (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 96",
+      "Skill Position": "(30,9)",
+      "Skill Position Exact": {
+        "x": 3547,
+        "y": 1050
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Trinket_Right"
+      ],
+      "Skill Prerequisite": "Skill 95 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 97",
+      "Skill Position": "(27,5)",
+      "Skill Position Exact": {
+        "x": 3247,
+        "y": 630
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 99"
+      ],
+      "Skill Prerequisite": "Skill 15 copy copy copy copy copy copy copy (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 98",
+      "Skill Position": "(22,4)",
+      "Skill Position Exact": {
+        "x": 2587,
+        "y": 450
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 100"
+      ],
+      "Skill Prerequisite": "Trinket_Top (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 99",
+      "Skill Position": "(26,5)",
+      "Skill Position Exact": {
+        "x": 3067,
+        "y": 570
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [],
+      "Skill Prerequisite": "Skill 101 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 100",
+      "Skill Position": "(23,4)",
+      "Skill Position Exact": {
+        "x": 2707,
+        "y": 510
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 101"
+      ],
+      "Skill Prerequisite": "Skill 98 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 101",
+      "Skill Position": "(24,5)",
+      "Skill Position Exact": {
+        "x": 2887,
+        "y": 570
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/axe-hammer-grey.png",
+      "Skill Dependencies": [
+        "Skill 15 copy copy copy copy copy copy",
+        "Skill 99"
+      ],
+      "Skill Prerequisite": "Skill 100 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 15 copy copy copy copy copy copy",
+      "Skill Position": "(24,6)",
+      "Skill Position Exact": {
+        "x": 2827,
+        "y": 690
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/fire-orb.png",
+      "Skill Dependencies": [
+        "Skill 15 copy copy copy copy copy copy"
+      ],
+      "Skill Prerequisite": "Skill 101 (1)",
+      "Skill Resources": []
+    },
+    {
+      "Skill Name": "Skill 15 copy copy copy copy copy copy",
+      "Skill Position": "(23,7)",
+      "Skill Position Exact": {
+        "x": 2767,
+        "y": 810
+      },
+      "Skill Level": 1,
+      "Skill Description": "Click to edit skill description.",
+      "Skill Max Points": 1,
+      "Skill Current Points": 0,
+      "Skill Image": "/fire-orb.png",
+      "Skill Dependencies": [],
+      "Skill Prerequisite": "Skill 15 copy copy copy copy copy copy (1)",
+      "Skill Resources": []
+    }
+  ],
+  "Class Name": " ",
+  "FullData": {
+    "hideLockedSkills": 0,
+    "totalStats": {},
+    "showInfo": false,
+    "showStatsSummary": false,
+    "config": {
+      "paths": {
+        "assets": "/src/app/assets",
+        "config": "/src/app/config",
+        "images": {
+          "skills": "/img/skill",
+          "backgrounds": "/img/background",
+          "default": "/img/skill/axe-hammer-grey.png"
+        }
+      },
+      "grid": {
+        "spacing": 120,
+        "startX": 100,
+        "startY": 100
+      },
+      "skill": {
+        "size": 100,
+        "offset": 30
+      },
+      "connection": {
+        "height": 2
+      },
+      "skillImages": [
+        "/axe-hammer-grey.png",
+        "/fire-orb.png",
+        "/fire-rock.png",
+        "/flaming-spear.png",
+        "/flaming-staff.png",
+        "/golden-arrow.png",
+        "/gray-spear.png",
+        "/ornate-spear.png",
+        "/skull-blue.png",
+        "/small-trident.png",
+        "/spectral-dagger.png",
+        "/water-sword.png"
+      ]
+    },
+    "skills": [
+      {
+        "id": 10,
+        "x": 2252,
+        "y": 1075,
+        "name": "Skill 10",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 11,
+        "x": 2132,
+        "y": 1075,
+        "name": "Skill 11",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 12,
+        "x": 2012,
+        "y": 1015,
+        "name": "Skill 12",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 13,
+        "x": 2012,
+        "y": 1135,
+        "name": "Skill 13",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 14,
+        "x": 1892,
+        "y": 1075,
+        "name": "Skill 14",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 15,
+        "x": 1772,
+        "y": 1075,
+        "name": "Skill 15",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/fire-orb.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 16,
+        "x": 1652,
+        "y": 1075,
+        "name": "Skill 16",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 17,
+        "x": 1532,
+        "y": 1015,
+        "name": "Skill 17",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 18,
+        "x": 1532,
+        "y": 1135,
+        "name": "Skill 18",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 19,
+        "x": 1412,
+        "y": 955,
+        "name": "Skill 19",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/fire-orb.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 20,
+        "x": 1412,
+        "y": 1075,
+        "name": "Skill 19 copy",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/fire-orb.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 21,
+        "x": 1412,
+        "y": 1195,
+        "name": "Skill 19 copy",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/fire-orb.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 22,
+        "x": 1292,
+        "y": 955,
+        "name": "Skill 22",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 23,
+        "x": 1292,
+        "y": 1075,
+        "name": "Skill 23",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 24,
+        "x": 1292,
+        "y": 1195,
+        "name": "Skill 24",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 25,
+        "x": 1172,
+        "y": 1075,
+        "name": "Skill 25",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 28,
+        "x": 2382,
+        "y": 1085,
+        "name": "Start",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/skull-blue.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 110,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 30,
+        "x": 1002,
+        "y": 1025,
+        "name": "Trinket_Left",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/golden-arrow.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 110,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 31,
+        "x": 1412,
+        "y": 1375,
+        "name": "Skill 31",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 32,
+        "x": 1592,
+        "y": 1555,
+        "name": "Skill 32",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 33,
+        "x": 1592,
+        "y": 1375,
+        "name": "Skill 33",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 34,
+        "x": 1652,
+        "y": 1315,
+        "name": "Skill 34",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/fire-orb.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 35,
+        "x": 1832,
+        "y": 1195,
+        "name": "Skill 35",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 36,
+        "x": 1712,
+        "y": 1195,
+        "name": "Skill 36",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 37,
+        "x": 1772,
+        "y": 1315,
+        "name": "Skill 37",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 38,
+        "x": 1892,
+        "y": 1315,
+        "name": "Skill 38",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 39,
+        "x": 1927,
+        "y": 1470,
+        "name": "Skill 15 copy",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/fire-orb.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 41,
+        "x": 2287,
+        "y": 1230,
+        "name": "Skill 38 copy",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 42,
+        "x": 2167,
+        "y": 1350,
+        "name": "Skill 38 copy",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 43,
+        "x": 2047,
+        "y": 1410,
+        "name": "Skill 38 copy",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 45,
+        "x": 1927,
+        "y": 1590,
+        "name": "Skill 38 copy",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 46,
+        "x": 1867,
+        "y": 1710,
+        "name": "Skill 38 copy",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 47,
+        "x": 1747,
+        "y": 1650,
+        "name": "Skill 38 copy",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 48,
+        "x": 1807,
+        "y": 1530,
+        "name": "Skill 15 copy copy",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/fire-orb.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 49,
+        "x": 1987,
+        "y": 1710,
+        "name": "Skill 38 copy copy",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 50,
+        "x": 2107,
+        "y": 1650,
+        "name": "Skill 38 copy copy",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 51,
+        "x": 2167,
+        "y": 1470,
+        "name": "Skill 38 copy copy",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 52,
+        "x": 2047,
+        "y": 1590,
+        "name": "Skill 15 copy copy copy",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/fire-orb.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 53,
+        "x": 2287,
+        "y": 1470,
+        "name": "Skill 53",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 54,
+        "x": 2262,
+        "y": 1565,
+        "name": "Trinket_Bottom",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/golden-arrow.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 110,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 55,
+        "x": 2407,
+        "y": 1230,
+        "name": "Skill 38 copy copy",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 56,
+        "x": 2527,
+        "y": 1170,
+        "name": "Skill 38 copy copy",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 58,
+        "x": 2467,
+        "y": 1350,
+        "name": "Skill 38 copy copy copy",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 59,
+        "x": 2587,
+        "y": 1290,
+        "name": "Skill 38 copy copy copy",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 60,
+        "x": 2587,
+        "y": 1410,
+        "name": "Skill 38 copy copy copy",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 61,
+        "x": 2707,
+        "y": 1410,
+        "name": "Skill 38 copy copy copy",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 62,
+        "x": 2587,
+        "y": 1530,
+        "name": "Skill 38 copy copy copy",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 63,
+        "x": 2467,
+        "y": 1470,
+        "name": "Skill 15 copy copy copy copy",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/fire-orb.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 64,
+        "x": 2707,
+        "y": 1290,
+        "name": "Skill 15 copy copy copy copy",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/fire-orb.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 65,
+        "x": 2647,
+        "y": 1650,
+        "name": "Skill 15 copy copy copy copy",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/fire-orb.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 66,
+        "x": 2827,
+        "y": 1470,
+        "name": "Skill 15 copy copy copy copy",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/fire-orb.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 67,
+        "x": 2347,
+        "y": 930,
+        "name": "Skill 67",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 69,
+        "x": 2467,
+        "y": 810,
+        "name": "Skill 69",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 70,
+        "x": 2287,
+        "y": 750,
+        "name": "Skill 70",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 71,
+        "x": 2407,
+        "y": 630,
+        "name": "Skill 71",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 72,
+        "x": 2407,
+        "y": 510,
+        "name": "Skill 72",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 73,
+        "x": 2227,
+        "y": 810,
+        "name": "Skill 15 copy copy copy copy copy",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/fire-orb.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 74,
+        "x": 2527,
+        "y": 870,
+        "name": "Skill 15 copy copy copy copy copy",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/fire-orb.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 75,
+        "x": 2322,
+        "y": 305,
+        "name": "Trinket_Top",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/golden-arrow.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 110,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 76,
+        "x": 2527,
+        "y": 1050,
+        "name": "Skill 76",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 77,
+        "x": 2647,
+        "y": 1050,
+        "name": "Skill 77",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 78,
+        "x": 2767,
+        "y": 1050,
+        "name": "Skill 15 copy copy copy copy copy",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/fire-orb.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 79,
+        "x": 2827,
+        "y": 930,
+        "name": "Skill 79",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 80,
+        "x": 2947,
+        "y": 810,
+        "name": "Skill 80",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 81,
+        "x": 2827,
+        "y": 1170,
+        "name": "Skill 81",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 82,
+        "x": 2947,
+        "y": 1290,
+        "name": "Skill 82",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 83,
+        "x": 3067,
+        "y": 810,
+        "name": "Skill 83",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 84,
+        "x": 3067,
+        "y": 1290,
+        "name": "Skill 84",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 85,
+        "x": 3187,
+        "y": 930,
+        "name": "Skill 85",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 86,
+        "x": 3187,
+        "y": 1170,
+        "name": "Skill 86",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 87,
+        "x": 3247,
+        "y": 1050,
+        "name": "Skill 15 copy copy copy copy copy copy",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/fire-orb.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 88,
+        "x": 3307,
+        "y": 810,
+        "name": "Skill 88",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 89,
+        "x": 3307,
+        "y": 1290,
+        "name": "Skill 89",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 90,
+        "x": 3427,
+        "y": 690,
+        "name": "Skill 15 copy copy copy copy copy copy copy",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/fire-orb.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 91,
+        "x": 3427,
+        "y": 1410,
+        "name": "Skill 15 copy copy copy copy copy copy copy",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/fire-orb.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 92,
+        "x": 3547,
+        "y": 1290,
+        "name": "Skill 92",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 93,
+        "x": 3547,
+        "y": 810,
+        "name": "Skill 93",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 94,
+        "x": 3642,
+        "y": 965,
+        "name": "Trinket_Right",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/golden-arrow.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 110,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 95,
+        "x": 3427,
+        "y": 1050,
+        "name": "Skill 95",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 96,
+        "x": 3547,
+        "y": 1050,
+        "name": "Skill 96",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 97,
+        "x": 3247,
+        "y": 630,
+        "name": "Skill 97",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 98,
+        "x": 2587,
+        "y": 450,
+        "name": "Skill 98",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 99,
+        "x": 3067,
+        "y": 570,
+        "name": "Skill 99",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 100,
+        "x": 2707,
+        "y": 510,
+        "name": "Skill 100",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 101,
+        "x": 2887,
+        "y": 570,
+        "name": "Skill 101",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/axe-hammer-grey.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 102,
+        "x": 2827,
+        "y": 690,
+        "name": "Skill 15 copy copy copy copy copy copy",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/fire-orb.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      },
+      {
+        "id": 103,
+        "x": 2767,
+        "y": 810,
+        "name": "Skill 15 copy copy copy copy copy copy",
+        "showActions": false,
+        "showTooltip": false,
+        "description": "Click to edit skill description.",
+        "maxPoints": 1,
+        "currentPoints": 0,
+        "requiredPoints": 0,
+        "image": "/img/skill/fire-orb.png",
+        "shouldAnimate": true,
+        "resources": [],
+        "size": 60,
+        "borderType": "solid",
+        "shape": "round"
+      }
+    ],
+    "connections": [
+      {
+        "id": "28-10",
+        "from": 28,
+        "to": 10,
+        "isHovered": false
+      },
+      {
+        "id": "10-11",
+        "from": 10,
+        "to": 11,
+        "isHovered": false
+      },
+      {
+        "id": "11-12",
+        "from": 11,
+        "to": 12,
+        "isHovered": false
+      },
+      {
+        "id": "11-13",
+        "from": 11,
+        "to": 13,
+        "isHovered": false
+      },
+      {
+        "id": "13-14",
+        "from": 13,
+        "to": 14,
+        "isHovered": false
+      },
+      {
+        "id": "12-14",
+        "from": 12,
+        "to": 14,
+        "isHovered": false
+      },
+      {
+        "id": "14-15",
+        "from": 14,
+        "to": 15,
+        "isHovered": false
+      },
+      {
+        "id": "15-16",
+        "from": 15,
+        "to": 16,
+        "isHovered": false
+      },
+      {
+        "id": "16-17",
+        "from": 16,
+        "to": 17,
+        "isHovered": false
+      },
+      {
+        "id": "16-18",
+        "from": 16,
+        "to": 18,
+        "isHovered": false
+      },
+      {
+        "id": "17-19",
+        "from": 17,
+        "to": 19,
+        "isHovered": false
+      },
+      {
+        "id": "18-20",
+        "from": 18,
+        "to": 20,
+        "isHovered": false
+      },
+      {
+        "id": "17-20",
+        "from": 17,
+        "to": 20,
+        "isHovered": false
+      },
+      {
+        "id": "18-21",
+        "from": 18,
+        "to": 21,
+        "isHovered": false
+      },
+      {
+        "id": "19-22",
+        "from": 19,
+        "to": 22
+      },
+      {
+        "id": "20-23",
+        "from": 20,
+        "to": 23
+      },
+      {
+        "id": "21-24",
+        "from": 21,
+        "to": 24,
+        "isHovered": false
+      },
+      {
+        "id": "24-25",
+        "from": 24,
+        "to": 25,
+        "isHovered": false
+      },
+      {
+        "id": "23-25",
+        "from": 23,
+        "to": 25,
+        "isHovered": false
+      },
+      {
+        "id": "22-25",
+        "from": 22,
+        "to": 25,
+        "isHovered": false
+      },
+      {
+        "id": "25-30",
+        "from": 25,
+        "to": 30
+      },
+      {
+        "id": "21-31",
+        "from": 21,
+        "to": 31,
+        "isHovered": false
+      },
+      {
+        "id": "31-33",
+        "from": 31,
+        "to": 33,
+        "isHovered": false
+      },
+      {
+        "id": "33-34",
+        "from": 33,
+        "to": 34,
+        "isHovered": false
+      },
+      {
+        "id": "32-33",
+        "from": 32,
+        "to": 33,
+        "isHovered": false
+      },
+      {
+        "id": "32-31",
+        "from": 32,
+        "to": 31,
+        "isHovered": false
+      },
+      {
+        "id": "15-36",
+        "from": 15,
+        "to": 36,
+        "isHovered": false
+      },
+      {
+        "id": "15-35",
+        "from": 15,
+        "to": 35,
+        "isHovered": false
+      },
+      {
+        "id": "37-36",
+        "from": 37,
+        "to": 36
+      },
+      {
+        "id": "38-35",
+        "from": 38,
+        "to": 35
+      },
+      {
+        "id": "39-37",
+        "from": 39,
+        "to": 37
+      },
+      {
+        "id": "39-38",
+        "from": 39,
+        "to": 38,
+        "isHovered": false
+      },
+      {
+        "id": "28-41",
+        "from": 28,
+        "to": 41,
+        "isHovered": false
+      },
+      {
+        "id": "41-42",
+        "from": 41,
+        "to": 42,
+        "isHovered": false
+      },
+      {
+        "id": "42-43",
+        "from": 42,
+        "to": 43
+      },
+      {
+        "id": "43-39",
+        "from": 43,
+        "to": 39,
+        "isHovered": false
+      },
+      {
+        "id": "39-45",
+        "from": 39,
+        "to": 45,
+        "isHovered": false
+      },
+      {
+        "id": "45-46",
+        "from": 45,
+        "to": 46,
+        "isHovered": false
+      },
+      {
+        "id": "46-47",
+        "from": 46,
+        "to": 47,
+        "isHovered": false
+      },
+      {
+        "id": "47-48",
+        "from": 47,
+        "to": 48,
+        "isHovered": false
+      },
+      {
+        "id": "47-32",
+        "from": 47,
+        "to": 32,
+        "isHovered": false
+      },
+      {
+        "id": "45-49",
+        "from": 45,
+        "to": 49
+      },
+      {
+        "id": "49-50",
+        "from": 49,
+        "to": 50,
+        "isHovered": false
+      },
+      {
+        "id": "50-52",
+        "from": 50,
+        "to": 52,
+        "isHovered": false
+      },
+      {
+        "id": "50-51",
+        "from": 50,
+        "to": 51,
+        "isHovered": false
+      },
+      {
+        "id": "51-53",
+        "from": 51,
+        "to": 53,
+        "isHovered": false
+      },
+      {
+        "id": "53-54",
+        "from": 53,
+        "to": 54,
+        "isHovered": false
+      },
+      {
+        "id": "28-56",
+        "from": 28,
+        "to": 56,
+        "isHovered": false
+      },
+      {
+        "id": "28-55",
+        "from": 28,
+        "to": 55,
+        "isHovered": false
+      },
+      {
+        "id": "55-58",
+        "from": 55,
+        "to": 58,
+        "isHovered": false
+      },
+      {
+        "id": "56-59",
+        "from": 56,
+        "to": 59,
+        "isHovered": false
+      },
+      {
+        "id": "59-60",
+        "from": 59,
+        "to": 60
+      },
+      {
+        "id": "58-60",
+        "from": 58,
+        "to": 60,
+        "isHovered": false
+      },
+      {
+        "id": "60-62",
+        "from": 60,
+        "to": 62,
+        "isHovered": false
+      },
+      {
+        "id": "60-61",
+        "from": 60,
+        "to": 61,
+        "isHovered": false
+      },
+      {
+        "id": "59-64",
+        "from": 59,
+        "to": 64
+      },
+      {
+        "id": "58-63",
+        "from": 58,
+        "to": 63
+      },
+      {
+        "id": "62-65",
+        "from": 62,
+        "to": 65,
+        "isHovered": false
+      },
+      {
+        "id": "61-66",
+        "from": 61,
+        "to": 66,
+        "isHovered": false
+      },
+      {
+        "id": "28-67",
+        "from": 28,
+        "to": 67,
+        "isHovered": false
+      },
+      {
+        "id": "67-69",
+        "from": 67,
+        "to": 69,
+        "isHovered": false
+      },
+      {
+        "id": "69-70",
+        "from": 69,
+        "to": 70,
+        "isHovered": false
+      },
+      {
+        "id": "70-71",
+        "from": 70,
+        "to": 71,
+        "isHovered": false
+      },
+      {
+        "id": "71-72",
+        "from": 71,
+        "to": 72,
+        "isHovered": false
+      },
+      {
+        "id": "70-73",
+        "from": 70,
+        "to": 73
+      },
+      {
+        "id": "69-74",
+        "from": 69,
+        "to": 74
+      },
+      {
+        "id": "72-75",
+        "from": 72,
+        "to": 75
+      },
+      {
+        "id": "28-76",
+        "from": 28,
+        "to": 76
+      },
+      {
+        "id": "76-77",
+        "from": 76,
+        "to": 77,
+        "isHovered": false
+      },
+      {
+        "id": "77-78",
+        "from": 77,
+        "to": 78,
+        "isHovered": false
+      },
+      {
+        "id": "78-79",
+        "from": 78,
+        "to": 79,
+        "isHovered": false
+      },
+      {
+        "id": "79-80",
+        "from": 79,
+        "to": 80
+      },
+      {
+        "id": "80-83",
+        "from": 80,
+        "to": 83,
+        "isHovered": false
+      },
+      {
+        "id": "83-85",
+        "from": 83,
+        "to": 85
+      },
+      {
+        "id": "85-87",
+        "from": 85,
+        "to": 87
+      },
+      {
+        "id": "78-81",
+        "from": 78,
+        "to": 81
+      },
+      {
+        "id": "81-82",
+        "from": 81,
+        "to": 82
+      },
+      {
+        "id": "82-84",
+        "from": 82,
+        "to": 84
+      },
+      {
+        "id": "84-86",
+        "from": 84,
+        "to": 86,
+        "isHovered": false
+      },
+      {
+        "id": "86-87",
+        "from": 86,
+        "to": 87,
+        "isHovered": false
+      },
+      {
+        "id": "87-95",
+        "from": 87,
+        "to": 95,
+        "isHovered": false
+      },
+      {
+        "id": "95-96",
+        "from": 95,
+        "to": 96,
+        "isHovered": false
+      },
+      {
+        "id": "96-94",
+        "from": 96,
+        "to": 94
+      },
+      {
+        "id": "86-89",
+        "from": 86,
+        "to": 89
+      },
+      {
+        "id": "89-91",
+        "from": 89,
+        "to": 91
+      },
+      {
+        "id": "91-92",
+        "from": 91,
+        "to": 92
+      },
+      {
+        "id": "92-94",
+        "from": 92,
+        "to": 94,
+        "isHovered": false
+      },
+      {
+        "id": "85-88",
+        "from": 85,
+        "to": 88,
+        "isHovered": false
+      },
+      {
+        "id": "88-90",
+        "from": 88,
+        "to": 90
+      },
+      {
+        "id": "90-93",
+        "from": 90,
+        "to": 93
+      },
+      {
+        "id": "93-94",
+        "from": 93,
+        "to": 94
+      },
+      {
+        "id": "90-97",
+        "from": 90,
+        "to": 97
+      },
+      {
+        "id": "101-102",
+        "from": 101,
+        "to": 102,
+        "isHovered": false
+      },
+      {
+        "id": "102-103",
+        "from": 102,
+        "to": 103
+      },
+      {
+        "id": "75-98",
+        "from": 75,
+        "to": 98
+      },
+      {
+        "id": "98-100",
+        "from": 98,
+        "to": 100
+      },
+      {
+        "id": "100-101",
+        "from": 100,
+        "to": 101
+      },
+      {
+        "id": "101-99",
+        "from": 101,
+        "to": 99
+      },
+      {
+        "id": "97-99",
+        "from": 97,
+        "to": 99,
+        "isHovered": false
+      }
+    ],
+    "connectingFrom": null,
+    "skillIdCounter": 105,
+    "draggedSkill": null,
+    "dragOffset": {
+      "x": 70,
+      "y": 53
+    },
+    "draggedElement": {},
+    "isDragging": false,
+    "isLinking": false,
+    "hoveredSkill": null,
+    "defaultMaxPoints": 5,
+    "dragStartTime": 1756629230981,
+    "dragStartPos": {
+      "x": 1042,
+      "y": 284
+    },
+    "dragThreshold": 5,
+    "showOptions": true,
+    "isPanning": false,
+    "panStart": {
+      "x": 1170,
+      "y": 434
+    },
+    "treePosition": {
+      "x": -323,
+      "y": 0
+    },
+    "scale": 0.5,
+    "minScale": 0.5,
+    "maxScale": 2,
+    "scaleStep": 0.1,
+    "isLoaded": false,
+    "touchStartX": null,
+    "touchStartY": null,
+    "lastTouchDistance": null,
+    "touchTimeout": null,
+    "doubleTapDelay": 300,
+    "lastTap": 0,
+    "editingSkill": null,
+    "oldSkills": null,
+    "oldBackgroundLink": null,
+    "oldName": null,
+    "currentBackgroundLink": "/img/background/grass-ancient.jpg",
+    "currentName": " ",
+    "currentClassDescription": null,
+    "inputText": "",
+    "isLoading": false,
+    "historyIndex": 49,
+    "maxHistorySize": 50,
+    "showImageSelector": false,
+    "selectedImage": "/fire-orb.png",
+    "availableImages": [
+      "/axe-hammer-grey.png",
+      "/fire-orb.png",
+      "/fire-rock.png",
+      "/flaming-spear.png",
+      "/flaming-staff.png",
+      "/golden-arrow.png",
+      "/gray-spear.png",
+      "/ornate-spear.png",
+      "/skull-blue.png",
+      "/small-trident.png",
+      "/spectral-dagger.png",
+      "/water-sword.png"
+    ],
+    "skillShape": "round",
+    "customImages": [],
+    "gridSnapEnabled": true,
+    "snapThreshold": 8,
+    "mode": "edit",
+    "overlayColor": "#000000",
+    "overlayOpacity": 75,
+    "showArrows": false,
+    "showGlobalGrid": true,
+    "gridOpacity": 12,
+    "gridSize": 120,
+    "maxPoints": 20,
+    "selectionBox": null,
+    "initialClick": {
+      "x": 1942,
+      "y": 804
+    },
+    "showLoadModal": false,
+    "initialPositions": null,
+    "prerequisiteMode": "all",
+    "showGenerateControls": true,
+    "lastPanTime": 0,
+    "treeEl": {},
+    "imageUrl": "",
+    "defaultSkillImage": "/img/skill/axe-hammer-grey.png",
+    "defaultMaxSkillPoints": 1,
+    "selectingDefaultImage": false,
+    "showSkillNames": false,
+    "skillSizePresets": {
+      "small": 30,
+      "medium": 60,
+      "large": 110
+    }
+  }
+}
