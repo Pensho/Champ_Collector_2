@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dtt3s5jyf4um3"
-path="res://.godot/imported/Forest_Troll_0001.png-480e7c2ce2034333009853ef4ac6e257.ctex"
+uid="uid://b4g0t5vexxvy5"
+path="res://.godot/imported/Forest_Troll_10.png-2cd15596ec0e02c72a5920cf71736bc1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ Collector/Creatures/Forest Troll/Forest_Troll_0001.png"
-dest_files=["res://.godot/imported/Forest_Troll_0001.png-480e7c2ce2034333009853ef4ac6e257.ctex"]
+source_file="res://Assets/Champ Collector/Creatures/Forest Troll/Forest_Troll_10.png"
+dest_files=["res://.godot/imported/Forest_Troll_10.png-2cd15596ec0e02c72a5920cf71736bc1.ctex"]
 
 [params]
 

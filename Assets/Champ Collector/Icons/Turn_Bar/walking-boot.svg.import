@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dt8yldnfdtyhb"
-path="res://.godot/imported/Flux_Dev_A_tall_lanky_pale_green_and_dirty_troll_in_the_style__4.jpg-8d8168ddbf83f597f12c0962b6258197.ctex"
+uid="uid://cj6uxwt730ish"
+path="res://.godot/imported/walking-boot.svg-caf7ffebddfe751de743446e8233db01.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ Collector/Creatures/Forest Troll/Flux_Dev_A_tall_lanky_pale_green_and_dirty_troll_in_the_style__4.jpg"
-dest_files=["res://.godot/imported/Flux_Dev_A_tall_lanky_pale_green_and_dirty_troll_in_the_style__4.jpg-8d8168ddbf83f597f12c0962b6258197.ctex"]
+source_file="res://Assets/Champ Collector/Icons/Turn_Bar/walking-boot.svg"
+dest_files=["res://.godot/imported/walking-boot.svg-caf7ffebddfe751de743446e8233db01.ctex"]
 
 [params]
 
@@ -32,3 +32,6 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
+svg/scale=1.0
+editor/scale_with_editor_scale=false
+editor/convert_colors_with_editor_theme=false

@@ -1,48 +1,96 @@
 extends Node2D
 
-@onready var battle_ui: Control = $"Battle UI"
+@onready var battle_ui: BattleUI = $"Battle UI"
 @onready var background: TextureRect = %BattleBackground
-@onready var boss_position: Node2D = $"Boss Position"
+
+@onready var enemy_repr_1: CharacterRepresentation = $Enemy_1
+@onready var enemy_repr_2: CharacterRepresentation = $Enemy_2
+@onready var enemy_repr_3: CharacterRepresentation = $Enemy_3
 
 @onready var character_repr_1: CharacterRepresentation = $Character_1
 @onready var character_repr_2: CharacterRepresentation = $Character_2
 @onready var character_repr_3: CharacterRepresentation = $Character_3
 
-#@onready var character_repr_1: Node2D = $Character_1
-#@onready var character_repr_2: Node2D = $Character_2
-#@onready var character_repr_3: Node2D = $Character_3
+var _char_1: Character
+var _char_2: Character
+var _char_3: Character
 
-#const k_pos_char_1: Vector2 = Vector2(70,370)
-#const k_pos_char_2: Vector2 = Vector2(280,430)
-#const k_pos_char_3: Vector2 = Vector2(530,460)
+var _enemy_1: Character
+var _enemy_2: Character
+var _enemy_3: Character
 
-func _ready() -> void:
-	pass
+const TURN_POS_X_THRESHOLD: int = 360
 
-func Init(context: ContextContainer) -> void:
-	var battlecontext: Context_Battle = context._context as Context_Battle
+var _someones_turn: bool = false
+var _initialized: bool = false
+
+func _process(delta: float) -> void:
+	if(_initialized):
+		UpdateBattle(delta, _char_1, 0)
+		UpdateBattle(delta, _char_2, 1)
+		UpdateBattle(delta, _char_3, 2)
+		UpdateBattle(delta, _enemy_1, 3)
+		UpdateBattle(delta, _enemy_2, 4)
+		UpdateBattle(delta, _enemy_3, 5)
+
+func UpdateBattle(delta: float, character: Character, battleSlot: int) -> void:
+	if (_someones_turn):
+		return
+	if(character._currentHealth <= 0):
+		return
+	if(battle_ui._char_turns[battleSlot].position.x + battle_ui._char_turns[battleSlot].get_rect().size.x < TURN_POS_X_THRESHOLD):
+		battle_ui._char_turns[battleSlot].position = battle_ui._char_turns[battleSlot].position + Vector2(character._speed * delta, 0)
+	else:
+		_someones_turn = true
+
+func CharPreperations(p_repr: CharacterRepresentation, p_character: Character) -> void:
+	p_repr._level.text = str(p_character._level)
+	p_repr._character_texture.texture = load(p_character._texture)
+	p_repr._lifebar.max_value = p_character._health
+	p_repr._lifebar.value = p_character._currentHealth
+	p_repr._lifebar_text.text = str(p_character._currentHealth) + "/" + str(p_character._health)
+
+func Init(p_context: ContextContainer) -> void:
+	print("Entering a battle scene.")
+	var battlecontext: Context_Battle = p_context._context as Context_Battle
 	background.texture = load(battlecontext._location)
 	
-	var char_1: Character = context._current_collection.GetCharacter(0)
-	var char_2: Character = context._current_collection.GetCharacter(1)
-	var char_3: Character = context._current_collection.GetCharacter(2)
+	_char_1 = p_context._current_collection.GetCharacter(0)
+	_char_2 = p_context._current_collection.GetCharacter(1)
+	_char_3 = p_context._current_collection.GetCharacter(2)
 	
-	character_repr_1._level.text = str(char_1._level)
-	character_repr_2._level.text = str(char_2._level)
-	character_repr_3._level.text = str(char_3._level)
+	CharPreperations(character_repr_1, _char_1)
+	CharPreperations(character_repr_2, _char_2)
+	CharPreperations(character_repr_3, _char_3)
 	
-	character_repr_1._character_texture.texture = load(char_1._texture)
-	character_repr_2._character_texture.texture = load(char_2._texture)
-	character_repr_3._character_texture.texture = load(char_3._texture)
+	battle_ui._char_turns[0].texture = load(_char_1._texture)
+	battle_ui._char_turns[1].texture = load(_char_2._texture)
+	battle_ui._char_turns[2].texture = load(_char_3._texture)
 	
-	character_repr_1._lifebar.max_value = char_1._health
-	character_repr_2._lifebar.max_value = char_2._health
-	character_repr_3._lifebar.max_value = char_3._health
+	for enemy in battlecontext._enemy_characters:
+		print("found enemy: ", enemy._name)
 	
-	character_repr_1._lifebar.value = char_1._currentHealth
-	character_repr_2._lifebar.value = char_2._currentHealth
-	character_repr_3._lifebar.value = char_3._currentHealth
-
-	character_repr_1._lifebar_text.text = str(char_1._currentHealth) + "/" + str(char_1._health)
-	character_repr_2._lifebar_text.text = str(char_2._currentHealth) + "/" + str(char_2._health)
-	character_repr_3._lifebar_text.text = str(char_3._currentHealth) + "/" + str(char_3._health)
+	if (battlecontext._enemy_characters.size() >= 1):
+		_enemy_1 = Character.new()
+		_enemy_1.InstantiateNew(battlecontext._enemy_characters[0], -1)
+		CharPreperations(enemy_repr_1, _enemy_1)
+		battle_ui._char_turns[3].texture = load(_enemy_1._texture)
+	else:
+		print("Accidental load to battle scene without enemies.")
+		get_tree().quit()
+	if (battlecontext._enemy_characters.size() >= 2):
+		_enemy_2 = Character.new()
+		_enemy_2.InstantiateNew(battlecontext._enemy_characters[1], -1)
+		CharPreperations(enemy_repr_2, _enemy_2)
+		battle_ui._char_turns[4].texture = load(_enemy_2._texture)
+	else:
+		enemy_repr_2.hide()
+	if (battlecontext._enemy_characters.size() >= 3):
+		_enemy_3 = Character.new()
+		_enemy_3.InstantiateNew(battlecontext._enemy_characters[2], -1)
+		CharPreperations(enemy_repr_3, _enemy_3)
+		battle_ui._char_turns[5].texture = load(_enemy_3._texture)
+	else:
+		enemy_repr_3.hide()
+	
+	_initialized = true

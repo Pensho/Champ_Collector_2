@@ -11,6 +11,7 @@ script = ExtResource("1_hd4xr")
 [node name="TextureRect" type="TextureRect" parent="."]
 offset_right = 200.0
 offset_bottom = 200.0
+expand_mode = 1
 metadata/_edit_use_anchors_ = true
 
 [node name="ProgressBar" type="ProgressBar" parent="."]

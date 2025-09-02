@@ -2,6 +2,8 @@ class_name CharacterPreset extends Resource
 
 const Types = preload("res://Scripts/Character/character_types.gd")
 
+@warning_ignore_start("unused_private_class_variable")
+
 @export var _name: String
 @export var _texture: String
 @export var _rarity: Types.Rarity
@@ -21,3 +23,5 @@ const Types = preload("res://Scripts/Character/character_types.gd")
 @export var _pressence: int = 0
 @export var _critChance: int = 0
 @export var _critDamage: int = 0
+
+@warning_ignore_restore("unused_private_class_variable")

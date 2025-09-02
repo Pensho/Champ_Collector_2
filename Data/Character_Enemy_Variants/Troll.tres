@@ -7,7 +7,7 @@
 [resource]
 script = ExtResource("2_xxfqe")
 _name = "Troll"
-_texture = "res://Assets/Champ Collector/Creatures/Forest Troll/Forest_Troll_2.jpg"
+_texture = "res://Assets/Champ Collector/Creatures/Forest Troll/Forest_Troll_10.png"
 _rarity = 2
 _faction = 4
 _role = 11
