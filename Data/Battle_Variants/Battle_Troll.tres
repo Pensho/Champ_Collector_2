@@ -7,6 +7,8 @@
 
 [resource]
 script = ExtResource("1_3p4dw")
-_enemy_characters = Array[ExtResource("1_bjutu")]([ExtResource("2_gpdaq"), ExtResource("3_gpdaq"), ExtResource("2_gpdaq")])
+_enemies_wave_1 = Array[ExtResource("1_bjutu")]([ExtResource("2_gpdaq"), ExtResource("2_gpdaq"), ExtResource("3_gpdaq")])
+_enemies_wave_2 = Array[ExtResource("1_bjutu")]([])
+_enemies_wave_3 = Array[ExtResource("1_bjutu")]([])
 _location = "res://Assets/Champ Collector/Scenery/Troll battle area/Troll_battle_area_7.jpg"
 metadata/_custom_type_script = "uid://bjtnao6fgl8go"
