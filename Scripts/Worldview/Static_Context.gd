@@ -1,0 +1,1 @@
+class_name Static_Context extends Resource

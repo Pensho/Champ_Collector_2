@@ -31,7 +31,7 @@ func Update(p_delta: float, p_characterID: int) -> void:
 		_turn_indicator.position.x = _character_repr[p_characterID].position.x + (_character_repr[p_characterID]._character_texture.size.x * 0.5) - (_turn_indicator.size.x * 0.5)
 		_turn_indicator.position.y = _character_repr[p_characterID].position.y - _turn_indicator.size.y
 
-func CharPreperations(p_characterID: int) -> void:
+func VisualizeCharacter(p_characterID: int) -> void:
 	_character_repr[p_characterID]._level.text = str(_characters[p_characterID]._level)
 	_character_repr[p_characterID]._character_texture.texture = load(_characters[p_characterID]._texture)
 	_character_repr[p_characterID]._lifebar.max_value = _characters[p_characterID]._health
@@ -42,30 +42,24 @@ func CharPreperations(p_characterID: int) -> void:
 
 func Init(p_context: ContextContainer) -> void:
 	print("Entering a battle scene.")
-	var battlecontext: Context_Battle = p_context._context as Context_Battle
+	var battlecontext: Context_Battle = p_context._static_context as Context_Battle
 	_background.texture = load(battlecontext._location)
 	
 	if(battlecontext._enemies_wave_1.is_empty()):
 		print("Accidental load to battle scene without enemies, terminating application")
 		get_tree().quit()
-	elif(p_context._current_collection.GetAllCharacters().is_empty()):
+	elif(p_context._player_battle_characters.is_empty()):
 		print("Accidental load to battle scene without player characters, terminating application")
 		get_tree().quit()
 	
-	if(p_context._current_collection.GetAllCharacters().size() >= 3):
-		for i in 3:
-			_characters.append(p_context._current_collection.GetCharacter(i))
-	else:
-		for i in p_context._current_collection.GetAllCharacters():
-			_characters.append(p_context._current_collection.GetCharacter(i))
-	
-	for i in _characters.size():
-		CharPreperations(i)
+	for i in p_context._player_battle_characters.size():
+		_characters.append(p_context._player_battle_characters[i])
+		VisualizeCharacter(i)
 
 	for i in battlecontext._enemies_wave_1.size():
 		_characters.append(Character.new())
 		_characters[i + 3].InstantiateNew(battlecontext._enemies_wave_1[i], -1)
-		CharPreperations(i + 3)
+		VisualizeCharacter(i + 3)
 		_battle_ui._char_turns[i + 3].texture = load(_characters[i + 3]._texture)
 		_character_repr[i + 3].show()
 		print("found enemy: ", _characters[i + 3]._name)

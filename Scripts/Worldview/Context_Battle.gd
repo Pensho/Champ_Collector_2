@@ -1,4 +1,4 @@
-class_name Context_Battle extends Context
+class_name Context_Battle extends Static_Context
 
 @warning_ignore_start("unused_private_class_variable")
 

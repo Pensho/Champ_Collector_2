@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="Context" load_steps=2 format=3 uid="uid://p8nvuqouk5oh"]
 
-[ext_resource type="Script" uid="uid://cmlqgi6s1y3ef" path="res://Scripts/Worldview/Context.gd" id="1_edati"]
+[ext_resource type="Script" uid="uid://cmlqgi6s1y3ef" path="res://Scripts/Worldview/Static_Context.gd" id="1_edati"]
 
 [resource]
 script = ExtResource("1_edati")

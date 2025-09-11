@@ -1,48 +1,45 @@
 extends Node
 
-var current_scene = null
-var character_collection: Collection
-
-const CONTEXT_TEST = preload("res://Data/Context_Test.tres")
+var _current_scene = null
+var _character_collection: Collection
 
 const KNIGHT = preload("res://Data/Character_Player_Variants/Knight.tres")
 const JESTER = preload("res://Data/Character_Player_Variants/Jester.tres")
 
 func _ready() -> void:
-	current_scene = get_tree().root.get_child(-1)
-	print("current scene is: ", current_scene)
-	character_collection = Collection.new()
-	add_child(character_collection)
+	_current_scene = get_tree().root.get_child(-1)
+	print("current scene is: ", _current_scene)
+	_character_collection = Collection.new()
+	add_child(_character_collection)
+	var context_container: ContextContainer = ContextContainer.new()
 
-	character_collection.Add(JESTER.duplicate(true))
-	character_collection.Add(KNIGHT.duplicate(true))
-	character_collection.Add(JESTER.duplicate(true))
+	_character_collection.Add(JESTER.duplicate(true))
+	_character_collection.Add(KNIGHT.duplicate(true))
+	_character_collection.Add(JESTER.duplicate(true))
 	
-	var all_chars = character_collection.GetAllCharacters()
+	var all_chars = _character_collection.GetAllCharacters()
 	for key in all_chars.keys():
-		print("Found character in collection, ID: ", all_chars[key]._instanceID)
+		print("Found character in collection, ID: ", all_chars[key]._instanceID, " name: ", all_chars[key]._name)
 	
-	var context: ContextContainer = load("res://Scenes/Context_Scenes/Context_Battle_Scene.tscn").instantiate()
-	context._context = CONTEXT_TEST
-	context._current_collection = character_collection
-	
-	change_scene("res://Scenes/ui/MainMenu.tscn", context)
+	context_container._current_collection = _character_collection
+	context_container._scene = "res://Scenes/ui/MainMenu.tscn"
+	change_scene(context_container)
 
-func change_scene(target: String, context: ContextContainer) -> void:
-	_deferred_change_scene(target, context)
+func change_scene(p_context: ContextContainer) -> void:
+	_deferred_change_scene(p_context)
 
-func _deferred_change_scene(target: String, context: ContextContainer) -> void:
+func _deferred_change_scene(p_context: ContextContainer) -> void:
 	## self.visible = true
 	## Play transition animation
-	if(current_scene.name != "Main"):
-		self.remove_child(current_scene)
-		current_scene.call_deferred("free")
+	if(_current_scene.name != "Main"):
+		self.remove_child(_current_scene)
+		_current_scene.call_deferred("free")
 
-	var scene = ResourceLoader.load(target)
-	current_scene = scene.instantiate()
-	add_child(current_scene)
-	print("current scene is: ", current_scene)
+	var scene = ResourceLoader.load(p_context._scene)
+	_current_scene = scene.instantiate()
+	add_child(_current_scene)
+	print("current scene is: ", _current_scene)
 	print(get_tree_string_pretty())
-	current_scene.Init(context)
+	_current_scene.Init(p_context)
 	## Play transition animation backwards
 	## self.visible = false
