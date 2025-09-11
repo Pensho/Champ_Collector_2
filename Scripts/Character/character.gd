@@ -33,8 +33,10 @@ var _faction: Types.Faction
 var _role: Types.Role
 
 var _instanceID : int = 0
+@warning_ignore_start("unused_private_class_variable")
 var _experience : int = 0
 var _level: int = 1
+@warning_ignore_restore("unused_private_class_variable")
 
 var _skills: Array[Skill] = []
 

@@ -1,8 +1,8 @@
 class_name BattleUI extends Control
 
-@onready var _turn_bar: Panel = $Camera2D/PlayerInfoBox
-
+@warning_ignore_start("unused_private_class_variable")
 @export var _char_turns: Array[TextureRect]
+@warning_ignore_restore("unused_private_class_variable")
 
 func _on_skill_1_button_up() -> void:
 	print("_on_skill_1_button_up")
