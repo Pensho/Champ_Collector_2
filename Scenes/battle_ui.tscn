@@ -115,6 +115,7 @@ texture = ExtResource("2_6sbxc")
 expand_mode = 1
 
 [node name="Skill_1" type="Button" parent="Camera2D"]
+visible = false
 material = SubResource("ShaderMaterial_d07u5")
 offset_left = 209.0
 offset_top = 186.0
@@ -124,6 +125,7 @@ icon = ExtResource("4_nm010")
 expand_icon = true
 
 [node name="Skill_2" type="Button" parent="Camera2D"]
+visible = false
 material = SubResource("ShaderMaterial_6lbqc")
 offset_left = 423.0
 offset_top = 153.0
@@ -133,6 +135,7 @@ icon = ExtResource("4_4blpl")
 expand_icon = true
 
 [node name="Skill_3" type="Button" parent="Camera2D"]
+visible = false
 material = SubResource("ShaderMaterial_rvbdk")
 offset_left = 447.0
 offset_top = -41.0

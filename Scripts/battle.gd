@@ -23,19 +23,23 @@ func _process(p_delta: float) -> void:
 			Update(p_delta, i)
 
 func Update(p_delta: float, p_characterID: int) -> void:
-	if (-1 != _characterIDs_turn):
+	if (ALLY_IDS.has(_characterIDs_turn) or ENEMY_IDS.has(_characterIDs_turn)):
 		return
 	if(_characters[p_characterID]._currentHealth <= 0):
 		return
 	if(_battle_ui._char_turns[p_characterID].position.x + _battle_ui._char_turns[p_characterID].get_rect().size.x < TURN_POS_X_THRESHOLD):
-		_battle_ui._char_turns[p_characterID].position = _battle_ui._char_turns[p_characterID].position + Vector2(_characters[p_characterID]._speed * p_delta, 0)
+		_battle_ui._char_turns[p_characterID].position += Vector2(_characters[p_characterID]._speed * p_delta, 0)
 	else:
 		_characterIDs_turn = p_characterID
 		_turn_indicator.position.x = _character_repr[p_characterID].position.x + (_character_repr[p_characterID]._character_texture.size.x * 0.5) - (_turn_indicator.size.x * 0.5)
 		_turn_indicator.position.y = _character_repr[p_characterID].position.y - _turn_indicator.size.y
-		_battle_ui.SetSkill1Texture(_characters[p_characterID]._skills[0].icon_path)
-		_battle_ui.SetSkill2Texture(_characters[p_characterID]._skills[1].icon_path)
-		_battle_ui.SetSkill3Texture(_characters[p_characterID]._skills[2].icon_path)
+		if(ALLY_IDS.has(p_characterID)):
+			_battle_ui.SetSkill1Texture(_characters[p_characterID]._skills[0].icon_path)
+			_battle_ui.SetSkill2Texture(_characters[p_characterID]._skills[1].icon_path)
+			_battle_ui.SetSkill3Texture(_characters[p_characterID]._skills[2].icon_path)
+			_battle_ui._skill_button_1.show()
+			_battle_ui._skill_button_2.show()
+			_battle_ui._skill_button_3.show()
 
 func VisualizeCharacter(p_characterID: int) -> void:
 	_character_repr[p_characterID]._level.text = str(_characters[p_characterID]._level)
@@ -102,9 +106,15 @@ func IsSkillTargetValid(p_target_ID: int, p_caster_ID: int) -> bool:
 	return false
 
 func _on_character_battle_target_selected(p_target_ID: int) -> void:
-	if(_characterIDs_turn != -1):
+	if(ALLY_IDS.has(_characterIDs_turn) or ENEMY_IDS.has(_characterIDs_turn)):
 		if(IsSkillTargetValid(p_target_ID, _characterIDs_turn)):
 			print("Target for skill found!")
+			# TODO: Resolve skill.
+			_battle_ui._skill_button_1.hide()
+			_battle_ui._skill_button_2.hide()
+			_battle_ui._skill_button_3.hide()
+			_battle_ui._char_turns[_characterIDs_turn].position -= Vector2(TURN_POS_X_THRESHOLD - _battle_ui._char_turns[_characterIDs_turn].get_rect().size.x, 0)
+			_characterIDs_turn = -1
 		else:
 			print("Invalid target for skill")
 
