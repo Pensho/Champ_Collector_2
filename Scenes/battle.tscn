@@ -20,26 +20,32 @@ expand_mode = 1
 [node name="Character_1" parent="." instance=ExtResource("3_ww2ai")]
 visible = false
 position = Vector2(70, 370)
+_target_ID = 0
 
 [node name="Character_2" parent="." instance=ExtResource("3_ww2ai")]
 visible = false
 position = Vector2(280, 430)
+_target_ID = 1
 
 [node name="Character_3" parent="." instance=ExtResource("3_ww2ai")]
 visible = false
 position = Vector2(530, 460)
+_target_ID = 2
 
 [node name="Enemy_1" parent="." instance=ExtResource("3_ww2ai")]
 visible = false
 position = Vector2(295, 196)
+_target_ID = 3
 
 [node name="Enemy_2" parent="." instance=ExtResource("3_ww2ai")]
 visible = false
 position = Vector2(566, 177)
+_target_ID = 4
 
 [node name="Enemy_3" parent="." instance=ExtResource("3_ww2ai")]
 visible = false
 position = Vector2(813, 233)
+_target_ID = 5
 
 [node name="Battle UI" parent="." instance=ExtResource("2_1ruyk")]
 
@@ -49,3 +55,11 @@ offset_right = -50.0
 offset_bottom = 50.0
 texture = ExtResource("5_pd5xk")
 expand_mode = 1
+
+[connection signal="battle_target_selected" from="Character_1" to="." method="_on_character_battle_target_selected"]
+[connection signal="battle_target_selected" from="Character_2" to="." method="_on_character_battle_target_selected"]
+[connection signal="battle_target_selected" from="Character_3" to="." method="_on_character_battle_target_selected"]
+[connection signal="battle_target_selected" from="Enemy_1" to="." method="_on_character_battle_target_selected"]
+[connection signal="battle_target_selected" from="Enemy_2" to="." method="_on_character_battle_target_selected"]
+[connection signal="battle_target_selected" from="Enemy_3" to="." method="_on_character_battle_target_selected"]
+[connection signal="battle_skill_selected" from="Battle UI" to="." method="_on_battle_ui_battle_skill_selected"]

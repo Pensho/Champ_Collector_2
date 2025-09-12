@@ -68,3 +68,10 @@ theme_override_font_sizes/font_size = 24
 text = "0"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="Button_Target" type="Button" parent="."]
+self_modulate = Color(1, 1, 1, 0)
+offset_right = 200.0
+offset_bottom = 200.0
+
+[connection signal="button_up" from="Button_Target" to="." method="_on_button_target_button_up"]

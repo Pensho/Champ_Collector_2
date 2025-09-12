@@ -39,10 +39,29 @@ enum Role
 
 enum Slot
 {
-	Weapon,
 	Helmet,
+	Weapon,
 	Shield,
-	Gloves,
+	Chest,
 	Pants,
 	Boots,
+	Gloves,
+	Ring,
+	Amulet,
+	Trinket,
+}
+
+enum Skill_Target
+{
+	Single_Enemy,
+	All_Enemies,
+	Random_Enemy,
+	
+	Single_Ally,
+	All_Allies,
+	Random_Ally,
+	
+	Ally_Not_Self,
+	Random_One,
+	All,
 }

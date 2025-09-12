@@ -1,17 +1,20 @@
 extends Node2D
 
-@onready var _battle_ui: BattleUI = $"Battle UI"
-@onready var _background: TextureRect = %BattleBackground
+const Common_Enums = preload("res://Scripts/common_enums.gd")
+
+const TURN_POS_X_THRESHOLD: int = 360
+const ALLY_IDS: Array[int] = [0,1,2]
+const ENEMY_IDS: Array[int] = [3,4,5]
 
 @export var _character_repr: Array[CharacterRepresentation]
 
+@onready var _battle_ui: BattleUI = $"Battle UI"
+@onready var _background: TextureRect = %BattleBackground
+@onready var _turn_indicator: TextureRect = $Turn_Indicator
 @onready var _characters: Array[Character]
 
-@onready var _turn_indicator: TextureRect = $Turn_Indicator
-
-const TURN_POS_X_THRESHOLD: int = 360
-
 var _characterIDs_turn: int = -1
+var _selected_skill_ID: int = 0
 var _initialized: bool = false
 
 func _process(p_delta: float) -> void:
@@ -30,6 +33,9 @@ func Update(p_delta: float, p_characterID: int) -> void:
 		_characterIDs_turn = p_characterID
 		_turn_indicator.position.x = _character_repr[p_characterID].position.x + (_character_repr[p_characterID]._character_texture.size.x * 0.5) - (_turn_indicator.size.x * 0.5)
 		_turn_indicator.position.y = _character_repr[p_characterID].position.y - _turn_indicator.size.y
+		_battle_ui.SetSkill1Texture(_characters[p_characterID]._skills[0].icon_path)
+		_battle_ui.SetSkill2Texture(_characters[p_characterID]._skills[1].icon_path)
+		_battle_ui.SetSkill3Texture(_characters[p_characterID]._skills[2].icon_path)
 
 func VisualizeCharacter(p_characterID: int) -> void:
 	_character_repr[p_characterID]._level.text = str(_characters[p_characterID]._level)
@@ -65,3 +71,43 @@ func Init(p_context: ContextContainer) -> void:
 		print("found enemy: ", _characters[i + 3]._name)
 	
 	_initialized = true
+
+func IsSkillTargetValid(p_target_ID: int, p_caster_ID: int) -> bool:
+	print("p_target_ID: ", p_target_ID, " p_caster_ID: ", p_caster_ID)
+	
+	match _characters[p_caster_ID]._skills[_selected_skill_ID].target:
+		Common_Enums.Skill_Target.Single_Enemy, Common_Enums.Skill_Target.All_Enemies, Common_Enums.Skill_Target.Random_Enemy:
+			if(ALLY_IDS.has(p_caster_ID) and ENEMY_IDS.has(p_target_ID)):
+				return true
+			elif(ENEMY_IDS.has(p_caster_ID) and ALLY_IDS.has(p_target_ID)):
+				return true
+		Common_Enums.Skill_Target.Single_Ally, Common_Enums.Skill_Target.All_Allies, Common_Enums.Skill_Target.Random_Ally:
+			if(ALLY_IDS.has(p_caster_ID) and ALLY_IDS.has(p_target_ID)):
+				return true
+			elif(ENEMY_IDS.has(p_caster_ID) and ENEMY_IDS.has(p_target_ID)):
+				return true
+		Common_Enums.Skill_Target.Ally_Not_Self:
+			if (p_caster_ID != p_target_ID):
+				if(ALLY_IDS.has(p_caster_ID) and ALLY_IDS.has(p_target_ID)):
+					return true
+				elif(ENEMY_IDS.has(p_caster_ID) and ENEMY_IDS.has(p_target_ID)):
+					return true
+		Common_Enums.Skill_Target.Random_One:
+			return true
+		Common_Enums.Skill_Target.All:
+			return true
+		var INVALID_TYPE:
+			print("Invalid argument for skill target enum passed: ", INVALID_TYPE)
+			return false
+	return false
+
+func _on_character_battle_target_selected(p_target_ID: int) -> void:
+	if(_characterIDs_turn != -1):
+		if(IsSkillTargetValid(p_target_ID, _characterIDs_turn)):
+			print("Target for skill found!")
+		else:
+			print("Invalid target for skill")
+
+func _on_battle_ui_battle_skill_selected(p_skill_ID: int) -> void:
+	_selected_skill_ID = p_skill_ID
+	print("_on_battle_ui_battle_skill_selected with ID: ", p_skill_ID)

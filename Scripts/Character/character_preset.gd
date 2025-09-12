@@ -1,6 +1,6 @@
 class_name CharacterPreset extends Resource
 
-const Types = preload("res://Scripts/Character/character_types.gd")
+const Types = preload("res://Scripts/common_enums.gd")
 
 @warning_ignore_start("unused_private_class_variable")
 

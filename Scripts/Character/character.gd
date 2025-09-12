@@ -1,6 +1,6 @@
 class_name Character extends Node
 
-const Types = preload("res://Scripts/Character/character_types.gd")
+const Types = preload("res://Scripts/common_enums.gd")
 
 func InstantiateNew(preset: CharacterPreset, instanceID: int) -> void:
 	_instanceID = instanceID

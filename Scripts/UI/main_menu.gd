@@ -2,8 +2,8 @@ extends Control
 
 var _player_battle_characters: Array[Character]
 
-signal start_game()
-@onready var buttons_v_box: VBoxContainer = %ButtonsVBox
+#signal start_game()
+@onready var _buttons_v_box: VBoxContainer = %ButtonsVBox
 
 const BATTLE_TROLL = preload("res://Data/Battle_Variants/Battle_Troll.tres")
 
@@ -24,7 +24,7 @@ func _on_start_game_button_pressed() -> void:
 	context_container._scene = "res://Scenes/battle.tscn"
 	context_container._player_battle_characters = _player_battle_characters
 	
-	start_game.emit()
+	#start_game.emit()
 	main.change_scene(context_container)
 	hide()
 
@@ -36,7 +36,6 @@ func _on_visibility_changed() -> void:
 		focus_button()
 		
 func focus_button() -> void:
-	if buttons_v_box:
-		var button: Button = buttons_v_box.get_child(0)
-		if button is Button:
-			button.grab_focus()
+	if _buttons_v_box:
+		var button: Button = _buttons_v_box.get_child(0)
+		button.grab_focus()
