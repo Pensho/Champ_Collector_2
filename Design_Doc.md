@@ -1,32 +1,92 @@
-# Game design manifest
+# Game Design Document: Champ Collector
 
 ---
 
-## Table of contents
-- Champ Collector
-- Factions
-- Possible enhancements of characters
-- Resources
-- Items
-- Util
-- Character roles
-- Effects
-- Minimum viable product
-- Content fill
-- WorldBuilding
-- Religion
-- God 1, the god of adventure
-- God 2, the god of Rules (Structure/Process/Strategy/Law/Instruction/Regulation/Sense/Logic)
-- God 3, the god of magic
-- Rival
-- Magic system
-- Combat
-- Combat formulas
-- Events
-- Level up system
-- Passive tree designers
-- Godot stuff
+## 1. Introduction
 
+### 1.1. High Concept
+
+---
+
+## 2. Core Gameplay Loop
+
+---
+
+## 3. Core Mechanics
+
+### 3.1. Champion Management
+
+#### 3.1.1. Character Attributes
+Each champion is defined by a set of core attributes:
+*   **Primary Stats:** 
+* Level
+* Experience
+* Health
+* Speed
+* Attack
+* Defence
+* Skill levels
+* Role
+* Affinity
+* Faction
+* Rarity
+* Accuracy
+* Resistance
+* Name
+* Rank
+* Reputation
+
+#### 3.1.2. Progression Systems
+
+### 3.2. Combat System
+
+#### 3.2.1. Overview
+
+#### 3.2.2. Combat Formulas
+
+### 3.3. Items and Resources
+
+#### 3.3.1. Itemization
+
+#### 3.3.2. Currencies
+
+---
+
+## 4. World and Narrative
+
+### 4.1. Worldbuilding
+
+#### 4.1.1. Religion & Lore
+
+#### 4.1.2. Factions
+
+### 4.2. Narrative Elements
+
+---
+
+## 5. Features
+
+### 5.1. Minimum Viable Product (MVP)
+
+### 5.2. Post-Launch Content
+
+---
+
+## 6. Technical Implementation (Godot Engine)
+
+### 6.1. Project Setup Checklist
+
+### 6.2. Tools for Development
+
+---
+---
+---
+---
+---
+---
+---
+---
+---
 ---
 
 ## Champ Collector
@@ -113,22 +173,7 @@ Existing roles are defined here: Characters
 * Negotiation conflict
 
 ### Character attributes
-* Level
-* Experience
-* Health
-* Speed
-* Attack
-* Defence
-* Skill levels
-* Role
-* Affinity
-* Faction
-* Rarity
-* Accuracy
-* Resistance
-* Name
-* Rank
-* Reputation
+
 
 ## WorldBuilding
 
