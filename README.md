@@ -1,4 +1,4 @@
-### Pensho Champ Collector
+## Pensho Champ Collector
 
 
 
@@ -16,7 +16,7 @@
 [Backlog in Teamhood](https://pensho.teamhood.com/PEWO/Board/CHCO?view=KANB)
 
 
-## Visual examples of the project
+### Visual examples of the project
 
 State of battle (2025_09_19)
 ![image](Progress_Images/2025_09_19.PNG)

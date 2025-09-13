@@ -105,11 +105,35 @@ func IsSkillTargetValid(p_target_ID: int, p_caster_ID: int) -> bool:
 			return false
 	return false
 
+func ResolveSkill(p_caster_ID: int, p_target_ID: int, p_skill_ID) -> void:
+	var cast_skill: Skill = _characters[p_caster_ID]._skills[p_skill_ID]
+	match cast_skill.target:
+		Common_Enums.Skill_Target.Single_Enemy:
+			_characters[p_target_ID]._health -= cast_skill.damage
+			_battle_ui._char_turns[_characterIDs_turn].position += Vector2(cast_skill.turn_effect, 0)
+			pass
+		Common_Enums.Skill_Target.All_Enemies:
+			pass
+		Common_Enums.Skill_Target.Random_Enemy:
+			pass
+		Common_Enums.Skill_Target.Single_Ally:
+			pass
+		Common_Enums.Skill_Target.All_Allies:
+			pass
+		Common_Enums.Skill_Target.Random_Ally:
+			pass
+		Common_Enums.Skill_Target.Ally_Not_Self:
+			pass
+		Common_Enums.Skill_Target.Random_One:
+			pass
+		Common_Enums.Skill_Target.All:
+			pass
+
 func _on_character_battle_target_selected(p_target_ID: int) -> void:
 	if(ALLY_IDS.has(_characterIDs_turn) or ENEMY_IDS.has(_characterIDs_turn)):
 		if(IsSkillTargetValid(p_target_ID, _characterIDs_turn)):
 			print("Target for skill found!")
-			# TODO: Resolve skill.
+			ResolveSkill(_characterIDs_turn, p_target_ID, _selected_skill_ID)
 			_battle_ui._skill_button_1.hide()
 			_battle_ui._skill_button_2.hide()
 			_battle_ui._skill_button_3.hide()

@@ -7,3 +7,6 @@ script = ExtResource("1_rci34")
 name = "Stab"
 description = "Plunge you weapon against an enemy."
 icon_path = "res://Assets/Champ Collector/Icons/Abilities/Stab/Stab_3.jpg"
+target = 0
+turn_effect = 0
+damage = 70
