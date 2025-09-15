@@ -50,7 +50,7 @@ var _mysticism: int = 0
 var _knowledge: int = 0
 var _pressence: int = 0
 var _critChance: int = 0
-var _critDamage: int = 0
+var _critDamage: float = 1.5
 
 var _health: int = 0
 var _currentHealth: int = 0

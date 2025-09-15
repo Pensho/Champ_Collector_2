@@ -1,6 +1,6 @@
 class_name GearData extends Resource
 
-const Types = preload("res://Scripts/Character/character_types.gd")
+const Types = preload("res://Scripts/common_enums.gd")
 
 @export var _name: String = "item name"
 @export var _slot: Types.Slot
