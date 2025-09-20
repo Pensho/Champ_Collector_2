@@ -20,8 +20,7 @@ func _ready() -> void:
 	var all_chars = _character_collection.GetAllCharacters()
 	for key in all_chars.keys():
 		print("Found character in collection, ID: ", all_chars[key]._instanceID, " name: ", all_chars[key]._name)
-	
-	context_container._current_collection = _character_collection
+
 	context_container._scene = "res://Scenes/ui/MainMenu.tscn"
 	change_scene(context_container)
 

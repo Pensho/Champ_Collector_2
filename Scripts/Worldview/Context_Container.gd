@@ -4,7 +4,6 @@ class_name ContextContainer extends Node
 
 var _scene: String
 var _static_context: Static_Context
-var _current_collection: Collection
 var _player_battle_characters: Array[Character]
 
 @warning_ignore_restore("unused_private_class_variable")

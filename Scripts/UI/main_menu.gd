@@ -11,12 +11,12 @@ func _ready() -> void:
 	focus_button()
 
 func Init(p_context_container: ContextContainer) -> void:
-	if(p_context_container._current_collection.GetAllCharacters().size() >= 3):
+	if(main._character_collection.GetAllCharacters().size() >= 3):
 		for i in 3:
-			_player_battle_characters.append(p_context_container._current_collection.GetCharacter(i))
+			_player_battle_characters.append(main._character_collection.GetCharacter(i))
 	else:
-		for i in p_context_container._current_collection.GetAllCharacters():
-			_player_battle_characters.append(p_context_container._current_collection.GetCharacter(i))
+		for i in main._character_collection.GetAllCharacters():
+			_player_battle_characters.append(main._character_collection.GetCharacter(i))
 
 func _on_start_game_button_pressed() -> void:
 	var context_container: ContextContainer = ContextContainer.new()

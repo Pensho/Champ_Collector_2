@@ -11,7 +11,7 @@ const MONSTER_IDS: Array[int] = [3,4,5]
 @onready var _battle_ui: BattleUI = $"Battle UI"
 @onready var _background: TextureRect = %BattleBackground
 @onready var _turn_indicator: TextureRect = $Turn_Indicator
-@onready var _characters: Array[Character]
+@onready var _characters: Dictionary
 
 var _characterIDs_turn: int = -1
 var _selected_skill_ID: int = 0
@@ -30,11 +30,11 @@ func Init(p_context: ContextContainer) -> void:
 		get_tree().quit()
 	
 	for i in p_context._player_battle_characters.size():
-		_characters.append(p_context._player_battle_characters[i])
+		_characters[i] = p_context._player_battle_characters[i]
 		VisualizeCharacter(i)
 
 	for i in battlecontext._enemies_wave_1.size():
-		_characters.append(Character.new())
+		_characters[i + 3] = Character.new()
 		_characters[i + 3].InstantiateNew(battlecontext._enemies_wave_1[i], -1)
 		VisualizeCharacter(i + 3)
 		_battle_ui._char_turns[i + 3].texture = load(_characters[i + 3]._texture)
@@ -45,7 +45,7 @@ func Init(p_context: ContextContainer) -> void:
 
 func _process(p_delta: float) -> void:
 	if(_initialized):
-		for i in _characters.size():
+		for i in _characters.keys():
 			Update(p_delta, i)
 
 func ConstrictTurnLocation(p_characterID: int) -> void:
@@ -163,16 +163,17 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID) -> voi
 func IsTheBattleOver() -> bool:
 	var player_defeated: bool = true
 	var computer_defeated: bool = true
-	for character_ID in _characters:
-		pass
-	for character_ID in PLAYER_IDS:
-		if(_characters[character_ID]._currentHealth > 0):
-			player_defeated = false
-			break
 	for character_ID in MONSTER_IDS:
-		if(_characters[character_ID]._currentHealth > 0):
-			computer_defeated = false
-			break
+		if(_characters.has(character_ID)):
+			if(_characters[character_ID]._currentHealth > 0):
+				computer_defeated = false
+				break
+	for character_ID in PLAYER_IDS:
+		if(_characters.has(character_ID)):
+			if(_characters[character_ID]._currentHealth > 0):
+				player_defeated = false
+				break
+	
 	#print("Is battle over? ", player_defeated or computer_defeated)
 	return player_defeated or computer_defeated
 
@@ -180,11 +181,9 @@ func _on_character_battle_target_selected(p_target_ID: int) -> void:
 	if(PLAYER_IDS.has(_characterIDs_turn) or MONSTER_IDS.has(_characterIDs_turn)):
 		var target_IDs: Array[int] = FoundSkillTargets(p_target_ID, _characterIDs_turn)
 		if(target_IDs.size() > 0):
-			#print("Targets for skill found!")
 			ResolveSkill(_characterIDs_turn, target_IDs, _selected_skill_ID)
 			if(IsTheBattleOver()):
 				var context_container: ContextContainer = ContextContainer.new()
-				#context_container._current_collection = _character_collection
 				context_container._scene = "res://Scenes/ui/MainMenu.tscn"
 				main.change_scene(context_container)
 			_battle_ui._skill_button_1.hide()
