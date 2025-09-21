@@ -9,3 +9,4 @@ const Types = preload("res://Scripts/common_enums.gd")
 
 @export var turn_effect: int
 @export var damage: float
+@export var cooldown: int = 0

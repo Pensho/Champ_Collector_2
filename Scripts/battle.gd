@@ -2,6 +2,7 @@ extends Node2D
 
 const Common_Enums = preload("res://Scripts/common_enums.gd")
 
+const NO_CHARACTERS_TURN: int = -1
 const TURN_POS_X_THRESHOLD: int = 360
 const PLAYER_IDS: Array[int] = [0,1,2]
 const MONSTER_IDS: Array[int] = [3,4,5]
@@ -39,8 +40,9 @@ func Init(p_context: ContextContainer) -> void:
 		VisualizeCharacter(i + 3)
 		_battle_ui._char_turns[i + 3].texture = load(_characters[i + 3]._texture)
 		_character_repr[i + 3].show()
-		print("found enemy: ", _characters[i + 3]._name)
+		print("found enemy: ", _characters[i + 3]._name, " with ID: ", i + 3)
 	
+	print("all character IDs: ", _characters.keys())
 	_initialized = true
 
 func _process(p_delta: float) -> void:
@@ -54,25 +56,52 @@ func ConstrictTurnLocation(p_characterID: int) -> void:
 	elif(_battle_ui._char_turns[p_characterID].position.x < 0):
 		_battle_ui._char_turns[p_characterID].position.x = 0
 
+func StartTurn() -> void:
+	_turn_indicator.position.x = _character_repr[_characterIDs_turn].position.x + (_character_repr[_characterIDs_turn]._character_texture.size.x * 0.5) - (_turn_indicator.size.x * 0.5)
+	_turn_indicator.position.y = _character_repr[_characterIDs_turn].position.y - _turn_indicator.size.y
+	_turn_indicator.show()
+	if(PLAYER_IDS.has(_characterIDs_turn)):
+		_battle_ui.SetSkill1Texture(_characters[_characterIDs_turn]._skills[0].icon_path)
+		_battle_ui.SetSkill2Texture(_characters[_characterIDs_turn]._skills[1].icon_path)
+		_battle_ui.SetSkill3Texture(_characters[_characterIDs_turn]._skills[2].icon_path)
+		_battle_ui._skill_button_1.show()
+		_battle_ui._skill_button_2.show()
+		_battle_ui._skill_button_3.show()
+	elif(MONSTER_IDS.has(_characterIDs_turn)):
+		# Using only the first skill for now.
+		_selected_skill_ID = 0
+		# Targets the first in order for now.
+		for i in PLAYER_IDS:
+			if(_characters.has(i) and _characters[i]._currentHealth >= 1):
+				var target_IDs: Array[int] = FindSkillTargets(i, _characterIDs_turn)
+				if(target_IDs.size() > 0):
+					ResolveSkill(_characterIDs_turn, target_IDs, _selected_skill_ID)
+					if(IsTheBattleOver()):
+						var context_container: ContextContainer = ContextContainer.new()
+						context_container._scene = "res://Scenes/ui/MainMenu.tscn"
+						main.change_scene(context_container)
+					_battle_ui._char_turns[_characterIDs_turn].position -= Vector2(TURN_POS_X_THRESHOLD - _battle_ui._char_turns[_characterIDs_turn].get_rect().size.x, 0)
+					_characterIDs_turn = NO_CHARACTERS_TURN
+					_turn_indicator.hide()
+				else:
+					print("Invalid target for skill by an enemy! Something is wrong.")
+				# A skill has resolved, break the loop for targeting.
+				break
+
 func Update(p_delta: float, p_characterID: int) -> void:
+	# It already is someones turn, so return early.
 	if (PLAYER_IDS.has(_characterIDs_turn) or MONSTER_IDS.has(_characterIDs_turn)):
 		return
+	# It isn't someones turn, but this character is dead so return early.
 	if(_characters[p_characterID]._currentHealth <= 0):
 		return
+	# No ones turn yet, so move along the turn order.
 	if(_battle_ui._char_turns[p_characterID].position.x + _battle_ui._char_turns[p_characterID].get_rect().size.x < TURN_POS_X_THRESHOLD):
 		_battle_ui._char_turns[p_characterID].position += Vector2(_characters[p_characterID]._speed * p_delta * 2, 0)
 	else:
+		print("Now a turn for character ID: ", p_characterID)
 		_characterIDs_turn = p_characterID
-		_turn_indicator.position.x = _character_repr[p_characterID].position.x + (_character_repr[p_characterID]._character_texture.size.x * 0.5) - (_turn_indicator.size.x * 0.5)
-		_turn_indicator.position.y = _character_repr[p_characterID].position.y - _turn_indicator.size.y
-		_turn_indicator.show()
-		if(PLAYER_IDS.has(p_characterID)):
-			_battle_ui.SetSkill1Texture(_characters[p_characterID]._skills[0].icon_path)
-			_battle_ui.SetSkill2Texture(_characters[p_characterID]._skills[1].icon_path)
-			_battle_ui.SetSkill3Texture(_characters[p_characterID]._skills[2].icon_path)
-			_battle_ui._skill_button_1.show()
-			_battle_ui._skill_button_2.show()
-			_battle_ui._skill_button_3.show()
+		StartTurn()
 
 func UpdateLifeBar(p_characterID: int) -> void:
 	_character_repr[p_characterID]._lifebar.max_value = _characters[p_characterID]._health
@@ -86,46 +115,46 @@ func VisualizeCharacter(p_characterID: int) -> void:
 	_battle_ui._char_turns[p_characterID].texture = load(_characters[p_characterID]._texture)
 	_character_repr[p_characterID].show()
 
-func FoundSkillTargets(p_target_ID: int, p_caster_ID: int) -> Array[int]:
-	print("p_target_ID: ", p_target_ID, " p_caster_ID: ", p_caster_ID)
+func FindSkillTargets(p_target_ID: int, p_attacker_ID: int) -> Array[int]:
+	print("p_target_ID: ", p_target_ID, " p_attacker_ID: ", p_attacker_ID)
 	var target_IDs: Array[int]
 	if(_characters[p_target_ID]._currentHealth > 0):
-		match _characters[p_caster_ID]._skills[_selected_skill_ID].target:
+		match _characters[p_attacker_ID]._skills[_selected_skill_ID].target:
 			Common_Enums.Skill_Target.Single_Enemy:
-				if(PLAYER_IDS.has(p_caster_ID) and MONSTER_IDS.has(p_target_ID)):
+				if(PLAYER_IDS.has(p_attacker_ID) and MONSTER_IDS.has(p_target_ID)):
 					target_IDs.append(p_target_ID)
-				elif(MONSTER_IDS.has(p_caster_ID) and PLAYER_IDS.has(p_target_ID)):
+				elif(MONSTER_IDS.has(p_attacker_ID) and PLAYER_IDS.has(p_target_ID)):
 					target_IDs.append(p_target_ID)
 			Common_Enums.Skill_Target.All_Enemies:
-				if(PLAYER_IDS.has(p_caster_ID) and MONSTER_IDS.has(p_target_ID)):
+				if(PLAYER_IDS.has(p_attacker_ID) and MONSTER_IDS.has(p_target_ID)):
 					target_IDs.append_array(MONSTER_IDS)
-				elif(MONSTER_IDS.has(p_caster_ID) and PLAYER_IDS.has(p_target_ID)):
+				elif(MONSTER_IDS.has(p_attacker_ID) and PLAYER_IDS.has(p_target_ID)):
 					target_IDs.append_array(PLAYER_IDS)
 			Common_Enums.Skill_Target.Random_Enemy:
-				if(PLAYER_IDS.has(p_caster_ID) and MONSTER_IDS.has(p_target_ID)):
+				if(PLAYER_IDS.has(p_attacker_ID) and MONSTER_IDS.has(p_target_ID)):
 					target_IDs.append(3 + (randi() % 3))
-				elif(MONSTER_IDS.has(p_caster_ID) and PLAYER_IDS.has(p_target_ID)):
+				elif(MONSTER_IDS.has(p_attacker_ID) and PLAYER_IDS.has(p_target_ID)):
 					target_IDs.append(randi() % 3)
 			Common_Enums.Skill_Target.Single_Ally:
-				if(PLAYER_IDS.has(p_caster_ID) and PLAYER_IDS.has(p_target_ID)):
+				if(PLAYER_IDS.has(p_attacker_ID) and PLAYER_IDS.has(p_target_ID)):
 					target_IDs.append(p_target_ID)
-				elif(MONSTER_IDS.has(p_caster_ID) and MONSTER_IDS.has(p_target_ID)):
+				elif(MONSTER_IDS.has(p_attacker_ID) and MONSTER_IDS.has(p_target_ID)):
 					target_IDs.append(p_target_ID)
 			Common_Enums.Skill_Target.All_Allies:
-				if(PLAYER_IDS.has(p_caster_ID) and PLAYER_IDS.has(p_target_ID)):
+				if(PLAYER_IDS.has(p_attacker_ID) and PLAYER_IDS.has(p_target_ID)):
 					target_IDs.append_array(PLAYER_IDS)
-				elif(MONSTER_IDS.has(p_caster_ID) and MONSTER_IDS.has(p_target_ID)):
+				elif(MONSTER_IDS.has(p_attacker_ID) and MONSTER_IDS.has(p_target_ID)):
 					target_IDs.append_array(MONSTER_IDS)
 			Common_Enums.Skill_Target.Random_Ally:
-				if(PLAYER_IDS.has(p_caster_ID) and PLAYER_IDS.has(p_target_ID)):
+				if(PLAYER_IDS.has(p_attacker_ID) and PLAYER_IDS.has(p_target_ID)):
 					target_IDs.append(randi() % 3)
-				elif(MONSTER_IDS.has(p_caster_ID) and MONSTER_IDS.has(p_target_ID)):
+				elif(MONSTER_IDS.has(p_attacker_ID) and MONSTER_IDS.has(p_target_ID)):
 					target_IDs.append(3 + (randi() % 3))
 			Common_Enums.Skill_Target.Ally_Not_Self:
-				if (p_caster_ID != p_target_ID):
-					if(PLAYER_IDS.has(p_caster_ID) and PLAYER_IDS.has(p_target_ID)):
+				if (p_attacker_ID != p_target_ID):
+					if(PLAYER_IDS.has(p_attacker_ID) and PLAYER_IDS.has(p_target_ID)):
 						target_IDs.append(p_target_ID)
-					elif(MONSTER_IDS.has(p_caster_ID) and MONSTER_IDS.has(p_target_ID)):
+					elif(MONSTER_IDS.has(p_attacker_ID) and MONSTER_IDS.has(p_target_ID)):
 						target_IDs.append(p_target_ID)
 			Common_Enums.Skill_Target.Random_One:
 				target_IDs.append(randi() % 6)
@@ -145,10 +174,10 @@ func DamageDealt(p_attacker: Character, p_defender: Character, p_Skill_ID: int) 
 	var mitigation_factor: float	= 0.5 + (0.5 * (p_attacker._attack / added))
 	return int(ceil(initial_damage * mitigation_factor * randomVal))
 
-func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID) -> void:
-	var cast_skill: Skill = _characters[p_caster_ID]._skills[p_skill_ID]
+func ResolveSkill(p_attacker_ID: int, p_target_IDs: Array[int], p_skill_ID) -> void:
+	var cast_skill: Skill = _characters[p_attacker_ID]._skills[p_skill_ID]
 	for target_ID in p_target_IDs:
-		var damage_dealt: int = DamageDealt(_characters[p_caster_ID], _characters[target_ID], p_skill_ID)
+		var damage_dealt: int = DamageDealt(_characters[p_attacker_ID], _characters[target_ID], p_skill_ID)
 		print("Character: ",  _characters[target_ID]._name, " took ", damage_dealt, " damage!")
 		_characters[target_ID]._currentHealth -= damage_dealt
 		if(_characters[target_ID]._currentHealth < 0):
@@ -178,8 +207,8 @@ func IsTheBattleOver() -> bool:
 	return player_defeated or computer_defeated
 
 func _on_character_battle_target_selected(p_target_ID: int) -> void:
-	if(PLAYER_IDS.has(_characterIDs_turn) or MONSTER_IDS.has(_characterIDs_turn)):
-		var target_IDs: Array[int] = FoundSkillTargets(p_target_ID, _characterIDs_turn)
+	if(PLAYER_IDS.has(_characterIDs_turn)):
+		var target_IDs: Array[int] = FindSkillTargets(p_target_ID, _characterIDs_turn)
 		if(target_IDs.size() > 0):
 			ResolveSkill(_characterIDs_turn, target_IDs, _selected_skill_ID)
 			if(IsTheBattleOver()):
@@ -190,7 +219,7 @@ func _on_character_battle_target_selected(p_target_ID: int) -> void:
 			_battle_ui._skill_button_2.hide()
 			_battle_ui._skill_button_3.hide()
 			_battle_ui._char_turns[_characterIDs_turn].position -= Vector2(TURN_POS_X_THRESHOLD - _battle_ui._char_turns[_characterIDs_turn].get_rect().size.x, 0)
-			_characterIDs_turn = -1
+			_characterIDs_turn = NO_CHARACTERS_TURN
 			_turn_indicator.hide()
 		else:
 			print("Invalid target for skill")
