@@ -7,7 +7,25 @@ class_name BattleUI extends Control
 @onready var _skill_button_3: Button = $Camera2D/Skill_3
 @warning_ignore_restore("unused_private_class_variable")
 
+const DAMAGE_NUMBER_TEMPLATE = preload("res://Scenes/ui/Damage_Number.tscn")
+
 signal battle_skill_selected(p_skill_ID: int)
+
+var _damage_number_2d_pool: Array[DamageNumber2D] = []
+
+func SpawnDamageNumber(p_value: int, p_position: Vector2) -> void:
+	var damage_number: DamageNumber2D = GetDamageNumber()
+	add_child(damage_number, true)
+	damage_number.SetValueAndAnimate(str(p_value), p_position, 100.0, 10.0)
+
+func GetDamageNumber() -> DamageNumber2D:
+	if (_damage_number_2d_pool.size() > 0):
+		return _damage_number_2d_pool.pop_front()
+	else:
+		var new_damage_number: DamageNumber2D = DAMAGE_NUMBER_TEMPLATE.instantiate()
+		new_damage_number.tree_exiting.connect(
+			func():_damage_number_2d_pool.append(new_damage_number))
+		return new_damage_number
 
 func SetSkill1Texture(p_texture_path: String) -> void:
 	_skill_button_1.icon = load(p_texture_path)

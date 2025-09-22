@@ -13,8 +13,8 @@ func _ready() -> void:
 	add_child(_character_collection)
 	var context_container: ContextContainer = ContextContainer.new()
 
-	_character_collection.Add(JESTER.duplicate(true))
 	_character_collection.Add(KNIGHT.duplicate(true))
+	_character_collection.Add(JESTER.duplicate(true))
 	_character_collection.Add(JESTER.duplicate(true))
 	
 	var all_chars = _character_collection.GetAllCharacters()
