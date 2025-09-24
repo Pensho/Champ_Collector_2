@@ -180,7 +180,6 @@ func ResolveSkill(p_attacker_ID: int, p_target_IDs: Array[int], p_skill_ID) -> v
 		var damage_dealt: int = DamageDealt(_characters[p_attacker_ID], _characters[target_ID], p_skill_ID)
 		if(damage_dealt != 0):
 			_battle_ui.SpawnDamageNumber(damage_dealt, _character_repr[target_ID].position + Vector2(100, 70))
-		print("Character: ",  _characters[target_ID]._name, " took ", damage_dealt, " damage!")
 		_characters[target_ID]._currentHealth -= damage_dealt
 		if(_characters[target_ID]._currentHealth < 0):
 			_characters[target_ID]._currentHealth = 0

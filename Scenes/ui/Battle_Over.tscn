@@ -1,0 +1,66 @@
+[gd_scene load_steps=4 format=3 uid="uid://d3ooarqabyw0p"]
+
+[ext_resource type="Script" uid="uid://b4s2d8usop6na" path="res://Scripts/UI/battle_over.gd" id="1_admv5"]
+[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ Collector/Themes/default_theme.tres" id="1_euu8f"]
+[ext_resource type="Texture2D" uid="uid://dx1p1jvdh8xjm" path="res://Assets/Champ Collector/UI/Victory_Screen/Victory_3.jpg" id="2_qbyvt"]
+
+[node name="BattleOver" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+script = ExtResource("1_admv5")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+texture = ExtResource("2_qbyvt")
+expand_mode = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 32
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("1_euu8f")
+theme_override_colors/font_shadow_color = Color(0.550652, 0.515633, 0.289595, 1)
+theme_override_colors/font_outline_color = Color(0.741176, 0.603922, 0.192157, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/outline_size = 4
+theme_override_constants/shadow_outline_size = 10
+theme_override_font_sizes/font_size = 64
+text = "Victory"
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 10
+theme_override_constants/separation = 32
+
+[node name="Button" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_euu8f")
+text = "Replay"
+
+[node name="Button2" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_euu8f")
+text = "Edit team"
+
+[node name="Button3" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_euu8f")
+text = "End"

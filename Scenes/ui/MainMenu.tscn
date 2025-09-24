@@ -1,6 +1,5 @@
-[gd_scene load_steps=5 format=3 uid="uid://c6c1o3oabj0pf"]
+[gd_scene load_steps=4 format=3 uid="uid://c6c1o3oabj0pf"]
 
-[ext_resource type="Script" uid="uid://dg6hmf1j0ygjl" path="res://Scripts/Character/character_collection.gd" id="1_4facs"]
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ Collector/Themes/default_theme.tres" id="1_hnwi1"]
 [ext_resource type="Script" uid="uid://cygusf5metdyh" path="res://Scripts/UI/main_menu.gd" id="2_hnwi1"]
 [ext_resource type="Texture2D" uid="uid://cxe2lffkbra47" path="res://Assets/Champ Collector/Scenery/Grasslands.png" id="3_h3tiw"]
@@ -83,9 +82,6 @@ focus_previous = NodePath("../Button_StartGame")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 1
 text = "Exit"
-
-[node name="Character_Collection" type="Node" parent="."]
-script = ExtResource("1_4facs")
 
 [connection signal="button_up" from="MarginContainer/VBoxContainer/ButtonsVBox/Button_StartGame" to="." method="_on_start_game_button_pressed"]
 [connection signal="button_up" from="MarginContainer/VBoxContainer/ButtonsVBox/Button_QuitGame" to="." method="_on_quit_button_pressed"]

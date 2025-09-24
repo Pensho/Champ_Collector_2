@@ -34,7 +34,7 @@ func _on_quit_button_pressed() -> void:
 func _on_visibility_changed() -> void:
 	if visible:
 		focus_button()
-		
+
 func focus_button() -> void:
 	if _buttons_v_box:
 		var button: Button = _buttons_v_box.get_child(0)
