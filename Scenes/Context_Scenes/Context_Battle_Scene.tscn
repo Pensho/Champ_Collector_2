@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://cpynxe7835lvp"]
-
-[ext_resource type="Script" uid="uid://c4yuwnarkyd4n" path="res://Scripts/Worldview/Context_Container.gd" id="1_j26rl"]
-
-[node name="ContextBattleScene" type="Node2D"]
-script = ExtResource("1_j26rl")

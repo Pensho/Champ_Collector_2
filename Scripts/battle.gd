@@ -18,6 +18,12 @@ var _characterIDs_turn: int = -1
 var _selected_skill_ID: int = 0
 var _initialized: bool = false
 
+enum BattleState
+{
+	Player_Won,
+	Monsters_Won,
+}
+
 func Init(p_context: ContextContainer) -> void:
 	print("Entering a battle scene.")
 	var battlecontext: Context_Battle = p_context._static_context as Context_Battle
@@ -49,6 +55,17 @@ func _process(p_delta: float) -> void:
 	if(_initialized):
 		for i in _characters.keys():
 			Update(p_delta, i)
+	
+	if(Input.is_key_pressed(KEY_A)):
+		for i in _characters.keys():
+			if (PLAYER_IDS.has(i)):
+				_characters[i]._currentHealth = 1
+				UpdateLifeBar(i)
+	elif(Input.is_key_pressed(KEY_M)):
+		for i in _characters.keys():
+			if (MONSTER_IDS.has(i)):
+				_characters[i]._currentHealth = 1
+				UpdateLifeBar(i)
 
 func ConstrictTurnLocation(p_characterID: int) -> void:
 	if(_battle_ui._char_turns[p_characterID].position.x + _battle_ui._char_turns[p_characterID].get_rect().size.x > TURN_POS_X_THRESHOLD):
@@ -77,9 +94,7 @@ func StartTurn() -> void:
 				if(target_IDs.size() > 0):
 					ResolveSkill(_characterIDs_turn, target_IDs, _selected_skill_ID)
 					if(IsTheBattleOver()):
-						var context_container: ContextContainer = ContextContainer.new()
-						context_container._scene = "res://Scenes/ui/MainMenu.tscn"
-						main.change_scene(context_container)
+						EndBattle(BattleState.Monsters_Won)
 					_battle_ui._char_turns[_characterIDs_turn].position -= Vector2(TURN_POS_X_THRESHOLD - _battle_ui._char_turns[_characterIDs_turn].get_rect().size.x, 0)
 					_characterIDs_turn = NO_CHARACTERS_TURN
 					_turn_indicator.hide()
@@ -191,31 +206,35 @@ func ResolveSkill(p_attacker_ID: int, p_target_IDs: Array[int], p_skill_ID) -> v
 		ConstrictTurnLocation(target_ID)
 
 func IsTheBattleOver() -> bool:
-	var player_defeated: bool = true
-	var computer_defeated: bool = true
+	var player_alive: bool = false
+	var monsters_alive: bool = false
 	for character_ID in MONSTER_IDS:
 		if(_characters.has(character_ID)):
 			if(_characters[character_ID]._currentHealth > 0):
-				computer_defeated = false
-				break
+				monsters_alive = true
 	for character_ID in PLAYER_IDS:
 		if(_characters.has(character_ID)):
 			if(_characters[character_ID]._currentHealth > 0):
-				player_defeated = false
-				break
-	
-	#print("Is battle over? ", player_defeated or computer_defeated)
-	return player_defeated or computer_defeated
+				player_alive = true
+
+	return (not player_alive or not monsters_alive)
+
+func EndBattle(p_winner) -> void:
+	var context_container: ContextContainer = ContextContainer.new()
+	context_container._scene = "res://Scenes/ui/Battle_Over.tscn"
+	if(p_winner == BattleState.Monsters_Won):
+		context_container._util_text = "Loss"
+	elif(p_winner == BattleState.Player_Won):
+		context_container._util_text = "Victory"
+	main.change_scene(context_container)
 
 func _on_character_battle_target_selected(p_target_ID: int) -> void:
 	if(PLAYER_IDS.has(_characterIDs_turn)):
 		var target_IDs: Array[int] = FindSkillTargets(p_target_ID, _characterIDs_turn)
 		if(target_IDs.size() > 0):
 			ResolveSkill(_characterIDs_turn, target_IDs, _selected_skill_ID)
-			if(IsTheBattleOver()):
-				var context_container: ContextContainer = ContextContainer.new()
-				context_container._scene = "res://Scenes/ui/MainMenu.tscn"
-				main.change_scene(context_container)
+			if (IsTheBattleOver()):
+				EndBattle(BattleState.Player_Won)
 			_battle_ui._skill_button_1.hide()
 			_battle_ui._skill_button_2.hide()
 			_battle_ui._skill_button_3.hide()

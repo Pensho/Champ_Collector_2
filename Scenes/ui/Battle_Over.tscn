@@ -11,8 +11,8 @@ offset_right = 1280.0
 offset_bottom = 720.0
 script = ExtResource("1_admv5")
 
-[node name="TextureRect" type="TextureRect" parent="."]
-layout_mode = 0
+[node name="TextureRect_Background" type="TextureRect" parent="."]
+layout_mode = 2
 offset_right = 1280.0
 offset_bottom = 720.0
 texture = ExtResource("2_qbyvt")
@@ -50,17 +50,29 @@ size_flags_horizontal = 8
 size_flags_vertical = 10
 theme_override_constants/separation = 32
 
-[node name="Button" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="Button_Replay" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
+focus_neighbor_left = NodePath("../Button_End")
+focus_neighbor_right = NodePath("../Button_Edit_Team")
+focus_next = NodePath("../Button_Edit_Team")
+focus_previous = NodePath("../Button_End")
 theme = ExtResource("1_euu8f")
 text = "Replay"
 
-[node name="Button2" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="Button_Edit_Team" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
+focus_neighbor_left = NodePath("../Button_Replay")
+focus_neighbor_right = NodePath("../Button_End")
+focus_next = NodePath("../Button_End")
+focus_previous = NodePath("../Button_Replay")
 theme = ExtResource("1_euu8f")
 text = "Edit team"
 
-[node name="Button3" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="Button_End" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
+focus_neighbor_left = NodePath("../Button_Edit_Team")
+focus_neighbor_right = NodePath("../Button_Replay")
+focus_next = NodePath("../Button_Replay")
+focus_previous = NodePath("../Button_Edit_Team")
 theme = ExtResource("1_euu8f")
 text = "End"
