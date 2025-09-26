@@ -13,10 +13,10 @@ func _ready() -> void:
 	add_child(_character_collection)
 	var context_container: ContextContainer = ContextContainer.new()
 
-	_character_collection.Add(KNIGHT.duplicate(true))
+	#_character_collection.Add(KNIGHT.duplicate(true))
 	_character_collection.Add(JESTER.duplicate(true))
-	_character_collection.Add(JESTER.duplicate(true))
-	
+	#_character_collection.Add(JESTER.duplicate(true))
+
 	var all_chars = _character_collection.GetAllCharacters()
 	for key in all_chars.keys():
 		print("Found character in collection, ID: ", all_chars[key]._instanceID, " name: ", all_chars[key]._name)

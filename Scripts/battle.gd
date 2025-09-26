@@ -94,7 +94,9 @@ func StartTurn() -> void:
 				if(target_IDs.size() > 0):
 					ResolveSkill(_characterIDs_turn, target_IDs, _selected_skill_ID)
 					if(IsTheBattleOver()):
+						
 						EndBattle(BattleState.Monsters_Won)
+						break
 					_battle_ui._char_turns[_characterIDs_turn].position -= Vector2(TURN_POS_X_THRESHOLD - _battle_ui._char_turns[_characterIDs_turn].get_rect().size.x, 0)
 					_characterIDs_turn = NO_CHARACTERS_TURN
 					_turn_indicator.hide()
@@ -114,24 +116,23 @@ func Update(p_delta: float, p_characterID: int) -> void:
 	if(_battle_ui._char_turns[p_characterID].position.x + _battle_ui._char_turns[p_characterID].get_rect().size.x < TURN_POS_X_THRESHOLD):
 		_battle_ui._char_turns[p_characterID].position += Vector2(_characters[p_characterID]._speed * p_delta * 2, 0)
 	else:
-		print("Now a turn for character ID: ", p_characterID)
+		#print("Now a turn for character ID: ", p_characterID)
 		_characterIDs_turn = p_characterID
 		StartTurn()
 
 func UpdateLifeBar(p_characterID: int) -> void:
-	_character_repr[p_characterID]._lifebar.max_value = _characters[p_characterID]._health
 	_character_repr[p_characterID]._lifebar.value = _characters[p_characterID]._currentHealth
 	_character_repr[p_characterID]._lifebar_text.text = str(_characters[p_characterID]._currentHealth) + "/" + str(_characters[p_characterID]._health)
 
 func VisualizeCharacter(p_characterID: int) -> void:
 	_character_repr[p_characterID]._level.text = str(_characters[p_characterID]._level)
 	_character_repr[p_characterID]._character_texture.texture = load(_characters[p_characterID]._texture)
+	_character_repr[p_characterID]._lifebar.max_value = _characters[p_characterID]._health
 	UpdateLifeBar(p_characterID)
 	_battle_ui._char_turns[p_characterID].texture = load(_characters[p_characterID]._texture)
 	_character_repr[p_characterID].show()
 
 func FindSkillTargets(p_target_ID: int, p_attacker_ID: int) -> Array[int]:
-	print("p_target_ID: ", p_target_ID, " p_attacker_ID: ", p_attacker_ID)
 	var target_IDs: Array[int]
 	if(_characters[p_target_ID]._currentHealth > 0):
 		match _characters[p_attacker_ID]._skills[_selected_skill_ID].target:
@@ -185,9 +186,10 @@ func DamageDealt(p_attacker: Character, p_defender: Character, p_Skill_ID: int) 
 	var initial_damage: float 		= p_attacker._attack * p_attacker._skills[p_Skill_ID].damage
 	if(randi_range(0, 100) <= p_attacker._critChance):
 		initial_damage *= p_attacker._critDamage
+		print("The ", p_attacker._name, " did a critical strike!")
 	var added: float 				= p_defender._defence + p_attacker._attack
 	var mitigation_factor: float	= 0.5 + (0.5 * (p_attacker._attack / added))
-	return int(ceil(initial_damage * mitigation_factor * randomVal))
+	return int(ceil(mitigation_factor * (initial_damage * randomVal)))
 
 func ResolveSkill(p_attacker_ID: int, p_target_IDs: Array[int], p_skill_ID) -> void:
 	var cast_skill: Skill = _characters[p_attacker_ID]._skills[p_skill_ID]
@@ -220,6 +222,10 @@ func IsTheBattleOver() -> bool:
 	return (not player_alive or not monsters_alive)
 
 func EndBattle(p_winner) -> void:
+	for i in _characters.keys():
+		if(PLAYER_IDS.has(i)):
+			_characters[i]._currentHealth = _characters[i]._health
+	
 	var context_container: ContextContainer = ContextContainer.new()
 	context_container._scene = "res://Scenes/ui/Battle_Over.tscn"
 	if(p_winner == BattleState.Monsters_Won):

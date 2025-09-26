@@ -76,3 +76,7 @@ focus_next = NodePath("../Button_Replay")
 focus_previous = NodePath("../Button_Edit_Team")
 theme = ExtResource("1_euu8f")
 text = "End"
+
+[connection signal="button_up" from="MarginContainer/VBoxContainer/HBoxContainer/Button_Replay" to="." method="_on_button_replay_button_up"]
+[connection signal="button_up" from="MarginContainer/VBoxContainer/HBoxContainer/Button_Edit_Team" to="." method="_on_button_edit_team_button_up"]
+[connection signal="button_up" from="MarginContainer/VBoxContainer/HBoxContainer/Button_End" to="." method="_on_button_end_button_up"]

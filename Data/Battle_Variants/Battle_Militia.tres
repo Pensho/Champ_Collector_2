@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="Context_Battle" load_steps=4 format=3 uid="uid://dstgijwmiqvo1"]
+
+[ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="1_jbr18"]
+[ext_resource type="Resource" uid="uid://b37nmpv7mries" path="res://Data/Character_Enemy_Variants/Militia.tres" id="2_f440i"]
+[ext_resource type="Script" uid="uid://bjtnao6fgl8go" path="res://Scripts/Worldview/Context_Battle.gd" id="3_6vl8o"]
+
+[resource]
+script = ExtResource("3_6vl8o")
+_enemies_wave_1 = Array[ExtResource("1_jbr18")]([ExtResource("2_f440i"), ExtResource("2_f440i"), ExtResource("2_f440i")])
+_enemies_wave_2 = Array[ExtResource("1_jbr18")]([])
+_enemies_wave_3 = Array[ExtResource("1_jbr18")]([])
+_location = "res://Assets/Champ Collector/Scenery/Troll battle area/Troll_battle_area_2.jpg"
+metadata/_custom_type_script = "uid://bjtnao6fgl8go"
