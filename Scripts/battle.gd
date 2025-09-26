@@ -94,7 +94,7 @@ func StartTurn() -> void:
 				if(target_IDs.size() > 0):
 					ResolveSkill(_characterIDs_turn, target_IDs, _selected_skill_ID)
 					if(IsTheBattleOver()):
-						
+						_battle_ui.CleanUp()
 						EndBattle(BattleState.Monsters_Won)
 						break
 					_battle_ui._char_turns[_characterIDs_turn].position -= Vector2(TURN_POS_X_THRESHOLD - _battle_ui._char_turns[_characterIDs_turn].get_rect().size.x, 0)
