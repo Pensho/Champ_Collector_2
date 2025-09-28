@@ -5,7 +5,7 @@ enum Rarity
 	Common,
 	Uncommon,
 	Rare,
-	Unique,
+	Epic,
 	Legendary,
 	Relic, # Items only
 }
@@ -30,11 +30,14 @@ enum Role
 	Scholar,
 	Diviner,
 	Appraiser,
-	Strategist,
+	Tactician,
 	Symbiote,
 	Jester,
 	Cultist,
 	Generic_Enemy,
+	Bar_Brawler,
+	Bloodmage,
+	Herald_of_the_loom,
 }
 
 enum Slot

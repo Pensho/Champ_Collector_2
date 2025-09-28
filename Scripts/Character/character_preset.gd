@@ -21,7 +21,7 @@ const Types = preload("res://Scripts/common_enums.gd")
 @export var _mysticism: int = 0
 @export var _knowledge: int = 0
 @export var _pressence: int = 0
-@export var _critChance: int = 0
-@export var _critDamage: float = 0.0
+@export var _critChance: int = 5
+@export var _critDamage: float = 1.5
 
 @warning_ignore_restore("unused_private_class_variable")

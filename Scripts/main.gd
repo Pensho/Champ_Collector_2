@@ -5,6 +5,8 @@ var _character_collection: Collection
 
 const KNIGHT = preload("res://Data/Character_Player_Variants/Knight.tres")
 const JESTER = preload("res://Data/Character_Player_Variants/Jester.tres")
+const BAR_BRAWLER = preload("res://Data/Character_Player_Variants/Bar_Brawler.tres")
+const HERALD_OF_THE_LOOM = preload("res://Data/Character_Player_Variants/Herald_of_the_loom.tres")
 
 func _ready() -> void:
 	_current_scene = get_tree().root.get_child(-1)
@@ -13,9 +15,9 @@ func _ready() -> void:
 	add_child(_character_collection)
 	var context_container: ContextContainer = ContextContainer.new()
 
-	#_character_collection.Add(KNIGHT.duplicate(true))
-	_character_collection.Add(JESTER.duplicate(true))
-	#_character_collection.Add(JESTER.duplicate(true))
+	_character_collection.Add(KNIGHT.duplicate(true))
+	_character_collection.Add(BAR_BRAWLER.duplicate(true))
+	_character_collection.Add(HERALD_OF_THE_LOOM.duplicate(true))
 
 	var all_chars = _character_collection.GetAllCharacters()
 	for key in all_chars.keys():
