@@ -23,3 +23,4 @@ _knowledge = 20
 _pressence = 35
 _critChance = 5
 _critDamage = 15
+_primary_attributes = Array[int]([0, 2, 3, 8])

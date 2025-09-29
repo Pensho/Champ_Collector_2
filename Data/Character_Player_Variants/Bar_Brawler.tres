@@ -23,4 +23,5 @@ _knowledge = 0
 _pressence = 20
 _critChance = 5
 _critDamage = 15
+_primary_attributes = Array[int]([0, 0, 5])
 metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

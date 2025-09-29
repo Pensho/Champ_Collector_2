@@ -1,6 +1,7 @@
 extends Node2D
 
 const Common_Enums = preload("res://Scripts/common_enums.gd")
+#const LevelSystem = preload("res://Scripts/Character/Level_System.gd")
 
 const NO_CHARACTERS_TURN: int = -1
 const TURN_POS_X_THRESHOLD: int = 360
@@ -25,7 +26,6 @@ enum BattleState
 }
 
 func Init(p_context: ContextContainer) -> void:
-	print("Entering a battle scene.")
 	var battlecontext: Context_Battle = p_context._static_context as Context_Battle
 	_background.texture = load(battlecontext._location)
 	
@@ -224,9 +224,15 @@ func IsTheBattleOver() -> bool:
 	return (not player_alive or not monsters_alive)
 
 func EndBattle(p_winner) -> void:
+	# TODO: implement a more refined experience reward.
+	var experience_gained: int = 5
+	for i in _characters.keys():
+		if(MONSTER_IDS.has(i)):
+			experience_gained += 5
 	for i in _characters.keys():
 		if(PLAYER_IDS.has(i)):
-			_characters[i]._currentHealth = _characters[i]._health
+			LevelSystem.AddExperience(_characters[i], experience_gained)
+			_characters[i]._currentHealth = _characters[i]._attributes[Common_Enums.Attribute.Health]
 	
 	var context_container: ContextContainer = ContextContainer.new()
 	context_container._scene = "res://Scenes/ui/Battle_Over.tscn"

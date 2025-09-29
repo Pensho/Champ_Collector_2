@@ -16,8 +16,8 @@ func _ready() -> void:
 	var context_container: ContextContainer = ContextContainer.new()
 
 	_character_collection.Add(KNIGHT.duplicate(true))
-	_character_collection.Add(BAR_BRAWLER.duplicate(true))
-	_character_collection.Add(HERALD_OF_THE_LOOM.duplicate(true))
+	#_character_collection.Add(BAR_BRAWLER.duplicate(true))
+	#_character_collection.Add(HERALD_OF_THE_LOOM.duplicate(true))
 
 	var all_chars = _character_collection.GetAllCharacters()
 	for key in all_chars.keys():
@@ -40,7 +40,7 @@ func _deferred_change_scene(p_context: ContextContainer) -> void:
 	_current_scene = scene.instantiate()
 	add_child(_current_scene)
 	print("current scene is: ", _current_scene)
-	print(get_tree_string_pretty())
+	#print(get_tree_string_pretty())
 	_current_scene.Init(p_context)
 	## Play transition animation backwards
 	## self.visible = false

@@ -11,6 +11,7 @@ func InstantiateNew(preset: CharacterPreset, instanceID: int) -> void:
 	_faction = preset._faction
 	_role = preset._role
 	_skills = preset._skills
+	_primary_attributes = preset._primary_attributes
 	
 	_attributes[Types.Attribute.Health] = preset._health * 10
 	_attributes[Types.Attribute.Speed] = preset._speed
@@ -58,3 +59,4 @@ var _attributes: Dictionary[Types.Attribute, int] = {
 }
 
 var _currentHealth: int = 0
+var _primary_attributes: Array[Types.Attribute]
