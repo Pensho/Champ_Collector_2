@@ -68,3 +68,18 @@ enum Skill_Target
 	Random_One,
 	All,
 }
+
+enum Attribute
+{
+	Health,
+	Speed,
+	Attack,
+	Defence,
+	Accuracy,
+	Resistance,
+	Mysticism,
+	Knowledge,
+	Pressence,
+	CritChance,
+	CritDamage,
+}

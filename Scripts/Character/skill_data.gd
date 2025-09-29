@@ -8,5 +8,5 @@ const Types = preload("res://Scripts/common_enums.gd")
 @export var target: Types.Skill_Target
 
 @export var turn_effect: int
-@export var damage: float
+@export var damage_scaling: Dictionary[Types.Attribute, float]
 @export var cooldown: int = 0

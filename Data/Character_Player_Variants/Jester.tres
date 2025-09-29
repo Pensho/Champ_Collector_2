@@ -22,4 +22,4 @@ _mysticism = 20
 _knowledge = 20
 _pressence = 35
 _critChance = 5
-_critDamage = 1.5
+_critDamage = 15

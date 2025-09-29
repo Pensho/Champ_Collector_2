@@ -9,4 +9,7 @@ description = "Plunge you weapon against an enemy."
 icon_path = "res://Assets/Champ Collector/Icons/Abilities/Stab/Stab_3.jpg"
 target = 0
 turn_effect = 0
-damage = 0.7
+damage_scaling = Dictionary[int, float]({
+2: 0.7
+})
+cooldown = 0

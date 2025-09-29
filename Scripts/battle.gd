@@ -114,7 +114,7 @@ func Update(p_delta: float, p_characterID: int) -> void:
 		return
 	# No ones turn yet, so move along the turn order.
 	if(_battle_ui._char_turns[p_characterID].position.x + _battle_ui._char_turns[p_characterID].get_rect().size.x < TURN_POS_X_THRESHOLD):
-		_battle_ui._char_turns[p_characterID].position += Vector2(_characters[p_characterID]._speed * p_delta * 2, 0)
+		_battle_ui._char_turns[p_characterID].position += Vector2(_characters[p_characterID]._attributes[Common_Enums.Attribute.Speed] * p_delta * 2, 0)
 	else:
 		#print("Now a turn for character ID: ", p_characterID)
 		_characterIDs_turn = p_characterID
@@ -122,12 +122,12 @@ func Update(p_delta: float, p_characterID: int) -> void:
 
 func UpdateLifeBar(p_characterID: int) -> void:
 	_character_repr[p_characterID]._lifebar.value = _characters[p_characterID]._currentHealth
-	_character_repr[p_characterID]._lifebar_text.text = str(_characters[p_characterID]._currentHealth) + "/" + str(_characters[p_characterID]._health)
+	_character_repr[p_characterID]._lifebar_text.text = str(_characters[p_characterID]._currentHealth) + "/" + str(_characters[p_characterID]._attributes[Common_Enums.Attribute.Health])
 
 func VisualizeCharacter(p_characterID: int) -> void:
 	_character_repr[p_characterID]._level.text = str(_characters[p_characterID]._level)
 	_character_repr[p_characterID]._character_texture.texture = load(_characters[p_characterID]._texture)
-	_character_repr[p_characterID]._lifebar.max_value = _characters[p_characterID]._health
+	_character_repr[p_characterID]._lifebar.max_value = _characters[p_characterID]._attributes[Common_Enums.Attribute.Health]
 	UpdateLifeBar(p_characterID)
 	_battle_ui._char_turns[p_characterID].texture = load(_characters[p_characterID]._texture)
 	_character_repr[p_characterID].show()
@@ -182,13 +182,15 @@ func FindSkillTargets(p_target_ID: int, p_attacker_ID: int) -> Array[int]:
 	return target_IDs
 
 func DamageDealt(p_attacker: Character, p_defender: Character, p_Skill_ID: int) -> int:
-	var randomVal: float			= randf_range(0.95, 1.05)
-	var initial_damage: float 		= p_attacker._attack * p_attacker._skills[p_Skill_ID].damage
-	if(randi_range(0, 100) <= p_attacker._critChance):
-		initial_damage *= p_attacker._critDamage
+	var randomVal: float = randf_range(0.95, 1.05)
+	var initial_damage: float = 0.0
+	for key in p_attacker._skills[p_Skill_ID].damage_scaling.keys():
+		initial_damage += p_attacker._skills[p_Skill_ID].damage_scaling[key] * p_attacker._attributes[key]
+	if(randi_range(0, 100) <= p_attacker._attributes[Common_Enums.Attribute.CritChance]):
+		initial_damage *= float(p_attacker._attributes[Common_Enums.Attribute.CritDamage]) * 0.1
 		print("The ", p_attacker._name, " did a critical strike!")
-	var added: float 				= p_defender._defence + p_attacker._attack
-	var mitigation_factor: float	= 0.5 + (0.5 * (p_attacker._attack / added))
+	var added: float = p_defender._attributes[Common_Enums.Attribute.Defence] + p_attacker._attributes[Common_Enums.Attribute.Attack]
+	var mitigation_factor: float = 0.5 + (0.5 * (p_attacker._attributes[Common_Enums.Attribute.Attack] / added))
 	return int(ceil(mitigation_factor * (initial_damage * randomVal)))
 
 func ResolveSkill(p_attacker_ID: int, p_target_IDs: Array[int], p_skill_ID) -> void:
@@ -200,8 +202,8 @@ func ResolveSkill(p_attacker_ID: int, p_target_IDs: Array[int], p_skill_ID) -> v
 		_characters[target_ID]._currentHealth -= damage_dealt
 		if(_characters[target_ID]._currentHealth < 0):
 			_characters[target_ID]._currentHealth = 0
-		elif (_characters[target_ID]._currentHealth > _characters[target_ID]._health):
-			_characters[target_ID]._currentHealth = _characters[target_ID]._health
+		elif (_characters[target_ID]._currentHealth > _characters[target_ID]._attributes[Common_Enums.Attribute.Health]):
+			_characters[target_ID]._currentHealth = _characters[target_ID]._attributes[Common_Enums.Attribute.Health]
 		UpdateLifeBar(target_ID)
 
 		_battle_ui._char_turns[target_ID].position += Vector2(cast_skill.turn_effect, 0)

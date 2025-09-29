@@ -11,18 +11,20 @@ func InstantiateNew(preset: CharacterPreset, instanceID: int) -> void:
 	_faction = preset._faction
 	_role = preset._role
 	_skills = preset._skills
-	_speed = preset._speed
-	_attack = preset._attack
-	_defence = preset._defence
-	_accuracy = preset._accuracy
-	_resistance = preset._resistance
-	_mysticism = preset._mysticism
-	_knowledge = preset._knowledge
-	_pressence = preset._pressence
-	_critChance = preset._critChance
-	_critDamage = preset._critDamage
-	_health = preset._health * 10
-	_currentHealth = _health
+	
+	_attributes[Types.Attribute.Health] = preset._health * 10
+	_attributes[Types.Attribute.Speed] = preset._speed
+	_attributes[Types.Attribute.Attack] = preset._attack
+	_attributes[Types.Attribute.Defence] = preset._defence
+	_attributes[Types.Attribute.Accuracy] = preset._accuracy
+	_attributes[Types.Attribute.Resistance] = preset._resistance
+	_attributes[Types.Attribute.Mysticism] = preset._mysticism
+	_attributes[Types.Attribute.Knowledge] = preset._knowledge
+	_attributes[Types.Attribute.Pressence] = preset._pressence
+	_attributes[Types.Attribute.CritChance] = preset._critChance
+	_attributes[Types.Attribute.CritDamage] = preset._critDamage
+	
+	_currentHealth = _attributes[Types.Attribute.Health]
 
 # Preset Data
 var _name: String = ""
@@ -41,16 +43,18 @@ var _level: int = 1
 var _skills: Array[Skill] = []
 
 # Attributes
-var _speed: int = 0
-var _attack: int = 0
-var _defence: int = 0
-var _accuracy: int = 0
-var _resistance: int = 0
-var _mysticism: int = 0
-var _knowledge: int = 0
-var _pressence: int = 0
-var _critChance: int = 0
-var _critDamage: float = 1.5
+var _attributes: Dictionary[Types.Attribute, int] = {
+	Types.Attribute.Health: 0,
+	Types.Attribute.Speed: 0,
+	Types.Attribute.Attack: 0,
+	Types.Attribute.Defence: 0,
+	Types.Attribute.Accuracy: 0,
+	Types.Attribute.Resistance: 0,
+	Types.Attribute.Mysticism: 0,
+	Types.Attribute.Knowledge: 0,
+	Types.Attribute.Pressence: 0,
+	Types.Attribute.CritChance: 0,
+	Types.Attribute.CritDamage: 15,
+}
 
-var _health: int = 0
 var _currentHealth: int = 0

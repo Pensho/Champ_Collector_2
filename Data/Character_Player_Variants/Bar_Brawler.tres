@@ -22,5 +22,5 @@ _mysticism = 10
 _knowledge = 0
 _pressence = 20
 _critChance = 5
-_critDamage = 1.5
+_critDamage = 15
 metadata/_custom_type_script = "uid://ftdwxfh8y3n1"
