@@ -24,6 +24,6 @@ const Types = preload("res://Scripts/common_enums.gd")
 @export var _critChance: int = 5
 @export var _critDamage: int = 15
 
-@export var _primary_attributes: Array[Types.Attribute]
+@export var _attributes_weights: Array[Types.Attribute]
 
 @warning_ignore_restore("unused_private_class_variable")

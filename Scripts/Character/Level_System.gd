@@ -43,7 +43,7 @@ static func AddExperience(p_character: Character, p_value: int) -> void:
 static func LevelUpReward(p_character: Character) -> void:
 	p_character._level += 1
 	var weights: Dictionary[Types.Attribute, int] = BASE_WEIGHTS.duplicate(true)
-	for attribute in p_character._primary_attributes:
+	for attribute in p_character._attributes_weights:
 		weights[attribute] += PRIMARY_ATTRIBUTE_MODIFIER
 	
 	var cumulative_weights: Dictionary[Types.Attribute, int]
