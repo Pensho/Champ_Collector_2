@@ -11,6 +11,7 @@ const BATTLE_MILITIA = preload("res://Data/Battle_Variants/Battle_Militia.tres")
 func _ready() -> void:
 	focus_button()
 
+@warning_ignore("unused_parameter") # Main menu requires nothing from the ContextContainer.
 func Init(p_context_container: ContextContainer) -> void:
 	if(main._character_collection.GetAllCharacters().size() >= 3):
 		for i in 3:
