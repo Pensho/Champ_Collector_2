@@ -8,6 +8,7 @@
 script = ExtResource("3_7g6n5")
 _name = "Jester"
 _texture = "res://Assets/Champ Collector/Creatures/Jester/Jester_0001.png"
+_normal_map = "res://Assets/Champ Collector/Creatures/Jester/Jester_0001_Normal_Map.png"
 _rarity = 0
 _faction = 0
 _role = 11

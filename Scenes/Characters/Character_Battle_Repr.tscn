@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://dvvopn2yuy4wr"]
+[gd_scene load_steps=5 format=3 uid="uid://dvvopn2yuy4wr"]
 
 [ext_resource type="Script" uid="uid://di021l42jy53d" path="res://Scripts/Character/character_battle_repr.gd" id="1_hd4xr"]
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ Collector/Themes/default_theme.tres" id="2_6p7dp"]
+[ext_resource type="Material" uid="uid://2tvv2h51laxc" path="res://Assets/Champ Collector/Material/Unshaded.tres" id="2_7qair"]
 
 [sub_resource type="Theme" id="Theme_iesxj"]
 
@@ -15,6 +16,7 @@ expand_mode = 1
 metadata/_edit_use_anchors_ = true
 
 [node name="ProgressBar" type="ProgressBar" parent="."]
+material = ExtResource("2_7qair")
 offset_top = 200.0
 offset_right = 200.0
 offset_bottom = 234.0
@@ -23,6 +25,7 @@ value = 100.0
 show_percentage = false
 
 [node name="Label" type="Label" parent="ProgressBar"]
+material = ExtResource("2_7qair")
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -38,6 +41,7 @@ grow_vertical = 2
 theme = ExtResource("2_6p7dp")
 
 [node name="ColorRect" type="ColorRect" parent="."]
+material = ExtResource("2_7qair")
 offset_left = -34.0
 offset_top = 200.0
 offset_bottom = 234.0
@@ -45,6 +49,7 @@ theme = SubResource("Theme_iesxj")
 color = Color(0.501407, 0.501406, 0.501406, 0.431373)
 
 [node name="ReferenceRect" type="ReferenceRect" parent="ColorRect"]
+material = ExtResource("2_7qair")
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -55,6 +60,7 @@ border_color = Color(0.780392, 0.796078, 0.764706, 0.811765)
 editor_only = false
 
 [node name="Label" type="Label" parent="ColorRect"]
+material = ExtResource("2_7qair")
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

@@ -126,6 +126,9 @@ func UpdateLifeBar(p_characterID: int) -> void:
 
 func VisualizeCharacter(p_characterID: int) -> void:
 	_character_repr[p_characterID]._level.text = str(_characters[p_characterID]._level)
+	var character_canvas_texture = CanvasTexture.new()
+	character_canvas_texture.diffuse_texture = load(_characters[p_characterID]._texture)
+	character_canvas_texture.normal_texture = load(_characters[p_characterID]._texture)
 	_character_repr[p_characterID]._character_texture.texture = load(_characters[p_characterID]._texture)
 	_character_repr[p_characterID]._lifebar.max_value = _characters[p_characterID]._attributes[Common_Enums.Attribute.Health]
 	UpdateLifeBar(p_characterID)

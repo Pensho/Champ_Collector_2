@@ -8,6 +8,7 @@
 script = ExtResource("2_dhkqx")
 _name = "Bar Brawler"
 _texture = "res://Assets/Champ Collector/Creatures/Bar brawler/Bar_Brawler_0004.png"
+_normal_map = "res://Assets/Champ Collector/Creatures/Bar brawler/Bar_Brawler_0004_Normal_Map.png"
 _rarity = 0
 _faction = 1
 _role = 14

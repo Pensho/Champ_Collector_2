@@ -6,6 +6,7 @@ const Types = preload("res://Scripts/common_enums.gd")
 
 @export var _name: String
 @export var _texture: String
+@export var _normal_map: String
 @export var _rarity: Types.Rarity
 @export var _faction: Types.Faction
 @export var _role: Types.Role

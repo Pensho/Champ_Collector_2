@@ -7,6 +7,7 @@ func InstantiateNew(preset: CharacterPreset, instanceID: int) -> void:
 	
 	_name = preset._name
 	_texture = preset._texture
+	_normal_map = preset._normal_map
 	_rarity = preset._rarity
 	_faction = preset._faction
 	_role = preset._role
@@ -30,6 +31,7 @@ func InstantiateNew(preset: CharacterPreset, instanceID: int) -> void:
 # Preset Data
 var _name: String = ""
 var _texture: String = ""
+var _normal_map: String = ""
 
 var _rarity: Types.Rarity
 var _faction: Types.Faction

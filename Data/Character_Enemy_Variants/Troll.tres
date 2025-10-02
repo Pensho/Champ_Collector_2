@@ -7,7 +7,8 @@
 [resource]
 script = ExtResource("2_xxfqe")
 _name = "Troll"
-_texture = "res://Assets/Champ Collector/Creatures/Forest Troll/Forest_Troll_10.png"
+_texture = "res://Assets/Champ Collector/Creatures/Forest Troll/Forest_Troll_12_200.png"
+_normal_map = "res://Assets/Champ Collector/Creatures/Forest Troll/Forest_Troll_12_200_Normal_Map.png"
 _rarity = 2
 _faction = 4
 _role = 13
@@ -23,4 +24,5 @@ _knowledge = 10
 _pressence = 80
 _critChance = 5
 _critDamage = 15
+_attributes_weights = Array[int]([])
 metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

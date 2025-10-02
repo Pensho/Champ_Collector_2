@@ -7,14 +7,15 @@ var _player_battle_characters: Array[Character]
 
 #const BATTLE_TROLL = preload("res://Data/Battle_Variants/Battle_Troll.tres")
 const BATTLE_MILITIA = preload("res://Data/Battle_Variants/Battle_Militia.tres")
+const NR_OF_CHARACTERS_IN_BATTLE: int = 3
 
 func _ready() -> void:
 	focus_button()
 
 @warning_ignore("unused_parameter") # Main menu requires nothing from the ContextContainer.
 func Init(p_context_container: ContextContainer) -> void:
-	if(main._character_collection.GetAllCharacters().size() >= 3):
-		for i in 3:
+	if(main._character_collection.GetAllCharacters().size() >= NR_OF_CHARACTERS_IN_BATTLE):
+		for i in NR_OF_CHARACTERS_IN_BATTLE:
 			_player_battle_characters.append(main._character_collection.GetCharacter(i))
 	else:
 		for i in main._character_collection.GetAllCharacters():

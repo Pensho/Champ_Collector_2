@@ -1,7 +1,8 @@
-[gd_scene load_steps=11 format=3 uid="uid://dy5q1foc8kon5"]
+[gd_scene load_steps=12 format=3 uid="uid://dy5q1foc8kon5"]
 
 [ext_resource type="Script" uid="uid://che4nfxkv8ukc" path="res://Scripts/battle_ui.gd" id="1_gfldn"]
 [ext_resource type="Texture2D" uid="uid://cj6uxwt730ish" path="res://Assets/Champ Collector/Icons/Turn_Bar/walking-boot.svg" id="2_6sbxc"]
+[ext_resource type="Material" uid="uid://2tvv2h51laxc" path="res://Assets/Champ Collector/Material/Unshaded.tres" id="2_d07u5"]
 [ext_resource type="Shader" uid="uid://bxqgowk0maklx" path="res://Assets/Champ Collector/Shaders/battle_ui_button.gdshader" id="2_scq05"]
 [ext_resource type="Texture2D" uid="uid://dttmv410f1bo5" path="res://Assets/Champ Collector/Icons/Abilities/Stab/Stab_3.jpg" id="4_4blpl"]
 [ext_resource type="Texture2D" uid="uid://ctbnnvhe6erv0" path="res://Assets/Champ Collector/Icons/Abilities/Bolas/Bolas_2.jpg" id="4_nm010"]
@@ -54,6 +55,7 @@ _char_turns = [NodePath("Camera2D/PlayerInfoBox/Char_1"), NodePath("Camera2D/Pla
 position = Vector2(641, 360)
 
 [node name="PlayerInfoBox" type="Panel" parent="Camera2D"]
+material = ExtResource("2_d07u5")
 offset_left = -614.0
 offset_top = -330.0
 offset_right = -264.0
@@ -102,6 +104,7 @@ offset_bottom = 50.0
 expand_mode = 1
 
 [node name="Turn_meter_icon" type="TextureRect" parent="Camera2D/PlayerInfoBox"]
+material = ExtResource("2_d07u5")
 layout_mode = 1
 anchors_preset = 4
 anchor_top = 0.5
