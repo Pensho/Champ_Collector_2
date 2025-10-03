@@ -14,7 +14,7 @@ func InstantiateNew(preset: CharacterPreset, instanceID: int) -> void:
 	_skills = preset._skills
 	_attributes_weights = preset._attributes_weights
 	
-	_attributes[Types.Attribute.Health] = preset._health * 10
+	_attributes[Types.Attribute.Health] = preset._health * 7
 	_attributes[Types.Attribute.Speed] = preset._speed
 	_attributes[Types.Attribute.Attack] = preset._attack
 	_attributes[Types.Attribute.Defence] = preset._defence

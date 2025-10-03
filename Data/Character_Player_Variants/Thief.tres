@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="CharacterPreset" load_steps=4 format=3 uid="uid://bm0sqmepyeoam"]
+
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_n4f0a"]
+[ext_resource type="Resource" uid="uid://dvgwxvsovsldc" path="res://Data/Character_Skill_Variants/Stab.tres" id="2_3tcpa"]
+[ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_r2vnm"]
+
+[resource]
+script = ExtResource("2_r2vnm")
+_name = "Thief"
+_texture = "res://Assets/Champ Collector/Creatures/Thief/Thief_0001.png"
+_normal_map = "res://Assets/Champ Collector/Creatures/Thief/Thief_0001_Normal_Map.png"
+_rarity = 0
+_faction = 2
+_role = 2
+_skills = Array[ExtResource("1_n4f0a")]([ExtResource("2_3tcpa"), ExtResource("2_3tcpa"), ExtResource("2_3tcpa")])
+_health = 60
+_speed = 60
+_attack = 70
+_defence = 40
+_accuracy = 60
+_resistance = 30
+_mysticism = 10
+_knowledge = 20
+_pressence = 20
+_critChance = 15
+_critDamage = 15
+_attributes_weights = Array[int]([])
+metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

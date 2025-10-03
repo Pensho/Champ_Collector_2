@@ -20,7 +20,7 @@ const BASE_WEIGHTS: Dictionary[Types.Attribute, int] = {
 	Types.Attribute.Pressence: 4,
 }
 
-const POINTS_TO_DISTRIBUTE: int = 20
+const POINTS_TO_DISTRIBUTE: int = 19
 const PRIMARY_ATTRIBUTE_MODIFIER: int = 5
 
 static func LevelUpCriteriaMet(p_character: Character) -> bool:
@@ -60,6 +60,9 @@ static func LevelUpReward(p_character: Character) -> void:
 	
 	print("\nStarting distribution of points for level up.\n")
 	
+	# Each level should increase health a bit.
+	new_attributes[Types.Attribute.Health] += 7
+	
 	var random_roll: int = 0
 	for i in range(POINTS_TO_DISTRIBUTE):
 		random_roll = randi_range(0, total_weight)
@@ -70,7 +73,7 @@ static func LevelUpReward(p_character: Character) -> void:
 				chosen_attribute = attribute
 				break
 		if(chosen_attribute == Types.Attribute.Health):
-			new_attributes[chosen_attribute] += 10
+			new_attributes[chosen_attribute] += 7
 		else:
 			new_attributes[chosen_attribute] += 1
 	
