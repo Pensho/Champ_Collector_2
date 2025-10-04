@@ -14,7 +14,7 @@ func InstantiateNew(preset: CharacterPreset, instanceID: int) -> void:
 	_skills = preset._skills
 	_attributes_weights = preset._attributes_weights
 	
-	_attributes[Types.Attribute.Health] = preset._health * 7
+	_attributes[Types.Attribute.Health] = preset._health
 	_attributes[Types.Attribute.Speed] = preset._speed
 	_attributes[Types.Attribute.Attack] = preset._attack
 	_attributes[Types.Attribute.Defence] = preset._defence
@@ -26,7 +26,7 @@ func InstantiateNew(preset: CharacterPreset, instanceID: int) -> void:
 	_attributes[Types.Attribute.CritChance] = preset._critChance
 	_attributes[Types.Attribute.CritDamage] = preset._critDamage
 	
-	_currentHealth = _attributes[Types.Attribute.Health]
+	_currentHealth = _attributes[Types.Attribute.Health] * Types.HEALTH_MULTIPLIER
 
 # Preset Data
 var _name: String = ""
@@ -45,7 +45,6 @@ var _level: int = 1
 
 var _skills: Array[Skill] = []
 
-# Attributes
 var _attributes: Dictionary[Types.Attribute, int] = {
 	Types.Attribute.Health: 0,
 	Types.Attribute.Speed: 0,
@@ -62,3 +61,13 @@ var _attributes: Dictionary[Types.Attribute, int] = {
 
 var _currentHealth: int = 0
 var _attributes_weights: Array[Types.Attribute]
+
+class ActiveBuff:
+	var effect: Types.Buff_Type = Types.Buff_Type.Invalid
+	var duration: int = 1
+var _active_buffs: Array[ActiveBuff] = []
+
+class ActiveDebuff:
+	var effect: Types.Debuff_Type = Types.Debuff_Type.Invalid
+	var duration: int = 1
+var _active_debuffs: Array[ActiveDebuff] = []

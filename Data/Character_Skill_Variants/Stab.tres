@@ -13,3 +13,4 @@ damage_scaling = Dictionary[int, float]({
 2: 0.7
 })
 cooldown = 0
+skill_type = 0

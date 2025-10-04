@@ -5,6 +5,7 @@ class_name BattleUI extends Control
 @onready var _skill_button_1: Button = $Camera2D/Skill_1
 @onready var _skill_button_2: Button = $Camera2D/Skill_2
 @onready var _skill_button_3: Button = $Camera2D/Skill_3
+@export var _character_repr: Array[CharacterRepresentation]
 @warning_ignore_restore("unused_private_class_variable")
 
 const DAMAGE_NUMBER_TEMPLATE = preload("res://Scenes/ui/Damage_Number.tscn")

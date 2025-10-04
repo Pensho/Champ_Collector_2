@@ -61,7 +61,7 @@ static func LevelUpReward(p_character: Character) -> void:
 	print("\nStarting distribution of points for level up.\n")
 	
 	# Each level should increase health a bit.
-	new_attributes[Types.Attribute.Health] += 7
+	new_attributes[Types.Attribute.Health] += 1
 	
 	var random_roll: int = 0
 	for i in range(POINTS_TO_DISTRIBUTE):
@@ -72,10 +72,7 @@ static func LevelUpReward(p_character: Character) -> void:
 			if(random_roll < cumulative_weights[attribute]):
 				chosen_attribute = attribute
 				break
-		if(chosen_attribute == Types.Attribute.Health):
-			new_attributes[chosen_attribute] += 7
-		else:
-			new_attributes[chosen_attribute] += 1
+		new_attributes[chosen_attribute] += 1
 	
 	print("--- Results ---")
 	print("new attributes for ", p_character._name)

@@ -1,7 +1,6 @@
 extends Node2D
 
-const Common_Enums = preload("res://Scripts/common_enums.gd")
-#const LevelSystem = preload("res://Scripts/Character/Level_System.gd")
+const Types = preload("res://Scripts/common_enums.gd")
 
 const NO_CHARACTERS_TURN: int = -1
 const TURN_POS_X_THRESHOLD: int = 360
@@ -13,7 +12,7 @@ const MONSTER_IDS: Array[int] = [3,4,5]
 @onready var _battle_ui: BattleUI = $"Battle UI"
 @onready var _background: TextureRect = %BattleBackground
 @onready var _turn_indicator: TextureRect = $Turn_Indicator
-@onready var _characters: Dictionary
+@onready var _characters: Dictionary[int, Character]
 
 var _characterIDs_turn: int = -1
 var _selected_skill_ID: int = 0
@@ -90,7 +89,7 @@ func StartTurn() -> void:
 		# Targets the first in order for now.
 		for i in PLAYER_IDS:
 			if(_characters.has(i) and _characters[i]._currentHealth >= 1):
-				var target_IDs: Array[int] = FindSkillTargets(i, _characterIDs_turn)
+				var target_IDs: Array[int] = Skills.FindSkillTargets(i, _characterIDs_turn, _characters, _characters[_characterIDs_turn]._skills[_selected_skill_ID])
 				if(target_IDs.size() > 0):
 					ResolveSkill(_characterIDs_turn, target_IDs, _selected_skill_ID)
 					if(IsTheBattleOver()):
@@ -114,7 +113,7 @@ func Update(p_delta: float, p_characterID: int) -> void:
 		return
 	# No ones turn yet, so move along the turn order.
 	if(_battle_ui._char_turns[p_characterID].position.x + _battle_ui._char_turns[p_characterID].get_rect().size.x < TURN_POS_X_THRESHOLD):
-		_battle_ui._char_turns[p_characterID].position += Vector2(_characters[p_characterID]._attributes[Common_Enums.Attribute.Speed] * p_delta * 2, 0)
+		_battle_ui._char_turns[p_characterID].position += Vector2(_characters[p_characterID]._attributes[Types.Attribute.Speed] * p_delta * 2, 0)
 	else:
 		#print("Now a turn for character ID: ", p_characterID)
 		_characterIDs_turn = p_characterID
@@ -122,7 +121,7 @@ func Update(p_delta: float, p_characterID: int) -> void:
 
 func UpdateLifeBar(p_characterID: int) -> void:
 	_character_repr[p_characterID]._lifebar.value = _characters[p_characterID]._currentHealth
-	_character_repr[p_characterID]._lifebar_text.text = str(_characters[p_characterID]._currentHealth) + "/" + str(_characters[p_characterID]._attributes[Common_Enums.Attribute.Health])
+	_character_repr[p_characterID]._lifebar_text.text = str(_characters[p_characterID]._currentHealth) + "/" + str(_characters[p_characterID]._attributes[Types.Attribute.Health] * Types.HEALTH_MULTIPLIER)
 
 func VisualizeCharacter(p_characterID: int) -> void:
 	_character_repr[p_characterID]._level.text = str(_characters[p_characterID]._level)
@@ -130,83 +129,31 @@ func VisualizeCharacter(p_characterID: int) -> void:
 	character_canvas_texture.diffuse_texture = load(_characters[p_characterID]._texture)
 	character_canvas_texture.normal_texture = load(_characters[p_characterID]._texture)
 	_character_repr[p_characterID]._character_texture.texture = load(_characters[p_characterID]._texture)
-	_character_repr[p_characterID]._lifebar.max_value = _characters[p_characterID]._attributes[Common_Enums.Attribute.Health]
+	_character_repr[p_characterID]._lifebar.max_value = _characters[p_characterID]._attributes[Types.Attribute.Health] * Types.HEALTH_MULTIPLIER
 	UpdateLifeBar(p_characterID)
 	_battle_ui._char_turns[p_characterID].texture = load(_characters[p_characterID]._texture)
 	_character_repr[p_characterID].show()
 
-func FindSkillTargets(p_target_ID: int, p_attacker_ID: int) -> Array[int]:
-	var target_IDs: Array[int]
-	if(_characters[p_target_ID]._currentHealth > 0):
-		match _characters[p_attacker_ID]._skills[_selected_skill_ID].target:
-			Common_Enums.Skill_Target.Single_Enemy:
-				if(PLAYER_IDS.has(p_attacker_ID) and MONSTER_IDS.has(p_target_ID)):
-					target_IDs.append(p_target_ID)
-				elif(MONSTER_IDS.has(p_attacker_ID) and PLAYER_IDS.has(p_target_ID)):
-					target_IDs.append(p_target_ID)
-			Common_Enums.Skill_Target.All_Enemies:
-				if(PLAYER_IDS.has(p_attacker_ID) and MONSTER_IDS.has(p_target_ID)):
-					target_IDs.append_array(MONSTER_IDS)
-				elif(MONSTER_IDS.has(p_attacker_ID) and PLAYER_IDS.has(p_target_ID)):
-					target_IDs.append_array(PLAYER_IDS)
-			Common_Enums.Skill_Target.Random_Enemy:
-				if(PLAYER_IDS.has(p_attacker_ID) and MONSTER_IDS.has(p_target_ID)):
-					target_IDs.append(3 + (randi() % 3))
-				elif(MONSTER_IDS.has(p_attacker_ID) and PLAYER_IDS.has(p_target_ID)):
-					target_IDs.append(randi() % 3)
-			Common_Enums.Skill_Target.Single_Ally:
-				if(PLAYER_IDS.has(p_attacker_ID) and PLAYER_IDS.has(p_target_ID)):
-					target_IDs.append(p_target_ID)
-				elif(MONSTER_IDS.has(p_attacker_ID) and MONSTER_IDS.has(p_target_ID)):
-					target_IDs.append(p_target_ID)
-			Common_Enums.Skill_Target.All_Allies:
-				if(PLAYER_IDS.has(p_attacker_ID) and PLAYER_IDS.has(p_target_ID)):
-					target_IDs.append_array(PLAYER_IDS)
-				elif(MONSTER_IDS.has(p_attacker_ID) and MONSTER_IDS.has(p_target_ID)):
-					target_IDs.append_array(MONSTER_IDS)
-			Common_Enums.Skill_Target.Random_Ally:
-				if(PLAYER_IDS.has(p_attacker_ID) and PLAYER_IDS.has(p_target_ID)):
-					target_IDs.append(randi() % 3)
-				elif(MONSTER_IDS.has(p_attacker_ID) and MONSTER_IDS.has(p_target_ID)):
-					target_IDs.append(3 + (randi() % 3))
-			Common_Enums.Skill_Target.Ally_Not_Self:
-				if (p_attacker_ID != p_target_ID):
-					if(PLAYER_IDS.has(p_attacker_ID) and PLAYER_IDS.has(p_target_ID)):
-						target_IDs.append(p_target_ID)
-					elif(MONSTER_IDS.has(p_attacker_ID) and MONSTER_IDS.has(p_target_ID)):
-						target_IDs.append(p_target_ID)
-			Common_Enums.Skill_Target.Random_One:
-				target_IDs.append(randi() % 6)
-			Common_Enums.Skill_Target.All:
-				target_IDs.append_array(PLAYER_IDS)
-				target_IDs.append_array(MONSTER_IDS)
-			var INVALID_TYPE:
-				print("Invalid argument for skill target enum passed: ", INVALID_TYPE)
-	return target_IDs
-
-func DamageDealt(p_attacker: Character, p_defender: Character, p_Skill_ID: int) -> int:
-	var randomVal: float = randf_range(0.95, 1.05)
-	var initial_damage: float = 0.0
-	for key in p_attacker._skills[p_Skill_ID].damage_scaling.keys():
-		initial_damage += p_attacker._skills[p_Skill_ID].damage_scaling[key] * p_attacker._attributes[key]
-	if(randi_range(0, 100) <= p_attacker._attributes[Common_Enums.Attribute.CritChance]):
-		initial_damage *= float(p_attacker._attributes[Common_Enums.Attribute.CritDamage]) * 0.1
-		print("The ", p_attacker._name, " did a critical strike!")
-	var added: float = p_defender._attributes[Common_Enums.Attribute.Defence] + p_attacker._attributes[Common_Enums.Attribute.Attack]
-	var mitigation_factor: float = 0.5 + (0.5 * (p_attacker._attributes[Common_Enums.Attribute.Attack] / added))
-	return int(ceil(mitigation_factor * (initial_damage * randomVal)))
-
-func ResolveSkill(p_attacker_ID: int, p_target_IDs: Array[int], p_skill_ID) -> void:
-	var cast_skill: Skill = _characters[p_attacker_ID]._skills[p_skill_ID]
+func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID) -> void:
+	var cast_skill: Skill = _characters[p_caster_ID]._skills[p_skill_ID]
+	var caster_attributes: Dictionary[Types.Attribute, int] = _characters[p_caster_ID]._attributes.duplicate(true)
+	var target_attributes: Dictionary[Types.Attribute, int]
+	
+	caster_attributes = Skills.ApplyStatusEffects(caster_attributes, _characters[p_caster_ID])
+	Skills.ResolveSkillEffect(p_caster_ID, caster_attributes, p_target_IDs, cast_skill, _characters)
+	
 	for target_ID in p_target_IDs:
-		var damage_dealt: int = DamageDealt(_characters[p_attacker_ID], _characters[target_ID], p_skill_ID)
+		target_attributes = _characters[target_ID]._attributes.duplicate(true)
+		if(target_ID != p_caster_ID):
+			target_attributes = Skills.ApplyStatusEffects(target_attributes, _characters[target_ID])
+		var damage_dealt: int = Skills.DamageDealt(caster_attributes, target_attributes, cast_skill)
 		if(damage_dealt != 0):
 			_battle_ui.SpawnDamageNumber(damage_dealt, _character_repr[target_ID].position + Vector2(100, 70))
 		_characters[target_ID]._currentHealth -= damage_dealt
 		if(_characters[target_ID]._currentHealth < 0):
 			_characters[target_ID]._currentHealth = 0
-		elif (_characters[target_ID]._currentHealth > _characters[target_ID]._attributes[Common_Enums.Attribute.Health]):
-			_characters[target_ID]._currentHealth = _characters[target_ID]._attributes[Common_Enums.Attribute.Health]
+		elif (_characters[target_ID]._currentHealth > (_characters[target_ID]._attributes[Types.Attribute.Health] * Types.HEALTH_MULTIPLIER)):
+			_characters[target_ID]._currentHealth = _characters[target_ID]._attributes[Types.Attribute.Health] * Types.HEALTH_MULTIPLIER
 		UpdateLifeBar(target_ID)
 
 		_battle_ui._char_turns[target_ID].position += Vector2(cast_skill.turn_effect, 0)
@@ -229,13 +176,14 @@ func IsTheBattleOver() -> bool:
 func EndBattle(p_winner) -> void:
 	# TODO: implement a more refined experience reward.
 	var experience_gained: int = 5
+	Skills.Reset()
 	for i in _characters.keys():
 		if(MONSTER_IDS.has(i)):
 			experience_gained += 5
 	for i in _characters.keys():
 		if(PLAYER_IDS.has(i)):
 			LevelSystem.AddExperience(_characters[i], experience_gained)
-			_characters[i]._currentHealth = _characters[i]._attributes[Common_Enums.Attribute.Health]
+			_characters[i]._currentHealth = _characters[i]._attributes[Types.Attribute.Health] * Types.HEALTH_MULTIPLIER
 	
 	var context_container: ContextContainer = ContextContainer.new()
 	context_container._scene = "res://Scenes/ui/Battle_Over.tscn"
@@ -247,7 +195,7 @@ func EndBattle(p_winner) -> void:
 
 func _on_character_battle_target_selected(p_target_ID: int) -> void:
 	if(PLAYER_IDS.has(_characterIDs_turn)):
-		var target_IDs: Array[int] = FindSkillTargets(p_target_ID, _characterIDs_turn)
+		var target_IDs: Array[int] = Skills.FindSkillTargets(p_target_ID, _characterIDs_turn, _characters, _characters[_characterIDs_turn]._skills[_selected_skill_ID])
 		if(target_IDs.size() > 0):
 			ResolveSkill(_characterIDs_turn, target_IDs, _selected_skill_ID)
 			if (IsTheBattleOver()):

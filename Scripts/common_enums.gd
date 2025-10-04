@@ -1,5 +1,8 @@
 extends Node
 
+# TODO: Move into a constants file maybe
+const HEALTH_MULTIPLIER: int = 7
+
 enum Rarity
 {
 	Common,
@@ -82,4 +85,20 @@ enum Attribute
 	Pressence,
 	CritChance,
 	CritDamage,
+}
+
+enum Skill_Type
+{
+	Stab,
+	Heap_On,
+}
+
+enum Buff_Type
+{
+	Invalid,
+}
+
+enum Debuff_Type
+{
+	Invalid,
 }

@@ -53,7 +53,8 @@ visible = false
 position = Vector2(813, 233)
 _target_ID = 5
 
-[node name="Battle UI" parent="." instance=ExtResource("2_1ruyk")]
+[node name="Battle UI" parent="." node_paths=PackedStringArray("_character_repr") instance=ExtResource("2_1ruyk")]
+_character_repr = [NodePath("../Character_1"), NodePath("../Character_2"), NodePath("../Character_3"), NodePath("../Enemy_1"), NodePath("../Enemy_2"), NodePath("../Enemy_3")]
 
 [node name="Turn_Indicator" type="TextureRect" parent="."]
 offset_left = -100.0
@@ -72,6 +73,7 @@ texture_scale = 2.31
 height = 35.0
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
+visible = false
 light_mask = 2
 visibility_layer = 2
 color = Color(0.724643, 0.724643, 0.724643, 1)
