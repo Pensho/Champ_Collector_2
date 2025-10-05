@@ -12,3 +12,4 @@ const Types = preload("res://Scripts/common_enums.gd")
 @export var cooldown: int = 0
 
 @export var skill_type: Types.Skill_Type
+@export var defense_ignore_factor: float = 1.0

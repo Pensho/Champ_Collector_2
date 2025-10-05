@@ -5,8 +5,8 @@ var _player_battle_characters: Array[Character]
 #signal start_game()
 @onready var _buttons_v_box: VBoxContainer = %ButtonsVBox
 
-#const BATTLE_TROLL = preload("res://Data/Battle_Variants/Battle_Troll.tres")
-const BATTLE_MILITIA = preload("res://Data/Battle_Variants/Battle_Militia.tres")
+const BATTLE_TROLL = preload("res://Data/Battle_Variants/Battle_Troll.tres")
+#const BATTLE_MILITIA = preload("res://Data/Battle_Variants/Battle_Militia.tres")
 const NR_OF_CHARACTERS_IN_BATTLE: int = 3
 
 func _ready() -> void:
@@ -23,7 +23,7 @@ func Init(p_context_container: ContextContainer) -> void:
 
 func _on_start_game_button_pressed() -> void:
 	var context_container: ContextContainer = ContextContainer.new()
-	context_container._static_context = BATTLE_MILITIA
+	context_container._static_context = BATTLE_TROLL
 	context_container._scene = "res://Scenes/battle.tscn"
 	context_container._player_battle_characters = _player_battle_characters
 

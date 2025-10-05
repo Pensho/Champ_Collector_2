@@ -91,6 +91,7 @@ enum Skill_Type
 {
 	Stab,
 	Heap_On,
+	Pierce_Weakness,
 }
 
 enum Buff_Type

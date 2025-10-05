@@ -64,10 +64,11 @@ texture = ExtResource("5_pd5xk")
 expand_mode = 1
 
 [node name="PointLight2D" type="PointLight2D" parent="."]
-position = Vector2(919.25, 142.75)
-scale = Vector2(2.222, 2.222)
+visible = false
+position = Vector2(801, -60.0001)
+scale = Vector2(19.1288, 19.1288)
 color = Color(0.721569, 0.627451, 0.180392, 0.298039)
-energy = 2.31
+energy = 1.77
 texture = ExtResource("6_lrv64")
 texture_scale = 2.31
 height = 35.0
