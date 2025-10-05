@@ -17,7 +17,6 @@ static func ResolveSkillEffect(p_caster_ID: int, p_caster_attr: Dictionary[Types
 		Types.Skill_Type.Heap_On:
 			if (0 == _heap_on_stacks[p_caster_ID]):
 				_heap_on_value[p_caster_ID] = float(p_caster_attr[Types.Attribute.Health]) * HEAP_ON_MULTIPLIER
-				print("Heap-on value: ", _heap_on_value[p_caster_ID])
 			p_caster_attr[Types.Attribute.Health] += int(_heap_on_value[p_caster_ID] * float(_heap_on_stacks[p_caster_ID]))
 			_heap_on_stacks[p_caster_ID] += 1
 
