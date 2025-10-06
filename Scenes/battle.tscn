@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://cc883blynrgq2"]
+[gd_scene load_steps=10 format=3 uid="uid://cc883blynrgq2"]
 
 [ext_resource type="Script" uid="uid://g08boofygabn" path="res://Scripts/Battle.gd" id="1_oxf17"]
 [ext_resource type="PackedScene" uid="uid://dy5q1foc8kon5" path="res://Scenes/battle_ui.tscn" id="2_1ruyk"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://dvvopn2yuy4wr" path="res://Scenes/Characters/Character_Battle_Repr.tscn" id="3_ww2ai"]
 [ext_resource type="Texture2D" uid="uid://cjcnam176bh58" path="res://Assets/Champ Collector/Icons/Indicator_Arrow/Indicator_Arrow_0001.png" id="5_pd5xk"]
 [ext_resource type="Texture2D" uid="uid://byq61tt3abjd8" path="res://Assets/Champ Collector/Light/Point_Light.tres" id="6_lrv64"]
+[ext_resource type="Material" uid="uid://2tvv2h51laxc" path="res://Assets/Champ Collector/Material/Unshaded.tres" id="6_qeyqd"]
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_heh15"]
 diffuse_texture = ExtResource("2_qeyqd")
@@ -15,6 +16,13 @@ normal_texture = ExtResource("3_k7mbx")
 [node name="Battle" type="Node2D" node_paths=PackedStringArray("_character_repr")]
 script = ExtResource("1_oxf17")
 _character_repr = [NodePath("Character_1"), NodePath("Character_2"), NodePath("Character_3"), NodePath("Enemy_1"), NodePath("Enemy_2"), NodePath("Enemy_3")]
+
+[node name="DirectionalLight2D" type="DirectionalLight2D" parent="."]
+light_mask = 1024
+visibility_layer = 1024
+color = Color(1, 1, 0, 1)
+blend_mode = 1
+height = 0.25
 
 [node name="BattleBackground" type="TextureRect" parent="."]
 unique_name_in_owner = true
@@ -57,6 +65,7 @@ _target_ID = 5
 _character_repr = [NodePath("../Character_1"), NodePath("../Character_2"), NodePath("../Character_3"), NodePath("../Enemy_1"), NodePath("../Enemy_2"), NodePath("../Enemy_3")]
 
 [node name="Turn_Indicator" type="TextureRect" parent="."]
+material = ExtResource("6_qeyqd")
 offset_left = -100.0
 offset_right = -50.0
 offset_bottom = 50.0
@@ -64,20 +73,13 @@ texture = ExtResource("5_pd5xk")
 expand_mode = 1
 
 [node name="PointLight2D" type="PointLight2D" parent="."]
-visible = false
 position = Vector2(801, -60.0001)
 scale = Vector2(19.1288, 19.1288)
-color = Color(0.721569, 0.627451, 0.180392, 0.298039)
-energy = 1.77
+color = Color(0.721569, 0.627451, 0.180392, 1)
+energy = 1.91
 texture = ExtResource("6_lrv64")
 texture_scale = 2.31
 height = 35.0
-
-[node name="CanvasModulate" type="CanvasModulate" parent="."]
-visible = false
-light_mask = 2
-visibility_layer = 2
-color = Color(0.724643, 0.724643, 0.724643, 1)
 
 [connection signal="battle_target_selected" from="Character_1" to="." method="_on_character_battle_target_selected"]
 [connection signal="battle_target_selected" from="Character_2" to="." method="_on_character_battle_target_selected"]

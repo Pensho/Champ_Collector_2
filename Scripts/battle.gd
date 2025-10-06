@@ -13,6 +13,9 @@ const MONSTER_IDS: Array[int] = [3,4,5]
 @onready var _background: TextureRect = %BattleBackground
 @onready var _turn_indicator: TextureRect = $Turn_Indicator
 @onready var _characters: Dictionary[int, Character]
+@onready var _global_scene_darkness: DirectionalLight2D = $DirectionalLight2D
+@onready var _global_scene_light: PointLight2D = $PointLight2D
+
 
 var _characterIDs_turn: int = -1
 var _selected_skill_ID: int = 0
@@ -27,6 +30,7 @@ enum BattleState
 func Init(p_context: ContextContainer) -> void:
 	var battlecontext: Context_Battle = p_context._static_context as Context_Battle
 	_background.texture = load(battlecontext._location)
+	_global_scene_light.color = battlecontext._global_scene_light
 	
 	if(battlecontext._enemies_wave_1.is_empty()):
 		print("Accidental load to battle scene without enemies, terminating application")
@@ -128,7 +132,7 @@ func VisualizeCharacter(p_characterID: int) -> void:
 	var character_canvas_texture = CanvasTexture.new()
 	character_canvas_texture.diffuse_texture = load(_characters[p_characterID]._texture)
 	character_canvas_texture.normal_texture = load(_characters[p_characterID]._texture)
-	_character_repr[p_characterID]._character_texture.texture = load(_characters[p_characterID]._texture)
+	_character_repr[p_characterID]._character_texture.texture = character_canvas_texture
 	_character_repr[p_characterID]._lifebar.max_value = _characters[p_characterID]._attributes[Types.Attribute.Health] * Types.HEALTH_MULTIPLIER
 	UpdateLifeBar(p_characterID)
 	_battle_ui._char_turns[p_characterID].texture = load(_characters[p_characterID]._texture)
