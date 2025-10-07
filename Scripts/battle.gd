@@ -87,6 +87,8 @@ func StartTurn() -> void:
 		_battle_ui._skill_button_1.show()
 		_battle_ui._skill_button_2.show()
 		_battle_ui._skill_button_3.show()
+		_selected_skill_ID = 0
+		_battle_ui.ActiveSkillGlow(_selected_skill_ID)
 	elif(MONSTER_IDS.has(_characterIDs_turn)):
 		# Using only the first skill for now.
 		_selected_skill_ID = 0
@@ -210,6 +212,7 @@ func _on_character_battle_target_selected(p_target_ID: int) -> void:
 			_battle_ui._char_turns[_characterIDs_turn].position -= Vector2(TURN_POS_X_THRESHOLD - _battle_ui._char_turns[_characterIDs_turn].get_rect().size.x, 0)
 			_characterIDs_turn = NO_CHARACTERS_TURN
 			_turn_indicator.hide()
+			_battle_ui.HideSkillGlow()
 		else:
 			print("Invalid target for skill")
 
