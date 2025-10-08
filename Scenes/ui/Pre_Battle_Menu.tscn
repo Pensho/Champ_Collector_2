@@ -1,0 +1,276 @@
+[gd_scene load_steps=3 format=3 uid="uid://d3hg8jxy8xj8n"]
+
+[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ Collector/Themes/default_theme.tres" id="1_fbx8u"]
+[ext_resource type="Texture2D" uid="uid://bfeh2jraugy2h" path="res://Assets/Champ Collector/UI/Pre_Battle_Screen/Pre_Battle_1.png" id="1_g4bfr"]
+
+[node name="PreBattleMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+texture = ExtResource("1_g4bfr")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 32
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_fbx8u")
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_font_sizes/font_size = 64
+text = "Select champions for battle"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Chosen_Characters" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ColorRect6" type="ColorRect" parent="MarginContainer/VBoxContainer/Chosen_Characters"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+
+[node name="ColorRect7" type="ColorRect" parent="MarginContainer/VBoxContainer/Chosen_Characters"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+
+[node name="ColorRect8" type="ColorRect" parent="MarginContainer/VBoxContainer/Chosen_Characters"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+
+[node name="ColorRect9" type="ColorRect" parent="MarginContainer/VBoxContainer/Chosen_Characters"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+
+[node name="ColorRect10" type="ColorRect" parent="MarginContainer/VBoxContainer/Chosen_Characters"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Available_Characters" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Available_Characters_1" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="ColorRect" type="ColorRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="ColorRect2" type="ColorRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="ColorRect3" type="ColorRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="ColorRect4" type="ColorRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="ColorRect5" type="ColorRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="ColorRect6" type="ColorRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="ColorRect7" type="ColorRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="ColorRect8" type="ColorRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="ColorRect9" type="ColorRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="ColorRect10" type="ColorRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Available_Characters_2" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="ColorRect" type="ColorRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="ColorRect2" type="ColorRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="ColorRect3" type="ColorRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="ColorRect4" type="ColorRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="ColorRect5" type="ColorRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="ColorRect6" type="ColorRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="ColorRect7" type="ColorRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="ColorRect8" type="ColorRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="ColorRect9" type="ColorRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="ColorRect10" type="ColorRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Available_Characters_3" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="ColorRect" type="ColorRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="ColorRect2" type="ColorRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="ColorRect3" type="ColorRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="ColorRect4" type="ColorRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="ColorRect5" type="ColorRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="ColorRect6" type="ColorRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="ColorRect7" type="ColorRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="ColorRect8" type="ColorRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="ColorRect9" type="ColorRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="ColorRect10" type="ColorRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+layout_direction = 3
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 8
+theme_override_constants/separation = 32
+
+[node name="Start" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../Exit")
+focus_neighbor_bottom = NodePath("../Exit")
+focus_next = NodePath("../Exit")
+focus_previous = NodePath("../Exit")
+theme = ExtResource("1_fbx8u")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+text = "Start Battle"
+
+[node name="Exit" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../Start")
+focus_neighbor_bottom = NodePath("../Start")
+focus_next = NodePath("../Start")
+focus_previous = NodePath("../Start")
+theme = ExtResource("1_fbx8u")
+theme_override_constants/outline_size = 5
+text = "Exit
+"

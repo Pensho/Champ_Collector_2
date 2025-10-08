@@ -68,7 +68,7 @@ focus_neighbor_bottom = NodePath("../Button_QuitGame")
 focus_next = NodePath("../Button_QuitGame")
 focus_previous = NodePath("../Button_QuitGame")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 1
+theme_override_constants/outline_size = 3
 text = "Start Game"
 
 [node name="Button_QuitGame" type="Button" parent="MarginContainer/VBoxContainer/ButtonsVBox"]
@@ -80,7 +80,7 @@ focus_neighbor_bottom = NodePath("../Button_StartGame")
 focus_next = NodePath("../Button_StartGame")
 focus_previous = NodePath("../Button_StartGame")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 1
+theme_override_constants/outline_size = 3
 text = "Exit"
 
 [connection signal="button_up" from="MarginContainer/VBoxContainer/ButtonsVBox/Button_StartGame" to="." method="_on_start_game_button_pressed"]

@@ -21,7 +21,7 @@ var _characterIDs_turn: int = -1
 var _selected_skill_ID: int = 0
 var _initialized: bool = false
 
-enum BattleState
+enum WinningTeam
 {
 	Player_Won,
 	Monsters_Won,
@@ -90,6 +90,7 @@ func StartTurn() -> void:
 		_selected_skill_ID = 0
 		_battle_ui.ActiveSkillGlow(_selected_skill_ID)
 	elif(MONSTER_IDS.has(_characterIDs_turn)):
+		# TODO: Clean this nested mess up
 		# Using only the first skill for now.
 		_selected_skill_ID = 0
 		# Targets the first in order for now.
@@ -100,7 +101,7 @@ func StartTurn() -> void:
 					ResolveSkill(_characterIDs_turn, target_IDs, _selected_skill_ID)
 					if(IsTheBattleOver()):
 						_battle_ui.CleanUp()
-						EndBattle(BattleState.Monsters_Won)
+						EndBattle(WinningTeam.Monsters_Won)
 						break
 					_battle_ui._char_turns[_characterIDs_turn].position -= Vector2(TURN_POS_X_THRESHOLD - _battle_ui._char_turns[_characterIDs_turn].get_rect().size.x, 0)
 					_characterIDs_turn = NO_CHARACTERS_TURN
@@ -179,7 +180,7 @@ func IsTheBattleOver() -> bool:
 
 	return (not player_alive or not monsters_alive)
 
-func EndBattle(p_winner) -> void:
+func EndBattle(p_winner: WinningTeam) -> void:
 	# TODO: implement a more refined experience reward.
 	var experience_gained: int = 5
 	Skills.Reset()
@@ -193,9 +194,9 @@ func EndBattle(p_winner) -> void:
 	
 	var context_container: ContextContainer = ContextContainer.new()
 	context_container._scene = "res://Scenes/ui/Battle_Over.tscn"
-	if(p_winner == BattleState.Monsters_Won):
+	if(p_winner == WinningTeam.Monsters_Won):
 		context_container._util_text = "Loss"
-	elif(p_winner == BattleState.Player_Won):
+	elif(p_winner == WinningTeam.Player_Won):
 		context_container._util_text = "Victory"
 	main.change_scene(context_container)
 
@@ -205,7 +206,7 @@ func _on_character_battle_target_selected(p_target_ID: int) -> void:
 		if(target_IDs.size() > 0):
 			ResolveSkill(_characterIDs_turn, target_IDs, _selected_skill_ID)
 			if (IsTheBattleOver()):
-				EndBattle(BattleState.Player_Won)
+				EndBattle(WinningTeam.Player_Won)
 			_battle_ui._skill_button_1.hide()
 			_battle_ui._skill_button_2.hide()
 			_battle_ui._skill_button_3.hide()
@@ -218,4 +219,3 @@ func _on_character_battle_target_selected(p_target_ID: int) -> void:
 
 func _on_battle_ui_battle_skill_selected(p_skill_ID: int) -> void:
 	_selected_skill_ID = p_skill_ID
-	print("_on_battle_ui_battle_skill_selected with ID: ", p_skill_ID)
