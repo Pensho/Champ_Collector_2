@@ -43,6 +43,7 @@ func _on_button_end_button_up() -> void:
 
 func _on_button_replay_button_up() -> void:
 	var context_container: ContextContainer = ContextContainer.new()
+	# TODO: This isn't right at all, point to the actual battle we came from.
 	context_container._static_context = BATTLE_MILITIA
 	context_container._scene = "res://Scenes/battle.tscn"
 	context_container._player_battle_characters = _player_battle_characters
@@ -51,4 +52,6 @@ func _on_button_replay_button_up() -> void:
 	hide()
 
 func _on_button_edit_team_button_up() -> void:
-	print("Not implemented yet.")
+	var context_container: ContextContainer = ContextContainer.new()
+	context_container._scene = "res://Scenes/ui/Pre_Battle_Menu.tscn"
+	main.change_scene(context_container)
