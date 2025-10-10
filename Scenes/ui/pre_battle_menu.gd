@@ -2,8 +2,8 @@ extends Control
 
 const Types = preload("res://Scripts/common_enums.gd")
 
-const BATTLE_TROLL = preload("res://Data/Battle_Variants/Battle_Troll.tres")
-#const BATTLE_MILITIA = preload("res://Data/Battle_Variants/Battle_Militia.tres")
+#const BATTLE_TROLL = preload("res://Data/Battle_Variants/Battle_Troll.tres")
+const BATTLE_MILITIA = preload("res://Data/Battle_Variants/Battle_Militia.tres")
 
 const NR_OF_CHARACTERS_IN_BATTLE: int = 3
 const CHARACTER_CHOSEN_COLOR: Color = Color(0.1, 0.1, 0.1)
@@ -74,7 +74,7 @@ func _on_start_button_up() -> void:
 		return
 	
 	var context_container: ContextContainer = ContextContainer.new()
-	context_container._static_context = BATTLE_TROLL
+	context_container._static_context = BATTLE_MILITIA
 	context_container._scene = "res://Scenes/battle.tscn"
 	context_container._player_battle_characters = _chosen_characters.values()
 	

@@ -187,19 +187,23 @@ func EndBattle(p_winner: WinningTeam) -> void:
 	# TODO: implement a more refined experience reward.
 	var experience_gained: int = 0
 	Skills.Reset()
-	for i in _characters.keys():
-		if(MONSTER_IDS.has(i) and p_winner == WinningTeam.Player_Won):
-			experience_gained += 5
-		if(PLAYER_IDS.has(i)):
-			LevelSystem.AddExperience(_characters[i], experience_gained)
-			_characters[i]._currentHealth = _characters[i]._attributes[Types.Attribute.Health] * Types.HEALTH_MULTIPLIER
 	
-	_self_context._scene = "res://Scenes/ui/Battle_Over.tscn"
 	if(p_winner == WinningTeam.Monsters_Won):
 		_self_context._util_text = "Loss"
 	elif(p_winner == WinningTeam.Player_Won):
 		experience_gained += 5
 		_self_context._util_text = "Victory"
+	
+	for i in _characters.keys():
+		if(MONSTER_IDS.has(i) and p_winner == WinningTeam.Player_Won):
+			experience_gained += 5
+	for i in _characters.keys():
+		if(PLAYER_IDS.has(i)):
+			LevelSystem.AddExperience(_characters[i], experience_gained)
+			_characters[i]._currentHealth = _characters[i]._attributes[Types.Attribute.Health] * Types.HEALTH_MULTIPLIER
+	
+	_self_context._scene = "res://Scenes/ui/Battle_Over.tscn"
+	
 	main.change_scene(_self_context)
 
 func _on_character_battle_target_selected(p_target_ID: int) -> void:
