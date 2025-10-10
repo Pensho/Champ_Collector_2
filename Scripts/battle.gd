@@ -31,6 +31,8 @@ enum WinningTeam
 func Init(p_context: ContextContainer) -> void:
 	var battlecontext: Context_Battle = p_context._static_context as Context_Battle
 	_background.texture = load(battlecontext._location)
+	_global_scene_darkness.color = battlecontext._global_scene_darkness
+	_global_scene_darkness.height = battlecontext._scene_darkness_height
 	_global_scene_light.color = battlecontext._global_scene_light
 	_self_context = p_context
 	_self_context._previous_scene = p_context._scene

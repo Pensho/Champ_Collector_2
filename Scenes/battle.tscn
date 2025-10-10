@@ -20,9 +20,8 @@ _character_repr = [NodePath("Character_1"), NodePath("Character_2"), NodePath("C
 [node name="DirectionalLight2D" type="DirectionalLight2D" parent="."]
 light_mask = 1024
 visibility_layer = 1024
-color = Color(1, 1, 0, 1)
 blend_mode = 1
-height = 0.25
+height = 0.3
 
 [node name="BattleBackground" type="TextureRect" parent="."]
 unique_name_in_owner = true
