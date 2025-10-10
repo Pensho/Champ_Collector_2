@@ -5,7 +5,7 @@
 [ext_resource type="Script" uid="uid://cpeob6aj52f4r" path="res://Scenes/ui/pre_battle_menu.gd" id="1_i4o5r"]
 [ext_resource type="Texture2D" uid="uid://becfm8860q605" path="res://Assets/Champ Collector/UI/Pre_Battle_Screen/Character_Slot_Frame_1.png" id="3_bs66k"]
 
-[node name="PreBattleMenu" type="Control"]
+[node name="PreBattleMenu" type="Control" node_paths=PackedStringArray("_chosen_char_texture", "_available_char_texture")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -13,6 +13,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_i4o5r")
+_chosen_char_texture = [NodePath("MarginContainer/VBoxContainer/Chosen_Characters/Chosen_Char_1/TextureRect"), NodePath("MarginContainer/VBoxContainer/Chosen_Characters/Chosen_Char_2/TextureRect"), NodePath("MarginContainer/VBoxContainer/Chosen_Characters/Chosen_Char_3/TextureRect")]
+_available_char_texture = [NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1/Available_Char_Slot1/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1/TextureRect26/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1/TextureRect27/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1/TextureRect28/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1/TextureRect29/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1/TextureRect30/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1/TextureRect31/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1/TextureRect32/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1/TextureRect33/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2/TextureRect25/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2/TextureRect26/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2/TextureRect27/Add_Char/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2/TextureRect28/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2/TextureRect29/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2/TextureRect30/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2/TextureRect31/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2/TextureRect32/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2/TextureRect33/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3/TextureRect17/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3/TextureRect18/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3/TextureRect19/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3/TextureRect20/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3/TextureRect21/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3/TextureRect22/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3/TextureRect23/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3/TextureRect24/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3/TextureRect25/TextureRect")]
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 0
@@ -57,6 +59,13 @@ size_flags_horizontal = 4
 texture = ExtResource("3_bs66k")
 expand_mode = 1
 
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Chosen_Characters/Chosen_Char_1"]
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+expand_mode = 1
+
 [node name="Remove_Char_1" type="Button" parent="MarginContainer/VBoxContainer/Chosen_Characters/Chosen_Char_1"]
 custom_minimum_size = Vector2(128, 128)
 layout_mode = 0
@@ -70,6 +79,12 @@ layout_mode = 2
 texture = ExtResource("3_bs66k")
 expand_mode = 1
 
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Chosen_Characters/Chosen_Char_2"]
+custom_minimum_size = Vector2(128, 128)
+offset_right = 128.0
+offset_bottom = 128.0
+expand_mode = 1
+
 [node name="Remove_Char_2" type="Button" parent="MarginContainer/VBoxContainer/Chosen_Characters/Chosen_Char_2"]
 custom_minimum_size = Vector2(128, 128)
 offset_right = 8.0
@@ -80,6 +95,12 @@ theme = ExtResource("1_fbx8u")
 custom_minimum_size = Vector2(128, 128)
 layout_mode = 2
 texture = ExtResource("3_bs66k")
+expand_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Chosen_Characters/Chosen_Char_3"]
+custom_minimum_size = Vector2(128, 128)
+offset_right = 128.0
+offset_bottom = 128.0
 expand_mode = 1
 
 [node name="Remove_Char_3" type="Button" parent="MarginContainer/VBoxContainer/Chosen_Characters/Chosen_Char_3"]
@@ -103,10 +124,17 @@ size_flags_vertical = 0
 theme_override_constants/separation = 0
 
 [node name="Available_Char_Slot1" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1"]
-modulate = Color(0.588235, 0.588235, 0.588235, 1)
+self_modulate = Color(0.6, 0.6, 0.6, 1)
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 texture = ExtResource("3_bs66k")
+expand_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1/Available_Char_Slot1"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
 expand_mode = 1
 
 [node name="Add_Char" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1/Available_Char_Slot1"]
@@ -117,10 +145,16 @@ offset_bottom = 8.0
 theme = ExtResource("1_fbx8u")
 
 [node name="TextureRect26" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1"]
-modulate = Color(0.588235, 0.588235, 0.588235, 1)
+self_modulate = Color(0.6, 0.6, 0.6, 1)
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 texture = ExtResource("3_bs66k")
+expand_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1/TextureRect26"]
+custom_minimum_size = Vector2(100, 100)
+offset_right = 100.0
+offset_bottom = 100.0
 expand_mode = 1
 
 [node name="Add_Char" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1/TextureRect26"]
@@ -130,10 +164,16 @@ offset_bottom = 8.0
 theme = ExtResource("1_fbx8u")
 
 [node name="TextureRect27" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1"]
-modulate = Color(0.588235, 0.588235, 0.588235, 1)
+self_modulate = Color(0.6, 0.6, 0.6, 1)
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 texture = ExtResource("3_bs66k")
+expand_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1/TextureRect27"]
+custom_minimum_size = Vector2(100, 100)
+offset_right = 100.0
+offset_bottom = 100.0
 expand_mode = 1
 
 [node name="Add_Char" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1/TextureRect27"]
@@ -143,10 +183,16 @@ offset_bottom = 8.0
 theme = ExtResource("1_fbx8u")
 
 [node name="TextureRect28" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1"]
-modulate = Color(0.588235, 0.588235, 0.588235, 1)
+self_modulate = Color(0.6, 0.6, 0.6, 1)
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 texture = ExtResource("3_bs66k")
+expand_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1/TextureRect28"]
+custom_minimum_size = Vector2(100, 100)
+offset_right = 100.0
+offset_bottom = 100.0
 expand_mode = 1
 
 [node name="Add_Char" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1/TextureRect28"]
@@ -156,10 +202,16 @@ offset_bottom = 8.0
 theme = ExtResource("1_fbx8u")
 
 [node name="TextureRect29" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1"]
-modulate = Color(0.588235, 0.588235, 0.588235, 1)
+self_modulate = Color(0.6, 0.6, 0.6, 1)
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 texture = ExtResource("3_bs66k")
+expand_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1/TextureRect29"]
+custom_minimum_size = Vector2(100, 100)
+offset_right = 100.0
+offset_bottom = 100.0
 expand_mode = 1
 
 [node name="Add_Char" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1/TextureRect29"]
@@ -169,10 +221,16 @@ offset_bottom = 8.0
 theme = ExtResource("1_fbx8u")
 
 [node name="TextureRect30" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1"]
-modulate = Color(0.588235, 0.588235, 0.588235, 1)
+self_modulate = Color(0.6, 0.6, 0.6, 1)
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 texture = ExtResource("3_bs66k")
+expand_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1/TextureRect30"]
+custom_minimum_size = Vector2(100, 100)
+offset_right = 100.0
+offset_bottom = 100.0
 expand_mode = 1
 
 [node name="Add_Char" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1/TextureRect30"]
@@ -182,10 +240,16 @@ offset_bottom = 8.0
 theme = ExtResource("1_fbx8u")
 
 [node name="TextureRect31" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1"]
-modulate = Color(0.588235, 0.588235, 0.588235, 1)
+self_modulate = Color(0.6, 0.6, 0.6, 1)
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 texture = ExtResource("3_bs66k")
+expand_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1/TextureRect31"]
+custom_minimum_size = Vector2(100, 100)
+offset_right = 100.0
+offset_bottom = 100.0
 expand_mode = 1
 
 [node name="Add_Char" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1/TextureRect31"]
@@ -195,10 +259,16 @@ offset_bottom = 8.0
 theme = ExtResource("1_fbx8u")
 
 [node name="TextureRect32" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1"]
-modulate = Color(0.588235, 0.588235, 0.588235, 1)
+self_modulate = Color(0.6, 0.6, 0.6, 1)
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 texture = ExtResource("3_bs66k")
+expand_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1/TextureRect32"]
+custom_minimum_size = Vector2(100, 100)
+offset_right = 100.0
+offset_bottom = 100.0
 expand_mode = 1
 
 [node name="Add_Char" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1/TextureRect32"]
@@ -208,10 +278,16 @@ offset_bottom = 8.0
 theme = ExtResource("1_fbx8u")
 
 [node name="TextureRect33" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1"]
-modulate = Color(0.588235, 0.588235, 0.588235, 1)
+self_modulate = Color(0.6, 0.6, 0.6, 1)
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 texture = ExtResource("3_bs66k")
+expand_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1/TextureRect33"]
+custom_minimum_size = Vector2(100, 100)
+offset_right = 100.0
+offset_bottom = 100.0
 expand_mode = 1
 
 [node name="Add_Char" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1/TextureRect33"]
@@ -227,10 +303,16 @@ size_flags_vertical = 0
 theme_override_constants/separation = 0
 
 [node name="TextureRect25" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2"]
-modulate = Color(0.588235, 0.588235, 0.588235, 1)
+self_modulate = Color(0.6, 0.6, 0.6, 1)
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 texture = ExtResource("3_bs66k")
+expand_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2/TextureRect25"]
+custom_minimum_size = Vector2(100, 100)
+offset_right = 100.0
+offset_bottom = 100.0
 expand_mode = 1
 
 [node name="Add_Char" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2/TextureRect25"]
@@ -240,10 +322,16 @@ offset_bottom = 8.0
 theme = ExtResource("1_fbx8u")
 
 [node name="TextureRect26" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2"]
-modulate = Color(0.588235, 0.588235, 0.588235, 1)
+self_modulate = Color(0.6, 0.6, 0.6, 1)
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 texture = ExtResource("3_bs66k")
+expand_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2/TextureRect26"]
+custom_minimum_size = Vector2(100, 100)
+offset_right = 100.0
+offset_bottom = 100.0
 expand_mode = 1
 
 [node name="Add_Char" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2/TextureRect26"]
@@ -253,7 +341,7 @@ offset_bottom = 8.0
 theme = ExtResource("1_fbx8u")
 
 [node name="TextureRect27" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2"]
-modulate = Color(0.588235, 0.588235, 0.588235, 1)
+self_modulate = Color(0.6, 0.6, 0.6, 1)
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 texture = ExtResource("3_bs66k")
@@ -265,11 +353,23 @@ offset_right = 8.0
 offset_bottom = 8.0
 theme = ExtResource("1_fbx8u")
 
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2/TextureRect27/Add_Char"]
+custom_minimum_size = Vector2(100, 100)
+offset_right = 100.0
+offset_bottom = 100.0
+expand_mode = 1
+
 [node name="TextureRect28" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2"]
-modulate = Color(0.588235, 0.588235, 0.588235, 1)
+self_modulate = Color(0.6, 0.6, 0.6, 1)
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 texture = ExtResource("3_bs66k")
+expand_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2/TextureRect28"]
+custom_minimum_size = Vector2(100, 100)
+offset_right = 100.0
+offset_bottom = 100.0
 expand_mode = 1
 
 [node name="Add_Char" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2/TextureRect28"]
@@ -279,10 +379,16 @@ offset_bottom = 8.0
 theme = ExtResource("1_fbx8u")
 
 [node name="TextureRect29" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2"]
-modulate = Color(0.588235, 0.588235, 0.588235, 1)
+self_modulate = Color(0.6, 0.6, 0.6, 1)
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 texture = ExtResource("3_bs66k")
+expand_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2/TextureRect29"]
+custom_minimum_size = Vector2(100, 100)
+offset_right = 100.0
+offset_bottom = 100.0
 expand_mode = 1
 
 [node name="Add_Char" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2/TextureRect29"]
@@ -292,10 +398,16 @@ offset_bottom = 8.0
 theme = ExtResource("1_fbx8u")
 
 [node name="TextureRect30" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2"]
-modulate = Color(0.588235, 0.588235, 0.588235, 1)
+self_modulate = Color(0.6, 0.6, 0.6, 1)
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 texture = ExtResource("3_bs66k")
+expand_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2/TextureRect30"]
+custom_minimum_size = Vector2(100, 100)
+offset_right = 100.0
+offset_bottom = 100.0
 expand_mode = 1
 
 [node name="Add_Char" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2/TextureRect30"]
@@ -305,10 +417,16 @@ offset_bottom = 8.0
 theme = ExtResource("1_fbx8u")
 
 [node name="TextureRect31" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2"]
-modulate = Color(0.588235, 0.588235, 0.588235, 1)
+self_modulate = Color(0.6, 0.6, 0.6, 1)
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 texture = ExtResource("3_bs66k")
+expand_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2/TextureRect31"]
+custom_minimum_size = Vector2(100, 100)
+offset_right = 100.0
+offset_bottom = 100.0
 expand_mode = 1
 
 [node name="Add_Char" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2/TextureRect31"]
@@ -318,10 +436,16 @@ offset_bottom = 8.0
 theme = ExtResource("1_fbx8u")
 
 [node name="TextureRect32" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2"]
-modulate = Color(0.588235, 0.588235, 0.588235, 1)
+self_modulate = Color(0.6, 0.6, 0.6, 1)
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 texture = ExtResource("3_bs66k")
+expand_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2/TextureRect32"]
+custom_minimum_size = Vector2(100, 100)
+offset_right = 100.0
+offset_bottom = 100.0
 expand_mode = 1
 
 [node name="Add_Char" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2/TextureRect32"]
@@ -331,10 +455,16 @@ offset_bottom = 8.0
 theme = ExtResource("1_fbx8u")
 
 [node name="TextureRect33" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2"]
-modulate = Color(0.588235, 0.588235, 0.588235, 1)
+self_modulate = Color(0.6, 0.6, 0.6, 1)
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 texture = ExtResource("3_bs66k")
+expand_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2/TextureRect33"]
+custom_minimum_size = Vector2(100, 100)
+offset_right = 100.0
+offset_bottom = 100.0
 expand_mode = 1
 
 [node name="Add_Char" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2/TextureRect33"]
@@ -350,10 +480,16 @@ size_flags_vertical = 0
 theme_override_constants/separation = 0
 
 [node name="TextureRect17" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3"]
-modulate = Color(0.588235, 0.588235, 0.588235, 1)
+self_modulate = Color(0.6, 0.6, 0.6, 1)
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 texture = ExtResource("3_bs66k")
+expand_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3/TextureRect17"]
+custom_minimum_size = Vector2(100, 100)
+offset_right = 100.0
+offset_bottom = 100.0
 expand_mode = 1
 
 [node name="Add_Char" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3/TextureRect17"]
@@ -363,10 +499,16 @@ offset_bottom = 8.0
 theme = ExtResource("1_fbx8u")
 
 [node name="TextureRect18" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3"]
-modulate = Color(0.588235, 0.588235, 0.588235, 1)
+self_modulate = Color(0.6, 0.6, 0.6, 1)
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 texture = ExtResource("3_bs66k")
+expand_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3/TextureRect18"]
+custom_minimum_size = Vector2(100, 100)
+offset_right = 100.0
+offset_bottom = 100.0
 expand_mode = 1
 
 [node name="Add_Char" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3/TextureRect18"]
@@ -376,10 +518,16 @@ offset_bottom = 8.0
 theme = ExtResource("1_fbx8u")
 
 [node name="TextureRect19" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3"]
-modulate = Color(0.588235, 0.588235, 0.588235, 1)
+self_modulate = Color(0.6, 0.6, 0.6, 1)
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 texture = ExtResource("3_bs66k")
+expand_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3/TextureRect19"]
+custom_minimum_size = Vector2(100, 100)
+offset_right = 100.0
+offset_bottom = 100.0
 expand_mode = 1
 
 [node name="Add_Char" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3/TextureRect19"]
@@ -389,10 +537,16 @@ offset_bottom = 8.0
 theme = ExtResource("1_fbx8u")
 
 [node name="TextureRect20" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3"]
-modulate = Color(0.588235, 0.588235, 0.588235, 1)
+self_modulate = Color(0.6, 0.6, 0.6, 1)
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 texture = ExtResource("3_bs66k")
+expand_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3/TextureRect20"]
+custom_minimum_size = Vector2(100, 100)
+offset_right = 100.0
+offset_bottom = 100.0
 expand_mode = 1
 
 [node name="Add_Char" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3/TextureRect20"]
@@ -402,10 +556,16 @@ offset_bottom = 8.0
 theme = ExtResource("1_fbx8u")
 
 [node name="TextureRect21" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3"]
-modulate = Color(0.588235, 0.588235, 0.588235, 1)
+self_modulate = Color(0.6, 0.6, 0.6, 1)
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 texture = ExtResource("3_bs66k")
+expand_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3/TextureRect21"]
+custom_minimum_size = Vector2(100, 100)
+offset_right = 100.0
+offset_bottom = 100.0
 expand_mode = 1
 
 [node name="Add_Char" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3/TextureRect21"]
@@ -415,10 +575,16 @@ offset_bottom = 8.0
 theme = ExtResource("1_fbx8u")
 
 [node name="TextureRect22" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3"]
-modulate = Color(0.588235, 0.588235, 0.588235, 1)
+self_modulate = Color(0.6, 0.6, 0.6, 1)
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 texture = ExtResource("3_bs66k")
+expand_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3/TextureRect22"]
+custom_minimum_size = Vector2(100, 100)
+offset_right = 100.0
+offset_bottom = 100.0
 expand_mode = 1
 
 [node name="Add_Char" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3/TextureRect22"]
@@ -428,10 +594,16 @@ offset_bottom = 8.0
 theme = ExtResource("1_fbx8u")
 
 [node name="TextureRect23" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3"]
-modulate = Color(0.588235, 0.588235, 0.588235, 1)
+self_modulate = Color(0.6, 0.6, 0.6, 1)
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 texture = ExtResource("3_bs66k")
+expand_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3/TextureRect23"]
+custom_minimum_size = Vector2(100, 100)
+offset_right = 100.0
+offset_bottom = 100.0
 expand_mode = 1
 
 [node name="Add_Char" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3/TextureRect23"]
@@ -441,10 +613,16 @@ offset_bottom = 8.0
 theme = ExtResource("1_fbx8u")
 
 [node name="TextureRect24" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3"]
-modulate = Color(0.588235, 0.588235, 0.588235, 1)
+self_modulate = Color(0.6, 0.6, 0.6, 1)
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 texture = ExtResource("3_bs66k")
+expand_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3/TextureRect24"]
+custom_minimum_size = Vector2(100, 100)
+offset_right = 100.0
+offset_bottom = 100.0
 expand_mode = 1
 
 [node name="Add_Char" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3/TextureRect24"]
@@ -454,10 +632,16 @@ offset_bottom = 8.0
 theme = ExtResource("1_fbx8u")
 
 [node name="TextureRect25" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3"]
-modulate = Color(0.588235, 0.588235, 0.588235, 1)
+self_modulate = Color(0.6, 0.6, 0.6, 1)
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 texture = ExtResource("3_bs66k")
+expand_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3/TextureRect25"]
+custom_minimum_size = Vector2(100, 100)
+offset_right = 100.0
+offset_bottom = 100.0
 expand_mode = 1
 
 [node name="Add_Char" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3/TextureRect25"]

@@ -19,6 +19,8 @@ func _ready() -> void:
 	_character_collection.Add(KNIGHT.duplicate(true))
 	_character_collection.Add(THIEF.duplicate(true))
 	_character_collection.Add(BAR_BRAWLER.duplicate(true))
+	_character_collection.Add(JESTER.duplicate(true))
+	_character_collection.Add(HERALD_OF_THE_LOOM.duplicate(true))
 
 	var all_chars = _character_collection.GetAllCharacters()
 	for key in all_chars.keys():
