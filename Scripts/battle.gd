@@ -16,6 +16,7 @@ const MONSTER_IDS: Array[int] = [3,4,5]
 @onready var _global_scene_darkness: DirectionalLight2D = $DirectionalLight2D
 @onready var _global_scene_light: PointLight2D = $PointLight2D
 
+var _self_context: ContextContainer
 
 var _characterIDs_turn: int = -1
 var _selected_skill_ID: int = 0
@@ -31,6 +32,8 @@ func Init(p_context: ContextContainer) -> void:
 	var battlecontext: Context_Battle = p_context._static_context as Context_Battle
 	_background.texture = load(battlecontext._location)
 	_global_scene_light.color = battlecontext._global_scene_light
+	_self_context = p_context
+	_self_context._previous_scene = p_context._scene
 	
 	if(battlecontext._enemies_wave_1.is_empty()):
 		print("Accidental load to battle scene without enemies, terminating application")
@@ -192,13 +195,12 @@ func EndBattle(p_winner: WinningTeam) -> void:
 			LevelSystem.AddExperience(_characters[i], experience_gained)
 			_characters[i]._currentHealth = _characters[i]._attributes[Types.Attribute.Health] * Types.HEALTH_MULTIPLIER
 	
-	var context_container: ContextContainer = ContextContainer.new()
-	context_container._scene = "res://Scenes/ui/Battle_Over.tscn"
+	_self_context._scene = "res://Scenes/ui/Battle_Over.tscn"
 	if(p_winner == WinningTeam.Monsters_Won):
-		context_container._util_text = "Loss"
+		_self_context._util_text = "Loss"
 	elif(p_winner == WinningTeam.Player_Won):
-		context_container._util_text = "Victory"
-	main.change_scene(context_container)
+		_self_context._util_text = "Victory"
+	main.change_scene(_self_context)
 
 func _on_character_battle_target_selected(p_target_ID: int) -> void:
 	if(PLAYER_IDS.has(_characterIDs_turn)):

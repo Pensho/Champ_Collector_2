@@ -25,7 +25,6 @@ func Init(p_context_container: ContextContainer) -> void:
 
 func SetTextures() -> void:
 	for slot in _available_char_texture.size():
-		print("SetTextures() slot nr: ", slot)
 		if (_character_collection.size() <= slot):
 			return
 		match _character_collection[slot]._role:
