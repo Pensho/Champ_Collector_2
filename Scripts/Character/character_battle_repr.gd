@@ -34,3 +34,9 @@ func RemoveStatusEffects(p_effect_IDs: Array[int]) -> void:
 	for effect_ID in p_effect_IDs:
 		_status_effect_textures[_status_effect[effect_ID]].texture = null
 		_status_effect_textures[_status_effect[effect_ID]].hide()
+
+func ClearStatusEffects() -> void:
+	for textRect in _status_effect_textures:
+		if(null != textRect.texture):
+			textRect.texture = null
+			textRect.hide()

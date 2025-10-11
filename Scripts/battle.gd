@@ -24,6 +24,7 @@ var _initialized: bool = false
 
 enum WinningTeam
 {
+	Ongoing,
 	Player_Won,
 	Monsters_Won,
 }
@@ -102,10 +103,12 @@ func StartTurn() -> void:
 				var target_IDs: Array[int] = Skills.FindSkillTargets(i, _characterIDs_turn, _characters[_characterIDs_turn]._skills[_selected_skill_ID])
 				if(target_IDs.size() > 0):
 					ResolveSkill(_characterIDs_turn, target_IDs, _selected_skill_ID)
-					if(IsTheBattleOver()):
-						_battle_ui.CleanUp()
-						EndBattle(WinningTeam.Monsters_Won)
+					
+					var battle_state = IsTheBattleOver()
+					if (WinningTeam.Ongoing != battle_state):
+						EndBattle(battle_state)
 						break
+					
 					_battle_ui._char_turns[_characterIDs_turn].position -= Vector2(TURN_POS_X_THRESHOLD - _battle_ui._char_turns[_characterIDs_turn].get_rect().size.x, 0)
 					_characterIDs_turn = NO_CHARACTERS_TURN
 					_turn_indicator.hide()
@@ -130,6 +133,14 @@ func Update(p_delta: float, p_characterID: int) -> void:
 		StartTurn()
 
 func UpdateLifeBar(p_characterID: int) -> void:
+	if(_characters[p_characterID]._currentHealth < 0):
+		_characters[p_characterID]._currentHealth = 0
+		_characters[p_characterID]._active_buffs.clear()
+		_characters[p_characterID]._active_debuffs.clear()
+		_character_repr[p_characterID].ClearStatusEffects()
+	elif (_characters[p_characterID]._currentHealth > (_characters[p_characterID]._attributes[Types.Attribute.Health] * Types.HEALTH_MULTIPLIER)):
+		_characters[p_characterID]._currentHealth = _characters[p_characterID]._attributes[Types.Attribute.Health] * Types.HEALTH_MULTIPLIER
+	
 	_character_repr[p_characterID]._lifebar.value = _characters[p_characterID]._currentHealth
 	_character_repr[p_characterID]._lifebar_text.text = str(_characters[p_characterID]._currentHealth) + "/" + str(_characters[p_characterID]._attributes[Types.Attribute.Health] * Types.HEALTH_MULTIPLIER)
 
@@ -188,16 +199,12 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID) -> voi
 		if(damage_dealt != 0):
 			_battle_ui.SpawnDamageNumber(damage_dealt, _character_repr[target_ID].position + Vector2(100, 70))
 		_characters[target_ID]._currentHealth -= damage_dealt
-		if(_characters[target_ID]._currentHealth < 0):
-			_characters[target_ID]._currentHealth = 0
-		elif (_characters[target_ID]._currentHealth > (_characters[target_ID]._attributes[Types.Attribute.Health] * Types.HEALTH_MULTIPLIER)):
-			_characters[target_ID]._currentHealth = _characters[target_ID]._attributes[Types.Attribute.Health] * Types.HEALTH_MULTIPLIER
 		UpdateLifeBar(target_ID)
 		
 		_battle_ui._char_turns[target_ID].position += Vector2(cast_skill.turn_effect, 0)
 		ConstrictTurnLocation(target_ID)
 
-func IsTheBattleOver() -> bool:
+func IsTheBattleOver() -> WinningTeam:
 	var player_alive: bool = false
 	var monsters_alive: bool = false
 	for character_ID in ENEMY_IDS:
@@ -208,13 +215,19 @@ func IsTheBattleOver() -> bool:
 		if(_characters.has(character_ID)):
 			if(_characters[character_ID]._currentHealth > 0):
 				player_alive = true
+	
+	if (false == monsters_alive):
+		return WinningTeam.Player_Won
+	elif (false == player_alive):
+		return WinningTeam.Monsters_Won
 
-	return (not player_alive or not monsters_alive)
+	return WinningTeam.Ongoing
 
 func EndBattle(p_winner: WinningTeam) -> void:
 	# TODO: implement a more refined experience reward.
 	var experience_gained: int = 0
 	Skills.Reset()
+	_battle_ui.CleanUp()
 	
 	if(p_winner == WinningTeam.Monsters_Won):
 		_self_context._util_text = "Loss"
@@ -242,8 +255,9 @@ func _on_character_battle_target_selected(p_target_ID: int) -> void:
 		var target_IDs: Array[int] = Skills.FindSkillTargets(p_target_ID, _characterIDs_turn, _characters[_characterIDs_turn]._skills[_selected_skill_ID])
 		if(target_IDs.size() > 0):
 			ResolveSkill(_characterIDs_turn, target_IDs, _selected_skill_ID)
-			if (IsTheBattleOver()):
-				EndBattle(WinningTeam.Player_Won)
+			var battle_state = IsTheBattleOver()
+			if (WinningTeam.Ongoing != battle_state):
+				EndBattle(battle_state)
 			_battle_ui._skill_button_1.hide()
 			_battle_ui._skill_button_2.hide()
 			_battle_ui._skill_button_3.hide()

@@ -84,7 +84,6 @@ static func TriggerExistingCasterDebuffs(
 	for debuff in p_caster._active_debuffs:
 		match debuff.effect:
 			Types.Debuff_Type.Burning:
-				print(p_caster._name, " is burning!")
 				p_caster._currentHealth -= int(floor((p_caster_attributes[Types.Attribute.Health] * Types.HEALTH_MULTIPLIER) * 0.05))
 		
 		debuff.duration -= 1
