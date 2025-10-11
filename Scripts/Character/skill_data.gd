@@ -1,6 +1,7 @@
 class_name Skill extends Resource
 
 const Types = preload("res://Scripts/common_enums.gd")
+const Statuses = preload("res://Scripts/status_effects.gd")
 
 @export var name: String = "New Skill"
 @export var description: String = ""
@@ -16,3 +17,6 @@ const Types = preload("res://Scripts/common_enums.gd")
 # defense_ignore_factor goes between 0.0 - 1.0
 # lower the value = more damage that bypasses defense
 @export var defense_ignore_factor: float = 1.0
+
+@export var buffs: Dictionary[Types.Skill_Target, Types.Buff_Type]
+@export var debuffs: Dictionary[Types.Skill_Target, Types.Debuff_Type]

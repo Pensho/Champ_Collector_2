@@ -12,4 +12,5 @@ _enemies_wave_3 = Array[ExtResource("1_jbr18")]([])
 _location = "res://Assets/Champ Collector/Scenery/Troll battle area/Troll_battle_area_2.jpg"
 _global_scene_light = Color(1, 1, 1, 1)
 _global_scene_darkness = Color(0, 0, 0, 1)
+_scene_darkness_height = 0.3
 metadata/_custom_type_script = "uid://bjtnao6fgl8go"

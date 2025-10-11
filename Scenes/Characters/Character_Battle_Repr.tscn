@@ -6,8 +6,9 @@
 
 [sub_resource type="Theme" id="Theme_iesxj"]
 
-[node name="Character" type="Node2D"]
+[node name="Character" type="Node2D" node_paths=PackedStringArray("_status_effect_textures")]
 script = ExtResource("1_hd4xr")
+_status_effect_textures = [NodePath("HBoxContainer_Status_Effects/Effect_1"), NodePath("HBoxContainer_Status_Effects/Effect_2"), NodePath("HBoxContainer_Status_Effects/Effect_3"), NodePath("HBoxContainer_Status_Effects/Effect_4"), NodePath("HBoxContainer_Status_Effects/Effect_5"), NodePath("HBoxContainer_Status_Effects/Effect_6"), NodePath("HBoxContainer_Status_Effects/Effect_7"), NodePath("HBoxContainer_Status_Effects/Effect_8")]
 
 [node name="TextureRect" type="TextureRect" parent="."]
 offset_right = 200.0
@@ -79,5 +80,59 @@ vertical_alignment = 1
 self_modulate = Color(1, 1, 1, 0)
 offset_right = 200.0
 offset_bottom = 200.0
+
+[node name="HBoxContainer_Status_Effects" type="HBoxContainer" parent="."]
+offset_top = 234.0
+offset_right = 200.0
+offset_bottom = 259.0
+theme_override_constants/separation = 0
+
+[node name="Effect_1" type="TextureRect" parent="HBoxContainer_Status_Effects"]
+visible = false
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+expand_mode = 1
+
+[node name="Effect_2" type="TextureRect" parent="HBoxContainer_Status_Effects"]
+visible = false
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+expand_mode = 1
+
+[node name="Effect_3" type="TextureRect" parent="HBoxContainer_Status_Effects"]
+visible = false
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+expand_mode = 1
+
+[node name="Effect_4" type="TextureRect" parent="HBoxContainer_Status_Effects"]
+visible = false
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+expand_mode = 1
+
+[node name="Effect_5" type="TextureRect" parent="HBoxContainer_Status_Effects"]
+visible = false
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+expand_mode = 1
+
+[node name="Effect_6" type="TextureRect" parent="HBoxContainer_Status_Effects"]
+visible = false
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+expand_mode = 1
+
+[node name="Effect_7" type="TextureRect" parent="HBoxContainer_Status_Effects"]
+visible = false
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+expand_mode = 1
+
+[node name="Effect_8" type="TextureRect" parent="HBoxContainer_Status_Effects"]
+visible = false
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+expand_mode = 1
 
 [connection signal="button_up" from="Button_Target" to="." method="_on_button_target_button_up"]

@@ -1,0 +1,11 @@
+buff foreground:
+
+buff background:
+
+
+
+debuff foreground:
+FFC100
+
+debuff background:
+8A0000

@@ -15,4 +15,6 @@ damage_scaling = Dictionary[int, float]({
 cooldown = 1
 skill_type = 2
 defense_ignore_factor = 0.7
+buffs = Dictionary[int, int]({})
+debuffs = Dictionary[int, int]({})
 metadata/_custom_type_script = "uid://glh06y3wvchj"

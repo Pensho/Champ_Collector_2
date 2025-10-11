@@ -92,6 +92,7 @@ enum Skill_Type
 	Stab,
 	Heap_On,
 	Pierce_Weakness,
+	Burning_Bolas,
 }
 
 enum Buff_Type
@@ -101,5 +102,6 @@ enum Buff_Type
 
 enum Debuff_Type
 {
+	Burning,
 	Invalid,
 }

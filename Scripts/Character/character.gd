@@ -1,6 +1,7 @@
 class_name Character extends Node
 
 const Types = preload("res://Scripts/common_enums.gd")
+const Statuses = preload("res://Scripts/status_effects.gd")
 
 func InstantiateNew(preset: CharacterPreset, instanceID: int) -> void:
 	_instanceID = instanceID
@@ -62,12 +63,7 @@ var _attributes: Dictionary[Types.Attribute, int] = {
 var _currentHealth: int = 0
 var _attributes_weights: Array[Types.Attribute]
 
-class ActiveBuff:
-	var effect: Types.Buff_Type = Types.Buff_Type.Invalid
-	var duration: int = 1
-var _active_buffs: Array[ActiveBuff] = []
-
-class ActiveDebuff:
-	var effect: Types.Debuff_Type = Types.Debuff_Type.Invalid
-	var duration: int = 1
-var _active_debuffs: Array[ActiveDebuff] = []
+@warning_ignore_start("unused_private_class_variable")
+var _active_buffs: Array[StatusEffects.Buff] = []
+var _active_debuffs: Array[StatusEffects.Debuff] = []
+@warning_ignore_restore("unused_private_class_variable")
