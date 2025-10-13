@@ -2,11 +2,8 @@ class_name Collection extends Node
 
 const Types = preload("res://Scripts/common_enums.gd")
 
-const COLLECTION_SIZE_INCREMENT: int = 10
-const COLLECTION_LIMIT: int = 200
-
 var _characters: Dictionary[int, Character] = {}
-var _current_max_amount: int = 50
+var _current_max_amount: int = main.GAME_BALANCE.COLLECTION_START_ROSTER_SIZE
 var _collected_types: Dictionary[Types.Role, String]
 
 func Save() -> void:
@@ -30,8 +27,8 @@ func Remove(instanceID: int) -> void:
 	# TODO: If there no longer is a type of role in the collection, remove it from _collected_types.
 
 func IncreaseCollectionSize() -> void:
-	if(_current_max_amount <= (COLLECTION_LIMIT - COLLECTION_SIZE_INCREMENT)):
-		_current_max_amount += COLLECTION_SIZE_INCREMENT
+	if(_current_max_amount <= (main.GAME_BALANCE.COLLECTION_LIMIT - main.GAME_BALANCE.COLLECTION_SIZE_INCREMENT)):
+		_current_max_amount += main.GAME_BALANCE.COLLECTION_SIZE_INCREMENT
 	else:
 		print("The maximum size of a collection has been reached.")
 

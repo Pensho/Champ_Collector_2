@@ -1,16 +1,13 @@
 extends Node
 
-# TODO: Move into a constants file maybe
-const HEALTH_MULTIPLIER: int = 7
-
 enum Rarity
 {
-	Common,
-	Uncommon,
-	Rare,
-	Epic,
-	Legendary,
-	Relic, # Items only
+	Common = 1,
+	Uncommon = 2,
+	Rare = 3,
+	Epic = 4,
+	Legendary = 5,
+	Relic = 0, # Items only
 }
 
 enum Faction

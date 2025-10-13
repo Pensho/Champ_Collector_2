@@ -3,36 +3,15 @@ extends Node
 
 const Types = preload("res://Scripts/common_enums.gd")
 
-const FACTOR: float = 1.3
-const CONSTANT_1: float = 2.0
-const CONSTANT_2: int = 10
-const CONSTANT_3: int = 10
-
-const BASE_WEIGHTS: Dictionary[Types.Attribute, int] = {
-	Types.Attribute.Health: 5,
-	Types.Attribute.Speed: 1,
-	Types.Attribute.Attack: 5,
-	Types.Attribute.Defence: 5,
-	Types.Attribute.Accuracy: 5,
-	Types.Attribute.Resistance: 5,
-	Types.Attribute.Mysticism: 5,
-	Types.Attribute.Knowledge: 4,
-	Types.Attribute.Pressence: 4,
-}
-
-const POINTS_TO_DISTRIBUTE: int = 19
-const PRIMARY_ATTRIBUTE_MODIFIER: int = 5
-
 static func LevelUpCriteriaMet(p_character: Character) -> bool:
-	var xp_requirement: float = pow((float(p_character._level) / FACTOR), CONSTANT_1)
-	xp_requirement *= CONSTANT_2
-	xp_requirement += CONSTANT_3 * p_character._level
-	xp_requirement = round(xp_requirement)
+	var xp_requirement: float = pow(
+		(float(p_character._level) / main.GAME_BALANCE.EXPERIENCE_FACTOR), 
+		main.GAME_BALANCE.EXPERIENCE_EXPONENT)
+	xp_requirement *= main.GAME_BALANCE.EXPERIENCE_CONSTANT_1
+	xp_requirement += main.GAME_BALANCE.EXPERIENCE_CONSTANT_2 * p_character._level
+	xp_requirement = round(xp_requirement + main.GAME_BALANCE.EXPERIENCE_CONSTANT_3)
 	print("Experience required for level up: ", xp_requirement, " experience accumulated: ", p_character._experience)
-	if(xp_requirement <= p_character._experience):
-		return true
-	else:
-		return false
+	return xp_requirement <= p_character._experience
 
 static func AddExperience(p_character: Character, p_value: int) -> void:
 	p_character._experience += p_value
@@ -42,9 +21,9 @@ static func AddExperience(p_character: Character, p_value: int) -> void:
 
 static func LevelUpReward(p_character: Character) -> void:
 	p_character._level += 1
-	var weights: Dictionary[Types.Attribute, int] = BASE_WEIGHTS.duplicate(true)
+	var weights: Dictionary[Types.Attribute, int] = main.GAME_BALANCE.BASE_ATTRIBUTE_WEIGHTS.duplicate(true)
 	for attribute in p_character._attributes_weights:
-		weights[attribute] += PRIMARY_ATTRIBUTE_MODIFIER
+		weights[attribute] += main.GAME_BALANCE.CHARACTER_ATTRIBUTE_WEIGHT
 	
 	var cumulative_weights: Dictionary[Types.Attribute, int]
 	var current_sum: int = 0
@@ -64,7 +43,7 @@ static func LevelUpReward(p_character: Character) -> void:
 	new_attributes[Types.Attribute.Health] += 1
 	
 	var random_roll: int = 0
-	for i in range(POINTS_TO_DISTRIBUTE):
+	for i in range(main.GAME_BALANCE.LEVEL_UP_POINTS_TO_DISTRIBUTE):
 		random_roll = randi_range(0, total_weight)
 		
 		var chosen_attribute: Types.Attribute

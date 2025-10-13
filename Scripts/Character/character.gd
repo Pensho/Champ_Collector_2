@@ -27,7 +27,7 @@ func InstantiateNew(preset: CharacterPreset, instanceID: int) -> void:
 	_attributes[Types.Attribute.CritChance] = preset._critChance
 	_attributes[Types.Attribute.CritDamage] = preset._critDamage
 	
-	_currentHealth = _attributes[Types.Attribute.Health] * Types.HEALTH_MULTIPLIER
+	_currentHealth = _attributes[Types.Attribute.Health] * main.GAME_BALANCE.ATTRIBUTE_HEALTH_MULTIPLIER
 
 # Preset Data
 var _name: String = ""
@@ -57,7 +57,7 @@ var _attributes: Dictionary[Types.Attribute, int] = {
 	Types.Attribute.Knowledge: 0,
 	Types.Attribute.Pressence: 0,
 	Types.Attribute.CritChance: 0,
-	Types.Attribute.CritDamage: 15,
+	Types.Attribute.CritDamage: 0,
 }
 
 var _currentHealth: int = 0

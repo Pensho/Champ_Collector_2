@@ -3,6 +3,8 @@ extends Node
 var _current_scene = null
 var _character_collection: Collection
 
+const GAME_BALANCE = preload("res://Data/Game_Balance.tres")
+
 const KNIGHT = preload("res://Data/Character_Player_Variants/Knight.tres")
 const JESTER = preload("res://Data/Character_Player_Variants/Jester.tres")
 const BAR_BRAWLER = preload("res://Data/Character_Player_Variants/Bar_Brawler.tres")
