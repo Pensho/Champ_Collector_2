@@ -60,6 +60,8 @@ var _attributes: Dictionary[Types.Attribute, int] = {
 	Types.Attribute.CritDamage: 0,
 }
 
+var _held_items: Dictionary[Types.Slot, Item]
+
 var _currentHealth: int = 0
 var _attributes_weights: Array[Types.Attribute]
 

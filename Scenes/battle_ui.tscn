@@ -1,6 +1,6 @@
 [gd_scene load_steps=14 format=3 uid="uid://dy5q1foc8kon5"]
 
-[ext_resource type="Script" uid="uid://che4nfxkv8ukc" path="res://Scripts/battle_ui.gd" id="1_gfldn"]
+[ext_resource type="Script" uid="uid://che4nfxkv8ukc" path="res://Scripts/UI/battle_ui.gd" id="1_gfldn"]
 [ext_resource type="Texture2D" uid="uid://cj6uxwt730ish" path="res://Assets/Champ Collector/Icons/Turn_Bar/walking-boot.svg" id="2_6sbxc"]
 [ext_resource type="Material" uid="uid://2tvv2h51laxc" path="res://Assets/Champ Collector/Material/Unshaded.tres" id="2_d07u5"]
 [ext_resource type="Shader" uid="uid://bxqgowk0maklx" path="res://Assets/Champ Collector/Shaders/battle_ui_button.gdshader" id="2_scq05"]

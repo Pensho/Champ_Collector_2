@@ -1,7 +1,8 @@
 extends Node
 
 var _current_scene = null
-var _character_collection: Collection
+var _character_collection: CharacterCollection
+var _item_collection: ItemCollection
 
 const GAME_BALANCE = preload("res://Data/Game_Balance.tres")
 
@@ -14,7 +15,7 @@ const THIEF = preload("res://Data/Character_Player_Variants/Thief.tres")
 func _ready() -> void:
 	_current_scene = get_tree().root.get_child(-1)
 	print("current scene is: ", _current_scene)
-	_character_collection = Collection.new()
+	_character_collection = CharacterCollection.new()
 	add_child(_character_collection)
 	var context_container: ContextContainer = ContextContainer.new()
 

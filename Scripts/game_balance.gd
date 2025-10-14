@@ -9,7 +9,7 @@ const CHARACTER_BASE_CRIT_DMG: int = 15
 
 const ATTRIBUTE_HEALTH_MULTIPLIER: int = 7
 
-## Collection
+## CharacterCollection
 const COLLECTION_START_ROSTER_SIZE: int = 50
 const COLLECTION_SIZE_INCREMENT: int = 10
 const COLLECTION_LIMIT: int = 200
@@ -66,3 +66,4 @@ const ITEM_TYPE_ATTRIBUTES: Dictionary = {
 		Types.Attribute.Defence,
 		Types.Attribute.CritChance,],
 }
+const ITEM_COLLECTION_LIMIT: int = 1000

@@ -1,4 +1,4 @@
-class_name Collection extends Node
+class_name CharacterCollection extends Node
 
 const Types = preload("res://Scripts/common_enums.gd")
 
