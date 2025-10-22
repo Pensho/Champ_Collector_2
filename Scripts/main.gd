@@ -17,6 +17,8 @@ func _ready() -> void:
 	print("current scene is: ", _current_scene)
 	_character_collection = CharacterCollection.new()
 	add_child(_character_collection)
+	_item_collection = ItemCollection.new()
+	add_child(_item_collection)
 	var context_container: ContextContainer = ContextContainer.new()
 
 	_character_collection.Add(KNIGHT.duplicate(true))
@@ -24,6 +26,8 @@ func _ready() -> void:
 	_character_collection.Add(BAR_BRAWLER.duplicate(true))
 	_character_collection.Add(JESTER.duplicate(true))
 	_character_collection.Add(HERALD_OF_THE_LOOM.duplicate(true))
+	
+	_character_collection.LoadTextures()
 
 	var all_chars = _character_collection.GetAllCharacters()
 	for key in all_chars.keys():
