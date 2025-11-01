@@ -11,7 +11,7 @@ void fragment() {
     }
 	else {
 		color.rgb = vec3(0.0, 0.0, 0.0);
-		color.a = 0.8;
+		color.a = 0.6;
 	}
 
     COLOR = color;

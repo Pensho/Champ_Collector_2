@@ -1,21 +1,11 @@
-[gd_resource type="Resource" script_class="GearData" load_steps=2 format=3 uid="uid://byulx2i0268n3"]
+[gd_resource type="Resource" script_class="EquipmentPreset" load_steps=2 format=3 uid="uid://byulx2i0268n3"]
 
-[ext_resource type="Script" uid="uid://8knbs7yij5eh" path="res://Scripts/Character/gear_data.gd" id="1_6yiay"]
+[ext_resource type="Script" uid="uid://8knbs7yij5eh" path="res://Scripts/Gear/equipment_preset.gd" id="1_6yiay"]
 
 [resource]
 script = ExtResource("1_6yiay")
 _name = "Basic Spear"
-_slot = 0
-_rarity = 0
-_health = 0
-_speed = 0
-_attack = 10
-_defence = 0
-_accuracy = 0
-_resistance = 0
-_mysticism = 0
-_knowledge = 0
-_pressence = 0
-_critChance = 0
-_critDamage = 0
+_slot = 1
+_rarity = 2
+_texture_path = "res://Assets/Champ Collector/Icons/Items/Sword_Icon.png"
 metadata/_custom_type_script = "uid://8knbs7yij5eh"

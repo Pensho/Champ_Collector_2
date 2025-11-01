@@ -1,11 +1,27 @@
-[gd_scene load_steps=5 format=3 uid="uid://b6ynhcan7pnn8"]
+[gd_scene load_steps=12 format=3 uid="uid://b6ynhcan7pnn8"]
 
 [ext_resource type="Script" uid="uid://156fy64gykij" path="res://Scenes/ui/inspect_collection_menu.gd" id="1_jlkm0"]
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ Collector/Themes/default_theme.tres" id="1_riq8p"]
 [ext_resource type="Texture2D" uid="uid://2cqmliidmlr7" path="res://Assets/Champ Collector/UI/Pre_Battle_Screen/Pre_Battle_2.png" id="2_01ceq"]
 [ext_resource type="PackedScene" uid="uid://di0y70sbai3yw" path="res://Scenes/ui/Menu_Item_Slot.tscn" id="4_xwg4m"]
+[ext_resource type="Shader" uid="uid://b4pd0enqhaisk" path="res://Assets/Champ Collector/Shaders/Menu_Item_Slot.gdshader" id="5_lsdxp"]
+[ext_resource type="Texture2D" uid="uid://hugm5i14rvkq" path="res://Assets/Champ Collector/Icons/Items/Sword_Icon.png" id="6_0ed3m"]
+[ext_resource type="Texture2D" uid="uid://dmaq2l582gu7e" path="res://Assets/Champ Collector/Icons/Items/Boot_Icon.png" id="6_35r4v"]
+[ext_resource type="Texture2D" uid="uid://d75871c7uh43" path="res://Assets/Champ Collector/Icons/Items/Shield_Icon.png" id="7_lgjj3"]
 
-[node name="InspectCollection" type="Control" node_paths=PackedStringArray("_attribute_labels", "_selected_char_label")]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_u3wy6"]
+shader = ExtResource("5_lsdxp")
+shader_parameter/texture_albedo = ExtResource("6_0ed3m")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2jco1"]
+shader = ExtResource("5_lsdxp")
+shader_parameter/texture_albedo = ExtResource("7_lgjj3")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0ed3m"]
+shader = ExtResource("5_lsdxp")
+shader_parameter/texture_albedo = ExtResource("6_35r4v")
+
+[node name="InspectCollection" type="Control" node_paths=PackedStringArray("_attribute_labels", "_selected_char_label", "_selected_char_level")]
 custom_minimum_size = Vector2(1280, 720)
 layout_mode = 3
 anchors_preset = 0
@@ -19,9 +35,11 @@ _attribute_labels = {
 5: NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer4/Label_Resistance_Val"),
 6: NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer4/Label_Mysticism_Val"),
 7: NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer4/Label_Knowledge_Val"),
-8: NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer4/Label_Pressence_Val")
+8: NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer4/Label_CritCh_Val"),
+9: NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer4/Label_CritDmg_Val")
 }
-_selected_char_label = NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/Label")
+_selected_char_label = NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/Control/Label")
+_selected_char_level = NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/Label2")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 custom_minimum_size = Vector2(1280, 720)
@@ -195,12 +213,43 @@ alignment = 1
 [node name="Weapon_Slot" parent="MarginContainer/HBoxContainer2/VBoxContainer2/HBoxContainer" instance=ExtResource("4_xwg4m")]
 layout_mode = 2
 
+[node name="TextureRect2" type="TextureRect" parent="MarginContainer/HBoxContainer2/VBoxContainer2/HBoxContainer/Weapon_Slot"]
+material = SubResource("ShaderMaterial_u3wy6")
+layout_mode = 0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 90.0
+offset_bottom = 90.0
+mouse_filter = 2
+texture = ExtResource("6_0ed3m")
+
 [node name="Shield_Slot" parent="MarginContainer/HBoxContainer2/VBoxContainer2/HBoxContainer" instance=ExtResource("4_xwg4m")]
 layout_mode = 2
+
+[node name="TextureRect2" type="TextureRect" parent="MarginContainer/HBoxContainer2/VBoxContainer2/HBoxContainer/Shield_Slot"]
+material = SubResource("ShaderMaterial_2jco1")
+layout_mode = 0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 90.0
+offset_bottom = 90.0
+mouse_filter = 2
+texture = ExtResource("7_lgjj3")
 
 [node name="Boots_Slot" parent="MarginContainer/HBoxContainer2/VBoxContainer2" instance=ExtResource("4_xwg4m")]
 layout_mode = 2
 size_flags_horizontal = 4
+
+[node name="TextureRect2" type="TextureRect" parent="MarginContainer/HBoxContainer2/VBoxContainer2/Boots_Slot"]
+material = SubResource("ShaderMaterial_0ed3m")
+layout_mode = 0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 90.0
+offset_bottom = 90.0
+mouse_filter = 2
+texture = ExtResource("6_35r4v")
+expand_mode = 1
 
 [node name="ColorRect2" type="ColorRect" parent="MarginContainer/HBoxContainer2/VBoxContainer2"]
 custom_minimum_size = Vector2(200, 200)
@@ -236,14 +285,31 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
+[node name="Label2" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme = ExtResource("1_riq8p")
+text = "Level: "
+
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 36
 
-[node name="Label" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer"]
+[node name="Control" type="Control" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/Control"]
+layout_direction = 2
+layout_mode = 1
+offset_right = 122.0
+offset_bottom = 18.0
+size_flags_horizontal = 4
+size_flags_vertical = 0
+theme = ExtResource("1_riq8p")
+theme_override_font_sizes/font_size = 18
 text = "Attributes for "
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer"]
@@ -286,31 +352,31 @@ theme_override_constants/separation = 10
 layout_mode = 2
 theme = ExtResource("1_riq8p")
 theme_override_colors/font_color = Color(1, 0.741176, 0, 1)
-text = "99999"
+text = "0"
 
 [node name="Label_Attack_Val" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3"]
 layout_mode = 2
 theme = ExtResource("1_riq8p")
 theme_override_colors/font_color = Color(1, 0.741176, 0, 1)
-text = "99999"
+text = "0"
 
 [node name="Label_Defense_Val" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3"]
 layout_mode = 2
 theme = ExtResource("1_riq8p")
 theme_override_colors/font_color = Color(1, 0.741176, 0, 1)
-text = "99999"
+text = "0"
 
 [node name="Label_Speed_Val" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3"]
 layout_mode = 2
 theme = ExtResource("1_riq8p")
 theme_override_colors/font_color = Color(1, 0.741176, 0, 1)
-text = "99999"
+text = "0"
 
 [node name="Label_Accuracy_Val" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3"]
 layout_mode = 2
 theme = ExtResource("1_riq8p")
 theme_override_colors/font_color = Color(1, 0.741176, 0, 1)
-text = "99999"
+text = "0"
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -334,7 +400,12 @@ text = "Knowledge: "
 [node name="Label4" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
 theme = ExtResource("1_riq8p")
-text = "Pressence: "
+text = "Crit Chance: "
+
+[node name="Label5" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+theme = ExtResource("1_riq8p")
+text = "Crit Damage: "
 
 [node name="VBoxContainer4" type="VBoxContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -344,25 +415,31 @@ theme_override_constants/separation = 10
 layout_mode = 2
 theme = ExtResource("1_riq8p")
 theme_override_colors/font_color = Color(1, 0.741176, 0, 1)
-text = "99999"
+text = "0"
 
 [node name="Label_Resistance_Val" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer4"]
 layout_mode = 2
 theme = ExtResource("1_riq8p")
 theme_override_colors/font_color = Color(1, 0.741176, 0, 1)
-text = "99999"
+text = "0"
 
 [node name="Label_Knowledge_Val" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer4"]
 layout_mode = 2
 theme = ExtResource("1_riq8p")
 theme_override_colors/font_color = Color(1, 0.741176, 0, 1)
-text = "99999"
+text = "0"
 
-[node name="Label_Pressence_Val" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer4"]
+[node name="Label_CritCh_Val" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer4"]
 layout_mode = 2
 theme = ExtResource("1_riq8p")
 theme_override_colors/font_color = Color(1, 0.741176, 0, 1)
-text = "99999"
+text = "0"
+
+[node name="Label_CritDmg_Val" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer4"]
+layout_mode = 2
+theme = ExtResource("1_riq8p")
+theme_override_colors/font_color = Color(1, 0.741176, 0, 1)
+text = "0"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
 layout_mode = 2

@@ -12,6 +12,8 @@ const BAR_BRAWLER = preload("res://Data/Character_Player_Variants/Bar_Brawler.tr
 const HERALD_OF_THE_LOOM = preload("res://Data/Character_Player_Variants/Herald_of_the_loom.tres")
 const THIEF = preload("res://Data/Character_Player_Variants/Thief.tres")
 
+const WEAPON_BASIC_SPEAR = preload("res://Data/Item_Presets/Weapon_Basic_Spear.tres")
+
 func _ready() -> void:
 	_current_scene = get_tree().root.get_child(-1)
 	print("current scene is: ", _current_scene)
@@ -20,14 +22,22 @@ func _ready() -> void:
 	_item_collection = ItemCollection.new()
 	add_child(_item_collection)
 	var context_container: ContextContainer = ContextContainer.new()
-
+	
 	_character_collection.Add(KNIGHT.duplicate(true))
-	_character_collection.Add(THIEF.duplicate(true))
-	_character_collection.Add(BAR_BRAWLER.duplicate(true))
-	_character_collection.Add(JESTER.duplicate(true))
-	_character_collection.Add(HERALD_OF_THE_LOOM.duplicate(true))
+	_character_collection.Add(KNIGHT.duplicate(true))
+	#_character_collection.Add(THIEF.duplicate(true))
+	#_character_collection.Add(BAR_BRAWLER.duplicate(true))
+	#_character_collection.Add(JESTER.duplicate(true))
+	#_character_collection.Add(HERALD_OF_THE_LOOM.duplicate(true))
+	
+	var weapon = WEAPON_BASIC_SPEAR.duplicate(true)
+	weapon.Setup()
+	_item_collection.AddPreset(weapon)
+	
+	_character_collection.GetCharacter(0).AddEquipment(_item_collection.TakeEquipment(0))
 	
 	_character_collection.LoadTextures()
+	_item_collection.LoadTextures()
 
 	var all_chars = _character_collection.GetAllCharacters()
 	for key in all_chars.keys():

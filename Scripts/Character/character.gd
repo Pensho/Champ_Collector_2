@@ -23,11 +23,33 @@ func InstantiateNew(preset: CharacterPreset, instanceID: int) -> void:
 	_attributes[Types.Attribute.Resistance] = preset._resistance
 	_attributes[Types.Attribute.Mysticism] = preset._mysticism
 	_attributes[Types.Attribute.Knowledge] = preset._knowledge
-	_attributes[Types.Attribute.Pressence] = preset._pressence
 	_attributes[Types.Attribute.CritChance] = preset._critChance
 	_attributes[Types.Attribute.CritDamage] = preset._critDamage
 	
-	_currentHealth = _attributes[Types.Attribute.Health] * main.GAME_BALANCE.ATTRIBUTE_HEALTH_MULTIPLIER
+	_currentHealth = GetBattleAttribute(Types.Attribute.Health) * main.GAME_BALANCE.ATTRIBUTE_HEALTH_MULTIPLIER
+
+func GetEquipmentBonus(p_attribute: Types.Attribute) -> int:
+	var bonus_stat: int = 0
+	for i in _held_items.keys():
+		bonus_stat += _held_items[i]._attributes[p_attribute]
+	return bonus_stat
+
+func GetBattleAttributes() -> Dictionary[Types.Attribute, int]:
+	var battle_attributes: Dictionary[Types.Attribute, int] = _attributes.duplicate(true)
+	for attribute in battle_attributes.keys():
+		battle_attributes[attribute] += GetEquipmentBonus(attribute)
+	return battle_attributes
+
+func GetBattleAttribute(p_attribute: Types.Attribute) -> int:
+	var attribute_val: int = _attributes[p_attribute]
+	attribute_val += GetEquipmentBonus(p_attribute)
+	return attribute_val
+
+func AddEquipment(p_equipment: Equipment) -> void:
+	if(not _held_items.has(p_equipment._slot)):
+		_held_items[p_equipment._slot] = p_equipment
+	else:
+		print(_name + " already has equipment for ", p_equipment._slot)
 
 # Preset Data
 var _name: String = ""
@@ -55,12 +77,11 @@ var _attributes: Dictionary[Types.Attribute, int] = {
 	Types.Attribute.Resistance: 0,
 	Types.Attribute.Mysticism: 0,
 	Types.Attribute.Knowledge: 0,
-	Types.Attribute.Pressence: 0,
 	Types.Attribute.CritChance: 0,
 	Types.Attribute.CritDamage: 0,
 }
 
-var _held_items: Dictionary[Types.Slot, Item]
+var _held_items: Dictionary[Types.Slot, Equipment]
 
 var _currentHealth: int = 0
 var _attributes_weights: Array[Types.Attribute]

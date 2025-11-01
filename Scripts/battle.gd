@@ -47,11 +47,13 @@ func Init(p_context: ContextContainer) -> void:
 	
 	for i in p_context._player_battle_characters.size():
 		_characters[i] = p_context._player_battle_characters[i]
+		_characters[i]._currentHealth = _characters[i].GetBattleAttribute(Types.Attribute.Health)  * main.GAME_BALANCE.ATTRIBUTE_HEALTH_MULTIPLIER
 		VisualizeCharacter(i)
 	
 	for i in battlecontext._enemies_wave_1.size():
 		_characters[i + 3] = Character.new()
 		_characters[i + 3].InstantiateNew(battlecontext._enemies_wave_1[i], -1)
+		_characters[i + 3]._currentHealth = _characters[i + 3].GetBattleAttribute(Types.Attribute.Health)  * main.GAME_BALANCE.ATTRIBUTE_HEALTH_MULTIPLIER
 		VisualizeCharacter(i + 3)
 		_battle_ui._char_turns[i + 3].texture = load(_characters[i + 3]._texture)
 		_character_repr[i + 3].show()
@@ -138,11 +140,11 @@ func UpdateLifeBar(p_characterID: int) -> void:
 		_characters[p_characterID]._active_buffs.clear()
 		_characters[p_characterID]._active_debuffs.clear()
 		_character_repr[p_characterID].ClearStatusEffects()
-	elif (_characters[p_characterID]._currentHealth > (_characters[p_characterID]._attributes[Types.Attribute.Health] * main.GAME_BALANCE.ATTRIBUTE_HEALTH_MULTIPLIER)):
-		_characters[p_characterID]._currentHealth = _characters[p_characterID]._attributes[Types.Attribute.Health] * main.GAME_BALANCE.ATTRIBUTE_HEALTH_MULTIPLIER
+	elif (_characters[p_characterID]._currentHealth > (_characters[p_characterID].GetBattleAttribute(Types.Attribute.Health) * main.GAME_BALANCE.ATTRIBUTE_HEALTH_MULTIPLIER)):
+		_characters[p_characterID]._currentHealth = _characters[p_characterID].GetBattleAttribute(Types.Attribute.Health) * main.GAME_BALANCE.ATTRIBUTE_HEALTH_MULTIPLIER
 	
 	_character_repr[p_characterID]._lifebar.value = _characters[p_characterID]._currentHealth
-	_character_repr[p_characterID]._lifebar_text.text = str(_characters[p_characterID]._currentHealth) + "/" + str(_characters[p_characterID]._attributes[Types.Attribute.Health] * main.GAME_BALANCE.ATTRIBUTE_HEALTH_MULTIPLIER)
+	_character_repr[p_characterID]._lifebar_text.text = str(_characters[p_characterID]._currentHealth) + "/" + str(_characters[p_characterID].GetBattleAttribute(Types.Attribute.Health) * main.GAME_BALANCE.ATTRIBUTE_HEALTH_MULTIPLIER)
 
 func VisualizeCharacter(p_characterID: int) -> void:
 	_character_repr[p_characterID]._level.text = str(_characters[p_characterID]._level)
@@ -150,14 +152,14 @@ func VisualizeCharacter(p_characterID: int) -> void:
 	character_canvas_texture.diffuse_texture = load(_characters[p_characterID]._texture)
 	character_canvas_texture.normal_texture = load(_characters[p_characterID]._texture)
 	_character_repr[p_characterID]._character_texture.texture = character_canvas_texture
-	_character_repr[p_characterID]._lifebar.max_value = _characters[p_characterID]._attributes[Types.Attribute.Health] * main.GAME_BALANCE.ATTRIBUTE_HEALTH_MULTIPLIER
+	_character_repr[p_characterID]._lifebar.max_value = (_characters[p_characterID].GetBattleAttribute(Types.Attribute.Health) * main.GAME_BALANCE.ATTRIBUTE_HEALTH_MULTIPLIER)
 	UpdateLifeBar(p_characterID)
 	_battle_ui._char_turns[p_characterID].texture = load(_characters[p_characterID]._texture)
 	_character_repr[p_characterID].show()
 
 func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID) -> void:
 	var cast_skill: Skill = _characters[p_caster_ID]._skills[p_skill_ID]
-	var caster_attributes: Dictionary[Types.Attribute, int] = _characters[p_caster_ID]._attributes.duplicate(true)
+	var caster_attributes: Dictionary[Types.Attribute, int] = _characters[p_caster_ID].GetBattleAttributes()
 	var target_attributes: Dictionary[Types.Attribute, int]
 	
 	Skills.ResolveSkillEffect(p_caster_ID, caster_attributes, p_target_IDs, cast_skill, _characters)
@@ -178,7 +180,7 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID) -> voi
 	
 	for target_ID in p_target_IDs:
 		if(p_caster_ID != target_ID):
-			target_attributes = _characters[target_ID]._attributes.duplicate(true)
+			target_attributes = _characters[target_ID].GetBattleAttributes()
 			Skills.TriggerTargetBuffs(
 				_characters[target_ID],
 				target_attributes,

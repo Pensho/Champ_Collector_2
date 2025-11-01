@@ -79,7 +79,6 @@ enum Attribute
 	Resistance,
 	Mysticism,
 	Knowledge,
-	Pressence,
 	CritChance,
 	CritDamage,
 }

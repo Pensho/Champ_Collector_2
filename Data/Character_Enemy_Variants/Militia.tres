@@ -21,7 +21,6 @@ _accuracy = 20
 _resistance = 10
 _mysticism = 10
 _knowledge = 30
-_pressence = 20
 _critChance = 5
 _critDamage = 15
 _attributes_weights = Array[int]([])

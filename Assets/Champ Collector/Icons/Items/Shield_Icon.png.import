@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dmaq2l582gu7e"
-path="res://.godot/imported/Boot_Icon.png-3e45cd22e413a76dd37f1dec8077409e.ctex"
+uid="uid://d75871c7uh43"
+path="res://.godot/imported/Shield_Icon.png-e33337e92d42924837863a0681afc2d3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ Collector/UI/Boot_Icon.png"
-dest_files=["res://.godot/imported/Boot_Icon.png-3e45cd22e413a76dd37f1dec8077409e.ctex"]
+source_file="res://Assets/Champ Collector/Icons/Items/Shield_Icon.png"
+dest_files=["res://.godot/imported/Shield_Icon.png-e33337e92d42924837863a0681afc2d3.ctex"]
 
 [params]
 

@@ -25,6 +25,15 @@ offset_right = 40.0
 offset_bottom = 40.0
 expand_mode = 1
 
+[node name="Label" type="Label" parent="TextureRect"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+theme = ExtResource("2_vybhe")
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+
 [node name="Button" type="Button" parent="TextureRect"]
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 0

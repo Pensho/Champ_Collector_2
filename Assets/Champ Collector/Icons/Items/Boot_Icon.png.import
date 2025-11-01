@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://hugm5i14rvkq"
-path="res://.godot/imported/Sword_Icon.png-6e1b5fed808eb330f55a7e5c23a07220.ctex"
+uid="uid://dmaq2l582gu7e"
+path="res://.godot/imported/Boot_Icon.png-fef55167e4971f6e1c83a2b23e3c030c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ Collector/UI/Sword_Icon.png"
-dest_files=["res://.godot/imported/Sword_Icon.png-6e1b5fed808eb330f55a7e5c23a07220.ctex"]
+source_file="res://Assets/Champ Collector/Icons/Items/Boot_Icon.png"
+dest_files=["res://.godot/imported/Boot_Icon.png-fef55167e4971f6e1c83a2b23e3c030c.ctex"]
 
 [params]
 

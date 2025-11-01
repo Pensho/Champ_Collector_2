@@ -28,7 +28,10 @@ static func ResolveSkillEffect(
 			if(p_caster_attr[Types.Attribute.Accuracy] >= p_characterList[p_target_IDs[0]]._attributes[Types.Attribute.Resistance] * randomVal):
 				pass
 
-static func FindSkillTargets(p_target_ID: int, p_attacker_ID: int, p_skill: Skill) -> Array[int]:
+static func FindSkillTargets(
+					p_target_ID: int,
+					p_attacker_ID: int,
+					p_skill: Skill) -> Array[int]:
 	var target_IDs: Array[int]
 	match p_skill.target:
 		Types.Skill_Target.Single_Enemy:
@@ -188,7 +191,7 @@ static func DamageDealt(p_attacker_attr: Dictionary[Types.Attribute, int],
 		caster_scaled_attribute_aggregate += p_skill.damage_scaling[key] * p_attacker_attr[key]
 		
 	if(randi_range(0, 100) <= p_attacker_attr[Types.Attribute.CritChance]):
-		crit_multiplier = float(p_attacker_attr[Types.Attribute.CritDamage]) * 0.1
+		crit_multiplier = float(p_attacker_attr[Types.Attribute.CritDamage]) * 0.01
 		# TODO: Add a flair to highlight the occurance of a critical strike.
 		print("The attacker did a critical strike!")
 		

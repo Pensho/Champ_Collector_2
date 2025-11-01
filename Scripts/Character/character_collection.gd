@@ -52,7 +52,7 @@ func GetCharacterTexture(p_character_role: Types.Role) -> Texture:
 		Types.Role.Herald_of_the_loom:
 			return _used_character_textures[Types.Role.Herald_of_the_loom]
 		_:
-			print("pre_battle_menu.gd/SetTextures() Unspecified character role!")
+			print("pre_battle_menu.gd/GetCharacterTexture() Unspecified character role!")
 	return null
 
 func Add(preset: CharacterPreset) -> void:

@@ -5,7 +5,7 @@ const Types = preload("res://Scripts/common_enums.gd")
 
 ## Character
 const CHARACTER_BASE_CRIT_CH: int = 5
-const CHARACTER_BASE_CRIT_DMG: int = 15
+const CHARACTER_BASE_CRIT_DMG: int = 150
 
 const ATTRIBUTE_HEALTH_MULTIPLIER: int = 7
 
@@ -36,7 +36,6 @@ const BASE_ATTRIBUTE_WEIGHTS: Dictionary[Types.Attribute, int] = {
 	Types.Attribute.Resistance: 5,
 	Types.Attribute.Mysticism: 5,
 	Types.Attribute.Knowledge: 4,
-	Types.Attribute.Pressence: 4,
 }
 
 ## Item
@@ -54,7 +53,6 @@ const ITEM_TYPE_ATTRIBUTES: Dictionary = {
 		Types.Attribute.Health,
 		Types.Attribute.Defence,
 		Types.Attribute.Resistance,
-		Types.Attribute.Pressence,
 		Types.Attribute.Mysticism,],
 		
 	Types.Slot.Boots: [
