@@ -24,14 +24,16 @@ func _ready() -> void:
 	var context_container: ContextContainer = ContextContainer.new()
 	
 	_character_collection.Add(KNIGHT.duplicate(true))
-	_character_collection.Add(KNIGHT.duplicate(true))
-	#_character_collection.Add(THIEF.duplicate(true))
-	#_character_collection.Add(BAR_BRAWLER.duplicate(true))
-	#_character_collection.Add(JESTER.duplicate(true))
-	#_character_collection.Add(HERALD_OF_THE_LOOM.duplicate(true))
+	#_character_collection.Add(KNIGHT.duplicate(true))
+	_character_collection.Add(THIEF.duplicate(true))
+	_character_collection.Add(BAR_BRAWLER.duplicate(true))
+	_character_collection.Add(JESTER.duplicate(true))
+	_character_collection.Add(HERALD_OF_THE_LOOM.duplicate(true))
 	
-	var weapon = WEAPON_BASIC_SPEAR.duplicate(true)
+	var weapon: EquipmentPreset = WEAPON_BASIC_SPEAR.duplicate(true)
 	weapon.Setup()
+	_item_collection.AddPreset(weapon)
+	_item_collection.AddPreset(weapon)
 	_item_collection.AddPreset(weapon)
 	
 	_character_collection.GetCharacter(0).AddEquipment(_item_collection.TakeEquipment(0))
@@ -39,7 +41,7 @@ func _ready() -> void:
 	_character_collection.LoadTextures()
 	_item_collection.LoadTextures()
 
-	var all_chars = _character_collection.GetAllCharacters()
+	var all_chars: Dictionary[int, Character] = _character_collection.GetAllCharacters()
 	for key in all_chars.keys():
 		print("Found character in collection, ID: ", all_chars[key]._instanceID, " name: ", all_chars[key]._name)
 
@@ -56,7 +58,7 @@ func _deferred_change_scene(p_context: ContextContainer) -> void:
 		self.remove_child(_current_scene)
 		_current_scene.call_deferred("free")
 
-	var scene = ResourceLoader.load(p_context._scene)
+	var scene := ResourceLoader.load(p_context._scene)
 	_current_scene = scene.instantiate()
 	add_child(_current_scene)
 	print("current scene is: ", _current_scene)
