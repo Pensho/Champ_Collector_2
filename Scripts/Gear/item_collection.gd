@@ -5,8 +5,8 @@ const GEARDATA = preload("res://Scripts/Gear/equipment_preset.gd")
 
 var _collected_types: Dictionary[Types.Slot, String]
 var _used_item_textures: Dictionary[Types.Slot, Texture]
-
 var _items: Dictionary[int, Equipment] = {}
+var _highest_ID: int = 0
 
 func LoadTextures() -> void:
 	for type in _collected_types.keys():
@@ -77,3 +77,12 @@ func TakeEquipment(p_instanseID: int) -> Equipment:
 	item = _items[p_instanseID]
 	_items.erase(p_instanseID)
 	return item
+
+func Size() -> int:
+	return _items.size()
+
+func GetHighestID() -> int:
+	for i in _items.keys():
+		if(i > _highest_ID):
+			_highest_ID = i
+	return _highest_ID
