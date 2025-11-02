@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://60dgfhxsxlr4"]
+
+[ext_resource type="Script" uid="uid://cnup2nbj45r4s" path="res://addons/gut/test.gd" id="1_fiyce"]
+
+[node name="GutTest" type="Node"]
+script = ExtResource("1_fiyce")
+metadata/_custom_type_script = "uid://cnup2nbj45r4s"

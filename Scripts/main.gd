@@ -52,7 +52,7 @@ func change_scene(p_context: ContextContainer) -> void:
 func _deferred_change_scene(p_context: ContextContainer) -> void:
 	## self.visible = true
 	## Play transition animation
-	if(_current_scene.name != "Main"):
+	if(_current_scene.name != "Main" and _current_scene.name != "RunFromEditor"):
 		self.remove_child(_current_scene)
 		_current_scene.call_deferred("free")
 
