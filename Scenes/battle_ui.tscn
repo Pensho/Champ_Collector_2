@@ -1,9 +1,10 @@
-[gd_scene load_steps=14 format=3 uid="uid://dy5q1foc8kon5"]
+[gd_scene load_steps=15 format=3 uid="uid://dy5q1foc8kon5"]
 
 [ext_resource type="Script" uid="uid://che4nfxkv8ukc" path="res://Scripts/UI/battle_ui.gd" id="1_gfldn"]
 [ext_resource type="Texture2D" uid="uid://cj6uxwt730ish" path="res://Assets/Champ Collector/Icons/Turn_Bar/walking-boot.svg" id="2_6sbxc"]
 [ext_resource type="Material" uid="uid://2tvv2h51laxc" path="res://Assets/Champ Collector/Material/Unshaded.tres" id="2_d07u5"]
 [ext_resource type="Shader" uid="uid://bxqgowk0maklx" path="res://Assets/Champ Collector/Shaders/battle_ui_button.gdshader" id="2_scq05"]
+[ext_resource type="Script" uid="uid://bdj0g5fc8d26k" path="res://Scripts/UI/turn_bar.gd" id="3_6lbqc"]
 [ext_resource type="Texture2D" uid="uid://dttmv410f1bo5" path="res://Assets/Champ Collector/Icons/Abilities/Stab/Stab_3.jpg" id="4_4blpl"]
 [ext_resource type="Material" uid="uid://btoxlv6hhnxp6" path="res://Assets/Champ Collector/Material/SkillMaterialShader.tres" id="4_d07u5"]
 [ext_resource type="Texture2D" uid="uid://ctbnnvhe6erv0" path="res://Assets/Champ Collector/Icons/Abilities/Bolas/Bolas_2.jpg" id="4_nm010"]
@@ -46,7 +47,7 @@ shader_parameter/radius = 0.5
 shader_parameter/feather = 0.03
 shader_parameter/center = Vector2(0.5, 0.5)
 
-[node name="Battle UI" type="Control" node_paths=PackedStringArray("_char_turns")]
+[node name="Battle UI" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -54,67 +55,19 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_gfldn")
-_char_turns = [NodePath("Camera2D/PlayerInfoBox/Char_1"), NodePath("Camera2D/PlayerInfoBox/Char_2"), NodePath("Camera2D/PlayerInfoBox/Char_3"), NodePath("Camera2D/PlayerInfoBox/Char_4"), NodePath("Camera2D/PlayerInfoBox/Char_5"), NodePath("Camera2D/PlayerInfoBox/Char_6")]
 
-[node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(641, 360)
-
-[node name="PlayerInfoBox" type="Panel" parent="Camera2D"]
+[node name="PlayerInfoBox" type="Panel" parent="." node_paths=PackedStringArray("_char_turns")]
 material = ExtResource("2_d07u5")
-offset_left = -614.0
-offset_top = -330.0
-offset_right = -264.0
-offset_bottom = -284.0
+layout_mode = 0
+offset_left = 20.0
+offset_top = 623.0
+offset_right = 1260.0
+offset_bottom = 703.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_4blpl")
+script = ExtResource("3_6lbqc")
+_char_turns = [NodePath("Char_1"), NodePath("Char_2"), NodePath("Char_3"), NodePath("Char_4"), NodePath("Char_5"), NodePath("Char_6")]
 
-[node name="Char_1" type="TextureRect" parent="Camera2D/PlayerInfoBox"]
-material = ExtResource("2_d07u5")
-layout_mode = 0
-offset_top = -15.0
-offset_right = 40.0
-offset_bottom = 25.0
-expand_mode = 1
-
-[node name="Char_2" type="TextureRect" parent="Camera2D/PlayerInfoBox"]
-material = ExtResource("2_d07u5")
-layout_mode = 0
-offset_top = -10.0
-offset_right = 40.0
-offset_bottom = 30.0
-expand_mode = 1
-
-[node name="Char_3" type="TextureRect" parent="Camera2D/PlayerInfoBox"]
-material = ExtResource("2_d07u5")
-layout_mode = 0
-offset_top = -5.0
-offset_right = 40.0
-offset_bottom = 35.0
-expand_mode = 1
-
-[node name="Char_4" type="TextureRect" parent="Camera2D/PlayerInfoBox"]
-material = ExtResource("2_d07u5")
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-expand_mode = 1
-
-[node name="Char_5" type="TextureRect" parent="Camera2D/PlayerInfoBox"]
-material = ExtResource("2_d07u5")
-layout_mode = 0
-offset_top = 5.0
-offset_right = 40.0
-offset_bottom = 45.0
-expand_mode = 1
-
-[node name="Char_6" type="TextureRect" parent="Camera2D/PlayerInfoBox"]
-material = ExtResource("2_d07u5")
-layout_mode = 0
-offset_top = 10.0
-offset_right = 40.0
-offset_bottom = 50.0
-expand_mode = 1
-
-[node name="Turn_meter_icon" type="TextureRect" parent="Camera2D/PlayerInfoBox"]
+[node name="Turn_meter_icon" type="TextureRect" parent="PlayerInfoBox"]
 material = ExtResource("2_d07u5")
 layout_mode = 1
 anchors_preset = 4
@@ -128,44 +81,95 @@ grow_vertical = 2
 texture = ExtResource("2_6sbxc")
 expand_mode = 1
 
-[node name="Skill_Focus" type="TextureRect" parent="Camera2D"]
+[node name="Char_1" type="TextureRect" parent="PlayerInfoBox"]
 material = ExtResource("2_d07u5")
-offset_left = -851.0
-offset_top = -358.0
-offset_right = -651.0
-offset_bottom = -158.0
+layout_mode = 0
+offset_top = -15.0
+offset_right = 40.0
+offset_bottom = 25.0
+expand_mode = 1
+
+[node name="Char_2" type="TextureRect" parent="PlayerInfoBox"]
+material = ExtResource("2_d07u5")
+layout_mode = 0
+offset_top = -10.0
+offset_right = 40.0
+offset_bottom = 30.0
+expand_mode = 1
+
+[node name="Char_3" type="TextureRect" parent="PlayerInfoBox"]
+material = ExtResource("2_d07u5")
+layout_mode = 0
+offset_top = -5.0
+offset_right = 40.0
+offset_bottom = 35.0
+expand_mode = 1
+
+[node name="Char_4" type="TextureRect" parent="PlayerInfoBox"]
+material = ExtResource("2_d07u5")
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+expand_mode = 1
+
+[node name="Char_5" type="TextureRect" parent="PlayerInfoBox"]
+material = ExtResource("2_d07u5")
+layout_mode = 0
+offset_top = 5.0
+offset_right = 40.0
+offset_bottom = 45.0
+expand_mode = 1
+
+[node name="Char_6" type="TextureRect" parent="PlayerInfoBox"]
+material = ExtResource("2_d07u5")
+layout_mode = 0
+offset_top = 10.0
+offset_right = 40.0
+offset_bottom = 50.0
+expand_mode = 1
+
+[node name="Skill_Focus" type="TextureRect" parent="."]
+material = ExtResource("2_d07u5")
+layout_mode = 0
+offset_left = -211.0
+offset_top = 2.0
+offset_right = -11.0
+offset_bottom = 202.0
 texture = SubResource("GradientTexture2D_6lbqc")
 
-[node name="Skill_1" type="Button" parent="Camera2D"]
+[node name="Skill_1" type="Button" parent="."]
 visible = false
 material = ExtResource("4_d07u5")
-offset_left = 209.0
-offset_top = 186.0
-offset_right = 359.0
-offset_bottom = 336.0
+layout_mode = 0
+offset_left = 1103.0
+offset_top = 129.0
+offset_right = 1253.0
+offset_bottom = 279.0
 icon = ExtResource("4_nm010")
 expand_icon = true
 
-[node name="Skill_2" type="Button" parent="Camera2D"]
+[node name="Skill_2" type="Button" parent="."]
 visible = false
 material = SubResource("ShaderMaterial_6lbqc")
-offset_left = 423.0
-offset_top = 153.0
-offset_right = 573.0
-offset_bottom = 303.0
+layout_mode = 0
+offset_left = 1102.0
+offset_top = 289.0
+offset_right = 1252.0
+offset_bottom = 439.0
 icon = ExtResource("4_4blpl")
 expand_icon = true
 
-[node name="Skill_3" type="Button" parent="Camera2D"]
+[node name="Skill_3" type="Button" parent="."]
 visible = false
 material = SubResource("ShaderMaterial_rvbdk")
-offset_left = 447.0
-offset_top = -41.0
-offset_right = 597.0
-offset_bottom = 109.0
+layout_mode = 0
+offset_left = 1103.0
+offset_top = 453.0
+offset_right = 1253.0
+offset_bottom = 603.0
 icon = ExtResource("6_scq05")
 expand_icon = true
 
-[connection signal="button_up" from="Camera2D/Skill_1" to="." method="_on_skill_1_button_up"]
-[connection signal="button_up" from="Camera2D/Skill_2" to="." method="_on_skill_2_button_up"]
-[connection signal="button_up" from="Camera2D/Skill_3" to="." method="_on_skill_3_button_up"]
+[connection signal="button_up" from="Skill_1" to="." method="_on_skill_1_button_up"]
+[connection signal="button_up" from="Skill_2" to="." method="_on_skill_2_button_up"]
+[connection signal="button_up" from="Skill_3" to="." method="_on_skill_3_button_up"]

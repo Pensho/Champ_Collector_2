@@ -6,7 +6,6 @@ const Statuses = preload("res://Scripts/status_effects.gd")
 
 const PLAYER_IDS: Array[int] = [0,1,2]
 const MONSTER_IDS: Array[int] = [3,4,5]
-const HEAP_ON_MULTIPLIER: float = 0.2
 
 static var _heap_on_stacks: Array[int] = [0, 0, 0, 0, 0, 0]
 static var _heap_on_value: Array[float] = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
@@ -20,7 +19,7 @@ static func ResolveSkillEffect(
 	match p_skill.skill_type:
 		Types.Skill_Type.Heap_On:
 			if (0 == _heap_on_stacks[p_caster_ID]):
-				_heap_on_value[p_caster_ID] = float(p_caster_attr[Types.Attribute.Health]) * HEAP_ON_MULTIPLIER
+				_heap_on_value[p_caster_ID] = float(p_caster_attr[Types.Attribute.Health]) * main.GAME_BALANCE.HEAP_ON_MULTIPLIER
 			p_caster_attr[Types.Attribute.Health] += int(_heap_on_value[p_caster_ID] * float(_heap_on_stacks[p_caster_ID]))
 			_heap_on_stacks[p_caster_ID] += 1
 		Types.Skill_Type.Burning_Bolas:

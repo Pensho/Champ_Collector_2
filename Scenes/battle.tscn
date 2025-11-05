@@ -32,36 +32,35 @@ expand_mode = 1
 
 [node name="Character_1" parent="." instance=ExtResource("3_ww2ai")]
 visible = false
-position = Vector2(70, 370)
+position = Vector2(43, 302)
 _target_ID = 0
 
 [node name="Character_2" parent="." instance=ExtResource("3_ww2ai")]
 visible = false
-position = Vector2(280, 430)
+position = Vector2(299, 374)
 _target_ID = 1
 
 [node name="Character_3" parent="." instance=ExtResource("3_ww2ai")]
 visible = false
-position = Vector2(530, 460)
+position = Vector2(599, 379)
 _target_ID = 2
 
 [node name="Enemy_1" parent="." instance=ExtResource("3_ww2ai")]
 visible = false
-position = Vector2(295, 196)
+position = Vector2(378, 108)
 _target_ID = 3
 
 [node name="Enemy_2" parent="." instance=ExtResource("3_ww2ai")]
 visible = false
-position = Vector2(566, 177)
+position = Vector2(638, 121)
 _target_ID = 4
 
 [node name="Enemy_3" parent="." instance=ExtResource("3_ww2ai")]
 visible = false
-position = Vector2(813, 233)
+position = Vector2(879, 178)
 _target_ID = 5
 
-[node name="Battle UI" parent="." node_paths=PackedStringArray("_character_repr") instance=ExtResource("2_1ruyk")]
-_character_repr = [NodePath("../Character_1"), NodePath("../Character_2"), NodePath("../Character_3"), NodePath("../Enemy_1"), NodePath("../Enemy_2"), NodePath("../Enemy_3")]
+[node name="Battle UI" parent="." instance=ExtResource("2_1ruyk")]
 
 [node name="Turn_Indicator" type="TextureRect" parent="."]
 material = ExtResource("6_qeyqd")

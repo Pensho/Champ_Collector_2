@@ -65,3 +65,9 @@ const ITEM_TYPE_ATTRIBUTES: Dictionary = {
 		Types.Attribute.CritChance,],
 }
 const ITEM_COLLECTION_LIMIT: int = 1000
+
+## Skills
+const HEAP_ON_MULTIPLIER: float = 0.2
+
+## Battle, Combat
+const TURN_DURATION_SECONDS: float = 2.5

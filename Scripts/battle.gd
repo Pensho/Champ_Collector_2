@@ -1,11 +1,13 @@
-extends Node2D
+class_name Battle extends Node2D
 
 const Types = preload("res://Scripts/common_enums.gd")
+const GRAYSCALE = preload("uid://ia57lns0336p")
 
 const NO_CHARACTERS_TURN: int = -1
 const TURN_POS_X_THRESHOLD: int = 360
 const PLAYER_IDS: Array[int] = [0,1,2]
 const ENEMY_IDS: Array[int] = [3,4,5]
+var GRAYSCALE_MATERIAL: ShaderMaterial
 
 @export var _character_repr: Array[CharacterRepresentation]
 
@@ -53,10 +55,15 @@ func Init(p_context: ContextContainer) -> void:
 	for i in battlecontext._enemies_wave_1.size():
 		_characters[i + 3] = Character.new()
 		_characters[i + 3].InstantiateNew(battlecontext._enemies_wave_1[i], -1)
+		_characters[i + 3]._attributes[Types.Attribute.Speed] += randi_range(-3, 3)
 		_characters[i + 3]._currentHealth = _characters[i + 3].GetBattleAttribute(Types.Attribute.Health)  * main.GAME_BALANCE.ATTRIBUTE_HEALTH_MULTIPLIER
 		VisualizeCharacter(i + 3)
-		_battle_ui._char_turns[i + 3].texture = load(_characters[i + 3]._texture)
-		_character_repr[i + 3].show()
+	
+	GRAYSCALE_MATERIAL = ShaderMaterial.new()
+	GRAYSCALE_MATERIAL.shader = GRAYSCALE
+	
+	_battle_ui.Init()
+	_battle_ui._turn_bar.Init(_characters)
 	
 	_initialized = true
 
@@ -75,12 +82,6 @@ func _process(p_delta: float) -> void:
 			if (ENEMY_IDS.has(i)):
 				_characters[i]._currentHealth = 1
 				UpdateLifeBar(i)
-
-func ConstrictTurnLocation(p_characterID: int) -> void:
-	if(_battle_ui._char_turns[p_characterID].position.x + _battle_ui._char_turns[p_characterID].get_rect().size.x > TURN_POS_X_THRESHOLD):
-		_battle_ui._char_turns[p_characterID].position.x = TURN_POS_X_THRESHOLD - _battle_ui._char_turns[p_characterID].get_rect().size.x
-	elif(_battle_ui._char_turns[p_characterID].position.x < 0):
-		_battle_ui._char_turns[p_characterID].position.x = 0
 
 func StartTurn() -> void:
 	_turn_indicator.position.x = _character_repr[_characterIDs_turn].position.x + (_character_repr[_characterIDs_turn]._character_texture.size.x * 0.5) - (_turn_indicator.size.x * 0.5)
@@ -111,7 +112,7 @@ func StartTurn() -> void:
 						EndBattle(battle_state)
 						break
 					
-					_battle_ui._char_turns[_characterIDs_turn].position -= Vector2(TURN_POS_X_THRESHOLD - _battle_ui._char_turns[_characterIDs_turn].get_rect().size.x, 0)
+					_battle_ui._turn_bar.TurnCompleteForCharacter(_characterIDs_turn)
 					_characterIDs_turn = NO_CHARACTERS_TURN
 					_turn_indicator.hide()
 				else:
@@ -127,12 +128,11 @@ func Update(p_delta: float, p_characterID: int) -> void:
 	if(_characters[p_characterID]._currentHealth <= 0):
 		return
 	# No ones turn yet, so move along the turn order.
-	if(_battle_ui._char_turns[p_characterID].position.x + _battle_ui._char_turns[p_characterID].get_rect().size.x < TURN_POS_X_THRESHOLD):
-		_battle_ui._char_turns[p_characterID].position += Vector2(_characters[p_characterID]._attributes[Types.Attribute.Speed] * p_delta * 2, 0)
-	else:
-		#print("Now a turn for character ID: ", p_characterID)
-		_characterIDs_turn = p_characterID
-		StartTurn()
+	_battle_ui._turn_bar.Update(p_delta, p_characterID)
+	_characterIDs_turn = _battle_ui._turn_bar.GetActiveTurnID()
+	if(NO_CHARACTERS_TURN == _characterIDs_turn):
+		return
+	StartTurn()
 
 func UpdateLifeBar(p_characterID: int) -> void:
 	if(_characters[p_characterID]._currentHealth < 0):
@@ -140,6 +140,8 @@ func UpdateLifeBar(p_characterID: int) -> void:
 		_characters[p_characterID]._active_buffs.clear()
 		_characters[p_characterID]._active_debuffs.clear()
 		_character_repr[p_characterID].ClearStatusEffects()
+		_battle_ui._turn_bar.ShowCharacterAsDead(p_characterID)
+		_character_repr[p_characterID]._character_texture.material = GRAYSCALE_MATERIAL
 	elif (_characters[p_characterID]._currentHealth > (_characters[p_characterID].GetBattleAttribute(Types.Attribute.Health) * main.GAME_BALANCE.ATTRIBUTE_HEALTH_MULTIPLIER)):
 		_characters[p_characterID]._currentHealth = _characters[p_characterID].GetBattleAttribute(Types.Attribute.Health) * main.GAME_BALANCE.ATTRIBUTE_HEALTH_MULTIPLIER
 	
@@ -150,11 +152,10 @@ func VisualizeCharacter(p_characterID: int) -> void:
 	_character_repr[p_characterID]._level.text = str(_characters[p_characterID]._level)
 	var character_canvas_texture = CanvasTexture.new()
 	character_canvas_texture.diffuse_texture = load(_characters[p_characterID]._texture)
-	character_canvas_texture.normal_texture = load(_characters[p_characterID]._texture)
+	character_canvas_texture.normal_texture = load(_characters[p_characterID]._normal_map)
 	_character_repr[p_characterID]._character_texture.texture = character_canvas_texture
 	_character_repr[p_characterID]._lifebar.max_value = (_characters[p_characterID].GetBattleAttribute(Types.Attribute.Health) * main.GAME_BALANCE.ATTRIBUTE_HEALTH_MULTIPLIER)
 	UpdateLifeBar(p_characterID)
-	_battle_ui._char_turns[p_characterID].texture = load(_characters[p_characterID]._texture)
 	_character_repr[p_characterID].show()
 
 func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID) -> void:
@@ -200,8 +201,8 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID) -> voi
 				_characters[target_ID]._currentHealth -= damage_dealt
 				UpdateLifeBar(target_ID)
 		
-		_battle_ui._char_turns[target_ID].position += Vector2(cast_skill.turn_effect, 0)
-		ConstrictTurnLocation(target_ID)
+		_battle_ui._turn_bar.BumpCharacter(target_ID, cast_skill.turn_effect)
+		_battle_ui._turn_bar.ConstrictTurnLocation(target_ID)
 
 func IsTheBattleOver() -> WinningTeam:
 	var player_alive: bool = false
@@ -260,7 +261,7 @@ func _on_character_battle_target_selected(p_target_ID: int) -> void:
 			_battle_ui._skill_button_1.hide()
 			_battle_ui._skill_button_2.hide()
 			_battle_ui._skill_button_3.hide()
-			_battle_ui._char_turns[_characterIDs_turn].position -= Vector2(TURN_POS_X_THRESHOLD - _battle_ui._char_turns[_characterIDs_turn].get_rect().size.x, 0)
+			_battle_ui._turn_bar.TurnCompleteForCharacter(_characterIDs_turn)
 			_characterIDs_turn = NO_CHARACTERS_TURN
 			_turn_indicator.hide()
 			_battle_ui.HideSkillGlow()

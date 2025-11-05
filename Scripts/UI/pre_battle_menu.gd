@@ -16,7 +16,7 @@ var _character_collection: Array[Character]
 var _used_character_textures: Dictionary[Types.Role, Texture]
 var _available_to_chosen_IDs: Dictionary[int, int] = {0: -1, 1: -1, 2: -1}
 
-func Init(p_context_container: ContextContainer) -> void:
+func Init(_p_context_container: ContextContainer) -> void:
 	_character_collection = main._character_collection.GetAllCharacters().values()
 	var collected_types := main._character_collection.GetCollectedTypes()
 	for type in collected_types.keys():
