@@ -123,6 +123,7 @@ func StartTurn() -> void:
 func Update(p_delta: float, p_characterID: int) -> void:
 	# It already is someones turn, so return early.
 	if (PLAYER_IDS.has(_characterIDs_turn) or ENEMY_IDS.has(_characterIDs_turn)):
+		_turn_indicator.position.y = _character_repr[_characterIDs_turn].position.y - _turn_indicator.size.y + (sin(Time.get_ticks_msec() * 0.005) * 5)
 		return
 	# It isn't someones turn, but this character is dead so return early.
 	if(_characters[p_characterID]._currentHealth <= 0):
@@ -135,15 +136,14 @@ func Update(p_delta: float, p_characterID: int) -> void:
 	StartTurn()
 
 func UpdateLifeBar(p_characterID: int) -> void:
-	if(_characters[p_characterID]._currentHealth < 0):
+	clampi(_characters[p_characterID]._currentHealth, 0, _characters[p_characterID].GetBattleAttribute(Types.Attribute.Health) * main.GAME_BALANCE.ATTRIBUTE_HEALTH_MULTIPLIER)
+	if(_characters[p_characterID]._currentHealth <= 0):
 		_characters[p_characterID]._currentHealth = 0
 		_characters[p_characterID]._active_buffs.clear()
 		_characters[p_characterID]._active_debuffs.clear()
 		_character_repr[p_characterID].ClearStatusEffects()
 		_battle_ui._turn_bar.ShowCharacterAsDead(p_characterID)
 		_character_repr[p_characterID]._character_texture.material = GRAYSCALE_MATERIAL
-	elif (_characters[p_characterID]._currentHealth > (_characters[p_characterID].GetBattleAttribute(Types.Attribute.Health) * main.GAME_BALANCE.ATTRIBUTE_HEALTH_MULTIPLIER)):
-		_characters[p_characterID]._currentHealth = _characters[p_characterID].GetBattleAttribute(Types.Attribute.Health) * main.GAME_BALANCE.ATTRIBUTE_HEALTH_MULTIPLIER
 	
 	_character_repr[p_characterID]._lifebar.value = _characters[p_characterID]._currentHealth
 	_character_repr[p_characterID]._lifebar_text.text = str(_characters[p_characterID]._currentHealth) + "/" + str(_characters[p_characterID].GetBattleAttribute(Types.Attribute.Health) * main.GAME_BALANCE.ATTRIBUTE_HEALTH_MULTIPLIER)
@@ -163,8 +163,6 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID) -> voi
 	var caster_attributes: Dictionary[Types.Attribute, int] = _characters[p_caster_ID].GetBattleAttributes()
 	var target_attributes: Dictionary[Types.Attribute, int]
 	
-	Skills.ResolveSkillEffect(p_caster_ID, caster_attributes, p_target_IDs, cast_skill, _characters)
-	
 	if (_characters[p_caster_ID]._active_debuffs.size() > 0):
 		Skills.TriggerExistingCasterDebuffs(
 			_characters[p_caster_ID],
@@ -178,6 +176,8 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID) -> voi
 		cast_skill,
 		p_target_IDs.has(p_caster_ID),
 		_character_repr[p_caster_ID])
+	
+	Skills.ResolveSkillEffect(p_caster_ID, caster_attributes, p_target_IDs, cast_skill, _characters)
 	
 	for target_ID in p_target_IDs:
 		if(p_caster_ID != target_ID):
