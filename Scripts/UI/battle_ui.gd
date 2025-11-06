@@ -21,11 +21,8 @@ var _allow_new_effects: bool = true
 
 func Init() -> void:
 	SKILL_GLOW_POS_1 = Vector2(_skill_button_1.position.x - 25.0, _skill_button_1.position.y - 25.0)
-	print("Glow pos 1: ", SKILL_GLOW_POS_1)
 	SKILL_GLOW_POS_2 = Vector2(_skill_button_2.position.x - 25.0, _skill_button_2.position.y - 25.0)
-	print("Glow pos 2: ", SKILL_GLOW_POS_2)
 	SKILL_GLOW_POS_3 = Vector2(_skill_button_3.position.x - 25.0, _skill_button_3.position.y - 25.0)
-	print("Glow pos 3: ", SKILL_GLOW_POS_3)
 
 func CleanUp() -> void:
 	_allow_new_effects = false

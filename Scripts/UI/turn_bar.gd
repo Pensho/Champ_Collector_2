@@ -10,6 +10,7 @@ var GRAYSCALE_MATERIAL: ShaderMaterial
 var _highest_speed: int = 0
 var _characters_normalized_speed: Dictionary[int, float]
 var _characters_turn_ID = -1
+var _zone_dividers: Array[ColorRect]
 
 func Init(p_characters: Dictionary[int, Character]):
 	for i in p_characters.keys():
@@ -23,6 +24,15 @@ func Init(p_characters: Dictionary[int, Character]):
 		_char_turns[i].texture = load(p_characters[i]._texture)
 	GRAYSCALE_MATERIAL = ShaderMaterial.new()
 	GRAYSCALE_MATERIAL.shader = GRAYSCALE
+	
+	_zone_dividers.resize(main.GAME_BALANCE.NUMBER_OF_TURN_BAR_ZONES - 1)
+	for i in range(_zone_dividers.size()):
+		_zone_dividers[i] = ColorRect.new()
+		_zone_dividers[i].color = Color(0.0, 0.0, 0.0, 0.49)
+		_zone_dividers[i].size = Vector2(3.0, self.size.y)
+		_zone_dividers[i].position = Vector2((self.size.x / main.GAME_BALANCE.NUMBER_OF_TURN_BAR_ZONES) * (i + 1), 0.0)
+		self.add_child(_zone_dividers[i])
+		_zone_dividers[i].show()
 
 func GetActiveTurnID() -> int:
 	return _characters_turn_ID
