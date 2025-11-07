@@ -4,7 +4,6 @@ const Types = preload("res://Scripts/common_enums.gd")
 const GRAYSCALE = preload("uid://ia57lns0336p")
 
 const NO_CHARACTERS_TURN: int = -1
-const TURN_POS_X_THRESHOLD: int = 360
 const PLAYER_IDS: Array[int] = [0,1,2]
 const ENEMY_IDS: Array[int] = [3,4,5]
 var GRAYSCALE_MATERIAL: ShaderMaterial

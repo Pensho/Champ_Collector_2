@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=3 uid="uid://cc883blynrgq2"]
 
-[ext_resource type="Script" uid="uid://g08boofygabn" path="res://Scripts/Battle.gd" id="1_oxf17"]
+[ext_resource type="Script" uid="uid://g08boofygabn" path="res://Scripts/battle.gd" id="1_oxf17"]
 [ext_resource type="PackedScene" uid="uid://dy5q1foc8kon5" path="res://Scenes/battle_ui.tscn" id="2_1ruyk"]
 [ext_resource type="Texture2D" uid="uid://n1b55anwfwtk" path="res://Assets/Champ Collector/Scenery/Troll battle area/Troll_battle_area_2.jpg" id="2_qeyqd"]
 [ext_resource type="Texture2D" uid="uid://0s8rmq2i2vg6" path="res://Assets/Champ Collector/Scenery/Troll battle area/Troll_battle_area_2_Normal_Map.jpg" id="3_k7mbx"]

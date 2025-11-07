@@ -1,6 +1,7 @@
 class_name TurnBar extends Panel
 
 const Types = preload("res://Scripts/common_enums.gd")
+const DEFAULT_THEME = preload("uid://c8irweh6md2jy")
 const GRAYSCALE = preload("uid://ia57lns0336p")
 const NO_CHARACTERS_TURN: int = -1
 var BASE_VELOCITY: float = self.size.x / main.GAME_BALANCE.TURN_DURATION_SECONDS
@@ -11,6 +12,7 @@ var _highest_speed: int = 0
 var _characters_normalized_speed: Dictionary[int, float]
 var _characters_turn_ID = -1
 var _zone_dividers: Array[ColorRect]
+var _zone_buttons: Array[Button]
 
 func Init(p_characters: Dictionary[int, Character]):
 	for i in p_characters.keys():
@@ -32,7 +34,22 @@ func Init(p_characters: Dictionary[int, Character]):
 		_zone_dividers[i].size = Vector2(3.0, self.size.y)
 		_zone_dividers[i].position = Vector2((self.size.x / main.GAME_BALANCE.NUMBER_OF_TURN_BAR_ZONES) * (i + 1), 0.0)
 		self.add_child(_zone_dividers[i])
-		_zone_dividers[i].show()
+	
+	var stylebox: StyleBoxFlat
+	_zone_buttons.resize(main.GAME_BALANCE.NUMBER_OF_TURN_BAR_ZONES)
+	for i in _zone_buttons.size():
+		_zone_buttons[i] = Button.new()
+		_zone_buttons[i].position = Vector2((self.size.x / main.GAME_BALANCE.NUMBER_OF_TURN_BAR_ZONES) * i, 0.0)
+		_zone_buttons[i].size = Vector2(self.size.x / main.GAME_BALANCE.NUMBER_OF_TURN_BAR_ZONES, self.size.y)
+		_zone_buttons[i].theme = DEFAULT_THEME
+		_zone_buttons[i].connect("button_up", _zone_button.bind(i))
+		stylebox = _zone_buttons[i].get_theme_stylebox("normal")
+		stylebox.bg_color = Color(0.0, 0.0, 0.0, 0.196)
+		_zone_buttons[i].add_theme_stylebox_override("normal", stylebox)
+		self.add_child(_zone_buttons[i])
+
+func _zone_button(p_zone_ID) -> void:
+	print("Triggered zone button nr: ", p_zone_ID)
 
 func GetActiveTurnID() -> int:
 	return _characters_turn_ID
