@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://dy5q1foc8kon5"]
+[gd_scene load_steps=16 format=3 uid="uid://dy5q1foc8kon5"]
 
 [ext_resource type="Script" uid="uid://che4nfxkv8ukc" path="res://Scripts/UI/battle_ui.gd" id="1_gfldn"]
 [ext_resource type="Texture2D" uid="uid://cj6uxwt730ish" path="res://Assets/Champ Collector/Icons/Turn_Bar/walking-boot.svg" id="2_6sbxc"]
@@ -9,6 +9,7 @@
 [ext_resource type="Material" uid="uid://btoxlv6hhnxp6" path="res://Assets/Champ Collector/Material/SkillMaterialShader.tres" id="4_d07u5"]
 [ext_resource type="Texture2D" uid="uid://ctbnnvhe6erv0" path="res://Assets/Champ Collector/Icons/Abilities/Bolas/Bolas_2.jpg" id="4_nm010"]
 [ext_resource type="Texture2D" uid="uid://desu7vr6la0bf" path="res://Assets/Champ Collector/Icons/Abilities/Smoke_Screen/Smoke_Screen_5.jpg" id="6_scq05"]
+[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ Collector/Themes/default_theme.tres" id="10_rvbdk"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4blpl"]
 bg_color = Color(0.635797, 0.5513, 0.269355, 0.482353)
@@ -47,7 +48,7 @@ shader_parameter/radius = 0.5
 shader_parameter/feather = 0.03
 shader_parameter/center = Vector2(0.5, 0.5)
 
-[node name="Battle UI" type="Control"]
+[node name="Battle UI" type="Control" node_paths=PackedStringArray("_battle_duration_label")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -55,6 +56,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_gfldn")
+_battle_duration_label = NodePath("Label_Battle_Duration")
 
 [node name="PlayerInfoBox" type="Panel" parent="." node_paths=PackedStringArray("_char_turns")]
 material = ExtResource("2_d07u5")
@@ -169,6 +171,14 @@ offset_right = 1253.0
 offset_bottom = 603.0
 icon = ExtResource("6_scq05")
 expand_icon = true
+
+[node name="Label_Battle_Duration" type="Label" parent="."]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 15.0
+offset_right = 69.0
+offset_bottom = 45.0
+theme = ExtResource("10_rvbdk")
 
 [connection signal="button_up" from="Skill_1" to="." method="_on_skill_1_button_up"]
 [connection signal="button_up" from="Skill_2" to="." method="_on_skill_2_button_up"]

@@ -8,6 +8,8 @@ class_name BattleUI extends Control
 @onready var _turn_bar: TurnBar = $PlayerInfoBox
 @warning_ignore_restore("unused_private_class_variable")
 
+@export var _battle_duration_label: Label
+
 const DAMAGE_NUMBER_TEMPLATE = preload("res://Scenes/ui/Damage_Number.tscn")
 var SKILL_GLOW_POS_1: Vector2
 var SKILL_GLOW_POS_2: Vector2
@@ -18,11 +20,18 @@ signal battle_skill_selected(p_skill_ID: int)
 
 var _damage_number_2d_pool: Array[DamageNumber2D] = []
 var _allow_new_effects: bool = true
+var _battle_duration := 0.0
 
 func Init() -> void:
 	SKILL_GLOW_POS_1 = Vector2(_skill_button_1.position.x - 25.0, _skill_button_1.position.y - 25.0)
 	SKILL_GLOW_POS_2 = Vector2(_skill_button_2.position.x - 25.0, _skill_button_2.position.y - 25.0)
 	SKILL_GLOW_POS_3 = Vector2(_skill_button_3.position.x - 25.0, _skill_button_3.position.y - 25.0)
+
+func _process(delta: float) -> void:
+	_battle_duration += delta
+	var minutes := _battle_duration / 60
+	var seconds := fmod(_battle_duration, 60)
+	_battle_duration_label.text = "%02d:%02d" % [minutes, seconds]
 
 func CleanUp() -> void:
 	_allow_new_effects = false
