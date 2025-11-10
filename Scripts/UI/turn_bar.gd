@@ -4,7 +4,7 @@ const Types = preload("res://Scripts/common_enums.gd")
 const DEFAULT_THEME = preload("uid://c8irweh6md2jy")
 const GRAYSCALE = preload("uid://ia57lns0336p")
 const NO_CHARACTERS_TURN: int = -1
-var BASE_VELOCITY: float = self.size.x / main.GAME_BALANCE.TURN_DURATION_SECONDS
+var BASE_VELOCITY: float = self.size.x / Game_Balance.TURN_DURATION_SECONDS
 var GRAYSCALE_MATERIAL: ShaderMaterial
 
 @export var _char_turns: Array[TextureRect]
@@ -27,20 +27,20 @@ func Init(p_characters: Dictionary[int, Character]):
 	GRAYSCALE_MATERIAL = ShaderMaterial.new()
 	GRAYSCALE_MATERIAL.shader = GRAYSCALE
 	
-	_zone_dividers.resize(main.GAME_BALANCE.NUMBER_OF_TURN_BAR_ZONES - 1)
+	_zone_dividers.resize(Game_Balance.NUMBER_OF_TURN_BAR_ZONES - 1)
 	for i in range(_zone_dividers.size()):
 		_zone_dividers[i] = ColorRect.new()
 		_zone_dividers[i].color = Color(0.0, 0.0, 0.0, 0.49)
 		_zone_dividers[i].size = Vector2(3.0, self.size.y)
-		_zone_dividers[i].position = Vector2((self.size.x / main.GAME_BALANCE.NUMBER_OF_TURN_BAR_ZONES) * (i + 1), 0.0)
+		_zone_dividers[i].position = Vector2((self.size.x / Game_Balance.NUMBER_OF_TURN_BAR_ZONES) * (i + 1), 0.0)
 		self.add_child(_zone_dividers[i])
 	
 	var stylebox: StyleBoxFlat
-	_zone_buttons.resize(main.GAME_BALANCE.NUMBER_OF_TURN_BAR_ZONES)
+	_zone_buttons.resize(Game_Balance.NUMBER_OF_TURN_BAR_ZONES)
 	for i in _zone_buttons.size():
 		_zone_buttons[i] = Button.new()
-		_zone_buttons[i].position = Vector2((self.size.x / main.GAME_BALANCE.NUMBER_OF_TURN_BAR_ZONES) * i, 0.0)
-		_zone_buttons[i].size = Vector2(self.size.x / main.GAME_BALANCE.NUMBER_OF_TURN_BAR_ZONES, self.size.y)
+		_zone_buttons[i].position = Vector2((self.size.x / Game_Balance.NUMBER_OF_TURN_BAR_ZONES) * i, 0.0)
+		_zone_buttons[i].size = Vector2(self.size.x / Game_Balance.NUMBER_OF_TURN_BAR_ZONES, self.size.y)
 		_zone_buttons[i].theme = DEFAULT_THEME
 		_zone_buttons[i].connect("button_up", _zone_button.bind(i))
 		stylebox = _zone_buttons[i].get_theme_stylebox("normal")

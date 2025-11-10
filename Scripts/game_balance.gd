@@ -1,5 +1,5 @@
 class_name GameBalance
-extends Resource
+extends Node
 
 const Types = preload("res://Scripts/common_enums.gd")
 

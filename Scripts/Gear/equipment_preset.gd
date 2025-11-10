@@ -26,9 +26,9 @@ var _attributes: Dictionary[Types.Attribute, int] = {
 func Setup() -> void:
 	var random_attribute_element: int = -1
 	for i in _rarity:
-		if(main.GAME_BALANCE.ITEM_TYPE_ATTRIBUTES.has(_slot)):
-			random_attribute_element = randi() % main.GAME_BALANCE.ITEM_TYPE_ATTRIBUTES[_slot].size()
+		if(Game_Balance.ITEM_TYPE_ATTRIBUTES.has(_slot)):
+			random_attribute_element = randi() % Game_Balance.ITEM_TYPE_ATTRIBUTES[_slot].size()
 			if(Types.Attribute.CritDamage != random_attribute_element):
-				_attributes[main.GAME_BALANCE.ITEM_TYPE_ATTRIBUTES[_slot][random_attribute_element]] += main.GAME_BALANCE.ITEM_ATTRIBUTE_PER_RARITY
+				_attributes[Game_Balance.ITEM_TYPE_ATTRIBUTES[_slot][random_attribute_element]] += Game_Balance.ITEM_ATTRIBUTE_PER_RARITY
 			else:
-				_attributes[main.GAME_BALANCE.ITEM_TYPE_ATTRIBUTES[_slot][random_attribute_element]] += main.GAME_BALANCE.ITEM_ATTRIBUTE_PER_RARITY
+				_attributes[Game_Balance.ITEM_TYPE_ATTRIBUTES[_slot][random_attribute_element]] += Game_Balance.ITEM_ATTRIBUTE_PER_RARITY

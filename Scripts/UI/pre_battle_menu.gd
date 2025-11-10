@@ -17,8 +17,8 @@ var _used_character_textures: Dictionary[Types.Role, Texture]
 var _available_to_chosen_IDs: Dictionary[int, int] = {0: -1, 1: -1, 2: -1}
 
 func Init(_p_context_container: ContextContainer) -> void:
-	_character_collection = main._character_collection.GetAllCharacters().values()
-	var collected_types := main._character_collection.GetCollectedTypes()
+	_character_collection = main.GetInstance()._character_collection.GetAllCharacters().values()
+	var collected_types := main.GetInstance()._character_collection.GetCollectedTypes()
 	for type in collected_types.keys():
 		_used_character_textures[type] = load(collected_types[type])
 	SetTextures()
@@ -66,7 +66,7 @@ func SetTextures() -> void:
 func _on_exit_button_up() -> void:
 	var context_container: ContextContainer = ContextContainer.new()
 	context_container._scene = "res://Scenes/ui/MainMenu.tscn"
-	main.change_scene(context_container)
+	main.GetInstance().change_scene(context_container)
 
 func _on_start_button_up() -> void:
 	if (_chosen_characters.size() <= 0):
@@ -78,7 +78,7 @@ func _on_start_button_up() -> void:
 	context_container._scene = "res://Scenes/battle.tscn"
 	context_container._player_battle_characters = _chosen_characters.values()
 	
-	main.change_scene(context_container)
+	main.GetInstance().change_scene(context_container)
 	hide()
 
 func _on_remove_char_button_up(p_char_slot: int) -> void:

@@ -19,7 +19,7 @@ static func ResolveSkillEffect(
 	match p_skill.skill_type:
 		Types.Skill_Type.Heap_On:
 			if (0 == _heap_on_stacks[p_caster_ID]):
-				_heap_on_value[p_caster_ID] = float(p_caster_attr[Types.Attribute.Health]) * main.GAME_BALANCE.HEAP_ON_MULTIPLIER
+				_heap_on_value[p_caster_ID] = float(p_caster_attr[Types.Attribute.Health]) * Game_Balance.HEAP_ON_MULTIPLIER
 			p_caster_attr[Types.Attribute.Health] += int(_heap_on_value[p_caster_ID] * float(_heap_on_stacks[p_caster_ID]))
 			_heap_on_stacks[p_caster_ID] += 1
 		Types.Skill_Type.Burning_Bolas:
@@ -86,7 +86,7 @@ static func TriggerExistingCasterDebuffs(
 	for debuff in p_caster._active_debuffs:
 		match debuff.effect:
 			Types.Debuff_Type.Burning:
-				p_caster._currentHealth -= int(floor((p_caster_attributes[Types.Attribute.Health] * main.GAME_BALANCE.ATTRIBUTE_HEALTH_MULTIPLIER) * 0.05))
+				p_caster._currentHealth -= int(floor((p_caster_attributes[Types.Attribute.Health] * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER) * 0.05))
 		
 		debuff.duration -= 1
 		if (debuff.duration <= 0):

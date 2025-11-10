@@ -14,19 +14,19 @@ const GAMEBALANCE = preload("res://Scripts/game_balance.gd")
 var _available_item_slots: Array[MenuItemSlot]
 var _item_slots_equiped: Array[MenuItemSlot]
 var _showing_items: bool = false
-var _character_collection: Array[Character] = main._character_collection.GetAllCharacters().values()
+var _character_collection: Array[Character] = main.GetInstance()._character_collection.GetAllCharacters().values()
 var _character_collection_size: int
 var _selected_character_ID: int = -1
 
 func Init(_p_context_container: ContextContainer) -> void:
 	_available_item_slots.append_array(GetMenuItemSlotChildren(v_box_container))
-	_character_collection_size = main._character_collection.Size()
+	_character_collection_size = main.GetInstance()._character_collection.Size()
 	
 	for i in _available_item_slots.size():
 		_available_item_slots[i]._ID = i
 		_available_item_slots[i].button.button_up.connect(AvailableItemSlotButton.bind(i))
 		if(i < _character_collection_size):
-			_available_item_slots[i].SetHeldObjectTexture(main._character_collection.GetCharacterTexture(_character_collection[i]._role))
+			_available_item_slots[i].SetHeldObjectTexture(main.GetInstance()._character_collection.GetCharacterTexture(_character_collection[i]._role))
 			_available_item_slots[i].level.text = str(_character_collection[i]._level)
 	
 	_item_slots_equiped.append_array(GetMenuItemSlotChildren(v_box_container_2))
@@ -43,7 +43,7 @@ func GetMenuItemSlotChildren(p_start_node: Node) -> Array[MenuItemSlot]:
 	return result
 
 func ShowSelectedCharacter(p_ID: int) -> void:
-	_selected_character_texture.texture = main._character_collection.GetCharacterTexture(_character_collection[p_ID]._role)
+	_selected_character_texture.texture = main.GetInstance()._character_collection.GetCharacterTexture(_character_collection[p_ID]._role)
 	for attr in _attribute_labels.keys():
 		if(Types.Attribute.Health == attr):
 			_attribute_labels[attr].text = str((_character_collection[p_ID]._attributes[attr] + _character_collection[p_ID].GetEquipmentBonus(attr)) * GAMEBALANCE.ATTRIBUTE_HEALTH_MULTIPLIER)
@@ -57,23 +57,23 @@ func ShowSelectedCharacter(p_ID: int) -> void:
 	_selected_char_level.text = "Level: " + str(_character_collection[p_ID]._level)
 	
 	if(_character_collection[p_ID]._held_items.has(Types.Slot.Weapon)):
-		_item_slots_equiped[0].SetHeldObjectTexture(main._item_collection.GetItemTexture(Types.Slot.Weapon))
+		_item_slots_equiped[0].SetHeldObjectTexture(main.GetInstance()._item_collection.GetItemTexture(Types.Slot.Weapon))
 	if(_character_collection[p_ID]._held_items.has(Types.Slot.Shield)):
-		_item_slots_equiped[0].SetHeldObjectTexture(main._item_collection.GetItemTexture(Types.Slot.Shield))
+		_item_slots_equiped[0].SetHeldObjectTexture(main.GetInstance()._item_collection.GetItemTexture(Types.Slot.Shield))
 	if(_character_collection[p_ID]._held_items.has(Types.Slot.Boots)):
-		_item_slots_equiped[0].SetHeldObjectTexture(main._item_collection.GetItemTexture(Types.Slot.Boots))
+		_item_slots_equiped[0].SetHeldObjectTexture(main.GetInstance()._item_collection.GetItemTexture(Types.Slot.Boots))
 
 func ShowItemCollection() -> void:
 	for slot in _available_item_slots.size():
 		_available_item_slots[slot].level.text = ""
 		
-		if(main._item_collection._items.has(slot)):
-			_available_item_slots[slot].SetHeldObjectTexture(main._item_collection.GetItemTexture(main._item_collection._items[slot]._slot))
+		if(main.GetInstance()._item_collection._items.has(slot)):
+			_available_item_slots[slot].SetHeldObjectTexture(main.GetInstance()._item_collection.GetItemTexture(main.GetInstance()._item_collection._items[slot]._slot))
 		else:
 			_available_item_slots[slot].SetHeldObjectTexture(null)
 
 func CanEquipFromMenuID(p_ID: int) -> bool:
-	var selected_item_type: Types.Slot = main._item_collection._items[p_ID]._slot
+	var selected_item_type: Types.Slot = main.GetInstance()._item_collection._items[p_ID]._slot
 	return not _character_collection[_selected_character_ID]._held_items.has(selected_item_type)
 
 func AvailableItemSlotButton(p_ID: int) -> void:
@@ -82,34 +82,34 @@ func AvailableItemSlotButton(p_ID: int) -> void:
 		_selected_character_ID = p_ID
 		ShowSelectedCharacter(p_ID)
 		ShowItemCollection()
-	elif (main._item_collection._items.has(p_ID) and _showing_items):
+	elif (main.GetInstance()._item_collection._items.has(p_ID) and _showing_items):
 		if(CanEquipFromMenuID(p_ID)):
 			print("Can equip!")
 			EquipItem(p_ID)
 
 func EquipItem(p_ID: int) -> void:
-	var item: Equipment =  main._item_collection.TakeEquipment(p_ID)
+	var item: Equipment =  main.GetInstance()._item_collection.TakeEquipment(p_ID)
 	_character_collection[_selected_character_ID].AddEquipment(item)
 	_available_item_slots[p_ID].SetHeldObjectTexture(null)
 	ShowSelectedCharacter(_selected_character_ID)
 
 func UnequipItem(p_slot: Types.Slot) -> void:
 	var held_item = _character_collection[_selected_character_ID]._held_items[p_slot]
-	main._item_collection.AddEquipment(held_item)
+	main.GetInstance()._item_collection.AddEquipment(held_item)
 	_character_collection[_selected_character_ID]._held_items.erase(p_slot)
 	match p_slot:
 		Types.Slot.Weapon:
 			_item_slots_equiped[0].SetHeldObjectTexture(null)
-			_available_item_slots[held_item._instanceID].SetHeldObjectTexture(main._item_collection.GetItemTexture(Types.Slot.Weapon))
+			_available_item_slots[held_item._instanceID].SetHeldObjectTexture(main.GetInstance()._item_collection.GetItemTexture(Types.Slot.Weapon))
 		Types.Slot.Shield:
 			_item_slots_equiped[1].SetHeldObjectTexture(null)
-			_available_item_slots[held_item._instanceID].SetHeldObjectTexture(main._item_collection.GetItemTexture(Types.Slot.Shield))
+			_available_item_slots[held_item._instanceID].SetHeldObjectTexture(main.GetInstance()._item_collection.GetItemTexture(Types.Slot.Shield))
 		Types.Slot.Boots:
 			_item_slots_equiped[2].SetHeldObjectTexture(null)
-			_available_item_slots[held_item._instanceID].SetHeldObjectTexture(main._item_collection.GetItemTexture(Types.Slot.Boots))
+			_available_item_slots[held_item._instanceID].SetHeldObjectTexture(main.GetInstance()._item_collection.GetItemTexture(Types.Slot.Boots))
 	ShowSelectedCharacter(_selected_character_ID)
 	print(_character_collection[_selected_character_ID], " now holds these items: ", _character_collection[_selected_character_ID]._held_items)
-	print("item collection now holds these items: ", main._item_collection._items)
+	print("item collection now holds these items: ", main.GetInstance()._item_collection._items)
 
 func EquipedItemSlotButton(p_ID: int) -> void:
 	if(_showing_items):
@@ -138,7 +138,7 @@ func _on_button_deselect_char_button_up() -> void:
 		_selected_char_level.text = "Level: "
 		for i in _available_item_slots.size():
 			if(i < _character_collection_size):
-				_available_item_slots[i].SetHeldObjectTexture(main._character_collection.GetCharacterTexture(_character_collection[i]._role))
+				_available_item_slots[i].SetHeldObjectTexture(main.GetInstance()._character_collection.GetCharacterTexture(_character_collection[i]._role))
 				_available_item_slots[i].level.text = str(_character_collection[i]._level)
 			else:
 				_available_item_slots[i].SetHeldObjectTexture(null)
@@ -155,4 +155,4 @@ func SetAvailableSlots(p_show_items: bool) -> void:
 func _on_exit_button_up() -> void:
 	var context_container: ContextContainer = ContextContainer.new()
 	context_container._scene = "res://Scenes/ui/MainMenu.tscn"
-	main.change_scene(context_container)
+	main.GetInstance().change_scene(context_container)

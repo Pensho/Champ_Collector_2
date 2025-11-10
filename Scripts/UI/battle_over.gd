@@ -16,18 +16,20 @@ func Init(p_context_container: ContextContainer) -> void:
 	_previous_context = p_context_container
 	if(p_context_container._util_text == "Loss"):
 		_texture_rect_background.texture = load("res://Assets/Champ Collector/UI/Loss_Screen/Loss_1.png")
+		_texture_rect_background.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		_texture_rect_background.size.x = 1280
 		_texture_rect_background.size.y = 720
 		_heading.text = "Lost"
 	elif(p_context_container._util_text == "Victory"):
 		pass
 
-	if(main._character_collection.GetAllCharacters().size() >= 3):
+	if(main.GetInstance()._character_collection.Size() >= 3):
 		for i in 3:
-			_player_battle_characters.append(main._character_collection.GetCharacter(i))
+			_player_battle_characters.append(main.GetInstance()._character_collection.GetCharacter(i))
 	else:
-		for i in main._character_collection.GetAllCharacters():
-			_player_battle_characters.append(main._character_collection.GetCharacter(i))
+		var characters = main.GetInstance()._character_collection.GetAllCharacters()
+		for i in characters:
+			_player_battle_characters.append(i)
 
 func focus_button() -> void:
 	if _h_box_container:
@@ -41,14 +43,14 @@ func _on_visibility_changed() -> void:
 func _on_button_end_button_up() -> void:
 	var context_container: ContextContainer = ContextContainer.new()
 	context_container._scene = "res://Scenes/ui/MainMenu.tscn"
-	main.change_scene(context_container)
+	main.GetInstance().change_scene(context_container)
 
 func _on_button_replay_button_up() -> void:
 	_previous_context._scene = _previous_context._previous_scene
 	_previous_context._previous_scene = "res://Scenes/ui/Battle_Over.tscn"
-	main.change_scene(_previous_context)
+	main.GetInstance().change_scene(_previous_context)
 
 func _on_button_edit_team_button_up() -> void:
 	var context_container: ContextContainer = ContextContainer.new()
 	context_container._scene = "res://Scenes/ui/Pre_Battle_Menu.tscn"
-	main.change_scene(context_container)
+	main.GetInstance().change_scene(context_container)

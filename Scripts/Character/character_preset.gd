@@ -21,8 +21,8 @@ const Types = preload("res://Scripts/common_enums.gd")
 @export var _resistance: int = 0
 @export var _mysticism: int = 0
 @export var _knowledge: int = 0
-@export var _critChance: int = main.GAME_BALANCE.CHARACTER_BASE_CRIT_CH
-@export var _critDamage: int = main.GAME_BALANCE.CHARACTER_BASE_CRIT_DMG
+@export var _critChance: int = Game_Balance.CHARACTER_BASE_CRIT_CH
+@export var _critDamage: int = Game_Balance.CHARACTER_BASE_CRIT_DMG
 
 @export var _attributes_weights: Array[Types.Attribute]
 

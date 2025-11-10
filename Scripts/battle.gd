@@ -48,14 +48,14 @@ func Init(p_context: ContextContainer) -> void:
 	
 	for i in p_context._player_battle_characters.size():
 		_characters[i] = p_context._player_battle_characters[i]
-		_characters[i]._currentHealth = _characters[i].GetBattleAttribute(Types.Attribute.Health)  * main.GAME_BALANCE.ATTRIBUTE_HEALTH_MULTIPLIER
+		_characters[i]._currentHealth = _characters[i].GetBattleAttribute(Types.Attribute.Health)  * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
 		VisualizeCharacter(i)
 	
 	for i in battlecontext._enemies_wave_1.size():
 		_characters[i + 3] = Character.new()
 		_characters[i + 3].InstantiateNew(battlecontext._enemies_wave_1[i], -1)
 		_characters[i + 3]._attributes[Types.Attribute.Speed] += randi_range(-3, 3)
-		_characters[i + 3]._currentHealth = _characters[i + 3].GetBattleAttribute(Types.Attribute.Health)  * main.GAME_BALANCE.ATTRIBUTE_HEALTH_MULTIPLIER
+		_characters[i + 3]._currentHealth = _characters[i + 3].GetBattleAttribute(Types.Attribute.Health)  * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
 		VisualizeCharacter(i + 3)
 	
 	GRAYSCALE_MATERIAL = ShaderMaterial.new()
@@ -135,7 +135,7 @@ func Update(p_delta: float, p_characterID: int) -> void:
 	StartTurn()
 
 func UpdateLifeBar(p_characterID: int) -> void:
-	clampi(_characters[p_characterID]._currentHealth, 0, _characters[p_characterID].GetBattleAttribute(Types.Attribute.Health) * main.GAME_BALANCE.ATTRIBUTE_HEALTH_MULTIPLIER)
+	clampi(_characters[p_characterID]._currentHealth, 0, _characters[p_characterID].GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
 	if(_characters[p_characterID]._currentHealth <= 0):
 		_characters[p_characterID]._currentHealth = 0
 		_characters[p_characterID]._active_buffs.clear()
@@ -145,7 +145,7 @@ func UpdateLifeBar(p_characterID: int) -> void:
 		_character_repr[p_characterID]._character_texture.material = GRAYSCALE_MATERIAL
 	
 	_character_repr[p_characterID]._lifebar.value = _characters[p_characterID]._currentHealth
-	_character_repr[p_characterID]._lifebar_text.text = str(_characters[p_characterID]._currentHealth) + "/" + str(_characters[p_characterID].GetBattleAttribute(Types.Attribute.Health) * main.GAME_BALANCE.ATTRIBUTE_HEALTH_MULTIPLIER)
+	_character_repr[p_characterID]._lifebar_text.text = str(_characters[p_characterID]._currentHealth) + "/" + str(_characters[p_characterID].GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
 
 func VisualizeCharacter(p_characterID: int) -> void:
 	_character_repr[p_characterID]._level.text = str(_characters[p_characterID]._level)
@@ -153,7 +153,7 @@ func VisualizeCharacter(p_characterID: int) -> void:
 	character_canvas_texture.diffuse_texture = load(_characters[p_characterID]._texture)
 	character_canvas_texture.normal_texture = load(_characters[p_characterID]._normal_map)
 	_character_repr[p_characterID]._character_texture.texture = character_canvas_texture
-	_character_repr[p_characterID]._lifebar.max_value = (_characters[p_characterID].GetBattleAttribute(Types.Attribute.Health) * main.GAME_BALANCE.ATTRIBUTE_HEALTH_MULTIPLIER)
+	_character_repr[p_characterID]._lifebar.max_value = (_characters[p_characterID].GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
 	UpdateLifeBar(p_characterID)
 	_character_repr[p_characterID].show()
 
@@ -240,11 +240,11 @@ func EndBattle(p_winner: WinningTeam) -> void:
 	for i in _characters.keys():
 		if(PLAYER_IDS.has(i)):
 			LevelSystem.AddExperience(_characters[i], experience_gained)
-			_characters[i]._currentHealth = _characters[i]._attributes[Types.Attribute.Health] * main.GAME_BALANCE.ATTRIBUTE_HEALTH_MULTIPLIER
+			_characters[i]._currentHealth = _characters[i]._attributes[Types.Attribute.Health] * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
 	
 	_self_context._scene = "res://Scenes/ui/Battle_Over.tscn"
 	
-	main.change_scene(_self_context)
+	main.GetInstance().change_scene(_self_context)
 
 func _on_character_battle_target_selected(p_target_ID: int) -> void:
 	if(PLAYER_IDS.has(_characterIDs_turn)):

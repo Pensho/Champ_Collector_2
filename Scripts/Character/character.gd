@@ -26,7 +26,7 @@ func InstantiateNew(preset: CharacterPreset, instanceID: int) -> void:
 	_attributes[Types.Attribute.CritChance] = preset._critChance
 	_attributes[Types.Attribute.CritDamage] = preset._critDamage
 	
-	_currentHealth = GetBattleAttribute(Types.Attribute.Health) * main.GAME_BALANCE.ATTRIBUTE_HEALTH_MULTIPLIER
+	_currentHealth = GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
 
 func GetEquipmentBonus(p_attribute: Types.Attribute) -> int:
 	var bonus_stat: int = 0

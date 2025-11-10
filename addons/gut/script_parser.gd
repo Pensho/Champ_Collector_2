@@ -174,7 +174,14 @@ class ParsedScript:
 
 
 	func _find_subpath(parent_script, inner):
-		var const_map = parent_script.get_script_constant_map()
+		var const_map
+		if(parent_script is GDScript):
+			#print("parent_script is GDScript!")
+			const_map = parent_script.get_script_constant_map()
+		else:
+			#print("parent_script is *NOT* GDScript!")
+			pass
+			const_map = {}
 		var consts = const_map.keys()
 		var const_idx = 0
 		var found = false
@@ -312,4 +319,3 @@ func parse(thing, inner_thing=null):
 				scripts[key] = parsed
 
 	return parsed
-

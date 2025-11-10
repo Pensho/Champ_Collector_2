@@ -12,7 +12,7 @@ offset_bottom = 720.0
 script = ExtResource("1_admv5")
 
 [node name="TextureRect_Background" type="TextureRect" parent="."]
-layout_mode = 2
+layout_mode = 0
 offset_right = 1280.0
 offset_bottom = 720.0
 texture = ExtResource("2_qbyvt")

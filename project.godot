@@ -20,6 +20,7 @@ config/icon="uid://cxe2lffkbra47"
 [autoload]
 
 main="*res://Scripts/main.gd"
+Game_Balance="*res://Scripts/game_balance.gd"
 
 [display]
 

@@ -12,12 +12,12 @@ func Init(p_context_container: ContextContainer) -> void:
 func _on_start_game_button_pressed() -> void:
 	var context_container: ContextContainer = ContextContainer.new()
 	context_container._scene = "res://Scenes/ui/Pre_Battle_Menu.tscn"
-	main.change_scene(context_container)
+	main.GetInstance().change_scene(context_container)
 
 func _on_button_view_collection_button_up() -> void:
 	var context_container: ContextContainer = ContextContainer.new()
 	context_container._scene = "res://Scenes/ui/Inspect_Collection_Menu.tscn"
-	main.change_scene(context_container)
+	main.GetInstance().change_scene(context_container)
 
 func _on_quit_button_pressed() -> void:
 	get_tree().quit()
