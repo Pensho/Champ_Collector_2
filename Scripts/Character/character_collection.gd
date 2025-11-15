@@ -51,6 +51,8 @@ func GetCharacterTexture(p_character_role: Types.Role) -> Texture:
 			return _used_character_textures[Types.Role.Bloodmage]
 		Types.Role.Herald_of_the_loom:
 			return _used_character_textures[Types.Role.Herald_of_the_loom]
+		Types.Role.Chronophage:
+			return _used_character_textures[Types.Role.Chronophage]
 		_:
 			print("pre_battle_menu.gd/GetCharacterTexture() Unspecified character role!")
 	return null

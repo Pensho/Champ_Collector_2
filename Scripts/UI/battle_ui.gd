@@ -77,9 +77,12 @@ func ActiveSkillGlow(p_skill_ID: int) -> void:
 		_:
 			print("Invalid option to show skill glow for.")
 
-func HideSkillGlow() -> void:
+func HideSkillUI() -> void:
+	_skill_button_1.hide()
+	_skill_button_2.hide()
+	_skill_button_3.hide()
 	skill_focus.position = SKILL_GLOW_POS_HIDDEN
-	pass
+	_turn_bar.DisableZones(true)
 
 func _on_skill_1_button_up() -> void:
 	skill_focus.position = SKILL_GLOW_POS_1

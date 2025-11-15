@@ -60,6 +60,8 @@ func SetTextures() -> void:
 				_available_char_texture[slot].texture = _used_character_textures[Types.Role.Bloodmage]
 			Types.Role.Herald_of_the_loom:
 				_available_char_texture[slot].texture = _used_character_textures[Types.Role.Herald_of_the_loom]
+			Types.Role.Chronophage:
+				_available_char_texture[slot].texture = _used_character_textures[Types.Role.Chronophage]
 			_:
 				print("pre_battle_menu.gd/SetTextures() Unspecified character role!")
 

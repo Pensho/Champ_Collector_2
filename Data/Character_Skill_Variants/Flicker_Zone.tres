@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="Skill" load_steps=2 format=3 uid="uid://c4jeqgmcjxuvw"]
+
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_5tl7t"]
+
+[resource]
+script = ExtResource("1_5tl7t")
+name = "Flicker Zone"
+description = "Creates a zone on the turn bar, giving allies a quick boost in speed when triggered."
+icon_path = "res://Assets/Champ Collector/Icons/Abilities/Flicker_Zone/Flicker_Zone.jpg"
+target = 8
+cooldown = 2
+duration = 4
+skill_type = 4
+metadata/_custom_type_script = "uid://glh06y3wvchj"

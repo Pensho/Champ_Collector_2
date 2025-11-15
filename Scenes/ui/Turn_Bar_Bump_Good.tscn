@@ -1,0 +1,108 @@
+[gd_scene load_steps=11 format=3 uid="uid://7aqjlq70jbhi"]
+
+[ext_resource type="Texture2D" uid="uid://cj6uxwt730ish" path="res://Assets/Champ Collector/Icons/Turn_Bar/walking-boot.svg" id="1_2w8t5"]
+[ext_resource type="Script" uid="uid://bak1t404v5t50" path="res://Scenes/ui/turn_bar_bump_good.gd" id="1_eoyxc"]
+[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ Collector/Themes/default_theme.tres" id="2_3u2qy"]
+
+[sub_resource type="Gradient" id="Gradient_7l2qu"]
+offsets = PackedFloat32Array(0.6396396, 0.7027027, 0.7241379)
+colors = PackedColorArray(1, 1, 1, 0.27450982, 1, 1, 1, 0.44313726, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_5qfag"]
+gradient = SubResource("Gradient_7l2qu")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+
+[sub_resource type="Gradient" id="Gradient_eoyxc"]
+offsets = PackedFloat32Array(0, 0.15137614, 1)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0)
+
+[sub_resource type="Gradient" id="Gradient_3u2qy"]
+offsets = PackedFloat32Array(0, 0.10550459, 1)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 0.6862745, 1, 1, 1, 0)
+
+[sub_resource type="Gradient" id="Gradient_iv02o"]
+offsets = PackedFloat32Array(0, 0.6216216)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_lxcu4"]
+gradient = SubResource("Gradient_iv02o")
+height = 16
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.8, 0.5)
+
+[sub_resource type="Gradient" id="Gradient_by2im"]
+offsets = PackedFloat32Array(0, 0.10091743, 1)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0)
+
+[node name="TurnBarBumpGood" type="Node2D" node_paths=PackedStringArray("background", "cpu_particles_2d_up_1", "cpu_particles_2d_up_2", "cpu_particles_2d_side_1", "label")]
+script = ExtResource("1_eoyxc")
+background = NodePath("Background")
+cpu_particles_2d_up_1 = NodePath("CPUParticles2D_Up_1")
+cpu_particles_2d_up_2 = NodePath("CPUParticles2D_Up_2")
+cpu_particles_2d_side_1 = NodePath("CPUParticles2D_Side_1")
+label = NodePath("Label")
+
+[node name="Background" type="ColorRect" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+mouse_filter = 2
+color = Color(1, 1, 0, 0.15686275)
+
+[node name="Label" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 23.0
+theme = ExtResource("2_3u2qy")
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.5176471)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 1
+theme_override_constants/shadow_outline_size = 1
+
+[node name="CPUParticles2D_Up_1" type="CPUParticles2D" parent="."]
+position = Vector2(0, -25)
+texture = SubResource("GradientTexture2D_5qfag")
+lifetime = 2.0
+emission_shape = 3
+emission_rect_extents = Vector2(200, 25)
+direction = Vector2(0, -1)
+spread = 10.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 20.0
+initial_velocity_max = 20.0
+scale_amount_min = 0.2
+scale_amount_max = 0.2
+color = Color(1, 1, 0, 1)
+color_ramp = SubResource("Gradient_eoyxc")
+
+[node name="CPUParticles2D_Up_2" type="CPUParticles2D" parent="."]
+position = Vector2(0, -25)
+texture = ExtResource("1_2w8t5")
+lifetime = 2.0
+emission_shape = 3
+emission_rect_extents = Vector2(200, 25)
+direction = Vector2(0, -1)
+spread = 10.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 20.0
+initial_velocity_max = 20.0
+scale_amount_min = 0.03
+scale_amount_max = 0.03
+color = Color(1, 1, 0, 1)
+color_ramp = SubResource("Gradient_3u2qy")
+
+[node name="CPUParticles2D_Side_1" type="CPUParticles2D" parent="."]
+position = Vector2(-100, -50)
+texture = SubResource("GradientTexture2D_lxcu4")
+emission_shape = 3
+emission_rect_extents = Vector2(100, 50)
+spread = 0.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 100.0
+initial_velocity_max = 200.0
+color = Color(1, 1, 0, 1)
+color_ramp = SubResource("Gradient_by2im")

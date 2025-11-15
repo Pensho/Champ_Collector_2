@@ -8,10 +8,12 @@ const Statuses = preload("res://Scripts/status_effects.gd")
 @export var icon_path: String = ""
 @export var target: Types.Skill_Target
 
-@export var turn_effect: int
+# turn_effect is used as a percentage. -1.0 - 1.0
+@export var turn_effect: float
 @export var damage_scaling: Dictionary[Types.Attribute, float]
 # cooldown is the amount of turns until the skill can be used again.
 @export var cooldown: int = 0
+@export var duration: int = 0
 
 @export var skill_type: Types.Skill_Type
 # defense_ignore_factor goes between 0.0 - 1.0

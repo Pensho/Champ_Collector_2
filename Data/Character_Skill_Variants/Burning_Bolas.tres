@@ -7,15 +7,11 @@ script = ExtResource("1_dp32v")
 name = "Burning bolas"
 description = "Fling a set of burning bolas onto the target, dealing damage and make them burn."
 icon_path = "res://Assets/Champ Collector/Icons/Abilities/Burning_Bolas/Burning_Bolas_1.png"
-target = 0
-turn_effect = 0
 damage_scaling = Dictionary[int, float]({
 2: 0.6
 })
-cooldown = 0
+cooldown = 1
 skill_type = 3
-defense_ignore_factor = 1.0
-buffs = Dictionary[int, int]({})
 debuffs = Dictionary[int, int]({
 0: 0
 })

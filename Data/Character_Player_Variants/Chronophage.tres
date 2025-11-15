@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="CharacterPreset" load_steps=5 format=3 uid="uid://wofv42g341ac"]
+
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_wypv1"]
+[ext_resource type="Resource" uid="uid://dvgwxvsovsldc" path="res://Data/Character_Skill_Variants/Stab.tres" id="2_s6tdb"]
+[ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_uh5a3"]
+[ext_resource type="Resource" uid="uid://c4jeqgmcjxuvw" path="res://Data/Character_Skill_Variants/Flicker_Zone.tres" id="3_rpaiv"]
+
+[resource]
+script = ExtResource("2_uh5a3")
+_name = "Chronophage"
+_texture = "res://Assets/Champ Collector/Creatures/Chronophage/Chronophage_0010.png"
+_rarity = 3
+_faction = 1
+_role = 17
+_skills = Array[ExtResource("1_wypv1")]([ExtResource("2_s6tdb"), ExtResource("2_s6tdb"), ExtResource("3_rpaiv")])
+_health = 40
+_speed = 80
+_attack = 40
+_defence = 40
+_accuracy = 40
+_resistance = 30
+_mysticism = 50
+_knowledge = 50
+_attributes_weights = Array[int]([1, 0, 6, 7])
+metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

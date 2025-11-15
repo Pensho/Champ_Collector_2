@@ -38,6 +38,7 @@ enum Role
 	Bar_Brawler,
 	Bloodmage,
 	Herald_of_the_loom,
+	Chronophage,
 }
 
 enum Slot
@@ -66,6 +67,7 @@ enum Skill_Target
 	
 	Ally_Not_Self,
 	Random_One,
+	Zone,
 	All,
 }
 
@@ -89,6 +91,8 @@ enum Skill_Type
 	Heap_On,
 	Pierce_Weakness,
 	Burning_Bolas,
+	Flicker_Zone,
+	None,
 }
 
 enum Buff_Type

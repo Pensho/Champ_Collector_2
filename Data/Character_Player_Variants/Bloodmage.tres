@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="CharacterPreset" load_steps=4 format=3 uid="uid://7adgp1emx6yk"]
+
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_vydqi"]
+[ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_8awhw"]
+[ext_resource type="Resource" uid="uid://dvgwxvsovsldc" path="res://Data/Character_Skill_Variants/Stab.tres" id="2_mbp0t"]
+
+[resource]
+script = ExtResource("2_8awhw")
+_name = "Bloodmage"
+_texture = "res://Assets/Champ Collector/Creatures/Bloodmage/Bloodmage_0004.png"
+_normal_map = "res://Assets/Champ Collector/Creatures/Bloodmage/Bloodmage_0004_Normal_Map.png"
+_rarity = 2
+_faction = 3
+_role = 15
+_skills = Array[ExtResource("1_vydqi")]([ExtResource("2_mbp0t"), ExtResource("2_mbp0t"), ExtResource("2_mbp0t")])
+_health = 100
+_speed = 50
+_attack = 30
+_defence = 40
+_accuracy = 30
+_resistance = 40
+_mysticism = 70
+_knowledge = 10
+_attributes_weights = Array[int]([0, 0, 6])
+metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

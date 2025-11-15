@@ -10,6 +10,15 @@ const MONSTER_IDS: Array[int] = [3,4,5]
 static var _heap_on_stacks: Array[int] = [0, 0, 0, 0, 0, 0]
 static var _heap_on_value: Array[float] = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
 
+static func ResolveZoneEffect(
+					p_zone_type: Types.Skill_Type,
+					p_character: Character,
+					p_character_ID: int,
+					p_battle_ui: BattleUI) -> void:
+	match p_zone_type:
+		Types.Skill_Type.Flicker_Zone:
+			p_battle_ui._turn_bar.BumpCharacter(p_character_ID, 0.15)
+
 static func ResolveSkillEffect(
 		p_caster_ID: int,
 		p_caster_attr: Dictionary[Types.Attribute, int],
@@ -74,6 +83,8 @@ static func FindSkillTargets(
 		Types.Skill_Target.All:
 			target_IDs.append_array(PLAYER_IDS)
 			target_IDs.append_array(MONSTER_IDS)
+		Types.Skill_Target.Zone:
+			pass
 		var INVALID_TYPE:
 			print("Invalid argument for skill target enum passed: ", INVALID_TYPE)
 	return target_IDs
@@ -157,26 +168,50 @@ static func TriggerTargetBuffs(
 static func TriggerTargetDebuffs(
 							p_target: Character,
 							p_target_attributes: Dictionary[Types.Attribute, int],
-							p_caster_accuracy: int,
 							p_skill: Skill,
 							p_target_repr: CharacterRepresentation) -> void:
-	
-	var randomVal: float = 0.0
-	for target in p_skill.debuffs.keys():
-		randomVal = randf_range(0.95, 1.05)
-		if(p_caster_accuracy * randomVal > p_target_attributes[Types.Attribute.Resistance]):
-			var new_debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
-			new_debuff.effect = p_skill.debuffs[target]
-			p_target._active_debuffs.append(new_debuff)
-			p_target_repr.AddStatusEffect(Statuses.DEBUFF_ICONS[target])
-		else:
-			print("Target character ", p_target._name, " resisted the debuff!")
 	
 	for debuff in p_target._active_debuffs:
 		match debuff.effect:
 			# TODO: Add debuff handling
 			_:
 				pass
+
+static func PlaceBuff(
+				p_target: Character,
+				p_skill: Skill,
+				p_target_repr: CharacterRepresentation):
+	
+	if(p_skill.buffs.is_empty()):
+		return
+	
+	var new_buff: StatusEffects.Buff = StatusEffects.Buff.new()
+	new_buff.effect = p_skill.buffs[p_skill.target]
+	p_target._active_buffs.append(new_buff)
+	p_target_repr.AddStatusEffect(Statuses.BUFF_ICONS[new_buff.effect])
+
+static func PlaceDebuff(
+					p_target: Character,
+					p_target_attributes: Dictionary[Types.Attribute, int],
+					p_caster_accuracy: int,
+					p_skill: Skill,
+					p_target_repr: CharacterRepresentation):
+	
+	if(p_skill.debuffs.is_empty()):
+		return
+	
+	var randomVal: float = randf_range(0.95, 1.0)
+	var randomVal2: float = randf_range(0.95, 1.0)
+	if(p_caster_accuracy * randomVal < p_target_attributes[Types.Attribute.Resistance] * randomVal2):
+		print("Target character ", p_target._name, " resisted the debuff!")
+		return
+	
+	match p_skill.skill_type:
+		Types.Skill_Type.Burning_Bolas:
+			var new_debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
+			new_debuff.effect = p_skill.debuffs[p_skill.target]
+			p_target._active_debuffs.append(new_debuff)
+			p_target_repr.AddStatusEffect(Statuses.DEBUFF_ICONS[new_debuff.effect])
 
 static func DamageDealt(p_attacker_attr: Dictionary[Types.Attribute, int],
 						p_defender_attr: Dictionary[Types.Attribute, int],
