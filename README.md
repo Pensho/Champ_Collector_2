@@ -15,8 +15,8 @@
 
 ### Visual examples of the project
 
-State of battle (2025_09_19)
-![image](Progress_Images/2025_09_19.PNG)
+State of battle (15-09-2025)
+![image](Progress_Images/15-09-2025.PNG)
 
 
 
