@@ -2,6 +2,7 @@ class_name Skills
 extends Node
 
 const Types = preload("res://Scripts/common_enums.gd")
+const ZoneType = preload("uid://bdjrfif0s60v4")
 const Statuses = preload("res://Scripts/status_effects.gd")
 
 const PLAYER_IDS: Array[int] = [0,1,2]
@@ -11,13 +12,14 @@ static var _heap_on_stacks: Array[int] = [0, 0, 0, 0, 0, 0]
 static var _heap_on_value: Array[float] = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
 
 static func ResolveZoneEffect(
-					p_zone_type: Types.Skill_Type,
+					p_zone: Zone,
 					p_character: Character,
 					p_character_ID: int,
 					p_battle_ui: BattleUI) -> void:
-	match p_zone_type:
+	match p_zone._type:
 		Types.Skill_Type.Flicker_Zone:
-			p_battle_ui._turn_bar.BumpCharacter(p_character_ID, 0.15)
+			if(CorrectZoneTarget(p_zone._owner_ID, p_character_ID, p_zone._target)):
+				p_battle_ui._turn_bar.BumpCharacter(p_character_ID, 0.15)
 
 static func ResolveSkillEffect(
 		p_caster_ID: int,
@@ -35,6 +37,18 @@ static func ResolveSkillEffect(
 			var randomVal: float = randf_range(0.95, 1.0)
 			if(p_caster_attr[Types.Attribute.Accuracy] >= p_characterList[p_target_IDs[0]]._attributes[Types.Attribute.Resistance] * randomVal):
 				pass
+
+static func CorrectZoneTarget(p_zone_owner_ID: int, p_trigger_character_ID: int, p_zone_target: Types.Skill_Target) -> bool:
+	match p_zone_target:
+		Types.Skill_Target.ZoneAll:
+			return true
+		Types.Skill_Target.ZoneAlly:
+			return (PLAYER_IDS.has(p_trigger_character_ID) and PLAYER_IDS.has(p_zone_owner_ID)) or (MONSTER_IDS.has(p_trigger_character_ID) and MONSTER_IDS.has(p_zone_owner_ID))
+		Types.Skill_Target.ZoneEnemy:
+			return (MONSTER_IDS.has(p_trigger_character_ID) and PLAYER_IDS.has(p_zone_owner_ID)) or (PLAYER_IDS.has(p_trigger_character_ID) and MONSTER_IDS.has(p_zone_owner_ID))
+		_:
+			print("Invalid target passed for zone target: ", p_zone_target)
+	return false
 
 static func FindSkillTargets(
 					p_target_ID: int,
@@ -83,7 +97,7 @@ static func FindSkillTargets(
 		Types.Skill_Target.All:
 			target_IDs.append_array(PLAYER_IDS)
 			target_IDs.append_array(MONSTER_IDS)
-		Types.Skill_Target.Zone:
+		Types.Skill_Target.ZoneAll, Types.Skill_Target.ZoneAlly, Types.Skill_Target.ZoneEnemy:
 			pass
 		var INVALID_TYPE:
 			print("Invalid argument for skill target enum passed: ", INVALID_TYPE)

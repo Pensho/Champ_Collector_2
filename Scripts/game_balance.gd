@@ -7,7 +7,7 @@ const Types = preload("res://Scripts/common_enums.gd")
 const CHARACTER_BASE_CRIT_CH: int = 5
 const CHARACTER_BASE_CRIT_DMG: int = 150
 
-const ATTRIBUTE_HEALTH_MULTIPLIER: int = 7
+const ATTRIBUTE_HEALTH_MULTIPLIER: int = 6
 
 ## CharacterCollection
 const COLLECTION_START_ROSTER_SIZE: int = 50

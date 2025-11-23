@@ -13,6 +13,7 @@ const Statuses = preload("res://Scripts/status_effects.gd")
 @export var damage_scaling: Dictionary[Types.Attribute, float]
 # cooldown is the amount of turns until the skill can be used again.
 @export var cooldown: int = 0
+var cooldown_left: int = 0
 @export var duration: int = 0
 
 @export var skill_type: Types.Skill_Type

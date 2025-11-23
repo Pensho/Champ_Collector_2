@@ -52,17 +52,6 @@ size_flags_vertical = 0
 mouse_filter = 2
 color = Color(1, 1, 0, 0.15686275)
 
-[node name="Label" type="Label" parent="."]
-offset_right = 40.0
-offset_bottom = 23.0
-theme = ExtResource("2_3u2qy")
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.5176471)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 3
-theme_override_constants/shadow_offset_y = 3
-theme_override_constants/outline_size = 1
-theme_override_constants/shadow_outline_size = 1
-
 [node name="CPUParticles2D_Up_1" type="CPUParticles2D" parent="."]
 position = Vector2(0, -25)
 texture = SubResource("GradientTexture2D_5qfag")
@@ -106,3 +95,15 @@ initial_velocity_min = 100.0
 initial_velocity_max = 200.0
 color = Color(1, 1, 0, 1)
 color_ramp = SubResource("Gradient_by2im")
+
+[node name="Label" type="Label" parent="."]
+self_modulate = Color(1, 1, 1, 0.75686276)
+offset_right = 40.0
+offset_bottom = 30.0
+theme = ExtResource("2_3u2qy")
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.5176471)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 1
+theme_override_constants/shadow_outline_size = 1

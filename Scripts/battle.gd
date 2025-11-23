@@ -1,6 +1,7 @@
 class_name Battle extends Node2D
 
 const Types = preload("res://Scripts/common_enums.gd")
+const ZoneType = preload("uid://bdjrfif0s60v4")
 const GRAYSCALE = preload("uid://ia57lns0336p")
 
 const NO_CHARACTERS_TURN: int = -1
@@ -23,10 +24,6 @@ var _characterIDs_turn: int = -1
 var _selected_skill_ID: int = 0
 var _initialized: bool = false
 
-class Zone:
-	var type: Types.Skill_Type
-	var duration: int = -1
-	var player_owned: bool
 var _zones: Dictionary[int, Zone]
 
 enum WinningTeam
@@ -91,6 +88,9 @@ func StartTurn() -> void:
 	_turn_indicator.position.x = _character_repr[_characterIDs_turn].position.x + (_character_repr[_characterIDs_turn]._character_texture.size.x * 0.5) - (_turn_indicator.size.x * 0.5)
 	_turn_indicator.position.y = _character_repr[_characterIDs_turn].position.y - _turn_indicator.size.y
 	_turn_indicator.show()
+	for i in _characters[_characterIDs_turn]._skills.size():
+		if(_characters[_characterIDs_turn]._skills[i].cooldown_left > 0):
+			_characters[_characterIDs_turn]._skills[i].cooldown_left -= 1
 	if(PLAYER_IDS.has(_characterIDs_turn)):
 		_battle_ui.SetSkill1Texture(_characters[_characterIDs_turn]._skills[0].icon_path)
 		_battle_ui.SetSkill2Texture(_characters[_characterIDs_turn]._skills[1].icon_path)
@@ -119,15 +119,21 @@ func StartTurn() -> void:
 					print("Invalid target for skill by an enemy! Something is wrong.")
 				# A skill has resolved, break the loop for targeting.
 				break
-	for character in _characters.keys():
-		if PLAYER_IDS.has(character):
-			for ID in _zones.keys():
-				if(_battle_ui._turn_bar.IsCharacterInZone(character, ID) and _zones[ID].duration != 0):
-					Skills.ResolveZoneEffect(_zones[ID].type, _characters[character], character, _battle_ui)
-					_zones[ID].duration -= 1
-					_battle_ui._turn_bar.ZoneTriggered(ID, _zones[ID].duration)
+	TriggerZones()
+
+func TriggerZones() -> void:
+	if(!PLAYER_IDS.has(_characterIDs_turn)):
+		return
+	for character_ID in _characters.keys():
+		for ID in _zones.keys():
+			if(_battle_ui._turn_bar.IsCharacterInZone(character_ID, ID) and _zones[ID]._duration != 0):
+				Skills.ResolveZoneEffect(_zones[ID], _characters[character_ID], character_ID, _battle_ui)
+				_zones[ID]._duration -= 1
+				_battle_ui._turn_bar.ZoneTriggered(ID, _zones[ID]._duration)
+				# Restrict the trigger to one zone per character.
+				break
 	for ID in _zones.keys():
-		if (_zones[ID].duration == 0):
+		if (_zones[ID]._duration == 0):
 			_zones.erase(ID)
 
 func Update(p_delta: float, p_characterID: int) -> void:
@@ -229,6 +235,7 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID) -> voi
 		if(0.0 != cast_skill.turn_effect):
 			_battle_ui._turn_bar.BumpCharacter(target_ID, cast_skill.turn_effect)
 	
+	_characters[p_caster_ID]._skills[p_skill_ID].cooldown_left = _characters[p_caster_ID]._skills[p_skill_ID].cooldown
 	_battle_ui._turn_bar.TurnCompleteForCharacter(_characterIDs_turn)
 	_characterIDs_turn = NO_CHARACTERS_TURN
 	_turn_indicator.hide()
@@ -292,9 +299,13 @@ func _on_character_battle_target_selected(p_target_ID: int) -> void:
 			print("Invalid target for skill")
 
 func _on_battle_ui_battle_skill_selected(p_skill_ID: int) -> void:
+	if(_characters[_characterIDs_turn]._skills[p_skill_ID].cooldown_left > 0):
+		print("Selected skill: ", p_skill_ID, " is on cooldown with: ", _characters[_characterIDs_turn]._skills[p_skill_ID].cooldown_left, " more turns left.")
+		return
 	_selected_skill_ID = p_skill_ID
-	if(Types.Skill_Target.Zone == _characters[_characterIDs_turn]._skills[_selected_skill_ID].target):
-		_battle_ui._turn_bar.DisableZones(false)
+	match _characters[_characterIDs_turn]._skills[_selected_skill_ID].target:
+		Types.Skill_Target.ZoneAlly, Types.Skill_Target.ZoneEnemy, Types.Skill_Target.ZoneAll:
+			_battle_ui._turn_bar.DisableZones(false)
 
 func _on_turn_bar_zone_selected(p_zone_ID: int) -> void:
 	print("_on_turn_bar_zone_selected called with ID: ", p_zone_ID)
@@ -302,10 +313,11 @@ func _on_turn_bar_zone_selected(p_zone_ID: int) -> void:
 		print("Zone is already used")
 		return
 	_zones[p_zone_ID] = Zone.new()
-	_zones[p_zone_ID].duration = _characters[_characterIDs_turn]._skills[_selected_skill_ID].duration
-	_zones[p_zone_ID].player_owned = true
-	_zones[p_zone_ID].type = _characters[_characterIDs_turn]._skills[_selected_skill_ID].skill_type
-	_battle_ui._turn_bar.SpawnZoneEffect(p_zone_ID, _zones[p_zone_ID].duration, _zones[p_zone_ID].player_owned)
+	_zones[p_zone_ID].CreateNew(_characters[_characterIDs_turn]._skills[_selected_skill_ID].skill_type,
+								_characters[_characterIDs_turn]._skills[_selected_skill_ID].duration,
+								_characterIDs_turn,
+								_characters[_characterIDs_turn]._skills[_selected_skill_ID].target)
+	_battle_ui._turn_bar.SpawnZoneEffect(p_zone_ID, _zones[p_zone_ID]._duration, PLAYER_IDS.has(_zones[p_zone_ID]._owner_ID))
 	ResolveSkill(_characterIDs_turn, [], _selected_skill_ID)
 	var battle_state = IsTheBattleOver()
 	if (WinningTeam.Ongoing != battle_state):

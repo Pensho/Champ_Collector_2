@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://dy5q1foc8kon5"]
+[gd_scene load_steps=18 format=3 uid="uid://dy5q1foc8kon5"]
 
 [ext_resource type="Script" uid="uid://che4nfxkv8ukc" path="res://Scripts/UI/battle_ui.gd" id="1_gfldn"]
 [ext_resource type="Texture2D" uid="uid://cj6uxwt730ish" path="res://Assets/Champ Collector/Icons/Turn_Bar/walking-boot.svg" id="2_6sbxc"]
@@ -35,6 +35,18 @@ gradient = SubResource("Gradient_d07u5")
 fill = 1
 fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(0.7, 0)
+
+[sub_resource type="Gradient" id="Gradient_rvbdk"]
+offsets = PackedFloat32Array(0.8603604, 1)
+colors = PackedColorArray(0, 0, 0, 0.8745098, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_lrvrl"]
+gradient = SubResource("Gradient_rvbdk")
+width = 160
+height = 160
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.85, 0.85)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6lbqc"]
 shader = ExtResource("2_scq05")
@@ -146,7 +158,6 @@ offset_bottom = 202.0
 texture = SubResource("GradientTexture2D_6lbqc")
 
 [node name="Skill_1" type="Button" parent="."]
-visible = false
 material = ExtResource("4_d07u5")
 layout_mode = 0
 offset_left = 1103.0
@@ -156,8 +167,46 @@ offset_bottom = 279.0
 icon = ExtResource("4_nm010")
 expand_icon = true
 
+[node name="TextureRect" type="TextureRect" parent="Skill_1"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -80.0
+offset_top = -80.0
+offset_right = 80.0
+offset_bottom = 80.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture2D_lrvrl")
+
+[node name="Label" type="Label" parent="Skill_1/TextureRect"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -15.0
+offset_right = 20.0
+offset_bottom = 15.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("10_rvbdk")
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.62352943)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 5
+theme_override_constants/shadow_outline_size = 5
+text = "2"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="Skill_2" type="Button" parent="."]
-visible = false
 material = SubResource("ShaderMaterial_6lbqc")
 layout_mode = 0
 offset_left = 1102.0
@@ -167,8 +216,46 @@ offset_bottom = 439.0
 icon = ExtResource("4_4blpl")
 expand_icon = true
 
+[node name="TextureRect" type="TextureRect" parent="Skill_2"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -80.0
+offset_top = -80.0
+offset_right = 80.0
+offset_bottom = 80.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture2D_lrvrl")
+
+[node name="Label" type="Label" parent="Skill_2/TextureRect"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -15.0
+offset_right = 20.0
+offset_bottom = 15.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("10_rvbdk")
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.62352943)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 5
+theme_override_constants/shadow_outline_size = 5
+text = "2"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="Skill_3" type="Button" parent="."]
-visible = false
 material = SubResource("ShaderMaterial_rvbdk")
 layout_mode = 0
 offset_left = 1103.0
@@ -177,6 +264,45 @@ offset_right = 1253.0
 offset_bottom = 603.0
 icon = ExtResource("6_scq05")
 expand_icon = true
+
+[node name="TextureRect" type="TextureRect" parent="Skill_3"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -80.0
+offset_top = -80.0
+offset_right = 80.0
+offset_bottom = 80.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture2D_lrvrl")
+
+[node name="Label" type="Label" parent="Skill_3/TextureRect"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -15.0
+offset_right = 20.0
+offset_bottom = 15.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("10_rvbdk")
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.62352943)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 5
+theme_override_constants/shadow_outline_size = 5
+text = "2"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="Label_Battle_Duration" type="Label" parent="."]
 layout_mode = 0

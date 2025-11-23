@@ -65,9 +65,12 @@ enum Skill_Target
 	All_Allies,
 	Random_Ally,
 	
+	ZoneAll,
+	ZoneAlly,
+	ZoneEnemy,
+	
 	Ally_Not_Self,
 	Random_One,
-	Zone,
 	All,
 }
 
