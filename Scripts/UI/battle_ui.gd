@@ -21,6 +21,7 @@ signal battle_skill_selected(p_skill_ID: int)
 var _damage_number_2d_pool: Array[DamageNumber2D] = []
 var _allow_new_effects: bool = true
 var _battle_duration := 0.0
+var _skill_textures: Dictionary[String, Texture2D]
 
 func Init() -> void:
 	SKILL_GLOW_POS_1 = Vector2(_skill_button_1.position.x - 25.0, _skill_button_1.position.y - 25.0)
@@ -38,6 +39,11 @@ func CleanUp() -> void:
 	for i in _damage_number_2d_pool:
 		i.animation_player.stop()
 	_damage_number_2d_pool.clear()
+
+func LoadSkillTexture(p_texture_path: String) -> void:
+	if(_skill_textures.has(p_texture_path)):
+		return
+	_skill_textures[p_texture_path] = load(p_texture_path)
 
 func SpawnDamageNumber(p_value: int, p_position: Vector2) -> void:
 	if (_allow_new_effects):
@@ -57,13 +63,13 @@ func GetDamageNumber() -> DamageNumber2D:
 	return null
 
 func SetSkill1Texture(p_texture_path: String) -> void:
-	_skill_button_1.icon = load(p_texture_path)
+	_skill_button_1.icon = _skill_textures[p_texture_path]
 
 func SetSkill2Texture(p_texture_path: String) -> void:
-	_skill_button_2.icon = load(p_texture_path)
+	_skill_button_2.icon = _skill_textures[p_texture_path]
 
 func SetSkill3Texture(p_texture_path: String) -> void:
-	_skill_button_3.icon = load(p_texture_path)
+	_skill_button_3.icon = _skill_textures[p_texture_path]
 
 func ActiveSkillGlow(p_skill_ID: int) -> void:
 	match p_skill_ID:

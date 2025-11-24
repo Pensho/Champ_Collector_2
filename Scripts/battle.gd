@@ -61,6 +61,10 @@ func Init(p_context: ContextContainer) -> void:
 		_characters[i + 3]._currentHealth = _characters[i + 3].GetBattleAttribute(Types.Attribute.Health)  * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
 		VisualizeCharacter(i + 3)
 	
+	for i in _characters.keys():
+		for j in _characters[i]._skills.size():
+			_battle_ui.LoadSkillTexture(_characters[i]._skills[j].icon_path)
+	
 	GRAYSCALE_MATERIAL = ShaderMaterial.new()
 	GRAYSCALE_MATERIAL.shader = GRAYSCALE
 	
