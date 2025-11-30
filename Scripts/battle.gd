@@ -92,18 +92,20 @@ func StartTurn() -> void:
 	_turn_indicator.position.x = _character_repr[_characterIDs_turn].position.x + (_character_repr[_characterIDs_turn]._character_texture.size.x * 0.5) - (_turn_indicator.size.x * 0.5)
 	_turn_indicator.position.y = _character_repr[_characterIDs_turn].position.y - _turn_indicator.size.y
 	_turn_indicator.show()
-	for i in _characters[_characterIDs_turn]._skills.size():
-		if(_characters[_characterIDs_turn]._skills[i].cooldown_left > 0):
-			_characters[_characterIDs_turn]._skills[i].cooldown_left -= 1
 	if(PLAYER_IDS.has(_characterIDs_turn)):
 		_battle_ui.SetSkill1Texture(_characters[_characterIDs_turn]._skills[0].icon_path)
 		_battle_ui.SetSkill2Texture(_characters[_characterIDs_turn]._skills[1].icon_path)
 		_battle_ui.SetSkill3Texture(_characters[_characterIDs_turn]._skills[2].icon_path)
-		_battle_ui._skill_button_1.show()
-		_battle_ui._skill_button_2.show()
-		_battle_ui._skill_button_3.show()
+		_battle_ui._skill_buttons[0].show()
+		_battle_ui._skill_buttons[1].show()
+		_battle_ui._skill_buttons[2].show()
 		_selected_skill_ID = 0
 		_battle_ui.ActiveSkillGlow(_selected_skill_ID)
+		for i in _battle_ui._skill_buttons.size():
+			if(_characters[_characterIDs_turn]._skills[i].cooldown_left > 0):
+				_battle_ui._skill_buttons[i].SetCooldown(_characters[_characterIDs_turn]._skills[i].cooldown_left)
+			else:
+				_battle_ui._skill_buttons[i].ClearCooldown()
 	elif(ENEMY_IDS.has(_characterIDs_turn)):
 		# TODO: Clean this nested mess up
 		# Using only the first skill for now.
@@ -239,6 +241,9 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID) -> voi
 		if(0.0 != cast_skill.turn_effect):
 			_battle_ui._turn_bar.BumpCharacter(target_ID, cast_skill.turn_effect)
 	
+	for i in _characters[_characterIDs_turn]._skills.size():
+		if(_characters[_characterIDs_turn]._skills[i].cooldown_left > 0):
+			_characters[_characterIDs_turn]._skills[i].cooldown_left -= 1
 	_characters[p_caster_ID]._skills[p_skill_ID].cooldown_left = _characters[p_caster_ID]._skills[p_skill_ID].cooldown
 	_battle_ui._turn_bar.TurnCompleteForCharacter(_characterIDs_turn)
 	_characterIDs_turn = NO_CHARACTERS_TURN

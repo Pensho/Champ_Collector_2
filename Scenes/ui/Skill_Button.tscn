@@ -1,0 +1,67 @@
+[gd_scene load_steps=7 format=3 uid="uid://bte7ljry64t3x"]
+
+[ext_resource type="Material" uid="uid://btoxlv6hhnxp6" path="res://Assets/Champ Collector/Material/SkillMaterialShader.tres" id="1_q5mwb"]
+[ext_resource type="Texture2D" uid="uid://ctbnnvhe6erv0" path="res://Assets/Champ Collector/Icons/Abilities/Bolas/Bolas_2.jpg" id="2_vb6vb"]
+[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ Collector/Themes/default_theme.tres" id="3_dgvai"]
+[ext_resource type="Script" uid="uid://d3vb3ivy0ijg8" path="res://Scripts/UI/skill_button.gd" id="3_vb6vb"]
+
+[sub_resource type="Gradient" id="Gradient_rvbdk"]
+offsets = PackedFloat32Array(0.8603604, 1)
+colors = PackedColorArray(0, 0, 0, 0.8745098, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_lrvrl"]
+gradient = SubResource("Gradient_rvbdk")
+width = 160
+height = 160
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.85, 0.85)
+
+[node name="Skill_1" type="Button"]
+material = ExtResource("1_q5mwb")
+offset_right = 150.0
+offset_bottom = 150.0
+icon = ExtResource("2_vb6vb")
+expand_icon = true
+script = ExtResource("3_vb6vb")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -80.0
+offset_top = -80.0
+offset_right = 80.0
+offset_bottom = 80.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture2D_lrvrl")
+
+[node name="Label" type="Label" parent="TextureRect"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -15.0
+offset_right = 20.0
+offset_bottom = 15.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("3_dgvai")
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.62352943)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 5
+theme_override_constants/shadow_outline_size = 5
+text = "2"
+horizontal_alignment = 1
+vertical_alignment = 1

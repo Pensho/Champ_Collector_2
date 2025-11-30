@@ -1,9 +1,7 @@
 class_name BattleUI extends Control
 
 @warning_ignore_start("unused_private_class_variable")
-@onready var _skill_button_1: Button = $Skill_1
-@onready var _skill_button_2: Button = $Skill_2
-@onready var _skill_button_3: Button = $Skill_3
+@export var _skill_buttons: Array[SkillButton]
 @onready var skill_focus: TextureRect = $Skill_Focus
 @onready var _turn_bar: TurnBar = $PlayerInfoBox
 @warning_ignore_restore("unused_private_class_variable")
@@ -24,9 +22,9 @@ var _battle_duration := 0.0
 var _skill_textures: Dictionary[String, Texture2D]
 
 func Init() -> void:
-	SKILL_GLOW_POS_1 = Vector2(_skill_button_1.position.x - 25.0, _skill_button_1.position.y - 25.0)
-	SKILL_GLOW_POS_2 = Vector2(_skill_button_2.position.x - 25.0, _skill_button_2.position.y - 25.0)
-	SKILL_GLOW_POS_3 = Vector2(_skill_button_3.position.x - 25.0, _skill_button_3.position.y - 25.0)
+	SKILL_GLOW_POS_1 = Vector2(_skill_buttons[0].position.x - 25.0, _skill_buttons[0].position.y - 25.0)
+	SKILL_GLOW_POS_2 = Vector2(_skill_buttons[1].position.x - 25.0, _skill_buttons[1].position.y - 25.0)
+	SKILL_GLOW_POS_3 = Vector2(_skill_buttons[2].position.x - 25.0, _skill_buttons[2].position.y - 25.0)
 
 func _process(delta: float) -> void:
 	_battle_duration += delta
@@ -63,13 +61,13 @@ func GetDamageNumber() -> DamageNumber2D:
 	return null
 
 func SetSkill1Texture(p_texture_path: String) -> void:
-	_skill_button_1.icon = _skill_textures[p_texture_path]
+	_skill_buttons[0].icon = _skill_textures[p_texture_path]
 
 func SetSkill2Texture(p_texture_path: String) -> void:
-	_skill_button_2.icon = _skill_textures[p_texture_path]
+	_skill_buttons[1].icon = _skill_textures[p_texture_path]
 
 func SetSkill3Texture(p_texture_path: String) -> void:
-	_skill_button_3.icon = _skill_textures[p_texture_path]
+	_skill_buttons[2].icon = _skill_textures[p_texture_path]
 
 func ActiveSkillGlow(p_skill_ID: int) -> void:
 	match p_skill_ID:
@@ -84,9 +82,8 @@ func ActiveSkillGlow(p_skill_ID: int) -> void:
 			print("Invalid option to show skill glow for.")
 
 func HideSkillUI() -> void:
-	_skill_button_1.hide()
-	_skill_button_2.hide()
-	_skill_button_3.hide()
+	for button in _skill_buttons:
+		button.hide()
 	skill_focus.position = SKILL_GLOW_POS_HIDDEN
 	_turn_bar.DisableZones(true)
 
