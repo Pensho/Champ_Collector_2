@@ -19,12 +19,11 @@ var GRAYSCALE_MATERIAL: ShaderMaterial
 @onready var _global_scene_light: PointLight2D = $PointLight2D
 
 var _self_context: ContextContainer
-
 var _characterIDs_turn: int = -1
 var _selected_skill_ID: int = 0
 var _initialized: bool = false
-
 var _zones: Dictionary[int, Zone]
+var _targeting_order: Array[int]
 
 enum WinningTeam
 {
@@ -32,6 +31,20 @@ enum WinningTeam
 	Player_Won,
 	Monsters_Won,
 }
+
+func SetTargetingOrder() -> void:
+	var sorted_keys = _characters.keys()
+	
+	sorted_keys.sort_custom(func(key_a, key_b):
+		var obj_a = _characters[key_a]
+		var obj_b = _characters[key_b]
+		
+		var sum_a = obj_a._attributes[Types.Attribute.Health] + obj_a._attributes[Types.Attribute.Defence]
+		var sum_b = obj_b._attributes[Types.Attribute.Health] + obj_b._attributes[Types.Attribute.Defence]
+		
+		return sum_a > sum_b
+		)
+	_targeting_order = sorted_keys
 
 func Init(p_context: ContextContainer) -> void:
 	var battlecontext: Context_Battle = p_context._static_context as Context_Battle
@@ -53,6 +66,8 @@ func Init(p_context: ContextContainer) -> void:
 		_characters[i] = p_context._player_battle_characters[i]
 		_characters[i]._currentHealth = _characters[i].GetBattleAttribute(Types.Attribute.Health)  * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
 		VisualizeCharacter(i)
+	
+	SetTargetingOrder()
 	
 	for i in battlecontext._enemies_wave_1.size():
 		_characters[i + 3] = Character.new()
@@ -111,8 +126,8 @@ func StartTurn() -> void:
 		# Using only the first skill for now.
 		_selected_skill_ID = 0
 		# Targets the first in order for now.
-		for i in PLAYER_IDS:
-			if(_characters.has(i) and _characters[i]._currentHealth >= 1):
+		for i in _targeting_order:
+			if(_characters[i]._currentHealth >= 1):
 				var target_IDs: Array[int] = Skills.FindSkillTargets(i, _characterIDs_turn, _characters[_characterIDs_turn]._skills[_selected_skill_ID])
 				if(target_IDs.size() > 0):
 					ResolveSkill(_characterIDs_turn, target_IDs, _selected_skill_ID)
