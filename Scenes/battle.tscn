@@ -37,12 +37,12 @@ _target_ID = 0
 
 [node name="Character_2" parent="." instance=ExtResource("3_ww2ai")]
 visible = false
-position = Vector2(299, 374)
+position = Vector2(299, 364)
 _target_ID = 1
 
 [node name="Character_3" parent="." instance=ExtResource("3_ww2ai")]
 visible = false
-position = Vector2(599, 379)
+position = Vector2(599, 369)
 _target_ID = 2
 
 [node name="Enemy_1" parent="." instance=ExtResource("3_ww2ai")]

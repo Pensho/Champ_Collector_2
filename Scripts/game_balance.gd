@@ -72,3 +72,4 @@ const HEAP_ON_MULTIPLIER: float = 0.2
 ## Battle, Combat
 const TURN_DURATION_SECONDS: float = 2.5
 const NUMBER_OF_TURN_BAR_ZONES: int = 5
+const MAX_STATUS_EFFECTS: int = 8

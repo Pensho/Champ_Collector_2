@@ -1,0 +1,115 @@
+[gd_scene load_steps=11 format=3 uid="uid://bognvuid7w2ti"]
+
+[ext_resource type="Script" uid="uid://bak1t404v5t50" path="res://Scripts/UI/turn_bar_zone_container.gd" id="1_k5lct"]
+[ext_resource type="Texture2D" uid="uid://cj6uxwt730ish" path="res://Assets/Champ Collector/Icons/Turn_Bar/walking-boot.svg" id="2_jwycs"]
+[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ Collector/Themes/default_theme.tres" id="3_gvfs7"]
+
+[sub_resource type="Gradient" id="Gradient_7l2qu"]
+offsets = PackedFloat32Array(0.6396396, 0.7027027, 0.7241379)
+colors = PackedColorArray(1, 1, 1, 0.27450982, 1, 1, 1, 0.44313726, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_5qfag"]
+gradient = SubResource("Gradient_7l2qu")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+
+[sub_resource type="Gradient" id="Gradient_eoyxc"]
+offsets = PackedFloat32Array(0, 0.1559633, 0.46330276, 0.8165138, 1)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 0, 1, 0.89411765, 0, 0.15686275, 1, 0, 0, 0, 1, 0, 0, 0, 0)
+
+[sub_resource type="Gradient" id="Gradient_3u2qy"]
+offsets = PackedFloat32Array(0, 0.10550459, 1)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 0.6862745, 1, 1, 1, 0)
+
+[sub_resource type="Gradient" id="Gradient_iv02o"]
+offsets = PackedFloat32Array(0, 0.6216216)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_lxcu4"]
+gradient = SubResource("Gradient_iv02o")
+width = 16
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.8, 0.5)
+
+[sub_resource type="Gradient" id="Gradient_by2im"]
+offsets = PackedFloat32Array(0, 0.10091743, 1)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0)
+
+[node name="TurnBarLava" type="Node2D" node_paths=PackedStringArray("background", "cpu_particles_2d_up_1", "cpu_particles_2d_up_2", "cpu_particles_2d_side_1", "label")]
+script = ExtResource("1_k5lct")
+background = NodePath("Background")
+cpu_particles_2d_up_1 = NodePath("CPUParticles2D_Up_1")
+cpu_particles_2d_up_2 = NodePath("CPUParticles2D_Up_2")
+cpu_particles_2d_side_1 = NodePath("CPUParticles2D_Side_1")
+label = NodePath("Label")
+
+[node name="Background" type="ColorRect" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+mouse_filter = 2
+color = Color(0.74658525, 2.0094587e-06, 8.663535e-07, 0.15686275)
+
+[node name="CPUParticles2D_Up_1" type="CPUParticles2D" parent="."]
+position = Vector2(0, -25)
+amount = 16
+texture = SubResource("GradientTexture2D_5qfag")
+lifetime = 2.0
+emission_shape = 3
+emission_rect_extents = Vector2(200, 25)
+direction = Vector2(0, -1)
+spread = 20.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 20.0
+initial_velocity_max = 20.0
+scale_amount_min = 0.2
+scale_amount_max = 0.2
+color_ramp = SubResource("Gradient_eoyxc")
+
+[node name="CPUParticles2D_Up_2" type="CPUParticles2D" parent="."]
+visible = false
+position = Vector2(0, -25)
+texture = ExtResource("2_jwycs")
+lifetime = 2.0
+emission_shape = 3
+emission_rect_extents = Vector2(200, 25)
+direction = Vector2(0, -1)
+spread = 10.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 20.0
+initial_velocity_max = 20.0
+scale_amount_min = 0.03
+scale_amount_max = 0.03
+color = Color(1, 1, 0, 1)
+color_ramp = SubResource("Gradient_3u2qy")
+
+[node name="CPUParticles2D_Side_1" type="CPUParticles2D" parent="."]
+position = Vector2(0, -25)
+amount = 12
+texture = SubResource("GradientTexture2D_lxcu4")
+lifetime = 2.0
+emission_shape = 3
+emission_rect_extents = Vector2(200, 25)
+direction = Vector2(0, -1)
+spread = 0.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 15.0
+initial_velocity_max = 25.0
+scale_amount_min = 0.7
+scale_amount_max = 1.3
+color = Color(1, 0.3254902, 0, 1)
+color_ramp = SubResource("Gradient_by2im")
+
+[node name="Label" type="Label" parent="."]
+self_modulate = Color(1, 1, 1, 0.75686276)
+offset_right = 40.0
+offset_bottom = 30.0
+theme = ExtResource("3_gvfs7")
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.5176471)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 1
+theme_override_constants/shadow_outline_size = 1

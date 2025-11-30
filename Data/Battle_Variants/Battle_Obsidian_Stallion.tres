@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="Context_Battle" load_steps=4 format=3 uid="uid://dbc3pmbr82wcc"]
+
+[ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="1_ql4dp"]
+[ext_resource type="Script" uid="uid://bjtnao6fgl8go" path="res://Scripts/Worldview/Context_Battle.gd" id="2_bqjlo"]
+[ext_resource type="Resource" uid="uid://cq2rkhiba5033" path="res://Data/Character_Enemy_Variants/Obsidian_Stallion.tres" id="2_tq6mo"]
+
+[resource]
+script = ExtResource("2_bqjlo")
+_enemies_wave_1 = Array[ExtResource("1_ql4dp")]([ExtResource("2_tq6mo")])
+_location = "res://Assets/Champ Collector/Scenery/Troll battle area/Troll_battle_area_7.jpg"
+metadata/_custom_type_script = "uid://bjtnao6fgl8go"

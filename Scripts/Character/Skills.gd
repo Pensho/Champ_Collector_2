@@ -15,11 +15,22 @@ static func ResolveZoneEffect(
 					p_zone: Zone,
 					p_character: Character,
 					p_character_ID: int,
-					p_battle_ui: BattleUI) -> void:
+					p_battle_ui: BattleUI,
+					p_character_repr: CharacterRepresentation) -> void:
 	match p_zone._type:
 		Types.Skill_Type.Flicker_Zone:
 			if(CorrectZoneTarget(p_zone._owner_ID, p_character_ID, p_zone._target)):
 				p_battle_ui._turn_bar.BumpCharacter(p_character_ID, 0.15)
+		Types.Skill_Type.Lava_Zone:
+			if(GameBalance.MAX_STATUS_EFFECTS <= p_character._active_buffs.size() + p_character._active_debuffs.size()):
+				print(p_character._name, " cannot have any more status effects right now.")
+				return
+			var new_debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
+			new_debuff.effect = Types.Debuff_Type.Burning
+			new_debuff.ID = p_character_repr.AddStatusEffect(Statuses.DEBUFF_ICONS[new_debuff.effect])
+			new_debuff.duration = 2 # TODO: Replace with a defined number from the skill.
+			
+			p_character._active_debuffs.append(new_debuff)
 
 static func ResolveSkillEffect(
 		p_caster_ID: int,
@@ -34,9 +45,7 @@ static func ResolveSkillEffect(
 			p_caster_attr[Types.Attribute.Health] += int(_heap_on_value[p_caster_ID] * float(_heap_on_stacks[p_caster_ID]))
 			_heap_on_stacks[p_caster_ID] += 1
 		Types.Skill_Type.Burning_Bolas:
-			var randomVal: float = randf_range(0.95, 1.0)
-			if(p_caster_attr[Types.Attribute.Accuracy] >= p_characterList[p_target_IDs[0]]._attributes[Types.Attribute.Resistance] * randomVal):
-				pass
+			pass
 
 static func CorrectZoneTarget(p_zone_owner_ID: int, p_trigger_character_ID: int, p_zone_target: Types.Skill_Target) -> bool:
 	match p_zone_target:
@@ -117,32 +126,15 @@ static func TriggerExistingCasterDebuffs(
 		if (debuff.duration <= 0):
 			debuff_IDs_to_be_removed.append(debuff.ID)
 	
-	p_caster._active_debuffs.filter(func(debuff): return debuff.duration > 0)
+	p_caster._active_debuffs = p_caster._active_debuffs.filter(func(debuff): return debuff.duration > 0)
 	p_caster_repr.RemoveStatusEffects(debuff_IDs_to_be_removed)
 
 static func TriggerCasterBuffs(
 							p_caster: Character,
 							p_caster_attributes: Dictionary[Types.Attribute, int],
 							p_skill: Skill,
-							p_target_self: bool,
 							p_caster_repr: CharacterRepresentation) -> void:
 	var buff_IDs_to_be_removed: Array[int] = []
-	
-	var receive_new_buff: bool
-	for target in p_skill.buffs.keys():
-		receive_new_buff = false
-		match target:
-			Types.Skill_Target.Single_Ally, Types.Skill_Target.Random_Ally, Types.Skill_Target.Random_One:
-				if(p_target_self):
-					receive_new_buff = true
-			Types.Skill_Target.All_Allies, Types.Skill_Target.All:
-				receive_new_buff = true
-		
-		if(receive_new_buff):
-			var new_buff: StatusEffects.Buff = StatusEffects.Buff.new()
-			new_buff.effect = p_skill.buffs[target]
-			p_caster._active_buffs.append(new_buff)
-			p_caster_repr.AddStatusEffect(Statuses.BUFF_ICONS[target])
 	
 	for buff in p_caster._active_buffs:
 		match buff.effect:
@@ -198,11 +190,16 @@ static func PlaceBuff(
 	
 	if(p_skill.buffs.is_empty()):
 		return
+	if(GameBalance.MAX_STATUS_EFFECTS <= p_target._active_buffs.size() + p_target._active_debuffs.size()):
+		print(p_target._name, " cannot have any more status effects right now.")
+		return
 	
 	var new_buff: StatusEffects.Buff = StatusEffects.Buff.new()
 	new_buff.effect = p_skill.buffs[p_skill.target]
+	new_buff.duration = 2 # TODO: Replace with a defined number from the skill.
+	new_buff.ID = p_target_repr.AddStatusEffect(Statuses.BUFF_ICONS[new_buff.effect])
+	
 	p_target._active_buffs.append(new_buff)
-	p_target_repr.AddStatusEffect(Statuses.BUFF_ICONS[new_buff.effect])
 
 static func PlaceDebuff(
 					p_target: Character,
@@ -213,6 +210,9 @@ static func PlaceDebuff(
 	
 	if(p_skill.debuffs.is_empty()):
 		return
+	if(GameBalance.MAX_STATUS_EFFECTS <= p_target._active_buffs.size() + p_target._active_debuffs.size()):
+		print(p_target._name, " cannot have any more status effects right now.")
+		return
 	
 	var randomVal: float = randf_range(0.95, 1.0)
 	var randomVal2: float = randf_range(0.95, 1.0)
@@ -220,12 +220,13 @@ static func PlaceDebuff(
 		print("Target character ", p_target._name, " resisted the debuff!")
 		return
 	
-	match p_skill.skill_type:
-		Types.Skill_Type.Burning_Bolas:
-			var new_debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
-			new_debuff.effect = p_skill.debuffs[p_skill.target]
-			p_target._active_debuffs.append(new_debuff)
-			p_target_repr.AddStatusEffect(Statuses.DEBUFF_ICONS[new_debuff.effect])
+	var new_debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
+	new_debuff.effect = p_skill.debuffs[p_skill.target]
+	new_debuff.duration = 2 # TODO: Replace with a defined number from the skill.
+	
+	new_debuff.ID = p_target_repr.AddStatusEffect(Statuses.DEBUFF_ICONS[new_debuff.effect])
+	
+	p_target._active_debuffs.append(new_debuff)
 
 static func DamageDealt(p_attacker_attr: Dictionary[Types.Attribute, int],
 						p_defender_attr: Dictionary[Types.Attribute, int],

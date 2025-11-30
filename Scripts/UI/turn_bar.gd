@@ -1,6 +1,7 @@
 class_name TurnBar extends Panel
 
 const TURN_BAR_BUMP_GOOD = preload("uid://7aqjlq70jbhi")
+const TURN_BAR_LAVA_ZONE = preload("uid://bognvuid7w2ti")
 
 const Types = preload("res://Scripts/common_enums.gd")
 const DEFAULT_THEME = preload("uid://c8irweh6md2jy")
@@ -43,19 +44,6 @@ func Init(p_characters: Dictionary[int, Character], p_zone_callable: Callable):
 		stylebox.bg_color = Color(0.0, 0.0, 0.0, 0.196)
 		_zone_buttons[i].add_theme_stylebox_override("normal", stylebox)
 		self.add_child(_zone_buttons[i])
-		
-		var effect: TurnBarBumpGood = TURN_BAR_BUMP_GOOD.instantiate()
-		effect.background.position = Vector2(-(_zone_buttons[i].size.x * 0.5), -_zone_buttons[i].size.y)
-		effect.background.size = _zone_buttons[i].size
-		effect.cpu_particles_2d_up_1.emission_rect_extents.x = _zone_buttons[i].size.x * 0.5
-		effect.cpu_particles_2d_up_2.emission_rect_extents.x = _zone_buttons[i].size.x * 0.5
-		#effect.cpu_particles_2d_side_1.emission_rect_extents.x = _zone_buttons[i].size.x
-		_zone_effects[i] = effect
-		_zone_effects[i].position = Vector2(
-			_zone_buttons[i].position.x + (_zone_buttons[i].size.x * 0.5),
-			_zone_buttons[i].position.y + _zone_buttons[i].size.y)
-		self.add_child(_zone_effects[i])
-		_zone_effects[i].hide()
 	
 	_zone_dividers.resize(Game_Balance.NUMBER_OF_TURN_BAR_ZONES - 1)
 	for i in range(_zone_dividers.size()):
@@ -67,7 +55,27 @@ func Init(p_characters: Dictionary[int, Character], p_zone_callable: Callable):
 	
 	DisableZones(true)
 
-func SpawnZoneEffect(p_zone_ID: int, p_duration: int, p_allySide: bool):
+func SpawnZoneEffect(p_zone_ID: int, p_duration: int, p_allySide: bool, p_zone_type: Types.Skill_Type):
+	var effect: TurnBarContainer
+	match p_zone_type:
+		Types.Skill_Type.Flicker_Zone:
+			effect = TURN_BAR_BUMP_GOOD.instantiate()
+		Types.Skill_Type.Lava_Zone:
+			effect = TURN_BAR_LAVA_ZONE.instantiate()
+			effect.cpu_particles_2d_side_1.emission_rect_extents.x = _zone_buttons[p_zone_ID].size.x * 0.5
+		_:
+			print("Invalid zone type! value: ", p_zone_type)
+			return
+	effect.background.position = Vector2(-(_zone_buttons[p_zone_ID].size.x * 0.5), -_zone_buttons[p_zone_ID].size.y)
+	effect.background.size = _zone_buttons[p_zone_ID].size
+	effect.cpu_particles_2d_up_1.emission_rect_extents.x = _zone_buttons[p_zone_ID].size.x * 0.5
+	effect.cpu_particles_2d_up_2.emission_rect_extents.x = _zone_buttons[p_zone_ID].size.x * 0.5
+	_zone_effects[p_zone_ID] = effect
+	_zone_effects[p_zone_ID].position = Vector2(
+		_zone_buttons[p_zone_ID].position.x + (_zone_buttons[p_zone_ID].size.x * 0.5),
+		_zone_buttons[p_zone_ID].position.y + _zone_buttons[p_zone_ID].size.y)
+	self.add_child(_zone_effects[p_zone_ID])
+	
 	if(0 > p_duration):
 		_zone_effects[p_zone_ID].label.text = "inf"
 	else:
@@ -75,11 +83,14 @@ func SpawnZoneEffect(p_zone_ID: int, p_duration: int, p_allySide: bool):
 	if(p_allySide):
 		_zone_effects[p_zone_ID].label.position = Vector2(-(_zone_buttons[p_zone_ID].size.x * 0.25), -(_zone_buttons[p_zone_ID].size.y * 0.95))
 	else:
-		_zone_effects[p_zone_ID].label.position = Vector2(_zone_effects[p_zone_ID].background.position + _zone_effects[p_zone_ID].background.size, 0.0)
+		_zone_effects[p_zone_ID].label.position = Vector2((_zone_buttons[p_zone_ID].size.x * 0.15), -(_zone_buttons[p_zone_ID].size.y * 0.95))
+	
 	_zone_effects[p_zone_ID].show()
 
 func RemoveZoneEffect(p_zone_ID: int):
 	_zone_effects[p_zone_ID].hide()
+	_zone_effects[p_zone_ID].queue_free()
+	_zone_effects[p_zone_ID] = null
 
 func ZoneTriggered(p_zone_ID: int, p_duration: int):
 	if(0 == p_duration):
@@ -126,8 +137,9 @@ func ShowCharacterAsDead(p_dead_char_ID: int):
 	_char_turns[p_dead_char_ID].material = GRAYSCALE_MATERIAL
 
 func IsCharacterInZone(p_character_ID: int, p_zone_ID: int) -> bool:
-	if(_char_turns[p_character_ID].get_rect().intersects(_zone_buttons[p_zone_ID].get_rect())):
-		if(_zone_effects[p_zone_ID].is_visible_in_tree()):
-			print("Character with ID: ", p_character_ID, " is within zone with ID: ", p_zone_ID)
-			return true
-	return false
+	if(null == _zone_effects[p_zone_ID]):
+		return false
+	if(!_char_turns[p_character_ID].get_rect().intersects(_zone_buttons[p_zone_ID].get_rect())):
+		return false
+	return true
+	

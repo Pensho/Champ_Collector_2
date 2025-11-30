@@ -95,6 +95,7 @@ enum Skill_Type
 	Pierce_Weakness,
 	Burning_Bolas,
 	Flicker_Zone,
+	Lava_Zone,
 	None,
 }
 

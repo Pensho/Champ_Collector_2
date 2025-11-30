@@ -13,10 +13,10 @@ const DEBUFF_ICONS: Dictionary[Types.Debuff_Type, String] = {
 
 class Buff:
 	var effect: Types.Buff_Type = Types.Buff_Type.Invalid
-	var duration: int = 2
+	var duration: int = 0
 	var ID: = 0
 
 class Debuff:
 	var effect: Types.Debuff_Type = Types.Debuff_Type.Invalid
-	var duration: int = 2
+	var duration: int = 0
 	var ID: = 0

@@ -41,6 +41,8 @@ func CleanUp() -> void:
 func LoadSkillTexture(p_texture_path: String) -> void:
 	if(_skill_textures.has(p_texture_path)):
 		return
+	if("" == p_texture_path):
+		return
 	_skill_textures[p_texture_path] = load(p_texture_path)
 
 func SpawnDamageNumber(p_value: int, p_position: Vector2) -> void:
