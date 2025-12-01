@@ -158,12 +158,13 @@ func StartTurn() -> void:
 						else:
 							print("Invalid target for skill by an enemy! Something is wrong.")
 						break # A skill has resolved, break the loop for targeting.
-	TriggerZones()
 
 func TriggerZones() -> void:
 	if(!PLAYER_IDS.has(_characterIDs_turn)):
 		return
 	for character_ID in _characters.keys():
+		if(character_ID == _characterIDs_turn):
+			continue
 		for ID in _zones.keys():
 			if(_zones[ID]._duration == 0):
 				continue
@@ -182,7 +183,6 @@ func TriggerZones() -> void:
 			Skills.ResolveZoneEffect(_zones[ID], _characters[character_ID], character_ID, _battle_ui, _character_repr[character_ID])
 			_zones[ID]._duration -= 1
 			_battle_ui._turn_bar.ZoneTriggered(ID, _zones[ID]._duration)
-			#print("Zone triggered by: ", _characters[character_ID]._name)
 			# Restrict the trigger to one zone per character.
 			break
 	for ID in _zones.keys():
@@ -292,6 +292,7 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID) -> voi
 			_characters[_characterIDs_turn]._skills[i].cooldown_left -= 1
 	_characters[p_caster_ID]._skills[p_skill_ID].cooldown_left = _characters[p_caster_ID]._skills[p_skill_ID].cooldown
 	_battle_ui._turn_bar.TurnCompleteForCharacter(_characterIDs_turn)
+	TriggerZones()
 	_characterIDs_turn = NO_CHARACTERS_TURN
 	_turn_indicator.hide()
 	_battle_ui.HideSkillUI()

@@ -40,7 +40,6 @@ class Main_Instance extends Node:
 		var context_container: ContextContainer = ContextContainer.new()
 		
 		_character_collection.Add(KNIGHT.duplicate(true))
-		#_character_collection.Add(KNIGHT.duplicate(true))
 		_character_collection.Add(THIEF.duplicate(true))
 		_character_collection.Add(BAR_BRAWLER.duplicate(true))
 		_character_collection.Add(JESTER.duplicate(true))
@@ -51,7 +50,11 @@ class Main_Instance extends Node:
 		var weapon: EquipmentPreset = WEAPON_BASIC_SPEAR.duplicate(true)
 		weapon.Setup()
 		_item_collection.AddPreset(weapon)
+		weapon = WEAPON_BASIC_SPEAR.duplicate(true)
+		weapon.Setup()
 		_item_collection.AddPreset(weapon)
+		weapon = WEAPON_BASIC_SPEAR.duplicate(true)
+		weapon.Setup()
 		_item_collection.AddPreset(weapon)
 		
 		_character_collection.GetCharacter(0).AddEquipment(_item_collection.TakeEquipment(0))

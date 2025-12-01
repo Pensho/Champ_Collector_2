@@ -3,7 +3,7 @@ extends Node
 
 const Types = preload("res://Scripts/common_enums.gd")
 const ZoneType = preload("uid://bdjrfif0s60v4")
-const Statuses = preload("res://Scripts/status_effects.gd")
+const Statuses = preload("uid://bp3pvvar4437")
 
 const PLAYER_IDS: Array[int] = [0,1,2]
 const MONSTER_IDS: Array[int] = [3,4,5]

@@ -1,6 +1,6 @@
 [gd_scene load_steps=11 format=3 uid="uid://bognvuid7w2ti"]
 
-[ext_resource type="Script" uid="uid://bak1t404v5t50" path="res://Scripts/UI/turn_bar_zone_container.gd" id="1_k5lct"]
+[ext_resource type="Script" uid="uid://bak1t404v5t50" path="res://Scripts/UI/Battle_UI/turn_bar_zone_container.gd" id="1_k5lct"]
 [ext_resource type="Texture2D" uid="uid://cj6uxwt730ish" path="res://Assets/Champ Collector/Icons/Turn_Bar/walking-boot.svg" id="2_jwycs"]
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ Collector/Themes/default_theme.tres" id="3_gvfs7"]
 

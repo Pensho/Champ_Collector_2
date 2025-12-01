@@ -58,10 +58,13 @@ func ShowSelectedCharacter(p_ID: int) -> void:
 	
 	if(_character_collection[p_ID]._held_items.has(Types.Slot.Weapon)):
 		_item_slots_equiped[0].SetHeldObjectTexture(main.GetInstance()._item_collection.GetItemTexture(Types.Slot.Weapon))
+		_item_slots_equiped[0].SetTextureOutline(_character_collection[p_ID]._held_items[Types.Slot.Weapon]._rarity)
 	if(_character_collection[p_ID]._held_items.has(Types.Slot.Shield)):
-		_item_slots_equiped[0].SetHeldObjectTexture(main.GetInstance()._item_collection.GetItemTexture(Types.Slot.Shield))
+		_item_slots_equiped[1].SetHeldObjectTexture(main.GetInstance()._item_collection.GetItemTexture(Types.Slot.Shield))
+		_item_slots_equiped[1].SetTextureOutline(_character_collection[p_ID]._held_items[Types.Slot.Shield]._rarity)
 	if(_character_collection[p_ID]._held_items.has(Types.Slot.Boots)):
-		_item_slots_equiped[0].SetHeldObjectTexture(main.GetInstance()._item_collection.GetItemTexture(Types.Slot.Boots))
+		_item_slots_equiped[2].SetHeldObjectTexture(main.GetInstance()._item_collection.GetItemTexture(Types.Slot.Boots))
+		_item_slots_equiped[2].SetTextureOutline(_character_collection[p_ID]._held_items[Types.Slot.Boots]._rarity)
 
 func ShowItemCollection() -> void:
 	for slot in _available_item_slots.size():
@@ -69,6 +72,7 @@ func ShowItemCollection() -> void:
 		
 		if(main.GetInstance()._item_collection._items.has(slot)):
 			_available_item_slots[slot].SetHeldObjectTexture(main.GetInstance()._item_collection.GetItemTexture(main.GetInstance()._item_collection._items[slot]._slot))
+			_available_item_slots[slot].SetTextureOutline(main.GetInstance()._item_collection._items[slot]._rarity)
 		else:
 			_available_item_slots[slot].SetHeldObjectTexture(null)
 
@@ -107,6 +111,7 @@ func UnequipItem(p_slot: Types.Slot) -> void:
 		Types.Slot.Boots:
 			_item_slots_equiped[2].SetHeldObjectTexture(null)
 			_available_item_slots[held_item._instanceID].SetHeldObjectTexture(main.GetInstance()._item_collection.GetItemTexture(Types.Slot.Boots))
+	_available_item_slots[held_item._instanceID].SetTextureOutline(held_item._rarity)
 	ShowSelectedCharacter(_selected_character_ID)
 	print(_character_collection[_selected_character_ID], " now holds these items: ", _character_collection[_selected_character_ID]._held_items)
 	print("item collection now holds these items: ", main.GetInstance()._item_collection._items)
@@ -139,6 +144,7 @@ func _on_button_deselect_char_button_up() -> void:
 		for i in _available_item_slots.size():
 			if(i < _character_collection_size):
 				_available_item_slots[i].SetHeldObjectTexture(main.GetInstance()._character_collection.GetCharacterTexture(_character_collection[i]._role))
+				_available_item_slots[i].SetTextureOutline(_character_collection[i]._rarity)
 				_available_item_slots[i].level.text = str(_character_collection[i]._level)
 			else:
 				_available_item_slots[i].SetHeldObjectTexture(null)

@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://2cqmliidmlr7" path="res://Assets/Champ Collector/UI/Pre_Battle_Screen/Pre_Battle_2.png" id="1_bs66k"]
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ Collector/Themes/default_theme.tres" id="1_fbx8u"]
-[ext_resource type="Script" uid="uid://cpeob6aj52f4r" path="res://Scripts/UI/pre_battle_menu.gd" id="1_i4o5r"]
+[ext_resource type="Script" uid="uid://cpeob6aj52f4r" path="res://Scripts/UI/Battle_UI/pre_battle_menu.gd" id="1_i4o5r"]
 [ext_resource type="Texture2D" uid="uid://becfm8860q605" path="res://Assets/Champ Collector/UI/Pre_Battle_Screen/Character_Slot_Frame_1.png" id="3_bs66k"]
 
 [node name="PreBattleMenu" type="Control" node_paths=PackedStringArray("_chosen_char_texture", "_available_char_texture")]

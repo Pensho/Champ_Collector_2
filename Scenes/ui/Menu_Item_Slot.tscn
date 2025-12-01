@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://di0y70sbai3yw"]
+[gd_scene load_steps=5 format=3 uid="uid://di0y70sbai3yw"]
 
 [ext_resource type="Texture2D" uid="uid://becfm8860q605" path="res://Assets/Champ Collector/UI/Pre_Battle_Screen/Character_Slot_Frame_1.png" id="1_di8fw"]
 [ext_resource type="Script" uid="uid://dql0n3rqcrd15" path="res://Scripts/UI/menu_item_slot.gd" id="1_vybhe"]
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ Collector/Themes/default_theme.tres" id="2_vybhe"]
+[ext_resource type="Material" uid="uid://b0urscvi0t421" path="res://Assets/Champ Collector/Material/outline.tres" id="3_n5d1g"]
 
 [node name="MenuItemSlot" type="Control"]
 custom_minimum_size = Vector2(100, 100)
@@ -19,6 +20,7 @@ texture = ExtResource("1_di8fw")
 expand_mode = 1
 
 [node name="TextureRect" type="TextureRect" parent="TextureRect"]
+material = ExtResource("3_n5d1g")
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 0
 offset_right = 40.0

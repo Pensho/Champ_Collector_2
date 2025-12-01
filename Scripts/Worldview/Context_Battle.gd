@@ -11,4 +11,6 @@ class_name Context_Battle extends Static_Context
 # darkness height goes between 0.0 - 1.0
 @export var _scene_darkness_height: float = 0.3
 
+@export var _environment_effects: Array[PackedScene]
+
 @warning_ignore_restore("unused_private_class_variable")
