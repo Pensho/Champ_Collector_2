@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="EquipmentPreset" load_steps=2 format=3 uid="uid://c3g7cshxhg0rw"]
+
+[ext_resource type="Script" uid="uid://8knbs7yij5eh" path="res://Scripts/Gear/equipment_preset.gd" id="1_tg4ja"]
+
+[resource]
+script = ExtResource("1_tg4ja")
+_slot = 5
+_rarity = 3
+_texture_path = "res://Assets/Champ Collector/Icons/Items/Red_Boot/Red_Boot_0003.png"
+metadata/_custom_type_script = "uid://8knbs7yij5eh"

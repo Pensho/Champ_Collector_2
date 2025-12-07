@@ -20,11 +20,14 @@ var _damage_number_2d_pool: Array[DamageNumber2D] = []
 var _allow_new_effects: bool = true
 var _battle_duration := 0.0
 var _skill_textures: Dictionary[String, Texture2D]
+var _environment_effects: Array[Node]
 
-func Init() -> void:
+func Init(p_environment_effects: Array[PackedScene]) -> void:
 	SKILL_GLOW_POS_1 = Vector2(_skill_buttons[0].position.x - 25.0, _skill_buttons[0].position.y - 25.0)
 	SKILL_GLOW_POS_2 = Vector2(_skill_buttons[1].position.x - 25.0, _skill_buttons[1].position.y - 25.0)
 	SKILL_GLOW_POS_3 = Vector2(_skill_buttons[2].position.x - 25.0, _skill_buttons[2].position.y - 25.0)
+	for i in p_environment_effects:
+		_environment_effects.append(i.instantiate())
 
 func _process(delta: float) -> void:
 	_battle_duration += delta

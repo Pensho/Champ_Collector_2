@@ -83,7 +83,7 @@ func Init(p_context: ContextContainer) -> void:
 	GRAYSCALE_MATERIAL = ShaderMaterial.new()
 	GRAYSCALE_MATERIAL.shader = GRAYSCALE
 	
-	_battle_ui.Init()
+	_battle_ui.Init(battlecontext._environment_effects)
 	_battle_ui._turn_bar.Init(_characters, _on_turn_bar_zone_selected)
 	_initialized = true
 
@@ -331,6 +331,8 @@ func EndBattle(p_winner: WinningTeam) -> void:
 	for i in _characters.keys():
 		_characters[i]._active_buffs.clear()
 		_characters[i]._active_debuffs.clear()
+		for j in _characters[i]._skills:
+			_characters[i]._skills[j].cooldown_left = 0
 		if(ENEMY_IDS.has(i) and p_winner == WinningTeam.Player_Won):
 			experience_gained += 5
 	for i in _characters.keys():

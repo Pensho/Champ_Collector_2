@@ -90,7 +90,7 @@ enum Attribute
 
 enum Skill_Type
 {
-	Stab,
+	Simple_Attack,
 	Heap_On,
 	Pierce_Weakness,
 	Burning_Bolas,

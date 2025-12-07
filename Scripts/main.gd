@@ -9,6 +9,7 @@ const CHRONOPHAGE = preload("uid://wofv42g341ac")
 const BLOODMAGE = preload("uid://7adgp1emx6yk")
 
 const WEAPON_BASIC_SPEAR = preload("res://Data/Item_Presets/Weapon_Basic_Spear.tres")
+const RED_BOOTS = preload("uid://c3g7cshxhg0rw")
 
 var _instance: Main_Instance = null
 
@@ -43,9 +44,9 @@ class Main_Instance extends Node:
 		_character_collection.Add(THIEF.duplicate(true))
 		_character_collection.Add(BAR_BRAWLER.duplicate(true))
 		_character_collection.Add(JESTER.duplicate(true))
-		_character_collection.Add(HERALD_OF_THE_LOOM.duplicate(true))
+		#_character_collection.Add(HERALD_OF_THE_LOOM.duplicate(true))
 		_character_collection.Add(CHRONOPHAGE.duplicate(true))
-		_character_collection.Add(BLOODMAGE.duplicate(true))
+		#_character_collection.Add(BLOODMAGE.duplicate(true))
 		
 		var weapon: EquipmentPreset = WEAPON_BASIC_SPEAR.duplicate(true)
 		weapon.Setup()
@@ -57,6 +58,11 @@ class Main_Instance extends Node:
 		weapon.Setup()
 		_item_collection.AddPreset(weapon)
 		
+		var boots: EquipmentPreset = RED_BOOTS.duplicate(true)
+		boots.Setup()
+		_item_collection.AddPreset(boots)
+		boots.Setup()
+		_item_collection.AddPreset(boots)
 		_character_collection.GetCharacter(0).AddEquipment(_item_collection.TakeEquipment(0))
 		
 		_character_collection.LoadTextures()

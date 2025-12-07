@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="Skill" load_steps=2 format=3 uid="uid://dl0s23m0g4w3i"]
+
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_8dsqx"]
+
+[resource]
+script = ExtResource("1_8dsqx")
+name = "Zap"
+description = "Attacks one enemy"
+icon_path = "res://Assets/Champ Collector/Icons/Abilities/Zap/Zap_2.jpg"
+damage_scaling = Dictionary[int, float]({
+1: 0.6
+})
+metadata/_custom_type_script = "uid://glh06y3wvchj"
