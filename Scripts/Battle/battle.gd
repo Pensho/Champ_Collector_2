@@ -108,9 +108,21 @@ func StartTurn() -> void:
 	_turn_indicator.position.y = _character_repr[_characterIDs_turn].position.y - _turn_indicator.size.y
 	_turn_indicator.show()
 	if(PLAYER_IDS.has(_characterIDs_turn)):
-		_battle_ui.SetSkill1Texture(_characters[_characterIDs_turn]._skills[0].icon_path)
-		_battle_ui.SetSkill2Texture(_characters[_characterIDs_turn]._skills[1].icon_path)
-		_battle_ui.SetSkill3Texture(_characters[_characterIDs_turn]._skills[2].icon_path)
+		_battle_ui.SetSkill1(
+			_characters[_characterIDs_turn]._skills[0].icon_path,
+			_characters[_characterIDs_turn]._skills[0].name,
+			_characters[_characterIDs_turn]._skills[0].description)
+		_battle_ui.SetSkill2(
+			_characters[_characterIDs_turn]._skills[1].icon_path,
+			_characters[_characterIDs_turn]._skills[1].name,
+			_characters[_characterIDs_turn]._skills[1].description)
+		_battle_ui.SetSkill3(
+			_characters[_characterIDs_turn]._skills[2].icon_path,
+			_characters[_characterIDs_turn]._skills[2].name,
+			_characters[_characterIDs_turn]._skills[2].description)
+		#_battle_ui.SetSkill1Texture(_characters[_characterIDs_turn]._skills[0].icon_path)
+		#_battle_ui.SetSkill2Texture(_characters[_characterIDs_turn]._skills[1].icon_path)
+		#_battle_ui.SetSkill3Texture(_characters[_characterIDs_turn]._skills[2].icon_path)
 		_battle_ui._skill_buttons[0].show()
 		_battle_ui._skill_buttons[1].show()
 		_battle_ui._skill_buttons[2].show()
@@ -160,8 +172,8 @@ func StartTurn() -> void:
 						break # A skill has resolved, break the loop for targeting.
 
 func TriggerZones() -> void:
-	if(!PLAYER_IDS.has(_characterIDs_turn)):
-		return
+	#if(!PLAYER_IDS.has(_characterIDs_turn)):
+		#return
 	for character_ID in _characters.keys():
 		if(character_ID == _characterIDs_turn):
 			continue
@@ -331,7 +343,7 @@ func EndBattle(p_winner: WinningTeam) -> void:
 	for i in _characters.keys():
 		_characters[i]._active_buffs.clear()
 		_characters[i]._active_debuffs.clear()
-		for j in _characters[i]._skills:
+		for j in _characters[i]._skills.size():
 			_characters[i]._skills[j].cooldown_left = 0
 		if(ENEMY_IDS.has(i) and p_winner == WinningTeam.Player_Won):
 			experience_gained += 5
@@ -368,7 +380,6 @@ func _on_battle_ui_battle_skill_selected(p_skill_ID: int) -> void:
 			_battle_ui._turn_bar.DisableZones(false)
 
 func _on_turn_bar_zone_selected(p_zone_ID: int) -> void:
-	print("_on_turn_bar_zone_selected called with ID: ", p_zone_ID)
 	if(_zones.has(p_zone_ID)):
 		print("Zone is already used")
 		return

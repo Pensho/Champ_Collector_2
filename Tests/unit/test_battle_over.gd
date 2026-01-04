@@ -5,7 +5,7 @@ extends GutTest
 
 # We must preload the MAIN script to access its nested class (Main_Instance).
 const MainScript = preload("res://Scripts/main.gd")
-const BattleOverScreen = preload("res://Scripts/UI/battle_over.gd")
+const BattleOverScreen = preload("uid://b4s2d8usop6na")
 const CHARACTER_COLLECTION_SCRIPT = preload("res://Scripts/Character/character_collection.gd")
 
 # Declare the mock instance of the nested Main_Instance class.

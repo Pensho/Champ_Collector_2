@@ -5,15 +5,8 @@
 [resource]
 script = ExtResource("1_rci34")
 name = "Stab"
-description = "Plunge you weapon against an enemy."
+description = "Plunge you weapon against an enemy. Based on attack."
 icon_path = "res://Assets/Champ Collector/Icons/Abilities/Stab/Stab_3.jpg"
-target = 0
-turn_effect = 0
 damage_scaling = Dictionary[int, float]({
 2: 0.7
 })
-cooldown = 0
-skill_type = 0
-defense_ignore_factor = 1.0
-buffs = Dictionary[int, int]({})
-debuffs = Dictionary[int, int]({})

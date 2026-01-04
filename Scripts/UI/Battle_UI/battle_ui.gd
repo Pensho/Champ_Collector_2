@@ -65,11 +65,23 @@ func GetDamageNumber() -> DamageNumber2D:
 			return new_damage_number
 	return null
 
+func SetSkill1(p_texture_path: String, p_title: String, p_description: String) -> void:
+	_skill_buttons[0].icon = _skill_textures[p_texture_path]
+	_skill_buttons[0].SetToolTip(p_title, p_description)
+
 func SetSkill1Texture(p_texture_path: String) -> void:
 	_skill_buttons[0].icon = _skill_textures[p_texture_path]
 
+func SetSkill2(p_texture_path: String, p_title: String, p_description: String) -> void:
+	_skill_buttons[1].icon = _skill_textures[p_texture_path]
+	_skill_buttons[1].SetToolTip(p_title, p_description)
+
 func SetSkill2Texture(p_texture_path: String) -> void:
 	_skill_buttons[1].icon = _skill_textures[p_texture_path]
+
+func SetSkill3(p_texture_path: String, p_title: String, p_description: String) -> void:
+	_skill_buttons[2].icon = _skill_textures[p_texture_path]
+	_skill_buttons[2].SetToolTip(p_title, p_description)
 
 func SetSkill3Texture(p_texture_path: String) -> void:
 	_skill_buttons[2].icon = _skill_textures[p_texture_path]
