@@ -39,6 +39,7 @@ enum Role
 	Bloodmage,
 	Herald_of_the_loom,
 	Chronophage,
+	Architect,
 }
 
 enum Slot

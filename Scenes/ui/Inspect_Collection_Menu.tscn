@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://b6ynhcan7pnn8"]
+[gd_scene load_steps=12 format=3 uid="uid://b6ynhcan7pnn8"]
 
 [ext_resource type="Script" uid="uid://156fy64gykij" path="res://Scripts/UI/inspect_collection_menu.gd" id="1_jlkm0"]
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ Collector/Themes/default_theme.tres" id="1_riq8p"]
@@ -8,7 +8,6 @@
 [ext_resource type="Texture2D" uid="uid://hugm5i14rvkq" path="res://Assets/Champ Collector/Icons/Items/Sword_Icon.png" id="6_0ed3m"]
 [ext_resource type="Texture2D" uid="uid://dmaq2l582gu7e" path="res://Assets/Champ Collector/Icons/Items/Boot_Icon.png" id="6_35r4v"]
 [ext_resource type="Texture2D" uid="uid://d75871c7uh43" path="res://Assets/Champ Collector/Icons/Items/Shield_Icon.png" id="7_lgjj3"]
-[ext_resource type="Script" uid="uid://bumae467d28vx" path="res://Scripts/UI/tooltip.gd" id="9_lgjj3"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_u3wy6"]
 shader = ExtResource("5_lsdxp")
@@ -453,14 +452,6 @@ theme = ExtResource("1_riq8p")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
 text = "Exit"
-
-[node name="Control" type="ColorRect" parent="."]
-layout_mode = 0
-offset_left = 618.0
-offset_top = 189.0
-offset_right = 658.0
-offset_bottom = 229.0
-script = ExtResource("9_lgjj3")
 
 [connection signal="button_up" from="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect2/Button_Deselect_Char" to="." method="_on_button_deselect_char_button_up"]
 [connection signal="button_up" from="MarginContainer/HBoxContainer/Exit" to="." method="_on_exit_button_up"]

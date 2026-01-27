@@ -129,6 +129,9 @@ Current roles, their identity and purpose exist as follows:
         - Black thread; All damage dealt and received scale with mysticism instead of other attributes. One other player & enemy character will have their attributes averaged out while Black thread is in use.  Primary attributes: Mysticism, Accuracy.
 - Chronophage
     - A speed focused character, applying various speed modifying skills onto the turn bar and primarily deals damage based on the Speed attribute. Primary attributes: Speed.
+- Architect
+    - A charge & support character, accumulates Calibration charges through basic skills, consumes a few charges applying defensive buffs to allies and massive charges for big final attacks. Primary attributes: Knowledge, Defense.
+    - The Architect is a methodical "Charge" role aligned with the God of Rules. Instead of raw aggression, they build "Logic Chains" by observing the flow of battle, eventually "solving" the encounter with a massive structural shift.
 
 ### 3.2. Combat
 Combat is turn based, using the Speed attribute of each character to move a representation accross a "turn bar". When a characters representation has crossed the entire bar, the game will pause for input to resolve their turn and then finish by putting the representation of the character back to the beginning. Then the system keeps going.
@@ -325,17 +328,28 @@ TODO
 
 ### 4.1. Religion
 
-One or multiple gods exist but they have spent their power already to affect the world in their vision.
-Maybe 3 gods, one “forgotten” due to the other 2. They all helped create the world but the 2 betrayed the 3rd to garner believers for themselves. Believers grant the gods power, but very slowly. Fragments of the 3rd god exist in ruins written in obscure languages only used in history.
-The 3rds only mark left on the world other than ruins is the magic system, which the other 2 now forcefully shuns through their doctrines.
-Since the 3rds imprisonment the magic system became very restricted in terms of conjuration and effect, often requiring powerful reagents, chants only known in parts or environmental conditions.
+In this world there are 3 gods that created it, but through their effort they have litte power left to affect it directly. There was the god of adventure, the god of rules and the god of magic. The god of magic was betrayed by the other two and imprisoned somewhere unknown. The only remaining mark of the god of magic is the magic system, which is now heavily restricted and shunned by the other two gods through their doctrines, leaving magic to be a rare and obscure art.
+
+The reason for betrayal is since while initially magic provided many oppertunities and options for adventure and structure, it eventually became clear that magic could easily break both adventure and structure if left unchecked. The god of adventure saw magic as a way to create endless possibilities, but the god of rules viewed it as a chaotic force that undermined order and predictability. Fearing the destabilizing potential of magic, the god of rules conspired with the god of adventure to imprison the god of magic, believing that by doing so, they could preserve their own domains.
+
+Believers grant the gods power, but very slowly. Fragments of the god of magic exists in ruins written in obscure languages only used in history.
+The god of magics only mark left on the world other than ruins is the magic system.
+Since the imprisonment the magic system became very restricted in terms of conjuration and effect, often requiring powerful reagents, chants only known in parts or environmental conditions.
 
 #### God 1, the god of adventure
-TODO
-#### God 2, the god of Rules (Structure/Process/Strategy/Law/Instruction/Regulation/Sense/Logic)
+
+The God of Adventure is the divine personification of curiosity, risk, and the thrill of the unknown. Unlike the God of Rules, who seeks to categorize the world into letters and numbers, the God of Adventure views the world as a vast, unpredictable playground. This deity is a playful thrill-seeker who lacks the power to manifest physically and instead watches the creatures of the world with a voyeuristic intensity, seeking to live vicariously through their triumphs and tragedies.
+
+The god is indifferent to the survival of their followers; a spectacular, high-stakes failure is considered just as entertaining as a victory. This is reflected in mechanics like the "Frenzy" buff, which grants great power at the cost of "Defense" and "Accuracy," embodying the god's preference for glass-cannon heroics.
+
+#### God 2, the god of Rules (Structure, Regulation & Logic)
+
 Created order and systems in the world, letters and numbers.
+The God of Rules is the divine architect of reality, responsible for the creation of order, systems, letters, and numbers. This deity views the world as a complex machine that functions best when every gear turns with mathematical precision. While the God of Adventure thrives on the chaos of the unknown, the God of Rules demands predictability and strategic foresight.
+
 #### God 3, the god of magic
-TODO
+
+The God of Magic holds immense knowledge of the arcane arts and the mysteries of the universe. This deity is a master of transformation, capable of bending reality to their will through spells and enchantments. However, their power is a double-edged sword; while they can create wonders, they can also unleash chaos if not properly controlled. Holding that much knowledge but in trade naive to the ways of interaction, with only interest in exploring their possibilities of creation.
 
 ### 4.2. Factions
 - Humans
