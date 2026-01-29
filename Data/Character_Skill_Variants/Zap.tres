@@ -6,7 +6,7 @@
 script = ExtResource("1_8dsqx")
 name = "Zap"
 description = "Attacks one enemy. Based on speed"
-icon_path = "res://Assets/Champ Collector/Icons/Abilities/Zap/Zap_2.jpg"
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Zap/Zap_2.jpg"
 damage_scaling = Dictionary[int, float]({
 1: 0.6
 })

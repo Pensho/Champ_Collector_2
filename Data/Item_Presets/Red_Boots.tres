@@ -6,5 +6,5 @@
 script = ExtResource("1_tg4ja")
 _slot = 5
 _rarity = 3
-_texture_path = "res://Assets/Champ Collector/Icons/Items/Red_Boot/Red_Boot_0003.png"
+_texture_path = "res://Assets/Champ_Collector/Icons/Items/Red_Boot/Red_Boot_0003.png"
 metadata/_custom_type_script = "uid://8knbs7yij5eh"

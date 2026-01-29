@@ -1,8 +1,8 @@
 [gd_scene load_steps=8 format=3 uid="uid://bte7ljry64t3x"]
 
-[ext_resource type="Material" uid="uid://btoxlv6hhnxp6" path="res://Assets/Champ Collector/Material/SkillMaterialShader.tres" id="1_q5mwb"]
-[ext_resource type="Texture2D" uid="uid://ctbnnvhe6erv0" path="res://Assets/Champ Collector/Icons/Abilities/Bolas/Bolas_2.jpg" id="2_vb6vb"]
-[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ Collector/Themes/default_theme.tres" id="3_dgvai"]
+[ext_resource type="Material" uid="uid://btoxlv6hhnxp6" path="res://Assets/Champ_Collector/Material/SkillMaterialShader.tres" id="1_q5mwb"]
+[ext_resource type="Texture2D" uid="uid://ctbnnvhe6erv0" path="res://Assets/Champ_Collector/Icons/Abilities/Bolas/Bolas_2.jpg" id="2_vb6vb"]
+[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="3_dgvai"]
 [ext_resource type="Script" uid="uid://d3vb3ivy0ijg8" path="res://Scripts/UI/Battle_UI/skill_button.gd" id="3_vb6vb"]
 [ext_resource type="Script" uid="uid://bumae467d28vx" path="res://Scripts/UI/tooltip.gd" id="4_dgvai"]
 

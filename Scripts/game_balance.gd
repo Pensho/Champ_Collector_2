@@ -67,9 +67,10 @@ const ITEM_TYPE_ATTRIBUTES: Dictionary = {
 const ITEM_COLLECTION_LIMIT: int = 1000
 
 ## Skills
-const HEAP_ON_MULTIPLIER: float = 0.2
+const HEAP_ON_MULTIPLIER: float = 0.25
 
 ## Battle, Combat
 const TURN_DURATION_SECONDS: float = 2.5
 const NUMBER_OF_TURN_BAR_ZONES: int = 5
 const MAX_STATUS_EFFECTS: int = 8
+const MINIMUM_DMG_PERCENT: float = 0.4

@@ -8,8 +8,8 @@
 [resource]
 script = ExtResource("2_r2vnm")
 _name = "Thief"
-_texture = "res://Assets/Champ Collector/Creatures/Thief/Thief_0001.png"
-_normal_map = "res://Assets/Champ Collector/Creatures/Thief/Thief_0001_Normal_Map.png"
+_texture = "res://Assets/Champ_Collector/Creatures/Thief/Thief_0001.png"
+_normal_map = "res://Assets/Champ_Collector/Creatures/Thief/Thief_0001_Normal_Map.png"
 _rarity = 1
 _faction = 2
 _role = 2

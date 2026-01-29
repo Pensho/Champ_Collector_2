@@ -15,7 +15,7 @@ func _ready() -> void:
 func Init(p_context_container: ContextContainer) -> void:
 	_previous_context = p_context_container
 	if(p_context_container._util_text == "Loss"):
-		_texture_rect_background.texture = load("res://Assets/Champ Collector/UI/Loss_Screen/Loss_1.png")
+		_texture_rect_background.texture = load("res://Assets/Champ_Collector/UI/Loss_Screen/Loss_1.png")
 		_texture_rect_background.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		_texture_rect_background.size.x = 1280
 		_texture_rect_background.size.y = 720

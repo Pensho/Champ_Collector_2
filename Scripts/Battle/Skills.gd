@@ -244,7 +244,7 @@ static func DamageDealt(p_attacker_attr: Dictionary[Types.Attribute, int],
 		# TODO: Add a flair to highlight the occurance of a critical strike.
 		print("The attacker did a critical strike!")
 		
-	var mitigation_factor: float = 0.5 + (0.5 * (caster_scaled_attribute_aggregate / ((p_defender_attr[Types.Attribute.Defence] * ignore_defense_factor) + caster_scaled_attribute_aggregate)))
+	var mitigation_factor: float = GameBalance.MINIMUM_DMG_PERCENT + ((1 - GameBalance.MINIMUM_DMG_PERCENT) * (caster_scaled_attribute_aggregate / ((p_defender_attr[Types.Attribute.Defence] * ignore_defense_factor) + caster_scaled_attribute_aggregate)))
 	var damage_dealt: float = mitigation_factor * caster_scaled_attribute_aggregate * crit_multiplier * randomVal
 	return int(ceil(damage_dealt))
 

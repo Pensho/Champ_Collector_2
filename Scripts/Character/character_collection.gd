@@ -60,7 +60,7 @@ func GetCharacterTexture(p_character_role: Types.Role) -> Texture:
 func Add(preset: CharacterPreset) -> void:
 	if(not IsTheCollectionFull()):
 		var new_character: Character = load("res://Scenes/Characters/Character.tscn").instantiate()
-		new_character.InstantiateNew(preset, CreateNextInstanceID())
+		new_character.InstantiateNew(preset, CreateNextInstanceID(), null)
 		_characters[new_character._instanceID] = new_character
 		
 		if(!_collected_types.has(new_character._role)):

@@ -7,7 +7,7 @@
 [resource]
 script = ExtResource("2_mo6rh")
 _name = "Architect"
-_texture = "res://Assets/Champ Collector/Creatures/Architect/Architect_0004.png"
+_texture = "res://Assets/Champ_Collector/Creatures/Architect/Architect_0004.png"
 _rarity = 3
 _faction = 1
 _role = 18

@@ -6,7 +6,7 @@
 script = ExtResource("1_rdx2g")
 name = "Heap On"
 description = "Slams the opponent with your full weight, increasing damage per use. Based on Health."
-icon_path = "res://Assets/Champ Collector/Icons/Abilities/Heap_On/Heap_On_1.jpg"
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Heap_On/Heap_On_1.jpg"
 damage_scaling = Dictionary[int, float]({
 0: 0.4
 })

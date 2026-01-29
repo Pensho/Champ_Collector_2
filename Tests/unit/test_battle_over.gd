@@ -172,7 +172,7 @@ func test_03_init_sets_loss_screen():
 	
 	# Check Loss-specific UI changes
 	var background = screen.get_node("TextureRect_Background")
-	assert_eq(background.texture.resource_path, "res://Assets/Champ Collector/UI/Loss_Screen/Loss_1.png")
+	assert_eq(background.texture.resource_path, "res://Assets/Champ_Collector/UI/Loss_Screen/Loss_1.png")
 	assert_eq(background.size.x, 1280.0)
 	assert_eq(background.size.y, 720.0)
 	

@@ -66,7 +66,7 @@ Each character is defined by a set of core attributes:
     * Mysticism
         * Determines the damage output of magical attacks.
     * Knowledge
-        * Influences the effectiveness of buffs and debuffs applied by the character. Also reduces critical damage taken.
+        * Influences the effectiveness of buffs and debuffs applied by the character (TODO: I don't like to tamper with the effectiveness of buffs/debuffs, consider replacing this use case). Also reduces critical damage taken.
     * Critical chance
         * The likelihood of landing a critical hit, which deals increased damage.
     * Critical damage
@@ -132,6 +132,13 @@ Current roles, their identity and purpose exist as follows:
 - Architect
     - A charge & support character, accumulates Calibration charges through basic skills, consumes a few charges applying defensive buffs to allies and massive charges for big final attacks. Primary attributes: Knowledge, Defense.
     - The Architect is a methodical "Charge" role aligned with the God of Rules. Instead of raw aggression, they build "Logic Chains" by observing the flow of battle, eventually "solving" the encounter with a massive structural shift.
+- Tidal Corsair
+    - Uses two types of basic attacks, one which grants sea stacks and the other grants steel stacks. The third attack consumes all stacks, altering the effect based on which type of stacks were consumed. Up to three stacks can be held at a time. Primary attributes: Attack, Speed.
+    - The Tidal Corsair is a Combo character where you plan your moves ahead, highly mobile but not inherently strong unless you set up your attacks correctly.
+- Plague Doctor
+    - A debuff focused character, applying various damage over time and stat reducing debuffs to enemies. Primary attributes: Mysticism, Resistance.
+- Warlord
+    - A buffing tank character, applying various buffs to self and allies while being able to take a lot of damage. Primary attributes: Health, Defense.
 
 ### 3.2. Combat
 Combat is turn based, using the Speed attribute of each character to move a representation accross a "turn bar". When a characters representation has crossed the entire bar, the game will pause for input to resolve their turn and then finish by putting the representation of the character back to the beginning. Then the system keeps going.
@@ -357,6 +364,9 @@ The God of Magic holds immense knowledge of the arcane arts and the mysteries of
 - Bandits?
 - Pirates?
 - Trolls
-- Elves?
-- Dwarfs?
 - Fae?
+
+### 4.3. Notable cities and locations
+
+#### 4.3.1. Reclaimed City
+A city built on the edge of a vast forest, where originally nobels invested heavily to forage and claim valuable magical resources from the forest. However the strong and harsh growth of the forest eventually proved too much for the city to handle, reaping too few rewards for further investment. The city was eventually abandoned and left to the forest, turning into ruin. Until recently when adventurers and scavengers have started to reclaim parts of the city to gather its resources once more.

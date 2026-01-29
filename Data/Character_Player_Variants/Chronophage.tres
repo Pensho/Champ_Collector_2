@@ -8,7 +8,7 @@
 [resource]
 script = ExtResource("2_uh5a3")
 _name = "Chronophage"
-_texture = "res://Assets/Champ Collector/Creatures/Chronophage/Chronophage_0010.png"
+_texture = "res://Assets/Champ_Collector/Creatures/Chronophage/Chronophage_0010.png"
 _rarity = 3
 _faction = 1
 _role = 17

@@ -1,11 +1,11 @@
 [gd_scene load_steps=10 format=3 uid="uid://dy5q1foc8kon5"]
 
 [ext_resource type="Script" uid="uid://che4nfxkv8ukc" path="res://Scripts/UI/Battle_UI/battle_ui.gd" id="1_gfldn"]
-[ext_resource type="Texture2D" uid="uid://cj6uxwt730ish" path="res://Assets/Champ Collector/Icons/Turn_Bar/walking-boot.svg" id="2_6sbxc"]
-[ext_resource type="Material" uid="uid://2tvv2h51laxc" path="res://Assets/Champ Collector/Material/Unshaded.tres" id="2_d07u5"]
+[ext_resource type="Texture2D" uid="uid://cj6uxwt730ish" path="res://Assets/Champ_Collector/Icons/Turn_Bar/walking-boot.svg" id="2_6sbxc"]
+[ext_resource type="Material" uid="uid://2tvv2h51laxc" path="res://Assets/Champ_Collector/Material/Unshaded.tres" id="2_d07u5"]
 [ext_resource type="Script" uid="uid://bdj0g5fc8d26k" path="res://Scripts/UI/Battle_UI/turn_bar.gd" id="3_6lbqc"]
 [ext_resource type="PackedScene" uid="uid://bte7ljry64t3x" path="res://Scenes/ui/Skill_Button.tscn" id="5_nm010"]
-[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ Collector/Themes/default_theme.tres" id="10_rvbdk"]
+[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="10_rvbdk"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4blpl"]
 bg_color = Color(0.635797, 0.5513, 0.269355, 0.482353)

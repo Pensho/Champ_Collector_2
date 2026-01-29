@@ -65,13 +65,15 @@ func Init(p_context: ContextContainer) -> void:
 	for i in p_context._player_battle_characters.size():
 		_characters[i] = p_context._player_battle_characters[i]
 		_characters[i]._currentHealth = _characters[i].GetBattleAttribute(Types.Attribute.Health)  * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
+		if(null != _characters[i]._trait):
+			_characters[i]._trait.StartOfBattle()
 		VisualizeCharacter(i)
 	
 	SetTargetingOrder()
 	
 	for i in battlecontext._enemies_wave_1.size():
 		_characters[i + 3] = Character.new()
-		_characters[i + 3].InstantiateNew(battlecontext._enemies_wave_1[i], -1)
+		_characters[i + 3].InstantiateNew(battlecontext._enemies_wave_1[i], -1, null)
 		_characters[i + 3]._attributes[Types.Attribute.Speed] += randi_range(-3, 3)
 		_characters[i + 3]._currentHealth = _characters[i + 3].GetBattleAttribute(Types.Attribute.Health)  * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
 		VisualizeCharacter(i + 3)

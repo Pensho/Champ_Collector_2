@@ -7,10 +7,8 @@
 [resource]
 script = ExtResource("2_ltt6g")
 _name = "Militia"
-_texture = "res://Assets/Champ Collector/Creatures/Militia/Militia_0002.png"
-_normal_map = "res://Assets/Champ Collector/Creatures/Militia/Militia_0002_Normal_Map.png"
-_rarity = 0
-_faction = 0
+_texture = "res://Assets/Champ_Collector/Creatures/Militia/Militia_0002.png"
+_normal_map = "res://Assets/Champ_Collector/Creatures/Militia/Militia_0002_Normal_Map.png"
 _role = 13
 _skills = Array[ExtResource("1_yenn6")]([ExtResource("2_3eue7")])
 _health = 60
@@ -21,7 +19,5 @@ _accuracy = 20
 _resistance = 10
 _mysticism = 10
 _knowledge = 30
-_critChance = 5
 _critDamage = 15
-_attributes_weights = Array[int]([])
 metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

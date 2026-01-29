@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://caq22aj34qk1f"]
 
 [ext_resource type="Script" uid="uid://c35o4eowgf517" path="res://Scripts/UI/Battle_UI/damage_number.gd" id="1_0yml7"]
-[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ Collector/Themes/default_theme.tres" id="2_iy6r6"]
+[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="2_iy6r6"]
 
 [sub_resource type="Animation" id="Animation_iy6r6"]
 resource_name = "Damage_Number_Animation"

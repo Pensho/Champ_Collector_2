@@ -6,7 +6,7 @@
 script = ExtResource("1_rci34")
 name = "Stab"
 description = "Plunge you weapon against an enemy. Based on attack."
-icon_path = "res://Assets/Champ Collector/Icons/Abilities/Stab/Stab_3.jpg"
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Stab/Stab_3.jpg"
 damage_scaling = Dictionary[int, float]({
 2: 0.7
 })

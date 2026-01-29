@@ -6,7 +6,7 @@
 script = ExtResource("1_paq84")
 name = "Pierce weakness"
 description = "Through precise means, finding the weak spot to circumvent defences. Based on attack."
-icon_path = "res://Assets/Champ Collector/Icons/Abilities/Pierce_Weakness/Pierce_Weakness_2.jpg"
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Pierce_Weakness/Pierce_Weakness_2.jpg"
 damage_scaling = Dictionary[int, float]({
 2: 1.0
 })

@@ -2,12 +2,12 @@
 
 [ext_resource type="Script" uid="uid://g08boofygabn" path="res://Scripts/Battle/battle.gd" id="1_oxf17"]
 [ext_resource type="PackedScene" uid="uid://dy5q1foc8kon5" path="res://Scenes/battle_ui.tscn" id="2_1ruyk"]
-[ext_resource type="Texture2D" uid="uid://n1b55anwfwtk" path="res://Assets/Champ Collector/Scenery/Troll battle area/Troll_battle_area_2.jpg" id="2_qeyqd"]
-[ext_resource type="Texture2D" uid="uid://0s8rmq2i2vg6" path="res://Assets/Champ Collector/Scenery/Troll battle area/Troll_battle_area_2_Normal_Map.jpg" id="3_k7mbx"]
+[ext_resource type="Texture2D" uid="uid://n1b55anwfwtk" path="res://Assets/Champ_Collector/Scenery/Troll battle area/Troll_battle_area_2.jpg" id="2_qeyqd"]
+[ext_resource type="Texture2D" uid="uid://0s8rmq2i2vg6" path="res://Assets/Champ_Collector/Scenery/Troll battle area/Troll_battle_area_2_Normal_Map.jpg" id="3_k7mbx"]
 [ext_resource type="PackedScene" uid="uid://dvvopn2yuy4wr" path="res://Scenes/Characters/Character_Battle_Repr.tscn" id="3_ww2ai"]
-[ext_resource type="Texture2D" uid="uid://cjcnam176bh58" path="res://Assets/Champ Collector/Icons/Indicator_Arrow/Indicator_Arrow_0001.png" id="5_pd5xk"]
-[ext_resource type="Texture2D" uid="uid://byq61tt3abjd8" path="res://Assets/Champ Collector/Light/Point_Light.tres" id="6_lrv64"]
-[ext_resource type="Material" uid="uid://2tvv2h51laxc" path="res://Assets/Champ Collector/Material/Unshaded.tres" id="6_qeyqd"]
+[ext_resource type="Texture2D" uid="uid://cjcnam176bh58" path="res://Assets/Champ_Collector/Icons/Indicator_Arrow/Indicator_Arrow_0001.png" id="5_pd5xk"]
+[ext_resource type="Texture2D" uid="uid://byq61tt3abjd8" path="res://Assets/Champ_Collector/Light/Point_Light.tres" id="6_lrv64"]
+[ext_resource type="Material" uid="uid://2tvv2h51laxc" path="res://Assets/Champ_Collector/Material/Unshaded.tres" id="6_qeyqd"]
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_heh15"]
 diffuse_texture = ExtResource("2_qeyqd")

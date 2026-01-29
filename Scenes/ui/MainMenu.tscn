@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://c6c1o3oabj0pf"]
 
-[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ Collector/Themes/default_theme.tres" id="1_hnwi1"]
+[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="1_hnwi1"]
 [ext_resource type="Script" uid="uid://cygusf5metdyh" path="res://Scripts/UI/main_menu.gd" id="2_hnwi1"]
-[ext_resource type="Texture2D" uid="uid://cxe2lffkbra47" path="res://Assets/Champ Collector/Scenery/Grasslands.png" id="3_h3tiw"]
+[ext_resource type="Texture2D" uid="uid://cxe2lffkbra47" path="res://Assets/Champ_Collector/Scenery/Grasslands.png" id="3_h3tiw"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3

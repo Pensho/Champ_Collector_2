@@ -3,7 +3,7 @@ class_name Character extends Node
 const Types = preload("res://Scripts/common_enums.gd")
 #const StatusEffects = preload("uid://bp3pvvar4437")
 
-func InstantiateNew(preset: CharacterPreset, instanceID: int) -> void:
+func InstantiateNew(preset: CharacterPreset, instanceID: int, characterTrait: CharacterTrait) -> void:
 	_instanceID = instanceID
 	
 	_name = preset._name
@@ -27,6 +27,10 @@ func InstantiateNew(preset: CharacterPreset, instanceID: int) -> void:
 	_attributes[Types.Attribute.CritDamage] = preset._critDamage
 	
 	_currentHealth = GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
+	
+	_trait = characterTrait
+	if(null != _trait):
+		_trait.Init()
 
 func GetEquipmentBonus(p_attribute: Types.Attribute) -> int:
 	var bonus_stat: int = 0
@@ -85,6 +89,8 @@ var _held_items: Dictionary[Types.Slot, Equipment]
 
 var _currentHealth: int = 0
 var _attributes_weights: Array[Types.Attribute]
+
+var _trait: CharacterTrait
 
 @warning_ignore_start("unused_private_class_variable")
 var _active_buffs: Array[StatusEffects.Buff] = []
