@@ -74,6 +74,7 @@ theme_override_font_sizes/font_size = 45
 text = "Start Game"
 
 [node name="Button_View_Collection" type="Button" parent="MarginContainer/VBoxContainer/ButtonsVBox"]
+visible = false
 layout_mode = 2
 theme = ExtResource("1_hnwi1")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)

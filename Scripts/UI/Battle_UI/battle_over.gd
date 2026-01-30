@@ -42,7 +42,7 @@ func _on_visibility_changed() -> void:
 
 func _on_button_end_button_up() -> void:
 	var context_container: ContextContainer = ContextContainer.new()
-	context_container._scene = "res://Scenes/ui/MainMenu.tscn"
+	context_container._scene = "uid://cfdrcdtsx2jh7"
 	main.GetInstance().change_scene(context_container)
 
 func _on_button_replay_button_up() -> void:

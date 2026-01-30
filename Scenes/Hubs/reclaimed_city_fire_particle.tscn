@@ -1,0 +1,80 @@
+[gd_scene load_steps=9 format=3 uid="uid://n8p43lcdr31e"]
+
+[ext_resource type="Texture2D" uid="uid://dath004d5x7bi" path="res://Assets/Champ_Collector/Particles/Fire_Particle.png" id="1_la8sq"]
+
+[sub_resource type="Curve" id="Curve_rbw2y"]
+_limits = [-360.0, 360.0, 0.0, 1.0]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.24761902, 198.18015), 0.0, 0.0, 0, 0, Vector2(0.4904762, 10.809814), 0.0, 0.0, 0, 0, Vector2(0.74523807, 210.95541), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 5
+
+[sub_resource type="Curve" id="Curve_i27mv"]
+_data = [Vector2(0.035714287, 0.4381256), 0.0, -1.3150988, 0, 0, Vector2(0.5071429, 0.43221116), -2.9498415, -2.9498415, 0, 0, Vector2(0.9928572, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Gradient" id="Gradient_5v33w"]
+offsets = PackedFloat32Array(0, 0.06852792, 0.18781726, 0.29187816, 0.4543147, 0.60152286, 0.7385787, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0.8745098, 0.74509805, 0.14901961, 1, 0.8828063, 0.5902301, 0.2043296, 1, 0.8862745, 0.5254902, 0.22745098, 1, 0.9756303, 0.112605035, 0.048739493, 1, 1, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0)
+
+[sub_resource type="Gradient" id="Gradient_la8sq"]
+offsets = PackedFloat32Array(0.52261305, 0.7512563)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_rbw2y"]
+gradient = SubResource("Gradient_la8sq")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+
+[sub_resource type="Curve" id="Curve_la8sq"]
+_data = [Vector2(0, 0.11874437), 0.0, 0.0, 0, 0, Vector2(1, 0.923112), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="Gradient_i27mv"]
+offsets = PackedFloat32Array(0, 0.11675127, 0.48477158, 1)
+colors = PackedColorArray(1, 0, 0, 1, 0.03478259, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0)
+
+[node name="ReclaimedCityFireParticle" type="Node2D"]
+
+[node name="CPUParticles2D_Flame" type="CPUParticles2D" parent="."]
+modulate = Color(1, 1, 1, 0.30980393)
+amount = 500
+texture = ExtResource("1_la8sq")
+lifetime = 0.4
+preprocess = 1.0
+speed_scale = 0.4
+randomness = 1.0
+draw_order = 1
+emission_shape = 1
+emission_sphere_radius = 5.0
+direction = Vector2(0, -1)
+spread = 0.0
+gravity = Vector2(0, -280)
+initial_velocity_max = 100.0
+angular_velocity_min = -45.0
+angular_velocity_max = 45.0
+angular_velocity_curve = SubResource("Curve_rbw2y")
+scale_amount_min = 0.0
+scale_amount_max = 0.2
+scale_amount_curve = SubResource("Curve_i27mv")
+color_ramp = SubResource("Gradient_5v33w")
+
+[node name="CPUParticles2D2_Smoke" type="CPUParticles2D" parent="."]
+modulate = Color(1, 1, 1, 0.11372549)
+position = Vector2(0, -20)
+amount = 500
+texture = SubResource("GradientTexture2D_rbw2y")
+lifetime = 1.5
+preprocess = 1.0
+speed_scale = 0.3
+draw_order = 1
+emission_shape = 2
+emission_sphere_radius = 5.0
+direction = Vector2(0, -1)
+spread = 128.68
+gravity = Vector2(0, -80)
+angular_velocity_min = -45.0
+angular_velocity_max = 45.0
+orbit_velocity_min = -0.2
+scale_amount_min = 0.0
+scale_amount_max = 0.3
+scale_amount_curve = SubResource("Curve_la8sq")
+color_ramp = SubResource("Gradient_i27mv")

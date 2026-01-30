@@ -1,0 +1,73 @@
+[gd_scene load_steps=7 format=3 uid="uid://cfdrcdtsx2jh7"]
+
+[ext_resource type="Texture2D" uid="uid://buloq01pashmn" path="res://Assets/Champ_Collector/Hubs/Reclaimed_City/Reclaimed_1.jpg" id="1_feqxn"]
+[ext_resource type="Script" uid="uid://u58ywhc4xsod" path="res://Scripts/UI/hub_menu.gd" id="1_sbf57"]
+[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="2_sbf57"]
+[ext_resource type="Theme" uid="uid://bcg5pku1fyhst" path="res://Assets/Champ_Collector/Themes/hub_theme.tres" id="4_62xir"]
+[ext_resource type="Texture2D" uid="uid://be4d7es1t3q0k" path="res://Scenes/Hubs/Reclaimed_City_button_hover.tres" id="5_5dym2"]
+[ext_resource type="PackedScene" uid="uid://n8p43lcdr31e" path="res://Scenes/Hubs/reclaimed_city_fire_particle.tscn" id="6_gm8ir"]
+
+[node name="ReclaimedCity" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_sbf57")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("1_feqxn")
+
+[node name="ReclaimedCityFireParticle" parent="." instance=ExtResource("6_gm8ir")]
+position = Vector2(984, 536)
+
+[node name="Button_Adventure_guild" type="TextureButton" parent="."]
+layout_mode = 0
+offset_left = 235.00002
+offset_top = 427.0
+offset_right = 457.0
+offset_bottom = 627.0
+scale = Vector2(1.2, 1.2)
+theme = ExtResource("2_sbf57")
+texture_hover = ExtResource("5_5dym2")
+
+[node name="Button_Shop" type="TextureButton" parent="."]
+layout_mode = 0
+offset_left = 907.0
+offset_top = 448.0
+offset_right = 1107.0
+offset_bottom = 648.0
+theme = ExtResource("4_62xir")
+texture_hover = ExtResource("5_5dym2")
+
+[node name="Button_Armory" type="TextureButton" parent="."]
+layout_mode = 0
+offset_left = 594.0
+offset_top = 101.0
+offset_right = 794.0
+offset_bottom = 301.0
+scale = Vector2(0.8, 0.8)
+theme = ExtResource("2_sbf57")
+texture_hover = ExtResource("5_5dym2")
+
+[node name="Button_War_Room" type="TextureButton" parent="."]
+layout_mode = 0
+offset_left = 845.0
+offset_top = 93.0
+offset_right = 1045.0
+offset_bottom = 293.0
+scale = Vector2(0.7, 0.8)
+theme = ExtResource("2_sbf57")
+texture_hover = ExtResource("5_5dym2")
+
+[node name="Button_Quit" type="Button" parent="."]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 27.0
+offset_right = 106.0
+offset_bottom = 87.0
+text = "Quit"
+
+[connection signal="button_up" from="Button_Armory" to="." method="_on_button_view_collection_button_up"]
+[connection signal="button_up" from="Button_War_Room" to="." method="_on_war_room_button_pressed"]
+[connection signal="button_up" from="Button_Quit" to="." method="_on_button_quit_button_up"]

@@ -160,5 +160,5 @@ func SetAvailableSlots(p_show_items: bool) -> void:
 
 func _on_exit_button_up() -> void:
 	var context_container: ContextContainer = ContextContainer.new()
-	context_container._scene = "res://Scenes/ui/MainMenu.tscn"
+	context_container._scene = "uid://cfdrcdtsx2jh7"
 	main.GetInstance().change_scene(context_container)

@@ -44,6 +44,7 @@ The core gameplay follows a cyclical "Prepare, Engage, Reward, Grow" loop design
 - Upgrading character skills
 - Energy system to restrict daily player activity
 - Applying effects onto the turn bar. If a character stops within applied zones of the bar, certain effects trigger. The turn bar is split into a set of "zones" that can have effects applied to them through skills.
+- Central hub area to manage characters, gear and access different game modes.
 
 ### 3.1. Champion Management
 TODO
@@ -327,6 +328,25 @@ Maybe a rotating schedule composed of one type of event per god? E.g.
 *   **God of Magic**
     *   Chaotic event, involving many elements that change often?
 
+### 3.6. Hub Area
+The hub areas will be almost identical but for visual themes, minor differences in NPCs and decorations.
+The biggest differences will come along the theme of the hub as it can be either neutral or run by one or more factions. This will affect the reqruitment weighting of characters.
+
+#### 3.6.1. The war room
+The Map Table: Access to the Main Campaign, Daily Events, and God-themed floor dungeons.
+
+#### 3.6.2. The Armory
+Where players can manage their character roster, equip gear, and upgrade skills.
+
+#### 3.6.3. The Adventurer's Guild
+Where players reqruit new characters using thematic resources.
+
+#### 3.6.4. The shop
+Where players can purchase consumables, gear, and other items using various currencies.
+
+### 3.6.4. Energy Systems
+To limit daily player activity, an energy system will be implemented. Players will have a set amount of Energy (e.g., Food or Supplies) that depletes when entering combat nodes. Energy will regenerate over time or can be replenished through in-game actions or purchases.
+
 
 ---
 
@@ -370,3 +390,52 @@ The God of Magic holds immense knowledge of the arcane arts and the mysteries of
 
 #### 4.3.1. Reclaimed City
 A city built on the edge of a vast forest, where originally nobels invested heavily to forage and claim valuable magical resources from the forest. However the strong and harsh growth of the forest eventually proved too much for the city to handle, reaping too few rewards for further investment. The city was eventually abandoned and left to the forest, turning into ruin. Until recently when adventurers and scavengers have started to reclaim parts of the city to gather its resources once more.
+
+Assosiated characters:
+- Symbiote
+- Plague Doctor
+- Alchemist
+- Diviner
+- Appraiser
+
+#### 4.3.2. The Pirate Coves
+A series of hidden coves along a treacherous coastline, serving as a haven for pirates and smugglers. These coves are notorious for their labyrinthine tunnels and secret passages, making them difficult to navigate for outsiders. The Pirate Coves are a hub of illicit trade, where anything from rare magical artifacts to forbidden knowledge can be bought and sold. The area is also known for its lawlessness, with various pirate factions vying for control over the lucrative smuggling routes.
+
+Assosiated characters:
+- Tidal Corsair
+- Thief
+- Bar Brawler
+- Jester
+
+#### 4.3.3. The Clockwork Spire
+A towering structure located in the heart of a sprawling desert, the Clockwork Spire is a marvel of engineering and arcane technology. Built by a long-lost civilization, the spire is filled with intricate gears, pulleys, and mechanisms that power its various functions. The spire serves as a research facility for scholars and inventors, who seek to unlock the secrets of its construction and harness its power for their own purposes. However, the spire is also home to dangerous traps and guardians, making it a perilous destination for those who dare to explore its depths.
+
+Assosiated characters:
+- Architect
+- Chronophage
+- Scholar
+
+#### 4.3.4. The god of rules holy city
+A city dedicated to the worship of the God of Rules, where order and structure are paramount.
+The city is a bastion of law and discipline, with strict regulations governing every aspect of daily life. Citizens are expected to adhere to a rigid code of conduct, and any deviation from the norm is met with swift and severe punishment. The city's architecture reflects its devotion to order, with perfectly symmetrical buildings and meticulously maintained streets. The city is also home to a powerful religious order, whose members serve as both spiritual leaders and enforcers of the god's will.
+
+Assosiated characters:
+- Emissary
+
+#### 4.3.5. The god of adventures caravan
+A nomadic settlement that travels across the land, following the whims of the God of Adventure.
+The caravan is a vibrant and eclectic community, filled with adventurers, performers, and thrill-seekers.
+
+Assosiated characters:
+- Warlord
+- Lancer
+- Tactician
+
+#### 4.3.6. The various ruins of the god of magic
+Scattered across the world are ancient ruins that were once dedicated to the worship of the God of Magic. These ruins are remnants of a bygone era, when magic was a dominant force in the world. The ruins are often hidden in remote and dangerous locations, protected by powerful enchantments and guardians. Inside the ruins, adventurers can find forgotten knowledge, powerful artifacts, and clues to the god's imprisonment. However, the ruins are also fraught with peril, as many have been corrupted by dark magic or overrun by hostile creatures.
+
+Assosiated characters:
+- Bloodmage
+- Cultist
+- Sorcerer
+- Herald of the loom
