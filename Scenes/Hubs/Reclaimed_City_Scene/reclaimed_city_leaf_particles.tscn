@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://4igirbcta72v"]
+
+[sub_resource type="ImageTexture" id="ImageTexture_dmole"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jdrxf"]
+atlas = SubResource("ImageTexture_dmole")
+
+[node name="ReclaimedCityLeafParticles" type="Node2D"]
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
+visible = false
+texture = SubResource("AtlasTexture_jdrxf")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
