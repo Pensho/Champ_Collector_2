@@ -12,7 +12,7 @@ layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_sbf57")
 
-[node name="TextureRect" type="TextureRect" parent="."]
+[node name="Background" type="TextureRect" parent="."]
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
@@ -31,14 +31,39 @@ scale = Vector2(1.2, 1.2)
 theme = ExtResource("2_sbf57")
 texture_hover = ExtResource("5_5dym2")
 
+[node name="Label_Adventureres_guild" type="Label" parent="."]
+layout_mode = 0
+offset_left = 224.0
+offset_top = 363.0
+offset_right = 494.0
+offset_bottom = 393.0
+theme = ExtResource("2_sbf57")
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.64705884)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 3
+text = "Adventurers Guild"
+
 [node name="Button_Shop" type="TextureButton" parent="."]
 layout_mode = 0
-offset_left = 907.0
-offset_top = 448.0
-offset_right = 1107.0
-offset_bottom = 648.0
+offset_left = 906.0
+offset_top = 437.0
+offset_right = 1106.0
+offset_bottom = 637.0
 theme = ExtResource("4_62xir")
 texture_hover = ExtResource("5_5dym2")
+
+[node name="Label_Shop" type="Label" parent="."]
+layout_mode = 1
+offset_left = 944.0
+offset_top = 385.0
+offset_right = 1038.0
+offset_bottom = 415.0
+theme = ExtResource("2_sbf57")
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.64705884)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 3
+text = "Shop"
+horizontal_alignment = 1
 
 [node name="Button_Armory" type="TextureButton" parent="."]
 layout_mode = 0
@@ -50,6 +75,19 @@ scale = Vector2(0.8, 0.8)
 theme = ExtResource("2_sbf57")
 texture_hover = ExtResource("5_5dym2")
 
+[node name="Label_Armory" type="Label" parent="."]
+layout_mode = 1
+offset_left = 559.0
+offset_top = 201.0
+offset_right = 667.0
+offset_bottom = 231.0
+theme = ExtResource("2_sbf57")
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.64705884)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 3
+text = "Armory"
+horizontal_alignment = 1
+
 [node name="Button_War_Room" type="TextureButton" parent="."]
 layout_mode = 0
 offset_left = 845.0
@@ -60,12 +98,28 @@ scale = Vector2(0.7, 0.8)
 theme = ExtResource("2_sbf57")
 texture_hover = ExtResource("5_5dym2")
 
+[node name="Label_Adventure" type="Label" parent="."]
+layout_mode = 1
+offset_left = 843.0
+offset_top = 46.0
+offset_right = 997.0
+offset_bottom = 76.0
+theme = ExtResource("2_sbf57")
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.64705884)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 3
+text = "Adventure"
+horizontal_alignment = 1
+
 [node name="Button_Quit" type="Button" parent="."]
 layout_mode = 0
 offset_left = 28.0
 offset_top = 27.0
 offset_right = 106.0
 offset_bottom = 87.0
+theme = ExtResource("2_sbf57")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
 text = "Quit"
 
 [connection signal="button_up" from="Button_Armory" to="." method="_on_button_view_collection_button_up"]
