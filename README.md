@@ -15,6 +15,10 @@
 
 ### Visual examples of the project
 
+Example of city (31-01-2026)
+![Example of city](Progress_Images/Hub_2026_01_31.gif)
+
+
 State of battle (15-09-2025)
 ![image](Progress_Images/15-09-2025.PNG)
 
