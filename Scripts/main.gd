@@ -7,6 +7,8 @@ const HERALD_OF_THE_LOOM = preload("res://Data/Character_Player_Variants/Herald_
 const THIEF = preload("res://Data/Character_Player_Variants/Thief.tres")
 const CHRONOPHAGE = preload("uid://wofv42g341ac")
 const BLOODMAGE = preload("uid://7adgp1emx6yk")
+const TIDAL_CORSAIR = preload("uid://bmqvx8opoocu7")
+
 
 const WEAPON_BASIC_SPEAR = preload("res://Data/Item_Presets/Weapon_Basic_Spear.tres")
 const RED_BOOTS = preload("uid://c3g7cshxhg0rw")
@@ -47,6 +49,7 @@ class Main_Instance extends Node:
 		#_character_collection.Add(HERALD_OF_THE_LOOM.duplicate(true))
 		_character_collection.Add(CHRONOPHAGE.duplicate(true))
 		#_character_collection.Add(BLOODMAGE.duplicate(true))
+		_character_collection.Add(TIDAL_CORSAIR.duplicate(true))
 		
 		var weapon: EquipmentPreset = WEAPON_BASIC_SPEAR.duplicate(true)
 		weapon.Setup()

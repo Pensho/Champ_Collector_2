@@ -122,9 +122,6 @@ func StartTurn() -> void:
 			_characters[_characterIDs_turn]._skills[2].icon_path,
 			_characters[_characterIDs_turn]._skills[2].name,
 			_characters[_characterIDs_turn]._skills[2].description)
-		#_battle_ui.SetSkill1Texture(_characters[_characterIDs_turn]._skills[0].icon_path)
-		#_battle_ui.SetSkill2Texture(_characters[_characterIDs_turn]._skills[1].icon_path)
-		#_battle_ui.SetSkill3Texture(_characters[_characterIDs_turn]._skills[2].icon_path)
 		_battle_ui._skill_buttons[0].show()
 		_battle_ui._skill_buttons[1].show()
 		_battle_ui._skill_buttons[2].show()

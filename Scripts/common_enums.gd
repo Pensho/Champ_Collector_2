@@ -40,6 +40,7 @@ enum Role
 	Herald_of_the_loom,
 	Chronophage,
 	Architect,
+	Tidal_Corsair,
 }
 
 enum Slot

@@ -26,4 +26,6 @@ const Types = preload("res://Scripts/common_enums.gd")
 
 @export var _attributes_weights: Array[Types.Attribute]
 
+@export var _trait: CharacterTrait
+
 @warning_ignore_restore("unused_private_class_variable")

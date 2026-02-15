@@ -31,7 +31,7 @@ The core gameplay follows a cyclical "Prepare, Engage, Reward, Grow" loop design
 |-----------|-------|------------------|
 | Short-Term (Daily) | Efficiency | Spending Energy on routine fights to gather crafting materials and XP; completing daily God-themed events. |
 | Mid-Term (Weekly) | Strategy | Solving "Puzzle" encounters and bosses to acquire Role-specific gear or rare Trinkets; participating in rotating God events (e.g., God of Structure’s floor dungeon). |
-| Long-Term (Monthly) | Collection | Using thematic resources to acquire new characters, completing faction-specific synergies, and uncovering the "Forgotten God" through world exploration. |
+| Long-Term (Monthly) | Collection | Using Commisions of guilds to acquire new characters, completing faction-specific synergies, and uncovering the "Forgotten God" through world exploration. |
 
 
 ---
@@ -47,7 +47,7 @@ The core gameplay follows a cyclical "Prepare, Engage, Reward, Grow" loop design
 - Central hub area to manage characters, gear and access different game modes.
 
 ### 3.1. Champion Management
-TODO
+The terms Champion, Character, Hero are synonumous for the playable characters a player can acquire and use.
 
 #### 3.1.1. Character Attributes
 Each character is defined by a set of core attributes:
@@ -92,7 +92,7 @@ Each character is defined by a set of core attributes:
 * Events
 
 #### 3.1.3. Character Role
-Each character role should define a baseline for a character but not necessarily the specifics of it. It will restrict which skills it could use as well as define its’ starting primary attributes.
+Each character role should define a baseline for a character but not necessarily the specifics of it. It will restrict which skills it could use as well as define its starting primary attributes.
 
 Current roles, their identity and purpose exist as follows:
 - Emissary
@@ -153,6 +153,8 @@ The first is simple fights to be routine and grind options to add to a players p
 The second type is the main challenge in the form of puzzle of sorts. Each encounter should require one of two or three combinations of specific skills to defeat, or a significantly larger value of character levels/gearing than expected of the encounter.
 
 <br/>
+
+After a combat event, the players characters are healed to full and their skill cooldowns reset. They are given some kind of reward, usually in terms of experience and sometimes equipment.
 
 
 #### 3.2.1. Combat Formulas
@@ -284,8 +286,10 @@ One type of consumable could include some types to alter items, e.g. increase th
 
 #### 3.3.2. Currencies
 - Area unlock currency
-- Energy of some kind (probably food or supplies or something)
-- Some kind of thematic resource to acquire new characters
+- Supplies
+    - Used to run playable content, costs X to run an encounter and refunds half if the player loses.
+- Fortune’s Favor
+    - Used in Adventurer's guild locations in hubs.
 
 ### 3.4. Game Modes
 TODO
@@ -332,14 +336,15 @@ Maybe a rotating schedule composed of one type of event per god? E.g.
 The hub areas will be almost identical but for visual themes, minor differences in NPCs and decorations.
 The biggest differences will come along the theme of the hub as it can be either neutral or run by one or more factions. This will affect the reqruitment weighting of characters.
 
-#### 3.6.1. The war room
-The Map Table: Access to the Main Campaign, Daily Events, and God-themed floor dungeons.
+#### 3.6.1. The war room (Gate out of town etc)
+Transports the player to a new screen, the world atlas. Where the player can access different playable ecounters.
 
 #### 3.6.2. The Armory
 Where players can manage their character roster, equip gear, and upgrade skills.
 
 #### 3.6.3. The Adventurer's Guild
-Where players reqruit new characters using thematic resources.
+Where players reqruit new characters using Fortune’s Favors.
+There is a chance when using a Fortune’s Favor to get a champion, or they could get supplies or currency as a filler.
 
 #### 3.6.4. The shop
 Where players can purchase consumables, gear, and other items using various currencies.
@@ -439,3 +444,28 @@ Assosiated characters:
 - Cultist
 - Sorcerer
 - Herald of the loom
+
+
+## 5. Playable content
+
+### 5.1. Longform
+Intended to be adventures aimed to span days to weeks to complete.
+
+### 5.2. Shortform
+Intended to be singlular encounters with specific, targetable and grindable rewards.
+
+#### 5.2.1. Quest Board (Experience ecounter)
+A quest board is accesible where one randomized encounter (out of two or three) will be available, with the purpose of having different characters/strategies be more efficient at different encounters.
+
+The intented way to enage is to bring one suitable character to deal with the ecounter and two weak characters to grow from the encounter reward, the experience points.
+
+#### 5.2.2. Gear ecounter 1 (To be named and themed still)
+In the future the intent is to have one type of encounter per type of gear set, where all types of equippable items or a subset can be a drop for that set.
+For now though in the meantime as gear sets doesn't exist yet, the intention is for each encounter to drop one type of equippable item as e.g. one ecounter for boots, one for weapons and one for off-hands.
+
+#### 5.2.3. Caravan (Currency ecounter)
+
+
+## 6. Development tools
+- Godot Engine version 4.5
+

@@ -40,3 +40,6 @@ func ClearStatusEffects() -> void:
 		if(null != textRect.texture):
 			textRect.texture = null
 			textRect.hide()
+
+func DrawCustomElement(texture: TextureRect, positon: Vector2) -> void:
+	pass

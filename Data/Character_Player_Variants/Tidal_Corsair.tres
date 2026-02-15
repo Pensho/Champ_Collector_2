@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="CharacterPreset" load_steps=4 format=3 uid="uid://bmqvx8opoocu7"]
+
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_6xory"]
+[ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_vqjbp"]
+[ext_resource type="Resource" uid="uid://dvgwxvsovsldc" path="res://Data/Character_Skill_Variants/Stab.tres" id="2_yd2bh"]
+
+[resource]
+script = ExtResource("2_vqjbp")
+_name = "Tidal Corsair"
+_texture = "res://Assets/Champ_Collector/Creatures/Tidal_Corsair/Tidal_Corsair_0002.png"
+_normal_map = "res://Assets/Champ_Collector/Creatures/Tidal_Corsair/Tidal_Corsair_0002_Normal_Map.png"
+_rarity = 2
+_faction = 2
+_role = 19
+_skills = Array[ExtResource("1_6xory")]([ExtResource("2_yd2bh"), ExtResource("2_yd2bh"), ExtResource("2_yd2bh")])
+_health = 55
+_speed = 60
+_attack = 80
+_defence = 45
+_accuracy = 40
+_resistance = 50
+_mysticism = 20
+_knowledge = 20
+_attributes_weights = Array[int]([0, 2, 2, 3])
+metadata/_custom_type_script = "uid://ftdwxfh8y3n1"
