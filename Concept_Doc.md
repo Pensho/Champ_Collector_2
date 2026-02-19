@@ -94,52 +94,81 @@ Each character is defined by a set of core attributes:
 #### 3.1.3. Character Role
 Each character role should define a baseline for a character but not necessarily the specifics of it. It will restrict which skills it could use as well as define its starting primary attributes.
 
+Each Role can have one or two main purposes in combat but it doesn't have to restrict their kit of skills. The types:
+- Damage
+    - Revolves around either or both relying on other characters or by themselves to deal significant amounts of damage onto the opponents.
+- Sustain
+    - The intent of the sustain purpose is to keep ally characters alive, either or both through being able to tank incoming damage, applying buffs to reduce incoming damage or healing through buffs or abilities.
+- Debuffer
+    - Applies various debuffs to enemies to either make them weaker, take more damage, become slower etc. So to make the enounter easier by affecting opponents.
+- Control
+    - Manipulates turn order, skill availability or targeting of skills.
+
 Current roles, their identity and purpose exist as follows:
 - Emissary
     - TODO
 - Thief
     - A squishy damage dealer, focusing on set-up through skills and bypassing enemy defenses, can steal buffs. Primary attributes: Attack.
+    - Purpose: Damage.
 - Lancer
     - TODO
+    - Damage
 - Alchemist
     - A support character that focuses on buffing allies and debuffing enemies through various concoctions. Primary attributes: Knowledge, Mysticism.
+    - Purpose: Debuffer, Sustain
 - Sorcerer
     - A damage dealer that harnesses the power of magic to deal Area of Effect damage and control the battlefield. Primary attributes: Mysticism, Knowledge.
+    - Purpose: Damage, Debuffer, Control
 - Scholar
     - A support character that focuses on knowledge and strategy to enhance allies' abilities and exploit enemy weaknesses. Primary attributes: Knowledge.
+    - Purpose: Sustain, Debuffer
 - Diviner
     - Gains buffs (On self and allies if high rarity Diviner) if enemies are x-y% (depending on rarity of Diviner) behind the Diviner on the turn bar when their turn starts. Primary attributes: Mysticism.
+    - Purpose: Sustain, Debuffer
 - Appraiser
     - A master at exploiting enemy weaknesses, allowing oppertunity for the team to easily deal critical hits. Primary attributes: Critical Chance, Knowledge.
+    - Purpose: Debuffer
 - Tactician
     - Gives buffs (On self and allies if high rarity Tactician) if allies are x-y% (depending on rarity of Tactician) behind the Tactician on the turn bar when their turn starts. Primary attributes: Knowledge, Speed.
+    - Purpose: Sustain, Debuffer
 - Symbiote
     - A character weak by default but given the option to alter itself to combine with one of select few monsters to gain their trait & bonus in attributes. Primary attributes: Health, Resistance.
+    - Purpose: Sustain, Debuffer
 - Jester
     - An unconventional tanking character that does not have significantly high Health or Defense but relies on skills that provoke hits to the Jester and dodge them. Primary attributes: Accuracy, Knowledge, Speed.
+    - Purpose: Damage, Sustain
 - Cultist
     - Consumes ally buffs or health to empower their own skills, dealing magical damage or applying debuffs. Primary attributes: Mysticism, Knowledge.
+    - Purpose: Debuffer, Damage
 - Bar Brawler
     - A health focused character, dealing damage, tanking and applying few debuffs. Attacks scales of health primarily. Primary attributes: Health.
+    - Purpose: Sustain, Debuffer
 - Bloodmage
     - Spending their own or allies health for big pay-off skills in terms of damage or applying shields based on sacrificed health. Primary attributes: Health, Mysticism.
+    - Purpose: Sustain, Damage
 - Herald of the loom
     - A stance character, using 3 types of stances:
         - Golden thread; All buffs & debuffs only goes to the herald instead of allies.
         - Silver thread; All herald buffs & debuffs cast becomes more powerfull, adds one attribute value to the accuracy attribute value when attempting to apply debuffs.
         - Black thread; All damage dealt and received scale with mysticism instead of other attributes. One other player & enemy character will have their attributes averaged out while Black thread is in use.  Primary attributes: Mysticism, Accuracy.
+    - Purpose: Debuffer
 - Chronophage
     - A speed focused character, applying various speed modifying skills onto the turn bar and primarily deals damage based on the Speed attribute. Primary attributes: Speed.
+    - Purpose: Control
 - Architect
     - A charge & support character, accumulates Calibration charges through basic skills, consumes a few charges applying defensive buffs to allies and massive charges for big final attacks. Primary attributes: Knowledge, Defense.
     - The Architect is a methodical "Charge" role aligned with the God of Rules. Instead of raw aggression, they build "Logic Chains" by observing the flow of battle, eventually "solving" the encounter with a massive structural shift.
+    - Purpose: Sustain, Damage
 - Tidal Corsair
     - Uses two types of basic attacks, one which grants sea stacks and the other grants steel stacks. The third attack consumes all stacks, altering the effect based on which type of stacks were consumed. Up to three stacks can be held at a time. Primary attributes: Attack, Speed.
     - The Tidal Corsair is a Combo character where you plan your moves ahead, highly mobile but not inherently strong unless you set up your attacks correctly.
+    - Purpose: Damage
 - Plague Doctor
     - A debuff focused character, applying various damage over time and stat reducing debuffs to enemies. Primary attributes: Mysticism, Resistance.
+    - Purpose: Debuffer
 - Warlord
     - A buffing tank character, applying various buffs to self and allies while being able to take a lot of damage. Primary attributes: Health, Defense.
+    - Purpose: Sustain
 
 ### 3.2. Combat
 Combat is turn based, using the Speed attribute of each character to move a representation accross a "turn bar". When a characters representation has crossed the entire bar, the game will pause for input to resolve their turn and then finish by putting the representation of the character back to the beginning. Then the system keeps going.

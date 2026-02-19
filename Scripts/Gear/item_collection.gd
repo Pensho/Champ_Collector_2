@@ -39,7 +39,7 @@ func GetItemTexture(p_item_type: Types.Slot) -> Texture:
 	return null
 
 func AddPreset(preset: EquipmentPreset) -> void:
-	var new_equipment: Equipment = load("res://Scenes/Equipment/Equipment.tscn").instantiate()
+	var new_equipment: Equipment = Equipment.new()
 	new_equipment.InstantiateNew(preset, CreateNextInstanceID())
 	_items[new_equipment._instanceID] = new_equipment
 	

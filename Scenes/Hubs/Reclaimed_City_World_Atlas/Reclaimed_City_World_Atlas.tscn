@@ -1,0 +1,124 @@
+[gd_scene load_steps=5 format=3 uid="uid://df6f1b4xoipjq"]
+
+[ext_resource type="Texture2D" uid="uid://xfua5pu07bpc" path="res://Assets/Champ_Collector/UI/Atlas_Screen/Atlas_Screen.jpg" id="1_ibbvk"]
+[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="2_75jl7"]
+[ext_resource type="Texture2D" uid="uid://be4d7es1t3q0k" path="res://Data/Texture_Data/Button_hover_highligt.tres" id="3_8g887"]
+[ext_resource type="Theme" uid="uid://bcg5pku1fyhst" path="res://Assets/Champ_Collector/Themes/hub_theme.tres" id="4_75jl7"]
+
+[node name="ReclaimedCityWorldAtlas" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("1_ibbvk")
+
+[node name="Button_Adventure_guild" type="TextureButton" parent="."]
+layout_mode = 0
+offset_left = 1013.0
+offset_top = 249.0
+offset_right = 1235.0
+offset_bottom = 449.0
+scale = Vector2(1.2, 1.2)
+theme = ExtResource("2_75jl7")
+texture_hover = ExtResource("3_8g887")
+
+[node name="Label_Experience_Quests" type="Label" parent="."]
+layout_mode = 1
+offset_left = 1074.0
+offset_top = 182.0
+offset_right = 1236.0
+offset_bottom = 212.0
+theme = ExtResource("2_75jl7")
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.64705884)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 3
+text = "Quests"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button_Quit" type="Button" parent="."]
+layout_mode = 0
+offset_left = 947.0
+offset_top = 623.0
+offset_right = 1027.0
+offset_bottom = 683.0
+theme = ExtResource("2_75jl7")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+text = "Town"
+
+[node name="Button_Caravan" type="TextureButton" parent="."]
+layout_mode = 0
+offset_left = 521.0
+offset_top = 210.0
+offset_right = 721.0
+offset_bottom = 410.0
+theme = ExtResource("4_75jl7")
+texture_hover = ExtResource("3_8g887")
+
+[node name="Label_Caravan" type="Label" parent="."]
+layout_mode = 0
+offset_left = 555.0
+offset_top = 216.0
+offset_right = 675.0
+offset_bottom = 246.0
+theme = ExtResource("2_75jl7")
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.64705884)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 3
+text = "Caravan"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button_Statues" type="TextureButton" parent="."]
+layout_mode = 0
+offset_left = 35.0
+offset_top = 157.0
+offset_right = 235.0
+offset_bottom = 357.0
+theme = ExtResource("4_75jl7")
+texture_hover = ExtResource("3_8g887")
+
+[node name="Label_Statues" type="Label" parent="."]
+layout_mode = 0
+offset_left = 84.0
+offset_top = 149.0
+offset_right = 178.0
+offset_bottom = 179.0
+theme = ExtResource("2_75jl7")
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.64705884)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 3
+text = "Statues"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button_Shop" type="TextureButton" parent="."]
+layout_mode = 0
+offset_left = 436.0
+offset_top = 5.0
+offset_right = 636.0
+offset_bottom = 205.0
+theme = ExtResource("4_75jl7")
+texture_hover = ExtResource("3_8g887")
+
+[node name="Label_Adventure" type="Label" parent="."]
+layout_mode = 0
+offset_left = 461.0
+offset_top = 78.0
+offset_right = 555.0
+offset_bottom = 108.0
+theme = ExtResource("2_75jl7")
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.64705884)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 3
+text = "Adventure
+"
+horizontal_alignment = 1
