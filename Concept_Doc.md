@@ -249,13 +249,19 @@ A status effect is a temporary condition that can affect a character's attribute
 * Temporal Leak (Debuff): Every time this character moves 10% of the bar, they take damage scaling with their own Speed.
 
 ##### 3.2.3.2 Common Status Effects
-* Expose Weakness (Debuff): Reduces Resistance and Defense by a percentage amount.
-* Mana Burn	(Debuff): Deals damage whenever the target uses a skill, scaling based on the target's Mysticism.
-* Frenzy (Buff): Increases Attack and Speed but reduces Defense and Accuracy.
-* Rush (Buff): Bonus stats for a few turns then getting stunned for one turn.
-* Exhert (Buff): Gain bonus stats at the cost of losing Health.
-* Luck (Buff): Roll calculations twice and take the better result.
-* Burn (Debuff): Deals 5% of max Health as damage.
+
+Debuffs:
+* Expose Weakness: Reduces Defense by a percentage amount.
+* Enfeeble: Reduces the Attack by a percentage amount.
+* Mana Burn: Deals damage whenever the target uses a non-basic skill, scaling based on the target's Mysticism.
+* Burn: Deals 5% of max Health as damage.
+* Sequence Lock: Speed cannot be increased or decreased.
+
+Buffs:
+* Frenzy: Increases Attack and Speed but reduces Defense and Accuracy.
+* Rush: Bonus stats for a few turns then getting stunned for one turn.
+* Exhert: Gain bonus stats at the cost of losing Health.
+* Luck: Roll calculations twice and take the better result.
 
 #### 3.2.4. Skills
 Skills can be categorized into three main types: Turn Bar Skills, Role Specific Skills, and Universal Skills.
@@ -274,6 +280,8 @@ Skill targeting types:
 * Ally Not Self
 * Random One
 * All Characters
+
+Of the skills a character has, they always have 1 basic skill that has no cooldown but in general is weaker or more basic than other skills.
 
 ##### 3.2.4.1 Turn Bar Skills
 Turn bar skills apply effects to specific zones on the turn bar. When a character's turn starts, all characters within a zone that has an effect applied to it from a skill or environmental effect will be affected.
@@ -488,9 +496,20 @@ A quest board is accesible where one randomized encounter (out of two or three) 
 
 The intented way to enage is to bring one suitable character to deal with the ecounter and two weak characters to grow from the encounter reward, the experience points.
 
-#### 5.2.2. Gear ecounter 1 (To be named and themed still)
+#### 5.2.2. Reanimating Statues 1, 2 and 3 (Gear ecounter)
 In the future the intent is to have one type of encounter per type of gear set, where all types of equippable items or a subset can be a drop for that set.
 For now though in the meantime as gear sets doesn't exist yet, the intention is for each encounter to drop one type of equippable item as e.g. one ecounter for boots, one for weapons and one for off-hands.
+
+So there now is 3 ecounters to choose from for gear farming, one per equipabble item.
+
+##### 5.2.2.1 Reanimating Statues 1 (Boots)
+This encounter is a against a statue that relies on very high speed and through that attack many times, using skills to get slightly faster each turn. The player can utilize e.g. Sequence Lock and/or Anchor to mitigate the speed.
+
+##### 5.2.2.2 Reanimating Statues 2 (Weapons)
+This encounter is against a statue that use a very high damage single target attack every few turns, so the player can utilize the Enfeeble debuff to reduce the hit or using some defensive skill from a Sustain focused character.
+
+##### 5.2.2.3 Reanimating Statues 3 (Off-hands)
+This encounter is against a statue that has high defense, so the player can utilize the debuffs Expose Weakness to deal more damage to it or for example Burn to deal a percentage of its health.
 
 #### 5.2.3. Caravan (Currency ecounter)
 
