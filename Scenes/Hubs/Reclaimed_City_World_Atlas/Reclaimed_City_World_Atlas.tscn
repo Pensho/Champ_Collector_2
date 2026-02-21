@@ -1,5 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://df6f1b4xoipjq"]
+[gd_scene load_steps=6 format=3 uid="uid://df6f1b4xoipjq"]
 
+[ext_resource type="Script" uid="uid://su8xqv5pj4yg" path="res://Scripts/UI/reclaimed_city_world_atlas_menu.gd" id="1_8g887"]
 [ext_resource type="Texture2D" uid="uid://xfua5pu07bpc" path="res://Assets/Champ_Collector/UI/Atlas_Screen/Atlas_Screen.jpg" id="1_ibbvk"]
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="2_75jl7"]
 [ext_resource type="Texture2D" uid="uid://be4d7es1t3q0k" path="res://Data/Texture_Data/Button_hover_highligt.tres" id="3_8g887"]
@@ -12,6 +13,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_8g887")
 
 [node name="Background" type="TextureRect" parent="."]
 layout_mode = 0
@@ -43,7 +45,7 @@ text = "Quests"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Button_Quit" type="Button" parent="."]
+[node name="Button_Town" type="Button" parent="."]
 layout_mode = 0
 offset_left = 947.0
 offset_top = 623.0
@@ -122,3 +124,6 @@ theme_override_constants/shadow_offset_y = 3
 text = "Adventure
 "
 horizontal_alignment = 1
+
+[connection signal="button_up" from="Button_Town" to="." method="_on_town_button_up"]
+[connection signal="button_up" from="Button_Statues" to="." method="_on_statues_button_up"]

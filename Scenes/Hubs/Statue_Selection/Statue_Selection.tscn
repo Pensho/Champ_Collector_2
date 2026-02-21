@@ -1,0 +1,108 @@
+[gd_scene load_steps=7 format=3 uid="uid://d3kgucyfmcvip"]
+
+[ext_resource type="Script" uid="uid://dip3jx38ebba5" path="res://Scripts/UI/statues_selection_menu.gd" id="1_hsto1"]
+[ext_resource type="Texture2D" uid="uid://xjdvu8a12vm5" path="res://Assets/Champ_Collector/UI/Gear_Statues_Screen/Gear_Statues_Screen_2.jpg" id="2_2sxm1"]
+[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="3_aiwp6"]
+[ext_resource type="PackedScene" uid="uid://sn6vu3g2r0ba" path="res://Scenes/Hubs/Statue_Selection/Statue_Selection_fire_particle.tscn" id="4_2sxm1"]
+[ext_resource type="Theme" uid="uid://bcg5pku1fyhst" path="res://Assets/Champ_Collector/Themes/hub_theme.tres" id="5_3ig1m"]
+[ext_resource type="Texture2D" uid="uid://be4d7es1t3q0k" path="res://Data/Texture_Data/Button_hover_highligt.tres" id="6_ipk2o"]
+
+[node name="StatueSelection" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_hsto1")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("2_2sxm1")
+
+[node name="StatueSelectionFireParticle" parent="." instance=ExtResource("4_2sxm1")]
+position = Vector2(633, 614)
+
+[node name="Button_Back" type="Button" parent="."]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 27.0
+offset_right = 106.0
+offset_bottom = 87.0
+theme = ExtResource("3_aiwp6")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+text = "Back"
+
+[node name="Button_Shield" type="TextureButton" parent="."]
+layout_mode = 0
+offset_left = 160.0
+offset_top = 90.0
+offset_right = 453.0
+offset_bottom = 467.0
+theme = ExtResource("5_3ig1m")
+texture_hover = ExtResource("6_ipk2o")
+
+[node name="Label_Shield" type="Label" parent="."]
+layout_mode = 0
+offset_left = 184.0
+offset_top = 56.0
+offset_right = 428.0
+offset_bottom = 86.0
+theme = ExtResource("3_aiwp6")
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.64705884)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 3
+text = "Bor Bulwark"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button_Boots" type="TextureButton" parent="."]
+layout_mode = 0
+offset_left = 521.0
+offset_top = 55.0
+offset_right = 762.0
+offset_bottom = 442.0
+theme = ExtResource("5_3ig1m")
+texture_hover = ExtResource("6_ipk2o")
+
+[node name="Label_Boots" type="Label" parent="."]
+layout_mode = 0
+offset_left = 544.0
+offset_top = 29.0
+offset_right = 738.0
+offset_bottom = 59.0
+theme = ExtResource("3_aiwp6")
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.64705884)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 3
+text = "Vael"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button_Weapon" type="TextureButton" parent="."]
+layout_mode = 0
+offset_left = 839.0
+offset_top = 82.0
+offset_right = 1130.0
+offset_bottom = 472.0
+theme = ExtResource("5_3ig1m")
+texture_hover = ExtResource("6_ipk2o")
+
+[node name="Label_Weapon" type="Label" parent="."]
+layout_mode = 0
+offset_left = 930.0
+offset_top = 52.0
+offset_right = 1050.0
+offset_bottom = 82.0
+theme = ExtResource("3_aiwp6")
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.64705884)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 3
+text = "Ulfrac"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="button_up" from="Button_Back" to="." method="_on_back_button_up"]

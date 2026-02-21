@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="CharacterPreset" load_steps=4 format=3 uid="uid://dflefeodbvqyy"]
+
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_1t4tc"]
+[ext_resource type="Resource" uid="uid://dvgwxvsovsldc" path="res://Data/Character_Skill_Variants/Stab.tres" id="2_cxef6"]
+[ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_w1xr5"]
+
+[resource]
+script = ExtResource("2_w1xr5")
+_name = "Bor Bulwark"
+_texture = "res://Assets/Champ_Collector/Creatures/Opponents/Gear_Statues/Statue_Shield.png"
+_rarity = 4
+_faction = 4
+_role = 13
+_skills = Array[ExtResource("1_1t4tc")]([ExtResource("2_cxef6"), ExtResource("2_cxef6"), ExtResource("2_cxef6")])
+_health = 300
+_speed = 50
+_attack = 40
+_defence = 180
+_accuracy = 40
+_resistance = 40
+_mysticism = 20
+_knowledge = 20
+metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

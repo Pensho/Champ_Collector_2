@@ -82,8 +82,10 @@ func SpawnZoneEffect(p_zone_ID: int, p_duration: int, p_allySide: bool, p_zone_t
 		_zone_effects[p_zone_ID].label.text = str(p_duration)
 	if(p_allySide):
 		_zone_effects[p_zone_ID].label.position = Vector2(-(_zone_buttons[p_zone_ID].size.x * 0.25), -(_zone_buttons[p_zone_ID].size.y * 0.95))
+		_zone_effects[p_zone_ID].label.modulate = Color(0.0, 0.653, 0.0, 1.0)
 	else:
 		_zone_effects[p_zone_ID].label.position = Vector2((_zone_buttons[p_zone_ID].size.x * 0.15), -(_zone_buttons[p_zone_ID].size.y * 0.95))
+		_zone_effects[p_zone_ID].label.modulate = Color(0.85, 0.0, 0.0, 1.0)
 	
 	_zone_effects[p_zone_ID].show()
 

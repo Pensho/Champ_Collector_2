@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="CharacterPreset" load_steps=4 format=3 uid="uid://c44bvlmv6s6ux"]
+
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_nk3ru"]
+[ext_resource type="Resource" uid="uid://dl0s23m0g4w3i" path="res://Data/Character_Skill_Variants/Zap.tres" id="2_d65ud"]
+[ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_u4t3b"]
+
+[resource]
+script = ExtResource("2_u4t3b")
+_name = "Vael"
+_texture = "res://Assets/Champ_Collector/Creatures/Opponents/Gear_Statues/Statue_Boots.png"
+_rarity = 4
+_faction = 4
+_role = 13
+_skills = Array[ExtResource("1_nk3ru")]([ExtResource("2_d65ud"), ExtResource("2_d65ud"), ExtResource("2_d65ud")])
+_health = 300
+_speed = 90
+_attack = 40
+_defence = 90
+_accuracy = 40
+_resistance = 50
+_mysticism = 40
+_knowledge = 30
+metadata/_custom_type_script = "uid://ftdwxfh8y3n1"
