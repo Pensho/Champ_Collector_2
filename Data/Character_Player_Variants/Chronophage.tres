@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_wypv1"]
 [ext_resource type="Resource" uid="uid://dl0s23m0g4w3i" path="res://Data/Character_Skill_Variants/Zap.tres" id="2_s6tdb"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_uh5a3"]
-[ext_resource type="Resource" uid="uid://c4jeqgmcjxuvw" path="res://Data/Character_Skill_Variants/Flicker_Zone.tres" id="3_rpaiv"]
+[ext_resource type="Resource" uid="uid://c4jeqgmcjxuvw" path="res://Data/Character_Skill_Variants/Zone_Skills/Flicker_Zone.tres" id="3_rpaiv"]
 
 [resource]
 script = ExtResource("2_uh5a3")

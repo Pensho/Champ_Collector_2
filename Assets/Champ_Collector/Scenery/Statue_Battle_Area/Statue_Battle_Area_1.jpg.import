@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dvf32posw54ke"
-path="res://.godot/imported/Flux_Dev_Far_above_the_ground_from_a_birds_perspective_A_top_d_1(1).jpg-3262095a7c68674e3cd469806841940a.ctex"
+uid="uid://brlff6j87h57r"
+path="res://.godot/imported/Statue_Battle_Area_1.jpg-c218ba34108eed445bd700680813eda0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Scenery/Flux_Dev_Far_above_the_ground_from_a_birds_perspective_A_top_d_1(1).jpg"
-dest_files=["res://.godot/imported/Flux_Dev_Far_above_the_ground_from_a_birds_perspective_A_top_d_1(1).jpg-3262095a7c68674e3cd469806841940a.ctex"]
+source_file="res://Assets/Champ_Collector/Scenery/Statue_Battle_Area/Statue_Battle_Area_1.jpg"
+dest_files=["res://.godot/imported/Statue_Battle_Area_1.jpg-c218ba34108eed445bd700680813eda0.ctex"]
 
 [params]
 

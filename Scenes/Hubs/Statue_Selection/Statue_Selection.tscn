@@ -106,3 +106,5 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [connection signal="button_up" from="Button_Back" to="." method="_on_back_button_up"]
+[connection signal="button_up" from="Button_Shield" to="." method="_on_shield_button_up"]
+[connection signal="button_up" from="Button_Weapon" to="." method="_on_weapon_button_up"]

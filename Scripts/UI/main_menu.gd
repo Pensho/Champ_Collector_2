@@ -14,12 +14,6 @@ func _on_start_game_button_pressed() -> void:
 	context_container._scene = "uid://cfdrcdtsx2jh7"
 	main.GetInstance().change_scene(context_container)
 
-# Deprecated now that the hub accesses the collection menu.
-#func _on_button_view_collection_button_up() -> void:
-	#var context_container: ContextContainer = ContextContainer.new()
-	#context_container._scene = "res://Scenes/ui/Inspect_Collection_Menu.tscn"
-	#main.GetInstance().change_scene(context_container)
-
 func _on_quit_button_pressed() -> void:
 	get_tree().quit()
 

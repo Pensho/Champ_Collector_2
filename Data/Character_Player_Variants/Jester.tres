@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="CharacterPreset" load_steps=5 format=3 uid="uid://dkpr2hnmtcodx"]
 
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_r2vnm"]
-[ext_resource type="Resource" uid="uid://dvgwxvsovsldc" path="res://Data/Character_Skill_Variants/Stab.tres" id="2_3tcpa"]
+[ext_resource type="Resource" uid="uid://dvgwxvsovsldc" path="res://Data/Character_Skill_Variants/Attack_Skills/Stab.tres" id="2_3tcpa"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="3_7g6n5"]
-[ext_resource type="Resource" uid="uid://b5174xlhufd0j" path="res://Data/Character_Skill_Variants/Burning_Bolas.tres" id="3_efesd"]
+[ext_resource type="Resource" uid="uid://b5174xlhufd0j" path="res://Data/Character_Skill_Variants/Attack_Skills/Burning_Bolas.tres" id="3_efesd"]
 
 [resource]
 script = ExtResource("3_7g6n5")

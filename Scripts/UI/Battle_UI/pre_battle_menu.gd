@@ -2,10 +2,6 @@ extends Control
 
 const Types = preload("res://Scripts/common_enums.gd")
 
-#const BATTLE_TROLL = preload("res://Data/Battle_Variants/Battle_Troll.tres")
-#const BATTLE_MILITIA = preload("res://Data/Battle_Variants/Battle_Militia.tres")
-const BATTLE_OBSIDIAN_STALLION = preload("uid://dbc3pmbr82wcc")
-
 const NR_OF_CHARACTERS_IN_BATTLE: int = 3
 const CHARACTER_CHOSEN_COLOR: Color = Color(0.1, 0.1, 0.1)
 
@@ -17,7 +13,14 @@ var _character_collection: Array[Character]
 var _used_character_textures: Dictionary[Types.Role, Texture]
 var _available_to_chosen_IDs: Dictionary[int, int] = {0: -1, 1: -1, 2: -1}
 
-func Init(_p_context_container: ContextContainer) -> void:
+var _self_context: ContextContainer
+
+func Init(p_context_container: ContextContainer) -> void:
+	if(null == p_context_container._static_context):
+		print("There is no static context to infer what battle has been chosen.")
+		return
+	_self_context = p_context_container
+	
 	_character_collection = main.GetInstance()._character_collection.GetAllCharacters().values()
 	var collected_types := main.GetInstance()._character_collection.GetCollectedTypes()
 	for type in collected_types.keys():
@@ -70,7 +73,7 @@ func SetTextures() -> void:
 
 func _on_exit_button_up() -> void:
 	var context_container: ContextContainer = ContextContainer.new()
-	context_container._scene = "uid://cfdrcdtsx2jh7"
+	context_container._scene = _self_context._previous_scene
 	main.GetInstance().change_scene(context_container)
 
 func _on_start_button_up() -> void:
@@ -78,12 +81,10 @@ func _on_start_button_up() -> void:
 		print("Trying to start a battle without any selected characters.")
 		return
 	
-	var context_container: ContextContainer = ContextContainer.new()
-	context_container._static_context = BATTLE_OBSIDIAN_STALLION
-	context_container._scene = "res://Scenes/battle.tscn"
-	context_container._player_battle_characters = _chosen_characters.values()
+	_self_context._scene = "res://Scenes/battle.tscn"
+	_self_context._player_battle_characters = _chosen_characters.values()
 	
-	main.GetInstance().change_scene(context_container)
+	main.GetInstance().change_scene(_self_context)
 	hide()
 
 func _on_remove_char_button_up(p_char_slot: int) -> void:

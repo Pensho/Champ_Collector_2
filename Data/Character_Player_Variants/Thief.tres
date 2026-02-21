@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="CharacterPreset" load_steps=5 format=3 uid="uid://bm0sqmepyeoam"]
 
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_n4f0a"]
-[ext_resource type="Resource" uid="uid://dvgwxvsovsldc" path="res://Data/Character_Skill_Variants/Stab.tres" id="2_3tcpa"]
+[ext_resource type="Resource" uid="uid://dvgwxvsovsldc" path="res://Data/Character_Skill_Variants/Attack_Skills/Stab.tres" id="2_3tcpa"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_r2vnm"]
-[ext_resource type="Resource" uid="uid://54q7s3jjny1w" path="res://Data/Character_Skill_Variants/Pierce_Weakness.tres" id="3_3tcpa"]
+[ext_resource type="Resource" uid="uid://54q7s3jjny1w" path="res://Data/Character_Skill_Variants/Attack_Skills/Pierce_Weakness.tres" id="3_3tcpa"]
 
 [resource]
 script = ExtResource("2_r2vnm")

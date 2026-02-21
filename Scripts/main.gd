@@ -49,7 +49,7 @@ class Main_Instance extends Node:
 		#_character_collection.Add(HERALD_OF_THE_LOOM.duplicate(true))
 		_character_collection.Add(CHRONOPHAGE.duplicate(true))
 		#_character_collection.Add(BLOODMAGE.duplicate(true))
-		_character_collection.Add(TIDAL_CORSAIR.duplicate(true))
+		#_character_collection.Add(TIDAL_CORSAIR.duplicate(true))
 		
 		var weapon: EquipmentPreset = WEAPON_BASIC_SPEAR.duplicate(true)
 		weapon.Setup()

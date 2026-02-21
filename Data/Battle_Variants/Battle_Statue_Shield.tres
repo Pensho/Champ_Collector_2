@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="Context_Battle" load_steps=4 format=3 uid="uid://comvft2e4h5kt"]
+
+[ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="1_aexo6"]
+[ext_resource type="Script" uid="uid://bjtnao6fgl8go" path="res://Scripts/Worldview/Context_Battle.gd" id="2_2ck73"]
+[ext_resource type="Resource" uid="uid://dflefeodbvqyy" path="res://Data/Character_Enemy_Variants/Statue_Shield.tres" id="2_i5snp"]
+
+[resource]
+script = ExtResource("2_2ck73")
+_enemies_wave_1 = Array[ExtResource("1_aexo6")]([ExtResource("2_i5snp")])
+_location = "res://Assets/Champ_Collector/Scenery/Statue_Battle_Area/Statue_Battle_Area_2.jpg"
+metadata/_custom_type_script = "uid://bjtnao6fgl8go"

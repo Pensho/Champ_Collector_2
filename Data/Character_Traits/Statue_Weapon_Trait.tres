@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="StatueWeaponTrait" load_steps=2 format=3 uid="uid://cuj66xo5ynhtl"]
+
+[ext_resource type="Script" uid="uid://bhmdjtu68brge" path="res://Scripts/Character/CharacterTraits/Statue_Weapon_Trait.gd" id="1_mj5td"]
+
+[resource]
+script = ExtResource("1_mj5td")
+metadata/_custom_type_script = "uid://bhmdjtu68brge"

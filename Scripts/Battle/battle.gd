@@ -53,7 +53,6 @@ func Init(p_context: ContextContainer) -> void:
 	_global_scene_darkness.height = battlecontext._scene_darkness_height
 	_global_scene_light.color = battlecontext._global_scene_light
 	_self_context = p_context
-	_self_context._previous_scene = p_context._scene
 	
 	if(battlecontext._enemies_wave_1.is_empty()):
 		print("Accidental load to battle scene without enemies, terminating application")

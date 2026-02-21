@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="CharacterPreset" load_steps=5 format=3 uid="uid://cq2rkhiba5033"]
 
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_knpra"]
-[ext_resource type="Resource" uid="uid://dvgwxvsovsldc" path="res://Data/Character_Skill_Variants/Stab.tres" id="2_es7at"]
+[ext_resource type="Resource" uid="uid://dvgwxvsovsldc" path="res://Data/Character_Skill_Variants/Attack_Skills/Stab.tres" id="2_es7at"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_hvruf"]
-[ext_resource type="Resource" uid="uid://bq3ncvu0l6xtu" path="res://Data/Character_Skill_Variants/Lava_Zone.tres" id="3_es7at"]
+[ext_resource type="Resource" uid="uid://bq3ncvu0l6xtu" path="res://Data/Character_Skill_Variants/Zone_Skills/Lava_Zone.tres" id="3_es7at"]
 
 [resource]
 script = ExtResource("2_hvruf")

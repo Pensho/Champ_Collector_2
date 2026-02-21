@@ -4,8 +4,6 @@ extends Control
 @onready var _heading: Label = $MarginContainer/VBoxContainer/Label
 @onready var _texture_rect_background: TextureRect = $TextureRect_Background
 
-const BATTLE_MILITIA = preload("res://Data/Battle_Variants/Battle_Militia.tres")
-
 var _previous_context: ContextContainer
 var _player_battle_characters: Array[Character]
 
@@ -42,15 +40,13 @@ func _on_visibility_changed() -> void:
 
 func _on_button_end_button_up() -> void:
 	var context_container: ContextContainer = ContextContainer.new()
-	context_container._scene = "uid://cfdrcdtsx2jh7"
+	context_container._scene = _previous_context._previous_scene
 	main.GetInstance().change_scene(context_container)
 
 func _on_button_replay_button_up() -> void:
-	_previous_context._scene = _previous_context._previous_scene
-	_previous_context._previous_scene = "res://Scenes/ui/Battle_Over.tscn"
+	_previous_context._scene = "res://Scenes/battle.tscn"
 	main.GetInstance().change_scene(_previous_context)
 
 func _on_button_edit_team_button_up() -> void:
-	var context_container: ContextContainer = ContextContainer.new()
-	context_container._scene = "res://Scenes/ui/Pre_Battle_Menu.tscn"
-	main.GetInstance().change_scene(context_container)
+	_previous_context._scene = "res://Scenes/ui/Pre_Battle_Menu.tscn"
+	main.GetInstance().change_scene(_previous_context)

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="Skill" load_steps=2 format=3 uid="uid://dpduy25aqyibo"]
+
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_8ctop"]
+
+[resource]
+script = ExtResource("1_8ctop")
+name = "Bash"
+description = "Attacks one enemy. Based on defense."
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Zap/Zap_2.jpg"
+damage_scaling = Dictionary[int, float]({
+3: 0.7
+})
+metadata/_custom_type_script = "uid://glh06y3wvchj"
