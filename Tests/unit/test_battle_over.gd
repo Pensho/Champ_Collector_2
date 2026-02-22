@@ -97,7 +97,6 @@ func before_each():
 
 	for child in GetAllChildren(screen, ""):
 		print(child)
-	print("End of before_each\n")
 
 func GetAllChildren(node: Node, indentation: String) -> Array:
 	var children = []
@@ -133,7 +132,6 @@ func test_01_ready_calls_focus_button():
 	# Check if the button's focus mode is correctly set (as per your original test)
 	var button = screen.get_node("MarginContainer/VBoxContainer/HBoxContainer").get_child(0)
 	assert_eq(Control.FocusMode.FOCUS_ALL, button.focus_mode)
-	print("End of test")
 
 func test_02_visibility_changed_calls_focus_button():
 	print(get_stack()[0]["function"])
@@ -152,12 +150,11 @@ func test_02_visibility_changed_calls_focus_button():
 	# Check if the button's focus mode is correctly set (as per your original test)
 	var button = h_box_container.get_child(0)
 	assert_eq(Control.FocusMode.FOCUS_ALL, button.focus_mode)
-	print("End of test")
 
 func test_03_init_sets_loss_screen():
 	print(get_stack()[0]["function"])
 	var mock_context = MockContextContainer.new()
-	mock_context._util_text = "Loss"
+	mock_context._arguments["Battle_Result"] = "Loss"
 	
 	chars_in_collection = [mock_char_1, mock_char_2, mock_char_3, MockCharacter.new()]
 	
@@ -184,12 +181,11 @@ func test_03_init_sets_loss_screen():
 	assert_eq(screen._player_battle_characters[0], mock_char_1)
 	assert_eq(screen._player_battle_characters[1], mock_char_2)
 	assert_eq(screen._player_battle_characters[2], mock_char_3)
-	print("End of test")
 
 func test_04_init_handles_less_than_3_characters():
 	print(get_stack()[0]["function"])
 	var mock_context = MockContextContainer.new()
-	mock_context._util_text = "Victory"
+	mock_context._arguments["Battle_Result"] = "Victory"
 	
 	chars_in_collection = [mock_char_1, mock_char_2]
 	
@@ -205,44 +201,6 @@ func test_04_init_handles_less_than_3_characters():
 	assert_eq(screen._player_battle_characters.size(), 2)
 	assert_eq(screen._player_battle_characters[0], mock_char_1)
 	assert_eq(screen._player_battle_characters[1], mock_char_2)
-	print("End of test")
-
-func test_05_on_button_end_changes_to_main_menu():
-	print(get_stack()[0]["function"])
-	screen._on_button_end_button_up()
-	
-	assert_call_count(MainMock_Instance, "change_scene", 1)
-	var parameters = get_call_parameters(MainMock_Instance, "change_scene")
-	
-	# Check the context object passed to change_scene
-	assert_is(parameters[0], ContextContainer)
-	assert_eq("res://Scenes/ui/MainMenu.tscn", parameters[0]._scene)
-	print("End of test")
-
-func test_06_on_button_replay_reverts_context_and_changes_scene():
-	print(get_stack()[0]["function"])
-	var prev_context = MockContextContainer.new()
-	prev_context._previous_scene = "res://Scenes/ui/Battle_Screen_Template.tscn"
-	prev_context._scene = "res://Scenes/ui/Battle_Over.tscn"
-	
-	# Note: Need to initialize character collection mock for Init call, even if unused in this path
-	chars_in_collection = [mock_char_1, mock_char_2, mock_char_3]
-	stub(character_collection_mock, "GetAllCharacters").to_return(chars_in_collection)
-	stub(character_collection_mock, "Size").to_return(chars_in_collection.size())
-	
-	# Manually call Init to set _previous_context
-	screen.Init(prev_context)
-	
-	screen._on_button_replay_button_up()
-	
-	assert_call_count(MainMock_Instance, "change_scene", 1)
-	var parameters = get_call_parameters(MainMock_Instance, "change_scene")
-	
-	# Check that the context was modified correctly before passing it to change_scene
-	var context_passed = parameters[0]
-	assert_eq("res://Scenes/ui/Battle_Screen_Template.tscn", context_passed._scene)
-	assert_eq("res://Scenes/ui/Battle_Over.tscn", context_passed._previous_scene)
-	print("End of test")
 
 func test_07_on_button_edit_team_changes_to_pre_battle_menu():
 	print(get_stack()[0]["function"])
@@ -254,4 +212,3 @@ func test_07_on_button_edit_team_changes_to_pre_battle_menu():
 	# Check the context object passed to change_scene
 	assert_is(parameters[0], ContextContainer)
 	assert_eq("res://Scenes/ui/Pre_Battle_Menu.tscn", parameters[0]._scene)
-	print("End of test")

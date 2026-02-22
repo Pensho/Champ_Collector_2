@@ -131,7 +131,7 @@ static func TriggerExistingCasterDebuffs(
 	p_caster._active_debuffs = p_caster._active_debuffs.filter(func(debuff): return debuff.duration > 0)
 	p_caster_repr.RemoveStatusEffects(debuff_IDs_to_be_removed)
 
-static func TriggerCasterBuffs(
+static func TriggerExistingCasterBuffs(
 							p_caster: Character,
 							p_caster_attributes: Dictionary[Types.Attribute, int],
 							p_skill: Skill,

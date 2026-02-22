@@ -253,7 +253,7 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID) -> voi
 		UpdateLifeBar(p_caster_ID)
 	
 	if (not _characters[p_caster_ID]._active_buffs.is_empty()):
-		Skills.TriggerCasterBuffs(_characters[p_caster_ID],
+		Skills.TriggerExistingCasterBuffs(_characters[p_caster_ID],
 		caster_attributes,
 		cast_skill,
 		_character_repr[p_caster_ID])
@@ -333,10 +333,10 @@ func EndBattle(p_winner: WinningTeam) -> void:
 	_battle_ui.CleanUp()
 	
 	if(p_winner == WinningTeam.Monsters_Won):
-		_self_context._util_text = "Loss"
+		_self_context._arguments["Battle_Result"] = "Loss"
 	elif(p_winner == WinningTeam.Player_Won):
 		experience_gained += 5
-		_self_context._util_text = "Victory"
+		_self_context._arguments["Battle_Result"] = "Victory"
 	
 	for i in _characters.keys():
 		_characters[i]._active_buffs.clear()
