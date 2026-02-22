@@ -88,7 +88,6 @@ func AvailableItemSlotButton(p_ID: int) -> void:
 		ShowItemCollection()
 	elif (main.GetInstance()._item_collection._items.has(p_ID) and _showing_items):
 		if(CanEquipFromMenuID(p_ID)):
-			print("Can equip!")
 			EquipItem(p_ID)
 
 func EquipItem(p_ID: int) -> void:

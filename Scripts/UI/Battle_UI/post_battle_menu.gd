@@ -14,7 +14,7 @@ func Init(p_context_container: ContextContainer) -> void:
 	_previous_context = p_context_container
 	if(not p_context_container._arguments.has("Battle_Result")):
 		print("There was no definition of win or loss after battle.")
-		OS.crash("There was no definition of win or loss after battle.")
+		get_tree().quit()
 		
 	if(p_context_container._arguments["Battle_Result"] == "Loss"):
 		_texture_rect_background.texture = load("res://Assets/Champ_Collector/UI/Loss_Screen/Loss_1.png")
@@ -53,6 +53,5 @@ func _on_button_replay_button_up() -> void:
 	main.GetInstance().change_scene(_previous_context)
 
 func _on_button_edit_team_button_up() -> void:
-	_previous_context = ContextContainer.new()
 	_previous_context._scene = "res://Scenes/ui/Pre_Battle_Menu.tscn"
 	main.GetInstance().change_scene(_previous_context)

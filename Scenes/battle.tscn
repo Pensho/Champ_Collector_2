@@ -30,21 +30,6 @@ offset_bottom = 720.0
 texture = SubResource("CanvasTexture_heh15")
 expand_mode = 1
 
-[node name="Character_1" parent="." instance=ExtResource("3_ww2ai")]
-visible = false
-position = Vector2(43, 302)
-_target_ID = 0
-
-[node name="Character_2" parent="." instance=ExtResource("3_ww2ai")]
-visible = false
-position = Vector2(299, 364)
-_target_ID = 1
-
-[node name="Character_3" parent="." instance=ExtResource("3_ww2ai")]
-visible = false
-position = Vector2(599, 369)
-_target_ID = 2
-
 [node name="Enemy_1" parent="." instance=ExtResource("3_ww2ai")]
 visible = false
 position = Vector2(378, 108)
@@ -59,6 +44,21 @@ _target_ID = 4
 visible = false
 position = Vector2(879, 178)
 _target_ID = 5
+
+[node name="Character_1" parent="." instance=ExtResource("3_ww2ai")]
+visible = false
+position = Vector2(43, 302)
+_target_ID = 0
+
+[node name="Character_2" parent="." instance=ExtResource("3_ww2ai")]
+visible = false
+position = Vector2(299, 364)
+_target_ID = 1
+
+[node name="Character_3" parent="." instance=ExtResource("3_ww2ai")]
+visible = false
+position = Vector2(599, 369)
+_target_ID = 2
 
 [node name="Battle UI" parent="." instance=ExtResource("2_1ruyk")]
 
@@ -79,10 +79,10 @@ texture = ExtResource("6_lrv64")
 texture_scale = 2.31
 height = 35.0
 
-[connection signal="battle_target_selected" from="Character_1" to="." method="_on_character_battle_target_selected"]
-[connection signal="battle_target_selected" from="Character_2" to="." method="_on_character_battle_target_selected"]
-[connection signal="battle_target_selected" from="Character_3" to="." method="_on_character_battle_target_selected"]
 [connection signal="battle_target_selected" from="Enemy_1" to="." method="_on_character_battle_target_selected"]
 [connection signal="battle_target_selected" from="Enemy_2" to="." method="_on_character_battle_target_selected"]
 [connection signal="battle_target_selected" from="Enemy_3" to="." method="_on_character_battle_target_selected"]
+[connection signal="battle_target_selected" from="Character_1" to="." method="_on_character_battle_target_selected"]
+[connection signal="battle_target_selected" from="Character_2" to="." method="_on_character_battle_target_selected"]
+[connection signal="battle_target_selected" from="Character_3" to="." method="_on_character_battle_target_selected"]
 [connection signal="battle_skill_selected" from="Battle UI" to="." method="_on_battle_ui_battle_skill_selected"]

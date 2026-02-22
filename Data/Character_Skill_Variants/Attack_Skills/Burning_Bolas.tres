@@ -8,9 +8,9 @@ name = "Burning bolas"
 description = "Fling a set of burning bolas onto the target, dealing damage and make them burn. Based on attack."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Burning_Bolas/Burning_Bolas_1.png"
 damage_scaling = Dictionary[int, float]({
-2: 0.6
+2: 0.8
 })
-cooldown = 1
+cooldown = 2
 duration = 2
 debuffs = Dictionary[int, int]({
 0: 0

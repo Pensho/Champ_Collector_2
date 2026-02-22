@@ -75,6 +75,9 @@ func Init(p_context: ContextContainer) -> void:
 		_characters[i + 3].InstantiateNew(battlecontext._enemies_wave_1[i], -1, null)
 		_characters[i + 3]._attributes[Types.Attribute.Speed] += randi_range(-3, 3)
 		_characters[i + 3]._currentHealth = _characters[i + 3].GetBattleAttribute(Types.Attribute.Health)  * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
+		if (p_context._arguments.has("Boss_Scale")):
+			_character_repr[i + 3].scale = Vector2(p_context._arguments["Boss_Scale"], p_context._arguments["Boss_Scale"])
+			_character_repr[i + 3].position.y -= (_character_repr[i + 3].position.y * p_context._arguments["Boss_Scale"]) * 0.5
 		VisualizeCharacter(i + 3)
 	
 	for i in _characters.keys():
@@ -170,10 +173,8 @@ func StartTurn() -> void:
 						break # A skill has resolved, break the loop for targeting.
 
 func TriggerZones() -> void:
-	#if(!PLAYER_IDS.has(_characterIDs_turn)):
-		#return
 	for character_ID in _characters.keys():
-		if(character_ID == _characterIDs_turn):
+		if(character_ID == _characterIDs_turn or _characters[character_ID]._currentHealth <= 0):
 			continue
 		for ID in _zones.keys():
 			if(_zones[ID]._duration == 0):

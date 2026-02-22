@@ -122,7 +122,7 @@ static func TriggerExistingCasterDebuffs(
 			Types.Debuff_Type.Enfeeble:
 				p_caster_attributes[Types.Attribute.Attack] -= int(ceilf(p_caster_attributes[Types.Attribute.Attack] * 0.3))
 			Types.Debuff_Type.Expose_Weakness:
-				p_caster_attributes[Types.Attribute.Defence] -= int(ceilf(p_caster_attributes[Types.Attribute.Defence] * 0.5))
+				p_caster_attributes[Types.Attribute.Defence] -= int(ceilf(p_caster_attributes[Types.Attribute.Defence] * 0.3))
 		
 		debuff.duration -= 1
 		if (debuff.duration <= 0):
