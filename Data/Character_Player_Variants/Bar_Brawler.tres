@@ -1,9 +1,10 @@
-[gd_resource type="Resource" script_class="CharacterPreset" load_steps=5 format=3 uid="uid://dnup7y7ax8jck"]
+[gd_resource type="Resource" script_class="CharacterPreset" load_steps=6 format=3 uid="uid://dnup7y7ax8jck"]
 
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_ct0uv"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_dhkqx"]
 [ext_resource type="Resource" uid="uid://dvgwxvsovsldc" path="res://Data/Character_Skill_Variants/Attack_Skills/Stab.tres" id="2_f0b57"]
 [ext_resource type="Resource" uid="uid://dvaq2b7qefpty" path="res://Data/Character_Skill_Variants/Heap_On.tres" id="3_f0b57"]
+[ext_resource type="Resource" uid="uid://civ8gh1okd6p1" path="res://Data/Character_Skill_Variants/Attack_Skills/Break_Guard.tres" id="3_igy35"]
 
 [resource]
 script = ExtResource("2_dhkqx")
@@ -13,7 +14,7 @@ _normal_map = "res://Assets/Champ_Collector/Creatures/Bar brawler/Bar_Brawler_00
 _rarity = 2
 _faction = 1
 _role = 14
-_skills = Array[ExtResource("1_ct0uv")]([ExtResource("2_f0b57"), ExtResource("2_f0b57"), ExtResource("3_f0b57")])
+_skills = Array[ExtResource("1_ct0uv")]([ExtResource("2_f0b57"), ExtResource("3_igy35"), ExtResource("3_f0b57")])
 _health = 90
 _speed = 40
 _attack = 60

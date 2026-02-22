@@ -120,9 +120,9 @@ static func TriggerExistingCasterDebuffs(
 			Types.Debuff_Type.Burning:
 				p_caster._currentHealth -= int(floor((p_caster_attributes[Types.Attribute.Health] * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER) * 0.05))
 			Types.Debuff_Type.Enfeeble:
-				print("Current attack: ", p_caster_attributes[Types.Attribute.Attack])
 				p_caster_attributes[Types.Attribute.Attack] -= int(ceilf(p_caster_attributes[Types.Attribute.Attack] * 0.3))
-				print("New attack: ", p_caster_attributes[Types.Attribute.Attack])
+			Types.Debuff_Type.Expose_Weakness:
+				p_caster_attributes[Types.Attribute.Defence] -= int(ceilf(p_caster_attributes[Types.Attribute.Defence] * 0.5))
 		
 		debuff.duration -= 1
 		if (debuff.duration <= 0):
@@ -181,7 +181,8 @@ static func TriggerTargetDebuffs(
 	
 	for debuff in p_target._active_debuffs:
 		match debuff.effect:
-			# TODO: Add debuff handling
+			Types.Debuff_Type.Expose_Weakness:
+				p_target_attributes[Types.Attribute.Defence] -= int(ceilf(p_target_attributes[Types.Attribute.Defence] * 0.5))
 			_:
 				pass
 
@@ -245,8 +246,8 @@ static func DamageDealt(p_attacker_attr: Dictionary[Types.Attribute, int],
 		crit_multiplier = float(p_attacker_attr[Types.Attribute.CritDamage]) * 0.01
 		# TODO: Add a flair to highlight the occurance of a critical strike.
 		print("The attacker did a critical strike!")
-		
-	var mitigation_factor: float = GameBalance.MINIMUM_DMG_PERCENT + ((1 - GameBalance.MINIMUM_DMG_PERCENT) * (caster_scaled_attribute_aggregate / ((p_defender_attr[Types.Attribute.Defence] * ignore_defense_factor) + caster_scaled_attribute_aggregate)))
+	
+	var mitigation_factor: float = GameBalance.MINIMUM_DMG_PERCENT + ((1 - GameBalance.MINIMUM_DMG_PERCENT) * (caster_scaled_attribute_aggregate / ((p_defender_attr[Types.Attribute.Defence] * ignore_defense_factor) + caster_scaled_attribute_aggregate + 1)))
 	var damage_dealt: float = mitigation_factor * caster_scaled_attribute_aggregate * crit_multiplier * randomVal
 	return int(ceil(damage_dealt))
 

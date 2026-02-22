@@ -8,6 +8,6 @@ name = "Bash"
 description = "Attacks one enemy. Based on defense."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Zap/Zap_2.jpg"
 damage_scaling = Dictionary[int, float]({
-3: 0.7
+3: 0.6
 })
 metadata/_custom_type_script = "uid://glh06y3wvchj"
