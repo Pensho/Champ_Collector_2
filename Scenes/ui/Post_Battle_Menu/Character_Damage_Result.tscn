@@ -1,0 +1,69 @@
+[gd_scene load_steps=5 format=3 uid="uid://d230va33ir4c1"]
+
+[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="1_fu18n"]
+[ext_resource type="Script" uid="uid://30ag8l24uc1l" path="res://Scripts/UI/Post_Battle_UI/character_damage_result.gd" id="1_ptaac"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fu18n"]
+bg_color = Color(0.24705882, 0.24705882, 0.24705882, 0.54509807)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ptaac"]
+
+[node name="CharacterDamageResult" type="Control" node_paths=PackedStringArray("_name", "_texture", "_damage_bar", "_damage_label")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ptaac")
+_name = NodePath("VBoxContainer/Label")
+_texture = NodePath("VBoxContainer/TextureRect")
+_damage_bar = NodePath("VBoxContainer/ProgressBar")
+_damage_label = NodePath("VBoxContainer/ProgressBar/Label")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("1_fu18n")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+expand_mode = 1
+
+[node name="ProgressBar" type="ProgressBar" parent="VBoxContainer"]
+custom_minimum_size = Vector2(100, 10)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_styles/background = SubResource("StyleBoxFlat_fu18n")
+theme_override_styles/fill = SubResource("StyleBoxFlat_ptaac")
+show_percentage = false
+
+[node name="Label" type="Label" parent="VBoxContainer/ProgressBar"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -15.0
+offset_right = 20.0
+offset_bottom = 15.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_fu18n")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 20
+horizontal_alignment = 1
+vertical_alignment = 1

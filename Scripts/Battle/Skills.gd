@@ -118,7 +118,7 @@ static func TriggerExistingCasterDebuffs(
 	for debuff in p_caster._active_debuffs:
 		match debuff.effect:
 			Types.Debuff_Type.Burning:
-				p_caster._currentHealth -= int(floor((p_caster_attributes[Types.Attribute.Health] * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER) * 0.05))
+				p_caster._currentHealth -= int(floor((p_caster_attributes[Types.Attribute.Health] * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER) * 0.04))
 			Types.Debuff_Type.Enfeeble:
 				p_caster_attributes[Types.Attribute.Attack] -= int(ceilf(p_caster_attributes[Types.Attribute.Attack] * 0.3))
 			Types.Debuff_Type.Expose_Weakness:
