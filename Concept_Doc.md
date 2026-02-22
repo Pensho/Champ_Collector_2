@@ -98,11 +98,13 @@ Each Role can have one or two main purposes in combat but it doesn't have to res
 - Damage
     - Revolves around either or both relying on other characters or by themselves to deal significant amounts of damage onto the opponents.
 - Sustain
-    - The intent of the sustain purpose is to keep ally characters alive, either or both through being able to tank incoming damage, applying buffs to reduce incoming damage or healing through buffs or abilities.
+    - The intent of the sustain purpose is to keep ally characters alive, either or both through being able to tank incoming damage or healing through buffs or abilities.
 - Debuffer
     - Applies various debuffs to enemies to either make them weaker, take more damage, become slower etc. So to make the enounter easier by affecting opponents.
 - Control
     - Manipulates turn order, skill availability or targeting of skills.
+- Buffer
+    - Applies various buffs to allies to make them stronger.
 
 Current roles, their identity and purpose exist as follows:
 - Emissary
@@ -112,10 +114,10 @@ Current roles, their identity and purpose exist as follows:
     - Purpose: Damage.
 - Lancer
     - TODO
-    - Damage
+    - Purpose: Damage
 - Alchemist
     - A support character that focuses on buffing allies and debuffing enemies through various concoctions. Primary attributes: Knowledge, Mysticism.
-    - Purpose: Debuffer, Sustain
+    - Purpose: Debuffer, Buffer
 - Sorcerer
     - A damage dealer that harnesses the power of magic to deal Area of Effect damage and control the battlefield. Primary attributes: Mysticism, Knowledge.
     - Purpose: Damage, Debuffer, Control
@@ -130,7 +132,7 @@ Current roles, their identity and purpose exist as follows:
     - Purpose: Debuffer
 - Tactician
     - Gives buffs (On self and allies if high rarity Tactician) if allies are x-y% (depending on rarity of Tactician) behind the Tactician on the turn bar when their turn starts. Primary attributes: Knowledge, Speed.
-    - Purpose: Sustain, Debuffer
+    - Purpose: Buffer
 - Symbiote
     - A character weak by default but given the option to alter itself to combine with one of select few monsters to gain their trait & bonus in attributes. Primary attributes: Health, Resistance.
     - Purpose: Sustain, Debuffer
@@ -141,8 +143,8 @@ Current roles, their identity and purpose exist as follows:
     - Consumes ally buffs or health to empower their own skills, dealing magical damage or applying debuffs. Primary attributes: Mysticism, Knowledge.
     - Purpose: Debuffer, Damage
 - Bar Brawler
-    - A health focused character, dealing damage, tanking and applying few debuffs. Attacks scales of health primarily. Primary attributes: Health.
-    - Purpose: Sustain, Debuffer
+    - A health focused character, dealing damage, tanking and applying a few uffs. Attacks scales of health primarily. Primary attributes: Health.
+    - Purpose: Sustain, Buffer
 - Bloodmage
     - Spending their own or allies health for big pay-off skills in terms of damage or applying shields based on sacrificed health. Primary attributes: Health, Mysticism.
     - Purpose: Sustain, Damage
@@ -158,7 +160,7 @@ Current roles, their identity and purpose exist as follows:
 - Architect
     - A charge & support character, accumulates Calibration charges through basic skills, consumes a few charges applying defensive buffs to allies and massive charges for big final attacks. Primary attributes: Knowledge, Defense.
     - The Architect is a methodical "Charge" role aligned with the God of Rules. Instead of raw aggression, they build "Logic Chains" by observing the flow of battle, eventually "solving" the encounter with a massive structural shift.
-    - Purpose: Sustain, Damage
+    - Purpose: Buffer, Damage
 - Tidal Corsair
     - Uses two types of basic attacks, one which grants sea stacks and the other grants steel stacks. The third attack consumes all stacks, altering the effect based on which type of stacks were consumed. Up to three stacks can be held at a time. Primary attributes: Attack, Speed.
     - The Tidal Corsair is a Combo character where you plan your moves ahead, highly mobile but not inherently strong unless you set up your attacks correctly.

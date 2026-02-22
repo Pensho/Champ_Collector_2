@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="Skill" load_steps=2 format=3 uid="uid://dvsuv0ji1ueq7"]
+
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_0dpkm"]
+
+[resource]
+script = ExtResource("1_0dpkm")
+name = "Disarm"
+description = "Puts the opponent into a stance that is tough to attack from. Based on Attack."
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Disarm/Disarm_1.jpg"
+damage_scaling = Dictionary[int, float]({
+2: 0.9
+})
+cooldown = 2
+duration = 2
+debuffs = Dictionary[int, int]({
+0: 1
+})
+metadata/_custom_type_script = "uid://glh06y3wvchj"

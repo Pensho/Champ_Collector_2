@@ -94,8 +94,6 @@ enum Skill_Type
 {
 	Simple_Attack,
 	Heap_On,
-	Pierce_Weakness,
-	Burning_Bolas,
 	Flicker_Zone,
 	Lava_Zone,
 	None,
@@ -109,5 +107,7 @@ enum Buff_Type
 enum Debuff_Type
 {
 	Burning,
+	Enfeeble,
+	Expose_Weakness,
 	Invalid,
 }

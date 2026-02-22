@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="Skill" load_steps=2 format=3 uid="uid://b5174xlhufd0j"]
 
-[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_dp32v"]
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_fxdmv"]
 
 [resource]
-script = ExtResource("1_dp32v")
+script = ExtResource("1_fxdmv")
 name = "Burning bolas"
 description = "Fling a set of burning bolas onto the target, dealing damage and make them burn. Based on attack."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Burning_Bolas/Burning_Bolas_1.png"
@@ -11,7 +11,7 @@ damage_scaling = Dictionary[int, float]({
 2: 0.6
 })
 cooldown = 1
-skill_type = 3
+duration = 2
 debuffs = Dictionary[int, int]({
 0: 0
 })

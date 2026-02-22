@@ -10,5 +10,5 @@ icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Flicker_Zone/Flicker_Z
 target = 7
 cooldown = 2
 duration = 4
-skill_type = 4
+skill_type = 2
 metadata/_custom_type_script = "uid://glh06y3wvchj"

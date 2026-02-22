@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cw2uh3d2mvj6t"
-path="res://.godot/imported/Icon_Border_0011.png-1bca04aef0fafe2a2e60c52ce5d61a23.ctex"
+uid="uid://bx67fb2yxsou4"
+path="res://.godot/imported/Character_Frame_2.png-1cd34e0939b0634ee62c65a0297a68f9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Borders/Icon_Border_0011.png"
-dest_files=["res://.godot/imported/Icon_Border_0011.png-1bca04aef0fafe2a2e60c52ce5d61a23.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Character_Frames/Character_Frame_2.png"
+dest_files=["res://.godot/imported/Character_Frame_2.png-1cd34e0939b0634ee62c65a0297a68f9.ctex"]
 
 [params]
 

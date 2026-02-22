@@ -44,8 +44,6 @@ static func ResolveSkillEffect(
 				_heap_on_value[p_caster_ID] = float(p_caster_attr[Types.Attribute.Health]) * Game_Balance.HEAP_ON_MULTIPLIER
 			p_caster_attr[Types.Attribute.Health] += int(_heap_on_value[p_caster_ID] * float(_heap_on_stacks[p_caster_ID]))
 			_heap_on_stacks[p_caster_ID] += 1
-		Types.Skill_Type.Burning_Bolas:
-			pass
 
 static func CorrectZoneTarget(p_zone_owner_ID: int, p_trigger_character_ID: int, p_zone_target: Types.Skill_Target) -> bool:
 	match p_zone_target:
@@ -121,6 +119,10 @@ static func TriggerExistingCasterDebuffs(
 		match debuff.effect:
 			Types.Debuff_Type.Burning:
 				p_caster._currentHealth -= int(floor((p_caster_attributes[Types.Attribute.Health] * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER) * 0.05))
+			Types.Debuff_Type.Enfeeble:
+				print("Current attack: ", p_caster_attributes[Types.Attribute.Attack])
+				p_caster_attributes[Types.Attribute.Attack] -= int(ceilf(p_caster_attributes[Types.Attribute.Attack] * 0.3))
+				print("New attack: ", p_caster_attributes[Types.Attribute.Attack])
 		
 		debuff.duration -= 1
 		if (debuff.duration <= 0):
@@ -222,7 +224,7 @@ static func PlaceDebuff(
 	
 	var new_debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
 	new_debuff.effect = p_skill.debuffs[p_skill.target]
-	new_debuff.duration = 2 # TODO: Replace with a defined number from the skill.
+	new_debuff.duration = p_skill.duration
 	
 	new_debuff.ID = p_target_repr.AddStatusEffect(Statuses.DEBUFF_ICONS[new_debuff.effect])
 	

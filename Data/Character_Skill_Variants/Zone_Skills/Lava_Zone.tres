@@ -8,7 +8,7 @@ name = "Lava Zone"
 description = "Burns enemies that stands in it."
 target = 8
 duration = 6
-skill_type = 5
+skill_type = 3
 debuffs = Dictionary[int, int]({
 0: 0
 })

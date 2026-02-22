@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cm4vfwgr24udt"
-path="res://.godot/imported/Icon_Border_0001.png-3962ce674cc1347e67f6794f25ee47e3.ctex"
+uid="uid://cxuqhrk2fw4jn"
+path="res://.godot/imported/broken-shield.svg-3afb8d7051d8e7825f9633c66dab4482.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Borders/Icon_Border_0001.png"
-dest_files=["res://.godot/imported/Icon_Border_0001.png-3962ce674cc1347e67f6794f25ee47e3.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Status_Effects/Expose_weakness/broken-shield.svg"
+dest_files=["res://.godot/imported/broken-shield.svg-3afb8d7051d8e7825f9633c66dab4482.ctex"]
 
 [params]
 
@@ -38,3 +38,6 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
+svg/scale=1.0
+editor/scale_with_editor_scale=false
+editor/convert_colors_with_editor_theme=false

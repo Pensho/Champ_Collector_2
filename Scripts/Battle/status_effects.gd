@@ -9,6 +9,7 @@ const BUFF_ICONS: Dictionary[Types.Buff_Type, String] = {
 
 const DEBUFF_ICONS: Dictionary[Types.Debuff_Type, String] = {
 	Types.Debuff_Type.Burning: "res://Assets/Champ_Collector/Icons/Status_Effects/Burning/flame.svg",
+	Types.Debuff_Type.Enfeeble: "res://Assets/Champ_Collector/Icons/Status_Effects/Enfeeble/shattered-sword.svg",
 }
 
 class Buff:
