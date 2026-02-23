@@ -11,6 +11,8 @@ const MONSTER_IDS: Array[int] = [3,4,5]
 static var _heap_on_stacks: Array[int] = [0, 0, 0, 0, 0, 0]
 static var _heap_on_value: Array[float] = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
 
+static var _status_effect_textures: Dictionary[String, Texture]
+
 static func ResolveZoneEffect(
 					p_zone: Zone,
 					p_character: Character,
@@ -27,7 +29,7 @@ static func ResolveZoneEffect(
 				return
 			var new_debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
 			new_debuff.effect = Types.Debuff_Type.Burning
-			new_debuff.ID = p_character_repr.AddStatusEffect(Statuses.DEBUFF_ICONS[new_debuff.effect])
+			new_debuff.ID = p_character_repr.AddStatusEffect(GetStatusEffectTexture(Statuses.DEBUFF_ICONS[new_debuff.effect]))
 			new_debuff.duration = 2 # TODO: Replace with a defined number from the skill.
 			
 			p_character._active_debuffs.append(new_debuff)
@@ -155,16 +157,7 @@ static func TriggerExistingCasterBuffs(
 # the buff targets yet.
 static func TriggerTargetBuffs(
 							p_target: Character,
-							p_target_attributes: Dictionary[Types.Attribute, int],
-							p_skill: Skill,
-							p_target_repr: CharacterRepresentation) -> void:
-	
-	for target in p_skill.buffs.keys():
-		var new_buff: StatusEffects.Buff = StatusEffects.Buff.new()
-		new_buff.effect = p_skill.buffs[target]
-		p_target._active_buffs.append(new_buff)
-		p_target_repr.AddStatusEffect(Statuses.BUFF_ICONS[target])
-	
+							p_target_attributes: Dictionary[Types.Attribute, int]) -> void:
 	for buff in p_target._active_buffs:
 		match buff.effect:
 			# TODO: Add buff handling
@@ -175,10 +168,7 @@ static func TriggerTargetBuffs(
 # the debuff targets yet.
 static func TriggerTargetDebuffs(
 							p_target: Character,
-							p_target_attributes: Dictionary[Types.Attribute, int],
-							p_skill: Skill,
-							p_target_repr: CharacterRepresentation) -> void:
-	
+							p_target_attributes: Dictionary[Types.Attribute, int]) -> void:
 	for debuff in p_target._active_debuffs:
 		match debuff.effect:
 			Types.Debuff_Type.Expose_Weakness:
@@ -190,17 +180,14 @@ static func PlaceBuff(
 				p_target: Character,
 				p_skill: Skill,
 				p_target_repr: CharacterRepresentation):
-	
-	if(p_skill.buffs.is_empty()):
-		return
 	if(GameBalance.MAX_STATUS_EFFECTS <= p_target._active_buffs.size() + p_target._active_debuffs.size()):
 		print(p_target._name, " cannot have any more status effects right now.")
 		return
 	
 	var new_buff: StatusEffects.Buff = StatusEffects.Buff.new()
 	new_buff.effect = p_skill.buffs[p_skill.target]
-	new_buff.duration = 2 # TODO: Replace with a defined number from the skill.
-	new_buff.ID = p_target_repr.AddStatusEffect(Statuses.BUFF_ICONS[new_buff.effect])
+	new_buff.duration = p_skill.duration
+	new_buff.ID = p_target_repr.AddStatusEffect(GetStatusEffectTexture(Statuses.BUFF_ICONS[new_buff.effect]))
 	
 	p_target._active_buffs.append(new_buff)
 
@@ -210,9 +197,6 @@ static func PlaceDebuff(
 					p_caster_accuracy: int,
 					p_skill: Skill,
 					p_target_repr: CharacterRepresentation):
-	
-	if(p_skill.debuffs.is_empty()):
-		return
 	if(GameBalance.MAX_STATUS_EFFECTS <= p_target._active_buffs.size() + p_target._active_debuffs.size()):
 		print(p_target._name, " cannot have any more status effects right now.")
 		return
@@ -227,7 +211,7 @@ static func PlaceDebuff(
 	new_debuff.effect = p_skill.debuffs[p_skill.target]
 	new_debuff.duration = p_skill.duration
 	
-	new_debuff.ID = p_target_repr.AddStatusEffect(Statuses.DEBUFF_ICONS[new_debuff.effect])
+	new_debuff.ID = p_target_repr.AddStatusEffect(GetStatusEffectTexture(Statuses.DEBUFF_ICONS[new_debuff.effect]))
 	
 	p_target._active_debuffs.append(new_debuff)
 
@@ -254,3 +238,9 @@ static func DamageDealt(p_attacker_attr: Dictionary[Types.Attribute, int],
 static func Reset() -> void:
 	_heap_on_stacks = [0, 0, 0, 0, 0, 0]
 	_heap_on_value = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+
+static func GetStatusEffectTexture(p_texture_path: String) -> Texture:
+	if(not _status_effect_textures.has(p_texture_path)):
+		_status_effect_textures[p_texture_path] = load(p_texture_path)
+	
+	return _status_effect_textures[p_texture_path]

@@ -266,28 +266,20 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID) -> voi
 	for target_ID in p_target_IDs:
 		if(p_caster_ID != target_ID):
 			target_attributes = _characters[target_ID].GetBattleAttributes()
-			Skills.TriggerTargetBuffs(
+			
+			Skills.TriggerTargetBuffs(_characters[target_ID], target_attributes)
+			Skills.TriggerTargetDebuffs(_characters[target_ID], target_attributes)
+		
+		if(not cast_skill.buffs.is_empty()):
+			Skills.PlaceBuff(_characters[target_ID], cast_skill, _character_repr[target_ID])
+		
+		if(not cast_skill.debuffs.is_empty()):
+			Skills.PlaceDebuff(
 				_characters[target_ID],
 				target_attributes,
+				caster_attributes[Types.Attribute.Accuracy],
 				cast_skill,
 				_character_repr[target_ID])
-			Skills.TriggerTargetDebuffs(
-				_characters[target_ID],
-				target_attributes,
-				cast_skill,
-				_character_repr[target_ID])
-		
-		Skills.PlaceBuff(
-			_characters[target_ID],
-			cast_skill,
-			_character_repr[target_ID])
-		
-		Skills.PlaceDebuff(
-			_characters[target_ID],
-			target_attributes,
-			caster_attributes[Types.Attribute.Accuracy],
-			cast_skill,
-			_character_repr[target_ID])
 		
 		if(not cast_skill.damage_scaling.is_empty()):
 			var damage_dealt: int = Skills.DamageDealt(caster_attributes, target_attributes, cast_skill)

@@ -19,10 +19,10 @@ var _status_effect_counter: int = 0
 func _on_button_target_button_up() -> void:
 	battle_target_selected.emit(_target_ID)
 
-func AddStatusEffect(p_effect_path: String) -> int:
+func AddStatusEffect(p_effect_texture: Texture) -> int:
 	for slot in _status_effect_textures.size():
 		if (null == _status_effect_textures[slot].texture):
-			_status_effect_textures[slot].texture = load(p_effect_path)
+			_status_effect_textures[slot].texture = p_effect_texture
 			_status_effect[_status_effect_counter] = slot
 			_status_effect_counter += 1
 			_status_effect_textures[slot].show()
