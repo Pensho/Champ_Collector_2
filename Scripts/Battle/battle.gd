@@ -222,7 +222,7 @@ func UpdateLifeBar(p_characterID: int) -> void:
 		_characters[p_characterID]._currentHealth = 0
 		_characters[p_characterID]._active_buffs.clear()
 		_characters[p_characterID]._active_debuffs.clear()
-		_character_repr[p_characterID].ClearStatusEffects()
+		_character_repr[p_characterID].ClearAllStatusEffects()
 		_battle_ui._turn_bar.ShowCharacterAsDead(p_characterID)
 		_character_repr[p_characterID]._character_texture.material = GRAYSCALE_MATERIAL
 	
@@ -255,12 +255,9 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID) -> voi
 		UpdateLifeBar(p_caster_ID)
 	
 	if (not _characters[p_caster_ID]._active_buffs.is_empty()):
-		Skills.TriggerExistingCasterBuffs(_characters[p_caster_ID],
-		caster_attributes,
-		cast_skill,
-		_character_repr[p_caster_ID])
+		Skills.TriggerExistingCasterBuffs(_characters[p_caster_ID], caster_attributes, _character_repr[p_caster_ID])
 	
-	Skills.ResolveSkillEffect(p_caster_ID, caster_attributes, p_target_IDs, cast_skill, _characters)
+	Skills.ResolveSkillEffect(p_caster_ID, caster_attributes, cast_skill)
 	
 	var target_attributes: Dictionary[Types.Attribute, int]
 	for target_ID in p_target_IDs:

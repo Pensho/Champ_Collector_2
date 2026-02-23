@@ -21,7 +21,7 @@ func _on_button_target_button_up() -> void:
 
 func AddStatusEffect(p_effect_texture: Texture) -> int:
 	for slot in _status_effect_textures.size():
-		if (null == _status_effect_textures[slot].texture):
+		if (not _status_effect_textures[slot].is_visible_in_tree()):
 			_status_effect_textures[slot].texture = p_effect_texture
 			_status_effect[_status_effect_counter] = slot
 			_status_effect_counter += 1
@@ -32,10 +32,9 @@ func AddStatusEffect(p_effect_texture: Texture) -> int:
 
 func RemoveStatusEffects(p_effect_IDs: Array[int]) -> void:
 	for effect_ID in p_effect_IDs:
-		_status_effect_textures[_status_effect[effect_ID]].texture = null
 		_status_effect_textures[_status_effect[effect_ID]].hide()
 
-func ClearStatusEffects() -> void:
+func ClearAllStatusEffects() -> void:
 	for textRect in _status_effect_textures:
 		if(null != textRect.texture):
 			textRect.texture = null

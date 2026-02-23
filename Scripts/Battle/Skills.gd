@@ -24,12 +24,12 @@ static func ResolveZoneEffect(
 			if(CorrectZoneTarget(p_zone._owner_ID, p_character_ID, p_zone._target)):
 				p_battle_ui._turn_bar.BumpCharacter(p_character_ID, 0.15)
 		Types.Skill_Type.Lava_Zone:
-			if(GameBalance.MAX_STATUS_EFFECTS <= p_character._active_buffs.size() + p_character._active_debuffs.size()):
-				print(p_character._name, " cannot have any more status effects right now.")
+			if(HasMaxStatusEffects(p_character)):
 				return
+			
 			var new_debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
-			new_debuff.effect = Types.Debuff_Type.Burning
-			new_debuff.ID = p_character_repr.AddStatusEffect(GetStatusEffectTexture(Statuses.DEBUFF_ICONS[new_debuff.effect]))
+			new_debuff.effect = Types.Debuff_Type.Burning # TODO: add a status effect container to the Zone class and use that instead
+			new_debuff.ID = p_character_repr.AddStatusEffect(GetStatusEffectTexture(Statuses.DEBUFF_ICONS[Types.Debuff_Type.Burning]))
 			new_debuff.duration = 2 # TODO: Replace with a defined number from the skill.
 			
 			p_character._active_debuffs.append(new_debuff)
@@ -37,9 +37,7 @@ static func ResolveZoneEffect(
 static func ResolveSkillEffect(
 		p_caster_ID: int,
 		p_caster_attr: Dictionary[Types.Attribute, int],
-		p_target_IDs: Array[int],
-		p_skill: Skill,
-		p_characterList: Dictionary[int, Character]) -> void:
+		p_skill: Skill) -> void:
 	match p_skill.skill_type:
 		Types.Skill_Type.Heap_On:
 			if (0 == _heap_on_stacks[p_caster_ID]):
@@ -136,7 +134,6 @@ static func TriggerExistingCasterDebuffs(
 static func TriggerExistingCasterBuffs(
 							p_caster: Character,
 							p_caster_attributes: Dictionary[Types.Attribute, int],
-							p_skill: Skill,
 							p_caster_repr: CharacterRepresentation) -> void:
 	var buff_IDs_to_be_removed: Array[int] = []
 	
@@ -180,8 +177,7 @@ static func PlaceBuff(
 				p_target: Character,
 				p_skill: Skill,
 				p_target_repr: CharacterRepresentation):
-	if(GameBalance.MAX_STATUS_EFFECTS <= p_target._active_buffs.size() + p_target._active_debuffs.size()):
-		print(p_target._name, " cannot have any more status effects right now.")
+	if(HasMaxStatusEffects(p_target)):
 		return
 	
 	var new_buff: StatusEffects.Buff = StatusEffects.Buff.new()
@@ -197,8 +193,7 @@ static func PlaceDebuff(
 					p_caster_accuracy: int,
 					p_skill: Skill,
 					p_target_repr: CharacterRepresentation):
-	if(GameBalance.MAX_STATUS_EFFECTS <= p_target._active_buffs.size() + p_target._active_debuffs.size()):
-		print(p_target._name, " cannot have any more status effects right now.")
+	if(HasMaxStatusEffects(p_target)):
 		return
 	
 	var randomVal: float = randf_range(0.95, 1.0)
@@ -210,7 +205,6 @@ static func PlaceDebuff(
 	var new_debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
 	new_debuff.effect = p_skill.debuffs[p_skill.target]
 	new_debuff.duration = p_skill.duration
-	
 	new_debuff.ID = p_target_repr.AddStatusEffect(GetStatusEffectTexture(Statuses.DEBUFF_ICONS[new_debuff.effect]))
 	
 	p_target._active_debuffs.append(new_debuff)
@@ -244,3 +238,9 @@ static func GetStatusEffectTexture(p_texture_path: String) -> Texture:
 		_status_effect_textures[p_texture_path] = load(p_texture_path)
 	
 	return _status_effect_textures[p_texture_path]
+
+static func HasMaxStatusEffects(p_character: Character) -> bool:
+	if(GameBalance.MAX_STATUS_EFFECTS <= p_character._active_buffs.size() + p_character._active_debuffs.size()):
+		print(p_character._name, " cannot have any more status effects right now.")
+		return true
+	return false
