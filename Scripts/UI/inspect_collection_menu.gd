@@ -112,22 +112,22 @@ func UnequipItem(p_slot: Types.Slot) -> void:
 			_available_item_slots[held_item._instanceID].SetHeldObjectTexture(main.GetInstance()._item_collection.GetItemTexture(Types.Slot.Boots))
 	_available_item_slots[held_item._instanceID].SetTextureOutline(held_item._rarity)
 	ShowSelectedCharacter(_selected_character_ID)
-	print(_character_collection[_selected_character_ID], " now holds these items: ", _character_collection[_selected_character_ID]._held_items)
-	print("item collection now holds these items: ", main.GetInstance()._item_collection._items)
+	#print(_character_collection[_selected_character_ID], " now holds these items: ", _character_collection[_selected_character_ID]._held_items)
+	#print("item collection now holds these items: ", main.GetInstance()._item_collection._items)
 
 func EquipedItemSlotButton(p_ID: int) -> void:
 	if(_showing_items):
 		match p_ID:
 			0:
-				print("Trying to remove weapon from ", _character_collection[_selected_character_ID]._name)
+				#print("Trying to remove weapon from ", _character_collection[_selected_character_ID]._name)
 				if(_character_collection[_selected_character_ID]._held_items.has(Types.Slot.Weapon)):
 					UnequipItem(Types.Slot.Weapon)
 			1:
-				print("Trying to remove shield from ", _character_collection[_selected_character_ID]._name)
+				#print("Trying to remove shield from ", _character_collection[_selected_character_ID]._name)
 				if(_character_collection[_selected_character_ID]._held_items.has(Types.Slot.Shield)):
 					UnequipItem(Types.Slot.Shield)
 			2:
-				print("Trying to remove boots from ", _character_collection[_selected_character_ID]._name)
+				#print("Trying to remove boots from ", _character_collection[_selected_character_ID]._name)
 				if(_character_collection[_selected_character_ID]._held_items.has(Types.Slot.Boots)):
 					UnequipItem(Types.Slot.Boots)
 

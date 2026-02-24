@@ -9,7 +9,7 @@ const CHRONOPHAGE = preload("uid://wofv42g341ac")
 const BLOODMAGE = preload("uid://7adgp1emx6yk")
 const TIDAL_CORSAIR = preload("uid://bmqvx8opoocu7")
 
-
+const SHIELD_BASIC = preload("uid://deri0o1rplmuk")
 const WEAPON_BASIC_SPEAR = preload("res://Data/Item_Presets/Weapon_Basic_Spear.tres")
 const RED_BOOTS = preload("uid://c3g7cshxhg0rw")
 
@@ -64,9 +64,17 @@ class Main_Instance extends Node:
 		var boots: EquipmentPreset = RED_BOOTS.duplicate(true)
 		boots.Setup()
 		_item_collection.AddPreset(boots)
+		boots = RED_BOOTS.duplicate(true)
 		boots.Setup()
 		_item_collection.AddPreset(boots)
-		_character_collection.GetCharacter(0).AddEquipment(_item_collection.TakeEquipment(0))
+		#_character_collection.GetCharacter(0).AddEquipment(_item_collection.TakeEquipment(0))
+		
+		var shield: EquipmentPreset = SHIELD_BASIC.duplicate(true)
+		shield.Setup()
+		_item_collection.AddPreset(shield)
+		shield = SHIELD_BASIC.duplicate(true)
+		shield.Setup()
+		_item_collection.AddPreset(shield)
 		
 		_character_collection.LoadTextures()
 		_item_collection.LoadTextures()

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="EquipmentPreset" load_steps=2 format=3 uid="uid://deri0o1rplmuk"]
+
+[ext_resource type="Script" uid="uid://8knbs7yij5eh" path="res://Scripts/Gear/equipment_preset.gd" id="1_haydv"]
+
+[resource]
+script = ExtResource("1_haydv")
+_name = "Uncommon Shield"
+_slot = 2
+_rarity = 2
+_texture_path = "res://Assets/Champ_Collector/Icons/Items/Shield/Shield_0002.png"
+metadata/_custom_type_script = "uid://8knbs7yij5eh"

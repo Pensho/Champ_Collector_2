@@ -388,8 +388,19 @@ There is a chance when using a Fortune’s Favor to get a champion, or they coul
 #### 3.6.4. The shop
 Where players can purchase consumables, gear, and other items using various currencies.
 
-### 3.6.4. Energy Systems
+### 3.7 Energy Systems
 To limit daily player activity, an energy system will be implemented. Players will have a set amount of Energy (e.g., Food or Supplies) that depletes when entering combat nodes. Energy will regenerate over time or can be replenished through in-game actions or purchases.
+
+### 3.8 Reward structure
+The idea is to have every encounter hold a "loot table" of possible drops. Some drops may always drop for certain encounters.
+Then each drop is given a "reward value", where e.g.
+- X silver is Y reward value points
+- X experience is Y reward value points
+- Gear of rarity Z is Y reward value points equivalent
+
+Then every encounter will be given a reward value points buffer depending on difficulty and cost of supplies to engage.
+
+When a victory is achieved, rewards will be randomly selected from the loot table and subtract that value from the reward value points buffer. Note that some drops may be guaranteed and will be picked out first before random selection. This goes on until the buffer is spent or if the remaining value is too small to equate another reward.
 
 
 ---
@@ -486,6 +497,7 @@ Assosiated characters:
 
 
 ## 5. Playable content
+Most forms of encounters shall have difficulty options, this is for several reasons. One is to have more challanging content for players whos account have outgrown certain encounters. Another is to scale the reward given to be able to farm specific gear/experience/currency to manage other difficult content.
 
 ### 5.1. Longform
 Intended to be adventures aimed to span days to weeks to complete.

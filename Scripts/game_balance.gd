@@ -53,7 +53,8 @@ const ITEM_TYPE_ATTRIBUTES: Dictionary = {
 		Types.Attribute.Health,
 		Types.Attribute.Defence,
 		Types.Attribute.Resistance,
-		Types.Attribute.Mysticism,],
+		Types.Attribute.Mysticism,
+		Types.Attribute.Accuracy,],
 		
 	Types.Slot.Boots: [
 		Types.Attribute.Speed,

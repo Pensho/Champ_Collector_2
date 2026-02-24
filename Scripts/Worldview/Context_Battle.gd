@@ -12,5 +12,6 @@ class_name Context_Battle extends Static_Context
 @export var _scene_darkness_height: float = 0.3
 
 @export var _environment_effects: Array[PackedScene]
+@export var _loot_table: LootTable
 
 @warning_ignore_restore("unused_private_class_variable")

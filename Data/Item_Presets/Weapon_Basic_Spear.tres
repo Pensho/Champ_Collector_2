@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_6yiay")
-_name = "Basic Spear"
+_name = "Uncommon Spear"
 _slot = 1
 _rarity = 2
 _texture_path = "res://Assets/Champ_Collector/Icons/Items/Spear/Spear_0002.png"

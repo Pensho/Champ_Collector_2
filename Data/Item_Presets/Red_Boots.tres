@@ -4,6 +4,7 @@
 
 [resource]
 script = ExtResource("1_tg4ja")
+_name = "Rare boots"
 _slot = 5
 _rarity = 3
 _texture_path = "res://Assets/Champ_Collector/Icons/Items/Red_Boot/Red_Boot_0003.png"
