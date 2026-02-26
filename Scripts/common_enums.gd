@@ -7,7 +7,7 @@ enum Rarity
 	Rare = 3,
 	Epic = 4,
 	Legendary = 5,
-	Relic = 0, # Items only
+	Relic = 6, # Items only
 }
 
 enum Faction
