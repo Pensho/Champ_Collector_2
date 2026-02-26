@@ -79,6 +79,11 @@ class Main_Instance extends Node:
 		_character_collection.LoadTextures()
 		_item_collection.LoadTextures()
 
+		var rarity_value: float = log(float(150.0))/log(50.0)
+		print(rarity_value)
+		var result: int = int((rarity_value - 1.0) / 0.3)
+		print(result)
+
 		context_container._scene = "res://Scenes/ui/MainMenu.tscn"
 		change_scene(context_container)
 
