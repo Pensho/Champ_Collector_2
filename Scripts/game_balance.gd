@@ -25,7 +25,7 @@ const EXPERIENCE_CONSTANT_2: int = 1
 const EXPERIENCE_CONSTANT_3: int = 5
 
 ## Level up
-const LEVEL_UP_POINTS_TO_DISTRIBUTE: int = 19
+const LEVEL_UP_POINTS_TO_DISTRIBUTE: int = 25
 const CHARACTER_ATTRIBUTE_WEIGHT: int = 5
 const BASE_ATTRIBUTE_WEIGHTS: Dictionary[Types.Attribute, int] = {
 	Types.Attribute.Health: 5,

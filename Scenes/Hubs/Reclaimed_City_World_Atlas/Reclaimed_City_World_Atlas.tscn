@@ -21,7 +21,7 @@ offset_right = 40.0
 offset_bottom = 40.0
 texture = ExtResource("1_ibbvk")
 
-[node name="Button_Adventure_guild" type="TextureButton" parent="."]
+[node name="Button_Experience_Quests" type="TextureButton" parent="."]
 layout_mode = 0
 offset_left = 1013.0
 offset_top = 249.0
@@ -125,5 +125,6 @@ text = "Adventure
 "
 horizontal_alignment = 1
 
+[connection signal="button_up" from="Button_Experience_Quests" to="." method="_on_experience_quests_button_up"]
 [connection signal="button_up" from="Button_Town" to="." method="_on_town_button_up"]
 [connection signal="button_up" from="Button_Statues" to="." method="_on_statues_button_up"]

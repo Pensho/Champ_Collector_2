@@ -11,12 +11,13 @@ static func LevelUpCriteriaMet(p_character: Character) -> bool:
 	xp_requirement += Game_Balance.EXPERIENCE_CONSTANT_2 * p_character._level
 	xp_requirement = round(xp_requirement + Game_Balance.EXPERIENCE_CONSTANT_3)
 	print("Experience required for level up: ", xp_requirement, " experience accumulated: ", p_character._experience)
-	return xp_requirement <= p_character._experience
+	var criteria_met: bool = xp_requirement <= p_character._experience
+	p_character._experience = max(p_character._experience - xp_requirement, 0)
+	return criteria_met
 
-static func AddExperience(p_character: Character, p_value: int) -> void:
-	p_character._experience += p_value
-	if(LevelUpCriteriaMet(p_character)):
-		p_character._experience = 0
+static func AddExperience(p_character: Character, p_experiene_gained: int) -> void:
+	p_character._experience += p_experiene_gained
+	while LevelUpCriteriaMet(p_character):
 		LevelUpReward(p_character)
 
 static func LevelUpReward(p_character: Character) -> void:
@@ -40,15 +41,15 @@ static func LevelUpReward(p_character: Character) -> void:
 	print("\nStarting distribution of points for level up.\n")
 	
 	# Each level should increase health a bit.
-	new_attributes[Types.Attribute.Health] += 1
+	new_attributes[Types.Attribute.Health] += 2
 	
 	var random_roll: int = 0
-	for i in range(Game_Balance.LEVEL_UP_POINTS_TO_DISTRIBUTE):
+	for i in range(pow(Game_Balance.LEVEL_UP_POINTS_TO_DISTRIBUTE, 1.1)):
 		random_roll = randi_range(0, total_weight)
 		
 		var chosen_attribute: Types.Attribute
 		for attribute in cumulative_weights.keys():
-			if(random_roll < cumulative_weights[attribute]):
+			if(random_roll <= cumulative_weights[attribute]):
 				chosen_attribute = attribute
 				break
 		new_attributes[chosen_attribute] += 1
@@ -69,19 +70,21 @@ static func SetOpponentLevel(p_character: Character, p_level: int, p_boss: bool 
 	if(p_level <= p_character._level):
 		print("Cannot lower an opponents level")
 		return
-	var total_levels_gained = p_character._level - 1
+	var total_levels_gained: float = float(p_level - p_character._level)
 	p_character._level = p_level
 	
 	var total_base_points: float = 0.0
 	for attribute in p_character._attributes.keys():
 		total_base_points += p_character._attributes[attribute]
 	
+	p_character._attributes[Types.Attribute.Health] += 2
+	
 	for attribute in p_character._attributes.keys():
-		var base_value = p_character._attributes[attribute]
-		var weight = base_value / total_base_points
-		var points = Game_Balance.LEVEL_UP_POINTS_TO_DISTRIBUTE
+		var base_value: int = p_character._attributes[attribute]
+		var weight: float = float(base_value) / float(total_base_points)
+		var points: float = float(pow(Game_Balance.LEVEL_UP_POINTS_TO_DISTRIBUTE, 1.1))
 		if(p_boss):
 			points = points * 2
 		var points_gained = weight * points * total_levels_gained
-		p_character._attributes[attribute] = round(base_value + points_gained)
+		p_character._attributes[attribute] = round(int(base_value + points_gained))
 	

@@ -92,13 +92,13 @@ func AvailableItemSlotButton(p_ID: int) -> void:
 
 func EquipItem(p_ID: int) -> void:
 	var item: Equipment =  main.GetInstance()._item_collection.TakeEquipment(p_ID)
-	_character_collection[_selected_character_ID].AddEquipment(item)
+	_character_collection[_selected_character_ID].EquipItem(item)
 	_available_item_slots[p_ID].SetHeldObjectTexture(null)
 	ShowSelectedCharacter(_selected_character_ID)
 
 func UnequipItem(p_slot: Types.Slot) -> void:
 	var held_item = _character_collection[_selected_character_ID]._held_items[p_slot]
-	main.GetInstance()._item_collection.AddEquipment(held_item)
+	main.GetInstance()._item_collection.AddToCollection(held_item)
 	_character_collection[_selected_character_ID]._held_items.erase(p_slot)
 	match p_slot:
 		Types.Slot.Weapon:

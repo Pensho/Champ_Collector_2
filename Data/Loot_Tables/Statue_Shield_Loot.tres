@@ -1,6 +1,5 @@
-[gd_resource type="Resource" script_class="LootTable" load_steps=4 format=3 uid="uid://bpomxijnhuk6t"]
+[gd_resource type="Resource" script_class="LootTable" load_steps=3 format=3 uid="uid://bpomxijnhuk6t"]
 
-[ext_resource type="Script" uid="uid://8knbs7yij5eh" path="res://Scripts/Gear/equipment_preset.gd" id="1_0brro"]
 [ext_resource type="Script" uid="uid://cabwckgc7os5u" path="res://Scripts/Battle/loot_table.gd" id="1_e6cfn"]
 [ext_resource type="Resource" uid="uid://deri0o1rplmuk" path="res://Data/Item_Presets/Shield_Basic.tres" id="1_il406"]
 
@@ -15,5 +14,5 @@ _secondary_loot = Dictionary[int, int]({
 0: 5,
 1: 10
 })
-_gear_loot = Array[ExtResource("1_0brro")]([ExtResource("1_il406")])
+_gear_loot = ExtResource("1_il406")
 metadata/_custom_type_script = "uid://cabwckgc7os5u"

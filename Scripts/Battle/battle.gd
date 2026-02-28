@@ -19,6 +19,7 @@ var GRAYSCALE_MATERIAL: ShaderMaterial
 @onready var _global_scene_light: PointLight2D = $PointLight2D
 
 var _self_context: ContextContainer
+var _battlecontext: Context_Battle
 var _characterIDs_turn: int = -1
 var _selected_skill_ID: int = 0
 var _initialized: bool = false
@@ -47,14 +48,14 @@ func SetTargetingOrder() -> void:
 	_targeting_order = sorted_keys
 
 func Init(p_context: ContextContainer) -> void:
-	var battlecontext: Context_Battle = p_context._static_context as Context_Battle
-	_background.texture = load(battlecontext._location)
-	_global_scene_darkness.color = battlecontext._global_scene_darkness
-	_global_scene_darkness.height = battlecontext._scene_darkness_height
-	_global_scene_light.color = battlecontext._global_scene_light
+	_battlecontext = p_context._static_context as Context_Battle
+	_background.texture = load(_battlecontext._location)
+	_global_scene_darkness.color = _battlecontext._global_scene_darkness
+	_global_scene_darkness.height = _battlecontext._scene_darkness_height
+	_global_scene_light.color = _battlecontext._global_scene_light
 	_self_context = p_context
 	
-	if(battlecontext._enemies_wave_1.is_empty()):
+	if(_battlecontext._enemies_wave_1.is_empty()):
 		print("Accidental load to battle scene without enemies, terminating application")
 		get_tree().quit()
 	elif(p_context._player_battle_characters.is_empty()):
@@ -69,12 +70,19 @@ func Init(p_context: ContextContainer) -> void:
 		_self_context._arguments["character_dmg_" + str(i)] = 0
 		VisualizeCharacter(i)
 	
+	var difficulty: int = 1
+	if(_self_context._arguments.has("Difficulty")):
+		difficulty = _self_context._arguments["Difficulty"]
+	else:
+		_self_context._arguments["Difficulty"] = difficulty
+	
 	SetTargetingOrder()
 	
-	for i in battlecontext._enemies_wave_1.size():
+	for i in _battlecontext._enemies_wave_1.size():
 		_characters[i + 3] = Character.new()
-		_characters[i + 3].InstantiateNew(battlecontext._enemies_wave_1[i], -1, null)
+		_characters[i + 3].InstantiateNew(_battlecontext._enemies_wave_1[i], -1, null)
 		_characters[i + 3]._attributes[Types.Attribute.Speed] += randi_range(-3, 3)
+		LevelSystem.SetOpponentLevel(_characters[i + 3], difficulty)
 		_characters[i + 3]._currentHealth = _characters[i + 3].GetBattleAttribute(Types.Attribute.Health)  * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
 		if (p_context._arguments.has("Boss_Scale")):
 			_character_repr[i + 3].scale = Vector2(p_context._arguments["Boss_Scale"], p_context._arguments["Boss_Scale"])
@@ -88,7 +96,7 @@ func Init(p_context: ContextContainer) -> void:
 	GRAYSCALE_MATERIAL = ShaderMaterial.new()
 	GRAYSCALE_MATERIAL.shader = GRAYSCALE
 	
-	_battle_ui.Init(battlecontext._environment_effects)
+	_battle_ui.Init(_battlecontext._environment_effects)
 	_battle_ui._turn_bar.Init(_characters, _on_turn_bar_zone_selected)
 	_initialized = true
 
@@ -320,28 +328,26 @@ func IsTheBattleOver() -> WinningTeam:
 	return WinningTeam.Ongoing
 
 func EndBattle(p_winner: WinningTeam) -> void:
-	# TODO: implement a more refined experience reward.
-	var experience_gained: int = 0
 	Skills.Reset()
 	_battle_ui.CleanUp()
 	
 	if(p_winner == WinningTeam.Monsters_Won):
 		_self_context._arguments["Battle_Result"] = "Loss"
 	elif(p_winner == WinningTeam.Player_Won):
-		experience_gained += 5
 		_self_context._arguments["Battle_Result"] = "Victory"
-	
-	for i in _characters.keys():
-		_characters[i]._active_buffs.clear()
-		_characters[i]._active_debuffs.clear()
-		for j in _characters[i]._skills.size():
-			_characters[i]._skills[j].cooldown_left = 0
-		if(ENEMY_IDS.has(i) and p_winner == WinningTeam.Player_Won):
-			experience_gained += 5
-	for i in _characters.keys():
-		if(PLAYER_IDS.has(i)):
-			LevelSystem.AddExperience(_characters[i], experience_gained)
-			_characters[i]._currentHealth = _characters[i]._attributes[Types.Attribute.Health] * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
+		_battlecontext._loot_table._budget = LootManager.CalculateBudget(_self_context._arguments["Difficulty"])
+		LootManager.DistributeRewards(_battlecontext._loot_table, _self_context._arguments["Difficulty"])
+		for i in _characters.keys():
+			if(PLAYER_IDS.has(i)):
+				_characters[i]._active_buffs.clear()
+				_characters[i]._active_debuffs.clear()
+				for j in _characters[i]._skills.size():
+					_characters[i]._skills[j].cooldown_left = 0
+				
+				LevelSystem.AddExperience(_characters[i], _battlecontext._loot_table._drop_result._experience)
+				_characters[i]._currentHealth = _characters[i]._attributes[Types.Attribute.Health] * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
+		if (null != _battlecontext._loot_table._drop_result._equipment):
+			main.GetInstance()._item_collection.AddPreset(_battlecontext._loot_table._drop_result._equipment)
 	
 	_self_context._scene = "res://Scenes/ui/Battle_Over.tscn"
 	

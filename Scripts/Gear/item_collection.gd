@@ -51,7 +51,7 @@ func AddPreset(preset: EquipmentPreset) -> void:
 		_collected_types[new_equipment._slot] = new_equipment._texture
 		_used_item_textures[new_equipment._slot] = load(new_equipment._texture)
 
-func AddEquipment(p_equipment: Equipment) -> void:
+func AddToCollection(p_equipment: Equipment) -> void:
 	if(_items.has(p_equipment._instanceID)):
 		p_equipment._instanceID = CreateNextInstanceID()
 	_items[p_equipment._instanceID] = p_equipment

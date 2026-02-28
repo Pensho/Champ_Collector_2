@@ -49,7 +49,7 @@ func GetBattleAttribute(p_attribute: Types.Attribute) -> int:
 	attribute_val += GetEquipmentBonus(p_attribute)
 	return attribute_val
 
-func AddEquipment(p_equipment: Equipment) -> void:
+func EquipItem(p_equipment: Equipment) -> void:
 	if(not _held_items.has(p_equipment._slot)):
 		_held_items[p_equipment._slot] = p_equipment
 	else:
