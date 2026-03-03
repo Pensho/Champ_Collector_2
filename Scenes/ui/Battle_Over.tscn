@@ -5,13 +5,12 @@
 [ext_resource type="Texture2D" uid="uid://dx1p1jvdh8xjm" path="res://Assets/Champ_Collector/UI/Victory_Screen/Victory_3.jpg" id="2_qbyvt"]
 [ext_resource type="PackedScene" uid="uid://d230va33ir4c1" path="res://Scenes/ui/Post_Battle_Menu/Character_Damage_Result.tscn" id="4_m6xdf"]
 
-[node name="BattleOver" type="Control" node_paths=PackedStringArray("_character_repr")]
+[node name="BattleOver" type="Control"]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 1280.0
 offset_bottom = 720.0
 script = ExtResource("1_admv5")
-_character_repr = [NodePath("MarginContainer/VBoxContainer/Character_repr_1/CharacterDamageResult"), NodePath("MarginContainer/VBoxContainer/Character_repr_2/CharacterDamageResult"), NodePath("MarginContainer/VBoxContainer/Character_repr_3/CharacterDamageResult")]
 
 [node name="TextureRect_Background" type="TextureRect" parent="."]
 layout_mode = 0

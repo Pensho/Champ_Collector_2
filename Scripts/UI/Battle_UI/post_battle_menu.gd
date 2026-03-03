@@ -6,13 +6,9 @@ const Types = preload("uid://bkpa0hv70oydy")
 @onready var _heading: Label = $MarginContainer/VBoxContainer/Label
 @onready var _texture_rect_background: TextureRect = $TextureRect_Background
 
-@export var _character_repr: Array[CharacterDamageResultUI]
-#@export var _character_repr_1: CharacterDamageResultUI
-#@export var _character_repr_2: CharacterDamageResultUI
-#@export var _character_repr_3: CharacterDamageResultUI
+@export var _character_result_UI: Array[CharacterDamageResultUI]
 
-var _context: ContextContainer
-#var _player_battle_characters: Array[Character]
+var _context: ContextContainer = ContextContainer.new()
 
 func _ready() -> void:
 	focus_button()
@@ -32,14 +28,6 @@ func Init(p_context_container: ContextContainer) -> void:
 		_heading.text = "Lost"
 	elif(p_context_container._arguments["Battle_Result"] == "Victory"):
 		pass
-
-	#if(main.GetInstance()._character_collection.Size() >= 3):
-		#for i in 3:
-			#_player_battle_characters.append(main.GetInstance()._character_collection.GetCharacter(i))
-	#else:
-		#var characters = main.GetInstance()._character_collection.GetAllCharacters()
-		#for i in characters:
-			#_player_battle_characters.append(i)
 	
 	var total_damage_dealt = 0
 	for character_ID in _context._player_battle_characters.size():
@@ -47,11 +35,11 @@ func Init(p_context_container: ContextContainer) -> void:
 		total_damage_dealt += _context._arguments["character_dmg_" + str(character_ID)]
 	
 	for character_ID in _context._player_battle_characters.size():
-		_character_repr[character_ID].SetName(_context._player_battle_characters[character_ID]._name)
-		_character_repr[character_ID].SetTexture(main.GetInstance()._character_collection.GetCharacterTexture(_context._player_battle_characters[character_ID]._role))
+		_character_result_UI[character_ID].SetName(_context._player_battle_characters[character_ID]._name)
+		_character_result_UI[character_ID].SetTexture(main.GetInstance()._character_collection.GetCharacterTexture(_context._player_battle_characters[character_ID]._role))
 		print("Setting damage dealt for ", _context._player_battle_characters[character_ID]._name)
-		_character_repr[character_ID].SetDamageDealt(_context._arguments["character_dmg_" + str(character_ID)], total_damage_dealt)
-		_character_repr[character_ID].show()
+		_character_result_UI[character_ID].SetDamageDealt(_context._arguments["character_dmg_" + str(character_ID)], total_damage_dealt)
+		_character_result_UI[character_ID].show()
 
 func focus_button() -> void:
 	if _h_box_container:

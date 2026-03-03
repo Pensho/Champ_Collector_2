@@ -5,7 +5,7 @@
 [ext_resource type="Script" uid="uid://cpeob6aj52f4r" path="res://Scripts/UI/Battle_UI/pre_battle_menu.gd" id="1_i4o5r"]
 [ext_resource type="Texture2D" uid="uid://becfm8860q605" path="res://Assets/Champ_Collector/UI/Pre_Battle_Screen/Character_Slot_Frame_1.png" id="3_bs66k"]
 
-[node name="PreBattleMenu" type="Control" node_paths=PackedStringArray("_chosen_char_texture", "_available_char_texture")]
+[node name="PreBattleMenu" type="Control" node_paths=PackedStringArray("_chosen_char_texture", "_available_char_texture", "_difficulty_option")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -15,6 +15,7 @@ grow_vertical = 2
 script = ExtResource("1_i4o5r")
 _chosen_char_texture = [NodePath("MarginContainer/VBoxContainer/Chosen_Characters/Chosen_Char_1/TextureRect"), NodePath("MarginContainer/VBoxContainer/Chosen_Characters/Chosen_Char_2/TextureRect"), NodePath("MarginContainer/VBoxContainer/Chosen_Characters/Chosen_Char_3/TextureRect")]
 _available_char_texture = [NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1/Available_Char_Slot1/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1/TextureRect26/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1/TextureRect27/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1/TextureRect28/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1/TextureRect29/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1/TextureRect30/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1/TextureRect31/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1/TextureRect32/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1/TextureRect33/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2/TextureRect25/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2/TextureRect26/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2/TextureRect27/Add_Char/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2/TextureRect28/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2/TextureRect29/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2/TextureRect30/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2/TextureRect31/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2/TextureRect32/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2/TextureRect33/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3/TextureRect17/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3/TextureRect18/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3/TextureRect19/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3/TextureRect20/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3/TextureRect21/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3/TextureRect22/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3/TextureRect23/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3/TextureRect24/TextureRect"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3/TextureRect25/TextureRect")]
+_difficulty_option = NodePath("OptionButton")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 0
@@ -734,6 +735,23 @@ theme = ExtResource("1_fbx8u")
 theme_override_constants/outline_size = 5
 text = "Exit
 "
+
+[node name="OptionButton" type="OptionButton" parent="."]
+custom_minimum_size = Vector2(200, 50)
+layout_mode = 0
+offset_left = 1014.0
+offset_top = 214.0
+offset_right = 1214.0
+offset_bottom = 264.0
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme = ExtResource("1_fbx8u")
+theme_override_colors/font_color = Color(0.73300546, 0.7330054, 0.7330054, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.29586652, 0.2958665, 0.2958665, 1)
+theme_override_colors/font_hover_color = Color(0.5649615, 0.56496155, 0.5649626, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
 
 [connection signal="button_up" from="MarginContainer/VBoxContainer/Chosen_Characters/Chosen_Char_1/Remove_Char_1" to="." method="_on_remove_char_button_up" binds= [0]]
 [connection signal="button_up" from="MarginContainer/VBoxContainer/Chosen_Characters/Chosen_Char_2/Remove_Char_2" to="." method="_on_remove_char_button_up" binds= [1]]

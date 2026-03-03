@@ -7,6 +7,7 @@ const CHARACTER_CHOSEN_COLOR: Color = Color(0.1, 0.1, 0.1)
 
 @export var _chosen_char_texture: Array[TextureRect]
 @export var _available_char_texture: Array[TextureRect]
+@export var _difficulty_option: OptionButton
 
 var _chosen_characters: Dictionary[int, Character]
 var _character_collection: Array[Character]
@@ -20,6 +21,10 @@ func Init(p_context_container: ContextContainer) -> void:
 		print("There is no static context to infer what battle has been chosen.")
 		return
 	_self_context = p_context_container
+	
+	for i in range(1, 21):
+		_difficulty_option.add_item("Difficulty " + str(i), i - 1)
+	_difficulty_option.select(0)
 	
 	_character_collection = main.GetInstance()._character_collection.GetAllCharacters().values()
 	var collected_types := main.GetInstance()._character_collection.GetCollectedTypes()
@@ -81,6 +86,7 @@ func _on_start_button_up() -> void:
 		print("Trying to start a battle without any selected characters.")
 		return
 	
+	_self_context._arguments["Difficulty"] = _difficulty_option.get_selected_id() + 1
 	_self_context._scene = "res://Scenes/battle.tscn"
 	_self_context._player_battle_characters = _chosen_characters.values()
 	
