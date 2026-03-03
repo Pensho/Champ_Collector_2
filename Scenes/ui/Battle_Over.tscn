@@ -5,12 +5,13 @@
 [ext_resource type="Texture2D" uid="uid://dx1p1jvdh8xjm" path="res://Assets/Champ_Collector/UI/Victory_Screen/Victory_3.jpg" id="2_qbyvt"]
 [ext_resource type="PackedScene" uid="uid://d230va33ir4c1" path="res://Scenes/ui/Post_Battle_Menu/Character_Damage_Result.tscn" id="4_m6xdf"]
 
-[node name="BattleOver" type="Control"]
+[node name="BattleOver" type="Control" node_paths=PackedStringArray("_character_result_UI")]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 1280.0
 offset_bottom = 720.0
 script = ExtResource("1_admv5")
+_character_result_UI = [NodePath("MarginContainer/VBoxContainer/Char_1/CharacterDamageResult"), NodePath("MarginContainer/VBoxContainer/Char_2/CharacterDamageResult"), NodePath("MarginContainer/VBoxContainer/Char_3/CharacterDamageResult")]
 
 [node name="TextureRect_Background" type="TextureRect" parent="."]
 layout_mode = 0
@@ -78,20 +79,20 @@ focus_previous = NodePath("../Button_Edit_Team")
 theme = ExtResource("1_euu8f")
 text = "End"
 
-[node name="Character_repr_1" type="Node2D" parent="MarginContainer/VBoxContainer"]
-position = Vector2(362, 218)
+[node name="Char_1" type="Node2D" parent="MarginContainer/VBoxContainer"]
+position = Vector2(353, 221)
 
-[node name="CharacterDamageResult" parent="MarginContainer/VBoxContainer/Character_repr_1" instance=ExtResource("4_m6xdf")]
+[node name="CharacterDamageResult" parent="MarginContainer/VBoxContainer/Char_1" instance=ExtResource("4_m6xdf")]
 
-[node name="Character_repr_2" type="Node2D" parent="MarginContainer/VBoxContainer"]
-position = Vector2(559, 219)
+[node name="Char_2" type="Node2D" parent="MarginContainer/VBoxContainer"]
+position = Vector2(552, 221)
 
-[node name="CharacterDamageResult" parent="MarginContainer/VBoxContainer/Character_repr_2" instance=ExtResource("4_m6xdf")]
+[node name="CharacterDamageResult" parent="MarginContainer/VBoxContainer/Char_2" instance=ExtResource("4_m6xdf")]
 
-[node name="Character_repr_3" type="Node2D" parent="MarginContainer/VBoxContainer"]
-position = Vector2(748, 220)
+[node name="Char_3" type="Node2D" parent="MarginContainer/VBoxContainer"]
+position = Vector2(764, 220)
 
-[node name="CharacterDamageResult" parent="MarginContainer/VBoxContainer/Character_repr_3" instance=ExtResource("4_m6xdf")]
+[node name="CharacterDamageResult" parent="MarginContainer/VBoxContainer/Char_3" instance=ExtResource("4_m6xdf")]
 
 [connection signal="button_up" from="MarginContainer/VBoxContainer/HBoxContainer/Button_Replay" to="." method="_on_button_replay_button_up"]
 [connection signal="button_up" from="MarginContainer/VBoxContainer/HBoxContainer/Button_Edit_Team" to="." method="_on_button_edit_team_button_up"]
