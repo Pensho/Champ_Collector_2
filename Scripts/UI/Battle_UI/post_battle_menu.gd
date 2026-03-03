@@ -27,17 +27,15 @@ func Init(p_context_container: ContextContainer) -> void:
 		_texture_rect_background.size.y = 720
 		_heading.text = "Lost"
 	elif(p_context_container._arguments["Battle_Result"] == "Victory"):
-		pass
+		main.GetInstance()._progress.MarkDifficultyCompleted(_context._static_context.resource_path, _context._arguments["Difficulty"])
 	
 	var total_damage_dealt = 0
 	for character_ID in _context._player_battle_characters.size():
-		print(_context._player_battle_characters[character_ID]._name, " dealt ", _context._arguments["character_dmg_" + str(character_ID)], " damage this combat.")
 		total_damage_dealt += _context._arguments["character_dmg_" + str(character_ID)]
 	
 	for character_ID in _context._player_battle_characters.size():
 		_character_result_UI[character_ID].SetName(_context._player_battle_characters[character_ID]._name)
 		_character_result_UI[character_ID].SetTexture(main.GetInstance()._character_collection.GetCharacterTexture(_context._player_battle_characters[character_ID]._role))
-		print("Setting damage dealt for ", _context._player_battle_characters[character_ID]._name)
 		_character_result_UI[character_ID].SetDamageDealt(_context._arguments["character_dmg_" + str(character_ID)], total_damage_dealt)
 		_character_result_UI[character_ID].show()
 

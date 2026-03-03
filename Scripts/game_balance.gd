@@ -25,7 +25,7 @@ const EXPERIENCE_CONSTANT_2: int = 1
 const EXPERIENCE_CONSTANT_3: int = 5
 
 ## Level up
-const LEVEL_UP_POINTS_TO_DISTRIBUTE: int = 25
+const LEVEL_UP_POINTS_TO_DISTRIBUTE: int = 20
 const CHARACTER_ATTRIBUTE_WEIGHT: int = 5
 const BASE_ATTRIBUTE_WEIGHTS: Dictionary[Types.Attribute, int] = {
 	Types.Attribute.Health: 5,
@@ -75,3 +75,4 @@ const TURN_DURATION_SECONDS: float = 2.5
 const NUMBER_OF_TURN_BAR_ZONES: int = 5
 const MAX_STATUS_EFFECTS: int = 8
 const MINIMUM_DMG_PERCENT: float = 0.1
+const MAX_DIFFICULTY: int = 20

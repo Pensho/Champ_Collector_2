@@ -31,6 +31,8 @@ class Main_Instance extends Node:
 	var _current_scene = null
 	var _character_collection: CharacterCollection
 	var _item_collection: ItemCollection
+	var _resources: ResourceHandler
+	var _progress: ProgressHandler
 	
 	func Init() -> void:
 		_current_scene = self
@@ -42,6 +44,9 @@ class Main_Instance extends Node:
 		add_child(_item_collection)
 		var context_container: ContextContainer = ContextContainer.new()
 		
+		_resources = ResourceHandler.new()
+		_progress = ProgressHandler.new()
+		
 		_character_collection.Add(KNIGHT.duplicate(true))
 		_character_collection.Add(THIEF.duplicate(true))
 		_character_collection.Add(BAR_BRAWLER.duplicate(true))
@@ -50,36 +55,6 @@ class Main_Instance extends Node:
 		_character_collection.Add(CHRONOPHAGE.duplicate(true))
 		#_character_collection.Add(BLOODMAGE.duplicate(true))
 		#_character_collection.Add(TIDAL_CORSAIR.duplicate(true))
-		
-		#var weapon: EquipmentPreset = WEAPON_BASIC_SPEAR.duplicate(true)
-		#weapon.Setup()
-		#_item_collection.AddPreset(weapon)
-		#weapon = WEAPON_BASIC_SPEAR.duplicate(true)
-		#weapon.Setup()
-		#_item_collection.AddPreset(weapon)
-		#weapon = WEAPON_BASIC_SPEAR.duplicate(true)
-		#weapon.Setup()
-		#_item_collection.AddPreset(weapon)
-		#
-		#var boots: EquipmentPreset = RED_BOOTS.duplicate(true)
-		#boots.Setup()
-		#_item_collection.AddPreset(boots)
-		#boots = RED_BOOTS.duplicate(true)
-		#boots.Setup()
-		#_item_collection.AddPreset(boots)
-		##_character_collection.GetCharacter(0).EquipItem(_item_collection.TakeEquipment(0))
-		#
-		#var shield: EquipmentPreset = SHIELD_BASIC.duplicate(true)
-		#shield.Setup()
-		#_item_collection.AddPreset(shield)
-		#shield = SHIELD_BASIC.duplicate(true)
-		#shield.Setup()
-		#_item_collection.AddPreset(shield)
-		#
-		#_character_collection.LoadTextures()
-		#_item_collection.LoadTextures()
-		
-		#print(LootManager.RollRarityForItem(523))
 		
 		context_container._scene = "res://Scenes/ui/MainMenu.tscn"
 		change_scene(context_container)

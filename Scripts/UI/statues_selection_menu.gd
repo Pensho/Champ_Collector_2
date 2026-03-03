@@ -16,7 +16,6 @@ func _on_weapon_button_up() -> void:
 	context_container._previous_scene = "res://Scenes/Hubs/Statue_Selection/Statue_Selection.tscn"
 	context_container._scene = "res://Scenes/ui/Pre_Battle_Menu.tscn"
 	context_container._arguments["Boss_Scale"] = 1.4
-	context_container._arguments["Difficulty"] = 1
 	main.GetInstance().change_scene(context_container)
 
 func _on_shield_button_up() -> void:
@@ -25,5 +24,4 @@ func _on_shield_button_up() -> void:
 	context_container._previous_scene = "res://Scenes/Hubs/Statue_Selection/Statue_Selection.tscn"
 	context_container._scene = "res://Scenes/ui/Pre_Battle_Menu.tscn"
 	context_container._arguments["Boss_Scale"] = 1.4
-	context_container._arguments["Difficulty"] = 1
 	main.GetInstance().change_scene(context_container)

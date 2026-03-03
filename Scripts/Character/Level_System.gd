@@ -38,13 +38,13 @@ static func LevelUpReward(p_character: Character) -> void:
 	for attribute in new_attributes.keys():
 		print(attribute, " was ", new_attributes[attribute])
 	
-	print("\nStarting distribution of points for level up.\n")
+	print("\nStarting distribution of ", Game_Balance.LEVEL_UP_POINTS_TO_DISTRIBUTE + floor(pow(p_character._level, 1.1)), " points for level up.\n")
 	
 	# Each level should increase health a bit.
 	new_attributes[Types.Attribute.Health] += 2
 	
 	var random_roll: int = 0
-	for i in range(pow(Game_Balance.LEVEL_UP_POINTS_TO_DISTRIBUTE, 1.1)):
+	for i in range(Game_Balance.LEVEL_UP_POINTS_TO_DISTRIBUTE + floor(pow(p_character._level, 1.1))):
 		random_roll = randi_range(0, total_weight)
 		
 		var chosen_attribute: Types.Attribute

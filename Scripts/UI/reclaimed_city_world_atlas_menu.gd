@@ -22,6 +22,4 @@ func _on_experience_quests_button_up() -> void:
 	context_container._static_context = load("uid://dstgijwmiqvo1") # Battle Variant, Battle_Context
 	context_container._previous_scene = "res://Scenes/Hubs/Reclaimed_City_World_Atlas/Reclaimed_City_World_Atlas.tscn"
 	context_container._scene = "res://Scenes/ui/Pre_Battle_Menu.tscn"
-	var difficulty: int = 1
-	context_container._arguments["Difficulty"] = difficulty
 	main.GetInstance().change_scene(context_container)

@@ -22,8 +22,8 @@ func Init(p_context_container: ContextContainer) -> void:
 		return
 	_self_context = p_context_container
 	
-	for i in range(1, 21):
-		_difficulty_option.add_item("Difficulty " + str(i), i - 1)
+	for i in range(1, main.GetInstance()._progress.GetCurrentEncounterDifficulty(_self_context._static_context.resource_path) + 1):
+		_difficulty_option.add_item("Difficulty " + str(i), i)
 	_difficulty_option.select(0)
 	
 	_character_collection = main.GetInstance()._character_collection.GetAllCharacters().values()
@@ -86,7 +86,7 @@ func _on_start_button_up() -> void:
 		print("Trying to start a battle without any selected characters.")
 		return
 	
-	_self_context._arguments["Difficulty"] = _difficulty_option.get_selected_id() + 1
+	_self_context._arguments["Difficulty"] = _difficulty_option.get_selected_id()
 	_self_context._scene = "res://Scenes/battle.tscn"
 	_self_context._player_battle_characters = _chosen_characters.values()
 	
