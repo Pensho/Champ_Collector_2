@@ -24,7 +24,7 @@ func Init(_p_context_container: ContextContainer) -> void:
 	
 	for i in _available_item_slots.size():
 		_available_item_slots[i]._ID = i
-		_available_item_slots[i].button.button_up.connect(AvailableItemSlotButton.bind(i))
+		_available_item_slots[i].ConnectButton(AvailableItemSlotButton)
 		if(i < _character_collection_size):
 			_available_item_slots[i].SetHeldObjectTexture(main.GetInstance()._character_collection.GetCharacterTexture(_character_collection[i]._role))
 			_available_item_slots[i].level.text = str(_character_collection[i]._level)
@@ -32,7 +32,7 @@ func Init(_p_context_container: ContextContainer) -> void:
 	_item_slots_equiped.append_array(GetMenuItemSlotChildren(v_box_container_2))
 	for i in _item_slots_equiped.size():
 		_item_slots_equiped[i]._ID = i
-		_item_slots_equiped[i].button.button_up.connect(EquipedItemSlotButton.bind(i))
+		_item_slots_equiped[i].ConnectButton(EquipedItemSlotButton)
 
 func GetMenuItemSlotChildren(p_start_node: Node) -> Array[MenuItemSlot]:
 	var result: Array[MenuItemSlot] = []

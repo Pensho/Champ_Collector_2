@@ -13,6 +13,9 @@ func ConnectButton(p_callback: Callable) -> void:
 func SetHeldObjectTexture(p_texture: Texture) -> void:
 	texture_rect.texture = p_texture
 
+func SetHeldObjectModulate(p_color: Color) -> void:
+	self.modulate = p_color
+
 func SetTextureOutline(p_rarity: Types.Rarity) -> void:
 	var col: Color = Color(0.0, 0.0, 0.0, 0.0)
 	match p_rarity:

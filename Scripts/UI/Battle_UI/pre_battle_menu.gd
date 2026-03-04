@@ -2,17 +2,20 @@ extends Control
 
 const Types = preload("res://Scripts/common_enums.gd")
 
+@onready var available_characters: VBoxContainer = $MarginContainer/VBoxContainer/HBoxContainer/Available_Characters
+
 const NR_OF_CHARACTERS_IN_BATTLE: int = 3
 const CHARACTER_CHOSEN_COLOR: Color = Color(0.1, 0.1, 0.1)
+const CHARACTER_AVAILABLE_COLOR: Color = Color(1,1,1)
 
-@export var _chosen_char_texture: Array[TextureRect]
-@export var _available_char_texture: Array[TextureRect]
 @export var _difficulty_option: OptionButton
+@export var _chosen_character_slots: Array[MenuItemSlot]
 
 var _chosen_characters: Dictionary[int, Character]
 var _character_collection: Array[Character]
-var _used_character_textures: Dictionary[Types.Role, Texture]
 var _available_to_chosen_IDs: Dictionary[int, int] = {0: -1, 1: -1, 2: -1}
+var _available_character_slots: Array[MenuItemSlot]
+var _character_collection_size: int
 
 var _self_context: ContextContainer
 
@@ -22,59 +25,24 @@ func Init(p_context_container: ContextContainer) -> void:
 		return
 	_self_context = p_context_container
 	
+	_available_character_slots.append_array(GetMenuItemSlotChildren(available_characters))
+	_character_collection_size = main.GetInstance()._character_collection.Size()
+	_character_collection = main.GetInstance()._character_collection.GetAllCharacters().values()
+	
+	for i in _chosen_character_slots.size():
+		_chosen_character_slots[i]._ID = i
+		_chosen_character_slots[i].ConnectButton(_on_remove_char_button_up)
+	
+	for i in _available_character_slots.size():
+		_available_character_slots[i]._ID = i
+		_available_character_slots[i].ConnectButton(_on_add_char_button_up)
+		if(i < _character_collection_size):
+			_available_character_slots[i].SetHeldObjectTexture(main.GetInstance()._character_collection.GetCharacterTexture(_character_collection[i]._role))
+			_available_character_slots[i].level.text = str(_character_collection[i]._level)
+	
 	for i in range(1, main.GetInstance()._progress.GetCurrentEncounterDifficulty(_self_context._static_context.resource_path) + 1):
 		_difficulty_option.add_item("Difficulty " + str(i), i)
 	_difficulty_option.select(0)
-	
-	_character_collection = main.GetInstance()._character_collection.GetAllCharacters().values()
-	var collected_types := main.GetInstance()._character_collection.GetCollectedTypes()
-	for type in collected_types.keys():
-		_used_character_textures[type] = load(collected_types[type])
-	SetTextures()
-
-func SetTextures() -> void:
-	for slot in _available_char_texture.size():
-		if (_character_collection.size() <= slot):
-			return
-		match _character_collection[slot]._role:
-			Types.Role.Emissary:
-				_available_char_texture[slot].texture = _used_character_textures[Types.Role.Emissary]
-			Types.Role.Cleric:
-				_available_char_texture[slot].texture = _used_character_textures[Types.Role.Cleric]
-			Types.Role.Thief:
-				_available_char_texture[slot].texture = _used_character_textures[Types.Role.Thief]
-			Types.Role.Knight:
-				_available_char_texture[slot].texture = _used_character_textures[Types.Role.Knight]
-			Types.Role.Alchemist:
-				_available_char_texture[slot].texture = _used_character_textures[Types.Role.Alchemist]
-			Types.Role.Sorcerer:
-				_available_char_texture[slot].texture = _used_character_textures[Types.Role.Sorcerer]
-			Types.Role.Scholar:
-				_available_char_texture[slot].texture = _used_character_textures[Types.Role.Scholar]
-			Types.Role.Diviner:
-				_available_char_texture[slot].texture = _used_character_textures[Types.Role.Diviner]
-			Types.Role.Appraiser:
-				_available_char_texture[slot].texture = _used_character_textures[Types.Role.Appraiser]
-			Types.Role.Tactician:
-				_available_char_texture[slot].texture = _used_character_textures[Types.Role.Tactician]
-			Types.Role.Symbiote:
-				_available_char_texture[slot].texture = _used_character_textures[Types.Role.Symbiote]
-			Types.Role.Jester:
-				_available_char_texture[slot].texture = _used_character_textures[Types.Role.Jester]
-			Types.Role.Cultist:
-				_available_char_texture[slot].texture = _used_character_textures[Types.Role.Cultist]
-			Types.Role.Bar_Brawler:
-				_available_char_texture[slot].texture = _used_character_textures[Types.Role.Bar_Brawler]
-			Types.Role.Bloodmage:
-				_available_char_texture[slot].texture = _used_character_textures[Types.Role.Bloodmage]
-			Types.Role.Herald_of_the_loom:
-				_available_char_texture[slot].texture = _used_character_textures[Types.Role.Herald_of_the_loom]
-			Types.Role.Chronophage:
-				_available_char_texture[slot].texture = _used_character_textures[Types.Role.Chronophage]
-			Types.Role.Tidal_Corsair:
-				_available_char_texture[slot].texture = _used_character_textures[Types.Role.Tidal_Corsair]
-			_:
-				print("pre_battle_menu.gd/SetTextures() Unspecified character role!")
 
 func _on_exit_button_up() -> void:
 	var context_container: ContextContainer = ContextContainer.new()
@@ -93,11 +61,21 @@ func _on_start_button_up() -> void:
 	main.GetInstance().change_scene(_self_context)
 	hide()
 
+func GetMenuItemSlotChildren(p_start_node: Node) -> Array[MenuItemSlot]:
+	var result: Array[MenuItemSlot] = []
+	for child in p_start_node.get_children():
+		if child is MenuItemSlot:
+			result.append(child)
+		result += GetMenuItemSlotChildren(child)
+	return result
+
 func _on_remove_char_button_up(p_char_slot: int) -> void:
 	if (_chosen_characters.has(p_char_slot)):
 		_chosen_characters.erase(p_char_slot)
-		_chosen_char_texture[p_char_slot].texture = null
-		_available_char_texture[_available_to_chosen_IDs[p_char_slot]].self_modulate = Color(1,1,1)
+		_chosen_character_slots[p_char_slot].SetHeldObjectTexture(null)
+		print("p_char_slot: ", p_char_slot)
+		print("_available_to_chosen_IDs[p_char_slot]: ", _available_to_chosen_IDs[p_char_slot])
+		_available_character_slots[_available_to_chosen_IDs[p_char_slot]].SetHeldObjectModulate(CHARACTER_AVAILABLE_COLOR)
 	else:
 		print("trying to remove a character from an empty slot nr: ", p_char_slot)
 
@@ -112,10 +90,14 @@ func _on_add_char_button_up(p_char_slot: int) -> void:
 		if (_chosen_characters[i]._instanceID == _character_collection[p_char_slot]._instanceID):
 			print("Trying to add a character already in the chosen roster.")
 			return
+		if (_chosen_characters[i]._name == _character_collection[p_char_slot]._name):
+			print("Trying to add two of the same type of character.")
+			return
 	for i in NR_OF_CHARACTERS_IN_BATTLE:
 		if (!_chosen_characters.has(i)):
 			_chosen_characters[i] = _character_collection[p_char_slot]
-			_chosen_char_texture[i].texture = _available_char_texture[p_char_slot].texture
-			_available_char_texture[p_char_slot].self_modulate = CHARACTER_CHOSEN_COLOR
+			_chosen_character_slots[i].SetHeldObjectTexture(_available_character_slots[p_char_slot].texture_rect.texture)
+			print("Time to darken _available_character_slots for slot nr: ", p_char_slot, " to color: ", CHARACTER_CHOSEN_COLOR)
+			_available_character_slots[p_char_slot].SetHeldObjectModulate(CHARACTER_CHOSEN_COLOR)
 			_available_to_chosen_IDs[i] = p_char_slot
 			return
