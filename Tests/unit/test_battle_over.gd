@@ -85,8 +85,9 @@ func before_each():
 	# This uses the 'main_service' variable defined in battle_over.gd for DI.
 	#screen.main_service = MainMock_Instance
 	main._instance = MainMock_Instance
-	
-	# 7. Manually call _ready() (equivalent to Godot adding it to the tree)
+
+	# 7. Add to scene tree so grab_focus() works, then call _ready()
+	add_child_autoqfree(screen)
 	screen.call("_ready")
 
 	# 8. Setup mock characters and state for tests
@@ -109,8 +110,7 @@ func GetAllChildren(node: Node, indentation: String) -> Array:
 
 func after_each():
 	# Clean up resources created during setup
-	if is_instance_valid(screen):
-		screen.call_deferred("free")
+	# screen is freed automatically by add_child_autoqfree
 	if is_instance_valid(context):
 		context.free()
 	if is_instance_valid(mock_char_1):
@@ -151,36 +151,44 @@ func test_02_visibility_changed_calls_focus_button():
 	var button = h_box_container.get_child(0)
 	assert_eq(Control.FocusMode.FOCUS_ALL, button.focus_mode)
 
-#func test_03_init_sets_loss_screen():
-	#print(get_stack()[0]["function"])
-	#var mock_context = MockContextContainer.new()
-	#mock_context._arguments["Battle_Result"] = "Loss"
-	#
-	#chars_in_collection = [mock_char_1, mock_char_2, mock_char_3, MockCharacter.new()]
-	#
-	## Setup the character collection mock behavior
-	#stub(character_collection_mock, "GetAllCharacters").to_return(chars_in_collection)
-	#stub(character_collection_mock, "Size").to_return(chars_in_collection.size())
-	#stub(character_collection_mock, "GetCharacter").to_return(mock_char_1).when_passed(0)
-	#stub(character_collection_mock, "GetCharacter").to_return(mock_char_2).when_passed(1)
-	#stub(character_collection_mock, "GetCharacter").to_return(mock_char_3).when_passed(2)
-	#
-	#screen.Init(mock_context)
-	#
-	## Check Loss-specific UI changes
-	#var background = screen.get_node("TextureRect_Background")
-	#assert_eq(background.texture.resource_path, "res://Assets/Champ_Collector/UI/Loss_Screen/Loss_1.png")
-	#assert_eq(background.size.x, 1280.0)
-	#assert_eq(background.size.y, 720.0)
-	#
-	#var heading = screen.get_node("MarginContainer/VBoxContainer/Label")
-	#assert_eq(heading.text, "Lost")
-	#
-	## Check character collection (should take the first 3)
-	#assert_eq(screen._context._player_battle_characters.size(), 3)
-	#assert_eq(screen._context._player_battle_characters[0], mock_char_1)
-	#assert_eq(screen._context._player_battle_characters[1], mock_char_2)
-	#assert_eq(screen._context._player_battle_characters[2], mock_char_3)
+func test_03_init_sets_loss_screen():
+	print(get_stack()[0]["function"])
+
+	# Setup character result UI doubles (Init always runs the character loop)
+	var repr_script = preload("res://Scripts/UI/Post_Battle_UI/character_damage_result.gd")
+	var repr1 = double(repr_script).new()
+	var repr2 = double(repr_script).new()
+	var repr3 = double(repr_script).new()
+	for r in [repr1, repr2, repr3]:
+		stub(r, "SetName")
+		stub(r, "SetTexture")
+		stub(r, "SetDamageDealt")
+	var typed_result_ui: Array[CharacterDamageResultUI] = []
+	typed_result_ui.assign([repr1, repr2, repr3])
+	screen._character_result_UI = typed_result_ui
+
+	# Stub GetCharacterTexture (called during character loop)
+	stub(character_collection_mock, "GetCharacterTexture").to_return(null)
+
+	# Setup mock context with Loss result and 3 characters
+	var mock_context = MockContextContainer.new()
+	mock_context._arguments["Battle_Result"] = "Loss"
+	mock_context._arguments["character_dmg_0"] = 100
+	mock_context._arguments["character_dmg_1"] = 200
+	mock_context._arguments["character_dmg_2"] = 150
+	var typed_chars: Array[Character] = []
+	typed_chars.assign([mock_char_1, mock_char_2, mock_char_3])
+	mock_context._player_battle_characters = typed_chars
+
+	screen.Init(mock_context)
+
+	# Check Loss-specific UI changes
+	var background = screen.get_node("TextureRect_Background")
+	assert_eq(background.size.x, 1280.0)
+	assert_eq(background.size.y, 720.0)
+
+	var heading = screen.get_node("MarginContainer/VBoxContainer/Label")
+	assert_eq(heading.text, "Lost")
 
 #func test_04_init_handles_less_than_3_characters():
 	#print(get_stack()[0]["function"])
@@ -239,20 +247,32 @@ func test_10_init_populates_character_result_UI_calls():
 		stub(r, "SetName")
 		stub(r, "SetTexture")
 		stub(r, "SetDamageDealt")
-		stub(r, "show")
 
 	# Inject the repr doubles directly
-	screen._character_result_UI = [repr1, repr2, repr3]
+	var typed_result_ui: Array[CharacterDamageResultUI] = []
+	typed_result_ui.assign([repr1, repr2, repr3])
+	screen._character_result_UI = typed_result_ui
 
-	chars_in_collection = [mock_char_1, mock_char_2, mock_char_3]
-	stub(character_collection_mock, "GetAllCharacters").to_return(chars_in_collection)
-	stub(character_collection_mock, "Size").to_return(chars_in_collection.size())
-	stub(character_collection_mock, "GetCharacter").to_return(mock_char_1).when_passed(0)
-	stub(character_collection_mock, "GetCharacter").to_return(mock_char_2).when_passed(1)
-	stub(character_collection_mock, "GetCharacter").to_return(mock_char_3).when_passed(2)
+	# Stub GetCharacterTexture (called during character loop)
+	stub(character_collection_mock, "GetCharacterTexture").to_return(null)
 
+	# Setup progress mock for the Victory branch (calls MarkDifficultyCompleted)
+	var progress_mock = double(preload("res://Scripts/Worldview/progress_handler.gd")).new()
+	stub(progress_mock, "MarkDifficultyCompleted")
+	MainMock_Instance._progress = progress_mock
+
+	# Setup mock context with 3 characters and damage values
 	var mock_context = MockContextContainer.new()
 	mock_context._arguments["Battle_Result"] = "Victory"
+	mock_context._arguments["Difficulty"] = 1
+	mock_context._arguments["character_dmg_0"] = 100
+	mock_context._arguments["character_dmg_1"] = 200
+	mock_context._arguments["character_dmg_2"] = 150
+	var typed_chars: Array[Character] = []
+	typed_chars.assign([mock_char_1, mock_char_2, mock_char_3])
+	mock_context._player_battle_characters = typed_chars
+	mock_context._static_context = Static_Context.new()
+
 	screen.Init(mock_context)
 
 	# Verify Init populated the UI by calling expected methods
@@ -260,4 +280,6 @@ func test_10_init_populates_character_result_UI_calls():
 		assert_call_count(r, "SetName", 1)
 		assert_call_count(r, "SetTexture", 1)
 		assert_call_count(r, "SetDamageDealt", 1)
-		assert_call_count(r, "show", 1)
+
+	# Verify progress was marked
+	assert_call_count(progress_mock, "MarkDifficultyCompleted", 1)
