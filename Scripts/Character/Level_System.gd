@@ -1,7 +1,6 @@
 class_name LevelSystem
 extends Node
 
-const Types = preload("res://Scripts/common_enums.gd")
 
 static func LevelUpCriteriaMet(p_character: Character) -> bool:
 	var xp_requirement: float = pow(

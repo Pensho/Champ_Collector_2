@@ -1,7 +1,5 @@
 extends Control
 
-const Types = preload("res://Scripts/common_enums.gd")
-
 @onready var available_characters: VBoxContainer = $MarginContainer/VBoxContainer/HBoxContainer/Available_Characters
 
 const NR_OF_CHARACTERS_IN_BATTLE: int = 3

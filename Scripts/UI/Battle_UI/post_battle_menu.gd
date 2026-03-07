@@ -1,7 +1,5 @@
 extends Control
 
-const Types = preload("uid://bkpa0hv70oydy")
-
 @onready var _h_box_container: HBoxContainer = $MarginContainer/VBoxContainer/HBoxContainer
 @onready var _heading: Label = $MarginContainer/VBoxContainer/Label
 @onready var _texture_rect_background: TextureRect = $TextureRect_Background

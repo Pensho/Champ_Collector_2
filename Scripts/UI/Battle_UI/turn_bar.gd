@@ -3,7 +3,6 @@ class_name TurnBar extends Panel
 const TURN_BAR_BUMP_GOOD = preload("uid://7aqjlq70jbhi")
 const TURN_BAR_LAVA_ZONE = preload("uid://bognvuid7w2ti")
 
-const Types = preload("res://Scripts/common_enums.gd")
 const DEFAULT_THEME = preload("uid://c8irweh6md2jy")
 const GRAYSCALE = preload("uid://ia57lns0336p")
 const NO_CHARACTERS_TURN: int = -1

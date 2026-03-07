@@ -1,7 +1,5 @@
 class_name MenuItemSlot extends Control
 
-const Types = preload("uid://bkpa0hv70oydy")
-
 @onready var texture_rect: TextureRect = $TextureRect/TextureRect
 @onready var button: Button = $TextureRect/Button
 @export var _ID: int = -1

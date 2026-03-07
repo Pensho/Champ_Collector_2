@@ -1,6 +1,5 @@
 class_name InspectCollectionMenu extends Control
 
-const Types = preload("res://Scripts/common_enums.gd")
 const GAMEBALANCE = preload("res://Scripts/game_balance.gd")
 
 @export var _attribute_labels: Dictionary[Types.Attribute, Label]

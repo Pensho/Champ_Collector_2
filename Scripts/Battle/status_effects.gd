@@ -1,8 +1,6 @@
 extends Node
 class_name StatusEffects
 
-const Types = preload("res://Scripts/common_enums.gd")
-
 const BUFF_ICONS: Dictionary[Types.Buff_Type, String] = {
 	Types.Buff_Type.Invalid: "N/A",
 }

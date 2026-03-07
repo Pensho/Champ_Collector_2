@@ -1,6 +1,5 @@
 class_name ItemCollection extends Node
 
-const Types = preload("res://Scripts/common_enums.gd")
 const GEARDATA = preload("res://Scripts/Gear/equipment_preset.gd")
 
 var _collected_types: Dictionary[Types.Slot, String]

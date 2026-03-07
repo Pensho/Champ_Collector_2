@@ -1,6 +1,5 @@
 class_name Skill extends Resource
 
-const Types = preload("res://Scripts/common_enums.gd")
 const Statuses = preload("uid://bp3pvvar4437")
 
 @export var name: String = "New Skill"

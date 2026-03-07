@@ -1,8 +1,6 @@
 class_name GameBalance
 extends Node
 
-const Types = preload("res://Scripts/common_enums.gd")
-
 ## Character
 const CHARACTER_BASE_CRIT_CH: int = 5
 const CHARACTER_BASE_CRIT_DMG: int = 150

@@ -1,7 +1,5 @@
 class_name LootManager extends Node
 
-const Types = preload("uid://bkpa0hv70oydy")
-
 enum LootType
 {
 	Experience,

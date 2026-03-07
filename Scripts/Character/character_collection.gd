@@ -1,7 +1,5 @@
 class_name CharacterCollection extends Node
 
-const Types = preload("res://Scripts/common_enums.gd")
-
 var _characters: Dictionary[int, Character] = {}
 var _current_max_amount: int = Game_Balance.COLLECTION_START_ROSTER_SIZE
 var _collected_types: Dictionary[Types.Role, String]

@@ -1,8 +1,6 @@
 class_name Zone
 extends Node
 
-const Types = preload("uid://bkpa0hv70oydy")
-
 var _type: Types.Skill_Type
 var _duration: int = -1
 var _owner_ID: int = -1

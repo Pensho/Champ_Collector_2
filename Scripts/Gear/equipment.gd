@@ -1,7 +1,5 @@
 class_name Equipment extends Node
 
-const Types = preload("res://Scripts/common_enums.gd")
-
 func InstantiateNew(preset: EquipmentPreset, instanceID: int) -> void:
 	_instanceID = instanceID
 	

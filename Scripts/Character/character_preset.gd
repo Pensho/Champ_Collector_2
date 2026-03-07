@@ -1,7 +1,5 @@
 class_name CharacterPreset extends Resource
 
-const Types = preload("res://Scripts/common_enums.gd")
-
 @warning_ignore_start("unused_private_class_variable")
 
 @export var _name: String

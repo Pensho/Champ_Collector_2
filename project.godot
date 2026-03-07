@@ -21,6 +21,7 @@ config/icon="uid://cxe2lffkbra47"
 
 main="*res://Scripts/main.gd"
 Game_Balance="*res://Scripts/game_balance.gd"
+Types="*res://Scripts/common_enums.gd"
 
 [display]
 
@@ -36,6 +37,15 @@ version_control/autoload_on_startup=true
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/gut/plugin.cfg")
+
+[file_customization]
+
+folder_colors={
+"res://Assets/": "green",
+"res://Data/": "gray",
+"res://Scenes/": "blue",
+"res://Scripts/": "purple"
+}
 
 [rendering]
 

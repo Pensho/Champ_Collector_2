@@ -1,8 +1,5 @@
 class_name Character extends Node
 
-const Types = preload("res://Scripts/common_enums.gd")
-#const StatusEffects = preload("uid://bp3pvvar4437")
-
 func InstantiateNew(preset: CharacterPreset, instanceID: int, characterTrait: CharacterTrait) -> void:
 	_instanceID = instanceID
 	

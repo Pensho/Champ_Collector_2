@@ -1,7 +1,6 @@
 class_name Skills
 extends Node
 
-const Types = preload("res://Scripts/common_enums.gd")
 const ZoneType = preload("uid://bdjrfif0s60v4")
 const Statuses = preload("uid://bp3pvvar4437")
 
