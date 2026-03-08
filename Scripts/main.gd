@@ -9,10 +9,6 @@ const CHRONOPHAGE = preload("uid://wofv42g341ac")
 const BLOODMAGE = preload("uid://7adgp1emx6yk")
 const TIDAL_CORSAIR = preload("uid://bmqvx8opoocu7")
 
-#const SHIELD_BASIC = preload("uid://deri0o1rplmuk")
-#const WEAPON_BASIC_SPEAR = preload("res://Data/Item_Presets/Weapon_Basic_Spear.tres")
-#const RED_BOOTS = preload("uid://c3g7cshxhg0rw")
-
 var _instance: Main_Instance = null
 
 func _ready() -> void:
@@ -33,6 +29,7 @@ class Main_Instance extends Node:
 	var _item_collection: ItemCollection
 	var _resources: ResourceHandler
 	var _progress: ProgressHandler
+	var _save_manager: SaveManager
 	
 	func Init() -> void:
 		_current_scene = self
@@ -46,6 +43,7 @@ class Main_Instance extends Node:
 		
 		_resources = ResourceHandler.new()
 		_progress = ProgressHandler.new()
+		_save_manager = SaveManager.new()
 		
 		_character_collection.Add(KNIGHT.duplicate(true))
 		_character_collection.Add(THIEF.duplicate(true))

@@ -1,6 +1,5 @@
 class_name ProgressHandler extends Node
 
-# 
 var _stage_difficulty: Dictionary[String, int]
 
 func RegisterEncounter(p_encounter_ID: String) -> void:

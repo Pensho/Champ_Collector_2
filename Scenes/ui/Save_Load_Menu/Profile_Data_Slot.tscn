@@ -1,0 +1,44 @@
+[gd_scene load_steps=3 format=3 uid="uid://cr3osdcoith57"]
+
+[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="1_5wvtp"]
+[ext_resource type="Script" uid="uid://cqdt6hg5f837a" path="res://Scripts/UI/profile_data_slot.gd" id="1_w5ruj"]
+
+[node name="ProfileDataSlot" type="Control" node_paths=PackedStringArray("_button", "_label")]
+custom_minimum_size = Vector2(400, 150)
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_w5ruj")
+_button = NodePath("Button")
+_label = NodePath("MarginContainer/VBoxContainer/HBoxContainer/Label")
+
+[node name="Button" type="Button" parent="."]
+custom_minimum_size = Vector2(400, 150)
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_5wvtp")
+text = "Save slot X"

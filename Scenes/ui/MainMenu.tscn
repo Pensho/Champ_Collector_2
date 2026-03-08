@@ -73,14 +73,13 @@ theme_override_constants/outline_size = 5
 theme_override_font_sizes/font_size = 45
 text = "Start Game"
 
-[node name="Button_View_Collection" type="Button" parent="MarginContainer/VBoxContainer/ButtonsVBox"]
-visible = false
+[node name="Button_Save_Load" type="Button" parent="MarginContainer/VBoxContainer/ButtonsVBox"]
 layout_mode = 2
 theme = ExtResource("1_hnwi1")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
 theme_override_font_sizes/font_size = 45
-text = "View Collection"
+text = "Save & Load"
 
 [node name="Button_QuitGame" type="Button" parent="MarginContainer/VBoxContainer/ButtonsVBox"]
 layout_mode = 2
@@ -96,5 +95,5 @@ theme_override_font_sizes/font_size = 45
 text = "Exit"
 
 [connection signal="button_up" from="MarginContainer/VBoxContainer/ButtonsVBox/Button_StartGame" to="." method="_on_start_game_button_pressed"]
-[connection signal="button_up" from="MarginContainer/VBoxContainer/ButtonsVBox/Button_View_Collection" to="." method="_on_button_view_collection_button_up"]
+[connection signal="button_up" from="MarginContainer/VBoxContainer/ButtonsVBox/Button_Save_Load" to="." method="_on_save_load_button_up"]
 [connection signal="button_up" from="MarginContainer/VBoxContainer/ButtonsVBox/Button_QuitGame" to="." method="_on_quit_button_pressed"]

@@ -25,3 +25,8 @@ func focus_button() -> void:
 	if _buttons_v_box:
 		var button: Button = _buttons_v_box.get_child(0)
 		button.grab_focus()
+
+func _on_save_load_button_up() -> void:
+	var context_container: ContextContainer = ContextContainer.new()
+	context_container._scene = "uid://caviahtf8gtm4"
+	main.GetInstance().change_scene(context_container)
