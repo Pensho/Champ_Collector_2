@@ -1,0 +1,3 @@
+disable:
+  - function-argument-name
+  - function-name
