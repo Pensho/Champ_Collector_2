@@ -1,0 +1,133 @@
+[gd_scene load_steps=7 format=3 uid="uid://dhudbbnbn7b3n"]
+
+[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="1_dkyla"]
+[ext_resource type="Script" uid="uid://drj7agsp5lfg4" path="res://Scripts/UI/profile_interact_dialog.gd" id="1_uf0c1"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uf0c1"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4vatj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pmku6"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rcnoy"]
+
+[node name="ProfileInteractDialog" type="Control" node_paths=PackedStringArray("_name_input", "_played_time_label", "_saved_at_label", "_background")]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_uf0c1")
+_name_input = NodePath("ColorRect/MarginContainer/VBoxContainer/LineEdit")
+_played_time_label = NodePath("ColorRect/MarginContainer/VBoxContainer/Label_Played_Time")
+_saved_at_label = NodePath("ColorRect/MarginContainer/VBoxContainer/Label_Saved_At")
+_background = NodePath("ColorRect")
+
+[node name="ColorRect2" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -2000.0
+offset_top = -1000.0
+offset_right = 2000.0
+offset_bottom = 1000.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.21568628)
+
+[node name="Button_Close" type="Button" parent="."]
+custom_minimum_size = Vector2(4000, 2000)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_uf0c1")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_4vatj")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_pmku6")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_rcnoy")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+custom_minimum_size = Vector2(500, 200)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+color = Color(0, 0, 0, 0.5294118)
+
+[node name="MarginContainer" type="MarginContainer" parent="ColorRect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 3
+theme_override_constants/margin_top = 3
+theme_override_constants/margin_right = 3
+theme_override_constants/margin_bottom = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ColorRect/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 25
+
+[node name="LineEdit" type="LineEdit" parent="ColorRect/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+placeholder_text = "Name"
+
+[node name="Label_Played_Time" type="Label" parent="ColorRect/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_dkyla")
+theme_override_font_sizes/font_size = 18
+text = "Played time: "
+
+[node name="Label_Saved_At" type="Label" parent="ColorRect/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_dkyla")
+theme_override_font_sizes/font_size = 18
+text = "Last saved at: "
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 10
+theme_override_constants/separation = 80
+alignment = 1
+
+[node name="Button_Save" type="Button" parent="ColorRect/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_dkyla")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+text = "Save"
+
+[node name="Button_Load" type="Button" parent="ColorRect/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_dkyla")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+text = "Load"
+
+[node name="Button_Cancel" type="Button" parent="ColorRect/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_dkyla")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+text = "Cancel"
+
+[node name="ReferenceRect" type="ReferenceRect" parent="ColorRect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+border_color = Color(1, 1, 1, 1)
+editor_only = false
+
+[connection signal="button_up" from="Button_Close" to="." method="_on_cancel_button_up"]
+[connection signal="text_submitted" from="ColorRect/MarginContainer/VBoxContainer/LineEdit" to="." method="_on_line_edit_text_changed"]
+[connection signal="button_up" from="ColorRect/MarginContainer/VBoxContainer/HBoxContainer/Button_Save" to="." method="_on_save_button_up"]
+[connection signal="button_up" from="ColorRect/MarginContainer/VBoxContainer/HBoxContainer/Button_Load" to="." method="_on_load_button_up"]
+[connection signal="button_up" from="ColorRect/MarginContainer/VBoxContainer/HBoxContainer/Button_Cancel" to="." method="_on_cancel_button_up"]

@@ -14,6 +14,7 @@ config/name="Jonas Spel"
 config/version="0.0.2"
 run/main_scene="uid://knp34r3jmafv"
 config/features=PackedStringArray("4.5", "Mobile")
+run/max_fps=60
 boot_splash/image="uid://cxe2lffkbra47"
 config/icon="uid://cxe2lffkbra47"
 
@@ -46,6 +47,10 @@ folder_colors={
 "res://Scenes/": "blue",
 "res://Scripts/": "purple"
 }
+
+[input_devices]
+
+pointing/emulate_touch_from_mouse=true
 
 [rendering]
 

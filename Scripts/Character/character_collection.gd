@@ -5,15 +5,24 @@ var _current_max_amount: int = Game_Balance.COLLECTION_START_ROSTER_SIZE
 var _collected_types: Dictionary[Types.Role, String]
 var _used_character_textures: Dictionary[Types.Role, Texture]
 
-func Save() -> void:
-	pass
+func _ready() -> void:
+	self.name = self.get_script().get_global_name()
+	add_to_group(SaveManager.GROUP_SAVEABLE)
 
-func Load() -> void:
-	pass
+func Serialize() -> Dictionary:
+	return {"characters": _characters, "max_amount": _current_max_amount}
+
+func Deserialize(p_data: Dictionary) -> void:
+	#_characters.clear()
+	if(p_data.has("max_amount")):
+		_current_max_amount = p_data["max_amount"]
+	LoadTextures()
+	print("Calling Deserialize for CharacterCollection, data:\n", p_data)
 
 func LoadTextures() -> void:
 	for type in _collected_types.keys():
-		_used_character_textures[type] = load(_collected_types[type])
+		if(!_used_character_textures.has(type)):
+			_used_character_textures[type] = load(_collected_types[type])
 
 func GetCharacterTexture(p_character_role: Types.Role) -> Texture:
 	match p_character_role:

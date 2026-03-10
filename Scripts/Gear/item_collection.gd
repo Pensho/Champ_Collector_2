@@ -7,9 +7,22 @@ var _used_item_textures: Dictionary[Types.Slot, Texture]
 var _items: Dictionary[int, Equipment] = {}
 var _highest_ID: int = 0
 
+func _ready() -> void:
+	self.name = self.get_script().get_global_name()
+	add_to_group(SaveManager.GROUP_SAVEABLE)
+
+func Serialize() -> Dictionary:
+	return {"item_test": _items}
+
+func Deserialize(p_data: Dictionary) -> void:
+	#_items.clear()
+	LoadTextures()
+	print("Calling Deserialize for ItemCollection, data:\n", p_data)
+
 func LoadTextures() -> void:
 	for type in _collected_types.keys():
-		_used_item_textures[type] = load(_collected_types[type])
+		if(!_used_item_textures.has(type)):
+			_used_item_textures[type] = load(_collected_types[type])
 
 func GetItemTexture(p_item_type: Types.Slot) -> Texture:
 	match p_item_type:

@@ -2,6 +2,18 @@ class_name ProgressHandler extends Node
 
 var _stage_difficulty: Dictionary[String, int]
 
+func _ready() -> void:
+	self.name = self.get_script().get_global_name()
+	add_to_group(SaveManager.GROUP_SAVEABLE)
+
+func Serialize() -> Dictionary:
+	return {"stage_difficulty": _stage_difficulty.duplicate(true)}
+
+func Deserialize(p_data: Dictionary) -> void:
+	_stage_difficulty.clear()
+	for key in p_data["stage_difficulty"]:
+		_stage_difficulty[key] = p_data["stage_difficulty"][key]
+
 func RegisterEncounter(p_encounter_ID: String) -> void:
 	print("RegisterEncounter for: ", p_encounter_ID)
 	if (_stage_difficulty.has(p_encounter_ID)):

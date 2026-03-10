@@ -35,24 +35,25 @@ class Main_Instance extends Node:
 		_current_scene = self
 		_current_scene.name = "Main"
 		print("current scene is: ", _current_scene)
+		
 		_character_collection = CharacterCollection.new()
 		add_child(_character_collection)
 		_item_collection = ItemCollection.new()
 		add_child(_item_collection)
-		var context_container: ContextContainer = ContextContainer.new()
-		
 		_resources = ResourceHandler.new()
+		add_child(_resources)
 		_progress = ProgressHandler.new()
+		add_child(_progress)
 		_save_manager = SaveManager.new()
+		add_child(_save_manager)
+		
+		var context_container: ContextContainer = ContextContainer.new()
 		
 		_character_collection.Add(KNIGHT.duplicate(true))
 		_character_collection.Add(THIEF.duplicate(true))
 		_character_collection.Add(BAR_BRAWLER.duplicate(true))
 		_character_collection.Add(JESTER.duplicate(true))
-		#_character_collection.Add(HERALD_OF_THE_LOOM.duplicate(true))
 		_character_collection.Add(CHRONOPHAGE.duplicate(true))
-		#_character_collection.Add(BLOODMAGE.duplicate(true))
-		#_character_collection.Add(TIDAL_CORSAIR.duplicate(true))
 		
 		context_container._scene = "res://Scenes/ui/MainMenu.tscn"
 		change_scene(context_container)
