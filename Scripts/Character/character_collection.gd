@@ -10,14 +10,41 @@ func _ready() -> void:
 	add_to_group(SaveManager.GROUP_SAVEABLE)
 
 func Serialize() -> Dictionary:
-	return {"characters": _characters, "max_amount": _current_max_amount}
+	var character_data: Array = []
+	for character : Character in _characters.values():
+		var held_items: Dictionary = {}
+		for slot in character._held_items:
+			pass # TODO: store equiped items
+		character_data.append({
+			"preset_UID": character._preset_UID,
+			"experience": character._experience,
+			"level": character._level,
+			"attributes": character._attributes.duplicate(true),
+			# TODO: get skills when they are no longer defined by a characters preset.
+			# TODO: get held items.
+		})
+	
+	return {"characters": character_data, "max_amount": _current_max_amount}
 
 func Deserialize(p_data: Dictionary) -> void:
-	#_characters.clear()
+	_characters.clear()
 	if(p_data.has("max_amount")):
 		_current_max_amount = p_data["max_amount"]
+	
+	for character_data in p_data["characters"]:
+		var preset: CharacterPreset = load(character_data["preset_UID"]).duplicate(true)
+		var new_character: Character = load("uid://s7cyusnkyl53").instantiate()
+		new_character.InstantiateNew(preset, CreateNextInstanceID(), preset._trait)
+		new_character._level = int(character_data["level"])
+		new_character._experience = int(character_data["experience"])
+	
+		for attribute in character_data["attributes"].keys():
+			new_character._attributes[int(attribute)] = character_data["attributes"][attribute] as int
+		
+		_characters[new_character._instanceID] = new_character
+	
 	LoadTextures()
-	print("Calling Deserialize for CharacterCollection, data:\n", p_data)
+	print("Calling Deserialize for CharacterCollection")
 
 func LoadTextures() -> void:
 	for type in _collected_types.keys():

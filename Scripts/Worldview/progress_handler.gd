@@ -12,7 +12,7 @@ func Serialize() -> Dictionary:
 func Deserialize(p_data: Dictionary) -> void:
 	_stage_difficulty.clear()
 	for key in p_data["stage_difficulty"]:
-		_stage_difficulty[key] = p_data["stage_difficulty"][key]
+		_stage_difficulty[key] = int(p_data["stage_difficulty"][key])
 
 func RegisterEncounter(p_encounter_ID: String) -> void:
 	print("RegisterEncounter for: ", p_encounter_ID)

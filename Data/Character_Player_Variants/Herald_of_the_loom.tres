@@ -22,4 +22,5 @@ _resistance = 30
 _mysticism = 70
 _knowledge = 10
 _attributes_weights = Array[int]([6, 6, 4])
+_preset_UID = "uid://cg7ffffaaw1hy"
 metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

@@ -20,4 +20,5 @@ _resistance = 10
 _mysticism = 10
 _knowledge = 30
 _critDamage = 15
+_preset_path = "uid://b37nmpv7mries"
 metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

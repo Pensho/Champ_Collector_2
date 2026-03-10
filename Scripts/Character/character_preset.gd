@@ -26,4 +26,6 @@ class_name CharacterPreset extends Resource
 
 @export var _trait: CharacterTrait
 
+@export var _preset_UID: String
+
 @warning_ignore_restore("unused_private_class_variable")

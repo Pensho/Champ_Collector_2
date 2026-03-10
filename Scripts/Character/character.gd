@@ -2,6 +2,7 @@ class_name Character extends Node
 
 func InstantiateNew(preset: CharacterPreset, instanceID: int, characterTrait: CharacterTrait) -> void:
 	_instanceID = instanceID
+	_preset_UID = preset._preset_UID
 	
 	_name = preset._name
 	_texture = preset._texture
@@ -93,3 +94,5 @@ var _trait: CharacterTrait
 var _active_buffs: Array[StatusEffects.Buff] = []
 var _active_debuffs: Array[StatusEffects.Debuff] = []
 @warning_ignore_restore("unused_private_class_variable")
+
+var _preset_UID: String = ""

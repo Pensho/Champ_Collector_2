@@ -20,4 +20,5 @@ _accuracy = 40
 _resistance = 40
 _mysticism = 20
 _knowledge = 20
+_preset_path = "uid://dflefeodbvqyy"
 metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

@@ -10,9 +10,10 @@ static func LevelUpCriteriaMet(p_character: Character) -> bool:
 	xp_requirement += Game_Balance.EXPERIENCE_CONSTANT_2 * p_character._level
 	xp_requirement = round(xp_requirement + Game_Balance.EXPERIENCE_CONSTANT_3)
 	print("Experience required for level up: ", xp_requirement, " experience accumulated: ", p_character._experience)
-	var criteria_met: bool = xp_requirement <= p_character._experience
-	p_character._experience = max(p_character._experience - xp_requirement, 0)
-	return criteria_met
+	if(xp_requirement <= p_character._experience):
+		p_character._experience = max(p_character._experience - xp_requirement, 0)
+		return true
+	return false
 
 static func AddExperience(p_character: Character, p_experiene_gained: int) -> void:
 	p_character._experience += p_experiene_gained

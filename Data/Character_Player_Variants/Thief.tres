@@ -24,4 +24,5 @@ _mysticism = 10
 _knowledge = 20
 _critChance = 15
 _attributes_weights = Array[int]([2, 2, 7, 4])
+_preset_UID = "uid://bm0sqmepyeoam"
 metadata/_custom_type_script = "uid://ftdwxfh8y3n1"
