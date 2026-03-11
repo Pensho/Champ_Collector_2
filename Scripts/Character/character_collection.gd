@@ -27,6 +27,10 @@ func Serialize() -> Dictionary:
 	return {"characters": character_data, "max_amount": _current_max_amount}
 
 func Deserialize(p_data: Dictionary) -> void:
+	if(not p_data.has("characters")):
+		print("No characters found in save slot.")
+		return
+	
 	_characters.clear()
 	if(p_data.has("max_amount")):
 		_current_max_amount = p_data["max_amount"]

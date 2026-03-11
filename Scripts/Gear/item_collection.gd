@@ -12,11 +12,32 @@ func _ready() -> void:
 	add_to_group(SaveManager.GROUP_SAVEABLE)
 
 func Serialize() -> Dictionary:
-	return {"item_test": _items}
+	var items_data: Array = []
+	for item: Equipment in _items.values():
+		items_data.append({
+			"preset_UID": item._preset_UID,
+			"attributes": item._attributes.duplicate(true),
+		})
+	return {"items": items_data}
 
 func Deserialize(p_data: Dictionary) -> void:
-	#_items.clear()
-	LoadTextures()
+	if(not p_data.has("items")):
+		print("No items found in save slot.")
+		return
+	
+	_items.clear()
+	for item_data in p_data["items"]:
+		var preset: EquipmentPreset = load(item_data["preset_UID"]).duplicate(true)
+		var new_equipment: Equipment = Equipment.new()
+		new_equipment.InstantiateNew(preset, CreateNextInstanceID())
+		
+		for attribute in item_data["attributes"].keys():
+			new_equipment._attributes[int(attribute)] = item_data["attributes"][attribute] as int
+		
+		_items[new_equipment._instanceID] = new_equipment
+		if(!_collected_types.has(new_equipment._slot)):
+			_collected_types[new_equipment._slot] = new_equipment._texture
+			_used_item_textures[new_equipment._slot] = load(new_equipment._texture)
 	print("Calling Deserialize for ItemCollection, data:\n", p_data)
 
 func LoadTextures() -> void:

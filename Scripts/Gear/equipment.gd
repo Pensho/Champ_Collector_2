@@ -7,6 +7,7 @@ func InstantiateNew(preset: EquipmentPreset, instanceID: int) -> void:
 	_texture = preset._texture_path
 	_rarity = preset._rarity
 	_slot = preset._slot
+	_preset_UID = preset._preset_UID
 	
 	_attributes[Types.Attribute.Health] = preset._attributes[Types.Attribute.Health]
 	_attributes[Types.Attribute.Speed] = preset._attributes[Types.Attribute.Speed]
@@ -27,6 +28,8 @@ var _texture: String = ""
 
 var _rarity: Types.Rarity
 var _slot: Types.Slot
+
+var _preset_UID: String = ""
 
 var _attributes: Dictionary[Types.Attribute, int] = {
 	Types.Attribute.Health: 0,

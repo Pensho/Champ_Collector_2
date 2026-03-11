@@ -10,6 +10,10 @@ func Serialize() -> Dictionary:
 	return {"stage_difficulty": _stage_difficulty.duplicate(true)}
 
 func Deserialize(p_data: Dictionary) -> void:
+	if(not p_data.has("stage_difficulty")):
+		print("No stage difficulty found in save slot.")
+		return
+	
 	_stage_difficulty.clear()
 	for key in p_data["stage_difficulty"]:
 		_stage_difficulty[key] = int(p_data["stage_difficulty"][key])

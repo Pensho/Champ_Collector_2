@@ -22,11 +22,6 @@ func Init(p_meta_data: Dictionary) -> void:
 	if (p_meta_data.has("saved_at")):
 		_saved_at_label.text = "Last saved at: " + str(p_meta_data["saved_at"])
 
-#func _on_line_edit_text_changed(new_text: String) -> void:
-	#if(MAX_LENGTH_NAME <= new_text.length()):
-		#_name = new_text
-		#print("modifying profile name, currently: ", _name)
-
 func GetSize() -> Vector2:
 	return Vector2(_background.get_rect().size.x, _background.get_rect().size.y)
 
