@@ -21,6 +21,7 @@ func InstantiateNew(preset: EquipmentPreset, instanceID: int) -> void:
 	_attributes[Types.Attribute.CritDamage] = preset._attributes[Types.Attribute.CritDamage]
 
 var _instanceID : int = 0
+var _held_by: int = -1
 
 # Preset Data
 var _name: String = ""

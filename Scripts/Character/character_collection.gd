@@ -4,6 +4,7 @@ var _characters: Dictionary[int, Character] = {}
 var _current_max_amount: int = Game_Balance.COLLECTION_START_ROSTER_SIZE
 var _collected_types: Dictionary[Types.Role, String]
 var _used_character_textures: Dictionary[Types.Role, Texture]
+var _next_ID: int = 0
 
 func _ready() -> void:
 	self.name = self.get_script().get_global_name()
@@ -12,25 +13,24 @@ func _ready() -> void:
 func Serialize() -> Dictionary:
 	var character_data: Array = []
 	for character : Character in _characters.values():
-		var held_items: Dictionary = {}
-		for slot in character._held_items:
-			pass # TODO: store equiped items
 		character_data.append({
 			"preset_UID": character._preset_UID,
 			"experience": character._experience,
 			"level": character._level,
 			"attributes": character._attributes.duplicate(true),
+			"held_items": character._held_items.duplicate(true),
+			"instance_ID": character._instanceID,
 			# TODO: get skills when they are no longer defined by a characters preset.
-			# TODO: get held items.
 		})
 	
-	return {"characters": character_data, "max_amount": _current_max_amount}
+	return {"characters": character_data, "max_amount": _current_max_amount, "next_ID": _next_ID}
 
 func Deserialize(p_data: Dictionary) -> void:
 	if(not p_data.has("characters")):
 		print("No characters found in save slot.")
 		return
 	
+	_next_ID = 0
 	_characters.clear()
 	if(p_data.has("max_amount")):
 		_current_max_amount = p_data["max_amount"]
@@ -38,12 +38,17 @@ func Deserialize(p_data: Dictionary) -> void:
 	for character_data in p_data["characters"]:
 		var preset: CharacterPreset = load(character_data["preset_UID"]).duplicate(true)
 		var new_character: Character = load("uid://s7cyusnkyl53").instantiate()
-		new_character.InstantiateNew(preset, CreateNextInstanceID(), preset._trait)
+		new_character.InstantiateNew(preset, character_data["instance_ID"], preset._trait)
 		new_character._level = int(character_data["level"])
 		new_character._experience = int(character_data["experience"])
-	
+		
+		_next_ID = max(_next_ID, new_character._instanceID)
+		
 		for attribute in character_data["attributes"].keys():
-			new_character._attributes[int(attribute)] = character_data["attributes"][attribute] as int
+			new_character._attributes[attribute as int] = character_data["attributes"][attribute] as int
+		
+		for held_item in character_data["held_items"].keys():
+			new_character._held_items[held_item as int] = character_data["held_items"][held_item] as int
 		
 		_characters[new_character._instanceID] = new_character
 	
@@ -126,14 +131,8 @@ func IsTheCollectionFull() -> bool:
 		return false
 
 func CreateNextInstanceID() -> int:
-	var nextID: int = 0
-	if(_characters.size() == 0):
-		return nextID
-
-	while _characters.has(nextID):
-		nextID += 1
-
-	return nextID
+	_next_ID += 1
+	return _next_ID - 1
 
 func GetCharacter(instanceID: int) -> Character:
 	if(_characters.has(instanceID)):

@@ -32,8 +32,8 @@ func InstantiateNew(preset: CharacterPreset, instanceID: int, characterTrait: Ch
 
 func GetEquipmentBonus(p_attribute: Types.Attribute) -> int:
 	var bonus_stat: int = 0
-	for i in _held_items.keys():
-		bonus_stat += _held_items[i]._attributes[p_attribute]
+	for i: int in _held_items.values():
+		bonus_stat += main.GetInstance()._item_collection._items[i]._attributes[p_attribute]
 	return bonus_stat
 
 func GetBattleAttributes() -> Dictionary[Types.Attribute, int]:
@@ -47,11 +47,14 @@ func GetBattleAttribute(p_attribute: Types.Attribute) -> int:
 	attribute_val += GetEquipmentBonus(p_attribute)
 	return attribute_val
 
-func EquipItem(p_equipment: Equipment) -> void:
-	if(not _held_items.has(p_equipment._slot)):
-		_held_items[p_equipment._slot] = p_equipment
+func EquipItem(p_equipment_ID: int) -> void:
+	if(not _held_items.has(main.GetInstance()._item_collection._items[p_equipment_ID]._slot)):
+		_held_items[main.GetInstance()._item_collection._items[p_equipment_ID]._slot] = p_equipment_ID
 	else:
-		print(_name + " already has equipment for ", p_equipment._slot)
+		print(_name + " already has equipment for ", main.GetInstance()._item_collection._items[p_equipment_ID]._slot)
+
+func UnequipItem(p_slot: Types.Slot) -> void:
+	_held_items.erase(p_slot)
 
 # Preset Data
 var _name: String = ""
@@ -83,7 +86,7 @@ var _attributes: Dictionary[Types.Attribute, int] = {
 	Types.Attribute.CritDamage: 0,
 }
 
-var _held_items: Dictionary[Types.Slot, Equipment]
+var _held_items: Dictionary[Types.Slot, int]
 
 var _currentHealth: int = 0
 var _attributes_weights: Array[Types.Attribute]

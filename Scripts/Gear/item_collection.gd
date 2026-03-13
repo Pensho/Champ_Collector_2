@@ -2,10 +2,12 @@ class_name ItemCollection extends Node
 
 const GEARDATA = preload("res://Scripts/Gear/equipment_preset.gd")
 
+const UNEQUIPPED: int = -1
+
 var _collected_types: Dictionary[Types.Slot, String]
 var _used_item_textures: Dictionary[Types.Slot, Texture]
 var _items: Dictionary[int, Equipment] = {}
-var _highest_ID: int = 0
+var _next_ID: int = 0
 
 func _ready() -> void:
 	self.name = self.get_script().get_global_name()
@@ -17,22 +19,28 @@ func Serialize() -> Dictionary:
 		items_data.append({
 			"preset_UID": item._preset_UID,
 			"attributes": item._attributes.duplicate(true),
+			"instance_ID": item._instanceID,
+			"held_by": item._held_by,
 		})
-	return {"items": items_data}
+	return {"items": items_data, "next_ID": _next_ID}
 
 func Deserialize(p_data: Dictionary) -> void:
 	if(not p_data.has("items")):
 		print("No items found in save slot.")
 		return
 	
+	if(p_data.has("next_ID")):
+		_next_ID = p_data["next_ID"]
 	_items.clear()
 	for item_data in p_data["items"]:
 		var preset: EquipmentPreset = load(item_data["preset_UID"]).duplicate(true)
 		var new_equipment: Equipment = Equipment.new()
-		new_equipment.InstantiateNew(preset, CreateNextInstanceID())
+		new_equipment.InstantiateNew(preset, item_data["instance_ID"])
 		
 		for attribute in item_data["attributes"].keys():
 			new_equipment._attributes[int(attribute)] = item_data["attributes"][attribute] as int
+		
+		new_equipment._held_by = item_data["held_by"]
 		
 		_items[new_equipment._instanceID] = new_equipment
 		if(!_collected_types.has(new_equipment._slot)):
@@ -76,18 +84,12 @@ func AddPreset(preset: EquipmentPreset) -> void:
 	new_equipment.InstantiateNew(preset, CreateNextInstanceID())
 	_items[new_equipment._instanceID] = new_equipment
 	
-	# Debug print for gear attribute bonuses
-	#for i in new_equipment._attributes.keys():
-		#print("Item has attribute value: ", new_equipment._attributes[i])
-	
 	if(!_collected_types.has(new_equipment._slot)):
 		_collected_types[new_equipment._slot] = new_equipment._texture
 		_used_item_textures[new_equipment._slot] = load(new_equipment._texture)
 
-func AddToCollection(p_equipment: Equipment) -> void:
-	if(_items.has(p_equipment._instanceID)):
-		p_equipment._instanceID = CreateNextInstanceID()
-	_items[p_equipment._instanceID] = p_equipment
+func UnequipCollectionItem(p_instanceID: int) -> void:
+	_items[p_instanceID]._held_by = UNEQUIPPED
 
 func Remove(instanceID: int) -> void:
 	if(!_items.erase(instanceID)):
@@ -95,27 +97,11 @@ func Remove(instanceID: int) -> void:
 	# TODO: If there no longer is a type of role in the collection, remove it from _collected_types.
 
 func CreateNextInstanceID() -> int:
-	var nextID: int = 0
-	if(_items.size() == 0):
-		return nextID
-	while _items.has(nextID):
-		nextID += 1
-	return nextID
+	_next_ID += 1
+	return _next_ID - 1
 
-func TakeEquipment(p_instanseID: int) -> Equipment:
-	var item: Equipment
-	if(not _items.has(p_instanseID)):
-		print("There is no item at ID: ", p_instanseID)
-		return null
-	item = _items[p_instanseID]
-	_items.erase(p_instanseID)
-	return item
+func EquipCollectionItem(p_instanceID: int) -> void:
+	_items[p_instanceID]._held_by = p_instanceID
 
 func Size() -> int:
 	return _items.size()
-
-func GetHighestID() -> int:
-	for i in _items.keys():
-		if(i > _highest_ID):
-			_highest_ID = i
-	return _highest_ID
