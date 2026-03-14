@@ -7,7 +7,7 @@ static func LevelUpCriteriaMet(p_character: Character) -> bool:
 		(float(p_character._level) / Game_Balance.EXPERIENCE_FACTOR), 
 		Game_Balance.EXPERIENCE_EXPONENT)
 	xp_requirement *= Game_Balance.EXPERIENCE_CONSTANT_1
-	xp_requirement += Game_Balance.EXPERIENCE_CONSTANT_2 * p_character._level
+	xp_requirement += Game_Balance.EXPERIENCE_CONSTANT_2 * float(p_character._level)
 	xp_requirement = round(xp_requirement + Game_Balance.EXPERIENCE_CONSTANT_3)
 	print("Experience required for level up: ", xp_requirement, " experience accumulated: ", p_character._experience)
 	if(xp_requirement <= p_character._experience):
@@ -82,9 +82,9 @@ static func SetOpponentLevel(p_character: Character, p_level: int, p_boss: bool 
 	for attribute in p_character._attributes.keys():
 		var base_value: int = p_character._attributes[attribute]
 		var weight: float = float(base_value) / float(total_base_points)
-		var points: float = float(pow(Game_Balance.LEVEL_UP_POINTS_TO_DISTRIBUTE, 1.1))
+		var points: float = Game_Balance.LEVEL_UP_POINTS_TO_DISTRIBUTE + float(pow(p_character._level * 3, 1.1))
 		if(p_boss):
-			points = points * 2
+			points *= 1.5
 		var points_gained = weight * points * total_levels_gained
 		p_character._attributes[attribute] = round(int(base_value + points_gained))
 	

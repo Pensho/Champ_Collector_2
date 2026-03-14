@@ -82,10 +82,13 @@ func Init(p_context: ContextContainer) -> void:
 		_characters[i + 3].InstantiateNew(_battlecontext._enemies_wave_1[i], -1, null)
 		_characters[i + 3]._attributes[Types.Attribute.Speed] += randi_range(-3, 3)
 		LevelSystem.SetOpponentLevel(_characters[i + 3], difficulty)
-		_characters[i + 3]._currentHealth = _characters[i + 3].GetBattleAttribute(Types.Attribute.Health)  * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
 		if (p_context._arguments.has("Boss_Scale")):
 			_character_repr[i + 3].scale = Vector2(p_context._arguments["Boss_Scale"], p_context._arguments["Boss_Scale"])
 			_character_repr[i + 3].position.y -= (_character_repr[i + 3].position.y * p_context._arguments["Boss_Scale"]) * 0.5
+			LevelSystem.SetOpponentLevel(_characters[i + 3], difficulty, true)
+		else:
+			LevelSystem.SetOpponentLevel(_characters[i + 3], difficulty)
+		_characters[i + 3]._currentHealth = _characters[i + 3].GetBattleAttribute(Types.Attribute.Health)  * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
 		VisualizeCharacter(i + 3)
 	
 	for i in _characters.keys():
@@ -336,17 +339,19 @@ func EndBattle(p_winner: WinningTeam) -> void:
 		_self_context._arguments["Battle_Result"] = "Victory"
 		_battlecontext._loot_table._budget = LootManager.CalculateBudget(_self_context._arguments["Difficulty"])
 		LootManager.DistributeRewards(_battlecontext._loot_table, _self_context._arguments["Difficulty"])
-		for i in _characters.keys():
-			if(PLAYER_IDS.has(i)):
-				_characters[i]._active_buffs.clear()
-				_characters[i]._active_debuffs.clear()
-				for j in _characters[i]._skills.size():
-					_characters[i]._skills[j].cooldown_left = 0
-				
-				LevelSystem.AddExperience(_characters[i], _battlecontext._loot_table._drop_result._experience)
-				_characters[i]._currentHealth = _characters[i]._attributes[Types.Attribute.Health] * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
 		if (null != _battlecontext._loot_table._drop_result._equipment):
 			main.GetInstance()._item_collection.AddPreset(_battlecontext._loot_table._drop_result._equipment)
+	
+	for i in _characters.keys():
+		if(PLAYER_IDS.has(i)):
+			_characters[i]._active_buffs.clear()
+			_characters[i]._active_debuffs.clear()
+			for j in _characters[i]._skills.size():
+				_characters[i]._skills[j].cooldown_left = 0
+				
+			if(p_winner == WinningTeam.Player_Won):
+				LevelSystem.AddExperience(_characters[i], _battlecontext._loot_table._drop_result._experience)
+			_characters[i]._currentHealth = _characters[i]._attributes[Types.Attribute.Health] * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
 	
 	_self_context._scene = "res://Scenes/ui/Battle_Over.tscn"
 	

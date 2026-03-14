@@ -48,10 +48,6 @@ func Init(_p_context_container: ContextContainer) -> void:
 	for i in _item_slots_equipped.size():
 		_item_slots_equipped[i]._ID = i
 		_item_slots_equipped[i].ConnectButton(EquipedItemSlotButton)
-	
-	print("\n_item_collection.size(): ", _item_collection.size())
-	print("\n_displayed_character_ids: ", _displayed_character_ids)
-	print("\n_displayed_item_ids: ", _displayed_item_ids)
 
 func GetMenuItemSlotChildren(p_start_node: Node) -> Array[MenuItemSlot]:
 	var result: Array[MenuItemSlot] = []

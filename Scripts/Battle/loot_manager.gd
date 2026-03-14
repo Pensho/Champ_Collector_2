@@ -22,9 +22,9 @@ const RARITY_WEIGHTING: Dictionary[Types.Rarity, int] = {
 	Types.Rarity.Legendary: 18,		# budget 9830 required
 	Types.Rarity.Relic: 7,			# budget 28,268 required
 }
-const SPAN_RANGE: int = 3
+const GEAR_RARITY_RANGE: int = 3
 const LOOT_VALUE: Dictionary[LootType, int] = {
-	LootType.Experience : 10,
+	LootType.Experience : 18,
 	LootType.Silver : 10,
 	LootType.Equipment : 50,
 	LootType.Fortunes_Favor : 500,
@@ -53,7 +53,7 @@ static func RollRarityForItem(p_best_outcome: int) -> Types.Rarity:
 	
 	var cumulative_weights: Dictionary[Types.Rarity, int]
 	var current_sum: int = 0
-	var worst_outcome: int = max(p_best_outcome - SPAN_RANGE, 1)
+	var worst_outcome: int = max(p_best_outcome - GEAR_RARITY_RANGE, 1)
 	for i in range(worst_outcome, p_best_outcome + 1):
 		current_sum += RARITY_WEIGHTING[i as Types.Rarity]
 		cumulative_weights[i as Types.Rarity] = current_sum
@@ -76,11 +76,11 @@ static func DistributeRewards(p_loot_table: LootTable, p_difficulty: int) -> voi
 			LootType.Experience:
 				for i in range(p_loot_table._primary_loot[type]):
 					p_loot_table._drop_result._experience += p_difficulty
-					p_loot_table._budget -= LOOT_VALUE[LootType.Experience]
+					p_loot_table._budget -= p_difficulty + (float(LOOT_VALUE[LootType.Experience]) * (float(p_difficulty))) as int
 					print("Received Experience, budget left: ", p_loot_table._budget)
 			LootType.Silver:
 				p_loot_table._drop_result._silver += p_difficulty
-				p_loot_table._budget -= LOOT_VALUE[LootType.Silver]
+				p_loot_table._budget -= (float(LOOT_VALUE[LootType.Silver]) * (float(p_difficulty) * 0.85)) as int
 				print("Received Silver, budget left: ", p_loot_table._budget)
 			LootType.Equipment:
 				for i in range(p_loot_table._primary_loot[type]):
@@ -103,11 +103,11 @@ static func DistributeRewards(p_loot_table: LootTable, p_difficulty: int) -> voi
 		match GetWeigthedRandom(p_loot_table._secondary_loot):
 			LootType.Experience:
 				p_loot_table._drop_result._experience += p_difficulty
-				p_loot_table._budget -= LOOT_VALUE[LootType.Experience]
+				p_loot_table._budget -= p_difficulty + (float(LOOT_VALUE[LootType.Experience]) * (float(p_difficulty))) as int
 				print("Received secondary Experience, budget left: ", p_loot_table._budget)
 			LootType.Silver:
 				p_loot_table._drop_result._silver += p_difficulty
-				p_loot_table._budget -= LOOT_VALUE[LootType.Silver]
+				p_loot_table._budget -= (float(LOOT_VALUE[LootType.Silver]) * (float(p_difficulty) * 0.85)) as int
 				print("Received secondary Silver, budget left: ", p_loot_table._budget)
 			LootType.Equipment:
 				pass

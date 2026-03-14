@@ -95,7 +95,7 @@ func _on_add_char_button_up(p_char_slot: int) -> void:
 		if (!_chosen_characters.has(i)):
 			_chosen_characters[i] = _character_collection[p_char_slot]
 			_chosen_character_slots[i].SetHeldObjectTexture(_available_character_slots[p_char_slot].texture_rect.texture)
-			print("Time to darken _available_character_slots for slot nr: ", p_char_slot, " to color: ", CHARACTER_CHOSEN_COLOR)
+			#print("Time to darken _available_character_slots for slot nr: ", p_char_slot, " to color: ", CHARACTER_CHOSEN_COLOR)
 			_available_character_slots[p_char_slot].SetHeldObjectModulate(CHARACTER_CHOSEN_COLOR)
 			_available_to_chosen_IDs[i] = p_char_slot
 			return
