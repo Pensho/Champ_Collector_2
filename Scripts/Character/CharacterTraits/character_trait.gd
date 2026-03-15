@@ -8,9 +8,6 @@ func Init(p_character_repr: CharacterRepresentation) -> void:
 	_character_repr = p_character_repr
 	print("character_trait base class Init() called!")
 
-func ConnectDrawSignal() -> void:
-	pass
-
 func StartOfBattle() -> void:
 	print("character_trait base class StartOfBattle() called!")
 

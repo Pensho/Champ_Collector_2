@@ -65,26 +65,13 @@ func GetDamageNumber() -> DamageNumber2D:
 			return new_damage_number
 	return null
 
-func SetSkill1(p_texture_path: String, p_title: String, p_description: String) -> void:
-	_skill_buttons[0].icon = _skill_textures[p_texture_path]
-	_skill_buttons[0].SetToolTip(p_title, p_description)
-
-func SetSkill1Texture(p_texture_path: String) -> void:
-	_skill_buttons[0].icon = _skill_textures[p_texture_path]
-
-func SetSkill2(p_texture_path: String, p_title: String, p_description: String) -> void:
-	_skill_buttons[1].icon = _skill_textures[p_texture_path]
-	_skill_buttons[1].SetToolTip(p_title, p_description)
-
-func SetSkill2Texture(p_texture_path: String) -> void:
-	_skill_buttons[1].icon = _skill_textures[p_texture_path]
-
-func SetSkill3(p_texture_path: String, p_title: String, p_description: String) -> void:
-	_skill_buttons[2].icon = _skill_textures[p_texture_path]
-	_skill_buttons[2].SetToolTip(p_title, p_description)
-
-func SetSkill3Texture(p_texture_path: String) -> void:
-	_skill_buttons[2].icon = _skill_textures[p_texture_path]
+func SetSkill(p_texture_path: String, p_title: String, p_description: String, p_slot: int) -> void:
+	if(p_slot < 0 or p_slot >= _skill_buttons.size()):
+		print("attempting to set a skill out of bounds: ", p_slot)
+		return
+	
+	_skill_buttons[p_slot].icon = _skill_textures[p_texture_path]
+	_skill_buttons[p_slot].SetToolTip(p_title, p_description)
 
 func ActiveSkillGlow(p_skill_ID: int) -> void:
 	match p_skill_ID:

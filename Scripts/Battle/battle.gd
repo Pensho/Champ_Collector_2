@@ -130,21 +130,13 @@ func StartTurn() -> void:
 			_characters[_characterIDs_turn]._trait.StartOfTurn()
 	
 	if(PLAYER_IDS.has(_characterIDs_turn)):
-		_battle_ui.SetSkill1(
-			_characters[_characterIDs_turn]._skills[0].icon_path,
-			_characters[_characterIDs_turn]._skills[0].name,
-			_characters[_characterIDs_turn]._skills[0].description)
-		_battle_ui.SetSkill2(
-			_characters[_characterIDs_turn]._skills[1].icon_path,
-			_characters[_characterIDs_turn]._skills[1].name,
-			_characters[_characterIDs_turn]._skills[1].description)
-		_battle_ui.SetSkill3(
-			_characters[_characterIDs_turn]._skills[2].icon_path,
-			_characters[_characterIDs_turn]._skills[2].name,
-			_characters[_characterIDs_turn]._skills[2].description)
-		_battle_ui._skill_buttons[0].show()
-		_battle_ui._skill_buttons[1].show()
-		_battle_ui._skill_buttons[2].show()
+		for i in _battle_ui._skill_buttons.size():
+			_battle_ui.SetSkill(
+				_characters[_characterIDs_turn]._skills[i].icon_path,
+				_characters[_characterIDs_turn]._skills[i].name,
+				_characters[_characterIDs_turn]._skills[i].description,
+				i)
+			_battle_ui._skill_buttons[i].show()
 		_selected_skill_ID = 0
 		_battle_ui.ActiveSkillGlow(_selected_skill_ID)
 		for i in _battle_ui._skill_buttons.size():
