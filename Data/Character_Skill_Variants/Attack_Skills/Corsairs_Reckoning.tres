@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="Skill" load_steps=2 format=3 uid="uid://f1t54rvwevl2"]
+
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_c405q"]
+
+[resource]
+script = ExtResource("1_c405q")
+name = "Corsairs Reckoning"
+description = "A devestating blow consuming all Stacks for various effects. Based on Attack."
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Stab/Stab_3.jpg"
+damage_scaling = Dictionary[int, float]({
+2: 2.0
+})
+cooldown = 3
+metadata/_custom_type_script = "uid://glh06y3wvchj"

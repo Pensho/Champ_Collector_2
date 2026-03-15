@@ -1,0 +1,73 @@
+class_name TidalCorsairTrait extends CharacterTrait
+
+const MAX_STACKS: int = 3
+
+class StackDescription:
+	var _title: String = "Title"
+	var _body: String = "Body"
+
+enum Stack_Type
+{
+	Empty,
+	Steel,
+	Sea,
+}
+
+var _sea_stack_texture: Texture2D
+var _steel_stack_texture: Texture2D
+var _held_stacks: Array[Stack_Type] = [Stack_Type.Empty, Stack_Type.Empty, Stack_Type.Empty]
+var _steel_description: StackDescription
+var _sea_description: StackDescription
+var _blank_description: StackDescription
+
+var _skill_result: TraitSkillResult
+
+func Init(p_character_repr: CharacterRepresentation) -> void:
+	_character_repr = p_character_repr
+	_sea_stack_texture = load("res://Assets/Champ_Collector/Creatures/Tidal_Corsair/Tidal_Corsair_Stack_Sea.png")
+	_steel_stack_texture = load("res://Assets/Champ_Collector/Creatures/Tidal_Corsair/Tidal_Corsair_Stack_Steel.png")
+	_execution_steps[Types.Combat_Event.Start_Combat] = Callable(self, "StartOfBattle")
+	_execution_steps[Types.Combat_Event.Skill_Cast] = Callable(self, "OnSkillCast")
+	
+	_steel_description = StackDescription.new()
+	_steel_description._title = "Steel Stack"
+	_steel_description._body = ""
+	
+	_sea_description = StackDescription.new()
+	_sea_description._title = "Sea Stack"
+	_sea_description._body = ""
+	
+	_blank_description = StackDescription.new()
+	_blank_description._title = "Empty Stack"
+	_blank_description._body = "Use an ability that grants stacks to fill this."
+	
+	_skill_result = TraitSkillResult.new()
+
+func StartOfBattle() -> void:
+	for i in _held_stacks.size():
+		_character_repr.SetBlankTraitElement(i)
+		_character_repr.SetTraitElementToolTip(_blank_description._title, _blank_description._body, i)
+
+func OnSkillCast(p_skill_name: String) -> TraitSkillResult:
+	match p_skill_name:
+		"Boarding Strike":
+			for i in _held_stacks.size():
+				if (_held_stacks[i] == Stack_Type.Empty):
+					_held_stacks[i] = Stack_Type.Steel
+					_character_repr.SetTraitElement(_steel_stack_texture, i)
+					_character_repr.SetTraitElementToolTip(_steel_description._title, _steel_description._body, i)
+					break;
+		"Saltwater Shot":
+			for i in _held_stacks.size():
+				if (_held_stacks[i] == Stack_Type.Empty):
+					_held_stacks[i] = Stack_Type.Sea
+					_character_repr.SetTraitElement(_sea_stack_texture, i)
+					_character_repr.SetTraitElementToolTip(_sea_description._title, _sea_description._body, i)
+					break;
+		"Corsairs Reckoning":
+			for i in _held_stacks.size():
+				_held_stacks[i] = Stack_Type.Empty
+				_character_repr.SetBlankTraitElement(i)
+				_character_repr.SetTraitElementToolTip(_blank_description._title, _blank_description._body, i)
+				
+	return _skill_result

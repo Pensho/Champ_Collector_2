@@ -1,16 +1,17 @@
 class_name CharacterRepresentation extends Node2D
 
-signal battle_target_selected(p_target_ID: int)
-
 @warning_ignore_start("unused_private_class_variable")
 @onready var _character_texture: TextureRect = $TextureRect
 @onready var _lifebar: ProgressBar = $ProgressBar
 @onready var _lifebar_text: Label = $ProgressBar/Label
 @onready var _level: Label = $ColorRect/Label
-
-@export var _target_ID: int = -1
 @warning_ignore_restore("unused_private_class_variable")
+const TRAIT_UI_ELEMENT_BLANK = preload("uid://cdwqpx4sgt42a")
 
+signal battle_target_selected(p_target_ID: int)
+@export var _trait_icons: Array[TextureRect]
+@export var _trait_tooltips: Array[ToolTip]
+@export var _target_ID: int = -1
 @export var _status_effect_textures: Array[TextureRect]
 
 var _status_effect: Dictionary[int, int]
@@ -40,5 +41,25 @@ func ClearAllStatusEffects() -> void:
 			textRect.texture = null
 			textRect.hide()
 
-func DrawCustomElement(texture: TextureRect, positon: Vector2) -> void:
-	pass
+func SetTraitElement(p_texture: Texture, p_slot: int) -> void:
+	if(p_slot < 0 or p_slot >= _trait_icons.size()):
+		print("Trying to draw character_repr trait elements out of range; ", p_slot)
+	_trait_icons[p_slot].texture = p_texture
+	_trait_icons[p_slot].show()
+
+func RemoveTraitElement(p_slot: int) -> void:
+	if(p_slot < 0 or p_slot >= _trait_icons.size()):
+		print("Trying to draw character_repr trait elements out of range; ", p_slot)
+	_trait_icons[p_slot].hide()
+
+func SetBlankTraitElement(p_slot: int) -> void:
+	if(p_slot < 0 or p_slot >= _trait_icons.size()):
+		print("Trying to draw character_repr trait elements out of range; ", p_slot)
+	_trait_icons[p_slot].texture = TRAIT_UI_ELEMENT_BLANK
+	_trait_icons[p_slot].show()
+
+func SetTraitElementToolTip(p_title: String, p_body: String, p_slot: int) -> void:
+	if(p_slot < 0 or p_slot >= _trait_icons.size()):
+		print("Trying to draw character_repr trait elements out of range; ", p_slot)
+	_trait_tooltips[p_slot].title_text = p_title
+	_trait_tooltips[p_slot].description_text = p_body

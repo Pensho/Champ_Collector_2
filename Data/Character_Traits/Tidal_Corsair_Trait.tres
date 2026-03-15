@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="TidalCorsairTrait" load_steps=2 format=3 uid="uid://dhoyqx02hnflk"]
+
+[ext_resource type="Script" uid="uid://yt6m38bnhknm" path="res://Scripts/Character/CharacterTraits/CharacterSpecificTraits/Tidal_Corsair_Trait.gd" id="1_nq6e5"]
+
+[resource]
+script = ExtResource("1_nq6e5")
+metadata/_custom_type_script = "uid://yt6m38bnhknm"

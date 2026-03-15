@@ -111,3 +111,13 @@ enum Debuff_Type
 	Expose_Weakness,
 	Invalid,
 }
+
+enum Combat_Event
+{
+	Start_Combat,
+	Start_Turn,
+	End_Turn,
+	Skill_Cast,
+	Damage_Taken,
+	On_Death,
+}

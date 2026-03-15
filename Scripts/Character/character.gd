@@ -27,8 +27,6 @@ func InstantiateNew(preset: CharacterPreset, instanceID: int, characterTrait: Ch
 	_currentHealth = GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
 	
 	_trait = characterTrait
-	if(null != _trait):
-		_trait.Init()
 
 func GetEquipmentBonus(p_attribute: Types.Attribute) -> int:
 	var bonus_stat: int = 0

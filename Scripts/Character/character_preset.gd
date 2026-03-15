@@ -24,7 +24,7 @@ class_name CharacterPreset extends Resource
 
 @export var _attributes_weights: Array[Types.Attribute]
 
-@export var _trait: CharacterTrait
+@export var _trait: CharacterTrait = null
 
 @export var _preset_UID: String
 

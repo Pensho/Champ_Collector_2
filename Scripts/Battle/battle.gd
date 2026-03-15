@@ -64,8 +64,6 @@ func Init(p_context: ContextContainer) -> void:
 	for i in p_context._player_battle_characters.size():
 		_characters[i] = p_context._player_battle_characters[i]
 		_characters[i]._currentHealth = _characters[i].GetBattleAttribute(Types.Attribute.Health)  * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
-		if(null != _characters[i]._trait):
-			_characters[i]._trait.StartOfBattle()
 		_self_context._arguments["character_dmg_" + str(i)] = 0
 		VisualizeCharacter(i)
 	
@@ -94,6 +92,10 @@ func Init(p_context: ContextContainer) -> void:
 	for i in _characters.keys():
 		for j in _characters[i]._skills.size():
 			_battle_ui.LoadSkillTexture(_characters[i]._skills[j].icon_path)
+		if(null != _characters[i]._trait):
+			_characters[i]._trait.Init(_character_repr[i])
+			if(_characters[i]._trait._execution_steps.has(Types.Combat_Event.Start_Combat)):
+				_characters[i]._trait.StartOfBattle()
 	
 	GRAYSCALE_MATERIAL = ShaderMaterial.new()
 	GRAYSCALE_MATERIAL.shader = GRAYSCALE
@@ -122,6 +124,11 @@ func StartTurn() -> void:
 	_turn_indicator.position.x = _character_repr[_characterIDs_turn].position.x + (_character_repr[_characterIDs_turn]._character_texture.size.x * 0.5) - (_turn_indicator.size.x * 0.5)
 	_turn_indicator.position.y = _character_repr[_characterIDs_turn].position.y - _turn_indicator.size.y
 	_turn_indicator.show()
+	
+	if (null != _characters[_characterIDs_turn]._trait):
+		if(_characters[_characterIDs_turn]._trait._execution_steps.has(Types.Combat_Event.Start_Turn)):
+			_characters[_characterIDs_turn]._trait.StartOfTurn()
+	
 	if(PLAYER_IDS.has(_characterIDs_turn)):
 		_battle_ui.SetSkill1(
 			_characters[_characterIDs_turn]._skills[0].icon_path,
@@ -235,6 +242,9 @@ func UpdateLifeBar(p_characterID: int) -> void:
 		_character_repr[p_characterID].ClearAllStatusEffects()
 		_battle_ui._turn_bar.ShowCharacterAsDead(p_characterID)
 		_character_repr[p_characterID]._character_texture.material = GRAYSCALE_MATERIAL
+		if (null != _characters[p_characterID]._trait):
+			if(_characters[p_characterID]._trait._execution_steps.has(Types.Combat_Event.On_Death)):
+				_characters[p_characterID]._trait.OnDeath()
 	
 	_character_repr[p_characterID]._lifebar.value = _characters[p_characterID]._currentHealth
 	_character_repr[p_characterID]._lifebar_text.text = str(_characters[p_characterID]._currentHealth) + "/" + str(_characters[p_characterID].GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
@@ -256,6 +266,11 @@ func VisualizeCharacter(p_characterID: int) -> void:
 func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID) -> void:
 	var cast_skill: Skill = _characters[p_caster_ID]._skills[p_skill_ID]
 	var caster_attributes: Dictionary[Types.Attribute, int] = _characters[p_caster_ID].GetBattleAttributes()
+	
+	var trait_result: TraitSkillResult = TraitSkillResult.new()
+	if (null != _characters[p_caster_ID]._trait):
+		if(_characters[p_caster_ID]._trait._execution_steps.has(Types.Combat_Event.Skill_Cast)):
+			trait_result = _characters[p_caster_ID]._trait.OnSkillCast(cast_skill.name)
 	
 	if (not _characters[p_caster_ID]._active_debuffs.is_empty()):
 		Skills.TriggerExistingCasterDebuffs(
@@ -296,9 +311,13 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID) -> voi
 				_battle_ui.SpawnDamageNumber(damage_dealt, _character_repr[target_ID].position + Vector2(100, 70))
 				_characters[target_ID]._currentHealth -= damage_dealt
 				UpdateLifeBar(target_ID)
+				if (null != _characters[target_ID]._trait):
+					if(_characters[target_ID]._trait._execution_steps.has(Types.Combat_Event.Damage_Taken)):
+						_characters[target_ID]._trait.OnDamageTaken()
 		
-		if(0.0 != cast_skill.turn_effect):
-			_battle_ui._turn_bar.BumpCharacter(target_ID, cast_skill.turn_effect)
+		var total_bump: float = cast_skill.turn_effect + trait_result._turn_bar_bump
+		if(0.0 != total_bump):
+			_battle_ui._turn_bar.BumpCharacter(target_ID, total_bump)
 	
 	for i in _characters[_characterIDs_turn]._skills.size():
 		if(_characters[_characterIDs_turn]._skills[i].cooldown_left > 0):
@@ -306,6 +325,9 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID) -> voi
 	_characters[p_caster_ID]._skills[p_skill_ID].cooldown_left = _characters[p_caster_ID]._skills[p_skill_ID].cooldown
 	_battle_ui._turn_bar.TurnCompleteForCharacter(_characterIDs_turn)
 	TriggerZones()
+	if (null != _characters[p_caster_ID]._trait):
+		if(_characters[p_caster_ID]._trait._execution_steps.has(Types.Combat_Event.End_Turn)):
+			_characters[p_caster_ID]._trait.EndOfTurn()
 	_characterIDs_turn = NO_CHARACTERS_TURN
 	_turn_indicator.hide()
 	_battle_ui.HideSkillUI()

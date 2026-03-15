@@ -14,6 +14,9 @@ const keywords: Dictionary[String, Color] = {
 	
 	"Critical": Color(0.476, 0.714, 1.0, 1.0),
 	
+	"Stack": Color(0.441, 0.777, 0.668, 1.0),
+	"Stacks": Color(0.441, 0.777, 0.668, 1.0),
+	
 	"Burn": Color(1.0, 0.0, 0.0, 1.0),
 	"Burning": Color(1.0, 0.0, 0.0, 1.0),
 }

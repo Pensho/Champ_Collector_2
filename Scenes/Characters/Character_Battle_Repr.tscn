@@ -1,13 +1,29 @@
-[gd_scene load_steps=5 format=3 uid="uid://dvvopn2yuy4wr"]
+[gd_scene load_steps=9 format=3 uid="uid://dvvopn2yuy4wr"]
 
 [ext_resource type="Script" uid="uid://di021l42jy53d" path="res://Scripts/Battle/character_battle_repr.gd" id="1_hd4xr"]
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="2_6p7dp"]
 [ext_resource type="Material" uid="uid://2tvv2h51laxc" path="res://Assets/Champ_Collector/Material/Unshaded.tres" id="2_7qair"]
+[ext_resource type="Texture2D" uid="uid://cdwqpx4sgt42a" path="res://Assets/Champ_Collector/Icons/Trait_UI_Element_Blank.png" id="4_wjchg"]
+[ext_resource type="Script" uid="uid://bumae467d28vx" path="res://Scripts/UI/tooltip.gd" id="5_7k67v"]
 
 [sub_resource type="Theme" id="Theme_iesxj"]
 
-[node name="Character" type="Node2D" node_paths=PackedStringArray("_status_effect_textures")]
+[sub_resource type="Gradient" id="Gradient_7k67v"]
+offsets = PackedFloat32Array(0.7446808, 0.7712766)
+colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_h4qcs"]
+gradient = SubResource("Gradient_7k67v")
+width = 40
+height = 40
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.9, 0)
+
+[node name="Character" type="Node2D" node_paths=PackedStringArray("_trait_icons", "_trait_tooltips", "_status_effect_textures")]
 script = ExtResource("1_hd4xr")
+_trait_icons = [NodePath("VBoxContainer_Trait_Elements/TextureRect"), NodePath("VBoxContainer_Trait_Elements/TextureRect2"), NodePath("VBoxContainer_Trait_Elements/TextureRect3")]
+_trait_tooltips = [NodePath("VBoxContainer_Trait_Elements/TextureRect"), NodePath("VBoxContainer_Trait_Elements/TextureRect2"), NodePath("VBoxContainer_Trait_Elements/TextureRect3")]
 _status_effect_textures = [NodePath("HBoxContainer_Status_Effects/Effect_1"), NodePath("HBoxContainer_Status_Effects/Effect_2"), NodePath("HBoxContainer_Status_Effects/Effect_3"), NodePath("HBoxContainer_Status_Effects/Effect_4"), NodePath("HBoxContainer_Status_Effects/Effect_5"), NodePath("HBoxContainer_Status_Effects/Effect_6"), NodePath("HBoxContainer_Status_Effects/Effect_7"), NodePath("HBoxContainer_Status_Effects/Effect_8")]
 
 [node name="TextureRect" type="TextureRect" parent="."]
@@ -142,5 +158,71 @@ visible = false
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 expand_mode = 1
+
+[node name="VBoxContainer_Trait_Elements" type="VBoxContainer" parent="."]
+offset_left = 200.0
+offset_right = 260.0
+offset_bottom = 200.0
+alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer_Trait_Elements"]
+visible = false
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+texture = ExtResource("4_wjchg")
+expand_mode = 1
+script = ExtResource("5_7k67v")
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer_Trait_Elements/TextureRect"]
+self_modulate = Color(1, 1, 1, 0.4745098)
+show_behind_parent = true
+layout_mode = 0
+offset_left = 3.0
+offset_top = 3.0
+offset_right = 43.0
+offset_bottom = 43.0
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_h4qcs")
+
+[node name="TextureRect2" type="TextureRect" parent="VBoxContainer_Trait_Elements"]
+visible = false
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+texture = ExtResource("4_wjchg")
+expand_mode = 1
+script = ExtResource("5_7k67v")
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer_Trait_Elements/TextureRect2"]
+self_modulate = Color(1, 1, 1, 0.4745098)
+show_behind_parent = true
+layout_mode = 0
+offset_left = 3.0
+offset_top = 3.0
+offset_right = 43.0
+offset_bottom = 43.0
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_h4qcs")
+
+[node name="TextureRect3" type="TextureRect" parent="VBoxContainer_Trait_Elements"]
+visible = false
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+texture = ExtResource("4_wjchg")
+expand_mode = 1
+script = ExtResource("5_7k67v")
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer_Trait_Elements/TextureRect3"]
+self_modulate = Color(1, 1, 1, 0.4745098)
+show_behind_parent = true
+layout_mode = 0
+offset_left = 3.0
+offset_top = 3.0
+offset_right = 43.0
+offset_bottom = 43.0
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_h4qcs")
 
 [connection signal="button_up" from="Button_Target" to="." method="_on_button_target_button_up"]

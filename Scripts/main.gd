@@ -54,6 +54,7 @@ class Main_Instance extends Node:
 		_character_collection.Add(BAR_BRAWLER.duplicate(true))
 		_character_collection.Add(JESTER.duplicate(true))
 		_character_collection.Add(CHRONOPHAGE.duplicate(true))
+		_character_collection.Add(TIDAL_CORSAIR.duplicate(true))
 		
 		context_container._scene = "res://Scenes/ui/MainMenu.tscn"
 		change_scene(context_container)

@@ -68,7 +68,6 @@ static func SetOpponentLevel(p_character: Character, p_level: int, p_boss: bool 
 		print("Cannot set opponent level below 1 or above 999")
 		return
 	if(p_level <= p_character._level):
-		print("Cannot lower an opponents level")
 		return
 	var total_levels_gained: float = float(p_level - p_character._level)
 	p_character._level = p_level

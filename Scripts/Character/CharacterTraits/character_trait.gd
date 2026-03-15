@@ -1,18 +1,11 @@
 class_name CharacterTrait extends Resource
 
-enum Combat_Event
-{
-	Start_Combat,
-	#Start_Turn,
-	#End_Turn,
-	#Skill_Cast,
-	#Damage_Taken,
-	#On_Death,
-}
+var _character_repr: CharacterRepresentation
 
-var _execution_steps: Dictionary[Combat_Event, Callable]
+var _execution_steps: Dictionary[Types.Combat_Event, Callable]
 
-func Init() -> void:
+func Init(p_character_repr: CharacterRepresentation) -> void:
+	_character_repr = p_character_repr
 	print("character_trait base class Init() called!")
 
 func ConnectDrawSignal() -> void:
@@ -21,17 +14,18 @@ func ConnectDrawSignal() -> void:
 func StartOfBattle() -> void:
 	print("character_trait base class StartOfBattle() called!")
 
-#func StartOfTurn() -> void:
-	#print("character_trait base class StartOfTurn() called!")
-#
-#func EndOfTurn() -> void:
-	#print("character_trait base class EndOfTurn() called!")
-#
-#func SkillCast() -> void:
-	#print("character_trait base class SkillCast() called!")
-#
-#func DamageTaken() -> void:
-	#print("character_trait base class DamageTaken() called!")
-#
-#func OnDeath() -> void:
-	#print("character_trait base class OnDeath() called!")
+func StartOfTurn() -> void:
+	print("character_trait base class StartOfTurn() called!")
+
+func EndOfTurn() -> void:
+	print("character_trait base class EndOfTurn() called!")
+
+func OnSkillCast(p_skill_name: String) -> TraitSkillResult:
+	print("character_trait base class SkillCast() called!")
+	return null
+
+func OnDamageTaken() -> void:
+	print("character_trait base class DamageTaken() called!")
+
+func OnDeath() -> void:
+	print("character_trait base class OnDeath() called!")
