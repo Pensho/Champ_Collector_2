@@ -137,13 +137,12 @@ func StartTurn() -> void:
 				_characters[_characterIDs_turn]._skills[i].description,
 				i)
 			_battle_ui._skill_buttons[i].show()
-		_selected_skill_ID = 0
-		_battle_ui.ActiveSkillGlow(_selected_skill_ID)
-		for i in _battle_ui._skill_buttons.size():
 			if(_characters[_characterIDs_turn]._skills[i].cooldown_left > 0):
 				_battle_ui._skill_buttons[i].SetCooldown(_characters[_characterIDs_turn]._skills[i].cooldown_left)
 			else:
 				_battle_ui._skill_buttons[i].ClearCooldown()
+		_selected_skill_ID = 0
+		_battle_ui.ActiveSkillGlow(_selected_skill_ID)
 	elif(ENEMY_IDS.has(_characterIDs_turn)):
 		# TODO: Clean this nested mess up
 		# Use skill in reverse order of ID
@@ -285,10 +284,10 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID) -> voi
 			Skills.TriggerTargetDebuffs(_characters[target_ID], target_attributes)
 		
 		if(not cast_skill.buffs.is_empty()):
-			Skills.PlaceBuff(_characters[target_ID], cast_skill, _character_repr[target_ID])
+			Skills.CastBuff(_characters[target_ID], cast_skill, _character_repr[target_ID])
 		
 		if(not cast_skill.debuffs.is_empty()):
-			Skills.PlaceDebuff(
+			Skills.CastDebuff(
 				_characters[target_ID],
 				target_attributes,
 				caster_attributes[Types.Attribute.Accuracy],

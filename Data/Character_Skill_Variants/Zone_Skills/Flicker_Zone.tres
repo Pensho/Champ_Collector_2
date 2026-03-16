@@ -9,6 +9,6 @@ description = "Creates a zone on the turn bar, giving allies a quick boost in sp
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Flicker_Zone/Flicker_Zone.jpg"
 target = 7
 cooldown = 2
-duration = 4
+duration = 5
 skill_type = 2
 metadata/_custom_type_script = "uid://glh06y3wvchj"

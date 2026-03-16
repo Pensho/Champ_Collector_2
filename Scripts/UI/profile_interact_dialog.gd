@@ -32,7 +32,6 @@ func ConnectLoad(p_callable: Callable) -> void:
 	_load_func = p_callable
 
 func _on_cancel_button_up() -> void:
-	print("Cancel")
 	self.hide()
 
 func _on_save_button_up() -> void:

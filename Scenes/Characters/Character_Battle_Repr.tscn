@@ -117,11 +117,31 @@ custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 expand_mode = 1
 
+[node name="Label" type="Label" parent="HBoxContainer_Status_Effects/Effect_1"]
+layout_mode = 0
+offset_right = 25.0
+offset_bottom = 25.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 12
+horizontal_alignment = 2
+vertical_alignment = 2
+
 [node name="Effect_2" type="TextureRect" parent="HBoxContainer_Status_Effects"]
 visible = false
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 expand_mode = 1
+
+[node name="Label" type="Label" parent="HBoxContainer_Status_Effects/Effect_2"]
+layout_mode = 0
+offset_right = 25.0
+offset_bottom = 25.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 12
+horizontal_alignment = 2
+vertical_alignment = 2
 
 [node name="Effect_3" type="TextureRect" parent="HBoxContainer_Status_Effects"]
 visible = false
@@ -129,11 +149,31 @@ custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 expand_mode = 1
 
+[node name="Label" type="Label" parent="HBoxContainer_Status_Effects/Effect_3"]
+layout_mode = 0
+offset_right = 25.0
+offset_bottom = 25.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 12
+horizontal_alignment = 2
+vertical_alignment = 2
+
 [node name="Effect_4" type="TextureRect" parent="HBoxContainer_Status_Effects"]
 visible = false
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 expand_mode = 1
+
+[node name="Label" type="Label" parent="HBoxContainer_Status_Effects/Effect_4"]
+layout_mode = 0
+offset_right = 25.0
+offset_bottom = 25.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 12
+horizontal_alignment = 2
+vertical_alignment = 2
 
 [node name="Effect_5" type="TextureRect" parent="HBoxContainer_Status_Effects"]
 visible = false
@@ -141,11 +181,31 @@ custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 expand_mode = 1
 
+[node name="Label" type="Label" parent="HBoxContainer_Status_Effects/Effect_5"]
+layout_mode = 0
+offset_right = 25.0
+offset_bottom = 25.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 12
+horizontal_alignment = 2
+vertical_alignment = 2
+
 [node name="Effect_6" type="TextureRect" parent="HBoxContainer_Status_Effects"]
 visible = false
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 expand_mode = 1
+
+[node name="Label" type="Label" parent="HBoxContainer_Status_Effects/Effect_6"]
+layout_mode = 0
+offset_right = 25.0
+offset_bottom = 25.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 12
+horizontal_alignment = 2
+vertical_alignment = 2
 
 [node name="Effect_7" type="TextureRect" parent="HBoxContainer_Status_Effects"]
 visible = false
@@ -153,11 +213,31 @@ custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 expand_mode = 1
 
+[node name="Label" type="Label" parent="HBoxContainer_Status_Effects/Effect_7"]
+layout_mode = 0
+offset_right = 25.0
+offset_bottom = 25.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 12
+horizontal_alignment = 2
+vertical_alignment = 2
+
 [node name="Effect_8" type="TextureRect" parent="HBoxContainer_Status_Effects"]
 visible = false
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 expand_mode = 1
+
+[node name="Label" type="Label" parent="HBoxContainer_Status_Effects/Effect_8"]
+layout_mode = 0
+offset_right = 25.0
+offset_bottom = 25.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 12
+horizontal_alignment = 2
+vertical_alignment = 2
 
 [node name="VBoxContainer_Trait_Elements" type="VBoxContainer" parent="."]
 offset_left = 200.0

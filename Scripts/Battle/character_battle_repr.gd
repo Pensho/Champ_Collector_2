@@ -20,16 +20,23 @@ var _status_effect_counter: int = 0
 func _on_button_target_button_up() -> void:
 	battle_target_selected.emit(_target_ID)
 
-func AddStatusEffect(p_effect_texture: Texture) -> int:
+func AddStatusEffect(p_effect_texture: Texture, p_duration: int) -> int:
 	for slot in _status_effect_textures.size():
 		if (not _status_effect_textures[slot].is_visible_in_tree()):
 			_status_effect_textures[slot].texture = p_effect_texture
 			_status_effect[_status_effect_counter] = slot
 			_status_effect_counter += 1
 			_status_effect_textures[slot].show()
+			SetStatusEffectDuration(slot, p_duration)
 			return _status_effect_counter - 1
 	print("character_battle_repr.gd/AddStatusEffect: Failed to add status effect!")
 	return -1
+
+func SetStatusEffectDuration(p_effect_ID: int, p_duration: int) -> void:
+	if(_status_effect.has(p_effect_ID)):
+		_status_effect_textures[_status_effect[p_effect_ID]].get_child(0).text = str(p_duration)
+	else:
+		print("No status effect found at ID: ", p_effect_ID)
 
 func RemoveStatusEffects(p_effect_IDs: Array[int]) -> void:
 	for effect_ID in p_effect_IDs:
