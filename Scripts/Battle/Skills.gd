@@ -200,7 +200,8 @@ static func CastDebuff(
 					p_target_attributes: Dictionary[Types.Attribute, int],
 					p_caster_accuracy: int,
 					p_skill: Skill,
-					p_target_repr: CharacterRepresentation):
+					p_target_repr: CharacterRepresentation,
+					p_battle_ui: BattleUI):
 	if(HasMaxStatusEffects(p_target)):
 		return
 	
@@ -208,6 +209,7 @@ static func CastDebuff(
 	var randomVal2: float = randf_range(0.95, 1.0)
 	if(p_caster_accuracy * randomVal < p_target_attributes[Types.Attribute.Resistance] * randomVal2):
 		print("Target character ", p_target._name, " resisted the debuff!")
+		p_battle_ui.SpawnCombatText("Resisted debuff!", p_target_repr.position + p_battle_ui.COMBAT_TEXT_SPAWN_POINT, Color(0.801, 0.0, 0.0, 1.0))
 		return
 	
 	for i in p_target._active_debuffs.size():
@@ -226,7 +228,9 @@ static func CastDebuff(
 static func DamageDealt(p_attacker_attr: Dictionary[Types.Attribute, int],
 						p_defender_attr: Dictionary[Types.Attribute, int],
 						p_skill: Skill,
-						p_trait_multiplier: float) -> int:
+						p_trait_multiplier: float,
+						p_target_repr: CharacterRepresentation,
+						p_battle_ui: BattleUI) -> int:
 	var randomVal: float = randf_range(0.95, 1.05)
 	var caster_scaled_attribute_aggregate: float = 0.0
 	var crit_multiplier: float = 1.0
@@ -237,6 +241,7 @@ static func DamageDealt(p_attacker_attr: Dictionary[Types.Attribute, int],
 		
 	if(randi_range(0, 100) <= p_attacker_attr[Types.Attribute.CritChance]):
 		crit_multiplier = float(p_attacker_attr[Types.Attribute.CritDamage]) * 0.01
+		p_battle_ui.SpawnCombatText("Critical Strike!", p_target_repr.position + p_battle_ui.COMBAT_TEXT_SPAWN_POINT, Color(1.0, 0.729, 0.0, 1.0))
 		# TODO: Add a flair to highlight the occurance of a critical strike.
 		print("The attacker did a critical strike!")
 	

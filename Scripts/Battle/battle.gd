@@ -292,14 +292,21 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID) -> voi
 				target_attributes,
 				caster_attributes[Types.Attribute.Accuracy],
 				cast_skill,
-				_character_repr[target_ID])
+				_character_repr[target_ID],
+				_battle_ui)
 		
 		if(not cast_skill.damage_scaling.is_empty()):
-			var damage_dealt: int = Skills.DamageDealt(caster_attributes, target_attributes, cast_skill, trait_result._damage_multiplier)
+			var damage_dealt: int = Skills.DamageDealt(
+				caster_attributes,
+				target_attributes,
+				cast_skill,
+				trait_result._damage_multiplier,
+				_character_repr[target_ID],
+				_battle_ui)
 			if(damage_dealt != 0):
 				if (PLAYER_IDS.has(p_caster_ID)):
 					_self_context._arguments["character_dmg_" + str(p_caster_ID)] += damage_dealt
-				_battle_ui.SpawnDamageNumber(damage_dealt, _character_repr[target_ID].position + Vector2(100, 70))
+				_battle_ui.SpawnCombatText(str(damage_dealt), _character_repr[target_ID].position + _battle_ui.COMBAT_TEXT_SPAWN_POINT)
 				_characters[target_ID]._currentHealth -= damage_dealt
 				UpdateLifeBar(target_ID)
 				if (null != _characters[target_ID]._trait):

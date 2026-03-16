@@ -8,16 +8,21 @@ class_name BattleUI extends Control
 
 @export var _battle_duration_label: Label
 
-const DAMAGE_NUMBER_TEMPLATE = preload("res://Scenes/ui/Damage_Number.tscn")
+const COMBAT_EFFECT_TEXT_TEMPLATE = preload("uid://caq22aj34qk1f")
+const SKILL_GLOW_POS_HIDDEN: Vector2 = Vector2(-2000.0, 0.0)
+const COMBAT_TEXT_SPAWN_POINT: Vector2 = Vector2(100, 70)
+const TEXT_SPAWN_DELAY: float = 0.25
 var SKILL_GLOW_POS_1: Vector2
 var SKILL_GLOW_POS_2: Vector2
 var SKILL_GLOW_POS_3: Vector2
-const SKILL_GLOW_POS_HIDDEN: Vector2 = Vector2(-2000.0, 0.0)
 
 signal battle_skill_selected(p_skill_ID: int)
 
-var _damage_number_2d_pool: Array[DamageNumber2D] = []
+var _damage_number_2d_pool: Array[CombatEffectText] = []
 var _allow_new_effects: bool = true
+var _spawn_queue: Array[CombatEffectText]
+var _spawn_timer: float = 0.0
+
 var _battle_duration := 0.0
 var _skill_textures: Dictionary[String, Texture2D]
 var _environment_effects: Array[Node]
@@ -34,6 +39,13 @@ func _process(delta: float) -> void:
 	var minutes := _battle_duration / 60
 	var seconds := fmod(_battle_duration, 60)
 	_battle_duration_label.text = "%02d:%02d" % [minutes, seconds]
+	
+	_spawn_timer -= delta
+	if(_spawn_timer <= 0.0 and not _spawn_queue.is_empty()):
+		var text = _spawn_queue.pop_front()
+		add_child(text, true)
+		text.Animate()
+		_spawn_timer = TEXT_SPAWN_DELAY
 
 func CleanUp() -> void:
 	_allow_new_effects = false
@@ -48,21 +60,21 @@ func LoadSkillTexture(p_texture_path: String) -> void:
 		return
 	_skill_textures[p_texture_path] = load(p_texture_path)
 
-func SpawnDamageNumber(p_value: int, p_position: Vector2) -> void:
+func SpawnCombatText(p_value: String, p_position: Vector2, p_color: Color = Color(1.0, 1.0, 1.0, 1.0)) -> void:
 	if (_allow_new_effects):
-		var damage_number: DamageNumber2D = GetDamageNumber()
-		add_child(damage_number, true)
-		damage_number.SetValueAndAnimate(str(p_value), p_position, 100.0, 10.0)
+		var text: CombatEffectText = GetDamageNumber()
+		text.SetValue(p_value, p_position, 100.0, 10.0, p_color)
+		_spawn_queue.append(text)
 
-func GetDamageNumber() -> DamageNumber2D:
+func GetDamageNumber() -> CombatEffectText:
 	if (_allow_new_effects):
 		if (_damage_number_2d_pool.size() > 0):
 			return _damage_number_2d_pool.pop_front()
 		else:
-			var new_damage_number: DamageNumber2D = DAMAGE_NUMBER_TEMPLATE.instantiate()
-			new_damage_number.tree_exiting.connect(
-				func():_damage_number_2d_pool.append(new_damage_number))
-			return new_damage_number
+			var new_text: CombatEffectText = COMBAT_EFFECT_TEXT_TEMPLATE.instantiate()
+			new_text.tree_exiting.connect(
+				func():_damage_number_2d_pool.append(new_text))
+			return new_text
 	return null
 
 func SetSkill(p_texture_path: String, p_title: String, p_description: String, p_slot: int) -> void:
