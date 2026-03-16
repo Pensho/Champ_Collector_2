@@ -295,7 +295,7 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID) -> voi
 				_character_repr[target_ID])
 		
 		if(not cast_skill.damage_scaling.is_empty()):
-			var damage_dealt: int = Skills.DamageDealt(caster_attributes, target_attributes, cast_skill)
+			var damage_dealt: int = Skills.DamageDealt(caster_attributes, target_attributes, cast_skill, trait_result._damage_multiplier)
 			if(damage_dealt != 0):
 				if (PLAYER_IDS.has(p_caster_ID)):
 					_self_context._arguments["character_dmg_" + str(p_caster_ID)] += damage_dealt

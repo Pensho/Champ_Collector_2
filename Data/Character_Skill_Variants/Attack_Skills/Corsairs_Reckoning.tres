@@ -6,9 +6,9 @@
 script = ExtResource("1_c405q")
 name = "Corsairs Reckoning"
 description = "A devestating blow consuming all Stacks for various effects. Based on Attack."
-icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Stab/Stab_3.jpg"
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Corsairs_Reckoning/Corsairs_Reckoning_1.jpg"
 damage_scaling = Dictionary[int, float]({
-2: 2.0
+2: 1.3
 })
 cooldown = 3
 metadata/_custom_type_script = "uid://glh06y3wvchj"

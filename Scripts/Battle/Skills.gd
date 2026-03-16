@@ -225,14 +225,15 @@ static func CastDebuff(
 
 static func DamageDealt(p_attacker_attr: Dictionary[Types.Attribute, int],
 						p_defender_attr: Dictionary[Types.Attribute, int],
-						p_skill: Skill) -> int:
+						p_skill: Skill,
+						p_trait_multiplier: float) -> int:
 	var randomVal: float = randf_range(0.95, 1.05)
 	var caster_scaled_attribute_aggregate: float = 0.0
 	var crit_multiplier: float = 1.0
 	var ignore_defense_factor: float = p_skill.defense_ignore_factor
 	
 	for key in p_skill.damage_scaling.keys():
-		caster_scaled_attribute_aggregate += p_skill.damage_scaling[key] * p_attacker_attr[key]
+		caster_scaled_attribute_aggregate += p_skill.damage_scaling[key] * float(p_attacker_attr[key]) * p_trait_multiplier
 		
 	if(randi_range(0, 100) <= p_attacker_attr[Types.Attribute.CritChance]):
 		crit_multiplier = float(p_attacker_attr[Types.Attribute.CritDamage]) * 0.01

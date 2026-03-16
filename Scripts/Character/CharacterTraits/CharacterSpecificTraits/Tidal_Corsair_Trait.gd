@@ -20,8 +20,6 @@ var _steel_description: StackDescription
 var _sea_description: StackDescription
 var _blank_description: StackDescription
 
-var _skill_result: TraitSkillResult
-
 func Init(p_character_repr: CharacterRepresentation) -> void:
 	_character_repr = p_character_repr
 	_sea_stack_texture = load("res://Assets/Champ_Collector/Creatures/Tidal_Corsair/Tidal_Corsair_Stack_Sea.png")
@@ -40,8 +38,6 @@ func Init(p_character_repr: CharacterRepresentation) -> void:
 	_blank_description = StackDescription.new()
 	_blank_description._title = "Empty Stack"
 	_blank_description._body = "Use an ability that grants stacks to fill this."
-	
-	_skill_result = TraitSkillResult.new()
 
 func StartOfBattle() -> void:
 	for i in _held_stacks.size():
@@ -49,6 +45,7 @@ func StartOfBattle() -> void:
 		_character_repr.SetTraitElementToolTip(_blank_description._title, _blank_description._body, i)
 
 func OnSkillCast(p_skill_name: String) -> TraitSkillResult:
+	var skill_result: TraitSkillResult = TraitSkillResult.new()
 	match p_skill_name:
 		"Boarding Strike":
 			for i in _held_stacks.size():
@@ -66,8 +63,12 @@ func OnSkillCast(p_skill_name: String) -> TraitSkillResult:
 					break;
 		"Corsairs Reckoning":
 			for i in _held_stacks.size():
+				if (_held_stacks[i] == Stack_Type.Steel):
+					skill_result._damage_multiplier += 0.5
+				elif (_held_stacks[i] == Stack_Type.Sea):
+					skill_result._turn_bar_bump -= 0.1
 				_held_stacks[i] = Stack_Type.Empty
 				_character_repr.SetBlankTraitElement(i)
 				_character_repr.SetTraitElementToolTip(_blank_description._title, _blank_description._body, i)
 				
-	return _skill_result
+	return skill_result
