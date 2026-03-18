@@ -15,13 +15,14 @@ enum Stack_Type
 
 var _sea_stack_texture: Texture2D
 var _steel_stack_texture: Texture2D
-var _held_stacks: Array[Stack_Type] = [Stack_Type.Empty, Stack_Type.Empty, Stack_Type.Empty]
+var _held_stacks: Array[Stack_Type]
 var _steel_description: StackDescription
 var _sea_description: StackDescription
 var _blank_description: StackDescription
 
-func Init(p_character_repr: CharacterRepresentation) -> void:
-	_character_repr = p_character_repr
+func Init() -> void:
+	print("Initializing Tidal corsair trait")
+	_held_stacks = [Stack_Type.Empty, Stack_Type.Empty, Stack_Type.Empty]
 	_sea_stack_texture = load("res://Assets/Champ_Collector/Creatures/Tidal_Corsair/Tidal_Corsair_Stack_Sea.png")
 	_steel_stack_texture = load("res://Assets/Champ_Collector/Creatures/Tidal_Corsair/Tidal_Corsair_Stack_Steel.png")
 	_execution_steps[Types.Combat_Event.Start_Combat] = Callable(self, "StartOfBattle")
@@ -39,27 +40,28 @@ func Init(p_character_repr: CharacterRepresentation) -> void:
 	_blank_description._title = "Empty Stack"
 	_blank_description._body = "Use an ability that grants stacks to fill this."
 
-func StartOfBattle() -> void:
+func StartOfBattle(p_character_repr: CharacterRepresentation) -> void:
+	_held_stacks = [Stack_Type.Empty, Stack_Type.Empty, Stack_Type.Empty]
 	for i in _held_stacks.size():
-		_character_repr.SetBlankTraitElement(i)
-		_character_repr.SetTraitElementToolTip(_blank_description._title, _blank_description._body, i)
+		p_character_repr.SetBlankTraitElement(i)
+		p_character_repr.SetTraitElementToolTip(_blank_description._title, _blank_description._body, i)
 
-func OnSkillCast(p_skill_name: String) -> TraitSkillResult:
+func OnSkillCast(p_skill_name: String, p_character_repr: CharacterRepresentation) -> TraitSkillResult:
 	var skill_result: TraitSkillResult = TraitSkillResult.new()
 	match p_skill_name:
 		"Boarding Strike":
 			for i in _held_stacks.size():
 				if (_held_stacks[i] == Stack_Type.Empty):
 					_held_stacks[i] = Stack_Type.Steel
-					_character_repr.SetTraitElement(_steel_stack_texture, i)
-					_character_repr.SetTraitElementToolTip(_steel_description._title, _steel_description._body, i)
+					p_character_repr.SetTraitElement(_steel_stack_texture, i)
+					p_character_repr.SetTraitElementToolTip(_steel_description._title, _steel_description._body, i)
 					break;
 		"Saltwater Shot":
 			for i in _held_stacks.size():
 				if (_held_stacks[i] == Stack_Type.Empty):
 					_held_stacks[i] = Stack_Type.Sea
-					_character_repr.SetTraitElement(_sea_stack_texture, i)
-					_character_repr.SetTraitElementToolTip(_sea_description._title, _sea_description._body, i)
+					p_character_repr.SetTraitElement(_sea_stack_texture, i)
+					p_character_repr.SetTraitElementToolTip(_sea_description._title, _sea_description._body, i)
 					break;
 		"Corsairs Reckoning":
 			for i in _held_stacks.size():
@@ -68,7 +70,7 @@ func OnSkillCast(p_skill_name: String) -> TraitSkillResult:
 				elif (_held_stacks[i] == Stack_Type.Sea):
 					skill_result._turn_bar_bump -= 0.1
 				_held_stacks[i] = Stack_Type.Empty
-				_character_repr.SetBlankTraitElement(i)
-				_character_repr.SetTraitElementToolTip(_blank_description._title, _blank_description._body, i)
+				p_character_repr.SetBlankTraitElement(i)
+				p_character_repr.SetTraitElementToolTip(_blank_description._title, _blank_description._body, i)
 				
 	return skill_result

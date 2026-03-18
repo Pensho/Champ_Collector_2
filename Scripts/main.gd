@@ -11,6 +11,8 @@ const TIDAL_CORSAIR = preload("uid://bmqvx8opoocu7")
 
 var _instance: Main_Instance = null
 
+var _key_pressed: bool = false
+
 func _ready() -> void:
 	_instance = Main_Instance.new()
 	_instance.Init()
@@ -22,6 +24,13 @@ func GetInstance() -> Main_Instance:
 		_instance.Init()
 		self.add_child(_instance)
 	return _instance
+
+func _process(_delta: float) -> void:
+	if(Input.is_key_pressed(KEY_0) and !_key_pressed):
+		_key_pressed = true
+		print(get_tree_string_pretty())
+	if(!Input.is_key_pressed(KEY_0) and _key_pressed):
+		_key_pressed = false
 
 class Main_Instance extends Node:
 	var _current_scene = null
@@ -73,7 +82,6 @@ class Main_Instance extends Node:
 		_current_scene = scene.instantiate()
 		add_child(_current_scene)
 		print("current scene is: ", _current_scene)
-		#print(get_tree_string_pretty())
 		_current_scene.Init(p_context)
 		## Play transition animation backwards
 		## self.visible = false
