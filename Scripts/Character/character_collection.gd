@@ -38,10 +38,7 @@ func Deserialize(p_data: Dictionary) -> void:
 	for character_data in p_data["characters"]:
 		var preset: CharacterPreset = load(character_data["preset_UID"]).duplicate(true)
 		var new_character: Character = load("uid://s7cyusnkyl53").instantiate()
-		var character_trait: CharacterTrait = null
-		if(preset._trait != null):
-			character_trait = preset._trait.duplicate(true)
-		new_character.InstantiateNew(preset, character_data["instance_ID"], character_trait)
+		new_character.InstantiateNew(preset, character_data["instance_ID"])
 		new_character._level = int(character_data["level"])
 		new_character._experience = int(character_data["experience"])
 		
@@ -108,10 +105,7 @@ func GetCharacterTexture(p_character_role: Types.Role) -> Texture:
 func Add(preset: CharacterPreset) -> void:
 	if(not IsTheCollectionFull()):
 		var new_character: Character = load("res://Scenes/Characters/Character.tscn").instantiate()
-		var character_trait: CharacterTrait = null
-		if(preset._trait != null):
-			character_trait = preset._trait.duplicate(true)
-		new_character.InstantiateNew(preset, CreateNextInstanceID(), character_trait)
+		new_character.InstantiateNew(preset, CreateNextInstanceID())
 		_characters[new_character._instanceID] = new_character
 		
 		if(!_collected_types.has(new_character._role)):

@@ -77,7 +77,7 @@ func Init(p_context: ContextContainer) -> void:
 	
 	for i in _battlecontext._enemies_wave_1.size():
 		_characters[i + 3] = Character.new()
-		_characters[i + 3].InstantiateNew(_battlecontext._enemies_wave_1[i], -1, null)
+		_characters[i + 3].InstantiateNew(_battlecontext._enemies_wave_1[i], -1)
 		_characters[i + 3]._attributes[Types.Attribute.Speed] += randi_range(-3, 3)
 		LevelSystem.SetOpponentLevel(_characters[i + 3], difficulty)
 		if (p_context._arguments.has("Boss_Scale")):

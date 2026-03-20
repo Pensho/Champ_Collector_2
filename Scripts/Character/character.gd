@@ -1,33 +1,33 @@
 class_name Character extends Node
 
-func InstantiateNew(preset: CharacterPreset, instanceID: int, characterTrait: CharacterTrait) -> void:
-	_instanceID = instanceID
-	_preset_UID = preset._preset_UID
+func InstantiateNew(p_preset: CharacterPreset, p_instanceID: int) -> void:
+	_instanceID = p_instanceID
+	_preset_UID = p_preset._preset_UID
 	
-	_name = preset._name
-	_texture = preset._texture
-	_normal_map = preset._normal_map
-	_rarity = preset._rarity
-	_faction = preset._faction
-	_role = preset._role
-	_skills = preset._skills
-	_attributes_weights = preset._attributes_weights
+	_name = p_preset._name
+	_texture = p_preset._texture
+	_normal_map = p_preset._normal_map
+	_rarity = p_preset._rarity
+	_faction = p_preset._faction
+	_role = p_preset._role
+	_skills = p_preset._skills
+	_attributes_weights = p_preset._attributes_weights
 	
-	_attributes[Types.Attribute.Health] = preset._health
-	_attributes[Types.Attribute.Speed] = preset._speed
-	_attributes[Types.Attribute.Attack] = preset._attack
-	_attributes[Types.Attribute.Defence] = preset._defence
-	_attributes[Types.Attribute.Accuracy] = preset._accuracy
-	_attributes[Types.Attribute.Resistance] = preset._resistance
-	_attributes[Types.Attribute.Mysticism] = preset._mysticism
-	_attributes[Types.Attribute.Knowledge] = preset._knowledge
-	_attributes[Types.Attribute.CritChance] = preset._critChance
-	_attributes[Types.Attribute.CritDamage] = preset._critDamage
+	_attributes[Types.Attribute.Health] = p_preset._health
+	_attributes[Types.Attribute.Speed] = p_preset._speed
+	_attributes[Types.Attribute.Attack] = p_preset._attack
+	_attributes[Types.Attribute.Defence] = p_preset._defence
+	_attributes[Types.Attribute.Accuracy] = p_preset._accuracy
+	_attributes[Types.Attribute.Resistance] = p_preset._resistance
+	_attributes[Types.Attribute.Mysticism] = p_preset._mysticism
+	_attributes[Types.Attribute.Knowledge] = p_preset._knowledge
+	_attributes[Types.Attribute.CritChance] = p_preset._critChance
+	_attributes[Types.Attribute.CritDamage] = p_preset._critDamage
 	
 	_currentHealth = GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
 	
-	_trait = characterTrait
-	if(null != _trait):
+	if(null != p_preset._trait):
+		_trait = p_preset._trait.duplicate(true)
 		_trait.Init()
 
 func GetEquipmentBonus(p_attribute: Types.Attribute) -> int:
