@@ -406,7 +406,7 @@ When a victory is achieved, rewards will be randomly selected from the loot tabl
 ---
 
 ## 4. World and Narrative
-TODO
+Also look at World_Building.md for more brainstorm writing.
 
 ### 4.1. Religion
 
@@ -415,7 +415,7 @@ In this world there are 3 gods that created it, but through their effort they ha
 The reason for betrayal is since while initially magic provided many oppertunities and options for adventure and structure, it eventually became clear that magic could easily break both adventure and structure if left unchecked. The god of adventure saw magic as a way to create endless possibilities, but the god of rules viewed it as a chaotic force that undermined order and predictability. Fearing the destabilizing potential of magic, the god of rules conspired with the god of adventure to imprison the god of magic, believing that by doing so, they could preserve their own domains.
 
 Believers grant the gods power, but very slowly. Fragments of the god of magic exists in ruins written in obscure languages only used in history.
-The god of magics only mark left on the world other than ruins is the magic system.
+The god of magics only mark left on the world other than ruins is the magic system, written in old scrolls lost to civilization.
 Since the imprisonment the magic system became very restricted in terms of conjuration and effect, often requiring powerful reagents, chants only known in parts or environmental conditions.
 
 #### God 1, the god of adventure
@@ -440,6 +440,9 @@ The God of Magic holds immense knowledge of the arcane arts and the mysteries of
 - Pirates?
 - Trolls
 - Fae?
+- Centaurs?
+- Harpies?
+- More mythical entities?
 
 ### 4.3. Notable cities and locations
 
