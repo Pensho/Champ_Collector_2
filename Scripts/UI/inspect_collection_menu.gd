@@ -31,7 +31,7 @@ func Init(_p_context_container: ContextContainer) -> void:
 		
 		if(slot_nr < _character_collection.size()):
 			_displayed_character_ids[slot_nr] = _character_collection.keys()[slot_nr]
-			_available_menu_slots[slot_nr].SetHeldObjectTexture(main.GetInstance()._character_collection.GetCharacterTexture(_character_collection[_displayed_character_ids[slot_nr]]._role))
+			_available_menu_slots[slot_nr].SetHeldObjectTexture(main.GetInstance()._character_collection.GetCharacterTexture(_character_collection[_displayed_character_ids[slot_nr]]._name))
 			_available_menu_slots[slot_nr].level.text = str(_character_collection[_displayed_character_ids[slot_nr]]._level)
 		else:
 			_displayed_character_ids[slot_nr] = -1
@@ -58,7 +58,7 @@ func GetMenuItemSlotChildren(p_start_node: Node) -> Array[MenuItemSlot]:
 	return result
 
 func ShowSelectedCharacter(p_instance_ID: int) -> void:
-	_selected_character_texture.texture = main.GetInstance()._character_collection.GetCharacterTexture(_character_collection[p_instance_ID]._role)
+	_selected_character_texture.texture = main.GetInstance()._character_collection.GetCharacterTexture(_character_collection[p_instance_ID]._name)
 	for attr in _attribute_labels.keys():
 		if(Types.Attribute.Health == attr):
 			_attribute_labels[attr].text = str((_character_collection[p_instance_ID]._attributes[attr] + _character_collection[p_instance_ID].GetEquipmentBonus(attr)) * GAMEBALANCE.ATTRIBUTE_HEALTH_MULTIPLIER)
@@ -160,7 +160,7 @@ func _on_button_deselect_char_button_up() -> void:
 		_selected_char_level.text = "Level: "
 		for slot_nr in _available_menu_slots.size(): #_displayed_character_ids
 			if(slot_nr < _character_collection.size()):
-				_available_menu_slots[slot_nr].SetHeldObjectTexture(main.GetInstance()._character_collection.GetCharacterTexture(_character_collection[_displayed_character_ids[slot_nr]]._role))
+				_available_menu_slots[slot_nr].SetHeldObjectTexture(main.GetInstance()._character_collection.GetCharacterTexture(_character_collection[_displayed_character_ids[slot_nr]]._name))
 				_available_menu_slots[slot_nr].SetTextureOutline(_character_collection[_displayed_character_ids[slot_nr]]._rarity)
 				_available_menu_slots[slot_nr].level.text = str(_character_collection[_displayed_character_ids[slot_nr]]._level)
 			else:

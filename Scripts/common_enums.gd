@@ -13,10 +13,13 @@ enum Rarity
 enum Faction
 {
 	Kingdom1,
-	Kingdom2,
+	The_Iron_Ledger,
 	Renegades,
 	Outcasts,
 	Generic_Enemy,
+	Centaur_Great_Caravan,
+	Centaur_Regimes,
+	Centaur_Rootless_Tribes,
 }
 
 enum Role

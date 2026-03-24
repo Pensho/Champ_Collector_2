@@ -35,7 +35,7 @@ func Init(p_context_container: ContextContainer) -> void:
 		_available_character_slots[i]._ID = i
 		_available_character_slots[i].ConnectButton(_on_add_char_button_up)
 		if(i < _character_collection_size):
-			_available_character_slots[i].SetHeldObjectTexture(main.GetInstance()._character_collection.GetCharacterTexture(_character_collection[i]._role))
+			_available_character_slots[i].SetHeldObjectTexture(main.GetInstance()._character_collection.GetCharacterTexture(_character_collection[i]._name))
 			_available_character_slots[i].level.text = str(_character_collection[i]._level)
 	
 	for i in range(1, main.GetInstance()._progress.GetCurrentEncounterDifficulty(_self_context._static_context.resource_path) + 1):

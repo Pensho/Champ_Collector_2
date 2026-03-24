@@ -8,6 +8,10 @@ const THIEF = preload("res://Data/Character_Player_Variants/Thief.tres")
 const CHRONOPHAGE = preload("uid://wofv42g341ac")
 const BLOODMAGE = preload("uid://7adgp1emx6yk")
 const TIDAL_CORSAIR = preload("uid://bmqvx8opoocu7")
+const CENTAUR_LANCER = preload("uid://cgpw0pv0l4wn4")
+const CENTAUR_ARCHIVIST = preload("uid://dkdgfkpt6si8y")
+
+
 
 var _instance: Main_Instance = null
 
@@ -64,6 +68,8 @@ class Main_Instance extends Node:
 		_character_collection.Add(JESTER.duplicate(true))
 		_character_collection.Add(CHRONOPHAGE.duplicate(true))
 		_character_collection.Add(TIDAL_CORSAIR.duplicate(true))
+		_character_collection.Add(CENTAUR_LANCER.duplicate(true))
+		_character_collection.Add(CENTAUR_ARCHIVIST.duplicate(true))
 		
 		context_container._scene = "res://Scenes/ui/MainMenu.tscn"
 		change_scene(context_container)

@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="CharacterPreset" load_steps=5 format=3 uid="uid://cgpw0pv0l4wn4"]
+
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_h4jsw"]
+[ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_qqxae"]
+[ext_resource type="Resource" uid="uid://dvgwxvsovsldc" path="res://Data/Character_Skill_Variants/Attack_Skills/Stab.tres" id="2_yv8li"]
+[ext_resource type="Resource" uid="uid://dvsuv0ji1ueq7" path="res://Data/Character_Skill_Variants/Attack_Skills/Disarm.tres" id="3_pnj57"]
+
+[resource]
+script = ExtResource("2_qqxae")
+_name = "Centaur Lancer"
+_texture = "res://Assets/Champ_Collector/Creatures/Centaur_Lancer/Centaur_Lancer_1.png"
+_rarity = 4
+_faction = 6
+_role = 3
+_skills = Array[ExtResource("1_h4jsw")]([ExtResource("2_yv8li"), ExtResource("3_pnj57"), ExtResource("2_yv8li")])
+_health = 90
+_speed = 55
+_attack = 65
+_defence = 75
+_accuracy = 40
+_resistance = 45
+_mysticism = 10
+_knowledge = 30
+_critDamage = 160
+_attributes_weights = Array[int]([0, 3, 0, 3, 2])
+_preset_UID = "uid://cgpw0pv0l4wn4"
+metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

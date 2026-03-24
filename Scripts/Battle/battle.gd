@@ -243,7 +243,7 @@ func VisualizeCharacter(p_characterID: int) -> void:
 	_character_repr[p_characterID]._level.text = str(_characters[p_characterID]._level)
 	var character_canvas_texture = CanvasTexture.new()
 	if(PLAYER_IDS.has(p_characterID)):
-		character_canvas_texture.diffuse_texture = main.GetInstance()._character_collection.GetCharacterTexture(_characters[p_characterID]._role)
+		character_canvas_texture.diffuse_texture = main.GetInstance()._character_collection.GetCharacterTexture(_characters[p_characterID]._name)
 	else:
 		character_canvas_texture.diffuse_texture = load(_characters[p_characterID]._texture)
 	if("" != _characters[p_characterID]._normal_map):

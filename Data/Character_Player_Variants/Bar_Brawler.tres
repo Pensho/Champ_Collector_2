@@ -12,7 +12,6 @@ _name = "Bar Brawler"
 _texture = "res://Assets/Champ_Collector/Creatures/Bar brawler/Bar_Brawler_0004.png"
 _normal_map = "res://Assets/Champ_Collector/Creatures/Bar brawler/Bar_Brawler_0004_Normal_Map.png"
 _rarity = 2
-_faction = 1
 _role = 14
 _skills = Array[ExtResource("1_ct0uv")]([ExtResource("2_f0b57"), ExtResource("3_igy35"), ExtResource("3_f0b57")])
 _health = 95
