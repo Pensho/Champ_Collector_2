@@ -3,8 +3,8 @@
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_apwnd"]
 [ext_resource type="Resource" uid="uid://dvgwxvsovsldc" path="res://Data/Character_Skill_Variants/Attack_Skills/Stab.tres" id="2_njcfh"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_q0dfw"]
-[ext_resource type="Resource" uid="uid://dvsuv0ji1ueq7" path="res://Data/Character_Skill_Variants/Attack_Skills/Disarm.tres" id="3_drmsg"]
-[ext_resource type="Resource" uid="uid://civ8gh1okd6p1" path="res://Data/Character_Skill_Variants/Attack_Skills/Break_Guard.tres" id="4_hflnl"]
+[ext_resource type="Resource" uid="uid://ca6l45nune41w" path="res://Data/Character_Skill_Variants/Support_Skills/Power_Tide.tres" id="3_njcfh"]
+[ext_resource type="Resource" uid="uid://cbgjuq0ikkygr" path="res://Data/Character_Skill_Variants/Support_Skills/Stalwart_Hymn.tres" id="4_njcfh"]
 
 [resource]
 script = ExtResource("2_q0dfw")
@@ -13,7 +13,7 @@ _texture = "res://Assets/Champ_Collector/Creatures/Centaur_Archivist/Centaur_Arc
 _rarity = 4
 _faction = 7
 _role = 6
-_skills = Array[ExtResource("1_apwnd")]([ExtResource("2_njcfh"), ExtResource("3_drmsg"), ExtResource("4_hflnl")])
+_skills = Array[ExtResource("1_apwnd")]([ExtResource("2_njcfh"), ExtResource("3_njcfh"), ExtResource("4_njcfh")])
 _health = 60
 _speed = 60
 _attack = 35

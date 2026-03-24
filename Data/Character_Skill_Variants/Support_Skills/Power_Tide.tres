@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="Skill" load_steps=2 format=3 uid="uid://ca6l45nune41w"]
+
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_g1e7h"]
+
+[resource]
+script = ExtResource("1_g1e7h")
+name = "Power Tide"
+description = "Grants all allies increased Attack."
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Power_Tide/Power_Surge_1.jpg"
+target = 4
+cooldown = 4
+duration = 3
+skill_type = 5
+buffs = Dictionary[int, int]({
+4: 1
+})
+metadata/_custom_type_script = "uid://glh06y3wvchj"

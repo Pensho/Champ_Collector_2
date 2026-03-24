@@ -283,7 +283,7 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID) -> voi
 			Skills.TriggerTargetDebuffs(_characters[target_ID], target_attributes)
 		
 		if(not cast_skill.buffs.is_empty()):
-			Skills.CastBuff(_characters[target_ID], cast_skill, _character_repr[target_ID])
+			Skills.CastBuff(_characters[target_ID], cast_skill, _character_repr[target_ID], _battle_ui)
 		
 		if(not cast_skill.debuffs.is_empty()):
 			Skills.CastDebuff(

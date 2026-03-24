@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="Skill" load_steps=2 format=3 uid="uid://cbgjuq0ikkygr"]
+
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_oj3d8"]
+
+[resource]
+script = ExtResource("1_oj3d8")
+name = "Stalwart Hymn"
+description = "Increases the defense of all allies."
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Stalwart_Hymn/Stalwart_Hymn.jpg"
+target = 4
+cooldown = 4
+duration = 3
+skill_type = 5
+buffs = Dictionary[int, int]({
+4: 2
+})
+metadata/_custom_type_script = "uid://glh06y3wvchj"

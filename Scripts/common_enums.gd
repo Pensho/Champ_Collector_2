@@ -100,11 +100,14 @@ enum Skill_Type
 	Flicker_Zone,
 	Lava_Zone,
 	None,
+	Status_Effect,
 }
 
 enum Buff_Type
 {
 	Invalid,
+	Empower,
+	Fortify,
 }
 
 enum Debuff_Type

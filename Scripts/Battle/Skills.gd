@@ -140,7 +140,10 @@ static func TriggerExistingCasterBuffs(
 	
 	for buff in p_caster._active_buffs:
 		match buff.type:
-			# TODO: Add buff handling
+			Types.Buff_Type.Empower:
+				p_caster_attributes[Types.Attribute.Attack] += int(ceilf(p_caster_attributes[Types.Attribute.Attack] * 0.3))
+			Types.Buff_Type.Fortify:
+				p_caster_attributes[Types.Attribute.Defence] += int(ceilf(p_caster_attributes[Types.Attribute.Defence] * 0.3))
 			_:
 				pass
 		
@@ -159,7 +162,10 @@ static func TriggerTargetBuffs(
 							p_target_attributes: Dictionary[Types.Attribute, int]) -> void:
 	for buff in p_target._active_buffs:
 		match buff.type:
-			# TODO: Add buff handling
+			Types.Buff_Type.Empower:
+				p_target_attributes[Types.Attribute.Attack] += int(ceilf(p_target_attributes[Types.Attribute.Attack] * 0.3))
+			Types.Buff_Type.Fortify:
+				p_target_attributes[Types.Attribute.Defence] += int(ceilf(p_target_attributes[Types.Attribute.Defence] * 0.3))
 			_:
 				pass
 
@@ -178,7 +184,8 @@ static func TriggerTargetDebuffs(
 static func CastBuff(
 				p_target: Character,
 				p_skill: Skill,
-				p_target_repr: CharacterRepresentation):
+				p_target_repr: CharacterRepresentation,
+				p_battle_ui: BattleUI):
 	if(HasMaxStatusEffects(p_target)):
 		return
 	
@@ -194,6 +201,7 @@ static func CastBuff(
 	new_buff.duration = p_skill.duration
 	new_buff.ID = p_target_repr.AddStatusEffect(GetStatusEffectTexture(Statuses.BUFF_ICONS[new_buff.type]), new_buff.duration)
 	p_target._active_buffs.append(new_buff)
+	p_battle_ui.SpawnCombatText(Types.Buff_Type.keys()[new_buff.type], p_target_repr.position + p_battle_ui.COMBAT_TEXT_SPAWN_POINT, Color(0.335, 0.575, 0.838, 1.0))
 
 static func CastDebuff(
 					p_target: Character,
@@ -224,6 +232,7 @@ static func CastDebuff(
 	new_debuff.duration = p_skill.duration
 	new_debuff.ID = p_target_repr.AddStatusEffect(GetStatusEffectTexture(Statuses.DEBUFF_ICONS[new_debuff.type]), new_debuff.duration)
 	p_target._active_debuffs.append(new_debuff)
+	p_battle_ui.SpawnCombatText(Types.Debuff_Type.keys()[new_debuff.type], p_target_repr.position + p_battle_ui.COMBAT_TEXT_SPAWN_POINT, Color(0.681, 0.152, 0.31, 1.0))
 
 static func DamageDealt(p_attacker_attr: Dictionary[Types.Attribute, int],
 						p_defender_attr: Dictionary[Types.Attribute, int],
@@ -238,12 +247,13 @@ static func DamageDealt(p_attacker_attr: Dictionary[Types.Attribute, int],
 	
 	for key in p_skill.damage_scaling.keys():
 		caster_scaled_attribute_aggregate += p_skill.damage_scaling[key] * float(p_attacker_attr[key]) * p_trait_multiplier
+	# For example, some status skills deal no damage. So no need to continue.
+	if(0.0 == caster_scaled_attribute_aggregate):
+		return 0
 		
 	if(randi_range(0, 100) <= p_attacker_attr[Types.Attribute.CritChance]):
 		crit_multiplier = float(p_attacker_attr[Types.Attribute.CritDamage]) * 0.01
 		p_battle_ui.SpawnCombatText("Critical Strike!", p_target_repr.position + p_battle_ui.COMBAT_TEXT_SPAWN_POINT, Color(1.0, 0.729, 0.0, 1.0))
-		# TODO: Add a flair to highlight the occurance of a critical strike.
-		print("The attacker did a critical strike!")
 	
 	var mitigation_factor: float = GameBalance.MINIMUM_DMG_PERCENT + ((1 - GameBalance.MINIMUM_DMG_PERCENT) * (caster_scaled_attribute_aggregate / ((p_defender_attr[Types.Attribute.Defence] * ignore_defense_factor) + caster_scaled_attribute_aggregate + 1)))
 	var damage_dealt: float = mitigation_factor * caster_scaled_attribute_aggregate * crit_multiplier * randomVal
