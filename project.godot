@@ -29,7 +29,7 @@ Types="*res://Scripts/common_enums.gd"
 window/size/viewport_width=1280
 window/size/viewport_height=720
 window/stretch/mode="canvas_items"
-mouse_cursor/custom_image="uid://lkqcpkrir4by"
+mouse_cursor/custom_image="uid://21unhotoqc14"
 
 [editor]
 

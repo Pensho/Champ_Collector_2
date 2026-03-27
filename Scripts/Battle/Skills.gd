@@ -152,7 +152,7 @@ static func TriggerExistingCasterBuffs(
 		if (buff.duration <= 0):
 			buff_IDs_to_be_removed.append(buff.ID)
 	
-	p_caster._active_buffs.filter(func(buff): return buff.duration > 0)
+	p_caster._active_buffs = p_caster._active_buffs.filter(func(buff): return buff.duration > 0)
 	p_caster_repr.RemoveStatusEffects(buff_IDs_to_be_removed)
 
 # TODO: Right now the targeting only inherits the skill target and doesn't use

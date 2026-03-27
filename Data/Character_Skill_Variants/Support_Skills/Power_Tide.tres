@@ -8,8 +8,8 @@ name = "Power Tide"
 description = "Grants all allies increased Attack."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Power_Tide/Power_Surge_1.jpg"
 target = 4
-cooldown = 4
-duration = 3
+cooldown = 3
+duration = 2
 skill_type = 5
 buffs = Dictionary[int, int]({
 4: 1
