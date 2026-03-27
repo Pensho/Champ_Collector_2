@@ -83,12 +83,12 @@ Each character is defined by a set of core attributes:
     * Rank
 
 #### 3.1.2. Progression Systems
-* Ascension
-* Aura?
+* Ascension?
+* ~~Aura~~
 * Synergy through combination of faction or characters
 * Area?
 * Home base upgrades?
-* Clan
+* ~~Clan~~
 * Events
 
 #### 3.1.3. Character Role

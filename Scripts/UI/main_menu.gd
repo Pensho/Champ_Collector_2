@@ -20,6 +20,8 @@ func _ready() -> void:
 	else:
 		_background.texture = GRASSLANDS_DAY
 	print(dateTime["hour"])
+	if(OS.get_name() == "Android" or OS.get_name() == "IOS"):
+		return
 	focus_button()
 
 @warning_ignore("unused_parameter") # Main menu requires nothing from the ContextContainer.
