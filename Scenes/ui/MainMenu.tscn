@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://cygusf5metdyh" path="res://Scripts/UI/main_menu.gd" id="2_hnwi1"]
 [ext_resource type="Texture2D" uid="uid://cxe2lffkbra47" path="res://Assets/Champ_Collector/Scenery/Grasslands.png" id="3_h3tiw"]
 
-[node name="MainMenu" type="Control"]
+[node name="MainMenu" type="Control" node_paths=PackedStringArray("_background")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -13,6 +13,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_hnwi1")
 script = ExtResource("2_hnwi1")
+_background = NodePath("TextureRect")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 unique_name_in_owner = true

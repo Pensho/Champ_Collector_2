@@ -1,8 +1,25 @@
 extends Control
 
+const GRASSLANDS_DAWN = preload("uid://c5josnkodntag")
+const GRASSLANDS_DAY = preload("uid://bj3f2iipfovw8")
+const GRASSLANDS_DUSK = preload("uid://ba31cn3hmntgv")
+const GRASSLANDS_NIGHT = preload("uid://bsmrvv2vuny5")
+
 @onready var _buttons_v_box: VBoxContainer = %ButtonsVBox
 
+@export var _background: TextureRect
+
 func _ready() -> void:
+	var dateTime: Dictionary = Time.get_datetime_dict_from_system()
+	if(dateTime["hour"] >= 4 and dateTime["hour"] < 10):
+		_background.texture = GRASSLANDS_DAWN
+	elif(dateTime["hour"] > 18 and dateTime["hour"] <= 21):
+		_background.texture = GRASSLANDS_DUSK
+	elif(dateTime["hour"] > 21 or dateTime["hour"] < 4):
+		_background.texture = GRASSLANDS_NIGHT
+	else:
+		_background.texture = GRASSLANDS_DAY
+	print(dateTime["hour"])
 	focus_button()
 
 @warning_ignore("unused_parameter") # Main menu requires nothing from the ContextContainer.
