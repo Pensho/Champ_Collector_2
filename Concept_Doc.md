@@ -3,7 +3,7 @@
 ---
 
 ## 1. Introduction
-This game is a turn based combat RPG. The main idea is to collect characters that the player can use in combat, each of them with slightly different skill sets to defeat the encounters.
+This game is a turn based combat RPG. The main idea is to collect characters that the player can use in combat, each of them with slightly different skill sets to manage to defeat enemy encounters.
 
 ---
 

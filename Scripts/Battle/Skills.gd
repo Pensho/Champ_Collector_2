@@ -26,7 +26,7 @@ static func ResolveZoneEffect(
 			if(HasMaxStatusEffects(p_character)):
 				return
 			
-			if(!OverwriteDeBuff(Types.Debuff_Type.Burning)):
+			if(!OverwritableDebuff(Types.Debuff_Type.Burning)):
 				var new_debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
 				new_debuff.type = Types.Debuff_Type.Burning # TODO: add a status effect container to the Zone class and use that instead
 				new_debuff.duration = 2 # TODO: Replace with a defined number from the skill.
@@ -191,7 +191,7 @@ static func CastBuff(
 	
 	for i in p_target._active_buffs.size():
 		if(p_target._active_buffs[i].type == p_skill.buffs[p_skill.target]):
-			if(OverwriteBuff(p_skill.buffs[p_skill.target])):
+			if(OverwritableBuff(p_skill.buffs[p_skill.target])):
 				p_target._active_buffs[i].duration = p_skill.duration
 				p_target_repr.SetStatusEffectDuration(p_target._active_buffs[i].ID, p_skill.duration)
 				return
@@ -222,7 +222,7 @@ static func CastDebuff(
 	
 	for i in p_target._active_debuffs.size():
 		if(p_target._active_debuffs[i].type == p_skill.debuffs[p_skill.target]):
-			if(OverwriteDeBuff(p_skill.debuffs[p_skill.target])):
+			if(OverwritableDebuff(p_skill.debuffs[p_skill.target])):
 				p_target._active_debuffs[i].duration = p_skill.duration
 				p_target_repr.SetStatusEffectDuration(p_target._active_debuffs[i].ID, p_skill.duration)
 				return
@@ -275,18 +275,14 @@ static func HasMaxStatusEffects(p_character: Character) -> bool:
 		return true
 	return false
 
-static func OverwriteBuff(p_buff_type: Types.Buff_Type) -> bool:
+static func OverwritableBuff(p_buff_type: Types.Buff_Type) -> bool:
 	match p_buff_type:
 		Types.Buff_Type.Invalid, _:
-			return false
+			return true
 
-static func OverwriteDeBuff(p_debuff_type: Types.Debuff_Type) -> bool:
+static func OverwritableDebuff(p_debuff_type: Types.Debuff_Type) -> bool:
 	match p_debuff_type:
 		Types.Debuff_Type.Burning:
 			return false
-		Types.Debuff_Type.Enfeeble:
-			return true
-		Types.Debuff_Type.Expose_Weakness:
-			return true
 		Types.Buff_Type.Invalid, _:
-			return false
+			return true
