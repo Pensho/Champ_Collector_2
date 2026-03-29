@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://di0y70sbai3yw"]
 
-[ext_resource type="Texture2D" uid="uid://becfm8860q605" path="res://Assets/Champ_Collector/UI/Pre_Battle_Screen/Character_Slot_Frame_1.png" id="1_di8fw"]
 [ext_resource type="Script" uid="uid://dql0n3rqcrd15" path="res://Scripts/UI/menu_item_slot.gd" id="1_vybhe"]
+[ext_resource type="Texture2D" uid="uid://bs4q3kt7agwa6" path="res://Assets/Champ_Collector/Icons/Character_Frames/Character_Frame_1.png" id="2_n5d1g"]
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="2_vybhe"]
 [ext_resource type="Shader" uid="uid://pqr1x86j3fq5" path="res://Assets/Champ_Collector/Shaders/outline.gdshader" id="3_n5d1g"]
 
@@ -15,7 +15,7 @@ shader_parameter/inside = false
 shader_parameter/add_margins = true
 
 [node name="MenuItemSlot" type="Control"]
-custom_minimum_size = Vector2(100, 100)
+custom_minimum_size = Vector2(100, 150)
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_vybhe")
@@ -23,17 +23,18 @@ script = ExtResource("1_vybhe")
 [node name="TextureRect" type="TextureRect" parent="."]
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-texture = ExtResource("1_di8fw")
+offset_right = 100.0
+offset_bottom = 150.0
+texture = ExtResource("2_n5d1g")
 expand_mode = 1
 
 [node name="TextureRect" type="TextureRect" parent="TextureRect"]
 material = SubResource("ShaderMaterial_e5jka")
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_top = 35.0
+offset_right = 100.0
+offset_bottom = 135.0
 expand_mode = 1
 
 [node name="Label" type="Label" parent="TextureRect"]
@@ -48,7 +49,7 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 2
 
 [node name="Button" type="Button" parent="TextureRect"]
-custom_minimum_size = Vector2(100, 100)
+custom_minimum_size = Vector2(100, 150)
 layout_mode = 0
 offset_right = 8.0
 offset_bottom = 8.0
