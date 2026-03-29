@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://156fy64gykij" path="res://Scripts/UI/inspect_collection_menu.gd" id="1_jlkm0"]
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="1_riq8p"]
-[ext_resource type="Texture2D" uid="uid://2cqmliidmlr7" path="res://Assets/Champ_Collector/UI/Pre_Battle_Screen/Pre_Battle_2.png" id="2_01ceq"]
+[ext_resource type="Texture2D" uid="uid://b8m3ys8q3g7q8" path="res://Assets/Champ_Collector/Scenery/Inspect_Character_Background/Inspect_Character_Background_3.jpg" id="2_0ed3m"]
 [ext_resource type="PackedScene" uid="uid://di0y70sbai3yw" path="res://Scenes/ui/Menu_Item_Slot.tscn" id="4_xwg4m"]
 [ext_resource type="Shader" uid="uid://b4pd0enqhaisk" path="res://Assets/Champ_Collector/Shaders/Menu_Item_Slot.gdshader" id="5_lsdxp"]
 [ext_resource type="Texture2D" uid="uid://hugm5i14rvkq" path="res://Assets/Champ_Collector/Icons/Items/Sword_Icon.png" id="6_0ed3m"]
@@ -46,28 +46,16 @@ custom_minimum_size = Vector2(1280, 720)
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
-texture = ExtResource("2_01ceq")
+texture = ExtResource("2_0ed3m")
 expand_mode = 1
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
-custom_minimum_size = Vector2(1280, 720)
+[node name="Label" type="Label" parent="."]
+visible = false
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-theme_override_constants/margin_left = 32
-theme_override_constants/margin_top = 32
-theme_override_constants/margin_right = 32
-theme_override_constants/margin_bottom = 32
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer"]
-layout_mode = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer2"]
-layout_mode = 2
-theme_override_constants/separation = 0
-
-[node name="Label" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer"]
-layout_mode = 2
+offset_left = 158.0
+offset_top = 15.0
+offset_right = 378.0
+offset_bottom = 45.0
 size_flags_horizontal = 4
 theme = ExtResource("1_riq8p")
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -75,139 +63,72 @@ theme_override_constants/shadow_offset_x = 3
 theme_override_constants/shadow_offset_y = 3
 text = "Available items"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-theme_override_constants/separation = 0
+[node name="MarginContainer" type="MarginContainer" parent="."]
+custom_minimum_size = Vector2(1280, 720)
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 36
+theme_override_constants/margin_bottom = 16
 
-[node name="MenuItemSlot" parent="MarginContainer/HBoxContainer2/VBoxContainer/HBoxContainer" instance=ExtResource("4_xwg4m")]
+[node name="ColorRect2" type="ColorRect" parent="MarginContainer"]
+custom_minimum_size = Vector2(200, 200)
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+mouse_filter = 1
+color = Color(0.24313726, 0.24313726, 0.24313726, 0)
 
-[node name="MenuItemSlot2" parent="MarginContainer/HBoxContainer2/VBoxContainer/HBoxContainer" instance=ExtResource("4_xwg4m")]
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/ColorRect2"]
+custom_minimum_size = Vector2(200, 200)
+layout_mode = 0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 210.0
+offset_bottom = 210.0
+size_flags_horizontal = 4
+mouse_filter = 2
+expand_mode = 1
+
+[node name="Button_Deselect_Char" type="Button" parent="MarginContainer/ColorRect2"]
+layout_mode = 0
+offset_right = 200.0
+offset_bottom = 200.0
+theme = ExtResource("1_riq8p")
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer"]
 layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 110
 
-[node name="MenuItemSlot3" parent="MarginContainer/HBoxContainer2/VBoxContainer/HBoxContainer" instance=ExtResource("4_xwg4m")]
-layout_mode = 2
-
-[node name="MenuItemSlot4" parent="MarginContainer/HBoxContainer2/VBoxContainer/HBoxContainer" instance=ExtResource("4_xwg4m")]
-layout_mode = 2
-
-[node name="MenuItemSlot5" parent="MarginContainer/HBoxContainer2/VBoxContainer/HBoxContainer" instance=ExtResource("4_xwg4m")]
-layout_mode = 2
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-theme_override_constants/separation = 0
-
-[node name="MenuItemSlot" parent="MarginContainer/HBoxContainer2/VBoxContainer/HBoxContainer2" instance=ExtResource("4_xwg4m")]
-layout_mode = 2
-
-[node name="MenuItemSlot2" parent="MarginContainer/HBoxContainer2/VBoxContainer/HBoxContainer2" instance=ExtResource("4_xwg4m")]
-layout_mode = 2
-
-[node name="MenuItemSlot3" parent="MarginContainer/HBoxContainer2/VBoxContainer/HBoxContainer2" instance=ExtResource("4_xwg4m")]
-layout_mode = 2
-
-[node name="MenuItemSlot4" parent="MarginContainer/HBoxContainer2/VBoxContainer/HBoxContainer2" instance=ExtResource("4_xwg4m")]
-layout_mode = 2
-
-[node name="MenuItemSlot5" parent="MarginContainer/HBoxContainer2/VBoxContainer/HBoxContainer2" instance=ExtResource("4_xwg4m")]
-layout_mode = 2
-
-[node name="HBoxContainer3" type="HBoxContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-theme_override_constants/separation = 0
-
-[node name="MenuItemSlot" parent="MarginContainer/HBoxContainer2/VBoxContainer/HBoxContainer3" instance=ExtResource("4_xwg4m")]
+[node name="ScrollContainer_Characters" type="ScrollContainer" parent="MarginContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(520, 0)
 layout_mode = 2
 
-[node name="MenuItemSlot2" parent="MarginContainer/HBoxContainer2/VBoxContainer/HBoxContainer3" instance=ExtResource("4_xwg4m")]
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/HBoxContainer2/ScrollContainer_Characters"]
+layout_mode = 2
+columns = 5
+
+[node name="ScrollContainer_Items" type="ScrollContainer" parent="MarginContainer/HBoxContainer2"]
+visible = false
+custom_minimum_size = Vector2(520, 0)
 layout_mode = 2
 
-[node name="MenuItemSlot3" parent="MarginContainer/HBoxContainer2/VBoxContainer/HBoxContainer3" instance=ExtResource("4_xwg4m")]
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/HBoxContainer2/ScrollContainer_Items"]
 layout_mode = 2
-
-[node name="MenuItemSlot4" parent="MarginContainer/HBoxContainer2/VBoxContainer/HBoxContainer3" instance=ExtResource("4_xwg4m")]
-layout_mode = 2
-
-[node name="MenuItemSlot5" parent="MarginContainer/HBoxContainer2/VBoxContainer/HBoxContainer3" instance=ExtResource("4_xwg4m")]
-layout_mode = 2
-
-[node name="HBoxContainer4" type="HBoxContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-theme_override_constants/separation = 0
-
-[node name="MenuItemSlot" parent="MarginContainer/HBoxContainer2/VBoxContainer/HBoxContainer4" instance=ExtResource("4_xwg4m")]
-layout_mode = 2
-
-[node name="MenuItemSlot2" parent="MarginContainer/HBoxContainer2/VBoxContainer/HBoxContainer4" instance=ExtResource("4_xwg4m")]
-layout_mode = 2
-
-[node name="MenuItemSlot3" parent="MarginContainer/HBoxContainer2/VBoxContainer/HBoxContainer4" instance=ExtResource("4_xwg4m")]
-layout_mode = 2
-
-[node name="MenuItemSlot4" parent="MarginContainer/HBoxContainer2/VBoxContainer/HBoxContainer4" instance=ExtResource("4_xwg4m")]
-layout_mode = 2
-
-[node name="MenuItemSlot5" parent="MarginContainer/HBoxContainer2/VBoxContainer/HBoxContainer4" instance=ExtResource("4_xwg4m")]
-layout_mode = 2
-
-[node name="HBoxContainer5" type="HBoxContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-theme_override_constants/separation = 0
-
-[node name="MenuItemSlot" parent="MarginContainer/HBoxContainer2/VBoxContainer/HBoxContainer5" instance=ExtResource("4_xwg4m")]
-layout_mode = 2
-
-[node name="MenuItemSlot2" parent="MarginContainer/HBoxContainer2/VBoxContainer/HBoxContainer5" instance=ExtResource("4_xwg4m")]
-layout_mode = 2
-
-[node name="MenuItemSlot3" parent="MarginContainer/HBoxContainer2/VBoxContainer/HBoxContainer5" instance=ExtResource("4_xwg4m")]
-layout_mode = 2
-
-[node name="MenuItemSlot4" parent="MarginContainer/HBoxContainer2/VBoxContainer/HBoxContainer5" instance=ExtResource("4_xwg4m")]
-layout_mode = 2
-
-[node name="MenuItemSlot5" parent="MarginContainer/HBoxContainer2/VBoxContainer/HBoxContainer5" instance=ExtResource("4_xwg4m")]
-layout_mode = 2
-
-[node name="HBoxContainer6" type="HBoxContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-theme_override_constants/separation = 0
-
-[node name="MenuItemSlot" parent="MarginContainer/HBoxContainer2/VBoxContainer/HBoxContainer6" instance=ExtResource("4_xwg4m")]
-layout_mode = 2
-
-[node name="MenuItemSlot2" parent="MarginContainer/HBoxContainer2/VBoxContainer/HBoxContainer6" instance=ExtResource("4_xwg4m")]
-layout_mode = 2
-
-[node name="MenuItemSlot3" parent="MarginContainer/HBoxContainer2/VBoxContainer/HBoxContainer6" instance=ExtResource("4_xwg4m")]
-layout_mode = 2
-
-[node name="MenuItemSlot4" parent="MarginContainer/HBoxContainer2/VBoxContainer/HBoxContainer6" instance=ExtResource("4_xwg4m")]
-layout_mode = 2
-
-[node name="MenuItemSlot5" parent="MarginContainer/HBoxContainer2/VBoxContainer/HBoxContainer6" instance=ExtResource("4_xwg4m")]
-layout_mode = 2
+columns = 5
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/HBoxContainer2"]
-custom_minimum_size = Vector2(550, 0)
+custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
-size_flags_horizontal = 6
+size_flags_horizontal = 10
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer2"]
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 alignment = 1
 
 [node name="Weapon_Slot" parent="MarginContainer/HBoxContainer2/VBoxContainer2/HBoxContainer" instance=ExtResource("4_xwg4m")]
@@ -217,9 +138,9 @@ layout_mode = 2
 material = SubResource("ShaderMaterial_u3wy6")
 layout_mode = 0
 offset_left = 10.0
-offset_top = 10.0
+offset_top = 40.0
 offset_right = 90.0
-offset_bottom = 90.0
+offset_bottom = 120.0
 mouse_filter = 2
 texture = ExtResource("6_0ed3m")
 
@@ -230,9 +151,9 @@ layout_mode = 2
 material = SubResource("ShaderMaterial_2jco1")
 layout_mode = 0
 offset_left = 10.0
-offset_top = 10.0
+offset_top = 40.0
 offset_right = 90.0
-offset_bottom = 90.0
+offset_bottom = 120.0
 mouse_filter = 2
 texture = ExtResource("7_lgjj3")
 
@@ -244,37 +165,18 @@ size_flags_horizontal = 4
 material = SubResource("ShaderMaterial_0ed3m")
 layout_mode = 0
 offset_left = 10.0
-offset_top = 10.0
+offset_top = 40.0
 offset_right = 90.0
-offset_bottom = 90.0
+offset_bottom = 120.0
 mouse_filter = 2
 texture = ExtResource("6_35r4v")
 expand_mode = 1
 
-[node name="ColorRect2" type="ColorRect" parent="MarginContainer/HBoxContainer2/VBoxContainer2"]
-custom_minimum_size = Vector2(200, 200)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-color = Color(0.243137, 0.243137, 0.243137, 0.690196)
-
-[node name="TextureRect" type="TextureRect" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect2"]
-custom_minimum_size = Vector2(200, 200)
-layout_mode = 0
-offset_right = 200.0
-offset_bottom = 200.0
-size_flags_horizontal = 4
-expand_mode = 1
-
-[node name="Button_Deselect_Char" type="Button" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect2"]
-layout_mode = 0
-offset_right = 200.0
-offset_bottom = 200.0
-theme = ExtResource("1_riq8p")
-
 [node name="ColorRect" type="ColorRect" parent="MarginContainer/HBoxContainer2/VBoxContainer2"]
 custom_minimum_size = Vector2(450, 250)
 layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
 color = Color(0.243137, 0.243137, 0.243137, 0.690196)
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect"]
@@ -454,5 +356,5 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
 text = "Exit"
 
-[connection signal="button_up" from="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect2/Button_Deselect_Char" to="." method="_on_button_deselect_char_button_up"]
+[connection signal="button_up" from="MarginContainer/ColorRect2/Button_Deselect_Char" to="." method="_on_button_deselect_char_button_up"]
 [connection signal="button_up" from="MarginContainer/HBoxContainer/Exit" to="." method="_on_exit_button_up"]
