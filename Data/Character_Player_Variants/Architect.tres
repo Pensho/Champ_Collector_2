@@ -1,8 +1,15 @@
-[gd_resource type="Resource" script_class="CharacterPreset" load_steps=4 format=3 uid="uid://d04mj1rh28xgt"]
+[gd_resource type="Resource" script_class="CharacterPreset" load_steps=11 format=3 uid="uid://d04mj1rh28xgt"]
 
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_quj0m"]
+[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_udkit"]
+[ext_resource type="Resource" uid="uid://jgqxh6bwrie0" path="res://Data/Attribute_Weights/Sturdy.tres" id="2_7i0tf"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_mo6rh"]
 [ext_resource type="Resource" uid="uid://dvgwxvsovsldc" path="res://Data/Character_Skill_Variants/Attack_Skills/Stab.tres" id="2_udkit"]
+[ext_resource type="Resource" uid="uid://bvo4uj38cgjg3" path="res://Data/Attribute_Weights/Calculating.tres" id="3_p5buu"]
+[ext_resource type="Resource" uid="uid://4fnej15sbkkv" path="res://Data/Attribute_Weights/Arcane.tres" id="4_6fgkh"]
+[ext_resource type="Resource" uid="uid://syj6hxvr5t2x" path="res://Data/Attribute_Weights/Dexterous.tres" id="5_drmfa"]
+[ext_resource type="Resource" uid="uid://ytl3g36itqfs" path="res://Data/Attribute_Weights/Learned.tres" id="6_mtgtk"]
+[ext_resource type="Resource" uid="uid://i4pibjinfd3x" path="res://Data/Attribute_Weights/Gluttonous.tres" id="7_frc1v"]
 
 [resource]
 script = ExtResource("2_mo6rh")
@@ -20,5 +27,6 @@ _accuracy = 40
 _resistance = 30
 _mysticism = 30
 _knowledge = 75
+_attribute_weight_types_available = Array[ExtResource("1_udkit")]([ExtResource("2_7i0tf"), ExtResource("3_p5buu"), ExtResource("4_6fgkh"), ExtResource("5_drmfa"), ExtResource("6_mtgtk"), ExtResource("7_frc1v")])
 _preset_UID = "uid://d04mj1rh28xgt"
 metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

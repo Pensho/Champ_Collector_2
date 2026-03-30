@@ -1,9 +1,16 @@
-[gd_resource type="Resource" script_class="CharacterPreset" load_steps=5 format=3 uid="uid://dkpr2hnmtcodx"]
+[gd_resource type="Resource" script_class="CharacterPreset" load_steps=12 format=3 uid="uid://dkpr2hnmtcodx"]
 
+[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_05mxh"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_r2vnm"]
 [ext_resource type="Resource" uid="uid://dvgwxvsovsldc" path="res://Data/Character_Skill_Variants/Attack_Skills/Stab.tres" id="2_3tcpa"]
+[ext_resource type="Resource" uid="uid://jgqxh6bwrie0" path="res://Data/Attribute_Weights/Sturdy.tres" id="2_mb06o"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="3_7g6n5"]
 [ext_resource type="Resource" uid="uid://b5174xlhufd0j" path="res://Data/Character_Skill_Variants/Attack_Skills/Burning_Bolas.tres" id="3_efesd"]
+[ext_resource type="Resource" uid="uid://bdxe6eob3xgsh" path="res://Data/Attribute_Weights/Fierce.tres" id="3_s0jyj"]
+[ext_resource type="Resource" uid="uid://ytl3g36itqfs" path="res://Data/Attribute_Weights/Learned.tres" id="4_61gp4"]
+[ext_resource type="Resource" uid="uid://syj6hxvr5t2x" path="res://Data/Attribute_Weights/Dexterous.tres" id="5_nk78g"]
+[ext_resource type="Resource" uid="uid://bejf1a62v41gq" path="res://Data/Attribute_Weights/Marksman.tres" id="6_rxutc"]
+[ext_resource type="Resource" uid="uid://4fnej15sbkkv" path="res://Data/Attribute_Weights/Arcane.tres" id="7_5rped"]
 
 [resource]
 script = ExtResource("3_7g6n5")
@@ -21,5 +28,5 @@ _accuracy = 50
 _resistance = 30
 _mysticism = 20
 _knowledge = 20
-_attributes_weights = Array[int]([0, 2, 3, 5])
+_attribute_weight_types_available = Array[ExtResource("1_05mxh")]([ExtResource("2_mb06o"), ExtResource("3_s0jyj"), ExtResource("4_61gp4"), ExtResource("5_nk78g"), ExtResource("6_rxutc"), ExtResource("7_5rped")])
 _preset_UID = "uid://dkpr2hnmtcodx"

@@ -22,7 +22,7 @@ class_name CharacterPreset extends Resource
 @export var _critChance: int = Game_Balance.CHARACTER_BASE_CRIT_CH
 @export var _critDamage: int = Game_Balance.CHARACTER_BASE_CRIT_DMG
 
-@export var _attributes_weights: Array[Types.Attribute]
+@export var _attribute_weight_types_available: Array[AttributeWeightPreset]
 
 @export var _trait: CharacterTrait = null
 

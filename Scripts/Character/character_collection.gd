@@ -20,6 +20,7 @@ func Serialize() -> Dictionary:
 			"attributes": character._attributes.duplicate(true),
 			"held_items": character._held_items.duplicate(true),
 			"instance_ID": character._instanceID,
+			"attribute_weights": character._attributes_weights._name
 			# TODO: get skills when they are no longer defined by a characters preset.
 		})
 	
@@ -41,6 +42,11 @@ func Deserialize(p_data: Dictionary) -> void:
 		new_character.InstantiateNew(preset, character_data["instance_ID"])
 		new_character._level = int(character_data["level"])
 		new_character._experience = int(character_data["experience"])
+		if(character_data.has("attribute_weights")):
+			for attribute_weight_type in preset._attribute_weight_types_available:
+				if(attribute_weight_type._name == character_data["attribute_weights"]):
+					new_character._attributes_weights = attribute_weight_type.duplicate(true)
+					break
 		
 		_next_ID = max(_next_ID, new_character._instanceID)
 		

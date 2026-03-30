@@ -1,9 +1,16 @@
-[gd_resource type="Resource" script_class="CharacterPreset" load_steps=5 format=3 uid="uid://cgpw0pv0l4wn4"]
+[gd_resource type="Resource" script_class="CharacterPreset" load_steps=12 format=3 uid="uid://cgpw0pv0l4wn4"]
 
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_h4jsw"]
+[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_kos58"]
+[ext_resource type="Resource" uid="uid://jgqxh6bwrie0" path="res://Data/Attribute_Weights/Sturdy.tres" id="2_dmcbt"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_qqxae"]
 [ext_resource type="Resource" uid="uid://dvgwxvsovsldc" path="res://Data/Character_Skill_Variants/Attack_Skills/Stab.tres" id="2_yv8li"]
+[ext_resource type="Resource" uid="uid://bdxe6eob3xgsh" path="res://Data/Attribute_Weights/Fierce.tres" id="3_b3rgr"]
 [ext_resource type="Resource" uid="uid://dvsuv0ji1ueq7" path="res://Data/Character_Skill_Variants/Attack_Skills/Disarm.tres" id="3_pnj57"]
+[ext_resource type="Resource" uid="uid://i4pibjinfd3x" path="res://Data/Attribute_Weights/Gluttonous.tres" id="4_rtnxb"]
+[ext_resource type="Resource" uid="uid://syj6hxvr5t2x" path="res://Data/Attribute_Weights/Dexterous.tres" id="5_kwq6j"]
+[ext_resource type="Resource" uid="uid://c60oh3whnodsm" path="res://Data/Attribute_Weights/Resilient.tres" id="6_e4nbd"]
+[ext_resource type="Resource" uid="uid://bvo4uj38cgjg3" path="res://Data/Attribute_Weights/Calculating.tres" id="7_ls30s"]
 
 [resource]
 script = ExtResource("2_qqxae")
@@ -22,6 +29,6 @@ _resistance = 45
 _mysticism = 10
 _knowledge = 30
 _critDamage = 160
-_attributes_weights = Array[int]([0, 3, 0, 3, 2])
+_attribute_weight_types_available = Array[ExtResource("1_kos58")]([ExtResource("2_dmcbt"), ExtResource("3_b3rgr"), ExtResource("4_rtnxb"), ExtResource("5_kwq6j"), ExtResource("6_e4nbd"), ExtResource("7_ls30s")])
 _preset_UID = "uid://cgpw0pv0l4wn4"
 metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

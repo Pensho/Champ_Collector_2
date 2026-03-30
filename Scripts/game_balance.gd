@@ -24,17 +24,6 @@ const EXPERIENCE_CONSTANT_3: float = 0.0
 
 ## Level up
 const LEVEL_UP_POINTS_TO_DISTRIBUTE: int = 20
-const CHARACTER_ATTRIBUTE_WEIGHT: int = 5
-const BASE_ATTRIBUTE_WEIGHTS: Dictionary[Types.Attribute, int] = {
-	Types.Attribute.Health: 5,
-	Types.Attribute.Speed: 1,
-	Types.Attribute.Attack: 5,
-	Types.Attribute.Defence: 5,
-	Types.Attribute.Accuracy: 5,
-	Types.Attribute.Resistance: 5,
-	Types.Attribute.Mysticism: 5,
-	Types.Attribute.Knowledge: 4,
-}
 
 ## Item
 const ITEM_ATTRIBUTE_PER_RARITY: int = 5

@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="AttributeWeightPreset" load_steps=2 format=3 uid="uid://jgqxh6bwrie0"]
+
+[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_i4jwb"]
+
+[resource]
+script = ExtResource("1_i4jwb")
+_name = "Sturdy"
+_weights = Dictionary[int, int]({
+0: 25,
+1: 10,
+2: 5,
+3: 35,
+4: 5,
+5: 15,
+6: 0,
+7: 5
+})
+metadata/_custom_type_script = "uid://bs3pmrrpk00vu"

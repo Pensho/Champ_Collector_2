@@ -1,9 +1,15 @@
-[gd_resource type="Resource" script_class="CharacterPreset" load_steps=5 format=3 uid="uid://bm0sqmepyeoam"]
+[gd_resource type="Resource" script_class="CharacterPreset" load_steps=11 format=3 uid="uid://bm0sqmepyeoam"]
 
+[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_3d6g2"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_n4f0a"]
 [ext_resource type="Resource" uid="uid://dvgwxvsovsldc" path="res://Data/Character_Skill_Variants/Attack_Skills/Stab.tres" id="2_3tcpa"]
+[ext_resource type="Resource" uid="uid://syj6hxvr5t2x" path="res://Data/Attribute_Weights/Dexterous.tres" id="2_034qc"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_r2vnm"]
 [ext_resource type="Resource" uid="uid://54q7s3jjny1w" path="res://Data/Character_Skill_Variants/Attack_Skills/Pierce_Weakness.tres" id="3_3tcpa"]
+[ext_resource type="Resource" uid="uid://bdxe6eob3xgsh" path="res://Data/Attribute_Weights/Fierce.tres" id="3_lvnnc"]
+[ext_resource type="Resource" uid="uid://bejf1a62v41gq" path="res://Data/Attribute_Weights/Marksman.tres" id="4_gh1m0"]
+[ext_resource type="Resource" uid="uid://ytl3g36itqfs" path="res://Data/Attribute_Weights/Learned.tres" id="5_wgxjw"]
+[ext_resource type="Resource" uid="uid://bqqsowpn2kvlu" path="res://Data/Attribute_Weights/Reckless.tres" id="6_lvnnc"]
 
 [resource]
 script = ExtResource("2_r2vnm")
@@ -23,6 +29,6 @@ _resistance = 30
 _mysticism = 10
 _knowledge = 20
 _critChance = 15
-_attributes_weights = Array[int]([2, 2, 7, 4])
+_attribute_weight_types_available = Array[ExtResource("1_3d6g2")]([ExtResource("2_034qc"), ExtResource("3_lvnnc"), ExtResource("4_gh1m0"), ExtResource("5_wgxjw"), ExtResource("6_lvnnc")])
 _preset_UID = "uid://bm0sqmepyeoam"
 metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

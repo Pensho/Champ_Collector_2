@@ -22,9 +22,7 @@ static func AddExperience(p_character: Character, p_experiene_gained: int) -> vo
 
 static func LevelUpReward(p_character: Character) -> void:
 	p_character._level += 1
-	var weights: Dictionary[Types.Attribute, int] = Game_Balance.BASE_ATTRIBUTE_WEIGHTS.duplicate(true)
-	for attribute in p_character._attributes_weights:
-		weights[attribute] += Game_Balance.CHARACTER_ATTRIBUTE_WEIGHT
+	var weights: Dictionary[Types.Attribute, int] = p_character._attributes_weights._weights
 	
 	var cumulative_weights: Dictionary[Types.Attribute, int]
 	var current_sum: int = 0
@@ -81,7 +79,11 @@ static func SetOpponentLevel(p_character: Character, p_level: int, p_boss: bool 
 	for attribute in p_character._attributes.keys():
 		var base_value: int = p_character._attributes[attribute]
 		var weight: float = float(base_value) / float(total_base_points)
-		var points: float = Game_Balance.LEVEL_UP_POINTS_TO_DISTRIBUTE + float(pow(p_character._level * 3, 1.1))
+		var points: float
+		if(Types.Attribute.Speed == attribute):
+			points = Game_Balance.LEVEL_UP_POINTS_TO_DISTRIBUTE + float(p_character._level * 2)
+		else:
+			points = Game_Balance.LEVEL_UP_POINTS_TO_DISTRIBUTE + float(pow(p_character._level * 3, 1.1))
 		if(p_boss):
 			points *= 1.5
 		var points_gained = weight * points * total_levels_gained

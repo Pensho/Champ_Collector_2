@@ -1,6 +1,8 @@
 class_name CharacterTrait extends Resource
 
+@warning_ignore_start("unused_private_class_variable")
 var _execution_steps: Dictionary[Types.Combat_Event, Callable]
+@warning_ignore_restore("unused_private_class_variable")
 
 func Init() -> void:
 	print("character_trait base class Init() called!")

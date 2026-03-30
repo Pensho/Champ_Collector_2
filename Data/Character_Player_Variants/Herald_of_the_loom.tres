@@ -1,8 +1,15 @@
-[gd_resource type="Resource" script_class="CharacterPreset" load_steps=4 format=3 uid="uid://cg7ffffaaw1hy"]
+[gd_resource type="Resource" script_class="CharacterPreset" load_steps=11 format=3 uid="uid://cg7ffffaaw1hy"]
 
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_cgy53"]
+[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_yuery"]
 [ext_resource type="Resource" uid="uid://dvgwxvsovsldc" path="res://Data/Character_Skill_Variants/Attack_Skills/Stab.tres" id="2_5jncj"]
+[ext_resource type="Resource" uid="uid://bdxe6eob3xgsh" path="res://Data/Attribute_Weights/Fierce.tres" id="2_kgg4d"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_uspd6"]
+[ext_resource type="Resource" uid="uid://syj6hxvr5t2x" path="res://Data/Attribute_Weights/Dexterous.tres" id="3_atjrr"]
+[ext_resource type="Resource" uid="uid://b8nee1hs4g663" path="res://Data/Attribute_Weights/Conjurer.tres" id="4_mfxwy"]
+[ext_resource type="Resource" uid="uid://bejf1a62v41gq" path="res://Data/Attribute_Weights/Marksman.tres" id="5_hh5c7"]
+[ext_resource type="Resource" uid="uid://4fnej15sbkkv" path="res://Data/Attribute_Weights/Arcane.tres" id="6_rbi6t"]
+[ext_resource type="Resource" uid="uid://bqqsowpn2kvlu" path="res://Data/Attribute_Weights/Reckless.tres" id="7_atjrr"]
 
 [resource]
 script = ExtResource("2_uspd6")
@@ -21,6 +28,6 @@ _accuracy = 40
 _resistance = 30
 _mysticism = 70
 _knowledge = 10
-_attributes_weights = Array[int]([6, 6, 4])
+_attribute_weight_types_available = Array[ExtResource("1_yuery")]([ExtResource("2_kgg4d"), ExtResource("3_atjrr"), ExtResource("4_mfxwy"), ExtResource("5_hh5c7"), ExtResource("6_rbi6t"), ExtResource("7_atjrr")])
 _preset_UID = "uid://cg7ffffaaw1hy"
 metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

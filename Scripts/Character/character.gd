@@ -11,7 +11,8 @@ func InstantiateNew(p_preset: CharacterPreset, p_instanceID: int) -> void:
 	_faction = p_preset._faction
 	_role = p_preset._role
 	_skills = p_preset._skills
-	_attributes_weights = p_preset._attributes_weights
+	if(!p_preset._attribute_weight_types_available.is_empty()):
+		_attributes_weights = p_preset._attribute_weight_types_available[randi_range(0, p_preset._attribute_weight_types_available.size() - 1)].duplicate(true)
 	
 	_attributes[Types.Attribute.Health] = p_preset._health
 	_attributes[Types.Attribute.Speed] = p_preset._speed
@@ -89,7 +90,7 @@ var _attributes: Dictionary[Types.Attribute, int] = {
 var _held_items: Dictionary[Types.Slot, int]
 
 var _currentHealth: int = 0
-var _attributes_weights: Array[Types.Attribute]
+var _attributes_weights: AttributeWeightPreset
 
 var _trait: CharacterTrait
 

@@ -1,8 +1,15 @@
-[gd_resource type="Resource" script_class="CharacterPreset" load_steps=4 format=3 uid="uid://7adgp1emx6yk"]
+[gd_resource type="Resource" script_class="CharacterPreset" load_steps=11 format=3 uid="uid://7adgp1emx6yk"]
 
+[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_6otwp"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_vydqi"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_8awhw"]
+[ext_resource type="Resource" uid="uid://jgqxh6bwrie0" path="res://Data/Attribute_Weights/Sturdy.tres" id="2_is80k"]
 [ext_resource type="Resource" uid="uid://dvgwxvsovsldc" path="res://Data/Character_Skill_Variants/Attack_Skills/Stab.tres" id="2_mbp0t"]
+[ext_resource type="Resource" uid="uid://i4pibjinfd3x" path="res://Data/Attribute_Weights/Gluttonous.tres" id="3_lbdjd"]
+[ext_resource type="Resource" uid="uid://ytl3g36itqfs" path="res://Data/Attribute_Weights/Learned.tres" id="4_04wjo"]
+[ext_resource type="Resource" uid="uid://b8nee1hs4g663" path="res://Data/Attribute_Weights/Conjurer.tres" id="5_22nff"]
+[ext_resource type="Resource" uid="uid://c60oh3whnodsm" path="res://Data/Attribute_Weights/Resilient.tres" id="6_rnfgs"]
+[ext_resource type="Resource" uid="uid://4fnej15sbkkv" path="res://Data/Attribute_Weights/Arcane.tres" id="7_xvd8e"]
 
 [resource]
 script = ExtResource("2_8awhw")
@@ -21,6 +28,6 @@ _accuracy = 30
 _resistance = 40
 _mysticism = 70
 _knowledge = 10
-_attributes_weights = Array[int]([0, 0, 6])
+_attribute_weight_types_available = Array[ExtResource("1_6otwp")]([ExtResource("2_is80k"), ExtResource("3_lbdjd"), ExtResource("4_04wjo"), ExtResource("5_22nff"), ExtResource("6_rnfgs"), ExtResource("7_xvd8e")])
 _preset_UID = "uid://7adgp1emx6yk"
 metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

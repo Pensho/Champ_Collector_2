@@ -1,11 +1,17 @@
-[gd_resource type="Resource" script_class="CharacterPreset" load_steps=7 format=3 uid="uid://bmqvx8opoocu7"]
+[gd_resource type="Resource" script_class="CharacterPreset" load_steps=13 format=3 uid="uid://bmqvx8opoocu7"]
 
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_6xory"]
+[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_d1vc0"]
+[ext_resource type="Resource" uid="uid://bdxe6eob3xgsh" path="res://Data/Attribute_Weights/Fierce.tres" id="2_2d1j8"]
 [ext_resource type="Resource" uid="uid://bh7ga2ynp8x2j" path="res://Data/Character_Skill_Variants/Attack_Skills/Boarding_Strike.tres" id="2_158pr"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_vqjbp"]
+[ext_resource type="Resource" uid="uid://syj6hxvr5t2x" path="res://Data/Attribute_Weights/Dexterous.tres" id="3_80fin"]
 [ext_resource type="Resource" uid="uid://b43o6ogc4mxvx" path="res://Data/Character_Skill_Variants/Attack_Skills/Saltwater_Shot.tres" id="3_sfamh"]
 [ext_resource type="Resource" uid="uid://dhoyqx02hnflk" path="res://Data/Character_Traits/Tidal_Corsair_Trait.tres" id="3_yd2bh"]
+[ext_resource type="Resource" uid="uid://bejf1a62v41gq" path="res://Data/Attribute_Weights/Marksman.tres" id="4_2hq8y"]
 [ext_resource type="Resource" uid="uid://f1t54rvwevl2" path="res://Data/Character_Skill_Variants/Attack_Skills/Corsairs_Reckoning.tres" id="4_158pr"]
+[ext_resource type="Resource" uid="uid://ytl3g36itqfs" path="res://Data/Attribute_Weights/Learned.tres" id="5_k73h2"]
+[ext_resource type="Resource" uid="uid://bqqsowpn2kvlu" path="res://Data/Attribute_Weights/Reckless.tres" id="6_80fin"]
 
 [resource]
 script = ExtResource("2_vqjbp")
@@ -24,7 +30,7 @@ _accuracy = 50
 _resistance = 50
 _mysticism = 20
 _knowledge = 20
-_attributes_weights = Array[int]([0, 2, 2, 3])
+_attribute_weight_types_available = Array[ExtResource("1_d1vc0")]([ExtResource("2_2d1j8"), ExtResource("3_80fin"), ExtResource("4_2hq8y"), ExtResource("5_k73h2"), ExtResource("6_80fin")])
 _trait = ExtResource("3_yd2bh")
 _preset_UID = "uid://bmqvx8opoocu7"
 metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

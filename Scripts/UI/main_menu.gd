@@ -19,7 +19,6 @@ func _ready() -> void:
 		_background.texture = GRASSLANDS_NIGHT
 	else:
 		_background.texture = GRASSLANDS_DAY
-	print(dateTime["hour"])
 	if(OS.get_name() == "Android" or OS.get_name() == "IOS"):
 		return
 	focus_button()

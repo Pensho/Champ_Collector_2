@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="AttributeWeightPreset" load_steps=2 format=3 uid="uid://4fnej15sbkkv"]
+
+[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_heb5r"]
+
+[resource]
+script = ExtResource("1_heb5r")
+_name = "Arcane"
+_weights = Dictionary[int, int]({
+0: 10,
+1: 10,
+2: 0,
+3: 5,
+4: 15,
+5: 10,
+6: 25,
+7: 25
+})
+metadata/_custom_type_script = "uid://bs3pmrrpk00vu"
