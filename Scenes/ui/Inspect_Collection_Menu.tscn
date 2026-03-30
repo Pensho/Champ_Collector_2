@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://b6ynhcan7pnn8"]
+[gd_scene load_steps=13 format=3 uid="uid://b6ynhcan7pnn8"]
 
 [ext_resource type="Script" uid="uid://156fy64gykij" path="res://Scripts/UI/inspect_collection_menu.gd" id="1_jlkm0"]
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="1_riq8p"]
@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://hugm5i14rvkq" path="res://Assets/Champ_Collector/Icons/Items/Sword_Icon.png" id="6_0ed3m"]
 [ext_resource type="Texture2D" uid="uid://dmaq2l582gu7e" path="res://Assets/Champ_Collector/Icons/Items/Boot_Icon.png" id="6_35r4v"]
 [ext_resource type="Texture2D" uid="uid://d75871c7uh43" path="res://Assets/Champ_Collector/Icons/Items/Shield_Icon.png" id="7_lgjj3"]
+[ext_resource type="Script" uid="uid://bumae467d28vx" path="res://Scripts/UI/tooltip.gd" id="9_lgjj3"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_u3wy6"]
 shader = ExtResource("5_lsdxp")
@@ -21,7 +22,7 @@ shader_parameter/texture_albedo = ExtResource("7_lgjj3")
 shader = ExtResource("5_lsdxp")
 shader_parameter/texture_albedo = ExtResource("6_35r4v")
 
-[node name="InspectCollection" type="Control" node_paths=PackedStringArray("_attribute_labels", "_selected_char_label", "_selected_char_level", "_selected_char_nature")]
+[node name="InspectCollection" type="Control" node_paths=PackedStringArray("_attribute_labels", "_selected_char_label", "_selected_char_level", "_selected_char_nature", "_selected_char_nature_tooltip")]
 custom_minimum_size = Vector2(1280, 720)
 layout_mode = 3
 anchors_preset = 0
@@ -41,6 +42,7 @@ _attribute_labels = {
 _selected_char_label = NodePath("MarginContainer/ColorRect2/Label_Character_Name")
 _selected_char_level = NodePath("MarginContainer/ColorRect2/Label_Level")
 _selected_char_nature = NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/Label_Character_Nature")
+_selected_char_nature_tooltip = NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/Label_Character_Nature")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 custom_minimum_size = Vector2(1280, 720)
@@ -240,7 +242,13 @@ offset_top = 205.0
 offset_right = 490.0
 offset_bottom = 235.0
 theme = ExtResource("1_riq8p")
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.47058824)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 3
 text = "Nature:"
+script = ExtResource("9_lgjj3")
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect"]
 layout_mode = 0

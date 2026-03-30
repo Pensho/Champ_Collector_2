@@ -15,4 +15,5 @@ _weights = Dictionary[int, int]({
 6: 0,
 7: 5
 })
+_description = "Body made to endure, Resistance & Health high and decent Accuracy."
 metadata/_custom_type_script = "uid://bs3pmrrpk00vu"

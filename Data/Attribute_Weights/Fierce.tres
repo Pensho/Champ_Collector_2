@@ -15,4 +15,5 @@ _weights = Dictionary[int, int]({
 6: 5,
 7: 5
 })
+_description = "Hit hard, hit once. Very high Attack and decent Accuracy."
 metadata/_custom_type_script = "uid://bs3pmrrpk00vu"

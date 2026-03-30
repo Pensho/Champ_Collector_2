@@ -15,4 +15,5 @@ _weights = Dictionary[int, int]({
 6: 10,
 7: 10
 })
+_description = "Momentum is key so Speed is high, but otherwise neutral in all regards."
 metadata/_custom_type_script = "uid://bs3pmrrpk00vu"

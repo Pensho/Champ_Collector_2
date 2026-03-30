@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(for f:*)",
+      "Bash(do echo:*)",
+      "Read(//c/Users/jonas/Documents/Champ_Collector_2/**)",
+      "Bash(done)"
+    ]
+  }
+}

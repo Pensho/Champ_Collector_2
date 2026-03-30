@@ -4,6 +4,7 @@ class_name InspectCollectionMenu extends Control
 @export var _selected_char_label: Label
 @export var _selected_char_level: Label
 @export var _selected_char_nature: Label
+@export var _selected_char_nature_tooltip: ToolTip
 
 @onready var _scroll_container_characters: ScrollContainer = $MarginContainer/HBoxContainer2/ScrollContainer_Characters
 @onready var _scroll_container_items: ScrollContainer = $MarginContainer/HBoxContainer2/ScrollContainer_Items
@@ -54,6 +55,9 @@ func Init(_p_context_container: ContextContainer) -> void:
 		_item_slots_equipped[i]._ID = i
 		_item_slots_equipped[i].ConnectButton(EquipedItemSlotButton)
 	
+	_selected_char_nature_tooltip.title_text = "Character Nature"
+	_selected_char_nature_tooltip.description_text = ""
+	
 	ShowCharacters()
 
 func GetMenuItemSlotChildren(p_start_node: Node) -> Array[MenuItemSlot]:
@@ -78,6 +82,8 @@ func ShowSelectedCharacter(p_instance_ID: int) -> void:
 	_selected_char_label.text = _character_collection[p_instance_ID]._name
 	_selected_char_level.text = "Level: " + str(_character_collection[p_instance_ID]._level)
 	_selected_char_nature.text = "Nature: " + str(_character_collection[p_instance_ID]._attributes_weights._name)
+	_selected_char_nature_tooltip.title_text = str(_character_collection[p_instance_ID]._attributes_weights._name) + " Nature"
+	_selected_char_nature_tooltip.description_text = str(_character_collection[p_instance_ID]._attributes_weights._description)
 	
 	if(_character_collection[p_instance_ID]._held_items.has(Types.Slot.Weapon)):
 		_item_slots_equipped[0].SetHeldObjectTexture(main.GetInstance()._item_collection.GetItemTexture(Types.Slot.Weapon))
@@ -172,6 +178,8 @@ func _on_button_deselect_char_button_up() -> void:
 	_selected_char_label.text = ""
 	_selected_char_level.text = ""
 	_selected_char_nature.text = "Nature: "
+	_selected_char_nature_tooltip.title_text = "Character Nature"
+	_selected_char_nature_tooltip.description_text = ""
 	for slot_nr in _available_characters.size(): #_displayed_character_ids
 		if(slot_nr < _character_collection.size()):
 			_available_characters[slot_nr].SetHeldObjectTexture(main.GetInstance()._character_collection.GetCharacterTexture(_character_collection[_displayed_character_ids[slot_nr]]._name))

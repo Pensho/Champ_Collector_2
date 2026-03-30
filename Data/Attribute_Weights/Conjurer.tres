@@ -15,4 +15,5 @@ _weights = Dictionary[int, int]({
 6: 40,
 7: 5
 })
+_description = "While very attuned to Mysticism and good Accuracy but traditional physical elements falls short."
 metadata/_custom_type_script = "uid://bs3pmrrpk00vu"

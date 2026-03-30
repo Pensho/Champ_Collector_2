@@ -15,4 +15,5 @@ _weights = Dictionary[int, int]({
 6: 30,
 7: 5
 })
+_description = "All out offence with Attack and Mysticism, while disregarding everything else."
 metadata/_custom_type_script = "uid://bs3pmrrpk00vu"

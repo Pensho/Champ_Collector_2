@@ -15,4 +15,5 @@ _weights = Dictionary[int, int]({
 6: 0,
 7: 25
 })
+_description = "Trained for Defense and Knowledge but is found lacking in offensive measures."
 metadata/_custom_type_script = "uid://bs3pmrrpk00vu"

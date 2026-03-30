@@ -15,4 +15,5 @@ _weights = Dictionary[int, int]({
 6: 25,
 7: 25
 })
+_description = "Favors Mysticism and Knowledge. With a weak body as cost."
 metadata/_custom_type_script = "uid://bs3pmrrpk00vu"

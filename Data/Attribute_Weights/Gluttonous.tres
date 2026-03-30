@@ -15,4 +15,5 @@ _weights = Dictionary[int, int]({
 6: 5,
 7: 0
 })
+_description = "Outlive them all! Very high Health and decent Resistance, otherwise not much."
 metadata/_custom_type_script = "uid://bs3pmrrpk00vu"
