@@ -7,7 +7,7 @@ const UNEQUIPPED: int = -1
 var _collected_types: Dictionary[Types.Slot, String]
 var _used_item_textures: Dictionary[Types.Slot, Texture]
 var _items: Dictionary[int, Equipment] = {}
-var _next_ID: int = 0
+var _next_id: int = 0
 
 func _ready() -> void:
 	self.name = self.get_script().get_global_name()
@@ -23,7 +23,7 @@ func Serialize() -> Dictionary:
 			"held_by": item._held_by,
 			"rarity": item._rarity,
 		})
-	return {"items": items_data, "next_ID": _next_ID}
+	return {"items": items_data, "next_ID": _next_id}
 
 func Deserialize(p_data: Dictionary) -> void:
 	if(not p_data.has("items")):
@@ -31,7 +31,7 @@ func Deserialize(p_data: Dictionary) -> void:
 		return
 	
 	if(p_data.has("next_ID")):
-		_next_ID = p_data["next_ID"]
+		_next_id = p_data["next_ID"]
 	_items.clear()
 	for item_data in p_data["items"]:
 		var preset: EquipmentPreset = load(item_data["preset_UID"]).duplicate(true)
@@ -57,30 +57,31 @@ func LoadTextures() -> void:
 			_used_item_textures[type] = load(_collected_types[type])
 
 func GetItemTexture(p_item_type: Types.Slot) -> Texture:
+	var texture: Texture = null
 	match p_item_type:
 		Types.Slot.Helmet:
-			return _used_item_textures[Types.Slot.Helmet]
+			texture = _used_item_textures[Types.Slot.Helmet]
 		Types.Slot.Weapon:
-			return _used_item_textures[Types.Slot.Weapon]
+			texture = _used_item_textures[Types.Slot.Weapon]
 		Types.Slot.Shield:
-			return _used_item_textures[Types.Slot.Shield]
+			texture = _used_item_textures[Types.Slot.Shield]
 		Types.Slot.Chest:
-			return _used_item_textures[Types.Slot.Chest]
+			texture = _used_item_textures[Types.Slot.Chest]
 		Types.Slot.Pants:
-			return _used_item_textures[Types.Slot.Pants]
+			texture = _used_item_textures[Types.Slot.Pants]
 		Types.Slot.Boots:
-			return _used_item_textures[Types.Slot.Boots]
+			texture = _used_item_textures[Types.Slot.Boots]
 		Types.Slot.Gloves:
-			return _used_item_textures[Types.Slot.Gloves]
+			texture = _used_item_textures[Types.Slot.Gloves]
 		Types.Slot.Ring:
-			return _used_item_textures[Types.Slot.Ring]
+			texture = _used_item_textures[Types.Slot.Ring]
 		Types.Slot.Amulet:
-			return _used_item_textures[Types.Slot.Amulet]
+			texture = _used_item_textures[Types.Slot.Amulet]
 		Types.Slot.Trinket:
-			return _used_item_textures[Types.Slot.Trinket]
+			texture = _used_item_textures[Types.Slot.Trinket]
 		_:
 			print("Item_Collection.gd/GetItemTexture() Unspecified item type!")
-	return null
+	return texture
 
 func AddPreset(preset: EquipmentPreset) -> void:
 	var new_equipment: Equipment = Equipment.new()
@@ -100,8 +101,8 @@ func Remove(instanceID: int) -> void:
 	# TODO: If there no longer is a type of role in the collection, remove it from _collected_types.
 
 func CreateNextInstanceID() -> int:
-	_next_ID += 1
-	return _next_ID - 1
+	_next_id += 1
+	return _next_id - 1
 
 func EquipCollectionItem(p_instanceID: int) -> void:
 	_items[p_instanceID]._held_by = p_instanceID

@@ -47,7 +47,9 @@ func Init(_p_context_container: ContextContainer) -> void:
 		_available_characters[i].ConnectButton(AvailableCharacterButton)
 		
 		_displayed_character_ids[i] = _character_collection.keys()[i]
-		_available_characters[i].SetHeldObjectTexture(main.GetInstance()._character_collection.GetCharacterTexture(_character_collection[_displayed_character_ids[i]]._name))
+		_available_characters[i].SetHeldObjectTexture(
+					main.GetInstance()._character_collection.GetCharacterTexture(
+						_character_collection[_displayed_character_ids[i]]._name))
 		_available_characters[i].level.text = str(_character_collection[_displayed_character_ids[i]]._level)
 	
 	_item_slots_equipped.append_array(GetMenuItemSlotChildren(v_box_container_equipped_items))
@@ -82,18 +84,26 @@ func ShowSelectedCharacter(p_instance_ID: int) -> void:
 	_selected_char_label.text = _character_collection[p_instance_ID]._name
 	_selected_char_level.text = "Level: " + str(_character_collection[p_instance_ID]._level)
 	_selected_char_nature.text = "Nature: " + str(_character_collection[p_instance_ID]._attributes_weights._name)
-	_selected_char_nature_tooltip.title_text = str(_character_collection[p_instance_ID]._attributes_weights._name) + " Nature"
-	_selected_char_nature_tooltip.description_text = str(_character_collection[p_instance_ID]._attributes_weights._description)
+	_selected_char_nature_tooltip.title_text = str(
+			_character_collection[p_instance_ID]._attributes_weights._name) + " Nature"
+	_selected_char_nature_tooltip.description_text = str(
+			_character_collection[p_instance_ID]._attributes_weights._description)
 	
 	if(_character_collection[p_instance_ID]._held_items.has(Types.Slot.Weapon)):
-		_item_slots_equipped[0].SetHeldObjectTexture(main.GetInstance()._item_collection.GetItemTexture(Types.Slot.Weapon))
-		_item_slots_equipped[0].SetTextureOutline(_item_collection[_character_collection[p_instance_ID]._held_items[Types.Slot.Weapon]]._rarity)
+		_item_slots_equipped[0].SetHeldObjectTexture(
+				main.GetInstance()._item_collection.GetItemTexture(Types.Slot.Weapon))
+		_item_slots_equipped[0].SetTextureOutline(
+				_item_collection[_character_collection[p_instance_ID]._held_items[Types.Slot.Weapon]]._rarity)
 	if(_character_collection[p_instance_ID]._held_items.has(Types.Slot.Shield)):
-		_item_slots_equipped[1].SetHeldObjectTexture(main.GetInstance()._item_collection.GetItemTexture(Types.Slot.Shield))
-		_item_slots_equipped[1].SetTextureOutline(_item_collection[_character_collection[p_instance_ID]._held_items[Types.Slot.Shield]]._rarity)
+		_item_slots_equipped[1].SetHeldObjectTexture(
+				main.GetInstance()._item_collection.GetItemTexture(Types.Slot.Shield))
+		_item_slots_equipped[1].SetTextureOutline(
+				_item_collection[_character_collection[p_instance_ID]._held_items[Types.Slot.Shield]]._rarity)
 	if(_character_collection[p_instance_ID]._held_items.has(Types.Slot.Boots)):
-		_item_slots_equipped[2].SetHeldObjectTexture(main.GetInstance()._item_collection.GetItemTexture(Types.Slot.Boots))
-		_item_slots_equipped[2].SetTextureOutline(_item_collection[_character_collection[p_instance_ID]._held_items[Types.Slot.Boots]]._rarity)
+		_item_slots_equipped[2].SetHeldObjectTexture(
+				main.GetInstance()._item_collection.GetItemTexture(Types.Slot.Boots))
+		_item_slots_equipped[2].SetTextureOutline(
+				_item_collection[_character_collection[p_instance_ID]._held_items[Types.Slot.Boots]]._rarity)
 
 func ShowCharacters() -> void:
 	_scroll_container_characters.show()
@@ -107,7 +117,9 @@ func ShowItems() -> void:
 	for slot in _available_items.size():
 		_available_items[slot].level.text = ""
 		if(main.GetInstance()._item_collection.UNEQUIPPED == _item_collection[_item_collection.keys()[slot]]._held_by):
-			_available_items[slot].SetHeldObjectTexture(main.GetInstance()._item_collection.GetItemTexture(_item_collection[_displayed_item_ids[slot]]._slot))
+			_available_items[slot].SetHeldObjectTexture(
+					main.GetInstance()._item_collection.GetItemTexture(
+						_item_collection[_displayed_item_ids[slot]]._slot))
 			_available_items[slot].SetTextureOutline(_item_collection[_displayed_item_ids[slot]]._rarity)
 			continue
 		_available_items[slot].SetHeldObjectTexture(null)
@@ -146,13 +158,16 @@ func TriggerUnequipItem(p_item_type: Types.Slot) -> void:
 	match p_item_type:
 		Types.Slot.Weapon:
 			_item_slots_equipped[0].SetHeldObjectTexture(null)
-			_available_items[slot_for_held_item].SetHeldObjectTexture(main.GetInstance()._item_collection.GetItemTexture(Types.Slot.Weapon))
+			_available_items[slot_for_held_item].SetHeldObjectTexture(
+					main.GetInstance()._item_collection.GetItemTexture(Types.Slot.Weapon))
 		Types.Slot.Shield:
 			_item_slots_equipped[1].SetHeldObjectTexture(null)
-			_available_items[slot_for_held_item].SetHeldObjectTexture(main.GetInstance()._item_collection.GetItemTexture(Types.Slot.Shield))
+			_available_items[slot_for_held_item].SetHeldObjectTexture(
+					main.GetInstance()._item_collection.GetItemTexture(Types.Slot.Shield))
 		Types.Slot.Boots:
 			_item_slots_equipped[2].SetHeldObjectTexture(null)
-			_available_items[slot_for_held_item].SetHeldObjectTexture(main.GetInstance()._item_collection.GetItemTexture(Types.Slot.Boots))
+			_available_items[slot_for_held_item].SetHeldObjectTexture(
+					main.GetInstance()._item_collection.GetItemTexture(Types.Slot.Boots))
 	_available_items[slot_for_held_item].SetTextureOutline(_item_collection[held_item_ID]._rarity)
 	
 	main.GetInstance()._item_collection.UnequipCollectionItem(held_item_ID)
@@ -182,9 +197,13 @@ func _on_button_deselect_char_button_up() -> void:
 	_selected_char_nature_tooltip.description_text = ""
 	for slot_nr in _available_characters.size(): #_displayed_character_ids
 		if(slot_nr < _character_collection.size()):
-			_available_characters[slot_nr].SetHeldObjectTexture(main.GetInstance()._character_collection.GetCharacterTexture(_character_collection[_displayed_character_ids[slot_nr]]._name))
-			_available_characters[slot_nr].SetTextureOutline(_character_collection[_displayed_character_ids[slot_nr]]._rarity)
-			_available_characters[slot_nr].level.text = str(_character_collection[_displayed_character_ids[slot_nr]]._level)
+			_available_characters[slot_nr].SetHeldObjectTexture(
+					main.GetInstance()._character_collection.GetCharacterTexture(
+						_character_collection[_displayed_character_ids[slot_nr]]._name))
+			_available_characters[slot_nr].SetTextureOutline(
+					_character_collection[_displayed_character_ids[slot_nr]]._rarity)
+			_available_characters[slot_nr].level.text = str(
+					_character_collection[_displayed_character_ids[slot_nr]]._level)
 		else:
 			_available_characters[slot_nr].SetHeldObjectTexture(null)
 	for i in _item_slots_equipped.size():

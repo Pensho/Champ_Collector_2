@@ -10,12 +10,12 @@ const GRASSLANDS_NIGHT = preload("uid://bsmrvv2vuny5")
 @export var _background: TextureRect
 
 func _ready() -> void:
-	var dateTime: Dictionary = Time.get_datetime_dict_from_system()
-	if(dateTime["hour"] >= 5 and dateTime["hour"] <= 9):
+	var date_time: Dictionary = Time.get_datetime_dict_from_system()
+	if(date_time["hour"] >= 5 and date_time["hour"] <= 9):
 		_background.texture = GRASSLANDS_DAWN
-	elif(dateTime["hour"] >= 18 and dateTime["hour"] <= 21):
+	elif(date_time["hour"] >= 18 and date_time["hour"] <= 21):
 		_background.texture = GRASSLANDS_DUSK
-	elif(dateTime["hour"] >= 22 or dateTime["hour"] <= 4):
+	elif(date_time["hour"] >= 22 or date_time["hour"] <= 4):
 		_background.texture = GRASSLANDS_NIGHT
 	else:
 		_background.texture = GRASSLANDS_DAY

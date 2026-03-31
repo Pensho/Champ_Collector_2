@@ -87,15 +87,13 @@ func Remove(instanceID: int) -> void:
 func IncreaseCollectionSize() -> void:
 	if(_current_max_amount <= (Game_Balance.COLLECTION_LIMIT - Game_Balance.COLLECTION_SIZE_INCREMENT)):
 		_current_max_amount += Game_Balance.COLLECTION_SIZE_INCREMENT
-	else:
-		print("The maximum size of a collection has been reached.")
+	print("The maximum size of a collection has been reached.")
 
 func IsTheCollectionFull() -> bool:
 	if (_characters.size() >= _current_max_amount):
 		print("You've reached the current max amount of characters.")
 		return true
-	else:
-		return false
+	return false
 
 func CreateNextInstanceID() -> int:
 	_next_ID += 1

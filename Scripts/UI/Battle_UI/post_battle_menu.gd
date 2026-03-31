@@ -25,7 +25,8 @@ func Init(p_context_container: ContextContainer) -> void:
 		_texture_rect_background.size.y = 720
 		_heading.text = "Lost"
 	elif(p_context_container._arguments["Battle_Result"] == "Victory"):
-		main.GetInstance()._progress.MarkDifficultyCompleted(_context._static_context.resource_path, _context._arguments["Difficulty"])
+		main.GetInstance()._progress.MarkDifficultyCompleted(
+				_context._static_context.resource_path, _context._arguments["Difficulty"])
 		var battle_context: Context_Battle = p_context_container._static_context as Context_Battle
 		main.GetInstance()._resources._fortunes_favor += battle_context._loot_table._drop_result._fortunes_favor
 		main.GetInstance()._resources._silver += battle_context._loot_table._drop_result._silver
@@ -37,8 +38,11 @@ func Init(p_context_container: ContextContainer) -> void:
 	
 	for character_ID in _context._player_battle_characters.size():
 		_character_result_UI[character_ID].SetName(_context._player_battle_characters[character_ID]._name)
-		_character_result_UI[character_ID].SetTexture(main.GetInstance()._character_collection.GetCharacterTexture(_context._player_battle_characters[character_ID]._name))
-		_character_result_UI[character_ID].SetDamageDealt(_context._arguments["character_dmg_" + str(character_ID)], total_damage_dealt)
+		_character_result_UI[character_ID].SetTexture(
+				main.GetInstance()._character_collection.GetCharacterTexture(
+					_context._player_battle_characters[character_ID]._name))
+		_character_result_UI[character_ID].SetDamageDealt(
+				_context._arguments["character_dmg_" + str(character_ID)], total_damage_dealt)
 		_character_result_UI[character_ID].show()
 
 func focus_button() -> void:

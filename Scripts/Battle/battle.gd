@@ -167,7 +167,8 @@ func StartTurn() -> void:
 			_:
 				for i in _targeting_order:
 					if(_characters[i]._currentHealth >= 1):
-						var target_IDs: Array[int] = Skills.FindSkillTargets(i, _characterIDs_turn, _characters[_characterIDs_turn]._skills[_selected_skill_ID])
+						var target_IDs: Array[int] = Skills.FindSkillTargets(
+							i, _characterIDs_turn, _characters[_characterIDs_turn]._skills[_selected_skill_ID])
 						if(target_IDs.size() > 0):
 							print(_characters[_characterIDs_turn]._name, " used skill with ID: ", _selected_skill_ID)
 							ResolveSkill(_characterIDs_turn, target_IDs, _selected_skill_ID)
@@ -199,7 +200,8 @@ func TriggerZones() -> void:
 					continue
 				if(ENEMY_IDS.has(character_ID) and ENEMY_IDS.has(_zones[ID]._owner_ID)):
 					continue
-			Skills.ResolveZoneEffect(_zones[ID], _characters[character_ID], character_ID, _battle_ui, _character_repr[character_ID])
+			Skills.ResolveZoneEffect(
+				_zones[ID], _characters[character_ID], character_ID, _battle_ui, _character_repr[character_ID])
 			_zones[ID]._duration -= 1
 			_battle_ui._turn_bar.ZoneTriggered(ID, _zones[ID]._duration)
 			# Restrict the trigger to one zone per character.

@@ -1,7 +1,7 @@
 class_name KeyWordColors
 extends Node
 
-const keywords: Dictionary[String, Color] = {
+const KEYWORDS: Dictionary[String, Color] = {
 	"Speed": Color(0.929, 0.8, 0.0, 1.0),
 	"Attack": Color(1.0, 0.0, 0.0, 1.0),
 	"Defence": Color(0.178, 0.515, 1.0, 1.0),

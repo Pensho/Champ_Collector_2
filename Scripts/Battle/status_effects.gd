@@ -1,5 +1,4 @@
-extends Node
-class_name StatusEffects
+class_name StatusEffects extends Node
 
 const BUFF_ICONS: Dictionary[Types.Buff_Type, String] = {
 	Types.Buff_Type.Invalid: "N/A",
@@ -10,7 +9,8 @@ const BUFF_ICONS: Dictionary[Types.Buff_Type, String] = {
 const DEBUFF_ICONS: Dictionary[Types.Debuff_Type, String] = {
 	Types.Debuff_Type.Burning: "res://Assets/Champ_Collector/Icons/Status_Effects/Burning/flame.svg",
 	Types.Debuff_Type.Enfeeble: "res://Assets/Champ_Collector/Icons/Status_Effects/Enfeeble/shattered-sword.svg",
-	Types.Debuff_Type.Expose_Weakness: "res://Assets/Champ_Collector/Icons/Status_Effects/Expose_weakness/broken-shield.svg",
+	Types.Debuff_Type.Expose_Weakness: "
+	res://Assets/Champ_Collector/Icons/Status_Effects/Expose_weakness/broken-shield.svg",
 }
 
 class Effect:

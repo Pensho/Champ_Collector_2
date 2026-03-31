@@ -9,7 +9,12 @@ var _position: Vector2
 var _height: float
 var _spread: float
 
-func SetValue(p_text: String, p_position: Vector2, p_height: float, p_spread: float, p_color: Color = Color(1.0, 1.0, 1.0, 1.0)) -> void:
+func SetValue(
+		p_text: String,
+		p_position: Vector2,
+		p_height: float,
+		p_spread: float,
+		p_color: Color = Color(1.0, 1.0, 1.0, 1.0)) -> void:
 	label.text = p_text
 	label.add_theme_color_override("font_color", p_color)
 	_position = p_position

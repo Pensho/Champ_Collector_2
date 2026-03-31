@@ -1,12 +1,11 @@
 class_name ToolTip extends Control
 
 const KeywordColors = preload("uid://bgywi0cu4mkig")
+const tooltip_scene = preload("uid://cne3qgmdo3t1u")
+const PRESSED_TIME: float = 0.3
 
 @export var title_text: String = "Item Title"
 @export var description_text: String = "This is a detailed description that will wrap automatically."
-const tooltip_scene = preload("uid://cne3qgmdo3t1u")
-
-const PRESSED_TIME: float = 0.3
 
 var visuals: PanelContainer
 var timer: Timer
@@ -57,8 +56,8 @@ func _apply_keyword_colors(original_text: String) -> String:
 	var regex = RegEx.new()
 	var processed_text = original_text
 	
-	for keyword in KeywordColors.keywords.keys():
-		var color_code = KeywordColors.keywords[keyword].to_html()
+	for keyword in KeywordColors.KEYWORDS.keys():
+		var color_code = KeywordColors.KEYWORDS[keyword].to_html()
 		var pattern = "(?i)\\b(" + keyword + ")\\b"
 		regex.compile(pattern)
 		

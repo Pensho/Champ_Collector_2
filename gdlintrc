@@ -1,3 +1,8 @@
+max-line-length: 120
+class-name: ([A-Z][a-z0-9]*)+
+sub-class-name: ([A-Z][a-z0-9]*)+
+
 disable:
   - function-argument-name
   - function-name
+  - trailing-whitespace

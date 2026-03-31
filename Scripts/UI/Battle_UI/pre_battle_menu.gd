@@ -1,7 +1,5 @@
 extends Control
 
-@onready var available_characters: VBoxContainer = $MarginContainer/VBoxContainer/HBoxContainer/Available_Characters
-
 const NR_OF_CHARACTERS_IN_BATTLE: int = 3
 const CHARACTER_CHOSEN_COLOR: Color = Color(0.1, 0.1, 0.1)
 const CHARACTER_AVAILABLE_COLOR: Color = Color(1,1,1)
@@ -11,11 +9,13 @@ const CHARACTER_AVAILABLE_COLOR: Color = Color(1,1,1)
 
 var _chosen_characters: Dictionary[int, Character]
 var _character_collection: Array[Character]
-var _available_to_chosen_IDs: Dictionary[int, int] = {0: -1, 1: -1, 2: -1}
+var _available_to_chosen_ids: Dictionary[int, int] = {0: -1, 1: -1, 2: -1}
 var _available_character_slots: Array[MenuItemSlot]
 var _character_collection_size: int
 
 var _self_context: ContextContainer
+
+@onready var available_characters: VBoxContainer = $MarginContainer/VBoxContainer/HBoxContainer/Available_Characters
 
 func Init(p_context_container: ContextContainer) -> void:
 	if(null == p_context_container._static_context):
@@ -35,10 +35,12 @@ func Init(p_context_container: ContextContainer) -> void:
 		_available_character_slots[i]._ID = i
 		_available_character_slots[i].ConnectButton(_on_add_char_button_up)
 		if(i < _character_collection_size):
-			_available_character_slots[i].SetHeldObjectTexture(main.GetInstance()._character_collection.GetCharacterTexture(_character_collection[i]._name))
+			_available_character_slots[i].SetHeldObjectTexture(
+					main.GetInstance()._character_collection.GetCharacterTexture(_character_collection[i]._name))
 			_available_character_slots[i].level.text = str(_character_collection[i]._level)
 	
-	for i in range(1, main.GetInstance()._progress.GetCurrentEncounterDifficulty(_self_context._static_context.resource_path) + 1):
+	for i in range(1, main.GetInstance()._progress.GetCurrentEncounterDifficulty(
+				_self_context._static_context.resource_path) + 1):
 		_difficulty_option.add_item("Difficulty " + str(i), i)
 	_difficulty_option.select(0)
 
@@ -72,8 +74,9 @@ func _on_remove_char_button_up(p_char_slot: int) -> void:
 		_chosen_characters.erase(p_char_slot)
 		_chosen_character_slots[p_char_slot].SetHeldObjectTexture(null)
 		print("p_char_slot: ", p_char_slot)
-		print("_available_to_chosen_IDs[p_char_slot]: ", _available_to_chosen_IDs[p_char_slot])
-		_available_character_slots[_available_to_chosen_IDs[p_char_slot]].SetHeldObjectModulate(CHARACTER_AVAILABLE_COLOR)
+		print("_available_to_chosen_ids[p_char_slot]: ", _available_to_chosen_ids[p_char_slot])
+		_available_character_slots[_available_to_chosen_ids[p_char_slot]].SetHeldObjectModulate(
+				CHARACTER_AVAILABLE_COLOR)
 	else:
 		print("trying to remove a character from an empty slot nr: ", p_char_slot)
 
@@ -94,8 +97,8 @@ func _on_add_char_button_up(p_char_slot: int) -> void:
 	for i in NR_OF_CHARACTERS_IN_BATTLE:
 		if (!_chosen_characters.has(i)):
 			_chosen_characters[i] = _character_collection[p_char_slot]
-			_chosen_character_slots[i].SetHeldObjectTexture(_available_character_slots[p_char_slot].texture_rect.texture)
-			#print("Time to darken _available_character_slots for slot nr: ", p_char_slot, " to color: ", CHARACTER_CHOSEN_COLOR)
+			_chosen_character_slots[i].SetHeldObjectTexture(
+					_available_character_slots[p_char_slot].texture_rect.texture)
 			_available_character_slots[p_char_slot].SetHeldObjectModulate(CHARACTER_CHOSEN_COLOR)
-			_available_to_chosen_IDs[i] = p_char_slot
+			_available_to_chosen_ids[i] = p_char_slot
 			return

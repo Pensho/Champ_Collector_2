@@ -16,7 +16,8 @@ func Save(p_slot: int) -> void:
 		print("Calling save for node: ", node.name)
 		data[node.name] = node.Serialize()
 	
-	var save_file: FileAccess = FileAccess.open(SAVE_DIR + "profile_" + str(p_slot) + ".save", FileAccess.WRITE)
+	var save_file: FileAccess = FileAccess.open(
+		SAVE_DIR + "profile_" + str(p_slot) + ".save", FileAccess.WRITE)
 	
 	save_file.store_string(JSON.stringify(data, "\t"))
 
@@ -25,7 +26,8 @@ func Load(p_slot: int) -> void:
 		print("There is no saved data for: ", SAVE_DIR + "profile_" + str(p_slot) + ".save")
 		return
 	
-	var save_file: FileAccess = FileAccess.open(SAVE_DIR + "profile_" + str(p_slot) + ".save", FileAccess.READ)
+	var save_file: FileAccess = FileAccess.open(
+		SAVE_DIR + "profile_" + str(p_slot) + ".save", FileAccess.READ)
 	var data: Dictionary = JSON.parse_string(save_file.get_as_text())
 	
 	# Items must load before characters so gear can be re-equipped
@@ -67,6 +69,7 @@ func GetSlotMetadata(p_slot: int) -> Dictionary:
 		print("There is no saved data for: ", "user://profile_" + str(p_slot) + ".save")
 		return {}
 	
-	var save_file: FileAccess = FileAccess.open("user://profile_" + str(p_slot) + ".save", FileAccess.READ)
+	var save_file: FileAccess = FileAccess.open(
+		"user://profile_" + str(p_slot) + ".save", FileAccess.READ)
 	var data: Dictionary = JSON.parse_string(save_file.get_as_text())
 	return data.get("meta", {})

@@ -5,11 +5,15 @@
             "label": "GDScript: Lint",
             "type": "shell",
             "command": "C:\\Users\\jonas\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.10_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python310\\Scripts\\gdlint.exe",
-            "args": ["${relativeFile}"],
+            "args": [
+                "${relativeFile}"
+            ],
             "options": {
                 "shell": {
                     "executable": "cmd.exe",
-                    "args": ["/c"]
+                    "args": [
+                        "/c"
+                    ]
                 }
             },
             "group": "test",
@@ -19,7 +23,10 @@
             },
             "problemMatcher": {
                 "owner": "gdscript",
-                "fileLocation": ["relative", "${workspaceFolder}"],
+                "fileLocation": [
+                    "relative",
+                    "${workspaceFolder}"
+                ],
                 "pattern": {
                     "regexp": "^(.+):(\\d+): (Error|Warning) - (.+)$",
                     "file": 1,
@@ -36,7 +43,9 @@
             "options": {
                 "shell": {
                     "executable": "cmd.exe",
-                    "args": ["/c"]
+                    "args": [
+                        "/c"
+                    ]
                 }
             },
             "group": "test",
@@ -46,7 +55,10 @@
             },
             "problemMatcher": {
                 "owner": "gdscript",
-                "fileLocation": ["relative", "${workspaceFolder}"],
+                "fileLocation": [
+                    "relative",
+                    "${workspaceFolder}"
+                ],
                 "pattern": {
                     "regexp": "^(.+):(\\d+): (Error|Warning) - (.+)$",
                     "file": 1,

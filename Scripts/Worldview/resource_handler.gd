@@ -1,11 +1,11 @@
 class_name ResourceHandler extends Node
 
+const SILVER_COIN_TEXTURE = preload("uid://cqc2eqqmdc30j")
+const SUPPLIES_TEXTURE = preload("uid://64keags07tr4")
+
 var _silver: int
 var _supplies: int
 var _fortunes_favor: int
-
-const SILVER_COIN_TEXTURE = preload("uid://cqc2eqqmdc30j")
-const SUPPLIES_TEXTURE = preload("uid://64keags07tr4")
 
 func _ready() -> void:
 	self.name = self.get_script().get_global_name()

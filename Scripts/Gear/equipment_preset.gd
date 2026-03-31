@@ -29,4 +29,6 @@ func Setup() -> void:
 		for i in _rarity:
 			if(Game_Balance.ITEM_TYPE_ATTRIBUTES.has(_slot)):
 				random_attribute_element = randi() % Game_Balance.ITEM_TYPE_ATTRIBUTES[_slot].size()
-				_attributes[Game_Balance.ITEM_TYPE_ATTRIBUTES[_slot][random_attribute_element]] += Game_Balance.ITEM_ATTRIBUTE_PER_RARITY
+				_attributes[
+					Game_Balance.ITEM_TYPE_ATTRIBUTES[
+						_slot][random_attribute_element]] += Game_Balance.ITEM_ATTRIBUTE_PER_RARITY
