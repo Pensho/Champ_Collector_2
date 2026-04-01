@@ -1,7 +1,7 @@
 class_name ToolTip extends Control
 
-const KeywordColors = preload("uid://bgywi0cu4mkig")
-const tooltip_scene = preload("uid://cne3qgmdo3t1u")
+const KEYWORD_COLORS = preload("uid://bgywi0cu4mkig")
+const TOOLTIP_SCENE = preload("uid://cne3qgmdo3t1u")
 const PRESSED_TIME: float = 0.3
 
 @export var title_text: String = "Item Title"
@@ -29,7 +29,7 @@ func _input(event: InputEvent) -> void:
 
 func _show_tooltip() -> void:
 	if not active_tooltip:
-		active_tooltip = tooltip_scene.instantiate()
+		active_tooltip = TOOLTIP_SCENE.instantiate()
 		add_child(active_tooltip)
 	
 	# 1. Update the text
@@ -56,8 +56,8 @@ func _apply_keyword_colors(original_text: String) -> String:
 	var regex = RegEx.new()
 	var processed_text = original_text
 	
-	for keyword in KeywordColors.KEYWORDS.keys():
-		var color_code = KeywordColors.KEYWORDS[keyword].to_html()
+	for keyword in KEYWORD_COLORS.KEYWORDS.keys():
+		var color_code = KEYWORD_COLORS.KEYWORDS[keyword].to_html()
 		var pattern = "(?i)\\b(" + keyword + ")\\b"
 		regex.compile(pattern)
 		

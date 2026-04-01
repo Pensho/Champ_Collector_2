@@ -1,0 +1,146 @@
+[gd_scene load_steps=8 format=3 uid="uid://c7smqpmfvs0ih"]
+
+[ext_resource type="Script" uid="uid://yruh34l1qcss" path="res://Scripts/UI/button_with_options.gd" id="1_me4ub"]
+[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="2_taquw"]
+[ext_resource type="FontFile" uid="uid://yjb867fn5vve" path="res://Assets/Champ_Collector/Fonts/alagard.ttf" id="3_taquw"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_taquw"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_atgrs"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_e6x3c"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vj1of"]
+
+[node name="ButtonWithOptions" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 5.0
+offset_bottom = 5.0
+script = ExtResource("1_me4ub")
+
+[node name="ColorRect2" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -1875.0
+offset_top = -900.0
+offset_right = 2125.0
+offset_bottom = 1100.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.33333334)
+
+[node name="Button_Close" type="Button" parent="."]
+custom_minimum_size = Vector2(4000, 2000)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -1875.0
+offset_top = -900.0
+offset_right = 2125.0
+offset_bottom = 1100.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_taquw")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_atgrs")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_e6x3c")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_vj1of")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+custom_minimum_size = Vector2(300, 200)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+color = Color(0, 0, 0, 0.49411765)
+
+[node name="PanelContainer" type="PanelContainer" parent="ColorRect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="ColorRect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ColorRect/MarginContainer"]
+layout_mode = 2
+
+[node name="Label_Title" type="Label" parent="ColorRect/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("2_taquw")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 24
+text = "Test Heading"
+
+[node name="RichTextLabel_Info" type="RichTextLabel" parent="ColorRect/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_taquw")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/normal_font_size = 20
+text = "This is my Description"
+fit_content = true
+
+[node name="HBoxContainer_Buttons" type="HBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 10
+
+[node name="Button_Left" type="Button" parent="ColorRect/MarginContainer/VBoxContainer/HBoxContainer_Buttons"]
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 8
+theme_override_fonts/font = ExtResource("3_taquw")
+theme_override_font_sizes/font_size = 22
+text = "Left"
+
+[node name="Button_Middle" type="Button" parent="ColorRect/MarginContainer/VBoxContainer/HBoxContainer_Buttons"]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+theme_override_fonts/font = ExtResource("3_taquw")
+theme_override_font_sizes/font_size = 22
+text = "Middle"
+
+[node name="Button_Right" type="Button" parent="ColorRect/MarginContainer/VBoxContainer/HBoxContainer_Buttons"]
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 8
+theme_override_fonts/font = ExtResource("3_taquw")
+theme_override_font_sizes/font_size = 22
+text = "Right"
+
+[node name="ReferenceRect" type="ReferenceRect" parent="ColorRect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+border_color = Color(1, 1, 1, 1)
+editor_only = false
+
+[connection signal="button_up" from="Button_Close" to="." method="_on_cancel_button_up"]
+[connection signal="button_up" from="ColorRect/MarginContainer/VBoxContainer/HBoxContainer_Buttons/Button_Left" to="." method="_on_confirm_button_up"]
+[connection signal="button_up" from="ColorRect/MarginContainer/VBoxContainer/HBoxContainer_Buttons/Button_Middle" to="." method="_on_sell_button_up"]
+[connection signal="button_up" from="ColorRect/MarginContainer/VBoxContainer/HBoxContainer_Buttons/Button_Right" to="." method="_on_cancel_button_up"]
