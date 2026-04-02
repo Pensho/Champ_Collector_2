@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://b6ynhcan7pnn8"]
+[gd_scene format=3 uid="uid://b6ynhcan7pnn8"]
 
 [ext_resource type="Script" uid="uid://156fy64gykij" path="res://Scripts/UI/inspect_collection_menu.gd" id="1_jlkm0"]
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="1_riq8p"]
@@ -22,7 +22,7 @@ shader_parameter/texture_albedo = ExtResource("7_lgjj3")
 shader = ExtResource("5_lsdxp")
 shader_parameter/texture_albedo = ExtResource("6_35r4v")
 
-[node name="InspectCollection" type="Control" node_paths=PackedStringArray("_attribute_labels", "_selected_char_label", "_selected_char_level", "_selected_char_nature", "_selected_char_nature_tooltip")]
+[node name="InspectCollection" type="Control" unique_id=226476496 node_paths=PackedStringArray("_attribute_labels", "_selected_char_label", "_selected_char_level", "_selected_char_nature", "_selected_char_nature_tooltip")]
 custom_minimum_size = Vector2(1280, 720)
 layout_mode = 3
 anchors_preset = 0
@@ -44,7 +44,7 @@ _selected_char_level = NodePath("MarginContainer/ColorRect2/Label_Level")
 _selected_char_nature = NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/Label_Character_Nature")
 _selected_char_nature_tooltip = NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/Label_Character_Nature")
 
-[node name="TextureRect" type="TextureRect" parent="."]
+[node name="TextureRect" type="TextureRect" parent="." unique_id=1077098852]
 custom_minimum_size = Vector2(1280, 720)
 layout_mode = 0
 offset_right = 40.0
@@ -52,7 +52,7 @@ offset_bottom = 40.0
 texture = ExtResource("2_0ed3m")
 expand_mode = 1
 
-[node name="Label" type="Label" parent="."]
+[node name="Label" type="Label" parent="." unique_id=699242934]
 visible = false
 layout_mode = 0
 offset_left = 158.0
@@ -66,7 +66,7 @@ theme_override_constants/shadow_offset_x = 3
 theme_override_constants/shadow_offset_y = 3
 text = "Available items"
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1661270928]
 custom_minimum_size = Vector2(1280, 720)
 layout_mode = 0
 offset_right = 1280.0
@@ -76,7 +76,7 @@ theme_override_constants/margin_top = 16
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 16
 
-[node name="ColorRect2" type="ColorRect" parent="MarginContainer"]
+[node name="ColorRect2" type="ColorRect" parent="MarginContainer" unique_id=1446251416]
 custom_minimum_size = Vector2(200, 200)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -84,7 +84,7 @@ size_flags_vertical = 4
 mouse_filter = 1
 color = Color(0.24313726, 0.24313726, 0.24313726, 0)
 
-[node name="TextureRect" type="TextureRect" parent="MarginContainer/ColorRect2"]
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/ColorRect2" unique_id=1822881906]
 custom_minimum_size = Vector2(200, 200)
 layout_mode = 0
 offset_left = 10.0
@@ -95,13 +95,13 @@ size_flags_horizontal = 4
 mouse_filter = 2
 expand_mode = 1
 
-[node name="Button_Deselect_Char" type="Button" parent="MarginContainer/ColorRect2"]
+[node name="Button_Deselect_Char" type="Button" parent="MarginContainer/ColorRect2" unique_id=388726007]
 layout_mode = 0
 offset_right = 200.0
 offset_bottom = 200.0
 theme = ExtResource("1_riq8p")
 
-[node name="Label_Level" type="Label" parent="MarginContainer/ColorRect2"]
+[node name="Label_Level" type="Label" parent="MarginContainer/ColorRect2" unique_id=144140695]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -123,7 +123,7 @@ theme_override_constants/shadow_outline_size = 5
 theme_override_font_sizes/font_size = 20
 horizontal_alignment = 1
 
-[node name="Label_Character_Name" type="Label" parent="MarginContainer/ColorRect2"]
+[node name="Label_Character_Name" type="Label" parent="MarginContainer/ColorRect2" unique_id=474828763]
 layout_direction = 2
 layout_mode = 1
 anchors_preset = 7
@@ -150,47 +150,47 @@ theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer" unique_id=749996676]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 50
 
-[node name="ScrollContainer_Characters" type="ScrollContainer" parent="MarginContainer/HBoxContainer2"]
+[node name="ScrollContainer_Characters" type="ScrollContainer" parent="MarginContainer/HBoxContainer2" unique_id=2084637322]
 custom_minimum_size = Vector2(520, 0)
 layout_mode = 2
 
-[node name="GridContainer" type="GridContainer" parent="MarginContainer/HBoxContainer2/ScrollContainer_Characters"]
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/HBoxContainer2/ScrollContainer_Characters" unique_id=1499657250]
 layout_mode = 2
 columns = 5
 
-[node name="ScrollContainer_Items" type="ScrollContainer" parent="MarginContainer/HBoxContainer2"]
+[node name="ScrollContainer_Items" type="ScrollContainer" parent="MarginContainer/HBoxContainer2" unique_id=483209083]
 visible = false
 custom_minimum_size = Vector2(520, 0)
 layout_mode = 2
 
-[node name="GridContainer" type="GridContainer" parent="MarginContainer/HBoxContainer2/ScrollContainer_Items"]
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/HBoxContainer2/ScrollContainer_Items" unique_id=205271624]
 layout_mode = 2
 columns = 5
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/HBoxContainer2"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/HBoxContainer2" unique_id=2003231855]
 custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
 size_flags_horizontal = 10
 size_flags_vertical = 4
 alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer2"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer2" unique_id=1678650511]
 custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 alignment = 1
 
-[node name="Weapon_Slot" parent="MarginContainer/HBoxContainer2/VBoxContainer2/HBoxContainer" instance=ExtResource("4_xwg4m")]
+[node name="Weapon_Slot" parent="MarginContainer/HBoxContainer2/VBoxContainer2/HBoxContainer" unique_id=569422811 instance=ExtResource("4_xwg4m")]
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 
-[node name="TextureRect2" type="TextureRect" parent="MarginContainer/HBoxContainer2/VBoxContainer2/HBoxContainer/Weapon_Slot"]
+[node name="TextureRect2" type="TextureRect" parent="MarginContainer/HBoxContainer2/VBoxContainer2/HBoxContainer/Weapon_Slot" unique_id=588322690]
 material = SubResource("ShaderMaterial_u3wy6")
 layout_mode = 0
 offset_left = 10.0
@@ -200,11 +200,11 @@ offset_bottom = 120.0
 mouse_filter = 2
 texture = ExtResource("6_0ed3m")
 
-[node name="Shield_Slot" parent="MarginContainer/HBoxContainer2/VBoxContainer2/HBoxContainer" instance=ExtResource("4_xwg4m")]
+[node name="Shield_Slot" parent="MarginContainer/HBoxContainer2/VBoxContainer2/HBoxContainer" unique_id=1250095819 instance=ExtResource("4_xwg4m")]
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 
-[node name="TextureRect2" type="TextureRect" parent="MarginContainer/HBoxContainer2/VBoxContainer2/HBoxContainer/Shield_Slot"]
+[node name="TextureRect2" type="TextureRect" parent="MarginContainer/HBoxContainer2/VBoxContainer2/HBoxContainer/Shield_Slot" unique_id=1086887396]
 material = SubResource("ShaderMaterial_2jco1")
 layout_mode = 0
 offset_left = 10.0
@@ -214,11 +214,11 @@ offset_bottom = 120.0
 mouse_filter = 2
 texture = ExtResource("7_lgjj3")
 
-[node name="Boots_Slot" parent="MarginContainer/HBoxContainer2/VBoxContainer2" instance=ExtResource("4_xwg4m")]
+[node name="Boots_Slot" parent="MarginContainer/HBoxContainer2/VBoxContainer2" unique_id=1663287261 instance=ExtResource("4_xwg4m")]
 layout_mode = 2
 size_flags_horizontal = 4
 
-[node name="TextureRect2" type="TextureRect" parent="MarginContainer/HBoxContainer2/VBoxContainer2/Boots_Slot"]
+[node name="TextureRect2" type="TextureRect" parent="MarginContainer/HBoxContainer2/VBoxContainer2/Boots_Slot" unique_id=1206789498]
 material = SubResource("ShaderMaterial_0ed3m")
 layout_mode = 0
 offset_left = 10.0
@@ -229,13 +229,13 @@ mouse_filter = 2
 texture = ExtResource("6_35r4v")
 expand_mode = 1
 
-[node name="ColorRect" type="ColorRect" parent="MarginContainer/HBoxContainer2/VBoxContainer2"]
+[node name="ColorRect" type="ColorRect" parent="MarginContainer/HBoxContainer2/VBoxContainer2" unique_id=1273749762]
 custom_minimum_size = Vector2(450, 250)
 layout_mode = 2
 size_flags_vertical = 10
 color = Color(0.243137, 0.243137, 0.243137, 0.690196)
 
-[node name="Label_Character_Nature" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect"]
+[node name="Label_Character_Nature" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect" unique_id=1136376217]
 layout_mode = 0
 offset_left = 10.0
 offset_top = 205.0
@@ -252,7 +252,7 @@ script = ExtResource("9_lgjj3")
 title_text = null
 description_text = null
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect" unique_id=204320373]
 layout_mode = 0
 offset_right = 500.0
 offset_bottom = 269.0
@@ -261,145 +261,145 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer" unique_id=1508898651]
 layout_mode = 2
 theme_override_constants/separation = 36
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer" unique_id=1195575698]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer" unique_id=1161202465]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=2045482843]
 layout_mode = 2
 theme = ExtResource("1_riq8p")
 text = "Health: "
 
-[node name="Label2" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+[node name="Label2" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=145787414]
 layout_mode = 2
 theme = ExtResource("1_riq8p")
 text = "Attack: "
 
-[node name="Label3" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+[node name="Label3" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=1906699439]
 layout_mode = 2
 theme = ExtResource("1_riq8p")
 text = "Defense: "
 
-[node name="Label4" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+[node name="Label4" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=1179068545]
 layout_mode = 2
 theme = ExtResource("1_riq8p")
 text = "Speed: "
 
-[node name="Label5" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+[node name="Label5" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=1587322169]
 layout_mode = 2
 theme = ExtResource("1_riq8p")
 text = "Accuracy: "
 
-[node name="VBoxContainer3" type="VBoxContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="VBoxContainer3" type="VBoxContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer" unique_id=274127026]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label_Health_Val" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3"]
+[node name="Label_Health_Val" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3" unique_id=1701275825]
 layout_mode = 2
 theme = ExtResource("1_riq8p")
 theme_override_colors/font_color = Color(1, 0.741176, 0, 1)
 text = "0"
 
-[node name="Label_Attack_Val" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3"]
+[node name="Label_Attack_Val" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3" unique_id=1156883985]
 layout_mode = 2
 theme = ExtResource("1_riq8p")
 theme_override_colors/font_color = Color(1, 0.741176, 0, 1)
 text = "0"
 
-[node name="Label_Defense_Val" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3"]
+[node name="Label_Defense_Val" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3" unique_id=384852516]
 layout_mode = 2
 theme = ExtResource("1_riq8p")
 theme_override_colors/font_color = Color(1, 0.741176, 0, 1)
 text = "0"
 
-[node name="Label_Speed_Val" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3"]
+[node name="Label_Speed_Val" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3" unique_id=443972591]
 layout_mode = 2
 theme = ExtResource("1_riq8p")
 theme_override_colors/font_color = Color(1, 0.741176, 0, 1)
 text = "0"
 
-[node name="Label_Accuracy_Val" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3"]
+[node name="Label_Accuracy_Val" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3" unique_id=909755940]
 layout_mode = 2
 theme = ExtResource("1_riq8p")
 theme_override_colors/font_color = Color(1, 0.741176, 0, 1)
 text = "0"
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer" unique_id=1518137742]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2"]
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2" unique_id=1030475691]
 layout_mode = 2
 theme = ExtResource("1_riq8p")
 text = "Mysticism: "
 
-[node name="Label2" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2"]
+[node name="Label2" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2" unique_id=66608017]
 layout_mode = 2
 theme = ExtResource("1_riq8p")
 text = "Resistance: "
 
-[node name="Label3" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2"]
+[node name="Label3" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2" unique_id=173666789]
 layout_mode = 2
 theme = ExtResource("1_riq8p")
 text = "Knowledge: "
 
-[node name="Label4" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2"]
+[node name="Label4" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2" unique_id=1416594088]
 layout_mode = 2
 theme = ExtResource("1_riq8p")
 text = "Crit Chance: "
 
-[node name="Label5" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2"]
+[node name="Label5" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2" unique_id=739655977]
 layout_mode = 2
 theme = ExtResource("1_riq8p")
 text = "Crit Damage: "
 
-[node name="VBoxContainer4" type="VBoxContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="VBoxContainer4" type="VBoxContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer" unique_id=1642701620]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label_Mysticism_Val" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer4"]
+[node name="Label_Mysticism_Val" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer4" unique_id=1929977622]
 layout_mode = 2
 theme = ExtResource("1_riq8p")
 theme_override_colors/font_color = Color(1, 0.741176, 0, 1)
 text = "0"
 
-[node name="Label_Resistance_Val" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer4"]
+[node name="Label_Resistance_Val" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer4" unique_id=192731491]
 layout_mode = 2
 theme = ExtResource("1_riq8p")
 theme_override_colors/font_color = Color(1, 0.741176, 0, 1)
 text = "0"
 
-[node name="Label_Knowledge_Val" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer4"]
+[node name="Label_Knowledge_Val" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer4" unique_id=1983064750]
 layout_mode = 2
 theme = ExtResource("1_riq8p")
 theme_override_colors/font_color = Color(1, 0.741176, 0, 1)
 text = "0"
 
-[node name="Label_CritCh_Val" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer4"]
+[node name="Label_CritCh_Val" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer4" unique_id=128795629]
 layout_mode = 2
 theme = ExtResource("1_riq8p")
 theme_override_colors/font_color = Color(1, 0.741176, 0, 1)
 text = "0"
 
-[node name="Label_CritDmg_Val" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer4"]
+[node name="Label_CritDmg_Val" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer4" unique_id=1380092998]
 layout_mode = 2
 theme = ExtResource("1_riq8p")
 theme_override_colors/font_color = Color(1, 0.741176, 0, 1)
 text = "0"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer" unique_id=1082317516]
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 8
 
-[node name="Exit" type="Button" parent="MarginContainer/HBoxContainer"]
+[node name="Exit" type="Button" parent="MarginContainer/HBoxContainer" unique_id=310925250]
 layout_mode = 2
 theme = ExtResource("1_riq8p")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)

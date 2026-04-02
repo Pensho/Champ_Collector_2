@@ -2,6 +2,9 @@ class_name ResourceHandler extends Node
 
 const SILVER_COIN_TEXTURE = preload("uid://cqc2eqqmdc30j")
 const SUPPLIES_TEXTURE = preload("uid://64keags07tr4")
+const FORTUNES_FAVOR_BONE_1 = preload("uid://d3ribnb76plyc")
+const FORTUNES_FAVOR_BRASS_1 = preload("uid://dq3fohqivkweb")
+const FORTUNES_FAVOR_PARCHMENT_1 = preload("uid://d1le2k5exvc1b")
 
 var _silver: int
 var _supplies: int

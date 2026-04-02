@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://df6f1b4xoipjq"]
+[gd_scene format=3 uid="uid://df6f1b4xoipjq"]
 
 [ext_resource type="Script" uid="uid://su8xqv5pj4yg" path="res://Scripts/UI/reclaimed_city_world_atlas_menu.gd" id="1_8g887"]
 [ext_resource type="Texture2D" uid="uid://xfua5pu07bpc" path="res://Assets/Champ_Collector/UI/Atlas_Screen/Atlas_Screen.jpg" id="1_ibbvk"]
@@ -7,7 +7,7 @@
 [ext_resource type="Theme" uid="uid://bcg5pku1fyhst" path="res://Assets/Champ_Collector/Themes/hub_theme.tres" id="4_75jl7"]
 [ext_resource type="PackedScene" uid="uid://cxq26hwryxtsy" path="res://Scenes/ui/Resources/Resource_UI_Slot.tscn" id="6_14bt2"]
 
-[node name="ReclaimedCityWorldAtlas" type="Control" node_paths=PackedStringArray("_silver_UI", "_supplies_UI")]
+[node name="ReclaimedCityWorldAtlas" type="Control" unique_id=795738096 node_paths=PackedStringArray("_silver_UI", "_supplies_UI", "_fortunes_favor_UI")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -17,19 +17,20 @@ grow_vertical = 2
 script = ExtResource("1_8g887")
 _silver_UI = NodePath("ResourceUISlot_Silver")
 _supplies_UI = NodePath("ResourceUISlot2_Supplies")
+_fortunes_favor_UI = NodePath("ResourceUISlot_Fortunes_Favor")
 
-[node name="Background" type="TextureRect" parent="."]
+[node name="Background" type="TextureRect" parent="." unique_id=25178206]
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 texture = ExtResource("1_ibbvk")
 
-[node name="Navigation_Buttons" type="Control" parent="."]
+[node name="Navigation_Buttons" type="Control" parent="." unique_id=1708789565]
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="Button_Experience_Quests" type="TextureButton" parent="Navigation_Buttons"]
+[node name="Button_Experience_Quests" type="TextureButton" parent="Navigation_Buttons" unique_id=2122147813]
 layout_mode = 0
 offset_left = 1013.0
 offset_top = 249.0
@@ -39,7 +40,7 @@ scale = Vector2(1.2, 1.2)
 theme = ExtResource("2_75jl7")
 texture_hover = ExtResource("3_8g887")
 
-[node name="Label_Experience_Quests" type="Label" parent="Navigation_Buttons"]
+[node name="Label_Experience_Quests" type="Label" parent="Navigation_Buttons" unique_id=304526404]
 layout_mode = 1
 offset_left = 1074.0
 offset_top = 182.0
@@ -53,7 +54,7 @@ text = "Quests"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Button_Town" type="Button" parent="Navigation_Buttons"]
+[node name="Button_Town" type="Button" parent="Navigation_Buttons" unique_id=678841848]
 layout_mode = 0
 offset_left = 947.0
 offset_top = 623.0
@@ -64,7 +65,7 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 6
 text = "Town"
 
-[node name="Button_Caravan" type="TextureButton" parent="Navigation_Buttons"]
+[node name="Button_Caravan" type="TextureButton" parent="Navigation_Buttons" unique_id=1184844239]
 layout_mode = 0
 offset_left = 521.0
 offset_top = 210.0
@@ -73,7 +74,7 @@ offset_bottom = 410.0
 theme = ExtResource("4_75jl7")
 texture_hover = ExtResource("3_8g887")
 
-[node name="Label_Caravan" type="Label" parent="Navigation_Buttons"]
+[node name="Label_Caravan" type="Label" parent="Navigation_Buttons" unique_id=220471163]
 layout_mode = 0
 offset_left = 555.0
 offset_top = 216.0
@@ -87,7 +88,7 @@ text = "Caravan"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Button_Statues" type="TextureButton" parent="Navigation_Buttons"]
+[node name="Button_Statues" type="TextureButton" parent="Navigation_Buttons" unique_id=2086452711]
 layout_mode = 0
 offset_left = 35.0
 offset_top = 157.0
@@ -96,7 +97,7 @@ offset_bottom = 357.0
 theme = ExtResource("4_75jl7")
 texture_hover = ExtResource("3_8g887")
 
-[node name="Label_Statues" type="Label" parent="Navigation_Buttons"]
+[node name="Label_Statues" type="Label" parent="Navigation_Buttons" unique_id=392278739]
 layout_mode = 0
 offset_left = 84.0
 offset_top = 149.0
@@ -110,7 +111,7 @@ text = "Statues"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Button_Shop" type="TextureButton" parent="Navigation_Buttons"]
+[node name="Button_Shop" type="TextureButton" parent="Navigation_Buttons" unique_id=551077809]
 layout_mode = 0
 offset_left = 436.0
 offset_top = 5.0
@@ -119,7 +120,7 @@ offset_bottom = 205.0
 theme = ExtResource("4_75jl7")
 texture_hover = ExtResource("3_8g887")
 
-[node name="Label_Adventure" type="Label" parent="Navigation_Buttons"]
+[node name="Label_Adventure" type="Label" parent="Navigation_Buttons" unique_id=282073038]
 layout_mode = 0
 offset_left = 461.0
 offset_top = 78.0
@@ -133,19 +134,26 @@ text = "Adventure
 "
 horizontal_alignment = 1
 
-[node name="ResourceUISlot_Silver" parent="." instance=ExtResource("6_14bt2")]
+[node name="ResourceUISlot_Silver" parent="." unique_id=779126230 instance=ExtResource("6_14bt2")]
 layout_mode = 0
-offset_left = 695.0
-offset_top = 8.0
-offset_right = 695.0
-offset_bottom = 8.0
+offset_left = 967.0
+offset_top = 20.0
+offset_right = 967.0
+offset_bottom = 20.0
 
-[node name="ResourceUISlot2_Supplies" parent="." instance=ExtResource("6_14bt2")]
+[node name="ResourceUISlot2_Supplies" parent="." unique_id=433933556 instance=ExtResource("6_14bt2")]
 layout_mode = 0
-offset_left = 825.0
-offset_top = 8.0
-offset_right = 825.0
-offset_bottom = 8.0
+offset_left = 1100.0
+offset_top = 20.0
+offset_right = 1100.0
+offset_bottom = 20.0
+
+[node name="ResourceUISlot_Fortunes_Favor" parent="." unique_id=901080193 instance=ExtResource("6_14bt2")]
+layout_mode = 0
+offset_left = 834.0
+offset_top = 20.0
+offset_right = 834.0
+offset_bottom = 20.0
 
 [connection signal="button_up" from="Navigation_Buttons/Button_Experience_Quests" to="." method="_on_experience_quests_button_up"]
 [connection signal="button_up" from="Navigation_Buttons/Button_Town" to="." method="_on_town_button_up"]

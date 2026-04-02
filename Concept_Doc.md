@@ -418,6 +418,8 @@ Believers grant the gods power, but very slowly. Fragments of the god of magic e
 The god of magics only mark left on the world other than ruins is the magic system, written in old scrolls lost to civilization.
 Since the imprisonment the magic system became very restricted in terms of conjuration and effect, often requiring powerful reagents, chants only known in parts or environmental conditions.
 
+These events transpired long before the player enters the game, with gods leaving little direct impact on the world and most people in the world wont even experience anything related to them except for stored or warped doctrines, statues and hard to come by books.
+
 #### God 1, the god of adventure
 
 The God of Adventure is the divine personification of curiosity, risk, and the thrill of the unknown. Unlike the God of Rules, who seeks to categorize the world into letters and numbers, the God of Adventure views the world as a vast, unpredictable playground. This deity is a playful thrill-seeker who lacks the power to manifest physically and instead watches the creatures of the world with a voyeuristic intensity, seeking to live vicariously through their triumphs and tragedies.

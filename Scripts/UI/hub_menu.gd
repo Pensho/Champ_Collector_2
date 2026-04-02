@@ -2,6 +2,7 @@ extends Control
 
 @export var _silver_UI: ResourceUISlot
 @export var _supplies_UI: ResourceUISlot
+@export var _fortunes_favor_UI: ResourceUISlot
 
 @warning_ignore("unused_parameter") # Main menu requires nothing from the ContextContainer.
 func Init(p_context_container: ContextContainer) -> void:
@@ -9,6 +10,8 @@ func Init(p_context_container: ContextContainer) -> void:
 	_silver_UI.SetTexture(main.GetInstance()._resources.SILVER_COIN_TEXTURE)
 	_supplies_UI.SetText(str(main.GetInstance()._resources._supplies) + "/" + str(GameBalance.MAX_SUPPLIES))
 	_supplies_UI.SetTexture(main.GetInstance()._resources.SUPPLIES_TEXTURE)
+	_fortunes_favor_UI.SetText(str(main.GetInstance()._resources._fortunes_favor))
+	_fortunes_favor_UI.SetTexture(main.GetInstance()._resources.FORTUNES_FAVOR_BONE_1)
 
 func _on_war_room_button_pressed() -> void:
 	var context_container: ContextContainer = ContextContainer.new()

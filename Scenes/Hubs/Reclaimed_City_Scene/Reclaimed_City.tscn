@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://cfdrcdtsx2jh7"]
+[gd_scene format=3 uid="uid://cfdrcdtsx2jh7"]
 
 [ext_resource type="Texture2D" uid="uid://buloq01pashmn" path="res://Assets/Champ_Collector/Hubs/Reclaimed_City/Reclaimed_1.jpg" id="1_feqxn"]
 [ext_resource type="Script" uid="uid://u58ywhc4xsod" path="res://Scripts/UI/hub_menu.gd" id="1_sbf57"]
@@ -39,23 +39,24 @@ color = Color(0.74558026, 0.7455802, 0.7455802, 1)
 color_ramp = SubResource("GradientTexture1D_1ilth")
 anim_offset_max = 1.0
 
-[node name="ReclaimedCity" type="Control" node_paths=PackedStringArray("_silver_UI", "_supplies_UI")]
+[node name="ReclaimedCity" type="Control" unique_id=30128910 node_paths=PackedStringArray("_silver_UI", "_supplies_UI", "_fortunes_favor_UI")]
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_sbf57")
 _silver_UI = NodePath("ResourceUISlot_Silver")
 _supplies_UI = NodePath("ResourceUISlot_Supplies")
+_fortunes_favor_UI = NodePath("ResourceUISlot_Fortunes_Favor")
 
-[node name="Background" type="TextureRect" parent="."]
+[node name="Background" type="TextureRect" parent="." unique_id=1375399691]
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 texture = ExtResource("1_feqxn")
 
-[node name="ReclaimedCityFireParticle" parent="." instance=ExtResource("6_gm8ir")]
+[node name="ReclaimedCityFireParticle" parent="." unique_id=1524760976 instance=ExtResource("6_gm8ir")]
 position = Vector2(984, 536)
 
-[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+[node name="GPUParticles2D" type="GPUParticles2D" parent="." unique_id=179570366]
 material = SubResource("CanvasItemMaterial_vvjq3")
 position = Vector2(598, 361)
 amount = 50
@@ -64,14 +65,14 @@ lifetime = 3.0
 visibility_rect = Rect2(-640, -360, 1280, 720)
 process_material = SubResource("ParticleProcessMaterial_kyfek")
 
-[node name="Navigation_Buttons" type="Control" parent="."]
+[node name="Navigation_Buttons" type="Control" parent="." unique_id=786884503]
 anchors_preset = 0
 offset_left = 598.0
 offset_top = 361.0
 offset_right = 638.0
 offset_bottom = 401.0
 
-[node name="Button_Adventure_guild" type="TextureButton" parent="Navigation_Buttons"]
+[node name="Button_Adventure_guild" type="TextureButton" parent="Navigation_Buttons" unique_id=227111686]
 layout_mode = 0
 offset_left = -363.0
 offset_top = 66.0
@@ -81,7 +82,7 @@ scale = Vector2(1.2, 1.2)
 theme = ExtResource("2_sbf57")
 texture_hover = ExtResource("5_5dym2")
 
-[node name="Label_Adventureres_guild" type="Label" parent="Navigation_Buttons"]
+[node name="Label_Adventureres_guild" type="Label" parent="Navigation_Buttons" unique_id=421766185]
 layout_mode = 0
 offset_left = -374.0
 offset_top = 2.0
@@ -93,7 +94,7 @@ theme_override_constants/shadow_offset_x = 4
 theme_override_constants/shadow_offset_y = 3
 text = "Adventurers Guild"
 
-[node name="Button_Shop" type="TextureButton" parent="Navigation_Buttons"]
+[node name="Button_Shop" type="TextureButton" parent="Navigation_Buttons" unique_id=338063886]
 layout_mode = 0
 offset_left = 308.0
 offset_top = 76.0
@@ -102,7 +103,7 @@ offset_bottom = 276.0
 theme = ExtResource("4_62xir")
 texture_hover = ExtResource("5_5dym2")
 
-[node name="Label_Shop" type="Label" parent="Navigation_Buttons"]
+[node name="Label_Shop" type="Label" parent="Navigation_Buttons" unique_id=254097262]
 layout_mode = 1
 offset_left = 346.0
 offset_top = 24.0
@@ -115,7 +116,7 @@ theme_override_constants/shadow_offset_y = 3
 text = "Shop"
 horizontal_alignment = 1
 
-[node name="Button_Armory" type="TextureButton" parent="Navigation_Buttons"]
+[node name="Button_Armory" type="TextureButton" parent="Navigation_Buttons" unique_id=359404257]
 layout_mode = 0
 offset_left = -4.0
 offset_top = -260.0
@@ -125,7 +126,7 @@ scale = Vector2(0.8, 0.8)
 theme = ExtResource("2_sbf57")
 texture_hover = ExtResource("5_5dym2")
 
-[node name="Label_Armory" type="Label" parent="Navigation_Buttons"]
+[node name="Label_Armory" type="Label" parent="Navigation_Buttons" unique_id=805408916]
 layout_mode = 1
 offset_left = -39.0
 offset_top = -160.0
@@ -138,7 +139,7 @@ theme_override_constants/shadow_offset_y = 3
 text = "Armory"
 horizontal_alignment = 1
 
-[node name="Button_War_Room" type="TextureButton" parent="Navigation_Buttons"]
+[node name="Button_War_Room" type="TextureButton" parent="Navigation_Buttons" unique_id=1368983676]
 layout_mode = 0
 offset_left = 247.0
 offset_top = -268.0
@@ -148,7 +149,7 @@ scale = Vector2(0.7, 0.8)
 theme = ExtResource("2_sbf57")
 texture_hover = ExtResource("5_5dym2")
 
-[node name="Label_Adventure" type="Label" parent="Navigation_Buttons"]
+[node name="Label_Adventure" type="Label" parent="Navigation_Buttons" unique_id=872951480]
 layout_mode = 1
 offset_left = 245.0
 offset_top = -315.0
@@ -161,7 +162,7 @@ theme_override_constants/shadow_offset_y = 3
 text = "Adventure"
 horizontal_alignment = 1
 
-[node name="Button_Quit" type="Button" parent="Navigation_Buttons"]
+[node name="Button_Quit" type="Button" parent="Navigation_Buttons" unique_id=1210979519]
 layout_mode = 0
 offset_left = -570.0
 offset_top = -334.0
@@ -172,19 +173,26 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 6
 text = "Quit"
 
-[node name="ResourceUISlot_Silver" parent="." instance=ExtResource("8_vvjq3")]
+[node name="ResourceUISlot_Silver" parent="." unique_id=2127587663 instance=ExtResource("8_vvjq3")]
 layout_mode = 0
 offset_left = 516.0
-offset_top = 28.0
+offset_top = 20.0
 offset_right = 516.0
-offset_bottom = 28.0
+offset_bottom = 20.0
 
-[node name="ResourceUISlot_Supplies" parent="." instance=ExtResource("8_vvjq3")]
+[node name="ResourceUISlot_Supplies" parent="." unique_id=1198053901 instance=ExtResource("8_vvjq3")]
 layout_mode = 0
 offset_left = 649.0
-offset_top = 28.0
+offset_top = 20.0
 offset_right = 649.0
-offset_bottom = 28.0
+offset_bottom = 20.0
+
+[node name="ResourceUISlot_Fortunes_Favor" parent="." unique_id=1396382706 instance=ExtResource("8_vvjq3")]
+layout_mode = 0
+offset_left = 383.0
+offset_top = 20.0
+offset_right = 383.0
+offset_bottom = 20.0
 
 [connection signal="button_up" from="Navigation_Buttons/Button_Armory" to="." method="_on_button_view_collection_button_up"]
 [connection signal="button_up" from="Navigation_Buttons/Button_War_Room" to="." method="_on_war_room_button_pressed"]
