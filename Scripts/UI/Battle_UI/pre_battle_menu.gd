@@ -42,7 +42,8 @@ func Init(p_context_container: ContextContainer) -> void:
 	for i in range(1, main.GetInstance()._progress.GetCurrentEncounterDifficulty(
 				_self_context._static_context.resource_path) + 1):
 		_difficulty_option.add_item("Difficulty " + str(i), i)
-	_difficulty_option.select(0)
+	_difficulty_option.select(_difficulty_option.item_count - 1)
+	_self_context._arguments["Difficulty"] = _difficulty_option.get_selected_id()
 
 func _on_exit_button_up() -> void:
 	var context_container: ContextContainer = ContextContainer.new()

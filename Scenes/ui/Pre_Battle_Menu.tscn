@@ -1,11 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://d3hg8jxy8xj8n"]
+[gd_scene format=3 uid="uid://d3hg8jxy8xj8n"]
 
 [ext_resource type="Texture2D" uid="uid://2cqmliidmlr7" path="res://Assets/Champ_Collector/UI/Pre_Battle_Screen/Pre_Battle_2.png" id="1_bs66k"]
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="1_fbx8u"]
 [ext_resource type="Script" uid="uid://cpeob6aj52f4r" path="res://Scripts/UI/Battle_UI/pre_battle_menu.gd" id="1_i4o5r"]
 [ext_resource type="PackedScene" uid="uid://di0y70sbai3yw" path="res://Scenes/ui/Menu_Item_Slot.tscn" id="5_1jdpx"]
 
-[node name="PreBattleMenu" type="Control" node_paths=PackedStringArray("_difficulty_option", "_chosen_character_slots")]
+[node name="PreBattleMenu" type="Control" unique_id=347484161 node_paths=PackedStringArray("_difficulty_option", "_chosen_character_slots")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -16,13 +16,13 @@ script = ExtResource("1_i4o5r")
 _difficulty_option = NodePath("OptionButton_Difficulty")
 _chosen_character_slots = [NodePath("MarginContainer/VBoxContainer/Chosen_Characters/Chosen_Char_1"), NodePath("MarginContainer/VBoxContainer/Chosen_Characters/Chosen_Char_2"), NodePath("MarginContainer/VBoxContainer/Chosen_Characters/Chosen_Char_3")]
 
-[node name="TextureRect" type="TextureRect" parent="."]
+[node name="TextureRect" type="TextureRect" parent="." unique_id=844320544]
 layout_mode = 0
 offset_right = 1280.0
 offset_bottom = 720.0
 texture = ExtResource("1_bs66k")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=166099539]
 layout_mode = 0
 offset_right = 1280.0
 offset_bottom = 720.0
@@ -31,11 +31,11 @@ theme_override_constants/margin_top = 32
 theme_override_constants/margin_right = 64
 theme_override_constants/margin_bottom = 32
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=910479141]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer" unique_id=327892692]
 layout_mode = 2
 theme = ExtResource("1_fbx8u")
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -46,136 +46,136 @@ text = "Select champions for battle"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Chosen_Characters" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="Chosen_Characters" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1279021260]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 6
 theme_override_constants/separation = 100
 
-[node name="Chosen_Char_1" parent="MarginContainer/VBoxContainer/Chosen_Characters" instance=ExtResource("5_1jdpx")]
+[node name="Chosen_Char_1" parent="MarginContainer/VBoxContainer/Chosen_Characters" unique_id=39152867 instance=ExtResource("5_1jdpx")]
 layout_mode = 2
 
-[node name="Chosen_Char_2" parent="MarginContainer/VBoxContainer/Chosen_Characters" instance=ExtResource("5_1jdpx")]
+[node name="Chosen_Char_2" parent="MarginContainer/VBoxContainer/Chosen_Characters" unique_id=669761649 instance=ExtResource("5_1jdpx")]
 layout_mode = 2
 
-[node name="Chosen_Char_3" parent="MarginContainer/VBoxContainer/Chosen_Characters" instance=ExtResource("5_1jdpx")]
+[node name="Chosen_Char_3" parent="MarginContainer/VBoxContainer/Chosen_Characters" unique_id=1387407584 instance=ExtResource("5_1jdpx")]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 0
-
-[node name="Available_Characters" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1900067397]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="Available_Characters_1" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters"]
+[node name="Available_Characters" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1754266383]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Available_Characters_1" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters" unique_id=638101068]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 theme_override_constants/separation = 0
 
-[node name="MenuItemSlot" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1" instance=ExtResource("5_1jdpx")]
+[node name="MenuItemSlot" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1" unique_id=452765765 instance=ExtResource("5_1jdpx")]
 layout_mode = 2
 
-[node name="MenuItemSlot2" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1" instance=ExtResource("5_1jdpx")]
+[node name="MenuItemSlot2" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1" unique_id=1183119111 instance=ExtResource("5_1jdpx")]
 layout_mode = 2
 
-[node name="MenuItemSlot3" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1" instance=ExtResource("5_1jdpx")]
+[node name="MenuItemSlot3" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1" unique_id=156714943 instance=ExtResource("5_1jdpx")]
 layout_mode = 2
 
-[node name="MenuItemSlot4" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1" instance=ExtResource("5_1jdpx")]
+[node name="MenuItemSlot4" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1" unique_id=713409768 instance=ExtResource("5_1jdpx")]
 layout_mode = 2
 
-[node name="MenuItemSlot5" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1" instance=ExtResource("5_1jdpx")]
+[node name="MenuItemSlot5" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1" unique_id=2139981860 instance=ExtResource("5_1jdpx")]
 layout_mode = 2
 
-[node name="MenuItemSlot6" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1" instance=ExtResource("5_1jdpx")]
+[node name="MenuItemSlot6" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1" unique_id=111937904 instance=ExtResource("5_1jdpx")]
 layout_mode = 2
 
-[node name="MenuItemSlot7" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1" instance=ExtResource("5_1jdpx")]
+[node name="MenuItemSlot7" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1" unique_id=54860351 instance=ExtResource("5_1jdpx")]
 layout_mode = 2
 
-[node name="MenuItemSlot8" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1" instance=ExtResource("5_1jdpx")]
+[node name="MenuItemSlot8" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1" unique_id=1445183591 instance=ExtResource("5_1jdpx")]
 layout_mode = 2
 
-[node name="MenuItemSlot9" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1" instance=ExtResource("5_1jdpx")]
+[node name="MenuItemSlot9" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1" unique_id=1433821970 instance=ExtResource("5_1jdpx")]
 layout_mode = 2
 
-[node name="Available_Characters_2" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters"]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-theme_override_constants/separation = 0
-
-[node name="MenuItemSlot10" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2" instance=ExtResource("5_1jdpx")]
-layout_mode = 2
-
-[node name="MenuItemSlot11" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2" instance=ExtResource("5_1jdpx")]
-layout_mode = 2
-
-[node name="MenuItemSlot12" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2" instance=ExtResource("5_1jdpx")]
-layout_mode = 2
-
-[node name="MenuItemSlot13" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2" instance=ExtResource("5_1jdpx")]
-layout_mode = 2
-
-[node name="MenuItemSlot14" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2" instance=ExtResource("5_1jdpx")]
-layout_mode = 2
-
-[node name="MenuItemSlot15" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2" instance=ExtResource("5_1jdpx")]
-layout_mode = 2
-
-[node name="MenuItemSlot16" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2" instance=ExtResource("5_1jdpx")]
-layout_mode = 2
-
-[node name="MenuItemSlot17" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2" instance=ExtResource("5_1jdpx")]
-layout_mode = 2
-
-[node name="MenuItemSlot18" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2" instance=ExtResource("5_1jdpx")]
-layout_mode = 2
-
-[node name="Available_Characters_3" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters"]
+[node name="Available_Characters_2" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters" unique_id=681389692]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 theme_override_constants/separation = 0
 
-[node name="MenuItemSlot19" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3" instance=ExtResource("5_1jdpx")]
+[node name="MenuItemSlot10" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2" unique_id=2066191970 instance=ExtResource("5_1jdpx")]
 layout_mode = 2
 
-[node name="MenuItemSlot20" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3" instance=ExtResource("5_1jdpx")]
+[node name="MenuItemSlot11" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2" unique_id=1632393684 instance=ExtResource("5_1jdpx")]
 layout_mode = 2
 
-[node name="MenuItemSlot21" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3" instance=ExtResource("5_1jdpx")]
+[node name="MenuItemSlot12" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2" unique_id=1059998544 instance=ExtResource("5_1jdpx")]
 layout_mode = 2
 
-[node name="MenuItemSlot22" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3" instance=ExtResource("5_1jdpx")]
+[node name="MenuItemSlot13" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2" unique_id=1474767828 instance=ExtResource("5_1jdpx")]
 layout_mode = 2
 
-[node name="MenuItemSlot23" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3" instance=ExtResource("5_1jdpx")]
+[node name="MenuItemSlot14" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2" unique_id=1303293246 instance=ExtResource("5_1jdpx")]
 layout_mode = 2
 
-[node name="MenuItemSlot24" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3" instance=ExtResource("5_1jdpx")]
+[node name="MenuItemSlot15" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2" unique_id=789875655 instance=ExtResource("5_1jdpx")]
 layout_mode = 2
 
-[node name="MenuItemSlot25" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3" instance=ExtResource("5_1jdpx")]
+[node name="MenuItemSlot16" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2" unique_id=1055636824 instance=ExtResource("5_1jdpx")]
 layout_mode = 2
 
-[node name="MenuItemSlot26" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3" instance=ExtResource("5_1jdpx")]
+[node name="MenuItemSlot17" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2" unique_id=1773332750 instance=ExtResource("5_1jdpx")]
 layout_mode = 2
 
-[node name="MenuItemSlot27" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3" instance=ExtResource("5_1jdpx")]
+[node name="MenuItemSlot18" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2" unique_id=1110368213 instance=ExtResource("5_1jdpx")]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="Available_Characters_3" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters" unique_id=204864281]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_constants/separation = 0
+
+[node name="MenuItemSlot19" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3" unique_id=1062964090 instance=ExtResource("5_1jdpx")]
+layout_mode = 2
+
+[node name="MenuItemSlot20" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3" unique_id=189694735 instance=ExtResource("5_1jdpx")]
+layout_mode = 2
+
+[node name="MenuItemSlot21" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3" unique_id=341193914 instance=ExtResource("5_1jdpx")]
+layout_mode = 2
+
+[node name="MenuItemSlot22" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3" unique_id=1243028715 instance=ExtResource("5_1jdpx")]
+layout_mode = 2
+
+[node name="MenuItemSlot23" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3" unique_id=1289011601 instance=ExtResource("5_1jdpx")]
+layout_mode = 2
+
+[node name="MenuItemSlot24" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3" unique_id=977026519 instance=ExtResource("5_1jdpx")]
+layout_mode = 2
+
+[node name="MenuItemSlot25" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3" unique_id=998378586 instance=ExtResource("5_1jdpx")]
+layout_mode = 2
+
+[node name="MenuItemSlot26" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3" unique_id=142841253 instance=ExtResource("5_1jdpx")]
+layout_mode = 2
+
+[node name="MenuItemSlot27" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3" unique_id=90776822 instance=ExtResource("5_1jdpx")]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1476464824]
 layout_direction = 3
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
 theme_override_constants/separation = 64
 
-[node name="Start" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+[node name="Start" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=927004820]
 layout_mode = 2
 focus_neighbor_top = NodePath("../Exit")
 focus_neighbor_bottom = NodePath("../Exit")
@@ -186,7 +186,7 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
 text = "Start Battle"
 
-[node name="Exit" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+[node name="Exit" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=1463416166]
 layout_mode = 2
 focus_neighbor_top = NodePath("../Start")
 focus_neighbor_bottom = NodePath("../Start")
@@ -197,7 +197,7 @@ theme_override_constants/outline_size = 5
 text = "Exit
 "
 
-[node name="OptionButton_Difficulty" type="OptionButton" parent="."]
+[node name="OptionButton_Difficulty" type="OptionButton" parent="." unique_id=674461108]
 custom_minimum_size = Vector2(200, 50)
 layout_mode = 0
 offset_left = 1014.0
