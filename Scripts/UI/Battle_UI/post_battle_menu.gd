@@ -60,9 +60,9 @@ func _on_button_end_button_up() -> void:
 	main.GetInstance().change_scene(context_container)
 
 func _on_button_replay_button_up() -> void:
-	_context._scene = "res://Scenes/battle.tscn"
+	_context._scene = "uid://cc883blynrgq2"
 	main.GetInstance().change_scene(_context)
 
 func _on_button_edit_team_button_up() -> void:
-	_context._scene = "res://Scenes/ui/Pre_Battle_Menu.tscn"
+	_context._scene = "uid://d3hg8jxy8xj8n"
 	main.GetInstance().change_scene(_context)

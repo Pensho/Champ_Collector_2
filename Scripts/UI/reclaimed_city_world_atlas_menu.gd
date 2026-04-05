@@ -26,6 +26,6 @@ func _on_statues_button_up() -> void:
 func _on_experience_quests_button_up() -> void:
 	var context_container: ContextContainer = ContextContainer.new()
 	context_container._static_context = load("uid://dstgijwmiqvo1") # Battle Variant, Battle_Context
-	context_container._previous_scene = "res://Scenes/Hubs/Reclaimed_City_World_Atlas/Reclaimed_City_World_Atlas.tscn"
-	context_container._scene = "res://Scenes/ui/Pre_Battle_Menu.tscn"
+	context_container._previous_scene = "uid://df6f1b4xoipjq"
+	context_container._scene = "uid://d3hg8jxy8xj8n"
 	main.GetInstance().change_scene(context_container)

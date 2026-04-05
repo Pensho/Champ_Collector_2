@@ -56,7 +56,7 @@ func _on_start_button_up() -> void:
 		return
 	
 	_self_context._arguments["Difficulty"] = _difficulty_option.get_selected_id()
-	_self_context._scene = "res://Scenes/battle.tscn"
+	_self_context._scene = "uid://cc883blynrgq2"
 	_self_context._player_battle_characters = _chosen_characters.values()
 	
 	main.GetInstance().change_scene(_self_context)

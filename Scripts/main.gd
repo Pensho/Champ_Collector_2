@@ -71,7 +71,7 @@ class Main_Instance extends Node:
 		_character_collection.Add(CENTAUR_LANCER.duplicate(true))
 		_character_collection.Add(CENTAUR_ARCHIVIST.duplicate(true))
 		
-		context_container._scene = "res://Scenes/ui/MainMenu.tscn"
+		context_container._scene = "uid://c6c1o3oabj0pf"
 		change_scene(context_container)
 
 	func change_scene(p_context: ContextContainer) -> void:

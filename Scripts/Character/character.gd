@@ -87,6 +87,7 @@ var _attributes: Dictionary[Types.Attribute, int] = {
 	Types.Attribute.CritDamage: 0,
 }
 
+# Dictionary of [Slot type, item instance ID]
 var _held_items: Dictionary[Types.Slot, int]
 
 var _currentHealth: int = 0

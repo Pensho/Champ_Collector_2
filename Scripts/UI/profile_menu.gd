@@ -12,7 +12,7 @@ func Init(p_context_container: ContextContainer) -> void:
 	
 	dialog = load("uid://dhudbbnbn7b3n").instantiate()
 	add_child(dialog)
-	dialog.position = (get_window().size / 2) - Vector2i(dialog.GetSize() * 0.5)
+	dialog.position = Vector2i((get_window().size * 0.5) - (dialog.GetSize() * 0.5))
 	dialog.hide()
 
 func UpdateProfileDataSlot(p_slot: int) -> void:

@@ -376,7 +376,7 @@ func EndBattle(p_winner: WinningTeam) -> void:
 				LevelSystem.AddExperience(_characters[i], _battlecontext._loot_table._drop_result._experience)
 			_characters[i]._currentHealth = _characters[i]._attributes[Types.Attribute.Health] * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
 	
-	_self_context._scene = "res://Scenes/ui/Battle_Over.tscn"
+	_self_context._scene = "uid://d3ooarqabyw0p"
 	
 	main.GetInstance().change_scene(_self_context)
 

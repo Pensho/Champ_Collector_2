@@ -1,7 +1,7 @@
-[gd_scene load_steps=10 format=3 uid="uid://cc883blynrgq2"]
+[gd_scene format=3 uid="uid://cc883blynrgq2"]
 
 [ext_resource type="Script" uid="uid://g08boofygabn" path="res://Scripts/Battle/battle.gd" id="1_oxf17"]
-[ext_resource type="PackedScene" uid="uid://dy5q1foc8kon5" path="res://Scenes/battle_ui.tscn" id="2_1ruyk"]
+[ext_resource type="PackedScene" uid="uid://dy5q1foc8kon5" path="res://Scenes/ui/Battle_UI/battle_ui.tscn" id="2_1ruyk"]
 [ext_resource type="Texture2D" uid="uid://n1b55anwfwtk" path="res://Assets/Champ_Collector/Scenery/Troll battle area/Troll_battle_area_2.jpg" id="2_qeyqd"]
 [ext_resource type="Texture2D" uid="uid://0s8rmq2i2vg6" path="res://Assets/Champ_Collector/Scenery/Troll battle area/Troll_battle_area_2_Normal_Map.jpg" id="3_k7mbx"]
 [ext_resource type="PackedScene" uid="uid://dvvopn2yuy4wr" path="res://Scenes/Characters/Character_Battle_Repr.tscn" id="3_ww2ai"]
@@ -13,56 +13,56 @@
 diffuse_texture = ExtResource("2_qeyqd")
 normal_texture = ExtResource("3_k7mbx")
 
-[node name="Battle" type="Node2D" node_paths=PackedStringArray("_character_repr")]
+[node name="Battle" type="Node2D" unique_id=1214121318 node_paths=PackedStringArray("_character_repr")]
 script = ExtResource("1_oxf17")
 _character_repr = [NodePath("Character_1"), NodePath("Character_2"), NodePath("Character_3"), NodePath("Enemy_1"), NodePath("Enemy_2"), NodePath("Enemy_3")]
 
-[node name="DirectionalLight2D" type="DirectionalLight2D" parent="."]
+[node name="DirectionalLight2D" type="DirectionalLight2D" parent="." unique_id=565446238]
 light_mask = 1024
 visibility_layer = 1024
 blend_mode = 1
 height = 0.3
 
-[node name="BattleBackground" type="TextureRect" parent="."]
+[node name="BattleBackground" type="TextureRect" parent="." unique_id=2046228740]
 unique_name_in_owner = true
 offset_right = 1280.0
 offset_bottom = 720.0
 texture = SubResource("CanvasTexture_heh15")
 expand_mode = 1
 
-[node name="Enemy_1" parent="." instance=ExtResource("3_ww2ai")]
+[node name="Enemy_1" parent="." unique_id=1908700306 instance=ExtResource("3_ww2ai")]
 visible = false
 position = Vector2(378, 108)
 _target_ID = 3
 
-[node name="Enemy_2" parent="." instance=ExtResource("3_ww2ai")]
+[node name="Enemy_2" parent="." unique_id=485644758 instance=ExtResource("3_ww2ai")]
 visible = false
 position = Vector2(638, 121)
 _target_ID = 4
 
-[node name="Enemy_3" parent="." instance=ExtResource("3_ww2ai")]
+[node name="Enemy_3" parent="." unique_id=1432082750 instance=ExtResource("3_ww2ai")]
 visible = false
 position = Vector2(879, 178)
 _target_ID = 5
 
-[node name="Character_1" parent="." instance=ExtResource("3_ww2ai")]
+[node name="Character_1" parent="." unique_id=1413518322 instance=ExtResource("3_ww2ai")]
 visible = false
 position = Vector2(43, 302)
 _target_ID = 0
 
-[node name="Character_2" parent="." instance=ExtResource("3_ww2ai")]
+[node name="Character_2" parent="." unique_id=1865707769 instance=ExtResource("3_ww2ai")]
 visible = false
 position = Vector2(299, 364)
 _target_ID = 1
 
-[node name="Character_3" parent="." instance=ExtResource("3_ww2ai")]
+[node name="Character_3" parent="." unique_id=1425478554 instance=ExtResource("3_ww2ai")]
 visible = false
 position = Vector2(599, 369)
 _target_ID = 2
 
-[node name="Battle UI" parent="." instance=ExtResource("2_1ruyk")]
+[node name="Battle UI" parent="." unique_id=623550734 instance=ExtResource("2_1ruyk")]
 
-[node name="Turn_Indicator" type="TextureRect" parent="."]
+[node name="Turn_Indicator" type="TextureRect" parent="." unique_id=1253183384]
 material = ExtResource("6_qeyqd")
 offset_left = -100.0
 offset_right = -50.0
@@ -70,7 +70,7 @@ offset_bottom = 50.0
 texture = ExtResource("5_pd5xk")
 expand_mode = 1
 
-[node name="PointLight2D" type="PointLight2D" parent="."]
+[node name="PointLight2D" type="PointLight2D" parent="." unique_id=60163852]
 position = Vector2(801, -60.0001)
 scale = Vector2(19.1288, 19.1288)
 color = Color(0.721569, 0.627451, 0.180392, 1)

@@ -1,11 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://caviahtf8gtm4"]
+[gd_scene format=3 uid="uid://caviahtf8gtm4"]
 
 [ext_resource type="Script" uid="uid://d14mqmbe6ib4x" path="res://Scripts/UI/profile_menu.gd" id="1_7ldts"]
 [ext_resource type="Texture2D" uid="uid://2cqmliidmlr7" path="res://Assets/Champ_Collector/UI/Pre_Battle_Screen/Pre_Battle_2.png" id="2_etxva"]
 [ext_resource type="PackedScene" uid="uid://cr3osdcoith57" path="res://Scenes/ui/Save_Load_Menu/Profile_Data_Slot.tscn" id="3_0tvep"]
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="4_xt7wm"]
 
-[node name="ProfileMenu" type="Control" node_paths=PackedStringArray("_profiles")]
+[node name="ProfileMenu" type="Control" unique_id=1842347494 node_paths=PackedStringArray("_profiles")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -15,13 +15,13 @@ grow_vertical = 2
 script = ExtResource("1_7ldts")
 _profiles = [NodePath("TextureRect/HBoxContainer/VBoxContainer/ProfileDataSlot"), NodePath("TextureRect/HBoxContainer/VBoxContainer/ProfileDataSlot2"), NodePath("TextureRect/HBoxContainer/VBoxContainer/ProfileDataSlot3")]
 
-[node name="TextureRect" type="TextureRect" parent="."]
+[node name="TextureRect" type="TextureRect" parent="." unique_id=330437269]
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 texture = ExtResource("2_etxva")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="TextureRect"]
+[node name="HBoxContainer" type="HBoxContainer" parent="TextureRect" unique_id=1440139860]
 layout_mode = 0
 offset_left = 227.0
 offset_top = 100.0
@@ -29,27 +29,27 @@ offset_right = 1078.0
 offset_bottom = 580.0
 theme_override_constants/separation = 50
 
-[node name="VBoxContainer" type="VBoxContainer" parent="TextureRect/HBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="TextureRect/HBoxContainer" unique_id=1025305142]
 layout_mode = 2
 theme_override_constants/separation = 15
 
-[node name="ProfileDataSlot" parent="TextureRect/HBoxContainer/VBoxContainer" instance=ExtResource("3_0tvep")]
+[node name="ProfileDataSlot" parent="TextureRect/HBoxContainer/VBoxContainer" unique_id=805363602 instance=ExtResource("3_0tvep")]
 layout_mode = 2
 size_flags_horizontal = 0
 
-[node name="ProfileDataSlot2" parent="TextureRect/HBoxContainer/VBoxContainer" instance=ExtResource("3_0tvep")]
+[node name="ProfileDataSlot2" parent="TextureRect/HBoxContainer/VBoxContainer" unique_id=698970455 instance=ExtResource("3_0tvep")]
 layout_mode = 2
 size_flags_horizontal = 0
 
-[node name="ProfileDataSlot3" parent="TextureRect/HBoxContainer/VBoxContainer" instance=ExtResource("3_0tvep")]
+[node name="ProfileDataSlot3" parent="TextureRect/HBoxContainer/VBoxContainer" unique_id=225632896 instance=ExtResource("3_0tvep")]
 layout_mode = 2
 
-[node name="ColorRect_Save_Details" type="ColorRect" parent="TextureRect/HBoxContainer"]
+[node name="ColorRect_Save_Details" type="ColorRect" parent="TextureRect/HBoxContainer" unique_id=1685422234]
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 color = Color(0, 0, 0, 0.5294118)
 
-[node name="MarginContainer" type="MarginContainer" parent="TextureRect/HBoxContainer/ColorRect_Save_Details"]
+[node name="MarginContainer" type="MarginContainer" parent="TextureRect/HBoxContainer/ColorRect_Save_Details" unique_id=1178886661]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -61,7 +61,7 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="Label_Header" type="Label" parent="TextureRect"]
+[node name="Label_Header" type="Label" parent="TextureRect" unique_id=809790384]
 layout_mode = 0
 offset_left = 563.0
 offset_top = 46.0
@@ -77,7 +77,7 @@ text = "Load Profile"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Button_Back" type="Button" parent="."]
+[node name="Button_Back" type="Button" parent="." unique_id=379839095]
 layout_mode = 0
 offset_left = 1176.0
 offset_top = 657.0

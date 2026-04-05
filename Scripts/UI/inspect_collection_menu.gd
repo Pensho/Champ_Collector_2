@@ -16,6 +16,9 @@ class_name InspectCollectionMenu extends Control
 
 const MENU_ITEM_SLOT = preload("uid://di0y70sbai3yw")
 
+var _select_item_option: ButtonWithOptions
+var _confirm_option: ButtonWithOptions
+
 var _available_characters: Array[MenuItemSlot] = []
 var _available_items: Array[MenuItemSlot] = []
 var _item_slots_equipped: Array[MenuItemSlot] = []
@@ -25,6 +28,7 @@ var _displayed_character_ids: Array[int] = []
 var _character_collection: Dictionary[int, Character] = main.GetInstance()._character_collection.GetAllCharacters()
 var _item_collection: Dictionary[int, Equipment] = main.GetInstance()._item_collection._items
 var _selected_character_ID: int = -1
+var _selected_item_slot_ID: int = -1
 
 func Init(_p_context_container: ContextContainer) -> void:
 	_available_items.resize(_item_collection.size())
@@ -59,6 +63,20 @@ func Init(_p_context_container: ContextContainer) -> void:
 	
 	_selected_char_nature_tooltip.title_text = "Character Nature"
 	_selected_char_nature_tooltip.description_text = ""
+	
+	_select_item_option = load("uid://c7smqpmfvs0ih").instantiate()
+	add_child(_select_item_option)
+	_select_item_option.SetText("Title", "Body")
+	_select_item_option.SetLeftButton("Equip", Callable())
+	_select_item_option.position = Vector2i((get_window().size * 0.5) - (_select_item_option.GetSize() * 0.5))
+	_select_item_option.hide()
+	
+	_confirm_option = load("uid://c7smqpmfvs0ih").instantiate()
+	add_child(_confirm_option)
+	_confirm_option.SetText("Title", "Body")
+	_confirm_option.SetLeftButton("Equip", Callable())
+	_confirm_option.position = Vector2i((get_window().size * 0.5) - (_confirm_option.GetSize() * 0.5))
+	_confirm_option.hide()
 	
 	ShowCharacters()
 
@@ -125,32 +143,53 @@ func ShowItems() -> void:
 		_available_items[slot].SetHeldObjectTexture(null)
 
 func CanEquipFromMenuID(p_instance_ID: int) -> bool:
-	if(p_instance_ID == -1):
-		return false
 	var selected_item_type: Types.Slot = _item_collection[p_instance_ID]._slot
 	return not _character_collection[_selected_character_ID]._held_items.has(selected_item_type)
 
 func AvailableItemButton(p_slot_ID: int) -> void:
-	if(CanEquipFromMenuID(_displayed_item_ids[p_slot_ID])):
-			TriggerEquipItem(p_slot_ID)
+	if(_character_collection[_selected_character_ID]._held_items.has(
+			_item_collection[_displayed_item_ids[p_slot_ID]]._slot)):
+		_select_item_option.SetText(_item_collection[_displayed_item_ids[p_slot_ID]]._name, "Body")
+	else:
+		_select_item_option.SetText(_item_collection[_displayed_item_ids[p_slot_ID]]._name, "Body")
+	_select_item_option.SetLeftButton("Equip", TriggerEquipItem)
+	_select_item_option.SetMiddleButton("Sell", TrySell)
+	_select_item_option.show()
+	_selected_item_slot_ID = p_slot_ID
+
+func TrySell() -> void:
+	_confirm_option.SetText("Sell", "Are you sure you want to sell this item?")
+	_confirm_option.SetLeftButton("Sell", Callable())
+	_confirm_option.show()
 
 func AvailableCharacterButton(p_slot_ID: int) -> void:
 	_selected_character_ID = _displayed_character_ids[p_slot_ID]
 	ShowSelectedCharacter(_displayed_character_ids[p_slot_ID])
 	ShowItems()
 
-func TriggerEquipItem(p_slot_ID: int) -> void:
-	_character_collection[_selected_character_ID].EquipItem(_displayed_item_ids[p_slot_ID])
-	main.GetInstance()._item_collection.EquipCollectionItem(_displayed_item_ids[p_slot_ID])
-	_available_items[p_slot_ID].SetHeldObjectTexture(null)
-	_displayed_item_ids[p_slot_ID] = -1
+func TriggerEquipItem() -> void:
+	if(_displayed_item_ids[_selected_item_slot_ID] == -1):
+		return
+	
+	var slot_type: Types.Slot = _item_collection[_displayed_item_ids[_selected_item_slot_ID]]._slot
+	if(_character_collection[_selected_character_ID]._held_items.has(slot_type)):
+		TriggerUnequipItem(slot_type)
+	
+	_character_collection[_selected_character_ID].EquipItem(_displayed_item_ids[_selected_item_slot_ID])
+	main.GetInstance()._item_collection.EquipCollectionItem(_displayed_item_ids[_selected_item_slot_ID])
+	_available_items[_selected_item_slot_ID].SetHeldObjectTexture(null)
+	_displayed_item_ids[_selected_item_slot_ID] = -1
+	print("setting _displayed_item_ids slot, ", _selected_item_slot_ID, " to -1")
 	ShowSelectedCharacter(_selected_character_ID)
+	_selected_item_slot_ID = -1
+	_select_item_option.hide()
 
 func TriggerUnequipItem(p_item_type: Types.Slot) -> void:
 	var held_item_ID = _character_collection[_selected_character_ID]._held_items[p_item_type]
 	var slot_for_held_item: int = -1
 	for slot_nr in _displayed_item_ids.size():
 		if(-1 == _displayed_item_ids[slot_nr]):
+			print("found an empty slot in _displayed_item_ids at ", slot_nr)
 			slot_for_held_item = slot_nr
 			_displayed_item_ids[slot_for_held_item] = held_item_ID
 			break

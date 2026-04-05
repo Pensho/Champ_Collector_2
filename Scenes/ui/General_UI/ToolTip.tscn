@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://cne3qgmdo3t1u"]
+[gd_scene format=3 uid="uid://cne3qgmdo3t1u"]
 
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="1_i0vmh"]
 
-[node name="ToolTip" type="PopupPanel"]
+[node name="ToolTip" type="PopupPanel" unique_id=808311079]
 transparent_bg = false
 oversampling_override = 1.0
 size = Vector2i(258, 200)
@@ -11,34 +11,34 @@ always_on_top = true
 transparent = false
 mouse_passthrough = true
 
-[node name="MainVisuals" type="PanelContainer" parent="."]
+[node name="MainVisuals" type="PanelContainer" parent="." unique_id=2074940366]
 offset_left = 4.0
 offset_top = 4.0
 offset_right = 254.0
 offset_bottom = 196.0
 mouse_filter = 1
 
-[node name="MarginContainer" type="MarginContainer" parent="MainVisuals"]
+[node name="MarginContainer" type="MarginContainer" parent="MainVisuals" unique_id=236052118]
 layout_mode = 2
 theme = ExtResource("1_i0vmh")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MainVisuals/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MainVisuals/MarginContainer" unique_id=663605061]
 layout_mode = 2
 
-[node name="Label_Title" type="Label" parent="MainVisuals/MarginContainer/VBoxContainer"]
+[node name="Label_Title" type="Label" parent="MainVisuals/MarginContainer/VBoxContainer" unique_id=361709000]
 layout_mode = 2
 theme = ExtResource("1_i0vmh")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 6
 text = "Title"
 
-[node name="ColorRect" type="ColorRect" parent="MainVisuals/MarginContainer/VBoxContainer"]
+[node name="ColorRect" type="ColorRect" parent="MainVisuals/MarginContainer/VBoxContainer" unique_id=943220858]
 custom_minimum_size = Vector2(1, 1)
 layout_mode = 2
 mouse_filter = 2
 color = Color(1, 1, 1, 0.49019608)
 
-[node name="Label_Description" type="RichTextLabel" parent="MainVisuals/MarginContainer/VBoxContainer"]
+[node name="Label_Description" type="RichTextLabel" parent="MainVisuals/MarginContainer/VBoxContainer" unique_id=1599958511]
 custom_minimum_size = Vector2(250, 100)
 layout_mode = 2
 focus_mode = 2

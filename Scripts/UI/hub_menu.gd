@@ -20,7 +20,7 @@ func _on_war_room_button_pressed() -> void:
 
 func _on_button_view_collection_button_up() -> void:
 	var context_container: ContextContainer = ContextContainer.new()
-	context_container._scene = "res://Scenes/ui/Inspect_Collection_Menu.tscn"
+	context_container._scene = "uid://b6ynhcan7pnn8"
 	main.GetInstance().change_scene(context_container)
 
 func _on_button_quit_button_up() -> void:
