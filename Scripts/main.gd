@@ -11,11 +11,11 @@ const TIDAL_CORSAIR = preload("uid://bmqvx8opoocu7")
 const CENTAUR_LANCER = preload("uid://cgpw0pv0l4wn4")
 const CENTAUR_ARCHIVIST = preload("uid://dkdgfkpt6si8y")
 
-
+const RED_BOOTS = preload("uid://c3g7cshxhg0rw")
 
 var _instance: Main_Instance = null
 
-var _key_pressed: bool = false
+var _keys_pressed: Dictionary[Key, bool] = { KEY_0 : false, KEY_8 : false }
 
 func _ready() -> void:
 	_instance = Main_Instance.new()
@@ -30,11 +30,21 @@ func GetInstance() -> Main_Instance:
 	return _instance
 
 func _process(_delta: float) -> void:
-	if(Input.is_key_pressed(KEY_0) and !_key_pressed):
-		_key_pressed = true
-		print(get_tree_string_pretty())
-	if(!Input.is_key_pressed(KEY_0) and _key_pressed):
-		_key_pressed = false
+	if(OS.has_feature("editor")):
+		if(Input.is_key_pressed(KEY_0) and !_keys_pressed[KEY_0]):
+			_keys_pressed[KEY_0] = true
+			print(get_tree_string_pretty())
+		if(!Input.is_key_pressed(KEY_0) and _keys_pressed[KEY_0]):
+			_keys_pressed[KEY_0] = false
+		
+		if(Input.is_key_pressed(KEY_8) and !_keys_pressed[KEY_8]):
+			var preset = RED_BOOTS.duplicate(true)
+			preset._rarity = Types.Rarity.Legendary
+			preset.Setup()
+			_instance._item_collection.AddPreset(preset)
+			_keys_pressed[KEY_8] = true
+		if(!Input.is_key_pressed(KEY_8) and _keys_pressed[KEY_8]):
+			_keys_pressed[KEY_8] = false
 
 class Main_Instance extends Node:
 	var _current_scene = null

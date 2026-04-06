@@ -31,6 +31,7 @@ const LOOT_VALUE: Dictionary[LootType, int] = {
 	LootType.Supplies : 300,
 }
 const RARITY_VALUE_POWER: float = 0.27
+const RARITY_SELLING_POWER: float = 0.15
 
 static func CalculateBudget(p_difficulty: int) -> int:
 	# Given the difficulty options of 1-20
@@ -121,7 +122,8 @@ static func DistributeRewards(p_loot_table: LootTable, p_difficulty: int) -> voi
 			_:
 				print("Invalid reward type specified while trying to distribute rewards!")
 
-static func GetWeigthedRandom(p_secondary_loot: Dictionary[LootManager.LootType, int]):
+static func GetWeigthedRandom(p_secondary_loot: Dictionary[LootManager.LootType, int]) -> LootManager.LootType:
+	var chosen_type: LootManager.LootType
 	var total_weight = 0
 	for type in p_secondary_loot.keys():
 		total_weight += p_secondary_loot[type]
@@ -131,4 +133,9 @@ static func GetWeigthedRandom(p_secondary_loot: Dictionary[LootManager.LootType,
 	for type in p_secondary_loot.keys():
 		current_weight += p_secondary_loot[type]
 		if(roll <= current_weight):
-			return type
+			chosen_type = type
+			break
+	return chosen_type
+
+static func GetSellValue(p_rarity: Types.Rarity) -> int:
+	return int(pow(LOOT_VALUE[LootType.Equipment], 1.0 + (float(p_rarity) * RARITY_SELLING_POWER)))

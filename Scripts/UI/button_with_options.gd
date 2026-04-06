@@ -14,14 +14,18 @@ func SetText(p_title: String, p_body: String) -> void:
 	label_title.text = p_title
 	rich_text_label_info.text = _apply_keyword_colors(p_body)
 
-func SetLeftButton(p_name: String, p_func_ptr: Callable) -> void:
+func SetLeftButton(p_name: String, p_func_ptr: Callable, p_color: Color = Color.WHITE) -> void:
 	button_left.text = p_name
-	button_left.connect("button_up", p_func_ptr)
+	if(!p_func_ptr.is_null()):
+		button_left.connect("button_up", p_func_ptr)
+	button_left.add_theme_color_override("font_color", p_color)
 	button_left.show()
 
-func SetMiddleButton(p_name: String, p_func_ptr: Callable) -> void:
+func SetMiddleButton(p_name: String, p_func_ptr: Callable, p_color: Color = Color.WHITE) -> void:
 	button_middle.text = p_name
-	button_middle.connect("button_up", p_func_ptr)
+	if(!p_func_ptr.is_null()):
+		button_middle.connect("button_up", p_func_ptr)
+	button_middle.add_theme_color_override("font_color", p_color)
 	button_middle.show()
 
 func _on_cancel_button_up() -> void:
@@ -47,5 +51,15 @@ func _apply_keyword_colors(original_text: String) -> String:
 		var replacement = "[color=" + color_code + "]$1[/color]"
 		
 		processed_text = regex.sub(processed_text, replacement, true)
-		
+	
+	regex.compile("\\+(\\d+\\.?\\d*)")
+	processed_text = regex.sub(processed_text, "+[color=#44FF44]$1[/color]", true)
+
+	regex.compile("-(\\d+\\.?\\d*)")
+	processed_text = regex.sub(processed_text, "[color=#FF4444]$1[/color]", true)
+
+	# Negative lookbehind (?<!\]) skips numbers already inside a color tag
+	regex.compile("(?<!\\])\\b(\\d+\\.?\\d*)\\b")
+	processed_text = regex.sub(processed_text, "[color=#FFD700]$1[/color]", true)
+
 	return processed_text

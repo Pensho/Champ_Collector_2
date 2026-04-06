@@ -58,7 +58,7 @@ custom_minimum_size = Vector2(300, 200)
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
-color = Color(0, 0, 0, 0.49411765)
+color = Color(0, 0, 0, 1)
 
 [node name="PanelContainer" type="PanelContainer" parent="ColorRect" unique_id=582627208]
 layout_mode = 1
@@ -98,6 +98,7 @@ theme = ExtResource("2_g4psy")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 2
 theme_override_font_sizes/normal_font_size = 20
+bbcode_enabled = true
 text = "This is my Description"
 fit_content = true
 

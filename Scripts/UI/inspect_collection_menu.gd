@@ -147,20 +147,42 @@ func CanEquipFromMenuID(p_instance_ID: int) -> bool:
 	return not _character_collection[_selected_character_ID]._held_items.has(selected_item_type)
 
 func AvailableItemButton(p_slot_ID: int) -> void:
-	if(_character_collection[_selected_character_ID]._held_items.has(
-			_item_collection[_displayed_item_ids[p_slot_ID]]._slot)):
-		_select_item_option.SetText(_item_collection[_displayed_item_ids[p_slot_ID]]._name, "Body")
+	var equip_difference_text: String = ""
+	var item : Equipment = _item_collection[_displayed_item_ids[p_slot_ID]]
+	if(_character_collection[_selected_character_ID]._held_items.has(item._slot)):
+		var held_item_id = _character_collection[_selected_character_ID]._held_items[item._slot]
+		var differing_value: int = 0
+		for type in item._attributes.keys():
+			differing_value = item._attributes[type] - _item_collection[held_item_id]._attributes[type]
+			if(0 < differing_value):
+				equip_difference_text += Types.Attribute.keys()[type] + " +" + str(differing_value) + "\n"
+			elif(0 > differing_value):
+				equip_difference_text += Types.Attribute.keys()[type] + " -" + str(differing_value) + "\n"
 	else:
-		_select_item_option.SetText(_item_collection[_displayed_item_ids[p_slot_ID]]._name, "Body")
+		for type in item._attributes.keys():
+			if(0 < item._attributes[type]):
+				equip_difference_text += Types.Attribute.keys()[type] + " +" + str(item._attributes[type]) + "\n"
+			elif (0 > item._attributes[type]):
+				equip_difference_text += Types.Attribute.keys()[type] + " -" + str(item._attributes[type]) + "\n"
+	
+	_select_item_option.SetText(item._name, equip_difference_text)
 	_select_item_option.SetLeftButton("Equip", TriggerEquipItem)
 	_select_item_option.SetMiddleButton("Sell", TrySell)
 	_select_item_option.show()
 	_selected_item_slot_ID = p_slot_ID
 
 func TrySell() -> void:
-	_confirm_option.SetText("Sell", "Are you sure you want to sell this item?")
-	_confirm_option.SetLeftButton("Sell", Callable())
+	_confirm_option.SetText("Sell", "Are you sure you want to sell this item? You will gain " + str(LootManager.GetSellValue(_item_collection[_displayed_item_ids[_selected_item_slot_ID]]._rarity)) + " silver.")
+	_confirm_option.SetLeftButton("Sell", SellItem, Color(0.863, 0.0, 0.0, 1.0))
 	_confirm_option.show()
+
+func SellItem() -> void:
+	main.GetInstance()._resources._silver += LootManager.GetSellValue(_item_collection[_displayed_item_ids[_selected_item_slot_ID]]._rarity)
+	main.GetInstance()._item_collection.Remove(_displayed_item_ids[_selected_item_slot_ID])
+	_available_items[_selected_item_slot_ID].SetHeldObjectTexture(null)
+	_displayed_item_ids[_selected_item_slot_ID] = -1
+	_confirm_option.hide()
+	_select_item_option.hide()
 
 func AvailableCharacterButton(p_slot_ID: int) -> void:
 	_selected_character_ID = _displayed_character_ids[p_slot_ID]

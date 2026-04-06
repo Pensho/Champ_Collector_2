@@ -52,7 +52,7 @@ const ITEM_TYPE_ATTRIBUTES: Dictionary = {
 		Types.Attribute.Defence,
 		Types.Attribute.CritChance,],
 }
-const ITEM_COLLECTION_LIMIT: int = 1000
+const ITEM_COLLECTION_LIMIT: int = 400
 
 ## Skills
 const HEAP_ON_MULTIPLIER: float = 0.2
