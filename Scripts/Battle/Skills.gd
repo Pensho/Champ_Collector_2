@@ -243,19 +243,27 @@ static func DamageDealt(p_attacker_attr: Dictionary[Types.Attribute, int],
 	var randomVal: float = randf_range(0.95, 1.05)
 	var caster_scaled_attribute_aggregate: float = 0.0
 	var crit_multiplier: float = 1.0
-	var ignore_defense_factor: float = p_skill.defense_ignore_factor
 	
 	for key in p_skill.damage_scaling.keys():
-		caster_scaled_attribute_aggregate += p_skill.damage_scaling[key] * float(p_attacker_attr[key]) * p_trait_multiplier
+		caster_scaled_attribute_aggregate += p_skill.damage_scaling[key] * float(
+				p_attacker_attr[key]) * p_trait_multiplier
 	# For example, some status skills deal no damage. So no need to continue.
 	if(0.0 == caster_scaled_attribute_aggregate):
 		return 0
 		
 	if(randi_range(0, 100) <= p_attacker_attr[Types.Attribute.CritChance]):
-		crit_multiplier = float(p_attacker_attr[Types.Attribute.CritDamage]) * 0.01
-		p_battle_ui.SpawnCombatText("Critical Strike!", p_target_repr.position + p_battle_ui.COMBAT_TEXT_SPAWN_POINT, Color(1.0, 0.729, 0.0, 1.0))
+		crit_multiplier = max(
+				Game_Balance.MINIMUM_CRIT_DAMAGE,
+				float(p_attacker_attr[Types.Attribute.CritDamage] - (p_defender_attr[Types.Attribute.Knowledge] * 0.5))
+				) * 0.01
+		p_battle_ui.SpawnCombatText(
+				"Critical Strike!",
+				p_target_repr.position + p_battle_ui.COMBAT_TEXT_SPAWN_POINT,
+				Color(1.0, 0.729, 0.0, 1.0))
 	
-	var mitigation_factor: float = GameBalance.MINIMUM_DMG_PERCENT + ((1 - GameBalance.MINIMUM_DMG_PERCENT) * (caster_scaled_attribute_aggregate / ((p_defender_attr[Types.Attribute.Defence] * ignore_defense_factor) + caster_scaled_attribute_aggregate + 1)))
+	var effective_defence: float = p_defender_attr[Types.Attribute.Defence] * p_skill.defense_ignore_factor
+	var damage_ratio: float = caster_scaled_attribute_aggregate / (effective_defence + caster_scaled_attribute_aggregate + 1)
+	var mitigation_factor: float = GameBalance.MINIMUM_DMG_PERCENT + ((1 - GameBalance.MINIMUM_DMG_PERCENT) * damage_ratio)
 	var damage_dealt: float = mitigation_factor * caster_scaled_attribute_aggregate * crit_multiplier * randomVal
 	return int(ceil(damage_dealt))
 
