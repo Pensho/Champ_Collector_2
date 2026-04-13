@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="CharacterPreset" load_steps=12 format=3 uid="uid://cgpw0pv0l4wn4"]
+[gd_resource type="Resource" script_class="CharacterPreset" format=3 uid="uid://cgpw0pv0l4wn4"]
 
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_h4jsw"]
 [ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_kos58"]
@@ -11,6 +11,7 @@
 [ext_resource type="Resource" uid="uid://syj6hxvr5t2x" path="res://Data/Attribute_Weights/Dexterous.tres" id="5_kwq6j"]
 [ext_resource type="Resource" uid="uid://c60oh3whnodsm" path="res://Data/Attribute_Weights/Resilient.tres" id="6_e4nbd"]
 [ext_resource type="Resource" uid="uid://bvo4uj38cgjg3" path="res://Data/Attribute_Weights/Calculating.tres" id="7_ls30s"]
+[ext_resource type="Resource" uid="uid://dikrn45u40rjr" path="res://Data/Character_Skill_Variants/Support_Skills/Fatal_Flaw.tres" id="11_rtnxb"]
 
 [resource]
 script = ExtResource("2_qqxae")
@@ -19,7 +20,7 @@ _texture = "res://Assets/Champ_Collector/Creatures/Centaur_Lancer/Centaur_Lancer
 _rarity = 4
 _faction = 6
 _role = 3
-_skills = Array[ExtResource("1_h4jsw")]([ExtResource("2_yv8li"), ExtResource("3_pnj57"), ExtResource("2_yv8li")])
+_skills = Array[ExtResource("1_h4jsw")]([ExtResource("2_yv8li"), ExtResource("3_pnj57"), ExtResource("11_rtnxb")])
 _health = 90
 _speed = 55
 _attack = 65

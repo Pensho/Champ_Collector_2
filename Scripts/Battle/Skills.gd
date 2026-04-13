@@ -9,6 +9,7 @@ const MONSTER_IDS: Array[int] = [3,4,5]
 
 static var _heap_on_stacks: Array[int] = [0, 0, 0, 0, 0, 0]
 static var _heap_on_value: Array[float] = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+static var _damage_multiplier: Array[float] = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
 
 static var _status_effect_textures: Dictionary[String, Texture]
 
@@ -106,6 +107,12 @@ static func FindSkillTargets(
 			target_IDs.append_array(MONSTER_IDS)
 		Types.Skill_Target.ZoneAll, Types.Skill_Target.ZoneAlly, Types.Skill_Target.ZoneEnemy:
 			pass
+		Types.Skill_Target.All_Other_Allies:
+			if(PLAYER_IDS.has(p_attacker_ID) and PLAYER_IDS.has(p_target_ID)):
+				target_IDs.append_array(PLAYER_IDS)
+			elif(MONSTER_IDS.has(p_attacker_ID) and MONSTER_IDS.has(p_target_ID)):
+				target_IDs.append_array(MONSTER_IDS)
+			target_IDs.erase(p_attacker_ID)
 		var INVALID_TYPE:
 			print("Invalid argument for skill target enum passed: ", INVALID_TYPE)
 	return target_IDs
@@ -135,7 +142,8 @@ static func TriggerExistingCasterDebuffs(
 static func TriggerExistingCasterBuffs(
 							p_caster: Character,
 							p_caster_attributes: Dictionary[Types.Attribute, int],
-							p_caster_repr: CharacterRepresentation) -> void:
+							p_caster_repr: CharacterRepresentation,
+							p_caster_ID: int) -> void:
 	var buff_IDs_to_be_removed: Array[int] = []
 	
 	for buff in p_caster._active_buffs:
@@ -144,6 +152,8 @@ static func TriggerExistingCasterBuffs(
 				p_caster_attributes[Types.Attribute.Attack] += int(ceilf(p_caster_attributes[Types.Attribute.Attack] * 0.3))
 			Types.Buff_Type.Fortify:
 				p_caster_attributes[Types.Attribute.Defence] += int(ceilf(p_caster_attributes[Types.Attribute.Defence] * 0.3))
+			Types.Buff_Type.Daunting_Strength:
+				_damage_multiplier[p_caster_ID] *= 2.0
 			_:
 				pass
 		
@@ -239,7 +249,8 @@ static func DamageDealt(p_attacker_attr: Dictionary[Types.Attribute, int],
 						p_skill: Skill,
 						p_trait_multiplier: float,
 						p_target_repr: CharacterRepresentation,
-						p_battle_ui: BattleUI) -> int:
+						p_battle_ui: BattleUI,
+						p_caster_ID: int) -> int:
 	var randomVal: float = randf_range(0.95, 1.05)
 	var caster_scaled_attribute_aggregate: float = 0.0
 	var crit_multiplier: float = 1.0
@@ -264,12 +275,14 @@ static func DamageDealt(p_attacker_attr: Dictionary[Types.Attribute, int],
 	var effective_defence: float = p_defender_attr[Types.Attribute.Defence] * p_skill.defense_ignore_factor
 	var damage_ratio: float = caster_scaled_attribute_aggregate / (effective_defence + caster_scaled_attribute_aggregate + 1)
 	var mitigation_factor: float = GameBalance.MINIMUM_DMG_PERCENT + ((1 - GameBalance.MINIMUM_DMG_PERCENT) * damage_ratio)
-	var damage_dealt: float = mitigation_factor * caster_scaled_attribute_aggregate * crit_multiplier * randomVal
+	var damage_dealt: float = mitigation_factor * (caster_scaled_attribute_aggregate * _damage_multiplier[p_caster_ID]) * crit_multiplier * randomVal
+	_damage_multiplier[p_caster_ID] = 1.0
 	return int(ceil(damage_dealt))
 
 static func Reset() -> void:
 	_heap_on_stacks = [0, 0, 0, 0, 0, 0]
 	_heap_on_value = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+	_damage_multiplier = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
 
 static func GetStatusEffectTexture(p_texture_path: String) -> Texture:
 	if(not _status_effect_textures.has(p_texture_path)):

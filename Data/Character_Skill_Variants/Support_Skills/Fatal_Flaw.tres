@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="Skill" format=3 uid="uid://dikrn45u40rjr"]
+
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_faf54"]
+
+[resource]
+script = ExtResource("1_faf54")
+name = "Fatal Flaw"
+description = "Through a trained eye, allowing their allies to deal a monstrous blow!"
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Fatal_Flaw/Fatal_Flaw_1.jpg"
+target = 12
+cooldown = 2
+duration = 1
+skill_type = 5
+buffs = Dictionary[int, int]({
+12: 3
+})
+metadata/_custom_type_script = "uid://glh06y3wvchj"

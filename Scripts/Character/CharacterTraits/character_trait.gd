@@ -10,8 +10,9 @@ func Init() -> void:
 func StartOfBattle(p_character_repr: CharacterRepresentation) -> void:
 	print("character_trait base class StartOfBattle() called!")
 
-func StartOfTurn(p_character_repr: CharacterRepresentation) -> void:
+func StartOfTurn(p_character_repr: CharacterRepresentation) -> TraitStartTurn:
 	print("character_trait base class StartOfTurn() called!")
+	return null
 
 func EndOfTurn(p_character_repr: CharacterRepresentation) -> void:
 	print("character_trait base class EndOfTurn() called!")

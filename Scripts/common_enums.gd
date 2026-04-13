@@ -77,6 +77,7 @@ enum Skill_Target
 	Ally_Not_Self,
 	Random_One,
 	All,
+	All_Other_Allies,
 }
 
 enum Attribute
@@ -108,6 +109,7 @@ enum Buff_Type
 	Invalid,
 	Empower,
 	Fortify,
+	Daunting_Strength,
 }
 
 enum Debuff_Type

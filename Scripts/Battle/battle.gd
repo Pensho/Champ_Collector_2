@@ -272,7 +272,11 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID) -> voi
 		UpdateLifeBar(p_caster_ID)
 	
 	if (not _characters[p_caster_ID]._active_buffs.is_empty()):
-		Skills.TriggerExistingCasterBuffs(_characters[p_caster_ID], caster_attributes, _character_repr[p_caster_ID])
+		Skills.TriggerExistingCasterBuffs(
+				_characters[p_caster_ID],
+				caster_attributes,
+				_character_repr[p_caster_ID],
+				p_caster_ID)
 	
 	Skills.ResolveSkillEffect(p_caster_ID, caster_attributes, cast_skill)
 	
@@ -300,12 +304,13 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID) -> voi
 		
 		if(not cast_skill.damage_scaling.is_empty()):
 			var damage_dealt: int = Skills.DamageDealt(
-				caster_attributes,
-				target_attributes,
-				cast_skill,
-				trait_result._damage_multiplier,
-				_character_repr[target_ID],
-				_battle_ui)
+					caster_attributes,
+					target_attributes,
+					cast_skill,
+					trait_result._damage_multiplier,
+					_character_repr[target_ID],
+					_battle_ui,
+					p_caster_ID)
 			if(damage_dealt != 0):
 				if (PLAYER_IDS.has(p_caster_ID)):
 					_self_context._arguments["character_dmg_" + str(p_caster_ID)] += damage_dealt
