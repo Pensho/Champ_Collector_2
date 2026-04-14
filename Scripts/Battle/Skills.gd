@@ -60,45 +60,45 @@ static func CorrectZoneTarget(p_zone_owner_ID: int, p_trigger_character_ID: int,
 
 static func FindSkillTargets(
 					p_target_ID: int,
-					p_attacker_ID: int,
-					p_skill: Skill) -> Array[int]:
+					p_caster_ID: int,
+					p_target_type: Types.Skill_Target) -> Array[int]:
 	var target_IDs: Array[int]
-	match p_skill.target:
+	match p_target_type:
 		Types.Skill_Target.Single_Enemy:
-			if(PLAYER_IDS.has(p_attacker_ID) and MONSTER_IDS.has(p_target_ID)):
+			if(PLAYER_IDS.has(p_caster_ID) and MONSTER_IDS.has(p_target_ID)):
 				target_IDs.append(p_target_ID)
-			elif(MONSTER_IDS.has(p_attacker_ID) and PLAYER_IDS.has(p_target_ID)):
+			elif(MONSTER_IDS.has(p_caster_ID) and PLAYER_IDS.has(p_target_ID)):
 				target_IDs.append(p_target_ID)
 		Types.Skill_Target.All_Enemies:
-			if(PLAYER_IDS.has(p_attacker_ID) and MONSTER_IDS.has(p_target_ID)):
+			if(PLAYER_IDS.has(p_caster_ID) and MONSTER_IDS.has(p_target_ID)):
 				target_IDs.append_array(MONSTER_IDS)
-			elif(MONSTER_IDS.has(p_attacker_ID) and PLAYER_IDS.has(p_target_ID)):
+			elif(MONSTER_IDS.has(p_caster_ID) and PLAYER_IDS.has(p_target_ID)):
 				target_IDs.append_array(PLAYER_IDS)
 		Types.Skill_Target.Random_Enemy:
-			if(PLAYER_IDS.has(p_attacker_ID) and MONSTER_IDS.has(p_target_ID)):
+			if(PLAYER_IDS.has(p_caster_ID) and MONSTER_IDS.has(p_target_ID)):
 				target_IDs.append(3 + (randi() % 3))
-			elif(MONSTER_IDS.has(p_attacker_ID) and PLAYER_IDS.has(p_target_ID)):
+			elif(MONSTER_IDS.has(p_caster_ID) and PLAYER_IDS.has(p_target_ID)):
 				target_IDs.append(randi() % 3)
 		Types.Skill_Target.Single_Ally:
-			if(PLAYER_IDS.has(p_attacker_ID) and PLAYER_IDS.has(p_target_ID)):
+			if(PLAYER_IDS.has(p_caster_ID) and PLAYER_IDS.has(p_target_ID)):
 				target_IDs.append(p_target_ID)
-			elif(MONSTER_IDS.has(p_attacker_ID) and MONSTER_IDS.has(p_target_ID)):
+			elif(MONSTER_IDS.has(p_caster_ID) and MONSTER_IDS.has(p_target_ID)):
 				target_IDs.append(p_target_ID)
 		Types.Skill_Target.All_Allies:
-			if(PLAYER_IDS.has(p_attacker_ID) and PLAYER_IDS.has(p_target_ID)):
+			if(PLAYER_IDS.has(p_caster_ID) and PLAYER_IDS.has(p_target_ID)):
 				target_IDs.append_array(PLAYER_IDS)
-			elif(MONSTER_IDS.has(p_attacker_ID) and MONSTER_IDS.has(p_target_ID)):
+			elif(MONSTER_IDS.has(p_caster_ID) and MONSTER_IDS.has(p_target_ID)):
 				target_IDs.append_array(MONSTER_IDS)
 		Types.Skill_Target.Random_Ally:
-			if(PLAYER_IDS.has(p_attacker_ID) and PLAYER_IDS.has(p_target_ID)):
+			if(PLAYER_IDS.has(p_caster_ID) and PLAYER_IDS.has(p_target_ID)):
 				target_IDs.append(randi() % 3)
-			elif(MONSTER_IDS.has(p_attacker_ID) and MONSTER_IDS.has(p_target_ID)):
+			elif(MONSTER_IDS.has(p_caster_ID) and MONSTER_IDS.has(p_target_ID)):
 				target_IDs.append(3 + (randi() % 3))
 		Types.Skill_Target.Ally_Not_Self:
-			if (p_attacker_ID != p_target_ID):
-				if(PLAYER_IDS.has(p_attacker_ID) and PLAYER_IDS.has(p_target_ID)):
+			if (p_caster_ID != p_target_ID):
+				if(PLAYER_IDS.has(p_caster_ID) and PLAYER_IDS.has(p_target_ID)):
 					target_IDs.append(p_target_ID)
-				elif(MONSTER_IDS.has(p_attacker_ID) and MONSTER_IDS.has(p_target_ID)):
+				elif(MONSTER_IDS.has(p_caster_ID) and MONSTER_IDS.has(p_target_ID)):
 					target_IDs.append(p_target_ID)
 		Types.Skill_Target.Random_One:
 			target_IDs.append(randi() % 6)
@@ -108,11 +108,11 @@ static func FindSkillTargets(
 		Types.Skill_Target.ZoneAll, Types.Skill_Target.ZoneAlly, Types.Skill_Target.ZoneEnemy:
 			pass
 		Types.Skill_Target.All_Other_Allies:
-			if(PLAYER_IDS.has(p_attacker_ID) and PLAYER_IDS.has(p_target_ID)):
+			if(PLAYER_IDS.has(p_caster_ID) and PLAYER_IDS.has(p_target_ID)):
 				target_IDs.append_array(PLAYER_IDS)
-			elif(MONSTER_IDS.has(p_attacker_ID) and MONSTER_IDS.has(p_target_ID)):
+			elif(MONSTER_IDS.has(p_caster_ID) and MONSTER_IDS.has(p_target_ID)):
 				target_IDs.append_array(MONSTER_IDS)
-			target_IDs.erase(p_attacker_ID)
+			target_IDs.erase(p_caster_ID)
 		var INVALID_TYPE:
 			print("Invalid argument for skill target enum passed: ", INVALID_TYPE)
 	return target_IDs
@@ -202,8 +202,9 @@ static func CastBuff(
 	for i in p_target._active_buffs.size():
 		if(p_target._active_buffs[i].type == p_skill.buffs[p_skill.target]):
 			if(OverwritableBuff(p_skill.buffs[p_skill.target])):
-				p_target._active_buffs[i].duration = p_skill.duration
-				p_target_repr.SetStatusEffectDuration(p_target._active_buffs[i].ID, p_skill.duration)
+				if(p_skill.duration > p_target._active_buffs[i].duration):
+					p_target._active_buffs[i].duration = p_skill.duration
+					p_target_repr.SetStatusEffectDuration(p_target._active_buffs[i].ID, p_skill.duration)
 				return
 	
 	var new_buff: StatusEffects.Buff = StatusEffects.Buff.new()
@@ -212,6 +213,30 @@ static func CastBuff(
 	new_buff.ID = p_target_repr.AddStatusEffect(GetStatusEffectTexture(Statuses.BUFF_ICONS[new_buff.type]), new_buff.duration)
 	p_target._active_buffs.append(new_buff)
 	p_battle_ui.SpawnCombatText(Types.Buff_Type.keys()[new_buff.type], p_target_repr.position + p_battle_ui.COMBAT_TEXT_SPAWN_POINT, Color(0.335, 0.575, 0.838, 1.0))
+
+static func ApplyBuff(
+		p_target: Character,
+		p_buff_template: StatusEffects.Buff,
+		p_target_repr: CharacterRepresentation,
+		p_battle_ui: BattleUI) -> void:
+	if(HasMaxStatusEffects(p_target)):
+		return
+	
+	for i in p_target._active_buffs.size():
+		if(p_target._active_buffs[i].type == p_buff_template.type):
+			if(OverwritableBuff(p_buff_template.type)):
+				if(p_buff_template.duration > p_target._active_buffs[i].duration):
+					p_target._active_buffs[i].duration = p_buff_template.duration
+					p_target_repr.SetStatusEffectDuration(p_target._active_buffs[i].ID, p_buff_template.duration)
+				return
+	
+	var new_buff: StatusEffects.Buff = StatusEffects.Buff.new()
+	new_buff.type = p_buff_template.type
+	new_buff.duration = p_buff_template.duration
+	new_buff.name = p_buff_template.name
+	new_buff.ID = p_target_repr.AddStatusEffect(GetStatusEffectTexture(Statuses.BUFF_ICONS[new_buff.type]), new_buff.duration)
+	p_target._active_buffs.append(new_buff)
+	p_battle_ui.SpawnCombatText(new_buff.name, p_target_repr.position + p_battle_ui.COMBAT_TEXT_SPAWN_POINT, Color(0.335, 0.575, 0.838, 1.0))
 
 static func CastDebuff(
 					p_target: Character,

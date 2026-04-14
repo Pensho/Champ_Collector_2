@@ -32,7 +32,7 @@ fill = 1
 fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(0.7, 0)
 
-[node name="Battle UI" type="Control" node_paths=PackedStringArray("_skill_buttons", "_battle_duration_label")]
+[node name="Battle UI" type="Control" unique_id=2001000775 node_paths=PackedStringArray("_skill_buttons", "_battle_duration_label")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -43,7 +43,7 @@ script = ExtResource("1_gfldn")
 _skill_buttons = [NodePath("Skill_1"), NodePath("Skill_2"), NodePath("Skill_3")]
 _battle_duration_label = NodePath("Label_Battle_Duration")
 
-[node name="PlayerInfoBox" type="Panel" parent="." node_paths=PackedStringArray("_char_turns")]
+[node name="PlayerInfoBox" type="Panel" parent="." unique_id=1195450184 node_paths=PackedStringArray("_char_turns")]
 material = ExtResource("2_d07u5")
 layout_mode = 0
 offset_left = 20.0
@@ -54,7 +54,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_4blpl")
 script = ExtResource("3_6lbqc")
 _char_turns = [NodePath("Char_1"), NodePath("Char_2"), NodePath("Char_3"), NodePath("Char_4"), NodePath("Char_5"), NodePath("Char_6")]
 
-[node name="Turn_meter_icon" type="TextureRect" parent="PlayerInfoBox"]
+[node name="Turn_meter_icon" type="TextureRect" parent="PlayerInfoBox" unique_id=861724968]
 material = ExtResource("2_d07u5")
 layout_mode = 1
 anchors_preset = 4
@@ -68,7 +68,7 @@ grow_vertical = 2
 texture = ExtResource("2_6sbxc")
 expand_mode = 1
 
-[node name="Char_1" type="TextureRect" parent="PlayerInfoBox"]
+[node name="Char_1" type="TextureRect" parent="PlayerInfoBox" unique_id=1713691633]
 z_index = 1
 material = ExtResource("2_d07u5")
 layout_mode = 0
@@ -77,7 +77,7 @@ offset_right = 40.0
 offset_bottom = 25.0
 expand_mode = 1
 
-[node name="Char_2" type="TextureRect" parent="PlayerInfoBox"]
+[node name="Char_2" type="TextureRect" parent="PlayerInfoBox" unique_id=1376268690]
 z_index = 1
 material = ExtResource("2_d07u5")
 layout_mode = 0
@@ -86,7 +86,7 @@ offset_right = 40.0
 offset_bottom = 30.0
 expand_mode = 1
 
-[node name="Char_3" type="TextureRect" parent="PlayerInfoBox"]
+[node name="Char_3" type="TextureRect" parent="PlayerInfoBox" unique_id=45139638]
 z_index = 1
 material = ExtResource("2_d07u5")
 layout_mode = 0
@@ -95,7 +95,7 @@ offset_right = 40.0
 offset_bottom = 35.0
 expand_mode = 1
 
-[node name="Char_4" type="TextureRect" parent="PlayerInfoBox"]
+[node name="Char_4" type="TextureRect" parent="PlayerInfoBox" unique_id=413339993]
 z_index = 1
 material = ExtResource("2_d07u5")
 layout_mode = 0
@@ -103,7 +103,7 @@ offset_right = 40.0
 offset_bottom = 40.0
 expand_mode = 1
 
-[node name="Char_5" type="TextureRect" parent="PlayerInfoBox"]
+[node name="Char_5" type="TextureRect" parent="PlayerInfoBox" unique_id=1823159655]
 z_index = 1
 material = ExtResource("2_d07u5")
 layout_mode = 0
@@ -112,7 +112,7 @@ offset_right = 40.0
 offset_bottom = 45.0
 expand_mode = 1
 
-[node name="Char_6" type="TextureRect" parent="PlayerInfoBox"]
+[node name="Char_6" type="TextureRect" parent="PlayerInfoBox" unique_id=2130413701]
 z_index = 1
 material = ExtResource("2_d07u5")
 layout_mode = 0
@@ -121,7 +121,7 @@ offset_right = 40.0
 offset_bottom = 50.0
 expand_mode = 1
 
-[node name="Skill_Focus" type="TextureRect" parent="."]
+[node name="Skill_Focus" type="TextureRect" parent="." unique_id=1486618200]
 material = ExtResource("2_d07u5")
 layout_mode = 0
 offset_left = -211.0
@@ -130,7 +130,7 @@ offset_right = -11.0
 offset_bottom = 202.0
 texture = SubResource("GradientTexture2D_6lbqc")
 
-[node name="Skill_1" parent="." instance=ExtResource("5_nm010")]
+[node name="Skill_1" parent="." unique_id=1278959153 instance=ExtResource("5_nm010")]
 visible = false
 layout_mode = 0
 offset_left = 1102.0
@@ -138,7 +138,7 @@ offset_top = 125.0
 offset_right = 1252.0
 offset_bottom = 275.0
 
-[node name="Skill_2" parent="." instance=ExtResource("5_nm010")]
+[node name="Skill_2" parent="." unique_id=1094189333 instance=ExtResource("5_nm010")]
 visible = false
 layout_mode = 0
 offset_left = 1102.0
@@ -146,7 +146,7 @@ offset_top = 289.0
 offset_right = 1252.0
 offset_bottom = 439.0
 
-[node name="Skill_3" parent="." instance=ExtResource("5_nm010")]
+[node name="Skill_3" parent="." unique_id=206559452 instance=ExtResource("5_nm010")]
 visible = false
 layout_mode = 0
 offset_left = 1103.0
@@ -154,7 +154,7 @@ offset_top = 453.0
 offset_right = 1253.0
 offset_bottom = 603.0
 
-[node name="Label_Battle_Duration" type="Label" parent="."]
+[node name="Label_Battle_Duration" type="Label" parent="." unique_id=2087459621]
 layout_mode = 0
 offset_left = 15.0
 offset_top = 15.0

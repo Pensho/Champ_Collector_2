@@ -37,7 +37,7 @@ func Init() -> void:
 	
 	_blank_description = StackDescription.new()
 	_blank_description._title = "Empty Stack"
-	_blank_description._body = "Use an ability that grants stacks to fill this."
+	_blank_description._body = "Use an ability that grants stacks to fill this slot."
 
 func StartOfBattle(p_character_repr: CharacterRepresentation) -> void:
 	_held_stacks = [Stack_Type.Empty, Stack_Type.Empty, Stack_Type.Empty]

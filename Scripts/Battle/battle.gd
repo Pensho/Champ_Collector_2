@@ -126,7 +126,11 @@ func StartTurn() -> void:
 	
 	if (null != _characters[_characterIDs_turn]._trait):
 		if(_characters[_characterIDs_turn]._trait._execution_steps.has(Types.Combat_Event.Start_Turn)):
-			_characters[_characterIDs_turn]._trait.StartOfTurn(_character_repr[_characterIDs_turn])
+			_characters[_characterIDs_turn]._trait.StartOfTurn(
+					_characterIDs_turn,
+					_battle_ui,
+					_characters,
+					_character_repr)
 	
 	if(PLAYER_IDS.has(_characterIDs_turn)):
 		for i in _battle_ui._skill_buttons.size():
@@ -168,7 +172,7 @@ func StartTurn() -> void:
 				for i in _targeting_order:
 					if(_characters[i]._currentHealth >= 1):
 						var target_IDs: Array[int] = Skills.FindSkillTargets(
-							i, _characterIDs_turn, _characters[_characterIDs_turn]._skills[_selected_skill_ID])
+							i, _characterIDs_turn, _characters[_characterIDs_turn]._skills[_selected_skill_ID].target)
 						if(target_IDs.size() > 0):
 							print(_characters[_characterIDs_turn]._name, " used skill with ID: ", _selected_skill_ID)
 							ResolveSkill(_characterIDs_turn, target_IDs, _selected_skill_ID)
@@ -390,7 +394,10 @@ func _on_character_battle_target_selected(p_target_ID: int) -> void:
 		if(_characters[p_target_ID]._currentHealth <= 0):
 			print("Invalid target for skill, target is dead.")
 			return
-		var target_IDs: Array[int] = Skills.FindSkillTargets(p_target_ID, _characterIDs_turn, _characters[_characterIDs_turn]._skills[_selected_skill_ID])
+		var target_IDs: Array[int] = Skills.FindSkillTargets(
+					p_target_ID,
+					_characterIDs_turn,
+					_characters[_characterIDs_turn]._skills[_selected_skill_ID].target)
 		if(target_IDs.size() > 0):
 			ResolveSkill(_characterIDs_turn, target_IDs, _selected_skill_ID)
 			var battle_state = IsTheBattleOver()

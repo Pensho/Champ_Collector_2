@@ -136,7 +136,26 @@ func BumpCharacter(p_character_ID: int, p_percent_change: float):
 
 func ConstrictTurnLocation(p_character_ID: int) -> void:
 	_char_turns[p_character_ID].position.x = clamp(
-		_char_turns[p_character_ID].position.x, 0, self.size.x - _char_turns[p_character_ID].size.x)
+		_char_turns[p_character_ID].position.x, 0.0, self.size.x - _char_turns[p_character_ID].size.x)
+
+## p_character_ID is from which character it is measured.
+## p_bar_percent is how far along the bar a character must have passed to be included. 0.0 - 1.0
+func GetCharactersWithinRange(p_character_ID: int, p_bar_percent: float) -> Array[int]:
+	var character_ids: Array[int]
+	if (0.0 > p_bar_percent or p_bar_percent > 1.0):
+		print("GetCharactersWithinRange, span supplied is not within range: ", p_bar_percent)
+		return character_ids
+	
+	for id in _char_turns.size():
+		if(0.0 == _char_turns[id].position.x):
+			continue
+		if(_char_turns[id].position.x < (p_bar_percent * self.size.x)):
+			continue
+		if(p_character_ID == id):
+			continue
+		character_ids.append(id)
+	
+	return character_ids
 
 func ShowCharacterAsDead(p_dead_char_ID: int):
 	_char_turns[p_dead_char_ID].material = _grayscale_material

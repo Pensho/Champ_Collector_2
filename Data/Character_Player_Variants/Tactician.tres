@@ -9,6 +9,7 @@
 [ext_resource type="Resource" uid="uid://dikrn45u40rjr" path="res://Data/Character_Skill_Variants/Support_Skills/Fatal_Flaw.tres" id="4_u2c7t"]
 [ext_resource type="Resource" uid="uid://4fnej15sbkkv" path="res://Data/Attribute_Weights/Arcane.tres" id="4_y2h5c"]
 [ext_resource type="Resource" uid="uid://bvo4uj38cgjg3" path="res://Data/Attribute_Weights/Calculating.tres" id="5_4hpto"]
+[ext_resource type="Resource" uid="uid://b35fkxci2lmx2" path="res://Data/Character_Traits/Plan_Trait.tres" id="9_igdfl"]
 
 [resource]
 script = ExtResource("3_gmjmg")
@@ -26,4 +27,5 @@ _resistance = 30
 _mysticism = 10
 _knowledge = 70
 _attribute_weight_types_available = Array[ExtResource("1_wt524")]([ExtResource("2_iaser"), ExtResource("3_igdfl"), ExtResource("4_y2h5c"), ExtResource("5_4hpto")])
+_trait = ExtResource("9_igdfl")
 metadata/_custom_type_script = "uid://ftdwxfh8y3n1"
