@@ -1,19 +1,22 @@
 class_name LevelSystem
 extends Node
 
-
 static func LevelUpCriteriaMet(p_character: Character) -> bool:
-	var xp_requirement: float = pow(
-		(float(p_character._level) / Game_Balance.EXPERIENCE_FACTOR), 
-		Game_Balance.EXPERIENCE_EXPONENT)
-	xp_requirement *= Game_Balance.EXPERIENCE_CONSTANT_1
-	xp_requirement += Game_Balance.EXPERIENCE_CONSTANT_2 * float(p_character._level)
-	xp_requirement = round(xp_requirement + Game_Balance.EXPERIENCE_CONSTANT_3)
+	var xp_requirement: float = GetExperienceRequirement(p_character._level)
 	print("Experience required for level up: ", xp_requirement, " experience accumulated: ", p_character._experience)
 	if(xp_requirement <= p_character._experience):
 		p_character._experience = max(p_character._experience - xp_requirement, 0)
 		return true
 	return false
+
+static func GetExperienceRequirement(p_current_level: int) -> float:
+	var xp_requirement: float = pow(
+		(float(p_current_level) / Game_Balance.EXPERIENCE_FACTOR), 
+		Game_Balance.EXPERIENCE_EXPONENT)
+	xp_requirement *= Game_Balance.EXPERIENCE_CONSTANT_1
+	xp_requirement += Game_Balance.EXPERIENCE_CONSTANT_2 * float(p_current_level)
+	xp_requirement = round(xp_requirement + Game_Balance.EXPERIENCE_CONSTANT_3)
+	return xp_requirement
 
 static func AddExperience(p_character: Character, p_experiene_gained: int) -> void:
 	p_character._experience += p_experiene_gained

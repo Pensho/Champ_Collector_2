@@ -5,6 +5,8 @@ class_name InspectCollectionMenu extends Control
 @export var _selected_char_level: Label
 @export var _selected_char_nature: Label
 @export var _selected_char_nature_tooltip: ToolTip
+@export var _experience_bar: ProgressBar
+@export var _experience_bar_text: Label
 
 @onready var _scroll_container_characters: ScrollContainer = $MarginContainer/HBoxContainer2/ScrollContainer_Characters
 @onready var _scroll_container_items: ScrollContainer = $MarginContainer/HBoxContainer2/ScrollContainer_Items
@@ -106,6 +108,10 @@ func ShowSelectedCharacter(p_instance_ID: int) -> void:
 			_character_collection[p_instance_ID]._attributes_weights._name) + " Nature"
 	_selected_char_nature_tooltip.description_text = str(
 			_character_collection[p_instance_ID]._attributes_weights._description)
+	
+	_experience_bar.max_value = LevelSystem.GetExperienceRequirement(_character_collection[p_instance_ID]._level)
+	_experience_bar.value = _character_collection[p_instance_ID]._experience
+	_experience_bar_text.text = str(_character_collection[p_instance_ID]._experience) + " / " + str(int(_experience_bar.max_value))
 	
 	if(_character_collection[p_instance_ID]._held_items.has(Types.Slot.Weapon)):
 		_item_slots_equipped[0].SetHeldObjectTexture(
@@ -256,6 +262,9 @@ func _on_button_deselect_char_button_up() -> void:
 	_selected_char_nature.text = "Nature: "
 	_selected_char_nature_tooltip.title_text = "Character Nature"
 	_selected_char_nature_tooltip.description_text = ""
+	_experience_bar.max_value = 100.0
+	_experience_bar.value = 0.0
+	_experience_bar_text.text = ""
 	for slot_nr in _available_characters.size(): #_displayed_character_ids
 		if(slot_nr < _character_collection.size()):
 			_available_characters[slot_nr].SetHeldObjectTexture(

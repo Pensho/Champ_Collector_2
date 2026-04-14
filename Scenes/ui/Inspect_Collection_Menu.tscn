@@ -22,7 +22,7 @@ shader_parameter/texture_albedo = ExtResource("7_lgjj3")
 shader = ExtResource("5_lsdxp")
 shader_parameter/texture_albedo = ExtResource("6_35r4v")
 
-[node name="InspectCollection" type="Control" unique_id=226476496 node_paths=PackedStringArray("_attribute_labels", "_selected_char_label", "_selected_char_level", "_selected_char_nature", "_selected_char_nature_tooltip")]
+[node name="InspectCollection" type="Control" unique_id=226476496 node_paths=PackedStringArray("_attribute_labels", "_selected_char_label", "_selected_char_level", "_selected_char_nature", "_selected_char_nature_tooltip", "_experience_bar", "_experience_bar_text")]
 custom_minimum_size = Vector2(1280, 720)
 layout_mode = 3
 anchors_preset = 0
@@ -41,8 +41,10 @@ _attribute_labels = {
 }
 _selected_char_label = NodePath("MarginContainer/ColorRect2/Label_Character_Name")
 _selected_char_level = NodePath("MarginContainer/ColorRect2/Label_Level")
-_selected_char_nature = NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/Label_Character_Nature")
-_selected_char_nature_tooltip = NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/Label_Character_Nature")
+_selected_char_nature = NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/Label_Character_Nature")
+_selected_char_nature_tooltip = NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/Label_Character_Nature")
+_experience_bar = NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/ProgressBar")
+_experience_bar_text = NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/ProgressBar/Label")
 
 [node name="TextureRect" type="TextureRect" parent="." unique_id=1077098852]
 custom_minimum_size = Vector2(1280, 720)
@@ -230,32 +232,18 @@ texture = ExtResource("6_35r4v")
 expand_mode = 1
 
 [node name="ColorRect" type="ColorRect" parent="MarginContainer/HBoxContainer2/VBoxContainer2" unique_id=1273749762]
-custom_minimum_size = Vector2(450, 250)
+custom_minimum_size = Vector2(450, 300)
 layout_mode = 2
 size_flags_vertical = 10
 color = Color(0.243137, 0.243137, 0.243137, 0.690196)
 
-[node name="Label_Character_Nature" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect" unique_id=1136376217]
-layout_mode = 0
-offset_left = 10.0
-offset_top = 205.0
-offset_right = 490.0
-offset_bottom = 235.0
-theme = ExtResource("1_riq8p")
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.47058824)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 3
-theme_override_constants/shadow_offset_y = 3
-theme_override_constants/outline_size = 3
-text = "Nature:"
-script = ExtResource("9_lgjj3")
-title_text = null
-description_text = null
-
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect" unique_id=204320373]
-layout_mode = 0
-offset_right = 500.0
-offset_bottom = 269.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
@@ -263,7 +251,31 @@ theme_override_constants/margin_bottom = 10
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer" unique_id=1508898651]
 layout_mode = 2
-theme_override_constants/separation = 36
+theme_override_constants/separation = 8
+
+[node name="ProgressBar" type="ProgressBar" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer" unique_id=294105484]
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 2
+theme = ExtResource("1_riq8p")
+show_percentage = false
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/ProgressBar" unique_id=855714334]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -77.0
+offset_top = -13.5
+offset_right = 77.0
+offset_bottom = 16.5
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_riq8p")
+theme_override_font_sizes/font_size = 22
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer" unique_id=1195575698]
 layout_mode = 2
@@ -393,6 +405,19 @@ layout_mode = 2
 theme = ExtResource("1_riq8p")
 theme_override_colors/font_color = Color(1, 0.741176, 0, 1)
 text = "0"
+
+[node name="Label_Character_Nature" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer" unique_id=1136376217]
+layout_mode = 2
+theme = ExtResource("1_riq8p")
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.47058824)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 3
+text = "Nature:"
+script = ExtResource("9_lgjj3")
+title_text = null
+description_text = null
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer" unique_id=1082317516]
 layout_mode = 2

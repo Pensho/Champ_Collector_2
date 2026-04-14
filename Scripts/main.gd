@@ -10,6 +10,7 @@ const BLOODMAGE = preload("uid://7adgp1emx6yk")
 const TIDAL_CORSAIR = preload("uid://bmqvx8opoocu7")
 const CENTAUR_LANCER = preload("uid://cgpw0pv0l4wn4")
 const CENTAUR_ARCHIVIST = preload("uid://dkdgfkpt6si8y")
+const TACTICIAN = preload("uid://dy22lp5h48s5f")
 
 const RED_BOOTS = preload("uid://c3g7cshxhg0rw")
 
@@ -80,6 +81,7 @@ class Main_Instance extends Node:
 		_character_collection.Add(TIDAL_CORSAIR.duplicate(true))
 		_character_collection.Add(CENTAUR_LANCER.duplicate(true))
 		_character_collection.Add(CENTAUR_ARCHIVIST.duplicate(true))
+		_character_collection.Add(TACTICIAN.duplicate(true))
 		
 		context_container._scene = "uid://c6c1o3oabj0pf"
 		change_scene(context_container)

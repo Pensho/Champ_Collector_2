@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="CharacterPreset" format=3 uid="uid://dy22lp5h48s5f"]
+
+[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_wt524"]
+[ext_resource type="Resource" uid="uid://ytl3g36itqfs" path="res://Data/Attribute_Weights/Learned.tres" id="2_iaser"]
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="2_id3hb"]
+[ext_resource type="Resource" uid="uid://dvgwxvsovsldc" path="res://Data/Character_Skill_Variants/Attack_Skills/Stab.tres" id="3_cm8rw"]
+[ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="3_gmjmg"]
+[ext_resource type="Resource" uid="uid://syj6hxvr5t2x" path="res://Data/Attribute_Weights/Dexterous.tres" id="3_igdfl"]
+[ext_resource type="Resource" uid="uid://dikrn45u40rjr" path="res://Data/Character_Skill_Variants/Support_Skills/Fatal_Flaw.tres" id="4_u2c7t"]
+[ext_resource type="Resource" uid="uid://4fnej15sbkkv" path="res://Data/Attribute_Weights/Arcane.tres" id="4_y2h5c"]
+[ext_resource type="Resource" uid="uid://bvo4uj38cgjg3" path="res://Data/Attribute_Weights/Calculating.tres" id="5_4hpto"]
+
+[resource]
+script = ExtResource("3_gmjmg")
+_name = "Tactician"
+_texture = "res://Assets/Champ_Collector/Creatures/Tactician/Tactician_0005.png"
+_rarity = 2
+_role = 9
+_skills = Array[ExtResource("2_id3hb")]([ExtResource("3_cm8rw"), ExtResource("4_u2c7t"), ExtResource("3_cm8rw")])
+_health = 50
+_speed = 70
+_attack = 40
+_defence = 30
+_accuracy = 60
+_resistance = 30
+_mysticism = 10
+_knowledge = 70
+_attribute_weight_types_available = Array[ExtResource("1_wt524")]([ExtResource("2_iaser"), ExtResource("3_igdfl"), ExtResource("4_y2h5c"), ExtResource("5_4hpto")])
+metadata/_custom_type_script = "uid://ftdwxfh8y3n1"
