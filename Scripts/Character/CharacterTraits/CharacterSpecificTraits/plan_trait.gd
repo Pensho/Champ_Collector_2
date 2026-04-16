@@ -6,7 +6,7 @@ var _body: String = "Body"
 var _start_of_turn_effects: TraitStartTurn
 
 func Init() -> void:
-	_trait_texture = load("uid://u2rpxcarwct2")
+	_trait_texture = load("uid://cfaeiuchn2y3o")
 	_execution_steps[Types.Combat_Event.Start_Turn] = Callable(self, "StartOfTurn")
 	_execution_steps[Types.Combat_Event.Start_Combat] = Callable(self, "StartOfBattle")
 	

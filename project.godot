@@ -19,7 +19,7 @@ config/version="0.0.2"
 run/main_scene="uid://knp34r3jmafv"
 config/features=PackedStringArray("4.6", "Mobile")
 run/max_fps=60
-boot_splash/image="uid://cxe2lffkbra47"
+boot_splash/image="uid://cc7qs58pswref"
 config/icon="uid://cxe2lffkbra47"
 
 [autoload]

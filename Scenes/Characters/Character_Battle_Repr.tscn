@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://dvvopn2yuy4wr"]
+[gd_scene format=3 uid="uid://dvvopn2yuy4wr"]
 
 [ext_resource type="Script" uid="uid://di021l42jy53d" path="res://Scripts/Battle/character_battle_repr.gd" id="1_hd4xr"]
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="2_6p7dp"]
@@ -20,19 +20,19 @@ fill = 1
 fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(0.9, 0)
 
-[node name="Character" type="Node2D" node_paths=PackedStringArray("_trait_icons", "_trait_tooltips", "_status_effect_textures")]
+[node name="Character" type="Node2D" unique_id=1722979971 node_paths=PackedStringArray("_trait_icons", "_trait_tooltips", "_status_effect_textures")]
 script = ExtResource("1_hd4xr")
 _trait_icons = [NodePath("VBoxContainer_Trait_Elements/TextureRect"), NodePath("VBoxContainer_Trait_Elements/TextureRect2"), NodePath("VBoxContainer_Trait_Elements/TextureRect3")]
 _trait_tooltips = [NodePath("VBoxContainer_Trait_Elements/TextureRect"), NodePath("VBoxContainer_Trait_Elements/TextureRect2"), NodePath("VBoxContainer_Trait_Elements/TextureRect3")]
 _status_effect_textures = [NodePath("HBoxContainer_Status_Effects/Effect_1"), NodePath("HBoxContainer_Status_Effects/Effect_2"), NodePath("HBoxContainer_Status_Effects/Effect_3"), NodePath("HBoxContainer_Status_Effects/Effect_4"), NodePath("HBoxContainer_Status_Effects/Effect_5"), NodePath("HBoxContainer_Status_Effects/Effect_6"), NodePath("HBoxContainer_Status_Effects/Effect_7"), NodePath("HBoxContainer_Status_Effects/Effect_8")]
 
-[node name="TextureRect" type="TextureRect" parent="."]
+[node name="TextureRect" type="TextureRect" parent="." unique_id=994506692]
 offset_right = 200.0
 offset_bottom = 200.0
 expand_mode = 1
 metadata/_edit_use_anchors_ = true
 
-[node name="ProgressBar" type="ProgressBar" parent="."]
+[node name="ProgressBar" type="ProgressBar" parent="." unique_id=132554160]
 material = ExtResource("2_7qair")
 offset_left = 25.0
 offset_top = 200.0
@@ -42,7 +42,7 @@ theme = ExtResource("2_6p7dp")
 value = 100.0
 show_percentage = false
 
-[node name="Label" type="Label" parent="ProgressBar"]
+[node name="Label" type="Label" parent="ProgressBar" unique_id=1533858800]
 material = ExtResource("2_7qair")
 layout_mode = 1
 anchors_preset = 8
@@ -59,7 +59,7 @@ grow_vertical = 2
 theme = ExtResource("2_6p7dp")
 theme_override_font_sizes/font_size = 22
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1190600553]
 material = ExtResource("2_7qair")
 offset_top = 200.0
 offset_right = 25.0
@@ -67,7 +67,7 @@ offset_bottom = 225.0
 theme = SubResource("Theme_iesxj")
 color = Color(0.501407, 0.501406, 0.501406, 0.431373)
 
-[node name="ReferenceRect" type="ReferenceRect" parent="ColorRect"]
+[node name="ReferenceRect" type="ReferenceRect" parent="ColorRect" unique_id=1039375888]
 material = ExtResource("2_7qair")
 layout_mode = 1
 anchors_preset = 15
@@ -78,7 +78,7 @@ grow_vertical = 2
 border_color = Color(0.780392, 0.796078, 0.764706, 0.811765)
 editor_only = false
 
-[node name="Label" type="Label" parent="ColorRect"]
+[node name="Label" type="Label" parent="ColorRect" unique_id=12289729]
 material = ExtResource("2_7qair")
 layout_mode = 1
 anchors_preset = 8
@@ -100,24 +100,24 @@ text = "0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Button_Target" type="Button" parent="."]
+[node name="Button_Target" type="Button" parent="." unique_id=1922236088]
 self_modulate = Color(1, 1, 1, 0)
 offset_right = 200.0
 offset_bottom = 200.0
 
-[node name="HBoxContainer_Status_Effects" type="HBoxContainer" parent="."]
+[node name="HBoxContainer_Status_Effects" type="HBoxContainer" parent="." unique_id=409708871]
 offset_top = 225.0
 offset_right = 200.0
 offset_bottom = 250.0
 theme_override_constants/separation = 0
 
-[node name="Effect_1" type="TextureRect" parent="HBoxContainer_Status_Effects"]
+[node name="Effect_1" type="TextureRect" parent="HBoxContainer_Status_Effects" unique_id=2076469723]
 visible = false
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 expand_mode = 1
 
-[node name="Label" type="Label" parent="HBoxContainer_Status_Effects/Effect_1"]
+[node name="Label" type="Label" parent="HBoxContainer_Status_Effects/Effect_1" unique_id=1460281220]
 layout_mode = 0
 offset_right = 25.0
 offset_bottom = 25.0
@@ -127,13 +127,13 @@ theme_override_font_sizes/font_size = 12
 horizontal_alignment = 2
 vertical_alignment = 2
 
-[node name="Effect_2" type="TextureRect" parent="HBoxContainer_Status_Effects"]
+[node name="Effect_2" type="TextureRect" parent="HBoxContainer_Status_Effects" unique_id=307024267]
 visible = false
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 expand_mode = 1
 
-[node name="Label" type="Label" parent="HBoxContainer_Status_Effects/Effect_2"]
+[node name="Label" type="Label" parent="HBoxContainer_Status_Effects/Effect_2" unique_id=295009170]
 layout_mode = 0
 offset_right = 25.0
 offset_bottom = 25.0
@@ -143,13 +143,13 @@ theme_override_font_sizes/font_size = 12
 horizontal_alignment = 2
 vertical_alignment = 2
 
-[node name="Effect_3" type="TextureRect" parent="HBoxContainer_Status_Effects"]
+[node name="Effect_3" type="TextureRect" parent="HBoxContainer_Status_Effects" unique_id=234114527]
 visible = false
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 expand_mode = 1
 
-[node name="Label" type="Label" parent="HBoxContainer_Status_Effects/Effect_3"]
+[node name="Label" type="Label" parent="HBoxContainer_Status_Effects/Effect_3" unique_id=448624446]
 layout_mode = 0
 offset_right = 25.0
 offset_bottom = 25.0
@@ -159,13 +159,13 @@ theme_override_font_sizes/font_size = 12
 horizontal_alignment = 2
 vertical_alignment = 2
 
-[node name="Effect_4" type="TextureRect" parent="HBoxContainer_Status_Effects"]
+[node name="Effect_4" type="TextureRect" parent="HBoxContainer_Status_Effects" unique_id=396163916]
 visible = false
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 expand_mode = 1
 
-[node name="Label" type="Label" parent="HBoxContainer_Status_Effects/Effect_4"]
+[node name="Label" type="Label" parent="HBoxContainer_Status_Effects/Effect_4" unique_id=998307567]
 layout_mode = 0
 offset_right = 25.0
 offset_bottom = 25.0
@@ -175,13 +175,13 @@ theme_override_font_sizes/font_size = 12
 horizontal_alignment = 2
 vertical_alignment = 2
 
-[node name="Effect_5" type="TextureRect" parent="HBoxContainer_Status_Effects"]
+[node name="Effect_5" type="TextureRect" parent="HBoxContainer_Status_Effects" unique_id=858902880]
 visible = false
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 expand_mode = 1
 
-[node name="Label" type="Label" parent="HBoxContainer_Status_Effects/Effect_5"]
+[node name="Label" type="Label" parent="HBoxContainer_Status_Effects/Effect_5" unique_id=1887947645]
 layout_mode = 0
 offset_right = 25.0
 offset_bottom = 25.0
@@ -191,13 +191,13 @@ theme_override_font_sizes/font_size = 12
 horizontal_alignment = 2
 vertical_alignment = 2
 
-[node name="Effect_6" type="TextureRect" parent="HBoxContainer_Status_Effects"]
+[node name="Effect_6" type="TextureRect" parent="HBoxContainer_Status_Effects" unique_id=1015242076]
 visible = false
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 expand_mode = 1
 
-[node name="Label" type="Label" parent="HBoxContainer_Status_Effects/Effect_6"]
+[node name="Label" type="Label" parent="HBoxContainer_Status_Effects/Effect_6" unique_id=985537920]
 layout_mode = 0
 offset_right = 25.0
 offset_bottom = 25.0
@@ -207,13 +207,13 @@ theme_override_font_sizes/font_size = 12
 horizontal_alignment = 2
 vertical_alignment = 2
 
-[node name="Effect_7" type="TextureRect" parent="HBoxContainer_Status_Effects"]
+[node name="Effect_7" type="TextureRect" parent="HBoxContainer_Status_Effects" unique_id=1739495247]
 visible = false
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 expand_mode = 1
 
-[node name="Label" type="Label" parent="HBoxContainer_Status_Effects/Effect_7"]
+[node name="Label" type="Label" parent="HBoxContainer_Status_Effects/Effect_7" unique_id=75422849]
 layout_mode = 0
 offset_right = 25.0
 offset_bottom = 25.0
@@ -223,13 +223,13 @@ theme_override_font_sizes/font_size = 12
 horizontal_alignment = 2
 vertical_alignment = 2
 
-[node name="Effect_8" type="TextureRect" parent="HBoxContainer_Status_Effects"]
+[node name="Effect_8" type="TextureRect" parent="HBoxContainer_Status_Effects" unique_id=515042062]
 visible = false
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 expand_mode = 1
 
-[node name="Label" type="Label" parent="HBoxContainer_Status_Effects/Effect_8"]
+[node name="Label" type="Label" parent="HBoxContainer_Status_Effects/Effect_8" unique_id=257118750]
 layout_mode = 0
 offset_right = 25.0
 offset_bottom = 25.0
@@ -239,13 +239,13 @@ theme_override_font_sizes/font_size = 12
 horizontal_alignment = 2
 vertical_alignment = 2
 
-[node name="VBoxContainer_Trait_Elements" type="VBoxContainer" parent="."]
-offset_left = 200.0
-offset_right = 260.0
+[node name="VBoxContainer_Trait_Elements" type="VBoxContainer" parent="." unique_id=770228792]
+offset_left = 180.0
+offset_right = 240.0
 offset_bottom = 200.0
 alignment = 1
 
-[node name="TextureRect" type="TextureRect" parent="VBoxContainer_Trait_Elements"]
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer_Trait_Elements" unique_id=56157510]
 visible = false
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
@@ -254,7 +254,7 @@ texture = ExtResource("4_wjchg")
 expand_mode = 1
 script = ExtResource("5_7k67v")
 
-[node name="TextureRect" type="TextureRect" parent="VBoxContainer_Trait_Elements/TextureRect"]
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer_Trait_Elements/TextureRect" unique_id=1978793466]
 self_modulate = Color(1, 1, 1, 0.4745098)
 show_behind_parent = true
 layout_mode = 0
@@ -265,7 +265,7 @@ offset_bottom = 43.0
 mouse_filter = 2
 texture = SubResource("GradientTexture2D_h4qcs")
 
-[node name="TextureRect2" type="TextureRect" parent="VBoxContainer_Trait_Elements"]
+[node name="TextureRect2" type="TextureRect" parent="VBoxContainer_Trait_Elements" unique_id=1858563459]
 visible = false
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
@@ -274,7 +274,7 @@ texture = ExtResource("4_wjchg")
 expand_mode = 1
 script = ExtResource("5_7k67v")
 
-[node name="TextureRect" type="TextureRect" parent="VBoxContainer_Trait_Elements/TextureRect2"]
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer_Trait_Elements/TextureRect2" unique_id=1784744235]
 self_modulate = Color(1, 1, 1, 0.4745098)
 show_behind_parent = true
 layout_mode = 0
@@ -285,7 +285,7 @@ offset_bottom = 43.0
 mouse_filter = 2
 texture = SubResource("GradientTexture2D_h4qcs")
 
-[node name="TextureRect3" type="TextureRect" parent="VBoxContainer_Trait_Elements"]
+[node name="TextureRect3" type="TextureRect" parent="VBoxContainer_Trait_Elements" unique_id=558453702]
 visible = false
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
@@ -294,7 +294,7 @@ texture = ExtResource("4_wjchg")
 expand_mode = 1
 script = ExtResource("5_7k67v")
 
-[node name="TextureRect" type="TextureRect" parent="VBoxContainer_Trait_Elements/TextureRect3"]
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer_Trait_Elements/TextureRect3" unique_id=2071550528]
 self_modulate = Color(1, 1, 1, 0.4745098)
 show_behind_parent = true
 layout_mode = 0
