@@ -105,9 +105,6 @@ func ZoneTriggered(p_zone_ID: int, p_duration: int):
 	else:
 		_zone_effects[p_zone_ID].label.text = str(p_duration)
 
-func _zone_button() -> void:
-	DisableZones(true)
-
 func GetActiveTurnID() -> int:
 	return _characters_turn_id
 
