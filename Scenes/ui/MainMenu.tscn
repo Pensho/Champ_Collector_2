@@ -1,10 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://c6c1o3oabj0pf"]
+[gd_scene format=3 uid="uid://c6c1o3oabj0pf"]
 
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="1_hnwi1"]
 [ext_resource type="Script" uid="uid://cygusf5metdyh" path="res://Scripts/UI/main_menu.gd" id="2_hnwi1"]
 [ext_resource type="Texture2D" uid="uid://cxe2lffkbra47" path="res://Assets/Champ_Collector/Scenery/Grasslands.png" id="3_h3tiw"]
+[ext_resource type="Texture2D" uid="uid://cloubi3guqcax" path="res://Assets/Champ_Collector/UI/Logo.png" id="4_h3tiw"]
 
-[node name="MainMenu" type="Control" node_paths=PackedStringArray("_background")]
+[node name="MainMenu" type="Control" unique_id=530331282 node_paths=PackedStringArray("_background")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -15,7 +16,7 @@ theme = ExtResource("1_hnwi1")
 script = ExtResource("2_hnwi1")
 _background = NodePath("TextureRect")
 
-[node name="TextureRect" type="TextureRect" parent="."]
+[node name="TextureRect" type="TextureRect" parent="." unique_id=1184415766]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
@@ -25,7 +26,7 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("3_h3tiw")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=828114008]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -37,31 +38,47 @@ theme_override_constants/margin_top = 32
 theme_override_constants/margin_right = 32
 theme_override_constants/margin_bottom = 32
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1644543693]
 layout_mode = 2
 alignment = 1
 
-[node name="Title_Text" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="Control" type="Control" parent="MarginContainer/VBoxContainer" unique_id=737962912]
+custom_minimum_size = Vector2(741, 263)
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.705882)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_constants/outline_size = 1
-theme_override_constants/shadow_outline_size = 4
-theme_override_font_sizes/font_size = 64
-text = "Jonas Spel"
-horizontal_alignment = 1
-vertical_alignment = 1
 
-[node name="ButtonsVBox" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Control" unique_id=387174047]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -383.0
+offset_top = -263.0
+offset_right = 358.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_horizontal = 4
+size_flags_vertical = 6
+texture = ExtResource("4_h3tiw")
+stretch_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Control/TextureRect" unique_id=1394443090]
+modulate = Color(0, 0, 0, 0.5647059)
+show_behind_parent = true
+layout_mode = 0
+offset_right = 745.0
+offset_bottom = 268.0
+texture = ExtResource("4_h3tiw")
+
+[node name="ButtonsVBox" type="VBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1504426693]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 6
 theme_override_constants/separation = 20
 
-[node name="Button_StartGame" type="Button" parent="MarginContainer/VBoxContainer/ButtonsVBox"]
+[node name="Button_StartGame" type="Button" parent="MarginContainer/VBoxContainer/ButtonsVBox" unique_id=973719084]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -74,7 +91,7 @@ theme_override_constants/outline_size = 5
 theme_override_font_sizes/font_size = 45
 text = "Start Game"
 
-[node name="Button_Save_Load" type="Button" parent="MarginContainer/VBoxContainer/ButtonsVBox"]
+[node name="Button_Save_Load" type="Button" parent="MarginContainer/VBoxContainer/ButtonsVBox" unique_id=160607124]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -88,7 +105,7 @@ theme_override_constants/outline_size = 5
 theme_override_font_sizes/font_size = 45
 text = "Save & Load"
 
-[node name="Button_QuitGame" type="Button" parent="MarginContainer/VBoxContainer/ButtonsVBox"]
+[node name="Button_QuitGame" type="Button" parent="MarginContainer/VBoxContainer/ButtonsVBox" unique_id=177789147]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
