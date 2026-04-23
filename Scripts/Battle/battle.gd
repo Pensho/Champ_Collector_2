@@ -147,43 +147,45 @@ func StartTurn() -> void:
 		_selected_skill_ID = 0
 		_battle_ui.ActiveSkillGlow(_selected_skill_ID)
 	elif(ENEMY_IDS.has(_characterIDs_turn)):
-		# TODO: Clean this nested mess up
-		# Use skill in reverse order of ID
-		for i in _characters[_characterIDs_turn]._skills.size():
-			if(0 >= _characters[_characterIDs_turn]._skills[i].cooldown_left):
-				match _characters[_characterIDs_turn]._skills[i].target:
-					Types.Skill_Target.ZoneAlly, Types.Skill_Target.ZoneEnemy, Types.Skill_Target.ZoneAll:
-						if(GameBalance.NUMBER_OF_TURN_BAR_ZONES <= _zones.size()):
-							continue
-				_selected_skill_ID = i
+		HandleEnemyTurn()
+
+func HandleEnemyTurn() -> void:
+	# TODO: Clean this nested mess up
+	_selected_skill_ID = 0
+	for i in range(_characters[_characterIDs_turn]._skills.size()-1, -1, -1):
+		if(0 >= _characters[_characterIDs_turn]._skills[i].cooldown_left):
+			match _characters[_characterIDs_turn]._skills[i].target:
+				Types.Skill_Target.ZoneAlly, Types.Skill_Target.ZoneEnemy, Types.Skill_Target.ZoneAll:
+					if(GameBalance.NUMBER_OF_TURN_BAR_ZONES <= _zones.size()):
+						continue
+			_selected_skill_ID = i
+			break
 		
-		match _characters[_characterIDs_turn]._skills[_selected_skill_ID].target:
-			Types.Skill_Target.ZoneAlly, Types.Skill_Target.ZoneEnemy, Types.Skill_Target.ZoneAll:
-				var available_zones: Array[int] = []
-				for num in GameBalance.NUMBER_OF_TURN_BAR_ZONES:
-					if(num not in _zones.keys()):
-						available_zones.append(num)
-				if(available_zones.is_empty()):
-					pass #if no available zones, choose another skill and go again.
-				_battle_ui._turn_bar.DisableZones(false)
-				print(_characters[_characterIDs_turn]._name, " used skill with ID: ", _selected_skill_ID)
-				_on_turn_bar_zone_selected(available_zones.pick_random())
-			_:
-				for i in _targeting_order:
-					if(_characters[i]._currentHealth >= 1):
-						var target_IDs: Array[int] = Skills.FindSkillTargets(
-							i, _characterIDs_turn, _characters[_characterIDs_turn]._skills[_selected_skill_ID].target)
-						if(target_IDs.size() > 0):
-							print(_characters[_characterIDs_turn]._name, " used skill with ID: ", _selected_skill_ID)
-							ResolveSkill(_characterIDs_turn, target_IDs, _selected_skill_ID)
-							
-							var battle_state = IsTheBattleOver()
-							if (WinningTeam.Ongoing != battle_state):
-								EndBattle(battle_state)
-								break
-						else:
-							print("Invalid target for skill by an enemy! Something is wrong.")
-						break # A skill has resolved, break the loop for targeting.
+	match _characters[_characterIDs_turn]._skills[_selected_skill_ID].target:
+		Types.Skill_Target.ZoneAlly, Types.Skill_Target.ZoneEnemy, Types.Skill_Target.ZoneAll:
+			var available_zones: Array[int] = []
+			for num in GameBalance.NUMBER_OF_TURN_BAR_ZONES:
+				if(num not in _zones.keys()):
+					available_zones.append(num)
+			_battle_ui._turn_bar.DisableZones(false)
+			print(_characters[_characterIDs_turn]._name, " used skill with ID: ", _selected_skill_ID)
+			_on_turn_bar_zone_selected(available_zones.pick_random())
+		_:
+			for i in _targeting_order:
+				if(_characters[i]._currentHealth >= 1):
+					var target_IDs: Array[int] = Skills.FindSkillTargets(
+						i, _characterIDs_turn, _characters[_characterIDs_turn]._skills[_selected_skill_ID].target)
+					if(target_IDs.size() > 0):
+						print(_characters[_characterIDs_turn]._name, " used skill with ID: ", _selected_skill_ID)
+						ResolveSkill(_characterIDs_turn, target_IDs, _selected_skill_ID)
+						
+						var battle_state = IsTheBattleOver()
+						if (WinningTeam.Ongoing != battle_state):
+							EndBattle(battle_state)
+							break
+					else:
+						print("Invalid target for skill by an enemy! Something is wrong.")
+					break # A skill has resolved, break the loop for targeting.
 
 func TriggerZones() -> void:
 	for character_ID in _characters.keys():
