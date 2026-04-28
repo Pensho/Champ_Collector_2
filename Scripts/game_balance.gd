@@ -67,3 +67,7 @@ const MINIMUM_CRIT_DAMAGE: float = 125.0
 
 # Resources
 const MAX_SUPPLIES: int = 100
+
+# Adventure
+const ADVENTURE_ENERGY_COST_PER_TIER: int = 10
+const ADVENTURE_DAILY_TIER_THRESHOLD: int = 3

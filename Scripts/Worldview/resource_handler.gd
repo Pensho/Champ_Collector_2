@@ -21,3 +21,9 @@ func Deserialize(p_data: Dictionary) -> void:
 	_silver = p_data["silver"]
 	_supplies = p_data["supplies"]
 	_fortunes_favor = p_data["fortunes_favor"]
+
+func SpendSupplies(amount: int) -> bool:
+	if (_supplies >= amount):
+		_supplies -= amount
+		return true
+	return false
