@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://c5vokw1b0pp1g"]
+
+[node name="AdventureGraphUi" type="Control" unique_id=1198365855]
+layout_mode = 3
+anchors_preset = 0
+
+[node name="VScrollBar" type="ScrollContainer" parent="." unique_id=344890161]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 8.0
+offset_bottom = 8.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_scroll_mode = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VScrollBar" unique_id=2014625953]
+layout_mode = 2

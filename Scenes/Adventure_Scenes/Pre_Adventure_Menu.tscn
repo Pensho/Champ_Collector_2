@@ -1,0 +1,52 @@
+[gd_scene format=3 uid="uid://cwjabuf3kdtft"]
+
+[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="1_w410e"]
+
+[node name="PreAdventure" type="Control" unique_id=470668109]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="ColorRect" parent="." unique_id=101395013]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0.30896565, 0.31012276, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=499729102]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1988926716]
+layout_mode = 2
+
+[node name="Label_Header" type="Label" parent="MarginContainer/VBoxContainer" unique_id=369816655]
+layout_mode = 2
+theme = ExtResource("1_w410e")
+text = "Adventure"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button_Start" type="Button" parent="MarginContainer/VBoxContainer" unique_id=1020529632]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Start"
+
+[node name="Button_Exit" type="Button" parent="MarginContainer/VBoxContainer" unique_id=635165248]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Exit"
