@@ -8,11 +8,8 @@ class_name BiomeData extends Resource
 
 @export var possible_rewards: LootTable
 
-# Should likely be a Dictionary[type, weight]
-var possible_node_modifiers
-
-# Should likely be a Dictionary[buff, cost]
-var possible_rest_stop_buffs
+var possible_node_modifiers: Dictionary[String, int]
+var possible_rest_stop_buffs: Dictionary[Types.Buff_Type, int]
 
 # Probably another resource containing various UI elements to describe the biome
 var visual_theme

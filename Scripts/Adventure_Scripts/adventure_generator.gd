@@ -2,53 +2,107 @@ class_name AdventureGenerator extends Node
 
 
 static func GenerateAdventure(p_template: AdventureTemplate, p_biome: BiomeData) -> Array[NodeData]:
-	var nodes: Array[NodeData]
-	
-	var num_nodes: int = randi_range(p_template.MIN_NODES, p_template.MAX_NODES)
-	var start_node: NodeData = NodeData.new()
-	start_node.depth = 0
-	start_node.node_type = NodeData.Node_Type.FIGHT
-	start_node.depth = 0
-	nodes.append(start_node)
-	var end_node: NodeData = NodeData.new()
-	end_node.node_type = NodeData.Node_Type.BOSS
-	nodes.append(end_node)
+	var target_depth: int = randi_range(p_template.MIN_DEPTH, p_template.MAX_DEPTH)
 
-	var rest_stops: int = SetRestNumber(p_template.rest_stops)
-	var branches: int = SetNumberOfBranchingPaths(p_template.branching_paths)
-	var branch_length: int = SetBranchLength(p_template.branching_paths)
-	if(1 <= branches):
-		branch_length = num_nodes
+	var spine: Array[NodeData] = _BuildSpine(target_depth)
+	_InsertRestStops(spine, SetRestNumber(p_template.rest_stops))
 
-	while (nodes.size() < num_nodes):
-		nodes.append(CreateBranch(start_node, branch_length, rest_stops, branches))
+	var boss: NodeData = NodeData.new()
+	boss.node_type = NodeData.Node_Type.BOSS
+	boss.depth = target_depth
+	spine[-1].next_node.append(boss)
+	boss.previous_node.append(spine[-1])
 
-	for i in nodes.size():
-		nodes[i].index = i
-		if(nodes[i].depth > end_node.depth):
-			end_node.depth = nodes[i].depth + 1
+	var branch_nodes: Array[NodeData] = _AddBranches(spine, p_template.branching_paths)
 
-	return nodes
+	var all_nodes: Array[NodeData]
+	all_nodes.append_array(spine)
+	all_nodes.append(boss)
+	all_nodes.append_array(branch_nodes)
 
-static func CreateBranch(
-			p_start_node: NodeData,
-			p_length: int,
-			p_rest_stops: int,
-			p_branches: int
-			) -> Array[NodeData]:
-	var branch_nodes: Array[NodeData]
+	for i in all_nodes.size():
+		all_nodes[i].index = i
+
+	return all_nodes
+
+
+static func _BuildSpine(p_depth: int) -> Array[NodeData]:
+	var spine: Array[NodeData]
+	for i in p_depth:
+		var node: NodeData = NodeData.new()
+		node.node_type = NodeData.Node_Type.FIGHT
+		node.depth = i
+		if i > 0:
+			spine[i - 1].next_node.append(node)
+			node.previous_node.append(spine[i - 1])
+		spine.append(node)
+	return spine
+
+
+static func _InsertRestStops(p_spine: Array[NodeData], p_count: int) -> void:
+	if p_count == 0 or p_spine.size() < 2:
+		return
+	@warning_ignore("integer_division")
+	var interval: int = p_spine.size() / (p_count + 1)
+	for i in p_count:
+		var idx: int = interval * (i + 1)
+		if idx < p_spine.size():
+			p_spine[idx].node_type = NodeData.Node_Type.REST_STOP
+
+
+static func _AddBranches(p_spine: Array[NodeData], p_frequency: AdventureTemplate.Mechanic_Frequency) -> Array[NodeData]:
+	var branch_count: int = SetNumberOfBranchingPaths(p_frequency)
+	var all_branch_nodes: Array[NodeData]
+	var used_start_indices: Array[int]
+
+	for _i in branch_count:
+		var branch_len: int = SetBranchLength(p_frequency)
+		# need at least branch_len + 1 gap between start and end, and stay away from the final node
+		var min_start: int = 1
+		var max_start: int = p_spine.size() - branch_len - 2
+		if max_start <= min_start:
+			break
+
+		var start_idx: int = _PickUnusedIndex(min_start, max_start, used_start_indices)
+		if start_idx == -1:
+			break
+		used_start_indices.append(start_idx)
+
+		var end_idx: int = start_idx + branch_len + 1
+		var new_nodes: Array[NodeData] = CreateParallelBranch(p_spine[start_idx], p_spine[end_idx], branch_len)
+		all_branch_nodes.append_array(new_nodes)
+
+	return all_branch_nodes
+
+
+static func _PickUnusedIndex(p_min: int, p_max: int, p_used: Array[int]) -> int:
+	var candidates: Array[int]
+	for i in range(p_min, p_max + 1):
+		if not p_used.has(i):
+			candidates.append(i)
+	if candidates.is_empty():
+		return -1
+	return candidates[randi_range(0, candidates.size() - 1)]
+
+
+static func CreateParallelBranch(p_start: NodeData, p_end: NodeData, p_length: int) -> Array[NodeData]:
+	var branch: Array[NodeData]
 	for i in p_length:
 		var node: NodeData = NodeData.new()
-		node.depth = p_start_node.depth + 1 + i
-		branch_nodes.append(node)
-	for i in branch_nodes.size():
-		if (i == 0):
-			p_start_node.next_node.append(branch_nodes[i])
-			branch_nodes[i].previous_node.append(p_start_node)
+		node.node_type = NodeData.Node_Type.FIGHT
+		node.depth = p_start.depth + 1 + i
+		branch.append(node)
+	for i in branch.size():
+		if i == 0:
+			p_start.next_node.append(branch[0])
+			branch[0].previous_node.append(p_start)
 		else:
-			branch_nodes[i - 1].next_node.append(branch_nodes[i])
-			branch_nodes[i].previous_node.append(branch_nodes[i - 1])
-	return branch_nodes
+			branch[i - 1].next_node.append(branch[i])
+			branch[i].previous_node.append(branch[i - 1])
+	p_end.previous_node.append(branch[-1])
+	branch[-1].next_node.append(p_end)
+	return branch
+
 
 static func SetRestNumber(p_frequency: AdventureTemplate.Mechanic_Frequency) -> int:
 	match p_frequency:
@@ -61,6 +115,7 @@ static func SetRestNumber(p_frequency: AdventureTemplate.Mechanic_Frequency) -> 
 		AdventureTemplate.Mechanic_Frequency.NONE, _:
 			return 0
 
+
 static func SetNumberOfBranchingPaths(p_frequency: AdventureTemplate.Mechanic_Frequency) -> int:
 	match p_frequency:
 		AdventureTemplate.Mechanic_Frequency.LOW:
@@ -72,6 +127,7 @@ static func SetNumberOfBranchingPaths(p_frequency: AdventureTemplate.Mechanic_Fr
 		AdventureTemplate.Mechanic_Frequency.NONE, _:
 			return 0
 
+
 static func SetBranchLength(p_frequency: AdventureTemplate.Mechanic_Frequency) -> int:
 	match p_frequency:
 		AdventureTemplate.Mechanic_Frequency.LOW:
@@ -82,16 +138,3 @@ static func SetBranchLength(p_frequency: AdventureTemplate.Mechanic_Frequency) -
 			return randi_range(2, 3)
 		AdventureTemplate.Mechanic_Frequency.NONE, _:
 			return 0
-
-# static func SetBranchingPaths(nodes: Array[NodeData], number_of_branching_paths: int, branch_length: int) -> void:
-# 	var possible_branch_points: Array[NodeData] = nodes.slice(0, nodes.size() - 1)
-# 	for i in number_of_branching_paths:
-# 		if (possible_branch_points.size() == 0):
-# 			break
-# 		var branch_point_index: int = randi_range(0, possible_branch_points.size() - 1)
-# 		var branch_point: NodeData = possible_branch_points[branch_point_index]
-# 		var branch_nodes: Array[NodeData] = CreateBranch(branch_point, branch_length)
-# 		branch_point.next_node.append(branch_nodes[0])
-# 		for j in branch_nodes.size():
-# 			if (j < branch_nodes.size() - 1):
-# 				branch_nodes[j].next_node.append(branch_nodes[j + 1])

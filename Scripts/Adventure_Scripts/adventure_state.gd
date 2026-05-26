@@ -24,10 +24,22 @@ func CheckDailyActivity():
 		steps_taken_today = 0
 		last_palayed_date = Time.get_date_string_from_system()
 
-func Serialize() -> void:
-	# TODO: Implement serialization logic for AdventureState via resource saver and give JSON saver a String reference
-	pass
+func Serialize() -> Dictionary:
+	var completion_map: Dictionary[int, bool]
+	for node in nodes:
+		if node.is_complete:
+			completion_map[node.index] = true
+	return {
+		"current_node_index": current_node_index,
+		"steps_taken_today": steps_taken_today,
+		"last_played_date": last_palayed_date,
+		"completed_nodes": completion_map,
+	}
 
-func Deserialize(data: Dictionary) -> void:
-	# TODO: Implement deserialization logic for AdventureState via resource loader and get JSON loader by a String reference
-	pass
+func Deserialize(p_data: Dictionary) -> void:
+	current_node_index = p_data.get("current_node_index", 0)
+	steps_taken_today = p_data.get("steps_taken_today", 0)
+	last_palayed_date = p_data.get("last_played_date", "")
+	var completion_map: Dictionary = p_data.get("completed_nodes", {})
+	for node in nodes:
+		node.is_complete = completion_map.get(node.index, false)

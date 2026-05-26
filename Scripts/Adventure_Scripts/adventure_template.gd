@@ -8,8 +8,8 @@ enum Mechanic_Frequency
 	HIGH,
 }
 
-@export var MAX_NODES: int = 50
-@export var MIN_NODES: int = 40
+@export var MIN_DEPTH: int = 18
+@export var MAX_DEPTH: int = 36
 
 @export var difficulty: int = 0
 @export var branching_paths: Mechanic_Frequency
