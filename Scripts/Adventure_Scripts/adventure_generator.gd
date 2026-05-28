@@ -23,6 +23,7 @@ static func GenerateAdventure(p_template: AdventureTemplate, p_biome: BiomeData)
 	for i in all_nodes.size():
 		all_nodes[i].index = i
 
+	_PopulateNodeContexts(all_nodes, p_biome)
 	return all_nodes
 
 
@@ -138,3 +139,39 @@ static func SetBranchLength(p_frequency: AdventureTemplate.Mechanic_Frequency) -
 			return randi_range(2, 3)
 		AdventureTemplate.Mechanic_Frequency.NONE, _:
 			return 0
+
+
+static func _PopulateNodeContexts(p_nodes: Array[NodeData], p_biome: BiomeData) -> void:
+	for node in p_nodes:
+		match node.node_type:
+			NodeData.Node_Type.FIGHT:
+				if p_biome.possible_opponents.is_empty():
+					continue
+				var ctx := Context_Battle.new()
+				ctx._enemies_wave_1 = [
+					_WeightedRandomPick(p_biome.possible_opponents),
+					_WeightedRandomPick(p_biome.possible_opponents),
+					_WeightedRandomPick(p_biome.possible_opponents),
+				]
+				ctx._loot_table = p_biome.possible_rewards
+				node.scene_context = ctx
+			NodeData.Node_Type.BOSS:
+				if p_biome.possible_bosses.is_empty():
+					continue
+				var ctx := Context_Battle.new()
+				ctx._enemies_wave_1 = [p_biome.possible_bosses.pick_random()]
+				ctx._loot_table = p_biome.possible_rewards
+				node.scene_context = ctx
+
+
+static func _WeightedRandomPick(p_pool: Dictionary[CharacterPreset, int]) -> CharacterPreset:
+	var total: int = 0
+	for w in p_pool.values():
+		total += w
+	var roll: int = randi_range(0, total - 1)
+	var cumulative: int = 0
+	for key: CharacterPreset in p_pool.keys():
+		cumulative += p_pool[key]
+		if roll < cumulative:
+			return key
+	return p_pool.keys()[-1]

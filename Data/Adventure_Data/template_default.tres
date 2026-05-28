@@ -4,9 +4,7 @@
 
 [resource]
 script = ExtResource("1_templ")
-metadata/_custom_type_script = "uid://cwcowgmtcq1ca"
-MIN_DEPTH = 18
-MAX_DEPTH = 36
-difficulty = 0
-branching_paths = 1
+difficulty = 1
+branching_paths = 2
 rest_stops = 1
+metadata/_custom_type_script = "uid://cwcowgmtcq1ca"

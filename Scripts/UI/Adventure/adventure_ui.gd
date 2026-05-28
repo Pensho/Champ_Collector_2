@@ -40,6 +40,8 @@ func _on_engage_confirmed(p_node: NodeData) -> void:
 		NodeData.Node_Type.FIGHT, NodeData.Node_Type.BOSS:
 			cc._scene = "uid://d3hg8jxy8xj8n"
 		NodeData.Node_Type.REST_STOP:
+			_graph_ui.Populate(_state.nodes)
+			_preview.visible = false
 			return
 	main.GetInstance().change_scene(cc)
 
