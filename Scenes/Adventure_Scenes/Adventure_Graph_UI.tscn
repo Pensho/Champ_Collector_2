@@ -1,19 +1,19 @@
 [gd_scene format=3 uid="uid://c5vokw1b0pp1g"]
 
-[ext_resource type="Script" path="res://Scripts/UI/Adventure/adventure_graph_ui.gd" id="1_graphui"]
+[ext_resource type="Script" uid="uid://c874u6k1fq1gw" path="res://Scripts/UI/Adventure/adventure_graph_ui.gd" id="1_graphui"]
 [ext_resource type="PackedScene" uid="uid://bssm5jp0ijped" path="res://Scenes/Adventure_Scenes/Adventure_Node_UI.tscn" id="2_nodeui"]
 
-[node name="AdventureGraphUi" type="Control" unique_id=1198365855 node_paths=PackedStringArray("_scroll_container", "_v_box")]
-script = ExtResource("1_graphui")
+[node name="AdventureGraphUi" type="Control" unique_id=1198365855 node_paths=PackedStringArray("_scroll_container", "_graph_canvas")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_graphui")
 _node_ui_scene = ExtResource("2_nodeui")
 _scroll_container = NodePath("VScrollBar")
-_v_box = NodePath("VScrollBar/VBoxContainer")
+_graph_canvas = NodePath("VScrollBar/GraphCanvas")
 
 [node name="VScrollBar" type="ScrollContainer" parent="." unique_id=344890161]
 layout_mode = 1
@@ -24,7 +24,6 @@ grow_horizontal = 2
 grow_vertical = 2
 horizontal_scroll_mode = 0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VScrollBar" unique_id=2014625953]
+[node name="GraphCanvas" type="Control" parent="VScrollBar" unique_id=2014625953]
 layout_mode = 2
 size_flags_horizontal = 3
-add_theme_constant_override("separation", 8)
