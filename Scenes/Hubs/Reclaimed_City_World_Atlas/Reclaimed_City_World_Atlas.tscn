@@ -111,7 +111,7 @@ text = "Statues"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Button_Shop" type="TextureButton" parent="Navigation_Buttons" unique_id=551077809]
+[node name="Button_Adventure" type="TextureButton" parent="Navigation_Buttons" unique_id=551077809]
 layout_mode = 0
 offset_left = 436.0
 offset_top = 5.0
@@ -158,3 +158,4 @@ offset_bottom = 20.0
 [connection signal="button_up" from="Navigation_Buttons/Button_Experience_Quests" to="." method="_on_experience_quests_button_up"]
 [connection signal="button_up" from="Navigation_Buttons/Button_Town" to="." method="_on_town_button_up"]
 [connection signal="button_up" from="Navigation_Buttons/Button_Statues" to="." method="_on_statues_button_up"]
+[connection signal="button_up" from="Navigation_Buttons/Button_Adventure" to="." method="_on_adventure_button_up"]

@@ -1,0 +1,84 @@
+[gd_scene format=3 uid="uid://c8b05sjr2m25s"]
+
+[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="1_theme"]
+[ext_resource type="Script" uid="uid://ckre4eoeabpnu" path="res://Scripts/UI/Adventure/adventure_node_preview.gd" id="2_preview"]
+
+[node name="AdventureNodePreview" type="Control" unique_id=100000001 node_paths=PackedStringArray("_label_type", "_label_cost", "_label_desc")]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_preview")
+_label_type = NodePath("ColorRect/PanelContainer/MarginContainer/VBoxContainer/Label_Type")
+_label_cost = NodePath("ColorRect/PanelContainer/MarginContainer/VBoxContainer/Label_SupplyCost")
+_label_desc = NodePath("ColorRect/PanelContainer/MarginContainer/VBoxContainer/Label_Description")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=100000002]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.6)
+
+[node name="PanelContainer" type="PanelContainer" parent="ColorRect" unique_id=100000003]
+custom_minimum_size = Vector2(600, 320)
+layout_mode = 0
+offset_left = 340.0
+offset_top = 200.0
+offset_right = 940.0
+offset_bottom = 520.0
+
+[node name="MarginContainer" type="MarginContainer" parent="ColorRect/PanelContainer" unique_id=100000004]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ColorRect/PanelContainer/MarginContainer" unique_id=100000005]
+layout_mode = 2
+theme = ExtResource("1_theme")
+
+[node name="Label_Description" type="Label" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer" unique_id=100000007]
+custom_minimum_size = Vector2(150, 100)
+layout_mode = 2
+theme = ExtResource("1_theme")
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Label_SupplyCost" type="Label" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer" unique_id=100000008]
+layout_mode = 2
+theme = ExtResource("1_theme")
+text = "Cost: 10 Supplies"
+horizontal_alignment = 1
+
+[node name="Label_Type" type="Label" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer" unique_id=1857020912]
+layout_mode = 2
+theme = ExtResource("1_theme")
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer" unique_id=100000009]
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("1_theme")
+alignment = 1
+
+[node name="Button_Engage" type="Button" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=100000011]
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("1_theme")
+text = "Engage"
+
+[node name="Button_Close" type="Button" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=909910804]
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("1_theme")
+text = "Close"
+
+[connection signal="button_up" from="ColorRect/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Button_Engage" to="." method="_on_engage_button_up"]
+[connection signal="button_up" from="ColorRect/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Button_Close" to="." method="_on_back_button_up"]

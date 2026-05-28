@@ -54,12 +54,13 @@ class Main_Instance extends Node:
 	var _resources: ResourceHandler
 	var _progress: ProgressHandler
 	var _save_manager: SaveManager
-	
+	var _adventure_state_handler: AdventureStateHandler
+
 	func Init() -> void:
 		_current_scene = self
 		_current_scene.name = "Main"
 		print("current scene is: ", _current_scene)
-		
+
 		_character_collection = CharacterCollection.new()
 		add_child(_character_collection)
 		_item_collection = ItemCollection.new()
@@ -70,6 +71,10 @@ class Main_Instance extends Node:
 		add_child(_progress)
 		_save_manager = SaveManager.new()
 		add_child(_save_manager)
+		_adventure_state_handler = AdventureStateHandler.new()
+		_adventure_state_handler.name = "AdventureStateHandler"
+		add_child(_adventure_state_handler)
+		_adventure_state_handler.add_to_group(SaveManager.GROUP_SAVEABLE)
 		
 		var context_container: ContextContainer = ContextContainer.new()
 		

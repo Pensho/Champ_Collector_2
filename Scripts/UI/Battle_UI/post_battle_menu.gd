@@ -25,8 +25,12 @@ func Init(p_context_container: ContextContainer) -> void:
 		_texture_rect_background.size.y = 720
 		_heading.text = "Lost"
 	elif(p_context_container._arguments["Battle_Result"] == "Victory"):
-		main.GetInstance()._progress.MarkDifficultyCompleted(
-				_context._static_context.resource_path, _context._arguments["Difficulty"])
+		var biome_path: String = _context._arguments.get("Biome_Path", "")
+		if biome_path.is_empty():
+			main.GetInstance()._progress.MarkDifficultyCompleted(
+					_context._static_context.resource_path, _context._arguments["Difficulty"])
+		elif _context._arguments.get("Is_Boss", false):
+			main.GetInstance()._progress.MarkDifficultyCompleted(biome_path, _context._arguments["Difficulty"])
 		var battle_context: Context_Battle = p_context_container._static_context as Context_Battle
 		main.GetInstance()._resources._fortunes_favor += battle_context._loot_table._drop_result._fortunes_favor
 		main.GetInstance()._resources._silver += battle_context._loot_table._drop_result._silver

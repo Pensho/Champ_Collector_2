@@ -1,12 +1,15 @@
 class_name AdventureState extends Resource
 
 var biome: BiomeData
+var template: AdventureTemplate
+var difficulty: int = 0
+var is_active: bool = false
 var current_node_index: int
 var last_palayed_date: String
 var steps_taken_today: int
 var nodes: Array[NodeData]
 
-# Probably a dictionary holding [type, duration]
+# Dictionary[Types.Buff_Type, int] — buff type → turns remaining
 var active_effects
 
 func GetNodeSupplyCost() -> int:
@@ -34,12 +37,29 @@ func Serialize() -> Dictionary:
 		"steps_taken_today": steps_taken_today,
 		"last_played_date": last_palayed_date,
 		"completed_nodes": completion_map,
+		"is_active": is_active,
+		"difficulty": difficulty,
+		"template_path": template.resource_path if template else "",
+		"biome_path": biome.resource_path if biome else "",
 	}
 
 func Deserialize(p_data: Dictionary) -> void:
 	current_node_index = p_data.get("current_node_index", 0)
 	steps_taken_today = p_data.get("steps_taken_today", 0)
 	last_palayed_date = p_data.get("last_played_date", "")
+	is_active = p_data.get("is_active", false)
+	difficulty = p_data.get("difficulty", 0)
+
+	var template_path: String = p_data.get("template_path", "")
+	var biome_path: String = p_data.get("biome_path", "")
+	if not template_path.is_empty() and ResourceLoader.exists(template_path):
+		template = load(template_path)
+	if not biome_path.is_empty() and ResourceLoader.exists(biome_path):
+		biome = load(biome_path)
+
+	if template != null and biome != null:
+		nodes = AdventureGenerator.GenerateAdventure(template, biome)
+
 	var completion_map: Dictionary = p_data.get("completed_nodes", {})
 	for node in nodes:
 		node.is_complete = completion_map.get(node.index, false)

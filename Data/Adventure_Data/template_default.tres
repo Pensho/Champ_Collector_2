@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="AdventureTemplate" format=3 uid="uid://bqk4emurlihv2"]
+
+[ext_resource type="Script" uid="uid://cwcowgmtcq1ca" path="res://Scripts/Adventure_Scripts/adventure_template.gd" id="1_templ"]
+
+[resource]
+script = ExtResource("1_templ")
+metadata/_custom_type_script = "uid://cwcowgmtcq1ca"
+MIN_DEPTH = 18
+MAX_DEPTH = 36
+difficulty = 0
+branching_paths = 1
+rest_stops = 1
