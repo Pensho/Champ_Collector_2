@@ -3,8 +3,7 @@ extends GutTest
 # --- 1. MOCK Setup ---
 # GUT uses "doubles" (mocks/stubs) for dependencies.
 
-# We must preload the MAIN script to access its nested class (Main_Instance).
-const MainScript = preload("res://Scripts/main.gd")
+const MainInstanceScript = preload("res://Scripts/main_instance.gd")
 const BattleOverScreen = preload("uid://b4s2d8usop6na")
 const CHARACTER_COLLECTION_SCRIPT = preload("res://Scripts/Character/character_collection.gd")
 
@@ -32,14 +31,13 @@ var screen: Control
 var context: ContextContainer
 
 func before_all():
-	# Register the inner class so GUT knows how to double it later.
-	register_inner_classes(MainScript)
+	pass
 
 func before_each():
 	print("\nbefore_each")
 	
 	# 1. Setup the core dependencies
-	MainMock_Instance = double(MainScript.Main_Instance).new()
+	MainMock_Instance = double(MainInstanceScript).new()
 	character_collection_mock = double(CHARACTER_COLLECTION_SCRIPT).new()
 	
 	# 2. Stub essential functions on the mock Main_Instance
@@ -48,6 +46,7 @@ func before_each():
 	
 	# 3. Inject the CharacterCollection mock into the Main_Instance mock
 	MainMock_Instance._character_collection = character_collection_mock
+	MainMock_Instance._resources = double(preload("res://Scripts/Worldview/resource_handler.gd")).new()
 	
 	# 4. Create the scene structure and assign the script
 	screen = Control.new()
@@ -218,22 +217,22 @@ func test_07_on_button_edit_team_changes_to_pre_battle_menu():
 	var parameters = get_call_parameters(MainMock_Instance, "change_scene")
 	
 	# Check the context object passed to change_scene
-	assert_is(parameters[0], ContextContainer)
-	assert_eq("res://Scenes/ui/Pre_Battle_Menu.tscn", parameters[0]._scene)
+	assert_true(parameters[0] is ContextContainer)
+	assert_eq("uid://d3hg8jxy8xj8n", parameters[0]._scene)
 
 func test_08_on_button_end_changes_scene():
 	print(get_stack()[0]["function"])
 	screen._on_button_end_button_up()
 	assert_call_count(MainMock_Instance, "change_scene", 1)
 	var params = get_call_parameters(MainMock_Instance, "change_scene")
-	assert_is(params[0], ContextContainer)
+	assert_true(params[0] is ContextContainer)
 
 func test_09_on_button_replay_changes_scene():
 	print(get_stack()[0]["function"])
 	screen._on_button_replay_button_up()
 	assert_call_count(MainMock_Instance, "change_scene", 1)
 	var params = get_call_parameters(MainMock_Instance, "change_scene")
-	assert_is(params[0], ContextContainer)
+	assert_true(params[0] is ContextContainer)
 
 func test_10_init_populates_character_result_UI_calls():
 	print(get_stack()[0]["function"])
@@ -271,7 +270,9 @@ func test_10_init_populates_character_result_UI_calls():
 	var typed_chars: Array[Character] = []
 	typed_chars.assign([mock_char_1, mock_char_2, mock_char_3])
 	mock_context._player_battle_characters = typed_chars
-	mock_context._static_context = Static_Context.new()
+	var battle_ctx = Context_Battle.new()
+	battle_ctx._loot_table = LootTable.new()
+	mock_context._static_context = battle_ctx
 
 	screen.Init(mock_context)
 
