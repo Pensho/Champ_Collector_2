@@ -28,11 +28,11 @@ func _on_node_selected(p_node: NodeData) -> void:
 func _on_engage_confirmed(p_node: NodeData) -> void:
 	_state.TakeStep()
 	_state.current_node_index = p_node.index
-	p_node.is_complete = true
 	_UpdateHeader()
 	var cc: ContextContainer = ContextContainer.new()
 	cc._static_context = p_node.scene_context
 	cc._previous_scene = _hub_scene
+	cc._adventure_state = _state
 	cc._arguments["Difficulty"] = _state.difficulty
 	cc._arguments["Biome_Path"] = _state.biome.resource_path if _state.biome else ""
 	cc._arguments["Is_Boss"] = p_node.node_type == NodeData.Node_Type.BOSS

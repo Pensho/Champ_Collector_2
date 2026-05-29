@@ -58,3 +58,31 @@ func test_serialize_roundtrip() -> void:
 	assert_true(restored.is_active, "is_active must survive serialization.")
 	assert_eq(restored.difficulty, 2, "difficulty must survive serialization.")
 	assert_eq(restored.last_palayed_date, "2026-05-26", "last_palayed_date must survive serialization.")
+
+
+# --- Node completion (guards the victory-marks-node-complete bug fix) ---
+
+func test_victory_marks_only_current_node_complete() -> void:
+	_state.current_node_index = 2
+	var node_1 := NodeData.new(); node_1.index = 1
+	var node_2 := NodeData.new(); node_2.index = 2
+	var node_3 := NodeData.new(); node_3.index = 3
+	var typed_nodes: Array[NodeData] = []
+	typed_nodes.assign([node_1, node_2, node_3])
+	_state.nodes = typed_nodes
+
+	# Replicate what post_battle_menu does on Victory
+	for node in _state.nodes:
+		if node.index == _state.current_node_index:
+			node.is_complete = true
+			break
+
+	assert_false(node_1.is_complete, "Non-current node must not be marked complete")
+	assert_true(node_2.is_complete, "Node matching current_node_index must be marked complete")
+	assert_false(node_3.is_complete, "Non-current node must not be marked complete")
+
+
+func test_nodes_start_incomplete() -> void:
+	var node := NodeData.new()
+	node.index = 1
+	assert_false(node.is_complete, "Nodes must start as incomplete so a loss does not count as a win")

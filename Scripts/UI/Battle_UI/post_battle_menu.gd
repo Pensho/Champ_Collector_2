@@ -35,6 +35,11 @@ func Init(p_context_container: ContextContainer) -> void:
 		main.GetInstance()._resources._fortunes_favor += battle_context._loot_table._drop_result._fortunes_favor
 		main.GetInstance()._resources._silver += battle_context._loot_table._drop_result._silver
 		main.GetInstance()._resources._supplies += battle_context._loot_table._drop_result._supplies
+		if _context._adventure_state != null:
+			for node in _context._adventure_state.nodes:
+				if node.index == _context._adventure_state.current_node_index:
+					node.is_complete = true
+					break
 	
 	var total_damage_dealt = 0
 	for character_ID in _context._player_battle_characters.size():
