@@ -120,11 +120,11 @@ static func SetRestNumber(p_frequency: AdventureTemplate.Mechanic_Frequency) -> 
 static func SetNumberOfBranchingPaths(p_frequency: AdventureTemplate.Mechanic_Frequency) -> int:
 	match p_frequency:
 		AdventureTemplate.Mechanic_Frequency.LOW:
-			return randi_range(1, 2)
-		AdventureTemplate.Mechanic_Frequency.MEDIUM:
 			return randi_range(2, 3)
+		AdventureTemplate.Mechanic_Frequency.MEDIUM:
+			return randi_range(4, 6)
 		AdventureTemplate.Mechanic_Frequency.HIGH:
-			return randi_range(3, 5)
+			return randi_range(7, 9)
 		AdventureTemplate.Mechanic_Frequency.NONE, _:
 			return 0
 

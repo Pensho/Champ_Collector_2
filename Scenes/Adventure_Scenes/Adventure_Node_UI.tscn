@@ -2,6 +2,7 @@
 
 [ext_resource type="Material" uid="uid://btoxlv6hhnxp6" path="res://Assets/Champ_Collector/Material/SkillMaterialShader.tres" id="1_hgc4y"]
 [ext_resource type="Script" uid="uid://dx5l3g1mg7xq" path="res://Scripts/UI/Adventure/adventure_node_ui.gd" id="2_nodeui"]
+[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="2_xir8b"]
 
 [node name="AdventureNodeUi" type="Control" unique_id=2088828898 node_paths=PackedStringArray("_icon", "_button")]
 custom_minimum_size = Vector2(80, 80)
@@ -18,6 +19,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("2_xir8b")
 
 [node name="ColorRect" type="ColorRect" parent="Button" unique_id=1992170371]
 material = ExtResource("1_hgc4y")
