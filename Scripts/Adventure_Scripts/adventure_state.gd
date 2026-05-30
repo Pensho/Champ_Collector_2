@@ -8,6 +8,7 @@ var current_node_index: int
 var last_palayed_date: String
 var steps_taken_today: int
 var nodes: Array[NodeData]
+var _generation_seed: int = -1
 
 # Dictionary[Types.Buff_Type, int] — buff type → turns remaining
 var active_effects
@@ -41,6 +42,7 @@ func Serialize() -> Dictionary:
 		"difficulty": difficulty,
 		"template_path": template.resource_path if template else "",
 		"biome_path": biome.resource_path if biome else "",
+		"generation_seed": _generation_seed,
 	}
 
 func Deserialize(p_data: Dictionary) -> void:
@@ -57,8 +59,12 @@ func Deserialize(p_data: Dictionary) -> void:
 	if not biome_path.is_empty() and ResourceLoader.exists(biome_path):
 		biome = load(biome_path)
 
-	if template != null and biome != null:
+	_generation_seed = p_data.get("generation_seed", -1)
+	if template != null and biome != null and _generation_seed >= 0:
+		seed(_generation_seed)
 		nodes = AdventureGenerator.GenerateAdventure(template, biome)
+	else:
+		is_active = false
 
 	var completion_map: Dictionary = p_data.get("completed_nodes", {})
 	for node in nodes:

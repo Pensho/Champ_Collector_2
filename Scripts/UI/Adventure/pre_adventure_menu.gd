@@ -60,6 +60,8 @@ func _on_start_button_up() -> void:
 		state.biome = biome
 		state.template = template
 		state.difficulty = template.difficulty
+		state._generation_seed = randi()
+		seed(state._generation_seed)
 		state.nodes = AdventureGenerator.GenerateAdventure(template, biome)
 		state.is_active = true
 		handler._state = state
