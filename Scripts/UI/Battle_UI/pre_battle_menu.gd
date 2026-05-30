@@ -39,9 +39,12 @@ func Init(p_context_container: ContextContainer) -> void:
 					main.GetInstance()._character_collection.GetCharacterTexture(_character_collection[i]._name))
 			_available_character_slots[i].level.text = str(_character_collection[i]._level)
 	
-	for i in range(1, main.GetInstance()._progress.GetCurrentEncounterDifficulty(
-				_self_context._static_context.resource_path) + 1):
-		_difficulty_option.add_item("Difficulty " + str(i), i)
+	var encounter_id: String = _self_context._static_context.resource_path
+	if _self_context._adventure_state != null or encounter_id.is_empty():
+		_difficulty_option.add_item("Difficulty " + str(_self_context._arguments.get("Difficulty", 1)), 1)
+	else:
+		for i in range(1, main.GetInstance()._progress.GetCurrentEncounterDifficulty(encounter_id) + 1):
+			_difficulty_option.add_item("Difficulty " + str(i), i)
 	_difficulty_option.select(_difficulty_option.item_count - 1)
 	_self_context._arguments["Difficulty"] = _difficulty_option.get_selected_id()
 

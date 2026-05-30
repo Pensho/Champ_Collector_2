@@ -37,6 +37,9 @@ func Deserialize(p_data: Dictionary) -> void:
 		_current_max_amount = p_data["max_amount"]
 	
 	for character_data in p_data["characters"]:
+		if character_data["preset_UID"].is_empty():
+			push_error("Skipping character with empty preset_UID (instance_ID: %d)" % character_data.get("instance_ID", -1))
+			continue
 		var preset: CharacterPreset = load(character_data["preset_UID"]).duplicate(true)
 		var new_character: Character = load("uid://s7cyusnkyl53").instantiate()
 		new_character.InstantiateNew(preset, character_data["instance_ID"])

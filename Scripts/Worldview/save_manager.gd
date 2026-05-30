@@ -36,7 +36,7 @@ func Load(p_slot: int) -> void:
 	
 	for node in get_tree().get_nodes_in_group(GROUP_SAVEABLE):
 		if not (node is ItemCollection) and not (node is CharacterCollection):
-			node.Deserialize(data[node.name])
+			node.Deserialize(data.get(node.name, {}))
 	
 	#_restore_equipped_gear()
 	
@@ -45,7 +45,7 @@ func Load(p_slot: int) -> void:
 func _deserialize_group_by_type(data: Dictionary, type) -> void:
 	for node in get_tree().get_nodes_in_group(GROUP_SAVEABLE):
 		if (is_instance_of(node, type)):
-			node.Deserialize(data[node.name])
+			node.Deserialize(data.get(node.name, {}))
 
 #func DeleteSave(p_slot: int) -> void:
 	#pass
