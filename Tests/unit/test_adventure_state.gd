@@ -86,3 +86,26 @@ func test_nodes_start_incomplete() -> void:
 	var node := NodeData.new()
 	node.index = 1
 	assert_false(node.is_complete, "Nodes must start as incomplete so a loss does not count as a win")
+
+
+# --- Progressive difficulty scaling ---
+
+func test_scaled_difficulty_start() -> void:
+	assert_eq(AdventureState.CalculateScaledDifficulty(1, 0, 9), 1,
+		"No nodes completed: difficulty unchanged.")
+
+func test_scaled_difficulty_first_third() -> void:
+	assert_eq(AdventureState.CalculateScaledDifficulty(1, 3, 9), 2,
+		"One third completed: difficulty +1.")
+
+func test_scaled_difficulty_second_third() -> void:
+	assert_eq(AdventureState.CalculateScaledDifficulty(1, 6, 9), 3,
+		"Two thirds completed: difficulty +2.")
+
+func test_scaled_difficulty_caps_at_two_tiers() -> void:
+	assert_eq(AdventureState.CalculateScaledDifficulty(1, 9, 9), 3,
+		"All nodes completed: capped at +2 tiers.")
+
+func test_scaled_difficulty_empty_adventure() -> void:
+	assert_eq(AdventureState.CalculateScaledDifficulty(2, 0, 0), 2,
+		"Zero total nodes: returns base difficulty unchanged.")

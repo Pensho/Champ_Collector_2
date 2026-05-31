@@ -13,6 +13,12 @@ var _generation_seed: int = -1
 # Dictionary[Types.Buff_Type, int] — buff type → turns remaining
 var active_effects
 
+static func CalculateScaledDifficulty(p_base: int, p_completed: int, p_total: int) -> int:
+	if p_total <= 0:
+		return p_base
+	var tier: int = mini(int(floor(float(p_completed) * 3.0 / float(p_total))), 2)
+	return p_base + tier
+
 func GetNodeSupplyCost() -> int:
 	var tier: int = floor(float(steps_taken_today) / GameBalance.ADVENTURE_DAILY_TIER_THRESHOLD)
 	return GameBalance.ADVENTURE_ENERGY_COST_PER_TIER * (tier + 1)

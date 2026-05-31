@@ -33,7 +33,8 @@ func _on_engage_confirmed(p_node: NodeData) -> void:
 	cc._static_context = p_node.scene_context
 	cc._previous_scene = _hub_scene
 	cc._adventure_state = _state
-	cc._arguments["Difficulty"] = _state.difficulty
+	var completed: int = _state.nodes.filter(func(n: NodeData) -> bool: return n.is_complete).size()
+	cc._arguments["Difficulty"] = AdventureState.CalculateScaledDifficulty(_state.difficulty, completed, _state.nodes.size())
 	cc._arguments["Biome_Path"] = _state.biome.resource_path if _state.biome else ""
 	cc._arguments["Is_Boss"] = p_node.node_type == NodeData.Node_Type.BOSS
 	match p_node.node_type:
