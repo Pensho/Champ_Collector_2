@@ -44,39 +44,45 @@ theme_override_constants/margin_bottom = 16
 layout_mode = 2
 theme = ExtResource("1_theme")
 
-[node name="Label_Description" type="Label" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer" unique_id=100000007]
-custom_minimum_size = Vector2(150, 100)
+[node name="Label_Type" type="Label" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer" unique_id=1857020912]
+custom_minimum_size = Vector2(150, 50)
 layout_mode = 2
 theme = ExtResource("1_theme")
+text = "Node Type"
 horizontal_alignment = 1
-autowrap_mode = 3
 
 [node name="Label_SupplyCost" type="Label" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer" unique_id=100000008]
 layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 6
 theme = ExtResource("1_theme")
 text = "Cost: 10 Supplies"
 horizontal_alignment = 1
 
-[node name="Label_Type" type="Label" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer" unique_id=1857020912]
+[node name="Label_Description" type="Label" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer" unique_id=100000007]
+custom_minimum_size = Vector2(550, 100)
 layout_mode = 2
 theme = ExtResource("1_theme")
-horizontal_alignment = 1
+text = "Description"
+autowrap_mode = 3
 
 [node name="HBoxContainer" type="HBoxContainer" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer" unique_id=100000009]
 layout_mode = 2
-size_flags_horizontal = 4
+size_flags_vertical = 10
 theme = ExtResource("1_theme")
 alignment = 1
 
 [node name="Button_Engage" type="Button" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=100000011]
 layout_mode = 2
-size_flags_horizontal = 4
+size_flags_horizontal = 2
+size_flags_vertical = 8
 theme = ExtResource("1_theme")
 text = "Engage"
 
 [node name="Button_Close" type="Button" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=909910804]
 layout_mode = 2
-size_flags_horizontal = 4
+size_flags_horizontal = 8
+size_flags_vertical = 8
 theme = ExtResource("1_theme")
 text = "Close"
 
