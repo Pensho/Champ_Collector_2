@@ -8,6 +8,7 @@
 custom_minimum_size = Vector2(80, 80)
 layout_mode = 3
 anchors_preset = 0
+mouse_filter = 1
 script = ExtResource("2_nodeui")
 _icon = NodePath("Button/TextureRect")
 _button = NodePath("Button")
@@ -19,6 +20,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
 theme = ExtResource("2_xir8b")
 
 [node name="ColorRect" type="ColorRect" parent="Button" unique_id=1992170371]
@@ -29,6 +31,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 color = Color(0, 0, 0, 1)
 
 [node name="ColorRect" type="ColorRect" parent="Button/ColorRect" unique_id=2128649798]
@@ -43,6 +46,7 @@ offset_right = -2.0
 offset_bottom = -2.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="TextureRect" type="TextureRect" parent="Button" unique_id=1000000002]
 layout_mode = 0

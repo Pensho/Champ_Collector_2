@@ -1,6 +1,10 @@
 class_name AdventureEdgeLayer extends Control
 
 const LINE_COLOR := Color(0.55, 0.55, 0.55, 0.85)
+
+func _ready() -> void:
+	mouse_filter = MOUSE_FILTER_IGNORE
+
 const LINE_WIDTH := 2.5
 const NODE_HALF  := Vector2(40.0, 40.0)
 
