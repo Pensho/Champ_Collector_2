@@ -242,6 +242,8 @@ func TriggerUnequipItem(p_item_type: Types.Slot) -> void:
 	ShowSelectedCharacter(_selected_character_ID)
 
 func EquipedItemSlotButton(p_slot_ID: int) -> void:
+	if _selected_character_ID == -1:
+		return
 	match p_slot_ID:
 		0:
 			if(_character_collection[_selected_character_ID]._held_items.has(Types.Slot.Weapon)):

@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="AdventureTemplate" format=3 uid="uid://bqk4emurlihv2"]
+
+[ext_resource type="Script" uid="uid://cwcowgmtcq1ca" path="res://Scripts/Adventure_Scripts/adventure_template.gd" id="1_templ"]
+
+[resource]
+script = ExtResource("1_templ")
+difficulty = 1
+branching_paths = 2
+rest_stops = 1
+metadata/_custom_type_script = "uid://cwcowgmtcq1ca"

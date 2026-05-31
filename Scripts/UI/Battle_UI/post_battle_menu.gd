@@ -25,12 +25,21 @@ func Init(p_context_container: ContextContainer) -> void:
 		_texture_rect_background.size.y = 720
 		_heading.text = "Lost"
 	elif(p_context_container._arguments["Battle_Result"] == "Victory"):
-		main.GetInstance()._progress.MarkDifficultyCompleted(
-				_context._static_context.resource_path, _context._arguments["Difficulty"])
+		var biome_path: String = _context._arguments.get("Biome_Path", "")
+		if biome_path.is_empty():
+			main.GetInstance()._progress.MarkDifficultyCompleted(
+					_context._static_context.resource_path, _context._arguments["Difficulty"])
+		elif _context._arguments.get("Is_Boss", false):
+			main.GetInstance()._progress.MarkDifficultyCompleted(biome_path, _context._arguments["Difficulty"])
 		var battle_context: Context_Battle = p_context_container._static_context as Context_Battle
 		main.GetInstance()._resources._fortunes_favor += battle_context._loot_table._drop_result._fortunes_favor
 		main.GetInstance()._resources._silver += battle_context._loot_table._drop_result._silver
 		main.GetInstance()._resources._supplies += battle_context._loot_table._drop_result._supplies
+		if _context._adventure_state != null:
+			for node in _context._adventure_state.nodes:
+				if node.index == _context._adventure_state.current_node_index:
+					node.is_complete = true
+					break
 	
 	var total_damage_dealt = 0
 	for character_ID in _context._player_battle_characters.size():
@@ -55,9 +64,8 @@ func _on_visibility_changed() -> void:
 		focus_button()
 
 func _on_button_end_button_up() -> void:
-	var context_container: ContextContainer = ContextContainer.new()
-	context_container._scene = _context._previous_scene
-	main.GetInstance().change_scene(context_container)
+	_context._scene = _context._previous_scene
+	main.GetInstance().change_scene(_context)
 
 func _on_button_replay_button_up() -> void:
 	_context._scene = "uid://cc883blynrgq2"

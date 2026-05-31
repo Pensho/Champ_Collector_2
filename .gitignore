@@ -2,11 +2,7 @@
 .godot/
 /android/
 /release/
-<<<<<<< Updated upstream
 /addons/
 .claude/
 .vscode/
-=======
-.claude/
 CLAUDE.md
->>>>>>> Stashed changes

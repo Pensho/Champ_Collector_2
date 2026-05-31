@@ -1,0 +1,86 @@
+[gd_scene format=3 uid="uid://mtv6bnpp8kjx"]
+
+[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="1_theme"]
+[ext_resource type="Script" uid="uid://vckjy7op21li" path="res://Scripts/UI/Adventure/adventure_ui.gd" id="2_advui"]
+[ext_resource type="PackedScene" uid="uid://c5vokw1b0pp1g" path="res://Scenes/Adventure_Scenes/Adventure_Graph_UI.tscn" id="3_graph"]
+[ext_resource type="PackedScene" uid="uid://c8b05sjr2m25s" path="res://Scenes/Adventure_Scenes/Adventure_Node_Preview.tscn" id="4_preview"]
+
+[node name="Adventure" type="Control" unique_id=93246272 node_paths=PackedStringArray("_graph_ui", "_preview", "_label_steps", "_button_finish")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_advui")
+_graph_ui = NodePath("MarginContainer/VBoxContainer/AdventureGraphUi")
+_preview = NodePath("AdventureNodePreview")
+_label_steps = NodePath("MarginContainer/VBoxContainer/HBoxContainer_Header/Label_Steps")
+_button_finish = NodePath("MarginContainer/VBoxContainer/Button_Finish")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=395936223]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 0.7261563, 0.5739055, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=407808371]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=200000001]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HBoxContainer_Header" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=200000002]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_theme")
+
+[node name="Label_Steps" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer_Header" unique_id=200000004]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_theme")
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.40392157)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 2
+text = "Steps today: 0/6"
+horizontal_alignment = 1
+
+[node name="Button_Hub" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer_Header" unique_id=200000005]
+layout_mode = 2
+theme = ExtResource("1_theme")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+text = "Back"
+
+[node name="AdventureGraphUi" parent="MarginContainer/VBoxContainer" unique_id=200000006 instance=ExtResource("3_graph")]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Button_Finish" type="Button" parent="MarginContainer/VBoxContainer" unique_id=200000010]
+visible = false
+layout_mode = 2
+theme = ExtResource("1_theme")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+text = "Finish Adventure"
+
+[node name="AdventureNodePreview" parent="." unique_id=200000007 instance=ExtResource("4_preview")]
+layout_mode = 1
+
+[connection signal="button_up" from="MarginContainer/VBoxContainer/HBoxContainer_Header/Button_Hub" to="." method="_on_hub_button_up"]
+[connection signal="button_up" from="MarginContainer/VBoxContainer/Button_Finish" to="." method="_on_finish_adventure_button_up"]

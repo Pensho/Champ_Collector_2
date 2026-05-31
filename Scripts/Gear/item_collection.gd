@@ -34,6 +34,9 @@ func Deserialize(p_data: Dictionary) -> void:
 		_next_id = p_data["next_ID"]
 	_items.clear()
 	for item_data in p_data["items"]:
+		if item_data["preset_UID"].is_empty():
+			push_error("Skipping item with empty preset_UID (instance_ID: %d)" % item_data.get("instance_ID", -1))
+			continue
 		var preset: EquipmentPreset = load(item_data["preset_UID"]).duplicate(true)
 		var new_equipment: Equipment = Equipment.new()
 		new_equipment.InstantiateNew(preset, item_data["instance_ID"])

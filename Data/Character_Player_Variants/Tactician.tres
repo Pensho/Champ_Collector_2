@@ -28,4 +28,5 @@ _mysticism = 10
 _knowledge = 70
 _attribute_weight_types_available = Array[ExtResource("1_wt524")]([ExtResource("2_iaser"), ExtResource("3_igdfl"), ExtResource("4_y2h5c"), ExtResource("5_4hpto")])
 _trait = ExtResource("9_igdfl")
+_preset_UID = "uid://dy22lp5h48s5f"
 metadata/_custom_type_script = "uid://ftdwxfh8y3n1"
