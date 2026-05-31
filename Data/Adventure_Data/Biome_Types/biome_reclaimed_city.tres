@@ -5,8 +5,8 @@
 [ext_resource type="Resource" uid="uid://cq2rkhiba5033" path="res://Data/Character_Enemy_Variants/Obsidian_Stallion.tres" id="2_grm6y"]
 [ext_resource type="Resource" uid="uid://b37nmpv7mries" path="res://Data/Character_Enemy_Variants/Militia.tres" id="3_3et75"]
 [ext_resource type="Resource" uid="uid://dauwp8sbf3ga" path="res://Data/Loot_Tables/Experience_Quest.tres" id="4_grm6y"]
-[ext_resource type="Resource" uid="uid://ckmtp8rvhbx3a" path="res://Data/Loot_Tables/Adventure_Boss_Loot.tres" id="5_boss"]
 [ext_resource type="Resource" uid="uid://bm0sqmepyeoam" path="res://Data/Character_Player_Variants/Thief.tres" id="4_oav00"]
+[ext_resource type="Resource" uid="uid://ckmtp8rvhbx3a" path="res://Data/Loot_Tables/Adventure_Boss_Loot.tres" id="5_boss"]
 [ext_resource type="Resource" uid="uid://dkpr2hnmtcodx" path="res://Data/Character_Player_Variants/Jester.tres" id="5_xulw6"]
 [ext_resource type="Resource" uid="uid://dnup7y7ax8jck" path="res://Data/Character_Player_Variants/Bar_Brawler.tres" id="6_ict8u"]
 
