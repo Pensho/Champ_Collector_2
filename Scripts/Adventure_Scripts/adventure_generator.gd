@@ -160,7 +160,7 @@ static func _PopulateNodeContexts(p_nodes: Array[NodeData], p_biome: BiomeData) 
 					continue
 				var ctx := Context_Battle.new()
 				ctx._enemies_wave_1 = [p_biome.possible_bosses.pick_random()]
-				ctx._loot_table = p_biome.possible_rewards
+				ctx._loot_table = p_biome.boss_rewards if p_biome.boss_rewards != null else p_biome.possible_rewards
 				node.scene_context = ctx
 
 

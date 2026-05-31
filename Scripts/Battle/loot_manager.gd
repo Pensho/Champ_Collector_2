@@ -94,7 +94,10 @@ static func DistributeRewards(p_loot_table: LootTable, p_difficulty: int) -> voi
 					p_loot_table._budget -= cost
 					print("Received Equipment, budget left: ", p_loot_table._budget)
 			LootType.Fortunes_Favor:
-				pass
+				var ff_count: int = max(1, int(p_difficulty / 2.0))
+				p_loot_table._drop_result._fortunes_favor += ff_count
+				p_loot_table._budget -= LOOT_VALUE[LootType.Fortunes_Favor] * ff_count
+				print("Received Fortunes Favor x", ff_count, ", budget left: ", p_loot_table._budget)
 			LootType.Supplies:
 				pass
 			_:
@@ -114,8 +117,9 @@ static func DistributeRewards(p_loot_table: LootTable, p_difficulty: int) -> voi
 				pass
 				#p_loot_table._budget -= LOOT_VALUE[LootType.Equipment]
 			LootType.Fortunes_Favor:
-				pass
-				#p_loot_table._budget -= LOOT_VALUE[LootType.Fortunes_Favor]
+				p_loot_table._drop_result._fortunes_favor += 1
+				p_loot_table._budget -= LOOT_VALUE[LootType.Fortunes_Favor]
+				print("Received secondary Fortunes Favor, budget left: ", p_loot_table._budget)
 			LootType.Supplies:
 				pass
 				#p_loot_table._budget -= LOOT_VALUE[LootType.Supplies]

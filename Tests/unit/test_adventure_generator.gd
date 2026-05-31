@@ -93,6 +93,31 @@ func test_rest_stop_nodes_have_no_context() -> void:
 			assert_null(node.scene_context, "REST_STOP node should have no scene_context.")
 
 
+func test_boss_node_uses_boss_rewards_when_set() -> void:
+	var boss_preset := CharacterPreset.new()
+	_biome.possible_bosses.append(boss_preset)
+	var boss_loot := LootTable.new()
+	_biome.boss_rewards = boss_loot
+	var nodes: Array[NodeData] = AdventureGenerator.GenerateAdventure(_template, _biome)
+	for node in nodes:
+		if node.node_type == NodeData.Node_Type.BOSS:
+			var ctx := node.scene_context as Context_Battle
+			assert_eq(ctx._loot_table, boss_loot, "BOSS node should use boss_rewards when set.")
+
+
+func test_boss_node_falls_back_to_possible_rewards_when_boss_rewards_null() -> void:
+	var boss_preset := CharacterPreset.new()
+	_biome.possible_bosses.append(boss_preset)
+	var fallback_loot := LootTable.new()
+	_biome.possible_rewards = fallback_loot
+	_biome.boss_rewards = null
+	var nodes: Array[NodeData] = AdventureGenerator.GenerateAdventure(_template, _biome)
+	for node in nodes:
+		if node.node_type == NodeData.Node_Type.BOSS:
+			var ctx := node.scene_context as Context_Battle
+			assert_eq(ctx._loot_table, fallback_loot, "BOSS node should fall back to possible_rewards when boss_rewards is null.")
+
+
 func test_no_crash_with_empty_biome_pools() -> void:
 	var nodes: Array[NodeData] = AdventureGenerator.GenerateAdventure(_template, _biome)
 	assert_gt(nodes.size(), 0, "Should still generate nodes with an empty biome.")

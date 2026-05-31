@@ -7,6 +7,7 @@ class_name BiomeData extends Resource
 @export var possible_bosses: Array[CharacterPreset]
 
 @export var possible_rewards: LootTable
+@export var boss_rewards: LootTable
 
 var possible_node_modifiers: Dictionary[String, int]
 var possible_rest_stop_buffs: Dictionary[Types.Buff_Type, int]
