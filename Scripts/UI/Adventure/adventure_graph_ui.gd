@@ -78,6 +78,6 @@ func _IsEligible(p_node: NodeData) -> bool:
 	if p_node.previous_node.is_empty():
 		return true
 	for prev in p_node.previous_node:
-		if not prev.is_complete:
-			return false
-	return true
+		if prev.is_complete:
+			return true
+	return false
