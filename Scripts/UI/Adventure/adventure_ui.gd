@@ -4,6 +4,7 @@ extends Control
 @export var _preview: AdventureNodePreview
 #@export var _label_supplies: Label
 @export var _label_steps: Label
+@export var _button_finish: Button
 
 var _state: AdventureState
 var _hub_scene: String
@@ -17,6 +18,8 @@ func Init(p_context: ContextContainer) -> void:
 	_graph_ui.node_selected.connect(_on_node_selected)
 	_preview.engage_confirmed.connect(_on_engage_confirmed)
 	_preview.cancelled.connect(func(): _preview.visible = false)
+	if _IsBossComplete():
+		_button_finish.show()
 
 func _UpdateHeader() -> void:
 	#_label_supplies.text = "Supplies: " + str(main.GetInstance()._resources._supplies) + "/" + str(GameBalance.MAX_SUPPLIES)
@@ -45,6 +48,19 @@ func _on_engage_confirmed(p_node: NodeData) -> void:
 			_graph_ui.Populate(_state.nodes)
 			_preview.visible = false
 			return
+	main.GetInstance().change_scene(cc)
+
+func _IsBossComplete() -> bool:
+	for node in _state.nodes:
+		if node.node_type == NodeData.Node_Type.BOSS and node.is_complete:
+			return true
+	return false
+
+func _on_finish_adventure_button_up() -> void:
+	main.GetInstance()._adventure_state_handler._state = AdventureState.new()
+	var cc: ContextContainer = ContextContainer.new()
+	cc._scene = "uid://cwjabuf3kdtft"
+	cc._previous_scene = _hub_scene
 	main.GetInstance().change_scene(cc)
 
 func _on_hub_button_up() -> void:
