@@ -67,7 +67,8 @@ func _on_start_button_up() -> void:
 		handler._state = state
 	var cc: ContextContainer = ContextContainer.new()
 	cc._adventure_state = handler._state
-	cc._previous_scene = _self_context._previous_scene
+	cc._previous_scene = "uid://mtv6bnpp8kjx"
+	cc._arguments["Hub_Scene"] = _self_context._previous_scene
 	cc._scene = "uid://mtv6bnpp8kjx"
 	main.GetInstance().change_scene(cc)
 

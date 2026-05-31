@@ -10,7 +10,7 @@ var _hub_scene: String
 
 func Init(p_context: ContextContainer) -> void:
 	_state = p_context._adventure_state
-	_hub_scene = p_context._previous_scene
+	_hub_scene = p_context._arguments.get("Hub_Scene", "")
 	_state.CheckDailyActivity()
 	_UpdateHeader()
 	_graph_ui.Populate(_state.nodes)
@@ -31,7 +31,8 @@ func _on_engage_confirmed(p_node: NodeData) -> void:
 	_UpdateHeader()
 	var cc: ContextContainer = ContextContainer.new()
 	cc._static_context = p_node.scene_context
-	cc._previous_scene = _hub_scene
+	cc._previous_scene = "uid://mtv6bnpp8kjx"
+	cc._arguments["Hub_Scene"] = _hub_scene
 	cc._adventure_state = _state
 	var completed: int = _state.nodes.filter(func(n: NodeData) -> bool: return n.is_complete).size()
 	cc._arguments["Difficulty"] = AdventureState.CalculateScaledDifficulty(_state.difficulty, completed, _state.nodes.size())

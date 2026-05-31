@@ -64,9 +64,8 @@ func _on_visibility_changed() -> void:
 		focus_button()
 
 func _on_button_end_button_up() -> void:
-	var context_container: ContextContainer = ContextContainer.new()
-	context_container._scene = _context._previous_scene
-	main.GetInstance().change_scene(context_container)
+	_context._scene = _context._previous_scene
+	main.GetInstance().change_scene(_context)
 
 func _on_button_replay_button_up() -> void:
 	_context._scene = "uid://cc883blynrgq2"

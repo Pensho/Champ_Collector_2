@@ -53,9 +53,8 @@ func Init(p_context_container: ContextContainer) -> void:
 		_self_context._arguments["Difficulty"] = _difficulty_option.get_selected_id()
 
 func _on_exit_button_up() -> void:
-	var context_container: ContextContainer = ContextContainer.new()
-	context_container._scene = _self_context._previous_scene
-	main.GetInstance().change_scene(context_container)
+	_self_context._scene = _self_context._previous_scene
+	main.GetInstance().change_scene(_self_context)
 
 func _on_start_button_up() -> void:
 	if (_chosen_characters.size() <= 0):
