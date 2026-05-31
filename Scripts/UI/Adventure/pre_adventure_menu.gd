@@ -3,6 +3,10 @@ extends Control
 @export var _difficulty_option: OptionButton
 @export var _biome_option: OptionButton
 
+const BIOME_RESOURCES: Array[BiomeData] = [
+	preload("uid://cpi1whtc518ok"), # biome_reclaimed_city
+]
+
 var _biomes: Array[BiomeData] = []
 var _self_context: ContextContainer
 
@@ -28,18 +32,12 @@ func _RefreshDifficultyOptions() -> void:
 	_self_context._arguments["Difficulty"] = _difficulty_option.get_selected_id()
 
 func _LoadBiomes() -> void:
-	var dir := DirAccess.open("res://Data/Adventure_Data/Biome_Types/")
-	if dir == null:
-		return
-	dir.list_dir_begin()
-	var file_name := dir.get_next()
-	while file_name != "":
-		if file_name.ends_with(".tres"):
-			var biome: BiomeData = load("res://Data/Adventure_Data/Biome_Types/" + file_name)
-			if biome != null:
-				_biomes.append(biome)
-				_biome_option.add_item(file_name.get_basename().replace("_", " "), _biomes.size() - 1)
-		file_name = dir.get_next()
+	for biome in BIOME_RESOURCES:
+		if biome == null:
+			continue
+		_biomes.append(biome)
+		var label: String = biome.resource_path.get_file().get_basename().replace("_", " ")
+		_biome_option.add_item(label, _biomes.size() - 1)
 
 func _on_biome_item_selected(_index: int) -> void:
 	_RefreshDifficultyOptions()
