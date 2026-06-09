@@ -4,6 +4,7 @@
 
 [resource]
 script = ExtResource("1_templ")
+MAX_DEPTH = 28
 difficulty = 1
 branching_paths = 2
 rest_stops = 1
