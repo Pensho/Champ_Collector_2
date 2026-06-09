@@ -164,9 +164,9 @@ func HandleEnemyTurn() -> void:
 	match _characters[_characterIDs_turn]._skills[_selected_skill_ID].target:
 		Types.Skill_Target.ZoneAlly, Types.Skill_Target.ZoneEnemy, Types.Skill_Target.ZoneAll:
 			var available_zones: Array[int] = []
-			for num in GameBalance.NUMBER_OF_TURN_BAR_ZONES:
-				if(num not in _zones.keys()):
-					available_zones.append(num)
+			for zone_number in GameBalance.NUMBER_OF_TURN_BAR_ZONES:
+				if(zone_number not in _zones.keys()):
+					available_zones.append(zone_number)
 			_battle_ui._turn_bar.DisableZones(false)
 			print(_characters[_characterIDs_turn]._name, " used skill with ID: ", _selected_skill_ID)
 			_on_turn_bar_zone_selected(available_zones.pick_random())

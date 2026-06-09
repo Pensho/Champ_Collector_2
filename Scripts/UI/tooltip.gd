@@ -42,13 +42,13 @@ func _show_tooltip() -> void:
 	active_tooltip.get_node("MainVisuals/MarginContainer/VBoxContainer/Label_Description").text = processed_desc
 	
 	# Calculate Position
-	var mouse_pos = get_global_mouse_position()
+	var mouse_position = get_global_mouse_position()
 	var viewport_size = get_viewport_rect().size
 	
 	# Basic 'Smart' positioning: if too far right, flip to left of mouse
 	var popup_width = 250 # Expected width
-	if mouse_pos.x + popup_width > viewport_size.x:
-		mouse_pos.x -= popup_width
+	if mouse_position.x + popup_width > viewport_size.x:
+		mouse_position.x -= popup_width
 	
 	_animate_entrance()
 
@@ -71,8 +71,8 @@ func _apply_keyword_colors(original_text: String) -> String:
 func _animate_entrance() -> void:
 	visuals = active_tooltip.get_node("MainVisuals")
 	visuals.modulate.a = 0
-	var mouse_pos = get_global_mouse_position()
-	active_tooltip.popup(Rect2i(mouse_pos.x, mouse_pos.y, 0, 0))
+	var mouse_position = get_global_mouse_position()
+	active_tooltip.popup(Rect2i(mouse_position.x, mouse_position.y, 0, 0))
 	
 	var tween = create_tween()
 	tween.set_trans(Tween.TRANS_QUART).set_ease(Tween.EASE_OUT)

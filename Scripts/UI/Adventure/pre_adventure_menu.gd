@@ -63,14 +63,14 @@ func _on_start_button_up() -> void:
 		state.nodes = AdventureGenerator.GenerateAdventure(template, biome)
 		state.is_active = true
 		handler._state = state
-	var cc: ContextContainer = ContextContainer.new()
-	cc._adventure_state = handler._state
-	cc._previous_scene = "uid://mtv6bnpp8kjx"
-	cc._arguments["Hub_Scene"] = _self_context._previous_scene
-	cc._scene = "uid://mtv6bnpp8kjx"
-	main.GetInstance().change_scene(cc)
+	var context_container: ContextContainer = ContextContainer.new()
+	context_container._adventure_state = handler._state
+	context_container._previous_scene = "uid://mtv6bnpp8kjx"
+	context_container._arguments["Hub_Scene"] = _self_context._previous_scene
+	context_container._scene = "uid://mtv6bnpp8kjx"
+	main.GetInstance().change_scene(context_container)
 
 func _on_exit_button_up() -> void:
-	var cc: ContextContainer = ContextContainer.new()
-	cc._scene = _self_context._previous_scene
-	main.GetInstance().change_scene(cc)
+	var context_container: ContextContainer = ContextContainer.new()
+	context_container._scene = _self_context._previous_scene
+	main.GetInstance().change_scene(context_container)

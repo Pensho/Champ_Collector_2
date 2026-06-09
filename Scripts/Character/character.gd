@@ -44,9 +44,9 @@ func GetBattleAttributes() -> Dictionary[Types.Attribute, int]:
 	return battle_attributes
 
 func GetBattleAttribute(p_attribute: Types.Attribute) -> int:
-	var attribute_val: int = _attributes[p_attribute]
-	attribute_val += GetEquipmentBonus(p_attribute)
-	return attribute_val
+	var attribute_value: int = _attributes[p_attribute]
+	attribute_value += GetEquipmentBonus(p_attribute)
+	return attribute_value
 
 func EquipItem(p_equipment_ID: int) -> void:
 	if(not _held_items.has(main.GetInstance()._item_collection._items[p_equipment_ID]._slot)):

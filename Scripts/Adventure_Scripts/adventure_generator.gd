@@ -46,9 +46,9 @@ static func _InsertRestStops(p_spine: Array[NodeData], p_count: int) -> void:
 	@warning_ignore("integer_division")
 	var interval: int = p_spine.size() / (p_count + 1)
 	for i in p_count:
-		var idx: int = interval * (i + 1)
-		if idx < p_spine.size():
-			p_spine[idx].node_type = NodeData.Node_Type.REST_STOP
+		var index: int = interval * (i + 1)
+		if index < p_spine.size():
+			p_spine[index].node_type = NodeData.Node_Type.REST_STOP
 
 
 static func _AddBranches(p_spine: Array[NodeData], p_frequency: AdventureTemplate.Mechanic_Frequency) -> Array[NodeData]:
@@ -57,20 +57,20 @@ static func _AddBranches(p_spine: Array[NodeData], p_frequency: AdventureTemplat
 	var used_start_indices: Array[int]
 
 	for _i in branch_count:
-		var branch_len: int = SetBranchLength(p_frequency)
-		# need at least branch_len + 1 gap between start and end, and stay away from the final node
+		var branch_length: int = SetBranchLength(p_frequency)
+		# need at least branch_length + 1 gap between start and end, and stay away from the final node
 		var min_start: int = 1
-		var max_start: int = p_spine.size() - branch_len - 2
+		var max_start: int = p_spine.size() - branch_length - 2
 		if max_start <= min_start:
 			break
 
-		var start_idx: int = _PickUnusedIndex(min_start, max_start, used_start_indices)
-		if start_idx == -1:
+		var start_index: int = _PickUnusedIndex(min_start, max_start, used_start_indices)
+		if start_index == -1:
 			break
-		used_start_indices.append(start_idx)
+		used_start_indices.append(start_index)
 
-		var end_idx: int = start_idx + branch_len + 1
-		var new_nodes: Array[NodeData] = CreateParallelBranch(p_spine[start_idx], p_spine[end_idx], branch_len)
+		var end_index: int = start_index + branch_length + 1
+		var new_nodes: Array[NodeData] = CreateParallelBranch(p_spine[start_index], p_spine[end_index], branch_length)
 		all_branch_nodes.append_array(new_nodes)
 
 	return all_branch_nodes

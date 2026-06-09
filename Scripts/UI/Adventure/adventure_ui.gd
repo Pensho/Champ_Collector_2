@@ -32,24 +32,24 @@ func _on_engage_confirmed(p_node: NodeData) -> void:
 	_state.TakeStep()
 	_state.current_node_index = p_node.index
 	_UpdateHeader()
-	var cc: ContextContainer = ContextContainer.new()
-	cc._static_context = p_node.scene_context
-	cc._previous_scene = "uid://mtv6bnpp8kjx"
-	cc._arguments["Hub_Scene"] = _hub_scene
-	cc._adventure_state = _state
+	var context_container: ContextContainer = ContextContainer.new()
+	context_container._static_context = p_node.scene_context
+	context_container._previous_scene = "uid://mtv6bnpp8kjx"
+	context_container._arguments["Hub_Scene"] = _hub_scene
+	context_container._adventure_state = _state
 	var completed: int = _state.nodes.filter(func(n: NodeData) -> bool: return n.is_complete).size()
-	cc._arguments["Difficulty"] = AdventureState.CalculateScaledDifficulty(_state.difficulty, completed, _state.nodes.size())
-	cc._arguments["Biome_Path"] = _state.biome.resource_path if _state.biome else ""
-	cc._arguments["Is_Boss"] = p_node.node_type == NodeData.Node_Type.BOSS
+	context_container._arguments["Difficulty"] = AdventureState.CalculateScaledDifficulty(_state.difficulty, completed, _state.nodes.size())
+	context_container._arguments["Biome_Path"] = _state.biome.resource_path if _state.biome else ""
+	context_container._arguments["Is_Boss"] = p_node.node_type == NodeData.Node_Type.BOSS
 	match p_node.node_type:
 		NodeData.Node_Type.FIGHT, NodeData.Node_Type.BOSS:
-			cc._scene = "uid://d3hg8jxy8xj8n"
+			context_container._scene = "uid://d3hg8jxy8xj8n"
 		NodeData.Node_Type.REST_STOP:
 			p_node.is_complete = true
 			_graph_ui.Populate(_state.nodes)
 			_preview.visible = false
 			return
-	main.GetInstance().change_scene(cc)
+	main.GetInstance().change_scene(context_container)
 
 func _IsBossComplete() -> bool:
 	for node in _state.nodes:
@@ -59,12 +59,12 @@ func _IsBossComplete() -> bool:
 
 func _on_finish_adventure_button_up() -> void:
 	main.GetInstance()._adventure_state_handler._state = AdventureState.new()
-	var cc: ContextContainer = ContextContainer.new()
-	cc._scene = "uid://cwjabuf3kdtft"
-	cc._previous_scene = _hub_scene
-	main.GetInstance().change_scene(cc)
+	var context_container: ContextContainer = ContextContainer.new()
+	context_container._scene = "uid://cwjabuf3kdtft"
+	context_container._previous_scene = _hub_scene
+	main.GetInstance().change_scene(context_container)
 
 func _on_hub_button_up() -> void:
-	var cc: ContextContainer = ContextContainer.new()
-	cc._scene = _hub_scene
-	main.GetInstance().change_scene(cc)
+	var context_container: ContextContainer = ContextContainer.new()
+	context_container._scene = _hub_scene
+	main.GetInstance().change_scene(context_container)
