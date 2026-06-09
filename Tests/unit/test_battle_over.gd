@@ -189,26 +189,6 @@ func test_03_init_sets_loss_screen():
 	var heading = screen.get_node("MarginContainer/VBoxContainer/Label")
 	assert_eq(heading.text, "Lost")
 
-#func test_04_init_handles_less_than_3_characters():
-	#print(get_stack()[0]["function"])
-	#var mock_context = MockContextContainer.new()
-	#mock_context._arguments["Battle_Result"] = "Victory"
-	#
-	#chars_in_collection = [mock_char_1, mock_char_2]
-	#
-	## Setup the character collection mock behavior
-	#stub(character_collection_mock, "GetAllCharacters").to_return(chars_in_collection)
-	#stub(character_collection_mock, "Size").to_return(chars_in_collection.size())
-	#stub(character_collection_mock, "GetCharacter").to_return(mock_char_1).when_passed(0)
-	#stub(character_collection_mock, "GetCharacter").to_return(mock_char_2).when_passed(1)
-	#
-	#screen.Init(mock_context)
-	#
-	## Check character collection (should take all 2)
-	#assert_eq(screen._context._player_battle_characters.size(), 2)
-	#assert_eq(screen._context._player_battle_characters[0], mock_char_1)
-	#assert_eq(screen._context._player_battle_characters[1], mock_char_2)
-
 func test_07_on_button_edit_team_changes_to_pre_battle_menu():
 	print(get_stack()[0]["function"])
 	screen._on_button_edit_team_button_up()

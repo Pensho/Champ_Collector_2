@@ -47,15 +47,11 @@ func test_serialize_roundtrip() -> void:
 	_state.last_palayed_date = "2026-05-26"
 	var data: Dictionary = _state.Serialize()
 	var restored: AdventureState = AdventureState.new()
-	# Only test fields that don't require template/biome for re-generation
-	restored.current_node_index = data.get("current_node_index", 0)
-	restored.steps_taken_today = data.get("steps_taken_today", 0)
-	restored.is_active = data.get("is_active", false)
-	restored.difficulty = data.get("difficulty", 0)
-	restored.last_palayed_date = data.get("last_played_date", "")
+	restored.Deserialize(data)
+	# is_active is intentionally not asserted: Deserialize forces it false when
+	# no template/biome paths are resolvable (correct behaviour for a test state).
 	assert_eq(restored.current_node_index, 7, "current_node_index must survive serialization.")
 	assert_eq(restored.steps_taken_today, 2, "steps_taken_today must survive serialization.")
-	assert_true(restored.is_active, "is_active must survive serialization.")
 	assert_eq(restored.difficulty, 2, "difficulty must survive serialization.")
 	assert_eq(restored.last_palayed_date, "2026-05-26", "last_palayed_date must survive serialization.")
 
@@ -71,11 +67,7 @@ func test_victory_marks_only_current_node_complete() -> void:
 	typed_nodes.assign([node_1, node_2, node_3])
 	_state.nodes = typed_nodes
 
-	# Replicate what post_battle_menu does on Victory
-	for node in _state.nodes:
-		if node.index == _state.current_node_index:
-			node.is_complete = true
-			break
+	_state.MarkCurrentNodeComplete()
 
 	assert_false(node_1.is_complete, "Non-current node must not be marked complete")
 	assert_true(node_2.is_complete, "Node matching current_node_index must be marked complete")
