@@ -30,6 +30,13 @@
 - Test_Design_Document.md written — defines what is and is not unit-tested and why
 - `Tests/unit/helpers/test_factory.gd` — shared character/loot/state builders
 
+## Documentation (added 2026-06-09)
+- Technical_Design_Document.md written — describes the as-built architecture (autoloads and
+  global state, the context-container scene-management pattern, the preset-versus-instance data
+  model, the combat resolution path, the trait hook system, collections and the group-based save
+  format) and a forward-looking "known weaknesses and recommendations" section; complements
+  Concept_Document.md (design) and Test_Design_Document.md (test strategy)
+
 ## Conventions (added 2026-06-09)
 - Added a naming and wording convention (spell words out, avoid acronyms) to both the
   fleet `~/repos/CLAUDE.md` and the project `CLAUDE.md`, with a project allowlist of
