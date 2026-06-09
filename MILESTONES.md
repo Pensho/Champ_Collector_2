@@ -27,5 +27,14 @@
 ## Test suite (added 2026-06-09)
 - 87 tests across 10 files, all passing headlessly
 - Covers: adventure state, generator, biomes, loot, level system, skills targeting, resource handler, character equipment, ItemCollection and CharacterCollection serialization roundtrips
-- TDD.md written — defines what is and is not unit-tested and why
+- Test_Design_Document.md written — defines what is and is not unit-tested and why
 - `Tests/unit/helpers/test_factory.gd` — shared character/loot/state builders
+
+## Conventions (added 2026-06-09)
+- Added a naming and wording convention (spell words out, avoid acronyms) to both the
+  fleet `~/repos/CLAUDE.md` and the project `CLAUDE.md`, with a project allowlist of
+  accepted acronyms (`UI`, `RPG`, `XP`, `ID`, `UID`, `JSON`, `URL`, `GUT`, `HP`, `AoE`)
+- Renamed `TDD.md` → `Test_Design_Document.md` and `Concept_Doc.md` → `Concept_Document.md`
+  to remove ambiguous/abbreviated document names; updated all cross-references
+- Spelled out abbreviated identifiers in scripts (`idx`, `num`, `mouse_pos`, `cc`,
+  `attribute_val`)
