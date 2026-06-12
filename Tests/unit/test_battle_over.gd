@@ -47,6 +47,7 @@ func before_each():
 	# 3. Inject the CharacterCollection mock into the Main_Instance mock
 	MainMock_Instance._character_collection = character_collection_mock
 	MainMock_Instance._resources = double(preload("res://Scripts/Worldview/resource_handler.gd")).new()
+	stub(MainMock_Instance._resources, "SpendSupplies").to_return(true)
 	
 	# 4. Create the scene structure and assign the script
 	screen = Control.new()

@@ -67,6 +67,9 @@ const MINIMUM_CRIT_DAMAGE: float = 125.0
 
 # Resources
 const MAX_SUPPLIES: int = 100
+const SUPPLY_REGEN_AMOUNT: int = 10
+const SUPPLY_REGEN_INTERVAL_SECONDS: int = 600
+const ENCOUNTER_BASE_SUPPLY_COST: int = 6 # base; surcharges (e.g. adventure tier) add on top
 
 # Adventure
 const ADVENTURE_ENERGY_COST_PER_TIER: int = 10

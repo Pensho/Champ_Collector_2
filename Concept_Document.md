@@ -326,7 +326,10 @@ One type of consumable could include some types to alter items, e.g. increase th
 #### 3.3.2. Currencies
 - Area unlock currency
 - Supplies
-    - Used to run playable content, costs X to run an encounter and refunds half if the player loses.
+    - Used to run playable content. Every encounter costs a base of 6 supplies, plus an
+      optional additional surcharge (e.g. adventure tier cost stacks on top of the base).
+      Half of the total cost (rounded down) is refunded if the player loses. Starting an
+      encounter is blocked if the player cannot afford the total cost.
 - Fortune’s Favor
     - Used in Adventurer's guild locations in hubs.
 
@@ -389,7 +392,7 @@ There is a chance when using a Fortune’s Favor to get a champion, or they coul
 Where players can purchase consumables, gear, and other items using various currencies.
 
 ### 3.7 Energy Systems
-To limit daily player activity, an energy system will be implemented. Players will have a set amount of Energy (e.g., Food or Supplies) that depletes when entering combat nodes. Energy will regenerate over time or can be replenished through in-game actions or purchases.
+To limit daily player activity, an energy system will be implemented. Players will have a set amount of Energy (Supplies) that depletes when entering combat nodes. Supplies regenerate over time at a rate of +10 per 10 real-world minutes, up to a cap of 100, and can also be replenished through in-game actions or purchases. Regeneration is offline-aware: elapsed real time is applied on load, with partial progress toward the next +10 preserved.
 
 ### 3.8 Reward structure
 The idea is to have every encounter hold a "loot table" of possible drops. Some drops may always drop for certain encounters.

@@ -24,6 +24,8 @@ func Init(p_context_container: ContextContainer) -> void:
 		_texture_rect_background.size.x = 1280
 		_texture_rect_background.size.y = 720
 		_heading.text = "Lost"
+		var paid: int = int(_context._arguments.get("Supply_Cost_Paid", GameBalance.ENCOUNTER_BASE_SUPPLY_COST))
+		main.GetInstance()._resources.AddSupplies(paid / 2)
 	elif(p_context_container._arguments["Battle_Result"] == "Victory"):
 		var biome_path: String = _context._arguments.get("Biome_Path", "")
 		if biome_path.is_empty():
@@ -34,7 +36,7 @@ func Init(p_context_container: ContextContainer) -> void:
 		var battle_context: Context_Battle = p_context_container._static_context as Context_Battle
 		main.GetInstance()._resources._fortunes_favor += battle_context._loot_table._drop_result._fortunes_favor
 		main.GetInstance()._resources._silver += battle_context._loot_table._drop_result._silver
-		main.GetInstance()._resources._supplies += battle_context._loot_table._drop_result._supplies
+		main.GetInstance()._resources.AddSupplies(battle_context._loot_table._drop_result._supplies)
 		if _context._adventure_state != null:
 			_context._adventure_state.MarkCurrentNodeComplete()
 	
@@ -65,6 +67,13 @@ func _on_button_end_button_up() -> void:
 	main.GetInstance().change_scene(_context)
 
 func _on_button_replay_button_up() -> void:
+	var additional: int = int(_context._arguments.get("Additional_Supply_Cost", 0))
+	var total: int = GameBalance.ENCOUNTER_BASE_SUPPLY_COST + additional
+	if not main.GetInstance()._resources.SpendSupplies(total):
+		print("Not enough supplies to replay this encounter.")
+		return
+	_context._arguments["Supply_Cost_Paid"] = total
+
 	_context._scene = "uid://cc883blynrgq2"
 	main.GetInstance().change_scene(_context)
 

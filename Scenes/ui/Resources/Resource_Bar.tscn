@@ -1,9 +1,9 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://bm6xwrr37gevr"]
 
 [ext_resource type="PackedScene" uid="uid://cxq26hwryxtsy" path="res://Scenes/ui/Resources/Resource_UI_Slot.tscn" id="1_slot"]
-[ext_resource type="Script" path="res://Scripts/UI/resource_bar.gd" id="2_bar"]
+[ext_resource type="Script" uid="uid://dqu4j3lmhd24t" path="res://Scripts/UI/resource_bar.gd" id="2_bar"]
 
-[node name="ResourceBar" type="Control" node_paths=PackedStringArray("_fortunes_favor_UI", "_silver_UI", "_supplies_UI")]
+[node name="ResourceBar" type="Control" unique_id=422635081 node_paths=PackedStringArray("_fortunes_favor_UI", "_silver_UI", "_supplies_UI")]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 386.0
@@ -13,23 +13,15 @@ _fortunes_favor_UI = NodePath("ResourceUISlot_Fortunes_Favor")
 _silver_UI = NodePath("ResourceUISlot_Silver")
 _supplies_UI = NodePath("ResourceUISlot_Supplies")
 
-[node name="ResourceUISlot_Fortunes_Favor" parent="." instance=ExtResource("1_slot")]
+[node name="ResourceUISlot_Fortunes_Favor" parent="." unique_id=1683955983 instance=ExtResource("1_slot")]
 layout_mode = 0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 0.0
 
-[node name="ResourceUISlot_Silver" parent="." instance=ExtResource("1_slot")]
+[node name="ResourceUISlot_Silver" parent="." unique_id=2085738329 instance=ExtResource("1_slot")]
 layout_mode = 0
 offset_left = 133.0
-offset_top = 0.0
 offset_right = 133.0
-offset_bottom = 0.0
 
-[node name="ResourceUISlot_Supplies" parent="." instance=ExtResource("1_slot")]
+[node name="ResourceUISlot_Supplies" parent="." unique_id=590429029 instance=ExtResource("1_slot")]
 layout_mode = 0
 offset_left = 266.0
-offset_top = 0.0
 offset_right = 266.0
-offset_bottom = 0.0

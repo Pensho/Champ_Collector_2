@@ -7,7 +7,7 @@
 - **Level system** — XP formula (`GetExperienceRequirement`), level-up detection, opponent level scaling with speed-vs-stat differentiation
 - **Skills** — targeting resolution (`FindSkillTargets`), zone targeting truth table (`CorrectZoneTarget`), buff/debuff application, damage formula
 - **Loot manager** — primary/secondary loot tables, Fortunes Favor distribution by difficulty and budget
-- **Resource handler** — supply spending with success/failure guards
+- **Resource handler** — supply spending with success/failure guards, offline-aware supply regeneration (+10 per 10 real minutes, capped at 100, partial progress preserved), `resources_changed` signal for live UI updates
 - **Item collection** — equipment storage, serialization/deserialization with preset UID lookup
 
 ### Adventure feature
@@ -19,6 +19,9 @@
 ### Battle feature
 - **Turn-based combat** — turn bar zones, character representations, skill casting, status effects
 - **Post-battle screen** — loss/victory display, character damage results, team-edit navigation
+- **Encounter supply cost** — composable cost (base 6 + optional adventure tier surcharge) charged
+  on battle start (including replay); half refunded on a loss; starting an encounter is blocked
+  when the player cannot afford the total
 
 ### Infrastructure
 - **Save system** — group-based saveable nodes, serialization contracts for Character, ItemCollection, ResourceHandler, AdventureStateHandler

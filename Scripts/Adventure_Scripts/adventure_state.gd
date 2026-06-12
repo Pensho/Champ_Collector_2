@@ -30,9 +30,6 @@ func MarkCurrentNodeComplete() -> void:
 			break
 
 func TakeStep():
-	var cost: int = GetNodeSupplyCost()
-	if (false == main.GetInstance()._resources.SpendSupplies(cost)):
-		return
 	steps_taken_today += 1
 
 func CheckDailyActivity():

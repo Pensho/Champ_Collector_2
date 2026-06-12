@@ -29,6 +29,7 @@ func _on_node_selected(p_node: NodeData) -> void:
 	_preview.Show(p_node, _state.GetNodeSupplyCost())
 
 func _on_engage_confirmed(p_node: NodeData) -> void:
+	var supply_cost: int = _state.GetNodeSupplyCost()
 	_state.TakeStep()
 	_state.current_node_index = p_node.index
 	_UpdateHeader()
@@ -36,6 +37,7 @@ func _on_engage_confirmed(p_node: NodeData) -> void:
 	context_container._static_context = p_node.scene_context
 	context_container._previous_scene = "uid://mtv6bnpp8kjx"
 	context_container._arguments["Hub_Scene"] = _hub_scene
+	context_container._arguments["Additional_Supply_Cost"] = supply_cost
 	context_container._adventure_state = _state
 	var completed: int = _state.nodes.filter(func(n: NodeData) -> bool: return n.is_complete).size()
 	context_container._arguments["Difficulty"] = AdventureState.CalculateScaledDifficulty(_state.difficulty, completed, _state.nodes.size())
