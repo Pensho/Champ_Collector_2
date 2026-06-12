@@ -109,6 +109,7 @@ func _on_set_hp_pressed(p_character_id: int) -> void:
 		return
 	battle._characters[p_character_id]._currentHealth = int(_hp_spins[p_character_id].value)
 	battle.UpdateLifeBar(p_character_id)
+	battle.CheckAndHandleBattleOver()
 
 func _on_kill_pressed(p_character_id: int) -> void:
 	var battle: Battle = GetBattle()
@@ -117,6 +118,7 @@ func _on_kill_pressed(p_character_id: int) -> void:
 	battle._characters[p_character_id]._currentHealth = 0
 	battle.UpdateLifeBar(p_character_id)
 	_hp_spins[p_character_id].value = 0
+	battle.CheckAndHandleBattleOver()
 
 func _on_revive_pressed(p_character_id: int) -> void:
 	var battle: Battle = GetBattle()

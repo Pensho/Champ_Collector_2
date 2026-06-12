@@ -120,7 +120,10 @@ func StartTurn() -> void:
 					_battle_ui,
 					_characters,
 					_character_repr)
-	
+
+	if (CheckAndHandleBattleOver()):
+		return
+
 	if(PLAYER_IDS.has(_characterIDs_turn)):
 		for i in _battle_ui._skill_buttons.size():
 			_battle_ui.SetSkill(
@@ -167,10 +170,8 @@ func HandleEnemyTurn() -> void:
 					if(target_IDs.size() > 0):
 						print(_characters[_characterIDs_turn]._name, " used skill with ID: ", _selected_skill_ID)
 						ResolveSkill(_characterIDs_turn, target_IDs, _selected_skill_ID)
-						
-						var battle_state = IsTheBattleOver()
-						if (WinningTeam.Ongoing != battle_state):
-							EndBattle(battle_state)
+
+						if (CheckAndHandleBattleOver()):
 							break
 					else:
 						print("Invalid target for skill by an enemy! Something is wrong.")
@@ -352,6 +353,13 @@ func IsTheBattleOver() -> WinningTeam:
 
 	return WinningTeam.Ongoing
 
+func CheckAndHandleBattleOver() -> bool:
+	var battle_state: WinningTeam = IsTheBattleOver()
+	if (WinningTeam.Ongoing != battle_state):
+		EndBattle(battle_state)
+		return true
+	return false
+
 func EndBattle(p_winner: WinningTeam) -> void:
 	Skills.Reset()
 	_battle_ui.CleanUp()
@@ -391,9 +399,7 @@ func _on_character_battle_target_selected(p_target_ID: int) -> void:
 					_characters[_characterIDs_turn]._skills[_selected_skill_ID].target)
 		if(target_IDs.size() > 0):
 			ResolveSkill(_characterIDs_turn, target_IDs, _selected_skill_ID)
-			var battle_state = IsTheBattleOver()
-			if (WinningTeam.Ongoing != battle_state):
-				EndBattle(battle_state)
+			CheckAndHandleBattleOver()
 		else:
 			print("Invalid target for skill")
 
@@ -421,6 +427,4 @@ func _on_turn_bar_zone_selected(p_zone_ID: int) -> void:
 								PLAYER_IDS.has(_zones[p_zone_ID]._owner_ID),
 								_characters[_characterIDs_turn]._skills[_selected_skill_ID].skill_type)
 	ResolveSkill(_characterIDs_turn, [], _selected_skill_ID)
-	var battle_state = IsTheBattleOver()
-	if (WinningTeam.Ongoing != battle_state):
-		EndBattle(battle_state)
+	CheckAndHandleBattleOver()
