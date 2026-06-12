@@ -1,0 +1,107 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/Debug/pages/in_battle_page.gd" id="1_script"]
+
+[node name="InBattlePage" type="Control" node_paths=PackedStringArray("_not_in_battle_label", "_character_rows", "_status_effect_section", "_character_option", "_buff_option", "_debuff_option", "_status_duration_spin")]
+layout_mode = 2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+_not_in_battle_label = NodePath("MarginContainer/VBoxContainer/Label_NotInBattle")
+_character_rows = NodePath("MarginContainer/VBoxContainer/ScrollContainer/CharacterRows")
+_status_effect_section = NodePath("MarginContainer/VBoxContainer/StatusEffectSection")
+_character_option = NodePath("MarginContainer/VBoxContainer/StatusEffectSection/CharacterRow/OptionButton_Character")
+_buff_option = NodePath("MarginContainer/VBoxContainer/StatusEffectSection/BuffRow/OptionButton_Buff")
+_debuff_option = NodePath("MarginContainer/VBoxContainer/StatusEffectSection/DebuffRow/OptionButton_Debuff")
+_status_duration_spin = NodePath("MarginContainer/VBoxContainer/StatusEffectSection/CharacterRow/SpinBox_Duration")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Label_NotInBattle" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Not currently in a battle."
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="CharacterRows" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 4
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="StatusEffectSection" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Label_StatusEffectsTitle" type="Label" parent="MarginContainer/VBoxContainer/StatusEffectSection"]
+layout_mode = 2
+text = "Status Effects"
+
+[node name="CharacterRow" type="HBoxContainer" parent="MarginContainer/VBoxContainer/StatusEffectSection"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Label_Character" type="Label" parent="MarginContainer/VBoxContainer/StatusEffectSection/CharacterRow"]
+layout_mode = 2
+text = "Character"
+
+[node name="OptionButton_Character" type="OptionButton" parent="MarginContainer/VBoxContainer/StatusEffectSection/CharacterRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label_Duration" type="Label" parent="MarginContainer/VBoxContainer/StatusEffectSection/CharacterRow"]
+layout_mode = 2
+text = "Duration"
+
+[node name="SpinBox_Duration" type="SpinBox" parent="MarginContainer/VBoxContainer/StatusEffectSection/CharacterRow"]
+layout_mode = 2
+min_value = 1.0
+value = 2.0
+
+[node name="BuffRow" type="HBoxContainer" parent="MarginContainer/VBoxContainer/StatusEffectSection"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="OptionButton_Buff" type="OptionButton" parent="MarginContainer/VBoxContainer/StatusEffectSection/BuffRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Button_AddBuff" type="Button" parent="MarginContainer/VBoxContainer/StatusEffectSection/BuffRow"]
+layout_mode = 2
+text = "Add Buff"
+
+[node name="DebuffRow" type="HBoxContainer" parent="MarginContainer/VBoxContainer/StatusEffectSection"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="OptionButton_Debuff" type="OptionButton" parent="MarginContainer/VBoxContainer/StatusEffectSection/DebuffRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Button_AddDebuff" type="Button" parent="MarginContainer/VBoxContainer/StatusEffectSection/DebuffRow"]
+layout_mode = 2
+text = "Add Debuff"
+
+[connection signal="button_up" from="MarginContainer/VBoxContainer/StatusEffectSection/BuffRow/Button_AddBuff" to="." method="_on_add_buff_button_up"]
+[connection signal="button_up" from="MarginContainer/VBoxContainer/StatusEffectSection/DebuffRow/Button_AddDebuff" to="." method="_on_add_debuff_button_up"]

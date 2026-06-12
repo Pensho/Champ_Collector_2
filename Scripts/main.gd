@@ -1,15 +1,15 @@
 extends Node
 
-const RED_BOOTS = preload("uid://c3g7cshxhg0rw")
+const DEBUG_OVERLAY_SCENE = preload("res://Scenes/debug/debug_overlay.tscn")
 
 var _instance: Main_Instance = null
-
-var _keys_pressed: Dictionary[Key, bool] = { KEY_0 : false, KEY_8 : false }
 
 func _ready() -> void:
 	_instance = Main_Instance.new()
 	_instance.Init()
 	self.add_child(_instance)
+	if(OS.has_feature("editor")):
+		add_child(DEBUG_OVERLAY_SCENE.instantiate())
 
 func GetInstance() -> Main_Instance:
 	if(null == _instance):
@@ -17,20 +17,3 @@ func GetInstance() -> Main_Instance:
 		_instance.Init()
 		self.add_child(_instance)
 	return _instance
-
-func _process(_delta: float) -> void:
-	if(OS.has_feature("editor")):
-		if(Input.is_key_pressed(KEY_0) and !_keys_pressed[KEY_0]):
-			_keys_pressed[KEY_0] = true
-			print(get_tree_string_pretty())
-		if(!Input.is_key_pressed(KEY_0) and _keys_pressed[KEY_0]):
-			_keys_pressed[KEY_0] = false
-		
-		if(Input.is_key_pressed(KEY_8) and !_keys_pressed[KEY_8]):
-			var preset = RED_BOOTS.duplicate(true)
-			preset._rarity = Types.Rarity.Legendary
-			preset.Setup()
-			_instance._item_collection.AddPreset(preset)
-			_keys_pressed[KEY_8] = true
-		if(!Input.is_key_pressed(KEY_8) and _keys_pressed[KEY_8]):
-			_keys_pressed[KEY_8] = false

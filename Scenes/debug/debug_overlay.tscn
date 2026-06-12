@@ -1,0 +1,58 @@
+[gd_scene format=3 uid="uid://dleb4pdksbldw"]
+
+[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="1_theme"]
+[ext_resource type="Script" uid="uid://dij4fuxjb7lxg" path="res://Scripts/Debug/debug_overlay.gd" id="2_script"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_background"]
+bg_color = Color(0.0784314, 0.0784314, 0.0901961, 0.94902)
+
+[node name="DebugOverlay" type="CanvasLayer" unique_id=2096631710 node_paths=PackedStringArray("_tab_container", "_current_scene_label")]
+layer = 128
+script = ExtResource("2_script")
+_tab_container = NodePath("Panel/VBoxContainer/TabContainer")
+_current_scene_label = NodePath("Panel/VBoxContainer/HeaderHBox/Label_CurrentScene")
+
+[node name="Panel" type="Panel" parent="." unique_id=255500684]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 40.0
+offset_top = 40.0
+offset_right = -40.0
+offset_bottom = -40.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_theme")
+theme_override_styles/panel = SubResource("StyleBoxFlat_background")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel" unique_id=808379783]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HeaderHBox" type="HBoxContainer" parent="Panel/VBoxContainer" unique_id=1515682809]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Button_PrintSceneTree" type="Button" parent="Panel/VBoxContainer/HeaderHBox" unique_id=297495112]
+layout_mode = 2
+text = "Print Scene Tree"
+
+[node name="Label_CurrentScene" type="Label" parent="Panel/VBoxContainer/HeaderHBox" unique_id=158840468]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Current scene: -"
+vertical_alignment = 1
+
+[node name="TabContainer" type="TabContainer" parent="Panel/VBoxContainer" unique_id=1323405879]
+layout_mode = 2
+size_flags_vertical = 3
+
+[connection signal="button_up" from="Panel/VBoxContainer/HeaderHBox/Button_PrintSceneTree" to="." method="_on_print_scene_tree_button_up"]

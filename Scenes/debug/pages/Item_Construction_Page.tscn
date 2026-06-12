@@ -1,0 +1,155 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/Debug/pages/item_construction_page.gd" id="1_script"]
+
+[node name="ItemConstructionPage" type="Control" node_paths=PackedStringArray("_name_edit", "_slot_option", "_rarity_option", "_attribute_spins")]
+layout_mode = 2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+_name_edit = NodePath("MarginContainer/VBoxContainer/NameRow/LineEdit_Name")
+_slot_option = NodePath("MarginContainer/VBoxContainer/SlotRarityRow/OptionButton_Slot")
+_rarity_option = NodePath("MarginContainer/VBoxContainer/SlotRarityRow/OptionButton_Rarity")
+_attribute_spins = [NodePath("MarginContainer/VBoxContainer/AttributeGrid/SpinBox_Health"), NodePath("MarginContainer/VBoxContainer/AttributeGrid/SpinBox_Speed"), NodePath("MarginContainer/VBoxContainer/AttributeGrid/SpinBox_Attack"), NodePath("MarginContainer/VBoxContainer/AttributeGrid/SpinBox_Defence"), NodePath("MarginContainer/VBoxContainer/AttributeGrid/SpinBox_Accuracy"), NodePath("MarginContainer/VBoxContainer/AttributeGrid/SpinBox_Resistance"), NodePath("MarginContainer/VBoxContainer/AttributeGrid/SpinBox_Mysticism"), NodePath("MarginContainer/VBoxContainer/AttributeGrid/SpinBox_Knowledge"), NodePath("MarginContainer/VBoxContainer/AttributeGrid/SpinBox_CritChance"), NodePath("MarginContainer/VBoxContainer/AttributeGrid/SpinBox_CritDamage")]
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="NameRow" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Label_Name" type="Label" parent="MarginContainer/VBoxContainer/NameRow"]
+layout_mode = 2
+text = "Name"
+
+[node name="LineEdit_Name" type="LineEdit" parent="MarginContainer/VBoxContainer/NameRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Debug Item"
+
+[node name="SlotRarityRow" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Label_Slot" type="Label" parent="MarginContainer/VBoxContainer/SlotRarityRow"]
+layout_mode = 2
+text = "Slot"
+
+[node name="OptionButton_Slot" type="OptionButton" parent="MarginContainer/VBoxContainer/SlotRarityRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label_Rarity" type="Label" parent="MarginContainer/VBoxContainer/SlotRarityRow"]
+layout_mode = 2
+text = "Rarity"
+
+[node name="OptionButton_Rarity" type="OptionButton" parent="MarginContainer/VBoxContainer/SlotRarityRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label_AttributesTitle" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Attributes"
+
+[node name="AttributeGrid" type="GridContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+columns = 4
+
+[node name="Label_Health" type="Label" parent="MarginContainer/VBoxContainer/AttributeGrid"]
+layout_mode = 2
+text = "Health"
+
+[node name="SpinBox_Health" type="SpinBox" parent="MarginContainer/VBoxContainer/AttributeGrid"]
+layout_mode = 2
+
+[node name="Label_Speed" type="Label" parent="MarginContainer/VBoxContainer/AttributeGrid"]
+layout_mode = 2
+text = "Speed"
+
+[node name="SpinBox_Speed" type="SpinBox" parent="MarginContainer/VBoxContainer/AttributeGrid"]
+layout_mode = 2
+
+[node name="Label_Attack" type="Label" parent="MarginContainer/VBoxContainer/AttributeGrid"]
+layout_mode = 2
+text = "Attack"
+
+[node name="SpinBox_Attack" type="SpinBox" parent="MarginContainer/VBoxContainer/AttributeGrid"]
+layout_mode = 2
+
+[node name="Label_Defence" type="Label" parent="MarginContainer/VBoxContainer/AttributeGrid"]
+layout_mode = 2
+text = "Defence"
+
+[node name="SpinBox_Defence" type="SpinBox" parent="MarginContainer/VBoxContainer/AttributeGrid"]
+layout_mode = 2
+
+[node name="Label_Accuracy" type="Label" parent="MarginContainer/VBoxContainer/AttributeGrid"]
+layout_mode = 2
+text = "Accuracy"
+
+[node name="SpinBox_Accuracy" type="SpinBox" parent="MarginContainer/VBoxContainer/AttributeGrid"]
+layout_mode = 2
+
+[node name="Label_Resistance" type="Label" parent="MarginContainer/VBoxContainer/AttributeGrid"]
+layout_mode = 2
+text = "Resistance"
+
+[node name="SpinBox_Resistance" type="SpinBox" parent="MarginContainer/VBoxContainer/AttributeGrid"]
+layout_mode = 2
+
+[node name="Label_Mysticism" type="Label" parent="MarginContainer/VBoxContainer/AttributeGrid"]
+layout_mode = 2
+text = "Mysticism"
+
+[node name="SpinBox_Mysticism" type="SpinBox" parent="MarginContainer/VBoxContainer/AttributeGrid"]
+layout_mode = 2
+
+[node name="Label_Knowledge" type="Label" parent="MarginContainer/VBoxContainer/AttributeGrid"]
+layout_mode = 2
+text = "Knowledge"
+
+[node name="SpinBox_Knowledge" type="SpinBox" parent="MarginContainer/VBoxContainer/AttributeGrid"]
+layout_mode = 2
+
+[node name="Label_CritChance" type="Label" parent="MarginContainer/VBoxContainer/AttributeGrid"]
+layout_mode = 2
+text = "CritChance"
+
+[node name="SpinBox_CritChance" type="SpinBox" parent="MarginContainer/VBoxContainer/AttributeGrid"]
+layout_mode = 2
+
+[node name="Label_CritDamage" type="Label" parent="MarginContainer/VBoxContainer/AttributeGrid"]
+layout_mode = 2
+text = "CritDamage"
+
+[node name="SpinBox_CritDamage" type="SpinBox" parent="MarginContainer/VBoxContainer/AttributeGrid"]
+layout_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Button_AddToCollection" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Add to Collection"
+
+[connection signal="button_up" from="MarginContainer/VBoxContainer/Button_AddToCollection" to="." method="_on_add_to_collection_button_up"]

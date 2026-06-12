@@ -1,0 +1,104 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/Debug/pages/currencies_progression_page.gd" id="1_script"]
+
+[node name="CurrenciesProgressionPage" type="Control" node_paths=PackedStringArray("_silver_spin", "_supplies_spin", "_fortunes_favor_spin", "_encounter_id_edit", "_difficulty_spin", "_encounters_label")]
+layout_mode = 2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+_silver_spin = NodePath("MarginContainer/VBoxContainer/CurrenciesGrid/SpinBox_Silver")
+_supplies_spin = NodePath("MarginContainer/VBoxContainer/CurrenciesGrid/SpinBox_Supplies")
+_fortunes_favor_spin = NodePath("MarginContainer/VBoxContainer/CurrenciesGrid/SpinBox_FortunesFavor")
+_encounter_id_edit = NodePath("MarginContainer/VBoxContainer/ProgressionRow/LineEdit_EncounterID")
+_difficulty_spin = NodePath("MarginContainer/VBoxContainer/ProgressionRow/SpinBox_Difficulty")
+_encounters_label = NodePath("MarginContainer/VBoxContainer/Label_Encounters")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Label_Title" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Currencies"
+
+[node name="CurrenciesGrid" type="GridContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+columns = 2
+
+[node name="Label_Silver" type="Label" parent="MarginContainer/VBoxContainer/CurrenciesGrid"]
+layout_mode = 2
+text = "Silver"
+
+[node name="SpinBox_Silver" type="SpinBox" parent="MarginContainer/VBoxContainer/CurrenciesGrid"]
+layout_mode = 2
+max_value = 999999.0
+
+[node name="Label_Supplies" type="Label" parent="MarginContainer/VBoxContainer/CurrenciesGrid"]
+layout_mode = 2
+text = "Supplies"
+
+[node name="SpinBox_Supplies" type="SpinBox" parent="MarginContainer/VBoxContainer/CurrenciesGrid"]
+layout_mode = 2
+max_value = 100.0
+
+[node name="Label_FortunesFavor" type="Label" parent="MarginContainer/VBoxContainer/CurrenciesGrid"]
+layout_mode = 2
+text = "Fortune's Favor"
+
+[node name="SpinBox_FortunesFavor" type="SpinBox" parent="MarginContainer/VBoxContainer/CurrenciesGrid"]
+layout_mode = 2
+max_value = 999999.0
+
+[node name="Button_ApplyCurrencies" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Apply Currencies"
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label_ProgressionTitle" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Encounter Difficulty"
+
+[node name="ProgressionRow" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="LineEdit_EncounterID" type="LineEdit" parent="MarginContainer/VBoxContainer/ProgressionRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Encounter resource path / ID"
+
+[node name="SpinBox_Difficulty" type="SpinBox" parent="MarginContainer/VBoxContainer/ProgressionRow"]
+layout_mode = 2
+min_value = 1.0
+max_value = 20.0
+value = 1.0
+
+[node name="Button_SetDifficulty" type="Button" parent="MarginContainer/VBoxContainer/ProgressionRow"]
+layout_mode = 2
+text = "Set Difficulty"
+
+[node name="Label_Encounters" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "No encounters registered yet."
+autowrap_mode = 2
+
+[connection signal="button_up" from="MarginContainer/VBoxContainer/Button_ApplyCurrencies" to="." method="_on_apply_currencies_button_up"]
+[connection signal="button_up" from="MarginContainer/VBoxContainer/ProgressionRow/Button_SetDifficulty" to="." method="_on_set_difficulty_button_up"]

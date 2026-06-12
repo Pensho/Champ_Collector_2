@@ -45,3 +45,21 @@
   to remove ambiguous/abbreviated document names; updated all cross-references
 - Spelled out abbreviated identifiers in scripts (`idx`, `num`, `mouse_pos`, `cc`,
   `attribute_val`)
+
+## Editor-only debug overlay (added 2026-06-12)
+- Added `Scripts/Debug/` + `Scenes/debug/`: a `CanvasLayer` overlay (`DebugOverlay`,
+  toggled with **F1**), instantiated by `main.gd` only when `OS.has_feature("editor")`
+  is true, so it is absent from exported builds
+- Five tabbed pages: Currencies & Progression, Champions (roster availability and
+  level), Item Construction (exact-stat `EquipmentPreset`s), Battle Launcher (jump
+  straight into a battle with chosen champions/enemy wave/difficulty), and In Battle
+  (live HP/turn/status-effect edits during combat)
+- `DebugCatalog` (preloaded champion/enemy/battle-context presets, no `DirAccess`) and
+  `DebugActions` (pure, unit-tested helpers for building equipment presets and battle
+  `ContextContainer`s) back the pages
+- Removed the old non-editor-gated debug hooks: KEY_0/KEY_8 in `main.gd` (print scene
+  tree / grant legendary boots) and KEY_A/KEY_M kill-team shortcuts in `battle.gd` —
+  print-tree and item-granting are now overlay features; kill-team is now per-character
+  Kill/Revive buttons on the In Battle page
+- `Tests/unit/test_debug_actions.gd` added (2 tests); suite now 89 tests across 11
+  files, all passing headlessly

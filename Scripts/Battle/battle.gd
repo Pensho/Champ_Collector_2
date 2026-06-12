@@ -107,17 +107,6 @@ func _process(p_delta: float) -> void:
 	if(_initialized):
 		for i in _characters.keys():
 			Update(p_delta, i)
-	
-	if(Input.is_key_pressed(KEY_A)):
-		for i in _characters.keys():
-			if (PLAYER_IDS.has(i)):
-				_characters[i]._currentHealth = 1
-				UpdateLifeBar(i)
-	elif(Input.is_key_pressed(KEY_M)):
-		for i in _characters.keys():
-			if (ENEMY_IDS.has(i)):
-				_characters[i]._currentHealth = 1
-				UpdateLifeBar(i)
 
 func StartTurn() -> void:
 	_turn_indicator.position.x = _character_repr[_characterIDs_turn].position.x + (_character_repr[_characterIDs_turn]._character_texture.size.x * 0.5) - (_turn_indicator.size.x * 0.5)

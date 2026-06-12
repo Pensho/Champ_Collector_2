@@ -1,0 +1,80 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/Debug/pages/battle_launcher_page.gd" id="1_script"]
+
+[node name="BattleLauncherPage" type="Control" node_paths=PackedStringArray("_character_list", "_enemy_wave_option", "_difficulty_spin", "_status_label")]
+layout_mode = 2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+_character_list = NodePath("MarginContainer/VBoxContainer/ScrollContainer/CharacterList")
+_enemy_wave_option = NodePath("MarginContainer/VBoxContainer/SetupRow/OptionButton_EnemyWave")
+_difficulty_spin = NodePath("MarginContainer/VBoxContainer/SetupRow/SpinBox_Difficulty")
+_status_label = NodePath("MarginContainer/VBoxContainer/Label_Status")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Label_Title" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Select up to 3 champions"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="CharacterList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 4
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="SetupRow" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Label_EnemyWave" type="Label" parent="MarginContainer/VBoxContainer/SetupRow"]
+layout_mode = 2
+text = "Enemy Wave"
+
+[node name="OptionButton_EnemyWave" type="OptionButton" parent="MarginContainer/VBoxContainer/SetupRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label_Difficulty" type="Label" parent="MarginContainer/VBoxContainer/SetupRow"]
+layout_mode = 2
+text = "Difficulty"
+
+[node name="SpinBox_Difficulty" type="SpinBox" parent="MarginContainer/VBoxContainer/SetupRow"]
+layout_mode = 2
+min_value = 1.0
+max_value = 20.0
+value = 1.0
+
+[node name="Button_LaunchBattle" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Launch Battle"
+
+[node name="Label_Status" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = ""
+
+[connection signal="button_up" from="MarginContainer/VBoxContainer/Button_LaunchBattle" to="." method="_on_launch_battle_button_up"]

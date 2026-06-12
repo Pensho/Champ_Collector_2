@@ -1,0 +1,66 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/Debug/pages/champions_page.gd" id="1_script"]
+
+[node name="ChampionsPage" type="Control" node_paths=PackedStringArray("_available_list", "_roster_list")]
+layout_mode = 2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+_available_list = NodePath("MarginContainer/HBoxContainer/AvailableColumn/ScrollContainer/AvailableList")
+_roster_list = NodePath("MarginContainer/HBoxContainer/RosterColumn/ScrollContainer/RosterList")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 24
+
+[node name="AvailableColumn" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Label_AvailableTitle" type="Label" parent="MarginContainer/HBoxContainer/AvailableColumn"]
+layout_mode = 2
+text = "Available Champions"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/HBoxContainer/AvailableColumn"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="AvailableList" type="VBoxContainer" parent="MarginContainer/HBoxContainer/AvailableColumn/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 4
+
+[node name="RosterColumn" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Label_RosterTitle" type="Label" parent="MarginContainer/HBoxContainer/RosterColumn"]
+layout_mode = 2
+text = "Current Roster"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/HBoxContainer/RosterColumn"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="RosterList" type="VBoxContainer" parent="MarginContainer/HBoxContainer/RosterColumn/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 4
