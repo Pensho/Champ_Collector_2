@@ -5,9 +5,9 @@
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="2_75jl7"]
 [ext_resource type="Texture2D" uid="uid://be4d7es1t3q0k" path="res://Data/Texture_Data/Button_hover_highligt.tres" id="3_8g887"]
 [ext_resource type="Theme" uid="uid://bcg5pku1fyhst" path="res://Assets/Champ_Collector/Themes/hub_theme.tres" id="4_75jl7"]
-[ext_resource type="PackedScene" uid="uid://cxq26hwryxtsy" path="res://Scenes/ui/Resources/Resource_UI_Slot.tscn" id="6_14bt2"]
+[ext_resource type="PackedScene" path="res://Scenes/ui/Resources/Resource_Bar.tscn" id="6_14bt2"]
 
-[node name="ReclaimedCityWorldAtlas" type="Control" unique_id=795738096 node_paths=PackedStringArray("_silver_UI", "_supplies_UI", "_fortunes_favor_UI")]
+[node name="ReclaimedCityWorldAtlas" type="Control" unique_id=795738096]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -15,9 +15,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_8g887")
-_silver_UI = NodePath("ResourceUISlot_Silver")
-_supplies_UI = NodePath("ResourceUISlot2_Supplies")
-_fortunes_favor_UI = NodePath("ResourceUISlot_Fortunes_Favor")
 
 [node name="Background" type="TextureRect" parent="." unique_id=25178206]
 layout_mode = 0
@@ -134,21 +131,7 @@ text = "Adventure
 "
 horizontal_alignment = 1
 
-[node name="ResourceUISlot_Silver" parent="." unique_id=779126230 instance=ExtResource("6_14bt2")]
-layout_mode = 0
-offset_left = 967.0
-offset_top = 20.0
-offset_right = 967.0
-offset_bottom = 20.0
-
-[node name="ResourceUISlot2_Supplies" parent="." unique_id=433933556 instance=ExtResource("6_14bt2")]
-layout_mode = 0
-offset_left = 1100.0
-offset_top = 20.0
-offset_right = 1100.0
-offset_bottom = 20.0
-
-[node name="ResourceUISlot_Fortunes_Favor" parent="." unique_id=901080193 instance=ExtResource("6_14bt2")]
+[node name="ResourceBar" parent="." instance=ExtResource("6_14bt2")]
 layout_mode = 0
 offset_left = 834.0
 offset_top = 20.0

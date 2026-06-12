@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://be4d7es1t3q0k" path="res://Data/Texture_Data/Button_hover_highligt.tres" id="5_5dym2"]
 [ext_resource type="PackedScene" uid="uid://n8p43lcdr31e" path="res://Scenes/Hubs/Reclaimed_City_Scene/reclaimed_city_fire_particle.tscn" id="6_gm8ir"]
 [ext_resource type="Texture2D" uid="uid://bn1o3x3kxre57" path="res://Assets/Champ_Collector/Particles/Leaves_sheet.png" id="7_41sf0"]
-[ext_resource type="PackedScene" uid="uid://cxq26hwryxtsy" path="res://Scenes/ui/Resources/Resource_UI_Slot.tscn" id="8_vvjq3"]
+[ext_resource type="PackedScene" path="res://Scenes/ui/Resources/Resource_Bar.tscn" id="8_vvjq3"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_vvjq3"]
 particles_animation = true
@@ -39,13 +39,10 @@ color = Color(0.74558026, 0.7455802, 0.7455802, 1)
 color_ramp = SubResource("GradientTexture1D_1ilth")
 anim_offset_max = 1.0
 
-[node name="ReclaimedCity" type="Control" unique_id=30128910 node_paths=PackedStringArray("_silver_UI", "_supplies_UI", "_fortunes_favor_UI")]
+[node name="ReclaimedCity" type="Control" unique_id=30128910]
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_sbf57")
-_silver_UI = NodePath("ResourceUISlot_Silver")
-_supplies_UI = NodePath("ResourceUISlot_Supplies")
-_fortunes_favor_UI = NodePath("ResourceUISlot_Fortunes_Favor")
 
 [node name="Background" type="TextureRect" parent="." unique_id=1375399691]
 layout_mode = 0
@@ -173,21 +170,7 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 6
 text = "Quit"
 
-[node name="ResourceUISlot_Silver" parent="." unique_id=2127587663 instance=ExtResource("8_vvjq3")]
-layout_mode = 0
-offset_left = 516.0
-offset_top = 20.0
-offset_right = 516.0
-offset_bottom = 20.0
-
-[node name="ResourceUISlot_Supplies" parent="." unique_id=1198053901 instance=ExtResource("8_vvjq3")]
-layout_mode = 0
-offset_left = 649.0
-offset_top = 20.0
-offset_right = 649.0
-offset_bottom = 20.0
-
-[node name="ResourceUISlot_Fortunes_Favor" parent="." unique_id=1396382706 instance=ExtResource("8_vvjq3")]
+[node name="ResourceBar" parent="." instance=ExtResource("8_vvjq3")]
 layout_mode = 0
 offset_left = 383.0
 offset_top = 20.0
