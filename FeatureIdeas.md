@@ -13,9 +13,6 @@ Effort: **S** = hours, **M** = days, **L** = week+
 
 ## Combat
 
-- **Turn Bar Zone Presets** *(Priority: Low | Effort: S)*
-  Allow saving and loading named zone effect configurations so players can quickly reuse setups across encounters.
-
 ---
 
 ## Characters & Progression
@@ -29,6 +26,7 @@ Effort: **S** = hours, **M** = days, **L** = week+
 
 - **Item Affix Reroller** *(Priority: Medium | Effort: M)*
   Consumable that randomizes the attribute affixes on an item without changing its rarity. Ties into the crafting consumable ideas in Concept_Document section 3.3.1.
+  Alternate option is for it to be a purchasable service at a town shop instead of a consumable.
 
 ---
 
