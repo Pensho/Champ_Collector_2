@@ -5,6 +5,14 @@
 [ext_resource type="PackedScene" uid="uid://c5vokw1b0pp1g" path="res://Scenes/Adventure_Scenes/Adventure_Graph_UI.tscn" id="3_graph"]
 [ext_resource type="PackedScene" uid="uid://c8b05sjr2m25s" path="res://Scenes/Adventure_Scenes/Adventure_Node_Preview.tscn" id="4_preview"]
 [ext_resource type="PackedScene" path="res://Scenes/Adventure_Scenes/Adventure_Interaction_Panel.tscn" id="5_interaction"]
+[ext_resource type="PackedScene" uid="uid://bm6xwrr37gevr" path="res://Scenes/ui/Resources/Resource_Bar.tscn" id="6_resourcebar"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_header"]
+content_margin_left = 8.0
+content_margin_top = 6.0
+content_margin_right = 8.0
+content_margin_bottom = 6.0
+bg_color = Color(0, 0, 0, 0.3019608)
 
 [node name="Adventure" type="Control" unique_id=93246272 node_paths=PackedStringArray("_graph_ui", "_preview", "_interaction_panel", "_label_steps", "_label_effects", "_button_finish")]
 layout_mode = 3
@@ -17,8 +25,8 @@ script = ExtResource("2_advui")
 _graph_ui = NodePath("MarginContainer/VBoxContainer/AdventureGraphUi")
 _preview = NodePath("AdventureNodePreview")
 _interaction_panel = NodePath("AdventureInteractionPanel")
-_label_steps = NodePath("MarginContainer/VBoxContainer/HBoxContainer_Header/Label_Steps")
-_label_effects = NodePath("MarginContainer/VBoxContainer/Label_Effects")
+_label_steps = NodePath("MarginContainer/VBoxContainer/PanelContainer_Header/VBoxContainer_Header/HBoxContainer_Header/Label_Steps")
+_label_effects = NodePath("MarginContainer/VBoxContainer/PanelContainer_Header/VBoxContainer_Header/Label_Effects")
 _button_finish = NodePath("MarginContainer/VBoxContainer/Button_Finish")
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=395936223]
@@ -46,12 +54,19 @@ theme_override_constants/margin_bottom = 5
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="HBoxContainer_Header" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=200000002]
+[node name="PanelContainer_Header" type="PanelContainer" parent="MarginContainer/VBoxContainer" unique_id=200000014]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_header")
+
+[node name="VBoxContainer_Header" type="VBoxContainer" parent="MarginContainer/VBoxContainer/PanelContainer_Header" unique_id=200000015]
+layout_mode = 2
+
+[node name="HBoxContainer_Header" type="HBoxContainer" parent="MarginContainer/VBoxContainer/PanelContainer_Header/VBoxContainer_Header" unique_id=200000002]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_theme")
 
-[node name="Label_Steps" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer_Header" unique_id=200000004]
+[node name="Label_Steps" type="Label" parent="MarginContainer/VBoxContainer/PanelContainer_Header/VBoxContainer_Header/HBoxContainer_Header" unique_id=200000004]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_theme")
@@ -60,17 +75,21 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 3
 theme_override_constants/shadow_offset_y = 3
 theme_override_constants/outline_size = 2
-text = "Steps today: 0/6"
-horizontal_alignment = 1
+text = "Steps taken today: 0"
 
-[node name="Button_Hub" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer_Header" unique_id=200000005]
+[node name="HBoxContainer_Back" type="HBoxContainer" parent="MarginContainer/VBoxContainer/PanelContainer_Header/VBoxContainer_Header/HBoxContainer_Header" unique_id=200000013]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 2
+
+[node name="Button_Hub" type="Button" parent="MarginContainer/VBoxContainer/PanelContainer_Header/VBoxContainer_Header/HBoxContainer_Header/HBoxContainer_Back" unique_id=200000005]
 layout_mode = 2
 theme = ExtResource("1_theme")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
+theme_override_constants/outline_size = 3
 text = "Back"
 
-[node name="Label_Effects" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="Label_Effects" type="Label" parent="MarginContainer/VBoxContainer/PanelContainer_Header/VBoxContainer_Header" unique_id=60694682]
 layout_mode = 2
 theme = ExtResource("1_theme")
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.40392157)
@@ -78,7 +97,6 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 3
 theme_override_constants/shadow_offset_y = 3
 theme_override_constants/outline_size = 2
-text = ""
 horizontal_alignment = 1
 
 [node name="AdventureGraphUi" parent="MarginContainer/VBoxContainer" unique_id=200000006 instance=ExtResource("3_graph")]
@@ -93,11 +111,22 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 2
 text = "Finish Adventure"
 
+[node name="ResourceBar" parent="." unique_id=200000012 instance=ExtResource("6_resourcebar")]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -193.0
+offset_top = 5.0
+offset_right = 193.0
+offset_bottom = 45.0
+grow_horizontal = 2
+
 [node name="AdventureNodePreview" parent="." unique_id=200000007 instance=ExtResource("4_preview")]
 layout_mode = 1
 
-[node name="AdventureInteractionPanel" parent="." instance=ExtResource("5_interaction")]
+[node name="AdventureInteractionPanel" parent="." unique_id=267918552 instance=ExtResource("5_interaction")]
 layout_mode = 1
 
-[connection signal="button_up" from="MarginContainer/VBoxContainer/HBoxContainer_Header/Button_Hub" to="." method="_on_hub_button_up"]
+[connection signal="button_up" from="MarginContainer/VBoxContainer/PanelContainer_Header/VBoxContainer_Header/HBoxContainer_Header/HBoxContainer_Back/Button_Hub" to="." method="_on_hub_button_up"]
 [connection signal="button_up" from="MarginContainer/VBoxContainer/Button_Finish" to="." method="_on_finish_adventure_button_up"]
