@@ -83,14 +83,14 @@ func test_boss_node_has_one_enemy_from_pool() -> void:
 			assert_eq(ctx._enemies_wave_1[0], boss_preset, "BOSS enemy should come from possible_bosses.")
 
 
-func test_rest_stop_nodes_have_no_context() -> void:
+func test_rest_stop_nodes_have_rest_stop_context() -> void:
 	_template.rest_stops = AdventureTemplate.Mechanic_Frequency.HIGH
 	var preset := CharacterPreset.new()
 	_biome.possible_opponents[preset] = 1
 	var nodes: Array[NodeData] = AdventureGenerator.GenerateAdventure(_template, _biome)
 	for node in nodes:
 		if node.node_type == NodeData.Node_Type.REST_STOP:
-			assert_null(node.scene_context, "REST_STOP node should have no scene_context.")
+			assert_true(node.scene_context is ContextRestStop, "REST_STOP node should have a ContextRestStop.")
 
 
 func test_boss_node_uses_boss_rewards_when_set() -> void:
@@ -122,4 +122,53 @@ func test_no_crash_with_empty_biome_pools() -> void:
 	var nodes: Array[NodeData] = AdventureGenerator.GenerateAdventure(_template, _biome)
 	assert_gt(nodes.size(), 0, "Should still generate nodes with an empty biome.")
 	for node in nodes:
-		assert_null(node.scene_context, "Nodes should have null scene_context when biome pools are empty.")
+		if node.node_type == NodeData.Node_Type.FIGHT or node.node_type == NodeData.Node_Type.BOSS:
+			assert_null(node.scene_context, "FIGHT/BOSS nodes should have null scene_context when biome pools are empty.")
+
+
+# --- New interactive node types ---
+
+func test_hint_nodes_are_generated_with_context() -> void:
+	_template.hint_nodes = AdventureTemplate.Mechanic_Frequency.HIGH
+	var nodes: Array[NodeData] = AdventureGenerator.GenerateAdventure(_template, _biome)
+	var found: bool = false
+	for node in nodes:
+		if node.node_type == NodeData.Node_Type.HINT:
+			found = true
+			assert_true(node.scene_context is ContextHint, "HINT node should have a ContextHint.")
+	assert_true(found, "HIGH hint_nodes frequency should generate at least one HINT node.")
+
+func test_gamble_nodes_are_generated_with_context() -> void:
+	_template.gamble_nodes = AdventureTemplate.Mechanic_Frequency.HIGH
+	var nodes: Array[NodeData] = AdventureGenerator.GenerateAdventure(_template, _biome)
+	var found: bool = false
+	for node in nodes:
+		if node.node_type == NodeData.Node_Type.GAMBLE:
+			found = true
+			var ctx := node.scene_context as ContextGamble
+			assert_true(ctx is ContextGamble, "GAMBLE node should have a ContextGamble.")
+			assert_ne(ctx.win_buff, Types.Buff_Type.Invalid, "Gamble win_buff should not be Invalid.")
+			assert_ne(ctx.loss_debuff, Types.Debuff_Type.Invalid, "Gamble loss_debuff should not be Invalid.")
+	assert_true(found, "HIGH gamble_nodes frequency should generate at least one GAMBLE node.")
+
+func test_escalating_nodes_are_generated_with_context() -> void:
+	_template.escalating_nodes = AdventureTemplate.Mechanic_Frequency.HIGH
+	var nodes: Array[NodeData] = AdventureGenerator.GenerateAdventure(_template, _biome)
+	var found: bool = false
+	for node in nodes:
+		if node.node_type == NodeData.Node_Type.ESCALATING:
+			found = true
+			assert_true(node.scene_context is ContextEscalating, "ESCALATING node should have a ContextEscalating.")
+	assert_true(found, "HIGH escalating_nodes frequency should generate at least one ESCALATING node.")
+
+func test_rest_stop_nodes_have_granted_buff() -> void:
+	_template.rest_stops = AdventureTemplate.Mechanic_Frequency.HIGH
+	var nodes: Array[NodeData] = AdventureGenerator.GenerateAdventure(_template, _biome)
+	var found: bool = false
+	for node in nodes:
+		if node.node_type == NodeData.Node_Type.REST_STOP:
+			found = true
+			var ctx := node.scene_context as ContextRestStop
+			assert_true(ctx is ContextRestStop, "REST_STOP node should have a ContextRestStop.")
+			assert_ne(ctx.granted_buff, Types.Buff_Type.Invalid, "Rest Stop granted_buff should not be Invalid.")
+	assert_true(found, "HIGH rest_stops frequency should generate at least one REST_STOP node.")

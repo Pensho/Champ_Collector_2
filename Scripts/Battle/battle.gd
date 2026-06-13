@@ -32,6 +32,22 @@ enum WinningTeam
 	Monsters_Won,
 }
 
+func ApplyAdventureEffects(p_character_ID: int) -> void:
+	if _self_context._adventure_state == null:
+		return
+	for buff_type: Types.Buff_Type in _self_context._adventure_state.active_buffs.keys():
+		var buff: StatusEffects.Buff = StatusEffects.Buff.new()
+		buff.type = buff_type
+		buff.duration = GameBalance.ADVENTURE_BUFF_COMBAT_DURATION
+		buff.name = Types.Buff_Type.keys()[buff_type]
+		Skills.ApplyBuff(_characters[p_character_ID], buff, _character_repr[p_character_ID], _battle_ui)
+	for debuff_type: Types.Debuff_Type in _self_context._adventure_state.active_debuffs.keys():
+		var debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
+		debuff.type = debuff_type
+		debuff.duration = GameBalance.ADVENTURE_BUFF_COMBAT_DURATION
+		debuff.name = Types.Debuff_Type.keys()[debuff_type]
+		Skills.ApplyDebuff(_characters[p_character_ID], debuff, _character_repr[p_character_ID], _battle_ui)
+
 func SetTargetingOrder() -> void:
 	var sorted_keys = _characters.keys()
 	
@@ -66,6 +82,7 @@ func Init(p_context: ContextContainer) -> void:
 		_characters[i]._currentHealth = _characters[i].GetBattleAttribute(Types.Attribute.Health)  * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
 		_self_context._arguments["character_dmg_" + str(i)] = 0
 		VisualizeCharacter(i)
+		ApplyAdventureEffects(i)
 	
 	var difficulty: int = 1
 	if(_self_context._arguments.has("Difficulty")):

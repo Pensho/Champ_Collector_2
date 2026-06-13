@@ -2,8 +2,10 @@ extends Control
 
 @export var _graph_ui: AdventureGraphUi
 @export var _preview: AdventureNodePreview
+@export var _interaction_panel: AdventureInteractionPanel
 #@export var _label_supplies: Label
 @export var _label_steps: Label
+@export var _label_effects: Label
 @export var _button_finish: Button
 
 var _state: AdventureState
@@ -18,12 +20,23 @@ func Init(p_context: ContextContainer) -> void:
 	_graph_ui.node_selected.connect(_on_node_selected)
 	_preview.engage_confirmed.connect(_on_engage_confirmed)
 	_preview.cancelled.connect(func(): _preview.visible = false)
+	_interaction_panel.resolved.connect(_on_interaction_resolved)
 	if _IsBossComplete():
 		_button_finish.show()
 
 func _UpdateHeader() -> void:
 	#_label_supplies.text = "Supplies: " + str(main.GetInstance()._resources._supplies) + "/" + str(GameBalance.MAX_SUPPLIES)
 	_label_steps.text = "Steps today: " + str(_state.steps_taken_today) + "/" + str(GameBalance.ADVENTURE_MAX_DAILY_STEPS)
+	var effect_parts: Array[String] = []
+	for type: Types.Buff_Type in _state.active_buffs:
+		var combats: int = _state.active_buffs[type]
+		var remaining: String = "rest of adventure" if combats >= GameBalance.ADVENTURE_PERMANENT_EFFECT else str(combats)
+		effect_parts.append("%s (%s)" % [Types.Buff_Type.keys()[type], remaining])
+	for type: Types.Debuff_Type in _state.active_debuffs:
+		var combats: int = _state.active_debuffs[type]
+		var remaining: String = "rest of adventure" if combats >= GameBalance.ADVENTURE_PERMANENT_EFFECT else str(combats)
+		effect_parts.append("%s (%s)" % [Types.Debuff_Type.keys()[type], remaining])
+	_label_effects.text = "Active effects: " + ", ".join(effect_parts) if not effect_parts.is_empty() else ""
 
 func _on_node_selected(p_node: NodeData) -> void:
 	_preview.Show(p_node, _state.GetNodeSupplyCost())
@@ -46,12 +59,16 @@ func _on_engage_confirmed(p_node: NodeData) -> void:
 	match p_node.node_type:
 		NodeData.Node_Type.FIGHT, NodeData.Node_Type.BOSS:
 			context_container._scene = "uid://d3hg8jxy8xj8n"
-		NodeData.Node_Type.REST_STOP:
-			p_node.is_complete = true
-			_graph_ui.Populate(_state.nodes)
+		NodeData.Node_Type.REST_STOP, NodeData.Node_Type.HINT, NodeData.Node_Type.GAMBLE, NodeData.Node_Type.ESCALATING:
 			_preview.visible = false
+			_interaction_panel.Show(p_node, _state)
 			return
 	main.GetInstance().change_scene(context_container)
+
+func _on_interaction_resolved() -> void:
+	_state.MarkCurrentNodeComplete()
+	_graph_ui.Populate(_state.nodes)
+	_UpdateHeader()
 
 func _IsBossComplete() -> bool:
 	for node in _state.nodes:

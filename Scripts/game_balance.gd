@@ -76,3 +76,21 @@ const ADVENTURE_ENERGY_COST_PER_TIER: int = 10
 const ADVENTURE_DAILY_TIER_THRESHOLD: int = 3
 const ADVENTURE_ENERGY_COST_TIER_2_MULTIPLIER: int = 2
 const ADVENTURE_MAX_DAILY_STEPS: int = 6
+
+# Adventure-spanning effects
+# Sentinel value for "active for the rest of the adventure" (never decremented).
+const ADVENTURE_PERMANENT_EFFECT: int = 999999
+# Turn duration applied to an adventure-spanning buff/debuff so it lasts an entire combat.
+const ADVENTURE_BUFF_COMBAT_DURATION: int = 999
+const ADVENTURE_REST_STOP_TIER_1_COMBATS: int = 1
+const ADVENTURE_REST_STOP_TIER_2_COMBATS: int = 3
+const ADVENTURE_REST_STOP_TIER_1_COST: int = 0
+const ADVENTURE_REST_STOP_TIER_2_COST: int = 6
+const ADVENTURE_REST_STOP_TIER_3_COST: int = 18
+const ADVENTURE_GAMBLE_BUFF_COMBATS: int = 4
+const ADVENTURE_GAMBLE_DEBUFF_COMBATS: int = 2
+const ADVENTURE_ESCALATING_DIFFICULTY_INCREASE: int = 1
+const ADVENTURE_HINT_REWARD_SILVER: int = 10
+const ADVENTURE_HINT_REWARD_SUPPLIES: int = 2
+const ADVENTURE_ESCALATING_REWARD_SILVER: int = 25
+const ADVENTURE_ESCALATING_REWARD_SUPPLIES: int = 5

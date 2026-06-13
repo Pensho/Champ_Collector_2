@@ -39,6 +39,7 @@ func Init(p_context_container: ContextContainer) -> void:
 		main.GetInstance()._resources.AddSupplies(battle_context._loot_table._drop_result._supplies)
 		if _context._adventure_state != null:
 			_context._adventure_state.MarkCurrentNodeComplete()
+			_context._adventure_state.DecrementAdventureEffects()
 	
 	var total_damage_dealt = 0
 	for character_ID in _context._player_battle_characters.size():

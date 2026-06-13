@@ -18,6 +18,12 @@ func Show(p_node: NodeData, p_supply_cost: int) -> void:
 			_label_type.text = "Rest Stop"
 		NodeData.Node_Type.BOSS:
 			_label_type.text = "Boss"
+		NodeData.Node_Type.HINT:
+			_label_type.text = "Hint"
+		NodeData.Node_Type.GAMBLE:
+			_label_type.text = "Gamble"
+		NodeData.Node_Type.ESCALATING:
+			_label_type.text = "Escalating Challenge"
 	_label_cost.text = "Cost: " + str(p_supply_cost) + " Supplies"
 	_label_desc.text = ""
 	visible = true

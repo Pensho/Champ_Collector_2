@@ -10,8 +10,9 @@ var steps_taken_today: int
 var nodes: Array[NodeData]
 var _generation_seed: int = -1
 
-# Dictionary[Types.Buff_Type, int] — buff type → turns remaining
-var active_effects
+# Adventure-spanning effects: type -> combats remaining (ADVENTURE_PERMANENT_EFFECT = rest of adventure)
+var active_buffs: Dictionary[Types.Buff_Type, int]
+var active_debuffs: Dictionary[Types.Debuff_Type, int]
 
 static func CalculateScaledDifficulty(p_base: int, p_completed: int, p_total: int) -> int:
 	if p_total <= 0:
@@ -28,6 +29,26 @@ func MarkCurrentNodeComplete() -> void:
 		if node.index == current_node_index:
 			node.is_complete = true
 			break
+
+func AddAdventureBuff(p_type: Types.Buff_Type, p_combats: int) -> void:
+	active_buffs[p_type] = p_combats
+
+func AddAdventureDebuff(p_type: Types.Debuff_Type, p_combats: int) -> void:
+	active_debuffs[p_type] = p_combats
+
+func DecrementAdventureEffects() -> void:
+	for type: Types.Buff_Type in active_buffs.keys().duplicate():
+		if active_buffs[type] >= GameBalance.ADVENTURE_PERMANENT_EFFECT:
+			continue
+		active_buffs[type] -= 1
+		if active_buffs[type] <= 0:
+			active_buffs.erase(type)
+	for type: Types.Debuff_Type in active_debuffs.keys().duplicate():
+		if active_debuffs[type] >= GameBalance.ADVENTURE_PERMANENT_EFFECT:
+			continue
+		active_debuffs[type] -= 1
+		if active_debuffs[type] <= 0:
+			active_debuffs.erase(type)
 
 func TakeStep():
 	steps_taken_today += 1
@@ -52,6 +73,8 @@ func Serialize() -> Dictionary:
 		"template_path": template.resource_path if template else "",
 		"biome_path": biome.resource_path if biome else "",
 		"generation_seed": _generation_seed,
+		"active_buffs": active_buffs,
+		"active_debuffs": active_debuffs,
 	}
 
 func Deserialize(p_data: Dictionary) -> void:
@@ -78,3 +101,10 @@ func Deserialize(p_data: Dictionary) -> void:
 	var completion_map: Dictionary = p_data.get("completed_nodes", {})
 	for node in nodes:
 		node.is_complete = completion_map.get(node.index, false)
+
+	active_buffs.clear()
+	for key in p_data.get("active_buffs", {}):
+		active_buffs[int(key) as Types.Buff_Type] = p_data["active_buffs"][key]
+	active_debuffs.clear()
+	for key in p_data.get("active_debuffs", {}):
+		active_debuffs[int(key) as Types.Debuff_Type] = p_data["active_debuffs"][key]

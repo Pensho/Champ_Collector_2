@@ -67,6 +67,26 @@
 - `Tests/unit/test_debug_actions.gd` added (2 tests); suite now 89 tests across 11
   files, all passing headlessly
 
+## Adventure node types: Rest Stop, Hint, Gamble, Escalating (added 2026-06-13)
+- Added `HINT`, `GAMBLE`, `ESCALATING` to `NodeData.Node_Type` (alongside the
+  existing `REST_STOP`); generalized `AdventureGenerator._InsertRestStops` into
+  `_InsertSpecialNodes`, driven by new `AdventureTemplate` frequency fields
+  (`hint_nodes`, `gamble_nodes`, `escalating_nodes`)
+- New context resources: `ContextHint`, `ContextGamble`, `ContextEscalating`, and
+  reworked `ContextRestStop` (`purchasable_buffs` -> fixed `granted_buff`)
+- Added adventure-spanning effects to `AdventureState`: `active_buffs` /
+  `active_debuffs` (combats-remaining, with an `ADVENTURE_PERMANENT_EFFECT` sentinel
+  for "rest of adventure"), `AddAdventureBuff`/`AddAdventureDebuff`/
+  `DecrementAdventureEffects`, serialized round-trip
+- `Battle.Init` applies all active adventure buffs/debuffs to player champions via
+  new `Skills.ApplyDebuff` (mirrors `ApplyBuff`, no resist check) with an
+  effectively-infinite turn duration; `post_battle_menu` decrements adventure
+  effects on Victory
+- New `Adventure_Interaction_Panel` scene/script resolves all four interactive node
+  types in the adventure scene (no battle load); `adventure_ui.gd` routes to it and
+  shows active adventure effects in the header
+- Documented the four node types in `Concept_Document.md` (section 3.9)
+
 ## Adventurers Guild scene shell (added 2026-06-13)
 - Added `Scenes/Hubs/Adventurers_Guild/Adventurers_Guild.tscn` and
   `Scripts/UI/adventurers_guild_menu.gd`, following the Reclaimed City /

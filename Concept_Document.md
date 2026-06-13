@@ -405,6 +405,28 @@ Then every encounter will be given a reward value points buffer depending on dif
 
 When a victory is achieved, rewards will be randomly selected from the loot table and subtract that value from the reward value points buffer. Note that some drops may be guaranteed and will be picked out first before random selection. This goes on until the buffer is spent or if the remaining value is too small to equate another reward.
 
+### 3.9 Adventure node types
+An adventure is a generated graph of nodes the player steps through. Besides the
+**Fight** and **Boss** combat nodes, the following interactive node types resolve
+directly in the adventure scene without entering battle:
+
+- **Rest Stop**: each Rest Stop is generated with one fixed buff. The player chooses
+  how long to receive it: 0 Supplies for the next combat, 6 Supplies for the next 3
+  combats, or 18 Supplies for the rest of the adventure.
+- **Hint**: a placeholder node that shows a configured hint (text and/or image) meant
+  to assist with an out-of-game puzzle, and grants a small Silver/Supplies reward on
+  acknowledgement. No puzzle backend exists yet.
+- **Gamble**: a 50/50 choice. On a win, the player receives a buff lasting 4 combats;
+  on a loss, a debuff lasting 2 combats.
+- **Escalating**: offers Silver and/or Supplies in exchange for a permanent +1 to the
+  adventure's difficulty for its remainder.
+
+Buffs and debuffs granted by these nodes are **adventure-spanning effects**: they are
+tracked on `AdventureState` as combats-remaining (rather than turns) and are applied to
+every player champion for the full duration of each subsequent combat until they expire.
+They reuse the existing combat `Buff_Type`/`Debuff_Type` set (Empower, Fortify,
+Daunting_Strength / Burning, Enfeeble, Expose_Weakness) — no new effect types were added.
+
 
 ---
 

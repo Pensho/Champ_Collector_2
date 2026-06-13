@@ -5,6 +5,9 @@ enum Node_Type
 	FIGHT,
 	REST_STOP,
 	BOSS,
+	HINT,
+	GAMBLE,
+	ESCALATING,
 }
 
 var scene_context: Static_Context

@@ -14,3 +14,6 @@ enum Mechanic_Frequency
 @export var difficulty: int = 0
 @export var branching_paths: Mechanic_Frequency
 @export var rest_stops: Mechanic_Frequency
+@export var hint_nodes: Mechanic_Frequency
+@export var gamble_nodes: Mechanic_Frequency
+@export var escalating_nodes: Mechanic_Frequency

@@ -5,7 +5,10 @@ static func GenerateAdventure(p_template: AdventureTemplate, p_biome: BiomeData)
 	var target_depth: int = randi_range(p_template.MIN_DEPTH, p_template.MAX_DEPTH)
 
 	var spine: Array[NodeData] = _BuildSpine(target_depth)
-	_InsertRestStops(spine, SetRestNumber(p_template.rest_stops))
+	_InsertSpecialNodes(spine, NodeData.Node_Type.REST_STOP, SetRestNumber(p_template.rest_stops))
+	_InsertSpecialNodes(spine, NodeData.Node_Type.HINT, SetRestNumber(p_template.hint_nodes))
+	_InsertSpecialNodes(spine, NodeData.Node_Type.GAMBLE, SetRestNumber(p_template.gamble_nodes))
+	_InsertSpecialNodes(spine, NodeData.Node_Type.ESCALATING, SetRestNumber(p_template.escalating_nodes))
 
 	var boss: NodeData = NodeData.new()
 	boss.node_type = NodeData.Node_Type.BOSS
@@ -40,15 +43,15 @@ static func _BuildSpine(p_depth: int) -> Array[NodeData]:
 	return spine
 
 
-static func _InsertRestStops(p_spine: Array[NodeData], p_count: int) -> void:
+static func _InsertSpecialNodes(p_spine: Array[NodeData], p_node_type: NodeData.Node_Type, p_count: int) -> void:
 	if p_count == 0 or p_spine.size() < 2:
 		return
 	@warning_ignore("integer_division")
 	var interval: int = p_spine.size() / (p_count + 1)
 	for i in p_count:
 		var index: int = interval * (i + 1)
-		if index < p_spine.size():
-			p_spine[index].node_type = NodeData.Node_Type.REST_STOP
+		if index < p_spine.size() - 1 and p_spine[index].node_type == NodeData.Node_Type.FIGHT:
+			p_spine[index].node_type = p_node_type
 
 
 static func _AddBranches(p_spine: Array[NodeData], p_frequency: AdventureTemplate.Mechanic_Frequency) -> Array[NodeData]:
@@ -162,6 +165,37 @@ static func _PopulateNodeContexts(p_nodes: Array[NodeData], p_biome: BiomeData) 
 				ctx._enemies_wave_1 = [p_biome.possible_bosses.pick_random()]
 				ctx._loot_table = p_biome.boss_rewards if p_biome.boss_rewards != null else p_biome.possible_rewards
 				node.scene_context = ctx
+			NodeData.Node_Type.REST_STOP:
+				var rest_ctx := ContextRestStop.new()
+				rest_ctx.granted_buff = _RandomBuffType()
+				node.scene_context = rest_ctx
+			NodeData.Node_Type.HINT:
+				var hint_ctx := ContextHint.new()
+				hint_ctx.reward_silver = GameBalance.ADVENTURE_HINT_REWARD_SILVER
+				hint_ctx.reward_supplies = GameBalance.ADVENTURE_HINT_REWARD_SUPPLIES
+				node.scene_context = hint_ctx
+			NodeData.Node_Type.GAMBLE:
+				var gamble_ctx := ContextGamble.new()
+				gamble_ctx.win_buff = _RandomBuffType()
+				gamble_ctx.loss_debuff = _RandomDebuffType()
+				node.scene_context = gamble_ctx
+			NodeData.Node_Type.ESCALATING:
+				var escalating_ctx := ContextEscalating.new()
+				escalating_ctx.reward_silver = GameBalance.ADVENTURE_ESCALATING_REWARD_SILVER
+				escalating_ctx.reward_supplies = GameBalance.ADVENTURE_ESCALATING_REWARD_SUPPLIES
+				node.scene_context = escalating_ctx
+
+
+static func _RandomBuffType() -> Types.Buff_Type:
+	var values: Array = Types.Buff_Type.values()
+	values.erase(Types.Buff_Type.Invalid)
+	return values.pick_random()
+
+
+static func _RandomDebuffType() -> Types.Debuff_Type:
+	var values: Array = Types.Debuff_Type.values()
+	values.erase(Types.Debuff_Type.Invalid)
+	return values.pick_random()
 
 
 static func _WeightedRandomPick(p_pool: Dictionary[CharacterPreset, int]) -> CharacterPreset:

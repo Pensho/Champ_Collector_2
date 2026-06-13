@@ -1,0 +1,84 @@
+[gd_scene format=3]
+
+[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="1_theme"]
+[ext_resource type="Script" path="res://Scripts/UI/Adventure/adventure_interaction_panel.gd" id="2_panel"]
+
+[node name="AdventureInteractionPanel" type="Control" node_paths=PackedStringArray("_label_type", "_label_description", "_button_primary", "_button_secondary", "_button_tertiary")]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_panel")
+_label_type = NodePath("ColorRect/PanelContainer/MarginContainer/VBoxContainer/Label_Type")
+_label_description = NodePath("ColorRect/PanelContainer/MarginContainer/VBoxContainer/Label_Description")
+_button_primary = NodePath("ColorRect/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer_Buttons/Button_Primary")
+_button_secondary = NodePath("ColorRect/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer_Buttons/Button_Secondary")
+_button_tertiary = NodePath("ColorRect/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer_Buttons/Button_Tertiary")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.6)
+
+[node name="PanelContainer" type="PanelContainer" parent="ColorRect"]
+custom_minimum_size = Vector2(600, 360)
+layout_mode = 0
+offset_left = 340.0
+offset_top = 180.0
+offset_right = 940.0
+offset_bottom = 540.0
+
+[node name="MarginContainer" type="MarginContainer" parent="ColorRect/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ColorRect/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme = ExtResource("1_theme")
+
+[node name="Label_Type" type="Label" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+theme = ExtResource("1_theme")
+text = "Node Type"
+horizontal_alignment = 1
+
+[node name="Label_Description" type="Label" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(550, 120)
+layout_mode = 2
+theme = ExtResource("1_theme")
+text = "Description"
+autowrap_mode = 3
+
+[node name="VBoxContainer_Buttons" type="VBoxContainer" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 10
+theme = ExtResource("1_theme")
+
+[node name="Button_Primary" type="Button" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer_Buttons"]
+visible = false
+layout_mode = 2
+theme = ExtResource("1_theme")
+text = "Primary"
+
+[node name="Button_Secondary" type="Button" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer_Buttons"]
+visible = false
+layout_mode = 2
+theme = ExtResource("1_theme")
+text = "Secondary"
+
+[node name="Button_Tertiary" type="Button" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer_Buttons"]
+visible = false
+layout_mode = 2
+theme = ExtResource("1_theme")
+text = "Tertiary"

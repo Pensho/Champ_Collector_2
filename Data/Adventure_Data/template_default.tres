@@ -8,4 +8,7 @@ MAX_DEPTH = 28
 difficulty = 1
 branching_paths = 2
 rest_stops = 1
+hint_nodes = 1
+gamble_nodes = 2
+escalating_nodes = 1
 metadata/_custom_type_script = "uid://cwcowgmtcq1ca"

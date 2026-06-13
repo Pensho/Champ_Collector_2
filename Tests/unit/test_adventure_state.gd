@@ -101,3 +101,44 @@ func test_scaled_difficulty_caps_at_two_tiers() -> void:
 func test_scaled_difficulty_empty_adventure() -> void:
 	assert_eq(AdventureState.CalculateScaledDifficulty(2, 0, 0), 2,
 		"Zero total nodes: returns base difficulty unchanged.")
+
+
+# --- Adventure-spanning effects ---
+
+func test_add_adventure_buff() -> void:
+	_state.AddAdventureBuff(Types.Buff_Type.Empower, 3)
+	assert_eq(_state.active_buffs[Types.Buff_Type.Empower], 3,
+		"AddAdventureBuff should store the combat count for the buff type.")
+
+func test_add_adventure_debuff() -> void:
+	_state.AddAdventureDebuff(Types.Debuff_Type.Burning, 2)
+	assert_eq(_state.active_debuffs[Types.Debuff_Type.Burning], 2,
+		"AddAdventureDebuff should store the combat count for the debuff type.")
+
+func test_decrement_adventure_effects() -> void:
+	_state.AddAdventureBuff(Types.Buff_Type.Empower, 2)
+	_state.AddAdventureDebuff(Types.Debuff_Type.Burning, 2)
+
+	_state.DecrementAdventureEffects()
+	assert_eq(_state.active_buffs[Types.Buff_Type.Empower], 1, "Buff should decrement by 1.")
+	assert_eq(_state.active_debuffs[Types.Debuff_Type.Burning], 1, "Debuff should decrement by 1.")
+
+	_state.DecrementAdventureEffects()
+	assert_false(_state.active_buffs.has(Types.Buff_Type.Empower), "Buff should be erased once it reaches 0.")
+	assert_false(_state.active_debuffs.has(Types.Debuff_Type.Burning), "Debuff should be erased once it reaches 0.")
+
+func test_permanent_adventure_buff_never_decrements() -> void:
+	_state.AddAdventureBuff(Types.Buff_Type.Fortify, GameBalance.ADVENTURE_PERMANENT_EFFECT)
+	for i in 5:
+		_state.DecrementAdventureEffects()
+	assert_eq(_state.active_buffs[Types.Buff_Type.Fortify], GameBalance.ADVENTURE_PERMANENT_EFFECT,
+		"A permanent-sentinel buff must never decrement.")
+
+func test_adventure_effects_serialize_roundtrip() -> void:
+	_state.AddAdventureBuff(Types.Buff_Type.Empower, 3)
+	_state.AddAdventureDebuff(Types.Debuff_Type.Burning, 2)
+	var data: Dictionary = _state.Serialize()
+	var restored: AdventureState = AdventureState.new()
+	restored.Deserialize(data)
+	assert_eq(restored.active_buffs[Types.Buff_Type.Empower], 3, "active_buffs must survive serialization.")
+	assert_eq(restored.active_debuffs[Types.Debuff_Type.Burning], 2, "active_debuffs must survive serialization.")

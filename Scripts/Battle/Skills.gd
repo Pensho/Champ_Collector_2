@@ -238,6 +238,30 @@ static func ApplyBuff(
 	p_target._active_buffs.append(new_buff)
 	p_battle_ui.SpawnCombatText(new_buff.name, p_target_repr.position + p_battle_ui.COMBAT_TEXT_SPAWN_POINT, Color(0.335, 0.575, 0.838, 1.0))
 
+static func ApplyDebuff(
+		p_target: Character,
+		p_debuff_template: StatusEffects.Debuff,
+		p_target_repr: CharacterRepresentation,
+		p_battle_ui: BattleUI) -> void:
+	if(HasMaxStatusEffects(p_target)):
+		return
+
+	for i in p_target._active_debuffs.size():
+		if(p_target._active_debuffs[i].type == p_debuff_template.type):
+			if(OverwritableDebuff(p_debuff_template.type)):
+				if(p_debuff_template.duration > p_target._active_debuffs[i].duration):
+					p_target._active_debuffs[i].duration = p_debuff_template.duration
+					p_target_repr.SetStatusEffectDuration(p_target._active_debuffs[i].ID, p_debuff_template.duration)
+				return
+
+	var new_debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
+	new_debuff.type = p_debuff_template.type
+	new_debuff.duration = p_debuff_template.duration
+	new_debuff.name = p_debuff_template.name
+	new_debuff.ID = p_target_repr.AddStatusEffect(GetStatusEffectTexture(Statuses.DEBUFF_ICONS[new_debuff.type]), new_debuff.duration)
+	p_target._active_debuffs.append(new_debuff)
+	p_battle_ui.SpawnCombatText(new_debuff.name, p_target_repr.position + p_battle_ui.COMBAT_TEXT_SPAWN_POINT, Color(0.681, 0.152, 0.31, 1.0))
+
 static func CastDebuff(
 					p_target: Character,
 					p_target_attributes: Dictionary[Types.Attribute, int],
