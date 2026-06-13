@@ -51,6 +51,7 @@ func PopulateCharacterRows(p_battle: Battle) -> void:
 		var max_health: int = character.GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
 
 		var row: HBoxContainer = HBoxContainer.new()
+		row.add_theme_constant_override("separation", 25)
 
 		var label: Label = Label.new()
 		label.text = character._name + " (ID " + str(character_id) + ")"

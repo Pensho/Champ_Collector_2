@@ -8,10 +8,10 @@ const TOGGLE_KEY: Key = KEY_F2
 ## overlay needs to change.
 const PAGE_SCENES: Array[PackedScene] = [
 	preload("res://Scenes/debug/pages/Currencies_Progression_Page.tscn"),
-	preload("res://Scenes/debug/pages/Champions_Page.tscn"),
+	preload("res://Scenes/debug/pages/In_Battle_Page.tscn"),
 	preload("res://Scenes/debug/pages/Item_Construction_Page.tscn"),
 	preload("res://Scenes/debug/pages/Battle_Launcher_Page.tscn"),
-	preload("res://Scenes/debug/pages/In_Battle_Page.tscn"),
+	preload("res://Scenes/debug/pages/Champions_Page.tscn"),
 ]
 
 @export var _tab_container: TabContainer
