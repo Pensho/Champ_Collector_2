@@ -26,7 +26,7 @@ func Init(p_context: ContextContainer) -> void:
 
 func _UpdateHeader() -> void:
 	#_label_supplies.text = "Supplies: " + str(main.GetInstance()._resources._supplies) + "/" + str(GameBalance.MAX_SUPPLIES)
-	_label_steps.text = "Steps today: " + str(_state.steps_taken_today) + "/" + str(GameBalance.ADVENTURE_MAX_DAILY_STEPS)
+	_label_steps.text = "Steps taken today: " + str(_state.steps_taken_today)
 	var effect_parts: Array[String] = []
 	for type: Types.Buff_Type in _state.active_buffs:
 		var combats: int = _state.active_buffs[type]
