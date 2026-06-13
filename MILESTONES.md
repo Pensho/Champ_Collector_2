@@ -66,3 +66,13 @@
   Kill/Revive buttons on the In Battle page
 - `Tests/unit/test_debug_actions.gd` added (2 tests); suite now 89 tests across 11
   files, all passing headlessly
+
+## Adventurers Guild scene shell (added 2026-06-13)
+- Added `Scenes/Hubs/Adventurers_Guild/Adventurers_Guild.tscn` and
+  `Scripts/UI/adventurers_guild_menu.gd`, following the Reclaimed City /
+  World Atlas button styling and navigation pattern (`TextureButton` +
+  hover highlight + shadowed `Label`, `ResourceBar` instance)
+- Three buttons: "Fortune's Favor" and "Drop Rates" (stubbed, mechanics to
+  follow in a future plan) and "Town" (returns to Reclaimed City)
+- Wired the existing `Button_Adventure_guild` on the Reclaimed City hub to
+  navigate to the new scene

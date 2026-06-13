@@ -177,6 +177,7 @@ offset_top = 20.0
 offset_right = 383.0
 offset_bottom = 20.0
 
+[connection signal="button_up" from="Navigation_Buttons/Button_Adventure_guild" to="." method="_on_adventure_guild_button_up"]
 [connection signal="button_up" from="Navigation_Buttons/Button_Armory" to="." method="_on_button_view_collection_button_up"]
 [connection signal="button_up" from="Navigation_Buttons/Button_War_Room" to="." method="_on_war_room_button_pressed"]
 [connection signal="button_up" from="Navigation_Buttons/Button_Quit" to="." method="_on_button_quit_button_up"]

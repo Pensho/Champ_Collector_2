@@ -4,6 +4,11 @@ extends Control
 func Init(p_context_container: ContextContainer) -> void:
 	pass
 
+func _on_adventure_guild_button_up() -> void:
+	var context_container: ContextContainer = ContextContainer.new()
+	context_container._scene = "res://Scenes/Hubs/Adventurers_Guild/Adventurers_Guild.tscn"
+	main.GetInstance().change_scene(context_container)
+
 func _on_war_room_button_pressed() -> void:
 	var context_container: ContextContainer = ContextContainer.new()
 	context_container._scene = "uid://df6f1b4xoipjq"
