@@ -1,13 +1,13 @@
 class_name ResourceBar extends Control
 
 const SILVER_TITLE: String = "Silver"
-const SILVER_DESCRIPTION: String = "The main currency. Earned from battles and used to purchase items and upgrades."
+const SILVER_DESCRIPTION: String = "Earned from battles and used to purchase items and upgrades."
 
 const SUPPLIES_TITLE: String = "Supplies"
-const SUPPLIES_DESCRIPTION: String = "Used to run playable content. Each encounter costs supplies to enter, and half are refunded if the player loses."
+const SUPPLIES_DESCRIPTION: String = "Spend to run content. Half are refunded if the player loses a battle."
 
 const FORTUNES_FAVOR_TITLE: String = "Fortune's Favor"
-const FORTUNES_FAVOR_DESCRIPTION: String = "Used at the Adventurer's Guild to recruit new champions."
+const FORTUNES_FAVOR_DESCRIPTION: String = "Used to recruit new champions."
 
 const SUPPLY_REGEN_COUNTDOWN_COLOR: String = "#E6D29E" # pale gold
 
