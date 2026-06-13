@@ -156,14 +156,14 @@ static func _PopulateNodeContexts(p_nodes: Array[NodeData], p_biome: BiomeData) 
 					_WeightedRandomPick(p_biome.possible_opponents),
 					_WeightedRandomPick(p_biome.possible_opponents),
 				]
-				ctx._loot_table = p_biome.possible_rewards
+				ctx._loot_table = p_biome.combat_rewards
 				node.scene_context = ctx
 			NodeData.Node_Type.BOSS:
 				if p_biome.possible_bosses.is_empty():
 					continue
 				var ctx := Context_Battle.new()
 				ctx._enemies_wave_1 = [p_biome.possible_bosses.pick_random()]
-				ctx._loot_table = p_biome.boss_rewards if p_biome.boss_rewards != null else p_biome.possible_rewards
+				ctx._loot_table = p_biome.boss_rewards if p_biome.boss_rewards != null else p_biome.combat_rewards
 				node.scene_context = ctx
 			NodeData.Node_Type.REST_STOP:
 				var rest_ctx := ContextRestStop.new()
@@ -171,8 +171,8 @@ static func _PopulateNodeContexts(p_nodes: Array[NodeData], p_biome: BiomeData) 
 				node.scene_context = rest_ctx
 			NodeData.Node_Type.HINT:
 				var hint_ctx := ContextHint.new()
-				hint_ctx.reward_silver = GameBalance.ADVENTURE_HINT_REWARD_SILVER
-				hint_ctx.reward_supplies = GameBalance.ADVENTURE_HINT_REWARD_SUPPLIES
+				if p_biome.hint_rewards != null:
+					hint_ctx._loot_table = p_biome.hint_rewards.duplicate(true)
 				node.scene_context = hint_ctx
 			NodeData.Node_Type.GAMBLE:
 				var gamble_ctx := ContextGamble.new()
@@ -181,8 +181,8 @@ static func _PopulateNodeContexts(p_nodes: Array[NodeData], p_biome: BiomeData) 
 				node.scene_context = gamble_ctx
 			NodeData.Node_Type.ESCALATING:
 				var escalating_ctx := ContextEscalating.new()
-				escalating_ctx.reward_silver = GameBalance.ADVENTURE_ESCALATING_REWARD_SILVER
-				escalating_ctx.reward_supplies = GameBalance.ADVENTURE_ESCALATING_REWARD_SUPPLIES
+				if p_biome.escalating_rewards != null:
+					escalating_ctx._loot_table = p_biome.escalating_rewards.duplicate(true)
 				node.scene_context = escalating_ctx
 
 

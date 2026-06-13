@@ -75,8 +75,9 @@ func _ShowHint(p_context: ContextHint) -> void:
 	_button_primary.pressed.connect(_on_hint_acknowledged.bind(p_context), CONNECT_ONE_SHOT)
 
 func _on_hint_acknowledged(p_context: ContextHint) -> void:
-	main.GetInstance()._resources._silver += p_context.reward_silver
-	main.GetInstance()._resources.AddSupplies(p_context.reward_supplies)
+	if p_context._loot_table != null:
+		main.GetInstance()._resources._silver += p_context._loot_table._drop_result._silver
+		main.GetInstance()._resources.AddSupplies(p_context._loot_table._drop_result._supplies)
 	_Resolve()
 
 func _ShowGamble(p_context: ContextGamble) -> void:
@@ -90,6 +91,11 @@ func _ShowGamble(p_context: ContextGamble) -> void:
 	_button_primary.disabled = false
 	_button_primary.show()
 	_button_primary.pressed.connect(_on_gamble_resolved.bind(p_context), CONNECT_ONE_SHOT)
+
+	_button_secondary.text = "Decline"
+	_button_secondary.disabled = false
+	_button_secondary.show()
+	_button_secondary.pressed.connect(_Resolve, CONNECT_ONE_SHOT)
 
 func _on_gamble_resolved(p_context: ContextGamble) -> void:
 	if randf() < 0.5:
@@ -108,8 +114,10 @@ func _on_gamble_resolved(p_context: ContextGamble) -> void:
 
 func _ShowEscalating(p_context: ContextEscalating) -> void:
 	_label_type.text = "Escalating Challenge"
+	var reward_silver: int = p_context._loot_table._drop_result._silver if p_context._loot_table != null else 0
+	var reward_supplies: int = p_context._loot_table._drop_result._supplies if p_context._loot_table != null else 0
 	_label_description.text = "Gain %d Silver and %d Supplies, but the rest of this adventure becomes permanently harder (+%d difficulty)." % [
-		p_context.reward_silver, p_context.reward_supplies, p_context.difficulty_increase]
+		reward_silver, reward_supplies, p_context.difficulty_increase]
 
 	_button_primary.text = "Accept"
 	_button_primary.disabled = false
@@ -123,8 +131,9 @@ func _ShowEscalating(p_context: ContextEscalating) -> void:
 
 func _on_escalating_accepted(p_context: ContextEscalating) -> void:
 	_state.difficulty += p_context.difficulty_increase
-	main.GetInstance()._resources._silver += p_context.reward_silver
-	main.GetInstance()._resources.AddSupplies(p_context.reward_supplies)
+	if p_context._loot_table != null:
+		main.GetInstance()._resources._silver += p_context._loot_table._drop_result._silver
+		main.GetInstance()._resources.AddSupplies(p_context._loot_table._drop_result._supplies)
 	_Resolve()
 
 func _Resolve() -> void:

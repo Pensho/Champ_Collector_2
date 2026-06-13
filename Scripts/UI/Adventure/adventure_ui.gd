@@ -50,20 +50,41 @@ func _on_engage_confirmed(p_node: NodeData) -> void:
 	context_container._static_context = p_node.scene_context
 	context_container._previous_scene = "uid://mtv6bnpp8kjx"
 	context_container._arguments["Hub_Scene"] = _hub_scene
-	context_container._arguments["Additional_Supply_Cost"] = supply_cost
+	context_container._arguments["Supply_Cost"] = supply_cost
 	context_container._adventure_state = _state
 	var completed: int = _state.nodes.filter(func(n: NodeData) -> bool: return n.is_complete).size()
 	context_container._arguments["Difficulty"] = AdventureState.CalculateScaledDifficulty(_state.difficulty, completed, _state.nodes.size())
 	context_container._arguments["Biome_Path"] = _state.biome.resource_path if _state.biome else ""
 	context_container._arguments["Is_Boss"] = p_node.node_type == NodeData.Node_Type.BOSS
+	var difficulty: int = context_container._arguments["Difficulty"]
 	match p_node.node_type:
 		NodeData.Node_Type.FIGHT, NodeData.Node_Type.BOSS:
 			context_container._scene = "uid://d3hg8jxy8xj8n"
 		NodeData.Node_Type.REST_STOP, NodeData.Node_Type.HINT, NodeData.Node_Type.GAMBLE, NodeData.Node_Type.ESCALATING:
 			_preview.visible = false
+			_GrantNodeLoot(p_node, difficulty)
 			_interaction_panel.Show(p_node, _state)
 			return
 	main.GetInstance().change_scene(context_container)
+
+func _GrantNodeLoot(p_node: NodeData, p_difficulty: int) -> void:
+	var ctx: Static_Context = p_node.scene_context
+	var loot_table: LootTable
+	var fraction: float
+	match p_node.node_type:
+		NodeData.Node_Type.HINT:
+			loot_table = (ctx as ContextHint)._loot_table
+			fraction = GameBalance.ADVENTURE_HINT_REWARD_BUDGET_FRACTION
+		NodeData.Node_Type.ESCALATING:
+			loot_table = (ctx as ContextEscalating)._loot_table
+			fraction = GameBalance.ADVENTURE_ESCALATING_REWARD_BUDGET_FRACTION
+		_:
+			return
+	if loot_table == null:
+		return
+	loot_table._budget = int(LootManager.CalculateBudget(p_difficulty) * fraction)
+	loot_table._drop_result = LootTable.DropResult.new()
+	LootManager.DistributeRewards(loot_table, p_difficulty)
 
 func _on_interaction_resolved() -> void:
 	_state.MarkCurrentNodeComplete()

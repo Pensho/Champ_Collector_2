@@ -105,17 +105,17 @@ func test_boss_node_uses_boss_rewards_when_set() -> void:
 			assert_eq(ctx._loot_table, boss_loot, "BOSS node should use boss_rewards when set.")
 
 
-func test_boss_node_falls_back_to_possible_rewards_when_boss_rewards_null() -> void:
+func test_boss_node_falls_back_to_combat_rewards_when_boss_rewards_null() -> void:
 	var boss_preset := CharacterPreset.new()
 	_biome.possible_bosses.append(boss_preset)
 	var fallback_loot := LootTable.new()
-	_biome.possible_rewards = fallback_loot
+	_biome.combat_rewards = fallback_loot
 	_biome.boss_rewards = null
 	var nodes: Array[NodeData] = AdventureGenerator.GenerateAdventure(_template, _biome)
 	for node in nodes:
 		if node.node_type == NodeData.Node_Type.BOSS:
 			var ctx := node.scene_context as Context_Battle
-			assert_eq(ctx._loot_table, fallback_loot, "BOSS node should fall back to possible_rewards when boss_rewards is null.")
+			assert_eq(ctx._loot_table, fallback_loot, "BOSS node should fall back to combat_rewards when boss_rewards is null.")
 
 
 func test_no_crash_with_empty_biome_pools() -> void:
@@ -130,12 +130,15 @@ func test_no_crash_with_empty_biome_pools() -> void:
 
 func test_hint_nodes_are_generated_with_context() -> void:
 	_template.hint_nodes = AdventureTemplate.Mechanic_Frequency.HIGH
+	_biome.hint_rewards = LootTable.new()
 	var nodes: Array[NodeData] = AdventureGenerator.GenerateAdventure(_template, _biome)
 	var found: bool = false
 	for node in nodes:
 		if node.node_type == NodeData.Node_Type.HINT:
 			found = true
-			assert_true(node.scene_context is ContextHint, "HINT node should have a ContextHint.")
+			var ctx := node.scene_context as ContextHint
+			assert_true(ctx is ContextHint, "HINT node should have a ContextHint.")
+			assert_not_null(ctx._loot_table, "HINT node should have a loot table when biome has hint_rewards configured.")
 	assert_true(found, "HIGH hint_nodes frequency should generate at least one HINT node.")
 
 func test_gamble_nodes_are_generated_with_context() -> void:
@@ -153,12 +156,15 @@ func test_gamble_nodes_are_generated_with_context() -> void:
 
 func test_escalating_nodes_are_generated_with_context() -> void:
 	_template.escalating_nodes = AdventureTemplate.Mechanic_Frequency.HIGH
+	_biome.escalating_rewards = LootTable.new()
 	var nodes: Array[NodeData] = AdventureGenerator.GenerateAdventure(_template, _biome)
 	var found: bool = false
 	for node in nodes:
 		if node.node_type == NodeData.Node_Type.ESCALATING:
 			found = true
-			assert_true(node.scene_context is ContextEscalating, "ESCALATING node should have a ContextEscalating.")
+			var ctx := node.scene_context as ContextEscalating
+			assert_true(ctx is ContextEscalating, "ESCALATING node should have a ContextEscalating.")
+			assert_not_null(ctx._loot_table, "ESCALATING node should have a loot table when biome has escalating_rewards configured.")
 	assert_true(found, "HIGH escalating_nodes frequency should generate at least one ESCALATING node.")
 
 func test_rest_stop_nodes_have_granted_buff() -> void:

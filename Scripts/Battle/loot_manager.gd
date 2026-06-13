@@ -99,7 +99,10 @@ static func DistributeRewards(p_loot_table: LootTable, p_difficulty: int) -> voi
 				p_loot_table._budget -= LOOT_VALUE[LootType.Fortunes_Favor] * ff_count
 				print("Received Fortunes Favor x", ff_count, ", budget left: ", p_loot_table._budget)
 			LootType.Supplies:
-				pass
+				for i in range(p_loot_table._primary_loot[type]):
+					p_loot_table._drop_result._supplies += 1
+					p_loot_table._budget -= LOOT_VALUE[LootType.Supplies]
+					print("Received Supplies, budget left: ", p_loot_table._budget)
 			_:
 				print("Invalid reward type specified while trying to distribute rewards!")
 	print("budget before secondary rewards: ", p_loot_table._budget)
@@ -121,8 +124,9 @@ static func DistributeRewards(p_loot_table: LootTable, p_difficulty: int) -> voi
 				p_loot_table._budget -= LOOT_VALUE[LootType.Fortunes_Favor]
 				print("Received secondary Fortunes Favor, budget left: ", p_loot_table._budget)
 			LootType.Supplies:
-				pass
-				#p_loot_table._budget -= LOOT_VALUE[LootType.Supplies]
+				p_loot_table._drop_result._supplies += 1
+				p_loot_table._budget -= LOOT_VALUE[LootType.Supplies]
+				print("Received secondary Supplies, budget left: ", p_loot_table._budget)
 			_:
 				print("Invalid reward type specified while trying to distribute rewards!")
 

@@ -61,8 +61,7 @@ func _on_start_button_up() -> void:
 		print("Trying to start a battle without any selected characters.")
 		return
 
-	var additional: int = int(_self_context._arguments.get("Additional_Supply_Cost", 0))
-	var total: int = GameBalance.ENCOUNTER_BASE_SUPPLY_COST + additional
+	var total: int = int(_self_context._arguments.get("Supply_Cost", GameBalance.ENCOUNTER_BASE_SUPPLY_COST))
 	if not main.GetInstance()._resources.SpendSupplies(total):
 		print("Not enough supplies to start this encounter.")
 		return

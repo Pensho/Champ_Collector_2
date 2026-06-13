@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="LootTable" format=3]
+
+[ext_resource type="Script" uid="uid://cabwckgc7os5u" path="res://Scripts/Battle/loot_table.gd" id="1_j1fi4"]
+
+[resource]
+script = ExtResource("1_j1fi4")
+_primary_loot = Dictionary[int, int]({
+1: 1
+})
+_secondary_loot = Dictionary[int, int]({
+1: 5,
+4: 5
+})
+metadata/_custom_type_script = "uid://cabwckgc7os5u"

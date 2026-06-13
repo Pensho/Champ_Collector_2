@@ -9,20 +9,20 @@ func before_each() -> void:
 func test_supply_cost_tier_1() -> void:
 	_state.steps_taken_today = 0
 	var cost: int = _state.GetNodeSupplyCost()
-	assert_eq(cost, GameBalance.ADVENTURE_ENERGY_COST_PER_TIER,
-		"First tier should cost ADVENTURE_ENERGY_COST_PER_TIER.")
+	assert_eq(cost, GameBalance.ENCOUNTER_BASE_SUPPLY_COST,
+		"First tier should cost ENCOUNTER_BASE_SUPPLY_COST.")
 
 func test_supply_cost_tier_2() -> void:
 	_state.steps_taken_today = GameBalance.ADVENTURE_DAILY_TIER_THRESHOLD
 	var cost: int = _state.GetNodeSupplyCost()
-	assert_eq(cost, GameBalance.ADVENTURE_ENERGY_COST_PER_TIER * 2,
-		"Second tier should cost 2x ADVENTURE_ENERGY_COST_PER_TIER.")
+	assert_eq(cost, GameBalance.ENCOUNTER_BASE_SUPPLY_COST * 2,
+		"Second tier should cost 2x ENCOUNTER_BASE_SUPPLY_COST.")
 
 func test_supply_cost_tier_3() -> void:
 	_state.steps_taken_today = GameBalance.ADVENTURE_DAILY_TIER_THRESHOLD * 2
 	var cost: int = _state.GetNodeSupplyCost()
-	assert_eq(cost, GameBalance.ADVENTURE_ENERGY_COST_PER_TIER * 3,
-		"Third tier should cost 3x ADVENTURE_ENERGY_COST_PER_TIER.")
+	assert_eq(cost, GameBalance.ENCOUNTER_BASE_SUPPLY_COST * 3,
+		"Third tier should cost 3x ENCOUNTER_BASE_SUPPLY_COST.")
 
 func test_daily_reset() -> void:
 	_state.steps_taken_today = 4

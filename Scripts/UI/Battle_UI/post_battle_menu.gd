@@ -68,8 +68,7 @@ func _on_button_end_button_up() -> void:
 	main.GetInstance().change_scene(_context)
 
 func _on_button_replay_button_up() -> void:
-	var additional: int = int(_context._arguments.get("Additional_Supply_Cost", 0))
-	var total: int = GameBalance.ENCOUNTER_BASE_SUPPLY_COST + additional
+	var total: int = int(_context._arguments.get("Supply_Cost", GameBalance.ENCOUNTER_BASE_SUPPLY_COST))
 	if not main.GetInstance()._resources.SpendSupplies(total):
 		print("Not enough supplies to replay this encounter.")
 		return

@@ -45,3 +45,20 @@ func test_ff_secondary_consumes_budget_for_one() -> void:
 	LootManager.DistributeRewards(table, 1)
 	assert_eq(table._drop_result._fortunes_favor, 1, "500 budget with FF-only secondary should yield 1 FF")
 	assert_lte(table._budget, 0, "Budget should be exhausted after 1 FF")
+
+
+func test_supplies_primary_gives_configured_count() -> void:
+	var table := LootTable.new()
+	table._primary_loot[LootManager.LootType.Supplies] = 2
+	table._budget = 0
+	LootManager.DistributeRewards(table, 1)
+	assert_eq(table._drop_result._supplies, 2, "Primary Supplies count should grant that many supplies")
+
+
+func test_supplies_secondary_consumes_budget_for_one() -> void:
+	var table := LootTable.new()
+	table._secondary_loot[LootManager.LootType.Supplies] = 1
+	table._budget = LootManager.LOOT_VALUE[LootManager.LootType.Supplies]
+	LootManager.DistributeRewards(table, 1)
+	assert_eq(table._drop_result._supplies, 1, "Budget with Supplies-only secondary should yield 1 supply")
+	assert_lte(table._budget, 0, "Budget should be exhausted after 1 supply")
