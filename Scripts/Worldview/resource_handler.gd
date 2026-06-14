@@ -88,5 +88,16 @@ func SpendSupplies(amount: int) -> bool:
 	return false
 
 func AddSupplies(p_amount: int) -> void:
-	_supplies = mini(GameBalance.MAX_SUPPLIES, _supplies + p_amount)
+	_supplies = _supplies + p_amount
+	resources_changed.emit()
+
+func SpendFortunesFavor(p_amount: int) -> bool:
+	if (_fortunes_favor >= p_amount):
+		_fortunes_favor -= p_amount
+		resources_changed.emit()
+		return true
+	return false
+
+func AddSilver(p_amount: int) -> void:
+	_silver += p_amount
 	resources_changed.emit()
