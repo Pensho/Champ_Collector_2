@@ -123,3 +123,21 @@
   derives rarity odds from the existing `RARITY_WEIGHTING` table, and
   `Types.RarityName()` converts a `Rarity` enum value to a display string; no
   rates are hard-coded
+
+## Item upgrading (added 2026-06-14)
+- Equipment now has a `_level` (0-10) raised via `Equipment.Upgrade()`, which
+  adds `3 + rarity` to a random attribute the item already holds (falling back
+  to `Game_Balance.ITEM_TYPE_ATTRIBUTES[_slot]` for items with no nonzero stats,
+  e.g. Relic); `CanUpgrade()`/`GetUpgradeGain()` support the new flow
+- `LootManager.GetUpgradeCost(rarity, current_level)` returns
+  `BASE_ITEM_UPGRADE_COST * (current_level + 1) * rarity`; new balance constants
+  `MAX_ITEM_LEVEL`, `ITEM_UPGRADE_FLAT_BONUS`, `BASE_ITEM_UPGRADE_COST`
+- `ResourceHandler.SpendSilver()` mirrors `SpendSupplies` as the silver spend
+  sink
+- `ButtonWithOptions` gained a fourth `Button_Upgrade`/`SetUpgradeButton()`;
+  Inspect Collection's item options dialog now offers Equip/Sell/Upgrade/Cancel,
+  showing cost and confirming via `TryUpgrade`/`UpgradeItem`
+- Item level persists via `ItemCollection` serialize/deserialize and is shown on
+  each unequipped item's grid slot (`MenuItemSlot.level`, same label used for
+  character level)
+- Rarity/affix rerolling on upgrade remains out of scope (Remaining_Scope_Checklist.md)

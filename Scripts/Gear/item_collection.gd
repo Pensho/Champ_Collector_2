@@ -22,6 +22,7 @@ func Serialize() -> Dictionary:
 			"instance_ID": item._instanceID,
 			"held_by": item._held_by,
 			"rarity": item._rarity,
+			"level": item._level,
 		})
 	return {"items": items_data, "next_ID": _next_id}
 
@@ -47,7 +48,8 @@ func Deserialize(p_data: Dictionary) -> void:
 		new_equipment._held_by = item_data["held_by"]
 		if(item_data.has("rarity")):
 			new_equipment._rarity = item_data["rarity"]
-		
+		new_equipment._level = item_data.get("level", 0)
+
 		_items[new_equipment._instanceID] = new_equipment
 		if(!_collected_types.has(new_equipment._slot)):
 			_collected_types[new_equipment._slot] = new_equipment._texture

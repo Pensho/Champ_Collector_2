@@ -16,7 +16,7 @@ that holds (or will hold) the detail.
 - [ ] More skills — expand role-specific and universal skill rosters (Concept_Document.md 3.2.4)
 - [ ] Effects when skills are cast — visual/animation feedback in combat
 - [ ] More big battles as puzzles — encounter design (Concept_Document.md 3.2 "Tactical Puzzles")
-- [ ] Upgrading items — rarity/affix upgrades, including affix rerolling (Concept_Document.md 3.3.1)
+- [ ] Upgrading items — stat-value upgrades done; rarity/affix rerolling still pending (Concept_Document.md 3.3.1)
 - [ ] Additional biomes — beyond Reclaimed City (World_Building.md 4.3)
 - [ ] Relic items — implement Relic rarity tier (Concept_Document.md 3.3.1)
 - [ ] Ascension system — post-level-cap progression (Concept_Document.md 3.1.2)

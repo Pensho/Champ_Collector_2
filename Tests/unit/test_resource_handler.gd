@@ -107,6 +107,20 @@ func test_fortunes_favor_deserialize_migrates_old_flat_key_into_bone() -> void:
 	assert_eq(rh.GetFortunesFavor(FortuneFavorTier.TierType.PARCHMENT), 0, "Parchment should default to zero on migration")
 	rh.free()
 
+func test_spend_silver_succeeds_when_enough_silver() -> void:
+	var rh: ResourceHandler = ResourceHandler.new()
+	rh._silver = 100
+	assert_true(rh.SpendSilver(40), "Should succeed when silver >= amount")
+	assert_eq(rh._silver, 60, "Silver should decrease by the spent amount")
+	rh.free()
+
+func test_spend_silver_fails_when_insufficient() -> void:
+	var rh: ResourceHandler = ResourceHandler.new()
+	rh._silver = 10
+	assert_false(rh.SpendSilver(20), "Should fail when silver < amount")
+	assert_eq(rh._silver, 10, "Silver should be unchanged on failure")
+	rh.free()
+
 func test_supply_regen_exact_multiple_has_no_remainder() -> void:
 	var now: int = int(Time.get_unix_time_from_system())
 	var last: int = now - 1200

@@ -6,6 +6,7 @@ const KEYWORD_COLORS = preload("uid://bgywi0cu4mkig")
 
 @onready var button_left: Button = $ColorRect/MarginContainer/VBoxContainer/HBoxContainer_Buttons/Button_Left
 @onready var button_middle: Button = $ColorRect/MarginContainer/VBoxContainer/HBoxContainer_Buttons/Button_Middle
+@onready var button_upgrade: Button = $ColorRect/MarginContainer/VBoxContainer/HBoxContainer_Buttons/Button_Upgrade
 
 @onready var label_title: Label = $ColorRect/MarginContainer/VBoxContainer/Label_Title
 @onready var rich_text_label_info: RichTextLabel = $ColorRect/MarginContainer/VBoxContainer/RichTextLabel_Info
@@ -27,6 +28,13 @@ func SetMiddleButton(p_name: String, p_func_ptr: Callable, p_color: Color = Colo
 		button_middle.connect("button_up", p_func_ptr)
 	button_middle.add_theme_color_override("font_color", p_color)
 	button_middle.show()
+
+func SetUpgradeButton(p_name: String, p_func_ptr: Callable, p_color: Color = Color.WHITE) -> void:
+	button_upgrade.text = p_name
+	if(!p_func_ptr.is_null()):
+		button_upgrade.connect("button_up", p_func_ptr)
+	button_upgrade.add_theme_color_override("font_color", p_color)
+	button_upgrade.show()
 
 func _on_cancel_button_up() -> void:
 	self.hide()

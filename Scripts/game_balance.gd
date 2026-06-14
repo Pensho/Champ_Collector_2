@@ -53,6 +53,9 @@ const ITEM_TYPE_ATTRIBUTES: Dictionary = {
 		Types.Attribute.CritChance,],
 }
 const ITEM_COLLECTION_LIMIT: int = 400
+const MAX_ITEM_LEVEL: int = 10
+const ITEM_UPGRADE_FLAT_BONUS: int = 3
+const BASE_ITEM_UPGRADE_COST: int = 25
 
 ## Skills
 const HEAP_ON_MULTIPLIER: float = 0.2

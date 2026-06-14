@@ -145,6 +145,7 @@ func ShowItems() -> void:
 					main.GetInstance()._item_collection.GetItemTexture(
 						_item_collection[_displayed_item_ids[slot]]._slot))
 			_available_items[slot].SetTextureOutline(_item_collection[_displayed_item_ids[slot]]._rarity)
+			_available_items[slot].level.text = str(_item_collection[_displayed_item_ids[slot]]._level)
 			continue
 		_available_items[slot].SetHeldObjectTexture(null)
 
@@ -174,6 +175,7 @@ func AvailableItemButton(p_slot_ID: int) -> void:
 	_select_item_option.SetText(item._name, equip_difference_text)
 	_select_item_option.SetLeftButton("Equip", TriggerEquipItem)
 	_select_item_option.SetMiddleButton("Sell", TrySell)
+	_select_item_option.SetUpgradeButton("Upgrade", TryUpgrade)
 	_select_item_option.show()
 	_selected_item_slot_ID = p_slot_ID
 
@@ -187,6 +189,33 @@ func SellItem() -> void:
 	main.GetInstance()._item_collection.Remove(_displayed_item_ids[_selected_item_slot_ID])
 	_available_items[_selected_item_slot_ID].SetHeldObjectTexture(null)
 	_displayed_item_ids[_selected_item_slot_ID] = -1
+	_confirm_option.hide()
+	_select_item_option.hide()
+
+func TryUpgrade() -> void:
+	var item: Equipment = _item_collection[_displayed_item_ids[_selected_item_slot_ID]]
+	if(not item.CanUpgrade()):
+		_confirm_option.SetText("Upgrade", "This item is already at maximum level.")
+		_confirm_option.show()
+		return
+
+	var cost: int = LootManager.GetUpgradeCost(item._rarity, item._level)
+	_confirm_option.SetText("Upgrade", "Upgrade to level " + str(item._level + 1) + " for " + str(cost) + " silver.")
+	_confirm_option.SetLeftButton("Upgrade", UpgradeItem)
+	_confirm_option.show()
+
+func UpgradeItem() -> void:
+	var item: Equipment = _item_collection[_displayed_item_ids[_selected_item_slot_ID]]
+	if(not item.CanUpgrade()):
+		return
+
+	var cost: int = LootManager.GetUpgradeCost(item._rarity, item._level)
+	if(not main.GetInstance()._resources.SpendSilver(cost)):
+		return
+
+	item.Upgrade()
+	_available_items[_selected_item_slot_ID].level.text = str(item._level)
+	ShowSelectedCharacter(_selected_character_ID)
 	_confirm_option.hide()
 	_select_item_option.hide()
 

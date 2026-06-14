@@ -119,3 +119,10 @@ func SpendFortunesFavor(p_tier_type: FortuneFavorTier.TierType, p_amount: int) -
 func AddSilver(p_amount: int) -> void:
 	_silver += p_amount
 	resources_changed.emit()
+
+func SpendSilver(p_amount: int) -> bool:
+	if (_silver >= p_amount):
+		_silver -= p_amount
+		resources_changed.emit()
+		return true
+	return false

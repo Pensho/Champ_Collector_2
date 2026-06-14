@@ -189,6 +189,9 @@ static func GetWeigthedRandom(p_secondary_loot: Dictionary[LootManager.LootType,
 static func GetSellValue(p_rarity: Types.Rarity) -> int:
 	return int(pow(LOOT_VALUE[LootType.Equipment], 1.0 + (float(p_rarity) * RARITY_SELLING_POWER)))
 
+static func GetUpgradeCost(p_rarity: Types.Rarity, p_current_level: int) -> int:
+	return GameBalance.BASE_ITEM_UPGRADE_COST * (p_current_level + 1) * int(p_rarity)
+
 static func GetRarityRates(p_grouped: Dictionary[Types.Rarity, Array]) -> Dictionary[Types.Rarity, float]:
 	var total_weight: int = 0
 	for rarity in RARITY_WEIGHTING.keys():

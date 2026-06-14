@@ -108,6 +108,13 @@ func test_rarity_rates_sum_to_100() -> void:
 	assert_almost_eq(total, 100.0, 0.01, "Rarity rates should sum to 100%")
 
 
+func test_upgrade_cost_matches_formula() -> void:
+	assert_eq(LootManager.GetUpgradeCost(Types.Rarity.Common, 0), GameBalance.BASE_ITEM_UPGRADE_COST * 1 * 1, "Common, level 0")
+	assert_eq(LootManager.GetUpgradeCost(Types.Rarity.Common, 3), GameBalance.BASE_ITEM_UPGRADE_COST * 4 * 1, "Common, level 3")
+	assert_eq(LootManager.GetUpgradeCost(Types.Rarity.Relic, 0), GameBalance.BASE_ITEM_UPGRADE_COST * 1 * 6, "Relic, level 0")
+	assert_eq(LootManager.GetUpgradeCost(Types.Rarity.Epic, 5), GameBalance.BASE_ITEM_UPGRADE_COST * 6 * 4, "Epic, level 5")
+
+
 func test_rarity_rates_only_include_present_rarities() -> void:
 	var grouped: Dictionary[Types.Rarity, Array] = {
 		Types.Rarity.Common: [1],

@@ -22,6 +22,7 @@ func InstantiateNew(preset: EquipmentPreset, instanceID: int) -> void:
 
 var _instanceID : int = 0
 var _held_by: int = -1
+var _level: int = 0
 
 # Preset Data
 var _name: String = ""
@@ -44,3 +45,21 @@ var _attributes: Dictionary[Types.Attribute, int] = {
 	Types.Attribute.CritChance: 0,
 	Types.Attribute.CritDamage: 0,
 }
+
+func CanUpgrade() -> bool:
+	return _level < Game_Balance.MAX_ITEM_LEVEL
+
+func GetUpgradeGain() -> int:
+	return Game_Balance.ITEM_UPGRADE_FLAT_BONUS + int(_rarity)
+
+func Upgrade() -> void:
+	var candidate_attributes: Array = []
+	for attribute in _attributes.keys():
+		if(0 < _attributes[attribute]):
+			candidate_attributes.append(attribute)
+	if(candidate_attributes.is_empty()):
+		candidate_attributes = Game_Balance.ITEM_TYPE_ATTRIBUTES[_slot]
+
+	var chosen_attribute = candidate_attributes[randi() % candidate_attributes.size()]
+	_attributes[chosen_attribute] += GetUpgradeGain()
+	_level += 1
