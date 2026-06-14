@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="FortuneFavorTier" format=3 uid="uid://ur2bxpb3t3fb"]
+[gd_resource type="Resource" script_class="FortuneFavorTier" load_steps=15 format=3]
 
+[ext_resource type="Script" path="res://Scripts/Character/fortune_favor_tier.gd" id="1_tier"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="1_preset"]
-[ext_resource type="Script" uid="uid://p3ncpbkkqrny" path="res://Scripts/Character/fortune_favor_tier.gd" id="1_tier"]
 [ext_resource type="Resource" uid="uid://d04mj1rh28xgt" path="res://Data/Character_Player_Variants/Architect.tres" id="2_architect"]
 [ext_resource type="Resource" uid="uid://dnup7y7ax8jck" path="res://Data/Character_Player_Variants/Bar_Brawler.tres" id="3_bar_brawler"]
 [ext_resource type="Resource" uid="uid://7adgp1emx6yk" path="res://Data/Character_Player_Variants/Bloodmage.tres" id="4_bloodmage"]
@@ -17,7 +17,8 @@
 
 [resource]
 script = ExtResource("1_tier")
-reward_count = 3
+tier_type = 2
+reward_count = 9
 silver_weight = 40
 silver_amount = 20
 supplies_weight = 30

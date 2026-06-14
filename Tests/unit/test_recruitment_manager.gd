@@ -85,6 +85,50 @@ func test_pick_champion_by_rarity_only_returns_present_rarities() -> void:
 		assert_true(grouped.has(champion._rarity), "Picked champion's rarity should be present in the pool")
 
 
+func test_build_rewards_brass_tier_has_five_rewards_and_at_most_one_champion() -> void:
+	_tier.reward_count = 5
+	var gate: Array[bool] = [true, true, true, true, true]
+	var rewards: Array[Dictionary] = RecruitmentManager.BuildRewards(_tier, gate)
+
+	assert_eq(rewards.size(), 5, "Brass tier should produce exactly 5 rewards")
+	var champion_count: int = 0
+	for reward in rewards:
+		if(reward["type"] == RecruitmentManager.RewardType.CHAMPION):
+			champion_count += 1
+	assert_eq(champion_count, 1, "At most one champion should be awarded regardless of reward count")
+
+
+func test_build_rewards_parchment_tier_has_nine_rewards_and_at_most_one_champion() -> void:
+	_tier.reward_count = 9
+	var gate: Array[bool] = [true, true, true, true, true, true, true, true, true]
+	var rewards: Array[Dictionary] = RecruitmentManager.BuildRewards(_tier, gate)
+
+	assert_eq(rewards.size(), 9, "Parchment tier should produce exactly 9 rewards")
+	var champion_count: int = 0
+	for reward in rewards:
+		if(reward["type"] == RecruitmentManager.RewardType.CHAMPION):
+			champion_count += 1
+	assert_eq(champion_count, 1, "At most one champion should be awarded regardless of reward count")
+
+
+func test_brass_tier_resource_loads_with_expected_reward_count_and_tier_type() -> void:
+	var tier: FortuneFavorTier = load("res://Data/Recruitment/Brass_Tier.tres")
+	assert_eq(tier.reward_count, 5, "Brass tier should have a reward count of 5")
+	assert_eq(tier.tier_type, FortuneFavorTier.TierType.BRASS, "Brass tier should have tier_type BRASS")
+
+
+func test_parchment_tier_resource_loads_with_expected_reward_count_and_tier_type() -> void:
+	var tier: FortuneFavorTier = load("res://Data/Recruitment/Parchment_Tier.tres")
+	assert_eq(tier.reward_count, 9, "Parchment tier should have a reward count of 9")
+	assert_eq(tier.tier_type, FortuneFavorTier.TierType.PARCHMENT, "Parchment tier should have tier_type PARCHMENT")
+
+
+func test_bone_tier_resource_loads_with_expected_reward_count_and_tier_type() -> void:
+	var tier: FortuneFavorTier = load("res://Data/Recruitment/Bone_Tier.tres")
+	assert_eq(tier.reward_count, 3, "Bone tier should have a reward count of 3")
+	assert_eq(tier.tier_type, FortuneFavorTier.TierType.BONE, "Bone tier should have tier_type BONE")
+
+
 func test_pick_champion_by_rarity_single_rarity_pool_always_returns_that_champion() -> void:
 	var single_preset := CharacterPreset.new()
 	single_preset._name = "Only Champion"

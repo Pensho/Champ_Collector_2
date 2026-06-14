@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bx1wl65s4cu0j"]
 
-[ext_resource type="Script" path="res://Scripts/UI/adventurers_guild_menu.gd" id="1_8g887"]
+[ext_resource type="Script" uid="uid://4ve02sd2rom6" path="res://Scripts/UI/adventurers_guild_menu.gd" id="1_8g887"]
 [ext_resource type="Texture2D" uid="uid://b12fxr5wjhc44" path="res://Assets/Champ_Collector/Scenery/Adventurers_Guild/Adventurers_Guild_1.jpg" id="1_ibbvk"]
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="2_75jl7"]
 [ext_resource type="Texture2D" uid="uid://be4d7es1t3q0k" path="res://Data/Texture_Data/Button_hover_highligt.tres" id="3_8g887"]

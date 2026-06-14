@@ -1,12 +1,14 @@
-[gd_scene format=3 uid="uid://dqx1m7r3y4t2k"]
+[gd_scene format=3 uid="uid://b03sym04k1f4d"]
 
-[ext_resource type="Script" path="res://Scripts/UI/recruitment_menu.gd" id="1_recruitment"]
+[ext_resource type="Script" uid="uid://cke22skwp0qbg" path="res://Scripts/UI/recruitment_menu.gd" id="1_recruitment"]
 [ext_resource type="Texture2D" uid="uid://b12fxr5wjhc44" path="res://Assets/Champ_Collector/Scenery/Adventurers_Guild/Adventurers_Guild_1.jpg" id="2_background"]
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="3_theme"]
 [ext_resource type="PackedScene" uid="uid://bm6xwrr37gevr" path="res://Scenes/ui/Resources/Resource_Bar.tscn" id="4_resource_bar"]
 [ext_resource type="Texture2D" uid="uid://d3ribnb76plyc" path="res://Assets/Champ_Collector/Icons/Resources/Fortunes_Favor/Bone/Fortunes_Favor_Bone_1.png" id="5_favor_icon"]
+[ext_resource type="Texture2D" uid="uid://dq3fohqivkweb" path="res://Assets/Champ_Collector/Icons/Resources/Fortunes_Favor/Brass/Fortunes_Favor_Brass_1.png" id="6_brass_icon"]
+[ext_resource type="Texture2D" uid="uid://d1le2k5exvc1b" path="res://Assets/Champ_Collector/Icons/Resources/Fortunes_Favor/Parchment/Fortunes_Favor_Parchment_1.png" id="7_parchment_icon"]
 
-[node name="RecruitmentMenu" type="Control" node_paths=PackedStringArray("_favor_count_label")]
+[node name="RecruitmentMenu" type="Control" unique_id=259832161 node_paths=PackedStringArray("_bone_favor_count_label", "_brass_favor_count_label", "_parchment_favor_count_label")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -14,15 +16,17 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_recruitment")
-_favor_count_label = NodePath("Label_Favor_Count")
+_bone_favor_count_label = NodePath("Label_Bone_Favor_Count")
+_brass_favor_count_label = NodePath("Label_Brass_Favor_Count")
+_parchment_favor_count_label = NodePath("Label_Parchment_Favor_Count")
 
-[node name="Background" type="TextureRect" parent="."]
+[node name="Background" type="TextureRect" parent="." unique_id=68433673]
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 texture = ExtResource("2_background")
 
-[node name="ResourceBar" parent="." instance=ExtResource("4_resource_bar")]
+[node name="ResourceBar" parent="." unique_id=1380831941 instance=ExtResource("4_resource_bar")]
 layout_mode = 0
 anchor_left = 0.5
 anchor_right = 0.5
@@ -32,13 +36,12 @@ offset_right = 193.0
 offset_bottom = 60.0
 grow_horizontal = 2
 
-[node name="Button_Back" type="Button" parent="."]
+[node name="Button_Back" type="Button" parent="." unique_id=385339907]
 layout_mode = 0
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -80.0
 offset_top = 20.0
-offset_right = 0.0
 offset_bottom = 60.0
 grow_horizontal = 0
 theme = ExtResource("3_theme")
@@ -46,34 +49,97 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 6
 text = "Back"
 
-[node name="Button_Favor" type="TextureButton" parent="."]
+[node name="Button_Bone_Favor" type="TextureButton" parent="." unique_id=1446255100]
 layout_mode = 0
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -75.0
-offset_top = -150.0
-offset_right = 25.0
-offset_bottom = -50.0
+offset_left = -200.0
+offset_top = -50.0
+offset_right = -100.0
+offset_bottom = 50.0
 texture_normal = ExtResource("5_favor_icon")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Label_Favor_Count" type="Label" parent="."]
+[node name="Label_Bone_Favor_Count" type="Label" parent="." unique_id=778897152]
 layout_mode = 0
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = 30.0
-offset_top = -130.0
-offset_right = 130.0
-offset_bottom = -70.0
+offset_left = -200.0
+offset_top = 400.0
+offset_right = -100.0
+offset_bottom = 450.0
 theme = ExtResource("3_theme")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 6
 theme_override_font_sizes/font_size = 32
 text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button_Brass_Favor" type="TextureButton" parent="." unique_id=1392815342]
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -50.0
+offset_top = -50.0
+offset_right = 50.0
+offset_bottom = 50.0
+texture_normal = ExtResource("6_brass_icon")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Label_Brass_Favor_Count" type="Label" parent="." unique_id=1212287068]
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -50.0
+offset_top = 400.0
+offset_right = 50.0
+offset_bottom = 450.0
+theme = ExtResource("3_theme")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 32
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button_Parchment_Favor" type="TextureButton" parent="." unique_id=1230054914]
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 100.0
+offset_top = -50.0
+offset_right = 200.0
+offset_bottom = 50.0
+texture_normal = ExtResource("7_parchment_icon")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Label_Parchment_Favor_Count" type="Label" parent="." unique_id=280003464]
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 100.0
+offset_top = 400.0
+offset_right = 200.0
+offset_bottom = 450.0
+theme = ExtResource("3_theme")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 32
+text = "0"
+horizontal_alignment = 1
 vertical_alignment = 1
 
 [connection signal="button_up" from="Button_Back" to="." method="_on_back_button_up"]
-[connection signal="button_up" from="Button_Favor" to="." method="_on_favor_button_up"]
+[connection signal="button_up" from="Button_Bone_Favor" to="." method="_on_bone_favor_button_up"]
+[connection signal="button_up" from="Button_Brass_Favor" to="." method="_on_brass_favor_button_up"]
+[connection signal="button_up" from="Button_Parchment_Favor" to="." method="_on_parchment_favor_button_up"]

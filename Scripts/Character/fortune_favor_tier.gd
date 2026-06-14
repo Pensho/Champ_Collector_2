@@ -1,5 +1,13 @@
 class_name FortuneFavorTier extends Resource
 
+enum TierType
+{
+	BONE,
+	BRASS,
+	PARCHMENT,
+}
+
+@export var tier_type: TierType
 @export var reward_count: int
 @export var silver_weight: int
 @export var silver_amount: int

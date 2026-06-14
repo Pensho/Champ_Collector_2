@@ -10,7 +10,11 @@ signal resources_changed
 
 var _silver: int
 var _supplies: int
-var _fortunes_favor: int
+var _fortunes_favor: Dictionary[FortuneFavorTier.TierType, int] = {
+	FortuneFavorTier.TierType.BONE: 0,
+	FortuneFavorTier.TierType.BRASS: 0,
+	FortuneFavorTier.TierType.PARCHMENT: 0,
+}
 var _last_supply_update_unix: int
 
 func _ready() -> void:
@@ -29,14 +33,21 @@ func Serialize() -> Dictionary:
 	return {
 		"silver": _silver,
 		"supplies": _supplies,
-		"fortunes_favor": _fortunes_favor,
+		"fortunes_favor_bone": _fortunes_favor[FortuneFavorTier.TierType.BONE],
+		"fortunes_favor_brass": _fortunes_favor[FortuneFavorTier.TierType.BRASS],
+		"fortunes_favor_parchment": _fortunes_favor[FortuneFavorTier.TierType.PARCHMENT],
 		"last_supply_update_unix": _last_supply_update_unix,
 	}
 
 func Deserialize(p_data: Dictionary) -> void:
 	_silver = p_data["silver"]
 	_supplies = p_data["supplies"]
-	_fortunes_favor = p_data["fortunes_favor"]
+	if(p_data.has("fortunes_favor_bone")):
+		_fortunes_favor[FortuneFavorTier.TierType.BONE] = p_data["fortunes_favor_bone"]
+		_fortunes_favor[FortuneFavorTier.TierType.BRASS] = p_data.get("fortunes_favor_brass", 0)
+		_fortunes_favor[FortuneFavorTier.TierType.PARCHMENT] = p_data.get("fortunes_favor_parchment", 0)
+	else:
+		_fortunes_favor[FortuneFavorTier.TierType.BONE] = p_data.get("fortunes_favor", 0)
 	_last_supply_update_unix = p_data.get("last_supply_update_unix", 0)
 	UpdateSupplies()
 
@@ -91,9 +102,16 @@ func AddSupplies(p_amount: int) -> void:
 	_supplies = _supplies + p_amount
 	resources_changed.emit()
 
-func SpendFortunesFavor(p_amount: int) -> bool:
-	if (_fortunes_favor >= p_amount):
-		_fortunes_favor -= p_amount
+func GetFortunesFavor(p_tier_type: FortuneFavorTier.TierType) -> int:
+	return _fortunes_favor[p_tier_type]
+
+func AddFortunesFavor(p_tier_type: FortuneFavorTier.TierType, p_amount: int) -> void:
+	_fortunes_favor[p_tier_type] += p_amount
+	resources_changed.emit()
+
+func SpendFortunesFavor(p_tier_type: FortuneFavorTier.TierType, p_amount: int) -> bool:
+	if (_fortunes_favor[p_tier_type] >= p_amount):
+		_fortunes_favor[p_tier_type] -= p_amount
 		resources_changed.emit()
 		return true
 	return false

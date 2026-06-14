@@ -34,7 +34,7 @@ func Init(p_context_container: ContextContainer) -> void:
 		elif _context._arguments.get("Is_Boss", false):
 			main.GetInstance()._progress.MarkDifficultyCompleted(biome_path, _context._arguments["Difficulty"])
 		var battle_context: Context_Battle = p_context_container._static_context as Context_Battle
-		main.GetInstance()._resources._fortunes_favor += battle_context._loot_table._drop_result._fortunes_favor
+		main.GetInstance()._resources.AddFortunesFavor(FortuneFavorTier.TierType.BONE, battle_context._loot_table._drop_result._fortunes_favor)
 		main.GetInstance()._resources._silver += battle_context._loot_table._drop_result._silver
 		main.GetInstance()._resources.AddSupplies(battle_context._loot_table._drop_result._supplies)
 		if _context._adventure_state != null:

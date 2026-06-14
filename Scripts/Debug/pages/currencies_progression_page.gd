@@ -2,7 +2,9 @@ extends DebugPage
 
 @export var _silver_spin: SpinBox
 @export var _supplies_spin: SpinBox
-@export var _fortunes_favor_spin: SpinBox
+@export var _fortunes_favor_bone_spin: SpinBox
+@export var _fortunes_favor_brass_spin: SpinBox
+@export var _fortunes_favor_parchment_spin: SpinBox
 @export var _encounter_id_edit: LineEdit
 @export var _difficulty_spin: SpinBox
 @export var _encounters_label: Label
@@ -17,7 +19,9 @@ func Refresh() -> void:
 	var resources: ResourceHandler = main.GetInstance()._resources
 	_silver_spin.value = resources._silver
 	_supplies_spin.value = resources._supplies
-	_fortunes_favor_spin.value = resources._fortunes_favor
+	_fortunes_favor_bone_spin.value = resources.GetFortunesFavor(FortuneFavorTier.TierType.BONE)
+	_fortunes_favor_brass_spin.value = resources.GetFortunesFavor(FortuneFavorTier.TierType.BRASS)
+	_fortunes_favor_parchment_spin.value = resources.GetFortunesFavor(FortuneFavorTier.TierType.PARCHMENT)
 	RefreshEncounterList()
 
 func RefreshEncounterList() -> void:
@@ -34,7 +38,9 @@ func _on_apply_currencies_button_up() -> void:
 	var resources: ResourceHandler = main.GetInstance()._resources
 	resources._silver = int(_silver_spin.value)
 	resources._supplies = int(_supplies_spin.value)
-	resources._fortunes_favor = int(_fortunes_favor_spin.value)
+	resources._fortunes_favor[FortuneFavorTier.TierType.BONE] = int(_fortunes_favor_bone_spin.value)
+	resources._fortunes_favor[FortuneFavorTier.TierType.BRASS] = int(_fortunes_favor_brass_spin.value)
+	resources._fortunes_favor[FortuneFavorTier.TierType.PARCHMENT] = int(_fortunes_favor_parchment_spin.value)
 
 func _on_set_difficulty_button_up() -> void:
 	var encounter_id: String = _encounter_id_edit.text.strip_edges()

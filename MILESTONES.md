@@ -96,3 +96,20 @@
   follow in a future plan) and "Town" (returns to Reclaimed City)
 - Wired the existing `Button_Adventure_guild` on the Reclaimed City hub to
   navigate to the new scene
+
+## Brass and Parchment Fortune's Favor tiers (added 2026-06-14)
+- `FortuneFavorTier` gains a `tier_type` enum (`BONE`/`BRASS`/`PARCHMENT`); added
+  `Brass_Tier.tres` (`reward_count = 5`) and `Parchment_Tier.tres` (`reward_count = 9`)
+  alongside `Bone_Tier.tres` (`reward_count = 3`), sharing the same weights/amounts
+  and recruitable champion pool
+- `ResourceHandler._fortunes_favor` is now a per-tier `Dictionary`, with
+  `GetFortunesFavor`/`AddFortunesFavor`/`SpendFortunesFavor(tier_type, amount)`;
+  serialized under `fortunes_favor_bone/brass/parchment` with migration of the old
+  flat `fortunes_favor` key into Bone on load
+- `RecruitmentMenu`/`Recruitment.tscn` now show three tier buttons (Bone/Brass/
+  Parchment), each spending its own balance and resolving via its own
+  `FortuneFavorTier` resource
+- Battle loot still awards generic Fortune's Favor into the Bone balance;
+  `ResourceBar` shows the sum of all three tiers under one icon; debug currencies
+  page exposes all three balances
+- Documented the three tiers in `Concept_Document.md` (section 3.3.2)

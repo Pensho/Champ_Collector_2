@@ -66,6 +66,47 @@ func test_supply_regen_fresh_anchor_is_set_to_now() -> void:
 	assert_eq(result["supplies"], 20, "Supplies should be unchanged on a fresh anchor")
 	assert_eq(result["last_unix"], now, "Anchor should be initialized to now")
 
+func test_fortunes_favor_spend_and_add_per_tier() -> void:
+	var rh: ResourceHandler = ResourceHandler.new()
+	rh.AddFortunesFavor(FortuneFavorTier.TierType.BONE, 3)
+	rh.AddFortunesFavor(FortuneFavorTier.TierType.BRASS, 2)
+
+	assert_eq(rh.GetFortunesFavor(FortuneFavorTier.TierType.BONE), 3, "Bone balance should reflect added amount")
+	assert_eq(rh.GetFortunesFavor(FortuneFavorTier.TierType.BRASS), 2, "Brass balance should reflect added amount")
+	assert_eq(rh.GetFortunesFavor(FortuneFavorTier.TierType.PARCHMENT), 0, "Parchment balance should remain zero")
+
+	assert_true(rh.SpendFortunesFavor(FortuneFavorTier.TierType.BONE, 3), "Should succeed spending exactly the Bone balance")
+	assert_eq(rh.GetFortunesFavor(FortuneFavorTier.TierType.BONE), 0, "Bone balance should be zero after spending")
+	assert_false(rh.SpendFortunesFavor(FortuneFavorTier.TierType.BRASS, 3), "Should fail spending more Brass than available")
+	assert_eq(rh.GetFortunesFavor(FortuneFavorTier.TierType.BRASS), 2, "Brass balance should be unchanged on failed spend")
+	rh.free()
+
+func test_fortunes_favor_serialize_deserialize_round_trip() -> void:
+	var rh: ResourceHandler = ResourceHandler.new()
+	rh.AddFortunesFavor(FortuneFavorTier.TierType.BONE, 1)
+	rh.AddFortunesFavor(FortuneFavorTier.TierType.BRASS, 2)
+	rh.AddFortunesFavor(FortuneFavorTier.TierType.PARCHMENT, 3)
+
+	var data: Dictionary = rh.Serialize()
+
+	var rh2: ResourceHandler = ResourceHandler.new()
+	rh2.Deserialize(data)
+
+	assert_eq(rh2.GetFortunesFavor(FortuneFavorTier.TierType.BONE), 1, "Bone balance should round-trip")
+	assert_eq(rh2.GetFortunesFavor(FortuneFavorTier.TierType.BRASS), 2, "Brass balance should round-trip")
+	assert_eq(rh2.GetFortunesFavor(FortuneFavorTier.TierType.PARCHMENT), 3, "Parchment balance should round-trip")
+	rh.free()
+	rh2.free()
+
+func test_fortunes_favor_deserialize_migrates_old_flat_key_into_bone() -> void:
+	var rh: ResourceHandler = ResourceHandler.new()
+	rh.Deserialize({"silver": 0, "supplies": 0, "fortunes_favor": 7})
+
+	assert_eq(rh.GetFortunesFavor(FortuneFavorTier.TierType.BONE), 7, "Old flat fortunes_favor value should migrate into Bone")
+	assert_eq(rh.GetFortunesFavor(FortuneFavorTier.TierType.BRASS), 0, "Brass should default to zero on migration")
+	assert_eq(rh.GetFortunesFavor(FortuneFavorTier.TierType.PARCHMENT), 0, "Parchment should default to zero on migration")
+	rh.free()
+
 func test_supply_regen_exact_multiple_has_no_remainder() -> void:
 	var now: int = int(Time.get_unix_time_from_system())
 	var last: int = now - 1200

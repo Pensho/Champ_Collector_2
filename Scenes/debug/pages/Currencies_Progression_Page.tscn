@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Scripts/Debug/pages/currencies_progression_page.gd" id="1_script"]
 
-[node name="CurrenciesProgressionPage" type="Control" node_paths=PackedStringArray("_silver_spin", "_supplies_spin", "_fortunes_favor_spin", "_encounter_id_edit", "_difficulty_spin", "_encounters_label")]
+[node name="CurrenciesProgressionPage" type="Control" node_paths=PackedStringArray("_silver_spin", "_supplies_spin", "_fortunes_favor_bone_spin", "_fortunes_favor_brass_spin", "_fortunes_favor_parchment_spin", "_encounter_id_edit", "_difficulty_spin", "_encounters_label")]
 layout_mode = 2
 anchors_preset = 15
 anchor_right = 1.0
@@ -12,7 +12,9 @@ grow_vertical = 2
 script = ExtResource("1_script")
 _silver_spin = NodePath("MarginContainer/VBoxContainer/CurrenciesGrid/SpinBox_Silver")
 _supplies_spin = NodePath("MarginContainer/VBoxContainer/CurrenciesGrid/SpinBox_Supplies")
-_fortunes_favor_spin = NodePath("MarginContainer/VBoxContainer/CurrenciesGrid/SpinBox_FortunesFavor")
+_fortunes_favor_bone_spin = NodePath("MarginContainer/VBoxContainer/CurrenciesGrid/SpinBox_FortunesFavorBone")
+_fortunes_favor_brass_spin = NodePath("MarginContainer/VBoxContainer/CurrenciesGrid/SpinBox_FortunesFavorBrass")
+_fortunes_favor_parchment_spin = NodePath("MarginContainer/VBoxContainer/CurrenciesGrid/SpinBox_FortunesFavorParchment")
 _encounter_id_edit = NodePath("MarginContainer/VBoxContainer/ProgressionRow/LineEdit_EncounterID")
 _difficulty_spin = NodePath("MarginContainer/VBoxContainer/ProgressionRow/SpinBox_Difficulty")
 _encounters_label = NodePath("MarginContainer/VBoxContainer/Label_Encounters")
@@ -57,11 +59,27 @@ text = "Supplies"
 layout_mode = 2
 max_value = 100.0
 
-[node name="Label_FortunesFavor" type="Label" parent="MarginContainer/VBoxContainer/CurrenciesGrid"]
+[node name="Label_FortunesFavorBone" type="Label" parent="MarginContainer/VBoxContainer/CurrenciesGrid"]
 layout_mode = 2
-text = "Fortune's Favor"
+text = "Fortune's Favor (Bone)"
 
-[node name="SpinBox_FortunesFavor" type="SpinBox" parent="MarginContainer/VBoxContainer/CurrenciesGrid"]
+[node name="SpinBox_FortunesFavorBone" type="SpinBox" parent="MarginContainer/VBoxContainer/CurrenciesGrid"]
+layout_mode = 2
+max_value = 999999.0
+
+[node name="Label_FortunesFavorBrass" type="Label" parent="MarginContainer/VBoxContainer/CurrenciesGrid"]
+layout_mode = 2
+text = "Fortune's Favor (Brass)"
+
+[node name="SpinBox_FortunesFavorBrass" type="SpinBox" parent="MarginContainer/VBoxContainer/CurrenciesGrid"]
+layout_mode = 2
+max_value = 999999.0
+
+[node name="Label_FortunesFavorParchment" type="Label" parent="MarginContainer/VBoxContainer/CurrenciesGrid"]
+layout_mode = 2
+text = "Fortune's Favor (Parchment)"
+
+[node name="SpinBox_FortunesFavorParchment" type="SpinBox" parent="MarginContainer/VBoxContainer/CurrenciesGrid"]
 layout_mode = 2
 max_value = 999999.0
 

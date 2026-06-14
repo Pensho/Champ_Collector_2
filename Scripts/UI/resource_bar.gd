@@ -36,7 +36,11 @@ func Refresh() -> void:
 	_supplies_UI.SetTexture(resources.SUPPLIES_TEXTURE)
 	_RefreshSuppliesTooltip()
 
-	_fortunes_favor_UI.SetText(str(resources._fortunes_favor))
+	var total_fortunes_favor: int = (
+			resources.GetFortunesFavor(FortuneFavorTier.TierType.BONE)
+			+ resources.GetFortunesFavor(FortuneFavorTier.TierType.BRASS)
+			+ resources.GetFortunesFavor(FortuneFavorTier.TierType.PARCHMENT))
+	_fortunes_favor_UI.SetText(str(total_fortunes_favor))
 	_fortunes_favor_UI.SetTexture(resources.FORTUNES_FAVOR_BONE_1)
 	_fortunes_favor_UI.SetToolTip(FORTUNES_FAVOR_TITLE, FORTUNES_FAVOR_DESCRIPTION)
 
