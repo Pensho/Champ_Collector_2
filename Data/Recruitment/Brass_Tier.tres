@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="FortuneFavorTier" load_steps=15 format=3]
+[gd_resource type="Resource" script_class="FortuneFavorTier" format=3 uid="uid://bskediuji6170"]
 
-[ext_resource type="Script" path="res://Scripts/Character/fortune_favor_tier.gd" id="1_tier"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="1_preset"]
+[ext_resource type="Script" uid="uid://p3ncpbkkqrny" path="res://Scripts/Character/fortune_favor_tier.gd" id="1_tier"]
 [ext_resource type="Resource" uid="uid://d04mj1rh28xgt" path="res://Data/Character_Player_Variants/Architect.tres" id="2_architect"]
 [ext_resource type="Resource" uid="uid://dnup7y7ax8jck" path="res://Data/Character_Player_Variants/Bar_Brawler.tres" id="3_bar_brawler"]
 [ext_resource type="Resource" uid="uid://7adgp1emx6yk" path="res://Data/Character_Player_Variants/Bloodmage.tres" id="4_bloodmage"]
@@ -20,7 +20,7 @@ script = ExtResource("1_tier")
 tier_type = 1
 reward_count = 5
 silver_weight = 40
-silver_amount = 20
+silver_amount = 30
 supplies_weight = 30
-supplies_amount = 10
+supplies_amount = 15
 recruitable_champions = Array[ExtResource("1_preset")]([ExtResource("2_architect"), ExtResource("3_bar_brawler"), ExtResource("4_bloodmage"), ExtResource("5_centaur_archivist"), ExtResource("6_centaur_lancer"), ExtResource("7_chronophage"), ExtResource("8_herald_of_the_loom"), ExtResource("9_jester"), ExtResource("10_knight"), ExtResource("11_tactician"), ExtResource("12_thief"), ExtResource("13_tidal_corsair")])

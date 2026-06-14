@@ -10,6 +10,7 @@ _primary_loot = Dictionary[int, int]({
 })
 _secondary_loot = Dictionary[int, int]({
 0: 5,
-1: 10
+1: 10,
+3: 1
 })
 metadata/_custom_type_script = "uid://cabwckgc7os5u"
