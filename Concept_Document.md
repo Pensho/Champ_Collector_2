@@ -83,7 +83,8 @@ Each character is defined by a set of core attributes:
     * Rank
 
 #### 3.1.2. Progression Systems
-* Ascension?
+* Ascension
+    * Lets a character be upgraded beyond max level using duplicate characters, unlocking a new passive or stat ceiling.
 * ~~Aura~~
 * Synergy through combination of faction or characters
 * Area?
@@ -336,32 +337,10 @@ One type of consumable could include some types to alter items, e.g. increase th
 ### 3.4. Game Modes
 TODO
 
-#### 3.6.1. Main Campaign
+#### 3.4.1. Main Campaign
 TODO
 
-#### 3.6.2. Daily/Weekly Challenges
-TODO
-
-#### 3.6.3. Draft Mode
-The player faces a series of battles, each time asked to in a specific order ban and pick characters from their collection and a set of random characters for the opponent.
-
-Order:
-| Player | Computer |
-|--------|----------|
-| Ban    |          |
-|        | Ban      |
-| Pick   |          |
-|        | Pick     |
-| Ban    |          |
-|        | Ban      |
-| Pick   |          |
-|        | Pick     |
-| Ban    |          |
-|        | Ban      |
-| Pick   |          |
-|        | Pick     |
-
-#### 3.6.4. Roguelite Mode
+#### 3.4.2. Daily/Weekly Challenges
 TODO
 
 ### 3.5. Events

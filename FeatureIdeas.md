@@ -17,16 +17,9 @@ Effort: **S** = hours, **M** = days, **L** = week+
 
 ## Characters & Progression
 
-- **Ascension System** *(Priority: High | Effort: L)*
-  Let players upgrade a character beyond max level using special materials, unlocking a new passive or stat ceiling. Referenced in the concept doc as a planned progression layer.
-
 ---
 
 ## Gear & Economy
-
-- **Item Affix Reroller** *(Priority: Medium | Effort: M)*
-  Consumable that randomizes the attribute affixes on an item without changing its rarity. Ties into the crafting consumable ideas in Concept_Document section 3.3.1.
-  Alternate option is for it to be a purchasable service at a town shop instead of a consumable.
 
 ---
 
