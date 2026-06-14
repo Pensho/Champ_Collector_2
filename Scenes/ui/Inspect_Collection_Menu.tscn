@@ -193,6 +193,7 @@ custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 
 [node name="TextureRect2" type="TextureRect" parent="MarginContainer/HBoxContainer2/VBoxContainer2/HBoxContainer/Weapon_Slot" unique_id=588322690]
+show_behind_parent = true
 material = SubResource("ShaderMaterial_u3wy6")
 layout_mode = 0
 offset_left = 10.0
@@ -207,6 +208,7 @@ custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 
 [node name="TextureRect2" type="TextureRect" parent="MarginContainer/HBoxContainer2/VBoxContainer2/HBoxContainer/Shield_Slot" unique_id=1086887396]
+show_behind_parent = true
 material = SubResource("ShaderMaterial_2jco1")
 layout_mode = 0
 offset_left = 10.0
@@ -221,6 +223,7 @@ layout_mode = 2
 size_flags_horizontal = 4
 
 [node name="TextureRect2" type="TextureRect" parent="MarginContainer/HBoxContainer2/VBoxContainer2/Boots_Slot" unique_id=1206789498]
+show_behind_parent = true
 material = SubResource("ShaderMaterial_0ed3m")
 layout_mode = 0
 offset_left = 10.0
@@ -422,7 +425,7 @@ description_text = null
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer" unique_id=1082317516]
 layout_mode = 2
 size_flags_horizontal = 8
-size_flags_vertical = 8
+size_flags_vertical = 0
 
 [node name="Exit" type="Button" parent="MarginContainer/HBoxContainer" unique_id=310925250]
 layout_mode = 2

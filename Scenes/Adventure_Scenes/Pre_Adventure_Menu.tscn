@@ -38,11 +38,12 @@ theme_override_constants/margin_bottom = 40
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1988926716]
 layout_mode = 2
 theme = ExtResource("1_w410e")
+theme_override_constants/separation = 32
 
 [node name="Label_Description" type="Label" parent="MarginContainer/VBoxContainer" unique_id=369816700]
 layout_mode = 2
 theme = ExtResource("1_w410e")
-text = "Select a biome and set out on a multi-day expedition."
+text = "Select an expedition"
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
@@ -77,13 +78,14 @@ size_flags_horizontal = 4
 theme = ExtResource("1_w410e")
 text = "Start"
 
-[node name="Button_Exit" type="Button" parent="MarginContainer/VBoxContainer" unique_id=635165248]
+[node name="Button_Exit" type="Button" parent="MarginContainer" unique_id=635165248]
 layout_mode = 2
-size_flags_horizontal = 4
+size_flags_horizontal = 8
+size_flags_vertical = 0
 theme = ExtResource("1_w410e")
 text = "Exit"
 
 [connection signal="item_selected" from="MarginContainer/VBoxContainer/HBoxContainer_Biome/OptionButton_Biome" to="." method="_on_biome_item_selected"]
 [connection signal="item_selected" from="MarginContainer/VBoxContainer/HBoxContainer_Difficulty/OptionButton_Difficulty" to="." method="_on_difficulty_item_selected"]
 [connection signal="button_up" from="MarginContainer/VBoxContainer/Button_Start" to="." method="_on_start_button_up"]
-[connection signal="button_up" from="MarginContainer/VBoxContainer/Button_Exit" to="." method="_on_exit_button_up"]
+[connection signal="button_up" from="MarginContainer/Button_Exit" to="." method="_on_exit_button_up"]
