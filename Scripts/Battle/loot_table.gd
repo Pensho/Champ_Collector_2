@@ -17,7 +17,7 @@ class DropResult extends Resource:
 	var _equipment: EquipmentPreset = null
 	var _experience: int = 0
 	var _silver: int = 0
-	var _fortunes_favor: int = 0
+	var _fortunes_favor: Dictionary[FortuneFavorTier.TierType, int] = {}
 	var _supplies: int = 0
 
 var _drop_result: DropResult = DropResult.new()

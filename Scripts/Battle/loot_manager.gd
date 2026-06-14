@@ -23,6 +23,12 @@ const RARITY_WEIGHTING: Dictionary[Types.Rarity, int] = {
 	Types.Rarity.Relic: 7,			# budget 28,268 required
 }
 const GEAR_RARITY_RANGE: int = 3
+const FORTUNE_FAVOR_TIER_RANGE: int = 2 # only 3 tiers exist, so range can cover all
+const FORTUNE_FAVOR_TIER_WEIGHTING: Dictionary[FortuneFavorTier.TierType, int] = {
+	FortuneFavorTier.TierType.BONE: 4,
+	FortuneFavorTier.TierType.BRASS: 2,
+	FortuneFavorTier.TierType.PARCHMENT: 1,
+}
 const LOOT_VALUE: Dictionary[LootType, int] = {
 	LootType.Experience : 18,
 	LootType.Silver : 10,
@@ -70,6 +76,36 @@ static func RollRarityForItem(p_best_outcome: int) -> Types.Rarity:
 	
 	return result
 
+static func GetBestFortuneFavorTier(p_budget: int) -> int:
+	var tier_power_value = log(float(p_budget))/log(LOOT_VALUE[LootType.Fortunes_Favor])
+	var best_outcome = int((tier_power_value - 1.0) / RARITY_VALUE_POWER)
+
+	if(FortuneFavorTier.TierType.BONE >= best_outcome):
+		return FortuneFavorTier.TierType.BONE as int
+	elif(FortuneFavorTier.TierType.PARCHMENT < best_outcome):
+		best_outcome = FortuneFavorTier.TierType.PARCHMENT as int
+
+	return best_outcome
+
+static func RollFortuneFavorTier(p_best_outcome: int) -> FortuneFavorTier.TierType:
+	var cumulative_weights: Dictionary[FortuneFavorTier.TierType, int]
+	var current_sum: int = 0
+	var worst_outcome: int = max(p_best_outcome - FORTUNE_FAVOR_TIER_RANGE, 0)
+	for i in range(worst_outcome, p_best_outcome + 1):
+		current_sum += FORTUNE_FAVOR_TIER_WEIGHTING[i as FortuneFavorTier.TierType]
+		cumulative_weights[i as FortuneFavorTier.TierType] = current_sum
+	var total_weight = current_sum
+
+	var random_roll = randi_range(0, total_weight)
+
+	var result: FortuneFavorTier.TierType = FortuneFavorTier.TierType.BONE
+	for tier in cumulative_weights.keys():
+		if(random_roll <= cumulative_weights[tier]):
+			result = tier
+			break
+
+	return result
+
 static func DistributeRewards(p_loot_table: LootTable, p_difficulty: int) -> void:
 	print("Loot budget from battle is: ", p_loot_table._budget)
 	for type in p_loot_table._primary_loot.keys():
@@ -95,9 +131,12 @@ static func DistributeRewards(p_loot_table: LootTable, p_difficulty: int) -> voi
 					print("Received Equipment, budget left: ", p_loot_table._budget)
 			LootType.Fortunes_Favor:
 				var ff_count: int = max(1, int(p_difficulty / 2.0))
-				p_loot_table._drop_result._fortunes_favor += ff_count
-				p_loot_table._budget -= LOOT_VALUE[LootType.Fortunes_Favor] * ff_count
-				print("Received Fortunes Favor x", ff_count, ", budget left: ", p_loot_table._budget)
+				var best_tier_outcome: int = GetBestFortuneFavorTier(p_loot_table._budget)
+				var tier: FortuneFavorTier.TierType = RollFortuneFavorTier(best_tier_outcome)
+				var cost: int = int(pow(LOOT_VALUE[LootType.Fortunes_Favor], 1.0 + (best_tier_outcome as float * RARITY_VALUE_POWER)))
+				p_loot_table._drop_result._fortunes_favor[tier] = p_loot_table._drop_result._fortunes_favor.get(tier, 0) + ff_count
+				p_loot_table._budget -= cost * ff_count
+				print("Received Fortunes Favor x", ff_count, " (tier ", tier, "), budget left: ", p_loot_table._budget)
 			LootType.Supplies:
 				for i in range(p_loot_table._primary_loot[type]):
 					p_loot_table._drop_result._supplies += 1
@@ -120,9 +159,11 @@ static func DistributeRewards(p_loot_table: LootTable, p_difficulty: int) -> voi
 				pass
 				#p_loot_table._budget -= LOOT_VALUE[LootType.Equipment]
 			LootType.Fortunes_Favor:
-				p_loot_table._drop_result._fortunes_favor += 1
+				var best_tier_outcome: int = GetBestFortuneFavorTier(p_loot_table._budget)
+				var tier: FortuneFavorTier.TierType = RollFortuneFavorTier(best_tier_outcome)
+				p_loot_table._drop_result._fortunes_favor[tier] = p_loot_table._drop_result._fortunes_favor.get(tier, 0) + 1
 				p_loot_table._budget -= LOOT_VALUE[LootType.Fortunes_Favor]
-				print("Received secondary Fortunes Favor, budget left: ", p_loot_table._budget)
+				print("Received secondary Fortunes Favor (tier ", tier, "), budget left: ", p_loot_table._budget)
 			LootType.Supplies:
 				p_loot_table._drop_result._supplies += 1
 				p_loot_table._budget -= LOOT_VALUE[LootType.Supplies]
