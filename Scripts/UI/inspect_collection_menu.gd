@@ -34,15 +34,14 @@ var _selected_item_slot_ID: int = -1
 
 func Init(_p_context_container: ContextContainer) -> void:
 	_available_items.resize(_item_collection.size())
-	_displayed_item_ids.resize(_item_collection.size())
 	for i in _item_collection.size():
 		var item_slot: MenuItemSlot = MENU_ITEM_SLOT.instantiate()
 		_grid_container_items.add_child(item_slot)
 		_available_items[i] = item_slot
 		_available_items[i]._ID = i
 		_available_items[i].ConnectButton(AvailableItemButton)
-		_displayed_item_ids[i] = _item_collection.keys()[i]
-		
+	RefreshDisplayedItems()
+
 	_available_characters.resize(_character_collection.size())
 	_displayed_character_ids.resize(_available_characters.size())
 	for i in _character_collection.size():
@@ -81,6 +80,12 @@ func Init(_p_context_container: ContextContainer) -> void:
 	_confirm_option.hide()
 	
 	ShowCharacters()
+
+func RefreshDisplayedItems() -> void:
+	_displayed_item_ids.clear()
+	for item_id in _item_collection.keys():
+		if main.GetInstance()._item_collection.UNEQUIPPED == _item_collection[item_id]._held_by:
+			_displayed_item_ids.append(item_id)
 
 func GetMenuItemSlotChildren(p_start_node: Node) -> Array[MenuItemSlot]:
 	var result: Array[MenuItemSlot] = []
@@ -139,15 +144,17 @@ func ShowItems() -> void:
 	_scroll_container_characters.hide()
 	_scroll_container_items.show()
 	for slot in _available_items.size():
-		_available_items[slot].level.text = ""
-		if(main.GetInstance()._item_collection.UNEQUIPPED == _item_collection[_item_collection.keys()[slot]]._held_by):
+		if slot < _displayed_item_ids.size():
+			var item_id: int = _displayed_item_ids[slot]
+			_available_items[slot].show()
 			_available_items[slot].SetHeldObjectTexture(
-					main.GetInstance()._item_collection.GetItemTexture(
-						_item_collection[_displayed_item_ids[slot]]._slot))
-			_available_items[slot].SetTextureOutline(_item_collection[_displayed_item_ids[slot]]._rarity)
-			_available_items[slot].level.text = str(_item_collection[_displayed_item_ids[slot]]._level)
-			continue
-		_available_items[slot].SetHeldObjectTexture(null)
+					main.GetInstance()._item_collection.GetItemTexture(_item_collection[item_id]._slot))
+			_available_items[slot].SetTextureOutline(_item_collection[item_id]._rarity)
+			_available_items[slot].level.text = str(_item_collection[item_id]._level)
+		else:
+			_available_items[slot].SetHeldObjectTexture(null)
+			_available_items[slot].level.text = ""
+			_available_items[slot].hide()
 
 func CanEquipFromMenuID(p_instance_ID: int) -> bool:
 	var selected_item_type: Types.Slot = _item_collection[p_instance_ID]._slot
@@ -185,10 +192,11 @@ func TrySell() -> void:
 	_confirm_option.show()
 
 func SellItem() -> void:
-	main.GetInstance()._resources._silver += LootManager.GetSellValue(_item_collection[_displayed_item_ids[_selected_item_slot_ID]]._rarity)
-	main.GetInstance()._item_collection.Remove(_displayed_item_ids[_selected_item_slot_ID])
-	_available_items[_selected_item_slot_ID].SetHeldObjectTexture(null)
-	_displayed_item_ids[_selected_item_slot_ID] = -1
+	var item_id: int = _displayed_item_ids[_selected_item_slot_ID]
+	main.GetInstance()._resources._silver += LootManager.GetSellValue(_item_collection[item_id]._rarity)
+	main.GetInstance()._item_collection.Remove(item_id)
+	RefreshDisplayedItems()
+	ShowItems()
 	_confirm_option.hide()
 	_select_item_option.hide()
 
@@ -225,49 +233,36 @@ func AvailableCharacterButton(p_slot_ID: int) -> void:
 	ShowItems()
 
 func TriggerEquipItem() -> void:
-	if(_displayed_item_ids[_selected_item_slot_ID] == -1):
-		return
-	
-	var slot_type: Types.Slot = _item_collection[_displayed_item_ids[_selected_item_slot_ID]]._slot
+	var item_id: int = _displayed_item_ids[_selected_item_slot_ID]
+
+	var slot_type: Types.Slot = _item_collection[item_id]._slot
 	if(_character_collection[_selected_character_ID]._held_items.has(slot_type)):
 		TriggerUnequipItem(slot_type)
-	
-	_character_collection[_selected_character_ID].EquipItem(_displayed_item_ids[_selected_item_slot_ID])
-	main.GetInstance()._item_collection.EquipCollectionItem(_displayed_item_ids[_selected_item_slot_ID])
-	_available_items[_selected_item_slot_ID].SetHeldObjectTexture(null)
-	_displayed_item_ids[_selected_item_slot_ID] = -1
-	print("setting _displayed_item_ids slot, ", _selected_item_slot_ID, " to -1")
+
+	_character_collection[_selected_character_ID].EquipItem(item_id)
+	main.GetInstance()._item_collection.EquipCollectionItem(item_id)
+	RefreshDisplayedItems()
+	ShowItems()
 	ShowSelectedCharacter(_selected_character_ID)
 	_selected_item_slot_ID = -1
 	_select_item_option.hide()
 
 func TriggerUnequipItem(p_item_type: Types.Slot) -> void:
-	var held_item_ID = _character_collection[_selected_character_ID]._held_items[p_item_type]
-	var slot_for_held_item: int = -1
-	for slot_nr in _displayed_item_ids.size():
-		if(-1 == _displayed_item_ids[slot_nr]):
-			print("found an empty slot in _displayed_item_ids at ", slot_nr)
-			slot_for_held_item = slot_nr
-			_displayed_item_ids[slot_for_held_item] = held_item_ID
-			break
-	
+	var held_item_ID: int = _character_collection[_selected_character_ID]._held_items[p_item_type]
+
 	match p_item_type:
 		Types.Slot.Weapon:
 			_item_slots_equipped[0].SetHeldObjectTexture(null)
-			_available_items[slot_for_held_item].SetHeldObjectTexture(
-					main.GetInstance()._item_collection.GetItemTexture(Types.Slot.Weapon))
 		Types.Slot.Shield:
 			_item_slots_equipped[1].SetHeldObjectTexture(null)
-			_available_items[slot_for_held_item].SetHeldObjectTexture(
-					main.GetInstance()._item_collection.GetItemTexture(Types.Slot.Shield))
 		Types.Slot.Boots:
 			_item_slots_equipped[2].SetHeldObjectTexture(null)
-			_available_items[slot_for_held_item].SetHeldObjectTexture(
-					main.GetInstance()._item_collection.GetItemTexture(Types.Slot.Boots))
-	_available_items[slot_for_held_item].SetTextureOutline(_item_collection[held_item_ID]._rarity)
-	
+
 	main.GetInstance()._item_collection.UnequipCollectionItem(held_item_ID)
 	_character_collection[_selected_character_ID].UnequipItem(p_item_type)
+
+	RefreshDisplayedItems()
+	ShowItems()
 	ShowSelectedCharacter(_selected_character_ID)
 
 func EquipedItemSlotButton(p_slot_ID: int) -> void:
