@@ -10,7 +10,9 @@ func _on_town_button_up() -> void:
 	main.GetInstance().change_scene(context_container)
 
 func _on_fortunes_favor_button_up() -> void:
-	pass # Recruitment using Fortune's Favor is implemented in a future plan.
+	var context_container: ContextContainer = ContextContainer.new()
+	context_container._scene = "uid://dqx1m7r3y4t2k"
+	main.GetInstance().change_scene(context_container)
 
 func _on_drop_rates_button_up() -> void:
 	pass # Fortune's Favor drop rate display is implemented in a future plan.
