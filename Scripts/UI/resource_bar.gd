@@ -11,7 +11,7 @@ const FORTUNES_FAVOR_DESCRIPTION: String = "Used to recruit new champions."
 
 const SUPPLY_REGEN_COUNTDOWN_COLOR: String = "#E6D29E" # pale gold
 
-@export var _fortunes_favor_UI: ResourceUISlot
+@export var _fortunes_favor_UI: FortunesFavorUISlot
 @export var _silver_UI: ResourceUISlot
 @export var _supplies_UI: ResourceUISlot
 
@@ -40,9 +40,25 @@ func Refresh() -> void:
 			resources.GetFortunesFavor(FortuneFavorTier.TierType.BONE)
 			+ resources.GetFortunesFavor(FortuneFavorTier.TierType.BRASS)
 			+ resources.GetFortunesFavor(FortuneFavorTier.TierType.PARCHMENT))
-	_fortunes_favor_UI.SetText(str(total_fortunes_favor))
-	_fortunes_favor_UI.SetTexture(resources.FORTUNES_FAVOR_BONE_1)
-	_fortunes_favor_UI.SetToolTip(FORTUNES_FAVOR_TITLE, FORTUNES_FAVOR_DESCRIPTION)
+	_fortunes_favor_UI.SetMainSlot(
+			str(total_fortunes_favor), resources.FORTUNES_FAVOR_BONE_1,
+			FORTUNES_FAVOR_TITLE, FORTUNES_FAVOR_DESCRIPTION)
+
+	_fortunes_favor_UI.SetTierSlot(
+			FortuneFavorTier.TierType.BONE,
+			str(resources.GetFortunesFavor(FortuneFavorTier.TierType.BONE)),
+			resources.FORTUNES_FAVOR_BONE_1,
+			"Bone Fortune's Favor", FORTUNES_FAVOR_DESCRIPTION)
+	_fortunes_favor_UI.SetTierSlot(
+			FortuneFavorTier.TierType.BRASS,
+			str(resources.GetFortunesFavor(FortuneFavorTier.TierType.BRASS)),
+			resources.FORTUNES_FAVOR_BRASS_1,
+			"Brass Fortune's Favor", FORTUNES_FAVOR_DESCRIPTION)
+	_fortunes_favor_UI.SetTierSlot(
+			FortuneFavorTier.TierType.PARCHMENT,
+			str(resources.GetFortunesFavor(FortuneFavorTier.TierType.PARCHMENT)),
+			resources.FORTUNES_FAVOR_PARCHMENT_1,
+			"Parchment Fortune's Favor", FORTUNES_FAVOR_DESCRIPTION)
 
 func _RefreshSuppliesTooltip() -> void:
 	var resources: ResourceHandler = main.GetInstance()._resources
