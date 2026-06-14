@@ -27,7 +27,7 @@ anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="Button_Fortunes_Favor" type="TextureButton" parent="Navigation_Buttons" unique_id=826988593]
+[node name="Button_Recuitment" type="TextureButton" parent="Navigation_Buttons" unique_id=826988593]
 layout_mode = 0
 offset_left = 246.0
 offset_top = 496.0
@@ -36,7 +36,7 @@ offset_bottom = 696.0
 theme = ExtResource("4_75jl7")
 texture_hover = ExtResource("3_8g887")
 
-[node name="Label_Fortunes_Favor" type="Label" parent="Navigation_Buttons" unique_id=313374422]
+[node name="Label_Recuitment" type="Label" parent="Navigation_Buttons" unique_id=313374422]
 layout_mode = 0
 offset_left = 177.0
 offset_top = 438.0
@@ -46,7 +46,7 @@ theme = ExtResource("2_75jl7")
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.64705884)
 theme_override_constants/shadow_offset_x = 4
 theme_override_constants/shadow_offset_y = 3
-text = "Fortune's Favor"
+text = "Recuitment"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -97,6 +97,6 @@ offset_right = 193.0
 offset_bottom = 60.0
 grow_horizontal = 2
 
-[connection signal="button_up" from="Navigation_Buttons/Button_Fortunes_Favor" to="." method="_on_fortunes_favor_button_up"]
+[connection signal="button_up" from="Navigation_Buttons/Button_Recuitment" to="." method="_on_fortunes_favor_button_up"]
 [connection signal="button_up" from="Navigation_Buttons/Button_Drop_Rates" to="." method="_on_drop_rates_button_up"]
 [connection signal="button_up" from="Navigation_Buttons/Button_Town" to="." method="_on_town_button_up"]
