@@ -1,8 +1,14 @@
 extends Control
 
+var _hollow_ledger_window: HollowLedgerWindow
+
 @warning_ignore("unused_parameter") # Adventurers Guild menu requires nothing from the ContextContainer.
 func Init(p_context_container: ContextContainer) -> void:
-	pass
+	_hollow_ledger_window = load("res://Scenes/ui/Hollow_Ledger_Window.tscn").instantiate()
+	add_child(_hollow_ledger_window)
+	_hollow_ledger_window.position = Vector2i((get_window().size * 0.5) - (_hollow_ledger_window.GetSize() * 0.5))
+	_hollow_ledger_window.Init()
+	_hollow_ledger_window.hide()
 
 func _on_town_button_up() -> void:
 	var context_container: ContextContainer = ContextContainer.new()
@@ -15,4 +21,4 @@ func _on_fortunes_favor_button_up() -> void:
 	main.GetInstance().change_scene(context_container)
 
 func _on_drop_rates_button_up() -> void:
-	pass # Fortune's Favor drop rate display is implemented in a future plan.
+	_hollow_ledger_window.show()

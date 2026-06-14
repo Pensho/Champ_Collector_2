@@ -129,3 +129,6 @@ enum Combat_Event
 	Damage_Taken,
 	On_Death,
 }
+
+func RarityName(p_rarity: Types.Rarity) -> String:
+	return Types.Rarity.keys()[p_rarity - 1]

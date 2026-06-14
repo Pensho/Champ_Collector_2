@@ -1,0 +1,90 @@
+[gd_scene format=3 uid="uid://cn10jucb2twm6"]
+
+[ext_resource type="Script" uid="uid://brrp21ilua4un" path="res://Scripts/UI/hollow_ledger_window.gd" id="1_script"]
+[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="1_theme"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_close"]
+
+[node name="HollowLedgerWindow" type="Control" unique_id=1838529508 node_paths=PackedStringArray("_tier_list", "_background")]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_script")
+_tier_list = NodePath("ColorRect/MarginContainer/VBoxContainer/ScrollContainer/TierList")
+_background = NodePath("ColorRect")
+
+[node name="ColorRect2" type="ColorRect" parent="." unique_id=244225679]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -2000.0
+offset_top = -1000.0
+offset_right = 2000.0
+offset_bottom = 1000.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.33333334)
+
+[node name="Button_Close" type="Button" parent="." unique_id=897971481]
+custom_minimum_size = Vector2(4000, 2000)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_close")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_close")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_close")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_close")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=827424720]
+custom_minimum_size = Vector2(560, 480)
+layout_mode = 0
+offset_right = 560.0
+offset_bottom = 480.0
+color = Color(0, 0, 0, 0.9607843)
+
+[node name="MarginContainer" type="MarginContainer" parent="ColorRect" unique_id=577386575]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ColorRect/MarginContainer" unique_id=468567754]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Label_Title" type="Label" parent="ColorRect/MarginContainer/VBoxContainer" unique_id=410860042]
+layout_mode = 2
+theme = ExtResource("1_theme")
+theme_override_font_sizes/font_size = 24
+text = "Chance to get a Champion"
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="ColorRect/MarginContainer/VBoxContainer" unique_id=998154476]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TierList" type="VBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer" unique_id=2084852066]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 16
+
+[node name="Button_Close_Bottom" type="Button" parent="ColorRect/MarginContainer/VBoxContainer" unique_id=533184899]
+layout_mode = 2
+theme = ExtResource("1_theme")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+text = "Close"
+
+[connection signal="button_up" from="Button_Close" to="." method="_on_close_button_up"]
+[connection signal="button_up" from="ColorRect/MarginContainer/VBoxContainer/Button_Close_Bottom" to="." method="_on_close_button_up"]

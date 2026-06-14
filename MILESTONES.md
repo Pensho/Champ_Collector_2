@@ -113,3 +113,13 @@
   `ResourceBar` shows the sum of all three tiers under one icon; debug currencies
   page exposes all three balances
 - Documented the three tiers in `Concept_Document.md` (section 3.3.2)
+
+## Hollow Ledger drop rates window (added 2026-06-14)
+- The Adventurers Guild's "Hollow Ledger" button now opens
+  `Hollow_Ledger_Window.tscn`, showing each Fortune's Favor tier's chance to
+  award a champion alongside the champion rarity odds available from that tier
+- The champion chance per tier is derived from `RecruitmentManager`'s
+  `reward_count` and `CHAMPION_CHANCE_PER_REWARD`; `LootManager.GetRarityRates()`
+  derives rarity odds from the existing `RARITY_WEIGHTING` table, and
+  `Types.RarityName()` converts a `Rarity` enum value to a display string; no
+  rates are hard-coded

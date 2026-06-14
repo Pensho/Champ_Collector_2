@@ -93,3 +93,27 @@ func test_supplies_secondary_consumes_budget_for_one() -> void:
 	LootManager.DistributeRewards(table, 1)
 	assert_eq(table._drop_result._supplies, 1, "Budget with Supplies-only secondary should yield 1 supply")
 	assert_lte(table._budget, 0, "Budget should be exhausted after 1 supply")
+
+
+func test_rarity_rates_sum_to_100() -> void:
+	var grouped: Dictionary[Types.Rarity, Array] = {
+		Types.Rarity.Common: [1],
+		Types.Rarity.Uncommon: [1],
+		Types.Rarity.Rare: [1],
+	}
+	var rates: Dictionary[Types.Rarity, float] = LootManager.GetRarityRates(grouped)
+	var total: float = 0.0
+	for rarity in rates.keys():
+		total += rates[rarity]
+	assert_almost_eq(total, 100.0, 0.01, "Rarity rates should sum to 100%")
+
+
+func test_rarity_rates_only_include_present_rarities() -> void:
+	var grouped: Dictionary[Types.Rarity, Array] = {
+		Types.Rarity.Common: [1],
+		Types.Rarity.Rare: [1],
+	}
+	var rates: Dictionary[Types.Rarity, float] = LootManager.GetRarityRates(grouped)
+	assert_false(rates.has(Types.Rarity.Uncommon), "Rarities absent from the pool should not appear in the rates")
+	assert_almost_eq(rates[Types.Rarity.Common], 80.0, 0.01, "Common (288) vs Rare (72) should split 80/20")
+	assert_almost_eq(rates[Types.Rarity.Rare], 20.0, 0.01, "Rare share should be 20%")
