@@ -141,3 +141,16 @@
   each unequipped item's grid slot (`MenuItemSlot.level`, same label used for
   character level)
 - Rarity/affix rerolling on upgrade remains out of scope (Remaining_Scope_Checklist.md)
+
+## Hollow Ledger — tabbed reference panel with Nature attribute weights (added 2026-06-16)
+- `Hollow_Ledger_Window.tscn` restructured: window enlarged from 560×480 to 720×600;
+  content area replaced with a `TabContainer` holding two tabs
+- **Tab "Champion Odds"** — unchanged drop-rate view (three Fortune's Favor tiers with
+  champion chance and rarity odds); `_tier_list` export path updated to reflect new nesting
+- **Tab "Natures"** — `OptionButton` listing all 11 `AttributeWeightPreset`s (preloaded via
+  `NATURE_PRESETS` constant); selecting a preset rebuilds an attribute list using computed
+  descriptors (`None` / `Low` / `Medium` / `High`) derived at runtime from each preset's
+  weight range, so `.tres` balance changes re-bucket automatically without touching script
+- `DescribeWeight(p_weight, p_min, p_max) -> String` static helper implements the
+  bottom-25%/top-25% bucketing rule; covered by 9 unit tests in
+  `Tests/unit/test_hollow_ledger_window.gd`; suite now 147 tests across 15 files, all passing

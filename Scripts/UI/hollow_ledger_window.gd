@@ -4,6 +4,20 @@ const BONE_TIER: FortuneFavorTier = preload("res://Data/Recruitment/Bone_Tier.tr
 const BRASS_TIER: FortuneFavorTier = preload("res://Data/Recruitment/Brass_Tier.tres")
 const PARCHMENT_TIER: FortuneFavorTier = preload("res://Data/Recruitment/Parchment_Tier.tres")
 
+const NATURE_PRESETS: Array[AttributeWeightPreset] = [
+	preload("res://Data/Attribute_Weights/Arcane.tres"),
+	preload("res://Data/Attribute_Weights/Calculating.tres"),
+	preload("res://Data/Attribute_Weights/Conjurer.tres"),
+	preload("res://Data/Attribute_Weights/Dexterous.tres"),
+	preload("res://Data/Attribute_Weights/Fierce.tres"),
+	preload("res://Data/Attribute_Weights/Gluttonous.tres"),
+	preload("res://Data/Attribute_Weights/Learned.tres"),
+	preload("res://Data/Attribute_Weights/Marksman.tres"),
+	preload("res://Data/Attribute_Weights/Reckless.tres"),
+	preload("res://Data/Attribute_Weights/Resilient.tres"),
+	preload("res://Data/Attribute_Weights/Sturdy.tres"),
+]
+
 const RARITY_COLORS: Dictionary[Types.Rarity, Color] = {
 	Types.Rarity.Common: Color(0.384, 0.384, 0.384, 1.0),
 	Types.Rarity.Uncommon: Color(0.0, 0.544, 0.313, 1.0),
@@ -15,6 +29,8 @@ const RARITY_COLORS: Dictionary[Types.Rarity, Color] = {
 
 @export var _tier_list: VBoxContainer
 @export var _background: ColorRect
+@export var _nature_option_button: OptionButton
+@export var _nature_attribute_list: VBoxContainer
 
 func GetSize() -> Vector2:
 	return Vector2(_background.get_rect().size.x, _background.get_rect().size.y)
@@ -25,6 +41,12 @@ func Init() -> void:
 
 	for tier in [BONE_TIER, BRASS_TIER, PARCHMENT_TIER]:
 		_tier_list.add_child(BuildTierSection(tier))
+
+	_nature_option_button.clear()
+	for preset in NATURE_PRESETS:
+		_nature_option_button.add_item(preset._name)
+
+	BuildNatureList(NATURE_PRESETS[0])
 
 func BuildTierSection(p_tier: FortuneFavorTier) -> VBoxContainer:
 	var section: VBoxContainer = VBoxContainer.new()
@@ -45,6 +67,47 @@ func BuildTierSection(p_tier: FortuneFavorTier) -> VBoxContainer:
 		section.add_child(row)
 
 	return section
+
+func BuildNatureList(p_preset: AttributeWeightPreset) -> void:
+	for child in _nature_attribute_list.get_children():
+		child.queue_free()
+
+	var weights: Dictionary = p_preset._weights
+	var nonzero_values: Array[int] = []
+	for weight in weights.values():
+		if weight != 0:
+			nonzero_values.append(weight)
+
+	var min_nonzero: int = 0
+	var max_nonzero: int = 0
+	if not nonzero_values.is_empty():
+		min_nonzero = nonzero_values.min()
+		max_nonzero = nonzero_values.max()
+
+	var attribute_names: Array = Types.Attribute.keys()
+	for attribute_index in weights.keys():
+		if attribute_index >= attribute_names.size():
+			continue
+		var weight: int = weights[attribute_index]
+		var descriptor: String = DescribeWeight(weight, min_nonzero, max_nonzero)
+		var row: Label = Label.new()
+		row.text = "%s: %s" % [attribute_names[attribute_index], descriptor]
+		_nature_attribute_list.add_child(row)
+
+static func DescribeWeight(p_weight: int, p_min: int, p_max: int) -> String:
+	if p_weight == 0:
+		return "None"
+	var weight_range: int = p_max - p_min
+	if weight_range == 0:
+		return "Medium"
+	if p_weight <= p_min + int(0.25 * weight_range):
+		return "Low"
+	if p_weight >= p_max - int(0.25 * weight_range):
+		return "High"
+	return "Medium"
+
+func _on_nature_selected(p_index: int) -> void:
+	BuildNatureList(NATURE_PRESETS[p_index])
 
 func _on_close_button_up() -> void:
 	self.hide()
