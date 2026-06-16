@@ -9,10 +9,10 @@
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_script")
-_tier_list = NodePath("ColorRect/MarginContainer/VBoxContainer/TabContainer/Champion_Odds/TierList")
+_tier_list = NodePath("ColorRect/MarginContainer/VBoxContainer/TabContainer/Champion_Odds/Champion_Odds_Content/Champion_Odds_Scroll/TierList")
 _background = NodePath("ColorRect")
-_nature_option_button = NodePath("ColorRect/MarginContainer/VBoxContainer/TabContainer/Natures/Nature_Option_Button")
-_nature_attribute_list = NodePath("ColorRect/MarginContainer/VBoxContainer/TabContainer/Natures/Nature_Scroll/Nature_Attribute_List")
+_nature_option_button = NodePath("ColorRect/MarginContainer/VBoxContainer/TabContainer/Natures/Natures_Content/Nature_Option_Button")
+_nature_attribute_list = NodePath("ColorRect/MarginContainer/VBoxContainer/TabContainer/Natures/Natures_Content/Nature_Scroll/Nature_Attribute_List")
 
 [node name="ColorRect2" type="ColorRect" parent="." unique_id=244225679]
 layout_mode = 1
@@ -76,48 +76,74 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_vertical = 3
 current_tab = 0
-tab_0/title = "Champion Odds"
+tab_0/title = "Fortune Favor Odds"
 
-[node name="Champion_Odds" type="ScrollContainer" parent="ColorRect/MarginContainer/VBoxContainer/TabContainer" unique_id=998154476]
+[node name="Champion_Odds" type="MarginContainer" parent="ColorRect/MarginContainer/VBoxContainer/TabContainer" unique_id=100000009]
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
 metadata/_tab_index = 0
-metadata/_tab_name = "Champion Odds"
+metadata/_tab_name = "Fortune Favor Odds"
 
-[node name="TierList" type="VBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer/TabContainer/Champion_Odds" unique_id=2084852066]
+[node name="Champion_Odds_Content" type="VBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer/TabContainer/Champion_Odds" unique_id=100000011]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Champion_Odds_Description" type="Label" parent="ColorRect/MarginContainer/VBoxContainer/TabContainer/Champion_Odds/Champion_Odds_Content" unique_id=100000012]
+layout_mode = 2
+theme = ExtResource("1_theme")
+theme_override_font_sizes/font_size = 24
+text = "Fortune's Favor has the following odds for the reward to be a Champion."
+autowrap_mode = 3
+
+[node name="Champion_Odds_Divider" type="HSeparator" parent="ColorRect/MarginContainer/VBoxContainer/TabContainer/Champion_Odds/Champion_Odds_Content" unique_id=100000013]
+layout_mode = 2
+
+[node name="Champion_Odds_Scroll" type="ScrollContainer" parent="ColorRect/MarginContainer/VBoxContainer/TabContainer/Champion_Odds/Champion_Odds_Content" unique_id=998154476]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TierList" type="VBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer/TabContainer/Champion_Odds/Champion_Odds_Content/Champion_Odds_Scroll" unique_id=2084852066]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 16
 
-[node name="Natures" type="VBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer/TabContainer" unique_id=100000002]
+[node name="Natures" type="MarginContainer" parent="ColorRect/MarginContainer/VBoxContainer/TabContainer" unique_id=100000010]
 visible = false
 layout_mode = 2
-theme_override_constants/separation = 8
+size_flags_vertical = 3
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
 metadata/_tab_index = 1
 
-[node name="Nature_Top_Spacer" type="Control" parent="ColorRect/MarginContainer/VBoxContainer/TabContainer/Natures" unique_id=100000008]
+[node name="Natures_Content" type="VBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer/TabContainer/Natures" unique_id=100000002]
 layout_mode = 2
-custom_minimum_size = Vector2(0, 8)
+theme_override_constants/separation = 8
 
-[node name="Nature_Description" type="Label" parent="ColorRect/MarginContainer/VBoxContainer/TabContainer/Natures" unique_id=100000006]
+[node name="Nature_Description" type="Label" parent="ColorRect/MarginContainer/VBoxContainer/TabContainer/Natures/Natures_Content" unique_id=100000006]
 layout_mode = 2
 theme = ExtResource("1_theme")
 theme_override_font_sizes/font_size = 24
 text = "A nature describes how likely an attribute is to be improved upon a level up of a character."
 autowrap_mode = 3
 
-[node name="Nature_Divider" type="HSeparator" parent="ColorRect/MarginContainer/VBoxContainer/TabContainer/Natures" unique_id=100000007]
+[node name="Nature_Divider" type="HSeparator" parent="ColorRect/MarginContainer/VBoxContainer/TabContainer/Natures/Natures_Content" unique_id=100000007]
 layout_mode = 2
 
-[node name="Nature_Option_Button" type="OptionButton" parent="ColorRect/MarginContainer/VBoxContainer/TabContainer/Natures" unique_id=100000003]
+[node name="Nature_Option_Button" type="OptionButton" parent="ColorRect/MarginContainer/VBoxContainer/TabContainer/Natures/Natures_Content" unique_id=100000003]
 layout_mode = 2
 theme = ExtResource("1_theme")
 
-[node name="Nature_Scroll" type="ScrollContainer" parent="ColorRect/MarginContainer/VBoxContainer/TabContainer/Natures" unique_id=100000004]
+[node name="Nature_Scroll" type="ScrollContainer" parent="ColorRect/MarginContainer/VBoxContainer/TabContainer/Natures/Natures_Content" unique_id=100000004]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Nature_Attribute_List" type="VBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer/TabContainer/Natures/Nature_Scroll" unique_id=100000005]
+[node name="Nature_Attribute_List" type="VBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer/TabContainer/Natures/Natures_Content/Nature_Scroll" unique_id=100000005]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 6
@@ -130,5 +156,5 @@ theme_override_constants/outline_size = 3
 text = "Close"
 
 [connection signal="button_up" from="Button_Close" to="." method="_on_close_button_up"]
-[connection signal="item_selected" from="ColorRect/MarginContainer/VBoxContainer/TabContainer/Natures/Nature_Option_Button" to="." method="_on_nature_selected"]
+[connection signal="item_selected" from="ColorRect/MarginContainer/VBoxContainer/TabContainer/Natures/Natures_Content/Nature_Option_Button" to="." method="_on_nature_selected"]
 [connection signal="button_up" from="ColorRect/MarginContainer/VBoxContainer/Button_Close_Bottom" to="." method="_on_close_button_up"]

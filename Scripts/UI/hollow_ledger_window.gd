@@ -20,11 +20,11 @@ const NATURE_PRESETS: Array[AttributeWeightPreset] = [
 
 const RARITY_COLORS: Dictionary[Types.Rarity, Color] = {
 	Types.Rarity.Common: Color(0.384, 0.384, 0.384, 1.0),
-	Types.Rarity.Uncommon: Color(0.0, 0.544, 0.313, 1.0),
-	Types.Rarity.Rare: Color(0.003, 0.152, 0.701, 1.0),
-	Types.Rarity.Epic: Color(0.413, 0.0, 0.484, 1.0),
-	Types.Rarity.Legendary: Color(0.651, 0.381, 0.0, 1.0),
-	Types.Rarity.Relic: Color(0.606, 0.0, 0.0, 1.0),
+	Types.Rarity.Uncommon: Color(0.0, 0.73, 0.253, 1.0),
+	Types.Rarity.Rare: Color(0.178, 0.515, 1.0, 1.0),
+	Types.Rarity.Epic: Color(0.582, 0.136, 1.0, 1.0),
+	Types.Rarity.Legendary: Color(0.934, 0.254, 0.0, 1.0),
+	Types.Rarity.Relic: Color(0.9, 0.0, 0.0, 1.0),
 }
 
 @export var _tier_list: VBoxContainer
