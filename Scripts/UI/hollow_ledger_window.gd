@@ -90,8 +90,21 @@ func BuildNatureList(p_preset: AttributeWeightPreset) -> void:
 			continue
 		var weight: int = weights[attribute_index]
 		var descriptor: String = DescribeWeight(weight, min_nonzero, max_nonzero)
-		var row: Label = Label.new()
-		row.text = "%s: %s" % [attribute_names[attribute_index], descriptor]
+		var attribute_name: String = attribute_names[attribute_index]
+
+		var row: HBoxContainer = HBoxContainer.new()
+
+		var name_label: Label = Label.new()
+		name_label.text = attribute_name
+		name_label.custom_minimum_size.x = 140
+		if KeyWordColors.KEYWORDS.has(attribute_name):
+			name_label.add_theme_color_override("font_color", KeyWordColors.KEYWORDS[attribute_name])
+		row.add_child(name_label)
+
+		var value_label: Label = Label.new()
+		value_label.text = descriptor
+		row.add_child(value_label)
+
 		_nature_attribute_list.add_child(row)
 
 static func DescribeWeight(p_weight: int, p_min: int, p_max: int) -> String:
