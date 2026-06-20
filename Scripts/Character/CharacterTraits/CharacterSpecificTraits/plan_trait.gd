@@ -1,8 +1,5 @@
 class_name PlanTrait extends CharacterTrait
 
-var _trait_texture: Texture2D
-var _title: String = "Title"
-var _body: String = "Body"
 var _start_of_turn_effects: TraitStartTurn
 
 func Init() -> void:

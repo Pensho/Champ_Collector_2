@@ -46,7 +46,7 @@ The core gameplay follows a cyclical "Prepare, Engage, Reward, Grow" loop design
 - Applying effects onto the turn bar. If a character stops within applied zones of the bar, certain effects trigger. The turn bar is split into a set of "zones" that can have effects applied to them through skills.
 - Central hub area to manage characters, gear and access different game modes.
 
-### 3.1. Champion Management
+### 3.1. Champions
 The terms Champion, Character, Hero are synonumous for the playable characters a player can acquire and use.
 
 #### 3.1.1. Character Attributes
@@ -111,7 +111,7 @@ Current roles, their identity and purpose exist as follows:
 - Emissary
     - TODO
 - Thief
-    - A squishy damage dealer, focusing on set-up through skills and bypassing enemy defenses, can steal buffs. Primary attributes: Attack.
+    - A squishy damage dealer, focusing on set-up through skills and bypassing enemy defenses, x-y% chance to steal a buff. Primary attributes: Attack.
     - Purpose: Damage.
 - Lancer
     - TODO

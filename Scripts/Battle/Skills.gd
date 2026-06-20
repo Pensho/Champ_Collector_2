@@ -238,6 +238,14 @@ static func ApplyBuff(
 	p_target._active_buffs.append(new_buff)
 	p_battle_ui.SpawnCombatText(new_buff.name, p_target_repr.position + p_battle_ui.COMBAT_TEXT_SPAWN_POINT, Color(0.335, 0.575, 0.838, 1.0))
 
+static func RemoveBuff(
+		p_target: Character,
+		p_buff: StatusEffects.Buff,
+		p_target_repr: CharacterRepresentation,
+		_p_battle_ui: BattleUI) -> void:
+	p_target._active_buffs.erase(p_buff)
+	p_target_repr.RemoveStatusEffects([p_buff.ID])
+
 static func ApplyDebuff(
 		p_target: Character,
 		p_debuff_template: StatusEffects.Debuff,

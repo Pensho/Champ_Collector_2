@@ -275,7 +275,7 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID) -> voi
 	var trait_result: TraitSkillResult = TraitSkillResult.new()
 	if (null != _characters[p_caster_ID]._trait):
 		if(_characters[p_caster_ID]._trait._execution_steps.has(Types.Combat_Event.Skill_Cast)):
-			trait_result = _characters[p_caster_ID]._trait.OnSkillCast(cast_skill.name, _character_repr[p_caster_ID])
+			trait_result = _characters[p_caster_ID]._trait.OnSkillCast(p_caster_ID, p_target_IDs, _characters, _character_repr, cast_skill.name, _battle_ui)
 	
 	if (not _characters[p_caster_ID]._active_debuffs.is_empty()):
 		Skills.TriggerExistingCasterDebuffs(
