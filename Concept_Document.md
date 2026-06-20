@@ -111,68 +111,93 @@ Each Role can have one or two main purposes in combat but it doesn't have to res
 Current roles, their identity and purpose exist as follows:
 - Emissary
     - TODO
+    - Purpose: 
+    - Passive:
 - Thief
-    - A squishy damage dealer, focusing on set-up through skills and bypassing enemy defenses, x-y% chance to steal a buff. Primary attributes: Attack.
+    - A squishy damage dealer, focusing on set-up through skills and bypassing enemy defenses. Primary attributes: Attack.
     - Purpose: Damage.
+    - Passive: Pilfer - Chance to steal a buff from the target when a skill is used.
+        - 20% Uncommon, 30% Rare, 40% Epic, 50% Legendary
 - Lancer
-    - TODO
+    - Always has at least one offencive skill and one defensive skill.
     - Purpose: Damage
+    - Passive: Reckless momentum - When an offensive skills is used Lancer gets one Momentum stack that gives +x% damage and -x/2% defense. When using a defensive skill, grants a Role unique 2 turn buff (Radiance) that gives x% defense and consumes all stacks.
+        - 4% Uncommon, 6% Rare, 8% Epic, 10% Legendary
 - Alchemist
     - A support character that focuses on buffing allies and debuffing enemies through various concoctions. Primary attributes: Knowledge, Mysticism.
     - Purpose: Debuffer, Buffer
+    - Passive: 
 - Sorcerer
     - A damage dealer that harnesses the power of magic to deal Area of Effect damage and control the battlefield. Primary attributes: Mysticism, Knowledge.
     - Purpose: Damage, Debuffer, Control
+    - Passive: 
 - Scholar
     - A support character that focuses on knowledge and strategy to enhance allies' abilities and exploit enemy weaknesses. Primary attributes: Knowledge.
     - Purpose: Sustain, Debuffer
+    - Passive: 
 - Diviner
     - Gains buffs (On self and allies if high rarity Diviner) if enemies are x-y% (depending on rarity of Diviner) behind the Diviner on the turn bar when their turn starts. Primary attributes: Mysticism.
     - Purpose: Sustain, Debuffer
+    - Passive: 
 - Appraiser
     - A master at exploiting enemy weaknesses, allowing oppertunity for the team to easily deal critical hits. Primary attributes: Critical Chance, Knowledge.
     - Purpose: Debuffer
+    - Passive: 
 - Tactician
-    - Gives buffs (On self and allies if high rarity Tactician) if allies are x-y% (depending on rarity of Tactician) behind the Tactician on the turn bar when their turn starts. Primary attributes: Knowledge, Speed.
+    - A squishy support. Primary attributes: Knowledge, Speed.
     - Purpose: Buffer
+    - Passive: Plan - Gives buffs (On self and allies if high rarity Tactician) if allies are x% behind the Tactician on the turn bar when their turn starts.
+        - 10% Uncommon, 15% Rare, 20% Epic, 25% Legendary
 - Symbiote
     - A character weak by default but given the option to alter itself to combine with one of select few monsters to gain their trait & bonus in attributes. Primary attributes: Health, Resistance.
     - Purpose: Sustain, Debuffer
+    - Passive: 
 - Jester
     - An unconventional tanking character that does not have significantly high Health or Defense but relies on skills that provoke hits to the Jester and dodge them. Primary attributes: Accuracy, Knowledge, Speed.
     - Purpose: Damage, Sustain
+    - Passive: 
 - Cultist
     - Consumes ally buffs or health to empower their own skills, dealing magical damage or applying debuffs. Primary attributes: Mysticism, Knowledge.
     - Purpose: Debuffer, Damage
+    - Passive: 
 - Bar Brawler
     - A health focused character, dealing damage, tanking and applying a few uffs. Attacks scales of health primarily. Primary attributes: Health.
     - Purpose: Sustain, Buffer
+    - Passive: 
 - Bloodmage
     - Spending their own or allies health for big pay-off skills in terms of damage or applying shields based on sacrificed health. Primary attributes: Health, Mysticism.
     - Purpose: Sustain, Damage
+    - Passive: 
 - Herald of the loom
     - A stance character, using 3 types of stances:
         - Golden thread; All buffs & debuffs only goes to the herald instead of allies.
         - Silver thread; All herald buffs & debuffs cast becomes more powerfull, adds one attribute value to the accuracy attribute value when attempting to apply debuffs.
         - Black thread; All damage dealt and received scale with mysticism instead of other attributes. One other player & enemy character will have their attributes averaged out while Black thread is in use.  Primary attributes: Mysticism, Accuracy.
     - Purpose: Debuffer
+    - Passive: 
 - Chronophage
     - A speed focused character, applying various speed modifying skills onto the turn bar and primarily deals damage based on the Speed attribute. Primary attributes: Speed.
     - Purpose: Control
+    - Passive: 
 - Architect
     - A charge & support character, accumulates Calibration charges through basic skills, consumes a few charges applying defensive buffs to allies and massive charges for big final attacks. Primary attributes: Knowledge, Defense.
     - The Architect is a methodical "Charge" role aligned with the God of Rules. Instead of raw aggression, they build "Logic Chains" by observing the flow of battle, eventually "solving" the encounter with a massive structural shift.
     - Purpose: Buffer, Damage
+    - Passive: 
 - Tidal Corsair
-    - Uses two types of basic attacks, one which grants sea stacks and the other grants steel stacks. The third attack consumes all stacks, altering the effect based on which type of stacks were consumed. Up to three stacks can be held at a time. Primary attributes: Attack, Speed.
+    - Damage dealer. Primary attributes: Attack, Speed.
     - The Tidal Corsair is a Combo character where you plan your moves ahead, highly mobile but not inherently strong unless you set up your attacks correctly.
     - Purpose: Damage
+    - Passive: Tidal Corsair Trait - Uses attacks that grant either sea or steel stacks. There is also a finishing move the consums stacks. Up to 3 stacks can be held at a time.
+        - TODO: Uncommon, Rare, Epic, Legendary
 - Plague Doctor
     - A debuff focused character, applying various damage over time and stat reducing debuffs to enemies. Primary attributes: Mysticism, Resistance.
     - Purpose: Debuffer
+    - Passive: 
 - Warlord
     - A buffing tank character, applying various buffs to self and allies while being able to take a lot of damage. Primary attributes: Health, Defense.
     - Purpose: Sustain
+    - Passive: 
 
 ### 3.2. Combat
 Combat is turn based, using the Speed attribute of each character to move a representation accross a "turn bar". When a characters representation has crossed the entire bar, the game will pause for input to resolve their turn and then finish by putting the representation of the character back to the beginning. Then the system keeps going.
