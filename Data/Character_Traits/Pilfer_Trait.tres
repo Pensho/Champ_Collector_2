@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="PilferTrait" format=3 uid="uid://bq5puiyy6bugf"]
+
+[ext_resource type="Script" uid="uid://dkihoniqgqv17" path="res://Scripts/Character/CharacterTraits/CharacterSpecificTraits/pilfer_trait.gd" id="1_ebeyu"]
+
+[resource]
+script = ExtResource("1_ebeyu")
+metadata/_custom_type_script = "uid://dkihoniqgqv17"

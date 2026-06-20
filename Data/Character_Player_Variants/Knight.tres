@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="CharacterPreset" load_steps=12 format=3 uid="uid://foglcohrhsnh"]
+[gd_resource type="Resource" script_class="CharacterPreset" format=3 uid="uid://foglcohrhsnh"]
 
 [ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_evj8v"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="1_quq0m"]
@@ -17,7 +17,7 @@ script = ExtResource("1_quq0m")
 _name = "Knight"
 _texture = "res://Assets/Champ_Collector/Creatures/Knight/Knight_0004.png"
 _normal_map = "res://Assets/Champ_Collector/Creatures/Knight/Knight_0004_Normal_Map.png"
-_rarity = 1
+_rarity = 2
 _role = 3
 _skills = Array[ExtResource("2_vmxkg")]([ExtResource("3_evj8v"), ExtResource("3_vmxkg"), ExtResource("3_evj8v")])
 _health = 80
