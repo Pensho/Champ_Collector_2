@@ -5,6 +5,7 @@ const BUFF_ICONS: Dictionary[Types.Buff_Type, String] = {
 	Types.Buff_Type.Empower: "res://Assets/Champ_Collector/Icons/Status_Effects/Empower/Empower.jpg",
 	Types.Buff_Type.Fortify: "res://Assets/Champ_Collector/Icons/Status_Effects/Fortify/Fortify.jpg",
 	Types.Buff_Type.Daunting_Strength: "uid://bxhbodgumh5r4",
+	Types.Buff_Type.Radiance: "res://Assets/Champ_Collector/Icons/Status_Effects/Radiance/Radiance.jpg",
 }
 
 const DEBUFF_ICONS: Dictionary[Types.Debuff_Type, String] = {
@@ -19,6 +20,7 @@ class Effect:
 	var ID: int = 0
 	var stackable: bool = true
 	var name: String = ""
+	var value: float = 0.0
 
 class Buff extends Effect:
 	var type: Types.Buff_Type = Types.Buff_Type.Invalid

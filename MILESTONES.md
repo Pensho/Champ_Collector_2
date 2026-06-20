@@ -142,6 +142,25 @@
   character level)
 - Rarity/affix rerolling on upgrade remains out of scope (Remaining_Scope_Checklist.md)
 
+## Lancer role passive — Reckless Momentum (added 2026-06-20)
+- `LancerTrait` implements the Reckless Momentum passive: offensive skills
+  (Stab, Disarm) accumulate Momentum stacks (capped at 5); each stack boosts
+  attack by x% on the next cast and reduces defence by x/2% when the Lancer is
+  attacked; scaling x is 4% Uncommon → 10% Legendary
+- A defensive skill consumes all stacks and applies **Radiance**, a role-unique
+  2-turn buff that adds +x% defence when the Lancer is hit
+- `Radiance` added to `Buff_Type` enum; `value: float` added to the `Effect`
+  base class for rarity-scaled magnitudes; `TriggerTargetBuffs` applies the
+  bonus; `TriggerExistingCasterBuffs` allows duration decay on the Lancer's turns
+- `OnSkillCast` gains a `p_caster_attributes` parameter (mutable, so traits can
+  boost attack directly); `OnDefend` added to `CharacterTrait` as a new hook
+  called after defender buffs/debuffs are applied in `ResolveSkill`
+- `Data/Character_Traits/Lancer_Trait.tres` created; `Centaur_Lancer.tres` preset
+  wired to it
+- 16 new tests in `test_lancer_trait.gd`; suite now 171 tests across 17 files, all passing
+- **Flag:** the `Centaur_Lancer` preset has no defensive skill (Stab, Disarm, Stab),
+  so Radiance cannot be triggered in play until a defensive skill is added to the preset
+
 ## Hollow Ledger — tabbed reference panel with Nature attribute weights (added 2026-06-16)
 - `Hollow_Ledger_Window.tscn` restructured: window enlarged from 560×480 to 720×600;
   content area replaced with a `TabContainer` holding two tabs

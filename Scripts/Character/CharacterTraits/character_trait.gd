@@ -30,9 +30,16 @@ func OnSkillCast(
 		_p_characters: Dictionary[int, Character],
 		_p_character_repr: Array[CharacterRepresentation],
 		_p_skill_name: String,
-		_p_battle_ui: BattleUI) -> TraitSkillResult:
+		_p_battle_ui: BattleUI,
+		_p_caster_attributes: Dictionary[Types.Attribute, int]) -> TraitSkillResult:
 	print("character_trait base class SkillCast() called!")
 	return null
+
+func OnDefend(
+		_p_defender_ID: int,
+		_p_defender_attributes: Dictionary[Types.Attribute, int],
+		_p_characters: Dictionary[int, Character]) -> void:
+	print("character_trait base class OnDefend() called!")
 
 func OnDamageTaken(p_character_repr: CharacterRepresentation) -> void:
 	print("character_trait base class DamageTaken() called!")

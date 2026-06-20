@@ -154,6 +154,8 @@ static func TriggerExistingCasterBuffs(
 				p_caster_attributes[Types.Attribute.Defence] += int(ceilf(p_caster_attributes[Types.Attribute.Defence] * 0.3))
 			Types.Buff_Type.Daunting_Strength:
 				_damage_multiplier[p_caster_ID] *= 2.0
+			Types.Buff_Type.Radiance:
+				pass
 			_:
 				pass
 		
@@ -176,6 +178,8 @@ static func TriggerTargetBuffs(
 				p_target_attributes[Types.Attribute.Attack] += int(ceilf(p_target_attributes[Types.Attribute.Attack] * 0.3))
 			Types.Buff_Type.Fortify:
 				p_target_attributes[Types.Attribute.Defence] += int(ceilf(p_target_attributes[Types.Attribute.Defence] * 0.3))
+			Types.Buff_Type.Radiance:
+				p_target_attributes[Types.Attribute.Defence] += int(ceilf(p_target_attributes[Types.Attribute.Defence] * buff.value))
 			_:
 				pass
 
@@ -234,6 +238,7 @@ static func ApplyBuff(
 	new_buff.type = p_buff_template.type
 	new_buff.duration = p_buff_template.duration
 	new_buff.name = p_buff_template.name
+	new_buff.value = p_buff_template.value
 	new_buff.ID = p_target_repr.AddStatusEffect(GetStatusEffectTexture(Statuses.BUFF_ICONS[new_buff.type]), new_buff.duration)
 	p_target._active_buffs.append(new_buff)
 	p_battle_ui.SpawnCombatText(new_buff.name, p_target_repr.position + p_battle_ui.COMBAT_TEXT_SPAWN_POINT, Color(0.335, 0.575, 0.838, 1.0))

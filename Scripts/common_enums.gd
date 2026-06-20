@@ -110,6 +110,7 @@ enum Buff_Type
 	Empower,
 	Fortify,
 	Daunting_Strength,
+	Radiance,
 }
 
 enum Debuff_Type
@@ -128,6 +129,7 @@ enum Combat_Event
 	Skill_Cast,
 	Damage_Taken,
 	On_Death,
+	Defend,
 }
 
 func RarityName(p_rarity: Types.Rarity) -> String:

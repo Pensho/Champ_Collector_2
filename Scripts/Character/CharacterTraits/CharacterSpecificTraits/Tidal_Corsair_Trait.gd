@@ -51,7 +51,8 @@ func OnSkillCast(
 		_p_characters: Dictionary[int, Character],
 		p_character_repr: Array[CharacterRepresentation],
 		p_skill_name: String,
-		_p_battle_ui: BattleUI) -> TraitSkillResult:
+		_p_battle_ui: BattleUI,
+		_p_caster_attributes: Dictionary[Types.Attribute, int]) -> TraitSkillResult:
 	var skill_result: TraitSkillResult = TraitSkillResult.new()
 	var owner_repr: CharacterRepresentation = p_character_repr[p_owner_ID]
 	match p_skill_name:

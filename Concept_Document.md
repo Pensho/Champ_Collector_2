@@ -119,9 +119,9 @@ Current roles, their identity and purpose exist as follows:
     - Passive: Pilfer - Chance to steal a buff from the target when a skill is used.
         - 20% Uncommon, 30% Rare, 40% Epic, 50% Legendary
 - Lancer
-    - Always has at least one offencive skill and one defensive skill.
+    - Always has at least one offensive skill and one defensive skill.
     - Purpose: Damage
-    - Passive: Reckless momentum - When an offensive skills is used Lancer gets one Momentum stack that gives +x% damage and -x/2% defense. When using a defensive skill, grants a Role unique 2 turn buff (Radiance) that gives x% defense and consumes all stacks.
+    - Passive: Reckless Momentum - When an offensive skill is used the Lancer gains one Momentum stack (+x% damage, -x/2% defence while stacks are held, maximum 5 stacks). When a defensive skill is used, the Lancer gains Radiance (a role-unique 2-turn buff, +x% defence) and all Momentum stacks are consumed.
         - 4% Uncommon, 6% Rare, 8% Epic, 10% Legendary
 - Alchemist
     - A support character that focuses on buffing allies and debuffing enemies through various concoctions. Primary attributes: Knowledge, Mysticism.

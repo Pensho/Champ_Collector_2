@@ -275,7 +275,7 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID) -> voi
 	var trait_result: TraitSkillResult = TraitSkillResult.new()
 	if (null != _characters[p_caster_ID]._trait):
 		if(_characters[p_caster_ID]._trait._execution_steps.has(Types.Combat_Event.Skill_Cast)):
-			trait_result = _characters[p_caster_ID]._trait.OnSkillCast(p_caster_ID, p_target_IDs, _characters, _character_repr, cast_skill.name, _battle_ui)
+			trait_result = _characters[p_caster_ID]._trait.OnSkillCast(p_caster_ID, p_target_IDs, _characters, _character_repr, cast_skill.name, _battle_ui, caster_attributes)
 	
 	if (not _characters[p_caster_ID]._active_debuffs.is_empty()):
 		Skills.TriggerExistingCasterDebuffs(
@@ -302,6 +302,9 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID) -> voi
 			
 			Skills.TriggerTargetBuffs(_characters[target_ID], target_attributes)
 			Skills.TriggerTargetDebuffs(_characters[target_ID], target_attributes)
+			if (null != _characters[target_ID]._trait):
+				if (_characters[target_ID]._trait._execution_steps.has(Types.Combat_Event.Defend)):
+					_characters[target_ID]._trait.OnDefend(target_ID, target_attributes, _characters)
 		
 		if(not cast_skill.buffs.is_empty() and _characters[target_ID]._currentHealth > 0):
 			Skills.CastBuff(_characters[target_ID], cast_skill, _character_repr[target_ID], _battle_ui)

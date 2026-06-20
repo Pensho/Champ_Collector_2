@@ -11,6 +11,7 @@
 [ext_resource type="Resource" uid="uid://bvo4uj38cgjg3" path="res://Data/Attribute_Weights/Calculating.tres" id="5_0ir7o"]
 [ext_resource type="Resource" uid="uid://c60oh3whnodsm" path="res://Data/Attribute_Weights/Resilient.tres" id="6_kmh4c"]
 [ext_resource type="Resource" uid="uid://bejf1a62v41gq" path="res://Data/Attribute_Weights/Marksman.tres" id="7_tdvd8"]
+[ext_resource type="Resource" uid="uid://dlancertr3sc0" path="res://Data/Character_Traits/Lancer_Trait.tres" id="11_0bkhb"]
 
 [resource]
 script = ExtResource("1_quq0m")
@@ -29,4 +30,5 @@ _resistance = 40
 _mysticism = 10
 _knowledge = 20
 _attribute_weight_types_available = Array[ExtResource("1_evj8v")]([ExtResource("2_xhsct"), ExtResource("3_swxqs"), ExtResource("4_0bkhb"), ExtResource("5_0ir7o"), ExtResource("6_kmh4c"), ExtResource("7_tdvd8")])
+_trait = ExtResource("11_0bkhb")
 _preset_UID = "uid://foglcohrhsnh"
