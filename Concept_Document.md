@@ -48,6 +48,7 @@ The core gameplay follows a cyclical "Prepare, Engage, Reward, Grow" loop design
 
 ### 3.1. Champions
 The terms Champion, Character, Hero are synonumous for the playable characters a player can acquire and use.
+For now there are no Common Characters that are usable by a player. Also, there will be Relic tier Characters, that tier level is restricted for Items.
 
 #### 3.1.1. Character Attributes
 Each character is defined by a set of core attributes:
