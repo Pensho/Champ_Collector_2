@@ -12,7 +12,7 @@ const MYSTICISM_BONUS: Dictionary[Types.Rarity, float] = {
 func Init() -> void:
 	_trait_texture = load("res://Assets/Champ_Collector/Icons/Abilities/Hemoclarity/Hemoclarity.png")
 	_title = "Hemoclarity"
-	_body = "While below 50% health, gain increased Mysticism."
+	_body = "While below half health, gain increased Mysticism."
 	_execution_steps[Types.Combat_Event.Skill_Cast] = Callable(self, "OnSkillCast")
 	_execution_steps[Types.Combat_Event.Start_Combat] = Callable(self, "StartOfBattle")
 
