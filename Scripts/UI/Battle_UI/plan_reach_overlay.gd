@@ -1,6 +1,6 @@
 class_name PlanReachOverlay extends TextureRect
 
-const PLAN_TRAIT_TURNBAR_TEXTURE = preload("res://Assets/Champ_Collector/Icons/Abilities/Plan/Plan_Trait_Turnbar_Texture.jpg")
+const PLAN_TRAIT_TURNBAR_TEXTURE = preload("res://Assets/Champ_Collector/Icons/Abilities/Plan/Plan_Trait_Turnbar_Texture_2.jpg")
 const PLAN_REACH_SHADER = preload("res://Assets/Champ_Collector/Shaders/plan_reach_overlay.gdshader")
 
 var _owner_icon: TextureRect
@@ -39,7 +39,7 @@ func _process(_delta: float) -> void:
 		hide()
 		return
 	
-	var right: float = _owner_icon.position.x
+	var right: float = _owner_icon.position.x + (_owner_icon.size.x / 2.0)
 	var left: float = max(0.0, right - _reach_px)
 	var width: float = right - left
 	if (width <= 0.0):
@@ -47,7 +47,7 @@ func _process(_delta: float) -> void:
 		return
 
 	_atlas_texture.region = Rect2(_texture_width - width, 0.0, width, _texture_height)
-	size = Vector2(width, _bar_height)
-	position = Vector2(left, 0.0)
+	size = Vector2(width, _texture_height)
+	position = Vector2(left, (_bar_height - _texture_height) / 2.0)
 	material.set_shader_parameter("fade_uv", 5.0 / width)
 	material.set_shader_parameter("region_uv_range", Vector2((_texture_width - width) / _texture_width, 1.0))
