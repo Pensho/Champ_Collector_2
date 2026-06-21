@@ -462,7 +462,7 @@ The adventure (run) system lives in `Scripts/Adventure_Scripts/`:
 - `adventure_state.gd` / `adventure_state_handler.gd` track current progress, supply-cost tiers,
   daily reset, and serialization; the handler is in the `"saveable"` group.
 - `biome_data.gd` deliberately avoids `DirAccess`-based loading in favor of preloads, for Android
-  export compatibility (see MILESTONES).
+  export compatibility.
 - Rewards flow through `LootManager` (`Scripts/Battle/loot_manager.gd`) and `LootTable` resources:
   a difficulty-scaled budget feeds primary (guaranteed) and secondary (weighted) loot.
 
