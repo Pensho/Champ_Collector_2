@@ -8,7 +8,7 @@
 [ext_resource type="Resource" uid="uid://wofv42g341ac" path="res://Data/Character_Player_Variants/Chronophage.tres" id="7_chronophage"]
 [ext_resource type="Resource" uid="uid://cg7ffffaaw1hy" path="res://Data/Character_Player_Variants/Herald_of_the_loom.tres" id="8_herald_of_the_loom"]
 [ext_resource type="Resource" uid="uid://dkpr2hnmtcodx" path="res://Data/Character_Player_Variants/Jester.tres" id="9_jester"]
-[ext_resource type="Resource" uid="uid://foglcohrhsnh" path="res://Data/Character_Player_Variants/Knight.tres" id="10_knight"]
+[ext_resource type="Resource" uid="uid://foglcohrhsnh" path="res://Data/Character_Player_Variants/Lancer.tres" id="10_knight"]
 [ext_resource type="Resource" uid="uid://dy22lp5h48s5f" path="res://Data/Character_Player_Variants/Tactician.tres" id="11_tactician"]
 [ext_resource type="Resource" uid="uid://bm0sqmepyeoam" path="res://Data/Character_Player_Variants/Thief.tres" id="12_thief"]
 [ext_resource type="Resource" uid="uid://bmqvx8opoocu7" path="res://Data/Character_Player_Variants/Tidal_Corsair.tres" id="13_tidal_corsair"]

@@ -1,6 +1,6 @@
 class_name Main_Instance extends Node
 
-const KNIGHT = preload("res://Data/Character_Player_Variants/Knight.tres")
+const LANCER = preload("res://Data/Character_Player_Variants/Lancer.tres")
 const JESTER = preload("res://Data/Character_Player_Variants/Jester.tres")
 const BAR_BRAWLER = preload("res://Data/Character_Player_Variants/Bar_Brawler.tres")
 const HERALD_OF_THE_LOOM = preload("res://Data/Character_Player_Variants/Herald_of_the_loom.tres")
@@ -42,7 +42,7 @@ func Init() -> void:
 
 	var context_container: ContextContainer = ContextContainer.new()
 
-	_character_collection.Add(KNIGHT.duplicate(true))
+	_character_collection.Add(LANCER.duplicate(true))
 	_character_collection.Add(THIEF.duplicate(true))
 	_character_collection.Add(BAR_BRAWLER.duplicate(true))
 	_character_collection.Add(JESTER.duplicate(true))

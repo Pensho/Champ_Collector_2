@@ -94,7 +94,7 @@ main.GetInstance()._item_collection   # etc.
 - Constructs and adds the long-lived state nodes: `CharacterCollection`, `ItemCollection`,
   `ResourceHandler`, `ProgressHandler`, `SaveManager`, `AdventureStateHandler`.
 - Adds `AdventureStateHandler` to the `SaveManager.GROUP_SAVEABLE` group.
-- Seeds a default roster by duplicating preloaded `CharacterPreset` resources (Knight, Thief,
+- Seeds a default roster by duplicating preloaded `CharacterPreset` resources (Lancer, Thief,
   Bar Brawler, Jester, Chronophage, Tidal Corsair, Centaur Lancer, Centaur Archivist, Tactician).
 - Builds the initial `ContextContainer` and calls `change_scene()` to load the first scene.
 

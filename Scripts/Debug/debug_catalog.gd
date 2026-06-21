@@ -7,7 +7,7 @@ const BATTLE_SCENE_UID: String = "uid://cc883blynrgq2"
 const MAIN_MENU_SCENE_UID: String = "uid://c6c1o3oabj0pf"
 
 const PLAYER_CHARACTER_PRESETS: Dictionary[String, CharacterPreset] = {
-	"Knight": preload("res://Data/Character_Player_Variants/Knight.tres"),
+	"Lancer": preload("res://Data/Character_Player_Variants/Lancer.tres"),
 	"Thief": preload("res://Data/Character_Player_Variants/Thief.tres"),
 	"Bar Brawler": preload("res://Data/Character_Player_Variants/Bar_Brawler.tres"),
 	"Jester": preload("res://Data/Character_Player_Variants/Jester.tres"),
