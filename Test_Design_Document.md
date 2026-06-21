@@ -19,7 +19,8 @@ Unit tests cover **pure logic only** — functions that transform values and ret
 |---|---|---|
 | Adventure state | `test_adventure_state.gd` | Supply cost tiers, daily reset, serialization roundtrip (via real Serialize/Deserialize), node completion, scaled difficulty |
 | Adventure generation | `test_adventure_generator.gd` | Node count, uniqueness, boss node, biome context |
-| Biome loading | `test_biome_loading.gd` | No DirAccess in scripts, preloaded biomes |
+| Biome loading | `test_biome_loading.gd` | Preloaded biomes |
+| Android export safety | `test_android_export_safety.gd` | No DirAccess or `get_window().size` usage in scripts (packed-export guards) |
 | Loot manager | `test_loot_manager.gd` | Fortunes Favor primary/secondary distribution by difficulty and budget |
 | Level system | `test_level_system.gd` | XP formula monotonicity, level-up threshold, XP consumption, `SetOpponentLevel` guards and attribute scaling |
 | Skills (targeting) | `test_skills.gd` | `FindSkillTargets` for all target types; `CorrectZoneTarget` truth table |
