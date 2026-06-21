@@ -16,18 +16,18 @@ var _pending_tier: FortuneFavorTier
 func Init(_p_context_container: ContextContainer) -> void:
 	_info_option = load("uid://c7smqpmfvs0ih").instantiate()
 	add_child(_info_option)
-	_info_option.position = Vector2i((get_window().size * 0.5) - (_info_option.GetSize() * 0.5))
+	_info_option.position = Vector2i((get_viewport_rect().size * 0.5) - (_info_option.GetSize() * 0.5))
 	_info_option.hide()
 
 	_confirm_option = load("uid://c7smqpmfvs0ih").instantiate()
 	add_child(_confirm_option)
 	_confirm_option.SetLeftButton("Recruit", _on_confirm_recruit)
-	_confirm_option.position = Vector2i((get_window().size * 0.5) - (_confirm_option.GetSize() * 0.5))
+	_confirm_option.position = Vector2i((get_viewport_rect().size * 0.5) - (_confirm_option.GetSize() * 0.5))
 	_confirm_option.hide()
 
 	_result_option = load("uid://c7smqpmfvs0ih").instantiate()
 	add_child(_result_option)
-	_result_option.position = Vector2i((get_window().size * 0.5) - (_result_option.GetSize() * 0.5))
+	_result_option.position = Vector2i((get_viewport_rect().size * 0.5) - (_result_option.GetSize() * 0.5))
 	_result_option.hide()
 
 func _ready() -> void:

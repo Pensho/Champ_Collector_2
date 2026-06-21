@@ -155,6 +155,18 @@ By convention, combat uses fixed integer slot IDs: player characters occupy IDs 
 enemies `3,4,5`. These are defined as `PLAYER_IDS`/`MONSTER_IDS` (or `ENEMY_IDS`) constants in
 both `battle.gd` and `Skills.gd` and are central to targeting.
 
+### 4.1. UI positioning and viewport space
+
+The project uses `window/stretch/mode="canvas_items"` with a fixed 1280×720 base viewport
+(see section 1). Control nodes lay out in that logical 1280×720 canvas space, not in physical
+OS-window pixels.
+
+UI positioning must use the logical canvas space. Use `get_viewport_rect().size` (logical
+1280×720 base viewport) for layout/centering math — never `get_window().size`, which returns
+physical OS-window pixels and breaks on Android, where physical size differs from the base
+viewport. On PC the window is usually near 1280×720 so the bug is hidden; on Android it is not.
+`test_ui_viewport_sizing.gd` guards against the wrong pattern reappearing.
+
 ---
 
 ## 5. Scene management: the context-container pattern

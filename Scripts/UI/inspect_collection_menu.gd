@@ -69,14 +69,14 @@ func Init(_p_context_container: ContextContainer) -> void:
 	add_child(_select_item_option)
 	_select_item_option.SetText("Title", "Body")
 	_select_item_option.SetLeftButton("Equip", Callable())
-	_select_item_option.position = Vector2i((get_window().size * 0.5) - (_select_item_option.GetSize() * 0.5))
+	_select_item_option.position = Vector2i((get_viewport_rect().size * 0.5) - (_select_item_option.GetSize() * 0.5))
 	_select_item_option.hide()
 	
 	_confirm_option = load("uid://c7smqpmfvs0ih").instantiate()
 	add_child(_confirm_option)
 	_confirm_option.SetText("Title", "Body")
 	_confirm_option.SetLeftButton("Equip", Callable())
-	_confirm_option.position = Vector2i((get_window().size * 0.5) - (_confirm_option.GetSize() * 0.5))
+	_confirm_option.position = Vector2i((get_viewport_rect().size * 0.5) - (_confirm_option.GetSize() * 0.5))
 	_confirm_option.hide()
 	
 	ShowCharacters()
