@@ -146,7 +146,7 @@ Current roles, their identity and purpose exist as follows:
 - Tactician
     - A squishy support. Primary attributes: Knowledge, Speed.
     - Purpose: Buffer
-    - Passive: Plan - Gives buffs (On self and allies if high rarity Tactician) if allies are x% behind the Tactician on the turn bar when their turn starts.
+    - Passive: Plan - Gives buffs to allies who are within x% behind the Tactician on the turn bar when their turn starts. Applies at every rarity; only the Tactician's own self is excluded.
         - 10% Uncommon, 15% Rare, 20% Epic, 25% Legendary
 - Symbiote
     - A character weak by default but given the option to alter itself to combine with one of select few monsters to gain their trait & bonus in attributes. Primary attributes: Health, Resistance.
@@ -188,13 +188,16 @@ Current roles, their identity and purpose exist as follows:
     - Damage dealer. Primary attributes: Attack, Speed.
     - The Tidal Corsair is a Combo character where you plan your moves ahead, highly mobile but not inherently strong unless you set up your attacks correctly.
     - Purpose: Damage
-    - Passive: Tidal Corsair Trait - Uses attacks that grant either sea or steel stacks. There is also a finishing move the consums stacks. Up to 3 stacks can be held at a time.
-        - TODO: Uncommon, Rare, Epic, Legendary
-- Plague Doctor
+    - Passive: Tidal Corsair Trait - Boarding Strike grants a Steel stack (+50% damage per stack
+      on the finishing move), Saltwater Shot grants a Sea stack (-10% turn bar bump per stack
+      on the finishing move). Corsair's Reckoning consumes all stacks. Up to 3 stacks can be
+      held at a time.
+        - Rarity scaling of these values is not yet implemented.
+- Plague Doctor (Not yet implemented)
     - A debuff focused character, applying various damage over time and stat reducing debuffs to enemies. Primary attributes: Mysticism, Resistance.
     - Purpose: Debuffer
     - Passive: 
-- Warlord
+- Warlord (Not yet implemented)
     - A buffing tank character, applying various buffs to self and allies while being able to take a lot of damage. Primary attributes: Health, Defense.
     - Purpose: Sustain
     - Passive: 
@@ -274,23 +277,27 @@ Most often require;
 A status effect is a temporary condition that can affect a character's attributes, abilities, or behavior in combat. Status effects can be beneficial (buffs) or detrimental (debuffs) and can significantly influence the outcome of battles.
 
 ##### 3.2.3.1 Turn Bar Effects
-* Anchor (Debuff): The character cannot be pushed forward or backward on the turn bar by skills.
-* Temporal Leak (Debuff): Every time this character moves 10% of the bar, they take damage scaling with their own Speed.
+* Anchor (Debuff): The character cannot be pushed forward or backward on the turn bar by skills. (Not yet implemented)
+* Temporal Leak (Debuff): Every time this character moves 10% of the bar, they take damage scaling with their own Speed. (Not yet implemented)
 
 ##### 3.2.3.2 Common Status Effects
 
 Debuffs:
-* Expose Weakness: Reduces Defense by a percentage amount.
-* Enfeeble: Reduces the Attack by a percentage amount.
-* Mana Burn: Deals damage whenever the target uses a non-basic skill, scaling based on the target's Mysticism.
-* Burn: Deals 5% of max Health as damage.
-* Sequence Lock: Speed cannot be increased or decreased.
+* Expose Weakness: Reduces Defense by 50%.
+* Enfeeble: Reduces the Attack by 30%.
+* Mana Burn: Deals damage whenever the target uses a non-basic skill, scaling based on the target's Mysticism. (Not yet implemented)
+* Burning: Deals 4% of max Health as damage.
+* Sequence Lock: Speed cannot be increased or decreased. (Not yet implemented)
 
 Buffs:
-* Frenzy: Increases Attack and Speed but reduces Defense and Accuracy.
-* Rush: Bonus stats for a few turns then getting stunned for one turn.
-* Exhert: Gain bonus stats at the cost of losing Health.
-* Luck: Roll calculations twice and take the better result.
+* Empower: Increases Attack by 30%.
+* Fortify: Increases Defense by 30%.
+* Daunting Strength: Doubles the damage of the next attack.
+* Frenzy: Increases Attack and Speed but reduces Defense and Accuracy. (Not yet implemented)
+* Rush: Bonus stats for a few turns then getting stunned for one turn. (Not yet implemented)
+* Exhert: Gain bonus stats at the cost of losing Health. (Not yet implemented)
+* Luck: Roll calculations twice and take the better result. (Not yet implemented)
+* Radiance: Gain bonus defense per stack of momentum consumed. (Lancer Specific)
 
 #### 3.2.4. Skills
 Skills can be categorized into three main types: Turn Bar Skills, Role Specific Skills, and Universal Skills.
@@ -320,7 +327,7 @@ Turn bar skills apply effects to specific zones on the turn bar. When a characte
 
 ##### 3.2.4.2 Role Specific Skills
 * Symbiotic Overdrive (Symbiote): Increases all primary attributes by 20% but causes the character to lose 5% of their max Health every time they take a turn.
-* Burning Bolas (Jester): Throws flaming bolas at an enemy, dealing damage and applying the Burn debuff, scaling of Attack.
+* Burning Bolas (Jester): Throws flaming bolas at an enemy, dealing damage and applying the Burning debuff, scaling of Attack.
 
 ##### 4.2.4.3 Universal Skills
 * Pagan Curse: A ticking debuff. After 3 turns, the character is hit with a massive burst of Magical Damage unless they use a specific Chant to cleanse it.
@@ -331,7 +338,9 @@ Turn bar skills apply effects to specific zones on the turn bar. When a characte
 ### 3.3. Items and Resources
 
 #### 3.3.1. Itemization
-Each character can have 3 or 4 types of equipment, a weapon, off-hand (shield, book or something), boots and if certain a talent tree node has been acquired then a "trinket" can also be equipped.
+Each character can have 3 or 4 types of equipment, a weapon, off-hand (shield, book or something), boots and if certain a talent tree node has been acquired then a "trinket" can also be equipped. These four pieces (Weapon, Off-hand, Boots, Trinket) are the core intended loadout.
+
+The codebase additionally defines six more equipment slots (Helmet, Chest, Pants, Gloves, Ring, Amulet) for future flexibility. These are optional and not currently in scope for itemization design or content — no items or drop tables target them yet.
 
 Rarity for items:
 * Common
@@ -423,12 +432,12 @@ directly in the adventure scene without entering battle:
   how long to receive it: 0 Supplies for the next combat, 6 Supplies for the next 3
   combats, or 18 Supplies for the rest of the adventure.
 - **Hint**: a placeholder node that shows a configured hint (text and/or image) meant
-  to assist with an out-of-game puzzle, and grants a small Silver/Supplies reward on
-  acknowledgement. No puzzle backend exists yet.
+  to assist with an out-of-game puzzle, and grants a small Silver/Supplies reward
+  (5% of the encounter's reward budget) on acknowledgement. No puzzle backend exists yet.
 - **Gamble**: a 50/50 choice. On a win, the player receives a buff lasting 4 combats;
   on a loss, a debuff lasting 2 combats.
-- **Escalating**: offers Silver and/or Supplies in exchange for a permanent +1 to the
-  adventure's difficulty for its remainder.
+- **Escalate**: offers Silver and/or Supplies (15% of the encounter's reward budget) in
+  exchange for a permanent +1 to the adventure's difficulty for its remainder.
 
 Buffs and debuffs granted by these nodes are **adventure-spanning effects**: they are
 tracked on `AdventureState` as combats-remaining (rather than turns) and are applied to
@@ -562,7 +571,7 @@ This encounter is a against a statue that relies on very high speed and through 
 This encounter is against a statue that use a very high damage single target attack every few turns, so the player can utilize the Enfeeble debuff to reduce the hit or using some defensive skill from a Sustain focused character.
 
 ##### 5.2.2.3 Reanimating Statues 3 (Off-hands)
-This encounter is against a statue that has high defense, so the player can utilize the debuffs Expose Weakness to deal more damage to it or for example Burn to deal a percentage of its health.
+This encounter is against a statue that has high defense, so the player can utilize the debuffs Expose Weakness to deal more damage to it or for example Burning to deal a percentage of its health.
 
 #### 5.2.3. Caravan (Currency ecounter)
 
