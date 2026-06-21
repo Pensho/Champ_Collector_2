@@ -51,6 +51,7 @@ func Init() -> void:
 	_character_collection.Add(CENTAUR_LANCER.duplicate(true))
 	_character_collection.Add(CENTAUR_ARCHIVIST.duplicate(true))
 	_character_collection.Add(TACTICIAN.duplicate(true))
+	_character_collection.Add(BLOODMAGE.duplicate(true))
 
 	context_container._scene = "uid://c6c1o3oabj0pf"
 	change_scene(context_container)
