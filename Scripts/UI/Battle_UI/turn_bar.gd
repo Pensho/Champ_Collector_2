@@ -54,6 +54,32 @@ func Init(p_characters: Dictionary[int, Character], p_zone_callable: Callable):
 		self.add_child(_zone_dividers[i])
 	
 	DisableZones(true)
+	SetupPlanReachOverlays(p_characters)
+
+func SetupPlanReachOverlays(p_characters: Dictionary[int, Character]) -> void:
+	var owner_ids: Array[int]
+	for i in p_characters.keys():
+		if (p_characters[i]._trait is PlanTrait and PlanTrait.GetReachThreshold(p_characters[i]._rarity) > 0.0):
+			owner_ids.append(i)
+	if (owner_ids.is_empty()):
+		return
+
+	var has_player_owner: bool = false
+	var has_enemy_owner: bool = false
+	for id in owner_ids:
+		if (Battle.PLAYER_IDS.has(id)):
+			has_player_owner = true
+		else:
+			has_enemy_owner = true
+
+	for id in owner_ids:
+		var tint: Color = Color.WHITE
+		if (has_player_owner and has_enemy_owner):
+			tint = Color(0.6, 1.0, 0.6) if Battle.PLAYER_IDS.has(id) else Color(1.0, 0.6, 0.6)
+		var threshold: float = PlanTrait.GetReachThreshold(p_characters[id]._rarity)
+		var overlay := PlanReachOverlay.new()
+		self.add_child(overlay)
+		overlay.Setup(_char_turns[id], threshold * self.size.x, tint, p_characters[id], self.size.y)
 
 func SpawnZoneEffect(p_zone_ID: int, p_duration: int, p_allySide: bool, p_zone_type: Types.Skill_Type):
 	var effect: TurnBarContainer
@@ -71,6 +97,7 @@ func SpawnZoneEffect(p_zone_ID: int, p_duration: int, p_allySide: bool, p_zone_t
 	effect.cpu_particles_2d_up_1.emission_rect_extents.x = _zone_buttons[p_zone_ID].size.x * 0.5
 	effect.cpu_particles_2d_up_2.emission_rect_extents.x = _zone_buttons[p_zone_ID].size.x * 0.5
 	_zone_effects[p_zone_ID] = effect
+	_zone_effects[p_zone_ID].z_index = 10
 	_zone_effects[p_zone_ID].position = Vector2(
 		_zone_buttons[p_zone_ID].position.x + (_zone_buttons[p_zone_ID].size.x * 0.5),
 		_zone_buttons[p_zone_ID].position.y + _zone_buttons[p_zone_ID].size.y)

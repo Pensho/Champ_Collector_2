@@ -9,6 +9,9 @@ const PERCENT_BEHIND_THRESHOLD: Dictionary[Types.Rarity, float] = {
 
 var _start_of_turn_buff: StatusEffects.Buff
 
+static func GetReachThreshold(p_rarity: Types.Rarity) -> float:
+	return PERCENT_BEHIND_THRESHOLD.get(p_rarity, 0.0)
+
 func Init() -> void:
 	_trait_texture = load("uid://cfaeiuchn2y3o")
 	_execution_steps[Types.Combat_Event.Start_Turn] = Callable(self, "StartOfTurn")
@@ -33,7 +36,7 @@ func StartOfTurn(
 		p_characters: Dictionary[int, Character],
 		p_character_repr: Array[CharacterRepresentation]) -> void:
 	var rarity: Types.Rarity = p_characters[p_owner_ID]._rarity
-	var threshold: float = PERCENT_BEHIND_THRESHOLD.get(rarity, 0.0)
+	var threshold: float = GetReachThreshold(rarity)
 
 	var allies_behind: Array[int] = p_battle_UI._turn_bar.GetCharactersBehindBy(p_owner_ID, threshold)
 	if (allies_behind.is_empty()):

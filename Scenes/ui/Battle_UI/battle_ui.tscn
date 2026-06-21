@@ -69,7 +69,7 @@ texture = ExtResource("2_6sbxc")
 expand_mode = 1
 
 [node name="Char_1" type="TextureRect" parent="PlayerInfoBox" unique_id=1713691633]
-z_index = 1
+z_index = 20
 material = ExtResource("2_d07u5")
 layout_mode = 0
 offset_top = -15.0
@@ -78,7 +78,7 @@ offset_bottom = 25.0
 expand_mode = 1
 
 [node name="Char_2" type="TextureRect" parent="PlayerInfoBox" unique_id=1376268690]
-z_index = 1
+z_index = 20
 material = ExtResource("2_d07u5")
 layout_mode = 0
 offset_top = -10.0
@@ -87,7 +87,7 @@ offset_bottom = 30.0
 expand_mode = 1
 
 [node name="Char_3" type="TextureRect" parent="PlayerInfoBox" unique_id=45139638]
-z_index = 1
+z_index = 20
 material = ExtResource("2_d07u5")
 layout_mode = 0
 offset_top = -5.0
@@ -96,7 +96,7 @@ offset_bottom = 35.0
 expand_mode = 1
 
 [node name="Char_4" type="TextureRect" parent="PlayerInfoBox" unique_id=413339993]
-z_index = 1
+z_index = 20
 material = ExtResource("2_d07u5")
 layout_mode = 0
 offset_right = 40.0
@@ -104,7 +104,7 @@ offset_bottom = 40.0
 expand_mode = 1
 
 [node name="Char_5" type="TextureRect" parent="PlayerInfoBox" unique_id=1823159655]
-z_index = 1
+z_index = 20
 material = ExtResource("2_d07u5")
 layout_mode = 0
 offset_top = 5.0
@@ -113,7 +113,7 @@ offset_bottom = 45.0
 expand_mode = 1
 
 [node name="Char_6" type="TextureRect" parent="PlayerInfoBox" unique_id=2130413701]
-z_index = 1
+z_index = 20
 material = ExtResource("2_d07u5")
 layout_mode = 0
 offset_top = 10.0
