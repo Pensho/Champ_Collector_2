@@ -154,6 +154,27 @@ func GetCharactersWithinRange(p_character_ID: int, p_bar_percent: float) -> Arra
 	
 	return character_ids
 
+## p_owner_ID is the character the distance is measured from.
+## p_bar_percent is the maximum span behind the owner another character may be to be
+## included, as a fraction of the bar (0.0 - 1.0). Characters at or ahead of the owner
+## are excluded.
+func GetCharactersBehindBy(p_owner_ID: int, p_bar_percent: float) -> Array[int]:
+	var character_ids: Array[int]
+	if (0.0 > p_bar_percent or p_bar_percent > 1.0):
+		print("GetCharactersBehindBy, span supplied is not within range: ", p_bar_percent)
+		return character_ids
+
+	var owner_position: float = _char_turns[p_owner_ID].position.x
+	for id in _char_turns.size():
+		if (p_owner_ID == id):
+			continue
+		var distance_behind: float = owner_position - _char_turns[id].position.x
+		if (distance_behind <= 0.0 or distance_behind > (p_bar_percent * self.size.x)):
+			continue
+		character_ids.append(id)
+
+	return character_ids
+
 func ShowCharacterAsDead(p_dead_char_ID: int):
 	_char_turns[p_dead_char_ID].material = _grayscale_material
 
