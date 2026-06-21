@@ -1,7 +1,7 @@
 shader_type canvas_item;
 
 uniform vec4 tint : source_color = vec4(1.0);
-uniform float base_alpha = 0.5;
+uniform float base_alpha = 0.3;
 uniform float fade_uv = 0.04;
 uniform vec2 region_uv_range = vec2(0.0, 1.0); // AtlasTexture region's UV bounds; UV is not 0..1 over the drawn quad.
 
