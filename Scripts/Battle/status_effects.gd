@@ -5,7 +5,7 @@ const BUFF_ICONS: Dictionary[Types.Buff_Type, String] = {
 	Types.Buff_Type.Empower: "res://Assets/Champ_Collector/Icons/Status_Effects/Empower/Empower.jpg",
 	Types.Buff_Type.Fortify: "res://Assets/Champ_Collector/Icons/Status_Effects/Fortify/Fortify.jpg",
 	Types.Buff_Type.Daunting_Strength: "uid://bxhbodgumh5r4",
-	Types.Buff_Type.Radiance: "res://Assets/Champ_Collector/Icons/Status_Effects/Radiance/Radiance.jpg",
+	Types.Buff_Type.Phalanx_Guard: "res://Assets/Champ_Collector/Icons/Status_Effects/Phalanx_Guard/Phalanx_Guard.jpg",
 }
 
 const DEBUFF_ICONS: Dictionary[Types.Debuff_Type, String] = {

@@ -154,7 +154,7 @@ static func TriggerExistingCasterBuffs(
 				p_caster_attributes[Types.Attribute.Defence] += int(ceilf(p_caster_attributes[Types.Attribute.Defence] * 0.3))
 			Types.Buff_Type.Daunting_Strength:
 				_damage_multiplier[p_caster_ID] *= 2.0
-			Types.Buff_Type.Radiance:
+			Types.Buff_Type.Phalanx_Guard:
 				pass
 			_:
 				pass
@@ -178,7 +178,7 @@ static func TriggerTargetBuffs(
 				p_target_attributes[Types.Attribute.Attack] += int(ceilf(p_target_attributes[Types.Attribute.Attack] * 0.3))
 			Types.Buff_Type.Fortify:
 				p_target_attributes[Types.Attribute.Defence] += int(ceilf(p_target_attributes[Types.Attribute.Defence] * 0.3))
-			Types.Buff_Type.Radiance:
+			Types.Buff_Type.Phalanx_Guard:
 				p_target_attributes[Types.Attribute.Defence] += int(ceilf(p_target_attributes[Types.Attribute.Defence] * buff.value))
 			_:
 				pass

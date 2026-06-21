@@ -109,7 +109,7 @@ enum Buff_Type
 	Empower,
 	Fortify,
 	Daunting_Strength,
-	Radiance,
+	Phalanx_Guard,
 }
 
 enum Debuff_Type

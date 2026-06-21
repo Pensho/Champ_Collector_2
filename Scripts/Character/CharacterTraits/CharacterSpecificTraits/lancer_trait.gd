@@ -7,7 +7,7 @@ const MOMENTUM_PER_STACK: Dictionary[Types.Rarity, float] = {
 	Types.Rarity.Legendary: 0.10,
 }
 
-const RADIANCE_DEFENSE: Dictionary[Types.Rarity, float] = {
+const PHALANX_GUARD_DEFENSE: Dictionary[Types.Rarity, float] = {
 	Types.Rarity.Uncommon: 0.04,
 	Types.Rarity.Rare: 0.06,
 	Types.Rarity.Epic: 0.08,
@@ -29,9 +29,9 @@ var defensive_skill_names: Dictionary[String, bool] = {}
 var _momentum_stacks: int = 0
 
 func Init() -> void:
-	_trait_texture = load("res://Assets/Champ_Collector/Icons/Status_Effects/Radiance/Radiance.jpg")
+	_trait_texture = load("res://Assets/Champ_Collector/Icons/Status_Effects/Phalanx_Guard/Phalanx_Guard.jpg")
 	_title = "Reckless Momentum"
-	_body = "Offensive skills grant a Momentum stack that gives more Attack and less Defense per stack. Using a defensive skill grants Radiance and consumes all stacks."
+	_body = "Offensive skills grant a Momentum stack that gives more Attack and less Defense per stack. Using a defensive skill grants Phalanx Guard and consumes all stacks."
 	_execution_steps[Types.Combat_Event.Start_Combat] = Callable(self, "StartOfBattle")
 	_execution_steps[Types.Combat_Event.Skill_Cast] = Callable(self, "OnSkillCast")
 	_execution_steps[Types.Combat_Event.Defend] = Callable(self, "OnDefend")
@@ -57,18 +57,18 @@ func OnSkillCast(
 	elif defensive_skill_names.has(p_skill_name):
 		if _momentum_stacks > 0:
 			_momentum_stacks = 0
-			var radiance_buff: StatusEffects.Buff = StatusEffects.Buff.new()
-			radiance_buff.type = Types.Buff_Type.Radiance
-			radiance_buff.duration = 2
-			radiance_buff.value = RADIANCE_DEFENSE.get(rarity, 0.0)
-			radiance_buff.name = "Radiance"
-			Skills.ApplyBuff(p_characters[p_owner_ID], radiance_buff, p_character_repr[p_owner_ID], p_battle_ui)
+			var phalanx_guard_buff: StatusEffects.Buff = StatusEffects.Buff.new()
+			phalanx_guard_buff.type = Types.Buff_Type.Phalanx_Guard
+			phalanx_guard_buff.duration = 2
+			phalanx_guard_buff.value = PHALANX_GUARD_DEFENSE.get(rarity, 0.0)
+			phalanx_guard_buff.name = "Phalanx Guard"
+			Skills.ApplyBuff(p_characters[p_owner_ID], phalanx_guard_buff, p_character_repr[p_owner_ID], p_battle_ui)
 	
 	if _momentum_stacks > 0:
 		var bonus_per_stack: float = MOMENTUM_PER_STACK.get(rarity, 0.0)
 		p_caster_attributes[Types.Attribute.Attack] += int(ceilf(p_caster_attributes[Types.Attribute.Attack] * bonus_per_stack * _momentum_stacks))
 	
-	_body = "Offensive skills grant a Momentum stack that gives more Attack and less Defense per stack. Using a defensive skill grants Radiance and consumes all stacks.\nCurrent Momentum Stacks: " + str(_momentum_stacks)
+	_body = "Offensive skills grant a Momentum stack that gives more Attack and less Defense per stack. Using a defensive skill grants Phalanx Guard and consumes all stacks.\nCurrent Momentum Stacks: " + str(_momentum_stacks)
 	p_character_repr[p_owner_ID].SetTraitElementToolTip(_title, _body, 0)
 	
 	return result

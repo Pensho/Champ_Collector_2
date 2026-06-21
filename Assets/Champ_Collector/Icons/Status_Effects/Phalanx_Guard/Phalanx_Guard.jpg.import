@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c3mkml3cucc5a"
-path="res://.godot/imported/Radiance.jpg-dcc3eea1655c210edd9c41914dd5ce65.ctex"
+path="res://.godot/imported/Phalanx_Guard.jpg-d374e6fe68d0deae047a98ac3ef1e6eb.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Status_Effects/Radiance/Radiance.jpg"
-dest_files=["res://.godot/imported/Radiance.jpg-dcc3eea1655c210edd9c41914dd5ce65.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Status_Effects/Phalanx_Guard/Phalanx_Guard.jpg"
+dest_files=["res://.godot/imported/Phalanx_Guard.jpg-d374e6fe68d0deae047a98ac3ef1e6eb.ctex"]
 
 [params]
 

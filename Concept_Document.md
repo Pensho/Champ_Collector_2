@@ -121,7 +121,7 @@ Current roles, their identity and purpose exist as follows:
 - Lancer
     - Always has at least one offensive skill and one defensive skill.
     - Purpose: Damage
-    - Passive: Reckless Momentum - When an offensive skill is used the Lancer gains one Momentum stack (+x% damage, -x/2% defence while stacks are held, maximum 5 stacks). When a defensive skill is used, the Lancer gains Radiance (a role-unique 2-turn buff, +x% defence) and all Momentum stacks are consumed.
+    - Passive: Reckless Momentum - When an offensive skill is used the Lancer gains one Momentum stack (+x% damage, -x/2% defence while stacks are held, maximum 5 stacks). When a defensive skill is used, the Lancer gains Phalanx Guard (a role-unique 2-turn buff, +x% defence) and all Momentum stacks are consumed.
         - 4% Uncommon, 6% Rare, 8% Epic, 10% Legendary
 - Alchemist
     - A support character that focuses on buffing allies and debuffing enemies through various concoctions. Primary attributes: Knowledge, Mysticism.
@@ -297,7 +297,7 @@ Buffs:
 * Rush: Bonus stats for a few turns then getting stunned for one turn. (Not yet implemented)
 * Exhert: Gain bonus stats at the cost of losing Health. (Not yet implemented)
 * Luck: Roll calculations twice and take the better result. (Not yet implemented)
-* Radiance: Gain bonus defense per stack of momentum consumed. (Lancer Specific)
+* Phalanx Guard: Gain bonus defense per stack of momentum consumed. (Lancer Specific)
 
 #### 3.2.4. Skills
 Skills can be categorized into three main types: Turn Bar Skills, Role Specific Skills, and Universal Skills.

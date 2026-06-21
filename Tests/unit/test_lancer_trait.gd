@@ -50,11 +50,11 @@ func test_momentum_per_stack_epic() -> void:
 func test_momentum_per_stack_legendary() -> void:
 	assert_eq(LancerTrait.MOMENTUM_PER_STACK.get(Types.Rarity.Legendary, 0.0), 0.10)
 
-func test_radiance_defense_uncommon() -> void:
-	assert_eq(LancerTrait.RADIANCE_DEFENSE.get(Types.Rarity.Uncommon, 0.0), 0.04)
+func test_phalanx_guard_defense_uncommon() -> void:
+	assert_eq(LancerTrait.PHALANX_GUARD_DEFENSE.get(Types.Rarity.Uncommon, 0.0), 0.04)
 
-func test_radiance_defense_legendary() -> void:
-	assert_eq(LancerTrait.RADIANCE_DEFENSE.get(Types.Rarity.Legendary, 0.0), 0.10)
+func test_phalanx_guard_defense_legendary() -> void:
+	assert_eq(LancerTrait.PHALANX_GUARD_DEFENSE.get(Types.Rarity.Legendary, 0.0), 0.10)
 
 # --- Momentum stack accumulation ---
 
@@ -125,18 +125,18 @@ func test_defend_no_penalty_with_zero_stacks() -> void:
 	assert_eq(defend_attr[Types.Attribute.Defence], 100,
 		"Zero stacks should produce no defence penalty")
 
-# --- Radiance buff on defensive skill ---
+# --- Phalanx Guard buff on defensive skill ---
 
-func test_defensive_skill_applies_radiance_buff() -> void:
-	_character._rarity = Types.Rarity.Uncommon  # 4% Radiance
+func test_defensive_skill_applies_phalanx_guard_buff() -> void:
+	_character._rarity = Types.Rarity.Uncommon  # 4% Phalanx Guard
 	_trait.defensive_skill_names["Shield_Bash"] = true
 	_trait._momentum_stacks = 3
 
 	var attributes: Dictionary[Types.Attribute, int] = {Types.Attribute.Attack: 0, Types.Attribute.Defence: 0}
 	_trait.OnSkillCast(0, [], _characters, _repr_array, "Shield_Bash", _battle_ui, attributes)
 
-	assert_eq(_character._active_buffs.size(), 1, "Radiance buff should be applied")
-	assert_eq(_character._active_buffs[0].type, Types.Buff_Type.Radiance)
+	assert_eq(_character._active_buffs.size(), 1, "Phalanx Guard buff should be applied")
+	assert_eq(_character._active_buffs[0].type, Types.Buff_Type.Phalanx_Guard)
 	assert_eq(_character._active_buffs[0].duration, 2)
 	assert_almost_eq(_character._active_buffs[0].value, 0.04, 0.0001)
 
@@ -150,7 +150,7 @@ func test_defensive_skill_clears_all_momentum_stacks() -> void:
 
 	assert_eq(_trait._momentum_stacks, 0, "Defensive skill should consume all Momentum stacks")
 
-func test_defensive_skill_with_zero_stacks_skips_radiance() -> void:
+func test_defensive_skill_with_zero_stacks_skips_phalanx_guard() -> void:
 	_character._rarity = Types.Rarity.Rare
 	_trait.defensive_skill_names["Shield_Bash"] = true
 	# _momentum_stacks stays at 0
@@ -158,4 +158,4 @@ func test_defensive_skill_with_zero_stacks_skips_radiance() -> void:
 	var attributes: Dictionary[Types.Attribute, int] = {Types.Attribute.Attack: 0, Types.Attribute.Defence: 0}
 	_trait.OnSkillCast(0, [], _characters, _repr_array, "Shield_Bash", _battle_ui, attributes)
 
-	assert_eq(_character._active_buffs.size(), 0, "No Radiance should be applied when stacks are zero")
+	assert_eq(_character._active_buffs.size(), 0, "No Phalanx Guard should be applied when stacks are zero")
