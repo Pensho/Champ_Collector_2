@@ -7,7 +7,7 @@ enum Node_Type
 	BOSS,
 	HINT,
 	GAMBLE,
-	ESCALATING,
+	ESCALATE,
 }
 
 var scene_context: Static_Context

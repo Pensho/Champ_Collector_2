@@ -16,4 +16,4 @@ enum Mechanic_Frequency
 @export var rest_stops: Mechanic_Frequency
 @export var hint_nodes: Mechanic_Frequency
 @export var gamble_nodes: Mechanic_Frequency
-@export var escalating_nodes: Mechanic_Frequency
+@export var escalate_nodes: Mechanic_Frequency

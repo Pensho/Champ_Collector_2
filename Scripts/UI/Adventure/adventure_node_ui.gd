@@ -36,7 +36,7 @@ func Init(p_node: NodeData, p_is_eligible: bool) -> void:
 		NodeData.Node_Type.GAMBLE:
 			img.fill(Color.GOLD)
 			_icon.texture = ImageTexture.create_from_image(img)
-		NodeData.Node_Type.ESCALATING:
+		NodeData.Node_Type.ESCALATE:
 			img.fill(Color.DARK_RED)
 			_icon.texture = ImageTexture.create_from_image(img)
 

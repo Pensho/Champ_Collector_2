@@ -154,18 +154,18 @@ func test_gamble_nodes_are_generated_with_context() -> void:
 			assert_ne(ctx.loss_debuff, Types.Debuff_Type.Invalid, "Gamble loss_debuff should not be Invalid.")
 	assert_true(found, "HIGH gamble_nodes frequency should generate at least one GAMBLE node.")
 
-func test_escalating_nodes_are_generated_with_context() -> void:
-	_template.escalating_nodes = AdventureTemplate.Mechanic_Frequency.HIGH
-	_biome.escalating_rewards = LootTable.new()
+func test_escalate_nodes_are_generated_with_context() -> void:
+	_template.escalate_nodes = AdventureTemplate.Mechanic_Frequency.HIGH
+	_biome.escalate_rewards = LootTable.new()
 	var nodes: Array[NodeData] = AdventureGenerator.GenerateAdventure(_template, _biome)
 	var found: bool = false
 	for node in nodes:
-		if node.node_type == NodeData.Node_Type.ESCALATING:
+		if node.node_type == NodeData.Node_Type.ESCALATE:
 			found = true
-			var ctx := node.scene_context as ContextEscalating
-			assert_true(ctx is ContextEscalating, "ESCALATING node should have a ContextEscalating.")
-			assert_not_null(ctx._loot_table, "ESCALATING node should have a loot table when biome has escalating_rewards configured.")
-	assert_true(found, "HIGH escalating_nodes frequency should generate at least one ESCALATING node.")
+			var ctx := node.scene_context as ContextEscalate
+			assert_true(ctx is ContextEscalate, "ESCALATE node should have a ContextEscalate.")
+			assert_not_null(ctx._loot_table, "ESCALATE node should have a loot table when biome has escalate_rewards configured.")
+	assert_true(found, "HIGH escalate_nodes frequency should generate at least one ESCALATE node.")
 
 func test_rest_stop_nodes_have_granted_buff() -> void:
 	_template.rest_stops = AdventureTemplate.Mechanic_Frequency.HIGH

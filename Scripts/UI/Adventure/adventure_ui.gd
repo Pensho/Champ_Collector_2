@@ -60,7 +60,7 @@ func _on_engage_confirmed(p_node: NodeData) -> void:
 	match p_node.node_type:
 		NodeData.Node_Type.FIGHT, NodeData.Node_Type.BOSS:
 			context_container._scene = "uid://d3hg8jxy8xj8n"
-		NodeData.Node_Type.REST_STOP, NodeData.Node_Type.HINT, NodeData.Node_Type.GAMBLE, NodeData.Node_Type.ESCALATING:
+		NodeData.Node_Type.REST_STOP, NodeData.Node_Type.HINT, NodeData.Node_Type.GAMBLE, NodeData.Node_Type.ESCALATE:
 			_preview.visible = false
 			_GrantNodeLoot(p_node, difficulty)
 			_interaction_panel.Show(p_node, _state)
@@ -75,9 +75,9 @@ func _GrantNodeLoot(p_node: NodeData, p_difficulty: int) -> void:
 		NodeData.Node_Type.HINT:
 			loot_table = (ctx as ContextHint)._loot_table
 			fraction = GameBalance.ADVENTURE_HINT_REWARD_BUDGET_FRACTION
-		NodeData.Node_Type.ESCALATING:
-			loot_table = (ctx as ContextEscalating)._loot_table
-			fraction = GameBalance.ADVENTURE_ESCALATING_REWARD_BUDGET_FRACTION
+		NodeData.Node_Type.ESCALATE:
+			loot_table = (ctx as ContextEscalate)._loot_table
+			fraction = GameBalance.ADVENTURE_ESCALATE_REWARD_BUDGET_FRACTION
 		_:
 			return
 	if loot_table == null:

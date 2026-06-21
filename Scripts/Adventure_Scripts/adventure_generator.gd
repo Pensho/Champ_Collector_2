@@ -8,7 +8,7 @@ static func GenerateAdventure(p_template: AdventureTemplate, p_biome: BiomeData)
 	_InsertSpecialNodes(spine, NodeData.Node_Type.REST_STOP, SetRestNumber(p_template.rest_stops))
 	_InsertSpecialNodes(spine, NodeData.Node_Type.HINT, SetRestNumber(p_template.hint_nodes))
 	_InsertSpecialNodes(spine, NodeData.Node_Type.GAMBLE, SetRestNumber(p_template.gamble_nodes))
-	_InsertSpecialNodes(spine, NodeData.Node_Type.ESCALATING, SetRestNumber(p_template.escalating_nodes))
+	_InsertSpecialNodes(spine, NodeData.Node_Type.ESCALATE, SetRestNumber(p_template.escalate_nodes))
 
 	var boss: NodeData = NodeData.new()
 	boss.node_type = NodeData.Node_Type.BOSS
@@ -179,11 +179,11 @@ static func _PopulateNodeContexts(p_nodes: Array[NodeData], p_biome: BiomeData) 
 				gamble_ctx.win_buff = _RandomBuffType()
 				gamble_ctx.loss_debuff = _RandomDebuffType()
 				node.scene_context = gamble_ctx
-			NodeData.Node_Type.ESCALATING:
-				var escalating_ctx := ContextEscalating.new()
-				if p_biome.escalating_rewards != null:
-					escalating_ctx._loot_table = p_biome.escalating_rewards.duplicate(true)
-				node.scene_context = escalating_ctx
+			NodeData.Node_Type.ESCALATE:
+				var escalate_ctx := ContextEscalate.new()
+				if p_biome.escalate_rewards != null:
+					escalate_ctx._loot_table = p_biome.escalate_rewards.duplicate(true)
+				node.scene_context = escalate_ctx
 
 
 static func _RandomBuffType() -> Types.Buff_Type:

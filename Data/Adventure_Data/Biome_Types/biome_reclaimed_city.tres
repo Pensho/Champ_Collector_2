@@ -10,7 +10,7 @@
 [ext_resource type="Resource" uid="uid://dkpr2hnmtcodx" path="res://Data/Character_Player_Variants/Jester.tres" id="5_xulw6"]
 [ext_resource type="Resource" uid="uid://dnup7y7ax8jck" path="res://Data/Character_Player_Variants/Bar_Brawler.tres" id="6_ict8u"]
 [ext_resource type="Resource" path="res://Data/Loot_Tables/Adventure_Hint_Loot.tres" id="7_hint"]
-[ext_resource type="Resource" path="res://Data/Loot_Tables/Adventure_Escalating_Loot.tres" id="8_escalating"]
+[ext_resource type="Resource" path="res://Data/Loot_Tables/Adventure_Escalate_Loot.tres" id="8_escalate"]
 
 [resource]
 script = ExtResource("1_biome")
@@ -25,5 +25,5 @@ possible_bosses = Array[ExtResource("1_8q126")]([ExtResource("2_grm6y")])
 combat_rewards = ExtResource("4_grm6y")
 boss_rewards = ExtResource("5_boss")
 hint_rewards = ExtResource("7_hint")
-escalating_rewards = ExtResource("8_escalating")
+escalate_rewards = ExtResource("8_escalate")
 metadata/_custom_type_script = "uid://dk7f1bo3kh54l"

@@ -22,8 +22,8 @@ func Show(p_node: NodeData, p_supply_cost: int) -> void:
 			_label_type.text = "Hint"
 		NodeData.Node_Type.GAMBLE:
 			_label_type.text = "Gamble"
-		NodeData.Node_Type.ESCALATING:
-			_label_type.text = "Escalating Challenge"
+		NodeData.Node_Type.ESCALATE:
+			_label_type.text = "Escalate Challenge"
 	match p_node.node_type:
 		NodeData.Node_Type.FIGHT, NodeData.Node_Type.BOSS:
 			_label_cost.text = "Cost: " + str(p_supply_cost) + " Supplies"

@@ -28,8 +28,8 @@ func Show(p_node: NodeData, p_state: AdventureState) -> void:
 			_ShowHint(p_node.scene_context as ContextHint)
 		NodeData.Node_Type.GAMBLE:
 			_ShowGamble(p_node.scene_context as ContextGamble)
-		NodeData.Node_Type.ESCALATING:
-			_ShowEscalating(p_node.scene_context as ContextEscalating)
+		NodeData.Node_Type.ESCALATE:
+			_ShowEscalate(p_node.scene_context as ContextEscalate)
 	visible = true
 
 func _DisconnectAll(p_signal: Signal) -> void:
@@ -112,8 +112,8 @@ func _on_gamble_resolved(p_context: ContextGamble) -> void:
 	_button_secondary.show()
 	_button_secondary.pressed.connect(_Resolve, CONNECT_ONE_SHOT)
 
-func _ShowEscalating(p_context: ContextEscalating) -> void:
-	_label_type.text = "Escalating Challenge"
+func _ShowEscalate(p_context: ContextEscalate) -> void:
+	_label_type.text = "Escalate Challenge"
 	var reward_silver: int = p_context._loot_table._drop_result._silver if p_context._loot_table != null else 0
 	var reward_supplies: int = p_context._loot_table._drop_result._supplies if p_context._loot_table != null else 0
 	_label_description.text = "Gain %d Silver and %d Supplies, but the rest of this adventure becomes permanently harder (+%d difficulty)." % [
@@ -122,14 +122,14 @@ func _ShowEscalating(p_context: ContextEscalating) -> void:
 	_button_primary.text = "Accept"
 	_button_primary.disabled = false
 	_button_primary.show()
-	_button_primary.pressed.connect(_on_escalating_accepted.bind(p_context), CONNECT_ONE_SHOT)
+	_button_primary.pressed.connect(_on_escalate_accepted.bind(p_context), CONNECT_ONE_SHOT)
 
 	_button_secondary.text = "Decline"
 	_button_secondary.disabled = false
 	_button_secondary.show()
 	_button_secondary.pressed.connect(_Resolve, CONNECT_ONE_SHOT)
 
-func _on_escalating_accepted(p_context: ContextEscalating) -> void:
+func _on_escalate_accepted(p_context: ContextEscalate) -> void:
 	_state.difficulty += p_context.difficulty_increase
 	if p_context._loot_table != null:
 		main.GetInstance()._resources._silver += p_context._loot_table._drop_result._silver
