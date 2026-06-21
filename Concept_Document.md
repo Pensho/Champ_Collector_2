@@ -167,7 +167,8 @@ Current roles, their identity and purpose exist as follows:
 - Bloodmage
     - Spending their own or allies health for big pay-off skills in terms of damage or applying shields based on sacrificed health. Primary attributes: Health, Mysticism.
     - Purpose: Sustain, Damage
-    - Passive: 
+    - Passive: Hemoclarity - While below 50% health, gain increased Mysticism.
+        - 25% Uncommon, 30% Rare, 35% Epic, 40% Legendary
 - Herald of the loom
     - A stance character, using 3 types of stances:
         - Golden thread; All buffs & debuffs only goes to the herald instead of allies.
