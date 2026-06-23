@@ -155,7 +155,7 @@ Current roles, their identity and purpose exist as follows:
 - Jester
     - An unconventional tanking character that does not have significantly high Health or Defense but relies on skills that provoke hits to the Jester and dodge them. Primary attributes: Accuracy, Knowledge, Speed.
     - Purpose: Damage, Sustain
-    - Passive: 
+    - Passive: "Double the fun!" - A base 5% chance to completely avoid the damage of an incoming attack (debuffs from the attack still land). Each hit that lands instead of being avoided increases the chance by a rarity-dependent amount, up to 3 stacks: Uncommon +3%, Rare +4%, Epic +5%, Legendary +6% per stack. Avoiding damage resets the chance to the 5% base. Increases the chances of being targeted.
 - Cultist
     - Consumes ally buffs or health to empower their own skills, dealing magical damage or applying debuffs. Primary attributes: Mysticism, Knowledge.
     - Purpose: Debuffer, Damage

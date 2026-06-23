@@ -41,8 +41,12 @@ func OnDefend(
 		_p_characters: Dictionary[int, Character]) -> void:
 	print("character_trait base class OnDefend() called!")
 
-func OnDamageTaken(p_character_repr: CharacterRepresentation) -> void:
+func OnDamageTaken(_p_character_repr: CharacterRepresentation, _p_rarity: Types.Rarity, _p_battle_ui: BattleUI) -> float:
 	print("character_trait base class DamageTaken() called!")
+	return 1.0
 
 func OnDeath(p_character_repr: CharacterRepresentation) -> void:
 	print("character_trait base class OnDeath() called!")
+
+func GetTargetingDefenceMultiplier() -> float:
+	return 1.0

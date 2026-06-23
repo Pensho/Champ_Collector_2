@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="CharacterPreset" load_steps=12 format=3 uid="uid://dkpr2hnmtcodx"]
+[gd_resource type="Resource" script_class="CharacterPreset" format=3 uid="uid://dkpr2hnmtcodx"]
 
 [ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_05mxh"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_r2vnm"]
@@ -11,6 +11,7 @@
 [ext_resource type="Resource" uid="uid://syj6hxvr5t2x" path="res://Data/Attribute_Weights/Dexterous.tres" id="5_nk78g"]
 [ext_resource type="Resource" uid="uid://bejf1a62v41gq" path="res://Data/Attribute_Weights/Marksman.tres" id="6_rxutc"]
 [ext_resource type="Resource" uid="uid://4fnej15sbkkv" path="res://Data/Attribute_Weights/Arcane.tres" id="7_5rped"]
+[ext_resource type="Resource" path="res://Data/Character_Traits/Double_The_Fun_Trait.tres" id="8_dtfun"]
 
 [resource]
 script = ExtResource("3_7g6n5")
@@ -29,4 +30,5 @@ _resistance = 30
 _mysticism = 20
 _knowledge = 20
 _attribute_weight_types_available = Array[ExtResource("1_05mxh")]([ExtResource("2_mb06o"), ExtResource("3_s0jyj"), ExtResource("4_61gp4"), ExtResource("5_nk78g"), ExtResource("6_rxutc"), ExtResource("7_5rped")])
+_trait = ExtResource("8_dtfun")
 _preset_UID = "uid://dkpr2hnmtcodx"

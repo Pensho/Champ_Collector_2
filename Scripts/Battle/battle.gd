@@ -54,9 +54,16 @@ func SetTargetingOrder() -> void:
 	sorted_keys.sort_custom(func(key_a, key_b):
 		var obj_a = _characters[key_a]
 		var obj_b = _characters[key_b]
-		
-		var sum_a = obj_a._attributes[Types.Attribute.Health] + obj_a._attributes[Types.Attribute.Defence]
-		var sum_b = obj_b._attributes[Types.Attribute.Health] + obj_b._attributes[Types.Attribute.Defence]
+
+		var defence_a: float = obj_a._attributes[Types.Attribute.Defence]
+		if obj_a._trait != null:
+			defence_a *= obj_a._trait.GetTargetingDefenceMultiplier()
+		var defence_b: float = obj_b._attributes[Types.Attribute.Defence]
+		if obj_b._trait != null:
+			defence_b *= obj_b._trait.GetTargetingDefenceMultiplier()
+
+		var sum_a = obj_a._attributes[Types.Attribute.Health] + defence_a
+		var sum_b = obj_b._attributes[Types.Attribute.Health] + defence_b
 		
 		return sum_a > sum_b
 		)
@@ -79,7 +86,7 @@ func Init(p_context: ContextContainer) -> void:
 	
 	for i in p_context._player_battle_characters.size():
 		_characters[i] = p_context._player_battle_characters[i]
-		_characters[i]._currentHealth = _characters[i].GetBattleAttribute(Types.Attribute.Health)  * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
+		_characters[i]._currentHealth = _characters[i].GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
 		_self_context._arguments["character_dmg_" + str(i)] = 0
 		VisualizeCharacter(i)
 		ApplyAdventureEffects(i)
@@ -89,8 +96,6 @@ func Init(p_context: ContextContainer) -> void:
 		difficulty = _self_context._arguments["Difficulty"]
 	else:
 		_self_context._arguments["Difficulty"] = difficulty
-	
-	SetTargetingOrder()
 	
 	for i in _battlecontext._enemies_wave_1.size():
 		_characters[i + 3] = Character.new()
@@ -113,6 +118,8 @@ func Init(p_context: ContextContainer) -> void:
 			if(_characters[i]._trait._execution_steps.has(Types.Combat_Event.Start_Combat)):
 				_characters[i]._trait.StartOfBattle(_character_repr[i])
 	
+	SetTargetingOrder()
+
 	GRAYSCALE_MATERIAL = ShaderMaterial.new()
 	GRAYSCALE_MATERIAL.shader = GRAYSCALE
 	
@@ -328,14 +335,16 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID) -> voi
 					_battle_ui,
 					p_caster_ID)
 			if(damage_dealt != 0):
-				if (PLAYER_IDS.has(p_caster_ID)):
-					_self_context._arguments["character_dmg_" + str(p_caster_ID)] += damage_dealt
-				_battle_ui.SpawnCombatText(str(damage_dealt), _character_repr[target_ID].position + _battle_ui.COMBAT_TEXT_SPAWN_POINT)
-				_characters[target_ID]._currentHealth -= damage_dealt
-				UpdateLifeBar(target_ID)
-				if (null != _characters[target_ID]._trait):
-					if(_characters[target_ID]._trait._execution_steps.has(Types.Combat_Event.Damage_Taken)):
-						_characters[target_ID]._trait.OnDamageTaken(_character_repr[target_ID])
+				if (damage_dealt > 0 and null != _characters[target_ID]._trait \
+						and _characters[target_ID]._trait._execution_steps.has(Types.Combat_Event.Damage_Taken)):
+					damage_dealt = int(round(damage_dealt * _characters[target_ID]._trait.OnDamageTaken(
+							_character_repr[target_ID], _characters[target_ID]._rarity, _battle_ui)))
+				if(damage_dealt != 0):
+					if (PLAYER_IDS.has(p_caster_ID)):
+						_self_context._arguments["character_dmg_" + str(p_caster_ID)] += damage_dealt
+					_battle_ui.SpawnCombatText(str(damage_dealt), _character_repr[target_ID].position + _battle_ui.COMBAT_TEXT_SPAWN_POINT)
+					_characters[target_ID]._currentHealth -= damage_dealt
+					UpdateLifeBar(target_ID)
 		
 		var total_bump: float = cast_skill.turn_effect + trait_result._turn_bar_bump
 		if(0.0 != total_bump):
