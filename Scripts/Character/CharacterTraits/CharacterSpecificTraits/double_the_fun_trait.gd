@@ -16,7 +16,7 @@ var _avoidance_stacks: int = 0
 
 # Temporary icon borrowed from Hemoclarity until dedicated Jester art exists.
 func Init() -> void:
-	_trait_texture = load("res://Assets/Champ_Collector/Icons/Abilities/Hemoclarity/Hemoclarity.png")
+	_trait_texture = load("res://Assets/Champ_Collector/Icons/Abilities/Double_The_Fun/Double_The_Fun.png")
 	_title = "Double the fun!"
 	_body = "Chance to completely avoid incoming damage. The chance ramps up with each hit taken and resets on a successful avoidance."
 	_execution_steps[Types.Combat_Event.Start_Combat] = Callable(self, "StartOfBattle")
