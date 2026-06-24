@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://dvvopn2yuy4wr"]
 
 [ext_resource type="Script" uid="uid://di021l42jy53d" path="res://Scripts/Battle/character_battle_repr.gd" id="1_hd4xr"]
+[ext_resource type="Script" uid="uid://2re1qsu3nr22" path="res://Scripts/Battle/character_visual_effects.gd" id="6_echovx"]
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="2_6p7dp"]
 [ext_resource type="Material" uid="uid://2tvv2h51laxc" path="res://Assets/Champ_Collector/Material/Unshaded.tres" id="2_7qair"]
 [ext_resource type="Texture2D" uid="uid://cdwqpx4sgt42a" path="res://Assets/Champ_Collector/Icons/Trait_UI_Element_Blank.png" id="4_wjchg"]
@@ -25,6 +26,38 @@ script = ExtResource("1_hd4xr")
 _trait_icons = [NodePath("VBoxContainer_Trait_Elements/TextureRect"), NodePath("VBoxContainer_Trait_Elements/TextureRect2"), NodePath("VBoxContainer_Trait_Elements/TextureRect3")]
 _trait_tooltips = [NodePath("VBoxContainer_Trait_Elements/TextureRect"), NodePath("VBoxContainer_Trait_Elements/TextureRect2"), NodePath("VBoxContainer_Trait_Elements/TextureRect3")]
 _status_effect_textures = [NodePath("HBoxContainer_Status_Effects/Effect_1"), NodePath("HBoxContainer_Status_Effects/Effect_2"), NodePath("HBoxContainer_Status_Effects/Effect_3"), NodePath("HBoxContainer_Status_Effects/Effect_4"), NodePath("HBoxContainer_Status_Effects/Effect_5"), NodePath("HBoxContainer_Status_Effects/Effect_6"), NodePath("HBoxContainer_Status_Effects/Effect_7"), NodePath("HBoxContainer_Status_Effects/Effect_8")]
+
+[node name="VisualEffects" type="Node2D" parent="." node_paths=PackedStringArray("_source_texture_rect", "_echo_textures")]
+script = ExtResource("6_echovx")
+_source_texture_rect = NodePath("../TextureRect")
+_echo_textures = [NodePath("Echo_1"), NodePath("Echo_2"), NodePath("Echo_3")]
+
+[node name="Echo_1" type="TextureRect" parent="VisualEffects" unique_id=2244668801]
+visible = false
+self_modulate = Color(1, 1, 1, 0.45)
+offset_left = 35.0
+offset_right = 235.0
+offset_bottom = 200.0
+expand_mode = 1
+mouse_filter = 2
+
+[node name="Echo_2" type="TextureRect" parent="VisualEffects" unique_id=2244668802]
+visible = false
+self_modulate = Color(1, 1, 1, 0.4)
+offset_left = -35.0
+offset_right = 165.0
+offset_bottom = 200.0
+expand_mode = 1
+mouse_filter = 2
+
+[node name="Echo_3" type="TextureRect" parent="VisualEffects" unique_id=2244668803]
+visible = false
+self_modulate = Color(1, 1, 1, 0.3)
+offset_left = 70.0
+offset_right = 270.0
+offset_bottom = 200.0
+expand_mode = 1
+mouse_filter = 2
 
 [node name="TextureRect" type="TextureRect" parent="." unique_id=994506692]
 offset_right = 200.0

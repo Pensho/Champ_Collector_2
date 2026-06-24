@@ -21,11 +21,17 @@ func Init() -> void:
 	_body = "Chance to completely avoid incoming damage. The chance ramps up with each hit taken and resets on a successful avoidance."
 	_execution_steps[Types.Combat_Event.Start_Combat] = Callable(self, "StartOfBattle")
 	_execution_steps[Types.Combat_Event.Damage_Taken] = Callable(self, "OnDamageTaken")
+	_execution_steps[Types.Combat_Event.On_Death] = Callable(self, "OnDeath")
 
 func StartOfBattle(p_character_repr: CharacterRepresentation) -> void:
 	_avoidance_stacks = 0
 	p_character_repr.SetTraitElement(_trait_texture, 0)
 	p_character_repr.SetTraitElementToolTip(_title, _body, 0)
+	p_character_repr.GetVisualEffects().SetSpriteEchoes(0)
+
+func OnDeath(p_character_repr: CharacterRepresentation) -> void:
+	_avoidance_stacks = 0
+	p_character_repr.GetVisualEffects().SetSpriteEchoes(0)
 
 func GetAvoidChance(p_rarity: Types.Rarity) -> float:
 	return BASE_AVOID_CHANCE + AVOIDANCE_INCREMENT.get(p_rarity, 0.0) * _avoidance_stacks
@@ -43,10 +49,12 @@ func OnDamageTaken(p_character_repr: CharacterRepresentation, p_rarity: Types.Ra
 		_avoidance_stacks = 0
 		p_battle_ui.SpawnCombatText("Avoided!", p_character_repr.position + p_battle_ui.COMBAT_TEXT_SPAWN_POINT)
 		UpdateTooltip(p_character_repr, p_rarity)
+		p_character_repr.GetVisualEffects().SetSpriteEchoes(0)
 		return 0.0
 
 	_avoidance_stacks = min(_avoidance_stacks + 1, MAX_AVOIDANCE_STACKS)
 	UpdateTooltip(p_character_repr, p_rarity)
+	p_character_repr.GetVisualEffects().SetSpriteEchoes(_avoidance_stacks)
 	return 1.0
 
 func GetTargetingDefenceMultiplier() -> float:

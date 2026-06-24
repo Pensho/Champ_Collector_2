@@ -2,20 +2,25 @@ extends GutTest
 
 const REPR_SCRIPT = preload("res://Scripts/Battle/character_battle_repr.gd")
 const BATTLE_UI_SCRIPT = preload("res://Scripts/UI/Battle_UI/battle_ui.gd")
+const VISUAL_EFFECTS_SCRIPT = preload("res://Scripts/Battle/character_visual_effects.gd")
 
 var _repr: CharacterRepresentation = null
 var _battle_ui: BattleUI = null
 var _trait: DoubleTheFunTrait = null
+var _visual_effects: CharacterVisualEffects = null
 
 func before_each() -> void:
 	_repr = double(REPR_SCRIPT).new()
 	_battle_ui = double(BATTLE_UI_SCRIPT).new()
+	_visual_effects = double(VISUAL_EFFECTS_SCRIPT).new()
+	stub(_repr, "GetVisualEffects").to_return(_visual_effects)
 	_trait = DoubleTheFunTrait.new()
 	_trait.Init()
 
 func after_each() -> void:
 	_repr.free()
 	_battle_ui.free()
+	_visual_effects.free()
 
 # --- AVOIDANCE_INCREMENT table ---
 
@@ -70,6 +75,17 @@ func test_start_of_battle_resets_stacks() -> void:
 	_trait._avoidance_stacks = DoubleTheFunTrait.MAX_AVOIDANCE_STACKS
 	_trait.StartOfBattle(_repr)
 	assert_eq(_trait._avoidance_stacks, 0)
+
+func test_on_death_resets_stacks() -> void:
+	_trait._avoidance_stacks = DoubleTheFunTrait.MAX_AVOIDANCE_STACKS
+	_trait.OnDeath(_repr)
+	assert_eq(_trait._avoidance_stacks, 0)
+
+func test_on_death_clears_sprite_echoes() -> void:
+	_trait._avoidance_stacks = DoubleTheFunTrait.MAX_AVOIDANCE_STACKS
+	_trait.OnDeath(_repr)
+	assert_call_count(_visual_effects, "SetSpriteEchoes", 1)
+	assert_eq(get_call_parameters(_visual_effects, "SetSpriteEchoes", 0)[0], 0)
 
 # --- Targeting weight ---
 

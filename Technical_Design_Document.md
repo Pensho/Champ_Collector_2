@@ -520,6 +520,25 @@ everywhere, one responsibility per script, and **words spelled out** in identifi
 names (with a small accepted-acronym allowlist: `UI`, `RPG`, `XP`, `ID`, `UID`, `JSON`, `URL`,
 `GUT`, `HP`, `AoE`). New documents must be named by their full meaning.
 
+### 9.1. Trait-driven battlefield visuals: `CharacterVisualEffects`
+
+`CharacterVisualEffects` (`Scripts/Battle/character_visual_effects.gd`, `extends Node2D`) is a
+generic, trait-agnostic visual-augmentation component on `Character_Battle_Repr.tscn`, separate
+from `CharacterRepresentation` so view-only effects don't leak trait-specific methods into the
+shared view. It owns a fixed pool of translucent `TextureRect` "echo" copies, positioned and faded
+in the scene, and exposes one generic method:
+
+```gdscript
+func SetSpriteEchoes(p_count: int) -> void
+```
+
+A trait drives the count from its own state; the component only renders it. `CharacterRepresentation`
+exposes the component via `GetVisualEffects()`. The first consumer is `DoubleTheFunTrait`
+([Section 9](#9-trait-hook-system)), which sets the echo count to its avoidance-stack count and
+clears it on a successful avoidance, battle start, or the character's own death (`OnDeath` hook).
+This is intended as the home for future trait-driven battlefield visuals (auras, etc.), not
+specific to this one trait.
+
 ---
 
 ## 15. Known weaknesses and recommendations
