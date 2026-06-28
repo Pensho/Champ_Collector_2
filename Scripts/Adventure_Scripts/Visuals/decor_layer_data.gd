@@ -12,4 +12,4 @@ class_name DecorLayerData extends Resource
 @export var allow_horizontal_flip: bool = true
 @export var tint: Color = Color.WHITE
 @export var z_index: int = 0                  # ground decal (<0) vs prop (>0)
-@export var avoid_radius: float = 60.0        # keep clear of node/edge positions
+@export var node_avoidance_radius: float = 60.0        # keep clear of node/edge positions

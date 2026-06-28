@@ -59,7 +59,7 @@ static func Generate(p_visual_data: BiomeVisualData, p_canvas_size: Vector2, p_n
 				detail_sample = (detail_sample + 1.0) * 0.5
 				if detail_sample < layer.noise_threshold_min or detail_sample > layer.noise_threshold_max:
 					continue
-				if layer.avoid_radius > 0.0 and _IsTooCloseToNode(candidate_point, node_position_list, layer.avoid_radius):
+				if layer.node_avoidance_radius > 0.0 and _IsTooCloseToNode(candidate_point, node_position_list, layer.node_avoidance_radius):
 					continue
 				placements.append(_BuildPlacement(layer, candidate_point, cell_rng, zone.tint))
 

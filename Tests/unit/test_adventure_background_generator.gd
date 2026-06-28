@@ -11,13 +11,13 @@ func before_each() -> void:
 	_node_positions[node] = Vector2(256, 256)
 
 
-func _BuildLayer(p_density: float, p_threshold_min: float, p_threshold_max: float, p_avoid_radius: float = 0.0) -> DecorLayerData:
+func _BuildLayer(p_density: float, p_threshold_min: float, p_threshold_max: float, p_node_avoidance_radius: float = 0.0) -> DecorLayerData:
 	var layer := DecorLayerData.new()
 	layer.textures = [PlaceholderTexture2D.new()]
 	layer.density = p_density
 	layer.noise_threshold_min = p_threshold_min
 	layer.noise_threshold_max = p_threshold_max
-	layer.avoid_radius = p_avoid_radius
+	layer.node_avoidance_radius = p_node_avoidance_radius
 	return layer
 
 
@@ -89,7 +89,7 @@ func test_forest_zone_denser_than_clearing_zone() -> void:
 	assert_gt(forest_placements.size(), clearing_placements.size(), "A dense zone should yield more placements than a near-empty zone.")
 
 
-func test_avoid_radius_keeps_placements_clear_of_nodes() -> void:
+func test_node_avoidance_radius_keeps_placements_clear_of_nodes() -> void:
 	var layer: DecorLayerData = _BuildLayer(1.0, 0.0, 1.0, 80.0)
 	var zone: BiomeRegionData = _BuildZone("Only", 1.0, layer)
 	var visual_data: BiomeVisualData = _BuildVisualData([zone])
@@ -100,7 +100,7 @@ func test_avoid_radius_keeps_placements_clear_of_nodes() -> void:
 	for placement in placements:
 		if placement.z_index == AdventureBackgroundGenerator.NODE_PROP_Z_INDEX:
 			continue
-		assert_gte(placement.position.distance_to(node_position), 80.0, "Decor placements must respect avoid_radius around nodes.")
+		assert_gte(placement.position.distance_to(node_position), 80.0, "Decor placements must respect node_avoidance_radius around nodes.")
 
 
 func test_node_prop_near_canvas_edge_stays_fully_on_screen() -> void:
