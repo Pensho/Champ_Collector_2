@@ -4,7 +4,7 @@ extends Control
 @export var _biome_option: OptionButton
 
 const BIOME_RESOURCES: Array[BiomeData] = [
-	preload("uid://cpi1whtc518ok"), # biome_reclaimed_city
+	preload("res://Data/Adventure_Data/Biome_Types/biome_reclaimed_city.tres"), # biome_reclaimed_city
 ]
 
 var _biomes: Array[BiomeData] = []

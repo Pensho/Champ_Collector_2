@@ -83,14 +83,14 @@ const ADVENTURE_MAX_DAILY_STEPS: int = 6
 # Sentinel value for "active for the rest of the adventure" (never decremented).
 const ADVENTURE_PERMANENT_EFFECT: int = 999999
 # Turn duration applied to an adventure-spanning buff/debuff so it lasts an entire combat.
-const ADVENTURE_BUFF_COMBAT_DURATION: int = 999
+const ADVENTURE_BUFF_COMBAT_DURATION: int = 5
 const ADVENTURE_REST_STOP_TIER_1_COMBATS: int = 1
 const ADVENTURE_REST_STOP_TIER_2_COMBATS: int = 3
 const ADVENTURE_REST_STOP_TIER_1_COST: int = 0
 const ADVENTURE_REST_STOP_TIER_2_COST: int = 6
 const ADVENTURE_REST_STOP_TIER_3_COST: int = 18
 const ADVENTURE_GAMBLE_BUFF_COMBATS: int = 4
-const ADVENTURE_GAMBLE_DEBUFF_COMBATS: int = 2
+const ADVENTURE_GAMBLE_DEBUFF_COMBATS: int = 3
 const ADVENTURE_ESCALATE_DIFFICULTY_INCREASE: int = 1
 const ADVENTURE_HINT_REWARD_BUDGET_FRACTION: float = 0.05
 const ADVENTURE_ESCALATE_REWARD_BUDGET_FRACTION: float = 0.15

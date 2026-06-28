@@ -10,5 +10,5 @@ branching_paths = 2
 rest_stops = 2
 hint_nodes = 1
 gamble_nodes = 2
-escalate_nodes = 1
+escalate_nodes = 3
 metadata/_custom_type_script = "uid://cwcowgmtcq1ca"
