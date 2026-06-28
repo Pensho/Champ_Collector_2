@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="DecorLayerData" format=3 uid="uid://bt6e147ny3c7r"]
+
+[ext_resource type="Script" uid="uid://c6250ti0wupfr" path="res://Scripts/Adventure_Scripts/Visuals/decor_layer_data.gd" id="1_65jy3"]
+[ext_resource type="Texture2D" uid="uid://c11lt4i2a5nve" path="res://Assets/Adventure/Background/reclaimed_city/fallen_log_01.png" id="2_x5sj4"]
+[ext_resource type="Texture2D" uid="uid://dqpnsjjxoy37l" path="res://Assets/Adventure/Background/reclaimed_city/fallen_log_02.png" id="3_viijv"]
+
+[resource]
+script = ExtResource("1_65jy3")
+textures = Array[Texture2D]([ExtResource("2_x5sj4"), ExtResource("3_viijv")])
+density = 0.05
+scale_min = 0.8
+scale_max = 1.6
+rotation_jitter_degrees = 3.0
+metadata/_custom_type_script = "uid://c6250ti0wupfr"

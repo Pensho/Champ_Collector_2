@@ -40,12 +40,12 @@ const ELEMENT_TABLE: Array = [
 	{ "folder": "Shared", "base_name": "node_prop_escalate", "width": 56, "height": 56, "variants": 1, "color": Color(0.70, 0.30, 0.80, 1.0) },
 
 	# --- Tier 3: reclaimed_city ---
-	{ "folder": "reclaimed_city", "base_name": "broadleaf_tree", "width": 160, "height": 192, "variants": 3, "color": Color(0.22, 0.55, 0.22, 1.0) },
+	{ "folder": "reclaimed_city", "base_name": "broadleaf_tree", "width": 160, "height": 384, "variants": 3, "color": Color(0.22, 0.55, 0.22, 1.0) },
 	{ "folder": "reclaimed_city", "base_name": "ruined_wall_fragment", "width": 128, "height": 128, "variants": 3, "color": Color(0.52, 0.52, 0.52, 1.0) },
 	{ "folder": "reclaimed_city", "base_name": "logic_moss_patch", "width": 96, "height": 48, "variants": 1, "color": Color(0.30, 0.60, 0.30, 0.6) },
 	{ "folder": "reclaimed_city", "base_name": "vine_draped_rubble", "width": 128, "height": 128, "variants": 1, "color": Color(0.40, 0.50, 0.38, 1.0) },
 	{ "folder": "reclaimed_city", "base_name": "toxic_spore_mushroom", "width": 48, "height": 48, "variants": 1, "color": Color(0.60, 0.30, 0.70, 1.0) },
-	{ "folder": "reclaimed_city", "base_name": "fallen_log", "width": 160, "height": 64, "variants": 1, "color": Color(0.45, 0.30, 0.18, 1.0) },
+	{ "folder": "reclaimed_city", "base_name": "fallen_log_01", "width": 160, "height": 64, "variants": 1, "color": Color(0.45, 0.30, 0.18, 1.0) },
 
 	# --- Tier 3: pirate_coves ---
 	{ "folder": "pirate_coves", "base_name": "sand_dune", "width": 128, "height": 96, "variants": 2, "color": Color(0.85, 0.75, 0.50, 0.7) },

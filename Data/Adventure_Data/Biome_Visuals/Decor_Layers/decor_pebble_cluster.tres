@@ -1,20 +1,15 @@
-[gd_resource type="Resource" script_class="DecorLayerData" format=3]
+[gd_resource type="Resource" script_class="DecorLayerData" format=3 uid="uid://c4ptn05lu1o7x"]
 
-[ext_resource type="Script" path="res://Scripts/Adventure_Scripts/Visuals/decor_layer_data.gd" id="1_decor"]
-[ext_resource type="Texture2D" path="res://Assets/Adventure/Background/Shared/pebble_cluster_01.png" id="2_tex1"]
-[ext_resource type="Texture2D" path="res://Assets/Adventure/Background/Shared/pebble_cluster_02.png" id="3_tex2"]
-[ext_resource type="Texture2D" path="res://Assets/Adventure/Background/Shared/pebble_cluster_03.png" id="4_tex3"]
+[ext_resource type="Script" uid="uid://c6250ti0wupfr" path="res://Scripts/Adventure_Scripts/Visuals/decor_layer_data.gd" id="1_decor"]
+[ext_resource type="Texture2D" uid="uid://bi05ovifgily6" path="res://Assets/Adventure/Background/Shared/pebble_cluster_01.png" id="2_tex1"]
+[ext_resource type="Texture2D" uid="uid://cne812wbtmo4f" path="res://Assets/Adventure/Background/Shared/pebble_cluster_02.png" id="3_tex2"]
+[ext_resource type="Texture2D" uid="uid://b2ggf50vaxhqt" path="res://Assets/Adventure/Background/Shared/pebble_cluster_03.png" id="4_tex3"]
 
 [resource]
 script = ExtResource("1_decor")
 textures = Array[Texture2D]([ExtResource("2_tex1"), ExtResource("3_tex2"), ExtResource("4_tex3")])
 density = 0.3
-noise_threshold_min = 0.0
-noise_threshold_max = 1.0
 scale_min = 0.8
 scale_max = 1.1
 rotation_jitter_degrees = 25.0
-allow_horizontal_flip = true
-tint = Color(1, 1, 1, 1)
-z_index = -1
-avoid_radius = 45.0
+node_avoidance_radius = 45.0

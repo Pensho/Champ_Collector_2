@@ -2,18 +2,19 @@
 
 [ext_resource type="Script" path="res://Scripts/Adventure_Scripts/Visuals/biome_region_data.gd" id="1_region"]
 [ext_resource type="Script" path="res://Scripts/Adventure_Scripts/Visuals/zone_decor_entry.gd" id="2_entry"]
-[ext_resource type="Resource" path="res://Data/Adventure_Data/Biome_Visuals/Decor_Layers/decor_ruined_wall.tres" id="3_wall"]
-[ext_resource type="Resource" path="res://Data/Adventure_Data/Biome_Visuals/Decor_Layers/decor_vine_draped_rubble.tres" id="4_vine"]
-[ext_resource type="Resource" path="res://Data/Adventure_Data/Biome_Visuals/Decor_Layers/decor_dirt_scree_patch.tres" id="5_dirt"]
+[ext_resource type="Resource" uid="uid://codu3vuyfa761" path="res://Data/Adventure_Data/Biome_Visuals/Decor_Layers/decor_ruined_wall.tres" id="3_wall"]
+[ext_resource type="Resource" uid="uid://dg6ph1s5plvhu" path="res://Data/Adventure_Data/Biome_Visuals/Decor_Layers/decor_vine_draped_rubble.tres" id="4_vine"]
+[ext_resource type="Resource" uid="uid://6gaqa7gnm205" path="res://Data/Adventure_Data/Biome_Visuals/Decor_Layers/decor_dirt_scree_patch.tres" id="5_dirt"]
 
 [sub_resource type="Resource" id="Resource_wall"]
 script = ExtResource("2_entry")
 layer = ExtResource("3_wall")
+density_multiplier = 0.8
 
 [sub_resource type="Resource" id="Resource_vine"]
 script = ExtResource("2_entry")
 layer = ExtResource("4_vine")
-density_multiplier = 0.7
+density_multiplier = 0.3
 
 [sub_resource type="Resource" id="Resource_dirt"]
 script = ExtResource("2_entry")

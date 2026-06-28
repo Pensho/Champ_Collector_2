@@ -1,18 +1,13 @@
-[gd_resource type="Resource" script_class="DecorLayerData" format=3]
+[gd_resource type="Resource" script_class="DecorLayerData" format=3 uid="uid://dg6ph1s5plvhu"]
 
-[ext_resource type="Script" path="res://Scripts/Adventure_Scripts/Visuals/decor_layer_data.gd" id="1_decor"]
-[ext_resource type="Texture2D" path="res://Assets/Adventure/Background/reclaimed_city/vine_draped_rubble.png" id="2_tex1"]
+[ext_resource type="Script" uid="uid://c6250ti0wupfr" path="res://Scripts/Adventure_Scripts/Visuals/decor_layer_data.gd" id="1_decor"]
+[ext_resource type="Texture2D" uid="uid://dhi2ucydgb0wh" path="res://Assets/Adventure/Background/reclaimed_city/vine_draped_rubble.png" id="2_tex1"]
 
 [resource]
 script = ExtResource("1_decor")
 textures = Array[Texture2D]([ExtResource("2_tex1")])
 density = 0.3
-noise_threshold_min = 0.0
-noise_threshold_max = 1.0
 scale_min = 0.9
 scale_max = 1.1
 rotation_jitter_degrees = 8.0
-allow_horizontal_flip = true
-tint = Color(1, 1, 1, 1)
-z_index = 0
-avoid_radius = 55.0
+node_avoidance_radius = 55.0

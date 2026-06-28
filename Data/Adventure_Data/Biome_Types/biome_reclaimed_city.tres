@@ -11,7 +11,7 @@
 [ext_resource type="Resource" uid="uid://dnup7y7ax8jck" path="res://Data/Character_Player_Variants/Bar_Brawler.tres" id="6_ict8u"]
 [ext_resource type="Resource" path="res://Data/Loot_Tables/Adventure_Hint_Loot.tres" id="7_hint"]
 [ext_resource type="Resource" path="res://Data/Loot_Tables/Adventure_Escalate_Loot.tres" id="8_escalate"]
-[ext_resource type="Resource" path="res://Data/Adventure_Data/Biome_Visuals/visuals_reclaimed_city.tres" id="9_visual"]
+[ext_resource type="Resource" uid="uid://c26mbm7i0xh7x" path="res://Data/Adventure_Data/Biome_Visuals/visuals_reclaimed_city.tres" id="9_visual"]
 
 [resource]
 script = ExtResource("1_biome")

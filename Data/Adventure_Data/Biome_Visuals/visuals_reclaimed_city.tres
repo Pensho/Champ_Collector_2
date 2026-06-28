@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" path="res://Scripts/Adventure_Scripts/Visuals/biome_region_data.gd" id="0_region_type"]
 [ext_resource type="Script" uid="uid://d38jy6bjotsgw" path="res://Scripts/Adventure_Scripts/Visuals/biome_visual_data.gd" id="1_visual"]
-[ext_resource type="Resource" path="res://Data/Adventure_Data/Biome_Visuals/Regions/region_reclaimed_city_forest.tres" id="2_forest"]
-[ext_resource type="Resource" path="res://Data/Adventure_Data/Biome_Visuals/Regions/region_reclaimed_city_clearing.tres" id="3_clearing"]
-[ext_resource type="Resource" path="res://Data/Adventure_Data/Biome_Visuals/Regions/region_reclaimed_city_rubble.tres" id="4_rubble"]
+[ext_resource type="Resource" uid="uid://bqc3x7ifs6ij2" path="res://Data/Adventure_Data/Biome_Visuals/Regions/region_reclaimed_city_forest.tres" id="2_forest"]
+[ext_resource type="Resource" uid="uid://bxtvm8prqlvku" path="res://Data/Adventure_Data/Biome_Visuals/Regions/region_reclaimed_city_clearing.tres" id="3_clearing"]
+[ext_resource type="Resource" uid="uid://xykcl26gxvrh" path="res://Data/Adventure_Data/Biome_Visuals/Regions/region_reclaimed_city_rubble.tres" id="4_rubble"]
 [ext_resource type="Texture2D" uid="uid://b0hj8ea5jkoo5" path="res://Assets/Adventure/Background/Shared/node_prop_fight.png" id="5_fight"]
 [ext_resource type="Texture2D" uid="uid://1uy312sm4b0t" path="res://Assets/Adventure/Background/Shared/node_prop_rest_stop.png" id="6_rest"]
 [ext_resource type="Texture2D" uid="uid://c6g7p8fjk7yx8" path="res://Assets/Adventure/Background/Shared/node_prop_boss.png" id="7_boss"]
