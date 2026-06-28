@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="BiomeRegionData" format=3]
+[gd_resource type="Resource" script_class="BiomeRegionData" format=3 uid="uid://bxtvm8prqlvku"]
 
 [ext_resource type="Script" path="res://Scripts/Adventure_Scripts/Visuals/biome_region_data.gd" id="1_region"]
 [ext_resource type="Script" path="res://Scripts/Adventure_Scripts/Visuals/zone_decor_entry.gd" id="2_entry"]
@@ -8,7 +8,6 @@
 [sub_resource type="Resource" id="Resource_grass"]
 script = ExtResource("2_entry")
 layer = ExtResource("3_grass")
-density_multiplier = 1.0
 
 [sub_resource type="Resource" id="Resource_pebble"]
 script = ExtResource("2_entry")
@@ -18,6 +17,6 @@ density_multiplier = 0.3
 [resource]
 script = ExtResource("1_region")
 name = "Clearing"
-selection_weight = 0.30
+selection_weight = 0.3
 tint = Color(1, 1, 0.96, 1)
 decor = Array[ExtResource("2_entry")]([SubResource("Resource_grass"), SubResource("Resource_pebble")])

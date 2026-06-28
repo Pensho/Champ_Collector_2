@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="BiomeVisualData" format=3]
+[gd_resource type="Resource" script_class="BiomeVisualData" format=3 uid="uid://bq77xvnraos4r"]
 
-[ext_resource type="Script" path="res://Scripts/Adventure_Scripts/Visuals/biome_visual_data.gd" id="1_visual"]
 [ext_resource type="Script" path="res://Scripts/Adventure_Scripts/Visuals/biome_region_data.gd" id="0_region_type"]
+[ext_resource type="Script" uid="uid://d38jy6bjotsgw" path="res://Scripts/Adventure_Scripts/Visuals/biome_visual_data.gd" id="1_visual"]
 [ext_resource type="Resource" path="res://Data/Adventure_Data/Biome_Visuals/Regions/region_generic.tres" id="2_generic"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_detail"]
@@ -9,7 +9,6 @@ noise_type = 0
 frequency = 0.05
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_region"]
-noise_type = 1
 frequency = 0.003
 domain_warp_enabled = true
 domain_warp_amplitude = 40.0
@@ -21,6 +20,3 @@ background_bottom_color = Color(1, 0.726, 0.574, 1)
 detail_noise = SubResource("FastNoiseLite_detail")
 region_noise = SubResource("FastNoiseLite_region")
 regions = Array[ExtResource("0_region_type")]([ExtResource("2_generic")])
-coarse_cell_size = 256.0
-fine_cell_size = 44.0
-node_props = Dictionary[int, Texture2D]({})

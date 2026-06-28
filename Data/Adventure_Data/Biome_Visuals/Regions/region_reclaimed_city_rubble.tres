@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="BiomeRegionData" format=3]
+[gd_resource type="Resource" script_class="BiomeRegionData" format=3 uid="uid://xykcl26gxvrh"]
 
 [ext_resource type="Script" path="res://Scripts/Adventure_Scripts/Visuals/biome_region_data.gd" id="1_region"]
 [ext_resource type="Script" path="res://Scripts/Adventure_Scripts/Visuals/zone_decor_entry.gd" id="2_entry"]
@@ -9,7 +9,6 @@
 [sub_resource type="Resource" id="Resource_wall"]
 script = ExtResource("2_entry")
 layer = ExtResource("3_wall")
-density_multiplier = 1.0
 
 [sub_resource type="Resource" id="Resource_vine"]
 script = ExtResource("2_entry")
