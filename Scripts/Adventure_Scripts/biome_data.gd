@@ -14,5 +14,4 @@ class_name BiomeData extends Resource
 var possible_node_modifiers: Dictionary[String, int]
 var possible_rest_stop_buffs: Dictionary[Types.Buff_Type, int]
 
-# Probably another resource containing various UI elements to describe the biome
-var visual_theme
+@export var visual_data: BiomeVisualData

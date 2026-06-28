@@ -10,6 +10,9 @@ that holds (or will hold) the detail.
   Fortune's Favor and champion recruitment (Concept_Document.md 3.6.3 The Adventurer's Guild)
 - [ ] Story mode — narrative campaign built on World_Building.md lore
 - [ ] Visuals for Adventure mode — art/UI pass on the adventure graph/node system
+  (data structure landed: `BiomeVisualData`/`DecorLayerData`; see
+  Adventure_Background_Visuals_Checklist.md for the art backlog and remaining
+  rendering-integration work)
 - [ ] The shop (Concept_Document.md 3.6.4 The shop)
 - [ ] Music
 - [ ] Sound effects

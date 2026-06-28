@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="BiomeVisualData" format=3]
+
+[ext_resource type="Script" path="res://Scripts/Adventure_Scripts/Visuals/biome_visual_data.gd" id="1_visual"]
+[ext_resource type="Script" path="res://Scripts/Adventure_Scripts/Visuals/decor_layer_data.gd" id="2_decor"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_1"]
+noise_type = 0
+frequency = 0.05
+
+[resource]
+script = ExtResource("1_visual")
+background_top_color = Color(1, 0.726, 0.574, 1)
+background_bottom_color = Color(1, 0.726, 0.574, 1)
+noise = SubResource("FastNoiseLite_1")
+decor_layers = Array[ExtResource("2_decor")]([])
+node_props = Dictionary[int, Texture2D]({})

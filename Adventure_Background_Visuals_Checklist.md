@@ -1,0 +1,98 @@
+# Adventure Background Visuals Checklist
+
+Art asset backlog for the adventure-map background decoration system (see
+`BiomeVisualData` / `DecorLayerData` in `Scripts/Adventure_Scripts/Visuals/`). Elements
+are scattered with noise (Tier 1/3) or placed per node (Tier 2) over the adventure graph
+canvas. Suggested asset folders: `Assets/Adventure/Background/<biome_slug>/` and
+`Assets/Adventure/Background/Shared/`.
+
+Each entry is one logical sprite that may ship as 2-4 minor variants for visual variety.
+
+## Tier 1 - Generic / shared (biome-agnostic, build first)
+
+- [ ] Grass tuft (short) - 3 variants
+- [ ] Grass tuft (tall / weed) - 2 variants
+- [ ] Small rock / pebble cluster - 3 variants
+- [ ] Large boulder - 2 variants
+- [ ] Dead tree / bare stump - 2 variants
+- [ ] Bush / shrub - 2 variants
+- [ ] Dirt / scree patch (ground decal) - 3 variants
+- [ ] Water puddle (ground decal) - 2 variants
+- [ ] Fog / mist patch (soft, semi-transparent, top layer) - 2 variants
+- [ ] Flower / detail speck (tiny accent) - 3 variants
+
+## Tier 2 - Node-type prop clusters
+
+Small fixed prop drawn adjacent to a node's icon to reinforce its identity at a glance.
+Keyed by `NodeData.Node_Type`.
+
+- [ ] FIGHT - crossed weapons / scattered bones / battle debris
+- [ ] BOSS - large ominous marker (banner, skull pile, monument)
+- [ ] REST_STOP - campfire + small tent/bedroll
+- [ ] HINT - signpost / wayshrine / open book on a stand
+- [ ] GAMBLE - dice + scattered coins
+- [ ] ESCALATE - cracked ground / warning totem / storm marker
+
+## Tier 3 - Biome-specific scenery
+
+### Reclaimed City (forest reclaiming ruins) - live biome, prioritize
+
+- [ ] Broadleaf tree - 3 variants
+- [ ] Overgrown ruined wall / pillar fragment - 3 variants
+- [ ] Logic-Moss patch (grows in straight lines - distinctive ground decal)
+- [ ] Vine-draped rubble
+- [ ] Toxic spore mushroom cluster
+- [ ] Fallen log
+
+### Pirate Coves (coastal)
+
+- [ ] Sand dune (ground decal) - 2 variants
+- [ ] Palm / coastal tree
+- [ ] Driftwood + rope/net debris
+- [ ] Tide pool (water decal)
+- [ ] Beached barrel / crate / anchor
+- [ ] Jagged sea rock
+
+### Clockwork Spire (desert / industrial)
+
+- [ ] Sand dune (reuse Coves dune or desert variant)
+- [ ] Broken gear / cog half-buried
+- [ ] Scrap-metal / pipe debris
+- [ ] Soot-Glass deposit (faint glow accent)
+- [ ] Dead cactus / dry brush
+- [ ] Steam vent (top-layer accent)
+
+### Holy City Plains / God of Adventure's Caravan (grassland)
+
+- [ ] Grass field (dense generic reuse)
+- [ ] Wagon ruts (ground decal)
+- [ ] Lone roadside stone marker / milestone
+- [ ] Hoof-Iron / horseshoe accent
+- [ ] Wildflower cluster
+- [ ] Distant tent silhouette
+
+### Ruins of the God of Magic / Glass Weald (corrupted)
+
+- [ ] Glass-tree (chiming colored-glass tree) - 2 variants
+- [ ] Memory-Vine (reality-warped plant)
+- [ ] Prism-Salt / crystal cluster (glow accent)
+- [ ] Floating shard / drifting color fragment (top layer)
+- [ ] Cracked arcane pillar / rune stone
+
+### Stub only (no live biome yet)
+
+Named in `World_Building.md` lore but not yet built: Frozen Ledger (snow), Grease-Pits
+(under-spire slum), Churning Marches (swamp - reeds, murk water, gnarled mangrove,
+will-o-wisp).
+
+## Rendering integration (future step, not yet implemented)
+
+- Add a `BackgroundLayer` (gradient via the two palette colors) and a `DecorLayer`
+  (`Node2D`) as the first children of `GraphCanvas` in `Adventure.tscn`, behind the
+  existing `AdventureEdgeLayer` and node UI.
+- A controller (e.g. `adventure_background.gd`) reads `BiomeVisualData` and the laid-out
+  node positions from `AdventureGraphUi`, samples `noise` on a grid, and instantiates a
+  `Sprite2D` per layer where threshold/density/avoid-radius checks pass. Node-type props
+  are placed once per node from `node_props`. Seed the noise and any
+  `RandomNumberGenerator` jitter from `AdventureState._generation_seed` so the same
+  adventure always renders the same scenery.
