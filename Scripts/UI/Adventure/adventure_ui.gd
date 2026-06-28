@@ -16,6 +16,8 @@ func Init(p_context: ContextContainer) -> void:
 	_hub_scene = p_context._arguments.get("Hub_Scene", "")
 	_state.CheckDailyActivity()
 	_UpdateHeader()
+	if _state.biome != null:
+		_graph_ui.SetBiomeVisuals(_state.biome.visual_data, _state._generation_seed)
 	_graph_ui.Populate(_state.nodes)
 	_graph_ui.node_selected.connect(_on_node_selected)
 	_preview.engage_confirmed.connect(_on_engage_confirmed)

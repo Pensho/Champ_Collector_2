@@ -85,17 +85,40 @@ Named in `World_Building.md` lore but not yet built: Frozen Ledger (snow), Greas
 (under-spire slum), Churning Marches (swamp - reeds, murk water, gnarled mangrove,
 will-o-wisp).
 
-## Rendering integration (future step, not yet implemented)
+## Rendering integration (implemented)
 
-- Add a `BackgroundLayer` (gradient via the two palette colors) and a `DecorLayer`
-  (`Node2D`) as the first children of `GraphCanvas` in `Adventure.tscn`, behind the
-  existing `AdventureEdgeLayer` and node UI.
-- A controller (e.g. `adventure_background.gd`) reads `BiomeVisualData` and the laid-out
-  node positions from `AdventureGraphUi`, samples `noise` on a grid, and instantiates a
-  `Sprite2D` per layer where threshold/density/avoid-radius checks pass. Node-type props
-  are placed once per node from `node_props`. Seed the noise and any
-  `RandomNumberGenerator` jitter from `AdventureState._generation_seed` so the same
-  adventure always renders the same scenery.
+A two-tier, zone-based generator produces clustered scenery instead of evenly speckled
+noise:
+
+- **Tier A — region grid** (`BiomeVisualData.coarse_cell_size`, default 256 px): a
+  low-frequency `region_noise` sample per coarse cell picks a `BiomeRegionData` zone
+  (e.g. Forest / Clearing / Rubble) via cumulative `selection_weight`. Because the noise
+  is continuous, neighbouring cells land in the same band, producing contiguous regions
+  rather than pure speckle.
+- **Tier B — placement grid** (`BiomeVisualData.fine_cell_size`, default 44 px): each fine
+  cell looks up its parent zone, jitters one candidate point, and rolls every
+  `ZoneDecorEntry` in that zone against `density × density_multiplier` and the
+  high-frequency `detail_noise` threshold band from the entry's `DecorLayerData`.
+- `AdventureBackgroundGenerator.Generate()` (`Scripts/Adventure_Scripts/Visuals/`) is a
+  pure static function returning `Array[DecorPlacement]` — no nodes, no drawing, fully
+  unit-tested in `Tests/unit/test_adventure_background_generator.gd`. Node-type props from
+  `node_props` are appended once per node at a small seeded offset.
+- `Scripts/UI/Adventure/adventure_background.gd` (`Control`) is the thin view: it draws a
+  `GradientTexture2D` background then each placement via `_draw()`. `adventure_graph_ui.gd`
+  adds it as the first child of `_graph_canvas`, ahead of `AdventureEdgeLayer`, so it
+  renders behind edges and node UI. The noise seeds and all placement jitter derive from
+  `AdventureState._generation_seed`, so the same adventure always renders identical
+  scenery.
+
+### Zone authoring
+
+Author one `BiomeRegionData` resource per zone under
+`Data/Adventure_Data/Biome_Visuals/Regions/`, each listing `ZoneDecorEntry` references
+into `Data/Adventure_Data/Biome_Visuals/Decor_Layers/`. A `DecorLayerData` (one texture
+set + placement rule) may be shared across multiple zones at different
+`density_multiplier` values — e.g. `decor_grass_tuft.tres` appears in both a biome's
+Forest and Clearing zones. Wire the finished `regions` array, `region_noise`, and
+`detail_noise` into the biome's `visuals_<biome_slug>.tres`.
 
 ---
 

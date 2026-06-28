@@ -7,6 +7,7 @@ signal node_selected(p_node: NodeData)
 @export var _graph_canvas: Control
 
 const EdgeLayerScene := preload("res://Scripts/UI/Adventure/adventure_edge_layer.gd")
+const BackgroundScene := preload("res://Scripts/UI/Adventure/adventure_background.gd")
 const LAYER_HEIGHT: int = 180
 const NODE_SIZE:    int = 80
 const PADDING:      int = 30
@@ -14,6 +15,12 @@ const JITTER_MAX:   int = 55
 const JITTER_Y_MAX: int = 45
 
 var _node_positions: Dictionary = {}
+var _visual_data: BiomeVisualData
+var _generation_seed: int = -1
+
+func SetBiomeVisuals(p_visual_data: BiomeVisualData, p_generation_seed: int) -> void:
+	_visual_data = p_visual_data
+	_generation_seed = p_generation_seed
 
 func Populate(p_nodes: Array[NodeData]) -> void:
 	for child in _graph_canvas.get_children():
@@ -49,6 +56,12 @@ func Populate(p_nodes: Array[NodeData]) -> void:
 			var x: float         = clampf(base_x + jitter_x, PADDING, canvas_width - NODE_SIZE - PADDING)
 			var y: float         = (max_depth - node.depth) * LAYER_HEIGHT + PADDING + jitter_y
 			_node_positions[node] = Vector2(x, y)
+
+	if _visual_data != null:
+		var background: AdventureBackground = BackgroundScene.new()
+		_graph_canvas.add_child(background)
+		background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		background.Generate(_visual_data, _node_positions, _generation_seed)
 
 	var edges: Array = []
 	for node in p_nodes:

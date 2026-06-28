@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="BiomeRegionData" format=3]
+
+[ext_resource type="Script" path="res://Scripts/Adventure_Scripts/Visuals/biome_region_data.gd" id="1_region"]
+[ext_resource type="Script" path="res://Scripts/Adventure_Scripts/Visuals/zone_decor_entry.gd" id="2_entry"]
+[ext_resource type="Resource" path="res://Data/Adventure_Data/Biome_Visuals/Decor_Layers/decor_tree_broadleaf.tres" id="3_tree"]
+[ext_resource type="Resource" path="res://Data/Adventure_Data/Biome_Visuals/Decor_Layers/decor_grass_tuft.tres" id="4_grass"]
+[ext_resource type="Resource" path="res://Data/Adventure_Data/Biome_Visuals/Decor_Layers/decor_bush_shrub.tres" id="5_bush"]
+
+[sub_resource type="Resource" id="Resource_tree"]
+script = ExtResource("2_entry")
+layer = ExtResource("3_tree")
+density_multiplier = 1.0
+
+[sub_resource type="Resource" id="Resource_grass"]
+script = ExtResource("2_entry")
+layer = ExtResource("4_grass")
+density_multiplier = 0.8
+
+[sub_resource type="Resource" id="Resource_bush"]
+script = ExtResource("2_entry")
+layer = ExtResource("5_bush")
+density_multiplier = 0.6
+
+[resource]
+script = ExtResource("1_region")
+name = "Forest"
+selection_weight = 0.45
+tint = Color(0.92, 1, 0.9, 1)
+decor = Array[ExtResource("2_entry")]([SubResource("Resource_tree"), SubResource("Resource_grass"), SubResource("Resource_bush")])

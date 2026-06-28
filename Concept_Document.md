@@ -446,6 +446,14 @@ every player champion for the full duration of each subsequent combat until they
 They reuse the existing combat `Buff_Type`/`Debuff_Type` set (Empower, Fortify,
 Daunting_Strength / Burning, Enfeeble, Expose_Weakness) — no new effect types were added.
 
+The adventure graph is drawn over a generated background rather than a flat color. Each
+biome defines zones (e.g. a Reclaimed City forest, clearing, or rubble field); a
+low-frequency noise sample assigns a zone to each region of the map so scenery forms
+contiguous forests and open gaps instead of an even speckle, and a second, finer noise
+pass scatters that zone's decor (trees, grass, rubble, etc.) within it. Generation is
+seeded from the adventure's own generation seed, so revisiting the same adventure always
+shows the same scenery.
+
 
 ---
 
