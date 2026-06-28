@@ -3,7 +3,11 @@ class_name AdventureNodeUi extends Control
 signal node_selected(p_node: NodeData)
 
 const ICON_FIGHT := preload("res://Assets/Champ_Collector/Creatures/Tidal_Corsair/Tidal_Corsair_Stack_Steel.png")
-const ICON_BOSS := preload("res://Assets/Champ_Collector/Creatures/Tidal_Corsair/Tidal_Corsair_Stack_Sea.png")
+const ICON_BOSS := preload("res://Assets/Adventure/Node_UI/Node_Icon_Boss.png")
+const NODE_ICON_GAMBLE = preload("uid://ccshf1gvvumar")
+const NODE_ICON_REST = preload("uid://bsn1u4nb0l2el")
+const NODE_ICON_HINT = preload("uid://djln10dgso1ut")
+const NODE_ICON_ESCALATE = preload("uid://bj0oacuyl1oti")
 
 @export var _icon: TextureRect
 @export var _button: Button
@@ -20,25 +24,19 @@ func Init(p_node: NodeData, p_is_eligible: bool) -> void:
 	else:
 		modulate = Color(0.3, 0.3, 0.3, 0.6)
 	_button.disabled = not p_is_eligible and not p_node.is_complete
-	#var node_texture = Image.create(size.x, size.y, false, Image.FORMAT_RGBA8)
-	var img := Image.create_empty(size.x, size.y, false, Image.FORMAT_RGBA8)
 	match p_node.node_type:
 		NodeData.Node_Type.FIGHT:
 			_icon.texture = ICON_FIGHT
 		NodeData.Node_Type.BOSS:
 			_icon.texture = ICON_BOSS
 		NodeData.Node_Type.REST_STOP:
-			img.fill(Color.ALICE_BLUE)
-			_icon.texture = ImageTexture.create_from_image(img)
+			_icon.texture = NODE_ICON_REST
 		NodeData.Node_Type.HINT:
-			img.fill(Color.PURPLE)
-			_icon.texture = ImageTexture.create_from_image(img)
+			_icon.texture = NODE_ICON_HINT
 		NodeData.Node_Type.GAMBLE:
-			img.fill(Color.GOLD)
-			_icon.texture = ImageTexture.create_from_image(img)
+			_icon.texture = NODE_ICON_GAMBLE
 		NodeData.Node_Type.ESCALATE:
-			img.fill(Color.DARK_RED)
-			_icon.texture = ImageTexture.create_from_image(img)
+			_icon.texture = NODE_ICON_ESCALATE
 
 func _on_button_up() -> void:
 	if not _node_data.is_complete:
