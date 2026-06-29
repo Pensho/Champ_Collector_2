@@ -183,23 +183,24 @@ func HandleEnemyTurn() -> void:
 			for zone_number in GameBalance.NUMBER_OF_TURN_BAR_ZONES:
 				if(zone_number not in _zones.keys()):
 					available_zones.append(zone_number)
-			_battle_ui._turn_bar.DisableZones(false)
-			print(_characters[_characterIDs_turn]._name, " used skill with ID: ", _selected_skill_ID)
-			_on_turn_bar_zone_selected(available_zones.pick_random())
+			if(available_zones.is_empty()):
+				ResolveSkill(_characterIDs_turn, [], _selected_skill_ID)
+			else:
+				_battle_ui._turn_bar.DisableZones(false)
+				print(_characters[_characterIDs_turn]._name, " used skill with ID: ", _selected_skill_ID)
+				_on_turn_bar_zone_selected(available_zones.pick_random())
 		_:
 			for i in _targeting_order:
-				if(_characters[i]._currentHealth >= 1):
-					var target_IDs: Array[int] = Skills.FindSkillTargets(
-						i, _characterIDs_turn, _characters[_characterIDs_turn]._skills[_selected_skill_ID].target)
-					if(target_IDs.size() > 0):
-						print(_characters[_characterIDs_turn]._name, " used skill with ID: ", _selected_skill_ID)
-						ResolveSkill(_characterIDs_turn, target_IDs, _selected_skill_ID)
-
-						if (CheckAndHandleBattleOver()):
-							break
-					else:
-						print("Invalid target for skill by an enemy! Something is wrong.")
-					break # A skill has resolved, break the loop for targeting.
+				if(_characters[i]._currentHealth < 1):
+					continue
+				var target_IDs: Array[int] = Skills.FindSkillTargets(
+					i, _characterIDs_turn, _characters[_characterIDs_turn]._skills[_selected_skill_ID].target)
+				if(target_IDs.is_empty()):
+					continue  # not a valid target for this caster (e.g. an ally), keep looking
+				print(_characters[_characterIDs_turn]._name, " used skill with ID: ", _selected_skill_ID)
+				ResolveSkill(_characterIDs_turn, target_IDs, _selected_skill_ID)
+				CheckAndHandleBattleOver()
+				break  # A skill has resolved.
 
 func TriggerZones() -> void:
 	for character_ID in _characters.keys():
