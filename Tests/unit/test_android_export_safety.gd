@@ -4,6 +4,10 @@ extends GutTest
 # - DirAccess directory scans fail on packed exports.
 # - get_window().size returns physical OS-window pixels instead of logical
 #   viewport pixels, which spilled dialogs off-screen on Android.
+#
+# Scripts/Debug/ holds editor-only tooling that is never packed into an
+# Android build (run manually via `godot --headless -s ...`), so it is
+# excluded from both scans below.
 
 func test_no_diraccess_in_scripts() -> void:
 	var offenders: Array = _scan_for_string("res://Scripts/", "DirAccess.")
@@ -26,6 +30,9 @@ func _scan_for_string(path: String, needle: String) -> Array:
 	while file_name != "":
 		var full_path: String = path.path_join(file_name)
 		if dir.current_is_dir():
+			if file_name == "Debug":
+				file_name = dir.get_next()
+				continue
 			hits.append_array(_scan_for_string(full_path, needle))
 		elif file_name.ends_with(".gd"):
 			var contents := FileAccess.get_file_as_string(full_path)
