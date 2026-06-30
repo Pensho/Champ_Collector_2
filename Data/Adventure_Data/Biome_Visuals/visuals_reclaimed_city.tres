@@ -5,7 +5,7 @@
 [ext_resource type="Resource" uid="uid://bqc3x7ifs6ij2" path="res://Data/Adventure_Data/Biome_Visuals/Regions/region_reclaimed_city_forest.tres" id="2_forest"]
 [ext_resource type="Resource" uid="uid://bxtvm8prqlvku" path="res://Data/Adventure_Data/Biome_Visuals/Regions/region_reclaimed_city_clearing.tres" id="3_clearing"]
 [ext_resource type="Resource" uid="uid://xykcl26gxvrh" path="res://Data/Adventure_Data/Biome_Visuals/Regions/region_reclaimed_city_rubble.tres" id="4_rubble"]
-[ext_resource type="Script" path="res://Scripts/Adventure_Scripts/Visuals/node_prop_cluster.gd" id="5_cluster_type"]
+[ext_resource type="Script" uid="uid://bwuf75nyssh3t" path="res://Scripts/Adventure_Scripts/Visuals/node_prop_cluster.gd" id="5_cluster_type"]
 [ext_resource type="Resource" path="res://Data/Adventure_Data/Biome_Visuals/Node_Props/cluster_fight.tres" id="6_fight"]
 [ext_resource type="Resource" path="res://Data/Adventure_Data/Biome_Visuals/Node_Props/cluster_rest_stop.tres" id="7_rest"]
 [ext_resource type="Resource" path="res://Data/Adventure_Data/Biome_Visuals/Node_Props/cluster_boss.tres" id="8_boss"]

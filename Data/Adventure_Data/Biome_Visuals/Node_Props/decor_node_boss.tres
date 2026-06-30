@@ -1,9 +1,9 @@
-[gd_resource type="Resource" script_class="DecorLayerData" format=3]
+[gd_resource type="Resource" script_class="DecorLayerData" format=3 uid="uid://brysve0oebb4"]
 
 [ext_resource type="Script" uid="uid://c6250ti0wupfr" path="res://Scripts/Adventure_Scripts/Visuals/decor_layer_data.gd" id="1_decor"]
-[ext_resource type="Texture2D" path="res://Assets/Adventure/Background/Shared/node_prop_boss_01.png" id="2_tex1"]
-[ext_resource type="Texture2D" path="res://Assets/Adventure/Background/Shared/node_prop_boss_02.png" id="3_tex2"]
-[ext_resource type="Texture2D" path="res://Assets/Adventure/Background/Shared/node_prop_boss_03.png" id="4_tex3"]
+[ext_resource type="Texture2D" uid="uid://d30q45swdp23g" path="res://Assets/Adventure/Background/Shared/node_prop_boss_01.png" id="2_tex1"]
+[ext_resource type="Texture2D" uid="uid://cbcsn0mrkduyl" path="res://Assets/Adventure/Background/Shared/node_prop_boss_02.png" id="3_tex2"]
+[ext_resource type="Texture2D" uid="uid://bfol5utorbkyu" path="res://Assets/Adventure/Background/Shared/node_prop_boss_03.png" id="4_tex3"]
 
 [resource]
 script = ExtResource("1_decor")
@@ -11,8 +11,5 @@ textures = Array[Texture2D]([ExtResource("2_tex1"), ExtResource("3_tex2"), ExtRe
 density = 0.7
 scale_min = 0.8
 scale_max = 1.3
-rotation_jitter_degrees = 20.0
-allow_horizontal_flip = true
-noise_threshold_min = 0.0
-noise_threshold_max = 1.0
+rotation_jitter_degrees = 3.0
 node_avoidance_radius = 0.0

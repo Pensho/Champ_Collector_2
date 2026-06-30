@@ -1,8 +1,8 @@
-[gd_resource type="Resource" script_class="NodePropCluster" format=3]
+[gd_resource type="Resource" script_class="NodePropCluster" format=3 uid="uid://xt35tgxgaknl"]
 
-[ext_resource type="Script" path="res://Scripts/Adventure_Scripts/Visuals/node_prop_cluster.gd" id="1_cluster"]
+[ext_resource type="Script" uid="uid://bwuf75nyssh3t" path="res://Scripts/Adventure_Scripts/Visuals/node_prop_cluster.gd" id="1_cluster"]
 [ext_resource type="Script" path="res://Scripts/Adventure_Scripts/Visuals/zone_decor_entry.gd" id="2_entry"]
-[ext_resource type="Resource" path="res://Data/Adventure_Data/Biome_Visuals/Node_Props/decor_node_fight.tres" id="3_decor"]
+[ext_resource type="Resource" uid="uid://djg641aj6cfbx" path="res://Data/Adventure_Data/Biome_Visuals/Node_Props/decor_node_fight.tres" id="3_decor"]
 
 [sub_resource type="Resource" id="Resource_entry"]
 script = ExtResource("2_entry")
@@ -11,6 +11,5 @@ layer = ExtResource("3_decor")
 [resource]
 script = ExtResource("1_cluster")
 decor = Array[ExtResource("2_entry")]([SubResource("Resource_entry")])
-inner_radius = 48.0
-outer_radius = 96.0
-sample_count = 12
+inner_radius = 40.0
+outer_radius = 80.0
