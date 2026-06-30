@@ -48,7 +48,8 @@ The core gameplay follows a cyclical "Prepare, Engage, Reward, Grow" loop design
 
 ### 3.1. Champions
 The terms Champion, Character, Hero are synonumous for the playable characters a player can acquire and use.
-For now there are no Common Characters that are usable by a player. Also, there will be Relic tier Characters, that tier level is restricted for Items.
+For now there are no Common Characters that are usable by a player. Also, there will be no Relic tier Characters, that tier level is restricted for Items.
+There is a maximum level of 50, with a future idea to use duplicate heroes as a mean to increase it a few steps at most (or to upgrade skills).
 
 #### 3.1.1. Character Attributes
 Each character is defined by a set of core attributes:

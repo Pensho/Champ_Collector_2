@@ -4,7 +4,7 @@ extends Node
 static func LevelUpCriteriaMet(p_character: Character) -> bool:
 	var xp_requirement: float = GetExperienceRequirement(p_character._level)
 	print("Experience required for level up: ", xp_requirement, " experience accumulated: ", p_character._experience)
-	if(xp_requirement <= p_character._experience):
+	if(xp_requirement <= p_character._experience and p_character._level < Game_Balance.MAX_LEVEL):
 		p_character._experience = max(p_character._experience - xp_requirement, 0)
 		return true
 	return false
@@ -86,7 +86,7 @@ static func SetOpponentLevel(p_character: Character, p_level: int, p_boss: bool 
 		if(Types.Attribute.Speed == attribute):
 			points = Game_Balance.LEVEL_UP_POINTS_TO_DISTRIBUTE + float(p_character._level * 2)
 		else:
-			points = Game_Balance.LEVEL_UP_POINTS_TO_DISTRIBUTE + float(pow(p_character._level * 3, 1.1))
+			points = Game_Balance.LEVEL_UP_POINTS_TO_DISTRIBUTE + float(pow(p_character._level * 3, 1.2))
 		if(p_boss):
 			points *= 1.5
 		var points_gained = weight * points * total_levels_gained
