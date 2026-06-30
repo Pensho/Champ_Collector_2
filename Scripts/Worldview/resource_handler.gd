@@ -28,6 +28,8 @@ func _ready() -> void:
 	add_child(timer)
 	
 	_supplies = GameBalance.MAX_SUPPLIES
+	_fortunes_favor[FortuneFavorTier.TierType.BONE] = 3
+	_fortunes_favor[FortuneFavorTier.TierType.BRASS] = 1
 
 func Serialize() -> Dictionary:
 	return {
