@@ -133,7 +133,7 @@ func test_node_prop_near_canvas_edge_stays_fully_on_screen() -> void:
 	assert_gte(prop_placement.position.y - rendered_size.y, -0.01, "Boss node prop must not bleed past the top edge of the canvas.")
 
 
-func test_node_prop_is_centered_and_enlarged_on_node() -> void:
+func test_node_prop_renders_at_native_texture_scale() -> void:
 	var layer: DecorLayerData = _BuildLayer(0.0, 0.0, 1.0)
 	var zone: BiomeRegionData = _BuildZone("Only", 1.0, layer)
 	var visual_data: BiomeVisualData = _BuildVisualData([zone])
@@ -145,7 +145,7 @@ func test_node_prop_is_centered_and_enlarged_on_node() -> void:
 	var prop_placement: DecorPlacement = placements[-1]
 	assert_eq(prop_placement.z_index, AdventureBackgroundGenerator.NODE_PROP_Z_INDEX)
 	assert_almost_eq(prop_placement.position.x, node_position.x + 40.0, 0.01, "Node prop must be centred horizontally on the node.")
-	assert_gt(prop_placement.scale, 2.0, "Node prop must render clearly larger than the node.")
+	assert_eq(prop_placement.scale, 1.0, "Node prop must render at the source texture's native pixel size.")
 
 
 func test_decor_with_large_footprint_near_node_is_rejected() -> void:

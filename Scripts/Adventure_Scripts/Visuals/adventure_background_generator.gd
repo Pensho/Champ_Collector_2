@@ -15,9 +15,6 @@ class_name AdventureBackgroundGenerator extends Node
 ## every decor layer regardless of the layer's own z_index.
 const NODE_PROP_Z_INDEX: int = 1000
 
-## Node props render this much larger than the 80px node, so they read as a base it stands on.
-const NODE_PROP_SCALE: float = 2.5
-
 ## Mirrors AdventureGraphUi.NODE_SIZE; stored node positions are the node's top-left
 ## corner, so the visual centre is position + (NODE_HALF_SIZE, NODE_HALF_SIZE).
 const NODE_HALF_SIZE: float = 40.0
@@ -71,7 +68,7 @@ static func Generate(p_visual_data: BiomeVisualData, p_canvas_size: Vector2, p_n
 					continue
 				placements.append(placement)
 
-	_AppendNodeProps(p_visual_data, p_node_positions, p_seed, p_canvas_size, placements)
+	_AppendNodeProps(p_visual_data, p_node_positions, p_canvas_size, placements)
 
 	placements.sort_custom(_SortByZThenY)
 	return placements
@@ -136,23 +133,20 @@ static func _BuildPlacement(p_layer: DecorLayerData, p_point: Vector2, p_rng: Ra
 	return placement
 
 
-static func _AppendNodeProps(p_visual_data: BiomeVisualData, p_node_positions: Dictionary, p_seed: int, p_canvas_size: Vector2, p_placements: Array[DecorPlacement]) -> void:
+static func _AppendNodeProps(p_visual_data: BiomeVisualData, p_node_positions: Dictionary, p_canvas_size: Vector2, p_placements: Array[DecorPlacement]) -> void:
 	for node: NodeData in p_node_positions:
 		if not p_visual_data.node_props.has(node.node_type):
 			continue
 		var texture: Texture2D = p_visual_data.node_props[node.node_type]
 		if texture == null:
 			continue
-		var node_rng := RandomNumberGenerator.new()
-		node_rng.seed = _HashCellSeed(p_seed, node.index, node.node_type)
-		var scale: float = node_rng.randf_range(NODE_PROP_SCALE * 0.94, NODE_PROP_SCALE * 1.06)
 		var node_center: Vector2 = p_node_positions[node] + Vector2(NODE_HALF_SIZE, NODE_HALF_SIZE)
-		var rendered_height: float = texture.get_size().y * scale
-		var position := Vector2(node_center.x, node_center.y + rendered_height * 0.6)
+		var rendered_height: float = texture.get_size().y
+		var position := Vector2(node_center.x, node_center.y + rendered_height * 0.5)
 		var placement := DecorPlacement.new()
 		placement.texture = texture
-		placement.scale = scale
-		placement.position = _ClampPropPosition(position, texture.get_size() * scale, p_canvas_size)
+		placement.scale = 1.0
+		placement.position = _ClampPropPosition(position, texture.get_size(), p_canvas_size)
 		placement.z_index = NODE_PROP_Z_INDEX
 		p_placements.append(placement)
 
@@ -161,7 +155,7 @@ static func _AppendNodeProps(p_visual_data: BiomeVisualData, p_node_positions: D
 ## [position.x - half_width, position.x + half_width] horizontally and
 ## [position.y - height, position.y] vertically; clamp position so that rect stays
 ## entirely within the canvas instead of bleeding off an edge. p_rendered_size is the
-## texture size already multiplied by the prop's scale.
+## texture's native pixel size — node props render at scale 1.0.
 static func _ClampPropPosition(p_position: Vector2, p_rendered_size: Vector2, p_canvas_size: Vector2) -> Vector2:
 	var half_width: float = p_rendered_size.x * 0.5
 	var clamped_x: float = clampf(p_position.x, half_width, maxf(half_width, p_canvas_size.x - half_width))
