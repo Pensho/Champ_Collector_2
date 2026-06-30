@@ -1,4 +1,5 @@
-extends SceneTree
+@tool
+extends EditorScript
 
 ## Data-driven generator for flat-color placeholder background textures.
 ##
@@ -32,12 +33,12 @@ const ELEMENT_TABLE: Array = [
 	{ "folder": "Shared", "base_name": "flower_speck", "width": 24, "height": 24, "variants": 3, "color": Color(0.95, 0.40, 0.65, 1.0) },
 
 	# --- Tier 2: Node props (biome-agnostic, distinct solid colors) ---
-	{ "folder": "Shared", "base_name": "node_prop_fight", "width": 56, "height": 56, "variants": 1, "color": Color(0.80, 0.20, 0.20, 1.0) },
-	{ "folder": "Shared", "base_name": "node_prop_boss", "width": 56, "height": 56, "variants": 1, "color": Color(0.55, 0.10, 0.10, 1.0) },
-	{ "folder": "Shared", "base_name": "node_prop_rest_stop", "width": 56, "height": 56, "variants": 1, "color": Color(0.20, 0.70, 0.40, 1.0) },
-	{ "folder": "Shared", "base_name": "node_prop_hint", "width": 56, "height": 56, "variants": 1, "color": Color(0.25, 0.55, 0.85, 1.0) },
-	{ "folder": "Shared", "base_name": "node_prop_gamble", "width": 56, "height": 56, "variants": 1, "color": Color(0.85, 0.65, 0.15, 1.0) },
-	{ "folder": "Shared", "base_name": "node_prop_escalate", "width": 56, "height": 56, "variants": 1, "color": Color(0.70, 0.30, 0.80, 1.0) },
+	{ "folder": "Shared", "base_name": "node_prop_fight", "width": 140, "height": 140, "variants": 1, "color": Color(0.80, 0.20, 0.20, 1.0) },
+	{ "folder": "Shared", "base_name": "node_prop_boss", "width": 140, "height": 140, "variants": 1, "color": Color(0.55, 0.10, 0.10, 1.0) },
+	{ "folder": "Shared", "base_name": "node_prop_rest_stop", "width": 140, "height": 140, "variants": 1, "color": Color(0.20, 0.70, 0.40, 1.0) },
+	{ "folder": "Shared", "base_name": "node_prop_hint", "width": 140, "height": 140, "variants": 1, "color": Color(0.25, 0.55, 0.85, 1.0) },
+	{ "folder": "Shared", "base_name": "node_prop_gamble", "width": 140, "height": 140, "variants": 1, "color": Color(0.85, 0.65, 0.15, 1.0) },
+	{ "folder": "Shared", "base_name": "node_prop_escalate", "width": 140, "height": 140, "variants": 1, "color": Color(0.70, 0.30, 0.80, 1.0) },
 
 	# --- Tier 3: reclaimed_city ---
 	{ "folder": "reclaimed_city", "base_name": "broadleaf_tree", "width": 160, "height": 384, "variants": 3, "color": Color(0.22, 0.55, 0.22, 1.0) },
@@ -80,7 +81,8 @@ const ELEMENT_TABLE: Array = [
 ]
 
 
-func _init() -> void:
+#func _init() -> void:node_
+func _run() -> void:
 	var written_count: int = 0
 	var skipped_count: int = 0
 	for row in ELEMENT_TABLE:
@@ -107,7 +109,7 @@ func _init() -> void:
 			written_count += 1
 	print("---")
 	print("Done. %d written, %d skipped." % [written_count, skipped_count])
-	quit()
+	#quit()
 
 
 ## Builds the variant file path. Single-variant elements get no numeric suffix;
