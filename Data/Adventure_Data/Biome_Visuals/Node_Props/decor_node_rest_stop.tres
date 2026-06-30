@@ -9,7 +9,6 @@
 script = ExtResource("1_decor")
 textures = Array[Texture2D]([ExtResource("2_tex1"), ExtResource("3_tex2"), ExtResource("4_tex3")])
 density = 0.7
-scale_min = 0.7
-scale_max = 1.2
+scale_max = 1.6
 rotation_jitter_degrees = 2.0
 node_avoidance_radius = 0.0

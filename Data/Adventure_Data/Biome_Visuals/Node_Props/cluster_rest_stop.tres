@@ -11,3 +11,4 @@ layer = ExtResource("3_decor")
 [resource]
 script = ExtResource("1_cluster")
 decor = Array[ExtResource("2_entry")]([SubResource("Resource_entry")])
+sample_count = 6
