@@ -97,10 +97,17 @@ func test_node_avoidance_radius_keeps_placements_clear_of_nodes() -> void:
 	var placements: Array[DecorPlacement] = AdventureBackgroundGenerator.Generate(visual_data, _canvas_size, _node_positions, 99)
 
 	var node_position: Vector2 = _node_positions.values()[0]
+	var node_center: Vector2 = node_position + Vector2(40.0, 40.0)
+	var node_rect := Rect2(node_center - Vector2(40.0, 40.0), Vector2(80.0, 80.0))
 	for placement in placements:
 		if placement.z_index == AdventureBackgroundGenerator.NODE_PROP_Z_INDEX:
 			continue
-		assert_gte(placement.position.distance_to(node_position), 80.0, "Decor placements must respect node_avoidance_radius around nodes.")
+		var texture_size: Vector2 = placement.texture.get_size()
+		var half_width: float = texture_size.x * 0.5 * placement.scale
+		var height: float = texture_size.y * placement.scale
+		var decor_rect := Rect2(placement.position.x - half_width, placement.position.y - height, half_width * 2.0, height)
+		decor_rect = decor_rect.grow(80.0)
+		assert_false(decor_rect.intersects(node_rect), "Decor placements must respect node_avoidance_radius around nodes as a footprint gap.")
 
 
 func test_node_prop_near_canvas_edge_stays_fully_on_screen() -> void:
@@ -120,9 +127,50 @@ func test_node_prop_near_canvas_edge_stays_fully_on_screen() -> void:
 
 	var prop_placement: DecorPlacement = placements[-1]
 	assert_eq(prop_placement.z_index, AdventureBackgroundGenerator.NODE_PROP_Z_INDEX)
-	var half_width: float = prop_texture.size.x * 0.5
-	assert_lte(prop_placement.position.x + half_width, _canvas_size.x, "Boss node prop must not bleed past the right edge of the canvas.")
-	assert_gte(prop_placement.position.y - prop_texture.size.y, 0.0, "Boss node prop must not bleed past the top edge of the canvas.")
+	var rendered_size: Vector2 = prop_texture.size * prop_placement.scale
+	var half_width: float = rendered_size.x * 0.5
+	assert_lte(prop_placement.position.x + half_width, _canvas_size.x + 0.01, "Boss node prop must not bleed past the right edge of the canvas.")
+	assert_gte(prop_placement.position.y - rendered_size.y, -0.01, "Boss node prop must not bleed past the top edge of the canvas.")
+
+
+func test_node_prop_is_centered_and_enlarged_on_node() -> void:
+	var layer: DecorLayerData = _BuildLayer(0.0, 0.0, 1.0)
+	var zone: BiomeRegionData = _BuildZone("Only", 1.0, layer)
+	var visual_data: BiomeVisualData = _BuildVisualData([zone])
+	visual_data.node_props[NodeData.Node_Type.FIGHT] = PlaceholderTexture2D.new()
+
+	var placements: Array[DecorPlacement] = AdventureBackgroundGenerator.Generate(visual_data, _canvas_size, _node_positions, 21)
+
+	var node_position: Vector2 = _node_positions.values()[0]
+	var prop_placement: DecorPlacement = placements[-1]
+	assert_eq(prop_placement.z_index, AdventureBackgroundGenerator.NODE_PROP_Z_INDEX)
+	assert_almost_eq(prop_placement.position.x, node_position.x + 40.0, 0.01, "Node prop must be centred horizontally on the node.")
+	assert_gt(prop_placement.scale, 2.0, "Node prop must render clearly larger than the node.")
+
+
+func test_decor_with_large_footprint_near_node_is_rejected() -> void:
+	var layer: DecorLayerData = _BuildLayer(1.0, 0.0, 1.0, 40.0)
+	var big_texture := PlaceholderTexture2D.new()
+	big_texture.size = Vector2(160, 384)
+	layer.textures = [big_texture]
+	layer.scale_min = 1.0
+	layer.scale_max = 1.0
+	var zone: BiomeRegionData = _BuildZone("Only", 1.0, layer)
+	var visual_data: BiomeVisualData = _BuildVisualData([zone])
+
+	var placements: Array[DecorPlacement] = AdventureBackgroundGenerator.Generate(visual_data, _canvas_size, _node_positions, 17)
+
+	var node_position: Vector2 = _node_positions.values()[0]
+	var node_center: Vector2 = node_position + Vector2(40.0, 40.0)
+	var node_rect := Rect2(node_center - Vector2(40.0, 40.0), Vector2(80.0, 80.0))
+	for placement in placements:
+		if placement.z_index == AdventureBackgroundGenerator.NODE_PROP_Z_INDEX:
+			continue
+		var half_width: float = placement.texture.get_size().x * 0.5 * placement.scale
+		var height: float = placement.texture.get_size().y * placement.scale
+		var decor_rect := Rect2(placement.position.x - half_width, placement.position.y - height, half_width * 2.0, height)
+		decor_rect = decor_rect.grow(40.0)
+		assert_false(decor_rect.intersects(node_rect), "A large decor footprint must not overlap the node once node_avoidance_radius is applied as a gap.")
 
 
 func test_region_coherence_neighbouring_cells_share_zone() -> void:
