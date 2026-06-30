@@ -7,14 +7,13 @@ var _main_inst: Main_Instance = null
 var _item_col: ItemCollection = null
 
 func before_each():
-	_character = load("res://Scenes/Characters/Character.tscn").instantiate()
+	_character = Character.new()
 	_main_inst = Main_Instance.new()
 	_item_col = ItemCollection.new()
 	_main_inst._item_collection = _item_col
 	main._instance = _main_inst
 
 func after_each():
-	_character.free()
 	_item_col.free()
 	_main_inst.free()
 	main._instance = null

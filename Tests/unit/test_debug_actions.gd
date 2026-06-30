@@ -31,5 +31,3 @@ func test_build_battle_context_assembles_context_container() -> void:
 	assert_eq(context._arguments["Difficulty"], 5, "Should set the requested difficulty")
 	assert_eq(context._previous_scene, "uid://previous_scene", "Should carry the previous scene")
 
-	for character in player_characters:
-		character.free()

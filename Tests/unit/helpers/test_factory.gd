@@ -1,7 +1,7 @@
 extends RefCounted
 
 static func make_character() -> Character:
-	var c: Character = load("res://Scenes/Characters/Character.tscn").instantiate()
+	var c: Character = Character.new()
 	c._name = "TestCharacter"
 	c._level = 1
 	c._experience = 0

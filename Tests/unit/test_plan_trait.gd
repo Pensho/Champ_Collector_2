@@ -18,8 +18,8 @@ var _one_ally_behind: Array[int]
 var _no_allies_behind: Array[int]
 
 func before_each() -> void:
-	_owner = load("res://Scenes/Characters/Character.tscn").instantiate()
-	_ally = load("res://Scenes/Characters/Character.tscn").instantiate()
+	_owner = Character.new()
+	_ally = Character.new()
 	_item_col = ItemCollection.new()
 	_main_inst = Main_Instance.new()
 	_main_inst._item_collection = _item_col
@@ -41,8 +41,6 @@ func before_each() -> void:
 	_no_allies_behind = []
 
 func after_each() -> void:
-	_owner.free()
-	_ally.free()
 	_owner_repr.free()
 	_ally_repr.free()
 	_battle_ui._turn_bar.free()

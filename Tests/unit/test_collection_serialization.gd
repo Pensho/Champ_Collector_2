@@ -75,10 +75,6 @@ func test_character_collection_serialize_roundtrip() -> void:
 	assert_eq(restored._experience, 123, "Experience must survive CharacterCollection roundtrip")
 	assert_eq(restored._preset_UID, preset_uid, "preset_UID must survive roundtrip")
 
-	for c in col1._characters.values():
-		c.free()
-	for c in col2._characters.values():
-		c.free()
 	col1.free()
 	col2.free()
 

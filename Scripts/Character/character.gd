@@ -1,4 +1,4 @@
-class_name Character extends Node
+class_name Character extends RefCounted
 
 func InstantiateNew(p_preset: CharacterPreset, p_instanceID: int) -> void:
 	_instanceID = p_instanceID

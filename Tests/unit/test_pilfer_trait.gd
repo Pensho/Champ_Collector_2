@@ -8,7 +8,7 @@ var _item_col: ItemCollection = null
 var _repr: CharacterRepresentation = null
 
 func before_each() -> void:
-	_character = load("res://Scenes/Characters/Character.tscn").instantiate()
+	_character = Character.new()
 	_item_col = ItemCollection.new()
 	_main_inst = Main_Instance.new()
 	_main_inst._item_collection = _item_col
@@ -16,7 +16,6 @@ func before_each() -> void:
 	_repr = double(REPR_SCRIPT).new()
 
 func after_each() -> void:
-	_character.free()
 	_repr.free()
 	_item_col.free()
 	_main_inst.free()

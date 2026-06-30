@@ -29,14 +29,14 @@ func test_level_up_not_met_at_zero_xp() -> void:
 	c._level = 1
 	c._experience = 0
 	assert_false(LevelSystem.LevelUpCriteriaMet(c), "Should not level up with 0 XP")
-	c.free()
+
 
 func test_level_up_met_at_threshold() -> void:
 	var c: Character = TestFactory.make_character()
 	c._level = 1
 	c._experience = int(LevelSystem.GetExperienceRequirement(1))
 	assert_true(LevelSystem.LevelUpCriteriaMet(c), "Should level up when XP meets the threshold")
-	c.free()
+
 
 func test_level_up_reduces_xp_by_requirement() -> void:
 	var c: Character = TestFactory.make_character()
@@ -45,7 +45,7 @@ func test_level_up_reduces_xp_by_requirement() -> void:
 	c._experience = req + 5
 	LevelSystem.LevelUpCriteriaMet(c)
 	assert_eq(c._experience, 5, "Remaining XP after level-up should be the surplus")
-	c.free()
+
 
 func test_level_up_false_leaves_xp_unchanged() -> void:
 	var c: Character = TestFactory.make_character()
@@ -53,7 +53,7 @@ func test_level_up_false_leaves_xp_unchanged() -> void:
 	c._experience = 1
 	LevelSystem.LevelUpCriteriaMet(c)
 	assert_eq(c._experience, 1, "XP must not change when level-up threshold is not met")
-	c.free()
+
 
 # --- SetOpponentLevel ---
 
@@ -62,14 +62,14 @@ func test_set_opponent_level_guard_below_1() -> void:
 	c._level = 5
 	LevelSystem.SetOpponentLevel(c, 0)
 	assert_eq(c._level, 5, "Level below 1 should be rejected")
-	c.free()
+
 
 func test_set_opponent_level_guard_above_999() -> void:
 	var c: Character = TestFactory.make_character()
 	c._level = 5
 	LevelSystem.SetOpponentLevel(c, 1000)
 	assert_eq(c._level, 5, "Level above 999 should be rejected")
-	c.free()
+
 
 func test_set_opponent_level_guard_not_lower_than_current() -> void:
 	var c: Character = TestFactory.make_character()
@@ -78,7 +78,7 @@ func test_set_opponent_level_guard_not_lower_than_current() -> void:
 	LevelSystem.SetOpponentLevel(c, 10)
 	assert_eq(c._level, 10, "Setting same level should be a no-op")
 	assert_eq(c._attributes[Types.Attribute.Attack], attack_before, "Attributes unchanged for no-op")
-	c.free()
+
 
 func test_set_opponent_level_increases_attributes() -> void:
 	var c: Character = TestFactory.make_character()
@@ -88,7 +88,7 @@ func test_set_opponent_level_increases_attributes() -> void:
 	assert_eq(c._level, 10, "Level should be updated to target")
 	assert_gt(c._attributes[Types.Attribute.Attack], attack_before,
 		"Attack should increase when levelling up")
-	c.free()
+
 
 func test_set_opponent_level_speed_scales_differently() -> void:
 	# Speed uses a linear scale; all other attributes use a polynomial scale.
@@ -106,5 +106,4 @@ func test_set_opponent_level_speed_scales_differently() -> void:
 	# Attack has a higher base weight per point so it should gain more than Speed
 	# when the polynomial (level^1.1) term dominates.
 	assert_gt(attack_gain, speed_gain, "Attack should gain more than Speed at high level")
-	c1.free()
-	c2.free()
+

@@ -13,7 +13,7 @@ var _characters: Dictionary[int, Character]
 var _repr_array: Array[CharacterRepresentation]
 
 func before_each() -> void:
-	_character = load("res://Scenes/Characters/Character.tscn").instantiate()
+	_character = Character.new()
 	_item_col = ItemCollection.new()
 	_main_inst = Main_Instance.new()
 	_main_inst._item_collection = _item_col
@@ -29,7 +29,6 @@ func before_each() -> void:
 	_repr_array[0] = _repr
 
 func after_each() -> void:
-	_character.free()
 	_repr.free()
 	_battle_ui.free()
 	_item_col.free()

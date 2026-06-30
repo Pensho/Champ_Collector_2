@@ -41,7 +41,7 @@ func Deserialize(p_data: Dictionary) -> void:
 			push_error("Skipping character with empty preset_UID (instance_ID: %d)" % character_data.get("instance_ID", -1))
 			continue
 		var preset: CharacterPreset = load(character_data["preset_UID"]).duplicate(true)
-		var new_character: Character = load("uid://s7cyusnkyl53").instantiate()
+		var new_character: Character = Character.new()
 		new_character.InstantiateNew(preset, character_data["instance_ID"])
 		new_character._level = int(character_data["level"])
 		new_character._experience = int(character_data["experience"])
@@ -74,7 +74,7 @@ func GetCharacterTexture(p_character_name: String) -> Texture:
 
 func Add(preset: CharacterPreset) -> void:
 	if(not IsTheCollectionFull()):
-		var new_character: Character = load("res://Scenes/Characters/Character.tscn").instantiate()
+		var new_character: Character = Character.new()
 		new_character.InstantiateNew(preset, CreateNextInstanceID())
 		_characters[new_character._instanceID] = new_character
 		
