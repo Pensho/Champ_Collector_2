@@ -24,6 +24,6 @@ density_multiplier = 0.5
 [resource]
 script = ExtResource("1_region")
 name = "Rubble"
-selection_weight = 0.25
+selection_weight = 0.3
 tint = Color(0.92, 0.9, 0.88, 1)
 decor = Array[ExtResource("2_entry")]([SubResource("Resource_wall"), SubResource("Resource_vine"), SubResource("Resource_dirt")])

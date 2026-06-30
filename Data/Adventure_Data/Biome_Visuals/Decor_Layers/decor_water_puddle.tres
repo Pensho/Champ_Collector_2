@@ -9,4 +9,5 @@ script = ExtResource("1_gsxtx")
 textures = Array[Texture2D]([ExtResource("2_0wmqm"), ExtResource("3_afp10")])
 density = 0.1
 scale_max = 2.0
+node_avoidance_radius = 5.0
 metadata/_custom_type_script = "uid://c6250ti0wupfr"

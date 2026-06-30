@@ -13,4 +13,4 @@ scale_min = 0.9
 scale_max = 1.8
 rotation_jitter_degrees = 4.0
 z_index = -1
-node_avoidance_radius = 70.0
+node_avoidance_radius = 5.0

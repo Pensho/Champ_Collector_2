@@ -17,6 +17,6 @@ density_multiplier = 0.3
 [resource]
 script = ExtResource("1_region")
 name = "Clearing"
-selection_weight = 0.3
+selection_weight = 0.25
 tint = Color(1, 1, 0.96, 1)
 decor = Array[ExtResource("2_entry")]([SubResource("Resource_grass"), SubResource("Resource_pebble")])
