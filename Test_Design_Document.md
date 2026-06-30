@@ -19,7 +19,6 @@ Unit tests cover **pure logic only** — functions that transform values and ret
 |---|---|---|
 | Adventure state | `test_adventure_state.gd` | Supply cost tiers, daily reset, serialization roundtrip (via real Serialize/Deserialize), node completion, scaled difficulty |
 | Adventure generation | `test_adventure_generator.gd` | Node count, uniqueness, boss node, biome context |
-| Biome loading | `test_biome_loading.gd` | Preloaded biomes |
 | Android export safety | `test_android_export_safety.gd` | No DirAccess or `get_window().size` usage in scripts (packed-export guards) |
 | Loot manager | `test_loot_manager.gd` | Fortunes Favor primary/secondary distribution by difficulty and budget |
 | Level system | `test_level_system.gd` | XP formula monotonicity, level-up threshold, XP consumption, `SetOpponentLevel` guards and attribute scaling |
@@ -56,4 +55,4 @@ Tests that involve randomness must use one of these approaches:
 ## Known issues / flags
 
 - `last_palayed_date` is a misspelled field name in `AdventureState` (and `AdventureTemplate`). The serialization key is `last_played_date`. Renaming is a deliberate refactor — do it in a separate approved change.
-- `test_battle_over.gd` produces orphan-node warnings on every test. These are pre-existing and out of scope here.
+- `test_battle_over.gd` produces orphan-node warnings on every test from `ContextContainer` (`extends Node`). These are pre-existing and out of scope here. `Character` and `TraitSkillResult` orphans are resolved — both now extend `RefCounted` and are constructed via `.new()`.
