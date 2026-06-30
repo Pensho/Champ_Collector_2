@@ -19,5 +19,6 @@ class_name BiomeVisualData extends Resource
 @export var coarse_cell_size: float = 256.0
 @export var fine_cell_size: float = 44.0
 
-# Node-type prop clusters. Texture drawn near each node of that type.
-@export var node_props: Dictionary[NodeData.Node_Type, Texture2D]
+# Node-type prop clusters. Each node type maps to a NodePropCluster that scatters
+# a ring of themed props around every node of that type.
+@export var node_props: Dictionary[NodeData.Node_Type, NodePropCluster]

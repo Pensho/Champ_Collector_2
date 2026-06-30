@@ -15,6 +15,10 @@ class_name AdventureBackgroundGenerator extends Node
 ## every decor layer regardless of the layer's own z_index.
 const NODE_PROP_Z_INDEX: int = 1000
 
+## Minimum clearance between a cluster prop's grown footprint and any node's 80×80 rect.
+## Smaller than layer.node_avoidance_radius so the ring forms close around the node icon.
+const NODE_PROP_CLEARANCE: float = 6.0
+
 ## Mirrors AdventureGraphUi.NODE_SIZE; stored node positions are the node's top-left
 ## corner, so the visual centre is position + (NODE_HALF_SIZE, NODE_HALF_SIZE).
 const NODE_HALF_SIZE: float = 40.0
@@ -68,7 +72,7 @@ static func Generate(p_visual_data: BiomeVisualData, p_canvas_size: Vector2, p_n
 					continue
 				placements.append(placement)
 
-	_AppendNodeProps(p_visual_data, p_node_positions, p_canvas_size, placements)
+	_AppendNodeProps(p_visual_data, p_node_positions, p_canvas_size, placements, p_seed, node_center_list)
 
 	placements.sort_custom(_SortByZThenY)
 	return placements
@@ -133,22 +137,41 @@ static func _BuildPlacement(p_layer: DecorLayerData, p_point: Vector2, p_rng: Ra
 	return placement
 
 
-static func _AppendNodeProps(p_visual_data: BiomeVisualData, p_node_positions: Dictionary, p_canvas_size: Vector2, p_placements: Array[DecorPlacement]) -> void:
+static func _AppendNodeProps(p_visual_data: BiomeVisualData, p_node_positions: Dictionary, p_canvas_size: Vector2, p_placements: Array[DecorPlacement], p_seed: int, p_node_center_list: Array[Vector2]) -> void:
 	for node: NodeData in p_node_positions:
 		if not p_visual_data.node_props.has(node.node_type):
 			continue
-		var texture: Texture2D = p_visual_data.node_props[node.node_type]
-		if texture == null:
+		var cluster: NodePropCluster = p_visual_data.node_props[node.node_type]
+		if cluster == null or cluster.decor.is_empty():
 			continue
 		var node_center: Vector2 = p_node_positions[node] + Vector2(NODE_HALF_SIZE, NODE_HALF_SIZE)
-		var rendered_height: float = texture.get_size().y
-		var position := Vector2(node_center.x, node_center.y + rendered_height * 0.5)
-		var placement := DecorPlacement.new()
-		placement.texture = texture
-		placement.scale = 1.0
-		placement.position = _ClampPropPosition(position, texture.get_size(), p_canvas_size)
-		placement.z_index = NODE_PROP_Z_INDEX
-		p_placements.append(placement)
+		var rng := RandomNumberGenerator.new()
+		rng.seed = hash([p_seed, node.index])
+		var inner_squared: float = cluster.inner_radius * cluster.inner_radius
+		var outer_squared: float = cluster.outer_radius * cluster.outer_radius
+		for _i in cluster.sample_count:
+			var angle: float = rng.randf() * TAU
+			var radius: float = sqrt(lerp(inner_squared, outer_squared, rng.randf()))
+			var candidate: Vector2 = node_center + Vector2(cos(angle), sin(angle)) * radius
+			for entry in cluster.decor:
+				var layer: DecorLayerData = entry.layer
+				if layer == null:
+					continue
+				var effective_density: float = clampf(layer.density * entry.density_multiplier, 0.0, 1.0)
+				if rng.randf() > effective_density:
+					continue
+				var detail_sample: float = p_visual_data.detail_noise.get_noise_2d(candidate.x, candidate.y)
+				detail_sample = (detail_sample + 1.0) * 0.5
+				if detail_sample < layer.noise_threshold_min or detail_sample > layer.noise_threshold_max:
+					continue
+				var placement: DecorPlacement = _BuildPlacement(layer, candidate, rng, Color.WHITE)
+				placement.z_index = NODE_PROP_Z_INDEX
+				if not _DecorClearsNodes(placement, p_node_center_list, NODE_PROP_CLEARANCE):
+					continue
+				if placement.texture != null:
+					var rendered_size: Vector2 = placement.texture.get_size() * placement.scale
+					placement.position = _ClampPropPosition(placement.position, rendered_size, p_canvas_size)
+				p_placements.append(placement)
 
 
 ## Node props pivot bottom-centre (see adventure_background.gd), so the texture rect spans

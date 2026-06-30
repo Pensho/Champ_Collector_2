@@ -453,7 +453,9 @@ low-frequency noise sample assigns a zone to each region of the map so scenery f
 contiguous forests and open gaps instead of an even speckle, and a second, finer noise
 pass scatters that zone's decor (trees, grass, rubble, etc.) within it. Generation is
 seeded from the adventure's own generation seed, so revisiting the same adventure always
-shows the same scenery.
+shows the same scenery. Each node also scatters a deterministic ring of node-type-themed
+props around it — reusing the same density, scale, rotation, and texture-variant mechanics
+as zone decor — so every node's surroundings vary while still reading clearly as their type.
 
 
 ---

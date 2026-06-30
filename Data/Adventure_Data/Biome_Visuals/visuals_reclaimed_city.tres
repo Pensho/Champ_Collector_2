@@ -5,12 +5,13 @@
 [ext_resource type="Resource" uid="uid://bqc3x7ifs6ij2" path="res://Data/Adventure_Data/Biome_Visuals/Regions/region_reclaimed_city_forest.tres" id="2_forest"]
 [ext_resource type="Resource" uid="uid://bxtvm8prqlvku" path="res://Data/Adventure_Data/Biome_Visuals/Regions/region_reclaimed_city_clearing.tres" id="3_clearing"]
 [ext_resource type="Resource" uid="uid://xykcl26gxvrh" path="res://Data/Adventure_Data/Biome_Visuals/Regions/region_reclaimed_city_rubble.tres" id="4_rubble"]
-[ext_resource type="Texture2D" uid="uid://b0hj8ea5jkoo5" path="res://Assets/Adventure/Background/Shared/node_prop_fight.png" id="5_fight"]
-[ext_resource type="Texture2D" uid="uid://1uy312sm4b0t" path="res://Assets/Adventure/Background/Shared/node_prop_rest_stop.png" id="6_rest"]
-[ext_resource type="Texture2D" uid="uid://c6g7p8fjk7yx8" path="res://Assets/Adventure/Background/Shared/node_prop_boss.png" id="7_boss"]
-[ext_resource type="Texture2D" uid="uid://ccmrunwckjig4" path="res://Assets/Adventure/Background/Shared/node_prop_hint.png" id="8_hint"]
-[ext_resource type="Texture2D" uid="uid://pv80o5kegkgd" path="res://Assets/Adventure/Background/Shared/node_prop_gamble.png" id="9_gamble"]
-[ext_resource type="Texture2D" uid="uid://mdl5nrjxlu0l" path="res://Assets/Adventure/Background/Shared/node_prop_escalate.png" id="10_escalate"]
+[ext_resource type="Script" path="res://Scripts/Adventure_Scripts/Visuals/node_prop_cluster.gd" id="5_cluster_type"]
+[ext_resource type="Resource" path="res://Data/Adventure_Data/Biome_Visuals/Node_Props/cluster_fight.tres" id="6_fight"]
+[ext_resource type="Resource" path="res://Data/Adventure_Data/Biome_Visuals/Node_Props/cluster_rest_stop.tres" id="7_rest"]
+[ext_resource type="Resource" path="res://Data/Adventure_Data/Biome_Visuals/Node_Props/cluster_boss.tres" id="8_boss"]
+[ext_resource type="Resource" path="res://Data/Adventure_Data/Biome_Visuals/Node_Props/cluster_hint.tres" id="9_hint"]
+[ext_resource type="Resource" path="res://Data/Adventure_Data/Biome_Visuals/Node_Props/cluster_gamble.tres" id="10_gamble"]
+[ext_resource type="Resource" path="res://Data/Adventure_Data/Biome_Visuals/Node_Props/cluster_escalate.tres" id="11_escalate"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_detail"]
 noise_type = 0
@@ -28,11 +29,11 @@ background_bottom_color = Color(0.09, 0.18, 0.1, 1)
 detail_noise = SubResource("FastNoiseLite_detail")
 region_noise = SubResource("FastNoiseLite_region")
 regions = Array[ExtResource("0_region_type")]([ExtResource("2_forest"), ExtResource("3_clearing"), ExtResource("4_rubble")])
-node_props = Dictionary[int, Texture2D]({
-0: ExtResource("5_fight"),
-1: ExtResource("6_rest"),
-2: ExtResource("7_boss"),
-3: ExtResource("8_hint"),
-4: ExtResource("9_gamble"),
-5: ExtResource("10_escalate")
+node_props = Dictionary[int, ExtResource("5_cluster_type")]({
+0: ExtResource("6_fight"),
+1: ExtResource("7_rest"),
+2: ExtResource("8_boss"),
+3: ExtResource("9_hint"),
+4: ExtResource("10_gamble"),
+5: ExtResource("11_escalate")
 })

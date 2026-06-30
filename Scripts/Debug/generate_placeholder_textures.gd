@@ -32,13 +32,13 @@ const ELEMENT_TABLE: Array = [
 	{ "folder": "Shared", "base_name": "fog_mist_patch", "width": 256, "height": 160, "variants": 2, "color": Color(1.0, 1.0, 1.0, 0.3) },
 	{ "folder": "Shared", "base_name": "flower_speck", "width": 24, "height": 24, "variants": 3, "color": Color(0.95, 0.40, 0.65, 1.0) },
 
-	# --- Tier 2: Node props (biome-agnostic, distinct solid colors) ---
-	{ "folder": "Shared", "base_name": "node_prop_fight", "width": 140, "height": 140, "variants": 1, "color": Color(0.80, 0.20, 0.20, 1.0) },
-	{ "folder": "Shared", "base_name": "node_prop_boss", "width": 140, "height": 140, "variants": 1, "color": Color(0.55, 0.10, 0.10, 1.0) },
-	{ "folder": "Shared", "base_name": "node_prop_rest_stop", "width": 140, "height": 140, "variants": 1, "color": Color(0.20, 0.70, 0.40, 1.0) },
-	{ "folder": "Shared", "base_name": "node_prop_hint", "width": 140, "height": 140, "variants": 1, "color": Color(0.25, 0.55, 0.85, 1.0) },
-	{ "folder": "Shared", "base_name": "node_prop_gamble", "width": 140, "height": 140, "variants": 1, "color": Color(0.85, 0.65, 0.15, 1.0) },
-	{ "folder": "Shared", "base_name": "node_prop_escalate", "width": 140, "height": 140, "variants": 1, "color": Color(0.70, 0.30, 0.80, 1.0) },
+	# --- Tier 2: Node props (biome-agnostic, distinct solid colors, multi-variant for scatter) ---
+	{ "folder": "Shared", "base_name": "node_prop_fight", "width": 48, "height": 48, "variants": 3, "color": Color(0.80, 0.20, 0.20, 1.0) },
+	{ "folder": "Shared", "base_name": "node_prop_boss", "width": 48, "height": 56, "variants": 3, "color": Color(0.55, 0.10, 0.10, 1.0) },
+	{ "folder": "Shared", "base_name": "node_prop_rest_stop", "width": 48, "height": 48, "variants": 3, "color": Color(0.20, 0.70, 0.40, 1.0) },
+	{ "folder": "Shared", "base_name": "node_prop_hint", "width": 48, "height": 48, "variants": 3, "color": Color(0.25, 0.55, 0.85, 1.0) },
+	{ "folder": "Shared", "base_name": "node_prop_gamble", "width": 48, "height": 48, "variants": 3, "color": Color(0.85, 0.65, 0.15, 1.0) },
+	{ "folder": "Shared", "base_name": "node_prop_escalate", "width": 48, "height": 48, "variants": 3, "color": Color(0.70, 0.30, 0.80, 1.0) },
 
 	# --- Tier 3: reclaimed_city ---
 	{ "folder": "reclaimed_city", "base_name": "broadleaf_tree", "width": 160, "height": 384, "variants": 3, "color": Color(0.22, 0.55, 0.22, 1.0) },
