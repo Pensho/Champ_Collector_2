@@ -14,11 +14,11 @@
 Example of city (31-01-2026)
 ![Example of city](Progress_Images/Hub_2026_01_31.gif)
 
+Example of an Adventure (01-07-2026)
+![image](Progress_Images/01-07-2026_Adventure-Mode.png)
 
 State of battle (27-03-2026)
 ![image](Progress_Images/27-03-2026.PNG)
-
-
 
 Plan of potential talent tree for characters.
 ![image](Progress_Images/Talent_Tree_Demo_2.drawio.png)
