@@ -6,12 +6,12 @@
 [ext_resource type="Resource" uid="uid://bxtvm8prqlvku" path="res://Data/Adventure_Data/Biome_Visuals/Regions/region_reclaimed_city_clearing.tres" id="3_clearing"]
 [ext_resource type="Resource" uid="uid://xykcl26gxvrh" path="res://Data/Adventure_Data/Biome_Visuals/Regions/region_reclaimed_city_rubble.tres" id="4_rubble"]
 [ext_resource type="Script" uid="uid://bwuf75nyssh3t" path="res://Scripts/Adventure_Scripts/Visuals/node_prop_cluster.gd" id="5_cluster_type"]
-[ext_resource type="Resource" path="res://Data/Adventure_Data/Biome_Visuals/Node_Props/cluster_fight.tres" id="6_fight"]
-[ext_resource type="Resource" path="res://Data/Adventure_Data/Biome_Visuals/Node_Props/cluster_rest_stop.tres" id="7_rest"]
-[ext_resource type="Resource" path="res://Data/Adventure_Data/Biome_Visuals/Node_Props/cluster_boss.tres" id="8_boss"]
-[ext_resource type="Resource" path="res://Data/Adventure_Data/Biome_Visuals/Node_Props/cluster_hint.tres" id="9_hint"]
-[ext_resource type="Resource" path="res://Data/Adventure_Data/Biome_Visuals/Node_Props/cluster_gamble.tres" id="10_gamble"]
-[ext_resource type="Resource" path="res://Data/Adventure_Data/Biome_Visuals/Node_Props/cluster_escalate.tres" id="11_escalate"]
+[ext_resource type="Resource" uid="uid://xt35tgxgaknl" path="res://Data/Adventure_Data/Biome_Visuals/Node_Props/cluster_fight.tres" id="6_fight"]
+[ext_resource type="Resource" uid="uid://bpw4fmxchvw4j" path="res://Data/Adventure_Data/Biome_Visuals/Node_Props/cluster_rest_stop.tres" id="7_rest"]
+[ext_resource type="Resource" uid="uid://cpn7y3uatumk8" path="res://Data/Adventure_Data/Biome_Visuals/Node_Props/cluster_boss.tres" id="8_boss"]
+[ext_resource type="Resource" uid="uid://d2hrxsyl25gwf" path="res://Data/Adventure_Data/Biome_Visuals/Node_Props/cluster_hint.tres" id="9_hint"]
+[ext_resource type="Resource" uid="uid://b0gepkb5m5ovq" path="res://Data/Adventure_Data/Biome_Visuals/Node_Props/cluster_gamble.tres" id="10_gamble"]
+[ext_resource type="Resource" uid="uid://cogeyb303k628" path="res://Data/Adventure_Data/Biome_Visuals/Node_Props/cluster_escalate.tres" id="11_escalate"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_detail"]
 noise_type = 0
