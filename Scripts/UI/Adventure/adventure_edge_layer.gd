@@ -7,7 +7,7 @@ class_name AdventureEdgeLayer extends Control
 const FALLBACK_LINE_COLOR := Color(0.55, 0.55, 0.55, 0.85)
 const FALLBACK_LINE_WIDTH := 2.5
 const ROAD_WIDTH := 16.0
-const ROAD_COLOR := Color(0.55, 0.42, 0.28, 1.0)
+const ROAD_COLOR := Color(0.8, 0.8, 0.8, 1.0)
 const NODE_HALF := Vector2(40.0, 40.0)
 
 ## One is picked per edge (seeded, so it's stable across redraws) so neighbouring roads
@@ -55,6 +55,7 @@ func _BuildRoadLine(p_edge: Array) -> Line2D:
 	line.default_color = ROAD_COLOR
 	line.texture = ROAD_TEXTURES[posmod(hash([road_seed, "texture"]), ROAD_TEXTURES.size())]
 	line.texture_mode = Line2D.LINE_TEXTURE_TILE
+	line.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
 	line.joint_mode = Line2D.LINE_JOINT_ROUND
 	line.begin_cap_mode = Line2D.LINE_CAP_ROUND
 	line.end_cap_mode = Line2D.LINE_CAP_ROUND
