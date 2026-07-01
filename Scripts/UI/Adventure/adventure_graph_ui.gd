@@ -6,6 +6,7 @@ signal node_selected(p_node: NodeData)
 @export var _scroll_container: ScrollContainer
 @export var _graph_canvas: Control
 
+const GroundGradientScene := preload("res://Scripts/UI/Adventure/adventure_ground_gradient.gd")
 const EdgeLayerScene := preload("res://Scripts/UI/Adventure/adventure_edge_layer.gd")
 const BackgroundScene := preload("res://Scripts/UI/Adventure/adventure_background.gd")
 const LAYER_HEIGHT: int = 180
@@ -58,20 +59,27 @@ func Populate(p_nodes: Array[NodeData]) -> void:
 			_node_positions[node] = Vector2(x, y)
 
 	if _visual_data != null:
-		var background: AdventureBackground = BackgroundScene.new()
-		_graph_canvas.add_child(background)
-		background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-		background.Generate(_visual_data, _node_positions, _generation_seed)
+		var ground_gradient := GroundGradientScene.new()
+		_graph_canvas.add_child(ground_gradient)
+		ground_gradient.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		ground_gradient.Generate(_visual_data)
 
 	var edges: Array = []
 	for node in p_nodes:
 		for next: NodeData in node.next_node:
-			edges.append([_node_positions[node], _node_positions[next]])
+			edges.append([_node_positions[node], _node_positions[next], node.index, next.index])
 
 	var edge_layer := EdgeLayerScene.new()
 	_graph_canvas.add_child(edge_layer)
 	edge_layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	edge_layer.configure(_visual_data, _generation_seed)
 	edge_layer.set_edges(edges)
+
+	if _visual_data != null:
+		var background: AdventureBackground = BackgroundScene.new()
+		_graph_canvas.add_child(background)
+		background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		background.Generate(_visual_data, _node_positions, _generation_seed)
 
 	var eligible_y: float = canvas_height
 	for node in p_nodes:
