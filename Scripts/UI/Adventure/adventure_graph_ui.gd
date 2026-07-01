@@ -14,6 +14,9 @@ const NODE_SIZE:    int = 80
 const PADDING:      int = 30
 const JITTER_MAX:   int = 55
 const JITTER_Y_MAX: int = 45
+## Empty map kept above the boss (last) node so it has the same decorated run-off as the
+## space below the first node. One extra layer past the boss, mirroring the bottom margin.
+const END_MARGIN: int = LAYER_HEIGHT
 
 var _node_positions: Dictionary = {}
 var _visual_data: BiomeVisualData
@@ -40,7 +43,7 @@ func Populate(p_nodes: Array[NodeData]) -> void:
 	await get_tree().process_frame
 
 	var canvas_width: float  = max(500.0, _scroll_container.size.x)
-	var canvas_height: float = (max_depth + 1) * LAYER_HEIGHT + PADDING * 2
+	var canvas_height: float = (max_depth + 1) * LAYER_HEIGHT + PADDING * 2 + END_MARGIN
 	_graph_canvas.custom_minimum_size = Vector2(canvas_width, canvas_height)
 
 	for depth in by_depth:
@@ -55,7 +58,7 @@ func Populate(p_nodes: Array[NodeData]) -> void:
 			var jitter_x: float  = rng.randf_range(-JITTER_MAX, JITTER_MAX)
 			var jitter_y: float  = rng.randf_range(-JITTER_Y_MAX, JITTER_Y_MAX)
 			var x: float         = clampf(base_x + jitter_x, PADDING, canvas_width - NODE_SIZE - PADDING)
-			var y: float         = (max_depth - node.depth) * LAYER_HEIGHT + PADDING + jitter_y
+			var y: float         = (max_depth - node.depth) * LAYER_HEIGHT + PADDING + END_MARGIN + jitter_y
 			_node_positions[node] = Vector2(x, y)
 
 	if _visual_data != null:
