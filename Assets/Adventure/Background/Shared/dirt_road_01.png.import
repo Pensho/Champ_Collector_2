@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bo5qgf6x5343d"
-path="res://.godot/imported/node_prop_hint.png-cc9a1bbf79226017464b8fdad002b5f4.ctex"
+uid="uid://dalsborwqpcvb"
+path="res://.godot/imported/dirt_road_01.png-e3e8a6da890b6e64c13c66ffb86185e3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Adventure/Background/Shared/node_prop_hint.png"
-dest_files=["res://.godot/imported/node_prop_hint.png-cc9a1bbf79226017464b8fdad002b5f4.ctex"]
+source_file="res://Assets/Adventure/Background/Shared/dirt_road_01.png"
+dest_files=["res://.godot/imported/dirt_road_01.png-e3e8a6da890b6e64c13c66ffb86185e3.ctex"]
 
 [params]
 

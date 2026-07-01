@@ -31,6 +31,7 @@ const ELEMENT_TABLE: Array = [
 	{ "folder": "Shared", "base_name": "water_puddle", "width": 96, "height": 64, "variants": 2, "color": Color(0.30, 0.50, 0.75, 0.5) },
 	{ "folder": "Shared", "base_name": "fog_mist_patch", "width": 256, "height": 160, "variants": 2, "color": Color(1.0, 1.0, 1.0, 0.3) },
 	{ "folder": "Shared", "base_name": "flower_speck", "width": 24, "height": 24, "variants": 3, "color": Color(0.95, 0.40, 0.65, 1.0) },
+	{ "folder": "Shared", "base_name": "dirt_road", "width": 24, "height": 24, "variants": 3, "color": Color(0.634, 0.333, 0.077, 1.0) },
 
 	# --- Tier 2: Node props (biome-agnostic, distinct solid colors, multi-variant for scatter) ---
 	{ "folder": "Shared", "base_name": "node_prop_fight", "width": 48, "height": 48, "variants": 3, "color": Color(0.80, 0.20, 0.20, 1.0) },
