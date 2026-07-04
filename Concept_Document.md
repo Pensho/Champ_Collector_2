@@ -111,9 +111,10 @@ Each Role can have one or two main purposes in combat but it doesn't have to res
 
 Current roles, their identity and purpose exist as follows:
 - Emissary
-    - TODO
-    - Purpose: 
-    - Passive:
+    - A field agent of the Iron Ledger who wins by building a case against the enemy rather than overpowering them. Keeps a per-enemy tally of Infractions (see the Standing Record passive) and issues Edicts — marks placed on an enemy that expand what counts as an Infraction for them or make their Infractions count double. Punishment effects stay gradual rather than binary: no hard skill sealing or turn bar manipulation; instead cooldown extension, debuff duration extension, and buff redaction (a redacted buff remains visible but has no effect until it expires), all scaling with the target's Infraction count. Primary attributes: Accuracy, Knowledge.
+    - Purpose: Debuffer, Control
+    - Passive: Standing Record - Every enemy has a personal Infraction tally that only grows and is never consumed. An enemy gains one Infraction whenever they gain a buff, place a zone, or land a debuff on an ally. The Emissary's skills gain +x% effect (potency, duration, or chance to land) per Infraction on the target, up to a rarity-dependent tally cap.
+        - +2% per Infraction with cap 5 Uncommon, +3% with cap 7 Rare, +4% with cap 9 Epic, +5% with cap 12 Legendary
 - Thief
     - A squishy damage dealer, focusing on set-up through skills and bypassing enemy defenses. Primary attributes: Attack.
     - Purpose: Damage.
