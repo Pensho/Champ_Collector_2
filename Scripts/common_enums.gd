@@ -39,7 +39,7 @@ enum Role
 	Generic_Enemy = 13,
 	Bar_Brawler = 14,
 	Bloodmage = 15,
-	Herald_of_the_loom = 16,
+	Herald_Of_The_Loom = 16,
 	Chronophage = 17,
 	Architect = 18,
 	Tidal_Corsair = 19,
