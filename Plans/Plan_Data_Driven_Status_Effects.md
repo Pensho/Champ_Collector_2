@@ -61,8 +61,10 @@ and a single generic apply/tick routine replacing the match blocks.
    resource fields.
 5. **Route zone effects through the same data.** The Lava zone currently hardcodes
    Burning with `duration = 2` and two TODO comments asking for exactly this change
-   (`Scripts/Battle/Skills.gd:32-33`); give `Zone` a `StatusEffectData` (or effect
-   type + duration) instead.
+   (`Scripts/Battle/Skills.gd:37-38`); give `Zone` a `StatusEffectData` (or effect
+   type + duration) instead. Note `Zone` now also carries caster Knowledge to scale
+   ally turn-bar effects (commit `1dbe29f`) — keep that scaling intact when routing
+   zones through resource data.
 6. **Tests:** a data-integrity test that every enum value has a corresponding resource
    (same pattern as `test_character_preset_skill_invariant.gd`), plus behavior tests
    that the generic tick produces the same numbers the hardcoded blocks did (write

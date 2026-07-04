@@ -7,7 +7,10 @@ its own test. No architecture changes belong in this plan — those live in
 
 ## Status
 
-Not started.
+Not started. Line references refreshed as of commit `4de83b6` (July 2026) — the
+class-variable renames (`_currentHealth` → `_current_health`, etc.) and the ally
+turn-bar Knowledge scaling landed since this plan was written and shifted some
+locations in `Skills.gd`; the findings themselves are all still present.
 
 ## Findings being fixed
 
@@ -47,7 +50,7 @@ Recorded in `Technical_Design_Document.md` section 15.6.
 
 ### 3. Fix the critical-hit off-by-one
 - **What:** `Skills.DamageDealt` rolls `randi_range(0, 100) <= CritChance`
-  (`Scripts/Battle/Skills.gd:327`), so 0% crit chance still crits on a rolled 0.
+  (`Scripts/Battle/Skills.gd:332`), so 0% crit chance still crits on a rolled 0.
   Change to `randi_range(1, 100)`.
 - **Files:** `Scripts/Battle/Skills.gd`.
 - **Test:** with `CritChance = 0`, no crit over many rolls; with `CritChance = 100`,
@@ -56,11 +59,11 @@ Recorded in `Technical_Design_Document.md` section 15.6.
   acceptable meanwhile.)
 
 ### 4. Exclude dead and missing characters from targeting
-- **What:** `Skills.FindSkillTargets` (`Scripts/Battle/Skills.gd:61-118`) hardcodes
+- **What:** `Skills.FindSkillTargets` (`Scripts/Battle/Skills.gd:66-123`) hardcodes
   `randi() % 3` for random targets and appends whole ID arrays with no alive check.
   Random Enemy can waste a turn damaging a corpse; All Enemies re-damages the dead.
   Pass the characters dictionary into `FindSkillTargets` and filter candidates on
-  existence and `_currentHealth > 0` before selection.
+  existence and `_current_health > 0` before selection.
 - **Files:** `Scripts/Battle/Skills.gd`, call sites in `Scripts/Battle/battle.gd`,
   existing tests `test_skills.gd` and `test_enemy_turn_targeting.gd`.
 - **Watch for:** `Random_One` and `All` targets both teams; keep self-targeting rules
@@ -71,7 +74,7 @@ Recorded in `Technical_Design_Document.md` section 15.6.
 
 ### 5. Normalize turn-bar speed from one attribute source
 - **What:** `TurnBar.Init` compares base speed (`_attributes[Speed]`) but stores geared
-  speed (`GetBattleAttribute(Speed)`) (`Scripts/UI/Battle_UI/turn_bar.gd:22-26`). A
+  speed (`GetBattleAttribute(Speed)`) (`Scripts/UI/Battle_UI/turn_bar.gd:20-26`). A
   character whose geared speed is highest but base speed is not produces a normalized
   speed above 1.0. Use `GetBattleAttribute` in both the comparison and the assignment.
 - **Files:** `Scripts/UI/Battle_UI/turn_bar.gd`.
@@ -93,7 +96,7 @@ Recorded in `Technical_Design_Document.md` section 15.6.
   assert experience is only consumed on an actual level-up.
 
 ### 7. Design decision needed: Lava zone Burning stacking
-- **What:** the Lava zone handler (`Scripts/Battle/Skills.gd:26-36`) never checks
+- **What:** the Lava zone handler (`Scripts/Battle/Skills.gd:31-41`) never checks
   whether the target already has Burning, so it appends a fresh copy every trigger up
   to the status cap. The surrounding `OverwritableDebuff` check reads as if it meant to
   prevent that. Confirm intent against `Concept_Document.md` (Burning is defined as a
@@ -109,4 +112,4 @@ Recorded in `Technical_Design_Document.md` section 15.6.
   -gdir=res://Tests/unit/ -gprefix=test_ -gsuffix=.gd -gexit
 ```
 
-All 221 existing tests must stay green; each step adds its own coverage.
+All existing tests must stay green; each step adds its own coverage.

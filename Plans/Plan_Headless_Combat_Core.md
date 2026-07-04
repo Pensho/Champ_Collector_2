@@ -60,6 +60,10 @@ BattleResolver (RefCounted, no nodes)
   `OnDamageTaken` in `Scripts/Character/CharacterTraits/`). Traits must instead return
   or append result records; this touches every trait under
   `CharacterSpecificTraits/` and their tests. Migrate hook by hook, not all at once.
+- **Watch for:** zone effects on allies now scale with caster Knowledge
+  (commit `1dbe29f`: `Zone` carries the caster's Knowledge, constants in
+  `game_balance.gd`) — that scaling moves into the resolver along with
+  `TriggerZones`.
 - **Watch for:** the turn bar is both state (positions decide zone hits and Plan-trait
   reach) and view. Short term, keep positional queries behind an interface the resolver
   calls; long term the positions belong in the core.
@@ -74,7 +78,8 @@ BattleResolver (RefCounted, no nodes)
   `CLAUDE.md` (convention note).
 
 ### 5. Replace the turn sentinel with an explicit state machine
-- **What:** turn flow is implicit in `_characterIDs_turn == -1` polled from `_process`,
+- **What:** turn flow is implicit in `_turn_character_ID == NO_CHARACTERS_TURN`
+  polled from `_process`,
   and `HandleEnemyTurn` carries a "TODO: Clean this nested mess up". Introduce explicit
   states (Advancing, AwaitingPlayerInput, EnemyActing, Resolving, BattleOver) as an
   enum-driven state machine in `battle.gd`.

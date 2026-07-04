@@ -24,6 +24,23 @@ that holds (or will hold) the detail.
 - [ ] Relic items — implement Relic rarity tier (Concept_Document.md 3.3.1)
 - [ ] Ascension system — post-level-cap progression (Concept_Document.md 3.1.2)
 
+## Technical Groundwork
+
+Not player-facing scope, but tracked here so the checklist covers everything
+outstanding. Detail and suggested order live in `Plans/` (see `Plans/README.md`).
+
+- [ ] Combat correctness fixes (Plans/Plan_Combat_Correctness_Fixes.md) — do first
+- [ ] Documentation parity — realign Concept_Document.md 3.2.1 with the implemented
+  combat formulas (Plans/Plan_Documentation_Parity.md)
+- [ ] Team and roster abstraction (Plans/Plan_Team_And_Roster_Abstraction.md)
+- [ ] Headless combat core (Plans/Plan_Headless_Combat_Core.md) — also unlocks the
+  "Run Multiplier" auto-battle idea from FeatureIdeas.md
+- [ ] Data-driven status effects (Plans/Plan_Data_Driven_Status_Effects.md) —
+  prerequisite for "More skills" under Important
+- [ ] Naming convention alignment (Plans/Plan_Naming_Convention_Alignment.md) —
+  partially done: rule amendments, gdlintrc enforcement, and variable renames have
+  landed; file renames and abbreviation spell-outs remain
+
 ## Optional
 
 - [ ] Character talent trees (Concept_Document.md 3.3.1)

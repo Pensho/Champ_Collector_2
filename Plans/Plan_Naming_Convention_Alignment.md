@@ -7,42 +7,45 @@ produces the same noise.
 
 ## Status
 
-Not started. Lowest priority of the plans; schedule as one or two mechanical commits
-in a quiet moment, never mixed into feature work. Extends
-`Technical_Design_Document.md` 15.3, which already covers file casing.
+Partially done (July 2026). Two of the four findings were resolved outside this plan:
+
+- Finding 1 (function casing) — resolved by amending the rule: `CLAUDE.md` now states
+  `PascalCase` for custom functions, matching the codebase (the recommendation below
+  was taken).
+- Finding 4 (camelCase members) — resolved by commit `4de83b6`, with slightly
+  different names than proposed here: `_critical_chance`, `_critical_damage`
+  (spelling out "crit", better than the proposed `_crit_*`), `_current_health`,
+  `_instance_ID`, and `_turn_character_ID` (instead of `_active_turn_character_ID`).
+  The serialization concern proved real but harmless: the crit values are exported
+  preset properties stored by name in `.tres` files, so three resources were updated
+  in the same commit and `test_collection_serialization.gd` stayed green.
+- Commit `5fa9bf3` additionally codified the real conventions in `gdlintrc`
+  (enum names, enum elements, class-variable casing including acronym segments like
+  `_owner_ID`), so `gdlint Scripts/` now enforces them mechanically.
+
+Remaining: findings 2 and 3 (file renames and abbreviation spell-outs). Lowest
+priority of the plans; schedule as one or two mechanical commits in a quiet moment,
+never mixed into feature work. Extends `Technical_Design_Document.md` 15.3, which
+already covers file casing.
 
 ## Findings
 
-1. **Function casing:** `CLAUDE.md` mandates `snake_case` for functions; the entire
-   codebase uses `PascalCase` (`Init`, `ResolveSkill`, `GetBattleAttribute`, ...).
-   This is the largest divergence and it is total — no file follows the written rule.
+1. ~~**Function casing**~~ — resolved; rule amended in `CLAUDE.md` (see Status).
 2. **File casing** (already recorded in 15.3): `Skills.gd`, `Zone.gd`,
    `Level_System.gd`, `Context_Container.gd`, `Static_Context.gd`,
    `CharacterTraits/`, `Statue_Weapon_Trait.gd`, `Tidal_Corsair_Trait.gd`.
 3. **Abbreviations not on the allowlist:** `Character_Battle_Repr.tscn` /
    `CharacterRepresentation`'s scene name ("Repr"), `_char_turns` ("char"),
-   `_character_repr` ("repr"), `p_caster_attr` ("attr"). The project's own rule says
-   spell words out; none of these are on the accepted-acronym list.
-4. **camelCase members** (partially recorded in 15.3): `_currentHealth`,
-   `_instanceID`, `_critChance`, `_critDamage`, plus oddities like
-   `_characterIDs_turn` (reads as plural; it holds a single ID) and locals like
-   `randomVal`/`randomVal2`.
-
-## Decision to make first
-
-**Recommended: change the rule, not the code, for function casing.** PascalCase
-functions are applied consistently across the whole project, Godot does not care, and
-a full rename touches every file, scene connection, and Callable reference for zero
-behavioral value. Amend `CLAUDE.md` to state: functions use `PascalCase`; variables
-and file names use `snake_case`.
-
-If you instead want the code to match the current rule, that is a much larger
-mechanical pass — decide explicitly before anyone starts.
+   `_character_repr` ("repr"), `p_caster_attr`/`p_attacker_attr` ("attr"). The
+   project's own rule says spell words out; none of these are on the
+   accepted-acronym list.
+4. ~~**camelCase members**~~ — resolved by commit `4de83b6` (see Status). Locals like
+   `randomVal`/`randomVal2` may linger; gdlint does not check local names, so sweep
+   them during step 3.
 
 ## Steps
 
-1. **Amend `CLAUDE.md`** (project and, if applicable, fleet-level `~/repos/CLAUDE.md`)
-   with the decided function-casing rule, so reviews stop flagging it.
+1. ~~**Amend `CLAUDE.md`**~~ — done; also enforced via `gdlintrc` (commit `5fa9bf3`).
 2. **Rename the off-convention files** from finding 2 in one commit: file renames plus
    `preload`/`load` path updates. Prefer `uid://` references (most already are) so
    scene links survive; grep for any remaining `res://` string paths to the renamed
@@ -52,12 +55,7 @@ mechanical pass — decide explicitly before anyone starts.
    `_character_turn_markers` (or similar), `_character_repr` to
    `_character_representations`, `p_caster_attr` to `p_caster_attributes`. Scene
    renames must update the exported node paths in `battle.tscn`.
-4. **Rename the camelCase members** from finding 4 (`_currentHealth` →
-   `_current_health`, `_instanceID` → `_instance_ID`, `_critChance` → `_crit_chance`,
-   `_critDamage` → `_crit_damage`, `_characterIDs_turn` → `_active_turn_character_ID`).
-   These appear in save serialization? Verify: `character_collection.gd` serializes by
-   its own string keys, not member names — confirm no member name leaks into the save
-   format before renaming, and run `test_collection_serialization.gd` after.
+4. ~~**Rename the camelCase members**~~ — done in commit `4de83b6`.
 5. **Run the full test suite and a manual battle smoke test** after each commit —
    renames in GDScript are textual and the compiler will not catch every stale string
    reference (Callable-by-name, `get_node` paths).
