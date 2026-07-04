@@ -19,7 +19,7 @@ func Serialize() -> Dictionary:
 			"level": character._level,
 			"attributes": character._attributes.duplicate(true),
 			"held_items": character._held_items.duplicate(true),
-			"instance_ID": character._instanceID,
+			"instance_ID": character._instance_ID,
 			"attribute_weights": character._attributes_weights._name
 			# TODO: get skills when they are no longer defined by a characters preset.
 		})
@@ -51,7 +51,7 @@ func Deserialize(p_data: Dictionary) -> void:
 					new_character._attributes_weights = attribute_weight_type.duplicate(true)
 					break
 		
-		_next_ID = max(_next_ID, new_character._instanceID)
+		_next_ID = max(_next_ID, new_character._instance_ID)
 		
 		for attribute in character_data["attributes"].keys():
 			new_character._attributes[attribute as int] = character_data["attributes"][attribute] as int
@@ -59,7 +59,7 @@ func Deserialize(p_data: Dictionary) -> void:
 		for held_item in character_data["held_items"].keys():
 			new_character._held_items[held_item as int] = character_data["held_items"][held_item] as int
 		
-		_characters[new_character._instanceID] = new_character
+		_characters[new_character._instance_ID] = new_character
 	
 	LoadTextures()
 	print("Calling Deserialize for CharacterCollection")
@@ -76,7 +76,7 @@ func Add(preset: CharacterPreset) -> void:
 	if(not IsTheCollectionFull()):
 		var new_character: Character = Character.new()
 		new_character.InstantiateNew(preset, CreateNextInstanceID())
-		_characters[new_character._instanceID] = new_character
+		_characters[new_character._instance_ID] = new_character
 		
 		if(!_collected_types.has(new_character._name)):
 			_collected_types[new_character._name] = new_character._texture

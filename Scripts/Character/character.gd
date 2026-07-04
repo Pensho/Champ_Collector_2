@@ -1,7 +1,7 @@
 class_name Character extends RefCounted
 
-func InstantiateNew(p_preset: CharacterPreset, p_instanceID: int) -> void:
-	_instanceID = p_instanceID
+func InstantiateNew(p_preset: CharacterPreset, p_instance_ID: int) -> void:
+	_instance_ID = p_instance_ID
 	_preset_UID = p_preset._preset_UID
 	
 	_name = p_preset._name
@@ -22,10 +22,10 @@ func InstantiateNew(p_preset: CharacterPreset, p_instanceID: int) -> void:
 	_attributes[Types.Attribute.Resistance] = p_preset._resistance
 	_attributes[Types.Attribute.Mysticism] = p_preset._mysticism
 	_attributes[Types.Attribute.Knowledge] = p_preset._knowledge
-	_attributes[Types.Attribute.CritChance] = p_preset._critChance
-	_attributes[Types.Attribute.CritDamage] = p_preset._critDamage
-	
-	_currentHealth = GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
+	_attributes[Types.Attribute.CritChance] = p_preset._critical_chance
+	_attributes[Types.Attribute.CritDamage] = p_preset._critical_damage
+
+	_current_health = GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
 	
 	if(null != p_preset._trait):
 		_trait = p_preset._trait.duplicate(true)
@@ -66,7 +66,7 @@ var _rarity: Types.Rarity
 var _faction: Types.Faction
 var _role: Types.Role
 
-var _instanceID : int = 0
+var _instance_ID : int = 0
 @warning_ignore_start("unused_private_class_variable")
 var _experience : int = 0
 var _level: int = 1
@@ -90,7 +90,7 @@ var _attributes: Dictionary[Types.Attribute, int] = {
 # Dictionary of [Slot type, item instance ID]
 var _held_items: Dictionary[Types.Slot, int]
 
-var _currentHealth: int = 0
+var _current_health: int = 0
 var _attributes_weights: AttributeWeightPreset
 
 var _trait: CharacterTrait

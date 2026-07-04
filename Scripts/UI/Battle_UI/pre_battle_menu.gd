@@ -102,7 +102,7 @@ func _on_add_char_button_up(p_char_slot: int) -> void:
 		print("Trying to add a character from an empty slot.")
 		return
 	for i in _chosen_characters.keys():
-		if (_chosen_characters[i]._instanceID == _character_collection[p_char_slot]._instanceID):
+		if (_chosen_characters[i]._instance_ID == _character_collection[p_char_slot]._instance_ID):
 			print("Trying to add a character already in the chosen roster.")
 			return
 		if (_chosen_characters[i]._name == _character_collection[p_char_slot]._name):

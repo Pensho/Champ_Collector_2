@@ -53,7 +53,7 @@ func test_mysticism_bonus_legendary() -> void:
 func test_below_half_health_increases_mysticism() -> void:
 	_character._rarity = Types.Rarity.Epic
 	_character._attributes[Types.Attribute.Health] = 100
-	_character._currentHealth = 199 # below 50% of 100 * ATTRIBUTE_HEALTH_MULTIPLIER (4) = 400
+	_character._current_health = 199 # below 50% of 100 * ATTRIBUTE_HEALTH_MULTIPLIER (4) = 400
 
 	var attributes: Dictionary[Types.Attribute, int] = {Types.Attribute.Mysticism: 100}
 	_trait.OnSkillCast(0, [], _characters, _repr_array, "Fireball", _battle_ui, attributes)
@@ -65,7 +65,7 @@ func test_below_half_health_increases_mysticism() -> void:
 func test_at_half_health_no_bonus() -> void:
 	_character._rarity = Types.Rarity.Epic
 	_character._attributes[Types.Attribute.Health] = 100
-	_character._currentHealth = 200 # exactly 50% of max health (400)
+	_character._current_health = 200 # exactly 50% of max health (400)
 
 	var attributes: Dictionary[Types.Attribute, int] = {Types.Attribute.Mysticism: 100}
 	_trait.OnSkillCast(0, [], _characters, _repr_array, "Fireball", _battle_ui, attributes)
@@ -76,7 +76,7 @@ func test_at_half_health_no_bonus() -> void:
 func test_above_half_health_no_bonus() -> void:
 	_character._rarity = Types.Rarity.Legendary
 	_character._attributes[Types.Attribute.Health] = 100
-	_character._currentHealth = 400 # full health
+	_character._current_health = 400 # full health
 
 	var attributes: Dictionary[Types.Attribute, int] = {Types.Attribute.Mysticism: 100}
 	_trait.OnSkillCast(0, [], _characters, _repr_array, "Fireball", _battle_ui, attributes)
@@ -86,7 +86,7 @@ func test_above_half_health_no_bonus() -> void:
 
 func test_rarity_scaling_uncommon_vs_epic() -> void:
 	_character._attributes[Types.Attribute.Health] = 100
-	_character._currentHealth = 1 # near zero, below half
+	_character._current_health = 1 # near zero, below half
 
 	var uncommon_attr: Dictionary[Types.Attribute, int] = {Types.Attribute.Mysticism: 100}
 	_character._rarity = Types.Rarity.Uncommon
@@ -105,7 +105,7 @@ func test_rarity_scaling_uncommon_vs_epic() -> void:
 func test_zero_max_health_does_not_divide_by_zero() -> void:
 	_character._rarity = Types.Rarity.Legendary
 	_character._attributes[Types.Attribute.Health] = 0
-	_character._currentHealth = 0
+	_character._current_health = 0
 
 	var attributes: Dictionary[Types.Attribute, int] = {Types.Attribute.Mysticism: 100}
 	_trait.OnSkillCast(0, [], _characters, _repr_array, "Fireball", _battle_ui, attributes)

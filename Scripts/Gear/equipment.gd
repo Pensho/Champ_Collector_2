@@ -1,7 +1,7 @@
 class_name Equipment extends Node
 
-func InstantiateNew(preset: EquipmentPreset, instanceID: int) -> void:
-	_instanceID = instanceID
+func InstantiateNew(preset: EquipmentPreset, instance_ID: int) -> void:
+	_instance_ID = instance_ID
 	
 	_name = preset._name
 	_texture = preset._texture_path
@@ -20,7 +20,7 @@ func InstantiateNew(preset: EquipmentPreset, instanceID: int) -> void:
 	_attributes[Types.Attribute.CritChance] = preset._attributes[Types.Attribute.CritChance]
 	_attributes[Types.Attribute.CritDamage] = preset._attributes[Types.Attribute.CritDamage]
 
-var _instanceID : int = 0
+var _instance_ID : int = 0
 var _held_by: int = -1
 var _level: int = 0
 

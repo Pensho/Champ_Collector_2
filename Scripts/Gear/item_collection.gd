@@ -19,7 +19,7 @@ func Serialize() -> Dictionary:
 		items_data.append({
 			"preset_UID": item._preset_UID,
 			"attributes": item._attributes.duplicate(true),
-			"instance_ID": item._instanceID,
+			"instance_ID": item._instance_ID,
 			"held_by": item._held_by,
 			"rarity": item._rarity,
 			"level": item._level,
@@ -50,7 +50,7 @@ func Deserialize(p_data: Dictionary) -> void:
 			new_equipment._rarity = item_data["rarity"]
 		new_equipment._level = item_data.get("level", 0)
 
-		_items[new_equipment._instanceID] = new_equipment
+		_items[new_equipment._instance_ID] = new_equipment
 		if(!_collected_types.has(new_equipment._slot)):
 			_collected_types[new_equipment._slot] = new_equipment._texture
 			_used_item_textures[new_equipment._slot] = load(new_equipment._texture)
@@ -91,7 +91,7 @@ func GetItemTexture(p_item_type: Types.Slot) -> Texture:
 func AddPreset(preset: EquipmentPreset) -> void:
 	var new_equipment: Equipment = Equipment.new()
 	new_equipment.InstantiateNew(preset, CreateNextInstanceID())
-	_items[new_equipment._instanceID] = new_equipment
+	_items[new_equipment._instance_ID] = new_equipment
 	
 	if(!_collected_types.has(new_equipment._slot)):
 		_collected_types[new_equipment._slot] = new_equipment._texture

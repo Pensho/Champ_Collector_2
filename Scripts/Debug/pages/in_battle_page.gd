@@ -61,7 +61,7 @@ func PopulateCharacterRows(p_battle: Battle) -> void:
 		var hp_spin: SpinBox = SpinBox.new()
 		hp_spin.min_value = 0
 		hp_spin.max_value = max_health
-		hp_spin.value = character._currentHealth
+		hp_spin.value = character._current_health
 		row.add_child(hp_spin)
 		_hp_spins[character_id] = hp_spin
 
@@ -108,7 +108,7 @@ func _on_set_hp_pressed(p_character_id: int) -> void:
 	var battle: Battle = GetBattle()
 	if(null == battle or not battle._characters.has(p_character_id)):
 		return
-	battle._characters[p_character_id]._currentHealth = int(_hp_spins[p_character_id].value)
+	battle._characters[p_character_id]._current_health = int(_hp_spins[p_character_id].value)
 	battle.UpdateLifeBar(p_character_id)
 	battle.CheckAndHandleBattleOver()
 
@@ -116,7 +116,7 @@ func _on_kill_pressed(p_character_id: int) -> void:
 	var battle: Battle = GetBattle()
 	if(null == battle or not battle._characters.has(p_character_id)):
 		return
-	battle._characters[p_character_id]._currentHealth = 0
+	battle._characters[p_character_id]._current_health = 0
 	battle.UpdateLifeBar(p_character_id)
 	_hp_spins[p_character_id].value = 0
 	battle.CheckAndHandleBattleOver()
@@ -127,7 +127,7 @@ func _on_revive_pressed(p_character_id: int) -> void:
 		return
 	var character: Character = battle._characters[p_character_id]
 	var max_health: int = character.GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
-	character._currentHealth = max_health
+	character._current_health = max_health
 	battle.UpdateLifeBar(p_character_id)
 	battle._character_repr[p_character_id]._character_texture.material = null
 	battle._battle_ui._turn_bar._char_turns[p_character_id].material = null

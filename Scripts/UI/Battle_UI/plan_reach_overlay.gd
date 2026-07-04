@@ -35,7 +35,7 @@ func Setup(p_owner_icon: TextureRect, p_reach_px: float, p_tint: Color, p_owner:
 	show()
 
 func _process(_delta: float) -> void:
-	if (_owner._currentHealth <= 0):
+	if (_owner._current_health <= 0):
 		hide()
 		return
 	

@@ -34,7 +34,7 @@ func OnSkillCast(
 	var max_health: int = owner.GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
 	if max_health <= 0:
 		return result
-	var health_fraction: float = float(owner._currentHealth) / float(max_health)
+	var health_fraction: float = float(owner._current_health) / float(max_health)
 	if health_fraction >= HEALTH_THRESHOLD:
 		return result
 

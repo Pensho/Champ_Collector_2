@@ -35,7 +35,7 @@ func OnSkillCast(
 	if (p_target_IDs.is_empty()):
 		return result
 	var target_ID: int = p_target_IDs[0]
-	if (not p_characters.has(target_ID) or p_characters[target_ID]._currentHealth <= 0):
+	if (not p_characters.has(target_ID) or p_characters[target_ID]._current_health <= 0):
 		return result
 
 	var target_buffs: Array[StatusEffects.Buff] = p_characters[target_ID]._active_buffs

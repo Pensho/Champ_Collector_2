@@ -19,7 +19,7 @@ var GRAYSCALE_MATERIAL: ShaderMaterial
 
 var _self_context: ContextContainer
 var _battlecontext: Context_Battle
-var _characterIDs_turn: int = -1
+var _turn_character_ID: int = -1
 var _selected_skill_ID: int = 0
 var _initialized: bool = false
 var _zones: Dictionary[int, Zone]
@@ -86,7 +86,7 @@ func Init(p_context: ContextContainer) -> void:
 	
 	for i in p_context._player_battle_characters.size():
 		_characters[i] = p_context._player_battle_characters[i]
-		_characters[i]._currentHealth = _characters[i].GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
+		_characters[i]._current_health = _characters[i].GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
 		_self_context._arguments["character_dmg_" + str(i)] = 0
 		VisualizeCharacter(i)
 		ApplyAdventureEffects(i)
@@ -108,7 +108,7 @@ func Init(p_context: ContextContainer) -> void:
 			LevelSystem.SetOpponentLevel(_characters[i + 3], difficulty, true)
 		else:
 			LevelSystem.SetOpponentLevel(_characters[i + 3], difficulty)
-		_characters[i + 3]._currentHealth = _characters[i + 3].GetBattleAttribute(Types.Attribute.Health)  * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
+		_characters[i + 3]._current_health = _characters[i + 3].GetBattleAttribute(Types.Attribute.Health)  * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
 		VisualizeCharacter(i + 3)
 	
 	for i in _characters.keys():
@@ -133,14 +133,14 @@ func _process(p_delta: float) -> void:
 			Update(p_delta, i)
 
 func StartTurn() -> void:
-	_turn_indicator.position.x = _character_repr[_characterIDs_turn].position.x + (_character_repr[_characterIDs_turn]._character_texture.size.x * 0.5) - (_turn_indicator.size.x * 0.5)
-	_turn_indicator.position.y = _character_repr[_characterIDs_turn].position.y - _turn_indicator.size.y
+	_turn_indicator.position.x = _character_repr[_turn_character_ID].position.x + (_character_repr[_turn_character_ID]._character_texture.size.x * 0.5) - (_turn_indicator.size.x * 0.5)
+	_turn_indicator.position.y = _character_repr[_turn_character_ID].position.y - _turn_indicator.size.y
 	_turn_indicator.show()
 	
-	if (null != _characters[_characterIDs_turn]._trait):
-		if(_characters[_characterIDs_turn]._trait._execution_steps.has(Types.Combat_Event.Start_Turn)):
-			_characters[_characterIDs_turn]._trait.StartOfTurn(
-					_characterIDs_turn,
+	if (null != _characters[_turn_character_ID]._trait):
+		if(_characters[_turn_character_ID]._trait._execution_steps.has(Types.Combat_Event.Start_Turn)):
+			_characters[_turn_character_ID]._trait.StartOfTurn(
+					_turn_character_ID,
 					_battle_ui,
 					_characters,
 					_character_repr)
@@ -148,63 +148,63 @@ func StartTurn() -> void:
 	if (CheckAndHandleBattleOver()):
 		return
 
-	if(PLAYER_IDS.has(_characterIDs_turn)):
+	if(PLAYER_IDS.has(_turn_character_ID)):
 		for i in _battle_ui._skill_buttons.size():
 			_battle_ui.SetSkill(
-				_characters[_characterIDs_turn]._skills[i].icon_path,
-				_characters[_characterIDs_turn]._skills[i].name,
-				_characters[_characterIDs_turn]._skills[i].description,
+				_characters[_turn_character_ID]._skills[i].icon_path,
+				_characters[_turn_character_ID]._skills[i].name,
+				_characters[_turn_character_ID]._skills[i].description,
 				i)
 			_battle_ui._skill_buttons[i].show()
-			if(_characters[_characterIDs_turn]._skills[i].cooldown_left > 0):
-				_battle_ui._skill_buttons[i].SetCooldown(_characters[_characterIDs_turn]._skills[i].cooldown_left)
+			if(_characters[_turn_character_ID]._skills[i].cooldown_left > 0):
+				_battle_ui._skill_buttons[i].SetCooldown(_characters[_turn_character_ID]._skills[i].cooldown_left)
 			else:
 				_battle_ui._skill_buttons[i].ClearCooldown()
 		_selected_skill_ID = 0
 		_battle_ui.ActiveSkillGlow(_selected_skill_ID)
-	elif(ENEMY_IDS.has(_characterIDs_turn)):
+	elif(ENEMY_IDS.has(_turn_character_ID)):
 		HandleEnemyTurn()
 
 func HandleEnemyTurn() -> void:
 	# TODO: Clean this nested mess up
 	_selected_skill_ID = 0
-	for i in range(_characters[_characterIDs_turn]._skills.size()-1, -1, -1):
-		if(0 >= _characters[_characterIDs_turn]._skills[i].cooldown_left):
-			match _characters[_characterIDs_turn]._skills[i].target:
+	for i in range(_characters[_turn_character_ID]._skills.size()-1, -1, -1):
+		if(0 >= _characters[_turn_character_ID]._skills[i].cooldown_left):
+			match _characters[_turn_character_ID]._skills[i].target:
 				Types.Skill_Target.ZoneAlly, Types.Skill_Target.ZoneEnemy, Types.Skill_Target.ZoneAll:
 					if(GameBalance.NUMBER_OF_TURN_BAR_ZONES <= _zones.size()):
 						continue
 			_selected_skill_ID = i
 			break
 		
-	match _characters[_characterIDs_turn]._skills[_selected_skill_ID].target:
+	match _characters[_turn_character_ID]._skills[_selected_skill_ID].target:
 		Types.Skill_Target.ZoneAlly, Types.Skill_Target.ZoneEnemy, Types.Skill_Target.ZoneAll:
 			var available_zones: Array[int] = []
 			for zone_number in GameBalance.NUMBER_OF_TURN_BAR_ZONES:
 				if(zone_number not in _zones.keys()):
 					available_zones.append(zone_number)
 			if(available_zones.is_empty()):
-				ResolveSkill(_characterIDs_turn, [], _selected_skill_ID)
+				ResolveSkill(_turn_character_ID, [], _selected_skill_ID)
 			else:
 				_battle_ui._turn_bar.DisableZones(false)
-				print(_characters[_characterIDs_turn]._name, " used skill with ID: ", _selected_skill_ID)
+				print(_characters[_turn_character_ID]._name, " used skill with ID: ", _selected_skill_ID)
 				_on_turn_bar_zone_selected(available_zones.pick_random())
 		_:
 			for i in _targeting_order:
-				if(_characters[i]._currentHealth < 1):
+				if(_characters[i]._current_health < 1):
 					continue
 				var target_IDs: Array[int] = Skills.FindSkillTargets(
-					i, _characterIDs_turn, _characters[_characterIDs_turn]._skills[_selected_skill_ID].target)
+					i, _turn_character_ID, _characters[_turn_character_ID]._skills[_selected_skill_ID].target)
 				if(target_IDs.is_empty()):
 					continue  # not a valid target for this caster (e.g. an ally), keep looking
-				print(_characters[_characterIDs_turn]._name, " used skill with ID: ", _selected_skill_ID)
-				ResolveSkill(_characterIDs_turn, target_IDs, _selected_skill_ID)
+				print(_characters[_turn_character_ID]._name, " used skill with ID: ", _selected_skill_ID)
+				ResolveSkill(_turn_character_ID, target_IDs, _selected_skill_ID)
 				CheckAndHandleBattleOver()
 				break  # A skill has resolved.
 
 func TriggerZones() -> void:
 	for character_ID in _characters.keys():
-		if(character_ID == _characterIDs_turn or _characters[character_ID]._currentHealth <= 0):
+		if(character_ID == _turn_character_ID or _characters[character_ID]._current_health <= 0):
 			continue
 		for ID in _zones.keys():
 			if(_zones[ID]._duration == 0):
@@ -233,23 +233,23 @@ func TriggerZones() -> void:
 
 func Update(p_delta: float, p_characterID: int) -> void:
 	# It already is someones turn, so return early.
-	if (PLAYER_IDS.has(_characterIDs_turn) or ENEMY_IDS.has(_characterIDs_turn)):
-		_turn_indicator.position.y = _character_repr[_characterIDs_turn].position.y - _turn_indicator.size.y + (sin(Time.get_ticks_msec() * 0.005) * 5)
+	if (PLAYER_IDS.has(_turn_character_ID) or ENEMY_IDS.has(_turn_character_ID)):
+		_turn_indicator.position.y = _character_repr[_turn_character_ID].position.y - _turn_indicator.size.y + (sin(Time.get_ticks_msec() * 0.005) * 5)
 		return
 	# It isn't someones turn, but this character is dead so return early.
-	if(_characters[p_characterID]._currentHealth <= 0):
+	if(_characters[p_characterID]._current_health <= 0):
 		return
 	# No ones turn yet, so move along the turn order.
 	_battle_ui._turn_bar.Update(p_delta, p_characterID)
-	_characterIDs_turn = _battle_ui._turn_bar.GetActiveTurnID()
-	if(NO_CHARACTERS_TURN == _characterIDs_turn):
+	_turn_character_ID = _battle_ui._turn_bar.GetActiveTurnID()
+	if(NO_CHARACTERS_TURN == _turn_character_ID):
 		return
 	StartTurn()
 
 func UpdateLifeBar(p_characterID: int) -> void:
-	clampi(_characters[p_characterID]._currentHealth, 0, _characters[p_characterID].GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
-	if(_characters[p_characterID]._currentHealth <= 0):
-		_characters[p_characterID]._currentHealth = 0
+	clampi(_characters[p_characterID]._current_health, 0, _characters[p_characterID].GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
+	if(_characters[p_characterID]._current_health <= 0):
+		_characters[p_characterID]._current_health = 0
 		_characters[p_characterID]._active_buffs.clear()
 		_characters[p_characterID]._active_debuffs.clear()
 		_character_repr[p_characterID].ClearAllStatusEffects()
@@ -259,8 +259,8 @@ func UpdateLifeBar(p_characterID: int) -> void:
 			if(_characters[p_characterID]._trait._execution_steps.has(Types.Combat_Event.On_Death)):
 				_characters[p_characterID]._trait.OnDeath(_character_repr[p_characterID])
 	
-	_character_repr[p_characterID]._lifebar.value = _characters[p_characterID]._currentHealth
-	_character_repr[p_characterID]._lifebar_text.text = str(_characters[p_characterID]._currentHealth) + "/" + str(_characters[p_characterID].GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
+	_character_repr[p_characterID]._lifebar.value = _characters[p_characterID]._current_health
+	_character_repr[p_characterID]._lifebar_text.text = str(_characters[p_characterID]._current_health) + "/" + str(_characters[p_characterID].GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
 
 func VisualizeCharacter(p_characterID: int) -> void:
 	_character_repr[p_characterID]._level.text = str(_characters[p_characterID]._level)
@@ -314,10 +314,10 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID) -> voi
 				if (_characters[target_ID]._trait._execution_steps.has(Types.Combat_Event.Defend)):
 					_characters[target_ID]._trait.OnDefend(target_ID, target_attributes, _characters)
 		
-		if(not cast_skill.buffs.is_empty() and _characters[target_ID]._currentHealth > 0):
+		if(not cast_skill.buffs.is_empty() and _characters[target_ID]._current_health > 0):
 			Skills.CastBuff(_characters[target_ID], cast_skill, _character_repr[target_ID], _battle_ui)
 		
-		if(not cast_skill.debuffs.is_empty() and _characters[target_ID]._currentHealth > 0):
+		if(not cast_skill.debuffs.is_empty() and _characters[target_ID]._current_health > 0):
 			Skills.CastDebuff(
 				_characters[target_ID],
 				target_attributes,
@@ -344,23 +344,23 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID) -> voi
 					if (PLAYER_IDS.has(p_caster_ID)):
 						_self_context._arguments["character_dmg_" + str(p_caster_ID)] += damage_dealt
 					_battle_ui.SpawnCombatText(str(damage_dealt), _character_repr[target_ID].position + _battle_ui.COMBAT_TEXT_SPAWN_POINT)
-					_characters[target_ID]._currentHealth -= damage_dealt
+					_characters[target_ID]._current_health -= damage_dealt
 					UpdateLifeBar(target_ID)
 		
 		var total_bump: float = cast_skill.turn_effect + trait_result._turn_bar_bump
 		if(0.0 != total_bump):
 			_battle_ui._turn_bar.BumpCharacter(target_ID, total_bump)
 	
-	for i in _characters[_characterIDs_turn]._skills.size():
-		if(_characters[_characterIDs_turn]._skills[i].cooldown_left > 0):
-			_characters[_characterIDs_turn]._skills[i].cooldown_left -= 1
+	for i in _characters[_turn_character_ID]._skills.size():
+		if(_characters[_turn_character_ID]._skills[i].cooldown_left > 0):
+			_characters[_turn_character_ID]._skills[i].cooldown_left -= 1
 	_characters[p_caster_ID]._skills[p_skill_ID].cooldown_left = _characters[p_caster_ID]._skills[p_skill_ID].cooldown
-	_battle_ui._turn_bar.TurnCompleteForCharacter(_characterIDs_turn)
+	_battle_ui._turn_bar.TurnCompleteForCharacter(_turn_character_ID)
 	TriggerZones()
 	if (null != _characters[p_caster_ID]._trait):
 		if(_characters[p_caster_ID]._trait._execution_steps.has(Types.Combat_Event.End_Turn)):
 			_characters[p_caster_ID]._trait.EndOfTurn(_character_repr[p_caster_ID])
-	_characterIDs_turn = NO_CHARACTERS_TURN
+	_turn_character_ID = NO_CHARACTERS_TURN
 	_turn_indicator.hide()
 	_battle_ui.HideSkillUI()
 
@@ -369,11 +369,11 @@ func IsTheBattleOver() -> WinningTeam:
 	var monsters_alive: bool = false
 	for character_ID in ENEMY_IDS:
 		if(_characters.has(character_ID)):
-			if(_characters[character_ID]._currentHealth > 0):
+			if(_characters[character_ID]._current_health > 0):
 				monsters_alive = true
 	for character_ID in PLAYER_IDS:
 		if(_characters.has(character_ID)):
-			if(_characters[character_ID]._currentHealth > 0):
+			if(_characters[character_ID]._current_health > 0):
 				player_alive = true
 	
 	if (false == monsters_alive):
@@ -412,33 +412,33 @@ func EndBattle(p_winner: WinningTeam) -> void:
 				
 			if(p_winner == WinningTeam.Player_Won):
 				LevelSystem.AddExperience(_characters[i], _battlecontext._loot_table._drop_result._experience)
-			_characters[i]._currentHealth = _characters[i]._attributes[Types.Attribute.Health] * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
+			_characters[i]._current_health = _characters[i]._attributes[Types.Attribute.Health] * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
 	
 	_self_context._scene = "uid://d3ooarqabyw0p"
 	
 	main.GetInstance().change_scene(_self_context)
 
 func _on_character_battle_target_selected(p_target_ID: int) -> void:
-	if(PLAYER_IDS.has(_characterIDs_turn)):
-		if(_characters[p_target_ID]._currentHealth <= 0):
+	if(PLAYER_IDS.has(_turn_character_ID)):
+		if(_characters[p_target_ID]._current_health <= 0):
 			print("Invalid target for skill, target is dead.")
 			return
 		var target_IDs: Array[int] = Skills.FindSkillTargets(
 					p_target_ID,
-					_characterIDs_turn,
-					_characters[_characterIDs_turn]._skills[_selected_skill_ID].target)
+					_turn_character_ID,
+					_characters[_turn_character_ID]._skills[_selected_skill_ID].target)
 		if(target_IDs.size() > 0):
-			ResolveSkill(_characterIDs_turn, target_IDs, _selected_skill_ID)
+			ResolveSkill(_turn_character_ID, target_IDs, _selected_skill_ID)
 			CheckAndHandleBattleOver()
 		else:
 			print("Invalid target for skill")
 
 func _on_battle_ui_battle_skill_selected(p_skill_ID: int) -> void:
-	if(_characters[_characterIDs_turn]._skills[p_skill_ID].cooldown_left > 0):
-		print("Selected skill: ", p_skill_ID, " is on cooldown with: ", _characters[_characterIDs_turn]._skills[p_skill_ID].cooldown_left, " more turns left.")
+	if(_characters[_turn_character_ID]._skills[p_skill_ID].cooldown_left > 0):
+		print("Selected skill: ", p_skill_ID, " is on cooldown with: ", _characters[_turn_character_ID]._skills[p_skill_ID].cooldown_left, " more turns left.")
 		return
 	_selected_skill_ID = p_skill_ID
-	match _characters[_characterIDs_turn]._skills[_selected_skill_ID].target:
+	match _characters[_turn_character_ID]._skills[_selected_skill_ID].target:
 		Types.Skill_Target.ZoneAlly, Types.Skill_Target.ZoneEnemy, Types.Skill_Target.ZoneAll:
 			_battle_ui._turn_bar.DisableZones(false)
 
@@ -447,15 +447,15 @@ func _on_turn_bar_zone_selected(p_zone_ID: int) -> void:
 		print("Zone is already used")
 		return
 	_zones[p_zone_ID] = Zone.new()
-	_zones[p_zone_ID].CreateNew(_characters[_characterIDs_turn]._skills[_selected_skill_ID].skill_type,
-								_characters[_characterIDs_turn]._skills[_selected_skill_ID].duration,
-								_characterIDs_turn,
-								_characters[_characterIDs_turn]._skills[_selected_skill_ID].target,
-								_characters[_characterIDs_turn].GetBattleAttribute(Types.Attribute.Knowledge))
+	_zones[p_zone_ID].CreateNew(_characters[_turn_character_ID]._skills[_selected_skill_ID].skill_type,
+								_characters[_turn_character_ID]._skills[_selected_skill_ID].duration,
+								_turn_character_ID,
+								_characters[_turn_character_ID]._skills[_selected_skill_ID].target,
+								_characters[_turn_character_ID].GetBattleAttribute(Types.Attribute.Knowledge))
 	_battle_ui._turn_bar.SpawnZoneEffect(
 								p_zone_ID,
 								_zones[p_zone_ID]._duration,
 								PLAYER_IDS.has(_zones[p_zone_ID]._owner_ID),
-								_characters[_characterIDs_turn]._skills[_selected_skill_ID].skill_type)
-	ResolveSkill(_characterIDs_turn, [], _selected_skill_ID)
+								_characters[_turn_character_ID]._skills[_selected_skill_ID].skill_type)
+	ResolveSkill(_turn_character_ID, [], _selected_skill_ID)
 	CheckAndHandleBattleOver()

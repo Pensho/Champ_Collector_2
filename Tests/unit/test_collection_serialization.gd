@@ -15,7 +15,7 @@ func test_item_collection_serialize_roundtrip() -> void:
 	eq._attributes[Types.Attribute.Speed] = 42
 	eq._attributes[Types.Attribute.Defence] = 7
 	eq._held_by = -1
-	eq._instanceID = 0
+	eq._instance_ID = 0
 	eq._level = 3
 	col1._items[0] = eq
 	col1._next_id = 1
@@ -33,7 +33,7 @@ func test_item_collection_serialize_roundtrip() -> void:
 	assert_eq(restored._attributes[Types.Attribute.Defence], 7,
 		"Defence attribute must survive ItemCollection roundtrip")
 	assert_eq(restored._held_by, -1, "held_by must survive roundtrip")
-	assert_eq(restored._instanceID, 0, "instance_ID must survive roundtrip")
+	assert_eq(restored._instance_ID, 0, "instance_ID must survive roundtrip")
 	assert_eq(restored._level, 3, "level must survive ItemCollection roundtrip")
 	assert_eq(col2._next_id, 1, "next_id must survive roundtrip")
 
