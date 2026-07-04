@@ -69,7 +69,7 @@ Each character is defined by a set of core attributes:
     * Mysticism
         * Determines the damage output of magical attacks.
     * Knowledge
-        * Influences the effectiveness of buffs and debuffs applied by the character (TODO: I don't like to tamper with the effectiveness of buffs/debuffs, consider replacing this use case). Also reduces critical damage taken.
+        * Increases the effect of ally turn bar zones placed by this character. Also reduces critical damage taken.
     * Critical chance
         * The likelihood of landing a critical hit, which deals increased damage.
     * Critical damage

@@ -356,12 +356,29 @@ var _type: Types.Skill_Type     # Flicker_Zone, Lava_Zone
 var _duration: int = -1         # -1 = infinite
 var _owner_ID: int
 var _target: Types.Skill_Target # ZoneAll / ZoneAlly / ZoneEnemy
+var _owner_knowledge: int = 0   # snapshotted at placement, see below
 ```
 
 Each turn, `Battle.TriggerZones()` checks which living, non-active characters sit inside a zone
 region (respecting the zone's ally/enemy targeting) and calls `Skills.ResolveZoneEffect()`:
-Flicker zones bump the character by 15%; Lava zones apply Burning. Zones decrement and are erased
-at duration 0, and the number of live zones is capped at `NUMBER_OF_TURN_BAR_ZONES` (5).
+Flicker zones bump the character by `FLICKER_ZONE_BASE_BUMP` (15%); Lava zones apply Burning.
+Zones decrement and are erased at duration 0, and the number of live zones is capped at
+`NUMBER_OF_TURN_BAR_ZONES` (5).
+
+**Knowledge scaling.** When a zone is created (`Zone.CreateNew`, called from
+`Battle._on_turn_bar_zone_selected`, the single call site for both player and enemy zone
+placement), the placing character's battle Knowledge is snapshotted into `_owner_knowledge`.
+Later Knowledge changes on that character do not retroactively affect the zone. When the zone
+triggers on an ally of its owner, the base effect magnitude is scaled by
+`Skills.AllyZoneMagnitude(base, owner_knowledge)`:
+
+```
+AllyZoneMagnitude = base * (1.0 + owner_knowledge * ZONE_KNOWLEDGE_SCALING)
+```
+
+`ZONE_KNOWLEDGE_SCALING` is `0.005` (+0.5% per point of Knowledge). Only ally-targeted zone
+effects are scaled this way (e.g. Flicker Zone's bump); enemy-targeted zone effects (Lava Zone's
+Burning) are unaffected by Knowledge. Zone duration and size are never scaled.
 
 ### 7.6. Ending combat
 

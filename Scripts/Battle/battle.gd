@@ -450,7 +450,8 @@ func _on_turn_bar_zone_selected(p_zone_ID: int) -> void:
 	_zones[p_zone_ID].CreateNew(_characters[_characterIDs_turn]._skills[_selected_skill_ID].skill_type,
 								_characters[_characterIDs_turn]._skills[_selected_skill_ID].duration,
 								_characterIDs_turn,
-								_characters[_characterIDs_turn]._skills[_selected_skill_ID].target)
+								_characters[_characterIDs_turn]._skills[_selected_skill_ID].target,
+								_characters[_characterIDs_turn].GetBattleAttribute(Types.Attribute.Knowledge))
 	_battle_ui._turn_bar.SpawnZoneEffect(
 								p_zone_ID,
 								_zones[p_zone_ID]._duration,

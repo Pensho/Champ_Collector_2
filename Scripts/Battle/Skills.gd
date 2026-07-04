@@ -13,6 +13,9 @@ static var _damage_multiplier: Array[float] = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
 
 static var _status_effect_textures: Dictionary[String, Texture]
 
+static func AllyZoneMagnitude(p_base: float, p_owner_knowledge: int) -> float:
+	return p_base * (1.0 + p_owner_knowledge * Game_Balance.ZONE_KNOWLEDGE_SCALING)
+
 static func ResolveZoneEffect(
 					p_zone: Zone,
 					p_character: Character,
@@ -22,7 +25,9 @@ static func ResolveZoneEffect(
 	match p_zone._type:
 		Types.Skill_Type.Flicker_Zone:
 			if(CorrectZoneTarget(p_zone._owner_ID, p_character_ID, p_zone._target)):
-				p_battle_ui._turn_bar.BumpCharacter(p_character_ID, 0.15)
+				p_battle_ui._turn_bar.BumpCharacter(
+						p_character_ID,
+						AllyZoneMagnitude(Game_Balance.FLICKER_ZONE_BASE_BUMP, p_zone._owner_knowledge))
 		Types.Skill_Type.Lava_Zone:
 			if(HasMaxStatusEffects(p_character)):
 				return
