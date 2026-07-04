@@ -1,6 +1,13 @@
 max-line-length: 120
 class-name: ([A-Z][a-z0-9]*)+
 sub-class-name: ([A-Z][a-z0-9]*)+
+# PascalCase or Pascal_Snake_Case (e.g. Rarity, Skill_Type)
+enum-name: '([A-Z][a-z0-9]*)+(_([A-Z][a-z0-9]*)+)*'
+# Pascal(_Snake) (e.g. Common, The_Iron_Ledger) or UPPER_SNAKE (e.g. REST_STOP)
+enum-element-name: '(([A-Z][a-z0-9]*)+(_([A-Z][a-z0-9]*)+)*|[A-Z][A-Z0-9]*(_[A-Z0-9]+)*)'
+# snake_case with optional _ prefix; segments may be uppercase acronyms (_owner_ID,
+# _supplies_UI) or digits; full UPPER_SNAKE allowed for constant-style variables
+class-variable-name: '_?([a-z0-9][a-z0-9]*|[A-Z][A-Z0-9]*)(_([a-z0-9][a-z0-9]*|[A-Z][A-Z0-9]*))*'
 
 disable:
   - function-argument-name
