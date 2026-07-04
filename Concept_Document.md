@@ -184,7 +184,8 @@ Current roles, their identity and purpose exist as follows:
 - Chronophage
     - A speed focused character, applying various speed modifying skills onto the turn bar and primarily deals damage based on the Speed attribute. Primary attributes: Speed.
     - Purpose: Control
-    - Passive: 
+    - Passive: Time Tithe - When the Chronophage's skills remove or reduce an enemy's turn bar, the Chronophage absorbs a portion of the stolen amount as its own turn-bar progress.
+        - 25% Uncommon, 35% Rare, 45% Epic, 55% Legendary
 - Architect
     - A charge & support character, accumulates Calibration charges through basic skills, consumes a few charges applying defensive buffs to allies and massive charges for big final attacks. Primary attributes: Knowledge, Defense.
     - The Architect is a methodical "Charge" role aligned with the God of Rules. Instead of raw aggression, they build "Logic Chains" by observing the flow of battle, eventually "solving" the encounter with a massive structural shift.
