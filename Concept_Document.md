@@ -141,9 +141,10 @@ Current roles, their identity and purpose exist as follows:
     - Purpose: Sustain, Debuffer
     - Passive: 
 - Diviner
-    - Gains buffs (On self and allies if high rarity Diviner) if enemies are x-y% (depending on rarity of Diviner) behind the Diviner on the turn bar when their turn starts. Primary attributes: Mysticism.
+    - A squishy support.  Primary attributes: Mysticism.
     - Purpose: Sustain, Debuffer
-    - Passive: 
+    - Passive: Foresight - Place debuffs on enemies if they are close enough behind the Diviner on the turn bar when the Diviners turn starts.
+        - 10% Uncommon, 15% Rare, 20% Epic, 25% Legendary
 - Appraiser
     - A master at exploiting enemy weaknesses, allowing opportunity for the team to easily deal critical hits. Primary attributes: Critical Chance, Knowledge.
     - Purpose: Debuffer
