@@ -91,8 +91,8 @@ The Maelstrom Market: A floating trade hub that moves every 24 hours to stay ahe
 The real conflict happens through the exchange of Fortune’s Favors.
 | Feature | The Iron Ledger | The Pirate Coalition |
 |---------|-----------------|----------------------|
-| Primary Export | Certified Equipment & "Safe" Travel Permits | Forbidden | Reagents & "Lost" Artifacts |
-View on Magic | A "Chaos Variable" that must be taxed or suppressed | A "Wild Card" used to tip the scales in a losing fight |
+| Primary Export | Certified Equipment & "Safe" Travel Permits | Forbidden Reagents & "Lost" Artifacts |
+| View on Magic | A "Chaos Variable" that must be taxed or suppressed | A "Wild Card" used to tip the scales in a losing fight |
 | Social Structure | Rigid Class Tiers (Rank/Level importance) | Meritocratic (If you can take it, it's yours) |
 
 ### 4.4. Points of Friction (Plot Hooks)
@@ -188,7 +188,7 @@ Because magic is shunned but the reagents are valuable, a "Gold Rush" mentality 
 
 Note on Chants: In these ruins, "Chants" act as physical keys. Reciting the correct ancient phrase doesn't just cast a spell; it literally reshapes the ruins' geometry, opening doors that weren't there or calming the "Temporal Backflow".
 
-#### 5.5.1. The Ossuary of Stolen Hues
+#### 5.4.1. The Ossuary of Stolen Hues
 
 Located deep within the Reclaimed City, this ruin is a crumbling cathedral where the very concept of "color" has become unstable.
 
@@ -198,7 +198,7 @@ The Hazard: Visitors who stay too long become "Refracted"—their skin becomes t
 
 The Loot: Scavengers hunt for Prism-Salt, a crystalline residue left behind when a color "dies" and turns into a physical mineral.
 
-#### 5.5.2. The Vault of Recursive Seconds
+#### 5.4.2. The Vault of Recursive Seconds
 
 A site often targeted by the Clockwork Spire’s scholars, this ruin is believed to be a former laboratory of the God of Magic.
 
@@ -237,7 +237,7 @@ Their goal is to recover Chants as Codes—ancient encrypted magic—to automate
 | Name | Role | Motivation |
 |------|------|------------|
 | Matriarch Valerica | Grand Auditor | Believes that if she can "solve" the God of Magic’s imprisonment, she can tax reality itself. |
-| Caspian Aethelgard | The "Audit-Raider" | A field agent who leads "Compliance Audits" on Pirate ships, specifically to "seize" (steal) magical reagents for the family. Often delegated onto lesser or more dangerous tasks and has such developed to resent the Matriach Valerica in hopes of usurping her. |
+| Caspian Aethelgard | The "Audit-Raider" | A field agent who leads "Compliance Audits" on Pirate ships, specifically to "seize" (steal) magical reagents for the family. Often delegated onto lesser or more dangerous tasks and has such developed to resent the Matriarch Valerica in hopes of usurping her. |
 | The Ghost Scholar | Disgraced Advisor | A former member of the Clockwork Spire who was "deleted" from official records and now deciphers Pagan texts in the Aethelgard basement. |
 
 #### 6.1.4. Points of Friction
@@ -254,7 +254,7 @@ The Fae in the Reclaimed City have noticed that Aethelgard-funded expeditions al
 
 The house was originally a lesser house on the verge of extinction when they came across pirates and thieves to form a cooperative alliance in purpose to smuggle the artifacts to regain their stading. This leaves them in a dangerous position if found out and even though the pirates and thieves are paid accordingly they hold the houses secret as hostage and hold over them.
 
-### 6.2. The Khasar Fleet: The Achivists of momentum
+### 6.2. The Khasar Fleet: The Archivists of Momentum
 
 The Khasar Fleet is not a navy, but a massive, land-based "regime of hooves" that views the God of Adventure’s legacy not as a story, but as a map that must be constantly traversed to remain valid. While the Iron Ledger attempts to quantify the world through static numbers, the Fleet believes the world only exists where it is currently being felt by a thundering gallop.
 

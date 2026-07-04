@@ -30,8 +30,8 @@ The core gameplay follows a cyclical "Prepare, Engage, Reward, Grow" loop design
 | Loop Type | Focus | Primary Activity |
 |-----------|-------|------------------|
 | Short-Term (Daily) | Efficiency | Spending Energy on routine fights to gather crafting materials and XP; completing daily God-themed events. |
-| Mid-Term (Weekly) | Strategy | Solving "Puzzle" encounters and bosses to acquire Role-specific gear or rare Trinkets; participating in rotating God events (e.g., God of Structure’s floor dungeon). |
-| Long-Term (Monthly) | Collection | Using Commisions of guilds to acquire new characters, completing faction-specific synergies, and uncovering the "Forgotten God" through world exploration. |
+| Mid-Term (Weekly) | Strategy | Solving "Puzzle" encounters and bosses to acquire Role-specific gear or rare Trinkets; participating in rotating God events (e.g., God of Rules’ floor dungeon). |
+| Long-Term (Monthly) | Collection | Using Commissions of guilds to acquire new characters, completing faction-specific synergies, and uncovering the "Forgotten God" through world exploration. |
 
 
 ---
@@ -47,7 +47,7 @@ The core gameplay follows a cyclical "Prepare, Engage, Reward, Grow" loop design
 - Central hub area to manage characters, gear and access different game modes.
 
 ### 3.1. Champions
-The terms Champion, Character, Hero are synonumous for the playable characters a player can acquire and use.
+The terms Champion, Character, Hero are synonymous for the playable characters a player can acquire and use.
 For now there are no Common Characters that are usable by a player. Also, there will be no Relic tier Characters, that tier level is restricted for Items.
 There is a maximum level of 50, with a future idea to use duplicate heroes as a mean to increase it a few steps at most (or to upgrade skills).
 
@@ -103,7 +103,7 @@ Each Role can have one or two main purposes in combat but it doesn't have to res
 - Sustain
     - The intent of the sustain purpose is to keep ally characters alive, either or both through being able to tank incoming damage or healing through buffs or abilities.
 - Debuffer
-    - Applies various debuffs to enemies to either make them weaker, take more damage, become slower etc. So to make the enounter easier by affecting opponents.
+    - Applies various debuffs to enemies to either make them weaker, take more damage, become slower etc. So to make the encounter easier by affecting opponents.
 - Control
     - Manipulates turn order, skill availability or targeting of skills.
 - Buffer
@@ -141,7 +141,7 @@ Current roles, their identity and purpose exist as follows:
     - Purpose: Sustain, Debuffer
     - Passive: 
 - Appraiser
-    - A master at exploiting enemy weaknesses, allowing oppertunity for the team to easily deal critical hits. Primary attributes: Critical Chance, Knowledge.
+    - A master at exploiting enemy weaknesses, allowing opportunity for the team to easily deal critical hits. Primary attributes: Critical Chance, Knowledge.
     - Purpose: Debuffer
     - Passive: 
 - Tactician
@@ -162,7 +162,7 @@ Current roles, their identity and purpose exist as follows:
     - Purpose: Debuffer, Damage
     - Passive: 
 - Bar Brawler
-    - A health focused character, dealing damage, tanking and applying a few uffs. Attacks scales of health primarily. Primary attributes: Health.
+    - A health focused character, dealing damage, tanking and applying a few buffs. Attacks scales of health primarily. Primary attributes: Health.
     - Purpose: Sustain, Buffer
     - Passive: 
 - Bloodmage
@@ -173,7 +173,7 @@ Current roles, their identity and purpose exist as follows:
 - Herald of the loom
     - A stance character, using 3 types of stances:
         - Golden thread; All buffs & debuffs only goes to the herald instead of allies.
-        - Silver thread; All herald buffs & debuffs cast becomes more powerfull, adds one attribute value to the accuracy attribute value when attempting to apply debuffs.
+        - Silver thread; All herald buffs & debuffs cast becomes more powerful, adds one attribute value to the accuracy attribute value when attempting to apply debuffs.
         - Black thread; All damage dealt and received scale with mysticism instead of other attributes. One other player & enemy character will have their attributes averaged out while Black thread is in use.  Primary attributes: Mysticism, Accuracy.
     - Purpose: Debuffer
     - Passive: 
@@ -205,7 +205,7 @@ Current roles, their identity and purpose exist as follows:
     - Passive: 
 
 ### 3.2. Combat
-Combat is turn based, using the Speed attribute of each character to move a representation accross a "turn bar". When a characters representation has crossed the entire bar, the game will pause for input to resolve their turn and then finish by putting the representation of the character back to the beginning. Then the system keeps going.
+Combat is turn based, using the Speed attribute of each character to move a representation across a "turn bar". When a characters representation has crossed the entire bar, the game will pause for input to resolve their turn and then finish by putting the representation of the character back to the beginning. Then the system keeps going.
 
 <br/>
 
@@ -386,7 +386,7 @@ TODO
 
 ### 3.5. Events
 Maybe a rotating schedule composed of one type of event per god? E.g.
-*   **God of Structure**
+*   **God of Rules**
     *   A numeric “floor” dungeon like raids doom tower
 *   **God of Adventure**
     *   A small storyline, quest
@@ -396,16 +396,16 @@ Maybe a rotating schedule composed of one type of event per god? E.g.
 
 ### 3.6. Hub Area
 The hub areas will be almost identical but for visual themes, minor differences in NPCs and decorations.
-The biggest differences will come along the theme of the hub as it can be either neutral or run by one or more factions. This will affect the reqruitment weighting of characters.
+The biggest differences will come along the theme of the hub as it can be either neutral or run by one or more factions. This will affect the recruitment weighting of characters.
 
 #### 3.6.1. The war room (Gate out of town etc)
-Transports the player to a new screen, the world atlas. Where the player can access different playable ecounters.
+Transports the player to a new screen, the world atlas. Where the player can access different playable encounters.
 
 #### 3.6.2. The Armory
 Where players can manage their character roster, equip gear, and upgrade skills.
 
 #### 3.6.3. The Adventurer's Guild
-Where players reqruit new characters using Fortune’s Favors.
+Where players recruit new characters using Fortune’s Favors.
 There is a chance when using a Fortune’s Favor to get a champion, or they could get supplies or currency as a filler.
 
 #### 3.6.4. The shop
@@ -465,15 +465,17 @@ Also look at World_Building.md for more brainstorm writing.
 
 ### 4.1. Religion
 
-In this world there are 3 gods that created it, but through their effort they have litte power left to affect it directly. There was the god of adventure, the god of rules and the god of magic. The god of magic was betrayed by the other two and imprisoned somewhere unknown. The only remaining mark of the god of magic is the magic system, which is now heavily restricted and shunned by the other two gods through their doctrines, leaving magic to be a rare and obscure art.
+In this world there are 3 gods that created it, but through their effort they have little power left to affect it directly. There was the god of adventure, the god of rules and the god of magic. The god of magic was betrayed by the other two and imprisoned somewhere unknown. The only remaining mark of the god of magic is the magic system, which is now heavily restricted and shunned by the other two gods through their doctrines, leaving magic to be a rare and obscure art.
 
-The reason for betrayal is since while initially magic provided many oppertunities and options for adventure and structure, it eventually became clear that magic could easily break both adventure and structure if left unchecked. The god of adventure saw magic as a way to create endless possibilities, but the god of rules viewed it as a chaotic force that undermined order and predictability. Fearing the destabilizing potential of magic, the god of rules conspired with the god of adventure to imprison the god of magic, believing that by doing so, they could preserve their own domains.
+The reason for betrayal is since while initially magic provided many opportunities and options for adventure and structure, it eventually became clear that magic could easily break both adventure and structure if left unchecked. The god of adventure saw magic as a way to create endless possibilities, but the god of rules viewed it as a chaotic force that undermined order and predictability. Fearing the destabilizing potential of magic, the god of rules conspired with the god of adventure to imprison the god of magic, believing that by doing so, they could preserve their own domains.
 
 Believers grant the gods power, but very slowly. Fragments of the god of magic exists in ruins written in obscure languages only used in history.
 The god of magics only mark left on the world other than ruins is the magic system, written in old scrolls lost to civilization.
 Since the imprisonment the magic system became very restricted in terms of conjuration and effect, often requiring powerful reagents, chants only known in parts or environmental conditions.
 
 These events transpired long before the player enters the game, with gods leaving little direct impact on the world and most people in the world wont even experience anything related to them except for stored or warped doctrines, statues and hard to come by books.
+
+In the present day the gods' doctrines survive mostly as warped institutions: the God of Rules is worshipped as the Divine Auditor of the Iron Ledger's bureaucracy, the God of Adventure's legacy lives on in the Great Caravans and the Khasar Fleet, and the God of Magic — also called the "Forgotten God" — is remembered only through the hazardous ruins that are strip-mined for reagents (World_Building.md sections 1, 2 and 4). Magic itself is treated as a contaminated resource; practicing mages are useful for war but shunned in daily life, and Chants circulate as lost "encryption keys" rather than prayers (World_Building.md 2).
 
 #### God 1, the god of adventure
 
@@ -491,22 +493,29 @@ The God of Rules is the divine architect of reality, responsible for the creatio
 The God of Magic holds immense knowledge of the arcane arts and the mysteries of the universe. This deity is a master of transformation, capable of bending reality to their will through spells and enchantments. However, their power is a double-edged sword; while they can create wonders, they can also unleash chaos if not properly controlled. Holding that much knowledge but in trade naive to the ways of interaction, with only interest in exploring their possibilities of creation.
 
 ### 4.2. Factions
-- Humans
-  - multiple kingdoms?
-- Bandits?
-- Pirates?
-- Trolls
-- Fae?
-- Centaurs?
-- Harpies?
-- More mythical entities?
+The factions below are developed in detail in World_Building.md; the section references point there.
+
+- Humans — split between two dominant power blocs locked in an economic cold war (World_Building.md sections 1 and 4):
+  - **The Iron Ledger**: the Holy City's world-spanning auditing bureaucracy, ruled by the Grand Auditors and enforced by the Emissaries (World_Building.md 1.1.1, 4.1).
+  - **The Merchant-States of the Spire**: trade guilds and the Scholar Caste who control the Clockwork Spire's Logic-Chains (World_Building.md 1.1.2).
+  - **The Pirate Coalition ("The Gilded Wake")**: the free-trade society of the Pirate Coves, governed by the loose Council of Coves (World_Building.md 1.2.2, 4.2).
+  - **The Scavenger Economy** of the Reclaimed City, including the shunned Symbiote Slums (World_Building.md 1.2.1).
+- Trolls — classified as "Biological Assets" by the Iron Ledger; heavy laborers in the Clockwork Spire and prized shields for the pirates (World_Building.md 4.5.1).
+- Harpies — high-altitude couriers caught between the Ledger's compliance fees and the pirates' schemes (World_Building.md 4.5.2).
+- Fae — geometric architects of the "harsh growth" reclaiming the Reclaimed City's forest (World_Building.md 4.6.1).
+- Centaurs — nomad archivists and information brokers, organized as the Khasar Fleet and its Regimes (World_Building.md 4.6.2, 6.2 and 7).
+
+Notable groups within these factions:
+- **House Aethelgard** — the Holy City's publicly devout, privately smuggling "shadow bank" noble house (World_Building.md 6.1).
+- **The Khasar Fleet** — the Centaur courier and toll-keeper regime of the open plains (World_Building.md 6.2).
+- **The Filter-Folk** — brass-skinned mutated humans of the Under-Spire who worship "Maintenance" (World_Building.md 5.1).
 
 ### 4.3. Notable cities and locations
 
 #### 4.3.1. Reclaimed City
-A city built on the edge of a vast forest, where originally nobels invested heavily to forage and claim valuable magical resources from the forest. However the strong and harsh growth of the forest eventually proved too much for the city to handle, reaping too few rewards for further investment. The city was eventually abandoned and left to the forest, turning into ruin. Until recently when adventurers and scavengers have started to reclaim parts of the city to gather its resources once more.
+A city built on the edge of a vast forest, where originally nobels invested heavily to forage and claim valuable magical resources from the forest. However the strong and harsh growth of the forest eventually proved too much for the city to handle, reaping too few rewards for further investment. The city was eventually abandoned and left to the forest, turning into ruin. Until recently when adventurers and scavengers have started to reclaim parts of the city to gather its resources once more. Today it runs on a scavenger "Gold Rush" economy: the shunned Symbiote Slums, whose workers bond with forest organisms to survive the toxic spores, and the "Green-Market" black market for magical reagents (World_Building.md 1.2.1). The Fae quietly work to regrow the forest into the human outposts (World_Building.md 4.6.1), and the ruin known as the Ossuary of Stolen Hues lies deep within the city (World_Building.md 5.4.1).
 
-Assosiated characters:
+Associated characters:
 - Symbiote
 - Plague Doctor
 - Alchemist
@@ -514,34 +523,36 @@ Assosiated characters:
 - Appraiser
 
 #### 4.3.2. The Pirate Coves
-A series of hidden coves along a treacherous coastline, serving as a haven for pirates and smugglers. These coves are notorious for their labyrinthine tunnels and secret passages, making them difficult to navigate for outsiders. The Pirate Coves are a hub of illicit trade, where anything from rare magical artifacts to forbidden knowledge can be bought and sold. The area is also known for its lawlessness, with various pirate factions vying for control over the lucrative smuggling routes.
+A series of hidden coves along a treacherous coastline, serving as a haven for pirates and smugglers. These coves are notorious for their labyrinthine tunnels and secret passages, making them difficult to navigate for outsiders. The Pirate Coves are a hub of illicit trade, where anything from rare magical artifacts to forbidden knowledge can be bought and sold. The area is also known for its lawlessness, with various pirate factions vying for control over the lucrative smuggling routes. Politically the coves operate as the Free-Trade Coalition, "The Gilded Wake" — a functional, if violent, society built on bypassing the Iron Ledger's taxes, governed by the loose Council of Coves (World_Building.md 1.2.2, 4.2).
 
-Assosiated characters:
+Associated characters:
 - Tidal Corsair
 - Thief
 - Bar Brawler
 - Jester
 
 #### 4.3.3. The Clockwork Spire
-A towering structure located in the heart of a sprawling desert, the Clockwork Spire is a marvel of engineering and arcane technology. Built by a long-lost civilization, the spire is filled with intricate gears, pulleys, and mechanisms that power its various functions. The spire serves as a research facility for scholars and inventors, who seek to unlock the secrets of its construction and harness its power for their own purposes. However, the spire is also home to dangerous traps and guardians, making it a perilous destination for those who dare to explore its depths.
+A towering structure located in the heart of a sprawling desert, the Clockwork Spire is a marvel of engineering and arcane technology. Built by a long-lost civilization, the spire is filled with intricate gears, pulleys, and mechanisms that power its various functions. Once a research facility for scholars and inventors, the spire now functions as a factory: trade guilds of the Merchant-States fight for control over its "Logic-Chains" (ancient automated assembly lines) to produce high-end gear, while the Scholar Caste hoards knowledge of its mechanics to keep a monopoly on technology (World_Building.md 1.1.2). However, the spire is also home to dangerous traps and guardians, making it a perilous destination for those who dare to explore its depths. Beneath it sprawl the Grease-Pits of the Under-Spire, a slum in the shadow of the Great Gears and home to the Filter-Folk (World_Building.md 5.1).
 
-Assosiated characters:
+Associated characters:
 - Architect
 - Chronophage
 - Scholar
 
-#### 4.3.4. The god of rules holy city
+#### 4.3.4. The god of rules holy city (The Iron Ledger)
 A city dedicated to the worship of the God of Rules, where order and structure are paramount.
-The city is a bastion of law and discipline, with strict regulations governing every aspect of daily life. Citizens are expected to adhere to a rigid code of conduct, and any deviation from the norm is met with swift and severe punishment. The city's architecture reflects its devotion to order, with perfectly symmetrical buildings and meticulously maintained streets. The city is also home to a powerful religious order, whose members serve as both spiritual leaders and enforcers of the god's will.
+The city is a bastion of law and discipline, with strict regulations governing every aspect of daily life. Citizens are expected to adhere to a rigid code of conduct, and any deviation from the norm is met with swift and severe punishment. The city's architecture reflects its devotion to order, with perfectly symmetrical buildings and meticulously maintained streets.
 
-Assosiated characters:
+Known as **The Iron Ledger**, the city is not just a place of worship but the world's central bank and legal capital: the God of Rules has been reinterpreted as the Divine Auditor, citizens are taxed on their "predictability", and the ruling council of Grand Auditors interprets the Ancient Statutes (World_Building.md 1.1.1, 4.1). Its Emissaries are not priests but high-ranking lawyers and adjudicators who enforce the god's will as field agents, treating an enemy's existence as a clerical error to be corrected. The city also secretly hosts House Aethelgard, its "shadow bank" (World_Building.md 6.1).
+
+Associated characters:
 - Emissary
 
 #### 4.3.5. The god of adventures caravan
 A nomadic settlement that travels across the land, following the whims of the God of Adventure.
-The caravan is a vibrant and eclectic community, filled with adventurers, performers, and thrill-seekers.
+The caravan is a vibrant and eclectic community, filled with adventurers, performers, and thrill-seekers. The Centaurs of the Khasar Fleet are closely tied to the caravan culture, escorting and tolling the Great Caravans along their migration cycles (World_Building.md 6.2 and 7).
 
-Assosiated characters:
+Associated characters:
 - Warlord
 - Lancer
 - Tactician
@@ -549,15 +560,23 @@ Assosiated characters:
 #### 4.3.6. The various ruins of the god of magic
 Scattered across the world are ancient ruins that were once dedicated to the worship of the God of Magic. These ruins are remnants of a bygone era, when magic was a dominant force in the world. The ruins are often hidden in remote and dangerous locations, protected by powerful enchantments and guardians. Inside the ruins, adventurers can find forgotten knowledge, powerful artifacts, and clues to the god's imprisonment. However, the ruins are also fraught with peril, as many have been corrupted by dark magic or overrun by hostile creatures.
 
-Assosiated characters:
+In the present day these ruins are less places of pilgrimage than strip-mines: a "Gold Rush" mentality has formed around their reagents, with the Iron Ledger classifying them as "Hazardous Waste Sites" to seize artifacts as contraband while the pirates hire unlicensed mages to haul out materials (World_Building.md 2, 5.4). Within them, Chants act as physical keys — reciting the correct ancient phrase reshapes the ruins' geometry. Notable named ruins are the Ossuary of Stolen Hues and the Vault of Recursive Seconds (World_Building.md 5.4.1, 5.4.2).
+
+Associated characters:
 - Bloodmage
 - Cultist
 - Sorcerer
 - Herald of the loom
 
+#### 4.3.7. Other notable locations
+Developed in World_Building.md section 5; listed here for reference:
+- **The Churning Marches and the Glass Weald** — the geographical "scar" of the God of Magic's betrayal, a forest of razor-sharp glass trees where those who linger become "Refracted" (World_Building.md 5.3).
+- **The Frozen Ledger (The Glacial Archives)** — northern mountain vaults of "Inert Information" guarded by the Silent Monks of the Abacus (World_Building.md 5.2).
+- **The Under-Spire (The Grease-Pits and the Sinking Sluices)** — the slums beneath the Clockwork Spire, home to the Filter-Folk (World_Building.md 5.1).
+
 
 ## 5. Playable content
-Most forms of encounters shall have difficulty options, this is for several reasons. One is to have more challanging content for players whos account have outgrown certain encounters. Another is to scale the reward given to be able to farm specific gear/experience/currency to manage other difficult content.
+Most forms of encounters shall have difficulty options, this is for several reasons. One is to have more challenging content for players whose account have outgrown certain encounters. Another is to scale the reward given to be able to farm specific gear/experience/currency to manage other difficult content.
 
 ### 5.1. Longform
 Intended to be adventures aimed to span days to weeks to complete.
@@ -565,16 +584,16 @@ Intended to be adventures aimed to span days to weeks to complete.
 ### 5.2. Shortform
 Intended to be singlular encounters with specific, targetable and grindable rewards.
 
-#### 5.2.1. Quest Board (Experience ecounter)
-A quest board is accesible where one randomized encounter (out of two or three) will be available, with the purpose of having different characters/strategies be more efficient at different encounters.
+#### 5.2.1. Quest Board (Experience encounter)
+A quest board is accessible where one randomized encounter (out of two or three) will be available, with the purpose of having different characters/strategies be more efficient at different encounters.
 
-The intented way to enage is to bring one suitable character to deal with the ecounter and two weak characters to grow from the encounter reward, the experience points.
+The intended way to engage is to bring one suitable character to deal with the encounter and two weak characters to grow from the encounter reward, the experience points.
 
-#### 5.2.2. Reanimating Statues 1, 2 and 3 (Gear ecounter)
+#### 5.2.2. Reanimating Statues 1, 2 and 3 (Gear encounter)
 In the future the intent is to have one type of encounter per type of gear set, where all types of equippable items or a subset can be a drop for that set.
-For now though in the meantime as gear sets doesn't exist yet, the intention is for each encounter to drop one type of equippable item as e.g. one ecounter for boots, one for weapons and one for off-hands.
+For now though in the meantime as gear sets doesn't exist yet, the intention is for each encounter to drop one type of equippable item as e.g. one encounter for boots, one for weapons and one for off-hands.
 
-So there now is 3 ecounters to choose from for gear farming, one per equipabble item.
+So there now is 3 encounters to choose from for gear farming, one per equippable item.
 
 ##### 5.2.2.1 Reanimating Statues 1 (Boots)
 This encounter is a against a statue that relies on very high speed and through that attack many times, using skills to get slightly faster each turn. The player can utilize e.g. Sequence Lock and/or Anchor to mitigate the speed.
@@ -585,7 +604,7 @@ This encounter is against a statue that use a very high damage single target att
 ##### 5.2.2.3 Reanimating Statues 3 (Off-hands)
 This encounter is against a statue that has high defense, so the player can utilize the debuffs Expose Weakness to deal more damage to it or for example Burning to deal a percentage of its health.
 
-#### 5.2.3. Caravan (Currency ecounter)
+#### 5.2.3. Caravan (Currency encounter)
 
 
 ## 6. Development tools
