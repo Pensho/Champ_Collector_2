@@ -249,7 +249,7 @@ not yet wired into runtime).
 
 ### 6.2. Runtime instances
 
-- `Character` (`Scripts/Character/character.gd`, `extends Node`) is built from a `CharacterPreset`
+- `Character` (`Scripts/Character/character.gd`, `extends RefCounted`) is built from a `CharacterPreset`
   via `InstantiateNew(preset, instanceID)`. It copies preset stats into an
   `_attributes: Dictionary[Types.Attribute, int]`, picks a random `AttributeWeightPreset` from
   those the preset allows, duplicates the trait, and stores `_preset_UID` for later save/restore.
@@ -263,8 +263,11 @@ not yet wired into runtime).
 attributes through these methods so gear is automatically included. Note that effective HP is
 `Health * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER` (×4), applied wherever current health is set.
 
-Templates are duplicated with `duplicate(true)` at instantiation so that two instances of the same
-preset never share mutable state.
+Player-roster templates are duplicated with `duplicate(true)` when added to the
+`CharacterCollection`, so two player instances of the same preset never share mutable state.
+This protection does **not** currently extend to enemies: `Battle.Init` instantiates enemies
+directly from the preset, and `Character.InstantiateNew` assigns `_skills` by reference — see
+[Section 15.6](#156-combat-correctness-defects).
 
 ---
 
@@ -597,3 +600,70 @@ introduce signals at the highest-traffic seams (e.g. battle → UI result events
 *Impact:* no compile-time safety; typos surface only at runtime.
 *Direction:* promote the recurring keys to typed fields on `Static_Context` subclasses (as
 `Context_Battle` already does for battle setup), reserving the dictionary for genuinely dynamic data.
+
+### 15.6. Combat correctness defects
+
+A code review (July 2026) found the following defects in the combat path. Remediation is
+planned in `Plans/Plan_Combat_Correctness_Fixes.md`; the entries stay here until fixed.
+
+1. **Enemy `Skill` resources are shared across instances and battles.**
+   `Character.InstantiateNew` assigns `_skills = p_preset._skills` by reference and
+   `Battle.Init` builds enemies straight from the (cached) preset resource. Two enemies of
+   the same variant share `cooldown_left`, and because `EndBattle` resets only player
+   cooldowns, enemy cooldown state persists on the cached `.tres` into later battles in the
+   same session.
+2. **Boss scaling never applies.** `Battle.Init` calls `SetOpponentLevel(difficulty)`
+   unconditionally before the boss branch; `SetOpponentLevel` early-returns once the level
+   is reached, so the boss call carrying the ×1.5 multiplier is dead code.
+3. **Critical-hit off-by-one.** `Skills.DamageDealt` rolls `randi_range(0, 100) <= CritChance`,
+   so 0% crit chance still crits on a rolled 0 and each stat point is worth slightly more
+   than one percent.
+4. **Targeting can select dead or nonexistent slots.** `Skills.FindSkillTargets` hardcodes
+   `randi() % 3` and appends whole ID ranges with no alive check; Random Enemy can spend a
+   turn on a corpse and All Enemies re-damages the dead.
+5. **Turn-bar speed normalization mixes attribute sources.** `TurnBar.Init` finds the
+   highest speed from base `_attributes` but normalizes with `GetBattleAttribute`, so a
+   gear-boosted character can exceed a normalized speed of 1.0.
+6. **Minor:** a discarded `clampi()` result in `Battle.UpdateLifeBar`; the post-battle heal
+   uses base rather than geared Health; `LevelSystem.LevelUpCriteriaMet` consumes experience
+   inside a predicate; the Lava-zone Burning application never checks for an existing
+   Burning debuff (stacking intent undecided — see `Plans/Plan_Combat_Correctness_Fixes.md`).
+
+### 15.7. Duplicated team-membership logic and fixed 3-versus-3 assumptions
+
+The slot-ID layout (players `0–2`, enemies `3–5`) is interpreted independently in
+`battle.gd`, `Skills.gd` (its own `PLAYER_IDS`/`MONSTER_IDS` copies, `3 + randi() % 3`
+arithmetic, six-slot static arrays), and `turn_bar.gd` (reaches back into
+`Battle.PLAYER_IDS`).
+
+*Impact:* every ally/enemy relationship is paired `has()` checks; random targeting assumes
+three living members per side (the source of several defects in 15.6); team size cannot vary.
+*Direction:* a small `CombatTeam`/`CombatSides` abstraction owning membership, alive-filtering,
+and random selection — see `Plans/Plan_Team_And_Roster_Abstraction.md`.
+
+### 15.8. Status-effect behavior is hardcoded and duplicated
+
+Buff/debuff magnitudes live in parallel `match` blocks in `Skills.gd`
+(`TriggerExistingCasterDebuffs`/`Buffs`, `TriggerTargetBuffs`/`Debuffs`) plus separate
+overwritability matches and icon maps. The duplication has already produced a divergence:
+Expose Weakness reduces Defence by 30% in the caster-side tick but 50% in the target-side
+snapshot (`Concept_Document.md` says 50%).
+
+*Impact:* adding one effect means editing several blocks with nothing enforcing consistency;
+the concept document's pending effects (Anchor, Sequence Lock, Frenzy, …) would compound this.
+*Direction:* a `StatusEffectData` resource per effect with a generic apply/tick routine,
+mirroring how `Skill` already works — see `Plans/Plan_Data_Driven_Status_Effects.md`.
+
+### 15.9. Concept-document combat formulas describe a superseded design
+
+`Concept_Document.md` 3.2.1 still specifies subtractive damage
+(`Attack − Defence`), a separate magical-damage formula, a debuff success formula with base
+chance and 10–90% caps, and round-based turn ordering. The implementation uses ratio-based
+mitigation with per-skill attribute scaling and defense-ignore (Section 7.4), a plain
+accuracy-versus-resistance contest with no base chance or caps, and the continuous turn bar.
+
+*Impact:* the stated design source of truth misleads planning; the missing debuff hit-chance
+floor also means low-Accuracy champions can be mathematically unable to land debuffs on
+high-Resistance bosses, which undercuts the puzzle-encounter design.
+*Direction:* rewrite the concept document's formula chapter to the implemented design and
+decide the minimum-hit-chance question — see `Plans/Plan_Documentation_Parity.md`.
