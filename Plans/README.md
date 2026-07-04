@@ -16,6 +16,10 @@ Suggested order (dependencies noted inside each plan):
    (independent; hooks into 4 if done after it).
 6. `Plan_Naming_Convention_Alignment.md` — align written conventions and code;
    mechanical, schedule last.
+7. `Plan_Reagent_System_And_Sorcerer_Passive.md` — reagent consumables (inventory,
+   loadout, in-battle use) plus the Sorcerer's Arcane Instability trait;
+   independent, but coordinate ordering with `Plan_Headless_Combat_Core.md`
+   (whichever lands second adapts).
 
 When a plan completes: update the documentation sections it names, strike the
 matching entries from `Technical_Design_Document.md` section 15, and delete or

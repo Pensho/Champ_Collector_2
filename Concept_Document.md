@@ -130,9 +130,12 @@ Current roles, their identity and purpose exist as follows:
     - Purpose: Debuffer, Buffer
     - Passive: 
 - Sorcerer
-    - A damage dealer that harnesses the power of magic to deal Area of Effect damage and control the battlefield. Primary attributes: Mysticism, Knowledge.
+    - A damage dealer that harnesses the power of magic to deal Area of Effect damage and control the battlefield. Wields the unstable, shunned magic left behind by the God of Magic, and excels at drawing power from reagents scavenged from that era's ruins. Primary attributes: Mysticism, Knowledge.
     - Purpose: Damage, Debuffer, Control
-    - Passive: 
+    - Passive: Arcane Instability - Using a non-basic skill grants one Instability stack (+x% Mysticism per stack, maximum 5). When the Sorcerer consumes a reagent, they gain two Instability stacks and the reagent's effect is amplified by y%. While at maximum stacks, the Sorcerer's next skill also releases a Surge: magical damage to all characters, allies included, scaling with the Sorcerer's Mysticism - then all stacks reset. Stacks do not persist between combats.
+        - Per-stack Mysticism: 4% Uncommon, 6% Rare, 8% Epic, 10% Legendary
+        - Reagent amplification: 20% Uncommon, 30% Rare, 40% Epic, 50% Legendary
+        - Depends on the reagent system (see section 3.3.3 and `Plans/Plan_Reagent_System_And_Sorcerer_Passive.md`). Until reagents exist, the passive functions on skill-cast stacks alone.
 - Scholar
     - A support character that focuses on knowledge and strategy to enhance allies' abilities and exploit enemy weaknesses. Primary attributes: Knowledge.
     - Purpose: Sustain, Debuffer
@@ -375,6 +378,23 @@ One type of consumable could include some types to alter items, e.g. increase th
       balance. Higher tiers roll more reward slots (Bone 3, Brass 5, Parchment 9), which
       raises the odds of winning a champion since each slot independently has a chance
       to award one.
+
+#### 3.3.3. Reagents
+Reagents are universal consumable items left over from the era of the God of Magic,
+looted primarily from that god's ruins and other encounters (rarer reagents drop only
+from bosses). They are stored in a persistent player inventory.
+
+Rules (designed; implementation planned in `Plans/Plan_Reagent_System_And_Sorcerer_Passive.md`):
+- Before a battle the player selects up to 3 reagents from their inventory to bring along.
+- Each brought reagent can be consumed exactly once per battle, by any champion on
+  their turn, as a free action (it does not consume the turn).
+- A consumed reagent is permanently deleted; reagents brought but not used return to
+  the inventory.
+- Reagent effects are varied rather than buff-centric — e.g. a heal for a percentage
+  of max Health, a buff, or a rare boss-only "reduce skill cooldowns by 1".
+- Any role can use reagents, but the Sorcerer excels at them through the Arcane
+  Instability passive (section 3.1.3), which grants extra Instability stacks and
+  amplifies the consumed reagent's effect.
 
 ### 3.4. Game Modes
 TODO
