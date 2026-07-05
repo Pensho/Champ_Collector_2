@@ -13,6 +13,9 @@ Effort: **S** = hours, **M** = days, **L** = week+
 
 ## Combat
 
+- **True Revive Reagent** *(Priority: Low | Effort: M)*
+  If true revival ever exists, it should be a Legendary-only reagent rather than any role's skill. Currently the Deathward Charm reagent (prevention, not resurrection) is the only death counterplay; whether resurrection should exist at all is undecided.
+
 ---
 
 ## Characters & Progression

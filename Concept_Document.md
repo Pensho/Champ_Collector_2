@@ -129,7 +129,7 @@ Current roles, their identity and purpose exist as follows:
     - A support character that focuses on buffing allies and debuffing enemies through various concoctions. Signature zone: Catalyst Cloud (see section 3.2.4.1). Primary attributes: Knowledge, Mysticism.
     - Purpose: Debuffer, Buffer
     - Passive: Fresh Batch - At the start of combat the Alchemist brews one concoction: a reagent drawn at random from an Alchemist-exclusive pool, occupying its own slot beyond the three brought reagents. It follows normal reagent rules (consumable once, by any champion, on their turn) except that it is never added to the inventory - if unconsumed when the battle ends, it is lost. Each fielded Alchemist brews their own concoction.
-        - Brew potency: 90% Uncommon, 100% Rare, 110% Epic, 120% Legendary (relative to a standard reagent of equivalent effect); Epic and Legendary Alchemists draw from an expanded pool
+        - Brew potency: 90% Uncommon, 100% Rare, 110% Epic, 120% Legendary (relative to a standard reagent of equivalent effect); the brew pool holds 3 lesser reagents at Uncommon and Rare, 4 at Epic and Legendary (see section 3.3.3)
         - Depends on the reagent system (see section 3.3.3 and `Plans/Plan_Reagent_System_And_Sorcerer_Passive.md`); inactive until reagents exist.
 - Sorcerer
     - A damage dealer that harnesses the power of magic to deal Area of Effect damage and control the battlefield. Wields the unstable, shunned magic left behind by the God of Magic, and excels at drawing power from reagents scavenged from that era's ruins. Signature zone: Unstable Rift (see section 3.2.4.1). Primary attributes: Mysticism, Knowledge.
@@ -343,9 +343,9 @@ Buffs:
 * Aegis: Blocks the next debuff that would land on the character, then the buff is consumed. (Not yet implemented)
 * Mirror Coat: When a debuff lands on the character, a copy is applied to the attacker, checked against the attacker's Resistance as normal. (Not yet implemented)
 * Opportunist: The character's attacks deal +10% damage per debuff on the target. (Not yet implemented)
-* Catalyst: The next reagent the character consumes has +50% effect. (Not yet implemented)
+* Catalyst: The next reagent the character consumes has +50% effect. Stacks additively with other reagent potency modifiers; has no effect on binary reagents (see section 3.3.3). (Not yet implemented)
 * Signed Writ: The character's next debuff cannot be resisted, then the buff is consumed. (Not yet implemented)
-* Wanderlust: At the start of each of the character's turns, gain +40% to one random primary stat until their next turn. (Not yet implemented)
+* Wanderlust: At the start of each of the character's turns, gain +20% to one random primary stat until their next turn. (Not yet implemented)
 * Overflow: When this buff expires, it deals magical damage to all enemies, scaling with the holder's Mysticism. (Not yet implemented)
 * Vigor: Increases max Health by 30%. (Not yet implemented)
 * Lethal Precision: Increases Critical Damage by 50%. (Not yet implemented)
@@ -449,13 +449,19 @@ from bosses). They are stored in a persistent player inventory.
 Rules (designed; implementation planned in `Plans/Plan_Reagent_System_And_Sorcerer_Passive.md`):
 - Before a battle the player selects up to 3 reagents from their inventory to bring along.
 - Each brought reagent can be consumed exactly once per battle, by any champion on
-  their turn, as a free action (it does not consume the turn).
+  their turn, as a free action (it does not consume the turn). Reagents are usable
+  strictly on the consumer's own turn, never reactively.
 - A consumed reagent is permanently deleted; reagents brought but not used return to
   the inventory.
-- Reagent effects are varied rather than buff-centric — e.g. a heal for a percentage
-  of max Health, a buff, a reagent that clears a zone from the turn bar (one of the
-  two dedicated zone-clearing effects, see section 3.2.4.1), or a rare boss-only
-  "reduce skill cooldowns by 1".
+- Reagents come in rarities (Uncommon, Rare, Epic, Legendary). Reagent effects scale
+  with rarity only — never with the consumer's attributes.
+- Every reagent effect is either scalar or binary:
+  - Scalar effects have a magnitude that potency modifiers can raise.
+  - Binary effects (marked "(Binary)" in the catalog below) either happen or don't;
+    potency modifiers ignore them, and they cannot appear in the Alchemist's brew pool.
+- All reagent potency modifiers — the Sorcerer's Arcane Instability amplification, the
+  Catalyst buff, and the Alchemist's brew potency — stack additively on one consumption.
+  None of them affect binary reagents.
 - Any role can use reagents, but the Sorcerer excels at them through the Arcane
   Instability passive (section 3.1.3), which grants extra Instability stacks and
   amplifies the consumed reagent's effect.
@@ -463,6 +469,47 @@ Rules (designed; implementation planned in `Plans/Plan_Reagent_System_And_Sorcer
   (section 3.1.3) brews a battle-scoped concoction at the start of combat, in a
   slot beyond the three brought reagents. Brews follow normal reagent rules but
   never enter the inventory.
+- Enemies never use reagents.
+
+Reagent catalog (designed; magnitudes without listed values are not yet decided):
+
+Families — one entry per rarity tier:
+* Tinctures: one family per primary attribute. A small battle-long increase to that
+  attribute. Not a buff: undispellable, unstealable, and invisible to buff-counting
+  effects. Deliberately weaker than the equivalent 30% buff.
+* Restorative Draught: heals one ally for a percentage of max Health.
+* Purging Tonic: removes up to N debuffs from one ally, N set by rarity.
+* Thief's Regret: destroys (not steals) up to N buffs on one enemy, N set by rarity.
+* Barrier Stone: grants one ally a Barrier with a flat absorb amount set by rarity.
+* Rewinding Grit: ticks one chosen skill's cooldown down by (1/1/1/2) turns, set by rarity.
+* Second Wind Phial: after the consumer's current turn ends, their turn bar resets to
+  15/20/25/30% (by rarity) instead of 0. Self-only.
+
+Singletons:
+* Zone-Dissolving Salts (Binary): clears one targeted zone section (one of the two
+  dedicated zone-clearing effects, see section 3.2.4.1).
+* Deathward Charm (Binary): applies the Deathward buff to one ally.
+* Chant Fragment (Binary): cleanses Pagan Curse from one ally. God of Magic lore family.
+* Notarized Seal (Binary): applies the Signed Writ buff to one ally. God of Rules
+  lore family.
+* Wayfarer's Draught: applies Wanderlust to the consumer, with the random-stat bonus
+  percentage set by rarity instead of the buff's standard value. God of Adventure
+  lore family.
+* Unrefined Residue: applies the effect of one random tincture family. God of Magic
+  lore family.
+* Fractured Idol: a crumbling artifact of the Forgotten God. Deals 10/14/18/22% (by
+  rarity) of the consumer's max Health as damage (cannot reduce the consumer below
+  1 Health) and grants a battle-long +10/13/16/20% (by rarity) to damage dealt.
+  Potency modifiers raise both the cost and the bonus. God of Magic lore family.
+
+Alchemist brew pool — an Alchemist-exclusive pool of lesser scalar reagents; pool
+size is 3 at Uncommon and Rare, 4 at Epic and Legendary:
+* Lesser Restorative Brew: a small heal for a percentage of one ally's max Health.
+* Lesser Tincture: a small battle-long increase to one random primary attribute of
+  one ally.
+* Lesser Barrier Brew: a small Barrier on one ally.
+* Lesser Purging Brew (Epic and Legendary Alchemists only): removes one debuff from
+  one ally.
 
 ### 3.4. Game Modes
 TODO
