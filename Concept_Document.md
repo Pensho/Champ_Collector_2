@@ -287,11 +287,12 @@ Most often require;
 #### 3.2.3. Status Effects
 A status effect is a temporary condition that can affect a character's attributes, abilities, or behavior in combat. Status effects can be beneficial (buffs) or detrimental (debuffs) and can significantly influence the outcome of battles.
 
-Unless stated otherwise, a buff lasts 2 turns.
+Unless stated otherwise, a buff or debuff lasts 2 turns.
 
 ##### 3.2.3.1 Turn Bar Effects
 * Anchor (Debuff): The character cannot be pushed forward or backward on the turn bar by skills. (Not yet implemented)
 * Temporal Leak (Debuff): Every time this character moves 10% of the bar, they take damage scaling with their own Speed. (Not yet implemented)
+* Dead Weight (Debuff): When the character takes damage, they lose 3% turn bar. (Not yet implemented)
 * Slipstream (Buff): The character passes through enemy-placed zones without triggering them. (Not yet implemented)
 * Steadfast (Buff): The character cannot be moved backward on the turn bar. (Not yet implemented)
 * Resonance (Buff): Ally-placed zones affect the character at double effect. (Not yet implemented)
@@ -305,6 +306,20 @@ Debuffs:
 * Mana Burn: Deals damage whenever the target uses a non-basic skill, scaling based on the target's Mysticism. (Not yet implemented)
 * Burning: Deals 4% of max Health as damage.
 * Sequence Lock: Speed cannot be increased or decreased. (Not yet implemented)
+* Suppress: Reduces Mysticism by 30%. (Not yet implemented)
+* Slow: Reduces Speed by 15%. (Not yet implemented)
+* Blind: Reduces Accuracy by 30%. (Not yet implemented)
+* Unravel: Reduces Resistance by 30%. (Not yet implemented)
+* Confound: Reduces Knowledge by 30%. (Not yet implemented)
+* Exposed Facet: Attacks against the character gain +15 percentage points Critical Chance. (Not yet implemented)
+* Bleed: At the start of the character's turn, they take damage scaling with the caster's Attack. (Not yet implemented)
+* Plague: Deals magical damage each turn scaling with the caster's Mysticism; when it expires, it spreads to a random other enemy with fresh duration. (Not yet implemented)
+* Blight: Healing received is reduced by 50%. (Not yet implemented)
+* Severance: The character cannot gain new buffs. (Not yet implemented)
+* Hexed: Roll calculations twice and take the worse result. (Not yet implemented)
+* Stun: The character skips their next turn. (Not yet implemented)
+* Fatigue: The character's skill cooldowns do not tick down. (Not yet implemented)
+* Refracted: The character's single-target skills hit a random character instead, allies included. (Not yet implemented)
 
 Buffs:
 * Empower: Increases Attack by 30%.
