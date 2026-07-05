@@ -128,7 +128,9 @@ Current roles, their identity and purpose exist as follows:
 - Alchemist
     - A support character that focuses on buffing allies and debuffing enemies through various concoctions. Primary attributes: Knowledge, Mysticism.
     - Purpose: Debuffer, Buffer
-    - Passive: 
+    - Passive: Fresh Batch - At the start of combat the Alchemist brews one concoction: a reagent drawn at random from an Alchemist-exclusive pool, occupying its own slot beyond the three brought reagents. It follows normal reagent rules (consumable once, by any champion, on their turn) except that it is never added to the inventory - if unconsumed when the battle ends, it is lost. Each fielded Alchemist brews their own concoction.
+        - Brew potency: 90% Uncommon, 100% Rare, 110% Epic, 120% Legendary (relative to a standard reagent of equivalent effect); Epic and Legendary Alchemists draw from an expanded pool
+        - Depends on the reagent system (see section 3.3.3 and `Plans/Plan_Reagent_System_And_Sorcerer_Passive.md`); inactive until reagents exist.
 - Sorcerer
     - A damage dealer that harnesses the power of magic to deal Area of Effect damage and control the battlefield. Wields the unstable, shunned magic left behind by the God of Magic, and excels at drawing power from reagents scavenged from that era's ruins. Primary attributes: Mysticism, Knowledge.
     - Purpose: Damage, Debuffer, Control
@@ -397,6 +399,10 @@ Rules (designed; implementation planned in `Plans/Plan_Reagent_System_And_Sorcer
 - Any role can use reagents, but the Sorcerer excels at them through the Arcane
   Instability passive (section 3.1.3), which grants extra Instability stacks and
   amplifies the consumed reagent's effect.
+- The Alchemist is the reagent producer counterpart: its Fresh Batch passive
+  (section 3.1.3) brews a battle-scoped concoction at the start of combat, in a
+  slot beyond the three brought reagents. Brews follow normal reagent rules but
+  never enter the inventory.
 
 ### 3.4. Game Modes
 TODO
