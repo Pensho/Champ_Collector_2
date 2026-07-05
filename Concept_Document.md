@@ -140,14 +140,14 @@ Current roles, their identity and purpose exist as follows:
         - Depends on the reagent system (see section 3.3.3 and `Plans/Plan_Reagent_System_And_Sorcerer_Passive.md`). Until reagents exist, the passive functions on skill-cast stacks alone.
 - Scholar
     - A support character that focuses on knowledge and strategy to enhance allies' abilities and exploit enemy weaknesses. Primary attributes: Knowledge.
-    - Purpose: Sustain, Debuffer
+    - Purpose: Debuffer, Buffer
     - Passive: 
 - Diviner
     - A squishy support.  Primary attributes: Mysticism.
     - Purpose: Sustain, Debuffer
     - Passive: Foresight - Place debuffs on enemies if they are close enough behind the Diviner on the turn bar when the Diviners turn starts.
         - 10% Uncommon, 15% Rare, 20% Epic, 25% Legendary
-- Appraiser
+- Appraiser (May postpone implementation and keep as optional)
     - A master at exploiting enemy weaknesses, allowing opportunity for the team to easily deal critical hits. Primary attributes: Critical Chance, Knowledge.
     - Purpose: Debuffer
     - Passive: 
@@ -158,7 +158,7 @@ Current roles, their identity and purpose exist as follows:
         - 10% Uncommon, 15% Rare, 20% Epic, 25% Legendary
 - Symbiote
     - A character weak by default but given the option to alter itself to combine with one of select few monsters to gain their trait & bonus in attributes. Primary attributes: Health, Resistance.
-    - Purpose: Sustain, Debuffer
+    - Purpose: Sustain, Buffer
     - Passive: 
 - Jester
     - An unconventional tanking character that does not have significantly high Health or Defense but relies on skills that provoke hits to the Jester and dodge them. Primary attributes: Accuracy, Knowledge, Speed.
@@ -182,7 +182,7 @@ Current roles, their identity and purpose exist as follows:
         - Golden thread; All buffs & debuffs only goes to the herald instead of allies.
         - Silver thread; All herald buffs & debuffs cast becomes more powerful, adds one attribute value to the accuracy attribute value when attempting to apply debuffs.
         - Black thread; All damage dealt and received scale with mysticism instead of other attributes. One other player & enemy character will have their attributes averaged out while Black thread is in use.  Primary attributes: Mysticism, Accuracy.
-    - Purpose: Debuffer
+    - Purpose: Debuffer, Buffer
     - Passive: 
 - Chronophage
     - A speed focused character, applying various speed modifying skills onto the turn bar and primarily deals damage based on the Speed attribute. Primary attributes: Speed.
