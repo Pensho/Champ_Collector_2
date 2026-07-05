@@ -287,9 +287,15 @@ Most often require;
 #### 3.2.3. Status Effects
 A status effect is a temporary condition that can affect a character's attributes, abilities, or behavior in combat. Status effects can be beneficial (buffs) or detrimental (debuffs) and can significantly influence the outcome of battles.
 
+Unless stated otherwise, a buff lasts 2 turns.
+
 ##### 3.2.3.1 Turn Bar Effects
 * Anchor (Debuff): The character cannot be pushed forward or backward on the turn bar by skills. (Not yet implemented)
 * Temporal Leak (Debuff): Every time this character moves 10% of the bar, they take damage scaling with their own Speed. (Not yet implemented)
+* Slipstream (Buff): The character passes through enemy-placed zones without triggering them. (Not yet implemented)
+* Steadfast (Buff): The character cannot be moved backward on the turn bar. (Not yet implemented)
+* Resonance (Buff): Ally-placed zones affect the character at double effect. (Not yet implemented)
+* Battle Orders (Buff): When the character takes damage, all allies gain 5% turn bar. (Not yet implemented)
 
 ##### 3.2.3.2 Common Status Effects
 
@@ -309,6 +315,27 @@ Buffs:
 * Exhert: Gain bonus stats at the cost of losing Health. (Not yet implemented)
 * Luck: Roll calculations twice and take the better result. (Not yet implemented)
 * Phalanx Guard: Gain bonus defense per stack of momentum consumed. (Lancer Specific)
+* Attune: Increases Mysticism by 30%. (Not yet implemented)
+* Haste: Increases Speed by 20%. (Not yet implemented)
+* True Aim: Increases Accuracy by 30%. (Not yet implemented)
+* Clarity: Increases Resistance by 30%. (Not yet implemented)
+* Keen Edge: Increases Critical Chance by 15 percentage points. (Not yet implemented)
+* Insight: Increases Knowledge by 30%. (Not yet implemented)
+* Regeneration: Heals 4% of max Health at the start of each turn. (Not yet implemented)
+* Barrier: A shield that absorbs damage up to a set amount before Health is touched. (Not yet implemented)
+* Deathward: The next hit that would be fatal instead leaves the character at 1 Health, then the buff is consumed. (Not yet implemented)
+* Aegis: Blocks the next debuff that would land on the character, then the buff is consumed. (Not yet implemented)
+* Mirror Coat: When a debuff lands on the character, a copy is applied to the attacker, checked against the attacker's Resistance as normal. (Not yet implemented)
+* Opportunist: The character's attacks deal +10% damage per debuff on the target. (Not yet implemented)
+* Catalyst: The next reagent the character consumes has +50% effect. (Not yet implemented)
+* Signed Writ: The character's next debuff cannot be resisted, then the buff is consumed. (Not yet implemented)
+* Wanderlust: At the start of each of the character's turns, gain +40% to one random primary stat until their next turn. (Not yet implemented)
+* Overflow: When this buff expires, it deals magical damage to all enemies, scaling with the holder's Mysticism. (Not yet implemented)
+* Vigor: Increases max Health by 30%. (Not yet implemented)
+* Lethal Precision: Increases Critical Damage by 50%. (Not yet implemented)
+* Spotlight: The character is much more likely to be targeted by enemies and takes 10% less damage. (Not yet implemented)
+* Premonition: The next attack against the character automatically misses, then the buff is consumed. (Not yet implemented)
+* Rehearsed: The character's next non-basic skill does not go on cooldown, then the buff is consumed. (Not yet implemented)
 
 #### 3.2.4. Skills
 Skills can be categorized into three main types: Turn Bar Skills, Role Specific Skills, and Universal Skills.
