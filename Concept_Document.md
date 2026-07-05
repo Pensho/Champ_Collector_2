@@ -681,6 +681,8 @@ The city is a bastion of law and discipline, with strict regulations governing e
 
 Known as **The Iron Ledger**, the city is not just a place of worship but the world's central bank and legal capital: the God of Rules has been reinterpreted as the Divine Auditor, citizens are taxed on their "predictability", and the ruling council of Grand Auditors interprets the Ancient Statutes (World_Building.md 1.1.1, 4.1). Its Emissaries are not priests but high-ranking lawyers and adjudicators who enforce the god's will as field agents, treating an enemy's existence as a clerical error to be corrected. The city also secretly hosts House Aethelgard, its "shadow bank" (World_Building.md 6.1).
 
+The city's hub area is located in **the Margins**, the slums pressed between the last audited district and the city wall, where the Adventurer's Guild hall stands as neutral ground; the district and its native gang, the Arrears, are detailed in World_Building.md 5.5 and 6.3.
+
 Associated characters:
 - Emissary
 

@@ -55,6 +55,9 @@ How the world has mutated since the "betrayal" of the God of Magic.
 | Logic-Moss | Flora | A parasitic moss in the Reclaimed City that grows in perfectly straight lines. If stepped on, it slows the character on the turn bar. |
 | Stutter-Crows | Fauna | Birds that seem to "glitch" in the air. They are scavengers that only appear near "Temporal Leaks". |
 | Gold-Thread Vine | Flora | A rare, metallic vine used by Heralds of the Loom to "stitch" their gear. It’s highly conductive of magical energy. |
+| Ink-Rats | Fauna | Canal rats of the Margins, permanently stained by document pulp; their fur shows ghost-fragments of legible text. Children catch and "read" them, selling the omens — occasionally a rat genuinely carries something someone would kill to recover. |
+| Clerk's-Beard | Flora | A pale, fibrous weed that grows only on rotting paper pulp. Burns slow and smokeless — the Margins' cooking and lamp fuel, and the reason the district smells faintly of burnt records. |
+| Seal-Wax Slag | Mineral | Melted-down wax scraped from voided documents, re-pooled into black-market sealing blanks. An essential forgery material in the Margins and the Pirate Coves alike. |
 
 ## 4. Political structures
 
@@ -208,6 +211,30 @@ The Hazard: "Stutter-Crows" nest here, feasting on the fragmented memories of th
 
 The Political Friction: The Iron Ledger attempts to "audit" the time inside, sending Emissaries to plant stationary mechanical clocks to "enforce" a standard second, though the clocks usually melt or turn into birds after a while.
 
+### 5.5. The Margins: The Slums of the Holy City
+
+The Iron Ledger's capital is written like a ledger: numbered concentric districts, gridded streets, every building an entry with an address, an owner, and a tax line. The Margins are everything outside the ruled lines — the strip pressed between the last audited district and the city wall, plus every gap the grid could not account for. Its people are those who cannot afford predictability: day laborers, the recently defaulted, the deregistered — anyone whose Risk Premium compounded until they fell off the books entirely.
+
+The district's organizing principle: **if it has no address, it cannot be taxed.** The Margins does not build on plots; it builds between things — bridge-houses spanning alleys too narrow to be numbered, rooftop parasites clinging to the backs of audited buildings, cellar warrens under voided foundations. Seen from the wall, the district looks like handwriting crammed into the white space of a page.
+
+The Adventurer's Guild hall — the hub of the Holy City — stands at the seam between the Queue and the Red-Ink Rows: close enough to the gates to serve registered clients, rooted enough in the Margins to hold its Shadow-Debt neutrality (see 4.4.2). All factions honor the guildhall as neutral ground.
+
+#### 5.5.1. The Red-Ink Rows
+
+The residential heart of the Margins and home turf of the Arrears (see 6.3). A warren of lean-tos and bridge-houses where every doorframe carries chalk tallies — the Grey Ledger made visible. Communal cooking fires, children running tallies between houses as messengers, laundry strung between buildings like pennants.
+
+#### 5.5.2. The Voided Blocks
+
+Buildings the Ledger has formally written off — condemned, foreclosed and never resold, or "deleted" after scandals. Officially they do not exist, which cuts both ways: Emissaries will not patrol what is not on the books, so the Voided Blocks are the lawless pocket where the genuinely dangerous things live. It is also the only ground where an outlawed debt-forgiveness sect dares to preach, on the doctrine that an erased place lies outside the Ledger's jurisdiction and thus under the true Auditor's mercy.
+
+#### 5.5.3. The Pulp-Canals
+
+A bureaucracy the size of the Iron Ledger produces mountains of expired paper. Old documents are barged out, pulped, and sluiced through canals along the city wall — and the Margins lives off sifting the pulp. Whole families pan the grey water for legible fragments: a surviving name, a property line, a seal. Fragments sell — to forgers, to blackmailers, to people hunting proof they ever existed. The Ink-Stained Reef salvages the Ledger's documents at sea; the Margins sifts them at home.
+
+#### 5.5.4. The Queue
+
+The border zone where the Margins meets the audited city — inspection gates, permit windows, and the day-labor lines where people wait from before dawn for stamped work chits. Census-Taker surveillance is thickest here; the Risk Premium is a felt, daily thing rather than an abstraction.
+
 ## 6. Communities and groups
 
 ### 6.1. House Aethelgard: The Silent Creditors
@@ -300,6 +327,51 @@ Many Centaur outriders who spend too much time in the "Glass Weald" or near "Tem
 
 The "Filter-Folk" beneath the Clockwork Spire have started stealing "Hoof-Iron" from Centaur camps to use in their machine maintenance. This has led to "Audit Raids" where Centaur Regimes trample the "Grease-Pits" in retaliation.
 
+
+### 6.3. The Arrears: The Bank of the Margins
+
+The slum-dwellers of the Margins are off the books — no Ledger banking, no courts, no contracts. The Arrears fill the vacuum: they are the bank of the Margins. Loans, protection, and dispute arbitration, all recorded in a shadow book of their own called the **Grey Ledger**. Everyone in the Margins is in the book, and being in the book is simultaneously membership, safety, and leash.
+
+The Arrears do not run on ledger logic as parody — they run on it as aspiration. Their deepest wish is not to burn the Iron Ledger down; it is to be readmitted to it.
+
+#### 6.3.1. The Public Face: The Keepers of the Rows
+
+* The Grey Ledger: every favor, loan, and grudge in the Margins is tallied in the book. Debts are marked visibly — chalk tallies on doorframes, ink tallies on forearms — so the whole district wears its accounting.
+
+* Credit for the Unwritten: newcomers with forged or missing papers cannot rent a room or ask a question in the Margins without touching the Arrears' economy. The gang extends credit readily — safehouses, guides, introductions — and every favor goes in the book. A saying in the Rows: "No one leaves her book except paid in full."
+
+* Arbitration: disputes the Ledger's courts will not hear are settled by the Arrears, whose rulings are enforced by their collectors.
+
+#### 6.3.2. The Private Reality: The Settlement
+
+* The Amnesty Audit: the Grand Auditors periodically dangle re-registration into the city proper for slum informants who deliver "outstanding irregularities." The Arrears' leadership treats every valuable outsider in their book as a potential payment — an asset whose surrender value is weighed, actuarially and without malice, against their account value.
+
+* The Consolidation Risk: to the Grand Auditors, the Grey Ledger is not a useful informant network — it is unlicensed banking, competition, heresy. Any deal the Arrears strike with the Ledger ends the same way: the book seized, the leadership "consolidated." The Ledger does not honor deals with entries that should not exist.
+
+* The Pirate Accounts: the Arrears broker the Shadow Debts (see 4.4.2) that Pirate Lords owe to Adventurer's Guilds inside Ledger cities, giving the Gilded Wake and the gang standing arrangements — smuggled arrivals from the Coves are handed directly into the Arrears' book.
+
+#### 6.3.3. Key Figures
+
+| Name | Role | Motivation |
+|------|------|------------|
+| The Debt-Mother | Keeper of the Grey Ledger | A deregistered Ledger clerk who fell into the Margins decades ago and rebuilt the only system she knew, from below. Wants her name written back into the Iron Ledger — and will sign a settlement to get it. |
+| Vessa, "the Collector" | The Debt-Mother's heir | A protégé raised inside the book; she did the collecting while the old woman did the counting. If the Grey Ledger falls, she will rebuild the remnant harder and crueler — and lay the ruin at the feet of whoever's account triggered it. |
+| Marn | Collector of the Rows | An enforcer assigned to shepherd valuable newcomers. Loyal to the people of the Rows more than to the book; the one most likely to warn a marked debtor before a settlement is executed. |
+| Census-Taker Quill | The Ledger's liaison | The quiet contact who brokers Amnesty Audit offers to the Arrears — and the visible proof, afterward, that the Ledger never intended to pay. |
+
+#### 6.3.4. Points of Friction
+
+* The Settlement of Accounts
+
+When an outsider in the book draws too much Emissary attention, the whole district's Risk Premium rises. The Debt-Mother does the arithmetic openly, even apologetically: the moment a debtor's surrender value exceeds their account value, they are not betrayed — they are settled. The debtor is literally the payment.
+
+* The Consolidation
+
+The Arrears' tragedy is that they play by the Ledger's rules perfectly, and that is exactly why the Ledger destroys them: an executed settlement invites an audit of the Grey Ledger itself. A consolidated Debt-Mother — alive, bookless, her name still unwritten — and a vengeful Collector rebuilding the remnant pull the surviving Arrears in opposite directions.
+
+* The Struck Lines
+
+The debt-forgiveness sect preaching in the Voided Blocks is the Arrears' exact ideological mirror: the Arrears tally debts, the sect erases them. The gang treats a forgiven debt as theft from the book.
 
 ## 7. The Centaurs
 
