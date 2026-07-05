@@ -126,20 +126,20 @@ Current roles, their identity and purpose exist as follows:
     - Passive: Reckless Momentum - When an offensive skill is used the Lancer gains one Momentum stack (+x% damage, -x/2% defence while stacks are held, maximum 5 stacks). When a defensive skill is used, the Lancer gains Phalanx Guard (a role-unique 2-turn buff, +x% defence) and all Momentum stacks are consumed.
         - 4% Uncommon, 6% Rare, 8% Epic, 10% Legendary
 - Alchemist
-    - A support character that focuses on buffing allies and debuffing enemies through various concoctions. Primary attributes: Knowledge, Mysticism.
+    - A support character that focuses on buffing allies and debuffing enemies through various concoctions. Signature zone: Catalyst Cloud (see section 3.2.4.1). Primary attributes: Knowledge, Mysticism.
     - Purpose: Debuffer, Buffer
     - Passive: Fresh Batch - At the start of combat the Alchemist brews one concoction: a reagent drawn at random from an Alchemist-exclusive pool, occupying its own slot beyond the three brought reagents. It follows normal reagent rules (consumable once, by any champion, on their turn) except that it is never added to the inventory - if unconsumed when the battle ends, it is lost. Each fielded Alchemist brews their own concoction.
         - Brew potency: 90% Uncommon, 100% Rare, 110% Epic, 120% Legendary (relative to a standard reagent of equivalent effect); Epic and Legendary Alchemists draw from an expanded pool
         - Depends on the reagent system (see section 3.3.3 and `Plans/Plan_Reagent_System_And_Sorcerer_Passive.md`); inactive until reagents exist.
 - Sorcerer
-    - A damage dealer that harnesses the power of magic to deal Area of Effect damage and control the battlefield. Wields the unstable, shunned magic left behind by the God of Magic, and excels at drawing power from reagents scavenged from that era's ruins. Primary attributes: Mysticism, Knowledge.
+    - A damage dealer that harnesses the power of magic to deal Area of Effect damage and control the battlefield. Wields the unstable, shunned magic left behind by the God of Magic, and excels at drawing power from reagents scavenged from that era's ruins. Signature zone: Unstable Rift (see section 3.2.4.1). Primary attributes: Mysticism, Knowledge.
     - Purpose: Damage, Debuffer, Control
     - Passive: Arcane Instability - Using a non-basic skill grants one Instability stack (+x% Mysticism per stack, maximum 5). When the Sorcerer consumes a reagent, they gain two Instability stacks and the reagent's effect is amplified by y%. While at maximum stacks, the Sorcerer's next skill also releases a Surge: magical damage to all characters, allies included, scaling with the Sorcerer's Mysticism - then all stacks reset. Stacks do not persist between combats.
         - Per-stack Mysticism: 4% Uncommon, 6% Rare, 8% Epic, 10% Legendary
         - Reagent amplification: 20% Uncommon, 30% Rare, 40% Epic, 50% Legendary
         - Depends on the reagent system (see section 3.3.3 and `Plans/Plan_Reagent_System_And_Sorcerer_Passive.md`). Until reagents exist, the passive functions on skill-cast stacks alone.
 - Scholar
-    - A support character that focuses on knowledge and strategy to enhance allies' abilities and exploit enemy weaknesses. Primary attributes: Knowledge.
+    - A support character that focuses on knowledge and strategy to enhance allies' abilities and exploit enemy weaknesses. The zone-clearing specialist: the Scholar's kit is one of the two dedicated ways to remove zones from the turn bar (see section 3.2.4.1). Primary attributes: Knowledge.
     - Purpose: Debuffer, Buffer
     - Passive: 
 - Diviner
@@ -185,7 +185,7 @@ Current roles, their identity and purpose exist as follows:
     - Purpose: Debuffer, Buffer
     - Passive: 
 - Chronophage
-    - A speed focused character, applying various speed modifying skills onto the turn bar and primarily deals damage based on the Speed attribute. Primary attributes: Speed.
+    - A speed focused character, applying various speed modifying skills onto the turn bar and primarily deals damage based on the Speed attribute. Signature zones: Flicker Zone and Temporal Sinkhole (see section 3.2.4.1). Primary attributes: Speed.
     - Purpose: Control
     - Passive: Time Tithe - When the Chronophage's skills remove or reduce an enemy's turn bar, the Chronophage absorbs a portion of the stolen amount as its own turn-bar progress.
         - 25% Uncommon, 35% Rare, 45% Epic, 55% Legendary
@@ -205,7 +205,7 @@ Current roles, their identity and purpose exist as follows:
       held at a time.
         - Rarity scaling of these values is not yet implemented.
 - Plague Doctor (Not yet implemented)
-    - A debuff focused character, applying various damage over time and stat reducing debuffs to enemies. Primary attributes: Mysticism, Resistance.
+    - A debuff focused character, applying various damage over time and stat reducing debuffs to enemies. Signature zone: Miasma (see section 3.2.4.1). Primary attributes: Mysticism, Resistance.
     - Purpose: Debuffer
     - Passive: 
 - Warlord (Not yet implemented)
@@ -320,6 +320,7 @@ Debuffs:
 * Stun: The character skips their next turn. (Not yet implemented)
 * Fatigue: The character's skill cooldowns do not tick down. (Not yet implemented)
 * Refracted: The character's single-target skills hit a random character instead, allies included. (Not yet implemented)
+* Warped: The character's damage dealt scales with Mysticism instead of the skill's normal attribute. Whether other calculations are also forced through Mysticism is not yet decided. (Not yet implemented)
 
 Buffs:
 * Empower: Increases Attack by 30%.
@@ -373,10 +374,24 @@ Skill targeting types:
 Of the skills a character has, they always have 1 basic skill that has no cooldown but in general is weaker or more basic than other skills.
 
 ##### 3.2.4.1 Turn Bar Skills
-Turn bar skills apply effects to specific zones on the turn bar. When a character's turn starts, all characters within a zone that has an effect applied to it from a skill or environmental effect will be affected.
+Turn bar skills apply effects to specific zones on the turn bar.
 
+Zone system rules:
+* The turn bar is divided into 5 sections. Each section can hold at most one zone at a time.
+* When placing a zone, the player chooses which section it goes into. A section that already holds a zone cannot be targeted; the placement is blocked until that zone is gone.
+* Trigger: when any character's turn starts, every character standing inside a zone is affected by it — but only once per visit. A character that has been affected by a zone is not affected by it again until they leave the section and re-enter it.
+* Zones are removed only by dedicated clearing effects — the Scholar's kit and a zone-clearing reagent. There is deliberately no universal zone-clearing skill.
+* Both sides place zones; the 5 sections are shared between allies and enemies.
+* The effect of ally-placed zones scales with the placing character's Knowledge (see section 3.1.1).
+* Each zone belongs to one of three lore families that define its visual language: order zones (God of Rules), unstable zones (God of Magic), and momentum zones (God of Adventure).
+
+Zone effects:
 * Weight of Law (Zone Effect): Affected enemies are Stunned for their next turn.
-* Flicker zone (Zone Effect): Affected allies move 15% further on the turn bar when they reach this zone.
+* Flicker Zone (Zone Effect): Affected allies move 15% further on the turn bar when they reach this zone.
+* Temporal Sinkhole (Zone Effect): Affected enemies lose a portion of their turn bar progress. Placed by the Chronophage, whose Time Tithe passive absorbs part of the stolen amount.
+* Miasma (Zone Effect): Affected enemies gain a damage-over-time debuff. Placed by the Plague Doctor. Duration model not yet decided.
+* Catalyst Cloud (Zone Effect): Affected allies gain the Catalyst buff (see section 3.2.3.2). Placed by the Alchemist.
+* Unstable Rift (Zone Effect): All affected characters, allies and enemies alike, gain the Warped debuff (see section 3.2.3.2). Placed by the Sorcerer.
 
 ##### 3.2.4.2 Role Specific Skills
 * Symbiotic Overdrive (Symbiote): Increases all primary attributes by 20% but causes the character to lose 5% of their max Health every time they take a turn.
@@ -438,7 +453,9 @@ Rules (designed; implementation planned in `Plans/Plan_Reagent_System_And_Sorcer
 - A consumed reagent is permanently deleted; reagents brought but not used return to
   the inventory.
 - Reagent effects are varied rather than buff-centric — e.g. a heal for a percentage
-  of max Health, a buff, or a rare boss-only "reduce skill cooldowns by 1".
+  of max Health, a buff, a reagent that clears a zone from the turn bar (one of the
+  two dedicated zone-clearing effects, see section 3.2.4.1), or a rare boss-only
+  "reduce skill cooldowns by 1".
 - Any role can use reagents, but the Sorcerer excels at them through the Arcane
   Instability passive (section 3.1.3), which grants extra Instability stacks and
   amplifies the consumed reagent's effect.
