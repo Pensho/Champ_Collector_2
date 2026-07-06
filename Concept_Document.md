@@ -110,7 +110,7 @@ Each Role can have one or two main purposes in combat but it doesn't have to res
     - Applies various buffs to allies to make them stronger.
 
 Current roles, their identity and purpose exist as follows:
-- Emissary
+- Emissary (Not yet implemented)
     - A field agent of the Iron Ledger who wins by building a case against the enemy rather than overpowering them. Keeps a per-enemy tally of Infractions (see the Standing Record passive) and issues Edicts — marks placed on an enemy that expand what counts as an Infraction for them or make their Infractions count double. Punishment effects stay gradual rather than binary: no hard skill sealing or turn bar manipulation; instead cooldown extension, debuff duration extension, and buff redaction (a redacted buff remains visible but has no effect until it expires), all scaling with the target's Infraction count. Primary attributes: Accuracy, Knowledge.
     - Purpose: Debuffer, Control
     - Passive: Standing Record - Every enemy has a personal Infraction tally that only grows and is never consumed. An enemy gains one Infraction whenever they gain a buff, place a zone, or land a debuff on an ally. The Emissary's skills gain +x% effect (potency, duration, or chance to land) per Infraction on the target, up to a rarity-dependent tally cap.
@@ -125,13 +125,13 @@ Current roles, their identity and purpose exist as follows:
     - Purpose: Damage
     - Passive: Reckless Momentum - When an offensive skill is used the Lancer gains one Momentum stack (+x% damage, -x/2% defence while stacks are held, maximum 5 stacks). When a defensive skill is used, the Lancer gains Phalanx Guard (a role-unique 2-turn buff, +x% defence) and all Momentum stacks are consumed.
         - 4% Uncommon, 6% Rare, 8% Epic, 10% Legendary
-- Alchemist
+- Alchemist (Not yet implemented)
     - A support character that focuses on buffing allies and debuffing enemies through various concoctions. Signature zone: Catalyst Cloud (see section 3.2.4.1). Primary attributes: Knowledge, Mysticism.
     - Purpose: Debuffer, Buffer
     - Passive: Fresh Batch - At the start of combat the Alchemist brews one concoction: a reagent drawn at random from an Alchemist-exclusive pool, occupying its own slot beyond the three brought reagents. It follows normal reagent rules (consumable once, by any champion, on their turn) except that it is never added to the inventory - if unconsumed when the battle ends, it is lost. Each fielded Alchemist brews their own concoction.
         - Brew potency: 90% Uncommon, 100% Rare, 110% Epic, 120% Legendary (relative to a standard reagent of equivalent effect); the brew pool holds 3 lesser reagents at Uncommon and Rare, 4 at Epic and Legendary (see section 3.3.3)
         - Depends on the reagent system (see section 3.3.3 and `Plans/Plan_Reagent_System_And_Sorcerer_Passive.md`); inactive until reagents exist.
-- Sorcerer
+- Sorcerer (Not yet implemented)
     - A damage dealer that harnesses the power of magic to deal Area of Effect damage and control the battlefield. Wields the unstable, shunned magic left behind by the God of Magic, and excels at drawing power from reagents scavenged from that era's ruins. Signature zone: Unstable Rift (see section 3.2.4.1). Primary attributes: Mysticism, Knowledge.
     - Purpose: Damage, Debuffer, Control
     - Passive: Arcane Instability - Using a non-basic skill grants one Instability stack (+x% Mysticism per stack, maximum 5). When the Sorcerer consumes a reagent, they gain two Instability stacks and the reagent's effect is amplified by y%. While at maximum stacks, the Sorcerer's next skill also releases a Surge: magical damage to all characters, allies included, scaling with the Sorcerer's Mysticism - then all stacks reset. Stacks do not persist between combats.
@@ -142,7 +142,7 @@ Current roles, their identity and purpose exist as follows:
     - A support character that focuses on knowledge and strategy to enhance allies' abilities and exploit enemy weaknesses. The zone-clearing specialist: the Scholar's kit is one of the two dedicated ways to remove zones from the turn bar (see section 3.2.4.1). Primary attributes: Knowledge.
     - Purpose: Debuffer, Buffer
     - Passive: 
-- Diviner
+- Diviner (Not yet implemented)
     - A squishy support.  Primary attributes: Mysticism.
     - Purpose: Sustain, Debuffer
     - Passive: Foresight - Place debuffs on enemies if they are close enough behind the Diviner on the turn bar when the Diviners turn starts.
@@ -156,7 +156,7 @@ Current roles, their identity and purpose exist as follows:
     - Purpose: Buffer
     - Passive: Plan - Gives buffs to allies who are within x% behind the Tactician on the turn bar when their turn starts. Applies at every rarity; only the Tactician's own self is excluded.
         - 10% Uncommon, 15% Rare, 20% Epic, 25% Legendary
-- Symbiote
+- Symbiote (Not yet implemented)
     - A character weak by default but given the option to alter itself to combine with one of select few monsters to gain their trait & bonus in attributes. Primary attributes: Health, Resistance.
     - Purpose: Sustain, Buffer
     - Passive: 
@@ -164,7 +164,7 @@ Current roles, their identity and purpose exist as follows:
     - An unconventional tanking character that does not have significantly high Health or Defense but relies on skills that provoke hits to the Jester and dodge them. Primary attributes: Accuracy, Knowledge, Speed.
     - Purpose: Damage, Sustain
     - Passive: "Double the fun!" - A base 5% chance to completely avoid the damage of an incoming attack (debuffs from the attack still land). Each hit that lands instead of being avoided increases the chance by a rarity-dependent amount, up to 3 stacks: Uncommon +3%, Rare +4%, Epic +5%, Legendary +6% per stack. Avoiding damage resets the chance to the 5% base. Increases the chances of being targeted.
-- Cultist
+- Cultist (Not yet implemented)
     - Consumes ally buffs or health to empower their own skills, dealing magical damage or applying debuffs. Primary attributes: Mysticism, Knowledge.
     - Purpose: Debuffer, Damage
     - Passive: 
@@ -373,7 +373,7 @@ Skill targeting types:
 
 Of the skills a character has, they always have 1 basic skill that has no cooldown but in general is weaker or more basic than other skills.
 
-##### 3.2.4.1 Turn Bar Skills
+##### 3.2.4.1 Zone System Rules
 Turn bar skills apply effects to specific zones on the turn bar.
 
 Zone system rules:
@@ -385,23 +385,103 @@ Zone system rules:
 * The effect of ally-placed zones scales with the placing character's Knowledge (see section 3.1.1).
 * Each zone belongs to one of three lore families that define its visual language: order zones (God of Rules), unstable zones (God of Magic), and momentum zones (God of Adventure).
 
-Zone effects:
-* Weight of Law (Zone Effect): Affected enemies are Stunned for their next turn.
-* Flicker Zone (Zone Effect): Affected allies move 15% further on the turn bar when they reach this zone.
-* Temporal Sinkhole (Zone Effect): Affected enemies lose a portion of their turn bar progress. Placed by the Chronophage, whose Time Tithe passive absorbs part of the stolen amount.
-* Miasma (Zone Effect): Affected enemies gain a damage-over-time debuff. Placed by the Plague Doctor. Duration model not yet decided.
-* Catalyst Cloud (Zone Effect): Affected allies gain the Catalyst buff (see section 3.2.3.2). Placed by the Alchemist.
-* Unstable Rift (Zone Effect): All affected characters, allies and enemies alike, gain the Warped debuff (see section 3.2.3.2). Placed by the Sorcerer.
+##### 3.2.4.2 Skills by Role
+Skills allocated to a specific Role, listed in the same order as their entries in section 3.1.3. A Role with no skills assigned yet keeps a placeholder heading so its absence is visible at a glance.
 
-##### 3.2.4.2 Role Specific Skills
-* Symbiotic Overdrive (Symbiote): Increases all primary attributes by 20% but causes the character to lose 5% of their max Health every time they take a turn.
-* Burning Bolas (Jester): Throws flaming bolas at an enemy, dealing damage and applying the Burning debuff, scaling of Attack.
+###### Emissary
+(No skills assigned yet.)
 
-##### 4.2.4.3 Universal Skills
-* Pagan Curse: A ticking debuff. After 3 turns, the character is hit with a massive burst of Magical Damage unless they use a specific Chant to cleanse it.
-* Zap (Damage Skill): Deals Magical Damage to a single target enemy, scaling with Speed.
-* Heap on (Damage Skill): Deals damage to one enemy, scaling with Health and grows stronger with every use.
-* Stab (Damage Skill): Deals Physical Damage to a single target enemy, scaling with Attack.
+###### Thief
+(No skills assigned yet.)
+
+###### Lancer
+(No skills assigned yet.)
+
+###### Alchemist
+* Catalyst Cloud
+    * Type: Turn Bar (Zone)
+    * Effect: Affected allies gain the Catalyst buff (see section 3.2.3.2).
+
+###### Sorcerer
+* Unstable Rift
+    * Type: Turn Bar (Zone)
+    * Effect: All affected characters, allies and enemies alike, gain the Warped debuff (see section 3.2.3.2).
+
+###### Scholar
+(No skills assigned yet.)
+
+###### Diviner
+(No skills assigned yet.)
+
+###### Appraiser
+(No skills assigned yet.)
+
+###### Tactician
+(No skills assigned yet.)
+
+###### Symbiote
+* Symbiotic Overdrive
+    * Type: Debuff
+    * Effect: Increases all primary attributes by 20% but causes the character to lose 5% of their max Health every time they take a turn.
+
+###### Jester
+* Burning Bolas
+    * Type: Damage, Debuff
+    * Effect: Throws flaming bolas at an enemy, dealing damage and applying the Burning debuff, scaling of Attack.
+
+###### Cultist
+(No skills assigned yet.)
+
+###### Bar Brawler
+(No skills assigned yet.)
+
+###### Bloodmage
+(No skills assigned yet.)
+
+###### Herald of the loom
+(No skills assigned yet.)
+
+###### Chronophage
+* Temporal Sinkhole
+    * Type: Turn Bar (Zone)
+    * Effect: Affected enemies lose a portion of their turn bar progress. Placed by the Chronophage, whose Time Tithe passive absorbs part of the stolen amount.
+
+###### Architect
+(No skills assigned yet.)
+
+###### Tidal Corsair
+(No skills assigned yet.)
+
+###### Plague Doctor
+* Miasma
+    * Type: Turn Bar (Zone)
+    * Effect: Affected enemies gain a damage-over-time debuff. Duration model not yet decided.
+
+###### Warlord
+(No skills assigned yet.)
+
+##### 3.2.4.3 Unassigned / Generic Skills
+Not yet tied to a specific Role, grouped by mechanical type for lookup.
+
+**Turn Bar (Zone Effects)**
+* Weight of Law
+    * Effect: Affected enemies are Stunned for their next turn.
+* Flicker Zone
+    * Effect: Affected allies move 15% further on the turn bar when they reach this zone.
+
+**Universal**
+* Pagan Curse
+    * Type: Debuff
+    * Effect: A ticking debuff. After 3 turns, the character is hit with a massive burst of Magical Damage unless they use a specific Chant to cleanse it.
+* Zap
+    * Type: Damage
+    * Effect: Deals Magical Damage to a single target enemy, scaling with Speed.
+* Heap on
+    * Type: Damage
+    * Effect: Deals damage to one enemy, scaling with Health and grows stronger with every use.
+* Stab
+    * Type: Damage
+    * Effect: Deals Physical Damage to a single target enemy, scaling with Attack.
 
 ### 3.3. Items and Resources
 
