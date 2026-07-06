@@ -21,6 +21,13 @@ Suggested order (dependencies noted inside each plan):
    independent, but coordinate ordering with `Plan_Headless_Combat_Core.md`
    (whichever lands second adapts).
 
+Design-only plans (no code; can run at any time):
+
+- `Plan_Role_Skill_Kits.md` — populate `Concept_Document.md` 3.2.4.2 with a full
+  skill kit per Role, batch-brainstormed with a claims ledger to control
+  buff/debuff/turn-bar overlap. Imports the Architect kit from
+  `Plan_Architect_Calibration_Kit.md`.
+
 When a plan completes: update the documentation sections it names, strike the
 matching entries from `Technical_Design_Document.md` section 15, and delete or
 archive the plan file.
