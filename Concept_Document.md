@@ -327,8 +327,8 @@ Buffs:
 * Fortify: Increases Defense by 30%.
 * Daunting Strength: Doubles the damage of the next attack.
 * Frenzy: Increases Attack and Speed but reduces Defense and Accuracy. (Not yet implemented)
-* Rush: Bonus stats for a few turns then getting stunned for one turn. (Not yet implemented)
-* Exhert: Gain bonus stats at the cost of losing Health. (Not yet implemented)
+* Rush: Increases all primary attributes except Health by 30%; when the buff expires, the character is Stunned for 1 turn. (Not yet implemented)
+* Exhert: Increases all primary attributes except Health by 20%, but the character loses 5% of their max Health every time they take a turn. (Not yet implemented)
 * Luck: Roll calculations twice and take the better result. (Not yet implemented)
 * Phalanx Guard: Gain bonus defense per stack of momentum consumed. (Lancer Specific)
 * Attune: Increases Mysticism by 30%. (Not yet implemented)
@@ -494,14 +494,30 @@ Skills allocated to a specific Role, listed in the same order as their entries i
     * Effect: One ally gains the Battle Orders turn bar buff for 2 turns (see section 3.2.3.1).
 
 ###### Symbiote
+* Spore Lash
+    * Type: Damage (basic skill, no cooldown)
+    * Effect: Deals Magical Damage to a single target enemy, scaling with Resistance.
 * Symbiotic Overdrive
-    * Type: Debuff
-    * Effect: Increases all primary attributes by 20% but causes the character to lose 5% of their max Health every time they take a turn.
+    * Type: Buff
+    * Cooldown: 5 turns
+    * Effect: The Symbiote gains the Exhert buff for 4 turns (see section 3.2.3.2).
+* Grafted Flesh
+    * Type: Buff, Heal
+    * Cooldown: 3 turns
+    * Effect: The Symbiote loses 10% of its max Health; one ally gains the Regeneration buff for 3 turns (see section 3.2.3.2).
 
 ###### Jester
+* Pratfall Sting
+    * Type: Damage (basic skill, no cooldown)
+    * Effect: Deals Physical Damage to a single target enemy, scaling with Accuracy. Deals +30% damage if the Jester avoided an attack since their last turn.
 * Burning Bolas
     * Type: Damage, Debuff
-    * Effect: Throws flaming bolas at an enemy, dealing damage and applying the Burning debuff, scaling of Attack.
+    * Cooldown: 2 turns
+    * Effect: Throws flaming bolas at a single enemy, dealing Physical Damage scaling with Attack, and applies the Burning debuff for 2 turns (see section 3.2.3.2).
+* Center Stage
+    * Type: Buff
+    * Cooldown: 3 turns
+    * Effect: The Jester gains the Spotlight buff for 2 turns and the Luck buff for 1 turn (see section 3.2.3.2).
 
 ###### Cultist
 * Profane Bolt
@@ -517,7 +533,17 @@ Skills allocated to a specific Role, listed in the same order as their entries i
     * Effect: Deals Magical Damage to a single enemy and applies the Severance debuff for 2 turns (see section 3.2.3.2).
 
 ###### Bar Brawler
-(No skills assigned yet.)
+* Heap on
+    * Type: Damage (basic skill, no cooldown)
+    * Effect: Deals Physical Damage to one enemy, scaling with Health, and grows stronger with every use.
+* Liquid Courage
+    * Type: Buff, Heal
+    * Cooldown: 3 turns
+    * Effect: The Bar Brawler gains the Vigor buff for 2 turns (see section 3.2.3.2) and heals 15% of max Health.
+* Headbutt
+    * Type: Damage, Debuff (Turn Bar)
+    * Cooldown: 3 turns
+    * Effect: Deals Physical Damage to a single enemy, scaling with Health, and applies the Dead Weight debuff for 2 turns (see section 3.2.3.1).
 
 ###### Bloodmage
 * Blood Bolt
@@ -590,7 +616,17 @@ Skills allocated to a specific Role, listed in the same order as their entries i
     * Effect: Deals Magical Damage to a single enemy and applies the Blight debuff for 2 turns (see section 3.2.3.2).
 
 ###### Warlord
-(No skills assigned yet.)
+* Shield Slam
+    * Type: Damage (basic skill, no cooldown)
+    * Effect: Deals Physical Damage to a single target enemy, scaling with Defense.
+* Hold the Line
+    * Type: Buff
+    * Cooldown: 3 turns
+    * Effect: All allies gain the Fortify buff for 2 turns (see section 3.2.3.2).
+* Brace for Impact
+    * Type: Buff
+    * Cooldown: 4 turns
+    * Effect: The Warlord gains the Rush buff and the Aegis buff for 1 turn each (see section 3.2.3.2). When Rush expires, the Warlord is Stunned for 1 turn per the Rush effect.
 
 ##### 3.2.4.3 Unassigned / Generic Skills
 Not yet tied to a specific Role, grouped by mechanical type for lookup.
@@ -606,9 +642,6 @@ Not yet tied to a specific Role, grouped by mechanical type for lookup.
 * Zap
     * Type: Damage
     * Effect: Deals Magical Damage to a single target enemy, scaling with Speed.
-* Heap on
-    * Type: Damage
-    * Effect: Deals damage to one enemy, scaling with Health and grows stronger with every use.
 * Stab
     * Type: Damage
     * Effect: Deals Physical Damage to a single target enemy, scaling with Attack.

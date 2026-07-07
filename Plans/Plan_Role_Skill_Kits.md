@@ -8,9 +8,8 @@ all output lands in `Concept_Document.md`; no code is written.
 
 ## Status
 
-In progress. Batches 1 (Damage), 2 (Debuffer / Control), and 3 (Buffer / Support)
-are written into 3.2.4.2; batch 4 (Sustain / Tank: Jester, Symbiote, Bar Brawler,
-Warlord) remains. Open slots to revisit:
+In progress. All four batches are written into 3.2.4.2; only the final pass
+(step 5) remains. Open slots to revisit:
 
 - Herald of the loom: the three thread stances live in the (currently empty) passive
   slot — stance selection at the start of the Herald's turn, to be defined in a
@@ -131,7 +130,7 @@ pass are reviewed in the final step (acceptable orphans vs. catalog cuts).
 |---|---|
 | Anchor | — |
 | Temporal Leak | — |
-| Dead Weight | — |
+| Dead Weight | Bar Brawler (Headbutt) |
 | Slipstream | — |
 | Steadfast | — |
 | Resonance | — |
@@ -167,12 +166,12 @@ pass are reviewed in the final step (acceptable orphans vs. catalog cuts).
 | Effect | Claimed by |
 |---|---|
 | Empower | — |
-| Fortify | — |
+| Fortify | Warlord (Hold the Line) |
 | Daunting Strength | Tactician (Fatal Flaw) |
 | Frenzy | — |
-| Rush | — |
-| Exhert | — |
-| Luck | — |
+| Rush | Warlord (Brace for Impact) |
+| Exhert | Symbiote (Symbiotic Overdrive) |
+| Luck | Jester (Center Stage) |
 | Phalanx Guard | Lancer (passive, role-unique) |
 | Attune | Herald of the loom (Woven Blessing) |
 | Haste | — |
@@ -180,27 +179,28 @@ pass are reviewed in the final step (acceptable orphans vs. catalog cuts).
 | Clarity | — |
 | Keen Edge | — |
 | Insight | — |
-| Regeneration | — |
+| Regeneration | Symbiote (Grafted Flesh) |
 | Barrier | — |
 | Deathward | — |
-| Aegis | — |
+| Aegis | Warlord (Brace for Impact) |
 | Mirror Coat | — |
 | Opportunist | Thief (Case the Target) |
 | Catalyst | Alchemist (Catalyst Cloud) |
 | Signed Writ | — |
 | Wanderlust | — |
 | Overflow | — |
-| Vigor | — |
+| Vigor | Bar Brawler (Liquid Courage) |
 | Lethal Precision | — |
-| Spotlight | — |
+| Spotlight | Jester (Center Stage) |
 | Premonition | Diviner (Premonition) |
 | Rehearsed | — |
 
 **Existing generic skills (3.2.4.3)** — candidates for claiming during batches:
-Weight of Law, Pagan Curse, Heap on. Whatever remains unclaimed stays in 3.2.4.3.
+Weight of Law, Pagan Curse. Whatever remains unclaimed stays in 3.2.4.3.
 Stab and Zap stay universal (fodder enemies fall back on them) while also serving
 as the Thief's and Chronophage's basic skills. Flicker Zone moved under the
-Chronophage in batch 2.
+Chronophage in batch 2; Heap on moved under the Bar Brawler in batch 4 (not
+dual-listed).
 
 ## Steps
 
