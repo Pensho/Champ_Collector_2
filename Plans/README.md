@@ -27,6 +27,10 @@ Design-only plans (no code; can run at any time):
   skill kit per Role, batch-brainstormed with a claims ledger to control
   buff/debuff/turn-bar overlap. Imports the Architect kit from
   `Plan_Architect_Calibration_Kit.md`.
+- `Plan_Encounter_Solution_Design.md` — long-running framework for designing
+  encounters the Role kits solve (fodder / mini-boss / boss tiers), with a
+  coverage ledger tracking which kit answers which encounter. Depends on the
+  kits from `Plan_Role_Skill_Kits.md`; batches append as scenarios are developed.
 
 When a plan completes: update the documentation sections it names, strike the
 matching entries from `Technical_Design_Document.md` section 15, and delete or
