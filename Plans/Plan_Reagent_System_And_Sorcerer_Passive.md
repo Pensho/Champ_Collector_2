@@ -28,7 +28,7 @@ instead of `battle.gd`/`Skills.gd` directly).
 - Effects are **not primarily buffs**: the starter set spans a heal, a buff, and a
   very rare boss-only cooldown reduction.
 - Sorcerer passive (Arcane Instability, `Concept_Document.md` 3.1.3): +1 Instability
-  stack per non-basic skill cast (max 5, +4/6/8/10% Mysticism per stack by rarity);
+  stack per skill cast (max 5, +4/6/8/10% Mysticism per stack by rarity);
   consuming a reagent grants +2 stacks and amplifies the reagent by 20/30/40/50%;
   at max stacks the next skill also releases a Surge (magical damage to all
   characters, allies included, scaling with Mysticism), then stacks reset. Stacks
@@ -79,7 +79,7 @@ instead of `battle.gd`/`Skills.gd` directly).
   for per-stack Mysticism and reagent amplification, stack counter, reset in
   `StartOfBattle`) and `Tidal_Corsair_Trait.gd` (stack display through
   `CharacterRepresentation.SetTraitElement`). Hooks `Skill_Cast` (+1 stack on
-  non-basic skills; Surge at max stacks, then reset) and `Reagent_Consumed`
+  every skill cast; Surge at max stacks, then reset) and `Reagent_Consumed`
   (+2 stacks, return amplification). Authored as `Sorcerer_Trait.tres` in
   `Data/Character_Traits/` and assigned to Sorcerer presets.
 
@@ -107,15 +107,12 @@ instead of `battle.gd`/`Skills.gd` directly).
 7. **Tests** (GUT, `Tests/unit/`): registry data-integrity test covering every
    reagent `.tres` (same pattern as `test_character_preset_skill_invariant.gd`);
    inventory add/consume/serialize round-trip; consumption applies the effect once
-   and deletes the reagent; Sorcerer stack accrual on non-basic skills only;
+   and deletes the reagent; Sorcerer stack accrual on every skill cast;
    +2 stacks on reagent consumption; Surge at max stacks then reset; rarity-scaled
    values; stacks reset at battle start.
 
 ## Watch for
 
-- Basic versus non-basic skill detection: the basic skill is the no-cooldown skill
-  (`Concept_Document.md` 3.2.4) — the trait needs a reliable predicate, not an
-  index assumption.
 - The Surge hits allies and must run through the normal damage handling
   (`Damage_Taken` trait hooks, Jester avoidance, death) — reuse the
   `Skills.DamageDealt` path, do not hand-roll damage.

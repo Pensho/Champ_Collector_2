@@ -134,7 +134,7 @@ Current roles, their identity and purpose exist as follows:
 - Sorcerer (Not yet implemented)
     - A damage dealer that harnesses the power of magic to deal Area of Effect damage and control the battlefield. Wields the unstable, shunned magic left behind by the God of Magic, and excels at drawing power from reagents scavenged from that era's ruins. Signature zone: Unstable Rift (see section 3.2.4.1). Primary attributes: Mysticism, Knowledge.
     - Purpose: Damage, Debuffer, Control
-    - Passive: Arcane Instability - Using a non-basic skill grants one Instability stack (+x% Mysticism per stack, maximum 5). When the Sorcerer consumes a reagent, they gain two Instability stacks and the reagent's effect is amplified by y%. While at maximum stacks, the Sorcerer's next skill also releases a Surge: magical damage to all characters, allies included, scaling with the Sorcerer's Mysticism - then all stacks reset. Stacks do not persist between combats.
+    - Passive: Arcane Instability - Using any skill grants one Instability stack (+x% Mysticism per stack, maximum 5). When the Sorcerer consumes a reagent, they gain two Instability stacks and the reagent's effect is amplified by y%. While at maximum stacks, the Sorcerer's next skill also releases a Surge: magical damage to all characters, allies included, scaling with the Sorcerer's Mysticism - then all stacks reset. Stacks do not persist between combats.
         - Per-stack Mysticism: 4% Uncommon, 6% Rare, 8% Epic, 10% Legendary
         - Reagent amplification: 20% Uncommon, 30% Rare, 40% Epic, 50% Legendary
         - Depends on the reagent system (see section 3.3.3 and `Plans/Plan_Reagent_System_And_Sorcerer_Passive.md`). Until reagents exist, the passive functions on skill-cast stacks alone.
@@ -380,6 +380,7 @@ Zone system rules:
 * The turn bar is divided into 5 sections. Each section can hold at most one zone at a time.
 * When placing a zone, the player chooses which section it goes into. A section that already holds a zone cannot be targeted; the placement is blocked until that zone is gone.
 * Trigger: when any character's turn starts, every character standing inside a zone is affected by it — but only once per visit. A character that has been affected by a zone is not affected by it again until they leave the section and re-enter it.
+* Zones do not expire with time. A zone holds a set number of charges; each time it affects a character, one charge is consumed, and when the last charge is consumed the zone dissipates.
 * Zones are removed only by dedicated clearing effects — the Scholar's kit and a zone-clearing reagent. There is deliberately no universal zone-clearing skill.
 * Both sides place zones; the 5 sections are shared between allies and enemies.
 * The effect of ally-placed zones scales with the placing character's Knowledge (see section 3.1.1).
@@ -389,35 +390,108 @@ Zone system rules:
 Skills allocated to a specific Role, listed in the same order as their entries in section 3.1.3. A Role with no skills assigned yet keeps a placeholder heading so its absence is visible at a glance.
 
 ###### Emissary
-(No skills assigned yet.)
+* Citation
+    * Type: Damage (basic skill, no cooldown)
+    * Effect: Deals Magical Damage to a single target enemy, scaling with Knowledge.
+* (Remaining two skills not yet decided.)
 
 ###### Thief
-(No skills assigned yet.)
+* Stab
+    * Type: Damage (basic skill, no cooldown)
+    * Effect: Deals Physical Damage to a single target enemy, scaling with Attack.
+* Pierce Weakness
+    * Type: Damage
+    * Cooldown: 2 turns
+    * Effect: Deals Physical Damage to a single enemy, ignoring 60% of the target's Defense, scaling with Attack.
+* Case the Target
+    * Type: Buff
+    * Cooldown: 3 turns
+    * Effect: The Thief gains the Opportunist buff for 2 turns (see section 3.2.3.2).
 
 ###### Lancer
-(No skills assigned yet.)
+* Lance Thrust
+    * Type: Damage (basic skill, no cooldown; counts as an offensive skill)
+    * Effect: Deals Physical Damage to a single target enemy, scaling with Attack.
+* Rending Charge
+    * Type: Damage, Debuff (counts as an offensive skill)
+    * Cooldown: 3 turns
+    * Effect: Deals heavy Physical Damage to a single enemy, scaling with Attack, and applies the Bleed debuff for 2 turns (see section 3.2.3.2).
+* Disarm
+    * Type: Damage, Debuff (counts as a defensive skill)
+    * Cooldown: 3 turns
+    * Effect: Deals Physical Damage to a single enemy and applies the Enfeeble debuff for 2 turns (see section 3.2.3.2).
 
 ###### Alchemist
+* Acrid Splash
+    * Type: Damage (basic skill, no cooldown)
+    * Effect: Deals Magical Damage to a single target enemy, scaling with Knowledge.
 * Catalyst Cloud
     * Type: Turn Bar (Zone)
-    * Effect: Affected allies gain the Catalyst buff (see section 3.2.3.2).
+    * Cooldown: 3 turns
+    * Effect: Affected allies gain the Catalyst buff for 2 turns (see section 3.2.3.2). Holds 4 charges.
+* Dissolving Agent
+    * Type: Debuff
+    * Cooldown: 3 turns
+    * Effect: Applies the Unravel debuff to a single enemy for 2 turns (see section 3.2.3.2).
 
 ###### Sorcerer
+* Arc Lash
+    * Type: Damage (basic skill, no cooldown)
+    * Effect: Deals Magical Damage to a single target enemy, scaling with Mysticism.
 * Unstable Rift
     * Type: Turn Bar (Zone)
-    * Effect: All affected characters, allies and enemies alike, gain the Warped debuff (see section 3.2.3.2).
+    * Cooldown: 3 turns
+    * Effect: All affected characters, allies and enemies alike, gain the Warped debuff for 2 turns (see section 3.2.3.2). Holds 5 charges. A second effect is planned but not yet decided.
+* (Third skill not yet decided.)
 
 ###### Scholar
-(No skills assigned yet.)
+* Sharp Rebuttal
+    * Type: Damage (basic skill, no cooldown)
+    * Effect: Deals Magical Damage to a single target enemy, scaling with Knowledge.
+* Refutation
+    * Type: Turn Bar
+    * Cooldown: 3 turns
+    * Effect: Removes one zone of the Scholar's choice from the turn bar.
+* Expose Fallacy
+    * Type: Debuff
+    * Cooldown: 3 turns
+    * Effect: Applies the Confound debuff to a single enemy for 2 turns (see section 3.2.3.2).
 
 ###### Diviner
-(No skills assigned yet.)
+* Fateful Glimpse
+    * Type: Damage, Heal (basic skill, no cooldown)
+    * Effect: Deals minor Magical Damage to a single target enemy and restores a small amount of Health to the most injured ally (the Diviner included), both scaling with Mysticism.
+* Premonition
+    * Type: Buff
+    * Cooldown: 3 turns
+    * Effect: Grants an ally the Premonition buff for 1 turn (see section 3.2.3.2).
+* Ill Omen
+    * Type: Damage, Debuff
+    * Cooldown: 3 turns
+    * Effect: Deals Magical Damage to a single enemy, scaling with Mysticism, and applies the Hexed debuff for 2 turns (see section 3.2.3.2).
 
 ###### Appraiser
-(No skills assigned yet.)
+* Sizing Cut
+    * Type: Damage (basic skill, no cooldown)
+    * Effect: Deals Physical Damage to a single target enemy, scaling with Knowledge.
+* Flaw Analysis
+    * Type: Debuff
+    * Cooldown: 2 turns
+    * Effect: Applies the Exposed Facet debuff to a single enemy for 2 turns (see section 3.2.3.2).
+* (Third skill not yet decided.)
 
 ###### Tactician
-(No skills assigned yet.)
+* Signal Strike
+    * Type: Damage (basic skill, no cooldown)
+    * Effect: Deals Physical Damage to a single target enemy, scaling with Knowledge.
+* Fatal Flaw
+    * Type: Buff
+    * Cooldown: 2 turns
+    * Effect: One ally gains the Daunting Strength buff for 1 turn (see section 3.2.3.2).
+* Battle Orders
+    * Type: Buff (Turn Bar)
+    * Cooldown: 4 turns
+    * Effect: One ally gains the Battle Orders turn bar buff for 2 turns (see section 3.2.3.1).
 
 ###### Symbiote
 * Symbiotic Overdrive
@@ -430,32 +504,90 @@ Skills allocated to a specific Role, listed in the same order as their entries i
     * Effect: Throws flaming bolas at an enemy, dealing damage and applying the Burning debuff, scaling of Attack.
 
 ###### Cultist
-(No skills assigned yet.)
+* Profane Bolt
+    * Type: Damage (basic skill, no cooldown)
+    * Effect: Deals Magical Damage to a single target enemy, scaling with Mysticism.
+* Devour Blessing
+    * Type: Damage
+    * Cooldown: 3 turns
+    * Effect: Consumes all buffs on one ally; deals heavy Magical Damage to a single enemy, scaling with Mysticism, +25% damage per buff consumed.
+* Rite of Severance
+    * Type: Damage, Debuff
+    * Cooldown: 4 turns
+    * Effect: Deals Magical Damage to a single enemy and applies the Severance debuff for 2 turns (see section 3.2.3.2).
 
 ###### Bar Brawler
 (No skills assigned yet.)
 
 ###### Bloodmage
-(No skills assigned yet.)
+* Blood Bolt
+    * Type: Damage (basic skill, no cooldown)
+    * Effect: Deals Magical Damage to a single target enemy, scaling with Mysticism. Costs 3% of the Bloodmage's max Health to cast.
+* (Remaining two skills not yet decided.)
 
 ###### Herald of the loom
-(No skills assigned yet.)
+* Thread Snap
+    * Type: Damage (basic skill, no cooldown)
+    * Effect: Deals Magical Damage to a single target enemy, scaling with Mysticism.
+* Thread Lash
+    * Type: Damage, Debuff
+    * Cooldown: 3 turns
+    * Effect: Deals Magical Damage to a single enemy and applies the Suppress debuff for 2 turns (see section 3.2.3.2).
+* Woven Blessing
+    * Type: Buff
+    * Cooldown: 3 turns
+    * Effect: One ally gains the Attune buff for 2 turns (see section 3.2.3.2).
 
 ###### Chronophage
+* Zap
+    * Type: Damage (basic skill, no cooldown)
+    * Effect: Deals Magical Damage to a single target enemy, scaling with Speed. (Also available as a Universal skill, see section 3.2.4.3.)
+* Flicker Zone
+    * Type: Turn Bar (Zone)
+    * Cooldown: 3 turns
+    * Effect: Affected allies move 15% further on the turn bar. Holds 5 charges.
 * Temporal Sinkhole
     * Type: Turn Bar (Zone)
-    * Effect: Affected enemies lose a portion of their turn bar progress. Placed by the Chronophage, whose Time Tithe passive absorbs part of the stolen amount.
+    * Cooldown: 4 turns
+    * Effect: Affected enemies lose a portion of their turn bar progress. Holds 4 charges.
 
 ###### Architect
-(No skills assigned yet.)
+* Cornerstone
+    * Type: Damage (basic skill, no cooldown)
+    * Effect: Deals Physical Damage to a single target enemy, scaling with Knowledge, and generates one Calibration charge.
+* Raise the Frame
+    * Type: Turn Bar (Zone)
+    * Cooldown: 2 turns
+    * Effect: Constructs a zone: affected allies gain the Sound Structure shield for 2 turns, sized by the Calibration charges invested in the construction (a new shield overwrites a prior one only if larger). Holds 5 charges.
+* Final Calculation
+    * Type: Damage
+    * Cooldown: 3 turns
+    * Effect: Consumes all held Calibration charges: 1-3 charges deal damage only; 4-6 also apply the Expose Weakness debuff for 2 turns (see section 3.2.3.2); 7-10 additionally re-erect the Architect's construction zone for free.
 
 ###### Tidal Corsair
-(No skills assigned yet.)
+* Boarding Strike
+    * Type: Damage (basic skill, no cooldown)
+    * Effect: Deals Physical Damage to a single target enemy, scaling with Attack, and grants the Tidal Corsair one Steel stack.
+* Saltwater Shot
+    * Type: Damage (no cooldown)
+    * Effect: Deals Physical Damage to a single target enemy, scaling with Attack, and grants the Tidal Corsair one Sea stack.
+* Corsair's Reckoning
+    * Type: Damage
+    * Cooldown: 3 turns
+    * Effect: A devastating blow consuming all held stacks: +50% damage per Steel stack; the target loses 10% turn bar progress per Sea stack.
 
 ###### Plague Doctor
+* Septic Lance
+    * Type: Damage (basic skill, no cooldown)
+    * Effect: Deals Magical Damage to a single target enemy, scaling with Mysticism.
 * Miasma
     * Type: Turn Bar (Zone)
-    * Effect: Affected enemies gain a damage-over-time debuff. Duration model not yet decided.
+    * Cooldown: 3 turns
+    * Effect: Affected enemies gain the Plague debuff for 3 turns (see section 3.2.3.2). Holds 4 charges.
+* Quarantine Breach
+    * Type: Damage, Debuff
+    * Cooldown: 4 turns
+    * Effect: Deals Magical Damage to a single enemy and applies the Blight debuff for 2 turns (see section 3.2.3.2).
 
 ###### Warlord
 (No skills assigned yet.)
@@ -466,8 +598,6 @@ Not yet tied to a specific Role, grouped by mechanical type for lookup.
 **Turn Bar (Zone Effects)**
 * Weight of Law
     * Effect: Affected enemies are Stunned for their next turn.
-* Flicker Zone
-    * Effect: Affected allies move 15% further on the turn bar when they reach this zone.
 
 **Universal**
 * Pagan Curse
@@ -482,6 +612,8 @@ Not yet tied to a specific Role, grouped by mechanical type for lookup.
 * Stab
     * Type: Damage
     * Effect: Deals Physical Damage to a single target enemy, scaling with Attack.
+
+##### 3.2.4.4 Opponent Skills
 
 ### 3.3. Items and Resources
 

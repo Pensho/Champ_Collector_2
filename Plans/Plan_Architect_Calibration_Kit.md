@@ -32,8 +32,9 @@ basic-skill charge generation alone.
   `ResolveZoneEffect` in `Scripts/Battle/Skills.gd`, the Chronophage zone pattern).
 - The shield's size is a flat base value plus a Knowledge-scaled modifier, following
   the existing `AllyZoneMagnitude` pattern. Fine values are left for balancing.
-- The zone lasts 5 turns; the construction skill has a 2-turn cooldown. Multiple zones
-  may stand at once.
+- The zone holds 5 charges (zones expire by charge consumption, not time — see the
+  zone rules in `Concept_Document.md` 3.2.4.1); the construction skill has a 2-turn
+  cooldown. Multiple zones may stand at once.
 - The finisher has no minimum charge requirement — cooldown is the only restriction on
   casting it.
 
