@@ -327,7 +327,7 @@ Buffs:
 * Fortify: Increases Defense by 30%.
 * Daunting Strength: Doubles the damage of the next attack.
 * Frenzy: Increases Attack and Speed but reduces Defense and Accuracy. (Not yet implemented)
-* Rush: Increases all primary attributes except Health by 30%; when the buff expires, the character is Stunned for 1 turn. (Not yet implemented)
+* Rush: Increases all primary attributes except Health by 30%; when the buff expires, it applies the Stun debuff to the character for 1 turn. This Stun cannot be resisted and is applied after other expiring buffs (such as Aegis) are removed. (Not yet implemented)
 * Exhert: Increases all primary attributes except Health by 20%, but the character loses 5% of their max Health every time they take a turn. (Not yet implemented)
 * Luck: Roll calculations twice and take the better result. (Not yet implemented)
 * Phalanx Guard: Gain bonus defense per stack of momentum consumed. (Lancer Specific)
@@ -338,7 +338,7 @@ Buffs:
 * Keen Edge: Increases Critical Chance by 15 percentage points. (Not yet implemented)
 * Insight: Increases Knowledge by 30%. (Not yet implemented)
 * Regeneration: Heals 4% of max Health at the start of each turn. (Not yet implemented)
-* Barrier: A shield that absorbs damage up to a set amount before Health is touched. (Not yet implemented)
+* Barrier: A shield that absorbs damage up to a set amount before Health is touched. Barriers do not stack; a new Barrier replaces an existing one only if it is larger. (Not yet implemented)
 * Deathward: The next hit that would be fatal instead leaves the character at 1 Health, then the buff is consumed. (Not yet implemented)
 * Aegis: Blocks the next debuff that would land on the character, then the buff is consumed. (Not yet implemented)
 * Mirror Coat: When a debuff lands on the character, a copy is applied to the attacker, checked against the attacker's Resistance as normal. (Not yet implemented)
@@ -584,7 +584,7 @@ Skills allocated to a specific Role, listed in the same order as their entries i
 * Raise the Frame
     * Type: Turn Bar (Zone)
     * Cooldown: 2 turns
-    * Effect: Constructs a zone: affected allies gain the Sound Structure shield for 2 turns, sized by the Calibration charges invested in the construction (a new shield overwrites a prior one only if larger). Holds 5 charges.
+    * Effect: Constructs a zone: affected allies gain the Barrier buff for 2 turns (see section 3.2.3.2), sized by the Calibration charges invested in the construction. Holds 5 charges.
 * Final Calculation
     * Type: Damage
     * Cooldown: 3 turns
@@ -626,7 +626,7 @@ Skills allocated to a specific Role, listed in the same order as their entries i
 * Brace for Impact
     * Type: Buff
     * Cooldown: 4 turns
-    * Effect: The Warlord gains the Rush buff and the Aegis buff for 1 turn each (see section 3.2.3.2). When Rush expires, the Warlord is Stunned for 1 turn per the Rush effect.
+    * Effect: The Warlord gains the Rush buff and the Aegis buff for 1 turn each (see section 3.2.3.2). When Rush expires, the Warlord receives the Stun debuff per the Rush effect.
 
 ##### 3.2.4.3 Unassigned / Generic Skills
 Not yet tied to a specific Role, grouped by mechanical type for lookup.
@@ -647,6 +647,10 @@ Not yet tied to a specific Role, grouped by mechanical type for lookup.
     * Effect: Deals Physical Damage to a single target enemy, scaling with Attack.
 
 ##### 3.2.4.4 Opponent Skills
+* Break Guard
+    * Type: Damage, Debuff
+    * Cooldown: 2 turns
+    * Effect: A blunt tackle dealing Physical Damage to a single target, scaling with Attack, and applies the Expose Weakness debuff for 2 turns (see section 3.2.3.2).
 
 ### 3.3. Items and Resources
 

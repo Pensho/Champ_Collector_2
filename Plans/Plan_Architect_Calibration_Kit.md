@@ -22,11 +22,12 @@ basic-skill charge generation alone.
 - The finisher resolves in **tiers with fixed thresholds across rarities**; rarity scales
   per-charge potency (4/6/8/10%), not the thresholds. Lowering thresholds per rarity was
   considered and rejected: it would diminish the build-up feeling that defines the role.
-- The zone grants a role-specific **shield buff** (working name "Sound Structure"): a
-  health buffer that absorbs damage before Health is touched, scaling with the charges
-  invested in the construction. It lasts around 2 turns (up for future balancing).
-- Any time an ally lands on the zone, the shield is applied, overwriting the prior
-  shield only if the new one is larger.
+- The zone grants the **Barrier buff** (catalogued in `Concept_Document.md` 3.2.3.2;
+  supersedes the "Sound Structure" working name): a health buffer that absorbs damage
+  before Health is touched, scaling with the charges invested in the construction.
+  It lasts around 2 turns (up for future balancing).
+- Any time an ally lands on the zone, the Barrier is applied; per the catalog rule,
+  Barriers do not stack and the new one replaces the prior only if larger.
 - "Using" the zone means an ally stopping on it when someones turn starts, reusing the
   existing zone targeting and resolution (`Skill_Target.ZoneAlly` and
   `ResolveZoneEffect` in `Scripts/Battle/Skills.gd`, the Chronophage zone pattern).
@@ -42,7 +43,7 @@ basic-skill charge generation alone.
 
 - **Basic skill** — deals damage and generates 1 Calibration charge.
 - **Zone construction skill** — erects a zone effect that generates 1 charge for the
-  Architect per character that uses it and applies the Sound Structure shield buff to
+  Architect per character that uses it and applies the Barrier buff to
   allies landing on it, sized by the charges consumed to construct the zone.
 - **Finisher** — consumes all held charges; the outcome resolves by tier:
   - **1–3 charges (Demolition):** damage only, scaling per charge. The early cash-out.

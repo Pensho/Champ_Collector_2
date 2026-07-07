@@ -108,8 +108,8 @@ Per-batch procedure:
   Strike, Saltwater Shot, Corsair's Reckoning) — the batch writes out their effects,
   it does not rename or replace them.
 - **Architect:** import the kit sketch (basic, zone construction, tiered finisher)
-  from `Plan_Architect_Calibration_Kit.md`; Expose Weakness and the Sound Structure
-  shield are claimed by it.
+  from `Plan_Architect_Calibration_Kit.md`; Expose Weakness and the Barrier buff
+  (formerly the Sound Structure working name) are claimed by it.
 - **Herald of the loom:** the thread stances live in the passive slot (decided in
   batch 3); the skills stand alone and stances modify them from the passive side.
 - **Symbiote:** the monster-combine mechanic is undefined; its kit may hold one
@@ -140,7 +140,7 @@ pass are reviewed in the final step (acceptable orphans vs. catalog cuts).
 
 | Effect | Claimed by |
 |---|---|
-| Expose Weakness | Architect (finisher tier 2, per its plan) |
+| Expose Weakness | Architect (finisher tier 2, per its plan); Break Guard (opponent skill) |
 | Enfeeble | Lancer (Disarm) |
 | Mana Burn | — |
 | Burning | Jester (Burning Bolas) |
@@ -156,7 +156,7 @@ pass are reviewed in the final step (acceptable orphans vs. catalog cuts).
 | Blight | Plague Doctor (Quarantine Breach) |
 | Severance | Cultist (Rite of Severance) |
 | Hexed | Diviner (Ill Omen) |
-| Stun | Weight of Law (generic zone, unassigned) |
+| Stun | Weight of Law (generic zone, unassigned); Rush expiry (self-inflicted) |
 | Fatigue | — |
 | Refracted | — |
 | Warped | Sorcerer (Unstable Rift) |
@@ -180,7 +180,7 @@ pass are reviewed in the final step (acceptable orphans vs. catalog cuts).
 | Keen Edge | — |
 | Insight | — |
 | Regeneration | Symbiote (Grafted Flesh) |
-| Barrier | — |
+| Barrier | Architect (Raise the Frame; replaced the Sound Structure working name) |
 | Deathward | — |
 | Aegis | Warlord (Brace for Impact) |
 | Mirror Coat | — |
