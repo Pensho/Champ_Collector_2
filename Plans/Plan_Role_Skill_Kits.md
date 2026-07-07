@@ -15,13 +15,7 @@ In progress. All four batches are written into 3.2.4.2; only the final pass
   slot — stance selection at the start of the Herald's turn, to be defined in a
   later passive pass, not in the skills.
 
-- Bloodmage: both signature skills.
-- Sorcerer: Unstable Rift's second effect; the third skill.
 - Tidal Corsair: the finisher's stack payloads may be revised.
-- Emissary: both signature skills. Under consideration: a Signed Writ skill
-  (cooldown 3) that reduces the target's buff durations by 1 turn and applies
-  Signed Writ reworked as a 1-turn debuff (the target cannot resist other debuffs) —
-  adopting it moves Signed Writ from the buff catalog to the debuff catalog in 3.2.3.2.
 - Appraiser: third skill.
 
 Independent of the implementation plans; can run at any time. One overlap:
@@ -96,9 +90,11 @@ Per-batch procedure:
 
 - **Lancer:** the kit must contain at least one offensive and one defensive skill —
   Reckless Momentum depends on both existing.
-- **Emissary:** no hard skill sealing, no turn bar manipulation; punishments are
-  gradual (cooldown extension, debuff duration extension, buff redaction) and scale
-  with Infractions. Skills are Edicts per the 3.1.3 entry.
+- **Emissary:** no hard skill sealing, no turn bar manipulation, no cooldown
+  manipulation; punishments are gradual (buff duration reduction, resistance bypass,
+  attribute sanctions) and scale with Infractions via the Standing Record rate —
+  the passive's rate is the only Infraction scalar; skills state what scales,
+  never their own rate.
 - **Scholar:** the kit must contain the zone-clearing skill — the Scholar is one of
   only two zone-clearing paths in the game.
 - **Chronophage:** both signature zones already exist; Flicker Zone currently sits
@@ -142,7 +138,7 @@ pass are reviewed in the final step (acceptable orphans vs. catalog cuts).
 |---|---|
 | Expose Weakness | Architect (finisher tier 2, per its plan); Break Guard (opponent skill) |
 | Enfeeble | Lancer (Disarm) |
-| Mana Burn | — |
+| Mana Burn | Bloodmage (Tithe of Vitality) |
 | Burning | Jester (Burning Bolas) |
 | Sequence Lock | — |
 | Suppress | Herald of the loom (Thread Lash) |
@@ -160,6 +156,8 @@ pass are reviewed in the final step (acceptable orphans vs. catalog cuts).
 | Fatigue | — |
 | Refracted | — |
 | Warped | Sorcerer (Unstable Rift) |
+| Signed Writ | Emissary (Signed Writ) — reworked from buff to debuff; Notarized Seal reagent re-pointed to one enemy |
+| Sanction | Emissary (Levied Sanction) — new effect this pass |
 
 **Buffs (3.2.3.2)**
 
@@ -180,13 +178,12 @@ pass are reviewed in the final step (acceptable orphans vs. catalog cuts).
 | Keen Edge | — |
 | Insight | — |
 | Regeneration | Symbiote (Grafted Flesh) |
-| Barrier | Architect (Raise the Frame; replaced the Sound Structure working name) |
+| Barrier | Architect (Raise the Frame; replaced the Sound Structure working name); Bloodmage (Transfusion) — ruled a commodity effect, two-kit cap now reached |
 | Deathward | — |
 | Aegis | Warlord (Brace for Impact) |
 | Mirror Coat | — |
 | Opportunist | Thief (Case the Target) |
 | Catalyst | Alchemist (Catalyst Cloud) |
-| Signed Writ | — |
 | Wanderlust | — |
 | Overflow | — |
 | Vigor | Bar Brawler (Liquid Courage) |

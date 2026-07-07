@@ -111,10 +111,10 @@ Each Role can have one or two main purposes in combat but it doesn't have to res
 
 Current roles, their identity and purpose exist as follows:
 - Emissary (Not yet implemented)
-    - A field agent of the Iron Ledger who wins by building a case against the enemy rather than overpowering them. Keeps a per-enemy tally of Infractions (see the Standing Record passive) and issues Edicts — marks placed on an enemy that expand what counts as an Infraction for them or make their Infractions count double. Punishment effects stay gradual rather than binary: no hard skill sealing or turn bar manipulation; instead cooldown extension, debuff duration extension, and buff redaction (a redacted buff remains visible but has no effect until it expires), all scaling with the target's Infraction count. Primary attributes: Accuracy, Knowledge.
+    - A field agent of the Iron Ledger who wins by building a case against the enemy rather than overpowering them. Keeps a per-enemy tally of Infractions (see the Standing Record passive) and issues Edicts — formal rulings whose severity is read off the target's Infraction tally. Punishment effects stay gradual rather than binary: no hard skill sealing or turn bar manipulation; instead buff duration reduction, resistance bypass, and attribute sanctions, all scaling with the target's Infraction count. Primary attributes: Accuracy, Knowledge.
     - Purpose: Debuffer, Control
-    - Passive: Standing Record - Every enemy has a personal Infraction tally that only grows and is never consumed. An enemy gains one Infraction whenever they gain a buff, place a zone, or land a debuff on an ally. The Emissary's skills gain +x% effect (potency, duration, or chance to land) per Infraction on the target, up to a rarity-dependent tally cap.
-        - +2% per Infraction with cap 5 Uncommon, +3% with cap 7 Rare, +4% with cap 9 Epic, +5% with cap 12 Legendary
+    - Passive: Standing Record - Every enemy has a personal Infraction tally that only grows and is never consumed. An enemy gains one Infraction whenever they gain a buff, place a zone, or land a debuff on an ally. The tally is counted up to a cap of 9 for skill effects. The Emissary's skills that scale with Infractions apply a rarity-dependent rate per Infraction on the target; that rate is the only source of Infraction scaling (skills state what scales, never their own rate).
+        - 2.5% per Infraction Uncommon, 3% Rare, 3.5% Epic, 4% Legendary
 - Thief
     - A squishy damage dealer, focusing on set-up through skills and bypassing enemy defenses. Primary attributes: Attack.
     - Purpose: Damage.
@@ -321,6 +321,8 @@ Debuffs:
 * Fatigue: The character's skill cooldowns do not tick down. (Not yet implemented)
 * Refracted: The character's single-target skills hit a random character instead, allies included. (Not yet implemented)
 * Warped: The character's damage dealt scales with Mysticism instead of the skill's normal attribute. Whether other calculations are also forced through Mysticism is not yet decided. (Not yet implemented)
+* Signed Writ: The character cannot resist debuffs. (Not yet implemented)
+* Sanction: Reduces all primary attributes except Health by the applier's Standing Record rate per Infraction on the target, set at the moment of application (see the Emissary's passive in section 3.1.3). (Not yet implemented)
 
 Buffs:
 * Empower: Increases Attack by 30%.
@@ -344,7 +346,6 @@ Buffs:
 * Mirror Coat: When a debuff lands on the character, a copy is applied to the attacker, checked against the attacker's Resistance as normal. (Not yet implemented)
 * Opportunist: The character's attacks deal +10% damage per debuff on the target. (Not yet implemented)
 * Catalyst: The next reagent the character consumes has +50% effect. Stacks additively with other reagent potency modifiers; has no effect on binary reagents (see section 3.3.3). (Not yet implemented)
-* Signed Writ: The character's next debuff cannot be resisted, then the buff is consumed. (Not yet implemented)
 * Wanderlust: At the start of each of the character's turns, gain +20% to one random primary stat until their next turn. (Not yet implemented)
 * Overflow: When this buff expires, it deals magical damage to all enemies, scaling with the holder's Mysticism. (Not yet implemented)
 * Vigor: Increases max Health by 30%. (Not yet implemented)
@@ -392,8 +393,15 @@ Skills allocated to a specific Role, listed in the same order as their entries i
 ###### Emissary
 * Citation
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals Magical Damage to a single target enemy, scaling with Knowledge.
-* (Remaining two skills not yet decided.)
+    * Effect: Deals Magical Damage to a single target enemy, scaling with Knowledge, increased by the Standing Record rate per Infraction on the target.
+* Signed Writ
+    * Type: Debuff
+    * Cooldown: 3 turns
+    * Effect: Reduces the durations of all the target's buffs by 1 turn and applies the Signed Writ debuff for 1 turn (see section 3.2.3.2). If the target has 6 or more Infractions, buff durations are reduced by 2 turns and Signed Writ lasts 2 turns instead.
+* Levied Sanction
+    * Type: Debuff
+    * Cooldown: 4 turns
+    * Effect: Applies the Sanction debuff to a single enemy for 2 turns (see section 3.2.3.2); its potency is set by the target's Infraction tally at the moment of application.
 
 ###### Thief
 * Stab
@@ -441,8 +449,11 @@ Skills allocated to a specific Role, listed in the same order as their entries i
 * Unstable Rift
     * Type: Turn Bar (Zone)
     * Cooldown: 3 turns
-    * Effect: All affected characters, allies and enemies alike, gain the Warped debuff for 2 turns (see section 3.2.3.2). Holds 5 charges. A second effect is planned but not yet decided.
-* (Third skill not yet decided.)
+    * Effect: All affected characters, allies and enemies alike, gain the Warped debuff for 2 turns (see section 3.2.3.2) and take Magical Damage scaling with the Sorcerer's Mysticism — enemies take 30% of a standard hit, allies 15%. Holds 5 charges.
+* Cataclysmic Surge
+    * Type: Damage (AoE)
+    * Cooldown: 4 turns
+    * Effect: Deals Magical Damage to all enemies, scaling with Mysticism. Targets currently affected by the Warped debuff take 30% increased damage.
 
 ###### Scholar
 * Sharp Rebuttal
@@ -549,7 +560,14 @@ Skills allocated to a specific Role, listed in the same order as their entries i
 * Blood Bolt
     * Type: Damage (basic skill, no cooldown)
     * Effect: Deals Magical Damage to a single target enemy, scaling with Mysticism. Costs 3% of the Bloodmage's max Health to cast.
-* (Remaining two skills not yet decided.)
+* Transfusion
+    * Type: Buff
+    * Cooldown: 3 turns
+    * Effect: The Bloodmage sacrifices 15% of max Health; one ally gains a Barrier absorbing 200% of the Health sacrificed, lasting 2 turns (see section 3.2.3.2).
+* Tithe of Vitality
+    * Type: Damage, Debuff
+    * Cooldown: 4 turns
+    * Effect: Drains 10% of max Health from each living ally (the Bloodmage excluded). Deals moderate Magical Damage to a single enemy, scaling with Mysticism, and applies the Mana Burn debuff for 2 turns (see section 3.2.3.2).
 
 ###### Herald of the loom
 * Thread Snap
@@ -739,7 +757,7 @@ Singletons:
   dedicated zone-clearing effects, see section 3.2.4.1).
 * Deathward Charm (Binary): applies the Deathward buff to one ally.
 * Chant Fragment (Binary): cleanses Pagan Curse from one ally. God of Magic lore family.
-* Notarized Seal (Binary): applies the Signed Writ buff to one ally. God of Rules
+* Notarized Seal (Binary): applies the Signed Writ debuff to one enemy for 1 turn. God of Rules
   lore family.
 * Wayfarer's Draught: applies Wanderlust to the consumer, with the random-stat bonus
   percentage set by rarity instead of the buff's standard value. God of Adventure
