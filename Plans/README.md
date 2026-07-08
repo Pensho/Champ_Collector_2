@@ -31,6 +31,11 @@ Design-only plans (no code; can run at any time):
   encounters the Role kits solve (fodder / mini-boss / boss tiers), with a
   coverage ledger tracking which kit answers which encounter. Depends on the
   kits from `Plan_Role_Skill_Kits.md`; batches append as scenarios are developed.
+- `Plan_Particle_Effects.md` — living inventory of battle and environmental
+  particle effects (archetype library, Adventure map overlays, hub ambience).
+  Mostly design; its battle-effect infrastructure section spawns a future code
+  plan. Soft ties to `Plan_Data_Driven_Status_Effects.md` (status-effect mapping
+  home) and `Adventure_Background_Visuals_Checklist.md` (fog and campfire props).
 
 When a plan completes: update the documentation sections it names, strike the
 matching entries from `Technical_Design_Document.md` section 15, and delete or
