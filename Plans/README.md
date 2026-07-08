@@ -36,6 +36,11 @@ Design-only plans (no code; can run at any time):
   Mostly design; its battle-effect infrastructure section spawns a future code
   plan. Soft ties to `Plan_Data_Driven_Status_Effects.md` (status-effect mapping
   home) and `Adventure_Background_Visuals_Checklist.md` (fog and campfire props).
+- `Plan_Lighting.md` — systemized 2D lighting for battles, the Adventure map, and
+  hubs: one `LightingProfile` mood resource, a shared ambient rig, living
+  (flicker/pulse) light archetypes. Design with a staged rollout; independent, but
+  soft ties to `Plan_Particle_Effects.md` (paired light/emitter scenes) and
+  `Adventure_Background_Visuals_Checklist.md` (glow-accent props).
 
 When a plan completes: update the documentation sections it names, strike the
 matching entries from `Technical_Design_Document.md` section 15, and delete or
