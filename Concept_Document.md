@@ -231,50 +231,69 @@ After a combat event, the players characters are healed to full and their skill 
 
 #### 3.2.1. Combat Formulas
 ##### 1. Damage Calculation
-Use a multiplicative formula that involves both the attacker's Attack and the defender's Defence attributes, other attributes can substitute Attack depending on the attackers Role or Skill used.
+Damage is ratio-based rather than subtractive: the attacker's scaled attributes are weighed
+against the defender's Defence to produce a mitigation percentage, so no hit is ever fully
+negated by a stat gap.
 
-**Physical Damage Formula:**
 ```
-Damage = (Attacker's Attack - Defender's Defence) * Random_Multiplier
+Caster_Scaled = Σ over the skill's weighted attributes (attribute_weight * Caster's attribute)
+Effective_Defence = Defender's Defence * Skill's Defense_Ignore_Factor
+Damage_Ratio = Caster_Scaled / (Effective_Defence + Caster_Scaled + 1)
+Mitigation = Minimum_Damage_Percent + (1 - Minimum_Damage_Percent) * Damage_Ratio
+Damage = Mitigation * Caster_Scaled * Critical_Multiplier * Random_Multiplier
 ```
-- The `Random_Multiplier` adds an element of chance, preventing every hit from being the exact same value. A range of 0.95 to 1.05 is a good starting point.
-- You'll need a clause for when the result is negative. A good rule is to cap the damage at a minimum value, such as 1 or 5, to ensure all hits do some damage.
 
-**Magical Damage Formula:**
-This is where your Mysticism stat comes in. It should function similarly to Attack but for magical attacks.
-```
-Magical Damage = (Attacker's Mysticism - ((Defender's Resistance + Defender’s Defence) / 2))) * Random_Multiplier
-```
-- This formula gives a clear distinction between physical and magical combat roles. A Sorcerer's high Mysticism will be their main damage source, while a Knight's high Attack will be theirs.
+- Every skill defines its own attribute weighting rather than a fixed Attack/Mysticism split,
+  so a skill can scale off any mix of attributes (e.g. a Speed-scaling strike, or a hybrid of
+  Attack and Knowledge). This is how Physical and Magical damage share one formula: the
+  "school" of a skill is just which attributes its weighting favors.
+- `Defense_Ignore_Factor` is a per-skill dial (0.0-1.0) for bypassing Defence — an armor-piercing
+  skill sets it below 1.0, and 0.0 ignores Defence entirely.
+- `Minimum_Damage_Percent` is a mitigation floor: no matter how far Defence outstrips the
+  attacker's scaled attributes, every hit still chips away at the target.
+- `Random_Multiplier` keeps a range of 0.95 to 1.05, preventing every hit from being the exact
+  same value.
 
 ##### 2. Turn Order and Speed
-Your Speed stat is crucial for a turn-based system. A simple and effective way to handle it is to use it to determine the turn order at the start of each round.
-
-**Turn Order Formula:**
-The character or enemy with the highest Speed acts first, followed by the next highest, and so on.
-- You can introduce ties by randomizing the order among characters with the same Speed.
-- This makes Speed a valuable stat for all roles, as acting first can be a significant advantage.
+Turn order is not resolved once per round; each character moves continuously along a turn bar
+(see the combat overview above) at a rate proportional to their Speed relative to the fastest
+combatant in the fight, and acts the instant they reach the end. A character with double
+another's Speed reaches the end roughly twice as often, rather than simply going first — Speed
+is a rate, not a priority ranking.
 
 ##### 3. Debuff and Status Effect Application
 Main attributes: Accuracy and Resistance.
 
 **Debuff Success Rate Formula:**
 ```
-Success Rate = Base Chance + (Caster's Accuracy - Target's Resistance) * Multiplier
+Contest = Caster's Accuracy * Random_Multiplier_A vs Target's Resistance * Random_Multiplier_B
 ```
-- The `Base Chance` is the innate probability of the debuff landing (e.g., a "Poison" spell might have a 60% base chance).
-- The `Multiplier` should be a small number (e.g., 0.5% to 1.0%) to ensure that small differences in stats don't make debuffs guaranteed to hit or miss.
-- The result should be capped at a minimum and maximum, such as 10% to 90%, to ensure some level of uncertainty remains.
+- Both sides roll an independent random multiplier (0.95 to 1.0) against their stat; the debuff
+  lands if the caster's rolled Accuracy exceeds the target's rolled Resistance.
+- There is no base chance and no floor or ceiling: a sufficiently large Accuracy-Resistance gap
+  makes a debuff land (or resist) with effective certainty. Encounters that rely on a debuff as
+  the intended solution must be tuned so that counter-play's Accuracy beats the target's
+  Resistance.
 
 This formula makes Accuracy a key stat for your Strategist or Jester roles, who might rely more on disrupting enemies than on raw damage. Conversely, a high Resistance is crucial for a tank-like Knight to avoid crippling debuffs.
 
 ##### 4. Critical Hits
-Critical hits add an element of excitement and potential for big plays.
+Critical Chance and Critical Damage are primary attributes, rolled per hit rather than fixed
+per character.
 
 **Critical Hit Chance Formula:**
-The chance to land a critical hit can be a fixed value for each character/enemy, or it can be based on a stat (e.g., a "Critical" stat you might want to add).
-- A simple approach is to have a fixed 5% to 10% chance.
-- When a critical hit occurs, a `Critical Damage Multiplier` is applied to the final damage (e.g., 1.5x or 2.0x). This multiplier can be a static value or tied to another stat.
+```
+Crits if: random_integer(1, 100) <= Attacker's Critical Chance
+```
+
+**Critical Damage Formula:**
+```
+Critical_Multiplier = max(Minimum_Crit_Damage, Attacker's Critical Damage - Defender's Knowledge * 0.5)
+```
+- A defender's Knowledge blunts incoming critical hits, giving Knowledge-scaling roles (e.g. the
+  Strategist) a secondary defensive niche.
+- `Minimum_Crit_Damage` ensures a critical hit always deals meaningfully more damage than a
+  normal hit even against a very high-Knowledge defender.
 
 #### 3.2.2. Magic system (only as a potential idea, might be discarded)
 Strengths and weaknesses.
@@ -301,7 +320,7 @@ Unless stated otherwise, a buff or debuff lasts 2 turns.
 ##### 3.2.3.2 Common Status Effects
 
 Debuffs:
-* Expose Weakness: Reduces Defense by 50%.
+* Expose Weakness: Reduces Defense by 30%.
 * Enfeeble: Reduces the Attack by 30%.
 * Mana Burn: Deals damage whenever the target uses a non-basic skill, scaling based on the target's Mysticism. (Not yet implemented)
 * Burning: Deals 4% of max Health as damage per stack; Burning stacks, so repeated applications (e.g. standing in a Lava zone) add independent instances up to the status-effect cap.

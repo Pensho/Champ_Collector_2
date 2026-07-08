@@ -6,16 +6,14 @@ body of work. Findings behind these plans are recorded in
 
 Suggested order (dependencies noted inside each plan):
 
-1. `Plan_Documentation_Parity.md` — realign `Concept_Document.md` with the
-   implemented combat formulas; no code dependency, can run in parallel.
-2. `Plan_Team_And_Roster_Abstraction.md` — replace magic slot IDs with teams.
-3. `Plan_Headless_Combat_Core.md` — extract testable combat resolution
-   (largest; builds on the completed combat-correctness fixes and ideally 2).
-4. `Plan_Data_Driven_Status_Effects.md` — status effects as resources
-   (independent; hooks into 3 if done after it).
-5. `Plan_Naming_Convention_Alignment.md` — align written conventions and code;
+1. `Plan_Team_And_Roster_Abstraction.md` — replace magic slot IDs with teams.
+2. `Plan_Headless_Combat_Core.md` — extract testable combat resolution
+   (largest; builds on the completed combat-correctness fixes and ideally 1).
+3. `Plan_Data_Driven_Status_Effects.md` — status effects as resources
+   (independent; hooks into 2 if done after it).
+4. `Plan_Naming_Convention_Alignment.md` — align written conventions and code;
    mechanical, schedule last.
-6. `Plan_Reagent_System_And_Sorcerer_Passive.md` — reagent consumables (inventory,
+5. `Plan_Reagent_System_And_Sorcerer_Passive.md` — reagent consumables (inventory,
    loadout, in-battle use) plus the Sorcerer's Arcane Instability trait;
    independent, but coordinate ordering with `Plan_Headless_Combat_Core.md`
    (whichever lands second adapts).

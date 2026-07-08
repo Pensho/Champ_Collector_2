@@ -20,9 +20,9 @@ Effect magnitudes and behavior are duplicated across at least three `match` bloc
   Expose Weakness -30% Defence (note: -30% here).
 - `TriggerExistingCasterBuffs` — Empower +30% Attack, Fortify +30% Defence,
   Daunting Strength x2 damage.
-- `TriggerTargetBuffs` / `TriggerTargetDebuffs` — Expose Weakness -50% Defence here,
-  matching the concept document, while the caster-side block uses -30%. One of the two
-  is wrong; resolve against `Concept_Document.md` 3.2.3.2 (which says 50%).
+- `TriggerTargetBuffs` / `TriggerTargetDebuffs` — Expose Weakness Defence reduction, now
+  aligned at -30% in both places per `Concept_Document.md` 3.2.3.2 (previously the
+  target-side snapshot used -50%).
 
 Adding one new effect today means editing every block plus the icon maps, with nothing
 enforcing consistency.
@@ -46,9 +46,8 @@ and a single generic apply/tick routine replacing the match blocks.
 
 ## Steps
 
-1. **Decide the Expose Weakness magnitude** (30% vs 50%) against the concept document
-   and record the answer there. Do this first — it is a balance change hiding inside a
-   refactor.
+1. ~~Decide the Expose Weakness magnitude (30% vs 50%) against the concept document
+   and record the answer there.~~ Resolved: 30%.
 2. **Create `StatusEffectData`** (`Scripts/Battle/status_effect_data.gd`) and author
    `.tres` files for the seven implemented effects (Empower, Fortify,
    Daunting Strength, Phalanx Guard, Burning, Enfeeble, Expose Weakness).

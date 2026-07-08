@@ -245,7 +245,7 @@ static func TriggerTargetDebuffs(
 	for debuff in p_target._active_debuffs:
 		match debuff.type:
 			Types.Debuff_Type.Expose_Weakness:
-				p_target_attributes[Types.Attribute.Defence] -= int(ceilf(p_target_attributes[Types.Attribute.Defence] * 0.5))
+				p_target_attributes[Types.Attribute.Defence] -= int(ceilf(p_target_attributes[Types.Attribute.Defence] * 0.3))
 			_:
 				pass
 

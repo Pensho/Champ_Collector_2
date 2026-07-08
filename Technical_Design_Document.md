@@ -634,25 +634,12 @@ and random selection — see `Plans/Plan_Team_And_Roster_Abstraction.md`.
 
 Buff/debuff magnitudes live in parallel `match` blocks in `Skills.gd`
 (`TriggerExistingCasterDebuffs`/`Buffs`, `TriggerTargetBuffs`/`Debuffs`) plus separate
-overwritability matches and icon maps. The duplication has already produced a divergence:
-Expose Weakness reduces Defence by 30% in the caster-side tick but 50% in the target-side
-snapshot (`Concept_Document.md` says 50%).
+overwritability matches and icon maps. The duplication previously produced a divergence
+(Expose Weakness at 30% in one block, 50% in the other, now aligned at 30% per
+`Concept_Document.md`), and nothing prevents the next effect added this way from drifting
+the same way.
 
 *Impact:* adding one effect means editing several blocks with nothing enforcing consistency;
 the concept document's pending effects (Anchor, Sequence Lock, Frenzy, …) would compound this.
 *Direction:* a `StatusEffectData` resource per effect with a generic apply/tick routine,
 mirroring how `Skill` already works — see `Plans/Plan_Data_Driven_Status_Effects.md`.
-
-### 15.9. Concept-document combat formulas describe a superseded design
-
-`Concept_Document.md` 3.2.1 still specifies subtractive damage
-(`Attack − Defence`), a separate magical-damage formula, a debuff success formula with base
-chance and 10–90% caps, and round-based turn ordering. The implementation uses ratio-based
-mitigation with per-skill attribute scaling and defense-ignore (Section 7.4), a plain
-accuracy-versus-resistance contest with no base chance or caps, and the continuous turn bar.
-
-*Impact:* the stated design source of truth misleads planning; the missing debuff hit-chance
-floor also means low-Accuracy champions can be mathematically unable to land debuffs on
-high-Resistance bosses, which undercuts the puzzle-encounter design.
-*Direction:* rewrite the concept document's formula chapter to the implemented design and
-decide the minimum-hit-chance question — see `Plans/Plan_Documentation_Parity.md`.

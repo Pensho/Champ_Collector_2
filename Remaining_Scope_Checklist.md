@@ -31,8 +31,8 @@ outstanding. Detail and suggested order live in `Plans/` (see `Plans/README.md`)
 
 - [x] Combat correctness fixes — completed; plan removed and findings struck from
   `Technical_Design_Document.md` section 15
-- [ ] Documentation parity — realign Concept_Document.md 3.2.1 with the implemented
-  combat formulas (Plans/Plan_Documentation_Parity.md)
+- [x] Documentation parity — completed; plan removed and findings struck from
+  `Technical_Design_Document.md` section 15
 - [ ] Team and roster abstraction (Plans/Plan_Team_And_Roster_Abstraction.md)
 - [ ] Headless combat core (Plans/Plan_Headless_Combat_Core.md) — also unlocks the
   "Run Multiplier" auto-battle idea from FeatureIdeas.md
