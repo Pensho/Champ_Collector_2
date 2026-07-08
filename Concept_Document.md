@@ -304,7 +304,7 @@ Debuffs:
 * Expose Weakness: Reduces Defense by 50%.
 * Enfeeble: Reduces the Attack by 30%.
 * Mana Burn: Deals damage whenever the target uses a non-basic skill, scaling based on the target's Mysticism. (Not yet implemented)
-* Burning: Deals 4% of max Health as damage.
+* Burning: Deals 4% of max Health as damage per stack; Burning stacks, so repeated applications (e.g. standing in a Lava zone) add independent instances up to the status-effect cap.
 * Sequence Lock: Speed cannot be increased or decreased. (Not yet implemented)
 * Suppress: Reduces Mysticism by 30%. (Not yet implemented)
 * Slow: Reduces Speed by 15%. (Not yet implemented)

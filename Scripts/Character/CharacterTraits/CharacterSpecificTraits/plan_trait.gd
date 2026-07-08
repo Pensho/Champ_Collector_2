@@ -42,7 +42,8 @@ func StartOfTurn(
 	if (allies_behind.is_empty()):
 		return
 
-	var skill_targets: Array[int] = Skills.FindSkillTargets(p_owner_ID, p_owner_ID, Types.Skill_Target.All_Other_Allies)
+	var skill_targets: Array[int] = Skills.FindSkillTargets(
+			p_owner_ID, p_owner_ID, Types.Skill_Target.All_Other_Allies, p_characters)
 	if (skill_targets.is_empty()):
 		return
 

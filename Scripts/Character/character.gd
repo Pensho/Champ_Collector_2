@@ -10,7 +10,12 @@ func InstantiateNew(p_preset: CharacterPreset, p_instance_ID: int) -> void:
 	_rarity = p_preset._rarity
 	_faction = p_preset._faction
 	_role = p_preset._role
-	_skills = p_preset._skills
+	# Deep-duplicate each skill so every Character owns its own Skill instances.
+	# Sharing the preset's skills by reference leaks mutable state (cooldown_left)
+	# between enemies of the same variant and across battles in the same session.
+	_skills = []
+	for skill: Skill in p_preset._skills:
+		_skills.append(skill.duplicate(true))
 	if(!p_preset._attribute_weight_types_available.is_empty()):
 		_attributes_weights = p_preset._attribute_weight_types_available[randi_range(0, p_preset._attribute_weight_types_available.size() - 1)].duplicate(true)
 	

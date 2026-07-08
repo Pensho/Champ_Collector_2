@@ -31,14 +31,17 @@ static func ResolveZoneEffect(
 		Types.Skill_Type.Lava_Zone:
 			if(HasMaxStatusEffects(p_character)):
 				return
-			
-			if(!OverwritableDebuff(Types.Debuff_Type.Burning)):
-				var new_debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
-				new_debuff.type = Types.Debuff_Type.Burning # TODO: add a status effect container to the Zone class and use that instead
-				new_debuff.duration = 2 # TODO: Replace with a defined number from the skill.
-				new_debuff.ID = p_character_repr.AddStatusEffect(GetStatusEffectTexture(Statuses.DEBUFF_ICONS[Types.Debuff_Type.Burning]), new_debuff.duration)
-				
-				p_character._active_debuffs.append(new_debuff)
+
+			# Burning stacks by design (Concept_Document.md 3.2.3.2): every Lava-zone
+			# trigger adds another independent Burning debuff, up to the status cap,
+			# so a target left in the lava keeps accruing 4%-max-health ticks.
+			var new_debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
+			new_debuff.type = Types.Debuff_Type.Burning # TODO: add a status effect container to the Zone class and use that instead
+			new_debuff.duration = 2 # TODO: Replace with a defined number from the skill.
+			new_debuff.source_ID = p_zone._owner_ID
+			new_debuff.ID = p_character_repr.AddStatusEffect(GetStatusEffectTexture(Statuses.DEBUFF_ICONS[Types.Debuff_Type.Burning]), new_debuff.duration)
+
+			p_character._active_debuffs.append(new_debuff)
 
 static func ResolveSkillEffect(
 		p_caster_ID: int,
@@ -66,7 +69,8 @@ static func CorrectZoneTarget(p_zone_owner_ID: int, p_trigger_character_ID: int,
 static func FindSkillTargets(
 					p_target_ID: int,
 					p_caster_ID: int,
-					p_target_type: Types.Skill_Target) -> Array[int]:
+					p_target_type: Types.Skill_Target,
+					p_characters: Dictionary[int, Character]) -> Array[int]:
 	var target_IDs: Array[int]
 	match p_target_type:
 		Types.Skill_Target.Single_Enemy:
@@ -81,9 +85,10 @@ static func FindSkillTargets(
 				target_IDs.append_array(PLAYER_IDS)
 		Types.Skill_Target.Random_Enemy:
 			if(PLAYER_IDS.has(p_caster_ID) and MONSTER_IDS.has(p_target_ID)):
-				target_IDs.append(3 + (randi() % 3))
+				target_IDs.append_array(MONSTER_IDS)
 			elif(MONSTER_IDS.has(p_caster_ID) and PLAYER_IDS.has(p_target_ID)):
-				target_IDs.append(randi() % 3)
+				target_IDs.append_array(PLAYER_IDS)
+			return PickRandomAliveTarget(target_IDs, p_characters)
 		Types.Skill_Target.Single_Ally:
 			if(PLAYER_IDS.has(p_caster_ID) and PLAYER_IDS.has(p_target_ID)):
 				target_IDs.append(p_target_ID)
@@ -96,9 +101,10 @@ static func FindSkillTargets(
 				target_IDs.append_array(MONSTER_IDS)
 		Types.Skill_Target.Random_Ally:
 			if(PLAYER_IDS.has(p_caster_ID) and PLAYER_IDS.has(p_target_ID)):
-				target_IDs.append(randi() % 3)
+				target_IDs.append_array(PLAYER_IDS)
 			elif(MONSTER_IDS.has(p_caster_ID) and MONSTER_IDS.has(p_target_ID)):
-				target_IDs.append(3 + (randi() % 3))
+				target_IDs.append_array(MONSTER_IDS)
+			return PickRandomAliveTarget(target_IDs, p_characters)
 		Types.Skill_Target.Ally_Not_Self:
 			if (p_caster_ID != p_target_ID):
 				if(PLAYER_IDS.has(p_caster_ID) and PLAYER_IDS.has(p_target_ID)):
@@ -106,7 +112,9 @@ static func FindSkillTargets(
 				elif(MONSTER_IDS.has(p_caster_ID) and MONSTER_IDS.has(p_target_ID)):
 					target_IDs.append(p_target_ID)
 		Types.Skill_Target.Random_One:
-			target_IDs.append(randi() % 6)
+			target_IDs.append_array(PLAYER_IDS)
+			target_IDs.append_array(MONSTER_IDS)
+			return PickRandomAliveTarget(target_IDs, p_characters)
 		Types.Skill_Target.All:
 			target_IDs.append_array(PLAYER_IDS)
 			target_IDs.append_array(MONSTER_IDS)
@@ -120,29 +128,70 @@ static func FindSkillTargets(
 			target_IDs.erase(p_caster_ID)
 		var INVALID_TYPE:
 			print("Invalid argument for skill target enum passed: ", INVALID_TYPE)
-	return target_IDs
+	return FilterAliveTargets(target_IDs, p_characters)
 
+# Keeps only the IDs that both exist in the battle and are still alive, so a skill
+# never resolves against a corpse or an empty slot.
+static func FilterAliveTargets(
+					p_ids: Array[int],
+					p_characters: Dictionary[int, Character]) -> Array[int]:
+	var alive_IDs: Array[int] = []
+	for id in p_ids:
+		if(p_characters.has(id) and p_characters[id]._current_health > 0):
+			alive_IDs.append(id)
+	return alive_IDs
+
+# Picks a single random target from the alive candidates, or an empty array when
+# none of the candidates are alive.
+static func PickRandomAliveTarget(
+					p_ids: Array[int],
+					p_characters: Dictionary[int, Character]) -> Array[int]:
+	var alive_IDs: Array[int] = FilterAliveTargets(p_ids, p_characters)
+	if(alive_IDs.is_empty()):
+		return alive_IDs
+	var chosen_IDs: Array[int] = []
+	chosen_IDs.append(alive_IDs.pick_random())
+	return chosen_IDs
+
+# Ticks the caster's own debuffs at the start of their turn. Burning deals damage, so
+# it shows combat text over the burning character and reports how much damage each
+# source dealt (keyed by the applier's character ID) for post-battle damage totals.
 static func TriggerExistingCasterDebuffs(
 								p_caster: Character,
 								p_caster_attributes: Dictionary[Types.Attribute, int],
-								p_caster_repr: CharacterRepresentation) -> void:
+								p_caster_repr: CharacterRepresentation,
+								p_battle_ui: BattleUI) -> Dictionary[int, int]:
 	var debuff_IDs_to_be_removed: Array[int] = []
+	var burning_damage_by_source: Dictionary[int, int] = {}
+	var burning_damage_total: int = 0
 	for debuff in p_caster._active_debuffs:
 		match debuff.type:
 			Types.Debuff_Type.Burning:
-				p_caster._current_health -= int(floor((p_caster_attributes[Types.Attribute.Health] * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER) * 0.04))
+				var tick_damage: int = int(floor((p_caster_attributes[Types.Attribute.Health] * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER) * 0.04))
+				p_caster._current_health -= tick_damage
+				burning_damage_total += tick_damage
+				if (not burning_damage_by_source.has(debuff.source_ID)):
+					burning_damage_by_source[debuff.source_ID] = 0
+				burning_damage_by_source[debuff.source_ID] += tick_damage
 			Types.Debuff_Type.Enfeeble:
 				p_caster_attributes[Types.Attribute.Attack] -= int(ceilf(p_caster_attributes[Types.Attribute.Attack] * 0.3))
 			Types.Debuff_Type.Expose_Weakness:
 				p_caster_attributes[Types.Attribute.Defence] -= int(ceilf(p_caster_attributes[Types.Attribute.Defence] * 0.3))
-		
+
 		debuff.duration -= 1
 		p_caster_repr.SetStatusEffectDuration(debuff.ID, debuff.duration)
 		if (debuff.duration <= 0):
 			debuff_IDs_to_be_removed.append(debuff.ID)
-	
+
+	if (burning_damage_total > 0):
+		p_battle_ui.SpawnCombatText(
+				str(burning_damage_total),
+				p_caster_repr.position + p_battle_ui.COMBAT_TEXT_SPAWN_POINT,
+				Color(1.0, 0.45, 0.1, 1.0))
+
 	p_caster._active_debuffs = p_caster._active_debuffs.filter(func(debuff): return debuff.duration > 0)
 	p_caster_repr.RemoveStatusEffects(debuff_IDs_to_be_removed)
+	return burning_damage_by_source
 
 static func TriggerExistingCasterBuffs(
 							p_caster: Character,
@@ -286,7 +335,8 @@ static func CastDebuff(
 					p_caster_accuracy: int,
 					p_skill: Skill,
 					p_target_repr: CharacterRepresentation,
-					p_battle_ui: BattleUI):
+					p_battle_ui: BattleUI,
+					p_caster_ID: int = -1):
 	if(HasMaxStatusEffects(p_target)):
 		return
 	
@@ -307,9 +357,15 @@ static func CastDebuff(
 	var new_debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
 	new_debuff.type = p_skill.debuffs[p_skill.target]
 	new_debuff.duration = p_skill.duration
+	new_debuff.source_ID = p_caster_ID
 	new_debuff.ID = p_target_repr.AddStatusEffect(GetStatusEffectTexture(Statuses.DEBUFF_ICONS[new_debuff.type]), new_debuff.duration)
 	p_target._active_debuffs.append(new_debuff)
 	p_battle_ui.SpawnCombatText(Types.Debuff_Type.keys()[new_debuff.type], p_target_repr.position + p_battle_ui.COMBAT_TEXT_SPAWN_POINT, Color(0.681, 0.152, 0.31, 1.0))
+
+# Rolls a 1-100 die against the crit chance. The die starts at 1 (not 0) so a
+# 0% crit chance can never crit and each chance point is worth exactly one percent.
+static func RollsCritical(p_crit_chance: int) -> bool:
+	return randi_range(1, 100) <= p_crit_chance
 
 static func DamageDealt(p_attacker_attr: Dictionary[Types.Attribute, int],
 						p_defender_attr: Dictionary[Types.Attribute, int],
@@ -329,7 +385,7 @@ static func DamageDealt(p_attacker_attr: Dictionary[Types.Attribute, int],
 	if(0.0 == caster_scaled_attribute_aggregate):
 		return 0
 		
-	if(randi_range(0, 100) <= p_attacker_attr[Types.Attribute.CritChance]):
+	if(RollsCritical(p_attacker_attr[Types.Attribute.CritChance])):
 		crit_multiplier = max(
 				Game_Balance.MINIMUM_CRIT_DAMAGE,
 				float(p_attacker_attr[Types.Attribute.CritDamage] - (p_defender_attr[Types.Attribute.Knowledge] * 0.5))

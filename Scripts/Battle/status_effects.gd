@@ -21,6 +21,9 @@ class Effect:
 	var stackable: bool = true
 	var name: String = ""
 	var value: float = 0.0
+	# Character ID that applied this effect, or -1 when there is no combatant source
+	# (e.g. adventure-map effects). Used to attribute damage-over-time back to its caster.
+	var source_ID: int = -1
 
 class Buff extends Effect:
 	var type: Types.Buff_Type = Types.Buff_Type.Invalid

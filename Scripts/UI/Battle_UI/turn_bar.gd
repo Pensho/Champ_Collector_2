@@ -10,7 +10,6 @@ var _base_velocity: float = self.size.x / Game_Balance.TURN_DURATION_SECONDS
 var _grayscale_material: ShaderMaterial
 
 @export var _char_turns: Array[TextureRect]
-var _highest_speed: int = 0
 var _characters_normalized_speed: Dictionary[int, float]
 var _characters_turn_id = -1
 var _zone_dividers: Array[ColorRect]
@@ -18,12 +17,11 @@ var _zone_buttons: Array[Button]
 var _zone_effects: Array[Node2D]
 
 func Init(p_characters: Dictionary[int, Character], p_zone_callable: Callable):
+	var speeds: Dictionary[int, int] = {}
 	for i in p_characters.keys():
-		if (p_characters[i]._attributes[Types.Attribute.Speed] > _highest_speed):
-			_highest_speed = p_characters[i].GetBattleAttribute(Types.Attribute.Speed)
+		speeds[i] = p_characters[i].GetBattleAttribute(Types.Attribute.Speed)
+	_characters_normalized_speed = NormalizeSpeeds(speeds)
 	for i in p_characters.keys():
-		_characters_normalized_speed[i] = float(
-			p_characters[i].GetBattleAttribute(Types.Attribute.Speed)) / float(_highest_speed)
 		_char_turns[i].size.y = self.size.y * 0.7
 		_char_turns[i].size.x = _char_turns[i].size.y
 		_char_turns[i].position.y = -15 + (i * 10)
@@ -55,6 +53,22 @@ func Init(p_characters: Dictionary[int, Character], p_zone_callable: Callable):
 	
 	DisableZones(true)
 	SetupPlanReachOverlays(p_characters)
+
+# Normalizes each character's speed against the fastest one, so the leader advances
+# at 1.0 and everyone else in proportion. Both the maximum and the normalization must
+# read the same (geared) speed source, or a gear-boosted character can exceed 1.0.
+static func NormalizeSpeeds(p_speeds: Dictionary[int, int]) -> Dictionary[int, float]:
+	var highest_speed: int = 0
+	for id in p_speeds.keys():
+		if (p_speeds[id] > highest_speed):
+			highest_speed = p_speeds[id]
+	var normalized: Dictionary[int, float] = {}
+	for id in p_speeds.keys():
+		if (highest_speed <= 0):
+			normalized[id] = 0.0
+		else:
+			normalized[id] = float(p_speeds[id]) / float(highest_speed)
+	return normalized
 
 func SetupPlanReachOverlays(p_characters: Dictionary[int, Character]) -> void:
 	var owner_ids: Array[int]

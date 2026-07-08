@@ -101,13 +101,13 @@ func Init(p_context: ContextContainer) -> void:
 		_characters[i + 3] = Character.new()
 		_characters[i + 3].InstantiateNew(_battlecontext._enemies_wave_1[i], -1)
 		_characters[i + 3]._attributes[Types.Attribute.Speed] += randi_range(-3, 3)
-		LevelSystem.SetOpponentLevel(_characters[i + 3], difficulty)
-		if (p_context._arguments.has("Boss_Scale")):
+		var is_boss: bool = p_context._arguments.has("Boss_Scale")
+		if (is_boss):
 			_character_repr[i + 3].scale = Vector2(p_context._arguments["Boss_Scale"], p_context._arguments["Boss_Scale"])
 			_character_repr[i + 3].position.y -= (_character_repr[i + 3].position.y * p_context._arguments["Boss_Scale"]) * 0.5
-			LevelSystem.SetOpponentLevel(_characters[i + 3], difficulty, true)
-		else:
-			LevelSystem.SetOpponentLevel(_characters[i + 3], difficulty)
+		# One levelling call carrying the boss flag, so the ×1.5 boss multiplier is
+		# actually applied instead of being pre-empted by an earlier no-op call.
+		LevelSystem.SetOpponentLevel(_characters[i + 3], difficulty, is_boss)
 		_characters[i + 3]._current_health = _characters[i + 3].GetBattleAttribute(Types.Attribute.Health)  * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
 		VisualizeCharacter(i + 3)
 	
@@ -194,7 +194,7 @@ func HandleEnemyTurn() -> void:
 				if(_characters[i]._current_health < 1):
 					continue
 				var target_IDs: Array[int] = Skills.FindSkillTargets(
-					i, _turn_character_ID, _characters[_turn_character_ID]._skills[_selected_skill_ID].target)
+					i, _turn_character_ID, _characters[_turn_character_ID]._skills[_selected_skill_ID].target, _characters)
 				if(target_IDs.is_empty()):
 					continue  # not a valid target for this caster (e.g. an ally), keep looking
 				print(_characters[_turn_character_ID]._name, " used skill with ID: ", _selected_skill_ID)
@@ -247,7 +247,7 @@ func Update(p_delta: float, p_characterID: int) -> void:
 	StartTurn()
 
 func UpdateLifeBar(p_characterID: int) -> void:
-	clampi(_characters[p_characterID]._current_health, 0, _characters[p_characterID].GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
+	_characters[p_characterID]._current_health = clampi(_characters[p_characterID]._current_health, 0, _characters[p_characterID].GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
 	if(_characters[p_characterID]._current_health <= 0):
 		_characters[p_characterID]._current_health = 0
 		_characters[p_characterID]._active_buffs.clear()
@@ -286,10 +286,15 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID) -> voi
 			trait_result = _characters[p_caster_ID]._trait.OnSkillCast(p_caster_ID, p_target_IDs, _characters, _character_repr, cast_skill.name, _battle_ui, caster_attributes)
 	
 	if (not _characters[p_caster_ID]._active_debuffs.is_empty()):
-		Skills.TriggerExistingCasterDebuffs(
+		var burning_damage_by_source: Dictionary[int, int] = Skills.TriggerExistingCasterDebuffs(
 			_characters[p_caster_ID],
 			caster_attributes,
-			_character_repr[p_caster_ID])
+			_character_repr[p_caster_ID],
+			_battle_ui)
+		# Attribute Burning ticks to the player who applied them, for the post-battle totals.
+		for source_ID in burning_damage_by_source.keys():
+			if (PLAYER_IDS.has(source_ID)):
+				_self_context._arguments["character_dmg_" + str(source_ID)] += burning_damage_by_source[source_ID]
 		UpdateLifeBar(p_caster_ID)
 	
 	if (not _characters[p_caster_ID]._active_buffs.is_empty()):
@@ -324,7 +329,8 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID) -> voi
 				caster_attributes[Types.Attribute.Accuracy],
 				cast_skill,
 				_character_repr[target_ID],
-				_battle_ui)
+				_battle_ui,
+				p_caster_ID)
 		
 		if(not cast_skill.damage_scaling.is_empty()):
 			var damage_dealt: int = Skills.DamageDealt(
@@ -412,7 +418,7 @@ func EndBattle(p_winner: WinningTeam) -> void:
 				
 			if(p_winner == WinningTeam.Player_Won):
 				LevelSystem.AddExperience(_characters[i], _battlecontext._loot_table._drop_result._experience)
-			_characters[i]._current_health = _characters[i]._attributes[Types.Attribute.Health] * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
+			_characters[i]._current_health = _characters[i].GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
 	
 	_self_context._scene = "uid://d3ooarqabyw0p"
 	
@@ -426,7 +432,8 @@ func _on_character_battle_target_selected(p_target_ID: int) -> void:
 		var target_IDs: Array[int] = Skills.FindSkillTargets(
 					p_target_ID,
 					_turn_character_ID,
-					_characters[_turn_character_ID]._skills[_selected_skill_ID].target)
+					_characters[_turn_character_ID]._skills[_selected_skill_ID].target,
+					_characters)
 		if(target_IDs.size() > 0):
 			ResolveSkill(_turn_character_ID, target_IDs, _selected_skill_ID)
 			CheckAndHandleBattleOver()

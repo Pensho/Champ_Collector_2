@@ -17,6 +17,16 @@ static func make_character() -> Character:
 	c._attributes[Types.Attribute.CritDamage] = 150
 	return c
 
+## Builds a full 6-slot battle roster (players 0-2, monsters 3-5), all alive.
+## Handy for exercising FindSkillTargets, which now filters on existence and health.
+static func make_full_roster() -> Dictionary:
+	var roster: Dictionary[int, Character] = {}
+	for id in range(6):
+		var c: Character = make_character()
+		c._current_health = c._attributes[Types.Attribute.Health]
+		roster[id] = c
+	return roster
+
 static func make_loot_table() -> LootTable:
 	return LootTable.new()
 

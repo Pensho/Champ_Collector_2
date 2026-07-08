@@ -265,9 +265,9 @@ attributes through these methods so gear is automatically included. Note that ef
 
 Player-roster templates are duplicated with `duplicate(true)` when added to the
 `CharacterCollection`, so two player instances of the same preset never share mutable state.
-This protection does **not** currently extend to enemies: `Battle.Init` instantiates enemies
-directly from the preset, and `Character.InstantiateNew` assigns `_skills` by reference — see
-[Section 15.6](#156-combat-correctness-defects).
+`Character.InstantiateNew` additionally deep-duplicates each `Skill`, so enemies built
+directly from a preset in `Battle.Init` also own their skills and never share mutable state
+such as `cooldown_left` — see [Section 15.6](#156-combat-correctness-defects-fixed).
 
 ---
 
@@ -618,33 +618,44 @@ introduce signals at the highest-traffic seams (e.g. battle → UI result events
 *Direction:* promote the recurring keys to typed fields on `Static_Context` subclasses (as
 `Context_Battle` already does for battle setup), reserving the dictionary for genuinely dynamic data.
 
-### 15.6. Combat correctness defects
+### 15.6. Combat correctness defects (fixed)
 
-A code review (July 2026) found the following defects in the combat path. Remediation is
-planned in `Plans/Plan_Combat_Correctness_Fixes.md`; the entries stay here until fixed.
+A code review (July 2026) found the following defects in the combat path. All were
+remediated per `Plans/Plan_Combat_Correctness_Fixes.md`; the descriptions are kept as a
+record of the fixed behavior.
 
-1. **Enemy `Skill` resources are shared across instances and battles.**
-   `Character.InstantiateNew` assigns `_skills = p_preset._skills` by reference and
-   `Battle.Init` builds enemies straight from the (cached) preset resource. Two enemies of
-   the same variant share `cooldown_left`, and because `EndBattle` resets only player
-   cooldowns, enemy cooldown state persists on the cached `.tres` into later battles in the
-   same session.
-2. **Boss scaling never applies.** `Battle.Init` calls `SetOpponentLevel(difficulty)`
-   unconditionally before the boss branch; `SetOpponentLevel` early-returns once the level
-   is reached, so the boss call carrying the ×1.5 multiplier is dead code.
-3. **Critical-hit off-by-one.** `Skills.DamageDealt` rolls `randi_range(0, 100) <= CritChance`,
-   so 0% crit chance still crits on a rolled 0 and each stat point is worth slightly more
-   than one percent.
-4. **Targeting can select dead or nonexistent slots.** `Skills.FindSkillTargets` hardcodes
-   `randi() % 3` and appends whole ID ranges with no alive check; Random Enemy can spend a
-   turn on a corpse and All Enemies re-damages the dead.
-5. **Turn-bar speed normalization mixes attribute sources.** `TurnBar.Init` finds the
-   highest speed from base `_attributes` but normalizes with `GetBattleAttribute`, so a
-   gear-boosted character can exceed a normalized speed of 1.0.
-6. **Minor:** a discarded `clampi()` result in `Battle.UpdateLifeBar`; the post-battle heal
-   uses base rather than geared Health; `LevelSystem.LevelUpCriteriaMet` consumes experience
-   inside a predicate; the Lava-zone Burning application never checks for an existing
-   Burning debuff (stacking intent undecided — see `Plans/Plan_Combat_Correctness_Fixes.md`).
+1. **Enemy `Skill` resources were shared across instances and battles.**
+   `Character.InstantiateNew` assigned `_skills = p_preset._skills` by reference, so two
+   enemies of the same variant shared `cooldown_left` and mutated the cached `.tres`.
+   *Fixed:* `InstantiateNew` now deep-duplicates every skill, so each `Character` owns its
+   own `Skill` instances.
+2. **Boss scaling never applied.** `Battle.Init` called `SetOpponentLevel(difficulty)`
+   unconditionally before the boss branch, and `SetOpponentLevel` early-returns once the
+   level is reached, so the boss call carrying the ×1.5 multiplier was dead code.
+   *Fixed:* `Battle.Init` computes the boss flag once and makes a single
+   `SetOpponentLevel(difficulty, is_boss)` call.
+3. **Critical-hit off-by-one.** `Skills.DamageDealt` rolled `randi_range(0, 100) <= CritChance`,
+   so 0% crit chance still crit on a rolled 0. *Fixed:* the roll now lives in
+   `Skills.RollsCritical`, which uses `randi_range(1, 100)`.
+4. **Targeting could select dead or nonexistent slots.** `Skills.FindSkillTargets` hardcoded
+   `randi() % 3` and appended whole ID ranges with no alive check. *Fixed:* `FindSkillTargets`
+   now takes the characters dictionary and filters candidates on existence and
+   `_current_health > 0` (via `FilterAliveTargets` / `PickRandomAliveTarget`) before selection.
+5. **Turn-bar speed normalization mixed attribute sources.** `TurnBar.Init` found the highest
+   speed from base `_attributes` but normalized with `GetBattleAttribute`. *Fixed:*
+   normalization is extracted into the static `TurnBar.NormalizeSpeeds`, which reads one
+   (geared) speed source for both the maximum and the division.
+6. **Minor (all fixed):** the discarded `clampi()` result in `Battle.UpdateLifeBar` is now
+   assigned back; the post-battle heal uses geared Health; `LevelSystem.LevelUpCriteriaMet`
+   is a pure predicate with experience consumed in `AddExperience`; the Lava-zone Burning
+   application dropped its misleading `OverwritableDebuff` guard — Burning stacks by design
+   (`Concept_Document.md` 3.2.3.2), so each trigger adds an independent stack up to the cap.
+7. **Burning feedback and attribution (fixed).** A Burning tick previously changed health
+   silently and credited no one. Each combatant `Skill.Debuff` now records a `source_ID`
+   (the applier), set by `CastDebuff` and the Lava-zone handler. `TriggerExistingCasterDebuffs`
+   spawns combat text over the burning character for the tick and returns the damage keyed by
+   source; `Battle.ResolveSkill` folds any player source's share into
+   `character_dmg_<id>`, so Burning shows up in the post-battle damage totals.
 
 ### 15.7. Duplicated team-membership logic and fixed 3-versus-3 assumptions
 

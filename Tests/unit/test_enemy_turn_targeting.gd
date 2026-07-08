@@ -5,9 +5,12 @@ extends GutTest
 # ally and keep looking, instead of aborting the turn. This mirrors the
 # targeting loop in Battle.HandleEnemyTurn()'s `_:` branch.
 
+const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
+
 func _simulate_single_enemy_targeting(p_targeting_order: Array[int], p_caster_ID: int) -> Array[int]:
+	var roster: Dictionary = TestFactory.make_full_roster()
 	for i in p_targeting_order:
-		var target_IDs: Array[int] = Skills.FindSkillTargets(i, p_caster_ID, Types.Skill_Target.Single_Enemy)
+		var target_IDs: Array[int] = Skills.FindSkillTargets(i, p_caster_ID, Types.Skill_Target.Single_Enemy, roster)
 		if(target_IDs.is_empty()):
 			continue
 		return target_IDs

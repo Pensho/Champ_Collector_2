@@ -20,6 +20,9 @@ var _no_allies_behind: Array[int]
 func before_each() -> void:
 	_owner = Character.new()
 	_ally = Character.new()
+	# Living combatants — the Plan trait's targeting now excludes dead allies.
+	_owner._current_health = 10
+	_ally._current_health = 10
 	_item_col = ItemCollection.new()
 	_main_inst = Main_Instance.new()
 	_main_inst._item_collection = _item_col

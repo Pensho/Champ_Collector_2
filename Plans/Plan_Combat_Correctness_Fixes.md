@@ -7,10 +7,11 @@ its own test. No architecture changes belong in this plan — those live in
 
 ## Status
 
-Not started. Line references refreshed as of commit `4de83b6` (July 2026) — the
-class-variable renames (`_currentHealth` → `_current_health`, etc.) and the ally
-turn-bar Knowledge scaling landed since this plan was written and shifted some
-locations in `Skills.gd`; the findings themselves are all still present.
+Complete. All eight steps implemented with tests; the full GUT suite is green. Step 7
+was resolved as "Burning stacks by design": the misleading `OverwritableDebuff` guard was
+removed and `Concept_Document.md` 3.2.3.2 now states Burning stacks up to the status cap.
+Step 8 (Burning combat text + damage attribution) was added after review. Findings are
+recorded as fixed in `Technical_Design_Document.md` section 15.6.
 
 ## Findings being fixed
 
@@ -103,6 +104,22 @@ Recorded in `Technical_Design_Document.md` section 15.6.
   4% max-health tick, nothing about stacking) before changing behavior; then either
   add the duplicate check or document stacking as intended in the concept document.
 - **Files:** `Scripts/Battle/Skills.gd`, possibly `Concept_Document.md`.
+- **Resolved:** Burning stacks by design; the misleading `OverwritableDebuff` guard was
+  removed and `Concept_Document.md` 3.2.3.2 updated to state the stacking rule.
+
+### 8. Burning damage feedback and attribution
+- **What:** a Burning tick changed the target's health with no combat text and never
+  contributed to the post-battle damage total for the character who applied it.
+- **Fix:** `StatusEffects.Effect` gained a `source_ID`, set by `CastDebuff` (skill-applied
+  Burning) and the Lava-zone handler (the zone owner). `TriggerExistingCasterDebuffs` now
+  spawns combat text over the burning character and returns the Burning damage keyed by
+  source; `Battle.ResolveSkill` attributes each player source's share to
+  `character_dmg_<id>`.
+- **Files:** `Scripts/Battle/status_effects.gd`, `Scripts/Battle/Skills.gd`,
+  `Scripts/Battle/battle.gd`.
+- **Test:** `Tests/unit/test_burning_damage.gd` — combat text is spawned, health drops by
+  the 4% tick, damage is attributed to the source, and stacks from the same and different
+  sources are summed/kept separate.
 
 ## Test run
 

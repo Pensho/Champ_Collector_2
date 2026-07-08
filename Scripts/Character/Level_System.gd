@@ -1,13 +1,12 @@
 class_name LevelSystem
 extends Node
 
+# Pure predicate: reports whether the character has enough experience to level up
+# without mutating any state. The experience is only consumed in AddExperience.
 static func LevelUpCriteriaMet(p_character: Character) -> bool:
 	var xp_requirement: float = GetExperienceRequirement(p_character._level)
 	print("Experience required for level up: ", xp_requirement, " experience accumulated: ", p_character._experience)
-	if(xp_requirement <= p_character._experience and p_character._level < Game_Balance.MAX_LEVEL):
-		p_character._experience = max(p_character._experience - xp_requirement, 0)
-		return true
-	return false
+	return xp_requirement <= p_character._experience and p_character._level < Game_Balance.MAX_LEVEL
 
 static func GetExperienceRequirement(p_current_level: int) -> float:
 	var xp_requirement: float = pow(
@@ -18,9 +17,13 @@ static func GetExperienceRequirement(p_current_level: int) -> float:
 	xp_requirement = round(xp_requirement + Game_Balance.EXPERIENCE_CONSTANT_3)
 	return xp_requirement
 
-static func AddExperience(p_character: Character, p_experiene_gained: int) -> void:
-	p_character._experience += p_experiene_gained
+static func AddExperience(p_character: Character, p_experience_gained: int) -> void:
+	p_character._experience += p_experience_gained
 	while LevelUpCriteriaMet(p_character):
+		# Consume the current level's requirement, then apply the reward. Experience
+		# is only ever spent here, on an actual level-up.
+		var xp_requirement: float = GetExperienceRequirement(p_character._level)
+		p_character._experience = int(max(p_character._experience - xp_requirement, 0))
 		LevelUpReward(p_character)
 
 static func LevelUpReward(p_character: Character) -> void:
@@ -90,5 +93,5 @@ static func SetOpponentLevel(p_character: Character, p_level: int, p_boss: bool 
 		if(p_boss):
 			points *= 1.5
 		var points_gained = weight * points * total_levels_gained
-		p_character._attributes[attribute] = round(int(base_value + points_gained))
+		p_character._attributes[attribute] = int(round(base_value + points_gained))
 	
