@@ -40,6 +40,21 @@ No hard dependency on other plans. Soft relationships:
   - Screen-wide ambient effect: `GPUParticles2D` with a `ParticleProcessMaterial`
     emitting over a box — the falling-leaves node inline in
     `Scenes/Hubs/Reclaimed_City_Scene/Reclaimed_City.tscn`.
+- **Default to the built-in particle nodes.** Every effect above is `CPUParticles2D` /
+  `GPUParticles2D` configured through a `ParticleProcessMaterial` — no script. Reach for
+  a scripted approach (a custom generator plus a view node) only when there's a concrete
+  requirement the built-in nodes can't express — for example a placement problem that
+  needs deterministic, per-instance data (the decor scatter in
+  `AdventureBackgroundGenerator` is the precedent: it drives node-avoidance and region
+  logic that a `ParticleProcessMaterial` has no way to express). Panning, looping,
+  drifting, and size/color variation are all native to the particle nodes and are not
+  such a requirement by themselves.
+- **Testing follows from that split.** A built-in-particle-node effect is pure visual
+  configuration with no logic of its own, so it carries no unit test — consistent with
+  the project's "test pure logic, not rendering or node trees" rule
+  (`Test_Design_Document.md`). A scripted effect's generator/placement logic is pure and
+  does get a unit test, same as `AdventureBackgroundGenerator`; the node that turns its
+  output into visuals still doesn't.
 - **File locations:** battle effect scenes in `Scenes/Battle_Visual_Effects/`
   (currently holds the `burning_environment.tscn` stub); environmental effect scenes
   next to the hub scene they belong to; shared particle textures in
@@ -122,14 +137,37 @@ The Adventure background is composed at runtime in
 `Scripts/UI/Adventure/adventure_graph_ui.gd::Populate` (ground gradient → roads →
 decor → node UI). The decor layer is a static `_draw()` pipeline
 (`adventure_background.gd`, fed by `adventure_background_generator.gd`) and cannot
-animate — moving effects need a **new animated overlay layer** added in `Populate`
-above the decor layer, plus **node-anchored** instances for point effects.
+animate — moving effects need a **new animated overlay**, plus **node-anchored**
+instances for point effects. Two ways to attach an overlay, depending on whether it
+should track the map or the screen:
+
+- **Screen-fixed** (stays put regardless of scroll position): a bare particle node
+  (no script) placed once in `Adventure_Graph_UI.tscn` as a sibling of the
+  `ScrollContainer`, outside `_graph_canvas`. Needs no `Populate` wiring at all.
+- **Scrolls with the map** (reads as part of the world, not a HUD sticker): must be a
+  child of `_graph_canvas` instead, which means it needs re-instancing in `Populate`
+  every call (that method clears and rebuilds `_graph_canvas`'s children each time) and
+  sizing from the generated canvas, which varies with adventure depth — the cloud
+  shadows entry below is the precedent for this case. Only reach for this script path
+  when the overlay genuinely needs data `Populate` computes (canvas size, node
+  positions, biome palette); a screen-fixed overlay stays the default.
 
 Overlay layer (screen-wide, subtle — the map must stay readable):
 
-- [ ] **Cloud shadows** — large, soft, semi-transparent dark blobs drifting slowly
-  across the whole map. Likely one `GPUParticles2D` with very few large particles, or
-  a scrolling-texture layer. Status: needed.
+- [x] **Cloud shadows** — large, soft, organic dark blobs drifting slowly across the
+  map, scrolling with it, and looping indefinitely. `GPUParticles2D`
+  (`Scenes/Adventure_Scenes/Adventure_Cloud_Shadows.tscn`) cycling a 4-frame baked
+  sprite sheet (`Cloud_Shadow_sheet.png`, white/alpha-only) via `CanvasItemMaterial`
+  flipbook animation, driven by a `ParticleProcessMaterial` (slow rightward drift,
+  large uniform scale, fade-in/fade-out `color_ramp`). This is the scrolls-with-the-map
+  case above, not the screen-fixed default: `AdventureGraphUi.Populate` instances it as
+  a child of `_graph_canvas` every call and sizes the emission box, particle count, and
+  `visibility_rect` from the generated canvas dimensions — plus a left-side spawn
+  margin so clouds drift in from off-screen rather than only ever appearing already in
+  view, and a scale-aware `visibility_rect` margin (derived from `scale_max` and the
+  frame size) so oversized particles don't get culled once scrolled. See the texture
+  inventory below for why the silhouette is a baked flipbook rather than a live
+  generated texture. Status: wired in.
 - [ ] **Birds** — sparse and occasional: a small flock takes off or crosses the map,
   then nothing for a while. Needs a small flipbook texture (wing beats) on a
   particle or animated overlay. Status: needed.
@@ -184,10 +222,11 @@ freely.
 Which components need authored textures, and which are generated in-engine.
 
 **Generated (no image file):** any particle that is a soft round blob — smoke, fog,
-cloud shadows, glow motes, generic magic flashes — uses a `GradientTexture2D` with
-radial fill, built as a sub-resource in the effect scene. The campfire's smoke
-emitter already works this way. Never leave a particle texture empty (that renders
-a hard white square).
+glow motes, generic magic flashes — uses a `GradientTexture2D` with radial fill, built
+as a sub-resource in the effect scene. The campfire's smoke emitter already works this
+way. Never leave a particle texture empty (that renders a hard white square). Cloud
+shadows were attempted this way and moved to the authored/baked bucket below — see the
+note under "Needed textures" for why.
 
 **Authored (image file needed):** any particle with a recognizable silhouette.
 
@@ -216,6 +255,14 @@ Needed textures (checked when the file exists in `Assets/`):
   burning tick, campfires, ember drift.
 - [x] Leaves — `Leaf_1.png`, `Leaf_2.png`, `Leaves_sheet.png`. Serves the falling
   leaves and pollen-adjacent drift.
+- [x] Cloud shadow blobs — `Cloud_Shadow_sheet.png` (4 frames, 160×128 each, white/
+  alpha). Baked rather than generated live: the outline comes from noise sampled
+  around a circle in noise-space to perturb the blob's radius per angle (an organic,
+  connected silhouette with no hard rectangular cutoff — a live `GradientTexture2D` /
+  `NoiseTexture2D` read as an obvious ellipse or punched full holes, since a
+  `color_ramp` can only map one noise value and can't multiply that by a radial
+  falloff in the same texture); a second noise layer modulates interior density for
+  cotton-ball texture. Serves the Adventure map cloud shadow overlay.
 - [ ] Spark/fleck (32×32, white) — sharp-edged chip. Serves physical impact, ember
   drift, debuff motes.
 - [ ] Four-point sparkle glint (32×32, white) — serves heal sparkle, buff shimmer,
@@ -229,9 +276,6 @@ Needed textures (checked when the file exists in `Assets/`):
 - [ ] Fog wisp (128×64, white, very soft alpha) — serves fog/mist drift; only if
   the generated radial blob reads too round. Coordinate with the checklist's
   static fog patch so both share one look.
-
-Cloud shadows need no texture: a generated radial blob scaled very large and
-tinted dark should suffice; revisit only if it reads as an obvious circle.
 
 ## Backlog
 

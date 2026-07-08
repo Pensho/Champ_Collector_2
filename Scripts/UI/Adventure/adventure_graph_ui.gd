@@ -9,6 +9,13 @@ signal node_selected(p_node: NodeData)
 const GroundGradientScene := preload("res://Scripts/UI/Adventure/adventure_ground_gradient.gd")
 const EdgeLayerScene := preload("res://Scripts/UI/Adventure/adventure_edge_layer.gd")
 const BackgroundScene := preload("res://Scripts/UI/Adventure/adventure_background.gd")
+const CloudShadowsScene := preload("res://Scenes/Adventure_Scenes/Adventure_Cloud_Shadows.tscn")
+## Baseline amount the scene ships with, tuned for one screen height. Scaled up with the
+## generated canvas height so deep adventures don't read as empty above/below the fold.
+const CLOUD_SHADOWS_AMOUNT_PER_HEIGHT: float = 6.0 / 720.0
+## Extends the emission box past the canvas's left edge so clouds are sometimes already
+## drifting in from off-screen instead of only ever appearing already inside view.
+const CLOUD_SHADOWS_LEFT_SPAWN_MARGIN: float = 400.0
 const LAYER_HEIGHT: int = 180
 const NODE_SIZE:    int = 80
 const PADDING:      int = 30
@@ -83,6 +90,32 @@ func Populate(p_nodes: Array[NodeData]) -> void:
 		_graph_canvas.add_child(background)
 		background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		background.Generate(_visual_data, _node_positions, _generation_seed)
+
+	## Scrolls with the map (child of `_graph_canvas`, not a fixed screen overlay), so it
+	## needs re-instancing every Populate and sizing to the generated canvas, which varies
+	## with adventure depth — unlike the fixed-size hub backgrounds this scene's precedent
+	## (the falling-leaves node) was built for.
+	var cloud_shadows: GPUParticles2D = CloudShadowsScene.instantiate()
+	_graph_canvas.add_child(cloud_shadows)
+	cloud_shadows.amount = int(clamp(canvas_height * CLOUD_SHADOWS_AMOUNT_PER_HEIGHT, 6.0, 40.0))
+
+	var cloud_material: ParticleProcessMaterial = cloud_shadows.process_material as ParticleProcessMaterial
+	var emission_width: float = canvas_width + CLOUD_SHADOWS_LEFT_SPAWN_MARGIN
+	var emission_center: Vector2 = Vector2((canvas_width - CLOUD_SHADOWS_LEFT_SPAWN_MARGIN) * 0.5, canvas_height * 0.5)
+	cloud_shadows.position = emission_center
+	cloud_material.emission_shape_scale = Vector3(emission_width, canvas_height, 1.0) * 0.5
+
+	## visibility_rect is local to the node and must cover the full emission area plus a
+	## margin for how far a scaled-up particle sprite extends past its own center — both
+	## vary per adventure (canvas height) and per current tuning (scale_max), so this is
+	## computed here rather than left as the fixed value the scene ships with, which would
+	## otherwise clip particles once the canvas grows taller or the sprite scale grows.
+	var canvas_material: CanvasItemMaterial = cloud_shadows.material as CanvasItemMaterial
+	var frame_count: float = maxf(1.0, float(canvas_material.particles_anim_h_frames))
+	var frame_size: Vector2 = cloud_shadows.texture.get_size() / Vector2(frame_count, 1.0)
+	var particle_margin: float = frame_size.length() * 0.5 * cloud_material.scale_max
+	var visibility_half_size: Vector2 = Vector2(emission_width, canvas_height) * 0.5 + Vector2.ONE * particle_margin
+	cloud_shadows.visibility_rect = Rect2(-visibility_half_size, visibility_half_size * 2.0)
 
 	var eligible_y: float = canvas_height
 	for node in p_nodes:
