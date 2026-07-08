@@ -29,7 +29,8 @@ that holds (or will hold) the detail.
 Not player-facing scope, but tracked here so the checklist covers everything
 outstanding. Detail and suggested order live in `Plans/` (see `Plans/README.md`).
 
-- [ ] Combat correctness fixes (Plans/Plan_Combat_Correctness_Fixes.md) — do first
+- [x] Combat correctness fixes — completed; plan removed and findings struck from
+  `Technical_Design_Document.md` section 15
 - [ ] Documentation parity — realign Concept_Document.md 3.2.1 with the implemented
   combat formulas (Plans/Plan_Documentation_Parity.md)
 - [ ] Team and roster abstraction (Plans/Plan_Team_And_Roster_Abstraction.md)
