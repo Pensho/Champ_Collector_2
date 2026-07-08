@@ -211,7 +211,8 @@ Current roles, their identity and purpose exist as follows:
 - Warlord (Not yet implemented)
     - A buffing tank character, applying various buffs to self and allies while being able to take a lot of damage. Primary attributes: Health, Defense.
     - Purpose: Sustain
-    - Passive: 
+    - Passive: Shield Wall - When an ally within 15% of the Warlord on the turn bar (in front or behind) takes attack damage, a portion of that damage is redirected to the Warlord instead. Proximity is checked at the moment the damage lands. Redirected damage is mitigated by the Warlord's Defense, not the ally's. AoE attacks are soaked separately for each affected ally within the window.
+        - Redirected portion: 15% Uncommon, 20% Rare, 25% Epic, 30% Legendary
 
 ### 3.2. Combat
 Combat is turn based, using the Speed attribute of each character to move a representation across a "turn bar". When a characters representation has crossed the entire bar, the game will pause for input to resolve their turn and then finish by putting the representation of the character back to the beginning. Then the system keeps going.
