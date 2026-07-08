@@ -171,7 +171,8 @@ Current roles, their identity and purpose exist as follows:
 - Bar Brawler
     - A health focused character, dealing damage, tanking and applying a few buffs. Attacks scales of health primarily. Primary attributes: Health.
     - Purpose: Sustain, Buffer
-    - Passive: 
+    - Passive: "On the House!" - Whenever the Bar Brawler gains a buff, from any source, he shares a round: all living allies (the Bar Brawler included) heal a rarity-dependent percentage of their own max Health. The round is poured at most once between each of the Bar Brawler's turns - further buffs gained before his next turn do not trigger it again.
+        - Heal per round: Uncommon 3%, Rare 4%, Epic 5%, Legendary 6%
 - Bloodmage
     - Spending their own or allies health for big pay-off skills in terms of damage or applying shields based on sacrificed health. Primary attributes: Health, Mysticism.
     - Purpose: Sustain, Damage
