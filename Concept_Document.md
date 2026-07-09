@@ -141,7 +141,7 @@ Current roles, their identity and purpose exist as follows:
 - Scholar
     - A support character that focuses on knowledge and strategy to enhance allies' abilities and exploit enemy weaknesses. The zone-clearing specialist: the Scholar's kit is one of the two dedicated ways to remove zones from the turn bar (see section 3.2.4.1). Primary attributes: Knowledge.
     - Purpose: Debuffer, Buffer
-    - Passive: 
+    - Passive: Field of Study - The Scholar has studied every opponent and knows their weaknesses. At the start of combat, each enemy's weakness is identified: their highest primary attribute, Health excluded (ties broken at random). Whenever the Scholar applies a debuff to an enemy, that enemy's identified attribute is additionally reduced for the debuff's duration: Uncommon 4%, Rare 6%, Epic 8%, Legendary 10%.
 - Diviner (Not yet implemented)
     - A squishy support.  Primary attributes: Mysticism.
     - Purpose: Sustain, Debuffer
@@ -483,11 +483,11 @@ Skills allocated to a specific Role, listed in the same order as their entries i
 * Refutation
     * Type: Turn Bar
     * Cooldown: 3 turns
-    * Effect: Removes one zone of the Scholar's choice from the turn bar.
+    * Effect: Removes one zone of the Scholar's choice from the turn bar. If the zone was enemy-placed, the enemy who placed it takes Magical Damage scaling with Knowledge — 10% of a standard hit per charge remaining on the zone. If it was ally-placed, the placing ally's zone skill has its cooldown reduced by 2.
 * Expose Fallacy
-    * Type: Debuff
+    * Type: Debuff, Buff
     * Cooldown: 3 turns
-    * Effect: Applies the Confound debuff to a single enemy for 2 turns (see section 3.2.3.2).
+    * Effect: Applies the Confound debuff to a single enemy for 2 turns and grants all allies the Opportunist buff for 2 turns (see section 3.2.3.2).
 
 ###### Diviner
 * Fateful Glimpse
