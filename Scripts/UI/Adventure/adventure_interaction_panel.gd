@@ -44,17 +44,28 @@ func _ShowRestStop(p_context: ContextRestStop) -> void:
 	_button_primary.text = "%s for next combat (%d Supplies)" % [buff_name, GameBalance.ADVENTURE_REST_STOP_TIER_1_COST]
 	_button_primary.disabled = false
 	_button_primary.show()
-	_button_primary.pressed.connect(_on_rest_stop_tier_chosen.bind(p_context, GameBalance.ADVENTURE_REST_STOP_TIER_1_COST, GameBalance.ADVENTURE_REST_STOP_TIER_1_COMBATS), CONNECT_ONE_SHOT)
+	_button_primary.pressed.connect(
+			_on_rest_stop_tier_chosen.bind(
+					p_context, GameBalance.ADVENTURE_REST_STOP_TIER_1_COST, GameBalance.ADVENTURE_REST_STOP_TIER_1_COMBATS),
+			CONNECT_ONE_SHOT)
 
-	_button_secondary.text = "%s for next 3 combats (%d Supplies)" % [buff_name, GameBalance.ADVENTURE_REST_STOP_TIER_2_COST]
+	_button_secondary.text = (
+			"%s for next 3 combats (%d Supplies)" % [buff_name, GameBalance.ADVENTURE_REST_STOP_TIER_2_COST])
 	_button_secondary.disabled = not _CanAfford(GameBalance.ADVENTURE_REST_STOP_TIER_2_COST)
 	_button_secondary.show()
-	_button_secondary.pressed.connect(_on_rest_stop_tier_chosen.bind(p_context, GameBalance.ADVENTURE_REST_STOP_TIER_2_COST, GameBalance.ADVENTURE_REST_STOP_TIER_2_COMBATS), CONNECT_ONE_SHOT)
+	_button_secondary.pressed.connect(
+			_on_rest_stop_tier_chosen.bind(
+					p_context, GameBalance.ADVENTURE_REST_STOP_TIER_2_COST, GameBalance.ADVENTURE_REST_STOP_TIER_2_COMBATS),
+			CONNECT_ONE_SHOT)
 
-	_button_tertiary.text = "%s for rest of adventure (%d Supplies)" % [buff_name, GameBalance.ADVENTURE_REST_STOP_TIER_3_COST]
+	_button_tertiary.text = (
+			"%s for rest of adventure (%d Supplies)" % [buff_name, GameBalance.ADVENTURE_REST_STOP_TIER_3_COST])
 	_button_tertiary.disabled = not _CanAfford(GameBalance.ADVENTURE_REST_STOP_TIER_3_COST)
 	_button_tertiary.show()
-	_button_tertiary.pressed.connect(_on_rest_stop_tier_chosen.bind(p_context, GameBalance.ADVENTURE_REST_STOP_TIER_3_COST, GameBalance.ADVENTURE_PERMANENT_EFFECT), CONNECT_ONE_SHOT)
+	_button_tertiary.pressed.connect(
+			_on_rest_stop_tier_chosen.bind(
+					p_context, GameBalance.ADVENTURE_REST_STOP_TIER_3_COST, GameBalance.ADVENTURE_PERMANENT_EFFECT),
+			CONNECT_ONE_SHOT)
 
 func _CanAfford(p_cost: int) -> bool:
 	return p_cost == 0 or main.GetInstance()._resources._supplies >= p_cost
@@ -116,8 +127,9 @@ func _ShowEscalate(p_context: ContextEscalate) -> void:
 	_label_type.text = "Escalate Challenge"
 	var reward_silver: int = p_context._loot_table._drop_result._silver if p_context._loot_table != null else 0
 	var reward_supplies: int = p_context._loot_table._drop_result._supplies if p_context._loot_table != null else 0
-	_label_description.text = "Gain %d Silver and %d Supplies, but the rest of this adventure becomes permanently harder (+%d difficulty)." % [
-		reward_silver, reward_supplies, p_context.difficulty_increase]
+	_label_description.text = (
+			"Gain %d Silver and %d Supplies, but the rest of this adventure becomes permanently harder (+%d difficulty)."
+			% [reward_silver, reward_supplies, p_context.difficulty_increase])
 
 	_button_primary.text = "Accept"
 	_button_primary.disabled = false

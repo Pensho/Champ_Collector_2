@@ -1,14 +1,13 @@
 class_name ProfileInteractDialog extends Control
 
-var _name: String = ""
+const MAX_LENGTH_NAME: int = 16
 
 @export var _name_input: LineEdit
 @export var _played_time_label: Label
 @export var _saved_at_label: Label
 @export var _background: ColorRect
 
-const MAX_LENGTH_NAME: int = 16
-
+var _name: String = ""
 var _save_func: Callable
 var _load_func: Callable
 

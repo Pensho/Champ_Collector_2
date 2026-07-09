@@ -8,11 +8,12 @@ var current_node_index: int
 var last_palayed_date: String
 var steps_taken_today: int
 var nodes: Array[NodeData]
-var _generation_seed: int = -1
 
 # Adventure-spanning effects: type -> combats remaining (ADVENTURE_PERMANENT_EFFECT = rest of adventure)
 var active_buffs: Dictionary[Types.Buff_Type, int]
 var active_debuffs: Dictionary[Types.Debuff_Type, int]
+
+var _generation_seed: int = -1
 
 static func CalculateScaledDifficulty(p_base: int, p_completed: int, p_total: int) -> int:
 	if p_total <= 0:

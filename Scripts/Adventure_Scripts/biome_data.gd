@@ -10,8 +10,7 @@ class_name BiomeData extends Resource
 @export var boss_rewards: LootTable
 @export var hint_rewards: LootTable
 @export var escalate_rewards: LootTable
+@export var visual_data: BiomeVisualData
 
 var possible_node_modifiers: Dictionary[String, int]
 var possible_rest_stop_buffs: Dictionary[Types.Buff_Type, int]
-
-@export var visual_data: BiomeVisualData

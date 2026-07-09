@@ -45,6 +45,9 @@ func OnSkillCast(
 	var buff_to_steal: StatusEffects.Buff = target_buffs[randi() % target_buffs.size()]
 	Skills.RemoveBuff(p_characters[target_ID], buff_to_steal, p_character_repr[target_ID], p_battle_ui)
 	Skills.ApplyBuff(p_characters[p_owner_ID], buff_to_steal, p_character_repr[p_owner_ID], p_battle_ui)
-	p_battle_ui.SpawnCombatText("Stole buff!", p_character_repr[p_owner_ID].position + p_battle_ui.COMBAT_TEXT_SPAWN_POINT, Color(0.6, 0.2, 0.8, 1.0))
+	p_battle_ui.SpawnCombatText(
+			"Stole buff!",
+			p_character_repr[p_owner_ID].position + p_battle_ui.COMBAT_TEXT_SPAWN_POINT,
+			Color(0.6, 0.2, 0.8, 1.0))
 
 	return result

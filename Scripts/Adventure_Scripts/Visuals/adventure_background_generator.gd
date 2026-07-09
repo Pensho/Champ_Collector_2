@@ -23,7 +23,11 @@ const NODE_PROP_CLEARANCE: float = 6.0
 ## corner, so the visual centre is position + (NODE_HALF_SIZE, NODE_HALF_SIZE).
 const NODE_HALF_SIZE: float = 40.0
 
-static func Generate(p_visual_data: BiomeVisualData, p_canvas_size: Vector2, p_node_positions: Dictionary, p_seed: int) -> Array[DecorPlacement]:
+static func Generate(
+		p_visual_data: BiomeVisualData,
+		p_canvas_size: Vector2,
+		p_node_positions: Dictionary,
+		p_seed: int) -> Array[DecorPlacement]:
 	var placements: Array[DecorPlacement] = []
 	if p_visual_data == null or p_visual_data.regions.is_empty():
 		return placements
@@ -68,7 +72,8 @@ static func Generate(p_visual_data: BiomeVisualData, p_canvas_size: Vector2, p_n
 				if detail_sample < layer.noise_threshold_min or detail_sample > layer.noise_threshold_max:
 					continue
 				var placement: DecorPlacement = _BuildPlacement(layer, candidate_point, cell_rng, zone.tint)
-				if layer.node_avoidance_radius > 0.0 and not _DecorClearsNodes(placement, node_center_list, layer.node_avoidance_radius):
+				if (layer.node_avoidance_radius > 0.0 and
+						not _DecorClearsNodes(placement, node_center_list, layer.node_avoidance_radius)):
 					continue
 				placements.append(placement)
 
@@ -113,21 +118,29 @@ static func _DecorClearsNodes(p_placement: DecorPlacement, p_node_centers: Array
 	var height: float = texture_size.y * p_placement.scale
 	var decor_rect: Rect2
 	if p_placement.z_index >= 0:
-		decor_rect = Rect2(p_placement.position.x - half_width, p_placement.position.y - height, half_width * 2.0, height)
+		decor_rect = Rect2(
+				p_placement.position.x - half_width, p_placement.position.y - height, half_width * 2.0, height)
 	else:
-		decor_rect = Rect2(p_placement.position.x - half_width, p_placement.position.y - height * 0.5, half_width * 2.0, height)
+		decor_rect = Rect2(
+				p_placement.position.x - half_width, p_placement.position.y - height * 0.5, half_width * 2.0, height)
 	decor_rect = decor_rect.grow(p_margin)
 
 	for node_center in p_node_centers:
-		var node_rect := Rect2(node_center - Vector2(NODE_HALF_SIZE, NODE_HALF_SIZE), Vector2(NODE_HALF_SIZE * 2.0, NODE_HALF_SIZE * 2.0))
+		var node_rect := Rect2(
+				node_center - Vector2(NODE_HALF_SIZE, NODE_HALF_SIZE), Vector2(NODE_HALF_SIZE * 2.0, NODE_HALF_SIZE * 2.0))
 		if decor_rect.intersects(node_rect):
 			return false
 	return true
 
 
-static func _BuildPlacement(p_layer: DecorLayerData, p_point: Vector2, p_rng: RandomNumberGenerator, p_zone_tint: Color) -> DecorPlacement:
+static func _BuildPlacement(
+		p_layer: DecorLayerData,
+		p_point: Vector2,
+		p_rng: RandomNumberGenerator,
+		p_zone_tint: Color) -> DecorPlacement:
 	var placement := DecorPlacement.new()
-	placement.texture = p_layer.textures[p_rng.randi_range(0, p_layer.textures.size() - 1)] if not p_layer.textures.is_empty() else null
+	placement.texture = (p_layer.textures[p_rng.randi_range(0, p_layer.textures.size() - 1)]
+			if not p_layer.textures.is_empty() else null)
 	placement.position = p_point
 	placement.scale = p_rng.randf_range(p_layer.scale_min, p_layer.scale_max)
 	placement.rotation_degrees = p_rng.randf_range(-p_layer.rotation_jitter_degrees, p_layer.rotation_jitter_degrees)
@@ -137,7 +150,13 @@ static func _BuildPlacement(p_layer: DecorLayerData, p_point: Vector2, p_rng: Ra
 	return placement
 
 
-static func _AppendNodeProps(p_visual_data: BiomeVisualData, p_node_positions: Dictionary, p_canvas_size: Vector2, p_placements: Array[DecorPlacement], p_seed: int, p_node_center_list: Array[Vector2]) -> void:
+static func _AppendNodeProps(
+		p_visual_data: BiomeVisualData,
+		p_node_positions: Dictionary,
+		p_canvas_size: Vector2,
+		p_placements: Array[DecorPlacement],
+		p_seed: int,
+		p_node_center_list: Array[Vector2]) -> void:
 	for node: NodeData in p_node_positions:
 		if not p_visual_data.node_props.has(node.node_type):
 			continue

@@ -104,10 +104,9 @@ func CreateNextInstanceID() -> int:
 
 func GetCharacter(instanceID: int) -> Character:
 	if(_characters.has(instanceID)):
-			return _characters[instanceID]
-	else:
-		print("No character found with ID: ", instanceID)
-		return null
+		return _characters[instanceID]
+	print("No character found with ID: ", instanceID)
+	return null
 
 func GetAllCharacters() -> Dictionary[int, Character]:
 	return _characters.duplicate(true)

@@ -1,17 +1,17 @@
 class_name TidalCorsairTrait extends CharacterTrait
 
-const MAX_STACKS: int = 3
-
-class StackDescription:
-	var _title: String = "Title"
-	var _body: String = "Body"
-
 enum Stack_Type
 {
 	Empty,
 	Steel,
 	Sea,
 }
+
+const MAX_STACKS: int = 3
+
+class StackDescription:
+	var _title: String = "Title"
+	var _body: String = "Body"
 
 var _sea_stack_texture: Texture2D
 var _steel_stack_texture: Texture2D

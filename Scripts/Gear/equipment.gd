@@ -1,25 +1,5 @@
 class_name Equipment extends Node
 
-func InstantiateNew(preset: EquipmentPreset, instance_ID: int) -> void:
-	_instance_ID = instance_ID
-	
-	_name = preset._name
-	_texture = preset._texture_path
-	_rarity = preset._rarity
-	_slot = preset._slot
-	_preset_UID = preset._preset_UID
-	
-	_attributes[Types.Attribute.Health] = preset._attributes[Types.Attribute.Health]
-	_attributes[Types.Attribute.Speed] = preset._attributes[Types.Attribute.Speed]
-	_attributes[Types.Attribute.Attack] = preset._attributes[Types.Attribute.Attack]
-	_attributes[Types.Attribute.Defence] = preset._attributes[Types.Attribute.Defence]
-	_attributes[Types.Attribute.Accuracy] = preset._attributes[Types.Attribute.Accuracy]
-	_attributes[Types.Attribute.Resistance] = preset._attributes[Types.Attribute.Resistance]
-	_attributes[Types.Attribute.Mysticism] = preset._attributes[Types.Attribute.Mysticism]
-	_attributes[Types.Attribute.Knowledge] = preset._attributes[Types.Attribute.Knowledge]
-	_attributes[Types.Attribute.CritChance] = preset._attributes[Types.Attribute.CritChance]
-	_attributes[Types.Attribute.CritDamage] = preset._attributes[Types.Attribute.CritDamage]
-
 var _instance_ID : int = 0
 var _held_by: int = -1
 var _level: int = 0
@@ -45,6 +25,26 @@ var _attributes: Dictionary[Types.Attribute, int] = {
 	Types.Attribute.CritChance: 0,
 	Types.Attribute.CritDamage: 0,
 }
+
+func InstantiateNew(preset: EquipmentPreset, instance_ID: int) -> void:
+	_instance_ID = instance_ID
+
+	_name = preset._name
+	_texture = preset._texture_path
+	_rarity = preset._rarity
+	_slot = preset._slot
+	_preset_UID = preset._preset_UID
+
+	_attributes[Types.Attribute.Health] = preset._attributes[Types.Attribute.Health]
+	_attributes[Types.Attribute.Speed] = preset._attributes[Types.Attribute.Speed]
+	_attributes[Types.Attribute.Attack] = preset._attributes[Types.Attribute.Attack]
+	_attributes[Types.Attribute.Defence] = preset._attributes[Types.Attribute.Defence]
+	_attributes[Types.Attribute.Accuracy] = preset._attributes[Types.Attribute.Accuracy]
+	_attributes[Types.Attribute.Resistance] = preset._attributes[Types.Attribute.Resistance]
+	_attributes[Types.Attribute.Mysticism] = preset._attributes[Types.Attribute.Mysticism]
+	_attributes[Types.Attribute.Knowledge] = preset._attributes[Types.Attribute.Knowledge]
+	_attributes[Types.Attribute.CritChance] = preset._attributes[Types.Attribute.CritChance]
+	_attributes[Types.Attribute.CritDamage] = preset._attributes[Types.Attribute.CritDamage]
 
 func CanUpgrade() -> bool:
 	return _level < Game_Balance.MAX_ITEM_LEVEL

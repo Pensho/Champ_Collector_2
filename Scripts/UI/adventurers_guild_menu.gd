@@ -3,7 +3,7 @@ extends Control
 var _hollow_ledger_window: HollowLedgerWindow
 
 @warning_ignore("unused_parameter") # Adventurers Guild menu requires nothing from the ContextContainer.
-func Init(p_context_container: ContextContainer) -> void:
+func Init(_p_context_container: ContextContainer) -> void:
 	_hollow_ledger_window = load("res://Scenes/ui/Hollow_Ledger_Window.tscn").instantiate()
 	add_child(_hollow_ledger_window)
 	_hollow_ledger_window.position = Vector2i((get_viewport_rect().size * 0.5) - (_hollow_ledger_window.GetSize() * 0.5))

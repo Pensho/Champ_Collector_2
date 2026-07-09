@@ -5,7 +5,7 @@ extends Control
 var dialog: ProfileInteractDialog
 
 @warning_ignore("unused_parameter") # Main menu requires nothing from the ContextContainer.
-func Init(p_context_container: ContextContainer) -> void:
+func Init(_p_context_container: ContextContainer) -> void:
 	for i in _profiles.size():
 		_profiles[i].ConnectButton(_on_profile_button.bind(i))
 		UpdateProfileDataSlot(i)

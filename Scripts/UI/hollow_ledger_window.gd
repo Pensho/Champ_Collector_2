@@ -51,10 +51,12 @@ func Init() -> void:
 func BuildTierSection(p_tier: FortuneFavorTier) -> VBoxContainer:
 	var section: VBoxContainer = VBoxContainer.new()
 
-	var champion_chance: float = (1.0 - pow(1.0 - RecruitmentManager.CHAMPION_CHANCE_PER_REWARD, p_tier.reward_count)) * 100.0
+	var champion_chance: float = (
+			(1.0 - pow(1.0 - RecruitmentManager.CHAMPION_CHANCE_PER_REWARD, p_tier.reward_count)) * 100.0)
 
 	var header: Label = Label.new()
-	header.text = "%s Fortune's Favor - %.1f%%" % [FortuneFavorTier.TierType.keys()[p_tier.tier_type], champion_chance]
+	header.text = ("%s Fortune's Favor - %.1f%%"
+			% [FortuneFavorTier.TierType.keys()[p_tier.tier_type], champion_chance])
 	header.add_theme_font_size_override("font_size", 18)
 	section.add_child(header)
 

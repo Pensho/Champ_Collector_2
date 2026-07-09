@@ -3,6 +3,7 @@ class_name RecruitmentMenu extends Control
 const BONE_TIER: FortuneFavorTier = preload("res://Data/Recruitment/Bone_Tier.tres")
 const BRASS_TIER: FortuneFavorTier = preload("res://Data/Recruitment/Brass_Tier.tres")
 const PARCHMENT_TIER: FortuneFavorTier = preload("res://Data/Recruitment/Parchment_Tier.tres")
+const BUTTON_WITH_OPTIONS_SCENE: PackedScene = preload("uid://c7smqpmfvs0ih")
 
 @export var _bone_favor_count_label: Label
 @export var _brass_favor_count_label: Label
@@ -14,18 +15,18 @@ var _result_option: ButtonWithOptions
 var _pending_tier: FortuneFavorTier
 
 func Init(_p_context_container: ContextContainer) -> void:
-	_info_option = load("uid://c7smqpmfvs0ih").instantiate()
+	_info_option = BUTTON_WITH_OPTIONS_SCENE.instantiate()
 	add_child(_info_option)
 	_info_option.position = Vector2i((get_viewport_rect().size * 0.5) - (_info_option.GetSize() * 0.5))
 	_info_option.hide()
 
-	_confirm_option = load("uid://c7smqpmfvs0ih").instantiate()
+	_confirm_option = BUTTON_WITH_OPTIONS_SCENE.instantiate()
 	add_child(_confirm_option)
 	_confirm_option.SetLeftButton("Recruit", _on_confirm_recruit)
 	_confirm_option.position = Vector2i((get_viewport_rect().size * 0.5) - (_confirm_option.GetSize() * 0.5))
 	_confirm_option.hide()
 
-	_result_option = load("uid://c7smqpmfvs0ih").instantiate()
+	_result_option = BUTTON_WITH_OPTIONS_SCENE.instantiate()
 	add_child(_result_option)
 	_result_option.position = Vector2i((get_viewport_rect().size * 0.5) - (_result_option.GetSize() * 0.5))
 	_result_option.hide()

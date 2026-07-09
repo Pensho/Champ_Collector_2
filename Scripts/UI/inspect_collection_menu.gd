@@ -1,5 +1,8 @@
 class_name InspectCollectionMenu extends Control
 
+const MENU_ITEM_SLOT = preload("uid://di0y70sbai3yw")
+const BUTTON_WITH_OPTIONS_SCENE = preload("uid://c7smqpmfvs0ih")
+
 @export var _attribute_labels: Dictionary[Types.Attribute, Label]
 @export var _selected_char_label: Label
 @export var _selected_char_level: Label
@@ -7,16 +10,6 @@ class_name InspectCollectionMenu extends Control
 @export var _selected_char_nature_tooltip: ToolTip
 @export var _experience_bar: ProgressBar
 @export var _experience_bar_text: Label
-
-@onready var _scroll_container_characters: ScrollContainer = $MarginContainer/HBoxContainer2/ScrollContainer_Characters
-@onready var _scroll_container_items: ScrollContainer = $MarginContainer/HBoxContainer2/ScrollContainer_Items
-@onready var _grid_container_characters: GridContainer = $MarginContainer/HBoxContainer2/ScrollContainer_Characters/GridContainer
-@onready var _grid_container_items: GridContainer = $MarginContainer/HBoxContainer2/ScrollContainer_Items/GridContainer
-
-@onready var v_box_container_equipped_items: VBoxContainer = $MarginContainer/HBoxContainer2/VBoxContainer2
-@onready var _selected_character_texture: TextureRect = $MarginContainer/ColorRect2/TextureRect
-
-const MENU_ITEM_SLOT = preload("uid://di0y70sbai3yw")
 
 var _select_item_option: ButtonWithOptions
 var _confirm_option: ButtonWithOptions
@@ -31,6 +24,15 @@ var _character_collection: Dictionary[int, Character] = main.GetInstance()._char
 var _item_collection: Dictionary[int, Equipment] = main.GetInstance()._item_collection._items
 var _selected_character_ID: int = -1
 var _selected_item_slot_ID: int = -1
+
+@onready var v_box_container_equipped_items: VBoxContainer = $MarginContainer/HBoxContainer2/VBoxContainer2
+
+@onready var _scroll_container_characters: ScrollContainer = $MarginContainer/HBoxContainer2/ScrollContainer_Characters
+@onready var _scroll_container_items: ScrollContainer = $MarginContainer/HBoxContainer2/ScrollContainer_Items
+@onready var _grid_container_characters: GridContainer = (
+		$MarginContainer/HBoxContainer2/ScrollContainer_Characters/GridContainer)
+@onready var _grid_container_items: GridContainer = $MarginContainer/HBoxContainer2/ScrollContainer_Items/GridContainer
+@onready var _selected_character_texture: TextureRect = $MarginContainer/ColorRect2/TextureRect
 
 func Init(_p_context_container: ContextContainer) -> void:
 	_available_items.resize(_item_collection.size())
@@ -65,14 +67,14 @@ func Init(_p_context_container: ContextContainer) -> void:
 	_selected_char_nature_tooltip.title_text = "Character Nature"
 	_selected_char_nature_tooltip.description_text = ""
 	
-	_select_item_option = load("uid://c7smqpmfvs0ih").instantiate()
+	_select_item_option = BUTTON_WITH_OPTIONS_SCENE.instantiate()
 	add_child(_select_item_option)
 	_select_item_option.SetText("Title", "Body")
 	_select_item_option.SetLeftButton("Equip", Callable())
 	_select_item_option.position = Vector2i((get_viewport_rect().size * 0.5) - (_select_item_option.GetSize() * 0.5))
 	_select_item_option.hide()
 	
-	_confirm_option = load("uid://c7smqpmfvs0ih").instantiate()
+	_confirm_option = BUTTON_WITH_OPTIONS_SCENE.instantiate()
 	add_child(_confirm_option)
 	_confirm_option.SetText("Title", "Body")
 	_confirm_option.SetLeftButton("Equip", Callable())
@@ -96,16 +98,19 @@ func GetMenuItemSlotChildren(p_start_node: Node) -> Array[MenuItemSlot]:
 	return result
 
 func ShowSelectedCharacter(p_instance_ID: int) -> void:
-	_selected_character_texture.texture = main.GetInstance()._character_collection.GetCharacterTexture(_character_collection[p_instance_ID]._name)
+	_selected_character_texture.texture = main.GetInstance()._character_collection.GetCharacterTexture(
+			_character_collection[p_instance_ID]._name)
 	for attr in _attribute_labels.keys():
+		var total_attribute: int = (_character_collection[p_instance_ID]._attributes[attr]
+				+ _character_collection[p_instance_ID].GetEquipmentBonus(attr))
 		if(Types.Attribute.Health == attr):
-			_attribute_labels[attr].text = str((_character_collection[p_instance_ID]._attributes[attr] + _character_collection[p_instance_ID].GetEquipmentBonus(attr)) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
+			_attribute_labels[attr].text = str(total_attribute * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
 		elif(Types.Attribute.CritChance == attr):
-			_attribute_labels[attr].text = str((_character_collection[p_instance_ID]._attributes[attr] + _character_collection[p_instance_ID].GetEquipmentBonus(attr))) + "%"
+			_attribute_labels[attr].text = str(total_attribute) + "%"
 		elif(Types.Attribute.CritDamage == attr):
-			_attribute_labels[attr].text = str(_character_collection[p_instance_ID]._attributes[attr] + _character_collection[p_instance_ID].GetEquipmentBonus(attr)) + "%"
+			_attribute_labels[attr].text = str(total_attribute) + "%"
 		else:
-			_attribute_labels[attr].text = str(_character_collection[p_instance_ID]._attributes[attr] + _character_collection[p_instance_ID].GetEquipmentBonus(attr))
+			_attribute_labels[attr].text = str(total_attribute)
 	_selected_char_label.text = _character_collection[p_instance_ID]._name
 	_selected_char_level.text = "Level: " + str(_character_collection[p_instance_ID]._level)
 	_selected_char_nature.text = "Nature: " + str(_character_collection[p_instance_ID]._attributes_weights._name)
@@ -116,7 +121,8 @@ func ShowSelectedCharacter(p_instance_ID: int) -> void:
 	
 	_experience_bar.max_value = LevelSystem.GetExperienceRequirement(_character_collection[p_instance_ID]._level)
 	_experience_bar.value = _character_collection[p_instance_ID]._experience
-	_experience_bar_text.text = str(_character_collection[p_instance_ID]._experience) + " / " + str(int(_experience_bar.max_value))
+	_experience_bar_text.text = (str(_character_collection[p_instance_ID]._experience)
+			+ " / " + str(int(_experience_bar.max_value)))
 	
 	if(_character_collection[p_instance_ID]._held_items.has(Types.Slot.Weapon)):
 		_item_slots_equipped[0].SetHeldObjectTexture(
@@ -187,7 +193,9 @@ func AvailableItemButton(p_slot_ID: int) -> void:
 	_selected_item_slot_ID = p_slot_ID
 
 func TrySell() -> void:
-	_confirm_option.SetText("Sell", "Are you sure you want to sell this item? You will gain " + str(LootManager.GetSellValue(_item_collection[_displayed_item_ids[_selected_item_slot_ID]]._rarity)) + " silver.")
+	var sell_value: int = LootManager.GetSellValue(_item_collection[_displayed_item_ids[_selected_item_slot_ID]]._rarity)
+	_confirm_option.SetText(
+			"Sell", "Are you sure you want to sell this item? You will gain " + str(sell_value) + " silver.")
 	_confirm_option.SetLeftButton("Sell", SellItem, Color(0.863, 0.0, 0.0, 1.0))
 	_confirm_option.show()
 

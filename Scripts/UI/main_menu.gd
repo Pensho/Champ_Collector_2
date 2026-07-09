@@ -5,9 +5,9 @@ const GRASSLANDS_DAY = preload("uid://bj3f2iipfovw8")
 const GRASSLANDS_DUSK = preload("uid://ba31cn3hmntgv")
 const GRASSLANDS_NIGHT = preload("uid://bsmrvv2vuny5")
 
-@onready var _buttons_v_box: VBoxContainer = %ButtonsVBox
-
 @export var _background: TextureRect
+
+@onready var _buttons_v_box: VBoxContainer = %ButtonsVBox
 
 func _ready() -> void:
 	var date_time: Dictionary = Time.get_datetime_dict_from_system()
@@ -24,7 +24,7 @@ func _ready() -> void:
 	focus_button()
 
 @warning_ignore("unused_parameter") # Main menu requires nothing from the ContextContainer.
-func Init(p_context_container: ContextContainer) -> void:
+func Init(_p_context_container: ContextContainer) -> void:
 	pass
 
 func _on_start_game_button_pressed() -> void:

@@ -31,7 +31,8 @@ var _momentum_stacks: int = 0
 func Init() -> void:
 	_trait_texture = load("res://Assets/Champ_Collector/Icons/Status_Effects/Phalanx_Guard/Phalanx_Guard.jpg")
 	_title = "Reckless Momentum"
-	_body = "Offensive skills grant a Momentum stack that gives more Attack and less Defense per stack. Using a defensive skill grants Phalanx Guard and consumes all stacks."
+	_body = ("Offensive skills grant a Momentum stack that gives more Attack and less Defense per stack. " +
+			"Using a defensive skill grants Phalanx Guard and consumes all stacks.")
 	_execution_steps[Types.Combat_Event.Start_Combat] = Callable(self, "StartOfBattle")
 	_execution_steps[Types.Combat_Event.Skill_Cast] = Callable(self, "OnSkillCast")
 	_execution_steps[Types.Combat_Event.Defend] = Callable(self, "OnDefend")
@@ -66,9 +67,12 @@ func OnSkillCast(
 	
 	if _momentum_stacks > 0:
 		var bonus_per_stack: float = MOMENTUM_PER_STACK.get(rarity, 0.0)
-		p_caster_attributes[Types.Attribute.Attack] += int(ceilf(p_caster_attributes[Types.Attribute.Attack] * bonus_per_stack * _momentum_stacks))
-	
-	_body = "Offensive skills grant a Momentum stack that gives more Attack and less Defense per stack. Using a defensive skill grants Phalanx Guard and consumes all stacks.\nCurrent Momentum Stacks: " + str(_momentum_stacks)
+		p_caster_attributes[Types.Attribute.Attack] += int(
+				ceilf(p_caster_attributes[Types.Attribute.Attack] * bonus_per_stack * _momentum_stacks))
+
+	_body = ("Offensive skills grant a Momentum stack that gives more Attack and less Defense per stack. " +
+			"Using a defensive skill grants Phalanx Guard and consumes all stacks.\n" +
+			"Current Momentum Stacks: " + str(_momentum_stacks))
 	p_character_repr[p_owner_ID].SetTraitElementToolTip(_title, _body, 0)
 	
 	return result
@@ -80,5 +84,6 @@ func OnDefend(
 	if _momentum_stacks == 0:
 		return
 	var rarity: Types.Rarity = p_characters[p_defender_ID]._rarity
-	var penalty: int = int(ceilf(p_defender_attributes[Types.Attribute.Defence] * (MOMENTUM_PER_STACK.get(rarity, 0.0) / 2.0) * _momentum_stacks))
+	var penalty: int = int(ceilf(
+			p_defender_attributes[Types.Attribute.Defence] * (MOMENTUM_PER_STACK.get(rarity, 0.0) / 2.0) * _momentum_stacks))
 	p_defender_attributes[Types.Attribute.Defence] = max(0, p_defender_attributes[Types.Attribute.Defence] - penalty)

@@ -18,7 +18,8 @@ var _avoidance_stacks: int = 0
 func Init() -> void:
 	_trait_texture = load("res://Assets/Champ_Collector/Icons/Abilities/Double_The_Fun/Double_The_Fun.png")
 	_title = "Double the fun!"
-	_body = "Chance to completely avoid incoming damage. The chance ramps up with each hit taken and resets on a successful avoidance."
+	_body = ("Chance to completely avoid incoming damage. The chance ramps up with each hit taken and resets on a "
+			+ "successful avoidance.")
 	_execution_steps[Types.Combat_Event.Start_Combat] = Callable(self, "StartOfBattle")
 	_execution_steps[Types.Combat_Event.Damage_Taken] = Callable(self, "OnDamageTaken")
 	_execution_steps[Types.Combat_Event.On_Death] = Callable(self, "OnDeath")

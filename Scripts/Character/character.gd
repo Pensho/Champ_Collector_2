@@ -1,67 +1,5 @@
 class_name Character extends RefCounted
 
-func InstantiateNew(p_preset: CharacterPreset, p_instance_ID: int) -> void:
-	_instance_ID = p_instance_ID
-	_preset_UID = p_preset._preset_UID
-	
-	_name = p_preset._name
-	_texture = p_preset._texture
-	_normal_map = p_preset._normal_map
-	_rarity = p_preset._rarity
-	_faction = p_preset._faction
-	_role = p_preset._role
-	# Deep-duplicate each skill so every Character owns its own Skill instances.
-	# Sharing the preset's skills by reference leaks mutable state (cooldown_left)
-	# between enemies of the same variant and across battles in the same session.
-	_skills = []
-	for skill: Skill in p_preset._skills:
-		_skills.append(skill.duplicate(true))
-	if(!p_preset._attribute_weight_types_available.is_empty()):
-		_attributes_weights = p_preset._attribute_weight_types_available[randi_range(0, p_preset._attribute_weight_types_available.size() - 1)].duplicate(true)
-	
-	_attributes[Types.Attribute.Health] = p_preset._health
-	_attributes[Types.Attribute.Speed] = p_preset._speed
-	_attributes[Types.Attribute.Attack] = p_preset._attack
-	_attributes[Types.Attribute.Defence] = p_preset._defence
-	_attributes[Types.Attribute.Accuracy] = p_preset._accuracy
-	_attributes[Types.Attribute.Resistance] = p_preset._resistance
-	_attributes[Types.Attribute.Mysticism] = p_preset._mysticism
-	_attributes[Types.Attribute.Knowledge] = p_preset._knowledge
-	_attributes[Types.Attribute.CritChance] = p_preset._critical_chance
-	_attributes[Types.Attribute.CritDamage] = p_preset._critical_damage
-
-	_current_health = GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
-	
-	if(null != p_preset._trait):
-		_trait = p_preset._trait.duplicate(true)
-		_trait.Init()
-
-func GetEquipmentBonus(p_attribute: Types.Attribute) -> int:
-	var bonus_stat: int = 0
-	for i: int in _held_items.values():
-		bonus_stat += main.GetInstance()._item_collection._items[i]._attributes[p_attribute]
-	return bonus_stat
-
-func GetBattleAttributes() -> Dictionary[Types.Attribute, int]:
-	var battle_attributes: Dictionary[Types.Attribute, int] = _attributes.duplicate(true)
-	for attribute in battle_attributes.keys():
-		battle_attributes[attribute] += GetEquipmentBonus(attribute)
-	return battle_attributes
-
-func GetBattleAttribute(p_attribute: Types.Attribute) -> int:
-	var attribute_value: int = _attributes[p_attribute]
-	attribute_value += GetEquipmentBonus(p_attribute)
-	return attribute_value
-
-func EquipItem(p_equipment_ID: int) -> void:
-	if(not _held_items.has(main.GetInstance()._item_collection._items[p_equipment_ID]._slot)):
-		_held_items[main.GetInstance()._item_collection._items[p_equipment_ID]._slot] = p_equipment_ID
-	else:
-		print(_name + " already has equipment for ", main.GetInstance()._item_collection._items[p_equipment_ID]._slot)
-
-func UnequipItem(p_slot: Types.Slot) -> void:
-	_held_items.erase(p_slot)
-
 # Preset Data
 var _name: String = ""
 var _texture: String = ""
@@ -106,3 +44,66 @@ var _active_debuffs: Array[StatusEffects.Debuff] = []
 @warning_ignore_restore("unused_private_class_variable")
 
 var _preset_UID: String = ""
+
+func InstantiateNew(p_preset: CharacterPreset, p_instance_ID: int) -> void:
+	_instance_ID = p_instance_ID
+	_preset_UID = p_preset._preset_UID
+	
+	_name = p_preset._name
+	_texture = p_preset._texture
+	_normal_map = p_preset._normal_map
+	_rarity = p_preset._rarity
+	_faction = p_preset._faction
+	_role = p_preset._role
+	# Deep-duplicate each skill so every Character owns its own Skill instances.
+	# Sharing the preset's skills by reference leaks mutable state (cooldown_left)
+	# between enemies of the same variant and across battles in the same session.
+	_skills = []
+	for skill: Skill in p_preset._skills:
+		_skills.append(skill.duplicate(true))
+	if(!p_preset._attribute_weight_types_available.is_empty()):
+		var weight_index: int = randi_range(0, p_preset._attribute_weight_types_available.size() - 1)
+		_attributes_weights = p_preset._attribute_weight_types_available[weight_index].duplicate(true)
+	
+	_attributes[Types.Attribute.Health] = p_preset._health
+	_attributes[Types.Attribute.Speed] = p_preset._speed
+	_attributes[Types.Attribute.Attack] = p_preset._attack
+	_attributes[Types.Attribute.Defence] = p_preset._defence
+	_attributes[Types.Attribute.Accuracy] = p_preset._accuracy
+	_attributes[Types.Attribute.Resistance] = p_preset._resistance
+	_attributes[Types.Attribute.Mysticism] = p_preset._mysticism
+	_attributes[Types.Attribute.Knowledge] = p_preset._knowledge
+	_attributes[Types.Attribute.CritChance] = p_preset._critical_chance
+	_attributes[Types.Attribute.CritDamage] = p_preset._critical_damage
+
+	_current_health = GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
+	
+	if(null != p_preset._trait):
+		_trait = p_preset._trait.duplicate(true)
+		_trait.Init()
+
+func GetEquipmentBonus(p_attribute: Types.Attribute) -> int:
+	var bonus_stat: int = 0
+	for i: int in _held_items.values():
+		bonus_stat += main.GetInstance()._item_collection._items[i]._attributes[p_attribute]
+	return bonus_stat
+
+func GetBattleAttributes() -> Dictionary[Types.Attribute, int]:
+	var battle_attributes: Dictionary[Types.Attribute, int] = _attributes.duplicate(true)
+	for attribute in battle_attributes.keys():
+		battle_attributes[attribute] += GetEquipmentBonus(attribute)
+	return battle_attributes
+
+func GetBattleAttribute(p_attribute: Types.Attribute) -> int:
+	var attribute_value: int = _attributes[p_attribute]
+	attribute_value += GetEquipmentBonus(p_attribute)
+	return attribute_value
+
+func EquipItem(p_equipment_ID: int) -> void:
+	if(not _held_items.has(main.GetInstance()._item_collection._items[p_equipment_ID]._slot)):
+		_held_items[main.GetInstance()._item_collection._items[p_equipment_ID]._slot] = p_equipment_ID
+	else:
+		print(_name + " already has equipment for ", main.GetInstance()._item_collection._items[p_equipment_ID]._slot)
+
+func UnequipItem(p_slot: Types.Slot) -> void:
+	_held_items.erase(p_slot)

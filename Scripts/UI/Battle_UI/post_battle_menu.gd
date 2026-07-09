@@ -1,12 +1,12 @@
 extends Control
 
-@onready var _h_box_container: HBoxContainer = $MarginContainer/VBoxContainer/HBoxContainer
-@onready var _heading: Label = $MarginContainer/VBoxContainer/Label
-@onready var _texture_rect_background: TextureRect = $TextureRect_Background
-
 @export var _character_result_UI: Array[CharacterDamageResultUI]
 
 var _context: ContextContainer = ContextContainer.new()
+
+@onready var _h_box_container: HBoxContainer = $MarginContainer/VBoxContainer/HBoxContainer
+@onready var _heading: Label = $MarginContainer/VBoxContainer/Label
+@onready var _texture_rect_background: TextureRect = $TextureRect_Background
 
 func _ready() -> void:
 	focus_button()

@@ -12,7 +12,6 @@ const Statuses = preload("uid://bp3pvvar4437")
 @export var damage_scaling: Dictionary[Types.Attribute, float]
 # cooldown is the amount of turns until the skill can be used again.
 @export var cooldown: int = 0
-var cooldown_left: int = 0
 @export var duration: int = 0
 
 @export var skill_type: Types.Skill_Type
@@ -22,3 +21,5 @@ var cooldown_left: int = 0
 
 @export var buffs: Dictionary[Types.Skill_Target, Types.Buff_Type]
 @export var debuffs: Dictionary[Types.Skill_Target, Types.Debuff_Type]
+
+var cooldown_left: int = 0

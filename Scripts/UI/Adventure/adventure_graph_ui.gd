@@ -2,10 +2,6 @@ class_name AdventureGraphUi extends Control
 
 signal node_selected(p_node: NodeData)
 
-@export var _node_ui_scene: PackedScene
-@export var _scroll_container: ScrollContainer
-@export var _graph_canvas: Control
-
 const GroundGradientScene := preload("res://Scripts/UI/Adventure/adventure_ground_gradient.gd")
 const EdgeLayerScene := preload("res://Scripts/UI/Adventure/adventure_edge_layer.gd")
 const BackgroundScene := preload("res://Scripts/UI/Adventure/adventure_background.gd")
@@ -24,6 +20,10 @@ const JITTER_Y_MAX: int = 45
 ## Empty map kept above the boss (last) node so it has the same decorated run-off as the
 ## space below the first node. One extra layer past the boss, mirroring the bottom margin.
 const END_MARGIN: int = LAYER_HEIGHT
+
+@export var _node_ui_scene: PackedScene
+@export var _scroll_container: ScrollContainer
+@export var _graph_canvas: Control
 
 var _node_positions: Dictionary = {}
 var _visual_data: BiomeVisualData

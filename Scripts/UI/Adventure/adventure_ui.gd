@@ -27,7 +27,8 @@ func Init(p_context: ContextContainer) -> void:
 		_button_finish.show()
 
 func _UpdateHeader() -> void:
-	#_label_supplies.text = "Supplies: " + str(main.GetInstance()._resources._supplies) + "/" + str(GameBalance.MAX_SUPPLIES)
+	#_label_supplies.text = "Supplies: " + str(main.GetInstance()._resources._supplies)
+	#		+ "/" + str(GameBalance.MAX_SUPPLIES)
 	_label_steps.text = "Steps taken today: " + str(_state.steps_taken_today)
 	var effect_parts: Array[String] = []
 	for type: Types.Buff_Type in _state.active_buffs:
@@ -55,7 +56,8 @@ func _on_engage_confirmed(p_node: NodeData) -> void:
 	context_container._arguments["Supply_Cost"] = supply_cost
 	context_container._adventure_state = _state
 	var completed: int = _state.nodes.filter(func(n: NodeData) -> bool: return n.is_complete).size()
-	context_container._arguments["Difficulty"] = AdventureState.CalculateScaledDifficulty(_state.difficulty, completed, _state.nodes.size())
+	context_container._arguments["Difficulty"] = AdventureState.CalculateScaledDifficulty(
+			_state.difficulty, completed, _state.nodes.size())
 	context_container._arguments["Biome_Path"] = _state.biome.resource_path if _state.biome else ""
 	context_container._arguments["Is_Boss"] = p_node.node_type == NodeData.Node_Type.BOSS
 	var difficulty: int = context_container._arguments["Difficulty"]

@@ -27,7 +27,11 @@ const DEGENERATE_LENGTH: float = 0.001
 const SEED_OFFSET_RANGE: int = 4096
 
 
-static func BuildRoadPoints(p_from: Vector2, p_to: Vector2, p_detail_noise: FastNoiseLite, p_seed: int) -> PackedVector2Array:
+static func BuildRoadPoints(
+		p_from: Vector2,
+		p_to: Vector2,
+		p_detail_noise: FastNoiseLite,
+		p_seed: int) -> PackedVector2Array:
 	var direction: Vector2 = p_to - p_from
 	var length: float = direction.length()
 	if length < DEGENERATE_LENGTH:
@@ -46,7 +50,14 @@ static func BuildRoadPoints(p_from: Vector2, p_to: Vector2, p_detail_noise: Fast
 	return curve.tessellate(TESSELLATE_STAGES, TESSELLATE_TOLERANCE)
 
 
-static func _BuildInteriorPoint(p_from: Vector2, p_to: Vector2, p_t: float, p_perpendicular: Vector2, p_sway: float, p_detail_noise: FastNoiseLite, p_seed_offset: Vector2) -> Vector2:
+static func _BuildInteriorPoint(
+		p_from: Vector2,
+		p_to: Vector2,
+		p_t: float,
+		p_perpendicular: Vector2,
+		p_sway: float,
+		p_detail_noise: FastNoiseLite,
+		p_seed_offset: Vector2) -> Vector2:
 	var base_point: Vector2 = p_from.lerp(p_to, p_t)
 	var sample_point: Vector2 = base_point + p_seed_offset
 	var noise_sample: float = p_detail_noise.get_noise_2d(sample_point.x, sample_point.y)

@@ -6,8 +6,11 @@ enum-name: '([A-Z][a-z0-9]*)+(_([A-Z][a-z0-9]*)+)*'
 # Pascal(_Snake) (e.g. Common, The_Iron_Ledger) or UPPER_SNAKE (e.g. REST_STOP)
 enum-element-name: '(([A-Z][a-z0-9]*)+(_([A-Z][a-z0-9]*)+)*|[A-Z][A-Z0-9]*(_[A-Z0-9]+)*)'
 # snake_case with optional _ prefix; segments may be uppercase acronyms (_owner_ID,
-# _supplies_UI) or digits; full UPPER_SNAKE allowed for constant-style variables
-class-variable-name: '_?([a-z0-9][a-z0-9]*|[A-Z][A-Z0-9]*)(_([a-z0-9][a-z0-9]*|[A-Z][A-Z0-9]*))*'
+# _supplies_UI), pluralized acronyms (_target_IDs), or digits; full UPPER_SNAKE
+# allowed for constant-style variables
+class-variable-name: '_?([a-z0-9][a-z0-9]*|[A-Z][A-Z0-9]*s?)(_([a-z0-9][a-z0-9]*|[A-Z][A-Z0-9]*s?))*'
+function-variable-name: '_?([a-z0-9][a-z0-9]*|[A-Z][A-Z0-9]*s?)(_([a-z0-9][a-z0-9]*|[A-Z][A-Z0-9]*s?))*'
+loop-variable-name: '_?([a-z0-9][a-z0-9]*|[A-Z][A-Z0-9]*s?)(_([a-z0-9][a-z0-9]*|[A-Z][A-Z0-9]*s?))*'
 
 disable:
   - function-argument-name

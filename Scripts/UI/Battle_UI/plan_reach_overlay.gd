@@ -1,6 +1,8 @@
 class_name PlanReachOverlay extends TextureRect
 
-const PLAN_TRAIT_TURNBAR_TEXTURE = preload("res://Assets/Champ_Collector/Icons/Abilities/Plan/Plan_Trait_Turnbar_Texture_2.jpg")
+const PLAN_TRAIT_TURNBAR_TEXTURE = preload(
+	"res://Assets/Champ_Collector/Icons/Abilities/Plan/Plan_Trait_Turnbar_Texture_2.jpg"
+)
 const PLAN_REACH_SHADER = preload("res://Assets/Champ_Collector/Shaders/plan_reach_overlay.gdshader")
 
 var _owner_icon: TextureRect
@@ -12,7 +14,12 @@ var _atlas_texture: AtlasTexture
 var _texture_width: float
 var _texture_height: float
 
-func Setup(p_owner_icon: TextureRect, p_reach_px: float, p_tint: Color, p_owner: Character, p_bar_height: float) -> void:
+func Setup(
+		p_owner_icon: TextureRect,
+		p_reach_px: float,
+		p_tint: Color,
+		p_owner: Character,
+		p_bar_height: float) -> void:
 	_owner_icon = p_owner_icon
 	_reach_px = p_reach_px
 	_owner = p_owner

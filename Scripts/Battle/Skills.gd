@@ -36,10 +36,12 @@ static func ResolveZoneEffect(
 			# trigger adds another independent Burning debuff, up to the status cap,
 			# so a target left in the lava keeps accruing 4%-max-health ticks.
 			var new_debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
-			new_debuff.type = Types.Debuff_Type.Burning # TODO: add a status effect container to the Zone class and use that instead
+			# TODO: add a status effect container to the Zone class and use that instead.
+			new_debuff.type = Types.Debuff_Type.Burning
 			new_debuff.duration = 2 # TODO: Replace with a defined number from the skill.
 			new_debuff.source_ID = p_zone._owner_ID
-			new_debuff.ID = p_character_repr.AddStatusEffect(GetStatusEffectTexture(Statuses.DEBUFF_ICONS[Types.Debuff_Type.Burning]), new_debuff.duration)
+			new_debuff.ID = p_character_repr.AddStatusEffect(
+					GetStatusEffectTexture(Statuses.DEBUFF_ICONS[Types.Debuff_Type.Burning]), new_debuff.duration)
 
 			p_character._active_debuffs.append(new_debuff)
 
@@ -54,14 +56,17 @@ static func ResolveSkillEffect(
 			p_caster_attr[Types.Attribute.Health] += int(_heap_on_value[p_caster_ID] * float(_heap_on_stacks[p_caster_ID]))
 			_heap_on_stacks[p_caster_ID] += 1
 
-static func CorrectZoneTarget(p_zone_owner_ID: int, p_trigger_character_ID: int, p_zone_target: Types.Skill_Target) -> bool:
+static func CorrectZoneTarget(
+		p_zone_owner_ID: int, p_trigger_character_ID: int, p_zone_target: Types.Skill_Target) -> bool:
 	match p_zone_target:
 		Types.Skill_Target.ZoneAll:
 			return true
 		Types.Skill_Target.ZoneAlly:
-			return (PLAYER_IDS.has(p_trigger_character_ID) and PLAYER_IDS.has(p_zone_owner_ID)) or (MONSTER_IDS.has(p_trigger_character_ID) and MONSTER_IDS.has(p_zone_owner_ID))
+			return ((PLAYER_IDS.has(p_trigger_character_ID) and PLAYER_IDS.has(p_zone_owner_ID)) or
+					(MONSTER_IDS.has(p_trigger_character_ID) and MONSTER_IDS.has(p_zone_owner_ID)))
 		Types.Skill_Target.ZoneEnemy:
-			return (MONSTER_IDS.has(p_trigger_character_ID) and PLAYER_IDS.has(p_zone_owner_ID)) or (PLAYER_IDS.has(p_trigger_character_ID) and MONSTER_IDS.has(p_zone_owner_ID))
+			return ((MONSTER_IDS.has(p_trigger_character_ID) and PLAYER_IDS.has(p_zone_owner_ID)) or
+					(PLAYER_IDS.has(p_trigger_character_ID) and MONSTER_IDS.has(p_zone_owner_ID)))
 		_:
 			print("Invalid target passed for zone target: ", p_zone_target)
 	return false
@@ -167,7 +172,8 @@ static func TriggerExistingCasterDebuffs(
 	for debuff in p_caster._active_debuffs:
 		match debuff.type:
 			Types.Debuff_Type.Burning:
-				var tick_damage: int = int(floor((p_caster_attributes[Types.Attribute.Health] * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER) * 0.04))
+				var tick_damage: int = int(floor(
+						(p_caster_attributes[Types.Attribute.Health] * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER) * 0.04))
 				p_caster._current_health -= tick_damage
 				burning_damage_total += tick_damage
 				if (not burning_damage_by_source.has(debuff.source_ID)):
@@ -233,7 +239,8 @@ static func TriggerTargetBuffs(
 			Types.Buff_Type.Fortify:
 				p_target_attributes[Types.Attribute.Defence] += int(ceilf(p_target_attributes[Types.Attribute.Defence] * 0.3))
 			Types.Buff_Type.Phalanx_Guard:
-				p_target_attributes[Types.Attribute.Defence] += int(ceilf(p_target_attributes[Types.Attribute.Defence] * buff.value))
+				p_target_attributes[Types.Attribute.Defence] += int(
+						ceilf(p_target_attributes[Types.Attribute.Defence] * buff.value))
 			_:
 				pass
 
@@ -268,9 +275,13 @@ static func CastBuff(
 	var new_buff: StatusEffects.Buff = StatusEffects.Buff.new()
 	new_buff.type = p_skill.buffs[p_skill.target]
 	new_buff.duration = p_skill.duration
-	new_buff.ID = p_target_repr.AddStatusEffect(GetStatusEffectTexture(Statuses.BUFF_ICONS[new_buff.type]), new_buff.duration)
+	new_buff.ID = p_target_repr.AddStatusEffect(
+			GetStatusEffectTexture(Statuses.BUFF_ICONS[new_buff.type]), new_buff.duration)
 	p_target._active_buffs.append(new_buff)
-	p_battle_ui.SpawnCombatText(Types.Buff_Type.keys()[new_buff.type], p_target_repr.position + p_battle_ui.COMBAT_TEXT_SPAWN_POINT, Color(0.335, 0.575, 0.838, 1.0))
+	p_battle_ui.SpawnCombatText(
+			Types.Buff_Type.keys()[new_buff.type],
+			p_target_repr.position + p_battle_ui.COMBAT_TEXT_SPAWN_POINT,
+			Color(0.335, 0.575, 0.838, 1.0))
 
 static func ApplyBuff(
 		p_target: Character,
@@ -293,9 +304,11 @@ static func ApplyBuff(
 	new_buff.duration = p_buff_template.duration
 	new_buff.name = p_buff_template.name
 	new_buff.value = p_buff_template.value
-	new_buff.ID = p_target_repr.AddStatusEffect(GetStatusEffectTexture(Statuses.BUFF_ICONS[new_buff.type]), new_buff.duration)
+	new_buff.ID = p_target_repr.AddStatusEffect(
+			GetStatusEffectTexture(Statuses.BUFF_ICONS[new_buff.type]), new_buff.duration)
 	p_target._active_buffs.append(new_buff)
-	p_battle_ui.SpawnCombatText(new_buff.name, p_target_repr.position + p_battle_ui.COMBAT_TEXT_SPAWN_POINT, Color(0.335, 0.575, 0.838, 1.0))
+	p_battle_ui.SpawnCombatText(
+			new_buff.name, p_target_repr.position + p_battle_ui.COMBAT_TEXT_SPAWN_POINT, Color(0.335, 0.575, 0.838, 1.0))
 
 static func RemoveBuff(
 		p_target: Character,
@@ -325,9 +338,11 @@ static func ApplyDebuff(
 	new_debuff.type = p_debuff_template.type
 	new_debuff.duration = p_debuff_template.duration
 	new_debuff.name = p_debuff_template.name
-	new_debuff.ID = p_target_repr.AddStatusEffect(GetStatusEffectTexture(Statuses.DEBUFF_ICONS[new_debuff.type]), new_debuff.duration)
+	new_debuff.ID = p_target_repr.AddStatusEffect(
+			GetStatusEffectTexture(Statuses.DEBUFF_ICONS[new_debuff.type]), new_debuff.duration)
 	p_target._active_debuffs.append(new_debuff)
-	p_battle_ui.SpawnCombatText(new_debuff.name, p_target_repr.position + p_battle_ui.COMBAT_TEXT_SPAWN_POINT, Color(0.681, 0.152, 0.31, 1.0))
+	p_battle_ui.SpawnCombatText(
+			new_debuff.name, p_target_repr.position + p_battle_ui.COMBAT_TEXT_SPAWN_POINT, Color(0.681, 0.152, 0.31, 1.0))
 
 static func CastDebuff(
 					p_target: Character,
@@ -340,11 +355,12 @@ static func CastDebuff(
 	if(HasMaxStatusEffects(p_target)):
 		return
 	
-	var randomVal: float = randf_range(0.95, 1.0)
-	var randomVal2: float = randf_range(0.95, 1.0)
-	if(p_caster_accuracy * randomVal < p_target_attributes[Types.Attribute.Resistance] * randomVal2):
+	var random_value: float = randf_range(0.95, 1.0)
+	var random_value_2: float = randf_range(0.95, 1.0)
+	if(p_caster_accuracy * random_value < p_target_attributes[Types.Attribute.Resistance] * random_value_2):
 		print("Target character ", p_target._name, " resisted the debuff!")
-		p_battle_ui.SpawnCombatText("Resisted debuff!", p_target_repr.position + p_battle_ui.COMBAT_TEXT_SPAWN_POINT, Color(0.801, 0.0, 0.0, 1.0))
+		p_battle_ui.SpawnCombatText(
+				"Resisted debuff!", p_target_repr.position + p_battle_ui.COMBAT_TEXT_SPAWN_POINT, Color(0.801, 0.0, 0.0, 1.0))
 		return
 	
 	for i in p_target._active_debuffs.size():
@@ -358,9 +374,13 @@ static func CastDebuff(
 	new_debuff.type = p_skill.debuffs[p_skill.target]
 	new_debuff.duration = p_skill.duration
 	new_debuff.source_ID = p_caster_ID
-	new_debuff.ID = p_target_repr.AddStatusEffect(GetStatusEffectTexture(Statuses.DEBUFF_ICONS[new_debuff.type]), new_debuff.duration)
+	new_debuff.ID = p_target_repr.AddStatusEffect(
+			GetStatusEffectTexture(Statuses.DEBUFF_ICONS[new_debuff.type]), new_debuff.duration)
 	p_target._active_debuffs.append(new_debuff)
-	p_battle_ui.SpawnCombatText(Types.Debuff_Type.keys()[new_debuff.type], p_target_repr.position + p_battle_ui.COMBAT_TEXT_SPAWN_POINT, Color(0.681, 0.152, 0.31, 1.0))
+	p_battle_ui.SpawnCombatText(
+			Types.Debuff_Type.keys()[new_debuff.type],
+			p_target_repr.position + p_battle_ui.COMBAT_TEXT_SPAWN_POINT,
+			Color(0.681, 0.152, 0.31, 1.0))
 
 # Rolls a 1-100 die against the crit chance. The die starts at 1 (not 0) so a
 # 0% crit chance can never crit and each chance point is worth exactly one percent.
@@ -374,7 +394,7 @@ static func DamageDealt(p_attacker_attr: Dictionary[Types.Attribute, int],
 						p_target_repr: CharacterRepresentation,
 						p_battle_ui: BattleUI,
 						p_caster_ID: int) -> int:
-	var randomVal: float = randf_range(0.95, 1.05)
+	var random_value: float = randf_range(0.95, 1.05)
 	var caster_scaled_attribute_aggregate: float = 0.0
 	var crit_multiplier: float = 1.0
 	
@@ -396,9 +416,12 @@ static func DamageDealt(p_attacker_attr: Dictionary[Types.Attribute, int],
 				Color(1.0, 0.729, 0.0, 1.0))
 	
 	var effective_defence: float = p_defender_attr[Types.Attribute.Defence] * p_skill.defense_ignore_factor
-	var damage_ratio: float = caster_scaled_attribute_aggregate / (effective_defence + caster_scaled_attribute_aggregate + 1)
-	var mitigation_factor: float = GameBalance.MINIMUM_DMG_PERCENT + ((1 - GameBalance.MINIMUM_DMG_PERCENT) * damage_ratio)
-	var damage_dealt: float = mitigation_factor * (caster_scaled_attribute_aggregate * _damage_multiplier[p_caster_ID]) * crit_multiplier * randomVal
+	var damage_ratio: float = (
+			caster_scaled_attribute_aggregate / (effective_defence + caster_scaled_attribute_aggregate + 1))
+	var mitigation_factor: float = (
+			GameBalance.MINIMUM_DMG_PERCENT + ((1 - GameBalance.MINIMUM_DMG_PERCENT) * damage_ratio))
+	var damage_dealt: float = (mitigation_factor * (caster_scaled_attribute_aggregate * _damage_multiplier[p_caster_ID]) *
+			crit_multiplier * random_value)
 	_damage_multiplier[p_caster_ID] = 1.0
 	return int(ceil(damage_dealt))
 

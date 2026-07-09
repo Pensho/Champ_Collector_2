@@ -1,15 +1,9 @@
 class_name CharacterRepresentation extends Node2D
 
-@warning_ignore_start("unused_private_class_variable")
-@onready var _character_texture: TextureRect = $TextureRect
-@onready var _lifebar: ProgressBar = $ProgressBar
-@onready var _lifebar_text: Label = $ProgressBar/Label
-@onready var _level: Label = $ColorRect/Label
-@onready var _visual_effects: CharacterVisualEffects = $VisualEffects
-@warning_ignore_restore("unused_private_class_variable")
+signal battle_target_selected(p_target_ID: int)
+
 const TRAIT_UI_ELEMENT_BLANK = preload("uid://cdwqpx4sgt42a")
 
-signal battle_target_selected(p_target_ID: int)
 @export var _trait_icons: Array[TextureRect]
 @export var _trait_tooltips: Array[ToolTip]
 @export var _target_ID: int = -1
@@ -17,6 +11,14 @@ signal battle_target_selected(p_target_ID: int)
 
 var _status_effect: Dictionary[int, int]
 var _status_effect_counter: int = 0
+
+@warning_ignore_start("unused_private_class_variable")
+@onready var _character_texture: TextureRect = $TextureRect
+@onready var _lifebar: ProgressBar = $ProgressBar
+@onready var _lifebar_text: Label = $ProgressBar/Label
+@onready var _level: Label = $ColorRect/Label
+@onready var _visual_effects: CharacterVisualEffects = $VisualEffects
+@warning_ignore_restore("unused_private_class_variable")
 
 func _on_button_target_button_up() -> void:
 	battle_target_selected.emit(_target_ID)
@@ -44,10 +46,10 @@ func RemoveStatusEffects(p_effect_IDs: Array[int]) -> void:
 		_status_effect_textures[_status_effect[effect_ID]].hide()
 
 func ClearAllStatusEffects() -> void:
-	for textRect in _status_effect_textures:
-		if(null != textRect.texture):
-			textRect.texture = null
-			textRect.hide()
+	for text_rect in _status_effect_textures:
+		if(null != text_rect.texture):
+			text_rect.texture = null
+			text_rect.hide()
 
 func SetTraitElement(p_texture: Texture, p_slot: int) -> void:
 	if(p_slot < 0 or p_slot >= _trait_icons.size()):

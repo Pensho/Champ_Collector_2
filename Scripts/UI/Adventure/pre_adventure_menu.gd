@@ -1,11 +1,11 @@
 extends Control
 
-@export var _difficulty_option: OptionButton
-@export var _biome_option: OptionButton
-
 const BIOME_RESOURCES: Array[BiomeData] = [
 	preload("res://Data/Adventure_Data/Biome_Types/biome_reclaimed_city.tres"), # biome_reclaimed_city
 ]
+
+@export var _difficulty_option: OptionButton
+@export var _biome_option: OptionButton
 
 var _biomes: Array[BiomeData] = []
 var _self_context: ContextContainer

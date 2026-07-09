@@ -1,7 +1,7 @@
 extends Control
 
 @warning_ignore("unused_parameter") # Main menu requires nothing from the ContextContainer.
-func Init(p_context_container: ContextContainer) -> void:
+func Init(_p_context_container: ContextContainer) -> void:
 	pass
 
 func _on_town_button_up() -> void:

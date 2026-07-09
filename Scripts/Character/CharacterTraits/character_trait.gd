@@ -10,18 +10,18 @@ var _body: String = "Body"
 func Init() -> void:
 	print("character_trait base class Init() called!")
 
-func StartOfBattle(p_character_repr: CharacterRepresentation) -> void:
+func StartOfBattle(_p_character_repr: CharacterRepresentation) -> void:
 	print("character_trait base class StartOfBattle() called!")
 
 func StartOfTurn(
-		p_owner_ID: int,
-		p_battle_UI: BattleUI,
-		p_characters: Dictionary[int, Character],
-		p_character_repr: Array[CharacterRepresentation]) -> void:
+		_p_owner_ID: int,
+		_p_battle_UI: BattleUI,
+		_p_characters: Dictionary[int, Character],
+		_p_character_repr: Array[CharacterRepresentation]) -> void:
 	print("character_trait base class StartOfTurn() called!")
 	return
 
-func EndOfTurn(p_character_repr: CharacterRepresentation) -> void:
+func EndOfTurn(_p_character_repr: CharacterRepresentation) -> void:
 	print("character_trait base class EndOfTurn() called!")
 
 func OnSkillCast(
@@ -41,11 +41,14 @@ func OnDefend(
 		_p_characters: Dictionary[int, Character]) -> void:
 	print("character_trait base class OnDefend() called!")
 
-func OnDamageTaken(_p_character_repr: CharacterRepresentation, _p_rarity: Types.Rarity, _p_battle_ui: BattleUI) -> float:
+func OnDamageTaken(
+		_p_character_repr: CharacterRepresentation,
+		_p_rarity: Types.Rarity,
+		_p_battle_ui: BattleUI) -> float:
 	print("character_trait base class DamageTaken() called!")
 	return 1.0
 
-func OnDeath(p_character_repr: CharacterRepresentation) -> void:
+func OnDeath(_p_character_repr: CharacterRepresentation) -> void:
 	print("character_trait base class OnDeath() called!")
 
 func GetTargetingDefenceMultiplier() -> float:

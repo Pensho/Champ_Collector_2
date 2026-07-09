@@ -1,21 +1,22 @@
 class_name Battle extends Node2D
 
+enum WinningTeam
+{
+	Ongoing,
+	Player_Won,
+	Monsters_Won,
+}
+
 const ZoneType = preload("uid://bdjrfif0s60v4")
 const GRAYSCALE = preload("uid://ia57lns0336p")
 
 const NO_CHARACTERS_TURN: int = -1
 const PLAYER_IDS: Array[int] = [0,1,2]
 const ENEMY_IDS: Array[int] = [3,4,5]
-var GRAYSCALE_MATERIAL: ShaderMaterial
 
 @export var _character_repr: Array[CharacterRepresentation]
 
-@onready var _battle_ui: BattleUI = $"Battle UI"
-@onready var _background: TextureRect = %BattleBackground
-@onready var _turn_indicator: TextureRect = $Turn_Indicator
-@onready var _characters: Dictionary[int, Character]
-@onready var _global_scene_darkness: DirectionalLight2D = $DirectionalLight2D
-@onready var _global_scene_light: PointLight2D = $PointLight2D
+var GRAYSCALE_MATERIAL: ShaderMaterial
 
 var _self_context: ContextContainer
 var _battlecontext: Context_Battle
@@ -25,12 +26,12 @@ var _initialized: bool = false
 var _zones: Dictionary[int, Zone]
 var _targeting_order: Array[int]
 
-enum WinningTeam
-{
-	Ongoing,
-	Player_Won,
-	Monsters_Won,
-}
+@onready var _battle_ui: BattleUI = $"Battle UI"
+@onready var _background: TextureRect = %BattleBackground
+@onready var _turn_indicator: TextureRect = $Turn_Indicator
+@onready var _characters: Dictionary[int, Character]
+@onready var _global_scene_darkness: DirectionalLight2D = $DirectionalLight2D
+@onready var _global_scene_light: PointLight2D = $PointLight2D
 
 func ApplyAdventureEffects(p_character_ID: int) -> void:
 	if _self_context._adventure_state == null:
@@ -86,7 +87,8 @@ func Init(p_context: ContextContainer) -> void:
 	
 	for i in p_context._player_battle_characters.size():
 		_characters[i] = p_context._player_battle_characters[i]
-		_characters[i]._current_health = _characters[i].GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
+		_characters[i]._current_health = (_characters[i].GetBattleAttribute(Types.Attribute.Health) *
+				Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
 		_self_context._arguments["character_dmg_" + str(i)] = 0
 		VisualizeCharacter(i)
 		ApplyAdventureEffects(i)
@@ -108,7 +110,8 @@ func Init(p_context: ContextContainer) -> void:
 		# One levelling call carrying the boss flag, so the ×1.5 boss multiplier is
 		# actually applied instead of being pre-empted by an earlier no-op call.
 		LevelSystem.SetOpponentLevel(_characters[i + 3], difficulty, is_boss)
-		_characters[i + 3]._current_health = _characters[i + 3].GetBattleAttribute(Types.Attribute.Health)  * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
+		_characters[i + 3]._current_health = (_characters[i + 3].GetBattleAttribute(Types.Attribute.Health) *
+				Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
 		VisualizeCharacter(i + 3)
 	
 	for i in _characters.keys():
@@ -133,7 +136,8 @@ func _process(p_delta: float) -> void:
 			Update(p_delta, i)
 
 func StartTurn() -> void:
-	_turn_indicator.position.x = _character_repr[_turn_character_ID].position.x + (_character_repr[_turn_character_ID]._character_texture.size.x * 0.5) - (_turn_indicator.size.x * 0.5)
+	_turn_indicator.position.x = (_character_repr[_turn_character_ID].position.x +
+			(_character_repr[_turn_character_ID]._character_texture.size.x * 0.5) - (_turn_indicator.size.x * 0.5))
 	_turn_indicator.position.y = _character_repr[_turn_character_ID].position.y - _turn_indicator.size.y
 	_turn_indicator.show()
 	
@@ -234,7 +238,8 @@ func TriggerZones() -> void:
 func Update(p_delta: float, p_characterID: int) -> void:
 	# It already is someones turn, so return early.
 	if (PLAYER_IDS.has(_turn_character_ID) or ENEMY_IDS.has(_turn_character_ID)):
-		_turn_indicator.position.y = _character_repr[_turn_character_ID].position.y - _turn_indicator.size.y + (sin(Time.get_ticks_msec() * 0.005) * 5)
+		_turn_indicator.position.y = (_character_repr[_turn_character_ID].position.y - _turn_indicator.size.y +
+				(sin(Time.get_ticks_msec() * 0.005) * 5))
 		return
 	# It isn't someones turn, but this character is dead so return early.
 	if(_characters[p_characterID]._current_health <= 0):
@@ -247,7 +252,10 @@ func Update(p_delta: float, p_characterID: int) -> void:
 	StartTurn()
 
 func UpdateLifeBar(p_characterID: int) -> void:
-	_characters[p_characterID]._current_health = clampi(_characters[p_characterID]._current_health, 0, _characters[p_characterID].GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
+	_characters[p_characterID]._current_health = clampi(
+			_characters[p_characterID]._current_health,
+			0,
+			_characters[p_characterID].GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
 	if(_characters[p_characterID]._current_health <= 0):
 		_characters[p_characterID]._current_health = 0
 		_characters[p_characterID]._active_buffs.clear()
@@ -260,19 +268,24 @@ func UpdateLifeBar(p_characterID: int) -> void:
 				_characters[p_characterID]._trait.OnDeath(_character_repr[p_characterID])
 	
 	_character_repr[p_characterID]._lifebar.value = _characters[p_characterID]._current_health
-	_character_repr[p_characterID]._lifebar_text.text = str(_characters[p_characterID]._current_health) + "/" + str(_characters[p_characterID].GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
+	var max_health: int = (_characters[p_characterID].GetBattleAttribute(Types.Attribute.Health) *
+			Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
+	_character_repr[p_characterID]._lifebar_text.text = (
+			str(_characters[p_characterID]._current_health) + "/" + str(max_health))
 
 func VisualizeCharacter(p_characterID: int) -> void:
 	_character_repr[p_characterID]._level.text = str(_characters[p_characterID]._level)
 	var character_canvas_texture = CanvasTexture.new()
 	if(PLAYER_IDS.has(p_characterID)):
-		character_canvas_texture.diffuse_texture = main.GetInstance()._character_collection.GetCharacterTexture(_characters[p_characterID]._name)
+		character_canvas_texture.diffuse_texture = (main.GetInstance()._character_collection
+				.GetCharacterTexture(_characters[p_characterID]._name))
 	else:
 		character_canvas_texture.diffuse_texture = load(_characters[p_characterID]._texture)
 	if("" != _characters[p_characterID]._normal_map):
 		character_canvas_texture.normal_texture = load(_characters[p_characterID]._normal_map)
 	_character_repr[p_characterID]._character_texture.texture = character_canvas_texture
-	_character_repr[p_characterID]._lifebar.max_value = (_characters[p_characterID].GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
+	_character_repr[p_characterID]._lifebar.max_value = (
+			_characters[p_characterID].GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
 	UpdateLifeBar(p_characterID)
 	_character_repr[p_characterID].show()
 
@@ -283,7 +296,8 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID) -> voi
 	var trait_result: TraitSkillResult = TraitSkillResult.new()
 	if (null != _characters[p_caster_ID]._trait):
 		if(_characters[p_caster_ID]._trait._execution_steps.has(Types.Combat_Event.Skill_Cast)):
-			trait_result = _characters[p_caster_ID]._trait.OnSkillCast(p_caster_ID, p_target_IDs, _characters, _character_repr, cast_skill.name, _battle_ui, caster_attributes)
+			trait_result = _characters[p_caster_ID]._trait.OnSkillCast(
+					p_caster_ID, p_target_IDs, _characters, _character_repr, cast_skill.name, _battle_ui, caster_attributes)
 	
 	if (not _characters[p_caster_ID]._active_debuffs.is_empty()):
 		var burning_damage_by_source: Dictionary[int, int] = Skills.TriggerExistingCasterDebuffs(
@@ -349,7 +363,8 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID) -> voi
 				if(damage_dealt != 0):
 					if (PLAYER_IDS.has(p_caster_ID)):
 						_self_context._arguments["character_dmg_" + str(p_caster_ID)] += damage_dealt
-					_battle_ui.SpawnCombatText(str(damage_dealt), _character_repr[target_ID].position + _battle_ui.COMBAT_TEXT_SPAWN_POINT)
+					_battle_ui.SpawnCombatText(
+							str(damage_dealt), _character_repr[target_ID].position + _battle_ui.COMBAT_TEXT_SPAWN_POINT)
 					_characters[target_ID]._current_health -= damage_dealt
 					UpdateLifeBar(target_ID)
 		
@@ -384,7 +399,7 @@ func IsTheBattleOver() -> WinningTeam:
 	
 	if (false == monsters_alive):
 		return WinningTeam.Player_Won
-	elif (false == player_alive):
+	if (false == player_alive):
 		return WinningTeam.Monsters_Won
 
 	return WinningTeam.Ongoing
@@ -418,7 +433,8 @@ func EndBattle(p_winner: WinningTeam) -> void:
 				
 			if(p_winner == WinningTeam.Player_Won):
 				LevelSystem.AddExperience(_characters[i], _battlecontext._loot_table._drop_result._experience)
-			_characters[i]._current_health = _characters[i].GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
+			_characters[i]._current_health = (_characters[i].GetBattleAttribute(Types.Attribute.Health) *
+				Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
 	
 	_self_context._scene = "uid://d3ooarqabyw0p"
 	
@@ -442,7 +458,8 @@ func _on_character_battle_target_selected(p_target_ID: int) -> void:
 
 func _on_battle_ui_battle_skill_selected(p_skill_ID: int) -> void:
 	if(_characters[_turn_character_ID]._skills[p_skill_ID].cooldown_left > 0):
-		print("Selected skill: ", p_skill_ID, " is on cooldown with: ", _characters[_turn_character_ID]._skills[p_skill_ID].cooldown_left, " more turns left.")
+		print("Selected skill: ", p_skill_ID, " is on cooldown with: ",
+				_characters[_turn_character_ID]._skills[p_skill_ID].cooldown_left, " more turns left.")
 		return
 	_selected_skill_ID = p_skill_ID
 	match _characters[_turn_character_ID]._skills[_selected_skill_ID].target:

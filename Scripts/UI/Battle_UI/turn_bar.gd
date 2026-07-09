@@ -6,10 +6,11 @@ const TURN_BAR_LAVA_ZONE = preload("uid://bognvuid7w2ti")
 const DEFAULT_THEME = preload("uid://c8irweh6md2jy")
 const GRAYSCALE = preload("uid://ia57lns0336p")
 const NO_CHARACTERS_TURN: int = -1
-var _base_velocity: float = self.size.x / Game_Balance.TURN_DURATION_SECONDS
-var _grayscale_material: ShaderMaterial
 
 @export var _char_turns: Array[TextureRect]
+
+var _base_velocity: float = self.size.x / Game_Balance.TURN_DURATION_SECONDS
+var _grayscale_material: ShaderMaterial
 var _characters_normalized_speed: Dictionary[int, float]
 var _characters_turn_id = -1
 var _zone_dividers: Array[ColorRect]

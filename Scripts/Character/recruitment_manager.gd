@@ -24,7 +24,9 @@ static func GroupByRarity(p_presets: Array[CharacterPreset]) -> Dictionary[Types
 		grouped[preset._rarity].append(preset)
 	return grouped
 
-static func PickChampionByRarity(p_grouped: Dictionary[Types.Rarity, Array], p_rarity_weights: Dictionary[Types.Rarity, int]) -> CharacterPreset:
+static func PickChampionByRarity(
+		p_grouped: Dictionary[Types.Rarity, Array],
+		p_rarity_weights: Dictionary[Types.Rarity, int]) -> CharacterPreset:
 	var cumulative_weights: Dictionary[Types.Rarity, int] = {}
 	var current_sum: int = 0
 	for rarity in p_rarity_weights.keys():

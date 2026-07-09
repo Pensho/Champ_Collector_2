@@ -1,8 +1,9 @@
 class_name MenuItemSlot extends Control
 
+@export var _ID: int = -1
+
 @onready var texture_rect: TextureRect = $TextureRect/TextureRect
 @onready var button: Button = $TextureRect/Button
-@export var _ID: int = -1
 @onready var level: Label = $TextureRect/Label
 
 func ConnectButton(p_callback: Callable) -> void:

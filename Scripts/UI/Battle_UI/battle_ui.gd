@@ -1,22 +1,18 @@
 class_name BattleUI extends Control
 
-@warning_ignore_start("unused_private_class_variable")
-@export var _skill_buttons: Array[SkillButton]
-@onready var skill_focus: TextureRect = $Skill_Focus
-@onready var _turn_bar: TurnBar = $PlayerInfoBox
-@warning_ignore_restore("unused_private_class_variable")
-
-@export var _battle_duration_label: Label
+signal battle_skill_selected(p_skill_ID: int)
 
 const COMBAT_EFFECT_TEXT_TEMPLATE = preload("uid://caq22aj34qk1f")
 const SKILL_GLOW_POS_HIDDEN: Vector2 = Vector2(-2000.0, 0.0)
 const COMBAT_TEXT_SPAWN_POINT: Vector2 = Vector2(100, 70)
 const TEXT_SPAWN_DELAY: float = 0.25
+
+@export var _skill_buttons: Array[SkillButton]
+@export var _battle_duration_label: Label
+
 var SKILL_GLOW_POS_1: Vector2
 var SKILL_GLOW_POS_2: Vector2
 var SKILL_GLOW_POS_3: Vector2
-
-signal battle_skill_selected(p_skill_ID: int)
 
 var _damage_number_2d_pool: Array[CombatEffectText] = []
 var _allow_new_effects: bool = true
@@ -26,6 +22,11 @@ var _spawn_timer: float = 0.0
 var _battle_duration := 0.0
 var _skill_textures: Dictionary[String, Texture2D]
 var _environment_effects: Array[Node]
+
+@warning_ignore_start("unused_private_class_variable")
+@onready var skill_focus: TextureRect = $Skill_Focus
+@onready var _turn_bar: TurnBar = $PlayerInfoBox
+@warning_ignore_restore("unused_private_class_variable")
 
 func Init(p_environment_effects: Array[PackedScene]) -> void:
 	SKILL_GLOW_POS_1 = Vector2(_skill_buttons[0].position.x - 25.0, _skill_buttons[0].position.y - 25.0)
@@ -70,11 +71,10 @@ func GetDamageNumber() -> CombatEffectText:
 	if (_allow_new_effects):
 		if (_damage_number_2d_pool.size() > 0):
 			return _damage_number_2d_pool.pop_front()
-		else:
-			var new_text: CombatEffectText = COMBAT_EFFECT_TEXT_TEMPLATE.instantiate()
-			new_text.tree_exiting.connect(
-				func():_damage_number_2d_pool.append(new_text))
-			return new_text
+		var new_text: CombatEffectText = COMBAT_EFFECT_TEXT_TEMPLATE.instantiate()
+		new_text.tree_exiting.connect(
+			func():_damage_number_2d_pool.append(new_text))
+		return new_text
 	return null
 
 func SetSkill(p_texture_path: String, p_title: String, p_description: String, p_slot: int) -> void:

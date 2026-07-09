@@ -54,7 +54,8 @@ static func _InsertSpecialNodes(p_spine: Array[NodeData], p_node_type: NodeData.
 			p_spine[index].node_type = p_node_type
 
 
-static func _AddBranches(p_spine: Array[NodeData], p_frequency: AdventureTemplate.Mechanic_Frequency) -> Array[NodeData]:
+static func _AddBranches(
+		p_spine: Array[NodeData], p_frequency: AdventureTemplate.Mechanic_Frequency) -> Array[NodeData]:
 	var branch_count: int = SetNumberOfBranchingPaths(p_frequency)
 	var all_branch_nodes: Array[NodeData]
 	var used_start_indices: Array[int]
