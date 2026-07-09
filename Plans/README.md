@@ -13,10 +13,16 @@ Suggested order (dependencies noted inside each plan):
    (independent; hooks into 2 if done after it).
 4. `Plan_Naming_Convention_Alignment.md` — align written conventions and code;
    mechanical, schedule last.
-5. `Plan_Reagent_System_And_Sorcerer_Passive.md` — reagent consumables (inventory,
-   loadout, in-battle use) plus the Sorcerer's Arcane Instability trait;
-   independent, but coordinate ordering with `Plan_Headless_Combat_Core.md`
-   (whichever lands second adapts).
+5. Reagent system, split into four sequential plans (independent of 1–4, but the
+   combat-facing ones coordinate ordering with `Plan_Headless_Combat_Core.md` —
+   whichever lands second adapts):
+   1. `Plan_Reagent_Data_And_Catalog.md` — `ReagentData`, registry, authored catalog.
+   2. `Plan_Reagent_Inventory_And_Storage_UI.md` — persistent inventory, loot
+      drops, storage view.
+   3. `Plan_Reagent_Combat_Application.md` — loadout, in-battle free-action
+      consumption, `Reagent_Consumed` hook.
+   4. `Plan_Sorcerer_Arcane_Instability.md` — the Sorcerer passive consuming that
+      hook (Sorcerer champion itself is a separate prerequisite task).
 
 Design-only plans (no code; can run at any time):
 

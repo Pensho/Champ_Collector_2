@@ -130,14 +130,14 @@ Current roles, their identity and purpose exist as follows:
     - Purpose: Debuffer, Buffer
     - Passive: Fresh Batch - At the start of combat the Alchemist brews one concoction: a reagent drawn at random from an Alchemist-exclusive pool, occupying its own slot beyond the three brought reagents. It follows normal reagent rules (consumable once, by any champion, on their turn) except that it is never added to the inventory - if unconsumed when the battle ends, it is lost. Each fielded Alchemist brews their own concoction.
         - Brew potency: 90% Uncommon, 100% Rare, 110% Epic, 120% Legendary (relative to a standard reagent of equivalent effect); the brew pool holds 3 lesser reagents at Uncommon and Rare, 4 at Epic and Legendary (see section 3.3.3)
-        - Depends on the reagent system (see section 3.3.3 and `Plans/Plan_Reagent_System_And_Sorcerer_Passive.md`); inactive until reagents exist.
+        - Depends on the reagent system (see section 3.3.3 and `Plans/Plan_Reagent_Combat_Application.md`); inactive until reagents exist.
 - Sorcerer (Not yet implemented)
     - A damage dealer that harnesses the power of magic to deal Area of Effect damage and control the battlefield. Wields the unstable, shunned magic left behind by the God of Magic, and excels at drawing power from reagents scavenged from that era's ruins. Signature zone: Unstable Rift (see section 3.2.4.1). Primary attributes: Mysticism, Knowledge.
     - Purpose: Damage, Debuffer, Control
     - Passive: Arcane Instability - Using any skill grants one Instability stack (+x% Mysticism per stack, maximum 5). When the Sorcerer consumes a reagent, they gain two Instability stacks and the reagent's effect is amplified by y%. While at maximum stacks, the Sorcerer's next skill also releases a Surge: magical damage to all characters, allies included, scaling with the Sorcerer's Mysticism - then all stacks reset. Stacks do not persist between combats.
         - Per-stack Mysticism: 4% Uncommon, 6% Rare, 8% Epic, 10% Legendary
         - Reagent amplification: 20% Uncommon, 30% Rare, 40% Epic, 50% Legendary
-        - Depends on the reagent system (see section 3.3.3 and `Plans/Plan_Reagent_System_And_Sorcerer_Passive.md`). Until reagents exist, the passive functions on skill-cast stacks alone.
+        - Depends on the reagent system (see section 3.3.3 and `Plans/Plan_Sorcerer_Arcane_Instability.md`). Until reagents exist, the passive functions on skill-cast stacks alone.
 - Scholar
     - A support character that focuses on knowledge and strategy to enhance allies' abilities and exploit enemy weaknesses. The zone-clearing specialist: the Scholar's kit is one of the two dedicated ways to remove zones from the turn bar (see section 3.2.4.1). Primary attributes: Knowledge.
     - Purpose: Debuffer, Buffer
@@ -734,13 +734,17 @@ Reagents are universal consumable items left over from the era of the God of Mag
 looted primarily from that god's ruins and other encounters (rarer reagents drop only
 from bosses). They are stored in a persistent player inventory.
 
-Rules (designed; implementation planned in `Plans/Plan_Reagent_System_And_Sorcerer_Passive.md`):
+Rules (designed; implementation planned in `Plans/Plan_Reagent_Data_And_Catalog.md`,
+`Plans/Plan_Reagent_Inventory_And_Storage_UI.md`, and
+`Plans/Plan_Reagent_Combat_Application.md`):
 - Before a battle the player selects up to 3 reagents from their inventory to bring along.
 - Each brought reagent can be consumed exactly once per battle, by any champion on
   their turn, as a free action (it does not consume the turn). Reagents are usable
   strictly on the consumer's own turn, never reactively.
 - A consumed reagent is permanently deleted; reagents brought but not used return to
   the inventory.
+- Reagents can be sold for Silver from the reagent storage screen (in the collection
+  menu). Sell values scale with rarity (values not yet decided).
 - Reagents come in rarities (Uncommon, Rare, Epic, Legendary). Reagent effects scale
   with rarity only — never with the consumer's attributes.
 - Every reagent effect is either scalar or binary:
