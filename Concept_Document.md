@@ -208,7 +208,8 @@ Current roles, their identity and purpose exist as follows:
 - Plague Doctor (Not yet implemented)
     - A debuff focused character, applying various damage over time and stat reducing debuffs to enemies. Signature zone: Miasma (see section 3.2.4.1). Primary attributes: Mysticism, Resistance.
     - Purpose: Debuffer
-    - Passive: 
+    - Passive: Comorbidity - Damage-over-time debuffs applied by the Plague Doctor tick for +x% damage per debuff on the target (the ticking debuff included, debuffs from any source counted, up to 5).
+        - Per-debuff tick bonus: 5% Uncommon, 7% Rare, 9% Epic, 11% Legendary
 - Warlord (Not yet implemented)
     - A buffing tank character, applying various buffs to self and allies while being able to take a lot of damage. Primary attributes: Health, Defense.
     - Purpose: Sustain
