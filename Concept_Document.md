@@ -216,7 +216,7 @@ Current roles, their identity and purpose exist as follows:
         - Redirected portion: 15% Uncommon, 20% Rare, 25% Epic, 30% Legendary
 
 ### 3.2. Combat
-Combat is turn based, using the Speed attribute of each character to move a representation across a "turn bar". When a characters representation has crossed the entire bar, the game will pause for input to resolve their turn and then finish by putting the representation of the character back to the beginning. Then the system keeps going.
+The player fields a team of up to 3 characters in a battle. Combat is turn based, using the Speed attribute of each character to move a representation across a "turn bar". When a characters representation has crossed the entire bar, the game will pause for input to resolve their turn and then finish by putting the representation of the character back to the beginning. Then the system keeps going.
 
 <br/>
 
@@ -511,7 +511,10 @@ Skills allocated to a specific Role, listed in the same order as their entries i
     * Type: Debuff
     * Cooldown: 2 turns
     * Effect: Applies the Exposed Facet debuff to a single enemy for 2 turns (see section 3.2.3.2).
-* (Third skill not yet decided.)
+* Full Appraisal
+    * Type: Buff
+    * Cooldown: 4 turns
+    * Effect: Grants one ally the Keen Edge and Lethal Precision buffs, both for 2 turns (see section 3.2.3.2).
 
 ###### Tactician
 * Signal Strike

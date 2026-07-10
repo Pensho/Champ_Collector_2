@@ -16,7 +16,6 @@ In progress. All four batches are written into 3.2.4.2; only the final pass
   later passive pass, not in the skills.
 
 - Tidal Corsair: the finisher's stack payloads may be revised.
-- Appraiser: third skill.
 
 Independent of the implementation plans; can run at any time. One overlap:
 the Architect's kit is already designed in `Plan_Architect_Calibration_Kit.md` — this
@@ -175,7 +174,7 @@ pass are reviewed in the final step (acceptable orphans vs. catalog cuts).
 | Haste | — |
 | True Aim | — |
 | Clarity | — |
-| Keen Edge | — |
+| Keen Edge | Appraiser (Full Appraisal) |
 | Insight | — |
 | Regeneration | Symbiote (Grafted Flesh) |
 | Barrier | Architect (Raise the Frame; replaced the Sound Structure working name); Bloodmage (Transfusion) — ruled a commodity effect, two-kit cap now reached |
@@ -187,7 +186,7 @@ pass are reviewed in the final step (acceptable orphans vs. catalog cuts).
 | Wanderlust | — |
 | Overflow | — |
 | Vigor | Bar Brawler (Liquid Courage) |
-| Lethal Precision | — |
+| Lethal Precision | Appraiser (Full Appraisal) |
 | Spotlight | Jester (Center Stage) |
 | Premonition | Diviner (Premonition) |
 | Rehearsed | — |
