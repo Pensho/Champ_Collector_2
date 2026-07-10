@@ -200,11 +200,10 @@ Current roles, their identity and purpose exist as follows:
     - Damage dealer. Primary attributes: Attack, Speed.
     - The Tidal Corsair is a Combo character where you plan your moves ahead, highly mobile but not inherently strong unless you set up your attacks correctly.
     - Purpose: Damage
-    - Passive: Tidal Corsair Trait - Boarding Strike grants a Steel stack (+50% damage per stack
-      on the finishing move), Saltwater Shot grants a Sea stack (-10% turn bar bump per stack
-      on the finishing move). Corsair's Reckoning consumes all stacks. Up to 3 stacks can be
+    - Passive: Wrangle the Sea - Boarding Strike grants a Steel stack, Saltwater Shot grants a Sea stack. Corsair's Reckoning consumes all stacks. Up to 3 stacks can be
       held at a time.
-        - Rarity scaling of these values is not yet implemented.
+        - Damage per Steel stack: 45% Uncommon, 50% Rare, 55% Epic, 60% Legendary
+        - Turn meter per Sea stack: 8% Uncommon, 10% Rare, 12% Epic, 14% Legendary
 - Plague Doctor (Not yet implemented)
     - A debuff focused character, applying various damage over time and stat reducing debuffs to enemies. Signature zone: Miasma (see section 3.2.4.1). Primary attributes: Mysticism, Resistance.
     - Purpose: Debuffer
