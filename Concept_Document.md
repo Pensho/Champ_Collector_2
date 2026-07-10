@@ -150,7 +150,7 @@ Current roles, their identity and purpose exist as follows:
 - Appraiser (May postpone implementation and keep as optional)
     - A master at exploiting enemy weaknesses, allowing opportunity for the team to easily deal critical hits. Primary attributes: Critical Chance, Knowledge.
     - Purpose: Debuffer
-    - Passive: 
+    - Passive: Strike the Flaw - The Appraiser's critical hits apply the Cracked Facet debuff to the target (see section 3.2.3.2), with a rarity-dependent duration: Uncommon and Rare 1 turn, Epic and Legendary 2 turns.
 - Tactician
     - A squishy support. Primary attributes: Knowledge, Speed.
     - Purpose: Buffer
@@ -333,6 +333,7 @@ Debuffs:
 * Unravel: Reduces Resistance by 30%. (Not yet implemented)
 * Confound: Reduces Knowledge by 30%. (Not yet implemented)
 * Exposed Facet: Attacks against the character gain +15 percentage points Critical Chance. (Not yet implemented)
+* Cracked Facet: Critical hits against the character deal +25% Critical Damage. (Not yet implemented)
 * Bleed: At the start of the character's turn, they take damage scaling with the caster's Attack. (Not yet implemented)
 * Plague: Deals magical damage each turn scaling with the caster's Mysticism; when it expires, it spreads to a random other enemy with fresh duration. (Not yet implemented)
 * Blight: Healing received is reduced by 50%. (Not yet implemented)

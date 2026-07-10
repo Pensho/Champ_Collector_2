@@ -16,6 +16,9 @@ Effort: **S** = hours, **M** = days, **L** = week+
 - **True Revive Reagent** *(Priority: Low | Effort: M)*
   If true revival ever exists, it should be a Legendary-only reagent rather than any role's skill. Currently the Deathward Charm reagent (prevention, not resurrection) is the only death counterplay; whether resurrection should exist at all is undecided.
 
+- **Knowledge-Bypass Variant of Cracked Facet** *(Priority: Low | Effort: S)*
+  Alternative effect for the Appraiser's Cracked Facet debuff: instead of flat bonus Critical Damage taken, the target's Knowledge does not blunt critical hits while the debuff holds (bypassing the `Defender's Knowledge * 0.5` term in the Critical Damage formula). Thematic for the Knowledge-scaling Appraiser but swingy — worthless against low-Knowledge enemies, huge against high-Knowledge ones. Shelved in favor of the flat bonus.
+
 ---
 
 ## Characters & Progression
