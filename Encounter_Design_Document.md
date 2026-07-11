@@ -71,6 +71,51 @@ Concept Document 3.2.3 catalog.
     * Effect: When an ally Cinder Husk dies, the user's next Cinder Sermon
       deals +40% damage. Multiple deaths stack; the bonus is consumed by that
       one Sermon.
+* Inscribe
+    * Type: Damage, Turn Bar (Zone) (basic skill, no cooldown)
+    * Effect: Deals Magical Damage to a single target enemy, scaling with
+      Mysticism, and places a Wild Glyph zone (unstable family) in the
+      left-most empty turn bar section, if any. Affected enemies take Magical
+      Damage scaling with the placer's Mysticism (starting point: 40% of a
+      standard hit) and gain the Warped debuff for 2 turns (see Concept
+      Document 3.2.3.2). Holds 3 charges.
+* Inscription Surge
+    * Type: Damage (AoE)
+    * Cooldown: 3 turns
+    * Effect: Deals Magical Damage to all enemies, scaling with Mysticism
+      (starting point: 80% of a standard hit), increased by 30% per zone
+      standing on the turn bar — regardless of who placed it.
+* Foreclosure
+    * Type: Damage (basic skill, no cooldown)
+    * Effect: Deals Physical Damage to a single target enemy, scaling with
+      Attack, increased by 20% per buff the user holds.
+* Lien
+    * Type: Passive
+    * Effect: At the start of the user's turn, if the user holds no buffs,
+      they gain the Empower buff for 2 turns (see Concept Document 3.2.3.2).
+      Triggers at most once every 4 turns.
+* Writ of Seizure
+    * Type: Buff theft (basic skill, no cooldown), Damage
+    * Effect: Steals one buff from a random enemy: the buff is removed and
+      applied to the user's designated ward (stated per encounter) with a
+      fresh 2-turn duration. Deals Magical
+      Damage, scaling with Knowledge.
+* Reliquary Ward
+    * Type: Buff (basic skill, no cooldown)
+    * Effect: Grants one ally a protection, alternating with each use: odd
+      uses grant a Barrier absorbing 60% of that ally's max Health for
+      2 turns; even uses grant the Deathward buff for 2 turns (see Concept
+      Document 3.2.3.2).
+* Vault Slam
+    * Type: Damage, Debuff (Turn Bar)
+    * Cooldown: 3 turns
+    * Effect: Deals heavy Physical Damage to a single enemy, scaling with
+      Attack (starting point: 220% of a basic hit), and applies the Dead
+      Weight debuff for 2 turns (see Concept Document 3.2.3.1).
+* Warden's Failsafe
+    * Type: Passive
+    * Effect: When an ally dies, the user gains the Frenzy buff for the rest
+      of the battle (see Concept Document 3.2.3.2).
 
 ## 2. Encounters
 
@@ -183,7 +228,7 @@ Concept Document).
 
 #### Reanimating Statues 1 (Boots)
 
-- **Tier:** Mini-boss. **Theme:** Clockwork Spire (order).
+- **Tier:** Mini-boss.
 - **Enemy composition:** one Reanimating Statue — Boots.
 - **Mechanics:** Wind the Mainspring (section 1) — the statue re-applies Haste
   to itself every turn, stacking into an ever-faster attack cadence. Onset:
@@ -203,7 +248,7 @@ Concept Document).
 
 #### Reanimating Statues 2 (Weapons)
 
-- **Tier:** Mini-boss. **Theme:** Clockwork Spire (order).
+- **Tier:** Mini-boss.
 - **Enemy composition:** one Reanimating Statue — Weapon.
 - **Mechanics:** a telegraphed kill-shot cycle — Break Guard softens a target,
   then Overwhelming Blow (both section 1) lands a massive single-target hit
@@ -221,7 +266,7 @@ Concept Document).
 
 #### Reanimating Statues 3 (Off-hands)
 
-- **Tier:** Mini-boss. **Theme:** Clockwork Spire (order).
+- **Tier:** Mini-boss.
 - **Enemy composition:** one Reanimating Statue — Shield.
 - **Mechanics:** extreme Defense — flat attacks barely scratch the statue.
   Onset: immediate, from enemy turn 1.
@@ -236,4 +281,94 @@ Concept Document).
 
 ### 2.3. Bosses
 
-*Empty.*
+#### The Glyphbound Archivist
+
+- **Tier:** Boss, full mechanical weight. **Theme:** Ruins of the God of Magic
+  (unstable).
+- **Enemy composition:** the Glyphbound Archivist alone — it is the zone
+  engine, and a second body would dilute the bar pressure.
+- **Mechanics:** Inscribe (section 1) — every turn the Archivist attacks and
+  writes a Wild Glyph zone into the left-most empty turn bar section (3
+  charges; Magical Damage plus Warped for 2 turns on affected champions).
+  Onset: enemy turn 1. Because occupied sections cannot be targeted (Concept
+  Document 3.2.4.1), an uncontested Archivist also progressively locks the
+  player out of their own zone play. Inscription Surge (section 1) — an AoE
+  that grows 30% stronger per zone standing on the bar, regardless of who
+  placed it, so the player's own zones feed it equally. Onset: first cast on
+  enemy turn 4, then every 3rd turn; a wall from roughly turn 8 if the bar
+  stays full.
+- **Intended solutions (configurations):** (1) the Scholar — Refutation
+  removes a glyph every 3 turns and punishes the Archivist per remaining
+  charge; (2) the reagent configuration — up to 3 Zone-Dissolving Salts,
+  spent just before Surges; (3) charge-burn sustain — a durable front (e.g.
+  the Warlord's Hold the Line, the Bar Brawler's bulk and healing)
+  deliberately walks glyphs to drain their 3 charges between Surges, keeping
+  the standing count low. Contesting sections with the player's own zones
+  denies glyph slots but feeds the Surge exactly as much — a trade, not an
+  answer.
+- **Unsolved texture:** hard wall. The bar fills by turn 5, the player's zone
+  skills go dark, and Surges compound past survivable. A zone-reliant roster
+  with no clearing is the worst roster here.
+- **Reward hook (deferred):** assigned at placement.
+
+#### The Collector of Debts
+
+- **Tier:** Boss, full mechanical weight. **Theme:** Iron Ledger (order).
+- **Enemy composition:** the Collector of Debts; one Warded Notary — its
+  mechanical reason is running the seizure paperwork (Writ of Seizure, with
+  the Collector as its designated ward) while the Collector fights. Killing
+  the Notary stops the theft but leaves the Lien self-funding, so kill order
+  is a real decision. The Collector's high Resistance is a natural attribute,
+  not a mechanic (echoing the Warded Clerks fodder so knowledge transfers).
+- **Mechanics:** Writ of Seizure (Notary, section 1) — steals one champion
+  buff to the Collector each turn with a fresh 2-turn duration. Onset: enemy
+  turn 1. Foreclosure (Collector, section 1) — the Collector's attack deals
+  +20% per buff it holds. Onset: bites from around turn 3 as seized buffs
+  stack. Lien (Collector passive, section 1) — an unbuffed Collector grants
+  itself Empower for 2 turns, at most once every 4 turns, so a buffless
+  roster never disarms the fight by accident. Onset: enemy turn 2. Per
+  Concept Document 3.2 the passive is learned by observation.
+- **Intended solutions (configurations):** (1) the Cultist buff economy —
+  Devour Blessing spends the party's buffs before they can be seized, and
+  buff-light play starves the Writ, leaving only the slow Lien drip to
+  manage; (2) buff repossession — the Emissary's Signed Writ shears the
+  Collector's stacked durations, the Thief's Pilfer steals them back;
+  (3) the reagent configuration — tinctures and the Fractured Idol are
+  explicitly not buffs (undispellable, invisible to buff counting), so a
+  reagent-powered roster fights at full strength with nothing to seize; the
+  Sorcerer's Arcane Instability amplifies them and makes it the natural
+  carrier.
+- **Unsolved texture:** hard wall for buff-reliant rosters — by turn 5 the
+  Collector holds 3–4 stolen buffs and Foreclosure starts deleting champions.
+- **Reward hook (deferred):** assigned at placement.
+
+#### The Warden of the Reliquary
+
+- **Tier:** Boss, full mechanical weight. **Theme:** Clockwork Spire (order).
+- **Enemy composition:** the Vault Warden — a modest Health pool of its own
+  (starting point: a standard champion's expected Health); the Reliquary
+  Core — no attacks, very high Health and Defense (starting point: 3× a
+  champion's expected Health). The Core's mechanical reason: it is the lock —
+  every protection the Warden survives behind flows from it.
+- **Mechanics:** Reliquary Ward (Core, section 1) — alternates a large
+  Barrier (60% of the Warden's max Health, 2 turns) and Deathward (2 turns)
+  onto the Warden. Onset: enemy turn 1 — the Warden is never unprotected
+  unless the player intervenes. Vault Slam (Warden, section 1) — a 220% hit
+  applying Dead Weight for 2 turns, dragging the soaker down the turn bar.
+  Onset: enemy turn 2. Mitigated by Enfeeble (e.g. the Lancer's Disarm) or a
+  Barrier (e.g. the Bloodmage's Transfusion, the Architect's Raise the
+  Frame). Warden's Failsafe (Warden passive, section 1) — when
+  the Core dies, the Warden gains Frenzy for the rest of the battle; tunneling
+  the Core is the viable brute-force route (the over-leveled path), but it is
+  slow and punished.
+- **Intended solutions (configurations):** (1) the Cultist — Rite of
+  Severance blocks new protections for 2 of every 4 turns, opening kill
+  windows on the Warden; (2) the Emissary — Signed Writ shears the
+  protections' durations so they fall off before they matter; (3) the burst
+  window — the Tactician (Daunting Strength) plus the Appraiser (Full
+  Appraisal: Keen Edge and Lethal Precision) stack one crit round that breaks
+  the Barrier, kills into the Deathward, and finishes the 1-Health Warden in
+  the same round.
+- **Unsolved texture:** hard wall — chip damage dies on fresh protections
+  while Vault Slams grind the party backward down the bar.
+- **Reward hook (deferred):** assigned at placement.

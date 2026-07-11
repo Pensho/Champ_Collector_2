@@ -33,6 +33,8 @@ runway, which is the mini-boss texture — and fight length is now a tier
 parameter with round budgets and a mechanic-onset rule (see Encounter tiers;
 owned by Concept 5.3). Their coverage-ledger answers now count toward the
 3-encounter review threshold; each answering effect currently sits at 1.
+The Statues carry no theme tag by design — a theme for them is deliberately
+unallocated for now.
 
 Way-of-working revision (confirmed): batches are single-tier from now on, and
 mini-boss and boss batches hold exactly one encounter worked in depth — the first
@@ -48,8 +50,17 @@ does not redirect it). The mini-boss proving batch is done: The Ashen Oracle
 (escalating Cinder Sermon; Cinder Husks as Ash Offering fuel, punishing
 careless AoE) — it also settled that enemy passives are not inspectable in
 battle (Concept 3.2; a reveal-on-trigger bestiary is parked in
-`FeatureIdeas.md`). Next up: the boss proving batch (one encounter,
-depth-first).
+`FeatureIdeas.md`). The boss proving batch is done: three candidates were
+iterated in depth and the user kept all three — The Glyphbound Archivist,
+The Collector of Debts, and The Warden of the Reliquary now live in
+`Encounter_Design_Document.md` 2.3 with eight new opponent skills and no new
+status effects. Keeping three was a one-off user redirect; volume batches
+return to exactly one boss per batch. A fourth candidate (a turn-bar tyrant
+answered by Steadfast/Anchor) was set aside because those effects have no kit
+carrier yet — same situation as Sequence Lock. The existing Obsidian Stallion
+enemy (Lava Zone placer) stays a mini-boss covering the simple zone-hazard
+space below the Archivist; it still needs thematic flavor. With this, all
+three proving batches are complete. Next up: volume batches.
 
 Depends on `Plan_Role_Skill_Kits.md`: an encounter's intended solutions may only
 reference effects that at least one designed kit in 3.2.4.2 or a reagent in 3.3.3
@@ -143,7 +154,7 @@ the Concept 4.3 locations and the god zone families (order / unstable / momentum
 
 - **Reclaimed City** — spore beasts, Fae geometry, scavenger crews.
 - **Clockwork Spire** — constructs and Logic-Chain guardians; order zones,
-  high-Defense and speed-ramp patterns (natural home for the Statues).
+  high-Defense and speed-ramp patterns.
 - **Pirate Coves** — Gilded Wake crews; buff economies and momentum zones.
 - **Iron Ledger** — enforcers and adjudicators; debuff pressure and order zones.
 - **Caravan plains** — Centaur regimes and plains beasts; momentum and speed
@@ -214,38 +225,53 @@ Review rules, checked after every batch:
 - Boss configuration sets are compared game-wide per the overlap tolerance: each
   boss keeps at least one configuration unique to it.
 
-| Role | Intended answer for |
-|---|---|
-| Emissary | Reanimating Statues 1 (Signed Writ → buff-duration strip); fodder: Wake Skimmers (buff-duration strip), Ledger Clerks (Signed Writ) |
-| Thief | fodder: Wake Skimmers (Pilfer buff theft) |
-| Lancer | Reanimating Statues 2 (Disarm → Enfeeble); fodder: Line Breaker (Disarm → Enfeeble) |
-| Alchemist | fodder: Ledger Clerks (Dissolving Agent → Unravel) |
-| Sorcerer | — |
-| Scholar | — |
-| Diviner | The Ashen Oracle (Ill Omen → Hexed); fodder: Ridge Marksmen (Premonition) |
-| Appraiser | — |
-| Tactician | — |
-| Symbiote | — |
-| Jester | Reanimating Statues 3 (Burning Bolas → Burning) |
-| Cultist | Reanimating Statues 1 (Rite of Severance → Severance halts the Haste ramp) |
-| Bar Brawler | Reanimating Statues 1 (Headbutt → Dead Weight) |
-| Bloodmage | Reanimating Statues 2 (Transfusion → Barrier); The Ashen Oracle (Tithe of Vitality → Mana Burn); fodder: Ridge Marksmen, Line Breaker (Barrier) |
-| Herald of the loom | The Ashen Oracle (Thread Lash → Suppress); fodder: Sporeback Pack (Thread Lash → Suppress) |
-| Chronophage | Reanimating Statues 1 (Temporal Sinkhole → turn-bar pressure); fodder: Plains Outriders (Temporal Sinkhole) |
-| Architect | Reanimating Statues 3 (Final Calculation tier 2 → Expose Weakness); Reanimating Statues 2 (Raise the Frame → Barrier); fodder: Ridge Marksmen, Flank Cutter (Barrier) |
-| Tidal Corsair | fodder: Plains Outriders (Corsair's Reckoning → turn-bar strip) |
-| Plague Doctor | fodder: Sporeback Pack (Quarantine Breach → Blight) |
-| Warlord | Reanimating Statues 2 (Hold the Line → Fortify); fodder: Flank Cutter (Fortify) |
+One column per tier, so a Role's distribution across tiers is readable at a
+glance (e.g. a Role that only ever answers fodder stands out). The Boss
+column lists configuration membership only; incidental mitigations named in
+an entry (e.g. Vault Slam's Enfeeble/Barrier softeners) are not tracked.
+
+| Role | Fodder | Mini-boss | Boss |
+|---|---|---|---|
+| Emissary | Wake Skimmers (buff-duration strip); Ledger Clerks (Signed Writ) | Reanimating Statues 1 (Signed Writ → buff-duration strip) | The Collector of Debts (Signed Writ → strips seized buffs); The Warden of the Reliquary (Signed Writ → shears protection durations) |
+| Thief | Wake Skimmers (Pilfer buff theft) | — | The Collector of Debts (Pilfer → steals seized buffs back) |
+| Lancer | Line Breaker (Disarm → Enfeeble) | Reanimating Statues 2 (Disarm → Enfeeble) | — |
+| Alchemist | Ledger Clerks (Dissolving Agent → Unravel) | — | — |
+| Sorcerer | — | — | The Collector of Debts (Arcane Instability → amplified tincture/Fractured Idol configuration) |
+| Scholar | — | — | The Glyphbound Archivist (Refutation → zone clear, role signature) |
+| Diviner | Ridge Marksmen (Premonition) | The Ashen Oracle (Ill Omen → Hexed) | — |
+| Appraiser | — | — | The Warden of the Reliquary (Full Appraisal → burst-window configuration) |
+| Tactician | — | — | The Warden of the Reliquary (Daunting Strength → burst-window configuration) |
+| Symbiote | — | — | — |
+| Jester | — | Reanimating Statues 3 (Burning Bolas → Burning) | — |
+| Cultist | — | Reanimating Statues 1 (Rite of Severance → Severance halts the Haste ramp) | The Collector of Debts (Devour Blessing → buff economy); The Warden of the Reliquary (Rite of Severance → blocks the protection grants) |
+| Bar Brawler | — | Reanimating Statues 1 (Headbutt → Dead Weight) | The Glyphbound Archivist (charge-burn sustain) |
+| Bloodmage | Ridge Marksmen, Line Breaker (Barrier) | Reanimating Statues 2 (Transfusion → Barrier); The Ashen Oracle (Tithe of Vitality → Mana Burn) | — |
+| Herald of the loom | Sporeback Pack (Thread Lash → Suppress) | The Ashen Oracle (Thread Lash → Suppress) | — |
+| Chronophage | Plains Outriders (Temporal Sinkhole) | Reanimating Statues 1 (Temporal Sinkhole → turn-bar pressure) | — |
+| Architect | Ridge Marksmen, Flank Cutter (Barrier) | Reanimating Statues 3 (Final Calculation tier 2 → Expose Weakness); Reanimating Statues 2 (Raise the Frame → Barrier) | — |
+| Tidal Corsair | Plains Outriders (Corsair's Reckoning → turn-bar strip) | — | — |
+| Plague Doctor | Sporeback Pack (Quarantine Breach → Blight) | — | — |
+| Warlord | Flank Cutter (Fortify) | Reanimating Statues 2 (Hold the Line → Fortify) | The Glyphbound Archivist (charge-burn sustain) |
 
 Sequence Lock has no carrier in the claims ledger; it is noted in the
 Reanimating Statues 1 entry as a future answer and becomes valid once a kit or
-reagent carries it. Fodder answers are not counted against the 3-encounter
-review threshold.
+reagent carries it. Steadfast and Anchor are in the same situation — a
+turn-bar-tyrant boss concept waits on one of them gaining a carrier. Fodder
+answers are not counted against the 3-encounter review threshold.
+
+Post-batch review check (boss proving batch): the Emissary's Signed Writ now
+answers 3 mini-boss/boss encounters — exactly at the review threshold; the
+next encounter leaning on it triggers the review. Severance sits at 2. Each
+boss keeps at least one configuration no other boss uses (Archivist: all
+three; Collector: the Cultist buff economy and the tincture reagent
+configuration; Warden: the Tactician + Appraiser burst window).
 
 Opponent skills authored so far (`Encounter_Design_Document.md` section 1):
 Break Guard, Wind the Mainspring, Overwhelming Blow, Sporeburst Mend, Rally the
 Crew, March Cadence, Aimed Shot, Flank Cut, Breaching Charge, Cinder Spit,
-Cinder Sermon, Ash Offering (passive).
+Cinder Sermon, Ash Offering (passive), Inscribe, Inscription Surge,
+Foreclosure, Lien (passive), Writ of Seizure, Reliquary Ward, Vault Slam,
+Warden's Failsafe (passive).
 
 ## Per-batch procedure
 
