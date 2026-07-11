@@ -30,10 +30,12 @@ Design-only plans (no code; can run at any time):
   skill kit per Role, batch-brainstormed with a claims ledger to control
   buff/debuff/turn-bar overlap. Imports the Architect kit from
   `Plan_Architect_Calibration_Kit.md`.
-- `Plan_Encounter_Solution_Design.md` — long-running framework for designing
-  encounters the Role kits solve (fodder / mini-boss / boss tiers), with a
-  coverage ledger tracking which kit answers which encounter. Depends on the
-  kits from `Plan_Role_Skill_Kits.md`; batches append as scenarios are developed.
+- `Plan_Encounter_Solution_Design.md` — the long-run encounter content plan:
+  designing encounters the Role kits solve (fodder / mini-boss / boss tiers),
+  progression-agnostic with volume floors (at least 20 fodder / 10 mini-boss /
+  10 boss), tiered overlap tolerance, an optional theme palette, and a coverage
+  ledger tracking which kit answers which encounter. Depends on the kits from
+  `Plan_Role_Skill_Kits.md`; output lands in `Encounter_Design_Document.md`.
 - `Plan_Particle_Effects.md` — living inventory of battle and environmental
   particle effects (archetype library, Adventure map overlays, hub ambience).
   Mostly design; its battle-effect infrastructure section spawns a future code
