@@ -216,7 +216,7 @@ Current roles, their identity and purpose exist as follows:
         - Redirected portion: 15% Uncommon, 20% Rare, 25% Epic, 30% Legendary
 
 ### 3.2. Combat
-The player fields a team of up to 3 characters in a battle. Combat is turn based, using the Speed attribute of each character to move a representation across a "turn bar". When a characters representation has crossed the entire bar, the game will pause for input to resolve their turn and then finish by putting the representation of the character back to the beginning. Then the system keeps going.
+The player fields a team of up to 3 characters in a battle. The party is ordered left to right, in the order the characters are picked in the pre-battle menu; some skills target by battlefield position (see the targeting types in section 3.2.4). Combat is turn based, using the Speed attribute of each character to move a representation across a "turn bar". When a characters representation has crossed the entire bar, the game will pause for input to resolve their turn and then finish by putting the representation of the character back to the beginning. Then the system keeps going.
 
 <br/>
 
@@ -393,6 +393,10 @@ Skill targeting types:
 * Ally Not Self
 * Random One
 * All Characters
+* Left-most Enemy
+* Right-most Enemy
+
+Positional targeting (Left-most Enemy, Right-most Enemy) is absolute: it follows the left-to-right party order (see section 3.2) and is not redirected by targeting-weight effects such as Spotlight.
 
 Of the skills a character has, they always have 1 basic skill that has no cooldown but in general is weaker or more basic than other skills.
 

@@ -34,6 +34,19 @@ parameter with round budgets and a mechanic-onset rule (see Encounter tiers;
 owned by Concept 5.3). Their coverage-ledger answers now count toward the
 3-encounter review threshold; each answering effect currently sits at 1.
 
+Way-of-working revision (confirmed): batches are single-tier from now on, and
+mini-boss and boss batches hold exactly one encounter worked in depth — the first
+proving batch surfaced that mixing tiers produced interesting but shallow
+mini-boss and boss sketches. Compositions are 1–3 enemies and supporting enemies
+must earn their slot (see Production decisions). The fodder proving batch is
+done: seven encounters (Sporeback Pack, Wake Skimmers, Ledger Clerks, Plains
+Outriders, Ridge Marksmen, Flank Cutter, Line Breaker) live in
+`Encounter_Design_Document.md` 2.1 with six new opponent skills. The positional
+pair introduced party order and the Left-most / Right-most Enemy targeting
+types into Concept 3.2 and 3.2.4 (positional targeting is absolute — Spotlight
+does not redirect it). Next up: the mini-boss proving batch (one encounter,
+depth-first).
+
 Depends on `Plan_Role_Skill_Kits.md`: an encounter's intended solutions may only
 reference effects that at least one designed kit in 3.2.4.2 or a reagent in 3.3.3
 actually carries. That plan's claims ledger is the lookup table for carriers.
@@ -106,6 +119,14 @@ entry states its mechanical weight (light / full) so the placement pass can slot
 - **Enemies are champions, data-wise:** enemy variants use the same
   `CharacterPreset` resource and skill data as playable champions. No enemy-only
   stat systems.
+- **Single-tier batches, depth-first:** a batch is either 3–5 fodder encounters,
+  or exactly one mini-boss, or exactly one boss. Mini-boss and boss batches
+  iterate their one encounter in depth with the user before anything is written
+  into the documents.
+- **Compositions are 1–3 enemies:** an encounter fields 1, 2, or 3 enemies —
+  never 3 by default. Any enemy fielded beside a mini-boss or boss must have a
+  stated mechanical reason to be there (it carries, enables, or feeds the
+  mechanic); no filler bodies.
 
 ## Theme palette (optional flavor, applied late)
 
@@ -137,8 +158,9 @@ that tier can be produced in bulk without padding.
   weight (light / full).
 - **Theme (optional):** a tag from the theme palette; where zones are involved, the
   god zone family (order / unstable / momentum, 3.2.4.1).
-- **Enemy composition:** the enemy variants fielded (this is what the player sees
-  pre-battle).
+- **Enemy composition:** the enemy variants fielded, 1–3 of them (this is what
+  the player sees pre-battle). Each enemy fielded beside a mini-boss or boss
+  states its mechanical reason.
 - **Mechanics:** expressed as opponent skills, passives, or zones. Each mechanic
   states its onset (by which enemy turn it becomes relevant), which must fall
   inside the tier's expected kill window. Each new opponent skill is added to the
@@ -188,26 +210,26 @@ Review rules, checked after every batch:
 
 | Role | Intended answer for |
 |---|---|
-| Emissary | Reanimating Statues 1 (Signed Writ → buff-duration strip) |
-| Thief | — |
-| Lancer | Reanimating Statues 2 (Disarm → Enfeeble) |
-| Alchemist | — |
+| Emissary | Reanimating Statues 1 (Signed Writ → buff-duration strip); fodder: Wake Skimmers (buff-duration strip), Ledger Clerks (Signed Writ) |
+| Thief | fodder: Wake Skimmers (Pilfer buff theft) |
+| Lancer | Reanimating Statues 2 (Disarm → Enfeeble); fodder: Line Breaker (Disarm → Enfeeble) |
+| Alchemist | fodder: Ledger Clerks (Dissolving Agent → Unravel) |
 | Sorcerer | — |
 | Scholar | — |
-| Diviner | — |
+| Diviner | fodder: Ridge Marksmen (Premonition) |
 | Appraiser | — |
 | Tactician | — |
 | Symbiote | — |
 | Jester | Reanimating Statues 3 (Burning Bolas → Burning) |
 | Cultist | Reanimating Statues 1 (Rite of Severance → Severance halts the Haste ramp) |
 | Bar Brawler | Reanimating Statues 1 (Headbutt → Dead Weight) |
-| Bloodmage | Reanimating Statues 2 (Transfusion → Barrier) |
-| Herald of the loom | — |
-| Chronophage | Reanimating Statues 1 (Temporal Sinkhole → turn-bar pressure) |
-| Architect | Reanimating Statues 3 (Final Calculation tier 2 → Expose Weakness); Reanimating Statues 2 (Raise the Frame → Barrier) |
-| Tidal Corsair | — |
-| Plague Doctor | — |
-| Warlord | Reanimating Statues 2 (Hold the Line → Fortify) |
+| Bloodmage | Reanimating Statues 2 (Transfusion → Barrier); fodder: Ridge Marksmen, Line Breaker (Barrier) |
+| Herald of the loom | fodder: Sporeback Pack (Thread Lash → Suppress) |
+| Chronophage | Reanimating Statues 1 (Temporal Sinkhole → turn-bar pressure); fodder: Plains Outriders (Temporal Sinkhole) |
+| Architect | Reanimating Statues 3 (Final Calculation tier 2 → Expose Weakness); Reanimating Statues 2 (Raise the Frame → Barrier); fodder: Ridge Marksmen, Flank Cutter (Barrier) |
+| Tidal Corsair | fodder: Plains Outriders (Corsair's Reckoning → turn-bar strip) |
+| Plague Doctor | fodder: Sporeback Pack (Quarantine Breach → Blight) |
+| Warlord | Reanimating Statues 2 (Hold the Line → Fortify); fodder: Flank Cutter (Fortify) |
 
 Sequence Lock has no carrier in the claims ledger; it is noted in the
 Reanimating Statues 1 entry as a future answer and becomes valid once a kit or
@@ -215,13 +237,16 @@ reagent carries it. Fodder answers are not counted against the 3-encounter
 review threshold.
 
 Opponent skills authored so far (`Encounter_Design_Document.md` section 1):
-Break Guard, Wind the Mainspring, Overwhelming Blow.
+Break Guard, Wind the Mainspring, Overwhelming Blow, Sporeburst Mend, Rally the
+Crew, March Cadence, Aimed Shot, Flank Cut, Breaching Charge.
 
 ## Per-batch procedure
 
-1. Run `/brainstorm` for the batch, prompting with: the tier template, the current
+1. Run `/brainstorm` for the batch (single-tier: 3–5 fodder candidates, or one
+   mini-boss, or one boss), prompting with: the tier template, the current
    coverage ledger, the rules above, and the 3.2.4.2 kit excerpts for the roles the
-   batch intends to cover.
+   batch intends to cover. Mini-boss and boss batches iterate the single
+   encounter in depth before step 3.
 2. The user picks from the candidates (or redirects).
 3. Write the picked encounters into `Encounter_Design_Document.md`; add new opponent
    skills to its opponent skill catalog and new status effects to Concept 3.2.3 in
@@ -237,11 +262,12 @@ Break Guard, Wind the Mainspring, Overwhelming Blow.
    5.2.2 wording only if the retrofit exposes gaps — note that Sequence Lock and
    Anchor currently have no kit carrier in the claims ledger, so Reanimating
    Statues 1 is the first "solutions must exist" test case.
-2. **Proving batch:** 2–3 fodder mechanics, one mini-boss, one full boss, via the
-   per-batch procedure. Purpose: prove the templates and the ledger work end to end.
+2. **Proving batches:** one single-tier batch per tier — the fodder batch (done:
+   five encounters), then one mini-boss, then one boss — via the per-batch
+   procedure. Purpose: prove the templates and the ledger work end to end.
 3. **Volume batches:** repeat the per-batch procedure toward the volume floors.
-   A batch mixes tiers (roughly 3–5 fodder, 1–2 mini-bosses, 1 boss) and stays
-   placement-agnostic; themes are optional tags.
+   Every batch is single-tier (3–5 fodder, or one mini-boss, or one boss) and
+   stays placement-agnostic; themes are optional tags.
 4. **Placement pass (later, once progression settles):** fit designed encounters to
    game modes, locations, and progression; assign reward hooks; tune stats to the
    placement's expected power. Placement rule: fodder sharing a boss's mechanic

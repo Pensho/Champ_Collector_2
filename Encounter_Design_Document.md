@@ -31,6 +31,31 @@ Concept Document 3.2.3 catalog.
     * Cooldown: 3 turns
     * Effect: Deals massive Physical Damage to a single target enemy, scaling
       with Attack (starting point: 250% of a basic hit).
+* Sporeburst Mend
+    * Type: Heal (basic skill, no cooldown)
+    * Effect: Restores Health to all allies, scaling with the user's Mysticism
+      (starting point: 8% of each ally's max Health at expected power).
+* Rally the Crew
+    * Type: Buff (basic skill, no cooldown)
+    * Effect: Grants one other ally the Empower buff for 2 turns (see Concept
+      Document 3.2.3.2).
+* March Cadence
+    * Type: Buff, Turn Bar (basic skill, no cooldown)
+    * Effect: All other allies gain 10% turn bar progress.
+* Aimed Shot
+    * Type: Damage
+    * Cooldown: 2 turns
+    * Effect: Deals heavy Physical Damage to the most injured enemy, scaling
+      with Attack (starting point: 200% of a basic hit).
+* Flank Cut
+    * Type: Damage (basic skill, no cooldown)
+    * Effect: Deals Physical Damage to the right-most enemy (positional
+      targeting, see Concept Document 3.2.4), scaling with Attack.
+* Breaching Charge
+    * Type: Damage (basic skill, no cooldown)
+    * Effect: Deals Physical Damage to the left-most enemy (positional
+      targeting, see Concept Document 3.2.4), scaling with Attack; each use
+      increases this skill's damage by 15% for the rest of the battle.
 
 ## 2. Encounters
 
@@ -40,7 +65,77 @@ Statues retrofit, then grown per batch.
 
 ### 2.1. Fodder
 
-*Empty.*
+Compact entries: composition, the single mechanic (with onset), and its answers.
+Enemies without a listed skill fall back on the universal Stab and Zap (Concept
+Document 3.2.4.3).
+
+#### Sporeback Pack
+
+- **Composition:** two Spore Hounds, one Sporeback Matron. **Theme:** Reclaimed
+  City.
+- **Mechanic:** the Matron's Sporeburst Mend (section 1) heals the whole pack
+  every turn while the Hounds attack. Onset: enemy turn 1.
+- **Answers:** Blight (e.g. the Plague Doctor's Quarantine Breach) halves the
+  healing; Suppress (e.g. the Herald of the loom's Thread Lash) guts its
+  Mysticism scaling.
+
+#### Wake Skimmers
+
+- **Composition:** two Skimmer Cutthroats, one Bosun. **Theme:** Pirate Coves.
+- **Mechanic:** the Bosun's Rally the Crew (section 1) hands a Cutthroat the
+  Empower buff (2 turns) every turn. Onset: enemy turn 1.
+- **Answers:** buff-duration stripping (e.g. the Emissary's Signed Writ) shears
+  the Empower off; buff theft (the Thief's Pilfer passive) turns it around.
+
+#### Ledger Clerks
+
+- **Composition:** three Warded Clerks. **Theme:** Iron Ledger.
+- **Mechanic:** permanently very high Resistance — debuff-reliant teams watch
+  everything fizzle. Onset: immediate.
+- **Answers:** Unravel (e.g. the Alchemist's Dissolving Agent) opens the
+  Resistance; the Signed Writ debuff (e.g. the Emissary's Signed Writ) makes
+  debuffs land regardless.
+
+#### Plains Outriders
+
+- **Composition:** two Outrider Lancers, one War Drummer. **Theme:** Caravan
+  plains.
+- **Mechanic:** the Drummer's March Cadence (section 1) pushes both Lancers 10%
+  up the turn bar every turn. Onset: enemy turn 2.
+- **Answers:** turn-bar stripping (e.g. the Tidal Corsair's Corsair's Reckoning
+  with Sea stacks) claws the tempo back; the Temporal Sinkhole zone (Chronophage)
+  bleeds the pushed progress away.
+
+#### Ridge Marksmen
+
+- **Composition:** two Scavenger Skirmishers, one Ridge Marksman. **Theme:**
+  Reclaimed City.
+- **Mechanic:** the Marksman's Aimed Shot (section 1) fires a heavy hit at the
+  most injured champion every other turn. Onset: enemy turn 2.
+- **Answers:** Premonition (e.g. the Diviner's Premonition) blanks the shot;
+  Barrier (e.g. the Architect's Raise the Frame, the Bloodmage's Transfusion)
+  absorbs it.
+
+#### Flank Cutter
+
+- **Composition:** one Flank Cutter (a lone, fast duelist). **Theme:** Pirate
+  Coves.
+- **Mechanic:** Flank Cut (section 1) — every attack targets the right-most
+  champion, absolutely (Spotlight does not redirect it). Onset: enemy turn 1.
+- **Answers:** Fortify (e.g. the Warlord's Hold the Line) or Barrier (e.g. the
+  Architect's Raise the Frame) hardens the right slot; the free lever is party
+  order — put the bruiser on the right.
+
+#### Line Breaker
+
+- **Composition:** one Plains Charger, one Drover. **Theme:** Caravan plains.
+  The Drover supplies side pressure with the universal Stab so the player
+  cannot pile every defense onto the left slot.
+- **Mechanic:** the Charger's Breaching Charge (section 1) hits the left-most
+  champion harder with every use. Onset: enemy turn 1, noticeable by turn 3.
+- **Answers:** Enfeeble (e.g. the Lancer's Disarm) blunts the ramp; Barrier
+  (e.g. the Bloodmage's Transfusion) absorbs the spikes; party order decides
+  who takes the charge.
 
 ### 2.2. Mini-bosses
 
