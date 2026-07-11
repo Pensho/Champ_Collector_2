@@ -356,7 +356,7 @@ Buffs:
 * Luck: Roll calculations twice and take the better result. (Not yet implemented)
 * Phalanx Guard: Gain bonus defense per stack of momentum consumed. (Lancer Specific)
 * Attune: Increases Mysticism by 30%. (Not yet implemented)
-* Haste: Increases Speed by 20%. (Not yet implemented)
+* Haste: Increases Speed by 20%; Haste stacks, so repeated applications add independent instances up to the status-effect cap. (Not yet implemented)
 * True Aim: Increases Accuracy by 30%. (Not yet implemented)
 * Clarity: Increases Resistance by 30%. (Not yet implemented)
 * Keen Edge: Increases Critical Chance by 15 percentage points. (Not yet implemented)
@@ -690,10 +690,7 @@ Not yet tied to a specific Role, grouped by mechanical type for lookup.
     * Effect: Deals Physical Damage to a single target enemy, scaling with Attack.
 
 ##### 3.2.4.4 Opponent Skills
-* Break Guard
-    * Type: Damage, Debuff
-    * Cooldown: 2 turns
-    * Effect: A blunt tackle dealing Physical Damage to a single target, scaling with Attack, and applies the Expose Weakness debuff for 2 turns (see section 3.2.3.2).
+Skills authored for enemies are cataloged in `Encounter_Design_Document.md` section 1 (Break Guard moved there). Any status effect they reference must exist in the 3.2.3 catalog.
 
 ### 3.3. Items and Resources
 
@@ -1027,19 +1024,22 @@ The intended way to engage is to bring one suitable character to deal with the e
 In the future the intent is to have one type of encounter per type of gear set, where all types of equippable items or a subset can be a drop for that set.
 For now though in the meantime as gear sets doesn't exist yet, the intention is for each encounter to drop one type of equippable item as e.g. one encounter for boots, one for weapons and one for off-hands.
 
-So there now is 3 encounters to choose from for gear farming, one per equippable item.
-
-##### 5.2.2.1 Reanimating Statues 1 (Boots)
-This encounter is a against a statue that relies on very high speed and through that attack many times, using skills to get slightly faster each turn. The player can utilize e.g. Sequence Lock and/or Anchor to mitigate the speed.
-
-##### 5.2.2.2 Reanimating Statues 2 (Weapons)
-This encounter is against a statue that use a very high damage single target attack every few turns, so the player can utilize the Enfeeble debuff to reduce the hit or using some defensive skill from a Sustain focused character.
-
-##### 5.2.2.3 Reanimating Statues 3 (Off-hands)
-This encounter is against a statue that has high defense, so the player can utilize the debuffs Expose Weakness to deal more damage to it or for example Burning to deal a percentage of its health.
+So there now is 3 encounters to choose from for gear farming, one per equippable item: Reanimating Statues 1 (Boots), 2 (Weapons), and 3 (Off-hands). All three are Mini-boss tier (see section 5.3); their mechanics, compositions, and intended solutions are cataloged in `Encounter_Design_Document.md` section 2.2.
 
 #### 5.2.3. Caravan (Currency encounter)
 
+
+### 5.3. Encounter tiers
+
+Every battle encounter belongs to one of three tiers. Expected fight length is a tier parameter, measured in rounds — one round is each fielded champion acting once. The round targets are starting points, to be tuned as content is placed.
+
+* **Fodder (routine fights):** a stat check tuned below expected player power, with at most one visible mechanic carrying an effect-based shortcut; fully circumventable by raw level and gear. Decided in 3–4 rounds.
+* **Mini-boss (optional puzzle):** one core mechanic; bringing an answer wins comfortably, ignoring it makes the fight substantially slower or riskier but never impossible. 6–10 rounds solved, roughly double unsolved.
+* **Boss (mandatory puzzle):** two or three layered mechanics; beatable by one of two or three specific skill configurations, or by a significantly over-leveled roster (see section 3.2). 10–12 rounds solved; unsolved is a wall, not merely slow.
+
+Every mechanic states its onset — by which enemy turn it becomes relevant — and that onset must fall inside its tier's expected kill window.
+
+Encounter entries, opponent skills, and the production rules (overlap tolerance, answer anchoring, volume targets) live in `Encounter_Design_Document.md` and `Plans/Plan_Encounter_Solution_Design.md`.
 
 ## 6. Development tools
 - Godot Engine version 4.5

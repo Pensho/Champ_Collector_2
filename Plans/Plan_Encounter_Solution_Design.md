@@ -17,8 +17,22 @@ them to modes, places, and progression later (see the placement pass in Steps).
 
 ## Status
 
-Long-running. Not yet started; first up is the Reanimating Statues retrofit
-(step 1), then the proving batch (step 2), then volume batches.
+Long-running. Step 1 (Reanimating Statues retrofit) is done: the three statue
+encounters and Break Guard live in `Encounter_Design_Document.md`, the Concept
+Document holds pointers, and the coverage ledger below is seeded. The
+"solutions must exist" gap in Reanimating Statues 1 was resolved by expressing
+the ramp as repeated self-applied Haste, answered by carried effects
+(Severance, Signed Writ's duration strip, Dead Weight, Temporal Sinkhole);
+Sequence Lock remains an intended future answer with no carrier, and Anchor was
+dropped as an answer (it blocks turn-bar pushes, which never counters a speed
+ramp). Next up: the proving batch (step 2), then volume batches.
+
+Follow-up decisions (confirmed): the three Reanimating Statues are retiered
+from fodder to mini-boss — all three mechanics only bite when the fight has
+runway, which is the mini-boss texture — and fight length is now a tier
+parameter with round budgets and a mechanic-onset rule (see Encounter tiers;
+owned by Concept 5.3). Their coverage-ledger answers now count toward the
+3-encounter review threshold; each answering effect currently sits at 1.
 
 Depends on `Plan_Role_Skill_Kits.md`: an encounter's intended solutions may only
 reference effects that at least one designed kit in 3.2.4.2 or a reagent in 3.3.3
@@ -34,7 +48,7 @@ specific roster picks matter most at the top tier.
 - **Fodder (routine fights):** the power-fantasy tier — tuned below the expected
   player power so the player most often crushes it and feels how far they have
   come. A stat check first: at most one visible mechanic with an effect-based
-  shortcut (e.g. the statue's self-haste answered by Sequence Lock or Anchor). The
+  shortcut (e.g. an enemy that spams self-healing, answered by Blight). The
   mechanic is fully circumventable by raw level and gear — under-leveled or
   under-geared players use the right kit for a simple solution; strong players
   ignore it.
@@ -48,6 +62,15 @@ specific roster picks matter most at the top tier.
   over-leveled roster (per Concept 3.2). Boss mechanics may demand role-signature
   answers — for example a zone only the Scholar's Refutation or Zone-Dissolving
   Salts can remove, or a window that only a specific reagent opens.
+
+Fight length is a tier parameter, measured in rounds (each fielded champion
+acting once). Targets — starting points, to be tuned: fodder is decided in 3–4
+rounds; a mini-boss runs 6–10 rounds solved and roughly double that unsolved; a
+boss runs 10–12 rounds solved, and unsolved is a wall rather than merely slow.
+Every mechanic states its onset — by which enemy turn it becomes relevant — and
+that onset must fall inside its tier's expected kill window: a mechanic that
+comes online after the fight is normally decided is dead content. These tier
+definitions are owned by `Concept_Document.md` section 5.3.
 
 Mechanical load scales with progression: an early-game boss carries little for the
 player to learn or adapt to, and the two-or-three-layer target above describes mid-
@@ -116,9 +139,11 @@ that tier can be produced in bulk without padding.
   god zone family (order / unstable / momentum, 3.2.4.1).
 - **Enemy composition:** the enemy variants fielded (this is what the player sees
   pre-battle).
-- **Mechanics:** expressed as opponent skills, passives, or zones. Each new opponent
-  skill is added to the opponent skill catalog in `Encounter_Design_Document.md` in
-  the same edit; each new status effect to Concept 3.2.3.
+- **Mechanics:** expressed as opponent skills, passives, or zones. Each mechanic
+  states its onset (by which enemy turn it becomes relevant), which must fall
+  inside the tier's expected kill window. Each new opponent skill is added to the
+  opponent skill catalog in `Encounter_Design_Document.md` in the same edit; each
+  new status effect to Concept 3.2.3.
 - **Intended solutions:** effect names plus example carrier roles; for bosses, the
   2–3 valid configurations spelled out.
 - **Unsolved texture:** what the fight looks like when the player ignores the
@@ -163,7 +188,7 @@ Review rules, checked after every batch:
 
 | Role | Intended answer for |
 |---|---|
-| Emissary | — |
+| Emissary | Reanimating Statues 1 (Signed Writ → buff-duration strip) |
 | Thief | — |
 | Lancer | Reanimating Statues 2 (Disarm → Enfeeble) |
 | Alchemist | — |
@@ -174,17 +199,23 @@ Review rules, checked after every batch:
 | Tactician | — |
 | Symbiote | — |
 | Jester | Reanimating Statues 3 (Burning Bolas → Burning) |
-| Cultist | — |
-| Bar Brawler | — |
-| Bloodmage | — |
+| Cultist | Reanimating Statues 1 (Rite of Severance → Severance halts the Haste ramp) |
+| Bar Brawler | Reanimating Statues 1 (Headbutt → Dead Weight) |
+| Bloodmage | Reanimating Statues 2 (Transfusion → Barrier) |
 | Herald of the loom | — |
-| Chronophage | Reanimating Statues 1 (speed control; Sequence Lock / Anchor carrier pending — see step 1) |
-| Architect | Reanimating Statues 3 (Final Calculation tier 2 → Expose Weakness) |
+| Chronophage | Reanimating Statues 1 (Temporal Sinkhole → turn-bar pressure) |
+| Architect | Reanimating Statues 3 (Final Calculation tier 2 → Expose Weakness); Reanimating Statues 2 (Raise the Frame → Barrier) |
 | Tidal Corsair | — |
 | Plague Doctor | — |
-| Warlord | Reanimating Statues 2 (Sustain-side answer) |
+| Warlord | Reanimating Statues 2 (Hold the Line → Fortify) |
 
-Existing opponent-skill precedent: Break Guard (3.2.4.4).
+Sequence Lock has no carrier in the claims ledger; it is noted in the
+Reanimating Statues 1 entry as a future answer and becomes valid once a kit or
+reagent carries it. Fodder answers are not counted against the 3-encounter
+review threshold.
+
+Opponent skills authored so far (`Encounter_Design_Document.md` section 1):
+Break Guard, Wind the Mainspring, Overwhelming Blow.
 
 ## Per-batch procedure
 
