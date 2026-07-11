@@ -44,7 +44,11 @@ Outriders, Ridge Marksmen, Flank Cutter, Line Breaker) live in
 `Encounter_Design_Document.md` 2.1 with six new opponent skills. The positional
 pair introduced party order and the Left-most / Right-most Enemy targeting
 types into Concept 3.2 and 3.2.4 (positional targeting is absolute — Spotlight
-does not redirect it). Next up: the mini-boss proving batch (one encounter,
+does not redirect it). The mini-boss proving batch is done: The Ashen Oracle
+(escalating Cinder Sermon; Cinder Husks as Ash Offering fuel, punishing
+careless AoE) — it also settled that enemy passives are not inspectable in
+battle (Concept 3.2; a reveal-on-trigger bestiary is parked in
+`FeatureIdeas.md`). Next up: the boss proving batch (one encounter,
 depth-first).
 
 Depends on `Plan_Role_Skill_Kits.md`: an encounter's intended solutions may only
@@ -107,9 +111,11 @@ entry states its mechanical weight (light / full) so the placement pass can slot
   skills; design is not limited to re-using champion skills. What stays anchored is
   the answer side (see Rules).
 - **Telegraph:** before committing a team the player sees the enemy composition,
-  not enemy skills. Mechanics must therefore be readable from who is fielded plus
-  prior experience — which favors re-using enemy variants across encounters so
-  knowledge transfers.
+  not enemy skills. In battle, enemy passives are not inspectable — the player
+  learns mechanics by observing them (rule owned by Concept 3.2; a
+  reveal-on-trigger bestiary upgrade is parked in `FeatureIdeas.md`). Mechanics
+  must therefore be readable from who is fielded plus prior experience — which
+  favors re-using enemy variants across encounters so knowledge transfers.
 - **Difficulty options add mechanics:** higher difficulty versions of an encounter
   will very likely add mechanics on top of scaling numbers, not numbers alone.
 - **Roster-slot budget:** battles field up to 3 champions (Concept 3.2). An
@@ -216,15 +222,15 @@ Review rules, checked after every batch:
 | Alchemist | fodder: Ledger Clerks (Dissolving Agent → Unravel) |
 | Sorcerer | — |
 | Scholar | — |
-| Diviner | fodder: Ridge Marksmen (Premonition) |
+| Diviner | The Ashen Oracle (Ill Omen → Hexed); fodder: Ridge Marksmen (Premonition) |
 | Appraiser | — |
 | Tactician | — |
 | Symbiote | — |
 | Jester | Reanimating Statues 3 (Burning Bolas → Burning) |
 | Cultist | Reanimating Statues 1 (Rite of Severance → Severance halts the Haste ramp) |
 | Bar Brawler | Reanimating Statues 1 (Headbutt → Dead Weight) |
-| Bloodmage | Reanimating Statues 2 (Transfusion → Barrier); fodder: Ridge Marksmen, Line Breaker (Barrier) |
-| Herald of the loom | fodder: Sporeback Pack (Thread Lash → Suppress) |
+| Bloodmage | Reanimating Statues 2 (Transfusion → Barrier); The Ashen Oracle (Tithe of Vitality → Mana Burn); fodder: Ridge Marksmen, Line Breaker (Barrier) |
+| Herald of the loom | The Ashen Oracle (Thread Lash → Suppress); fodder: Sporeback Pack (Thread Lash → Suppress) |
 | Chronophage | Reanimating Statues 1 (Temporal Sinkhole → turn-bar pressure); fodder: Plains Outriders (Temporal Sinkhole) |
 | Architect | Reanimating Statues 3 (Final Calculation tier 2 → Expose Weakness); Reanimating Statues 2 (Raise the Frame → Barrier); fodder: Ridge Marksmen, Flank Cutter (Barrier) |
 | Tidal Corsair | fodder: Plains Outriders (Corsair's Reckoning → turn-bar strip) |
@@ -238,7 +244,8 @@ review threshold.
 
 Opponent skills authored so far (`Encounter_Design_Document.md` section 1):
 Break Guard, Wind the Mainspring, Overwhelming Blow, Sporeburst Mend, Rally the
-Crew, March Cadence, Aimed Shot, Flank Cut, Breaching Charge.
+Crew, March Cadence, Aimed Shot, Flank Cut, Breaching Charge, Cinder Spit,
+Cinder Sermon, Ash Offering (passive).
 
 ## Per-batch procedure
 

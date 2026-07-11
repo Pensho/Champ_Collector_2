@@ -226,6 +226,8 @@ The first is simple fights to be routine and grind options to add to a players p
 
 The second type is the main challenge in the form of puzzle of sorts. Each encounter should require one of two or three combinations of specific skills to defeat, or a significantly larger value of character levels/gearing than expected of the encounter.
 
+Before a battle the player sees the enemy composition, not the enemies' skills. In battle, enemy passives are not inspectable (unlike the player's own): the player learns enemy mechanics by observing them in play, and that knowledge carries into later encounters that re-use the same enemy variants.
+
 <br/>
 
 After a combat event, the players characters are healed to full and their skill cooldowns reset. They are given some kind of reward, usually in terms of experience and sometimes equipment.

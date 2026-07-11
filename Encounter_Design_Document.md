@@ -56,6 +56,21 @@ Concept Document 3.2.3 catalog.
     * Effect: Deals Physical Damage to the left-most enemy (positional
       targeting, see Concept Document 3.2.4), scaling with Attack; each use
       increases this skill's damage by 15% for the rest of the battle.
+* Cinder Spit
+    * Type: Damage (basic skill, no cooldown)
+    * Effect: Deals Magical Damage to a single target enemy, scaling with
+      Mysticism.
+* Cinder Sermon
+    * Type: Damage (AoE)
+    * Cooldown: 2 turns
+    * Effect: Deals Magical Damage to all enemies, scaling with Mysticism
+      (starting point: 90% of a standard hit); each cast is permanently 20
+      percentage points stronger than the last for the rest of the battle.
+* Ash Offering
+    * Type: Passive
+    * Effect: When an ally Cinder Husk dies, the user's next Cinder Sermon
+      deals +40% damage. Multiple deaths stack; the bonus is consumed by that
+      one Sermon.
 
 ## 2. Encounters
 
@@ -142,6 +157,29 @@ Document 3.2.4.3).
 The three Reanimating Statues are retrofitted from Concept Document 5.2.2 (the
 Gear encounters — their drop-type placement and reward framing stay in the
 Concept Document).
+
+#### The Ashen Oracle
+
+- **Tier:** Mini-boss. **Theme:** Ruins of the God of Magic (unstable).
+- **Enemy composition:** the Ashen Oracle; two Cinder Husks — fragile melee
+  bodies (universal Stab, dying to roughly two hits) whose mechanical reason
+  is Ash Offering fuel: their deaths feed the Sermon.
+- **Mechanics:** Cinder Sermon (section 1) — an escalating AoE wave every
+  other turn; onset: first cast on enemy turn 2, dangerous from around turn 6.
+  Ash Offering (section 1, passive) — a dead Cinder Husk supercharges the next
+  Sermon, so careless AoE accelerates the very mechanic the player is racing;
+  onset: immediate once a Husk drops. The Oracle's passive is not readable in
+  battle (Concept Document 3.2) — the player learns it by watching a Husk
+  death detonate.
+- **Intended solutions:** Suppress (e.g. the Herald of the loom's Thread Lash)
+  guts the Mysticism scaling for 2 of every 3 turns; Mana Burn (e.g. the
+  Bloodmage's Tithe of Vitality) bleeds the Oracle for every Sermon cast;
+  Hexed (e.g. the Diviner's Ill Omen) forces the Sermon to roll twice and take
+  the worse result. Play-pattern lever for any roster: leave the Husks alive
+  and tunnel the Oracle.
+- **Unsolved texture:** a bloody race against rising waves — roughly double
+  length with heavy incidental damage, but no hard wall.
+- **Reward hook (deferred):** assigned at placement.
 
 #### Reanimating Statues 1 (Boots)
 
