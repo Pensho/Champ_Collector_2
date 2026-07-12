@@ -16,12 +16,24 @@ Effort: **S** = hours, **M** = days, **L** = week+
 - **True Revive Reagent** *(Priority: Low | Effort: M)*
   If true revival ever exists, it should be a Legendary-only reagent rather than any role's skill. Currently the Deathward Charm reagent (prevention, not resurrection) is the only death counterplay; whether resurrection should exist at all is undecided.
 
+- **Alternative Battle Objectives** *(Priority: Low | Effort: L)*
+  Win/loss conditions beyond defeating all enemies: survive N rounds, protect a target, defeat a specific enemy before their Nth turn. A combat-core extension (coordinate with Plans/Plan_Headless_Combat_Core.md if picked up); would serve story-mode escape and protection beats. Not planned for now.
+
 - **Knowledge-Bypass Variant of Cracked Facet** *(Priority: Low | Effort: S)*
   Alternative effect for the Appraiser's Cracked Facet debuff: instead of flat bonus Critical Damage taken, the target's Knowledge does not blunt critical hits while the debuff holds (bypassing the `Defender's Knowledge * 0.5` term in the Critical Damage formula). Thematic for the Knowledge-scaling Appraiser but swingy — worthless against low-Knowledge enemies, huge against high-Knowledge ones. Shelved in favor of the flat bonus.
 
 ---
 
 ## Characters & Progression
+
+- **New Role: The Abacist (Control/Sustain)** *(Priority: Medium | Effort: M)*
+  A stillness-control role — the Chronophage's opposite: it forbids turn-bar movement instead of causing it, claiming the orphaned Anchor, Steadfast, and Sequence Lock effects. Unblocks the shelved turn-bar-tyrant boss concept and completes the Reanimating Statues 1 answer set; lore home: the Silent Monks of the Abacus (World_Building 5.2).
+
+- **New Role: The Outrider (Buffer/Control)** *(Priority: Medium | Effort: M)*
+  A momentum support giving the God of Adventure / Khasar Fleet its first playable role, claiming Slipstream and Wanderlust plus ally turn-bar pushes. Slipstream is a champion-bound, situational answer to zone-heavy encounters (e.g. the Glyphbound Archivist) that is not zone-clearing.
+
+- **New Role: The Underwriter (declared wagers)** *(Priority: Medium | Effort: L)*
+  A role built on a mechanic type new to the genre: its skills declare a wager on an outcome before it happens (e.g. "this enemy dies within 3 of the Underwriter's turns", "this ally takes no Health damage before my next turn") and settle later — a party payoff if the prediction holds, a penalty on the Underwriter if it fails. Skill effects are placeholders to be tweaked; the declare-then-settle structure is the idea. Lore home: Iron Ledger actuarial insurance or the Arrears' Grey Ledger.
 
 ---
 

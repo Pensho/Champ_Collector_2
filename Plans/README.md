@@ -24,6 +24,14 @@ Suggested order (dependencies noted inside each plan):
    4. `Plan_Sorcerer_Arcane_Instability.md` — the Sorcerer passive consuming that
       hook (Sorcerer champion itself is a separate prerequisite task).
 
+6. `Plan_Story_Mode_Systems.md` — the systems that deliver story mode (story
+   state handler, dialogue overlay, flag-driven hub variants, act gating,
+   scripted battle openings, guest champions). The state handler and dialogue
+   overlay are independent and can start any time; scripted openings coordinate
+   ordering with `Plan_Headless_Combat_Core.md`, and guest champions ride on
+   `Plan_Team_And_Roster_Abstraction.md`. Design counterpart:
+   `Plan_Story_Mode.md`.
+
 Design-only plans (no code; can run at any time):
 
 - `Plan_Role_Skill_Kits.md` — populate `Concept_Document.md` 3.2.4.2 with a full
@@ -36,6 +44,11 @@ Design-only plans (no code; can run at any time):
   10 boss), tiered overlap tolerance, an optional theme palette, and a coverage
   ledger tracking which kit answers which encounter. Depends on the kits from
   `Plan_Role_Skill_Kits.md`; output lands in `Encounter_Design_Document.md`.
+- `Plan_Story_Mode.md` — the narrative campaign: captures the four-act hub order
+  and slum arc, then iterates a drama-curve pass, act beat sheets, lore-gap fills,
+  and an integration pass. Output lands in a new `Story_Design_Document.md` plus
+  `Concept_Document.md` 3.4.1; story battles route through
+  `Plan_Encounter_Solution_Design.md`.
 - `Plan_Particle_Effects.md` — living inventory of battle and environmental
   particle effects (archetype library, Adventure map overlays, hub ambience).
   Mostly design; its battle-effect infrastructure section spawns a future code
