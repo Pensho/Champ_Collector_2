@@ -6,7 +6,7 @@ Framework: **GUT** (Godot Unit Test), version 9.5.x.
 
 Run headlessly from the project root:
 ```
-/home/jonas/Documents/Godot_v4.6.2-stable_linux.x86_64 \
+/home/jonas/Documents/Godot_v4.7.1-stable_linux.x86_64 \
   --headless -s addons/gut/gut_cmdln.gd \
   -gdir=res://Tests/unit/ -gprefix=test_ -gsuffix=.gd -gexit
 ```

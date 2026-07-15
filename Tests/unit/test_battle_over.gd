@@ -168,7 +168,7 @@ func test_03_init_sets_loss_screen():
 	screen._character_result_UI = typed_result_ui
 
 	# Stub GetCharacterTexture (called during character loop)
-	stub(character_collection_mock, "GetCharacterTexture").to_return(null)
+	stub(character_collection_mock, "GetCharacterTexture").to_return(ImageTexture.new())
 
 	# Setup mock context with Loss result and 3 characters
 	var mock_context = MockContextContainer.new()
@@ -234,7 +234,7 @@ func test_10_init_populates_character_result_UI_calls():
 	screen._character_result_UI = typed_result_ui
 
 	# Stub GetCharacterTexture (called during character loop)
-	stub(character_collection_mock, "GetCharacterTexture").to_return(null)
+	stub(character_collection_mock, "GetCharacterTexture").to_return(ImageTexture.new())
 
 	# Setup progress mock for the Victory branch (calls MarkDifficultyCompleted)
 	var progress_mock = double(preload("res://Scripts/Worldview/progress_handler.gd")).new()
