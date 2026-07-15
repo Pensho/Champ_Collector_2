@@ -2,12 +2,12 @@
 
 [ext_resource type="Script" uid="uid://c6250ti0wupfr" path="res://Scripts/Adventure_Scripts/Visuals/decor_layer_data.gd" id="1_decor"]
 [ext_resource type="Texture2D" uid="uid://hvfre1vyvf12" path="res://Assets/Adventure/Background/Shared/node_prop_gamble_01.png" id="2_tex1"]
-[ext_resource type="Texture2D" uid="uid://bbo4jty5p56oh" path="res://Assets/Adventure/Background/Shared/node_prop_gamble_02.png" id="3_tex2"]
+[ext_resource type="Texture2D" uid="uid://dmgiaumrutlys" path="res://Assets/Adventure/Background/Shared/node_prop_gamble_02.png" id="3_20u1a"]
 [ext_resource type="Texture2D" uid="uid://b3f0g6i7v6fs3" path="res://Assets/Adventure/Background/Shared/node_prop_gamble_03.png" id="4_tex3"]
 
 [resource]
 script = ExtResource("1_decor")
-textures = Array[Texture2D]([ExtResource("2_tex1"), ExtResource("3_tex2"), ExtResource("4_tex3")])
+textures = Array[Texture2D]([ExtResource("2_tex1"), ExtResource("3_20u1a"), ExtResource("4_tex3")])
 density = 0.7
 scale_min = 0.7
 scale_max = 1.2

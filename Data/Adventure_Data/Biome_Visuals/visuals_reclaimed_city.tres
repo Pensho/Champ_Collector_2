@@ -24,8 +24,8 @@ domain_warp_amplitude = 40.0
 
 [resource]
 script = ExtResource("1_visual")
-background_top_color = Color(0.18, 0.32, 0.16, 1)
-background_bottom_color = Color(0.09, 0.18, 0.1, 1)
+background_top_color = Color(0.09019608, 0.18039216, 0.101960786, 1)
+background_bottom_color = Color(0.18039216, 0.32156864, 0.16078432, 1)
 detail_noise = SubResource("FastNoiseLite_detail")
 region_noise = SubResource("FastNoiseLite_region")
 regions = Array[ExtResource("0_region_type")]([ExtResource("2_forest"), ExtResource("3_clearing"), ExtResource("4_rubble")])
