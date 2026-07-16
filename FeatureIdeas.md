@@ -19,6 +19,9 @@ Effort: **S** = hours, **M** = days, **L** = week+
 - **Alternative Battle Objectives** *(Priority: Low | Effort: L)*
   Win/loss conditions beyond defeating all enemies: survive N rounds, protect a target, defeat a specific enemy before their Nth turn. A combat-core extension (coordinate with Plans/Plan_Headless_Combat_Core.md if picked up); would serve story-mode escape and protection beats. Not planned for now.
 
+- **Rework Orphaned Turn Bar Effects** *(Priority: Medium | Effort: M)*
+  Five of the seven turn bar effects in Concept_Document 3.2.3.1 (Anchor, Temporal Leak, Slipstream, Steadfast, Resonance) ended the Role-kit pass unclaimed, largely because their effects are too weak to spend a skill slot on. Revisit them — strengthen, replace, or design new turn bar effects — before assigning them to future kits, opponent skills, or the passive pass. Final claims state: Plans/Archive/Plan_Role_Skill_Kits.md.
+
 - **Knowledge-Bypass Variant of Cracked Facet** *(Priority: Low | Effort: S)*
   Alternative effect for the Appraiser's Cracked Facet debuff: instead of flat bonus Critical Damage taken, the target's Knowledge does not blunt critical hits while the debuff holds (bypassing the `Defender's Knowledge * 0.5` term in the Critical Damage formula). Thematic for the Knowledge-scaling Appraiser but swingy — worthless against low-Knowledge enemies, huge against high-Knowledge ones. Shelved in favor of the flat bonus.
 

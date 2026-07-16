@@ -8,18 +8,24 @@ all output lands in `Concept_Document.md`; no code is written.
 
 ## Status
 
-In progress. All four batches are written into 3.2.4.2; only the final pass
-(step 5) remains. Open slots to revisit:
+**Complete** (2026-07-16). All four batches and the final pass are done: all 20 Role
+kits are in 3.2.4.2, no placeholder headings remain, and 3.2.4.3 holds only the
+genuinely unassigned skills. Final-pass rulings:
 
-- Herald of the loom: the three thread stances live in the (currently empty) passive
-  slot — stance selection at the start of the Herald's turn, to be defined in a
-  later passive pass, not in the skills.
+- Tidal Corsair: Corsair's Reckoning no longer hardcodes stack payloads; the
+  Wrangle the Sea passive owns the rarity-dependent rates.
+- Emissary: Signed Writ's Infraction threshold (6+) is accepted — thresholds are
+  allowed; only per-Infraction *rates* are reserved to the Standing Record passive.
+- Orphaned effects (see the ledger) are kept in the catalog, not cut. The five
+  unclaimed turn bar effects are mostly too weak as-is; revisiting or replacing
+  them is backlogged in `FeatureIdeas.md`.
 
-- Tidal Corsair: the finisher's stack payloads may be revised.
+Deferred to a later passive pass (not part of this plan): the Herald of the loom's
+thread stances and the Symbiote's monster-combine passive.
 
-Independent of the implementation plans; can run at any time. One overlap:
-the Architect's kit is already designed in `Plan_Architect_Calibration_Kit.md` — this
-plan imports that kit sketch into 3.2.4.2 verbatim and does not redesign it.
+The Architect's kit was imported verbatim from `Plan_Architect_Calibration_Kit.md`,
+not redesigned. The claims ledger below is the final state, preserved as a
+balancing reference.
 
 ## Design (confirmed decisions)
 
@@ -146,6 +152,7 @@ pass are reviewed in the final step (acceptable orphans vs. catalog cuts).
 | Unravel | Alchemist (Dissolving Agent) |
 | Confound | Scholar (Expose Fallacy) |
 | Exposed Facet | Appraiser (Flaw Analysis) |
+| Cracked Facet | Appraiser (Strike the Flaw passive, role-unique) |
 | Bleed | Lancer (Rending Charge) |
 | Plague | Plague Doctor (Miasma) |
 | Blight | Plague Doctor (Quarantine Breach) |
@@ -170,7 +177,7 @@ pass are reviewed in the final step (acceptable orphans vs. catalog cuts).
 | Exhert | Symbiote (Symbiotic Overdrive) |
 | Luck | Jester (Center Stage) |
 | Phalanx Guard | Lancer (passive, role-unique) |
-| Attune | Herald of the loom (Woven Blessing) |
+| Attune | Herald of the loom (Woven Blessing); Cultist (Chosen Vessel passive) |
 | Haste | — |
 | True Aim | — |
 | Clarity | — |
@@ -181,7 +188,7 @@ pass are reviewed in the final step (acceptable orphans vs. catalog cuts).
 | Deathward | — |
 | Aegis | Warlord (Brace for Impact) |
 | Mirror Coat | — |
-| Opportunist | Thief (Case the Target) |
+| Opportunist | Thief (Case the Target); Scholar (Expose Fallacy) — commodity two-kit cap reached |
 | Catalyst | Alchemist (Catalyst Cloud) |
 | Wanderlust | — |
 | Overflow | — |

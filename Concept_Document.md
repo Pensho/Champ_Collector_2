@@ -649,7 +649,7 @@ Skills allocated to a specific Role, listed in the same order as their entries i
 * Corsair's Reckoning
     * Type: Damage
     * Cooldown: 3 turns
-    * Effect: A devastating blow consuming all held stacks: +50% damage per Steel stack; the target loses 10% turn bar progress per Sea stack.
+    * Effect: A devastating blow consuming all held stacks: bonus damage per Steel stack and target turn bar loss per Sea stack, at the rarity-dependent rates of the Wrangle the Sea passive (see section 3.1.3).
 
 ###### Plague Doctor
 * Septic Lance

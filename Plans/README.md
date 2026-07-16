@@ -34,16 +34,13 @@ Suggested order (dependencies noted inside each plan):
 
 Design-only plans (no code; can run at any time):
 
-- `Plan_Role_Skill_Kits.md` — populate `Concept_Document.md` 3.2.4.2 with a full
-  skill kit per Role, batch-brainstormed with a claims ledger to control
-  buff/debuff/turn-bar overlap. Imports the Architect kit from
-  `Plan_Architect_Calibration_Kit.md`.
 - `Plan_Encounter_Solution_Design.md` — the long-run encounter content plan:
   designing encounters the Role kits solve (fodder / mini-boss / boss tiers),
   progression-agnostic with volume floors (at least 20 fodder / 10 mini-boss /
   10 boss), tiered overlap tolerance, an optional theme palette, and a coverage
-  ledger tracking which kit answers which encounter. Depends on the kits from
-  `Plan_Role_Skill_Kits.md`; output lands in `Encounter_Design_Document.md`.
+  ledger tracking which kit answers which encounter. The Role kits it depends on
+  are complete (`Concept_Document.md` 3.2.4.2); output lands in
+  `Encounter_Design_Document.md`.
 - `Plan_Story_Mode.md` — the narrative campaign: captures the four-act hub order
   and slum arc, then iterates a drama-curve pass, act beat sheets, lore-gap fills,
   and an integration pass. Output lands in a new `Story_Design_Document.md` plus
@@ -63,3 +60,5 @@ Design-only plans (no code; can run at any time):
 When a plan completes: run `/review-implementation` against the plan, then update
 the documentation sections it names, strike the matching entries from
 `Technical_Design_Document.md` section 15, and delete or archive the plan file.
+Archived plans live in `Archive/`; `Plan_Role_Skill_Kits.md` is kept there for its
+claims ledger (the balancing reference for effect assignments).
