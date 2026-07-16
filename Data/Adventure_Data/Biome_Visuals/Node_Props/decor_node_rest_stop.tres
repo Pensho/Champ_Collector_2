@@ -11,4 +11,4 @@ textures = Array[Texture2D]([ExtResource("2_tex1"), ExtResource("3_tex2"), ExtRe
 density = 0.7
 scale_max = 1.6
 rotation_jitter_degrees = 2.0
-node_avoidance_radius = 0.0
+node_avoidance_radius = 20.0

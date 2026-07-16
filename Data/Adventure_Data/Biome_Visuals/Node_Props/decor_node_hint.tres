@@ -12,4 +12,4 @@ density = 0.7
 scale_min = 0.7
 scale_max = 1.1
 rotation_jitter_degrees = 2.0
-node_avoidance_radius = 0.0
+node_avoidance_radius = 20.0
