@@ -22,6 +22,8 @@ shader_parameter/texture_albedo = ExtResource("7_lgjj3")
 shader = ExtResource("5_lsdxp")
 shader_parameter/texture_albedo = ExtResource("6_35r4v")
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_reagent_close"]
+
 [node name="InspectCollection" type="Control" unique_id=226476496 node_paths=PackedStringArray("_attribute_labels", "_selected_char_label", "_selected_char_level", "_selected_char_nature", "_selected_char_nature_tooltip", "_experience_bar", "_experience_bar_text")]
 custom_minimum_size = Vector2(1280, 720)
 layout_mode = 3
@@ -126,7 +128,6 @@ theme_override_font_sizes/font_size = 20
 horizontal_alignment = 1
 
 [node name="Label_Character_Name" type="Label" parent="MarginContainer/ColorRect2" unique_id=474828763]
-layout_direction = 2
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -141,6 +142,7 @@ grow_horizontal = 2
 grow_vertical = 0
 size_flags_horizontal = 4
 size_flags_vertical = 0
+layout_direction = 2
 theme = ExtResource("1_riq8p")
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.44705883)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
@@ -434,5 +436,96 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
 text = "Exit"
 
+[node name="Button_Reagents" type="Button" parent="MarginContainer" unique_id=900000001]
+layout_mode = 2
+size_flags_vertical = 8
+theme = ExtResource("1_riq8p")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+text = "Reagents"
+
+[node name="ReagentWindow" type="Control" parent="." unique_id=900000002]
+visible = false
+anchors_preset = 0
+
+[node name="ColorRect2" type="ColorRect" parent="ReagentWindow" unique_id=900000003]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -2000.0
+offset_top = -1000.0
+offset_right = 2000.0
+offset_bottom = 1000.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.33333334)
+
+[node name="Button_Close" type="Button" parent="ReagentWindow" unique_id=900000004]
+custom_minimum_size = Vector2(4000, 2000)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_reagent_close")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_reagent_close")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_reagent_close")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_reagent_close")
+
+[node name="ColorRect" type="ColorRect" parent="ReagentWindow" unique_id=900000005]
+custom_minimum_size = Vector2(720, 480)
+layout_mode = 0
+offset_left = 280.0
+offset_top = 120.0
+offset_right = 1000.0
+offset_bottom = 600.0
+color = Color(0, 0, 0, 0.9607843)
+
+[node name="MarginContainer" type="MarginContainer" parent="ReagentWindow/ColorRect" unique_id=900000006]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ReagentWindow/ColorRect/MarginContainer" unique_id=900000007]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Label_Title" type="Label" parent="ReagentWindow/ColorRect/MarginContainer/VBoxContainer" unique_id=900000008]
+layout_mode = 2
+theme = ExtResource("1_riq8p")
+theme_override_font_sizes/font_size = 24
+text = "Reagents"
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="ReagentWindow/ColorRect/MarginContainer/VBoxContainer" unique_id=900000009]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="GridContainer" type="GridContainer" parent="ReagentWindow/ColorRect/MarginContainer/VBoxContainer/ScrollContainer" unique_id=900000010]
+layout_mode = 2
+size_flags_horizontal = 3
+columns = 5
+
+[node name="Button_Close_Bottom" type="Button" parent="ReagentWindow/ColorRect/MarginContainer/VBoxContainer" unique_id=900000011]
+layout_mode = 2
+theme = ExtResource("1_riq8p")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+text = "Close"
+
 [connection signal="button_up" from="MarginContainer/ColorRect2/Button_Deselect_Char" to="." method="_on_button_deselect_char_button_up"]
 [connection signal="button_up" from="MarginContainer/HBoxContainer/Exit" to="." method="_on_exit_button_up"]
+[connection signal="button_up" from="MarginContainer/Button_Reagents" to="." method="_on_button_reagents_button_up"]
+[connection signal="button_up" from="ReagentWindow/Button_Close" to="." method="_on_reagent_window_close_button_up"]
+[connection signal="button_up" from="ReagentWindow/ColorRect/MarginContainer/VBoxContainer/Button_Close_Bottom" to="." method="_on_reagent_window_close_button_up"]

@@ -5,7 +5,8 @@
 [resource]
 script = ExtResource("1_j1fi4")
 _primary_loot = Dictionary[int, int]({
-1: 1
+1: 1,
+5: 1
 })
 _secondary_loot = Dictionary[int, int]({
 1: 5,

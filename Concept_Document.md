@@ -741,10 +741,9 @@ Reagents are universal consumable items left over from the era of the God of Mag
 looted primarily from that god's ruins and other encounters (rarer reagents drop only
 from bosses). They are stored in a persistent player inventory.
 
-Rules (designed; data model and catalog implemented, see `Technical_Design_Document.md`
-section 6.1; remaining implementation planned in
-`Plans/Plan_Reagent_Inventory_And_Storage_UI.md` and
-`Plans/Plan_Reagent_Combat_Application.md`):
+Rules (designed; data model, catalog, persistent inventory, loot acquisition, and storage/sell
+UI implemented, see `Technical_Design_Document.md` section 6.1 and 10.1; combat consumption
+planned in `Plans/Plan_Reagent_Combat_Application.md`):
 - Before a battle the player selects up to 3 reagents from their inventory to bring along.
 - Each brought reagent can be consumed exactly once per battle, by any champion on
   their turn, as a free action (it does not consume the turn). Reagents are usable
@@ -752,7 +751,10 @@ section 6.1; remaining implementation planned in
 - A consumed reagent is permanently deleted; reagents brought but not used return to
   the inventory.
 - Reagents can be sold for Silver from the reagent storage screen (in the collection
-  menu). Sell values scale with rarity (values not yet decided).
+  menu). Sell value scales with rarity: `60 ^ (1 + rarity * 0.15)`, the same formula
+  shape used for equipment sell values (`LootManager.GetReagentSellValue`).
+- Reagents are currently loot-only (dropped by bosses and the Escalate adventure node,
+  see below); shop purchase is a tracked follow-up (see `FeatureIdeas.md`).
 - Reagents come in rarities (Uncommon, Rare, Epic, Legendary). Reagent effects scale
   with rarity only — never with the consumer's attributes.
 - Every reagent effect is either scalar or binary:
@@ -876,7 +878,8 @@ directly in the adventure scene without entering battle:
   (5% of the encounter's reward budget) on acknowledgement. No puzzle backend exists yet.
 - **Gamble**: a 50/50 choice. On a win, the player receives a buff lasting 4 combats;
   on a loss, a debuff lasting 2 combats.
-- **Escalate**: offers Silver and/or Supplies (15% of the encounter's reward budget) in
+- **Escalate**: offers Silver and/or Supplies (15% of the encounter's reward budget) plus a
+  guaranteed reagent (Uncommon-Epic; Legendary is boss-exclusive, see section 3.3.3) in
   exchange for a permanent +1 to the adventure's difficulty for its remainder.
 
 Buffs and debuffs granted by these nodes are **adventure-spanning effects**: they are

@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="ReagentData" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="ReagentData" format=3 uid="uid://djo087odgpeol"]
 
-[ext_resource type="Script" path="res://Scripts/Battle/reagent_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://Assets/Champ_Collector/Icons/Reagents/Tincture_Speed/Tincture_Speed_Epic.png" id="2_icon"]
+[ext_resource type="Script" uid="uid://t3vvjqg3kas0" path="res://Scripts/Battle/reagent_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://bh3uau7duiuar" path="res://Assets/Champ_Collector/Icons/Reagents/Tincture_Speed/Tincture_Speed_Epic.png" id="2_icon"]
 
 [resource]
 script = ExtResource("1_script")
@@ -9,9 +9,5 @@ display_name = "Tincture of Speed"
 description = "A small battle-long +12% increase to Speed. Not a buff: cannot be dispelled, stolen, or counted by buff-related effects."
 icon = ExtResource("2_icon")
 rarity = 4
-binary = false
-effect_kind = 0
-target_kind = 0
 affected_attribute = 1
 magnitude = 12.0
-secondary_magnitude = 0.0

@@ -234,6 +234,7 @@ load time. There is a consistent **preset (template) vs instance (runtime)** spl
 | `CharacterTrait` | `Scripts/Character/character_traits/character_trait.gd` | Base class for character special abilities (see [Section 9](#9-trait-hook-system)) |
 | `StatusEffectData` | `Scripts/Battle/status_effect_data.gd` | Buff/debuff definition: magnitude, magnitude kind, default duration, overwrite/stack rules, application sites, icon |
 | `ReagentData` | `Scripts/Battle/reagent_data.gd` | Reagent definition (one rarity tier per resource): effect kind, target kind, rarity, binary flag, magnitude(s), icon |
+| `ReagentCollection` | `Scripts/Gear/reagent_collection.gd` | Persistent player-owned reagent counts, keyed by `ReagentRegistry` identifier string |
 
 `Skill` is illustrative of how data drives behavior:
 
@@ -288,9 +289,10 @@ Zone-applied debuffs (e.g. the Lava zone's Burning) come from the placing `Skill
 `debuffs` dictionary, keyed by the skill's own `target`, rather than being hardcoded in
 `BattleResolver._ResolveZoneEffect`.
 
-`ReagentData` (`Concept_Document.md` 3.3.3) is the reagent-system data model, authored so far as
-a pure data layer with no inventory, UI, or combat-application code yet (those land in
-`Plans/Plan_Reagent_Inventory_And_Storage_UI.md` and `Plans/Plan_Reagent_Combat_Application.md`).
+`ReagentData` (`Concept_Document.md` 3.3.3) is the reagent-system data model. The persistent
+inventory and loot-drop acquisition are landed (see `ReagentCollection` below and
+[Section 10](#10-collections-and-the-save-system)); combat consumption still lands in
+`Plans/Plan_Reagent_Combat_Application.md`.
 Unlike `StatusEffectData`, one resource covers exactly
 one rarity tier — `Data/Reagents/<Family>/<Family>_<Rarity>.tres`, one subfolder per reagent
 family — since reagent magnitudes scale with rarity only, never with the consumer's attributes
@@ -573,6 +575,12 @@ damage/turn-bar values.
 (`Scripts/Gear/item_collection.gd`) are `Node`s owned by `Main_Instance`. Each holds a dictionary
 keyed by an auto-incrementing instance ID (`Dictionary[int, Character]` / `Dictionary[int, Equipment]`)
 and exposes `Serialize()` / `Deserialize()`.
+
+`ReagentCollection` (`Scripts/Gear/reagent_collection.gd`) is likewise owned by `Main_Instance`
+and in the saveable group, but holds a `Dictionary[String, int]` of owned counts keyed by the
+`ReagentRegistry` identifier string rather than an instance-ID dictionary, since reagents are
+fungible (no per-instance state). `Deserialize` tolerates both pre-reagent saves (missing data)
+and stale keys no longer in `ReagentRegistry.REAGENTS`.
 
 ### 10.2. Save format and ordering
 

@@ -11,6 +11,8 @@ _primary_loot = Dictionary[int, int]({
 _secondary_loot = Dictionary[int, int]({
 0: 5,
 1: 10,
-3: 1
+3: 1,
+5: 5
 })
+_reagent_max_rarity = 5
 metadata/_custom_type_script = "uid://cabwckgc7os5u"

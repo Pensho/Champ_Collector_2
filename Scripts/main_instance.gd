@@ -15,6 +15,7 @@ const TACTICIAN = preload("uid://dy22lp5h48s5f")
 var _current_scene = null
 var _character_collection: CharacterCollection
 var _item_collection: ItemCollection
+var _reagent_collection: ReagentCollection
 var _resources: ResourceHandler
 var _progress: ProgressHandler
 var _save_manager: SaveManager
@@ -29,6 +30,8 @@ func Init() -> void:
 	add_child(_character_collection)
 	_item_collection = ItemCollection.new()
 	add_child(_item_collection)
+	_reagent_collection = ReagentCollection.new()
+	add_child(_reagent_collection)
 	_resources = ResourceHandler.new()
 	add_child(_resources)
 	_progress = ProgressHandler.new()
@@ -52,6 +55,10 @@ func Init() -> void:
 	_character_collection.Add(CENTAUR_ARCHIVIST.duplicate(true))
 	_character_collection.Add(TACTICIAN.duplicate(true))
 	_character_collection.Add(BLOODMAGE.duplicate(true))
+
+	var reagent_keys: Array = ReagentRegistry.REAGENTS.keys()
+	for i in 3:
+		_reagent_collection.Add(reagent_keys[randi_range(0, reagent_keys.size() - 1)])
 
 	context_container._scene = "uid://c6c1o3oabj0pf"
 	change_scene(context_container)

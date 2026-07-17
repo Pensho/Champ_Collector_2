@@ -42,6 +42,10 @@ Effort: **S** = hours, **M** = days, **L** = week+
 
 ## Gear & Economy
 
+- **Reagent Shop Purchase** *(Priority: Low | Effort: M)*
+  Reagents are currently loot-only (bosses and the Escalate adventure node). Add a shop
+  purchase path once the 3.6.4 shop design lands, so players aren't fully dependent on drops.
+
 ---
 
 ## Content & Encounters

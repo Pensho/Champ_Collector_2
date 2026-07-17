@@ -13,15 +13,21 @@ const BUTTON_WITH_OPTIONS_SCENE = preload("uid://c7smqpmfvs0ih")
 
 var _select_item_option: ButtonWithOptions
 var _confirm_option: ButtonWithOptions
+var _reagent_select_option: ButtonWithOptions
+var _reagent_confirm_option: ButtonWithOptions
 
 var _available_characters: Array[MenuItemSlot] = []
 var _available_items: Array[MenuItemSlot] = []
 var _item_slots_equipped: Array[MenuItemSlot] = []
+var _reagent_slots: Array[MenuItemSlot] = []
 var _displayed_item_ids: Array[int] = []
 var _displayed_character_ids: Array[int] = []
+var _displayed_reagent_keys: Array[String] = []
+var _selected_reagent_key: String = ""
 
 var _character_collection: Dictionary[int, Character] = main.GetInstance()._character_collection.GetAllCharacters()
 var _item_collection: Dictionary[int, Equipment] = main.GetInstance()._item_collection._items
+var _reagent_collection: ReagentCollection = main.GetInstance()._reagent_collection
 var _selected_character_ID: int = -1
 var _selected_item_slot_ID: int = -1
 
@@ -33,6 +39,9 @@ var _selected_item_slot_ID: int = -1
 		$MarginContainer/HBoxContainer2/ScrollContainer_Characters/GridContainer)
 @onready var _grid_container_items: GridContainer = $MarginContainer/HBoxContainer2/ScrollContainer_Items/GridContainer
 @onready var _selected_character_texture: TextureRect = $MarginContainer/ColorRect2/TextureRect
+@onready var _reagent_window: Control = $ReagentWindow
+@onready var _grid_container_reagents: GridContainer = (
+		$ReagentWindow/ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GridContainer)
 
 func Init(_p_context_container: ContextContainer) -> void:
 	_available_items.resize(_item_collection.size())
@@ -80,7 +89,21 @@ func Init(_p_context_container: ContextContainer) -> void:
 	_confirm_option.SetLeftButton("Equip", Callable())
 	_confirm_option.position = Vector2i((get_viewport_rect().size * 0.5) - (_confirm_option.GetSize() * 0.5))
 	_confirm_option.hide()
-	
+
+	_reagent_select_option = BUTTON_WITH_OPTIONS_SCENE.instantiate()
+	add_child(_reagent_select_option)
+	_reagent_select_option.SetMiddleButton("Sell", TryReagentSell)
+	_reagent_select_option.position = (
+			Vector2i((get_viewport_rect().size * 0.5) - (_reagent_select_option.GetSize() * 0.5)))
+	_reagent_select_option.hide()
+
+	_reagent_confirm_option = BUTTON_WITH_OPTIONS_SCENE.instantiate()
+	add_child(_reagent_confirm_option)
+	_reagent_confirm_option.SetLeftButton("Sell", SellReagent, Color(0.863, 0.0, 0.0, 1.0))
+	_reagent_confirm_option.position = (
+			Vector2i((get_viewport_rect().size * 0.5) - (_reagent_confirm_option.GetSize() * 0.5)))
+	_reagent_confirm_option.hide()
+
 	ShowCharacters()
 
 func RefreshDisplayedItems() -> void:
@@ -234,6 +257,53 @@ func UpgradeItem() -> void:
 	ShowSelectedCharacter(_selected_character_ID)
 	_confirm_option.hide()
 	_select_item_option.hide()
+
+func RefreshReagentGrid() -> void:
+	for slot in _reagent_slots:
+		slot.queue_free()
+	_reagent_slots.clear()
+	_displayed_reagent_keys.clear()
+
+	var owned: Dictionary[String, int] = _reagent_collection.GetAllOwned()
+	for reagent_key in owned.keys():
+		var reagent_data: ReagentData = ReagentRegistry.Get(reagent_key)
+		var slot: MenuItemSlot = MENU_ITEM_SLOT.instantiate()
+		_grid_container_reagents.add_child(slot)
+		slot._ID = _displayed_reagent_keys.size()
+		slot.ConnectButton(ReagentSlotButton)
+		slot.SetHeldObjectTexture(reagent_data.icon)
+		slot.SetTextureOutline(reagent_data.rarity)
+		slot.level.text = str(owned[reagent_key])
+		_reagent_slots.append(slot)
+		_displayed_reagent_keys.append(reagent_key)
+
+func ReagentSlotButton(p_slot_ID: int) -> void:
+	_selected_reagent_key = _displayed_reagent_keys[p_slot_ID]
+	var reagent_data: ReagentData = ReagentRegistry.Get(_selected_reagent_key)
+	_reagent_select_option.SetText(reagent_data.display_name, reagent_data.description)
+	_reagent_select_option.show()
+
+func TryReagentSell() -> void:
+	var reagent_data: ReagentData = ReagentRegistry.Get(_selected_reagent_key)
+	var sell_value: int = LootManager.GetReagentSellValue(reagent_data.rarity)
+	_reagent_confirm_option.SetText(
+			"Sell", "Are you sure you want to sell this reagent? You will gain " + str(sell_value) + " silver.")
+	_reagent_confirm_option.show()
+
+func SellReagent() -> void:
+	var reagent_data: ReagentData = ReagentRegistry.Get(_selected_reagent_key)
+	main.GetInstance()._resources.AddSilver(LootManager.GetReagentSellValue(reagent_data.rarity))
+	_reagent_collection.Consume(_selected_reagent_key)
+	RefreshReagentGrid()
+	_reagent_confirm_option.hide()
+	_reagent_select_option.hide()
+
+func _on_button_reagents_button_up() -> void:
+	RefreshReagentGrid()
+	_reagent_window.show()
+
+func _on_reagent_window_close_button_up() -> void:
+	_reagent_window.hide()
 
 func AvailableCharacterButton(p_slot_ID: int) -> void:
 	_selected_character_ID = _displayed_character_ids[p_slot_ID]

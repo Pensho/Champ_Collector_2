@@ -38,6 +38,8 @@ func Init(p_context_container: ContextContainer) -> void:
 			main.GetInstance()._resources.AddFortunesFavor(tier, battle_context._loot_table._drop_result._fortunes_favor[tier])
 		main.GetInstance()._resources._silver += battle_context._loot_table._drop_result._silver
 		main.GetInstance()._resources.AddSupplies(battle_context._loot_table._drop_result._supplies)
+		for reagent_key in battle_context._loot_table._drop_result._reagents:
+			main.GetInstance()._reagent_collection.Add(reagent_key)
 		if _context._adventure_state != null:
 			_context._adventure_state.MarkCurrentNodeComplete()
 			_context._adventure_state.DecrementAdventureEffects()

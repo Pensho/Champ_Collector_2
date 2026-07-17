@@ -79,3 +79,10 @@ const REAGENTS: Dictionary[String, ReagentData] = {
 
 static func Get(p_id: String) -> ReagentData:
 	return REAGENTS.get(p_id)
+
+static func GetRandomKeyForRarity(p_rarity: Types.Rarity) -> String:
+	var matching_keys: Array[String] = []
+	for reagent_key in REAGENTS.keys():
+		if(REAGENTS[reagent_key].rarity == p_rarity):
+			matching_keys.append(reagent_key)
+	return matching_keys[randi_range(0, matching_keys.size() - 1)]

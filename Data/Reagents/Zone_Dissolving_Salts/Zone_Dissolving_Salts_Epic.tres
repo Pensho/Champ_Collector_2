@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="ReagentData" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="ReagentData" format=3 uid="uid://qp8gm7wokssp"]
 
-[ext_resource type="Script" path="res://Scripts/Battle/reagent_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://Assets/Champ_Collector/Icons/Reagents/Zone_Dissolving_Salts/Zone_Dissolving_Salts_Epic.png" id="2_icon"]
+[ext_resource type="Script" uid="uid://t3vvjqg3kas0" path="res://Scripts/Battle/reagent_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://fvki0vt5ajfr" path="res://Assets/Champ_Collector/Icons/Reagents/Zone_Dissolving_Salts/Zone_Dissolving_Salts_Epic.png" id="2_icon"]
 
 [resource]
 script = ExtResource("1_script")
@@ -12,6 +12,3 @@ rarity = 4
 binary = true
 effect_kind = 6
 target_kind = 3
-affected_attribute = 0
-magnitude = 0.0
-secondary_magnitude = 0.0

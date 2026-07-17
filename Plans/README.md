@@ -24,8 +24,11 @@ Suggested order (dependencies noted inside each plan):
       (`Scripts/Battle/reagent_data.gd`), `ReagentRegistry`, and the authored
       feasible-subset catalog (`Data/Reagents/`) are live (see
       `Technical_Design_Document.md` section 6.1).
-   2. `Plan_Reagent_Inventory_And_Storage_UI.md` — persistent inventory, loot
-      drops, storage view.
+   2. Reagent inventory and storage UI — completed and deleted; `ReagentCollection`
+      (`Scripts/Gear/reagent_collection.gd`), loot-drop acquisition through
+      `LootManager`/`LootTable`, and the storage/sell view in
+      `Inspect_Collection_Menu` are live (see `Technical_Design_Document.md`
+      sections 6.1 and 10.1).
    3. `Plan_Reagent_Combat_Application.md` — loadout, in-battle free-action
       consumption, `Reagent_Consumed` hook.
    4. `Plan_Sorcerer_Arcane_Instability.md` — the Sorcerer passive consuming that

@@ -7,6 +7,7 @@ enum LootType
 	Equipment,
 	Fortunes_Favor,
 	Supplies,
+	Reagent,
 }
 
 # First Sub-series: {7, 18, 36, 72}
@@ -23,6 +24,7 @@ const RARITY_WEIGHTING: Dictionary[Types.Rarity, int] = {
 	Types.Rarity.Relic: 7,			# budget 28,268 required
 }
 const GEAR_RARITY_RANGE: int = 3
+const REAGENT_RARITY_RANGE: int = 3
 const FORTUNE_FAVOR_TIER_RANGE: int = 2 # only 3 tiers exist, so range can cover all
 const FORTUNE_FAVOR_TIER_WEIGHTING: Dictionary[FortuneFavorTier.TierType, int] = {
 	FortuneFavorTier.TierType.BONE: 4,
@@ -35,6 +37,7 @@ const LOOT_VALUE: Dictionary[LootType, int] = {
 	LootType.Equipment : 50,
 	LootType.Fortunes_Favor : 500,
 	LootType.Supplies : 300,
+	LootType.Reagent : 60,
 }
 const RARITY_VALUE_POWER: float = 0.27
 const RARITY_SELLING_POWER: float = 0.15
@@ -74,6 +77,32 @@ static func RollRarityForItem(p_best_outcome: int) -> Types.Rarity:
 			result = rarity
 			break
 	
+	return result
+
+static func GetBestRarityForReagent(p_budget: int) -> int:
+	var rarity_power_value = log(float(p_budget))/log(LOOT_VALUE[LootType.Reagent])
+	var best_outcome = int((rarity_power_value - 1.0) / RARITY_VALUE_POWER)
+	return clampi(best_outcome, Types.Rarity.Uncommon as int, Types.Rarity.Legendary as int)
+
+static func RollRarityForReagent(p_best_outcome: int, p_max_rarity: Types.Rarity) -> Types.Rarity:
+	var capped_best: int = min(p_best_outcome, p_max_rarity as int)
+
+	var cumulative_weights: Dictionary[Types.Rarity, int]
+	var current_sum: int = 0
+	var worst_outcome: int = max(capped_best - REAGENT_RARITY_RANGE, Types.Rarity.Uncommon as int)
+	for i in range(worst_outcome, capped_best + 1):
+		current_sum += RARITY_WEIGHTING[i as Types.Rarity]
+		cumulative_weights[i as Types.Rarity] = current_sum
+	var total_weight = current_sum
+
+	var random_roll = randi_range(0, total_weight)
+
+	var result: Types.Rarity = Types.Rarity.Uncommon
+	for rarity in cumulative_weights.keys():
+		if(random_roll <= cumulative_weights[rarity]):
+			result = rarity
+			break
+
 	return result
 
 static func GetBestFortuneFavorTier(p_budget: int) -> int:
@@ -143,6 +172,14 @@ static func DistributeRewards(p_loot_table: LootTable, p_difficulty: int) -> voi
 					p_loot_table._drop_result._supplies += 1
 					p_loot_table._budget -= LOOT_VALUE[LootType.Supplies]
 					print("Received Supplies, budget left: ", p_loot_table._budget)
+			LootType.Reagent:
+				for i in range(p_loot_table._primary_loot[type]):
+					var best_rarity_outcome: int = GetBestRarityForReagent(p_loot_table._budget)
+					var rarity: Types.Rarity = RollRarityForReagent(best_rarity_outcome, p_loot_table._reagent_max_rarity)
+					var cost: int = int(pow(LOOT_VALUE[LootType.Reagent], 1.0 + (best_rarity_outcome as float * RARITY_VALUE_POWER)))
+					p_loot_table._drop_result._reagents.append(ReagentRegistry.GetRandomKeyForRarity(rarity))
+					p_loot_table._budget -= cost
+					print("Received Reagent, budget left: ", p_loot_table._budget)
 			_:
 				print("Invalid reward type specified while trying to distribute rewards!")
 	print("budget before secondary rewards: ", p_loot_table._budget)
@@ -169,6 +206,12 @@ static func DistributeRewards(p_loot_table: LootTable, p_difficulty: int) -> voi
 				p_loot_table._drop_result._supplies += 1
 				p_loot_table._budget -= LOOT_VALUE[LootType.Supplies]
 				print("Received secondary Supplies, budget left: ", p_loot_table._budget)
+			LootType.Reagent:
+				var best_rarity_outcome: int = GetBestRarityForReagent(p_loot_table._budget)
+				var rarity: Types.Rarity = RollRarityForReagent(best_rarity_outcome, p_loot_table._reagent_max_rarity)
+				p_loot_table._drop_result._reagents.append(ReagentRegistry.GetRandomKeyForRarity(rarity))
+				p_loot_table._budget -= LOOT_VALUE[LootType.Reagent]
+				print("Received secondary Reagent, budget left: ", p_loot_table._budget)
 			_:
 				print("Invalid reward type specified while trying to distribute rewards!")
 
@@ -189,6 +232,9 @@ static func GetWeigthedRandom(p_secondary_loot: Dictionary[LootManager.LootType,
 
 static func GetSellValue(p_rarity: Types.Rarity) -> int:
 	return int(pow(LOOT_VALUE[LootType.Equipment], 1.0 + (float(p_rarity) * RARITY_SELLING_POWER)))
+
+static func GetReagentSellValue(p_rarity: Types.Rarity) -> int:
+	return int(pow(LOOT_VALUE[LootType.Reagent], 1.0 + (float(p_rarity) * RARITY_SELLING_POWER)))
 
 static func GetUpgradeCost(p_rarity: Types.Rarity, p_current_level: int) -> int:
 	return GameBalance.BASE_ITEM_UPGRADE_COST * (p_current_level + 1) * int(p_rarity)
