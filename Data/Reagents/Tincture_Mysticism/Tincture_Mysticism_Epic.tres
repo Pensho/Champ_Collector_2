@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ReagentData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Battle/reagent_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://Assets/Champ_Collector/Icons/Reagents/Tincture_Mysticism/Tincture_Mysticism_Epic.png" id="2_icon"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "Tincture of Mysticism"
+description = "A small battle-long +12% increase to Mysticism. Not a buff: cannot be dispelled, stolen, or counted by buff-related effects."
+icon = ExtResource("2_icon")
+rarity = 4
+binary = false
+effect_kind = 0
+target_kind = 0
+affected_attribute = 6
+magnitude = 12.0
+secondary_magnitude = 0.0

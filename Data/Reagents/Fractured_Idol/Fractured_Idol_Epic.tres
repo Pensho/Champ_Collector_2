@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ReagentData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Battle/reagent_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://Assets/Champ_Collector/Icons/Reagents/Fractured_Idol/Fractured_Idol_Epic.png" id="2_icon"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "Fractured Idol"
+description = "Deals 18% of the consumer's max Health as damage (cannot reduce them below 1 Health) and grants a battle-long +16% bonus to damage dealt."
+icon = ExtResource("2_icon")
+rarity = 4
+binary = false
+effect_kind = 8
+target_kind = 0
+affected_attribute = 0
+magnitude = 18.0
+secondary_magnitude = 16.0

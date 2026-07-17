@@ -8,8 +8,9 @@ trait hook. The Sorcerer passive that consumes that hook is
 
 ## Status
 
-Not started. Depends on `Plan_Reagent_Data_And_Catalog.md` and
-`Plan_Reagent_Inventory_And_Storage_UI.md`. The headless combat core has landed, so
+Not started. Depends on `Plan_Reagent_Inventory_And_Storage_UI.md`. `ReagentData`
+and `ReagentRegistry` are already landed (see `Technical_Design_Document.md`
+section 6.1). The headless combat core has landed, so
 reagent resolution and the `Reagent_Consumed` hook go through `BattleResolver`
 (logic mutation + `CombatResult` reporting) rather than `battle.gd`/`Skills.gd`
 directly.

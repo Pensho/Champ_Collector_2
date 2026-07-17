@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ReagentData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Battle/reagent_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://Assets/Champ_Collector/Icons/Reagents/Unrefined_Residue/Unrefined_Residue_Uncommon.png" id="2_icon"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "Unrefined Residue"
+description = "Applies the effect of one random Tincture family (a battle-long +6% attribute increase) to the consumer."
+icon = ExtResource("2_icon")
+rarity = 2
+binary = false
+effect_kind = 7
+target_kind = 0
+affected_attribute = 0
+magnitude = 6.0
+secondary_magnitude = 0.0

@@ -20,7 +20,10 @@ Suggested order (dependencies noted inside each plan):
 5. Reagent system, split into four sequential plans (independent of 1–4; the
    combat-facing ones apply their effects through `BattleResolver`, since the
    headless combat core has landed):
-   1. `Plan_Reagent_Data_And_Catalog.md` — `ReagentData`, registry, authored catalog.
+   1. Reagent data and catalog — completed and deleted; `ReagentData`
+      (`Scripts/Battle/reagent_data.gd`), `ReagentRegistry`, and the authored
+      feasible-subset catalog (`Data/Reagents/`) are live (see
+      `Technical_Design_Document.md` section 6.1).
    2. `Plan_Reagent_Inventory_And_Storage_UI.md` — persistent inventory, loot
       drops, storage view.
    3. `Plan_Reagent_Combat_Application.md` — loadout, in-battle free-action

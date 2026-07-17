@@ -233,6 +233,7 @@ load time. There is a consistent **preset (template) vs instance (runtime)** spl
 | `BiomeData` | `Scripts/Adventure_Scripts/biome_data.gd` | Biome enemy pools and boss definitions |
 | `CharacterTrait` | `Scripts/Character/character_traits/character_trait.gd` | Base class for character special abilities (see [Section 9](#9-trait-hook-system)) |
 | `StatusEffectData` | `Scripts/Battle/status_effect_data.gd` | Buff/debuff definition: magnitude, magnitude kind, default duration, overwrite/stack rules, application sites, icon |
+| `ReagentData` | `Scripts/Battle/reagent_data.gd` | Reagent definition (one rarity tier per resource): effect kind, target kind, rarity, binary flag, magnitude(s), icon |
 
 `Skill` is illustrative of how data drives behavior:
 
@@ -286,6 +287,43 @@ resolve `stackable`/`overwritable` from the registry instead of the old `Skills.
 Zone-applied debuffs (e.g. the Lava zone's Burning) come from the placing `Skill`'s existing
 `debuffs` dictionary, keyed by the skill's own `target`, rather than being hardcoded in
 `BattleResolver._ResolveZoneEffect`.
+
+`ReagentData` (`Concept_Document.md` 3.3.3) is the reagent-system data model, authored so far as
+a pure data layer with no inventory, UI, or combat-application code yet (those land in
+`Plans/Plan_Reagent_Inventory_And_Storage_UI.md` and `Plans/Plan_Reagent_Combat_Application.md`).
+Unlike `StatusEffectData`, one resource covers exactly
+one rarity tier — `Data/Reagents/<Family>/<Family>_<Rarity>.tres`, one subfolder per reagent
+family — since reagent magnitudes scale with rarity only, never with the consumer's attributes
+(deliberately no attribute-snapshot fields on the resource). Looked up by `ReagentRegistry`
+(`Scripts/Battle/reagent_registry.gd`, same preload-not-`DirAccess` pattern as
+`StatusEffectRegistry`) through a stable string identifier matching the `.tres` base file name
+(e.g. `"Tincture_Speed_Uncommon"`):
+
+```gdscript
+class_name ReagentData extends Resource
+enum EffectKind {
+    Attribute_Increase, Heal, Remove_Debuffs, Destroy_Enemy_Buffs, Reduce_Cooldown,
+    Turn_Bar_Reset, Clear_Zone, Random_Attribute_Increase, Health_Cost_Damage_Bonus,
+}
+enum TargetKind { Self_Target, One_Ally, One_Enemy, Zone_Section }
+@export var rarity: Types.Rarity
+@export var binary: bool = false                            # unaffected by potency modifiers
+@export var effect_kind: EffectKind
+@export var target_kind: TargetKind
+@export var affected_attribute: Types.Attribute             # Attribute_Increase / Random_Attribute_Increase only
+@export var magnitude: float = 0.0                          # units depend on effect_kind, see script
+@export var secondary_magnitude: float = 0.0                # Health_Cost_Damage_Bonus's damage-dealt bonus only
+@export var icon: Texture2D
+```
+
+The catalog currently covers the "feasible subset" whose combat mechanics already exist:
+Tinctures (one family per primary attribute), Restorative Draught, Purging Tonic, Thief's Regret,
+Rewinding Grit, Second Wind Phial, Zone-Dissolving Salts, Unrefined Residue, and Fractured Idol —
+68 `.tres` files (17 families × 4 rarity tiers). Rewinding Grit targets one ally directly
+(`One_Ally`) and reduces the cooldown of every skill that ally has currently on cooldown, rather
+than requiring a skill-choice target kind. Reagents still deferred until their blocking mechanic
+lands: Barrier Stone, Deathward Charm, Chant Fragment, Notarized Seal, Wayfarer's Draught, and the
+Alchemist brew pool.
 
 ### 6.2. Runtime instances
 

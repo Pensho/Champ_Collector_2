@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ReagentData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Battle/reagent_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://Assets/Champ_Collector/Icons/Reagents/Purging_Tonic/Purging_Tonic_Legendary.png" id="2_icon"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "Purging Tonic"
+description = "Removes up to 2 debuffs from one ally."
+icon = ExtResource("2_icon")
+rarity = 5
+binary = false
+effect_kind = 2
+target_kind = 1
+affected_attribute = 0
+magnitude = 2.0
+secondary_magnitude = 0.0

@@ -7,9 +7,11 @@ in `Plan_Reagent_Combat_Application.md`.
 
 ## Status
 
-Not started. Depends on `Plan_Reagent_Data_And_Catalog.md` (needs `ReagentData` and
-the registry). Does not touch combat resolution (`BattleResolver`/`Skills.gd`); it
-does extend `loot_manager.gd` and the post-battle reward flow.
+Not started. Dependency satisfied: `ReagentData` (`Scripts/Battle/reagent_data.gd`)
+and `ReagentRegistry` (`Scripts/Battle/reagent_registry.gd`) are landed (see
+`Technical_Design_Document.md` section 6.1). Does not touch combat resolution
+(`BattleResolver`/`Skills.gd`); it does extend `loot_manager.gd` and the post-battle
+reward flow.
 
 ## Design (from Concept_Document.md 3.3.3)
 

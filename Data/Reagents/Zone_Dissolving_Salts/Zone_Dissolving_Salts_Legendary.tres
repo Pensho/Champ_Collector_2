@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ReagentData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Battle/reagent_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://Assets/Champ_Collector/Icons/Reagents/Zone_Dissolving_Salts/Zone_Dissolving_Salts_Legendary.png" id="2_icon"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "Zone-Dissolving Salts"
+description = "Clears one targeted zone section. Not affected by potency modifiers."
+icon = ExtResource("2_icon")
+rarity = 5
+binary = true
+effect_kind = 6
+target_kind = 3
+affected_attribute = 0
+magnitude = 0.0
+secondary_magnitude = 0.0

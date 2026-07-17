@@ -741,8 +741,9 @@ Reagents are universal consumable items left over from the era of the God of Mag
 looted primarily from that god's ruins and other encounters (rarer reagents drop only
 from bosses). They are stored in a persistent player inventory.
 
-Rules (designed; implementation planned in `Plans/Plan_Reagent_Data_And_Catalog.md`,
-`Plans/Plan_Reagent_Inventory_And_Storage_UI.md`, and
+Rules (designed; data model and catalog implemented, see `Technical_Design_Document.md`
+section 6.1; remaining implementation planned in
+`Plans/Plan_Reagent_Inventory_And_Storage_UI.md` and
 `Plans/Plan_Reagent_Combat_Application.md`):
 - Before a battle the player selects up to 3 reagents from their inventory to bring along.
 - Each brought reagent can be consumed exactly once per battle, by any champion on
@@ -773,14 +774,16 @@ Rules (designed; implementation planned in `Plans/Plan_Reagent_Data_And_Catalog.
 Reagent catalog (designed; magnitudes without listed values are not yet decided):
 
 Families — one entry per rarity tier:
-* Tinctures: one family per primary attribute. A small battle-long increase to that
-  attribute. Not a buff: undispellable, unstealable, and invisible to buff-counting
-  effects. Deliberately weaker than the equivalent 30% buff.
-* Restorative Draught: heals one ally for a percentage of max Health.
-* Purging Tonic: removes up to N debuffs from one ally, N set by rarity.
-* Thief's Regret: destroys (not steals) up to N buffs on one enemy, N set by rarity.
+* Tinctures: one family per primary attribute. A small battle-long +6/9/12/15%
+  (by rarity) increase to that attribute. Not a buff: undispellable, unstealable,
+  and invisible to buff-counting effects. Deliberately weaker than the equivalent
+  30% buff.
+* Restorative Draught: heals one ally for 15/20/25/30% (by rarity) of max Health.
+* Purging Tonic: removes up to 1/1/2/2 (by rarity) debuffs from one ally.
+* Thief's Regret: destroys (not steals) up to 1/1/2/2 (by rarity) buffs on one enemy.
 * Barrier Stone: grants one ally a Barrier with a flat absorb amount set by rarity.
-* Rewinding Grit: ticks one chosen skill's cooldown down by (1/1/1/2) turns, set by rarity.
+* Rewinding Grit: targets one ally and reduces the cooldown of every skill they have
+  currently on cooldown by (1/1/1/2) turns, set by rarity.
 * Second Wind Phial: after the consumer's current turn ends, their turn bar resets to
   15/20/25/30% (by rarity) instead of 0. Self-only.
 
@@ -794,8 +797,8 @@ Singletons:
 * Wayfarer's Draught: applies Wanderlust to the consumer, with the random-stat bonus
   percentage set by rarity instead of the buff's standard value. God of Adventure
   lore family.
-* Unrefined Residue: applies the effect of one random tincture family. God of Magic
-  lore family.
+* Unrefined Residue: applies the effect of one random tincture family (+6/9/12/15%
+  by rarity, matching the Tinctures magnitude). God of Magic lore family.
 * Fractured Idol: a crumbling artifact of the Forgotten God. Deals 10/14/18/22% (by
   rarity) of the consumer's max Health as damage (cannot reduce the consumer below
   1 Health) and grants a battle-long +10/13/16/20% (by rarity) to damage dealt.
