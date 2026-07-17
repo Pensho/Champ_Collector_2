@@ -3,7 +3,7 @@ extends GutTest
 const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 
 # Coverage for the generic, registry-driven status-effect application that replaced
-# the hardcoded match blocks in Skills.gd/battle_resolver.gd (Plan_Data_Driven_Status_Effects).
+# the hardcoded match blocks in skills.gd/battle_resolver.gd (Plan_Data_Driven_Status_Effects).
 # Locks in the exact magnitudes the old match blocks used, split by application site:
 # target-snapshot (Skills.TriggerTargetBuffs/Debuffs, unit-tested directly) and
 # self-tick (BattleResolver.ResolveSkill, tested end-to-end since the tick methods

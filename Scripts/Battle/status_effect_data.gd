@@ -1,7 +1,7 @@
 class_name StatusEffectData extends Resource
 
 ## Data-driven definition of one buff or debuff type, replacing the hardcoded match
-## blocks in Skills.gd/battle_resolver.gd. One resource per effect lives under
+## blocks in skills.gd/battle_resolver.gd. One resource per effect lives under
 ## Data/Status_Effects/ and is looked up through StatusEffectRegistry.
 
 enum MagnitudeKind {

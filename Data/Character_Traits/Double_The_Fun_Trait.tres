@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="DoubleTheFunTrait" format=3]
 
-[ext_resource type="Script" path="res://Scripts/Character/CharacterTraits/CharacterSpecificTraits/double_the_fun_trait.gd" id="1_dtfun"]
+[ext_resource type="Script" path="res://Scripts/Character/character_traits/CharacterSpecificTraits/double_the_fun_trait.gd" id="1_dtfun"]
 
 [resource]
 script = ExtResource("1_dtfun")

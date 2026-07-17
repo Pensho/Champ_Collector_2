@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="LancerTrait" format=3 uid="uid://dlancertr3sc0"]
 
-[ext_resource type="Script" uid="uid://qqpvh2sp1ips" path="res://Scripts/Character/CharacterTraits/CharacterSpecificTraits/lancer_trait.gd" id="1_lncrtr"]
+[ext_resource type="Script" uid="uid://qqpvh2sp1ips" path="res://Scripts/Character/character_traits/CharacterSpecificTraits/lancer_trait.gd" id="1_lncrtr"]
 
 [resource]
 script = ExtResource("1_lncrtr")

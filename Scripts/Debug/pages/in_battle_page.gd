@@ -126,8 +126,8 @@ func _on_revive_pressed(p_character_id: int) -> void:
 	var character: Character = battle._characters[p_character_id]
 	var max_health: int = character.GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
 	battle._resolver.SetCurrentHealth(p_character_id, max_health)
-	battle._character_repr[p_character_id]._character_texture.material = null
-	battle._battle_ui._turn_bar._char_turns[p_character_id].material = null
+	battle._character_representations[p_character_id]._character_texture.material = null
+	battle._battle_ui._turn_bar._character_turn_markers[p_character_id].material = null
 	_hp_spins[p_character_id].value = max_health
 
 func _on_bump_turn_pressed(p_character_id: int, p_bump_spin: SpinBox) -> void:

@@ -43,7 +43,7 @@ script = ExtResource("1_gfldn")
 _skill_buttons = [NodePath("Skill_1"), NodePath("Skill_2"), NodePath("Skill_3")]
 _battle_duration_label = NodePath("Label_Battle_Duration")
 
-[node name="PlayerInfoBox" type="Panel" parent="." unique_id=1195450184 node_paths=PackedStringArray("_char_turns")]
+[node name="PlayerInfoBox" type="Panel" parent="." unique_id=1195450184 node_paths=PackedStringArray("_character_turn_markers")]
 material = ExtResource("2_d07u5")
 layout_mode = 0
 offset_left = 20.0
@@ -52,7 +52,7 @@ offset_right = 1260.0
 offset_bottom = 703.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_4blpl")
 script = ExtResource("3_6lbqc")
-_char_turns = [NodePath("Char_1"), NodePath("Char_2"), NodePath("Char_3"), NodePath("Char_4"), NodePath("Char_5"), NodePath("Char_6")]
+_character_turn_markers = [NodePath("Char_1"), NodePath("Char_2"), NodePath("Char_3"), NodePath("Char_4"), NodePath("Char_5"), NodePath("Char_6")]
 
 [node name="Turn_meter_icon" type="TextureRect" parent="PlayerInfoBox" unique_id=861724968]
 material = ExtResource("2_d07u5")

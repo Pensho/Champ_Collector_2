@@ -353,14 +353,14 @@ func _HandleDeath(p_character_ID: int) -> void:
 ## Caster-side skill mechanics that key off per-combat state (Heap On stacking).
 func _ResolveSkillEffect(
 		p_caster_ID: int,
-		p_caster_attr: Dictionary[Types.Attribute, int],
+		p_caster_attributes: Dictionary[Types.Attribute, int],
 		p_skill: Skill) -> void:
 	match p_skill.skill_type:
 		Types.Skill_Type.Heap_On:
 			if(0 == _heap_on_stacks.get(p_caster_ID, 0)):
-				_heap_on_value[p_caster_ID] = (float(p_caster_attr[Types.Attribute.Health])
+				_heap_on_value[p_caster_ID] = (float(p_caster_attributes[Types.Attribute.Health])
 						* GameBalance.HEAP_ON_MULTIPLIER)
-			p_caster_attr[Types.Attribute.Health] += int(
+			p_caster_attributes[Types.Attribute.Health] += int(
 					_heap_on_value[p_caster_ID] * float(_heap_on_stacks.get(p_caster_ID, 0)))
 			_heap_on_stacks[p_caster_ID] = _heap_on_stacks.get(p_caster_ID, 0) + 1
 

@@ -7,7 +7,7 @@ const DEFAULT_THEME = preload("uid://c8irweh6md2jy")
 const GRAYSCALE = preload("uid://ia57lns0336p")
 const NO_CHARACTERS_TURN: int = -1
 
-@export var _char_turns: Array[TextureRect]
+@export var _character_turn_markers: Array[TextureRect]
 
 var _base_velocity: float = self.size.x / Game_Balance.TURN_DURATION_SECONDS
 var _grayscale_material: ShaderMaterial
@@ -23,10 +23,10 @@ func Init(p_characters: Dictionary[int, Character], p_zone_callable: Callable, p
 		speeds[i] = p_characters[i].GetBattleAttribute(Types.Attribute.Speed)
 	_characters_normalized_speed = NormalizeSpeeds(speeds)
 	for i in p_characters.keys():
-		_char_turns[i].size.y = self.size.y * 0.7
-		_char_turns[i].size.x = _char_turns[i].size.y
-		_char_turns[i].position.y = -15 + (i * 10)
-		_char_turns[i].texture = load(p_characters[i]._texture)
+		_character_turn_markers[i].size.y = self.size.y * 0.7
+		_character_turn_markers[i].size.x = _character_turn_markers[i].size.y
+		_character_turn_markers[i].position.y = -15 + (i * 10)
+		_character_turn_markers[i].texture = load(p_characters[i]._texture)
 	_grayscale_material = ShaderMaterial.new()
 	_grayscale_material.shader = GRAYSCALE
 	
@@ -94,7 +94,7 @@ func SetupPlanReachOverlays(p_characters: Dictionary[int, Character], p_player_t
 		var threshold: float = PlanTrait.GetReachThreshold(p_characters[id]._rarity)
 		var overlay := PlanReachOverlay.new()
 		self.add_child(overlay)
-		overlay.Setup(_char_turns[id], threshold * self.size.x, tint, p_characters[id], self.size.y)
+		overlay.Setup(_character_turn_markers[id], threshold * self.size.x, tint, p_characters[id], self.size.y)
 
 func SpawnZoneEffect(p_zone_ID: int, p_duration: int, p_allySide: bool, p_zone_type: Types.Skill_Type):
 	var effect: TurnBarContainer
@@ -155,7 +155,7 @@ func DisableZones(p_disable: bool):
 		button.disabled = p_disable
 
 func TurnCompleteForCharacter(p_character_ID) -> void:
-	_char_turns[p_character_ID].position.x = 0
+	_character_turn_markers[p_character_ID].position.x = 0
 	_characters_turn_id = NO_CHARACTERS_TURN
 
 func Update(p_delta: float, p_character_ID) -> void:
@@ -163,19 +163,20 @@ func Update(p_delta: float, p_character_ID) -> void:
 		return
 	
 	var frame_distance: float = _base_velocity * _characters_normalized_speed[p_character_ID] * p_delta
-	_char_turns[p_character_ID].position.x += frame_distance
+	_character_turn_markers[p_character_ID].position.x += frame_distance
 	
-	if((_char_turns[p_character_ID].position.x + _char_turns[p_character_ID].size.x) > self.size.x):
-		_char_turns[p_character_ID].position.x = self.size.x - _char_turns[p_character_ID].size.x
+	var marker: TextureRect = _character_turn_markers[p_character_ID]
+	if((marker.position.x + marker.size.x) > self.size.x):
+		marker.position.x = self.size.x - marker.size.x
 		_characters_turn_id = p_character_ID
 
 func BumpCharacter(p_character_ID: int, p_percent_change: float):
-	_char_turns[p_character_ID].position.x += p_percent_change * self.size.x
+	_character_turn_markers[p_character_ID].position.x += p_percent_change * self.size.x
 	ConstrictTurnLocation(p_character_ID)
 
 func ConstrictTurnLocation(p_character_ID: int) -> void:
-	_char_turns[p_character_ID].position.x = clamp(
-		_char_turns[p_character_ID].position.x, 0.0, self.size.x - _char_turns[p_character_ID].size.x)
+	_character_turn_markers[p_character_ID].position.x = clamp(
+		_character_turn_markers[p_character_ID].position.x, 0.0, self.size.x - _character_turn_markers[p_character_ID].size.x)
 
 ## p_character_ID is from which character it is measured.
 ## p_bar_percent is how far along the bar a character must have passed to be included. 0.0 - 1.0
@@ -185,10 +186,10 @@ func GetCharactersWithinRange(p_character_ID: int, p_bar_percent: float) -> Arra
 		print("GetCharactersWithinRange, span supplied is not within range: ", p_bar_percent)
 		return character_ids
 	
-	for id in _char_turns.size():
-		if(0.0 == _char_turns[id].position.x):
+	for id in _character_turn_markers.size():
+		if(0.0 == _character_turn_markers[id].position.x):
 			continue
-		if(_char_turns[id].position.x < (p_bar_percent * self.size.x)):
+		if(_character_turn_markers[id].position.x < (p_bar_percent * self.size.x)):
 			continue
 		if(p_character_ID == id):
 			continue
@@ -206,11 +207,11 @@ func GetCharactersBehindBy(p_owner_ID: int, p_bar_percent: float) -> Array[int]:
 		print("GetCharactersBehindBy, span supplied is not within range: ", p_bar_percent)
 		return character_ids
 
-	var owner_position: float = _char_turns[p_owner_ID].position.x
-	for id in _char_turns.size():
+	var owner_position: float = _character_turn_markers[p_owner_ID].position.x
+	for id in _character_turn_markers.size():
 		if (p_owner_ID == id):
 			continue
-		var distance_behind: float = owner_position - _char_turns[id].position.x
+		var distance_behind: float = owner_position - _character_turn_markers[id].position.x
 		if (distance_behind <= 0.0 or distance_behind > (p_bar_percent * self.size.x)):
 			continue
 		character_ids.append(id)
@@ -218,12 +219,12 @@ func GetCharactersBehindBy(p_owner_ID: int, p_bar_percent: float) -> Array[int]:
 	return character_ids
 
 func ShowCharacterAsDead(p_dead_char_ID: int):
-	_char_turns[p_dead_char_ID].material = _grayscale_material
+	_character_turn_markers[p_dead_char_ID].material = _grayscale_material
 
 func IsCharacterInZone(p_character_ID: int, p_zone_ID: int) -> bool:
 	if(null == _zone_effects[p_zone_ID]):
 		return false
-	if(!_char_turns[p_character_ID].get_rect().intersects(_zone_buttons[p_zone_ID].get_rect())):
+	if(!_character_turn_markers[p_character_ID].get_rect().intersects(_zone_buttons[p_zone_ID].get_rect())):
 		return false
 	return true
 	

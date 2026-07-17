@@ -18,11 +18,11 @@ const ZoneType = preload("uid://bdjrfif0s60v4")
 const GRAYSCALE = preload("uid://ia57lns0336p")
 
 const NO_CHARACTERS_TURN: int = -1
-# Enemy slot IDs start here so they index the same exported _character_repr array and
+# Enemy slot IDs start here so they index the same exported _character_representations array and
 # turn-bar slots as before; the offset is fixed even when a wave has fewer enemies.
 const ENEMY_ID_OFFSET: int = 3
 
-@export var _character_repr: Array[CharacterRepresentation]
+@export var _character_representations: Array[CharacterRepresentation]
 
 var GRAYSCALE_MATERIAL: ShaderMaterial
 
@@ -139,9 +139,10 @@ func Init(p_context: ContextContainer) -> void:
 		_characters[enemy_ID]._attributes[Types.Attribute.Speed] += _resolver.GetRandom().randi_range(-3, 3)
 		var is_boss: bool = p_context._arguments.has("Boss_Scale")
 		if (is_boss):
-			_character_repr[enemy_ID].scale = Vector2(p_context._arguments["Boss_Scale"], p_context._arguments["Boss_Scale"])
-			_character_repr[enemy_ID].position.y -= (
-					_character_repr[enemy_ID].position.y * p_context._arguments["Boss_Scale"]) * 0.5
+			var boss_scale: float = p_context._arguments["Boss_Scale"]
+			_character_representations[enemy_ID].scale = Vector2(boss_scale, boss_scale)
+			_character_representations[enemy_ID].position.y -= (
+					_character_representations[enemy_ID].position.y * boss_scale) * 0.5
 		# One levelling call carrying the boss flag, so the ×1.5 boss multiplier is
 		# actually applied instead of being pre-empted by an earlier no-op call.
 		LevelSystem.SetOpponentLevel(_characters[enemy_ID], difficulty, is_boss)
@@ -155,7 +156,7 @@ func Init(p_context: ContextContainer) -> void:
 		if(null != _characters[i]._trait):
 			if(_characters[i]._trait._execution_steps.has(Types.Combat_Event.Start_Combat)):
 				_characters[i]._trait.StartOfBattle()
-			_characters[i]._trait.RefreshVisuals(_character_repr[i])
+			_characters[i]._trait.RefreshVisuals(_character_representations[i])
 
 	SetTargetingOrder()
 
@@ -174,7 +175,7 @@ func _process(p_delta: float) -> void:
 		BattleState.Advancing:
 			AdvanceTurnBar(p_delta)
 		BattleState.Awaiting_Player_Input, BattleState.Selecting_Zone:
-			_turn_indicator.position.y = (_character_repr[_turn_character_ID].position.y -
+			_turn_indicator.position.y = (_character_representations[_turn_character_ID].position.y -
 					_turn_indicator.size.y + (sin(Time.get_ticks_msec() * 0.005) * 5))
 		_:
 			pass
@@ -190,9 +191,9 @@ func AdvanceTurnBar(p_delta: float) -> void:
 			return
 
 func StartTurn() -> void:
-	_turn_indicator.position.x = (_character_repr[_turn_character_ID].position.x +
-			(_character_repr[_turn_character_ID]._character_texture.size.x * 0.5) - (_turn_indicator.size.x * 0.5))
-	_turn_indicator.position.y = _character_repr[_turn_character_ID].position.y - _turn_indicator.size.y
+	_turn_indicator.position.x = (_character_representations[_turn_character_ID].position.x +
+			(_character_representations[_turn_character_ID]._character_texture.size.x * 0.5) - (_turn_indicator.size.x * 0.5))
+	_turn_indicator.position.y = _character_representations[_turn_character_ID].position.y - _turn_indicator.size.y
 	_turn_indicator.show()
 
 	_resolver.BeginTurn(_turn_character_ID)
@@ -271,10 +272,10 @@ func ResolveTurn(p_target_IDs: Array[int]) -> void:
 func RefreshAllTraitVisuals() -> void:
 	for i in _characters.keys():
 		if(null != _characters[i]._trait):
-			_characters[i]._trait.RefreshVisuals(_character_repr[i])
+			_characters[i]._trait.RefreshVisuals(_character_representations[i])
 
 func CombatTextPosition(p_character_ID: int) -> Vector2:
-	return _character_repr[p_character_ID].position + _battle_ui.COMBAT_TEXT_SPAWN_POINT
+	return _character_representations[p_character_ID].position + _battle_ui.COMBAT_TEXT_SPAWN_POINT
 
 # Translates one resolver result into visuals (and post-battle damage attribution).
 func _on_resolver_result_produced(p_result: CombatResult) -> void:
@@ -300,7 +301,7 @@ func _on_resolver_result_produced(p_result: CombatResult) -> void:
 			ShowStatusApplied(p_result)
 		CombatResult.Kind.Status_Duration:
 			if(_status_visual_IDs.has(p_result.status_ID)):
-				_character_repr[p_result.target_ID].SetStatusEffectDuration(
+				_character_representations[p_result.target_ID].SetStatusEffectDuration(
 						_status_visual_IDs[p_result.status_ID], p_result.duration)
 		CombatResult.Kind.Statuses_Removed:
 			var repr_effect_IDs: Array[int] = []
@@ -308,9 +309,9 @@ func _on_resolver_result_produced(p_result: CombatResult) -> void:
 				if(_status_visual_IDs.has(status_ID)):
 					repr_effect_IDs.append(_status_visual_IDs[status_ID])
 					_status_visual_IDs.erase(status_ID)
-			_character_repr[p_result.target_ID].RemoveStatusEffects(repr_effect_IDs)
+			_character_representations[p_result.target_ID].RemoveStatusEffects(repr_effect_IDs)
 		CombatResult.Kind.Statuses_Cleared:
-			_character_repr[p_result.target_ID].ClearAllStatusEffects()
+			_character_representations[p_result.target_ID].ClearAllStatusEffects()
 		CombatResult.Kind.Turn_Bar_Bump:
 			_battle_ui._turn_bar.BumpCharacter(p_result.target_ID, p_result.fraction)
 		CombatResult.Kind.Zone_Placed:
@@ -325,7 +326,7 @@ func _on_resolver_result_produced(p_result: CombatResult) -> void:
 			_battle_ui.SpawnCombatText(p_result.text, CombatTextPosition(p_result.target_ID), p_result.color)
 		CombatResult.Kind.Death:
 			_battle_ui._turn_bar.ShowCharacterAsDead(p_result.target_ID)
-			_character_repr[p_result.target_ID]._character_texture.material = GRAYSCALE_MATERIAL
+			_character_representations[p_result.target_ID]._character_texture.material = GRAYSCALE_MATERIAL
 			UpdateLifeBar(p_result.target_ID)
 
 # Credits damage to the player who dealt it, for the post-battle totals.
@@ -342,21 +343,21 @@ func ShowStatusApplied(p_result: CombatResult) -> void:
 	else:
 		texture = StatusEffectRegistry.DebuffData(p_result.debuff_type).icon
 		text_color = Color(0.681, 0.152, 0.31, 1.0)
-	_status_visual_IDs[p_result.status_ID] = _character_repr[p_result.target_ID].AddStatusEffect(
+	_status_visual_IDs[p_result.status_ID] = _character_representations[p_result.target_ID].AddStatusEffect(
 			texture, p_result.duration)
 	if("" != p_result.text):
 		_battle_ui.SpawnCombatText(p_result.text, CombatTextPosition(p_result.target_ID), text_color)
 
 # Display-only: combat mutation (clamping, death handling) happens in the resolver.
 func UpdateLifeBar(p_characterID: int) -> void:
-	_character_repr[p_characterID]._lifebar.value = _characters[p_characterID]._current_health
+	_character_representations[p_characterID]._lifebar.value = _characters[p_characterID]._current_health
 	var max_health: int = (_characters[p_characterID].GetBattleAttribute(Types.Attribute.Health) *
 			Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
-	_character_repr[p_characterID]._lifebar_text.text = (
+	_character_representations[p_characterID]._lifebar_text.text = (
 			str(_characters[p_characterID]._current_health) + "/" + str(max_health))
 
 func VisualizeCharacter(p_characterID: int) -> void:
-	_character_repr[p_characterID]._level.text = str(_characters[p_characterID]._level)
+	_character_representations[p_characterID]._level.text = str(_characters[p_characterID]._level)
 	var character_canvas_texture = CanvasTexture.new()
 	if(_sides.player.Has(p_characterID)):
 		character_canvas_texture.diffuse_texture = (main.GetInstance()._character_collection
@@ -365,11 +366,11 @@ func VisualizeCharacter(p_characterID: int) -> void:
 		character_canvas_texture.diffuse_texture = load(_characters[p_characterID]._texture)
 	if("" != _characters[p_characterID]._normal_map):
 		character_canvas_texture.normal_texture = load(_characters[p_characterID]._normal_map)
-	_character_repr[p_characterID]._character_texture.texture = character_canvas_texture
-	_character_repr[p_characterID]._lifebar.max_value = (
+	_character_representations[p_characterID]._character_texture.texture = character_canvas_texture
+	_character_representations[p_characterID]._lifebar.max_value = (
 			_characters[p_characterID].GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
 	UpdateLifeBar(p_characterID)
-	_character_repr[p_characterID].show()
+	_character_representations[p_characterID].show()
 
 func CheckAndHandleBattleOver() -> bool:
 	var battle_state: BattleResolver.Winner = _resolver.IsTheBattleOver()
