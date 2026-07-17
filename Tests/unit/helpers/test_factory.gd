@@ -77,6 +77,7 @@ static func make_lava_zone_skill() -> Skill:
 	skill.target = Types.Skill_Target.ZoneAll
 	skill.skill_type = Types.Skill_Type.Lava_Zone
 	skill.duration = 10
+	skill.debuffs = {Types.Skill_Target.ZoneAll: Types.Debuff_Type.Burning}
 	return skill
 
 static func make_loot_table() -> LootTable:

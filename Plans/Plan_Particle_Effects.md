@@ -17,9 +17,8 @@ removed when they turn out not to be wanted. Expected to grow and shrink over ti
 
 No hard dependency on other plans. Soft relationships:
 
-- `Plan_Data_Driven_Status_Effects.md` — the status-effect-to-particle mapping should
-  ride on whatever resource structure that plan lands; if this plan's infrastructure
-  work starts first, coordinate the mapping's home.
+- Data-driven status effects (completed) — the status-effect-to-particle mapping
+  should ride on `StatusEffectData` (`Technical_Design_Document.md` section 6.1).
 - `Adventure_Background_Visuals_Checklist.md` — the Tier 1 fog/mist patch and the
   `REST_STOP` campfire prop are tracked there as static art; this plan covers their
   animated counterparts and cross-references rather than duplicates them.
@@ -121,8 +120,8 @@ level — this section becomes its own implementation plan when picked up:
   variation parameters (color ramp, texture, scale) as resource data, consistent with
   the project's data-driven `.tres` pattern — either a field on `Skill`
   (`Scripts/Character/skill_data.gd`) or a lookup table keyed by skill/status
-  identifiers. If `Plan_Data_Driven_Status_Effects.md` lands first, status-effect
-  mappings live on its resources.
+  identifiers. Status-effect mappings can live directly on `StatusEffectData`
+  (`Scripts/Battle/status_effect_data.gd`).
 - **Spawner hook:** the resolve path (`Skills.gd::ResolveSkillEffect` /
   `ResolveZoneEffect`, driven by `battle.gd`) spawns the mapped archetype at the
   target's `Character_Battle_Repr`, alongside the existing `SpawnCombatText` calls.

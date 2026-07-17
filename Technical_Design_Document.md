@@ -232,6 +232,7 @@ load time. There is a consistent **preset (template) vs instance (runtime)** spl
 | `AdventureTemplate` | `Scripts/Adventure_Scripts/adventure_template.gd` | Adventure generation parameters |
 | `BiomeData` | `Scripts/Adventure_Scripts/biome_data.gd` | Biome enemy pools and boss definitions |
 | `CharacterTrait` | `Scripts/Character/CharacterTraits/character_trait.gd` | Base class for character special abilities (see [Section 9](#9-trait-hook-system)) |
+| `StatusEffectData` | `Scripts/Battle/status_effect_data.gd` | Buff/debuff definition: magnitude, magnitude kind, default duration, overwrite/stack rules, application sites, icon |
 
 `Skill` is illustrative of how data drives behavior:
 
@@ -253,6 +254,38 @@ There are 66+ `.tres` files under `Data/` (player and enemy character variants, 
 split into Attack/Support/Zone folders, attribute weights, item presets, loot tables, traits, and
 adventure data). `Data/Example_Tree.json` is an exported skill-tree definition (a design artifact,
 not yet wired into runtime).
+
+`StatusEffectData` replaces the old hardcoded match blocks that used to duplicate buff/debuff
+magnitudes across `Skills.gd`. One `.tres` per implemented `Buff_Type`/`Debuff_Type` lives under
+`Data/Status_Effects/`, looked up by `StatusEffectRegistry` (`Scripts/Battle/status_effect_registry.gd`,
+preload-based like `Scripts/Debug/debug_catalog.gd`, not `DirAccess`-based, for Android export safety):
+
+```gdscript
+class_name StatusEffectData extends Resource
+enum MagnitudeKind { AttributePercent, MaxHealthPercent, DamageMultiplier, TurnBarBump }
+@export var magnitude_kind: MagnitudeKind
+@export var affected_attribute: Types.Attribute            # AttributePercent only
+@export var magnitude: float = 0.0                         # 0.0 = no static default; the
+                                                             # applier sets the instance's value
+                                                             # directly (e.g. Phalanx Guard)
+@export var duration_default: int = 2
+@export var overwritable: bool = true                       # re-apply refreshes duration
+@export var stackable: bool = false                         # re-apply adds an independent instance
+@export var applies_on_self_tick: bool = true                # ticks on the holder's own turn
+@export var applies_on_target_snapshot: bool = false          # applies when the holder is targeted
+@export var icon: Texture2D
+```
+
+`StatusEffects.Buff`/`Debuff` (`Scripts/Battle/status_effects.gd`) carry the resolved per-instance
+`value` (Empower/Fortify read `StatusEffectData.magnitude` by default; Phalanx Guard overrides it
+per-rarity in `LancerTrait`). `BattleResolver.ApplyBuff`/`ApplyDebuff`/`_CastBuff`/`_CastDebuff` all
+resolve `stackable`/`overwritable` from the registry instead of the old `Skills.OverwritableBuff`/
+`OverwritableDebuff` match statements, and the caster-tick methods
+(`_TriggerExistingCasterBuffs`/`Debuffs`) and target-snapshot methods (`Skills.TriggerTargetBuffs`/
+`TriggerTargetDebuffs`) dispatch generically on `magnitude_kind` instead of the buff/debuff type.
+Zone-applied debuffs (e.g. the Lava zone's Burning) come from the placing `Skill`'s existing
+`debuffs` dictionary, keyed by the skill's own `target`, rather than being hardcoded in
+`BattleResolver._ResolveZoneEffect`.
 
 ### 6.2. Runtime instances
 
@@ -675,16 +708,11 @@ alive-filtering, and random selection now live in `CombatTeam`/`CombatSides`
 `Skills.gd` (now dictionaries keyed by slot ID) are gone, and `turn_bar.gd` receives the
 player team instead of reaching back into `Battle`.
 
-### 15.8. Status-effect behavior is hardcoded and duplicated
+### 15.8. Status-effect behavior is hardcoded and duplicated — resolved
 
-Buff/debuff magnitudes live in parallel `match` blocks in `Skills.gd`
-(`TriggerExistingCasterDebuffs`/`Buffs`, `TriggerTargetBuffs`/`Debuffs`) plus separate
-overwritability matches and icon maps. The duplication previously produced a divergence
-(Expose Weakness at 30% in one block, 50% in the other, now aligned at 30% per
-`Concept_Document.md`), and nothing prevents the next effect added this way from drifting
-the same way.
-
-*Impact:* adding one effect means editing several blocks with nothing enforcing consistency;
-the concept document's pending effects (Anchor, Sequence Lock, Frenzy, …) would compound this.
-*Direction:* a `StatusEffectData` resource per effect with a generic apply/tick routine,
-mirroring how `Skill` already works — see `Plans/Plan_Data_Driven_Status_Effects.md`.
+Resolved by the completed data-driven-status-effects plan: buff/debuff magnitude,
+overwrite/stack rules, application sites, and icons now live on one `StatusEffectData`
+resource per effect under `Data/Status_Effects/`, looked up through
+`StatusEffectRegistry` (see section 6.1). `Skills.gd`/`BattleResolver`'s per-type
+`match` blocks and the `Statuses.BUFF_ICONS`/`DEBUFF_ICONS` maps are gone; the caster-tick
+and target-snapshot methods dispatch generically on `StatusEffectData.magnitude_kind`.

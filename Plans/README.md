@@ -11,8 +11,9 @@ Suggested order (dependencies noted inside each plan):
 2. Headless combat core — completed and deleted; combat resolution lives in
    `BattleResolver` with `CombatResult` records and a seeded generator (see
    `Technical_Design_Document.md` section 7).
-3. `Plan_Data_Driven_Status_Effects.md` — status effects as resources
-   (independent; hooks into 2 if done after it).
+3. Data-driven status effects — completed and deleted; buff/debuff magnitude,
+   overwrite/stack rules, and icons live on `StatusEffectData` resources looked up
+   through `StatusEffectRegistry` (see `Technical_Design_Document.md` section 6.1).
 4. `Plan_Naming_Convention_Alignment.md` — align written conventions and code;
    mechanical, schedule last.
 5. Reagent system, split into four sequential plans (independent of 1–4; the
@@ -51,8 +52,9 @@ Design-only plans (no code; can run at any time):
 - `Plan_Particle_Effects.md` — living inventory of battle and environmental
   particle effects (archetype library, Adventure map overlays, hub ambience).
   Mostly design; its battle-effect infrastructure section spawns a future code
-  plan. Soft ties to `Plan_Data_Driven_Status_Effects.md` (status-effect mapping
-  home) and `Adventure_Background_Visuals_Checklist.md` (fog and campfire props).
+  plan. Soft ties to the completed data-driven status effects work (status-effect
+  mapping home, see `StatusEffectData`) and `Adventure_Background_Visuals_Checklist.md`
+  (fog and campfire props).
 - `Plan_Lighting.md` — systemized 2D lighting for battles, the Adventure map, and
   hubs: one `LightingProfile` mood resource, a shared ambient rig, living
   (flicker/pulse) light archetypes. Design with a staged rollout; independent, but

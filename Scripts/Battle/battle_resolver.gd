@@ -169,7 +169,8 @@ func PlaceZone(p_zone_ID: int, p_owner_ID: int, p_skill: Skill) -> Array[CombatR
 		return _EndBatch()
 	var zone: Zone = Zone.new()
 	zone.CreateNew(p_skill.skill_type, p_skill.duration, p_owner_ID, p_skill.target,
-			_characters[p_owner_ID].GetBattleAttribute(Types.Attribute.Knowledge))
+			_characters[p_owner_ID].GetBattleAttribute(Types.Attribute.Knowledge),
+			p_skill.debuffs.get(p_skill.target, Types.Debuff_Type.Invalid))
 	_zones[p_zone_ID] = zone
 	var result: CombatResult = CombatResult.new(CombatResult.Kind.Zone_Placed)
 	result.zone_ID = p_zone_ID
@@ -186,20 +187,22 @@ func ApplyBuff(p_target_ID: int, p_buff_template: StatusEffects.Buff) -> Array[C
 	var target: Character = _characters[p_target_ID]
 	if(Skills.HasMaxStatusEffects(target)):
 		return _EndBatch()
+	var data: StatusEffectData = StatusEffectRegistry.BuffData(p_buff_template.type)
 
-	for i in target._active_buffs.size():
-		if(target._active_buffs[i].type == p_buff_template.type):
-			if(Skills.OverwritableBuff(p_buff_template.type)):
-				if(p_buff_template.duration > target._active_buffs[i].duration):
-					target._active_buffs[i].duration = p_buff_template.duration
-					_EmitStatusDuration(p_target_ID, target._active_buffs[i].ID, p_buff_template.duration)
+	if(null == data or not data.stackable):
+		for i in target._active_buffs.size():
+			if(target._active_buffs[i].type == p_buff_template.type):
+				if(null == data or data.overwritable):
+					if(p_buff_template.duration > target._active_buffs[i].duration):
+						target._active_buffs[i].duration = p_buff_template.duration
+						_EmitStatusDuration(p_target_ID, target._active_buffs[i].ID, p_buff_template.duration)
 				return _EndBatch()
 
 	var new_buff: StatusEffects.Buff = StatusEffects.Buff.new()
 	new_buff.type = p_buff_template.type
 	new_buff.duration = p_buff_template.duration
 	new_buff.name = p_buff_template.name
-	new_buff.value = p_buff_template.value
+	new_buff.value = p_buff_template.value if 0.0 != p_buff_template.value or null == data else data.magnitude
 	new_buff.ID = _NextStatusID()
 	target._active_buffs.append(new_buff)
 	_EmitBuffApplied(p_target_ID, new_buff, new_buff.name)
@@ -212,13 +215,15 @@ func ApplyDebuff(p_target_ID: int, p_debuff_template: StatusEffects.Debuff) -> A
 	var target: Character = _characters[p_target_ID]
 	if(Skills.HasMaxStatusEffects(target)):
 		return _EndBatch()
+	var data: StatusEffectData = StatusEffectRegistry.DebuffData(p_debuff_template.type)
 
-	for i in target._active_debuffs.size():
-		if(target._active_debuffs[i].type == p_debuff_template.type):
-			if(Skills.OverwritableDebuff(p_debuff_template.type)):
-				if(p_debuff_template.duration > target._active_debuffs[i].duration):
-					target._active_debuffs[i].duration = p_debuff_template.duration
-					_EmitStatusDuration(p_target_ID, target._active_debuffs[i].ID, p_debuff_template.duration)
+	if(null == data or not data.stackable):
+		for i in target._active_debuffs.size():
+			if(target._active_debuffs[i].type == p_debuff_template.type):
+				if(null == data or data.overwritable):
+					if(p_debuff_template.duration > target._active_debuffs[i].duration):
+						target._active_debuffs[i].duration = p_debuff_template.duration
+						_EmitStatusDuration(p_target_ID, target._active_debuffs[i].ID, p_debuff_template.duration)
 				return _EndBatch()
 
 	var new_debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
@@ -370,21 +375,22 @@ func _TriggerExistingCasterDebuffs(
 	var burning_damage_by_source: Dictionary[int, int] = {}
 	var burning_damage_total: int = 0
 	for debuff in caster._active_debuffs:
-		match debuff.type:
-			Types.Debuff_Type.Burning:
-				var tick_damage: int = int(floor(
-						(p_caster_attributes[Types.Attribute.Health]
-								* GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER) * 0.04))
-				burning_damage_total += tick_damage
-				if(not burning_damage_by_source.has(debuff.source_ID)):
-					burning_damage_by_source[debuff.source_ID] = 0
-				burning_damage_by_source[debuff.source_ID] += tick_damage
-			Types.Debuff_Type.Enfeeble:
-				p_caster_attributes[Types.Attribute.Attack] -= int(
-						ceilf(p_caster_attributes[Types.Attribute.Attack] * 0.3))
-			Types.Debuff_Type.Expose_Weakness:
-				p_caster_attributes[Types.Attribute.Defence] -= int(
-						ceilf(p_caster_attributes[Types.Attribute.Defence] * 0.3))
+		var data: StatusEffectData = StatusEffectRegistry.DebuffData(debuff.type)
+		if(null != data and data.applies_on_self_tick):
+			match data.magnitude_kind:
+				StatusEffectData.MagnitudeKind.MaxHealthPercent:
+					var tick_damage: int = int(floor(
+							(p_caster_attributes[Types.Attribute.Health]
+									* GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER) * data.magnitude))
+					burning_damage_total += tick_damage
+					if(not burning_damage_by_source.has(debuff.source_ID)):
+						burning_damage_by_source[debuff.source_ID] = 0
+					burning_damage_by_source[debuff.source_ID] += tick_damage
+				StatusEffectData.MagnitudeKind.AttributePercent:
+					p_caster_attributes[data.affected_attribute] -= int(
+							ceilf(p_caster_attributes[data.affected_attribute] * data.magnitude))
+				_:
+					pass
 
 		debuff.duration -= 1
 		_EmitStatusDuration(p_caster_ID, debuff.ID, debuff.duration)
@@ -414,19 +420,16 @@ func _TriggerExistingCasterBuffs(
 	var status_IDs_to_be_removed: Array[int] = []
 
 	for buff in caster._active_buffs:
-		match buff.type:
-			Types.Buff_Type.Empower:
-				p_caster_attributes[Types.Attribute.Attack] += int(
-						ceilf(p_caster_attributes[Types.Attribute.Attack] * 0.3))
-			Types.Buff_Type.Fortify:
-				p_caster_attributes[Types.Attribute.Defence] += int(
-						ceilf(p_caster_attributes[Types.Attribute.Defence] * 0.3))
-			Types.Buff_Type.Daunting_Strength:
-				_damage_multiplier[p_caster_ID] = _damage_multiplier.get(p_caster_ID, 1.0) * 2.0
-			Types.Buff_Type.Phalanx_Guard:
-				pass
-			_:
-				pass
+		var data: StatusEffectData = StatusEffectRegistry.BuffData(buff.type)
+		if(null != data and data.applies_on_self_tick):
+			match data.magnitude_kind:
+				StatusEffectData.MagnitudeKind.AttributePercent:
+					p_caster_attributes[data.affected_attribute] += int(
+							ceilf(p_caster_attributes[data.affected_attribute] * buff.value))
+				StatusEffectData.MagnitudeKind.DamageMultiplier:
+					_damage_multiplier[p_caster_ID] = _damage_multiplier.get(p_caster_ID, 1.0) * buff.value
+				_:
+					pass
 
 		buff.duration -= 1
 		_EmitStatusDuration(p_caster_ID, buff.ID, buff.duration)
@@ -446,18 +449,22 @@ func _CastBuff(p_target_ID: int, p_skill: Skill) -> void:
 	var target: Character = _characters[p_target_ID]
 	if(Skills.HasMaxStatusEffects(target)):
 		return
+	var buff_type: Types.Buff_Type = p_skill.buffs[p_skill.target]
+	var data: StatusEffectData = StatusEffectRegistry.BuffData(buff_type)
 
-	for i in target._active_buffs.size():
-		if(target._active_buffs[i].type == p_skill.buffs[p_skill.target]):
-			if(Skills.OverwritableBuff(p_skill.buffs[p_skill.target])):
-				if(p_skill.duration > target._active_buffs[i].duration):
-					target._active_buffs[i].duration = p_skill.duration
-					_EmitStatusDuration(p_target_ID, target._active_buffs[i].ID, p_skill.duration)
+	if(null == data or not data.stackable):
+		for i in target._active_buffs.size():
+			if(target._active_buffs[i].type == buff_type):
+				if(null == data or data.overwritable):
+					if(p_skill.duration > target._active_buffs[i].duration):
+						target._active_buffs[i].duration = p_skill.duration
+						_EmitStatusDuration(p_target_ID, target._active_buffs[i].ID, p_skill.duration)
 				return
 
 	var new_buff: StatusEffects.Buff = StatusEffects.Buff.new()
-	new_buff.type = p_skill.buffs[p_skill.target]
+	new_buff.type = buff_type
 	new_buff.duration = p_skill.duration
+	new_buff.value = data.magnitude if null != data else 0.0
 	new_buff.ID = _NextStatusID()
 	target._active_buffs.append(new_buff)
 	_EmitBuffApplied(p_target_ID, new_buff, Types.Buff_Type.keys()[new_buff.type])
@@ -483,15 +490,19 @@ func _CastDebuff(
 		_Emit(resisted)
 		return
 
-	for i in target._active_debuffs.size():
-		if(target._active_debuffs[i].type == p_skill.debuffs[p_skill.target]):
-			if(Skills.OverwritableDebuff(p_skill.debuffs[p_skill.target])):
-				target._active_debuffs[i].duration = p_skill.duration
-				_EmitStatusDuration(p_target_ID, target._active_debuffs[i].ID, p_skill.duration)
+	var debuff_type: Types.Debuff_Type = p_skill.debuffs[p_skill.target]
+	var data: StatusEffectData = StatusEffectRegistry.DebuffData(debuff_type)
+
+	if(null == data or not data.stackable):
+		for i in target._active_debuffs.size():
+			if(target._active_debuffs[i].type == debuff_type):
+				if(null == data or data.overwritable):
+					target._active_debuffs[i].duration = p_skill.duration
+					_EmitStatusDuration(p_target_ID, target._active_debuffs[i].ID, p_skill.duration)
 				return
 
 	var new_debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
-	new_debuff.type = p_skill.debuffs[p_skill.target]
+	new_debuff.type = debuff_type
 	new_debuff.duration = p_skill.duration
 	new_debuff.source_ID = p_caster_ID
 	new_debuff.ID = _NextStatusID()
@@ -599,10 +610,10 @@ func _ResolveZoneEffect(p_zone: Zone, p_character_ID: int) -> void:
 			var target: Character = _characters[p_character_ID]
 			if(Skills.HasMaxStatusEffects(target)):
 				return
+			var data: StatusEffectData = StatusEffectRegistry.DebuffData(p_zone._debuff_type)
 			var new_debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
-			# TODO: add a status effect container to the Zone class and use that instead.
-			new_debuff.type = Types.Debuff_Type.Burning
-			new_debuff.duration = 2 # TODO: Replace with a defined number from the skill.
+			new_debuff.type = p_zone._debuff_type
+			new_debuff.duration = data.duration_default if null != data else 0
 			new_debuff.source_ID = p_zone._owner_ID
 			new_debuff.ID = _NextStatusID()
 			target._active_debuffs.append(new_debuff)

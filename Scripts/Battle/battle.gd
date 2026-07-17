@@ -16,7 +16,6 @@ enum BattleState
 
 const ZoneType = preload("uid://bdjrfif0s60v4")
 const GRAYSCALE = preload("uid://ia57lns0336p")
-const Statuses = preload("uid://bp3pvvar4437")
 
 const NO_CHARACTERS_TURN: int = -1
 # Enemy slot IDs start here so they index the same exported _character_repr array and
@@ -338,10 +337,10 @@ func ShowStatusApplied(p_result: CombatResult) -> void:
 	var texture: Texture
 	var text_color: Color
 	if(p_result.is_buff):
-		texture = Skills.GetStatusEffectTexture(Statuses.BUFF_ICONS[p_result.buff_type])
+		texture = StatusEffectRegistry.BuffData(p_result.buff_type).icon
 		text_color = Color(0.335, 0.575, 0.838, 1.0)
 	else:
-		texture = Skills.GetStatusEffectTexture(Statuses.DEBUFF_ICONS[p_result.debuff_type])
+		texture = StatusEffectRegistry.DebuffData(p_result.debuff_type).icon
 		text_color = Color(0.681, 0.152, 0.31, 1.0)
 	_status_visual_IDs[p_result.status_ID] = _character_repr[p_result.target_ID].AddStatusEffect(
 			texture, p_result.duration)

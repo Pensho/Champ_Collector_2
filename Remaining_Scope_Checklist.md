@@ -38,8 +38,8 @@ outstanding. Detail and suggested order live in `Plans/` (see `Plans/README.md`)
   `Technical_Design_Document.md` section 15.7 marked resolved
 - [ ] Headless combat core (Plans/Plan_Headless_Combat_Core.md) — also unlocks the
   "Run Multiplier" auto-battle idea from FeatureIdeas.md
-- [ ] Data-driven status effects (Plans/Plan_Data_Driven_Status_Effects.md) —
-  prerequisite for "More skills" under Important
+- [x] Data-driven status effects — completed; plan deleted and
+  `Technical_Design_Document.md` section 15.8 marked resolved
 - [ ] Naming convention alignment (Plans/Plan_Naming_Convention_Alignment.md) —
   partially done: rule amendments, gdlintrc enforcement, and variable renames have
   landed; file renames and abbreviation spell-outs remain

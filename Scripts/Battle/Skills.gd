@@ -6,9 +6,6 @@ extends Node
 ## multipliers, status application, damage rolls) lives on BattleResolver.
 
 const ZoneType = preload("uid://bdjrfif0s60v4")
-const Statuses = preload("uid://bp3pvvar4437")
-
-static var _status_effect_textures: Dictionary[String, Texture]
 
 static func AllyZoneMagnitude(p_base: float, p_owner_knowledge: int) -> float:
 	return p_base * (1.0 + p_owner_knowledge * Game_Balance.ZONE_KNOWLEDGE_SCALING)
@@ -98,18 +95,12 @@ static func TriggerTargetBuffs(
 							p_target: Character,
 							p_target_attributes: Dictionary[Types.Attribute, int]) -> void:
 	for buff in p_target._active_buffs:
-		match buff.type:
-			Types.Buff_Type.Empower:
-				p_target_attributes[Types.Attribute.Attack] += int(
-						ceilf(p_target_attributes[Types.Attribute.Attack] * 0.3))
-			Types.Buff_Type.Fortify:
-				p_target_attributes[Types.Attribute.Defence] += int(
-						ceilf(p_target_attributes[Types.Attribute.Defence] * 0.3))
-			Types.Buff_Type.Phalanx_Guard:
-				p_target_attributes[Types.Attribute.Defence] += int(
-						ceilf(p_target_attributes[Types.Attribute.Defence] * buff.value))
-			_:
-				pass
+		var data: StatusEffectData = StatusEffectRegistry.BuffData(buff.type)
+		if(null == data or not data.applies_on_target_snapshot
+				or StatusEffectData.MagnitudeKind.AttributePercent != data.magnitude_kind):
+			continue
+		p_target_attributes[data.affected_attribute] += int(
+				ceilf(p_target_attributes[data.affected_attribute] * buff.value))
 
 # TODO: Right now the targeting only inherits the skill target and doesn't use
 # the debuff targets yet.
@@ -117,38 +108,20 @@ static func TriggerTargetDebuffs(
 							p_target: Character,
 							p_target_attributes: Dictionary[Types.Attribute, int]) -> void:
 	for debuff in p_target._active_debuffs:
-		match debuff.type:
-			Types.Debuff_Type.Expose_Weakness:
-				p_target_attributes[Types.Attribute.Defence] -= int(
-						ceilf(p_target_attributes[Types.Attribute.Defence] * 0.3))
-			_:
-				pass
+		var data: StatusEffectData = StatusEffectRegistry.DebuffData(debuff.type)
+		if(null == data or not data.applies_on_target_snapshot
+				or StatusEffectData.MagnitudeKind.AttributePercent != data.magnitude_kind):
+			continue
+		p_target_attributes[data.affected_attribute] -= int(
+				ceilf(p_target_attributes[data.affected_attribute] * data.magnitude))
 
 # Rolls a 1-100 die against the crit chance. The die starts at 1 (not 0) so a
 # 0% crit chance can never crit and each chance point is worth exactly one percent.
 static func RollsCritical(p_crit_chance: int, p_random: RandomNumberGenerator) -> bool:
 	return p_random.randi_range(1, 100) <= p_crit_chance
 
-static func GetStatusEffectTexture(p_texture_path: String) -> Texture:
-	if(not _status_effect_textures.has(p_texture_path)):
-		_status_effect_textures[p_texture_path] = load(p_texture_path)
-
-	return _status_effect_textures[p_texture_path]
-
 static func HasMaxStatusEffects(p_character: Character) -> bool:
 	if(GameBalance.MAX_STATUS_EFFECTS <= p_character._active_buffs.size() + p_character._active_debuffs.size()):
 		print(p_character._name, " cannot have any more status effects right now.")
 		return true
 	return false
-
-static func OverwritableBuff(p_buff_type: Types.Buff_Type) -> bool:
-	match p_buff_type:
-		Types.Buff_Type.Invalid, _:
-			return true
-
-static func OverwritableDebuff(p_debuff_type: Types.Debuff_Type) -> bool:
-	match p_debuff_type:
-		Types.Debuff_Type.Burning:
-			return false
-		Types.Buff_Type.Invalid, _:
-			return true
