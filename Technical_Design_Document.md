@@ -151,9 +151,16 @@ A key split: **`Character` (logic) is separate from `CharacterRepresentation` (v
 exported `_character_repr: Array[CharacterRepresentation]` for the on-screen sprites, life bars,
 and status-effect icons. Combat logic mutates the former and pushes results into the latter.
 
-By convention, combat uses fixed integer slot IDs: player characters occupy IDs `0,1,2` and
-enemies `3,4,5`. These are defined as `PLAYER_IDS`/`MONSTER_IDS` (or `ENEMY_IDS`) constants in
-both `battle.gd` and `Skills.gd` and are central to targeting.
+By convention, combat uses integer slot IDs: player characters count up from `0` and enemies
+from `ENEMY_ID_OFFSET` (`3`, fixed so enemy slots always index the same `_character_repr`
+entries even when a wave fields fewer than three enemies). Team membership is owned by a
+single abstraction built in `Battle.Init` from the actual roster sizes:
+`CombatSides` (`Scripts/Battle/combat_sides.gd`) holds a player and an enemy
+`CombatTeam` (`Scripts/Battle/combat_team.gd`) and answers every ally/enemy question
+(`SideOf`, `AlliesOf`/`EnemiesOf`, `AreAllies`/`AreEnemies`); `CombatTeam` owns membership,
+alive-filtering (`AliveMembers`), and random selection (`RandomAliveMember`, `-1` when no
+member lives). Targeting, zone checks, and battle-over scanning all go through it — no code
+outside `Battle.Init` assumes a fixed 3-versus-3 layout.
 
 ### 4.1. UI positioning and viewport space
 
@@ -303,12 +310,15 @@ no character advances.
 
 ### 7.3. Taking a turn (`StartTurn`)
 
-- Positions the turn indicator over the active character and fires the `StartOfTurn` trait hook.
-- **Player turn** (ID 0–2): populates the skill buttons (icon, name, description, cooldown) and
-  waits for input.
-- **Enemy turn** (ID 3–5): calls `HandleEnemyTurn()`, which selects the first off-cooldown skill
-  (iterating skills in reverse), then either picks a free turn-bar zone (for zone skills) or walks
-  `_targeting_order` to find a living valid target via `Skills.FindSkillTargets()`, and resolves.
+- Positions the turn indicator over the active character and fires the `StartOfTurn` trait hook
+  (which receives the `CombatSides` alongside the roster).
+- **Player turn** (`_sides.player.Has(ID)`): populates the skill buttons (icon, name,
+  description, cooldown) and waits for input.
+- **Enemy turn** (`_sides.enemy.Has(ID)`): calls `HandleEnemyTurn()`, which selects the first
+  off-cooldown skill (iterating skills in reverse), then either picks a free turn-bar zone (for
+  zone skills) or walks `_targeting_order` to find a living valid target via
+  `Skills.FindSkillTargets()` (which takes the `CombatSides` and resolves every ally/enemy
+  branch through it), and resolves.
 
 Player input arrives as two handlers: `_on_battle_ui_battle_skill_selected(skill_ID)` records the
 selected skill (and, for zone skills, enables zone selection), and
@@ -618,17 +628,14 @@ introduce signals at the highest-traffic seams (e.g. battle → UI result events
 *Direction:* promote the recurring keys to typed fields on `Static_Context` subclasses (as
 `Context_Battle` already does for battle setup), reserving the dictionary for genuinely dynamic data.
 
-### 15.7. Duplicated team-membership logic and fixed 3-versus-3 assumptions
+### 15.7. Duplicated team-membership logic and fixed 3-versus-3 assumptions — resolved
 
-The slot-ID layout (players `0–2`, enemies `3–5`) is interpreted independently in
-`battle.gd`, `Skills.gd` (its own `PLAYER_IDS`/`MONSTER_IDS` copies, six-slot static
-arrays), and `turn_bar.gd` (reaches back into `Battle.PLAYER_IDS`).
-
-*Impact:* every ally/enemy relationship is paired `has()` checks; random targeting assumes
-three living members per side (the source of several now-fixed combat targeting defects);
-team size cannot vary.
-*Direction:* a small `CombatTeam`/`CombatSides` abstraction owning membership, alive-filtering,
-and random selection — see `Plans/Plan_Team_And_Roster_Abstraction.md`.
+Resolved by `Plans/Archive/Plan_Team_And_Roster_Abstraction.md`: team membership,
+alive-filtering, and random selection now live in `CombatTeam`/`CombatSides`
+(see section 4), built once in `Battle.Init` from the actual roster sizes. The
+`PLAYER_IDS`/`MONSTER_IDS`/`ENEMY_IDS` constants and the six-slot static arrays in
+`Skills.gd` (now dictionaries keyed by slot ID) are gone, and `turn_bar.gd` receives the
+player team instead of reaching back into `Battle`.
 
 ### 15.8. Status-effect behavior is hardcoded and duplicated
 

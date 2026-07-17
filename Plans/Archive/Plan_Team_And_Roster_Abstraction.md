@@ -7,10 +7,14 @@ is the prerequisite for ever fielding more or fewer than 3-versus-3.
 
 ## Status
 
-Not started. Best sequenced after `Plan_Combat_Correctness_Fixes.md` (which patches the
-worst symptoms in place) and before or during stage 3 of
-`Plan_Headless_Combat_Core.md` (the resolver should be written against teams, not raw
-IDs).
+Completed 2026-07-16. `CombatTeam` (`Scripts/Battle/combat_team.gd`) and `CombatSides`
+(`Scripts/Battle/combat_sides.gd`) landed as two files (GDScript allows one global
+`class_name` per file), built once in `Battle.Init` from the actual roster sizes.
+All six steps done: targeting, zone checks, battle.gd membership checks, and the turn-bar
+reach-back go through the abstraction; the `StartOfTurn` trait hook now carries the sides
+(PlanTrait targets through it); the six-slot static arrays in `Skills` became dictionaries
+keyed by slot ID. `Technical_Design_Document.md` sections 4, 7.3, and 15.7 updated.
+`Plan_Headless_Combat_Core.md` stage 3 can now write the resolver against teams.
 
 ## Problem
 

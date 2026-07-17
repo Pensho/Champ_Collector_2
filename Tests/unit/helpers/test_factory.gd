@@ -27,6 +27,10 @@ static func make_full_roster() -> Dictionary:
 		roster[id] = c
 	return roster
 
+## Sides matching make_full_roster(): players 0-2, monsters 3-5.
+static func make_full_sides() -> CombatSides:
+	return CombatSides.new([0, 1, 2], [3, 4, 5])
+
 static func make_loot_table() -> LootTable:
 	return LootTable.new()
 

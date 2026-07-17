@@ -34,7 +34,8 @@ func StartOfTurn(
 		p_owner_ID: int,
 		p_battle_UI: BattleUI,
 		p_characters: Dictionary[int, Character],
-		p_character_repr: Array[CharacterRepresentation]) -> void:
+		p_character_repr: Array[CharacterRepresentation],
+		p_sides: CombatSides) -> void:
 	var rarity: Types.Rarity = p_characters[p_owner_ID]._rarity
 	var threshold: float = GetReachThreshold(rarity)
 
@@ -43,7 +44,7 @@ func StartOfTurn(
 		return
 
 	var skill_targets: Array[int] = Skills.FindSkillTargets(
-			p_owner_ID, p_owner_ID, Types.Skill_Target.All_Other_Allies, p_characters)
+			p_owner_ID, p_owner_ID, Types.Skill_Target.All_Other_Allies, p_characters, p_sides)
 	if (skill_targets.is_empty()):
 		return
 

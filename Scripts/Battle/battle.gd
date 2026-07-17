@@ -11,8 +11,9 @@ const ZoneType = preload("uid://bdjrfif0s60v4")
 const GRAYSCALE = preload("uid://ia57lns0336p")
 
 const NO_CHARACTERS_TURN: int = -1
-const PLAYER_IDS: Array[int] = [0,1,2]
-const ENEMY_IDS: Array[int] = [3,4,5]
+# Enemy slot IDs start here so they index the same exported _character_repr array and
+# turn-bar slots as before; the offset is fixed even when a wave has fewer enemies.
+const ENEMY_ID_OFFSET: int = 3
 
 @export var _character_repr: Array[CharacterRepresentation]
 
@@ -25,6 +26,7 @@ var _selected_skill_ID: int = 0
 var _initialized: bool = false
 var _zones: Dictionary[int, Zone]
 var _targeting_order: Array[int]
+var _sides: CombatSides
 
 @onready var _battle_ui: BattleUI = $"Battle UI"
 @onready var _background: TextureRect = %BattleBackground
@@ -84,7 +86,15 @@ func Init(p_context: ContextContainer) -> void:
 	elif(p_context._player_battle_characters.is_empty()):
 		print("Accidental load to battle scene without player characters, terminating application")
 		get_tree().quit()
-	
+
+	var player_IDs: Array[int] = []
+	for i in p_context._player_battle_characters.size():
+		player_IDs.append(i)
+	var enemy_IDs: Array[int] = []
+	for i in _battlecontext._enemies_wave_1.size():
+		enemy_IDs.append(ENEMY_ID_OFFSET + i)
+	_sides = CombatSides.new(player_IDs, enemy_IDs)
+
 	for i in p_context._player_battle_characters.size():
 		_characters[i] = p_context._player_battle_characters[i]
 		_characters[i]._current_health = (_characters[i].GetBattleAttribute(Types.Attribute.Health) *
@@ -100,19 +110,21 @@ func Init(p_context: ContextContainer) -> void:
 		_self_context._arguments["Difficulty"] = difficulty
 	
 	for i in _battlecontext._enemies_wave_1.size():
-		_characters[i + 3] = Character.new()
-		_characters[i + 3].InstantiateNew(_battlecontext._enemies_wave_1[i], -1)
-		_characters[i + 3]._attributes[Types.Attribute.Speed] += randi_range(-3, 3)
+		var enemy_ID: int = ENEMY_ID_OFFSET + i
+		_characters[enemy_ID] = Character.new()
+		_characters[enemy_ID].InstantiateNew(_battlecontext._enemies_wave_1[i], -1)
+		_characters[enemy_ID]._attributes[Types.Attribute.Speed] += randi_range(-3, 3)
 		var is_boss: bool = p_context._arguments.has("Boss_Scale")
 		if (is_boss):
-			_character_repr[i + 3].scale = Vector2(p_context._arguments["Boss_Scale"], p_context._arguments["Boss_Scale"])
-			_character_repr[i + 3].position.y -= (_character_repr[i + 3].position.y * p_context._arguments["Boss_Scale"]) * 0.5
+			_character_repr[enemy_ID].scale = Vector2(p_context._arguments["Boss_Scale"], p_context._arguments["Boss_Scale"])
+			_character_repr[enemy_ID].position.y -= (
+					_character_repr[enemy_ID].position.y * p_context._arguments["Boss_Scale"]) * 0.5
 		# One levelling call carrying the boss flag, so the ×1.5 boss multiplier is
 		# actually applied instead of being pre-empted by an earlier no-op call.
-		LevelSystem.SetOpponentLevel(_characters[i + 3], difficulty, is_boss)
-		_characters[i + 3]._current_health = (_characters[i + 3].GetBattleAttribute(Types.Attribute.Health) *
+		LevelSystem.SetOpponentLevel(_characters[enemy_ID], difficulty, is_boss)
+		_characters[enemy_ID]._current_health = (_characters[enemy_ID].GetBattleAttribute(Types.Attribute.Health) *
 				Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
-		VisualizeCharacter(i + 3)
+		VisualizeCharacter(enemy_ID)
 	
 	for i in _characters.keys():
 		for j in _characters[i]._skills.size():
@@ -127,7 +139,7 @@ func Init(p_context: ContextContainer) -> void:
 	GRAYSCALE_MATERIAL.shader = GRAYSCALE
 	
 	_battle_ui.Init(_battlecontext._environment_effects)
-	_battle_ui._turn_bar.Init(_characters, _on_turn_bar_zone_selected)
+	_battle_ui._turn_bar.Init(_characters, _on_turn_bar_zone_selected, _sides.player)
 	_initialized = true
 
 func _process(p_delta: float) -> void:
@@ -147,12 +159,13 @@ func StartTurn() -> void:
 					_turn_character_ID,
 					_battle_ui,
 					_characters,
-					_character_repr)
+					_character_repr,
+					_sides)
 
 	if (CheckAndHandleBattleOver()):
 		return
 
-	if(PLAYER_IDS.has(_turn_character_ID)):
+	if(_sides.player.Has(_turn_character_ID)):
 		for i in _battle_ui._skill_buttons.size():
 			_battle_ui.SetSkill(
 				_characters[_turn_character_ID]._skills[i].icon_path,
@@ -166,7 +179,7 @@ func StartTurn() -> void:
 				_battle_ui._skill_buttons[i].ClearCooldown()
 		_selected_skill_ID = 0
 		_battle_ui.ActiveSkillGlow(_selected_skill_ID)
-	elif(ENEMY_IDS.has(_turn_character_ID)):
+	elif(_sides.enemy.Has(_turn_character_ID)):
 		HandleEnemyTurn()
 
 func HandleEnemyTurn() -> void:
@@ -198,7 +211,11 @@ func HandleEnemyTurn() -> void:
 				if(_characters[i]._current_health < 1):
 					continue
 				var target_IDs: Array[int] = Skills.FindSkillTargets(
-					i, _turn_character_ID, _characters[_turn_character_ID]._skills[_selected_skill_ID].target, _characters)
+					i,
+					_turn_character_ID,
+					_characters[_turn_character_ID]._skills[_selected_skill_ID].target,
+					_characters,
+					_sides)
 				if(target_IDs.is_empty()):
 					continue  # not a valid target for this caster (e.g. an ally), keep looking
 				print(_characters[_turn_character_ID]._name, " used skill with ID: ", _selected_skill_ID)
@@ -215,18 +232,14 @@ func TriggerZones() -> void:
 				continue
 			if(!_battle_ui._turn_bar.IsCharacterInZone(character_ID, ID)):
 				continue
-			if(_zones[ID]._target == Types.Skill_Target.ZoneAlly):
-				if(PLAYER_IDS.has(character_ID) and ENEMY_IDS.has(_zones[ID]._owner_ID)):
-					continue
-				if(ENEMY_IDS.has(character_ID) and PLAYER_IDS.has(_zones[ID]._owner_ID)):
-					continue
-			if(_zones[ID]._target == Types.Skill_Target.ZoneEnemy):
-				if(PLAYER_IDS.has(character_ID) and PLAYER_IDS.has(_zones[ID]._owner_ID)):
-					continue
-				if(ENEMY_IDS.has(character_ID) and ENEMY_IDS.has(_zones[ID]._owner_ID)):
-					continue
+			if(_zones[ID]._target == Types.Skill_Target.ZoneAlly and
+					!_sides.AreAllies(character_ID, _zones[ID]._owner_ID)):
+				continue
+			if(_zones[ID]._target == Types.Skill_Target.ZoneEnemy and
+					!_sides.AreEnemies(character_ID, _zones[ID]._owner_ID)):
+				continue
 			Skills.ResolveZoneEffect(
-				_zones[ID], _characters[character_ID], character_ID, _battle_ui, _character_repr[character_ID])
+				_zones[ID], _characters[character_ID], character_ID, _battle_ui, _character_repr[character_ID], _sides)
 			_zones[ID]._duration -= 1
 			_battle_ui._turn_bar.ZoneTriggered(ID, _zones[ID]._duration)
 			# Restrict the trigger to one zone per character.
@@ -237,7 +250,7 @@ func TriggerZones() -> void:
 
 func Update(p_delta: float, p_characterID: int) -> void:
 	# It already is someones turn, so return early.
-	if (PLAYER_IDS.has(_turn_character_ID) or ENEMY_IDS.has(_turn_character_ID)):
+	if (_sides.Has(_turn_character_ID)):
 		_turn_indicator.position.y = (_character_repr[_turn_character_ID].position.y - _turn_indicator.size.y +
 				(sin(Time.get_ticks_msec() * 0.005) * 5))
 		return
@@ -276,7 +289,7 @@ func UpdateLifeBar(p_characterID: int) -> void:
 func VisualizeCharacter(p_characterID: int) -> void:
 	_character_repr[p_characterID]._level.text = str(_characters[p_characterID]._level)
 	var character_canvas_texture = CanvasTexture.new()
-	if(PLAYER_IDS.has(p_characterID)):
+	if(_sides.player.Has(p_characterID)):
 		character_canvas_texture.diffuse_texture = (main.GetInstance()._character_collection
 				.GetCharacterTexture(_characters[p_characterID]._name))
 	else:
@@ -307,7 +320,7 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID) -> voi
 			_battle_ui)
 		# Attribute Burning ticks to the player who applied them, for the post-battle totals.
 		for source_ID in burning_damage_by_source.keys():
-			if (PLAYER_IDS.has(source_ID)):
+			if (_sides.player.Has(source_ID)):
 				_self_context._arguments["character_dmg_" + str(source_ID)] += burning_damage_by_source[source_ID]
 		UpdateLifeBar(p_caster_ID)
 	
@@ -361,7 +374,7 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID) -> voi
 					damage_dealt = int(round(damage_dealt * _characters[target_ID]._trait.OnDamageTaken(
 							_character_repr[target_ID], _characters[target_ID]._rarity, _battle_ui)))
 				if(damage_dealt != 0):
-					if (PLAYER_IDS.has(p_caster_ID)):
+					if (_sides.player.Has(p_caster_ID)):
 						_self_context._arguments["character_dmg_" + str(p_caster_ID)] += damage_dealt
 					_battle_ui.SpawnCombatText(
 							str(damage_dealt), _character_repr[target_ID].position + _battle_ui.COMBAT_TEXT_SPAWN_POINT)
@@ -386,20 +399,9 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID) -> voi
 	_battle_ui.HideSkillUI()
 
 func IsTheBattleOver() -> WinningTeam:
-	var player_alive: bool = false
-	var monsters_alive: bool = false
-	for character_ID in ENEMY_IDS:
-		if(_characters.has(character_ID)):
-			if(_characters[character_ID]._current_health > 0):
-				monsters_alive = true
-	for character_ID in PLAYER_IDS:
-		if(_characters.has(character_ID)):
-			if(_characters[character_ID]._current_health > 0):
-				player_alive = true
-	
-	if (false == monsters_alive):
+	if (_sides.enemy.AliveMembers(_characters).is_empty()):
 		return WinningTeam.Player_Won
-	if (false == player_alive):
+	if (_sides.player.AliveMembers(_characters).is_empty()):
 		return WinningTeam.Monsters_Won
 
 	return WinningTeam.Ongoing
@@ -425,7 +427,7 @@ func EndBattle(p_winner: WinningTeam) -> void:
 			main.GetInstance()._item_collection.AddPreset(_battlecontext._loot_table._drop_result._equipment)
 	
 	for i in _characters.keys():
-		if(PLAYER_IDS.has(i)):
+		if(_sides.player.Has(i)):
 			_characters[i]._active_buffs.clear()
 			_characters[i]._active_debuffs.clear()
 			for j in _characters[i]._skills.size():
@@ -441,7 +443,7 @@ func EndBattle(p_winner: WinningTeam) -> void:
 	main.GetInstance().change_scene(_self_context)
 
 func _on_character_battle_target_selected(p_target_ID: int) -> void:
-	if(PLAYER_IDS.has(_turn_character_ID)):
+	if(_sides.player.Has(_turn_character_ID)):
 		if(_characters[p_target_ID]._current_health <= 0):
 			print("Invalid target for skill, target is dead.")
 			return
@@ -449,7 +451,8 @@ func _on_character_battle_target_selected(p_target_ID: int) -> void:
 					p_target_ID,
 					_turn_character_ID,
 					_characters[_turn_character_ID]._skills[_selected_skill_ID].target,
-					_characters)
+					_characters,
+					_sides)
 		if(target_IDs.size() > 0):
 			ResolveSkill(_turn_character_ID, target_IDs, _selected_skill_ID)
 			CheckAndHandleBattleOver()
@@ -479,7 +482,7 @@ func _on_turn_bar_zone_selected(p_zone_ID: int) -> void:
 	_battle_ui._turn_bar.SpawnZoneEffect(
 								p_zone_ID,
 								_zones[p_zone_ID]._duration,
-								PLAYER_IDS.has(_zones[p_zone_ID]._owner_ID),
+								_sides.player.Has(_zones[p_zone_ID]._owner_ID),
 								_characters[_turn_character_ID]._skills[_selected_skill_ID].skill_type)
 	ResolveSkill(_turn_character_ID, [], _selected_skill_ID)
 	CheckAndHandleBattleOver()

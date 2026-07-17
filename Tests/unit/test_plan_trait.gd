@@ -13,6 +13,7 @@ var _ally_repr: CharacterRepresentation = null
 var _battle_ui: BattleUI = null
 var _trait: PlanTrait = null
 var _characters: Dictionary[int, Character]
+var _sides: CombatSides = null
 var _repr_array: Array[CharacterRepresentation]
 var _one_ally_behind: Array[int]
 var _no_allies_behind: Array[int]
@@ -36,6 +37,8 @@ func before_each() -> void:
 	_trait = PlanTrait.new()
 	_trait.Init()
 	_characters = {0: _owner, 1: _ally}
+	# A two-player side with no enemies — exercises a sub-3 team on purpose.
+	_sides = CombatSides.new([0, 1], [])
 	_repr_array = []
 	_repr_array.resize(2)
 	_repr_array[0] = _owner_repr
@@ -72,7 +75,7 @@ func test_owner_is_never_empowered() -> void:
 	_owner._rarity = Types.Rarity.Legendary
 	stub(_battle_ui._turn_bar, "GetCharactersBehindBy").to_return(_one_ally_behind)
 
-	_trait.StartOfTurn(0, _battle_ui, _characters, _repr_array)
+	_trait.StartOfTurn(0, _battle_ui, _characters, _repr_array, _sides)
 
 	assert_eq(_owner._active_buffs.size(), 0, "Tactician should not buff itself")
 
@@ -82,7 +85,7 @@ func test_ally_within_threshold_is_empowered_at_low_rarity() -> void:
 	_owner._rarity = Types.Rarity.Uncommon
 	stub(_battle_ui._turn_bar, "GetCharactersBehindBy").to_return(_one_ally_behind)
 
-	_trait.StartOfTurn(0, _battle_ui, _characters, _repr_array)
+	_trait.StartOfTurn(0, _battle_ui, _characters, _repr_array, _sides)
 
 	assert_eq(_ally._active_buffs.size(), 1, "Ally within threshold should be empowered at any rarity")
 	assert_eq(_ally._active_buffs[0].type, Types.Buff_Type.Empower)
@@ -91,7 +94,7 @@ func test_ally_within_threshold_is_empowered_at_high_rarity() -> void:
 	_owner._rarity = Types.Rarity.Legendary
 	stub(_battle_ui._turn_bar, "GetCharactersBehindBy").to_return(_one_ally_behind)
 
-	_trait.StartOfTurn(0, _battle_ui, _characters, _repr_array)
+	_trait.StartOfTurn(0, _battle_ui, _characters, _repr_array, _sides)
 
 	assert_eq(_ally._active_buffs.size(), 1, "Ally within threshold should be empowered at Legendary rarity")
 
@@ -99,7 +102,7 @@ func test_no_buff_when_no_allies_within_threshold() -> void:
 	_owner._rarity = Types.Rarity.Legendary
 	stub(_battle_ui._turn_bar, "GetCharactersBehindBy").to_return(_no_allies_behind)
 
-	_trait.StartOfTurn(0, _battle_ui, _characters, _repr_array)
+	_trait.StartOfTurn(0, _battle_ui, _characters, _repr_array, _sides)
 
 	assert_eq(_ally._active_buffs.size(), 0,
 		"No ally buff should be applied when none qualify as within threshold")
@@ -109,7 +112,7 @@ func test_threshold_passed_to_turn_bar_matches_rarity() -> void:
 	var turn_bar: Object = _battle_ui._turn_bar
 	stub(turn_bar, "GetCharactersBehindBy").to_return(_no_allies_behind)
 
-	_trait.StartOfTurn(0, _battle_ui, _characters, _repr_array)
+	_trait.StartOfTurn(0, _battle_ui, _characters, _repr_array, _sides)
 
 	assert_call_count(turn_bar, "GetCharactersBehindBy", 1)
 	var call_params: Array = get_call_parameters(turn_bar, "GetCharactersBehindBy", 0)

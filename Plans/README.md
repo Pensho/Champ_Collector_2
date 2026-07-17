@@ -7,8 +7,9 @@ body of work. Findings behind these plans are recorded in
 Suggested order (dependencies noted inside each plan):
 
 1. `Plan_Team_And_Roster_Abstraction.md` — replace magic slot IDs with teams.
+   Completed and archived; combat now runs on `CombatTeam`/`CombatSides`.
 2. `Plan_Headless_Combat_Core.md` — extract testable combat resolution
-   (largest; builds on the completed combat-correctness fixes and ideally 1).
+   (largest; builds on the completed combat-correctness fixes and 1).
 3. `Plan_Data_Driven_Status_Effects.md` — status effects as resources
    (independent; hooks into 2 if done after it).
 4. `Plan_Naming_Convention_Alignment.md` — align written conventions and code;

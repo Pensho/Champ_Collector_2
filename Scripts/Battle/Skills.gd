@@ -4,12 +4,10 @@ extends Node
 const ZoneType = preload("uid://bdjrfif0s60v4")
 const Statuses = preload("uid://bp3pvvar4437")
 
-const PLAYER_IDS: Array[int] = [0,1,2]
-const MONSTER_IDS: Array[int] = [3,4,5]
-
-static var _heap_on_stacks: Array[int] = [0, 0, 0, 0, 0, 0]
-static var _heap_on_value: Array[float] = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
-static var _damage_multiplier: Array[float] = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+# Per-combat state keyed by slot ID, sized by whatever roster the battle fields.
+static var _heap_on_stacks: Dictionary[int, int] = {}
+static var _heap_on_value: Dictionary[int, float] = {}
+static var _damage_multiplier: Dictionary[int, float] = {}
 
 static var _status_effect_textures: Dictionary[String, Texture]
 
@@ -21,10 +19,11 @@ static func ResolveZoneEffect(
 					p_character: Character,
 					p_character_ID: int,
 					p_battle_ui: BattleUI,
-					p_character_repr: CharacterRepresentation) -> void:
+					p_character_repr: CharacterRepresentation,
+					p_sides: CombatSides) -> void:
 	match p_zone._type:
 		Types.Skill_Type.Flicker_Zone:
-			if(CorrectZoneTarget(p_zone._owner_ID, p_character_ID, p_zone._target)):
+			if(CorrectZoneTarget(p_zone._owner_ID, p_character_ID, p_zone._target, p_sides)):
 				p_battle_ui._turn_bar.BumpCharacter(
 						p_character_ID,
 						AllyZoneMagnitude(Game_Balance.FLICKER_ZONE_BASE_BUMP, p_zone._owner_knowledge))
@@ -51,22 +50,24 @@ static func ResolveSkillEffect(
 		p_skill: Skill) -> void:
 	match p_skill.skill_type:
 		Types.Skill_Type.Heap_On:
-			if (0 == _heap_on_stacks[p_caster_ID]):
+			if (0 == _heap_on_stacks.get(p_caster_ID, 0)):
 				_heap_on_value[p_caster_ID] = float(p_caster_attr[Types.Attribute.Health]) * Game_Balance.HEAP_ON_MULTIPLIER
-			p_caster_attr[Types.Attribute.Health] += int(_heap_on_value[p_caster_ID] * float(_heap_on_stacks[p_caster_ID]))
-			_heap_on_stacks[p_caster_ID] += 1
+			p_caster_attr[Types.Attribute.Health] += int(
+					_heap_on_value[p_caster_ID] * float(_heap_on_stacks.get(p_caster_ID, 0)))
+			_heap_on_stacks[p_caster_ID] = _heap_on_stacks.get(p_caster_ID, 0) + 1
 
 static func CorrectZoneTarget(
-		p_zone_owner_ID: int, p_trigger_character_ID: int, p_zone_target: Types.Skill_Target) -> bool:
+		p_zone_owner_ID: int,
+		p_trigger_character_ID: int,
+		p_zone_target: Types.Skill_Target,
+		p_sides: CombatSides) -> bool:
 	match p_zone_target:
 		Types.Skill_Target.ZoneAll:
 			return true
 		Types.Skill_Target.ZoneAlly:
-			return ((PLAYER_IDS.has(p_trigger_character_ID) and PLAYER_IDS.has(p_zone_owner_ID)) or
-					(MONSTER_IDS.has(p_trigger_character_ID) and MONSTER_IDS.has(p_zone_owner_ID)))
+			return p_sides.AreAllies(p_trigger_character_ID, p_zone_owner_ID)
 		Types.Skill_Target.ZoneEnemy:
-			return ((MONSTER_IDS.has(p_trigger_character_ID) and PLAYER_IDS.has(p_zone_owner_ID)) or
-					(PLAYER_IDS.has(p_trigger_character_ID) and MONSTER_IDS.has(p_zone_owner_ID)))
+			return p_sides.AreEnemies(p_trigger_character_ID, p_zone_owner_ID)
 		_:
 			print("Invalid target passed for zone target: ", p_zone_target)
 	return false
@@ -75,61 +76,40 @@ static func FindSkillTargets(
 					p_target_ID: int,
 					p_caster_ID: int,
 					p_target_type: Types.Skill_Target,
-					p_characters: Dictionary[int, Character]) -> Array[int]:
+					p_characters: Dictionary[int, Character],
+					p_sides: CombatSides) -> Array[int]:
 	var target_IDs: Array[int]
 	match p_target_type:
 		Types.Skill_Target.Single_Enemy:
-			if(PLAYER_IDS.has(p_caster_ID) and MONSTER_IDS.has(p_target_ID)):
-				target_IDs.append(p_target_ID)
-			elif(MONSTER_IDS.has(p_caster_ID) and PLAYER_IDS.has(p_target_ID)):
+			if(p_sides.AreEnemies(p_caster_ID, p_target_ID)):
 				target_IDs.append(p_target_ID)
 		Types.Skill_Target.All_Enemies:
-			if(PLAYER_IDS.has(p_caster_ID) and MONSTER_IDS.has(p_target_ID)):
-				target_IDs.append_array(MONSTER_IDS)
-			elif(MONSTER_IDS.has(p_caster_ID) and PLAYER_IDS.has(p_target_ID)):
-				target_IDs.append_array(PLAYER_IDS)
+			if(p_sides.AreEnemies(p_caster_ID, p_target_ID)):
+				target_IDs.append_array(p_sides.EnemiesOf(p_caster_ID).members)
 		Types.Skill_Target.Random_Enemy:
-			if(PLAYER_IDS.has(p_caster_ID) and MONSTER_IDS.has(p_target_ID)):
-				target_IDs.append_array(MONSTER_IDS)
-			elif(MONSTER_IDS.has(p_caster_ID) and PLAYER_IDS.has(p_target_ID)):
-				target_IDs.append_array(PLAYER_IDS)
-			return PickRandomAliveTarget(target_IDs, p_characters)
+			if(p_sides.AreEnemies(p_caster_ID, p_target_ID)):
+				return SingleTargetArray(p_sides.EnemiesOf(p_caster_ID).RandomAliveMember(p_characters))
 		Types.Skill_Target.Single_Ally:
-			if(PLAYER_IDS.has(p_caster_ID) and PLAYER_IDS.has(p_target_ID)):
-				target_IDs.append(p_target_ID)
-			elif(MONSTER_IDS.has(p_caster_ID) and MONSTER_IDS.has(p_target_ID)):
+			if(p_sides.AreAllies(p_caster_ID, p_target_ID)):
 				target_IDs.append(p_target_ID)
 		Types.Skill_Target.All_Allies:
-			if(PLAYER_IDS.has(p_caster_ID) and PLAYER_IDS.has(p_target_ID)):
-				target_IDs.append_array(PLAYER_IDS)
-			elif(MONSTER_IDS.has(p_caster_ID) and MONSTER_IDS.has(p_target_ID)):
-				target_IDs.append_array(MONSTER_IDS)
+			if(p_sides.AreAllies(p_caster_ID, p_target_ID)):
+				target_IDs.append_array(p_sides.AlliesOf(p_caster_ID).members)
 		Types.Skill_Target.Random_Ally:
-			if(PLAYER_IDS.has(p_caster_ID) and PLAYER_IDS.has(p_target_ID)):
-				target_IDs.append_array(PLAYER_IDS)
-			elif(MONSTER_IDS.has(p_caster_ID) and MONSTER_IDS.has(p_target_ID)):
-				target_IDs.append_array(MONSTER_IDS)
-			return PickRandomAliveTarget(target_IDs, p_characters)
+			if(p_sides.AreAllies(p_caster_ID, p_target_ID)):
+				return SingleTargetArray(p_sides.AlliesOf(p_caster_ID).RandomAliveMember(p_characters))
 		Types.Skill_Target.Ally_Not_Self:
-			if (p_caster_ID != p_target_ID):
-				if(PLAYER_IDS.has(p_caster_ID) and PLAYER_IDS.has(p_target_ID)):
-					target_IDs.append(p_target_ID)
-				elif(MONSTER_IDS.has(p_caster_ID) and MONSTER_IDS.has(p_target_ID)):
-					target_IDs.append(p_target_ID)
+			if(p_caster_ID != p_target_ID and p_sides.AreAllies(p_caster_ID, p_target_ID)):
+				target_IDs.append(p_target_ID)
 		Types.Skill_Target.Random_One:
-			target_IDs.append_array(PLAYER_IDS)
-			target_IDs.append_array(MONSTER_IDS)
-			return PickRandomAliveTarget(target_IDs, p_characters)
+			return SingleTargetArray(p_sides.RandomAliveMember(p_characters))
 		Types.Skill_Target.All:
-			target_IDs.append_array(PLAYER_IDS)
-			target_IDs.append_array(MONSTER_IDS)
+			target_IDs.append_array(p_sides.AllMembers())
 		Types.Skill_Target.ZoneAll, Types.Skill_Target.ZoneAlly, Types.Skill_Target.ZoneEnemy:
 			pass
 		Types.Skill_Target.All_Other_Allies:
-			if(PLAYER_IDS.has(p_caster_ID) and PLAYER_IDS.has(p_target_ID)):
-				target_IDs.append_array(PLAYER_IDS)
-			elif(MONSTER_IDS.has(p_caster_ID) and MONSTER_IDS.has(p_target_ID)):
-				target_IDs.append_array(MONSTER_IDS)
+			if(p_sides.AreAllies(p_caster_ID, p_target_ID)):
+				target_IDs.append_array(p_sides.AlliesOf(p_caster_ID).members)
 			target_IDs.erase(p_caster_ID)
 		var INVALID_TYPE:
 			print("Invalid argument for skill target enum passed: ", INVALID_TYPE)
@@ -146,17 +126,13 @@ static func FilterAliveTargets(
 			alive_IDs.append(id)
 	return alive_IDs
 
-# Picks a single random target from the alive candidates, or an empty array when
-# none of the candidates are alive.
-static func PickRandomAliveTarget(
-					p_ids: Array[int],
-					p_characters: Dictionary[int, Character]) -> Array[int]:
-	var alive_IDs: Array[int] = FilterAliveTargets(p_ids, p_characters)
-	if(alive_IDs.is_empty()):
-		return alive_IDs
-	var chosen_IDs: Array[int] = []
-	chosen_IDs.append(alive_IDs.pick_random())
-	return chosen_IDs
+# Wraps a random pick as a target list: an empty array for the no-living-target
+# sentinel (-1), a one-element array otherwise.
+static func SingleTargetArray(p_target_ID: int) -> Array[int]:
+	var target_IDs: Array[int] = []
+	if(-1 != p_target_ID):
+		target_IDs.append(p_target_ID)
+	return target_IDs
 
 # Ticks the caster's own debuffs at the start of their turn. Burning deals damage, so
 # it shows combat text over the burning character and reports how much damage each
@@ -213,7 +189,7 @@ static func TriggerExistingCasterBuffs(
 			Types.Buff_Type.Fortify:
 				p_caster_attributes[Types.Attribute.Defence] += int(ceilf(p_caster_attributes[Types.Attribute.Defence] * 0.3))
 			Types.Buff_Type.Daunting_Strength:
-				_damage_multiplier[p_caster_ID] *= 2.0
+				_damage_multiplier[p_caster_ID] = _damage_multiplier.get(p_caster_ID, 1.0) * 2.0
 			Types.Buff_Type.Phalanx_Guard:
 				pass
 			_:
@@ -420,15 +396,16 @@ static func DamageDealt(p_attacker_attr: Dictionary[Types.Attribute, int],
 			caster_scaled_attribute_aggregate / (effective_defence + caster_scaled_attribute_aggregate + 1))
 	var mitigation_factor: float = (
 			GameBalance.MINIMUM_DMG_PERCENT + ((1 - GameBalance.MINIMUM_DMG_PERCENT) * damage_ratio))
-	var damage_dealt: float = (mitigation_factor * (caster_scaled_attribute_aggregate * _damage_multiplier[p_caster_ID]) *
+	var damage_dealt: float = (mitigation_factor *
+			(caster_scaled_attribute_aggregate * _damage_multiplier.get(p_caster_ID, 1.0)) *
 			crit_multiplier * random_value)
-	_damage_multiplier[p_caster_ID] = 1.0
+	_damage_multiplier.erase(p_caster_ID)
 	return int(ceil(damage_dealt))
 
 static func Reset() -> void:
-	_heap_on_stacks = [0, 0, 0, 0, 0, 0]
-	_heap_on_value = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
-	_damage_multiplier = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+	_heap_on_stacks.clear()
+	_heap_on_value.clear()
+	_damage_multiplier.clear()
 
 static func GetStatusEffectTexture(p_texture_path: String) -> Texture:
 	if(not _status_effect_textures.has(p_texture_path)):

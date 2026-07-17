@@ -3,14 +3,16 @@ extends GutTest
 const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 
 var _roster: Dictionary = {}
+var _sides: CombatSides = null
 
 func before_each() -> void:
 	_roster = TestFactory.make_full_roster()
+	_sides = TestFactory.make_full_sides()
 
 # Thin wrapper so the many targeting cases below read the same as before the
-# characters dictionary became a required argument.
+# characters dictionary and the sides became required arguments.
 func _find(p_target_ID: int, p_caster_ID: int, p_target_type: Types.Skill_Target) -> Array[int]:
-	return Skills.FindSkillTargets(p_target_ID, p_caster_ID, p_target_type, _roster)
+	return Skills.FindSkillTargets(p_target_ID, p_caster_ID, p_target_type, _roster, _sides)
 
 # --- FindSkillTargets ---
 
@@ -125,31 +127,50 @@ func test_full_crit_chance_always_crits() -> void:
 # --- CorrectZoneTarget ---
 
 func test_zone_all_always_triggers() -> void:
-	assert_true(Skills.CorrectZoneTarget(0, 3, Types.Skill_Target.ZoneAll),
+	assert_true(Skills.CorrectZoneTarget(0, 3, Types.Skill_Target.ZoneAll, _sides),
 		"ZoneAll should trigger for any combatant")
-	assert_true(Skills.CorrectZoneTarget(3, 0, Types.Skill_Target.ZoneAll),
+	assert_true(Skills.CorrectZoneTarget(3, 0, Types.Skill_Target.ZoneAll, _sides),
 		"ZoneAll should trigger for any combatant")
 
 func test_zone_ally_triggers_for_same_team() -> void:
-	assert_true(Skills.CorrectZoneTarget(0, 1, Types.Skill_Target.ZoneAlly),
+	assert_true(Skills.CorrectZoneTarget(0, 1, Types.Skill_Target.ZoneAlly, _sides),
 		"ZoneAlly: player zone owner, player trigger → true")
-	assert_true(Skills.CorrectZoneTarget(3, 4, Types.Skill_Target.ZoneAlly),
+	assert_true(Skills.CorrectZoneTarget(3, 4, Types.Skill_Target.ZoneAlly, _sides),
 		"ZoneAlly: monster zone owner, monster trigger → true")
 
 func test_zone_ally_does_not_trigger_for_enemy() -> void:
-	assert_false(Skills.CorrectZoneTarget(0, 3, Types.Skill_Target.ZoneAlly),
+	assert_false(Skills.CorrectZoneTarget(0, 3, Types.Skill_Target.ZoneAlly, _sides),
 		"ZoneAlly: player zone, monster trigger → false")
-	assert_false(Skills.CorrectZoneTarget(3, 0, Types.Skill_Target.ZoneAlly),
+	assert_false(Skills.CorrectZoneTarget(3, 0, Types.Skill_Target.ZoneAlly, _sides),
 		"ZoneAlly: monster zone, player trigger → false")
 
 func test_zone_enemy_triggers_for_opposing_team() -> void:
-	assert_true(Skills.CorrectZoneTarget(0, 3, Types.Skill_Target.ZoneEnemy),
+	assert_true(Skills.CorrectZoneTarget(0, 3, Types.Skill_Target.ZoneEnemy, _sides),
 		"ZoneEnemy: player zone owner, monster trigger → true")
-	assert_true(Skills.CorrectZoneTarget(3, 0, Types.Skill_Target.ZoneEnemy),
+	assert_true(Skills.CorrectZoneTarget(3, 0, Types.Skill_Target.ZoneEnemy, _sides),
 		"ZoneEnemy: monster zone owner, player trigger → true")
 
 func test_zone_enemy_does_not_trigger_for_ally() -> void:
-	assert_false(Skills.CorrectZoneTarget(0, 1, Types.Skill_Target.ZoneEnemy),
+	assert_false(Skills.CorrectZoneTarget(0, 1, Types.Skill_Target.ZoneEnemy, _sides),
 		"ZoneEnemy: player zone, player trigger → false")
-	assert_false(Skills.CorrectZoneTarget(3, 4, Types.Skill_Target.ZoneEnemy),
+	assert_false(Skills.CorrectZoneTarget(3, 4, Types.Skill_Target.ZoneEnemy, _sides),
 		"ZoneEnemy: monster zone, monster trigger → false")
+
+# --- Non-3-versus-3 rosters ---
+
+func test_all_enemies_two_enemy_wave_has_no_phantom_slot() -> void:
+	_roster.erase(5)
+	var two_enemy_sides: CombatSides = CombatSides.new([0, 1, 2], [3, 4])
+	var targets: Array[int] = Skills.FindSkillTargets(
+			3, 0, Types.Skill_Target.All_Enemies, _roster, two_enemy_sides)
+	assert_eq(targets.size(), 2, "A two-enemy wave yields exactly two targets")
+	assert_false(targets.has(5), "The never-filled slot 5 must not be targeted")
+
+func test_random_enemy_two_enemy_wave_only_picks_fielded_slots() -> void:
+	_roster.erase(5)
+	var two_enemy_sides: CombatSides = CombatSides.new([0, 1, 2], [3, 4])
+	for _i in range(100):
+		var targets: Array[int] = Skills.FindSkillTargets(
+				3, 0, Types.Skill_Target.Random_Enemy, _roster, two_enemy_sides)
+		assert_eq(targets.size(), 1)
+		assert_true([3, 4].has(targets[0]), "Random_Enemy must only pick fielded enemies")

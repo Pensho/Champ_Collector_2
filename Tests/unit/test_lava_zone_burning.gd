@@ -8,10 +8,12 @@ const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 # status-effect cap.
 
 var _repr: CharacterRepresentation
+var _sides: CombatSides = null
 
 func before_each() -> void:
 	_repr = double(REPR_SCRIPT).new()
 	stub(_repr, "AddStatusEffect").to_return(0)
+	_sides = TestFactory.make_full_sides()
 
 func after_each() -> void:
 	_repr.free()
@@ -26,8 +28,8 @@ func test_lava_zone_stacks_burning() -> void:
 	var character: Character = TestFactory.make_character()
 	var zone: Zone = _make_lava_zone()
 
-	Skills.ResolveZoneEffect(zone, character, 0, null, _repr)
-	Skills.ResolveZoneEffect(zone, character, 0, null, _repr)
+	Skills.ResolveZoneEffect(zone, character, 0, null, _repr, _sides)
+	Skills.ResolveZoneEffect(zone, character, 0, null, _repr, _sides)
 
 	assert_eq(character._active_debuffs.size(), 2,
 		"Each Lava-zone trigger should add another stacking Burning debuff")
@@ -41,7 +43,7 @@ func test_lava_zone_respects_status_cap() -> void:
 	var zone: Zone = _make_lava_zone()
 
 	for _i in range(GameBalance.MAX_STATUS_EFFECTS + 3):
-		Skills.ResolveZoneEffect(zone, character, 0, null, _repr)
+		Skills.ResolveZoneEffect(zone, character, 0, null, _repr, _sides)
 
 	assert_eq(character._active_debuffs.size(), GameBalance.MAX_STATUS_EFFECTS,
 		"Stacking Burning must not exceed the status-effect cap")

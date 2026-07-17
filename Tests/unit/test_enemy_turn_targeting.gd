@@ -9,8 +9,10 @@ const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 
 func _simulate_single_enemy_targeting(p_targeting_order: Array[int], p_caster_ID: int) -> Array[int]:
 	var roster: Dictionary = TestFactory.make_full_roster()
+	var sides: CombatSides = TestFactory.make_full_sides()
 	for i in p_targeting_order:
-		var target_IDs: Array[int] = Skills.FindSkillTargets(i, p_caster_ID, Types.Skill_Target.Single_Enemy, roster)
+		var target_IDs: Array[int] = Skills.FindSkillTargets(
+				i, p_caster_ID, Types.Skill_Target.Single_Enemy, roster, sides)
 		if(target_IDs.is_empty()):
 			continue
 		return target_IDs

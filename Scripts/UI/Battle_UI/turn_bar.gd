@@ -17,7 +17,7 @@ var _zone_dividers: Array[ColorRect]
 var _zone_buttons: Array[Button]
 var _zone_effects: Array[Node2D]
 
-func Init(p_characters: Dictionary[int, Character], p_zone_callable: Callable):
+func Init(p_characters: Dictionary[int, Character], p_zone_callable: Callable, p_player_team: CombatTeam):
 	var speeds: Dictionary[int, int] = {}
 	for i in p_characters.keys():
 		speeds[i] = p_characters[i].GetBattleAttribute(Types.Attribute.Speed)
@@ -53,7 +53,7 @@ func Init(p_characters: Dictionary[int, Character], p_zone_callable: Callable):
 		self.add_child(_zone_dividers[i])
 	
 	DisableZones(true)
-	SetupPlanReachOverlays(p_characters)
+	SetupPlanReachOverlays(p_characters, p_player_team)
 
 # Normalizes each character's speed against the fastest one, so the leader advances
 # at 1.0 and everyone else in proportion. Both the maximum and the normalization must
@@ -71,7 +71,7 @@ static func NormalizeSpeeds(p_speeds: Dictionary[int, int]) -> Dictionary[int, f
 			normalized[id] = float(p_speeds[id]) / float(highest_speed)
 	return normalized
 
-func SetupPlanReachOverlays(p_characters: Dictionary[int, Character]) -> void:
+func SetupPlanReachOverlays(p_characters: Dictionary[int, Character], p_player_team: CombatTeam) -> void:
 	var owner_ids: Array[int]
 	for i in p_characters.keys():
 		if (p_characters[i]._trait is PlanTrait and PlanTrait.GetReachThreshold(p_characters[i]._rarity) > 0.0):
@@ -82,7 +82,7 @@ func SetupPlanReachOverlays(p_characters: Dictionary[int, Character]) -> void:
 	var has_player_owner: bool = false
 	var has_enemy_owner: bool = false
 	for id in owner_ids:
-		if (Battle.PLAYER_IDS.has(id)):
+		if (p_player_team.Has(id)):
 			has_player_owner = true
 		else:
 			has_enemy_owner = true
@@ -90,7 +90,7 @@ func SetupPlanReachOverlays(p_characters: Dictionary[int, Character]) -> void:
 	for id in owner_ids:
 		var tint: Color = Color.WHITE
 		if (has_player_owner and has_enemy_owner):
-			tint = Color(0.6, 1.0, 0.6) if Battle.PLAYER_IDS.has(id) else Color(1.0, 0.6, 0.6)
+			tint = Color(0.6, 1.0, 0.6) if p_player_team.Has(id) else Color(1.0, 0.6, 0.6)
 		var threshold: float = PlanTrait.GetReachThreshold(p_characters[id]._rarity)
 		var overlay := PlanReachOverlay.new()
 		self.add_child(overlay)

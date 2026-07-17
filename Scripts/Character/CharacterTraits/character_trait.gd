@@ -17,7 +17,8 @@ func StartOfTurn(
 		_p_owner_ID: int,
 		_p_battle_UI: BattleUI,
 		_p_characters: Dictionary[int, Character],
-		_p_character_repr: Array[CharacterRepresentation]) -> void:
+		_p_character_repr: Array[CharacterRepresentation],
+		_p_sides: CombatSides) -> void:
 	print("character_trait base class StartOfTurn() called!")
 	return
 
