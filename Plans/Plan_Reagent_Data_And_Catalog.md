@@ -70,6 +70,17 @@ future Fresh Batch passive plan, not here.
   per-rarity magnitude dictionaries is preferred before mass-authoring — the
   per-rarity-file variant matches how `Data/Character_Traits/` scales values, the
   dictionary variant means fewer files; pick one and stay consistent).
+- **Icons**: placeholder textures from the shared generator
+  `Scripts/Debug/generate_placeholder_icons.gd` (defined in
+  `Plan_Status_Effect_Implementation.md` Batch 0 — a data-driven table, one row
+  per icon, skip-existing, headless-runnable). This plan adds reagent rows to
+  that table, outputting under `Assets/Champ_Collector/Icons/Reagents/`. If this
+  plan lands before the status effect plan, create the script here following the
+  Batch 0 recipe (sibling of `Scripts/Debug/generate_placeholder_textures.gd`)
+  and the status effect plan extends it instead. Color language: one hue per
+  reagent family, tinted by rarity (Uncommon green, Rare blue, Epic purple,
+  Legendary orange). Every authored `.tres` wires its generated texture into
+  `icon`; the registry test asserts `icon` is non-null.
 - **Proposed magnitudes**: concept-decided values are Rewinding Grit (1/1/1/2),
   Second Wind Phial (15/20/25/30%), Fractured Idol (10/14/18/22% cost,
   +10/13/16/20% bonus). All other magnitudes are marked "not yet decided" in the
@@ -80,14 +91,20 @@ future Fresh Batch passive plan, not here.
 1. **`ReagentData` resource.** Effect kind enum, target kind enum, rarity, binary
    flag, magnitudes. Type-hint everything; `gdlint Scripts/` clean.
 2. **Registry.** `reagent_registry.gd` with preload consts and the keyed dictionary.
-3. **Author the feasible subset** under `Data/Reagents/` with agreed magnitudes,
+3. **Placeholder icons.** Add reagent rows to
+   `Scripts/Debug/generate_placeholder_icons.gd` (or create it per the Batch 0
+   recipe if the status effect plan hasn't landed yet) and run it to generate
+   `Assets/Champ_Collector/Icons/Reagents/`.
+4. **Author the feasible subset** under `Data/Reagents/` with agreed magnitudes,
    lore-consistent names and descriptions (check `World_Building.md` for the God of
-   Magic / God of Rules / God of Adventure lore families).
-4. **Tests** (GUT, `Tests/unit/test_reagent_registry.gd`, pattern:
+   Magic / God of Rules / God of Adventure lore families), each wired to its
+   generated icon.
+5. **Tests** (GUT, `Tests/unit/test_reagent_registry.gd`, pattern:
    `test_character_preset_skill_invariant.gd`): every registry entry loads; rarity
    is within Uncommon–Legendary; binary reagents have no scalar magnitude; scalar
    reagents have a positive magnitude; target kind is valid for the effect kind;
-   names and descriptions are non-empty; registry keys are unique.
+   names and descriptions are non-empty; icon is non-null; registry keys are
+   unique.
 
 ## Watch for
 
