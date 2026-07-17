@@ -181,7 +181,7 @@ viewport. On PC the window is usually near 1280×720 so the bug is hidden; on An
 There is no scene-stack or router object; scene transitions are a single mechanism on
 `Main_Instance`.
 
-`ContextContainer` (`Scripts/Worldview/Context_Container.gd`) is a plain `Node` envelope:
+`ContextContainer` (`Scripts/Worldview/context_container.gd`) is a plain `Node` envelope:
 
 ```gdscript
 class_name ContextContainer extends Node
@@ -202,7 +202,7 @@ Transition flow (`Main_Instance.change_scene` → `_deferred_change_scene`):
 4. Call **`_current_scene.Init(p_context)`** — every gameplay scene exposes an `Init()` that reads
    what it needs out of the context.
 
-`Static_Context` (`Scripts/Worldview/Static_Context.gd`) is the base for typed scene payloads;
+`Static_Context` (`Scripts/Worldview/static_context.gd`) is the base for typed scene payloads;
 `Context_Battle` (`Scripts/Worldview/Context_Battle.gd`) extends it with battle-specific data
 (location texture, lighting, enemy waves, environment effects, loot table). Combat reads this in
 `Battle.Init()` via `p_context._static_context as Context_Battle`.
@@ -231,7 +231,7 @@ load time. There is a consistent **preset (template) vs instance (runtime)** spl
 | `LootTable` | `Scripts/Battle/loot_table.gd` | Encounter rewards: primary (guaranteed) and secondary (weighted) loot |
 | `AdventureTemplate` | `Scripts/Adventure_Scripts/adventure_template.gd` | Adventure generation parameters |
 | `BiomeData` | `Scripts/Adventure_Scripts/biome_data.gd` | Biome enemy pools and boss definitions |
-| `CharacterTrait` | `Scripts/Character/CharacterTraits/character_trait.gd` | Base class for character special abilities (see [Section 9](#9-trait-hook-system)) |
+| `CharacterTrait` | `Scripts/Character/character_traits/character_trait.gd` | Base class for character special abilities (see [Section 9](#9-trait-hook-system)) |
 | `StatusEffectData` | `Scripts/Battle/status_effect_data.gd` | Buff/debuff definition: magnitude, magnitude kind, default duration, overwrite/stack rules, application sites, icon |
 
 `Skill` is illustrative of how data drives behavior:
@@ -256,7 +256,7 @@ adventure data). `Data/Example_Tree.json` is an exported skill-tree definition (
 not yet wired into runtime).
 
 `StatusEffectData` replaces the old hardcoded match blocks that used to duplicate buff/debuff
-magnitudes across `Skills.gd`. One `.tres` per implemented `Buff_Type`/`Debuff_Type` lives under
+magnitudes across `skills.gd`. One `.tres` per implemented `Buff_Type`/`Debuff_Type` lives under
 `Data/Status_Effects/`, looked up by `StatusEffectRegistry` (`Scripts/Battle/status_effect_registry.gd`,
 preload-based like `Scripts/Debug/debug_catalog.gd`, not `DirAccess`-based, for Android export safety):
 
@@ -329,7 +329,7 @@ Combat is split across two layers:
   selection is a sub-state of player input, not a boolean.
 
 Stateless helpers (targeting, zone-target checks, status-effect rules, attribute-snapshot
-modifiers) remain as statics on `Skills` (`Scripts/Battle/Skills.gd`). For the *design* of the
+modifiers) remain as statics on `Skills` (`Scripts/Battle/skills.gd`). For the *design* of the
 combat formulas, see `Concept_Document.md`; this section describes the *code path*.
 
 ### 7.1. Setup (`Battle.Init`)
@@ -424,7 +424,7 @@ when rendering.
 
 ### 7.5. Zones
 
-`Zone` (`Scripts/Battle/Zone.gd`) is a persistent effect placed on a turn-bar region:
+`Zone` (`Scripts/Battle/zone.gd`) is a persistent effect placed on a turn-bar region:
 
 ```gdscript
 var _type: Types.Skill_Type     # Flicker_Zone, Lava_Zone
@@ -469,7 +469,7 @@ per-combat state) is simply discarded with the scene — there is no global stat
 
 ## 8. Character progression
 
-`LevelSystem` (`Scripts/Character/Level_System.gd`, static) owns all progression math.
+`LevelSystem` (`Scripts/Character/level_system.gd`, static) owns all progression math.
 
 - **Experience curve** — `GetExperienceRequirement(level)` implements
   `round((level / EXPERIENCE_FACTOR)^EXPERIENCE_EXPONENT * EXPERIENCE_CONSTANT_1
@@ -492,7 +492,7 @@ Test coverage for these formulas is described in `Test_Design_Document.md` (`tes
 Character special abilities are implemented as an **event-hook system**, the project's primary
 extension point for bespoke behavior.
 
-`CharacterTrait` (`Scripts/Character/CharacterTraits/character_trait.gd`, `extends Resource`) is
+`CharacterTrait` (`Scripts/Character/character_traits/character_trait.gd`, `extends Resource`) is
 the base class. It declares an `_execution_steps: Dictionary[Types.Combat_Event, Callable]` map and
 provides default (no-op, debug-printing) implementations of each hook. The combat hooks are
 **logic-only**: they mutate trait/`Character` state and report effects through the
@@ -518,10 +518,10 @@ A concrete trait subclasses `CharacterTrait`, registers the events it cares abou
 `_trait._execution_steps.has(<event>)`, so a trait only pays for the hooks it opts into.
 
 `OnSkillCast` returns a `TraitSkillResult`
-(`Scripts/Character/CharacterTraits/TraitHookResults/trait_skill_result.gd`) carrying a
+(`Scripts/Character/character_traits/TraitHookResults/trait_skill_result.gd`) carrying a
 `_damage_multiplier` and `_turn_bar_bump`, which `ResolveSkill` folds into the damage and turn-bar
 calculations. Example: the Tidal Corsair trait
-(`Scripts/Character/CharacterTraits/CharacterSpecificTraits/Tidal_Corsair_Trait.gd`) accumulates
+(`Scripts/Character/character_traits/CharacterSpecificTraits/tidal_corsair_trait.gd`) accumulates
 stacks as skills are cast and, on its finisher, consumes them to return amplified
 damage/turn-bar values.
 
@@ -671,16 +671,14 @@ on the battle-scoped `BattleResolver` instance and is created and discarded with
 `Skills.Reset()` is gone and `Skills` keeps only stateless helpers (plus a static texture cache).
 Combat rolls all go through the resolver's injectable, seedable `RandomNumberGenerator`.
 
-### 15.3. File and identifier casing diverges from the snake_case convention
+### 15.3. File and identifier casing diverges from the snake_case convention — resolved
 
-Several script files use PascalCase or mixed casing against the stated `snake_case` file
-convention: `Skills.gd`, `Zone.gd`, `Level_System.gd`, `Context_Container.gd`, `Static_Context.gd`,
-and folders such as `CharacterTraits/`. A handful of `Character` members also use camelCase
-(`_currentHealth`, `_instanceID`, `_critChance`).
-
-*Impact:* inconsistent navigation and a mismatch with `CLAUDE.md`.
-*Direction:* a dedicated rename pass (files and the stray members), updating `class_name`
-references and `.tres`/scene script paths together, ideally as one mechanical commit.
+Resolved by the completed naming-convention-alignment plan: `skills.gd`, `zone.gd`,
+`level_system.gd`, `context_container.gd`, `static_context.gd`, and the `character_traits/`
+folder now use `snake_case`; the stray camelCase `Character` members and the
+`Repr`/`char`/`attr` abbreviations in `_character_representations`, `_character_turn_markers`,
+and `p_caster_attributes` are spelled out. `class_name`s were left unchanged; `.tres`/scene
+script paths were updated alongside the renamed files.
 
 ### 15.4. Signal-versus-direct-call usage is inconsistent with the stated convention — resolved for the combat seam
 
@@ -705,7 +703,7 @@ Resolved by the completed team-and-roster-abstraction plan: team membership,
 alive-filtering, and random selection now live in `CombatTeam`/`CombatSides`
 (see section 4), built once in `Battle.Init` from the actual roster sizes. The
 `PLAYER_IDS`/`MONSTER_IDS`/`ENEMY_IDS` constants and the six-slot static arrays in
-`Skills.gd` (now dictionaries keyed by slot ID) are gone, and `turn_bar.gd` receives the
+`skills.gd` (now dictionaries keyed by slot ID) are gone, and `turn_bar.gd` receives the
 player team instead of reaching back into `Battle`.
 
 ### 15.8. Status-effect behavior is hardcoded and duplicated — resolved
@@ -713,6 +711,6 @@ player team instead of reaching back into `Battle`.
 Resolved by the completed data-driven-status-effects plan: buff/debuff magnitude,
 overwrite/stack rules, application sites, and icons now live on one `StatusEffectData`
 resource per effect under `Data/Status_Effects/`, looked up through
-`StatusEffectRegistry` (see section 6.1). `Skills.gd`/`BattleResolver`'s per-type
+`StatusEffectRegistry` (see section 6.1). `skills.gd`/`BattleResolver`'s per-type
 `match` blocks and the `Statuses.BUFF_ICONS`/`DEBUFF_ICONS` maps are gone; the caster-tick
 and target-snapshot methods dispatch generically on `StatusEffectData.magnitude_kind`.

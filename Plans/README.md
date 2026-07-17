@@ -14,8 +14,9 @@ Suggested order (dependencies noted inside each plan):
 3. Data-driven status effects — completed and deleted; buff/debuff magnitude,
    overwrite/stack rules, and icons live on `StatusEffectData` resources looked up
    through `StatusEffectRegistry` (see `Technical_Design_Document.md` section 6.1).
-4. `Plan_Naming_Convention_Alignment.md` — align written conventions and code;
-   mechanical, schedule last.
+4. Naming convention alignment — completed and deleted; file and identifier casing
+   now matches the stated `snake_case`/`PascalCase` conventions (see
+   `Technical_Design_Document.md` section 15.3).
 5. Reagent system, split into four sequential plans (independent of 1–4; the
    combat-facing ones apply their effects through `BattleResolver`, since the
    headless combat core has landed):

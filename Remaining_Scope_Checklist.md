@@ -40,9 +40,8 @@ outstanding. Detail and suggested order live in `Plans/` (see `Plans/README.md`)
   "Run Multiplier" auto-battle idea from FeatureIdeas.md
 - [x] Data-driven status effects — completed; plan deleted and
   `Technical_Design_Document.md` section 15.8 marked resolved
-- [ ] Naming convention alignment (Plans/Plan_Naming_Convention_Alignment.md) —
-  partially done: rule amendments, gdlintrc enforcement, and variable renames have
-  landed; file renames and abbreviation spell-outs remain
+- [x] Naming convention alignment — completed; plan deleted and
+  `Technical_Design_Document.md` section 15.3 marked resolved
 
 ## Optional
 
