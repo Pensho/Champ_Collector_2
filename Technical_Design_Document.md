@@ -630,7 +630,7 @@ introduce signals at the highest-traffic seams (e.g. battle → UI result events
 
 ### 15.7. Duplicated team-membership logic and fixed 3-versus-3 assumptions — resolved
 
-Resolved by `Plans/Archive/Plan_Team_And_Roster_Abstraction.md`: team membership,
+Resolved by the completed team-and-roster-abstraction plan: team membership,
 alive-filtering, and random selection now live in `CombatTeam`/`CombatSides`
 (see section 4), built once in `Battle.Init` from the actual roster sizes. The
 `PLAYER_IDS`/`MONSTER_IDS`/`ENEMY_IDS` constants and the six-slot static arrays in

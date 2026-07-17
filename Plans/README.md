@@ -6,8 +6,8 @@ body of work. Findings behind these plans are recorded in
 
 Suggested order (dependencies noted inside each plan):
 
-1. `Plan_Team_And_Roster_Abstraction.md` — replace magic slot IDs with teams.
-   Completed and archived; combat now runs on `CombatTeam`/`CombatSides`.
+1. Team and roster abstraction — completed and deleted; combat now runs on
+   `CombatTeam`/`CombatSides` (see `Technical_Design_Document.md` section 4).
 2. `Plan_Headless_Combat_Core.md` — extract testable combat resolution
    (largest; builds on the completed combat-correctness fixes and 1).
 3. `Plan_Data_Driven_Status_Effects.md` — status effects as resources
@@ -30,8 +30,8 @@ Suggested order (dependencies noted inside each plan):
    scripted battle openings, guest champions). The state handler and dialogue
    overlay are independent and can start any time; scripted openings coordinate
    ordering with `Plan_Headless_Combat_Core.md`, and guest champions ride on
-   `Plan_Team_And_Roster_Abstraction.md`. Design counterpart:
-   `Plan_Story_Mode.md`.
+   the completed team and roster abstraction (`CombatTeam`/`CombatSides`).
+   Design counterpart: `Plan_Story_Mode.md`.
 
 Design-only plans (no code; can run at any time):
 
@@ -60,6 +60,9 @@ Design-only plans (no code; can run at any time):
 
 When a plan completes: run `/review-implementation` against the plan, then update
 the documentation sections it names, strike the matching entries from
-`Technical_Design_Document.md` section 15, and delete or archive the plan file.
-Archived plans live in `Archive/`; `Plan_Role_Skill_Kits.md` is kept there for its
-claims ledger (the balancing reference for effect assignments).
+`Technical_Design_Document.md` section 15, and **delete** the plan file. A completed
+plan's content belongs in the living documents; the file itself is history and git
+keeps that. Archive to `Archive/` only when the file stays useful as a future
+reference in its own right — content the living documents do not absorb.
+`Plan_Role_Skill_Kits.md` is the example: its claims ledger is the balancing
+reference for effect assignments.

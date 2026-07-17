@@ -88,8 +88,8 @@ elements — no story node type, no story gating inside adventure graphs.
 - A story beat can add a temporary roster entry flagged as story-loaned: fielded
   like a normal champion, excluded from permanent roster operations, removed at
   its act boundary.
-- Rides on `Plan_Team_And_Roster_Abstraction.md` (completed); deferred until
-  an act beat sheet actually fields a guest.
+- Rides on the completed team and roster abstraction (`CombatTeam`/`CombatSides`);
+  deferred until an act beat sheet actually fields a guest.
 
 ## Suggested order
 

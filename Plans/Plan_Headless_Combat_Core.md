@@ -9,9 +9,9 @@ seam (15.4), reproducible rolls, and the "Run Multiplier" auto-battle idea from
 
 ## Status
 
-Not started. Recommended order: run `Plan_Combat_Correctness_Fixes.md` first (small,
-independently verifiable), and ideally `Plan_Team_And_Roster_Abstraction.md` before or
-alongside stage 3 here.
+Not started. Both recommended predecessors are complete: the combat-correctness fixes
+and the team and roster abstraction. Stage 3's resolver is therefore written against
+`CombatTeam`/`CombatSides`, not raw slot IDs.
 
 ## Target shape
 

@@ -34,7 +34,7 @@ outstanding. Detail and suggested order live in `Plans/` (see `Plans/README.md`)
   `Technical_Design_Document.md` section 15
 - [x] Documentation parity — completed; plan removed and findings struck from
   `Technical_Design_Document.md` section 15
-- [x] Team and roster abstraction — completed; plan archived and
+- [x] Team and roster abstraction — completed; plan deleted and
   `Technical_Design_Document.md` section 15.7 marked resolved
 - [ ] Headless combat core (Plans/Plan_Headless_Combat_Core.md) — also unlocks the
   "Run Multiplier" auto-battle idea from FeatureIdeas.md
