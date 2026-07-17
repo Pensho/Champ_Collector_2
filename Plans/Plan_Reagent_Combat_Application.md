@@ -9,11 +9,10 @@ trait hook. The Sorcerer passive that consumes that hook is
 ## Status
 
 Not started. Depends on `Plan_Reagent_Data_And_Catalog.md` and
-`Plan_Reagent_Inventory_And_Storage_UI.md`. Touches `battle.gd` and `Skills.gd`
-areas that `Plan_Headless_Combat_Core.md` will later refactor — whichever of the
-two lands second adapts to the other (if the combat core extraction lands first,
+`Plan_Reagent_Inventory_And_Storage_UI.md`. The headless combat core has landed, so
 reagent resolution and the `Reagent_Consumed` hook go through `BattleResolver`
-instead of `battle.gd`/`Skills.gd` directly).
+(logic mutation + `CombatResult` reporting) rather than `battle.gd`/`Skills.gd`
+directly.
 
 ## Design (from Concept_Document.md 3.3.3)
 

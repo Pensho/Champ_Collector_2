@@ -12,8 +12,9 @@ implemented)" — no preset in `Data/Character_Player_Variants/` and no skills d
 in the concept doc. The trait can be implemented and unit-tested standalone, but
 assigning it in-game requires the Sorcerer champion (its own task via the
 new-champion flow, including skill design sign-off with the user). The Surge damage
-formula's exact numbers also need user sign-off. If `Plan_Headless_Combat_Core.md`
-lands first, the trait hooks fire from `BattleResolver` rather than `battle.gd`.
+formula's exact numbers also need user sign-off. The headless combat core has
+landed, so this trait's hooks fire from `BattleResolver` (receiving the resolver
+instance, not `battle.gd`/`BattleUI`).
 
 ## Design (from Concept_Document.md 3.1.3)
 

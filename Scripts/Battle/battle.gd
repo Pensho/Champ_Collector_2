@@ -1,14 +1,22 @@
 class_name Battle extends Node2D
 
-enum WinningTeam
+## The battle scene: feeds input into BattleResolver and renders the CombatResult
+## records it produces (life bars, combat text, status icons, turn-bar effects).
+## Turn flow is an explicit state machine; all combat mutation lives in the resolver.
+
+enum BattleState
 {
-	Ongoing,
-	Player_Won,
-	Monsters_Won,
+	Advancing,
+	Awaiting_Player_Input,
+	Selecting_Zone,
+	Enemy_Acting,
+	Resolving,
+	Battle_Over,
 }
 
 const ZoneType = preload("uid://bdjrfif0s60v4")
 const GRAYSCALE = preload("uid://ia57lns0336p")
+const Statuses = preload("uid://bp3pvvar4437")
 
 const NO_CHARACTERS_TURN: int = -1
 # Enemy slot IDs start here so they index the same exported _character_repr array and
@@ -21,12 +29,15 @@ var GRAYSCALE_MATERIAL: ShaderMaterial
 
 var _self_context: ContextContainer
 var _battlecontext: Context_Battle
+var _resolver: BattleResolver
+var _state: BattleState = BattleState.Advancing
 var _turn_character_ID: int = -1
 var _selected_skill_ID: int = 0
 var _initialized: bool = false
-var _zones: Dictionary[int, Zone]
 var _targeting_order: Array[int]
 var _sides: CombatSides
+# Maps resolver status-effect IDs to the representation's status-icon IDs.
+var _status_visual_IDs: Dictionary[int, int] = {}
 
 @onready var _battle_ui: BattleUI = $"Battle UI"
 @onready var _background: TextureRect = %BattleBackground
@@ -43,17 +54,17 @@ func ApplyAdventureEffects(p_character_ID: int) -> void:
 		buff.type = buff_type
 		buff.duration = GameBalance.ADVENTURE_BUFF_COMBAT_DURATION
 		buff.name = Types.Buff_Type.keys()[buff_type]
-		Skills.ApplyBuff(_characters[p_character_ID], buff, _character_repr[p_character_ID], _battle_ui)
+		_resolver.ApplyBuff(p_character_ID, buff)
 	for debuff_type: Types.Debuff_Type in _self_context._adventure_state.active_debuffs.keys():
 		var debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
 		debuff.type = debuff_type
 		debuff.duration = GameBalance.ADVENTURE_BUFF_COMBAT_DURATION
 		debuff.name = Types.Debuff_Type.keys()[debuff_type]
-		Skills.ApplyDebuff(_characters[p_character_ID], debuff, _character_repr[p_character_ID], _battle_ui)
+		_resolver.ApplyDebuff(p_character_ID, debuff)
 
 func SetTargetingOrder() -> void:
 	var sorted_keys = _characters.keys()
-	
+
 	sorted_keys.sort_custom(func(key_a, key_b):
 		var obj_a = _characters[key_a]
 		var obj_b = _characters[key_b]
@@ -67,10 +78,19 @@ func SetTargetingOrder() -> void:
 
 		var sum_a = obj_a._attributes[Types.Attribute.Health] + defence_a
 		var sum_b = obj_b._attributes[Types.Attribute.Health] + defence_b
-		
+
 		return sum_a > sum_b
 		)
 	_targeting_order = sorted_keys
+
+# A reproducible seed for the resolver when the encounter comes from a generated
+# adventure (mirroring how adventure generation is seeded); -1 randomizes otherwise.
+func BattleSeed() -> int:
+	if(_self_context._adventure_state != null and _self_context._adventure_state._generation_seed >= 0):
+		return abs(hash([
+				_self_context._adventure_state._generation_seed,
+				_self_context._adventure_state.current_node_index]))
+	return -1
 
 func Init(p_context: ContextContainer) -> void:
 	_battlecontext = p_context._static_context as Context_Battle
@@ -79,7 +99,7 @@ func Init(p_context: ContextContainer) -> void:
 	_global_scene_darkness.height = _battlecontext._scene_darkness_height
 	_global_scene_light.color = _battlecontext._global_scene_light
 	_self_context = p_context
-	
+
 	if(_battlecontext._enemies_wave_1.is_empty()):
 		print("Accidental load to battle scene without enemies, terminating application")
 		get_tree().quit()
@@ -95,6 +115,10 @@ func Init(p_context: ContextContainer) -> void:
 		enemy_IDs.append(ENEMY_ID_OFFSET + i)
 	_sides = CombatSides.new(player_IDs, enemy_IDs)
 
+	_resolver = BattleResolver.new(
+			_characters, _sides, TurnBarPositions.new(_battle_ui._turn_bar), BattleSeed())
+	_resolver.result_produced.connect(_on_resolver_result_produced)
+
 	for i in p_context._player_battle_characters.size():
 		_characters[i] = p_context._player_battle_characters[i]
 		_characters[i]._current_health = (_characters[i].GetBattleAttribute(Types.Attribute.Health) *
@@ -102,18 +126,18 @@ func Init(p_context: ContextContainer) -> void:
 		_self_context._arguments["character_dmg_" + str(i)] = 0
 		VisualizeCharacter(i)
 		ApplyAdventureEffects(i)
-	
+
 	var difficulty: int = 1
 	if(_self_context._arguments.has("Difficulty")):
 		difficulty = _self_context._arguments["Difficulty"]
 	else:
 		_self_context._arguments["Difficulty"] = difficulty
-	
+
 	for i in _battlecontext._enemies_wave_1.size():
 		var enemy_ID: int = ENEMY_ID_OFFSET + i
 		_characters[enemy_ID] = Character.new()
 		_characters[enemy_ID].InstantiateNew(_battlecontext._enemies_wave_1[i], -1)
-		_characters[enemy_ID]._attributes[Types.Attribute.Speed] += randi_range(-3, 3)
+		_characters[enemy_ID]._attributes[Types.Attribute.Speed] += _resolver.GetRandom().randi_range(-3, 3)
 		var is_boss: bool = p_context._arguments.has("Boss_Scale")
 		if (is_boss):
 			_character_repr[enemy_ID].scale = Vector2(p_context._arguments["Boss_Scale"], p_context._arguments["Boss_Scale"])
@@ -125,42 +149,55 @@ func Init(p_context: ContextContainer) -> void:
 		_characters[enemy_ID]._current_health = (_characters[enemy_ID].GetBattleAttribute(Types.Attribute.Health) *
 				Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
 		VisualizeCharacter(enemy_ID)
-	
+
 	for i in _characters.keys():
 		for j in _characters[i]._skills.size():
 			_battle_ui.LoadSkillTexture(_characters[i]._skills[j].icon_path)
 		if(null != _characters[i]._trait):
 			if(_characters[i]._trait._execution_steps.has(Types.Combat_Event.Start_Combat)):
-				_characters[i]._trait.StartOfBattle(_character_repr[i])
-	
+				_characters[i]._trait.StartOfBattle()
+			_characters[i]._trait.RefreshVisuals(_character_repr[i])
+
 	SetTargetingOrder()
 
 	GRAYSCALE_MATERIAL = ShaderMaterial.new()
 	GRAYSCALE_MATERIAL.shader = GRAYSCALE
-	
+
 	_battle_ui.Init(_battlecontext._environment_effects)
 	_battle_ui._turn_bar.Init(_characters, _on_turn_bar_zone_selected, _sides.player)
+	_state = BattleState.Advancing
 	_initialized = true
 
 func _process(p_delta: float) -> void:
-	if(_initialized):
-		for i in _characters.keys():
-			Update(p_delta, i)
+	if(not _initialized):
+		return
+	match _state:
+		BattleState.Advancing:
+			AdvanceTurnBar(p_delta)
+		BattleState.Awaiting_Player_Input, BattleState.Selecting_Zone:
+			_turn_indicator.position.y = (_character_repr[_turn_character_ID].position.y -
+					_turn_indicator.size.y + (sin(Time.get_ticks_msec() * 0.005) * 5))
+		_:
+			pass
+
+func AdvanceTurnBar(p_delta: float) -> void:
+	for character_ID in _characters.keys():
+		if(_characters[character_ID]._current_health <= 0):
+			continue
+		_battle_ui._turn_bar.Update(p_delta, character_ID)
+		_turn_character_ID = _battle_ui._turn_bar.GetActiveTurnID()
+		if(NO_CHARACTERS_TURN != _turn_character_ID):
+			StartTurn()
+			return
 
 func StartTurn() -> void:
 	_turn_indicator.position.x = (_character_repr[_turn_character_ID].position.x +
 			(_character_repr[_turn_character_ID]._character_texture.size.x * 0.5) - (_turn_indicator.size.x * 0.5))
 	_turn_indicator.position.y = _character_repr[_turn_character_ID].position.y - _turn_indicator.size.y
 	_turn_indicator.show()
-	
-	if (null != _characters[_turn_character_ID]._trait):
-		if(_characters[_turn_character_ID]._trait._execution_steps.has(Types.Combat_Event.Start_Turn)):
-			_characters[_turn_character_ID]._trait.StartOfTurn(
-					_turn_character_ID,
-					_battle_ui,
-					_characters,
-					_character_repr,
-					_sides)
+
+	_resolver.BeginTurn(_turn_character_ID)
+	RefreshAllTraitVisuals()
 
 	if (CheckAndHandleBattleOver()):
 		return
@@ -179,107 +216,140 @@ func StartTurn() -> void:
 				_battle_ui._skill_buttons[i].ClearCooldown()
 		_selected_skill_ID = 0
 		_battle_ui.ActiveSkillGlow(_selected_skill_ID)
+		_state = BattleState.Awaiting_Player_Input
 	elif(_sides.enemy.Has(_turn_character_ID)):
+		_state = BattleState.Enemy_Acting
 		HandleEnemyTurn()
 
+# Reverse-iterates the skills for the first one off cooldown, skipping zone skills
+# when no turn-bar zone is free; skill 0 is the fallback.
+func SelectEnemySkillID() -> int:
+	var skills: Array[Skill] = _characters[_turn_character_ID]._skills
+	for i in range(skills.size() - 1, -1, -1):
+		if(0 < skills[i].cooldown_left):
+			continue
+		match skills[i].target:
+			Types.Skill_Target.ZoneAlly, Types.Skill_Target.ZoneEnemy, Types.Skill_Target.ZoneAll:
+				if(_resolver.AvailableZoneIDs().is_empty()):
+					continue
+		return i
+	return 0
+
 func HandleEnemyTurn() -> void:
-	# TODO: Clean this nested mess up
-	_selected_skill_ID = 0
-	for i in range(_characters[_turn_character_ID]._skills.size()-1, -1, -1):
-		if(0 >= _characters[_turn_character_ID]._skills[i].cooldown_left):
-			match _characters[_turn_character_ID]._skills[i].target:
-				Types.Skill_Target.ZoneAlly, Types.Skill_Target.ZoneEnemy, Types.Skill_Target.ZoneAll:
-					if(GameBalance.NUMBER_OF_TURN_BAR_ZONES <= _zones.size()):
-						continue
-			_selected_skill_ID = i
-			break
-		
-	match _characters[_turn_character_ID]._skills[_selected_skill_ID].target:
+	_selected_skill_ID = SelectEnemySkillID()
+	var cast_skill: Skill = _characters[_turn_character_ID]._skills[_selected_skill_ID]
+
+	match cast_skill.target:
 		Types.Skill_Target.ZoneAlly, Types.Skill_Target.ZoneEnemy, Types.Skill_Target.ZoneAll:
-			var available_zones: Array[int] = []
-			for zone_number in GameBalance.NUMBER_OF_TURN_BAR_ZONES:
-				if(zone_number not in _zones.keys()):
-					available_zones.append(zone_number)
-			if(available_zones.is_empty()):
-				ResolveSkill(_turn_character_ID, [], _selected_skill_ID)
-			else:
-				_battle_ui._turn_bar.DisableZones(false)
-				print(_characters[_turn_character_ID]._name, " used skill with ID: ", _selected_skill_ID)
-				_on_turn_bar_zone_selected(available_zones.pick_random())
+			var available_zones: Array[int] = _resolver.AvailableZoneIDs()
+			print(_characters[_turn_character_ID]._name, " used skill with ID: ", _selected_skill_ID)
+			var zone_ID: int = available_zones[_resolver.GetRandom().randi_range(0, available_zones.size() - 1)]
+			_resolver.PlaceZone(zone_ID, _turn_character_ID, cast_skill)
+			ResolveTurn([])
 		_:
 			for i in _targeting_order:
 				if(_characters[i]._current_health < 1):
 					continue
-				var target_IDs: Array[int] = Skills.FindSkillTargets(
-					i,
-					_turn_character_ID,
-					_characters[_turn_character_ID]._skills[_selected_skill_ID].target,
-					_characters,
-					_sides)
+				var target_IDs: Array[int] = _resolver.FindSkillTargets(i, _turn_character_ID, cast_skill.target)
 				if(target_IDs.is_empty()):
 					continue  # not a valid target for this caster (e.g. an ally), keep looking
 				print(_characters[_turn_character_ID]._name, " used skill with ID: ", _selected_skill_ID)
-				ResolveSkill(_turn_character_ID, target_IDs, _selected_skill_ID)
-				CheckAndHandleBattleOver()
-				break  # A skill has resolved.
+				ResolveTurn(target_IDs)
+				return  # A skill has resolved.
 
-func TriggerZones() -> void:
-	for character_ID in _characters.keys():
-		if(character_ID == _turn_character_ID or _characters[character_ID]._current_health <= 0):
-			continue
-		for ID in _zones.keys():
-			if(_zones[ID]._duration == 0):
-				continue
-			if(!_battle_ui._turn_bar.IsCharacterInZone(character_ID, ID)):
-				continue
-			if(_zones[ID]._target == Types.Skill_Target.ZoneAlly and
-					!_sides.AreAllies(character_ID, _zones[ID]._owner_ID)):
-				continue
-			if(_zones[ID]._target == Types.Skill_Target.ZoneEnemy and
-					!_sides.AreEnemies(character_ID, _zones[ID]._owner_ID)):
-				continue
-			Skills.ResolveZoneEffect(
-				_zones[ID], _characters[character_ID], character_ID, _battle_ui, _character_repr[character_ID], _sides)
-			_zones[ID]._duration -= 1
-			_battle_ui._turn_bar.ZoneTriggered(ID, _zones[ID]._duration)
-			# Restrict the trigger to one zone per character.
-			break
-	for ID in _zones.keys():
-		if (_zones[ID]._duration == 0):
-			_zones.erase(ID)
+# Resolves the active character's selected skill and closes out the turn.
+func ResolveTurn(p_target_IDs: Array[int]) -> void:
+	_state = BattleState.Resolving
+	_resolver.ResolveSkill(_turn_character_ID, p_target_IDs, _selected_skill_ID)
+	_battle_ui._turn_bar.TurnCompleteForCharacter(_turn_character_ID)
+	RefreshAllTraitVisuals()
+	_turn_character_ID = NO_CHARACTERS_TURN
+	_turn_indicator.hide()
+	_battle_ui.HideSkillUI()
+	if(not CheckAndHandleBattleOver()):
+		_state = BattleState.Advancing
 
-func Update(p_delta: float, p_characterID: int) -> void:
-	# It already is someones turn, so return early.
-	if (_sides.Has(_turn_character_ID)):
-		_turn_indicator.position.y = (_character_repr[_turn_character_ID].position.y - _turn_indicator.size.y +
-				(sin(Time.get_ticks_msec() * 0.005) * 5))
-		return
-	# It isn't someones turn, but this character is dead so return early.
-	if(_characters[p_characterID]._current_health <= 0):
-		return
-	# No ones turn yet, so move along the turn order.
-	_battle_ui._turn_bar.Update(p_delta, p_characterID)
-	_turn_character_ID = _battle_ui._turn_bar.GetActiveTurnID()
-	if(NO_CHARACTERS_TURN == _turn_character_ID):
-		return
-	StartTurn()
+func RefreshAllTraitVisuals() -> void:
+	for i in _characters.keys():
+		if(null != _characters[i]._trait):
+			_characters[i]._trait.RefreshVisuals(_character_repr[i])
 
+func CombatTextPosition(p_character_ID: int) -> Vector2:
+	return _character_repr[p_character_ID].position + _battle_ui.COMBAT_TEXT_SPAWN_POINT
+
+# Translates one resolver result into visuals (and post-battle damage attribution).
+func _on_resolver_result_produced(p_result: CombatResult) -> void:
+	match p_result.kind:
+		CombatResult.Kind.Damage:
+			if(p_result.critical):
+				_battle_ui.SpawnCombatText(
+						"Critical Strike!", CombatTextPosition(p_result.target_ID), Color(1.0, 0.729, 0.0, 1.0))
+			if(p_result.amount > 0):
+				_battle_ui.SpawnCombatText(str(p_result.amount), CombatTextPosition(p_result.target_ID))
+				AttributeDamage(p_result.source_ID, p_result.amount)
+			UpdateLifeBar(p_result.target_ID)
+		CombatResult.Kind.Burning_Tick:
+			_battle_ui.SpawnCombatText(
+					str(p_result.amount), CombatTextPosition(p_result.target_ID), Color(1.0, 0.45, 0.1, 1.0))
+			for source_ID in p_result.amount_by_source.keys():
+				AttributeDamage(source_ID, p_result.amount_by_source[source_ID])
+			UpdateLifeBar(p_result.target_ID)
+		CombatResult.Kind.Debuff_Resisted:
+			_battle_ui.SpawnCombatText(
+					"Resisted debuff!", CombatTextPosition(p_result.target_ID), Color(0.801, 0.0, 0.0, 1.0))
+		CombatResult.Kind.Status_Applied:
+			ShowStatusApplied(p_result)
+		CombatResult.Kind.Status_Duration:
+			if(_status_visual_IDs.has(p_result.status_ID)):
+				_character_repr[p_result.target_ID].SetStatusEffectDuration(
+						_status_visual_IDs[p_result.status_ID], p_result.duration)
+		CombatResult.Kind.Statuses_Removed:
+			var repr_effect_IDs: Array[int] = []
+			for status_ID in p_result.status_IDs:
+				if(_status_visual_IDs.has(status_ID)):
+					repr_effect_IDs.append(_status_visual_IDs[status_ID])
+					_status_visual_IDs.erase(status_ID)
+			_character_repr[p_result.target_ID].RemoveStatusEffects(repr_effect_IDs)
+		CombatResult.Kind.Statuses_Cleared:
+			_character_repr[p_result.target_ID].ClearAllStatusEffects()
+		CombatResult.Kind.Turn_Bar_Bump:
+			_battle_ui._turn_bar.BumpCharacter(p_result.target_ID, p_result.fraction)
+		CombatResult.Kind.Zone_Placed:
+			_battle_ui._turn_bar.SpawnZoneEffect(
+					p_result.zone_ID,
+					p_result.duration,
+					_sides.player.Has(p_result.source_ID),
+					p_result.skill_type)
+		CombatResult.Kind.Zone_Triggered:
+			_battle_ui._turn_bar.ZoneTriggered(p_result.zone_ID, p_result.duration)
+		CombatResult.Kind.Trait_Text:
+			_battle_ui.SpawnCombatText(p_result.text, CombatTextPosition(p_result.target_ID), p_result.color)
+		CombatResult.Kind.Death:
+			_battle_ui._turn_bar.ShowCharacterAsDead(p_result.target_ID)
+			_character_repr[p_result.target_ID]._character_texture.material = GRAYSCALE_MATERIAL
+			UpdateLifeBar(p_result.target_ID)
+
+# Credits damage to the player who dealt it, for the post-battle totals.
+func AttributeDamage(p_source_ID: int, p_amount: int) -> void:
+	if(_sides.player.Has(p_source_ID)):
+		_self_context._arguments["character_dmg_" + str(p_source_ID)] += p_amount
+
+func ShowStatusApplied(p_result: CombatResult) -> void:
+	var texture: Texture
+	var text_color: Color
+	if(p_result.is_buff):
+		texture = Skills.GetStatusEffectTexture(Statuses.BUFF_ICONS[p_result.buff_type])
+		text_color = Color(0.335, 0.575, 0.838, 1.0)
+	else:
+		texture = Skills.GetStatusEffectTexture(Statuses.DEBUFF_ICONS[p_result.debuff_type])
+		text_color = Color(0.681, 0.152, 0.31, 1.0)
+	_status_visual_IDs[p_result.status_ID] = _character_repr[p_result.target_ID].AddStatusEffect(
+			texture, p_result.duration)
+	if("" != p_result.text):
+		_battle_ui.SpawnCombatText(p_result.text, CombatTextPosition(p_result.target_ID), text_color)
+
+# Display-only: combat mutation (clamping, death handling) happens in the resolver.
 func UpdateLifeBar(p_characterID: int) -> void:
-	_characters[p_characterID]._current_health = clampi(
-			_characters[p_characterID]._current_health,
-			0,
-			_characters[p_characterID].GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
-	if(_characters[p_characterID]._current_health <= 0):
-		_characters[p_characterID]._current_health = 0
-		_characters[p_characterID]._active_buffs.clear()
-		_characters[p_characterID]._active_debuffs.clear()
-		_character_repr[p_characterID].ClearAllStatusEffects()
-		_battle_ui._turn_bar.ShowCharacterAsDead(p_characterID)
-		_character_repr[p_characterID]._character_texture.material = GRAYSCALE_MATERIAL
-		if (null != _characters[p_characterID]._trait):
-			if(_characters[p_characterID]._trait._execution_steps.has(Types.Combat_Event.On_Death)):
-				_characters[p_characterID]._trait.OnDeath(_character_repr[p_characterID])
-	
 	_character_repr[p_characterID]._lifebar.value = _characters[p_characterID]._current_health
 	var max_health: int = (_characters[p_characterID].GetBattleAttribute(Types.Attribute.Health) *
 			Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
@@ -302,164 +372,60 @@ func VisualizeCharacter(p_characterID: int) -> void:
 	UpdateLifeBar(p_characterID)
 	_character_repr[p_characterID].show()
 
-func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID) -> void:
-	var cast_skill: Skill = _characters[p_caster_ID]._skills[p_skill_ID]
-	var caster_attributes: Dictionary[Types.Attribute, int] = _characters[p_caster_ID].GetBattleAttributes()
-	
-	var trait_result: TraitSkillResult = TraitSkillResult.new()
-	if (null != _characters[p_caster_ID]._trait):
-		if(_characters[p_caster_ID]._trait._execution_steps.has(Types.Combat_Event.Skill_Cast)):
-			trait_result = _characters[p_caster_ID]._trait.OnSkillCast(
-					p_caster_ID, p_target_IDs, _characters, _character_repr, cast_skill.name, _battle_ui, caster_attributes)
-	
-	if (not _characters[p_caster_ID]._active_debuffs.is_empty()):
-		var burning_damage_by_source: Dictionary[int, int] = Skills.TriggerExistingCasterDebuffs(
-			_characters[p_caster_ID],
-			caster_attributes,
-			_character_repr[p_caster_ID],
-			_battle_ui)
-		# Attribute Burning ticks to the player who applied them, for the post-battle totals.
-		for source_ID in burning_damage_by_source.keys():
-			if (_sides.player.Has(source_ID)):
-				_self_context._arguments["character_dmg_" + str(source_ID)] += burning_damage_by_source[source_ID]
-		UpdateLifeBar(p_caster_ID)
-	
-	if (not _characters[p_caster_ID]._active_buffs.is_empty()):
-		Skills.TriggerExistingCasterBuffs(
-				_characters[p_caster_ID],
-				caster_attributes,
-				_character_repr[p_caster_ID],
-				p_caster_ID)
-	
-	Skills.ResolveSkillEffect(p_caster_ID, caster_attributes, cast_skill)
-	
-	var target_attributes: Dictionary[Types.Attribute, int]
-	for target_ID in p_target_IDs:
-		if(!_characters.has(target_ID)):
-			continue
-		if(p_caster_ID != target_ID):
-			target_attributes = _characters[target_ID].GetBattleAttributes()
-			
-			Skills.TriggerTargetBuffs(_characters[target_ID], target_attributes)
-			Skills.TriggerTargetDebuffs(_characters[target_ID], target_attributes)
-			if (null != _characters[target_ID]._trait):
-				if (_characters[target_ID]._trait._execution_steps.has(Types.Combat_Event.Defend)):
-					_characters[target_ID]._trait.OnDefend(target_ID, target_attributes, _characters)
-		
-		if(not cast_skill.buffs.is_empty() and _characters[target_ID]._current_health > 0):
-			Skills.CastBuff(_characters[target_ID], cast_skill, _character_repr[target_ID], _battle_ui)
-		
-		if(not cast_skill.debuffs.is_empty() and _characters[target_ID]._current_health > 0):
-			Skills.CastDebuff(
-				_characters[target_ID],
-				target_attributes,
-				caster_attributes[Types.Attribute.Accuracy],
-				cast_skill,
-				_character_repr[target_ID],
-				_battle_ui,
-				p_caster_ID)
-		
-		if(not cast_skill.damage_scaling.is_empty()):
-			var damage_dealt: int = Skills.DamageDealt(
-					caster_attributes,
-					target_attributes,
-					cast_skill,
-					trait_result._damage_multiplier,
-					_character_repr[target_ID],
-					_battle_ui,
-					p_caster_ID)
-			if(damage_dealt != 0):
-				if (damage_dealt > 0 and null != _characters[target_ID]._trait \
-						and _characters[target_ID]._trait._execution_steps.has(Types.Combat_Event.Damage_Taken)):
-					damage_dealt = int(round(damage_dealt * _characters[target_ID]._trait.OnDamageTaken(
-							_character_repr[target_ID], _characters[target_ID]._rarity, _battle_ui)))
-				if(damage_dealt != 0):
-					if (_sides.player.Has(p_caster_ID)):
-						_self_context._arguments["character_dmg_" + str(p_caster_ID)] += damage_dealt
-					_battle_ui.SpawnCombatText(
-							str(damage_dealt), _character_repr[target_ID].position + _battle_ui.COMBAT_TEXT_SPAWN_POINT)
-					_characters[target_ID]._current_health -= damage_dealt
-					UpdateLifeBar(target_ID)
-		
-		var total_bump: float = cast_skill.turn_effect + trait_result._turn_bar_bump
-		if(0.0 != total_bump):
-			_battle_ui._turn_bar.BumpCharacter(target_ID, total_bump)
-	
-	for i in _characters[_turn_character_ID]._skills.size():
-		if(_characters[_turn_character_ID]._skills[i].cooldown_left > 0):
-			_characters[_turn_character_ID]._skills[i].cooldown_left -= 1
-	_characters[p_caster_ID]._skills[p_skill_ID].cooldown_left = _characters[p_caster_ID]._skills[p_skill_ID].cooldown
-	_battle_ui._turn_bar.TurnCompleteForCharacter(_turn_character_ID)
-	TriggerZones()
-	if (null != _characters[p_caster_ID]._trait):
-		if(_characters[p_caster_ID]._trait._execution_steps.has(Types.Combat_Event.End_Turn)):
-			_characters[p_caster_ID]._trait.EndOfTurn(_character_repr[p_caster_ID])
-	_turn_character_ID = NO_CHARACTERS_TURN
-	_turn_indicator.hide()
-	_battle_ui.HideSkillUI()
-
-func IsTheBattleOver() -> WinningTeam:
-	if (_sides.enemy.AliveMembers(_characters).is_empty()):
-		return WinningTeam.Player_Won
-	if (_sides.player.AliveMembers(_characters).is_empty()):
-		return WinningTeam.Monsters_Won
-
-	return WinningTeam.Ongoing
-
 func CheckAndHandleBattleOver() -> bool:
-	var battle_state: WinningTeam = IsTheBattleOver()
-	if (WinningTeam.Ongoing != battle_state):
+	var battle_state: BattleResolver.Winner = _resolver.IsTheBattleOver()
+	if (BattleResolver.Winner.Ongoing != battle_state):
 		EndBattle(battle_state)
 		return true
 	return false
 
-func EndBattle(p_winner: WinningTeam) -> void:
-	Skills.Reset()
+func EndBattle(p_winner: BattleResolver.Winner) -> void:
+	_state = BattleState.Battle_Over
 	_battle_ui.CleanUp()
-	
-	if(p_winner == WinningTeam.Monsters_Won):
+
+	if(p_winner == BattleResolver.Winner.Monsters_Won):
 		_self_context._arguments["Battle_Result"] = "Loss"
-	elif(p_winner == WinningTeam.Player_Won):
+	elif(p_winner == BattleResolver.Winner.Player_Won):
 		_self_context._arguments["Battle_Result"] = "Victory"
 		_battlecontext._loot_table._budget = LootManager.CalculateBudget(_self_context._arguments["Difficulty"])
 		LootManager.DistributeRewards(_battlecontext._loot_table, _self_context._arguments["Difficulty"])
 		if (null != _battlecontext._loot_table._drop_result._equipment):
 			main.GetInstance()._item_collection.AddPreset(_battlecontext._loot_table._drop_result._equipment)
-	
+
 	for i in _characters.keys():
 		if(_sides.player.Has(i)):
 			_characters[i]._active_buffs.clear()
 			_characters[i]._active_debuffs.clear()
 			for j in _characters[i]._skills.size():
 				_characters[i]._skills[j].cooldown_left = 0
-				
-			if(p_winner == WinningTeam.Player_Won):
+
+			if(p_winner == BattleResolver.Winner.Player_Won):
 				LevelSystem.AddExperience(_characters[i], _battlecontext._loot_table._drop_result._experience)
 			_characters[i]._current_health = (_characters[i].GetBattleAttribute(Types.Attribute.Health) *
 				Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
-	
+
 	_self_context._scene = "uid://d3ooarqabyw0p"
-	
+
 	main.GetInstance().change_scene(_self_context)
 
 func _on_character_battle_target_selected(p_target_ID: int) -> void:
-	if(_sides.player.Has(_turn_character_ID)):
-		if(_characters[p_target_ID]._current_health <= 0):
-			print("Invalid target for skill, target is dead.")
-			return
-		var target_IDs: Array[int] = Skills.FindSkillTargets(
-					p_target_ID,
-					_turn_character_ID,
-					_characters[_turn_character_ID]._skills[_selected_skill_ID].target,
-					_characters,
-					_sides)
-		if(target_IDs.size() > 0):
-			ResolveSkill(_turn_character_ID, target_IDs, _selected_skill_ID)
-			CheckAndHandleBattleOver()
-		else:
-			print("Invalid target for skill")
+	if(BattleState.Awaiting_Player_Input != _state):
+		return
+	if(_characters[p_target_ID]._current_health <= 0):
+		print("Invalid target for skill, target is dead.")
+		return
+	var target_IDs: Array[int] = _resolver.FindSkillTargets(
+			p_target_ID,
+			_turn_character_ID,
+			_characters[_turn_character_ID]._skills[_selected_skill_ID].target)
+	if(target_IDs.size() > 0):
+		ResolveTurn(target_IDs)
+	else:
+		print("Invalid target for skill")
 
 func _on_battle_ui_battle_skill_selected(p_skill_ID: int) -> void:
+	if(BattleState.Awaiting_Player_Input != _state and BattleState.Selecting_Zone != _state):
+		return
 	if(_characters[_turn_character_ID]._skills[p_skill_ID].cooldown_left > 0):
 		print("Selected skill: ", p_skill_ID, " is on cooldown with: ",
 				_characters[_turn_character_ID]._skills[p_skill_ID].cooldown_left, " more turns left.")
@@ -467,22 +433,16 @@ func _on_battle_ui_battle_skill_selected(p_skill_ID: int) -> void:
 	_selected_skill_ID = p_skill_ID
 	match _characters[_turn_character_ID]._skills[_selected_skill_ID].target:
 		Types.Skill_Target.ZoneAlly, Types.Skill_Target.ZoneEnemy, Types.Skill_Target.ZoneAll:
+			_state = BattleState.Selecting_Zone
 			_battle_ui._turn_bar.DisableZones(false)
+		_:
+			_state = BattleState.Awaiting_Player_Input
+			_battle_ui._turn_bar.DisableZones(true)
 
 func _on_turn_bar_zone_selected(p_zone_ID: int) -> void:
-	if(_zones.has(p_zone_ID)):
+	if(_resolver.HasZone(p_zone_ID)):
 		print("Zone is already used")
 		return
-	_zones[p_zone_ID] = Zone.new()
-	_zones[p_zone_ID].CreateNew(_characters[_turn_character_ID]._skills[_selected_skill_ID].skill_type,
-								_characters[_turn_character_ID]._skills[_selected_skill_ID].duration,
-								_turn_character_ID,
-								_characters[_turn_character_ID]._skills[_selected_skill_ID].target,
-								_characters[_turn_character_ID].GetBattleAttribute(Types.Attribute.Knowledge))
-	_battle_ui._turn_bar.SpawnZoneEffect(
-								p_zone_ID,
-								_zones[p_zone_ID]._duration,
-								_sides.player.Has(_zones[p_zone_ID]._owner_ID),
-								_characters[_turn_character_ID]._skills[_selected_skill_ID].skill_type)
-	ResolveSkill(_turn_character_ID, [], _selected_skill_ID)
-	CheckAndHandleBattleOver()
+	_resolver.PlaceZone(
+			p_zone_ID, _turn_character_ID, _characters[_turn_character_ID]._skills[_selected_skill_ID])
+	ResolveTurn([])

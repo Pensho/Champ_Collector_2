@@ -8,15 +8,16 @@ Suggested order (dependencies noted inside each plan):
 
 1. Team and roster abstraction — completed and deleted; combat now runs on
    `CombatTeam`/`CombatSides` (see `Technical_Design_Document.md` section 4).
-2. `Plan_Headless_Combat_Core.md` — extract testable combat resolution
-   (largest; builds on the completed combat-correctness fixes and 1).
+2. Headless combat core — completed and deleted; combat resolution lives in
+   `BattleResolver` with `CombatResult` records and a seeded generator (see
+   `Technical_Design_Document.md` section 7).
 3. `Plan_Data_Driven_Status_Effects.md` — status effects as resources
    (independent; hooks into 2 if done after it).
 4. `Plan_Naming_Convention_Alignment.md` — align written conventions and code;
    mechanical, schedule last.
-5. Reagent system, split into four sequential plans (independent of 1–4, but the
-   combat-facing ones coordinate ordering with `Plan_Headless_Combat_Core.md` —
-   whichever lands second adapts):
+5. Reagent system, split into four sequential plans (independent of 1–4; the
+   combat-facing ones apply their effects through `BattleResolver`, since the
+   headless combat core has landed):
    1. `Plan_Reagent_Data_And_Catalog.md` — `ReagentData`, registry, authored catalog.
    2. `Plan_Reagent_Inventory_And_Storage_UI.md` — persistent inventory, loot
       drops, storage view.
@@ -28,9 +29,9 @@ Suggested order (dependencies noted inside each plan):
 6. `Plan_Story_Mode_Systems.md` — the systems that deliver story mode (story
    state handler, dialogue overlay, flag-driven hub variants, act gating,
    scripted battle openings, guest champions). The state handler and dialogue
-   overlay are independent and can start any time; scripted openings coordinate
-   ordering with `Plan_Headless_Combat_Core.md`, and guest champions ride on
-   the completed team and roster abstraction (`CombatTeam`/`CombatSides`).
+   overlay are independent and can start any time; scripted openings apply
+   through the landed `BattleResolver`, and guest champions ride on the
+   completed team and roster abstraction (`CombatTeam`/`CombatSides`).
    Design counterpart: `Plan_Story_Mode.md`.
 
 Design-only plans (no code; can run at any time):

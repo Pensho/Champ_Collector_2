@@ -108,16 +108,14 @@ func _on_set_hp_pressed(p_character_id: int) -> void:
 	var battle: Battle = GetBattle()
 	if(null == battle or not battle._characters.has(p_character_id)):
 		return
-	battle._characters[p_character_id]._current_health = int(_hp_spins[p_character_id].value)
-	battle.UpdateLifeBar(p_character_id)
+	battle._resolver.SetCurrentHealth(p_character_id, int(_hp_spins[p_character_id].value))
 	battle.CheckAndHandleBattleOver()
 
 func _on_kill_pressed(p_character_id: int) -> void:
 	var battle: Battle = GetBattle()
 	if(null == battle or not battle._characters.has(p_character_id)):
 		return
-	battle._characters[p_character_id]._current_health = 0
-	battle.UpdateLifeBar(p_character_id)
+	battle._resolver.SetCurrentHealth(p_character_id, 0)
 	_hp_spins[p_character_id].value = 0
 	battle.CheckAndHandleBattleOver()
 
@@ -127,8 +125,7 @@ func _on_revive_pressed(p_character_id: int) -> void:
 		return
 	var character: Character = battle._characters[p_character_id]
 	var max_health: int = character.GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
-	character._current_health = max_health
-	battle.UpdateLifeBar(p_character_id)
+	battle._resolver.SetCurrentHealth(p_character_id, max_health)
 	battle._character_repr[p_character_id]._character_texture.material = null
 	battle._battle_ui._turn_bar._char_turns[p_character_id].material = null
 	_hp_spins[p_character_id].value = max_health
@@ -149,7 +146,7 @@ func _on_add_buff_button_up() -> void:
 	var buff: StatusEffects.Buff = StatusEffects.Buff.new()
 	buff.type = _buff_option.get_selected_id() as Types.Buff_Type
 	buff.duration = int(_status_duration_spin.value)
-	Skills.ApplyBuff(battle._characters[character_id], buff, battle._character_repr[character_id], battle._battle_ui)
+	battle._resolver.ApplyBuff(character_id, buff)
 
 func _on_add_debuff_button_up() -> void:
 	var battle: Battle = GetBattle()
@@ -161,6 +158,4 @@ func _on_add_debuff_button_up() -> void:
 	var debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
 	debuff.type = _debuff_option.get_selected_id() as Types.Debuff_Type
 	debuff.duration = int(_status_duration_spin.value)
-	debuff.ID = battle._character_repr[character_id].AddStatusEffect(
-		Skills.GetStatusEffectTexture(StatusEffects.DEBUFF_ICONS[debuff.type]), debuff.duration)
-	battle._characters[character_id]._active_debuffs.append(debuff)
+	battle._resolver.ApplyDebuff(character_id, debuff)

@@ -23,6 +23,7 @@ Unit tests cover **pure logic only** — functions that transform values and ret
 | Loot manager | `test_loot_manager.gd` | Fortunes Favor primary/secondary distribution by difficulty and budget |
 | Level system | `test_level_system.gd` | XP formula monotonicity, level-up threshold, XP consumption, `SetOpponentLevel` guards and attribute scaling |
 | Skills (targeting) | `test_skills.gd` | `FindSkillTargets` for all target types; `CorrectZoneTarget` truth table |
+| Battle resolver | `test_battle_resolver.gd` | Full seeded 3-versus-3 battle to a winner, same-seed reproducibility, per-resolver (non-static) Heap-On state |
 | Resource handler | `test_resource_handler.gd` | `SpendSupplies` success, failure, exact, zero, empty-state paths |
 | Character | `test_character.gd` | Equipment bonus baseline, `GetBattleAttribute` with and without gear, `EquipItem`/`UnequipItem` slot management |
 | Collection serialization | `test_collection_serialization.gd` | `ItemCollection` and `CharacterCollection` Serialize↔Deserialize roundtrips through real methods |
@@ -32,7 +33,9 @@ Unit tests cover **pure logic only** — functions that transform values and ret
 
 These areas depend on the scene tree, rendering, or real input and are covered by manual play instead:
 
-- `Scripts/Battle/battle.gd` — turn loop is tightly coupled to `BattleUI`
+- `Scripts/Battle/battle.gd` — after the headless-combat-core extraction this script is input
+  handling, a turn-flow state machine, and result rendering only; the combat logic it used to own
+  is tested through `BattleResolver` (`test_battle_resolver.gd` and the trait/status tests)
 - `Scripts/Battle/character_battle_repr.gd` — visual representation node
 - All scripts under `Scripts/UI/` — requires scene instantiation
 - Texture and asset loading — hardware-dependent
@@ -40,8 +43,9 @@ These areas depend on the scene tree, rendering, or real input and are covered b
 ## Determinism rules
 
 Tests that involve randomness must use one of these approaches:
-1. **Seed before calling**: `seed(12345)` immediately before the call under test.
-2. **Assert bounds / invariants**: when exact output cannot be predicted (e.g. `Random_Enemy` targeting), assert the result is within the valid range and test the branch conditions via non-random paths instead.
+1. **Seed the resolver**: combat rolls all go through `BattleResolver`'s injected `RandomNumberGenerator`; construct it with a fixed seed (`TestFactory.make_resolver` defaults to seed 0) so every roll is reproducible.
+2. **Seed before calling**: `seed(12345)` immediately before a call that still uses the global generator (non-combat code).
+3. **Assert bounds / invariants**: when exact output cannot be predicted (e.g. `Random_Enemy` targeting), assert the result is within the valid range and test the branch conditions via non-random paths instead.
 
 ## File naming and helper
 
@@ -50,7 +54,7 @@ Tests that involve randomness must use one of these approaches:
   ```gdscript
   const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
   ```
-  The factory provides static builders: `make_character()`, `make_loot_table()`, `make_adventure_state()`. Add a builder when the same construction logic is needed in two or more test files.
+  The factory provides static builders: `make_character()`, `make_full_roster()`, `make_full_sides()`, `make_resolver()`, the skill builders (`make_strike_skill()`, `make_empty_skill()`, `make_lava_zone_skill()`), `make_loot_table()`, `make_adventure_state()`, and the `FakeTurnPositions` stub for zone/reach queries. Add a builder when the same construction logic is needed in two or more test files.
 
 ## Known issues / flags
 

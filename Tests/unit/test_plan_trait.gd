@@ -1,59 +1,26 @@
 extends GutTest
 
-const REPR_SCRIPT = preload("res://Scripts/Battle/character_battle_repr.gd")
-const BATTLE_UI_SCRIPT = preload("res://Scripts/UI/Battle_UI/battle_ui.gd")
-const TURN_BAR_SCRIPT = preload("res://Scripts/UI/Battle_UI/turn_bar.gd")
+const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 
 var _owner: Character = null
 var _ally: Character = null
-var _main_inst: Main_Instance = null
-var _item_col: ItemCollection = null
-var _owner_repr: CharacterRepresentation = null
-var _ally_repr: CharacterRepresentation = null
-var _battle_ui: BattleUI = null
 var _trait: PlanTrait = null
 var _characters: Dictionary[int, Character]
-var _sides: CombatSides = null
-var _repr_array: Array[CharacterRepresentation]
-var _one_ally_behind: Array[int]
-var _no_allies_behind: Array[int]
+var _positions: TestFactory.FakeTurnPositions = null
+var _resolver: BattleResolver = null
 
 func before_each() -> void:
 	_owner = Character.new()
 	_ally = Character.new()
-	# Living combatants — the Plan trait's targeting now excludes dead allies.
+	# Living combatants — the Plan trait's targeting excludes dead allies.
 	_owner._current_health = 10
 	_ally._current_health = 10
-	_item_col = ItemCollection.new()
-	_main_inst = Main_Instance.new()
-	_main_inst._item_collection = _item_col
-	main._instance = _main_inst
-	_owner_repr = double(REPR_SCRIPT).new()
-	_ally_repr = double(REPR_SCRIPT).new()
-	stub(_owner_repr, "AddStatusEffect").to_return(0)
-	stub(_ally_repr, "AddStatusEffect").to_return(1)
-	_battle_ui = double(BATTLE_UI_SCRIPT).new()
-	_battle_ui._turn_bar = double(TURN_BAR_SCRIPT).new()
 	_trait = PlanTrait.new()
 	_trait.Init()
 	_characters = {0: _owner, 1: _ally}
+	_positions = TestFactory.FakeTurnPositions.new()
 	# A two-player side with no enemies — exercises a sub-3 team on purpose.
-	_sides = CombatSides.new([0, 1], [])
-	_repr_array = []
-	_repr_array.resize(2)
-	_repr_array[0] = _owner_repr
-	_repr_array[1] = _ally_repr
-	_one_ally_behind = [1]
-	_no_allies_behind = []
-
-func after_each() -> void:
-	_owner_repr.free()
-	_ally_repr.free()
-	_battle_ui._turn_bar.free()
-	_battle_ui.free()
-	_item_col.free()
-	_main_inst.free()
-	main._instance = null
+	_resolver = TestFactory.make_resolver(_characters, CombatSides.new([0, 1], []), _positions)
 
 # --- Rarity tables ---
 
@@ -73,9 +40,9 @@ func test_percent_behind_threshold_legendary() -> void:
 
 func test_owner_is_never_empowered() -> void:
 	_owner._rarity = Types.Rarity.Legendary
-	stub(_battle_ui._turn_bar, "GetCharactersBehindBy").to_return(_one_ally_behind)
+	_positions.behind_IDs = [1]
 
-	_trait.StartOfTurn(0, _battle_ui, _characters, _repr_array, _sides)
+	_trait.StartOfTurn(0, _resolver)
 
 	assert_eq(_owner._active_buffs.size(), 0, "Tactician should not buff itself")
 
@@ -83,37 +50,35 @@ func test_owner_is_never_empowered() -> void:
 
 func test_ally_within_threshold_is_empowered_at_low_rarity() -> void:
 	_owner._rarity = Types.Rarity.Uncommon
-	stub(_battle_ui._turn_bar, "GetCharactersBehindBy").to_return(_one_ally_behind)
+	_positions.behind_IDs = [1]
 
-	_trait.StartOfTurn(0, _battle_ui, _characters, _repr_array, _sides)
+	_trait.StartOfTurn(0, _resolver)
 
 	assert_eq(_ally._active_buffs.size(), 1, "Ally within threshold should be empowered at any rarity")
 	assert_eq(_ally._active_buffs[0].type, Types.Buff_Type.Empower)
 
 func test_ally_within_threshold_is_empowered_at_high_rarity() -> void:
 	_owner._rarity = Types.Rarity.Legendary
-	stub(_battle_ui._turn_bar, "GetCharactersBehindBy").to_return(_one_ally_behind)
+	_positions.behind_IDs = [1]
 
-	_trait.StartOfTurn(0, _battle_ui, _characters, _repr_array, _sides)
+	_trait.StartOfTurn(0, _resolver)
 
 	assert_eq(_ally._active_buffs.size(), 1, "Ally within threshold should be empowered at Legendary rarity")
 
 func test_no_buff_when_no_allies_within_threshold() -> void:
 	_owner._rarity = Types.Rarity.Legendary
-	stub(_battle_ui._turn_bar, "GetCharactersBehindBy").to_return(_no_allies_behind)
+	_positions.behind_IDs = []
 
-	_trait.StartOfTurn(0, _battle_ui, _characters, _repr_array, _sides)
+	_trait.StartOfTurn(0, _resolver)
 
 	assert_eq(_ally._active_buffs.size(), 0,
 		"No ally buff should be applied when none qualify as within threshold")
 
-func test_threshold_passed_to_turn_bar_matches_rarity() -> void:
+func test_threshold_queried_matches_rarity() -> void:
 	_owner._rarity = Types.Rarity.Epic
-	var turn_bar: Object = _battle_ui._turn_bar
-	stub(turn_bar, "GetCharactersBehindBy").to_return(_no_allies_behind)
+	_positions.behind_IDs = []
 
-	_trait.StartOfTurn(0, _battle_ui, _characters, _repr_array, _sides)
+	_trait.StartOfTurn(0, _resolver)
 
-	assert_call_count(turn_bar, "GetCharactersBehindBy", 1)
-	var call_params: Array = get_call_parameters(turn_bar, "GetCharactersBehindBy", 0)
-	assert_eq(call_params, [0, 0.20], "Epic rarity should query the turn bar with a 20% threshold")
+	assert_eq(_positions.last_behind_query, [0, 0.20],
+		"Epic rarity should query the turn positions with a 20% threshold")

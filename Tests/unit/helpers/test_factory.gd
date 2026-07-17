@@ -1,5 +1,20 @@
 extends RefCounted
 
+## Headless stand-in for the turn bar's positional queries: every character counts as
+## inside every zone when `characters_in_zones` is set, and `behind_IDs` is returned
+## for reach queries (the last query's arguments are recorded for assertions).
+class FakeTurnPositions extends TurnPositions:
+	var characters_in_zones: bool = false
+	var behind_IDs: Array[int] = []
+	var last_behind_query: Array = []
+
+	func IsCharacterInZone(_p_character_ID: int, _p_zone_ID: int) -> bool:
+		return characters_in_zones
+
+	func GetCharactersBehindBy(p_owner_ID: int, p_bar_percent: float) -> Array[int]:
+		last_behind_query = [p_owner_ID, p_bar_percent]
+		return behind_IDs
+
 static func make_character() -> Character:
 	var c: Character = Character.new()
 	c._name = "TestCharacter"
@@ -30,6 +45,39 @@ static func make_full_roster() -> Dictionary:
 ## Sides matching make_full_roster(): players 0-2, monsters 3-5.
 static func make_full_sides() -> CombatSides:
 	return CombatSides.new([0, 1, 2], [3, 4, 5])
+
+## A resolver over the given roster with a fixed default seed, so tests are
+## reproducible unless they opt into another seed.
+static func make_resolver(
+		p_characters: Dictionary[int, Character],
+		p_sides: CombatSides,
+		p_turn_positions: TurnPositions = null,
+		p_seed: int = 0) -> BattleResolver:
+	return BattleResolver.new(p_characters, p_sides, p_turn_positions, p_seed)
+
+## A plain single-enemy damage skill scaling 1:1 with Attack.
+static func make_strike_skill() -> Skill:
+	var skill: Skill = Skill.new()
+	skill.name = "Strike"
+	skill.target = Types.Skill_Target.Single_Enemy
+	skill.damage_scaling = {Types.Attribute.Attack: 1.0}
+	return skill
+
+## A skill with no damage, buffs, or debuffs — resolving it only ticks the caster's
+## own statuses and cooldowns.
+static func make_empty_skill() -> Skill:
+	var skill: Skill = Skill.new()
+	skill.name = "Idle"
+	skill.target = Types.Skill_Target.Single_Enemy
+	return skill
+
+static func make_lava_zone_skill() -> Skill:
+	var skill: Skill = Skill.new()
+	skill.name = "Lava Zone"
+	skill.target = Types.Skill_Target.ZoneAll
+	skill.skill_type = Types.Skill_Type.Lava_Zone
+	skill.duration = 10
+	return skill
 
 static func make_loot_table() -> LootTable:
 	return LootTable.new()

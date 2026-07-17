@@ -26,32 +26,23 @@ func Init() -> void:
 	_title = "Plan ahead"
 	_body = "Casts Empower on allies who are close enough behind on the turn bar."
 
-func StartOfBattle(p_character_repr: CharacterRepresentation) -> void:
-	p_character_repr.SetTraitElement(_trait_texture, 0)
-	p_character_repr.SetTraitElementToolTip(_title, _body, 0)
+func StartOfBattle() -> void:
+	pass
 
-func StartOfTurn(
-		p_owner_ID: int,
-		p_battle_UI: BattleUI,
-		p_characters: Dictionary[int, Character],
-		p_character_repr: Array[CharacterRepresentation],
-		p_sides: CombatSides) -> void:
-	var rarity: Types.Rarity = p_characters[p_owner_ID]._rarity
+func StartOfTurn(p_owner_ID: int, p_resolver: BattleResolver) -> void:
+	var characters: Dictionary[int, Character] = p_resolver.GetCharacters()
+	var rarity: Types.Rarity = characters[p_owner_ID]._rarity
 	var threshold: float = GetReachThreshold(rarity)
 
-	var allies_behind: Array[int] = p_battle_UI._turn_bar.GetCharactersBehindBy(p_owner_ID, threshold)
+	var allies_behind: Array[int] = p_resolver.GetTurnPositions().GetCharactersBehindBy(p_owner_ID, threshold)
 	if (allies_behind.is_empty()):
 		return
 
-	var skill_targets: Array[int] = Skills.FindSkillTargets(
-			p_owner_ID, p_owner_ID, Types.Skill_Target.All_Other_Allies, p_characters, p_sides)
+	var skill_targets: Array[int] = p_resolver.FindSkillTargets(
+			p_owner_ID, p_owner_ID, Types.Skill_Target.All_Other_Allies)
 	if (skill_targets.is_empty()):
 		return
 
 	for id in allies_behind:
 		if (skill_targets.has(id)):
-			Skills.ApplyBuff(
-					p_characters[id],
-					_start_of_turn_buff,
-					p_character_repr[id],
-					p_battle_UI)
+			p_resolver.ApplyBuff(id, _start_of_turn_buff)

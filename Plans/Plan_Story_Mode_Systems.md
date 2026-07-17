@@ -78,8 +78,9 @@ elements — no story node type, no story gating inside adventure graphs.
   - pre-applied buffs/debuffs with explicit durations.
 - Pure data on the encounter definition; reuses the existing zone, status, and
   turn-bar systems — no new combat rules.
-- Ordering with `Plan_Headless_Combat_Core.md`: whichever lands second adapts
-  (same arrangement as the reagent plans).
+- The headless combat core has landed: scripted battle openings apply their
+  effects through `BattleResolver` (`ApplyBuff`/`ApplyDebuff`/`PlaceZone`), not
+  `battle.gd`/`Skills.gd` directly.
 - Tests: setup application as pure logic — zones placed, offsets applied,
   effects present with correct durations at battle start.
 

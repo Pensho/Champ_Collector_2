@@ -280,22 +280,42 @@ such as `cooldown_left`.
 
 ## 7. Combat system (as implemented)
 
-Combat lives in `Scripts/Battle/battle.gd` (`class_name Battle extends Node2D`), with stateless
-math and effect resolution delegated to the `Skills` static utility
-(`Scripts/Battle/Skills.gd`). For the *design* of the combat formulas, see `Concept_Document.md`;
-this section describes the *code path*.
+Combat is split across two layers:
+
+- **`BattleResolver`** (`Scripts/Battle/battle_resolver.gd`, `extends RefCounted`) — the headless
+  resolution core. It owns all per-combat transient state (Heap-On stacks, damage multipliers,
+  zones, status-effect identity), a seedable `RandomNumberGenerator` that every combat roll goes
+  through, and the battle-over check. It mutates `Character` state and reports everything that
+  happens as **`CombatResult`** records (`Scripts/Battle/combat_result.gd`) — each result is both
+  appended to the returned array and emitted through the `result_produced` signal. The resolver
+  never touches `CharacterRepresentation` or `BattleUI`.
+- **`Battle`** (`Scripts/Battle/battle.gd`, `extends Node2D`) — the scene. It feeds input into the
+  resolver and renders the results: life bars, combat text, status icons, turn-bar effects, the
+  turn indicator. Turn flow is an explicit `BattleState` state machine (`Advancing`,
+  `Awaiting_Player_Input`, `Selecting_Zone`, `Enemy_Acting`, `Resolving`, `Battle_Over`); zone
+  selection is a sub-state of player input, not a boolean.
+
+Stateless helpers (targeting, zone-target checks, status-effect rules, attribute-snapshot
+modifiers) remain as statics on `Skills` (`Scripts/Battle/Skills.gd`). For the *design* of the
+combat formulas, see `Concept_Document.md`; this section describes the *code path*.
 
 ### 7.1. Setup (`Battle.Init`)
 
 1. Reads `Context_Battle` from the container: background, lighting, enemy wave, loot table.
-2. Loads player characters into `_characters[0..2]`, setting `_currentHealth` to scaled max HP.
-3. Computes `_targeting_order` via `SetTargetingOrder()` — characters sorted by
+2. Builds `CombatSides` from the fielded rosters and constructs the `BattleResolver` over the
+   shared characters dictionary, connecting `result_produced` to the scene's renderer. When the
+   encounter comes from a generated adventure, the resolver is seeded from the adventure's
+   generation seed and current node index (`Battle.BattleSeed()`), making the battle's rolls
+   reproducible; otherwise the seed is randomized.
+3. Loads player characters into `_characters[0..2]`, setting `_current_health` to scaled max HP,
+   and applies adventure buffs/debuffs through `resolver.ApplyBuff`/`ApplyDebuff`.
+4. Computes `_targeting_order` via `SetTargetingOrder()` — characters sorted by
    `Health + Defence` descending (used by enemy AI to pick "tankiest valid" targets).
-4. Instantiates enemies into `_characters[3..5]`, jitters their speed by `randi_range(-3,3)`, and
-   scales them to the encounter difficulty with `LevelSystem.SetOpponentLevel()` (boss variant if
-   `_arguments["Boss_Scale"]` is present).
-5. Fires each character's `StartOfBattle` trait hook (if registered), then initializes the
-   battle UI and turn bar.
+5. Instantiates enemies into `_characters[3..5]`, jitters their speed by `randi_range(-3,3)` on
+   the **resolver's** generator, and scales them to the encounter difficulty with
+   `LevelSystem.SetOpponentLevel()` (boss variant if `_arguments["Boss_Scale"]` is present).
+6. Fires each character's `StartOfBattle` trait hook (logic reset only) and paints the initial
+   trait visuals via `trait.RefreshVisuals(repr)`, then initializes the battle UI and turn bar.
 
 ### 7.2. Turn order (the turn bar)
 
@@ -304,58 +324,70 @@ Each character's progress increases by `base_velocity * normalized_speed * delta
 `base_velocity = bar_width / TURN_DURATION_SECONDS` and `normalized_speed = speed / highest_speed`.
 When a character reaches the right edge, the bar reports that ID as the active turn.
 
-`Battle._process` drives this: it calls `turn_bar.Update()` for every character until
-`GetActiveTurnID()` returns a non-`-1` ID, then calls `StartTurn()`. While a turn is in progress
-no character advances.
+`Battle._process` drives this only in the `Advancing` state: it calls `turn_bar.Update()` for
+every living character until `GetActiveTurnID()` returns a non-`-1` ID, then calls `StartTurn()`.
 
-### 7.3. Taking a turn (`StartTurn`)
+The turn bar is still both state and view: zone occupancy and Plan-trait reach are positional
+questions only it can answer. The resolver reaches them through the **`TurnPositions`** interface
+(`Scripts/Battle/turn_positions.gd`) — `IsCharacterInZone` and `GetCharactersBehindBy` — with
+`TurnBarPositions` (`Scripts/UI/Battle_UI/turn_bar_positions.gd`) adapting the live node and the
+base class doubling as the headless default for tests. Long term the positions belong in the core.
 
-- Positions the turn indicator over the active character and fires the `StartOfTurn` trait hook
-  (which receives the `CombatSides` alongside the roster).
+### 7.3. Taking a turn (`StartTurn` and the state machine)
+
+- Positions the turn indicator over the active character and calls `resolver.BeginTurn(ID)`,
+  which fires the `StartOfTurn` trait hook (e.g. the Plan trait's reach-based Empower).
 - **Player turn** (`_sides.player.Has(ID)`): populates the skill buttons (icon, name,
-  description, cooldown) and waits for input.
-- **Enemy turn** (`_sides.enemy.Has(ID)`): calls `HandleEnemyTurn()`, which selects the first
-  off-cooldown skill (iterating skills in reverse), then either picks a free turn-bar zone (for
-  zone skills) or walks `_targeting_order` to find a living valid target via
-  `Skills.FindSkillTargets()` (which takes the `CombatSides` and resolves every ally/enemy
-  branch through it), and resolves.
+  description, cooldown) and enters `Awaiting_Player_Input`. Selecting a zone skill enters
+  `Selecting_Zone` and enables the zone buttons; selecting a non-zone skill returns to
+  `Awaiting_Player_Input`.
+- **Enemy turn** (`_sides.enemy.Has(ID)`): enters `Enemy_Acting` and calls `HandleEnemyTurn()`,
+  which selects the first off-cooldown skill via `SelectEnemySkillID()` (skipping zone skills when
+  no zone is free), then either places a random free zone (`resolver.PlaceZone`, rolled on the
+  resolver's generator) or walks `_targeting_order` for a living valid target via
+  `resolver.FindSkillTargets()`.
 
-Player input arrives as two handlers: `_on_battle_ui_battle_skill_selected(skill_ID)` records the
-selected skill (and, for zone skills, enables zone selection), and
-`_on_character_battle_target_selected(target_ID)` resolves the skill against the chosen target.
+Every resolution path funnels through `Battle.ResolveTurn(target_IDs)`: it enters `Resolving`,
+calls `resolver.ResolveSkill`, marks the turn complete on the bar, refreshes trait visuals, hides
+the skill UI, and returns to `Advancing` (or ends the battle).
 
-### 7.4. Skill resolution (`ResolveSkill`)
+### 7.4. Skill resolution (`BattleResolver.ResolveSkill`)
 
-`ResolveSkill(caster_ID, target_IDs, skill_ID)` is the core sequence:
+`ResolveSkill(caster_ID, target_IDs, skill_ID) -> Array[CombatResult]` is the core sequence:
 
 1. Snapshot caster attributes via `GetBattleAttributes()` (base + gear).
 2. Fire the `OnSkillCast` trait hook → returns a `TraitSkillResult` carrying a damage multiplier
    and turn-bar bump.
-3. Tick the caster's own active debuffs (`TriggerExistingCasterDebuffs`) and buffs
-   (`TriggerExistingCasterBuffs`) — these apply per-turn effects (e.g. Burning deals 4% of max HP)
-   and decrement durations.
-4. `Skills.ResolveSkillEffect` for caster-side mechanics (e.g. Heap On stacking).
-5. For each target: apply buff/debuff snapshots, optionally `CastBuff`/`CastDebuff` (debuffs are
-   accuracy-vs-resistance rolled), and compute damage with `Skills.DamageDealt`.
-6. Apply damage to `_currentHealth`, update the life bar, fire `OnDamageTaken`, and bump the
-   target on the turn bar by `skill.turn_effect + trait_result._turn_bar_bump`.
+3. Tick the caster's own active debuffs and buffs — per-turn effects (e.g. Burning deals 4% of
+   max HP, reported as a `Burning_Tick` result with a per-source damage split) and duration
+   decrements (reported as `Status_Duration` / `Statuses_Removed` results).
+4. Resolve caster-side skill mechanics (e.g. Heap On stacking against the resolver's per-combat
+   state).
+5. For each target: apply buff/debuff snapshots, fire `OnDefend`, optionally cast the skill's
+   buff/debuff (debuffs are accuracy-vs-resistance rolled on the resolver's generator; a failed
+   roll reports `Debuff_Resisted`), and compute damage.
+6. Apply damage to `_current_health` (clamped; an alive→dead transition clears the victim's
+   statuses, fires the `OnDeath` trait hook, and reports `Statuses_Cleared` + `Death`), and bump
+   the target on the turn bar by `skill.turn_effect + trait_result._turn_bar_bump`
+   (`Turn_Bar_Bump`).
 7. Decrement all of the caster's cooldowns and set the used skill's `cooldown_left = cooldown`.
-8. Mark the turn complete on the bar, run `TriggerZones()`, fire `EndOfTurn`, and clear the active
-   turn so the bar resumes.
+8. Run `TriggerZones()` and fire the `EndOfTurn` trait hook.
 
-The implemented damage formula (`Skills.DamageDealt`):
+The implemented damage formula (`BattleResolver._ResolveDamage`):
 
 ```
 caster_scaled = Σ over attrs ( skill.damage_scaling[attr] * caster[attr] * trait_multiplier )
 effective_defence = defender.Defence * skill.defense_ignore_factor
 damage_ratio = caster_scaled / (effective_defence + caster_scaled + 1)
 mitigation = MINIMUM_DMG_PERCENT + (1 - MINIMUM_DMG_PERCENT) * damage_ratio
-crit (if randi(0..100) <= CritChance): max(MINIMUM_CRIT_DAMAGE, CritDamage - defender.Knowledge*0.5) * 0.01
-damage = mitigation * caster_scaled * _damage_multiplier[caster] * crit * random(0.95..1.05)
+crit (if rng.randi(1..100) <= CritChance): max(MINIMUM_CRIT_DAMAGE, CritDamage - defender.Knowledge*0.5) * 0.01
+damage = mitigation * caster_scaled * damage_multiplier[caster] * crit * rng.random(0.95..1.05)
 ```
 
 Status effects are capped at `MAX_STATUS_EFFECTS` (8) per character; Burning is non-overwritable
-while the others refresh duration.
+while the others refresh duration. The resolver assigns each applied status a battle-unique ID
+(carried on `Status_Applied` results); the scene maps those IDs to the representation's icon slots
+when rendering.
 
 ### 7.5. Zones
 
@@ -369,18 +401,18 @@ var _target: Types.Skill_Target # ZoneAll / ZoneAlly / ZoneEnemy
 var _owner_knowledge: int = 0   # snapshotted at placement, see below
 ```
 
-Each turn, `Battle.TriggerZones()` checks which living, non-active characters sit inside a zone
-region (respecting the zone's ally/enemy targeting) and calls `Skills.ResolveZoneEffect()`:
-Flicker zones bump the character by `FLICKER_ZONE_BASE_BUMP` (15%); Lava zones apply Burning.
-Zones decrement and are erased at duration 0, and the number of live zones is capped at
-`NUMBER_OF_TURN_BAR_ZONES` (5).
+The resolver owns the live zones. `PlaceZone(zone_ID, owner_ID, skill)` creates one (reporting
+`Zone_Placed`); `TriggerZones(active_ID)` runs at the end of every `ResolveSkill`, checking which
+living, non-active characters sit inside a zone region (via `TurnPositions`, respecting the zone's
+ally/enemy targeting) and applying the effect: Flicker zones bump the character
+(`Turn_Bar_Bump`); Lava zones apply Burning (a silent `Status_Applied`). Each trigger decrements
+the zone and reports `Zone_Triggered`; expired zones are freed and erased. At most one zone fires
+per character per round, and the number of live zones is capped at `NUMBER_OF_TURN_BAR_ZONES` (5).
 
-**Knowledge scaling.** When a zone is created (`Zone.CreateNew`, called from
-`Battle._on_turn_bar_zone_selected`, the single call site for both player and enemy zone
-placement), the placing character's battle Knowledge is snapshotted into `_owner_knowledge`.
-Later Knowledge changes on that character do not retroactively affect the zone. When the zone
-triggers on an ally of its owner, the base effect magnitude is scaled by
-`Skills.AllyZoneMagnitude(base, owner_knowledge)`:
+**Knowledge scaling.** When a zone is created, the placing character's battle Knowledge is
+snapshotted into `_owner_knowledge`. Later Knowledge changes on that character do not
+retroactively affect the zone. When the zone triggers on an ally of its owner, the base effect
+magnitude is scaled by `Skills.AllyZoneMagnitude(base, owner_knowledge)`:
 
 ```
 AllyZoneMagnitude = base * (1.0 + owner_knowledge * ZONE_KNOWLEDGE_SCALING)
@@ -392,12 +424,13 @@ Burning) are unaffected by Knowledge. Zone duration and size are never scaled.
 
 ### 7.6. Ending combat
 
-`IsTheBattleOver()` returns `Player_Won` / `Monsters_Won` / `Ongoing` by scanning current health.
-`EndBattle()` resets the `Skills` static state, records the result in `_arguments`, and on victory:
-computes the loot budget (`LootManager.CalculateBudget`), distributes rewards
+`BattleResolver.IsTheBattleOver()` returns `Player_Won` / `Monsters_Won` / `Ongoing` by scanning
+team aliveness. `Battle.EndBattle()` enters `Battle_Over`, records the result in `_arguments`, and
+on victory: computes the loot budget (`LootManager.CalculateBudget`), distributes rewards
 (`LootManager.DistributeRewards`), adds any dropped equipment to the `ItemCollection`, awards
 experience via `LevelSystem.AddExperience`, restores player HP, then transitions to the
-post-battle scene through `main.GetInstance().change_scene()`.
+post-battle scene through `main.GetInstance().change_scene()`. The resolver (and all its
+per-combat state) is simply discarded with the scene — there is no global state to reset.
 
 ---
 
@@ -428,19 +461,27 @@ extension point for bespoke behavior.
 
 `CharacterTrait` (`Scripts/Character/CharacterTraits/character_trait.gd`, `extends Resource`) is
 the base class. It declares an `_execution_steps: Dictionary[Types.Combat_Event, Callable]` map and
-provides default (no-op, debug-printing) implementations of each hook:
+provides default (no-op, debug-printing) implementations of each hook. The combat hooks are
+**logic-only**: they mutate trait/`Character` state and report effects through the
+`BattleResolver` they receive (`ApplyBuff`, `RemoveBuff`, `EmitTraitText`, `GetRandom`,
+`GetTurnPositions`, …), never through UI types:
 
-| Hook | `Combat_Event` | Fired from `battle.gd` when… | Returns |
+| Hook | `Combat_Event` | Fired when… | Returns |
 |---|---|---|---|
-| `StartOfBattle` | `Start_Combat` | during `Init`, once per character | — |
-| `StartOfTurn` | `Start_Turn` | at `StartTurn` for the active character | — |
-| `EndOfTurn` | `End_Turn` | at the end of `ResolveSkill` | — |
-| `OnSkillCast` | `Skill_Cast` | at the start of `ResolveSkill` | `TraitSkillResult` |
-| `OnDamageTaken` | `Damage_Taken` | after a target takes damage | — |
-| `OnDeath` | `On_Death` | when a character drops to 0 HP | — |
+| `StartOfBattle()` | `Start_Combat` | during `Battle.Init`, once per character (logic reset) | — |
+| `StartOfTurn(owner_ID, resolver)` | `Start_Turn` | in `BeginTurn` for the active character | — |
+| `EndOfTurn(owner_ID, resolver)` | `End_Turn` | at the end of `ResolveSkill` | — |
+| `OnSkillCast(owner_ID, target_IDs, skill_name, caster_attributes, resolver)` | `Skill_Cast` | at the start of `ResolveSkill` | `TraitSkillResult` |
+| `OnDefend(defender_ID, defender_attributes, characters)` | `Defend` | when snapshotting a target's attributes | — |
+| `OnDamageTaken(owner_ID, rarity, resolver)` | `Damage_Taken` | before damage lands; returns the incoming-damage multiplier | `float` |
+| `OnDeath()` | `On_Death` | when a character drops to 0 HP (logic reset) | — |
+
+One **view hook** complements them: `RefreshVisuals(character_repr)` repaints the trait's icons,
+tooltips, and battlefield effects (e.g. sprite echoes) from current trait state. The battle scene
+calls it after `StartOfBattle` and after every resolved action; the resolver never does.
 
 A concrete trait subclasses `CharacterTrait`, registers the events it cares about in
-`_execution_steps`, and overrides the matching hooks. `battle.gd` always guards calls with
+`_execution_steps`, and overrides the matching hooks. Callers always guard with
 `_trait._execution_steps.has(<event>)`, so a trait only pays for the hooks it opts into.
 
 `OnSkillCast` returns a `TraitSkillResult`
@@ -506,21 +547,24 @@ Coverage: `test_adventure_state.gd`, `test_adventure_generator.gd`, `test_biome_
 The codebase mixes several inter-node communication mechanisms. In rough order of how often they
 appear:
 
-1. **Direct method/property calls** (dominant). `battle.gd` calls `Skills.*` statics and reaches
-   into `Character` fields and `CharacterRepresentation` members directly. Global state is reached
-   through `main.GetInstance()`.
-2. **Callables passed as parameters.** The turn bar receives `_on_turn_bar_zone_selected` as a
+1. **Signals at the battle-to-UI seam.** `BattleResolver` emits every `CombatResult` through its
+   `result_produced` signal; the battle scene connects once in `Init` and renders each record
+   (`Battle._on_resolver_result_produced`). The battle UI likewise emits
+   `battle_skill_selected(skill_ID)`, handled by `battle.gd`. This is the project's
+   highest-traffic boundary and it is signal-driven.
+2. **Direct method/property calls** (still common elsewhere). Scene code reaches into `Character`
+   fields and `CharacterRepresentation` members directly, and global state is reached through
+   `main.GetInstance()`.
+3. **Callables passed as parameters.** The turn bar receives `_on_turn_bar_zone_selected` as a
    `Callable` in `turn_bar.Init()`; zone buttons invoke it with a bound index.
-3. **Signals** (limited use). The battle UI emits e.g. `battle_skill_selected(skill_ID)`, handled
-   by `battle.gd._on_battle_ui_battle_skill_selected`.
 4. **Resource UID references.** Scenes, presets, and icons are referenced by `uid://…` strings and
    loaded on demand (`ResourceLoader.load` / `preload`).
 5. **Dictionary arguments.** `ContextContainer._arguments` carries free-form, stringly-typed data
    across scene transitions (difficulty, per-character damage, battle result).
 
-The project conventions in `CLAUDE.md` state a preference for signals over direct calls for
-cross-node communication; the as-built code leans heavily on direct calls instead. This is noted as
-an observation, not a defect — see [Section 15](#15-known-weaknesses-and-recommendations).
+The `CLAUDE.md` convention (prefer signals for cross-node communication) is now honored at the
+combat seam. The remaining direct-call seams (view-internal wiring, `main.GetInstance()`) are
+accepted as-is — see [Section 15.4](#154-signal-versus-direct-call-usage-is-inconsistent-with-the-stated-convention).
 
 ---
 
@@ -534,9 +578,11 @@ Tests use **GUT** (Godot Unit Test, 9.5.x), run headlessly from the project root
   -gdir=res://Tests/unit/ -gprefix=test_ -gsuffix=.gd -gexit
 ```
 
-Tests target **pure logic only** — combat math, targeting, leveling, loot, serialization — and
-deliberately avoid the scene tree, rendering, and UI. Shared fixtures live in
-`Tests/unit/helpers/test_factory.gd` (`make_character`, `make_loot_table`, `make_adventure_state`).
+Tests target **pure logic only** — combat resolution (`BattleResolver`, including a full seeded
+3-versus-3 battle in `test_battle_resolver.gd`), combat math, targeting, leveling, loot,
+serialization — and deliberately avoid the scene tree, rendering, and UI. Shared fixtures live in
+`Tests/unit/helpers/test_factory.gd` (`make_character`, `make_full_roster`, `make_resolver`,
+skill builders, and the `FakeTurnPositions` stub).
 The full coverage matrix and the rationale for what is *not* tested are maintained in
 `Test_Design_Document.md`; this document does not duplicate that detail.
 
@@ -577,26 +623,20 @@ This section is **forward-looking**. The items below are not yet acted on; they 
 current architecture is likely to cause friction and suggest directions. Nothing here describes
 existing behavior.
 
-### 15.1. User-interface and combat logic are tightly coupled
+### 15.1. User-interface and combat logic are tightly coupled — resolved
 
-`battle.gd` owns both game-state mutation and direct manipulation of `CharacterRepresentation`
-visuals, life bars, the turn indicator, and combat text. There is no view-model boundary.
+Resolved by the headless combat core: `BattleResolver` owns all combat mutation and reports
+`CombatResult` records; `battle.gd` is input handling, a turn-flow state machine, and rendering
+([Section 7](#7-combat-system-as-implemented)). The resolution path is unit-tested without the
+scene tree (`test_battle_resolver.gd`). One residue remains: turn-bar *positions* are still view
+state, reached through the `TurnPositions` interface — moving them into the core is the follow-up.
 
-*Impact:* combat logic cannot be unit-tested without the scene tree, which is why
-`Test_Design_Document.md` excludes the battle scene from logic tests.
-*Direction:* extract a headless combat-resolution layer (pure functions over `Character` state and
-turn order) that emits result events the UI renders, so the resolution path becomes testable
-independent of nodes.
+### 15.2. Static mutable state in `Skills` — resolved
 
-### 15.2. Static mutable state in `Skills`
-
-`Skills` keeps per-character arrays as `static var` (`_heap_on_stacks`, `_heap_on_value`,
-`_damage_multiplier`), reset between battles via `Skills.Reset()`.
-
-*Impact:* the combat math is not reentrant and carries hidden global state; a missed `Reset()` or
-any future parallel/replayed battle would corrupt results, and tests must remember to reset.
-*Direction:* move this transient per-combat state onto a battle-scoped object (or onto the
-`Character`/combat-context instance) so it is created and destroyed with the battle.
+Resolved: the per-combat state (`_heap_on_stacks`, `_heap_on_value`, `_damage_multiplier`) lives
+on the battle-scoped `BattleResolver` instance and is created and discarded with the battle;
+`Skills.Reset()` is gone and `Skills` keeps only stateless helpers (plus a static texture cache).
+Combat rolls all go through the resolver's injectable, seedable `RandomNumberGenerator`.
 
 ### 15.3. File and identifier casing diverges from the snake_case convention
 
@@ -609,15 +649,13 @@ and folders such as `CharacterTraits/`. A handful of `Character` members also us
 *Direction:* a dedicated rename pass (files and the stray members), updating `class_name`
 references and `.tres`/scene script paths together, ideally as one mechanical commit.
 
-### 15.4. Signal-versus-direct-call usage is inconsistent with the stated convention
+### 15.4. Signal-versus-direct-call usage is inconsistent with the stated convention — resolved for the combat seam
 
-`CLAUDE.md` prefers signals for cross-node communication, but most coupling is direct calls and
-Callables ([Section 12](#12-communication-patterns)).
-
-*Impact:* tighter coupling than the convention intends; harder to intercept or test interactions.
-*Direction:* decide deliberately per boundary — either relax the convention to match reality, or
-introduce signals at the highest-traffic seams (e.g. battle → UI result events, which also supports
-15.1). Either way, align the convention text and the code.
+The highest-traffic boundary is now signal-driven: `BattleResolver.result_produced` carries every
+combat event to the battle scene ([Section 12](#12-communication-patterns)). The remaining
+direct-call seams (view-internal wiring, `main.GetInstance()` access, Callable-based zone
+selection) are accepted as-is; the `CLAUDE.md` convention should be read as applying to
+cross-subsystem boundaries, not every node interaction.
 
 ### 15.5. Stringly-typed cross-scene arguments
 

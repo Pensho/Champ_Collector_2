@@ -7,9 +7,10 @@ Mana Burn, Sequence Lock, Frenzy, Rush, Exhert, Luck).
 
 ## Status
 
-Not started. Independent of the other plans; can run before or after
-`Plan_Headless_Combat_Core.md` (if after, the registry hooks into `BattleResolver`
-instead of `Skills`).
+Not started. Independent of the other plans. The headless combat core has landed:
+`BattleResolver` owns status application (`ApplyBuff`/`ApplyDebuff`/`RemoveBuff`) and
+reports `Status_Applied`/`Status_Duration`/`Statuses_Removed` results, so this plan's
+data-driven registry hooks into `BattleResolver` rather than the old `Skills` statics.
 
 ## Problem
 

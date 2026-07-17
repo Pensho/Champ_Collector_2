@@ -8,9 +8,8 @@ in `Plan_Reagent_Combat_Application.md`.
 ## Status
 
 Not started. Depends on `Plan_Reagent_Data_And_Catalog.md` (needs `ReagentData` and
-the registry). Does not touch `battle.gd`/`Skills.gd` combat resolution, so it is
-unaffected by `Plan_Headless_Combat_Core.md`; it does extend `loot_manager.gd` and
-the post-battle reward flow.
+the registry). Does not touch combat resolution (`BattleResolver`/`Skills.gd`); it
+does extend `loot_manager.gd` and the post-battle reward flow.
 
 ## Design (from Concept_Document.md 3.3.3)
 

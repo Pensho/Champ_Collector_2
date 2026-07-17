@@ -37,22 +37,24 @@ func Init() -> void:
 	_execution_steps[Types.Combat_Event.Skill_Cast] = Callable(self, "OnSkillCast")
 	_execution_steps[Types.Combat_Event.Defend] = Callable(self, "OnDefend")
 
-func StartOfBattle(p_character_repr: CharacterRepresentation) -> void:
+func StartOfBattle() -> void:
 	_momentum_stacks = 0
+
+func RefreshVisuals(p_character_repr: CharacterRepresentation) -> void:
+	var body_with_stacks: String = (_body + "\n" +
+			"Current Momentum Stacks: " + str(_momentum_stacks))
 	p_character_repr.SetTraitElement(_trait_texture, 0)
-	p_character_repr.SetTraitElementToolTip(_title, _body, 0)
+	p_character_repr.SetTraitElementToolTip(_title, body_with_stacks, 0)
 
 func OnSkillCast(
 		p_owner_ID: int,
 		_p_target_IDs: Array[int],
-		p_characters: Dictionary[int, Character],
-		p_character_repr: Array[CharacterRepresentation],
 		p_skill_name: String,
-		p_battle_ui: BattleUI,
-		p_caster_attributes: Dictionary[Types.Attribute, int]) -> TraitSkillResult:
+		p_caster_attributes: Dictionary[Types.Attribute, int],
+		p_resolver: BattleResolver) -> TraitSkillResult:
 	var result: TraitSkillResult = TraitSkillResult.new()
-	var rarity: Types.Rarity = p_characters[p_owner_ID]._rarity
-	
+	var rarity: Types.Rarity = p_resolver.GetCharacters()[p_owner_ID]._rarity
+
 	if OFFENSIVE_SKILL_NAMES.has(p_skill_name):
 		_momentum_stacks = min(_momentum_stacks + 1, MAX_MOMENTUM_STACKS)
 	elif defensive_skill_names.has(p_skill_name):
@@ -63,18 +65,13 @@ func OnSkillCast(
 			phalanx_guard_buff.duration = 2
 			phalanx_guard_buff.value = PHALANX_GUARD_DEFENSE.get(rarity, 0.0)
 			phalanx_guard_buff.name = "Phalanx Guard"
-			Skills.ApplyBuff(p_characters[p_owner_ID], phalanx_guard_buff, p_character_repr[p_owner_ID], p_battle_ui)
-	
+			p_resolver.ApplyBuff(p_owner_ID, phalanx_guard_buff)
+
 	if _momentum_stacks > 0:
 		var bonus_per_stack: float = MOMENTUM_PER_STACK.get(rarity, 0.0)
 		p_caster_attributes[Types.Attribute.Attack] += int(
 				ceilf(p_caster_attributes[Types.Attribute.Attack] * bonus_per_stack * _momentum_stacks))
 
-	_body = ("Offensive skills grant a Momentum stack that gives more Attack and less Defense per stack. " +
-			"Using a defensive skill grants Phalanx Guard and consumes all stacks.\n" +
-			"Current Momentum Stacks: " + str(_momentum_stacks))
-	p_character_repr[p_owner_ID].SetTraitElementToolTip(_title, _body, 0)
-	
 	return result
 
 func OnDefend(

@@ -13,6 +13,7 @@ const AVOIDANCE_INCREMENT: Dictionary[Types.Rarity, float] = {
 const TARGETING_DEFENCE_MULTIPLIER: float = 1.5
 
 var _avoidance_stacks: int = 0
+var _rarity_for_tooltip: Types.Rarity = Types.Rarity.Common
 
 # Temporary icon borrowed from Hemoclarity until dedicated Jester art exists.
 func Init() -> void:
@@ -24,38 +25,34 @@ func Init() -> void:
 	_execution_steps[Types.Combat_Event.Damage_Taken] = Callable(self, "OnDamageTaken")
 	_execution_steps[Types.Combat_Event.On_Death] = Callable(self, "OnDeath")
 
-func StartOfBattle(p_character_repr: CharacterRepresentation) -> void:
+func StartOfBattle() -> void:
 	_avoidance_stacks = 0
-	p_character_repr.SetTraitElement(_trait_texture, 0)
-	p_character_repr.SetTraitElementToolTip(_title, _body, 0)
-	p_character_repr.GetVisualEffects().SetSpriteEchoes(0)
 
-func OnDeath(p_character_repr: CharacterRepresentation) -> void:
+func OnDeath() -> void:
 	_avoidance_stacks = 0
-	p_character_repr.GetVisualEffects().SetSpriteEchoes(0)
+
+func RefreshVisuals(p_character_repr: CharacterRepresentation) -> void:
+	var increment: float = AVOIDANCE_INCREMENT.get(_rarity_for_tooltip, 0.0)
+	var body_with_stacks: String = _body + "\nAvoidance chance: " \
+	+ str(100.0 * (BASE_AVOID_CHANCE + (_avoidance_stacks * increment))) + "% / " \
+	+ str(100.0 * (BASE_AVOID_CHANCE + (MAX_AVOIDANCE_STACKS * increment))) + "% (max)"
+	p_character_repr.SetTraitElement(_trait_texture, 0)
+	p_character_repr.SetTraitElementToolTip(_title, body_with_stacks, 0)
+	p_character_repr.GetVisualEffects().SetSpriteEchoes(_avoidance_stacks)
 
 func GetAvoidChance(p_rarity: Types.Rarity) -> float:
 	return BASE_AVOID_CHANCE + AVOIDANCE_INCREMENT.get(p_rarity, 0.0) * _avoidance_stacks
 
-func UpdateTooltip(p_character_repr: CharacterRepresentation, p_rarity: Types.Rarity) -> void:
-	var body_with_stacks: String = _body + "\nAvoidance chance: " \
-	+ str(100.0 * (BASE_AVOID_CHANCE + (_avoidance_stacks * AVOIDANCE_INCREMENT.get(p_rarity, 0.0)))) + "% / " \
-	+ str(100.0 * (BASE_AVOID_CHANCE + (MAX_AVOIDANCE_STACKS * AVOIDANCE_INCREMENT.get(p_rarity, 0.0)))) + "% (max)"
-	p_character_repr.SetTraitElementToolTip(_title, body_with_stacks, 0)
-
-func OnDamageTaken(p_character_repr: CharacterRepresentation, p_rarity: Types.Rarity, p_battle_ui: BattleUI) -> float:
+func OnDamageTaken(p_owner_ID: int, p_rarity: Types.Rarity, p_resolver: BattleResolver) -> float:
 	var chance: float = GetAvoidChance(p_rarity)
+	_rarity_for_tooltip = p_rarity
 
-	if randf() < chance:
+	if(p_resolver.GetRandom().randf() < chance):
 		_avoidance_stacks = 0
-		p_battle_ui.SpawnCombatText("Avoided!", p_character_repr.position + p_battle_ui.COMBAT_TEXT_SPAWN_POINT)
-		UpdateTooltip(p_character_repr, p_rarity)
-		p_character_repr.GetVisualEffects().SetSpriteEchoes(0)
+		p_resolver.EmitTraitText(p_owner_ID, "Avoided!")
 		return 0.0
 
 	_avoidance_stacks = min(_avoidance_stacks + 1, MAX_AVOIDANCE_STACKS)
-	UpdateTooltip(p_character_repr, p_rarity)
-	p_character_repr.GetVisualEffects().SetSpriteEchoes(_avoidance_stacks)
 	return 1.0
 
 func GetTargetingDefenceMultiplier() -> float:

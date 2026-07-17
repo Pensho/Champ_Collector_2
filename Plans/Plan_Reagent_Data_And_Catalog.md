@@ -8,8 +8,7 @@ behavior yet. Successors: `Plan_Reagent_Inventory_And_Storage_UI.md`,
 ## Status
 
 Not started. No dependencies on other plans. Purely additive data layer; does not
-touch `battle.gd` or `Skills.gd`, so it is unaffected by
-`Plan_Headless_Combat_Core.md`.
+touch `battle.gd`, `Skills.gd`, or `BattleResolver`.
 
 ## Design (from Concept_Document.md 3.3.3)
 

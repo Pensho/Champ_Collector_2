@@ -117,12 +117,14 @@ func test_missing_slot_is_excluded() -> void:
 # --- RollsCritical ---
 
 func test_zero_crit_chance_never_crits() -> void:
+	var random: RandomNumberGenerator = RandomNumberGenerator.new()
 	for _i in range(1000):
-		assert_false(Skills.RollsCritical(0), "0%% crit chance must never roll a critical")
+		assert_false(Skills.RollsCritical(0, random), "0%% crit chance must never roll a critical")
 
 func test_full_crit_chance_always_crits() -> void:
+	var random: RandomNumberGenerator = RandomNumberGenerator.new()
 	for _i in range(1000):
-		assert_true(Skills.RollsCritical(100), "100%% crit chance must always roll a critical")
+		assert_true(Skills.RollsCritical(100, random), "100%% crit chance must always roll a critical")
 
 # --- CorrectZoneTarget ---
 
