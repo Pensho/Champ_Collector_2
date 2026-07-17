@@ -28,7 +28,20 @@ Suggested order (dependencies noted inside each plan):
    4. `Plan_Sorcerer_Arcane_Instability.md` — the Sorcerer passive consuming that
       hook (Sorcerer champion itself is a separate prerequisite task).
 
-6. `Plan_Story_Mode_Systems.md` — the systems that deliver story mode (story
+6. `Plan_Status_Effect_Implementation.md` — the full status effect catalog
+   (`Concept_Document.md` 3.2.3) as `StatusEffectData` resources, batched by
+   mechanism, plus the placeholder icon generator (also serving skills and
+   passives later). Builds on the landed `StatusEffectData`/`StatusEffectRegistry`
+   work; no dependency on skills — the reverse dependency of plan 7.
+
+7. `Plan_Skill_Implementation.md` — the skill catalog made real: champion Role
+   kits (`Concept_Document.md` 3.2.4) and opponent skills
+   (`Encounter_Design_Document.md` section 1) in six mechanical batches.
+   Depends on `Plan_Status_Effect_Implementation.md` (effects, healing hook,
+   icon generator); the final batch assembles the enemy presets the encounter
+   catalog needs, so it feeds `Plan_Encounter_Solution_Design.md` playability.
+
+8. `Plan_Story_Mode_Systems.md` — the systems that deliver story mode (story
    state handler, dialogue overlay, flag-driven hub variants, act gating,
    scripted battle openings, guest champions). The state handler and dialogue
    overlay are independent and can start any time; scripted openings apply
