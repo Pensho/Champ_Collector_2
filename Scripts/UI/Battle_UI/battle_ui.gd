@@ -2,8 +2,10 @@ class_name BattleUI extends Control
 
 signal battle_skill_selected(p_skill_ID: int)
 signal battle_reagent_selected(p_reagent_index: int)
+signal reagent_confirmed(p_reagent_index: int)
 
 const COMBAT_EFFECT_TEXT_TEMPLATE = preload("uid://caq22aj34qk1f")
+const BUTTON_WITH_OPTIONS_SCENE = preload("uid://c7smqpmfvs0ih")
 const SKILL_GLOW_POS_HIDDEN: Vector2 = Vector2(-2000.0, 0.0)
 const COMBAT_TEXT_SPAWN_POINT: Vector2 = Vector2(100, 70)
 const TEXT_SPAWN_DELAY: float = 0.25
@@ -24,6 +26,8 @@ var _spawn_timer: float = 0.0
 var _battle_duration := 0.0
 var _skill_textures: Dictionary[String, Texture2D]
 var _environment_effects: Array[Node]
+var _reagent_confirm: ButtonWithOptions
+var _pending_reagent_index: int = -1
 
 @warning_ignore_start("unused_private_class_variable")
 @onready var skill_focus: TextureRect = $Skill_Focus
@@ -36,6 +40,13 @@ func Init(p_environment_effects: Array[PackedScene]) -> void:
 	SKILL_GLOW_POS_3 = Vector2(_skill_buttons[2].position.x - 25.0, _skill_buttons[2].position.y - 25.0)
 	for i in p_environment_effects:
 		_environment_effects.append(i.instantiate())
+
+	_reagent_confirm = BUTTON_WITH_OPTIONS_SCENE.instantiate()
+	add_child(_reagent_confirm)
+	_reagent_confirm.SetLeftButton("Use", _on_reagent_confirm_use_button_up)
+	_reagent_confirm.position = Vector2i(
+			(get_viewport_rect().size * 0.5) - (_reagent_confirm.GetSize() * 0.5))
+	_reagent_confirm.hide()
 
 func _process(delta: float) -> void:
 	_battle_duration += delta
@@ -94,6 +105,15 @@ func SetReagent(p_icon: Texture, p_title: String, p_description: String, p_slot:
 
 	_reagent_buttons[p_slot].icon = p_icon
 	_reagent_buttons[p_slot].SetToolTip(p_title, p_description)
+
+func ShowReagentConfirm(p_reagent_index: int, p_title: String, p_description: String) -> void:
+	_pending_reagent_index = p_reagent_index
+	_reagent_confirm.SetText(p_title, p_description)
+	_reagent_confirm.show()
+
+func _on_reagent_confirm_use_button_up() -> void:
+	_reagent_confirm.hide()
+	reagent_confirmed.emit(_pending_reagent_index)
 
 func ActiveSkillGlow(p_skill_ID: int) -> void:
 	match p_skill_ID:

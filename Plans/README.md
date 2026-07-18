@@ -29,8 +29,11 @@ Suggested order (dependencies noted inside each plan):
       `LootManager`/`LootTable`, and the storage/sell view in
       `Inspect_Collection_Menu` are live (see `Technical_Design_Document.md`
       sections 6.1 and 10.1).
-   3. `Plan_Reagent_Combat_Application.md` — loadout, in-battle free-action
-      consumption, `Reagent_Consumed` hook.
+   3. Reagent combat application — completed and deleted; pre-battle loadout
+      selection, headless free-action resolution (`BattleResolver.ResolveReagent`,
+      `ReagentResolver`, `ReagentLoadout`), the `Reagent_Consumed` trait hook, and
+      the in-battle reagent tray are live (see `Technical_Design_Document.md`
+      section 7.7).
    4. `Plan_Sorcerer_Arcane_Instability.md` — the Sorcerer passive consuming that
       hook (Sorcerer champion itself is a separate prerequisite task).
 

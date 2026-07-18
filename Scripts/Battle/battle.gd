@@ -501,6 +501,12 @@ func _on_battle_ui_battle_reagent_selected(p_reagent_index: int) -> void:
 		print("Reagent at index ", p_reagent_index, " has already been consumed this battle.")
 		return
 	var reagent: ReagentData = ReagentRegistry.Get(_reagent_loadout.KeyAt(p_reagent_index))
+	_battle_ui.ShowReagentConfirm(p_reagent_index, reagent.display_name, reagent.description)
+
+func _on_battle_ui_reagent_confirmed(p_reagent_index: int) -> void:
+	if(BattleState.Awaiting_Player_Input != _state or _reagent_loadout.IsSpent(p_reagent_index)):
+		return
+	var reagent: ReagentData = ReagentRegistry.Get(_reagent_loadout.KeyAt(p_reagent_index))
 	match reagent.target_kind:
 		ReagentData.TargetKind.Self_Target:
 			_ResolveReagentConsumption(p_reagent_index, _turn_character_ID)
@@ -515,8 +521,10 @@ func _on_battle_ui_battle_reagent_selected(p_reagent_index: int) -> void:
 func _ResolveReagentConsumption(p_reagent_index: int, p_target_ID: int) -> void:
 	if(not _reagent_loadout.TryConsume(p_reagent_index, main.GetInstance()._reagent_collection)):
 		return
+	var reagent: ReagentData = ReagentRegistry.Get(_reagent_loadout.KeyAt(p_reagent_index))
 	_resolver.ResolveReagent(_turn_character_ID, _reagent_loadout.KeyAt(p_reagent_index), p_target_ID)
 	_battle_ui._reagent_buttons[p_reagent_index].MarkSpent()
+	_battle_ui.SpawnCombatText(reagent.display_name, CombatTextPosition(_turn_character_ID), Color(0.6, 0.9, 1.0, 1.0))
 	RefreshAllTraitVisuals()
 	_selected_reagent_index = -1
 	_state = BattleState.Awaiting_Player_Input
