@@ -328,14 +328,15 @@ Debuffs:
 * Enfeeble: Reduces the Attack by 30%.
 * Mana Burn: Deals damage whenever the target uses a non-basic skill, scaling based on the target's Mysticism. (Not yet implemented)
 * Burning: Deals 4% of max Health as damage per stack; Burning stacks, so repeated applications (e.g. standing in a Lava zone) add independent instances up to the status-effect cap.
-* Sequence Lock: Speed cannot be increased or decreased. (Not yet implemented)
-* Suppress: Reduces Mysticism by 30%. (Not yet implemented)
-* Slow: Reduces Speed by 15%. (Not yet implemented)
-* Blind: Reduces Accuracy by 30%. (Not yet implemented)
-* Unravel: Reduces Resistance by 30%. (Not yet implemented)
-* Confound: Reduces Knowledge by 30%. (Not yet implemented)
-* Exposed Facet: Attacks against the character gain +15 percentage points Critical Chance. (Not yet implemented)
-* Cracked Facet: Critical hits against the character deal +25% Critical Damage. (Not yet implemented)
+* Sequence Lock: Speed cannot be increased or decreased.
+* Suppress: Reduces Mysticism by 30%.
+* Slow: Reduces Speed by 15%. (Speed penalty applies to combat calculations; the turn-bar-rate
+  half is dormant until the turn bar reads live combat attributes instead of only base + gear)
+* Blind: Reduces Accuracy by 30%.
+* Unravel: Reduces Resistance by 30%.
+* Confound: Reduces Knowledge by 30%.
+* Exposed Facet: Attacks against the character gain +15 percentage points Critical Chance.
+* Cracked Facet: Critical hits against the character deal +25% Critical Damage.
 * Bleed: At the start of the character's turn, they take damage scaling with the caster's Attack. (Not yet implemented)
 * Plague: Deals magical damage each turn scaling with the caster's Mysticism; when it expires, it spreads to a random other enemy with fresh duration. (Not yet implemented)
 * Blight: Healing received is reduced by 50%. (Not yet implemented)
@@ -352,28 +353,28 @@ Buffs:
 * Empower: Increases Attack by 30%.
 * Fortify: Increases Defense by 30%.
 * Daunting Strength: Doubles the damage of the next attack.
-* Frenzy: Increases Attack and Speed but reduces Defense and Accuracy. (Not yet implemented)
+* Frenzy: Increases Attack and Speed by 30% but reduces Defense and Accuracy by 30%.
 * Rush: Increases all primary attributes except Health by 30%; when the buff expires, it applies the Stun debuff to the character for 1 turn. This Stun cannot be resisted and is applied after other expiring buffs (such as Aegis) are removed. (Not yet implemented)
 * Exhert: Increases all primary attributes except Health by 20%, but the character loses 5% of their max Health every time they take a turn. (Not yet implemented)
 * Luck: Roll calculations twice and take the better result. (Not yet implemented)
 * Phalanx Guard: Gain bonus defense per stack of momentum consumed. (Lancer Specific)
-* Attune: Increases Mysticism by 30%. (Not yet implemented)
-* Haste: Increases Speed by 20%; Haste stacks, so repeated applications add independent instances up to the status-effect cap. (Not yet implemented)
-* True Aim: Increases Accuracy by 30%. (Not yet implemented)
-* Clarity: Increases Resistance by 30%. (Not yet implemented)
-* Keen Edge: Increases Critical Chance by 15 percentage points. (Not yet implemented)
-* Insight: Increases Knowledge by 30%. (Not yet implemented)
+* Attune: Increases Mysticism by 30%.
+* Haste: Increases Speed by 20%; Haste stacks, so repeated applications add independent instances up to the status-effect cap. (Speed bonus applies to combat calculations; the turn-bar-rate half is dormant until the turn bar reads live combat attributes instead of only base + gear)
+* True Aim: Increases Accuracy by 30%.
+* Clarity: Increases Resistance by 30%.
+* Keen Edge: Increases Critical Chance by 15 percentage points.
+* Insight: Increases Knowledge by 30%.
 * Regeneration: Heals 4% of max Health at the start of each turn. (Not yet implemented)
 * Barrier: A shield that absorbs damage up to a set amount before Health is touched. Barriers do not stack; a new Barrier replaces an existing one only if it is larger. (Not yet implemented)
 * Deathward: The next hit that would be fatal instead leaves the character at 1 Health, then the buff is consumed. (Not yet implemented)
 * Aegis: Blocks the next debuff that would land on the character, then the buff is consumed. (Not yet implemented)
 * Mirror Coat: When a debuff lands on the character, a copy is applied to the attacker, checked against the attacker's Resistance as normal. (Not yet implemented)
-* Opportunist: The character's attacks deal +10% damage per debuff on the target. (Not yet implemented)
+* Opportunist: The character's attacks deal +10% damage per debuff on the target.
 * Catalyst: The next reagent the character consumes has +50% effect. Stacks additively with other reagent potency modifiers; has no effect on binary reagents (see section 3.3.3). (Not yet implemented)
 * Wanderlust: At the start of each of the character's turns, gain +20% to one random primary stat until their next turn. (Not yet implemented)
 * Overflow: When this buff expires, it deals magical damage to all enemies, scaling with the holder's Mysticism. (Not yet implemented)
-* Vigor: Increases max Health by 30%. (Not yet implemented)
-* Lethal Precision: Increases Critical Damage by 50%. (Not yet implemented)
+* Vigor: Increases max Health by 30%.
+* Lethal Precision: Increases Critical Damage by 50 percentage points.
 * Spotlight: The character is much more likely to be targeted by enemies and takes 10% less damage. (Not yet implemented)
 * Premonition: The next attack against the character automatically misses, then the buff is consumed. (Not yet implemented)
 * Rehearsed: The character's next non-basic skill does not go on cooldown, then the buff is consumed. (Not yet implemented)

@@ -58,6 +58,52 @@ const REAGENT_FAMILY_TABLE: Array = [
 			"color": Color(0.35, 0.12, 0.12, 1.0) },
 ]
 
+# One row per batch-1 status effect (Plan_Status_Effect_Implementation.md). Status
+# effects aren't rarity-tiered, so each row writes a single flat-color PNG rather than
+# one per RARITY_TINTS entry. Buffs use a green/blue hue family, debuffs a red/purple
+# one; each effect gets a distinct hue within its family.
+#   folder, base_name, size, color
+const STATUS_EFFECT_TABLE: Array = [
+	# Debuffs (red/purple family)
+	{ "folder": "Status_Effects/Suppress", "base_name": "Suppress", "size": 64,
+			"color": Color(0.55, 0.20, 0.65, 1.0) },
+	{ "folder": "Status_Effects/Slow", "base_name": "Slow", "size": 64,
+			"color": Color(0.70, 0.30, 0.15, 1.0) },
+	{ "folder": "Status_Effects/Blind", "base_name": "Blind", "size": 64,
+			"color": Color(0.60, 0.15, 0.15, 1.0) },
+	{ "folder": "Status_Effects/Unravel", "base_name": "Unravel", "size": 64,
+			"color": Color(0.65, 0.25, 0.45, 1.0) },
+	{ "folder": "Status_Effects/Confound", "base_name": "Confound", "size": 64,
+			"color": Color(0.45, 0.15, 0.55, 1.0) },
+	{ "folder": "Status_Effects/Exposed_Facet", "base_name": "Exposed_Facet", "size": 64,
+			"color": Color(0.80, 0.35, 0.20, 1.0) },
+	{ "folder": "Status_Effects/Cracked_Facet", "base_name": "Cracked_Facet", "size": 64,
+			"color": Color(0.75, 0.10, 0.30, 1.0) },
+	{ "folder": "Status_Effects/Sequence_Lock", "base_name": "Sequence_Lock", "size": 64,
+			"color": Color(0.50, 0.10, 0.10, 1.0) },
+	# Buffs (green/blue family)
+	{ "folder": "Status_Effects/Attune", "base_name": "Attune", "size": 64,
+			"color": Color(0.30, 0.55, 0.80, 1.0) },
+	{ "folder": "Status_Effects/Haste", "base_name": "Haste", "size": 64,
+			"color": Color(0.20, 0.75, 0.55, 1.0) },
+	{ "folder": "Status_Effects/True_Aim", "base_name": "True_Aim", "size": 64,
+			"color": Color(0.15, 0.65, 0.35, 1.0) },
+	{ "folder": "Status_Effects/Clarity", "base_name": "Clarity", "size": 64,
+			"color": Color(0.35, 0.80, 0.75, 1.0) },
+	{ "folder": "Status_Effects/Insight", "base_name": "Insight", "size": 64,
+			"color": Color(0.20, 0.45, 0.75, 1.0) },
+	{ "folder": "Status_Effects/Vigor", "base_name": "Vigor", "size": 64,
+			"color": Color(0.25, 0.70, 0.30, 1.0) },
+	{ "folder": "Status_Effects/Keen_Edge", "base_name": "Keen_Edge", "size": 64,
+			"color": Color(0.40, 0.70, 0.90, 1.0) },
+	{ "folder": "Status_Effects/Lethal_Precision", "base_name": "Lethal_Precision", "size": 64,
+			"color": Color(0.15, 0.55, 0.85, 1.0) },
+	{ "folder": "Status_Effects/Frenzy", "base_name": "Frenzy", "size": 64,
+			"color": Color(0.60, 0.75, 0.20, 1.0) },
+	{ "folder": "Status_Effects/Opportunist", "base_name": "Opportunist", "size": 64,
+			"color": Color(0.20, 0.60, 0.65, 1.0) },
+]
+
 # Rarity tier order, tint color, and blend strength (how far the base hue shifts
 # toward the tint). Blend strength increases with rarity.
 const RARITY_TINTS: Array = [
@@ -93,6 +139,26 @@ func _run() -> void:
 				continue
 			print("wrote: %s (%dx%d)" % [path, size, size])
 			written_count += 1
+	for status_row in STATUS_EFFECT_TABLE:
+		var folder_path: String = "%s/%s" % [ICON_ROOT, status_row["folder"]]
+		var make_result: int = DirAccess.make_dir_recursive_absolute(folder_path)
+		if make_result != OK and not DirAccess.dir_exists_absolute(folder_path):
+			push_error("Could not create folder: %s" % folder_path)
+			continue
+		var path: String = "%s/%s.png" % [folder_path, status_row["base_name"]]
+		if not OVERWRITE and FileAccess.file_exists(path):
+			print("skip (exists): %s" % path)
+			skipped_count += 1
+			continue
+		var size: int = status_row["size"]
+		var image := Image.create(size, size, false, Image.FORMAT_RGBA8)
+		image.fill(status_row["color"])
+		var save_result: int = image.save_png(path)
+		if save_result != OK:
+			push_error("Failed to write: %s" % path)
+			continue
+		print("wrote: %s (%dx%d)" % [path, size, size])
+		written_count += 1
 	print("---")
 	print("Done. %d written, %d skipped." % [written_count, skipped_count])
 

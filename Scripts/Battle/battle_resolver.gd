@@ -201,6 +201,8 @@ func ApplyBuff(p_target_ID: int, p_buff_template: StatusEffects.Buff) -> Array[C
 	if(Skills.HasMaxStatusEffects(target)):
 		return _EndBatch()
 	var data: StatusEffectData = StatusEffectRegistry.BuffData(p_buff_template.type)
+	if(_BlockedBySequenceLock(data, target)):
+		return _EndBatch()
 
 	if(null == data or not data.stackable):
 		for i in target._active_buffs.size():
@@ -229,6 +231,8 @@ func ApplyDebuff(p_target_ID: int, p_debuff_template: StatusEffects.Debuff) -> A
 	if(Skills.HasMaxStatusEffects(target)):
 		return _EndBatch()
 	var data: StatusEffectData = StatusEffectRegistry.DebuffData(p_debuff_template.type)
+	if(_BlockedBySequenceLock(data, target)):
+		return _EndBatch()
 
 	if(null == data or not data.stackable):
 		for i in target._active_debuffs.size():
@@ -244,6 +248,7 @@ func ApplyDebuff(p_target_ID: int, p_debuff_template: StatusEffects.Debuff) -> A
 	new_debuff.duration = p_debuff_template.duration
 	new_debuff.name = p_debuff_template.name
 	new_debuff.source_ID = p_debuff_template.source_ID
+	new_debuff.value = p_debuff_template.value if 0.0 != p_debuff_template.value or null == data else data.magnitude
 	new_debuff.ID = _NextStatusID()
 	target._active_debuffs.append(new_debuff)
 	_EmitDebuffApplied(p_target_ID, new_debuff, new_debuff.name)
@@ -410,8 +415,51 @@ func _NextStatusID() -> int:
 	return _next_status_ID - 1
 
 
+func _BlockedBySequenceLock(p_data: StatusEffectData, p_target: Character) -> bool:
+	if(null == p_data or not p_data.attribute_modifiers.has(Types.Attribute.Speed)):
+		return false
+	for debuff in p_target._active_debuffs:
+		if(Types.Debuff_Type.Sequence_Lock == debuff.type):
+			return true
+	return false
+
+
+func _AttackerCritChanceBonus(p_target: Character) -> int:
+	var bonus: int = 0
+	for debuff in p_target._active_debuffs:
+		var data: StatusEffectData = StatusEffectRegistry.DebuffData(debuff.type)
+		if(null != data and StatusEffectData.MagnitudeKind.AttackerCritChanceBonus == data.magnitude_kind):
+			bonus += int(debuff.value)
+	return bonus
+
+
+func _AttackerCritDamageBonus(p_target: Character) -> int:
+	var bonus: int = 0
+	for debuff in p_target._active_debuffs:
+		var data: StatusEffectData = StatusEffectRegistry.DebuffData(debuff.type)
+		if(null != data and StatusEffectData.MagnitudeKind.AttackerCritDamageBonus == data.magnitude_kind):
+			bonus += int(debuff.value)
+	return bonus
+
+
+func _OpportunistDamageMultiplier(p_caster_ID: int, p_target: Character) -> float:
+	if(not _characters.has(p_caster_ID)):
+		return 1.0
+	var multiplier: float = 1.0
+	for buff in _characters[p_caster_ID]._active_buffs:
+		var data: StatusEffectData = StatusEffectRegistry.BuffData(buff.type)
+		if(null != data and StatusEffectData.MagnitudeKind.PerTargetDebuffDamagePercent == data.magnitude_kind):
+			multiplier += buff.value * p_target._active_debuffs.size()
+	return multiplier
+
+
 func _MaxHealth(p_character: Character) -> int:
-	return p_character.GetBattleAttribute(Types.Attribute.Health) * GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER
+	var health: int = p_character.GetBattleAttribute(Types.Attribute.Health)
+	for buff in p_character._active_buffs:
+		var data: StatusEffectData = StatusEffectRegistry.BuffData(buff.type)
+		if(null != data and StatusEffectData.MagnitudeKind.MaxHealthAttributePercent == data.magnitude_kind):
+			health += int(ceilf(health * buff.value))
+	return health * GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER
 
 
 func _EmitStatusDuration(p_target_ID: int, p_status_ID: int, p_duration: int) -> void:
@@ -487,8 +535,6 @@ func _ResolveSkillEffect(
 			_heap_on_stacks[p_caster_ID] = _heap_on_stacks.get(p_caster_ID, 0) + 1
 
 
-## Ticks the caster's own debuffs at the start of their action. Burning deals damage;
-## the tick is reported with a per-source split for post-battle damage attribution.
 func _TriggerExistingCasterDebuffs(
 		p_caster_ID: int,
 		p_caster_attributes: Dictionary[Types.Attribute, int]) -> void:
@@ -508,9 +554,8 @@ func _TriggerExistingCasterDebuffs(
 					if(not burning_damage_by_source.has(debuff.source_ID)):
 						burning_damage_by_source[debuff.source_ID] = 0
 					burning_damage_by_source[debuff.source_ID] += tick_damage
-				StatusEffectData.MagnitudeKind.AttributePercent:
-					p_caster_attributes[data.affected_attribute] -= int(
-							ceilf(p_caster_attributes[data.affected_attribute] * data.magnitude))
+				StatusEffectData.MagnitudeKind.AttributePercent, StatusEffectData.MagnitudeKind.AttributePercentagePointAdd:
+					Skills.ApplyAttributeModifiers(data, debuff.value, p_caster_attributes)
 				_:
 					pass
 
@@ -545,9 +590,8 @@ func _TriggerExistingCasterBuffs(
 		var data: StatusEffectData = StatusEffectRegistry.BuffData(buff.type)
 		if(null != data and data.applies_on_self_tick):
 			match data.magnitude_kind:
-				StatusEffectData.MagnitudeKind.AttributePercent:
-					p_caster_attributes[data.affected_attribute] += int(
-							ceilf(p_caster_attributes[data.affected_attribute] * buff.value))
+				StatusEffectData.MagnitudeKind.AttributePercent, StatusEffectData.MagnitudeKind.AttributePercentagePointAdd:
+					Skills.ApplyAttributeModifiers(data, buff.value, p_caster_attributes)
 				StatusEffectData.MagnitudeKind.DamageMultiplier:
 					_damage_multiplier[p_caster_ID] = _damage_multiplier.get(p_caster_ID, 1.0) * buff.value
 				_:
@@ -564,15 +608,19 @@ func _TriggerExistingCasterBuffs(
 		removed.target_ID = p_caster_ID
 		removed.status_IDs = status_IDs_to_be_removed
 		_Emit(removed)
+		# A max-Health buff may have just expired; reclamp current health to
+		# the new, smaller max (_MaxHealth reads the buffs that remain after the filter above).
+		caster._current_health = mini(caster._current_health, _MaxHealth(caster))
 
 
-## Applies the cast skill's buff to a target (announced with the buff's enum name).
 func _CastBuff(p_target_ID: int, p_skill: Skill) -> void:
 	var target: Character = _characters[p_target_ID]
 	if(Skills.HasMaxStatusEffects(target)):
 		return
 	var buff_type: Types.Buff_Type = p_skill.buffs[p_skill.target]
 	var data: StatusEffectData = StatusEffectRegistry.BuffData(buff_type)
+	if(_BlockedBySequenceLock(data, target)):
+		return
 
 	if(null == data or not data.stackable):
 		for i in target._active_buffs.size():
@@ -592,7 +640,6 @@ func _CastBuff(p_target_ID: int, p_skill: Skill) -> void:
 	_EmitBuffApplied(p_target_ID, new_buff, Types.Buff_Type.keys()[new_buff.type])
 
 
-## Applies the cast skill's debuff to a target, rolled accuracy versus resistance.
 func _CastDebuff(
 		p_target_ID: int,
 		p_target_resistance: int,
@@ -614,6 +661,8 @@ func _CastDebuff(
 
 	var debuff_type: Types.Debuff_Type = p_skill.debuffs[p_skill.target]
 	var data: StatusEffectData = StatusEffectRegistry.DebuffData(debuff_type)
+	if(_BlockedBySequenceLock(data, target)):
+		return
 
 	if(null == data or not data.stackable):
 		for i in target._active_debuffs.size():
@@ -627,13 +676,12 @@ func _CastDebuff(
 	new_debuff.type = debuff_type
 	new_debuff.duration = p_skill.duration
 	new_debuff.source_ID = p_caster_ID
+	new_debuff.value = data.magnitude if null != data else 0.0
 	new_debuff.ID = _NextStatusID()
 	target._active_debuffs.append(new_debuff)
 	_EmitDebuffApplied(p_target_ID, new_debuff, Types.Debuff_Type.keys()[new_debuff.type])
 
 
-## Computes and applies skill damage to one target, including the crit roll, the
-## Daunting Strength multiplier, and the target's on-damage-taken trait hook.
 func _ResolveDamage(
 		p_caster_ID: int,
 		p_target_ID: int,
@@ -654,11 +702,13 @@ func _ResolveDamage(
 	if(0.0 == caster_scaled_attribute_aggregate):
 		return
 
-	if(p_allow_critical and Skills.RollsCritical(p_caster_attributes[Types.Attribute.CritChance], _random)):
+	var target: Character = _characters[p_target_ID]
+	if(p_allow_critical and Skills.RollsCritical(
+			p_caster_attributes[Types.Attribute.CritChance] + _AttackerCritChanceBonus(target), _random)):
 		rolled_critical = true
 		crit_multiplier = max(
 				GameBalance.MINIMUM_CRIT_DAMAGE,
-				float(p_caster_attributes[Types.Attribute.CritDamage]
+				float(p_caster_attributes[Types.Attribute.CritDamage] + _AttackerCritDamageBonus(target)
 						- (p_target_attributes[Types.Attribute.Knowledge] * 0.5))
 				) * 0.01
 
@@ -669,12 +719,12 @@ func _ResolveDamage(
 			GameBalance.MINIMUM_DMG_PERCENT + ((1.0 - GameBalance.MINIMUM_DMG_PERCENT) * damage_ratio))
 	var damage_dealt: int = int(ceil(Skills.DamageDealt(mitigation_factor
 			* (caster_scaled_attribute_aggregate * _damage_multiplier.get(p_caster_ID, 1.0))
-			* crit_multiplier * random_value, _damage_dealt_bonus.get(p_caster_ID, 0.0))))
+			* crit_multiplier * random_value, _damage_dealt_bonus.get(p_caster_ID, 0.0))
+			* _OpportunistDamageMultiplier(p_caster_ID, target)))
 	_damage_multiplier.erase(p_caster_ID)
 
 	if(damage_dealt == 0):
 		return
-	var target: Character = _characters[p_target_ID]
 	if(damage_dealt > 0 and null != target._trait
 			and target._trait._execution_steps.has(Types.Combat_Event.Damage_Taken)):
 		damage_dealt = int(round(damage_dealt * target._trait.OnDamageTaken(p_target_ID, self)))
@@ -690,9 +740,6 @@ func _ResolveDamage(
 	_ApplyHealthLoss(p_target_ID, damage_dealt)
 
 
-## Fires the zones that living, non-active characters stand in — at most one zone per
-## character — then decrements and expires triggered zones. Runs automatically at the
-## end of ResolveSkill; public for headless tests that drive zones directly.
 func TriggerZones(p_active_character_ID: int) -> Array[CombatResult]:
 	_BeginBatch()
 	for character_ID in _characters.keys():
@@ -716,7 +763,6 @@ func TriggerZones(p_active_character_ID: int) -> Array[CombatResult]:
 			break
 	for ID in _zones.keys():
 		if(_zones[ID]._duration == 0):
-			# Zone extends Node, so erasing the reference alone would leak it.
 			_zones[ID].free()
 			_zones.erase(ID)
 	return _EndBatch()

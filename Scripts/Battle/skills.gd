@@ -87,6 +87,26 @@ static func SingleTargetArray(p_target_ID: int) -> Array[int]:
 		target_IDs.append(p_target_ID)
 	return target_IDs
 
+
+static func IsAttributeModifierKind(p_kind: StatusEffectData.MagnitudeKind) -> bool:
+	return (StatusEffectData.MagnitudeKind.AttributePercent == p_kind
+			or StatusEffectData.MagnitudeKind.AttributePercentagePointAdd == p_kind)
+
+static func ApplyAttributeModifiers(
+							p_data: StatusEffectData,
+							p_value: float,
+							p_attributes: Dictionary[Types.Attribute, int]) -> void:
+	# 0.0 means the instance never had its own value set (e.g. a debuff built directly by
+	# a zone or a test) — fall back to the resource's static magnitude, same convention
+	# ApplyBuff/ApplyDebuff already use when resolving a template's default value.
+	var resolved_value: float = p_value if 0.0 != p_value else p_data.magnitude
+	for attribute in p_data.attribute_modifiers.keys():
+		var modifier_sign: float = p_data.attribute_modifiers[attribute]
+		if(StatusEffectData.MagnitudeKind.AttributePercentagePointAdd == p_data.magnitude_kind):
+			p_attributes[attribute] += int(modifier_sign * resolved_value)
+		else:
+			p_attributes[attribute] += int(modifier_sign * ceilf(p_attributes[attribute] * resolved_value))
+
 # TODO: Right now the targeting only inherits the skill target and doesn't use
 # the buff targets yet.
 static func TriggerTargetBuffs(
@@ -94,11 +114,9 @@ static func TriggerTargetBuffs(
 							p_target_attributes: Dictionary[Types.Attribute, int]) -> void:
 	for buff in p_target._active_buffs:
 		var data: StatusEffectData = StatusEffectRegistry.BuffData(buff.type)
-		if(null == data or not data.applies_on_target_snapshot
-				or StatusEffectData.MagnitudeKind.AttributePercent != data.magnitude_kind):
+		if(null == data or not data.applies_on_target_snapshot or not IsAttributeModifierKind(data.magnitude_kind)):
 			continue
-		p_target_attributes[data.affected_attribute] += int(
-				ceilf(p_target_attributes[data.affected_attribute] * buff.value))
+		ApplyAttributeModifiers(data, buff.value, p_target_attributes)
 
 # TODO: Right now the targeting only inherits the skill target and doesn't use
 # the debuff targets yet.
@@ -107,11 +125,9 @@ static func TriggerTargetDebuffs(
 							p_target_attributes: Dictionary[Types.Attribute, int]) -> void:
 	for debuff in p_target._active_debuffs:
 		var data: StatusEffectData = StatusEffectRegistry.DebuffData(debuff.type)
-		if(null == data or not data.applies_on_target_snapshot
-				or StatusEffectData.MagnitudeKind.AttributePercent != data.magnitude_kind):
+		if(null == data or not data.applies_on_target_snapshot or not IsAttributeModifierKind(data.magnitude_kind)):
 			continue
-		p_target_attributes[data.affected_attribute] -= int(
-				ceilf(p_target_attributes[data.affected_attribute] * data.magnitude))
+		ApplyAttributeModifiers(data, debuff.value, p_target_attributes)
 
 static func RollsCritical(p_crit_chance: int, p_random: RandomNumberGenerator) -> bool:
 	return p_random.randi_range(1, 100) <= p_crit_chance

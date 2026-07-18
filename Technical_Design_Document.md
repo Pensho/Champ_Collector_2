@@ -264,9 +264,15 @@ preload-based like `Scripts/Debug/debug_catalog.gd`, not `DirAccess`-based, for 
 
 ```gdscript
 class_name StatusEffectData extends Resource
-enum MagnitudeKind { AttributePercent, MaxHealthPercent, DamageMultiplier, TurnBarBump }
+enum MagnitudeKind {
+    AttributePercent, MaxHealthPercent, DamageMultiplier, TurnBarBump,
+    AttributePercentagePointAdd, MaxHealthAttributePercent, PerTargetDebuffDamagePercent,
+    AttackerCritChanceBonus, AttackerCritDamageBonus,
+}
 @export var magnitude_kind: MagnitudeKind
-@export var affected_attribute: Types.Attribute            # AttributePercent only
+@export var attribute_modifiers: Dictionary[Types.Attribute, float] = {}  # attribute -> sign
+                                                             # (+1.0/-1.0); AttributePercent and
+                                                             # AttributePercentagePointAdd only
 @export var magnitude: float = 0.0                         # 0.0 = no static default; the
                                                              # applier sets the instance's value
                                                              # directly (e.g. Phalanx Guard)
@@ -280,14 +286,34 @@ enum MagnitudeKind { AttributePercent, MaxHealthPercent, DamageMultiplier, TurnB
 
 `StatusEffects.Buff`/`Debuff` (`Scripts/Battle/status_effects.gd`) carry the resolved per-instance
 `value` (Empower/Fortify read `StatusEffectData.magnitude` by default; Phalanx Guard overrides it
-per-rarity in `LancerTrait`). `BattleResolver.ApplyBuff`/`ApplyDebuff`/`_CastBuff`/`_CastDebuff` all
-resolve `stackable`/`overwritable` from the registry instead of the old `Skills.OverwritableBuff`/
+per-rarity in `LancerTrait`). Debuffs resolve `value` the same way buffs do (`ApplyDebuff`/
+`_CastDebuff` default it to `data.magnitude`), so both buff and debuff self-tick/target-snapshot
+sites read one instance value instead of buffs reading `value` and debuffs reading `data.magnitude`
+directly. `BattleResolver.ApplyBuff`/`ApplyDebuff`/`_CastBuff`/`_CastDebuff` all resolve
+`stackable`/`overwritable` from the registry instead of the old `Skills.OverwritableBuff`/
 `OverwritableDebuff` match statements, and the caster-tick methods
 (`_TriggerExistingCasterBuffs`/`Debuffs`) and target-snapshot methods (`Skills.TriggerTargetBuffs`/
-`TriggerTargetDebuffs`) dispatch generically on `magnitude_kind` instead of the buff/debuff type.
+`TriggerTargetDebuffs`) dispatch generically on `magnitude_kind` instead of the buff/debuff type,
+routing `AttributePercent`/`AttributePercentagePointAdd` through the shared
+`Skills.ApplyAttributeModifiers` helper, which loops `attribute_modifiers` instead of touching one
+hardcoded attribute (needed for effects like Frenzy that move several attributes with mixed signs
+in one status). `AttributePercentagePointAdd` adds `magnitude` directly instead of a percent of the
+current value, for the crit stats (Keen Edge, Lethal Precision) where a percent-of-attribute
+reading would be nearly meaningless at low Crit Chance values.
 Zone-applied debuffs (e.g. the Lava zone's Burning) come from the placing `Skill`'s existing
 `debuffs` dictionary, keyed by the skill's own `target`, rather than being hardcoded in
 `BattleResolver._ResolveZoneEffect`.
+
+Three magnitude kinds are read directly at their own application site instead of through the
+self-tick/target-snapshot loops: `MaxHealthAttributePercent` (Vigor) is summed by
+`BattleResolver._MaxHealth()` from the holder's active buffs, with a reclamp of current health to
+the new max when such a buff expires; `PerTargetDebuffDamagePercent` (Opportunist) and
+`AttackerCritChanceBonus`/`AttackerCritDamageBonus` (Exposed Facet/Cracked Facet) are read in
+`BattleResolver._ResolveDamage` — the former from the caster's own active buffs (scaled by the
+target's debuff count), the latter from the target's active debuffs (added to the attacker's roll
+for that hit only). Sequence Lock has no dedicated field: `ApplyBuff`/`ApplyDebuff`/`_CastBuff`/
+`_CastDebuff` block any status whose `attribute_modifiers` touches Speed when the target already
+has an active `Sequence_Lock` debuff, generic over any current or future Speed-touching status.
 
 `ReagentData` (`Concept_Document.md` 3.3.3) is the reagent-system data model. The persistent
 inventory, loot-drop acquisition, and in-battle combat consumption are all landed (see

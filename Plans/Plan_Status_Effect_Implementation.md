@@ -12,11 +12,28 @@ nothing here depends on it.
 
 ## Status
 
-Not started. Dependencies landed: data-driven status effects
-(`StatusEffectData` / `StatusEffectRegistry`, `Technical_Design_Document.md`
-section 6.1) and the headless combat core (section 7). Implemented today: 7 of
-the catalog's ~50 effects (Empower, Fortify, Daunting Strength, Phalanx Guard,
-Burning, Enfeeble, Expose Weakness).
+Batches 0 and 1 done. Implemented: 25 of the catalog's ~50 effects — the
+original 7 (Empower, Fortify, Daunting Strength, Phalanx Guard, Burning,
+Enfeeble, Expose Weakness) plus batch 1's 18 (debuffs: Suppress, Slow, Blind,
+Unravel, Confound, Exposed Facet, Cracked Facet, Sequence Lock; buffs: Attune,
+Haste, True Aim, Clarity, Insight, Vigor, Keen Edge, Lethal Precision, Frenzy,
+Opportunist). `StatusEffectData` now carries `attribute_modifiers`
+(attribute -> sign) instead of a single `affected_attribute`, plus four new
+`MagnitudeKind` values (`AttributePercentagePointAdd`,
+`MaxHealthAttributePercent`, `PerTargetDebuffDamagePercent`,
+`AttackerCritChanceBonus`, `AttackerCritDamageBonus`) — see
+`Technical_Design_Document.md` section 6.1. The placeholder icon generator
+(`Scripts/Debug/generate_placeholder_icons.gd`) gained a `STATUS_EFFECT_TABLE`
+that batches 2-4 should keep extending.
+
+Dormant note beyond the exclusions below: Slow and Haste's Speed modifier
+applies to combat calculations (e.g. Speed-scaling damage) but has no live
+effect on turn-bar rate yet — `turn_bar.gd` reads only base + gear Speed, not
+buffed combat attributes. Wiring that up is turn-bar-effects territory
+(batch 4), not part of this plan's batch 1 scope.
+
+Batches 2-4 (ticks/healing/DoT, consumed/triggered effects, turn-bar/rule
+effects) remain and need their own implementation pass.
 
 ## Scope and exclusions
 

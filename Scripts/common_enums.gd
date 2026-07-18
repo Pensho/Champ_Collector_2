@@ -110,6 +110,16 @@ enum Buff_Type
 	Fortify,
 	Daunting_Strength,
 	Phalanx_Guard,
+	Attune,
+	Haste,
+	True_Aim,
+	Clarity,
+	Insight,
+	Vigor,
+	Keen_Edge,
+	Lethal_Precision,
+	Frenzy,
+	Opportunist,
 }
 
 enum Debuff_Type
@@ -117,6 +127,14 @@ enum Debuff_Type
 	Burning,
 	Enfeeble,
 	Expose_Weakness,
+	Suppress,
+	Slow,
+	Blind,
+	Unravel,
+	Confound,
+	Exposed_Facet,
+	Cracked_Facet,
+	Sequence_Lock,
 	Invalid,
 }
 
