@@ -31,17 +31,16 @@ func after_each() -> void:
 
 # --- AVOIDANCE_INCREMENT table ---
 
-func test_avoidance_increment_uncommon() -> void:
-	assert_eq(DoubleTheFunTrait.AVOIDANCE_INCREMENT.get(Types.Rarity.Uncommon, 0.0), 0.03)
-
-func test_avoidance_increment_rare() -> void:
-	assert_eq(DoubleTheFunTrait.AVOIDANCE_INCREMENT.get(Types.Rarity.Rare, 0.0), 0.04)
-
-func test_avoidance_increment_epic() -> void:
-	assert_eq(DoubleTheFunTrait.AVOIDANCE_INCREMENT.get(Types.Rarity.Epic, 0.0), 0.05)
-
-func test_avoidance_increment_legendary() -> void:
-	assert_eq(DoubleTheFunTrait.AVOIDANCE_INCREMENT.get(Types.Rarity.Legendary, 0.0), 0.06)
+func test_avoidance_increment_table() -> void:
+	var expected: Dictionary[Types.Rarity, float] = {
+		Types.Rarity.Uncommon: 0.03,
+		Types.Rarity.Rare: 0.04,
+		Types.Rarity.Epic: 0.05,
+		Types.Rarity.Legendary: 0.06,
+	}
+	for rarity: Types.Rarity in expected:
+		assert_eq(DoubleTheFunTrait.AVOIDANCE_INCREMENT.get(rarity, 0.0), expected[rarity],
+			"AVOIDANCE_INCREMENT at %s" % Types.RarityName(rarity))
 
 # --- Chance computation boundaries ---
 

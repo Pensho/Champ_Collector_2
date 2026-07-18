@@ -10,29 +10,27 @@ func _InitTrait(p_rarity: Types.Rarity) -> void:
 
 # --- Rarity tables ---
 
-func test_damage_per_steel_stack_uncommon() -> void:
-	assert_eq(TidalCorsairTrait.DAMAGE_PER_STEEL_STACK.get(Types.Rarity.Uncommon, 0.0), 0.45)
+func test_damage_per_steel_stack_table() -> void:
+	var expected: Dictionary[Types.Rarity, float] = {
+		Types.Rarity.Uncommon: 0.45,
+		Types.Rarity.Rare: 0.50,
+		Types.Rarity.Epic: 0.55,
+		Types.Rarity.Legendary: 0.60,
+	}
+	for rarity: Types.Rarity in expected:
+		assert_eq(TidalCorsairTrait.DAMAGE_PER_STEEL_STACK.get(rarity, 0.0), expected[rarity],
+			"DAMAGE_PER_STEEL_STACK at %s" % Types.RarityName(rarity))
 
-func test_damage_per_steel_stack_rare() -> void:
-	assert_eq(TidalCorsairTrait.DAMAGE_PER_STEEL_STACK.get(Types.Rarity.Rare, 0.0), 0.50)
-
-func test_damage_per_steel_stack_epic() -> void:
-	assert_eq(TidalCorsairTrait.DAMAGE_PER_STEEL_STACK.get(Types.Rarity.Epic, 0.0), 0.55)
-
-func test_damage_per_steel_stack_legendary() -> void:
-	assert_eq(TidalCorsairTrait.DAMAGE_PER_STEEL_STACK.get(Types.Rarity.Legendary, 0.0), 0.60)
-
-func test_turn_bar_per_sea_stack_uncommon() -> void:
-	assert_eq(TidalCorsairTrait.TURN_BAR_PER_SEA_STACK.get(Types.Rarity.Uncommon, 0.0), 0.08)
-
-func test_turn_bar_per_sea_stack_rare() -> void:
-	assert_eq(TidalCorsairTrait.TURN_BAR_PER_SEA_STACK.get(Types.Rarity.Rare, 0.0), 0.10)
-
-func test_turn_bar_per_sea_stack_epic() -> void:
-	assert_eq(TidalCorsairTrait.TURN_BAR_PER_SEA_STACK.get(Types.Rarity.Epic, 0.0), 0.12)
-
-func test_turn_bar_per_sea_stack_legendary() -> void:
-	assert_eq(TidalCorsairTrait.TURN_BAR_PER_SEA_STACK.get(Types.Rarity.Legendary, 0.0), 0.14)
+func test_turn_bar_per_sea_stack_table() -> void:
+	var expected: Dictionary[Types.Rarity, float] = {
+		Types.Rarity.Uncommon: 0.08,
+		Types.Rarity.Rare: 0.10,
+		Types.Rarity.Epic: 0.12,
+		Types.Rarity.Legendary: 0.14,
+	}
+	for rarity: Types.Rarity in expected:
+		assert_eq(TidalCorsairTrait.TURN_BAR_PER_SEA_STACK.get(rarity, 0.0), expected[rarity],
+			"TURN_BAR_PER_SEA_STACK at %s" % Types.RarityName(rarity))
 
 # --- Stack accumulation ---
 

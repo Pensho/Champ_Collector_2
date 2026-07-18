@@ -6,23 +6,18 @@ func before_each() -> void:
 	_state = AdventureState.new()
 	_state.steps_taken_today = 0
 
-func test_supply_cost_tier_1() -> void:
-	_state.steps_taken_today = 0
-	var cost: int = _state.GetNodeSupplyCost()
-	assert_eq(cost, GameBalance.ENCOUNTER_BASE_SUPPLY_COST,
-		"First tier should cost ENCOUNTER_BASE_SUPPLY_COST.")
-
-func test_supply_cost_tier_2() -> void:
-	_state.steps_taken_today = GameBalance.ADVENTURE_DAILY_TIER_THRESHOLD
-	var cost: int = _state.GetNodeSupplyCost()
-	assert_eq(cost, GameBalance.ENCOUNTER_BASE_SUPPLY_COST * 2,
-		"Second tier should cost 2x ENCOUNTER_BASE_SUPPLY_COST.")
-
-func test_supply_cost_tier_3() -> void:
-	_state.steps_taken_today = GameBalance.ADVENTURE_DAILY_TIER_THRESHOLD * 2
-	var cost: int = _state.GetNodeSupplyCost()
-	assert_eq(cost, GameBalance.ENCOUNTER_BASE_SUPPLY_COST * 3,
-		"Third tier should cost 3x ENCOUNTER_BASE_SUPPLY_COST.")
+func test_supply_cost_tiers() -> void:
+	var expected: Dictionary[int, int] = {
+		0: 1,
+		GameBalance.ADVENTURE_DAILY_TIER_THRESHOLD: 2,
+		GameBalance.ADVENTURE_DAILY_TIER_THRESHOLD * 2: 3,
+	}
+	for steps_taken_today: int in expected:
+		_state.steps_taken_today = steps_taken_today
+		var cost: int = _state.GetNodeSupplyCost()
+		assert_eq(cost, GameBalance.ENCOUNTER_BASE_SUPPLY_COST * expected[steps_taken_today],
+			"Supply cost at %d steps taken today should be %dx ENCOUNTER_BASE_SUPPLY_COST." %
+				[steps_taken_today, expected[steps_taken_today]])
 
 func test_daily_reset() -> void:
 	_state.steps_taken_today = 4
@@ -82,21 +77,16 @@ func test_nodes_start_incomplete() -> void:
 
 # --- Progressive difficulty scaling ---
 
-func test_scaled_difficulty_start() -> void:
-	assert_eq(AdventureState.CalculateScaledDifficulty(1, 0, 9), 1,
-		"No nodes completed: difficulty unchanged.")
-
-func test_scaled_difficulty_first_third() -> void:
-	assert_eq(AdventureState.CalculateScaledDifficulty(1, 3, 9), 2,
-		"One third completed: difficulty +1.")
-
-func test_scaled_difficulty_second_third() -> void:
-	assert_eq(AdventureState.CalculateScaledDifficulty(1, 6, 9), 3,
-		"Two thirds completed: difficulty +2.")
-
-func test_scaled_difficulty_caps_at_two_tiers() -> void:
-	assert_eq(AdventureState.CalculateScaledDifficulty(1, 9, 9), 3,
-		"All nodes completed: capped at +2 tiers.")
+func test_scaled_difficulty_table() -> void:
+	# Each row: [base_difficulty, completed_nodes, total_nodes, expected, message]
+	var cases: Array[Array] = [
+		[1, 0, 9, 1, "No nodes completed: difficulty unchanged."],
+		[1, 3, 9, 2, "One third completed: difficulty +1."],
+		[1, 6, 9, 3, "Two thirds completed: difficulty +2."],
+		[1, 9, 9, 3, "All nodes completed: capped at +2 tiers."],
+	]
+	for case: Array in cases:
+		assert_eq(AdventureState.CalculateScaledDifficulty(case[0], case[1], case[2]), case[3], case[4])
 
 func test_scaled_difficulty_empty_adventure() -> void:
 	assert_eq(AdventureState.CalculateScaledDifficulty(2, 0, 0), 2,

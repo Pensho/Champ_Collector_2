@@ -27,17 +27,16 @@ func _InitTrait(p_rarity: Types.Rarity) -> void:
 
 # --- Rarity tables ---
 
-func test_percent_behind_threshold_uncommon() -> void:
-	assert_eq(PlanTrait.PERCENT_BEHIND_THRESHOLD.get(Types.Rarity.Uncommon, 0.0), 0.10)
-
-func test_percent_behind_threshold_rare() -> void:
-	assert_eq(PlanTrait.PERCENT_BEHIND_THRESHOLD.get(Types.Rarity.Rare, 0.0), 0.15)
-
-func test_percent_behind_threshold_epic() -> void:
-	assert_eq(PlanTrait.PERCENT_BEHIND_THRESHOLD.get(Types.Rarity.Epic, 0.0), 0.20)
-
-func test_percent_behind_threshold_legendary() -> void:
-	assert_eq(PlanTrait.PERCENT_BEHIND_THRESHOLD.get(Types.Rarity.Legendary, 0.0), 0.25)
+func test_percent_behind_threshold_table() -> void:
+	var expected: Dictionary[Types.Rarity, float] = {
+		Types.Rarity.Uncommon: 0.10,
+		Types.Rarity.Rare: 0.15,
+		Types.Rarity.Epic: 0.20,
+		Types.Rarity.Legendary: 0.25,
+	}
+	for rarity: Types.Rarity in expected:
+		assert_eq(PlanTrait.PERCENT_BEHIND_THRESHOLD.get(rarity, 0.0), expected[rarity],
+			"PERCENT_BEHIND_THRESHOLD at %s" % Types.RarityName(rarity))
 
 # --- The Tactician itself is never buffed ---
 

@@ -21,29 +21,27 @@ func _InitTrait(p_rarity: Types.Rarity) -> void:
 
 # --- Rarity tables ---
 
-func test_mysticism_per_stack_uncommon() -> void:
-	assert_eq(SorcererTrait.MYSTICISM_PER_STACK.get(Types.Rarity.Uncommon, 0.0), 0.04)
+func test_mysticism_per_stack_table() -> void:
+	var expected: Dictionary[Types.Rarity, float] = {
+		Types.Rarity.Uncommon: 0.04,
+		Types.Rarity.Rare: 0.06,
+		Types.Rarity.Epic: 0.08,
+		Types.Rarity.Legendary: 0.10,
+	}
+	for rarity: Types.Rarity in expected:
+		assert_eq(SorcererTrait.MYSTICISM_PER_STACK.get(rarity, 0.0), expected[rarity],
+			"MYSTICISM_PER_STACK at %s" % Types.RarityName(rarity))
 
-func test_mysticism_per_stack_rare() -> void:
-	assert_eq(SorcererTrait.MYSTICISM_PER_STACK.get(Types.Rarity.Rare, 0.0), 0.06)
-
-func test_mysticism_per_stack_epic() -> void:
-	assert_eq(SorcererTrait.MYSTICISM_PER_STACK.get(Types.Rarity.Epic, 0.0), 0.08)
-
-func test_mysticism_per_stack_legendary() -> void:
-	assert_eq(SorcererTrait.MYSTICISM_PER_STACK.get(Types.Rarity.Legendary, 0.0), 0.10)
-
-func test_reagent_amplification_uncommon() -> void:
-	assert_eq(SorcererTrait.REAGENT_AMPLIFICATION.get(Types.Rarity.Uncommon, 0.0), 0.20)
-
-func test_reagent_amplification_rare() -> void:
-	assert_eq(SorcererTrait.REAGENT_AMPLIFICATION.get(Types.Rarity.Rare, 0.0), 0.30)
-
-func test_reagent_amplification_epic() -> void:
-	assert_eq(SorcererTrait.REAGENT_AMPLIFICATION.get(Types.Rarity.Epic, 0.0), 0.40)
-
-func test_reagent_amplification_legendary() -> void:
-	assert_eq(SorcererTrait.REAGENT_AMPLIFICATION.get(Types.Rarity.Legendary, 0.0), 0.50)
+func test_reagent_amplification_table() -> void:
+	var expected: Dictionary[Types.Rarity, float] = {
+		Types.Rarity.Uncommon: 0.20,
+		Types.Rarity.Rare: 0.30,
+		Types.Rarity.Epic: 0.40,
+		Types.Rarity.Legendary: 0.50,
+	}
+	for rarity: Types.Rarity in expected:
+		assert_eq(SorcererTrait.REAGENT_AMPLIFICATION.get(rarity, 0.0), expected[rarity],
+			"REAGENT_AMPLIFICATION at %s" % Types.RarityName(rarity))
 
 # --- Stack accrual per skill cast ---
 

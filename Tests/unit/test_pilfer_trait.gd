@@ -13,29 +13,18 @@ func before_each() -> void:
 
 # --- STEAL_CHANCE table ---
 
-func test_steal_chance_uncommon() -> void:
-	assert_eq(PilferTrait.STEAL_CHANCE.get(Types.Rarity.Uncommon, 0.0), 0.20,
-		"Uncommon Thief should have 20% steal chance")
-
-func test_steal_chance_rare() -> void:
-	assert_eq(PilferTrait.STEAL_CHANCE.get(Types.Rarity.Rare, 0.0), 0.30,
-		"Rare Thief should have 30% steal chance")
-
-func test_steal_chance_epic() -> void:
-	assert_eq(PilferTrait.STEAL_CHANCE.get(Types.Rarity.Epic, 0.0), 0.40,
-		"Epic Thief should have 40% steal chance")
-
-func test_steal_chance_legendary() -> void:
-	assert_eq(PilferTrait.STEAL_CHANCE.get(Types.Rarity.Legendary, 0.0), 0.50,
-		"Legendary Thief should have 50% steal chance")
-
-func test_steal_chance_common_is_zero() -> void:
-	assert_eq(PilferTrait.STEAL_CHANCE.get(Types.Rarity.Common, 0.0), 0.0,
-		"Common rarity should default to 0% steal chance")
-
-func test_steal_chance_relic_is_zero() -> void:
-	assert_eq(PilferTrait.STEAL_CHANCE.get(Types.Rarity.Relic, 0.0), 0.0,
-		"Relic rarity should default to 0% steal chance")
+func test_steal_chance_table() -> void:
+	var expected: Dictionary[Types.Rarity, float] = {
+		Types.Rarity.Common: 0.0,
+		Types.Rarity.Uncommon: 0.20,
+		Types.Rarity.Rare: 0.30,
+		Types.Rarity.Epic: 0.40,
+		Types.Rarity.Legendary: 0.50,
+		Types.Rarity.Relic: 0.0,
+	}
+	for rarity: Types.Rarity in expected:
+		assert_eq(PilferTrait.STEAL_CHANCE.get(rarity, 0.0), expected[rarity],
+			"STEAL_CHANCE at %s" % Types.RarityName(rarity))
 
 # --- BattleResolver.RemoveBuff ---
 

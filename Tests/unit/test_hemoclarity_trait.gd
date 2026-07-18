@@ -19,17 +19,16 @@ func _InitTrait(p_rarity: Types.Rarity) -> void:
 
 # --- MYSTICISM_BONUS table ---
 
-func test_mysticism_bonus_uncommon() -> void:
-	assert_eq(HemoclarityTrait.MYSTICISM_BONUS.get(Types.Rarity.Uncommon, 0.0), 0.25)
-
-func test_mysticism_bonus_rare() -> void:
-	assert_eq(HemoclarityTrait.MYSTICISM_BONUS.get(Types.Rarity.Rare, 0.0), 0.30)
-
-func test_mysticism_bonus_epic() -> void:
-	assert_eq(HemoclarityTrait.MYSTICISM_BONUS.get(Types.Rarity.Epic, 0.0), 0.35)
-
-func test_mysticism_bonus_legendary() -> void:
-	assert_eq(HemoclarityTrait.MYSTICISM_BONUS.get(Types.Rarity.Legendary, 0.0), 0.40)
+func test_mysticism_bonus_table() -> void:
+	var expected: Dictionary[Types.Rarity, float] = {
+		Types.Rarity.Uncommon: 0.25,
+		Types.Rarity.Rare: 0.30,
+		Types.Rarity.Epic: 0.35,
+		Types.Rarity.Legendary: 0.40,
+	}
+	for rarity: Types.Rarity in expected:
+		assert_eq(HemoclarityTrait.MYSTICISM_BONUS.get(rarity, 0.0), expected[rarity],
+			"MYSTICISM_BONUS at %s" % Types.RarityName(rarity))
 
 # --- Health threshold behaviour ---
 
