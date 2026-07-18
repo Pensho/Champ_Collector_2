@@ -1,6 +1,7 @@
 class_name BattleUI extends Control
 
 signal battle_skill_selected(p_skill_ID: int)
+signal battle_reagent_selected(p_reagent_index: int)
 
 const COMBAT_EFFECT_TEXT_TEMPLATE = preload("uid://caq22aj34qk1f")
 const SKILL_GLOW_POS_HIDDEN: Vector2 = Vector2(-2000.0, 0.0)
@@ -8,6 +9,7 @@ const COMBAT_TEXT_SPAWN_POINT: Vector2 = Vector2(100, 70)
 const TEXT_SPAWN_DELAY: float = 0.25
 
 @export var _skill_buttons: Array[SkillButton]
+@export var _reagent_buttons: Array[ReagentButton]
 @export var _battle_duration_label: Label
 
 var SKILL_GLOW_POS_1: Vector2
@@ -85,6 +87,14 @@ func SetSkill(p_texture_path: String, p_title: String, p_description: String, p_
 	_skill_buttons[p_slot].icon = _skill_textures[p_texture_path]
 	_skill_buttons[p_slot].SetToolTip(p_title, p_description)
 
+func SetReagent(p_icon: Texture, p_title: String, p_description: String, p_slot: int) -> void:
+	if(p_slot < 0 or p_slot >= _reagent_buttons.size()):
+		print("attempting to set a reagent out of bounds: ", p_slot)
+		return
+
+	_reagent_buttons[p_slot].icon = p_icon
+	_reagent_buttons[p_slot].SetToolTip(p_title, p_description)
+
 func ActiveSkillGlow(p_skill_ID: int) -> void:
 	match p_skill_ID:
 		
@@ -103,6 +113,10 @@ func HideSkillUI() -> void:
 	skill_focus.position = SKILL_GLOW_POS_HIDDEN
 	_turn_bar.DisableZones(true)
 
+func HideReagentUI() -> void:
+	for button in _reagent_buttons:
+		button.hide()
+
 func _on_skill_1_button_up() -> void:
 	skill_focus.position = SKILL_GLOW_POS_1
 	battle_skill_selected.emit(0)
@@ -114,3 +128,12 @@ func _on_skill_2_button_up() -> void:
 func _on_skill_3_button_up() -> void:
 	skill_focus.position = SKILL_GLOW_POS_3
 	battle_skill_selected.emit(2)
+
+func _on_reagent_1_button_up() -> void:
+	battle_reagent_selected.emit(0)
+
+func _on_reagent_2_button_up() -> void:
+	battle_reagent_selected.emit(1)
+
+func _on_reagent_3_button_up() -> void:
+	battle_reagent_selected.emit(2)

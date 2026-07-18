@@ -24,6 +24,12 @@ var _heap_on_stacks: Dictionary[int, int] = {}
 var _heap_on_value: Dictionary[int, float] = {}
 var _damage_multiplier: Dictionary[int, float] = {}
 
+# Inner Dictionary is Dictionary[Types.Attribute, int]
+# keyed by attribute with the accumulated bonus.
+var _battle_long_attribute_bonus: Dictionary[int, Dictionary] = {}
+# Battle persistent damage-dealt multiplier.
+var _damage_dealt_bonus: Dictionary[int, float] = {}
+
 var _next_status_ID: int = 0
 var _batch: Array[CombatResult] = []
 var _batch_depth: int = 0
@@ -77,7 +83,14 @@ func AvailableZoneIDs() -> Array[int]:
 	return available
 
 
-## Targeting for this battle's roster; random picks use the resolver's generator.
+func GetCombatAttributes(p_character_ID: int) -> Dictionary[Types.Attribute, int]:
+	var attributes: Dictionary[Types.Attribute, int] = _characters[p_character_ID].GetBattleAttributes()
+	var bonus: Dictionary = _battle_long_attribute_bonus.get(p_character_ID, {})
+	for attribute: Types.Attribute in bonus.keys():
+		attributes[attribute] += bonus[attribute]
+	return attributes
+
+
 func FindSkillTargets(p_target_ID: int, p_caster_ID: int, p_target_type: Types.Skill_Target) -> Array[int]:
 	return Skills.FindSkillTargets(p_target_ID, p_caster_ID, p_target_type, _characters, _sides, _random)
 
@@ -105,7 +118,7 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 	_BeginBatch()
 	var caster: Character = _characters[p_caster_ID]
 	var cast_skill: Skill = caster._skills[p_skill_ID]
-	var caster_attributes: Dictionary[Types.Attribute, int] = caster.GetBattleAttributes()
+	var caster_attributes: Dictionary[Types.Attribute, int] = GetCombatAttributes(p_caster_ID)
 
 	var trait_result: TraitSkillResult = TraitSkillResult.new()
 	if(null != caster._trait and caster._trait._execution_steps.has(Types.Combat_Event.Skill_Cast)):
@@ -125,7 +138,7 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 			continue
 		var target: Character = _characters[target_ID]
 		if(p_caster_ID != target_ID):
-			target_attributes = target.GetBattleAttributes()
+			target_attributes = GetCombatAttributes(target_ID)
 			Skills.TriggerTargetBuffs(target, target_attributes)
 			Skills.TriggerTargetDebuffs(target, target_attributes)
 			if(null != target._trait and target._trait._execution_steps.has(Types.Combat_Event.Defend)):
@@ -272,6 +285,91 @@ func SetCurrentHealth(p_character_ID: int, p_health: int) -> Array[CombatResult]
 	return _EndBatch()
 
 
+func ResolveReagent(p_consumer_ID: int, p_reagent_key: String, p_target_ID: int) -> Array[CombatResult]:
+	_BeginBatch()
+	var reagent: ReagentData = ReagentRegistry.Get(p_reagent_key)
+	var consumer: Character = _characters[p_consumer_ID]
+	var potency: float = 1.0
+	if(not reagent.binary and null != consumer._trait
+			and consumer._trait._execution_steps.has(Types.Combat_Event.Reagent_Consumed)):
+		potency += consumer._trait.OnReagentConsumed(p_consumer_ID, reagent, self)
+	_ResolveReagentEffect(p_consumer_ID, p_target_ID, reagent, potency)
+	return _EndBatch()
+
+
+func _ResolveReagentEffect(
+		p_consumer_ID: int, p_target_ID: int, p_reagent: ReagentData, p_potency: float) -> void:
+	match p_reagent.effect_kind:
+		ReagentData.EffectKind.Attribute_Increase:
+			_ApplyReagentAttributeIncrease(p_target_ID, p_reagent.affected_attribute, p_reagent.magnitude, p_potency)
+		ReagentData.EffectKind.Random_Attribute_Increase:
+			var attribute: Types.Attribute = ReagentResolver.RandomTinctureAttribute(_random)
+			_ApplyReagentAttributeIncrease(p_target_ID, attribute, p_reagent.magnitude, p_potency)
+		ReagentData.EffectKind.Heal:
+			var amount: int = ReagentResolver.HealAmount(_MaxHealth(_characters[p_target_ID]), p_reagent.magnitude, p_potency)
+			_ApplyHeal(p_target_ID, amount)
+			var result: CombatResult = CombatResult.new(CombatResult.Kind.Heal)
+			result.target_ID = p_target_ID
+			result.amount = amount
+			_Emit(result)
+		ReagentData.EffectKind.Remove_Debuffs:
+			_RemoveStatuses(_characters[p_target_ID]._active_debuffs, p_target_ID,
+					ReagentResolver.PotencyScaledCount(p_reagent.magnitude, p_potency))
+		ReagentData.EffectKind.Destroy_Enemy_Buffs:
+			_RemoveStatuses(_characters[p_target_ID]._active_buffs, p_target_ID,
+					ReagentResolver.PotencyScaledCount(p_reagent.magnitude, p_potency))
+		ReagentData.EffectKind.Reduce_Cooldown:
+			var amount: int = ReagentResolver.PotencyScaledCount(p_reagent.magnitude, p_potency)
+			for skill in _characters[p_target_ID]._skills:
+				if(skill.cooldown_left > 0):
+					skill.cooldown_left = maxi(0, skill.cooldown_left - amount)
+		ReagentData.EffectKind.Turn_Bar_Reset:
+			var result: CombatResult = CombatResult.new(CombatResult.Kind.Turn_Bar_Reset_Pending)
+			result.target_ID = p_consumer_ID
+			result.fraction = ReagentResolver.PercentFraction(p_reagent.magnitude, p_potency)
+			_Emit(result)
+		ReagentData.EffectKind.Clear_Zone:
+			if(_zones.has(p_target_ID)):
+				_zones[p_target_ID].free()
+				_zones.erase(p_target_ID)
+				var result: CombatResult = CombatResult.new(CombatResult.Kind.Zone_Cleared)
+				result.zone_ID = p_target_ID
+				_Emit(result)
+		ReagentData.EffectKind.Health_Cost_Damage_Bonus:
+			var consumer: Character = _characters[p_consumer_ID]
+			var cost: int = ReagentResolver.HealthCostAmount(
+					_MaxHealth(consumer), p_reagent.magnitude, p_potency, consumer._current_health)
+			if(cost > 0):
+				_ApplyHealthLoss(p_consumer_ID, cost)
+				var result: CombatResult = CombatResult.new(CombatResult.Kind.Damage)
+				result.target_ID = p_consumer_ID
+				result.amount = cost
+				_Emit(result)
+			_damage_dealt_bonus[p_consumer_ID] = (_damage_dealt_bonus.get(p_consumer_ID, 0.0)
+					+ ReagentResolver.PercentFraction(p_reagent.secondary_magnitude, p_potency))
+		var invalid_kind:
+			print("Invalid reagent effect kind: ", invalid_kind)
+
+
+func _ApplyReagentAttributeIncrease(
+		p_target_ID: int, p_attribute: Types.Attribute, p_magnitude: float, p_potency: float) -> void:
+	var current: int = GetCombatAttributes(p_target_ID)[p_attribute]
+	var bonus_amount: int = ReagentResolver.AttributeIncreaseAmount(current, p_magnitude, p_potency)
+	var bonus: Dictionary = _battle_long_attribute_bonus.get(p_target_ID, {})
+	bonus[p_attribute] = bonus.get(p_attribute, 0) + bonus_amount
+	_battle_long_attribute_bonus[p_target_ID] = bonus
+
+
+func _RemoveStatuses(p_statuses: Array, p_target_ID: int, p_count: int) -> void:
+	for i in mini(p_count, p_statuses.size()):
+		var removed = p_statuses[0]
+		p_statuses.remove_at(0)
+		var result: CombatResult = CombatResult.new(CombatResult.Kind.Statuses_Removed)
+		result.target_ID = p_target_ID
+		result.status_IDs = [removed.ID]
+		_Emit(result)
+
+
 func _BeginBatch() -> void:
 	if(_batch_depth == 0):
 		_batch = []
@@ -334,6 +432,11 @@ func _ApplyHealthLoss(p_character_ID: int, p_amount: int) -> void:
 	character._current_health = clampi(character._current_health - p_amount, 0, _MaxHealth(character))
 	if(was_alive and character._current_health <= 0):
 		_HandleDeath(p_character_ID)
+
+
+func _ApplyHeal(p_character_ID: int, p_amount: int) -> void:
+	var character: Character = _characters[p_character_ID]
+	character._current_health = clampi(character._current_health + p_amount, 0, _MaxHealth(character))
 
 
 func _HandleDeath(p_character_ID: int) -> void:
@@ -544,9 +647,9 @@ func _ResolveDamage(
 			caster_scaled_attribute_aggregate / (effective_defence + caster_scaled_attribute_aggregate + 1.0))
 	var mitigation_factor: float = (
 			GameBalance.MINIMUM_DMG_PERCENT + ((1.0 - GameBalance.MINIMUM_DMG_PERCENT) * damage_ratio))
-	var damage_dealt: int = int(ceil(mitigation_factor
+	var damage_dealt: int = int(ceil(Skills.DamageDealt(mitigation_factor
 			* (caster_scaled_attribute_aggregate * _damage_multiplier.get(p_caster_ID, 1.0))
-			* crit_multiplier * random_value))
+			* crit_multiplier * random_value, _damage_dealt_bonus.get(p_caster_ID, 0.0))))
 	_damage_multiplier.erase(p_caster_ID)
 
 	if(damage_dealt == 0):

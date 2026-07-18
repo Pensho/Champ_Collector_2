@@ -290,9 +290,9 @@ Zone-applied debuffs (e.g. the Lava zone's Burning) come from the placing `Skill
 `BattleResolver._ResolveZoneEffect`.
 
 `ReagentData` (`Concept_Document.md` 3.3.3) is the reagent-system data model. The persistent
-inventory and loot-drop acquisition are landed (see `ReagentCollection` below and
-[Section 10](#10-collections-and-the-save-system)); combat consumption still lands in
-`Plans/Plan_Reagent_Combat_Application.md`.
+inventory, loot-drop acquisition, and in-battle combat consumption are all landed (see
+`ReagentCollection` below, [Section 10](#10-collections-and-the-save-system), and
+[Section 7.7](#77-reagent-consumption)).
 Unlike `StatusEffectData`, one resource covers exactly
 one rarity tier — `Data/Reagents/<Family>/<Family>_<Rarity>.tres`, one subfolder per reagent
 family — since reagent magnitudes scale with rarity only, never with the consumer's attributes
@@ -428,7 +428,8 @@ the skill UI, and returns to `Advancing` (or ends the battle).
 
 `ResolveSkill(caster_ID, target_IDs, skill_ID) -> Array[CombatResult]` is the core sequence:
 
-1. Snapshot caster attributes via `GetBattleAttributes()` (base + gear).
+1. Snapshot caster attributes via `GetCombatAttributes()` (base + gear + any battle-long
+   reagent attribute bonus, see section 7.7).
 2. Fire the `OnSkillCast` trait hook → returns a `TraitSkillResult` carrying a damage multiplier
    and turn-bar bump.
 3. Tick the caster's own active debuffs and buffs — per-turn effects (e.g. Burning deals 4% of
@@ -505,6 +506,52 @@ experience via `LevelSystem.AddExperience`, restores player HP, then transitions
 post-battle scene through `main.GetInstance().change_scene()`. The resolver (and all its
 per-combat state) is simply discarded with the scene — there is no global state to reset.
 
+### 7.7. Reagent consumption
+
+Reagents (`Concept_Document.md` 3.3.3) apply through a resolution path parallel to, but
+independent of, `ResolveSkill` — consuming a reagent is a **free action**: it never ticks a
+cooldown, never fires `Start_Turn`/`End_Turn`, and never advances the turn bar.
+
+- **Loadout.** `Pre_Battle_Menu` writes up to 3 chosen reagent registry keys to
+  `ContextContainer._battle_reagents`. `Battle.Init()` wraps them in a
+  `ReagentLoadout` (`Scripts/Battle/reagent_loadout.gd`, `RefCounted`) — a small class kept
+  independent of the `Battle` scene node specifically so once-per-battle enforcement and
+  inventory deletion are unit-testable headlessly. `ReagentLoadout.TryConsume(index,
+  reagent_collection)` marks an entry spent and calls `ReagentCollection.Consume()`
+  immediately (so a mid-battle defeat still keeps it consumed); unused entries need no
+  "return to inventory" step, since they were never debited from the collection at
+  loadout-selection time in the first place.
+- **Resolution core.** `BattleResolver.ResolveReagent(consumer_ID, reagent_key, target_ID)`
+  fires the consumer's `Reagent_Consumed` trait hook (binary reagents never call it — see
+  section 9) for an additive potency contribution, then dispatches on
+  `ReagentData.effect_kind` to `_ResolveReagentEffect`. The per-kind math (percent-to-fraction
+  conversion, potency scaling, the random-Tincture-attribute roll) lives in
+  `ReagentResolver` (`Scripts/Battle/reagent_resolver.gd`), stateless static functions
+  mirroring `skills.gd`'s style; `BattleResolver` applies the result and reports it as
+  `CombatResult`s.
+- **Battle-long mechanisms.** Two effects persist for the rest of the battle without being a
+  `StatusEffects.Buff` (undispellable, unstealable, invisible to buff-counting):
+  `_battle_long_attribute_bonus` (Tinctures/Unrefined Residue — folded into
+  `GetCombatAttributes()`) and `_damage_dealt_bonus` (Fractured Idol — folded into
+  `_ResolveDamage` via `Skills.DamageDealt`). Both are plain resolver-owned dictionaries
+  that disappear with the resolver at battle end, needing no explicit cleanup.
+- **Deferred turn-bar reset.** Second Wind Phial's reset can't apply at consumption time
+  (the consumer's turn hasn't ended yet), so `ResolveReagent` reports a
+  `Turn_Bar_Reset_Pending` result instead; `Battle` stores it in a local dictionary and
+  consults it at the one call site where `TurnCompleteForCharacter` actually resets the bar,
+  passing the stored percent instead of the default 0.
+- **Battle scene wiring.** `BattleUI` exposes up to 3 `ReagentButton`s (a simpler sibling of
+  `SkillButton` — no cooldown countdown, just an available/permanently-spent state via
+  `MarkSpent()`), shown alongside the skill buttons on the player's turn. Selecting one
+  branches on `ReagentData.target_kind`: `Self_Target` resolves immediately; `One_Ally`/
+  `One_Enemy` enters a new `BattleState.Selecting_Reagent_Target` that reuses the existing
+  character-click signal (`_on_character_battle_target_selected`); `Zone_Section` enters
+  `BattleState.Selecting_Reagent_Zone` and reuses the turn bar's zone-click callback,
+  requiring an *occupied* zone (the opposite condition from skill-driven zone placement,
+  which requires an empty one). Resolution always returns `_state` to
+  `Awaiting_Player_Input` rather than routing through `ResolveTurn` — the defining trait of
+  a free action.
+
 ---
 
 ## 8. Character progression
@@ -548,6 +595,7 @@ provides default (no-op, debug-printing) implementations of each hook. The comba
 | `OnDefend(defender_ID, defender_attributes, characters)` | `Defend` | when snapshotting a target's attributes | — |
 | `OnDamageTaken(owner_ID, rarity, resolver)` | `Damage_Taken` | before damage lands; returns the incoming-damage multiplier | `float` |
 | `OnDeath()` | `On_Death` | when a character drops to 0 HP (logic reset) | — |
+| `OnReagentConsumed(consumer_ID, reagent, resolver)` | `Reagent_Consumed` | in `ResolveReagent`, for non-binary reagents only; returns an additive potency contribution (0.0 base) | `float` |
 
 One **view hook** complements them: `RefreshVisuals(character_repr)` repaints the trait's icons,
 tooltips, and battlefield effects (e.g. sprite echoes) from current trait state. The battle scene

@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://bdj0g5fc8d26k" path="res://Scripts/UI/Battle_UI/turn_bar.gd" id="3_6lbqc"]
 [ext_resource type="PackedScene" uid="uid://bte7ljry64t3x" path="res://Scenes/ui/Battle_UI/Skill_Button.tscn" id="5_nm010"]
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="10_rvbdk"]
+[ext_resource type="PackedScene" path="res://Scenes/ui/Battle_UI/Reagent_Button.tscn" id="11_reagent"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4blpl"]
 bg_color = Color(0.635797, 0.5513, 0.269355, 0.482353)
@@ -32,7 +33,7 @@ fill = 1
 fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(0.7, 0)
 
-[node name="Battle UI" type="Control" unique_id=2001000775 node_paths=PackedStringArray("_skill_buttons", "_battle_duration_label")]
+[node name="Battle UI" type="Control" unique_id=2001000775 node_paths=PackedStringArray("_skill_buttons", "_reagent_buttons", "_battle_duration_label")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -41,6 +42,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_gfldn")
 _skill_buttons = [NodePath("Skill_1"), NodePath("Skill_2"), NodePath("Skill_3")]
+_reagent_buttons = [NodePath("Reagent_1"), NodePath("Reagent_2"), NodePath("Reagent_3")]
 _battle_duration_label = NodePath("Label_Battle_Duration")
 
 [node name="PlayerInfoBox" type="Panel" parent="." unique_id=1195450184 node_paths=PackedStringArray("_character_turn_markers")]
@@ -162,6 +164,33 @@ offset_right = 69.0
 offset_bottom = 45.0
 theme = ExtResource("10_rvbdk")
 
+[node name="Reagent_1" parent="." unique_id=347484170 instance=ExtResource("11_reagent")]
+visible = false
+layout_mode = 0
+offset_left = 972.0
+offset_top = 125.0
+offset_right = 1072.0
+offset_bottom = 225.0
+
+[node name="Reagent_2" parent="." unique_id=347484171 instance=ExtResource("11_reagent")]
+visible = false
+layout_mode = 0
+offset_left = 972.0
+offset_top = 289.0
+offset_right = 1072.0
+offset_bottom = 389.0
+
+[node name="Reagent_3" parent="." unique_id=347484172 instance=ExtResource("11_reagent")]
+visible = false
+layout_mode = 0
+offset_left = 972.0
+offset_top = 453.0
+offset_right = 1072.0
+offset_bottom = 553.0
+
 [connection signal="button_up" from="Skill_1" to="." method="_on_skill_1_button_up"]
 [connection signal="button_up" from="Skill_2" to="." method="_on_skill_2_button_up"]
 [connection signal="button_up" from="Skill_3" to="." method="_on_skill_3_button_up"]
+[connection signal="button_up" from="Reagent_1" to="." method="_on_reagent_1_button_up"]
+[connection signal="button_up" from="Reagent_2" to="." method="_on_reagent_2_button_up"]
+[connection signal="button_up" from="Reagent_3" to="." method="_on_reagent_3_button_up"]

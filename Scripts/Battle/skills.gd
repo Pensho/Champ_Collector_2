@@ -70,8 +70,6 @@ static func FindSkillTargets(
 			print("Invalid argument for skill target enum passed: ", INVALID_TYPE)
 	return FilterAliveTargets(target_IDs, p_characters)
 
-# Keeps only the IDs that both exist in the battle and are still alive, so a skill
-# never resolves against a corpse or an empty slot.
 static func FilterAliveTargets(
 					p_ids: Array[int],
 					p_characters: Dictionary[int, Character]) -> Array[int]:
@@ -115,8 +113,6 @@ static func TriggerTargetDebuffs(
 		p_target_attributes[data.affected_attribute] -= int(
 				ceilf(p_target_attributes[data.affected_attribute] * data.magnitude))
 
-# Rolls a 1-100 die against the crit chance. The die starts at 1 (not 0) so a
-# 0% crit chance can never crit and each chance point is worth exactly one percent.
 static func RollsCritical(p_crit_chance: int, p_random: RandomNumberGenerator) -> bool:
 	return p_random.randi_range(1, 100) <= p_crit_chance
 
@@ -125,3 +121,6 @@ static func HasMaxStatusEffects(p_character: Character) -> bool:
 		print(p_character._name, " cannot have any more status effects right now.")
 		return true
 	return false
+
+static func DamageDealt(p_damage: float, p_bonus_percent: float) -> float:
+	return p_damage * (1.0 + p_bonus_percent)

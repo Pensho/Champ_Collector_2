@@ -15,6 +15,19 @@ class FakeTurnPositions extends TurnPositions:
 		last_behind_query = [p_owner_ID, p_bar_percent]
 		return behind_IDs
 
+## Headless stand-in for a reagent-amplifying trait (e.g. the Sorcerer's Arcane
+## Instability): always contributes a fixed additive potency amount, for testing
+## that scalar reagent effects scale with the summed potency modifier.
+class FakeAmplifyingTrait extends CharacterTrait:
+	var contribution: float = 0.0
+
+	func _init(p_contribution: float) -> void:
+		contribution = p_contribution
+		_execution_steps[Types.Combat_Event.Reagent_Consumed] = Callable(self, "OnReagentConsumed")
+
+	func OnReagentConsumed(_p_consumer_ID: int, _p_reagent: ReagentData, _p_resolver: BattleResolver) -> float:
+		return contribution
+
 static func make_character() -> Character:
 	var c: Character = Character.new()
 	c._name = "TestCharacter"

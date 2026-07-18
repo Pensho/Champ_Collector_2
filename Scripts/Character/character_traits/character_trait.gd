@@ -1,10 +1,5 @@
 class_name CharacterTrait extends Resource
 
-## Base class for champion traits. The combat hooks below are logic-only: they mutate
-## trait/Character state and report effects through the BattleResolver they receive
-## (ApplyBuff, EmitTraitText, GetRandom, ...), never through UI types. RefreshVisuals
-## is the one view hook — the battle scene calls it to repaint trait icons, tooltips,
-## and battlefield effects from the trait's current state.
 
 @warning_ignore_start("unused_private_class_variable")
 var _execution_steps: Dictionary[Types.Combat_Event, Callable]
@@ -16,12 +11,9 @@ var _body: String = "Body"
 func Init() -> void:
 	print("character_trait base class Init() called!")
 
-## Logic reset at the start of a battle (stack counters and the like).
 func StartOfBattle() -> void:
 	print("character_trait base class StartOfBattle() called!")
 
-## View hook: repaint this trait's icons, tooltips, and visual effects on the
-## owner's representation from current trait state.
 func RefreshVisuals(p_character_repr: CharacterRepresentation) -> void:
 	p_character_repr.SetTraitElement(_trait_texture, 0)
 	p_character_repr.SetTraitElementToolTip(_title, _body, 0)
@@ -57,3 +49,8 @@ func OnDeath() -> void:
 
 func GetTargetingDefenceMultiplier() -> float:
 	return 1.0
+
+func OnReagentConsumed(
+		_p_consumer_ID: int, _p_reagent: ReagentData, _p_resolver: BattleResolver) -> float:
+	print("character_trait base class OnReagentConsumed() called!")
+	return 0.0

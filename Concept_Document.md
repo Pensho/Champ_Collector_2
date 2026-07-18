@@ -741,9 +741,9 @@ Reagents are universal consumable items left over from the era of the God of Mag
 looted primarily from that god's ruins and other encounters (rarer reagents drop only
 from bosses). They are stored in a persistent player inventory.
 
-Rules (designed; data model, catalog, persistent inventory, loot acquisition, and storage/sell
-UI implemented, see `Technical_Design_Document.md` section 6.1 and 10.1; combat consumption
-planned in `Plans/Plan_Reagent_Combat_Application.md`):
+Rules (designed and implemented — data model, catalog, persistent inventory, loot
+acquisition, storage/sell UI, pre-battle loadout selection, and in-battle free-action
+consumption; see `Technical_Design_Document.md` sections 6.1, 7.4, 9, and 10.1):
 - Before a battle the player selects up to 3 reagents from their inventory to bring along.
 - Each brought reagent can be consumed exactly once per battle, by any champion on
   their turn, as a free action (it does not consume the turn). Reagents are usable

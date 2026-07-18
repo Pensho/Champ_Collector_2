@@ -129,6 +129,7 @@ enum Combat_Event
 	Damage_Taken,
 	On_Death,
 	Defend,
+	Reagent_Consumed,
 }
 
 func RarityName(p_rarity: Types.Rarity) -> String:

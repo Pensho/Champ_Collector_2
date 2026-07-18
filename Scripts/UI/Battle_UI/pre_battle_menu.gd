@@ -1,17 +1,28 @@
 extends Control
 
+const MENU_ITEM_SLOT = preload("uid://di0y70sbai3yw")
+
 const NR_OF_CHARACTERS_IN_BATTLE: int = 3
 const CHARACTER_CHOSEN_COLOR: Color = Color(0.1, 0.1, 0.1)
 const CHARACTER_AVAILABLE_COLOR: Color = Color(1,1,1)
+const NR_OF_REAGENTS_IN_BATTLE: int = 3
 
 @export var _difficulty_option: OptionButton
 @export var _chosen_character_slots: Array[MenuItemSlot]
+@export var _chosen_reagent_slots: Array[MenuItemSlot]
+@export var _grid_container_reagents: GridContainer
 
 var _chosen_characters: Dictionary[int, Character]
 var _character_collection: Array[Character]
 var _available_to_chosen_ids: Dictionary[int, int] = {0: -1, 1: -1, 2: -1}
 var _available_character_slots: Array[MenuItemSlot]
 var _character_collection_size: int
+
+# Reagent selection: chosen slot index -> reagent registry key.
+var _chosen_reagents: Dictionary[int, String]
+var _available_reagent_slots: Array[MenuItemSlot]
+var _displayed_reagent_keys: Array[String]
+var _reagent_collection: ReagentCollection
 
 var _self_context: ContextContainer
 
@@ -30,6 +41,12 @@ func Init(p_context_container: ContextContainer) -> void:
 	for i in _chosen_character_slots.size():
 		_chosen_character_slots[i]._ID = i
 		_chosen_character_slots[i].ConnectButton(_on_remove_char_button_up)
+
+	_reagent_collection = main.GetInstance()._reagent_collection
+	for i in _chosen_reagent_slots.size():
+		_chosen_reagent_slots[i]._ID = i
+		_chosen_reagent_slots[i].ConnectButton(_on_remove_reagent_button_up)
+	RefreshAvailableReagents()
 	
 	for i in _available_character_slots.size():
 		_available_character_slots[i]._ID = i
@@ -71,6 +88,7 @@ func _on_start_button_up() -> void:
 		_self_context._arguments["Difficulty"] = _difficulty_option.get_selected_id()
 	_self_context._scene = "uid://cc883blynrgq2"
 	_self_context._player_battle_characters = _chosen_characters.values()
+	_self_context._battle_reagents.assign(_chosen_reagents.values())
 
 	main.GetInstance().change_scene(_self_context)
 	hide()
@@ -116,3 +134,62 @@ func _on_add_char_button_up(p_char_slot: int) -> void:
 			_available_character_slots[p_char_slot].SetHeldObjectModulate(CHARACTER_CHOSEN_COLOR)
 			_available_to_chosen_ids[i] = p_char_slot
 			return
+
+func RefreshAvailableReagents() -> void:
+	for slot in _available_reagent_slots:
+		slot.queue_free()
+	_available_reagent_slots.clear()
+	_displayed_reagent_keys.clear()
+
+	var owned: Dictionary[String, int] = _reagent_collection.GetAllOwned()
+	for reagent_key in owned.keys():
+		var reagent_data: ReagentData = ReagentRegistry.Get(reagent_key)
+		var slot: MenuItemSlot = MENU_ITEM_SLOT.instantiate()
+		_grid_container_reagents.add_child(slot)
+		slot._ID = _displayed_reagent_keys.size()
+		slot.ConnectButton(_on_add_reagent_button_up)
+		slot.SetHeldObjectTexture(reagent_data.icon)
+		slot.SetTextureOutline(reagent_data.rarity)
+		slot.level.text = str(owned[reagent_key])
+		_available_reagent_slots.append(slot)
+		_displayed_reagent_keys.append(reagent_key)
+
+func RemainingAvailableCount(p_reagent_key: String) -> int:
+	var chosen_count: int = 0
+	for key in _chosen_reagents.values():
+		if (key == p_reagent_key):
+			chosen_count += 1
+	return _reagent_collection.GetCount(p_reagent_key) - chosen_count
+
+func _on_add_reagent_button_up(p_reagent_slot: int) -> void:
+	if (_chosen_reagents.size() >= NR_OF_REAGENTS_IN_BATTLE):
+		print("Trying to add a reagent when the loadout is full.")
+		return
+	if (_displayed_reagent_keys.size() <= p_reagent_slot):
+		print("Trying to add a reagent from an empty slot.")
+		return
+	var reagent_key: String = _displayed_reagent_keys[p_reagent_slot]
+	if (RemainingAvailableCount(reagent_key) <= 0):
+		print("Trying to add more of a reagent than is owned.")
+		return
+	var reagent_data: ReagentData = ReagentRegistry.Get(reagent_key)
+	for i in NR_OF_REAGENTS_IN_BATTLE:
+		if (!_chosen_reagents.has(i)):
+			_chosen_reagents[i] = reagent_key
+			_chosen_reagent_slots[i].SetHeldObjectTexture(reagent_data.icon)
+			_chosen_reagent_slots[i].SetTextureOutline(reagent_data.rarity)
+			if (RemainingAvailableCount(reagent_key) <= 0):
+				_available_reagent_slots[p_reagent_slot].SetHeldObjectModulate(CHARACTER_CHOSEN_COLOR)
+			return
+
+func _on_remove_reagent_button_up(p_reagent_slot: int) -> void:
+	if (!_chosen_reagents.has(p_reagent_slot)):
+		print("trying to remove a reagent from an empty slot nr: ", p_reagent_slot)
+		return
+	var reagent_key: String = _chosen_reagents[p_reagent_slot]
+	_chosen_reagents.erase(p_reagent_slot)
+	_chosen_reagent_slots[p_reagent_slot].SetHeldObjectTexture(null)
+	for i in _displayed_reagent_keys.size():
+		if (_displayed_reagent_keys[i] == reagent_key):
+			_available_reagent_slots[i].SetHeldObjectModulate(CHARACTER_AVAILABLE_COLOR)
+			break

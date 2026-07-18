@@ -9,6 +9,8 @@ enum BattleState
 	Advancing,
 	Awaiting_Player_Input,
 	Selecting_Zone,
+	Selecting_Reagent_Target,
+	Selecting_Reagent_Zone,
 	Enemy_Acting,
 	Resolving,
 	Battle_Over,
@@ -18,8 +20,6 @@ const ZoneType = preload("uid://bdjrfif0s60v4")
 const GRAYSCALE = preload("uid://ia57lns0336p")
 
 const NO_CHARACTERS_TURN: int = -1
-# Enemy slot IDs start here so they index the same exported _character_representations array and
-# turn-bar slots as before; the offset is fixed even when a wave has fewer enemies.
 const ENEMY_ID_OFFSET: int = 3
 
 @export var _character_representations: Array[CharacterRepresentation]
@@ -37,6 +37,9 @@ var _targeting_order: Array[int]
 var _sides: CombatSides
 # Maps resolver status-effect IDs to the representation's status-icon IDs.
 var _status_visual_IDs: Dictionary[int, int] = {}
+var _reagent_loadout: ReagentLoadout
+var _selected_reagent_index: int = -1
+var _pending_turn_bar_reset: Dictionary[int, float] = {}
 
 @onready var _battle_ui: BattleUI = $"Battle UI"
 @onready var _background: TextureRect = %BattleBackground
@@ -117,6 +120,8 @@ func Init(p_context: ContextContainer) -> void:
 	_resolver = BattleResolver.new(
 			_characters, _sides, TurnBarPositions.new(_battle_ui._turn_bar), BattleSeed())
 	_resolver.result_produced.connect(_on_resolver_result_produced)
+
+	_reagent_loadout = ReagentLoadout.new(p_context._battle_reagents)
 
 	for i in p_context._player_battle_characters.size():
 		_characters[i] = p_context._player_battle_characters[i]
@@ -216,6 +221,12 @@ func StartTurn() -> void:
 				_battle_ui._skill_buttons[i].ClearCooldown()
 		_selected_skill_ID = 0
 		_battle_ui.ActiveSkillGlow(_selected_skill_ID)
+		for i in mini(_reagent_loadout.Size(), _battle_ui._reagent_buttons.size()):
+			var reagent: ReagentData = ReagentRegistry.Get(_reagent_loadout.KeyAt(i))
+			_battle_ui.SetReagent(reagent.icon, reagent.display_name, reagent.description, i)
+			_battle_ui._reagent_buttons[i].show()
+			if(_reagent_loadout.IsSpent(i)):
+				_battle_ui._reagent_buttons[i].MarkSpent()
 		_state = BattleState.Awaiting_Player_Input
 	elif(_sides.enemy.Has(_turn_character_ID)):
 		_state = BattleState.Enemy_Acting
@@ -257,15 +268,19 @@ func HandleEnemyTurn() -> void:
 				ResolveTurn(target_IDs)
 				return  # A skill has resolved.
 
-# Resolves the active character's selected skill and closes out the turn.
 func ResolveTurn(p_target_IDs: Array[int]) -> void:
 	_state = BattleState.Resolving
 	_resolver.ResolveSkill(_turn_character_ID, p_target_IDs, _selected_skill_ID)
-	_battle_ui._turn_bar.TurnCompleteForCharacter(_turn_character_ID)
+	if(_pending_turn_bar_reset.has(_turn_character_ID)):
+		_battle_ui._turn_bar.TurnCompleteForCharacter(_turn_character_ID, _pending_turn_bar_reset[_turn_character_ID])
+		_pending_turn_bar_reset.erase(_turn_character_ID)
+	else:
+		_battle_ui._turn_bar.TurnCompleteForCharacter(_turn_character_ID)
 	RefreshAllTraitVisuals()
 	_turn_character_ID = NO_CHARACTERS_TURN
 	_turn_indicator.hide()
 	_battle_ui.HideSkillUI()
+	_battle_ui.HideReagentUI()
 	if(not CheckAndHandleBattleOver()):
 		_state = BattleState.Advancing
 
@@ -322,6 +337,15 @@ func _on_resolver_result_produced(p_result: CombatResult) -> void:
 					p_result.skill_type)
 		CombatResult.Kind.Zone_Triggered:
 			_battle_ui._turn_bar.ZoneTriggered(p_result.zone_ID, p_result.duration)
+		CombatResult.Kind.Zone_Cleared:
+			_battle_ui._turn_bar.RemoveZoneEffect(p_result.zone_ID)
+		CombatResult.Kind.Turn_Bar_Reset_Pending:
+			_pending_turn_bar_reset[p_result.target_ID] = p_result.fraction
+		CombatResult.Kind.Heal:
+			if(p_result.amount > 0):
+				_battle_ui.SpawnCombatText(
+						str(p_result.amount), CombatTextPosition(p_result.target_ID), Color(0.2, 0.85, 0.3, 1.0))
+			UpdateLifeBar(p_result.target_ID)
 		CombatResult.Kind.Trait_Text:
 			_battle_ui.SpawnCombatText(p_result.text, CombatTextPosition(p_result.target_ID), p_result.color)
 		CombatResult.Kind.Death:
@@ -409,6 +433,9 @@ func EndBattle(p_winner: BattleResolver.Winner) -> void:
 	main.GetInstance().change_scene(_self_context)
 
 func _on_character_battle_target_selected(p_target_ID: int) -> void:
+	if(BattleState.Selecting_Reagent_Target == _state):
+		_OnReagentTargetSelected(p_target_ID)
+		return
 	if(BattleState.Awaiting_Player_Input != _state):
 		return
 	if(_characters[p_target_ID]._current_health <= 0):
@@ -422,6 +449,20 @@ func _on_character_battle_target_selected(p_target_ID: int) -> void:
 		ResolveTurn(target_IDs)
 	else:
 		print("Invalid target for skill")
+
+func _OnReagentTargetSelected(p_target_ID: int) -> void:
+	if(_characters[p_target_ID]._current_health <= 0):
+		print("Invalid target for reagent, target is dead.")
+		return
+	var reagent: ReagentData = ReagentRegistry.Get(_reagent_loadout.KeyAt(_selected_reagent_index))
+	var mapped_target: Types.Skill_Target = (
+			Types.Skill_Target.Single_Ally if ReagentData.TargetKind.One_Ally == reagent.target_kind
+			else Types.Skill_Target.Single_Enemy)
+	var target_IDs: Array[int] = _resolver.FindSkillTargets(p_target_ID, _turn_character_ID, mapped_target)
+	if(target_IDs.is_empty()):
+		print("Invalid target for reagent")
+		return
+	_ResolveReagentConsumption(_selected_reagent_index, p_target_ID)
 
 func _on_battle_ui_battle_skill_selected(p_skill_ID: int) -> void:
 	if(BattleState.Awaiting_Player_Input != _state and BattleState.Selecting_Zone != _state):
@@ -440,9 +481,43 @@ func _on_battle_ui_battle_skill_selected(p_skill_ID: int) -> void:
 			_battle_ui._turn_bar.DisableZones(true)
 
 func _on_turn_bar_zone_selected(p_zone_ID: int) -> void:
+	if(BattleState.Selecting_Reagent_Zone == _state):
+		if(not _resolver.HasZone(p_zone_ID)):
+			print("No zone to clear there")
+			return
+		_ResolveReagentConsumption(_selected_reagent_index, p_zone_ID)
+		return
 	if(_resolver.HasZone(p_zone_ID)):
 		print("Zone is already used")
 		return
 	_resolver.PlaceZone(
 			p_zone_ID, _turn_character_ID, _characters[_turn_character_ID]._skills[_selected_skill_ID])
 	ResolveTurn([])
+
+func _on_battle_ui_battle_reagent_selected(p_reagent_index: int) -> void:
+	if(BattleState.Awaiting_Player_Input != _state):
+		return
+	if(_reagent_loadout.IsSpent(p_reagent_index)):
+		print("Reagent at index ", p_reagent_index, " has already been consumed this battle.")
+		return
+	var reagent: ReagentData = ReagentRegistry.Get(_reagent_loadout.KeyAt(p_reagent_index))
+	match reagent.target_kind:
+		ReagentData.TargetKind.Self_Target:
+			_ResolveReagentConsumption(p_reagent_index, _turn_character_ID)
+		ReagentData.TargetKind.One_Ally, ReagentData.TargetKind.One_Enemy:
+			_selected_reagent_index = p_reagent_index
+			_state = BattleState.Selecting_Reagent_Target
+		ReagentData.TargetKind.Zone_Section:
+			_selected_reagent_index = p_reagent_index
+			_state = BattleState.Selecting_Reagent_Zone
+			_battle_ui._turn_bar.DisableZones(false)
+
+func _ResolveReagentConsumption(p_reagent_index: int, p_target_ID: int) -> void:
+	if(not _reagent_loadout.TryConsume(p_reagent_index, main.GetInstance()._reagent_collection)):
+		return
+	_resolver.ResolveReagent(_turn_character_ID, _reagent_loadout.KeyAt(p_reagent_index), p_target_ID)
+	_battle_ui._reagent_buttons[p_reagent_index].MarkSpent()
+	RefreshAllTraitVisuals()
+	_selected_reagent_index = -1
+	_state = BattleState.Awaiting_Player_Input
+	_battle_ui._turn_bar.DisableZones(true)

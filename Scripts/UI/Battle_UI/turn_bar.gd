@@ -154,8 +154,8 @@ func DisableZones(p_disable: bool):
 	for button in _zone_buttons:
 		button.disabled = p_disable
 
-func TurnCompleteForCharacter(p_character_ID) -> void:
-	_character_turn_markers[p_character_ID].position.x = 0
+func TurnCompleteForCharacter(p_character_ID, p_reset_percent: float = 0.0) -> void:
+	_character_turn_markers[p_character_ID].position.x = self.size.x * p_reset_percent
 	_characters_turn_id = NO_CHARACTERS_TURN
 
 func Update(p_delta: float, p_character_ID) -> void:

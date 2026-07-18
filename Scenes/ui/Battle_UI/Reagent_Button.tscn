@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://c6r15fjhq4x2p"]
+
+[ext_resource type="Texture2D" uid="uid://ctbnnvhe6erv0" path="res://Assets/Champ_Collector/Icons/Abilities/Bolas/Bolas_2.jpg" id="1_icon"]
+[ext_resource type="Script" path="res://Scripts/UI/Battle_UI/reagent_button.gd" id="2_script"]
+[ext_resource type="Script" uid="uid://bumae467d28vx" path="res://Scripts/UI/tooltip.gd" id="3_tooltip"]
+
+[node name="Reagent_1" type="Button"]
+offset_right = 100.0
+offset_bottom = 100.0
+icon = ExtResource("1_icon")
+expand_icon = true
+script = ExtResource("2_script")
+
+[node name="Control" type="Control" parent="."]
+custom_minimum_size = Vector2(100, 100)
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 1
+script = ExtResource("3_tooltip")

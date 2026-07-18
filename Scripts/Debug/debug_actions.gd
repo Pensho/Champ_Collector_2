@@ -23,11 +23,13 @@ static func build_battle_context(
 		p_player_characters: Array[Character],
 		p_battle_context: Context_Battle,
 		p_difficulty: int,
-		p_previous_scene: String) -> ContextContainer:
+		p_previous_scene: String,
+		p_battle_reagents: Array[String] = []) -> ContextContainer:
 	var context: ContextContainer = ContextContainer.new()
 	context._scene = DebugCatalog.BATTLE_SCENE_UID
 	context._static_context = p_battle_context
 	context._player_battle_characters = p_player_characters
+	context._battle_reagents = p_battle_reagents
 	context._arguments["Difficulty"] = p_difficulty
 	context._previous_scene = p_previous_scene
 	return context
