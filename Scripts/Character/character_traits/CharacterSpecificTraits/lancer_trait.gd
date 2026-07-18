@@ -27,8 +27,13 @@ const OFFENSIVE_SKILL_NAMES: Dictionary[String, bool] = {
 var defensive_skill_names: Dictionary[String, bool] = {}
 
 var _momentum_stacks: int = 0
+var _momentum_per_stack: float = 0.0
+var _phalanx_guard_defense: float = 0.0
 
-func Init() -> void:
+func Init(p_rarity: Types.Rarity) -> void:
+	super.Init(p_rarity)
+	_momentum_per_stack = MOMENTUM_PER_STACK.get(p_rarity, 0.0)
+	_phalanx_guard_defense = PHALANX_GUARD_DEFENSE.get(p_rarity, 0.0)
 	_trait_texture = load("res://Assets/Champ_Collector/Icons/Status_Effects/Phalanx_Guard/Phalanx_Guard.jpg")
 	_title = "Reckless Momentum"
 	_body = ("Offensive skills grant a Momentum stack that gives more Attack and less Defense per stack. " +
@@ -53,7 +58,6 @@ func OnSkillCast(
 		p_caster_attributes: Dictionary[Types.Attribute, int],
 		p_resolver: BattleResolver) -> TraitSkillResult:
 	var result: TraitSkillResult = TraitSkillResult.new()
-	var rarity: Types.Rarity = p_resolver.GetCharacters()[p_owner_ID]._rarity
 
 	if OFFENSIVE_SKILL_NAMES.has(p_skill_name):
 		_momentum_stacks = min(_momentum_stacks + 1, MAX_MOMENTUM_STACKS)
@@ -63,24 +67,22 @@ func OnSkillCast(
 			var phalanx_guard_buff: StatusEffects.Buff = StatusEffects.Buff.new()
 			phalanx_guard_buff.type = Types.Buff_Type.Phalanx_Guard
 			phalanx_guard_buff.duration = 2
-			phalanx_guard_buff.value = PHALANX_GUARD_DEFENSE.get(rarity, 0.0)
+			phalanx_guard_buff.value = _phalanx_guard_defense
 			phalanx_guard_buff.name = "Phalanx Guard"
 			p_resolver.ApplyBuff(p_owner_ID, phalanx_guard_buff)
 
 	if _momentum_stacks > 0:
-		var bonus_per_stack: float = MOMENTUM_PER_STACK.get(rarity, 0.0)
 		p_caster_attributes[Types.Attribute.Attack] += int(
-				ceilf(p_caster_attributes[Types.Attribute.Attack] * bonus_per_stack * _momentum_stacks))
+				ceilf(p_caster_attributes[Types.Attribute.Attack] * _momentum_per_stack * _momentum_stacks))
 
 	return result
 
 func OnDefend(
-		p_defender_ID: int,
+		_p_defender_ID: int,
 		p_defender_attributes: Dictionary[Types.Attribute, int],
-		p_characters: Dictionary[int, Character]) -> void:
+		_p_characters: Dictionary[int, Character]) -> void:
 	if _momentum_stacks == 0:
 		return
-	var rarity: Types.Rarity = p_characters[p_defender_ID]._rarity
 	var penalty: int = int(ceilf(
-			p_defender_attributes[Types.Attribute.Defence] * (MOMENTUM_PER_STACK.get(rarity, 0.0) / 2.0) * _momentum_stacks))
+			p_defender_attributes[Types.Attribute.Defence] * (_momentum_per_stack / 2.0) * _momentum_stacks))
 	p_defender_attributes[Types.Attribute.Defence] = max(0, p_defender_attributes[Types.Attribute.Defence] - penalty)

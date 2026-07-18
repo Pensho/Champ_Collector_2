@@ -7,7 +7,11 @@ const STEAL_CHANCE: Dictionary[Types.Rarity, float] = {
 	Types.Rarity.Legendary: 0.50,
 }
 
-func Init() -> void:
+var _steal_chance: float = 0.0
+
+func Init(p_rarity: Types.Rarity) -> void:
+	super.Init(p_rarity)
+	_steal_chance = STEAL_CHANCE.get(p_rarity, 0.0)
 	_trait_texture = load("res://Assets/Champ_Collector/Creatures/Tidal_Corsair/Tidal_Corsair_Stack_Steel.png")
 	_title = "Pilfer"
 	_body = "Chance to steal a buff from the target when a skill is used."
@@ -26,8 +30,7 @@ func OnSkillCast(
 	var result: TraitSkillResult = TraitSkillResult.new()
 	var characters: Dictionary[int, Character] = p_resolver.GetCharacters()
 
-	var chance: float = STEAL_CHANCE.get(characters[p_owner_ID]._rarity, 0.0)
-	if (p_resolver.GetRandom().randf() >= chance):
+	if (p_resolver.GetRandom().randf() >= _steal_chance):
 		return result
 
 	if (p_target_IDs.is_empty()):

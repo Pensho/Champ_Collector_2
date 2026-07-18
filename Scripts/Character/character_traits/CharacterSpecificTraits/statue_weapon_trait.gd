@@ -1,6 +1,7 @@
 class_name StatueWeaponTrait extends CharacterTrait
 
-func Init() -> void:
+func Init(p_rarity: Types.Rarity) -> void:
+	super.Init(p_rarity)
 	_execution_steps[Types.Combat_Event.Start_Combat] = Callable(self, "StartOfBattle")
 
 func StartOfBattle() -> void:

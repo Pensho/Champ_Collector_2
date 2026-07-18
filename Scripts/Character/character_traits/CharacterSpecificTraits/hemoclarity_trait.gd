@@ -9,7 +9,11 @@ const MYSTICISM_BONUS: Dictionary[Types.Rarity, float] = {
 	Types.Rarity.Legendary: 0.40,
 }
 
-func Init() -> void:
+var _mysticism_bonus: float = 0.0
+
+func Init(p_rarity: Types.Rarity) -> void:
+	super.Init(p_rarity)
+	_mysticism_bonus = MYSTICISM_BONUS.get(p_rarity, 0.0)
 	_trait_texture = load("res://Assets/Champ_Collector/Icons/Abilities/Hemoclarity/Hemoclarity.png")
 	_title = "Hemoclarity"
 	_body = "While below half health, gain increased Mysticism."
@@ -35,6 +39,6 @@ func OnSkillCast(
 	if health_fraction >= HEALTH_THRESHOLD:
 		return result
 
-	var bonus: float = MYSTICISM_BONUS.get(owner._rarity, 0.0)
-	p_caster_attributes[Types.Attribute.Mysticism] += int(ceilf(p_caster_attributes[Types.Attribute.Mysticism] * bonus))
+	p_caster_attributes[Types.Attribute.Mysticism] += int(
+			ceilf(p_caster_attributes[Types.Attribute.Mysticism] * _mysticism_bonus))
 	return result

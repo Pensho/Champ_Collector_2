@@ -16,11 +16,14 @@ func before_each() -> void:
 	_owner._current_health = 10
 	_ally._current_health = 10
 	_trait = PlanTrait.new()
-	_trait.Init()
 	_characters = {0: _owner, 1: _ally}
 	_positions = TestFactory.FakeTurnPositions.new()
 	# A two-player side with no enemies — exercises a sub-3 team on purpose.
 	_resolver = TestFactory.make_resolver(_characters, CombatSides.new([0, 1], []), _positions)
+
+func _InitTrait(p_rarity: Types.Rarity) -> void:
+	_owner._rarity = p_rarity
+	_trait.Init(p_rarity)
 
 # --- Rarity tables ---
 
@@ -39,7 +42,7 @@ func test_percent_behind_threshold_legendary() -> void:
 # --- The Tactician itself is never buffed ---
 
 func test_owner_is_never_empowered() -> void:
-	_owner._rarity = Types.Rarity.Legendary
+	_InitTrait(Types.Rarity.Legendary)
 	_positions.behind_IDs = [1]
 
 	_trait.StartOfTurn(0, _resolver)
@@ -49,7 +52,7 @@ func test_owner_is_never_empowered() -> void:
 # --- Allies within threshold are buffed at every rarity ---
 
 func test_ally_within_threshold_is_empowered_at_low_rarity() -> void:
-	_owner._rarity = Types.Rarity.Uncommon
+	_InitTrait(Types.Rarity.Uncommon)
 	_positions.behind_IDs = [1]
 
 	_trait.StartOfTurn(0, _resolver)
@@ -58,7 +61,7 @@ func test_ally_within_threshold_is_empowered_at_low_rarity() -> void:
 	assert_eq(_ally._active_buffs[0].type, Types.Buff_Type.Empower)
 
 func test_ally_within_threshold_is_empowered_at_high_rarity() -> void:
-	_owner._rarity = Types.Rarity.Legendary
+	_InitTrait(Types.Rarity.Legendary)
 	_positions.behind_IDs = [1]
 
 	_trait.StartOfTurn(0, _resolver)
@@ -66,7 +69,7 @@ func test_ally_within_threshold_is_empowered_at_high_rarity() -> void:
 	assert_eq(_ally._active_buffs.size(), 1, "Ally within threshold should be empowered at Legendary rarity")
 
 func test_no_buff_when_no_allies_within_threshold() -> void:
-	_owner._rarity = Types.Rarity.Legendary
+	_InitTrait(Types.Rarity.Legendary)
 	_positions.behind_IDs = []
 
 	_trait.StartOfTurn(0, _resolver)
@@ -75,7 +78,7 @@ func test_no_buff_when_no_allies_within_threshold() -> void:
 		"No ally buff should be applied when none qualify as within threshold")
 
 func test_threshold_queried_matches_rarity() -> void:
-	_owner._rarity = Types.Rarity.Epic
+	_InitTrait(Types.Rarity.Epic)
 	_positions.behind_IDs = []
 
 	_trait.StartOfTurn(0, _resolver)

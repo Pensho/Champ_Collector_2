@@ -80,7 +80,7 @@ func InstantiateNew(p_preset: CharacterPreset, p_instance_ID: int) -> void:
 	
 	if(null != p_preset._trait):
 		_trait = p_preset._trait.duplicate(true)
-		_trait.Init()
+		_trait.Init(_rarity)
 
 func GetEquipmentBonus(p_attribute: Types.Attribute) -> int:
 	var bonus_stat: int = 0

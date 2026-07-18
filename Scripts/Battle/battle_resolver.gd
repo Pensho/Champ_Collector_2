@@ -677,7 +677,7 @@ func _ResolveDamage(
 	var target: Character = _characters[p_target_ID]
 	if(damage_dealt > 0 and null != target._trait
 			and target._trait._execution_steps.has(Types.Combat_Event.Damage_Taken)):
-		damage_dealt = int(round(damage_dealt * target._trait.OnDamageTaken(p_target_ID, target._rarity, self)))
+		damage_dealt = int(round(damage_dealt * target._trait.OnDamageTaken(p_target_ID, self)))
 	if(damage_dealt == 0):
 		return
 

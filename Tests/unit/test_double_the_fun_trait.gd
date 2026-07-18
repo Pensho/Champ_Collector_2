@@ -17,9 +17,13 @@ func before_each() -> void:
 	_character = Character.new()
 	_character._current_health = 10
 	_trait = DoubleTheFunTrait.new()
-	_trait.Init()
 	var roster: Dictionary[int, Character] = {0: _character}
 	_resolver = TestFactory.make_resolver(roster, CombatSides.new([0], []))
+	_InitTrait(Types.Rarity.Common)
+
+func _InitTrait(p_rarity: Types.Rarity) -> void:
+	_character._rarity = p_rarity
+	_trait.Init(p_rarity)
 
 func after_each() -> void:
 	_repr.free()
@@ -42,25 +46,29 @@ func test_avoidance_increment_legendary() -> void:
 # --- Chance computation boundaries ---
 
 func test_base_chance_at_zero_stacks() -> void:
-	assert_eq(_trait.GetAvoidChance(Types.Rarity.Legendary), 0.05)
+	_InitTrait(Types.Rarity.Legendary)
+	assert_eq(_trait.GetAvoidChance(), 0.05)
 
 func test_chance_ramps_per_stack_epic() -> void:
+	_InitTrait(Types.Rarity.Epic)
 	_trait._avoidance_stacks = 1
-	assert_almost_eq(_trait.GetAvoidChance(Types.Rarity.Epic), 0.10, 0.0001)
+	assert_almost_eq(_trait.GetAvoidChance(), 0.10, 0.0001)
 	_trait._avoidance_stacks = 2
-	assert_almost_eq(_trait.GetAvoidChance(Types.Rarity.Epic), 0.15, 0.0001)
+	assert_almost_eq(_trait.GetAvoidChance(), 0.15, 0.0001)
 	_trait._avoidance_stacks = 3
-	assert_almost_eq(_trait.GetAvoidChance(Types.Rarity.Epic), 0.20, 0.0001)
+	assert_almost_eq(_trait.GetAvoidChance(), 0.20, 0.0001)
 
 func test_max_chance_legendary() -> void:
+	_InitTrait(Types.Rarity.Legendary)
 	_trait._avoidance_stacks = DoubleTheFunTrait.MAX_AVOIDANCE_STACKS
-	assert_almost_eq(_trait.GetAvoidChance(Types.Rarity.Legendary), 0.23, 0.0001)
+	assert_almost_eq(_trait.GetAvoidChance(), 0.23, 0.0001)
 
 # --- Stack ramp / cap / reset behaviour (driven via OnDamageTaken outcomes) ---
 
 func test_stacks_increment_on_a_hit() -> void:
+	_InitTrait(Types.Rarity.Uncommon)
 	_trait._avoidance_stacks = 0
-	var multiplier: float = _trait.OnDamageTaken(0, Types.Rarity.Uncommon, _resolver)
+	var multiplier: float = _trait.OnDamageTaken(0, _resolver)
 	if multiplier == 1.0:
 		assert_eq(_trait._avoidance_stacks, 1, "A hit (no avoid) should increment stacks by 1")
 	else:
@@ -70,17 +78,19 @@ func test_stacks_cap_at_max_after_repeated_hits() -> void:
 	# Common rarity has no entry in AVOIDANCE_INCREMENT, so chance stays at the 5% base
 	# regardless of stacks. Driving many calls makes repeated hits overwhelmingly likely
 	# while keeping the cap assertion deterministic.
+	_InitTrait(Types.Rarity.Common)
 	for i in 200:
-		_trait.OnDamageTaken(0, Types.Rarity.Common, _resolver)
+		_trait.OnDamageTaken(0, _resolver)
 	assert_true(_trait._avoidance_stacks <= DoubleTheFunTrait.MAX_AVOIDANCE_STACKS)
 
 func test_avoid_reports_trait_text() -> void:
+	_InitTrait(Types.Rarity.Legendary)
 	var received: Array[CombatResult] = []
 	_resolver.result_produced.connect(func(p_result): received.append(p_result))
 	var avoided: bool = false
 	for i in 500:
 		_trait._avoidance_stacks = DoubleTheFunTrait.MAX_AVOIDANCE_STACKS
-		if(_trait.OnDamageTaken(0, Types.Rarity.Legendary, _resolver) == 0.0):
+		if(_trait.OnDamageTaken(0, _resolver) == 0.0):
 			avoided = true
 			break
 	assert_true(avoided, "A 23% avoid chance over 500 rolls should avoid at least once")

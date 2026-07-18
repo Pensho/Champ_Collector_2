@@ -20,8 +20,13 @@ const MAX_INSTABILITY_STACKS: int = 5
 const SURGE_MYSTICISM_SCALING: float = 1.5
 
 var _instability_stacks: int = 0
+var _mysticism_per_stack: float = 0.0
+var _reagent_amplification: float = 0.0
 
-func Init() -> void:
+func Init(p_rarity: Types.Rarity) -> void:
+	super.Init(p_rarity)
+	_mysticism_per_stack = MYSTICISM_PER_STACK.get(p_rarity, 0.0)
+	_reagent_amplification = REAGENT_AMPLIFICATION.get(p_rarity, 0.0)
 	_trait_texture = load("res://Assets/Champ_Collector/Icons/Abilities/Arcane_Instability/Arcane_Instability.png")
 	_title = "Arcane Instability"
 	_body = ("Using any skill grants an Instability stack that gives more Mysticism per stack. " +
@@ -48,16 +53,14 @@ func OnSkillCast(
 		p_caster_attributes: Dictionary[Types.Attribute, int],
 		p_resolver: BattleResolver) -> TraitSkillResult:
 	var result: TraitSkillResult = TraitSkillResult.new()
-	var rarity: Types.Rarity = p_resolver.GetCharacters()[p_owner_ID]._rarity
 	var releases_surge: bool = _instability_stacks >= MAX_INSTABILITY_STACKS
 
 	if not releases_surge:
 		_instability_stacks = min(_instability_stacks + 1, MAX_INSTABILITY_STACKS)
 
 	if _instability_stacks > 0:
-		var bonus_per_stack: float = MYSTICISM_PER_STACK.get(rarity, 0.0)
 		p_caster_attributes[Types.Attribute.Mysticism] += int(ceilf(
-				p_caster_attributes[Types.Attribute.Mysticism] * bonus_per_stack * _instability_stacks))
+				p_caster_attributes[Types.Attribute.Mysticism] * _mysticism_per_stack * _instability_stacks))
 
 	if releases_surge:
 		_ReleaseSurge(p_owner_ID, p_caster_attributes, p_resolver)
@@ -66,10 +69,9 @@ func OnSkillCast(
 	return result
 
 func OnReagentConsumed(
-		p_consumer_ID: int, _p_reagent: ReagentData, p_resolver: BattleResolver) -> float:
+		_p_consumer_ID: int, _p_reagent: ReagentData, _p_resolver: BattleResolver) -> float:
 	_instability_stacks = min(_instability_stacks + 2, MAX_INSTABILITY_STACKS)
-	var rarity: Types.Rarity = p_resolver.GetCharacters()[p_consumer_ID]._rarity
-	return REAGENT_AMPLIFICATION.get(rarity, 0.0)
+	return _reagent_amplification
 
 func _ReleaseSurge(
 		p_owner_ID: int,

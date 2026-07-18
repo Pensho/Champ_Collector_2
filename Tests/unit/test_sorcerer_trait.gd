@@ -12,9 +12,12 @@ func before_each() -> void:
 	_character._current_health = 10
 	_character._attributes[Types.Attribute.Health] = 10
 	_trait = SorcererTrait.new()
-	_trait.Init()
 	_characters = {0: _character}
 	_resolver = TestFactory.make_resolver(_characters, CombatSides.new([0], []))
+
+func _InitTrait(p_rarity: Types.Rarity) -> void:
+	_character._rarity = p_rarity
+	_trait.Init(p_rarity)
 
 # --- Rarity tables ---
 
@@ -45,13 +48,13 @@ func test_reagent_amplification_legendary() -> void:
 # --- Stack accrual per skill cast ---
 
 func test_skill_cast_increments_stacks() -> void:
-	_character._rarity = Types.Rarity.Epic
+	_InitTrait(Types.Rarity.Epic)
 	var attributes: Dictionary[Types.Attribute, int] = {Types.Attribute.Mysticism: 0}
 	_trait.OnSkillCast(0, [], "Zap", attributes, _resolver)
 	assert_eq(_trait._instability_stacks, 1, "Casting any skill should add one Instability stack")
 
 func test_stacks_capped_at_max_without_reagents() -> void:
-	_character._rarity = Types.Rarity.Epic
+	_InitTrait(Types.Rarity.Epic)
 	var attributes: Dictionary[Types.Attribute, int] = {Types.Attribute.Mysticism: 0}
 	# Exactly MAX_INSTABILITY_STACKS casts reach the cap without yet triggering a Surge
 	# (Surge fires on the next cast made *while already at* max stacks).
@@ -61,7 +64,7 @@ func test_stacks_capped_at_max_without_reagents() -> void:
 		"Instability stacks must not exceed MAX_INSTABILITY_STACKS")
 
 func test_mysticism_bonus_scales_with_stacks_and_rarity() -> void:
-	_character._rarity = Types.Rarity.Epic  # 8% per stack
+	_InitTrait(Types.Rarity.Epic)  # 8% per stack
 	var stack_attr: Dictionary[Types.Attribute, int] = {Types.Attribute.Mysticism: 0}
 	_trait.OnSkillCast(0, [], "Zap", stack_attr, _resolver)
 	_trait.OnSkillCast(0, [], "Zap", stack_attr, _resolver)
@@ -76,26 +79,26 @@ func test_mysticism_bonus_scales_with_stacks_and_rarity() -> void:
 # --- Reagent consumption hook ---
 
 func test_reagent_consumption_grants_two_stacks() -> void:
-	_character._rarity = Types.Rarity.Rare
+	_InitTrait(Types.Rarity.Rare)
 	_trait.OnReagentConsumed(0, ReagentData.new(), _resolver)
 	assert_eq(_trait._instability_stacks, 2, "Consuming a reagent should grant two stacks")
 
 func test_reagent_consumption_capped_at_max() -> void:
-	_character._rarity = Types.Rarity.Rare
+	_InitTrait(Types.Rarity.Rare)
 	_trait._instability_stacks = 4
 	_trait.OnReagentConsumed(0, ReagentData.new(), _resolver)
 	assert_eq(_trait._instability_stacks, SorcererTrait.MAX_INSTABILITY_STACKS,
 		"Reagent stacks must not exceed MAX_INSTABILITY_STACKS")
 
 func test_reagent_consumption_returns_amplification_by_rarity() -> void:
-	_character._rarity = Types.Rarity.Legendary
+	_InitTrait(Types.Rarity.Legendary)
 	var amplification: float = _trait.OnReagentConsumed(0, ReagentData.new(), _resolver)
 	assert_eq(amplification, 0.50)
 
 # --- Surge ---
 
 func test_surge_fires_only_at_max_stacks() -> void:
-	_character._rarity = Types.Rarity.Epic
+	_InitTrait(Types.Rarity.Epic)
 	var ally: Character = TestFactory.make_character()
 	ally._current_health = 10
 	ally._rarity = Types.Rarity.Epic
@@ -114,7 +117,7 @@ func test_surge_fires_only_at_max_stacks() -> void:
 	assert_lt(ally._current_health, 10, "Surge should fire on the next cast made while at max stacks")
 
 func test_surge_damages_allies_and_the_sorcerer() -> void:
-	_character._rarity = Types.Rarity.Epic
+	_InitTrait(Types.Rarity.Epic)
 	var ally: Character = TestFactory.make_character()
 	ally._current_health = 10
 	ally._rarity = Types.Rarity.Epic
@@ -129,7 +132,7 @@ func test_surge_damages_allies_and_the_sorcerer() -> void:
 	assert_lt(_character._current_health, 10, "Surge should damage the Sorcerer themselves")
 
 func test_surge_damages_enemies() -> void:
-	_character._rarity = Types.Rarity.Epic
+	_InitTrait(Types.Rarity.Epic)
 	var enemy: Character = TestFactory.make_character()
 	enemy._current_health = 10
 	enemy._rarity = Types.Rarity.Epic
@@ -143,7 +146,7 @@ func test_surge_damages_enemies() -> void:
 	assert_lt(enemy._current_health, 10, "Surge should damage enemies too")
 
 func test_surge_never_crits() -> void:
-	_character._rarity = Types.Rarity.Epic
+	_InitTrait(Types.Rarity.Epic)
 	var enemy: Character = TestFactory.make_character()
 	enemy._attributes[Types.Attribute.Health] = 1000
 	enemy._current_health = 4000  # Health(1000) x ATTRIBUTE_HEALTH_MULTIPLIER(4)
@@ -163,7 +166,7 @@ func test_surge_never_crits() -> void:
 	assert_true(damage_taken > 0 and damage_taken < 300, "Surge must never roll a critical hit")
 
 func test_surge_resets_stacks() -> void:
-	_character._rarity = Types.Rarity.Epic
+	_InitTrait(Types.Rarity.Epic)
 	_trait._instability_stacks = SorcererTrait.MAX_INSTABILITY_STACKS
 
 	var attributes: Dictionary[Types.Attribute, int] = {Types.Attribute.Mysticism: 100}

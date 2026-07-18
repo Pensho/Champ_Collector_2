@@ -20,7 +20,8 @@ var _steel_description: StackDescription
 var _sea_description: StackDescription
 var _blank_description: StackDescription
 
-func Init() -> void:
+func Init(p_rarity: Types.Rarity) -> void:
+	super.Init(p_rarity)
 	_held_stacks = [Stack_Type.Empty, Stack_Type.Empty, Stack_Type.Empty]
 	_sea_stack_texture = load("res://Assets/Champ_Collector/Creatures/Tidal_Corsair/Tidal_Corsair_Stack_Sea.png")
 	_steel_stack_texture = load("res://Assets/Champ_Collector/Creatures/Tidal_Corsair/Tidal_Corsair_Stack_Steel.png")

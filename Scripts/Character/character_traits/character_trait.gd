@@ -6,10 +6,11 @@ var _execution_steps: Dictionary[Types.Combat_Event, Callable]
 var _trait_texture: Texture2D
 var _title: String = "Title"
 var _body: String = "Body"
+var _owner_rarity: Types.Rarity = Types.Rarity.Common
 @warning_ignore_restore("unused_private_class_variable")
 
-func Init() -> void:
-	print("character_trait base class Init() called!")
+func Init(p_rarity: Types.Rarity) -> void:
+	_owner_rarity = p_rarity
 
 func StartOfBattle() -> void:
 	print("character_trait base class StartOfBattle() called!")
@@ -40,7 +41,7 @@ func OnDefend(
 	print("character_trait base class OnDefend() called!")
 
 ## Returns the multiplier applied to incoming damage (1.0 = unchanged, 0.0 = avoided).
-func OnDamageTaken(_p_owner_ID: int, _p_rarity: Types.Rarity, _p_resolver: BattleResolver) -> float:
+func OnDamageTaken(_p_owner_ID: int, _p_resolver: BattleResolver) -> float:
 	print("character_trait base class DamageTaken() called!")
 	return 1.0
 
