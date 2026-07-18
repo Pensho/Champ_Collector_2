@@ -34,8 +34,12 @@ Suggested order (dependencies noted inside each plan):
       `ReagentResolver`, `ReagentLoadout`), the `Reagent_Consumed` trait hook, and
       the in-battle reagent tray are live (see `Technical_Design_Document.md`
       section 7.7).
-   4. `Plan_Sorcerer_Arcane_Instability.md` — the Sorcerer passive consuming that
-      hook (Sorcerer champion itself is a separate prerequisite task).
+   4. Sorcerer Arcane Instability passive — completed and deleted; the trait
+      (`Scripts/Character/character_traits/CharacterSpecificTraits/sorcerer_trait.gd`)
+      consumes the `Reagent_Consumed` hook and the new `BattleResolver.ResolveTraitDamage`
+      entry point for the Surge (see `Technical_Design_Document.md` section 9).
+      Assigning it to the Sorcerer champion itself is a separate prerequisite task
+      (the champion preset does not exist yet).
 
 6. `Plan_Status_Effect_Implementation.md` — the full status effect catalog
    (`Concept_Document.md` 3.2.3) as `StatusEffectData` resources, batched by

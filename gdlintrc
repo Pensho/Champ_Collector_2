@@ -1,4 +1,5 @@
 max-line-length: 120
+max-public-methods: 21
 class-name: ([A-Z][a-z0-9]*)+
 sub-class-name: ([A-Z][a-z0-9]*)+
 # PascalCase or Pascal_Snake_Case (e.g. Rarity, Skill_Type)

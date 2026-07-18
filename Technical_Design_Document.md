@@ -613,6 +613,15 @@ calculations. Example: the Tidal Corsair trait
 stacks as skills are cast and, on its finisher, consumes them to return amplified
 damage/turn-bar values.
 
+Traits that deal damage outside the casting skill's own resolution (e.g. the Sorcerer's Surge,
+`Scripts/Character/character_traits/CharacterSpecificTraits/sorcerer_trait.gd`) call
+`BattleResolver.ResolveTraitDamage(caster_ID, target_IDs, caster_attributes, damage_scaling,
+allow_critical := true)`. It builds a throwaway `Skill` carrying only the given `damage_scaling`
+and routes each target through the same `_ResolveDamage` mitigation, `Damage_Taken` hook, and
+death handling as normal skill damage — `allow_critical = false` skips the crit roll without
+touching any other part of the shared path, so a trait effect can never crit while still
+mitigating and killing normally.
+
 ---
 
 ## 10. Collections and the save system

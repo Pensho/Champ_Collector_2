@@ -297,6 +297,25 @@ func ResolveReagent(p_consumer_ID: int, p_reagent_key: String, p_target_ID: int)
 	return _EndBatch()
 
 
+func ResolveTraitDamage(
+		p_caster_ID: int,
+		p_target_IDs: Array[int],
+		p_caster_attributes: Dictionary[Types.Attribute, int],
+		p_damage_scaling: Dictionary[Types.Attribute, float],
+		p_allow_critical: bool = true) -> Array[CombatResult]:
+	_BeginBatch()
+	var synthetic_skill: Skill = Skill.new()
+	synthetic_skill.damage_scaling = p_damage_scaling
+	var target_attributes: Dictionary[Types.Attribute, int]
+	for target_ID in p_target_IDs:
+		if(not _characters.has(target_ID) or _characters[target_ID]._current_health <= 0):
+			continue
+		target_attributes = GetCombatAttributes(target_ID)
+		_ResolveDamage(p_caster_ID, target_ID, p_caster_attributes, target_attributes,
+				synthetic_skill, 1.0, p_allow_critical)
+	return _EndBatch()
+
+
 func _ResolveReagentEffect(
 		p_consumer_ID: int, p_target_ID: int, p_reagent: ReagentData, p_potency: float) -> void:
 	match p_reagent.effect_kind:
@@ -621,7 +640,8 @@ func _ResolveDamage(
 		p_caster_attributes: Dictionary[Types.Attribute, int],
 		p_target_attributes: Dictionary[Types.Attribute, int],
 		p_skill: Skill,
-		p_trait_multiplier: float) -> void:
+		p_trait_multiplier: float,
+		p_allow_critical: bool = true) -> void:
 	var random_value: float = _random.randf_range(0.95, 1.05)
 	var caster_scaled_attribute_aggregate: float = 0.0
 	var crit_multiplier: float = 1.0
@@ -634,7 +654,7 @@ func _ResolveDamage(
 	if(0.0 == caster_scaled_attribute_aggregate):
 		return
 
-	if(Skills.RollsCritical(p_caster_attributes[Types.Attribute.CritChance], _random)):
+	if(p_allow_critical and Skills.RollsCritical(p_caster_attributes[Types.Attribute.CritChance], _random)):
 		rolled_critical = true
 		crit_multiplier = max(
 				GameBalance.MINIMUM_CRIT_DAMAGE,

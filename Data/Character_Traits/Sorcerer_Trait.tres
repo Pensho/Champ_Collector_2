@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="SorcererTrait" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://dkdfun362c2cp" path="res://Scripts/Character/character_traits/CharacterSpecificTraits/sorcerer_trait.gd" id="1_srcrtr"]
+
+[resource]
+script = ExtResource("1_srcrtr")
+metadata/_custom_type_script = "uid://dkdfun362c2cp"
