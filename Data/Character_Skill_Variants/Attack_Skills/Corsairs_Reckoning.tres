@@ -1,11 +1,11 @@
-[gd_resource type="Resource" script_class="Skill" load_steps=2 format=3 uid="uid://f1t54rvwevl2"]
+[gd_resource type="Resource" script_class="Skill" format=3 uid="uid://f1t54rvwevl2"]
 
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_c405q"]
 
 [resource]
 script = ExtResource("1_c405q")
 name = "Corsairs Reckoning"
-description = "A devestating blow consuming all Stacks for various effects. Based on Attack."
+description = "A devestating blow consuming all Stacks. Damage per Steel and turn reduction per Sea. Based on Attack."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Corsairs_Reckoning/Corsairs_Reckoning_1.jpg"
 damage_scaling = Dictionary[int, float]({
 2: 1.3

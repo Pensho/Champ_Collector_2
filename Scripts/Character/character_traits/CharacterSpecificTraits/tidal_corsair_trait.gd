@@ -9,6 +9,20 @@ enum Stack_Type
 
 const MAX_STACKS: int = 3
 
+const DAMAGE_PER_STEEL_STACK: Dictionary[Types.Rarity, float] = {
+	Types.Rarity.Uncommon: 0.45,
+	Types.Rarity.Rare: 0.50,
+	Types.Rarity.Epic: 0.55,
+	Types.Rarity.Legendary: 0.60,
+}
+
+const TURN_BAR_PER_SEA_STACK: Dictionary[Types.Rarity, float] = {
+	Types.Rarity.Uncommon: 0.08,
+	Types.Rarity.Rare: 0.10,
+	Types.Rarity.Epic: 0.12,
+	Types.Rarity.Legendary: 0.14,
+}
+
 class StackDescription:
 	var _title: String = "Title"
 	var _body: String = "Body"
@@ -19,9 +33,13 @@ var _held_stacks: Array[Stack_Type]
 var _steel_description: StackDescription
 var _sea_description: StackDescription
 var _blank_description: StackDescription
+var _damage_per_steel_stack: float = 0.0
+var _turn_bar_per_sea_stack: float = 0.0
 
 func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
+	_damage_per_steel_stack = DAMAGE_PER_STEEL_STACK.get(p_rarity, 0.0)
+	_turn_bar_per_sea_stack = TURN_BAR_PER_SEA_STACK.get(p_rarity, 0.0)
 	_held_stacks = [Stack_Type.Empty, Stack_Type.Empty, Stack_Type.Empty]
 	_sea_stack_texture = load("res://Assets/Champ_Collector/Creatures/Tidal_Corsair/Tidal_Corsair_Stack_Sea.png")
 	_steel_stack_texture = load("res://Assets/Champ_Collector/Creatures/Tidal_Corsair/Tidal_Corsair_Stack_Steel.png")
@@ -30,11 +48,13 @@ func Init(p_rarity: Types.Rarity) -> void:
 
 	_steel_description = StackDescription.new()
 	_steel_description._title = "Steel Stack"
-	_steel_description._body = ""
+	_steel_description._body = ("Consumed by Corsair's Reckoning for +" +
+			str(int(round(100.0 * _damage_per_steel_stack))) + "% damage.")
 
 	_sea_description = StackDescription.new()
 	_sea_description._title = "Sea Stack"
-	_sea_description._body = ""
+	_sea_description._body = ("Consumed by Corsair's Reckoning for -" +
+			str(int(round(100.0 * _turn_bar_per_sea_stack))) + "% target turn bar.")
 
 	_blank_description = StackDescription.new()
 	_blank_description._title = "Empty Stack"
@@ -77,9 +97,9 @@ func OnSkillCast(
 		"Corsairs Reckoning":
 			for i in _held_stacks.size():
 				if (_held_stacks[i] == Stack_Type.Steel):
-					skill_result._damage_multiplier += 0.5
+					skill_result._damage_multiplier += _damage_per_steel_stack
 				elif (_held_stacks[i] == Stack_Type.Sea):
-					skill_result._turn_bar_bump -= 0.1
+					skill_result._turn_bar_bump -= _turn_bar_per_sea_stack
 				_held_stacks[i] = Stack_Type.Empty
 
 	return skill_result
