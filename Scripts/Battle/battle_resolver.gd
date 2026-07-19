@@ -134,6 +134,9 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 
 	_ResolveSkillEffect(p_caster_ID, caster_attributes, cast_skill)
 
+	var is_non_basic: bool = cast_skill.cooldown > 0
+	_TriggerManaBurn(p_caster_ID, caster_attributes, is_non_basic)
+
 	var target_attributes: Dictionary[Types.Attribute, int]
 	for target_ID in p_target_IDs:
 		if(not _characters.has(target_ID)):
@@ -167,7 +170,8 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 	for i in caster._skills.size():
 		if(caster._skills[i].cooldown_left > 0):
 			caster._skills[i].cooldown_left -= 1
-	caster._skills[p_skill_ID].cooldown_left = caster._skills[p_skill_ID].cooldown
+	if(not (is_non_basic and _ConsumeRehearsedIfPresent(p_caster_ID))):
+		caster._skills[p_skill_ID].cooldown_left = caster._skills[p_skill_ID].cooldown
 
 	TriggerZones(p_caster_ID)
 
@@ -206,6 +210,11 @@ func ApplyBuff(p_target_ID: int, p_buff_template: StatusEffects.Buff) -> Array[C
 	if(_BlockedBySequenceLock(data, target)):
 		return _EndBatch()
 
+	var new_value: float = p_buff_template.value if 0.0 != p_buff_template.value or null == data else data.magnitude
+	if(Types.Buff_Type.Barrier == p_buff_template.type
+			and _KeepsExistingBarrier(p_target_ID, target, new_value)):
+		return _EndBatch()
+
 	if(null == data or not data.stackable):
 		for i in target._active_buffs.size():
 			if(target._active_buffs[i].type == p_buff_template.type):
@@ -219,7 +228,7 @@ func ApplyBuff(p_target_ID: int, p_buff_template: StatusEffects.Buff) -> Array[C
 	new_buff.type = p_buff_template.type
 	new_buff.duration = p_buff_template.duration
 	new_buff.name = p_buff_template.name
-	new_buff.value = p_buff_template.value if 0.0 != p_buff_template.value or null == data else data.magnitude
+	new_buff.value = new_value
 	new_buff.ID = _NextStatusID()
 	target._active_buffs.append(new_buff)
 	_EmitBuffApplied(p_target_ID, new_buff, new_buff.name)
@@ -234,6 +243,8 @@ func ApplyDebuff(p_target_ID: int, p_debuff_template: StatusEffects.Debuff) -> A
 		return _EndBatch()
 	var data: StatusEffectData = StatusEffectRegistry.DebuffData(p_debuff_template.type)
 	if(_BlockedBySequenceLock(data, target)):
+		return _EndBatch()
+	if(_ConsumeAegisIfPresent(p_target_ID, p_debuff_template.source_ID)):
 		return _EndBatch()
 
 	if(null == data or not data.stackable):
@@ -449,12 +460,110 @@ func _NextStatusID() -> int:
 	return _next_status_ID - 1
 
 
+func _HasBuff(p_character_ID: int, p_type: Types.Buff_Type) -> bool:
+	if(not _characters.has(p_character_ID)):
+		return false
+	for buff in _characters[p_character_ID]._active_buffs:
+		if(buff.type == p_type):
+			return true
+	return false
+
+
+func _HasDebuff(p_character_ID: int, p_type: Types.Debuff_Type) -> bool:
+	if(not _characters.has(p_character_ID)):
+		return false
+	for debuff in _characters[p_character_ID]._active_debuffs:
+		if(debuff.type == p_type):
+			return true
+	return false
+
+
+## Rolls once, or twice keeping the better/worse result for the roll's owner when
+## they hold Luck or Hexed (an owner holding both cancels out to a single roll).
+func _RollFavoring(p_character_ID: int, p_min: float, p_max: float, p_higher_is_better: bool) -> float:
+	var first: float = _random.randf_range(p_min, p_max)
+	var has_luck: bool = _HasBuff(p_character_ID, Types.Buff_Type.Luck)
+	var has_hexed: bool = _HasDebuff(p_character_ID, Types.Debuff_Type.Hexed)
+	if(has_luck == has_hexed):
+		return first
+	var second: float = _random.randf_range(p_min, p_max)
+	if(p_higher_is_better):
+		return max(first, second) if has_luck else min(first, second)
+	return min(first, second) if has_luck else max(first, second)
+
+
 func _BlockedBySequenceLock(p_data: StatusEffectData, p_target: Character) -> bool:
 	if(null == p_data or not p_data.attribute_modifiers.has(Types.Attribute.Speed)):
 		return false
 	for debuff in p_target._active_debuffs:
 		if(Types.Debuff_Type.Sequence_Lock == debuff.type):
 			return true
+	return false
+
+
+## Blocks one incoming debuff by consuming the target's Aegis buff, if any.
+func _ConsumeAegisIfPresent(p_target_ID: int, p_source_ID: int) -> bool:
+	var target: Character = _characters[p_target_ID]
+	for buff in target._active_buffs:
+		if(Types.Buff_Type.Aegis == buff.type):
+			RemoveBuff(p_target_ID, buff)
+			var blocked: CombatResult = CombatResult.new(CombatResult.Kind.Debuff_Blocked)
+			blocked.target_ID = p_target_ID
+			blocked.source_ID = p_source_ID
+			_Emit(blocked)
+			return true
+	return false
+
+
+## Deals Mysticism-scaled magical damage to every living enemy when Overflow expires.
+func _TriggerOverflow(p_holder_ID: int) -> void:
+	var side: CombatTeam = _sides.EnemiesOf(p_holder_ID)
+	if(null == side):
+		return
+	var data: StatusEffectData = StatusEffectRegistry.BuffData(Types.Buff_Type.Overflow)
+	ResolveTraitDamage(p_holder_ID, side.AliveMembers(_characters),
+			GetCombatAttributes(p_holder_ID), {Types.Attribute.Mysticism: data.magnitude})
+
+
+## Consumes the caster's Rehearsed buff, if any, reporting whether cooldown
+## assignment should be skipped for the skill just cast.
+func _ConsumeRehearsedIfPresent(p_caster_ID: int) -> bool:
+	for buff in _characters[p_caster_ID]._active_buffs:
+		if(Types.Buff_Type.Rehearsed == buff.type):
+			RemoveBuff(p_caster_ID, buff)
+			return true
+	return false
+
+
+## Deals Mysticism-scaled damage to a Mana Burn holder when they cast a non-basic skill.
+func _TriggerManaBurn(
+		p_caster_ID: int,
+		p_caster_attributes: Dictionary[Types.Attribute, int],
+		p_is_non_basic: bool) -> void:
+	if(not p_is_non_basic):
+		return
+	var caster: Character = _characters[p_caster_ID]
+	for debuff in caster._active_debuffs:
+		if(Types.Debuff_Type.Mana_Burn == debuff.type):
+			var data: StatusEffectData = StatusEffectRegistry.DebuffData(Types.Debuff_Type.Mana_Burn)
+			var damage: int = int(floor(p_caster_attributes[Types.Attribute.Mysticism] * data.magnitude))
+			if(damage > 0):
+				_ApplyHealthLoss(p_caster_ID, damage)
+				var result: CombatResult = CombatResult.new(CombatResult.Kind.Damage)
+				result.source_ID = debuff.source_ID
+				result.target_ID = p_caster_ID
+				result.amount = damage
+				_Emit(result)
+			return
+
+
+func _KeepsExistingBarrier(p_target_ID: int, p_target: Character, p_new_value: float) -> bool:
+	for buff in p_target._active_buffs:
+		if(Types.Buff_Type.Barrier == buff.type):
+			if(buff.value >= p_new_value):
+				return true
+			RemoveBuff(p_target_ID, buff)
+			return false
 	return false
 
 
@@ -564,11 +673,41 @@ func _EmitDebuffApplied(p_target_ID: int, p_debuff: StatusEffects.Debuff, p_disp
 
 ## Loses health, clamps, and handles the alive-to-dead transition.
 func _ApplyHealthLoss(p_character_ID: int, p_amount: int) -> void:
+	var remaining: int = _AbsorbWithBarrier(p_character_ID, p_amount)
+	if(remaining <= 0):
+		return
 	var character: Character = _characters[p_character_ID]
 	var was_alive: bool = character._current_health > 0
-	character._current_health = clampi(character._current_health - p_amount, 0, _MaxHealth(character))
+	var new_health: int = clampi(character._current_health - remaining, 0, _MaxHealth(character))
+	if(was_alive and new_health <= 0):
+		for buff in character._active_buffs:
+			if(Types.Buff_Type.Deathward == buff.type):
+				RemoveBuff(p_character_ID, buff)
+				new_health = 1
+				break
+	character._current_health = new_health
 	if(was_alive and character._current_health <= 0):
 		_HandleDeath(p_character_ID)
+
+
+## Absorbs as much of an incoming loss as the holder's active Barrier can cover,
+## consuming it once its value is exhausted, and returns the remainder.
+func _AbsorbWithBarrier(p_character_ID: int, p_amount: int) -> int:
+	var character: Character = _characters[p_character_ID]
+	for buff in character._active_buffs:
+		if(Types.Buff_Type.Barrier == buff.type):
+			var absorbed: int = mini(p_amount, int(buff.value))
+			if(absorbed <= 0):
+				return p_amount
+			buff.value -= absorbed
+			var result: CombatResult = CombatResult.new(CombatResult.Kind.Barrier_Absorbed)
+			result.target_ID = p_character_ID
+			result.amount = absorbed
+			_Emit(result)
+			if(buff.value <= 0.0):
+				RemoveBuff(p_character_ID, buff)
+			return p_amount - absorbed
+	return p_amount
 
 
 ## Returns the Health actually gained, after any healing-reduction debuff and clamping.
@@ -678,6 +817,7 @@ func _TriggerExistingCasterBuffs(
 	var status_IDs_to_be_removed: Array[int] = []
 	var heal_total: int = 0
 	var self_cost_total: int = 0
+	var expiring_overflows: Array[StatusEffects.Buff] = []
 
 	for buff in caster._active_buffs:
 		var data: StatusEffectData = StatusEffectRegistry.BuffData(buff.type)
@@ -691,6 +831,9 @@ func _TriggerExistingCasterBuffs(
 					heal_total += int(floor(
 							(p_caster_attributes[Types.Attribute.Health]
 									* GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER) * data.magnitude))
+				StatusEffectData.MagnitudeKind.RandomAttributePercent:
+					var attribute: Types.Attribute = ReagentResolver.RandomTinctureAttribute(_random)
+					p_caster_attributes[attribute] += int(ceilf(p_caster_attributes[attribute] * data.magnitude))
 				_:
 					pass
 			if(data.self_tick_max_health_cost_percent > 0.0):
@@ -702,6 +845,8 @@ func _TriggerExistingCasterBuffs(
 		_EmitStatusDuration(p_caster_ID, buff.ID, buff.duration)
 		if(buff.duration <= 0):
 			status_IDs_to_be_removed.append(buff.ID)
+			if(Types.Buff_Type.Overflow == buff.type):
+				expiring_overflows.append(buff)
 
 	caster._active_buffs = caster._active_buffs.filter(func(buff): return buff.duration > 0)
 	if(not status_IDs_to_be_removed.is_empty()):
@@ -712,6 +857,9 @@ func _TriggerExistingCasterBuffs(
 		# A max-Health buff may have just expired; reclamp current health to
 		# the new, smaller max (_MaxHealth reads the buffs that remain after the filter above).
 		caster._current_health = mini(caster._current_health, _MaxHealth(caster))
+
+	for i in expiring_overflows.size():
+		_TriggerOverflow(p_caster_ID)
 
 	if(heal_total > 0):
 		var healed: int = _ApplyHeal(p_caster_ID, heal_total)
@@ -736,6 +884,9 @@ func _CastBuff(p_target_ID: int, p_skill: Skill) -> void:
 	var data: StatusEffectData = StatusEffectRegistry.BuffData(buff_type)
 	if(_BlockedBySequenceLock(data, target)):
 		return
+	var new_value: float = data.magnitude if null != data else 0.0
+	if(Types.Buff_Type.Barrier == buff_type and _KeepsExistingBarrier(p_target_ID, target, new_value)):
+		return
 
 	if(null == data or not data.stackable):
 		for i in target._active_buffs.size():
@@ -749,7 +900,7 @@ func _CastBuff(p_target_ID: int, p_skill: Skill) -> void:
 	var new_buff: StatusEffects.Buff = StatusEffects.Buff.new()
 	new_buff.type = buff_type
 	new_buff.duration = p_skill.duration
-	new_buff.value = data.magnitude if null != data else 0.0
+	new_buff.value = new_value
 	new_buff.ID = _NextStatusID()
 	target._active_buffs.append(new_buff)
 	_EmitBuffApplied(p_target_ID, new_buff, Types.Buff_Type.keys()[new_buff.type])
@@ -765,8 +916,8 @@ func _CastDebuff(
 	if(Skills.HasMaxStatusEffects(target)):
 		return
 
-	var random_value: float = _random.randf_range(0.95, 1.0)
-	var random_value_2: float = _random.randf_range(0.95, 1.0)
+	var random_value: float = _RollFavoring(p_caster_ID, 0.95, 1.0, true)
+	var random_value_2: float = _RollFavoring(p_target_ID, 0.95, 1.0, true)
 	if(p_caster_accuracy * random_value < p_target_resistance * random_value_2):
 		var resisted: CombatResult = CombatResult.new(CombatResult.Kind.Debuff_Resisted)
 		resisted.target_ID = p_target_ID
@@ -777,6 +928,8 @@ func _CastDebuff(
 	var debuff_type: Types.Debuff_Type = p_skill.debuffs[p_skill.target]
 	var data: StatusEffectData = StatusEffectRegistry.DebuffData(debuff_type)
 	if(_BlockedBySequenceLock(data, target)):
+		return
+	if(_ConsumeAegisIfPresent(p_target_ID, p_caster_ID)):
 		return
 
 	if(null == data or not data.stackable):
@@ -795,6 +948,36 @@ func _CastDebuff(
 	new_debuff.ID = _NextStatusID()
 	target._active_debuffs.append(new_debuff)
 	_EmitDebuffApplied(p_target_ID, new_debuff, Types.Debuff_Type.keys()[new_debuff.type])
+	_TriggerMirrorCoat(p_target_ID, p_caster_ID, debuff_type)
+
+
+## When a debuff lands on a holder with an active Mirror Coat, a copy of it is
+## rolled against the attacker's own Resistance and applied directly if it lands.
+func _TriggerMirrorCoat(p_holder_ID: int, p_attacker_ID: int, p_debuff_type: Types.Debuff_Type) -> void:
+	if(not _HasBuff(p_holder_ID, Types.Buff_Type.Mirror_Coat) or p_holder_ID == p_attacker_ID
+			or not _characters.has(p_attacker_ID) or _characters[p_attacker_ID]._current_health <= 0):
+		return
+	var holder_accuracy: int = GetCombatAttributes(p_holder_ID)[Types.Attribute.Accuracy]
+	var attacker_resistance: int = GetCombatAttributes(p_attacker_ID)[Types.Attribute.Resistance]
+	var random_value: float = _RollFavoring(p_holder_ID, 0.95, 1.0, true)
+	var random_value_2: float = _RollFavoring(p_attacker_ID, 0.95, 1.0, true)
+	if(holder_accuracy * random_value < attacker_resistance * random_value_2):
+		var resisted: CombatResult = CombatResult.new(CombatResult.Kind.Debuff_Resisted)
+		resisted.target_ID = p_attacker_ID
+		resisted.source_ID = p_holder_ID
+		_Emit(resisted)
+		return
+	if(Skills.HasMaxStatusEffects(_characters[p_attacker_ID])):
+		return
+	var data: StatusEffectData = StatusEffectRegistry.DebuffData(p_debuff_type)
+	var mirrored: StatusEffects.Debuff = StatusEffects.Debuff.new()
+	mirrored.type = p_debuff_type
+	mirrored.duration = data.duration_default if null != data else 0
+	mirrored.source_ID = p_holder_ID
+	mirrored.value = _SnapshotStatusValue(data, p_holder_ID)
+	mirrored.ID = _NextStatusID()
+	_characters[p_attacker_ID]._active_debuffs.append(mirrored)
+	_EmitDebuffApplied(p_attacker_ID, mirrored, "")
 
 
 func _ResolveDamage(
@@ -805,7 +988,7 @@ func _ResolveDamage(
 		p_skill: Skill,
 		p_trait_multiplier: float,
 		p_allow_critical: bool = true) -> void:
-	var random_value: float = _random.randf_range(0.95, 1.05)
+	var random_value: float = _RollFavoring(p_caster_ID, 0.95, 1.05, true)
 	var caster_scaled_attribute_aggregate: float = 0.0
 	var crit_multiplier: float = 1.0
 	var rolled_critical: bool = false
@@ -818,8 +1001,18 @@ func _ResolveDamage(
 		return
 
 	var target: Character = _characters[p_target_ID]
-	if(p_allow_critical and Skills.RollsCritical(
-			p_caster_attributes[Types.Attribute.CritChance] + _AttackerCritChanceBonus(target), _random)):
+	for buff in target._active_buffs:
+		if(Types.Buff_Type.Premonition == buff.type):
+			RemoveBuff(p_target_ID, buff)
+			var missed: CombatResult = CombatResult.new(CombatResult.Kind.Attack_Missed)
+			missed.target_ID = p_target_ID
+			missed.source_ID = p_caster_ID
+			_Emit(missed)
+			return
+
+	var crit_roll: float = _RollFavoring(p_caster_ID, 1.0, 100.0, false)
+	if(p_allow_critical and crit_roll <= float(
+			p_caster_attributes[Types.Attribute.CritChance] + _AttackerCritChanceBonus(target))):
 		rolled_critical = true
 		crit_multiplier = max(
 				GameBalance.MINIMUM_CRIT_DAMAGE,
@@ -893,6 +1086,8 @@ func _ResolveZoneEffect(p_zone: Zone, p_character_ID: int) -> void:
 		Types.Skill_Type.Lava_Zone:
 			var target: Character = _characters[p_character_ID]
 			if(Skills.HasMaxStatusEffects(target)):
+				return
+			if(_ConsumeAegisIfPresent(p_character_ID, p_zone._owner_ID)):
 				return
 			var data: StatusEffectData = StatusEffectRegistry.DebuffData(p_zone._debuff_type)
 			var new_debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()

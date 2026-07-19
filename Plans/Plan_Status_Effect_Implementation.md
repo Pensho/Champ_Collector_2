@@ -12,7 +12,7 @@ nothing here depends on it.
 
 ## Status
 
-Batches 0, 1, and 2 done. Implemented: 31 of the catalog's ~50 effects — the
+Batches 0, 1, 2, and 3 done. Implemented: 42 of the catalog's ~50 effects — the
 original 7 (Empower, Fortify, Daunting Strength, Phalanx Guard, Burning,
 Enfeeble, Expose Weakness), batch 1's 18 (debuffs: Suppress, Slow, Blind,
 Unravel, Confound, Exposed Facet, Cracked Facet, Sequence Lock; buffs: Attune,
@@ -49,8 +49,24 @@ effect on turn-bar rate yet — `turn_bar.gd` reads only base + gear Speed, not
 buffed combat attributes. Wiring that up is turn-bar-effects territory
 (batch 4), not part of this plan's batch 1 scope.
 
-Batches 3-4 (consumed/triggered effects, turn-bar/rule effects) remain and
-need their own implementation pass.
+Batch 3 landed the 9 buffs and 2 debuffs whose defining trait is a trigger rather
+than a steady per-turn magnitude: Premonition, Deathward, Aegis, Rehearsed
+(consume-on-trigger, reusing `RemoveBuff()` as their consume step), Barrier (a
+per-instance absorb pool, replace-only-if-larger), Mirror Coat (reflects a landed
+debuff back at its source, rolled again), Overflow (expiry-triggered AoE damage),
+Wanderlust (a random primary attribute boosted each self-tick, transient), Mana
+Burn (cast-triggered rather than tick-triggered self-damage), and Luck/Hexed (a
+shared double-roll helper wrapping every existing roll site). Two catalog numbers
+had no specified value and were confirmed with the user: Overflow and Mana Burn
+both scale at 30% of the relevant Mysticism, matching Plague's existing
+convention. Rehearsed turned out to have no missing dependency despite being
+grouped with the dormant exclusions below — it landed fully live. If a character
+holds Luck and Hexed simultaneously, they cancel out to a single normal roll
+(user decision). `gdlintrc`'s `max-file-lines` was added at 1150 (`battle_resolver.gd`
+crossed the default 1000-line cap) — same category of decision as batch 2's
+`max-public-methods` bump.
+
+Batch 4 (turn-bar/rule effects) remains and needs its own implementation pass.
 
 ## Scope and exclusions
 
@@ -68,8 +84,9 @@ through template application, but with their missing half explicitly deferred:
   `Plan_Skill_Implementation.md`.
 - **Spotlight** — the damage-reduction half lands here; the targeting-weight
   half needs the enemy-AI targeting work in `Plan_Skill_Implementation.md`.
-- **Rehearsed** — interacts with skill cooldown assignment; the hook lands
-  here, exercised by existing cooldown skills.
+
+Rehearsed was originally grouped here too, but turned out to have no missing
+dependency (unlike the three above) and landed fully live in batch 3.
 
 ## Approach (confirmed decisions)
 

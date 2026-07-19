@@ -122,6 +122,15 @@ enum Buff_Type
 	Opportunist,
 	Regeneration,
 	Exhert,
+	Premonition,
+	Deathward,
+	Aegis,
+	Mirror_Coat,
+	Barrier,
+	Luck,
+	Rehearsed,
+	Overflow,
+	Wanderlust,
 }
 
 enum Debuff_Type
@@ -141,6 +150,8 @@ enum Debuff_Type
 	Plague,
 	Blight,
 	Temporal_Leak,
+	Mana_Burn,
+	Hexed,
 	Invalid,
 }
 

@@ -18,6 +18,8 @@ enum MagnitudeKind {
 	CasterAttributeSnapshotPercent, # tick value = magnitude * the applier's attribute, snapshotted at application
 	IncomingHealReduction,          # -magnitude fraction off any heal the holder receives
 	TurnBarMovementDamagePercent,   # magnitude * own Speed, dealt on each turn-bar progress trigger
+	DamageAbsorb,                   # per-instance value is a Health pool consumed before Health itself (Barrier)
+	RandomAttributePercent,         # magnitude on one random attribute, re-rolled each self-tick (Wanderlust)
 }
 
 @export var magnitude_kind: MagnitudeKind

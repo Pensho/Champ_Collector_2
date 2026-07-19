@@ -17,6 +17,9 @@ enum Kind {
 	Heal,
 	Zone_Cleared,
 	Turn_Bar_Reset_Pending,
+	Attack_Missed,
+	Debuff_Blocked,
+	Barrier_Absorbed,
 }
 
 var kind: Kind

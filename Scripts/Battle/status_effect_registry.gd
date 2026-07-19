@@ -21,6 +21,15 @@ const BUFFS: Dictionary[Types.Buff_Type, StatusEffectData] = {
 	Types.Buff_Type.Opportunist: preload("res://Data/Status_Effects/Opportunist.tres"),
 	Types.Buff_Type.Regeneration: preload("res://Data/Status_Effects/Regeneration.tres"),
 	Types.Buff_Type.Exhert: preload("res://Data/Status_Effects/Exhert.tres"),
+	Types.Buff_Type.Premonition: preload("res://Data/Status_Effects/Premonition.tres"),
+	Types.Buff_Type.Deathward: preload("res://Data/Status_Effects/Deathward.tres"),
+	Types.Buff_Type.Aegis: preload("res://Data/Status_Effects/Aegis.tres"),
+	Types.Buff_Type.Mirror_Coat: preload("res://Data/Status_Effects/Mirror_Coat.tres"),
+	Types.Buff_Type.Barrier: preload("res://Data/Status_Effects/Barrier.tres"),
+	Types.Buff_Type.Luck: preload("res://Data/Status_Effects/Luck.tres"),
+	Types.Buff_Type.Rehearsed: preload("res://Data/Status_Effects/Rehearsed.tres"),
+	Types.Buff_Type.Overflow: preload("res://Data/Status_Effects/Overflow.tres"),
+	Types.Buff_Type.Wanderlust: preload("res://Data/Status_Effects/Wanderlust.tres"),
 }
 
 const DEBUFFS: Dictionary[Types.Debuff_Type, StatusEffectData] = {
@@ -39,6 +48,8 @@ const DEBUFFS: Dictionary[Types.Debuff_Type, StatusEffectData] = {
 	Types.Debuff_Type.Plague: preload("res://Data/Status_Effects/Plague.tres"),
 	Types.Debuff_Type.Blight: preload("res://Data/Status_Effects/Blight.tres"),
 	Types.Debuff_Type.Temporal_Leak: preload("res://Data/Status_Effects/Temporal_Leak.tres"),
+	Types.Debuff_Type.Mana_Burn: preload("res://Data/Status_Effects/Mana_Burn.tres"),
+	Types.Debuff_Type.Hexed: preload("res://Data/Status_Effects/Hexed.tres"),
 }
 
 static func BuffData(p_type: Types.Buff_Type) -> StatusEffectData:

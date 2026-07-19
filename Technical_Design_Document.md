@@ -343,6 +343,38 @@ resolver and is tested without the view. `CombatResult.Kind.Burning_Tick` was re
 `Debuff_Tick` since Bleed and Plague now report through the same self-tick damage result Burning
 used exclusively before.
 
+Batch 3 landed the consumed and event-triggered effects: two more `MagnitudeKind` values
+(`DamageAbsorb` for Barrier, `RandomAttributePercent` for Wanderlust) and three more
+`CombatResult.Kind` entries (`Attack_Missed`, `Debuff_Blocked`, `Barrier_Absorbed`). The
+consume-on-trigger buffs (Premonition, Deathward, Aegis, Rehearsed) each get one dedicated
+resolver method checking their own trigger condition and calling the existing `RemoveBuff()` to
+consume themselves, in the same spirit as `_BlockedBySequenceLock` and `_SpreadPlague` — no shared
+"consumable" field, since each trigger site differs (an incoming hit, a fatal hit, a landing
+debuff, a cooldown assignment). Barrier is read directly in `_ApplyHealthLoss` ahead of the normal
+clamp, absorbing as much of an incoming loss as its per-instance `value` covers and consuming
+itself when exhausted; its reapplication rule is the one exception to the standard
+duration-refresh overwrite logic — `ApplyBuff`/`_CastBuff` special-case it to replace the existing
+instance only when the new value is larger. Mirror Coat is wired only at `_CastDebuff` (it needs a
+real attacker): a debuff that lands on a Mirror Coat holder is rolled again, holder Accuracy vs.
+attacker Resistance, and copied directly onto the attacker on success, the same direct-append
+pattern as `_SpreadPlague` rather than a recursive `_CastDebuff` call (which is what keeps mutual
+Mirror Coat from looping). Overflow is an expiry hook collected the same way as Plague's spread,
+dealing Mysticism-scaled damage (30%) to every living enemy through the existing
+`ResolveTraitDamage` entry point when the buff's duration lapses. Wanderlust's
+`RandomAttributePercent` case lives in the ordinary self-tick `match` block, picking one attribute
+each tick via `ReagentResolver.RandomTinctureAttribute()` (the same random-primary-attribute pool
+reagents already use) and applying it only to that turn's `p_caster_attributes` copy — never
+written back to the `Character`, so the bonus does not persist. Mana Burn is cast-triggered, not
+tick-triggered: `ResolveSkill` computes `is_non_basic := cast_skill.cooldown > 0` once and a
+dedicated `_TriggerManaBurn()` call deals 30%-Mysticism-scaled self-damage whenever a Mana Burn
+holder casts a non-basic skill; the same `is_non_basic` flag gates Rehearsed's cooldown skip.
+Luck and Hexed wrap every existing roll site (`_ResolveDamage`'s damage-variance and crit-chance
+rolls, `_CastDebuff`'s two resist-roll components) through a new `_RollFavoring()` helper that
+rolls twice and keeps the better or worse result for whichever character owns that roll; a holder
+with both active cancels out to a single normal roll (user decision). `Skills.RollsCritical` is no
+longer called by the resolver (replaced by `_RollFavoring` at the crit-chance site) but remains for
+its own direct unit tests.
+
 `ReagentData` (`Concept_Document.md` 3.3.3) is the reagent-system data model. The persistent
 inventory, loot-drop acquisition, and in-battle combat consumption are all landed (see
 `ReagentCollection` below, [Section 10](#10-collections-and-the-save-system), and
