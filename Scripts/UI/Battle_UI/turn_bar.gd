@@ -158,17 +158,20 @@ func TurnCompleteForCharacter(p_character_ID, p_reset_percent: float = 0.0) -> v
 	_character_turn_markers[p_character_ID].position.x = self.size.x * p_reset_percent
 	_characters_turn_id = NO_CHARACTERS_TURN
 
-func Update(p_delta: float, p_character_ID) -> void:
+## Returns the fraction of the bar's width this character just moved (0.0 while it is
+## already someone's turn).
+func Update(p_delta: float, p_character_ID) -> float:
 	if(_characters_turn_id != NO_CHARACTERS_TURN):
-		return
-	
+		return 0.0
+
 	var frame_distance: float = _base_velocity * _characters_normalized_speed[p_character_ID] * p_delta
 	_character_turn_markers[p_character_ID].position.x += frame_distance
-	
+
 	var marker: TextureRect = _character_turn_markers[p_character_ID]
 	if((marker.position.x + marker.size.x) > self.size.x):
 		marker.position.x = self.size.x - marker.size.x
 		_characters_turn_id = p_character_ID
+	return frame_distance / self.size.x
 
 func BumpCharacter(p_character_ID: int, p_percent_change: float):
 	_character_turn_markers[p_character_ID].position.x += p_percent_change * self.size.x

@@ -3,7 +3,7 @@ extends GutTest
 const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 
 # Coverage for Burning ticks through the resolver: a tick must be reported as a
-# Burning_Tick result (the view renders it as combat text), and must carry its damage
+# Debuff_Tick result (the view renders it as combat text), and must carry its damage
 # keyed by the source that applied it, so the post-battle screen can credit the
 # applier. Ticks run when the burning character acts, so the tests resolve an
 # effect-free skill for the burning character.
@@ -32,13 +32,13 @@ func _expected_tick(p_max_health: int) -> int:
 	return int(floor((p_max_health * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER) * 0.04))
 
 func _burning_ticks(p_results: Array[CombatResult]) -> Array[CombatResult]:
-	return p_results.filter(func(result): return result.kind == CombatResult.Kind.Burning_Tick)
+	return p_results.filter(func(result): return result.kind == CombatResult.Kind.Debuff_Tick)
 
 func test_burning_tick_produces_burning_result() -> void:
 	_set_max_health(0, 100)
 	_add_burning(0, 1)
 	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [], 0)
-	assert_eq(_burning_ticks(results).size(), 1, "A burning character's action should report one Burning_Tick")
+	assert_eq(_burning_ticks(results).size(), 1, "A burning character's action should report one Debuff_Tick")
 
 func test_burning_tick_reduces_health_by_expected_amount() -> void:
 	_set_max_health(0, 100)

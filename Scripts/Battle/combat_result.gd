@@ -3,7 +3,7 @@ class_name CombatResult extends RefCounted
 
 enum Kind {
 	Damage,
-	Burning_Tick,
+	Debuff_Tick,
 	Debuff_Resisted,
 	Status_Applied,
 	Status_Duration,

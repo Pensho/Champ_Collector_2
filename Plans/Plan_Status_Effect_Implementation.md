@@ -12,19 +12,36 @@ nothing here depends on it.
 
 ## Status
 
-Batches 0 and 1 done. Implemented: 25 of the catalog's ~50 effects — the
+Batches 0, 1, and 2 done. Implemented: 31 of the catalog's ~50 effects — the
 original 7 (Empower, Fortify, Daunting Strength, Phalanx Guard, Burning,
-Enfeeble, Expose Weakness) plus batch 1's 18 (debuffs: Suppress, Slow, Blind,
+Enfeeble, Expose Weakness), batch 1's 18 (debuffs: Suppress, Slow, Blind,
 Unravel, Confound, Exposed Facet, Cracked Facet, Sequence Lock; buffs: Attune,
 Haste, True Aim, Clarity, Insight, Vigor, Keen Edge, Lethal Precision, Frenzy,
-Opportunist). `StatusEffectData` now carries `attribute_modifiers`
-(attribute -> sign) instead of a single `affected_attribute`, plus four new
+Opportunist), and batch 2's 6 (debuffs: Bleed, Plague, Blight, Temporal Leak;
+buffs: Regeneration, Exhert). `StatusEffectData` now carries `attribute_modifiers`
+(attribute -> sign) instead of a single `affected_attribute`, plus seven new
 `MagnitudeKind` values (`AttributePercentagePointAdd`,
 `MaxHealthAttributePercent`, `PerTargetDebuffDamagePercent`,
-`AttackerCritChanceBonus`, `AttackerCritDamageBonus`) — see
+`AttackerCritChanceBonus`, `AttackerCritDamageBonus`,
+`CasterAttributeSnapshotPercent`, `IncomingHealReduction`,
+`TurnBarMovementDamagePercent`) and one new field independent of
+`magnitude_kind` (`self_tick_max_health_cost_percent`, for Exhert) — see
 `Technical_Design_Document.md` section 6.1. The placeholder icon generator
 (`Scripts/Debug/generate_placeholder_icons.gd`) gained a `STATUS_EFFECT_TABLE`
-that batches 2-4 should keep extending.
+that batches 3-4 should keep extending.
+
+Batch 2 landed `BattleResolver._ApplyHeal` as the single health-gain
+application point (now returning the amount actually gained instead of void),
+Blight's healing reduction hooked into it, and a generic
+`CasterAttributeSnapshotPercent` self-tick path shared by Bleed and Plague.
+Temporal Leak went live rather than dormant (user decision during batch 2):
+`TurnBar.Update()` now returns the fraction of the bar moved that frame, and
+`Battle.AdvanceTurnBar()` forwards it to the new
+`BattleResolver.AccumulateTurnBarMovement()` entry point, which owns all the
+actual accumulation/threshold/damage logic so it stays headless-testable.
+`CombatResult.Kind.Burning_Tick` was renamed to `Debuff_Tick` since Bleed and
+Plague now share it. `gdlintrc`'s `max-public-methods` was bumped from 21 to
+22 for the new `AccumulateTurnBarMovement` entry point (user decision).
 
 Dormant note beyond the exclusions below: Slow and Haste's Speed modifier
 applies to combat calculations (e.g. Speed-scaling damage) but has no live
@@ -32,8 +49,8 @@ effect on turn-bar rate yet — `turn_bar.gd` reads only base + gear Speed, not
 buffed combat attributes. Wiring that up is turn-bar-effects territory
 (batch 4), not part of this plan's batch 1 scope.
 
-Batches 2-4 (ticks/healing/DoT, consumed/triggered effects, turn-bar/rule
-effects) remain and need their own implementation pass.
+Batches 3-4 (consumed/triggered effects, turn-bar/rule effects) remain and
+need their own implementation pass.
 
 ## Scope and exclusions
 

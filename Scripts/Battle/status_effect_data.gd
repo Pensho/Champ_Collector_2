@@ -15,6 +15,9 @@ enum MagnitudeKind {
 	PerTargetDebuffDamagePercent, # +magnitude damage per debuff on the target
 	AttackerCritChanceBonus,      # +magnitude crit-chance points to the attacker
 	AttackerCritDamageBonus,      # +magnitude crit-damage points to the attacker
+	CasterAttributeSnapshotPercent, # tick value = magnitude * the applier's attribute, snapshotted at application
+	IncomingHealReduction,          # -magnitude fraction off any heal the holder receives
+	TurnBarMovementDamagePercent,   # magnitude * own Speed, dealt on each turn-bar progress trigger
 }
 
 @export var magnitude_kind: MagnitudeKind
@@ -27,4 +30,6 @@ enum MagnitudeKind {
 @export var stackable: bool = false
 @export var applies_on_self_tick: bool = true
 @export var applies_on_target_snapshot: bool = false
+# Extra self-tick max-Health cost, independent of magnitude_kind.
+@export var self_tick_max_health_cost_percent: float = 0.0
 @export var icon: Texture2D

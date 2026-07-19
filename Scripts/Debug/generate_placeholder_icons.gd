@@ -81,6 +81,14 @@ const STATUS_EFFECT_TABLE: Array = [
 			"color": Color(0.75, 0.10, 0.30, 1.0) },
 	{ "folder": "Status_Effects/Sequence_Lock", "base_name": "Sequence_Lock", "size": 64,
 			"color": Color(0.50, 0.10, 0.10, 1.0) },
+	{ "folder": "Status_Effects/Bleed", "base_name": "Bleed", "size": 64,
+			"color": Color(0.65, 0.05, 0.05, 1.0) },
+	{ "folder": "Status_Effects/Plague", "base_name": "Plague", "size": 64,
+			"color": Color(0.40, 0.30, 0.10, 1.0) },
+	{ "folder": "Status_Effects/Blight", "base_name": "Blight", "size": 64,
+			"color": Color(0.45, 0.15, 0.30, 1.0) },
+	{ "folder": "Status_Effects/Temporal_Leak", "base_name": "Temporal_Leak", "size": 64,
+			"color": Color(0.35, 0.15, 0.45, 1.0) },
 	# Buffs (green/blue family)
 	{ "folder": "Status_Effects/Attune", "base_name": "Attune", "size": 64,
 			"color": Color(0.30, 0.55, 0.80, 1.0) },
@@ -102,6 +110,10 @@ const STATUS_EFFECT_TABLE: Array = [
 			"color": Color(0.60, 0.75, 0.20, 1.0) },
 	{ "folder": "Status_Effects/Opportunist", "base_name": "Opportunist", "size": 64,
 			"color": Color(0.20, 0.60, 0.65, 1.0) },
+	{ "folder": "Status_Effects/Regeneration", "base_name": "Regeneration", "size": 64,
+			"color": Color(0.25, 0.80, 0.45, 1.0) },
+	{ "folder": "Status_Effects/Exhert", "base_name": "Exhert", "size": 64,
+			"color": Color(0.15, 0.60, 0.55, 1.0) },
 ]
 
 # Rarity tier order, tint color, and blend strength (how far the base hue shifts

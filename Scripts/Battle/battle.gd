@@ -189,7 +189,9 @@ func AdvanceTurnBar(p_delta: float) -> void:
 	for character_ID in _characters.keys():
 		if(_characters[character_ID]._current_health <= 0):
 			continue
-		_battle_ui._turn_bar.Update(p_delta, character_ID)
+		var moved_fraction: float = _battle_ui._turn_bar.Update(p_delta, character_ID)
+		if(moved_fraction > 0.0):
+			_resolver.AccumulateTurnBarMovement(character_ID, moved_fraction)
 		_turn_character_ID = _battle_ui._turn_bar.GetActiveTurnID()
 		if(NO_CHARACTERS_TURN != _turn_character_ID):
 			StartTurn()
@@ -303,7 +305,7 @@ func _on_resolver_result_produced(p_result: CombatResult) -> void:
 				_battle_ui.SpawnCombatText(str(p_result.amount), CombatTextPosition(p_result.target_ID))
 				AttributeDamage(p_result.source_ID, p_result.amount)
 			UpdateLifeBar(p_result.target_ID)
-		CombatResult.Kind.Burning_Tick:
+		CombatResult.Kind.Debuff_Tick:
 			_battle_ui.SpawnCombatText(
 					str(p_result.amount), CombatTextPosition(p_result.target_ID), Color(1.0, 0.45, 0.1, 1.0))
 			for source_ID in p_result.amount_by_source.keys():

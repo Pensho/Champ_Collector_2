@@ -314,7 +314,7 @@ Unless stated otherwise, a buff or debuff lasts 2 turns.
 
 ##### 3.2.3.1 Turn Bar Effects
 * Anchor (Debuff): The character cannot be pushed forward or backward on the turn bar by skills. (Not yet implemented)
-* Temporal Leak (Debuff): Every time this character moves 10% of the bar, they take damage scaling with their own Speed. (Not yet implemented)
+* Temporal Leak (Debuff): Every time this character moves 10% of the bar, they take damage equal to 5% of their own Speed.
 * Dead Weight (Debuff): When the character takes damage, they lose 3% turn bar. (Not yet implemented)
 * Slipstream (Buff): The character passes through enemy-placed zones without triggering them. (Not yet implemented)
 * Steadfast (Buff): The character cannot be moved backward on the turn bar. (Not yet implemented)
@@ -337,9 +337,9 @@ Debuffs:
 * Confound: Reduces Knowledge by 30%.
 * Exposed Facet: Attacks against the character gain +15 percentage points Critical Chance.
 * Cracked Facet: Critical hits against the character deal +25% Critical Damage.
-* Bleed: At the start of the character's turn, they take damage scaling with the caster's Attack. (Not yet implemented)
-* Plague: Deals magical damage each turn scaling with the caster's Mysticism; when it expires, it spreads to a random other enemy with fresh duration. (Not yet implemented)
-* Blight: Healing received is reduced by 50%. (Not yet implemented)
+* Bleed: At the start of the character's turn, they take damage equal to 40% of the caster's Attack, snapshotted at the moment of application.
+* Plague: Deals magical damage each turn equal to 30% of the caster's Mysticism, snapshotted at the moment of application; when it expires, it spreads to a random other enemy with fresh duration.
+* Blight: Healing received is reduced by 50%.
 * Severance: The character cannot gain new buffs. (Not yet implemented)
 * Hexed: Roll calculations twice and take the worse result. (Not yet implemented)
 * Stun: The character skips their next turn. (Not yet implemented)
@@ -355,7 +355,7 @@ Buffs:
 * Daunting Strength: Doubles the damage of the next attack.
 * Frenzy: Increases Attack and Speed by 30% but reduces Defense and Accuracy by 30%.
 * Rush: Increases all primary attributes except Health by 30%; when the buff expires, it applies the Stun debuff to the character for 1 turn. This Stun cannot be resisted and is applied after other expiring buffs (such as Aegis) are removed. (Not yet implemented)
-* Exhert: Increases all primary attributes except Health by 20%, but the character loses 5% of their max Health every time they take a turn. (Not yet implemented)
+* Exhert: Increases all primary attributes except Health by 20%, but the character loses 5% of their max Health every time they take a turn.
 * Luck: Roll calculations twice and take the better result. (Not yet implemented)
 * Phalanx Guard: Gain bonus defense per stack of momentum consumed. (Lancer Specific)
 * Attune: Increases Mysticism by 30%.
@@ -364,7 +364,7 @@ Buffs:
 * Clarity: Increases Resistance by 30%.
 * Keen Edge: Increases Critical Chance by 15 percentage points.
 * Insight: Increases Knowledge by 30%.
-* Regeneration: Heals 4% of max Health at the start of each turn. (Not yet implemented)
+* Regeneration: Heals 4% of max Health at the start of each turn.
 * Barrier: A shield that absorbs damage up to a set amount before Health is touched. Barriers do not stack; a new Barrier replaces an existing one only if it is larger. (Not yet implemented)
 * Deathward: The next hit that would be fatal instead leaves the character at 1 Health, then the buff is consumed. (Not yet implemented)
 * Aegis: Blocks the next debuff that would land on the character, then the buff is consumed. (Not yet implemented)

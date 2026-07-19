@@ -19,6 +19,8 @@ const BUFFS: Dictionary[Types.Buff_Type, StatusEffectData] = {
 	Types.Buff_Type.Lethal_Precision: preload("res://Data/Status_Effects/Lethal_Precision.tres"),
 	Types.Buff_Type.Frenzy: preload("res://Data/Status_Effects/Frenzy.tres"),
 	Types.Buff_Type.Opportunist: preload("res://Data/Status_Effects/Opportunist.tres"),
+	Types.Buff_Type.Regeneration: preload("res://Data/Status_Effects/Regeneration.tres"),
+	Types.Buff_Type.Exhert: preload("res://Data/Status_Effects/Exhert.tres"),
 }
 
 const DEBUFFS: Dictionary[Types.Debuff_Type, StatusEffectData] = {
@@ -33,6 +35,10 @@ const DEBUFFS: Dictionary[Types.Debuff_Type, StatusEffectData] = {
 	Types.Debuff_Type.Exposed_Facet: preload("res://Data/Status_Effects/Exposed_Facet.tres"),
 	Types.Debuff_Type.Cracked_Facet: preload("res://Data/Status_Effects/Cracked_Facet.tres"),
 	Types.Debuff_Type.Sequence_Lock: preload("res://Data/Status_Effects/Sequence_Lock.tres"),
+	Types.Debuff_Type.Bleed: preload("res://Data/Status_Effects/Bleed.tres"),
+	Types.Debuff_Type.Plague: preload("res://Data/Status_Effects/Plague.tres"),
+	Types.Debuff_Type.Blight: preload("res://Data/Status_Effects/Blight.tres"),
+	Types.Debuff_Type.Temporal_Leak: preload("res://Data/Status_Effects/Temporal_Leak.tres"),
 }
 
 static func BuffData(p_type: Types.Buff_Type) -> StatusEffectData:

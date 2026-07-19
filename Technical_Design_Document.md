@@ -267,7 +267,8 @@ class_name StatusEffectData extends Resource
 enum MagnitudeKind {
     AttributePercent, MaxHealthPercent, DamageMultiplier, TurnBarBump,
     AttributePercentagePointAdd, MaxHealthAttributePercent, PerTargetDebuffDamagePercent,
-    AttackerCritChanceBonus, AttackerCritDamageBonus,
+    AttackerCritChanceBonus, AttackerCritDamageBonus, CasterAttributeSnapshotPercent,
+    IncomingHealReduction, TurnBarMovementDamagePercent,
 }
 @export var magnitude_kind: MagnitudeKind
 @export var attribute_modifiers: Dictionary[Types.Attribute, float] = {}  # attribute -> sign
@@ -281,6 +282,8 @@ enum MagnitudeKind {
 @export var stackable: bool = false                         # re-apply adds an independent instance
 @export var applies_on_self_tick: bool = true                # ticks on the holder's own turn
 @export var applies_on_target_snapshot: bool = false          # applies when the holder is targeted
+@export var self_tick_max_health_cost_percent: float = 0.0    # extra self-tick Health cost,
+                                                             # independent of magnitude_kind (Exhert)
 @export var icon: Texture2D
 ```
 
@@ -314,6 +317,31 @@ target's debuff count), the latter from the target's active debuffs (added to th
 for that hit only). Sequence Lock has no dedicated field: `ApplyBuff`/`ApplyDebuff`/`_CastBuff`/
 `_CastDebuff` block any status whose `attribute_modifiers` touches Speed when the target already
 has an active `Sequence_Lock` debuff, generic over any current or future Speed-touching status.
+
+Batch 2 (`Plan_Status_Effect_Implementation.md`) landed the health-gain application point and three
+more self-contained magnitude kinds. `BattleResolver._ApplyHeal` (mirroring `_ApplyHealthLoss`)
+is the single site all healing flows through — reagent heals and Regeneration's self-tick alike —
+and now returns the Health actually gained instead of void, since `IncomingHealReduction` (Blight)
+halves the request there before the caller's `CombatResult.Kind.Heal` is built, keeping the
+reported amount honest. `CasterAttributeSnapshotPercent` (Bleed, Attack; Plague, Mysticism) is
+resolved once, at application, by `BattleResolver._SnapshotStatusValue()` — called from `_CastDebuff`,
+`ApplyDebuff`, and the zone path alike — into the instance's `value`, per the Phalanx Guard
+per-instance precedent; the self-tick loop then just reads that already-resolved `value` instead of
+re-deriving it from the source's current (possibly changed) attributes. Plague additionally spreads
+to a random other living member of its own side when it expires (`BattleResolver._SpreadPlague`),
+a dedicated per-type hook in the same spirit as the Sequence Lock block above — no other effect
+needs "copy myself onto someone else on expiry" today. `TurnBarMovementDamagePercent` (Temporal
+Leak) is the one magnitude kind with no self-tick or target-snapshot involvement at all: it is read
+by the new public entry point `BattleResolver.AccumulateTurnBarMovement(character_ID, fraction_moved)`,
+called every frame from `Battle.AdvanceTurnBar()` with the fraction `TurnBar.Update()` reports it
+just advanced the character's marker by. The resolver accumulates fractional progress per holder
+and deals Speed-scaled damage each time `GameBalance.TURN_BAR_PROGRESS_TRIGGER_FRACTION` (0.1) is
+crossed — the only application site backed by the view layer instead of purely resolver-internal
+state, since turn-bar position is tracked in `TurnBar`, not the resolver; `TurnBar.Update()` and
+`Battle.AdvanceTurnBar()` are thin unconditional pass-throughs, so the actual behavior stays in the
+resolver and is tested without the view. `CombatResult.Kind.Burning_Tick` was renamed to
+`Debuff_Tick` since Bleed and Plague now report through the same self-tick damage result Burning
+used exclusively before.
 
 `ReagentData` (`Concept_Document.md` 3.3.3) is the reagent-system data model. The persistent
 inventory, loot-drop acquisition, and in-battle combat consumption are all landed (see
@@ -425,6 +453,10 @@ When a character reaches the right edge, the bar reports that ID as the active t
 
 `Battle._process` drives this only in the `Advancing` state: it calls `turn_bar.Update()` for
 every living character until `GetActiveTurnID()` returns a non-`-1` ID, then calls `StartTurn()`.
+`turn_bar.Update()` also returns the fraction of the bar's width that character just moved (`0.0`
+while it is already someone's turn); `Battle.AdvanceTurnBar()` forwards any non-zero fraction to
+`resolver.AccumulateTurnBarMovement()`, the only place turn-bar position feeds back into the
+resolver outside the `TurnPositions` queries (see section 6.1's Temporal Leak note).
 
 The turn bar is still both state and view: zone occupancy and Plan-trait reach are positional
 questions only it can answer. The resolver reaches them through the **`TurnPositions`** interface
@@ -459,8 +491,9 @@ the skill UI, and returns to `Advancing` (or ends the battle).
 2. Fire the `OnSkillCast` trait hook → returns a `TraitSkillResult` carrying a damage multiplier
    and turn-bar bump.
 3. Tick the caster's own active debuffs and buffs — per-turn effects (e.g. Burning deals 4% of
-   max HP, reported as a `Burning_Tick` result with a per-source damage split) and duration
-   decrements (reported as `Status_Duration` / `Statuses_Removed` results).
+   max HP, reported as a `Debuff_Tick` result with a per-source damage split; Regeneration heals
+   4% of max HP, reported as `Heal`) and duration decrements (reported as `Status_Duration` /
+   `Statuses_Removed` results).
 4. Resolve caster-side skill mechanics (e.g. Heap On stacking against the resolver's per-combat
    state).
 5. For each target: apply buff/debuff snapshots, fire `OnDefend`, optionally cast the skill's

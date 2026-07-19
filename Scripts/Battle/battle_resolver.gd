@@ -34,6 +34,8 @@ var _next_status_ID: int = 0
 var _batch: Array[CombatResult] = []
 var _batch_depth: int = 0
 
+var _turn_bar_progress: Dictionary[int, float] = {}
+
 
 ## Pass a non-negative p_seed for reproducible rolls (e.g. from the encounter);
 ## a negative seed randomizes.
@@ -248,7 +250,8 @@ func ApplyDebuff(p_target_ID: int, p_debuff_template: StatusEffects.Debuff) -> A
 	new_debuff.duration = p_debuff_template.duration
 	new_debuff.name = p_debuff_template.name
 	new_debuff.source_ID = p_debuff_template.source_ID
-	new_debuff.value = p_debuff_template.value if 0.0 != p_debuff_template.value or null == data else data.magnitude
+	new_debuff.value = (p_debuff_template.value if 0.0 != p_debuff_template.value
+			else _SnapshotStatusValue(data, p_debuff_template.source_ID))
 	new_debuff.ID = _NextStatusID()
 	target._active_debuffs.append(new_debuff)
 	_EmitDebuffApplied(p_target_ID, new_debuff, new_debuff.name)
@@ -262,6 +265,37 @@ func RemoveBuff(p_target_ID: int, p_buff: StatusEffects.Buff) -> Array[CombatRes
 	result.target_ID = p_target_ID
 	result.status_IDs = [p_buff.ID]
 	_Emit(result)
+	return _EndBatch()
+
+
+func AccumulateTurnBarMovement(p_character_ID: int, p_fraction_moved: float) -> Array[CombatResult]:
+	_BeginBatch()
+	if(p_fraction_moved <= 0.0 or not _characters.has(p_character_ID)):
+		return _EndBatch()
+	var character: Character = _characters[p_character_ID]
+	if(character._current_health <= 0):
+		return _EndBatch()
+	var has_temporal_leak: bool = false
+	for debuff in character._active_debuffs:
+		if(Types.Debuff_Type.Temporal_Leak == debuff.type):
+			has_temporal_leak = true
+			break
+	if(not has_temporal_leak):
+		return _EndBatch()
+
+	var data: StatusEffectData = StatusEffectRegistry.DebuffData(Types.Debuff_Type.Temporal_Leak)
+	var progress: float = _turn_bar_progress.get(p_character_ID, 0.0) + p_fraction_moved
+	while(progress >= GameBalance.TURN_BAR_PROGRESS_TRIGGER_FRACTION and character._current_health > 0):
+		progress -= GameBalance.TURN_BAR_PROGRESS_TRIGGER_FRACTION
+		var speed: int = GetCombatAttributes(p_character_ID)[Types.Attribute.Speed]
+		var damage: int = int(floor(speed * data.magnitude))
+		if(damage > 0):
+			_ApplyHealthLoss(p_character_ID, damage)
+			var result: CombatResult = CombatResult.new(CombatResult.Kind.Debuff_Tick)
+			result.target_ID = p_character_ID
+			result.amount = damage
+			_Emit(result)
+	_turn_bar_progress[p_character_ID] = progress
 	return _EndBatch()
 
 
@@ -330,11 +364,11 @@ func _ResolveReagentEffect(
 			var attribute: Types.Attribute = ReagentResolver.RandomTinctureAttribute(_random)
 			_ApplyReagentAttributeIncrease(p_target_ID, attribute, p_reagent.magnitude, p_potency)
 		ReagentData.EffectKind.Heal:
-			var amount: int = ReagentResolver.HealAmount(_MaxHealth(_characters[p_target_ID]), p_reagent.magnitude, p_potency)
-			_ApplyHeal(p_target_ID, amount)
+			var requested: int = ReagentResolver.HealAmount(_MaxHealth(_characters[p_target_ID]), p_reagent.magnitude, p_potency)
+			var healed: int = _ApplyHeal(p_target_ID, requested)
 			var result: CombatResult = CombatResult.new(CombatResult.Kind.Heal)
 			result.target_ID = p_target_ID
-			result.amount = amount
+			result.amount = healed
 			_Emit(result)
 		ReagentData.EffectKind.Remove_Debuffs:
 			_RemoveStatuses(_characters[p_target_ID]._active_debuffs, p_target_ID,
@@ -424,6 +458,42 @@ func _BlockedBySequenceLock(p_data: StatusEffectData, p_target: Character) -> bo
 	return false
 
 
+func _SnapshotStatusValue(p_data: StatusEffectData, p_source_ID: int) -> float:
+	if(null == p_data):
+		return 0.0
+	if(StatusEffectData.MagnitudeKind.CasterAttributeSnapshotPercent == p_data.magnitude_kind):
+		if(not _characters.has(p_source_ID)):
+			return 0.0
+		var source_attributes: Dictionary[Types.Attribute, int] = GetCombatAttributes(p_source_ID)
+		var value: float = 0.0
+		for attribute in p_data.attribute_modifiers.keys():
+			value += p_data.magnitude * float(source_attributes[attribute])
+		return value
+	return p_data.magnitude
+
+
+func _SpreadPlague(p_holder_ID: int, p_expiring: StatusEffects.Debuff) -> void:
+	var side: CombatTeam = _sides.AlliesOf(p_holder_ID)
+	if(null == side):
+		return
+	var candidates: Array[int] = side.AliveMembers(_characters)
+	candidates.erase(p_holder_ID)
+	if(candidates.is_empty()):
+		return
+	var target_ID: int = candidates[_random.randi_range(0, candidates.size() - 1)]
+	if(Skills.HasMaxStatusEffects(_characters[target_ID])):
+		return
+	var data: StatusEffectData = StatusEffectRegistry.DebuffData(Types.Debuff_Type.Plague)
+	var spread: StatusEffects.Debuff = StatusEffects.Debuff.new()
+	spread.type = Types.Debuff_Type.Plague
+	spread.duration = data.duration_default if null != data else 0
+	spread.source_ID = p_expiring.source_ID
+	spread.value = p_expiring.value
+	spread.ID = _NextStatusID()
+	_characters[target_ID]._active_debuffs.append(spread)
+	_EmitDebuffApplied(target_ID, spread, "")
+
+
 func _AttackerCritChanceBonus(p_target: Character) -> int:
 	var bonus: int = 0
 	for debuff in p_target._active_debuffs:
@@ -501,9 +571,22 @@ func _ApplyHealthLoss(p_character_ID: int, p_amount: int) -> void:
 		_HandleDeath(p_character_ID)
 
 
-func _ApplyHeal(p_character_ID: int, p_amount: int) -> void:
+## Returns the Health actually gained, after any healing-reduction debuff and clamping.
+func _ApplyHeal(p_character_ID: int, p_amount: int) -> int:
 	var character: Character = _characters[p_character_ID]
-	character._current_health = clampi(character._current_health + p_amount, 0, _MaxHealth(character))
+	var health_before: int = character._current_health
+	var reduced_amount: int = int(floor(float(p_amount) * _HealingMultiplier(character)))
+	character._current_health = clampi(character._current_health + reduced_amount, 0, _MaxHealth(character))
+	return character._current_health - health_before
+
+
+func _HealingMultiplier(p_character: Character) -> float:
+	var multiplier: float = 1.0
+	for debuff in p_character._active_debuffs:
+		var data: StatusEffectData = StatusEffectRegistry.DebuffData(debuff.type)
+		if(null != data and StatusEffectData.MagnitudeKind.IncomingHealReduction == data.magnitude_kind):
+			multiplier -= (debuff.value if 0.0 != debuff.value else data.magnitude)
+	return maxf(multiplier, 0.0)
 
 
 func _HandleDeath(p_character_ID: int) -> void:
@@ -540,29 +623,34 @@ func _TriggerExistingCasterDebuffs(
 		p_caster_attributes: Dictionary[Types.Attribute, int]) -> void:
 	var caster: Character = _characters[p_caster_ID]
 	var status_IDs_to_be_removed: Array[int] = []
-	var burning_damage_by_source: Dictionary[int, int] = {}
-	var burning_damage_total: int = 0
+	var tick_damage_by_source: Dictionary[int, int] = {}
+	var tick_damage_total: int = 0
+	var expiring_plagues: Array[StatusEffects.Debuff] = []
 	for debuff in caster._active_debuffs:
 		var data: StatusEffectData = StatusEffectRegistry.DebuffData(debuff.type)
 		if(null != data and data.applies_on_self_tick):
+			var tick_damage: int = 0
 			match data.magnitude_kind:
 				StatusEffectData.MagnitudeKind.MaxHealthPercent:
-					var tick_damage: int = int(floor(
+					tick_damage = int(floor(
 							(p_caster_attributes[Types.Attribute.Health]
 									* GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER) * data.magnitude))
-					burning_damage_total += tick_damage
-					if(not burning_damage_by_source.has(debuff.source_ID)):
-						burning_damage_by_source[debuff.source_ID] = 0
-					burning_damage_by_source[debuff.source_ID] += tick_damage
+				StatusEffectData.MagnitudeKind.CasterAttributeSnapshotPercent:
+					tick_damage = int(floor(debuff.value))
 				StatusEffectData.MagnitudeKind.AttributePercent, StatusEffectData.MagnitudeKind.AttributePercentagePointAdd:
 					Skills.ApplyAttributeModifiers(data, debuff.value, p_caster_attributes)
 				_:
 					pass
+			if(tick_damage > 0):
+				tick_damage_total += tick_damage
+				tick_damage_by_source[debuff.source_ID] = tick_damage_by_source.get(debuff.source_ID, 0) + tick_damage
 
 		debuff.duration -= 1
 		_EmitStatusDuration(p_caster_ID, debuff.ID, debuff.duration)
 		if(debuff.duration <= 0):
 			status_IDs_to_be_removed.append(debuff.ID)
+			if(Types.Debuff_Type.Plague == debuff.type):
+				expiring_plagues.append(debuff)
 
 	caster._active_debuffs = caster._active_debuffs.filter(func(debuff): return debuff.duration > 0)
 	if(not status_IDs_to_be_removed.is_empty()):
@@ -571,13 +659,16 @@ func _TriggerExistingCasterDebuffs(
 		removed.status_IDs = status_IDs_to_be_removed
 		_Emit(removed)
 
-	if(burning_damage_total > 0):
-		var tick: CombatResult = CombatResult.new(CombatResult.Kind.Burning_Tick)
+	if(tick_damage_total > 0):
+		_ApplyHealthLoss(p_caster_ID, tick_damage_total)
+		var tick: CombatResult = CombatResult.new(CombatResult.Kind.Debuff_Tick)
 		tick.target_ID = p_caster_ID
-		tick.amount = burning_damage_total
-		tick.amount_by_source = burning_damage_by_source
+		tick.amount = tick_damage_total
+		tick.amount_by_source = tick_damage_by_source
 		_Emit(tick)
-		_ApplyHealthLoss(p_caster_ID, burning_damage_total)
+
+	for plague in expiring_plagues:
+		_SpreadPlague(p_caster_ID, plague)
 
 
 func _TriggerExistingCasterBuffs(
@@ -585,6 +676,8 @@ func _TriggerExistingCasterBuffs(
 		p_caster_attributes: Dictionary[Types.Attribute, int]) -> void:
 	var caster: Character = _characters[p_caster_ID]
 	var status_IDs_to_be_removed: Array[int] = []
+	var heal_total: int = 0
+	var self_cost_total: int = 0
 
 	for buff in caster._active_buffs:
 		var data: StatusEffectData = StatusEffectRegistry.BuffData(buff.type)
@@ -594,8 +687,16 @@ func _TriggerExistingCasterBuffs(
 					Skills.ApplyAttributeModifiers(data, buff.value, p_caster_attributes)
 				StatusEffectData.MagnitudeKind.DamageMultiplier:
 					_damage_multiplier[p_caster_ID] = _damage_multiplier.get(p_caster_ID, 1.0) * buff.value
+				StatusEffectData.MagnitudeKind.MaxHealthPercent:
+					heal_total += int(floor(
+							(p_caster_attributes[Types.Attribute.Health]
+									* GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER) * data.magnitude))
 				_:
 					pass
+			if(data.self_tick_max_health_cost_percent > 0.0):
+				self_cost_total += int(ceil(
+						(p_caster_attributes[Types.Attribute.Health]
+								* GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER) * data.self_tick_max_health_cost_percent))
 
 		buff.duration -= 1
 		_EmitStatusDuration(p_caster_ID, buff.ID, buff.duration)
@@ -611,6 +712,20 @@ func _TriggerExistingCasterBuffs(
 		# A max-Health buff may have just expired; reclamp current health to
 		# the new, smaller max (_MaxHealth reads the buffs that remain after the filter above).
 		caster._current_health = mini(caster._current_health, _MaxHealth(caster))
+
+	if(heal_total > 0):
+		var healed: int = _ApplyHeal(p_caster_ID, heal_total)
+		var heal_result: CombatResult = CombatResult.new(CombatResult.Kind.Heal)
+		heal_result.target_ID = p_caster_ID
+		heal_result.amount = healed
+		_Emit(heal_result)
+
+	if(self_cost_total > 0 and caster._current_health > 0):
+		_ApplyHealthLoss(p_caster_ID, self_cost_total)
+		var cost_result: CombatResult = CombatResult.new(CombatResult.Kind.Damage)
+		cost_result.target_ID = p_caster_ID
+		cost_result.amount = self_cost_total
+		_Emit(cost_result)
 
 
 func _CastBuff(p_target_ID: int, p_skill: Skill) -> void:
@@ -676,7 +791,7 @@ func _CastDebuff(
 	new_debuff.type = debuff_type
 	new_debuff.duration = p_skill.duration
 	new_debuff.source_ID = p_caster_ID
-	new_debuff.value = data.magnitude if null != data else 0.0
+	new_debuff.value = _SnapshotStatusValue(data, p_caster_ID)
 	new_debuff.ID = _NextStatusID()
 	target._active_debuffs.append(new_debuff)
 	_EmitDebuffApplied(p_target_ID, new_debuff, Types.Debuff_Type.keys()[new_debuff.type])
@@ -784,6 +899,7 @@ func _ResolveZoneEffect(p_zone: Zone, p_character_ID: int) -> void:
 			new_debuff.type = p_zone._debuff_type
 			new_debuff.duration = data.duration_default if null != data else 0
 			new_debuff.source_ID = p_zone._owner_ID
+			new_debuff.value = _SnapshotStatusValue(data, p_zone._owner_ID)
 			new_debuff.ID = _NextStatusID()
 			target._active_debuffs.append(new_debuff)
 			_EmitDebuffApplied(p_character_ID, new_debuff, "")

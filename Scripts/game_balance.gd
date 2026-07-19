@@ -69,6 +69,8 @@ const TURN_DURATION_SECONDS: float = 2.5
 const NUMBER_OF_TURN_BAR_ZONES: int = 5
 const MAX_STATUS_EFFECTS: int = 8
 const MINIMUM_DMG_PERCENT: float = 0.1
+# Fraction of turn-bar progress that triggers movement-based damage.
+const TURN_BAR_PROGRESS_TRIGGER_FRACTION: float = 0.1
 const MAX_DIFFICULTY: int = 20
 const MINIMUM_CRIT_DAMAGE: float = 125.0
 

@@ -120,6 +120,8 @@ enum Buff_Type
 	Lethal_Precision,
 	Frenzy,
 	Opportunist,
+	Regeneration,
+	Exhert,
 }
 
 enum Debuff_Type
@@ -135,6 +137,10 @@ enum Debuff_Type
 	Exposed_Facet,
 	Cracked_Facet,
 	Sequence_Lock,
+	Bleed,
+	Plague,
+	Blight,
+	Temporal_Leak,
 	Invalid,
 }
 
