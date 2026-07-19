@@ -131,13 +131,12 @@ Current roles, their identity and purpose exist as follows:
     - Passive: Fresh Batch - At the start of combat the Alchemist brews one concoction: a reagent drawn at random from an Alchemist-exclusive pool, occupying its own slot beyond the three brought reagents. It follows normal reagent rules (consumable once, by any champion, on their turn) except that it is never added to the inventory - if unconsumed when the battle ends, it is lost. Each fielded Alchemist brews their own concoction.
         - Brew potency: 90% Uncommon, 100% Rare, 110% Epic, 120% Legendary (relative to a standard reagent of equivalent effect); the brew pool holds 3 lesser reagents at Uncommon and Rare, 4 at Epic and Legendary (see section 3.3.3)
         - Depends on the reagent system (see section 3.3.3 and `Plans/Plan_Reagent_Combat_Application.md`); inactive until reagents exist.
-- Sorcerer (Not yet implemented)
+- Sorcerer
     - A damage dealer that harnesses the power of magic to deal Area of Effect damage and control the battlefield. Wields the unstable, shunned magic left behind by the God of Magic, and excels at drawing power from reagents scavenged from that era's ruins. Signature zone: Unstable Rift (see section 3.2.4.1). Primary attributes: Mysticism, Knowledge.
     - Purpose: Damage, Debuffer, Control
     - Passive: Arcane Instability (implemented) - Using any skill grants one Instability stack (+x% Mysticism per stack, maximum 5). When the Sorcerer consumes a reagent, they gain two Instability stacks and the reagent's effect is amplified by y%. While at maximum stacks, the Sorcerer's next skill also releases a Surge: magical damage to all characters, allies and the Sorcerer included, scaling 1.5x with the Sorcerer's Mysticism (mitigated by each target's Defence as normal, never a critical hit) - then all stacks reset. Stacks do not persist between combats.
         - Per-stack Mysticism: 4% Uncommon, 6% Rare, 8% Epic, 10% Legendary
         - Reagent amplification: 20% Uncommon, 30% Rare, 40% Epic, 50% Legendary
-        - Champion assignment (preset, skills) is still pending; the Sorcerer itself remains "(Not yet implemented)" until that work lands.
 - Scholar
     - A support character that focuses on knowledge and strategy to enhance allies' abilities and exploit enemy weaknesses. The zone-clearing specialist: the Scholar's kit is one of the two dedicated ways to remove zones from the turn bar (see section 3.2.4.1). Primary attributes: Knowledge.
     - Purpose: Debuffer, Buffer
@@ -156,7 +155,7 @@ Current roles, their identity and purpose exist as follows:
     - Purpose: Buffer
     - Passive: Plan - Gives buffs to allies who are within x% behind the Tactician on the turn bar when their turn starts. Applies at every rarity; only the Tactician's own self is excluded.
         - 10% Uncommon, 15% Rare, 20% Epic, 25% Legendary
-- Symbiote (Not yet implemented)
+- Symbiote
     - A character weak by default but given the option to alter itself to combine with one of select few monsters to gain their trait & bonus in attributes. Primary attributes: Health, Resistance.
     - Purpose: Sustain, Buffer
     - Passive: 

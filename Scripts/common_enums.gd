@@ -43,6 +43,8 @@ enum Role
 	Chronophage = 17,
 	Architect = 18,
 	Tidal_Corsair = 19,
+	Plague_Doctor = 20,
+	Warlord = 21,
 }
 
 enum Slot

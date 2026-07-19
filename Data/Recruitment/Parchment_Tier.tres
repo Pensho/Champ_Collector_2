@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="FortuneFavorTier" format=3 uid="uid://c5twqhky48bn4"]
 
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="1_preset"]
-[ext_resource type="Script" uid="uid://p3ncpbkkqrny" path="res://Scripts/Character/fortune_favor_tier.gd" id="1_tier"]
+[ext_resource type="Script" path="res://Scripts/Character/fortune_favor_tier.gd" id="1_tier"]
 [ext_resource type="Resource" uid="uid://d04mj1rh28xgt" path="res://Data/Character_Player_Variants/Architect.tres" id="2_architect"]
 [ext_resource type="Resource" uid="uid://dnup7y7ax8jck" path="res://Data/Character_Player_Variants/Bar_Brawler.tres" id="3_bar_brawler"]
 [ext_resource type="Resource" uid="uid://7adgp1emx6yk" path="res://Data/Character_Player_Variants/Bloodmage.tres" id="4_bloodmage"]
@@ -14,6 +14,8 @@
 [ext_resource type="Resource" uid="uid://dy22lp5h48s5f" path="res://Data/Character_Player_Variants/Tactician.tres" id="11_tactician"]
 [ext_resource type="Resource" uid="uid://bm0sqmepyeoam" path="res://Data/Character_Player_Variants/Thief.tres" id="12_thief"]
 [ext_resource type="Resource" uid="uid://bmqvx8opoocu7" path="res://Data/Character_Player_Variants/Tidal_Corsair.tres" id="13_tidal_corsair"]
+[ext_resource type="Resource" uid="uid://cd3taeihyjuh3" path="res://Data/Character_Player_Variants/Sorcerer.tres" id="14_sorcerer"]
+[ext_resource type="Resource" uid="uid://2mmrc7vnsrqw" path="res://Data/Character_Player_Variants/Symbiote.tres" id="15_symbiote"]
 
 [resource]
 script = ExtResource("1_tier")
@@ -23,4 +25,4 @@ silver_weight = 40
 silver_amount = 40
 supplies_weight = 30
 supplies_amount = 20
-recruitable_champions = Array[ExtResource("1_preset")]([ExtResource("2_architect"), ExtResource("3_bar_brawler"), ExtResource("4_bloodmage"), ExtResource("5_centaur_archivist"), ExtResource("6_centaur_lancer"), ExtResource("7_chronophage"), ExtResource("8_herald_of_the_loom"), ExtResource("9_jester"), ExtResource("10_knight"), ExtResource("11_tactician"), ExtResource("12_thief"), ExtResource("13_tidal_corsair")])
+recruitable_champions = Array[ExtResource("1_preset")]([ExtResource("2_architect"), ExtResource("3_bar_brawler"), ExtResource("4_bloodmage"), ExtResource("5_centaur_archivist"), ExtResource("6_centaur_lancer"), ExtResource("7_chronophage"), ExtResource("8_herald_of_the_loom"), ExtResource("9_jester"), ExtResource("10_knight"), ExtResource("11_tactician"), ExtResource("12_thief"), ExtResource("13_tidal_corsair"), ExtResource("14_sorcerer"), ExtResource("15_symbiote")])

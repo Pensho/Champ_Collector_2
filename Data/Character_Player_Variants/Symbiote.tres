@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="CharacterPreset" format=3 uid="uid://2mmrc7vnsrqw"]
+
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_weight"]
+[ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_preset"]
+[ext_resource type="Resource" uid="uid://dvaq2b7qefpty" path="res://Data/Character_Skill_Variants/Heap_On.tres" id="3_heap_on"]
+[ext_resource type="Resource" uid="uid://dsehiu3g0rbyd" path="res://Data/Character_Skill_Variants/Attack_Skills/Crush.tres" id="4_crush"]
+[ext_resource type="Resource" uid="uid://cbgjuq0ikkygr" path="res://Data/Character_Skill_Variants/Support_Skills/Stalwart_Hymn.tres" id="5_hymn"]
+[ext_resource type="Resource" uid="uid://jgqxh6bwrie0" path="res://Data/Attribute_Weights/Sturdy.tres" id="6_sturdy"]
+[ext_resource type="Resource" uid="uid://c60oh3whnodsm" path="res://Data/Attribute_Weights/Resilient.tres" id="7_resilient"]
+[ext_resource type="Resource" uid="uid://i4pibjinfd3x" path="res://Data/Attribute_Weights/Gluttonous.tres" id="8_gluttonous"]
+
+[resource]
+script = ExtResource("2_preset")
+_name = "Symbiote"
+_texture = "res://Assets/Champ_Collector/Creatures/Symbiote/Symbiote_0001.png"
+_rarity = 3
+_faction = 3
+_role = 10
+_skills = Array[ExtResource("1_skill")]([ExtResource("3_heap_on"), ExtResource("4_crush"), ExtResource("5_hymn")])
+_health = 90
+_speed = 40
+_attack = 45
+_defence = 45
+_accuracy = 50
+_resistance = 80
+_mysticism = 10
+_knowledge = 10
+_attribute_weight_types_available = Array[ExtResource("1_weight")]([ExtResource("6_sturdy"), ExtResource("7_resilient"), ExtResource("8_gluttonous")])
+_preset_UID = "uid://2mmrc7vnsrqw"
+metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

@@ -11,6 +11,8 @@ const TIDAL_CORSAIR = preload("uid://bmqvx8opoocu7")
 const CENTAUR_LANCER = preload("uid://cgpw0pv0l4wn4")
 const CENTAUR_ARCHIVIST = preload("uid://dkdgfkpt6si8y")
 const TACTICIAN = preload("uid://dy22lp5h48s5f")
+const SYMBIOTE = preload("uid://2mmrc7vnsrqw")
+const SORCERER = preload("uid://cd3taeihyjuh3")
 
 var _current_scene = null
 var _character_collection: CharacterCollection
@@ -55,6 +57,8 @@ func Init() -> void:
 	_character_collection.Add(CENTAUR_ARCHIVIST.duplicate(true))
 	_character_collection.Add(TACTICIAN.duplicate(true))
 	_character_collection.Add(BLOODMAGE.duplicate(true))
+	_character_collection.Add(SORCERER.duplicate(true))
+	_character_collection.Add(SYMBIOTE.duplicate(true))
 
 	var reagent_keys: Array = ReagentRegistry.REAGENTS.keys()
 	for i in 3:
