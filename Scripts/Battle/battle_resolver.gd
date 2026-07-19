@@ -846,13 +846,13 @@ func _ResolveDamage(
 	if(damage_dealt == 0):
 		return
 
+	_ApplyHealthLoss(p_target_ID, damage_dealt)
 	var result: CombatResult = CombatResult.new(CombatResult.Kind.Damage)
 	result.source_ID = p_caster_ID
 	result.target_ID = p_target_ID
 	result.amount = damage_dealt
 	result.critical = rolled_critical
 	_Emit(result)
-	_ApplyHealthLoss(p_target_ID, damage_dealt)
 
 
 func TriggerZones(p_active_character_ID: int) -> Array[CombatResult]:
