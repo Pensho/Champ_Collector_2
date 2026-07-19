@@ -20,6 +20,10 @@ enum MagnitudeKind {
 	TurnBarMovementDamagePercent,   # magnitude * own Speed, dealt on each turn-bar progress trigger
 	DamageAbsorb,                   # per-instance value is a Health pool consumed before Health itself (Barrier)
 	RandomAttributePercent,         # magnitude on one random attribute, re-rolled each self-tick (Wanderlust)
+	SelfTurnBarLossOnDamage,        # -magnitude turn bar to the holder when they take damage (Dead Weight)
+	AllyTurnBarGainOnDamage,        # +magnitude turn bar to every living ally when the holder takes damage
+	# (Battle Orders)
+	IncomingDamageReduction,        # -magnitude fraction off any damage the holder takes (Spotlight)
 }
 
 @export var magnitude_kind: MagnitudeKind

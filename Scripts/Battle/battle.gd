@@ -209,6 +209,12 @@ func StartTurn() -> void:
 	if (CheckAndHandleBattleOver()):
 		return
 
+	if(IsStunned(_turn_character_ID)):
+		_state = BattleState.Resolving
+		_resolver.ResolveStunTurn(_turn_character_ID)
+		CompleteTurn()
+		return
+
 	if(_sides.player.Has(_turn_character_ID)):
 		for i in _battle_ui._skill_buttons.size():
 			_battle_ui.SetSkill(
@@ -273,6 +279,15 @@ func HandleEnemyTurn() -> void:
 func ResolveTurn(p_target_IDs: Array[int]) -> void:
 	_state = BattleState.Resolving
 	_resolver.ResolveSkill(_turn_character_ID, p_target_IDs, _selected_skill_ID)
+	CompleteTurn()
+
+func IsStunned(p_character_ID: int) -> bool:
+	for debuff in _characters[p_character_ID]._active_debuffs:
+		if(Types.Debuff_Type.Stun == debuff.type):
+			return true
+	return false
+
+func CompleteTurn() -> void:
 	if(_pending_turn_bar_reset.has(_turn_character_ID)):
 		_battle_ui._turn_bar.TurnCompleteForCharacter(_turn_character_ID, _pending_turn_bar_reset[_turn_character_ID])
 		_pending_turn_bar_reset.erase(_turn_character_ID)
@@ -350,6 +365,9 @@ func _on_resolver_result_produced(p_result: CombatResult) -> void:
 			UpdateLifeBar(p_result.target_ID)
 		CombatResult.Kind.Trait_Text:
 			_battle_ui.SpawnCombatText(p_result.text, CombatTextPosition(p_result.target_ID), p_result.color)
+		CombatResult.Kind.Turn_Skipped:
+			_battle_ui.SpawnCombatText(
+					"Stunned!", CombatTextPosition(p_result.target_ID), Color(0.801, 0.68, 0.0, 1.0))
 		CombatResult.Kind.Death:
 			_battle_ui._turn_bar.ShowCharacterAsDead(p_result.target_ID)
 			_character_representations[p_result.target_ID]._character_texture.material = GRAYSCALE_MATERIAL

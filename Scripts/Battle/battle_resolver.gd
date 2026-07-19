@@ -94,7 +94,11 @@ func GetCombatAttributes(p_character_ID: int) -> Dictionary[Types.Attribute, int
 
 
 func FindSkillTargets(p_target_ID: int, p_caster_ID: int, p_target_type: Types.Skill_Target) -> Array[int]:
-	return Skills.FindSkillTargets(p_target_ID, p_caster_ID, p_target_type, _characters, _sides, _random)
+	var effective_type: Types.Skill_Target = p_target_type
+	if((Types.Skill_Target.Single_Enemy == p_target_type or Types.Skill_Target.Single_Ally == p_target_type)
+			and _HasDebuff(p_caster_ID, Types.Debuff_Type.Refracted)):
+		effective_type = Types.Skill_Target.Random_One
+	return Skills.FindSkillTargets(p_target_ID, p_caster_ID, effective_type, _characters, _sides, _random)
 
 
 func IsTheBattleOver() -> Winner:
@@ -161,15 +165,9 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 					cast_skill, trait_result._damage_multiplier)
 
 		var total_bump: float = cast_skill.turn_effect + trait_result._turn_bar_bump
-		if(0.0 != total_bump):
-			var bump: CombatResult = CombatResult.new(CombatResult.Kind.Turn_Bar_Bump)
-			bump.target_ID = target_ID
-			bump.fraction = total_bump
-			_Emit(bump)
+		_EmitTurnBarBump(target_ID, total_bump)
 
-	for i in caster._skills.size():
-		if(caster._skills[i].cooldown_left > 0):
-			caster._skills[i].cooldown_left -= 1
+	_TickCooldowns(caster)
 	if(not (is_non_basic and _ConsumeRehearsedIfPresent(p_caster_ID))):
 		caster._skills[p_skill_ID].cooldown_left = caster._skills[p_skill_ID].cooldown
 
@@ -177,6 +175,26 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 
 	if(null != caster._trait and caster._trait._execution_steps.has(Types.Combat_Event.End_Turn)):
 		caster._trait.EndOfTurn(p_caster_ID, self)
+	return _EndBatch()
+
+
+## A Stun-affected character's turn: still ticks their own statuses (so Stun's own
+## duration decrements and clears itself) and zones, but casts no skill.
+func ResolveStunTurn(p_caster_ID: int) -> Array[CombatResult]:
+	_BeginBatch()
+	var caster: Character = _characters[p_caster_ID]
+	var caster_attributes: Dictionary[Types.Attribute, int] = GetCombatAttributes(p_caster_ID)
+	if(not caster._active_debuffs.is_empty()):
+		_TriggerExistingCasterDebuffs(p_caster_ID, caster_attributes)
+	if(not caster._active_buffs.is_empty()):
+		_TriggerExistingCasterBuffs(p_caster_ID, caster_attributes)
+	_TickCooldowns(caster)
+	TriggerZones(p_caster_ID)
+	if(null != caster._trait and caster._trait._execution_steps.has(Types.Combat_Event.End_Turn)):
+		caster._trait.EndOfTurn(p_caster_ID, self)
+	var result: CombatResult = CombatResult.new(CombatResult.Kind.Turn_Skipped)
+	result.target_ID = p_caster_ID
+	_Emit(result)
 	return _EndBatch()
 
 
@@ -207,7 +225,7 @@ func ApplyBuff(p_target_ID: int, p_buff_template: StatusEffects.Buff) -> Array[C
 	if(Skills.HasMaxStatusEffects(target)):
 		return _EndBatch()
 	var data: StatusEffectData = StatusEffectRegistry.BuffData(p_buff_template.type)
-	if(_BlockedBySequenceLock(data, target)):
+	if(_BlockedBySequenceLock(data, target) or _BlockedBySeverance(target)):
 		return _EndBatch()
 
 	var new_value: float = p_buff_template.value if 0.0 != p_buff_template.value or null == data else data.magnitude
@@ -501,6 +519,78 @@ func _BlockedBySequenceLock(p_data: StatusEffectData, p_target: Character) -> bo
 	return false
 
 
+func _BlockedBySeverance(p_target: Character) -> bool:
+	for debuff in p_target._active_debuffs:
+		if(Types.Debuff_Type.Severance == debuff.type):
+			return true
+	return false
+
+
+func _RollsResistDebuff(
+		p_defender_ID: int,
+		p_defender_resistance: int,
+		p_attacker_ID: int,
+		p_attacker_accuracy: int) -> bool:
+	if(_HasDebuff(p_defender_ID, Types.Debuff_Type.Signed_Writ)):
+		return false
+	var random_value: float = _RollFavoring(p_attacker_ID, 0.95, 1.0, true)
+	var random_value_2: float = _RollFavoring(p_defender_ID, 0.95, 1.0, true)
+	return p_attacker_accuracy * random_value < p_defender_resistance * random_value_2
+
+
+func _EmitTurnBarBump(p_target_ID: int, p_fraction: float) -> void:
+	if(0.0 == p_fraction or _HasDebuff(p_target_ID, Types.Debuff_Type.Anchor)):
+		return
+	if(p_fraction < 0.0 and _HasBuff(p_target_ID, Types.Buff_Type.Steadfast)):
+		return
+	var bump: CombatResult = CombatResult.new(CombatResult.Kind.Turn_Bar_Bump)
+	bump.target_ID = p_target_ID
+	bump.fraction = p_fraction
+	_Emit(bump)
+
+
+func _TickCooldowns(p_caster: Character) -> void:
+	if(_BlockedByFatigue(p_caster)):
+		return
+	for i in p_caster._skills.size():
+		if(p_caster._skills[i].cooldown_left > 0):
+			p_caster._skills[i].cooldown_left -= 1
+
+
+func _BlockedByFatigue(p_character: Character) -> bool:
+	for debuff in p_character._active_debuffs:
+		if(Types.Debuff_Type.Fatigue == debuff.type):
+			return true
+	return false
+
+
+func _TriggerDamageTakenReactions(p_character_ID: int) -> void:
+	var character: Character = _characters[p_character_ID]
+	for debuff in character._active_debuffs:
+		if(Types.Debuff_Type.Dead_Weight == debuff.type):
+			var data: StatusEffectData = StatusEffectRegistry.DebuffData(Types.Debuff_Type.Dead_Weight)
+			_EmitTurnBarBump(p_character_ID, -data.magnitude)
+			break
+	for buff in character._active_buffs:
+		if(Types.Buff_Type.Battle_Orders == buff.type):
+			var data: StatusEffectData = StatusEffectRegistry.BuffData(Types.Buff_Type.Battle_Orders)
+			var allies: CombatTeam = _sides.AlliesOf(p_character_ID)
+			if(null != allies):
+				for ally_ID in allies.AliveMembers(_characters):
+					if(ally_ID != p_character_ID):
+						_EmitTurnBarBump(ally_ID, data.magnitude)
+			break
+
+
+func _DamageTakenMultiplier(p_character: Character) -> float:
+	var multiplier: float = 1.0
+	for buff in p_character._active_buffs:
+		var data: StatusEffectData = StatusEffectRegistry.BuffData(buff.type)
+		if(null != data and StatusEffectData.MagnitudeKind.IncomingDamageReduction == data.magnitude_kind):
+			multiplier -= (buff.value if 0.0 != buff.value else data.magnitude)
+	return maxf(multiplier, 0.0)
+
+
 ## Blocks one incoming debuff by consuming the target's Aegis buff, if any.
 func _ConsumeAegisIfPresent(p_target_ID: int, p_source_ID: int) -> bool:
 	var target: Character = _characters[p_target_ID]
@@ -523,6 +613,18 @@ func _TriggerOverflow(p_holder_ID: int) -> void:
 	var data: StatusEffectData = StatusEffectRegistry.BuffData(Types.Buff_Type.Overflow)
 	ResolveTraitDamage(p_holder_ID, side.AliveMembers(_characters),
 			GetCombatAttributes(p_holder_ID), {Types.Attribute.Mysticism: data.magnitude})
+
+
+func _TriggerRushStun(p_holder_ID: int) -> void:
+	if(Skills.HasMaxStatusEffects(_characters[p_holder_ID])):
+		return
+	var stun: StatusEffects.Debuff = StatusEffects.Debuff.new()
+	stun.type = Types.Debuff_Type.Stun
+	stun.duration = 1
+	stun.source_ID = p_holder_ID
+	stun.ID = _NextStatusID()
+	_characters[p_holder_ID]._active_debuffs.append(stun)
+	_EmitDebuffApplied(p_holder_ID, stun, "")
 
 
 ## Consumes the caster's Rehearsed buff, if any, reporting whether cooldown
@@ -673,9 +775,12 @@ func _EmitDebuffApplied(p_target_ID: int, p_debuff: StatusEffects.Debuff, p_disp
 
 ## Loses health, clamps, and handles the alive-to-dead transition.
 func _ApplyHealthLoss(p_character_ID: int, p_amount: int) -> void:
-	var remaining: int = _AbsorbWithBarrier(p_character_ID, p_amount)
+	var reduced_amount: int = int(floor(
+			float(p_amount) * _DamageTakenMultiplier(_characters[p_character_ID])))
+	var remaining: int = _AbsorbWithBarrier(p_character_ID, reduced_amount)
 	if(remaining <= 0):
 		return
+	_TriggerDamageTakenReactions(p_character_ID)
 	var character: Character = _characters[p_character_ID]
 	var was_alive: bool = character._current_health > 0
 	var new_health: int = clampi(character._current_health - remaining, 0, _MaxHealth(character))
@@ -818,6 +923,7 @@ func _TriggerExistingCasterBuffs(
 	var heal_total: int = 0
 	var self_cost_total: int = 0
 	var expiring_overflows: Array[StatusEffects.Buff] = []
+	var expiring_rush_count: int = 0
 
 	for buff in caster._active_buffs:
 		var data: StatusEffectData = StatusEffectRegistry.BuffData(buff.type)
@@ -847,6 +953,8 @@ func _TriggerExistingCasterBuffs(
 			status_IDs_to_be_removed.append(buff.ID)
 			if(Types.Buff_Type.Overflow == buff.type):
 				expiring_overflows.append(buff)
+			elif(Types.Buff_Type.Rush == buff.type):
+				expiring_rush_count += 1
 
 	caster._active_buffs = caster._active_buffs.filter(func(buff): return buff.duration > 0)
 	if(not status_IDs_to_be_removed.is_empty()):
@@ -860,6 +968,9 @@ func _TriggerExistingCasterBuffs(
 
 	for i in expiring_overflows.size():
 		_TriggerOverflow(p_caster_ID)
+
+	for i in expiring_rush_count:
+		_TriggerRushStun(p_caster_ID)
 
 	if(heal_total > 0):
 		var healed: int = _ApplyHeal(p_caster_ID, heal_total)
@@ -882,7 +993,7 @@ func _CastBuff(p_target_ID: int, p_skill: Skill) -> void:
 		return
 	var buff_type: Types.Buff_Type = p_skill.buffs[p_skill.target]
 	var data: StatusEffectData = StatusEffectRegistry.BuffData(buff_type)
-	if(_BlockedBySequenceLock(data, target)):
+	if(_BlockedBySequenceLock(data, target) or _BlockedBySeverance(target)):
 		return
 	var new_value: float = data.magnitude if null != data else 0.0
 	if(Types.Buff_Type.Barrier == buff_type and _KeepsExistingBarrier(p_target_ID, target, new_value)):
@@ -916,9 +1027,7 @@ func _CastDebuff(
 	if(Skills.HasMaxStatusEffects(target)):
 		return
 
-	var random_value: float = _RollFavoring(p_caster_ID, 0.95, 1.0, true)
-	var random_value_2: float = _RollFavoring(p_target_ID, 0.95, 1.0, true)
-	if(p_caster_accuracy * random_value < p_target_resistance * random_value_2):
+	if(_RollsResistDebuff(p_target_ID, p_target_resistance, p_caster_ID, p_caster_accuracy)):
 		var resisted: CombatResult = CombatResult.new(CombatResult.Kind.Debuff_Resisted)
 		resisted.target_ID = p_target_ID
 		resisted.source_ID = p_caster_ID
@@ -959,9 +1068,7 @@ func _TriggerMirrorCoat(p_holder_ID: int, p_attacker_ID: int, p_debuff_type: Typ
 		return
 	var holder_accuracy: int = GetCombatAttributes(p_holder_ID)[Types.Attribute.Accuracy]
 	var attacker_resistance: int = GetCombatAttributes(p_attacker_ID)[Types.Attribute.Resistance]
-	var random_value: float = _RollFavoring(p_holder_ID, 0.95, 1.0, true)
-	var random_value_2: float = _RollFavoring(p_attacker_ID, 0.95, 1.0, true)
-	if(holder_accuracy * random_value < attacker_resistance * random_value_2):
+	if(_RollsResistDebuff(p_attacker_ID, attacker_resistance, p_holder_ID, holder_accuracy)):
 		var resisted: CombatResult = CombatResult.new(CombatResult.Kind.Debuff_Resisted)
 		resisted.target_ID = p_attacker_ID
 		resisted.source_ID = p_holder_ID
@@ -993,8 +1100,15 @@ func _ResolveDamage(
 	var crit_multiplier: float = 1.0
 	var rolled_critical: bool = false
 
-	for key in p_skill.damage_scaling.keys():
-		caster_scaled_attribute_aggregate += (p_skill.damage_scaling[key]
+	var effective_scaling: Dictionary[Types.Attribute, float] = p_skill.damage_scaling
+	if(not effective_scaling.is_empty() and _HasDebuff(p_caster_ID, Types.Debuff_Type.Warped)):
+		var total_weight: float = 0.0
+		for weight in effective_scaling.values():
+			total_weight += weight
+		effective_scaling = {Types.Attribute.Mysticism: total_weight}
+
+	for key in effective_scaling.keys():
+		caster_scaled_attribute_aggregate += (effective_scaling[key]
 				* float(p_caster_attributes[key]) * p_trait_multiplier)
 	# Some status skills deal no damage. So no need to continue.
 	if(0.0 == caster_scaled_attribute_aggregate):
@@ -1060,7 +1174,15 @@ func TriggerZones(p_active_character_ID: int) -> Array[CombatResult]:
 				continue
 			if(not Skills.CorrectZoneTarget(_zones[ID]._owner_ID, character_ID, _zones[ID]._target, _sides)):
 				continue
-			_ResolveZoneEffect(_zones[ID], character_ID)
+			if(_HasBuff(character_ID, Types.Buff_Type.Slipstream)
+					and _sides.AreEnemies(character_ID, _zones[ID]._owner_ID)):
+				continue
+			var trigger_count: int = (
+					2 if (_HasBuff(character_ID, Types.Buff_Type.Resonance)
+							and _sides.AreAllies(character_ID, _zones[ID]._owner_ID))
+					else 1)
+			for i in trigger_count:
+				_ResolveZoneEffect(_zones[ID], character_ID)
 			_zones[ID]._duration -= 1
 			var triggered: CombatResult = CombatResult.new(CombatResult.Kind.Zone_Triggered)
 			triggered.zone_ID = ID
@@ -1079,10 +1201,8 @@ func TriggerZones(p_active_character_ID: int) -> Array[CombatResult]:
 func _ResolveZoneEffect(p_zone: Zone, p_character_ID: int) -> void:
 	match p_zone._type:
 		Types.Skill_Type.Flicker_Zone:
-			var bump: CombatResult = CombatResult.new(CombatResult.Kind.Turn_Bar_Bump)
-			bump.target_ID = p_character_ID
-			bump.fraction = Skills.AllyZoneMagnitude(GameBalance.FLICKER_ZONE_BASE_BUMP, p_zone._owner_knowledge)
-			_Emit(bump)
+			_EmitTurnBarBump(p_character_ID,
+					Skills.AllyZoneMagnitude(GameBalance.FLICKER_ZONE_BASE_BUMP, p_zone._owner_knowledge))
 		Types.Skill_Type.Lava_Zone:
 			var target: Character = _characters[p_character_ID]
 			if(Skills.HasMaxStatusEffects(target)):

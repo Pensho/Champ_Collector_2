@@ -41,11 +41,11 @@ Suggested order (dependencies noted inside each plan):
       Assigning it to the Sorcerer champion itself is a separate prerequisite task
       (the champion preset does not exist yet).
 
-6. `Plan_Status_Effect_Implementation.md` — the full status effect catalog
-   (`Concept_Document.md` 3.2.3) as `StatusEffectData` resources, batched by
-   mechanism, plus the placeholder icon generator (also serving skills and
-   passives later). Builds on the landed `StatusEffectData`/`StatusEffectRegistry`
-   work; no dependency on skills — the reverse dependency of plan 7.
+6. `Plan_Status_Effect_Implementation.md` — completed and deleted; the full status
+   effect catalog (`Concept_Document.md` 3.2.3) lives as `StatusEffectData`
+   resources looked up through `StatusEffectRegistry`, plus the placeholder icon
+   generator (also serving skills and passives later) (see
+   `Technical_Design_Document.md` section 6.1).
 
 7. `Plan_Skill_Implementation.md` — the skill catalog made real: champion Role
    kits (`Concept_Document.md` 3.2.4) and opponent skills

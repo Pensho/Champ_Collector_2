@@ -313,13 +313,13 @@ A status effect is a temporary condition that can affect a character's attribute
 Unless stated otherwise, a buff or debuff lasts 2 turns.
 
 ##### 3.2.3.1 Turn Bar Effects
-* Anchor (Debuff): The character cannot be pushed forward or backward on the turn bar by skills. (Not yet implemented)
+* Anchor (Debuff): The character cannot be pushed forward or backward on the turn bar by skills.
 * Temporal Leak (Debuff): Every time this character moves 10% of the bar, they take damage equal to 5% of their own Speed.
-* Dead Weight (Debuff): When the character takes damage, they lose 3% turn bar. (Not yet implemented)
-* Slipstream (Buff): The character passes through enemy-placed zones without triggering them. (Not yet implemented)
-* Steadfast (Buff): The character cannot be moved backward on the turn bar. (Not yet implemented)
-* Resonance (Buff): Ally-placed zones affect the character at double effect. (Not yet implemented)
-* Battle Orders (Buff): When the character takes damage, all allies gain 5% turn bar. (Not yet implemented)
+* Dead Weight (Debuff): When the character takes damage, they lose 3% turn bar.
+* Slipstream (Buff): The character passes through enemy-placed zones without triggering them.
+* Steadfast (Buff): The character cannot be moved backward on the turn bar.
+* Resonance (Buff): Ally-placed zones affect the character at double effect.
+* Battle Orders (Buff): When the character takes damage, all allies gain 5% turn bar.
 
 ##### 3.2.3.2 Common Status Effects
 
@@ -340,21 +340,21 @@ Debuffs:
 * Bleed: At the start of the character's turn, they take damage equal to 40% of the caster's Attack, snapshotted at the moment of application.
 * Plague: Deals magical damage each turn equal to 30% of the caster's Mysticism, snapshotted at the moment of application; when it expires, it spreads to a random other enemy with fresh duration.
 * Blight: Healing received is reduced by 50%.
-* Severance: The character cannot gain new buffs. (Not yet implemented)
+* Severance: The character cannot gain new buffs.
 * Hexed: Roll calculations twice and take the worse result.
-* Stun: The character skips their next turn. (Not yet implemented)
-* Fatigue: The character's skill cooldowns do not tick down. (Not yet implemented)
-* Refracted: The character's single-target skills hit a random character instead, allies included. (Not yet implemented)
-* Warped: The character's damage dealt scales with Mysticism instead of the skill's normal attribute. Whether other calculations are also forced through Mysticism is not yet decided. (Not yet implemented)
-* Signed Writ: The character cannot resist debuffs. (Not yet implemented)
-* Sanction: Reduces all primary attributes except Health by the applier's Standing Record rate per Infraction on the target, set at the moment of application (see the Emissary's passive in section 3.1.3). (Not yet implemented)
+* Stun: The character skips their next turn.
+* Fatigue: The character's skill cooldowns do not tick down.
+* Refracted: The character's single-target skills hit a random character instead, allies included.
+* Warped: The character's damage dealt scales with Mysticism instead of the skill's normal attribute. Whether other calculations are also forced through Mysticism is not yet decided (damage only is implemented).
+* Signed Writ: The character cannot resist debuffs.
+* Sanction: Reduces all primary attributes except Health by the applier's Standing Record rate per Infraction on the target, set at the moment of application (see the Emissary's passive in section 3.1.3). The attribute-reduction machinery is implemented; it is dormant until the Emissary's Infraction tally (the magnitude source) lands.
 
 Buffs:
 * Empower: Increases Attack by 30%.
 * Fortify: Increases Defense by 30%.
 * Daunting Strength: Doubles the damage of the next attack.
 * Frenzy: Increases Attack and Speed by 30% but reduces Defense and Accuracy by 30%.
-* Rush: Increases all primary attributes except Health by 30%; when the buff expires, it applies the Stun debuff to the character for 1 turn. This Stun cannot be resisted and is applied after other expiring buffs (such as Aegis) are removed. (Not yet implemented)
+* Rush: Increases all primary attributes except Health by 30%; when the buff expires, it applies the Stun debuff to the character for 1 turn. This Stun cannot be resisted and is applied after other expiring buffs (such as Aegis) are removed.
 * Exhert: Increases all primary attributes except Health by 20%, but the character loses 5% of their max Health every time they take a turn.
 * Luck: Roll calculations twice and take the better result.
 * Phalanx Guard: Gain bonus defense per stack of momentum consumed. (Lancer Specific)
@@ -370,12 +370,12 @@ Buffs:
 * Aegis: Blocks the next debuff that would land on the character, then the buff is consumed.
 * Mirror Coat: When a debuff lands on the character, a copy is applied to the attacker, checked against the attacker's Resistance as normal.
 * Opportunist: The character's attacks deal +10% damage per debuff on the target.
-* Catalyst: The next reagent the character consumes has +50% effect. Stacks additively with other reagent potency modifiers; has no effect on binary reagents (see section 3.3.3). (Not yet implemented)
+* Catalyst: The next reagent the character consumes has +50% effect. Stacks additively with other reagent potency modifiers; has no effect on binary reagents (see section 3.3.3). (Dormant: the status exists but has no application site yet)
 * Wanderlust: At the start of each of the character's turns, gain +20% to one random primary stat until their next turn.
 * Overflow: When this buff expires, it deals magical damage to all enemies, scaling with the holder's Mysticism.
 * Vigor: Increases max Health by 30%.
 * Lethal Precision: Increases Critical Damage by 50 percentage points.
-* Spotlight: The character is much more likely to be targeted by enemies and takes 10% less damage. (Not yet implemented)
+* Spotlight: The character is much more likely to be targeted by enemies and takes 10% less damage. (The damage-reduction half is implemented; the targeting-weight half is dormant until enemy-AI targeting weights land)
 * Premonition: The next attack against the character automatically misses, then the buff is consumed.
 * Rehearsed: The character's next non-basic skill does not go on cooldown, then the buff is consumed.
 

@@ -131,6 +131,13 @@ enum Buff_Type
 	Rehearsed,
 	Overflow,
 	Wanderlust,
+	Steadfast,
+	Slipstream,
+	Resonance,
+	Battle_Orders,
+	Rush,
+	Spotlight,
+	Catalyst,
 }
 
 enum Debuff_Type
@@ -152,6 +159,15 @@ enum Debuff_Type
 	Temporal_Leak,
 	Mana_Burn,
 	Hexed,
+	Dead_Weight,
+	Stun,
+	Fatigue,
+	Refracted,
+	Warped,
+	Signed_Writ,
+	Severance,
+	Sanction,
+	Anchor,
 	Invalid,
 }
 

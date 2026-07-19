@@ -30,6 +30,13 @@ const BUFFS: Dictionary[Types.Buff_Type, StatusEffectData] = {
 	Types.Buff_Type.Rehearsed: preload("res://Data/Status_Effects/Rehearsed.tres"),
 	Types.Buff_Type.Overflow: preload("res://Data/Status_Effects/Overflow.tres"),
 	Types.Buff_Type.Wanderlust: preload("res://Data/Status_Effects/Wanderlust.tres"),
+	Types.Buff_Type.Steadfast: preload("res://Data/Status_Effects/Steadfast.tres"),
+	Types.Buff_Type.Slipstream: preload("res://Data/Status_Effects/Slipstream.tres"),
+	Types.Buff_Type.Resonance: preload("res://Data/Status_Effects/Resonance.tres"),
+	Types.Buff_Type.Battle_Orders: preload("res://Data/Status_Effects/Battle_Orders.tres"),
+	Types.Buff_Type.Rush: preload("res://Data/Status_Effects/Rush.tres"),
+	Types.Buff_Type.Spotlight: preload("res://Data/Status_Effects/Spotlight.tres"),
+	Types.Buff_Type.Catalyst: preload("res://Data/Status_Effects/Catalyst.tres"),
 }
 
 const DEBUFFS: Dictionary[Types.Debuff_Type, StatusEffectData] = {
@@ -50,6 +57,15 @@ const DEBUFFS: Dictionary[Types.Debuff_Type, StatusEffectData] = {
 	Types.Debuff_Type.Temporal_Leak: preload("res://Data/Status_Effects/Temporal_Leak.tres"),
 	Types.Debuff_Type.Mana_Burn: preload("res://Data/Status_Effects/Mana_Burn.tres"),
 	Types.Debuff_Type.Hexed: preload("res://Data/Status_Effects/Hexed.tres"),
+	Types.Debuff_Type.Dead_Weight: preload("res://Data/Status_Effects/Dead_Weight.tres"),
+	Types.Debuff_Type.Stun: preload("res://Data/Status_Effects/Stun.tres"),
+	Types.Debuff_Type.Fatigue: preload("res://Data/Status_Effects/Fatigue.tres"),
+	Types.Debuff_Type.Refracted: preload("res://Data/Status_Effects/Refracted.tres"),
+	Types.Debuff_Type.Warped: preload("res://Data/Status_Effects/Warped.tres"),
+	Types.Debuff_Type.Signed_Writ: preload("res://Data/Status_Effects/Signed_Writ.tres"),
+	Types.Debuff_Type.Severance: preload("res://Data/Status_Effects/Severance.tres"),
+	Types.Debuff_Type.Sanction: preload("res://Data/Status_Effects/Sanction.tres"),
+	Types.Debuff_Type.Anchor: preload("res://Data/Status_Effects/Anchor.tres"),
 }
 
 static func BuffData(p_type: Types.Buff_Type) -> StatusEffectData:

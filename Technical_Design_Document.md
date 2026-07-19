@@ -375,6 +375,57 @@ with both active cancels out to a single normal roll (user decision). `Skills.Ro
 longer called by the resolver (replaced by `_RollFavoring` at the crit-chance site) but remains for
 its own direct unit tests.
 
+Batch 4 landed the turn-bar reactions and rule switches, the last batch of the status-effect
+catalog. Three more `MagnitudeKind` values: `SelfTurnBarLossOnDamage` (Dead Weight),
+`AllyTurnBarGainOnDamage` (Battle Orders), and `IncomingDamageReduction` (Spotlight, mirroring
+`IncomingHealReduction`), each read directly at its own application site rather than through the
+generic self-tick loop. Every other batch-4 effect is a pure rule check with no numeric payload —
+`magnitude_kind = AttributePercent` (unused) and `applies_on_self_tick = false`, the convention
+already established by Aegis/Sequence Lock/Rehearsed; Rush is the one exception, reusing
+`AttributePercent` with the same `attribute_modifiers` set as Exhert (every attribute except
+Health). A new `_EmitTurnBarBump()` is now the sole site that emits `CombatResult.Kind.Turn_Bar_Bump`
+(replacing the two inline emissions in `ResolveSkill` and `_ResolveZoneEffect`'s Flicker Zone case):
+it no-ops for a target holding Anchor, and blocks negative fractions for a target holding Steadfast.
+`_ApplyHealthLoss` gained two more steps ahead of the existing Barrier absorption: `_DamageTakenMultiplier`
+(Spotlight's `IncomingDamageReduction`, mirroring `_HealingMultiplier`) reduces the incoming amount,
+and — once real Health is lost — `_TriggerDamageTakenReactions` fires Dead Weight's self-bump and
+Battle Orders' ally-bump (excluding the holder) through `_EmitTurnBarBump`, uniformly for any source
+of Health loss (attacks, DOT ticks, self-inflicted costs), not just attacker-dealt damage. Stun's
+turn-skip needed a resolver entry point outside `ResolveSkill`: `ResolveStunTurn()` still ticks the
+caster's existing buffs/debuffs (so Stun's own duration decrements and clears itself, and other
+DOTs/heals still fire) and cooldowns/zones/`EndOfTurn`, but casts no skill, reporting a new
+`CombatResult.Kind.Turn_Skipped`; `Battle.StartTurn` checks the active character's debuffs directly
+(the same direct `_active_debuffs` access `EndBattle` already uses) rather than adding another
+public resolver method, and a factored-out `Battle.CompleteTurn()` is shared between the stun-skip
+path and the normal `ResolveTurn` tail. The cooldown-decrement loop that used to live inline in
+`ResolveSkill` is now `_TickCooldowns()`, gated on Fatigue, and reused by `ResolveStunTurn()`; the
+cooldown *assignment* for the skill just cast is untouched by Fatigue. Signed Writ is a single
+shared `_RollsResistDebuff()` check (returns "not resisted" immediately for a Signed-Writ-holding
+defender) used at both existing resist-roll sites, `_CastDebuff` and `_TriggerMirrorCoat`, so a
+holder can't resist a debuff regardless of whether it arrives directly or via a Mirror Coat
+reflection. Severance is a blanket `_BlockedBySeverance()` check alongside `_BlockedBySequenceLock`
+in `ApplyBuff`/`_CastBuff`, the same precedent as Sequence Lock's blanket block for Speed-touching
+statuses. Warped is read once in `_ResolveDamage`: if the caster holds it, the skill's
+`damage_scaling` weights are summed and collapsed into a single `{Mysticism: total_weight}`
+dictionary before the aggregate calculation — damage only, per the catalog's own open question
+about broader forcing. Refracted is read in the resolver's `FindSkillTargets` wrapper: a
+Refracted caster's `Single_Enemy`/`Single_Ally` target type is overridden to `Random_One` before
+delegating to `Skills.FindSkillTargets`, which already draws from both sides via
+`CombatSides.RandomAliveMember`. Rush's expiry is collected the same way Overflow's is in
+`_TriggerExistingCasterBuffs`, then `_TriggerRushStun()` direct-appends an unresistable 1-turn Stun
+after the tick's other expiry hooks run. Zone interactions (Slipstream, Resonance) are read in
+`TriggerZones` right before `_ResolveZoneEffect`: a Slipstream holder skips a matched zone entirely
+(no effect, no duration decrement) when its owner is an enemy of theirs; otherwise `_ResolveZoneEffect`
+runs twice instead of once when the character holds Resonance and the zone's owner is an ally — a
+generic "double effect" that works for both Flicker Zone's turn-bar bump (two bumps sum) and Lava
+Zone's stackable Burning (two independent instances) with no per-zone-type special-casing. Sanction
+and Catalyst land as resources only (`gdlintrc`'s `max-public-methods`/`max-file-lines` bumped to
+23/1250 for `battle_resolver.gd`'s growth, same category of decision as batches 2 and 3): Sanction's
+`attribute_modifiers`/`magnitude_kind` are wired but `magnitude = 0.0` (the applier sets the
+instance value, the same "applier sets the instance's value directly" convention `magnitude`'s own
+doc comment already describes, used today by Phalanx Guard/Bleed) since its magnitude source (the
+Emissary's Infraction tally) is deferred; Catalyst has no application site at all yet.
+
 `ReagentData` (`Concept_Document.md` 3.3.3) is the reagent-system data model. The persistent
 inventory, loot-drop acquisition, and in-battle combat consumption are all landed (see
 `ReagentCollection` below, [Section 10](#10-collections-and-the-save-system), and
@@ -500,6 +551,9 @@ base class doubling as the headless default for tests. Long term the positions b
 
 - Positions the turn indicator over the active character and calls `resolver.BeginTurn(ID)`,
   which fires the `StartOfTurn` trait hook (e.g. the Plan trait's reach-based Empower).
+- If the active character holds Stun, `StartTurn` calls `resolver.ResolveStunTurn(ID)` (still ticks
+  their own statuses and cooldowns/zones, but casts no skill) and completes the turn immediately via
+  `CompleteTurn()`, skipping skill-button population and enemy-turn handling entirely.
 - **Player turn** (`_sides.player.Has(ID)`): populates the skill buttons (icon, name,
   description, cooldown) and enters `Awaiting_Player_Input`. Selecting a zone skill enters
   `Selecting_Zone` and enables the zone buttons; selecting a non-zone skill returns to
