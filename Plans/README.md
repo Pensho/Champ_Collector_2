@@ -62,6 +62,13 @@ Suggested order (dependencies noted inside each plan):
    completed team and roster abstraction (`CombatTeam`/`CombatSides`).
    Design counterpart: `Plan_Story_Mode.md`.
 
+9. `Plan_Missing_Role_Champions.md` — the nine roles without a playable champion
+   (Emissary, Alchemist, Sorcerer, Diviner, Appraiser, Symbiote, Cultist, Plague
+   Doctor, Warlord): champion presets with role passives as traits, placeholder
+   skill kits and art. Independent of 7, but its placeholder kits are superseded
+   by `Plan_Skill_Implementation.md`'s Role kits when those land; the Alchemist
+   batch rides on the completed reagent system.
+
 Design-only plans (no code; can run at any time):
 
 - `Plan_Encounter_Solution_Design.md` — the long-run encounter content plan:
