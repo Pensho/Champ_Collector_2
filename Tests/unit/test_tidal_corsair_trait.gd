@@ -54,7 +54,7 @@ func test_stacks_fill_leftmost_empty_slot_first() -> void:
 func test_start_of_battle_resets_stacks() -> void:
 	_InitTrait(Types.Rarity.Epic)
 	_trait.OnSkillCast(0, [], "Boarding Strike", {}, null)
-	_trait.StartOfBattle()
+	_trait.StartOfBattle(0, null)
 	for stack_type in _trait._held_stacks:
 		assert_eq(stack_type, TidalCorsairTrait.Stack_Type.Empty)
 

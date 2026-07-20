@@ -5,6 +5,11 @@ Sorcerer, Diviner, Appraiser, Symbiote, Cultist, Plague Doctor, Warlord
 (`Concept_Document.md` section 3.1.3). Each gets a champion preset with its role
 passive implemented as a trait; skill kits and art are placeholders.
 
+## Status
+
+Batch 1 (Role enum entries + Sorcerer and Symbiote presets) and Batch 2
+(`StartOfBattle` signature extension) are done. Batch 3 (Diviner) is next.
+
 ## Decided scope
 
 - **All nine roles**, including Appraiser (the doc's "may postpone" note is

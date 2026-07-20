@@ -60,7 +60,7 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_blank_description._title = "Empty Stack"
 	_blank_description._body = "Use an ability that grants stacks to fill this slot."
 
-func StartOfBattle() -> void:
+func StartOfBattle(_p_owner_ID: int, _p_resolver: BattleResolver) -> void:
 	_held_stacks = [Stack_Type.Empty, Stack_Type.Empty, Stack_Type.Empty]
 
 func RefreshVisuals(p_character_repr: CharacterRepresentation) -> void:

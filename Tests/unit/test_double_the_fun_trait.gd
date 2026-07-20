@@ -100,7 +100,7 @@ func test_avoid_reports_trait_text() -> void:
 
 func test_start_of_battle_resets_stacks() -> void:
 	_trait._avoidance_stacks = DoubleTheFunTrait.MAX_AVOIDANCE_STACKS
-	_trait.StartOfBattle()
+	_trait.StartOfBattle(0, null)
 	assert_eq(_trait._avoidance_stacks, 0)
 
 func test_on_death_resets_stacks() -> void:

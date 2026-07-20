@@ -37,7 +37,7 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_execution_steps[Types.Combat_Event.Skill_Cast] = Callable(self, "OnSkillCast")
 	_execution_steps[Types.Combat_Event.Reagent_Consumed] = Callable(self, "OnReagentConsumed")
 
-func StartOfBattle() -> void:
+func StartOfBattle(_p_owner_ID: int, _p_resolver: BattleResolver) -> void:
 	_instability_stacks = 0
 
 func RefreshVisuals(p_character_repr: CharacterRepresentation) -> void:

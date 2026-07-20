@@ -176,5 +176,5 @@ func test_surge_resets_stacks() -> void:
 
 func test_stacks_reset_at_battle_start() -> void:
 	_trait._instability_stacks = 3
-	_trait.StartOfBattle()
+	_trait.StartOfBattle(0, null)
 	assert_eq(_trait._instability_stacks, 0, "Instability stacks should not persist between combats")

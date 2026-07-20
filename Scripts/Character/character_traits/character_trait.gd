@@ -12,7 +12,7 @@ var _owner_rarity: Types.Rarity = Types.Rarity.Common
 func Init(p_rarity: Types.Rarity) -> void:
 	_owner_rarity = p_rarity
 
-func StartOfBattle() -> void:
+func StartOfBattle(_p_owner_ID: int, _p_resolver: BattleResolver) -> void:
 	print("character_trait base class StartOfBattle() called!")
 
 func RefreshVisuals(p_character_repr: CharacterRepresentation) -> void:

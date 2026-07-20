@@ -27,7 +27,7 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_execution_steps[Types.Combat_Event.Damage_Taken] = Callable(self, "OnDamageTaken")
 	_execution_steps[Types.Combat_Event.On_Death] = Callable(self, "OnDeath")
 
-func StartOfBattle() -> void:
+func StartOfBattle(_p_owner_ID: int, _p_resolver: BattleResolver) -> void:
 	_avoidance_stacks = 0
 
 func OnDeath() -> void:

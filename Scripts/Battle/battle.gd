@@ -160,7 +160,7 @@ func Init(p_context: ContextContainer) -> void:
 			_battle_ui.LoadSkillTexture(_characters[i]._skills[j].icon_path)
 		if(null != _characters[i]._trait):
 			if(_characters[i]._trait._execution_steps.has(Types.Combat_Event.Start_Combat)):
-				_characters[i]._trait.StartOfBattle()
+				_characters[i]._trait.StartOfBattle(i, _resolver)
 			_characters[i]._trait.RefreshVisuals(_character_representations[i])
 
 	SetTargetingOrder()

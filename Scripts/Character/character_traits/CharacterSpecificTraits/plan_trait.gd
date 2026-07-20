@@ -29,7 +29,7 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_title = "Plan ahead"
 	_body = "Casts Empower on allies who are close enough behind on the turn bar."
 
-func StartOfBattle() -> void:
+func StartOfBattle(_p_owner_ID: int, _p_resolver: BattleResolver) -> void:
 	pass
 
 func StartOfTurn(p_owner_ID: int, p_resolver: BattleResolver) -> void:
