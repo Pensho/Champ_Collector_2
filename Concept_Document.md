@@ -163,10 +163,11 @@ Current roles, their identity and purpose exist as follows:
     - An unconventional tanking character that does not have significantly high Health or Defense but relies on skills that provoke hits to the Jester and dodge them. Primary attributes: Accuracy, Knowledge, Speed.
     - Purpose: Damage, Sustain
     - Passive: "Double the fun!" - A base 5% chance to completely avoid the damage of an incoming attack (debuffs from the attack still land). Each hit that lands instead of being avoided increases the chance by a rarity-dependent amount, up to 3 stacks: Uncommon +3%, Rare +4%, Epic +5%, Legendary +6% per stack. Avoiding damage resets the chance to the 5% base. Increases the chances of being targeted.
-- Cultist (Not yet implemented)
+- Cultist
     - Consumes ally buffs or health to empower their own skills, dealing magical damage or applying debuffs. Primary attributes: Mysticism, Knowledge.
     - Purpose: Debuffer, Damage
-    - Passive: Chosen Vessel - At the start of combat the Cultist marks a random ally (the Cultist excluded) as their Vessel. Whenever the Cultist uses a non-basic skill, the Vessel loses 5% of their max Health and the skill gains a rarity-dependent power bonus: Uncommon +15%, Rare +20%, Epic +25%, Legendary +30%. The drain can kill the Vessel. When the Vessel dies (from any source), the Cultist gains the Attune buff for 3 turns (see section 3.2.3.2) and a new random ally is marked as the Vessel if any is alive. If all allies are dead then nothing happens.
+    - Passive: Chosen Vessel - At the start of combat the Cultist marks a random ally (the Cultist excluded) as their Vessel. Whenever the Cultist uses a non-basic skill, the Vessel loses 5% of their max Health and the skill gains a rarity-dependent power bonus. The drain can kill the Vessel. When the Vessel dies (from any source), the Cultist gains the Attune buff for 3 turns (see section 3.2.3.2) and a new random ally is marked as the Vessel if any is alive. If all allies are dead then nothing happens.
+        - Power bonus: 15% Uncommon, 20% Rare, 25% Epic, 30% Legendary
 - Bar Brawler
     - A health focused character, dealing damage, tanking and applying a few buffs. Attacks scales of health primarily. Primary attributes: Health.
     - Purpose: Sustain, Buffer

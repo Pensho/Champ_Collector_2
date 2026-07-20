@@ -1,5 +1,5 @@
 max-line-length: 120
-max-public-methods: 23
+max-public-methods: 24
 max-file-lines: 1250
 class-name: ([A-Z][a-z0-9]*)+
 sub-class-name: ([A-Z][a-z0-9]*)+

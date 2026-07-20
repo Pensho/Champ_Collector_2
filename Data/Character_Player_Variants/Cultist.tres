@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="CharacterPreset" format=3 uid="uid://cibtcfqy82br4"]
+
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_weight"]
+[ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_preset"]
+[ext_resource type="Resource" uid="uid://dl0s23m0g4w3i" path="res://Data/Character_Skill_Variants/Zap.tres" id="3_zap"]
+[ext_resource type="Resource" uid="uid://b5174xlhufd0j" path="res://Data/Character_Skill_Variants/Attack_Skills/Burning_Bolas.tres" id="4_bolas"]
+[ext_resource type="Resource" uid="uid://civ8gh1okd6p1" path="res://Data/Character_Skill_Variants/Attack_Skills/Break_Guard.tres" id="5_break_guard"]
+[ext_resource type="Resource" uid="uid://4fnej15sbkkv" path="res://Data/Attribute_Weights/Arcane.tres" id="6_arcane"]
+[ext_resource type="Resource" uid="uid://b8nee1hs4g663" path="res://Data/Attribute_Weights/Conjurer.tres" id="7_conjurer"]
+[ext_resource type="Resource" uid="uid://ytl3g36itqfs" path="res://Data/Attribute_Weights/Learned.tres" id="8_learned"]
+[ext_resource type="Resource" path="res://Data/Character_Traits/Chosen_Vessel_Trait.tres" id="9_trait"]
+
+[resource]
+script = ExtResource("2_preset")
+_name = "Cultist"
+_texture = "res://Assets/Champ_Collector/Creatures/Bloodmage/Bloodmage_0001.png"
+_rarity = 2
+_role = 12
+_skills = Array[ExtResource("1_skill")]([ExtResource("3_zap"), ExtResource("4_bolas"), ExtResource("5_break_guard")])
+_health = 40
+_speed = 60
+_attack = 30
+_defence = 30
+_accuracy = 60
+_resistance = 40
+_mysticism = 90
+_knowledge = 10
+_attribute_weight_types_available = Array[ExtResource("1_weight")]([ExtResource("6_arcane"), ExtResource("7_conjurer"), ExtResource("8_learned")])
+_trait = ExtResource("9_trait")
+_preset_UID = "uid://c9vsl2rj4ktbm"
+metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

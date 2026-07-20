@@ -69,6 +69,11 @@ func GetRandom() -> RandomNumberGenerator:
 	return _random
 
 
+## Max Health including max-Health buffs, in the same units as `_current_health`.
+func GetMaxHealth(p_character_ID: int) -> int:
+	return _MaxHealth(_characters[p_character_ID])
+
+
 func GetZones() -> Dictionary[int, Zone]:
 	return _zones
 
@@ -846,6 +851,13 @@ func _HandleDeath(p_character_ID: int) -> void:
 	var death: CombatResult = CombatResult.new(CombatResult.Kind.Death)
 	death.target_ID = p_character_ID
 	_Emit(death)
+
+	var allies: CombatTeam = _sides.AlliesOf(p_character_ID)
+	if(null != allies):
+		for ally_ID in allies.AliveMembers(_characters):
+			var ally: Character = _characters[ally_ID]
+			if(null != ally._trait and ally._trait._execution_steps.has(Types.Combat_Event.Ally_Death)):
+				ally._trait.OnAllyDeath(ally_ID, p_character_ID, self)
 
 
 ## Caster-side skill mechanics that key off per-combat state (Heap On stacking).

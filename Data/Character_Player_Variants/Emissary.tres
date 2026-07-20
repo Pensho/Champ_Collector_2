@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="CharacterPreset" format=3 uid="uid://rmnyol4orytc"]
 
-[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_weight"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_weight"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_preset"]
 [ext_resource type="Resource" uid="uid://dpduy25aqyibo" path="res://Data/Character_Skill_Variants/Bash.tres" id="3_bash"]
 [ext_resource type="Resource" uid="uid://dvsuv0ji1ueq7" path="res://Data/Character_Skill_Variants/Attack_Skills/Disarm.tres" id="4_disarm"]
@@ -17,7 +17,6 @@ _name = "Emissary"
 _texture = "res://Assets/Champ_Collector/Creatures/Emissary/Emissary_0001.png"
 _rarity = 2
 _faction = 1
-_role = 0
 _skills = Array[ExtResource("1_skill")]([ExtResource("3_bash"), ExtResource("4_disarm"), ExtResource("5_break_guard")])
 _health = 55
 _speed = 50

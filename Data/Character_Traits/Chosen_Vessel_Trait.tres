@@ -1,0 +1,6 @@
+[gd_resource type="Resource" script_class="ChosenVesselTrait" format=3]
+
+[ext_resource type="Script" path="res://Scripts/Character/character_traits/CharacterSpecificTraits/chosen_vessel_trait.gd" id="1_cv"]
+
+[resource]
+script = ExtResource("1_cv")
