@@ -110,7 +110,7 @@ Each Role can have one or two main purposes in combat but it doesn't have to res
     - Applies various buffs to allies to make them stronger.
 
 Current roles, their identity and purpose exist as follows:
-- Emissary (Not yet implemented)
+- Emissary
     - A field agent of the Iron Ledger who wins by building a case against the enemy rather than overpowering them. Keeps a per-enemy tally of Infractions (see the Standing Record passive) and issues Edicts — formal rulings whose severity is read off the target's Infraction tally. Punishment effects stay gradual rather than binary: no hard skill sealing or turn bar manipulation; instead buff duration reduction, resistance bypass, and attribute sanctions, all scaling with the target's Infraction count. Primary attributes: Accuracy, Knowledge.
     - Purpose: Debuffer, Control
     - Passive: Standing Record - Every enemy has a personal Infraction tally that only grows and is never consumed. An enemy gains one Infraction whenever they gain a buff, place a zone, or land a debuff on an ally. The tally is counted up to a cap of 9 for skill effects. The Emissary's skills that scale with Infractions apply a rarity-dependent rate per Infraction on the target; that rate is the only source of Infraction scaling (skills state what scales, never their own rate).

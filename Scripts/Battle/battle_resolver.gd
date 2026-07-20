@@ -769,6 +769,7 @@ func _EmitDebuffApplied(p_target_ID: int, p_debuff: StatusEffects.Debuff, p_disp
 	result.is_buff = false
 	result.debuff_type = p_debuff.type
 	result.duration = p_debuff.duration
+	result.source_ID = p_debuff.source_ID
 	result.text = p_display_name
 	_Emit(result)
 

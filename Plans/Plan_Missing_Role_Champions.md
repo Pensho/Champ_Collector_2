@@ -8,8 +8,8 @@ passive implemented as a trait; skill kits and art are placeholders.
 ## Status
 
 Batch 1 (Role enum entries + Sorcerer and Symbiote presets), Batch 2
-(`StartOfBattle` signature extension), Batch 3 (Diviner), and Batch 4 (Appraiser) are
-done. Batch 5 (Emissary) is next.
+(`StartOfBattle` signature extension), Batch 3 (Diviner), Batch 4 (Appraiser), and
+Batch 5 (Emissary) are done. Batch 6 (Cultist) is next.
 
 ## Decided scope
 
