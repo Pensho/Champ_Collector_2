@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="CharacterPreset" format=3]
+
+[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_weight"]
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_preset"]
+[ext_resource type="Resource" uid="uid://dvgwxvsovsldc" path="res://Data/Character_Skill_Variants/Attack_Skills/Stab.tres" id="3_stab"]
+[ext_resource type="Resource" uid="uid://54q7s3jjny1w" path="res://Data/Character_Skill_Variants/Attack_Skills/Pierce_Weakness.tres" id="4_pierce_weakness"]
+[ext_resource type="Resource" uid="uid://dikrn45u40rjr" path="res://Data/Character_Skill_Variants/Support_Skills/Fatal_Flaw.tres" id="5_fatal_flaw"]
+[ext_resource type="Resource" uid="uid://bejf1a62v41gq" path="res://Data/Attribute_Weights/Marksman.tres" id="6_marksman"]
+[ext_resource type="Resource" uid="uid://bvo4uj38cgjg3" path="res://Data/Attribute_Weights/Calculating.tres" id="7_calculating"]
+[ext_resource type="Resource" uid="uid://ytl3g36itqfs" path="res://Data/Attribute_Weights/Learned.tres" id="8_learned"]
+[ext_resource type="Resource" path="res://Data/Character_Traits/Strike_The_Flaw_Trait.tres" id="9_trait"]
+
+[resource]
+script = ExtResource("2_preset")
+_name = "Appraiser"
+_texture = "res://Assets/Champ_Collector/Creatures/Thief/Thief_0001.png"
+_normal_map = "res://Assets/Champ_Collector/Creatures/Thief/Thief_0001_Normal_Map.png"
+_rarity = 2
+_role = 8
+_skills = Array[ExtResource("1_skill")]([ExtResource("3_stab"), ExtResource("4_pierce_weakness"), ExtResource("5_fatal_flaw")])
+_health = 55
+_speed = 55
+_attack = 40
+_defence = 35
+_accuracy = 60
+_resistance = 30
+_mysticism = 10
+_knowledge = 45
+_critical_chance = 30
+_attribute_weight_types_available = Array[ExtResource("1_weight")]([ExtResource("6_marksman"), ExtResource("7_calculating"), ExtResource("8_learned")])
+_trait = ExtResource("9_trait")
+_preset_UID = "uid://d9uhdoz1uc1d1"
+metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

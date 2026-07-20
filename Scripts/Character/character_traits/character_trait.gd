@@ -55,3 +55,6 @@ func OnReagentConsumed(
 		_p_consumer_ID: int, _p_reagent: ReagentData, _p_resolver: BattleResolver) -> float:
 	print("character_trait base class OnReagentConsumed() called!")
 	return 0.0
+
+func OnCriticalHit(_p_owner_ID: int, _p_target_ID: int, _p_resolver: BattleResolver) -> void:
+	print("character_trait base class OnCriticalHit() called!")

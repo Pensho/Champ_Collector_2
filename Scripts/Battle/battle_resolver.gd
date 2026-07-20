@@ -1161,6 +1161,11 @@ func _ResolveDamage(
 	result.critical = rolled_critical
 	_Emit(result)
 
+	if(rolled_critical):
+		var caster: Character = _characters[p_caster_ID]
+		if(null != caster._trait and caster._trait._execution_steps.has(Types.Combat_Event.Critical_Hit)):
+			caster._trait.OnCriticalHit(p_caster_ID, p_target_ID, self)
+
 
 func TriggerZones(p_active_character_ID: int) -> Array[CombatResult]:
 	_BeginBatch()

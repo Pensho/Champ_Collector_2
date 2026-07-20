@@ -17,6 +17,7 @@
 [ext_resource type="Resource" uid="uid://cd3taeihyjuh3" path="res://Data/Character_Player_Variants/Sorcerer.tres" id="14_sorcerer"]
 [ext_resource type="Resource" uid="uid://2mmrc7vnsrqw" path="res://Data/Character_Player_Variants/Symbiote.tres" id="15_symbiote"]
 [ext_resource type="Resource" path="res://Data/Character_Player_Variants/Diviner.tres" id="16_diviner"]
+[ext_resource type="Resource" path="res://Data/Character_Player_Variants/Appraiser.tres" id="17_appraiser"]
 
 [resource]
 script = ExtResource("1_tier")
@@ -26,4 +27,4 @@ silver_weight = 40
 silver_amount = 40
 supplies_weight = 30
 supplies_amount = 20
-recruitable_champions = Array[ExtResource("1_preset")]([ExtResource("2_architect"), ExtResource("3_bar_brawler"), ExtResource("4_bloodmage"), ExtResource("5_centaur_archivist"), ExtResource("6_centaur_lancer"), ExtResource("7_chronophage"), ExtResource("8_herald_of_the_loom"), ExtResource("9_jester"), ExtResource("10_knight"), ExtResource("11_tactician"), ExtResource("12_thief"), ExtResource("13_tidal_corsair"), ExtResource("14_sorcerer"), ExtResource("15_symbiote"), ExtResource("16_diviner")])
+recruitable_champions = Array[ExtResource("1_preset")]([ExtResource("2_architect"), ExtResource("3_bar_brawler"), ExtResource("4_bloodmage"), ExtResource("5_centaur_archivist"), ExtResource("6_centaur_lancer"), ExtResource("7_chronophage"), ExtResource("8_herald_of_the_loom"), ExtResource("9_jester"), ExtResource("10_knight"), ExtResource("11_tactician"), ExtResource("12_thief"), ExtResource("13_tidal_corsair"), ExtResource("14_sorcerer"), ExtResource("15_symbiote"), ExtResource("16_diviner"), ExtResource("17_appraiser")])

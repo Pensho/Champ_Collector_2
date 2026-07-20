@@ -146,7 +146,7 @@ Current roles, their identity and purpose exist as follows:
     - Purpose: Sustain, Debuffer
     - Passive: Foresight - Place debuffs on enemies if they are close enough behind the Diviner on the turn bar when the Diviners turn starts. Applies Enfeeble for 1 turn, with no resist roll (symmetric to the Tactician's Plan applying Empower).
         - 10% Uncommon, 15% Rare, 20% Epic, 25% Legendary
-- Appraiser (May postpone implementation and keep as optional)
+- Appraiser
     - A master at exploiting enemy weaknesses, allowing opportunity for the team to easily deal critical hits. Primary attributes: Critical Chance, Knowledge.
     - Purpose: Debuffer
     - Passive: Strike the Flaw - The Appraiser's critical hits apply the Cracked Facet debuff to the target (see section 3.2.3.2), with a rarity-dependent duration: Uncommon and Rare 1 turn, Epic and Legendary 2 turns.

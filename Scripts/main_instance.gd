@@ -14,6 +14,7 @@ const TACTICIAN = preload("uid://dy22lp5h48s5f")
 const SYMBIOTE = preload("uid://2mmrc7vnsrqw")
 const SORCERER = preload("uid://cd3taeihyjuh3")
 const DIVINER = preload("res://Data/Character_Player_Variants/Diviner.tres")
+const APPRAISER = preload("res://Data/Character_Player_Variants/Appraiser.tres")
 
 var _current_scene = null
 var _character_collection: CharacterCollection
@@ -61,6 +62,7 @@ func Init() -> void:
 	_character_collection.Add(SORCERER.duplicate(true))
 	_character_collection.Add(SYMBIOTE.duplicate(true))
 	_character_collection.Add(DIVINER.duplicate(true))
+	_character_collection.Add(APPRAISER.duplicate(true))
 
 	var reagent_keys: Array = ReagentRegistry.REAGENTS.keys()
 	for i in 3:
