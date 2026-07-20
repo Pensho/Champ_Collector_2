@@ -17,6 +17,7 @@ const DIVINER = preload("res://Data/Character_Player_Variants/Diviner.tres")
 const APPRAISER = preload("res://Data/Character_Player_Variants/Appraiser.tres")
 const EMISSARY = preload("res://Data/Character_Player_Variants/Emissary.tres")
 const CULTIST = preload("res://Data/Character_Player_Variants/Cultist.tres")
+const PLAGUE_DOCTOR = preload("res://Data/Character_Player_Variants/Plague_Doctor.tres")
 
 var _current_scene = null
 var _character_collection: CharacterCollection
@@ -67,6 +68,7 @@ func Init() -> void:
 	_character_collection.Add(APPRAISER.duplicate(true))
 	_character_collection.Add(EMISSARY.duplicate(true))
 	_character_collection.Add(CULTIST.duplicate(true))
+	_character_collection.Add(PLAGUE_DOCTOR.duplicate(true))
 
 	var reagent_keys: Array = ReagentRegistry.REAGENTS.keys()
 	for i in 3:

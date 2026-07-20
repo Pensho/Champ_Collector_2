@@ -16,3 +16,6 @@ class Buff extends Effect:
 
 class Debuff extends Effect:
 	var type: Types.Debuff_Type = Types.Debuff_Type.Invalid
+	# Rarity-dependent bonus (e.g. the Plague Doctor's Comorbidity) stamped onto this
+	# debuff when it was cast, scaling its own tick damage with the target's debuff count.
+	var tick_bonus_per_debuff: float = 0.0

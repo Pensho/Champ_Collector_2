@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="CharacterPreset" format=3]
+
+[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_weight"]
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_preset"]
+[ext_resource type="Resource" uid="uid://dl0s23m0g4w3i" path="res://Data/Character_Skill_Variants/Zap.tres" id="3_zap"]
+[ext_resource type="Resource" uid="uid://b5174xlhufd0j" path="res://Data/Character_Skill_Variants/Attack_Skills/Burning_Bolas.tres" id="4_bolas"]
+[ext_resource type="Resource" uid="uid://bq3ncvu0l6xtu" path="res://Data/Character_Skill_Variants/Zone_Skills/Lava_Zone.tres" id="5_lava_zone"]
+[ext_resource type="Resource" uid="uid://4fnej15sbkkv" path="res://Data/Attribute_Weights/Arcane.tres" id="6_arcane"]
+[ext_resource type="Resource" uid="uid://c60oh3whnodsm" path="res://Data/Attribute_Weights/Resilient.tres" id="7_resilient"]
+[ext_resource type="Resource" uid="uid://b8nee1hs4g663" path="res://Data/Attribute_Weights/Conjurer.tres" id="8_conjurer"]
+[ext_resource type="Resource" path="res://Data/Character_Traits/Comorbidity_Trait.tres" id="9_trait"]
+
+[resource]
+script = ExtResource("2_preset")
+_name = "Plague Doctor"
+_texture = "res://Assets/Champ_Collector/Creatures/Jester/Jester_0001.png"
+_normal_map = "res://Assets/Champ_Collector/Creatures/Jester/Jester_0001_Normal_Map.png"
+_rarity = 2
+_role = 20
+_skills = Array[ExtResource("1_skill")]([ExtResource("3_zap"), ExtResource("4_bolas"), ExtResource("5_lava_zone")])
+_health = 50
+_speed = 50
+_attack = 30
+_defence = 30
+_accuracy = 60
+_resistance = 60
+_mysticism = 80
+_knowledge = 10
+_attribute_weight_types_available = Array[ExtResource("1_weight")]([ExtResource("6_arcane"), ExtResource("7_resilient"), ExtResource("8_conjurer")])
+_trait = ExtResource("9_trait")
+_preset_UID = "uid://dq3lm8s5vwr2t"
+metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

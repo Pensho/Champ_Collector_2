@@ -163,7 +163,7 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 
 		if(not cast_skill.debuffs.is_empty() and target._current_health > 0):
 			_CastDebuff(target_ID, target_attributes[Types.Attribute.Resistance], caster_attributes[Types.Attribute.Accuracy],
-					cast_skill, p_caster_ID)
+					cast_skill, p_caster_ID, trait_result._tick_bonus_per_debuff)
 
 		if(not cast_skill.damage_scaling.is_empty()):
 			_ResolveDamage(p_caster_ID, target_ID, caster_attributes, target_attributes,
@@ -899,6 +899,9 @@ func _TriggerExistingCasterDebuffs(
 				_:
 					pass
 			if(tick_damage > 0):
+				if(debuff.tick_bonus_per_debuff > 0.0):
+					var stack_count: int = mini(caster._active_debuffs.size(), GameBalance.DEBUFF_TICK_BONUS_STACK_CAP)
+					tick_damage = int(floor(tick_damage * (1.0 + debuff.tick_bonus_per_debuff * stack_count)))
 				tick_damage_total += tick_damage
 				tick_damage_by_source[debuff.source_ID] = tick_damage_by_source.get(debuff.source_ID, 0) + tick_damage
 
@@ -1035,7 +1038,8 @@ func _CastDebuff(
 		p_target_resistance: int,
 		p_caster_accuracy: int,
 		p_skill: Skill,
-		p_caster_ID: int) -> void:
+		p_caster_ID: int,
+		p_tick_bonus_per_debuff: float = 0.0) -> void:
 	var target: Character = _characters[p_target_ID]
 	if(Skills.HasMaxStatusEffects(target)):
 		return
@@ -1059,6 +1063,7 @@ func _CastDebuff(
 			if(target._active_debuffs[i].type == debuff_type):
 				if(null == data or data.overwritable):
 					target._active_debuffs[i].duration = p_skill.duration
+					target._active_debuffs[i].tick_bonus_per_debuff = p_tick_bonus_per_debuff
 					_EmitStatusDuration(p_target_ID, target._active_debuffs[i].ID, p_skill.duration)
 				return
 
@@ -1067,6 +1072,7 @@ func _CastDebuff(
 	new_debuff.duration = p_skill.duration
 	new_debuff.source_ID = p_caster_ID
 	new_debuff.value = _SnapshotStatusValue(data, p_caster_ID)
+	new_debuff.tick_bonus_per_debuff = p_tick_bonus_per_debuff
 	new_debuff.ID = _NextStatusID()
 	target._active_debuffs.append(new_debuff)
 	_EmitDebuffApplied(p_target_ID, new_debuff, Types.Debuff_Type.keys()[new_debuff.type])

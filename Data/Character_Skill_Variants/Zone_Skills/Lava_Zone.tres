@@ -6,6 +6,7 @@
 script = ExtResource("1_ejmff")
 name = "Lava Zone"
 description = "Burns enemies that stands in it."
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Righteous_Fire/Righteous_Fire_1.jpg"
 target = 8
 duration = 6
 skill_type = 3

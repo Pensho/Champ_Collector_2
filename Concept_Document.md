@@ -204,7 +204,7 @@ Current roles, their identity and purpose exist as follows:
       held at a time.
         - Damage per Steel stack: 45% Uncommon, 50% Rare, 55% Epic, 60% Legendary
         - Turn meter per Sea stack: 8% Uncommon, 10% Rare, 12% Epic, 14% Legendary
-- Plague Doctor (Not yet implemented)
+- Plague Doctor
     - A debuff focused character, applying various damage over time and stat reducing debuffs to enemies. Signature zone: Miasma (see section 3.2.4.1). Primary attributes: Mysticism, Resistance.
     - Purpose: Debuffer
     - Passive: Comorbidity - Damage-over-time debuffs applied by the Plague Doctor tick for +x% damage per debuff on the target (the ticking debuff included, debuffs from any source counted, up to 5).

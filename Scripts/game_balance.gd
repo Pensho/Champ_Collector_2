@@ -73,6 +73,8 @@ const MINIMUM_DMG_PERCENT: float = 0.1
 const TURN_BAR_PROGRESS_TRIGGER_FRACTION: float = 0.1
 const MAX_DIFFICULTY: int = 20
 const MINIMUM_CRIT_DAMAGE: float = 125.0
+# Cap on the active-debuff count a tick_bonus_per_debuff multiplier can scale with.
+const DEBUFF_TICK_BONUS_STACK_CAP: int = 5
 
 # Resources
 const MAX_SUPPLIES: int = 100
