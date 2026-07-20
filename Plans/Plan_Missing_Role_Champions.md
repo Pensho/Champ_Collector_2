@@ -7,8 +7,9 @@ passive implemented as a trait; skill kits and art are placeholders.
 
 ## Status
 
-Batch 1 (Role enum entries + Sorcerer and Symbiote presets) and Batch 2
-(`StartOfBattle` signature extension) are done. Batch 3 (Diviner) is next.
+Batch 1 (Role enum entries + Sorcerer and Symbiote presets), Batch 2
+(`StartOfBattle` signature extension), and Batch 3 (Diviner) are done. Batch 4
+(Appraiser) is next.
 
 ## Decided scope
 
@@ -45,8 +46,8 @@ Batch 1 (Role enum entries + Sorcerer and Symbiote presets) and Batch 2
   stateful trait resets in its start-of-battle hook.
 - Preset registration: append to `recruitable_champions` in
   `Data/Recruitment/Bone_Tier.tres`, `Brass_Tier.tres`, `Parchment_Tier.tres`, and
-  to `Scripts/Debug/debug_catalog.gd` `PLAYER_CHARACTER_PRESETS`. Do not touch the
-  `main_instance.gd` starter roster.
+  to `Scripts/Debug/debug_catalog.gd` `PLAYER_CHARACTER_PRESETS`. Also add each new
+  champion to the `main_instance.gd` starter roster so it is playable immediately.
 - Existing status effects reused: `Attune.tres` (Cultist), `Cracked_Facet.tres`
   (Appraiser), `Enfeeble.tres` (Diviner), `Barrier.tres` (Alchemist brew).
 - Scaffolding checklist: `.claude/skills/new-champion/SKILL.md`.

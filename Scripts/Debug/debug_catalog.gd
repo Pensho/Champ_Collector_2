@@ -21,6 +21,7 @@ const PLAYER_CHARACTER_PRESETS: Dictionary[String, CharacterPreset] = {
 	"Chronophage": preload("res://Data/Character_Player_Variants/Chronophage.tres"),
 	"Sorcerer": preload("res://Data/Character_Player_Variants/Sorcerer.tres"),
 	"Symbiote": preload("res://Data/Character_Player_Variants/Symbiote.tres"),
+	"Diviner": preload("res://Data/Character_Player_Variants/Diviner.tres"),
 }
 
 const ENEMY_CHARACTER_PRESETS: Dictionary[String, CharacterPreset] = {

@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="ForesightTrait" format=3 uid="uid://cfxl5tcn12vw5"]
+
+[ext_resource type="Script" uid="uid://dk40rjari6r4g" path="res://Scripts/Character/character_traits/CharacterSpecificTraits/foresight_trait.gd" id="1_frsght"]
+
+[resource]
+script = ExtResource("1_frsght")
+metadata/_custom_type_script = "uid://dk40rjari6r4g"

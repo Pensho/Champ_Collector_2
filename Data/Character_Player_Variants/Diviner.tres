@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="CharacterPreset" format=3 uid="uid://dp21n8t5rkmsf"]
+
+[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_weight"]
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_zap"]
+[ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_preset"]
+[ext_resource type="Resource" uid="uid://dl0s23m0g4w3i" path="res://Data/Character_Skill_Variants/Zap.tres" id="3_zap"]
+[ext_resource type="Resource" uid="uid://bqqsowpn2kvlu" path="res://Data/Attribute_Weights/Reckless.tres" id="4_apdyv"]
+[ext_resource type="Resource" uid="uid://dikrn45u40rjr" path="res://Data/Character_Skill_Variants/Support_Skills/Fatal_Flaw.tres" id="4_fatal_flaw"]
+[ext_resource type="Resource" uid="uid://cbgjuq0ikkygr" path="res://Data/Character_Skill_Variants/Support_Skills/Stalwart_Hymn.tres" id="5_hymn"]
+[ext_resource type="Resource" uid="uid://syj6hxvr5t2x" path="res://Data/Attribute_Weights/Dexterous.tres" id="5_k1jtx"]
+[ext_resource type="Resource" uid="uid://4fnej15sbkkv" path="res://Data/Attribute_Weights/Arcane.tres" id="6_arcane"]
+[ext_resource type="Resource" uid="uid://b8nee1hs4g663" path="res://Data/Attribute_Weights/Conjurer.tres" id="7_conjurer"]
+[ext_resource type="Resource" uid="uid://cfxl5tcn12vw5" path="res://Data/Character_Traits/Foresight_Trait.tres" id="9_trait"]
+
+[resource]
+script = ExtResource("2_preset")
+_name = "Diviner"
+_texture = "res://Assets/Champ_Collector/Creatures/Cleric/Cleric_0001.png"
+_rarity = 3
+_role = 7
+_skills = Array[ExtResource("1_zap")]([ExtResource("3_zap"), ExtResource("4_fatal_flaw"), ExtResource("5_hymn")])
+_health = 50
+_speed = 50
+_attack = 30
+_defence = 30
+_accuracy = 60
+_resistance = 60
+_mysticism = 80
+_knowledge = 10
+_attribute_weight_types_available = Array[ExtResource("1_weight")]([ExtResource("6_arcane"), ExtResource("7_conjurer"), ExtResource("4_apdyv"), ExtResource("5_k1jtx")])
+_trait = ExtResource("9_trait")
+_preset_UID = "uid://ck3pj0uyq6xgh"
+metadata/_custom_type_script = "uid://ftdwxfh8y3n1"
