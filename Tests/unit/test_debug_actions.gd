@@ -31,3 +31,50 @@ func test_build_battle_context_assembles_context_container() -> void:
 	assert_eq(context._arguments["Difficulty"], 5, "Should set the requested difficulty")
 	assert_eq(context._previous_scene, "uid://previous_scene", "Should carry the previous scene")
 
+func _make_character_with_weights() -> Character:
+	var c: Character = TestFactory.make_character()
+	var weights: AttributeWeightPreset = AttributeWeightPreset.new()
+	for attribute in weights._weights.keys():
+		weights._weights[attribute] = 1
+	c._attributes_weights = weights
+	return c
+
+func test_set_character_level_raises_level_and_attributes() -> void:
+	var c: Character = _make_character_with_weights()
+	c._level = 1
+	var attack_before: int = c._attributes[Types.Attribute.Attack]
+	DebugActions.set_character_level(c, 2)
+	assert_eq(c._level, 2, "Level should reach the target")
+	assert_gt(c._attributes[Types.Attribute.Attack], attack_before,
+		"Real level-up reward should increase an attribute")
+
+func test_set_character_level_raises_multiple_levels() -> void:
+	var c: Character = _make_character_with_weights()
+	c._level = 1
+	DebugActions.set_character_level(c, 5)
+	assert_eq(c._level, 5, "Level should reach the target after several level-ups")
+
+func test_set_character_level_clamps_above_max_level() -> void:
+	var c: Character = _make_character_with_weights()
+	c._level = 1
+	DebugActions.set_character_level(c, Game_Balance.MAX_LEVEL + 50)
+	assert_eq(c._level, Game_Balance.MAX_LEVEL, "Level should clamp at Game_Balance.MAX_LEVEL")
+
+func test_set_character_level_lowering_is_raw_assignment() -> void:
+	var c: Character = _make_character_with_weights()
+	c._level = 10
+	var attack_before: int = c._attributes[Types.Attribute.Attack]
+	DebugActions.set_character_level(c, 3)
+	assert_eq(c._level, 3, "Lowering should set the level directly")
+	assert_eq(c._attributes[Types.Attribute.Attack], attack_before,
+		"Lowering should not touch attributes")
+
+func test_set_character_level_same_level_is_noop() -> void:
+	var c: Character = _make_character_with_weights()
+	c._level = 4
+	var attack_before: int = c._attributes[Types.Attribute.Attack]
+	DebugActions.set_character_level(c, 4)
+	assert_eq(c._level, 4, "Setting the same level should be a no-op")
+	assert_eq(c._attributes[Types.Attribute.Attack], attack_before,
+		"No-op should not touch attributes")
+

@@ -1,7 +1,5 @@
 extends DebugPage
 
-const MAX_LEVEL: int = 100
-
 @export var _available_list: VBoxContainer
 @export var _roster_list: VBoxContainer
 
@@ -38,7 +36,7 @@ func PopulateRosterList() -> void:
 		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		var level_spin: SpinBox = SpinBox.new()
 		level_spin.min_value = 1
-		level_spin.max_value = MAX_LEVEL
+		level_spin.max_value = Game_Balance.MAX_LEVEL
 		level_spin.value = character._level
 		level_spin.value_changed.connect(_on_level_changed.bind(instance_id))
 		var remove_button: Button = Button.new()
@@ -56,7 +54,7 @@ func _on_add_preset_pressed(p_preset: CharacterPreset) -> void:
 func _on_level_changed(p_value: float, p_instance_id: int) -> void:
 	var character: Character = main.GetInstance()._character_collection.GetCharacter(p_instance_id)
 	if(null != character):
-		character._level = int(p_value)
+		DebugActions.set_character_level(character, int(p_value))
 
 func _on_remove_pressed(p_instance_id: int) -> void:
 	main.GetInstance()._character_collection.Remove(p_instance_id)

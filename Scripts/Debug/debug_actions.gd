@@ -33,3 +33,15 @@ static func build_battle_context(
 	context._arguments["Difficulty"] = p_difficulty
 	context._previous_scene = p_previous_scene
 	return context
+
+## Raises a character to the target level by repeatedly applying the real
+## level-up reward (LevelSystem.LevelUpReward), the same procedure a battle-won
+## experience gain triggers, so debug level-ups grant the same attribute growth.
+## Lowering the level is a plain assignment: there's no inverse of a level-up.
+static func set_character_level(p_character: Character, p_target_level: int) -> void:
+	var clamped_target: int = clampi(p_target_level, 1, Game_Balance.MAX_LEVEL)
+	if(clamped_target > p_character._level):
+		while(p_character._level < clamped_target):
+			LevelSystem.LevelUpReward(p_character)
+	else:
+		p_character._level = clamped_target
