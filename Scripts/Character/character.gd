@@ -76,7 +76,7 @@ func InstantiateNew(p_preset: CharacterPreset, p_instance_ID: int) -> void:
 	_attributes[Types.Attribute.CritChance] = p_preset._critical_chance
 	_attributes[Types.Attribute.CritDamage] = p_preset._critical_damage
 
-	_current_health = GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
+	_current_health = GetTotalAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
 	
 	if(null != p_preset._trait):
 		_trait = p_preset._trait.duplicate(true)
@@ -88,13 +88,13 @@ func GetEquipmentBonus(p_attribute: Types.Attribute) -> int:
 		bonus_stat += main.GetInstance()._item_collection._items[i]._attributes[p_attribute]
 	return bonus_stat
 
-func GetBattleAttributes() -> Dictionary[Types.Attribute, int]:
+func GetTotalAttributes() -> Dictionary[Types.Attribute, int]:
 	var battle_attributes: Dictionary[Types.Attribute, int] = _attributes.duplicate(true)
 	for attribute in battle_attributes.keys():
 		battle_attributes[attribute] += GetEquipmentBonus(attribute)
 	return battle_attributes
 
-func GetBattleAttribute(p_attribute: Types.Attribute) -> int:
+func GetTotalAttribute(p_attribute: Types.Attribute) -> int:
 	var attribute_value: int = _attributes[p_attribute]
 	attribute_value += GetEquipmentBonus(p_attribute)
 	return attribute_value

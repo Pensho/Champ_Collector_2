@@ -125,7 +125,7 @@ func Init(p_context: ContextContainer) -> void:
 
 	for i in p_context._player_battle_characters.size():
 		_characters[i] = p_context._player_battle_characters[i]
-		_characters[i]._current_health = (_characters[i].GetBattleAttribute(Types.Attribute.Health) *
+		_characters[i]._current_health = (_characters[i].GetTotalAttribute(Types.Attribute.Health) *
 				Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
 		_self_context._arguments["character_dmg_" + str(i)] = 0
 		VisualizeCharacter(i)
@@ -151,7 +151,7 @@ func Init(p_context: ContextContainer) -> void:
 		# One levelling call carrying the boss flag, so the ×1.5 boss multiplier is
 		# actually applied instead of being pre-empted by an earlier no-op call.
 		LevelSystem.SetOpponentLevel(_characters[enemy_ID], difficulty, is_boss)
-		_characters[enemy_ID]._current_health = (_characters[enemy_ID].GetBattleAttribute(Types.Attribute.Health) *
+		_characters[enemy_ID]._current_health = (_characters[enemy_ID].GetTotalAttribute(Types.Attribute.Health) *
 				Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
 		VisualizeCharacter(enemy_ID)
 
@@ -395,7 +395,7 @@ func ShowStatusApplied(p_result: CombatResult) -> void:
 # Display-only: combat mutation (clamping, death handling) happens in the resolver.
 func UpdateLifeBar(p_characterID: int) -> void:
 	_character_representations[p_characterID]._lifebar.value = _characters[p_characterID]._current_health
-	var max_health: int = (_characters[p_characterID].GetBattleAttribute(Types.Attribute.Health) *
+	var max_health: int = (_characters[p_characterID].GetTotalAttribute(Types.Attribute.Health) *
 			Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
 	_character_representations[p_characterID]._lifebar_text.text = (
 			str(_characters[p_characterID]._current_health) + "/" + str(max_health))
@@ -412,7 +412,7 @@ func VisualizeCharacter(p_characterID: int) -> void:
 		character_canvas_texture.normal_texture = load(_characters[p_characterID]._normal_map)
 	_character_representations[p_characterID]._character_texture.texture = character_canvas_texture
 	_character_representations[p_characterID]._lifebar.max_value = (
-			_characters[p_characterID].GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
+			_characters[p_characterID].GetTotalAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
 	UpdateLifeBar(p_characterID)
 	_character_representations[p_characterID].show()
 
@@ -445,7 +445,7 @@ func EndBattle(p_winner: BattleResolver.Winner) -> void:
 
 			if(p_winner == BattleResolver.Winner.Player_Won):
 				LevelSystem.AddExperience(_characters[i], _battlecontext._loot_table._drop_result._experience)
-			_characters[i]._current_health = (_characters[i].GetBattleAttribute(Types.Attribute.Health) *
+			_characters[i]._current_health = (_characters[i].GetTotalAttribute(Types.Attribute.Health) *
 				Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
 
 	_self_context._scene = "uid://d3ooarqabyw0p"

@@ -32,7 +32,7 @@ func test_heal_never_exceeds_max_health() -> void:
 
 	resolver.ResolveReagent(0, "Restorative_Draught_Legendary", 0)
 
-	var max_health: int = target.GetBattleAttribute(Types.Attribute.Health) * GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER
+	var max_health: int = target.GetTotalAttribute(Types.Attribute.Health) * GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER
 	assert_eq(target._current_health, max_health)
 
 func test_clear_zone_removes_a_placed_zone() -> void:
@@ -156,7 +156,7 @@ func test_potency_scales_a_scalar_effect_but_not_a_binary_one() -> void:
 func test_potency_raises_fractured_idols_cost_and_damage_bonus() -> void:
 	var baseline_resolver: BattleResolver = _make_resolver()
 	var baseline_consumer: Character = baseline_resolver.GetCharacters()[0]
-	baseline_consumer._current_health = baseline_consumer.GetBattleAttribute(
+	baseline_consumer._current_health = baseline_consumer.GetTotalAttribute(
 			Types.Attribute.Health) * GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER
 	var baseline_start_health: int = baseline_consumer._current_health
 	baseline_resolver.ResolveReagent(0, "Fractured_Idol_Rare", 0)
@@ -168,7 +168,7 @@ func test_potency_raises_fractured_idols_cost_and_damage_bonus() -> void:
 	# A large contribution so the damage-bonus gap survives ceil() rounding
 	# regardless of the test roster's small base damage numbers.
 	boosted_consumer._trait = TestFactory.FakeAmplifyingTrait.new(10.0)
-	boosted_consumer._current_health = boosted_consumer.GetBattleAttribute(
+	boosted_consumer._current_health = boosted_consumer.GetTotalAttribute(
 			Types.Attribute.Health) * GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER
 	var boosted_start_health: int = boosted_consumer._current_health
 	boosted_resolver.ResolveReagent(0, "Fractured_Idol_Rare", 0)

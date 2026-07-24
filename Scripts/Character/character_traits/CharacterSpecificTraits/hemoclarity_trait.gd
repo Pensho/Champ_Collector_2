@@ -32,7 +32,7 @@ func OnSkillCast(
 	var result: TraitSkillResult = TraitSkillResult.new()
 	var owner: Character = p_resolver.GetCharacters()[p_owner_ID]
 
-	var max_health: int = owner.GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
+	var max_health: int = owner.GetTotalAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
 	if max_health <= 0:
 		return result
 	var health_fraction: float = float(owner._current_health) / float(max_health)

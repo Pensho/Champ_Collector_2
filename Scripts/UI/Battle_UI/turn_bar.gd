@@ -20,7 +20,7 @@ var _zone_effects: Array[Node2D]
 func Init(p_characters: Dictionary[int, Character], p_zone_callable: Callable, p_player_team: CombatTeam):
 	var speeds: Dictionary[int, int] = {}
 	for i in p_characters.keys():
-		speeds[i] = p_characters[i].GetBattleAttribute(Types.Attribute.Speed)
+		speeds[i] = p_characters[i].GetTotalAttribute(Types.Attribute.Speed)
 	_characters_normalized_speed = NormalizeSpeeds(speeds)
 	for i in p_characters.keys():
 		_character_turn_markers[i].size.y = self.size.y * 0.7

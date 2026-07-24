@@ -48,7 +48,7 @@ func PopulateCharacterRows(p_battle: Battle) -> void:
 
 	for character_id in p_battle._characters.keys():
 		var character: Character = p_battle._characters[character_id]
-		var max_health: int = character.GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
+		var max_health: int = character.GetTotalAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
 
 		var row: HBoxContainer = HBoxContainer.new()
 		row.add_theme_constant_override("separation", 25)
@@ -124,7 +124,7 @@ func _on_revive_pressed(p_character_id: int) -> void:
 	if(null == battle or not battle._characters.has(p_character_id)):
 		return
 	var character: Character = battle._characters[p_character_id]
-	var max_health: int = character.GetBattleAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
+	var max_health: int = character.GetTotalAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
 	battle._resolver.SetCurrentHealth(p_character_id, max_health)
 	battle._character_representations[p_character_id]._character_texture.material = null
 	battle._battle_ui._turn_bar._character_turn_markers[p_character_id].material = null

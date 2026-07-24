@@ -28,8 +28,8 @@ func test_GetEquipmentBonus():
 
 func test_get_battle_attribute_equals_base_when_no_equipment() -> void:
 	_character._attributes[Types.Attribute.Attack] = 25
-	assert_eq(_character.GetBattleAttribute(Types.Attribute.Attack), 25,
-		"GetBattleAttribute should equal base attribute when no items are equipped")
+	assert_eq(_character.GetTotalAttribute(Types.Attribute.Attack), 25,
+		"GetTotalAttribute should equal base attribute when no items are equipped")
 
 # --- UnequipItem ---
 
@@ -71,7 +71,7 @@ func test_equip_item_does_not_overwrite_occupied_slot() -> void:
 	weapon1.free()
 	weapon2.free()
 
-# --- GetEquipmentBonus and GetBattleAttribute with item ---
+# --- GetEquipmentBonus and GetTotalAttribute with item ---
 
 func test_get_equipment_bonus_with_item_equipped() -> void:
 	var weapon: Equipment = Equipment.new()
@@ -90,6 +90,6 @@ func test_get_battle_attribute_includes_equipment_bonus() -> void:
 	weapon._attributes[Types.Attribute.Attack] = 5
 	_item_col._items[0] = weapon
 	_character.EquipItem(0)
-	assert_eq(_character.GetBattleAttribute(Types.Attribute.Attack), 15,
-		"GetBattleAttribute should sum base attribute and equipment bonus")
+	assert_eq(_character.GetTotalAttribute(Types.Attribute.Attack), 15,
+		"GetTotalAttribute should sum base attribute and equipment bonus")
 	weapon.free()

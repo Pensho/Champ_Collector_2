@@ -91,7 +91,7 @@ func AvailableZoneIDs() -> Array[int]:
 
 
 func GetCombatAttributes(p_character_ID: int) -> Dictionary[Types.Attribute, int]:
-	var attributes: Dictionary[Types.Attribute, int] = _characters[p_character_ID].GetBattleAttributes()
+	var attributes: Dictionary[Types.Attribute, int] = _characters[p_character_ID].GetTotalAttributes()
 	var bonus: Dictionary = _battle_long_attribute_bonus.get(p_character_ID, {})
 	for attribute: Types.Attribute in bonus.keys():
 		attributes[attribute] += bonus[attribute]
@@ -211,7 +211,7 @@ func PlaceZone(p_zone_ID: int, p_owner_ID: int, p_skill: Skill) -> Array[CombatR
 		return _EndBatch()
 	var zone: Zone = Zone.new()
 	zone.CreateNew(p_skill.skill_type, p_skill.duration, p_owner_ID, p_skill.target,
-			_characters[p_owner_ID].GetBattleAttribute(Types.Attribute.Knowledge),
+			_characters[p_owner_ID].GetTotalAttribute(Types.Attribute.Knowledge),
 			p_skill.debuffs.get(p_skill.target, Types.Debuff_Type.Invalid))
 	_zones[p_zone_ID] = zone
 	var result: CombatResult = CombatResult.new(CombatResult.Kind.Zone_Placed)
@@ -740,7 +740,7 @@ func _OpportunistDamageMultiplier(p_caster_ID: int, p_target: Character) -> floa
 
 
 func _MaxHealth(p_character: Character) -> int:
-	var health: int = p_character.GetBattleAttribute(Types.Attribute.Health)
+	var health: int = p_character.GetTotalAttribute(Types.Attribute.Health)
 	for buff in p_character._active_buffs:
 		var data: StatusEffectData = StatusEffectRegistry.BuffData(buff.type)
 		if(null != data and StatusEffectData.MagnitudeKind.MaxHealthAttributePercent == data.magnitude_kind):
