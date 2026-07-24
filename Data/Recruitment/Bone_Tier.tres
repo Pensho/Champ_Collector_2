@@ -17,7 +17,7 @@
 [ext_resource type="Resource" uid="uid://dp21n8t5rkmsf" path="res://Data/Character_Player_Variants/Diviner.tres" id="16_diviner"]
 [ext_resource type="Resource" path="res://Data/Character_Player_Variants/Appraiser.tres" id="17_appraiser"]
 [ext_resource type="Resource" uid="uid://rmnyol4orytc" path="res://Data/Character_Player_Variants/Emissary.tres" id="18_emissary"]
-[ext_resource type="Resource" path="res://Data/Character_Player_Variants/Cultist.tres" id="19_cultist"]
+[ext_resource type="Resource" uid="uid://cibtcfqy82br4" path="res://Data/Character_Player_Variants/Cultist.tres" id="19_cultist"]
 [ext_resource type="Resource" path="res://Data/Character_Player_Variants/Plague_Doctor.tres" id="20_plague_doctor"]
 [ext_resource type="Resource" path="res://Data/Character_Player_Variants/Warlord.tres" id="21_warlord"]
 
