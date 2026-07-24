@@ -96,8 +96,8 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 focus_neighbor_top = NodePath("../Button_StartGame")
-focus_neighbor_bottom = NodePath("../Button_QuitGame")
-focus_next = NodePath("../Button_QuitGame")
+focus_neighbor_bottom = NodePath("../Button_Settings")
+focus_next = NodePath("../Button_Settings")
 focus_previous = NodePath("../Button_StartGame")
 theme = ExtResource("1_hnwi1")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
@@ -105,14 +105,27 @@ theme_override_constants/outline_size = 5
 theme_override_font_sizes/font_size = 45
 text = "Save & Load"
 
-[node name="Button_QuitGame" type="Button" parent="MarginContainer/VBoxContainer/ButtonsVBox" unique_id=177789147]
+[node name="Button_Settings" type="Button" parent="MarginContainer/VBoxContainer/ButtonsVBox" unique_id=160607125]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 focus_neighbor_top = NodePath("../Button_Save_Load")
+focus_neighbor_bottom = NodePath("../Button_QuitGame")
+focus_next = NodePath("../Button_QuitGame")
+focus_previous = NodePath("../Button_Save_Load")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 45
+text = "Settings"
+
+[node name="Button_QuitGame" type="Button" parent="MarginContainer/VBoxContainer/ButtonsVBox" unique_id=177789147]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+focus_neighbor_top = NodePath("../Button_Settings")
 focus_neighbor_bottom = NodePath("../Button_StartGame")
 focus_next = NodePath("../Button_StartGame")
-focus_previous = NodePath("../Button_Save_Load")
+focus_previous = NodePath("../Button_Settings")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
 theme_override_font_sizes/font_size = 45
@@ -120,4 +133,5 @@ text = "Exit"
 
 [connection signal="button_up" from="MarginContainer/VBoxContainer/ButtonsVBox/Button_StartGame" to="." method="_on_start_game_button_pressed"]
 [connection signal="button_up" from="MarginContainer/VBoxContainer/ButtonsVBox/Button_Save_Load" to="." method="_on_save_load_button_up"]
+[connection signal="button_up" from="MarginContainer/VBoxContainer/ButtonsVBox/Button_Settings" to="." method="_on_settings_button_up"]
 [connection signal="button_up" from="MarginContainer/VBoxContainer/ButtonsVBox/Button_QuitGame" to="." method="_on_quit_button_pressed"]

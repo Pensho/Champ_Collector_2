@@ -1,0 +1,221 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/UI/settings_menu.gd" id="1_script"]
+[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="1_theme"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_close"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_groove"]
+bg_color = Color(0.39675, 0.493838, 0.33239, 0.521569)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fill"]
+bg_color = Color(0.294118, 0.701961, 0.27451, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[node name="SettingsMenu" type="Control" unique_id=1938529509 node_paths=PackedStringArray("_background", "_master_volume_slider", "_music_volume_slider", "_sound_effects_volume_slider", "_screen_shake_check_box", "_fullscreen_check_box", "_language_option_button")]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_script")
+_background = NodePath("ColorRect")
+_master_volume_slider = NodePath("ColorRect/MarginContainer/VBoxContainer/Row_Master_Volume/HSlider_Master_Volume")
+_music_volume_slider = NodePath("ColorRect/MarginContainer/VBoxContainer/Row_Music_Volume/HSlider_Music_Volume")
+_sound_effects_volume_slider = NodePath("ColorRect/MarginContainer/VBoxContainer/Row_Sound_Effects_Volume/HSlider_Sound_Effects_Volume")
+_screen_shake_check_box = NodePath("ColorRect/MarginContainer/VBoxContainer/CheckBox_Screen_Shake")
+_fullscreen_check_box = NodePath("ColorRect/MarginContainer/VBoxContainer/CheckBox_Fullscreen")
+_language_option_button = NodePath("ColorRect/MarginContainer/VBoxContainer/Row_Language/OptionButton_Language")
+
+[node name="ColorRect2" type="ColorRect" parent="." unique_id=244225680]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -2000.0
+offset_top = -1000.0
+offset_right = 2000.0
+offset_bottom = 1000.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.33333334)
+
+[node name="Button_Close" type="Button" parent="." unique_id=897971482]
+custom_minimum_size = Vector2(4000, 2000)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_close")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_close")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_close")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_close")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=827424721]
+custom_minimum_size = Vector2(640, 560)
+layout_mode = 0
+offset_right = 640.0
+offset_bottom = 560.0
+color = Color(0, 0, 0, 0.9607843)
+
+[node name="MarginContainer" type="MarginContainer" parent="ColorRect" unique_id=577386576]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ColorRect/MarginContainer" unique_id=468567755]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Label_Title" type="Label" parent="ColorRect/MarginContainer/VBoxContainer" unique_id=410860043]
+layout_mode = 2
+theme = ExtResource("1_theme")
+theme_override_font_sizes/font_size = 24
+text = "Settings"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="ColorRect/MarginContainer/VBoxContainer" unique_id=100000020]
+layout_mode = 2
+
+[node name="Row_Master_Volume" type="HBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer" unique_id=100000021]
+layout_mode = 2
+
+[node name="Label_Master_Volume" type="Label" parent="ColorRect/MarginContainer/VBoxContainer/Row_Master_Volume" unique_id=100000022]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+theme = ExtResource("1_theme")
+theme_override_font_sizes/font_size = 18
+text = "Master Volume"
+
+[node name="HSlider_Master_Volume" type="HSlider" parent="ColorRect/MarginContainer/VBoxContainer/Row_Master_Volume" unique_id=100000023]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/slider = SubResource("StyleBoxFlat_groove")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_fill")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_fill")
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="Row_Music_Volume" type="HBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer" unique_id=100000024]
+layout_mode = 2
+
+[node name="Label_Music_Volume" type="Label" parent="ColorRect/MarginContainer/VBoxContainer/Row_Music_Volume" unique_id=100000025]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+theme = ExtResource("1_theme")
+theme_override_font_sizes/font_size = 18
+text = "Music Volume"
+
+[node name="HSlider_Music_Volume" type="HSlider" parent="ColorRect/MarginContainer/VBoxContainer/Row_Music_Volume" unique_id=100000026]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/slider = SubResource("StyleBoxFlat_groove")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_fill")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_fill")
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="Row_Sound_Effects_Volume" type="HBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer" unique_id=100000027]
+layout_mode = 2
+
+[node name="Label_Sound_Effects_Volume" type="Label" parent="ColorRect/MarginContainer/VBoxContainer/Row_Sound_Effects_Volume" unique_id=100000028]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+theme = ExtResource("1_theme")
+theme_override_font_sizes/font_size = 18
+text = "Sound Effects Volume"
+
+[node name="HSlider_Sound_Effects_Volume" type="HSlider" parent="ColorRect/MarginContainer/VBoxContainer/Row_Sound_Effects_Volume" unique_id=100000029]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/slider = SubResource("StyleBoxFlat_groove")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_fill")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_fill")
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="CheckBox_Screen_Shake" type="CheckBox" parent="ColorRect/MarginContainer/VBoxContainer" unique_id=100000030]
+layout_mode = 2
+theme = ExtResource("1_theme")
+theme_override_font_sizes/font_size = 18
+text = "Screen Shake"
+button_pressed = true
+
+[node name="CheckBox_Fullscreen" type="CheckBox" parent="ColorRect/MarginContainer/VBoxContainer" unique_id=100000031]
+layout_mode = 2
+theme = ExtResource("1_theme")
+theme_override_font_sizes/font_size = 18
+text = "Fullscreen"
+
+[node name="Row_Language" type="HBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer" unique_id=100000032]
+layout_mode = 2
+
+[node name="Label_Language" type="Label" parent="ColorRect/MarginContainer/VBoxContainer/Row_Language" unique_id=100000033]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+theme = ExtResource("1_theme")
+theme_override_font_sizes/font_size = 18
+text = "Language"
+
+[node name="OptionButton_Language" type="OptionButton" parent="ColorRect/MarginContainer/VBoxContainer/Row_Language" unique_id=100000034]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_theme")
+item_count = 1
+selected = 0
+popup/item_0/text = "English"
+popup/item_0/id = 0
+
+[node name="HSeparator2" type="HSeparator" parent="ColorRect/MarginContainer/VBoxContainer" unique_id=100000035]
+layout_mode = 2
+
+[node name="Row_Bottom_Buttons" type="HBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer" unique_id=100000036]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 20
+
+[node name="Button_Reset" type="Button" parent="ColorRect/MarginContainer/VBoxContainer/Row_Bottom_Buttons" unique_id=100000037]
+layout_mode = 2
+theme = ExtResource("1_theme")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+text = "Reset to Defaults"
+
+[node name="Button_Back" type="Button" parent="ColorRect/MarginContainer/VBoxContainer/Row_Bottom_Buttons" unique_id=100000038]
+layout_mode = 2
+theme = ExtResource("1_theme")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+text = "Back"
+
+[connection signal="button_up" from="Button_Close" to="." method="_on_back_pressed"]
+[connection signal="value_changed" from="ColorRect/MarginContainer/VBoxContainer/Row_Master_Volume/HSlider_Master_Volume" to="." method="_on_master_volume_changed"]
+[connection signal="value_changed" from="ColorRect/MarginContainer/VBoxContainer/Row_Music_Volume/HSlider_Music_Volume" to="." method="_on_music_volume_changed"]
+[connection signal="value_changed" from="ColorRect/MarginContainer/VBoxContainer/Row_Sound_Effects_Volume/HSlider_Sound_Effects_Volume" to="." method="_on_sound_effects_volume_changed"]
+[connection signal="toggled" from="ColorRect/MarginContainer/VBoxContainer/CheckBox_Screen_Shake" to="." method="_on_screen_shake_toggled"]
+[connection signal="toggled" from="ColorRect/MarginContainer/VBoxContainer/CheckBox_Fullscreen" to="." method="_on_fullscreen_toggled"]
+[connection signal="item_selected" from="ColorRect/MarginContainer/VBoxContainer/Row_Language/OptionButton_Language" to="." method="_on_language_selected"]
+[connection signal="button_up" from="ColorRect/MarginContainer/VBoxContainer/Row_Bottom_Buttons/Button_Reset" to="." method="_on_reset_pressed"]
+[connection signal="button_up" from="ColorRect/MarginContainer/VBoxContainer/Row_Bottom_Buttons/Button_Back" to="." method="_on_back_pressed"]

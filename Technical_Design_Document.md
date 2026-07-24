@@ -127,6 +127,24 @@ It is referenced both as the autoload `Game_Balance.X` and, in a few files, by t
 `Combat_Event`. Every system references attributes and targeting through `Types.Attribute.*`,
 `Types.Skill_Target.*`, and so on, which keeps enum values consistent across data files and code.
 
+### 3.4. `Game_Settings` (`class_name Settings`)
+
+`Scripts/settings.gd` owns user preferences (audio volumes, screen shake, fullscreen, locale),
+persisted to `user://settings.cfg` via `ConfigFile`. This is deliberately separate from
+`SaveManager`'s per-profile `user://profile_<slot>.save` files: settings apply regardless of
+which save slot is active. On `_ready()` it loads the config and applies every value to the
+engine (`AudioServer` bus volumes for the `Master`/`Music`/`Sound Effects` buses, window mode via
+`DisplayServer`, locale via `TranslationServer`). Each setter applies its side effect immediately
+and re-saves, so the settings menu (`Scenes/ui/Settings_Menu.tscn`,
+`Scripts/UI/settings_menu.gd`) is a thin view over this autoload. The menu itself is an overlay
+`Control` instantiated by `MainMenu` and toggled with `show()`/`hide()`, following the same
+pattern as `HollowLedgerWindow`.
+
+The autoload key (`Game_Settings`) intentionally differs from the class name (`Settings`) —
+matching `Game_Balance`/`GameBalance` — because an autoload's registered name shadows a
+same-named `class_name` in the global scope, which would otherwise make `Settings.new()`
+resolve to the singleton instance instead of the class.
+
 ---
 
 ## 4. Scene and node architecture
