@@ -14,3 +14,8 @@ func IsCharacterInZone(_p_character_ID: int, _p_zone_ID: int) -> bool:
 ## ahead of the owner are excluded.
 func GetCharactersBehindBy(_p_owner_ID: int, _p_bar_percent: float) -> Array[int]:
 	return []
+
+
+## Characters within `p_bar_percent` of the bar from p_owner_ID, in front or behind.
+func GetCharactersWithinProximity(_p_owner_ID: int, _p_bar_percent: float) -> Array[int]:
+	return []

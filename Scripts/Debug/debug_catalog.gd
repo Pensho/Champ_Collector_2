@@ -26,6 +26,7 @@ const PLAYER_CHARACTER_PRESETS: Dictionary[String, CharacterPreset] = {
 	"Emissary": preload("res://Data/Character_Player_Variants/Emissary.tres"),
 	"Cultist": preload("res://Data/Character_Player_Variants/Cultist.tres"),
 	"Plague Doctor": preload("res://Data/Character_Player_Variants/Plague_Doctor.tres"),
+	"Warlord": preload("res://Data/Character_Player_Variants/Warlord.tres"),
 }
 
 const ENEMY_CHARACTER_PRESETS: Dictionary[String, CharacterPreset] = {

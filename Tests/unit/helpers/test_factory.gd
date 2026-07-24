@@ -7,6 +7,8 @@ class FakeTurnPositions extends TurnPositions:
 	var characters_in_zones: bool = false
 	var behind_IDs: Array[int] = []
 	var last_behind_query: Array = []
+	var proximity_IDs: Array[int] = []
+	var last_proximity_query: Array = []
 
 	func IsCharacterInZone(_p_character_ID: int, _p_zone_ID: int) -> bool:
 		return characters_in_zones
@@ -14,6 +16,10 @@ class FakeTurnPositions extends TurnPositions:
 	func GetCharactersBehindBy(p_owner_ID: int, p_bar_percent: float) -> Array[int]:
 		last_behind_query = [p_owner_ID, p_bar_percent]
 		return behind_IDs
+
+	func GetCharactersWithinProximity(p_owner_ID: int, p_bar_percent: float) -> Array[int]:
+		last_proximity_query = [p_owner_ID, p_bar_percent]
+		return proximity_IDs
 
 ## Headless stand-in for a reagent-amplifying trait (e.g. the Sorcerer's Arcane
 ## Instability): always contributes a fixed additive potency amount, for testing

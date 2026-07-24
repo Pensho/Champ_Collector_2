@@ -209,7 +209,7 @@ Current roles, their identity and purpose exist as follows:
     - Purpose: Debuffer
     - Passive: Comorbidity - Damage-over-time debuffs applied by the Plague Doctor tick for +x% damage per debuff on the target (the ticking debuff included, debuffs from any source counted, up to 5).
         - Per-debuff tick bonus: 5% Uncommon, 7% Rare, 9% Epic, 11% Legendary
-- Warlord (Not yet implemented)
+- Warlord
     - A buffing tank character, applying various buffs to self and allies while being able to take a lot of damage. Primary attributes: Health, Defense.
     - Purpose: Sustain
     - Passive: Shield Wall - When an ally within 15% of the Warlord on the turn bar (in front or behind) takes attack damage, a portion of that damage is redirected to the Warlord instead. Proximity is checked at the moment the damage lands. Redirected damage is mitigated by the Warlord's Defense, not the ally's. AoE attacks are soaked separately for each affected ally within the window.

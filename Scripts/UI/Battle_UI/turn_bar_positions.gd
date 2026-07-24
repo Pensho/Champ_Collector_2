@@ -15,3 +15,7 @@ func IsCharacterInZone(p_character_ID: int, p_zone_ID: int) -> bool:
 
 func GetCharactersBehindBy(p_owner_ID: int, p_bar_percent: float) -> Array[int]:
 	return _turn_bar.GetCharactersBehindBy(p_owner_ID, p_bar_percent)
+
+
+func GetCharactersWithinProximity(p_owner_ID: int, p_bar_percent: float) -> Array[int]:
+	return _turn_bar.GetCharactersWithinProximity(p_owner_ID, p_bar_percent)

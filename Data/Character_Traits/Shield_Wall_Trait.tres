@@ -1,0 +1,6 @@
+[gd_resource type="Resource" script_class="ShieldWallTrait" format=3]
+
+[ext_resource type="Script" path="res://Scripts/Character/character_traits/CharacterSpecificTraits/shield_wall_trait.gd" id="1_sw"]
+
+[resource]
+script = ExtResource("1_sw")

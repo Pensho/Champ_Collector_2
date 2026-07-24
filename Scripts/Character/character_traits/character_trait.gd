@@ -61,3 +61,9 @@ func OnCriticalHit(_p_owner_ID: int, _p_target_ID: int, _p_resolver: BattleResol
 
 func OnAllyDeath(_p_owner_ID: int, _p_dead_ally_ID: int, _p_resolver: BattleResolver) -> void:
 	print("character_trait base class OnAllyDeath() called!")
+
+## Returns the fraction of an ally's incoming attack damage this owner redirects to
+## itself (0.0 = no redirect).
+func OnAllyDamageTaken(
+		_p_owner_ID: int, _p_damaged_ally_ID: int, _p_resolver: BattleResolver) -> float:
+	return 0.0

@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="CharacterPreset" format=3]
+
+[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_weight"]
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_preset"]
+[ext_resource type="Resource" uid="uid://dpduy25aqyibo" path="res://Data/Character_Skill_Variants/Bash.tres" id="3_bash"]
+[ext_resource type="Resource" uid="uid://cbgjuq0ikkygr" path="res://Data/Character_Skill_Variants/Support_Skills/Stalwart_Hymn.tres" id="4_stalwart_hymn"]
+[ext_resource type="Resource" uid="uid://dsehiu3g0rbyd" path="res://Data/Character_Skill_Variants/Attack_Skills/Crush.tres" id="5_crush"]
+[ext_resource type="Resource" uid="uid://jgqxh6bwrie0" path="res://Data/Attribute_Weights/Sturdy.tres" id="6_sturdy"]
+[ext_resource type="Resource" uid="uid://c60oh3whnodsm" path="res://Data/Attribute_Weights/Resilient.tres" id="7_resilient"]
+[ext_resource type="Resource" uid="uid://bdxe6eob3xgsh" path="res://Data/Attribute_Weights/Fierce.tres" id="8_fierce"]
+[ext_resource type="Resource" path="res://Data/Character_Traits/Shield_Wall_Trait.tres" id="9_trait"]
+
+[resource]
+script = ExtResource("2_preset")
+_name = "Warlord"
+_texture = "res://Assets/Champ_Collector/Creatures/Knight/Knight_0002.png"
+_rarity = 2
+_role = 21
+_skills = Array[ExtResource("1_skill")]([ExtResource("3_bash"), ExtResource("4_stalwart_hymn"), ExtResource("5_crush")])
+_health = 85
+_speed = 45
+_attack = 40
+_defence = 70
+_accuracy = 40
+_resistance = 45
+_mysticism = 5
+_knowledge = 15
+_attribute_weight_types_available = Array[ExtResource("1_weight")]([ExtResource("6_sturdy"), ExtResource("7_resilient"), ExtResource("8_fierce")])
+_trait = ExtResource("9_trait")
+_preset_UID = "uid://xfe1wgmaw5of1"
+metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

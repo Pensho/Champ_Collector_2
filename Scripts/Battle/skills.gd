@@ -140,3 +140,43 @@ static func HasMaxStatusEffects(p_character: Character) -> bool:
 
 static func DamageDealt(p_damage: float, p_bonus_percent: float) -> float:
 	return p_damage * (1.0 + p_bonus_percent)
+
+## Mitigated damage from a single attack roll against `p_effective_defence`; shared by
+## the direct hit and any Shield-Wall-style redirected share, which re-mitigates the
+## same roll against the soaker's own Defence.
+static func MitigatedDamage(
+		p_effective_defence: float,
+		p_caster_scaled_attribute_aggregate: float,
+		p_crit_multiplier: float,
+		p_random_value: float,
+		p_damage_multiplier: float,
+		p_damage_dealt_bonus: float,
+		p_opportunist_multiplier: float) -> int:
+	var damage_ratio: float = (
+			p_caster_scaled_attribute_aggregate
+			/ (p_effective_defence + p_caster_scaled_attribute_aggregate + 1.0))
+	var mitigation_factor: float = (
+			GameBalance.MINIMUM_DMG_PERCENT + ((1.0 - GameBalance.MINIMUM_DMG_PERCENT) * damage_ratio))
+	return int(ceil(DamageDealt(mitigation_factor
+			* (p_caster_scaled_attribute_aggregate * p_damage_multiplier)
+			* p_crit_multiplier * p_random_value, p_damage_dealt_bonus)
+			* p_opportunist_multiplier))
+
+## The first living ally of `p_target_ID` whose trait redirects a share of incoming
+## attack damage (e.g. Shield Wall); [-1, 0.0] when nobody redirects or the attacker
+## is not an enemy of the target.
+static func FindDamageRedirect(
+		p_resolver: BattleResolver, p_caster_ID: int, p_target_ID: int) -> Array:
+	if(not p_resolver.GetSides().AreEnemies(p_caster_ID, p_target_ID)):
+		return [-1, 0.0]
+	var characters: Dictionary[int, Character] = p_resolver.GetCharacters()
+	for ally_ID in p_resolver.GetSides().AlliesOf(p_target_ID).AliveMembers(characters):
+		if(ally_ID == p_target_ID):
+			continue
+		var ally: Character = characters[ally_ID]
+		if(null == ally._trait or not ally._trait._execution_steps.has(Types.Combat_Event.Ally_Damage_Taken)):
+			continue
+		var fraction: float = ally._trait.OnAllyDamageTaken(ally_ID, p_target_ID, p_resolver)
+		if(fraction > 0.0):
+			return [ally_ID, fraction]
+	return [-1, 0.0]

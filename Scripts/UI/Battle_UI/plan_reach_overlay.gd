@@ -9,22 +9,31 @@ var _owner_icon: TextureRect
 var _reach_px: float
 var _owner: Character
 var _bar_height: float
+var _bar_width: float
+var _ahead: bool
 var _atlas_texture: AtlasTexture
 
 var _texture_width: float
 var _texture_height: float
 
+## p_ahead mirrors the overlay to cover the span in front of the owner instead of
+## behind it (e.g. Shield Wall's both-directions proximity, alongside a second,
+## unmirrored instance covering behind).
 func Setup(
 		p_owner_icon: TextureRect,
 		p_reach_px: float,
 		p_tint: Color,
 		p_owner: Character,
-		p_bar_height: float) -> void:
+		p_bar_height: float,
+		p_bar_width: float,
+		p_ahead: bool = false) -> void:
 	_owner_icon = p_owner_icon
 	_reach_px = p_reach_px
 	_owner = p_owner
 	_bar_height = p_bar_height
-	
+	_bar_width = p_bar_width
+	_ahead = p_ahead
+
 	_texture_width = PLAN_TRAIT_TURNBAR_TEXTURE.get_width()
 	_texture_height = PLAN_TRAIT_TURNBAR_TEXTURE.get_height()
 
@@ -33,6 +42,7 @@ func Setup(
 	self.texture = _atlas_texture
 	self.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	self.stretch_mode = TextureRect.STRETCH_KEEP
+	self.flip_h = _ahead
 	self.z_index = 5
 
 	var shader_material := ShaderMaterial.new()
@@ -45,9 +55,16 @@ func _process(_delta: float) -> void:
 	if (_owner._current_health <= 0):
 		hide()
 		return
-	
-	var right: float = _owner_icon.position.x + (_owner_icon.size.x / 2.0)
-	var left: float = max(0.0, right - _reach_px)
+
+	var owner_center: float = _owner_icon.position.x + (_owner_icon.size.x / 2.0)
+	var left: float
+	var right: float
+	if (_ahead):
+		left = owner_center
+		right = min(_bar_width, left + _reach_px)
+	else:
+		right = owner_center
+		left = max(0.0, right - _reach_px)
 	var width: float = right - left
 	if (width <= 0.0):
 		hide()

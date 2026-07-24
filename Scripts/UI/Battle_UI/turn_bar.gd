@@ -92,17 +92,28 @@ func SetupPlanReachOverlays(p_characters: Dictionary[int, Character], p_player_t
 		if (has_player_owner and has_enemy_owner):
 			tint = Color(0.6, 1.0, 0.6) if p_player_team.Has(id) else Color(1.0, 0.6, 0.6)
 		var threshold: float = _GetReachThreshold(p_characters[id])
-		var overlay := PlanReachOverlay.new()
-		self.add_child(overlay)
-		overlay.Setup(_character_turn_markers[id], threshold * self.size.x, tint, p_characters[id], self.size.y)
+		_AddPlanReachOverlay(id, threshold, tint, p_characters[id], false)
+		if (p_characters[id]._trait is ShieldWallTrait):
+			_AddPlanReachOverlay(id, threshold, tint, p_characters[id], true)
 
-# Reach-threshold traits (Plan, Foresight) each expose a static GetReachThreshold by
-# rarity; this dispatches to whichever one the character carries, 0.0 for neither.
+func _AddPlanReachOverlay(
+		p_owner_ID: int, p_threshold: float, p_tint: Color, p_owner: Character, p_ahead: bool) -> void:
+	var overlay := PlanReachOverlay.new()
+	self.add_child(overlay)
+	overlay.Setup(_character_turn_markers[p_owner_ID], p_threshold * self.size.x, p_tint, p_owner,
+			self.size.y, self.size.x, p_ahead)
+
+# Reach-threshold traits (Plan, Foresight, Shield Wall) each expose a static
+# GetReachThreshold by rarity; this dispatches to whichever one the character
+# carries, 0.0 for neither. Shield Wall's window covers both directions, so it gets
+# a second, mirrored overlay covering ahead (see SetupPlanReachOverlays above).
 func _GetReachThreshold(p_character: Character) -> float:
 	if (p_character._trait is PlanTrait):
 		return PlanTrait.GetReachThreshold(p_character._rarity)
 	if (p_character._trait is ForesightTrait):
 		return ForesightTrait.GetReachThreshold(p_character._rarity)
+	if (p_character._trait is ShieldWallTrait):
+		return ShieldWallTrait.GetReachThreshold(p_character._rarity)
 	return 0.0
 
 func SpawnZoneEffect(p_zone_ID: int, p_duration: int, p_allySide: bool, p_zone_type: Types.Skill_Type):
@@ -225,6 +236,26 @@ func GetCharactersBehindBy(p_owner_ID: int, p_bar_percent: float) -> Array[int]:
 			continue
 		var distance_behind: float = owner_position - _character_turn_markers[id].position.x
 		if (distance_behind <= 0.0 or distance_behind > (p_bar_percent * self.size.x)):
+			continue
+		character_ids.append(id)
+
+	return character_ids
+
+## p_owner_ID is the character the distance is measured from.
+## p_bar_percent is the maximum span from the owner another character may be to be
+## included, in front or behind, as a fraction of the bar (0.0 - 1.0).
+func GetCharactersWithinProximity(p_owner_ID: int, p_bar_percent: float) -> Array[int]:
+	var character_ids: Array[int]
+	if (0.0 > p_bar_percent or p_bar_percent > 1.0):
+		print("GetCharactersWithinProximity, span supplied is not within range: ", p_bar_percent)
+		return character_ids
+
+	var owner_position: float = _character_turn_markers[p_owner_ID].position.x
+	for id in _character_turn_markers.size():
+		if (p_owner_ID == id):
+			continue
+		var distance: float = abs(owner_position - _character_turn_markers[id].position.x)
+		if (distance > (p_bar_percent * self.size.x)):
 			continue
 		character_ids.append(id)
 

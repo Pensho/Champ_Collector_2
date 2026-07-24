@@ -1154,15 +1154,30 @@ func _ResolveDamage(
 				) * 0.01
 
 	var effective_defence: float = p_target_attributes[Types.Attribute.Defence] * p_skill.defense_ignore_factor
-	var damage_ratio: float = (
-			caster_scaled_attribute_aggregate / (effective_defence + caster_scaled_attribute_aggregate + 1.0))
-	var mitigation_factor: float = (
-			GameBalance.MINIMUM_DMG_PERCENT + ((1.0 - GameBalance.MINIMUM_DMG_PERCENT) * damage_ratio))
-	var damage_dealt: int = int(ceil(Skills.DamageDealt(mitigation_factor
-			* (caster_scaled_attribute_aggregate * _damage_multiplier.get(p_caster_ID, 1.0))
-			* crit_multiplier * random_value, _damage_dealt_bonus.get(p_caster_ID, 0.0))
-			* _OpportunistDamageMultiplier(p_caster_ID, target)))
+	var damage_dealt: int = Skills.MitigatedDamage(effective_defence,
+			caster_scaled_attribute_aggregate, crit_multiplier, random_value,
+			_damage_multiplier.get(p_caster_ID, 1.0), _damage_dealt_bonus.get(p_caster_ID, 0.0),
+			_OpportunistDamageMultiplier(p_caster_ID, target))
+
+	var redirect: Array = Skills.FindDamageRedirect(self, p_caster_ID, p_target_ID)
+	var soaker_ID: int = redirect[0]
+	var soaker_damage: int = 0
+	if(soaker_ID != -1):
+		var redirect_fraction: float = float(redirect[1])
+		var soaker: Character = _characters[soaker_ID]
+		var soaker_defence: float = (
+				GetCombatAttributes(soaker_ID)[Types.Attribute.Defence] * p_skill.defense_ignore_factor)
+		soaker_damage = Skills.MitigatedDamage(soaker_defence,
+				caster_scaled_attribute_aggregate * redirect_fraction, crit_multiplier, random_value,
+				_damage_multiplier.get(p_caster_ID, 1.0), _damage_dealt_bonus.get(p_caster_ID, 0.0),
+				_OpportunistDamageMultiplier(p_caster_ID, soaker))
+		damage_dealt = int(round(damage_dealt * (1.0 - redirect_fraction)))
+
 	_damage_multiplier.erase(p_caster_ID)
+
+	if(soaker_damage > 0):
+		_ApplyHealthLoss(soaker_ID, soaker_damage)
+		_EmitDamageResult(p_caster_ID, soaker_ID, soaker_damage, rolled_critical)
 
 	if(damage_dealt == 0):
 		return
@@ -1173,17 +1188,21 @@ func _ResolveDamage(
 		return
 
 	_ApplyHealthLoss(p_target_ID, damage_dealt)
-	var result: CombatResult = CombatResult.new(CombatResult.Kind.Damage)
-	result.source_ID = p_caster_ID
-	result.target_ID = p_target_ID
-	result.amount = damage_dealt
-	result.critical = rolled_critical
-	_Emit(result)
+	_EmitDamageResult(p_caster_ID, p_target_ID, damage_dealt, rolled_critical)
 
 	if(rolled_critical):
 		var caster: Character = _characters[p_caster_ID]
 		if(null != caster._trait and caster._trait._execution_steps.has(Types.Combat_Event.Critical_Hit)):
 			caster._trait.OnCriticalHit(p_caster_ID, p_target_ID, self)
+
+
+func _EmitDamageResult(p_source_ID: int, p_target_ID: int, p_amount: int, p_critical: bool) -> void:
+	var result: CombatResult = CombatResult.new(CombatResult.Kind.Damage)
+	result.source_ID = p_source_ID
+	result.target_ID = p_target_ID
+	result.amount = p_amount
+	result.critical = p_critical
+	_Emit(result)
 
 
 func TriggerZones(p_active_character_ID: int) -> Array[CombatResult]:
