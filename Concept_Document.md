@@ -546,8 +546,8 @@ Skills allocated to a specific Role, listed in the same order as their entries i
     * Effect: The Symbiote gains the Exhert buff for 4 turns (see section 3.2.3.2).
 * Grafted Flesh
     * Type: Buff, Heal
-    * Cooldown: 3 turns
-    * Effect: The Symbiote loses 10% of its max Health; one ally gains the Regeneration buff for 3 turns (see section 3.2.3.2).
+    * Cooldown: 4 turns
+    * Effect: The Symbiote loses 10% of its max Health; one ally gains the Regeneration buff for 4 turns (see section 3.2.3.2).
 
 ###### Jester
 * Pratfall Sting
