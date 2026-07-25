@@ -95,7 +95,9 @@ main.GetInstance()._item_collection   # etc.
   `ResourceHandler`, `ProgressHandler`, `SaveManager`, `AdventureStateHandler`.
 - Adds `AdventureStateHandler` to the `SaveManager.GROUP_SAVEABLE` group.
 - Seeds a default roster by duplicating preloaded `CharacterPreset` resources (Lancer, Thief,
-  Bar Brawler, Jester, Chronophage, Tidal Corsair, Centaur Lancer, Centaur Archivist, Tactician).
+  Bar Brawler, Jester, Chronophage, Tidal Corsair, Centaur Lancer, Centaur Archivist, Tactician,
+  Bloodmage, Sorcerer, Symbiote, Diviner, Appraiser, Emissary, Cultist, Plague Doctor, Warlord,
+  Alchemist) — one preset per implemented Role (`Concept_Document.md` 3.1.3).
 - Builds the initial `ContextContainer` and calls `change_scene()` to load the first scene.
 
 `Main_Instance` also owns scene switching — see [Section 5](#5-scene-management-the-context-container-pattern).
@@ -542,8 +544,11 @@ combat formulas, see `Concept_Document.md`; this section describes the *code pat
 5. Instantiates enemies into `_characters[3..5]`, jitters their speed by `randi_range(-3,3)` on
    the **resolver's** generator, and scales them to the encounter difficulty with
    `LevelSystem.SetOpponentLevel()` (boss variant if `_arguments["Boss_Scale"]` is present).
-6. Fires each character's `StartOfBattle` trait hook (logic reset only) and paints the initial
-   trait visuals via `trait.RefreshVisuals(repr)`, then initializes the battle UI and turn bar.
+6. Fires each character's `StartOfBattle` trait hook (logic reset only), then unconditionally
+   calls `trait.BrewReagentKey()`/`GetBrewPotencyBonus()` — a no-op for every trait except the
+   Alchemist's Fresh Batch, which adds a brewed slot to `_reagent_loadout` here (section 7.7) —
+   and paints the initial trait visuals via `trait.RefreshVisuals(repr)`, then initializes the
+   battle UI and turn bar.
 
 ### 7.2. Turn order (the turn bar)
 
@@ -684,14 +689,27 @@ cooldown, never fires `Start_Turn`/`End_Turn`, and never advances the turn bar.
   immediately (so a mid-battle defeat still keeps it consumed); unused entries need no
   "return to inventory" step, since they were never debited from the collection at
   loadout-selection time in the first place.
-- **Resolution core.** `BattleResolver.ResolveReagent(consumer_ID, reagent_key, target_ID)`
-  fires the consumer's `Reagent_Consumed` trait hook (binary reagents never call it — see
-  section 9) for an additive potency contribution, then dispatches on
-  `ReagentData.effect_kind` to `_ResolveReagentEffect`. The per-kind math (percent-to-fraction
-  conversion, potency scaling, the random-Tincture-attribute roll) lives in
+- **Resolution core.** `BattleResolver.ResolveReagent(consumer_ID, reagent_key, target_ID,
+  extra_potency := 0.0)` starts potency at `1.0 + extra_potency`, then fires the consumer's
+  `Reagent_Consumed` trait hook (binary reagents never call it — see section 9) for an
+  additional additive contribution — all potency modifiers (a trait's own amplification, the
+  brewed slot's potency bonus, future battle-long modifiers) stack additively on one
+  consumption (`Concept_Document.md` 3.3.3). It then dispatches on `ReagentData.effect_kind` to
+  `_ResolveReagentEffect`. The per-kind math (percent-to-fraction conversion, potency scaling,
+  the random-Tincture-attribute roll, the flat-value `Barrier` scaling) lives in
   `ReagentResolver` (`Scripts/Battle/reagent_resolver.gd`), stateless static functions
   mirroring `skills.gd`'s style; `BattleResolver` applies the result and reports it as
   `CombatResult`s.
+- **Brewed slot (the Alchemist's Fresh Batch).** `ReagentLoadout` carries parallel `_brewed` and
+  `_potency_bonus` arrays alongside its keys/spent flags. `AddBrewed(key, potency_bonus)`
+  appends a slot beyond the three brought reagents; `TryConsume` skips
+  `ReagentCollection.Consume()` for a brewed slot, so it never touches the persistent
+  inventory and is simply lost if unconsumed when the battle ends. `Battle.gd` passes
+  `_reagent_loadout.PotencyBonusAt(index)` as `ResolveReagent`'s `extra_potency` on consumption,
+  so the bonus travels with the slot rather than the consumer — any champion can spend a brewed
+  reagent, and the Alchemist's own rarity (fixed at brew time) still sets its potency.
+  `ReagentData.brew_only` marks the four brew-pool reagents (`Data/Reagents/Alchemist_Brews/`)
+  so `ReagentRegistry.GetRandomKeyForRarity` (ordinary loot rolls) never returns one.
 - **Battle-long mechanisms.** Two effects persist for the rest of the battle without being a
   `StatusEffects.Buff` (undispellable, unstealable, invisible to buff-counting):
   `_battle_long_attribute_bonus` (Tinctures/Unrefined Residue — folded into
@@ -703,7 +721,8 @@ cooldown, never fires `Start_Turn`/`End_Turn`, and never advances the turn bar.
   `Turn_Bar_Reset_Pending` result instead; `Battle` stores it in a local dictionary and
   consults it at the one call site where `TurnCompleteForCharacter` actually resets the bar,
   passing the stored percent instead of the default 0.
-- **Battle scene wiring.** `BattleUI` exposes up to 3 `ReagentButton`s (a simpler sibling of
+- **Battle scene wiring.** `BattleUI` exposes up to 4 `ReagentButton`s (the fourth for a brewed
+  slot, shown only when one exists) — a simpler sibling of
   `SkillButton` — no cooldown countdown, just an available/permanently-spent state via
   `MarkSpent()`), shown alongside the skill buttons on the player's turn. Selecting one
   branches on `ReagentData.target_kind`: `Self_Target` resolves immediately; `One_Ally`/
@@ -751,14 +770,22 @@ provides default (no-op, debug-printing) implementations of each hook. The comba
 
 | Hook | `Combat_Event` | Fired when… | Returns |
 |---|---|---|---|
-| `StartOfBattle()` | `Start_Combat` | during `Battle.Init`, once per character (logic reset) | — |
+| `StartOfBattle(owner_ID, resolver)` | `Start_Combat` | during `Battle.Init`, once per character (logic reset) | — |
 | `StartOfTurn(owner_ID, resolver)` | `Start_Turn` | in `BeginTurn` for the active character | — |
 | `EndOfTurn(owner_ID, resolver)` | `End_Turn` | at the end of `ResolveSkill` | — |
 | `OnSkillCast(owner_ID, target_IDs, skill_name, caster_attributes, resolver)` | `Skill_Cast` | at the start of `ResolveSkill` | `TraitSkillResult` |
 | `OnDefend(defender_ID, defender_attributes, characters)` | `Defend` | when snapshotting a target's attributes | — |
-| `OnDamageTaken(owner_ID, rarity, resolver)` | `Damage_Taken` | before damage lands; returns the incoming-damage multiplier | `float` |
+| `OnDamageTaken(owner_ID, resolver)` | `Damage_Taken` | before damage lands; returns the incoming-damage multiplier | `float` |
 | `OnDeath()` | `On_Death` | when a character drops to 0 HP (logic reset) | — |
 | `OnReagentConsumed(consumer_ID, reagent, resolver)` | `Reagent_Consumed` | in `ResolveReagent`, for non-binary reagents only; returns an additive potency contribution (0.0 base) | `float` |
+| `OnCriticalHit(owner_ID, target_ID, resolver)` | `Critical_Hit` | in `_ResolveDamage`, after a critical hit lands, on the caster's trait | — |
+| `OnAllyDeath(owner_ID, dead_ally_ID, resolver)` | `Ally_Death` | in `_HandleDeath`, on every living ally of the character who just died | — |
+| `OnAllyDamageTaken(owner_ID, damaged_ally_ID, resolver)` | `Ally_Damage_Taken` | in `_ResolveDamage`, polled on the target's living allies before mitigation; returns the fraction of the incoming hit this owner redirects to itself (0.0 base) | `float` |
+
+`StartOfBattle`'s `owner_ID`/`resolver` parameters were added specifically so traits can subscribe
+to resolver signals (`resolver.result_produced`) or mark battle-start state (e.g. the Cultist's
+Vessel) before the character's own first turn — a lazily-initialized equivalent would miss events
+that fire before then.
 
 One **view hook** complements them: `RefreshVisuals(character_repr)` repaints the trait's icons,
 tooltips, and battlefield effects (e.g. sprite echoes) from current trait state. The battle scene
@@ -767,6 +794,13 @@ calls it after `StartOfBattle` and after every resolved action; the resolver nev
 A concrete trait subclasses `CharacterTrait`, registers the events it cares about in
 `_execution_steps`, and overrides the matching hooks. Callers always guard with
 `_trait._execution_steps.has(<event>)`, so a trait only pays for the hooks it opts into.
+
+Two hooks sit outside the `_execution_steps`/`Combat_Event` dispatch entirely and are called
+unconditionally on every character's trait, relying on a no-op base-class default instead of an
+opt-in guard: `BrewReagentKey(random) -> String` and `GetBrewPotencyBonus() -> float`, called once
+per character during `Battle.Init`'s `StartOfBattle` loop so the Alchemist's Fresh Batch passive
+can add a brewed slot to the `ReagentLoadout` (section 7.7) without `Battle.gd` needing an
+Alchemist-specific branch.
 
 `OnSkillCast` returns a `TraitSkillResult`
 (`Scripts/Character/character_traits/TraitHookResults/trait_skill_result.gd`) carrying a
