@@ -781,10 +781,10 @@ Families — one entry per rarity tier:
   (by rarity) increase to that attribute. Not a buff: undispellable, unstealable,
   and invisible to buff-counting effects. Deliberately weaker than the equivalent
   30% buff.
-* Restorative Draught: heals one ally for 15/20/25/30% (by rarity) of max Health.
-* Purging Tonic: removes up to 1/1/2/2 (by rarity) debuffs from one ally.
+* Restorative Draught: heals the user for 15/20/25/30% (by rarity) of max Health.
+* Purging Tonic: removes up to 1/1/2/2 (by rarity) debuffs from the user.
 * Thief's Regret: destroys (not steals) up to 1/1/2/2 (by rarity) buffs on one enemy.
-* Barrier Stone: grants one ally a Barrier with a flat absorb amount set by rarity.
+* Barrier Stone: grants a Barrier with a flat absorb amount set by rarity to the user.
 * Rewinding Grit: targets one ally and reduces the cooldown of every skill they have
   currently on cooldown by (1/1/1/2) turns, set by rarity.
 * Second Wind Phial: after the consumer's current turn ends, their turn bar resets to
@@ -793,7 +793,7 @@ Families — one entry per rarity tier:
 Singletons:
 * Zone-Dissolving Salts (Binary): clears one targeted zone section (one of the two
   dedicated zone-clearing effects, see section 3.2.4.1).
-* Deathward Charm (Binary): applies the Deathward buff to one ally.
+* Deathward Charm (Binary): applies the Deathward buff to the user.
 * Chant Fragment (Binary): cleanses Pagan Curse from one ally. God of Magic lore family.
 * Notarized Seal (Binary): applies the Signed Writ debuff to one enemy for 1 turn. God of Rules
   lore family.

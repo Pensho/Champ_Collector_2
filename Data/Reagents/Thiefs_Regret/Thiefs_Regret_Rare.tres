@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1_script")
 display_name = "Thief's Regret"
-description = "Destroys (rather than steals) up to 1 buff on one enemy."
+description = "Removes up to 1 random buffs on one enemy."
 icon = ExtResource("2_icon")
 rarity = 3
 effect_kind = 3

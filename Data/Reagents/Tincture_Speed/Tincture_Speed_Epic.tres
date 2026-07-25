@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1_script")
 display_name = "Tincture of Speed"
-description = "A small battle-long +12% increase to Speed. Not a buff: cannot be dispelled, stolen, or counted by buff-related effects."
+description = "+12% increase to Speed."
 icon = ExtResource("2_icon")
 rarity = 4
 affected_attribute = 1

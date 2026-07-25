@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1_script")
 display_name = "Zone-Dissolving Salts"
-description = "Clears one targeted zone section. Not affected by potency modifiers."
+description = "Clears one targeted zone section."
 icon = ExtResource("2_icon")
 rarity = 3
 binary = true

@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1_script")
 display_name = "Rewinding Grit"
-description = "Reduces the cooldown of every skill on one ally that is currently on cooldown by 2 turns."
+description = "Reduces an allies cooldown of all skills by 2 turn."
 icon = ExtResource("2_icon")
 rarity = 5
 effect_kind = 4

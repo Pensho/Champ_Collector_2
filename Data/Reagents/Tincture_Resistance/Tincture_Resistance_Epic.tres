@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1_script")
 display_name = "Tincture of Resistance"
-description = "A small battle-long +12% increase to Resistance. Not a buff: cannot be dispelled, stolen, or counted by buff-related effects."
+description = "+12% increase to Resistance."
 icon = ExtResource("2_icon")
 rarity = 4
 affected_attribute = 5

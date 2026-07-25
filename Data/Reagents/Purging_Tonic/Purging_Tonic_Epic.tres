@@ -6,9 +6,8 @@
 [resource]
 script = ExtResource("1_script")
 display_name = "Purging Tonic"
-description = "Removes up to 2 debuffs from one ally."
+description = "Removes up to 2 debuffs."
 icon = ExtResource("2_icon")
 rarity = 4
 effect_kind = 2
-target_kind = 1
 magnitude = 2.0

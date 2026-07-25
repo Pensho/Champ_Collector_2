@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1_script")
 display_name = "Tincture of Critical Damage"
-description = "A small battle-long +15% increase to Critical Damage. Not a buff: cannot be dispelled, stolen, or counted by buff-related effects."
+description = "+15% increase to Critical Damage."
 icon = ExtResource("2_icon")
 rarity = 5
 affected_attribute = 9

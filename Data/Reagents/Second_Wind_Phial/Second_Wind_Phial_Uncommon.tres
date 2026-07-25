@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1_script")
 display_name = "Second Wind Phial"
-description = "After the consumer's current turn ends, their turn bar resets to 15% instead of 0. Self-only."
+description = "Next turn starts at 15% progress on the turn bar."
 icon = ExtResource("2_icon")
 rarity = 2
 effect_kind = 5

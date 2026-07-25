@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1_script")
 display_name = "Fractured Idol"
-description = "Deals 18% of the consumer's max Health as damage (cannot reduce them below 1 Health) and grants a battle-long +16% bonus to damage dealt."
+description = "Takes 18% max Health as damage (cannot kill) and grants +16% bonus to damage dealt."
 icon = ExtResource("2_icon")
 rarity = 4
 effect_kind = 8

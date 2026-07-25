@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1_script")
 display_name = "Restorative Draught"
-description = "Heals one ally for 30% of their max Health."
+description = "Heals for 30% of max Health."
 icon = ExtResource("2_icon")
 rarity = 5
 effect_kind = 1

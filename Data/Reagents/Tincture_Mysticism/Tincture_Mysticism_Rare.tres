@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1_script")
 display_name = "Tincture of Mysticism"
-description = "A small battle-long +9% increase to Mysticism. Not a buff: cannot be dispelled, stolen, or counted by buff-related effects."
+description = "+9% increase to Mysticism."
 icon = ExtResource("2_icon")
 rarity = 3
 affected_attribute = 6

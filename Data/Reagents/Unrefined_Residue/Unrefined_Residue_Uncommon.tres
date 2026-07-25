@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1_script")
 display_name = "Unrefined Residue"
-description = "Applies the effect of one random Tincture family (a battle-long +6% attribute increase) to the consumer."
+description = "Gives +6% to one random attribute."
 icon = ExtResource("2_icon")
 rarity = 2
 effect_kind = 7
