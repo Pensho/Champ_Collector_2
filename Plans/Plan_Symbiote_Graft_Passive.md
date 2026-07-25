@@ -11,13 +11,14 @@ sticks across all future battles, win or lose, and cannot be undone or replaced 
 different graft by grafting a *different* Symbiote).
 
 This plan builds the **machinery** only. The **pool of graft options** (the concrete
-effects and which enemy offers which) is the product of a **future brainstorm / design
-document** and is deliberately out of scope here. The pool is intended to be varied — not
-just stat changes, but effects that spawn a zone, interact with an ally, or interact with
-an enemy — so the machinery must let a graft do anything a trait can do, not merely bump
-numbers. The `GraftEffect`-extends-`CharacterTrait` model below satisfies that: grafts
-inherit the full trait hook surface (buff ally, debuff enemy, place zone, deal damage)
-plus an attribute-delta layer.
+effects) is authored in `Symbiote_Graft_Pool.md`; this plan does not implement those
+grafts, and the enemy-to-graft sourcing (which enemy offers which) is still deferred there
+until more opponents are designed. The pool is deliberately varied — not just stat changes,
+but effects that spawn a zone, interact with an ally, or interact with an enemy — so the
+machinery must let a graft do anything a trait can do, not merely bump numbers. The
+`GraftEffect`-extends-`CharacterTrait` model below satisfies that: grafts inherit the full
+trait hook surface (buff ally, debuff enemy, place zone, deal damage) plus an
+attribute-delta layer.
 
 Depends on the Missing Role Champions work (the Symbiote preset exists,
 `Data/Character_Player_Variants/Symbiote.tres`). Findings should be recorded in
@@ -59,17 +60,21 @@ button never appears again for that instance.
 - Adds an `_attribute_delta: Dictionary[Types.Attribute, int]` computed in `Init(rarity)`
   from a subclass-supplied per-rarity **bonus** (scaled by rarity) merged with a flat
   **drawback**; exposes `GetAttributeDelta(attribute) -> int`.
-- Inherits `_title`/`_body`/`_trait_texture` (for the collection tooltip and battle trait
-  icon) and the `_execution_steps` hook registration — concrete grafts (future doc)
+- Inherits `_title`/`_body` (for the collection tooltip and battle trait icon) and the
+  `_execution_steps` hook registration — the concrete grafts in `Symbiote_Graft_Pool.md`
   subclass this and register their hooks exactly like existing traits.
+- **Shared texture:** the base class sets `_trait_texture` once to a single Graft-passive
+  icon; concrete grafts do **not** each supply their own. Every graft displays the same
+  passive icon, so `sorcerer_trait.gd`'s per-trait `_trait_texture = load(...)` is set here
+  in the base `Init` and left alone by subclasses.
 - **Watch for:** follow the existing rarity-dict convention (`const X_PER_RARITY`) seen in
   `sorcerer_trait.gd`; the bonus scales with rarity, the drawback does not.
 
 ### 2. Enemy preset field
 - **`Scripts/Character/character_preset.gd`:** add
   `@export var _graft_effect: GraftEffect = null` (sibling of `_trait` at line 27).
-  Populated per-enemy in the enemy `.tres` files by the **future pool doc** — left `null`
-  for now.
+  Populated per-enemy in the enemy `.tres` files once `Symbiote_Graft_Pool.md` assigns
+  concrete enemy sources — left `null` for now.
 - **Watch for:** enemies with `_graft_effect == null` are simply not graftable (targeting
   guard in step 5). Do not populate real enemy grafts in this plan.
 
@@ -136,7 +141,7 @@ Model the entire flow on the reagent free-action seam.
 ### 7. Tests
 - **New:** `Tests/unit/test_graft.gd` (GUT, pure logic only):
   - A minimal test-only `GraftEffect` subclass (a stat bonus + flat drawback + one hook,
-    e.g. applies a buff) to exercise the machinery without depending on the future pool.
+    e.g. applies a buff) to exercise the machinery without depending on the pool content.
   - Assert `GetAttributeDelta` scales the bonus by rarity and keeps the drawback flat.
   - Assert `Character.GetTotalAttribute` includes the graft layer and `_attributes` stays
     the pristine base.
@@ -147,13 +152,15 @@ Model the entire flow on the reagent free-action seam.
     ungrafted.
 - Do **not** test node/UI wiring (per `Test_Design_Document.md` conventions).
 
-## Dependency on the future pool document
+## Relationship to the graft pool document
 
-This plan ships **no real graft content**. The concrete `GraftEffect` subclasses, their
-numbers, and each enemy's `_graft_effect` assignment come from a later brainstorm / design
-document. When that lands, the only work is: author `GraftEffect` subclasses plus a
-one-line `.tres` each (mirroring `Foresight_Trait.tres`), and set `_graft_effect` on the
-enemy variant `.tres` files. No further engine changes needed.
+This plan ships **no real graft content**. The concrete graft effects and their numbers are
+specified in `Symbiote_Graft_Pool.md`; each entry there becomes one `GraftEffect` subclass
+plus a one-line `.tres` (mirroring `Foresight_Trait.tres`) in a separate content pass. Each
+enemy's `_graft_effect` assignment is still deferred in that document until more opponents
+are designed. When both land, the only work is authoring those subclasses and `.tres` files
+and setting `_graft_effect` on the enemy variant `.tres` files. No further engine changes
+needed.
 
 ## Verification
 
