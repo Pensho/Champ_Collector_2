@@ -88,3 +88,5 @@ height = 35.0
 [connection signal="battle_skill_selected" from="Battle UI" to="." method="_on_battle_ui_battle_skill_selected"]
 [connection signal="battle_reagent_selected" from="Battle UI" to="." method="_on_battle_ui_battle_reagent_selected"]
 [connection signal="reagent_confirmed" from="Battle UI" to="." method="_on_battle_ui_reagent_confirmed"]
+[connection signal="battle_graft_selected" from="Battle UI" to="." method="_on_battle_ui_battle_graft_selected"]
+[connection signal="graft_confirmed" from="Battle UI" to="." method="_on_battle_ui_graft_confirmed"]

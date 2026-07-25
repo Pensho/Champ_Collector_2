@@ -24,7 +24,7 @@ shader_parameter/texture_albedo = ExtResource("6_35r4v")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_reagent_close"]
 
-[node name="InspectCollection" type="Control" unique_id=226476496 node_paths=PackedStringArray("_attribute_labels", "_selected_char_label", "_selected_char_level", "_selected_char_nature", "_selected_char_nature_tooltip", "_experience_bar", "_experience_bar_text")]
+[node name="InspectCollection" type="Control" unique_id=226476496 node_paths=PackedStringArray("_attribute_labels", "_selected_char_label", "_selected_char_level", "_selected_char_nature", "_selected_char_nature_tooltip", "_selected_char_graft", "_selected_char_graft_tooltip", "_experience_bar", "_experience_bar_text")]
 custom_minimum_size = Vector2(1280, 720)
 layout_mode = 3
 anchors_preset = 0
@@ -45,6 +45,8 @@ _selected_char_label = NodePath("MarginContainer/ColorRect2/Label_Character_Name
 _selected_char_level = NodePath("MarginContainer/ColorRect2/Label_Level")
 _selected_char_nature = NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/Label_Character_Nature")
 _selected_char_nature_tooltip = NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/Label_Character_Nature")
+_selected_char_graft = NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/Label_Character_Graft")
+_selected_char_graft_tooltip = NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/Label_Character_Graft")
 _experience_bar = NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/ProgressBar")
 _experience_bar_text = NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/ProgressBar/Label")
 
@@ -420,6 +422,19 @@ theme_override_constants/shadow_offset_x = 3
 theme_override_constants/shadow_offset_y = 3
 theme_override_constants/outline_size = 3
 text = "Nature:"
+script = ExtResource("9_lgjj3")
+title_text = null
+description_text = null
+
+[node name="Label_Character_Graft" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer" unique_id=1136376218]
+layout_mode = 2
+theme = ExtResource("1_riq8p")
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.47058824)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 3
+text = "Graft:"
 script = ExtResource("9_lgjj3")
 title_text = null
 description_text = null

@@ -3,6 +3,8 @@ class_name BattleUI extends Control
 signal battle_skill_selected(p_skill_ID: int)
 signal battle_reagent_selected(p_reagent_index: int)
 signal reagent_confirmed(p_reagent_index: int)
+signal battle_graft_selected
+signal graft_confirmed(p_target_ID: int)
 
 const COMBAT_EFFECT_TEXT_TEMPLATE = preload("uid://caq22aj34qk1f")
 const BUTTON_WITH_OPTIONS_SCENE = preload("uid://c7smqpmfvs0ih")
@@ -12,6 +14,7 @@ const TEXT_SPAWN_DELAY: float = 0.25
 
 @export var _skill_buttons: Array[SkillButton]
 @export var _reagent_buttons: Array[ReagentButton]
+@export var _graft_button: GraftButton
 @export var _battle_duration_label: Label
 
 var SKILL_GLOW_POS_1: Vector2
@@ -28,6 +31,10 @@ var _skill_textures: Dictionary[String, Texture2D]
 var _environment_effects: Array[Node]
 var _reagent_confirm: ButtonWithOptions
 var _pending_reagent_index: int = -1
+
+var _graft_description_window: ButtonWithOptions
+var _graft_permanence_confirm: ButtonWithOptions
+var _pending_graft_target_ID: int = -1
 
 @warning_ignore_start("unused_private_class_variable")
 @onready var skill_focus: TextureRect = $Skill_Focus
@@ -47,6 +54,20 @@ func Init(p_environment_effects: Array[PackedScene]) -> void:
 	_reagent_confirm.position = Vector2i(
 			(get_viewport_rect().size * 0.5) - (_reagent_confirm.GetSize() * 0.5))
 	_reagent_confirm.hide()
+
+	_graft_description_window = BUTTON_WITH_OPTIONS_SCENE.instantiate()
+	add_child(_graft_description_window)
+	_graft_description_window.SetLeftButton("Graft", _on_graft_description_confirmed)
+	_graft_description_window.position = Vector2i(
+			(get_viewport_rect().size * 0.5) - (_graft_description_window.GetSize() * 0.5))
+	_graft_description_window.hide()
+
+	_graft_permanence_confirm = BUTTON_WITH_OPTIONS_SCENE.instantiate()
+	add_child(_graft_permanence_confirm)
+	_graft_permanence_confirm.SetLeftButton("Confirm", _on_graft_permanence_confirmed)
+	_graft_permanence_confirm.position = Vector2i(
+			(get_viewport_rect().size * 0.5) - (_graft_permanence_confirm.GetSize() * 0.5))
+	_graft_permanence_confirm.hide()
 
 func _process(delta: float) -> void:
 	_battle_duration += delta
@@ -115,6 +136,23 @@ func _on_reagent_confirm_use_button_up() -> void:
 	_reagent_confirm.hide()
 	reagent_confirmed.emit(_pending_reagent_index)
 
+func ShowGraftDescription(p_target_ID: int, p_title: String, p_body: String) -> void:
+	_pending_graft_target_ID = p_target_ID
+	_graft_description_window.SetText(p_title, p_body)
+	_graft_description_window.show()
+
+func _on_graft_description_confirmed() -> void:
+	_graft_description_window.hide()
+	_graft_permanence_confirm.SetText("Graft", "Are you sure? This is permanent.")
+	_graft_permanence_confirm.show()
+
+func _on_graft_permanence_confirmed() -> void:
+	_graft_permanence_confirm.hide()
+	graft_confirmed.emit(_pending_graft_target_ID)
+
+func HideGraftUI() -> void:
+	_graft_button.hide()
+
 func ActiveSkillGlow(p_skill_ID: int) -> void:
 	match p_skill_ID:
 		
@@ -160,3 +198,6 @@ func _on_reagent_3_button_up() -> void:
 
 func _on_reagent_4_button_up() -> void:
 	battle_reagent_selected.emit(3)
+
+func _on_graft_button_button_up() -> void:
+	battle_graft_selected.emit()

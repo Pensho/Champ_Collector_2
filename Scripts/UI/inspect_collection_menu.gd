@@ -8,6 +8,8 @@ const BUTTON_WITH_OPTIONS_SCENE = preload("uid://c7smqpmfvs0ih")
 @export var _selected_char_level: Label
 @export var _selected_char_nature: Label
 @export var _selected_char_nature_tooltip: ToolTip
+@export var _selected_char_graft: Label
+@export var _selected_char_graft_tooltip: ToolTip
 @export var _experience_bar: ProgressBar
 @export var _experience_bar_text: Label
 
@@ -141,7 +143,20 @@ func ShowSelectedCharacter(p_instance_ID: int) -> void:
 			_character_collection[p_instance_ID]._attributes_weights._name) + " Nature"
 	_selected_char_nature_tooltip.description_text = str(
 			_character_collection[p_instance_ID]._attributes_weights._description)
-	
+
+	if(Types.Role.Symbiote == _character_collection[p_instance_ID]._role):
+		_selected_char_graft.show()
+		if(null == _character_collection[p_instance_ID]._graft):
+			_selected_char_graft.text = "Graft: Ungrafted"
+			_selected_char_graft_tooltip.title_text = "Graft"
+			_selected_char_graft_tooltip.description_text = ""
+		else:
+			_selected_char_graft.text = "Graft: " + _character_collection[p_instance_ID]._graft._title
+			_selected_char_graft_tooltip.title_text = _character_collection[p_instance_ID]._graft._title
+			_selected_char_graft_tooltip.description_text = _character_collection[p_instance_ID]._graft._body
+	else:
+		_selected_char_graft.hide()
+
 	_experience_bar.max_value = LevelSystem.GetExperienceRequirement(_character_collection[p_instance_ID]._level)
 	_experience_bar.value = _character_collection[p_instance_ID]._experience
 	_experience_bar_text.text = (str(_character_collection[p_instance_ID]._experience)
@@ -366,6 +381,7 @@ func _on_button_deselect_char_button_up() -> void:
 	_selected_char_nature.text = "Nature: "
 	_selected_char_nature_tooltip.title_text = "Character Nature"
 	_selected_char_nature_tooltip.description_text = ""
+	_selected_char_graft.hide()
 	_experience_bar.max_value = 100.0
 	_experience_bar.value = 0.0
 	_experience_bar_text.text = ""

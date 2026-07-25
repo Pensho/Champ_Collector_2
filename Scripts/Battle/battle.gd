@@ -11,6 +11,7 @@ enum BattleState
 	Selecting_Zone,
 	Selecting_Reagent_Target,
 	Selecting_Reagent_Zone,
+	Selecting_Graft_Target,
 	Enemy_Acting,
 	Resolving,
 	Battle_Over,
@@ -238,6 +239,9 @@ func StartTurn() -> void:
 			_battle_ui._reagent_buttons[i].show()
 			if(_reagent_loadout.IsSpent(i)):
 				_battle_ui._reagent_buttons[i].MarkSpent()
+		if(Types.Role.Symbiote == _characters[_turn_character_ID]._role and
+				null == _characters[_turn_character_ID]._graft):
+			_battle_ui._graft_button.show()
 		_state = BattleState.Awaiting_Player_Input
 	elif(_sides.enemy.Has(_turn_character_ID)):
 		_state = BattleState.Enemy_Acting
@@ -301,6 +305,7 @@ func CompleteTurn() -> void:
 	_turn_indicator.hide()
 	_battle_ui.HideSkillUI()
 	_battle_ui.HideReagentUI()
+	_battle_ui.HideGraftUI()
 	if(not CheckAndHandleBattleOver()):
 		_state = BattleState.Advancing
 
@@ -459,6 +464,9 @@ func _on_character_battle_target_selected(p_target_ID: int) -> void:
 	if(BattleState.Selecting_Reagent_Target == _state):
 		_OnReagentTargetSelected(p_target_ID)
 		return
+	if(BattleState.Selecting_Graft_Target == _state):
+		_OnGraftTargetSelected(p_target_ID)
+		return
 	if(BattleState.Awaiting_Player_Input != _state):
 		return
 	if(_characters[p_target_ID]._current_health <= 0):
@@ -486,6 +494,17 @@ func _OnReagentTargetSelected(p_target_ID: int) -> void:
 		print("Invalid target for reagent")
 		return
 	_ResolveReagentConsumption(_selected_reagent_index, p_target_ID)
+
+func _OnGraftTargetSelected(p_target_ID: int) -> void:
+	if(_characters[p_target_ID]._current_health <= 0):
+		print("Invalid target for graft, target is dead.")
+		return
+	if(null == _characters[p_target_ID]._graft_effect):
+		print("Invalid target for graft, target offers no graft effect.")
+		return
+	_state = BattleState.Awaiting_Player_Input
+	_battle_ui.ShowGraftDescription(
+			p_target_ID, _characters[p_target_ID]._graft_effect._title, _characters[p_target_ID]._graft_effect._body)
 
 func _on_battle_ui_battle_skill_selected(p_skill_ID: int) -> void:
 	if(BattleState.Awaiting_Player_Input != _state and BattleState.Selecting_Zone != _state):
@@ -540,6 +559,30 @@ func _on_battle_ui_reagent_confirmed(p_reagent_index: int) -> void:
 			_selected_reagent_index = p_reagent_index
 			_state = BattleState.Selecting_Reagent_Zone
 			_battle_ui._turn_bar.DisableZones(false)
+
+func _on_battle_ui_battle_graft_selected() -> void:
+	if(BattleState.Awaiting_Player_Input != _state):
+		return
+	if(Types.Role.Symbiote != _characters[_turn_character_ID]._role or
+			null != _characters[_turn_character_ID]._graft):
+		return
+	_state = BattleState.Selecting_Graft_Target
+
+func _on_battle_ui_graft_confirmed(p_target_ID: int) -> void:
+	_ResolveGraft(_turn_character_ID, p_target_ID)
+
+func _ResolveGraft(p_symbiote_ID: int, p_target_enemy_ID: int) -> void:
+	var symbiote: Character = _characters[p_symbiote_ID]
+	var graft_effect: GraftEffect = _characters[p_target_enemy_ID]._graft_effect
+	symbiote.ApplyGraft(graft_effect)
+	var collection_character: Character = (
+			main.GetInstance()._character_collection.GetCharacter(symbiote._instance_ID))
+	if(null != collection_character and collection_character != symbiote):
+		collection_character.ApplyGraft(graft_effect)
+	if(symbiote._trait._execution_steps.has(Types.Combat_Event.Start_Combat)):
+		symbiote._trait.StartOfBattle(p_symbiote_ID, _resolver)
+	RefreshAllTraitVisuals()
+	_state = BattleState.Awaiting_Player_Input
 
 func _ResolveReagentConsumption(p_reagent_index: int, p_target_ID: int) -> void:
 	if(not _reagent_loadout.TryConsume(p_reagent_index, main.GetInstance()._reagent_collection)):
