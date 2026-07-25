@@ -156,9 +156,9 @@ Current roles, their identity and purpose exist as follows:
     - Passive: Plan - Gives buffs to allies who are within x% behind the Tactician on the turn bar when their turn starts. Applies at every rarity; only the Tactician's own self is excluded.
         - 10% Uncommon, 15% Rare, 20% Epic, 25% Legendary
 - Symbiote
-    - A character weak by default but given the option to alter itself to combine with one of select few monsters to gain their trait & bonus in attributes. Primary attributes: Health, Resistance.
+    - A character weak by default, able to permanently graft itself onto an enemy in battle to gain that enemy's graft effect and an attribute bonus at the cost of a drawback. Primary attributes: Health, Resistance.
     - Purpose: Sustain, Buffer
-    - Passive: 
+    - Passive: Graft - The Symbiote begins ungrafted and comparatively weak. Once per lifetime, during any battle and as a free action, the Symbiote may target a living enemy and graft onto it, confirmed through a warning that the choice is permanent. Grafting is irreversible: it binds that enemy's graft effect to the Symbiote for the rest of its existence, and can never be undone or replaced. A graft grants the Symbiote its bound effect, a bonus to attributes, and a drawback; the effect and attribute bonus scale with the Symbiote's own rarity, while the drawback does not. A graft takes hold immediately. Once grafted, the graft option is no longer offered for that Symbiote.
 - Jester
     - An unconventional tanking character that does not have significantly high Health or Defense but relies on skills that provoke hits to the Jester and dodge them. Primary attributes: Accuracy, Knowledge, Speed.
     - Purpose: Damage, Sustain

@@ -69,6 +69,15 @@ Suggested order (dependencies noted inside each plan):
    `Technical_Design_Document.md` sections 3.1 and 9). The placeholder kits are
    superseded by `Plan_Skill_Implementation.md`'s Role kits when those land.
 
+10. `Plan_Symbiote_Graft_Passive.md` — the machinery for the Symbiote's `Graft`
+    passive (`Concept_Document.md` 3.1.3): a `GraftEffect` resource extending
+    `CharacterTrait` (effect via the existing `_trait` dispatch) plus a derived
+    attribute layer (mirroring equipment), a per-enemy `_graft_effect` preset
+    field, one-time in-battle free-action grafting modeled on reagent consumption,
+    persistence by graft UID, and the Inspect Collection display. Depends on the
+    Symbiote preset from `Plan_Missing_Role_Champions.md`. Ships no graft content;
+    the concrete pool comes from a future brainstorm / design document.
+
 Design-only plans (no code; can run at any time):
 
 - `Plan_Encounter_Solution_Design.md` — the long-run encounter content plan:
