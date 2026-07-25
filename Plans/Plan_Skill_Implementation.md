@@ -24,9 +24,10 @@ opponent passives — they are cataloged as skills), plus the targeting types
 and resolver mechanics those skills require. Presets for champions and
 enemies that do not exist yet are created in the batch that lands their
 skills (via the `new-champion` workflow), so every skill is attached and
-testable. Every new skill and passive also gets a row in the placeholder icon
-generator (`Scripts/Debug/generate_placeholder_icons.gd`, from the status
-effect plan) so it is visually represented immediately.
+testable. Every new skill and passive is given an icon directory and a
+placeholder icon up front in batch 0, via the placeholder icon generator
+(`Scripts/Debug/generate_placeholder_icons.gd`, from the status effect plan),
+so each skill is visually represented from the moment its `.tres` lands.
 
 Excluded (owned elsewhere or blocked on design):
 
@@ -66,6 +67,37 @@ Excluded (owned elsewhere or blocked on design):
   and left for balancing; this plan never invents new values.
 
 ## Batches
+
+### Batch 0 — skill icon directories and placeholders
+
+Give every skill and passive this plan will author its icon directory and a
+flat-color placeholder before any `.tres` is written, so later batches can
+point each skill's `icon_path` at an image that already exists. This mirrors
+how the reagent and status-effect tables in
+`Scripts/Debug/generate_placeholder_icons.gd` seed their art.
+
+- Add a `SKILL_ICON_TABLE` to the generator alongside the existing
+  `REAGENT_FAMILY_TABLE` and `STATUS_EFFECT_TABLE`, with one row per skill and
+  passive across batches 1–6 (champion skills, opponent skills, opponent
+  passives, and the Standing Record prerequisite trait). Skills are not
+  rarity-tiered, so — like the status-effect rows — each row writes a single
+  flat-color PNG rather than one per rarity tier.
+- Each row targets `Abilities/<Skill_Name>` under `ICON_ROOT`, matching the
+  existing per-ability folder layout (`Icons/Abilities/Stab/`, etc.), and gives
+  the skill a distinct base hue.
+- Extend `_run()` (or factor a shared helper) so the new table is iterated with
+  the same "skip if the file already exists" guard, so the real ability art
+  already in `Icons/Abilities/` is never clobbered.
+- Run the generator headless to create the directories and PNGs:
+  `godot --headless -s res://Scripts/Debug/generate_placeholder_icons.gd`.
+- Gate cycle applies: a GUT test asserting the table is well-formed (unique
+  folders/names, expected row count), `gdlint Scripts/` clean, review. Only
+  skills excluded from this plan's scope (see "Scope and exclusions") are
+  omitted from the table.
+
+Watch for: skills already shipping real art (Stab, Zap, the Tidal Corsair kit,
+etc.) keep their existing files — the skip guard protects them, and only the
+skills this plan actually authors need new rows.
 
 ### Batch 1 — skills on existing machinery
 
