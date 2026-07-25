@@ -448,6 +448,14 @@ func _ResolveReagentEffect(
 			barrier.duration = 2
 			barrier.value = ReagentResolver.BarrierAmount(p_reagent.magnitude, p_potency)
 			ApplyBuff(p_target_ID, barrier)
+		ReagentData.EffectKind.Random_Attribute_Buff:
+			var buff_type: Types.Buff_Type = ReagentResolver.RandomAttributeBuff(_random)
+			var buff: StatusEffects.Buff = StatusEffects.Buff.new()
+			buff.type = buff_type
+			buff.name = Types.Buff_Type.keys()[buff_type]
+			buff.duration = 3
+			buff.value = ReagentResolver.PercentFraction(p_reagent.magnitude, p_potency)
+			ApplyBuff(p_target_ID, buff)
 		var invalid_kind:
 			print("Invalid reagent effect kind: ", invalid_kind)
 

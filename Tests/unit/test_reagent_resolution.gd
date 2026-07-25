@@ -165,6 +165,23 @@ func test_barrier_effect_applies_a_barrier_buff_scaled_by_potency() -> void:
 	assert_eq(barriers.size(), 1, "Lesser Barrier Brew must grant one Barrier buff")
 	assert_eq(barriers[0].value, 40, "At default potency the Barrier value equals the reagent's magnitude")
 
+func test_chaotic_blessing_applies_one_pool_buff_at_the_reagent_magnitude_and_duration() -> void:
+	var resolver: BattleResolver = _make_resolver()
+	var consumer: Character = resolver.GetCharacters()[0]
+	var pool: Array[Types.Buff_Type] = [
+		Types.Buff_Type.Empower, Types.Buff_Type.Fortify, Types.Buff_Type.Haste,
+		Types.Buff_Type.True_Aim, Types.Buff_Type.Clarity, Types.Buff_Type.Attune,
+		Types.Buff_Type.Insight, Types.Buff_Type.Vigor,
+	]
+
+	resolver.ResolveReagent(0, "Chaotic_Blessing_Rare", 0)
+
+	var pool_buffs: Array = consumer._active_buffs.filter(func(b): return pool.has(b.type))
+	assert_eq(pool_buffs.size(), 1, "Chaotic Blessing must grant exactly one pool buff")
+	assert_almost_eq(pool_buffs[0].value, 0.2, 0.0001,
+			"At default potency the buff value is the reagent's magnitude as a fraction")
+	assert_eq(pool_buffs[0].duration, 3, "Chaotic Blessing's buff duration is fixed at 3 turns")
+
 func test_extra_potency_stacks_additively_with_a_traits_own_amplification() -> void:
 	var trait_only_resolver: BattleResolver = _make_resolver()
 	var trait_only_target: Character = trait_only_resolver.GetCharacters()[0]

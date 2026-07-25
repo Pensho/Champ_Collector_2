@@ -52,7 +52,7 @@ const REAGENT_FAMILY_TABLE: Array = [
 			"color": Color(0.40, 0.70, 0.90, 1.0) },
 	{ "folder": "Reagents/Zone_Dissolving_Salts", "base_name": "Zone_Dissolving_Salts", "size": 64,
 			"color": Color(0.60, 0.60, 0.60, 1.0) },
-	{ "folder": "Reagents/Unrefined_Residue", "base_name": "Unrefined_Residue", "size": 64,
+	{ "folder": "Reagents/Chaotic_Blessing", "base_name": "Chaotic_Blessing", "size": 64,
 			"color": Color(0.45, 0.50, 0.30, 1.0) },
 	{ "folder": "Reagents/Fractured_Idol", "base_name": "Fractured_Idol", "size": 64,
 			"color": Color(0.35, 0.12, 0.12, 1.0) },

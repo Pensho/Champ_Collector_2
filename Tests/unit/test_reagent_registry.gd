@@ -20,6 +20,7 @@ const VALID_TARGET_KINDS_BY_EFFECT: Dictionary[ReagentData.EffectKind, Array] = 
 	# One_Ally: a future non-brew Barrier Stone family (Concept_Document.md 3.3.3);
 	# Self_Target: the brewed Lesser Barrier Brew.
 	ReagentData.EffectKind.Barrier: [ReagentData.TargetKind.One_Ally, ReagentData.TargetKind.Self_Target],
+	ReagentData.EffectKind.Random_Attribute_Buff: [ReagentData.TargetKind.Self_Target],
 }
 
 const BREW_ONLY_KEYS: Array[String] = [

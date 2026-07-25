@@ -800,8 +800,10 @@ Singletons:
 * Wayfarer's Draught: applies Wanderlust to the consumer, with the random-stat bonus
   percentage set by rarity instead of the buff's standard value. God of Adventure
   lore family.
-* Unrefined Residue: applies the effect of one random tincture family (+6/9/12/15%
-  by rarity, matching the Tinctures magnitude). God of Magic lore family.
+* Chaotic Blessing: applies one random buff from a fixed pool (Empower, Fortify,
+  Haste, True Aim, Clarity, Attune, Insight, Vigor), with its magnitude overridden to
+  15/20/25/30% (by rarity) and its duration set to 3 turns instead of the buff's
+  standard values. God of Magic lore family.
 * Fractured Idol: a crumbling artifact of the Forgotten God. Deals 10/14/18/22% (by
   rarity) of the consumer's max Health as damage (cannot reduce the consumer below
   1 Health) and grants a battle-long +10/13/16/20% (by rarity) to damage dealt.

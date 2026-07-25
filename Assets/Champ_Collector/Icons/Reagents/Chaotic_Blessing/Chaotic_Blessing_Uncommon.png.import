@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d1dqdf3y43ayu"
-path="res://.godot/imported/Unrefined_Residue_Epic.png-bfe8073cca00c4013571599401ca4185.ctex"
+uid="uid://dmne1rwlyflsx"
+path="res://.godot/imported/Chaotic_Blessing_Uncommon.png-d8de4f92c40e88feaa6eeeb7e76b6b63.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Reagents/Unrefined_Residue/Unrefined_Residue_Epic.png"
-dest_files=["res://.godot/imported/Unrefined_Residue_Epic.png-bfe8073cca00c4013571599401ca4185.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Reagents/Chaotic_Blessing/Chaotic_Blessing_Uncommon.png"
+dest_files=["res://.godot/imported/Chaotic_Blessing_Uncommon.png-d8de4f92c40e88feaa6eeeb7e76b6b63.ctex"]
 
 [params]
 

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ReagentData" format=3 uid="uid://dhgyv0yu3qnmu"]
+
+[ext_resource type="Script" uid="uid://t3vvjqg3kas0" path="res://Scripts/Battle/reagent_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://4xn7oc0kvswf" path="res://Assets/Champ_Collector/Icons/Reagents/Chaotic_Blessing/Chaotic_Blessing_Rare.png" id="2_icon"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "Chaotic Blessing"
+description = "Applies a random buff (+20% to one attribute) for 3 turns."
+icon = ExtResource("2_icon")
+rarity = 3
+effect_kind = 10
+magnitude = 20.0

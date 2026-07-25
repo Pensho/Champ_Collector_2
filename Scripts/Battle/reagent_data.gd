@@ -18,6 +18,8 @@ enum EffectKind {
 	# self-damage; secondary_magnitude is the percent battle-long bonus to damage dealt.
 	Health_Cost_Damage_Bonus,
 	Barrier,                   # magnitude: flat absorb amount granted as a Barrier buff
+	Random_Attribute_Buff,     # magnitude: percent (as a fraction) overriding one random pool
+	# buff's standard value; duration fixed at 3 turns (see ReagentResolver.ATTRIBUTE_BUFFS)
 }
 
 enum TargetKind

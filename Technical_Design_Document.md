@@ -477,7 +477,7 @@ enum TargetKind { Self_Target, One_Ally, One_Enemy, Zone_Section }
 
 The catalog currently covers the "feasible subset" whose combat mechanics already exist:
 Tinctures (one family per primary attribute), Restorative Draught, Purging Tonic, Thief's Regret,
-Rewinding Grit, Second Wind Phial, Zone-Dissolving Salts, Unrefined Residue, and Fractured Idol —
+Rewinding Grit, Second Wind Phial, Zone-Dissolving Salts, Chaotic Blessing, and Fractured Idol —
 68 `.tres` files (17 families × 4 rarity tiers). Rewinding Grit targets one ally directly
 (`One_Ally`) and reduces the cooldown of every skill that ally has currently on cooldown, rather
 than requiring a skill-choice target kind. Reagents still deferred until their blocking mechanic
@@ -712,7 +712,7 @@ cooldown, never fires `Start_Turn`/`End_Turn`, and never advances the turn bar.
   so `ReagentRegistry.GetRandomKeyForRarity` (ordinary loot rolls) never returns one.
 - **Battle-long mechanisms.** Two effects persist for the rest of the battle without being a
   `StatusEffects.Buff` (undispellable, unstealable, invisible to buff-counting):
-  `_battle_long_attribute_bonus` (Tinctures/Unrefined Residue — folded into
+  `_battle_long_attribute_bonus` (Tinctures — folded into
   `GetCombatAttributes()`) and `_damage_dealt_bonus` (Fractured Idol — folded into
   `_ResolveDamage` via `Skills.DamageDealt`). Both are plain resolver-owned dictionaries
   that disappear with the resolver at battle end, needing no explicit cleanup.

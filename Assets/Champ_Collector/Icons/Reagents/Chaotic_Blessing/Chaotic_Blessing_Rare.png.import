@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bbqloc7v8rrkf"
-path="res://.godot/imported/Unrefined_Residue_Legendary.png-ed07248cbc4d1afb6f63a70e83444323.ctex"
+uid="uid://4xn7oc0kvswf"
+path="res://.godot/imported/Chaotic_Blessing_Rare.png-5b2806747576bbe1efa191dfd677473e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Reagents/Unrefined_Residue/Unrefined_Residue_Legendary.png"
-dest_files=["res://.godot/imported/Unrefined_Residue_Legendary.png-ed07248cbc4d1afb6f63a70e83444323.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Reagents/Chaotic_Blessing/Chaotic_Blessing_Rare.png"
+dest_files=["res://.godot/imported/Chaotic_Blessing_Rare.png-5b2806747576bbe1efa191dfd677473e.ctex"]
 
 [params]
 

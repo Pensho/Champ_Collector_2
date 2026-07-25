@@ -12,6 +12,17 @@ const TINCTURE_ATTRIBUTES: Array[Types.Attribute] = [
 	Types.Attribute.CritDamage,
 ]
 
+const ATTRIBUTE_BUFFS: Array[Types.Buff_Type] = [
+	Types.Buff_Type.Empower,
+	Types.Buff_Type.Fortify,
+	Types.Buff_Type.Haste,
+	Types.Buff_Type.True_Aim,
+	Types.Buff_Type.Clarity,
+	Types.Buff_Type.Attune,
+	Types.Buff_Type.Insight,
+	Types.Buff_Type.Vigor,
+]
+
 
 static func PercentFraction(p_magnitude: float, p_potency: float) -> float:
 	return (p_magnitude / 100.0) * p_potency
@@ -40,3 +51,7 @@ static func BarrierAmount(p_magnitude: float, p_potency: float) -> int:
 
 static func RandomTinctureAttribute(p_random: RandomNumberGenerator) -> Types.Attribute:
 	return TINCTURE_ATTRIBUTES[p_random.randi_range(0, TINCTURE_ATTRIBUTES.size() - 1)]
+
+
+static func RandomAttributeBuff(p_random: RandomNumberGenerator) -> Types.Buff_Type:
+	return ATTRIBUTE_BUFFS[p_random.randi_range(0, ATTRIBUTE_BUFFS.size() - 1)]
