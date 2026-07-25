@@ -77,6 +77,29 @@ Suggested order (dependencies noted inside each plan):
     persistence by graft UID, and the Inspect Collection display. Depends on the
     Symbiote preset from `Plan_Missing_Role_Champions.md`. Ships no graft content;
     the concrete pool comes from a future brainstorm / design document.
+    Implemented — pending reconciliation (review, fold into
+    `Technical_Design_Document.md`, strike section 15, delete) once its suite is
+    confirmed green.
+
+11. `Plan_Symbiote_Graft_Pool.md` — the concrete graft content from
+    `Symbiote_Graft_Pool.md` (18 grafts), turned into `GraftEffect` subclasses on the
+    landed machinery (item 10). Phased: this plan implements **Batch 1**, the four grafts
+    buildable with no new engine code (Wretched Conscript, Spreading Rot, Reactive Plating,
+    Strength in Numbers). Enemy-to-graft sourcing stays deferred until more opponents exist.
+    The remaining 14 grafts each need a new engine primitive and live in their own plans:
+    - `Plan_Graft_Healing_Primitives.md` — public heal + lifesteal (Hollow Hunger, Carrion
+      Bloom, Overgrowth).
+    - `Plan_Graft_Turn_Bar_Control.md` — resolver turn-bar ordering + push/pull (Caravan
+      Cadence, Gravitic Rot, Contagion Bond).
+    - `Plan_Graft_Retaliation.md` — attacker-aware damage-taken reaction (Glass Refraction,
+      Undertow, Glamour).
+    - `Plan_Graft_On_Kill_And_Conditional_Damage.md` — killing-blow hook + conditional
+      damage (Bloodscent).
+    - `Plan_Graft_Zone_Extensions.md` — dual-faction zone, charge replenishment,
+      affected-by-zone hook (Living Bloom, Rootfeeder).
+    - `Plan_Graft_Event_Triggers.md` — buff-expired / zone-dissipated triggers, broadened
+      `Reagent_Consumed` (Detritivore).
+    - `Plan_Graft_Tether.md` — random-ally tether with attribute sharing (Symbiotic Anchor).
 
 Design-only plans (no code; can run at any time):
 
