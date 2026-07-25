@@ -25,6 +25,7 @@ class_name CharacterPreset extends Resource
 @export var _attribute_weight_types_available: Array[AttributeWeightPreset]
 
 @export var _trait: CharacterTrait = null
+@export var _graft_effect: GraftEffect = null
 
 @export var _preset_UID: String
 

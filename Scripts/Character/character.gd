@@ -38,6 +38,13 @@ var _attributes_weights: AttributeWeightPreset
 
 var _trait: CharacterTrait
 
+## The effect this character offers to a Symbiote that grafts onto it (enemies only).
+var _graft_effect: GraftEffect = null
+
+## The effect this character has received by grafting onto something else (Symbiotes only).
+var _graft: GraftEffect = null
+var _graft_UID: String = ""
+
 @warning_ignore_start("unused_private_class_variable")
 var _active_buffs: Array[StatusEffects.Buff] = []
 var _active_debuffs: Array[StatusEffects.Debuff] = []
@@ -55,6 +62,7 @@ func InstantiateNew(p_preset: CharacterPreset, p_instance_ID: int) -> void:
 	_rarity = p_preset._rarity
 	_faction = p_preset._faction
 	_role = p_preset._role
+	_graft_effect = p_preset._graft_effect
 	# Deep-duplicate each skill so every Character owns its own Skill instances.
 	# Sharing the preset's skills by reference leaks mutable state (cooldown_left)
 	# between enemies of the same variant and across battles in the same session.
@@ -92,12 +100,22 @@ func GetTotalAttributes() -> Dictionary[Types.Attribute, int]:
 	var battle_attributes: Dictionary[Types.Attribute, int] = _attributes.duplicate(true)
 	for attribute in battle_attributes.keys():
 		battle_attributes[attribute] += GetEquipmentBonus(attribute)
+		if(null != _graft):
+			battle_attributes[attribute] += _graft.GetAttributeDelta(attribute)
 	return battle_attributes
 
 func GetTotalAttribute(p_attribute: Types.Attribute) -> int:
 	var attribute_value: int = _attributes[p_attribute]
 	attribute_value += GetEquipmentBonus(p_attribute)
+	if(null != _graft):
+		attribute_value += _graft.GetAttributeDelta(p_attribute)
 	return attribute_value
+
+func ApplyGraft(p_graft_effect: GraftEffect) -> void:
+	_graft = p_graft_effect.duplicate(true)
+	_graft.Init(_rarity)
+	_trait = _graft
+	_graft_UID = p_graft_effect.resource_path
 
 func EquipItem(p_equipment_ID: int) -> void:
 	if(not _held_items.has(main.GetInstance()._item_collection._items[p_equipment_ID]._slot)):

@@ -20,7 +20,8 @@ func Serialize() -> Dictionary:
 			"attributes": character._attributes.duplicate(true),
 			"held_items": character._held_items.duplicate(true),
 			"instance_ID": character._instance_ID,
-			"attribute_weights": character._attributes_weights._name
+			"attribute_weights": character._attributes_weights._name,
+			"graft": character._graft_UID
 			# TODO: get skills when they are no longer defined by a characters preset.
 		})
 	
@@ -58,7 +59,11 @@ func Deserialize(p_data: Dictionary) -> void:
 		
 		for held_item in character_data["held_items"].keys():
 			new_character._held_items[held_item as int] = character_data["held_items"][held_item] as int
-		
+
+		if(character_data.has("graft") and not (character_data["graft"] as String).is_empty()):
+			var graft_effect: GraftEffect = load(character_data["graft"])
+			new_character.ApplyGraft(graft_effect)
+
 		_characters[new_character._instance_ID] = new_character
 	
 	LoadTextures()
