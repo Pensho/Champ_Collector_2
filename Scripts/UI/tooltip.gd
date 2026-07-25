@@ -20,6 +20,8 @@ func _ready() -> void:
 	add_child(timer)
 
 func _input(event: InputEvent) -> void:
+	if not is_visible_in_tree():
+		return
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		var is_over_me = get_global_rect().has_point(get_global_mouse_position())
 		if event.pressed and is_over_me:

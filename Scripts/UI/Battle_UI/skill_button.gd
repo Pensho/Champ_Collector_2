@@ -1,7 +1,7 @@
 class_name SkillButton extends Button
 
-@onready var _cooldown_overlay: TextureRect = $TextureRect
-@onready var _cooldown: Label = $TextureRect/Label
+@onready var _cooldown_overlay: TextureRect = $CoolDownOverlayTextureRect
+@onready var _cooldown: Label = $CoolDownOverlayTextureRect/Label
 @onready var _tooltip: ToolTip = $Control
 
 func SetToolTip(p_title: String, p_description: String) -> void:
