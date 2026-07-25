@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ReagentData" format=3 uid="uid://b7wsb6cccx7r1"]
+
+[ext_resource type="Script" uid="uid://t3vvjqg3kas0" path="res://Scripts/Battle/reagent_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://ruu5mciaqln2" path="res://Assets/Champ_Collector/Icons/Reagents/Tincture_Speed/Tincture_Speed_Uncommon.png" id="2_icon"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "Lesser Tincture"
+description = "+5% increase to a random attribute."
+icon = ExtResource("2_icon")
+rarity = 2
+effect_kind = 7
+magnitude = 5.0
+brew_only = true

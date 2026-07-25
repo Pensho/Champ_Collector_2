@@ -161,6 +161,9 @@ func Init(p_context: ContextContainer) -> void:
 		if(null != _characters[i]._trait):
 			if(_characters[i]._trait._execution_steps.has(Types.Combat_Event.Start_Combat)):
 				_characters[i]._trait.StartOfBattle(i, _resolver)
+			var brew_key: String = _characters[i]._trait.BrewReagentKey(_resolver.GetRandom())
+			if("" != brew_key):
+				_reagent_loadout.AddBrewed(brew_key, _characters[i]._trait.GetBrewPotencyBonus())
 			_characters[i]._trait.RefreshVisuals(_character_representations[i])
 
 	SetTargetingOrder()
@@ -542,7 +545,8 @@ func _ResolveReagentConsumption(p_reagent_index: int, p_target_ID: int) -> void:
 	if(not _reagent_loadout.TryConsume(p_reagent_index, main.GetInstance()._reagent_collection)):
 		return
 	var reagent: ReagentData = ReagentRegistry.Get(_reagent_loadout.KeyAt(p_reagent_index))
-	_resolver.ResolveReagent(_turn_character_ID, _reagent_loadout.KeyAt(p_reagent_index), p_target_ID)
+	_resolver.ResolveReagent(_turn_character_ID, _reagent_loadout.KeyAt(p_reagent_index), p_target_ID,
+			_reagent_loadout.PotencyBonusAt(p_reagent_index))
 	_battle_ui._reagent_buttons[p_reagent_index].MarkSpent()
 	_battle_ui.SpawnCombatText(reagent.display_name, CombatTextPosition(_turn_character_ID), Color(0.6, 0.9, 1.0, 1.0))
 	RefreshAllTraitVisuals()

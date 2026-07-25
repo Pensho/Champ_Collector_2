@@ -153,6 +153,38 @@ func test_potency_scales_a_scalar_effect_but_not_a_binary_one() -> void:
 
 	assert_false(zone_resolver.HasZone(0), "A binary effect resolves the same regardless of potency")
 
+func test_barrier_effect_applies_a_barrier_buff_scaled_by_potency() -> void:
+	var resolver: BattleResolver = _make_resolver()
+	var consumer: Character = resolver.GetCharacters()[0]
+
+	# The brewed slot is self-targeted: consumer and target are the same character.
+	resolver.ResolveReagent(0, "Lesser_Barrier_Brew", 0)
+
+	var barriers: Array = consumer._active_buffs.filter(
+			func(b): return b.type == Types.Buff_Type.Barrier)
+	assert_eq(barriers.size(), 1, "Lesser Barrier Brew must grant one Barrier buff")
+	assert_eq(barriers[0].value, 40, "At default potency the Barrier value equals the reagent's magnitude")
+
+func test_extra_potency_stacks_additively_with_a_traits_own_amplification() -> void:
+	var trait_only_resolver: BattleResolver = _make_resolver()
+	var trait_only_target: Character = trait_only_resolver.GetCharacters()[0]
+	trait_only_target._trait = TestFactory.FakeAmplifyingTrait.new(0.5)
+	trait_only_target._current_health = 5
+
+	var trait_only_healed: int = trait_only_resolver.ResolveReagent(
+			0, "Restorative_Draught_Rare", 0)[0].amount
+
+	var stacked_resolver: BattleResolver = _make_resolver()
+	var stacked_target: Character = stacked_resolver.GetCharacters()[0]
+	stacked_target._trait = TestFactory.FakeAmplifyingTrait.new(0.5)
+	stacked_target._current_health = 5
+
+	var stacked_healed: int = stacked_resolver.ResolveReagent(
+			0, "Restorative_Draught_Rare", 0, 0.2)[0].amount
+
+	assert_gt(stacked_healed, trait_only_healed,
+			"p_extra_potency (a brew's potency bonus) must add on top of the trait's own bonus")
+
 func test_potency_raises_fractured_idols_cost_and_damage_bonus() -> void:
 	var baseline_resolver: BattleResolver = _make_resolver()
 	var baseline_consumer: Character = baseline_resolver.GetCharacters()[0]

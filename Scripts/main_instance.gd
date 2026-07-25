@@ -19,6 +19,7 @@ const EMISSARY = preload("res://Data/Character_Player_Variants/Emissary.tres")
 const CULTIST = preload("res://Data/Character_Player_Variants/Cultist.tres")
 const PLAGUE_DOCTOR = preload("res://Data/Character_Player_Variants/Plague_Doctor.tres")
 const WARLORD = preload("res://Data/Character_Player_Variants/Warlord.tres")
+const ALCHEMIST = preload("res://Data/Character_Player_Variants/Alchemist.tres")
 
 var _current_scene = null
 var _character_collection: CharacterCollection
@@ -71,6 +72,7 @@ func Init() -> void:
 	_character_collection.Add(CULTIST.duplicate(true))
 	_character_collection.Add(PLAGUE_DOCTOR.duplicate(true))
 	_character_collection.Add(WARLORD.duplicate(true))
+	_character_collection.Add(ALCHEMIST.duplicate(true))
 
 	var reagent_keys: Array = ReagentRegistry.REAGENTS.keys()
 	for i in 3:

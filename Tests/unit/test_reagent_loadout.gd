@@ -55,3 +55,26 @@ func test_size_and_key_at() -> void:
 	assert_eq(loadout.KeyAt(0), A_REAGENT_KEY)
 	assert_eq(loadout.KeyAt(1), ANOTHER_REAGENT_KEY)
 	assert_false(loadout.IsSpent(0))
+
+func test_add_brewed_appends_an_unspent_consumable_slot() -> void:
+	var loadout: ReagentLoadout = ReagentLoadout.new([A_REAGENT_KEY])
+
+	loadout.AddBrewed("Lesser_Restorative_Brew", 0.1)
+
+	assert_eq(loadout.Size(), 2)
+	assert_eq(loadout.KeyAt(1), "Lesser_Restorative_Brew")
+	assert_false(loadout.IsSpent(1))
+	assert_almost_eq(loadout.PotencyBonusAt(1), 0.1, 0.001)
+	assert_almost_eq(loadout.PotencyBonusAt(0), 0.0, 0.001, "Brought reagents keep a zero potency bonus")
+
+func test_try_consume_on_a_brewed_slot_never_touches_the_collection() -> void:
+	var collection: ReagentCollection = ReagentCollection.new()
+	var loadout: ReagentLoadout = ReagentLoadout.new([])
+	loadout.AddBrewed("Lesser_Restorative_Brew", 0.0)
+
+	assert_true(loadout.TryConsume(0, collection))
+
+	assert_true(loadout.IsSpent(0))
+	assert_eq(collection.GetCount("Lesser_Restorative_Brew"), 0,
+			"A brewed slot must never be added to or removed from the persistent inventory")
+	collection.free()

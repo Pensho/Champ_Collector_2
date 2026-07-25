@@ -17,6 +17,7 @@ enum EffectKind {
 	# Health_Cost_Damage_Bonus: magnitude is percent of consumer's max Health dealt as
 	# self-damage; secondary_magnitude is the percent battle-long bonus to damage dealt.
 	Health_Cost_Damage_Bonus,
+	Barrier,                   # magnitude: flat absorb amount granted as a Barrier buff
 }
 
 enum TargetKind
@@ -42,3 +43,6 @@ enum TargetKind
 @export var magnitude: float = 0.0
 # Health_Cost_Damage_Bonus only: the battle-long damage-dealt bonus percent. 0.0 otherwise.
 @export var secondary_magnitude: float = 0.0
+# True for reagents in the Alchemist's exclusive brew pool: excluded from
+# GetRandomKeyForRarity and never added to the persistent inventory.
+@export var brew_only: bool = false

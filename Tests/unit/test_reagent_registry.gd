@@ -6,15 +6,25 @@ extends GutTest
 
 const VALID_TARGET_KINDS_BY_EFFECT: Dictionary[ReagentData.EffectKind, Array] = {
 	ReagentData.EffectKind.Attribute_Increase: [ReagentData.TargetKind.Self_Target],
-	ReagentData.EffectKind.Heal: [ReagentData.TargetKind.One_Ally],
-	ReagentData.EffectKind.Remove_Debuffs: [ReagentData.TargetKind.One_Ally],
+	# One_Ally: standard Restorative Draught; Self_Target: the Alchemist's brewed
+	# Lesser Restorative Brew, consumed on the drinker's own turn.
+	ReagentData.EffectKind.Heal: [ReagentData.TargetKind.One_Ally, ReagentData.TargetKind.Self_Target],
+	# One_Ally: standard Purging Tonic; Self_Target: the brewed Lesser Purging Brew.
+	ReagentData.EffectKind.Remove_Debuffs: [ReagentData.TargetKind.One_Ally, ReagentData.TargetKind.Self_Target],
 	ReagentData.EffectKind.Destroy_Enemy_Buffs: [ReagentData.TargetKind.One_Enemy],
 	ReagentData.EffectKind.Reduce_Cooldown: [ReagentData.TargetKind.One_Ally],
 	ReagentData.EffectKind.Turn_Bar_Reset: [ReagentData.TargetKind.Self_Target],
 	ReagentData.EffectKind.Clear_Zone: [ReagentData.TargetKind.Zone_Section],
 	ReagentData.EffectKind.Random_Attribute_Increase: [ReagentData.TargetKind.Self_Target],
 	ReagentData.EffectKind.Health_Cost_Damage_Bonus: [ReagentData.TargetKind.Self_Target],
+	# One_Ally: a future non-brew Barrier Stone family (Concept_Document.md 3.3.3);
+	# Self_Target: the brewed Lesser Barrier Brew.
+	ReagentData.EffectKind.Barrier: [ReagentData.TargetKind.One_Ally, ReagentData.TargetKind.Self_Target],
 }
+
+const BREW_ONLY_KEYS: Array[String] = [
+	"Lesser_Restorative_Brew", "Lesser_Tincture", "Lesser_Barrier_Brew", "Lesser_Purging_Brew",
+]
 
 func test_every_registered_reagent_loads() -> void:
 	for reagent_id in ReagentRegistry.REAGENTS:
@@ -70,3 +80,16 @@ func test_binary_reagent_descriptions_mention_potency_modifiers() -> void:
 		if(data.binary):
 			assert_true(data.description.contains("potency modifier"),
 				"%s is binary but its description doesn't state potency-modifier immunity" % reagent_id)
+
+func test_brew_only_keys_are_registered() -> void:
+	for reagent_id in BREW_ONLY_KEYS:
+		var data: ReagentData = ReagentRegistry.Get(reagent_id)
+		assert_not_null(data, "Brew-only reagent %s must be registered" % reagent_id)
+		assert_true(data.brew_only, "%s must be marked brew_only" % reagent_id)
+
+func test_random_key_for_rarity_never_returns_a_brew_only_key() -> void:
+	for rarity in [Types.Rarity.Uncommon, Types.Rarity.Rare, Types.Rarity.Epic, Types.Rarity.Legendary]:
+		for i in 20:
+			var key: String = ReagentRegistry.GetRandomKeyForRarity(rarity)
+			assert_false(BREW_ONLY_KEYS.has(key),
+				"GetRandomKeyForRarity(%s) must never return a brew-only key, got %s" % [rarity, key])

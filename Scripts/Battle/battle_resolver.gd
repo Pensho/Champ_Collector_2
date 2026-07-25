@@ -358,11 +358,13 @@ func SetCurrentHealth(p_character_ID: int, p_health: int) -> Array[CombatResult]
 	return _EndBatch()
 
 
-func ResolveReagent(p_consumer_ID: int, p_reagent_key: String, p_target_ID: int) -> Array[CombatResult]:
+func ResolveReagent(
+		p_consumer_ID: int, p_reagent_key: String, p_target_ID: int,
+		p_extra_potency: float = 0.0) -> Array[CombatResult]:
 	_BeginBatch()
 	var reagent: ReagentData = ReagentRegistry.Get(p_reagent_key)
 	var consumer: Character = _characters[p_consumer_ID]
-	var potency: float = 1.0
+	var potency: float = 1.0 + p_extra_potency
 	if(not reagent.binary and null != consumer._trait
 			and consumer._trait._execution_steps.has(Types.Combat_Event.Reagent_Consumed)):
 		potency += consumer._trait.OnReagentConsumed(p_consumer_ID, reagent, self)
@@ -439,6 +441,13 @@ func _ResolveReagentEffect(
 				_Emit(result)
 			_damage_dealt_bonus[p_consumer_ID] = (_damage_dealt_bonus.get(p_consumer_ID, 0.0)
 					+ ReagentResolver.PercentFraction(p_reagent.secondary_magnitude, p_potency))
+		ReagentData.EffectKind.Barrier:
+			var barrier: StatusEffects.Buff = StatusEffects.Buff.new()
+			barrier.type = Types.Buff_Type.Barrier
+			barrier.name = "Barrier"
+			barrier.duration = 2
+			barrier.value = ReagentResolver.BarrierAmount(p_reagent.magnitude, p_potency)
+			ApplyBuff(p_target_ID, barrier)
 		var invalid_kind:
 			print("Invalid reagent effect kind: ", invalid_kind)
 

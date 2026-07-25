@@ -125,12 +125,12 @@ Current roles, their identity and purpose exist as follows:
     - Purpose: Damage
     - Passive: Reckless Momentum - When an offensive skill is used the Lancer gains one Momentum stack (+x% damage, -x/2% defence while stacks are held, maximum 5 stacks). When a defensive skill is used, the Lancer gains Phalanx Guard (a role-unique 2-turn buff, +x% defence) and all Momentum stacks are consumed.
         - 4% Uncommon, 6% Rare, 8% Epic, 10% Legendary
-- Alchemist (Not yet implemented)
+- Alchemist
     - A support character that focuses on buffing allies and debuffing enemies through various concoctions. Signature zone: Catalyst Cloud (see section 3.2.4.1). Primary attributes: Knowledge, Mysticism.
     - Purpose: Debuffer, Buffer
     - Passive: Fresh Batch - At the start of combat the Alchemist brews one concoction: a reagent drawn at random from an Alchemist-exclusive pool, occupying its own slot beyond the three brought reagents. It follows normal reagent rules (consumable once, by any champion, on their turn) except that it is never added to the inventory - if unconsumed when the battle ends, it is lost. Each fielded Alchemist brews their own concoction.
         - Brew potency: 90% Uncommon, 100% Rare, 110% Epic, 120% Legendary (relative to a standard reagent of equivalent effect); the brew pool holds 3 lesser reagents at Uncommon and Rare, 4 at Epic and Legendary (see section 3.3.3)
-        - Depends on the reagent system (see section 3.3.3 and `Plans/Plan_Reagent_Combat_Application.md`); inactive until reagents exist.
+        - Brews are self-targeted (the consumer is always the recipient). Magnitudes: Lesser Restorative Brew heals 10% of max Health; Lesser Tincture grants +5% to one random primary attribute, battle-long; Lesser Barrier Brew grants a flat 40 absorb Barrier; Lesser Purging Brew (Epic/Legendary pool only) removes 1 debuff.
 - Sorcerer
     - A damage dealer that harnesses the power of magic to deal Area of Effect damage and control the battlefield. Wields the unstable, shunned magic left behind by the God of Magic, and excels at drawing power from reagents scavenged from that era's ruins. Signature zone: Unstable Rift (see section 3.2.4.1). Primary attributes: Mysticism, Knowledge.
     - Purpose: Damage, Debuffer, Control
@@ -807,14 +807,15 @@ Singletons:
   1 Health) and grants a battle-long +10/13/16/20% (by rarity) to damage dealt.
   Potency modifiers raise both the cost and the bonus. God of Magic lore family.
 
-Alchemist brew pool — an Alchemist-exclusive pool of lesser scalar reagents; pool
-size is 3 at Uncommon and Rare, 4 at Epic and Legendary:
-* Lesser Restorative Brew: a small heal for a percentage of one ally's max Health.
-* Lesser Tincture: a small battle-long increase to one random primary attribute of
-  one ally.
-* Lesser Barrier Brew: a small Barrier on one ally.
-* Lesser Purging Brew (Epic and Legendary Alchemists only): removes one debuff from
-  one ally.
+Alchemist brew pool — an Alchemist-exclusive pool of lesser scalar reagents,
+self-targeted (the consumer is always the recipient); pool size is 3 at Uncommon and
+Rare, 4 at Epic and Legendary:
+* Lesser Restorative Brew: heals the consumer for 10% of their max Health.
+* Lesser Tincture: a small battle-long +5% increase to one random primary attribute
+  of the consumer.
+* Lesser Barrier Brew: grants the consumer a Barrier with a flat 40 absorb amount.
+* Lesser Purging Brew (Epic and Legendary Alchemists only): removes up to 1 debuff
+  from the consumer.
 
 ### 3.4. Game Modes
 TODO

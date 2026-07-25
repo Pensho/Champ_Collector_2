@@ -67,3 +67,9 @@ func OnAllyDeath(_p_owner_ID: int, _p_dead_ally_ID: int, _p_resolver: BattleReso
 func OnAllyDamageTaken(
 		_p_owner_ID: int, _p_damaged_ally_ID: int, _p_resolver: BattleResolver) -> float:
 	return 0.0
+
+func BrewReagentKey(_p_random: RandomNumberGenerator) -> String:
+	return ""
+
+func GetBrewPotencyBonus() -> float:
+	return 0.0

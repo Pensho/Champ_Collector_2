@@ -6,7 +6,7 @@
 [ext_resource type="Script" uid="uid://bdj0g5fc8d26k" path="res://Scripts/UI/Battle_UI/turn_bar.gd" id="3_6lbqc"]
 [ext_resource type="PackedScene" uid="uid://bte7ljry64t3x" path="res://Scenes/ui/Battle_UI/Skill_Button.tscn" id="5_nm010"]
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="10_rvbdk"]
-[ext_resource type="PackedScene" path="res://Scenes/ui/Battle_UI/Reagent_Button.tscn" id="11_reagent"]
+[ext_resource type="PackedScene" uid="uid://c6r15fjhq4x2p" path="res://Scenes/ui/Battle_UI/Reagent_Button.tscn" id="11_reagent"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4blpl"]
 bg_color = Color(0.635797, 0.5513, 0.269355, 0.482353)
@@ -42,7 +42,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_gfldn")
 _skill_buttons = [NodePath("Skill_1"), NodePath("Skill_2"), NodePath("Skill_3")]
-_reagent_buttons = [NodePath("Reagent_1"), NodePath("Reagent_2"), NodePath("Reagent_3")]
+_reagent_buttons = [NodePath("Reagent_1"), NodePath("Reagent_2"), NodePath("Reagent_3"), NodePath("Reagent_4")]
 _battle_duration_label = NodePath("Label_Battle_Duration")
 
 [node name="PlayerInfoBox" type="Panel" parent="." unique_id=1195450184 node_paths=PackedStringArray("_character_turn_markers")]
@@ -126,35 +126,35 @@ expand_mode = 1
 [node name="Skill_Focus" type="TextureRect" parent="." unique_id=1486618200]
 material = ExtResource("2_d07u5")
 layout_mode = 0
-offset_left = -211.0
-offset_top = 2.0
-offset_right = -11.0
-offset_bottom = 202.0
+offset_left = -170.0
+offset_top = 12.0
+offset_right = -15.0
+offset_bottom = 167.0
 texture = SubResource("GradientTexture2D_6lbqc")
 
 [node name="Skill_1" parent="." unique_id=1278959153 instance=ExtResource("5_nm010")]
 visible = false
 layout_mode = 0
-offset_left = 1102.0
+offset_left = 1110.0
 offset_top = 125.0
-offset_right = 1252.0
-offset_bottom = 275.0
+offset_right = 1235.0
+offset_bottom = 250.0
 
 [node name="Skill_2" parent="." unique_id=1094189333 instance=ExtResource("5_nm010")]
 visible = false
 layout_mode = 0
-offset_left = 1102.0
+offset_left = 1110.0
 offset_top = 289.0
-offset_right = 1252.0
-offset_bottom = 439.0
+offset_right = 1235.0
+offset_bottom = 414.0
 
 [node name="Skill_3" parent="." unique_id=206559452 instance=ExtResource("5_nm010")]
 visible = false
 layout_mode = 0
-offset_left = 1103.0
+offset_left = 1110.0
 offset_top = 453.0
-offset_right = 1253.0
-offset_bottom = 603.0
+offset_right = 1235.0
+offset_bottom = 578.0
 
 [node name="Label_Battle_Duration" type="Label" parent="." unique_id=2087459621]
 layout_mode = 0
@@ -167,26 +167,30 @@ theme = ExtResource("10_rvbdk")
 [node name="Reagent_1" parent="." unique_id=347484170 instance=ExtResource("11_reagent")]
 visible = false
 layout_mode = 0
-offset_left = 972.0
-offset_top = 125.0
-offset_right = 1072.0
-offset_bottom = 225.0
+offset_left = 870.0
+offset_top = 25.0
+offset_right = 945.0
 
 [node name="Reagent_2" parent="." unique_id=347484171 instance=ExtResource("11_reagent")]
 visible = false
 layout_mode = 0
-offset_left = 972.0
-offset_top = 289.0
-offset_right = 1072.0
-offset_bottom = 389.0
+offset_left = 970.0
+offset_top = 25.0
+offset_right = 1045.0
 
 [node name="Reagent_3" parent="." unique_id=347484172 instance=ExtResource("11_reagent")]
 visible = false
 layout_mode = 0
-offset_left = 972.0
-offset_top = 453.0
-offset_right = 1072.0
-offset_bottom = 553.0
+offset_left = 1070.0
+offset_top = 25.0
+offset_right = 1145.0
+
+[node name="Reagent_4" parent="." unique_id=347484173 instance=ExtResource("11_reagent")]
+visible = false
+layout_mode = 0
+offset_left = 1170.0
+offset_top = 25.0
+offset_right = 1245.0
 
 [connection signal="button_up" from="Skill_1" to="." method="_on_skill_1_button_up"]
 [connection signal="button_up" from="Skill_2" to="." method="_on_skill_2_button_up"]
@@ -194,3 +198,4 @@ offset_bottom = 553.0
 [connection signal="button_up" from="Reagent_1" to="." method="_on_reagent_1_button_up"]
 [connection signal="button_up" from="Reagent_2" to="." method="_on_reagent_2_button_up"]
 [connection signal="button_up" from="Reagent_3" to="." method="_on_reagent_3_button_up"]
+[connection signal="button_up" from="Reagent_4" to="." method="_on_reagent_4_button_up"]

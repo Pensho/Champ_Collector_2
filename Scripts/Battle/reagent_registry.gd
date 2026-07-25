@@ -5,6 +5,10 @@ class_name ReagentRegistry extends Node
 ## StatusEffectRegistry (DirAccess-based discovery is unsafe on Android export).
 
 const REAGENTS: Dictionary[String, ReagentData] = {
+	"Lesser_Restorative_Brew": preload("res://Data/Reagents/Alchemist_Brews/Lesser_Restorative_Brew.tres"),
+	"Lesser_Tincture": preload("res://Data/Reagents/Alchemist_Brews/Lesser_Tincture.tres"),
+	"Lesser_Barrier_Brew": preload("res://Data/Reagents/Alchemist_Brews/Lesser_Barrier_Brew.tres"),
+	"Lesser_Purging_Brew": preload("res://Data/Reagents/Alchemist_Brews/Lesser_Purging_Brew.tres"),
 	"Fractured_Idol_Epic": preload("res://Data/Reagents/Fractured_Idol/Fractured_Idol_Epic.tres"),
 	"Fractured_Idol_Legendary": preload("res://Data/Reagents/Fractured_Idol/Fractured_Idol_Legendary.tres"),
 	"Fractured_Idol_Rare": preload("res://Data/Reagents/Fractured_Idol/Fractured_Idol_Rare.tres"),
@@ -83,6 +87,6 @@ static func Get(p_id: String) -> ReagentData:
 static func GetRandomKeyForRarity(p_rarity: Types.Rarity) -> String:
 	var matching_keys: Array[String] = []
 	for reagent_key in REAGENTS.keys():
-		if(REAGENTS[reagent_key].rarity == p_rarity):
+		if(REAGENTS[reagent_key].rarity == p_rarity and not REAGENTS[reagent_key].brew_only):
 			matching_keys.append(reagent_key)
 	return matching_keys[randi_range(0, matching_keys.size() - 1)]

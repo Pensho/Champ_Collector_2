@@ -34,5 +34,9 @@ static func PotencyScaledCount(p_magnitude: float, p_potency: float) -> int:
 	return int(floor(p_magnitude * p_potency))
 
 
+static func BarrierAmount(p_magnitude: float, p_potency: float) -> int:
+	return int(ceil(p_magnitude * p_potency))
+
+
 static func RandomTinctureAttribute(p_random: RandomNumberGenerator) -> Types.Attribute:
 	return TINCTURE_ATTRIBUTES[p_random.randi_range(0, TINCTURE_ATTRIBUTES.size() - 1)]

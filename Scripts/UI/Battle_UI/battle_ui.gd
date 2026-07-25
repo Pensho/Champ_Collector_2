@@ -35,9 +35,9 @@ var _pending_reagent_index: int = -1
 @warning_ignore_restore("unused_private_class_variable")
 
 func Init(p_environment_effects: Array[PackedScene]) -> void:
-	SKILL_GLOW_POS_1 = Vector2(_skill_buttons[0].position.x - 25.0, _skill_buttons[0].position.y - 25.0)
-	SKILL_GLOW_POS_2 = Vector2(_skill_buttons[1].position.x - 25.0, _skill_buttons[1].position.y - 25.0)
-	SKILL_GLOW_POS_3 = Vector2(_skill_buttons[2].position.x - 25.0, _skill_buttons[2].position.y - 25.0)
+	SKILL_GLOW_POS_1 = Vector2(_skill_buttons[0].position.x - 15.0, _skill_buttons[0].position.y - 15.0)
+	SKILL_GLOW_POS_2 = Vector2(_skill_buttons[1].position.x - 15.0, _skill_buttons[1].position.y - 15.0)
+	SKILL_GLOW_POS_3 = Vector2(_skill_buttons[2].position.x - 15.0, _skill_buttons[2].position.y - 15.0)
 	for i in p_environment_effects:
 		_environment_effects.append(i.instantiate())
 
@@ -157,3 +157,6 @@ func _on_reagent_2_button_up() -> void:
 
 func _on_reagent_3_button_up() -> void:
 	battle_reagent_selected.emit(2)
+
+func _on_reagent_4_button_up() -> void:
+	battle_reagent_selected.emit(3)
