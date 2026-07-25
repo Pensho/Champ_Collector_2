@@ -94,6 +94,25 @@ func test_apply_graft_makes_trait_dispatch_the_grafts_hook() -> void:
 	assert_true((character._trait as TestGraftEffect).start_of_battle_called)
 	assert_eq(character._active_buffs.size(), 1, "The graft's Start_Combat hook should have applied a buff")
 
+# --- Placeholder trait (pre-graft passive display) ---
+
+func test_ungrafted_symbiote_shows_the_placeholder_trait() -> void:
+	var character: Character = Character.new()
+	character.InstantiateNew(SYMBIOTE_PRESET, 0)
+
+	assert_true(character._trait is SymbioteTrait,
+			"An ungrafted Symbiote should show the Graft placeholder trait, not go traitless")
+
+func test_apply_graft_replaces_the_placeholder_trait() -> void:
+	var character: Character = Character.new()
+	character.InstantiateNew(SYMBIOTE_PRESET, 0)
+
+	character.ApplyGraft(load(TEST_GRAFT_EFFECT_PATH))
+
+	assert_false(character._trait is SymbioteTrait,
+			"Grafting should replace the placeholder trait with the acquired GraftEffect")
+	assert_true(character._trait is TestGraftEffect)
+
 # --- Persistence round trip ---
 
 func test_collection_serialize_deserialize_round_trips_graft() -> void:
