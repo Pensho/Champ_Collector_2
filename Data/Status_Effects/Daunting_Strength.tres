@@ -9,3 +9,4 @@ magnitude_kind = 2
 magnitude = 2.0
 duration_default = 2
 icon = ExtResource("2_icon")
+description = "Doubles the damage of the next attack."

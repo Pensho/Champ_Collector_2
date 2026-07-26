@@ -11,3 +11,4 @@ attribute_modifiers = Dictionary[int, float]({
 applies_on_self_tick = false
 applies_on_target_snapshot = true
 icon = ExtResource("2_icon")
+description = "Gain bonus Defense per stack of momentum consumed."

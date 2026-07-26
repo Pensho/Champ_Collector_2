@@ -8,6 +8,7 @@ const TRAIT_UI_ELEMENT_BLANK = preload("uid://cdwqpx4sgt42a")
 @export var _trait_tooltips: Array[ToolTip]
 @export var _target_ID: int = -1
 @export var _status_effect_textures: Array[TextureRect]
+@export var _status_effect_tooltips: Array[ToolTip]
 
 var _status_effect: Dictionary[int, int]
 var _status_effect_counter: int = 0
@@ -23,7 +24,8 @@ var _status_effect_counter: int = 0
 func _on_button_target_button_up() -> void:
 	battle_target_selected.emit(_target_ID)
 
-func AddStatusEffect(p_effect_texture: Texture, p_duration: int) -> int:
+func AddStatusEffect(
+		p_effect_texture: Texture, p_duration: int, p_title: String, p_description: String) -> int:
 	for slot in _status_effect_textures.size():
 		if (not _status_effect_textures[slot].is_visible_in_tree()):
 			_status_effect_textures[slot].texture = p_effect_texture
@@ -31,6 +33,8 @@ func AddStatusEffect(p_effect_texture: Texture, p_duration: int) -> int:
 			_status_effect_counter += 1
 			_status_effect_textures[slot].show()
 			SetStatusEffectDuration(slot, p_duration)
+			_status_effect_tooltips[slot].title_text = p_title
+			_status_effect_tooltips[slot].description_text = p_description
 			return _status_effect_counter - 1
 	print("character_battle_repr.gd/AddStatusEffect: Failed to add status effect!")
 	return -1

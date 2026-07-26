@@ -10,3 +10,4 @@ magnitude = 0.3
 duration_default = 2
 applies_on_self_tick = false
 icon = ExtResource("2_icon")
+description = "When this buff expires, it deals magical damage to all enemies, scaling with the holder's Mysticism."

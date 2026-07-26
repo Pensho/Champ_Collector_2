@@ -190,3 +190,9 @@ enum Combat_Event
 
 func RarityName(p_rarity: Types.Rarity) -> String:
 	return Types.Rarity.keys()[p_rarity - 1]
+
+func BuffName(p_type: Types.Buff_Type) -> String:
+	return Types.Buff_Type.keys()[p_type].replace("_", " ")
+
+func DebuffName(p_type: Types.Debuff_Type) -> String:
+	return Types.Debuff_Type.keys()[p_type].replace("_", " ")

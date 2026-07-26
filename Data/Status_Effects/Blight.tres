@@ -10,3 +10,4 @@ magnitude = 0.5
 duration_default = 2
 applies_on_self_tick = false
 icon = ExtResource("2_icon")
+description = "Healing received is reduced by 50%."

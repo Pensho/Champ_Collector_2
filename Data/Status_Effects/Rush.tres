@@ -20,3 +20,4 @@ attribute_modifiers = Dictionary[int, float]({
 magnitude = 0.3
 duration_default = 2
 icon = ExtResource("2_icon")
+description = "Increases all primary attributes except Health by 30%. When the buff expires, it applies Stun to the character for 1 turn; this Stun cannot be resisted."

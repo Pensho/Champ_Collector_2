@@ -20,3 +20,19 @@ const KEYWORDS: Dictionary[String, Color] = {
 	"Burn": Color(1.0, 0.0, 0.0, 1.0),
 	"Burning": Color(1.0, 0.0, 0.0, 1.0),
 }
+
+static func ApplyKeywordColors(p_text: String) -> String:
+	var regex = RegEx.new()
+	var processed_text = p_text
+
+	for keyword in KEYWORDS.keys():
+		var color_code = KEYWORDS[keyword].to_html()
+		var pattern = "(?i)\\b(" + keyword + ")\\b"
+		regex.compile(pattern)
+
+		# $1 inserts the text found in the first set of parentheses
+		var replacement = "[color=" + color_code + "]$1[/color]"
+
+		processed_text = regex.sub(processed_text, replacement, true)
+
+	return processed_text

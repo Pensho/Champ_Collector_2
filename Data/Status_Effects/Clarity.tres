@@ -14,3 +14,4 @@ duration_default = 2
 applies_on_self_tick = false
 applies_on_target_snapshot = true
 icon = ExtResource("2_icon")
+description = "Increases Resistance by 30%."

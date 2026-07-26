@@ -12,3 +12,4 @@ attribute_modifiers = Dictionary[int, float]({
 magnitude = 0.3
 duration_default = 2
 icon = ExtResource("2_icon")
+description = "Increases Mysticism by 30%."

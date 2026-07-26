@@ -21,3 +21,4 @@ magnitude = 0.2
 duration_default = 2
 self_tick_max_health_cost_percent = 0.05
 icon = ExtResource("2_icon")
+description = "Increases all primary attributes except Health by 20%, but the character loses 5% of their max Health every time they take a turn."

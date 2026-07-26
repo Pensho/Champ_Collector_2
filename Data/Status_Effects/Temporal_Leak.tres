@@ -10,3 +10,4 @@ magnitude = 0.05
 duration_default = 2
 applies_on_self_tick = false
 icon = ExtResource("2_icon")
+description = "Every time this character moves 10% of the turn bar, they take damage equal to 5% of their own Speed."

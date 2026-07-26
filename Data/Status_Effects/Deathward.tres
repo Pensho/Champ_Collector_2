@@ -9,3 +9,4 @@ magnitude_kind = 0
 duration_default = 2
 applies_on_self_tick = false
 icon = ExtResource("2_icon")
+description = "The next hit that would be fatal instead leaves the character at 1 Health, then the buff is consumed."

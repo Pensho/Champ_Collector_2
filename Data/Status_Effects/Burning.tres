@@ -11,3 +11,4 @@ duration_default = 2
 overwritable = false
 stackable = true
 icon = ExtResource("2_icon")
+description = "Deals 4% of max Health as damage per stack each turn. Burning stacks, so repeated applications add independent instances up to the status-effect cap."

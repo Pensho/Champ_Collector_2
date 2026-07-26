@@ -39,3 +39,4 @@ enum MagnitudeKind {
 # Extra self-tick max-Health cost, independent of magnitude_kind.
 @export var self_tick_max_health_cost_percent: float = 0.0
 @export var icon: Texture2D
+@export_multiline var description: String = ""

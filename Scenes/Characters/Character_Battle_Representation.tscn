@@ -21,11 +21,12 @@ fill = 1
 fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(0.9, 0)
 
-[node name="Character" type="Node2D" unique_id=1722979971 node_paths=PackedStringArray("_trait_icons", "_trait_tooltips", "_status_effect_textures")]
+[node name="Character" type="Node2D" unique_id=1722979971 node_paths=PackedStringArray("_trait_icons", "_trait_tooltips", "_status_effect_textures", "_status_effect_tooltips")]
 script = ExtResource("1_hd4xr")
 _trait_icons = [NodePath("VBoxContainer_Trait_Elements/TextureRect"), NodePath("VBoxContainer_Trait_Elements/TextureRect2"), NodePath("VBoxContainer_Trait_Elements/TextureRect3")]
 _trait_tooltips = [NodePath("VBoxContainer_Trait_Elements/TextureRect"), NodePath("VBoxContainer_Trait_Elements/TextureRect2"), NodePath("VBoxContainer_Trait_Elements/TextureRect3")]
 _status_effect_textures = [NodePath("HBoxContainer_Status_Effects/Effect_1"), NodePath("HBoxContainer_Status_Effects/Effect_2"), NodePath("HBoxContainer_Status_Effects/Effect_3"), NodePath("HBoxContainer_Status_Effects/Effect_4"), NodePath("HBoxContainer_Status_Effects/Effect_5"), NodePath("HBoxContainer_Status_Effects/Effect_6"), NodePath("HBoxContainer_Status_Effects/Effect_7"), NodePath("HBoxContainer_Status_Effects/Effect_8")]
+_status_effect_tooltips = [NodePath("HBoxContainer_Status_Effects/Effect_1"), NodePath("HBoxContainer_Status_Effects/Effect_2"), NodePath("HBoxContainer_Status_Effects/Effect_3"), NodePath("HBoxContainer_Status_Effects/Effect_4"), NodePath("HBoxContainer_Status_Effects/Effect_5"), NodePath("HBoxContainer_Status_Effects/Effect_6"), NodePath("HBoxContainer_Status_Effects/Effect_7"), NodePath("HBoxContainer_Status_Effects/Effect_8")]
 
 [node name="VisualEffects" type="Node2D" parent="." node_paths=PackedStringArray("_source_texture_rect", "_echo_textures")]
 script = ExtResource("6_echovx")
@@ -149,6 +150,7 @@ visible = false
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 expand_mode = 1
+script = ExtResource("5_7k67v")
 
 [node name="Label" type="Label" parent="HBoxContainer_Status_Effects/Effect_1" unique_id=1460281220]
 layout_mode = 0
@@ -165,6 +167,7 @@ visible = false
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 expand_mode = 1
+script = ExtResource("5_7k67v")
 
 [node name="Label" type="Label" parent="HBoxContainer_Status_Effects/Effect_2" unique_id=295009170]
 layout_mode = 0
@@ -181,6 +184,7 @@ visible = false
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 expand_mode = 1
+script = ExtResource("5_7k67v")
 
 [node name="Label" type="Label" parent="HBoxContainer_Status_Effects/Effect_3" unique_id=448624446]
 layout_mode = 0
@@ -197,6 +201,7 @@ visible = false
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 expand_mode = 1
+script = ExtResource("5_7k67v")
 
 [node name="Label" type="Label" parent="HBoxContainer_Status_Effects/Effect_4" unique_id=998307567]
 layout_mode = 0
@@ -213,6 +218,7 @@ visible = false
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 expand_mode = 1
+script = ExtResource("5_7k67v")
 
 [node name="Label" type="Label" parent="HBoxContainer_Status_Effects/Effect_5" unique_id=1887947645]
 layout_mode = 0
@@ -229,6 +235,7 @@ visible = false
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 expand_mode = 1
+script = ExtResource("5_7k67v")
 
 [node name="Label" type="Label" parent="HBoxContainer_Status_Effects/Effect_6" unique_id=985537920]
 layout_mode = 0
@@ -245,6 +252,7 @@ visible = false
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 expand_mode = 1
+script = ExtResource("5_7k67v")
 
 [node name="Label" type="Label" parent="HBoxContainer_Status_Effects/Effect_7" unique_id=75422849]
 layout_mode = 0
@@ -261,6 +269,7 @@ visible = false
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 expand_mode = 1
+script = ExtResource("5_7k67v")
 
 [node name="Label" type="Label" parent="HBoxContainer_Status_Effects/Effect_8" unique_id=257118750]
 layout_mode = 0

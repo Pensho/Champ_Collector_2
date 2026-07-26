@@ -21,3 +21,4 @@ magnitude = 0.0
 duration_default = 2
 applies_on_target_snapshot = true
 icon = ExtResource("2_icon")
+description = "Reduces all primary attributes except Health, scaled to the applier's Standing Record rate per Infraction on the target, set at the moment of application."

@@ -5,7 +5,7 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_close"]
 
-[node name="HollowLedgerWindow" type="Control" unique_id=1838529508 node_paths=PackedStringArray("_tier_list", "_background", "_nature_option_button", "_nature_attribute_list")]
+[node name="HollowLedgerWindow" type="Control" unique_id=1838529508 node_paths=PackedStringArray("_tier_list", "_background", "_nature_option_button", "_nature_attribute_list", "_glossary_list")]
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_script")
@@ -13,6 +13,7 @@ _tier_list = NodePath("ColorRect/MarginContainer/VBoxContainer/TabContainer/Cham
 _background = NodePath("ColorRect")
 _nature_option_button = NodePath("ColorRect/MarginContainer/VBoxContainer/TabContainer/Natures/Natures_Content/Nature_Option_Button")
 _nature_attribute_list = NodePath("ColorRect/MarginContainer/VBoxContainer/TabContainer/Natures/Natures_Content/Nature_Scroll/Nature_Attribute_List")
+_glossary_list = NodePath("ColorRect/MarginContainer/VBoxContainer/TabContainer/Effects/Effects_Content/Effects_Scroll/Effect_List")
 
 [node name="ColorRect2" type="ColorRect" parent="." unique_id=244225679]
 layout_mode = 1
@@ -147,6 +148,39 @@ size_flags_vertical = 3
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 6
+
+[node name="Effects" type="MarginContainer" parent="ColorRect/MarginContainer/VBoxContainer/TabContainer" unique_id=100000020]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+metadata/_tab_index = 2
+
+[node name="Effects_Content" type="VBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer/TabContainer/Effects" unique_id=100000021]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Effects_Description" type="Label" parent="ColorRect/MarginContainer/VBoxContainer/TabContainer/Effects/Effects_Content" unique_id=100000022]
+layout_mode = 2
+theme = ExtResource("1_theme")
+theme_override_font_sizes/font_size = 24
+text = "A glossary of every buff and debuff that can appear in combat."
+autowrap_mode = 3
+
+[node name="Effects_Divider" type="HSeparator" parent="ColorRect/MarginContainer/VBoxContainer/TabContainer/Effects/Effects_Content" unique_id=100000023]
+layout_mode = 2
+
+[node name="Effects_Scroll" type="ScrollContainer" parent="ColorRect/MarginContainer/VBoxContainer/TabContainer/Effects/Effects_Content" unique_id=100000024]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Effect_List" type="VBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer/TabContainer/Effects/Effects_Content/Effects_Scroll" unique_id=100000025]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 12
 
 [node name="Button_Close_Bottom" type="Button" parent="ColorRect/MarginContainer/VBoxContainer" unique_id=533184899]
 layout_mode = 2

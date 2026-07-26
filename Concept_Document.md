@@ -312,6 +312,10 @@ A status effect is a temporary condition that can affect a character's attribute
 
 Unless stated otherwise, a buff or debuff lasts 2 turns.
 
+Status effect descriptions are surfaced to the player in two places: a press-and-hold
+tooltip on each status icon during combat, and a browsable glossary tab in the Hollow
+Ledger. Both read the same static, authored description per effect.
+
 ##### 3.2.3.1 Turn Bar Effects
 * Anchor (Debuff): The character cannot be pushed forward or backward on the turn bar by skills.
 * Temporal Leak (Debuff): Every time this character moves 10% of the bar, they take damage equal to 5% of their own Speed.

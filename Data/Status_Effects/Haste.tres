@@ -14,3 +14,4 @@ duration_default = 2
 overwritable = false
 stackable = true
 icon = ExtResource("2_icon")
+description = "Increases Speed by 20%. Haste stacks, so repeated applications add independent instances up to the status-effect cap."

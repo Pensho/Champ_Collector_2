@@ -31,6 +31,7 @@ const RARITY_COLORS: Dictionary[Types.Rarity, Color] = {
 @export var _background: ColorRect
 @export var _nature_option_button: OptionButton
 @export var _nature_attribute_list: VBoxContainer
+@export var _glossary_list: VBoxContainer
 
 func GetSize() -> Vector2:
 	return Vector2(_background.get_rect().size.x, _background.get_rect().size.y)
@@ -47,6 +48,7 @@ func Init() -> void:
 		_nature_option_button.add_item(preset._name)
 
 	BuildNatureList(NATURE_PRESETS[0])
+	BuildGlossary()
 
 func BuildTierSection(p_tier: FortuneFavorTier) -> VBoxContainer:
 	var section: VBoxContainer = VBoxContainer.new()
@@ -120,6 +122,63 @@ static func DescribeWeight(p_weight: int, p_min: int, p_max: int) -> String:
 	if p_weight >= p_max - int(0.25 * weight_range):
 		return "High"
 	return "Medium"
+
+func BuildGlossary() -> void:
+	for child in _glossary_list.get_children():
+		child.queue_free()
+
+	_glossary_list.add_child(BuildGlossaryHeader("Buffs"))
+	for buff_name in Types.Buff_Type.keys():
+		var buff_type: Types.Buff_Type = Types.Buff_Type[buff_name]
+		if(Types.Buff_Type.Invalid == buff_type):
+			continue
+		_glossary_list.add_child(BuildGlossaryRow(
+				StatusEffectRegistry.BuffData(buff_type), Types.BuffName(buff_type)))
+
+	_glossary_list.add_child(BuildGlossaryHeader("Debuffs"))
+	for debuff_name in Types.Debuff_Type.keys():
+		var debuff_type: Types.Debuff_Type = Types.Debuff_Type[debuff_name]
+		if(Types.Debuff_Type.Invalid == debuff_type):
+			continue
+		_glossary_list.add_child(BuildGlossaryRow(
+				StatusEffectRegistry.DebuffData(debuff_type), Types.DebuffName(debuff_type)))
+
+func BuildGlossaryHeader(p_text: String) -> Label:
+	var header: Label = Label.new()
+	header.text = p_text
+	header.add_theme_font_size_override("font_size", 18)
+	return header
+
+func BuildGlossaryRow(p_data: StatusEffectData, p_display_name: String) -> HBoxContainer:
+	var row: HBoxContainer = HBoxContainer.new()
+
+	var icon: TextureRect = TextureRect.new()
+	icon.texture = p_data.icon
+	icon.custom_minimum_size = Vector2(48, 48)
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	row.add_child(icon)
+
+	var text_column: VBoxContainer = VBoxContainer.new()
+	text_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+	var name_label: Label = Label.new()
+	name_label.text = p_display_name
+	if KeyWordColors.KEYWORDS.has(p_display_name):
+		name_label.add_theme_color_override("font_color", KeyWordColors.KEYWORDS[p_display_name])
+	text_column.add_child(name_label)
+
+	# A plain autowrap Label, not a RichTextLabel: dozens of fit_content
+	# RichTextLabels inside this nested ScrollContainer chain blow out Godot's
+	# deferred-update message queue and crash the engine.
+	var description_label: Label = Label.new()
+	description_label.text = p_data.description
+	description_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	text_column.add_child(description_label)
+
+	row.add_child(text_column)
+	return row
 
 func _on_nature_selected(p_index: int) -> void:
 	BuildNatureList(NATURE_PRESETS[p_index])

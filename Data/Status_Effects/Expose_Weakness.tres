@@ -11,3 +11,4 @@ attribute_modifiers = Dictionary[int, float]({
 magnitude = 0.3
 applies_on_target_snapshot = true
 icon = ExtResource("2_icon")
+description = "Reduces Defense by 30%."

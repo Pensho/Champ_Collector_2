@@ -12,3 +12,4 @@ attribute_modifiers = Dictionary[int, float]({
 magnitude = 15.0
 duration_default = 2
 icon = ExtResource("2_icon")
+description = "Increases Critical Chance by 15 percentage points."

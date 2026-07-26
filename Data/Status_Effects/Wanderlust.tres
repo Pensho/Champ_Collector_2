@@ -9,3 +9,4 @@ magnitude_kind = 13
 magnitude = 0.2
 duration_default = 2
 icon = ExtResource("2_icon")
+description = "At the start of each of the character's turns, gain +20% to one random primary stat until their next turn."

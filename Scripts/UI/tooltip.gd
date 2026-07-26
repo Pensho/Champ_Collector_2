@@ -38,7 +38,7 @@ func _show_tooltip() -> void:
 	active_tooltip.get_node("MainVisuals/MarginContainer/VBoxContainer/Label_Title").text = title_text
 	
 	# 2. Process the Description for Keywords
-	var processed_desc = _apply_keyword_colors(description_text)
+	var processed_desc = KEYWORD_COLORS.ApplyKeywordColors(description_text)
 	
 	# 3. Apply to RichTextLabel (Note: use .text or .append_text with BBCode)
 	active_tooltip.get_node("MainVisuals/MarginContainer/VBoxContainer/Label_Description").text = processed_desc
@@ -53,22 +53,6 @@ func _show_tooltip() -> void:
 		mouse_position.x -= popup_width
 	
 	_animate_entrance()
-
-func _apply_keyword_colors(original_text: String) -> String:
-	var regex = RegEx.new()
-	var processed_text = original_text
-	
-	for keyword in KEYWORD_COLORS.KEYWORDS.keys():
-		var color_code = KEYWORD_COLORS.KEYWORDS[keyword].to_html()
-		var pattern = "(?i)\\b(" + keyword + ")\\b"
-		regex.compile(pattern)
-		
-		# $1 inserts the text found in the first set of parentheses
-		var replacement = "[color=" + color_code + "]$1[/color]"
-		
-		processed_text = regex.sub(processed_text, replacement, true)
-		
-	return processed_text
 
 func _animate_entrance() -> void:
 	visuals = active_tooltip.get_node("MainVisuals")

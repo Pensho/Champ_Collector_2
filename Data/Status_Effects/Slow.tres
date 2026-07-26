@@ -12,3 +12,4 @@ attribute_modifiers = Dictionary[int, float]({
 magnitude = 0.15
 duration_default = 2
 icon = ExtResource("2_icon")
+description = "Reduces Speed by 15%."

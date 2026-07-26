@@ -10,3 +10,4 @@ magnitude = 25.0
 duration_default = 2
 applies_on_self_tick = false
 icon = ExtResource("2_icon")
+description = "Critical hits against the character deal +25% Critical Damage."

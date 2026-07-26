@@ -10,3 +10,4 @@ magnitude = 15.0
 duration_default = 2
 applies_on_self_tick = false
 icon = ExtResource("2_icon")
+description = "Attacks against the character gain +15 percentage points Critical Chance."

@@ -10,3 +10,4 @@ magnitude = 0.1
 duration_default = 2
 applies_on_self_tick = false
 icon = ExtResource("2_icon")
+description = "The character is much more likely to be targeted by enemies and takes 10% less damage."

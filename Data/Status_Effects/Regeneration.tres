@@ -9,3 +9,4 @@ magnitude_kind = 1
 magnitude = 0.04
 duration_default = 2
 icon = ExtResource("2_icon")
+description = "Heals 4% of max Health at the start of each turn."

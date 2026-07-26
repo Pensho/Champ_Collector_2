@@ -10,3 +10,4 @@ magnitude = 0.5
 duration_default = 2
 applies_on_self_tick = false
 icon = ExtResource("2_icon")
+description = "The next reagent the character consumes has +50% effect."

@@ -394,16 +394,19 @@ func AttributeDamage(p_source_ID: int, p_amount: int) -> void:
 		_self_context._arguments["character_dmg_" + str(p_source_ID)] += p_amount
 
 func ShowStatusApplied(p_result: CombatResult) -> void:
-	var texture: Texture
+	var data: StatusEffectData
+	var title: String
 	var text_color: Color
 	if(p_result.is_buff):
-		texture = StatusEffectRegistry.BuffData(p_result.buff_type).icon
+		data = StatusEffectRegistry.BuffData(p_result.buff_type)
+		title = Types.BuffName(p_result.buff_type)
 		text_color = Color(0.335, 0.575, 0.838, 1.0)
 	else:
-		texture = StatusEffectRegistry.DebuffData(p_result.debuff_type).icon
+		data = StatusEffectRegistry.DebuffData(p_result.debuff_type)
+		title = Types.DebuffName(p_result.debuff_type)
 		text_color = Color(0.681, 0.152, 0.31, 1.0)
 	_status_visual_IDs[p_result.status_ID] = _character_representations[p_result.target_ID].AddStatusEffect(
-			texture, p_result.duration)
+			data.icon, p_result.duration, title, data.description)
 	if("" != p_result.text):
 		_battle_ui.SpawnCombatText(p_result.text, CombatTextPosition(p_result.target_ID), text_color)
 

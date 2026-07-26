@@ -12,3 +12,4 @@ attribute_modifiers = Dictionary[int, float]({
 magnitude = 0.4
 duration_default = 2
 icon = ExtResource("2_icon")
+description = "At the start of the character's turn, they take damage equal to 40% of the caster's Attack, snapshotted at the moment of application."

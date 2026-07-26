@@ -9,3 +9,4 @@ magnitude_kind = 12
 duration_default = 2
 applies_on_self_tick = false
 icon = ExtResource("2_icon")
+description = "A shield that absorbs damage up to a set amount before Health is touched. Barriers do not stack; a new Barrier replaces an existing one only if it is larger."

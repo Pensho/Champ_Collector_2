@@ -9,3 +9,4 @@ magnitude_kind = 0
 duration_default = 2
 applies_on_self_tick = false
 icon = ExtResource("2_icon")
+description = "The character cannot be pushed forward or backward on the turn bar by skills."
