@@ -34,7 +34,7 @@ func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
 	_momentum_per_stack = MOMENTUM_PER_STACK.get(p_rarity, 0.0)
 	_phalanx_guard_defense = PHALANX_GUARD_DEFENSE.get(p_rarity, 0.0)
-	_trait_texture = load("res://Assets/Champ_Collector/Icons/Status_Effects/Phalanx_Guard/Phalanx_Guard.jpg")
+	_trait_texture = load("res://Assets/Champ_Collector/Icons/Abilities/Passives/Lancer_Trait/lancer_trait.png")
 	_title = "Reckless Momentum"
 	_body = ("Offensive skills grant a Momentum stack that gives more Attack and less Defense per stack. " +
 			"Using a defensive skill grants Phalanx Guard and consumes all stacks.")
