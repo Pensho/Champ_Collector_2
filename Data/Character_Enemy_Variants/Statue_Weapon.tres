@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_m7np0"]
 [ext_resource type="Resource" uid="uid://dvgwxvsovsldc" path="res://Data/Character_Skill_Variants/Attack_Skills/Stab.tres" id="2_ttuqr"]
 [ext_resource type="Resource" uid="uid://dsehiu3g0rbyd" path="res://Data/Character_Skill_Variants/Attack_Skills/Crush.tres" id="3_ttuqr"]
-[ext_resource type="Resource" uid="uid://cuj66xo5ynhtl" path="res://Data/Character_Traits/Statue_Weapon_Trait.tres" id="4_2mmo3"]
+[ext_resource type="Resource" uid="uid://cuj66xo5ynhtl" path="res://Data/Character_Traits/Enemy_Traits/Statue_Weapon_Trait.tres" id="4_2mmo3"]
 
 [resource]
 script = ExtResource("2_m7np0")
