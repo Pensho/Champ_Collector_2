@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="CharacterPreset" load_steps=11 format=3 uid="uid://cg7ffffaaw1hy"]
+[gd_resource type="Resource" script_class="CharacterPreset" format=3 uid="uid://cg7ffffaaw1hy"]
 
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_cgy53"]
 [ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_yuery"]
@@ -29,5 +29,5 @@ _resistance = 30
 _mysticism = 70
 _knowledge = 10
 _attribute_weight_types_available = Array[ExtResource("1_yuery")]([ExtResource("2_kgg4d"), ExtResource("3_atjrr"), ExtResource("4_mfxwy"), ExtResource("5_hh5c7"), ExtResource("6_rbi6t"), ExtResource("7_atjrr")])
-_preset_UID = "uid://cg7ffffaaw1hy"
+_preset_path = "res://Data/Character_Player_Variants/Herald_of_the_loom.tres"
 metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

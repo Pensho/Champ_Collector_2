@@ -50,11 +50,11 @@ var _active_buffs: Array[StatusEffects.Buff] = []
 var _active_debuffs: Array[StatusEffects.Debuff] = []
 @warning_ignore_restore("unused_private_class_variable")
 
-var _preset_UID: String = ""
+var _preset_path: String = ""
 
 func InstantiateNew(p_preset: CharacterPreset, p_instance_ID: int) -> void:
 	_instance_ID = p_instance_ID
-	_preset_UID = p_preset._preset_UID
+	_preset_path = p_preset._preset_path
 	
 	_name = p_preset._name
 	_texture = p_preset._texture

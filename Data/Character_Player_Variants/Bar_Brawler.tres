@@ -29,5 +29,5 @@ _accuracy = 40
 _resistance = 70
 _mysticism = 10
 _attribute_weight_types_available = Array[ExtResource("1_iqgp1")]([ExtResource("2_56cds"), ExtResource("3_mowhv"), ExtResource("4_e70qb"), ExtResource("5_woc2i"), ExtResource("6_0dq2p"), ExtResource("7_iphvn")])
-_preset_UID = "uid://dnup7y7ax8jck"
+_preset_path = "res://Data/Character_Player_Variants/Bar_Brawler.tres"
 metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

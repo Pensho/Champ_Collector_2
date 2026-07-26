@@ -31,5 +31,5 @@ _mysticism = 70
 _knowledge = 10
 _attribute_weight_types_available = Array[ExtResource("1_6otwp")]([ExtResource("2_is80k"), ExtResource("3_lbdjd"), ExtResource("4_04wjo"), ExtResource("5_22nff"), ExtResource("6_rnfgs"), ExtResource("7_xvd8e")])
 _trait = ExtResource("8_hmclr")
-_preset_UID = "uid://7adgp1emx6yk"
+_preset_path = "res://Data/Character_Player_Variants/Bloodmage.tres"
 metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

@@ -14,7 +14,7 @@ func Serialize() -> Dictionary:
 	var character_data: Array = []
 	for character : Character in _characters.values():
 		character_data.append({
-			"preset_UID": character._preset_UID,
+			"preset_path": character._preset_path,
 			"experience": character._experience,
 			"level": character._level,
 			"attributes": character._attributes.duplicate(true),
@@ -38,10 +38,16 @@ func Deserialize(p_data: Dictionary) -> void:
 		_current_max_amount = p_data["max_amount"]
 	
 	for character_data in p_data["characters"]:
-		if character_data["preset_UID"].is_empty():
-			push_error("Skipping character with empty preset_UID (instance_ID: %d)" % character_data.get("instance_ID", -1))
+		var preset_path: String = character_data.get("preset_path", character_data.get("preset_UID", ""))
+		if preset_path.is_empty():
+			push_error("Skipping character with empty preset_path (instance_ID: %d)" % character_data.get("instance_ID", -1))
 			continue
-		var preset: CharacterPreset = load(character_data["preset_UID"]).duplicate(true)
+		var preset_resource: Resource = load(preset_path)
+		if preset_resource == null:
+			push_error("Skipping character with unresolvable preset_path '%s' (instance_ID: %d)" %
+				[preset_path, character_data.get("instance_ID", -1)])
+			continue
+		var preset: CharacterPreset = preset_resource.duplicate(true)
 		var new_character: Character = Character.new()
 		new_character.InstantiateNew(preset, character_data["instance_ID"])
 		new_character._level = int(character_data["level"])

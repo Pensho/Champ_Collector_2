@@ -29,5 +29,5 @@ _mysticism = 80
 _knowledge = 10
 _attribute_weight_types_available = Array[ExtResource("1_weight")]([ExtResource("6_arcane"), ExtResource("7_conjurer"), ExtResource("4_apdyv"), ExtResource("5_k1jtx")])
 _trait = ExtResource("9_trait")
-_preset_UID = "uid://ck3pj0uyq6xgh"
+_preset_path = "res://Data/Character_Player_Variants/Diviner.tres"
 metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

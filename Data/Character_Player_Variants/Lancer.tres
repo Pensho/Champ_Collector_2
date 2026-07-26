@@ -31,4 +31,4 @@ _mysticism = 10
 _knowledge = 20
 _attribute_weight_types_available = Array[ExtResource("1_evj8v")]([ExtResource("2_xhsct"), ExtResource("3_swxqs"), ExtResource("4_0bkhb"), ExtResource("5_0ir7o"), ExtResource("6_kmh4c"), ExtResource("7_tdvd8")])
 _trait = ExtResource("11_0bkhb")
-_preset_UID = "uid://foglcohrhsnh"
+_preset_path = "res://Data/Character_Player_Variants/Lancer.tres"

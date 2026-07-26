@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="CharacterPreset" load_steps=13 format=3 uid="uid://dkdgfkpt6si8y"]
+[gd_resource type="Resource" script_class="CharacterPreset" format=3 uid="uid://dkdgfkpt6si8y"]
 
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_apwnd"]
 [ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_hflnl"]
@@ -30,5 +30,5 @@ _resistance = 30
 _mysticism = 10
 _knowledge = 120
 _attribute_weight_types_available = Array[ExtResource("1_hflnl")]([ExtResource("2_leoeh"), ExtResource("3_eqvax"), ExtResource("4_or5t3"), ExtResource("5_psd0m"), ExtResource("6_2vu7x"), ExtResource("7_y80ud")])
-_preset_UID = "uid://dkdgfkpt6si8y"
+_preset_path = "res://Data/Character_Player_Variants/Centaur_Archivist.tres"
 metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

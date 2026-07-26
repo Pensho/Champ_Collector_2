@@ -8,5 +8,5 @@ _name = "Uncommon Spear"
 _slot = 1
 _rarity = 2
 _texture_path = "res://Assets/Champ_Collector/Icons/Items/Spear/Spear_0002.png"
-_preset_UID = "uid://byulx2i0268n3"
+_preset_path = "res://Data/Item_Presets/Weapon_Basic_Spear.tres"
 metadata/_custom_type_script = "uid://8knbs7yij5eh"

@@ -1,14 +1,14 @@
-[gd_resource type="Resource" script_class="CharacterPreset" format=3]
+[gd_resource type="Resource" script_class="CharacterPreset" format=3 uid="uid://84sxl2otcwbb"]
 
-[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_weight"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_weight"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_preset"]
 [ext_resource type="Resource" uid="uid://dl0s23m0g4w3i" path="res://Data/Character_Skill_Variants/Zap.tres" id="3_zap"]
 [ext_resource type="Resource" uid="uid://ca6l45nune41w" path="res://Data/Character_Skill_Variants/Support_Skills/Power_Tide.tres" id="4_power_tide"]
 [ext_resource type="Resource" uid="uid://cbgjuq0ikkygr" path="res://Data/Character_Skill_Variants/Support_Skills/Stalwart_Hymn.tres" id="5_hymn"]
 [ext_resource type="Resource" uid="uid://ytl3g36itqfs" path="res://Data/Attribute_Weights/Learned.tres" id="6_learned"]
 [ext_resource type="Resource" uid="uid://4fnej15sbkkv" path="res://Data/Attribute_Weights/Arcane.tres" id="7_arcane"]
-[ext_resource type="Resource" path="res://Data/Attribute_Weights/Calculating.tres" id="8_calculating"]
+[ext_resource type="Resource" uid="uid://bvo4uj38cgjg3" path="res://Data/Attribute_Weights/Calculating.tres" id="8_calculating"]
 [ext_resource type="Resource" path="res://Data/Character_Traits/Fresh_Batch_Trait.tres" id="9_trait"]
 
 [resource]
@@ -28,5 +28,5 @@ _mysticism = 80
 _knowledge = 10
 _attribute_weight_types_available = Array[ExtResource("1_weight")]([ExtResource("6_learned"), ExtResource("7_arcane"), ExtResource("8_calculating")])
 _trait = ExtResource("9_trait")
-_preset_UID = "uid://calchmst9br3w01"
+_preset_path = "res://Data/Character_Player_Variants/Alchemist.tres"
 metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

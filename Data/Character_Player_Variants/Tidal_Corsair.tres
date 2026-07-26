@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="CharacterPreset" load_steps=13 format=3 uid="uid://bmqvx8opoocu7"]
+[gd_resource type="Resource" script_class="CharacterPreset" format=3 uid="uid://bmqvx8opoocu7"]
 
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_6xory"]
 [ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_d1vc0"]
@@ -32,5 +32,5 @@ _mysticism = 20
 _knowledge = 20
 _attribute_weight_types_available = Array[ExtResource("1_d1vc0")]([ExtResource("2_2d1j8"), ExtResource("3_80fin"), ExtResource("4_2hq8y"), ExtResource("5_k73h2"), ExtResource("6_80fin")])
 _trait = ExtResource("3_yd2bh")
-_preset_UID = "uid://bmqvx8opoocu7"
+_preset_path = "res://Data/Character_Player_Variants/Tidal_Corsair.tres"
 metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="CharacterPreset" load_steps=11 format=3 uid="uid://wofv42g341ac"]
+[gd_resource type="Resource" script_class="CharacterPreset" format=3 uid="uid://wofv42g341ac"]
 
 [ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_sg0ng"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_wypv1"]
@@ -28,5 +28,5 @@ _resistance = 30
 _mysticism = 50
 _knowledge = 50
 _attribute_weight_types_available = Array[ExtResource("1_sg0ng")]([ExtResource("2_mvvkq"), ExtResource("3_qgja1"), ExtResource("4_yl6xa"), ExtResource("5_53dyg"), ExtResource("6_dxy17")])
-_preset_UID = "uid://wofv42g341ac"
+_preset_path = "res://Data/Character_Player_Variants/Chronophage.tres"
 metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

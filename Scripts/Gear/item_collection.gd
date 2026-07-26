@@ -17,7 +17,7 @@ func Serialize() -> Dictionary:
 	var items_data: Array = []
 	for item: Equipment in _items.values():
 		items_data.append({
-			"preset_UID": item._preset_UID,
+			"preset_path": item._preset_path,
 			"attributes": item._attributes.duplicate(true),
 			"instance_ID": item._instance_ID,
 			"held_by": item._held_by,
@@ -35,10 +35,16 @@ func Deserialize(p_data: Dictionary) -> void:
 		_next_id = p_data["next_ID"]
 	_items.clear()
 	for item_data in p_data["items"]:
-		if item_data["preset_UID"].is_empty():
-			push_error("Skipping item with empty preset_UID (instance_ID: %d)" % item_data.get("instance_ID", -1))
+		var preset_path: String = item_data.get("preset_path", item_data.get("preset_UID", ""))
+		if preset_path.is_empty():
+			push_error("Skipping item with empty preset_path (instance_ID: %d)" % item_data.get("instance_ID", -1))
 			continue
-		var preset: EquipmentPreset = load(item_data["preset_UID"]).duplicate(true)
+		var preset_resource: Resource = load(preset_path)
+		if preset_resource == null:
+			push_error("Skipping item with unresolvable preset_path '%s' (instance_ID: %d)" %
+				[preset_path, item_data.get("instance_ID", -1)])
+			continue
+		var preset: EquipmentPreset = preset_resource.duplicate(true)
 		var new_equipment: Equipment = Equipment.new()
 		new_equipment.InstantiateNew(preset, item_data["instance_ID"])
 		

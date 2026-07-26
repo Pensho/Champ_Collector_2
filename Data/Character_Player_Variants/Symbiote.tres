@@ -29,5 +29,5 @@ _mysticism = 10
 _knowledge = 10
 _attribute_weight_types_available = Array[ExtResource("1_weight")]([ExtResource("6_sturdy"), ExtResource("7_resilient"), ExtResource("8_gluttonous")])
 _trait = ExtResource("9_symbiote_trait")
-_preset_UID = "uid://2mmrc7vnsrqw"
+_preset_path = "res://Data/Character_Player_Variants/Symbiote.tres"
 metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

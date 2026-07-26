@@ -28,5 +28,5 @@ _mysticism = 90
 _knowledge = 10
 _attribute_weight_types_available = Array[ExtResource("1_weight")]([ExtResource("6_arcane"), ExtResource("7_conjurer"), ExtResource("8_learned")])
 _trait = ExtResource("9_trait")
-_preset_UID = "uid://c9vsl2rj4ktbm"
+_preset_path = "res://Data/Character_Player_Variants/Cultist.tres"
 metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

@@ -244,7 +244,7 @@ load time. There is a consistent **preset (template) vs instance (runtime)** spl
 
 | Class | File | Role |
 |---|---|---|
-| `CharacterPreset` | `Scripts/Character/character_preset.gd` | Champion archetype: base stats, skills, available attribute-weight presets, trait, `_preset_UID` |
+| `CharacterPreset` | `Scripts/Character/character_preset.gd` | Champion archetype: base stats, skills, available attribute-weight presets, trait, `_preset_path` |
 | `Skill` | `Scripts/Character/skill_data.gd` | Skill definition: target, damage scaling, turn effect, cooldown, type, buffs/debuffs |
 | `AttributeWeightPreset` | `Scripts/Character/attribute_weight_preset.gd` | Per-attribute weight distribution used at level-up |
 | `EquipmentPreset` | `Scripts/Gear/equipment_preset.gd` | Gear template: slot, rarity, attribute composition |
@@ -489,7 +489,7 @@ Alchemist brew pool.
 - `Character` (`Scripts/Character/character.gd`, `extends RefCounted`) is built from a `CharacterPreset`
   via `InstantiateNew(preset, instanceID)`. It copies preset stats into an
   `_attributes: Dictionary[Types.Attribute, int]`, picks a random `AttributeWeightPreset` from
-  those the preset allows, duplicates the trait, and stores `_preset_UID` for later save/restore.
+  those the preset allows, duplicates the trait, and stores `_preset_path` for later save/restore.
   Equipped gear lives in `_held_items: Dictionary[Types.Slot, int]` (slot → item instance ID).
 - `Equipment` (`Scripts/Gear/equipment.gd`) is the runtime gear instance, holding its slot,
   rarity, and rolled attributes.
@@ -848,9 +848,9 @@ before characters**, so that gear referenced by a character's `_held_items` alre
 `ItemCollection` when the character is restored. `_deserialize_group_by_type` is used to force this
 order, and remaining saveable nodes are deserialized afterward.
 
-What persists: per-character `_preset_UID`, level, experience, attributes, and held-item IDs;
+What persists: per-character `_preset_path`, level, experience, attributes, and held-item IDs;
 per-item slot/rarity/attributes; plus resource and adventure state. On load, characters are
-rebuilt from their preset UID and then have their saved progression re-applied.
+rebuilt from their preset's `res://` path and then have their saved progression re-applied.
 
 Serialization roundtrips are covered by `test_collection_serialization.gd`
 (see `Test_Design_Document.md`).

@@ -32,5 +32,5 @@ _knowledge = 20
 _critical_chance = 15
 _attribute_weight_types_available = Array[ExtResource("1_3d6g2")]([ExtResource("2_034qc"), ExtResource("3_lvnnc"), ExtResource("4_gh1m0"), ExtResource("5_wgxjw"), ExtResource("6_lvnnc")])
 _trait = ExtResource("10_gh1m0")
-_preset_UID = "uid://bm0sqmepyeoam"
+_preset_path = "res://Data/Character_Player_Variants/Thief.tres"
 metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="CharacterPreset" load_steps=11 format=3 uid="uid://d04mj1rh28xgt"]
+[gd_resource type="Resource" script_class="CharacterPreset" format=3 uid="uid://d04mj1rh28xgt"]
 
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_quj0m"]
 [ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_udkit"]
@@ -28,5 +28,5 @@ _resistance = 30
 _mysticism = 30
 _knowledge = 75
 _attribute_weight_types_available = Array[ExtResource("1_udkit")]([ExtResource("2_7i0tf"), ExtResource("3_p5buu"), ExtResource("4_6fgkh"), ExtResource("5_drmfa"), ExtResource("6_mtgtk"), ExtResource("7_frc1v")])
-_preset_UID = "uid://d04mj1rh28xgt"
+_preset_path = "res://Data/Character_Player_Variants/Architect.tres"
 metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

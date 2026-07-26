@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="CharacterPreset" format=3]
+[gd_resource type="Resource" script_class="CharacterPreset" format=3 uid="uid://bq7rxhgujqk6t"]
 
-[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_weight"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_weight"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_preset"]
 [ext_resource type="Resource" uid="uid://dpduy25aqyibo" path="res://Data/Character_Skill_Variants/Bash.tres" id="3_bash"]
 [ext_resource type="Resource" uid="uid://cbgjuq0ikkygr" path="res://Data/Character_Skill_Variants/Support_Skills/Stalwart_Hymn.tres" id="4_stalwart_hymn"]
@@ -28,5 +28,5 @@ _mysticism = 5
 _knowledge = 15
 _attribute_weight_types_available = Array[ExtResource("1_weight")]([ExtResource("6_sturdy"), ExtResource("7_resilient"), ExtResource("8_fierce")])
 _trait = ExtResource("9_trait")
-_preset_UID = "uid://xfe1wgmaw5of1"
+_preset_path = "res://Data/Character_Player_Variants/Warlord.tres"
 metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

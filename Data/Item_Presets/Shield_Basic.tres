@@ -8,5 +8,5 @@ _name = "Uncommon Shield"
 _slot = 2
 _rarity = 2
 _texture_path = "res://Assets/Champ_Collector/Icons/Items/Shield/Shield_0002.png"
-_preset_UID = "uid://deri0o1rplmuk"
+_preset_path = "res://Data/Item_Presets/Shield_Basic.tres"
 metadata/_custom_type_script = "uid://8knbs7yij5eh"

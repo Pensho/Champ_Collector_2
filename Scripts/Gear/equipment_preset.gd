@@ -6,7 +6,7 @@ class_name EquipmentPreset extends Resource
 @export var _slot: Types.Slot
 @export var _rarity: Types.Rarity
 @export var _texture_path: String = ""
-@export var _preset_UID: String = ""
+@export var _preset_path: String = ""
 
 var _attributes: Dictionary[Types.Attribute, int] = {
 	Types.Attribute.Health: 0,
