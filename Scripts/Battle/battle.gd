@@ -189,6 +189,13 @@ func _process(p_delta: float) -> void:
 		_:
 			pass
 
+func _unhandled_input(p_event: InputEvent) -> void:
+	if(BattleState.Selecting_Graft_Target != _state):
+		return
+	if(p_event is InputEventMouseButton and p_event.pressed and
+			MOUSE_BUTTON_LEFT == p_event.button_index):
+		_state = BattleState.Awaiting_Player_Input
+
 func AdvanceTurnBar(p_delta: float) -> void:
 	for character_ID in _characters.keys():
 		if(_characters[character_ID]._current_health <= 0):
