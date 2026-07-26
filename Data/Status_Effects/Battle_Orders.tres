@@ -1,13 +1,12 @@
-[gd_resource type="Resource" script_class="StatusEffectData" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="StatusEffectData" format=3 uid="uid://bswo857rsinuc"]
 
-[ext_resource type="Script" path="res://Scripts/Battle/status_effect_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://Assets/Champ_Collector/Icons/Status_Effects/Battle_Orders/Battle_Orders.png" id="2_icon"]
+[ext_resource type="Script" uid="uid://sqkdniv48rkg" path="res://Scripts/Battle/status_effect_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://bmt3nrsyvfahx" path="res://Assets/Champ_Collector/Icons/Status_Effects/Battle_Orders/Battle_Orders.png" id="2_icon"]
 
 [resource]
 script = ExtResource("1_script")
 magnitude_kind = 15
 magnitude = 0.05
-duration_default = 2
 applies_on_self_tick = false
 icon = ExtResource("2_icon")
 description = "When the character takes damage, all allies gain 5% turn bar."

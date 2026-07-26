@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="StatusEffectData" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="StatusEffectData" format=3 uid="uid://c8ywhuufq8obs"]
 
-[ext_resource type="Script" path="res://Scripts/Battle/status_effect_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://Assets/Champ_Collector/Icons/Status_Effects/Plague/Plague.png" id="2_icon"]
+[ext_resource type="Script" uid="uid://sqkdniv48rkg" path="res://Scripts/Battle/status_effect_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://yx8u8njpejc5" path="res://Assets/Champ_Collector/Icons/Status_Effects/Plague/Plague.png" id="2_icon"]
 
 [resource]
 script = ExtResource("1_script")
@@ -10,6 +10,5 @@ attribute_modifiers = Dictionary[int, float]({
 6: 1.0
 })
 magnitude = 0.3
-duration_default = 2
 icon = ExtResource("2_icon")
 description = "Deals magical damage each turn equal to 30% of the caster's Mysticism, snapshotted at the moment of application. When it expires, it spreads to a random other enemy with fresh duration."

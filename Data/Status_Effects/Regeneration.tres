@@ -1,12 +1,11 @@
-[gd_resource type="Resource" script_class="StatusEffectData" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="StatusEffectData" format=3 uid="uid://c14p3kyj668mx"]
 
-[ext_resource type="Script" path="res://Scripts/Battle/status_effect_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://Assets/Champ_Collector/Icons/Status_Effects/Regeneration/Regeneration.png" id="2_icon"]
+[ext_resource type="Script" uid="uid://sqkdniv48rkg" path="res://Scripts/Battle/status_effect_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://d2tbjajtjd6cy" path="res://Assets/Champ_Collector/Icons/Status_Effects/Regeneration/Regeneration.png" id="2_icon"]
 
 [resource]
 script = ExtResource("1_script")
 magnitude_kind = 1
 magnitude = 0.04
-duration_default = 2
 icon = ExtResource("2_icon")
 description = "Heals 4% of max Health at the start of each turn."

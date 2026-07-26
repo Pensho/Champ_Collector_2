@@ -10,7 +10,7 @@
 [ext_resource type="Resource" uid="uid://b8nee1hs4g663" path="res://Data/Attribute_Weights/Conjurer.tres" id="5_22nff"]
 [ext_resource type="Resource" uid="uid://c60oh3whnodsm" path="res://Data/Attribute_Weights/Resilient.tres" id="6_rnfgs"]
 [ext_resource type="Resource" uid="uid://4fnej15sbkkv" path="res://Data/Attribute_Weights/Arcane.tres" id="7_xvd8e"]
-[ext_resource type="Resource" path="res://Data/Character_Traits/Hemoclarity_Trait.tres" id="8_hmclr"]
+[ext_resource type="Resource" uid="uid://csg0hemoclrt1" path="res://Data/Character_Traits/Hemoclarity_Trait.tres" id="8_hmclr"]
 
 [resource]
 script = ExtResource("2_8awhw")

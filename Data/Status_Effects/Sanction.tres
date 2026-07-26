@@ -1,11 +1,10 @@
-[gd_resource type="Resource" script_class="StatusEffectData" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="StatusEffectData" format=3 uid="uid://d3po7j4ul1bqs"]
 
-[ext_resource type="Script" path="res://Scripts/Battle/status_effect_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://Assets/Champ_Collector/Icons/Status_Effects/Sanction/Sanction.png" id="2_icon"]
+[ext_resource type="Script" uid="uid://sqkdniv48rkg" path="res://Scripts/Battle/status_effect_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://bt6afb8rygc81" path="res://Assets/Champ_Collector/Icons/Status_Effects/Sanction/Sanction.png" id="2_icon"]
 
 [resource]
 script = ExtResource("1_script")
-magnitude_kind = 0
 attribute_modifiers = Dictionary[int, float]({
 1: -1.0,
 2: -1.0,
@@ -17,8 +16,6 @@ attribute_modifiers = Dictionary[int, float]({
 8: -1.0,
 9: -1.0
 })
-magnitude = 0.0
-duration_default = 2
 applies_on_target_snapshot = true
 icon = ExtResource("2_icon")
 description = "Reduces all primary attributes except Health, scaled to the applier's Standing Record rate per Infraction on the target, set at the moment of application."
