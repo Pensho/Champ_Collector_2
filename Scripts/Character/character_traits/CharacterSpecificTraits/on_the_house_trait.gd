@@ -16,13 +16,13 @@ static func GetHealFraction(p_rarity: Types.Rarity) -> float:
 func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
 	_heal_fraction = GetHealFraction(p_rarity)
-	_trait_texture = load("res://Assets/Champ_Collector/Icons/Abilities/Heap_On/Heap_On_1.jpg")
+	_trait_texture = load("res://Assets/Champ_Collector/Icons/Abilities/Passives/On_The_House_Trait/On_The_House_Trait.png")
 	_execution_steps[Types.Combat_Event.Buff_Applied] = Callable(self, "OnBuffGained")
 	_execution_steps[Types.Combat_Event.Start_Turn] = Callable(self, "StartOfTurn")
 
 	_title = "On the House!"
-	_body = "Whenever the Bar Brawler gains a buff, from any source, all living allies" \
-			+ " (himself included) heal " + str(_heal_fraction * 100) + "% of their own max" \
+	_body = "Whenever the Bar Brawler gains a buff, all living player characters" \
+			+ " heal " + str(_heal_fraction * 100) + "% of their own max" \
 			+ " Health. This can happen at most once between his turns."
 
 func StartOfTurn(_p_owner_ID: int, _p_resolver: BattleResolver) -> void:
