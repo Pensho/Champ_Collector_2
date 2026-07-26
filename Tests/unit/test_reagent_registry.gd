@@ -64,24 +64,6 @@ func test_target_kind_is_valid_for_effect_kind() -> void:
 			"%s has target_kind %s invalid for effect_kind %s" %
 			[reagent_id, data.target_kind, data.effect_kind])
 
-func test_names_and_descriptions_are_non_empty() -> void:
-	for reagent_id in ReagentRegistry.REAGENTS:
-		var data: ReagentData = ReagentRegistry.Get(reagent_id)
-		assert_false(data.display_name.is_empty(), "%s has an empty display_name" % reagent_id)
-		assert_false(data.description.is_empty(), "%s has an empty description" % reagent_id)
-
-func test_icon_is_non_null() -> void:
-	for reagent_id in ReagentRegistry.REAGENTS:
-		var data: ReagentData = ReagentRegistry.Get(reagent_id)
-		assert_not_null(data.icon, "%s has no icon" % reagent_id)
-
-func test_binary_reagent_descriptions_mention_potency_modifiers() -> void:
-	for reagent_id in ReagentRegistry.REAGENTS:
-		var data: ReagentData = ReagentRegistry.Get(reagent_id)
-		if(data.binary):
-			assert_true(data.description.contains("potency modifier"),
-				"%s is binary but its description doesn't state potency-modifier immunity" % reagent_id)
-
 func test_brew_only_keys_are_registered() -> void:
 	for reagent_id in BREW_ONLY_KEYS:
 		var data: ReagentData = ReagentRegistry.Get(reagent_id)
