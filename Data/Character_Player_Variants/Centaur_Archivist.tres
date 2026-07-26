@@ -12,6 +12,7 @@
 [ext_resource type="Resource" uid="uid://bejf1a62v41gq" path="res://Data/Attribute_Weights/Marksman.tres" id="5_psd0m"]
 [ext_resource type="Resource" uid="uid://4fnej15sbkkv" path="res://Data/Attribute_Weights/Arcane.tres" id="6_2vu7x"]
 [ext_resource type="Resource" uid="uid://bvo4uj38cgjg3" path="res://Data/Attribute_Weights/Calculating.tres" id="7_y80ud"]
+[ext_resource type="Resource" path="res://Data/Character_Traits/Field_of_Study_Trait.tres" id="8_trait"]
 
 [resource]
 script = ExtResource("2_q0dfw")
@@ -30,5 +31,6 @@ _resistance = 30
 _mysticism = 10
 _knowledge = 120
 _attribute_weight_types_available = Array[ExtResource("1_hflnl")]([ExtResource("2_leoeh"), ExtResource("3_eqvax"), ExtResource("4_or5t3"), ExtResource("5_psd0m"), ExtResource("6_2vu7x"), ExtResource("7_y80ud")])
+_trait = ExtResource("8_trait")
 _preset_path = "res://Data/Character_Player_Variants/Centaur_Archivist.tres"
 metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

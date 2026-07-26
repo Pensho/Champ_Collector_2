@@ -25,6 +25,12 @@ Effort: **S** = hours, **M** = days, **L** = week+
 - **Knowledge-Bypass Variant of Cracked Facet** *(Priority: Low | Effort: S)*
   Alternative effect for the Appraiser's Cracked Facet debuff: instead of flat bonus Critical Damage taken, the target's Knowledge does not blunt critical hits while the debuff holds (bypassing the `Defender's Knowledge * 0.5` term in the Critical Damage formula). Thematic for the Knowledge-scaling Appraiser but swingy — worthless against low-Knowledge enemies, huge against high-Knowledge ones. Shelved in favor of the flat bonus.
 
+- **Speed as a Field of Study Weakness** *(Priority: Low | Effort: M)*
+  The Scholar's Field of Study currently excludes Speed from the identifiable weaknesses, because turn order is computed from base attributes and never reads the active-debuff attribute modifiers a Field of Study reduction rides on — so a Speed weakness would be identified but do nothing. Revisit if turn-order math is ever reworked to read live (debuffed) Speed.
+
+- **Watch Debuff Class Field Bloat** *(Priority: Low | Effort: M)*
+  `StatusEffects.Debuff` already carries two fields useful to only one trait each: `tick_bonus_per_debuff` (Comorbidity) and the `has_weakness_rider`/`weakness_attribute`/`weakness_reduction` trio (Field of Study). Fine at this size, but every future trait needing per-instance debuff state adds more fields that sit unused on every other debuff in the game. If a third one-off case shows up, stop and reassess the shared class's shape rather than adding a fourth. See Technical_Design_Document.md section 6.1.
+
 ---
 
 ## Characters & Progression

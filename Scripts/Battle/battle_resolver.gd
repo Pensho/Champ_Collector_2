@@ -812,6 +812,7 @@ func _EmitDebuffApplied(p_target_ID: int, p_debuff: StatusEffects.Debuff, p_disp
 	result.source_ID = p_debuff.source_ID
 	result.text = p_display_name
 	_Emit(result)
+	Skills.DispatchDebuffApplied(p_debuff, p_target_ID, _characters, self)
 
 
 ## Loses health, clamps, and handles the alive-to-dead transition.
@@ -922,6 +923,9 @@ func _TriggerExistingCasterDebuffs(
 		var data: StatusEffectData = StatusEffectRegistry.DebuffData(debuff.type)
 		if(null != data and data.applies_on_self_tick):
 			var tick_damage: int = 0
+			if(Skills.IsAttributeModifierKind(data.magnitude_kind)):
+				Skills.ApplyAttributeModifiers(data, debuff.value, p_caster_attributes)
+			Skills.ApplyWeaknessRider(debuff, p_caster_attributes)
 			match data.magnitude_kind:
 				StatusEffectData.MagnitudeKind.MaxHealthPercent:
 					tick_damage = int(floor(
@@ -929,8 +933,6 @@ func _TriggerExistingCasterDebuffs(
 									* GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER) * data.magnitude))
 				StatusEffectData.MagnitudeKind.CasterAttributeSnapshotPercent:
 					tick_damage = int(floor(debuff.value))
-				StatusEffectData.MagnitudeKind.AttributePercent, StatusEffectData.MagnitudeKind.AttributePercentagePointAdd:
-					Skills.ApplyAttributeModifiers(data, debuff.value, p_caster_attributes)
 				_:
 					pass
 			if(tick_damage > 0):

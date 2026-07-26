@@ -19,3 +19,9 @@ class Debuff extends Effect:
 	# Rarity-dependent bonus (e.g. the Plague Doctor's Comorbidity) stamped onto this
 	# debuff when it was cast, scaling its own tick damage with the target's debuff count.
 	var tick_bonus_per_debuff: float = 0.0
+	# Rider reduction on top of this debuff's own effect (the Scholar's Field of Study):
+	# -weakness_reduction fraction off weakness_attribute, applied wherever this debuff's
+	# own attribute snapshot is taken.
+	var has_weakness_rider: bool = false
+	var weakness_attribute: Types.Attribute = Types.Attribute.Health
+	var weakness_reduction: float = 0.0

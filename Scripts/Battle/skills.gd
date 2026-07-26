@@ -107,6 +107,29 @@ static func ApplyAttributeModifiers(
 		else:
 			p_attributes[attribute] += int(modifier_sign * ceilf(p_attributes[attribute] * resolved_value))
 
+## Applies a debuff's Field-of-Study weakness rider, if any, wherever the debuff's own
+## attribute snapshot is taken — independent of the carrying debuff's own magnitude_kind.
+static func ApplyWeaknessRider(
+							p_debuff: StatusEffects.Debuff,
+							p_attributes: Dictionary[Types.Attribute, int]) -> void:
+	if(not p_debuff.has_weakness_rider):
+		return
+	var attribute: Types.Attribute = p_debuff.weakness_attribute
+	p_attributes[attribute] -= int(ceilf(p_attributes[attribute] * p_debuff.weakness_reduction))
+
+## Fires an applier's Debuff_Applied trait hook when their debuff lands on someone
+## else — the applier-side counterpart to _EmitBuffApplied's target-side dispatch.
+static func DispatchDebuffApplied(
+							p_debuff: StatusEffects.Debuff,
+							p_target_ID: int,
+							p_characters: Dictionary[int, Character],
+							p_resolver: BattleResolver) -> void:
+	if(p_debuff.source_ID < 0 or not p_characters.has(p_debuff.source_ID)):
+		return
+	var applier: Character = p_characters[p_debuff.source_ID]
+	if(null != applier._trait and applier._trait._execution_steps.has(Types.Combat_Event.Debuff_Applied)):
+		applier._trait.OnDebuffApplied(p_debuff.source_ID, p_target_ID, p_debuff, p_resolver)
+
 # TODO: Right now the targeting only inherits the skill target and doesn't use
 # the buff targets yet.
 static func TriggerTargetBuffs(
@@ -125,9 +148,9 @@ static func TriggerTargetDebuffs(
 							p_target_attributes: Dictionary[Types.Attribute, int]) -> void:
 	for debuff in p_target._active_debuffs:
 		var data: StatusEffectData = StatusEffectRegistry.DebuffData(debuff.type)
-		if(null == data or not data.applies_on_target_snapshot or not IsAttributeModifierKind(data.magnitude_kind)):
-			continue
-		ApplyAttributeModifiers(data, debuff.value, p_target_attributes)
+		if(null != data and data.applies_on_target_snapshot and IsAttributeModifierKind(data.magnitude_kind)):
+			ApplyAttributeModifiers(data, debuff.value, p_target_attributes)
+		ApplyWeaknessRider(debuff, p_target_attributes)
 
 static func RollsCritical(p_crit_chance: int, p_random: RandomNumberGenerator) -> bool:
 	return p_random.randi_range(1, 100) <= p_crit_chance

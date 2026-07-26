@@ -76,3 +76,10 @@ func GetBrewPotencyBonus() -> float:
 
 func OnBuffGained(_p_owner_ID: int, _p_resolver: BattleResolver) -> void:
 	print("character_trait base class OnBuffGained() called!")
+
+func OnDebuffApplied(
+		_p_owner_ID: int,
+		_p_target_ID: int,
+		_p_debuff: StatusEffects.Debuff,
+		_p_resolver: BattleResolver) -> void:
+	print("character_trait base class OnDebuffApplied() called!")

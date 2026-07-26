@@ -363,6 +363,14 @@ resolver and is tested without the view. `CombatResult.Kind.Burning_Tick` was re
 `Debuff_Tick` since Bleed and Plague now report through the same self-tick damage result Burning
 used exclusively before.
 
+`StatusEffects.Debuff` also carries a small but growing set of fields useful to only one trait
+each, instead of every field being generic across all debuffs: `tick_bonus_per_debuff`
+(Comorbidity) and the `has_weakness_rider`/`weakness_attribute`/`weakness_reduction` trio (the
+Scholar's Field of Study, stamped in `OnDebuffApplied` onto whichever debuff triggered it, read by
+`Skills.ApplyWeaknessRider` at both self-tick and target-snapshot) both sit unused on every debuff
+instance that isn't theirs. Fine at two, but this is a shape to watch — see FeatureIdeas.md's
+"Watch Debuff Class Field Bloat" entry for the reassessment trigger.
+
 Batch 3 landed the consumed and event-triggered effects: two more `MagnitudeKind` values
 (`DamageAbsorb` for Barrier, `RandomAttributePercent` for Wanderlust) and three more
 `CombatResult.Kind` entries (`Attack_Missed`, `Debuff_Blocked`, `Barrier_Absorbed`). The
