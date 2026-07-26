@@ -121,7 +121,7 @@ once more opponents are designed.
   +2% / 3% / 4% / 5% Defense per stack, up to 9 stacks, lasting the rest of the battle.
 - **Attribute bonus:** none.
 - **Drawback:** Speed −15%.
-- **Implementation note:** needs a new stacking **Hardened** buff applied from an
+- **Implementation note:** needs a new stacking **Hardened** bonus applied from an
   on-damage-taken hook.
 
 ### Undertow

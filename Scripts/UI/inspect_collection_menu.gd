@@ -146,14 +146,11 @@ func ShowSelectedCharacter(p_instance_ID: int) -> void:
 
 	if(Types.Role.Symbiote == _character_collection[p_instance_ID]._role):
 		_selected_char_graft.show()
-		if(null == _character_collection[p_instance_ID]._graft):
-			_selected_char_graft.text = "Graft: Ungrafted"
-			_selected_char_graft_tooltip.title_text = "Graft"
-			_selected_char_graft_tooltip.description_text = ""
-		else:
-			_selected_char_graft.text = "Graft: " + _character_collection[p_instance_ID]._graft._title
-			_selected_char_graft_tooltip.title_text = _character_collection[p_instance_ID]._graft._title
-			_selected_char_graft_tooltip.description_text = _character_collection[p_instance_ID]._graft._body
+		var symbiote_trait: CharacterTrait = _character_collection[p_instance_ID]._trait
+		_selected_char_graft.text = ("Graft: Ungrafted" if null == _character_collection[p_instance_ID]._graft
+				else "Graft: " + symbiote_trait._title)
+		_selected_char_graft_tooltip.title_text = symbiote_trait._title
+		_selected_char_graft_tooltip.description_text = symbiote_trait._body
 	else:
 		_selected_char_graft.hide()
 

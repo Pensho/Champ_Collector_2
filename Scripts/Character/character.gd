@@ -101,14 +101,14 @@ func GetTotalAttributes() -> Dictionary[Types.Attribute, int]:
 	for attribute in battle_attributes.keys():
 		battle_attributes[attribute] += GetEquipmentBonus(attribute)
 		if(null != _graft):
-			battle_attributes[attribute] += _graft.GetAttributeDelta(attribute)
+			battle_attributes[attribute] += _graft.GetAttributeDelta(attribute, battle_attributes[attribute])
 	return battle_attributes
 
 func GetTotalAttribute(p_attribute: Types.Attribute) -> int:
 	var attribute_value: int = _attributes[p_attribute]
 	attribute_value += GetEquipmentBonus(p_attribute)
 	if(null != _graft):
-		attribute_value += _graft.GetAttributeDelta(p_attribute)
+		attribute_value += _graft.GetAttributeDelta(p_attribute, attribute_value)
 	return attribute_value
 
 func ApplyGraft(p_graft_effect: GraftEffect) -> void:

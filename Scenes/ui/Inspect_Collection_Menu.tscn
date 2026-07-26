@@ -427,6 +427,7 @@ title_text = null
 description_text = null
 
 [node name="Label_Character_Graft" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer" unique_id=1136376218]
+visible = false
 layout_mode = 2
 theme = ExtResource("1_riq8p")
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.47058824)

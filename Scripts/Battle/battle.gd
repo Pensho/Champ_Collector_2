@@ -503,8 +503,9 @@ func _OnGraftTargetSelected(p_target_ID: int) -> void:
 		print("Invalid target for graft, target offers no graft effect.")
 		return
 	_state = BattleState.Awaiting_Player_Input
-	_battle_ui.ShowGraftDescription(
-			p_target_ID, _characters[p_target_ID]._graft_effect._title, _characters[p_target_ID]._graft_effect._body)
+	var preview: GraftEffect = _characters[p_target_ID]._graft_effect.duplicate(true)
+	preview.Init(_characters[_turn_character_ID]._rarity)
+	_battle_ui.ShowGraftDescription(p_target_ID, preview._title, preview._body)
 
 func _on_battle_ui_battle_skill_selected(p_skill_ID: int) -> void:
 	if(BattleState.Awaiting_Player_Input != _state and BattleState.Selecting_Zone != _state):

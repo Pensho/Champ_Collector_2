@@ -14,19 +14,20 @@ func _make_graft_effect(p_rarity: Types.Rarity) -> TestGraftEffect:
 func test_attribute_delta_scales_bonus_by_rarity() -> void:
 	for rarity: Types.Rarity in TestGraftEffect.HEALTH_BONUS_PER_RARITY:
 		var graft_effect: TestGraftEffect = _make_graft_effect(rarity)
-		assert_eq(graft_effect.GetAttributeDelta(Types.Attribute.Health),
-				TestGraftEffect.HEALTH_BONUS_PER_RARITY[rarity],
+		var expected: int = int(ceilf(100 * TestGraftEffect.HEALTH_BONUS_PER_RARITY[rarity]))
+		assert_eq(graft_effect.GetAttributeDelta(Types.Attribute.Health, 100), expected,
 				"Health bonus should scale with rarity %s" % Types.RarityName(rarity))
 
 func test_attribute_delta_drawback_stays_flat_across_rarities() -> void:
+	var expected: int = -int(ceilf(100 * absf(TestGraftEffect.SPEED_DRAWBACK)))
 	for rarity: Types.Rarity in TestGraftEffect.HEALTH_BONUS_PER_RARITY:
 		var graft_effect: TestGraftEffect = _make_graft_effect(rarity)
-		assert_eq(graft_effect.GetAttributeDelta(Types.Attribute.Speed), TestGraftEffect.SPEED_DRAWBACK,
+		assert_eq(graft_effect.GetAttributeDelta(Types.Attribute.Speed, 100), expected,
 				"Drawback must not scale with rarity %s" % Types.RarityName(rarity))
 
 func test_attribute_delta_defaults_to_zero_for_unlisted_attributes() -> void:
 	var graft_effect: TestGraftEffect = _make_graft_effect(Types.Rarity.Epic)
-	assert_eq(graft_effect.GetAttributeDelta(Types.Attribute.Attack), 0)
+	assert_eq(graft_effect.GetAttributeDelta(Types.Attribute.Attack, 100), 0)
 
 # --- Character layering ---
 
@@ -34,21 +35,21 @@ func test_total_attribute_includes_graft_layer() -> void:
 	var character: Character = TestFactory.make_character()
 	character._rarity = Types.Rarity.Epic
 	var base_health: int = character._attributes[Types.Attribute.Health]
+	var expected_delta: int = int(ceilf(base_health * TestGraftEffect.HEALTH_BONUS_PER_RARITY[Types.Rarity.Epic]))
 
 	character.ApplyGraft(load(TEST_GRAFT_EFFECT_PATH))
 
-	assert_eq(character.GetTotalAttribute(Types.Attribute.Health),
-			base_health + TestGraftEffect.HEALTH_BONUS_PER_RARITY[Types.Rarity.Epic])
+	assert_eq(character.GetTotalAttribute(Types.Attribute.Health), base_health + expected_delta)
 
 func test_total_attribute_includes_graft_drawback() -> void:
 	var character: Character = TestFactory.make_character()
 	character._rarity = Types.Rarity.Rare
 	var base_speed: int = character._attributes[Types.Attribute.Speed]
+	var expected_delta: int = -int(ceilf(base_speed * absf(TestGraftEffect.SPEED_DRAWBACK)))
 
 	character.ApplyGraft(load(TEST_GRAFT_EFFECT_PATH))
 
-	assert_eq(character.GetTotalAttribute(Types.Attribute.Speed),
-			base_speed + TestGraftEffect.SPEED_DRAWBACK)
+	assert_eq(character.GetTotalAttribute(Types.Attribute.Speed), base_speed + expected_delta)
 
 func test_pristine_attributes_unchanged_by_graft() -> void:
 	var character: Character = TestFactory.make_character()
@@ -64,11 +65,12 @@ func test_get_total_attributes_includes_graft_layer_for_every_attribute() -> voi
 	var character: Character = TestFactory.make_character()
 	character._rarity = Types.Rarity.Epic
 	var base_health: int = character._attributes[Types.Attribute.Health]
+	var expected_delta: int = int(ceilf(base_health * TestGraftEffect.HEALTH_BONUS_PER_RARITY[Types.Rarity.Epic]))
 
 	character.ApplyGraft(load(TEST_GRAFT_EFFECT_PATH))
 
 	var totals: Dictionary[Types.Attribute, int] = character.GetTotalAttributes()
-	assert_eq(totals[Types.Attribute.Health], base_health + TestGraftEffect.HEALTH_BONUS_PER_RARITY[Types.Rarity.Epic])
+	assert_eq(totals[Types.Attribute.Health], base_health + expected_delta)
 
 # --- ApplyGraft identity and dispatch ---
 

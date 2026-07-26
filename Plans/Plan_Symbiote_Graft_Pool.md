@@ -52,6 +52,25 @@ Established by the machinery and the existing role traits
 
 ## Batch 1 steps
 
+**Status: implemented.** All four grafts, their `.tres`, and
+`Tests/unit/test_symbiote_graft_pool.gd` are in. Two deviations from the steps below,
+found during implementation and review:
+
+- The graft attribute layer (`GraftEffect`/`Character.GetTotalAttribute`) turned out to
+  only support flat-int deltas, not the design doc's percentages. Rather than bake
+  percentages into guessed flat numbers, `GraftEffect._attribute_percent_delta` and
+  `GetAttributeDelta` were changed to store percentages and compute the flat delta
+  live against the attribute's current base value (`ceilf`, sign applied after,
+  matching `Skills.ApplyAttributeModifiers`'s convention). This is a small machinery
+  change beyond the "no new engine code" framing below, made because it was the only
+  way to honor the design doc's literal percentages without guessing.
+- Reactive Plating's Hardened stacks and Strength in Numbers' living-ally scaling are
+  both implemented as mutations of that same `_attribute_percent_delta` (recomputed by
+  the relevant hooks), not `StatusEffects.Buff` — a graft's bonus is an inherent
+  property of the graft, not a battle-applied status effect, so it should never go
+  through the Buff/Debuff system. Worth stating explicitly in future graft-batch plans
+  so it isn't re-litigated per batch.
+
 ### 1. Wretched Conscript — pure stat
 - **New:** `Scripts/Character/character_traits/Grafts/wretched_conscript_graft.gd` + a
   `.tres` in `Data/Character_Traits/Grafts/`.
@@ -162,3 +181,14 @@ in place.
    and drops to the penalty when alone). Save/reload; confirm each graft persists (effect +
    attribute delta) and Inspect Collection shows "Graft: <name>" with the tooltip. **Remove
    the temporary wiring** — sourcing stays deferred.
+
+**Results:** suite green (535/536; the one failure is pre-existing and unrelated, in
+`test_reagent_registry.gd`), `gdlint Scripts/` clean. Runtime verification ran headlessly
+through `BattleResolver`/`CharacterCollection` (no windowed Godot available in this
+environment) rather than a manual in-editor battle; all four grafts behaved and persisted
+correctly. Manual play-testing by the user surfaced three further bugs, since fixed:
+the Inspect Collection graft label showing by default before any character was selected;
+the ungrafted tooltip not reusing `SymbioteTrait`'s placeholder text; and the in-battle
+graft-target-selection window showing the un-`Init()`'d resource's default "Title"/"Body"
+instead of the real graft text (`Battle._OnGraftTargetSelected` now previews with a
+duplicated, `Init()`'d instance scaled to the Symbiote's own rarity).
