@@ -38,6 +38,7 @@ var _pending_graft_target_ID: int = -1
 
 @warning_ignore_start("unused_private_class_variable")
 @onready var skill_focus: TextureRect = $Skill_Focus
+@onready var _graft_focus: TextureRect = $Graft_Focus
 @onready var _turn_bar: TurnBar = $PlayerInfoBox
 @warning_ignore_restore("unused_private_class_variable")
 
@@ -152,6 +153,24 @@ func _on_graft_permanence_confirmed() -> void:
 
 func HideGraftUI() -> void:
 	_graft_button.hide()
+	_graft_focus.hide()
+
+func ShowGraftHighlight() -> void:
+	_graft_focus.show()
+
+func HideGraftHighlight() -> void:
+	_graft_focus.hide()
+
+func HideSkillFocus() -> void:
+	skill_focus.position = SKILL_GLOW_POS_HIDDEN
+
+func HideSkillButtons() -> void:
+	for button in _skill_buttons:
+		button.hide()
+
+func ShowSkillButtons() -> void:
+	for button in _skill_buttons:
+		button.show()
 
 func ActiveSkillGlow(p_skill_ID: int) -> void:
 	match p_skill_ID:

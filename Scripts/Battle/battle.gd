@@ -194,7 +194,7 @@ func _unhandled_input(p_event: InputEvent) -> void:
 		return
 	if(p_event is InputEventMouseButton and p_event.pressed and
 			MOUSE_BUTTON_LEFT == p_event.button_index):
-		_state = BattleState.Awaiting_Player_Input
+		_LeaveGraftTargeting()
 
 func AdvanceTurnBar(p_delta: float) -> void:
 	for character_ID in _characters.keys():
@@ -509,10 +509,16 @@ func _OnGraftTargetSelected(p_target_ID: int) -> void:
 	if(null == _characters[p_target_ID]._graft_effect):
 		print("Invalid target for graft, target offers no graft effect.")
 		return
-	_state = BattleState.Awaiting_Player_Input
+	_LeaveGraftTargeting()
 	var preview: GraftEffect = _characters[p_target_ID]._graft_effect.duplicate(true)
 	preview.Init(_characters[_turn_character_ID]._rarity)
 	_battle_ui.ShowGraftDescription(p_target_ID, preview._title, preview._body)
+
+func _LeaveGraftTargeting() -> void:
+	_state = BattleState.Awaiting_Player_Input
+	_battle_ui.HideGraftHighlight()
+	_battle_ui.ShowSkillButtons()
+	_battle_ui.ActiveSkillGlow(_selected_skill_ID)
 
 func _on_battle_ui_battle_skill_selected(p_skill_ID: int) -> void:
 	if(BattleState.Awaiting_Player_Input != _state and BattleState.Selecting_Zone != _state):
@@ -575,6 +581,9 @@ func _on_battle_ui_battle_graft_selected() -> void:
 			null != _characters[_turn_character_ID]._graft):
 		return
 	_state = BattleState.Selecting_Graft_Target
+	_battle_ui.ShowGraftHighlight()
+	_battle_ui.HideSkillFocus()
+	_battle_ui.HideSkillButtons()
 
 func _on_battle_ui_graft_confirmed(p_target_ID: int) -> void:
 	_ResolveGraft(_turn_character_ID, p_target_ID)
