@@ -73,3 +73,6 @@ func BrewReagentKey(_p_random: RandomNumberGenerator) -> String:
 
 func GetBrewPotencyBonus() -> float:
 	return 0.0
+
+func OnBuffGained(_p_owner_ID: int, _p_resolver: BattleResolver) -> void:
+	print("character_trait base class OnBuffGained() called!")

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="CharacterPreset" load_steps=13 format=3 uid="uid://dnup7y7ax8jck"]
+[gd_resource type="Resource" script_class="CharacterPreset" format=3 uid="uid://dnup7y7ax8jck"]
 
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_ct0uv"]
 [ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_iqgp1"]
@@ -12,6 +12,7 @@
 [ext_resource type="Resource" uid="uid://c60oh3whnodsm" path="res://Data/Attribute_Weights/Resilient.tres" id="5_woc2i"]
 [ext_resource type="Resource" uid="uid://ytl3g36itqfs" path="res://Data/Attribute_Weights/Learned.tres" id="6_0dq2p"]
 [ext_resource type="Resource" uid="uid://bvo4uj38cgjg3" path="res://Data/Attribute_Weights/Calculating.tres" id="7_iphvn"]
+[ext_resource type="Resource" path="res://Data/Character_Traits/On_The_House_Trait.tres" id="8_oth"]
 
 [resource]
 script = ExtResource("2_dhkqx")
@@ -29,5 +30,6 @@ _accuracy = 40
 _resistance = 70
 _mysticism = 10
 _attribute_weight_types_available = Array[ExtResource("1_iqgp1")]([ExtResource("2_56cds"), ExtResource("3_mowhv"), ExtResource("4_e70qb"), ExtResource("5_woc2i"), ExtResource("6_0dq2p"), ExtResource("7_iphvn")])
+_trait = ExtResource("8_oth")
 _preset_path = "res://Data/Character_Player_Variants/Bar_Brawler.tres"
 metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

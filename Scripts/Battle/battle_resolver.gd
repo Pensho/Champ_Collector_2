@@ -372,6 +372,21 @@ func ResolveReagent(
 	return _EndBatch()
 
 
+## Heals each living target by a fraction of that target's own max Health (traits).
+func ResolveTraitHeal(p_target_IDs: Array[int], p_max_health_fraction: float) -> Array[CombatResult]:
+	_BeginBatch()
+	for target_ID in p_target_IDs:
+		if(not _characters.has(target_ID) or _characters[target_ID]._current_health <= 0):
+			continue
+		var requested: int = int(round(_MaxHealth(_characters[target_ID]) * p_max_health_fraction))
+		var healed: int = _ApplyHeal(target_ID, requested)
+		var result: CombatResult = CombatResult.new(CombatResult.Kind.Heal)
+		result.target_ID = target_ID
+		result.amount = healed
+		_Emit(result)
+	return _EndBatch()
+
+
 func ResolveTraitDamage(
 		p_caster_ID: int,
 		p_target_IDs: Array[int],
@@ -782,6 +797,9 @@ func _EmitBuffApplied(p_target_ID: int, p_buff: StatusEffects.Buff, p_display_na
 	result.duration = p_buff.duration
 	result.text = p_display_name
 	_Emit(result)
+	var target: Character = _characters[p_target_ID]
+	if(null != target._trait and target._trait._execution_steps.has(Types.Combat_Event.Buff_Applied)):
+		target._trait.OnBuffGained(p_target_ID, self)
 
 
 func _EmitDebuffApplied(p_target_ID: int, p_debuff: StatusEffects.Debuff, p_display_name: String) -> void:

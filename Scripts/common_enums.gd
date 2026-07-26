@@ -186,6 +186,7 @@ enum Combat_Event
 	Critical_Hit,
 	Ally_Death,
 	Ally_Damage_Taken,
+	Buff_Applied,
 }
 
 func RarityName(p_rarity: Types.Rarity) -> String:
