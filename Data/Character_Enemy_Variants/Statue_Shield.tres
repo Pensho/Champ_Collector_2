@@ -1,6 +1,8 @@
-[gd_resource type="Resource" script_class="CharacterPreset" load_steps=4 format=3 uid="uid://dflefeodbvqyy"]
+[gd_resource type="Resource" script_class="CharacterPreset" format=3 uid="uid://dflefeodbvqyy"]
 
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_1t4tc"]
+[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_kb5rk"]
+[ext_resource type="Resource" path="res://Data/Character_Traits/Grafts/Reactive_Plating_Graft.tres" id="2_3xnmi"]
 [ext_resource type="Resource" uid="uid://dpduy25aqyibo" path="res://Data/Character_Skill_Variants/Bash.tres" id="2_cxef6"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_w1xr5"]
 
@@ -20,4 +22,5 @@ _accuracy = 40
 _resistance = 35
 _mysticism = 20
 _knowledge = 20
+_graft_effect = ExtResource("2_3xnmi")
 metadata/_custom_type_script = "uid://ftdwxfh8y3n1"
