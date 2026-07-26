@@ -8,15 +8,17 @@ func before_each() -> void:
 
 func test_supply_cost_tiers() -> void:
 	var expected: Dictionary[int, int] = {
-		0: 1,
-		GameBalance.ADVENTURE_DAILY_TIER_THRESHOLD: 2,
-		GameBalance.ADVENTURE_DAILY_TIER_THRESHOLD * 2: 3,
+		0: 0,
+		GameBalance.ADVENTURE_DAILY_TIER_THRESHOLD: 1,
+		GameBalance.ADVENTURE_DAILY_TIER_THRESHOLD * 2: 2,
 	}
 	for steps_taken_today: int in expected:
 		_state.steps_taken_today = steps_taken_today
 		var cost: int = _state.GetNodeSupplyCost()
-		assert_eq(cost, GameBalance.ENCOUNTER_BASE_SUPPLY_COST * expected[steps_taken_today],
-			"Supply cost at %d steps taken today should be %dx ENCOUNTER_BASE_SUPPLY_COST." %
+		var expected_cost: int = GameBalance.ENCOUNTER_BASE_SUPPLY_COST + \
+			expected[steps_taken_today] * GameBalance.ADVENTURE_SUPPLY_COST_TIER_INCREASE
+		assert_eq(cost, expected_cost,
+			"Supply cost at %d steps taken today should be base + %d tier increases." %
 				[steps_taken_today, expected[steps_taken_today]])
 
 func test_daily_reset() -> void:

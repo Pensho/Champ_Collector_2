@@ -81,6 +81,7 @@ const MAX_SUPPLIES: int = 100
 const SUPPLY_REGEN_AMOUNT: int = 10
 const SUPPLY_REGEN_INTERVAL_SECONDS: int = 600
 const ENCOUNTER_BASE_SUPPLY_COST: int = 6 # base; surcharges (e.g. adventure tier) add on top
+const ADVENTURE_SUPPLY_COST_TIER_INCREASE: int = 3
 
 # Adventure
 const ADVENTURE_DAILY_TIER_THRESHOLD: int = 3

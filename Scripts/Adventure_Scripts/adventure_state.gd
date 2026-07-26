@@ -23,7 +23,7 @@ static func CalculateScaledDifficulty(p_base: int, p_completed: int, p_total: in
 
 func GetNodeSupplyCost() -> int:
 	var tier: int = floor(float(steps_taken_today) / GameBalance.ADVENTURE_DAILY_TIER_THRESHOLD)
-	return GameBalance.ENCOUNTER_BASE_SUPPLY_COST * (tier + 1)
+	return GameBalance.ENCOUNTER_BASE_SUPPLY_COST + tier * GameBalance.ADVENTURE_SUPPLY_COST_TIER_INCREASE
 
 func MarkCurrentNodeComplete() -> void:
 	for node in nodes:
