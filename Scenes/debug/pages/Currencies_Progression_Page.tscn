@@ -57,7 +57,7 @@ text = "Supplies"
 
 [node name="SpinBox_Supplies" type="SpinBox" parent="MarginContainer/VBoxContainer/CurrenciesGrid"]
 layout_mode = 2
-max_value = 100.0
+max_value = 999999.0
 
 [node name="Label_FortunesFavorBone" type="Label" parent="MarginContainer/VBoxContainer/CurrenciesGrid"]
 layout_mode = 2

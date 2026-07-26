@@ -11,7 +11,6 @@ extends DebugPage
 
 func _ready() -> void:
 	page_title = "Currencies & Progression"
-	_supplies_spin.max_value = Game_Balance.MAX_SUPPLIES
 	_difficulty_spin.min_value = 1
 	_difficulty_spin.max_value = Game_Balance.MAX_DIFFICULTY
 
