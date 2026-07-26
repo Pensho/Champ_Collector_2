@@ -99,7 +99,9 @@ func Deserialize(p_data: Dictionary) -> void:
 	else:
 		is_active = false
 
-	var completion_map: Dictionary = p_data.get("completed_nodes", {})
+	var completion_map: Dictionary = {}
+	for key in p_data.get("completed_nodes", {}):
+		completion_map[int(key)] = true
 	for node in nodes:
 		node.is_complete = completion_map.get(node.index, false)
 

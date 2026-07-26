@@ -52,6 +52,30 @@ func test_serialize_roundtrip() -> void:
 	assert_eq(restored.difficulty, 2, "difficulty must survive serialization.")
 	assert_eq(restored.last_palayed_date, "2026-05-26", "last_palayed_date must survive serialization.")
 
+func test_serialize_roundtrip_through_json_preserves_completion_and_active_state() -> void:
+	_state.template = load("res://Data/Adventure_Data/template_default.tres")
+	_state.biome = load("res://Data/Adventure_Data/Biome_Types/biome_reclaimed_city.tres")
+	_state.difficulty = 1
+	_state._generation_seed = 42
+	seed(_state._generation_seed)
+	_state.nodes = AdventureGenerator.GenerateAdventure(_state.template, _state.biome)
+	_state.is_active = true
+	_state.current_node_index = _state.nodes[0].index
+	_state.nodes[0].is_complete = true
+
+	var data: Dictionary = _state.Serialize()
+	# Round-trip through JSON, exactly as SaveManager does, so dictionary keys
+	# turn into strings the way they do on a real save/load.
+	var json_data: Dictionary = JSON.parse_string(JSON.stringify(data))
+
+	var restored: AdventureState = AdventureState.new()
+	restored.Deserialize(json_data)
+
+	assert_true(restored.is_active, "is_active must survive a save/load cycle with real resources.")
+	assert_true(restored.nodes[0].is_complete,
+		"Completed nodes must stay completed after a JSON save/load cycle, " +
+		"otherwise the adventure graph looks like a fresh start.")
+
 
 # --- Node completion (guards the victory-marks-node-complete bug fix) ---
 
