@@ -131,6 +131,36 @@ func test_add_adventure_debuff() -> void:
 	assert_eq(_state.active_debuffs[Types.Debuff_Type.Burning], 2,
 		"AddAdventureDebuff should store the combat count for the debuff type.")
 
+func test_add_adventure_buff_keeps_longer_duration() -> void:
+	_state.AddAdventureBuff(Types.Buff_Type.Fortify, 5)
+	_state.AddAdventureBuff(Types.Buff_Type.Fortify, 1)
+	assert_eq(_state.active_buffs[Types.Buff_Type.Fortify], 5,
+		"Re-applying a shorter buff must not replace a longer remaining duration.")
+
+func test_add_adventure_buff_upgrades_to_longer_duration() -> void:
+	_state.AddAdventureBuff(Types.Buff_Type.Fortify, 1)
+	_state.AddAdventureBuff(Types.Buff_Type.Fortify, 5)
+	assert_eq(_state.active_buffs[Types.Buff_Type.Fortify], 5,
+		"Re-applying a longer buff must upgrade the stored duration.")
+
+func test_add_adventure_debuff_keeps_longer_duration() -> void:
+	_state.AddAdventureDebuff(Types.Debuff_Type.Burning, 4)
+	_state.AddAdventureDebuff(Types.Debuff_Type.Burning, 1)
+	assert_eq(_state.active_debuffs[Types.Debuff_Type.Burning], 4,
+		"Re-applying a shorter debuff must not replace a longer remaining duration.")
+
+func test_add_adventure_permanent_effect_wins_over_finite() -> void:
+	_state.AddAdventureBuff(Types.Buff_Type.Fortify, 3)
+	_state.AddAdventureBuff(Types.Buff_Type.Fortify, GameBalance.ADVENTURE_PERMANENT_EFFECT)
+	assert_eq(_state.active_buffs[Types.Buff_Type.Fortify], GameBalance.ADVENTURE_PERMANENT_EFFECT,
+		"A permanent-sentinel buff must win over a finite duration regardless of order.")
+
+	_state.active_buffs.clear()
+	_state.AddAdventureBuff(Types.Buff_Type.Fortify, GameBalance.ADVENTURE_PERMANENT_EFFECT)
+	_state.AddAdventureBuff(Types.Buff_Type.Fortify, 3)
+	assert_eq(_state.active_buffs[Types.Buff_Type.Fortify], GameBalance.ADVENTURE_PERMANENT_EFFECT,
+		"A finite duration must not override an existing permanent-sentinel buff.")
+
 func test_decrement_adventure_effects() -> void:
 	_state.AddAdventureBuff(Types.Buff_Type.Empower, 2)
 	_state.AddAdventureDebuff(Types.Debuff_Type.Burning, 2)

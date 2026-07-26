@@ -32,10 +32,10 @@ func MarkCurrentNodeComplete() -> void:
 			break
 
 func AddAdventureBuff(p_type: Types.Buff_Type, p_combats: int) -> void:
-	active_buffs[p_type] = p_combats
+	active_buffs[p_type] = maxi(active_buffs.get(p_type, 0), p_combats)
 
 func AddAdventureDebuff(p_type: Types.Debuff_Type, p_combats: int) -> void:
-	active_debuffs[p_type] = p_combats
+	active_debuffs[p_type] = maxi(active_debuffs.get(p_type, 0), p_combats)
 
 func DecrementAdventureEffects() -> void:
 	for type: Types.Buff_Type in active_buffs.keys().duplicate():
