@@ -23,7 +23,7 @@ static func GetReachThreshold(_p_rarity: Types.Rarity) -> float:
 func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
 	_redirect_fraction = GetRedirectFraction(p_rarity)
-	_trait_texture = load("res://Assets/Champ_Collector/Icons/Abilities/Stalwart_Hymn/Stalwart_Hymn.jpg")
+	_trait_texture = load("res://Assets/Champ_Collector/Icons/Abilities/Passives/Shield_Wall_Trait/shield_wall_trait.png")
 	_execution_steps[Types.Combat_Event.Ally_Damage_Taken] = Callable(self, "OnAllyDamageTaken")
 
 	_title = "Shield Wall"
