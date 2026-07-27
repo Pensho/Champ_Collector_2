@@ -17,7 +17,7 @@ func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
 	_potency_bonus = POTENCY_BONUS.get(p_rarity, 0.0)
 	_trait_texture = load(
-			"res://Assets/Champ_Collector/Icons/Reagents/Restorative_Draught/Restorative_Draught_Uncommon.png")
+			"res://Assets/Champ_Collector/Icons/Abilities/Passives/Fresh_Batch_Trait/fresh_batch_trait.png")
 	_title = "Fresh Batch"
 	_body = ("At the start of combat, brews one concoction drawn at random from the" \
 			+ " Alchemist-exclusive brew pool, occupying its own reagent slot. It follows" \

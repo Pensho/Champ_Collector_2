@@ -19,7 +19,7 @@ static func GetPowerBonus(p_rarity: Types.Rarity) -> float:
 func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
 	_power_bonus = GetPowerBonus(p_rarity)
-	_trait_texture = load("res://Assets/Champ_Collector/Icons/Abilities/Burning_Bolas/Burning_Bolas_1.png")
+	_trait_texture = load("res://Assets/Champ_Collector/Icons/Abilities/Passives/Chosen_Vessel_Trait/chosen_vessel_trait.png")
 	_execution_steps[Types.Combat_Event.Start_Combat] = Callable(self, "StartOfBattle")
 	_execution_steps[Types.Combat_Event.Skill_Cast] = Callable(self, "OnSkillCast")
 	_execution_steps[Types.Combat_Event.Ally_Death] = Callable(self, "OnAllyDeath")
