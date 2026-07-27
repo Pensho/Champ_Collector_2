@@ -127,9 +127,10 @@ func _ShowEscalate(p_context: ContextEscalate) -> void:
 	_label_type.text = "Escalate Challenge"
 	var reward_silver: int = p_context._loot_table._drop_result._silver if p_context._loot_table != null else 0
 	var reward_supplies: int = p_context._loot_table._drop_result._supplies if p_context._loot_table != null else 0
-	_label_description.text = (
-			"Gain %d Silver and %d Supplies, but the rest of this adventure becomes permanently harder (+%d difficulty)."
-			% [reward_silver, reward_supplies, p_context.difficulty_increase])
+	var description_format: String = (
+			"Gain %d Silver, %d Supplies, and a Reagent, but the rest of this adventure becomes permanently harder"
+			+ " (+%d difficulty).")
+	_label_description.text = description_format % [reward_silver, reward_supplies, p_context.difficulty_increase]
 
 	_button_primary.text = "Accept"
 	_button_primary.disabled = false
@@ -146,6 +147,8 @@ func _on_escalate_accepted(p_context: ContextEscalate) -> void:
 	if p_context._loot_table != null:
 		main.GetInstance()._resources._silver += p_context._loot_table._drop_result._silver
 		main.GetInstance()._resources.AddSupplies(p_context._loot_table._drop_result._supplies)
+		for reagent_key in p_context._loot_table._drop_result._reagents:
+			main.GetInstance()._reagent_collection.Add(reagent_key)
 	_Resolve()
 
 func _Resolve() -> void:
