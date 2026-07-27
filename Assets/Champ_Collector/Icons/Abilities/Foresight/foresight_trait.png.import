@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dr67eqh4n6r68"
-path="res://.godot/imported/Anticipate_4.jpg-1fb7a56ff25802009c35efc136affdab.ctex"
+uid="uid://dcfg7fq4o7xj0"
+path="res://.godot/imported/foresight_trait.png-7c75b1cfa7c31c831f1b76d58a2aeed1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Abilities/Predict/Anticipate_4.jpg"
-dest_files=["res://.godot/imported/Anticipate_4.jpg-1fb7a56ff25802009c35efc136affdab.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Abilities/Foresight/foresight_trait.png"
+dest_files=["res://.godot/imported/foresight_trait.png-7c75b1cfa7c31c831f1b76d58a2aeed1.ctex"]
 
 [params]
 

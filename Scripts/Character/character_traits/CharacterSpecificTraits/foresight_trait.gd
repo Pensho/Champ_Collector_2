@@ -16,7 +16,7 @@ static func GetReachThreshold(p_rarity: Types.Rarity) -> float:
 func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
 	_reach_threshold = GetReachThreshold(p_rarity)
-	_trait_texture = load("res://Assets/Champ_Collector/Icons/Abilities/Predict/Anticipate_1.jpg")
+	_trait_texture = load("res://Assets/Champ_Collector/Icons/Abilities/Foresight/foresight_trait.png")
 	_execution_steps[Types.Combat_Event.Start_Turn] = Callable(self, "StartOfTurn")
 
 	_start_of_turn_debuff = StatusEffects.Debuff.new()
