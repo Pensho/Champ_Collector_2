@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://u2rpxcarwct2"
-path="res://.godot/imported/Plan_1.jpg-fbac6a92ba3fd996f8d99427111f9111.ctex"
+uid="uid://cfaeiuchn2y3o"
+path="res://.godot/imported/Plan.png-1589b4c25c07d95f7dc35ddafd847c54.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Abilities/Plan/Plan_1.jpg"
-dest_files=["res://.godot/imported/Plan_1.jpg-fbac6a92ba3fd996f8d99427111f9111.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Abilities/Plan/Plan.png"
+dest_files=["res://.godot/imported/Plan.png-1589b4c25c07d95f7dc35ddafd847c54.ctex"]
 
 [params]
 
