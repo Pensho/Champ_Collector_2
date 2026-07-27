@@ -19,7 +19,7 @@ var _avoidance_increment: float = 0.0
 func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
 	_avoidance_increment = AVOIDANCE_INCREMENT.get(p_rarity, 0.0)
-	_trait_texture = load("res://Assets/Champ_Collector/Icons/Abilities/Double_The_Fun/Double_The_Fun.png")
+	_trait_texture = load("res://Assets/Champ_Collector/Icons/Abilities/Passives/Double_The_Fun_Trait/Double_The_Fun.png")
 	_title = "Double the fun!"
 	_body = ("Chance to completely avoid incoming damage. The chance ramps up with each hit taken and resets on a "
 			+ "successful avoidance.")

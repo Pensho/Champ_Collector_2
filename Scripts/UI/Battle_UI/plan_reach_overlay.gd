@@ -1,7 +1,7 @@
 class_name PlanReachOverlay extends TextureRect
 
 const PLAN_TRAIT_TURNBAR_TEXTURE = preload(
-	"res://Assets/Champ_Collector/Icons/Abilities/Plan/Plan_Trait_Turnbar_Texture_2.jpg"
+	"res://Assets/Champ_Collector/Icons/Abilities/Passives/Plan_Trait/Plan_Trait_Turnbar_Texture_2.jpg"
 )
 const PLAN_REACH_SHADER = preload("res://Assets/Champ_Collector/Shaders/plan_reach_overlay.gdshader")
 

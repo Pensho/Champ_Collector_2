@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cfaeiuchn2y3o"
-path="res://.godot/imported/Plan.png-1589b4c25c07d95f7dc35ddafd847c54.ctex"
+uid="uid://rq0tvsyujedy"
+path="res://.godot/imported/arcane_instability_trait.png-a57ff0b8509acbe8012bee6162cd2fe9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Abilities/Plan/Plan.png"
-dest_files=["res://.godot/imported/Plan.png-1589b4c25c07d95f7dc35ddafd847c54.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Abilities/Passives/Arcane_Instability/arcane_instability_trait.png"
+dest_files=["res://.godot/imported/arcane_instability_trait.png-a57ff0b8509acbe8012bee6162cd2fe9.ctex"]
 
 [params]
 

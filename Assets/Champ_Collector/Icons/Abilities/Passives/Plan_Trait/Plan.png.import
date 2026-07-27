@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bfj6xwcb35fkl"
-path="res://.godot/imported/Plan_Trait_Turnbar_Texture_2.jpg-ef7379495cdaaf5cfb431d5590aa05a7.ctex"
+uid="uid://cfaeiuchn2y3o"
+path="res://.godot/imported/Plan.png-91c1ed557b4bd4368201cdaa8e34cbb4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Abilities/Plan/Plan_Trait_Turnbar_Texture_2.jpg"
-dest_files=["res://.godot/imported/Plan_Trait_Turnbar_Texture_2.jpg-ef7379495cdaaf5cfb431d5590aa05a7.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Abilities/Passives/Plan_Trait/Plan.png"
+dest_files=["res://.godot/imported/Plan.png-91c1ed557b4bd4368201cdaa8e34cbb4.ctex"]
 
 [params]
 

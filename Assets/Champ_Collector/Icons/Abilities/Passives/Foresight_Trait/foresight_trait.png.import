@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dad2gftk0ctm4"
-path="res://.godot/imported/Double_The_Fun.png-f888391487ebad36816c373f3aac7a67.ctex"
+uid="uid://dcfg7fq4o7xj0"
+path="res://.godot/imported/foresight_trait.png-30332c0c4100111e197d731cd4a523e8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Abilities/Double_The_Fun/Double_The_Fun.png"
-dest_files=["res://.godot/imported/Double_The_Fun.png-f888391487ebad36816c373f3aac7a67.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Abilities/Passives/Foresight_Trait/foresight_trait.png"
+dest_files=["res://.godot/imported/foresight_trait.png-30332c0c4100111e197d731cd4a523e8.ctex"]
 
 [params]
 

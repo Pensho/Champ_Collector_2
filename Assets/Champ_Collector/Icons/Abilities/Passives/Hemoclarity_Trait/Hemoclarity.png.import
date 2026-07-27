@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cnrue6gqfsnjk"
-path="res://.godot/imported/Hemoclarity.png-e54e7d58705d2581f4adba80986f60c7.ctex"
+path="res://.godot/imported/Hemoclarity.png-4c590b5dcbfa2772af4aa351d984883e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Abilities/Hemoclarity/Hemoclarity.png"
-dest_files=["res://.godot/imported/Hemoclarity.png-e54e7d58705d2581f4adba80986f60c7.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Abilities/Passives/Hemoclarity_Trait/Hemoclarity.png"
+dest_files=["res://.godot/imported/Hemoclarity.png-4c590b5dcbfa2772af4aa351d984883e.ctex"]
 
 [params]
 

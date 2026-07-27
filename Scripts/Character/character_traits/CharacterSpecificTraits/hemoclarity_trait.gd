@@ -14,7 +14,7 @@ var _mysticism_bonus: float = 0.0
 func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
 	_mysticism_bonus = MYSTICISM_BONUS.get(p_rarity, 0.0)
-	_trait_texture = load("res://Assets/Champ_Collector/Icons/Abilities/Hemoclarity/Hemoclarity.png")
+	_trait_texture = load("res://Assets/Champ_Collector/Icons/Abilities/Passives/Hemoclarity_Trait/Hemoclarity.png")
 	_title = "Hemoclarity"
 	_body = "While below half health, gain increased Mysticism."
 	_execution_steps[Types.Combat_Event.Skill_Cast] = Callable(self, "OnSkillCast")

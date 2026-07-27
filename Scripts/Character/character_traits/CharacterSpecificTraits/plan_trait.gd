@@ -16,7 +16,7 @@ static func GetReachThreshold(p_rarity: Types.Rarity) -> float:
 func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
 	_reach_threshold = GetReachThreshold(p_rarity)
-	_trait_texture = load("res://Assets/Champ_Collector/Icons/Abilities/Plan/Plan.png")
+	_trait_texture = load("res://Assets/Champ_Collector/Icons/Abilities/Passives/Plan_Trait/Plan.png")
 	_execution_steps[Types.Combat_Event.Start_Turn] = Callable(self, "StartOfTurn")
 	_execution_steps[Types.Combat_Event.Start_Combat] = Callable(self, "StartOfBattle")
 

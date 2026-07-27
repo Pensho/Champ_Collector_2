@@ -4,7 +4,7 @@ var _attribute_percent_delta: Dictionary[Types.Attribute, float] = {}
 
 func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
-	_trait_texture = load("res://Assets/Champ_Collector/Icons/Abilities/Hemoclarity/Hemoclarity.png")
+	_trait_texture = load("res://Assets/Champ_Collector/Icons/Abilities/Passives/Hemoclarity_Trait/Hemoclarity.png")
 	_attribute_percent_delta = _BonusForRarity(p_rarity).duplicate(true)
 	for attribute: Types.Attribute in _Drawback().keys():
 		_attribute_percent_delta[attribute] = _attribute_percent_delta.get(attribute, 0.0) + _Drawback()[attribute]
