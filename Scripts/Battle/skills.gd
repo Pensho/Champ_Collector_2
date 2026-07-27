@@ -117,6 +117,19 @@ static func ApplyWeaknessRider(
 	var attribute: Types.Attribute = p_debuff.weakness_attribute
 	p_attributes[attribute] -= int(ceilf(p_attributes[attribute] * p_debuff.weakness_reduction))
 
+## Fraction (e.g. Chronophage's Time Tithe) p_source_ID gains for itself when its own
+## effect reduced enemy p_target_ID's turn bar by p_fraction (0.0 = no tithe).
+static func TurnBarTithe(
+			p_source_ID: int, p_target_ID: int, p_fraction: float,
+			p_characters: Dictionary[int, Character], p_sides: CombatSides, p_resolver: BattleResolver) -> float:
+	if(p_fraction >= 0.0 or p_source_ID < 0 or p_source_ID == p_target_ID
+			or not p_sides.AreEnemies(p_source_ID, p_target_ID)):
+		return 0.0
+	var source: Character = p_characters[p_source_ID]
+	if(null == source._trait or not source._trait._execution_steps.has(Types.Combat_Event.Enemy_Turn_Bar_Reduced)):
+		return 0.0
+	return source._trait.OnEnemyTurnBarReduced(p_source_ID, -p_fraction, p_resolver)
+
 ## Fires an applier's Debuff_Applied trait hook when their debuff lands on someone
 ## else — the applier-side counterpart to _EmitBuffApplied's target-side dispatch.
 static func DispatchDebuffApplied(

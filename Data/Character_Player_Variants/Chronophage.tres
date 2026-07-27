@@ -10,6 +10,7 @@
 [ext_resource type="Resource" uid="uid://bejf1a62v41gq" path="res://Data/Attribute_Weights/Marksman.tres" id="4_yl6xa"]
 [ext_resource type="Resource" uid="uid://bvo4uj38cgjg3" path="res://Data/Attribute_Weights/Calculating.tres" id="5_53dyg"]
 [ext_resource type="Resource" uid="uid://i4pibjinfd3x" path="res://Data/Attribute_Weights/Gluttonous.tres" id="6_dxy17"]
+[ext_resource type="Resource" path="res://Data/Character_Traits/Chronophage_Trait.tres" id="7_tithe"]
 
 [resource]
 script = ExtResource("2_uh5a3")
@@ -28,5 +29,6 @@ _resistance = 30
 _mysticism = 50
 _knowledge = 50
 _attribute_weight_types_available = Array[ExtResource("1_sg0ng")]([ExtResource("2_mvvkq"), ExtResource("3_qgja1"), ExtResource("4_yl6xa"), ExtResource("5_53dyg"), ExtResource("6_dxy17")])
+_trait = ExtResource("7_tithe")
 _preset_path = "res://Data/Character_Player_Variants/Chronophage.tres"
 metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

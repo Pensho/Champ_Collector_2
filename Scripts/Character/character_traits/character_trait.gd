@@ -83,3 +83,10 @@ func OnDebuffApplied(
 		_p_debuff: StatusEffects.Debuff,
 		_p_resolver: BattleResolver) -> void:
 	print("character_trait base class OnDebuffApplied() called!")
+
+## Returns the fraction of turn bar the owner tithes for itself when its own effect
+## reduced an enemy's turn bar by p_reduction (0.0 = no tithe).
+func OnEnemyTurnBarReduced(
+		_p_owner_ID: int, _p_reduction: float, _p_resolver: BattleResolver) -> float:
+	print("character_trait base class OnEnemyTurnBarReduced() called!")
+	return 0.0

@@ -170,7 +170,7 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 					cast_skill, trait_result._damage_multiplier)
 
 		var total_bump: float = cast_skill.turn_effect + trait_result._turn_bar_bump
-		_EmitTurnBarBump(target_ID, total_bump)
+		_EmitTurnBarBump(target_ID, total_bump, p_caster_ID)
 
 	_TickCooldowns(caster)
 	if(not (is_non_basic and _ConsumeRehearsedIfPresent(p_caster_ID))):
@@ -575,7 +575,7 @@ func _RollsResistDebuff(
 	return p_attacker_accuracy * random_value < p_defender_resistance * random_value_2
 
 
-func _EmitTurnBarBump(p_target_ID: int, p_fraction: float) -> void:
+func _EmitTurnBarBump(p_target_ID: int, p_fraction: float, p_source_ID: int = -1) -> void:
 	if(0.0 == p_fraction or _HasDebuff(p_target_ID, Types.Debuff_Type.Anchor)):
 		return
 	if(p_fraction < 0.0 and _HasBuff(p_target_ID, Types.Buff_Type.Steadfast)):
@@ -584,7 +584,7 @@ func _EmitTurnBarBump(p_target_ID: int, p_fraction: float) -> void:
 	bump.target_ID = p_target_ID
 	bump.fraction = p_fraction
 	_Emit(bump)
-
+	_EmitTurnBarBump(p_source_ID, Skills.TurnBarTithe(p_source_ID, p_target_ID, p_fraction, _characters, _sides, self))
 
 func _TickCooldowns(p_caster: Character) -> void:
 	if(_BlockedByFatigue(p_caster)):
@@ -1282,7 +1282,7 @@ func _ResolveZoneEffect(p_zone: Zone, p_character_ID: int) -> void:
 	match p_zone._type:
 		Types.Skill_Type.Flicker_Zone:
 			_EmitTurnBarBump(p_character_ID,
-					Skills.AllyZoneMagnitude(GameBalance.FLICKER_ZONE_BASE_BUMP, p_zone._owner_knowledge))
+					Skills.AllyZoneMagnitude(GameBalance.FLICKER_ZONE_BASE_BUMP, p_zone._owner_knowledge), p_zone._owner_ID)
 		Types.Skill_Type.Lava_Zone:
 			var target: Character = _characters[p_character_ID]
 			if(Skills.HasMaxStatusEffects(target)):
