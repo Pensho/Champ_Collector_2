@@ -12,7 +12,7 @@ var _steal_chance: float = 0.0
 func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
 	_steal_chance = STEAL_CHANCE.get(p_rarity, 0.0)
-	_trait_texture = load("res://Assets/Champ_Collector/Creatures/Tidal_Corsair/Tidal_Corsair_Stack_Steel.png")
+	_trait_texture = load("res://Assets/Champ_Collector/Icons/Abilities/Passives/Pilfer_Trait/pilfer_trait.png")
 	_title = "Pilfer"
 	_body = "Chance to steal a buff from the target when a skill is used."
 	_execution_steps[Types.Combat_Event.Skill_Cast] = Callable(self, "OnSkillCast")
