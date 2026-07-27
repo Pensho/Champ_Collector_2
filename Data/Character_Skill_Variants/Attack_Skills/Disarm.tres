@@ -6,7 +6,7 @@
 script = ExtResource("1_0dpkm")
 name = "Disarm"
 description = "Puts the opponent into a stance that is tough to attack from. Based on Attack."
-icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Disarm/Disarm_1.jpg"
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Disarm/Disarm_1.jpg"
 damage_scaling = Dictionary[int, float]({
 2: 0.9
 })

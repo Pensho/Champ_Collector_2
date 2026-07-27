@@ -6,7 +6,7 @@
 script = ExtResource("1_ybmev")
 name = "Boarding Strike"
 description = "Slashes an opponent to create a Steel Stack. Based on attack."
-icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Boarding_Strike/Boarding_Strike_1.jpg"
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Boarding_Strike/Boarding_Strike_1.jpg"
 damage_scaling = Dictionary[int, float]({
 2: 1.0
 })

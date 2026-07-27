@@ -20,7 +20,8 @@ static func GetRatePerInfraction(p_rarity: Types.Rarity) -> float:
 func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
 	_rate_per_infraction = GetRatePerInfraction(p_rarity)
-	_trait_texture = load("res://Assets/Champ_Collector/Icons/Abilities/Break_Guard/Break_Guard.jpg")
+	_trait_texture = load(
+			"res://Assets/Champ_Collector/Icons/Abilities/Opponent_Active_Skills/Break_Guard/Break_Guard.jpg")
 	_execution_steps[Types.Combat_Event.Start_Combat] = Callable(self, "StartOfBattle")
 
 	_title = "Standing Record"

@@ -6,7 +6,7 @@
 script = ExtResource("1_oj3d8")
 name = "Stalwart Hymn"
 description = "Increases the defense of all allies."
-icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Stalwart_Hymn/Stalwart_Hymn.jpg"
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Stalwart_Hymn/Stalwart_Hymn.jpg"
 target = 4
 cooldown = 3
 duration = 2

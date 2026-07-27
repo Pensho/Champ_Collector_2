@@ -6,7 +6,7 @@
 script = ExtResource("1_g1e7h")
 name = "Power Tide"
 description = "Grants all allies increased Attack."
-icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Power_Tide/Power_Surge_1.jpg"
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Power_Tide/Power_Surge_1.jpg"
 target = 4
 cooldown = 3
 duration = 2
