@@ -155,6 +155,28 @@ func test_final_calculation_at_tier_three_upgrades_an_existing_zone() -> void:
 	assert_eq(zones.size(), 1, "The existing zone should be upgraded, not duplicated")
 	assert_eq(zones[0]._duration, CalibrationTrait.ZONE_UPGRADE_CHARGES)
 
+func test_final_calculation_upgrading_an_existing_zone_emits_a_duration_result() -> void:
+	_InitTrait(Types.Rarity.Epic)
+	var zone_skill: Skill = Skill.new()
+	zone_skill.target = Types.Skill_Target.ZoneAlly
+	zone_skill.skill_type = Types.Skill_Type.Barrier_Zone
+	zone_skill.duration = 2
+	_resolver.PlaceZone(0, 0, zone_skill)
+
+	var received: Array[CombatResult] = []
+	_resolver.result_produced.connect(func(p_result): received.append(p_result))
+
+	for i in CalibrationTrait.ZONE_RE_ERECT_THRESHOLD:
+		_trait.OnSkillCast(0, [], "Cornerstone", {}, _resolver)
+	_trait.OnSkillCast(0, [], "Final Calculation", {}, _resolver)
+
+	var duration_results: Array = received.filter(
+		func(p_result): return p_result.kind == CombatResult.Kind.Zone_Duration_Changed)
+	assert_eq(duration_results.size(), 1,
+		"Upgrading an existing zone should notify listeners so the turn bar label updates")
+	assert_eq(duration_results[0].zone_ID, 0)
+	assert_eq(duration_results[0].duration, CalibrationTrait.ZONE_UPGRADE_CHARGES)
+
 # --- Raise the Frame: charge consumption ---
 
 func test_raise_the_frame_consumes_up_to_the_cap() -> void:

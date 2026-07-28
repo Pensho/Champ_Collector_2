@@ -384,7 +384,7 @@ func _on_resolver_result_produced(p_result: CombatResult) -> void:
 					p_result.duration,
 					_sides.player.Has(p_result.source_ID),
 					p_result.skill_type)
-		CombatResult.Kind.Zone_Triggered:
+		CombatResult.Kind.Zone_Triggered, CombatResult.Kind.Zone_Duration_Changed:
 			_battle_ui._turn_bar.ZoneTriggered(p_result.zone_ID, p_result.duration)
 		CombatResult.Kind.Zone_Cleared:
 			_battle_ui._turn_bar.RemoveZoneEffect(p_result.zone_ID)

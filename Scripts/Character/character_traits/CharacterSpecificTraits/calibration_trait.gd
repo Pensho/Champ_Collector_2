@@ -89,7 +89,7 @@ func _ReErectZone(p_owner_ID: int, p_resolver: BattleResolver) -> void:
 	var zones: Dictionary[int, Zone] = p_resolver.GetZones()
 	for zone_ID: int in zones:
 		if(zones[zone_ID]._owner_ID == p_owner_ID):
-			zones[zone_ID]._duration = ZONE_UPGRADE_CHARGES
+			p_resolver.SetZoneDuration(zone_ID, ZONE_UPGRADE_CHARGES)
 			return
 
 	var available_zone_IDs: Array[int] = p_resolver.AvailableZoneIDs()

@@ -12,6 +12,7 @@ enum Kind {
 	Turn_Bar_Bump,
 	Zone_Placed,
 	Zone_Triggered,
+	Zone_Duration_Changed,
 	Trait_Text,
 	Death,
 	Heal,

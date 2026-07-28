@@ -333,6 +333,14 @@ func AccumulateTurnBarMovement(p_character_ID: int, p_fraction_moved: float) -> 
 	_turn_bar_progress[p_character_ID] = progress
 	return _EndBatch()
 
+func SetZoneDuration(p_zone_ID: int, p_duration: int) -> void:
+	if(not _zones.has(p_zone_ID)):
+		return
+	_zones[p_zone_ID]._duration = p_duration
+	var result: CombatResult = CombatResult.new(CombatResult.Kind.Zone_Duration_Changed)
+	result.zone_ID = p_zone_ID
+	result.duration = p_duration
+	_Emit(result)
 
 ## Trait flavor text ("Stole buff!", "Avoided!") routed through the result stream.
 func EmitTraitText(p_target_ID: int, p_text: String, p_color: Color = Color.WHITE) -> void:
