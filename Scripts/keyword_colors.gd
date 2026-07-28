@@ -16,9 +16,13 @@ const KEYWORDS: Dictionary[String, Color] = {
 	
 	"Stack": Color(0.441, 0.777, 0.668, 1.0),
 	"Stacks": Color(0.441, 0.777, 0.668, 1.0),
-	
+	"Charge": Color(0.441, 0.777, 0.668, 1.0),
+	"Charges": Color(0.441, 0.777, 0.668, 1.0),
+
 	"Burn": Color(1.0, 0.0, 0.0, 1.0),
 	"Burning": Color(1.0, 0.0, 0.0, 1.0),
+
+	"Barrier": Color(0.6, 0.85, 1.0, 1.0),
 }
 
 static func ApplyKeywordColors(p_text: String) -> String:

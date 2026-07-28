@@ -90,3 +90,14 @@ func OnEnemyTurnBarReduced(
 		_p_owner_ID: int, _p_reduction: float, _p_resolver: BattleResolver) -> float:
 	print("character_trait base class OnEnemyTurnBarReduced() called!")
 	return 0.0
+
+func OnZoneUsed(_p_owner_ID: int, _p_user_ID: int, _p_resolver: BattleResolver) -> void:
+	print("character_trait base class OnZoneUsed() called!")
+
+func OnZoneConstructed(_p_owner_ID: int, _p_zone_ID: int, _p_resolver: BattleResolver) -> void:
+	print("character_trait base class OnZoneConstructed() called!")
+
+## Returns a scalar bonus (e.g. Calibration's charge investment) folded into the size
+## of the owner's own zone effect (0.0 = no bonus).
+func GetZoneChargeBonus(_p_zone_ID: int) -> float:
+	return 0.0

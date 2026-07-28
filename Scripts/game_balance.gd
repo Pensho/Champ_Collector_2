@@ -61,6 +61,7 @@ const BASE_ITEM_UPGRADE_COST: int = 25
 ## Skills
 const HEAP_ON_MULTIPLIER: float = 0.2
 const FLICKER_ZONE_BASE_BUMP: float = 0.15
+const RAISE_THE_FRAME_BASE_BARRIER: float = 15.0
 # Ally turn bar zone effect magnitude scaling per point of the placing character's Knowledge.
 const ZONE_KNOWLEDGE_SCALING: float = 0.005
 

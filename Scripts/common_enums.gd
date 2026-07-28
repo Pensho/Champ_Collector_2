@@ -103,6 +103,7 @@ enum Skill_Type
 	Lava_Zone,
 	None,
 	Status_Effect,
+	Barrier_Zone,
 }
 
 enum Buff_Type
@@ -189,6 +190,8 @@ enum Combat_Event
 	Buff_Applied,
 	Debuff_Applied,
 	Enemy_Turn_Bar_Reduced,
+	Zone_Used,
+	Zone_Constructed,
 }
 
 func RarityName(p_rarity: Types.Rarity) -> String:

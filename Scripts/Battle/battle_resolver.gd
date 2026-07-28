@@ -220,6 +220,7 @@ func PlaceZone(p_zone_ID: int, p_owner_ID: int, p_skill: Skill) -> Array[CombatR
 	result.duration = zone._duration
 	result.skill_type = zone._type
 	_Emit(result)
+	Skills.TriggerZoneConstructedHook(_characters, p_owner_ID, p_zone_ID, self)
 	return _EndBatch()
 
 
@@ -1262,7 +1263,7 @@ func TriggerZones(p_active_character_ID: int) -> Array[CombatResult]:
 							and _sides.AreAllies(character_ID, _zones[ID]._owner_ID))
 					else 1)
 			for i in trigger_count:
-				_ResolveZoneEffect(_zones[ID], character_ID)
+				_ResolveZoneEffect(_zones[ID], ID, character_ID)
 			_zones[ID]._duration -= 1
 			var triggered: CombatResult = CombatResult.new(CombatResult.Kind.Zone_Triggered)
 			triggered.zone_ID = ID
@@ -1278,7 +1279,7 @@ func TriggerZones(p_active_character_ID: int) -> Array[CombatResult]:
 	return _EndBatch()
 
 
-func _ResolveZoneEffect(p_zone: Zone, p_character_ID: int) -> void:
+func _ResolveZoneEffect(p_zone: Zone, p_zone_ID: int, p_character_ID: int) -> void:
 	match p_zone._type:
 		Types.Skill_Type.Flicker_Zone:
 			_EmitTurnBarBump(p_character_ID,
@@ -1298,3 +1299,5 @@ func _ResolveZoneEffect(p_zone: Zone, p_character_ID: int) -> void:
 			new_debuff.ID = _NextStatusID()
 			target._active_debuffs.append(new_debuff)
 			_EmitDebuffApplied(p_character_ID, new_debuff, "")
+		Types.Skill_Type.Barrier_Zone:
+			Skills.ApplyBarrierZone(self, p_zone._owner_ID, p_zone_ID, p_zone._owner_knowledge, p_character_ID)

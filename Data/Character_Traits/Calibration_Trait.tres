@@ -1,0 +1,6 @@
+[gd_resource type="Resource" script_class="CalibrationTrait" format=3]
+
+[ext_resource type="Script" path="res://Scripts/Character/character_traits/CharacterSpecificTraits/calibration_trait.gd" id="1_clbrt"]
+
+[resource]
+script = ExtResource("1_clbrt")

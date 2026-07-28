@@ -10,6 +10,49 @@ const ZoneType = preload("uid://bdjrfif0s60v4")
 static func AllyZoneMagnitude(p_base: float, p_owner_knowledge: int) -> float:
 	return p_base * (1.0 + p_owner_knowledge * Game_Balance.ZONE_KNOWLEDGE_SCALING)
 
+static func MakeBarrierZoneBuff(p_owner_knowledge: int, p_charge_bonus: float = 0.0) -> StatusEffects.Buff:
+	var barrier: StatusEffects.Buff = StatusEffects.Buff.new()
+	barrier.type = Types.Buff_Type.Barrier
+	barrier.name = "Barrier"
+	barrier.duration = 2
+	barrier.value = ceil(AllyZoneMagnitude(Game_Balance.RAISE_THE_FRAME_BASE_BARRIER, p_owner_knowledge)
+			* (1.0 + p_charge_bonus))
+	return barrier
+
+static func TriggerZoneUsedHook(
+		p_characters: Dictionary[int, Character],
+		p_zone_owner_ID: int,
+		p_user_ID: int,
+		p_resolver: BattleResolver) -> void:
+	var zone_owner: Character = p_characters.get(p_zone_owner_ID)
+	if(null != zone_owner and null != zone_owner._trait
+			and zone_owner._trait._execution_steps.has(Types.Combat_Event.Zone_Used)):
+		zone_owner._trait.OnZoneUsed(p_zone_owner_ID, p_user_ID, p_resolver)
+
+static func TriggerZoneConstructedHook(
+		p_characters: Dictionary[int, Character],
+		p_zone_owner_ID: int,
+		p_zone_ID: int,
+		p_resolver: BattleResolver) -> void:
+	var zone_owner: Character = p_characters.get(p_zone_owner_ID)
+	if(null != zone_owner and null != zone_owner._trait
+			and zone_owner._trait._execution_steps.has(Types.Combat_Event.Zone_Constructed)):
+		zone_owner._trait.OnZoneConstructed(p_zone_owner_ID, p_zone_ID, p_resolver)
+
+static func ApplyBarrierZone(
+		p_resolver: BattleResolver,
+		p_zone_owner_ID: int,
+		p_zone_ID: int,
+		p_owner_knowledge: int,
+		p_character_ID: int) -> void:
+	var characters: Dictionary[int, Character] = p_resolver.GetCharacters()
+	var zone_owner: Character = characters.get(p_zone_owner_ID)
+	var charge_bonus: float = 0.0
+	if(null != zone_owner and null != zone_owner._trait):
+		charge_bonus = zone_owner._trait.GetZoneChargeBonus(p_zone_ID)
+	p_resolver.ApplyBuff(p_character_ID, MakeBarrierZoneBuff(p_owner_knowledge, charge_bonus))
+	TriggerZoneUsedHook(characters, p_zone_owner_ID, p_character_ID, p_resolver)
+
 static func CorrectZoneTarget(
 		p_zone_owner_ID: int,
 		p_trigger_character_ID: int,

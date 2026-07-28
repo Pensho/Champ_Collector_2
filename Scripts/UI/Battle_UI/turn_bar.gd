@@ -118,8 +118,9 @@ func _GetReachThreshold(p_character: Character) -> float:
 
 func SpawnZoneEffect(p_zone_ID: int, p_duration: int, p_allySide: bool, p_zone_type: Types.Skill_Type):
 	var effect: TurnBarContainer
+	# Barrier_Zone has no graphic of its own yet; reuses Flicker_Zone's as a placeholder.
 	match p_zone_type:
-		Types.Skill_Type.Flicker_Zone:
+		Types.Skill_Type.Flicker_Zone, Types.Skill_Type.Barrier_Zone:
 			effect = TURN_BAR_BUMP_GOOD.instantiate()
 		Types.Skill_Type.Lava_Zone:
 			effect = TURN_BAR_LAVA_ZONE.instantiate()
