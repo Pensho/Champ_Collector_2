@@ -23,22 +23,10 @@ Suggested order (dependencies noted inside each plan):
    completed team and roster abstraction (`CombatTeam`/`CombatSides`).
    Design counterpart: `Plan_Story_Mode.md`.
 
-3. `Plan_Symbiote_Graft_Passive.md` — the machinery for the Symbiote's `Graft`
-    passive (`Concept_Document.md` 3.1.3): a `GraftEffect` resource extending
-    `CharacterTrait` (effect via the existing `_trait` dispatch) plus a derived
-    attribute layer (mirroring equipment), a per-enemy `_graft_effect` preset
-    field, one-time in-battle free-action grafting modeled on reagent consumption,
-    persistence by graft UID, and the Inspect Collection display. Depends on the
-    Symbiote preset (added when all nine roles got a playable champion — see
-    `Technical_Design_Document.md` sections 3.1 and 9). Ships no graft content;
-    the concrete pool comes from a future brainstorm / design document.
-    Implemented — pending reconciliation (review, fold into
-    `Technical_Design_Document.md`, strike section 15, delete) once its suite is
-    confirmed green.
-
-4. `Plan_Symbiote_Graft_Pool.md` — the concrete graft content from
+3. `Plan_Symbiote_Graft_Pool.md` — the concrete graft content from
     `Symbiote_Graft_Pool.md` (18 grafts), turned into `GraftEffect` subclasses on the
-    landed machinery (item 3). Phased: this plan implements **Batch 1**, the four grafts
+    landed machinery (`Technical_Design_Document.md` section 9.2). Phased: this plan
+    implements **Batch 1**, the four grafts
     buildable with no new engine code (Wretched Conscript, Spreading Rot, Reactive Plating,
     Strength in Numbers) — **implemented, suite green — pending reconciliation** (review,
     fold into `Technical_Design_Document.md`, strike section 15, delete the Batch 1 steps).

@@ -956,6 +956,46 @@ clears it on a successful avoidance, battle start, or the character's own death 
 This is intended as the home for future trait-driven battlefield visuals (auras, etc.), not
 specific to this one trait.
 
+### 9.2. The Graft passive: `GraftEffect`
+
+`GraftEffect` (`Scripts/Character/character_traits/graft_effect.gd`, `extends CharacterTrait`)
+models the Symbiote's Graft passive as two reused systems layered together rather than a bespoke
+subsystem:
+
+- **Effect** — a graft *is* a `CharacterTrait`, so it inherits the full hook surface
+  ([Section 9](#9-trait-hook-system)) and the existing dispatch: grafting sets the Symbiote's
+  `_trait` to the graft effect, so every existing hook call site fires it with no new dispatch
+  code. Concrete grafts (`Scripts/Character/character_traits/Grafts/`, e.g.
+  `ReactivePlatingGraft`) subclass `GraftEffect`, override `_BonusForRarity(rarity)` and
+  `_Drawback()`, and register hooks in `Init` exactly like any other trait.
+- **Attribute layer** — `GraftEffect.GetAttributeDelta(attribute, base_value)` returns a
+  percent-of-base delta (a rarity-scaled bonus plus a flat-percent drawback, both expressed as
+  `Dictionary[Types.Attribute, float]`), applied on read in `Character.GetTotalAttribute`/
+  `GetTotalAttributes` the same way `GetEquipmentBonus` is — `_attributes` itself is never
+  mutated, so there is one source of truth (the graft identity) and no double-application on
+  load.
+
+`Character` holds two independent `GraftEffect` references: `_graft_effect` is the offer an
+enemy preset carries (`CharacterPreset._graft_effect`, populated per-enemy as the graft pool is
+authored) and `_graft` is what a Symbiote has actually acquired. `ApplyGraft(effect)` duplicates
+the effect, calls `Init(_rarity)`, and assigns it to both `_graft` and `_trait`.
+
+**Battle flow** (`Battle._on_battle_ui_battle_graft_selected` / `_OnGraftTargetSelected` /
+`_ResolveGraft`, `Scripts/Battle/battle.gd`): the Graft button appears only for a Symbiote with
+`_graft == null`; targeting a living enemy with a non-null `_graft_effect` shows a description
+window then a permanence confirm (`ButtonWithOptions`, mirroring the reagent-consumption flow);
+`_ResolveGraft` calls `ApplyGraft` on both the battle-local `Character` and the canonical
+`CharacterCollection` instance (they are not guaranteed to be the same reference) so the graft
+persists regardless of battle outcome, then returns to `Awaiting_Player_Input` without
+`CompleteTurn()` — the free action never advances the turn bar.
+
+**Persistence:** `CharacterCollection.Serialize`/`Deserialize` save only the acquired graft's
+resource path (`_graft_UID`); the effect and attribute layer are re-derived from `load(path)` +
+`Init(rarity)` on load. Old saves without a `"graft"` key deserialize as ungrafted.
+
+Coverage: `test_graft.gd` (machinery, via a test-only `GraftEffect` subclass) and
+`test_symbiote_graft_pool.gd` (concrete grafts) — see `Test_Design_Document.md`.
+
 ---
 
 ## 15. Known weaknesses and recommendations
@@ -1022,3 +1062,13 @@ resource per effect under `Data/Status_Effects/`, looked up through
 `StatusEffectRegistry` (see section 6.1). `skills.gd`/`BattleResolver`'s per-type
 `match` blocks and the `Statuses.BUFF_ICONS`/`DEBUFF_ICONS` maps are gone; the caster-tick
 and target-snapshot methods dispatch generically on `StatusEffectData.magnitude_kind`.
+
+### 15.9. The Symbiote's Graft passive needed generic effect + attribute-bonus machinery — resolved
+
+Resolved by the completed Graft passive plan
+([Section 9.2](#92-the-graft-passive-grafteffect)): `GraftEffect` reuses the `CharacterTrait`
+hook surface for the graft's effect and layers a derived, percent-of-base attribute delta on top
+of `Character`'s base attributes, so a graft can do anything a trait can (buff, debuff, zone,
+damage) without any new dispatch code. The in-battle flow models the reagent free-action seam;
+persistence stores only the graft's resource UID. Ships no graft content itself — enemy
+`_graft_effect` sourcing beyond the first batch is populated separately by the graft-pool plan.
