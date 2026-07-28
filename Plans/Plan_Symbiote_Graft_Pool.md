@@ -50,89 +50,22 @@ Established by the machinery and the existing role traits
   instance at apply time (per-rarity constant → the instance's `value`), following
   `plan_trait.gd`/`lancer_trait.gd`; set `.source_ID = p_owner_ID`.
 
-## Batch 1 steps
+## Batch 1 — complete
 
-**Status: implemented.** All four grafts, their `.tres`, and
-`Tests/unit/test_symbiote_graft_pool.gd` are in. Two deviations from the steps below,
-found during implementation and review:
+Wretched Conscript, Spreading Rot, Reactive Plating, and Strength in Numbers are
+implemented, reviewed, and folded into `Technical_Design_Document.md` section 9.2. Suite
+green (604/604), `gdlint Scripts/` clean on the graft scripts. Two notes for future
+batches, so they aren't re-litigated per batch:
 
-- The graft attribute layer (`GraftEffect`/`Character.GetTotalAttribute`) turned out to
-  only support flat-int deltas, not the design doc's percentages. Rather than bake
-  percentages into guessed flat numbers, `GraftEffect._attribute_percent_delta` and
-  `GetAttributeDelta` were changed to store percentages and compute the flat delta
-  live against the attribute's current base value (`ceilf`, sign applied after,
-  matching `Skills.ApplyAttributeModifiers`'s convention). This is a small machinery
-  change beyond the "no new engine code" framing below, made because it was the only
-  way to honor the design doc's literal percentages without guessing.
-- Reactive Plating's Hardened stacks and Strength in Numbers' living-ally scaling are
-  both implemented as mutations of that same `_attribute_percent_delta` (recomputed by
-  the relevant hooks), not `StatusEffects.Buff` — a graft's bonus is an inherent
-  property of the graft, not a battle-applied status effect, so it should never go
-  through the Buff/Debuff system. Worth stating explicitly in future graft-batch plans
-  so it isn't re-litigated per batch.
-
-### 1. Wretched Conscript — pure stat
-- **New:** `Scripts/Character/character_traits/Grafts/wretched_conscript_graft.gd` + a
-  `.tres` in `Data/Character_Traits/Grafts/`.
-- `_BonusForRarity`: `Defence +8% / 10% / 12% / 14%`. No effect, no drawback, no hooks.
-- **Watch for:** the bonus is a *percent* of base Defence but `GetAttributeDelta` returns an
-  `int`; confirm whether the attribute layer stores percent-of-base or flat points by reading
-  how `_attribute_delta` is consumed in `Character.GetTotalAttribute` and match that
-  convention — do not invent a second one.
-
-### 2. Spreading Rot — attack-applied Blight + self-rot
-- **New:** `Grafts/spreading_rot_graft.gd` + `.tres`.
-- `_BonusForRarity`: `Health +12% / 16% / 20% / 24%`. No stat drawback (rot is a hook).
-- `Skill_Cast` hook (`OnSkillCast`): apply **Blight** (`Types.Debuff_Type.Blight`,
-  `Data/Status_Effects/Blight.tres`) to the skill's **enemy** targets — duration 1/1/2/2 —
-  via `p_resolver.ApplyDebuff`.
-- `Start_Turn` hook: self rot damage = 3% of max Health via
-  `p_resolver.SetCurrentHealth(owner, current - int(0.03 * GetMaxHealth(owner)))`.
-- **Watch for:** there is no per-hit "on attack" hook; `OnSkillCast` fires for every skill,
-  so gate the Blight to targets that are enemies of the owner (`GetSides`). This approximates
-  "attacks"; if a true per-hit gate is needed it becomes a machinery item and moves to a
-  later batch. Reuse Blight for now — the dedicated Rot debuff is an open decision in
-  `Symbiote_Graft_Pool.md` and is not built here.
-
-### 3. Reactive Plating — Hardened stacks on damage taken
-- **New:** `Grafts/reactive_plating_graft.gd` + `.tres`; **new** `StatusEffectData`
-  `Data/Status_Effects/Hardened.tres` (buff, `AttributePercent` on `Defence`,
-  `stackable = true`, rest-of-battle duration).
-- `_Drawback`: `Speed -15%`. No attribute bonus.
-- `Damage_Taken` hook (`OnDamageTaken`, returns `1.0` unchanged): apply one Hardened stack
-  via `p_resolver.ApplyBuff` with per-stack magnitude `+2% / 3% / 4% / 5%`, **capped at 9
-  stacks** (read the current stack count from `character._active_buffs` first and skip past
-  the cap).
-- **Watch for:** confirm whether `AttributePercent` magnitude comes from the runtime
-  `Buff.value` or the `StatusEffectData` magnitude (read the apply path in
-  `battle_resolver.gd` `ApplyBuff`) and set the per-rarity value accordingly.
-
-### 4. Strength in Numbers — per-living-ally scaling
-- **New:** `Grafts/strength_in_numbers_graft.gd` + `.tres`; reuse a percent
-  Resistance/Defence buff, or add a `StatusEffectData` if none in `Data/Status_Effects/`
-  fits.
-- Effect: `+8% / 10% / 12% / 14%` Resistance **and** the same Defence per *other* living
-  ally, up to two others. Drawback: while the Symbiote has no living allies, `-25%`
-  Resistance.
-- Recompute on `Start_Combat`, `Start_Turn`, and `Ally_Death`: count other living allies
-  (`GetSides` + current health), remove the prior scaling buff, apply the new one (or the
-  no-ally penalty). Model it as a recomputed buff, not a static `_attribute_delta`, because
-  the payoff is dynamic battle state.
-- **Watch for:** clear the previous instance before reapplying so the buff never
-  double-stacks across turns; re-run on `Ally_Death` so a death mid-round updates it.
-
-### 5. Tests
-- **New:** `Tests/unit/test_symbiote_graft_pool.gd` (GUT, pure logic; extends the
-  `test_graft.gd` / `TestFactory` patterns). Per graft:
-  - Attribute deltas scale by rarity and drawbacks stay flat (`GetAttributeDelta`).
-  - Spreading Rot: `OnSkillCast` applies Blight to an enemy target and not to an ally target;
-    `Start_Turn` reduces the owner's health by ~3% max.
-  - Reactive Plating: `OnDamageTaken` adds a Hardened stack and stops at 9.
-  - Strength in Numbers: the buff scales with the number of living allies and applies the
-    no-ally penalty when alone.
-  - Wretched Conscript: `GetTotalAttribute(Defence)` includes the rarity-scaled bonus and
-    `_attributes` stays pristine.
-- Do **not** test UI/node wiring (per `Test_Design_Document.md`).
+- The graft attribute layer (`GraftEffect`/`Character.GetTotalAttribute`) stores
+  **percent-of-base** deltas, not flat ints — `GetAttributeDelta` computes the flat amount
+  live against the attribute's current base value (`ceilf`, sign applied after, matching
+  `Skills.ApplyAttributeModifiers`'s convention). Author `_BonusForRarity`/`_Drawback` in
+  the design doc's literal percentages.
+- A graft's own scaling (e.g. stack-based or ally-count-based bonuses) is a mutation of
+  `_attribute_percent_delta` recomputed by the relevant hooks, not `StatusEffects.Buff` —
+  it is an inherent property of the graft, not a battle-applied status effect, so it never
+  goes through the Buff/Debuff system.
 
 ## Roadmap — deferred batches (separate plan files)
 
@@ -168,27 +101,9 @@ The remaining batches (retaliation-proper, on-kill hook, zone extensions, event 
 tether) are otherwise independent and may run in any order once their prerequisite above is
 in place.
 
-## Verification (Batch 1)
-
-1. **Tests:** run the GUT suite headlessly (per project `CLAUDE.md`); confirm
-   `test_symbiote_graft_pool.gd`, the existing `test_graft.gd`, and the rest are green.
-2. **Lint:** `gdlint Scripts/` clean.
-3. **Runtime (temporary wiring, removed before finishing):** temporarily set one enemy's
-   `_graft_effect` to each Batch-1 graft in turn, enter a battle with a Symbiote, graft it,
-   and confirm each behaves (Wretched Conscript raises Defence by the rarity-scaled amount;
-   Spreading Rot's attacks apply Blight and the Symbiote self-rots each turn; Reactive Plating
-   stacks Hardened to a cap of 9 as it is hit; Strength in Numbers tracks living-ally count
-   and drops to the penalty when alone). Save/reload; confirm each graft persists (effect +
-   attribute delta) and Inspect Collection shows "Graft: <name>" with the tooltip. **Remove
-   the temporary wiring** — sourcing stays deferred.
-
-**Results:** suite green (535/536; the one failure is pre-existing and unrelated, in
-`test_reagent_registry.gd`), `gdlint Scripts/` clean. Runtime verification ran headlessly
-through `BattleResolver`/`CharacterCollection` (no windowed Godot available in this
-environment) rather than a manual in-editor battle; all four grafts behaved and persisted
-correctly. Manual play-testing by the user surfaced three further bugs, since fixed:
-the Inspect Collection graft label showing by default before any character was selected;
-the ungrafted tooltip not reusing `SymbioteTrait`'s placeholder text; and the in-battle
+Manual play-testing after Batch 1 landed surfaced three further bugs, since fixed: the
+Inspect Collection graft label showing by default before any character was selected; the
+ungrafted tooltip not reusing `SymbioteTrait`'s placeholder text; and the in-battle
 graft-target-selection window showing the un-`Init()`'d resource's default "Title"/"Body"
 instead of the real graft text (`Battle._OnGraftTargetSelected` now previews with a
 duplicated, `Init()`'d instance scaled to the Symbiote's own rarity).

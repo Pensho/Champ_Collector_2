@@ -996,6 +996,18 @@ resource path (`_graft_UID`); the effect and attribute layer are re-derived from
 Coverage: `test_graft.gd` (machinery, via a test-only `GraftEffect` subclass) and
 `test_symbiote_graft_pool.gd` (concrete grafts) — see `Test_Design_Document.md`.
 
+**Content, Batch 1** (`Symbiote_Graft_Pool.md`): the four grafts buildable with no new engine
+primitive are implemented — `WretchedConscriptGraft` (pure `Defence` bonus), `SpreadingRotGraft`
+(`Skill_Cast` applies Blight to enemy targets, `Start_Turn` self-damages 3% max Health),
+`ReactivePlatingGraft` (`Damage_Taken` adds a Hardened stack to `Defence`, capped at 9, alongside
+a flat Speed drawback), and `StrengthInNumbersGraft` (`Start_Combat`/`Start_Turn`/`Ally_Death`
+recompute a Resistance+Defence bonus scaled by living-ally count, or a no-ally Resistance
+penalty). All four live under `Scripts/Character/character_traits/Grafts/` with one `.tres` each
+under `Data/Character_Traits/Grafts/`. The remaining 14 grafts each need a new engine primitive
+(healing, turn-bar control, retaliation, on-kill/conditional damage, zone extensions, event
+triggers, tether) and are scheduled as separate plans; every enemy `_graft_effect` stays null
+until a future pass assigns sources.
+
 ---
 
 ## 15. Known weaknesses and recommendations
