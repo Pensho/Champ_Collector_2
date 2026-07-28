@@ -787,6 +787,7 @@ provides default (no-op, debug-printing) implementations of each hook. The comba
 | `OnDeath()` | `On_Death` | when a character drops to 0 HP (logic reset) | — |
 | `OnReagentConsumed(consumer_ID, reagent, resolver)` | `Reagent_Consumed` | in `ResolveReagent`, for non-binary reagents only; returns an additive potency contribution (0.0 base) | `float` |
 | `OnCriticalHit(owner_ID, target_ID, resolver)` | `Critical_Hit` | in `_ResolveDamage`, after a critical hit lands, on the caster's trait | — |
+| `OnDamageDealt(owner_ID, target_ID, amount, resolver)` | `Damage_Dealt` | in `_ResolveDamage`, after damage lands (unconditionally, not only on a crit), on the caster's trait | — |
 | `OnAllyDeath(owner_ID, dead_ally_ID, resolver)` | `Ally_Death` | in `_HandleDeath`, on every living ally of the character who just died | — |
 | `OnAllyDamageTaken(owner_ID, damaged_ally_ID, resolver)` | `Ally_Damage_Taken` | in `_ResolveDamage`, polled on the target's living allies before mitigation; returns the fraction of the incoming hit this owner redirects to itself (0.0 base) | `float` |
 
@@ -1003,10 +1004,25 @@ primitive are implemented — `WretchedConscriptGraft` (pure `Defence` bonus), `
 a flat Speed drawback), and `StrengthInNumbersGraft` (`Start_Combat`/`Start_Turn`/`Ally_Death`
 recompute a Resistance+Defence bonus scaled by living-ally count, or a no-ally Resistance
 penalty). All four live under `Scripts/Character/character_traits/Grafts/` with one `.tres` each
-under `Data/Character_Traits/Grafts/`. The remaining 14 grafts each need a new engine primitive
-(healing, turn-bar control, retaliation, on-kill/conditional damage, zone extensions, event
-triggers, tether) and are scheduled as separate plans; every enemy `_graft_effect` stays null
-until a future pass assigns sources.
+under `Data/Character_Traits/Grafts/`.
+
+**Content, healing primitives batch:** three more grafts landed on two new primitives —
+`HollowHungerGraft` (`Damage_Dealt` heals the owner by a rarity-scaled fraction of damage dealt,
+alongside a flat max-Health drawback), `CarrionBloomGraft` (`Start_Turn` heals the lowest-current-
+Health living ally, including the owner itself, by a rarity-scaled fraction of that ally's max
+Health; overrides `GetIncomingHealMultiplier` to permanently halve healing the owner itself
+receives — kept off the Buff/Debuff system as an inherent graft property, per the Batch 1
+convention), and `OvergrowthGraft` (`Start_Turn` stacks a self-heal that grows each turn, spilling
+over into team-wide Regeneration at 6 stacks before resetting). The primitives: `ResolveTraitHeal`
+(`BattleResolver`) gained an optional `p_raw_amount` so a raw healed amount (lifesteal) can reuse
+the same path as its existing max-Health-fraction heals, and `CharacterTrait.GetIncomingHealMultiplier(owner_ID)`
+is a permanent, unconditional multiplier `_HealingMultiplier` composes with the existing
+`IncomingHealReduction` debuff scan — the same "plain getter, no `Combat_Event`" shape as
+`GetTargetingDefenceMultiplier`/`GetZoneChargeBonus`.
+
+The remaining 11 grafts each need a new engine primitive (turn-bar control, retaliation, on-kill/
+conditional damage, zone extensions, event triggers, tether) and are scheduled as separate plans;
+every enemy `_graft_effect` stays null until a future pass assigns sources.
 
 ---
 
@@ -1084,3 +1100,15 @@ of `Character`'s base attributes, so a graft can do anything a trait can (buff, 
 damage) without any new dispatch code. The in-battle flow models the reagent free-action seam;
 persistence stores only the graft's resource UID. Ships no graft content itself — enemy
 `_graft_effect` sourcing beyond the first batch is populated separately by the graft-pool plan.
+
+### 15.10. `battle_resolver.gd` is at its `gdlintrc` budget ceiling
+
+`Scripts/Battle/battle_resolver.gd` sits at exactly `max-file-lines` (1320) and
+`max-public-methods` (26) as of the healing-primitives graft batch — the healing primitives
+landed by extending an existing public method (`ResolveTraitHeal`'s optional `p_raw_amount`)
+rather than adding a new one, specifically to stay under budget. The remaining graft roadmap
+batches (turn-bar control, retaliation, on-kill/conditional damage, zone extensions, event
+triggers, tether) each propose at least one new resolver-side primitive; at least one of them
+will need to either extend an existing public method the way this batch did, or split
+`battle_resolver.gd` (e.g. moving the `ResolveX` trait-facing entry points to a helper the
+resolver composes) before `gdlintrc`'s limits allow a straightforward new method.

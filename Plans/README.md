@@ -26,12 +26,13 @@ Suggested order (dependencies noted inside each plan):
 3. `Plan_Symbiote_Graft_Pool.md` — the concrete graft content from
     `Symbiote_Graft_Pool.md` (18 grafts), turned into `GraftEffect` subclasses on the
     landed machinery (`Technical_Design_Document.md` section 9.2, which also covers Batch
-    1's content). Phased: **Batch 1**, the four grafts buildable with no new engine code
-    (Wretched Conscript, Spreading Rot, Reactive Plating, Strength in Numbers), is done and
-    reconciled. Enemy-to-graft sourcing stays deferred until more opponents exist. The
-    remaining 14 grafts each need a new engine primitive and live in their own plans:
-    - `Plan_Graft_Healing_Primitives.md` — public heal + lifesteal (Hollow Hunger, Carrion
-      Bloom, Overgrowth).
+    1 and the healing-primitives batch's content). Phased: **Batch 1** (Wretched Conscript,
+    Spreading Rot, Reactive Plating, Strength in Numbers) and the **healing primitives
+    batch** (Hollow Hunger, Carrion Bloom, Overgrowth) are done and reconciled. Enemy-to-graft
+    sourcing stays deferred until more opponents exist. `battle_resolver.gd` is now at its
+    `gdlintrc` budget ceiling (`Technical_Design_Document.md` section 15.10) — a concern for
+    whichever remaining batch runs next. The remaining 11 grafts each need a new engine
+    primitive and live in their own plans:
     - `Plan_Graft_Turn_Bar_Control.md` — resolver turn-bar ordering + push/pull (Caravan
       Cadence, Gravitic Rot, Contagion Bond).
     - `Plan_Graft_Retaliation.md` — attacker-aware damage-taken reaction (Glass Refraction,

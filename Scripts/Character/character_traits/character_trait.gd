@@ -51,6 +51,12 @@ func OnDeath() -> void:
 func GetTargetingDefenceMultiplier() -> float:
 	return 1.0
 
+## Permanent multiplier this owner's trait applies to healing it receives
+## (1.0 = unchanged). Composes with, but is separate from, expiring
+## IncomingHealReduction debuffs.
+func GetIncomingHealMultiplier(_p_owner_ID: int) -> float:
+	return 1.0
+
 func OnReagentConsumed(
 		_p_consumer_ID: int, _p_reagent: ReagentData, _p_resolver: BattleResolver) -> float:
 	print("character_trait base class OnReagentConsumed() called!")
@@ -58,6 +64,10 @@ func OnReagentConsumed(
 
 func OnCriticalHit(_p_owner_ID: int, _p_target_ID: int, _p_resolver: BattleResolver) -> void:
 	print("character_trait base class OnCriticalHit() called!")
+
+func OnDamageDealt(
+		_p_owner_ID: int, _p_target_ID: int, _p_amount: int, _p_resolver: BattleResolver) -> void:
+	print("character_trait base class OnDamageDealt() called!")
 
 func OnAllyDeath(_p_owner_ID: int, _p_dead_ally_ID: int, _p_resolver: BattleResolver) -> void:
 	print("character_trait base class OnAllyDeath() called!")

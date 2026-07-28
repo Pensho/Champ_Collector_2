@@ -381,13 +381,15 @@ func ResolveReagent(
 	return _EndBatch()
 
 
-## Heals each living target by a fraction of that target's own max Health (traits).
-func ResolveTraitHeal(p_target_IDs: Array[int], p_max_health_fraction: float) -> Array[CombatResult]:
+## Heals each target by a fraction of their max Health, or p_raw_amount (>= 0) when given.
+func ResolveTraitHeal(
+		p_target_IDs: Array[int], p_max_health_fraction: float, p_raw_amount: int = -1) -> Array[CombatResult]:
 	_BeginBatch()
 	for target_ID in p_target_IDs:
 		if(not _characters.has(target_ID) or _characters[target_ID]._current_health <= 0):
 			continue
-		var requested: int = int(round(_MaxHealth(_characters[target_ID]) * p_max_health_fraction))
+		var requested: int = (p_raw_amount if p_raw_amount >= 0
+				else int(round(_MaxHealth(_characters[target_ID]) * p_max_health_fraction)))
 		var healed: int = _ApplyHeal(target_ID, requested)
 		var result: CombatResult = CombatResult.new(CombatResult.Kind.Heal)
 		result.target_ID = target_ID
@@ -872,18 +874,21 @@ func _AbsorbWithBarrier(p_character_ID: int, p_amount: int) -> int:
 func _ApplyHeal(p_character_ID: int, p_amount: int) -> int:
 	var character: Character = _characters[p_character_ID]
 	var health_before: int = character._current_health
-	var reduced_amount: int = int(floor(float(p_amount) * _HealingMultiplier(character)))
+	var reduced_amount: int = int(floor(float(p_amount) * _HealingMultiplier(p_character_ID)))
 	character._current_health = clampi(character._current_health + reduced_amount, 0, _MaxHealth(character))
 	return character._current_health - health_before
 
 
-func _HealingMultiplier(p_character: Character) -> float:
+func _HealingMultiplier(p_character_ID: int) -> float:
+	var character: Character = _characters[p_character_ID]
 	var multiplier: float = 1.0
-	for debuff in p_character._active_debuffs:
+	for debuff in character._active_debuffs:
 		var data: StatusEffectData = StatusEffectRegistry.DebuffData(debuff.type)
 		if(null != data and StatusEffectData.MagnitudeKind.IncomingHealReduction == data.magnitude_kind):
 			multiplier -= (debuff.value if 0.0 != debuff.value else data.magnitude)
-	return maxf(multiplier, 0.0)
+	var trait_multiplier: float = (character._trait.GetIncomingHealMultiplier(p_character_ID)
+			if null != character._trait else 1.0)
+	return maxf(multiplier * trait_multiplier, 0.0)
 
 
 func _HandleDeath(p_character_ID: int) -> void:
@@ -1238,8 +1243,10 @@ func _ResolveDamage(
 	_ApplyHealthLoss(p_target_ID, damage_dealt)
 	_EmitDamageResult(p_caster_ID, p_target_ID, damage_dealt, rolled_critical)
 
+	var caster: Character = _characters[p_caster_ID]
+	if(null != caster._trait and caster._trait._execution_steps.has(Types.Combat_Event.Damage_Dealt)):
+		caster._trait.OnDamageDealt(p_caster_ID, p_target_ID, damage_dealt, self)
 	if(rolled_critical):
-		var caster: Character = _characters[p_caster_ID]
 		if(null != caster._trait and caster._trait._execution_steps.has(Types.Combat_Event.Critical_Hit)):
 			caster._trait.OnCriticalHit(p_caster_ID, p_target_ID, self)
 

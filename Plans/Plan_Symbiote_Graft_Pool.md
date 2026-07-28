@@ -72,9 +72,16 @@ batches, so they aren't re-litigated per batch:
 Each is its own `Plans/*.md`, building one shared primitive first (with tests), then the
 grafts that fall out. None blocks Batch 1.
 
+**Healing primitives batch — complete.** Hollow Hunger, Carrion Bloom, and Overgrowth are
+implemented and folded into `Technical_Design_Document.md` section 9.2 (`ResolveTraitHeal`'s
+`p_raw_amount` for lifesteal; `CharacterTrait.GetIncomingHealMultiplier` for Carrion Bloom's
+permanent self heal-reduction). `battle_resolver.gd` is now at its `gdlintrc`
+`max-file-lines`/`max-public-methods` ceiling ([Section 15.10](../Technical_Design_Document.md#1510-battle_resolvergd-is-at-its-gdlintrc-budget-ceiling))
+— extend an existing public method rather than adding a new one where possible, or expect to
+split the file, before the remaining batches below land their own primitives.
+
 | Plan file | Primitive to build | Grafts |
 | --- | --- | --- |
-| `Plan_Graft_Healing_Primitives.md` | Public `ResolveTraitHeal` (`Heal` `CombatResult`, respects `IncomingHealReduction`) + lifesteal feeding `_ResolveDamage` back to the caster | Hollow Hunger, Carrion Bloom, Overgrowth |
 | `Plan_Graft_Turn_Bar_Control.md` | Resolver-side turn-bar ordering/position queries (today only in `turn_bar.gd`) + public push/pull wrapping `_EmitTurnBarBump` | Caravan Cadence, Gravitic Rot, Contagion Bond |
 | `Plan_Graft_Retaliation.md` | Attacker-aware `Damage_Taken` hook (or in-resolver plumbing like `_TriggerMirrorCoat`) | Glass Refraction, Undertow, Glamour |
 | `Plan_Graft_On_Kill_And_Conditional_Damage.md` | Killing-blow hook fired on the *killer* + target-Health-conditional damage modifier | Bloodscent |
@@ -82,20 +89,19 @@ grafts that fall out. None blocks Batch 1.
 | `Plan_Graft_Event_Triggers.md` | Buff-expired + zone-dissipated triggers (+ a zone-dissipation `CombatResult`) + broadened `Reagent_Consumed` | Detritivore |
 | `Plan_Graft_Tether.md` | Persistent random-ally tether with cross-character attribute sharing + re-tether on death | Symbiotic Anchor |
 
-Coverage: Batch 1 (4) + 3 + 3 + 3 + 1 + 2 + 1 + 1 = **18**.
+Coverage: Batch 1 (4) + healing (3) + 3 + 3 + 1 + 2 + 1 + 1 = **18**.
 
 ### Build order and shared primitives
 
-Most primitives are 1:1 with their batch. Two are shared and must be built **once** and then
-depended on — do not reimplement them per batch:
+Most primitives are 1:1 with their batch. One is shared and must be built **once** and then
+depended on — do not reimplement it per batch:
 
-- **Public heal (`ResolveTraitHeal`)** is built in `Plan_Graft_Healing_Primitives.md` and
-  reused by the on-kill (Bloodscent), zone (Rootfeeder), and event-trigger (Detritivore)
-  heals. **Schedule `Plan_Graft_Healing_Primitives.md` first** among the effect batches; the
-  three consumers hard-depend on its `ResolveTraitHeal` rather than adding their own heal.
 - **Turn-bar push/pull + ordering** is built in `Plan_Graft_Turn_Bar_Control.md` and reused
   by Undertow (`Plan_Graft_Retaliation.md`). Schedule turn-bar control before retaliation, or
   land the primitive with whichever runs first and have the other depend on it.
+- Rootfeeder (`Plan_Graft_Zone_Extensions.md`) and Detritivore (`Plan_Graft_Event_Triggers.md`)
+  now depend on the landed `ResolveTraitHeal`/`p_raw_amount` primitive above rather than adding
+  their own heal path.
 
 The remaining batches (retaliation-proper, on-kill hook, zone extensions, event triggers,
 tether) are otherwise independent and may run in any order once their prerequisite above is

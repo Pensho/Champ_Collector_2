@@ -192,6 +192,7 @@ enum Combat_Event
 	Enemy_Turn_Bar_Reduced,
 	Zone_Used,
 	Zone_Constructed,
+	Damage_Dealt,
 }
 
 func RarityName(p_rarity: Types.Rarity) -> String:
