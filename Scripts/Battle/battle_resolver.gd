@@ -462,7 +462,8 @@ func _ResolveReagentEffect(
 			barrier.type = Types.Buff_Type.Barrier
 			barrier.name = "Barrier"
 			barrier.duration = 2
-			barrier.value = ReagentResolver.BarrierAmount(p_reagent.magnitude, p_potency)
+			barrier.value = ReagentResolver.BarrierAmount(
+					_MaxHealth(_characters[p_target_ID]), p_reagent.magnitude, p_potency)
 			ApplyBuff(p_target_ID, barrier)
 		ReagentData.EffectKind.Random_Attribute_Buff:
 			var buff_type: Types.Buff_Type = ReagentResolver.RandomAttributeBuff(_random)

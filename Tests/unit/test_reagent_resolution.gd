@@ -163,7 +163,9 @@ func test_barrier_effect_applies_a_barrier_buff_scaled_by_potency() -> void:
 	var barriers: Array = consumer._active_buffs.filter(
 			func(b): return b.type == Types.Buff_Type.Barrier)
 	assert_eq(barriers.size(), 1, "Lesser Barrier Brew must grant one Barrier buff")
-	assert_eq(barriers[0].value, 40, "At default potency the Barrier value equals the reagent's magnitude")
+	var max_health: int = consumer.GetTotalAttribute(Types.Attribute.Health) * GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER
+	assert_eq(barriers[0].value, ReagentResolver.BarrierAmount(max_health, 40.0, 1.0),
+		"At default potency the Barrier value equals the reagent's magnitude percent of max Health")
 
 func test_chaotic_blessing_applies_one_pool_buff_at_the_reagent_magnitude_and_duration() -> void:
 	var resolver: BattleResolver = _make_resolver()

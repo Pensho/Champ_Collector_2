@@ -130,7 +130,7 @@ Current roles, their identity and purpose exist as follows:
     - Purpose: Debuffer, Buffer
     - Passive: Fresh Batch - At the start of combat the Alchemist brews one concoction: a reagent drawn at random from an Alchemist-exclusive pool, occupying its own slot beyond the three brought reagents. It follows normal reagent rules (consumable once, by any champion, on their turn) except that it is never added to the inventory - if unconsumed when the battle ends, it is lost. Each fielded Alchemist brews their own concoction.
         - Brew potency: 90% Uncommon, 100% Rare, 110% Epic, 120% Legendary (relative to a standard reagent of equivalent effect); the brew pool holds 3 lesser reagents at Uncommon and Rare, 4 at Epic and Legendary (see section 3.3.3)
-        - Brews are self-targeted (the consumer is always the recipient). Magnitudes: Lesser Restorative Brew heals 10% of max Health; Lesser Tincture grants +5% to one random primary attribute, battle-long; Lesser Barrier Brew grants a flat 40 absorb Barrier; Lesser Purging Brew (Epic/Legendary pool only) removes 1 debuff.
+        - Brews are self-targeted (the consumer is always the recipient). Magnitudes: Lesser Restorative Brew heals 10% of max Health; Lesser Tincture grants +5% to one random primary attribute, battle-long; Lesser Barrier Brew grants a Barrier absorbing 40% of max Health; Lesser Purging Brew (Epic/Legendary pool only) removes 1 debuff.
 - Sorcerer
     - A damage dealer that harnesses the power of magic to deal Area of Effect damage and control the battlefield. Wields the unstable, shunned magic left behind by the God of Magic, and excels at drawing power from reagents scavenged from that era's ruins. Signature zone: Unstable Rift (see section 3.2.4.1). Primary attributes: Mysticism, Knowledge.
     - Purpose: Damage, Debuffer, Control
@@ -638,7 +638,7 @@ Skills allocated to a specific Role, listed in the same order as their entries i
 * Raise the Frame
     * Type: Turn Bar (Zone)
     * Cooldown: 2 turns
-    * Effect: Constructs a zone: affected allies gain the Barrier buff for 2 turns (see section 3.2.3.2), sized by the Calibration charges invested in the construction. Holds 5 charges.
+    * Effect: Constructs a zone: affected allies gain the Barrier buff for 2 turns (see section 3.2.3.2), sized by the Architect's Knowledge and boosted by the Calibration charges invested in the construction. Holds 5 charges.
 * Final Calculation
     * Type: Damage
     * Cooldown: 3 turns
@@ -819,7 +819,7 @@ Rare, 4 at Epic and Legendary:
 * Lesser Restorative Brew: heals the consumer for 10% of their max Health.
 * Lesser Tincture: a small battle-long +5% increase to one random primary attribute
   of the consumer.
-* Lesser Barrier Brew: grants the consumer a Barrier with a flat 40 absorb amount.
+* Lesser Barrier Brew: grants the consumer a Barrier absorbing 40% of their max Health.
 * Lesser Purging Brew (Epic and Legendary Alchemists only): removes up to 1 debuff
   from the consumer.
 

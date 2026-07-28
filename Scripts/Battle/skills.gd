@@ -10,13 +10,19 @@ const ZoneType = preload("uid://bdjrfif0s60v4")
 static func AllyZoneMagnitude(p_base: float, p_owner_knowledge: int) -> float:
 	return p_base * (1.0 + p_owner_knowledge * Game_Balance.ZONE_KNOWLEDGE_SCALING)
 
+## Additive attribute-scaled Barrier value, shared by the barrier zone and any future
+## direct-cast Barrier skill (use GameBalance.BARRIER_DIRECT_BASE / _COEFF and the
+## casting skill's own scaling attribute for the latter).
+static func Barrier(p_base: float, p_coeff: float, p_attribute_value: int, p_bonus: float = 0.0) -> int:
+	return int(ceil((p_base + p_coeff * p_attribute_value) * (1.0 + p_bonus)))
+
 static func MakeBarrierZoneBuff(p_owner_knowledge: int, p_charge_bonus: float = 0.0) -> StatusEffects.Buff:
 	var barrier: StatusEffects.Buff = StatusEffects.Buff.new()
 	barrier.type = Types.Buff_Type.Barrier
 	barrier.name = "Barrier"
 	barrier.duration = 2
-	barrier.value = ceil(AllyZoneMagnitude(Game_Balance.RAISE_THE_FRAME_BASE_BARRIER, p_owner_knowledge)
-			* (1.0 + p_charge_bonus))
+	barrier.value = Barrier(Game_Balance.BARRIER_ZONE_BASE, Game_Balance.BARRIER_ZONE_KNOWLEDGE_COEFF,
+			p_owner_knowledge, p_charge_bonus)
 	return barrier
 
 static func TriggerZoneUsedHook(

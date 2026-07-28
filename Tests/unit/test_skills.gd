@@ -176,3 +176,18 @@ func test_random_enemy_two_enemy_wave_only_picks_fielded_slots() -> void:
 				3, 0, Types.Skill_Target.Random_Enemy, _roster, two_enemy_sides)
 		assert_eq(targets.size(), 1)
 		assert_true([3, 4].has(targets[0]), "Random_Enemy must only pick fielded enemies")
+
+# --- Barrier ---
+
+func test_barrier_with_zero_attribute_and_bonus_returns_ceiled_base() -> void:
+	assert_eq(Skills.Barrier(24.5, 1.0, 0), 25)
+
+func test_barrier_scales_additively_with_the_attribute() -> void:
+	var low: int = Skills.Barrier(25.0, 0.75, 10)
+	var high: int = Skills.Barrier(25.0, 0.75, 100)
+	assert_true(high > low, "A higher attribute value must yield a larger Barrier")
+
+func test_barrier_applies_bonus_as_a_multiplier_on_top_of_base_plus_attribute() -> void:
+	var raw: float = 25.0 + 0.75 * 75
+	var with_bonus: int = Skills.Barrier(25.0, 0.75, 75, 0.24)
+	assert_eq(with_bonus, int(ceil(raw * 1.24)))

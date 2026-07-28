@@ -69,9 +69,10 @@ func test_barrier_scales_with_the_owners_invested_charges() -> void:
 	_place_barrier_zone()
 	_resolver.TriggerZones(0)
 
-	var expected: float = ceil(Skills.AllyZoneMagnitude(
-			Game_Balance.RAISE_THE_FRAME_BASE_BARRIER, _roster[0].GetTotalAttribute(Types.Attribute.Knowledge))
-			* (1.0 + CalibrationTrait.RAISE_THE_FRAME_CONSUME_CAP * calibration_trait._per_charge_potency))
+	var expected: int = Skills.Barrier(
+			Game_Balance.BARRIER_ZONE_BASE, Game_Balance.BARRIER_ZONE_KNOWLEDGE_COEFF,
+			_roster[0].GetTotalAttribute(Types.Attribute.Knowledge),
+			CalibrationTrait.RAISE_THE_FRAME_CONSUME_CAP * calibration_trait._per_charge_potency)
 	assert_eq(_roster[1]._active_buffs[0].value, expected,
 		"Barrier should scale with both Knowledge and invested charges")
 
@@ -83,7 +84,8 @@ func test_barrier_with_zero_invested_charges_is_base_value_only() -> void:
 	_place_barrier_zone()
 	_resolver.TriggerZones(0)
 
-	var expected: float = ceil(Skills.AllyZoneMagnitude(
-			Game_Balance.RAISE_THE_FRAME_BASE_BARRIER, _roster[0].GetTotalAttribute(Types.Attribute.Knowledge)))
+	var expected: int = Skills.Barrier(
+			Game_Balance.BARRIER_ZONE_BASE, Game_Balance.BARRIER_ZONE_KNOWLEDGE_COEFF,
+			_roster[0].GetTotalAttribute(Types.Attribute.Knowledge))
 	assert_eq(_roster[1]._active_buffs[0].value, expected,
 		"With no invested charges the Barrier should fall back to base plus Knowledge only")

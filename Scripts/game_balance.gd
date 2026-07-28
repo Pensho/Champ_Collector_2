@@ -61,9 +61,15 @@ const BASE_ITEM_UPGRADE_COST: int = 25
 ## Skills
 const HEAP_ON_MULTIPLIER: float = 0.2
 const FLICKER_ZONE_BASE_BUMP: float = 0.15
-const RAISE_THE_FRAME_BASE_BARRIER: float = 15.0
 # Ally turn bar zone effect magnitude scaling per point of the placing character's Knowledge.
 const ZONE_KNOWLEDGE_SCALING: float = 0.005
+
+## Barrier
+# Additive attribute-scaled Barrier: ceil((BASE + COEFF * attribute) * (1 + bonus)).
+const BARRIER_ZONE_BASE: float = 5.0
+const BARRIER_ZONE_KNOWLEDGE_COEFF: float = 0.75
+const BARRIER_DIRECT_BASE: float = 5.0
+const BARRIER_DIRECT_COEFF: float = 1.0
 
 ## Battle, Combat
 const TURN_DURATION_SECONDS: float = 2.5

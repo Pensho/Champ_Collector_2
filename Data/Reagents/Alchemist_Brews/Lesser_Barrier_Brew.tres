@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1_script")
 display_name = "Lesser Barrier Brew"
-description = "Grants a Barrier absorbing 40 damage."
+description = "Grants a Barrier absorbing 40% of the consumer's max Health."
 icon = ExtResource("2_icon")
 rarity = 2
 effect_kind = 9

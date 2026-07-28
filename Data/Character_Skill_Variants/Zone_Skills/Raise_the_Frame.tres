@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_rsthfrm")
 name = "Raise the Frame"
-description = "Constructs a zone: allies gain the Barrier buff when they use it, sized by Knowledge and up to 3 Calibration charges consumed on construction. Generates a Calibration charge per character that uses the zone."
+description = "Constructs a zone: allies gain the Barrier buff when they use it, sized by Knowledge and boosted by up to 3 Calibration charges consumed on construction. Generates a Calibration charge per character that uses the zone."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Raise_the_Frame/Raise_the_Frame_1.jpg"
 target = 7
 cooldown = 2
