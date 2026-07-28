@@ -27,7 +27,9 @@ func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
 	_mysticism_per_stack = MYSTICISM_PER_STACK.get(p_rarity, 0.0)
 	_reagent_amplification = REAGENT_AMPLIFICATION.get(p_rarity, 0.0)
-	_trait_texture = load("res://Assets/Champ_Collector/Icons/Abilities/Passives/Arcane_Instability/arcane_instability_trait.png")
+	_trait_texture = load(
+		"res://Assets/Champ_Collector/Icons/Abilities/Passives/Arcane_Instability/arcane_instability_trait.png"
+	)
 	_title = "Arcane Instability"
 	_body = ("Using any skill grants an Instability stack that gives more Mysticism per stack. " +
 			"Consuming a reagent grants two stacks and amplifies the reagent's effect. " +

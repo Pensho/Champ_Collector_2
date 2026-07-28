@@ -113,12 +113,6 @@ func after_each():
 	# screen is freed automatically by add_child_autoqfree
 	if is_instance_valid(context):
 		context.free()
-	if is_instance_valid(mock_char_1):
-		mock_char_1.free()
-	if is_instance_valid(mock_char_2):
-		mock_char_2.free()
-	if is_instance_valid(mock_char_3):
-		mock_char_3.free()
 	if is_instance_valid(character_collection_mock):
 		character_collection_mock.free()
 

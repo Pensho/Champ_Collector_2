@@ -16,7 +16,9 @@ static func GetHealFraction(p_rarity: Types.Rarity) -> float:
 func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
 	_heal_fraction = GetHealFraction(p_rarity)
-	_trait_texture = load("res://Assets/Champ_Collector/Icons/Abilities/Passives/On_The_House_Trait/On_The_House_Trait.png")
+	_trait_texture = load(
+		"res://Assets/Champ_Collector/Icons/Abilities/Passives/On_The_House_Trait/On_The_House_Trait.png"
+	)
 	_execution_steps[Types.Combat_Event.Buff_Applied] = Callable(self, "OnBuffGained")
 	_execution_steps[Types.Combat_Event.Start_Turn] = Callable(self, "StartOfTurn")
 
