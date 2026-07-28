@@ -1,6 +1,7 @@
 class_name TurnBar extends Panel
 
-const TURN_BAR_BUMP_GOOD = preload("uid://7aqjlq70jbhi")
+const TURN_BAR_FLICKER = preload("res://Scenes/ui/Turn_Bar_Zones/Turn_Bar_Flicker.tscn")
+const TURN_BAR_RAISE_THE_FRAME = preload("res://Scenes/ui/Turn_Bar_Zones/Turn_Bar_Raise_the_Frame.tscn")
 const TURN_BAR_LAVA_ZONE = preload("uid://bognvuid7w2ti")
 
 const DEFAULT_THEME = preload("uid://c8irweh6md2jy")
@@ -120,8 +121,10 @@ func SpawnZoneEffect(p_zone_ID: int, p_duration: int, p_allySide: bool, p_zone_t
 	var effect: TurnBarContainer
 	# Barrier_Zone has no graphic of its own yet; reuses Flicker_Zone's as a placeholder.
 	match p_zone_type:
-		Types.Skill_Type.Flicker_Zone, Types.Skill_Type.Barrier_Zone:
-			effect = TURN_BAR_BUMP_GOOD.instantiate()
+		Types.Skill_Type.Flicker_Zone:
+			effect = TURN_BAR_FLICKER.instantiate()
+		Types.Skill_Type.Barrier_Zone:
+			effect = TURN_BAR_RAISE_THE_FRAME.instantiate()
 		Types.Skill_Type.Lava_Zone:
 			effect = TURN_BAR_LAVA_ZONE.instantiate()
 			effect.cpu_particles_2d_side_1.emission_rect_extents.x = _zone_buttons[p_zone_ID].size.x * 0.5
