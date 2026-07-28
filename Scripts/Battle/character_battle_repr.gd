@@ -16,7 +16,7 @@ var _status_effect_counter: int = 0
 @warning_ignore_start("unused_private_class_variable")
 @onready var _character_texture: TextureRect = $TextureRect
 @onready var _lifebar: ProgressBar = $ProgressBar
-@onready var _lifebar_text: Label = $ProgressBar/Label
+@onready var _lifebar_text: Label = $Label
 @onready var _barrier_bar: ProgressBar = $BarrierBar
 @onready var _level: Label = $ColorRect/Label
 @onready var _visual_effects: CharacterVisualEffects = $VisualEffects

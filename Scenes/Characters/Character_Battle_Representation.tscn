@@ -88,23 +88,6 @@ theme = ExtResource("2_6p7dp")
 value = 100.0
 show_percentage = false
 
-[node name="Label" type="Label" parent="ProgressBar" unique_id=1533858800]
-material = ExtResource("2_7qair")
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -45.5
-offset_top = -9.5
-offset_right = 45.5
-offset_bottom = 20.5
-grow_horizontal = 2
-grow_vertical = 2
-theme = ExtResource("2_6p7dp")
-theme_override_font_sizes/font_size = 22
-
 [node name="BarrierBar" type="ProgressBar" parent="." unique_id=132554161]
 material = ExtResource("2_7qair")
 visible = false
@@ -117,6 +100,15 @@ theme_override_styles/background = SubResource("StyleBoxEmpty_barrier_bg")
 theme_override_styles/fill = SubResource("StyleBoxFlat_barrier_fill")
 value = 0.0
 show_percentage = false
+
+[node name="Label" type="Label" parent="." unique_id=1533858800]
+material = ExtResource("2_7qair")
+offset_left = 67.0
+offset_top = 203.0
+offset_right = 158.0
+offset_bottom = 233.0
+theme = ExtResource("2_6p7dp")
+theme_override_font_sizes/font_size = 22
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=1190600553]
 material = ExtResource("2_7qair")
