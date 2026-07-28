@@ -796,6 +796,7 @@ func _EmitBuffApplied(p_target_ID: int, p_buff: StatusEffects.Buff, p_display_na
 	result.is_buff = true
 	result.buff_type = p_buff.type
 	result.duration = p_buff.duration
+	result.amount = int(p_buff.value)
 	result.text = p_display_name
 	_Emit(result)
 	var target: Character = _characters[p_target_ID]

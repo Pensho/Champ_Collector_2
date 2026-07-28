@@ -83,3 +83,14 @@ func test_apply_buff_replaces_the_existing_barrier_when_the_new_value_is_larger(
 	assert_eq(_roster[0]._active_buffs.size(), 1)
 	assert_almost_eq(_roster[0]._active_buffs[0].value, 80.0, 0.0001,
 		"A larger reapplication must replace the existing Barrier")
+
+func test_apply_buff_reports_the_barriers_value_on_the_status_applied_result() -> void:
+	var template: StatusEffects.Buff = StatusEffects.Buff.new()
+	template.type = Types.Buff_Type.Barrier
+	template.duration = 2
+	template.value = 30.0
+
+	var results: Array[CombatResult] = _resolver.ApplyBuff(0, template)
+
+	var applied: Array = results.filter(func(r): return r.kind == CombatResult.Kind.Status_Applied)
+	assert_eq(applied[0].amount, 30, "The overlay bar reads the Barrier's pool from the applied result's amount")

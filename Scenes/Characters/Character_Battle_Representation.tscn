@@ -21,6 +21,18 @@ fill = 1
 fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(0.9, 0)
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_barrier_bg"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_barrier_fill"]
+bg_color = Color(0.298039, 0.564706, 0.870588, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_bottom = 2
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
 [node name="Character" type="Node2D" unique_id=1722979971 node_paths=PackedStringArray("_trait_icons", "_trait_tooltips", "_status_effect_textures", "_status_effect_tooltips")]
 script = ExtResource("1_hd4xr")
 _trait_icons = [NodePath("VBoxContainer_Trait_Elements/TextureRect"), NodePath("VBoxContainer_Trait_Elements/TextureRect2"), NodePath("VBoxContainer_Trait_Elements/TextureRect3")]
@@ -92,6 +104,19 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("2_6p7dp")
 theme_override_font_sizes/font_size = 22
+
+[node name="BarrierBar" type="ProgressBar" parent="." unique_id=132554161]
+material = ExtResource("2_7qair")
+visible = false
+offset_left = 25.0
+offset_top = 200.0
+offset_right = 200.0
+offset_bottom = 225.0
+theme = ExtResource("2_6p7dp")
+theme_override_styles/background = SubResource("StyleBoxEmpty_barrier_bg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_barrier_fill")
+value = 0.0
+show_percentage = false
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=1190600553]
 material = ExtResource("2_7qair")

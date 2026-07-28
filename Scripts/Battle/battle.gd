@@ -38,6 +38,8 @@ var _targeting_order: Array[int]
 var _sides: CombatSides
 # Maps resolver status-effect IDs to the representation's status-icon IDs.
 var _status_visual_IDs: Dictionary[int, int] = {}
+# Maps a character ID to the status-effect ID of its active Barrier, if any.
+var _barrier_status_ID: Dictionary[int, int] = {}
 var _reagent_loadout: ReagentLoadout
 var _selected_reagent_index: int = -1
 var _pending_turn_bar_reset: Dictionary[int, float] = {}
@@ -346,6 +348,9 @@ func _on_resolver_result_produced(p_result: CombatResult) -> void:
 					"Resisted debuff!", CombatTextPosition(p_result.target_ID), Color(0.801, 0.0, 0.0, 1.0))
 		CombatResult.Kind.Status_Applied:
 			ShowStatusApplied(p_result)
+			if(p_result.is_buff and Types.Buff_Type.Barrier == p_result.buff_type):
+				_barrier_status_ID[p_result.target_ID] = p_result.status_ID
+				SetBarrierBar(p_result.target_ID, p_result.amount)
 		CombatResult.Kind.Status_Duration:
 			if(_status_visual_IDs.has(p_result.status_ID)):
 				_character_representations[p_result.target_ID].SetStatusEffectDuration(
@@ -356,9 +361,21 @@ func _on_resolver_result_produced(p_result: CombatResult) -> void:
 				if(_status_visual_IDs.has(status_ID)):
 					repr_effect_IDs.append(_status_visual_IDs[status_ID])
 					_status_visual_IDs.erase(status_ID)
+				if(_barrier_status_ID.get(p_result.target_ID, -1) == status_ID):
+					_barrier_status_ID.erase(p_result.target_ID)
+					SetBarrierBar(p_result.target_ID, 0)
 			_character_representations[p_result.target_ID].RemoveStatusEffects(repr_effect_IDs)
 		CombatResult.Kind.Statuses_Cleared:
 			_character_representations[p_result.target_ID].ClearAllStatusEffects()
+			if(_barrier_status_ID.has(p_result.target_ID)):
+				_barrier_status_ID.erase(p_result.target_ID)
+				SetBarrierBar(p_result.target_ID, 0)
+		CombatResult.Kind.Barrier_Absorbed:
+			if(p_result.amount > 0):
+				_battle_ui.SpawnCombatText(
+						str(p_result.amount), CombatTextPosition(p_result.target_ID), Color(0.298, 0.565, 0.871, 1.0))
+			SetBarrierBar(p_result.target_ID,
+					int(_character_representations[p_result.target_ID]._barrier_bar.value) - p_result.amount)
 		CombatResult.Kind.Turn_Bar_Bump:
 			_battle_ui._turn_bar.BumpCharacter(p_result.target_ID, p_result.fraction)
 		CombatResult.Kind.Zone_Placed:
@@ -410,13 +427,27 @@ func ShowStatusApplied(p_result: CombatResult) -> void:
 	if("" != p_result.text):
 		_battle_ui.SpawnCombatText(p_result.text, CombatTextPosition(p_result.target_ID), text_color)
 
+func _MaxHealthDisplay(p_characterID: int) -> int:
+	return (_characters[p_characterID].GetTotalAttribute(Types.Attribute.Health) *
+			Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
+
+func _RefreshHealthLabel(p_characterID: int) -> void:
+	var repr: CharacterRepresentation = _character_representations[p_characterID]
+	if(repr._barrier_bar.visible and repr._barrier_bar.value > 0):
+		repr._lifebar_text.text = str(int(repr._barrier_bar.value))
+	else:
+		repr._lifebar_text.text = (
+				str(_characters[p_characterID]._current_health) + "/" + str(_MaxHealthDisplay(p_characterID)))
+
 # Display-only: combat mutation (clamping, death handling) happens in the resolver.
 func UpdateLifeBar(p_characterID: int) -> void:
 	_character_representations[p_characterID]._lifebar.value = _characters[p_characterID]._current_health
-	var max_health: int = (_characters[p_characterID].GetTotalAttribute(Types.Attribute.Health) *
-			Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
-	_character_representations[p_characterID]._lifebar_text.text = (
-			str(_characters[p_characterID]._current_health) + "/" + str(max_health))
+	_RefreshHealthLabel(p_characterID)
+
+func SetBarrierBar(p_characterID: int, p_barrier: int) -> void:
+	_character_representations[p_characterID]._barrier_bar.value = p_barrier
+	_character_representations[p_characterID]._barrier_bar.visible = p_barrier > 0
+	_RefreshHealthLabel(p_characterID)
 
 func VisualizeCharacter(p_characterID: int) -> void:
 	_character_representations[p_characterID]._level.text = str(_characters[p_characterID]._level)
@@ -429,9 +460,11 @@ func VisualizeCharacter(p_characterID: int) -> void:
 	if("" != _characters[p_characterID]._normal_map):
 		character_canvas_texture.normal_texture = load(_characters[p_characterID]._normal_map)
 	_character_representations[p_characterID]._character_texture.texture = character_canvas_texture
-	_character_representations[p_characterID]._lifebar.max_value = (
-			_characters[p_characterID].GetTotalAttribute(Types.Attribute.Health) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
+	var max_health: int = _MaxHealthDisplay(p_characterID)
+	_character_representations[p_characterID]._lifebar.max_value = max_health
+	_character_representations[p_characterID]._barrier_bar.max_value = max_health
 	UpdateLifeBar(p_characterID)
+	SetBarrierBar(p_characterID, 0)
 	_character_representations[p_characterID].show()
 
 func CheckAndHandleBattleOver() -> bool:
