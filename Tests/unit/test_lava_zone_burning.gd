@@ -22,18 +22,18 @@ func before_each() -> void:
 		_roster[id]._current_health = 0
 
 func after_each() -> void:
-	for zone in _resolver.GetZones().values():
+	for zone in _resolver.GetZoneResolver().GetZones().values():
 		zone.free()
 
 func _place_lava_zone() -> void:
-	var results: Array[CombatResult] = _resolver.PlaceZone(0, 0, TestFactory.make_lava_zone_skill())
+	var results: Array[CombatResult] = _resolver.GetZoneResolver().PlaceZone(0, 0, TestFactory.make_lava_zone_skill())
 	assert_eq(results.size(), 1, "Placing a lava zone should report Zone_Placed")
 
 func test_lava_zone_stacks_burning() -> void:
 	_place_lava_zone()
 
-	_resolver.TriggerZones(0)
-	_resolver.TriggerZones(0)
+	_resolver.GetZoneResolver().TriggerZones(0)
+	_resolver.GetZoneResolver().TriggerZones(0)
 
 	assert_eq(_roster[3]._active_debuffs.size(), 2,
 		"Each Lava-zone trigger should add another stacking Burning debuff")
@@ -44,7 +44,7 @@ func test_lava_zone_respects_status_cap() -> void:
 	_place_lava_zone()
 
 	for _i in range(GameBalance.MAX_STATUS_EFFECTS + 3):
-		_resolver.TriggerZones(0)
+		_resolver.GetZoneResolver().TriggerZones(0)
 
 	assert_eq(_roster[3]._active_debuffs.size(), GameBalance.MAX_STATUS_EFFECTS,
 		"Stacking Burning must not exceed the status-effect cap")
@@ -53,6 +53,6 @@ func test_zone_expires_after_duration_charges() -> void:
 	_place_lava_zone()
 
 	for _i in range(TestFactory.make_lava_zone_skill().duration):
-		_resolver.TriggerZones(0)
+		_resolver.GetZoneResolver().TriggerZones(0)
 
-	assert_false(_resolver.HasZone(0), "A zone should be erased once its charges are spent")
+	assert_false(_resolver.GetZoneResolver().HasZone(0), "A zone should be erased once its charges are spent")

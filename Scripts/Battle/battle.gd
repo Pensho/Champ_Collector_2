@@ -265,7 +265,7 @@ func SelectEnemySkillID() -> int:
 			continue
 		match skills[i].target:
 			Types.Skill_Target.ZoneAlly, Types.Skill_Target.ZoneEnemy, Types.Skill_Target.ZoneAll:
-				if(_resolver.AvailableZoneIDs().is_empty()):
+				if(_resolver.GetZoneResolver().AvailableZoneIDs().is_empty()):
 					continue
 		return i
 	return 0
@@ -276,10 +276,10 @@ func HandleEnemyTurn() -> void:
 
 	match cast_skill.target:
 		Types.Skill_Target.ZoneAlly, Types.Skill_Target.ZoneEnemy, Types.Skill_Target.ZoneAll:
-			var available_zones: Array[int] = _resolver.AvailableZoneIDs()
+			var available_zones: Array[int] = _resolver.GetZoneResolver().AvailableZoneIDs()
 			print(_characters[_turn_character_ID]._name, " used skill with ID: ", _selected_skill_ID)
 			var zone_ID: int = available_zones[_resolver.GetRandom().randi_range(0, available_zones.size() - 1)]
-			_resolver.PlaceZone(zone_ID, _turn_character_ID, cast_skill)
+			_resolver.GetZoneResolver().PlaceZone(zone_ID, _turn_character_ID, cast_skill)
 			ResolveTurn([])
 		_:
 			for i in _targeting_order:
@@ -574,15 +574,15 @@ func _on_battle_ui_battle_skill_selected(p_skill_ID: int) -> void:
 
 func _on_turn_bar_zone_selected(p_zone_ID: int) -> void:
 	if(BattleState.Selecting_Reagent_Zone == _state):
-		if(not _resolver.HasZone(p_zone_ID)):
+		if(not _resolver.GetZoneResolver().HasZone(p_zone_ID)):
 			print("No zone to clear there")
 			return
 		_ResolveReagentConsumption(_selected_reagent_index, p_zone_ID)
 		return
-	if(_resolver.HasZone(p_zone_ID)):
+	if(_resolver.GetZoneResolver().HasZone(p_zone_ID)):
 		print("Zone is already used")
 		return
-	_resolver.PlaceZone(
+	_resolver.GetZoneResolver().PlaceZone(
 			p_zone_ID, _turn_character_ID, _characters[_turn_character_ID]._skills[_selected_skill_ID])
 	ResolveTurn([])
 

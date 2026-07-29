@@ -124,7 +124,7 @@ func test_final_calculation_below_tier_three_does_not_place_a_zone() -> void:
 	for i in CalibrationTrait.ZONE_RE_ERECT_THRESHOLD - 1:
 		_trait.OnSkillCast(0, [], "Cornerstone", {}, _resolver)
 	_trait.OnSkillCast(0, [], "Final Calculation", {}, _resolver)
-	assert_true(_resolver.GetZones().is_empty(),
+	assert_true(_resolver.GetZoneResolver().GetZones().is_empty(),
 		"Below the zone re-erect threshold, no zone should appear")
 
 func test_final_calculation_at_tier_three_erects_a_zone_when_none_exists() -> void:
@@ -132,7 +132,7 @@ func test_final_calculation_at_tier_three_erects_a_zone_when_none_exists() -> vo
 	for i in CalibrationTrait.ZONE_RE_ERECT_THRESHOLD:
 		_trait.OnSkillCast(0, [], "Cornerstone", {}, _resolver)
 	_trait.OnSkillCast(0, [], "Final Calculation", {}, _resolver)
-	var zones: Dictionary[int, Zone] = _resolver.GetZones()
+	var zones: Dictionary[int, Zone] = _resolver.GetZoneResolver().GetZones()
 	assert_eq(zones.size(), 1, "A construction zone should be re-erected for free")
 	var zone: Zone = zones.values()[0]
 	assert_eq(zone._owner_ID, 0)
@@ -145,13 +145,13 @@ func test_final_calculation_at_tier_three_upgrades_an_existing_zone() -> void:
 	zone_skill.target = Types.Skill_Target.ZoneAlly
 	zone_skill.skill_type = Types.Skill_Type.Barrier_Zone
 	zone_skill.duration = 2
-	_resolver.PlaceZone(0, 0, zone_skill)
+	_resolver.GetZoneResolver().PlaceZone(0, 0, zone_skill)
 
 	for i in CalibrationTrait.ZONE_RE_ERECT_THRESHOLD:
 		_trait.OnSkillCast(0, [], "Cornerstone", {}, _resolver)
 	_trait.OnSkillCast(0, [], "Final Calculation", {}, _resolver)
 
-	var zones: Dictionary[int, Zone] = _resolver.GetZones()
+	var zones: Dictionary[int, Zone] = _resolver.GetZoneResolver().GetZones()
 	assert_eq(zones.size(), 1, "The existing zone should be upgraded, not duplicated")
 	assert_eq(zones[0]._duration, CalibrationTrait.ZONE_UPGRADE_CHARGES)
 
@@ -161,7 +161,7 @@ func test_final_calculation_upgrading_an_existing_zone_emits_a_duration_result()
 	zone_skill.target = Types.Skill_Target.ZoneAlly
 	zone_skill.skill_type = Types.Skill_Type.Barrier_Zone
 	zone_skill.duration = 2
-	_resolver.PlaceZone(0, 0, zone_skill)
+	_resolver.GetZoneResolver().PlaceZone(0, 0, zone_skill)
 
 	var received: Array[CombatResult] = []
 	_resolver.result_produced.connect(func(p_result): received.append(p_result))
@@ -209,7 +209,7 @@ func test_on_zone_constructed_records_capped_invested_charges() -> void:
 	zone_skill.target = Types.Skill_Target.ZoneAlly
 	zone_skill.skill_type = Types.Skill_Type.Barrier_Zone
 	zone_skill.duration = 5
-	_resolver.PlaceZone(0, 0, zone_skill)
+	_resolver.GetZoneResolver().PlaceZone(0, 0, zone_skill)
 	assert_eq(_trait._charges_invested_per_zone.get(0, -1), CalibrationTrait.RAISE_THE_FRAME_CONSUME_CAP,
 		"Invested amount should be capped, independent of charges actually consumed")
 	assert_eq(_trait._charges, CalibrationTrait.RAISE_THE_FRAME_CONSUME_CAP + 4,
@@ -223,7 +223,7 @@ func test_on_zone_constructed_ignores_non_barrier_zones() -> void:
 	zone_skill.target = Types.Skill_Target.ZoneAlly
 	zone_skill.skill_type = Types.Skill_Type.Flicker_Zone
 	zone_skill.duration = 5
-	_resolver.PlaceZone(0, 0, zone_skill)
+	_resolver.GetZoneResolver().PlaceZone(0, 0, zone_skill)
 	assert_false(_trait._charges_invested_per_zone.has(0),
 		"Non-Barrier zones should not record an invested amount")
 
@@ -238,7 +238,7 @@ func test_get_zone_charge_bonus_scales_with_invested_charges_and_potency() -> vo
 	zone_skill.target = Types.Skill_Target.ZoneAlly
 	zone_skill.skill_type = Types.Skill_Type.Barrier_Zone
 	zone_skill.duration = 5
-	_resolver.PlaceZone(0, 0, zone_skill)
+	_resolver.GetZoneResolver().PlaceZone(0, 0, zone_skill)
 	assert_almost_eq(_trait.GetZoneChargeBonus(0), CalibrationTrait.RAISE_THE_FRAME_CONSUME_CAP * 0.10, 0.0001)
 
 func test_get_zone_charge_bonus_is_zero_for_unknown_zone() -> void:
@@ -255,7 +255,7 @@ func test_start_of_battle_clears_invested_charges() -> void:
 	zone_skill.target = Types.Skill_Target.ZoneAlly
 	zone_skill.skill_type = Types.Skill_Type.Barrier_Zone
 	zone_skill.duration = 5
-	_resolver.PlaceZone(0, 0, zone_skill)
+	_resolver.GetZoneResolver().PlaceZone(0, 0, zone_skill)
 	assert_gt(_trait.GetZoneChargeBonus(0), 0.0, "Sanity check: the zone's investment was recorded")
 	_trait.StartOfBattle(0, _resolver)
 	assert_eq(_trait.GetZoneChargeBonus(0), 0.0)

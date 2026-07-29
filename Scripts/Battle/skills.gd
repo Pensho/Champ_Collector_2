@@ -7,8 +7,14 @@ extends Node
 
 const ZoneType = preload("uid://bdjrfif0s60v4")
 
-static func AllyZoneMagnitude(p_base: float, p_owner_knowledge: int) -> float:
+static func ZoneMagnitude(p_base: float, p_owner_knowledge: int) -> float:
 	return p_base * (1.0 + p_owner_knowledge * Game_Balance.ZONE_KNOWLEDGE_SCALING)
+
+static func ActiveHook(p_character: Character, p_event: Types.Combat_Event) -> CharacterTrait:
+	if(null != p_character and null != p_character._trait
+			and p_character._trait._execution_steps.has(p_event)):
+		return p_character._trait
+	return null
 
 ## Additive attribute-scaled Barrier value, shared by the barrier zone and any future
 ## direct-cast Barrier skill (use GameBalance.BARRIER_DIRECT_BASE / _COEFF and the
@@ -31,9 +37,9 @@ static func TriggerZoneUsedHook(
 		p_user_ID: int,
 		p_resolver: BattleResolver) -> void:
 	var zone_owner: Character = p_characters.get(p_zone_owner_ID)
-	if(null != zone_owner and null != zone_owner._trait
-			and zone_owner._trait._execution_steps.has(Types.Combat_Event.Zone_Used)):
-		zone_owner._trait.OnZoneUsed(p_zone_owner_ID, p_user_ID, p_resolver)
+	var active_trait: CharacterTrait = ActiveHook(zone_owner, Types.Combat_Event.Zone_Used)
+	if(null != active_trait):
+		active_trait.OnZoneUsed(p_zone_owner_ID, p_user_ID, p_resolver)
 
 static func TriggerZoneConstructedHook(
 		p_characters: Dictionary[int, Character],
@@ -41,9 +47,9 @@ static func TriggerZoneConstructedHook(
 		p_zone_ID: int,
 		p_resolver: BattleResolver) -> void:
 	var zone_owner: Character = p_characters.get(p_zone_owner_ID)
-	if(null != zone_owner and null != zone_owner._trait
-			and zone_owner._trait._execution_steps.has(Types.Combat_Event.Zone_Constructed)):
-		zone_owner._trait.OnZoneConstructed(p_zone_owner_ID, p_zone_ID, p_resolver)
+	var active_trait: CharacterTrait = ActiveHook(zone_owner, Types.Combat_Event.Zone_Constructed)
+	if(null != active_trait):
+		active_trait.OnZoneConstructed(p_zone_owner_ID, p_zone_ID, p_resolver)
 
 static func ApplyBarrierZone(
 		p_resolver: BattleResolver,
@@ -175,9 +181,10 @@ static func TurnBarTithe(
 			or not p_sides.AreEnemies(p_source_ID, p_target_ID)):
 		return 0.0
 	var source: Character = p_characters[p_source_ID]
-	if(null == source._trait or not source._trait._execution_steps.has(Types.Combat_Event.Enemy_Turn_Bar_Reduced)):
+	var active_trait: CharacterTrait = ActiveHook(source, Types.Combat_Event.Enemy_Turn_Bar_Reduced)
+	if(null == active_trait):
 		return 0.0
-	return source._trait.OnEnemyTurnBarReduced(p_source_ID, -p_fraction, p_resolver)
+	return active_trait.OnEnemyTurnBarReduced(p_source_ID, -p_fraction, p_resolver)
 
 ## Fires an applier's Debuff_Applied trait hook when their debuff lands on someone
 ## else — the applier-side counterpart to _EmitBuffApplied's target-side dispatch.
@@ -189,8 +196,9 @@ static func DispatchDebuffApplied(
 	if(p_debuff.source_ID < 0 or not p_characters.has(p_debuff.source_ID)):
 		return
 	var applier: Character = p_characters[p_debuff.source_ID]
-	if(null != applier._trait and applier._trait._execution_steps.has(Types.Combat_Event.Debuff_Applied)):
-		applier._trait.OnDebuffApplied(p_debuff.source_ID, p_target_ID, p_debuff, p_resolver)
+	var active_trait: CharacterTrait = ActiveHook(applier, Types.Combat_Event.Debuff_Applied)
+	if(null != active_trait):
+		active_trait.OnDebuffApplied(p_debuff.source_ID, p_target_ID, p_debuff, p_resolver)
 
 # TODO: Right now the targeting only inherits the skill target and doesn't use
 # the buff targets yet.
@@ -259,9 +267,10 @@ static func FindDamageRedirect(
 		if(ally_ID == p_target_ID):
 			continue
 		var ally: Character = characters[ally_ID]
-		if(null == ally._trait or not ally._trait._execution_steps.has(Types.Combat_Event.Ally_Damage_Taken)):
+		var active_trait: CharacterTrait = ActiveHook(ally, Types.Combat_Event.Ally_Damage_Taken)
+		if(null == active_trait):
 			continue
-		var fraction: float = ally._trait.OnAllyDamageTaken(ally_ID, p_target_ID, p_resolver)
+		var fraction: float = active_trait.OnAllyDamageTaken(ally_ID, p_target_ID, p_resolver)
 		if(fraction > 0.0):
 			return [ally_ID, fraction]
 	return [-1, 0.0]

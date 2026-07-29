@@ -18,7 +18,7 @@ var _characters: Dictionary[int, Character]
 var _sides: CombatSides
 var _turn_positions: TurnPositions
 var _random: RandomNumberGenerator = RandomNumberGenerator.new()
-var _zones: Dictionary[int, Zone] = {}
+var _zone_resolver: ZoneResolver
 
 var _heap_on_stacks: Dictionary[int, int] = {}
 var _heap_on_value: Dictionary[int, float] = {}
@@ -47,6 +47,7 @@ func _init(
 	_characters = p_characters
 	_sides = p_sides
 	_turn_positions = p_turn_positions if p_turn_positions != null else TurnPositions.new()
+	_zone_resolver = ZoneResolver.new(self)
 	if(p_seed >= 0):
 		_random.seed = p_seed
 	else:
@@ -74,20 +75,8 @@ func GetMaxHealth(p_character_ID: int) -> int:
 	return _MaxHealth(_characters[p_character_ID])
 
 
-func GetZones() -> Dictionary[int, Zone]:
-	return _zones
-
-
-func HasZone(p_zone_ID: int) -> bool:
-	return _zones.has(p_zone_ID)
-
-
-func AvailableZoneIDs() -> Array[int]:
-	var available: Array[int] = []
-	for zone_number in GameBalance.NUMBER_OF_TURN_BAR_ZONES:
-		if(not _zones.has(zone_number)):
-			available.append(zone_number)
-	return available
+func GetZoneResolver() -> ZoneResolver:
+	return _zone_resolver
 
 
 func GetCombatAttributes(p_character_ID: int) -> Dictionary[Types.Attribute, int]:
@@ -118,8 +107,9 @@ func IsTheBattleOver() -> Winner:
 func BeginTurn(p_character_ID: int) -> Array[CombatResult]:
 	_BeginBatch()
 	var character: Character = _characters[p_character_ID]
-	if(null != character._trait and character._trait._execution_steps.has(Types.Combat_Event.Start_Turn)):
-		character._trait.StartOfTurn(p_character_ID, self)
+	var active_trait: CharacterTrait = Skills.ActiveHook(character, Types.Combat_Event.Start_Turn)
+	if(null != active_trait):
+		active_trait.StartOfTurn(p_character_ID, self)
 	return _EndBatch()
 
 
@@ -132,8 +122,9 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 	var caster_attributes: Dictionary[Types.Attribute, int] = GetCombatAttributes(p_caster_ID)
 
 	var trait_result: TraitSkillResult = TraitSkillResult.new()
-	if(null != caster._trait and caster._trait._execution_steps.has(Types.Combat_Event.Skill_Cast)):
-		trait_result = caster._trait.OnSkillCast(p_caster_ID, p_target_IDs, cast_skill.name, caster_attributes, self)
+	var skill_cast_trait: CharacterTrait = Skills.ActiveHook(caster, Types.Combat_Event.Skill_Cast)
+	if(null != skill_cast_trait):
+		trait_result = skill_cast_trait.OnSkillCast(p_caster_ID, p_target_IDs, cast_skill.name, caster_attributes, self)
 
 	if(not caster._active_debuffs.is_empty()):
 		_TriggerExistingCasterDebuffs(p_caster_ID, caster_attributes)
@@ -155,8 +146,9 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 			target_attributes = GetCombatAttributes(target_ID)
 			Skills.TriggerTargetBuffs(target, target_attributes)
 			Skills.TriggerTargetDebuffs(target, target_attributes)
-			if(null != target._trait and target._trait._execution_steps.has(Types.Combat_Event.Defend)):
-				target._trait.OnDefend(target_ID, target_attributes, _characters)
+			var defend_trait: CharacterTrait = Skills.ActiveHook(target, Types.Combat_Event.Defend)
+			if(null != defend_trait):
+				defend_trait.OnDefend(target_ID, target_attributes, _characters)
 
 		if(not cast_skill.buffs.is_empty() and target._current_health > 0):
 			_CastBuff(target_ID, cast_skill)
@@ -176,10 +168,11 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 	if(not (is_non_basic and _ConsumeRehearsedIfPresent(p_caster_ID))):
 		caster._skills[p_skill_ID].cooldown_left = caster._skills[p_skill_ID].cooldown
 
-	TriggerZones(p_caster_ID)
+	_zone_resolver.TriggerZones(p_caster_ID)
 
-	if(null != caster._trait and caster._trait._execution_steps.has(Types.Combat_Event.End_Turn)):
-		caster._trait.EndOfTurn(p_caster_ID, self)
+	var end_turn_trait: CharacterTrait = Skills.ActiveHook(caster, Types.Combat_Event.End_Turn)
+	if(null != end_turn_trait):
+		end_turn_trait.EndOfTurn(p_caster_ID, self)
 	return _EndBatch()
 
 
@@ -194,33 +187,13 @@ func ResolveStunTurn(p_caster_ID: int) -> Array[CombatResult]:
 	if(not caster._active_buffs.is_empty()):
 		_TriggerExistingCasterBuffs(p_caster_ID, caster_attributes)
 	_TickCooldowns(caster)
-	TriggerZones(p_caster_ID)
-	if(null != caster._trait and caster._trait._execution_steps.has(Types.Combat_Event.End_Turn)):
-		caster._trait.EndOfTurn(p_caster_ID, self)
+	_zone_resolver.TriggerZones(p_caster_ID)
+	var end_turn_trait: CharacterTrait = Skills.ActiveHook(caster, Types.Combat_Event.End_Turn)
+	if(null != end_turn_trait):
+		end_turn_trait.EndOfTurn(p_caster_ID, self)
 	var result: CombatResult = CombatResult.new(CombatResult.Kind.Turn_Skipped)
 	result.target_ID = p_caster_ID
 	_Emit(result)
-	return _EndBatch()
-
-
-## Places a zone on the turn bar. Returns the results, empty when the slot is taken.
-func PlaceZone(p_zone_ID: int, p_owner_ID: int, p_skill: Skill) -> Array[CombatResult]:
-	_BeginBatch()
-	if(_zones.has(p_zone_ID)):
-		print("Zone is already used")
-		return _EndBatch()
-	var zone: Zone = Zone.new()
-	zone.CreateNew(p_skill.skill_type, p_skill.duration, p_owner_ID, p_skill.target,
-			_characters[p_owner_ID].GetTotalAttribute(Types.Attribute.Knowledge),
-			p_skill.debuffs.get(p_skill.target, Types.Debuff_Type.Invalid))
-	_zones[p_zone_ID] = zone
-	var result: CombatResult = CombatResult.new(CombatResult.Kind.Zone_Placed)
-	result.zone_ID = p_zone_ID
-	result.source_ID = p_owner_ID
-	result.duration = zone._duration
-	result.skill_type = zone._type
-	_Emit(result)
-	Skills.TriggerZoneConstructedHook(_characters, p_owner_ID, p_zone_ID, self)
 	return _EndBatch()
 
 
@@ -333,15 +306,6 @@ func AccumulateTurnBarMovement(p_character_ID: int, p_fraction_moved: float) -> 
 	_turn_bar_progress[p_character_ID] = progress
 	return _EndBatch()
 
-func SetZoneDuration(p_zone_ID: int, p_duration: int) -> void:
-	if(not _zones.has(p_zone_ID)):
-		return
-	_zones[p_zone_ID]._duration = p_duration
-	var result: CombatResult = CombatResult.new(CombatResult.Kind.Zone_Duration_Changed)
-	result.zone_ID = p_zone_ID
-	result.duration = p_duration
-	_Emit(result)
-
 ## Trait flavor text ("Stole buff!", "Avoided!") routed through the result stream.
 func EmitTraitText(p_target_ID: int, p_text: String, p_color: Color = Color.WHITE) -> void:
 	var result: CombatResult = CombatResult.new(CombatResult.Kind.Trait_Text)
@@ -374,9 +338,9 @@ func ResolveReagent(
 	var reagent: ReagentData = ReagentRegistry.Get(p_reagent_key)
 	var consumer: Character = _characters[p_consumer_ID]
 	var potency: float = 1.0 + p_extra_potency
-	if(not reagent.binary and null != consumer._trait
-			and consumer._trait._execution_steps.has(Types.Combat_Event.Reagent_Consumed)):
-		potency += consumer._trait.OnReagentConsumed(p_consumer_ID, reagent, self)
+	var reagent_trait: CharacterTrait = Skills.ActiveHook(consumer, Types.Combat_Event.Reagent_Consumed)
+	if(not reagent.binary and null != reagent_trait):
+		potency += reagent_trait.OnReagentConsumed(p_consumer_ID, reagent, self)
 	_ResolveReagentEffect(p_consumer_ID, p_target_ID, reagent, potency)
 	return _EndBatch()
 
@@ -449,12 +413,7 @@ func _ResolveReagentEffect(
 			result.fraction = ReagentResolver.PercentFraction(p_reagent.magnitude, p_potency)
 			_Emit(result)
 		ReagentData.EffectKind.Clear_Zone:
-			if(_zones.has(p_target_ID)):
-				_zones[p_target_ID].free()
-				_zones.erase(p_target_ID)
-				var result: CombatResult = CombatResult.new(CombatResult.Kind.Zone_Cleared)
-				result.zone_ID = p_target_ID
-				_Emit(result)
+			_zone_resolver.ClearZone(p_target_ID)
 		ReagentData.EffectKind.Health_Cost_Damage_Bonus:
 			var consumer: Character = _characters[p_consumer_ID]
 			var cost: int = ReagentResolver.HealthCostAmount(
@@ -811,8 +770,9 @@ func _EmitBuffApplied(p_target_ID: int, p_buff: StatusEffects.Buff, p_display_na
 	result.text = p_display_name
 	_Emit(result)
 	var target: Character = _characters[p_target_ID]
-	if(null != target._trait and target._trait._execution_steps.has(Types.Combat_Event.Buff_Applied)):
-		target._trait.OnBuffGained(p_target_ID, self)
+	var buff_trait: CharacterTrait = Skills.ActiveHook(target, Types.Combat_Event.Buff_Applied)
+	if(null != buff_trait):
+		buff_trait.OnBuffGained(p_target_ID, self)
 
 
 func _EmitDebuffApplied(p_target_ID: int, p_debuff: StatusEffects.Debuff, p_display_name: String) -> void:
@@ -898,8 +858,9 @@ func _HandleDeath(p_character_ID: int) -> void:
 	var cleared: CombatResult = CombatResult.new(CombatResult.Kind.Statuses_Cleared)
 	cleared.target_ID = p_character_ID
 	_Emit(cleared)
-	if(null != character._trait and character._trait._execution_steps.has(Types.Combat_Event.On_Death)):
-		character._trait.OnDeath()
+	var death_trait: CharacterTrait = Skills.ActiveHook(character, Types.Combat_Event.On_Death)
+	if(null != death_trait):
+		death_trait.OnDeath()
 	var death: CombatResult = CombatResult.new(CombatResult.Kind.Death)
 	death.target_ID = p_character_ID
 	_Emit(death)
@@ -908,8 +869,9 @@ func _HandleDeath(p_character_ID: int) -> void:
 	if(null != allies):
 		for ally_ID in allies.AliveMembers(_characters):
 			var ally: Character = _characters[ally_ID]
-			if(null != ally._trait and ally._trait._execution_steps.has(Types.Combat_Event.Ally_Death)):
-				ally._trait.OnAllyDeath(ally_ID, p_character_ID, self)
+			var ally_death_trait: CharacterTrait = Skills.ActiveHook(ally, Types.Combat_Event.Ally_Death)
+			if(null != ally_death_trait):
+				ally_death_trait.OnAllyDeath(ally_ID, p_character_ID, self)
 
 
 ## Caster-side skill mechanics that key off per-combat state (Heap On stacking).
@@ -1234,9 +1196,9 @@ func _ResolveDamage(
 
 	if(damage_dealt == 0):
 		return
-	if(damage_dealt > 0 and null != target._trait
-			and target._trait._execution_steps.has(Types.Combat_Event.Damage_Taken)):
-		damage_dealt = int(round(damage_dealt * target._trait.OnDamageTaken(p_target_ID, self)))
+	var damage_taken_trait: CharacterTrait = Skills.ActiveHook(target, Types.Combat_Event.Damage_Taken)
+	if(damage_dealt > 0 and null != damage_taken_trait):
+		damage_dealt = int(round(damage_dealt * damage_taken_trait.OnDamageTaken(p_target_ID, self)))
 	if(damage_dealt == 0):
 		return
 
@@ -1244,11 +1206,13 @@ func _ResolveDamage(
 	_EmitDamageResult(p_caster_ID, p_target_ID, damage_dealt, rolled_critical)
 
 	var caster: Character = _characters[p_caster_ID]
-	if(null != caster._trait and caster._trait._execution_steps.has(Types.Combat_Event.Damage_Dealt)):
-		caster._trait.OnDamageDealt(p_caster_ID, p_target_ID, damage_dealt, self)
+	var damage_dealt_trait: CharacterTrait = Skills.ActiveHook(caster, Types.Combat_Event.Damage_Dealt)
+	if(null != damage_dealt_trait):
+		damage_dealt_trait.OnDamageDealt(p_caster_ID, p_target_ID, damage_dealt, self)
 	if(rolled_critical):
-		if(null != caster._trait and caster._trait._execution_steps.has(Types.Combat_Event.Critical_Hit)):
-			caster._trait.OnCriticalHit(p_caster_ID, p_target_ID, self)
+		var critical_trait: CharacterTrait = Skills.ActiveHook(caster, Types.Combat_Event.Critical_Hit)
+		if(null != critical_trait):
+			critical_trait.OnCriticalHit(p_caster_ID, p_target_ID, self)
 
 
 func _EmitDamageResult(p_source_ID: int, p_target_ID: int, p_amount: int, p_critical: bool) -> void:
@@ -1260,61 +1224,3 @@ func _EmitDamageResult(p_source_ID: int, p_target_ID: int, p_amount: int, p_crit
 	_Emit(result)
 
 
-func TriggerZones(p_active_character_ID: int) -> Array[CombatResult]:
-	_BeginBatch()
-	for character_ID in _characters.keys():
-		if(character_ID == p_active_character_ID or _characters[character_ID]._current_health <= 0):
-			continue
-		for ID in _zones.keys():
-			if(_zones[ID]._duration == 0):
-				continue
-			if(not _turn_positions.IsCharacterInZone(character_ID, ID)):
-				continue
-			if(not Skills.CorrectZoneTarget(_zones[ID]._owner_ID, character_ID, _zones[ID]._target, _sides)):
-				continue
-			if(_HasBuff(character_ID, Types.Buff_Type.Slipstream)
-					and _sides.AreEnemies(character_ID, _zones[ID]._owner_ID)):
-				continue
-			var trigger_count: int = (
-					2 if (_HasBuff(character_ID, Types.Buff_Type.Resonance)
-							and _sides.AreAllies(character_ID, _zones[ID]._owner_ID))
-					else 1)
-			for i in trigger_count:
-				_ResolveZoneEffect(_zones[ID], ID, character_ID)
-			_zones[ID]._duration -= 1
-			var triggered: CombatResult = CombatResult.new(CombatResult.Kind.Zone_Triggered)
-			triggered.zone_ID = ID
-			triggered.target_ID = character_ID
-			triggered.duration = _zones[ID]._duration
-			_Emit(triggered)
-			# Restrict the trigger to one zone per character.
-			break
-	for ID in _zones.keys():
-		if(_zones[ID]._duration == 0):
-			_zones[ID].free()
-			_zones.erase(ID)
-	return _EndBatch()
-
-
-func _ResolveZoneEffect(p_zone: Zone, p_zone_ID: int, p_character_ID: int) -> void:
-	match p_zone._type:
-		Types.Skill_Type.Flicker_Zone:
-			_EmitTurnBarBump(p_character_ID,
-					Skills.AllyZoneMagnitude(GameBalance.FLICKER_ZONE_BASE_BUMP, p_zone._owner_knowledge), p_zone._owner_ID)
-		Types.Skill_Type.Lava_Zone:
-			var target: Character = _characters[p_character_ID]
-			if(Skills.HasMaxStatusEffects(target)):
-				return
-			if(_ConsumeAegisIfPresent(p_character_ID, p_zone._owner_ID)):
-				return
-			var data: StatusEffectData = StatusEffectRegistry.DebuffData(p_zone._debuff_type)
-			var new_debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
-			new_debuff.type = p_zone._debuff_type
-			new_debuff.duration = data.duration_default if null != data else 0
-			new_debuff.source_ID = p_zone._owner_ID
-			new_debuff.value = _SnapshotStatusValue(data, p_zone._owner_ID)
-			new_debuff.ID = _NextStatusID()
-			target._active_debuffs.append(new_debuff)
-			_EmitDebuffApplied(p_character_ID, new_debuff, "")
-		Types.Skill_Type.Barrier_Zone:
-			Skills.ApplyBarrierZone(self, p_zone._owner_ID, p_zone_ID, p_zone._owner_knowledge, p_character_ID)

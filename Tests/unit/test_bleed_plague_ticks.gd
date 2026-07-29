@@ -79,11 +79,11 @@ func test_zone_delivered_bleed_snapshots_the_zone_owners_attack() -> void:
 		_roster[id]._current_health = 0
 	var zone_skill: Skill = TestFactory.make_lava_zone_skill()
 	zone_skill.debuffs = {Types.Skill_Target.ZoneAll: Types.Debuff_Type.Bleed}
-	zone_resolver.PlaceZone(0, 0, zone_skill)
+	zone_resolver.GetZoneResolver().PlaceZone(0, 0, zone_skill)
 
-	zone_resolver.TriggerZones(0)
+	zone_resolver.GetZoneResolver().TriggerZones(0)
 
 	var expected: float = 40 * StatusEffectRegistry.DebuffData(Types.Debuff_Type.Bleed).magnitude
 	assert_almost_eq(_roster[3]._active_debuffs[0].value, expected, 0.0001,
 		"A zone-delivered Bleed should snapshot the zone owner's Attack, same as a skill-cast one")
-	zone_resolver.GetZones()[0].free()
+	zone_resolver.GetZoneResolver().GetZones()[0].free()

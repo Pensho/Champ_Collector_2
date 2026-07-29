@@ -21,7 +21,7 @@ func before_each() -> void:
 		_roster[id]._current_health = 0
 
 func after_each() -> void:
-	for zone in _resolver.GetZones().values():
+	for zone in _resolver.GetZoneResolver().GetZones().values():
 		zone.free()
 
 func _place_barrier_zone() -> void:
@@ -29,12 +29,12 @@ func _place_barrier_zone() -> void:
 	zone_skill.target = Types.Skill_Target.ZoneAlly
 	zone_skill.skill_type = Types.Skill_Type.Barrier_Zone
 	zone_skill.duration = 5
-	var results: Array[CombatResult] = _resolver.PlaceZone(0, 0, zone_skill)
+	var results: Array[CombatResult] = _resolver.GetZoneResolver().PlaceZone(0, 0, zone_skill)
 	assert_eq(results.size(), 1, "Placing a Barrier zone should report Zone_Placed")
 
 func test_barrier_zone_applies_barrier_buff_to_the_ally_standing_in_it() -> void:
 	_place_barrier_zone()
-	_resolver.TriggerZones(0)
+	_resolver.GetZoneResolver().TriggerZones(0)
 	assert_eq(_roster[1]._active_buffs.size(), 1)
 	assert_eq(_roster[1]._active_buffs[0].type, Types.Buff_Type.Barrier)
 	assert_eq(_roster[1]._active_buffs[0].duration, 2)
@@ -46,7 +46,7 @@ func test_barrier_zone_grants_the_owners_calibration_trait_a_charge() -> void:
 	_roster[0]._trait = calibration_trait
 	_place_barrier_zone()
 
-	_resolver.TriggerZones(0)
+	_resolver.GetZoneResolver().TriggerZones(0)
 
 	assert_eq(calibration_trait._charges, 1,
 		"Zone use should generate one Calibration charge for the owner")
@@ -55,9 +55,9 @@ func test_zone_expires_after_duration_charges() -> void:
 	_place_barrier_zone()
 
 	for _i in range(5):
-		_resolver.TriggerZones(0)
+		_resolver.GetZoneResolver().TriggerZones(0)
 
-	assert_false(_resolver.HasZone(0), "A zone should be erased once its charges are spent")
+	assert_false(_resolver.GetZoneResolver().HasZone(0), "A zone should be erased once its charges are spent")
 
 func test_barrier_scales_with_the_owners_invested_charges() -> void:
 	var calibration_trait: CalibrationTrait = CalibrationTrait.new()
@@ -67,7 +67,7 @@ func test_barrier_scales_with_the_owners_invested_charges() -> void:
 		calibration_trait.OnSkillCast(0, [], "Cornerstone", {}, _resolver)
 
 	_place_barrier_zone()
-	_resolver.TriggerZones(0)
+	_resolver.GetZoneResolver().TriggerZones(0)
 
 	var expected: int = Skills.Barrier(
 			Game_Balance.BARRIER_ZONE_BASE, Game_Balance.BARRIER_ZONE_KNOWLEDGE_COEFF,
@@ -82,7 +82,7 @@ func test_barrier_with_zero_invested_charges_is_base_value_only() -> void:
 	_roster[0]._trait = calibration_trait
 
 	_place_barrier_zone()
-	_resolver.TriggerZones(0)
+	_resolver.GetZoneResolver().TriggerZones(0)
 
 	var expected: int = Skills.Barrier(
 			Game_Balance.BARRIER_ZONE_BASE, Game_Balance.BARRIER_ZONE_KNOWLEDGE_COEFF,

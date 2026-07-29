@@ -1,22 +1,22 @@
 extends GutTest
 
-# --- Skills.AllyZoneMagnitude ---
+# --- Skills.ZoneMagnitude ---
 
 func test_ally_zone_magnitude_zero_knowledge_returns_base() -> void:
-	var magnitude: float = Skills.AllyZoneMagnitude(0.15, 0)
+	var magnitude: float = Skills.ZoneMagnitude(0.15, 0)
 	assert_eq(magnitude, 0.15, "Zero Knowledge should not change the base magnitude")
 
 func test_ally_zone_magnitude_scales_linearly_with_knowledge() -> void:
 	var base: float = 0.15
-	var magnitude_at_100: float = Skills.AllyZoneMagnitude(base, 100)
+	var magnitude_at_100: float = Skills.ZoneMagnitude(base, 100)
 	var expected: float = base * (1.0 + 100 * Game_Balance.ZONE_KNOWLEDGE_SCALING)
 	assert_almost_eq(magnitude_at_100, expected, 0.0001,
 		"Magnitude should scale by 1.0 + knowledge * ZONE_KNOWLEDGE_SCALING")
 
 func test_ally_zone_magnitude_higher_knowledge_yields_higher_magnitude() -> void:
 	var base: float = 0.15
-	var low: float = Skills.AllyZoneMagnitude(base, 10)
-	var high: float = Skills.AllyZoneMagnitude(base, 200)
+	var low: float = Skills.ZoneMagnitude(base, 10)
+	var high: float = Skills.ZoneMagnitude(base, 200)
 	assert_true(high > low, "Higher Knowledge should produce a larger effect magnitude")
 
 # --- Zone.CreateNew ---

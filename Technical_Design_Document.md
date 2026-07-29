@@ -325,7 +325,7 @@ current value, for the crit stats (Keen Edge, Lethal Precision) where a percent-
 reading would be nearly meaningless at low Crit Chance values.
 Zone-applied debuffs (e.g. the Lava zone's Burning) come from the placing `Skill`'s existing
 `debuffs` dictionary, keyed by the skill's own `target`, rather than being hardcoded in
-`BattleResolver._ResolveZoneEffect`.
+`ZoneResolver._ResolveZoneEffect`.
 
 Three magnitude kinds are read directly at their own application site instead of through the
 self-tick/target-snapshot loops: `MaxHealthAttributePercent` (Vigor) is summed by
@@ -442,7 +442,7 @@ delegating to `Skills.FindSkillTargets`, which already draws from both sides via
 `CombatSides.RandomAliveMember`. Rush's expiry is collected the same way Overflow's is in
 `_TriggerExistingCasterBuffs`, then `_TriggerRushStun()` direct-appends an unresistable 1-turn Stun
 after the tick's other expiry hooks run. Zone interactions (Slipstream, Resonance) are read in
-`TriggerZones` right before `_ResolveZoneEffect`: a Slipstream holder skips a matched zone entirely
+`ZoneResolver.TriggerZones` right before `_ResolveZoneEffect`: a Slipstream holder skips a matched zone entirely
 (no effect, no duration decrement) when its owner is an enemy of theirs; otherwise `_ResolveZoneEffect`
 runs twice instead of once when the character holds Resonance and the zone's owner is an ally — a
 generic "double effect" that works for both Flicker Zone's turn-bar bump (two bumps sum) and Lava
@@ -621,7 +621,7 @@ the skill UI, and returns to `Advancing` (or ends the battle).
    the target on the turn bar by `skill.turn_effect + trait_result._turn_bar_bump`
    (`Turn_Bar_Bump`).
 7. Decrement all of the caster's cooldowns and set the used skill's `cooldown_left = cooldown`.
-8. Run `TriggerZones()` and fire the `EndOfTurn` trait hook.
+8. Run `GetZoneResolver().TriggerZones()` and fire the `EndOfTurn` trait hook.
 
 The implemented damage formula (`BattleResolver._ResolveDamage`):
 
@@ -1101,14 +1101,32 @@ damage) without any new dispatch code. The in-battle flow models the reagent fre
 persistence stores only the graft's resource UID. Ships no graft content itself — enemy
 `_graft_effect` sourcing beyond the first batch is populated separately by the graft-pool plan.
 
-### 15.10. `battle_resolver.gd` is at its `gdlintrc` budget ceiling
+### 15.10. `battle_resolver.gd` growth and the `ZoneResolver` split
 
-`Scripts/Battle/battle_resolver.gd` sits at exactly `max-file-lines` (1320) and
-`max-public-methods` (26) as of the healing-primitives graft batch — the healing primitives
-landed by extending an existing public method (`ResolveTraitHeal`'s optional `p_raw_amount`)
-rather than adding a new one, specifically to stay under budget. The remaining graft roadmap
-batches (turn-bar control, retaliation, on-kill/conditional damage, zone extensions, event
-triggers, tether) each propose at least one new resolver-side primitive; at least one of them
-will need to either extend an existing public method the way this batch did, or split
-`battle_resolver.gd` (e.g. moving the `ResolveX` trait-facing entry points to a helper the
-resolver composes) before `gdlintrc`'s limits allow a straightforward new method.
+`Scripts/Battle/battle_resolver.gd` previously sat at exactly `gdlintrc`'s `max-file-lines`
+(1320) and `max-public-methods` (26) as of the healing-primitives graft batch — the healing
+primitives landed by extending an existing public method (`ResolveTraitHeal`'s optional
+`p_raw_amount`) rather than adding a new one, specifically to stay under budget.
+
+The zone lifecycle (`_zones` state, `PlaceZone`, `TriggerZones`, `SetZoneDuration`,
+`AvailableZoneIDs`, `HasZone`, `GetZones`, `ClearZone`, `_ResolveZoneEffect`) has since moved
+into `ZoneResolver` (`Scripts/Battle/zone_resolver.gd`), a `RefCounted` subsystem constructed
+by `BattleResolver._init` and held as `_zone_resolver`, mirroring `CombatSides`/`TurnPositions`/
+`ReagentLoadout`'s pattern of small `RefCounted` collaborators rather than `Node`-based
+utilities like `Skills`/`ReagentResolver`. `ZoneResolver` holds a back-reference to its owning
+`BattleResolver` and reaches its `_characters`/`_sides`/`_turn_positions` state and
+`_BeginBatch`/`_EndBatch`/`_Emit`/`_EmitTurnBarBump`/`_ConsumeAegisIfPresent`/
+`_SnapshotStatusValue`/`_NextStatusID`/`_EmitDebuffApplied`/`_HasBuff` services directly through
+it — GDScript does not enforce `_`-privacy, so no method needed to become public to support
+this. `BattleResolver` exposes the subsystem through a single `GetZoneResolver() -> ZoneResolver`
+accessor, mirroring the existing `GetSides()`/`GetTurnPositions()` pattern of handing back an
+owned collaborator rather than re-forwarding each of its methods; callers reach the zone API as
+`resolver.GetZoneResolver().PlaceZone(...)` etc. (`battle.gd`, `calibration_trait.gd`, and the
+zone-touching tests were updated to the new call shape; the `Clear_Zone` reagent branch, being
+internal to `BattleResolver`, calls `_zone_resolver` directly).
+
+This freed real budget back (`battle_resolver.gd` dropped from 1320 to roughly 1230 lines). The
+remaining graft roadmap batches (turn-bar control, retaliation, on-kill/conditional damage, zone
+extensions, event triggers, tether) each propose at least one new resolver-side primitive; the
+same accessor-to-a-`RefCounted`-subsystem split is the template for whichever cluster needs to
+move out next if the budget tightens again.
