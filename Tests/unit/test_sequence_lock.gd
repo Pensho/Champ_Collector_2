@@ -3,7 +3,7 @@ extends GutTest
 const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 
 # Sequence Lock blocks any Speed-touching status from being applied, through both the
-# template path (ApplyBuff/ApplyDebuff) and the skill path (_CastBuff/_CastDebuff via
+# template path (ApplyBuff/ApplyDebuff) and the skill path (_CastBuff/CastDebuff via
 # ResolveSkill), per the "works through both" watch item in
 # Plan_Status_Effect_Implementation.md. Non-Speed statuses must still land normally.
 

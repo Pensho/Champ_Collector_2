@@ -40,6 +40,12 @@ func OnDefend(
 		_p_characters: Dictionary[int, Character]) -> void:
 	print("character_trait base class OnDefend() called!")
 
+func BlocksForwardTurnBarBump(_p_owner_ID: int) -> bool:
+	return false
+
+func GetIncomingDebuffDurationBonus(_p_owner_ID: int) -> int:
+	return 0
+
 ## Returns the multiplier applied to incoming damage (1.0 = unchanged, 0.0 = avoided).
 func OnDamageTaken(_p_owner_ID: int, _p_resolver: BattleResolver) -> float:
 	print("character_trait base class DamageTaken() called!")
@@ -84,8 +90,13 @@ func BrewReagentKey(_p_random: RandomNumberGenerator) -> String:
 func GetBrewPotencyBonus() -> float:
 	return 0.0
 
-func OnBuffGained(_p_owner_ID: int, _p_resolver: BattleResolver) -> void:
+func OnBuffGained(
+		_p_owner_ID: int, _p_buff: StatusEffects.Buff, _p_resolver: BattleResolver) -> void:
 	print("character_trait base class OnBuffGained() called!")
+
+func OnDebuffReceived(
+		_p_owner_ID: int, _p_debuff: StatusEffects.Debuff, _p_resolver: BattleResolver) -> void:
+	print("character_trait base class OnDebuffReceived() called!")
 
 func OnDebuffApplied(
 		_p_owner_ID: int,

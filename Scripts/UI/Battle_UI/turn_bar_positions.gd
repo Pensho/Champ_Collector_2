@@ -19,3 +19,9 @@ func GetCharactersBehindBy(p_owner_ID: int, p_bar_percent: float) -> Array[int]:
 
 func GetCharactersWithinProximity(p_owner_ID: int, p_bar_percent: float) -> Array[int]:
 	return _turn_bar.GetCharactersWithinProximity(p_owner_ID, p_bar_percent)
+
+func GetCharactersBehindOrdered(p_owner_ID: int) -> Array[int]:
+	return _turn_bar.GetCharactersBehindOrdered(p_owner_ID)
+
+func GetCharactersByProximityOrdered(p_owner_ID: int, p_bar_percent: float) -> Array[int]:
+	return _turn_bar.GetCharactersByProximityOrdered(p_owner_ID, p_bar_percent)

@@ -94,7 +94,7 @@ func SetupPlanReachOverlays(p_characters: Dictionary[int, Character], p_player_t
 			tint = Color(0.6, 1.0, 0.6) if p_player_team.Has(id) else Color(1.0, 0.6, 0.6)
 		var threshold: float = _GetReachThreshold(p_characters[id])
 		_AddPlanReachOverlay(id, threshold, tint, p_characters[id], false)
-		if (p_characters[id]._trait is ShieldWallTrait):
+		if (_HasBidirectionalReach(p_characters[id])):
 			_AddPlanReachOverlay(id, threshold, tint, p_characters[id], true)
 
 func _AddPlanReachOverlay(
@@ -104,10 +104,6 @@ func _AddPlanReachOverlay(
 	overlay.Setup(_character_turn_markers[p_owner_ID], p_threshold * self.size.x, p_tint, p_owner,
 			self.size.y, self.size.x, p_ahead)
 
-# Reach-threshold traits (Plan, Foresight, Shield Wall) each expose a static
-# GetReachThreshold by rarity; this dispatches to whichever one the character
-# carries, 0.0 for neither. Shield Wall's window covers both directions, so it gets
-# a second, mirrored overlay covering ahead (see SetupPlanReachOverlays above).
 func _GetReachThreshold(p_character: Character) -> float:
 	if (p_character._trait is PlanTrait):
 		return PlanTrait.GetReachThreshold(p_character._rarity)
@@ -115,7 +111,14 @@ func _GetReachThreshold(p_character: Character) -> float:
 		return ForesightTrait.GetReachThreshold(p_character._rarity)
 	if (p_character._trait is ShieldWallTrait):
 		return ShieldWallTrait.GetReachThreshold(p_character._rarity)
+	if (p_character._trait is ContagionBondGraft):
+		return ContagionBondGraft.GetReachThreshold(p_character._rarity)
+	if (p_character._trait is GraviticRotGraft):
+		return GraviticRotGraft.GetReachThreshold(p_character._rarity)
 	return 0.0
+
+func _HasBidirectionalReach(p_character: Character) -> bool:
+	return p_character._trait is ShieldWallTrait or p_character._trait is ContagionBondGraft
 
 func SpawnZoneEffect(p_zone_ID: int, p_duration: int, p_allySide: bool, p_zone_type: Types.Skill_Type):
 	var effect: TurnBarContainer
@@ -263,6 +266,20 @@ func GetCharactersWithinProximity(p_owner_ID: int, p_bar_percent: float) -> Arra
 			continue
 		character_ids.append(id)
 
+	return character_ids
+
+func GetCharactersBehindOrdered(p_owner_ID: int) -> Array[int]:
+	var character_ids: Array[int] = GetCharactersBehindBy(p_owner_ID, 1.0)
+	character_ids.sort_custom(func(a: int, b: int) -> bool:
+		return _character_turn_markers[a].position.x < _character_turn_markers[b].position.x)
+	return character_ids
+
+func GetCharactersByProximityOrdered(p_owner_ID: int, p_bar_percent: float) -> Array[int]:
+	var character_ids: Array[int] = GetCharactersWithinProximity(p_owner_ID, p_bar_percent)
+	var owner_position: float = _character_turn_markers[p_owner_ID].position.x
+	character_ids.sort_custom(func(a: int, b: int) -> bool:
+		return abs(owner_position - _character_turn_markers[a].position.x) \
+				< abs(owner_position - _character_turn_markers[b].position.x))
 	return character_ids
 
 func ShowCharacterAsDead(p_dead_char_ID: int):

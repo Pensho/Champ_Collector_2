@@ -189,6 +189,7 @@ enum Combat_Event
 	Ally_Damage_Taken,
 	Buff_Applied,
 	Debuff_Applied,
+	Debuff_Received,
 	Enemy_Turn_Bar_Reduced,
 	Zone_Used,
 	Zone_Constructed,

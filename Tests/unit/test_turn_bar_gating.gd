@@ -81,6 +81,31 @@ func test_dead_weight_bumps_the_holder_backward_on_taking_damage() -> void:
 	assert_eq(bumps.size(), 1, "Dead Weight should bump its holder once on taking damage")
 	assert_almost_eq(bumps[0].fraction, -0.03, 0.0001, "Dead Weight should lose 3% turn bar")
 
+func test_forward_blocking_trait_blocks_a_positive_bump() -> void:
+	_roster[0]._trait = TestFactory.FakeForwardBlockingTrait.new()
+	_resolver = TestFactory.make_resolver(_roster, TestFactory.make_full_sides())
+
+	_resolver.BumpTurnBar(0, 0.2)
+
+	assert_eq(_bumps_for(_resolver._batch, 0).size(), 0, "The forward-block hook should suppress a positive bump")
+
+func test_forward_blocking_trait_allows_a_negative_bump() -> void:
+	_roster[0]._trait = TestFactory.FakeForwardBlockingTrait.new()
+	_resolver = TestFactory.make_resolver(_roster, TestFactory.make_full_sides())
+
+	_resolver.BumpTurnBar(0, -0.2)
+
+	assert_eq(_bumps_for(_resolver._batch, 0).size(), 1, "The forward-block hook should not suppress a negative bump")
+
+func test_bump_turn_bar_emits_a_turn_bar_bump_result() -> void:
+	_resolver = TestFactory.make_resolver(_roster, TestFactory.make_full_sides())
+
+	_resolver.BumpTurnBar(0, 0.2)
+
+	var bumps: Array[CombatResult] = _bumps_for(_resolver._batch, 0)
+	assert_eq(bumps.size(), 1)
+	assert_almost_eq(bumps[0].fraction, 0.2, 0.0001)
+
 func test_battle_orders_bumps_living_allies_forward_on_the_holders_damage_taken() -> void:
 	_roster[0]._active_buffs.append(_buff(Types.Buff_Type.Battle_Orders))
 	_roster[3]._skills.append(TestFactory.make_strike_skill())

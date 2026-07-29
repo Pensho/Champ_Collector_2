@@ -160,9 +160,11 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 			_status_resolver._CastBuff(target_ID, cast_skill)
 
 		if(not cast_skill.debuffs.is_empty() and target._current_health > 0):
-			_status_resolver._CastDebuff(target_ID, target_attributes[Types.Attribute.Resistance],
-					caster_attributes[Types.Attribute.Accuracy], cast_skill, p_caster_ID,
-					trait_result._tick_bonus_per_debuff)
+			var cast_debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
+			cast_debuff.type = cast_skill.debuffs[cast_skill.target]
+			cast_debuff.duration = cast_skill.duration
+			_status_resolver.CastDebuff(target_ID, cast_debuff, p_caster_ID,
+					trait_result._tick_bonus_per_debuff, true, true)
 
 		if(not cast_skill.damage_scaling.is_empty()):
 			_ResolveDamage(p_caster_ID, target_ID, caster_attributes, target_attributes,
@@ -233,6 +235,9 @@ func AccumulateTurnBarMovement(p_character_ID: int, p_fraction_moved: float) -> 
 			_Emit(result)
 	_turn_bar_progress[p_character_ID] = progress
 	return _EndBatch()
+
+func BumpTurnBar(p_target_ID: int, p_fraction: float, p_source_ID: int = -1) -> void:
+	_EmitTurnBarBump(p_target_ID, p_fraction, p_source_ID)
 
 ## Trait flavor text ("Stole buff!", "Avoided!") routed through the result stream.
 func EmitTraitText(p_target_ID: int, p_text: String, p_color: Color = Color.WHITE) -> void:
@@ -446,22 +451,14 @@ func _RollFavoring(p_character_ID: int, p_min: float, p_max: float, p_higher_is_
 	return min(first, second) if has_luck else max(first, second)
 
 
-func _RollsResistDebuff(
-		p_defender_ID: int,
-		p_defender_resistance: int,
-		p_attacker_ID: int,
-		p_attacker_accuracy: int) -> bool:
-	if(_HasDebuff(p_defender_ID, Types.Debuff_Type.Signed_Writ)):
-		return false
-	var random_value: float = _RollFavoring(p_attacker_ID, 0.95, 1.0, true)
-	var random_value_2: float = _RollFavoring(p_defender_ID, 0.95, 1.0, true)
-	return p_attacker_accuracy * random_value < p_defender_resistance * random_value_2
-
-
 func _EmitTurnBarBump(p_target_ID: int, p_fraction: float, p_source_ID: int = -1) -> void:
 	if(0.0 == p_fraction or _HasDebuff(p_target_ID, Types.Debuff_Type.Anchor)):
 		return
 	if(p_fraction < 0.0 and _HasBuff(p_target_ID, Types.Buff_Type.Steadfast)):
+		return
+	var target: Character = _characters.get(p_target_ID)
+	if(p_fraction > 0.0 and null != target and null != target._trait
+			and target._trait.BlocksForwardTurnBarBump(p_target_ID)):
 		return
 	var bump: CombatResult = CombatResult.new(CombatResult.Kind.Turn_Bar_Bump)
 	bump.target_ID = p_target_ID

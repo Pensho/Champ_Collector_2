@@ -65,7 +65,7 @@ func test_lethal_precision_adds_flat_crit_damage_points() -> void:
 	Skills.ApplyAttributeModifiers(StatusEffectRegistry.BuffData(Types.Buff_Type.Lethal_Precision), 50.0, attrs)
 	assert_eq(attrs[Types.Attribute.CritDamage], 200)
 
-# --- Debuff instance value unification (ApplyDebuff / _CastDebuff) ---
+# --- Debuff instance value unification (ApplyDebuff / CastDebuff) ---
 
 func test_apply_debuff_resolves_registry_default_when_template_leaves_value_unset() -> void:
 	var roster: Dictionary[int, Character] = TestFactory.make_full_roster()

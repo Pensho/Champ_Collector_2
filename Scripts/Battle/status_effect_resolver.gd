@@ -11,7 +11,6 @@ func _init(p_resolver: BattleResolver) -> void:
 	_resolver = p_resolver
 
 
-## Applies a buff from a template (traits, adventure effects, debug tools).
 func ApplyBuff(p_target_ID: int, p_buff_template: StatusEffects.Buff) -> Array[CombatResult]:
 	_resolver._BeginBatch()
 	var target: Character = _resolver._characters[p_target_ID]
@@ -31,7 +30,6 @@ func ApplyBuff(p_target_ID: int, p_buff_template: StatusEffects.Buff) -> Array[C
 	return _resolver._EndBatch()
 
 
-## Applies a debuff from a template without a resist roll (adventure effects, debug).
 func ApplyDebuff(p_target_ID: int, p_debuff_template: StatusEffects.Debuff) -> Array[CombatResult]:
 	_resolver._BeginBatch()
 	var target: Character = _resolver._characters[p_target_ID]
@@ -100,36 +98,52 @@ func _CastBuff(p_target_ID: int, p_skill: Skill) -> void:
 			-1, 0.0, false, Types.Buff_Type.keys()[buff_type])
 
 
-func _CastDebuff(
+func CastDebuff(
 		p_target_ID: int,
-		p_target_resistance: int,
-		p_caster_accuracy: int,
-		p_skill: Skill,
+		p_debuff_template: StatusEffects.Debuff,
 		p_caster_ID: int,
-		p_tick_bonus_per_debuff: float = 0.0) -> void:
+		p_tick_bonus_per_debuff: float = 0.0,
+		p_always_refresh_duration: bool = false,
+		p_trigger_mirror_coat: bool = false) -> Array[CombatResult]:
+	_resolver._BeginBatch()
 	var target: Character = _resolver._characters[p_target_ID]
 	if(Skills.HasMaxStatusEffects(target)):
-		return
+		return _resolver._EndBatch()
 
-	if(_resolver._RollsResistDebuff(p_target_ID, p_target_resistance, p_caster_ID, p_caster_accuracy)):
+	var data: StatusEffectData = StatusEffectRegistry.DebuffData(p_debuff_template.type)
+	if(_BlockedBySequenceLock(data, target)):
+		return _resolver._EndBatch()
+	if(_ConsumeAegisIfPresent(p_target_ID, p_caster_ID)):
+		return _resolver._EndBatch()
+
+	var target_resistance: int = _resolver.GetCombatAttributes(p_target_ID)[Types.Attribute.Resistance]
+	var caster_accuracy: int = _resolver.GetCombatAttributes(p_caster_ID)[Types.Attribute.Accuracy]
+	if(_RollsResistDebuff(p_target_ID, target_resistance, p_caster_ID, caster_accuracy)):
 		var resisted: CombatResult = CombatResult.new(CombatResult.Kind.Debuff_Resisted)
 		resisted.target_ID = p_target_ID
 		resisted.source_ID = p_caster_ID
 		_resolver._Emit(resisted)
-		return
+		return _resolver._EndBatch()
 
-	var debuff_type: Types.Debuff_Type = p_skill.debuffs[p_skill.target]
-	var data: StatusEffectData = StatusEffectRegistry.DebuffData(debuff_type)
-	if(_BlockedBySequenceLock(data, target)):
-		return
-	if(_ConsumeAegisIfPresent(p_target_ID, p_caster_ID)):
-		return
+	var value: float = (p_debuff_template.value if 0.0 != p_debuff_template.value
+			else _SnapshotStatusValue(data, p_caster_ID))
+	var created: StatusEffects.Effect = _InsertOrRefresh(p_target_ID, false, p_debuff_template.type, data, value,
+			p_debuff_template.duration, p_caster_ID, p_tick_bonus_per_debuff, p_always_refresh_duration,
+			Types.Debuff_Type.keys()[p_debuff_template.type])
+	if(p_trigger_mirror_coat and null != created):
+		_TriggerMirrorCoat(p_target_ID, p_caster_ID, p_debuff_template.type)
+	return _resolver._EndBatch()
 
-	var new_value: float = _SnapshotStatusValue(data, p_caster_ID)
-	var created: StatusEffects.Effect = _InsertOrRefresh(p_target_ID, false, debuff_type, data, new_value,
-			p_skill.duration, p_caster_ID, p_tick_bonus_per_debuff, true, Types.Debuff_Type.keys()[debuff_type])
-	if(null != created):
-		_TriggerMirrorCoat(p_target_ID, p_caster_ID, debuff_type)
+func _RollsResistDebuff(
+		p_defender_ID: int,
+		p_defender_resistance: int,
+		p_attacker_ID: int,
+		p_attacker_accuracy: int) -> bool:
+	if(_resolver._HasDebuff(p_defender_ID, Types.Debuff_Type.Signed_Writ)):
+		return false
+	var random_value: float = _resolver._RollFavoring(p_attacker_ID, 0.95, 1.0, true)
+	var random_value_2: float = _resolver._RollFavoring(p_defender_ID, 0.95, 1.0, true)
+	return p_attacker_accuracy * random_value < p_defender_resistance * random_value_2
 
 
 ## When a debuff lands on a holder with an active Mirror Coat, a copy of it is
@@ -140,7 +154,7 @@ func _TriggerMirrorCoat(p_holder_ID: int, p_attacker_ID: int, p_debuff_type: Typ
 		return
 	var holder_accuracy: int = _resolver.GetCombatAttributes(p_holder_ID)[Types.Attribute.Accuracy]
 	var attacker_resistance: int = _resolver.GetCombatAttributes(p_attacker_ID)[Types.Attribute.Resistance]
-	if(_resolver._RollsResistDebuff(p_attacker_ID, attacker_resistance, p_holder_ID, holder_accuracy)):
+	if(_RollsResistDebuff(p_attacker_ID, attacker_resistance, p_holder_ID, holder_accuracy)):
 		var resisted: CombatResult = CombatResult.new(CombatResult.Kind.Debuff_Resisted)
 		resisted.target_ID = p_attacker_ID
 		resisted.source_ID = p_holder_ID
@@ -328,7 +342,7 @@ func _ConsumeRehearsedIfPresent(p_caster_ID: int) -> bool:
 	return false
 
 
-## Shared insert-or-refresh tail for ApplyBuff/_CastBuff/ApplyDebuff/_CastDebuff. Scans for
+## Shared insert-or-refresh tail for ApplyBuff/_CastBuff/ApplyDebuff/CastDebuff. Scans for
 ## an existing non-stackable instance of p_type: when found and overwritable, refreshes its
 ## duration (unconditionally when p_always_refresh_duration, otherwise only if p_duration is
 ## longer than what's already there) and returns null — nothing new was created. Otherwise
@@ -348,6 +362,9 @@ func _InsertOrRefresh(
 		p_display_name: String) -> StatusEffects.Effect:
 	var target: Character = _resolver._characters[p_target_ID]
 	var active: Array = target._active_buffs if p_is_buff else target._active_debuffs
+
+	if(not p_is_buff and p_duration > 0 and null != target._trait):
+		p_duration += target._trait.GetIncomingDebuffDurationBonus(p_target_ID)
 
 	if(null == p_data or not p_data.stackable):
 		for i in active.size():
@@ -583,7 +600,7 @@ func _EmitBuffApplied(p_target_ID: int, p_buff: StatusEffects.Buff, p_display_na
 	var target: Character = _resolver._characters[p_target_ID]
 	var buff_trait: CharacterTrait = Skills.ActiveHook(target, Types.Combat_Event.Buff_Applied)
 	if(null != buff_trait):
-		buff_trait.OnBuffGained(p_target_ID, _resolver)
+		buff_trait.OnBuffGained(p_target_ID, p_buff, _resolver)
 
 
 func _EmitDebuffApplied(p_target_ID: int, p_debuff: StatusEffects.Debuff, p_display_name: String) -> void:
@@ -597,3 +614,7 @@ func _EmitDebuffApplied(p_target_ID: int, p_debuff: StatusEffects.Debuff, p_disp
 	result.text = p_display_name
 	_resolver._Emit(result)
 	Skills.DispatchDebuffApplied(p_debuff, p_target_ID, _resolver._characters, _resolver)
+	var target: Character = _resolver._characters[p_target_ID]
+	var debuff_trait: CharacterTrait = Skills.ActiveHook(target, Types.Combat_Event.Debuff_Received)
+	if(null != debuff_trait):
+		debuff_trait.OnDebuffReceived(p_target_ID, p_debuff, _resolver)

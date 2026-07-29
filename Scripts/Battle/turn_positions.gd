@@ -5,17 +5,23 @@ class_name TurnPositions extends RefCounted
 ## positions move into the core. The base class doubles as the headless default:
 ## no character overlaps a zone and nobody is behind anyone.
 
-
 func IsCharacterInZone(_p_character_ID: int, _p_zone_ID: int) -> bool:
 	return false
-
 
 ## Characters within `p_bar_percent` of the bar behind p_owner_ID; characters at or
 ## ahead of the owner are excluded.
 func GetCharactersBehindBy(_p_owner_ID: int, _p_bar_percent: float) -> Array[int]:
 	return []
 
-
 ## Characters within `p_bar_percent` of the bar from p_owner_ID, in front or behind.
 func GetCharactersWithinProximity(_p_owner_ID: int, _p_bar_percent: float) -> Array[int]:
+	return []
+
+## Every character strictly behind p_owner_ID, ordered furthest-behind first.
+func GetCharactersBehindOrdered(_p_owner_ID: int) -> Array[int]:
+	return []
+
+## Characters within `p_bar_percent` of p_owner_ID (either direction), ordered
+## nearest-first.
+func GetCharactersByProximityOrdered(_p_owner_ID: int, _p_bar_percent: float) -> Array[int]:
 	return []

@@ -30,7 +30,7 @@ func Init(p_rarity: Types.Rarity) -> void:
 func StartOfTurn(_p_owner_ID: int, _p_resolver: BattleResolver) -> void:
 	_round_poured_this_cycle = false
 
-func OnBuffGained(p_owner_ID: int, p_resolver: BattleResolver) -> void:
+func OnBuffGained(p_owner_ID: int, _p_buff: StatusEffects.Buff, p_resolver: BattleResolver) -> void:
 	if(_round_poured_this_cycle or _heal_fraction <= 0.0):
 		return
 	_round_poured_this_cycle = true

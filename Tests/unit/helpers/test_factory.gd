@@ -9,6 +9,13 @@ class FakeTurnPositions extends TurnPositions:
 	var last_behind_query: Array = []
 	var proximity_IDs: Array[int] = []
 	var last_proximity_query: Array = []
+	var behind_ordered_IDs: Array[int] = []
+	var last_behind_ordered_query: Array = []
+	var proximity_ordered_IDs: Array[int] = []
+	var last_proximity_ordered_query: Array = []
+	# Per-owner override for GetCharactersByProximityOrdered, for tests needing an
+	# owner-dependent (e.g. mutual-nearest) result rather than one flat answer.
+	var proximity_ordered_by_owner: Dictionary = {}
 
 	func IsCharacterInZone(_p_character_ID: int, _p_zone_ID: int) -> bool:
 		return characters_in_zones
@@ -20,6 +27,18 @@ class FakeTurnPositions extends TurnPositions:
 	func GetCharactersWithinProximity(p_owner_ID: int, p_bar_percent: float) -> Array[int]:
 		last_proximity_query = [p_owner_ID, p_bar_percent]
 		return proximity_IDs
+
+	func GetCharactersBehindOrdered(p_owner_ID: int) -> Array[int]:
+		last_behind_ordered_query = [p_owner_ID]
+		return behind_ordered_IDs
+
+	func GetCharactersByProximityOrdered(p_owner_ID: int, p_bar_percent: float) -> Array[int]:
+		last_proximity_ordered_query = [p_owner_ID, p_bar_percent]
+		if(proximity_ordered_by_owner.has(p_owner_ID)):
+			var result: Array[int] = []
+			result.assign(proximity_ordered_by_owner[p_owner_ID])
+			return result
+		return proximity_ordered_IDs
 
 ## Headless stand-in for a reagent-amplifying trait (e.g. the Sorcerer's Arcane
 ## Instability): always contributes a fixed additive potency amount, for testing
@@ -33,6 +52,53 @@ class FakeAmplifyingTrait extends CharacterTrait:
 
 	func OnReagentConsumed(_p_consumer_ID: int, _p_reagent: ReagentData, _p_resolver: BattleResolver) -> float:
 		return contribution
+
+## Headless stand-in for a trait that blocks forward turn-bar bumps (e.g. Caravan
+## Cadence's drawback) without applying any status.
+class FakeForwardBlockingTrait extends CharacterTrait:
+	func BlocksForwardTurnBarBump(_p_owner_ID: int) -> bool:
+		return true
+
+## Records the buff it was told the owner just gained (Buff_Applied), for asserting the
+## dispatch passes the actual applied instance through.
+class FakeBuffGainedRecorder extends CharacterTrait:
+	var last_owner_ID: int = -1
+	var last_buff: StatusEffects.Buff = null
+	var call_count: int = 0
+
+	func _init() -> void:
+		_execution_steps[Types.Combat_Event.Buff_Applied] = Callable(self, "OnBuffGained")
+
+	func OnBuffGained(p_owner_ID: int, p_buff: StatusEffects.Buff, _p_resolver: BattleResolver) -> void:
+		last_owner_ID = p_owner_ID
+		last_buff = p_buff
+		call_count += 1
+
+## Records the debuff it was told just landed on the owner (Debuff_Received), the
+## receiver-side counterpart to Debuff_Applied's applier-side dispatch.
+class FakeDebuffReceivedRecorder extends CharacterTrait:
+	var last_owner_ID: int = -1
+	var last_debuff: StatusEffects.Debuff = null
+	var call_count: int = 0
+
+	func _init() -> void:
+		_execution_steps[Types.Combat_Event.Debuff_Received] = Callable(self, "OnDebuffReceived")
+
+	func OnDebuffReceived(p_owner_ID: int, p_debuff: StatusEffects.Debuff, _p_resolver: BattleResolver) -> void:
+		last_owner_ID = p_owner_ID
+		last_debuff = p_debuff
+		call_count += 1
+
+## Headless stand-in for a trait that extends the duration of any debuff landing on its
+## owner (e.g. Contagion Bond's drawback).
+class FakeDebuffDurationBonusTrait extends CharacterTrait:
+	var bonus: int = 0
+
+	func _init(p_bonus: int) -> void:
+		bonus = p_bonus
+
+	func GetIncomingDebuffDurationBonus(_p_owner_ID: int) -> int:
+		return bonus
 
 static func make_character() -> Character:
 	var c: Character = Character.new()
