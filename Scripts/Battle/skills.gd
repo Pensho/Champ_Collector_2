@@ -62,7 +62,7 @@ static func ApplyBarrierZone(
 	var charge_bonus: float = 0.0
 	if(null != zone_owner and null != zone_owner._trait):
 		charge_bonus = zone_owner._trait.GetZoneChargeBonus(p_zone_ID)
-	p_resolver.ApplyBuff(p_character_ID, MakeBarrierZoneBuff(p_owner_knowledge, charge_bonus))
+	p_resolver.GetStatusResolver().ApplyBuff(p_character_ID, MakeBarrierZoneBuff(p_owner_knowledge, charge_bonus))
 	TriggerZoneUsedHook(characters, p_zone_owner_ID, p_character_ID, p_resolver)
 
 static func CorrectZoneTarget(

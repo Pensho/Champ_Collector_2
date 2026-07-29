@@ -22,7 +22,7 @@ func _apply_debuff(p_type: Types.Debuff_Type, p_target_ID: int, p_source_ID: int
 	template.type = p_type
 	template.duration = p_duration
 	template.source_ID = p_source_ID
-	_resolver.ApplyDebuff(p_target_ID, template)
+	_resolver.GetStatusResolver().ApplyDebuff(p_target_ID, template)
 
 func _debuff_ticks(p_results: Array[CombatResult]) -> Array[CombatResult]:
 	return p_results.filter(func(result): return result.kind == CombatResult.Kind.Debuff_Tick)

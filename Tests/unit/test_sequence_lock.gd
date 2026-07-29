@@ -22,7 +22,7 @@ func test_apply_buff_is_blocked_for_speed_effect() -> void:
 	template.type = Types.Buff_Type.Haste
 	template.duration = 2
 
-	resolver.ApplyBuff(3, template)
+	resolver.GetStatusResolver().ApplyBuff(3, template)
 
 	var haste: Array = roster[3]._active_buffs.filter(func(b): return b.type == Types.Buff_Type.Haste)
 	assert_eq(haste.size(), 0, "Haste must not be applied while Sequence Lock is active")
@@ -34,7 +34,7 @@ func test_apply_debuff_is_blocked_for_speed_effect() -> void:
 	template.type = Types.Debuff_Type.Slow
 	template.duration = 2
 
-	resolver.ApplyDebuff(3, template)
+	resolver.GetStatusResolver().ApplyDebuff(3, template)
 
 	var slow: Array = roster[3]._active_debuffs.filter(func(d): return d.type == Types.Debuff_Type.Slow)
 	assert_eq(slow.size(), 0, "Slow must not be applied while Sequence Lock is active")
@@ -46,7 +46,7 @@ func test_apply_buff_still_lands_for_non_speed_effect() -> void:
 	template.type = Types.Buff_Type.Empower
 	template.duration = 2
 
-	resolver.ApplyBuff(3, template)
+	resolver.GetStatusResolver().ApplyBuff(3, template)
 
 	var empower: Array = roster[3]._active_buffs.filter(func(b): return b.type == Types.Buff_Type.Empower)
 	assert_eq(empower.size(), 1, "Empower does not touch Speed and must still land")

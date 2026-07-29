@@ -45,8 +45,8 @@ func OnSkillCast(
 
 	var buff_to_steal: StatusEffects.Buff = target_buffs[
 			p_resolver.GetRandom().randi() % target_buffs.size()]
-	p_resolver.RemoveBuff(target_ID, buff_to_steal)
-	p_resolver.ApplyBuff(p_owner_ID, buff_to_steal)
+	p_resolver.GetStatusResolver().RemoveBuff(target_ID, buff_to_steal)
+	p_resolver.GetStatusResolver().ApplyBuff(p_owner_ID, buff_to_steal)
 	p_resolver.EmitTraitText(p_owner_ID, "Stole buff!", Color(0.6, 0.2, 0.8, 1.0))
 
 	return result

@@ -69,7 +69,7 @@ func OnSkillCast(
 			if(_charges >= EXPOSE_WEAKNESS_THRESHOLD):
 				_expose_weakness_debuff.source_ID = _p_owner_ID
 				for target_ID in p_target_IDs:
-					p_resolver.ApplyDebuff(target_ID, _expose_weakness_debuff)
+					p_resolver.GetStatusResolver().ApplyDebuff(target_ID, _expose_weakness_debuff)
 			if(_charges >= ZONE_RE_ERECT_THRESHOLD):
 				_ReErectZone(_p_owner_ID, p_resolver)
 			_charges = 0

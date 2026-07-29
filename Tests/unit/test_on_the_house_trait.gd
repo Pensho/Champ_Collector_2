@@ -57,7 +57,7 @@ func test_gaining_a_buff_heals_owner_and_every_living_ally_by_their_own_max_heal
 	_ally_a._current_health = 1
 	_ally_b._current_health = 1
 
-	_resolver.ApplyBuff(0, _make_buff_template())
+	_resolver.GetStatusResolver().ApplyBuff(0, _make_buff_template())
 
 	# Max Health = Health attribute x 4; 6% of that, rounded.
 	# Owner: Vigor (the triggering buff) also raises the owner's own max Health by 30%
@@ -73,7 +73,7 @@ func test_gaining_a_buff_does_not_heal_the_enemy() -> void:
 	_InitTrait(Types.Rarity.Uncommon)
 	_enemy._current_health = 1
 
-	_resolver.ApplyBuff(0, _make_buff_template())
+	_resolver.GetStatusResolver().ApplyBuff(0, _make_buff_template())
 
 	assert_eq(_enemy._current_health, 1, "Enemies must not be healed by the Bar Brawler's passive")
 
@@ -81,7 +81,7 @@ func test_dead_allies_are_skipped() -> void:
 	_InitTrait(Types.Rarity.Uncommon)
 	_ally_a._current_health = 0
 
-	_resolver.ApplyBuff(0, _make_buff_template())
+	_resolver.GetStatusResolver().ApplyBuff(0, _make_buff_template())
 
 	assert_eq(_ally_a._current_health, 0, "A dead ally must not be healed")
 
@@ -90,14 +90,14 @@ func test_dead_allies_are_skipped() -> void:
 func test_a_second_buff_in_the_same_cycle_does_not_heal_again() -> void:
 	_InitTrait(Types.Rarity.Uncommon)
 	_owner._current_health = 1
-	_resolver.ApplyBuff(0, _make_buff_template())
+	_resolver.GetStatusResolver().ApplyBuff(0, _make_buff_template())
 	var health_after_first_pour: int = _owner._current_health
 
 	var second_buff: StatusEffects.Buff = StatusEffects.Buff.new()
 	second_buff.type = Types.Buff_Type.Attune
 	second_buff.duration = 3
 	second_buff.name = "Attune"
-	_resolver.ApplyBuff(0, second_buff)
+	_resolver.GetStatusResolver().ApplyBuff(0, second_buff)
 
 	assert_eq(_owner._current_health, health_after_first_pour,
 		"A second buff before his next turn must not pour again")
@@ -105,7 +105,7 @@ func test_a_second_buff_in_the_same_cycle_does_not_heal_again() -> void:
 func test_start_of_turn_reopens_the_pour_window() -> void:
 	_InitTrait(Types.Rarity.Uncommon)
 	_owner._current_health = 1
-	_resolver.ApplyBuff(0, _make_buff_template())
+	_resolver.GetStatusResolver().ApplyBuff(0, _make_buff_template())
 	var health_after_first_pour: int = _owner._current_health
 
 	_trait.StartOfTurn(0, _resolver)
@@ -113,7 +113,7 @@ func test_start_of_turn_reopens_the_pour_window() -> void:
 	second_buff.type = Types.Buff_Type.Attune
 	second_buff.duration = 3
 	second_buff.name = "Attune"
-	_resolver.ApplyBuff(0, second_buff)
+	_resolver.GetStatusResolver().ApplyBuff(0, second_buff)
 
 	assert_true(_owner._current_health > health_after_first_pour,
 		"After his turn starts, the next buff gained should pour again")
@@ -122,12 +122,12 @@ func test_start_of_turn_reopens_the_pour_window() -> void:
 
 func test_refreshing_an_existing_buff_does_not_trigger_a_pour() -> void:
 	_InitTrait(Types.Rarity.Uncommon)
-	_resolver.ApplyBuff(0, _make_buff_template())
+	_resolver.GetStatusResolver().ApplyBuff(0, _make_buff_template())
 	_trait.StartOfTurn(0, _resolver)
 	_owner._current_health = 1
 
 	# Vigor is non-stackable/overwritable: applying it again on an already-buffed
 	# target refreshes duration instead of appending a new buff.
-	_resolver.ApplyBuff(0, _make_buff_template())
+	_resolver.GetStatusResolver().ApplyBuff(0, _make_buff_template())
 
 	assert_eq(_owner._current_health, 1, "Refreshing an existing buff must not pour a heal")

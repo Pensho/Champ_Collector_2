@@ -59,7 +59,7 @@ func OnAllyDeath(p_owner_ID: int, p_dead_ally_ID: int, p_resolver: BattleResolve
 	attune.type = Types.Buff_Type.Attune
 	attune.duration = ATTUNE_DURATION
 	attune.name = "Attune"
-	p_resolver.ApplyBuff(p_owner_ID, attune)
+	p_resolver.GetStatusResolver().ApplyBuff(p_owner_ID, attune)
 	_MarkNewVessel(p_owner_ID, p_resolver)
 
 func _MarkNewVessel(p_owner_ID: int, p_resolver: BattleResolver) -> void:

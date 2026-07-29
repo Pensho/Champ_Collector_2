@@ -59,13 +59,13 @@ func ApplyAdventureEffects(p_character_ID: int) -> void:
 		buff.type = buff_type
 		buff.duration = GameBalance.ADVENTURE_BUFF_COMBAT_DURATION
 		buff.name = Types.Buff_Type.keys()[buff_type]
-		_resolver.ApplyBuff(p_character_ID, buff)
+		_resolver.GetStatusResolver().ApplyBuff(p_character_ID, buff)
 	for debuff_type: Types.Debuff_Type in _self_context._adventure_state.active_debuffs.keys():
 		var debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
 		debuff.type = debuff_type
 		debuff.duration = GameBalance.ADVENTURE_BUFF_COMBAT_DURATION
 		debuff.name = Types.Debuff_Type.keys()[debuff_type]
-		_resolver.ApplyDebuff(p_character_ID, debuff)
+		_resolver.GetStatusResolver().ApplyDebuff(p_character_ID, debuff)
 
 func SetTargetingOrder() -> void:
 	var sorted_keys = _characters.keys()

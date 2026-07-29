@@ -146,7 +146,7 @@ func _on_add_buff_button_up() -> void:
 	var buff: StatusEffects.Buff = StatusEffects.Buff.new()
 	buff.type = _buff_option.get_selected_id() as Types.Buff_Type
 	buff.duration = int(_status_duration_spin.value)
-	battle._resolver.ApplyBuff(character_id, buff)
+	battle._resolver.GetStatusResolver().ApplyBuff(character_id, buff)
 
 func _on_add_debuff_button_up() -> void:
 	var battle: Battle = GetBattle()
@@ -158,4 +158,4 @@ func _on_add_debuff_button_up() -> void:
 	var debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
 	debuff.type = _debuff_option.get_selected_id() as Types.Debuff_Type
 	debuff.duration = int(_status_duration_spin.value)
-	battle._resolver.ApplyDebuff(character_id, debuff)
+	battle._resolver.GetStatusResolver().ApplyDebuff(character_id, debuff)

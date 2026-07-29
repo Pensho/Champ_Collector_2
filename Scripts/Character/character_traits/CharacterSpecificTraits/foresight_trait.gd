@@ -38,4 +38,4 @@ func StartOfTurn(p_owner_ID: int, p_resolver: BattleResolver) -> void:
 		var skill_targets: Array[int] = p_resolver.FindSkillTargets(
 				id, p_owner_ID, Types.Skill_Target.Single_Enemy)
 		if (skill_targets.has(id)):
-			p_resolver.ApplyDebuff(id, _start_of_turn_debuff)
+			p_resolver.GetStatusResolver().ApplyDebuff(id, _start_of_turn_debuff)

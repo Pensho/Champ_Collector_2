@@ -74,7 +74,7 @@ func test_apply_debuff_resolves_registry_default_when_template_leaves_value_unse
 	template.type = Types.Debuff_Type.Suppress
 	template.duration = 2
 
-	resolver.ApplyDebuff(0, template)
+	resolver.GetStatusResolver().ApplyDebuff(0, template)
 
 	assert_almost_eq(roster[0]._active_debuffs[0].value,
 		StatusEffectRegistry.DebuffData(Types.Debuff_Type.Suppress).magnitude, 0.0001,

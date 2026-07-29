@@ -69,7 +69,7 @@ func OnSkillCast(
 			phalanx_guard_buff.duration = 2
 			phalanx_guard_buff.value = _phalanx_guard_defense
 			phalanx_guard_buff.name = "Phalanx Guard"
-			p_resolver.ApplyBuff(p_owner_ID, phalanx_guard_buff)
+			p_resolver.GetStatusResolver().ApplyBuff(p_owner_ID, phalanx_guard_buff)
 
 	if _momentum_stacks > 0:
 		p_caster_attributes[Types.Attribute.Attack] += int(

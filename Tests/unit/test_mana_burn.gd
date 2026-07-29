@@ -19,7 +19,7 @@ func _apply_mana_burn(p_target_ID: int, p_source_ID: int) -> void:
 	template.type = Types.Debuff_Type.Mana_Burn
 	template.duration = 2
 	template.source_ID = p_source_ID
-	_resolver.ApplyDebuff(p_target_ID, template)
+	_resolver.GetStatusResolver().ApplyDebuff(p_target_ID, template)
 
 func test_non_basic_cast_damages_the_holder_scaled_by_their_own_mysticism() -> void:
 	_roster[0]._attributes[Types.Attribute.Mysticism] = 20  # 6 damage, less than the holder's 10 Health

@@ -91,7 +91,7 @@ func test_applying_a_debuff_on_a_studied_enemy_stamps_the_weakness_rider() -> vo
 	_InitTrait(Types.Rarity.Epic)
 	_trait.StartOfBattle(0, _resolver)
 
-	_resolver.ApplyDebuff(2, _debuff_template(Types.Debuff_Type.Enfeeble, 3, 0))
+	_resolver.GetStatusResolver().ApplyDebuff(2, _debuff_template(Types.Debuff_Type.Enfeeble, 3, 0))
 
 	assert_eq(_enemy_a._active_debuffs.size(), 1, "The rider must ride the triggering debuff, not add a second one")
 	var applied: StatusEffects.Debuff = _enemy_a._active_debuffs[0]
@@ -104,7 +104,7 @@ func test_debuff_on_an_unstudied_target_gets_no_rider() -> void:
 	_trait.StartOfBattle(0, _resolver)
 
 	# The ally was never a studied enemy, so it is absent from _weakness_by_enemy.
-	_resolver.ApplyDebuff(1, _debuff_template(Types.Debuff_Type.Enfeeble, 3, 0))
+	_resolver.GetStatusResolver().ApplyDebuff(1, _debuff_template(Types.Debuff_Type.Enfeeble, 3, 0))
 
 	var applied: StatusEffects.Debuff = _ally._active_debuffs[0]
 	assert_false(applied.has_weakness_rider, "A debuff on an unstudied target must get no rider")
@@ -112,9 +112,9 @@ func test_debuff_on_an_unstudied_target_gets_no_rider() -> void:
 func test_each_debuff_on_a_studied_enemy_carries_its_own_rider() -> void:
 	_InitTrait(Types.Rarity.Epic)
 	_trait.StartOfBattle(0, _resolver)
-	_resolver.ApplyDebuff(2, _debuff_template(Types.Debuff_Type.Enfeeble, 2, 0))
+	_resolver.GetStatusResolver().ApplyDebuff(2, _debuff_template(Types.Debuff_Type.Enfeeble, 2, 0))
 
-	_resolver.ApplyDebuff(2, _debuff_template(Types.Debuff_Type.Blind, 5, 0))
+	_resolver.GetStatusResolver().ApplyDebuff(2, _debuff_template(Types.Debuff_Type.Blind, 5, 0))
 
 	assert_eq(_enemy_a._active_debuffs.size(), 2)
 	for applied: StatusEffects.Debuff in _enemy_a._active_debuffs:
@@ -127,7 +127,7 @@ func test_each_debuff_on_a_studied_enemy_carries_its_own_rider() -> void:
 func test_weakness_rider_reduces_the_identified_attribute_on_a_target_snapshot() -> void:
 	_InitTrait(Types.Rarity.Epic)
 	_trait.StartOfBattle(0, _resolver)
-	_resolver.ApplyDebuff(2, _debuff_template(Types.Debuff_Type.Enfeeble, 3, 0))
+	_resolver.GetStatusResolver().ApplyDebuff(2, _debuff_template(Types.Debuff_Type.Enfeeble, 3, 0))
 	var identified: Types.Attribute = _trait._weakness_by_enemy[2]
 
 	var attrs: Dictionary[Types.Attribute, int] = {identified: 100}
@@ -138,8 +138,8 @@ func test_weakness_rider_reduces_the_identified_attribute_on_a_target_snapshot()
 func test_two_riders_on_the_same_attribute_compound() -> void:
 	_InitTrait(Types.Rarity.Epic)
 	_trait.StartOfBattle(0, _resolver)
-	_resolver.ApplyDebuff(2, _debuff_template(Types.Debuff_Type.Enfeeble, 2, 0))
-	_resolver.ApplyDebuff(2, _debuff_template(Types.Debuff_Type.Blind, 5, 0))
+	_resolver.GetStatusResolver().ApplyDebuff(2, _debuff_template(Types.Debuff_Type.Enfeeble, 2, 0))
+	_resolver.GetStatusResolver().ApplyDebuff(2, _debuff_template(Types.Debuff_Type.Blind, 5, 0))
 	var identified: Types.Attribute = _trait._weakness_by_enemy[2]
 
 	var attrs: Dictionary[Types.Attribute, int] = {identified: 100}

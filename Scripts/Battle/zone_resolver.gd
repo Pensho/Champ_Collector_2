@@ -106,16 +106,16 @@ func _ResolveZoneEffect(p_zone: Zone, p_zone_ID: int, p_character_ID: int) -> vo
 			var target: Character = _resolver._characters[p_character_ID]
 			if(Skills.HasMaxStatusEffects(target)):
 				return
-			if(_resolver._ConsumeAegisIfPresent(p_character_ID, p_zone._owner_ID)):
+			if(_resolver.GetStatusResolver()._ConsumeAegisIfPresent(p_character_ID, p_zone._owner_ID)):
 				return
 			var data: StatusEffectData = StatusEffectRegistry.DebuffData(p_zone._debuff_type)
 			var new_debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
 			new_debuff.type = p_zone._debuff_type
 			new_debuff.duration = data.duration_default if null != data else 0
 			new_debuff.source_ID = p_zone._owner_ID
-			new_debuff.value = _resolver._SnapshotStatusValue(data, p_zone._owner_ID)
+			new_debuff.value = _resolver.GetStatusResolver()._SnapshotStatusValue(data, p_zone._owner_ID)
 			new_debuff.ID = _resolver._NextStatusID()
 			target._active_debuffs.append(new_debuff)
-			_resolver._EmitDebuffApplied(p_character_ID, new_debuff, "")
+			_resolver.GetStatusResolver()._EmitDebuffApplied(p_character_ID, new_debuff, "")
 		Types.Skill_Type.Barrier_Zone:
 			Skills.ApplyBarrierZone(_resolver, p_zone._owner_ID, p_zone_ID, p_zone._owner_knowledge, p_character_ID)

@@ -27,4 +27,4 @@ func Init(p_rarity: Types.Rarity) -> void:
 
 func OnCriticalHit(p_owner_ID: int, p_target_ID: int, p_resolver: BattleResolver) -> void:
 	_cracked_facet_debuff.source_ID = p_owner_ID
-	p_resolver.ApplyDebuff(p_target_ID, _cracked_facet_debuff)
+	p_resolver.GetStatusResolver().ApplyDebuff(p_target_ID, _cracked_facet_debuff)

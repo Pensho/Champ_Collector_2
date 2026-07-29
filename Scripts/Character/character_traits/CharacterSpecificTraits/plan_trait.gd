@@ -45,4 +45,4 @@ func StartOfTurn(p_owner_ID: int, p_resolver: BattleResolver) -> void:
 
 	for id in allies_behind:
 		if (skill_targets.has(id)):
-			p_resolver.ApplyBuff(id, _start_of_turn_buff)
+			p_resolver.GetStatusResolver().ApplyBuff(id, _start_of_turn_buff)

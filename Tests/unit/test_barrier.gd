@@ -29,7 +29,7 @@ func _apply_self_bleed(p_target_ID: int, p_attack: int) -> int:
 	template.type = Types.Debuff_Type.Bleed
 	template.duration = 2
 	template.source_ID = p_target_ID
-	_resolver.ApplyDebuff(p_target_ID, template)
+	_resolver.GetStatusResolver().ApplyDebuff(p_target_ID, template)
 	return int(floor(p_attack * StatusEffectRegistry.DebuffData(Types.Debuff_Type.Bleed).magnitude))
 
 func test_damage_under_the_barrier_value_is_fully_absorbed() -> void:
@@ -65,7 +65,7 @@ func test_apply_buff_keeps_the_existing_barrier_when_the_new_value_is_smaller() 
 	template.duration = 2
 	template.value = 30.0
 
-	_resolver.ApplyBuff(0, template)
+	_resolver.GetStatusResolver().ApplyBuff(0, template)
 
 	assert_eq(_roster[0]._active_buffs.size(), 1)
 	assert_almost_eq(_roster[0]._active_buffs[0].value, 50.0, 0.0001,
@@ -78,7 +78,7 @@ func test_apply_buff_replaces_the_existing_barrier_when_the_new_value_is_larger(
 	template.duration = 2
 	template.value = 80.0
 
-	_resolver.ApplyBuff(0, template)
+	_resolver.GetStatusResolver().ApplyBuff(0, template)
 
 	assert_eq(_roster[0]._active_buffs.size(), 1)
 	assert_almost_eq(_roster[0]._active_buffs[0].value, 80.0, 0.0001,
@@ -90,7 +90,7 @@ func test_apply_buff_reports_the_barriers_value_on_the_status_applied_result() -
 	template.duration = 2
 	template.value = 30.0
 
-	var results: Array[CombatResult] = _resolver.ApplyBuff(0, template)
+	var results: Array[CombatResult] = _resolver.GetStatusResolver().ApplyBuff(0, template)
 
 	var applied: Array = results.filter(func(r): return r.kind == CombatResult.Kind.Status_Applied)
 	assert_eq(applied[0].amount, 30, "The overlay bar reads the Barrier's pool from the applied result's amount")

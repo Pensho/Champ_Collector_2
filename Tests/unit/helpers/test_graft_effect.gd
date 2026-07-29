@@ -26,7 +26,7 @@ func StartOfBattle(p_owner_ID: int, p_resolver: BattleResolver) -> void:
 	buff.type = Types.Buff_Type.Fortify
 	buff.duration = 1
 	buff.name = "Fortify"
-	p_resolver.ApplyBuff(p_owner_ID, buff)
+	p_resolver.GetStatusResolver().ApplyBuff(p_owner_ID, buff)
 
 func _BonusForRarity(p_rarity: Types.Rarity) -> Dictionary[Types.Attribute, float]:
 	return {Types.Attribute.Health: HEALTH_BONUS_PER_RARITY.get(p_rarity, 0.0)}

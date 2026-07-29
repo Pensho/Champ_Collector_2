@@ -42,5 +42,5 @@ func StartOfTurn(p_owner_ID: int, p_resolver: BattleResolver) -> void:
 		var allies: Array[int] = p_resolver.GetSides().AlliesOf(p_owner_ID).AliveMembers(
 				p_resolver.GetCharacters())
 		for ally_ID in allies:
-			p_resolver.ApplyBuff(ally_ID, _regeneration_buff)
+			p_resolver.GetStatusResolver().ApplyBuff(ally_ID, _regeneration_buff)
 		_stacks = 0

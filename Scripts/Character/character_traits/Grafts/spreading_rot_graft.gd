@@ -41,7 +41,7 @@ func OnSkillCast(
 	_blight_debuff.source_ID = p_owner_ID
 	for target_ID in p_target_IDs:
 		if p_resolver.GetSides().AreEnemies(p_owner_ID, target_ID):
-			p_resolver.ApplyDebuff(target_ID, _blight_debuff)
+			p_resolver.GetStatusResolver().ApplyDebuff(target_ID, _blight_debuff)
 	return TraitSkillResult.new()
 
 func StartOfTurn(p_owner_ID: int, p_resolver: BattleResolver) -> void:

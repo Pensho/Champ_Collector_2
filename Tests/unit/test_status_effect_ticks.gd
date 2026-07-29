@@ -114,7 +114,7 @@ func test_apply_buff_resolves_registry_default_when_template_leaves_value_unset(
 	template.type = Types.Buff_Type.Empower
 	template.duration = 2
 
-	resolver.ApplyBuff(0, template)
+	resolver.GetStatusResolver().ApplyBuff(0, template)
 
 	assert_almost_eq(roster[0]._active_buffs[0].value,
 		StatusEffectRegistry.BuffData(Types.Buff_Type.Empower).magnitude, 0.0001,
@@ -128,7 +128,7 @@ func test_apply_buff_keeps_an_explicit_template_value_like_phalanx_guard() -> vo
 	template.duration = 2
 	template.value = 0.08
 
-	resolver.ApplyBuff(0, template)
+	resolver.GetStatusResolver().ApplyBuff(0, template)
 
 	assert_almost_eq(roster[0]._active_buffs[0].value, 0.08, 0.0001,
 		"A caller-supplied value (rarity-scaled Phalanx Guard) must not be overridden by the registry default")

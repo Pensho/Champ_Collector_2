@@ -37,7 +37,7 @@ func test_remove_buff_erases_from_active_buffs() -> void:
 
 	assert_eq(_character._active_buffs.size(), 1, "Buff should be present before removal")
 
-	var results: Array[CombatResult] = _resolver.RemoveBuff(0, buff)
+	var results: Array[CombatResult] = _resolver.GetStatusResolver().RemoveBuff(0, buff)
 
 	assert_eq(_character._active_buffs.size(), 0, "Buff should be erased after RemoveBuff")
 	assert_eq(results.size(), 1, "Removal should be reported")
@@ -58,7 +58,7 @@ func test_remove_buff_only_erases_target_buff() -> void:
 	_character._active_buffs.append(buff_a)
 	_character._active_buffs.append(buff_b)
 
-	_resolver.RemoveBuff(0, buff_a)
+	_resolver.GetStatusResolver().RemoveBuff(0, buff_a)
 
 	assert_eq(_character._active_buffs.size(), 1, "Only the targeted buff should be removed")
 	assert_eq(_character._active_buffs[0].type, Types.Buff_Type.Fortify,

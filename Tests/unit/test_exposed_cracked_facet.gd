@@ -15,19 +15,19 @@ func _add_debuff(p_character: Character, p_type: Types.Debuff_Type) -> void:
 func test_exposed_facet_grants_the_attacker_crit_chance_points() -> void:
 	var roster: Dictionary[int, Character] = TestFactory.make_full_roster()
 	var resolver: BattleResolver = TestFactory.make_resolver(roster, TestFactory.make_full_sides())
-	assert_eq(resolver._AttackerCritChanceBonus(roster[3]), 0, "No debuff, no crit-chance bonus")
+	assert_eq(resolver.GetStatusResolver()._AttackerCritChanceBonus(roster[3]), 0, "No debuff, no crit-chance bonus")
 
 	_add_debuff(roster[3], Types.Debuff_Type.Exposed_Facet)
-	assert_eq(resolver._AttackerCritChanceBonus(roster[3]), 15,
+	assert_eq(resolver.GetStatusResolver()._AttackerCritChanceBonus(roster[3]), 15,
 		"Exposed Facet should grant a flat +15 crit-chance bonus to the attacker")
 
 func test_cracked_facet_grants_the_attacker_crit_damage_points() -> void:
 	var roster: Dictionary[int, Character] = TestFactory.make_full_roster()
 	var resolver: BattleResolver = TestFactory.make_resolver(roster, TestFactory.make_full_sides())
-	assert_eq(resolver._AttackerCritDamageBonus(roster[3]), 0, "No debuff, no crit-damage bonus")
+	assert_eq(resolver.GetStatusResolver()._AttackerCritDamageBonus(roster[3]), 0, "No debuff, no crit-damage bonus")
 
 	_add_debuff(roster[3], Types.Debuff_Type.Cracked_Facet)
-	assert_eq(resolver._AttackerCritDamageBonus(roster[3]), 25,
+	assert_eq(resolver.GetStatusResolver()._AttackerCritDamageBonus(roster[3]), 25,
 		"Cracked Facet should grant a flat +25 crit-damage bonus to the attacker")
 
 func test_cracked_facet_increases_actual_crit_damage_dealt() -> void:

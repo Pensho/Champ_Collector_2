@@ -54,13 +54,13 @@ func test_aegis_blocks_one_debuff_then_is_removed() -> void:
 	template.duration = 2
 	template.source_ID = 3
 
-	var results: Array[CombatResult] = _resolver.ApplyDebuff(0, template)
+	var results: Array[CombatResult] = _resolver.GetStatusResolver().ApplyDebuff(0, template)
 
 	assert_eq(_results_of_kind(results, CombatResult.Kind.Debuff_Blocked).size(), 1)
 	assert_eq(_roster[0]._active_debuffs.size(), 0, "The blocked debuff must not land")
 	assert_eq(_roster[0]._active_buffs.size(), 0, "Aegis should be consumed after blocking one debuff")
 
-	_resolver.ApplyDebuff(0, template)
+	_resolver.GetStatusResolver().ApplyDebuff(0, template)
 	assert_eq(_roster[0]._active_debuffs.size(), 1, "A second debuff should land normally once Aegis is gone")
 
 func test_rehearsed_skips_one_non_basic_cooldown_then_is_removed() -> void:

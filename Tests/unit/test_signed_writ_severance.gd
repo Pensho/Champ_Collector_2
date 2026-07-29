@@ -68,7 +68,7 @@ func test_severance_blocks_a_new_buff_via_apply_buff() -> void:
 	_roster[0]._active_debuffs.append(_debuff(Types.Debuff_Type.Severance))
 	_resolver = TestFactory.make_resolver(_roster, TestFactory.make_full_sides())
 
-	_resolver.ApplyBuff(0, _buff(Types.Buff_Type.Empower))
+	_resolver.GetStatusResolver().ApplyBuff(0, _buff(Types.Buff_Type.Empower))
 
 	assert_eq(_roster[0]._active_buffs.size(), 0, "Severance should block a template-applied buff")
 

@@ -39,7 +39,7 @@ func test_enemy_gaining_a_buff_adds_an_infraction() -> void:
 	var buff: StatusEffects.Buff = StatusEffects.Buff.new()
 	buff.type = Types.Buff_Type.Empower
 	buff.duration = 1
-	_resolver.ApplyBuff(2, buff)
+	_resolver.GetStatusResolver().ApplyBuff(2, buff)
 
 	assert_eq(_trait.GetInfractions(2), 1)
 
@@ -48,7 +48,7 @@ func test_enemy_landing_a_debuff_on_an_owner_side_ally_adds_an_infraction() -> v
 	debuff.type = Types.Debuff_Type.Enfeeble
 	debuff.duration = 1
 	debuff.source_ID = 2
-	_resolver.ApplyDebuff(1, debuff)
+	_resolver.GetStatusResolver().ApplyDebuff(1, debuff)
 
 	assert_eq(_trait.GetInfractions(2), 1)
 
@@ -63,7 +63,7 @@ func test_ally_gaining_a_buff_does_not_add_an_infraction() -> void:
 	var buff: StatusEffects.Buff = StatusEffects.Buff.new()
 	buff.type = Types.Buff_Type.Empower
 	buff.duration = 1
-	_resolver.ApplyBuff(1, buff)
+	_resolver.GetStatusResolver().ApplyBuff(1, buff)
 
 	assert_eq(_trait.GetInfractions(1), 0)
 
@@ -72,7 +72,7 @@ func test_ally_landing_a_debuff_on_an_owner_side_ally_does_not_add_an_infraction
 	debuff.type = Types.Debuff_Type.Enfeeble
 	debuff.duration = 1
 	debuff.source_ID = 1
-	_resolver.ApplyDebuff(0, debuff)
+	_resolver.GetStatusResolver().ApplyDebuff(0, debuff)
 
 	assert_eq(_trait.GetInfractions(1), 0)
 
@@ -81,7 +81,7 @@ func test_enemy_landing_a_debuff_on_another_enemy_does_not_add_an_infraction() -
 	debuff.type = Types.Debuff_Type.Enfeeble
 	debuff.duration = 1
 	debuff.source_ID = 2
-	_resolver.ApplyDebuff(3, debuff)
+	_resolver.GetStatusResolver().ApplyDebuff(3, debuff)
 
 	assert_eq(_trait.GetInfractions(2), 0)
 
@@ -99,7 +99,7 @@ func test_start_of_battle_resets_the_tally() -> void:
 	var buff: StatusEffects.Buff = StatusEffects.Buff.new()
 	buff.type = Types.Buff_Type.Empower
 	buff.duration = 1
-	_resolver.ApplyBuff(2, buff)
+	_resolver.GetStatusResolver().ApplyBuff(2, buff)
 	assert_eq(_trait.GetInfractions(2), 1)
 
 	_trait.StartOfBattle(0, _resolver)

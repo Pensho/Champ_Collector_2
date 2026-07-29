@@ -312,9 +312,10 @@ enum MagnitudeKind {
 per-rarity in `LancerTrait`). Debuffs resolve `value` the same way buffs do (`ApplyDebuff`/
 `_CastDebuff` default it to `data.magnitude`), so both buff and debuff self-tick/target-snapshot
 sites read one instance value instead of buffs reading `value` and debuffs reading `data.magnitude`
-directly. `BattleResolver.ApplyBuff`/`ApplyDebuff`/`_CastBuff`/`_CastDebuff` all resolve
-`stackable`/`overwritable` from the registry instead of the old `Skills.OverwritableBuff`/
-`OverwritableDebuff` match statements, and the caster-tick methods
+directly. `ApplyBuff`/`ApplyDebuff`/`_CastBuff`/`_CastDebuff` (`StatusEffectResolver`, see
+[Section 15.10](#1510-battle_resolvergd-growth-the-zoneresolver-and-statuseffectresolver-splits))
+all resolve `stackable`/`overwritable` from the registry instead of the old
+`Skills.OverwritableBuff`/`OverwritableDebuff` match statements, and the caster-tick methods
 (`_TriggerExistingCasterBuffs`/`Debuffs`) and target-snapshot methods (`Skills.TriggerTargetBuffs`/
 `TriggerTargetDebuffs`) dispatch generically on `magnitude_kind` instead of the buff/debuff type,
 routing `AttributePercent`/`AttributePercentagePointAdd` through the shared
@@ -546,7 +547,7 @@ combat formulas, see `Concept_Document.md`; this section describes the *code pat
    generation seed and current node index (`Battle.BattleSeed()`), making the battle's rolls
    reproducible; otherwise the seed is randomized.
 3. Loads player characters into `_characters[0..2]`, setting `_current_health` to scaled max HP,
-   and applies adventure buffs/debuffs through `resolver.ApplyBuff`/`ApplyDebuff`.
+   and applies adventure buffs/debuffs through `resolver.GetStatusResolver().ApplyBuff`/`ApplyDebuff`.
 4. Computes `_targeting_order` via `SetTargetingOrder()` — characters sorted by
    `Health + Defence` descending (used by enemy AI to pick "tankiest valid" targets).
 5. Instantiates enemies into `_characters[3..5]`, jitters their speed by `randi_range(-3,3)` on
@@ -773,8 +774,8 @@ extension point for bespoke behavior.
 the base class. It declares an `_execution_steps: Dictionary[Types.Combat_Event, Callable]` map and
 provides default (no-op, debug-printing) implementations of each hook. The combat hooks are
 **logic-only**: they mutate trait/`Character` state and report effects through the
-`BattleResolver` they receive (`ApplyBuff`, `RemoveBuff`, `EmitTraitText`, `GetRandom`,
-`GetTurnPositions`, …), never through UI types:
+`BattleResolver` they receive (`GetStatusResolver().ApplyBuff`/`RemoveBuff`, `EmitTraitText`,
+`GetRandom`, `GetTurnPositions`, …), never through UI types:
 
 | Hook | `Combat_Event` | Fired when… | Returns |
 |---|---|---|---|
@@ -1101,7 +1102,7 @@ damage) without any new dispatch code. The in-battle flow models the reagent fre
 persistence stores only the graft's resource UID. Ships no graft content itself — enemy
 `_graft_effect` sourcing beyond the first batch is populated separately by the graft-pool plan.
 
-### 15.10. `battle_resolver.gd` growth and the `ZoneResolver` split
+### 15.10. `battle_resolver.gd` growth: the `ZoneResolver` and `StatusEffectResolver` splits
 
 `Scripts/Battle/battle_resolver.gd` previously sat at exactly `gdlintrc`'s `max-file-lines`
 (1320) and `max-public-methods` (26) as of the healing-primitives graft batch — the healing
@@ -1109,24 +1110,55 @@ primitives landed by extending an existing public method (`ResolveTraitHeal`'s o
 `p_raw_amount`) rather than adding a new one, specifically to stay under budget.
 
 The zone lifecycle (`_zones` state, `PlaceZone`, `TriggerZones`, `SetZoneDuration`,
-`AvailableZoneIDs`, `HasZone`, `GetZones`, `ClearZone`, `_ResolveZoneEffect`) has since moved
+`AvailableZoneIDs`, `HasZone`, `GetZones`, `ClearZone`, `_ResolveZoneEffect`) moved first,
 into `ZoneResolver` (`Scripts/Battle/zone_resolver.gd`), a `RefCounted` subsystem constructed
 by `BattleResolver._init` and held as `_zone_resolver`, mirroring `CombatSides`/`TurnPositions`/
 `ReagentLoadout`'s pattern of small `RefCounted` collaborators rather than `Node`-based
 utilities like `Skills`/`ReagentResolver`. `ZoneResolver` holds a back-reference to its owning
 `BattleResolver` and reaches its `_characters`/`_sides`/`_turn_positions` state and
-`_BeginBatch`/`_EndBatch`/`_Emit`/`_EmitTurnBarBump`/`_ConsumeAegisIfPresent`/
-`_SnapshotStatusValue`/`_NextStatusID`/`_EmitDebuffApplied`/`_HasBuff` services directly through
-it — GDScript does not enforce `_`-privacy, so no method needed to become public to support
-this. `BattleResolver` exposes the subsystem through a single `GetZoneResolver() -> ZoneResolver`
-accessor, mirroring the existing `GetSides()`/`GetTurnPositions()` pattern of handing back an
-owned collaborator rather than re-forwarding each of its methods; callers reach the zone API as
+`_BeginBatch`/`_EndBatch`/`_Emit`/`_EmitTurnBarBump`/`_NextStatusID`/`_HasBuff` services directly
+through it, plus the status-effect services below through `GetStatusResolver()` — GDScript does
+not enforce `_`-privacy, so no method needed to become public to support this. `BattleResolver`
+exposes the subsystem through a single `GetZoneResolver() -> ZoneResolver` accessor, mirroring
+the existing `GetSides()`/`GetTurnPositions()` pattern of handing back an owned collaborator
+rather than re-forwarding each of its methods; callers reach the zone API as
 `resolver.GetZoneResolver().PlaceZone(...)` etc. (`battle.gd`, `calibration_trait.gd`, and the
 zone-touching tests were updated to the new call shape; the `Clear_Zone` reagent branch, being
 internal to `BattleResolver`, calls `_zone_resolver` directly).
 
-This freed real budget back (`battle_resolver.gd` dropped from 1320 to roughly 1230 lines). The
-remaining graft roadmap batches (turn-bar control, retaliation, on-kill/conditional damage, zone
-extensions, event triggers, tether) each propose at least one new resolver-side primitive; the
-same accessor-to-a-`RefCounted`-subsystem split is the template for whichever cluster needs to
-move out next if the budget tightens again.
+The buff/debuff lifecycle moved the same way, into `StatusEffectResolver`
+(`Scripts/Battle/status_effect_resolver.gd`) — the resolver's largest remaining source of
+per-effect method growth (one bespoke private method per status: `_TriggerManaBurn`,
+`_SpreadPlague`, `_TriggerMirrorCoat`, `_ConsumeAegisIfPresent`, `_BlockedBySequenceLock`, …).
+`StatusEffectResolver` owns `ApplyBuff`/`ApplyDebuff`/`RemoveBuff`, the `_CastBuff`/`_CastDebuff`/
+`_TriggerExistingCasterBuffs`/`Debuffs` skill-resolution helpers, every status-specific block/
+consume/trigger rule, the status-derived damage and healing multipliers, and the `Status_Applied`/
+`Status_Duration` emitters — constructed and held the same way as `_zone_resolver`, exposed
+through `GetStatusResolver() -> StatusEffectResolver`. `BattleResolver` itself keeps only the
+shared substrate (`_characters`, `_sides`, batch/emit, `_NextStatusID`, `_HasBuff`/`_HasDebuff`,
+the health primitives `_ApplyHealthLoss`/`_ApplyHeal`) and damage/turn orchestration
+(`ResolveSkill`, `_ResolveDamage`, `_TickCooldowns`, `_HandleDeath`, …); two checks that were
+previously inlined in that orchestration — the Premonition miss and the Deathward fatal-hit
+save — became named `ConsumePremonitionIfPresent`/`ConsumeDeathwardIfPresent` on
+`StatusEffectResolver` so the damage/health path calls one line instead of scanning the buff
+array itself. Because `ApplyBuff`/`ApplyDebuff`/`RemoveBuff` are the resolver's trait-facing
+public API (called from most `CharacterTrait` subclasses, `skills.gd`, `battle.gd`, and debug
+tooling — an order of magnitude more external callers than zones had), every call site was
+updated to the `resolver.GetStatusResolver().ApplyBuff(...)` shape rather than adding thin
+forwarders on `BattleResolver`, for consistency with the `ZoneResolver` accessor precedent.
+The four insertion methods' shared skeleton (max-status guard, stackable/overwritable scan with
+duration-refresh, append, emit) was also collapsed onto one `_InsertOrRefresh` helper; it takes
+an `p_always_refresh_duration` flag because `_CastDebuff` alone refreshes an existing debuff's
+duration unconditionally (the other three only refresh when the new duration is longer), and
+returns the created instance (or `null` when nothing new was created) so `_CastDebuff` alone can
+gate its Mirror Coat trigger on an actual creation, not a mere refresh.
+
+This freed real budget back: `battle_resolver.gd` dropped from roughly 1230 to 656 lines and 19
+public methods, with the buff/debuff machinery now in its own 599-line file. `gdlintrc`'s
+`max-file-lines`/`max-public-methods` were retightened from 1320/26 to 700/25 — headroom over the
+current largest file and highest public-method count (`character_trait.gd`'s 24 hook methods),
+not a return to the original pre-batch values, since those predate work unrelated to this split.
+The remaining graft roadmap batches (turn-bar control, retaliation, on-kill/conditional damage,
+zone extensions, event triggers, tether) each propose at least one new resolver-side primitive;
+the same accessor-to-a-`RefCounted`-subsystem split is the template for whichever cluster needs
+to move out next if the budget tightens again.
