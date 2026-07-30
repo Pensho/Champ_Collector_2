@@ -114,20 +114,15 @@ func _ResolveZoneEffect(p_zone: Zone, p_zone_ID: int, p_character_ID: int) -> vo
 					Skills.ZoneMagnitude(GameBalance.FLICKER_ZONE_BASE_BUMP, p_zone._owner_knowledge)
 							* effect_multiplier, p_zone._owner_ID)
 		Types.Skill_Type.Lava_Zone:
-			if(Skills.HasMaxStatusEffects(affected)):
-				return
-			if(_resolver.GetStatusResolver()._ConsumeAegisIfPresent(p_character_ID, p_zone._owner_ID)):
-				return
 			var data: StatusEffectData = StatusEffectRegistry.DebuffData(p_zone._debuff_type)
-			var new_debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
-			new_debuff.type = p_zone._debuff_type
-			new_debuff.duration = data.duration_default if null != data else 0
-			new_debuff.source_ID = p_zone._owner_ID
-			new_debuff.value = (_resolver.GetStatusResolver()._SnapshotStatusValue(data, p_zone._owner_ID)
+			var burning: StatusEffects.Debuff = StatusEffects.Debuff.new()
+			burning.type = p_zone._debuff_type
+			burning.duration = data.duration_default if null != data else 0
+			burning.source_ID = p_zone._owner_ID
+			burning.value = (_resolver.GetStatusResolver()._SnapshotStatusValue(data, p_zone._owner_ID)
 					* effect_multiplier)
-			new_debuff.ID = _resolver._NextStatusID()
-			affected._active_debuffs.append(new_debuff)
-			_resolver.GetStatusResolver()._EmitDebuffApplied(p_character_ID, new_debuff, "")
+			if(_resolver.GetStatusResolver().ApplyDebuff(p_character_ID, burning).is_empty()):
+				return
 		Types.Skill_Type.Barrier_Zone:
 			Skills.ApplyBarrierZone(_resolver, p_zone._owner_ID, p_zone_ID, p_zone._owner_knowledge, p_character_ID)
 		Types.Skill_Type.Spore_Zone:

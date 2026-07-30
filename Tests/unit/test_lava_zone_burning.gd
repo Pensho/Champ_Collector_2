@@ -56,3 +56,15 @@ func test_zone_expires_after_duration_charges() -> void:
 		_resolver.GetZoneResolver().TriggerZones(0)
 
 	assert_false(_resolver.GetZoneResolver().HasZone(0), "A zone should be erased once its charges are spent")
+
+func test_lava_zone_burning_is_blocked_by_aegis() -> void:
+	var aegis: StatusEffects.Buff = StatusEffects.Buff.new()
+	aegis.type = Types.Buff_Type.Aegis
+	aegis.duration = 2
+	_roster[3]._active_buffs.append(aegis)
+	_place_lava_zone()
+
+	_resolver.GetZoneResolver().TriggerZones(0)
+
+	assert_eq(_roster[3]._active_debuffs.size(), 0, "Aegis should block the Burning debuff from landing")
+	assert_eq(_roster[3]._active_buffs.size(), 0, "Aegis should be consumed after blocking Burning")
