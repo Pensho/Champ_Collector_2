@@ -622,10 +622,15 @@ func _ResolveDamage(
 						- (p_target_attributes[Types.Attribute.Knowledge] * 0.5))
 				) * 0.01
 
+	var attacker_trait: CharacterTrait = _characters[p_caster_ID]._trait
+	var conditional_bonus: float = 0.0
+	if(null != attacker_trait):
+		conditional_bonus = attacker_trait.GetOutgoingDamageBonus(p_caster_ID, p_target_ID, self)
+
 	var effective_defence: float = p_target_attributes[Types.Attribute.Defence] * p_skill.defense_ignore_factor
 	var damage_dealt: int = Skills.MitigatedDamage(effective_defence,
 			caster_scaled_attribute_aggregate, crit_multiplier, random_value,
-			_damage_multiplier.get(p_caster_ID, 1.0), _damage_dealt_bonus.get(p_caster_ID, 0.0),
+			_damage_multiplier.get(p_caster_ID, 1.0), _damage_dealt_bonus.get(p_caster_ID, 0.0) + conditional_bonus,
 			_status_resolver._OpportunistDamageMultiplier(p_caster_ID, target))
 
 	var redirect: Array = Skills.FindDamageRedirect(self, p_caster_ID, p_target_ID)
@@ -667,6 +672,11 @@ func _ResolveDamage(
 		var critical_trait: CharacterTrait = Skills.ActiveHook(caster, Types.Combat_Event.Critical_Hit)
 		if(null != critical_trait):
 			critical_trait.OnCriticalHit(p_caster_ID, p_target_ID, self)
+
+	if(target._current_health <= 0 and caster._current_health > 0):
+		var kill_trait: CharacterTrait = Skills.ActiveHook(caster, Types.Combat_Event.On_Kill)
+		if(null != kill_trait):
+			kill_trait.OnKill(p_caster_ID, p_target_ID, self)
 
 
 func _EmitDamageResult(p_source_ID: int, p_target_ID: int, p_amount: int, p_critical: bool) -> void:

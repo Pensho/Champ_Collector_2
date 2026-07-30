@@ -29,12 +29,11 @@ Suggested order (dependencies noted inside each plan):
     1 and the healing-primitives batch's content). Phased: **Batch 1** (Wretched Conscript,
     Spreading Rot, Reactive Plating, Strength in Numbers), the **healing primitives
     batch** (Hollow Hunger, Carrion Bloom, Overgrowth), the **turn-bar-control batch**
-    (Caravan Cadence, Gravitic Rot, Contagion Bond), and the **retaliation batch** (Glass
-    Refraction, Undertow, Glamour) are done and reconciled. Enemy-to-graft sourcing stays
-    deferred until more opponents exist. The remaining 5 grafts each need a new engine
-    primitive and live in their own plans:
-    - `Plan_Graft_On_Kill_And_Conditional_Damage.md` — killing-blow hook + conditional
-      damage (Bloodscent).
+    (Caravan Cadence, Gravitic Rot, Contagion Bond), the **retaliation batch** (Glass
+    Refraction, Undertow, Glamour), and the **on-kill and conditional-damage batch**
+    (Bloodscent) are done and reconciled. Enemy-to-graft sourcing stays deferred until
+    more opponents exist. The remaining 4 grafts each need a new engine primitive and
+    live in their own plans:
     - `Plan_Graft_Zone_Extensions.md` — dual-faction zone, charge replenishment,
       affected-by-zone hook (Living Bloom, Rootfeeder).
     - `Plan_Graft_Event_Triggers.md` — buff-expired / zone-dissipated triggers, broadened

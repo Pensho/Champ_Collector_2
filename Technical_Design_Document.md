@@ -1088,9 +1088,27 @@ the whole `Health + Defence` sum before comparison, so "targeted N% more/less of
 regardless of the holder's Health/Defence split (`test_targeting_order.gd`'s
 `test_targeting_priority_multiplier_scales_the_whole_score_not_just_defence` covers the regression).
 
-The remaining 5 grafts each need a new engine primitive (on-kill/conditional damage, zone
-extensions, event triggers, tether) and are scheduled as separate plans; every enemy
-`_graft_effect` stays null until a future pass assigns sources.
+**Content, on-kill and conditional-damage batch:** one graft, `BloodscentGraft`, lands on two new
+damage-path primitives. `Types.Combat_Event.On_Kill` and `CharacterTrait.OnKill(owner_ID,
+victim_ID, resolver)` (no-op default) are a killer-side hook, dispatched from
+`BattleResolver._ResolveDamage` right after the existing `Damage_Dealt`/`Critical_Hit` dispatch,
+guarded by `target._current_health <= 0 and caster._current_health > 0` — this scopes it to attack
+kills only (reagent-cost and turn-bar self-damage deaths never reach `_ResolveDamage`) and correctly
+excludes a Deathward rescue, which pins the target at 1 Health rather than 0.
+`CharacterTrait.GetOutgoingDamageBonus(owner_ID, target_ID, resolver) -> float` (default `0.0`) is an
+unconditional per-attack getter, read in `_ResolveDamage` before `Skills.MitigatedDamage` and folded
+additively into the existing `_damage_dealt_bonus.get(caster_ID, 0.0)` argument — a live computed
+add, not persisted back to `_damage_dealt_bonus`, so it can vary by target on every attack.
+`BloodscentGraft` registers only `On_Kill` in `_execution_steps` (`OnKill` heals the owner for 15% of
+its own max Health via `ResolveTraitHeal`); `GetOutgoingDamageBonus` is read unconditionally and
+implements "penalty wins" — a target above 50% Health always takes −25% regardless of whether it is
+also the lowest-Health enemy, checked before the lowest-Health min-scan (mirroring `CarrionBloomGraft`'s
+inline scan, but over `GetSides().EnemiesOf(owner)`) that grants +20/25/30/35% by rarity. Both
+attribute layers are empty — all of Bloodscent's effects are behavioral, per the Batch 1 convention.
+
+The remaining 4 grafts each need a new engine primitive (zone extensions, event triggers, tether)
+and are scheduled as separate plans; every enemy `_graft_effect` stays null until a future pass
+assigns sources.
 
 ---
 

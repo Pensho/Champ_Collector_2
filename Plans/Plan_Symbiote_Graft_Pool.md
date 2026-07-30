@@ -82,30 +82,32 @@ split the file, before the remaining batches below land their own primitives.
 
 | Plan file | Primitive to build | Grafts |
 | --- | --- | --- |
-| `Plan_Graft_Turn_Bar_Control.md` | Resolver-side turn-bar ordering/position queries (today only in `turn_bar.gd`) + public push/pull wrapping `_EmitTurnBarBump` | Caravan Cadence, Gravitic Rot, Contagion Bond |
-| `Plan_Graft_Retaliation.md` | Attacker-aware `Damage_Taken` hook (or in-resolver plumbing like `_TriggerMirrorCoat`) | Glass Refraction, Undertow, Glamour |
-| `Plan_Graft_On_Kill_And_Conditional_Damage.md` | Killing-blow hook fired on the *killer* + target-Health-conditional damage modifier | Bloodscent |
 | `Plan_Graft_Zone_Extensions.md` | Dual-faction zone (buff allies + debuff enemies), zone charge replenishment/cap, affected-by-zone hook | Living Bloom, Rootfeeder |
 | `Plan_Graft_Event_Triggers.md` | Buff-expired + zone-dissipated triggers (+ a zone-dissipation `CombatResult`) + broadened `Reagent_Consumed` | Detritivore |
 | `Plan_Graft_Tether.md` | Persistent random-ally tether with cross-character attribute sharing + re-tether on death | Symbiotic Anchor |
 
-Coverage: Batch 1 (4) + healing (3) + 3 + 3 + 1 + 2 + 1 + 1 = **18**.
+**Turn-bar-control batch — complete.** Caravan Cadence, Gravitic Rot, and Contagion Bond are
+implemented and folded into `Technical_Design_Document.md` section 9.2.
+
+**Retaliation batch — complete.** Glass Refraction, Undertow, and Glamour are implemented and
+folded into `Technical_Design_Document.md` section 9.2.
+
+**On-kill and conditional-damage batch — complete.** Bloodscent is implemented and folded into
+`Technical_Design_Document.md` section 9.2.
+
+Coverage: Batch 1 (4) + healing (3) + turn-bar control (3) + retaliation (3) + on-kill/conditional (1)
++ 2 + 1 + 1 = **18**.
 
 ### Build order and shared primitives
 
-Most primitives are 1:1 with their batch. One is shared and must be built **once** and then
-depended on — do not reimplement it per batch:
+Turn-bar push/pull + ordering (`Plan_Graft_Turn_Bar_Control.md`) and the attacker-aware
+`Damage_Taken` hook (`Plan_Graft_Retaliation.md`) have both landed; Undertow's retaliatory
+turn-bar pull reused the former, as planned. Rootfeeder (`Plan_Graft_Zone_Extensions.md`) and
+Detritivore (`Plan_Graft_Event_Triggers.md`) depend on the landed `ResolveTraitHeal`/
+`p_raw_amount` primitive rather than adding their own heal path.
 
-- **Turn-bar push/pull + ordering** is built in `Plan_Graft_Turn_Bar_Control.md` and reused
-  by Undertow (`Plan_Graft_Retaliation.md`). Schedule turn-bar control before retaliation, or
-  land the primitive with whichever runs first and have the other depend on it.
-- Rootfeeder (`Plan_Graft_Zone_Extensions.md`) and Detritivore (`Plan_Graft_Event_Triggers.md`)
-  now depend on the landed `ResolveTraitHeal`/`p_raw_amount` primitive above rather than adding
-  their own heal path.
-
-The remaining batches (retaliation-proper, on-kill hook, zone extensions, event triggers,
-tether) are otherwise independent and may run in any order once their prerequisite above is
-in place.
+The remaining batches (zone extensions, event triggers, tether) are otherwise independent and
+may run in any order.
 
 Manual play-testing after Batch 1 landed surfaced three further bugs, since fixed: the
 Inspect Collection graft label showing by default before any character was selected; the
