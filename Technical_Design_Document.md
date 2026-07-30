@@ -310,9 +310,9 @@ enum MagnitudeKind {
 `StatusEffects.Buff`/`Debuff` (`Scripts/Battle/status_effects.gd`) carry the resolved per-instance
 `value` (Empower/Fortify read `StatusEffectData.magnitude` by default; Phalanx Guard overrides it
 per-rarity in `LancerTrait`). Debuffs resolve `value` the same way buffs do (`ApplyDebuff`/
-`_CastDebuff` default it to `data.magnitude`), so both buff and debuff self-tick/target-snapshot
+`CastDebuff` default it to `data.magnitude`), so both buff and debuff self-tick/target-snapshot
 sites read one instance value instead of buffs reading `value` and debuffs reading `data.magnitude`
-directly. `ApplyBuff`/`ApplyDebuff`/`_CastBuff`/`_CastDebuff` (`StatusEffectResolver`, see
+directly. `ApplyBuff`/`ApplyDebuff`/`_CastBuff`/`CastDebuff` (`StatusEffectResolver`, see
 [Section 15.10](#1510-battle_resolvergd-growth-the-zoneresolver-and-statuseffectresolver-splits))
 all resolve `stackable`/`overwritable` from the registry instead of the old
 `Skills.OverwritableBuff`/`OverwritableDebuff` match statements, and the caster-tick methods
@@ -336,7 +336,7 @@ the new max when such a buff expires; `PerTargetDebuffDamagePercent` (Opportunis
 `BattleResolver._ResolveDamage` — the former from the caster's own active buffs (scaled by the
 target's debuff count), the latter from the target's active debuffs (added to the attacker's roll
 for that hit only). Sequence Lock has no dedicated field: `ApplyBuff`/`ApplyDebuff`/`_CastBuff`/
-`_CastDebuff` block any status whose `attribute_modifiers` touches Speed when the target already
+`CastDebuff` block any status whose `attribute_modifiers` touches Speed when the target already
 has an active `Sequence_Lock` debuff, generic over any current or future Speed-touching status.
 
 Batch 2 (`Plan_Status_Effect_Implementation.md`) landed the health-gain application point and three
@@ -345,7 +345,7 @@ is the single site all healing flows through — reagent heals and Regeneration'
 and now returns the Health actually gained instead of void, since `IncomingHealReduction` (Blight)
 halves the request there before the caller's `CombatResult.Kind.Heal` is built, keeping the
 reported amount honest. `CasterAttributeSnapshotPercent` (Bleed, Attack; Plague, Mysticism) is
-resolved once, at application, by `BattleResolver._SnapshotStatusValue()` — called from `_CastDebuff`,
+resolved once, at application, by `BattleResolver._SnapshotStatusValue()` — called from `CastDebuff`,
 `ApplyDebuff`, and the zone path alike — into the instance's `value`, per the Phalanx Guard
 per-instance precedent; the self-tick loop then just reads that already-resolved `value` instead of
 re-deriving it from the source's current (possibly changed) attributes. Plague additionally spreads
@@ -383,10 +383,10 @@ debuff, a cooldown assignment). Barrier is read directly in `_ApplyHealthLoss` a
 clamp, absorbing as much of an incoming loss as its per-instance `value` covers and consuming
 itself when exhausted; its reapplication rule is the one exception to the standard
 duration-refresh overwrite logic — `ApplyBuff`/`_CastBuff` special-case it to replace the existing
-instance only when the new value is larger. Mirror Coat is wired only at `_CastDebuff` (it needs a
+instance only when the new value is larger. Mirror Coat is wired only at `CastDebuff` (it needs a
 real attacker): a debuff that lands on a Mirror Coat holder is rolled again, holder Accuracy vs.
 attacker Resistance, and copied directly onto the attacker on success, the same direct-append
-pattern as `_SpreadPlague` rather than a recursive `_CastDebuff` call (which is what keeps mutual
+pattern as `_SpreadPlague` rather than a recursive `CastDebuff` call (which is what keeps mutual
 Mirror Coat from looping). Overflow is an expiry hook collected the same way as Plague's spread,
 dealing Mysticism-scaled damage (30%) to every living enemy through the existing
 `ResolveTraitDamage` entry point when the buff's duration lapses. Wanderlust's
@@ -398,7 +398,7 @@ tick-triggered: `ResolveSkill` computes `is_non_basic := cast_skill.cooldown > 0
 dedicated `_TriggerManaBurn()` call deals 30%-Mysticism-scaled self-damage whenever a Mana Burn
 holder casts a non-basic skill; the same `is_non_basic` flag gates Rehearsed's cooldown skip.
 Luck and Hexed wrap every existing roll site (`_ResolveDamage`'s damage-variance and crit-chance
-rolls, `_CastDebuff`'s two resist-roll components) through a new `_RollFavoring()` helper that
+rolls, `CastDebuff`'s two resist-roll components) through a new `_RollFavoring()` helper that
 rolls twice and keeps the better or worse result for whichever character owns that roll; a holder
 with both active cancels out to a single normal roll (user decision). `Skills.RollsCritical` is no
 longer called by the resolver (replaced by `_RollFavoring` at the crit-chance site) but remains for
@@ -430,7 +430,7 @@ path and the normal `ResolveTurn` tail. The cooldown-decrement loop that used to
 `ResolveSkill` is now `_TickCooldowns()`, gated on Fatigue, and reused by `ResolveStunTurn()`; the
 cooldown *assignment* for the skill just cast is untouched by Fatigue. Signed Writ is a single
 shared `_RollsResistDebuff()` check (returns "not resisted" immediately for a Signed-Writ-holding
-defender) used at both existing resist-roll sites, `_CastDebuff` and `_TriggerMirrorCoat`, so a
+defender) used at both existing resist-roll sites, `CastDebuff` and `_TriggerMirrorCoat`, so a
 holder can't resist a debuff regardless of whether it arrives directly or via a Mirror Coat
 reflection. Severance is a blanket `_BlockedBySeverance()` check alongside `_BlockedBySequenceLock`
 in `ApplyBuff`/`_CastBuff`, the same precedent as Sequence Lock's blanket block for Speed-touching
@@ -1021,9 +1021,42 @@ is a permanent, unconditional multiplier `_HealingMultiplier` composes with the 
 `IncomingHealReduction` debuff scan — the same "plain getter, no `Combat_Event`" shape as
 `GetTargetingDefenceMultiplier`/`GetZoneChargeBonus`.
 
-The remaining 11 grafts each need a new engine primitive (turn-bar control, retaliation, on-kill/
-conditional damage, zone extensions, event triggers, tether) and are scheduled as separate plans;
-every enemy `_graft_effect` stays null until a future pass assigns sources.
+**Content, turn-bar-control batch:** three more grafts landed on the shared turn-bar push/pull
+primitive — `CaravanCadenceGraft` (`Start_Turn` finds the furthest-behind living ally via
+`TurnPositions.GetCharactersBehindOrdered` and pushes them forward with `BattleResolver.BumpTurnBar`,
+alongside a Knowledge bonus and a graft-inherent forward-bump block on itself),
+`GraviticRotGraft` (`Start_Turn` pulls every living enemy within the existing rear-proximity window
+back with a negative `BumpTurnBar`, alongside a flat Speed drawback), and `ContagionBondGraft`
+(`Buff_Applied`/`Debuff_Received` duplicate whatever buff/debuff the owner just gained or received,
+at 1-turn duration, onto the nearest ally/enemy found via the new
+`TurnPositions.GetCharactersByProximityOrdered`, alongside a permanent incoming-debuff-duration
+extension on the owner). The primitives: `BattleResolver.BumpTurnBar` is a public wrapper around
+the existing private `_EmitTurnBarBump`, so grafts can push/pull turn-bar position directly and get
+Anchor/Steadfast/turn-bar-tithe handling for free; `CharacterTrait.BlocksForwardTurnBarBump(owner_ID)`
+is a new hook (default `false`), checked in `_EmitTurnBarBump` to suppress only positive bumps — the
+inverse of Steadfast's negative-only block — kept off the Buff/Debuff system as a graft-inherent
+property, per the Batch 1 convention. `TurnPositions`/`TurnBar`/`TurnBarPositions` gained the two
+ordered queries (`GetCharactersBehindOrdered`, furthest-first; `GetCharactersByProximityOrdered`,
+nearest-first), matching the shape of the existing `GetCharactersBehindBy`/`GetCharactersWithinProximity`.
+`Types.Combat_Event.Debuff_Received` is a new receiver-side hook dispatched from
+`StatusEffectResolver._EmitDebuffApplied` (mirroring the target-side `Buff_Applied` dispatch in
+`_EmitBuffApplied`; `Debuff_Applied` itself stays applier-side, an existing asymmetry left
+unchanged), and `_EmitBuffApplied`'s dispatch was broadened to pass the applied buff itself to
+`OnBuffGained` (`OnTheHouseTrait` updated to the new signature, ignoring the added parameter).
+`CharacterTrait.GetIncomingDebuffDurationBonus(owner_ID)` (default `0`) is added to the debuff
+duration in `StatusEffectResolver._InsertOrRefresh` before it is stored, the same "plain getter"
+shape as `GetIncomingHealMultiplier`. Finally, the passive resist-then-land debuff path was
+unified: `_CastDebuff` (which unpacked a `Skill` resource directly) is gone, replaced by one public
+`StatusEffectResolver.CastDebuff(target_ID, debuff_template, caster_ID, tick_bonus_per_debuff := 0.0,
+always_refresh_duration := false, trigger_mirror_coat := false)` that takes an already-built
+`StatusEffects.Debuff` template; `BattleResolver.ResolveSkill` builds that template from the cast
+`Skill` and passes `always_refresh_duration=true, trigger_mirror_coat=true` for its pre-existing
+behavior, while Contagion Bond's passive copy leaves both `false` (matching `ApplyDebuff`'s
+unconditional-application scope — Mirror Coat only reflects skill-cast debuffs).
+
+The remaining 8 grafts each need a new engine primitive (retaliation, on-kill/conditional damage,
+zone extensions, event triggers, tether) and are scheduled as separate plans; every enemy
+`_graft_effect` stays null until a future pass assigns sources.
 
 ---
 
@@ -1130,7 +1163,7 @@ The buff/debuff lifecycle moved the same way, into `StatusEffectResolver`
 (`Scripts/Battle/status_effect_resolver.gd`) — the resolver's largest remaining source of
 per-effect method growth (one bespoke private method per status: `_TriggerManaBurn`,
 `_SpreadPlague`, `_TriggerMirrorCoat`, `_ConsumeAegisIfPresent`, `_BlockedBySequenceLock`, …).
-`StatusEffectResolver` owns `ApplyBuff`/`ApplyDebuff`/`RemoveBuff`, the `_CastBuff`/`_CastDebuff`/
+`StatusEffectResolver` owns `ApplyBuff`/`ApplyDebuff`/`RemoveBuff`, the `_CastBuff`/`CastDebuff`/
 `_TriggerExistingCasterBuffs`/`Debuffs` skill-resolution helpers, every status-specific block/
 consume/trigger rule, the status-derived damage and healing multipliers, and the `Status_Applied`/
 `Status_Duration` emitters — constructed and held the same way as `_zone_resolver`, exposed
@@ -1148,9 +1181,9 @@ updated to the `resolver.GetStatusResolver().ApplyBuff(...)` shape rather than a
 forwarders on `BattleResolver`, for consistency with the `ZoneResolver` accessor precedent.
 The four insertion methods' shared skeleton (max-status guard, stackable/overwritable scan with
 duration-refresh, append, emit) was also collapsed onto one `_InsertOrRefresh` helper; it takes
-an `p_always_refresh_duration` flag because `_CastDebuff` alone refreshes an existing debuff's
+an `p_always_refresh_duration` flag because `CastDebuff` alone refreshes an existing debuff's
 duration unconditionally (the other three only refresh when the new duration is longer), and
-returns the created instance (or `null` when nothing new was created) so `_CastDebuff` alone can
+returns the created instance (or `null` when nothing new was created) so `CastDebuff` alone can
 gate its Mirror Coat trigger on an actual creation, not a mere refresh.
 
 This freed real budget back: `battle_resolver.gd` dropped from roughly 1230 to 656 lines and 19
