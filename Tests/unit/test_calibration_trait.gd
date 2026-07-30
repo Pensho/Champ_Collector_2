@@ -23,9 +23,9 @@ func _InitTrait(p_rarity: Types.Rarity) -> void:
 func test_per_charge_potency_table() -> void:
 	var expected: Dictionary[Types.Rarity, float] = {
 		Types.Rarity.Uncommon: 0.04,
-		Types.Rarity.Rare: 0.06,
-		Types.Rarity.Epic: 0.08,
-		Types.Rarity.Legendary: 0.10,
+		Types.Rarity.Rare: 0.05,
+		Types.Rarity.Epic: 0.06,
+		Types.Rarity.Legendary: 0.07,
 	}
 	for rarity: Types.Rarity in expected:
 		assert_eq(CalibrationTrait.PER_CHARGE_POTENCY.get(rarity, 0.0), expected[rarity],
@@ -71,12 +71,12 @@ func test_zone_used_capped_at_max() -> void:
 # --- Final Calculation consumption ---
 
 func test_final_calculation_damage_multiplier_scales_with_charges_and_rarity() -> void:
-	_InitTrait(Types.Rarity.Legendary)  # 10% per charge
+	_InitTrait(Types.Rarity.Legendary)  # 7% per charge
 	for i in 3:
 		_trait.OnSkillCast(0, [], "Cornerstone", {}, _resolver)
 	var result: TraitSkillResult = _trait.OnSkillCast(0, [1], "Final Calculation", {}, _resolver)
-	assert_almost_eq(result._damage_multiplier, 1.0 + 3 * 0.10, 0.0001,
-		"Three charges at Legendary should add 3 x 10% to the base multiplier")
+	assert_almost_eq(result._damage_multiplier, 1.0 + 3 * 0.07, 0.0001,
+		"Three charges at Legendary should add 3 x 7% to the base multiplier")
 
 func test_final_calculation_below_threshold_applies_no_debuff() -> void:
 	_InitTrait(Types.Rarity.Epic)
@@ -230,7 +230,7 @@ func test_on_zone_constructed_ignores_non_barrier_zones() -> void:
 # --- GetZoneChargeBonus ---
 
 func test_get_zone_charge_bonus_scales_with_invested_charges_and_potency() -> void:
-	_InitTrait(Types.Rarity.Legendary) # 10% per charge
+	_InitTrait(Types.Rarity.Legendary) # 7% per charge
 	_character._trait = _trait
 	for i in CalibrationTrait.RAISE_THE_FRAME_CONSUME_CAP:
 		_trait.OnSkillCast(0, [], "Cornerstone", {}, _resolver)
@@ -239,7 +239,7 @@ func test_get_zone_charge_bonus_scales_with_invested_charges_and_potency() -> vo
 	zone_skill.skill_type = Types.Skill_Type.Barrier_Zone
 	zone_skill.duration = 5
 	_resolver.GetZoneResolver().PlaceZone(0, 0, zone_skill)
-	assert_almost_eq(_trait.GetZoneChargeBonus(0), CalibrationTrait.RAISE_THE_FRAME_CONSUME_CAP * 0.10, 0.0001)
+	assert_almost_eq(_trait.GetZoneChargeBonus(0), CalibrationTrait.RAISE_THE_FRAME_CONSUME_CAP * 0.07, 0.0001)
 
 func test_get_zone_charge_bonus_is_zero_for_unknown_zone() -> void:
 	_InitTrait(Types.Rarity.Legendary)

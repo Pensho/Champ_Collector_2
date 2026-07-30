@@ -12,7 +12,7 @@ const PER_CHARGE_POTENCY: Dictionary[Types.Rarity, float] = {
 	Types.Rarity.Uncommon: 0.04,
 	Types.Rarity.Rare: 0.05,
 	Types.Rarity.Epic: 0.06,
-	Types.Rarity.Legendary: 0.7,
+	Types.Rarity.Legendary: 0.07,
 }
 
 var _charges: int = 0
