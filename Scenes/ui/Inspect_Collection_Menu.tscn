@@ -423,8 +423,6 @@ theme_override_constants/shadow_offset_y = 3
 theme_override_constants/outline_size = 3
 text = "Nature:"
 script = ExtResource("9_lgjj3")
-title_text = null
-description_text = null
 
 [node name="Label_Character_Graft" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer" unique_id=1136376218]
 visible = false
@@ -437,8 +435,6 @@ theme_override_constants/shadow_offset_y = 3
 theme_override_constants/outline_size = 3
 text = "Graft:"
 script = ExtResource("9_lgjj3")
-title_text = null
-description_text = null
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer" unique_id=1082317516]
 layout_mode = 2

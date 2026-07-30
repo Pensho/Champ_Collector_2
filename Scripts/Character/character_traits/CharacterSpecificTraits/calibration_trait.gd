@@ -1,18 +1,18 @@
 class_name CalibrationTrait extends CharacterTrait
 
-const MAX_CHARGES: int = 10
-const EXPOSE_WEAKNESS_THRESHOLD: int = 4
+const MAX_CHARGES: int = 12
+const EXPOSE_WEAKNESS_THRESHOLD: int = 5
 const EXPOSE_WEAKNESS_DURATION: int = 2
-const ZONE_RE_ERECT_THRESHOLD: int = 7
+const ZONE_RE_ERECT_THRESHOLD: int = 9
 const ZONE_UPGRADE_CHARGES: int = 8
 const RAISE_THE_FRAME_ZONE_CHARGES: int = 5
 const RAISE_THE_FRAME_CONSUME_CAP: int = 3
 
 const PER_CHARGE_POTENCY: Dictionary[Types.Rarity, float] = {
 	Types.Rarity.Uncommon: 0.04,
-	Types.Rarity.Rare: 0.06,
-	Types.Rarity.Epic: 0.08,
-	Types.Rarity.Legendary: 0.10,
+	Types.Rarity.Rare: 0.05,
+	Types.Rarity.Epic: 0.06,
+	Types.Rarity.Legendary: 0.7,
 }
 
 var _charges: int = 0
@@ -23,7 +23,7 @@ var _charges_invested_per_zone: Dictionary[int, int] = {}
 func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
 	_per_charge_potency = PER_CHARGE_POTENCY.get(p_rarity, 0.0)
-	_trait_texture = load("res://Assets/Champ_Collector/Icons/Status_Effects/Barrier/Barrier.png")
+	_trait_texture = load("res://Assets/Champ_Collector/Icons/Abilities/Passives/Calibration_Trait/calibration_trait.png")
 	_execution_steps[Types.Combat_Event.Start_Combat] = Callable(self, "StartOfBattle")
 	_execution_steps[Types.Combat_Event.Skill_Cast] = Callable(self, "OnSkillCast")
 	_execution_steps[Types.Combat_Event.Zone_Used] = Callable(self, "OnZoneUsed")

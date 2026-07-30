@@ -12,6 +12,9 @@ var _tithe_fraction: float = 0.0
 func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
 	_tithe_fraction = TITHE_FRACTION.get(p_rarity, 0.0)
+	_trait_texture = load(
+		"res://Assets/Champ_Collector/Icons/Abilities/Passives/Time_Tithe_Trait/time_tithe_trait.png"
+	)
 	_title = "Time Tithe"
 	_body = ("When the Chronophage reduces an enemy's turn bar, it absorbs a portion of " +
 			"the stolen amount as its own turn-bar progress.")
