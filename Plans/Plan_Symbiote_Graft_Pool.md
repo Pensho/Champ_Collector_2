@@ -82,7 +82,6 @@ split the file, before the remaining batches below land their own primitives.
 
 | Plan file | Primitive to build | Grafts |
 | --- | --- | --- |
-| `Plan_Graft_Event_Triggers.md` | Buff-expired + zone-dissipated triggers (+ a zone-dissipation `CombatResult`) + broadened `Reagent_Consumed` | Detritivore |
 | `Plan_Graft_Tether.md` | Persistent random-ally tether with cross-character attribute sharing + re-tether on death | Symbiotic Anchor |
 
 **Turn-bar-control batch — complete.** Caravan Cadence, Gravitic Rot, and Contagion Bond are
@@ -100,19 +99,21 @@ folded into `Technical_Design_Document.md` section 9.2.
 subsystem — see section 9.2's note) — expect the next new hook to either use that headroom or
 prompt a rethink of the hook-interface shape.
 
+**Event-triggers batch — complete.** Detritivore is implemented and folded into
+`Technical_Design_Document.md` section 9.2.
+
 Coverage: Batch 1 (4) + healing (3) + turn-bar control (3) + retaliation (3) + on-kill/conditional (1)
-+ zone extensions (2) + 1 + 1 = **18**.
++ zone extensions (2) + event triggers (1) + 1 = **18**.
 
 ### Build order and shared primitives
 
 Turn-bar push/pull + ordering (`Plan_Graft_Turn_Bar_Control.md`) and the attacker-aware
 `Damage_Taken` hook (`Plan_Graft_Retaliation.md`) have both landed; Undertow's retaliatory
 turn-bar pull reused the former, as planned. Rootfeeder (`Plan_Graft_Zone_Extensions.md`) and
-Detritivore (`Plan_Graft_Event_Triggers.md`) depend on the landed `ResolveTraitHeal`/
+Detritivore (`Plan_Graft_Event_Triggers.md`) depended on the landed `ResolveTraitHeal`/
 `p_raw_amount` primitive rather than adding their own heal path.
 
-The remaining batches (zone extensions, event triggers, tether) are otherwise independent and
-may run in any order.
+The remaining batch (tether) is otherwise independent.
 
 Manual play-testing after Batch 1 landed surfaced three further bugs, since fixed: the
 Inspect Collection graft label showing by default before any character was selected; the

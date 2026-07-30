@@ -280,6 +280,8 @@ func _TriggerExistingCasterBuffs(
 		# A max-Health buff may have just expired; reclamp current health to
 		# the new, smaller max (_MaxHealth reads the buffs that remain after the filter above).
 		caster._current_health = mini(caster._current_health, _resolver._MaxHealth(caster))
+		for i in status_IDs_to_be_removed.size():
+			_resolver.BroadcastEvent(Types.Combat_Event.Resource_Depleted)
 
 	for i in expiring_overflows.size():
 		_TriggerOverflow(p_caster_ID)

@@ -95,6 +95,7 @@ func TriggerZones(p_active_character_ID: int) -> Array[CombatResult]:
 		if(_zones[ID]._duration == 0):
 			_zones[ID].free()
 			_zones.erase(ID)
+			_resolver.BroadcastEvent(Types.Combat_Event.Resource_Depleted)
 	return _resolver._EndBatch()
 
 func ReplenishZoneCharge(p_zone_ID: int, p_amount: int, p_max_charges: int) -> void:

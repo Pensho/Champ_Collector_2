@@ -1149,8 +1149,31 @@ the resolver bumps, but with no split available, growth here will keep consuming
 hook at a time until a future batch needs to revisit the shape of the interface itself (e.g.
 grouping related hooks behind a smaller number of dispatch entry points).
 
-The remaining 2 grafts each need a new engine primitive (event triggers, tether) and are scheduled
-as separate plans; every enemy `_graft_effect` stays null until a future pass assigns sources.
+**Content, event-triggers batch:** one graft, `DetritivoreGraft`, lands on a broadcast-dispatch
+primitive. `BattleResolver.BroadcastEvent(event: Types.Combat_Event) -> void` iterates every
+character on either side and invokes the registered `_execution_steps` Callable directly (no new
+`CharacterTrait` hook method — it reuses the existing per-trait `_execution_steps` dispatch table
+in place), so any trait can react to something happening to *any* character, not just itself. It
+calls the hook as `(owner_ID: int, resolver: BattleResolver)`, which is not every hook's shape
+(`OnDamageTaken` also takes an attacker ID, `OnSkillCast` takes a target list, and so on), so it is
+restricted to a `_BROADCASTABLE_EVENTS` allowlist checked by an `assert` — currently `Start_Combat`,
+`Start_Turn`, `End_Turn`, and `Resource_Depleted`, the only `Combat_Event`s whose hook matches that
+shape; broadening it to a differently-shaped hook needs its own dispatch, not this one. The
+new `Types.Combat_Event.Resource_Depleted` is fired at three sites, once per occurrence:
+`StatusEffectResolver._TriggerExistingCasterBuffs` (once per buff whose duration reaches 0 —
+early `RemoveBuff` and death's `Statuses_Cleared` are untouched, and debuff expiry is deliberately
+out of scope, per the design doc's "a buff expires"), `ZoneResolver.TriggerZones` (once per zone
+freed at 0 duration), and `BattleResolver.ResolveReagent` (once per reagent consumed by anyone,
+additive to the existing consumer-side `OnReagentConsumed` hook). `DetritivoreGraft` registers
+`Start_Combat` and `Resource_Depleted`: each scavenge heals 2% of the owner's max Health via
+`ResolveTraitHeal` and adds an uncapped Scrap stack, recomputing `_attribute_percent_delta[Resistance]`
+from scratch each time as `STARTING_RESISTANCE_PENALTY + scrap_per_stack * stacks` (a graft-inherent
+scaling mutation, not a Buff/Debuff, per the Batch 1 convention) so the permanent −20% Resistance
+drawback and the growing Scrap bonus — the same attribute — never drift apart; `StartOfBattle`
+resets stacks to 0 and restores exactly `STARTING_RESISTANCE_PENALTY`, not `0.0`.
+
+The remaining graft (tether) needs a new engine primitive and is scheduled as a separate plan;
+every enemy `_graft_effect` stays null until a future pass assigns sources.
 
 ---
 

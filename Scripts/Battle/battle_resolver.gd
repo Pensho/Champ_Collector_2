@@ -14,6 +14,13 @@ enum Winner {
 	Monsters_Won,
 }
 
+const _BROADCASTABLE_EVENTS: Array[Types.Combat_Event] = [
+	Types.Combat_Event.Start_Combat,
+	Types.Combat_Event.Start_Turn,
+	Types.Combat_Event.End_Turn,
+	Types.Combat_Event.Resource_Depleted,
+]
+
 var _characters: Dictionary[int, Character]
 var _sides: CombatSides
 var _turn_positions: TurnPositions
@@ -248,6 +255,14 @@ func BumpTurnBar(p_target_ID: int, p_fraction: float, p_source_ID: int = -1) -> 
 func AggregateDamageMultipliers(p_character_ID: int, p_amount: float) -> void:
 	_damage_dealt_bonus[p_character_ID] = _damage_dealt_bonus.get(p_character_ID, 0.0) + p_amount
 
+func BroadcastEvent(p_event: Types.Combat_Event) -> void:
+	assert(_BROADCASTABLE_EVENTS.has(p_event),
+			"BroadcastEvent only supports owner/resolver-shaped hooks; got " + Types.Combat_Event.keys()[p_event])
+	for character_ID in _characters.keys():
+		var character: Character = _characters[character_ID]
+		if(null != character._trait and character._trait._execution_steps.has(p_event)):
+			character._trait._execution_steps[p_event].call(character_ID, self)
+
 ## Trait flavor text ("Stole buff!", "Avoided!") routed through the result stream.
 func EmitTraitText(p_target_ID: int, p_text: String, p_color: Color = Color.WHITE) -> void:
 	var result: CombatResult = CombatResult.new(CombatResult.Kind.Trait_Text)
@@ -284,6 +299,7 @@ func ResolveReagent(
 	if(not reagent.binary and null != reagent_trait):
 		potency += reagent_trait.OnReagentConsumed(p_consumer_ID, reagent, self)
 	_ResolveReagentEffect(p_consumer_ID, p_target_ID, reagent, potency)
+	BroadcastEvent(Types.Combat_Event.Resource_Depleted)
 	return _EndBatch()
 
 
