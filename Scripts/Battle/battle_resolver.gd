@@ -408,9 +408,14 @@ func _ApplyReagentAttributeIncrease(
 		p_target_ID: int, p_attribute: Types.Attribute, p_magnitude: float, p_potency: float) -> void:
 	var current: int = GetCombatAttributes(p_target_ID)[p_attribute]
 	var bonus_amount: int = ReagentResolver.AttributeIncreaseAmount(current, p_magnitude, p_potency)
-	var bonus: Dictionary = _battle_long_attribute_bonus.get(p_target_ID, {})
-	bonus[p_attribute] = bonus.get(p_attribute, 0) + bonus_amount
-	_battle_long_attribute_bonus[p_target_ID] = bonus
+	AdjustLongAttributeBonus(p_target_ID, p_attribute, bonus_amount)
+
+
+## Positive p_delta grants a flat attribute bonus for the rest of the battle, negative removes one.
+func AdjustLongAttributeBonus(p_character_ID: int, p_attribute: Types.Attribute, p_delta: int) -> void:
+	var bonus: Dictionary = _battle_long_attribute_bonus.get(p_character_ID, {})
+	bonus[p_attribute] = bonus.get(p_attribute, 0) + p_delta
+	_battle_long_attribute_bonus[p_character_ID] = bonus
 
 
 func _RemoveStatuses(p_statuses: Array, p_target_ID: int, p_count: int) -> void:

@@ -1172,8 +1172,25 @@ scaling mutation, not a Buff/Debuff, per the Batch 1 convention) so the permanen
 drawback and the growing Scrap bonus — the same attribute — never drift apart; `StartOfBattle`
 resets stacks to 0 and restores exactly `STARTING_RESISTANCE_PENALTY`, not `0.0`.
 
-The remaining graft (tether) needs a new engine primitive and is scheduled as a separate plan;
-every enemy `_graft_effect` stays null until a future pass assigns sources.
+**Content, tether batch:** one graft, `SymbioticAnchorGraft`, lands on a cross-character
+attribute-sharing primitive. `BattleResolver.AdjustLongAttributeBonus(character_ID, attribute,
+delta)` is a public mutator over the existing `_battle_long_attribute_bonus` layer (previously
+written only by the private `_ApplyReagentAttributeIncrease`, which now calls it for its
+dict-merge instead of duplicating the logic) — a positive delta grants a flat attribute bonus for
+the rest of the battle, negative removes one, and it is summed into every combat calculation via
+the existing `GetCombatAttributes`. `SymbioticAnchorGraft` registers `Start_Combat` and
+`Ally_Death`: it tethers to a random living ally (the same pick-random-ally/re-tether-on-death
+idiom as `StrengthInNumbersGraft`/`ChosenVesselTrait`), snapshotting 20% of the Symbiote's own
+total Resistance and Attack at the moment of tethering and granting it to the tethered ally via
+`AdjustLongAttributeBonus` — a one-time snapshot, not a live-tracked share, so later changes to the
+Symbiote's stats do not retroactively adjust the ally's bonus, and the ally keeps its shared bonus
+even if the Symbiote dies afterward (`OnDeath()` takes no resolver argument, so there is no cleanup
+hook to remove it). The graft re-tethers only when its currently tethered ally dies, so the
+previous tether target is always dead by the time a new one is picked — no bonus needs to be
+stripped from a still-living prior ally. It also carries a rarity-scaled Resistance bonus (14–20%)
+and a flat −30% Defence/CritDamage drawback on its own attribute layer.
+
+Every enemy `_graft_effect` stays null until a future pass assigns sources.
 
 ---
 

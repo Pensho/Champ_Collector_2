@@ -23,20 +23,6 @@ Suggested order (dependencies noted inside each plan):
    completed team and roster abstraction (`CombatTeam`/`CombatSides`).
    Design counterpart: `Plan_Story_Mode.md`.
 
-3. `Plan_Symbiote_Graft_Pool.md` — the concrete graft content from
-    `Symbiote_Graft_Pool.md` (18 grafts), turned into `GraftEffect` subclasses on the
-    landed machinery (`Technical_Design_Document.md` section 9.2, which also covers Batch
-    1 and the healing-primitives batch's content). Phased: **Batch 1** (Wretched Conscript,
-    Spreading Rot, Reactive Plating, Strength in Numbers), the **healing primitives
-    batch** (Hollow Hunger, Carrion Bloom, Overgrowth), the **turn-bar-control batch**
-    (Caravan Cadence, Gravitic Rot, Contagion Bond), the **retaliation batch** (Glass
-    Refraction, Undertow, Glamour), and the **on-kill and conditional-damage batch**
-    (Bloodscent), the **zone extensions batch** (Living Bloom, Rootfeeder), and the
-    **event-triggers batch** (Detritivore, on the new broadcast-dispatch primitive) are
-    done and reconciled. Enemy-to-graft sourcing stays deferred until more opponents exist.
-    The remaining graft needs a new engine primitive and lives in its own plan:
-    - `Plan_Graft_Tether.md` — random-ally tether with attribute sharing (Symbiotic Anchor).
-
 Design-only plans (no code; can run at any time):
 
 - `Plan_Encounter_Solution_Design.md` — the long-run encounter content plan:
