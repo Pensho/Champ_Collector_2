@@ -82,7 +82,6 @@ split the file, before the remaining batches below land their own primitives.
 
 | Plan file | Primitive to build | Grafts |
 | --- | --- | --- |
-| `Plan_Graft_Zone_Extensions.md` | Dual-faction zone (buff allies + debuff enemies), zone charge replenishment/cap, affected-by-zone hook | Living Bloom, Rootfeeder |
 | `Plan_Graft_Event_Triggers.md` | Buff-expired + zone-dissipated triggers (+ a zone-dissipation `CombatResult`) + broadened `Reagent_Consumed` | Detritivore |
 | `Plan_Graft_Tether.md` | Persistent random-ally tether with cross-character attribute sharing + re-tether on death | Symbiotic Anchor |
 
@@ -95,8 +94,14 @@ folded into `Technical_Design_Document.md` section 9.2.
 **On-kill and conditional-damage batch — complete.** Bloodscent is implemented and folded into
 `Technical_Design_Document.md` section 9.2.
 
+**Zone extensions batch — complete.** Living Bloom and Rootfeeder are implemented and folded into
+`Technical_Design_Document.md` section 9.2. `CharacterTrait` is now at its `gdlintrc`
+`max-public-methods` ceiling (with headroom, unlike `battle_resolver.gd` it cannot be split into a
+subsystem — see section 9.2's note) — expect the next new hook to either use that headroom or
+prompt a rethink of the hook-interface shape.
+
 Coverage: Batch 1 (4) + healing (3) + turn-bar control (3) + retaliation (3) + on-kill/conditional (1)
-+ 2 + 1 + 1 = **18**.
++ zone extensions (2) + 1 + 1 = **18**.
 
 ### Build order and shared primitives
 

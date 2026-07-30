@@ -97,14 +97,24 @@ func TriggerZones(p_active_character_ID: int) -> Array[CombatResult]:
 			_zones.erase(ID)
 	return _resolver._EndBatch()
 
+func ReplenishZoneCharge(p_zone_ID: int, p_amount: int, p_max_charges: int) -> void:
+	if(not _zones.has(p_zone_ID) or _zones[p_zone_ID]._duration >= p_max_charges):
+		return
+	SetZoneDuration(p_zone_ID, mini(_zones[p_zone_ID]._duration + p_amount, p_max_charges))
+
 func _ResolveZoneEffect(p_zone: Zone, p_zone_ID: int, p_character_ID: int) -> void:
+	var affected: Character = _resolver._characters[p_character_ID]
+	var effect_multiplier: float = 1.0
+	if(null != affected._trait):
+		effect_multiplier = affected._trait.GetIncomingZoneEffectMultiplier(
+				p_character_ID, p_zone._owner_ID, _resolver._sides)
 	match p_zone._type:
 		Types.Skill_Type.Flicker_Zone:
 			_resolver._EmitTurnBarBump(p_character_ID,
-					Skills.ZoneMagnitude(GameBalance.FLICKER_ZONE_BASE_BUMP, p_zone._owner_knowledge), p_zone._owner_ID)
+					Skills.ZoneMagnitude(GameBalance.FLICKER_ZONE_BASE_BUMP, p_zone._owner_knowledge)
+							* effect_multiplier, p_zone._owner_ID)
 		Types.Skill_Type.Lava_Zone:
-			var target: Character = _resolver._characters[p_character_ID]
-			if(Skills.HasMaxStatusEffects(target)):
+			if(Skills.HasMaxStatusEffects(affected)):
 				return
 			if(_resolver.GetStatusResolver()._ConsumeAegisIfPresent(p_character_ID, p_zone._owner_ID)):
 				return
@@ -113,9 +123,34 @@ func _ResolveZoneEffect(p_zone: Zone, p_zone_ID: int, p_character_ID: int) -> vo
 			new_debuff.type = p_zone._debuff_type
 			new_debuff.duration = data.duration_default if null != data else 0
 			new_debuff.source_ID = p_zone._owner_ID
-			new_debuff.value = _resolver.GetStatusResolver()._SnapshotStatusValue(data, p_zone._owner_ID)
+			new_debuff.value = (_resolver.GetStatusResolver()._SnapshotStatusValue(data, p_zone._owner_ID)
+					* effect_multiplier)
 			new_debuff.ID = _resolver._NextStatusID()
-			target._active_debuffs.append(new_debuff)
+			affected._active_debuffs.append(new_debuff)
 			_resolver.GetStatusResolver()._EmitDebuffApplied(p_character_ID, new_debuff, "")
 		Types.Skill_Type.Barrier_Zone:
 			Skills.ApplyBarrierZone(_resolver, p_zone._owner_ID, p_zone_ID, p_zone._owner_knowledge, p_character_ID)
+		Types.Skill_Type.Spore_Zone:
+			if(_resolver._sides.AreAllies(p_character_ID, p_zone._owner_ID)):
+				var regeneration: StatusEffects.Buff = StatusEffects.Buff.new()
+				regeneration.type = Types.Buff_Type.Regeneration
+				regeneration.name = "Regeneration"
+				regeneration.duration = 1
+				regeneration.value = (Skills.ZoneMagnitude(
+						StatusEffectRegistry.BuffData(Types.Buff_Type.Regeneration).magnitude, p_zone._owner_knowledge)
+						* effect_multiplier)
+				if(_resolver.GetStatusResolver().ApplyBuff(p_character_ID, regeneration).is_empty()):
+					return
+			else:
+				var blight: StatusEffects.Debuff = StatusEffects.Debuff.new()
+				blight.type = Types.Debuff_Type.Blight
+				blight.duration = 1
+				blight.source_ID = p_zone._owner_ID
+				blight.value = (Skills.ZoneMagnitude(
+						StatusEffectRegistry.DebuffData(Types.Debuff_Type.Blight).magnitude, p_zone._owner_knowledge)
+						* effect_multiplier)
+				if(_resolver.GetStatusResolver().ApplyDebuff(p_character_ID, blight).is_empty()):
+					return
+	var reactive: CharacterTrait = Skills.ActiveHook(affected, Types.Combat_Event.Zone_Affected)
+	if(null != reactive):
+		reactive.OnAffectedByZone(p_character_ID, p_zone._owner_ID, _resolver)

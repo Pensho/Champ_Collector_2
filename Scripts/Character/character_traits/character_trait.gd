@@ -134,3 +134,10 @@ func OnZoneConstructed(_p_owner_ID: int, _p_zone_ID: int, _p_resolver: BattleRes
 ## of the owner's own zone effect (0.0 = no bonus).
 func GetZoneChargeBonus(_p_zone_ID: int) -> float:
 	return 0.0
+
+func OnAffectedByZone(_p_owner_ID: int, _p_zone_owner_ID: int, _p_resolver: BattleResolver) -> void:
+	print("character_trait base class OnAffectedByZone() called!")
+
+func GetIncomingZoneEffectMultiplier(
+		_p_owner_ID: int, _p_zone_owner_ID: int, _p_sides: CombatSides) -> float:
+	return 1.0

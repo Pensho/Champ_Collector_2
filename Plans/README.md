@@ -31,11 +31,9 @@ Suggested order (dependencies noted inside each plan):
     batch** (Hollow Hunger, Carrion Bloom, Overgrowth), the **turn-bar-control batch**
     (Caravan Cadence, Gravitic Rot, Contagion Bond), the **retaliation batch** (Glass
     Refraction, Undertow, Glamour), and the **on-kill and conditional-damage batch**
-    (Bloodscent) are done and reconciled. Enemy-to-graft sourcing stays deferred until
-    more opponents exist. The remaining 4 grafts each need a new engine primitive and
-    live in their own plans:
-    - `Plan_Graft_Zone_Extensions.md` — dual-faction zone, charge replenishment,
-      affected-by-zone hook (Living Bloom, Rootfeeder).
+    (Bloodscent), and the **zone extensions batch** (Living Bloom, Rootfeeder) are done
+    and reconciled. Enemy-to-graft sourcing stays deferred until more opponents exist.
+    The remaining 2 grafts each need a new engine primitive and live in their own plans:
     - `Plan_Graft_Event_Triggers.md` — buff-expired / zone-dissipated triggers, broadened
       `Reagent_Consumed` (Detritivore).
     - `Plan_Graft_Tether.md` — random-ally tether with attribute sharing (Symbiotic Anchor).

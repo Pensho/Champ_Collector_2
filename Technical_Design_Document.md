@@ -1106,9 +1106,51 @@ also the lowest-Health enemy, checked before the lowest-Health min-scan (mirrori
 inline scan, but over `GetSides().EnemiesOf(owner)`) that grants +20/25/30/35% by rarity. Both
 attribute layers are empty — all of Bloodscent's effects are behavioral, per the Batch 1 convention.
 
-The remaining 4 grafts each need a new engine primitive (zone extensions, event triggers, tether)
-and are scheduled as separate plans; every enemy `_graft_effect` stays null until a future pass
-assigns sources.
+**Content, zone extensions batch:** two more grafts land on three zone primitives —
+`LivingBloomGraft` (`Start_Combat` seeds a 10-charge Spore zone in a free turn-bar-zone slot via
+`ZoneResolver.PlaceZone`, no-op if every slot is full; `Start_Turn` tops the zone back up by 1
+charge, capped at 10, via `ReplenishZoneCharge`; a Knowledge bonus by rarity, no drawback) and
+`RootfeederGraft` (`Zone_Affected` heals the owner for a rarity-scaled fraction of max Health via
+`ResolveTraitHeal` on top of whatever zone effect just landed, for either side's zones; overrides
+`GetIncomingZoneEffectMultiplier` to make enemy-owned zone effects 150% as strong against it — a
+graft-inherent behavioral drawback, not an attribute, per the Batch 1 convention). The primitives:
+`Types.Skill_Type.Spore_Zone` is a new dual-faction zone type resolved in
+`ZoneResolver._ResolveZoneEffect` — it branches on `_resolver._sides.AreAllies(character, zone
+owner)` to apply a 1-turn Regeneration to allies or a 1-turn Blight to enemies from the same
+placement, both routed through `StatusEffectResolver.ApplyBuff`/`ApplyDebuff` (inheriting the
+max-status/sequence-lock/Aegis/severance guards those already enforce) rather than building the
+status inline the way the older Lava arm does; both values are `Skills.ZoneMagnitude`-scaled by
+the zone owner's Knowledge snapshot, the existing ally-zone scaling convention.
+`ZoneResolver.ReplenishZoneCharge(zone_ID, amount, max_charges)` raises a zone's `_duration`
+toward a cap via the existing `SetZoneDuration` emitter, and is a no-op — it does not shrink the
+zone — both below, at, and above the cap. `Types.Combat_Event.Zone_Affected` and two new
+`CharacterTrait` virtuals, `OnAffectedByZone(owner_ID, zone_owner_ID, resolver)` (no-op default)
+and `GetIncomingZoneEffectMultiplier(owner_ID, zone_owner_ID, sides) -> float` (default `1.0`),
+give the character standing in a zone a reactive hook and an incoming-magnitude multiplier,
+mirroring the owner-side `GetZoneChargeBonus`/`OnZoneUsed` shape from the opposite side of the
+interaction. `_ResolveZoneEffect` computes the affected character's multiplier once up front and
+threads it into the Flicker bump, the Lava debuff's value, and both Spore values — Barrier is left
+unthreaded, since Barrier only ever targets `ZoneAlly` and so an enemy-owned Barrier can never
+trigger on a multiplier-holding character in the first place. The `Zone_Affected` dispatch fires
+only when the zone's own effect actually landed: the Lava arm already skipped it via its existing
+early returns (max status effects, Aegis consumed), and the new Spore arm checks the `Array[CombatResult]`
+`ApplyBuff`/`ApplyDebuff` return for emptiness (blocked, or silently no-op'd because the refreshed
+duration wasn't longer) before falling through to the dispatch — so Rootfeeder's heal never fires
+for a zone effect that didn't actually apply.
+
+`CharacterTrait`'s hook surface reached exactly `gdlintrc`'s `max-public-methods` ceiling (30) with
+these two new virtuals (32 total). Unlike `battle_resolver.gd`'s growth ([Section 15.10](#1510-battle_resolvergd-is-at-its-gdlintrc-budget-ceiling)),
+this base class cannot be split into a `RefCounted` subsystem the way `ZoneResolver`/
+`StatusEffectResolver` were — it is a `Resource` base class extended by every trait and graft
+subclass in the project, and its public surface *is* the hook interface by design, so there is no
+"internal implementation detail" half to move out. The ceiling was raised to 34 (two methods of
+headroom over the current count, rather than the exact count) — the same category of decision as
+the resolver bumps, but with no split available, growth here will keep consuming that headroom one
+hook at a time until a future batch needs to revisit the shape of the interface itself (e.g.
+grouping related hooks behind a smaller number of dispatch entry points).
+
+The remaining 2 grafts each need a new engine primitive (event triggers, tether) and are scheduled
+as separate plans; every enemy `_graft_effect` stays null until a future pass assigns sources.
 
 ---
 

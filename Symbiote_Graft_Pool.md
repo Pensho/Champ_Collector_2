@@ -58,8 +58,8 @@ once more opponents are designed.
 ### Living Bloom
 
 - **Effect:** at the start of battle the Symbiote seeds one Spore Bloom in a free section
-  of the turn bar, starting with 5 charges. Each time the Symbiote takes a turn, the Bloom
-  gains one charge, up to its 5-charge maximum. Enemies that stop in it gain **Blight** for
+  of the turn bar, starting with 10 charges. Each time the Symbiote takes a turn, the Bloom
+  gains one charge, up to its 10-charge maximum. Enemies that stop in it gain **Blight** for
   1 turn; allies gain **Regeneration** for 1 turn.
 - **Attribute bonus:** Knowledge +15% / 20% / 25% / 30% (the Bloom's potency scales with
   the Symbiote's Knowledge, the standard ally-zone rule).
