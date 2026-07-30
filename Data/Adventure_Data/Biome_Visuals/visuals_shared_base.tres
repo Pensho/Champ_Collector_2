@@ -1,8 +1,9 @@
-[gd_resource type="Resource" script_class="BiomeVisualData" format=3 uid="uid://bq77xvnraos4r"]
+[gd_resource type="Resource" script_class="BiomeVisualData" format=3 uid="uid://ce0jokopa7h18"]
 
 [ext_resource type="Script" path="res://Scripts/Adventure_Scripts/Visuals/biome_region_data.gd" id="0_region_type"]
+[ext_resource type="Script" uid="uid://bwuf75nyssh3t" path="res://Scripts/Adventure_Scripts/Visuals/node_prop_cluster.gd" id="1_ingt6"]
 [ext_resource type="Script" uid="uid://d38jy6bjotsgw" path="res://Scripts/Adventure_Scripts/Visuals/biome_visual_data.gd" id="1_visual"]
-[ext_resource type="Resource" path="res://Data/Adventure_Data/Biome_Visuals/Regions/region_generic.tres" id="2_generic"]
+[ext_resource type="Resource" uid="uid://c78qdt8r08f3d" path="res://Data/Adventure_Data/Biome_Visuals/Regions/region_generic.tres" id="2_generic"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_detail"]
 noise_type = 0
