@@ -47,14 +47,20 @@ func GetIncomingDebuffDurationBonus(_p_owner_ID: int) -> int:
 	return 0
 
 ## Returns the multiplier applied to incoming damage (1.0 = unchanged, 0.0 = avoided).
-func OnDamageTaken(_p_owner_ID: int, _p_resolver: BattleResolver) -> float:
+func OnDamageTaken(_p_owner_ID: int, _p_attacker_ID: int, _p_resolver: BattleResolver) -> float:
 	print("character_trait base class DamageTaken() called!")
 	return 1.0
+
+func GetIncomingSingleTargetRedirectChance(_p_owner_ID: int) -> float:
+	return 0.0
 
 func OnDeath() -> void:
 	print("character_trait base class OnDeath() called!")
 
-func GetTargetingDefenceMultiplier() -> float:
+## Multiplier applied to this owner's whole enemy-AI targeting priority score
+## (Health + Defence), not just its Defence component — a value above 1.0 makes
+## the owner more likely to be chosen as a target, below 1.0 less likely.
+func GetTargetingPriorityMultiplier() -> float:
 	return 1.0
 
 ## Permanent multiplier this owner's trait applies to healing it receives

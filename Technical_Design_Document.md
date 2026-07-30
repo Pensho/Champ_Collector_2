@@ -1019,7 +1019,7 @@ over into team-wide Regeneration at 6 stacks before resetting). The primitives: 
 the same path as its existing max-Health-fraction heals, and `CharacterTrait.GetIncomingHealMultiplier(owner_ID)`
 is a permanent, unconditional multiplier `_HealingMultiplier` composes with the existing
 `IncomingHealReduction` debuff scan — the same "plain getter, no `Combat_Event`" shape as
-`GetTargetingDefenceMultiplier`/`GetZoneChargeBonus`.
+`GetTargetingPriorityMultiplier`/`GetZoneChargeBonus`.
 
 **Content, turn-bar-control batch:** three more grafts landed on the shared turn-bar push/pull
 primitive — `CaravanCadenceGraft` (`Start_Turn` finds the furthest-behind living ally via
@@ -1054,8 +1054,42 @@ always_refresh_duration := false, trigger_mirror_coat := false)` that takes an a
 behavior, while Contagion Bond's passive copy leaves both `false` (matching `ApplyDebuff`'s
 unconditional-application scope — Mirror Coat only reflects skill-cast debuffs).
 
-The remaining 8 grafts each need a new engine primitive (retaliation, on-kill/conditional damage,
-zone extensions, event triggers, tether) and are scheduled as separate plans; every enemy
+**Content, retaliation batch:** three more grafts landed on an attacker-aware damage-taken
+reaction — `GlassRefractionGraft` (`Damage_Taken` strikes a living, non-self attacker back for a
+Mysticism-scaled backlash through `ResolveTraitDamage`, alongside a Mysticism bonus and a flat
+Resistance drawback), `UndertowGraft` (`Damage_Taken` pulls a living enemy attacker back on the
+turn bar via `BumpTurnBar` and self-reduces by a flat amount, alongside a Health bonus; the
+self-reduction is a graft-inherent behavior, not an attribute, per the Batch 1 convention), and
+`GlamourGraft` (`Start_Combat` adds a flat dealt-damage bonus via the new
+`AggregateDamageMultipliers`; `Damage_Taken` returns a flat 1.1 taken-damage multiplier; overrides
+`GetIncomingSingleTargetRedirectChance` and the existing `GetTargetingPriorityMultiplier` for its
+redirect chance and increased targeting — all effects are behavioral, both attribute layers
+empty). The primitives: `CharacterTrait.OnDamageTaken(owner_ID, attacker_ID, resolver)` is a
+broadened signature (previously `(owner_ID, resolver)`; every existing override —
+`ReactivePlatingGraft`, `DoubleTheFunTrait` — updated to accept, and mostly ignore, the added
+attacker ID), the same "broaden a hook, update its consumers" shape as the turn-bar-control
+batch's `Buff_Applied`. `CharacterTrait.GetIncomingSingleTargetRedirectChance(owner_ID) -> float`
+(default `0.0`) is read in `BattleResolver.FindSkillTargets`: a `Single_Enemy`/`Single_Ally` skill
+whose resolved target rolls under this chance is redirected to a random other living combatant
+(`_RandomOtherCharacter`), the defender-side counterpart to the existing caster-side Refracted
+redirect at the same site — the two are mutually exclusive (a Refracted caster's redirect takes
+priority) and neither ever touches AoE targeting. `BattleResolver.AggregateDamageMultipliers(
+character_ID, amount)` is a public wrapper around the existing additive `_damage_dealt_bonus`
+merge (multiple sources on the same character sum their percentages rather than compounding); the
+Fractured Idol reagent path was refactored to call it instead of mutating the dictionary directly,
+with no behavior change (its own test still passes unmodified).
+
+Landing Glamour surfaced a pre-existing bug in `Battle.SetTargetingOrder`, fixed in the same pass:
+the trait multiplier (previously `GetTargetingDefenceMultiplier`, renamed
+`GetTargetingPriorityMultiplier` to match) was scaling only the Defence term of the
+Health-plus-Defence targeting-priority score before the two were summed, so a trait like Glamour's
++20% or Double the Fun's +50% barely moved a low-Defence character's priority at all. It now scales
+the whole `Health + Defence` sum before comparison, so "targeted N% more/less often" holds
+regardless of the holder's Health/Defence split (`test_targeting_order.gd`'s
+`test_targeting_priority_multiplier_scales_the_whole_score_not_just_defence` covers the regression).
+
+The remaining 5 grafts each need a new engine primitive (on-kill/conditional damage, zone
+extensions, event triggers, tether) and are scheduled as separate plans; every enemy
 `_graft_effect` stays null until a future pass assigns sources.
 
 ---

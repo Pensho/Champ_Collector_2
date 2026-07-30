@@ -32,7 +32,7 @@ func RefreshVisuals(p_character_repr: CharacterRepresentation) -> void:
 	p_character_repr.SetTraitElement(_trait_texture, 0)
 	p_character_repr.SetTraitElementToolTip(_title, body_with_stacks, 0)
 
-func OnDamageTaken(_p_owner_ID: int, _p_resolver: BattleResolver) -> float:
+func OnDamageTaken(_p_owner_ID: int, _p_attacker_ID: int, _p_resolver: BattleResolver) -> float:
 	_stacks = min(_stacks + 1, MAX_STACKS)
 	_attribute_percent_delta[Types.Attribute.Defence] = _defence_bonus_per_stack * _stacks
 	return 1.0

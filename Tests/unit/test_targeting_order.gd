@@ -44,3 +44,23 @@ func test_targeting_order_accounts_for_equipment_bonus() -> void:
 	assert_eq(_battle._targeting_order[0], 1,
 		"The equipped character's total Defence should outweigh the unequipped character's higher base stats")
 	armor.free()
+
+func test_targeting_priority_multiplier_scales_the_whole_score_not_just_defence() -> void:
+	# A: all Health, no Defence, but a 2x targeting priority multiplier (e.g. Glamour).
+	# B: a higher raw Health + Defence sum, but no multiplier. If the multiplier only
+	# scaled the Defence component (the old bug), A's zero Defence would leave it
+	# unboosted and B would outrank it; scaling the whole score correctly ranks A first.
+	var boosted: Character = TestFactory.make_character()
+	boosted._attributes[Types.Attribute.Health] = 100
+	boosted._attributes[Types.Attribute.Defence] = 0
+	boosted._trait = TestFactory.FakeTargetingPriorityTrait.new(2.0)
+
+	var plain: Character = TestFactory.make_character()
+	plain._attributes[Types.Attribute.Health] = 150
+	plain._attributes[Types.Attribute.Defence] = 0
+
+	_battle._characters = {0: boosted, 1: plain}
+	_battle.SetTargetingOrder()
+
+	assert_eq(_battle._targeting_order[0], 0,
+		"The targeting priority multiplier must scale the whole Health+Defence score, not only Defence")

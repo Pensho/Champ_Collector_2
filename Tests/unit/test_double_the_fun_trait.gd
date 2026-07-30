@@ -67,7 +67,7 @@ func test_max_chance_legendary() -> void:
 func test_stacks_increment_on_a_hit() -> void:
 	_InitTrait(Types.Rarity.Uncommon)
 	_trait._avoidance_stacks = 0
-	var multiplier: float = _trait.OnDamageTaken(0, _resolver)
+	var multiplier: float = _trait.OnDamageTaken(0, -1, _resolver)
 	if multiplier == 1.0:
 		assert_eq(_trait._avoidance_stacks, 1, "A hit (no avoid) should increment stacks by 1")
 	else:
@@ -79,7 +79,7 @@ func test_stacks_cap_at_max_after_repeated_hits() -> void:
 	# while keeping the cap assertion deterministic.
 	_InitTrait(Types.Rarity.Common)
 	for i in 200:
-		_trait.OnDamageTaken(0, _resolver)
+		_trait.OnDamageTaken(0, -1, _resolver)
 	assert_true(_trait._avoidance_stacks <= DoubleTheFunTrait.MAX_AVOIDANCE_STACKS)
 
 func test_avoid_reports_trait_text() -> void:
@@ -89,7 +89,7 @@ func test_avoid_reports_trait_text() -> void:
 	var avoided: bool = false
 	for i in 500:
 		_trait._avoidance_stacks = DoubleTheFunTrait.MAX_AVOIDANCE_STACKS
-		if(_trait.OnDamageTaken(0, _resolver) == 0.0):
+		if(_trait.OnDamageTaken(0, -1, _resolver) == 0.0):
 			avoided = true
 			break
 	assert_true(avoided, "A 23% avoid chance over 500 rolls should avoid at least once")
@@ -117,9 +117,9 @@ func test_refresh_visuals_after_death_clears_sprite_echoes() -> void:
 
 # --- Targeting weight ---
 
-func test_targeting_defence_multiplier_is_one_point_five() -> void:
-	assert_eq(_trait.GetTargetingDefenceMultiplier(), 1.5)
+func test_targeting_priority_multiplier_is_one_point_five() -> void:
+	assert_eq(_trait.GetTargetingPriorityMultiplier(), 1.5)
 
-func test_base_class_targeting_defence_multiplier_is_one() -> void:
+func test_base_class_targeting_priority_multiplier_is_one() -> void:
 	var base_trait: CharacterTrait = CharacterTrait.new()
-	assert_eq(base_trait.GetTargetingDefenceMultiplier(), 1.0)
+	assert_eq(base_trait.GetTargetingPriorityMultiplier(), 1.0)

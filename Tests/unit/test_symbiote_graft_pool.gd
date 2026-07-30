@@ -104,14 +104,14 @@ func test_reactive_plating_ondamagetaken_adds_hardened_stack_and_caps_at_9() -> 
 	var graft: ReactivePlatingGraft = _make_reactive_plating(Types.Rarity.Uncommon)
 
 	for i in 12:
-		graft.OnDamageTaken(0, null)
+		graft.OnDamageTaken(0, -1, null)
 
 	assert_eq(graft._stacks, 9)
 
 func test_reactive_plating_defence_bonus_scales_with_stacks() -> void:
 	var graft: ReactivePlatingGraft = _make_reactive_plating(Types.Rarity.Uncommon)
 	for i in 3:
-		graft.OnDamageTaken(0, null)
+		graft.OnDamageTaken(0, -1, null)
 
 	assert_eq(graft.GetAttributeDelta(Types.Attribute.Defence, 100), 6)
 
@@ -124,7 +124,7 @@ func test_reactive_plating_defence_bonus_applies_outside_of_defending() -> void:
 	var character: Character = TestFactory.make_character()
 	character._rarity = Types.Rarity.Uncommon
 	character.ApplyGraft(load(REACTIVE_PLATING_PATH))
-	(character._trait as ReactivePlatingGraft).OnDamageTaken(0, null)
+	(character._trait as ReactivePlatingGraft).OnDamageTaken(0, -1, null)
 	var base_defence: int = character._attributes[Types.Attribute.Defence]
 	var expected_delta: int = int(ceilf(base_defence * 0.02))
 

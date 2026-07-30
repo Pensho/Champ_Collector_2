@@ -10,7 +10,7 @@ const AVOIDANCE_INCREMENT: Dictionary[Types.Rarity, float] = {
 	Types.Rarity.Legendary: 0.06,
 }
 
-const TARGETING_DEFENCE_MULTIPLIER: float = 1.5
+const TARGETING_PRIORITY_MULTIPLIER: float = 1.5
 
 var _avoidance_stacks: int = 0
 var _avoidance_increment: float = 0.0
@@ -44,7 +44,7 @@ func RefreshVisuals(p_character_repr: CharacterRepresentation) -> void:
 func GetAvoidChance() -> float:
 	return BASE_AVOID_CHANCE + _avoidance_increment * _avoidance_stacks
 
-func OnDamageTaken(p_owner_ID: int, p_resolver: BattleResolver) -> float:
+func OnDamageTaken(p_owner_ID: int, _p_attacker_ID: int, p_resolver: BattleResolver) -> float:
 	var chance: float = GetAvoidChance()
 
 	if(p_resolver.GetRandom().randf() < chance):
@@ -55,5 +55,5 @@ func OnDamageTaken(p_owner_ID: int, p_resolver: BattleResolver) -> float:
 	_avoidance_stacks = min(_avoidance_stacks + 1, MAX_AVOIDANCE_STACKS)
 	return 1.0
 
-func GetTargetingDefenceMultiplier() -> float:
-	return TARGETING_DEFENCE_MULTIPLIER
+func GetTargetingPriorityMultiplier() -> float:
+	return TARGETING_PRIORITY_MULTIPLIER

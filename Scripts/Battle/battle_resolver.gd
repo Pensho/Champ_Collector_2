@@ -95,9 +95,15 @@ func GetCombatAttributes(p_character_ID: int) -> Dictionary[Types.Attribute, int
 
 func FindSkillTargets(p_target_ID: int, p_caster_ID: int, p_target_type: Types.Skill_Target) -> Array[int]:
 	var effective_type: Types.Skill_Target = p_target_type
-	if((Types.Skill_Target.Single_Enemy == p_target_type or Types.Skill_Target.Single_Ally == p_target_type)
-			and _HasDebuff(p_caster_ID, Types.Debuff_Type.Refracted)):
+	var is_single_target: bool = (Types.Skill_Target.Single_Enemy == p_target_type
+			or Types.Skill_Target.Single_Ally == p_target_type)
+	if(is_single_target and _HasDebuff(p_caster_ID, Types.Debuff_Type.Refracted)):
 		effective_type = Types.Skill_Target.Random_One
+	elif(is_single_target and _RollsIncomingRedirect(p_target_ID)):
+		var redirected_ID: int = _RandomOtherCharacter(p_target_ID)
+		if(redirected_ID != -1):
+			EmitTraitText(p_target_ID, "Refracted!")
+			return [redirected_ID]
 	return Skills.FindSkillTargets(p_target_ID, p_caster_ID, effective_type, _characters, _sides, _random)
 
 
@@ -239,6 +245,9 @@ func AccumulateTurnBarMovement(p_character_ID: int, p_fraction_moved: float) -> 
 func BumpTurnBar(p_target_ID: int, p_fraction: float, p_source_ID: int = -1) -> void:
 	_EmitTurnBarBump(p_target_ID, p_fraction, p_source_ID)
 
+func AggregateDamageMultipliers(p_character_ID: int, p_amount: float) -> void:
+	_damage_dealt_bonus[p_character_ID] = _damage_dealt_bonus.get(p_character_ID, 0.0) + p_amount
+
 ## Trait flavor text ("Stole buff!", "Avoided!") routed through the result stream.
 func EmitTraitText(p_target_ID: int, p_text: String, p_color: Color = Color.WHITE) -> void:
 	var result: CombatResult = CombatResult.new(CombatResult.Kind.Trait_Text)
@@ -357,8 +366,8 @@ func _ResolveReagentEffect(
 				result.target_ID = p_consumer_ID
 				result.amount = cost
 				_Emit(result)
-			_damage_dealt_bonus[p_consumer_ID] = (_damage_dealt_bonus.get(p_consumer_ID, 0.0)
-					+ ReagentResolver.PercentFraction(p_reagent.secondary_magnitude, p_potency))
+			AggregateDamageMultipliers(p_consumer_ID,
+					ReagentResolver.PercentFraction(p_reagent.secondary_magnitude, p_potency))
 		ReagentData.EffectKind.Barrier:
 			var barrier: StatusEffects.Buff = StatusEffects.Buff.new()
 			barrier.type = Types.Buff_Type.Barrier
@@ -435,6 +444,22 @@ func _HasDebuff(p_character_ID: int, p_type: Types.Debuff_Type) -> bool:
 		if(debuff.type == p_type):
 			return true
 	return false
+
+
+func _RollsIncomingRedirect(p_target_ID: int) -> bool:
+	var target: Character = _characters.get(p_target_ID)
+	if(null == target or null == target._trait):
+		return false
+	var chance: float = target._trait.GetIncomingSingleTargetRedirectChance(p_target_ID)
+	return chance > 0.0 and _random.randf() < chance
+
+
+func _RandomOtherCharacter(p_excluded_ID: int) -> int:
+	var candidates: Array[int] = _sides.AllMembers().filter(
+			func(id: int) -> bool: return id != p_excluded_ID and _characters.has(id) and _characters[id]._current_health > 0)
+	if(candidates.is_empty()):
+		return -1
+	return candidates[_random.randi_range(0, candidates.size() - 1)]
 
 
 ## Rolls once, or twice keeping the better/worse result for the roll's owner when
@@ -627,7 +652,7 @@ func _ResolveDamage(
 		return
 	var damage_taken_trait: CharacterTrait = Skills.ActiveHook(target, Types.Combat_Event.Damage_Taken)
 	if(damage_dealt > 0 and null != damage_taken_trait):
-		damage_dealt = int(round(damage_dealt * damage_taken_trait.OnDamageTaken(p_target_ID, self)))
+		damage_dealt = int(round(damage_dealt * damage_taken_trait.OnDamageTaken(p_target_ID, p_caster_ID, self)))
 	if(damage_dealt == 0):
 		return
 

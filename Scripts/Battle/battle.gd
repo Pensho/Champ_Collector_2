@@ -74,17 +74,16 @@ func SetTargetingOrder() -> void:
 		var obj_a = _characters[key_a]
 		var obj_b = _characters[key_b]
 
-		var defence_a: float = obj_a.GetTotalAttribute(Types.Attribute.Defence)
+		var priority_a: float = (obj_a.GetTotalAttribute(Types.Attribute.Health)
+				+ obj_a.GetTotalAttribute(Types.Attribute.Defence))
 		if obj_a._trait != null:
-			defence_a *= obj_a._trait.GetTargetingDefenceMultiplier()
-		var defence_b: float = obj_b.GetTotalAttribute(Types.Attribute.Defence)
+			priority_a *= obj_a._trait.GetTargetingPriorityMultiplier()
+		var priority_b: float = (obj_b.GetTotalAttribute(Types.Attribute.Health)
+				+ obj_b.GetTotalAttribute(Types.Attribute.Defence))
 		if obj_b._trait != null:
-			defence_b *= obj_b._trait.GetTargetingDefenceMultiplier()
+			priority_b *= obj_b._trait.GetTargetingPriorityMultiplier()
 
-		var sum_a = obj_a.GetTotalAttribute(Types.Attribute.Health) + defence_a
-		var sum_b = obj_b.GetTotalAttribute(Types.Attribute.Health) + defence_b
-
-		return sum_a > sum_b
+		return priority_a > priority_b
 		)
 	_targeting_order = sorted_keys
 

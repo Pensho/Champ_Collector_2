@@ -180,8 +180,9 @@ the discarded.
 - **Attribute bonus:** none.
 - **Drawback:** the Symbiote takes +10% damage and is targeted 20% more often — enemies swat
   at the maddening blur.
-- **Implementation note:** reuses the Refracted debuff mechanic, applied to any attacker that
-  single-targets the Symbiote.
+- **Implementation note:** redirects the current attack itself (a defender-side
+  `GetIncomingSingleTargetRedirectChance` roll in target resolution), not the existing
+  Refracted debuff, which is caster-side and redirects the *holder's own* future casts.
 
 ## Open decisions
 

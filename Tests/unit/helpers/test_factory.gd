@@ -100,6 +100,44 @@ class FakeDebuffDurationBonusTrait extends CharacterTrait:
 	func GetIncomingDebuffDurationBonus(_p_owner_ID: int) -> int:
 		return bonus
 
+## Records the attacker ID passed to OnDamageTaken (e.g. Glass Refraction/Undertow's
+## retaliation), without affecting the incoming damage.
+class FakeDamageTakenAttackerRecorder extends CharacterTrait:
+	var last_owner_ID: int = -1
+	var last_attacker_ID: int = -1
+	var call_count: int = 0
+
+	func _init() -> void:
+		_execution_steps[Types.Combat_Event.Damage_Taken] = Callable(self, "OnDamageTaken")
+
+	func OnDamageTaken(p_owner_ID: int, p_attacker_ID: int, _p_resolver: BattleResolver) -> float:
+		last_owner_ID = p_owner_ID
+		last_attacker_ID = p_attacker_ID
+		call_count += 1
+		return 1.0
+
+## Headless stand-in for a trait with a fixed incoming single-target redirect chance
+## (e.g. Glamour).
+class FakeRedirectChanceTrait extends CharacterTrait:
+	var chance: float = 0.0
+
+	func _init(p_chance: float) -> void:
+		chance = p_chance
+
+	func GetIncomingSingleTargetRedirectChance(_p_owner_ID: int) -> float:
+		return chance
+
+## Headless stand-in for a trait with a fixed enemy-AI targeting priority multiplier
+## (e.g. Glamour, Double the Fun).
+class FakeTargetingPriorityTrait extends CharacterTrait:
+	var multiplier: float = 1.0
+
+	func _init(p_multiplier: float) -> void:
+		multiplier = p_multiplier
+
+	func GetTargetingPriorityMultiplier() -> float:
+		return multiplier
+
 static func make_character() -> Character:
 	var c: Character = Character.new()
 	c._name = "TestCharacter"
