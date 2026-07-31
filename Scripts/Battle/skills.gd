@@ -123,6 +123,8 @@ static func FindSkillTargets(
 			target_IDs.erase(p_caster_ID)
 		Types.Skill_Target.Self:
 			target_IDs.append(p_caster_ID)
+		Types.Skill_Target.Most_Injured_Ally:
+			target_IDs.append_array(p_sides.AlliesOf(p_caster_ID).members)
 		var INVALID_TYPE:
 			print("Invalid argument for skill target enum passed: ", INVALID_TYPE)
 	return FilterAliveTargets(target_IDs, p_characters)
@@ -144,6 +146,19 @@ static func SingleTargetArray(p_target_ID: int) -> Array[int]:
 		target_IDs.append(p_target_ID)
 	return target_IDs
 
+static func MostInjured(p_IDs: Array[int], p_characters: Dictionary[int, Character],
+		p_max_health: Callable) -> int:
+	var best_ID: int = -1
+	var best_ratio: float = INF
+	for id in p_IDs:
+		if(not p_characters.has(id) or p_characters[id]._current_health <= 0):
+			continue
+		var max_health: int = p_max_health.call(p_characters[id])
+		var ratio: float = float(p_characters[id]._current_health) / float(max_health)
+		if(ratio < best_ratio or (ratio == best_ratio and id < best_ID)):
+			best_ratio = ratio
+			best_ID = id
+	return best_ID
 
 static func IsAttributeModifierKind(p_kind: StatusEffectData.MagnitudeKind) -> bool:
 	return (StatusEffectData.MagnitudeKind.AttributePercent == p_kind

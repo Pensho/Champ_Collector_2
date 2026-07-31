@@ -22,4 +22,11 @@ const Statuses = preload("uid://bp3pvvar4437")
 @export var buffs: Dictionary[Types.Skill_Target, Array]
 @export var debuffs: Dictionary[Types.Skill_Target, Array]
 
+# Fraction of max Health each target group gains (positive) or pays (negative).
+@export var health_change: Dictionary[Types.Skill_Target, float]
+# Attribute-scaled healing per target group: group -> Dictionary[Types.Attribute, float].
+@export var heal_scaling: Dictionary[Types.Skill_Target, Dictionary]
+# Multiplier turning the Health the caster paid this cast into the granted Barrier's pool.
+@export var barrier_from_health_paid: float = 0.0
+
 var cooldown_left: int = 0

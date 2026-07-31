@@ -82,14 +82,15 @@ func ConsumeDeathwardIfPresent(p_character_ID: int) -> bool:
 	return false
 
 
-func _CastBuffOfType(p_target_ID: int, p_buff_type: Types.Buff_Type, p_duration: int) -> void:
+func _CastBuffOfType(p_target_ID: int, p_buff_type: Types.Buff_Type, p_duration: int,
+		p_value_override: float = -1.0) -> void:
 	var target: Character = _resolver._characters[p_target_ID]
 	if(Skills.HasMaxStatusEffects(target)):
 		return
 	var data: StatusEffectData = StatusEffectRegistry.BuffData(p_buff_type)
 	if(_BlockedBySequenceLock(data, target) or _BlockedBySeverance(target)):
 		return
-	var new_value: float = data.magnitude if null != data else 0.0
+	var new_value: float = p_value_override if p_value_override >= 0.0 else (data.magnitude if null != data else 0.0)
 	if(Types.Buff_Type.Barrier == p_buff_type and _KeepsExistingBarrier(p_target_ID, target, new_value)):
 		return
 

@@ -270,6 +270,15 @@ var cooldown_left: int = 0
 @export var defense_ignore_factor: float = 1.0             # lower = more defense bypassed
 @export var buffs:   Dictionary[Types.Skill_Target, Types.Buff_Type]
 @export var debuffs: Dictionary[Types.Skill_Target, Types.Debuff_Type]
+@export var health_change: Dictionary[Types.Skill_Target, float]   # signed max-Health
+                                                             # fraction per target group:
+                                                             # positive heals, negative costs
+@export var heal_scaling: Dictionary[Types.Skill_Target, Dictionary]  # group -> Dictionary
+                                                             # [Types.Attribute, float],
+                                                             # attribute-scaled healing
+@export var barrier_from_health_paid: float = 0.0           # multiplier turning this cast's
+                                                             # own health_change cost into a
+                                                             # granted Barrier's pool
 ```
 
 There are 66+ `.tres` files under `Data/` (player and enemy character variants, skill variants
@@ -679,7 +688,15 @@ the skill UI, and returns to `Advancing` (or ends the battle).
    `Statuses_Removed` results). Attribute modifiers are no longer applied here — they were already
    folded in at step 1.
 4. Resolve caster-side skill mechanics (e.g. Heap On stacking against the resolver's per-combat
-   state).
+   state). Then pay any negative `health_change` entries (`HealthTransferResolver.ResolveHealthCosts`,
+   via `_ApplyHealthCost` — non-lethal, floored at 1 Health, Barrier-absorbable like any other
+   Health loss) before buffs/debuffs are cast, so a Barrier granted by the same skill
+   (`barrier_from_health_paid > 0`) can size its pool from what the caster actually paid.
+   `_ResolveStatusGroups` then casts the skill's buffs/debuffs per target group.
+   Finally, positive `health_change` entries and every `heal_scaling` entry heal
+   (`HealthTransferResolver.ResolveHealthGains`), after the status step so a max-Health buff
+   granted by the same skill (e.g. Liquid Courage's Vigor) already applies when its heal is
+   computed.
 5. For each target: read the target's live attributes via `GetEffectiveAttributes()`, fire
    `OnDefend`, optionally cast the skill's
    buff/debuff (debuffs are accuracy-vs-resistance rolled on the resolver's generator; a failed
@@ -1391,6 +1408,16 @@ an `p_always_refresh_duration` flag because `CastDebuff` alone refreshes an exis
 duration unconditionally (the other three only refresh when the new duration is longer), and
 returns the created instance (or `null` when nothing new was created) so `CastDebuff` alone can
 gate its Mirror Coat trigger on an actual creation, not a mere refresh.
+
+`Skill.health_change`/`heal_scaling` resolution (batch 2) landed the same way from the start,
+as `HealthTransferResolver` (`Scripts/Battle/health_transfer_resolver.gd`) rather than as new
+`BattleResolver` methods, since the addition alone would have pushed the file past
+`max-file-lines`. It owns `ResolveHealthCosts`/`ResolveHealthGains`, constructed and held as
+`_health_transfer_resolver` the same way as `_zone_resolver`/`_status_resolver`, called directly
+from `ResolveSkill` (no external callers yet, so no `GetHealthTransferResolver()` accessor was
+added — follow the `ZoneResolver` precedent if one shows up). It reaches `_ResolveStatusGroupTargets`,
+`_MaxHealth`, `_ApplyHealthCost`, `_ApplyHeal`, and `_Emit` on the owning `BattleResolver` directly,
+same as the other two subsystems.
 
 This freed real budget back: `battle_resolver.gd` dropped from roughly 1230 to 656 lines and 19
 public methods, with the buff/debuff machinery now in its own 599-line file. `gdlintrc`'s

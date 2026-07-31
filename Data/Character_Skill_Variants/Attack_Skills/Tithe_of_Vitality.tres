@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="Skill" format=3 uid="uid://clr2o8gr3t7ef"]
+
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+
+[resource]
+script = ExtResource("1_skill")
+name = "Tithe of Vitality"
+description = "Drains 10% of max Health from each living ally (caster excluded). Deals damage to a single enemy, scaled by Mysticism, and applies Mana Burn for 2 turns."
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Tithe_of_Vitality/Tithe_of_Vitality.png"
+damage_scaling = Dictionary[int, float]({
+6: 1.5
+})
+cooldown = 4
+duration = 2
+debuffs = Dictionary[int, Array]({
+0: [15]
+})
+health_change = Dictionary[int, float]({
+12: -0.1
+})
+metadata/_custom_type_script = "uid://glh06y3wvchj"

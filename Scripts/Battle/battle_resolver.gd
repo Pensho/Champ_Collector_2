@@ -27,6 +27,7 @@ var _turn_positions: TurnPositions
 var _random: RandomNumberGenerator = RandomNumberGenerator.new()
 var _zone_resolver: ZoneResolver
 var _status_resolver: StatusEffectResolver
+var _health_transfer_resolver: HealthTransferResolver
 
 var _heap_on_stacks: Dictionary[int, int] = {}
 var _heap_on_value: Dictionary[int, float] = {}
@@ -57,6 +58,7 @@ func _init(
 	_turn_positions = p_turn_positions if p_turn_positions != null else TurnPositions.new()
 	_status_resolver = StatusEffectResolver.new(self)
 	_zone_resolver = ZoneResolver.new(self)
+	_health_transfer_resolver = HealthTransferResolver.new(self)
 	if(p_seed >= 0):
 		_random.seed = p_seed
 	else:
@@ -159,7 +161,9 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 		_status_resolver._TriggerExistingCasterBuffs(p_caster_ID, caster_attributes)
 
 	_ResolveSkillEffect(p_caster_ID, caster_attributes, cast_skill)
-	_ResolveStatusGroups(p_caster_ID, p_target_IDs, cast_skill, trait_result._tick_bonus_per_debuff)
+	var health_paid: int = _health_transfer_resolver.ResolveHealthCosts(p_caster_ID, p_target_IDs, cast_skill)
+	_ResolveStatusGroups(p_caster_ID, p_target_IDs, cast_skill, trait_result._tick_bonus_per_debuff, health_paid)
+	_health_transfer_resolver.ResolveHealthGains(p_caster_ID, p_target_IDs, cast_skill, caster_attributes)
 
 	var is_non_basic: bool = cast_skill.cooldown > 0
 	_status_resolver._TriggerManaBurn(p_caster_ID, caster_attributes, is_non_basic)
@@ -561,6 +565,14 @@ func _ApplyHeal(p_character_ID: int, p_amount: int) -> int:
 	character._current_health = clampi(character._current_health + reduced_amount, 0, _MaxHealth(character))
 	return character._current_health - health_before
 
+func _ApplyHealthCost(p_character_ID: int, p_amount: int) -> int:
+	var character: Character = _characters[p_character_ID]
+	var health_before: int = character._current_health
+	var capped_amount: int = mini(p_amount, health_before - 1)
+	if(capped_amount <= 0):
+		return 0
+	_ApplyHealthLoss(p_character_ID, capped_amount)
+	return health_before - character._current_health
 
 func _HandleDeath(p_character_ID: int) -> void:
 	var character: Character = _characters[p_character_ID]
@@ -603,11 +615,15 @@ func _ResolveStatusGroups(
 		p_caster_ID: int,
 		p_target_IDs: Array[int],
 		p_skill: Skill,
-		p_tick_bonus_per_debuff: float) -> void:
+		p_tick_bonus_per_debuff: float,
+		p_health_paid: int = 0) -> void:
 	for target_type in p_skill.buffs.keys():
 		for target_ID in _ResolveStatusGroupTargets(p_caster_ID, p_target_IDs, p_skill, target_type):
 			for buff_type in p_skill.buffs[target_type]:
-				_status_resolver._CastBuffOfType(target_ID, buff_type, p_skill.duration)
+				var value_override: float = -1.0
+				if(Types.Buff_Type.Barrier == buff_type and p_skill.barrier_from_health_paid > 0.0):
+					value_override = float(p_health_paid) * p_skill.barrier_from_health_paid
+				_status_resolver._CastBuffOfType(target_ID, buff_type, p_skill.duration, value_override)
 
 	for target_type in p_skill.debuffs.keys():
 		for target_ID in _ResolveStatusGroupTargets(p_caster_ID, p_target_IDs, p_skill, target_type):
@@ -646,6 +662,9 @@ func _ResolveIndependentStatusGroup(p_caster_ID: int, p_target_type: Types.Skill
 			group_IDs = Skills.SingleTargetArray(_sides.RandomAliveMember(_characters, _random))
 		Types.Skill_Target.All:
 			group_IDs = _sides.AllMembers()
+		Types.Skill_Target.Most_Injured_Ally:
+			group_IDs = Skills.SingleTargetArray(
+					Skills.MostInjured(_sides.AlliesOf(p_caster_ID).members, _characters, _MaxHealth))
 		_:
 			print("Skill target enum has no caster-relative resolution for a secondary status group: ", p_target_type)
 	return group_IDs

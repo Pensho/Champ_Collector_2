@@ -8,10 +8,10 @@ executed, tested, and reviewed on their own.
 
 ## Status
 
-The six skill batches are unstarted, but every dependency they rested on is now
-satisfied. The headless combat core (`BattleResolver`, `CombatResult`, seeded
-generator — `Technical_Design_Document.md` section 7) and data-driven status
-effects (section 6.1) both landed, and **`Plan_Status_Effect_Implementation.md`
+Batches 0–2 are complete; batches 3–6 remain, but every dependency they rested
+on is now satisfied. The headless combat core (`BattleResolver`, `CombatResult`,
+seeded generator — `Technical_Design_Document.md` section 7) and data-driven
+status effects (section 6.1) both landed, and **`Plan_Status_Effect_Implementation.md`
 is complete and deleted**: the full status effect catalog, the heal path
 (`BattleResolver.ResolveTraitHeal`, emitting `CombatResult.Kind.Heal`), and the
 placeholder icon generator this plan builds on are all in place. The status
@@ -79,7 +79,7 @@ Excluded (owned elsewhere or blocked on design):
 
 ## Batches
 
-### Batch 0 — skill icon directories and placeholders
+### Batch 0 — skill icon directories and placeholders (complete)
 
 Give every skill and passive this plan will author its icon directory and a
 flat-color placeholder before any `.tres` is written, so later batches can
@@ -114,7 +114,7 @@ etc.) keep their existing files under `Icons/Abilities/Role_Active_Skills/` —
 the skip guard protects them, and only the skills this plan actually authors
 need new rows.
 
-### Batch 1 — skills on existing machinery
+### Batch 1 — skills on existing machinery (complete)
 
 Everything expressible with the current `Skill` resource once the status
 effect catalog exists: damage scaling, buff/debuff application, cooldowns,
@@ -132,7 +132,7 @@ defense ignore. No resolver changes.
   Blow (compare against the existing Crush before authoring a duplicate),
   Rally the Crew, Cinder Spit, Vault Slam.
 
-### Batch 2 — healing and health costs
+### Batch 2 — healing and health costs (complete)
 
 Skills that restore Health and skills that cost the caster or allies Health.
 A heal path already exists (`BattleResolver.ResolveTraitHeal`, emitting

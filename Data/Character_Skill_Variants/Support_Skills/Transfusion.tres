@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="Skill" format=3 uid="uid://bunyo3xdyy4b2"]
+
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+
+[resource]
+script = ExtResource("1_skill")
+name = "Transfusion"
+description = "The caster sacrifices 15% of max Health; one ally gains a Barrier absorbing 200% of the Health sacrificed, lasting 2 turns."
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Transfusion/Transfusion.png"
+target = 3
+cooldown = 4
+duration = 2
+skill_type = 5
+buffs = Dictionary[int, Array]({
+12: [21]
+})
+health_change = Dictionary[int, float]({
+13: -0.15
+})
+barrier_from_health_paid = 2.0
+metadata/_custom_type_script = "uid://glh06y3wvchj"

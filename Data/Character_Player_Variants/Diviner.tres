@@ -3,10 +3,10 @@
 [ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_weight"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_zap"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_preset"]
-[ext_resource type="Resource" uid="uid://dl0s23m0g4w3i" path="res://Data/Character_Skill_Variants/Zap.tres" id="3_zap"]
+[ext_resource type="Resource" path="res://Data/Character_Skill_Variants/Attack_Skills/Fateful_Glimpse.tres" id="3_fateful_glimpse"]
 [ext_resource type="Resource" uid="uid://bqqsowpn2kvlu" path="res://Data/Attribute_Weights/Reckless.tres" id="4_apdyv"]
-[ext_resource type="Resource" path="res://Data/Character_Skill_Variants/Support_Skills/Premonition.tres" id="4_premonition"]
-[ext_resource type="Resource" path="res://Data/Character_Skill_Variants/Attack_Skills/Ill_Omen.tres" id="5_ill_omen"]
+[ext_resource type="Resource" uid="uid://4o0n1j2jxr73" path="res://Data/Character_Skill_Variants/Support_Skills/Premonition.tres" id="4_premonition"]
+[ext_resource type="Resource" uid="uid://bqbc6cyis8ety" path="res://Data/Character_Skill_Variants/Attack_Skills/Ill_Omen.tres" id="5_ill_omen"]
 [ext_resource type="Resource" uid="uid://syj6hxvr5t2x" path="res://Data/Attribute_Weights/Dexterous.tres" id="5_k1jtx"]
 [ext_resource type="Resource" uid="uid://4fnej15sbkkv" path="res://Data/Attribute_Weights/Arcane.tres" id="6_arcane"]
 [ext_resource type="Resource" uid="uid://b8nee1hs4g663" path="res://Data/Attribute_Weights/Conjurer.tres" id="7_conjurer"]
@@ -18,7 +18,7 @@ _name = "Diviner"
 _texture = "res://Assets/Champ_Collector/Creatures/Cleric/Cleric_0001.png"
 _rarity = 3
 _role = 7
-_skills = Array[ExtResource("1_zap")]([ExtResource("3_zap"), ExtResource("4_premonition"), ExtResource("5_ill_omen")])
+_skills = Array[ExtResource("1_zap")]([ExtResource("3_fateful_glimpse"), ExtResource("4_premonition"), ExtResource("5_ill_omen")])
 _health = 50
 _speed = 50
 _attack = 30

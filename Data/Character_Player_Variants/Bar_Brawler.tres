@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_dhkqx"]
 [ext_resource type="Resource" uid="uid://dvaq2b7qefpty" path="res://Data/Character_Skill_Variants/Heap_On.tres" id="3_f0b57"]
 [ext_resource type="Resource" uid="uid://chrxxamiu00ig" path="res://Data/Character_Skill_Variants/Attack_Skills/Headbutt.tres" id="3_headbutt"]
+[ext_resource type="Resource" path="res://Data/Character_Skill_Variants/Support_Skills/Liquid_Courage.tres" id="3_liquid_courage"]
 [ext_resource type="Resource" uid="uid://i4pibjinfd3x" path="res://Data/Attribute_Weights/Gluttonous.tres" id="3_mowhv"]
 [ext_resource type="Resource" uid="uid://bejf1a62v41gq" path="res://Data/Attribute_Weights/Marksman.tres" id="4_e70qb"]
 [ext_resource type="Resource" uid="uid://c60oh3whnodsm" path="res://Data/Attribute_Weights/Resilient.tres" id="5_woc2i"]
@@ -20,7 +21,7 @@ _texture = "res://Assets/Champ_Collector/Creatures/Bar brawler/Bar_Brawler_0004.
 _normal_map = "res://Assets/Champ_Collector/Creatures/Bar brawler/Bar_Brawler_0004_Normal_Map.png"
 _rarity = 2
 _role = 14
-_skills = Array[ExtResource("1_ct0uv")]([ExtResource("3_f0b57"), ExtResource("3_headbutt"), ExtResource("3_f0b57")])
+_skills = Array[ExtResource("1_ct0uv")]([ExtResource("3_f0b57"), ExtResource("3_headbutt"), ExtResource("3_liquid_courage")])
 _health = 95
 _speed = 40
 _attack = 60

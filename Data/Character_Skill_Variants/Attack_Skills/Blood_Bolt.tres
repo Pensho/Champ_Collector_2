@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="Skill" format=3 uid="uid://dnwk2p0xkmpyj"]
+
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+
+[resource]
+script = ExtResource("1_skill")
+name = "Blood Bolt"
+description = "Deals damage to a single enemy, scaled by Mysticism. Costs 3% of the casters max Health."
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Blood_Bolt/Blood_Bolt.png"
+damage_scaling = Dictionary[int, float]({
+6: 1.0
+})
+health_change = Dictionary[int, float]({
+13: -0.03
+})
+metadata/_custom_type_script = "uid://glh06y3wvchj"

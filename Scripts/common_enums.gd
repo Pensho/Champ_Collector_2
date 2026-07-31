@@ -80,6 +80,7 @@ enum Skill_Target
 	All,
 	All_Other_Allies,
 	Self,
+	Most_Injured_Ally,
 }
 
 enum Attribute
