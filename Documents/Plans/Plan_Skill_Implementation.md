@@ -8,40 +8,51 @@ executed, tested, and reviewed on their own.
 
 ## Status
 
-Not started. Dependencies: the headless combat core (`BattleResolver`,
-`CombatResult`, seeded generator — `Technical_Design_Document.md` section 7)
-and data-driven status effects (section 6.1), both landed; and
-**`Plan_Status_Effect_Implementation.md`**, which delivers the full status
-effect catalog, the healing hook (`_ApplyHealthGain`), and the placeholder
-icon generator this plan builds on. Batch 1 needs only that plan's batch 1;
-later batches assume the catalog is complete.
+The six skill batches are unstarted, but every dependency they rested on is now
+satisfied. The headless combat core (`BattleResolver`, `CombatResult`, seeded
+generator — `Technical_Design_Document.md` section 7) and data-driven status
+effects (section 6.1) both landed, and **`Plan_Status_Effect_Implementation.md`
+is complete and deleted**: the full status effect catalog, the heal path
+(`BattleResolver.ResolveTraitHeal`, emitting `CombatResult.Kind.Heal`), and the
+placeholder icon generator this plan builds on are all in place. The status
+effects several later skills need are already authored (e.g.
+`Data/Status_Effects/Sanction.tres`, `Signed_Writ.tres`).
 
 ## Scope and exclusions
 
 In scope: every champion skill in Concept Document 3.2.4.2/3.2.4.3 and every
 opponent skill in Encounter Design Document section 1 (including the three
 opponent passives — they are cataloged as skills), plus the targeting types
-and resolver mechanics those skills require. Presets for champions and
-enemies that do not exist yet are created in the batch that lands their
-skills (via the `new-champion` workflow), so every skill is attached and
-testable. Every new skill and passive is given an icon directory and a
-placeholder icon up front in batch 0, via the placeholder icon generator
-(`Scripts/Debug/generate_placeholder_icons.gd`, from the status effect plan),
-so each skill is visually represented from the moment its `.tres` lands.
+and resolver mechanics those skills require. Champion presets already exist
+under `Data/Character_Player_Variants/`, each carrying placeholder skills
+(e.g. the Emissary holds Bash/Disarm/Break Guard), so the champion-skill work
+is attaching each Role's real skills to its existing preset rather than
+creating it. Enemy presets that do not exist yet are created in the batch that
+lands their skills (batch 6, via the `new-champion` workflow), so every skill
+is attached and testable. Every new skill and passive is given an icon
+directory and a placeholder icon up front in batch 0, via the placeholder icon
+generator (`Scripts/Debug/generate_placeholder_icons.gd`, from the status
+effect plan), so each skill is visually represented from the moment its `.tres`
+lands.
 
 Excluded (owned elsewhere or blocked on design):
 
-- Status effects themselves — `Plan_Status_Effect_Implementation.md`.
+- Status effects themselves — `Plan_Status_Effect_Implementation.md`
+  (complete and deleted; its catalog is in place).
 - The Architect kit (Cornerstone, Raise the Frame, Final Calculation) —
-  `Plan_Architect_Calibration_Kit.md`.
+  `Plan_Architect_Calibration_Kit.md`. Since landed (`Cornerstone.tres`,
+  `Raise_the_Frame.tres`, `Final_Calculation.tres`); still owned by that plan
+  and out of scope here.
 - Sorcerer reagent interactions — `Plan_Sorcerer_Arcane_Instability.md`; the
   Sorcerer's three skills are in scope here, the passive is not.
 - The Alchemist's Fresh Batch passive and the reagent half of the Catalyst
   buff — the reagent plans. Catalyst Cloud (the zone) lands here.
 - Champion passives (traits) in general: already-implemented ones are
-  untouched, unimplemented ones are separate tasks — except the Emissary's
-  Standing Record, which is a prerequisite of the Emissary skills (they read
-  the Infraction tally) and therefore lands with them in batch 4.
+  untouched, unimplemented ones are separate tasks. The Emissary's Standing
+  Record — a prerequisite of the Emissary skills (they read the Infraction
+  tally) — is already implemented
+  (`standing_record_trait.gd` + `Standing_Record_Trait.tres`, wired to the
+  Emissary preset), so batch 4 only authors the skills that consume it.
 - Pagan Curse — its cleanse depends on an undefined "Chant" mechanic; deferred
   until the Concept Document defines it.
 - Already-implemented skills (Stab, Zap, Pierce Weakness, Disarm, Burning
@@ -82,12 +93,15 @@ how the reagent and status-effect tables in
   passives, and the Standing Record prerequisite trait). Skills are not
   rarity-tiered, so — like the status-effect rows — each row writes a single
   flat-color PNG rather than one per rarity tier.
-- Each row targets `Abilities/<Skill_Name>` under `ICON_ROOT`, matching the
-  existing per-ability folder layout (`Icons/Abilities/Stab/`, etc.), and gives
-  the skill a distinct base hue.
+- Each row targets the reorganized per-ability folder layout under `ICON_ROOT`
+  — `Abilities/Role_Active_Skills/<Skill_Name>` for champion skills,
+  `Abilities/Opponent_Active_Skills/<Skill_Name>` for opponent skills, and
+  `Abilities/Passives/<Passive_Name>` for passives (matching the existing
+  `Icons/Abilities/Role_Active_Skills/Stab/`, etc.) — and gives the skill a
+  distinct base hue.
 - Extend `_run()` (or factor a shared helper) so the new table is iterated with
   the same "skip if the file already exists" guard, so the real ability art
-  already in `Icons/Abilities/` is never clobbered.
+  already under `Icons/Abilities/` is never clobbered.
 - Run the generator headless to create the directories and PNGs:
   `godot --headless -s res://Scripts/Debug/generate_placeholder_icons.gd`.
 - Gate cycle applies: a GUT test asserting the table is well-formed (unique
@@ -96,8 +110,9 @@ how the reagent and status-effect tables in
   omitted from the table.
 
 Watch for: skills already shipping real art (Stab, Zap, the Tidal Corsair kit,
-etc.) keep their existing files — the skip guard protects them, and only the
-skills this plan actually authors need new rows.
+etc.) keep their existing files under `Icons/Abilities/Role_Active_Skills/` —
+the skip guard protects them, and only the skills this plan actually authors
+need new rows.
 
 ### Batch 1 — skills on existing machinery
 
@@ -119,10 +134,11 @@ defense ignore. No resolver changes.
 
 ### Batch 2 — healing and health costs
 
-Skills that restore Health (through the status plan's `_ApplyHealthGain`,
-routed through `ResolveSkill` with heal targeting) and skills that cost the
-caster or allies Health. Includes most-injured-ally selection for heal
-targeting.
+Skills that restore Health and skills that cost the caster or allies Health.
+A heal path already exists (`BattleResolver.ResolveTraitHeal`, emitting
+`CombatResult.Kind.Heal`); this batch routes heal-targeted skills through
+`ResolveSkill` onto that same health-gain application rather than building a new
+hook. Includes most-injured-ally selection for heal targeting.
 
 - Champion skills: Fateful Glimpse (Diviner); Grafted Flesh (Symbiote);
   Liquid Courage (Bar Brawler); Blood Bolt, Transfusion, Tithe of Vitality
@@ -152,7 +168,9 @@ counting them, and per-buff-count damage scaling.
 
 - Prerequisite trait: Standing Record (Emissary passive — per-enemy
   Infraction tally, capped at 9, fed by buff gains, zone placements, and
-  debuffs landed; the Sanction debuff's dormant magnitude source goes live).
+  debuffs landed) is already implemented (`standing_record_trait.gd` +
+  `Standing_Record_Trait.tres`); this batch only wires the skills that read the
+  tally, and takes the Sanction debuff's dormant magnitude source live.
 - Champion skills: Citation, Signed Writ, Levied Sanction (Emissary); Devour
   Blessing, Rite of Severance (Cultist); Pratfall Sting (avoided-attack bonus
   read from the Jester's trait state) and Center Stage (Jester).
@@ -164,8 +182,12 @@ counting them, and per-buff-count damage scaling.
 Align zones with Concept Document 3.2.4.1 — charges instead of durations,
 player-chosen section placement, blocked placement into occupied sections —
 and make zone effects data-driven (a zone-effect definition on the `Skill` or
-a dedicated resource, replacing the per-type match arm in
-`_ResolveZoneEffect`). Migrate Flicker Zone and Lava Zone onto the new model.
+a dedicated resource, replacing the per-type effect logic). The zone lifecycle
+now lives in `Scripts/Battle/zone_resolver.gd` (`ZoneResolver`, with its
+`ActiveHook`), not a `_ResolveZoneEffect` match arm in `battle_resolver.gd`, and
+zones are still `_duration`-based — so target the charge/section rework and the
+data-driven effect definition at `ZoneResolver`. Migrate Flicker Zone and Lava
+Zone onto the new model.
 
 - Champion skills: Catalyst Cloud (Alchemist); Unstable Rift, Cataclysmic
   Surge (Sorcerer); Refutation (Scholar — zone removal, per-charge
@@ -197,9 +219,10 @@ turn-start check with an internal 4-turn cooldown.
 - Skills are deep-copied per character instance; any new per-battle skill
   state (ramps, alternation counters like Reliquary Ward's) belongs on the
   resolver, not the `Skill` resource — follow the Heap_On precedent.
-- `Break_Guard.tres` is currently attached to the Bar Brawler, but the design
-  docs catalog Break Guard as an opponent skill and give the Bar Brawler
-  Headbutt instead — realign in batch 1.
+- `Break_Guard.tres` is currently attached to the Bar Brawler (and now also to
+  the Cultist and Emissary presets, all as placeholders), but the design docs
+  catalog Break Guard as an opponent skill and give the Bar Brawler Headbutt
+  instead; `Headbutt.tres` does not exist yet — realign in batch 1.
 - `Fatal_Flaw.tres` targets All Other Allies; Concept 3.2.4.2 says one ally —
   flag with the user before changing either side.
 - If the Concept Document and the Encounter Design Document disagree on a
@@ -213,8 +236,9 @@ turn-start check with an internal 4-turn cooldown.
 
 - Update `Technical_Design_Document.md` sections 6.1 (resource templates),
   7.4 (skill resolution), and 7.5 (zones) whenever a batch changes the
-  architecture — the zone rework in batch 5 and the heal path in batch 2
-  certainly will.
+  architecture — the zone rework in batch 5 certainly will. The heal path and
+  status catalog are already documented, having landed with the completed
+  status-effect and Architect plans.
 - Strike the remaining skill-related "(Not yet implemented)" markers in
   Concept Document 3.1.3 as passives and kits land.
 - On completion: run `/review-implementation` against this plan, update the
