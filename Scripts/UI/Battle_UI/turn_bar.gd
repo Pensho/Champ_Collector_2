@@ -22,7 +22,7 @@ func Init(p_characters: Dictionary[int, Character], p_zone_callable: Callable, p
 	var speeds: Dictionary[int, int] = {}
 	for i in p_characters.keys():
 		speeds[i] = p_characters[i].GetTotalAttribute(Types.Attribute.Speed)
-	_characters_normalized_speed = NormalizeSpeeds(speeds)
+	RefreshSpeeds(speeds)
 	for i in p_characters.keys():
 		_character_turn_markers[i].size.y = self.size.y * 0.7
 		_character_turn_markers[i].size.x = _character_turn_markers[i].size.y
@@ -71,6 +71,9 @@ static func NormalizeSpeeds(p_speeds: Dictionary[int, int]) -> Dictionary[int, f
 		else:
 			normalized[id] = float(p_speeds[id]) / float(highest_speed)
 	return normalized
+
+func RefreshSpeeds(p_speeds: Dictionary[int, int]) -> void:
+	_characters_normalized_speed = NormalizeSpeeds(p_speeds)
 
 func SetupPlanReachOverlays(p_characters: Dictionary[int, Character], p_player_team: CombatTeam) -> void:
 	var owner_ids: Array[int]

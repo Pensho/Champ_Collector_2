@@ -38,7 +38,7 @@ func StartOfBattle(p_owner_ID: int, p_resolver: BattleResolver) -> void:
 	var enemies: Array[int] = p_resolver.GetSides().EnemiesOf(p_owner_ID).AliveMembers(p_resolver.GetCharacters())
 	for enemy_ID in enemies:
 		_weakness_by_enemy[enemy_ID] = _IdentifyWeakness(
-				p_resolver.GetCombatAttributes(enemy_ID), p_resolver.GetRandom())
+				p_resolver.GetEffectiveAttributes(enemy_ID), p_resolver.GetRandom())
 
 func OnDebuffApplied(
 		_p_owner_ID: int,

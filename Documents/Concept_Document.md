@@ -310,6 +310,11 @@ Most often require;
 #### 3.2.3. Status Effects
 A status effect is a temporary condition that can affect a character's attributes, abilities, or behavior in combat. Status effects can be beneficial (buffs) or detrimental (debuffs) and can significantly influence the outcome of battles.
 
+An attribute-modifying status holds its effect continuously for its whole duration: it affects
+every relevant calculation, not only the holder's own turn or moments when the holder is
+directly targeted. A Defense buff lowers incoming damage between the holder's own turns just as
+much as a Speed buff changes how fast the holder advances on the turn bar.
+
 Unless stated otherwise, a buff or debuff lasts 2 turns.
 
 Status effect descriptions are surfaced to the player in two places: a press-and-hold
@@ -334,8 +339,7 @@ Debuffs:
 * Burning: Deals 4% of max Health as damage per stack; Burning stacks, so repeated applications (e.g. standing in a Lava zone) add independent instances up to the status-effect cap.
 * Sequence Lock: Speed cannot be increased or decreased.
 * Suppress: Reduces Mysticism by 30%.
-* Slow: Reduces Speed by 15%. (Speed penalty applies to combat calculations; the turn-bar-rate
-  half is dormant until the turn bar reads live combat attributes instead of only base + gear)
+* Slow: Reduces Speed by 15%, including how fast the character advances on the turn bar.
 * Blind: Reduces Accuracy by 30%.
 * Unravel: Reduces Resistance by 30%.
 * Confound: Reduces Knowledge by 30%.
@@ -363,7 +367,7 @@ Buffs:
 * Luck: Roll calculations twice and take the better result.
 * Phalanx Guard: Gain bonus defense per stack of momentum consumed. (Lancer Specific)
 * Attune: Increases Mysticism by 30%.
-* Haste: Increases Speed by 20%; Haste stacks, so repeated applications add independent instances up to the status-effect cap. (Speed bonus applies to combat calculations; the turn-bar-rate half is dormant until the turn bar reads live combat attributes instead of only base + gear)
+* Haste: Increases Speed by 20%, including how fast the character advances on the turn bar; Haste stacks, so repeated applications add independent instances up to the status-effect cap.
 * True Aim: Increases Accuracy by 30%.
 * Clarity: Increases Resistance by 30%.
 * Keen Edge: Increases Critical Chance by 15 percentage points.

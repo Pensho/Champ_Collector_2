@@ -62,7 +62,7 @@ func test_critical_hit_through_the_resolver_applies_cracked_facet() -> void:
 	roster[0]._attributes[Types.Attribute.CritChance] = 100
 	var resolver: BattleResolver = TestFactory.make_resolver(roster, TestFactory.make_full_sides())
 
-	resolver.ResolveTraitDamage(0, [3], resolver.GetCombatAttributes(0), {Types.Attribute.Attack: 1.0}, true)
+	resolver.ResolveTraitDamage(0, [3], resolver.GetEffectiveAttributes(0), {Types.Attribute.Attack: 1.0}, true)
 
 	assert_eq(roster[3]._active_debuffs.size(), 1, "A guaranteed crit should apply Cracked Facet")
 	assert_eq(roster[3]._active_debuffs[0].type, Types.Debuff_Type.Cracked_Facet)
@@ -74,7 +74,7 @@ func test_non_critical_hit_applies_no_debuff() -> void:
 	roster[0]._attributes[Types.Attribute.CritChance] = 0
 	var resolver: BattleResolver = TestFactory.make_resolver(roster, TestFactory.make_full_sides())
 
-	resolver.ResolveTraitDamage(0, [3], resolver.GetCombatAttributes(0), {Types.Attribute.Attack: 1.0}, true)
+	resolver.ResolveTraitDamage(0, [3], resolver.GetEffectiveAttributes(0), {Types.Attribute.Attack: 1.0}, true)
 
 	assert_eq(roster[3]._active_debuffs.size(), 0, "A non-critical hit should not apply Cracked Facet")
 
@@ -85,7 +85,7 @@ func test_hook_does_not_fire_when_critical_hits_are_disallowed() -> void:
 	roster[0]._attributes[Types.Attribute.CritChance] = 100
 	var resolver: BattleResolver = TestFactory.make_resolver(roster, TestFactory.make_full_sides())
 
-	resolver.ResolveTraitDamage(0, [3], resolver.GetCombatAttributes(0), {Types.Attribute.Attack: 1.0}, false)
+	resolver.ResolveTraitDamage(0, [3], resolver.GetEffectiveAttributes(0), {Types.Attribute.Attack: 1.0}, false)
 
 	assert_eq(roster[3]._active_debuffs.size(), 0,
 		"Cracked Facet should not be applied when the damage source disallows critical hits")

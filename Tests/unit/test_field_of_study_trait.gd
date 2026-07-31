@@ -122,18 +122,23 @@ func test_each_debuff_on_a_studied_enemy_carries_its_own_rider() -> void:
 		assert_eq(applied.weakness_attribute, _trait._weakness_by_enemy[2])
 		assert_almost_eq(applied.weakness_reduction, FieldOfStudyTrait.GetWeaknessReduction(Types.Rarity.Epic), 0.0001)
 
-# --- The reduction actually lowers the identified attribute on a snapshot ---
+# --- The reduction actually lowers the identified attribute, live ---
 
-func test_weakness_rider_reduces_the_identified_attribute_on_a_target_snapshot() -> void:
+func test_weakness_rider_reduces_the_identified_attribute() -> void:
 	_InitTrait(Types.Rarity.Epic)
 	_trait.StartOfBattle(0, _resolver)
 	_resolver.GetStatusResolver().ApplyDebuff(2, _debuff_template(Types.Debuff_Type.Enfeeble, 3, 0))
 	var identified: Types.Attribute = _trait._weakness_by_enemy[2]
 
-	var attrs: Dictionary[Types.Attribute, int] = {identified: 100}
-	Skills.TriggerTargetDebuffs(_enemy_a, attrs)
+	# Attribute modifiers are always live now, so Enfeeble's own -30% on the identified
+	# attribute (Attack) is folded in too, before the rider's -8% of the reduced value:
+	# 100 -> 70 (Enfeeble) -> 64 (rider).
+	var attrs: Dictionary[Types.Attribute, int] = _enemy_a.GetTotalAttributes()
+	attrs[identified] = 100
+	Skills.ApplyActiveAttributeModifiers(_enemy_a, attrs)
 
-	assert_eq(attrs[identified], 92, "Epic Studied Weakness should reduce the identified attribute by 8%%")
+	assert_eq(attrs[identified], 64,
+		"Epic Studied Weakness should reduce the identified attribute by 8%% on top of Enfeeble's own -30%%")
 
 func test_two_riders_on_the_same_attribute_compound() -> void:
 	_InitTrait(Types.Rarity.Epic)
@@ -142,9 +147,12 @@ func test_two_riders_on_the_same_attribute_compound() -> void:
 	_resolver.GetStatusResolver().ApplyDebuff(2, _debuff_template(Types.Debuff_Type.Blind, 5, 0))
 	var identified: Types.Attribute = _trait._weakness_by_enemy[2]
 
-	var attrs: Dictionary[Types.Attribute, int] = {identified: 100}
-	Skills.TriggerTargetDebuffs(_enemy_a, attrs)
+	var attrs: Dictionary[Types.Attribute, int] = _enemy_a.GetTotalAttributes()
+	attrs[identified] = 100
+	Skills.ApplyActiveAttributeModifiers(_enemy_a, attrs)
 
-	# Two independent 8% riders compound sequentially: 100 -> 92 -> 84.
-	assert_eq(attrs[identified], 84,
+	# Enfeeble's own -30% on the identified attribute (Attack), then its 8% rider, then
+	# Blind's rider (Blind's own effect is on Accuracy, not Attack, so only its rider
+	# touches the identified attribute here): 100 -> 70 -> 64 -> 58.
+	assert_eq(attrs[identified], 58,
 		"Two simultaneous Scholar debuffs on the same enemy each carry their own rider")

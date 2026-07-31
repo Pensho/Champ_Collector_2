@@ -202,27 +202,18 @@ static func DispatchDebuffApplied(
 	if(null != active_trait):
 		active_trait.OnDebuffApplied(p_debuff.source_ID, p_target_ID, p_debuff, p_resolver)
 
-# TODO: Right now the targeting only inherits the skill target and doesn't use
-# the buff targets yet.
-static func TriggerTargetBuffs(
-							p_target: Character,
-							p_target_attributes: Dictionary[Types.Attribute, int]) -> void:
-	for buff in p_target._active_buffs:
+static func ApplyActiveAttributeModifiers(
+							p_character: Character,
+							p_attributes: Dictionary[Types.Attribute, int]) -> void:
+	for buff in p_character._active_buffs:
 		var data: StatusEffectData = StatusEffectRegistry.BuffData(buff.type)
-		if(null == data or not data.applies_on_target_snapshot or not IsAttributeModifierKind(data.magnitude_kind)):
-			continue
-		ApplyAttributeModifiers(data, buff.value, p_target_attributes)
-
-# TODO: Right now the targeting only inherits the skill target and doesn't use
-# the debuff targets yet.
-static func TriggerTargetDebuffs(
-							p_target: Character,
-							p_target_attributes: Dictionary[Types.Attribute, int]) -> void:
-	for debuff in p_target._active_debuffs:
+		if(null != data and IsAttributeModifierKind(data.magnitude_kind)):
+			ApplyAttributeModifiers(data, buff.value, p_attributes)
+	for debuff in p_character._active_debuffs:
 		var data: StatusEffectData = StatusEffectRegistry.DebuffData(debuff.type)
-		if(null != data and data.applies_on_target_snapshot and IsAttributeModifierKind(data.magnitude_kind)):
-			ApplyAttributeModifiers(data, debuff.value, p_target_attributes)
-		ApplyWeaknessRider(debuff, p_target_attributes)
+		if(null != data and IsAttributeModifierKind(data.magnitude_kind)):
+			ApplyAttributeModifiers(data, debuff.value, p_attributes)
+		ApplyWeaknessRider(debuff, p_attributes)
 
 static func RollsCritical(p_crit_chance: int, p_random: RandomNumberGenerator) -> bool:
 	return p_random.randi_range(1, 100) <= p_crit_chance

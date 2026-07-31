@@ -19,7 +19,7 @@ func _debuff(p_type: Types.Debuff_Type) -> StatusEffects.Debuff:
 	debuff.value = StatusEffectRegistry.DebuffData(p_type).magnitude
 	return debuff
 
-func test_frenzy_target_snapshot_moves_all_four_attributes() -> void:
+func test_frenzy_moves_all_four_effective_attributes() -> void:
 	var character: Character = TestFactory.make_character()
 	character._active_buffs.append(_buff(Types.Buff_Type.Frenzy))
 	var attrs: Dictionary[Types.Attribute, int] = {
@@ -28,27 +28,24 @@ func test_frenzy_target_snapshot_moves_all_four_attributes() -> void:
 		Types.Attribute.Defence: 100,
 		Types.Attribute.Accuracy: 100,
 	}
-	Skills.TriggerTargetBuffs(character, attrs)
+	Skills.ApplyActiveAttributeModifiers(character, attrs)
 	assert_eq(attrs[Types.Attribute.Attack], 130, "Frenzy should raise Attack by 30%")
 	assert_eq(attrs[Types.Attribute.Speed], 130, "Frenzy should raise Speed by 30%")
 	assert_eq(attrs[Types.Attribute.Defence], 70, "Frenzy should lower Defence by 30%")
 	assert_eq(attrs[Types.Attribute.Accuracy], 70, "Frenzy should lower Accuracy by 30%")
 
-func test_suppress_reduces_target_snapshot_mysticism_using_debuff_value() -> void:
+func test_suppress_reduces_effective_mysticism_using_debuff_value() -> void:
 	var character: Character = TestFactory.make_character()
 	character._active_debuffs.append(_debuff(Types.Debuff_Type.Suppress))
 	var attrs: Dictionary[Types.Attribute, int] = {Types.Attribute.Mysticism: 100}
-	# Suppress applies at self-tick, not target-snapshot, so route it through the
-	# same generic helper the self-tick sites use.
-	Skills.ApplyAttributeModifiers(StatusEffectRegistry.DebuffData(Types.Debuff_Type.Suppress),
-			character._active_debuffs[0].value, attrs)
+	Skills.ApplyActiveAttributeModifiers(character, attrs)
 	assert_eq(attrs[Types.Attribute.Mysticism], 70, "Suppress should lower Mysticism by 30%")
 
-func test_unravel_reduces_target_snapshot_resistance() -> void:
+func test_unravel_reduces_effective_resistance() -> void:
 	var character: Character = TestFactory.make_character()
 	character._active_debuffs.append(_debuff(Types.Debuff_Type.Unravel))
 	var attrs: Dictionary[Types.Attribute, int] = {Types.Attribute.Resistance: 100}
-	Skills.TriggerTargetDebuffs(character, attrs)
+	Skills.ApplyActiveAttributeModifiers(character, attrs)
 	assert_eq(attrs[Types.Attribute.Resistance], 70, "Unravel should lower Resistance by 30%")
 
 func test_keen_edge_adds_flat_crit_chance_points_not_a_percent() -> void:

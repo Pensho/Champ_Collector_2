@@ -93,3 +93,41 @@ func test_get_battle_attribute_includes_equipment_bonus() -> void:
 	assert_eq(_character.GetTotalAttribute(Types.Attribute.Attack), 15,
 		"GetTotalAttribute should sum base attribute and equipment bonus")
 	weapon.free()
+
+# --- Discrete contributor steps (GetBaseAttributes / ApplyEquipmentBonuses / ApplyTraitAttributeBonus) ---
+
+func test_get_base_attributes_is_a_copy_independent_of_the_character() -> void:
+	_character._attributes[Types.Attribute.Attack] = 10
+	var base: Dictionary[Types.Attribute, int] = _character.GetBaseAttributes()
+	base[Types.Attribute.Attack] = 999
+	assert_eq(_character._attributes[Types.Attribute.Attack], 10,
+		"GetBaseAttributes must return a copy, not a reference into the character's own sheet")
+
+func test_apply_equipment_bonuses_adds_gear_onto_an_existing_dictionary() -> void:
+	_character._attributes[Types.Attribute.Attack] = 10
+	var weapon: Equipment = Equipment.new()
+	weapon._slot = Types.Slot.Weapon
+	weapon._attributes[Types.Attribute.Attack] = 5
+	_item_col._items[0] = weapon
+	_character.EquipItem(0)
+
+	var attrs: Dictionary[Types.Attribute, int] = _character.GetBaseAttributes()
+	_character.ApplyEquipmentBonuses(attrs)
+
+	assert_eq(attrs[Types.Attribute.Attack], 15)
+	weapon.free()
+
+func test_apply_trait_attribute_bonus_is_a_no_op_without_a_trait() -> void:
+	var attrs: Dictionary[Types.Attribute, int] = _character.GetBaseAttributes()
+	var before: Dictionary[Types.Attribute, int] = attrs.duplicate(true)
+	_character.ApplyTraitAttributeBonus(attrs)
+	assert_eq(attrs, before, "A character with no trait should leave attributes untouched")
+
+func test_apply_trait_attribute_bonus_is_a_no_op_for_a_plain_trait() -> void:
+	# Character delegates to whatever _trait it holds, generically — it does not know grafts
+	# exist. A plain CharacterTrait's default GetAttributeDelta returns 0, same as no trait.
+	_character._trait = CharacterTrait.new()
+	var attrs: Dictionary[Types.Attribute, int] = _character.GetBaseAttributes()
+	var before: Dictionary[Types.Attribute, int] = attrs.duplicate(true)
+	_character.ApplyTraitAttributeBonus(attrs)
+	assert_eq(attrs, before, "A trait that doesn't override GetAttributeDelta should leave attributes untouched")

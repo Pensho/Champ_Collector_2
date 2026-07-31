@@ -252,7 +252,7 @@ load time. There is a consistent **preset (template) vs instance (runtime)** spl
 | `AdventureTemplate` | `Scripts/Adventure_Scripts/adventure_template.gd` | Adventure generation parameters |
 | `BiomeData` | `Scripts/Adventure_Scripts/biome_data.gd` | Biome enemy pools and boss definitions |
 | `CharacterTrait` | `Scripts/Character/character_traits/character_trait.gd` | Base class for character special abilities (see [Section 9](#9-trait-hook-system)) |
-| `StatusEffectData` | `Scripts/Battle/status_effect_data.gd` | Buff/debuff definition: magnitude, magnitude kind, default duration, overwrite/stack rules, application sites, icon |
+| `StatusEffectData` | `Scripts/Battle/status_effect_data.gd` | Buff/debuff definition: magnitude, magnitude kind, default duration, overwrite/stack rules, self-tick behavior, icon |
 | `ReagentData` | `Scripts/Battle/reagent_data.gd` | Reagent definition (one rarity tier per resource): effect kind, target kind, rarity, binary flag, magnitude(s), icon |
 | `ReagentCollection` | `Scripts/Gear/reagent_collection.gd` | Persistent player-owned reagent counts, keyed by `ReagentRegistry` identifier string |
 
@@ -300,8 +300,16 @@ enum MagnitudeKind {
 @export var duration_default: int = 2
 @export var overwritable: bool = true                       # re-apply refreshes duration
 @export var stackable: bool = false                         # re-apply adds an independent instance
-@export var applies_on_self_tick: bool = true                # ticks on the holder's own turn
-@export var applies_on_target_snapshot: bool = false          # applies when the holder is targeted
+@export var applies_on_self_tick: bool = true                # has a genuine per-turn tick effect
+                                                             # (DoT/HoT, self-tick Health cost, a
+                                                             # re-rolled random attribute, a damage
+                                                             # multiplier) — does NOT gate
+                                                             # attribute_modifiers, which are always
+                                                             # live (see below)
+@export var applies_on_target_snapshot: bool = false          # vestigial: no longer read anywhere;
+                                                             # kept only so the existing .tres
+                                                             # resources don't need a values
+                                                             # migration
 @export var self_tick_max_health_cost_percent: float = 0.0    # extra self-tick Health cost,
                                                              # independent of magnitude_kind (Exhert)
 @export var icon: Texture2D
@@ -310,26 +318,82 @@ enum MagnitudeKind {
 `StatusEffects.Buff`/`Debuff` (`Scripts/Battle/status_effects.gd`) carry the resolved per-instance
 `value` (Empower/Fortify read `StatusEffectData.magnitude` by default; Phalanx Guard overrides it
 per-rarity in `LancerTrait`). Debuffs resolve `value` the same way buffs do (`ApplyDebuff`/
-`CastDebuff` default it to `data.magnitude`), so both buff and debuff self-tick/target-snapshot
-sites read one instance value instead of buffs reading `value` and debuffs reading `data.magnitude`
-directly. `ApplyBuff`/`ApplyDebuff`/`_CastBuff`/`CastDebuff` (`StatusEffectResolver`, see
+`CastDebuff` default it to `data.magnitude`), so both buff and debuff read one instance value
+instead of buffs reading `value` and debuffs reading `data.magnitude` directly. `ApplyBuff`/
+`ApplyDebuff`/`_CastBuff`/`CastDebuff` (`StatusEffectResolver`, see
 [Section 15.10](#1510-battle_resolvergd-growth-the-zoneresolver-and-statuseffectresolver-splits))
 all resolve `stackable`/`overwritable` from the registry instead of the old
-`Skills.OverwritableBuff`/`OverwritableDebuff` match statements, and the caster-tick methods
-(`_TriggerExistingCasterBuffs`/`Debuffs`) and target-snapshot methods (`Skills.TriggerTargetBuffs`/
-`TriggerTargetDebuffs`) dispatch generically on `magnitude_kind` instead of the buff/debuff type,
-routing `AttributePercent`/`AttributePercentagePointAdd` through the shared
-`Skills.ApplyAttributeModifiers` helper, which loops `attribute_modifiers` instead of touching one
-hardcoded attribute (needed for effects like Frenzy that move several attributes with mixed signs
-in one status). `AttributePercentagePointAdd` adds `magnitude` directly instead of a percent of the
-current value, for the crit stats (Keen Edge, Lethal Precision) where a percent-of-attribute
-reading would be nearly meaningless at low Crit Chance values.
+`Skills.OverwritableBuff`/`OverwritableDebuff` match statements.
+
+**Attribute modifiers are always live, not sampled at two checkpoints.** Earlier, an
+attribute-modifying status (`AttributePercent`/`AttributePercentagePointAdd`) was only folded
+into a combatant's attributes at two gated moments: the holder's own turn
+(`applies_on_self_tick`) and when the holder was directly targeted (`applies_on_target_snapshot`).
+Every other combat read — debuff-resist rolls, redirected/soaked damage, trait/DoT damage, the
+Temporal Leak DoT, turn-bar Speed — used a status-blind base value the rest of the time, so a
+status held its effect only in those two moments instead of continuously for its whole duration.
+`BattleResolver.GetEffectiveAttributes(character_ID)` is now the single source of truth for a
+combatant's current attributes, and every combat read that needs "this character's attributes
+right now" calls it. It composes five ordered contributor steps live on every call — order
+matters, since the trait delta and status percentages both read the running total:
+
+```gdscript
+func GetEffectiveAttributes(p_character_ID: int) -> Dictionary[Types.Attribute, int]:
+    var character: Character = _characters[p_character_ID]
+    var attributes: Dictionary[Types.Attribute, int] = character.GetBaseAttributes()  # 1. base
+    character.ApplyEquipmentBonuses(attributes)                                      # 2. gear
+    character.ApplyTraitAttributeBonus(attributes)                                   # 3. trait
+    _ApplyLongAttributeBonus(p_character_ID, attributes)                # 4. reagent long-bonus
+    Skills.ApplyActiveAttributeModifiers(character, attributes)         # 5. active statuses
+    return attributes
+```
+
+Each step is its own function rather than a pre-baked bundle: `Character.GetBaseAttributes()`,
+`ApplyEquipmentBonuses()`, and `ApplyTraitAttributeBonus()` (steps 1–3) also compose into
+`Character.GetTotalAttributes()`/`GetTotalAttribute()`, the accessor non-combat and
+battle-setup reads use when no active statuses are relevant (max Health display, AI targeting
+priority, initial turn-bar seeding). Step 3 asks `Character._trait` generically via
+`CharacterTrait.GetAttributeDelta(attribute, running_value)` (default: 0, no contribution) —
+`Character` has no graft-specific code path; `GraftEffect` is simply the one `CharacterTrait`
+subclass that overrides it today. This keeps `Character` unaffected if a future non-graft trait
+ever needs to contribute a static attribute delta. `Skills.ApplyActiveAttributeModifiers`
+(step 5) replaced the old `Skills.TriggerTargetBuffs`/`TriggerTargetDebuffs` pair and the
+attribute-modifier branches inside `StatusEffectResolver._TriggerExistingCasterBuffs`/`Debuffs`;
+it folds every active attribute-modifying buff then debuff (plus any debuff weakness rider) into
+the given attributes dictionary unconditionally — there is no gating flag. The old
+`GetCombatAttributes()` (base + gear + graft + reagent, but never statuses) is retired; the few
+combat-time sites that deliberately want the pre-status value (reagent %-scaling in
+`_ApplyReagentAttributeIncrease`, so a semi-permanent bonus can't compound off a temporary buff;
+`_SnapshotStatusValue`'s snapshot-at-application reads for `CasterAttributeSnapshotPercent` DoTs)
+call `Character.GetTotalAttributes()` plus `BattleResolver._ApplyLongAttributeBonus()` explicitly,
+so no accessor silently hides statuses again.
+
+Base and gear (steps 1–2) are combat-static — nothing mutates a character's base sheet or gear
+once combat is running — so they are a trivial memoization point if profiling ever justifies it.
+`GetEffectiveAttributes` deliberately does not cache them: the call volume is tiny (turn-based,
+at most six combatants), and caching would add resolver state plus a static-layer invariant to
+maintain for no measurable gain. The trait delta (step 3) is not static — a Symbiote can graft
+mid-battle — so it must stay live regardless.
+
+Turn order and the turn bar's advance rate now also read live Speed:
+`Battle.RefreshTurnBarSpeeds()` rebuilds the normalized speed ratios
+(`TurnBar.RefreshSpeeds`/`NormalizeSpeeds`) from every living character's
+`GetEffectiveAttributes(id)[Speed]`, called once at battle start and again each time a turn
+completes back into `BattleState.Advancing` — never every frame, since statuses only change
+during a turn's resolution.
+
+`Skills.ApplyAttributeModifiers`, the low-level helper `ApplyActiveAttributeModifiers` calls per
+status, loops `attribute_modifiers` instead of touching one hardcoded attribute (needed for
+effects like Frenzy that move several attributes with mixed signs in one status).
+`AttributePercentagePointAdd` adds `magnitude` directly instead of a percent of the current
+value, for the crit stats (Keen Edge, Lethal Precision) where a percent-of-attribute reading
+would be nearly meaningless at low Crit Chance values.
 Zone-applied debuffs (e.g. the Lava zone's Burning) come from the placing `Skill`'s existing
 `debuffs` dictionary, keyed by the skill's own `target`, rather than being hardcoded in
 `ZoneResolver._ResolveZoneEffect`.
 
-Three magnitude kinds are read directly at their own application site instead of through the
-self-tick/target-snapshot loops: `MaxHealthAttributePercent` (Vigor) is summed by
+Three magnitude kinds are read directly at their own application site instead of through
+`ApplyActiveAttributeModifiers`: `MaxHealthAttributePercent` (Vigor) is summed by
 `BattleResolver._MaxHealth()` from the holder's active buffs, with a reclamp of current health to
 the new max when such a buff expires; `PerTargetDebuffDamagePercent` (Opportunist) and
 `AttackerCritChanceBonus`/`AttackerCritDamageBonus` (Exposed Facet/Cracked Facet) are read in
@@ -356,8 +420,9 @@ Leak) is the one magnitude kind with no self-tick or target-snapshot involvement
 by the new public entry point `BattleResolver.AccumulateTurnBarMovement(character_ID, fraction_moved)`,
 called every frame from `Battle.AdvanceTurnBar()` with the fraction `TurnBar.Update()` reports it
 just advanced the character's marker by. The resolver accumulates fractional progress per holder
-and deals Speed-scaled damage each time `GameBalance.TURN_BAR_PROGRESS_TRIGGER_FRACTION` (0.1) is
-crossed — the only application site backed by the view layer instead of purely resolver-internal
+and deals damage scaled by the holder's live `GetEffectiveAttributes` Speed (so a Speed buff/debuff
+changes the tick, not just the base sheet) each time `GameBalance.TURN_BAR_PROGRESS_TRIGGER_FRACTION`
+(0.1) is crossed — the only application site backed by the view layer instead of purely resolver-internal
 state, since turn-bar position is tracked in `TurnBar`, not the resolver; `TurnBar.Update()` and
 `Battle.AdvanceTurnBar()` are thin unconditional pass-throughs, so the actual behavior stays in the
 resolver and is tested without the view. `CombatResult.Kind.Burning_Tick` was renamed to
@@ -368,8 +433,8 @@ used exclusively before.
 each, instead of every field being generic across all debuffs: `tick_bonus_per_debuff`
 (Comorbidity) and the `has_weakness_rider`/`weakness_attribute`/`weakness_reduction` trio (the
 Scholar's Field of Study, stamped in `OnDebuffApplied` onto whichever debuff triggered it, read by
-`Skills.ApplyWeaknessRider` at both self-tick and target-snapshot) both sit unused on every debuff
-instance that isn't theirs. Fine at two, but this is a shape to watch — see FeatureIdeas.md's
+`Skills.ApplyWeaknessRider` wherever `GetEffectiveAttributes` folds in active statuses, always
+live) both sit unused on every debuff instance that isn't theirs. Fine at two, but this is a shape to watch — see FeatureIdeas.md's
 "Watch Debuff Class Field Bloat" entry for the reassessment trigger.
 
 Batch 3 landed the consumed and event-triggered effects: two more `MagnitudeKind` values
@@ -604,17 +669,19 @@ the skill UI, and returns to `Advancing` (or ends the battle).
 
 `ResolveSkill(caster_ID, target_IDs, skill_ID) -> Array[CombatResult]` is the core sequence:
 
-1. Snapshot caster attributes via `GetCombatAttributes()` (base + gear + any battle-long
-   reagent attribute bonus, see section 7.7).
+1. Read the caster's live attributes via `GetEffectiveAttributes()` (base + gear + graft + any
+   battle-long reagent attribute bonus + active statuses, see section 6.1).
 2. Fire the `OnSkillCast` trait hook → returns a `TraitSkillResult` carrying a damage multiplier
    and turn-bar bump.
 3. Tick the caster's own active debuffs and buffs — per-turn effects (e.g. Burning deals 4% of
    max HP, reported as a `Debuff_Tick` result with a per-source damage split; Regeneration heals
    4% of max HP, reported as `Heal`) and duration decrements (reported as `Status_Duration` /
-   `Statuses_Removed` results).
+   `Statuses_Removed` results). Attribute modifiers are no longer applied here — they were already
+   folded in at step 1.
 4. Resolve caster-side skill mechanics (e.g. Heap On stacking against the resolver's per-combat
    state).
-5. For each target: apply buff/debuff snapshots, fire `OnDefend`, optionally cast the skill's
+5. For each target: read the target's live attributes via `GetEffectiveAttributes()`, fire
+   `OnDefend`, optionally cast the skill's
    buff/debuff (debuffs are accuracy-vs-resistance rolled on the resolver's generator; a failed
    roll reports `Debuff_Resisted`), and compute damage.
 6. Apply damage to `_current_health` (clamped; an alive→dead transition clears the victim's
@@ -722,7 +789,7 @@ cooldown, never fires `Start_Turn`/`End_Turn`, and never advances the turn bar.
 - **Battle-long mechanisms.** Two effects persist for the rest of the battle without being a
   `StatusEffects.Buff` (undispellable, unstealable, invisible to buff-counting):
   `_battle_long_attribute_bonus` (Tinctures — folded into
-  `GetCombatAttributes()`) and `_damage_dealt_bonus` (Fractured Idol — folded into
+  `GetEffectiveAttributes()` via `_ApplyLongAttributeBonus()`) and `_damage_dealt_bonus` (Fractured Idol — folded into
   `_ResolveDamage` via `Skills.DamageDealt`). Both are plain resolver-owned dictionaries
   that disappear with the resolver at battle end, needing no explicit cleanup.
 - **Deferred turn-bar reset.** Second Wind Phial's reset can't apply at consumption time
@@ -970,12 +1037,16 @@ subsystem:
   code. Concrete grafts (`Scripts/Character/character_traits/Grafts/`, e.g.
   `ReactivePlatingGraft`) subclass `GraftEffect`, override `_BonusForRarity(rarity)` and
   `_Drawback()`, and register hooks in `Init` exactly like any other trait.
-- **Attribute layer** — `GraftEffect.GetAttributeDelta(attribute, base_value)` returns a
-  percent-of-base delta (a rarity-scaled bonus plus a flat-percent drawback, both expressed as
-  `Dictionary[Types.Attribute, float]`), applied on read in `Character.GetTotalAttribute`/
-  `GetTotalAttributes` the same way `GetEquipmentBonus` is — `_attributes` itself is never
-  mutated, so there is one source of truth (the graft identity) and no double-application on
-  load.
+- **Attribute layer** — `GetAttributeDelta(attribute, base_value)` is declared on `CharacterTrait`
+  itself (default: 0, no contribution), not on `GraftEffect` — `Character.ApplyTraitAttributeBonus()`
+  (see section 6.1's `GetEffectiveAttributes` contributor steps) asks whatever `_trait` a
+  character holds, generically, the same way `ApplyEquipmentBonuses` applies `GetEquipmentBonus`.
+  `GraftEffect` overrides it to return a percent-of-base delta (a rarity-scaled bonus plus a
+  flat-percent drawback, both expressed as `Dictionary[Types.Attribute, float]`) — `_attributes`
+  itself is never mutated, so there is one source of truth (the graft identity) and no
+  double-application on load. `Character` never references `GraftEffect` or grafts by name for
+  this; a future non-graft trait needing a static attribute delta overrides the same base-class
+  method with no change to `Character`.
 
 `Character` holds two independent `GraftEffect` references: `_graft_effect` is the offer an
 enemy preset carries (`CharacterPreset._graft_effect`, populated per-enemy as the graft pool is
@@ -1178,7 +1249,7 @@ delta)` is a public mutator over the existing `_battle_long_attribute_bonus` lay
 written only by the private `_ApplyReagentAttributeIncrease`, which now calls it for its
 dict-merge instead of duplicating the logic) — a positive delta grants a flat attribute bonus for
 the rest of the battle, negative removes one, and it is summed into every combat calculation via
-the existing `GetCombatAttributes`. `SymbioticAnchorGraft` registers `Start_Combat` and
+`GetEffectiveAttributes`. `SymbioticAnchorGraft` registers `Start_Combat` and
 `Ally_Death`: it tethers to a random living ally (the same pick-random-ally/re-tether-on-death
 idiom as `StrengthInNumbersGraft`/`ChosenVesselTrait`), snapshotting 20% of the Symbiote's own
 total Resistance and Attack at the moment of tethering and granting it to the tethered ally via
@@ -1256,8 +1327,9 @@ Resolved by the completed data-driven-status-effects plan: buff/debuff magnitude
 overwrite/stack rules, application sites, and icons now live on one `StatusEffectData`
 resource per effect under `Data/Status_Effects/`, looked up through
 `StatusEffectRegistry` (see section 6.1). `skills.gd`/`BattleResolver`'s per-type
-`match` blocks and the `Statuses.BUFF_ICONS`/`DEBUFF_ICONS` maps are gone; the caster-tick
-and target-snapshot methods dispatch generically on `StatusEffectData.magnitude_kind`.
+`match` blocks and the `Statuses.BUFF_ICONS`/`DEBUFF_ICONS` maps are gone; the effect-application
+methods dispatch generically on `StatusEffectData.magnitude_kind` (see section 6.1's
+"always live" note for how that dispatch is wired today).
 
 ### 15.9. The Symbiote's Graft passive needed generic effect + attribute-bonus machinery — resolved
 

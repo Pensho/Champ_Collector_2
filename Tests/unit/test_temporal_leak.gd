@@ -62,3 +62,20 @@ func test_no_effect_without_the_debuff() -> void:
 	_roster[0]._attributes[Types.Attribute.Speed] = 20
 	var results: Array[CombatResult] = _resolver.AccumulateTurnBarMovement(0, 1.0)
 	assert_eq(results.size(), 0, "Movement without Temporal Leak active should do nothing")
+
+func test_damage_scales_with_live_speed_not_just_base() -> void:
+	_roster[0]._attributes[Types.Attribute.Speed] = 20
+	_add_temporal_leak(0)
+	var haste: StatusEffects.Buff = StatusEffects.Buff.new()
+	haste.type = Types.Buff_Type.Haste
+	haste.duration = 2
+	_roster[0]._active_buffs.append(haste)
+
+	var results: Array[CombatResult] = _resolver.AccumulateTurnBarMovement(0, Game_Balance.TURN_BAR_PROGRESS_TRIGGER_FRACTION)
+
+	var ticks: Array = results.filter(func(r): return r.kind == CombatResult.Kind.Debuff_Tick)
+	assert_eq(ticks.size(), 1)
+	# Haste's live +20% Speed (20 -> 24) must be read, not the base 20 GetCombatAttributes
+	# used to return before attribute modifiers became always-live.
+	assert_eq(ticks[0].amount, _expected_tick(24),
+		"Temporal Leak's tick damage must scale off live Speed, including active Speed buffs")

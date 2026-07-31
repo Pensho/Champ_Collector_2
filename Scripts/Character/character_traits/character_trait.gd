@@ -141,3 +141,6 @@ func OnAffectedByZone(_p_owner_ID: int, _p_zone_owner_ID: int, _p_resolver: Batt
 func GetIncomingZoneEffectMultiplier(
 		_p_owner_ID: int, _p_zone_owner_ID: int, _p_sides: CombatSides) -> float:
 	return 1.0
+
+func GetAttributeDelta(_p_attribute: Types.Attribute, _p_base_value: int) -> int:
+	return 0

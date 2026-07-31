@@ -177,7 +177,7 @@ func test_hollow_hunger_heals_owner_by_lifesteal_fraction_of_damage_dealt() -> v
 	var resolver: BattleResolver = TestFactory.make_resolver(roster, TestFactory.make_full_sides())
 
 	var results: Array[CombatResult] = resolver.ResolveTraitDamage(
-			0, [3], resolver.GetCombatAttributes(0), {Types.Attribute.Attack: 1.0})
+			0, [3], resolver.GetEffectiveAttributes(0), {Types.Attribute.Attack: 1.0})
 
 	var damage_dealt: int = 0
 	var healed: int = -1

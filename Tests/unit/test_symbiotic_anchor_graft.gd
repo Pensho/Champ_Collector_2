@@ -35,8 +35,8 @@ func test_start_of_battle_shares_resistance_and_attack_with_the_only_living_ally
 			+ int(ceilf(roster[0].GetTotalAttribute(Types.Attribute.Resistance) * 0.20))
 	var expected_attack: int = roster[1].GetTotalAttribute(Types.Attribute.Attack) \
 			+ int(ceilf(roster[0].GetTotalAttribute(Types.Attribute.Attack) * 0.20))
-	assert_eq(resolver.GetCombatAttributes(1)[Types.Attribute.Resistance], expected_resistance)
-	assert_eq(resolver.GetCombatAttributes(1)[Types.Attribute.Attack], expected_attack)
+	assert_eq(resolver.GetEffectiveAttributes(1)[Types.Attribute.Resistance], expected_resistance)
+	assert_eq(resolver.GetEffectiveAttributes(1)[Types.Attribute.Attack], expected_attack)
 
 func test_re_tethers_to_the_surviving_ally_when_the_tethered_ally_dies() -> void:
 	var roster: Dictionary = TestFactory.make_full_roster()
@@ -52,7 +52,7 @@ func test_re_tethers_to_the_surviving_ally_when_the_tethered_ally_dies() -> void
 
 	var expected_resistance: int = roster[2].GetTotalAttribute(Types.Attribute.Resistance) \
 			+ int(ceilf(roster[0].GetTotalAttribute(Types.Attribute.Resistance) * 0.20))
-	assert_eq(resolver.GetCombatAttributes(2)[Types.Attribute.Resistance], expected_resistance,
+	assert_eq(resolver.GetEffectiveAttributes(2)[Types.Attribute.Resistance], expected_resistance,
 			"The new sole survivor should now carry the shared bonus")
 
 func test_a_non_tethered_allys_death_is_a_no_op() -> void:
@@ -62,11 +62,11 @@ func test_a_non_tethered_allys_death_is_a_no_op() -> void:
 	roster[2]._current_health = 0
 	var resolver: BattleResolver = TestFactory.make_resolver(roster, TestFactory.make_full_sides())
 	roster[0]._trait.StartOfBattle(0, resolver)
-	var before: int = resolver.GetCombatAttributes(1)[Types.Attribute.Resistance]
+	var before: int = resolver.GetEffectiveAttributes(1)[Types.Attribute.Resistance]
 
 	roster[0]._trait.OnAllyDeath(0, 2, resolver)
 
-	assert_eq(resolver.GetCombatAttributes(1)[Types.Attribute.Resistance], before,
+	assert_eq(resolver.GetEffectiveAttributes(1)[Types.Attribute.Resistance], before,
 			"Death of an ally that was never tethered should not re-tether")
 
 func test_symbiote_alone_leaves_no_tether_and_does_not_crash() -> void:
@@ -89,9 +89,9 @@ func test_shared_bonus_is_a_snapshot_that_ignores_later_symbiote_stat_changes() 
 	roster[2]._current_health = 0
 	var resolver: BattleResolver = TestFactory.make_resolver(roster, TestFactory.make_full_sides())
 	roster[0]._trait.StartOfBattle(0, resolver)
-	var before: int = resolver.GetCombatAttributes(1)[Types.Attribute.Resistance]
+	var before: int = resolver.GetEffectiveAttributes(1)[Types.Attribute.Resistance]
 
 	resolver.AdjustLongAttributeBonus(0, Types.Attribute.Resistance, 50)
 
-	assert_eq(resolver.GetCombatAttributes(1)[Types.Attribute.Resistance], before,
+	assert_eq(resolver.GetEffectiveAttributes(1)[Types.Attribute.Resistance], before,
 			"The ally's shared bonus should not follow later changes to the Symbiote's Resistance")

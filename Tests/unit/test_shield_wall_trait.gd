@@ -89,7 +89,7 @@ func test_in_window_attack_splits_between_target_and_warlord() -> void:
 			roster, TestFactory.make_full_sides(), positions)
 
 	var results: Array[CombatResult] = resolver.ResolveTraitDamage(
-			3, [0], resolver.GetCombatAttributes(3), {Types.Attribute.Attack: 1.0})
+			3, [0], resolver.GetEffectiveAttributes(3), {Types.Attribute.Attack: 1.0})
 
 	assert_eq(_damage_to(results, 0).size(), 1, "The attacked ally still takes a share of the damage")
 	assert_eq(_damage_to(results, 1).size(), 1, "The Warlord soaks a redirected share")
@@ -102,7 +102,7 @@ func test_out_of_window_attack_is_not_redirected() -> void:
 			roster, TestFactory.make_full_sides(), positions)
 
 	var results: Array[CombatResult] = resolver.ResolveTraitDamage(
-			3, [0], resolver.GetCombatAttributes(3), {Types.Attribute.Attack: 1.0})
+			3, [0], resolver.GetEffectiveAttributes(3), {Types.Attribute.Attack: 1.0})
 
 	assert_eq(_damage_to(results, 0).size(), 1)
 	assert_eq(_damage_to(results, 1).size(), 0, "No redirect when the Warlord is outside the proximity window")
@@ -116,14 +116,14 @@ func test_soaked_share_is_mitigated_by_the_warlords_own_defence() -> void:
 	var low_defence_resolver: BattleResolver = TestFactory.make_resolver(
 			low_defence_roster, TestFactory.make_full_sides(), positions)
 	var low_defence_results: Array[CombatResult] = low_defence_resolver.ResolveTraitDamage(
-			3, [0], low_defence_resolver.GetCombatAttributes(3), {Types.Attribute.Attack: 1.0})
+			3, [0], low_defence_resolver.GetEffectiveAttributes(3), {Types.Attribute.Attack: 1.0})
 
 	var high_defence_roster: Dictionary[int, Character] = _make_roster_with_warlord(500)
 	high_defence_roster[3]._attributes[Types.Attribute.Attack] = 300
 	var high_defence_resolver: BattleResolver = TestFactory.make_resolver(
 			high_defence_roster, TestFactory.make_full_sides(), positions)
 	var high_defence_results: Array[CombatResult] = high_defence_resolver.ResolveTraitDamage(
-			3, [0], high_defence_resolver.GetCombatAttributes(3), {Types.Attribute.Attack: 1.0})
+			3, [0], high_defence_resolver.GetEffectiveAttributes(3), {Types.Attribute.Attack: 1.0})
 
 	var low_defence_soak: int = _damage_to(low_defence_results, 1)[0].amount
 	var high_defence_soak: int = _damage_to(high_defence_results, 1)[0].amount
@@ -142,7 +142,7 @@ func test_soaked_share_scales_with_the_redirect_fraction() -> void:
 	var low_rarity_resolver: BattleResolver = TestFactory.make_resolver(
 			low_rarity_roster, TestFactory.make_full_sides(), positions)
 	var low_rarity_results: Array[CombatResult] = low_rarity_resolver.ResolveTraitDamage(
-			3, [0], low_rarity_resolver.GetCombatAttributes(3), {Types.Attribute.Attack: 1.0})
+			3, [0], low_rarity_resolver.GetEffectiveAttributes(3), {Types.Attribute.Attack: 1.0})
 
 	var high_rarity_roster: Dictionary[int, Character] = TestFactory.make_full_roster()
 	high_rarity_roster[1]._trait = ShieldWallTrait.new()
@@ -152,7 +152,7 @@ func test_soaked_share_scales_with_the_redirect_fraction() -> void:
 	var high_rarity_resolver: BattleResolver = TestFactory.make_resolver(
 			high_rarity_roster, TestFactory.make_full_sides(), positions)
 	var high_rarity_results: Array[CombatResult] = high_rarity_resolver.ResolveTraitDamage(
-			3, [0], high_rarity_resolver.GetCombatAttributes(3), {Types.Attribute.Attack: 1.0})
+			3, [0], high_rarity_resolver.GetEffectiveAttributes(3), {Types.Attribute.Attack: 1.0})
 
 	var low_rarity_soak: int = _damage_to(low_rarity_results, 1)[0].amount
 	var high_rarity_soak: int = _damage_to(high_rarity_results, 1)[0].amount
@@ -167,7 +167,7 @@ func test_warlords_own_damage_is_never_redirected() -> void:
 			roster, TestFactory.make_full_sides(), positions)
 
 	var results: Array[CombatResult] = resolver.ResolveTraitDamage(
-			3, [1], resolver.GetCombatAttributes(3), {Types.Attribute.Attack: 1.0})
+			3, [1], resolver.GetEffectiveAttributes(3), {Types.Attribute.Attack: 1.0})
 
 	assert_eq(_damage_to(results, 1).size(), 1, "The Warlord takes its own hit, undivided")
 
@@ -180,7 +180,7 @@ func test_dead_warlord_never_soaks() -> void:
 			roster, TestFactory.make_full_sides(), positions)
 
 	var results: Array[CombatResult] = resolver.ResolveTraitDamage(
-			3, [0], resolver.GetCombatAttributes(3), {Types.Attribute.Attack: 1.0})
+			3, [0], resolver.GetEffectiveAttributes(3), {Types.Attribute.Attack: 1.0})
 
 	assert_eq(_damage_to(results, 1).size(), 0, "A dead Warlord cannot soak redirected damage")
 
@@ -192,6 +192,6 @@ func test_AoE_hitting_two_allies_soaks_each_separately() -> void:
 			roster, TestFactory.make_full_sides(), positions)
 
 	var results: Array[CombatResult] = resolver.ResolveTraitDamage(
-			3, [0, 2], resolver.GetCombatAttributes(3), {Types.Attribute.Attack: 1.0})
+			3, [0, 2], resolver.GetEffectiveAttributes(3), {Types.Attribute.Attack: 1.0})
 
 	assert_eq(_damage_to(results, 1).size(), 2, "Each AoE hit is soaked as its own separate redirect")

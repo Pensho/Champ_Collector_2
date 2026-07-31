@@ -69,11 +69,11 @@ func test_remove_debuffs_removes_up_to_the_reagent_count() -> void:
 
 func test_attribute_increase_is_visible_through_combat_attributes() -> void:
 	var resolver: BattleResolver = _make_resolver()
-	var before: int = resolver.GetCombatAttributes(0)[Types.Attribute.Speed]
+	var before: int = resolver.GetEffectiveAttributes(0)[Types.Attribute.Speed]
 
 	resolver.ResolveReagent(0, "Tincture_Speed_Rare", 0)
 
-	var after: int = resolver.GetCombatAttributes(0)[Types.Attribute.Speed]
+	var after: int = resolver.GetEffectiveAttributes(0)[Types.Attribute.Speed]
 	assert_gt(after, before, "The Tincture bonus must be visible on the consumer's combat attributes")
 
 func test_fractured_idol_never_reduces_consumer_below_one_health() -> void:

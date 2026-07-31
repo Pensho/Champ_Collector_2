@@ -23,7 +23,7 @@ func Init(p_rarity: Types.Rarity) -> void:
 func OnDamageTaken(p_owner_ID: int, p_attacker_ID: int, p_resolver: BattleResolver) -> float:
 	if(p_attacker_ID != p_owner_ID and p_resolver.GetCharacters().has(p_attacker_ID)
 			and p_resolver.GetCharacters()[p_attacker_ID]._current_health > 0):
-		p_resolver.ResolveTraitDamage(p_owner_ID, [p_attacker_ID], p_resolver.GetCombatAttributes(p_owner_ID),
+		p_resolver.ResolveTraitDamage(p_owner_ID, [p_attacker_ID], p_resolver.GetEffectiveAttributes(p_owner_ID),
 				{Types.Attribute.Mysticism: MYSTICISM_BACKLASH}, false)
 	return 1.0
 

@@ -96,20 +96,27 @@ func GetEquipmentBonus(p_attribute: Types.Attribute) -> int:
 		bonus_stat += main.GetInstance()._item_collection._items[i]._attributes[p_attribute]
 	return bonus_stat
 
+func GetBaseAttributes() -> Dictionary[Types.Attribute, int]:
+	return _attributes.duplicate(true)
+
+func ApplyEquipmentBonuses(p_attributes: Dictionary[Types.Attribute, int]) -> void:
+	for attribute in p_attributes.keys():
+		p_attributes[attribute] += GetEquipmentBonus(attribute)
+
+func ApplyTraitAttributeBonus(p_attributes: Dictionary[Types.Attribute, int]) -> void:
+	if(null == _trait):
+		return
+	for attribute in p_attributes.keys():
+		p_attributes[attribute] += _trait.GetAttributeDelta(attribute, p_attributes[attribute])
+
 func GetTotalAttributes() -> Dictionary[Types.Attribute, int]:
-	var battle_attributes: Dictionary[Types.Attribute, int] = _attributes.duplicate(true)
-	for attribute in battle_attributes.keys():
-		battle_attributes[attribute] += GetEquipmentBonus(attribute)
-		if(null != _graft):
-			battle_attributes[attribute] += _graft.GetAttributeDelta(attribute, battle_attributes[attribute])
-	return battle_attributes
+	var attributes: Dictionary[Types.Attribute, int] = GetBaseAttributes()
+	ApplyEquipmentBonuses(attributes)
+	ApplyTraitAttributeBonus(attributes)
+	return attributes
 
 func GetTotalAttribute(p_attribute: Types.Attribute) -> int:
-	var attribute_value: int = _attributes[p_attribute]
-	attribute_value += GetEquipmentBonus(p_attribute)
-	if(null != _graft):
-		attribute_value += _graft.GetAttributeDelta(p_attribute, attribute_value)
-	return attribute_value
+	return GetTotalAttributes()[p_attribute]
 
 func ApplyGraft(p_graft_effect: GraftEffect) -> void:
 	_graft = p_graft_effect.duplicate(true)

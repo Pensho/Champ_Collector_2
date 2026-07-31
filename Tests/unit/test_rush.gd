@@ -48,12 +48,12 @@ func test_rush_expiry_stun_is_unresistable() -> void:
 	var stuns: Array = _roster[0]._active_debuffs.filter(func(d): return d.type == Types.Debuff_Type.Stun)
 	assert_eq(stuns.size(), 1, "Overwhelming Resistance must not prevent Rush's Stun from landing")
 
-func test_rush_increases_target_snapshot_defence_by_30_percent() -> void:
+func test_rush_increases_effective_defence_by_30_percent() -> void:
 	var character: Character = TestFactory.make_character()
 	character._active_buffs.append(_buff(Types.Buff_Type.Rush))
 	var attrs: Dictionary[Types.Attribute, int] = character.GetTotalAttributes()
 	attrs[Types.Attribute.Defence] = 100
-	Skills.TriggerTargetBuffs(character, attrs)
+	Skills.ApplyActiveAttributeModifiers(character, attrs)
 	assert_eq(attrs[Types.Attribute.Defence], 130,
 		"Rush must raise Defense against incoming attacks, not just the holder's own turn")
 

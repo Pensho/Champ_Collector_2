@@ -58,7 +58,7 @@ func test_buff_expiring_via_duration_fires_the_broadcast() -> void:
 	buff.type = Types.Buff_Type.Empower
 	buff.duration = 1
 	_roster[0]._active_buffs.append(buff)
-	var attrs: Dictionary[Types.Attribute, int] = _resolver.GetCombatAttributes(0)
+	var attrs: Dictionary[Types.Attribute, int] = _resolver.GetEffectiveAttributes(0)
 
 	_resolver.GetStatusResolver()._TriggerExistingCasterBuffs(0, attrs)
 

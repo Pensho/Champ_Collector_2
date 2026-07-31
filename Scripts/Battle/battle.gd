@@ -175,8 +175,16 @@ func Init(p_context: ContextContainer) -> void:
 
 	_battle_ui.Init(_battlecontext._environment_effects)
 	_battle_ui._turn_bar.Init(_characters, _on_turn_bar_zone_selected, _sides.player)
+	RefreshTurnBarSpeeds()
 	_state = BattleState.Advancing
 	_initialized = true
+
+func RefreshTurnBarSpeeds() -> void:
+	var speeds: Dictionary[int, int] = {}
+	for character_ID in _characters.keys():
+		if(_characters[character_ID]._current_health > 0):
+			speeds[character_ID] = _resolver.GetEffectiveAttributes(character_ID)[Types.Attribute.Speed]
+	_battle_ui._turn_bar.RefreshSpeeds(speeds)
 
 func _process(p_delta: float) -> void:
 	if(not _initialized):
@@ -315,6 +323,7 @@ func CompleteTurn() -> void:
 	_battle_ui.HideReagentUI()
 	_battle_ui.HideGraftUI()
 	if(not CheckAndHandleBattleOver()):
+		RefreshTurnBarSpeeds()
 		_state = BattleState.Advancing
 
 func RefreshAllTraitVisuals() -> void:

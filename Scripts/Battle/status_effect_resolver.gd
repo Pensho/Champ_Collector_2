@@ -115,8 +115,8 @@ func CastDebuff(
 	if(_ConsumeAegisIfPresent(p_target_ID, p_caster_ID)):
 		return _resolver._EndBatch()
 
-	var target_resistance: int = _resolver.GetCombatAttributes(p_target_ID)[Types.Attribute.Resistance]
-	var caster_accuracy: int = _resolver.GetCombatAttributes(p_caster_ID)[Types.Attribute.Accuracy]
+	var target_resistance: int = _resolver.GetEffectiveAttributes(p_target_ID)[Types.Attribute.Resistance]
+	var caster_accuracy: int = _resolver.GetEffectiveAttributes(p_caster_ID)[Types.Attribute.Accuracy]
 	if(_RollsResistDebuff(p_target_ID, target_resistance, p_caster_ID, caster_accuracy)):
 		var resisted: CombatResult = CombatResult.new(CombatResult.Kind.Debuff_Resisted)
 		resisted.target_ID = p_target_ID
@@ -151,8 +151,8 @@ func _TriggerMirrorCoat(p_holder_ID: int, p_attacker_ID: int, p_debuff_type: Typ
 	if(not _resolver._HasBuff(p_holder_ID, Types.Buff_Type.Mirror_Coat) or p_holder_ID == p_attacker_ID
 			or not _resolver._characters.has(p_attacker_ID) or _resolver._characters[p_attacker_ID]._current_health <= 0):
 		return
-	var holder_accuracy: int = _resolver.GetCombatAttributes(p_holder_ID)[Types.Attribute.Accuracy]
-	var attacker_resistance: int = _resolver.GetCombatAttributes(p_attacker_ID)[Types.Attribute.Resistance]
+	var holder_accuracy: int = _resolver.GetEffectiveAttributes(p_holder_ID)[Types.Attribute.Accuracy]
+	var attacker_resistance: int = _resolver.GetEffectiveAttributes(p_attacker_ID)[Types.Attribute.Resistance]
 	if(_RollsResistDebuff(p_attacker_ID, attacker_resistance, p_holder_ID, holder_accuracy)):
 		var resisted: CombatResult = CombatResult.new(CombatResult.Kind.Debuff_Resisted)
 		resisted.target_ID = p_attacker_ID
@@ -184,9 +184,6 @@ func _TriggerExistingCasterDebuffs(
 		var data: StatusEffectData = StatusEffectRegistry.DebuffData(debuff.type)
 		if(null != data and data.applies_on_self_tick):
 			var tick_damage: int = 0
-			if(Skills.IsAttributeModifierKind(data.magnitude_kind)):
-				Skills.ApplyAttributeModifiers(data, debuff.value, p_caster_attributes)
-			Skills.ApplyWeaknessRider(debuff, p_caster_attributes)
 			match data.magnitude_kind:
 				StatusEffectData.MagnitudeKind.MaxHealthPercent:
 					tick_damage = int(floor(
@@ -243,8 +240,6 @@ func _TriggerExistingCasterBuffs(
 		var data: StatusEffectData = StatusEffectRegistry.BuffData(buff.type)
 		if(null != data and data.applies_on_self_tick):
 			match data.magnitude_kind:
-				StatusEffectData.MagnitudeKind.AttributePercent, StatusEffectData.MagnitudeKind.AttributePercentagePointAdd:
-					Skills.ApplyAttributeModifiers(data, buff.value, p_caster_attributes)
 				StatusEffectData.MagnitudeKind.DamageMultiplier:
 					_resolver._damage_multiplier[p_caster_ID] = _resolver._damage_multiplier.get(p_caster_ID, 1.0) * buff.value
 				StatusEffectData.MagnitudeKind.MaxHealthPercent:
@@ -434,7 +429,7 @@ func _TriggerOverflow(p_holder_ID: int) -> void:
 		return
 	var data: StatusEffectData = StatusEffectRegistry.BuffData(Types.Buff_Type.Overflow)
 	_resolver.ResolveTraitDamage(p_holder_ID, side.AliveMembers(_resolver._characters),
-			_resolver.GetCombatAttributes(p_holder_ID), {Types.Attribute.Mysticism: data.magnitude})
+			_resolver.GetEffectiveAttributes(p_holder_ID), {Types.Attribute.Mysticism: data.magnitude})
 
 
 func _TriggerRushStun(p_holder_ID: int) -> void:
@@ -477,7 +472,8 @@ func _SnapshotStatusValue(p_data: StatusEffectData, p_source_ID: int) -> float:
 	if(StatusEffectData.MagnitudeKind.CasterAttributeSnapshotPercent == p_data.magnitude_kind):
 		if(not _resolver._characters.has(p_source_ID)):
 			return 0.0
-		var source_attributes: Dictionary[Types.Attribute, int] = _resolver.GetCombatAttributes(p_source_ID)
+		var source_attributes: Dictionary[Types.Attribute, int] = _resolver._characters[p_source_ID].GetTotalAttributes()
+		_resolver._ApplyLongAttributeBonus(p_source_ID, source_attributes)
 		var value: float = 0.0
 		for attribute in p_data.attribute_modifiers.keys():
 			value += p_data.magnitude * float(source_attributes[attribute])

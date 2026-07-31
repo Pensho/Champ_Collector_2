@@ -92,12 +92,19 @@ func GetStatusResolver() -> StatusEffectResolver:
 	return _status_resolver
 
 
-func GetCombatAttributes(p_character_ID: int) -> Dictionary[Types.Attribute, int]:
-	var attributes: Dictionary[Types.Attribute, int] = _characters[p_character_ID].GetTotalAttributes()
+func GetEffectiveAttributes(p_character_ID: int) -> Dictionary[Types.Attribute, int]:
+	var character: Character = _characters[p_character_ID]
+	var attributes: Dictionary[Types.Attribute, int] = character.GetBaseAttributes()
+	character.ApplyEquipmentBonuses(attributes)
+	character.ApplyTraitAttributeBonus(attributes)
+	_ApplyLongAttributeBonus(p_character_ID, attributes)
+	Skills.ApplyActiveAttributeModifiers(character, attributes)
+	return attributes
+
+func _ApplyLongAttributeBonus(p_character_ID: int, p_attributes: Dictionary[Types.Attribute, int]) -> void:
 	var bonus: Dictionary = _battle_long_attribute_bonus.get(p_character_ID, {})
 	for attribute: Types.Attribute in bonus.keys():
-		attributes[attribute] += bonus[attribute]
-	return attributes
+		p_attributes[attribute] += bonus[attribute]
 
 
 func FindSkillTargets(p_target_ID: int, p_caster_ID: int, p_target_type: Types.Skill_Target) -> Array[int]:
@@ -138,7 +145,7 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 	_BeginBatch()
 	var caster: Character = _characters[p_caster_ID]
 	var cast_skill: Skill = caster._skills[p_skill_ID]
-	var caster_attributes: Dictionary[Types.Attribute, int] = GetCombatAttributes(p_caster_ID)
+	var caster_attributes: Dictionary[Types.Attribute, int] = GetEffectiveAttributes(p_caster_ID)
 
 	var trait_result: TraitSkillResult = TraitSkillResult.new()
 	var skill_cast_trait: CharacterTrait = Skills.ActiveHook(caster, Types.Combat_Event.Skill_Cast)
@@ -163,9 +170,7 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 			continue
 		var target: Character = _characters[target_ID]
 		if(p_caster_ID != target_ID):
-			target_attributes = GetCombatAttributes(target_ID)
-			Skills.TriggerTargetBuffs(target, target_attributes)
-			Skills.TriggerTargetDebuffs(target, target_attributes)
+			target_attributes = GetEffectiveAttributes(target_ID)
 			var defend_trait: CharacterTrait = Skills.ActiveHook(target, Types.Combat_Event.Defend)
 			if(null != defend_trait):
 				defend_trait.OnDefend(target_ID, target_attributes, _characters)
@@ -194,7 +199,7 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 func ResolveStunTurn(p_caster_ID: int) -> Array[CombatResult]:
 	_BeginBatch()
 	var caster: Character = _characters[p_caster_ID]
-	var caster_attributes: Dictionary[Types.Attribute, int] = GetCombatAttributes(p_caster_ID)
+	var caster_attributes: Dictionary[Types.Attribute, int] = GetEffectiveAttributes(p_caster_ID)
 	if(not caster._active_debuffs.is_empty()):
 		_status_resolver._TriggerExistingCasterDebuffs(p_caster_ID, caster_attributes)
 	if(not caster._active_buffs.is_empty()):
@@ -229,7 +234,7 @@ func AccumulateTurnBarMovement(p_character_ID: int, p_fraction_moved: float) -> 
 	var progress: float = _turn_bar_progress.get(p_character_ID, 0.0) + p_fraction_moved
 	while(progress >= GameBalance.TURN_BAR_PROGRESS_TRIGGER_FRACTION and character._current_health > 0):
 		progress -= GameBalance.TURN_BAR_PROGRESS_TRIGGER_FRACTION
-		var speed: int = GetCombatAttributes(p_character_ID)[Types.Attribute.Speed]
+		var speed: int = GetEffectiveAttributes(p_character_ID)[Types.Attribute.Speed]
 		var damage: int = int(floor(speed * data.magnitude))
 		if(damage > 0):
 			_ApplyHealthLoss(p_character_ID, damage)
@@ -324,7 +329,7 @@ func ResolveTraitDamage(
 	for target_ID in p_target_IDs:
 		if(not _characters.has(target_ID) or _characters[target_ID]._current_health <= 0):
 			continue
-		target_attributes = GetCombatAttributes(target_ID)
+		target_attributes = GetEffectiveAttributes(target_ID)
 		_ResolveDamage(p_caster_ID, target_ID, p_caster_attributes, target_attributes,
 				synthetic_skill, 1.0, p_allow_critical)
 	return _EndBatch()
@@ -397,7 +402,9 @@ func _ResolveReagentEffect(
 
 func _ApplyReagentAttributeIncrease(
 		p_target_ID: int, p_attribute: Types.Attribute, p_magnitude: float, p_potency: float) -> void:
-	var current: int = GetCombatAttributes(p_target_ID)[p_attribute]
+	var pre_status_attributes: Dictionary[Types.Attribute, int] = _characters[p_target_ID].GetTotalAttributes()
+	_ApplyLongAttributeBonus(p_target_ID, pre_status_attributes)
+	var current: int = pre_status_attributes[p_attribute]
 	var bonus_amount: int = ReagentResolver.AttributeIncreaseAmount(current, p_magnitude, p_potency)
 	AdjustLongAttributeBonus(p_target_ID, p_attribute, bonus_amount)
 
@@ -703,7 +710,7 @@ func _ResolveDamage(
 		var redirect_fraction: float = float(redirect[1])
 		var soaker: Character = _characters[soaker_ID]
 		var soaker_defence: float = (
-				GetCombatAttributes(soaker_ID)[Types.Attribute.Defence] * p_skill.defense_ignore_factor)
+				GetEffectiveAttributes(soaker_ID)[Types.Attribute.Defence] * p_skill.defense_ignore_factor)
 		soaker_damage = Skills.MitigatedDamage(soaker_defence,
 				caster_scaled_attribute_aggregate * redirect_fraction, crit_multiplier, random_value,
 				_damage_multiplier.get(p_caster_ID, 1.0), _damage_dealt_bonus.get(p_caster_ID, 0.0),

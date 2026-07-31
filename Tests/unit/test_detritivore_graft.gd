@@ -76,7 +76,7 @@ func test_grafted_symbiote_scavenges_when_another_characters_buff_expires() -> v
 	ally._active_buffs.append(buff)
 	var roster: Dictionary[int, Character] = {0: symbiote, 1: ally}
 	var resolver: BattleResolver = TestFactory.make_resolver(roster, CombatSides.new([0], [1]))
-	var attrs: Dictionary[Types.Attribute, int] = resolver.GetCombatAttributes(1)
+	var attrs: Dictionary[Types.Attribute, int] = resolver.GetEffectiveAttributes(1)
 
 	resolver.GetStatusResolver()._TriggerExistingCasterBuffs(1, attrs)
 

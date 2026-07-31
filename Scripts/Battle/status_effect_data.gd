@@ -35,6 +35,8 @@ enum MagnitudeKind {
 @export var overwritable: bool = true
 @export var stackable: bool = false
 @export var applies_on_self_tick: bool = true
+# Vestigial: attribute modifiers no longer read this flag (always live). Kept only so the 59
+# existing .tres resources don't need a values migration; not consulted anywhere in code.
 @export var applies_on_target_snapshot: bool = false
 # Extra self-tick max-Health cost, independent of magnitude_kind.
 @export var self_tick_max_health_cost_percent: float = 0.0
