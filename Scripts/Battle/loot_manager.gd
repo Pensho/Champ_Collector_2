@@ -143,11 +143,9 @@ static func DistributeRewards(p_loot_table: LootTable, p_difficulty: int) -> voi
 				for i in range(p_loot_table._primary_loot[type]):
 					p_loot_table._drop_result._experience += p_difficulty
 					p_loot_table._budget -= p_difficulty + (float(LOOT_VALUE[LootType.Experience]) * (float(p_difficulty))) as int
-					print("Received Experience, budget left: ", p_loot_table._budget)
 			LootType.Silver:
 				p_loot_table._drop_result._silver += p_difficulty
 				p_loot_table._budget -= (float(LOOT_VALUE[LootType.Silver]) * (float(p_difficulty) * 0.85)) as int
-				print("Received Silver, budget left: ", p_loot_table._budget)
 			LootType.Equipment:
 				for i in range(p_loot_table._primary_loot[type]):
 					var best_rarity_outcome = GetBestRarityForItem(p_loot_table._budget)
@@ -157,7 +155,6 @@ static func DistributeRewards(p_loot_table: LootTable, p_difficulty: int) -> voi
 					p_loot_table._drop_result._equipment._rarity = rarity
 					p_loot_table._drop_result._equipment.Setup()
 					p_loot_table._budget -= cost
-					print("Received Equipment, budget left: ", p_loot_table._budget)
 			LootType.Fortunes_Favor:
 				var ff_count: int = max(1, int(p_difficulty / 2.0))
 				var best_tier_outcome: int = GetBestFortuneFavorTier(p_loot_table._budget)
@@ -166,12 +163,10 @@ static func DistributeRewards(p_loot_table: LootTable, p_difficulty: int) -> voi
 						LOOT_VALUE[LootType.Fortunes_Favor], 1.0 + (best_tier_outcome as float * RARITY_VALUE_POWER)))
 				p_loot_table._drop_result._fortunes_favor[tier] = p_loot_table._drop_result._fortunes_favor.get(tier, 0) + ff_count
 				p_loot_table._budget -= cost * ff_count
-				print("Received Fortunes Favor x", ff_count, " (tier ", tier, "), budget left: ", p_loot_table._budget)
 			LootType.Supplies:
 				for i in range(p_loot_table._primary_loot[type]):
 					p_loot_table._drop_result._supplies += 1
 					p_loot_table._budget -= LOOT_VALUE[LootType.Supplies]
-					print("Received Supplies, budget left: ", p_loot_table._budget)
 			LootType.Reagent:
 				for i in range(p_loot_table._primary_loot[type]):
 					var best_rarity_outcome: int = GetBestRarityForReagent(p_loot_table._budget)
@@ -179,7 +174,6 @@ static func DistributeRewards(p_loot_table: LootTable, p_difficulty: int) -> voi
 					var cost: int = int(pow(LOOT_VALUE[LootType.Reagent], 1.0 + (best_rarity_outcome as float * RARITY_VALUE_POWER)))
 					p_loot_table._drop_result._reagents.append(ReagentRegistry.GetRandomKeyForRarity(rarity))
 					p_loot_table._budget -= cost
-					print("Received Reagent, budget left: ", p_loot_table._budget)
 			_:
 				print("Invalid reward type specified while trying to distribute rewards!")
 	print("budget before secondary rewards: ", p_loot_table._budget)
@@ -188,11 +182,9 @@ static func DistributeRewards(p_loot_table: LootTable, p_difficulty: int) -> voi
 			LootType.Experience:
 				p_loot_table._drop_result._experience += p_difficulty
 				p_loot_table._budget -= p_difficulty + (float(LOOT_VALUE[LootType.Experience]) * (float(p_difficulty))) as int
-				print("Received secondary Experience, budget left: ", p_loot_table._budget)
 			LootType.Silver:
 				p_loot_table._drop_result._silver += p_difficulty
 				p_loot_table._budget -= (float(LOOT_VALUE[LootType.Silver]) * (float(p_difficulty) * 0.85)) as int
-				print("Received secondary Silver, budget left: ", p_loot_table._budget)
 			LootType.Equipment:
 				pass
 				#p_loot_table._budget -= LOOT_VALUE[LootType.Equipment]
@@ -201,19 +193,31 @@ static func DistributeRewards(p_loot_table: LootTable, p_difficulty: int) -> voi
 				var tier: FortuneFavorTier.TierType = RollFortuneFavorTier(best_tier_outcome)
 				p_loot_table._drop_result._fortunes_favor[tier] = p_loot_table._drop_result._fortunes_favor.get(tier, 0) + 1
 				p_loot_table._budget -= LOOT_VALUE[LootType.Fortunes_Favor]
-				print("Received secondary Fortunes Favor (tier ", tier, "), budget left: ", p_loot_table._budget)
 			LootType.Supplies:
 				p_loot_table._drop_result._supplies += 1
 				p_loot_table._budget -= LOOT_VALUE[LootType.Supplies]
-				print("Received secondary Supplies, budget left: ", p_loot_table._budget)
 			LootType.Reagent:
 				var best_rarity_outcome: int = GetBestRarityForReagent(p_loot_table._budget)
 				var rarity: Types.Rarity = RollRarityForReagent(best_rarity_outcome, p_loot_table._reagent_max_rarity)
 				p_loot_table._drop_result._reagents.append(ReagentRegistry.GetRandomKeyForRarity(rarity))
 				p_loot_table._budget -= LOOT_VALUE[LootType.Reagent]
-				print("Received secondary Reagent, budget left: ", p_loot_table._budget)
 			_:
 				print("Invalid reward type specified while trying to distribute rewards!")
+	var received_loot: String = "-----------\nReceived loot:\n"
+	if(p_loot_table._drop_result._experience > 0):
+		received_loot += "Experience: " + str(p_loot_table._drop_result._experience) + "\n"
+	if(p_loot_table._drop_result._silver > 0):
+		received_loot += "Silver: " + str(p_loot_table._drop_result._silver) + "\n"
+	if(p_loot_table._drop_result._supplies > 0):
+		received_loot += "Supplies: " + str(p_loot_table._drop_result._supplies) + "\n"
+	if(false == p_loot_table._drop_result._fortunes_favor.is_empty()):
+		received_loot += "Fortune's Favor: " + str(p_loot_table._drop_result._fortunes_favor) + "\n"
+	if(false == p_loot_table._drop_result._reagents.is_empty()):
+		received_loot += "Reagents: " + str(p_loot_table._drop_result._reagents) + "\n"
+	if(null != p_loot_table._drop_result._equipment):
+		received_loot += "Equipment: " + str(p_loot_table._drop_result._equipment) + "\n"
+	received_loot += "Budget left: " + str(p_loot_table._budget) + "\n-----------"
+	print(received_loot)
 
 static func GetWeigthedRandom(p_secondary_loot: Dictionary[LootManager.LootType, int]) -> LootManager.LootType:
 	var chosen_type: LootManager.LootType
