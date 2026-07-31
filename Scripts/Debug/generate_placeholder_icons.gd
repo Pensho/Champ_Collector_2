@@ -4,10 +4,9 @@ extends EditorScript
 ## Data-driven generator for flat-color placeholder icon textures, following
 ## Scripts/Debug/generate_placeholder_textures.gd's recipe.
 ##
-## Each row in ICON_TABLE describes one icon: a folder, a base name, a size, a base
-## hue, and a rarity tier. The output PNG is the base hue blended toward that
-## rarity's tint color, written to
-## <ICON_ROOT>/<folder>/<base_name>_<rarity>.png.
+## Reagent rows are rarity-tiered: each writes one PNG per tier, the base hue blended
+## toward that tier's tint, to <ICON_ROOT>/<folder>/<base_name>_<rarity>.png. Status-effect
+## and skill rows are flat: each writes a single <ICON_ROOT>/<folder>/<base_name>.png.
 ##
 ## Existing files are skipped so hand-replaced real art is never clobbered; set
 ## OVERWRITE to true to force regeneration.
@@ -172,6 +171,170 @@ const STATUS_EFFECT_TABLE: Array = [
 			"color": Color(0.25, 0.75, 0.65, 1.0) },
 ]
 
+# One row per skill and passive still awaiting real art. Skills aren't rarity-tiered, so
+# like the status table each row writes a single flat-color PNG. Champion skills live under
+# Abilities/Role_Active_Skills, opponent skills under Abilities/Opponent_Active_Skills, and
+# passives under Abilities/Passives. Each is grouped by owner with a distinct base hue.
+#   folder, base_name, size, color
+const SKILL_ICON_TABLE: Array = [
+	# Champion skills (Role_Active_Skills)
+	# Herald of the Loom
+	{ "folder": "Abilities/Role_Active_Skills/Thread_Snap", "base_name": "Thread_Snap", "size": 64,
+			"color": Color(0.20, 0.55, 0.60, 1.0) },
+	{ "folder": "Abilities/Role_Active_Skills/Thread_Lash", "base_name": "Thread_Lash", "size": 64,
+			"color": Color(0.15, 0.45, 0.55, 1.0) },
+	{ "folder": "Abilities/Role_Active_Skills/Woven_Blessing", "base_name": "Woven_Blessing", "size": 64,
+			"color": Color(0.30, 0.65, 0.60, 1.0) },
+	# Thief
+	{ "folder": "Abilities/Role_Active_Skills/Case_the_Target", "base_name": "Case_the_Target", "size": 64,
+			"color": Color(0.45, 0.25, 0.55, 1.0) },
+	# Alchemist
+	{ "folder": "Abilities/Role_Active_Skills/Acrid_Splash", "base_name": "Acrid_Splash", "size": 64,
+			"color": Color(0.55, 0.65, 0.20, 1.0) },
+	{ "folder": "Abilities/Role_Active_Skills/Dissolving_Agent", "base_name": "Dissolving_Agent", "size": 64,
+			"color": Color(0.45, 0.60, 0.15, 1.0) },
+	{ "folder": "Abilities/Role_Active_Skills/Catalyst_Cloud", "base_name": "Catalyst_Cloud", "size": 64,
+			"color": Color(0.35, 0.70, 0.40, 1.0) },
+	# Sorcerer
+	{ "folder": "Abilities/Role_Active_Skills/Arc_Lash", "base_name": "Arc_Lash", "size": 64,
+			"color": Color(0.50, 0.25, 0.80, 1.0) },
+	{ "folder": "Abilities/Role_Active_Skills/Unstable_Rift", "base_name": "Unstable_Rift", "size": 64,
+			"color": Color(0.40, 0.15, 0.70, 1.0) },
+	{ "folder": "Abilities/Role_Active_Skills/Cataclysmic_Surge", "base_name": "Cataclysmic_Surge", "size": 64,
+			"color": Color(0.60, 0.20, 0.85, 1.0) },
+	# Scholar
+	{ "folder": "Abilities/Role_Active_Skills/Sharp_Rebuttal", "base_name": "Sharp_Rebuttal", "size": 64,
+			"color": Color(0.25, 0.45, 0.75, 1.0) },
+	{ "folder": "Abilities/Role_Active_Skills/Expose_Fallacy", "base_name": "Expose_Fallacy", "size": 64,
+			"color": Color(0.20, 0.55, 0.80, 1.0) },
+	{ "folder": "Abilities/Role_Active_Skills/Refutation", "base_name": "Refutation", "size": 64,
+			"color": Color(0.30, 0.50, 0.70, 1.0) },
+	# Diviner
+	{ "folder": "Abilities/Role_Active_Skills/Ill_Omen", "base_name": "Ill_Omen", "size": 64,
+			"color": Color(0.30, 0.35, 0.65, 1.0) },
+	{ "folder": "Abilities/Role_Active_Skills/Premonition", "base_name": "Premonition", "size": 64,
+			"color": Color(0.35, 0.60, 0.80, 1.0) },
+	{ "folder": "Abilities/Role_Active_Skills/Fateful_Glimpse", "base_name": "Fateful_Glimpse", "size": 64,
+			"color": Color(0.40, 0.55, 0.75, 1.0) },
+	# Appraiser
+	{ "folder": "Abilities/Role_Active_Skills/Sizing_Cut", "base_name": "Sizing_Cut", "size": 64,
+			"color": Color(0.80, 0.60, 0.20, 1.0) },
+	{ "folder": "Abilities/Role_Active_Skills/Flaw_Analysis", "base_name": "Flaw_Analysis", "size": 64,
+			"color": Color(0.75, 0.50, 0.15, 1.0) },
+	{ "folder": "Abilities/Role_Active_Skills/Full_Appraisal", "base_name": "Full_Appraisal", "size": 64,
+			"color": Color(0.85, 0.70, 0.30, 1.0) },
+	# Tactician
+	{ "folder": "Abilities/Role_Active_Skills/Signal_Strike", "base_name": "Signal_Strike", "size": 64,
+			"color": Color(0.30, 0.55, 0.45, 1.0) },
+	{ "folder": "Abilities/Role_Active_Skills/Battle_Orders", "base_name": "Battle_Orders", "size": 64,
+			"color": Color(0.25, 0.60, 0.40, 1.0) },
+	# Symbiote
+	{ "folder": "Abilities/Role_Active_Skills/Spore_Lash", "base_name": "Spore_Lash", "size": 64,
+			"color": Color(0.45, 0.55, 0.30, 1.0) },
+	{ "folder": "Abilities/Role_Active_Skills/Symbiotic_Overdrive", "base_name": "Symbiotic_Overdrive", "size": 64,
+			"color": Color(0.50, 0.45, 0.25, 1.0) },
+	{ "folder": "Abilities/Role_Active_Skills/Grafted_Flesh", "base_name": "Grafted_Flesh", "size": 64,
+			"color": Color(0.40, 0.50, 0.35, 1.0) },
+	# Jester
+	{ "folder": "Abilities/Role_Active_Skills/Pratfall_Sting", "base_name": "Pratfall_Sting", "size": 64,
+			"color": Color(0.75, 0.30, 0.55, 1.0) },
+	{ "folder": "Abilities/Role_Active_Skills/Center_Stage", "base_name": "Center_Stage", "size": 64,
+			"color": Color(0.85, 0.35, 0.60, 1.0) },
+	# Cultist
+	{ "folder": "Abilities/Role_Active_Skills/Profane_Bolt", "base_name": "Profane_Bolt", "size": 64,
+			"color": Color(0.45, 0.15, 0.35, 1.0) },
+	{ "folder": "Abilities/Role_Active_Skills/Devour_Blessing", "base_name": "Devour_Blessing", "size": 64,
+			"color": Color(0.50, 0.10, 0.30, 1.0) },
+	{ "folder": "Abilities/Role_Active_Skills/Rite_of_Severance", "base_name": "Rite_of_Severance", "size": 64,
+			"color": Color(0.40, 0.10, 0.40, 1.0) },
+	# Bar Brawler
+	{ "folder": "Abilities/Role_Active_Skills/Headbutt", "base_name": "Headbutt", "size": 64,
+			"color": Color(0.70, 0.40, 0.20, 1.0) },
+	{ "folder": "Abilities/Role_Active_Skills/Liquid_Courage", "base_name": "Liquid_Courage", "size": 64,
+			"color": Color(0.75, 0.45, 0.25, 1.0) },
+	# Bloodmage
+	{ "folder": "Abilities/Role_Active_Skills/Blood_Bolt", "base_name": "Blood_Bolt", "size": 64,
+			"color": Color(0.65, 0.10, 0.15, 1.0) },
+	{ "folder": "Abilities/Role_Active_Skills/Transfusion", "base_name": "Transfusion", "size": 64,
+			"color": Color(0.55, 0.15, 0.20, 1.0) },
+	{ "folder": "Abilities/Role_Active_Skills/Tithe_of_Vitality", "base_name": "Tithe_of_Vitality", "size": 64,
+			"color": Color(0.60, 0.10, 0.25, 1.0) },
+	# Lancer
+	{ "folder": "Abilities/Role_Active_Skills/Lance_Thrust", "base_name": "Lance_Thrust", "size": 64,
+			"color": Color(0.60, 0.45, 0.30, 1.0) },
+	{ "folder": "Abilities/Role_Active_Skills/Rending_Charge", "base_name": "Rending_Charge", "size": 64,
+			"color": Color(0.65, 0.35, 0.20, 1.0) },
+	# Plague Doctor
+	{ "folder": "Abilities/Role_Active_Skills/Septic_Lance", "base_name": "Septic_Lance", "size": 64,
+			"color": Color(0.35, 0.45, 0.25, 1.0) },
+	{ "folder": "Abilities/Role_Active_Skills/Quarantine_Breach", "base_name": "Quarantine_Breach", "size": 64,
+			"color": Color(0.30, 0.50, 0.30, 1.0) },
+	{ "folder": "Abilities/Role_Active_Skills/Miasma", "base_name": "Miasma", "size": 64,
+			"color": Color(0.25, 0.45, 0.20, 1.0) },
+	# Warlord
+	{ "folder": "Abilities/Role_Active_Skills/Shield_Slam", "base_name": "Shield_Slam", "size": 64,
+			"color": Color(0.35, 0.45, 0.60, 1.0) },
+	{ "folder": "Abilities/Role_Active_Skills/Hold_the_Line", "base_name": "Hold_the_Line", "size": 64,
+			"color": Color(0.30, 0.40, 0.55, 1.0) },
+	{ "folder": "Abilities/Role_Active_Skills/Brace_for_Impact", "base_name": "Brace_for_Impact", "size": 64,
+			"color": Color(0.40, 0.50, 0.65, 1.0) },
+	# Chronophage
+	{ "folder": "Abilities/Role_Active_Skills/Temporal_Sinkhole", "base_name": "Temporal_Sinkhole", "size": 64,
+			"color": Color(0.35, 0.20, 0.50, 1.0) },
+	# Emissary
+	{ "folder": "Abilities/Role_Active_Skills/Citation", "base_name": "Citation", "size": 64,
+			"color": Color(0.60, 0.50, 0.20, 1.0) },
+	{ "folder": "Abilities/Role_Active_Skills/Signed_Writ", "base_name": "Signed_Writ", "size": 64,
+			"color": Color(0.65, 0.45, 0.15, 1.0) },
+	{ "folder": "Abilities/Role_Active_Skills/Levied_Sanction", "base_name": "Levied_Sanction", "size": 64,
+			"color": Color(0.55, 0.40, 0.10, 1.0) },
+	# Unassigned zone
+	{ "folder": "Abilities/Role_Active_Skills/Weight_of_Law", "base_name": "Weight_of_Law", "size": 64,
+			"color": Color(0.50, 0.50, 0.55, 1.0) },
+	# Opponent skills (Opponent_Active_Skills)
+	{ "folder": "Abilities/Opponent_Active_Skills/Wind_the_Mainspring", "base_name": "Wind_the_Mainspring", "size": 64,
+			"color": Color(0.70, 0.55, 0.20, 1.0) },
+	{ "folder": "Abilities/Opponent_Active_Skills/Overwhelming_Blow", "base_name": "Overwhelming_Blow", "size": 64,
+			"color": Color(0.65, 0.30, 0.15, 1.0) },
+	{ "folder": "Abilities/Opponent_Active_Skills/Rally_the_Crew", "base_name": "Rally_the_Crew", "size": 64,
+			"color": Color(0.75, 0.45, 0.20, 1.0) },
+	{ "folder": "Abilities/Opponent_Active_Skills/Cinder_Spit", "base_name": "Cinder_Spit", "size": 64,
+			"color": Color(0.80, 0.35, 0.15, 1.0) },
+	{ "folder": "Abilities/Opponent_Active_Skills/Vault_Slam", "base_name": "Vault_Slam", "size": 64,
+			"color": Color(0.55, 0.35, 0.25, 1.0) },
+	{ "folder": "Abilities/Opponent_Active_Skills/Sporeburst_Mend", "base_name": "Sporeburst_Mend", "size": 64,
+			"color": Color(0.45, 0.60, 0.35, 1.0) },
+	{ "folder": "Abilities/Opponent_Active_Skills/Flank_Cut", "base_name": "Flank_Cut", "size": 64,
+			"color": Color(0.70, 0.25, 0.20, 1.0) },
+	{ "folder": "Abilities/Opponent_Active_Skills/Breaching_Charge", "base_name": "Breaching_Charge", "size": 64,
+			"color": Color(0.65, 0.35, 0.25, 1.0) },
+	{ "folder": "Abilities/Opponent_Active_Skills/Aimed_Shot", "base_name": "Aimed_Shot", "size": 64,
+			"color": Color(0.75, 0.40, 0.30, 1.0) },
+	{ "folder": "Abilities/Opponent_Active_Skills/March_Cadence", "base_name": "March_Cadence", "size": 64,
+			"color": Color(0.70, 0.50, 0.25, 1.0) },
+	{ "folder": "Abilities/Opponent_Active_Skills/Cinder_Sermon", "base_name": "Cinder_Sermon", "size": 64,
+			"color": Color(0.85, 0.30, 0.15, 1.0) },
+	{ "folder": "Abilities/Opponent_Active_Skills/Foreclosure", "base_name": "Foreclosure", "size": 64,
+			"color": Color(0.55, 0.45, 0.20, 1.0) },
+	{ "folder": "Abilities/Opponent_Active_Skills/Writ_of_Seizure", "base_name": "Writ_of_Seizure", "size": 64,
+			"color": Color(0.60, 0.35, 0.30, 1.0) },
+	{ "folder": "Abilities/Opponent_Active_Skills/Reliquary_Ward", "base_name": "Reliquary_Ward", "size": 64,
+			"color": Color(0.50, 0.40, 0.35, 1.0) },
+	{ "folder": "Abilities/Opponent_Active_Skills/Inscribe", "base_name": "Inscribe", "size": 64,
+			"color": Color(0.65, 0.25, 0.45, 1.0) },
+	{ "folder": "Abilities/Opponent_Active_Skills/Inscription_Surge", "base_name": "Inscription_Surge", "size": 64,
+			"color": Color(0.70, 0.20, 0.40, 1.0) },
+	# Passives (Passives)
+	{ "folder": "Abilities/Passives/Ash_Offering", "base_name": "Ash_Offering", "size": 64,
+			"color": Color(0.45, 0.35, 0.30, 1.0) },
+	{ "folder": "Abilities/Passives/Lien", "base_name": "Lien", "size": 64,
+			"color": Color(0.40, 0.35, 0.45, 1.0) },
+	{ "folder": "Abilities/Passives/Wardens_Failsafe", "base_name": "Wardens_Failsafe", "size": 64,
+			"color": Color(0.35, 0.30, 0.40, 1.0) },
+	{ "folder": "Abilities/Passives/Standing_Record", "base_name": "Standing_Record", "size": 64,
+			"color": Color(0.50, 0.42, 0.28, 1.0) },
+]
+
 # Rarity tier order, tint color, and blend strength (how far the base hue shifts
 # toward the tint). Blend strength increases with rarity.
 const RARITY_TINTS: Array = [
@@ -207,28 +370,42 @@ func _run() -> void:
 				continue
 			print("wrote: %s (%dx%d)" % [path, size, size])
 			written_count += 1
-	for status_row in STATUS_EFFECT_TABLE:
-		var folder_path: String = "%s/%s" % [ICON_ROOT, status_row["folder"]]
+	var status_counts: Vector2i = _write_flat_icon_table(STATUS_EFFECT_TABLE)
+	written_count += status_counts.x
+	skipped_count += status_counts.y
+	var skill_counts: Vector2i = _write_flat_icon_table(SKILL_ICON_TABLE)
+	written_count += skill_counts.x
+	skipped_count += skill_counts.y
+	print("---")
+	print("Done. %d written, %d skipped." % [written_count, skipped_count])
+
+
+## Writes one flat-color PNG per row of a non-rarity-tiered table, creating folders and
+## honoring the skip-if-exists guard. Returns the written and skipped counts as (x, y).
+func _write_flat_icon_table(table: Array) -> Vector2i:
+	var written: int = 0
+	var skipped: int = 0
+	for row in table:
+		var folder_path: String = "%s/%s" % [ICON_ROOT, row["folder"]]
 		var make_result: int = DirAccess.make_dir_recursive_absolute(folder_path)
 		if make_result != OK and not DirAccess.dir_exists_absolute(folder_path):
 			push_error("Could not create folder: %s" % folder_path)
 			continue
-		var path: String = "%s/%s.png" % [folder_path, status_row["base_name"]]
+		var path: String = "%s/%s.png" % [folder_path, row["base_name"]]
 		if not OVERWRITE and FileAccess.file_exists(path):
 			print("skip (exists): %s" % path)
-			skipped_count += 1
+			skipped += 1
 			continue
-		var size: int = status_row["size"]
+		var size: int = row["size"]
 		var image := Image.create(size, size, false, Image.FORMAT_RGBA8)
-		image.fill(status_row["color"])
+		image.fill(row["color"])
 		var save_result: int = image.save_png(path)
 		if save_result != OK:
 			push_error("Failed to write: %s" % path)
 			continue
 		print("wrote: %s (%dx%d)" % [path, size, size])
-		written_count += 1
-	print("---")
-	print("Done. %d written, %d skipped." % [written_count, skipped_count])
+		written += 1
+	return Vector2i(written, skipped)
 
 
 ## Blends a family's base hue toward a rarity tier's tint color by that tier's
