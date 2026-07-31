@@ -152,6 +152,7 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 		_status_resolver._TriggerExistingCasterBuffs(p_caster_ID, caster_attributes)
 
 	_ResolveSkillEffect(p_caster_ID, caster_attributes, cast_skill)
+	_ResolveStatusGroups(p_caster_ID, p_target_IDs, cast_skill, trait_result._tick_bonus_per_debuff)
 
 	var is_non_basic: bool = cast_skill.cooldown > 0
 	_status_resolver._TriggerManaBurn(p_caster_ID, caster_attributes, is_non_basic)
@@ -168,16 +169,6 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 			var defend_trait: CharacterTrait = Skills.ActiveHook(target, Types.Combat_Event.Defend)
 			if(null != defend_trait):
 				defend_trait.OnDefend(target_ID, target_attributes, _characters)
-
-		if(not cast_skill.buffs.is_empty() and target._current_health > 0):
-			_status_resolver._CastBuff(target_ID, cast_skill)
-
-		if(not cast_skill.debuffs.is_empty() and target._current_health > 0):
-			var cast_debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
-			cast_debuff.type = cast_skill.debuffs[cast_skill.target]
-			cast_debuff.duration = cast_skill.duration
-			_status_resolver.CastDebuff(target_ID, cast_debuff, p_caster_ID,
-					trait_result._tick_bonus_per_debuff, true, true)
 
 		if(not cast_skill.damage_scaling.is_empty()):
 			_ResolveDamage(p_caster_ID, target_ID, caster_attributes, target_attributes,
@@ -600,6 +591,57 @@ func _ResolveSkillEffect(
 			p_caster_attributes[Types.Attribute.Health] += int(
 					_heap_on_value[p_caster_ID] * float(_heap_on_stacks.get(p_caster_ID, 0)))
 			_heap_on_stacks[p_caster_ID] = _heap_on_stacks.get(p_caster_ID, 0) + 1
+
+func _ResolveStatusGroups(
+		p_caster_ID: int,
+		p_target_IDs: Array[int],
+		p_skill: Skill,
+		p_tick_bonus_per_debuff: float) -> void:
+	for target_type in p_skill.buffs.keys():
+		for target_ID in _ResolveStatusGroupTargets(p_caster_ID, p_target_IDs, p_skill, target_type):
+			for buff_type in p_skill.buffs[target_type]:
+				_status_resolver._CastBuffOfType(target_ID, buff_type, p_skill.duration)
+
+	for target_type in p_skill.debuffs.keys():
+		for target_ID in _ResolveStatusGroupTargets(p_caster_ID, p_target_IDs, p_skill, target_type):
+			for debuff_type in p_skill.debuffs[target_type]:
+				var cast_debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
+				cast_debuff.type = debuff_type
+				cast_debuff.duration = p_skill.duration
+				_status_resolver.CastDebuff(target_ID, cast_debuff, p_caster_ID,
+						p_tick_bonus_per_debuff, true, true)
+
+func _ResolveStatusGroupTargets(
+		p_caster_ID: int,
+		p_target_IDs: Array[int],
+		p_skill: Skill,
+		p_target_type: Types.Skill_Target) -> Array[int]:
+	var group_IDs: Array[int] = (p_target_IDs if p_target_type == p_skill.target
+			else _ResolveIndependentStatusGroup(p_caster_ID, p_target_type))
+	return group_IDs.filter(func(id): return _characters.has(id) and _characters[id]._current_health > 0)
+
+func _ResolveIndependentStatusGroup(p_caster_ID: int, p_target_type: Types.Skill_Target) -> Array[int]:
+	var group_IDs: Array[int] = []
+	match p_target_type:
+		Types.Skill_Target.Self, Types.Skill_Target.Single_Ally:
+			group_IDs = [p_caster_ID]
+		Types.Skill_Target.All_Allies, Types.Skill_Target.All_Other_Allies, Types.Skill_Target.Ally_Not_Self:
+			group_IDs = _sides.AlliesOf(p_caster_ID).members.duplicate()
+			if(Types.Skill_Target.All_Allies != p_target_type):
+				group_IDs.erase(p_caster_ID)
+		Types.Skill_Target.Random_Ally:
+			group_IDs = Skills.SingleTargetArray(_sides.AlliesOf(p_caster_ID).RandomAliveMember(_characters, _random))
+		Types.Skill_Target.All_Enemies:
+			group_IDs = _sides.EnemiesOf(p_caster_ID).members
+		Types.Skill_Target.Random_Enemy:
+			group_IDs = Skills.SingleTargetArray(_sides.EnemiesOf(p_caster_ID).RandomAliveMember(_characters, _random))
+		Types.Skill_Target.Random_One:
+			group_IDs = Skills.SingleTargetArray(_sides.RandomAliveMember(_characters, _random))
+		Types.Skill_Target.All:
+			group_IDs = _sides.AllMembers()
+		_:
+			print("Skill target enum has no caster-relative resolution for a secondary status group: ", p_target_type)
+	return group_IDs
 
 
 func _ResolveDamage(

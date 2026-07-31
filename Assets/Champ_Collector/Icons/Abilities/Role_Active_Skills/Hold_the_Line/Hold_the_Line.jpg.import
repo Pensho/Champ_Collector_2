@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cmc8tnvnnhtfy"
-path="res://.godot/imported/Stalwart_Hymn.jpg-b07f57e5823197b179aa5175aa027561.ctex"
+path="res://.godot/imported/Hold_the_Line.jpg-b605da538dbd6af3f4f22938a0cea93d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Stalwart_Hymn/Stalwart_Hymn.jpg"
-dest_files=["res://.godot/imported/Stalwart_Hymn.jpg-b07f57e5823197b179aa5175aa027561.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Hold_the_Line/Hold_the_Line.jpg"
+dest_files=["res://.godot/imported/Hold_the_Line.jpg-b605da538dbd6af3f4f22938a0cea93d.ctex"]
 
 [params]
 

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="Skill" format=3 uid="uid://chb3lmfhya3g2"]
+
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+
+[resource]
+script = ExtResource("1_skill")
+name = "Acrid Splash"
+description = "Deals damage to a single enemy, scaled by Knowledge."
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Acrid_Splash/Acrid_Splash.png"
+damage_scaling = Dictionary[int, float]({
+7: 0.7
+})
+metadata/_custom_type_script = "uid://glh06y3wvchj"

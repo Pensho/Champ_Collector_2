@@ -82,20 +82,19 @@ func ConsumeDeathwardIfPresent(p_character_ID: int) -> bool:
 	return false
 
 
-func _CastBuff(p_target_ID: int, p_skill: Skill) -> void:
+func _CastBuffOfType(p_target_ID: int, p_buff_type: Types.Buff_Type, p_duration: int) -> void:
 	var target: Character = _resolver._characters[p_target_ID]
 	if(Skills.HasMaxStatusEffects(target)):
 		return
-	var buff_type: Types.Buff_Type = p_skill.buffs[p_skill.target]
-	var data: StatusEffectData = StatusEffectRegistry.BuffData(buff_type)
+	var data: StatusEffectData = StatusEffectRegistry.BuffData(p_buff_type)
 	if(_BlockedBySequenceLock(data, target) or _BlockedBySeverance(target)):
 		return
 	var new_value: float = data.magnitude if null != data else 0.0
-	if(Types.Buff_Type.Barrier == buff_type and _KeepsExistingBarrier(p_target_ID, target, new_value)):
+	if(Types.Buff_Type.Barrier == p_buff_type and _KeepsExistingBarrier(p_target_ID, target, new_value)):
 		return
 
-	_InsertOrRefresh(p_target_ID, true, buff_type, data, new_value, p_skill.duration,
-			-1, 0.0, false, Types.Buff_Type.keys()[buff_type])
+	_InsertOrRefresh(p_target_ID, true, p_buff_type, data, new_value, p_duration,
+			-1, 0.0, false, Types.Buff_Type.keys()[p_buff_type])
 
 
 func CastDebuff(
@@ -344,13 +343,6 @@ func _ConsumeRehearsedIfPresent(p_caster_ID: int) -> bool:
 	return false
 
 
-## Shared insert-or-refresh tail for ApplyBuff/_CastBuff/ApplyDebuff/CastDebuff. Scans for
-## an existing non-stackable instance of p_type: when found and overwritable, refreshes its
-## duration (unconditionally when p_always_refresh_duration, otherwise only if p_duration is
-## longer than what's already there) and returns null — nothing new was created. Otherwise
-## appends a new Buff/Debuff instance, emits Status_Applied, and returns it. p_display_name
-## is both the stored instance's `.name` and the display name passed to the emit call — no
-## caller reads `.name` back off a status instance, so the two never need to differ.
 func _InsertOrRefresh(
 		p_target_ID: int,
 		p_is_buff: bool,

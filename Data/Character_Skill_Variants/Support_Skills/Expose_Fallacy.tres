@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="Skill" format=3 uid="uid://d3qwiwkh6klk3"]
+
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+
+[resource]
+script = ExtResource("1_skill")
+name = "Expose Fallacy"
+description = "Applies the Confound debuff to a single enemy for 2 turns, and grants all allies the Opportunist buff for 2 turns."
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Expose_Fallacy/Expose_Fallacy.png"
+cooldown = 3
+duration = 2
+buffs = Dictionary[int, Array]({
+4: [14]
+})
+debuffs = Dictionary[int, Array]({
+0: [7]
+})
+metadata/_custom_type_script = "uid://glh06y3wvchj"

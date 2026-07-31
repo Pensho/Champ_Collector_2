@@ -19,7 +19,7 @@ const Statuses = preload("uid://bp3pvvar4437")
 # lower the value = more damage that bypasses defense
 @export var defense_ignore_factor: float = 1.0
 
-@export var buffs: Dictionary[Types.Skill_Target, Types.Buff_Type]
-@export var debuffs: Dictionary[Types.Skill_Target, Types.Debuff_Type]
+@export var buffs: Dictionary[Types.Skill_Target, Array]
+@export var debuffs: Dictionary[Types.Skill_Target, Array]
 
 var cooldown_left: int = 0

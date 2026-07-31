@@ -79,6 +79,7 @@ enum Skill_Target
 	Random_One,
 	All,
 	All_Other_Allies,
+	Self,
 }
 
 enum Attribute

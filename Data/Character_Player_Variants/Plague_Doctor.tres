@@ -3,8 +3,8 @@
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
 [ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_weight"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_preset"]
-[ext_resource type="Resource" uid="uid://dl0s23m0g4w3i" path="res://Data/Character_Skill_Variants/Zap.tres" id="3_zap"]
-[ext_resource type="Resource" uid="uid://b5174xlhufd0j" path="res://Data/Character_Skill_Variants/Attack_Skills/Burning_Bolas.tres" id="4_bolas"]
+[ext_resource type="Resource" path="res://Data/Character_Skill_Variants/Attack_Skills/Septic_Lance.tres" id="3_septic_lance"]
+[ext_resource type="Resource" path="res://Data/Character_Skill_Variants/Attack_Skills/Quarantine_Breach.tres" id="4_quarantine_breach"]
 [ext_resource type="Resource" uid="uid://bq3ncvu0l6xtu" path="res://Data/Character_Skill_Variants/Zone_Skills/Lava_Zone.tres" id="5_lava_zone"]
 [ext_resource type="Resource" uid="uid://4fnej15sbkkv" path="res://Data/Attribute_Weights/Arcane.tres" id="6_arcane"]
 [ext_resource type="Resource" uid="uid://c60oh3whnodsm" path="res://Data/Attribute_Weights/Resilient.tres" id="7_resilient"]
@@ -18,7 +18,7 @@ _texture = "res://Assets/Champ_Collector/Creatures/Jester/Jester_0001.png"
 _normal_map = "res://Assets/Champ_Collector/Creatures/Jester/Jester_0001_Normal_Map.png"
 _rarity = 2
 _role = 20
-_skills = Array[ExtResource("1_skill")]([ExtResource("3_zap"), ExtResource("4_bolas"), ExtResource("5_lava_zone")])
+_skills = Array[ExtResource("1_skill")]([ExtResource("3_septic_lance"), ExtResource("4_quarantine_breach"), ExtResource("5_lava_zone")])
 _health = 50
 _speed = 50
 _attack = 30

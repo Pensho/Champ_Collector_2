@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="Skill" format=3]
+
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+
+[resource]
+script = ExtResource("1_skill")
+name = "Rally the Crew"
+description = "Grants one other ally the Empower buff for 2 turns."
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Opponent_Active_Skills/Rally_the_Crew/Rally_the_Crew.png"
+target = 9
+duration = 2
+skill_type = 5
+buffs = Dictionary[int, Array]({
+9: [1]
+})
+metadata/_custom_type_script = "uid://glh06y3wvchj"

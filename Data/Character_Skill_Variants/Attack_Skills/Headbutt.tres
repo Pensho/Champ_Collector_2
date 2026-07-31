@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="Skill" format=3 uid="uid://chrxxamiu00ig"]
+
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+
+[resource]
+script = ExtResource("1_skill")
+name = "Headbutt"
+description = "Deals damage to a single enemy, scaled by Health, and applies Dead Weight for 2 turns."
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Headbutt/Headbutt.png"
+damage_scaling = Dictionary[int, float]({
+0: 0.9
+})
+cooldown = 3
+duration = 2
+debuffs = Dictionary[int, Array]({
+0: [17]
+})
+metadata/_custom_type_script = "uid://glh06y3wvchj"

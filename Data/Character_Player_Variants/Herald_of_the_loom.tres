@@ -2,9 +2,11 @@
 
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_cgy53"]
 [ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_yuery"]
-[ext_resource type="Resource" uid="uid://dvgwxvsovsldc" path="res://Data/Character_Skill_Variants/Attack_Skills/Stab.tres" id="2_5jncj"]
 [ext_resource type="Resource" uid="uid://bdxe6eob3xgsh" path="res://Data/Attribute_Weights/Fierce.tres" id="2_kgg4d"]
+[ext_resource type="Resource" uid="uid://b7w6fcjp2alxu" path="res://Data/Character_Skill_Variants/Attack_Skills/Thread_Lash.tres" id="2_thread_lash"]
+[ext_resource type="Resource" uid="uid://cyuqb7w3ymgww" path="res://Data/Character_Skill_Variants/Attack_Skills/Thread_Snap.tres" id="2_thread_snap"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_uspd6"]
+[ext_resource type="Resource" uid="uid://dvb8dilbwuux" path="res://Data/Character_Skill_Variants/Support_Skills/Woven_Blessing.tres" id="2_woven_blessing"]
 [ext_resource type="Resource" uid="uid://syj6hxvr5t2x" path="res://Data/Attribute_Weights/Dexterous.tres" id="3_atjrr"]
 [ext_resource type="Resource" uid="uid://b8nee1hs4g663" path="res://Data/Attribute_Weights/Conjurer.tres" id="4_mfxwy"]
 [ext_resource type="Resource" uid="uid://bejf1a62v41gq" path="res://Data/Attribute_Weights/Marksman.tres" id="5_hh5c7"]
@@ -19,7 +21,7 @@ _normal_map = "res://Assets/Champ_Collector/Creatures/Herald_of_the_loom/Herald_
 _rarity = 3
 _faction = 3
 _role = 16
-_skills = Array[ExtResource("1_cgy53")]([ExtResource("2_5jncj"), ExtResource("2_5jncj"), ExtResource("2_5jncj")])
+_skills = Array[ExtResource("1_cgy53")]([ExtResource("2_thread_snap"), ExtResource("2_thread_lash"), ExtResource("2_woven_blessing")])
 _health = 50
 _speed = 50
 _attack = 30

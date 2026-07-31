@@ -6,7 +6,7 @@ extends GutTest
 ## malformed rows as skills are added to the table.
 
 const GENERATOR_PATH: String = "res://Scripts/Debug/generate_placeholder_icons.gd"
-const EXPECTED_ROW_COUNT: int = 67
+const EXPECTED_ROW_COUNT: int = 66
 const ALLOWED_PREFIXES: Array = [
 	"Abilities/Role_Active_Skills/",
 	"Abilities/Opponent_Active_Skills/",

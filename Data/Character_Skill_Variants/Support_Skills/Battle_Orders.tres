@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="Skill" format=3 uid="uid://cj53yvqrq3okl"]
+
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+
+[resource]
+script = ExtResource("1_skill")
+name = "Battle Orders"
+description = "Grants a single ally the Battle Orders buff for 2 turns."
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Battle_Orders/Battle_Orders.png"
+target = 3
+cooldown = 4
+duration = 2
+skill_type = 5
+buffs = Dictionary[int, Array]({
+3: [29]
+})
+metadata/_custom_type_script = "uid://glh06y3wvchj"

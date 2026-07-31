@@ -11,7 +11,7 @@ target = 12
 cooldown = 2
 duration = 1
 skill_type = 5
-buffs = Dictionary[int, int]({
-12: 3
+buffs = Dictionary[int, Array]({
+12: [3]
 })
 metadata/_custom_type_script = "uid://glh06y3wvchj"

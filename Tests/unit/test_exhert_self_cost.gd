@@ -50,6 +50,15 @@ func test_exhert_costs_5_percent_max_health_on_the_holders_own_turn() -> void:
 		func(r): return r.kind == CombatResult.Kind.Damage and r.target_ID == 0 and r.amount == expected_cost)
 	assert_eq(self_damage.size(), 1, "The self-cost should be reported as a Damage result")
 
+func test_exhert_increases_target_snapshot_defence_by_20_percent() -> void:
+	var character: Character = TestFactory.make_character()
+	character._active_buffs.append(_exhert_buff())
+	var attrs: Dictionary[Types.Attribute, int] = character.GetTotalAttributes()
+	attrs[Types.Attribute.Defence] = 100
+	Skills.TriggerTargetBuffs(character, attrs)
+	assert_eq(attrs[Types.Attribute.Defence], 120,
+		"Exhert must raise Defense against incoming attacks, not just the holder's own turn")
+
 func _first_damage(p_results: Array[CombatResult]) -> int:
 	var damage: Array = p_results.filter(func(r): return r.kind == CombatResult.Kind.Damage and r.source_ID == 0)
 	return damage[0].amount if not damage.is_empty() else -1

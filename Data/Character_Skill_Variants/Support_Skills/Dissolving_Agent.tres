@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="Skill" format=3 uid="uid://bm2neuieq5fti"]
+
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+
+[resource]
+script = ExtResource("1_skill")
+name = "Dissolving Agent"
+description = "Applies the Unravel debuff to a single enemy for 2 turns."
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Dissolving_Agent/Dissolving_Agent.png"
+cooldown = 3
+duration = 2
+skill_type = 5
+debuffs = Dictionary[int, Array]({
+0: [6]
+})
+metadata/_custom_type_script = "uid://glh06y3wvchj"

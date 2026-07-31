@@ -28,10 +28,11 @@ func PlaceZone(p_zone_ID: int, p_owner_ID: int, p_skill: Skill) -> Array[CombatR
 	if(_zones.has(p_zone_ID)):
 		print("Zone is already used")
 		return _resolver._EndBatch()
+	var zone_debuffs: Array[Types.Debuff_Type] = []
+	zone_debuffs.assign(p_skill.debuffs.get(p_skill.target, []))
 	var zone: Zone = Zone.new()
 	zone.CreateNew(p_skill.skill_type, p_skill.duration, p_owner_ID, p_skill.target,
-			_resolver._characters[p_owner_ID].GetTotalAttribute(Types.Attribute.Knowledge),
-			p_skill.debuffs.get(p_skill.target, Types.Debuff_Type.Invalid))
+			_resolver._characters[p_owner_ID].GetTotalAttribute(Types.Attribute.Knowledge), zone_debuffs)
 	_zones[p_zone_ID] = zone
 	var result: CombatResult = CombatResult.new(CombatResult.Kind.Zone_Placed)
 	result.zone_ID = p_zone_ID
@@ -115,14 +116,18 @@ func _ResolveZoneEffect(p_zone: Zone, p_zone_ID: int, p_character_ID: int) -> vo
 					Skills.ZoneMagnitude(GameBalance.FLICKER_ZONE_BASE_BUMP, p_zone._owner_knowledge)
 							* effect_multiplier, p_zone._owner_ID)
 		Types.Skill_Type.Lava_Zone:
-			var data: StatusEffectData = StatusEffectRegistry.DebuffData(p_zone._debuff_type)
-			var burning: StatusEffects.Debuff = StatusEffects.Debuff.new()
-			burning.type = p_zone._debuff_type
-			burning.duration = data.duration_default if null != data else 0
-			burning.source_ID = p_zone._owner_ID
-			burning.value = (_resolver.GetStatusResolver()._SnapshotStatusValue(data, p_zone._owner_ID)
-					* effect_multiplier)
-			if(_resolver.GetStatusResolver().ApplyDebuff(p_character_ID, burning).is_empty()):
+			var any_landed: bool = false
+			for debuff_type in p_zone._debuff_types:
+				var data: StatusEffectData = StatusEffectRegistry.DebuffData(debuff_type)
+				var burning: StatusEffects.Debuff = StatusEffects.Debuff.new()
+				burning.type = debuff_type
+				burning.duration = data.duration_default if null != data else 0
+				burning.source_ID = p_zone._owner_ID
+				burning.value = (_resolver.GetStatusResolver()._SnapshotStatusValue(data, p_zone._owner_ID)
+						* effect_multiplier)
+				if(not _resolver.GetStatusResolver().ApplyDebuff(p_character_ID, burning).is_empty()):
+					any_landed = true
+			if(not p_zone._debuff_types.is_empty() and not any_landed):
 				return
 		Types.Skill_Type.Barrier_Zone:
 			Skills.ApplyBarrierZone(_resolver, p_zone._owner_ID, p_zone_ID, p_zone._owner_knowledge, p_character_ID)

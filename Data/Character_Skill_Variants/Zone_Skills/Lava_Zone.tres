@@ -10,7 +10,7 @@ icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Rig
 target = 8
 duration = 6
 skill_type = 3
-debuffs = Dictionary[int, int]({
-8: 0
+debuffs = Dictionary[int, Array]({
+8: [0]
 })
 metadata/_custom_type_script = "uid://glh06y3wvchj"

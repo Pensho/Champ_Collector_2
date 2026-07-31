@@ -3,7 +3,7 @@ extends GutTest
 const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 
 # Sequence Lock blocks any Speed-touching status from being applied, through both the
-# template path (ApplyBuff/ApplyDebuff) and the skill path (_CastBuff/CastDebuff via
+# template path (ApplyBuff/ApplyDebuff) and the skill path (_CastBuffOfType/CastDebuff via
 # ResolveSkill), per the "works through both" watch item in
 # Plan_Status_Effect_Implementation.md. Non-Speed statuses must still land normally.
 
@@ -58,7 +58,7 @@ func test_cast_debuff_is_blocked_for_speed_effect() -> void:
 	var resolver: BattleResolver = TestFactory.make_resolver(roster, TestFactory.make_full_sides())
 	var skill: Skill = TestFactory.make_strike_skill()
 	skill.duration = 2
-	skill.debuffs = {Types.Skill_Target.Single_Enemy: Types.Debuff_Type.Slow}
+	skill.debuffs = {Types.Skill_Target.Single_Enemy: [Types.Debuff_Type.Slow]}
 	roster[0]._attributes[Types.Attribute.Accuracy] = 1000
 	roster[3]._attributes[Types.Attribute.Resistance] = 0
 
@@ -76,7 +76,7 @@ func test_cast_buff_is_blocked_for_speed_effect() -> void:
 	skill.damage_scaling = {}
 	skill.target = Types.Skill_Target.Single_Ally
 	skill.duration = 2
-	skill.buffs = {Types.Skill_Target.Single_Ally: Types.Buff_Type.Haste}
+	skill.buffs = {Types.Skill_Target.Single_Ally: [Types.Buff_Type.Haste]}
 	roster[3]._skills.append(skill)
 
 	resolver.ResolveSkill(3, [3], 1)

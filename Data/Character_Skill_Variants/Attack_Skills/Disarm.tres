@@ -8,11 +8,11 @@ name = "Disarm"
 description = "Puts the opponent into a stance that is tough to attack from. Based on Attack."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Disarm/Disarm_1.jpg"
 damage_scaling = Dictionary[int, float]({
-2: 0.9
+2: 0.8
 })
 cooldown = 2
 duration = 2
-debuffs = Dictionary[int, int]({
-0: 1
+debuffs = Dictionary[int, Array]({
+0: [1]
 })
 metadata/_custom_type_script = "uid://glh06y3wvchj"

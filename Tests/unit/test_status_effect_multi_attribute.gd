@@ -85,7 +85,7 @@ func test_cast_debuff_sets_instance_value_from_registry() -> void:
 	var skill: Skill = TestFactory.make_strike_skill()
 	skill.damage_scaling = {}
 	skill.duration = 2
-	skill.debuffs = {Types.Skill_Target.Single_Enemy: Types.Debuff_Type.Blind}
+	skill.debuffs = {Types.Skill_Target.Single_Enemy: [Types.Debuff_Type.Blind]}
 	roster[0]._skills.append(skill)
 	var resolver: BattleResolver = TestFactory.make_resolver(roster, TestFactory.make_full_sides())
 	roster[0]._attributes[Types.Attribute.Accuracy] = 1000

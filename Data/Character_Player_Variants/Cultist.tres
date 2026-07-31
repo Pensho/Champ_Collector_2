@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
 [ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_weight"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_preset"]
-[ext_resource type="Resource" uid="uid://dl0s23m0g4w3i" path="res://Data/Character_Skill_Variants/Zap.tres" id="3_zap"]
+[ext_resource type="Resource" path="res://Data/Character_Skill_Variants/Attack_Skills/Profane_Bolt.tres" id="3_profane_bolt"]
 [ext_resource type="Resource" uid="uid://b5174xlhufd0j" path="res://Data/Character_Skill_Variants/Attack_Skills/Burning_Bolas.tres" id="4_bolas"]
 [ext_resource type="Resource" uid="uid://civ8gh1okd6p1" path="res://Data/Character_Skill_Variants/Attack_Skills/Break_Guard.tres" id="5_break_guard"]
 [ext_resource type="Resource" uid="uid://4fnej15sbkkv" path="res://Data/Attribute_Weights/Arcane.tres" id="6_arcane"]
@@ -17,7 +17,7 @@ _name = "Cultist"
 _texture = "res://Assets/Champ_Collector/Creatures/Bloodmage/Bloodmage_0001.png"
 _rarity = 2
 _role = 12
-_skills = Array[ExtResource("1_skill")]([ExtResource("3_zap"), ExtResource("4_bolas"), ExtResource("5_break_guard")])
+_skills = Array[ExtResource("1_skill")]([ExtResource("3_profane_bolt"), ExtResource("4_bolas"), ExtResource("5_break_guard")])
 _health = 40
 _speed = 60
 _attack = 30

@@ -8,6 +8,6 @@ name = "Cornerstone"
 description = "Deals damage to a single enemy, scaling with Knowledge, and generates one Calibration charge."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Cornerstone/Cornerstone_1.jpg"
 damage_scaling = Dictionary[int, float]({
-7: 1.0
+7: 0.7
 })
 metadata/_custom_type_script = "uid://glh06y3wvchj"

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="Skill" format=3 uid="uid://dvb8dilbwuux"]
+
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+
+[resource]
+script = ExtResource("1_skill")
+name = "Woven Blessing"
+description = "Grants a single ally the Attune buff for 2 turns."
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Woven_Blessing/Woven_Blessing.png"
+target = 3
+cooldown = 3
+duration = 2
+skill_type = 5
+buffs = Dictionary[int, Array]({
+3: [5]
+})
+metadata/_custom_type_script = "uid://glh06y3wvchj"

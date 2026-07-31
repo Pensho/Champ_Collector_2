@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="Skill" format=3 uid="uid://pkxfcdkdocol"]
+
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+
+[resource]
+script = ExtResource("1_skill")
+name = "Brace for Impact"
+description = "Grants the caster the Rush and Aegis buffs for 1 turn."
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Brace_for_Impact/Brace_for_Impact.png"
+target = 13
+cooldown = 4
+duration = 1
+skill_type = 5
+buffs = Dictionary[int, Array]({
+13: [30, 19]
+})
+metadata/_custom_type_script = "uid://glh06y3wvchj"

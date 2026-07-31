@@ -4,14 +4,14 @@
 
 [resource]
 script = ExtResource("1_oj3d8")
-name = "Stalwart Hymn"
-description = "Increases the defense of all allies."
-icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Stalwart_Hymn/Stalwart_Hymn.jpg"
+name = "Hold the Line"
+description = "Grants all allies the Fortify buff for 2 turns."
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Hold_the_Line/Hold_the_Line.jpg"
 target = 4
 cooldown = 3
 duration = 2
 skill_type = 5
-buffs = Dictionary[int, int]({
-4: 2
+buffs = Dictionary[int, Array]({
+4: [2]
 })
 metadata/_custom_type_script = "uid://glh06y3wvchj"

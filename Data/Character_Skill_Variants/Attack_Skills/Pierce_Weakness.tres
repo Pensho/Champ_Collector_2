@@ -8,7 +8,7 @@ name = "Pierce weakness"
 description = "Through precise means, finding the weak spot to circumvent defences. Based on attack."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Pierce_Weakness/Pierce_Weakness_2.jpg"
 damage_scaling = Dictionary[int, float]({
-2: 1.0
+2: 1.1
 })
 cooldown = 1
 defense_ignore_factor = 0.7

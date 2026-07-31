@@ -31,6 +31,19 @@ Effort: **S** = hours, **M** = days, **L** = week+
 - **Watch Debuff Class Field Bloat** *(Priority: Low | Effort: M)*
   `StatusEffects.Debuff` already carries two fields useful to only one trait each: `tick_bonus_per_debuff` (Comorbidity) and the `has_weakness_rider`/`weakness_attribute`/`weakness_reduction` trio (Field of Study). Fine at this size, but every future trait needing per-instance debuff state adds more fields that sit unused on every other debuff in the game. If a third one-off case shows up, stop and reassess the shared class's shape rather than adding a fourth. See Technical_Design_Document.md section 6.1.
 
+- **Status Effects Only Apply at Two Checkpoints, Not Continuously** *(Priority: High | Effort: L)*
+  Buff/debuff attribute effects (`StatusEffectData.applies_on_self_tick`/`applies_on_target_snapshot`,
+  Technical_Design_Document.md section on `StatusEffectData`) only get read at two discrete moments:
+  the holder's own turn, and when the holder is directly targeted by a skill. A status is supposed to
+  hold its effect continuously from application to expiry, so anything that should matter outside
+  those two moments currently doesn't — found concretely when Rush and Exhert were missing
+  `applies_on_target_snapshot`, silently leaving their Defense/Resistance boost doing nothing against
+  incoming attacks between the holder's turns (fixed as a data patch this session, see Rush.tres/
+  Exhert.tres). The data-patch fix doesn't address the underlying gap: any future status with a
+  live-attribute purpose neither checkpoint covers will silently fail the same way, and there's no
+  systematic guard against forgetting a flag. Needs a dedicated session to review whether the model
+  should move to always-live attribute reads instead of two sampled checkpoints.
+
 - **Calibration Zone "Upgrade" Feel** *(Priority: Low | Effort: S)*
   Final Calculation's tier-3 effect (7+ charges) re-erects the Architect's construction zone for free, or "upgrades" it if one is already standing (Concept_Document.md 3.1.3 / 3.2.4.3). The current implementation collapses "upgrade" to simply setting the existing zone's remaining charges to 8 — functionally correct but flavorless. Brainstorm a more distinct upgrade effect (e.g. a stronger Barrier size, bonus duration, or a visual/mechanical tell that the zone was reinforced rather than merely refilled) before this reads as a real tier-3 payoff.
 

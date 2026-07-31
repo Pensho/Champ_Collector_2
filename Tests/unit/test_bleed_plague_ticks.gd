@@ -78,7 +78,7 @@ func test_zone_delivered_bleed_snapshots_the_zone_owners_attack() -> void:
 	for id in [1, 2, 4, 5]:
 		_roster[id]._current_health = 0
 	var zone_skill: Skill = TestFactory.make_lava_zone_skill()
-	zone_skill.debuffs = {Types.Skill_Target.ZoneAll: Types.Debuff_Type.Bleed}
+	zone_skill.debuffs = {Types.Skill_Target.ZoneAll: [Types.Debuff_Type.Bleed]}
 	zone_resolver.GetZoneResolver().PlaceZone(0, 0, zone_skill)
 
 	zone_resolver.GetZoneResolver().TriggerZones(0)

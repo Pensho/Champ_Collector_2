@@ -3,9 +3,9 @@
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
 [ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_weight"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_preset"]
-[ext_resource type="Resource" uid="uid://dvgwxvsovsldc" path="res://Data/Character_Skill_Variants/Attack_Skills/Stab.tres" id="3_stab"]
-[ext_resource type="Resource" uid="uid://54q7s3jjny1w" path="res://Data/Character_Skill_Variants/Attack_Skills/Pierce_Weakness.tres" id="4_pierce_weakness"]
-[ext_resource type="Resource" uid="uid://dikrn45u40rjr" path="res://Data/Character_Skill_Variants/Support_Skills/Fatal_Flaw.tres" id="5_fatal_flaw"]
+[ext_resource type="Resource" path="res://Data/Character_Skill_Variants/Attack_Skills/Sizing_Cut.tres" id="3_sizing_cut"]
+[ext_resource type="Resource" path="res://Data/Character_Skill_Variants/Support_Skills/Flaw_Analysis.tres" id="4_flaw_analysis"]
+[ext_resource type="Resource" path="res://Data/Character_Skill_Variants/Support_Skills/Full_Appraisal.tres" id="5_full_appraisal"]
 [ext_resource type="Resource" uid="uid://bejf1a62v41gq" path="res://Data/Attribute_Weights/Marksman.tres" id="6_marksman"]
 [ext_resource type="Resource" uid="uid://bvo4uj38cgjg3" path="res://Data/Attribute_Weights/Calculating.tres" id="7_calculating"]
 [ext_resource type="Resource" uid="uid://ytl3g36itqfs" path="res://Data/Attribute_Weights/Learned.tres" id="8_learned"]
@@ -18,7 +18,7 @@ _texture = "res://Assets/Champ_Collector/Creatures/Thief/Thief_0001.png"
 _normal_map = "res://Assets/Champ_Collector/Creatures/Thief/Thief_0001_Normal_Map.png"
 _rarity = 2
 _role = 8
-_skills = Array[ExtResource("1_skill")]([ExtResource("3_stab"), ExtResource("4_pierce_weakness"), ExtResource("5_fatal_flaw")])
+_skills = Array[ExtResource("1_skill")]([ExtResource("3_sizing_cut"), ExtResource("4_flaw_analysis"), ExtResource("5_full_appraisal")])
 _health = 55
 _speed = 55
 _attack = 40

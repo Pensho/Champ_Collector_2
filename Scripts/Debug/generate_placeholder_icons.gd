@@ -186,7 +186,7 @@ const SKILL_ICON_TABLE: Array = [
 	{ "folder": "Abilities/Role_Active_Skills/Woven_Blessing", "base_name": "Woven_Blessing", "size": 64,
 			"color": Color(0.30, 0.65, 0.60, 1.0) },
 	# Thief
-	{ "folder": "Abilities/Role_Active_Skills/Case_the_Target", "base_name": "Case_the_Target", "size": 64,
+	{ "folder": "Abilities/Role_Active_Skills/Weigh_the_Mark", "base_name": "Weigh_the_Mark", "size": 64,
 			"color": Color(0.45, 0.25, 0.55, 1.0) },
 	# Alchemist
 	{ "folder": "Abilities/Role_Active_Skills/Acrid_Splash", "base_name": "Acrid_Splash", "size": 64,
@@ -274,8 +274,8 @@ const SKILL_ICON_TABLE: Array = [
 	# Warlord
 	{ "folder": "Abilities/Role_Active_Skills/Shield_Slam", "base_name": "Shield_Slam", "size": 64,
 			"color": Color(0.35, 0.45, 0.60, 1.0) },
-	{ "folder": "Abilities/Role_Active_Skills/Hold_the_Line", "base_name": "Hold_the_Line", "size": 64,
-			"color": Color(0.30, 0.40, 0.55, 1.0) },
+	# Hold the Line reuses Stalwart_Hymn.tres's real hand-authored art (renamed
+	# Hold_the_Line.jpg), so it needs no placeholder row here.
 	{ "folder": "Abilities/Role_Active_Skills/Brace_for_Impact", "base_name": "Brace_for_Impact", "size": 64,
 			"color": Color(0.40, 0.50, 0.65, 1.0) },
 	# Chronophage

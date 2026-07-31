@@ -121,6 +121,8 @@ static func FindSkillTargets(
 			if(p_sides.AreAllies(p_caster_ID, p_target_ID)):
 				target_IDs.append_array(p_sides.AlliesOf(p_caster_ID).members)
 			target_IDs.erase(p_caster_ID)
+		Types.Skill_Target.Self:
+			target_IDs.append(p_caster_ID)
 		var INVALID_TYPE:
 			print("Invalid argument for skill target enum passed: ", INVALID_TYPE)
 	return FilterAliveTargets(target_IDs, p_characters)
