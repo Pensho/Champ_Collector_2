@@ -87,7 +87,8 @@ static func FindSkillTargets(
 					p_target_type: Types.Skill_Target,
 					p_characters: Dictionary[int, Character],
 					p_sides: CombatSides,
-					p_random: RandomNumberGenerator = null) -> Array[int]:
+					p_random: RandomNumberGenerator = null,
+					p_max_health: Callable = Callable()) -> Array[int]:
 	var target_IDs: Array[int]
 	match p_target_type:
 		Types.Skill_Target.Single_Enemy:
@@ -125,6 +126,13 @@ static func FindSkillTargets(
 			target_IDs.append(p_caster_ID)
 		Types.Skill_Target.Most_Injured_Ally:
 			target_IDs.append_array(p_sides.AlliesOf(p_caster_ID).members)
+		Types.Skill_Target.Most_Injured_Enemy:
+			return SingleTargetArray(
+					MostInjured(p_sides.EnemiesOf(p_caster_ID).members, p_characters, p_max_health))
+		Types.Skill_Target.Left_Most_Enemy:
+			return SingleTargetArray(EdgeMostAlive(p_sides.EnemiesOf(p_caster_ID).AliveMembers(p_characters), true))
+		Types.Skill_Target.Right_Most_Enemy:
+			return SingleTargetArray(EdgeMostAlive(p_sides.EnemiesOf(p_caster_ID).AliveMembers(p_characters), false))
 		var INVALID_TYPE:
 			print("Invalid argument for skill target enum passed: ", INVALID_TYPE)
 	return FilterAliveTargets(target_IDs, p_characters)
@@ -159,6 +167,23 @@ static func MostInjured(p_IDs: Array[int], p_characters: Dictionary[int, Charact
 			best_ratio = ratio
 			best_ID = id
 	return best_ID
+
+## The left-most (p_want_left true) or right-most alive member of an already
+## alive-filtered, left-to-right ordered ID list; -1 if the list is empty.
+static func EdgeMostAlive(p_alive_IDs_left_to_right: Array[int], p_want_left: bool) -> int:
+	if(p_alive_IDs_left_to_right.is_empty()):
+		return -1
+	return p_alive_IDs_left_to_right.front() if p_want_left else p_alive_IDs_left_to_right.back()
+
+## The combined enemy-AI targeting-weight multiplier from all of a character's active
+## buffs (e.g. Spotlight's 1.5x). 1.0 when none apply.
+static func TargetingWeightMultiplier(p_character: Character) -> float:
+	var multiplier: float = 1.0
+	for buff in p_character._active_buffs:
+		var data: StatusEffectData = StatusEffectRegistry.BuffData(buff.type)
+		if(null != data):
+			multiplier *= data.targeting_weight_multiplier
+	return multiplier
 
 static func IsAttributeModifierKind(p_kind: StatusEffectData.MagnitudeKind) -> bool:
 	return (StatusEffectData.MagnitudeKind.AttributePercent == p_kind

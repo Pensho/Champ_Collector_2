@@ -81,6 +81,9 @@ enum Skill_Target
 	All_Other_Allies,
 	Self,
 	Most_Injured_Ally,
+	Left_Most_Enemy,
+	Right_Most_Enemy,
+	Most_Injured_Enemy,
 }
 
 enum Attribute
@@ -99,14 +102,13 @@ enum Attribute
 
 enum Skill_Type
 {
-	Simple_Attack,
-	Heap_On,
-	Flicker_Zone,
-	Lava_Zone,
-	None,
-	Status_Effect,
-	Barrier_Zone,
-	Spore_Zone,
+	Simple_Attack = 0,
+	Flicker_Zone = 2,
+	Lava_Zone = 3,
+	None = 4,
+	Status_Effect = 5,
+	Barrier_Zone = 6,
+	Spore_Zone = 7,
 }
 
 enum Buff_Type

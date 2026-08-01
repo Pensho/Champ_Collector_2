@@ -383,7 +383,7 @@ Buffs:
 * Overflow: When this buff expires, it deals magical damage to all enemies, scaling with the holder's Mysticism.
 * Vigor: Increases max Health by 30%.
 * Lethal Precision: Increases Critical Damage by 50 percentage points.
-* Spotlight: The character is much more likely to be targeted by enemies and takes 10% less damage. (The damage-reduction half is implemented; the targeting-weight half is dormant until enemy-AI targeting weights land)
+* Spotlight: The character is much more likely to be targeted by enemies (1.5x targeting weight) and takes 10% less damage.
 * Premonition: The next attack against the character automatically misses, then the buff is consumed.
 * Rehearsed: The character's next non-basic skill does not go on cooldown, then the buff is consumed.
 
@@ -406,6 +406,8 @@ Skill targeting types:
 * All Characters
 * Left-most Enemy
 * Right-most Enemy
+* Most Injured Ally
+* Most Injured Enemy
 
 Positional targeting (Left-most Enemy, Right-most Enemy) is absolute: it follows the left-to-right party order (see section 3.2) and is not redirected by targeting-weight effects such as Spotlight.
 

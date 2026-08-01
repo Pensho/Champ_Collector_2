@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="Skill" format=3 uid="uid://beas40vltkngn"]
+
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+
+[resource]
+script = ExtResource("1_skill")
+name = "Aimed Shot"
+description = "Deals damage to the most injured enemy, scaled by Attack."
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Opponent_Active_Skills/Aimed_Shot/Aimed_Shot.png"
+target = 17
+damage_scaling = Dictionary[int, float]({
+2: 1.4
+})
+cooldown = 2
+metadata/_custom_type_script = "uid://glh06y3wvchj"

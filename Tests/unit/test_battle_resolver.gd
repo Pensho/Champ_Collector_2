@@ -108,7 +108,7 @@ func test_heap_on_state_is_per_resolver_not_global() -> void:
 	# resolver even after another resolver accumulated stacks.
 	var heap_on_skill: Skill = Skill.new()
 	heap_on_skill.name = "Heap On"
-	heap_on_skill.skill_type = Types.Skill_Type.Heap_On
+	heap_on_skill.ramp_per_use = 0.2
 	heap_on_skill.target = Types.Skill_Target.Single_Enemy
 	heap_on_skill.damage_scaling = {Types.Attribute.Health: 1.0}
 
@@ -128,6 +128,75 @@ func test_heap_on_state_is_per_resolver_not_global() -> void:
 
 	assert_eq(first_cast_a, first_cast_b,
 		"A fresh resolver must start with clean Heap-On state (no static leakage)")
+
+func test_ramp_per_use_grows_damage_and_is_permanent_for_the_battle() -> void:
+	var ramping_skill: Skill = Skill.new()
+	ramping_skill.name = "Breaching Charge"
+	ramping_skill.target = Types.Skill_Target.Single_Enemy
+	ramping_skill.damage_scaling = {Types.Attribute.Attack: 1.0}
+	ramping_skill.ramp_per_use = 0.15
+
+	var roster: Dictionary[int, Character] = _make_roster()
+	roster[0]._skills[0] = ramping_skill
+	var resolver: BattleResolver = TestFactory.make_resolver(
+			roster, TestFactory.make_full_sides(), null, BATTLE_SEED)
+
+	# Each cast's random damage-variance roll (+/-5%) can occasionally outweigh a single
+	# 15% ramp step, so compare across enough casts that the ramp's growth dominates the
+	# per-cast noise rather than asserting strict cast-over-cast monotonicity.
+	var first_cast: int = _first_damage_amount(resolver.ResolveSkill(0, [3], 0))
+	var last_cast: int = first_cast
+	for _i in range(6):
+		last_cast = _first_damage_amount(resolver.ResolveSkill(0, [3], 0))
+
+	assert_true(last_cast > first_cast,
+		"A ramping skill must deal noticeably more damage after several casts than on its first")
+
+func test_ramp_per_use_is_scoped_to_the_skill_not_the_caster() -> void:
+	var ramping_skill: Skill = Skill.new()
+	ramping_skill.name = "Breaching Charge"
+	ramping_skill.target = Types.Skill_Target.Single_Enemy
+	ramping_skill.damage_scaling = {Types.Attribute.Attack: 1.0}
+	ramping_skill.ramp_per_use = 0.15
+
+	var plain_skill: Skill = Skill.new()
+	plain_skill.name = "Plain Strike"
+	plain_skill.target = Types.Skill_Target.Single_Enemy
+	plain_skill.damage_scaling = {Types.Attribute.Attack: 1.0}
+
+	var roster: Dictionary[int, Character] = _make_roster()
+	roster[0]._skills[0] = ramping_skill
+	roster[0]._skills.append(plain_skill)
+	var resolver: BattleResolver = TestFactory.make_resolver(
+			roster, TestFactory.make_full_sides(), null, BATTLE_SEED)
+
+	var first_plain_cast: int = _first_damage_amount(resolver.ResolveSkill(0, [3], 1))
+	resolver.ResolveSkill(0, [3], 0)
+	resolver.ResolveSkill(0, [3], 0)
+	var second_plain_cast: int = _first_damage_amount(resolver.ResolveSkill(0, [3], 1))
+
+	assert_eq(first_plain_cast, second_plain_cast,
+		"A caster's other, non-ramping skill must be unaffected by a ramping skill's stacks")
+
+func test_march_cadence_pushes_all_other_allies_turn_bar_and_not_the_caster() -> void:
+	var march_cadence: Skill = Skill.new()
+	march_cadence.name = "March Cadence"
+	march_cadence.target = Types.Skill_Target.All_Other_Allies
+	march_cadence.turn_effect = 0.1
+
+	var roster: Dictionary[int, Character] = _make_roster()
+	roster[0]._skills[0] = march_cadence
+	var resolver: BattleResolver = TestFactory.make_resolver(
+			roster, TestFactory.make_full_sides(), null, BATTLE_SEED)
+
+	var target_IDs: Array[int] = resolver.FindSkillTargets(1, 0, Types.Skill_Target.All_Other_Allies)
+	var results: Array[CombatResult] = resolver.ResolveSkill(0, target_IDs, 0)
+
+	var bump_targets: Array = _kinds(results, CombatResult.Kind.Turn_Bar_Bump).map(
+			func(p_result): return p_result.target_ID)
+	assert_true(bump_targets.has(1) and bump_targets.has(2),
+		"March Cadence must push the turn bar of every other ally")
+	assert_false(bump_targets.has(0), "March Cadence must not push the caster's own turn bar")
 
 func _first_damage_amount(p_results: Array[CombatResult]) -> int:
 	var damage_results: Array[CombatResult] = _kinds(p_results, CombatResult.Kind.Damage)

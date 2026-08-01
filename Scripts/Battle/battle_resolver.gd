@@ -29,9 +29,9 @@ var _zone_resolver: ZoneResolver
 var _status_resolver: StatusEffectResolver
 var _health_transfer_resolver: HealthTransferResolver
 
-var _heap_on_stacks: Dictionary[int, int] = {}
-var _heap_on_value: Dictionary[int, float] = {}
 var _damage_multiplier: Dictionary[int, float] = {}
+
+var _skill_ramp_uses: Dictionary[String, int] = {}
 
 # Inner Dictionary is Dictionary[Types.Attribute, int]
 # keyed by attribute with the accumulated bonus.
@@ -120,7 +120,7 @@ func FindSkillTargets(p_target_ID: int, p_caster_ID: int, p_target_type: Types.S
 		if(redirected_ID != -1):
 			EmitTraitText(p_target_ID, "Refracted!")
 			return [redirected_ID]
-	return Skills.FindSkillTargets(p_target_ID, p_caster_ID, effective_type, _characters, _sides, _random)
+	return Skills.FindSkillTargets(p_target_ID, p_caster_ID, effective_type, _characters, _sides, _random, _MaxHealth)
 
 
 func IsTheBattleOver() -> Winner:
@@ -160,7 +160,7 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 	if(not caster._active_buffs.is_empty()):
 		_status_resolver._TriggerExistingCasterBuffs(p_caster_ID, caster_attributes)
 
-	_ResolveSkillEffect(p_caster_ID, caster_attributes, cast_skill)
+	var ramp_multiplier: float = _SkillRampMultiplier(p_caster_ID, cast_skill)
 	var health_paid: int = _health_transfer_resolver.ResolveHealthCosts(p_caster_ID, p_target_IDs, cast_skill)
 	_ResolveStatusGroups(p_caster_ID, p_target_IDs, cast_skill, trait_result._tick_bonus_per_debuff, health_paid)
 	_health_transfer_resolver.ResolveHealthGains(p_caster_ID, p_target_IDs, cast_skill, caster_attributes)
@@ -181,7 +181,7 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 
 		if(not cast_skill.damage_scaling.is_empty()):
 			_ResolveDamage(p_caster_ID, target_ID, caster_attributes, target_attributes,
-					cast_skill, trait_result._damage_multiplier)
+					cast_skill, trait_result._damage_multiplier, true, ramp_multiplier)
 
 		var total_bump: float = cast_skill.turn_effect + trait_result._turn_bar_bump
 		_EmitTurnBarBump(target_ID, total_bump, p_caster_ID)
@@ -597,19 +597,14 @@ func _HandleDeath(p_character_ID: int) -> void:
 				ally_death_trait.OnAllyDeath(ally_ID, p_character_ID, self)
 
 
-## Caster-side skill mechanics that key off per-combat state (Heap On stacking).
-func _ResolveSkillEffect(
-		p_caster_ID: int,
-		p_caster_attributes: Dictionary[Types.Attribute, int],
-		p_skill: Skill) -> void:
-	match p_skill.skill_type:
-		Types.Skill_Type.Heap_On:
-			if(0 == _heap_on_stacks.get(p_caster_ID, 0)):
-				_heap_on_value[p_caster_ID] = (float(p_caster_attributes[Types.Attribute.Health])
-						* GameBalance.HEAP_ON_MULTIPLIER)
-			p_caster_attributes[Types.Attribute.Health] += int(
-					_heap_on_value[p_caster_ID] * float(_heap_on_stacks.get(p_caster_ID, 0)))
-			_heap_on_stacks[p_caster_ID] = _heap_on_stacks.get(p_caster_ID, 0) + 1
+func _SkillRampMultiplier(p_caster_ID: int, p_skill: Skill) -> float:
+	if(0.0 == p_skill.ramp_per_use):
+		return 1.0
+	var key: String = "%d:%s" % [p_caster_ID, p_skill.name]
+	var uses: int = _skill_ramp_uses.get(key, 0)
+	_skill_ramp_uses[key] = uses + 1
+	return 1.0 + p_skill.ramp_per_use * float(uses)
+
 
 func _ResolveStatusGroups(
 		p_caster_ID: int,
@@ -677,7 +672,8 @@ func _ResolveDamage(
 		p_target_attributes: Dictionary[Types.Attribute, int],
 		p_skill: Skill,
 		p_trait_multiplier: float,
-		p_allow_critical: bool = true) -> void:
+		p_allow_critical: bool = true,
+		p_ramp_multiplier: float = 1.0) -> void:
 	var random_value: float = _RollFavoring(p_caster_ID, 0.95, 1.05, true)
 	var caster_scaled_attribute_aggregate: float = 0.0
 	var crit_multiplier: float = 1.0
@@ -693,6 +689,7 @@ func _ResolveDamage(
 	for key in effective_scaling.keys():
 		caster_scaled_attribute_aggregate += (effective_scaling[key]
 				* float(p_caster_attributes[key]) * p_trait_multiplier)
+	caster_scaled_attribute_aggregate *= p_ramp_multiplier
 	# Some status skills deal no damage. So no need to continue.
 	if(0.0 == caster_scaled_attribute_aggregate):
 		return

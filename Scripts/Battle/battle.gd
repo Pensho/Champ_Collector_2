@@ -78,10 +78,12 @@ func SetTargetingOrder() -> void:
 				+ obj_a.GetTotalAttribute(Types.Attribute.Defence))
 		if obj_a._trait != null:
 			priority_a *= obj_a._trait.GetTargetingPriorityMultiplier()
+		priority_a *= Skills.TargetingWeightMultiplier(obj_a)
 		var priority_b: float = (obj_b.GetTotalAttribute(Types.Attribute.Health)
 				+ obj_b.GetTotalAttribute(Types.Attribute.Defence))
 		if obj_b._trait != null:
 			priority_b *= obj_b._trait.GetTargetingPriorityMultiplier()
+		priority_b *= Skills.TargetingWeightMultiplier(obj_b)
 
 		return priority_a > priority_b
 		)
@@ -168,8 +170,6 @@ func Init(p_context: ContextContainer) -> void:
 				_reagent_loadout.AddBrewed(brew_key, _characters[i]._trait.GetBrewPotencyBonus())
 			_characters[i]._trait.RefreshVisuals(_character_representations[i])
 
-	SetTargetingOrder()
-
 	GRAYSCALE_MATERIAL = ShaderMaterial.new()
 	GRAYSCALE_MATERIAL.shader = GRAYSCALE
 
@@ -224,6 +224,7 @@ func StartTurn() -> void:
 	_turn_indicator.show()
 
 	_resolver.BeginTurn(_turn_character_ID)
+	SetTargetingOrder()
 	RefreshAllTraitVisuals()
 
 	if (CheckAndHandleBattleOver()):

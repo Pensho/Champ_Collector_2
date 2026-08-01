@@ -12,7 +12,10 @@ func before_each() -> void:
 # Thin wrapper so the many targeting cases below read the same as before the
 # characters dictionary and the sides became required arguments.
 func _find(p_target_ID: int, p_caster_ID: int, p_target_type: Types.Skill_Target) -> Array[int]:
-	return Skills.FindSkillTargets(p_target_ID, p_caster_ID, p_target_type, _roster, _sides)
+	return Skills.FindSkillTargets(p_target_ID, p_caster_ID, p_target_type, _roster, _sides, null, _MaxHealth)
+
+func _MaxHealth(p_character: Character) -> int:
+	return p_character.GetTotalAttribute(Types.Attribute.Health)
 
 # --- FindSkillTargets ---
 
@@ -80,6 +83,58 @@ func test_all_other_allies_excludes_caster() -> void:
 	assert_false(targets.has(0), "All_Other_Allies should exclude the caster (ID 0)")
 	assert_true(targets.has(1), "All_Other_Allies should include other ally IDs")
 	assert_true(targets.has(2), "All_Other_Allies should include other ally IDs")
+
+# --- Left_Most_Enemy / Right_Most_Enemy / Most_Injured_Enemy ---
+
+func test_left_most_enemy_is_the_first_slot_in_party_order() -> void:
+	var targets: Array[int] = _find(3, 0, Types.Skill_Target.Left_Most_Enemy)
+	assert_eq(targets, [3], "Left_Most_Enemy should resolve to the first enemy slot (ID 3)")
+
+func test_right_most_enemy_is_the_last_slot_in_party_order() -> void:
+	var targets: Array[int] = _find(3, 0, Types.Skill_Target.Right_Most_Enemy)
+	assert_eq(targets, [5], "Right_Most_Enemy should resolve to the last enemy slot (ID 5)")
+
+func test_left_most_enemy_skips_a_dead_edge_slot() -> void:
+	_roster[3]._current_health = 0
+	var targets: Array[int] = _find(3, 0, Types.Skill_Target.Left_Most_Enemy)
+	assert_eq(targets, [4], "Left_Most_Enemy must skip a dead left-edge slot for the next alive one")
+
+func test_right_most_enemy_skips_a_dead_edge_slot() -> void:
+	_roster[5]._current_health = 0
+	var targets: Array[int] = _find(3, 0, Types.Skill_Target.Right_Most_Enemy)
+	assert_eq(targets, [4], "Right_Most_Enemy must skip a dead right-edge slot for the next alive one")
+
+func test_left_most_enemy_empty_when_all_enemies_dead() -> void:
+	for id in [3, 4, 5]:
+		_roster[id]._current_health = 0
+	var targets: Array[int] = _find(3, 0, Types.Skill_Target.Left_Most_Enemy)
+	assert_eq(targets.size(), 0, "Left_Most_Enemy returns nothing when every enemy is dead")
+
+func test_left_most_enemy_reads_the_static_party_order_not_caster_relative() -> void:
+	# From a monster caster, "enemies" is the player side [0, 1, 2]; left-most is still
+	# the first slot in that side's fixed order, not related to the monster's own slot.
+	var targets: Array[int] = _find(0, 3, Types.Skill_Target.Left_Most_Enemy)
+	assert_eq(targets, [0], "Left_Most_Enemy from a monster caster should hit player slot 0")
+
+func test_most_injured_enemy_picks_the_lowest_health_ratio() -> void:
+	_roster[4]._current_health = 3
+	var targets: Array[int] = _find(3, 0, Types.Skill_Target.Most_Injured_Enemy)
+	assert_eq(targets, [4], "Most_Injured_Enemy should pick the enemy with the lowest Health ratio")
+
+func test_left_most_enemy_is_not_redirected_by_spotlight() -> void:
+	# Positional targeting is absolute and must not be pulled toward a Spotlight holder
+	# that isn't the actual left-most slot.
+	var spotlight: StatusEffects.Buff = StatusEffects.Buff.new()
+	spotlight.type = Types.Buff_Type.Spotlight
+	_roster[5]._active_buffs.append(spotlight)
+	var targets: Array[int] = _find(3, 0, Types.Skill_Target.Left_Most_Enemy)
+	assert_eq(targets, [3], "Left_Most_Enemy must ignore Spotlight and still resolve to the left-most slot")
+
+func test_most_injured_enemy_ignores_a_dead_enemy() -> void:
+	_roster[4]._current_health = 0
+	var targets: Array[int] = _find(3, 0, Types.Skill_Target.Most_Injured_Enemy)
+	assert_false(targets.has(4), "Most_Injured_Enemy must not select a dead enemy")
+	assert_eq(targets.size(), 1)
 
 # --- Dead / missing target exclusion ---
 

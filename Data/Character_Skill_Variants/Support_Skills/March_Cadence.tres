@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="Skill" format=3]
+
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+
+[resource]
+script = ExtResource("1_skill")
+name = "March Cadence"
+description = "All other allies gain 10% turn bar progress."
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Opponent_Active_Skills/March_Cadence/March_Cadence.png"
+target = 12
+turn_effect = 0.1
+skill_type = 4
+metadata/_custom_type_script = "uid://glh06y3wvchj"

@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="Skill" format=3 uid="uid://dn1j0tcepmp1r"]
+
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+
+[resource]
+script = ExtResource("1_skill")
+name = "Flank Cut"
+description = "Deals damage to the right-most enemy, scaled by Attack."
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Opponent_Active_Skills/Flank_Cut/Flank_Cut.png"
+target = 16
+damage_scaling = Dictionary[int, float]({
+2: 0.7
+})
+metadata/_custom_type_script = "uid://glh06y3wvchj"

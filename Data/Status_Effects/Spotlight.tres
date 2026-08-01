@@ -8,5 +8,6 @@ script = ExtResource("1_script")
 magnitude_kind = 16
 magnitude = 0.1
 applies_on_self_tick = false
+targeting_weight_multiplier = 1.5
 icon = ExtResource("2_icon")
 description = "The character is much more likely to be targeted by enemies and takes 10% less damage."

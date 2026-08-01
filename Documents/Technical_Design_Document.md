@@ -279,6 +279,12 @@ var cooldown_left: int = 0
 @export var barrier_from_health_paid: float = 0.0           # multiplier turning this cast's
                                                              # own health_change cost into a
                                                              # granted Barrier's pool
+@export var ramp_per_use: float = 0.0                       # fractional damage growth per prior
+                                                             # cast of this skill this battle
+                                                             # (0.0 = no ramp), permanent for the
+                                                             # battle; tracked per (caster, skill
+                                                             # name) on the resolver (Heap On,
+                                                             # Breaching Charge, Cinder Sermon)
 ```
 
 There are 66+ `.tres` files under `Data/` (player and enemy character variants, skill variants
@@ -321,6 +327,9 @@ enum MagnitudeKind {
                                                              # migration
 @export var self_tick_max_health_cost_percent: float = 0.0    # extra self-tick Health cost,
                                                              # independent of magnitude_kind (Exhert)
+@export var targeting_weight_multiplier: float = 1.0          # multiplies the holder's enemy-AI
+                                                             # targeting priority, independent of
+                                                             # magnitude_kind (Spotlight, 1.5x)
 @export var icon: Texture2D
 ```
 
@@ -687,8 +696,11 @@ the skill UI, and returns to `Advancing` (or ends the battle).
    4% of max HP, reported as `Heal`) and duration decrements (reported as `Status_Duration` /
    `Statuses_Removed` results). Attribute modifiers are no longer applied here — they were already
    folded in at step 1.
-4. Resolve caster-side skill mechanics (e.g. Heap On stacking against the resolver's per-combat
-   state). Then pay any negative `health_change` entries (`HealthTransferResolver.ResolveHealthCosts`,
+4. Compute this cast's `Skill.ramp_per_use` multiplier (`_SkillRampMultiplier`, e.g. Heap On,
+   Breaching Charge, Cinder Sermon): `1.0 + ramp_per_use * prior_casts_of_this_skill`,
+   tracked per (caster, skill name) so a caster's other skills are unaffected, applied to
+   `caster_scaled` in the damage formula below. Then pay any negative `health_change` entries
+   (`HealthTransferResolver.ResolveHealthCosts`,
    via `_ApplyHealthCost` — non-lethal, floored at 1 Health, Barrier-absorbable like any other
    Health loss) before buffs/debuffs are cast, so a Barrier granted by the same skill
    (`barrier_from_health_paid > 0`) can size its pool from what the caster actually paid.
@@ -711,7 +723,7 @@ the skill UI, and returns to `Advancing` (or ends the battle).
 The implemented damage formula (`BattleResolver._ResolveDamage`):
 
 ```
-caster_scaled = Σ over attrs ( skill.damage_scaling[attr] * caster[attr] * trait_multiplier )
+caster_scaled = Σ over attrs ( skill.damage_scaling[attr] * caster[attr] * trait_multiplier ) * ramp_multiplier
 effective_defence = defender.Defence * skill.defense_ignore_factor
 damage_ratio = caster_scaled / (effective_defence + caster_scaled + 1)
 mitigation = MINIMUM_DMG_PERCENT + (1 - MINIMUM_DMG_PERCENT) * damage_ratio
@@ -1298,7 +1310,7 @@ state, reached through the `TurnPositions` interface — moving them into the co
 
 ### 15.2. Static mutable state in `Skills` — resolved
 
-Resolved: the per-combat state (`_heap_on_stacks`, `_heap_on_value`, `_damage_multiplier`) lives
+Resolved: the per-combat state (`_skill_ramp_uses`, `_damage_multiplier`) lives
 on the battle-scoped `BattleResolver` instance and is created and discarded with the battle;
 `Skills.Reset()` is gone and `Skills` keeps only stateless helpers (plus a static texture cache).
 Combat rolls all go through the resolver's injectable, seedable `RandomNumberGenerator`.

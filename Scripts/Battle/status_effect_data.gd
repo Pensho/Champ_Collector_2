@@ -40,5 +40,6 @@ enum MagnitudeKind {
 @export var applies_on_target_snapshot: bool = false
 # Extra self-tick max-Health cost, independent of magnitude_kind.
 @export var self_tick_max_health_cost_percent: float = 0.0
+@export var targeting_weight_multiplier: float = 1.0
 @export var icon: Texture2D
 @export_multiline var description: String = ""

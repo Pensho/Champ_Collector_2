@@ -64,3 +64,21 @@ func test_targeting_priority_multiplier_scales_the_whole_score_not_just_defence(
 
 	assert_eq(_battle._targeting_order[0], 0,
 		"The targeting priority multiplier must scale the whole Health+Defence score, not only Defence")
+
+func test_spotlight_buff_raises_targeting_weight() -> void:
+	var spotlighted: Character = TestFactory.make_character()
+	spotlighted._attributes[Types.Attribute.Health] = 100
+	spotlighted._attributes[Types.Attribute.Defence] = 0
+	var spotlight: StatusEffects.Buff = StatusEffects.Buff.new()
+	spotlight.type = Types.Buff_Type.Spotlight
+	spotlighted._active_buffs.append(spotlight)
+
+	var plain: Character = TestFactory.make_character()
+	plain._attributes[Types.Attribute.Health] = 140
+	plain._attributes[Types.Attribute.Defence] = 0
+
+	_battle._characters = {0: spotlighted, 1: plain}
+	_battle.SetTargetingOrder()
+
+	assert_eq(_battle._targeting_order[0], 0,
+		"Spotlight's 1.5x targeting weight (100 -> 150) must outrank a higher raw score of 140")

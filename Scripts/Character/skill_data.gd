@@ -28,5 +28,6 @@ const Statuses = preload("uid://bp3pvvar4437")
 @export var heal_scaling: Dictionary[Types.Skill_Target, Dictionary]
 # Multiplier turning the Health the caster paid this cast into the granted Barrier's pool.
 @export var barrier_from_health_paid: float = 0.0
+@export var ramp_per_use: float = 0.0
 
 var cooldown_left: int = 0

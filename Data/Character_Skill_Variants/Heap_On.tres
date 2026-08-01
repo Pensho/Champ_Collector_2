@@ -10,5 +10,5 @@ icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Hea
 damage_scaling = Dictionary[int, float]({
 0: 0.4
 })
-skill_type = 1
+ramp_per_use = 0.2
 metadata/_custom_type_script = "uid://glh06y3wvchj"

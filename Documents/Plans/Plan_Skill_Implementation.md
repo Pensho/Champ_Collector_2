@@ -8,7 +8,7 @@ executed, tested, and reviewed on their own.
 
 ## Status
 
-Batches 0–2 are complete; batches 3–6 remain, but every dependency they rested
+Batches 0–3 are complete; batches 4–6 remain, but every dependency they rested
 on is now satisfied. The headless combat core (`BattleResolver`, `CombatResult`,
 seeded generator — `Technical_Design_Document.md` section 7) and data-driven
 status effects (section 6.1) both landed, and **`Plan_Status_Effect_Implementation.md`
@@ -145,15 +145,24 @@ hook. Includes most-injured-ally selection for heal targeting.
   (Bloodmage).
 - Opponent skills: Sporeburst Mend.
 
-### Batch 3 — targeting extensions and per-battle ramps
+### Batch 3 — targeting extensions and per-battle ramps (complete)
 
 New `Skill_Target` variants: Left-most Enemy, Right-most Enemy (absolute,
-party-order based — characters need a battlefield slot index the resolver can
-read; Spotlight must not redirect these), and most-injured-enemy selection.
-Generalize the Heap_On per-resolver ramp so any skill can declare per-use
-growth, and support ally-side turn-bar pushes. Spotlight's targeting-weight
-half (dormant since the status plan) goes live with the enemy-targeting work
-here.
+party-order based — resolved directly off `CombatSides`/`CombatTeam`'s
+already-ordered party arrays, no new `Character` field needed; Spotlight does
+not redirect these, since they never touch `Battle._targeting_order`), and
+most-injured-enemy selection. Generalized the Heap_On per-resolver ramp into
+`Skill.ramp_per_use` (keyed per caster+skill, so any skill can declare
+per-use growth independent of the caster's other skills), and migrated Heap
+On itself onto it (a follow-up beyond this batch's original scope, since the
+two mechanisms turned out to be mathematically identical — see
+`Skill_Type.Heap_On`'s vestigial-but-kept enum entry). Added ally-side
+turn-bar pushes (needed no resolver change — `_EmitTurnBarBump` was already
+side-agnostic). Spotlight's targeting-weight half (dormant since the status
+plan) is live: `StatusEffectData.targeting_weight_multiplier`, read by
+`Battle.SetTargetingOrder()`, which now also runs every turn rather than only
+at battle start, so a targeting-weight buff gained mid-battle takes effect
+immediately.
 
 - Champion skills: none (champion kits do not use positional targeting).
 - Opponent skills: Flank Cut, Breaching Charge (+15% per use), Aimed Shot,
