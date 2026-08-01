@@ -186,6 +186,14 @@ counting them, and per-buff-count damage scaling.
 - Opponent skills: Foreclosure (+20% per held buff), Writ of Seizure (steal
   to the designated ward), Reliquary Ward (alternating Barrier / Deathward).
 
+The flat `Skill` fields this batch introduced (`buff_duration_overrides`,
+`consume_buffs`, `damage_bonus_per_buff`, `steal_buff_count`/`steal_buff_to`,
+`alternating_buffs`, `escalated_at_infractions`,
+`bonus_damage_on_trait_condition`, `barrier_from_target_max_health`) are
+replaced by effect components in `Plan_Skill_Effect_Components.md`; the skills
+themselves are unchanged. Author any further skill against the effect schema,
+not these fields.
+
 ### Batch 5 — zone system alignment and new zones
 
 Align zones with Concept Document 3.2.4.1 — charges instead of durations,
@@ -197,6 +205,15 @@ now lives in `Scripts/Battle/zone_resolver.gd` (`ZoneResolver`, with its
 zones are still `_duration`-based — so target the charge/section rework and the
 data-driven effect definition at `ZoneResolver`. Migrate Flicker Zone and Lava
 Zone onto the new model.
+
+`Plan_Skill_Effect_Components.md` moved zone **placement** onto a `ZoneEffect`
+component: a zone skill's duration and debuff list now come from that effect
+rather than the `Skill.duration`/`Skill.debuffs` fields, which no longer exist,
+and `ZoneResolver.PlaceZone` reads it. Everything inside `ZoneResolver` after
+placement — the lifecycle, per-type effect logic, and `ActiveHook` — was
+deliberately left untouched and is still this batch's job. Build the charge and
+section rework, and the data-driven zone-effect definition, on `ZoneEffect`
+rather than introducing a second zone-data resource.
 
 - Champion skills: Catalyst Cloud (Alchemist); Unstable Rift, Cataclysmic
   Surge (Sorcerer); Refutation (Scholar — zone removal, per-charge

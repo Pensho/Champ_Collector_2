@@ -34,6 +34,9 @@ Effort: **S** = hours, **M** = days, **L** = week+
 - **Calibration Zone "Upgrade" Feel** *(Priority: Low | Effort: S)*
   Final Calculation's tier-3 effect (7+ charges) re-erects the Architect's construction zone for free, or "upgrades" it if one is already standing (Concept_Document.md 3.1.3 / 3.2.4.3). The current implementation collapses "upgrade" to simply setting the existing zone's remaining charges to 8 — functionally correct but flavorless. Brainstorm a more distinct upgrade effect (e.g. a stronger Barrier size, bonus duration, or a visual/mechanical tell that the zone was reinforced rather than merely refilled) before this reads as a real tier-3 payoff.
 
+- **Additive Damage Bonuses as a Distinct Lever** *(Priority: Low | Effort: S)*
+  Per-use ramps (`ramp_per_use`, e.g. Heap On) scale the attack *before* mitigation, so each use improves Defence penetration as well as raw size and the curve is super-linear. A bonus applied additively at the end of the damage formula instead grows strictly linearly and is blunted by high Defence — worth 5–26% less on the ramp skills at 3–5 uses, more the tankier the target. Both forms read as "+X% damage" but behave differently; the additive one suits effects that should stay honest against armored targets (conditional riders, buff-count scaling), the pre-mitigation one suits "this skill grows" identities. Consider using the split deliberately when designing future scaling skills. See Technical_Design_Document.md section 7.4.
+
 ---
 
 ## Characters & Progression
