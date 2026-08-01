@@ -285,6 +285,38 @@ var cooldown_left: int = 0
                                                              # battle; tracked per (caster, skill
                                                              # name) on the resolver (Heap On,
                                                              # Breaching Charge, Cinder Sermon)
+@export var buff_duration_overrides: Dictionary[Types.Buff_Type, int]  # per-buff duration;
+                                                             # a type not present here uses
+                                                             # `duration` (Center Stage)
+@export var buff_duration_reduction: Dictionary[Types.Skill_Target, int]  # turns shaved off
+                                                             # every buff already on the group
+                                                             # (Signed Writ)
+@export var consume_buffs: Dictionary[Types.Skill_Target, int]  # buffs consumed from the group
+                                                             # (-1 = all) before damage resolves
+                                                             # (Devour Blessing)
+@export var damage_bonus_per_buff: float = 0.0              # additive damage fraction per buff
+                                                             # counted — consumed buffs if
+                                                             # consume_buffs is set, else the
+                                                             # caster's own held buffs
+                                                             # (Devour Blessing, Foreclosure)
+@export var steal_buff_count: int = 0                       # buffs stolen from the primary
+                                                             # targets and re-applied to
+                                                             # steal_buff_to (Writ of Seizure)
+@export var steal_buff_to: Types.Skill_Target
+@export var barrier_from_target_max_health: float = 0.0     # Barrier pool as a fraction of the
+                                                             # recipient's own max Health,
+                                                             # mirroring barrier_from_health_paid
+                                                             # (Reliquary Ward)
+@export var alternating_buffs: Dictionary[Types.Skill_Target, Array]  # buff set used instead of
+                                                             # `buffs` on even-numbered casts of
+                                                             # this skill (Reliquary Ward)
+@export var escalated_at_infractions: int = 0                # at/above this Infraction tally on
+                                                             # the primary target, duration and
+                                                             # buff_duration_reduction each gain
+                                                             # +1 (0 = off; Signed Writ)
+@export var bonus_damage_on_trait_condition: float = 0.0     # additive damage fraction when the
+                                                             # caster's trait reports its
+                                                             # condition met (Pratfall Sting)
 ```
 
 There are 66+ `.tres` files under `Data/` (player and enemy character variants, skill variants
@@ -696,16 +728,32 @@ the skill UI, and returns to `Advancing` (or ends the battle).
    4% of max HP, reported as `Heal`) and duration decrements (reported as `Status_Duration` /
    `Statuses_Removed` results). Attribute modifiers are no longer applied here — they were already
    folded in at step 1.
-4. Compute this cast's `Skill.ramp_per_use` multiplier (`_SkillRampMultiplier`, e.g. Heap On,
-   Breaching Charge, Cinder Sermon): `1.0 + ramp_per_use * prior_casts_of_this_skill`,
-   tracked per (caster, skill name) so a caster's other skills are unaffected, applied to
-   `caster_scaled` in the damage formula below. Then pay any negative `health_change` entries
+4. Compute this cast's use count (`_SkillUseCount`, per (caster, skill name), shared by
+   `Skill.ramp_per_use` and `alternating_buffs` below) and its `ramp_per_use` multiplier
+   (`_SkillRampMultiplier`, e.g. Heap On, Breaching Charge, Cinder Sermon):
+   `1.0 + ramp_per_use * prior_casts_of_this_skill`, applied to `caster_scaled` in the damage
+   formula below. Then pay any negative `health_change` entries
    (`HealthTransferResolver.ResolveHealthCosts`,
    via `_ApplyHealthCost` — non-lethal, floored at 1 Health, Barrier-absorbable like any other
    Health loss) before buffs/debuffs are cast, so a Barrier granted by the same skill
    (`barrier_from_health_paid > 0`) can size its pool from what the caster actually paid.
-   `_ResolveStatusGroups` then casts the skill's buffs/debuffs per target group.
-   Finally, positive `health_change` entries and every `heal_scaling` entry heal
+   `StatusEffectResolver._ResolveBuffManipulation` then resolves, in order, the skill's
+   buff-theft (`steal_buff_count`/`steal_buff_to`, via `StatusEffectResolver.StealBuff`),
+   buff-duration shear (`buff_duration_reduction`, via `ReduceBuffDurations`), and buff
+   consumption (`consume_buffs`, via `ConsumeBuffs`) — all read the buff-count/Infraction
+   state as it stood before this cast's own buffs land — and returns a
+   `BuffManipulationResult` (`Scripts/Battle/buff_manipulation_result.gd`) carrying an
+   additive `bonus_damage_fraction` (from `damage_bonus_per_buff` times the counted buffs,
+   plus `bonus_damage_on_trait_condition` when `CharacterTrait.IsConditionActive()`) and a
+   `duration_bonus` (`+1` when `escalated_at_infractions` is met on the primary target, read
+   off the caster's `StandingRecordTrait` if attached). `_ResolveStatusGroups` (also on
+   `StatusEffectResolver`) then casts the skill's buffs/debuffs per target group — using
+   `alternating_buffs` instead of `buffs` on odd use-counts, `buff_duration_overrides` for any
+   buff type that needs its own duration, `barrier_from_target_max_health` alongside the
+   existing `barrier_from_health_paid` override, and `CharacterTrait.GetAppliedStatusValue`
+   (default `-1.0`, no opinion) to let a trait set a debuff's magnitude at cast time (Levied
+   Sanction's Sanction, scaled by the target's Standing Record tally). Finally, positive
+   `health_change` entries and every `heal_scaling` entry heal
    (`HealthTransferResolver.ResolveHealthGains`), after the status step so a max-Health buff
    granted by the same skill (e.g. Liquid Courage's Vigor) already applies when its heal is
    computed.
@@ -729,7 +777,13 @@ damage_ratio = caster_scaled / (effective_defence + caster_scaled + 1)
 mitigation = MINIMUM_DMG_PERCENT + (1 - MINIMUM_DMG_PERCENT) * damage_ratio
 crit (if rng.randi(1..100) <= CritChance): max(MINIMUM_CRIT_DAMAGE, CritDamage - defender.Knowledge*0.5) * 0.01
 damage = mitigation * caster_scaled * damage_multiplier[caster] * crit * rng.random(0.95..1.05)
+        * (1 + damage_dealt_bonus[caster] + conditional_bonus)
 ```
+
+`conditional_bonus` sums `CharacterTrait.GetOutgoingDamageBonus` (e.g. Citation's Infraction-rate
+read off the target's `StandingRecordTrait`) and `BuffManipulationResult.bonus_damage_fraction`
+(`damage_bonus_per_buff`/`bonus_damage_on_trait_condition`, computed in step 4 above) — both are
+live per-attack additions, not persisted back to `damage_dealt_bonus[caster]`.
 
 Status effects are capped at `MAX_STATUS_EFFECTS` (8) per character; Burning is non-overwritable
 while the others refresh duration. The resolver assigns each applied status a battle-unique ID
@@ -924,6 +978,22 @@ and routes each target through the same `_ResolveDamage` mitigation, `Damage_Tak
 death handling as normal skill damage — `allow_critical = false` skips the crit roll without
 touching any other part of the shared path, so a trait effect can never crit while still
 mitigating and killing normally.
+
+**Buff manipulation (skill implementation batch 4):** two more unconditional query getters, the
+same category as `GetOutgoingDamageBonus`/`GetIncomingDebuffDurationBonus` above.
+`CharacterTrait.GetAppliedStatusValue(owner_ID, target_ID, debuff_type, resolver) -> float`
+(default `-1.0`, no opinion) is read in `StatusEffectResolver._ResolveStatusGroups` when a skill's
+`debuffs` entry is about to be cast; a non-negative return becomes the new debuff's value instead
+of the usual snapshot/template value. `StandingRecordTrait` overrides it for `Sanction` only,
+returning `GetInfractions(target_ID) * _rate_per_infraction` — this is Sanction's magnitude source
+(section 3.2.3.2) going live; every other debuff type still falls through to the existing
+`_SnapshotStatusValue` path. `CharacterTrait.IsConditionActive() -> bool` (default `false`) lets a
+trait report a live condition for a skill's `Skill.bonus_damage_on_trait_condition` to read (the
+Jester's Pratfall Sting: `DoubleTheFunTrait` tracks `_avoided_since_last_turn`, set on a successful
+avoidance and cleared on the Jester's own `End_Turn`). Both getters are consulted from
+`StatusEffectResolver._ResolveBuffManipulation`/`_ResolveStatusGroups` (see
+[Section 7.4](#74-skill-resolution-battleresolverresolveskill)), not gated by `_execution_steps`,
+the same "always polled" shape as the rest of this getter family.
 
 ---
 
@@ -1427,9 +1497,10 @@ as `HealthTransferResolver` (`Scripts/Battle/health_transfer_resolver.gd`) rathe
 `max-file-lines`. It owns `ResolveHealthCosts`/`ResolveHealthGains`, constructed and held as
 `_health_transfer_resolver` the same way as `_zone_resolver`/`_status_resolver`, called directly
 from `ResolveSkill` (no external callers yet, so no `GetHealthTransferResolver()` accessor was
-added — follow the `ZoneResolver` precedent if one shows up). It reaches `_ResolveStatusGroupTargets`,
-`_MaxHealth`, `_ApplyHealthCost`, `_ApplyHeal`, and `_Emit` on the owning `BattleResolver` directly,
-same as the other two subsystems.
+added — follow the `ZoneResolver` precedent if one shows up). It reaches
+`GetStatusResolver()._ResolveStatusGroupTargets` (moved to `StatusEffectResolver` in the batch 4
+split below) and `_MaxHealth`/`_ApplyHealthCost`/`_ApplyHeal`/`_Emit` on the owning `BattleResolver`
+directly, same as the other two subsystems.
 
 This freed real budget back: `battle_resolver.gd` dropped from roughly 1230 to 656 lines and 19
 public methods, with the buff/debuff machinery now in its own 599-line file. `gdlintrc`'s
@@ -1440,3 +1511,26 @@ The remaining graft roadmap batches (turn-bar control, retaliation, on-kill/cond
 zone extensions, event triggers, tether) each propose at least one new resolver-side primitive;
 the same accessor-to-a-`RefCounted`-subsystem split is the template for whichever cluster needs
 to move out next if the budget tightens again.
+
+**Skill implementation batch 4** (buff manipulation) followed that template rather than needing
+a new subsystem: `_ResolveStatusGroups`, `_ResolveStatusGroupTargets`, and
+`_ResolveIndependentStatusGroup` moved from `BattleResolver` into `StatusEffectResolver` (they
+already called almost exclusively into it), alongside the new `_ResolveBuffManipulation` (see
+[Section 9](#9-trait-hook-system)) — the group-resolution helpers were the natural fit, since
+`StatusEffectResolver`'s own docstring already scopes it to "the per-combat buff/debuff
+lifecycle". `BattleResolver` calls the moved entry point as
+`_status_resolver._ResolveStatusGroups(...)`, matching the existing `GetStatusResolver().X(...)`
+call shape everywhere else; `HealthTransferResolver`'s three call sites moved the same way. This
+kept `battle_resolver.gd` under `max-file-lines` without retightening the ceiling — the file
+gained the buff-manipulation wiring, `_SkillUseCount` (generalized from `_SkillRampMultiplier`'s
+inline counter so `alternating_buffs`, e.g. Reliquary Ward, can read the same per-(caster, skill)
+use count), and the `Most_Buffed_Ally` targeting arm, while shedding roughly the same number of
+lines it gained. `BuffManipulationResult` (`Scripts/Battle/buff_manipulation_result.gd`) is a
+small standalone return-value class, following the `TraitSkillResult` precedent
+(`Scripts/Character/character_traits/TraitHookResults/trait_skill_result.gd`) rather than an
+inner class, since an inner class on `BattleResolver` would have counted against the same
+line budget it was extracted to relieve. `character_trait.gd`'s two new getters
+(`GetAppliedStatusValue`, `IsConditionActive`, see [Section 9](#9-trait-hook-system)) pushed its
+hook count to 35; `max-public-methods` was retightened from 34 to 35 for the same reason
+Section 9's `GraftEffect` note gives for the earlier 30→34 move — no split is available for a
+`Resource` base class whose public surface *is* the hook interface.

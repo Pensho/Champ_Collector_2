@@ -355,7 +355,7 @@ Debuffs:
 * Refracted: The character's single-target skills hit a random character instead, allies included.
 * Warped: The character's damage dealt scales with Mysticism instead of the skill's normal attribute. Whether other calculations are also forced through Mysticism is not yet decided (damage only is implemented).
 * Signed Writ: The character cannot resist debuffs.
-* Sanction: Reduces all primary attributes except Health by the applier's Standing Record rate per Infraction on the target, set at the moment of application (see the Emissary's passive in section 3.1.3). The attribute-reduction machinery is implemented; it is dormant until the Emissary's Infraction tally (the magnitude source) lands.
+* Sanction: Reduces all primary attributes except Health by the applier's Standing Record rate per Infraction on the target, set at the moment of application (see the Emissary's passive in section 3.1.3).
 
 Buffs:
 * Empower: Increases Attack by 30%.

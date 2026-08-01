@@ -11,12 +11,13 @@ func _init(p_resolver: BattleResolver) -> void:
 	_resolver = p_resolver
 
 func ResolveHealthCosts(p_caster_ID: int, p_target_IDs: Array[int], p_skill: Skill) -> int:
+	var status_resolver: StatusEffectResolver = _resolver.GetStatusResolver()
 	var caster_paid: int = 0
 	for target_type in p_skill.health_change.keys():
 		var fraction: float = p_skill.health_change[target_type]
 		if(fraction >= 0.0):
 			continue
-		for target_ID in _resolver._ResolveStatusGroupTargets(p_caster_ID, p_target_IDs, p_skill, target_type):
+		for target_ID in status_resolver._ResolveStatusGroupTargets(p_caster_ID, p_target_IDs, p_skill, target_type):
 			var requested: int = int(round(_resolver._MaxHealth(_resolver._characters[target_ID]) * -fraction))
 			var paid: int = _resolver._ApplyHealthCost(target_ID, requested)
 			if(paid > 0):
@@ -33,11 +34,12 @@ func ResolveHealthGains(
 		p_target_IDs: Array[int],
 		p_skill: Skill,
 		p_caster_attributes: Dictionary[Types.Attribute, int]) -> void:
+	var status_resolver: StatusEffectResolver = _resolver.GetStatusResolver()
 	for target_type in p_skill.health_change.keys():
 		var fraction: float = p_skill.health_change[target_type]
 		if(fraction <= 0.0):
 			continue
-		for target_ID in _resolver._ResolveStatusGroupTargets(p_caster_ID, p_target_IDs, p_skill, target_type):
+		for target_ID in status_resolver._ResolveStatusGroupTargets(p_caster_ID, p_target_IDs, p_skill, target_type):
 			var requested: int = int(round(_resolver._MaxHealth(_resolver._characters[target_ID]) * fraction))
 			_EmitHealthGain(target_ID, requested)
 
@@ -46,7 +48,7 @@ func ResolveHealthGains(
 		var requested: int = 0
 		for attribute: Types.Attribute in scaling.keys():
 			requested += int(round(float(scaling[attribute]) * float(p_caster_attributes[attribute])))
-		for target_ID in _resolver._ResolveStatusGroupTargets(p_caster_ID, p_target_IDs, p_skill, target_type):
+		for target_ID in status_resolver._ResolveStatusGroupTargets(p_caster_ID, p_target_IDs, p_skill, target_type):
 			_EmitHealthGain(target_ID, requested)
 
 

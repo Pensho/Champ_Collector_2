@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="Skill" format=3 uid="uid://cptvcpnt0n8kb"]
+
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+
+[resource]
+script = ExtResource("1_skill")
+name = "Writ of Seizure"
+description = "Steals one buff from a random enemy and applies it to the user's ward with a fresh 2-turn duration. Deals Damage to the same enemy, scaling with Knowledge."
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Opponent_Active_Skills/Writ_of_Seizure/Writ_of_Seizure.png"
+target = 2
+damage_scaling = Dictionary[int, float]({
+7: 0.8
+})
+duration = 2
+steal_buff_count = 1
+steal_buff_to = 9
+metadata/_custom_type_script = "uid://glh06y3wvchj"

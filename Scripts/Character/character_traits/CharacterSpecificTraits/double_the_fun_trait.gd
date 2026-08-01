@@ -14,6 +14,7 @@ const TARGETING_PRIORITY_MULTIPLIER: float = 1.5
 
 var _avoidance_stacks: int = 0
 var _avoidance_increment: float = 0.0
+var _avoided_since_last_turn: bool = false
 
 # Temporary icon borrowed from Hemoclarity until dedicated Jester art exists.
 func Init(p_rarity: Types.Rarity) -> void:
@@ -26,12 +27,21 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_execution_steps[Types.Combat_Event.Start_Combat] = Callable(self, "StartOfBattle")
 	_execution_steps[Types.Combat_Event.Damage_Taken] = Callable(self, "OnDamageTaken")
 	_execution_steps[Types.Combat_Event.On_Death] = Callable(self, "OnDeath")
+	_execution_steps[Types.Combat_Event.End_Turn] = Callable(self, "EndOfTurn")
 
 func StartOfBattle(_p_owner_ID: int, _p_resolver: BattleResolver) -> void:
 	_avoidance_stacks = 0
+	_avoided_since_last_turn = false
+
+func EndOfTurn(_p_owner_ID: int, _p_resolver: BattleResolver) -> void:
+	_avoided_since_last_turn = false
 
 func OnDeath() -> void:
 	_avoidance_stacks = 0
+	_avoided_since_last_turn = false
+
+func IsConditionActive() -> bool:
+	return _avoided_since_last_turn
 
 func RefreshVisuals(p_character_repr: CharacterRepresentation) -> void:
 	var body_with_stacks: String = _body + "\nAvoidance chance: " \
@@ -49,6 +59,7 @@ func OnDamageTaken(p_owner_ID: int, _p_attacker_ID: int, p_resolver: BattleResol
 
 	if(p_resolver.GetRandom().randf() < chance):
 		_avoidance_stacks = 0
+		_avoided_since_last_turn = true
 		p_resolver.EmitTraitText(p_owner_ID, "Avoided!")
 		return 0.0
 

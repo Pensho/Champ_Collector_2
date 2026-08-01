@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="Skill" format=3 uid="uid://b12lcjnggwykm"]
+
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+
+[resource]
+script = ExtResource("1_skill")
+name = "Devour Blessing"
+description = "Consumes all buffs on the ally holding the most, then deals Damage to a single enemy, scaling with Mysticism, +25% damage per buff consumed."
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Devour_Blessing/Devour_Blessing.png"
+damage_scaling = Dictionary[int, float]({
+6: 1.3
+})
+cooldown = 3
+consume_buffs = Dictionary[int, int]({
+18: -1
+})
+damage_bonus_per_buff = 0.25
+metadata/_custom_type_script = "uid://glh06y3wvchj"

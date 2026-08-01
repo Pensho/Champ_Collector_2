@@ -3,9 +3,9 @@
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
 [ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_weight"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_preset"]
-[ext_resource type="Resource" uid="uid://dpduy25aqyibo" path="res://Data/Character_Skill_Variants/Bash.tres" id="3_bash"]
-[ext_resource type="Resource" uid="uid://dvsuv0ji1ueq7" path="res://Data/Character_Skill_Variants/Attack_Skills/Disarm.tres" id="4_disarm"]
-[ext_resource type="Resource" uid="uid://civ8gh1okd6p1" path="res://Data/Character_Skill_Variants/Attack_Skills/Break_Guard.tres" id="5_break_guard"]
+[ext_resource type="Resource" path="res://Data/Character_Skill_Variants/Attack_Skills/Citation.tres" id="3_citation"]
+[ext_resource type="Resource" path="res://Data/Character_Skill_Variants/Support_Skills/Signed_Writ.tres" id="4_signed_writ"]
+[ext_resource type="Resource" path="res://Data/Character_Skill_Variants/Support_Skills/Levied_Sanction.tres" id="5_levied_sanction"]
 [ext_resource type="Resource" uid="uid://bejf1a62v41gq" path="res://Data/Attribute_Weights/Marksman.tres" id="6_marksman"]
 [ext_resource type="Resource" uid="uid://bvo4uj38cgjg3" path="res://Data/Attribute_Weights/Calculating.tres" id="7_calculating"]
 [ext_resource type="Resource" uid="uid://ytl3g36itqfs" path="res://Data/Attribute_Weights/Learned.tres" id="8_learned"]
@@ -17,7 +17,7 @@ _name = "Emissary"
 _texture = "res://Assets/Champ_Collector/Creatures/Emissary/Emissary_0001.png"
 _rarity = 2
 _faction = 1
-_skills = Array[ExtResource("1_skill")]([ExtResource("3_bash"), ExtResource("4_disarm"), ExtResource("5_break_guard")])
+_skills = Array[ExtResource("1_skill")]([ExtResource("3_citation"), ExtResource("4_signed_writ"), ExtResource("5_levied_sanction")])
 _health = 55
 _speed = 50
 _attack = 35

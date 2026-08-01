@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="Skill" format=3 uid="uid://c1omq8x7bxvb"]
+
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+
+[resource]
+script = ExtResource("1_skill")
+name = "Pratfall Sting"
+description = "Deals Damage to a single enemy, scaling with Accuracy. Deals +30% damage if the caster avoided an attack since their last turn."
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Pratfall_Sting/Pratfall_Sting.png"
+damage_scaling = Dictionary[int, float]({
+4: 0.9
+})
+bonus_damage_on_trait_condition = 0.3
+metadata/_custom_type_script = "uid://glh06y3wvchj"

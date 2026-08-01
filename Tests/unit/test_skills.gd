@@ -246,3 +246,37 @@ func test_barrier_applies_bonus_as_a_multiplier_on_top_of_base_plus_attribute() 
 	var raw: float = 25.0 + 0.75 * 75
 	var with_bonus: int = Skills.Barrier(25.0, 0.75, 75, 0.24)
 	assert_eq(with_bonus, int(ceil(raw * 1.24)))
+
+# --- MostBuffed ---
+
+func test_most_buffed_picks_the_highest_buff_count() -> void:
+	var buff: StatusEffects.Buff = StatusEffects.Buff.new()
+	buff.type = Types.Buff_Type.Empower
+	_roster[0]._active_buffs.append(buff)
+	_roster[1]._active_buffs.append(buff)
+	_roster[1]._active_buffs.append(buff)
+
+	assert_eq(Skills.MostBuffed([0, 1, 2], _roster), 1, "The ally with the most buffs should be picked")
+
+func test_most_buffed_ties_break_to_the_earliest_id() -> void:
+	var buff: StatusEffects.Buff = StatusEffects.Buff.new()
+	buff.type = Types.Buff_Type.Empower
+	_roster[0]._active_buffs.append(buff)
+	_roster[2]._active_buffs.append(buff)
+
+	assert_eq(Skills.MostBuffed([2, 0], _roster), 2, "The earliest candidate in the given order should win a tie")
+
+func test_most_buffed_excludes_dead_candidates() -> void:
+	var buff: StatusEffects.Buff = StatusEffects.Buff.new()
+	buff.type = Types.Buff_Type.Empower
+	_roster[0]._active_buffs.append(buff)
+	_roster[0]._active_buffs.append(buff)
+	_roster[0]._current_health = 0
+
+	assert_eq(Skills.MostBuffed([0, 1], _roster), 1, "A dead character must not be selected")
+
+func test_most_buffed_returns_negative_one_when_none_are_alive() -> void:
+	for id in [0, 1, 2]:
+		_roster[id]._current_health = 0
+
+	assert_eq(Skills.MostBuffed([0, 1, 2], _roster), -1)

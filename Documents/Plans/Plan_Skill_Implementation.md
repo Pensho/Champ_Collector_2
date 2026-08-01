@@ -8,7 +8,7 @@ executed, tested, and reviewed on their own.
 
 ## Status
 
-Batches 0–3 are complete; batches 4–6 remain, but every dependency they rested
+Batches 0–4 are complete; batches 5–6 remain, but every dependency they rested
 on is now satisfied. The headless combat core (`BattleResolver`, `CombatResult`,
 seeded generator — `Technical_Design_Document.md` section 7) and data-driven
 status effects (section 6.1) both landed, and **`Plan_Status_Effect_Implementation.md`
@@ -169,7 +169,7 @@ immediately.
   March Cadence (+10% turn bar to all other allies), Cinder Sermon (per-cast
   permanent ramp on an AoE).
 
-### Batch 4 — buff manipulation and the Emissary
+### Batch 4 — buff manipulation and the Emissary (complete)
 
 New resolver primitives: removing a buff from a target and re-applying it
 elsewhere (theft), reducing buff durations, consuming a set of buffs and

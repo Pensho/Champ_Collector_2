@@ -10,6 +10,126 @@ var _resolver: BattleResolver
 func _init(p_resolver: BattleResolver) -> void:
 	_resolver = p_resolver
 
+func _ResolveBuffManipulation(
+		p_caster_ID: int,
+		p_target_IDs: Array[int],
+		p_skill: Skill) -> BuffManipulationResult:
+	var result: BuffManipulationResult = BuffManipulationResult.new()
+
+	if(p_skill.escalated_at_infractions > 0 and not p_target_IDs.is_empty()):
+		var standing_record: CharacterTrait = _resolver._characters[p_caster_ID]._trait
+		if(standing_record is StandingRecordTrait
+				and (standing_record as StandingRecordTrait).GetInfractions(p_target_IDs[0])
+						>= p_skill.escalated_at_infractions):
+			result.duration_bonus = 1
+
+	if(p_skill.steal_buff_count > 0):
+		var recipients: Array[int] = _ResolveIndependentStatusGroup(p_caster_ID, p_skill.steal_buff_to).filter(
+				func(id): return _resolver._characters.has(id) and _resolver._characters[id]._current_health > 0)
+		if(not recipients.is_empty()):
+			var recipient_ID: int = recipients[_resolver._random.randi_range(0, recipients.size() - 1)]
+			for target_ID in p_target_IDs:
+				for i in p_skill.steal_buff_count:
+					StealBuff(target_ID, recipient_ID, p_skill.duration)
+
+	for target_type in p_skill.buff_duration_reduction.keys():
+		var reduction: int = p_skill.buff_duration_reduction[target_type] + result.duration_bonus
+		for target_ID in _ResolveStatusGroupTargets(p_caster_ID, p_target_IDs, p_skill, target_type):
+			ReduceBuffDurations(target_ID, reduction)
+
+	var consumed_count: int = 0
+	for target_type in p_skill.consume_buffs.keys():
+		for target_ID in _ResolveStatusGroupTargets(p_caster_ID, p_target_IDs, p_skill, target_type):
+			consumed_count += ConsumeBuffs(target_ID, p_skill.consume_buffs[target_type])
+
+	if(p_skill.damage_bonus_per_buff > 0.0):
+		var buff_count: int = (consumed_count if not p_skill.consume_buffs.is_empty()
+				else _resolver._characters[p_caster_ID]._active_buffs.size())
+		result.bonus_damage_fraction += p_skill.damage_bonus_per_buff * float(buff_count)
+
+	var caster_trait: CharacterTrait = _resolver._characters[p_caster_ID]._trait
+	if(p_skill.bonus_damage_on_trait_condition > 0.0 and null != caster_trait and caster_trait.IsConditionActive()):
+		result.bonus_damage_fraction += p_skill.bonus_damage_on_trait_condition
+
+	return result
+
+func _ResolveStatusGroups(
+		p_caster_ID: int,
+		p_target_IDs: Array[int],
+		p_skill: Skill,
+		p_tick_bonus_per_debuff: float,
+		p_duration: int,
+		p_use_count: int,
+		p_health_paid: int = 0) -> void:
+	var buff_groups: Dictionary[Types.Skill_Target, Array] = (
+			p_skill.alternating_buffs
+			if (not p_skill.alternating_buffs.is_empty() and p_use_count % 2 == 1)
+			else p_skill.buffs)
+	for target_type in buff_groups.keys():
+		for target_ID in _ResolveStatusGroupTargets(p_caster_ID, p_target_IDs, p_skill, target_type):
+			for buff_type in buff_groups[target_type]:
+				var value_override: float = -1.0
+				if(Types.Buff_Type.Barrier == buff_type and p_skill.barrier_from_health_paid > 0.0):
+					value_override = float(p_health_paid) * p_skill.barrier_from_health_paid
+				elif(Types.Buff_Type.Barrier == buff_type and p_skill.barrier_from_target_max_health > 0.0):
+					value_override = (float(_resolver._MaxHealth(_resolver._characters[target_ID]))
+							* p_skill.barrier_from_target_max_health)
+				var buff_duration: int = p_skill.buff_duration_overrides.get(buff_type, p_duration)
+				_CastBuffOfType(target_ID, buff_type, buff_duration, value_override)
+
+	for target_type in p_skill.debuffs.keys():
+		for target_ID in _ResolveStatusGroupTargets(p_caster_ID, p_target_IDs, p_skill, target_type):
+			for debuff_type in p_skill.debuffs[target_type]:
+				var cast_debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
+				cast_debuff.type = debuff_type
+				cast_debuff.duration = p_duration
+				var caster_trait: CharacterTrait = _resolver._characters[p_caster_ID]._trait
+				if(null != caster_trait):
+					var value_override: float = caster_trait.GetAppliedStatusValue(
+							p_caster_ID, target_ID, debuff_type, _resolver)
+					if(value_override >= 0.0):
+						cast_debuff.value = value_override
+				CastDebuff(target_ID, cast_debuff, p_caster_ID, p_tick_bonus_per_debuff, true, true)
+
+func _ResolveStatusGroupTargets(
+		p_caster_ID: int,
+		p_target_IDs: Array[int],
+		p_skill: Skill,
+		p_target_type: Types.Skill_Target) -> Array[int]:
+	var group_IDs: Array[int] = (p_target_IDs if p_target_type == p_skill.target
+			else _ResolveIndependentStatusGroup(p_caster_ID, p_target_type))
+	var characters: Dictionary[int, Character] = _resolver._characters
+	return group_IDs.filter(func(id): return characters.has(id) and characters[id]._current_health > 0)
+
+func _ResolveIndependentStatusGroup(p_caster_ID: int, p_target_type: Types.Skill_Target) -> Array[int]:
+	var sides: CombatSides = _resolver._sides
+	var characters: Dictionary[int, Character] = _resolver._characters
+	var group_IDs: Array[int] = []
+	match p_target_type:
+		Types.Skill_Target.Self, Types.Skill_Target.Single_Ally:
+			group_IDs = [p_caster_ID]
+		Types.Skill_Target.All_Allies, Types.Skill_Target.All_Other_Allies, Types.Skill_Target.Ally_Not_Self:
+			group_IDs = sides.AlliesOf(p_caster_ID).members.duplicate()
+			if(Types.Skill_Target.All_Allies != p_target_type):
+				group_IDs.erase(p_caster_ID)
+		Types.Skill_Target.Random_Ally:
+			group_IDs = Skills.SingleTargetArray(sides.AlliesOf(p_caster_ID).RandomAliveMember(characters, _resolver._random))
+		Types.Skill_Target.All_Enemies:
+			group_IDs = sides.EnemiesOf(p_caster_ID).members
+		Types.Skill_Target.Random_Enemy:
+			group_IDs = Skills.SingleTargetArray(sides.EnemiesOf(p_caster_ID).RandomAliveMember(characters, _resolver._random))
+		Types.Skill_Target.Random_One:
+			group_IDs = Skills.SingleTargetArray(sides.RandomAliveMember(characters, _resolver._random))
+		Types.Skill_Target.All:
+			group_IDs = sides.AllMembers()
+		Types.Skill_Target.Most_Injured_Ally:
+			group_IDs = Skills.SingleTargetArray(
+					Skills.MostInjured(sides.AlliesOf(p_caster_ID).members, characters, _resolver._MaxHealth))
+		Types.Skill_Target.Most_Buffed_Ally:
+			group_IDs = Skills.SingleTargetArray(Skills.MostBuffed(sides.AlliesOf(p_caster_ID).members, characters))
+		_:
+			print("Skill target enum has no caster-relative resolution for a secondary status group: ", p_target_type)
+	return group_IDs
 
 func ApplyBuff(p_target_ID: int, p_buff_template: StatusEffects.Buff) -> Array[CombatResult]:
 	_resolver._BeginBatch()
@@ -29,7 +149,6 @@ func ApplyBuff(p_target_ID: int, p_buff_template: StatusEffects.Buff) -> Array[C
 			-1, 0.0, false, p_buff_template.name)
 	return _resolver._EndBatch()
 
-
 func ApplyDebuff(p_target_ID: int, p_debuff_template: StatusEffects.Debuff) -> Array[CombatResult]:
 	_resolver._BeginBatch()
 	var target: Character = _resolver._characters[p_target_ID]
@@ -47,18 +166,68 @@ func ApplyDebuff(p_target_ID: int, p_debuff_template: StatusEffects.Debuff) -> A
 			p_debuff_template.source_ID, 0.0, false, p_debuff_template.name)
 	return _resolver._EndBatch()
 
-
 func RemoveBuff(p_target_ID: int, p_buff: StatusEffects.Buff) -> Array[CombatResult]:
 	_resolver._BeginBatch()
-	_resolver._characters[p_target_ID]._active_buffs.erase(p_buff)
+	var target: Character = _resolver._characters[p_target_ID]
+	target._active_buffs.erase(p_buff)
+	# A max-Health buff (e.g. Vigor) may have just been removed; reclamp to the new,
+	# possibly smaller max.
+	target._current_health = mini(target._current_health, _resolver._MaxHealth(target))
 	var result: CombatResult = CombatResult.new(CombatResult.Kind.Statuses_Removed)
 	result.target_ID = p_target_ID
 	result.status_IDs = [p_buff.ID]
 	_resolver._Emit(result)
 	return _resolver._EndBatch()
 
+func ReduceBuffDurations(p_target_ID: int, p_amount: int) -> void:
+	if(p_amount <= 0):
+		return
+	var target: Character = _resolver._characters[p_target_ID]
+	for buff in target._active_buffs:
+		buff.duration -= p_amount
+		_EmitStatusDuration(p_target_ID, buff.ID, buff.duration)
+	_ExpireBuffs(p_target_ID)
 
-## Blocks one incoming attack by consuming the target's Premonition buff, if any.
+func ConsumeBuffs(p_target_ID: int, p_count: int) -> int:
+	var target: Character = _resolver._characters[p_target_ID]
+	var to_remove: Array[StatusEffects.Buff] = target._active_buffs.duplicate()
+	if(p_count >= 0):
+		to_remove = to_remove.slice(0, p_count)
+	for buff in to_remove:
+		RemoveBuff(p_target_ID, buff)
+	return to_remove.size()
+
+func StealBuff(p_from_ID: int, p_to_ID: int, p_duration: int = -1) -> bool:
+	var source: Character = _resolver._characters[p_from_ID]
+	if(source._active_buffs.is_empty()):
+		return false
+	var buff: StatusEffects.Buff = source._active_buffs[_resolver._random.randi() % source._active_buffs.size()]
+	RemoveBuff(p_from_ID, buff)
+	var stolen: StatusEffects.Buff = StatusEffects.Buff.new()
+	stolen.type = buff.type
+	stolen.value = buff.value
+	stolen.duration = p_duration if p_duration >= 0 else buff.duration
+	stolen.name = buff.name
+	ApplyBuff(p_to_ID, stolen)
+	return true
+
+func _ExpireBuffs(p_target_ID: int) -> void:
+	var target: Character = _resolver._characters[p_target_ID]
+	var status_IDs_to_be_removed: Array[int] = []
+	for buff in target._active_buffs:
+		if(buff.duration <= 0):
+			status_IDs_to_be_removed.append(buff.ID)
+	if(status_IDs_to_be_removed.is_empty()):
+		return
+	target._active_buffs = target._active_buffs.filter(func(buff): return buff.duration > 0)
+	var removed: CombatResult = CombatResult.new(CombatResult.Kind.Statuses_Removed)
+	removed.target_ID = p_target_ID
+	removed.status_IDs = status_IDs_to_be_removed
+	_resolver._Emit(removed)
+	target._current_health = mini(target._current_health, _resolver._MaxHealth(target))
+	for i in status_IDs_to_be_removed.size():
+		_resolver.BroadcastEvent(Types.Combat_Event.Resource_Depleted)
+
 func ConsumePremonitionIfPresent(p_target_ID: int, p_caster_ID: int) -> bool:
 	var target: Character = _resolver._characters[p_target_ID]
 	for buff in target._active_buffs:
@@ -70,7 +239,6 @@ func ConsumePremonitionIfPresent(p_target_ID: int, p_caster_ID: int) -> bool:
 			_resolver._Emit(missed)
 			return true
 	return false
-
 
 ## Saves a character from a fatal hit by consuming their Deathward buff, if any.
 func ConsumeDeathwardIfPresent(p_character_ID: int) -> bool:
@@ -231,7 +399,6 @@ func _TriggerExistingCasterBuffs(
 		p_caster_ID: int,
 		p_caster_attributes: Dictionary[Types.Attribute, int]) -> void:
 	var caster: Character = _resolver._characters[p_caster_ID]
-	var status_IDs_to_be_removed: Array[int] = []
 	var heal_total: int = 0
 	var self_cost_total: int = 0
 	var expiring_overflows: Array[StatusEffects.Buff] = []
@@ -260,23 +427,12 @@ func _TriggerExistingCasterBuffs(
 		buff.duration -= 1
 		_EmitStatusDuration(p_caster_ID, buff.ID, buff.duration)
 		if(buff.duration <= 0):
-			status_IDs_to_be_removed.append(buff.ID)
 			if(Types.Buff_Type.Overflow == buff.type):
 				expiring_overflows.append(buff)
 			elif(Types.Buff_Type.Rush == buff.type):
 				expiring_rush_count += 1
 
-	caster._active_buffs = caster._active_buffs.filter(func(buff): return buff.duration > 0)
-	if(not status_IDs_to_be_removed.is_empty()):
-		var removed: CombatResult = CombatResult.new(CombatResult.Kind.Statuses_Removed)
-		removed.target_ID = p_caster_ID
-		removed.status_IDs = status_IDs_to_be_removed
-		_resolver._Emit(removed)
-		# A max-Health buff may have just expired; reclamp current health to
-		# the new, smaller max (_MaxHealth reads the buffs that remain after the filter above).
-		caster._current_health = mini(caster._current_health, _resolver._MaxHealth(caster))
-		for i in status_IDs_to_be_removed.size():
-			_resolver.BroadcastEvent(Types.Combat_Event.Resource_Depleted)
+	_ExpireBuffs(p_caster_ID)
 
 	for i in expiring_overflows.size():
 		_TriggerOverflow(p_caster_ID)

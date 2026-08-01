@@ -144,3 +144,15 @@ func GetIncomingZoneEffectMultiplier(
 
 func GetAttributeDelta(_p_attribute: Types.Attribute, _p_base_value: int) -> int:
 	return 0
+
+## Lets this owner's trait set the value of a debuff it is about to apply (e.g. the
+## Emissary's Infraction-scaled Sanction). A negative return (the default) means the
+## trait has no opinion and the normal snapshot/template value is used.
+func GetAppliedStatusValue(
+		_p_owner_ID: int, _p_target_ID: int, _p_debuff_type: Types.Debuff_Type, _p_resolver: BattleResolver) -> float:
+	return -1.0
+
+## Whether this owner's trait-tracked condition (e.g. the Jester's "avoided an attack
+## since their last turn") is currently active.
+func IsConditionActive() -> bool:
+	return false

@@ -31,7 +31,7 @@ var _health_transfer_resolver: HealthTransferResolver
 
 var _damage_multiplier: Dictionary[int, float] = {}
 
-var _skill_ramp_uses: Dictionary[String, int] = {}
+var _skill_use_counts: Dictionary[String, int] = {}
 
 # Inner Dictionary is Dictionary[Types.Attribute, int]
 # keyed by attribute with the accumulated bonus.
@@ -160,9 +160,14 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 	if(not caster._active_buffs.is_empty()):
 		_status_resolver._TriggerExistingCasterBuffs(p_caster_ID, caster_attributes)
 
-	var ramp_multiplier: float = _SkillRampMultiplier(p_caster_ID, cast_skill)
+	var use_count: int = _SkillUseCount(p_caster_ID, cast_skill)
+	var ramp_multiplier: float = _SkillRampMultiplier(cast_skill, use_count)
 	var health_paid: int = _health_transfer_resolver.ResolveHealthCosts(p_caster_ID, p_target_IDs, cast_skill)
-	_ResolveStatusGroups(p_caster_ID, p_target_IDs, cast_skill, trait_result._tick_bonus_per_debuff, health_paid)
+	var buff_manipulation: BuffManipulationResult = _status_resolver._ResolveBuffManipulation(
+			p_caster_ID, p_target_IDs, cast_skill)
+	var effective_duration: int = cast_skill.duration + buff_manipulation.duration_bonus
+	_status_resolver._ResolveStatusGroups(p_caster_ID, p_target_IDs, cast_skill, trait_result._tick_bonus_per_debuff,
+			effective_duration, use_count, health_paid)
 	_health_transfer_resolver.ResolveHealthGains(p_caster_ID, p_target_IDs, cast_skill, caster_attributes)
 
 	var is_non_basic: bool = cast_skill.cooldown > 0
@@ -181,7 +186,8 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 
 		if(not cast_skill.damage_scaling.is_empty()):
 			_ResolveDamage(p_caster_ID, target_ID, caster_attributes, target_attributes,
-					cast_skill, trait_result._damage_multiplier, true, ramp_multiplier)
+					cast_skill, trait_result._damage_multiplier, true, ramp_multiplier,
+					buff_manipulation.bonus_damage_fraction)
 
 		var total_bump: float = cast_skill.turn_effect + trait_result._turn_bar_bump
 		_EmitTurnBarBump(target_ID, total_bump, p_caster_ID)
@@ -597,72 +603,19 @@ func _HandleDeath(p_character_ID: int) -> void:
 				ally_death_trait.OnAllyDeath(ally_ID, p_character_ID, self)
 
 
-func _SkillRampMultiplier(p_caster_ID: int, p_skill: Skill) -> float:
+## How many times p_caster_ID has cast p_skill this battle so far, including this
+## cast (so the first call returns 0). Advances the shared per-skill counter.
+func _SkillUseCount(p_caster_ID: int, p_skill: Skill) -> int:
+	var key: String = "%d:%s" % [p_caster_ID, p_skill.name]
+	var uses: int = _skill_use_counts.get(key, 0)
+	_skill_use_counts[key] = uses + 1
+	return uses
+
+
+func _SkillRampMultiplier(p_skill: Skill, p_use_count: int) -> float:
 	if(0.0 == p_skill.ramp_per_use):
 		return 1.0
-	var key: String = "%d:%s" % [p_caster_ID, p_skill.name]
-	var uses: int = _skill_ramp_uses.get(key, 0)
-	_skill_ramp_uses[key] = uses + 1
-	return 1.0 + p_skill.ramp_per_use * float(uses)
-
-
-func _ResolveStatusGroups(
-		p_caster_ID: int,
-		p_target_IDs: Array[int],
-		p_skill: Skill,
-		p_tick_bonus_per_debuff: float,
-		p_health_paid: int = 0) -> void:
-	for target_type in p_skill.buffs.keys():
-		for target_ID in _ResolveStatusGroupTargets(p_caster_ID, p_target_IDs, p_skill, target_type):
-			for buff_type in p_skill.buffs[target_type]:
-				var value_override: float = -1.0
-				if(Types.Buff_Type.Barrier == buff_type and p_skill.barrier_from_health_paid > 0.0):
-					value_override = float(p_health_paid) * p_skill.barrier_from_health_paid
-				_status_resolver._CastBuffOfType(target_ID, buff_type, p_skill.duration, value_override)
-
-	for target_type in p_skill.debuffs.keys():
-		for target_ID in _ResolveStatusGroupTargets(p_caster_ID, p_target_IDs, p_skill, target_type):
-			for debuff_type in p_skill.debuffs[target_type]:
-				var cast_debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
-				cast_debuff.type = debuff_type
-				cast_debuff.duration = p_skill.duration
-				_status_resolver.CastDebuff(target_ID, cast_debuff, p_caster_ID,
-						p_tick_bonus_per_debuff, true, true)
-
-func _ResolveStatusGroupTargets(
-		p_caster_ID: int,
-		p_target_IDs: Array[int],
-		p_skill: Skill,
-		p_target_type: Types.Skill_Target) -> Array[int]:
-	var group_IDs: Array[int] = (p_target_IDs if p_target_type == p_skill.target
-			else _ResolveIndependentStatusGroup(p_caster_ID, p_target_type))
-	return group_IDs.filter(func(id): return _characters.has(id) and _characters[id]._current_health > 0)
-
-func _ResolveIndependentStatusGroup(p_caster_ID: int, p_target_type: Types.Skill_Target) -> Array[int]:
-	var group_IDs: Array[int] = []
-	match p_target_type:
-		Types.Skill_Target.Self, Types.Skill_Target.Single_Ally:
-			group_IDs = [p_caster_ID]
-		Types.Skill_Target.All_Allies, Types.Skill_Target.All_Other_Allies, Types.Skill_Target.Ally_Not_Self:
-			group_IDs = _sides.AlliesOf(p_caster_ID).members.duplicate()
-			if(Types.Skill_Target.All_Allies != p_target_type):
-				group_IDs.erase(p_caster_ID)
-		Types.Skill_Target.Random_Ally:
-			group_IDs = Skills.SingleTargetArray(_sides.AlliesOf(p_caster_ID).RandomAliveMember(_characters, _random))
-		Types.Skill_Target.All_Enemies:
-			group_IDs = _sides.EnemiesOf(p_caster_ID).members
-		Types.Skill_Target.Random_Enemy:
-			group_IDs = Skills.SingleTargetArray(_sides.EnemiesOf(p_caster_ID).RandomAliveMember(_characters, _random))
-		Types.Skill_Target.Random_One:
-			group_IDs = Skills.SingleTargetArray(_sides.RandomAliveMember(_characters, _random))
-		Types.Skill_Target.All:
-			group_IDs = _sides.AllMembers()
-		Types.Skill_Target.Most_Injured_Ally:
-			group_IDs = Skills.SingleTargetArray(
-					Skills.MostInjured(_sides.AlliesOf(p_caster_ID).members, _characters, _MaxHealth))
-		_:
-			print("Skill target enum has no caster-relative resolution for a secondary status group: ", p_target_type)
-	return group_IDs
+	return 1.0 + p_skill.ramp_per_use * float(p_use_count)
 
 
 func _ResolveDamage(
@@ -673,7 +626,8 @@ func _ResolveDamage(
 		p_skill: Skill,
 		p_trait_multiplier: float,
 		p_allow_critical: bool = true,
-		p_ramp_multiplier: float = 1.0) -> void:
+		p_ramp_multiplier: float = 1.0,
+		p_bonus_damage_fraction: float = 0.0) -> void:
 	var random_value: float = _RollFavoring(p_caster_ID, 0.95, 1.05, true)
 	var caster_scaled_attribute_aggregate: float = 0.0
 	var crit_multiplier: float = 1.0
@@ -709,9 +663,9 @@ func _ResolveDamage(
 				) * 0.01
 
 	var attacker_trait: CharacterTrait = _characters[p_caster_ID]._trait
-	var conditional_bonus: float = 0.0
+	var conditional_bonus: float = p_bonus_damage_fraction
 	if(null != attacker_trait):
-		conditional_bonus = attacker_trait.GetOutgoingDamageBonus(p_caster_ID, p_target_ID, self)
+		conditional_bonus += attacker_trait.GetOutgoingDamageBonus(p_caster_ID, p_target_ID, self)
 
 	var effective_defence: float = p_target_attributes[Types.Attribute.Defence] * p_skill.defense_ignore_factor
 	var damage_dealt: int = Skills.MitigatedDamage(effective_defence,

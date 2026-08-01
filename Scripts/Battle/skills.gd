@@ -168,6 +168,18 @@ static func MostInjured(p_IDs: Array[int], p_characters: Dictionary[int, Charact
 			best_ID = id
 	return best_ID
 
+static func MostBuffed(p_IDs: Array[int], p_characters: Dictionary[int, Character]) -> int:
+	var most_buffs_character_ID: int = -1
+	var most_buffs_count: int = -1
+	for id in p_IDs:
+		if(not p_characters.has(id) or p_characters[id]._current_health <= 0):
+			continue
+		var count: int = p_characters[id]._active_buffs.size()
+		if(count > most_buffs_count):
+			most_buffs_count = count
+			most_buffs_character_ID = id
+	return most_buffs_character_ID
+
 ## The left-most (p_want_left true) or right-most alive member of an already
 ## alive-filtered, left-to-right ordered ID list; -1 if the list is empty.
 static func EdgeMostAlive(p_alive_IDs_left_to_right: Array[int], p_want_left: bool) -> int:

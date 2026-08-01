@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="Skill" format=3 uid="uid://duvmnpkxmo10c"]
+
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+
+[resource]
+script = ExtResource("1_skill")
+name = "Signed Writ"
+description = "Reduces the durations of the target's buffs by 1 turn and applies the Signed Writ debuff for 1 turn. At 6 or more Infractions on the target, both affect 2 turns instead."
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Signed_Writ/Signed_Writ.png"
+cooldown = 3
+duration = 1
+debuffs = Dictionary[int, Array]({
+0: [22]
+})
+buff_duration_reduction = Dictionary[int, int]({
+0: 1
+})
+escalated_at_infractions = 6
+metadata/_custom_type_script = "uid://glh06y3wvchj"

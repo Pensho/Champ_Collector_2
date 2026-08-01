@@ -54,3 +54,15 @@ func _OnResultProduced(p_result: CombatResult) -> void:
 
 func _AddInfraction(p_enemy_ID: int) -> void:
 	_infractions[p_enemy_ID] = mini(_infractions.get(p_enemy_ID, 0) + 1, INFRACTION_CAP)
+
+## Citation's own scaling: bonus damage fraction from the target's Infraction tally.
+func GetOutgoingDamageBonus(_p_owner_ID: int, p_target_ID: int, _p_resolver: BattleResolver) -> float:
+	return float(GetInfractions(p_target_ID)) * _rate_per_infraction
+
+## Sanction's magnitude source: set at the moment of application from the target's
+## Infraction tally.
+func GetAppliedStatusValue(
+		_p_owner_ID: int, p_target_ID: int, p_debuff_type: Types.Debuff_Type, _p_resolver: BattleResolver) -> float:
+	if(Types.Debuff_Type.Sanction != p_debuff_type):
+		return -1.0
+	return float(GetInfractions(p_target_ID)) * _rate_per_infraction

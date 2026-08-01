@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="Skill" format=3 uid="uid://di33fmejkr3ua"]
+
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+
+[resource]
+script = ExtResource("1_skill")
+name = "Reliquary Ward"
+description = "Grants one ally a protection, alternating with each use: odd uses grant a Barrier absorbing 60% of that ally's max Health for 2 turns; even uses grant the Deathward buff for 2 turns."
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Opponent_Active_Skills/Reliquary_Ward/Reliquary_Ward.png"
+target = 3
+duration = 2
+skill_type = 5
+buffs = Dictionary[int, Array]({
+3: [21]
+})
+barrier_from_target_max_health = 0.6
+alternating_buffs = Dictionary[int, Array]({
+3: [18]
+})
+metadata/_custom_type_script = "uid://glh06y3wvchj"

@@ -84,6 +84,7 @@ enum Skill_Target
 	Left_Most_Enemy,
 	Right_Most_Enemy,
 	Most_Injured_Enemy,
+	Most_Buffed_Ally,
 }
 
 enum Attribute

@@ -39,14 +39,7 @@ func OnSkillCast(
 	if (not characters.has(target_ID) or characters[target_ID]._current_health <= 0):
 		return result
 
-	var target_buffs: Array[StatusEffects.Buff] = characters[target_ID]._active_buffs
-	if (target_buffs.is_empty()):
-		return result
-
-	var buff_to_steal: StatusEffects.Buff = target_buffs[
-			p_resolver.GetRandom().randi() % target_buffs.size()]
-	p_resolver.GetStatusResolver().RemoveBuff(target_ID, buff_to_steal)
-	p_resolver.GetStatusResolver().ApplyBuff(p_owner_ID, buff_to_steal)
-	p_resolver.EmitTraitText(p_owner_ID, "Stole buff!", Color(0.6, 0.2, 0.8, 1.0))
+	if (p_resolver.GetStatusResolver().StealBuff(target_ID, p_owner_ID)):
+		p_resolver.EmitTraitText(p_owner_ID, "Stole buff!", Color(0.6, 0.2, 0.8, 1.0))
 
 	return result

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="Skill" format=3 uid="uid://dgcjgp2u2y442"]
+
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+
+[resource]
+script = ExtResource("1_skill")
+name = "Levied Sanction"
+description = "Applies the Sanction debuff to a single enemy for 2 turns; its potency is set by the target's Infraction tally at the moment of application."
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Levied_Sanction/Levied_Sanction.png"
+cooldown = 4
+duration = 2
+debuffs = Dictionary[int, Array]({
+0: [24]
+})
+metadata/_custom_type_script = "uid://glh06y3wvchj"
