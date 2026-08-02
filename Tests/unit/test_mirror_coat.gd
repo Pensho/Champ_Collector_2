@@ -20,8 +20,11 @@ func _debuff_skill() -> Skill:
 	var skill: Skill = Skill.new()
 	skill.name = "Debuff"
 	skill.target = Types.Skill_Target.Single_Enemy
-	skill.duration = 2
-	skill.debuffs = {Types.Skill_Target.Single_Enemy: [Types.Debuff_Type.Enfeeble]}
+	var effect: ApplyDebuffEffect = ApplyDebuffEffect.new()
+	effect.target = Types.Skill_Target.Single_Enemy
+	effect.debuff_type = Types.Debuff_Type.Enfeeble
+	effect.duration = 2
+	skill.effects = [effect]
 	return skill
 
 func _mirror_buff() -> StatusEffects.Buff:

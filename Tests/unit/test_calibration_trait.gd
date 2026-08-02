@@ -144,7 +144,9 @@ func test_final_calculation_at_tier_three_upgrades_an_existing_zone() -> void:
 	var zone_skill: Skill = Skill.new()
 	zone_skill.target = Types.Skill_Target.ZoneAlly
 	zone_skill.skill_type = Types.Skill_Type.Barrier_Zone
-	zone_skill.duration = 2
+	var zone_effect: ZoneEffect = ZoneEffect.new()
+	zone_effect.duration = 2
+	zone_skill.effects = [zone_effect]
 	_resolver.GetZoneResolver().PlaceZone(0, 0, zone_skill)
 
 	for i in CalibrationTrait.ZONE_RE_ERECT_THRESHOLD:
@@ -160,7 +162,9 @@ func test_final_calculation_upgrading_an_existing_zone_emits_a_duration_result()
 	var zone_skill: Skill = Skill.new()
 	zone_skill.target = Types.Skill_Target.ZoneAlly
 	zone_skill.skill_type = Types.Skill_Type.Barrier_Zone
-	zone_skill.duration = 2
+	var zone_effect: ZoneEffect = ZoneEffect.new()
+	zone_effect.duration = 2
+	zone_skill.effects = [zone_effect]
 	_resolver.GetZoneResolver().PlaceZone(0, 0, zone_skill)
 
 	var received: Array[CombatResult] = []
@@ -208,7 +212,9 @@ func test_on_zone_constructed_records_capped_invested_charges() -> void:
 	var zone_skill: Skill = Skill.new()
 	zone_skill.target = Types.Skill_Target.ZoneAlly
 	zone_skill.skill_type = Types.Skill_Type.Barrier_Zone
-	zone_skill.duration = 5
+	var zone_effect: ZoneEffect = ZoneEffect.new()
+	zone_effect.duration = 5
+	zone_skill.effects = [zone_effect]
 	_resolver.GetZoneResolver().PlaceZone(0, 0, zone_skill)
 	assert_eq(_trait._charges_invested_per_zone.get(0, -1), CalibrationTrait.RAISE_THE_FRAME_CONSUME_CAP,
 		"Invested amount should be capped, independent of charges actually consumed")
@@ -222,7 +228,9 @@ func test_on_zone_constructed_ignores_non_barrier_zones() -> void:
 	var zone_skill: Skill = Skill.new()
 	zone_skill.target = Types.Skill_Target.ZoneAlly
 	zone_skill.skill_type = Types.Skill_Type.Flicker_Zone
-	zone_skill.duration = 5
+	var zone_effect: ZoneEffect = ZoneEffect.new()
+	zone_effect.duration = 5
+	zone_skill.effects = [zone_effect]
 	_resolver.GetZoneResolver().PlaceZone(0, 0, zone_skill)
 	assert_false(_trait._charges_invested_per_zone.has(0),
 		"Non-Barrier zones should not record an invested amount")
@@ -237,7 +245,9 @@ func test_get_zone_charge_bonus_scales_with_invested_charges_and_potency() -> vo
 	var zone_skill: Skill = Skill.new()
 	zone_skill.target = Types.Skill_Target.ZoneAlly
 	zone_skill.skill_type = Types.Skill_Type.Barrier_Zone
-	zone_skill.duration = 5
+	var zone_effect: ZoneEffect = ZoneEffect.new()
+	zone_effect.duration = 5
+	zone_skill.effects = [zone_effect]
 	_resolver.GetZoneResolver().PlaceZone(0, 0, zone_skill)
 	assert_almost_eq(_trait.GetZoneChargeBonus(0), CalibrationTrait.RAISE_THE_FRAME_CONSUME_CAP * 0.07, 0.0001)
 
@@ -254,7 +264,9 @@ func test_start_of_battle_clears_invested_charges() -> void:
 	var zone_skill: Skill = Skill.new()
 	zone_skill.target = Types.Skill_Target.ZoneAlly
 	zone_skill.skill_type = Types.Skill_Type.Barrier_Zone
-	zone_skill.duration = 5
+	var zone_effect: ZoneEffect = ZoneEffect.new()
+	zone_effect.duration = 5
+	zone_skill.effects = [zone_effect]
 	_resolver.GetZoneResolver().PlaceZone(0, 0, zone_skill)
 	assert_gt(_trait.GetZoneChargeBonus(0), 0.0, "Sanity check: the zone's investment was recorded")
 	_trait.StartOfBattle(0, _resolver)

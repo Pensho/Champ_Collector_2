@@ -148,9 +148,11 @@ func test_steal_buff_count_skill_steals_from_the_target_to_the_casters_ward() ->
 	var resolver: BattleResolver = TestFactory.make_resolver(roster, CombatSides.new([0], [3, 4]))
 	var skill: Skill = TestFactory.make_empty_skill()
 	skill.name = "Writ of Seizure"
-	skill.steal_buff_count = 1
-	skill.steal_buff_to = Types.Skill_Target.Ally_Not_Self
-	skill.duration = 2
+	var effect: StealBuffEffect = StealBuffEffect.new()
+	effect.count = 1
+	effect.to = Types.Skill_Target.Ally_Not_Self
+	effect.duration_override = 2
+	skill.effects = [effect]
 	roster[3]._skills.append(skill)
 
 	resolver.ResolveSkill(3, [0], 0)
@@ -173,9 +175,11 @@ func test_steal_buff_count_skips_a_dead_ward_in_favor_of_a_living_one() -> void:
 	var resolver: BattleResolver = TestFactory.make_resolver(roster, CombatSides.new([0], [3, 4, 5]))
 	var skill: Skill = TestFactory.make_empty_skill()
 	skill.name = "Writ of Seizure"
-	skill.steal_buff_count = 1
-	skill.steal_buff_to = Types.Skill_Target.Ally_Not_Self
-	skill.duration = 2
+	var effect: StealBuffEffect = StealBuffEffect.new()
+	effect.count = 1
+	effect.to = Types.Skill_Target.Ally_Not_Self
+	effect.duration_override = 2
+	skill.effects = [effect]
 	roster[3]._skills.append(skill)
 
 	resolver.ResolveSkill(3, [0], 0)

@@ -17,28 +17,57 @@ func _make_setup() -> Dictionary:
 	record_trait.StartOfBattle(0, resolver)
 	return {"roster": roster, "resolver": resolver, "trait": record_trait}
 
+## The rate-multiplied escalation threshold Signed Writ's migrated .tres authors:
+## 6 Infractions x the Standing Record trait's Uncommon rate (0.025).
+const SIGNED_WRIT_CONDITION_THRESHOLD: float = 0.15
+
 func _citation_skill() -> Skill:
 	var skill: Skill = TestFactory.make_empty_skill()
 	skill.name = "Citation"
-	skill.damage_scaling = {Types.Attribute.Knowledge: 0.7}
+	var effect: DamageEffect = DamageEffect.new()
+	effect.damage_scaling = {Types.Attribute.Knowledge: 0.7}
+	skill.effects = [effect]
 	return skill
 
 func _signed_writ_skill() -> Skill:
 	var skill: Skill = TestFactory.make_empty_skill()
 	skill.name = "Signed Writ"
 	skill.cooldown = 3
-	skill.duration = 1
-	skill.debuffs = {Types.Skill_Target.Single_Enemy: [Types.Debuff_Type.Signed_Writ]}
-	skill.buff_duration_reduction = {Types.Skill_Target.Single_Enemy: 1}
-	skill.escalated_at_infractions = 6
+	var reduction: ReduceBuffDurationsEffect = ReduceBuffDurationsEffect.new()
+	reduction.target = Types.Skill_Target.Single_Enemy
+	reduction.amount = 1
+	var escalated_reduction: ReduceBuffDurationsEffect = ReduceBuffDurationsEffect.new()
+	escalated_reduction.target = Types.Skill_Target.Single_Enemy
+	escalated_reduction.amount = 1
+	escalated_reduction.condition = Types.Skill_Condition.Trait_Counter_On_Target
+	escalated_reduction.condition_test = Types.Condition_Test.At_Least
+	escalated_reduction.condition_threshold = SIGNED_WRIT_CONDITION_THRESHOLD
+	var debuff: ApplyDebuffEffect = ApplyDebuffEffect.new()
+	debuff.target = Types.Skill_Target.Single_Enemy
+	debuff.debuff_type = Types.Debuff_Type.Signed_Writ
+	debuff.duration = 1
+	debuff.condition = Types.Skill_Condition.Trait_Counter_On_Target
+	debuff.condition_test = Types.Condition_Test.Below
+	debuff.condition_threshold = SIGNED_WRIT_CONDITION_THRESHOLD
+	var escalated_debuff: ApplyDebuffEffect = ApplyDebuffEffect.new()
+	escalated_debuff.target = Types.Skill_Target.Single_Enemy
+	escalated_debuff.debuff_type = Types.Debuff_Type.Signed_Writ
+	escalated_debuff.duration = 2
+	escalated_debuff.condition = Types.Skill_Condition.Trait_Counter_On_Target
+	escalated_debuff.condition_test = Types.Condition_Test.At_Least
+	escalated_debuff.condition_threshold = SIGNED_WRIT_CONDITION_THRESHOLD
+	skill.effects = [reduction, escalated_reduction, debuff, escalated_debuff]
 	return skill
 
 func _levied_sanction_skill() -> Skill:
 	var skill: Skill = TestFactory.make_empty_skill()
 	skill.name = "Levied Sanction"
 	skill.cooldown = 4
-	skill.duration = 2
-	skill.debuffs = {Types.Skill_Target.Single_Enemy: [Types.Debuff_Type.Sanction]}
+	var effect: ApplyDebuffEffect = ApplyDebuffEffect.new()
+	effect.target = Types.Skill_Target.Single_Enemy
+	effect.debuff_type = Types.Debuff_Type.Sanction
+	effect.duration = 2
+	skill.effects = [effect]
 	return skill
 
 func _buff(p_type: Types.Buff_Type, p_duration: int) -> StatusEffects.Buff:
@@ -131,6 +160,33 @@ func test_signed_writ_escalates_at_six_or_more_infractions() -> void:
 	assert_eq(roster[3]._active_buffs[0].duration, 3, "Escalated shear should be 2 turns, not 1")
 	var applied: Array = roster[3]._active_debuffs.filter(func(d): return d.type == Types.Debuff_Type.Signed_Writ)
 	assert_eq(applied[0].duration, 2, "Escalated Signed Writ should last 2 turns")
+
+func test_signed_writ_escalation_makes_only_one_debuff_attempt() -> void:
+	# The base and escalated ApplyDebuffEffects must be mutually exclusive (Below vs.
+	# At_Least on the same threshold), not two independent CastDebuff calls — otherwise an
+	# Aegis on the target would be consumed by one attempt and leave the other free to land.
+	var setup: Dictionary = _make_setup()
+	var roster: Dictionary[int, Character] = setup["roster"]
+	var resolver: BattleResolver = setup["resolver"]
+	var record_trait: StandingRecordTrait = setup["trait"]
+	_guarantee_debuffs_land(roster)
+	for i in 6:
+		record_trait._AddInfraction(3)
+	# A long duration so Signed Writ's own buff-duration-shear effects (which also reduce
+	# Aegis, an ordinary buff, by up to 2) cannot expire it before the debuff effect runs —
+	# this test isolates Aegis-vs-repeated-CastDebuff, not Aegis-vs-duration-decay.
+	var aegis: StatusEffects.Buff = StatusEffects.Buff.new()
+	aegis.type = Types.Buff_Type.Aegis
+	aegis.duration = 10
+	roster[3]._active_buffs.append(aegis)
+	roster[0]._skills.append(_signed_writ_skill())
+
+	resolver.ResolveSkill(0, [3], 0)
+
+	var applied: Array = roster[3]._active_debuffs.filter(func(d): return d.type == Types.Debuff_Type.Signed_Writ)
+	assert_eq(applied.size(), 0, "A single Aegis should block the escalated cast's one debuff attempt entirely")
+	var aegis_remaining: Array = roster[3]._active_buffs.filter(func(b): return b.type == Types.Buff_Type.Aegis)
+	assert_eq(aegis_remaining.size(), 0, "Aegis should be consumed by blocking the attempt")
 
 func test_signed_writ_does_not_escalate_below_six_infractions() -> void:
 	var setup: Dictionary = _make_setup()

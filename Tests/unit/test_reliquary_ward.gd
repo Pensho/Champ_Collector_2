@@ -18,11 +18,19 @@ func _reliquary_ward_skill() -> Skill:
 	var skill: Skill = TestFactory.make_empty_skill()
 	skill.name = "Reliquary Ward"
 	skill.target = Types.Skill_Target.Single_Ally
-	skill.duration = 2
 	skill.skill_type = Types.Skill_Type.Status_Effect
-	skill.buffs = {Types.Skill_Target.Single_Ally: [Types.Buff_Type.Barrier]}
-	skill.alternating_buffs = {Types.Skill_Target.Single_Ally: [Types.Buff_Type.Deathward]}
-	skill.barrier_from_target_max_health = 0.6
+	var barrier: BarrierEffect = BarrierEffect.new()
+	barrier.target = Types.Skill_Target.Single_Ally
+	barrier.source = BarrierEffect.Source.Target_Max_Health
+	barrier.fraction = 0.6
+	barrier.duration = 2
+	var deathward: ApplyBuffEffect = ApplyBuffEffect.new()
+	deathward.target = Types.Skill_Target.Single_Ally
+	deathward.buff_type = Types.Buff_Type.Deathward
+	deathward.duration = 2
+	var alternating: AlternatingEffect = AlternatingEffect.new()
+	alternating.effects = [barrier, deathward]
+	skill.effects = [alternating]
 	return skill
 
 func test_first_cast_grants_a_barrier_worth_sixty_percent_of_max_health() -> void:

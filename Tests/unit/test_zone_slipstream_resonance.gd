@@ -32,7 +32,9 @@ func _flicker_skill(p_target: Types.Skill_Target) -> Skill:
 	skill.name = "Flicker Zone"
 	skill.target = p_target
 	skill.skill_type = Types.Skill_Type.Flicker_Zone
-	skill.duration = 10
+	var effect: ZoneEffect = ZoneEffect.new()
+	effect.duration = 10
+	skill.effects = [effect]
 	return skill
 
 func test_slipstream_passes_through_an_enemy_zone_untriggered() -> void:

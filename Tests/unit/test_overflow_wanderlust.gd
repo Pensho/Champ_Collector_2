@@ -39,7 +39,7 @@ func test_wanderlust_boosts_the_seeded_random_attribute_on_self_tick() -> void:
 	# here rather than re-derived, matching this codebase's other seed-dependent tests.
 	var chosen_attribute: Types.Attribute = Types.Attribute.Defence
 	_roster[0]._skills[0] = TestFactory.make_strike_skill()
-	_roster[0]._skills[0].damage_scaling = {chosen_attribute: 1.0}
+	(_roster[0]._skills[0].effects[0] as DamageEffect).damage_scaling = {chosen_attribute: 1.0}
 	_roster[0]._attributes[chosen_attribute] = 500
 	_roster[0]._attributes[Types.Attribute.CritChance] = 0
 	var buff: StatusEffects.Buff = StatusEffects.Buff.new()
@@ -54,7 +54,7 @@ func test_wanderlust_boosts_the_seeded_random_attribute_on_self_tick() -> void:
 	for id in baseline_roster.keys():
 		baseline_roster[id]._skills.append(TestFactory.make_empty_skill())
 	baseline_roster[0]._skills[0] = TestFactory.make_strike_skill()
-	baseline_roster[0]._skills[0].damage_scaling = {chosen_attribute: 1.0}
+	(baseline_roster[0]._skills[0].effects[0] as DamageEffect).damage_scaling = {chosen_attribute: 1.0}
 	baseline_roster[0]._attributes[chosen_attribute] = 500
 	baseline_roster[0]._attributes[Types.Attribute.CritChance] = 0
 	var baseline_resolver: BattleResolver = TestFactory.make_resolver(baseline_roster, TestFactory.make_full_sides())

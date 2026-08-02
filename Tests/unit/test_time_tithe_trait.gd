@@ -19,7 +19,9 @@ func _push_skill(p_turn_effect: float) -> Skill:
 	var skill: Skill = Skill.new()
 	skill.name = "Push"
 	skill.target = Types.Skill_Target.Single_Enemy
-	skill.turn_effect = p_turn_effect
+	var effect: TurnBarEffect = TurnBarEffect.new()
+	effect.fraction = p_turn_effect
+	skill.effects = [effect]
 	return skill
 
 func _bumps_for(p_results: Array[CombatResult], p_target_ID: int) -> Array[CombatResult]:
@@ -81,7 +83,9 @@ func test_no_tithe_when_the_reduced_target_is_an_ally() -> void:
 	var ally_push: Skill = Skill.new()
 	ally_push.name = "Ally Push"
 	ally_push.target = Types.Skill_Target.Single_Ally
-	ally_push.turn_effect = -0.20
+	var effect: TurnBarEffect = TurnBarEffect.new()
+	effect.fraction = -0.20
+	ally_push.effects = [effect]
 	_roster[3]._skills.append(ally_push)
 
 	var results: Array[CombatResult] = _resolver.ResolveSkill(3, [4], 0)

@@ -40,9 +40,6 @@ func OnDeath() -> void:
 	_avoidance_stacks = 0
 	_avoided_since_last_turn = false
 
-func IsConditionActive() -> bool:
-	return _avoided_since_last_turn
-
 func GetConditionCount(
 		_p_owner_ID: int,
 		_p_target_ID: int,

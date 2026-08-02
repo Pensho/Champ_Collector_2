@@ -73,7 +73,10 @@ func test_returns_negative_one_when_none_are_alive() -> void:
 
 func test_resolves_correctly_as_a_secondary_group_while_the_skills_own_target_is_an_enemy() -> void:
 	var skill: Skill = TestFactory.make_strike_skill()
-	skill.heal_scaling = {Types.Skill_Target.Most_Injured_Ally: {Types.Attribute.Attack: 1.0}}
+	var heal_effect: HealthChangeEffect = HealthChangeEffect.new()
+	heal_effect.target = Types.Skill_Target.Most_Injured_Ally
+	heal_effect.scaling = {Types.Attribute.Attack: 1.0}
+	skill.effects.append(heal_effect)
 	_roster[0]._skills.append(skill)
 	_roster[1]._current_health = 1
 	var target_health_before: int = _roster[3]._current_health

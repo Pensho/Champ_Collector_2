@@ -1,6 +1,17 @@
 [gd_resource type="Resource" script_class="Skill" format=3 uid="uid://dkponwva6f3ai"]
 
+[ext_resource type="Script" uid="uid://bmqtglyyora7q" path="res://Scripts/Battle/Skill_Effects/skill_effect.gd" id="1_jt31v"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Script" uid="uid://bn0n72opjy7sb" path="res://Scripts/Battle/Skill_Effects/damage_effect.gd" id="2_m4684"]
+
+[sub_resource type="Resource" id="Resource_58pni"]
+script = ExtResource("2_m4684")
+damage_scaling = Dictionary[int, float]({
+2: 0.7
+})
+bonus_per = Dictionary[int, float]({
+2: 0.15
+})
 
 [resource]
 script = ExtResource("1_skill")
@@ -8,8 +19,5 @@ name = "Breaching Charge"
 description = "Deals damage to the left-most enemy, scaled by Attack. Each use increases this skill's damage by 15% for the rest of the battle."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Opponent_Active_Skills/Breaching_Charge/Breaching_Charge.png"
 target = 15
-damage_scaling = Dictionary[int, float]({
-2: 0.7
-})
-ramp_per_use = 0.15
+effects = Array[ExtResource("1_jt31v")]([SubResource("Resource_58pni")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

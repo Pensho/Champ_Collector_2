@@ -101,5 +101,7 @@ func _ReErectZone(p_owner_ID: int, p_resolver: BattleResolver) -> void:
 	zone_skill.name = "Raise the Frame"
 	zone_skill.target = Types.Skill_Target.ZoneAlly
 	zone_skill.skill_type = Types.Skill_Type.Barrier_Zone
-	zone_skill.duration = RAISE_THE_FRAME_ZONE_CHARGES
+	var zone_effect: ZoneEffect = ZoneEffect.new()
+	zone_effect.duration = RAISE_THE_FRAME_ZONE_CHARGES
+	zone_skill.effects = [zone_effect]
 	zone_resolver.PlaceZone(available_zone_IDs[0], p_owner_ID, zone_skill)

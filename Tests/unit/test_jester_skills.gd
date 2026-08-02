@@ -2,9 +2,9 @@ extends GutTest
 
 const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 
-# Coverage for the Jester's kit: Pratfall Sting (Skill.bonus_damage_on_trait_condition,
-# reading DoubleTheFunTrait.IsConditionActive) and Center Stage (a single skill granting
-# two buffs with different durations via Skill.buff_duration_overrides).
+# Coverage for the Jester's kit: Pratfall Sting (a DamageEffect bonus_per Trait_Condition,
+# reading DoubleTheFunTrait.GetConditionCount) and Center Stage (a skill granting two
+# buffs with different durations via two ApplyBuffEffects).
 
 var _roster: Dictionary[int, Character] = {}
 var _resolver: BattleResolver = null
@@ -16,8 +16,10 @@ func before_each() -> void:
 func _pratfall_sting_skill() -> Skill:
 	var skill: Skill = TestFactory.make_empty_skill()
 	skill.name = "Pratfall Sting"
-	skill.damage_scaling = {Types.Attribute.Accuracy: 0.9}
-	skill.bonus_damage_on_trait_condition = 0.3
+	var effect: DamageEffect = DamageEffect.new()
+	effect.damage_scaling = {Types.Attribute.Accuracy: 0.9}
+	effect.bonus_per = {Types.Damage_Bonus_Source.Trait_Condition: 0.3}
+	skill.effects = [effect]
 	return skill
 
 func _center_stage_skill() -> Skill:
@@ -25,10 +27,16 @@ func _center_stage_skill() -> Skill:
 	skill.name = "Center Stage"
 	skill.target = Types.Skill_Target.Self
 	skill.cooldown = 3
-	skill.duration = 2
 	skill.skill_type = Types.Skill_Type.Status_Effect
-	skill.buffs = {Types.Skill_Target.Self: [Types.Buff_Type.Spotlight, Types.Buff_Type.Luck]}
-	skill.buff_duration_overrides = {Types.Buff_Type.Luck: 1}
+	var spotlight: ApplyBuffEffect = ApplyBuffEffect.new()
+	spotlight.target = Types.Skill_Target.Self
+	spotlight.buff_type = Types.Buff_Type.Spotlight
+	spotlight.duration = 2
+	var luck: ApplyBuffEffect = ApplyBuffEffect.new()
+	luck.target = Types.Skill_Target.Self
+	luck.buff_type = Types.Buff_Type.Luck
+	luck.duration = 1
+	skill.effects = [spotlight, luck]
 	return skill
 
 # --- Pratfall Sting ---
@@ -65,7 +73,7 @@ func test_pratfall_sting_avoidance_bonus_clears_after_the_jesters_own_turn_ends(
 
 	_resolver.ResolveSkill(0, [3], 0)
 
-	assert_false(jester_trait.IsConditionActive(),
+	assert_false(jester_trait._avoided_since_last_turn,
 		"The avoidance flag should clear at the end of the Jester's own turn")
 
 func test_pratfall_sting_deals_no_bonus_without_a_trait() -> void:

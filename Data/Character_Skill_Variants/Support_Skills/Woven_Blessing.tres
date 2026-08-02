@@ -1,6 +1,14 @@
 [gd_resource type="Resource" script_class="Skill" format=3 uid="uid://dvb8dilbwuux"]
 
+[ext_resource type="Script" uid="uid://bmqtglyyora7q" path="res://Scripts/Battle/Skill_Effects/skill_effect.gd" id="1_iwchr"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Script" uid="uid://bay8tvxoeo0tu" path="res://Scripts/Battle/Skill_Effects/apply_buff_effect.gd" id="2_8pgya"]
+
+[sub_resource type="Resource" id="Resource_li6bm"]
+script = ExtResource("2_8pgya")
+buff_type = 5
+duration = 2
+target = 3
 
 [resource]
 script = ExtResource("1_skill")
@@ -9,9 +17,6 @@ description = "Grants a single ally the Attune buff for 2 turns."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Woven_Blessing/Woven_Blessing.png"
 target = 3
 cooldown = 3
-duration = 2
 skill_type = 5
-buffs = Dictionary[int, Array]({
-3: [5]
-})
+effects = Array[ExtResource("1_iwchr")]([SubResource("Resource_li6bm")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

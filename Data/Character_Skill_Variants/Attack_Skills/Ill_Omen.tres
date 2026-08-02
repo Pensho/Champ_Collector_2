@@ -1,18 +1,27 @@
 [gd_resource type="Resource" script_class="Skill" format=3 uid="uid://bqbc6cyis8ety"]
 
+[ext_resource type="Script" uid="uid://bmqtglyyora7q" path="res://Scripts/Battle/Skill_Effects/skill_effect.gd" id="1_8g8s7"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Script" uid="uid://bonwfsp34aafb" path="res://Scripts/Battle/Skill_Effects/apply_debuff_effect.gd" id="2_cl6xs"]
+[ext_resource type="Script" uid="uid://bn0n72opjy7sb" path="res://Scripts/Battle/Skill_Effects/damage_effect.gd" id="3_b84fp"]
+
+[sub_resource type="Resource" id="Resource_ria2k"]
+script = ExtResource("2_cl6xs")
+debuff_type = 16
+duration = 2
+target = 0
+
+[sub_resource type="Resource" id="Resource_n32js"]
+script = ExtResource("3_b84fp")
+damage_scaling = Dictionary[int, float]({
+6: 1.2
+})
 
 [resource]
 script = ExtResource("1_skill")
 name = "Ill Omen"
 description = "Deals damage to a single enemy, scaled by Mysticism, and applies Hexed for 2 turns."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Ill_Omen/Ill_Omen.png"
-damage_scaling = Dictionary[int, float]({
-6: 1.2
-})
 cooldown = 3
-duration = 2
-debuffs = Dictionary[int, Array]({
-0: [16]
-})
+effects = Array[ExtResource("1_8g8s7")]([SubResource("Resource_ria2k"), SubResource("Resource_n32js")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

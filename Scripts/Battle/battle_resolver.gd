@@ -27,7 +27,6 @@ var _turn_positions: TurnPositions
 var _random: RandomNumberGenerator = RandomNumberGenerator.new()
 var _zone_resolver: ZoneResolver
 var _status_resolver: StatusEffectResolver
-var _health_transfer_resolver: HealthTransferResolver
 
 var _damage_multiplier: Dictionary[int, float] = {}
 
@@ -58,7 +57,6 @@ func _init(
 	_turn_positions = p_turn_positions if p_turn_positions != null else TurnPositions.new()
 	_status_resolver = StatusEffectResolver.new(self)
 	_zone_resolver = ZoneResolver.new(self)
-	_health_transfer_resolver = HealthTransferResolver.new(self)
 	if(p_seed >= 0):
 		_random.seed = p_seed
 	else:
@@ -161,18 +159,8 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 		_status_resolver._TriggerExistingCasterBuffs(p_caster_ID, caster_attributes)
 
 	var use_count: int = _SkillUseCount(p_caster_ID, cast_skill)
-	var ramp_multiplier: float = _SkillRampMultiplier(cast_skill, use_count)
-	var health_paid: int = _health_transfer_resolver.ResolveHealthCosts(p_caster_ID, p_target_IDs, cast_skill)
-	var buff_manipulation: BuffManipulationResult = _status_resolver._ResolveBuffManipulation(
-			p_caster_ID, p_target_IDs, cast_skill)
-	var effective_duration: int = cast_skill.duration + buff_manipulation.duration_bonus
-	_status_resolver._ResolveStatusGroups(p_caster_ID, p_target_IDs, cast_skill, trait_result._tick_bonus_per_debuff,
-			effective_duration, use_count, health_paid)
-	_health_transfer_resolver.ResolveHealthGains(p_caster_ID, p_target_IDs, cast_skill, caster_attributes)
-
 	var context := SkillCastContext.new(self, p_caster_ID, p_target_IDs, cast_skill, caster_attributes,
 			use_count, trait_result)
-	context.health_paid = health_paid
 	for effect in cast_skill.effects:
 		if(context.ConditionMet(effect)):
 			effect.Resolve(context)
@@ -180,24 +168,10 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 	var is_non_basic: bool = cast_skill.cooldown > 0
 	_status_resolver._TriggerManaBurn(p_caster_ID, caster_attributes, is_non_basic)
 
-	var target_attributes: Dictionary[Types.Attribute, int]
 	for target_ID in p_target_IDs:
 		if(not _characters.has(target_ID)):
 			continue
-		var target: Character = _characters[target_ID]
-		if(p_caster_ID != target_ID):
-			target_attributes = GetEffectiveAttributes(target_ID)
-			var defend_trait: CharacterTrait = Skills.ActiveHook(target, Types.Combat_Event.Defend)
-			if(null != defend_trait):
-				defend_trait.OnDefend(target_ID, target_attributes, _characters)
-
-		if(not cast_skill.damage_scaling.is_empty()):
-			_ResolveDamage(p_caster_ID, target_ID, caster_attributes, target_attributes,
-					cast_skill.damage_scaling, cast_skill.defense_ignore_factor, trait_result._damage_multiplier,
-					true, ramp_multiplier, buff_manipulation.bonus_damage_fraction)
-
-		var total_bump: float = cast_skill.turn_effect + trait_result._turn_bar_bump
-		_EmitTurnBarBump(target_ID, total_bump, p_caster_ID)
+		_EmitTurnBarBump(target_ID, trait_result._turn_bar_bump, p_caster_ID)
 
 	_TickCooldowns(caster)
 	if(not (is_non_basic and _status_resolver._ConsumeRehearsedIfPresent(p_caster_ID))):
@@ -660,12 +634,6 @@ func _SkillUseCount(p_caster_ID: int, p_skill: Skill) -> int:
 	var uses: int = _skill_use_counts.get(key, 0)
 	_skill_use_counts[key] = uses + 1
 	return uses
-
-
-func _SkillRampMultiplier(p_skill: Skill, p_use_count: int) -> float:
-	if(0.0 == p_skill.ramp_per_use):
-		return 1.0
-	return 1.0 + p_skill.ramp_per_use * float(p_use_count)
 
 
 func _ResolveDamage(

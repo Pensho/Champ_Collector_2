@@ -28,10 +28,13 @@ func PlaceZone(p_zone_ID: int, p_owner_ID: int, p_skill: Skill) -> Array[CombatR
 	if(_zones.has(p_zone_ID)):
 		print("Zone is already used")
 		return _resolver._EndBatch()
+	var zone_effect: ZoneEffect = _FindZoneEffect(p_skill)
+	var duration: int = zone_effect.duration if null != zone_effect else 0
 	var zone_debuffs: Array[Types.Debuff_Type] = []
-	zone_debuffs.assign(p_skill.debuffs.get(p_skill.target, []))
+	if(null != zone_effect):
+		zone_debuffs.assign(zone_effect.debuffs)
 	var zone: Zone = Zone.new()
-	zone.CreateNew(p_skill.skill_type, p_skill.duration, p_owner_ID, p_skill.target,
+	zone.CreateNew(p_skill.skill_type, duration, p_owner_ID, p_skill.target,
 			_resolver._characters[p_owner_ID].GetTotalAttribute(Types.Attribute.Knowledge), zone_debuffs)
 	_zones[p_zone_ID] = zone
 	var result: CombatResult = CombatResult.new(CombatResult.Kind.Zone_Placed)
@@ -42,6 +45,12 @@ func PlaceZone(p_zone_ID: int, p_owner_ID: int, p_skill: Skill) -> Array[CombatR
 	_resolver._Emit(result)
 	Skills.TriggerZoneConstructedHook(_resolver._characters, p_owner_ID, p_zone_ID, _resolver)
 	return _resolver._EndBatch()
+
+func _FindZoneEffect(p_skill: Skill) -> ZoneEffect:
+	for effect in p_skill.effects:
+		if(effect is ZoneEffect):
+			return effect
+	return null
 
 func SetZoneDuration(p_zone_ID: int, p_duration: int) -> void:
 	if(not _zones.has(p_zone_ID)):

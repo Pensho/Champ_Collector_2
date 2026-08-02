@@ -10,96 +10,6 @@ var _resolver: BattleResolver
 func _init(p_resolver: BattleResolver) -> void:
 	_resolver = p_resolver
 
-func _ResolveBuffManipulation(
-		p_caster_ID: int,
-		p_target_IDs: Array[int],
-		p_skill: Skill) -> BuffManipulationResult:
-	var result: BuffManipulationResult = BuffManipulationResult.new()
-
-	if(p_skill.escalated_at_infractions > 0 and not p_target_IDs.is_empty()):
-		var standing_record: CharacterTrait = _resolver._characters[p_caster_ID]._trait
-		if(standing_record is StandingRecordTrait
-				and (standing_record as StandingRecordTrait).GetInfractions(p_target_IDs[0])
-						>= p_skill.escalated_at_infractions):
-			result.duration_bonus = 1
-
-	if(p_skill.steal_buff_count > 0):
-		var recipients: Array[int] = SkillCastContext.ResolveIndependentGroup(
-				_resolver, p_caster_ID, p_skill.steal_buff_to).filter(
-				func(id): return _resolver._characters.has(id) and _resolver._characters[id]._current_health > 0)
-		if(not recipients.is_empty()):
-			var recipient_ID: int = recipients[_resolver._random.randi_range(0, recipients.size() - 1)]
-			for target_ID in p_target_IDs:
-				for i in p_skill.steal_buff_count:
-					StealBuff(target_ID, recipient_ID, p_skill.duration)
-
-	for target_type in p_skill.buff_duration_reduction.keys():
-		var reduction: int = p_skill.buff_duration_reduction[target_type] + result.duration_bonus
-		var targets: Array[int] = SkillCastContext.ResolveStatusGroupTargets(
-				_resolver, p_caster_ID, p_target_IDs, p_skill, target_type)
-		for target_ID in targets:
-			ReduceBuffDurations(target_ID, reduction)
-
-	var consumed_count: int = 0
-	for target_type in p_skill.consume_buffs.keys():
-		var targets: Array[int] = SkillCastContext.ResolveStatusGroupTargets(
-				_resolver, p_caster_ID, p_target_IDs, p_skill, target_type)
-		for target_ID in targets:
-			consumed_count += ConsumeBuffs(target_ID, p_skill.consume_buffs[target_type])
-
-	if(p_skill.damage_bonus_per_buff > 0.0):
-		var buff_count: int = (consumed_count if not p_skill.consume_buffs.is_empty()
-				else _resolver._characters[p_caster_ID]._active_buffs.size())
-		result.bonus_damage_fraction += p_skill.damage_bonus_per_buff * float(buff_count)
-
-	var caster_trait: CharacterTrait = _resolver._characters[p_caster_ID]._trait
-	if(p_skill.bonus_damage_on_trait_condition > 0.0 and null != caster_trait and caster_trait.IsConditionActive()):
-		result.bonus_damage_fraction += p_skill.bonus_damage_on_trait_condition
-
-	return result
-
-func _ResolveStatusGroups(
-		p_caster_ID: int,
-		p_target_IDs: Array[int],
-		p_skill: Skill,
-		p_tick_bonus_per_debuff: float,
-		p_duration: int,
-		p_use_count: int,
-		p_health_paid: int = 0) -> void:
-	var buff_groups: Dictionary[Types.Skill_Target, Array] = (
-			p_skill.alternating_buffs
-			if (not p_skill.alternating_buffs.is_empty() and p_use_count % 2 == 1)
-			else p_skill.buffs)
-	for target_type in buff_groups.keys():
-		var buff_targets: Array[int] = SkillCastContext.ResolveStatusGroupTargets(
-				_resolver, p_caster_ID, p_target_IDs, p_skill, target_type)
-		for target_ID in buff_targets:
-			for buff_type in buff_groups[target_type]:
-				var value_override: float = -1.0
-				if(Types.Buff_Type.Barrier == buff_type and p_skill.barrier_from_health_paid > 0.0):
-					value_override = float(p_health_paid) * p_skill.barrier_from_health_paid
-				elif(Types.Buff_Type.Barrier == buff_type and p_skill.barrier_from_target_max_health > 0.0):
-					value_override = (float(_resolver._MaxHealth(_resolver._characters[target_ID]))
-							* p_skill.barrier_from_target_max_health)
-				var buff_duration: int = p_skill.buff_duration_overrides.get(buff_type, p_duration)
-				_CastBuffOfType(target_ID, buff_type, buff_duration, value_override)
-
-	for target_type in p_skill.debuffs.keys():
-		var debuff_targets: Array[int] = SkillCastContext.ResolveStatusGroupTargets(
-				_resolver, p_caster_ID, p_target_IDs, p_skill, target_type)
-		for target_ID in debuff_targets:
-			for debuff_type in p_skill.debuffs[target_type]:
-				var cast_debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
-				cast_debuff.type = debuff_type
-				cast_debuff.duration = p_duration
-				var caster_trait: CharacterTrait = _resolver._characters[p_caster_ID]._trait
-				if(null != caster_trait):
-					var value_override: float = caster_trait.GetAppliedStatusValue(
-							p_caster_ID, target_ID, debuff_type, _resolver)
-					if(value_override >= 0.0):
-						cast_debuff.value = value_override
-				CastDebuff(target_ID, cast_debuff, p_caster_ID, p_tick_bonus_per_debuff, true, true)
-
 func ApplyBuff(p_target_ID: int, p_buff_template: StatusEffects.Buff) -> Array[CombatResult]:
 	_resolver._BeginBatch()
 	var target: Character = _resolver._characters[p_target_ID]
@@ -217,22 +127,6 @@ func ConsumeDeathwardIfPresent(p_character_ID: int) -> bool:
 			RemoveBuff(p_character_ID, buff)
 			return true
 	return false
-
-
-func _CastBuffOfType(p_target_ID: int, p_buff_type: Types.Buff_Type, p_duration: int,
-		p_value_override: float = -1.0) -> void:
-	var target: Character = _resolver._characters[p_target_ID]
-	if(Skills.HasMaxStatusEffects(target)):
-		return
-	var data: StatusEffectData = StatusEffectRegistry.BuffData(p_buff_type)
-	if(_BlockedBySequenceLock(data, target) or _BlockedBySeverance(target)):
-		return
-	var new_value: float = p_value_override if p_value_override >= 0.0 else (data.magnitude if null != data else 0.0)
-	if(Types.Buff_Type.Barrier == p_buff_type and _KeepsExistingBarrier(p_target_ID, target, new_value)):
-		return
-
-	_InsertOrRefresh(p_target_ID, true, p_buff_type, data, new_value, p_duration,
-			-1, 0.0, false, Types.Buff_Type.keys()[p_buff_type])
 
 
 func CastDebuff(

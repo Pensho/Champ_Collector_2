@@ -1,6 +1,20 @@
 [gd_resource type="Resource" script_class="Skill" format=3 uid="uid://bunyo3xdyy4b2"]
 
+[ext_resource type="Script" uid="uid://bmqtglyyora7q" path="res://Scripts/Battle/Skill_Effects/skill_effect.gd" id="1_6f24j"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Script" uid="uid://cdtqrch6g28ma" path="res://Scripts/Battle/Skill_Effects/health_change_effect.gd" id="2_fp07e"]
+[ext_resource type="Script" uid="uid://c665i2g4of8u6" path="res://Scripts/Battle/Skill_Effects/barrier_effect.gd" id="3_675t1"]
+
+[sub_resource type="Resource" id="Resource_bpvft"]
+script = ExtResource("2_fp07e")
+fraction = -0.15
+target = 13
+
+[sub_resource type="Resource" id="Resource_c86ti"]
+script = ExtResource("3_675t1")
+fraction = 2.0
+duration = 2
+target = 12
 
 [resource]
 script = ExtResource("1_skill")
@@ -9,13 +23,6 @@ description = "The caster sacrifices 15% of max Health; one ally gains a Barrier
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Transfusion/Transfusion.png"
 target = 3
 cooldown = 4
-duration = 2
 skill_type = 5
-buffs = Dictionary[int, Array]({
-12: [21]
-})
-health_change = Dictionary[int, float]({
-13: -0.15
-})
-barrier_from_health_paid = 2.0
+effects = Array[ExtResource("1_6f24j")]([SubResource("Resource_bpvft"), SubResource("Resource_c86ti")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

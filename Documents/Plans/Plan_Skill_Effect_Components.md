@@ -231,7 +231,7 @@ yields eleven subclasses); `ApplyHealthCost` / `ApplyHeal` shipped as `ResolveHe
 own `CombatResult`. `ZoneEffect` ships inert, since `ZoneResolver.PlaceZone` is rewired in
 phase 2.
 
-### Phase 2 — data migration and field removal
+### Phase 2 — data migration and field removal (complete)
 
 A throwaway `Scripts/Debug/migrate_skills_to_effects.gd` reads each of the 69 `.tres`
 files under `Data/Character_Skill_Variants/` and rewrites its flat fields as an ordered
@@ -246,6 +246,29 @@ asserting every shipped skill `.tres` loads and carries at least one effect.
 
 Also clears the phase 2 findings below: the `context.health_paid` seed and the
 `SkillCastContext` accessor bypass.
+
+Delivered with one deliberate deviation from the Blocker's literal text: Signed Writ's
+`escalated_at_infractions` is migrated now, not deferred, using the existing (overloaded)
+`Trait_Counter_On_Target` contract with a hardcoded `condition_threshold` of `6 × 0.025`
+(the rate of the only rarity Signed Writ ships at today) — confirmed with the user rather
+than leaving the field as a phase-2 exception. The `ApplyDebuffEffect` half of the
+escalation pair authors the escalated branch's `duration` as the full value (2), not a
+`+1` delta, because `_InsertOrRefresh`'s `p_always_refresh_duration` overwrites rather than
+adds; `ReduceBuffDurationsEffect` is additive, so its pair does use `+1` per effect. The
+real contract split and clean count-based re-expression remain phase 3's job. Also found
+and fixed along the way: two more `Skill.new()` call sites outside `.tres` data
+(`living_bloom_graft.gd`, `calibration_trait.gd`) that built zone skills from the flat
+`duration` field; `ZoneResolver.PlaceZone` bypasses the effect loop entirely for
+zone-target skills (cast routes straight to `PlaceZone`, never `ResolveSkill`), so
+zone-type skills carry only a `ZoneEffect`, never the generic resolution effects; and the
+per-target `Defend`-hook trigger in `ResolveSkill`'s tail loop was dead code once
+`ResolveEffectDamage` started triggering it itself, so it was deleted rather than kept
+redundant. One accepted expected-value change, the sole exception to the no-value-changes
+rule: `test_transfusion_barrier.gd`'s zero-multiplier case moved from `0.0` to `-1.0`,
+which is delta (4) below becoming real. No shipped skill reaches it — every
+`barrier_from_*` skill authored a positive fraction — so the new "grant nothing" reading
+is the intended one; it is recorded here so a later phase does not re-derive it as a
+regression.
 
 ### Phase 3 — behaviour fixes and wording
 
@@ -263,7 +286,11 @@ Rewrite Technical Design Document section 6.1 (the `Skill` template becomes the 
 catalog), 7.4 (the effect pipeline, canonical order, and the context accumulators), and the
 trait-getter passage in section 9. Remove the "skill implementation batch 4" phrasing from
 the Technical Design Document — plan metadata does not belong in a document that outlives
-the plan.
+the plan. Also sweep for stale references outside those three sections: phase 2 deleted
+`HealthTransferResolver`, `BuffManipulationResult`, `CharacterTrait.IsConditionActive`, and
+`_SkillRampMultiplier`, and the document still describes at least `HealthTransferResolver`
+as a live subsystem-composition precedent (around line 1495) — grep the whole document for
+all four names rather than assuming sections 6.1/7.4/9 are the only places they appear.
 
 ## Findings
 
@@ -286,28 +313,35 @@ one skill would need four authored thresholds — each of them the trait's own r
 into skill data, which is what Concept 3.1.3 forbids and what this pass exists to prevent.
 `Trait_Condition` is not a substitute: it is binary, and `StandingRecordTrait` returns 0.0
 for it. The fix is to split the contract — either a raw-count `Damage_Bonus_Source`, or
-`ConditionMet` querying a separate un-multiplied hook. Unreachable today, since no shipped
-skill authors a condition, but the enum is cheapest to change before phase 2 migrates data.
-
-### Concern — fix in phase 2
-
-**Delete the `context.health_paid` seed.** `ResolveSkill` seeds the accumulator from the
-flat-field path so the two paths agree while both run. Once `HealthChangeEffect` writes it,
-the accumulator has two writers and a `BarrierEffect` reading it double-counts silently.
-This is an explicit deletion step in phase 2, not something to notice afterwards.
+`ConditionMet` querying a separate un-multiplied hook. Signed Writ now authors a condition
+(migrated in phase 2 against the overloaded contract, with the user's explicit sign-off —
+see phase 2's entry above), so this is reachable today, not just a future risk.
 
 ### Nit
 
-**`SkillCastContext` bypasses accessors that exist (phase 2).** The moved static methods
-reach into `_characters`, `_sides`, `_random` and `_MaxHealth`, while the effect classes in
-the same folder correctly use `GetCharacters()`, `GetRandom()` and `GetMaxHealth()`.
-Inherited verbatim from `StatusEffectResolver`, so it is not new, but this is the file to
-converge now that the public surface exists. Not a pure substitution: `DamageEffect` and
-`ApplyDebuffEffect` reach `._trait` and `._active_buffs`, which have no accessor — either
-add two, or decide deliberately to leave them.
-
 **Plan bookkeeping (phase 4).** Phase 1's naming deviations are recorded in its own entry
 above; the documentation rewrite must use the shipped names, not the catalog's.
+
+**Stale comments naming deleted symbols (phase 3).** `Scripts/Battle/Skill_Effects/zone_effect.gd`'s
+class docstring still says `ZoneResolver.PlaceZone` does not read the effect yet, which phase 2
+made false; `skill_cast_context.gd` line 7 names `_ResolveStatusGroups` and
+`BuffManipulationResult`, and `Tests/unit/test_sequence_lock.gd` line 6 names `_CastBuffOfType` —
+all three symbols are gone. Reword each in terms of the surviving API.
+
+**`gdlintrc` `max-public-methods` can revert (phase 3).** `CharacterTrait` is back to 35 public
+methods now that `IsConditionActive` is deleted, so the phase 1 bump to 36 is no longer needed;
+`gdlint Scripts/` was confirmed clean at 35. The batch 4 `BattleResolver` bump is separate and
+still load-bearing.
+
+**Jester condition test asserts a private field (phase 3).** `Tests/unit/test_jester_skills.gd`
+line 76 reads `DoubleTheFunTrait._avoided_since_last_turn` directly, so it no longer exercises the
+contract the skill uses. Assert through `GetConditionCount(..., Trait_Condition, ...)` instead —
+best done alongside the `GetConditionCount` contract split, since that is the hook it should be
+testing.
+
+**Migration test name outlives the migration (phase 3 or 4).** `Tests/unit/test_skill_data_migration.gd`
+asserts a standing invariant — every shipped skill loads and carries at least one effect — under a
+name that describes a one-time event. Rename to `test_skill_resources.gd`.
 
 ## Watch for
 
@@ -330,6 +364,24 @@ above; the documentation rewrite must use the shipped names, not the catalog's.
   them deliberately against the skills that could expose them (multi-target skills that
   can kill some but not all targets; skills with both damage and a turn-bar bump; skills
   whose heal can compute to zero) rather than discover a behaviour change after the fact.
+- Two more behaviour deltas the same migration surfaced, both unreachable in shipped data
+  today: (4) `BarrierEffect` skips granting entirely on a non-positive value, where the old
+  path fell back to the status registry's default magnitude and still granted a Barrier
+  (`test_transfusion_barrier.gd`'s zero-multiplier case exercises this; every shipped
+  `barrier_from_*` skill authors a positive fraction, so it never fires today); (5) a skill
+  combining a `DamageEffect`-adjacent trait turn-bar bump with a `TurnBarEffect` now emits
+  two separate `Turn_Bar_Bump` results instead of one combined bump, so a sign-gating trait
+  (Anchor, Steadfast) or `Skills.TurnBarTithe` would see each part independently rather than
+  their sum — no shipped skill both deals damage via a trait bump and carries a
+  `TurnBarEffect`, so this is latent, not live.
+- A sixth delta, live in shipped content: the old pipeline resolved heals *before* the per-target
+  damage loop, where the canonical effect order puts them after. Fateful Glimpse authors
+  `[DamageEffect, HealthChangeEffect]`, so its `Most_Injured_Ally` heal target is now chosen once
+  the hit has landed — and a target carrying `GlassRefractionGraft` backlashes damage onto the
+  caster inside `ResolveEffectDamage`, which can change who the most-injured ally is. The suite is
+  green either way. Phase 4's order documentation must state which reading is canonical; if the
+  old order was intended, Fateful Glimpse authors the heal first rather than the canonical order
+  changing.
 - `gdlintrc`'s `max-public-methods` was raised by batch 4 (`BattleResolver`) and again in
   phase 1 (`CharacterTrait`, 35 → 36, for `GetConditionCount`); revert either bump if the
   class it was raised for shrinks back below the old limit.

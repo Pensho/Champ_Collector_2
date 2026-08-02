@@ -1,13 +1,19 @@
 [gd_resource type="Resource" script_class="Skill" format=3 uid="uid://b8x0tmrxq602j"]
 
+[ext_resource type="Script" uid="uid://bmqtglyyora7q" path="res://Scripts/Battle/Skill_Effects/skill_effect.gd" id="1_6428e"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Script" uid="uid://bn0n72opjy7sb" path="res://Scripts/Battle/Skill_Effects/damage_effect.gd" id="2_yvhhn"]
+
+[sub_resource type="Resource" id="Resource_56rrq"]
+script = ExtResource("2_yvhhn")
+damage_scaling = Dictionary[int, float]({
+6: 1.0
+})
 
 [resource]
 script = ExtResource("1_skill")
 name = "Cinder Spit"
 description = "Deals damage to a single enemy, scaled by Mysticism."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Opponent_Active_Skills/Cinder_Spit/Cinder_Spit.png"
-damage_scaling = Dictionary[int, float]({
-6: 1.0
-})
+effects = Array[ExtResource("1_6428e")]([SubResource("Resource_56rrq")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

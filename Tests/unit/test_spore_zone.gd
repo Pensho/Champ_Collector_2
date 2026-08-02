@@ -30,7 +30,9 @@ func _place_spore_zone(p_owner_knowledge: int) -> void:
 	zone_skill.name = "Spore Bloom"
 	zone_skill.target = Types.Skill_Target.ZoneAll
 	zone_skill.skill_type = Types.Skill_Type.Spore_Zone
-	zone_skill.duration = 5
+	var zone_effect: ZoneEffect = ZoneEffect.new()
+	zone_effect.duration = 5
+	zone_skill.effects = [zone_effect]
 	var results: Array[CombatResult] = _resolver.GetZoneResolver().PlaceZone(0, 0, zone_skill)
 	assert_eq(results.size(), 1, "Placing a Spore zone should report Zone_Placed")
 

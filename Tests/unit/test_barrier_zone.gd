@@ -28,7 +28,9 @@ func _place_barrier_zone() -> void:
 	var zone_skill: Skill = Skill.new()
 	zone_skill.target = Types.Skill_Target.ZoneAlly
 	zone_skill.skill_type = Types.Skill_Type.Barrier_Zone
-	zone_skill.duration = 5
+	var zone_effect: ZoneEffect = ZoneEffect.new()
+	zone_effect.duration = 5
+	zone_skill.effects = [zone_effect]
 	var results: Array[CombatResult] = _resolver.GetZoneResolver().PlaceZone(0, 0, zone_skill)
 	assert_eq(results.size(), 1, "Placing a Barrier zone should report Zone_Placed")
 

@@ -31,7 +31,9 @@ func StartOfBattle(p_owner_ID: int, p_resolver: BattleResolver) -> void:
 	zone_skill.name = "Spore Bloom"
 	zone_skill.target = Types.Skill_Target.ZoneAll
 	zone_skill.skill_type = Types.Skill_Type.Spore_Zone
-	zone_skill.duration = MAX_CHARGES
+	var zone_effect: ZoneEffect = ZoneEffect.new()
+	zone_effect.duration = MAX_CHARGES
+	zone_skill.effects = [zone_effect]
 	_bloom_zone_ID = free_slots[0]
 	p_resolver.GetZoneResolver().PlaceZone(_bloom_zone_ID, p_owner_ID, zone_skill)
 

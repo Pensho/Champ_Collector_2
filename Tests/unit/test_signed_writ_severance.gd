@@ -28,8 +28,11 @@ func _debuff_skill() -> Skill:
 	var skill: Skill = Skill.new()
 	skill.name = "Debuff"
 	skill.target = Types.Skill_Target.Single_Enemy
-	skill.duration = 2
-	skill.debuffs = {Types.Skill_Target.Single_Enemy: [Types.Debuff_Type.Enfeeble]}
+	var effect: ApplyDebuffEffect = ApplyDebuffEffect.new()
+	effect.target = Types.Skill_Target.Single_Enemy
+	effect.debuff_type = Types.Debuff_Type.Enfeeble
+	effect.duration = 2
+	skill.effects = [effect]
 	return skill
 
 func test_signed_writ_holder_never_resists_a_debuff() -> void:
@@ -76,8 +79,11 @@ func test_severance_blocks_a_new_buff_via_skill_cast() -> void:
 	var buff_skill: Skill = Skill.new()
 	buff_skill.name = "Buff"
 	buff_skill.target = Types.Skill_Target.Single_Ally
-	buff_skill.duration = 2
-	buff_skill.buffs = {Types.Skill_Target.Single_Ally: [Types.Buff_Type.Empower]}
+	var effect: ApplyBuffEffect = ApplyBuffEffect.new()
+	effect.target = Types.Skill_Target.Single_Ally
+	effect.buff_type = Types.Buff_Type.Empower
+	effect.duration = 2
+	buff_skill.effects = [effect]
 	_roster[3]._skills.append(buff_skill)
 	_roster[0]._active_debuffs.append(_debuff(Types.Debuff_Type.Severance))
 	_resolver = TestFactory.make_resolver(_roster, TestFactory.make_full_sides())

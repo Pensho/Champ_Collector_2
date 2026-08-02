@@ -1,6 +1,14 @@
 [gd_resource type="Resource" script_class="Skill" format=3 uid="uid://482fyuc5atf"]
 
+[ext_resource type="Script" uid="uid://bmqtglyyora7q" path="res://Scripts/Battle/Skill_Effects/skill_effect.gd" id="1_lykb2"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Script" uid="uid://bay8tvxoeo0tu" path="res://Scripts/Battle/Skill_Effects/apply_buff_effect.gd" id="2_o41qs"]
+
+[sub_resource type="Resource" id="Resource_baxnj"]
+script = ExtResource("2_o41qs")
+buff_type = 16
+duration = 4
+target = 13
 
 [resource]
 script = ExtResource("1_skill")
@@ -9,9 +17,6 @@ description = "Grants the caster the Exhert buff for 4 turns."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Symbiotic_Overdrive/Symbiotic_Overdrive.png"
 target = 13
 cooldown = 5
-duration = 4
 skill_type = 5
-buffs = Dictionary[int, Array]({
-13: [16]
-})
+effects = Array[ExtResource("1_lykb2")]([SubResource("Resource_baxnj")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

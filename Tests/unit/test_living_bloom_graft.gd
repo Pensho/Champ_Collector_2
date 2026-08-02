@@ -43,7 +43,9 @@ func test_start_of_battle_no_ops_when_no_slots_are_free() -> void:
 		var filler_skill: Skill = Skill.new()
 		filler_skill.target = Types.Skill_Target.ZoneAll
 		filler_skill.skill_type = Types.Skill_Type.Flicker_Zone
-		filler_skill.duration = 3
+		var filler_effect: ZoneEffect = ZoneEffect.new()
+		filler_effect.duration = 3
+		filler_skill.effects = [filler_effect]
 		resolver.GetZoneResolver().PlaceZone(zone_number, 0, filler_skill)
 
 	(roster[0]._trait as LivingBloomGraft).StartOfBattle(0, resolver)

@@ -52,7 +52,8 @@ func test_lava_zone_respects_status_cap() -> void:
 func test_zone_expires_after_duration_charges() -> void:
 	_place_lava_zone()
 
-	for _i in range(TestFactory.make_lava_zone_skill().duration):
+	var zone_effect: ZoneEffect = TestFactory.make_lava_zone_skill().effects[0] as ZoneEffect
+	for _i in range(zone_effect.duration):
 		_resolver.GetZoneResolver().TriggerZones(0)
 
 	assert_false(_resolver.GetZoneResolver().HasZone(0), "A zone should be erased once its charges are spent")

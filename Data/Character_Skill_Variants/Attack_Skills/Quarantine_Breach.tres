@@ -1,18 +1,27 @@
 [gd_resource type="Resource" script_class="Skill" format=3 uid="uid://b1gv84pc8lhid"]
 
+[ext_resource type="Script" uid="uid://bmqtglyyora7q" path="res://Scripts/Battle/Skill_Effects/skill_effect.gd" id="1_6amnf"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Script" uid="uid://bonwfsp34aafb" path="res://Scripts/Battle/Skill_Effects/apply_debuff_effect.gd" id="2_8iap2"]
+[ext_resource type="Script" uid="uid://bn0n72opjy7sb" path="res://Scripts/Battle/Skill_Effects/damage_effect.gd" id="3_jqjop"]
+
+[sub_resource type="Resource" id="Resource_pcy4x"]
+script = ExtResource("2_8iap2")
+debuff_type = 13
+duration = 2
+target = 0
+
+[sub_resource type="Resource" id="Resource_13bda"]
+script = ExtResource("3_jqjop")
+damage_scaling = Dictionary[int, float]({
+6: 1.2
+})
 
 [resource]
 script = ExtResource("1_skill")
 name = "Quarantine Breach"
 description = "Deals damage to a single enemy, scaled by Mysticism, and applies Blight for 2 turns."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Quarantine_Breach/Quarantine_Breach.png"
-damage_scaling = Dictionary[int, float]({
-6: 1.2
-})
 cooldown = 4
-duration = 2
-debuffs = Dictionary[int, Array]({
-0: [13]
-})
+effects = Array[ExtResource("1_6amnf")]([SubResource("Resource_pcy4x"), SubResource("Resource_13bda")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

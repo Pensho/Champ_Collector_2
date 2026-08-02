@@ -57,8 +57,11 @@ func test_cast_debuff_is_blocked_for_speed_effect() -> void:
 		roster[id]._skills.append(TestFactory.make_strike_skill())
 	var resolver: BattleResolver = TestFactory.make_resolver(roster, TestFactory.make_full_sides())
 	var skill: Skill = TestFactory.make_strike_skill()
-	skill.duration = 2
-	skill.debuffs = {Types.Skill_Target.Single_Enemy: [Types.Debuff_Type.Slow]}
+	var debuff_effect: ApplyDebuffEffect = ApplyDebuffEffect.new()
+	debuff_effect.target = Types.Skill_Target.Single_Enemy
+	debuff_effect.debuff_type = Types.Debuff_Type.Slow
+	debuff_effect.duration = 2
+	skill.effects.append(debuff_effect)
 	roster[0]._attributes[Types.Attribute.Accuracy] = 1000
 	roster[3]._attributes[Types.Attribute.Resistance] = 0
 
@@ -72,11 +75,13 @@ func test_cast_buff_is_blocked_for_speed_effect() -> void:
 	for id in roster.keys():
 		roster[id]._skills.append(TestFactory.make_strike_skill())
 	var resolver: BattleResolver = TestFactory.make_resolver(roster, TestFactory.make_full_sides())
-	var skill: Skill = TestFactory.make_strike_skill()
-	skill.damage_scaling = {}
+	var skill: Skill = TestFactory.make_empty_skill()
 	skill.target = Types.Skill_Target.Single_Ally
-	skill.duration = 2
-	skill.buffs = {Types.Skill_Target.Single_Ally: [Types.Buff_Type.Haste]}
+	var buff_effect: ApplyBuffEffect = ApplyBuffEffect.new()
+	buff_effect.target = Types.Skill_Target.Single_Ally
+	buff_effect.buff_type = Types.Buff_Type.Haste
+	buff_effect.duration = 2
+	skill.effects = [buff_effect]
 	roster[3]._skills.append(skill)
 
 	resolver.ResolveSkill(3, [3], 1)

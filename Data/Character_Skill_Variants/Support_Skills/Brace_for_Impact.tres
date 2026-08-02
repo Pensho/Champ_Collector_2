@@ -1,6 +1,20 @@
 [gd_resource type="Resource" script_class="Skill" format=3 uid="uid://pkxfcdkdocol"]
 
+[ext_resource type="Script" uid="uid://bmqtglyyora7q" path="res://Scripts/Battle/Skill_Effects/skill_effect.gd" id="1_ahs63"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Script" uid="uid://bay8tvxoeo0tu" path="res://Scripts/Battle/Skill_Effects/apply_buff_effect.gd" id="2_3b7kf"]
+
+[sub_resource type="Resource" id="Resource_5wokx"]
+script = ExtResource("2_3b7kf")
+buff_type = 30
+duration = 1
+target = 13
+
+[sub_resource type="Resource" id="Resource_bisby"]
+script = ExtResource("2_3b7kf")
+buff_type = 19
+duration = 1
+target = 13
 
 [resource]
 script = ExtResource("1_skill")
@@ -9,9 +23,6 @@ description = "Grants the caster the Rush and Aegis buffs for 1 turn."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Brace_for_Impact/Brace_for_Impact.png"
 target = 13
 cooldown = 4
-duration = 1
 skill_type = 5
-buffs = Dictionary[int, Array]({
-13: [30, 19]
-})
+effects = Array[ExtResource("1_ahs63")]([SubResource("Resource_5wokx"), SubResource("Resource_bisby")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

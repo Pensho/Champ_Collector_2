@@ -1,6 +1,20 @@
 [gd_resource type="Resource" script_class="Skill" format=3 uid="uid://d473ml6c1qbl"]
 
+[ext_resource type="Script" uid="uid://bmqtglyyora7q" path="res://Scripts/Battle/Skill_Effects/skill_effect.gd" id="1_1lryt"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Script" uid="uid://bay8tvxoeo0tu" path="res://Scripts/Battle/Skill_Effects/apply_buff_effect.gd" id="2_nikl5"]
+
+[sub_resource type="Resource" id="Resource_jktjo"]
+script = ExtResource("2_nikl5")
+buff_type = 11
+duration = 2
+target = 3
+
+[sub_resource type="Resource" id="Resource_ktias"]
+script = ExtResource("2_nikl5")
+buff_type = 12
+duration = 2
+target = 3
 
 [resource]
 script = ExtResource("1_skill")
@@ -9,9 +23,6 @@ description = "Grants a single ally the Keen Edge and Lethal Precision buffs for
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Full_Appraisal/Full_Appraisal.png"
 target = 3
 cooldown = 4
-duration = 2
 skill_type = 5
-buffs = Dictionary[int, Array]({
-3: [11, 12]
-})
+effects = Array[ExtResource("1_1lryt")]([SubResource("Resource_jktjo"), SubResource("Resource_ktias")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

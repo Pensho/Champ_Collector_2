@@ -1,6 +1,14 @@
 [gd_resource type="Resource" script_class="Skill" format=3 uid="uid://5l0gnsec2vge"]
 
+[ext_resource type="Script" uid="uid://bmqtglyyora7q" path="res://Scripts/Battle/Skill_Effects/skill_effect.gd" id="1_cy286"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Script" uid="uid://bay8tvxoeo0tu" path="res://Scripts/Battle/Skill_Effects/apply_buff_effect.gd" id="2_poff0"]
+
+[sub_resource type="Resource" id="Resource_i1lcg"]
+script = ExtResource("2_poff0")
+buff_type = 14
+duration = 3
+target = 13
 
 [resource]
 script = ExtResource("1_skill")
@@ -9,9 +17,6 @@ description = "Grants the caster the Opportunist buff for 3 turns."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Weigh_the_Mark/Weigh_the_Mark.png"
 target = 13
 cooldown = 4
-duration = 3
 skill_type = 5
-buffs = Dictionary[int, Array]({
-13: [14]
-})
+effects = Array[ExtResource("1_cy286")]([SubResource("Resource_i1lcg")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

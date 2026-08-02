@@ -1,21 +1,33 @@
 [gd_resource type="Resource" script_class="Skill" format=3 uid="uid://clr2o8gr3t7ef"]
 
+[ext_resource type="Script" uid="uid://bmqtglyyora7q" path="res://Scripts/Battle/Skill_Effects/skill_effect.gd" id="1_jc03f"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Script" uid="uid://cdtqrch6g28ma" path="res://Scripts/Battle/Skill_Effects/health_change_effect.gd" id="2_jjufv"]
+[ext_resource type="Script" uid="uid://bonwfsp34aafb" path="res://Scripts/Battle/Skill_Effects/apply_debuff_effect.gd" id="3_f1y8h"]
+[ext_resource type="Script" uid="uid://bn0n72opjy7sb" path="res://Scripts/Battle/Skill_Effects/damage_effect.gd" id="4_536ub"]
+
+[sub_resource type="Resource" id="Resource_u4o0w"]
+script = ExtResource("2_jjufv")
+fraction = -0.1
+target = 12
+
+[sub_resource type="Resource" id="Resource_1qo26"]
+script = ExtResource("3_f1y8h")
+debuff_type = 15
+duration = 2
+target = 0
+
+[sub_resource type="Resource" id="Resource_bk538"]
+script = ExtResource("4_536ub")
+damage_scaling = Dictionary[int, float]({
+6: 1.5
+})
 
 [resource]
 script = ExtResource("1_skill")
 name = "Tithe of Vitality"
 description = "Drains 10% of max Health from each living ally (caster excluded). Deals damage to a single enemy, scaled by Mysticism, and applies Mana Burn for 2 turns."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Tithe_of_Vitality/Tithe_of_Vitality.png"
-damage_scaling = Dictionary[int, float]({
-6: 1.5
-})
 cooldown = 4
-duration = 2
-debuffs = Dictionary[int, Array]({
-0: [15]
-})
-health_change = Dictionary[int, float]({
-12: -0.1
-})
+effects = Array[ExtResource("1_jc03f")]([SubResource("Resource_u4o0w"), SubResource("Resource_1qo26"), SubResource("Resource_bk538")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

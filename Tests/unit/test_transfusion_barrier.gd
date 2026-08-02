@@ -18,10 +18,15 @@ func before_each() -> void:
 func _transfusion_like_skill(p_barrier_from_health_paid: float) -> Skill:
 	var skill: Skill = TestFactory.make_empty_skill()
 	skill.target = Types.Skill_Target.Ally_Not_Self
-	skill.duration = 2
-	skill.health_change = {Types.Skill_Target.Self: -0.15}
-	skill.buffs = {Types.Skill_Target.Ally_Not_Self: [Types.Buff_Type.Barrier]}
-	skill.barrier_from_health_paid = p_barrier_from_health_paid
+	var cost_effect: HealthChangeEffect = HealthChangeEffect.new()
+	cost_effect.target = Types.Skill_Target.Self
+	cost_effect.fraction = -0.15
+	var barrier_effect: BarrierEffect = BarrierEffect.new()
+	barrier_effect.target = Types.Skill_Target.Ally_Not_Self
+	barrier_effect.source = BarrierEffect.Source.Health_Paid
+	barrier_effect.fraction = p_barrier_from_health_paid
+	barrier_effect.duration = 2
+	skill.effects = [cost_effect, barrier_effect]
 	return skill
 
 func _barrier_value(p_character: Character) -> float:
@@ -69,5 +74,5 @@ func test_no_barrier_value_is_set_when_barrier_from_health_paid_is_0() -> void:
 
 	_resolver.ResolveSkill(0, [1], 0)
 
-	assert_eq(_barrier_value(_roster[1]), 0.0,
-		"With no barrier_from_health_paid multiplier, the Barrier keeps its unset default value")
+	assert_eq(_barrier_value(_roster[1]), -1.0,
+		"BarrierEffect skips granting entirely for a non-positive value rather than falling back to a registry default")

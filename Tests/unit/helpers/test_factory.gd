@@ -201,7 +201,9 @@ static func make_strike_skill() -> Skill:
 	var skill: Skill = Skill.new()
 	skill.name = "Strike"
 	skill.target = Types.Skill_Target.Single_Enemy
-	skill.damage_scaling = {Types.Attribute.Attack: 1.0}
+	var effect: DamageEffect = DamageEffect.new()
+	effect.damage_scaling = {Types.Attribute.Attack: 1.0}
+	skill.effects = [effect]
 	return skill
 
 ## A skill with no damage, buffs, or debuffs — resolving it only ticks the caster's
@@ -217,8 +219,10 @@ static func make_lava_zone_skill() -> Skill:
 	skill.name = "Lava Zone"
 	skill.target = Types.Skill_Target.ZoneAll
 	skill.skill_type = Types.Skill_Type.Lava_Zone
-	skill.duration = 10
-	skill.debuffs = {Types.Skill_Target.ZoneAll: [Types.Debuff_Type.Burning]}
+	var effect: ZoneEffect = ZoneEffect.new()
+	effect.duration = 10
+	effect.debuffs = [Types.Debuff_Type.Burning]
+	skill.effects = [effect]
 	return skill
 
 ## A SkillCastContext for effect-class unit tests, skipping ResolveSkill's turn

@@ -63,8 +63,11 @@ func test_cast_debuff_stamps_the_bonus_onto_the_new_debuff() -> void:
 	var skill: Skill = Skill.new()
 	skill.name = "Toxin"
 	skill.target = Types.Skill_Target.Single_Enemy
-	skill.duration = 2
-	skill.debuffs = {Types.Skill_Target.Single_Enemy: [Types.Debuff_Type.Burning]}
+	var effect: ApplyDebuffEffect = ApplyDebuffEffect.new()
+	effect.target = Types.Skill_Target.Single_Enemy
+	effect.debuff_type = Types.Debuff_Type.Burning
+	effect.duration = 2
+	skill.effects = [effect]
 	_roster[0]._skills = [skill]
 	_roster[0]._trait = ComorbidityTrait.new()
 	_roster[0]._trait.Init(Types.Rarity.Rare)
@@ -77,8 +80,11 @@ func test_refreshing_an_existing_debuff_updates_its_bonus() -> void:
 	var skill: Skill = Skill.new()
 	skill.name = "Toxin"
 	skill.target = Types.Skill_Target.Single_Enemy
-	skill.duration = 3
-	skill.debuffs = {Types.Skill_Target.Single_Enemy: [Types.Debuff_Type.Enfeeble]}
+	var effect: ApplyDebuffEffect = ApplyDebuffEffect.new()
+	effect.target = Types.Skill_Target.Single_Enemy
+	effect.debuff_type = Types.Debuff_Type.Enfeeble
+	effect.duration = 3
+	skill.effects = [effect]
 	_roster[0]._skills = [skill]
 	_roster[0]._trait = ComorbidityTrait.new()
 	_roster[0]._trait.Init(Types.Rarity.Rare)

@@ -1,18 +1,27 @@
-[gd_resource type="Resource" script_class="Skill" format=3]
+[gd_resource type="Resource" script_class="Skill" format=3 uid="uid://e0qqh7x4p1ek"]
 
+[ext_resource type="Script" uid="uid://bmqtglyyora7q" path="res://Scripts/Battle/Skill_Effects/skill_effect.gd" id="1_pxex2"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Script" uid="uid://bonwfsp34aafb" path="res://Scripts/Battle/Skill_Effects/apply_debuff_effect.gd" id="2_og5jm"]
+[ext_resource type="Script" uid="uid://bn0n72opjy7sb" path="res://Scripts/Battle/Skill_Effects/damage_effect.gd" id="3_dlyfv"]
+
+[sub_resource type="Resource" id="Resource_amx1x"]
+script = ExtResource("2_og5jm")
+debuff_type = 17
+duration = 2
+target = 0
+
+[sub_resource type="Resource" id="Resource_sytf4"]
+script = ExtResource("3_dlyfv")
+damage_scaling = Dictionary[int, float]({
+2: 2.2
+})
 
 [resource]
 script = ExtResource("1_skill")
 name = "Vault Slam"
 description = "Deals heavy damage to a single enemy, scaled by Attack, and applies Dead Weight for 2 turns."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Opponent_Active_Skills/Vault_Slam/Vault_Slam.png"
-damage_scaling = Dictionary[int, float]({
-2: 2.2
-})
 cooldown = 3
-duration = 2
-debuffs = Dictionary[int, Array]({
-0: [17]
-})
+effects = Array[ExtResource("1_pxex2")]([SubResource("Resource_amx1x"), SubResource("Resource_sytf4")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

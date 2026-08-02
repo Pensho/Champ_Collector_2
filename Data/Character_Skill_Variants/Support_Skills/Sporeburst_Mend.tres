@@ -1,6 +1,15 @@
-[gd_resource type="Resource" script_class="Skill" format=3]
+[gd_resource type="Resource" script_class="Skill" format=3 uid="uid://coh4q6v0um2ld"]
 
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Script" uid="uid://bmqtglyyora7q" path="res://Scripts/Battle/Skill_Effects/skill_effect.gd" id="1_yxsct"]
+[ext_resource type="Script" uid="uid://cdtqrch6g28ma" path="res://Scripts/Battle/Skill_Effects/health_change_effect.gd" id="2_eg1bs"]
+
+[sub_resource type="Resource" id="Resource_jdfw5"]
+script = ExtResource("2_eg1bs")
+scaling = Dictionary[int, float]({
+6: 0.2
+})
+target = 4
 
 [resource]
 script = ExtResource("1_skill")
@@ -9,9 +18,5 @@ description = "Restores Health to all allies, scaled by Mysticism."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Opponent_Active_Skills/Sporeburst_Mend/Sporeburst_Mend.png"
 target = 4
 skill_type = 5
-heal_scaling = Dictionary[int, Dictionary]({
-4: {
-6: 0.2
-}
-})
+effects = Array[ExtResource("1_yxsct")]([SubResource("Resource_jdfw5")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

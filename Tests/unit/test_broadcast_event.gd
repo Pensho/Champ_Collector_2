@@ -96,7 +96,6 @@ func test_zone_reaching_zero_duration_fires_the_broadcast() -> void:
 	var zone_skill: Skill = Skill.new()
 	zone_skill.target = Types.Skill_Target.ZoneAll
 	zone_skill.skill_type = Types.Skill_Type.Flicker_Zone
-	zone_skill.duration = 0
 	_resolver.GetZoneResolver().PlaceZone(0, 0, zone_skill)
 
 	_resolver.GetZoneResolver().TriggerZones(-1)

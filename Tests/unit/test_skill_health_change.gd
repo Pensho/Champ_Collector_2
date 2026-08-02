@@ -33,7 +33,10 @@ func _blight_debuff() -> StatusEffects.Debuff:
 func test_self_cost_is_paid_and_reported() -> void:
 	var skill: Skill = TestFactory.make_empty_skill()
 	skill.target = Types.Skill_Target.Self
-	skill.health_change = {Types.Skill_Target.Self: -0.1}
+	var effect: HealthChangeEffect = HealthChangeEffect.new()
+	effect.target = Types.Skill_Target.Self
+	effect.fraction = -0.1
+	skill.effects.append(effect)
 	_roster[0]._skills.append(skill)
 	var max_health: int = _resolver.GetMaxHealth(0)
 	var expected_cost: int = int(round(max_health * 0.1))
@@ -50,7 +53,10 @@ func test_self_cost_is_paid_and_reported() -> void:
 func test_a_cost_floors_the_payer_at_1_health_instead_of_killing_them() -> void:
 	var skill: Skill = TestFactory.make_empty_skill()
 	skill.target = Types.Skill_Target.Self
-	skill.health_change = {Types.Skill_Target.Self: -1.0}
+	var effect: HealthChangeEffect = HealthChangeEffect.new()
+	effect.target = Types.Skill_Target.Self
+	effect.fraction = -1.0
+	skill.effects.append(effect)
 	_roster[0]._skills.append(skill)
 	_roster[0]._current_health = 5
 
@@ -61,7 +67,10 @@ func test_a_cost_floors_the_payer_at_1_health_instead_of_killing_them() -> void:
 
 func test_a_caster_already_at_1_health_pays_nothing_and_the_skill_still_resolves() -> void:
 	var skill: Skill = TestFactory.make_strike_skill()
-	skill.health_change = {Types.Skill_Target.Self: -0.1}
+	var effect: HealthChangeEffect = HealthChangeEffect.new()
+	effect.target = Types.Skill_Target.Self
+	effect.fraction = -0.1
+	skill.effects.append(effect)
 	_roster[0]._skills.append(skill)
 	_roster[0]._current_health = 1
 	var target_health_before: int = _roster[3]._current_health
@@ -77,7 +86,10 @@ func test_a_caster_already_at_1_health_pays_nothing_and_the_skill_still_resolves
 func test_all_other_allies_drain_hits_every_living_ally_and_skips_the_caster_and_the_dead() -> void:
 	var skill: Skill = TestFactory.make_empty_skill()
 	skill.target = Types.Skill_Target.Self
-	skill.health_change = {Types.Skill_Target.All_Other_Allies: -0.1}
+	var effect: HealthChangeEffect = HealthChangeEffect.new()
+	effect.target = Types.Skill_Target.All_Other_Allies
+	effect.fraction = -0.1
+	skill.effects.append(effect)
 	_roster[0]._skills.append(skill)
 	_roster[2]._current_health = 0
 	var caster_health_before: int = _roster[0]._current_health
@@ -94,7 +106,10 @@ func test_all_other_allies_drain_hits_every_living_ally_and_skips_the_caster_and
 func test_an_active_barrier_absorbs_a_cost() -> void:
 	var skill: Skill = TestFactory.make_empty_skill()
 	skill.target = Types.Skill_Target.Self
-	skill.health_change = {Types.Skill_Target.Self: -0.1}
+	var effect: HealthChangeEffect = HealthChangeEffect.new()
+	effect.target = Types.Skill_Target.Self
+	effect.fraction = -0.1
+	skill.effects.append(effect)
 	_roster[0]._skills.append(skill)
 	_roster[0]._active_buffs.append(_barrier_buff(1000.0))
 	var health_before: int = _roster[0]._current_health
@@ -111,7 +126,10 @@ func test_an_active_barrier_absorbs_a_cost() -> void:
 func test_positive_health_change_heals_as_a_max_health_fraction() -> void:
 	var skill: Skill = TestFactory.make_empty_skill()
 	skill.target = Types.Skill_Target.Self
-	skill.health_change = {Types.Skill_Target.Self: 0.2}
+	var effect: HealthChangeEffect = HealthChangeEffect.new()
+	effect.target = Types.Skill_Target.Self
+	effect.fraction = 0.2
+	skill.effects.append(effect)
 	_roster[0]._skills.append(skill)
 	_roster[0]._current_health = 1
 	var expected_heal: int = int(round(_resolver.GetMaxHealth(0) * 0.2))
@@ -124,7 +142,10 @@ func test_positive_health_change_heals_as_a_max_health_fraction() -> void:
 func test_blight_halves_a_skill_heal() -> void:
 	var skill: Skill = TestFactory.make_empty_skill()
 	skill.target = Types.Skill_Target.Self
-	skill.health_change = {Types.Skill_Target.Self: 0.2}
+	var effect: HealthChangeEffect = HealthChangeEffect.new()
+	effect.target = Types.Skill_Target.Self
+	effect.fraction = 0.2
+	skill.effects.append(effect)
 	_roster[0]._skills.append(skill)
 	_roster[0]._current_health = 1
 	_roster[0]._active_debuffs.append(_blight_debuff())
@@ -139,9 +160,14 @@ func test_blight_halves_a_skill_heal() -> void:
 func test_a_buff_that_raises_max_health_lands_before_the_heal_is_computed() -> void:
 	var skill: Skill = TestFactory.make_empty_skill()
 	skill.target = Types.Skill_Target.Self
-	skill.duration = 2
-	skill.buffs = {Types.Skill_Target.Self: [Types.Buff_Type.Vigor]}
-	skill.health_change = {Types.Skill_Target.Self: 0.15}
+	var buff_effect: ApplyBuffEffect = ApplyBuffEffect.new()
+	buff_effect.target = Types.Skill_Target.Self
+	buff_effect.buff_type = Types.Buff_Type.Vigor
+	buff_effect.duration = 2
+	var heal_effect: HealthChangeEffect = HealthChangeEffect.new()
+	heal_effect.target = Types.Skill_Target.Self
+	heal_effect.fraction = 0.15
+	skill.effects = [buff_effect, heal_effect]
 	_roster[0]._skills.append(skill)
 	_roster[0]._attributes[Types.Attribute.Health] = 100
 	_roster[0]._current_health = 1

@@ -108,9 +108,11 @@ func test_heap_on_state_is_per_resolver_not_global() -> void:
 	# resolver even after another resolver accumulated stacks.
 	var heap_on_skill: Skill = Skill.new()
 	heap_on_skill.name = "Heap On"
-	heap_on_skill.ramp_per_use = 0.2
 	heap_on_skill.target = Types.Skill_Target.Single_Enemy
-	heap_on_skill.damage_scaling = {Types.Attribute.Health: 1.0}
+	var heap_on_effect: DamageEffect = DamageEffect.new()
+	heap_on_effect.damage_scaling = {Types.Attribute.Health: 1.0}
+	heap_on_effect.bonus_per = {Types.Damage_Bonus_Source.Uses_This_Battle: 0.2}
+	heap_on_skill.effects = [heap_on_effect]
 
 	var roster_a: Dictionary[int, Character] = _make_roster()
 	roster_a[0]._skills[0] = heap_on_skill
@@ -133,11 +135,17 @@ func test_ramp_per_use_grows_damage_and_is_permanent_for_the_battle() -> void:
 	var ramping_skill: Skill = Skill.new()
 	ramping_skill.name = "Breaching Charge"
 	ramping_skill.target = Types.Skill_Target.Single_Enemy
-	ramping_skill.damage_scaling = {Types.Attribute.Attack: 1.0}
-	ramping_skill.ramp_per_use = 0.15
+	var ramping_effect: DamageEffect = DamageEffect.new()
+	ramping_effect.damage_scaling = {Types.Attribute.Attack: 1.0}
+	ramping_effect.bonus_per = {Types.Damage_Bonus_Source.Uses_This_Battle: 0.15}
+	ramping_skill.effects = [ramping_effect]
 
 	var roster: Dictionary[int, Character] = _make_roster()
 	roster[0]._skills[0] = ramping_skill
+	# A high enough max Health that seven escalating hits cannot kill the target mid-test
+	# — this test is about ramp growth, not about DamageEffect's alive-target filtering.
+	roster[3]._attributes[Types.Attribute.Health] = 1000
+	roster[3]._current_health = 1000 * GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER
 	var resolver: BattleResolver = TestFactory.make_resolver(
 			roster, TestFactory.make_full_sides(), null, BATTLE_SEED)
 
@@ -156,17 +164,25 @@ func test_ramp_per_use_is_scoped_to_the_skill_not_the_caster() -> void:
 	var ramping_skill: Skill = Skill.new()
 	ramping_skill.name = "Breaching Charge"
 	ramping_skill.target = Types.Skill_Target.Single_Enemy
-	ramping_skill.damage_scaling = {Types.Attribute.Attack: 1.0}
-	ramping_skill.ramp_per_use = 0.15
+	var ramping_effect: DamageEffect = DamageEffect.new()
+	ramping_effect.damage_scaling = {Types.Attribute.Attack: 1.0}
+	ramping_effect.bonus_per = {Types.Damage_Bonus_Source.Uses_This_Battle: 0.15}
+	ramping_skill.effects = [ramping_effect]
 
 	var plain_skill: Skill = Skill.new()
 	plain_skill.name = "Plain Strike"
 	plain_skill.target = Types.Skill_Target.Single_Enemy
-	plain_skill.damage_scaling = {Types.Attribute.Attack: 1.0}
+	var plain_effect: DamageEffect = DamageEffect.new()
+	plain_effect.damage_scaling = {Types.Attribute.Attack: 1.0}
+	plain_skill.effects = [plain_effect]
 
 	var roster: Dictionary[int, Character] = _make_roster()
 	roster[0]._skills[0] = ramping_skill
 	roster[0]._skills.append(plain_skill)
+	# A high enough max Health that a few ramping-skill hits cannot kill the target
+	# mid-test — this test is about ramp scoping, not DamageEffect's alive-target filtering.
+	roster[3]._attributes[Types.Attribute.Health] = 1000
+	roster[3]._current_health = 1000 * GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER
 	var resolver: BattleResolver = TestFactory.make_resolver(
 			roster, TestFactory.make_full_sides(), null, BATTLE_SEED)
 
@@ -182,7 +198,9 @@ func test_march_cadence_pushes_all_other_allies_turn_bar_and_not_the_caster() ->
 	var march_cadence: Skill = Skill.new()
 	march_cadence.name = "March Cadence"
 	march_cadence.target = Types.Skill_Target.All_Other_Allies
-	march_cadence.turn_effect = 0.1
+	var turn_bar_effect: TurnBarEffect = TurnBarEffect.new()
+	turn_bar_effect.fraction = 0.1
+	march_cadence.effects = [turn_bar_effect]
 
 	var roster: Dictionary[int, Character] = _make_roster()
 	roster[0]._skills[0] = march_cadence

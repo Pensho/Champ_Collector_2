@@ -20,7 +20,9 @@ func _place_zone(p_duration: int) -> void:
 	var zone_skill: Skill = Skill.new()
 	zone_skill.target = Types.Skill_Target.ZoneAll
 	zone_skill.skill_type = Types.Skill_Type.Spore_Zone
-	zone_skill.duration = p_duration
+	var zone_effect: ZoneEffect = ZoneEffect.new()
+	zone_effect.duration = p_duration
+	zone_skill.effects = [zone_effect]
 	_resolver.GetZoneResolver().PlaceZone(0, 0, zone_skill)
 
 func test_replenish_raises_duration_up_to_the_cap() -> void:

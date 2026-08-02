@@ -23,16 +23,22 @@ func _devour_blessing_skill() -> Skill:
 	var skill: Skill = TestFactory.make_empty_skill()
 	skill.name = "Devour Blessing"
 	skill.cooldown = 3
-	skill.damage_scaling = {Types.Attribute.Mysticism: 1.3}
-	skill.consume_buffs = {Types.Skill_Target.Most_Buffed_Ally: -1}
-	skill.damage_bonus_per_buff = 0.25
+	var consume_effect: ConsumeBuffsEffect = ConsumeBuffsEffect.new()
+	consume_effect.target = Types.Skill_Target.Most_Buffed_Ally
+	consume_effect.count = -1
+	var damage_effect: DamageEffect = DamageEffect.new()
+	damage_effect.damage_scaling = {Types.Attribute.Mysticism: 1.3}
+	damage_effect.bonus_per = {Types.Damage_Bonus_Source.Buffs_Consumed: 0.25}
+	skill.effects = [consume_effect, damage_effect]
 	return skill
 
 func _foreclosure_skill() -> Skill:
 	var skill: Skill = TestFactory.make_empty_skill()
 	skill.name = "Foreclosure"
-	skill.damage_scaling = {Types.Attribute.Attack: 0.9}
-	skill.damage_bonus_per_buff = 0.2
+	var effect: DamageEffect = DamageEffect.new()
+	effect.damage_scaling = {Types.Attribute.Attack: 0.9}
+	effect.bonus_per = {Types.Damage_Bonus_Source.Buffs_On_Caster: 0.2}
+	skill.effects = [effect]
 	return skill
 
 # --- Devour Blessing ---

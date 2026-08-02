@@ -1,6 +1,14 @@
-[gd_resource type="Resource" script_class="Skill" format=3]
+[gd_resource type="Resource" script_class="Skill" format=3 uid="uid://blurw27uy2cvi"]
 
+[ext_resource type="Script" uid="uid://bmqtglyyora7q" path="res://Scripts/Battle/Skill_Effects/skill_effect.gd" id="1_n0jjk"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Script" uid="uid://bay8tvxoeo0tu" path="res://Scripts/Battle/Skill_Effects/apply_buff_effect.gd" id="2_oj01r"]
+
+[sub_resource type="Resource" id="Resource_5s8gb"]
+script = ExtResource("2_oj01r")
+buff_type = 1
+duration = 2
+target = 9
 
 [resource]
 script = ExtResource("1_skill")
@@ -8,9 +16,6 @@ name = "Rally the Crew"
 description = "Grants one other ally the Empower buff for 2 turns."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Opponent_Active_Skills/Rally_the_Crew/Rally_the_Crew.png"
 target = 9
-duration = 2
 skill_type = 5
-buffs = Dictionary[int, Array]({
-9: [1]
-})
+effects = Array[ExtResource("1_n0jjk")]([SubResource("Resource_5s8gb")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

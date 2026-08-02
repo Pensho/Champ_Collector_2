@@ -79,13 +79,16 @@ static func ResolveStatusGroupTargets(
 		p_target_type: Types.Skill_Target) -> Array[int]:
 	var group_IDs: Array[int] = (p_target_IDs if p_target_type == p_skill.target
 			else ResolveIndependentGroup(p_resolver, p_caster_ID, p_target_type))
-	var characters: Dictionary[int, Character] = p_resolver._characters
+	var characters: Dictionary[int, Character] = p_resolver.GetCharacters()
 	return group_IDs.filter(func(id): return characters.has(id) and characters[id]._current_health > 0)
 
 static func ResolveIndependentGroup(
 		p_resolver: BattleResolver, p_caster_ID: int, p_target_type: Types.Skill_Target) -> Array[int]:
-	var sides: CombatSides = p_resolver._sides
-	var characters: Dictionary[int, Character] = p_resolver._characters
+	var sides: CombatSides = p_resolver.GetSides()
+	var characters: Dictionary[int, Character] = p_resolver.GetCharacters()
+	var random: RandomNumberGenerator = p_resolver.GetRandom()
+	var max_health: Callable = func(p_character: Character) -> int:
+		return p_resolver.GetMaxHealth(p_character._instance_ID)
 	var group_IDs: Array[int] = []
 	match p_target_type:
 		Types.Skill_Target.Self, Types.Skill_Target.Single_Ally:
@@ -95,18 +98,18 @@ static func ResolveIndependentGroup(
 			if(Types.Skill_Target.All_Allies != p_target_type):
 				group_IDs.erase(p_caster_ID)
 		Types.Skill_Target.Random_Ally:
-			group_IDs = Skills.SingleTargetArray(sides.AlliesOf(p_caster_ID).RandomAliveMember(characters, p_resolver._random))
+			group_IDs = Skills.SingleTargetArray(sides.AlliesOf(p_caster_ID).RandomAliveMember(characters, random))
 		Types.Skill_Target.All_Enemies:
 			group_IDs = sides.EnemiesOf(p_caster_ID).members
 		Types.Skill_Target.Random_Enemy:
-			group_IDs = Skills.SingleTargetArray(sides.EnemiesOf(p_caster_ID).RandomAliveMember(characters, p_resolver._random))
+			group_IDs = Skills.SingleTargetArray(sides.EnemiesOf(p_caster_ID).RandomAliveMember(characters, random))
 		Types.Skill_Target.Random_One:
-			group_IDs = Skills.SingleTargetArray(sides.RandomAliveMember(characters, p_resolver._random))
+			group_IDs = Skills.SingleTargetArray(sides.RandomAliveMember(characters, random))
 		Types.Skill_Target.All:
 			group_IDs = sides.AllMembers()
 		Types.Skill_Target.Most_Injured_Ally:
 			group_IDs = Skills.SingleTargetArray(
-					Skills.MostInjured(sides.AlliesOf(p_caster_ID).members, characters, p_resolver._MaxHealth))
+					Skills.MostInjured(sides.AlliesOf(p_caster_ID).members, characters, max_health))
 		Types.Skill_Target.Most_Buffed_Ally:
 			group_IDs = Skills.SingleTargetArray(Skills.MostBuffed(sides.AlliesOf(p_caster_ID).members, characters))
 		_:

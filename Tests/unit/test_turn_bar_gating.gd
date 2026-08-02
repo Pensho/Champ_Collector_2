@@ -28,7 +28,9 @@ func _push_skill(p_turn_effect: float) -> Skill:
 	var skill: Skill = Skill.new()
 	skill.name = "Push"
 	skill.target = Types.Skill_Target.Single_Enemy
-	skill.turn_effect = p_turn_effect
+	var effect: TurnBarEffect = TurnBarEffect.new()
+	effect.fraction = p_turn_effect
+	skill.effects = [effect]
 	return skill
 
 func _bumps_for(p_results: Array[CombatResult], p_target_ID: int) -> Array[CombatResult]:

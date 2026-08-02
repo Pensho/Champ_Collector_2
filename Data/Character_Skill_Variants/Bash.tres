@@ -1,13 +1,19 @@
 [gd_resource type="Resource" script_class="Skill" format=3 uid="uid://dpduy25aqyibo"]
 
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_8ctop"]
+[ext_resource type="Script" uid="uid://bmqtglyyora7q" path="res://Scripts/Battle/Skill_Effects/skill_effect.gd" id="1_p3gy2"]
+[ext_resource type="Script" uid="uid://bn0n72opjy7sb" path="res://Scripts/Battle/Skill_Effects/damage_effect.gd" id="2_c76i4"]
+
+[sub_resource type="Resource" id="Resource_ntvso"]
+script = ExtResource("2_c76i4")
+damage_scaling = Dictionary[int, float]({
+3: 0.6
+})
 
 [resource]
 script = ExtResource("1_8ctop")
 name = "Bash"
 description = "Attacks one enemy. Based on defense."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Zap/Zap_2.jpg"
-damage_scaling = Dictionary[int, float]({
-3: 0.6
-})
+effects = Array[ExtResource("1_p3gy2")]([SubResource("Resource_ntvso")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

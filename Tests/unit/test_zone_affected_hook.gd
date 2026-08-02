@@ -52,7 +52,9 @@ func _place_flicker_zone() -> void:
 	var zone_skill: Skill = Skill.new()
 	zone_skill.target = Types.Skill_Target.ZoneAll
 	zone_skill.skill_type = Types.Skill_Type.Flicker_Zone
-	zone_skill.duration = 5
+	var zone_effect: ZoneEffect = ZoneEffect.new()
+	zone_effect.duration = 5
+	zone_skill.effects = [zone_effect]
 	_resolver.GetZoneResolver().PlaceZone(0, 0, zone_skill)
 
 func _place_lava_zone() -> void:
@@ -109,7 +111,9 @@ func test_spore_zone_does_not_dispatch_when_the_status_application_is_blocked() 
 	var zone_skill: Skill = Skill.new()
 	zone_skill.target = Types.Skill_Target.ZoneAll
 	zone_skill.skill_type = Types.Skill_Type.Spore_Zone
-	zone_skill.duration = 5
+	var zone_effect: ZoneEffect = ZoneEffect.new()
+	zone_effect.duration = 5
+	zone_skill.effects = [zone_effect]
 	_resolver.GetZoneResolver().PlaceZone(0, 0, zone_skill)
 
 	_resolver.GetZoneResolver().TriggerZones(0)

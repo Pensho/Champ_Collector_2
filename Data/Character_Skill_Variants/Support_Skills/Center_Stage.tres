@@ -1,6 +1,20 @@
-[gd_resource type="Resource" script_class="Skill" format=3]
+[gd_resource type="Resource" script_class="Skill" format=3 uid="uid://cf43fi4d1tijk"]
 
+[ext_resource type="Script" uid="uid://bmqtglyyora7q" path="res://Scripts/Battle/Skill_Effects/skill_effect.gd" id="1_2p47k"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Script" uid="uid://bay8tvxoeo0tu" path="res://Scripts/Battle/Skill_Effects/apply_buff_effect.gd" id="2_sktrs"]
+
+[sub_resource type="Resource" id="Resource_mxuek"]
+script = ExtResource("2_sktrs")
+buff_type = 31
+duration = 2
+target = 13
+
+[sub_resource type="Resource" id="Resource_mdkgs"]
+script = ExtResource("2_sktrs")
+buff_type = 22
+duration = 1
+target = 13
 
 [resource]
 script = ExtResource("1_skill")
@@ -9,12 +23,6 @@ description = "The Jester gains the Spotlight buff for 2 turns and the Luck buff
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Center_Stage/Center_Stage.png"
 target = 13
 cooldown = 3
-duration = 2
 skill_type = 5
-buffs = Dictionary[int, Array]({
-13: [31, 22]
-})
-buff_duration_overrides = Dictionary[int, int]({
-22: 1
-})
+effects = Array[ExtResource("1_2p47k")]([SubResource("Resource_mxuek"), SubResource("Resource_mdkgs")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

@@ -1,18 +1,27 @@
 [gd_resource type="Resource" script_class="Skill" format=3 uid="uid://dvsuv0ji1ueq7"]
 
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_0dpkm"]
+[ext_resource type="Script" uid="uid://bmqtglyyora7q" path="res://Scripts/Battle/Skill_Effects/skill_effect.gd" id="1_xaiq1"]
+[ext_resource type="Script" uid="uid://bonwfsp34aafb" path="res://Scripts/Battle/Skill_Effects/apply_debuff_effect.gd" id="2_h2ibw"]
+[ext_resource type="Script" uid="uid://bn0n72opjy7sb" path="res://Scripts/Battle/Skill_Effects/damage_effect.gd" id="3_tarsp"]
+
+[sub_resource type="Resource" id="Resource_h6x4g"]
+script = ExtResource("2_h2ibw")
+debuff_type = 1
+duration = 2
+target = 0
+
+[sub_resource type="Resource" id="Resource_m0ay8"]
+script = ExtResource("3_tarsp")
+damage_scaling = Dictionary[int, float]({
+2: 0.8
+})
 
 [resource]
 script = ExtResource("1_0dpkm")
 name = "Disarm"
 description = "Puts the opponent into a stance that is tough to attack from. Based on Attack."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Disarm/Disarm_1.jpg"
-damage_scaling = Dictionary[int, float]({
-2: 0.8
-})
 cooldown = 2
-duration = 2
-debuffs = Dictionary[int, Array]({
-0: [1]
-})
+effects = Array[ExtResource("1_xaiq1")]([SubResource("Resource_h6x4g"), SubResource("Resource_m0ay8")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

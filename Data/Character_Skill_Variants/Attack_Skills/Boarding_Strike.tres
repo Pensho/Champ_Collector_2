@@ -1,13 +1,19 @@
 [gd_resource type="Resource" script_class="Skill" format=3 uid="uid://bh7ga2ynp8x2j"]
 
+[ext_resource type="Script" uid="uid://bmqtglyyora7q" path="res://Scripts/Battle/Skill_Effects/skill_effect.gd" id="1_8bl8o"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_ybmev"]
+[ext_resource type="Script" uid="uid://bn0n72opjy7sb" path="res://Scripts/Battle/Skill_Effects/damage_effect.gd" id="2_h3u3r"]
+
+[sub_resource type="Resource" id="Resource_aikjm"]
+script = ExtResource("2_h3u3r")
+damage_scaling = Dictionary[int, float]({
+2: 1.0
+})
 
 [resource]
 script = ExtResource("1_ybmev")
 name = "Boarding Strike"
 description = "Slashes an opponent to create a Steel Stack. Based on attack."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Boarding_Strike/Boarding_Strike_1.jpg"
-damage_scaling = Dictionary[int, float]({
-2: 1.0
-})
+effects = Array[ExtResource("1_8bl8o")]([SubResource("Resource_aikjm")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

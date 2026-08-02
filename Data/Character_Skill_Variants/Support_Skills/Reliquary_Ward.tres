@@ -1,6 +1,27 @@
 [gd_resource type="Resource" script_class="Skill" format=3 uid="uid://di33fmejkr3ua"]
 
+[ext_resource type="Script" uid="uid://bmqtglyyora7q" path="res://Scripts/Battle/Skill_Effects/skill_effect.gd" id="1_obs55"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Script" uid="uid://c665i2g4of8u6" path="res://Scripts/Battle/Skill_Effects/barrier_effect.gd" id="2_7u7o0"]
+[ext_resource type="Script" uid="uid://bay8tvxoeo0tu" path="res://Scripts/Battle/Skill_Effects/apply_buff_effect.gd" id="3_rpdl6"]
+[ext_resource type="Script" uid="uid://dargua0terro2" path="res://Scripts/Battle/Skill_Effects/alternating_effect.gd" id="4_g105n"]
+
+[sub_resource type="Resource" id="Resource_1c8w1"]
+script = ExtResource("2_7u7o0")
+source = 1
+fraction = 0.6
+duration = 2
+target = 3
+
+[sub_resource type="Resource" id="Resource_t7bkj"]
+script = ExtResource("3_rpdl6")
+buff_type = 18
+duration = 2
+target = 3
+
+[sub_resource type="Resource" id="Resource_eap4w"]
+script = ExtResource("4_g105n")
+effects = Array[ExtResource("1_obs55")]([SubResource("Resource_1c8w1"), SubResource("Resource_t7bkj")])
 
 [resource]
 script = ExtResource("1_skill")
@@ -8,13 +29,6 @@ name = "Reliquary Ward"
 description = "Grants one ally a protection, alternating with each use: odd uses grant a Barrier absorbing 60% of that ally's max Health for 2 turns; even uses grant the Deathward buff for 2 turns."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Opponent_Active_Skills/Reliquary_Ward/Reliquary_Ward.png"
 target = 3
-duration = 2
 skill_type = 5
-buffs = Dictionary[int, Array]({
-3: [21]
-})
-barrier_from_target_max_health = 0.6
-alternating_buffs = Dictionary[int, Array]({
-3: [18]
-})
+effects = Array[ExtResource("1_obs55")]([SubResource("Resource_eap4w")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

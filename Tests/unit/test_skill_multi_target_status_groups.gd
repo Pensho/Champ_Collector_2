@@ -24,11 +24,17 @@ func _has_debuff(p_character: Character, p_type: Types.Debuff_Type) -> bool:
 
 
 func test_multiple_buffs_land_on_the_same_target_group() -> void:
-	var skill: Skill = TestFactory.make_strike_skill()
+	var skill: Skill = TestFactory.make_empty_skill()
 	skill.target = Types.Skill_Target.Single_Ally
-	skill.damage_scaling = {}
-	skill.duration = 2
-	skill.buffs = {Types.Skill_Target.Single_Ally: [Types.Buff_Type.Keen_Edge, Types.Buff_Type.Lethal_Precision]}
+	var keen_edge: ApplyBuffEffect = ApplyBuffEffect.new()
+	keen_edge.target = Types.Skill_Target.Single_Ally
+	keen_edge.buff_type = Types.Buff_Type.Keen_Edge
+	keen_edge.duration = 2
+	var lethal_precision: ApplyBuffEffect = ApplyBuffEffect.new()
+	lethal_precision.target = Types.Skill_Target.Single_Ally
+	lethal_precision.buff_type = Types.Buff_Type.Lethal_Precision
+	lethal_precision.duration = 2
+	skill.effects = [keen_edge, lethal_precision]
 	_roster[0]._skills.append(skill)
 
 	_resolver.ResolveSkill(0, [1], 0)
@@ -39,8 +45,11 @@ func test_multiple_buffs_land_on_the_same_target_group() -> void:
 
 func test_a_second_target_group_key_buffs_the_caster_while_attacking_an_enemy() -> void:
 	var skill: Skill = TestFactory.make_strike_skill()
-	skill.duration = 2
-	skill.buffs = {Types.Skill_Target.Self: [Types.Buff_Type.Haste]}
+	var buff_effect: ApplyBuffEffect = ApplyBuffEffect.new()
+	buff_effect.target = Types.Skill_Target.Self
+	buff_effect.buff_type = Types.Buff_Type.Haste
+	buff_effect.duration = 2
+	skill.effects.append(buff_effect)
 	_roster[0]._skills.append(skill)
 
 	_resolver.ResolveSkill(0, [3], 0)
@@ -52,11 +61,16 @@ func test_a_second_target_group_key_buffs_the_caster_while_attacking_an_enemy() 
 
 
 func test_a_second_target_group_key_can_buff_all_allies_while_debuffing_an_enemy() -> void:
-	var skill: Skill = TestFactory.make_strike_skill()
-	skill.damage_scaling = {}
-	skill.duration = 2
-	skill.debuffs = {Types.Skill_Target.Single_Enemy: [Types.Debuff_Type.Confound]}
-	skill.buffs = {Types.Skill_Target.All_Allies: [Types.Buff_Type.Opportunist]}
+	var skill: Skill = TestFactory.make_empty_skill()
+	var debuff_effect: ApplyDebuffEffect = ApplyDebuffEffect.new()
+	debuff_effect.target = Types.Skill_Target.Single_Enemy
+	debuff_effect.debuff_type = Types.Debuff_Type.Confound
+	debuff_effect.duration = 2
+	var buff_effect: ApplyBuffEffect = ApplyBuffEffect.new()
+	buff_effect.target = Types.Skill_Target.All_Allies
+	buff_effect.buff_type = Types.Buff_Type.Opportunist
+	buff_effect.duration = 2
+	skill.effects = [debuff_effect, buff_effect]
 	_roster[0]._skills.append(skill)
 
 	_resolver.ResolveSkill(0, [3], 0)
@@ -70,9 +84,16 @@ func test_a_second_target_group_key_can_buff_all_allies_while_debuffing_an_enemy
 
 func test_a_second_target_group_key_can_debuff_all_enemies_while_buffing_the_caster() -> void:
 	var skill: Skill = TestFactory.make_strike_skill()
-	skill.duration = 2
-	skill.buffs = {Types.Skill_Target.Self: [Types.Buff_Type.Haste]}
-	skill.debuffs = {Types.Skill_Target.All_Enemies: [Types.Debuff_Type.Confound]}
+	var buff_effect: ApplyBuffEffect = ApplyBuffEffect.new()
+	buff_effect.target = Types.Skill_Target.Self
+	buff_effect.buff_type = Types.Buff_Type.Haste
+	buff_effect.duration = 2
+	var debuff_effect: ApplyDebuffEffect = ApplyDebuffEffect.new()
+	debuff_effect.target = Types.Skill_Target.All_Enemies
+	debuff_effect.debuff_type = Types.Debuff_Type.Confound
+	debuff_effect.duration = 2
+	skill.effects.append(buff_effect)
+	skill.effects.append(debuff_effect)
 	_roster[0]._skills.append(skill)
 
 	_resolver.ResolveSkill(0, [3], 0)
@@ -84,10 +105,16 @@ func test_a_second_target_group_key_can_debuff_all_enemies_while_buffing_the_cas
 
 
 func test_multiple_debuffs_land_on_the_same_target_group() -> void:
-	var skill: Skill = TestFactory.make_strike_skill()
-	skill.damage_scaling = {}
-	skill.duration = 2
-	skill.debuffs = {Types.Skill_Target.Single_Enemy: [Types.Debuff_Type.Confound, Types.Debuff_Type.Unravel]}
+	var skill: Skill = TestFactory.make_empty_skill()
+	var confound: ApplyDebuffEffect = ApplyDebuffEffect.new()
+	confound.target = Types.Skill_Target.Single_Enemy
+	confound.debuff_type = Types.Debuff_Type.Confound
+	confound.duration = 2
+	var unravel: ApplyDebuffEffect = ApplyDebuffEffect.new()
+	unravel.target = Types.Skill_Target.Single_Enemy
+	unravel.debuff_type = Types.Debuff_Type.Unravel
+	unravel.duration = 2
+	skill.effects = [confound, unravel]
 	_roster[0]._skills.append(skill)
 
 	_resolver.ResolveSkill(0, [3], 0)
@@ -97,11 +124,13 @@ func test_multiple_debuffs_land_on_the_same_target_group() -> void:
 
 
 func test_self_buff_skill_grants_the_caster_a_buff_with_no_damage() -> void:
-	var skill: Skill = TestFactory.make_strike_skill()
+	var skill: Skill = TestFactory.make_empty_skill()
 	skill.target = Types.Skill_Target.Self
-	skill.damage_scaling = {}
-	skill.duration = 4
-	skill.buffs = {Types.Skill_Target.Self: [Types.Buff_Type.Exhert]}
+	var effect: ApplyBuffEffect = ApplyBuffEffect.new()
+	effect.target = Types.Skill_Target.Self
+	effect.buff_type = Types.Buff_Type.Exhert
+	effect.duration = 4
+	skill.effects = [effect]
 	_roster[0]._skills.append(skill)
 
 	_resolver.ResolveSkill(0, [0], 0)
@@ -110,10 +139,12 @@ func test_self_buff_skill_grants_the_caster_a_buff_with_no_damage() -> void:
 
 
 func test_pure_debuff_skill_applies_no_damage() -> void:
-	var skill: Skill = TestFactory.make_strike_skill()
-	skill.damage_scaling = {}
-	skill.duration = 2
-	skill.debuffs = {Types.Skill_Target.Single_Enemy: [Types.Debuff_Type.Unravel]}
+	var skill: Skill = TestFactory.make_empty_skill()
+	var effect: ApplyDebuffEffect = ApplyDebuffEffect.new()
+	effect.target = Types.Skill_Target.Single_Enemy
+	effect.debuff_type = Types.Debuff_Type.Unravel
+	effect.duration = 2
+	skill.effects = [effect]
 	_roster[0]._skills.append(skill)
 	var health_before: int = _roster[3]._current_health
 
