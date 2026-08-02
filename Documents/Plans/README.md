@@ -49,6 +49,20 @@ Design-only plans (no code; can run at any time):
   soft ties to `Plan_Particle_Effects.md` (paired light/emitter scenes) and
   `Adventure_Background_Visuals_Checklist.md` (glow-accent props).
 
+## Findings section
+
+A plan reviewed mid-flight (`/review-implementation` against a phase, or a fresh-context
+reviewer) carries the surviving findings in a `## Findings` section, placed after the
+phases and before `Watch for`. Each finding names a severity — **Blocker** (the phase it
+names cannot be authored correctly until it is resolved), **Concern** (a real defect or
+gap; fix within the named phase), **Nit** (cosmetic or bookkeeping) — and the phase that
+resolves it.
+
+The section lists **open work only**: fixing a finding deletes it, rather than annotating
+it as fixed. A finding that is a standing property to preserve rather than a piece of work
+belongs in `Watch for` instead, and a deviation from the plan belongs in its own phase
+entry, phrased as what shipped. Plans with no open findings have no such section.
+
 When a plan completes: run `/review-implementation` against the plan, then update
 the documentation sections it names, strike the matching entries from
 `Technical_Design_Document.md` section 15, and **delete** the plan file. A completed

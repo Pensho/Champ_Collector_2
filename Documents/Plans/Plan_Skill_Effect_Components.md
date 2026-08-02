@@ -213,7 +213,7 @@ recording that batch 4's fields were replaced by effect components and that zone
 placement now runs through `ZoneEffect` while the `ZoneResolver` lifecycle rework remains
 batch 5's job.
 
-### Phase 1 — effect classes and pipeline
+### Phase 1 — effect classes and pipeline (complete)
 
 Add `Scripts/Battle/Skill_Effects/` (base, context, eleven effect subclasses), the new
 enums, the `CharacterTrait` getter, and the new public `BattleResolver` methods. Add
@@ -222,6 +222,14 @@ flat-field path, so nothing breaks yet. Move `_ResolveStatusGroupTargets` and
 `_ResolveIndependentStatusGroup` from `StatusEffectResolver` to `SkillCastContext`
 (`HealthTransferResolver` and `ZoneResolver` follow). New unit tests per effect class,
 built with new `Tests/unit/helpers/test_factory.gd` helpers.
+
+Delivered with three naming deviations, all deliberate — phase 4's documentation must use
+the real names: the catalog's single `ApplyStatusEffect` shipped as `ApplyBuffEffect` plus
+`ApplyDebuffEffect` (buff and debuff application genuinely diverge, and the split still
+yields eleven subclasses); `ApplyHealthCost` / `ApplyHeal` shipped as `ResolveHealthCost` /
+`ResolveHealthGain`; and no public `Emit` was needed, because those two methods emit their
+own `CombatResult`. `ZoneEffect` ships inert, since `ZoneResolver.PlaceZone` is rewired in
+phase 2.
 
 ### Phase 2 — data migration and field removal
 
@@ -236,11 +244,15 @@ the 21 test files that construct skills from flat fields (`test_factory.gd`'s
 `make_strike_skill` / `make_lava_zone_skill` first, which covers most of them). Add a test
 asserting every shipped skill `.tres` loads and carries at least one effect.
 
+Also clears the phase 2 findings below: the `context.health_paid` seed and the
+`SkillCastContext` accessor bypass.
+
 ### Phase 3 — behaviour fixes and wording
 
 Remove `StandingRecordTrait.GetOutgoingDamageBonus` so the Infraction rate applies only
 through Citation's `DamageEffect`; re-express Signed Writ's escalation as a conditional
-effect pair. Lowercase "Deals damage" in the ten batch-4 descriptions, and strip "Physical Damage"
+effect pair — which is blocked by the `GetConditionCount` finding below until the condition
+contract splits from the damage-bonus one. Lowercase "Deals damage" in the ten batch-4 descriptions, and strip "Physical Damage"
 and "Magical Damage" from `Concept_Document.md` (38 occurrences) and
 `Encounter_Design_Document.md` (13) — the resolver has no damage-type split, so the words
 describe a mechanic that does not exist.
@@ -253,6 +265,50 @@ trait-getter passage in section 9. Remove the "skill implementation batch 4" phr
 the Technical Design Document — plan metadata does not belong in a document that outlives
 the plan.
 
+## Findings
+
+Review findings raised against the implemented phases, each tagged with the phase that
+resolves it. **Blocker** — the named phase cannot be authored correctly until it is
+resolved. **Concern** — a real defect or gap; fix within the named phase. **Nit** —
+cosmetic or bookkeeping. A finding that is a standing property to preserve rather than a
+piece of work belongs in "Watch for" instead. A resolved finding is deleted from this
+section, not annotated as fixed — the section lists open work only, and the fix itself is
+in the code.
+
+### Blocker — resolve before phase 3
+
+**`GetConditionCount` overloads two contracts.** `StandingRecordTrait.GetConditionCount`
+returns `infractions × _rate_per_infraction`, and `SkillCastContext.ConditionMet` compares
+that already-multiplied value against `condition_threshold`. That is right for a damage
+bonus and wrong for a condition: re-expressing Signed Writ's `escalated_at_infractions = 6`
+would need a threshold of `6 × rate`, and the rate is rarity-dependent (0.025 to 0.04), so
+one skill would need four authored thresholds — each of them the trait's own rate written
+into skill data, which is what Concept 3.1.3 forbids and what this pass exists to prevent.
+`Trait_Condition` is not a substitute: it is binary, and `StandingRecordTrait` returns 0.0
+for it. The fix is to split the contract — either a raw-count `Damage_Bonus_Source`, or
+`ConditionMet` querying a separate un-multiplied hook. Unreachable today, since no shipped
+skill authors a condition, but the enum is cheapest to change before phase 2 migrates data.
+
+### Concern — fix in phase 2
+
+**Delete the `context.health_paid` seed.** `ResolveSkill` seeds the accumulator from the
+flat-field path so the two paths agree while both run. Once `HealthChangeEffect` writes it,
+the accumulator has two writers and a `BarrierEffect` reading it double-counts silently.
+This is an explicit deletion step in phase 2, not something to notice afterwards.
+
+### Nit
+
+**`SkillCastContext` bypasses accessors that exist (phase 2).** The moved static methods
+reach into `_characters`, `_sides`, `_random` and `_MaxHealth`, while the effect classes in
+the same folder correctly use `GetCharacters()`, `GetRandom()` and `GetMaxHealth()`.
+Inherited verbatim from `StatusEffectResolver`, so it is not new, but this is the file to
+converge now that the public surface exists. Not a pure substitution: `DamageEffect` and
+`ApplyDebuffEffect` reach `._trait` and `._active_buffs`, which have no accessor — either
+add two, or decide deliberately to leave them.
+
+**Plan bookkeeping (phase 4).** Phase 1's naming deviations are recorded in its own entry
+above; the documentation rewrite must use the shipped names, not the catalog's.
+
 ## Watch for
 
 - Every phase must be green with **no expected-value changes**; the Standing Record fix in
@@ -262,13 +318,30 @@ the plan.
   additive term is the one change in this pass that would move damage numbers.
 - Effect order is now data. A mis-ordered `.tres` is a silent behaviour bug rather than a
   compile error — hence the canonical order and the test that asserts it.
-- `gdlintrc`'s `max-public-methods: 35` was raised by batch 4; revert it if the resolver
-  shrinks back below the old limit.
+- Three small, deliberate behaviour deltas between the old per-target loop and the new
+  effect loop, introduced in phase 1 and not yet exercised by any migrated skill: (1)
+  `SkillCastContext.TargetsFor` filters a `DamageEffect`'s targets to those still alive,
+  where the old loop would resolve damage against any target still present in
+  `_characters` regardless of Health; (2) effect order means every `DamageEffect` in a
+  skill's `effects` array resolves before any later `TurnBarEffect`, where the old code
+  interleaved damage and the turn-bar bump per target; (3) `HealthChangeEffect` guards on
+  a positive amount, where `ResolveHealthGains` emits a zero-amount `Heal` result
+  unconditionally. All three read as improvements, but phase 2's migration should verify
+  them deliberately against the skills that could expose them (multi-target skills that
+  can kill some but not all targets; skills with both damage and a turn-bar bump; skills
+  whose heal can compute to zero) rather than discover a behaviour change after the fact.
+- `gdlintrc`'s `max-public-methods` was raised by batch 4 (`BattleResolver`) and again in
+  phase 1 (`CharacterTrait`, 35 → 36, for `GetConditionCount`); revert either bump if the
+  class it was raised for shrinks back below the old limit.
 - `test_character_preset_skill_invariant.gd` (skill slot 0 has zero cooldown) must still
   hold for every migrated preset.
 - Skills are deep-copied per character instance; per-battle state (use counts,
   alternation) stays on the resolver, never on the effect resource — the existing
   `_skill_use_counts` precedent.
+- `AlternatingEffect` holds one effect per alternate, not the array of effect *sets* the
+  design sketched. Reliquary Ward — the only skill using `alternating_buffs`, one buff per
+  alternate — migrates fine, so this is not worth changing now. An alternate needing two
+  effects has no expression short of a composite effect class; add one then, not before.
 
 ## Documentation
 
