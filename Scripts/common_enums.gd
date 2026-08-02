@@ -206,23 +206,26 @@ enum Combat_Event
 	Resource_Depleted,
 }
 
-## Source a DamageEffect's bonus_per fraction can scale against. Uses_This_Battle scales
-## the pre-mitigation damage aggregate (a ramp); every other source adds to the final
-## damage bonus alongside the battle-persistent damage-dealt bonus.
-enum Damage_Bonus_Source
+## Source a DamageEffect's bonus_per fraction, or a SkillEffect's condition, scales
+## against. Trait_Counter_On_Target is rate-multiplied; Trait_Counter_Raw_On_Target is
+## the same counter un-multiplied.
+enum Trait_Count_Source
 {
 	Buffs_On_Caster,
 	Buffs_Consumed,
 	Uses_This_Battle,
 	Trait_Condition,
 	Trait_Counter_On_Target,
+	Trait_Counter_Raw_On_Target,
 }
 
+## Always reads as the raw (un-multiplied) Trait_Count_Source, even where the member
+## name matches a rate-multiplied one, so a threshold is always a plain count.
 enum Skill_Condition
 {
 	None,
 	Trait_Condition,
-	Trait_Counter_On_Target,
+	Trait_Counter_Raw_On_Target,
 }
 
 enum Condition_Test

@@ -28,7 +28,7 @@ func _devour_blessing_skill() -> Skill:
 	consume_effect.count = -1
 	var damage_effect: DamageEffect = DamageEffect.new()
 	damage_effect.damage_scaling = {Types.Attribute.Mysticism: 1.3}
-	damage_effect.bonus_per = {Types.Damage_Bonus_Source.Buffs_Consumed: 0.25}
+	damage_effect.bonus_per = {Types.Trait_Count_Source.Buffs_Consumed: 0.25}
 	skill.effects = [consume_effect, damage_effect]
 	return skill
 
@@ -37,7 +37,7 @@ func _foreclosure_skill() -> Skill:
 	skill.name = "Foreclosure"
 	var effect: DamageEffect = DamageEffect.new()
 	effect.damage_scaling = {Types.Attribute.Attack: 0.9}
-	effect.bonus_per = {Types.Damage_Bonus_Source.Buffs_On_Caster: 0.2}
+	effect.bonus_per = {Types.Trait_Count_Source.Buffs_On_Caster: 0.2}
 	skill.effects = [effect]
 	return skill
 

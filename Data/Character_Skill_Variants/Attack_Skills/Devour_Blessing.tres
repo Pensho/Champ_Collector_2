@@ -21,7 +21,7 @@ bonus_per = Dictionary[int, float]({
 [resource]
 script = ExtResource("1_skill")
 name = "Devour Blessing"
-description = "Consumes all buffs on the ally holding the most, then deals Damage to a single enemy, scaling with Mysticism, +25% damage per buff consumed."
+description = "Consumes all buffs on the ally holding the most, then deals damage to a single enemy, scaling with Mysticism, +25% damage per buff consumed."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Devour_Blessing/Devour_Blessing.png"
 cooldown = 3
 effects = Array[ExtResource("1_tkyhh")]([SubResource("Resource_8nq7j"), SubResource("Resource_i32g4")])

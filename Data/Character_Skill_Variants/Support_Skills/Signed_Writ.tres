@@ -15,7 +15,7 @@ script = ExtResource("2_86nd0")
 amount = 1
 target = 0
 condition = 2
-condition_threshold = 0.15
+condition_threshold = 6.0
 
 [sub_resource type="Resource" id="Resource_env50"]
 script = ExtResource("3_omomm")
@@ -24,7 +24,7 @@ duration = 1
 target = 0
 condition = 2
 condition_test = 1
-condition_threshold = 0.15
+condition_threshold = 6.0
 
 [sub_resource type="Resource" id="Resource_ppdl1"]
 script = ExtResource("3_omomm")
@@ -32,7 +32,7 @@ debuff_type = 22
 duration = 2
 target = 0
 condition = 2
-condition_threshold = 0.15
+condition_threshold = 6.0
 
 [resource]
 script = ExtResource("1_skill")

@@ -59,15 +59,15 @@ Each character is defined by a set of core attributes:
     * Speed
         * Influences turn order in combat.
     * Attack
-        * Determines the damage output of physical attacks.
+        * A common scaling attribute for damaging skills (see 3.2.1 "1. Damage Calculation" — every skill defines its own attribute weighting).
     * Defense
-        * Reduces incoming physical damage.
+        * Reduces incoming damage from every skill, regardless of which attributes it scales with.
     * Accuracy
         * Affects the likelihood of successfully landing debuffs or status effects on enemies.
     * Resistance
         * Reduces the chance of receiving debuffs or status effects.
     * Mysticism
-        * Determines the damage output of magical attacks.
+        * A common scaling attribute for damaging skills, alongside Attack (see 3.2.1 "1. Damage Calculation").
     * Knowledge
         * Increases the effect of ally turn bar zones placed by this character. Also reduces critical damage taken.
     * Critical chance
@@ -134,7 +134,7 @@ Current roles, their identity and purpose exist as follows:
 - Sorcerer
     - A damage dealer that harnesses the power of magic to deal Area of Effect damage and control the battlefield. Wields the unstable, shunned magic left behind by the God of Magic, and excels at drawing power from reagents scavenged from that era's ruins. Signature zone: Unstable Rift (see section 3.2.4.1). Primary attributes: Mysticism, Knowledge.
     - Purpose: Damage, Debuffer, Control
-    - Passive: Arcane Instability (implemented) - Using any skill grants one Instability stack (+x% Mysticism per stack, maximum 5). When the Sorcerer consumes a reagent, they gain two Instability stacks and the reagent's effect is amplified by y%. While at maximum stacks, the Sorcerer's next skill also releases a Surge: magical damage to all characters, allies and the Sorcerer included, scaling 1.5x with the Sorcerer's Mysticism (mitigated by each target's Defence as normal, never a critical hit) - then all stacks reset. Stacks do not persist between combats.
+    - Passive: Arcane Instability (implemented) - Using any skill grants one Instability stack (+x% Mysticism per stack, maximum 5). When the Sorcerer consumes a reagent, they gain two Instability stacks and the reagent's effect is amplified by y%. While at maximum stacks, the Sorcerer's next skill also releases a Surge: damage to all characters, allies and the Sorcerer included, scaling 1.5x with the Sorcerer's Mysticism (mitigated by each target's Defence as normal, never a critical hit) - then all stacks reset. Stacks do not persist between combats.
         - Per-stack Mysticism: 4% Uncommon, 6% Rare, 8% Epic, 10% Legendary
         - Reagent amplification: 20% Uncommon, 30% Rare, 40% Epic, 50% Legendary
 - Scholar
@@ -164,7 +164,7 @@ Current roles, their identity and purpose exist as follows:
     - Purpose: Damage, Sustain
     - Passive: "Double the fun!" - A base 5% chance to completely avoid the damage of an incoming attack (debuffs from the attack still land). Each hit that lands instead of being avoided increases the chance by a rarity-dependent amount, up to 3 stacks: Uncommon +3%, Rare +4%, Epic +5%, Legendary +6% per stack. Avoiding damage resets the chance to the 5% base. Increases the chances of being targeted.
 - Cultist
-    - Consumes ally buffs or health to empower their own skills, dealing magical damage or applying debuffs. Primary attributes: Mysticism, Knowledge.
+    - Consumes ally buffs or health to empower their own skills, dealing damage or applying debuffs. Primary attributes: Mysticism, Knowledge.
     - Purpose: Debuffer, Damage
     - Passive: Chosen Vessel - At the start of combat the Cultist marks a random ally (the Cultist excluded) as their Vessel. Whenever the Cultist uses a non-basic skill, the Vessel loses 5% of their max Health and the skill gains a rarity-dependent power bonus. The drain can kill the Vessel. When the Vessel dies (from any source), the Cultist gains the Attune buff for 3 turns (see section 3.2.3.2) and a new random ally is marked as the Vessel if any is alive. If all allies are dead then nothing happens.
         - Power bonus: 15% Uncommon, 20% Rare, 25% Epic, 30% Legendary
@@ -249,8 +249,7 @@ Damage = Mitigation * Caster_Scaled * Critical_Multiplier * Random_Multiplier
 
 - Every skill defines its own attribute weighting rather than a fixed Attack/Mysticism split,
   so a skill can scale off any mix of attributes (e.g. a Speed-scaling strike, or a hybrid of
-  Attack and Knowledge). This is how Physical and Magical damage share one formula: the
-  "school" of a skill is just which attributes its weighting favors.
+  Attack and Knowledge) — there is no fixed damage-type split, only per-skill weighting.
 - `Defense_Ignore_Factor` is a per-skill dial (0.0-1.0) for bypassing Defence — an armor-piercing
   skill sets it below 1.0, and 0.0 ignores Defence entirely.
 - `Minimum_Damage_Percent` is a mitigation floor: no matter how far Defence outstrips the
@@ -346,7 +345,7 @@ Debuffs:
 * Exposed Facet: Attacks against the character gain +15 percentage points Critical Chance.
 * Cracked Facet: Critical hits against the character deal +25% Critical Damage.
 * Bleed: At the start of the character's turn, they take damage equal to 40% of the caster's Attack, snapshotted at the moment of application.
-* Plague: Deals magical damage each turn equal to 30% of the caster's Mysticism, snapshotted at the moment of application; when it expires, it spreads to a random other enemy with fresh duration.
+* Plague: Deals damage each turn equal to 30% of the caster's Mysticism, snapshotted at the moment of application; when it expires, it spreads to a random other enemy with fresh duration.
 * Blight: Healing received is reduced by 50%.
 * Severance: The character cannot gain new buffs.
 * Hexed: Roll calculations twice and take the worse result.
@@ -380,7 +379,7 @@ Buffs:
 * Opportunist: The character's attacks deal +10% damage per debuff on the target.
 * Catalyst: The next reagent the character consumes has +50% effect. Stacks additively with other reagent potency modifiers; has no effect on binary reagents (see section 3.3.3). (Dormant: the status exists but has no application site yet)
 * Wanderlust: At the start of each of the character's turns, gain +20% to one random primary stat until their next turn.
-* Overflow: When this buff expires, it deals magical damage to all enemies, scaling with the holder's Mysticism.
+* Overflow: When this buff expires, it deals damage to all enemies, scaling with the holder's Mysticism.
 * Vigor: Increases max Health by 30%.
 * Lethal Precision: Increases Critical Damage by 50 percentage points.
 * Spotlight: The character is much more likely to be targeted by enemies (1.5x targeting weight) and takes 10% less damage.
@@ -432,7 +431,7 @@ Skills allocated to a specific Role, listed in the same order as their entries i
 ###### Emissary
 * Citation
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals Magical Damage to a single target enemy, scaling with Knowledge, increased by the Standing Record rate per Infraction on the target.
+    * Effect: Deals damage to a single target enemy, scaling with Knowledge, increased by the Standing Record rate per Infraction on the target.
 * Signed Writ
     * Type: Debuff
     * Cooldown: 3 turns
@@ -445,11 +444,11 @@ Skills allocated to a specific Role, listed in the same order as their entries i
 ###### Thief
 * Stab
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals Physical Damage to a single target enemy, scaling with Attack.
+    * Effect: Deals damage to a single target enemy, scaling with Attack.
 * Pierce Weakness
     * Type: Damage
     * Cooldown: 2 turns
-    * Effect: Deals Physical Damage to a single enemy, ignoring 60% of the target's Defense, scaling with Attack.
+    * Effect: Deals damage to a single enemy, ignoring 60% of the target's Defense, scaling with Attack.
 * Case the Target
     * Type: Buff
     * Cooldown: 3 turns
@@ -458,20 +457,20 @@ Skills allocated to a specific Role, listed in the same order as their entries i
 ###### Lancer
 * Lance Thrust
     * Type: Damage (basic skill, no cooldown; counts as an offensive skill)
-    * Effect: Deals Physical Damage to a single target enemy, scaling with Attack.
+    * Effect: Deals damage to a single target enemy, scaling with Attack.
 * Rending Charge
     * Type: Damage, Debuff (counts as an offensive skill)
     * Cooldown: 3 turns
-    * Effect: Deals heavy Physical Damage to a single enemy, scaling with Attack, and applies the Bleed debuff for 2 turns (see section 3.2.3.2).
+    * Effect: Deals heavy damage to a single enemy, scaling with Attack, and applies the Bleed debuff for 2 turns (see section 3.2.3.2).
 * Disarm
     * Type: Damage, Debuff (counts as a defensive skill)
     * Cooldown: 3 turns
-    * Effect: Deals Physical Damage to a single enemy and applies the Enfeeble debuff for 2 turns (see section 3.2.3.2).
+    * Effect: Deals damage to a single enemy and applies the Enfeeble debuff for 2 turns (see section 3.2.3.2).
 
 ###### Alchemist
 * Acrid Splash
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals Magical Damage to a single target enemy, scaling with Knowledge.
+    * Effect: Deals damage to a single target enemy, scaling with Knowledge.
 * Catalyst Cloud
     * Type: Turn Bar (Zone)
     * Cooldown: 3 turns
@@ -484,24 +483,24 @@ Skills allocated to a specific Role, listed in the same order as their entries i
 ###### Sorcerer
 * Arc Lash
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals Magical Damage to a single target enemy, scaling with Mysticism.
+    * Effect: Deals damage to a single target enemy, scaling with Mysticism.
 * Unstable Rift
     * Type: Turn Bar (Zone)
     * Cooldown: 3 turns
-    * Effect: All affected characters, allies and enemies alike, gain the Warped debuff for 2 turns (see section 3.2.3.2) and take Magical Damage scaling with the Sorcerer's Mysticism — enemies take 30% of a standard hit, allies 15%. Holds 5 charges.
+    * Effect: All affected characters, allies and enemies alike, gain the Warped debuff for 2 turns (see section 3.2.3.2) and take damage scaling with the Sorcerer's Mysticism — enemies take 30% of a standard hit, allies 15%. Holds 5 charges.
 * Cataclysmic Surge
     * Type: Damage (AoE)
     * Cooldown: 4 turns
-    * Effect: Deals Magical Damage to all enemies, scaling with Mysticism. Targets currently affected by the Warped debuff take 30% increased damage.
+    * Effect: Deals damage to all enemies, scaling with Mysticism. Targets currently affected by the Warped debuff take 30% increased damage.
 
 ###### Scholar
 * Sharp Rebuttal
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals Magical Damage to a single target enemy, scaling with Knowledge.
+    * Effect: Deals damage to a single target enemy, scaling with Knowledge.
 * Refutation
     * Type: Turn Bar
     * Cooldown: 3 turns
-    * Effect: Removes one zone of the Scholar's choice from the turn bar. If the zone was enemy-placed, the enemy who placed it takes Magical Damage scaling with Knowledge — 10% of a standard hit per charge remaining on the zone. If it was ally-placed, the placing ally's zone skill has its cooldown reduced by 2.
+    * Effect: Removes one zone of the Scholar's choice from the turn bar. If the zone was enemy-placed, the enemy who placed it takes damage scaling with Knowledge — 10% of a standard hit per charge remaining on the zone. If it was ally-placed, the placing ally's zone skill has its cooldown reduced by 2.
 * Expose Fallacy
     * Type: Debuff, Buff
     * Cooldown: 3 turns
@@ -510,7 +509,7 @@ Skills allocated to a specific Role, listed in the same order as their entries i
 ###### Diviner
 * Fateful Glimpse
     * Type: Damage, Heal (basic skill, no cooldown)
-    * Effect: Deals minor Magical Damage to a single target enemy and restores a small amount of Health to the most injured ally (the Diviner included), both scaling with Mysticism.
+    * Effect: Deals minor damage to a single target enemy and restores a small amount of Health to the most injured ally (the Diviner included), both scaling with Mysticism.
 * Premonition
     * Type: Buff
     * Cooldown: 3 turns
@@ -518,12 +517,12 @@ Skills allocated to a specific Role, listed in the same order as their entries i
 * Ill Omen
     * Type: Damage, Debuff
     * Cooldown: 3 turns
-    * Effect: Deals Magical Damage to a single enemy, scaling with Mysticism, and applies the Hexed debuff for 2 turns (see section 3.2.3.2).
+    * Effect: Deals damage to a single enemy, scaling with Mysticism, and applies the Hexed debuff for 2 turns (see section 3.2.3.2).
 
 ###### Appraiser
 * Sizing Cut
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals Physical Damage to a single target enemy, scaling with Knowledge.
+    * Effect: Deals damage to a single target enemy, scaling with Knowledge.
 * Flaw Analysis
     * Type: Debuff
     * Cooldown: 2 turns
@@ -536,7 +535,7 @@ Skills allocated to a specific Role, listed in the same order as their entries i
 ###### Tactician
 * Signal Strike
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals Physical Damage to a single target enemy, scaling with Knowledge.
+    * Effect: Deals damage to a single target enemy, scaling with Knowledge.
 * Fatal Flaw
     * Type: Buff
     * Cooldown: 2 turns
@@ -549,7 +548,7 @@ Skills allocated to a specific Role, listed in the same order as their entries i
 ###### Symbiote
 * Spore Lash
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals Magical Damage to a single target enemy, scaling with Resistance.
+    * Effect: Deals damage to a single target enemy, scaling with Resistance.
 * Symbiotic Overdrive
     * Type: Buff
     * Cooldown: 5 turns
@@ -562,11 +561,11 @@ Skills allocated to a specific Role, listed in the same order as their entries i
 ###### Jester
 * Pratfall Sting
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals Physical Damage to a single target enemy, scaling with Accuracy. Deals +30% damage if the Jester avoided an attack since their last turn.
+    * Effect: Deals damage to a single target enemy, scaling with Accuracy. Deals +30% damage if the Jester avoided an attack since their last turn.
 * Burning Bolas
     * Type: Damage, Debuff
     * Cooldown: 2 turns
-    * Effect: Throws flaming bolas at a single enemy, dealing Physical Damage scaling with Attack, and applies the Burning debuff for 2 turns (see section 3.2.3.2).
+    * Effect: Throws flaming bolas at a single enemy, dealing damage scaling with Attack, and applies the Burning debuff for 2 turns (see section 3.2.3.2).
 * Center Stage
     * Type: Buff
     * Cooldown: 3 turns
@@ -575,20 +574,20 @@ Skills allocated to a specific Role, listed in the same order as their entries i
 ###### Cultist
 * Profane Bolt
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals Magical Damage to a single target enemy, scaling with Mysticism.
+    * Effect: Deals damage to a single target enemy, scaling with Mysticism.
 * Devour Blessing
     * Type: Damage
     * Cooldown: 3 turns
-    * Effect: Consumes all buffs on one ally; deals heavy Magical Damage to a single enemy, scaling with Mysticism, +25% damage per buff consumed.
+    * Effect: Consumes all buffs on one ally; deals heavy damage to a single enemy, scaling with Mysticism, +25% damage per buff consumed.
 * Rite of Severance
     * Type: Damage, Debuff
     * Cooldown: 4 turns
-    * Effect: Deals Magical Damage to a single enemy and applies the Severance debuff for 2 turns (see section 3.2.3.2).
+    * Effect: Deals damage to a single enemy and applies the Severance debuff for 2 turns (see section 3.2.3.2).
 
 ###### Bar Brawler
 * Heap on
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals Physical Damage to one enemy, scaling with Health, and grows stronger with every use.
+    * Effect: Deals damage to one enemy, scaling with Health, and grows stronger with every use.
 * Liquid Courage
     * Type: Buff, Heal
     * Cooldown: 3 turns
@@ -596,12 +595,12 @@ Skills allocated to a specific Role, listed in the same order as their entries i
 * Headbutt
     * Type: Damage, Debuff (Turn Bar)
     * Cooldown: 3 turns
-    * Effect: Deals Physical Damage to a single enemy, scaling with Health, and applies the Dead Weight debuff for 2 turns (see section 3.2.3.1).
+    * Effect: Deals damage to a single enemy, scaling with Health, and applies the Dead Weight debuff for 2 turns (see section 3.2.3.1).
 
 ###### Bloodmage
 * Blood Bolt
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals Magical Damage to a single target enemy, scaling with Mysticism. Costs 3% of the Bloodmage's max Health to cast.
+    * Effect: Deals damage to a single target enemy, scaling with Mysticism. Costs 3% of the Bloodmage's max Health to cast.
 * Transfusion
     * Type: Buff
     * Cooldown: 3 turns
@@ -609,16 +608,16 @@ Skills allocated to a specific Role, listed in the same order as their entries i
 * Tithe of Vitality
     * Type: Damage, Debuff
     * Cooldown: 4 turns
-    * Effect: Drains 10% of max Health from each living ally (the Bloodmage excluded). Deals moderate Magical Damage to a single enemy, scaling with Mysticism, and applies the Mana Burn debuff for 2 turns (see section 3.2.3.2).
+    * Effect: Drains 10% of max Health from each living ally (the Bloodmage excluded). Deals moderate damage to a single enemy, scaling with Mysticism, and applies the Mana Burn debuff for 2 turns (see section 3.2.3.2).
 
 ###### Herald of the loom
 * Thread Snap
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals Magical Damage to a single target enemy, scaling with Mysticism.
+    * Effect: Deals damage to a single target enemy, scaling with Mysticism.
 * Thread Lash
     * Type: Damage, Debuff
     * Cooldown: 3 turns
-    * Effect: Deals Magical Damage to a single enemy and applies the Suppress debuff for 2 turns (see section 3.2.3.2).
+    * Effect: Deals damage to a single enemy and applies the Suppress debuff for 2 turns (see section 3.2.3.2).
 * Woven Blessing
     * Type: Buff
     * Cooldown: 3 turns
@@ -627,7 +626,7 @@ Skills allocated to a specific Role, listed in the same order as their entries i
 ###### Chronophage
 * Zap
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals Magical Damage to a single target enemy, scaling with Speed. (Also available as a Universal skill, see section 3.2.4.3.)
+    * Effect: Deals damage to a single target enemy, scaling with Speed. (Also available as a Universal skill, see section 3.2.4.3.)
 * Flicker Zone
     * Type: Turn Bar (Zone)
     * Cooldown: 3 turns
@@ -640,7 +639,7 @@ Skills allocated to a specific Role, listed in the same order as their entries i
 ###### Architect
 * Cornerstone
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals Physical Damage to a single target enemy, scaling with Knowledge, and generates one Calibration charge.
+    * Effect: Deals damage to a single target enemy, scaling with Knowledge, and generates one Calibration charge.
 * Raise the Frame
     * Type: Turn Bar (Zone)
     * Cooldown: 2 turns
@@ -653,10 +652,10 @@ Skills allocated to a specific Role, listed in the same order as their entries i
 ###### Tidal Corsair
 * Boarding Strike
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals Physical Damage to a single target enemy, scaling with Attack, and grants the Tidal Corsair one Steel stack.
+    * Effect: Deals damage to a single target enemy, scaling with Attack, and grants the Tidal Corsair one Steel stack.
 * Saltwater Shot
     * Type: Damage (no cooldown)
-    * Effect: Deals Physical Damage to a single target enemy, scaling with Attack, and grants the Tidal Corsair one Sea stack.
+    * Effect: Deals damage to a single target enemy, scaling with Attack, and grants the Tidal Corsair one Sea stack.
 * Corsair's Reckoning
     * Type: Damage
     * Cooldown: 3 turns
@@ -665,7 +664,7 @@ Skills allocated to a specific Role, listed in the same order as their entries i
 ###### Plague Doctor
 * Septic Lance
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals Magical Damage to a single target enemy, scaling with Mysticism.
+    * Effect: Deals damage to a single target enemy, scaling with Mysticism.
 * Miasma
     * Type: Turn Bar (Zone)
     * Cooldown: 3 turns
@@ -673,12 +672,12 @@ Skills allocated to a specific Role, listed in the same order as their entries i
 * Quarantine Breach
     * Type: Damage, Debuff
     * Cooldown: 4 turns
-    * Effect: Deals Magical Damage to a single enemy and applies the Blight debuff for 2 turns (see section 3.2.3.2).
+    * Effect: Deals damage to a single enemy and applies the Blight debuff for 2 turns (see section 3.2.3.2).
 
 ###### Warlord
 * Shield Slam
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals Physical Damage to a single target enemy, scaling with Defense.
+    * Effect: Deals damage to a single target enemy, scaling with Defense.
 * Hold the Line
     * Type: Buff
     * Cooldown: 3 turns
@@ -698,13 +697,13 @@ Not yet tied to a specific Role, grouped by mechanical type for lookup.
 **Universal**
 * Pagan Curse
     * Type: Debuff
-    * Effect: A ticking debuff. After 3 turns, the character is hit with a massive burst of Magical Damage unless they use a specific Chant to cleanse it.
+    * Effect: A ticking debuff. After 3 turns, the character is hit with a massive burst of damage unless they use a specific Chant to cleanse it.
 * Zap
     * Type: Damage
-    * Effect: Deals Magical Damage to a single target enemy, scaling with Speed.
+    * Effect: Deals damage to a single target enemy, scaling with Speed.
 * Stab
     * Type: Damage
-    * Effect: Deals Physical Damage to a single target enemy, scaling with Attack.
+    * Effect: Deals damage to a single target enemy, scaling with Attack.
 
 ##### 3.2.4.4 Opponent Skills
 Skills authored for enemies are cataloged in `Encounter_Design_Document.md` section 1 (Break Guard moved there). Any status effect they reference must exist in the 3.2.3 catalog.

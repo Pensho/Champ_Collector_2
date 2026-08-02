@@ -20,7 +20,7 @@ damage_scaling = Dictionary[int, float]({
 [resource]
 script = ExtResource("1_skill")
 name = "Rite of Severance"
-description = "Deals Damage to a single enemy, scaling with Mysticism, and applies the Severance debuff for 2 turns."
+description = "Deals damage to a single enemy, scaling with Mysticism, and applies the Severance debuff for 2 turns."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Rite_of_Severance/Rite_of_Severance.png"
 cooldown = 4
 effects = Array[ExtResource("1_6drmy")]([SubResource("Resource_j2cq0"), SubResource("Resource_5eoiq")])

@@ -9,11 +9,14 @@ script = ExtResource("2_v04um")
 damage_scaling = Dictionary[int, float]({
 7: 0.6
 })
+bonus_per = Dictionary[int, float]({
+4: 1.0
+})
 
 [resource]
 script = ExtResource("1_skill")
 name = "Citation"
-description = "Deals Damage to a single enemy, scaling with Knowledge, increased by the Standing Record rate per Infraction on the target."
+description = "Deals damage to a single enemy, scaling with Knowledge, increased by the Standing Record rate per Infraction on the target."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Citation/Citation.png"
 effects = Array[ExtResource("1_3nx6q")]([SubResource("Resource_b3dla")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

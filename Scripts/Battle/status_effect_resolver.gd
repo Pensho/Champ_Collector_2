@@ -442,7 +442,7 @@ func _TriggerManaBurn(
 			return
 
 
-## Deals Mysticism-scaled magical damage to every living enemy when Overflow expires.
+## Deals Mysticism-scaled damage to every living enemy when Overflow expires.
 func _TriggerOverflow(p_holder_ID: int) -> void:
 	var side: CombatTeam = _resolver._sides.EnemiesOf(p_holder_ID)
 	if(null == side):

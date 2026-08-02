@@ -55,18 +55,18 @@ func _OnResultProduced(p_result: CombatResult) -> void:
 func _AddInfraction(p_enemy_ID: int) -> void:
 	_infractions[p_enemy_ID] = mini(_infractions.get(p_enemy_ID, 0) + 1, INFRACTION_CAP)
 
-## Citation's own scaling: bonus damage fraction from the target's Infraction tally.
-func GetOutgoingDamageBonus(_p_owner_ID: int, p_target_ID: int, _p_resolver: BattleResolver) -> float:
-	return float(GetInfractions(p_target_ID)) * _rate_per_infraction
-
+## Citation's own scaling source: bonus damage fraction, and Signed Writ's escalation
+## condition, from the target's Infraction tally.
 func GetConditionCount(
 		_p_owner_ID: int,
 		p_target_ID: int,
-		p_source: Types.Damage_Bonus_Source,
+		p_source: Types.Trait_Count_Source,
 		_p_resolver: BattleResolver) -> float:
-	if(Types.Damage_Bonus_Source.Trait_Counter_On_Target != p_source):
-		return 0.0
-	return float(GetInfractions(p_target_ID)) * _rate_per_infraction
+	if(Types.Trait_Count_Source.Trait_Counter_On_Target == p_source):
+		return float(GetInfractions(p_target_ID)) * _rate_per_infraction
+	if(Types.Trait_Count_Source.Trait_Counter_Raw_On_Target == p_source):
+		return float(GetInfractions(p_target_ID))
+	return 0.0
 
 ## Sanction's magnitude source: set at the moment of application from the target's
 ## Infraction tally.

@@ -3,8 +3,7 @@ class_name SkillCastContext extends RefCounted
 ## Per-cast state threaded through a skill's effect loop: the read-only inputs every
 ## effect needs (resolver, caster, targets, the skill, caster attributes, use count,
 ## trait hook result), and the accumulators earlier effects write for later ones to
-## read (health_paid, buffs_consumed). Replaces the growing parameter lists on
-## _ResolveDamage/_ResolveStatusGroups and retires BuffManipulationResult.
+## read (health_paid, buffs_consumed).
 
 var resolver: BattleResolver
 var caster_ID: int
@@ -59,9 +58,9 @@ func ConditionMet(p_effect: SkillEffect) -> bool:
 		return true
 	var caster_trait: CharacterTrait = resolver.GetCharacters()[caster_ID]._trait
 	var primary_target_ID: int = target_IDs[0] if not target_IDs.is_empty() else -1
-	var source: Types.Damage_Bonus_Source = (
-			Types.Damage_Bonus_Source.Trait_Condition if Types.Skill_Condition.Trait_Condition == p_effect.condition
-			else Types.Damage_Bonus_Source.Trait_Counter_On_Target)
+	var source: Types.Trait_Count_Source = (
+			Types.Trait_Count_Source.Trait_Condition if Types.Skill_Condition.Trait_Condition == p_effect.condition
+			else Types.Trait_Count_Source.Trait_Counter_Raw_On_Target)
 	var count: float = (caster_trait.GetConditionCount(caster_ID, primary_target_ID, source, resolver)
 			if null != caster_trait else 0.0)
 	if(Types.Condition_Test.At_Least == p_effect.condition_test):

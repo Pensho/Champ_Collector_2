@@ -71,13 +71,15 @@ scenes. Mappings below cover the implemented skills
 (`Scripts/common_enums.gd`: Empower, Fortify, Daunting Strength, Phalanx Guard;
 Burning, Enfeeble, Expose Weakness). Catalog-only skills are mapped in the backlog.
 
-- [ ] **Physical impact** — burst of sparks/slash flecks at the target on hit.
+- [ ] **Impact** — burst of sparks/slash flecks at the target on hit, for skills
+  weighted toward Attack, Speed, Accuracy, or similar melee-adjacent attributes.
   Variation: scale with hit weight, fleck texture.
   Serves: Stab, Bash, Crush, Heap On, Boarding Strike, Saltwater Shot,
   Corsairs Reckoning, Pierce Weakness, Break Guard, Disarm, Burning Bolas
-  (impact part), and the opponents' physical hits. Status: needed.
-- [ ] **Magic impact** — concentrated flash/mote burst at the target for
-  magic-scaling hits. Variation: color per element/school.
+  (impact part), and the opponents' equivalent hits. Status: needed.
+- [ ] **Arcane impact** — concentrated flash/mote burst at the target, for skills
+  weighted toward Mysticism, Knowledge, or similar arcane attributes. Variation:
+  color per element/school.
   Serves: Zap (Speed-scaled, electric palette). Status: needed.
 - [ ] **Fire ignition + burning tick** — ignition flare on application, plus a small
   persistent flame emitter on the character while Burning lasts (reuse
@@ -235,7 +237,7 @@ Conventions, derived from the existing assets:
   comes from the emitter at runtime (`color_ramp` gradient, modulate).
   `Fire_Particle.png` is pure white; the campfire tints it through its
   yellow→orange→red gradient. One silhouette therefore serves many effects: the
-  same spark fleck can be a physical impact (white-yellow), an ember (orange), or a
+  same spark fleck can be an impact hit (white-yellow), an ember (orange), or a
   debuff mote (sickly green). Effect-specific palettes are set per entry: the fire
   palette is already defined by the campfire gradient; buff/debuff application
   colors should key to the matching icons in
@@ -262,10 +264,10 @@ Needed textures (checked when the file exists in `Assets/`):
   `color_ramp` can only map one noise value and can't multiply that by a radial
   falloff in the same texture); a second noise layer modulates interior density for
   cotton-ball texture. Serves the Adventure map cloud shadow overlay.
-- [ ] Spark/fleck (32×32, white) — sharp-edged chip. Serves physical impact, ember
+- [ ] Spark/fleck (32×32, white) — sharp-edged chip. Serves impact, ember
   drift, debuff motes.
 - [ ] Four-point sparkle glint (32×32, white) — serves heal sparkle, buff shimmer,
-  magic impact.
+  arcane impact.
 - [ ] Crack shard (32×32, white) — angular fragment. Serves debuff application and
   Expose Weakness / Break Guard flavor.
 - [ ] Shield fragment / arc sliver (64×64, white, soft edges) — serves barrier
@@ -282,11 +284,12 @@ Grows only when the corresponding skill, status effect, or scene is implemented;
 promotion an entry moves into the archetype mappings above.
 
 **Catalog skills** (Concept 3.2.4.2–3.2.4.4, ~20 role kits): most map onto the
-existing archetypes by their nature — physical-damage skills to physical impact,
-magic-damage skills to magic impact, buff/debuff appliers to the application
-shimmers, heals to the sparkle, shields to the barrier shimmer, zones to zone
-ambience with the god-family variation. Expected genuine additions rather than
-variations, worth bespoke or new-archetype treatment when their roles land:
+existing archetypes by their nature — skills weighted toward Attack/Speed/Accuracy
+to impact, skills weighted toward Mysticism/Knowledge to arcane impact, buff/debuff
+appliers to the application shimmers, heals to the sparkle, shields to the barrier
+shimmer, zones to zone ambience with the god-family variation. Expected genuine
+additions rather than variations, worth bespoke or new-archetype treatment when
+their roles land:
 
 - Damage-over-time ticks beyond Burning (Bleed, Plague) — likely one shared "tick"
   archetype with per-effect color.

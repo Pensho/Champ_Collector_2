@@ -43,7 +43,7 @@ func test_damage_effect_bonus_per_buffs_on_caster_increases_damage() -> void:
 	var skill: Skill = TestFactory.make_strike_skill()
 	var effect: DamageEffect = DamageEffect.new()
 	effect.damage_scaling = {Types.Attribute.Attack: 1.0}
-	effect.bonus_per = {Types.Damage_Bonus_Source.Buffs_On_Caster: 0.3}
+	effect.bonus_per = {Types.Trait_Count_Source.Buffs_On_Caster: 0.3}
 	var baseline_context: SkillCastContext = TestFactory.make_context(_resolver, 0, [3], skill)
 	var baseline_before: int = _roster[3]._current_health
 	effect.Resolve(baseline_context)
@@ -65,7 +65,7 @@ func test_damage_effect_bonus_per_buffs_consumed_reads_the_context_accumulator()
 	var skill: Skill = TestFactory.make_strike_skill()
 	var effect: DamageEffect = DamageEffect.new()
 	effect.damage_scaling = {Types.Attribute.Attack: 1.0}
-	effect.bonus_per = {Types.Damage_Bonus_Source.Buffs_Consumed: 0.3}
+	effect.bonus_per = {Types.Trait_Count_Source.Buffs_Consumed: 0.3}
 	var baseline_context: SkillCastContext = TestFactory.make_context(_resolver, 0, [3], skill)
 	var baseline_before: int = _roster[3]._current_health
 	effect.Resolve(baseline_context)
@@ -86,7 +86,7 @@ func test_damage_effect_uses_this_battle_ramps_the_pre_mitigation_aggregate() ->
 	var skill: Skill = TestFactory.make_strike_skill()
 	var effect: DamageEffect = DamageEffect.new()
 	effect.damage_scaling = {Types.Attribute.Attack: 1.0}
-	effect.bonus_per = {Types.Damage_Bonus_Source.Uses_This_Battle: 0.5}
+	effect.bonus_per = {Types.Trait_Count_Source.Uses_This_Battle: 0.5}
 
 	var first_before: int = _roster[3]._current_health
 	effect.Resolve(TestFactory.make_context(_resolver, 0, [3], skill, 0))
@@ -105,7 +105,7 @@ func test_damage_effect_trait_condition_reads_the_casters_trait() -> void:
 	var skill: Skill = TestFactory.make_strike_skill()
 	var effect: DamageEffect = DamageEffect.new()
 	effect.damage_scaling = {Types.Attribute.Attack: 1.0}
-	effect.bonus_per = {Types.Damage_Bonus_Source.Trait_Condition: 0.5}
+	effect.bonus_per = {Types.Trait_Count_Source.Trait_Condition: 0.5}
 
 	var baseline_before: int = _roster[3]._current_health
 	effect.Resolve(TestFactory.make_context(_resolver, 0, [3], skill))
@@ -113,7 +113,7 @@ func test_damage_effect_trait_condition_reads_the_casters_trait() -> void:
 
 	_roster.assign(TestFactory.make_full_roster())
 	_resolver = TestFactory.make_resolver(_roster, TestFactory.make_full_sides())
-	_roster[0]._trait = TestFactory.FakeConditionCountTrait.new(Types.Damage_Bonus_Source.Trait_Condition, 1.0)
+	_roster[0]._trait = TestFactory.FakeConditionCountTrait.new(Types.Trait_Count_Source.Trait_Condition, 1.0)
 	var conditioned_before: int = _roster[3]._current_health
 	effect.Resolve(TestFactory.make_context(_resolver, 0, [3], skill))
 	var conditioned_damage: int = conditioned_before - _roster[3]._current_health
@@ -126,7 +126,7 @@ func test_damage_effect_trait_counter_on_target_reads_the_traits_own_rate() -> v
 	var skill: Skill = TestFactory.make_strike_skill()
 	var effect: DamageEffect = DamageEffect.new()
 	effect.damage_scaling = {Types.Attribute.Attack: 1.0}
-	effect.bonus_per = {Types.Damage_Bonus_Source.Trait_Counter_On_Target: 1.0}
+	effect.bonus_per = {Types.Trait_Count_Source.Trait_Counter_On_Target: 1.0}
 
 	var baseline_before: int = _roster[3]._current_health
 	effect.Resolve(TestFactory.make_context(_resolver, 0, [3], skill))
@@ -134,7 +134,7 @@ func test_damage_effect_trait_counter_on_target_reads_the_traits_own_rate() -> v
 
 	_roster.assign(TestFactory.make_full_roster())
 	_resolver = TestFactory.make_resolver(_roster, TestFactory.make_full_sides())
-	_roster[0]._trait = TestFactory.FakeConditionCountTrait.new(Types.Damage_Bonus_Source.Trait_Counter_On_Target, 0.3)
+	_roster[0]._trait = TestFactory.FakeConditionCountTrait.new(Types.Trait_Count_Source.Trait_Counter_On_Target, 0.3)
 	var boosted_before: int = _roster[3]._current_health
 	effect.Resolve(TestFactory.make_context(_resolver, 0, [3], skill))
 	var boosted_damage: int = boosted_before - _roster[3]._current_health
@@ -406,7 +406,7 @@ func test_condition_met_below_is_unmet_once_the_traits_count_reaches_the_thresho
 	effect.condition = Types.Skill_Condition.Trait_Condition
 	effect.condition_test = Types.Condition_Test.Below
 	effect.condition_threshold = 6.0
-	_roster[0]._trait = TestFactory.FakeConditionCountTrait.new(Types.Damage_Bonus_Source.Trait_Condition, 9.0)
+	_roster[0]._trait = TestFactory.FakeConditionCountTrait.new(Types.Trait_Count_Source.Trait_Condition, 9.0)
 	var context: SkillCastContext = TestFactory.make_context(_resolver, 0, [3], TestFactory.make_empty_skill())
 
 	assert_false(context.ConditionMet(effect))
@@ -457,7 +457,7 @@ func test_resolve_skill_runs_an_effect_whose_condition_is_met() -> void:
 	conditional.condition_test = Types.Condition_Test.At_Least
 	conditional.condition_threshold = 1.0
 	skill.effects = [conditional]
-	_roster[0]._trait = TestFactory.FakeConditionCountTrait.new(Types.Damage_Bonus_Source.Trait_Condition, 1.0)
+	_roster[0]._trait = TestFactory.FakeConditionCountTrait.new(Types.Trait_Count_Source.Trait_Condition, 1.0)
 	_roster[0]._skills.append(skill)
 
 	_resolver.ResolveSkill(0, [0], 0)

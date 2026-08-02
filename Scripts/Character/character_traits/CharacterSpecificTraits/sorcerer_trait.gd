@@ -16,7 +16,7 @@ const REAGENT_AMPLIFICATION: Dictionary[Types.Rarity, float] = {
 
 const MAX_INSTABILITY_STACKS: int = 5
 
-# Magical damage coefficient scaling Surge with the Sorcerer's Mysticism.
+# Damage coefficient scaling Surge with the Sorcerer's Mysticism.
 const SURGE_MYSTICISM_SCALING: float = 1.5
 
 var _instability_stacks: int = 0
@@ -33,7 +33,7 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_title = "Arcane Instability"
 	_body = ("Using any skill grants an Instability stack that gives more Mysticism per stack. " +
 			"Consuming a reagent grants two stacks and amplifies the reagent's effect. " +
-			"At maximum stacks, the next skill also releases a Surge: magical damage to all " +
+			"At maximum stacks, the next skill also releases a Surge: damage to all " +
 			"characters, allies and the Sorcerer included, then all stacks reset.")
 	_execution_steps[Types.Combat_Event.Start_Combat] = Callable(self, "StartOfBattle")
 	_execution_steps[Types.Combat_Event.Skill_Cast] = Callable(self, "OnSkillCast")

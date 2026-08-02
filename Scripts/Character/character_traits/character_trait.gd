@@ -152,13 +152,11 @@ func GetAppliedStatusValue(
 		_p_owner_ID: int, _p_target_ID: int, _p_debuff_type: Types.Debuff_Type, _p_resolver: BattleResolver) -> float:
 	return -1.0
 
-## Answers a DamageEffect's bonus_per count for one Damage_Bonus_Source: Trait_Condition
-## returns 0.0 or 1.0 (a binary condition folded into a count), Trait_Counter_On_Target
-## returns this owner's own per-target counter already multiplied by its own rate — the
-## skill states that it scales, never the rate. The base class has neither.
+## Answers a DamageEffect's bonus_per count, or a SkillEffect's condition test, for one
+## Trait_Count_Source. The base class has none of them.
 func GetConditionCount(
 		_p_owner_ID: int,
 		_p_target_ID: int,
-		_p_source: Types.Damage_Bonus_Source,
+		_p_source: Types.Trait_Count_Source,
 		_p_resolver: BattleResolver) -> float:
 	return 0.0

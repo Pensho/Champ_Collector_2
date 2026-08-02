@@ -18,18 +18,18 @@ Concept Document 3.2.3 catalog.
 * Break Guard
     * Type: Damage, Debuff
     * Cooldown: 2 turns
-    * Effect: A blunt tackle dealing Physical Damage to a single target, scaling
+    * Effect: A blunt tackle dealing damage to a single target, scaling
       with Attack, and applies the Expose Weakness debuff for 2 turns (see
       Concept Document 3.2.3.2).
 * Wind the Mainspring
     * Type: Damage, Buff (basic skill, no cooldown)
-    * Effect: Deals Physical Damage to a single target enemy, scaling with Speed,
+    * Effect: Deals damage to a single target enemy, scaling with Speed,
       and the user gains the Haste buff for 2 turns (see Concept Document
       3.2.3.2; Haste stacks, so an uninterrupted user ramps steadily faster).
 * Overwhelming Blow
     * Type: Damage
     * Cooldown: 3 turns
-    * Effect: Deals massive Physical Damage to a single target enemy, scaling
+    * Effect: Deals massive damage to a single target enemy, scaling
       with Attack (starting point: 250% of a basic hit).
 * Sporeburst Mend
     * Type: Heal (basic skill, no cooldown)
@@ -45,25 +45,25 @@ Concept Document 3.2.3 catalog.
 * Aimed Shot
     * Type: Damage
     * Cooldown: 2 turns
-    * Effect: Deals heavy Physical Damage to the most injured enemy, scaling
+    * Effect: Deals heavy damage to the most injured enemy, scaling
       with Attack (starting point: 200% of a basic hit).
 * Flank Cut
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals Physical Damage to the right-most enemy (positional
+    * Effect: Deals damage to the right-most enemy (positional
       targeting, see Concept Document 3.2.4), scaling with Attack.
 * Breaching Charge
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals Physical Damage to the left-most enemy (positional
+    * Effect: Deals damage to the left-most enemy (positional
       targeting, see Concept Document 3.2.4), scaling with Attack; each use
       increases this skill's damage by 15% for the rest of the battle.
 * Cinder Spit
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals Magical Damage to a single target enemy, scaling with
+    * Effect: Deals damage to a single target enemy, scaling with
       Mysticism.
 * Cinder Sermon
     * Type: Damage (AoE)
     * Cooldown: 2 turns
-    * Effect: Deals Magical Damage to all enemies, scaling with Mysticism
+    * Effect: Deals damage to all enemies, scaling with Mysticism
       (starting point: 90% of a standard hit); each cast is permanently 20
       percentage points stronger than the last for the rest of the battle.
 * Ash Offering
@@ -73,21 +73,21 @@ Concept Document 3.2.3 catalog.
       one Sermon.
 * Inscribe
     * Type: Damage, Turn Bar (Zone) (basic skill, no cooldown)
-    * Effect: Deals Magical Damage to a single target enemy, scaling with
+    * Effect: Deals damage to a single target enemy, scaling with
       Mysticism, and places a Wild Glyph zone (unstable family) in the
-      left-most empty turn bar section, if any. Affected enemies take Magical
-      Damage scaling with the placer's Mysticism (starting point: 40% of a
+      left-most empty turn bar section, if any. Affected enemies take
+      damage scaling with the placer's Mysticism (starting point: 40% of a
       standard hit) and gain the Warped debuff for 2 turns (see Concept
       Document 3.2.3.2). Holds 3 charges.
 * Inscription Surge
     * Type: Damage (AoE)
     * Cooldown: 3 turns
-    * Effect: Deals Magical Damage to all enemies, scaling with Mysticism
+    * Effect: Deals damage to all enemies, scaling with Mysticism
       (starting point: 80% of a standard hit), increased by 30% per zone
       standing on the turn bar — regardless of who placed it.
 * Foreclosure
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals Physical Damage to a single target enemy, scaling with
+    * Effect: Deals damage to a single target enemy, scaling with
       Attack, increased by 20% per buff the user holds.
 * Lien
     * Type: Passive
@@ -98,8 +98,7 @@ Concept Document 3.2.3 catalog.
     * Type: Buff theft (basic skill, no cooldown), Damage
     * Effect: Steals one buff from a random enemy: the buff is removed and
       applied to the user's designated ward (stated per encounter) with a
-      fresh 2-turn duration. Deals Magical
-      Damage, scaling with Knowledge.
+      fresh 2-turn duration. Deals damage, scaling with Knowledge.
 * Reliquary Ward
     * Type: Buff (basic skill, no cooldown)
     * Effect: Grants one ally a protection, alternating with each use: odd
@@ -109,7 +108,7 @@ Concept Document 3.2.3 catalog.
 * Vault Slam
     * Type: Damage, Debuff (Turn Bar)
     * Cooldown: 3 turns
-    * Effect: Deals heavy Physical Damage to a single enemy, scaling with
+    * Effect: Deals heavy damage to a single enemy, scaling with
       Attack (starting point: 220% of a basic hit), and applies the Dead
       Weight debuff for 2 turns (see Concept Document 3.2.3.1).
 * Warden's Failsafe
@@ -289,7 +288,7 @@ Concept Document).
   engine, and a second body would dilute the bar pressure.
 - **Mechanics:** Inscribe (section 1) — every turn the Archivist attacks and
   writes a Wild Glyph zone into the left-most empty turn bar section (3
-  charges; Magical Damage plus Warped for 2 turns on affected champions).
+  charges; damage plus Warped for 2 turns on affected champions).
   Onset: enemy turn 1. Because occupied sections cannot be targeted (Concept
   Document 3.2.4.1), an uncontested Archivist also progressively locks the
   player out of their own zone play. Inscription Surge (section 1) — an AoE

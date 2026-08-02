@@ -270,15 +270,51 @@ which is delta (4) below becoming real. No shipped skill reaches it — every
 is the intended one; it is recorded here so a later phase does not re-derive it as a
 regression.
 
-### Phase 3 — behaviour fixes and wording
+### Phase 3 — behaviour fixes and wording (complete)
 
-Remove `StandingRecordTrait.GetOutgoingDamageBonus` so the Infraction rate applies only
-through Citation's `DamageEffect`; re-express Signed Writ's escalation as a conditional
-effect pair — which is blocked by the `GetConditionCount` finding below until the condition
-contract splits from the damage-bonus one. Lowercase "Deals damage" in the ten batch-4 descriptions, and strip "Physical Damage"
-and "Magical Damage" from `Concept_Document.md` (38 occurrences) and
-`Encounter_Design_Document.md` (13) — the resolver has no damage-type split, so the words
-describe a mechanic that does not exist.
+Removed `StandingRecordTrait.GetOutgoingDamageBonus` so the Infraction rate applies only
+through Citation's `DamageEffect`; re-expressed Signed Writ's escalation as a conditional
+effect pair once the `GetConditionCount` contract split (see below) unblocked it. Lowercased
+"Deals damage" and stripped "Physical Damage"/"Magical Damage" from `Concept_Document.md`
+and `Encounter_Design_Document.md` — the resolver has no damage-type split, so the words
+described a mechanic that does not exist.
+
+Delivered as its own sub-plan,
+`Documents/Plans/Plan_Skill_Effect_Components_Phase_Three.md` (deleted on completion per the
+retention rule; see the git history for its full content), with deviations from this
+section's text worth recording here because phase 4's documentation rewrite must reflect
+them:
+
+- The `GetConditionCount` blocker below was resolved by renaming
+  `Types.Damage_Bonus_Source` to `Types.Trait_Count_Source` (it now serves both a damage
+  bonus and a condition test) and adding a raw-count `Trait_Counter_Raw_On_Target` member
+  alongside the existing rate-multiplied `Trait_Counter_On_Target`. Signed Writ's `.tres`
+  now authors `condition_threshold = 6.0` — a plain, rarity-independent Infraction count —
+  instead of the phase 2 workaround's rate-multiplied `0.15`.
+- Citation's `.tres` gained `bonus_per = {Trait_Counter_On_Target: 1.0}` on its
+  `DamageEffect`, since it previously had no `bonus_per` at all — its Infraction scaling
+  came entirely from the removed override. This is the fix landing, not an incidental edit.
+- The actual counts differed from this section's estimates: eight skill descriptions needed
+  lowercasing (not ten — six "Deals Damage", two bare sentence-opening "Damage"), and the
+  documents carried roughly 44 and 15 occurrences respectively (not 38 and 13; the
+  Encounter document had two occurrences split across a line wrap that a single-line grep
+  missed).
+- The wording sweep's scope widened past the two named documents, with the user's sign-off,
+  to cover player-facing strings describing the same non-existent mechanic:
+  `sorcerer_trait.gd`, `glass_refraction_graft.gd`, `Data/Status_Effects/Plague.tres` and
+  `Overflow.tres`, a comment in `status_effect_resolver.gd`, and
+  `Documents/Symbiote_Graft_Pool.md`. `Documents/Plans/Plan_Particle_Effects.md`'s
+  physical/magical VFX categorization was also re-expressed in terms of each skill's
+  scaling attributes (Attack/Speed/Accuracy → "Impact", Mysticism/Knowledge → "Arcane
+  impact") rather than the now-absent damage-type labels.
+- `Corsairs_Reckoning.tres` and `Final_Calculation.tres` got a fuller sentence restructure
+  (plus a "devestating" → "devastating" spelling fix) rather than a bare lowercasing, since
+  lowercasing a sentence-initial "Damage" needs a rephrase to still read naturally.
+- A fresh-context review of phase 3 found one more surviving damage-type phrase outside the
+  swept documents, `Data/Attribute_Weights/Conjurer.tres`'s description, fixed alongside
+  reworking `Skill_Condition` so it names the raw-count semantics explicitly (see below)
+  rather than relying on comment prose to disambiguate it from `Trait_Count_Source`'s
+  same-named, rate-multiplied member.
 
 ### Phase 4 — documentation
 
@@ -302,46 +338,15 @@ piece of work belongs in "Watch for" instead. A resolved finding is deleted from
 section, not annotated as fixed — the section lists open work only, and the fix itself is
 in the code.
 
-### Blocker — resolve before phase 3
-
-**`GetConditionCount` overloads two contracts.** `StandingRecordTrait.GetConditionCount`
-returns `infractions × _rate_per_infraction`, and `SkillCastContext.ConditionMet` compares
-that already-multiplied value against `condition_threshold`. That is right for a damage
-bonus and wrong for a condition: re-expressing Signed Writ's `escalated_at_infractions = 6`
-would need a threshold of `6 × rate`, and the rate is rarity-dependent (0.025 to 0.04), so
-one skill would need four authored thresholds — each of them the trait's own rate written
-into skill data, which is what Concept 3.1.3 forbids and what this pass exists to prevent.
-`Trait_Condition` is not a substitute: it is binary, and `StandingRecordTrait` returns 0.0
-for it. The fix is to split the contract — either a raw-count `Damage_Bonus_Source`, or
-`ConditionMet` querying a separate un-multiplied hook. Signed Writ now authors a condition
-(migrated in phase 2 against the overloaded contract, with the user's explicit sign-off —
-see phase 2's entry above), so this is reachable today, not just a future risk.
-
 ### Nit
 
 **Plan bookkeeping (phase 4).** Phase 1's naming deviations are recorded in its own entry
-above; the documentation rewrite must use the shipped names, not the catalog's.
-
-**Stale comments naming deleted symbols (phase 3).** `Scripts/Battle/Skill_Effects/zone_effect.gd`'s
-class docstring still says `ZoneResolver.PlaceZone` does not read the effect yet, which phase 2
-made false; `skill_cast_context.gd` line 7 names `_ResolveStatusGroups` and
-`BuffManipulationResult`, and `Tests/unit/test_sequence_lock.gd` line 6 names `_CastBuffOfType` —
-all three symbols are gone. Reword each in terms of the surviving API.
-
-**`gdlintrc` `max-public-methods` can revert (phase 3).** `CharacterTrait` is back to 35 public
-methods now that `IsConditionActive` is deleted, so the phase 1 bump to 36 is no longer needed;
-`gdlint Scripts/` was confirmed clean at 35. The batch 4 `BattleResolver` bump is separate and
-still load-bearing.
-
-**Jester condition test asserts a private field (phase 3).** `Tests/unit/test_jester_skills.gd`
-line 76 reads `DoubleTheFunTrait._avoided_since_last_turn` directly, so it no longer exercises the
-contract the skill uses. Assert through `GetConditionCount(..., Trait_Condition, ...)` instead —
-best done alongside the `GetConditionCount` contract split, since that is the hook it should be
-testing.
-
-**Migration test name outlives the migration (phase 3 or 4).** `Tests/unit/test_skill_data_migration.gd`
-asserts a standing invariant — every shipped skill loads and carries at least one effect — under a
-name that describes a one-time event. Rename to `test_skill_resources.gd`.
+above; the documentation rewrite must use the shipped names, not the catalog's. Phase 3's
+entry additionally renamed `Types.Damage_Bonus_Source` to `Types.Trait_Count_Source`, added
+`Trait_Counter_Raw_On_Target`, and renamed `Types.Skill_Condition.Trait_Counter_On_Target`
+to `Trait_Counter_Raw_On_Target` (same ordinal, so no `.tres` data changed) so the raw-count
+member no longer shares a name with `Trait_Count_Source`'s rate-multiplied one — phase 4
+must use these names too, not the ones this plan's Design section originally specified.
 
 ## Watch for
 
@@ -382,9 +387,11 @@ name that describes a one-time event. Rename to `test_skill_resources.gd`.
   green either way. Phase 4's order documentation must state which reading is canonical; if the
   old order was intended, Fateful Glimpse authors the heal first rather than the canonical order
   changing.
-- `gdlintrc`'s `max-public-methods` was raised by batch 4 (`BattleResolver`) and again in
-  phase 1 (`CharacterTrait`, 35 → 36, for `GetConditionCount`); revert either bump if the
-  class it was raised for shrinks back below the old limit.
+- `gdlintrc`'s `max-public-methods` was raised by batch 4 for `BattleResolver` and briefly
+  again in phase 1 for `CharacterTrait` (35 → 36); phase 3 reverted it to 35 once deleting
+  `IsConditionActive` brought `CharacterTrait` back under the old limit. The
+  `BattleResolver` bump is separate and still load-bearing — revert it too if that class
+  ever shrinks back below 35.
 - `test_character_preset_skill_invariant.gd` (skill slot 0 has zero cooldown) must still
   hold for every migrated preset.
 - Skills are deep-copied per character instance; per-battle state (use counts,

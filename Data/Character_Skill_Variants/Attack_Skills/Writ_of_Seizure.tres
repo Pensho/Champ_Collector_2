@@ -19,7 +19,7 @@ damage_scaling = Dictionary[int, float]({
 [resource]
 script = ExtResource("1_skill")
 name = "Writ of Seizure"
-description = "Steals one buff from a random enemy and applies it to the user's ward with a fresh 2-turn duration. Deals Damage to the same enemy, scaling with Knowledge."
+description = "Steals one buff from a random enemy and applies it to the user's ward with a fresh 2-turn duration. Deals damage to the same enemy, scaling with Knowledge."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Opponent_Active_Skills/Writ_of_Seizure/Writ_of_Seizure.png"
 target = 2
 effects = Array[ExtResource("1_fcses")]([SubResource("Resource_kycsw"), SubResource("Resource_3fgd5")])

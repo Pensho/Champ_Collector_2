@@ -16,7 +16,7 @@ bonus_per = Dictionary[int, float]({
 [resource]
 script = ExtResource("1_skill")
 name = "Foreclosure"
-description = "Deals Damage to a single enemy, scaling with Attack, increased by 20% per buff the user holds."
+description = "Deals damage to a single enemy, scaling with Attack, increased by 20% per buff the user holds."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Opponent_Active_Skills/Foreclosure/Foreclosure.png"
 effects = Array[ExtResource("1_nbdi1")]([SubResource("Resource_grcs3")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

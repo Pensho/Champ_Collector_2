@@ -139,20 +139,20 @@ class FakeTargetingPriorityTrait extends CharacterTrait:
 		return multiplier
 
 ## Headless stand-in for a trait with a fixed GetConditionCount answer for one
-## Damage_Bonus_Source, for DamageEffect/SkillCastContext condition tests without
+## Trait_Count_Source, for DamageEffect/SkillCastContext condition tests without
 ## needing a real character-specific trait.
 class FakeConditionCountTrait extends CharacterTrait:
-	var source: Types.Damage_Bonus_Source
+	var source: Types.Trait_Count_Source
 	var count: float = 0.0
 
-	func _init(p_source: Types.Damage_Bonus_Source, p_count: float) -> void:
+	func _init(p_source: Types.Trait_Count_Source, p_count: float) -> void:
 		source = p_source
 		count = p_count
 
 	func GetConditionCount(
 			_p_owner_ID: int,
 			_p_target_ID: int,
-			p_source: Types.Damage_Bonus_Source,
+			p_source: Types.Trait_Count_Source,
 			_p_resolver: BattleResolver) -> float:
 		return count if p_source == source else 0.0
 

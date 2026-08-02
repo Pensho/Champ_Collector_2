@@ -14,7 +14,7 @@ const RESISTANCE_DRAWBACK: float = -0.40
 func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
 	_title = "Glass Refraction"
-	_body = ("When hit by an attack, a chaotic backlash strikes the attacker for magical damage"
+	_body = ("When hit by an attack, a chaotic backlash strikes the attacker for damage"
 			+ " equal to " + str(int(MYSTICISM_BACKLASH * 100)) + "% of its own Mysticism. Gains "
 			+ str(int(MYSTICISM_BONUS_PER_RARITY.get(p_rarity, 0.0) * 100)) + "% Mysticism, at the cost of "
 			+ str(int(-RESISTANCE_DRAWBACK * 100)) + "% Resistance.")

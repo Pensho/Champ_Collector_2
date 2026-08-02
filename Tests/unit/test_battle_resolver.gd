@@ -111,7 +111,7 @@ func test_heap_on_state_is_per_resolver_not_global() -> void:
 	heap_on_skill.target = Types.Skill_Target.Single_Enemy
 	var heap_on_effect: DamageEffect = DamageEffect.new()
 	heap_on_effect.damage_scaling = {Types.Attribute.Health: 1.0}
-	heap_on_effect.bonus_per = {Types.Damage_Bonus_Source.Uses_This_Battle: 0.2}
+	heap_on_effect.bonus_per = {Types.Trait_Count_Source.Uses_This_Battle: 0.2}
 	heap_on_skill.effects = [heap_on_effect]
 
 	var roster_a: Dictionary[int, Character] = _make_roster()
@@ -137,7 +137,7 @@ func test_ramp_per_use_grows_damage_and_is_permanent_for_the_battle() -> void:
 	ramping_skill.target = Types.Skill_Target.Single_Enemy
 	var ramping_effect: DamageEffect = DamageEffect.new()
 	ramping_effect.damage_scaling = {Types.Attribute.Attack: 1.0}
-	ramping_effect.bonus_per = {Types.Damage_Bonus_Source.Uses_This_Battle: 0.15}
+	ramping_effect.bonus_per = {Types.Trait_Count_Source.Uses_This_Battle: 0.15}
 	ramping_skill.effects = [ramping_effect]
 
 	var roster: Dictionary[int, Character] = _make_roster()
@@ -166,7 +166,7 @@ func test_ramp_per_use_is_scoped_to_the_skill_not_the_caster() -> void:
 	ramping_skill.target = Types.Skill_Target.Single_Enemy
 	var ramping_effect: DamageEffect = DamageEffect.new()
 	ramping_effect.damage_scaling = {Types.Attribute.Attack: 1.0}
-	ramping_effect.bonus_per = {Types.Damage_Bonus_Source.Uses_This_Battle: 0.15}
+	ramping_effect.bonus_per = {Types.Trait_Count_Source.Uses_This_Battle: 0.15}
 	ramping_skill.effects = [ramping_effect]
 
 	var plain_skill: Skill = Skill.new()

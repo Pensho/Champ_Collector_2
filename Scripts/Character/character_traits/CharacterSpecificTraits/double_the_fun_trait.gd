@@ -43,9 +43,9 @@ func OnDeath() -> void:
 func GetConditionCount(
 		_p_owner_ID: int,
 		_p_target_ID: int,
-		p_source: Types.Damage_Bonus_Source,
+		p_source: Types.Trait_Count_Source,
 		_p_resolver: BattleResolver) -> float:
-	if(Types.Damage_Bonus_Source.Trait_Condition != p_source):
+	if(Types.Trait_Count_Source.Trait_Condition != p_source):
 		return 0.0
 	return 1.0 if _avoided_since_last_turn else 0.0
 

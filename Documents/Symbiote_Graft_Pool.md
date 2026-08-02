@@ -51,7 +51,7 @@ once more opponents are designed.
 ### Glass Refraction
 
 - **Effect:** when the Symbiote is hit by an attack, a chaotic backlash strikes the
-  attacker for magical damage equal to 25% of the Symbiote's Mysticism.
+  attacker for damage equal to 25% of the Symbiote's Mysticism.
 - **Attribute bonus:** Mysticism +12% / 16% / 20% / 24%.
 - **Drawback:** Resistance −40%.
 

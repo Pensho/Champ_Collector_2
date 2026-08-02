@@ -18,7 +18,7 @@ func _pratfall_sting_skill() -> Skill:
 	skill.name = "Pratfall Sting"
 	var effect: DamageEffect = DamageEffect.new()
 	effect.damage_scaling = {Types.Attribute.Accuracy: 0.9}
-	effect.bonus_per = {Types.Damage_Bonus_Source.Trait_Condition: 0.3}
+	effect.bonus_per = {Types.Trait_Count_Source.Trait_Condition: 0.3}
 	skill.effects = [effect]
 	return skill
 
@@ -73,8 +73,10 @@ func test_pratfall_sting_avoidance_bonus_clears_after_the_jesters_own_turn_ends(
 
 	_resolver.ResolveSkill(0, [3], 0)
 
-	assert_false(jester_trait._avoided_since_last_turn,
-		"The avoidance flag should clear at the end of the Jester's own turn")
+	var condition_count: float = jester_trait.GetConditionCount(
+			0, 3, Types.Trait_Count_Source.Trait_Condition, _resolver)
+	assert_eq(condition_count, 0.0,
+		"The avoidance condition should clear at the end of the Jester's own turn")
 
 func test_pratfall_sting_deals_no_bonus_without_a_trait() -> void:
 	_roster[0]._skills.append(_pratfall_sting_skill())

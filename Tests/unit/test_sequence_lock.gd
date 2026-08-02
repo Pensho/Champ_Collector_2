@@ -3,9 +3,9 @@ extends GutTest
 const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 
 # Sequence Lock blocks any Speed-touching status from being applied, through both the
-# template path (ApplyBuff/ApplyDebuff) and the skill path (_CastBuffOfType/CastDebuff via
-# ResolveSkill), per the "works through both" watch item in
-# Plan_Status_Effect_Implementation.md. Non-Speed statuses must still land normally.
+# template path (ApplyBuff/ApplyDebuff) and the skill path (the ApplyBuffEffect/
+# ApplyDebuffEffect/CastDebuff route via ResolveSkill). Non-Speed statuses must still
+# land normally.
 
 func _sequence_locked_roster() -> Dictionary[int, Character]:
 	var roster: Dictionary[int, Character] = TestFactory.make_full_roster()
