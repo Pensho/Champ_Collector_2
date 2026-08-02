@@ -138,6 +138,24 @@ class FakeTargetingPriorityTrait extends CharacterTrait:
 	func GetTargetingPriorityMultiplier() -> float:
 		return multiplier
 
+## Headless stand-in for a trait with a fixed GetConditionCount answer for one
+## Damage_Bonus_Source, for DamageEffect/SkillCastContext condition tests without
+## needing a real character-specific trait.
+class FakeConditionCountTrait extends CharacterTrait:
+	var source: Types.Damage_Bonus_Source
+	var count: float = 0.0
+
+	func _init(p_source: Types.Damage_Bonus_Source, p_count: float) -> void:
+		source = p_source
+		count = p_count
+
+	func GetConditionCount(
+			_p_owner_ID: int,
+			_p_target_ID: int,
+			p_source: Types.Damage_Bonus_Source,
+			_p_resolver: BattleResolver) -> float:
+		return count if p_source == source else 0.0
+
 static func make_character() -> Character:
 	var c: Character = Character.new()
 	c._name = "TestCharacter"
@@ -202,6 +220,20 @@ static func make_lava_zone_skill() -> Skill:
 	skill.duration = 10
 	skill.debuffs = {Types.Skill_Target.ZoneAll: [Types.Debuff_Type.Burning]}
 	return skill
+
+## A SkillCastContext for effect-class unit tests, skipping ResolveSkill's turn
+## machinery entirely: effects are exercised directly via effect.Resolve(context).
+static func make_context(
+		p_resolver: BattleResolver,
+		p_caster_ID: int,
+		p_target_IDs: Array[int],
+		p_skill: Skill,
+		p_use_count: int = 0,
+		p_trait_result: TraitSkillResult = null) -> SkillCastContext:
+	var caster_attributes: Dictionary[Types.Attribute, int] = p_resolver.GetEffectiveAttributes(p_caster_ID)
+	var trait_result: TraitSkillResult = p_trait_result if null != p_trait_result else TraitSkillResult.new()
+	return SkillCastContext.new(p_resolver, p_caster_ID, p_target_IDs, p_skill, caster_attributes,
+			p_use_count, trait_result)
 
 static func make_loot_table() -> LootTable:
 	return LootTable.new()

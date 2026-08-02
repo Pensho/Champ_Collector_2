@@ -59,6 +59,15 @@ func _AddInfraction(p_enemy_ID: int) -> void:
 func GetOutgoingDamageBonus(_p_owner_ID: int, p_target_ID: int, _p_resolver: BattleResolver) -> float:
 	return float(GetInfractions(p_target_ID)) * _rate_per_infraction
 
+func GetConditionCount(
+		_p_owner_ID: int,
+		p_target_ID: int,
+		p_source: Types.Damage_Bonus_Source,
+		_p_resolver: BattleResolver) -> float:
+	if(Types.Damage_Bonus_Source.Trait_Counter_On_Target != p_source):
+		return 0.0
+	return float(GetInfractions(p_target_ID)) * _rate_per_infraction
+
 ## Sanction's magnitude source: set at the moment of application from the target's
 ## Infraction tally.
 func GetAppliedStatusValue(

@@ -156,3 +156,14 @@ func GetAppliedStatusValue(
 ## since their last turn") is currently active.
 func IsConditionActive() -> bool:
 	return false
+
+## Answers a DamageEffect's bonus_per count for one Damage_Bonus_Source: Trait_Condition
+## returns 0.0 or 1.0 (a binary condition folded into a count), Trait_Counter_On_Target
+## returns this owner's own per-target counter already multiplied by its own rate — the
+## skill states that it scales, never the rate. The base class has neither.
+func GetConditionCount(
+		_p_owner_ID: int,
+		_p_target_ID: int,
+		_p_source: Types.Damage_Bonus_Source,
+		_p_resolver: BattleResolver) -> float:
+	return 0.0

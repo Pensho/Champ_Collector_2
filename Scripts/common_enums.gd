@@ -85,6 +85,7 @@ enum Skill_Target
 	Right_Most_Enemy,
 	Most_Injured_Enemy,
 	Most_Buffed_Ally,
+	Skill_Default,
 }
 
 enum Attribute
@@ -203,6 +204,31 @@ enum Combat_Event
 	On_Kill,
 	Zone_Affected,
 	Resource_Depleted,
+}
+
+## Source a DamageEffect's bonus_per fraction can scale against. Uses_This_Battle scales
+## the pre-mitigation damage aggregate (a ramp); every other source adds to the final
+## damage bonus alongside the battle-persistent damage-dealt bonus.
+enum Damage_Bonus_Source
+{
+	Buffs_On_Caster,
+	Buffs_Consumed,
+	Uses_This_Battle,
+	Trait_Condition,
+	Trait_Counter_On_Target,
+}
+
+enum Skill_Condition
+{
+	None,
+	Trait_Condition,
+	Trait_Counter_On_Target,
+}
+
+enum Condition_Test
+{
+	At_Least,
+	Below,
 }
 
 func RarityName(p_rarity: Types.Rarity) -> String:

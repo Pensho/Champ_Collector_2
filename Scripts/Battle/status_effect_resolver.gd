@@ -24,7 +24,8 @@ func _ResolveBuffManipulation(
 			result.duration_bonus = 1
 
 	if(p_skill.steal_buff_count > 0):
-		var recipients: Array[int] = _ResolveIndependentStatusGroup(p_caster_ID, p_skill.steal_buff_to).filter(
+		var recipients: Array[int] = SkillCastContext.ResolveIndependentGroup(
+				_resolver, p_caster_ID, p_skill.steal_buff_to).filter(
 				func(id): return _resolver._characters.has(id) and _resolver._characters[id]._current_health > 0)
 		if(not recipients.is_empty()):
 			var recipient_ID: int = recipients[_resolver._random.randi_range(0, recipients.size() - 1)]
@@ -34,12 +35,16 @@ func _ResolveBuffManipulation(
 
 	for target_type in p_skill.buff_duration_reduction.keys():
 		var reduction: int = p_skill.buff_duration_reduction[target_type] + result.duration_bonus
-		for target_ID in _ResolveStatusGroupTargets(p_caster_ID, p_target_IDs, p_skill, target_type):
+		var targets: Array[int] = SkillCastContext.ResolveStatusGroupTargets(
+				_resolver, p_caster_ID, p_target_IDs, p_skill, target_type)
+		for target_ID in targets:
 			ReduceBuffDurations(target_ID, reduction)
 
 	var consumed_count: int = 0
 	for target_type in p_skill.consume_buffs.keys():
-		for target_ID in _ResolveStatusGroupTargets(p_caster_ID, p_target_IDs, p_skill, target_type):
+		var targets: Array[int] = SkillCastContext.ResolveStatusGroupTargets(
+				_resolver, p_caster_ID, p_target_IDs, p_skill, target_type)
+		for target_ID in targets:
 			consumed_count += ConsumeBuffs(target_ID, p_skill.consume_buffs[target_type])
 
 	if(p_skill.damage_bonus_per_buff > 0.0):
@@ -66,7 +71,9 @@ func _ResolveStatusGroups(
 			if (not p_skill.alternating_buffs.is_empty() and p_use_count % 2 == 1)
 			else p_skill.buffs)
 	for target_type in buff_groups.keys():
-		for target_ID in _ResolveStatusGroupTargets(p_caster_ID, p_target_IDs, p_skill, target_type):
+		var buff_targets: Array[int] = SkillCastContext.ResolveStatusGroupTargets(
+				_resolver, p_caster_ID, p_target_IDs, p_skill, target_type)
+		for target_ID in buff_targets:
 			for buff_type in buff_groups[target_type]:
 				var value_override: float = -1.0
 				if(Types.Buff_Type.Barrier == buff_type and p_skill.barrier_from_health_paid > 0.0):
@@ -78,7 +85,9 @@ func _ResolveStatusGroups(
 				_CastBuffOfType(target_ID, buff_type, buff_duration, value_override)
 
 	for target_type in p_skill.debuffs.keys():
-		for target_ID in _ResolveStatusGroupTargets(p_caster_ID, p_target_IDs, p_skill, target_type):
+		var debuff_targets: Array[int] = SkillCastContext.ResolveStatusGroupTargets(
+				_resolver, p_caster_ID, p_target_IDs, p_skill, target_type)
+		for target_ID in debuff_targets:
 			for debuff_type in p_skill.debuffs[target_type]:
 				var cast_debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
 				cast_debuff.type = debuff_type
@@ -90,46 +99,6 @@ func _ResolveStatusGroups(
 					if(value_override >= 0.0):
 						cast_debuff.value = value_override
 				CastDebuff(target_ID, cast_debuff, p_caster_ID, p_tick_bonus_per_debuff, true, true)
-
-func _ResolveStatusGroupTargets(
-		p_caster_ID: int,
-		p_target_IDs: Array[int],
-		p_skill: Skill,
-		p_target_type: Types.Skill_Target) -> Array[int]:
-	var group_IDs: Array[int] = (p_target_IDs if p_target_type == p_skill.target
-			else _ResolveIndependentStatusGroup(p_caster_ID, p_target_type))
-	var characters: Dictionary[int, Character] = _resolver._characters
-	return group_IDs.filter(func(id): return characters.has(id) and characters[id]._current_health > 0)
-
-func _ResolveIndependentStatusGroup(p_caster_ID: int, p_target_type: Types.Skill_Target) -> Array[int]:
-	var sides: CombatSides = _resolver._sides
-	var characters: Dictionary[int, Character] = _resolver._characters
-	var group_IDs: Array[int] = []
-	match p_target_type:
-		Types.Skill_Target.Self, Types.Skill_Target.Single_Ally:
-			group_IDs = [p_caster_ID]
-		Types.Skill_Target.All_Allies, Types.Skill_Target.All_Other_Allies, Types.Skill_Target.Ally_Not_Self:
-			group_IDs = sides.AlliesOf(p_caster_ID).members.duplicate()
-			if(Types.Skill_Target.All_Allies != p_target_type):
-				group_IDs.erase(p_caster_ID)
-		Types.Skill_Target.Random_Ally:
-			group_IDs = Skills.SingleTargetArray(sides.AlliesOf(p_caster_ID).RandomAliveMember(characters, _resolver._random))
-		Types.Skill_Target.All_Enemies:
-			group_IDs = sides.EnemiesOf(p_caster_ID).members
-		Types.Skill_Target.Random_Enemy:
-			group_IDs = Skills.SingleTargetArray(sides.EnemiesOf(p_caster_ID).RandomAliveMember(characters, _resolver._random))
-		Types.Skill_Target.Random_One:
-			group_IDs = Skills.SingleTargetArray(sides.RandomAliveMember(characters, _resolver._random))
-		Types.Skill_Target.All:
-			group_IDs = sides.AllMembers()
-		Types.Skill_Target.Most_Injured_Ally:
-			group_IDs = Skills.SingleTargetArray(
-					Skills.MostInjured(sides.AlliesOf(p_caster_ID).members, characters, _resolver._MaxHealth))
-		Types.Skill_Target.Most_Buffed_Ally:
-			group_IDs = Skills.SingleTargetArray(Skills.MostBuffed(sides.AlliesOf(p_caster_ID).members, characters))
-		_:
-			print("Skill target enum has no caster-relative resolution for a secondary status group: ", p_target_type)
-	return group_IDs
 
 func ApplyBuff(p_target_ID: int, p_buff_template: StatusEffects.Buff) -> Array[CombatResult]:
 	_resolver._BeginBatch()

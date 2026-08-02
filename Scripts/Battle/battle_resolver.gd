@@ -170,6 +170,13 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 			effective_duration, use_count, health_paid)
 	_health_transfer_resolver.ResolveHealthGains(p_caster_ID, p_target_IDs, cast_skill, caster_attributes)
 
+	var context := SkillCastContext.new(self, p_caster_ID, p_target_IDs, cast_skill, caster_attributes,
+			use_count, trait_result)
+	context.health_paid = health_paid
+	for effect in cast_skill.effects:
+		if(context.ConditionMet(effect)):
+			effect.Resolve(context)
+
 	var is_non_basic: bool = cast_skill.cooldown > 0
 	_status_resolver._TriggerManaBurn(p_caster_ID, caster_attributes, is_non_basic)
 
@@ -186,8 +193,8 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 
 		if(not cast_skill.damage_scaling.is_empty()):
 			_ResolveDamage(p_caster_ID, target_ID, caster_attributes, target_attributes,
-					cast_skill, trait_result._damage_multiplier, true, ramp_multiplier,
-					buff_manipulation.bonus_damage_fraction)
+					cast_skill.damage_scaling, cast_skill.defense_ignore_factor, trait_result._damage_multiplier,
+					true, ramp_multiplier, buff_manipulation.bonus_damage_fraction)
 
 		var total_bump: float = cast_skill.turn_effect + trait_result._turn_bar_bump
 		_EmitTurnBarBump(target_ID, total_bump, p_caster_ID)
@@ -257,6 +264,51 @@ func AccumulateTurnBarMovement(p_character_ID: int, p_fraction_moved: float) -> 
 
 func BumpTurnBar(p_target_ID: int, p_fraction: float, p_source_ID: int = -1) -> void:
 	_EmitTurnBarBump(p_target_ID, p_fraction, p_source_ID)
+
+
+## Public entry point for a DamageEffect: resolves one hit the same way skill and trait
+## damage already do, including the target's Defend hook (e.g. LancerTrait raising
+## Defence) when the caster is not the target.
+func ResolveEffectDamage(
+		p_caster_ID: int,
+		p_target_ID: int,
+		p_caster_attributes: Dictionary[Types.Attribute, int],
+		p_damage_scaling: Dictionary[Types.Attribute, float],
+		p_defense_ignore_factor: float,
+		p_trait_multiplier: float,
+		p_allow_critical: bool = true,
+		p_ramp_multiplier: float = 1.0,
+		p_bonus_damage_fraction: float = 0.0) -> void:
+	var target_attributes: Dictionary[Types.Attribute, int] = GetEffectiveAttributes(p_target_ID)
+	if(p_caster_ID != p_target_ID and _characters.has(p_target_ID)):
+		var defend_trait: CharacterTrait = Skills.ActiveHook(_characters[p_target_ID], Types.Combat_Event.Defend)
+		if(null != defend_trait):
+			defend_trait.OnDefend(p_target_ID, target_attributes, _characters)
+	_ResolveDamage(p_caster_ID, p_target_ID, p_caster_attributes, target_attributes, p_damage_scaling,
+			p_defense_ignore_factor, p_trait_multiplier, p_allow_critical, p_ramp_multiplier, p_bonus_damage_fraction)
+
+
+## Applies a Health cost to p_character_ID and emits the resulting Damage result.
+## Returns the Health actually paid.
+func ResolveHealthCost(p_character_ID: int, p_amount: int) -> int:
+	var paid: int = _ApplyHealthCost(p_character_ID, p_amount)
+	if(paid > 0):
+		var result: CombatResult = CombatResult.new(CombatResult.Kind.Damage)
+		result.target_ID = p_character_ID
+		result.amount = paid
+		_Emit(result)
+	return paid
+
+
+## Heals p_character_ID and emits the resulting Heal result. Returns the Health
+## actually gained.
+func ResolveHealthGain(p_character_ID: int, p_amount: int) -> int:
+	var healed: int = _ApplyHeal(p_character_ID, p_amount)
+	var result: CombatResult = CombatResult.new(CombatResult.Kind.Heal)
+	result.target_ID = p_character_ID
+	result.amount = healed
+	_Emit(result)
+	return healed
 
 func AggregateDamageMultipliers(p_character_ID: int, p_amount: float) -> void:
 	_damage_dealt_bonus[p_character_ID] = _damage_dealt_bonus.get(p_character_ID, 0.0) + p_amount
@@ -333,15 +385,13 @@ func ResolveTraitDamage(
 		p_damage_scaling: Dictionary[Types.Attribute, float],
 		p_allow_critical: bool = true) -> Array[CombatResult]:
 	_BeginBatch()
-	var synthetic_skill: Skill = Skill.new()
-	synthetic_skill.damage_scaling = p_damage_scaling
 	var target_attributes: Dictionary[Types.Attribute, int]
 	for target_ID in p_target_IDs:
 		if(not _characters.has(target_ID) or _characters[target_ID]._current_health <= 0):
 			continue
 		target_attributes = GetEffectiveAttributes(target_ID)
 		_ResolveDamage(p_caster_ID, target_ID, p_caster_attributes, target_attributes,
-				synthetic_skill, 1.0, p_allow_critical)
+				p_damage_scaling, 1.0, 1.0, p_allow_critical)
 	return _EndBatch()
 
 
@@ -623,7 +673,8 @@ func _ResolveDamage(
 		p_target_ID: int,
 		p_caster_attributes: Dictionary[Types.Attribute, int],
 		p_target_attributes: Dictionary[Types.Attribute, int],
-		p_skill: Skill,
+		p_damage_scaling: Dictionary[Types.Attribute, float],
+		p_defense_ignore_factor: float,
 		p_trait_multiplier: float,
 		p_allow_critical: bool = true,
 		p_ramp_multiplier: float = 1.0,
@@ -633,7 +684,7 @@ func _ResolveDamage(
 	var crit_multiplier: float = 1.0
 	var rolled_critical: bool = false
 
-	var effective_scaling: Dictionary[Types.Attribute, float] = p_skill.damage_scaling
+	var effective_scaling: Dictionary[Types.Attribute, float] = p_damage_scaling
 	if(not effective_scaling.is_empty() and _HasDebuff(p_caster_ID, Types.Debuff_Type.Warped)):
 		var total_weight: float = 0.0
 		for weight in effective_scaling.values():
@@ -667,7 +718,7 @@ func _ResolveDamage(
 	if(null != attacker_trait):
 		conditional_bonus += attacker_trait.GetOutgoingDamageBonus(p_caster_ID, p_target_ID, self)
 
-	var effective_defence: float = p_target_attributes[Types.Attribute.Defence] * p_skill.defense_ignore_factor
+	var effective_defence: float = p_target_attributes[Types.Attribute.Defence] * p_defense_ignore_factor
 	var damage_dealt: int = Skills.MitigatedDamage(effective_defence,
 			caster_scaled_attribute_aggregate, crit_multiplier, random_value,
 			_damage_multiplier.get(p_caster_ID, 1.0), _damage_dealt_bonus.get(p_caster_ID, 0.0) + conditional_bonus,
@@ -680,7 +731,7 @@ func _ResolveDamage(
 		var redirect_fraction: float = float(redirect[1])
 		var soaker: Character = _characters[soaker_ID]
 		var soaker_defence: float = (
-				GetEffectiveAttributes(soaker_ID)[Types.Attribute.Defence] * p_skill.defense_ignore_factor)
+				GetEffectiveAttributes(soaker_ID)[Types.Attribute.Defence] * p_defense_ignore_factor)
 		soaker_damage = Skills.MitigatedDamage(soaker_defence,
 				caster_scaled_attribute_aggregate * redirect_fraction, crit_multiplier, random_value,
 				_damage_multiplier.get(p_caster_ID, 1.0), _damage_dealt_bonus.get(p_caster_ID, 0.0),

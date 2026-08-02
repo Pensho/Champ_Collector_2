@@ -53,4 +53,7 @@ const Statuses = preload("uid://bp3pvvar4437")
 # Additive damage fraction applied when the caster's trait condition is met.
 @export var bonus_damage_on_trait_condition: float = 0.0
 
+## Ordered, self-resolving effects, resolved after the flat fields above.
+@export var effects: Array[SkillEffect]
+
 var cooldown_left: int = 0

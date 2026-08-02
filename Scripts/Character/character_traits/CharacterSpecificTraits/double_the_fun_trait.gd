@@ -43,6 +43,15 @@ func OnDeath() -> void:
 func IsConditionActive() -> bool:
 	return _avoided_since_last_turn
 
+func GetConditionCount(
+		_p_owner_ID: int,
+		_p_target_ID: int,
+		p_source: Types.Damage_Bonus_Source,
+		_p_resolver: BattleResolver) -> float:
+	if(Types.Damage_Bonus_Source.Trait_Condition != p_source):
+		return 0.0
+	return 1.0 if _avoided_since_last_turn else 0.0
+
 func RefreshVisuals(p_character_repr: CharacterRepresentation) -> void:
 	var body_with_stacks: String = _body + "\nAvoidance chance: " \
 	+ str(100.0 * (BASE_AVOID_CHANCE + (_avoidance_stacks * _avoidance_increment))) + "% / " \
