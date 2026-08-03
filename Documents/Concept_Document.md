@@ -1067,5 +1067,5 @@ Every mechanic states its onset — by which enemy turn it becomes relevant — 
 Encounter entries, opponent skills, and the production rules (overlap tolerance, answer anchoring, volume targets) live in `Encounter_Design_Document.md` and `Plans/Plan_Encounter_Solution_Design.md`.
 
 ## 6. Development tools
-- Godot Engine version 4.5
+- Godot Engine version 4.7
 
