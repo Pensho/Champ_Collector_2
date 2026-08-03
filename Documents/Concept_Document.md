@@ -5,6 +5,66 @@
 ## 1. Introduction
 This game is a turn based combat RPG. The main idea is to collect characters that the player can use in combat, each of them with slightly different skill sets to manage to defeat enemy encounters.
 
+### 1.1. Design Pillar: The Blowout
+
+This section outranks every other part of this document. Where another section conflicts with it, this section wins and the other section is wrong.
+
+**The target emotion:** when a player assembles the right team and plays it correctly, they should suspect they broke the game. The reward for solving an encounter is not a comfortable win — it is an outcome so far past the requirement that it reads as a mistake in the player's favour.
+
+There are two accepted forms of this, and they are sequential rather than alternative. The **realisation** ("that combination works together?") is the discovery; the **blowout** (the numbers it produces) is the payoff for executing it. An encounter delivers the realisation as its lock and the blowout as its reward. Neither is a substitute for the other, and an encounter that offers a realisation with no payoff has not met the pillar.
+
+#### 1.1.1. Fight shape
+
+Expected fight lengths in section 5.3 are unchanged: the pillar changes how damage is *distributed* across a fight, not how long the fight runs. Constant round budgets plus enormous numbers requires damage to be back-loaded.
+
+A solved encounter therefore runs as **pressure and burst**: most of its rounds are spent building — placing effects, accumulating conditions, holding position — at unremarkable numbers, followed by one resolution that ends the fight. On a solved boss the burst accounts for the majority of total damage dealt, targeting 60–80%.
+
+Two properties follow and must hold:
+
+* **The threat curve peaks before the burst, not after.** The tension is "can I survive to the trigger", not "can I out-damage it". A burst that is guaranteed once set up is a cutscene.
+* **Unsolved is a wall, not a slow fight.** Without the combination there is no burst, and the remaining chip damage cannot finish the encounter inside its round budget.
+
+#### 1.1.2. Where the blowout is legible
+
+Enemy Health scales alongside player power, so the burst is never large relative to the enemy's Health bar. The contrast is read **inside the fight**, against the numbers the player saw during the build-up.
+
+The calibration target is that a burst resolution deals **roughly 50 times** what the same champion's basic skill deals in the same fight. Per tier:
+
+* **Fodder:** no dedicated burst. Blowout here is overkill on trash — encounters die to routine kit output.
+* **Mini-boss:** one realisation, a partial burst, target around 10x.
+* **Boss:** layered realisations, full burst, target around 50x.
+
+These ratios are calibration starting points, to be revised once the burst is playable and can be felt rather than estimated.
+
+#### 1.1.3. The three damage channels
+
+Blowout requires terms that grow independently and combine multiplicatively. Damage is produced by three channels:
+
+1. **Scaled attributes (additive).** Attributes and gear accumulate into the skill's scaled attribute sum, as described in section 3.2.1. This channel grows steadily and stays readable, and it is the only channel a champion has access to without setup.
+2. **Combined modifier (multiplicative).** Not a meter that is filled — a product assembled at the moment a skill resolves, from every damage-relevant condition true at that instant: buffs on the caster, debuffs and statuses on the target, zone effects, and skill-specific conditions. Each contributing source supplies **its own factor**, so satisfying a further condition multiplies the result rather than adding to it. A buff that raises an attribute instead feeds channel 1; a buff that modifies damage contributes a factor here.
+3. **Cascade (count).** Effects that trigger off other effects, each producing its own resolution. A single action can therefore release many separate damage instances in sequence. Every instance carries its own combined modifier, so instance count and modifier size compound against each other.
+
+**The composition law:** *within a champion's kit, effects add into one factor; across kits, effects form separate factors that multiply.* A single champion stays tame and readable on their own. Two or three kits whose effects contribute independent factors are where the fight detonates. Collection is therefore the source of the power fantasy, not character level alone.
+
+#### 1.1.4. Rules the channels must obey
+
+* **Stack ceilings:** cap what accrues automatically; leave uncapped what costs the player an action or a resource. The existing capped passives (Momentum, Arcane Instability, Steel and Sea stacks) are correct as written — they accrue on their own. A resource the player deliberately builds may run without a ceiling.
+* **Cascade termination:** every cascade must terminate. Each trigger source resolves at most once per originating action, and a cascade has a maximum depth. A chain able to re-enter itself is a defect, not a large number.
+* **Mitigation must not eat the burst.** The mitigation term in section 3.2.1 silently shaves damage against high Defence. Burst skills use a low `Defense_Ignore_Factor` so the combined modifier lands undamped.
+* **Base attribute values stay tame.** Growth belongs in the combined modifier and cascade channels. Inflating base attributes to chase the pillar breaks fodder tuning and Health-bar readability.
+
+#### 1.1.5. Resolution and presentation
+
+The burst is a mechanic, not an effect layer applied afterwards — how it resolves on screen carries as much of the emotion as the numbers do. A burst resolves as a **visible sequence**: each instance lands one at a time, attributed to its source, with the tempo and magnitude escalating through the cascade rather than flushing at once.
+
+#### 1.1.6. Rejection test
+
+Applied to every new mechanic, skill, item, and encounter:
+
+> If a mechanic's best case is a linear improvement over not having it, it does not serve the pillar.
+
+A mechanic passes by feeding one of the three channels in a way that multiplies with something else in the game. A mechanic that only makes an existing number somewhat larger is rejected regardless of how well it fits the theme.
+
 ---
 
 ## 2. Core Gameplay Loop
@@ -244,7 +304,8 @@ Caster_Scaled = Σ over the skill's weighted attributes (attribute_weight * Cast
 Effective_Defence = Defender's Defence * Skill's Defense_Ignore_Factor
 Damage_Ratio = Caster_Scaled / (Effective_Defence + Caster_Scaled + 1)
 Mitigation = Minimum_Damage_Percent + (1 - Minimum_Damage_Percent) * Damage_Ratio
-Damage = Mitigation * Caster_Scaled * Critical_Multiplier * Random_Multiplier
+Combined_Modifier = Π over every damage-relevant condition true at resolution (its factor)
+Damage = Mitigation * Caster_Scaled * Critical_Multiplier * Random_Multiplier * Combined_Modifier
 ```
 
 - Every skill defines its own attribute weighting rather than a fixed Attack/Mysticism split,
@@ -254,6 +315,10 @@ Damage = Mitigation * Caster_Scaled * Critical_Multiplier * Random_Multiplier
   skill sets it below 1.0, and 0.0 ignores Defence entirely.
 - `Minimum_Damage_Percent` is a mitigation floor: no matter how far Defence outstrips the
   attacker's scaled attributes, every hit still chips away at the target.
+- `Combined_Modifier` is the multiplicative channel described in section 1.1.3: one factor per
+  contributing source (caster buffs, target debuffs and statuses, zones, skill conditions),
+  multiplied together at resolution time rather than accumulated into a stored value. It is the
+  term the blowout is built out of, and it is **not yet implemented**.
 - `Random_Multiplier` keeps a range of 0.95 to 1.05, preventing every hit from being the exact
   same value.
 
