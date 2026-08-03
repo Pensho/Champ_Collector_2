@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="AttributeWeightPreset" load_steps=2 format=3 uid="uid://b8nee1hs4g663"]
+[gd_resource type="Resource" script_class="AttributeWeightPreset" format=3 uid="uid://b8nee1hs4g663"]
 
 [ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_yq726"]
 
