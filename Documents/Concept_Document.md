@@ -28,13 +28,17 @@ Two properties follow and must hold:
 
 Enemy Health scales alongside player power, so the burst is never large relative to the enemy's Health bar. The contrast is read **inside the fight**, against the numbers the player saw during the build-up.
 
-The calibration target is that a burst resolution deals **roughly 50 times** what the same champion's basic skill deals in the same fight. Per tier:
+The calibration target is that a burst resolution deals **30 to 50 times** what the same champion's basic skill deals in the same fight, aiming at the upper end of that band. Per tier:
 
 * **Fodder:** no dedicated burst. Blowout here is overkill on trash — encounters die to routine kit output.
 * **Mini-boss:** one realisation, a partial burst, target around 10x.
-* **Boss:** layered realisations, full burst, target around 50x.
+* **Boss:** layered realisations, full burst, target 30–50x, preferring 50x.
 
-These ratios are calibration starting points, to be revised once the burst is playable and can be felt rather than estimated.
+These ratios are confirmed reachable through kit design. Against a boss-tier Defence of 120, a 50x burst needs a 26x multiplier on the scaled attribute aggregate — about five independent factors of 2x, eight of 1.5x, or three of 3x. Spread across a three-champion team under the composition law below, that is one to two factors per champion, which normal kits can carry.
+
+Enemy Health is the value that has to move. Against the balanced bosses (Health attribute around 300, so roughly 1200 hit points) a 50x burst lands at 150–283% of a boss — overkill, but not by an order of magnitude. For a burst to land as 60–80% of a boss, boss Health attributes need to roughly **triple**, to around 900–1000. A 30x burst needs about double.
+
+The ratios remain open to revision once the burst is playable and can be felt rather than computed. `Scripts/Debug/blowout_calibration.gd` recomputes all of the above when the formula or the presets change.
 
 #### 1.1.3. The three damage channels
 
@@ -50,7 +54,8 @@ Blowout requires terms that grow independently and combine multiplicatively. Dam
 
 * **Stack ceilings:** cap what accrues automatically; leave uncapped what costs the player an action or a resource. The existing capped passives (Momentum, Arcane Instability, Steel and Sea stacks) are correct as written — they accrue on their own. A resource the player deliberately builds may run without a ceiling.
 * **Cascade termination:** every cascade must terminate. Each trigger source resolves at most once per originating action, and a cascade has a maximum depth. A chain able to re-enter itself is a defect, not a large number.
-* **Mitigation must not eat the burst.** The mitigation term in section 3.2.1 silently shaves damage against high Defence. Burst skills use a low `Defense_Ignore_Factor` so the combined modifier lands undamped.
+* **The combined modifier multiplies the scaled attribute aggregate, not the final damage.** The aggregate also feeds the mitigation ratio, so raising it raises mitigation as well: against a boss-tier Defence of 120, a 33x modifier on the aggregate yields a 63x damage increase, where the same modifier on final damage yields exactly 33x. The placement is worth nearly double, it is worth more the tankier the target, and it matches where the existing trait and ramp multipliers already apply.
+* **Defence stops mattering at burst scale.** At burst magnitudes the scaled aggregate dwarfs any Defence value, leaving mitigation near 1 regardless: varying `Defense_Ignore_Factor` from 1.0 to 0.0 moves a burst by under 2%. Defence-ignore is a tool for basic and mid-sized hits, and burst skills gain nothing from it.
 * **Base attribute values stay tame.** Growth belongs in the combined modifier and cascade channels. Inflating base attributes to chase the pillar breaks fodder tuning and Health-bar readability.
 
 #### 1.1.5. Resolution and presentation

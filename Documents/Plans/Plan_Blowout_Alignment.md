@@ -11,7 +11,32 @@ the calibration phase is likely to overturn.
 
 ## Status
 
-Not started. Phase 0 is next.
+Phase 0 is done; its harness lives at `Scripts/Debug/blowout_calibration.gd`. Phase 1
+is next, reframed by the findings below.
+
+Phase 0 findings, measured against the balanced bosses (Troll, Vael, Obsidian Stallion,
+Ulfrac, Bor Bulwark). The newer catalog bosses are excluded as untuned and unplayed:
+
+* **50x is reachable by kit design.** It needs a 26x multiplier on the scaled aggregate —
+  about five independent factors of 2x, eight of 1.5x, or three of 3x. That is one to two
+  factors per champion across a team of three.
+* **Boss Health needs to roughly triple** (attribute ~300 to ~900–1000) for a 50x burst to
+  land as 60–80% of a boss rather than 150–283% of it. Doubling suffices for 30x. Recorded
+  in section 1.1.2; Phase 7 carries the retuning.
+* **The current round budget is sound.** Three champions at basic-skill output clear a
+  balanced boss in 5.9–11.1 rounds, against the 10–12 in section 5.3. No change needed.
+* **The modifier belongs on the scaled aggregate, not on final damage** — worth nearly
+  double (33x becomes 63x against Defence 120), because the aggregate also feeds the
+  mitigation ratio, and worth more the tankier the target. Section 1.1.4.
+* **Defence-ignore is irrelevant to bursts** (under 2% across the full range), correcting
+  an earlier assumption in section 1.1.4.
+* **The multiplicative channel already exists, fragmented.** `_ResolveDamage` in
+  `battle_resolver.gd` already threads six ad-hoc modifier inputs into
+  `Skills.MitigatedDamage`: `p_trait_multiplier`, `p_ramp_multiplier`,
+  `_damage_multiplier`, `_damage_dealt_bonus`, `GetOutgoingDamageBonus`, and
+  `_OpportunistDamageMultiplier` — some multiplicative, some additive fractions, some on
+  the aggregate and some on final damage. Phase 1 is a unification of these into one
+  declared channel, not a greenfield addition.
 
 ## Ordering principle
 
@@ -28,7 +53,9 @@ Three constraints set the order:
 
 ### Phase 0 — Calibration harness
 
-**Produces:** a throwaway headless script, not a sub-plan.
+**Done.** Produced `Scripts/Debug/blowout_calibration.gd`, kept rather than thrown away —
+it re-answers these questions whenever the formula or the presets change. Findings are in
+Status above.
 
 Compute basic-skill damage versus burst damage for a champion under a given set of
 modifier factors, using the section 3.2.1 formula with `Combined_Modifier` applied.
@@ -144,6 +171,13 @@ lands** — authoring more encounters under the old rules adds to the retrofit b
   not treat 50x as settled while authoring.
 * The pillar outranks the rest of the Concept Document. When a phase finds a conflict, the
   other section is the one that changes — but flag it rather than rewriting silently.
+* **The contrast baseline is unsettled.** Section 1.1.2 measures a burst against the
+  bursting champion's own basic skill, and the Phase 0 harness models it that way. Under
+  the composition law a burst is a team product, so the honest baseline may instead be the
+  team's average per-action output — which would move the target substantially. Deliberately
+  left unresolved: a burst is assembled from a composition rather than a single origin, and
+  that composition is what makes an encounter a puzzle, so the baseline is a design question
+  to settle against a playable burst rather than to emulate now. Revisit in Phase 5.
 
 ## Documentation
 
