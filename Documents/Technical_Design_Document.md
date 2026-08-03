@@ -557,12 +557,15 @@ after the tick's other expiry hooks run. Zone interactions (Slipstream, Resonanc
 runs twice instead of once when the character holds Resonance and the zone's owner is an ally — a
 generic "double effect" that works for both Flicker Zone's turn-bar bump (two bumps sum) and Lava
 Zone's stackable Burning (two independent instances) with no per-zone-type special-casing. Sanction
-and Catalyst land as resources only (`gdlintrc`'s `max-public-methods`/`max-file-lines` bumped to
-23/1250 for `battle_resolver.gd`'s growth): Sanction's
+lands as a resource only (`gdlintrc`'s `max-public-methods`/`max-file-lines` bumped to
+23/1250 for `battle_resolver.gd`'s growth): its
 `attribute_modifiers`/`magnitude_kind` are wired but `magnitude = 0.0` (the applier sets the
 instance value, the same "applier sets the instance's value directly" convention `magnitude`'s own
 doc comment already describes, used today by Phalanx Guard/Bleed) since its magnitude source (the
-Emissary's Infraction tally) is deferred; Catalyst has no application site at all yet.
+Emissary's Infraction tally) is deferred. Catalyst Cloud (`Data/Character_Skill_Variants/Zone_Skills/Catalyst_Cloud.tres`)
+applies the Catalyst buff; `BattleResolver.ResolveReagent` consumes it via
+`StatusEffectResolver.ConsumeCatalystIfPresent`, adding its value to potency for scalar reagents
+only, additively alongside the `Reagent_Consumed` trait hook and a brew's own potency bonus.
 
 `ReagentData` (`Concept_Document.md` 3.3.3) is the reagent-system data model. The persistent
 inventory, loot-drop acquisition, and in-battle combat consumption are all landed (see

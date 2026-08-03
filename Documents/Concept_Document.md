@@ -377,7 +377,7 @@ Buffs:
 * Aegis: Blocks the next debuff that would land on the character, then the buff is consumed.
 * Mirror Coat: When a debuff lands on the character, a copy is applied to the attacker, checked against the attacker's Resistance as normal.
 * Opportunist: The character's attacks deal +10% damage per debuff on the target.
-* Catalyst: The next reagent the character consumes has +50% effect. Stacks additively with other reagent potency modifiers; has no effect on binary reagents (see section 3.3.3). (Dormant: the status exists but has no application site yet)
+* Catalyst: The next reagent the character consumes has +50% effect. Stacks additively with other reagent potency modifiers; has no effect on binary reagents (see section 3.3.3).
 * Wanderlust: At the start of each of the character's turns, gain +20% to one random primary stat until their next turn.
 * Overflow: When this buff expires, it deals damage to all enemies, scaling with the holder's Mysticism.
 * Vigor: Increases max Health by 30%.

@@ -128,6 +128,16 @@ func ConsumeDeathwardIfPresent(p_character_ID: int) -> bool:
 			return true
 	return false
 
+## Consumes the character's Catalyst buff, if any, returning its potency bonus (0.0 if absent).
+func ConsumeCatalystIfPresent(p_consumer_ID: int) -> float:
+	var consumer: Character = _resolver._characters[p_consumer_ID]
+	for buff in consumer._active_buffs:
+		if(Types.Buff_Type.Catalyst == buff.type):
+			var bonus: float = buff.value
+			RemoveBuff(p_consumer_ID, buff)
+			return bonus
+	return 0.0
+
 
 func CastDebuff(
 		p_target_ID: int,

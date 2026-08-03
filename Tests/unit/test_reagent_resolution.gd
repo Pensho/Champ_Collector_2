@@ -228,3 +228,64 @@ func test_potency_raises_fractured_idols_cost_and_damage_bonus() -> void:
 
 	assert_gt(boosted_cost, baseline_cost, "Higher potency must raise Fractured Idol's Health cost")
 	assert_gt(boosted_damage, baseline_damage, "Higher potency must raise Fractured Idol's damage-dealt bonus")
+
+func _add_catalyst(p_character: Character) -> void:
+	var catalyst: StatusEffects.Buff = StatusEffects.Buff.new()
+	catalyst.type = Types.Buff_Type.Catalyst
+	catalyst.value = 0.5
+	catalyst.duration = 2
+	p_character._active_buffs.append(catalyst)
+
+func test_catalyst_buff_amplifies_a_scalar_reagent_and_is_consumed() -> void:
+	var catalyst_resolver: BattleResolver = _make_resolver()
+	var catalyst_consumer: Character = catalyst_resolver.GetCharacters()[0]
+	catalyst_consumer._current_health = 5
+	_add_catalyst(catalyst_consumer)
+
+	var baseline_resolver: BattleResolver = _make_resolver()
+	var baseline_consumer: Character = baseline_resolver.GetCharacters()[0]
+	baseline_consumer._current_health = 5
+
+	catalyst_resolver.ResolveReagent(0, "Restorative_Draught_Rare", 0)
+	baseline_resolver.ResolveReagent(0, "Restorative_Draught_Rare", 0)
+
+	assert_gt(catalyst_consumer._current_health, baseline_consumer._current_health,
+			"Catalyst must amplify a scalar reagent's effect")
+	assert_false(catalyst_consumer._active_buffs.any(func(b): return b.type == Types.Buff_Type.Catalyst),
+			"Catalyst must be consumed by the reagent it amplified")
+
+func test_catalyst_buff_does_not_affect_a_binary_reagent_and_is_not_consumed() -> void:
+	var resolver: BattleResolver = _make_resolver()
+	var consumer: Character = resolver.GetCharacters()[0]
+	_add_catalyst(consumer)
+	TestFactory.place_zone(resolver, 0, 0, TestFactory.make_lava_zone_effect(), Types.Skill_Target.ZoneAll)
+
+	resolver.ResolveReagent(0, "Zone_Dissolving_Salts_Rare", 0)
+
+	assert_false(resolver.GetZoneResolver().HasZone(0), "Zone-Dissolving Salts still resolves without amplification")
+	assert_true(consumer._active_buffs.any(func(b): return b.type == Types.Buff_Type.Catalyst),
+			"A binary reagent must not consume the Catalyst buff")
+
+func _heal_amount(p_results: Array[CombatResult]) -> int:
+	for result in p_results:
+		if(CombatResult.Kind.Heal == result.kind):
+			return result.amount
+	return -1
+
+func test_catalyst_stacks_additively_with_a_traits_own_amplification() -> void:
+	var stacked_resolver: BattleResolver = _make_resolver()
+	var stacked_target: Character = stacked_resolver.GetCharacters()[0]
+	stacked_target._trait = TestFactory.FakeAmplifyingTrait.new(0.5)
+	stacked_target._current_health = 1
+	_add_catalyst(stacked_target)
+
+	var stacked_healed: int = _heal_amount(
+			stacked_resolver.ResolveReagent(0, "Restorative_Draught_Rare", 0))
+
+	# Additive potency: 1.0 base + 0.5 trait + 0.5 Catalyst = 2.0, not 1.5 * 1.5.
+	var max_health: int = stacked_target.GetTotalAttribute(
+			Types.Attribute.Health) * GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER
+	var expected_healed: int = mini(
+			ReagentResolver.HealAmount(max_health, 20.0, 2.0), max_health - 1)
+	assert_eq(stacked_healed, expected_healed,
+			"Catalyst must stack additively (not multiplicatively) with a trait's own reagent amplification")

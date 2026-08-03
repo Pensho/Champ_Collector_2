@@ -343,9 +343,11 @@ func ResolveReagent(
 	var reagent: ReagentData = ReagentRegistry.Get(p_reagent_key)
 	var consumer: Character = _characters[p_consumer_ID]
 	var potency: float = 1.0 + p_extra_potency
-	var reagent_trait: CharacterTrait = Skills.ActiveHook(consumer, Types.Combat_Event.Reagent_Consumed)
-	if(not reagent.binary and null != reagent_trait):
-		potency += reagent_trait.OnReagentConsumed(p_consumer_ID, reagent, self)
+	if(not reagent.binary):
+		var reagent_trait: CharacterTrait = Skills.ActiveHook(consumer, Types.Combat_Event.Reagent_Consumed)
+		if(null != reagent_trait):
+			potency += reagent_trait.OnReagentConsumed(p_consumer_ID, reagent, self)
+		potency += _status_resolver.ConsumeCatalystIfPresent(p_consumer_ID)
 	_ResolveReagentEffect(p_consumer_ID, p_target_ID, reagent, potency)
 	BroadcastEvent(Types.Combat_Event.Resource_Depleted)
 	return _EndBatch()
