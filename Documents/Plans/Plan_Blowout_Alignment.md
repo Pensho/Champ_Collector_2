@@ -11,8 +11,8 @@ the calibration phase is likely to overturn.
 
 ## Status
 
-Phase 0 is done; its harness lives at `Scripts/Debug/blowout_calibration.gd`. Phase 1
-is next, reframed by the findings below.
+Phase 0 is done; its harness lives at `Scripts/Debug/blowout_calibration.gd`. Phase 1's
+sub-plan is written (`Plan_Combined_Modifier.md`) and unexecuted.
 
 Phase 0 findings, measured against the balanced bosses (Troll, Vael, Obsidian Stallion,
 Ulfrac, Bor Bulwark). The newer catalog bosses are excluded as untuned and unplayed:
@@ -73,14 +73,18 @@ question and should not become an engineering project.
 
 ### Phase 1 — Combined modifier in the damage pipeline
 
-**Produces:** `Plan_Combined_Modifier.md`.
+**Produced:** `Plan_Combined_Modifier.md`, written and unexecuted.
 
-Implement the multiplicative channel. Must settle: where factors are registered and
-collected at resolution time; how a source declares its factor; how factors are attributed
-in `CombatResult` so the presentation layer can name them; and how the composition law
-(add within a kit, multiply across kits) is enforced mechanically rather than by author
-discipline. Touches `Scripts/Battle/skills.gd`, `Scripts/Battle/Skill_Effects/`,
-`Scripts/Battle/battle_resolver.gd`, and `CombatResult`.
+Implement the multiplicative channel, unifying the eight existing modifier inputs into one
+declared channel on the scaled aggregate. Settled there: factors are keyed by **mechanic
+identity, never by character**, so grouping enforces itself; the modifier is assembled per
+resolution and never stored, which is what Phase 3's repeat and cascade mechanics rest on;
+and `CombatResult` carries the assembled object for Phase 4 to name contributors from.
+
+The composition law in section 1.1.3 is worded in terms of champions ("within a champion's
+kit, effects add"), which describes character-keyed grouping. That wording is corrected in
+this phase. Which mechanics ought to share a key is left open — it is a content decision
+Phases 2 and 5 make as kits are redesigned.
 
 Prerequisite for every phase after it.
 
