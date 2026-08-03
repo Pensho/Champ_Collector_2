@@ -239,12 +239,21 @@ assembly gives them an owner.
 
 ### Batch 6 — opponent passives and encounter assembly
 
-Opponent passives as `CharacterTrait` subclasses. The `OnDeath` hook fires
-but carries no context — extend its signature so a trait can react to an
-*ally's* death (Ash Offering, Warden's Failsafe) and so Lien can run a
-turn-start check with an internal 4-turn cooldown.
+Opponent passives as `CharacterTrait` subclasses. `OnAllyDeath(owner_ID,
+dead_ally_ID, resolver)` already exists and already carries full context
+(landed with the status-effect plan, consumed by `chosen_vessel_trait.gd`
+and `strength_in_numbers_graft.gd`); Ash Offering and Warden's Failsafe react
+to an ally's death through it, no `CharacterTrait` or resolver signature
+change needed. Lien runs a turn-start check with an internal 4-turn
+cooldown, following the `on_the_house_trait.gd` per-cycle-gate precedent.
 
-- Passives: Ash Offering, Lien, Warden's Failsafe.
+- Passives (done): Ash Offering (`ash_offering_trait.gd`, gated to Cinder
+  Husk deaths per the Encounter Design Document wording), Lien
+  (`lien_trait.gd`), Warden's Failsafe (`wardens_failsafe_trait.gd`, using
+  the new `GameBalance.BATTLE_PERMANENT_EFFECT` sentinel for its permanent
+  Frenzy). None emit floating trait text on trigger — Concept Document 3.2
+  states enemy passives are not inspectable in battle, so naming the passive
+  in combat text would leak it; `statue_weapon_trait.gd` set this precedent.
 - Assembly: enemy presets (`Data/Character_Enemy_Variants/`) and battle
   definitions (`Data/Battle_Variants/`) for the encounters cataloged in
   Encounter Design Document section 2, wiring the skills from all prior

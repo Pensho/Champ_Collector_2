@@ -81,6 +81,8 @@ const MAX_DIFFICULTY: int = 20
 const MINIMUM_CRIT_DAMAGE: float = 125.0
 # Cap on the active-debuff count a tick_bonus_per_debuff multiplier can scale with.
 const DEBUFF_TICK_BONUS_STACK_CAP: int = 5
+# Sentinel duration for "active for the rest of the battle" (never decremented within it).
+const BATTLE_PERMANENT_EFFECT: int = 999999
 
 # Resources
 const MAX_SUPPLIES: int = 100
