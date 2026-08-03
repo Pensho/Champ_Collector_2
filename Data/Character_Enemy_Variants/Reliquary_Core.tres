@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="CharacterPreset" format=3]
+
+[ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="1_preset"]
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Resource" uid="uid://di33fmejkr3ua" path="res://Data/Character_Skill_Variants/Support_Skills/Reliquary_Ward.tres" id="2_ward"]
+
+[resource]
+script = ExtResource("1_preset")
+_name = "Reliquary Core"
+_texture = "res://Assets/Champ_Collector/Creatures/Opponents/Reliquary_Core/Reliquary_Core.png"
+_rarity = 5
+_faction = 1
+_role = 13
+_skills = Array[ExtResource("1_skill")]([ExtResource("2_ward")])
+_health = 900
+_speed = 40
+_attack = 0
+_defence = 200
+_accuracy = 20
+_resistance = 40
+_mysticism = 20
+_knowledge = 10
+metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

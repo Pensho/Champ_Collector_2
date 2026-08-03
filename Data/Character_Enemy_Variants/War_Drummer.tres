@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="CharacterPreset" format=3]
+
+[ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="1_preset"]
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Resource" uid="uid://dddik7cttb1p3" path="res://Data/Character_Skill_Variants/Support_Skills/March_Cadence.tres" id="2_march"]
+[ext_resource type="Resource" uid="uid://dvgwxvsovsldc" path="res://Data/Character_Skill_Variants/Attack_Skills/Stab.tres" id="3_stab"]
+
+[resource]
+script = ExtResource("1_preset")
+_name = "War Drummer"
+_texture = "res://Assets/Champ_Collector/Creatures/Opponents/War_Drummer/War_Drummer.png"
+_faction = 4
+_role = 13
+_skills = Array[ExtResource("1_skill")]([ExtResource("2_march"), ExtResource("3_stab")])
+_health = 85
+_speed = 45
+_attack = 30
+_defence = 30
+_accuracy = 20
+_resistance = 15
+_mysticism = 20
+_knowledge = 15
+metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

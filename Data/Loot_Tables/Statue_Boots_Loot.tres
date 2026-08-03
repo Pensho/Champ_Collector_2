@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="LootTable" load_steps=3 format=3]
+
+[ext_resource type="Script" uid="uid://cabwckgc7os5u" path="res://Scripts/Battle/loot_table.gd" id="1_e6cfn"]
+[ext_resource type="Resource" uid="uid://c3g7cshxhg0rw" path="res://Data/Item_Presets/Red_Boots.tres" id="1_il406"]
+
+[resource]
+script = ExtResource("1_e6cfn")
+_primary_loot = Dictionary[int, int]({
+0: 1,
+1: 1,
+2: 1
+})
+_secondary_loot = Dictionary[int, int]({
+0: 5,
+1: 10
+})
+_gear_loot = ExtResource("1_il406")
+metadata/_custom_type_script = "uid://cabwckgc7os5u"

@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="CharacterPreset" format=3]
+
+[ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="1_preset"]
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Resource" uid="uid://coh4q6v0um2ld" path="res://Data/Character_Skill_Variants/Support_Skills/Sporeburst_Mend.tres" id="2_mend"]
+[ext_resource type="Resource" uid="uid://dvgwxvsovsldc" path="res://Data/Character_Skill_Variants/Attack_Skills/Stab.tres" id="3_stab"]
+
+[resource]
+script = ExtResource("1_preset")
+_name = "Sporeback Matron"
+_texture = "res://Assets/Champ_Collector/Creatures/Opponents/Sporeback_Matron/Sporeback_Matron.png"
+_faction = 4
+_role = 13
+_skills = Array[ExtResource("1_skill")]([ExtResource("2_mend"), ExtResource("3_stab")])
+_health = 90
+_speed = 40
+_attack = 30
+_defence = 25
+_accuracy = 20
+_resistance = 15
+_mysticism = 60
+_knowledge = 10
+metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

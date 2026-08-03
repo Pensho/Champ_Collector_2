@@ -16,6 +16,7 @@ extends EditorScript
 
 const OVERWRITE: bool = false
 const ICON_ROOT: String = "res://Assets/Champ_Collector/Icons"
+const CREATURE_ROOT: String = "res://Assets/Champ_Collector/Creatures/Opponents"
 
 # One row per reagent family. Each family gets one icon per rarity tier, all sharing
 # this base hue blended toward the rarity's tint (see RARITY_TINTS).
@@ -335,6 +336,63 @@ const SKILL_ICON_TABLE: Array = [
 			"color": Color(0.50, 0.42, 0.28, 1.0) },
 ]
 
+# One row per opponent body still awaiting real art. Creatures aren't rarity-tiered, so
+# like the skill and status tables each row writes a single flat-color PNG. Rows land
+# under CREATURE_ROOT rather than ICON_ROOT, one folder per creature, grouped by
+# encounter with a distinct base hue.
+#   folder, base_name, size, color
+const CREATURE_PLACEHOLDER_TABLE: Array = [
+	# Sporeback Pack
+	{ "folder": "Spore_Hound", "base_name": "Spore_Hound", "size": 128,
+			"color": Color(0.45, 0.55, 0.30, 1.0) },
+	{ "folder": "Sporeback_Matron", "base_name": "Sporeback_Matron", "size": 128,
+			"color": Color(0.40, 0.60, 0.35, 1.0) },
+	# Wake Skimmers
+	{ "folder": "Skimmer_Cutthroat", "base_name": "Skimmer_Cutthroat", "size": 128,
+			"color": Color(0.20, 0.45, 0.60, 1.0) },
+	{ "folder": "Bosun", "base_name": "Bosun", "size": 128,
+			"color": Color(0.15, 0.40, 0.55, 1.0) },
+	# Ledger Clerks
+	{ "folder": "Warded_Clerk", "base_name": "Warded_Clerk", "size": 128,
+			"color": Color(0.50, 0.50, 0.55, 1.0) },
+	# Plains Outriders
+	{ "folder": "Outrider_Lancer", "base_name": "Outrider_Lancer", "size": 128,
+			"color": Color(0.65, 0.50, 0.25, 1.0) },
+	{ "folder": "War_Drummer", "base_name": "War_Drummer", "size": 128,
+			"color": Color(0.60, 0.45, 0.20, 1.0) },
+	# Ridge Marksmen
+	{ "folder": "Scavenger_Skirmisher", "base_name": "Scavenger_Skirmisher", "size": 128,
+			"color": Color(0.55, 0.40, 0.30, 1.0) },
+	{ "folder": "Ridge_Marksman", "base_name": "Ridge_Marksman", "size": 128,
+			"color": Color(0.50, 0.35, 0.25, 1.0) },
+	# Flank Cutter
+	{ "folder": "Flank_Cutter", "base_name": "Flank_Cutter", "size": 128,
+			"color": Color(0.70, 0.25, 0.20, 1.0) },
+	# Line Breaker
+	{ "folder": "Plains_Charger", "base_name": "Plains_Charger", "size": 128,
+			"color": Color(0.65, 0.35, 0.20, 1.0) },
+	{ "folder": "Drover", "base_name": "Drover", "size": 128,
+			"color": Color(0.60, 0.40, 0.25, 1.0) },
+	# The Ashen Oracle
+	{ "folder": "Cinder_Husk", "base_name": "Cinder_Husk", "size": 128,
+			"color": Color(0.55, 0.20, 0.15, 1.0) },
+	{ "folder": "Ashen_Oracle", "base_name": "Ashen_Oracle", "size": 128,
+			"color": Color(0.60, 0.25, 0.15, 1.0) },
+	# The Glyphbound Archivist
+	{ "folder": "Glyphbound_Archivist", "base_name": "Glyphbound_Archivist", "size": 128,
+			"color": Color(0.45, 0.20, 0.55, 1.0) },
+	# The Collector of Debts
+	{ "folder": "Collector_of_Debts", "base_name": "Collector_of_Debts", "size": 128,
+			"color": Color(0.40, 0.35, 0.15, 1.0) },
+	{ "folder": "Warded_Notary", "base_name": "Warded_Notary", "size": 128,
+			"color": Color(0.45, 0.40, 0.20, 1.0) },
+	# The Warden of the Reliquary
+	{ "folder": "Vault_Warden", "base_name": "Vault_Warden", "size": 128,
+			"color": Color(0.35, 0.35, 0.45, 1.0) },
+	{ "folder": "Reliquary_Core", "base_name": "Reliquary_Core", "size": 128,
+			"color": Color(0.30, 0.30, 0.50, 1.0) },
+]
+
 # Rarity tier order, tint color, and blend strength (how far the base hue shifts
 # toward the tint). Blend strength increases with rarity.
 const RARITY_TINTS: Array = [
@@ -376,17 +434,20 @@ func _run() -> void:
 	var skill_counts: Vector2i = _write_flat_icon_table(SKILL_ICON_TABLE)
 	written_count += skill_counts.x
 	skipped_count += skill_counts.y
+	var creature_counts: Vector2i = _write_flat_icon_table(CREATURE_PLACEHOLDER_TABLE, CREATURE_ROOT)
+	written_count += creature_counts.x
+	skipped_count += creature_counts.y
 	print("---")
 	print("Done. %d written, %d skipped." % [written_count, skipped_count])
 
 
 ## Writes one flat-color PNG per row of a non-rarity-tiered table, creating folders and
 ## honoring the skip-if-exists guard. Returns the written and skipped counts as (x, y).
-func _write_flat_icon_table(table: Array) -> Vector2i:
+func _write_flat_icon_table(table: Array, output_root: String = ICON_ROOT) -> Vector2i:
 	var written: int = 0
 	var skipped: int = 0
 	for row in table:
-		var folder_path: String = "%s/%s" % [ICON_ROOT, row["folder"]]
+		var folder_path: String = "%s/%s" % [output_root, row["folder"]]
 		var make_result: int = DirAccess.make_dir_recursive_absolute(folder_path)
 		if make_result != OK and not DirAccess.dir_exists_absolute(folder_path):
 			push_error("Could not create folder: %s" % folder_path)

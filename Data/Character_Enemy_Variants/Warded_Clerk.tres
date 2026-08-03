@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="CharacterPreset" format=3]
+
+[ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="1_preset"]
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Resource" uid="uid://dl0s23m0g4w3i" path="res://Data/Character_Skill_Variants/Zap.tres" id="2_zap"]
+
+[resource]
+script = ExtResource("1_preset")
+_name = "Warded Clerk"
+_texture = "res://Assets/Champ_Collector/Creatures/Opponents/Warded_Clerk/Warded_Clerk.png"
+_faction = 1
+_role = 13
+_skills = Array[ExtResource("1_skill")]([ExtResource("2_zap")])
+_health = 70
+_speed = 35
+_attack = 30
+_defence = 30
+_accuracy = 20
+_resistance = 90
+_mysticism = 20
+_knowledge = 20
+metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

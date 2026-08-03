@@ -268,11 +268,12 @@ three; Collector: the Cultist buff economy and the tincture reagent
 configuration; Warden: the Tactician + Appraiser burst window).
 
 Opponent skills authored so far (`Encounter_Design_Document.md` section 1):
-Break Guard, Wind the Mainspring, Overwhelming Blow, Sporeburst Mend, Rally the
+Break Guard, Wind the Mainspring, Sporeburst Mend, Rally the
 Crew, March Cadence, Aimed Shot, Flank Cut, Breaching Charge, Cinder Spit,
 Cinder Sermon, Ash Offering (passive), Inscribe, Inscription Surge,
 Foreclosure, Lien (passive), Writ of Seizure, Reliquary Ward, Vault Slam,
-Warden's Failsafe (passive).
+Warden's Failsafe (passive). Reanimating Statues 2 reuses Crush (Attack Skills)
+rather than authoring a duplicate Overwhelming Blow.
 
 ## Per-batch procedure
 

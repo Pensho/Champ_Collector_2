@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="CharacterPreset" load_steps=4 format=3 uid="uid://c44bvlmv6s6ux"]
+[gd_resource type="Resource" script_class="CharacterPreset" format=3 uid="uid://c44bvlmv6s6ux"]
 
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_nk3ru"]
-[ext_resource type="Resource" uid="uid://dl0s23m0g4w3i" path="res://Data/Character_Skill_Variants/Zap.tres" id="2_d65ud"]
+[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_p62yr"]
+[ext_resource type="Resource" uid="uid://bskvmtf181qhi" path="res://Data/Character_Skill_Variants/Attack_Skills/Wind_the_Mainspring.tres" id="2_d65ud"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_u4t3b"]
 
 [resource]

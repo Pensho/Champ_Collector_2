@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="Context_Battle" load_steps=5 format=3]
+
+[ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="1_preset"]
+[ext_resource type="Script" uid="uid://bjtnao6fgl8go" path="res://Scripts/Worldview/Context_Battle.gd" id="2_battle"]
+[ext_resource type="Resource" path="res://Data/Character_Enemy_Variants/Flank_Cutter.tres" id="3_cutter"]
+[ext_resource type="Resource" uid="uid://dauwp8sbf3ga" path="res://Data/Loot_Tables/Experience_Quest.tres" id="4_loot"]
+
+[resource]
+script = ExtResource("2_battle")
+_enemies_wave_1 = Array[ExtResource("1_preset")]([ExtResource("3_cutter")])
+_location = "res://Assets/Champ_Collector/Scenery/Troll battle area/Troll_battle_area_3.jpg"
+_loot_table = ExtResource("4_loot")
+metadata/_custom_type_script = "uid://bjtnao6fgl8go"

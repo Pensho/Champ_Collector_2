@@ -6,16 +6,7 @@ body of work. Findings behind these plans are recorded in
 
 Suggested order (dependencies noted inside each plan):
 
-1. `Plan_Skill_Implementation.md` — the skill catalog made real: champion Role
-   kits (`Concept_Document.md` 3.2.4) and opponent skills
-   (`Encounter_Design_Document.md` section 1) in six mechanical batches.
-   Depends on the completed status-effect system (`StatusEffectData` resources
-   looked up through `StatusEffectRegistry`, healing hook, icon generator — see
-   `Technical_Design_Document.md` section 6.1); the final batch assembles the
-   enemy presets the encounter catalog needs, so it feeds
-   `Plan_Encounter_Solution_Design.md` playability.
-
-2. `Plan_Story_Mode_Systems.md` — the systems that deliver story mode (story
+1. `Plan_Story_Mode_Systems.md` — the systems that deliver story mode (story
    state handler, dialogue overlay, flag-driven hub variants, act gating,
    scripted battle openings, guest champions). The state handler and dialogue
    overlay are independent and can start any time; scripted openings apply

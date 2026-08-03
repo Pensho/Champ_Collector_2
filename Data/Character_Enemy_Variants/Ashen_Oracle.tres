@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="CharacterPreset" format=3]
+
+[ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="1_preset"]
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Resource" uid="uid://b8x0tmrxq602j" path="res://Data/Character_Skill_Variants/Attack_Skills/Cinder_Spit.tres" id="2_spit"]
+[ext_resource type="Resource" uid="uid://kr6xr33w4g6u" path="res://Data/Character_Skill_Variants/Attack_Skills/Cinder_Sermon.tres" id="3_sermon"]
+[ext_resource type="Resource" path="res://Data/Character_Traits/Enemy_Traits/Ash_Offering_Trait.tres" id="4_trait"]
+
+[resource]
+script = ExtResource("1_preset")
+_name = "The Ashen Oracle"
+_texture = "res://Assets/Champ_Collector/Creatures/Opponents/Ashen_Oracle/Ashen_Oracle.png"
+_rarity = 4
+_faction = 4
+_role = 13
+_skills = Array[ExtResource("1_skill")]([ExtResource("2_spit"), ExtResource("3_sermon")])
+_health = 260
+_speed = 45
+_attack = 30
+_defence = 45
+_accuracy = 25
+_resistance = 30
+_mysticism = 90
+_knowledge = 20
+_trait = ExtResource("4_trait")
+metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

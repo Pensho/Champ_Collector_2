@@ -26,11 +26,6 @@ Concept Document 3.2.3 catalog.
     * Effect: Deals damage to a single target enemy, scaling with Speed,
       and the user gains the Haste buff for 2 turns (see Concept Document
       3.2.3.2; Haste stacks, so an uninterrupted user ramps steadily faster).
-* Overwhelming Blow
-    * Type: Damage
-    * Cooldown: 3 turns
-    * Effect: Deals massive damage to a single target enemy, scaling
-      with Attack (starting point: 250% of a basic hit).
 * Sporeburst Mend
     * Type: Heal (basic skill, no cooldown)
     * Effect: Restores Health to all allies, scaling with the user's Mysticism
@@ -249,10 +244,9 @@ Concept Document).
 
 - **Tier:** Mini-boss.
 - **Enemy composition:** one Reanimating Statue — Weapon.
-- **Mechanics:** a telegraphed kill-shot cycle — Break Guard softens a target,
-  then Overwhelming Blow (both section 1) lands a massive single-target hit
-  every few turns. Onset: the first Overwhelming Blow lands around enemy
-  turn 2–3.
+- **Mechanics:** a telegraphed kill-shot cycle — Break Guard (section 1) softens
+  a target, then Crush (cooldown 2, 250% Attack) lands a massive single-target
+  hit every few turns. Onset: the first Crush lands around enemy turn 2–3.
 - **Intended solutions:** Enfeeble (e.g. the Lancer's Disarm) blunts the hit; a
   sustain-side answer — Fortify (e.g. the Warlord's Hold the Line) or Barrier
   (e.g. the Architect's Raise the Frame, the Bloodmage's Transfusion) — absorbs

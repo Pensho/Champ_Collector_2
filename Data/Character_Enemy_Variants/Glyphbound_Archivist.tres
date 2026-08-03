@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="CharacterPreset" format=3]
+
+[ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="1_preset"]
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Resource" uid="uid://yj5qjv18f6k2" path="res://Data/Character_Skill_Variants/Attack_Skills/Inscribe.tres" id="2_inscribe"]
+[ext_resource type="Resource" path="res://Data/Character_Skill_Variants/Attack_Skills/Inscription_Surge.tres" id="3_surge"]
+
+[resource]
+script = ExtResource("1_preset")
+_name = "The Glyphbound Archivist"
+_texture = "res://Assets/Champ_Collector/Creatures/Opponents/Glyphbound_Archivist/Glyphbound_Archivist.png"
+_rarity = 5
+_faction = 4
+_role = 13
+_skills = Array[ExtResource("1_skill")]([ExtResource("2_inscribe"), ExtResource("3_surge")])
+_health = 500
+_speed = 50
+_attack = 40
+_defence = 60
+_accuracy = 30
+_resistance = 40
+_mysticism = 100
+_knowledge = 30
+metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

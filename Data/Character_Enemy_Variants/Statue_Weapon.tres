@@ -6,6 +6,7 @@
 [ext_resource type="Resource" uid="uid://dvgwxvsovsldc" path="res://Data/Character_Skill_Variants/Attack_Skills/Stab.tres" id="2_ttuqr"]
 [ext_resource type="Resource" uid="uid://dsehiu3g0rbyd" path="res://Data/Character_Skill_Variants/Attack_Skills/Crush.tres" id="3_ttuqr"]
 [ext_resource type="Resource" uid="uid://cuj66xo5ynhtl" path="res://Data/Character_Traits/Enemy_Traits/Statue_Weapon_Trait.tres" id="4_2mmo3"]
+[ext_resource type="Resource" uid="uid://civ8gh1okd6p1" path="res://Data/Character_Skill_Variants/Attack_Skills/Break_Guard.tres" id="5_bgrd0"]
 
 [resource]
 script = ExtResource("2_m7np0")
@@ -14,7 +15,7 @@ _texture = "res://Assets/Champ_Collector/Creatures/Opponents/Gear_Statues/Statue
 _rarity = 4
 _faction = 4
 _role = 13
-_skills = Array[ExtResource("1_e4125")]([ExtResource("2_ttuqr"), ExtResource("2_ttuqr"), ExtResource("3_ttuqr")])
+_skills = Array[ExtResource("1_e4125")]([ExtResource("2_ttuqr"), ExtResource("5_bgrd0"), ExtResource("3_ttuqr")])
 _health = 270
 _speed = 45
 _attack = 110

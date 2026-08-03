@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="CharacterPreset" format=3]
+
+[ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="1_preset"]
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Resource" uid="uid://ceysesalsco4n" path="res://Data/Character_Skill_Variants/Attack_Skills/Foreclosure.tres" id="2_foreclosure"]
+[ext_resource type="Resource" path="res://Data/Character_Traits/Enemy_Traits/Lien_Trait.tres" id="3_trait"]
+
+[resource]
+script = ExtResource("1_preset")
+_name = "The Collector of Debts"
+_texture = "res://Assets/Champ_Collector/Creatures/Opponents/Collector_of_Debts/Collector_of_Debts.png"
+_rarity = 5
+_faction = 1
+_role = 13
+_skills = Array[ExtResource("1_skill")]([ExtResource("2_foreclosure")])
+_health = 350
+_speed = 45
+_attack = 70
+_defence = 45
+_accuracy = 30
+_resistance = 70
+_mysticism = 20
+_knowledge = 30
+_trait = ExtResource("3_trait")
+metadata/_custom_type_script = "uid://ftdwxfh8y3n1"
