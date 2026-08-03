@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_wypv1"]
 [ext_resource type="Resource" uid="uid://ytl3g36itqfs" path="res://Data/Attribute_Weights/Learned.tres" id="2_mvvkq"]
 [ext_resource type="Resource" uid="uid://dl0s23m0g4w3i" path="res://Data/Character_Skill_Variants/Zap.tres" id="2_s6tdb"]
+[ext_resource type="Resource" path="res://Data/Character_Skill_Variants/Zone_Skills/Temporal_Sinkhole.tres" id="2_sinkhole"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_uh5a3"]
 [ext_resource type="Resource" uid="uid://syj6hxvr5t2x" path="res://Data/Attribute_Weights/Dexterous.tres" id="3_qgja1"]
 [ext_resource type="Resource" uid="uid://c4jeqgmcjxuvw" path="res://Data/Character_Skill_Variants/Zone_Skills/Flicker_Zone.tres" id="3_rpaiv"]
@@ -19,7 +20,7 @@ _texture = "res://Assets/Champ_Collector/Creatures/Chronophage/Chronophage_0010.
 _rarity = 3
 _faction = 1
 _role = 17
-_skills = Array[ExtResource("1_wypv1")]([ExtResource("2_s6tdb"), ExtResource("2_s6tdb"), ExtResource("3_rpaiv")])
+_skills = Array[ExtResource("1_wypv1")]([ExtResource("2_s6tdb"), ExtResource("2_sinkhole"), ExtResource("3_rpaiv")])
 _health = 40
 _speed = 80
 _attack = 40

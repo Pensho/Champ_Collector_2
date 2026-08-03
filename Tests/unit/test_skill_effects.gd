@@ -163,6 +163,47 @@ func test_damage_effect_defense_ignore_factor_reduces_the_targets_effective_defe
 	assert_gt(ignoring_damage, full_defence_damage,
 		"A lower defense_ignore_factor should shrink effective Defence and deal more damage")
 
+func test_damage_effect_bonus_per_zones_on_turn_bar_scales_with_zone_count() -> void:
+	var skill: Skill = TestFactory.make_strike_skill()
+	var effect: DamageEffect = DamageEffect.new()
+	effect.damage_scaling = {Types.Attribute.Attack: 1.0}
+	effect.bonus_per = {Types.Trait_Count_Source.Zones_On_Turn_Bar: 0.3}
+	var baseline_before: int = _roster[3]._current_health
+	effect.Resolve(TestFactory.make_context(_resolver, 0, [3], skill))
+	var baseline_damage: int = baseline_before - _roster[3]._current_health
+
+	_roster.assign(TestFactory.make_full_roster())
+	_resolver = TestFactory.make_resolver(_roster, TestFactory.make_full_sides())
+	TestFactory.place_zone(_resolver, 0, 0, TestFactory.make_zone_effect(1), Types.Skill_Target.ZoneAll)
+	var zoned_before: int = _roster[3]._current_health
+	effect.Resolve(TestFactory.make_context(_resolver, 0, [3], skill))
+	var zoned_damage: int = zoned_before - _roster[3]._current_health
+
+	assert_gt(zoned_damage, baseline_damage, "A zone standing on the bar should add its bonus fraction")
+	for zone in _resolver.GetZoneResolver().GetZones().values():
+		zone.free()
+
+func test_damage_effect_bonus_per_debuff_on_target_applies_only_when_the_target_carries_it() -> void:
+	var skill: Skill = TestFactory.make_strike_skill()
+	var effect: DamageEffect = DamageEffect.new()
+	effect.damage_scaling = {Types.Attribute.Attack: 1.0}
+	effect.bonus_per_debuff_on_target = {Types.Debuff_Type.Warped: 0.3}
+	var baseline_before: int = _roster[3]._current_health
+	effect.Resolve(TestFactory.make_context(_resolver, 0, [3], skill))
+	var baseline_damage: int = baseline_before - _roster[3]._current_health
+
+	_roster.assign(TestFactory.make_full_roster())
+	_resolver = TestFactory.make_resolver(_roster, TestFactory.make_full_sides())
+	var warped: StatusEffects.Debuff = StatusEffects.Debuff.new()
+	warped.type = Types.Debuff_Type.Warped
+	warped.duration = 2
+	_roster[3]._active_debuffs.append(warped)
+	var warped_before: int = _roster[3]._current_health
+	effect.Resolve(TestFactory.make_context(_resolver, 0, [3], skill))
+	var warped_damage: int = warped_before - _roster[3]._current_health
+
+	assert_gt(warped_damage, baseline_damage, "A target carrying the bonus debuff should take increased damage")
+
 # --- ApplyBuffEffect / ApplyDebuffEffect ---
 
 func test_apply_buff_effect_applies_a_buff_with_its_own_duration() -> void:

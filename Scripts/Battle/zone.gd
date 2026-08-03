@@ -11,6 +11,7 @@ var _visual_scene: PackedScene
 # Characters currently standing in the zone who have already been affected by it this
 # visit; cleared per-character when ZoneResolver detects they have left the section.
 var _affected_since_entry: Array[int] = []
+var _placing_skill_name: String = ""
 
 func CreateNew(
 		p_charges: int,
@@ -18,13 +19,15 @@ func CreateNew(
 		p_target: Types.Skill_Target,
 		p_owner_attributes: Dictionary[Types.Attribute, int] = {},
 		p_on_trigger: Array[SkillEffect] = [],
-		p_visual_scene: PackedScene = null) -> void:
+		p_visual_scene: PackedScene = null,
+		p_placing_skill_name: String = "") -> void:
 	_charges = p_charges
 	_owner_ID = p_owner_ID
 	_owner_attributes = p_owner_attributes
 	_owner_knowledge = p_owner_attributes.get(Types.Attribute.Knowledge, 0)
 	_on_trigger = p_on_trigger
 	_visual_scene = p_visual_scene
+	_placing_skill_name = p_placing_skill_name
 	match p_target:
 		Types.Skill_Target.ZoneAll, Types.Skill_Target.ZoneAlly, Types.Skill_Target.ZoneEnemy:
 			_target = p_target

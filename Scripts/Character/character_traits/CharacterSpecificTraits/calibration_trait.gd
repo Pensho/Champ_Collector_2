@@ -107,4 +107,4 @@ func _ReErectZone(p_owner_ID: int, p_resolver: BattleResolver) -> void:
 	zone_effect.charges = RAISE_THE_FRAME_ZONE_CHARGES
 	zone_effect.on_trigger = [BarrierZoneEffect.new()]
 	zone_resolver.PlaceZone(available_zone_IDs[0], p_owner_ID, zone_effect, Types.Skill_Target.ZoneAlly,
-			p_resolver.GetEffectiveAttributes(p_owner_ID))
+			p_resolver.GetEffectiveAttributes(p_owner_ID), "Raise the Frame")

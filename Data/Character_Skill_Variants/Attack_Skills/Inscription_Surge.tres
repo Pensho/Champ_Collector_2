@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="Skill" format=3]
+
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Script" uid="uid://bmqtglyyora7q" path="res://Scripts/Battle/Skill_Effects/skill_effect.gd" id="1_effect"]
+[ext_resource type="Script" uid="uid://bn0n72opjy7sb" path="res://Scripts/Battle/Skill_Effects/damage_effect.gd" id="2_damage"]
+
+[sub_resource type="Resource" id="Resource_surge"]
+script = ExtResource("2_damage")
+damage_scaling = Dictionary[int, float]({
+6: 0.8
+})
+bonus_per = Dictionary[int, float]({
+6: 0.3
+})
+
+[resource]
+script = ExtResource("1_skill")
+name = "Inscription Surge"
+description = "Deals damage to all enemies, scaling with Mysticism, increased by 30% per zone standing on the turn bar -- regardless of who placed it."
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Opponent_Active_Skills/Inscription_Surge/Inscription_Surge.png"
+target = 1
+cooldown = 3
+effects = Array[ExtResource("1_effect")]([SubResource("Resource_surge")])
+metadata/_custom_type_script = "uid://glh06y3wvchj"

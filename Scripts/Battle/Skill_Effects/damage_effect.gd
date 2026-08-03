@@ -9,6 +9,9 @@ class_name DamageEffect extends SkillEffect
 @export var damage_scaling: Dictionary[Types.Attribute, float]
 @export var defense_ignore_factor: float = 1.0
 @export var bonus_per: Dictionary[Types.Trait_Count_Source, float]
+## Per-target bonus, summed for each debuff type currently on the target — distinct
+## from bonus_per because the source is a debuff type, not a Trait_Count_Source.
+@export var bonus_per_debuff_on_target: Dictionary[Types.Debuff_Type, float]
 @export var allow_critical: bool = true
 
 func Resolve(p_context: SkillCastContext) -> void:
@@ -31,7 +34,19 @@ func _AdditiveBonus(p_context: SkillCastContext, p_target_ID: int) -> float:
 		if(Types.Trait_Count_Source.Uses_This_Battle == source):
 			continue
 		bonus += bonus_per[source] * _Count(p_context, p_target_ID, source)
+	for debuff_type: Types.Debuff_Type in bonus_per_debuff_on_target.keys():
+		if(_TargetHasDebuff(p_context, p_target_ID, debuff_type)):
+			bonus += bonus_per_debuff_on_target[debuff_type]
 	return bonus
+
+func _TargetHasDebuff(p_context: SkillCastContext, p_target_ID: int, p_debuff_type: Types.Debuff_Type) -> bool:
+	var target_character: Character = p_context.resolver.GetCharacters().get(p_target_ID)
+	if(null == target_character):
+		return false
+	for debuff in target_character._active_debuffs:
+		if(p_debuff_type == debuff.type):
+			return true
+	return false
 
 func _Count(p_context: SkillCastContext, p_target_ID: int, p_source: Types.Trait_Count_Source) -> float:
 	match p_source:
@@ -39,6 +54,8 @@ func _Count(p_context: SkillCastContext, p_target_ID: int, p_source: Types.Trait
 			return float(p_context.resolver.GetCharacters()[p_context.caster_ID]._active_buffs.size())
 		Types.Trait_Count_Source.Buffs_Consumed:
 			return float(p_context.buffs_consumed)
+		Types.Trait_Count_Source.Zones_On_Turn_Bar:
+			return float(p_context.resolver.GetZoneResolver().GetZones().size())
 		Types.Trait_Count_Source.Trait_Condition, Types.Trait_Count_Source.Trait_Counter_On_Target, \
 				Types.Trait_Count_Source.Trait_Counter_Raw_On_Target:
 			return _TraitCount(p_context, p_target_ID, p_source)

@@ -194,7 +194,7 @@ replaced by effect components in `Plan_Skill_Effect_Components.md`; the skills
 themselves are unchanged. Author any further skill against the effect schema,
 not these fields.
 
-### Batch 5 — zone system alignment and new zones
+### Batch 5 — zone system alignment and new zones (complete)
 
 Align zones with Concept Document 3.2.4.1 — charges instead of durations,
 player-chosen section placement, blocked placement into occupied sections —
@@ -221,6 +221,21 @@ rather than introducing a second zone-data resource.
   (Plague Doctor); Weight of Law (unassigned zone).
 - Opponent skills: Inscribe (Wild Glyph), Inscription Surge
   (per-standing-zone scaling).
+
+**Weight of Law** was authored unattached to any preset, with Cooldown 3 and 3
+charges as a stated assumption — Concept 3.2.4.2 lists it with an effect line
+only, no Role owner, Type, cooldown, or charge count. Needs the user's
+confirmation.
+
+**Refutation** is wired into `Centaur_Archivist.tres` (`_role = 6`, Scholar) —
+the Role's preset filename need not match the Role name — replacing the
+`Hold_the_Line` placeholder that sat alongside its other two Concept-listed
+skills, Sharp Rebuttal and Expose Fallacy.
+
+**Inscribe** and **Inscription Surge** are likewise unattached — the
+Glyphbound Archivist is an enemy-only boss (`Encounter_Design_Document.md`
+2.3), not a player Role, so both land unattached until Batch 6's encounter
+assembly gives them an owner.
 
 ### Batch 6 — opponent passives and encounter assembly
 

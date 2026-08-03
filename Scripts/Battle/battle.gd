@@ -43,6 +43,9 @@ var _barrier_status_ID: Dictionary[int, int] = {}
 var _reagent_loadout: ReagentLoadout
 var _selected_reagent_index: int = -1
 var _pending_turn_bar_reset: Dictionary[int, float] = {}
+# Whether the current Selecting_Zone pick is clearing an occupied section (e.g.
+# Refutation) rather than placing a new zone into an empty one.
+var _clearing_zone_mode: bool = false
 
 @onready var _battle_ui: BattleUI = $"Battle UI"
 @onready var _background: TextureRect = %BattleBackground
@@ -270,14 +273,23 @@ func _HasZoneEffect(p_skill: Skill) -> bool:
 			return true
 	return false
 
+func _HasClearZoneEffect(p_skill: Skill) -> bool:
+	for effect in p_skill.effects:
+		if(effect is ClearZoneEffect):
+			return true
+	return false
+
 # Reverse-iterates the skills for the first one off cooldown, skipping zone skills
-# when no turn-bar zone is free; skill 0 is the fallback.
+# when no turn-bar zone is free (or, for a clearing skill, when there is no zone to
+# clear); skill 0 is the fallback.
 func SelectEnemySkillID() -> int:
 	var skills: Array[Skill] = _characters[_turn_character_ID]._skills
 	for i in range(skills.size() - 1, -1, -1):
 		if(0 < skills[i].cooldown_left):
 			continue
 		if(_HasZoneEffect(skills[i]) and _resolver.GetZoneResolver().AvailableZoneIDs().is_empty()):
+			continue
+		if(_HasClearZoneEffect(skills[i]) and _resolver.GetZoneResolver().GetZones().is_empty()):
 			continue
 		return i
 	return 0
@@ -286,7 +298,7 @@ func HandleEnemyTurn() -> void:
 	_selected_skill_ID = SelectEnemySkillID()
 	var cast_skill: Skill = _characters[_turn_character_ID]._skills[_selected_skill_ID]
 
-	if(_HasZoneEffect(cast_skill)):
+	if(_HasZoneEffect(cast_skill) or _HasClearZoneEffect(cast_skill)):
 		print(_characters[_turn_character_ID]._name, " used skill with ID: ", _selected_skill_ID)
 		ResolveTurn([])
 		return
@@ -573,7 +585,9 @@ func _on_battle_ui_battle_skill_selected(p_skill_ID: int) -> void:
 				_characters[_turn_character_ID]._skills[p_skill_ID].cooldown_left, " more turns left.")
 		return
 	_selected_skill_ID = p_skill_ID
-	if(_HasZoneEffect(_characters[_turn_character_ID]._skills[_selected_skill_ID])):
+	var selected_skill: Skill = _characters[_turn_character_ID]._skills[_selected_skill_ID]
+	if(_HasZoneEffect(selected_skill) or _HasClearZoneEffect(selected_skill)):
+		_clearing_zone_mode = _HasClearZoneEffect(selected_skill)
 		_state = BattleState.Selecting_Zone
 		_battle_ui._turn_bar.DisableZones(false)
 	else:
@@ -587,8 +601,9 @@ func _on_turn_bar_zone_selected(p_zone_ID: int) -> void:
 			return
 		_ResolveReagentConsumption(_selected_reagent_index, p_zone_ID)
 		return
-	if(_resolver.GetZoneResolver().HasZone(p_zone_ID)):
-		print("Zone is already used")
+	var occupied: bool = _resolver.GetZoneResolver().HasZone(p_zone_ID)
+	if(occupied != _clearing_zone_mode):
+		print("Zone is already used" if occupied else "No zone to clear there")
 		return
 	_resolver.SetPendingZoneSection(p_zone_ID)
 	ResolveTurn([])

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="Skill" format=3 uid="uid://dwq2un5ko47jb"]
+
+[ext_resource type="Script" uid="uid://bmqtglyyora7q" path="res://Scripts/Battle/Skill_Effects/skill_effect.gd" id="1_effect"]
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Script" uid="uid://ci8gllbleku23" path="res://Scripts/Battle/Skill_Effects/clear_zone_effect.gd" id="2_clear"]
+
+[sub_resource type="Resource" id="Resource_clear"]
+script = ExtResource("2_clear")
+
+[resource]
+script = ExtResource("1_skill")
+name = "Refutation"
+description = "Removes one zone of your choice from the turn bar. If enemy-placed, deal damage to the caster scaling with Knowledge. 10% damage increase per charge remaining. If ally-placed, the placing ally's zone skill has its cooldown reduced by 2."
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Refutation/Refutation.png"
+cooldown = 3
+effects = Array[ExtResource("1_effect")]([SubResource("Resource_clear")])
+metadata/_custom_type_script = "uid://glh06y3wvchj"

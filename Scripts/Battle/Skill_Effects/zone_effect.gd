@@ -14,8 +14,9 @@ func Resolve(p_context: SkillCastContext) -> void:
 		return
 	var effective_target: Types.Skill_Target = (
 			p_context.skill.target if Types.Skill_Target.Skill_Default == target else target)
+	var placing_skill_name: String = p_context.skill.name if null != p_context.skill else ""
 	zone_resolver.PlaceZone(zone_ID, p_context.caster_ID, self, effective_target,
-			p_context.resolver.GetEffectiveAttributes(p_context.caster_ID))
+			p_context.resolver.GetEffectiveAttributes(p_context.caster_ID), placing_skill_name)
 
 func _ResolveSection(p_context: SkillCastContext, p_zone_resolver: ZoneResolver) -> int:
 	var available: Array[int] = p_zone_resolver.AvailableZoneIDs()

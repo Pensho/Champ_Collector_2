@@ -38,13 +38,14 @@ func PlaceZone(
 		p_owner_ID: int,
 		p_zone_effect: ZoneEffect,
 		p_target: Types.Skill_Target,
-		p_owner_attributes: Dictionary[Types.Attribute, int]) -> Array[CombatResult]:
+		p_owner_attributes: Dictionary[Types.Attribute, int],
+		p_placing_skill_name: String = "") -> Array[CombatResult]:
 	_resolver._BeginBatch()
 	if(_zones.has(p_zone_ID)):
 		return _resolver._EndBatch()
 	var zone: Zone = Zone.new()
 	zone.CreateNew(p_zone_effect.charges, p_owner_ID, p_target, p_owner_attributes,
-			p_zone_effect.on_trigger.duplicate(), p_zone_effect.visual_scene)
+			p_zone_effect.on_trigger.duplicate(), p_zone_effect.visual_scene, p_placing_skill_name)
 	_zones[p_zone_ID] = zone
 	var result: CombatResult = CombatResult.new(CombatResult.Kind.Zone_Placed)
 	result.zone_ID = p_zone_ID

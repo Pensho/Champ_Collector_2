@@ -4,11 +4,11 @@
 [ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_hflnl"]
 [ext_resource type="Resource" uid="uid://i4pibjinfd3x" path="res://Data/Attribute_Weights/Gluttonous.tres" id="2_leoeh"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_q0dfw"]
-[ext_resource type="Resource" path="res://Data/Character_Skill_Variants/Attack_Skills/Sharp_Rebuttal.tres" id="2_sharp_rebuttal"]
+[ext_resource type="Resource" uid="uid://dlll3hibnwd3k" path="res://Data/Character_Skill_Variants/Attack_Skills/Sharp_Rebuttal.tres" id="2_sharp_rebuttal"]
 [ext_resource type="Resource" uid="uid://ytl3g36itqfs" path="res://Data/Attribute_Weights/Learned.tres" id="3_eqvax"]
-[ext_resource type="Resource" path="res://Data/Character_Skill_Variants/Support_Skills/Expose_Fallacy.tres" id="3_expose_fallacy"]
-[ext_resource type="Resource" uid="uid://cbgjuq0ikkygr" path="res://Data/Character_Skill_Variants/Support_Skills/Hold_the_Line.tres" id="4_njcfh"]
+[ext_resource type="Resource" uid="uid://d3qwiwkh6klk3" path="res://Data/Character_Skill_Variants/Support_Skills/Expose_Fallacy.tres" id="3_expose_fallacy"]
 [ext_resource type="Resource" uid="uid://syj6hxvr5t2x" path="res://Data/Attribute_Weights/Dexterous.tres" id="4_or5t3"]
+[ext_resource type="Resource" path="res://Data/Character_Skill_Variants/Support_Skills/Refutation.tres" id="4_refutation"]
 [ext_resource type="Resource" uid="uid://bejf1a62v41gq" path="res://Data/Attribute_Weights/Marksman.tres" id="5_psd0m"]
 [ext_resource type="Resource" uid="uid://4fnej15sbkkv" path="res://Data/Attribute_Weights/Arcane.tres" id="6_2vu7x"]
 [ext_resource type="Resource" uid="uid://bvo4uj38cgjg3" path="res://Data/Attribute_Weights/Calculating.tres" id="7_y80ud"]
@@ -21,7 +21,7 @@ _texture = "res://Assets/Champ_Collector/Creatures/Centaur_Archivist/Centaur_Arc
 _rarity = 4
 _faction = 7
 _role = 6
-_skills = Array[ExtResource("1_apwnd")]([ExtResource("2_sharp_rebuttal"), ExtResource("3_expose_fallacy"), ExtResource("4_njcfh")])
+_skills = Array[ExtResource("1_apwnd")]([ExtResource("2_sharp_rebuttal"), ExtResource("3_expose_fallacy"), ExtResource("4_refutation")])
 _health = 60
 _speed = 60
 _attack = 35

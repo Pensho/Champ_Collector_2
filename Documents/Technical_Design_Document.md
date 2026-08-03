@@ -125,7 +125,7 @@ It is referenced both as the autoload `Game_Balance.X` and, in a few files, by t
 ### 3.3. `Types` (`common_enums.gd`)
 
 `Scripts/common_enums.gd` is the single source for all shared enums: `Rarity`, `Faction`,
-`Role`, `Slot`, `Skill_Target`, `Attribute`, `Skill_Type`, `Buff_Type`, `Debuff_Type`,
+`Role`, `Slot`, `Skill_Target`, `Attribute`, `Buff_Type`, `Debuff_Type`,
 `Combat_Event`. Every system references attributes and targeting through `Types.Attribute.*`,
 `Types.Skill_Target.*`, and so on, which keeps enum values consistent across data files and code.
 
@@ -269,7 +269,6 @@ class_name Skill extends Resource
 @export var target: Types.Skill_Target      # default target group for the effects
 # cooldown is the amount of turns until the skill can be used again.
 @export var cooldown: int = 0
-@export var skill_type: Types.Skill_Type    # UI category, and the zone's type
 ## Ordered, self-resolving effects.
 @export var effects: Array[SkillEffect]
 var cooldown_left: int = 0
@@ -296,11 +295,11 @@ self-buff on an otherwise offensive skill). `condition`/`condition_test`/`condit
 gate the whole effect on a trait's `GetConditionCount` reading for the primary target — see
 [Section 9](#9-trait-hook-system).
 
-The eleven effect subclasses, all under `Scripts/Battle/Skill_Effects/`:
+The effect subclasses, all under `Scripts/Battle/Skill_Effects/`:
 
 | Effect | Fields | Resolves |
 |---|---|---|
-| `DamageEffect` | `damage_scaling`, `defense_ignore_factor`, `bonus_per: Dictionary[Types.Trait_Count_Source, float]`, `allow_critical` | Damage to the target group, scaled and bonused — see the damage-bonus discussion in [Section 7.4](#74-skill-resolution-battleresolverresolveskill) |
+| `DamageEffect` | `damage_scaling`, `defense_ignore_factor`, `bonus_per: Dictionary[Types.Trait_Count_Source, float]`, `bonus_per_debuff_on_target: Dictionary[Types.Debuff_Type, float]`, `allow_critical` | Damage to the target group, scaled and bonused — see the damage-bonus discussion in [Section 7.4](#74-skill-resolution-battleresolverresolveskill). `bonus_per_debuff_on_target` sums an additive bonus per debuff type currently on each individual target (e.g. Cataclysmic Surge's +30% against Warped) — keyed by debuff type rather than `Trait_Count_Source` because the source is which debuff is present, not a count |
 | `HealthChangeEffect` | `fraction`, `scaling: Dictionary[Types.Attribute, float]` | A signed max-Health-fraction transfer: negative is a cost (writes `context.health_paid` when the target is the caster), non-negative plus attribute scaling is a heal |
 | `ApplyBuffEffect` | `buff_type`, `duration` | Applies one buff type, with its own duration, to the target group (a second buff on the same skill with a different duration is just a second `ApplyBuffEffect`) |
 | `ApplyDebuffEffect` | `debuff_type`, `duration` | Applies one debuff type; consults `CharacterTrait.GetAppliedStatusValue` for a value override before casting |
@@ -310,9 +309,11 @@ The eleven effect subclasses, all under `Scripts/Battle/Skill_Effects/`:
 | `ReduceBuffDurationsEffect` | `amount` | Shaves `amount` turns off every buff already on the target group |
 | `TurnBarEffect` | `fraction` | Bumps the target group's turn bar by the skill's own contribution, independent of any trait turn-bar bump |
 | `AlternatingEffect` | `effects: Array[SkillEffect]` | Cycles through `effects` by this cast's use count, so a skill can behave differently on alternating (or any N-way rotating) casts |
-| `ZoneEffect` | `duration`, `debuffs: Array[Types.Debuff_Type]` | Pure data read by `ZoneResolver.PlaceZone`; never resolved by the generic effect loop — zone-target skills route straight to `PlaceZone` and carry no other effect |
+| `ZoneEffect` | `charges`, `section` (`Player_Chosen`/`Left_Most_Empty`/`Random_Empty`), `on_trigger: Array[SkillEffect]`, `visual_scene: PackedScene` | Resolves a turn-bar section (see [Section 7.5](#75-zones)) and calls `ZoneResolver.PlaceZone` with itself; an ordinary effect in the effect loop like any other, so a skill can place a zone alongside a direct effect (e.g. Inscribe's damage-plus-glyph) |
+| `BarrierZoneEffect` | *(none)* | The Architect's charge-scaled turn-bar Barrier (`Skills.ApplyBarrierZone`), kept as its own effect rather than a generic `BarrierEffect` zone case so the Calibration trait's charge-investment bonus and `Zone_Used` hook stay intact |
+| `ClearZoneEffect` | `damage_scaling_per_charge: Dictionary[Types.Attribute, float]`, `cooldown_reduction` | Removes one zone from the turn bar (Refutation): a player-chosen or random occupied section; damages the placing enemy scaled by remaining charges, or reduces the placing ally's zone skill's cooldown |
 
-There are 72 `.tres` files under `Data/Character_Skill_Variants/` (skill variants, mostly split
+There are 81 `.tres` files under `Data/Character_Skill_Variants/` (skill variants, mostly split
 into Attack/Support/Zone subfolders), plus player and enemy character variants, attribute weights, item
 presets, loot tables, traits, and adventure data elsewhere under `Data/`. `Data/Example_Tree.json`
 is an exported skill-tree definition (a design artifact, not yet wired into runtime).
@@ -742,7 +743,10 @@ the skill UI, and returns to `Advancing` (or ends the battle).
    its own `TurnBarEffect` reports two separate `Turn_Bar_Bump`s rather than their sum, so a
    sign-gating trait (Anchor, Steadfast) or `Skills.TurnBarTithe` sees each independently.
 7. Decrement all of the caster's cooldowns and set the used skill's `cooldown_left = cooldown`.
-8. Run `GetZoneResolver().TriggerZones()` and fire the `EndOfTurn` trait hook.
+8. Run `GetZoneResolver().TriggerZones()` and fire the `EndOfTurn` trait hook. Because a `ZoneEffect`
+   placement already happened inside step 4's loop, a zone placed this same cast can immediately
+   trigger here if a character other than the caster already occupies its section (see
+   [Section 7.5](#75-zones)).
 
 **The effect loop and cast context.** `SkillCastContext`
 (`Scripts/Battle/Skill_Effects/skill_cast_context.gd`, `RefCounted`) carries the read-only inputs
@@ -816,36 +820,104 @@ when rendering.
 
 ### 7.5. Zones
 
-`Zone` (`Scripts/Battle/zone.gd`) is a persistent effect placed on a turn-bar region:
+`Zone` (`Scripts/Battle/zone.gd`) is a persistent effect placed on a turn-bar section, matching
+`Concept_Document.md` 3.2.4.1: zones hold **charges**, not a duration, and a character is affected
+**once per visit** — not again until they leave the section and re-enter it.
 
 ```gdscript
-var _type: Types.Skill_Type     # Flicker_Zone, Lava_Zone
-var _duration: int = -1         # -1 = infinite
+var _charges: int = -1                        # -1 = infinite
 var _owner_ID: int
-var _target: Types.Skill_Target # ZoneAll / ZoneAlly / ZoneEnemy
-var _owner_knowledge: int = 0   # snapshotted at placement, see below
+var _target: Types.Skill_Target                # ZoneAll / ZoneAlly / ZoneEnemy
+var _owner_knowledge: int = 0                   # snapshotted at placement, see below
+var _owner_attributes: Dictionary[Types.Attribute, int] = {}  # full snapshot, see below
+var _on_trigger: Array[SkillEffect] = []        # the zone's effect, as ordinary skill-effect data
+var _visual_scene: PackedScene
+var _affected_since_entry: Array[int] = []      # character IDs already affected this visit
+var _placing_skill_name: String = ""            # for ClearZoneEffect's cooldown refund
 ```
 
-The resolver owns the live zones. `PlaceZone(zone_ID, owner_ID, skill)` creates one (reporting
-`Zone_Placed`); `TriggerZones(active_ID)` runs at the end of every `ResolveSkill`, checking which
-living, non-active characters sit inside a zone region (via `TurnPositions`, respecting the zone's
-ally/enemy targeting) and applying the effect: Flicker zones bump the character
-(`Turn_Bar_Bump`); Lava zones apply Burning (a silent `Status_Applied`). Each trigger decrements
-the zone and reports `Zone_Triggered`; expired zones are freed and erased. At most one zone fires
-per character per round, and the number of live zones is capped at `NUMBER_OF_TURN_BAR_ZONES` (5).
+**Placement.** A `ZoneEffect` (see [Section 6.1](#61-resource-templates)) is an ordinary
+`SkillEffect`: its `Resolve` picks a turn-bar section per its `section` mode
+(`Player_Chosen` reads a pending section the UI set via `BattleResolver.SetPendingZoneSection`,
+consumed once by `ConsumePendingZoneSection`, falling back to random if none is pending — e.g. an
+enemy AI cast; `Left_Most_Empty` / `Random_Empty` pick from `ZoneResolver.AvailableZoneIDs()`
+directly) and calls `ZoneResolver.PlaceZone(zone_ID, owner_ID, zone_effect, target,
+owner_attributes, placing_skill_name)`, which snapshots the owner's full effective attributes
+(`BattleResolver.GetEffectiveAttributes`, not only Knowledge) and reports `Zone_Placed`. Because
+`ZoneEffect` is just one effect among a skill's `effects`, a skill can place a zone *and* do
+something else in the same cast (Inscribe: a direct `DamageEffect` at the skill level plus a
+`ZoneEffect` placing a Wild Glyph). An already-occupied target section is a silent no-op for
+`Player_Chosen`/explicit picks and for `Left_Most_Empty`/`Random_Empty` when the bar is full — the
+rest of the skill's effects still resolve. `battle.gd`'s `Selecting_Zone` state carries a
+`_clearing_zone_mode` flag rather than a separate state: the same turn-bar click handler validates
+against an empty section for a placement and an occupied one for a `ClearZoneEffect` (Refutation),
+picking the zone ID the effect consumes the same way either way.
 
-**Knowledge scaling.** When a zone is created, the placing character's battle Knowledge is
-snapshotted into `_owner_knowledge`. Later Knowledge changes on that character do not
-retroactively affect the zone. When the zone triggers on an ally of its owner, the base effect
-magnitude is scaled by `Skills.AllyZoneMagnitude(base, owner_knowledge)`:
+**Triggering.** `ZoneResolver.TriggerZones(active_ID)` runs at the end of every `ResolveSkill`
+(including the one that just placed a zone, so a section already occupied when the zone lands
+triggers immediately — see [Section 7.4](#74-skill-resolution-battleresolverresolveskill) step 8).
+For every living, non-active character standing in a zone (`TurnPositions.IsCharacterInZone`) whose
+side matches the zone's `ZoneAll`/`ZoneAlly`/`ZoneEnemy` target (`Skills.CorrectZoneTarget`) and who
+is not already recorded in `_affected_since_entry` this visit, `_ResolveZoneEffect` builds a
+`SkillCastContext` (`caster_ID` = the zone owner, `target_IDs` = `[affected_ID]`, the snapshotted
+owner attributes, `is_zone_trigger = true`, `zone_target` / `zone_ID` / `zone_magnitude` set) and
+walks `zone._on_trigger` through the same `ConditionMet` / `Resolve` loop as any skill's own
+`effects` — a zone's effect is ordinary `SkillEffect` data, not a hardcoded match on a zone kind.
+`ApplyBuffEffect`/`ApplyDebuffEffect` snapshot their status value from `StatusEffectRegistry` scaled
+by `zone_magnitude` when triggered this way (see Knowledge scaling below) and set
+`context.status_effect_attempted`/`status_effect_landed`, so `ZoneResolver` can skip the
+`Zone_Affected` hook when a status was attempted but blocked (status cap, Aegis). An effect can
+override its own `target` (`ZoneAlly`/`ZoneEnemy`) independently of the zone's own target — Unstable
+Rift's zone is `ZoneAll` but authors two `DamageEffect`s, one `target = ZoneEnemy` at 30%, one
+`target = ZoneAlly` at 15%, so both sides are affected by the same trigger but scaled differently.
+
+Each trigger decrements the zone's charges by one and reports `Zone_Triggered`; a zone reaching zero
+charges is cleared and reports `Zone_Cleared` (the same result a natural expiry and a
+`ClearZoneEffect` clear both route through — there is no silent-free path). Before the per-character
+pass, any character `_affected_since_entry` records for a zone they are no longer standing in is
+forgotten (`_ForgetDepartedVisitors`) — that is the "left the section" edge that allows a fresh
+trigger on re-entry. At most one zone fires per character per round (`break` after the first zone
+that matches), and the number of live zones is capped at `NUMBER_OF_TURN_BAR_ZONES` (5). Slipstream
+lets an ally pass through an enemy's zone untriggered; Resonance triggers an ally's own zone twice
+(for one charge) on the character carrying it.
+
+**Knowledge scaling.** When a zone is created, the placing character's full effective attributes
+are snapshotted (`_owner_attributes`, `_owner_knowledge` for convenience). Later attribute changes on
+that character do not retroactively affect the zone. Every zone-triggered effect's magnitude is
+scaled by `context.zone_magnitude`, set once per trigger to
+`Skills.ZoneMagnitude(1.0, owner_knowledge) * trait.GetIncomingZoneEffectMultiplier(...)`:
 
 ```
-AllyZoneMagnitude = base * (1.0 + owner_knowledge * ZONE_KNOWLEDGE_SCALING)
+ZoneMagnitude = base * (1.0 + owner_knowledge * ZONE_KNOWLEDGE_SCALING)
 ```
 
-`ZONE_KNOWLEDGE_SCALING` is `0.005` (+0.5% per point of Knowledge). Only ally-targeted zone
-effects are scaled this way (e.g. Flicker Zone's bump); enemy-targeted zone effects (Lava Zone's
-Burning) are unaffected by Knowledge. Zone duration and size are never scaled.
+`ZONE_KNOWLEDGE_SCALING` is `0.005` (+0.5% per point of Knowledge). Unlike the old model, this
+applies uniformly regardless of which side is affected — `TurnBarEffect`, `ApplyBuffEffect`,
+`ApplyDebuffEffect`, and `BarrierEffect` (via `BarrierZoneEffect`/`Skills.ApplyBarrierZone`) all
+multiply by `zone_magnitude`, which is `1.0` outside a zone trigger, so non-zone casts are
+unaffected. `GetIncomingZoneEffectMultiplier` (default `1.0`) lets a character's own trait amplify
+or dampen what they receive from *any* zone, independent of the owner's Knowledge (e.g.
+`RootfeederGraft` at 150% against enemy-owned zones).
+
+**Visuals.** `ZoneEffect.visual_scene` is an exported `PackedScene`, resolved when the `.tres` loads
+at battle setup; `SpawnZoneEffect` only pays `instantiate()`, no per-placement `load()`. The three
+lore families the Concept Document describes (order / unstable / momentum) are expressed by which
+scene a zone authors, not by an enum — there is no zone-kind enum left in `Types` at all. The six
+Batch 5 zone-carrying skills (Catalyst Cloud, Unstable Rift, Temporal Sinkhole, Miasma, Weight of
+Law, Inscribe's Wild Glyph) all point at `Turn_Bar_Flicker.tscn` as a placeholder visual — bespoke
+scenes per the three lore families are follow-up art work, not yet built.
+
+**Clearing.** Besides natural expiry, `ClearZoneEffect` (Refutation) is the other dedicated removal
+path (Concept 3.2.4.1: "Zones are removed only by dedicated clearing effects... There is
+deliberately no universal zone-clearing skill"). It resolves a section the same way `ZoneEffect`
+does for `Player_Chosen` (the pending-section channel) or picks a random occupied one for an AI
+cast, then clears it and either damages the placing enemy (`damage_scaling_per_charge` × charges
+remaining, via `BattleResolver.ResolveEffectDamage`) or reduces the placing ally's zone skill's
+`cooldown_left` — found by matching `Zone._placing_skill_name` against the owner's `_skills`, which
+is why `PlaceZone` threads the casting skill's name through from `ZoneEffect.Resolve`
+(`p_context.skill.name`, empty for the two grafts/traits that construct a `ZoneEffect` directly
+rather than through a cast skill). A reagent-consumed clear (`ReagentData.EffectKind.Clear_Zone`)
+is a separate, simpler path straight to `ZoneResolver.ClearZone` with no damage/refund branch.
 
 ### 7.6. Ending combat
 
