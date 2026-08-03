@@ -25,13 +25,9 @@ func after_each() -> void:
 		zone.free()
 
 func _place_barrier_zone() -> void:
-	var zone_skill: Skill = Skill.new()
-	zone_skill.target = Types.Skill_Target.ZoneAlly
-	zone_skill.skill_type = Types.Skill_Type.Barrier_Zone
-	var zone_effect: ZoneEffect = ZoneEffect.new()
-	zone_effect.duration = 5
-	zone_skill.effects = [zone_effect]
-	var results: Array[CombatResult] = _resolver.GetZoneResolver().PlaceZone(0, 0, zone_skill)
+	var zone_effect: ZoneEffect = TestFactory.make_zone_effect(5, [BarrierZoneEffect.new()])
+	var results: Array[CombatResult] = TestFactory.place_zone(
+			_resolver, 0, 0, zone_effect, Types.Skill_Target.ZoneAlly)
 	assert_eq(results.size(), 1, "Placing a Barrier zone should report Zone_Placed")
 
 func test_barrier_zone_applies_barrier_buff_to_the_ally_standing_in_it() -> void:
@@ -56,8 +52,13 @@ func test_barrier_zone_grants_the_owners_calibration_trait_a_charge() -> void:
 func test_zone_expires_after_duration_charges() -> void:
 	_place_barrier_zone()
 
+	# Once-per-visit means a still-standing ally is only affected once; cycle them
+	# out and back in each round so every call produces a fresh trigger.
 	for _i in range(5):
 		_resolver.GetZoneResolver().TriggerZones(0)
+		_positions.occupants_by_zone[0] = []
+		_resolver.GetZoneResolver().TriggerZones(0)
+		_positions.occupants_by_zone[0] = [1]
 
 	assert_false(_resolver.GetZoneResolver().HasZone(0), "A zone should be erased once its charges are spent")
 

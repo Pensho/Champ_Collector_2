@@ -17,6 +17,5 @@ description = "Grants all allies the Fortify buff for 2 turns."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Hold_the_Line/Hold_the_Line.jpg"
 target = 4
 cooldown = 3
-skill_type = 5
 effects = Array[ExtResource("1_xba5q")]([SubResource("Resource_6dom1")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

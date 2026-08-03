@@ -17,6 +17,5 @@ description = "Grants the caster the Opportunist buff for 3 turns."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Weigh_the_Mark/Weigh_the_Mark.png"
 target = 13
 cooldown = 4
-skill_type = 5
 effects = Array[ExtResource("1_cy286")]([SubResource("Resource_i1lcg")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

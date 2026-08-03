@@ -3,10 +3,17 @@
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_rsthfrm"]
 [ext_resource type="Script" uid="uid://bmqtglyyora7q" path="res://Scripts/Battle/Skill_Effects/skill_effect.gd" id="1_ulw5k"]
 [ext_resource type="Script" uid="uid://bu8jujkcolxy0" path="res://Scripts/Battle/Skill_Effects/zone_effect.gd" id="2_0hck7"]
+[ext_resource type="Script" uid="uid://bpaqfprbgt84h" path="res://Scripts/Battle/Skill_Effects/barrier_zone_effect.gd" id="3_barrier"]
+[ext_resource type="PackedScene" uid="uid://cqtb821wdd4vr" path="res://Scenes/ui/Turn_Bar_Zones/Turn_Bar_Raise_the_Frame.tscn" id="4_visual"]
+
+[sub_resource type="Resource" id="Resource_barrier"]
+script = ExtResource("3_barrier")
 
 [sub_resource type="Resource" id="Resource_tk0l0"]
 script = ExtResource("2_0hck7")
-duration = 5
+charges = 5
+on_trigger = Array[ExtResource("1_ulw5k")]([SubResource("Resource_barrier")])
+visual_scene = ExtResource("4_visual")
 
 [resource]
 script = ExtResource("1_rsthfrm")
@@ -15,6 +22,5 @@ description = "Constructs a zone: allies gain the Barrier buff when they use it,
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Raise_the_Frame/Raise_the_Frame_1.jpg"
 target = 7
 cooldown = 2
-skill_type = 6
 effects = Array[ExtResource("1_ulw5k")]([SubResource("Resource_tk0l0")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

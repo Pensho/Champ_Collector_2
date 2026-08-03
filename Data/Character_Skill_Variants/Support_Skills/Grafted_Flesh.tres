@@ -23,6 +23,5 @@ description = "The caster loses 10% of its max Health; one ally gains the Regene
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Grafted_Flesh/Grafted_Flesh.png"
 target = 3
 cooldown = 4
-skill_type = 5
 effects = Array[ExtResource("1_aohpt")]([SubResource("Resource_5djor"), SubResource("Resource_44xr2")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

@@ -3,10 +3,18 @@
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_5tl7t"]
 [ext_resource type="Script" uid="uid://bmqtglyyora7q" path="res://Scripts/Battle/Skill_Effects/skill_effect.gd" id="1_u1du0"]
 [ext_resource type="Script" uid="uid://bu8jujkcolxy0" path="res://Scripts/Battle/Skill_Effects/zone_effect.gd" id="2_ivtng"]
+[ext_resource type="Script" uid="uid://clxlmr6ebfll7" path="res://Scripts/Battle/Skill_Effects/turn_bar_effect.gd" id="3_turnb"]
+[ext_resource type="PackedScene" uid="uid://7aqjlq70jbhi" path="res://Scenes/ui/Turn_Bar_Zones/Turn_Bar_Flicker.tscn" id="4_visual"]
+
+[sub_resource type="Resource" id="Resource_bump"]
+script = ExtResource("3_turnb")
+fraction = 0.15
 
 [sub_resource type="Resource" id="Resource_gx4yy"]
 script = ExtResource("2_ivtng")
-duration = 5
+charges = 5
+on_trigger = Array[ExtResource("1_u1du0")]([SubResource("Resource_bump")])
+visual_scene = ExtResource("4_visual")
 
 [resource]
 script = ExtResource("1_5tl7t")
@@ -15,6 +23,5 @@ description = "Creates a zone on the turn bar, giving allies a quick boost in sp
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Flicker_Zone/Flicker_Zone.jpg"
 target = 7
 cooldown = 2
-skill_type = 2
 effects = Array[ExtResource("1_u1du0")]([SubResource("Resource_gx4yy")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

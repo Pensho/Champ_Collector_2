@@ -17,5 +17,15 @@ func Resolve(p_context: SkillCastContext) -> void:
 					p_context.caster_ID, target_ID, debuff_type, p_context.resolver)
 			if(value_override >= 0.0):
 				debuff.value = value_override
-		status_resolver.CastDebuff(target_ID, debuff, p_context.caster_ID,
-				p_context.trait_result._tick_bonus_per_debuff, true, true)
+		if(p_context.is_zone_trigger):
+			debuff.source_ID = p_context.caster_ID
+			if(0.0 == debuff.value):
+				var data: StatusEffectData = StatusEffectRegistry.DebuffData(debuff_type)
+				debuff.value = status_resolver._SnapshotStatusValue(data, p_context.caster_ID) * p_context.zone_magnitude
+			var results: Array[CombatResult] = status_resolver.ApplyDebuff(target_ID, debuff)
+			p_context.status_effect_attempted = true
+			if(not results.is_empty()):
+				p_context.status_effect_landed = true
+		else:
+			status_resolver.CastDebuff(target_ID, debuff, p_context.caster_ID,
+					p_context.trait_result._tick_bonus_per_debuff, true, true)

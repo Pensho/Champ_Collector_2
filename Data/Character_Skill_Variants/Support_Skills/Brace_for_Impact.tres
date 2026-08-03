@@ -23,6 +23,5 @@ description = "Grants the caster the Rush and Aegis buffs for 1 turn."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Brace_for_Impact/Brace_for_Impact.png"
 target = 13
 cooldown = 4
-skill_type = 5
 effects = Array[ExtResource("1_ahs63")]([SubResource("Resource_5wokx"), SubResource("Resource_bisby")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

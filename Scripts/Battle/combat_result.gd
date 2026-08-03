@@ -12,7 +12,7 @@ enum Kind {
 	Turn_Bar_Bump,
 	Zone_Placed,
 	Zone_Triggered,
-	Zone_Duration_Changed,
+	Zone_Charges_Changed,
 	Trait_Text,
 	Death,
 	Heal,
@@ -39,7 +39,8 @@ var duration: int = 0
 var text: String = ""
 var color: Color = Color.WHITE
 var zone_ID: int = -1
-var skill_type: Types.Skill_Type
+var charges: int = 0
+var visual_scene: PackedScene
 var amount_by_source: Dictionary[int, int] = {}
 
 

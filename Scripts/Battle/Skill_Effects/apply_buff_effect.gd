@@ -14,4 +14,13 @@ func Resolve(p_context: SkillCastContext) -> void:
 		buff.type = buff_type
 		buff.duration = duration
 		buff.name = Types.Buff_Type.keys()[buff_type]
-		status_resolver.ApplyBuff(target_ID, buff)
+		if(p_context.is_zone_trigger):
+			var data: StatusEffectData = StatusEffectRegistry.BuffData(buff_type)
+			if(null != data):
+				buff.value = data.magnitude * p_context.zone_magnitude
+			var results: Array[CombatResult] = status_resolver.ApplyBuff(target_ID, buff)
+			p_context.status_effect_attempted = true
+			if(not results.is_empty()):
+				p_context.status_effect_landed = true
+		else:
+			status_resolver.ApplyBuff(target_ID, buff)

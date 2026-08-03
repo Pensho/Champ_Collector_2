@@ -17,6 +17,5 @@ description = "Grants all allies increased Attack."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Power_Tide/Power_Surge_1.jpg"
 target = 4
 cooldown = 3
-skill_type = 5
 effects = Array[ExtResource("1_h777f")]([SubResource("Resource_enkk5")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

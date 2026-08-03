@@ -44,6 +44,11 @@ var _batch_depth: int = 0
 
 var _turn_bar_progress: Dictionary[int, float] = {}
 
+# The turn-bar section a player just clicked, consumed once by the next ZoneEffect
+# placement in the skill they cast it for; -1 when nothing is pending (an enemy's own
+# zone skill has no player choice to consume, so it falls back to a random section).
+var _pending_zone_section: int = -1
+
 
 ## Pass a non-negative p_seed for reproducible rolls (e.g. from the encounter);
 ## a negative seed randomizes.
@@ -90,6 +95,17 @@ func GetZoneResolver() -> ZoneResolver:
 
 func GetStatusResolver() -> StatusEffectResolver:
 	return _status_resolver
+
+
+func SetPendingZoneSection(p_zone_ID: int) -> void:
+	_pending_zone_section = p_zone_ID
+
+
+## Consumes and returns the pending player-chosen section, or -1 if none is pending.
+func ConsumePendingZoneSection() -> int:
+	var section: int = _pending_zone_section
+	_pending_zone_section = -1
+	return section
 
 
 func GetEffectiveAttributes(p_character_ID: int) -> Dictionary[Types.Attribute, int]:

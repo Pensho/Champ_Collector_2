@@ -264,6 +264,12 @@ func StartTurn() -> void:
 		_state = BattleState.Enemy_Acting
 		HandleEnemyTurn()
 
+func _HasZoneEffect(p_skill: Skill) -> bool:
+	for effect in p_skill.effects:
+		if(effect is ZoneEffect):
+			return true
+	return false
+
 # Reverse-iterates the skills for the first one off cooldown, skipping zone skills
 # when no turn-bar zone is free; skill 0 is the fallback.
 func SelectEnemySkillID() -> int:
@@ -271,10 +277,8 @@ func SelectEnemySkillID() -> int:
 	for i in range(skills.size() - 1, -1, -1):
 		if(0 < skills[i].cooldown_left):
 			continue
-		match skills[i].target:
-			Types.Skill_Target.ZoneAlly, Types.Skill_Target.ZoneEnemy, Types.Skill_Target.ZoneAll:
-				if(_resolver.GetZoneResolver().AvailableZoneIDs().is_empty()):
-					continue
+		if(_HasZoneEffect(skills[i]) and _resolver.GetZoneResolver().AvailableZoneIDs().is_empty()):
+			continue
 		return i
 	return 0
 
@@ -282,23 +286,19 @@ func HandleEnemyTurn() -> void:
 	_selected_skill_ID = SelectEnemySkillID()
 	var cast_skill: Skill = _characters[_turn_character_ID]._skills[_selected_skill_ID]
 
-	match cast_skill.target:
-		Types.Skill_Target.ZoneAlly, Types.Skill_Target.ZoneEnemy, Types.Skill_Target.ZoneAll:
-			var available_zones: Array[int] = _resolver.GetZoneResolver().AvailableZoneIDs()
-			print(_characters[_turn_character_ID]._name, " used skill with ID: ", _selected_skill_ID)
-			var zone_ID: int = available_zones[_resolver.GetRandom().randi_range(0, available_zones.size() - 1)]
-			_resolver.GetZoneResolver().PlaceZone(zone_ID, _turn_character_ID, cast_skill)
-			ResolveTurn([])
-		_:
-			for i in _targeting_order:
-				if(_characters[i]._current_health < 1):
-					continue
-				var target_IDs: Array[int] = _resolver.FindSkillTargets(i, _turn_character_ID, cast_skill.target)
-				if(target_IDs.is_empty()):
-					continue  # not a valid target for this caster (e.g. an ally), keep looking
-				print(_characters[_turn_character_ID]._name, " used skill with ID: ", _selected_skill_ID)
-				ResolveTurn(target_IDs)
-				return  # A skill has resolved.
+	if(_HasZoneEffect(cast_skill)):
+		print(_characters[_turn_character_ID]._name, " used skill with ID: ", _selected_skill_ID)
+		ResolveTurn([])
+		return
+	for i in _targeting_order:
+		if(_characters[i]._current_health < 1):
+			continue
+		var target_IDs: Array[int] = _resolver.FindSkillTargets(i, _turn_character_ID, cast_skill.target)
+		if(target_IDs.is_empty()):
+			continue  # not a valid target for this caster (e.g. an ally), keep looking
+		print(_characters[_turn_character_ID]._name, " used skill with ID: ", _selected_skill_ID)
+		ResolveTurn(target_IDs)
+		return  # A skill has resolved.
 
 func ResolveTurn(p_target_IDs: Array[int]) -> void:
 	_state = BattleState.Resolving
@@ -390,11 +390,11 @@ func _on_resolver_result_produced(p_result: CombatResult) -> void:
 		CombatResult.Kind.Zone_Placed:
 			_battle_ui._turn_bar.SpawnZoneEffect(
 					p_result.zone_ID,
-					p_result.duration,
+					p_result.charges,
 					_sides.player.Has(p_result.source_ID),
-					p_result.skill_type)
-		CombatResult.Kind.Zone_Triggered, CombatResult.Kind.Zone_Duration_Changed:
-			_battle_ui._turn_bar.ZoneTriggered(p_result.zone_ID, p_result.duration)
+					p_result.visual_scene)
+		CombatResult.Kind.Zone_Triggered, CombatResult.Kind.Zone_Charges_Changed:
+			_battle_ui._turn_bar.ZoneTriggered(p_result.zone_ID, p_result.charges)
 		CombatResult.Kind.Zone_Cleared:
 			_battle_ui._turn_bar.RemoveZoneEffect(p_result.zone_ID)
 		CombatResult.Kind.Turn_Bar_Reset_Pending:
@@ -573,13 +573,12 @@ func _on_battle_ui_battle_skill_selected(p_skill_ID: int) -> void:
 				_characters[_turn_character_ID]._skills[p_skill_ID].cooldown_left, " more turns left.")
 		return
 	_selected_skill_ID = p_skill_ID
-	match _characters[_turn_character_ID]._skills[_selected_skill_ID].target:
-		Types.Skill_Target.ZoneAlly, Types.Skill_Target.ZoneEnemy, Types.Skill_Target.ZoneAll:
-			_state = BattleState.Selecting_Zone
-			_battle_ui._turn_bar.DisableZones(false)
-		_:
-			_state = BattleState.Awaiting_Player_Input
-			_battle_ui._turn_bar.DisableZones(true)
+	if(_HasZoneEffect(_characters[_turn_character_ID]._skills[_selected_skill_ID])):
+		_state = BattleState.Selecting_Zone
+		_battle_ui._turn_bar.DisableZones(false)
+	else:
+		_state = BattleState.Awaiting_Player_Input
+		_battle_ui._turn_bar.DisableZones(true)
 
 func _on_turn_bar_zone_selected(p_zone_ID: int) -> void:
 	if(BattleState.Selecting_Reagent_Zone == _state):
@@ -591,8 +590,7 @@ func _on_turn_bar_zone_selected(p_zone_ID: int) -> void:
 	if(_resolver.GetZoneResolver().HasZone(p_zone_ID)):
 		print("Zone is already used")
 		return
-	_resolver.GetZoneResolver().PlaceZone(
-			p_zone_ID, _turn_character_ID, _characters[_turn_character_ID]._skills[_selected_skill_ID])
+	_resolver.SetPendingZoneSection(p_zone_ID)
 	ResolveTurn([])
 
 func _on_battle_ui_battle_reagent_selected(p_reagent_index: int) -> void:

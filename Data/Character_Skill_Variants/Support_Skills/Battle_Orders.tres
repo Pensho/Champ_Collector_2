@@ -17,6 +17,5 @@ description = "Grants a single ally the Battle Orders buff for 2 turns."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Battle_Orders/Battle_Orders.png"
 target = 3
 cooldown = 4
-skill_type = 5
 effects = Array[ExtResource("1_pur5l")]([SubResource("Resource_w61wi")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

@@ -17,6 +17,5 @@ description = "Grants the caster the Exhert buff for 4 turns."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Symbiotic_Overdrive/Symbiotic_Overdrive.png"
 target = 13
 cooldown = 5
-skill_type = 5
 effects = Array[ExtResource("1_lykb2")]([SubResource("Resource_baxnj")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

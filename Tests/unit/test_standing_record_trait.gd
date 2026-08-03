@@ -53,7 +53,7 @@ func test_enemy_landing_a_debuff_on_an_owner_side_ally_adds_an_infraction() -> v
 	assert_eq(_trait.GetInfractions(2), 1)
 
 func test_enemy_placing_a_zone_adds_an_infraction() -> void:
-	_resolver.GetZoneResolver().PlaceZone(0, 2, TestFactory.make_lava_zone_skill())
+	TestFactory.place_zone(_resolver, 0, 2, TestFactory.make_lava_zone_effect(), Types.Skill_Target.ZoneAll)
 
 	assert_eq(_trait.GetInfractions(2), 1)
 

@@ -26,14 +26,9 @@ func after_each() -> void:
 
 func _place_spore_zone(p_owner_knowledge: int) -> void:
 	_roster[0]._attributes[Types.Attribute.Knowledge] = p_owner_knowledge
-	var zone_skill: Skill = Skill.new()
-	zone_skill.name = "Spore Bloom"
-	zone_skill.target = Types.Skill_Target.ZoneAll
-	zone_skill.skill_type = Types.Skill_Type.Spore_Zone
-	var zone_effect: ZoneEffect = ZoneEffect.new()
-	zone_effect.duration = 5
-	zone_skill.effects = [zone_effect]
-	var results: Array[CombatResult] = _resolver.GetZoneResolver().PlaceZone(0, 0, zone_skill)
+	var zone_effect: ZoneEffect = TestFactory.make_zone_effect(5, LivingBloomGraft.SporeOnTrigger())
+	var results: Array[CombatResult] = TestFactory.place_zone(
+			_resolver, 0, 0, zone_effect, Types.Skill_Target.ZoneAll)
 	assert_eq(results.size(), 1, "Placing a Spore zone should report Zone_Placed")
 
 func test_spore_zone_regenerates_the_ally_and_blights_the_enemy() -> void:

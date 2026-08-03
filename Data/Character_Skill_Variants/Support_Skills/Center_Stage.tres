@@ -23,6 +23,5 @@ description = "The Jester gains the Spotlight buff for 2 turns and the Luck buff
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Center_Stage/Center_Stage.png"
 target = 13
 cooldown = 3
-skill_type = 5
 effects = Array[ExtResource("1_2p47k")]([SubResource("Resource_mxuek"), SubResource("Resource_mdkgs")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

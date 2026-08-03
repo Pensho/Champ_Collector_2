@@ -1,9 +1,5 @@
 class_name TurnBar extends Panel
 
-const TURN_BAR_FLICKER = preload("res://Scenes/ui/Turn_Bar_Zones/Turn_Bar_Flicker.tscn")
-const TURN_BAR_RAISE_THE_FRAME = preload("res://Scenes/ui/Turn_Bar_Zones/Turn_Bar_Raise_the_Frame.tscn")
-const TURN_BAR_LAVA_ZONE = preload("uid://bognvuid7w2ti")
-
 const DEFAULT_THEME = preload("uid://c8irweh6md2jy")
 const GRAYSCALE = preload("uid://ia57lns0336p")
 const NO_CHARACTERS_TURN: int = -1
@@ -123,35 +119,28 @@ func _GetReachThreshold(p_character: Character) -> float:
 func _HasBidirectionalReach(p_character: Character) -> bool:
 	return p_character._trait is ShieldWallTrait or p_character._trait is ContagionBondGraft
 
-func SpawnZoneEffect(p_zone_ID: int, p_duration: int, p_allySide: bool, p_zone_type: Types.Skill_Type):
-	var effect: TurnBarContainer
-	# Barrier_Zone has no graphic of its own yet; reuses Flicker_Zone's as a placeholder.
-	match p_zone_type:
-		Types.Skill_Type.Flicker_Zone:
-			effect = TURN_BAR_FLICKER.instantiate()
-		Types.Skill_Type.Barrier_Zone:
-			effect = TURN_BAR_RAISE_THE_FRAME.instantiate()
-		Types.Skill_Type.Lava_Zone:
-			effect = TURN_BAR_LAVA_ZONE.instantiate()
-			effect.cpu_particles_2d_side_1.emission_rect_extents.x = _zone_buttons[p_zone_ID].size.x * 0.5
-		_:
-			print("Invalid zone type! value: ", p_zone_type)
-			return
+func SpawnZoneEffect(p_zone_ID: int, p_charges: int, p_allySide: bool, p_visual_scene: PackedScene):
+	if(null == p_visual_scene):
+		print("Zone placed with no visual scene assigned")
+		return
+	var effect: TurnBarContainer = p_visual_scene.instantiate()
 	effect.background.position = Vector2(-(_zone_buttons[p_zone_ID].size.x * 0.5), -_zone_buttons[p_zone_ID].size.y)
 	effect.background.size = _zone_buttons[p_zone_ID].size
 	effect.cpu_particles_2d_up_1.emission_rect_extents.x = _zone_buttons[p_zone_ID].size.x * 0.5
 	effect.cpu_particles_2d_up_2.emission_rect_extents.x = _zone_buttons[p_zone_ID].size.x * 0.5
+	if(null != effect.cpu_particles_2d_side_1):
+		effect.cpu_particles_2d_side_1.emission_rect_extents.x = _zone_buttons[p_zone_ID].size.x * 0.5
 	_zone_effects[p_zone_ID] = effect
 	_zone_effects[p_zone_ID].z_index = 10
 	_zone_effects[p_zone_ID].position = Vector2(
 		_zone_buttons[p_zone_ID].position.x + (_zone_buttons[p_zone_ID].size.x * 0.5),
 		_zone_buttons[p_zone_ID].position.y + _zone_buttons[p_zone_ID].size.y)
 	self.add_child(_zone_effects[p_zone_ID])
-	
-	if(0 > p_duration):
+
+	if(0 > p_charges):
 		_zone_effects[p_zone_ID].label.text = "inf"
 	else:
-		_zone_effects[p_zone_ID].label.text = str(p_duration)
+		_zone_effects[p_zone_ID].label.text = str(p_charges)
 	if(p_allySide):
 		_zone_effects[p_zone_ID].label.position = Vector2(
 			-(_zone_buttons[p_zone_ID].size.x * 0.25), -(_zone_buttons[p_zone_ID].size.y * 0.95))
@@ -164,18 +153,22 @@ func SpawnZoneEffect(p_zone_ID: int, p_duration: int, p_allySide: bool, p_zone_t
 	_zone_effects[p_zone_ID].show()
 
 func RemoveZoneEffect(p_zone_ID: int):
+	# Natural expiry reports both Zone_Triggered(charges=0) and Zone_Cleared for the same
+	# event, so this must tolerate being called twice for one removal.
+	if(null == _zone_effects[p_zone_ID]):
+		return
 	_zone_effects[p_zone_ID].hide()
 	_zone_effects[p_zone_ID].queue_free()
 	_zone_effects[p_zone_ID] = null
 
-func ZoneTriggered(p_zone_ID: int, p_duration: int):
-	if(0 == p_duration):
+func ZoneTriggered(p_zone_ID: int, p_charges: int):
+	if(0 == p_charges):
 		RemoveZoneEffect(p_zone_ID)
 		return
-	if(0 > p_duration):
+	if(0 > p_charges):
 		_zone_effects[p_zone_ID].label.text = "inf"
 	else:
-		_zone_effects[p_zone_ID].label.text = str(p_duration)
+		_zone_effects[p_zone_ID].label.text = str(p_charges)
 
 func GetActiveTurnID() -> int:
 	return _characters_turn_id

@@ -23,6 +23,5 @@ description = "Gain the Vigor buff for 2 turns and heals 15% of max Health."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Liquid_Courage/Liquid_Courage.png"
 target = 13
 cooldown = 3
-skill_type = 5
 effects = Array[ExtResource("1_lamrk")]([SubResource("Resource_yrah2"), SubResource("Resource_24qgc")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

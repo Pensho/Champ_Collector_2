@@ -77,13 +77,19 @@ func test_zone_delivered_bleed_snapshots_the_zone_owners_attack() -> void:
 	var zone_resolver: BattleResolver = TestFactory.make_resolver(_roster, TestFactory.make_full_sides(), positions)
 	for id in [1, 2, 4, 5]:
 		_roster[id]._current_health = 0
-	var zone_skill: Skill = TestFactory.make_lava_zone_skill()
-	(zone_skill.effects[0] as ZoneEffect).debuffs = [Types.Debuff_Type.Bleed]
-	zone_resolver.GetZoneResolver().PlaceZone(0, 0, zone_skill)
+	var bleed: ApplyDebuffEffect = ApplyDebuffEffect.new()
+	bleed.debuff_type = Types.Debuff_Type.Bleed
+	bleed.duration = StatusEffectRegistry.DebuffData(Types.Debuff_Type.Bleed).duration_default
+	var zone_effect: ZoneEffect = TestFactory.make_zone_effect(10, [bleed])
+	TestFactory.place_zone(zone_resolver, 0, 0, zone_effect, Types.Skill_Target.ZoneAll)
 
 	zone_resolver.GetZoneResolver().TriggerZones(0)
 
-	var expected: float = 40 * StatusEffectRegistry.DebuffData(Types.Debuff_Type.Bleed).magnitude
+	# Zone debuffs also scale with the owner's Knowledge (Concept_Document.md 3.2.4.1),
+	# on top of the Attack-based snapshot Bleed itself always applies.
+	var expected: float = Skills.ZoneMagnitude(
+			40 * StatusEffectRegistry.DebuffData(Types.Debuff_Type.Bleed).magnitude,
+			_roster[0].GetTotalAttribute(Types.Attribute.Knowledge))
 	assert_almost_eq(_roster[3]._active_debuffs[0].value, expected, 0.0001,
 		"A zone-delivered Bleed should snapshot the zone owner's Attack, same as a skill-cast one")
 	zone_resolver.GetZoneResolver().GetZones()[0].free()

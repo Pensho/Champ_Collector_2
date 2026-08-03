@@ -27,7 +27,6 @@ func _center_stage_skill() -> Skill:
 	skill.name = "Center Stage"
 	skill.target = Types.Skill_Target.Self
 	skill.cooldown = 3
-	skill.skill_type = Types.Skill_Type.Status_Effect
 	var spotlight: ApplyBuffEffect = ApplyBuffEffect.new()
 	spotlight.target = Types.Skill_Target.Self
 	spotlight.buff_type = Types.Buff_Type.Spotlight

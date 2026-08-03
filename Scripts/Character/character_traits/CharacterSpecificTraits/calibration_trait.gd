@@ -78,9 +78,15 @@ func OnSkillCast(
 
 func OnZoneConstructed(_p_owner_ID: int, p_zone_ID: int, p_resolver: BattleResolver) -> void:
 	var zone: Zone = p_resolver.GetZoneResolver().GetZones().get(p_zone_ID)
-	if(null == zone or Types.Skill_Type.Barrier_Zone != zone._type):
+	if(null == zone or not _IsBarrierZone(zone)):
 		return
 	_charges_invested_per_zone[p_zone_ID] = min(_charges, RAISE_THE_FRAME_CONSUME_CAP)
+
+func _IsBarrierZone(p_zone: Zone) -> bool:
+	for effect in p_zone._on_trigger:
+		if(effect is BarrierZoneEffect):
+			return true
+	return false
 
 func GetZoneChargeBonus(p_zone_ID: int) -> float:
 	return _charges_invested_per_zone.get(p_zone_ID, 0) * _per_charge_potency
@@ -90,18 +96,15 @@ func _ReErectZone(p_owner_ID: int, p_resolver: BattleResolver) -> void:
 	var zones: Dictionary[int, Zone] = zone_resolver.GetZones()
 	for zone_ID: int in zones:
 		if(zones[zone_ID]._owner_ID == p_owner_ID):
-			zone_resolver.SetZoneDuration(zone_ID, ZONE_UPGRADE_CHARGES)
+			zone_resolver.SetZoneCharges(zone_ID, ZONE_UPGRADE_CHARGES)
 			return
 
 	var available_zone_IDs: Array[int] = zone_resolver.AvailableZoneIDs()
 	if(available_zone_IDs.is_empty()):
 		return
 
-	var zone_skill: Skill = Skill.new()
-	zone_skill.name = "Raise the Frame"
-	zone_skill.target = Types.Skill_Target.ZoneAlly
-	zone_skill.skill_type = Types.Skill_Type.Barrier_Zone
 	var zone_effect: ZoneEffect = ZoneEffect.new()
-	zone_effect.duration = RAISE_THE_FRAME_ZONE_CHARGES
-	zone_skill.effects = [zone_effect]
-	zone_resolver.PlaceZone(available_zone_IDs[0], p_owner_ID, zone_skill)
+	zone_effect.charges = RAISE_THE_FRAME_ZONE_CHARGES
+	zone_effect.on_trigger = [BarrierZoneEffect.new()]
+	zone_resolver.PlaceZone(available_zone_IDs[0], p_owner_ID, zone_effect, Types.Skill_Target.ZoneAlly,
+			p_resolver.GetEffectiveAttributes(p_owner_ID))

@@ -3,11 +3,19 @@
 [ext_resource type="Script" uid="uid://bmqtglyyora7q" path="res://Scripts/Battle/Skill_Effects/skill_effect.gd" id="1_cq2sf"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_ejmff"]
 [ext_resource type="Script" uid="uid://bu8jujkcolxy0" path="res://Scripts/Battle/Skill_Effects/zone_effect.gd" id="2_l7tb4"]
+[ext_resource type="Script" uid="uid://bonwfsp34aafb" path="res://Scripts/Battle/Skill_Effects/apply_debuff_effect.gd" id="3_debuff"]
+[ext_resource type="PackedScene" uid="uid://bognvuid7w2ti" path="res://Scenes/ui/Turn_Bar_Zones/Turn_Bar_Lava_Zone.tscn" id="4_visual"]
+
+[sub_resource type="Resource" id="Resource_burning"]
+script = ExtResource("3_debuff")
+debuff_type = 0
+duration = 2
 
 [sub_resource type="Resource" id="Resource_3jaan"]
 script = ExtResource("2_l7tb4")
-duration = 6
-debuffs = Array[int]([0])
+charges = 6
+on_trigger = Array[ExtResource("1_cq2sf")]([SubResource("Resource_burning")])
+visual_scene = ExtResource("4_visual")
 
 [resource]
 script = ExtResource("1_ejmff")
@@ -15,6 +23,5 @@ name = "Lava Zone"
 description = "Burns enemies that stands in it."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Righteous_Fire/Righteous_Fire_1.jpg"
 target = 8
-skill_type = 3
 effects = Array[ExtResource("1_cq2sf")]([SubResource("Resource_3jaan")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

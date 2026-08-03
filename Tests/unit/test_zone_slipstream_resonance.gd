@@ -27,34 +27,29 @@ func _buff(p_type: Types.Buff_Type, p_duration: int = 2) -> StatusEffects.Buff:
 	buff.duration = p_duration
 	return buff
 
-func _flicker_skill(p_target: Types.Skill_Target) -> Skill:
-	var skill: Skill = Skill.new()
-	skill.name = "Flicker Zone"
-	skill.target = p_target
-	skill.skill_type = Types.Skill_Type.Flicker_Zone
-	var effect: ZoneEffect = ZoneEffect.new()
-	effect.duration = 10
-	skill.effects = [effect]
-	return skill
+func _flicker_zone_effect() -> ZoneEffect:
+	var bump: TurnBarEffect = TurnBarEffect.new()
+	bump.fraction = GameBalance.FLICKER_ZONE_BASE_BUMP
+	return TestFactory.make_zone_effect(10, [bump])
 
 func test_slipstream_passes_through_an_enemy_zone_untriggered() -> void:
 	for id in [1, 2, 4, 5]:
 		_roster[id]._current_health = 0
 	_roster[3]._active_buffs.append(_buff(Types.Buff_Type.Slipstream))
-	_resolver.GetZoneResolver().PlaceZone(0, 0, TestFactory.make_lava_zone_skill())
+	TestFactory.place_zone(_resolver, 0, 0, TestFactory.make_lava_zone_effect(), Types.Skill_Target.ZoneAll)
 
 	var results: Array[CombatResult] = _resolver.GetZoneResolver().TriggerZones(0)
 
 	assert_eq(_roster[3]._active_debuffs.size(), 0, "Slipstream should prevent the enemy zone's effect")
 	assert_eq(results.filter(func(r): return r.kind == CombatResult.Kind.Zone_Triggered).size(), 0,
 		"A Slipstream pass-through should not report a trigger")
-	assert_eq(_resolver.GetZoneResolver().GetZones()[0]._duration, 10, "The zone's duration must not decrement on a pass-through")
+	assert_eq(_resolver.GetZoneResolver().GetZones()[0]._charges, 10, "The zone's charges must not decrement on a pass-through")
 
 func test_slipstream_does_not_block_an_ally_zone() -> void:
 	for id in [2, 3, 4, 5]:
 		_roster[id]._current_health = 0
 	_roster[1]._active_buffs.append(_buff(Types.Buff_Type.Slipstream))
-	_resolver.GetZoneResolver().PlaceZone(0, 0, _flicker_skill(Types.Skill_Target.ZoneAll))
+	TestFactory.place_zone(_resolver, 0, 0, _flicker_zone_effect(), Types.Skill_Target.ZoneAll)
 
 	var results: Array[CombatResult] = _resolver.GetZoneResolver().TriggerZones(0)
 
@@ -65,7 +60,7 @@ func test_resonance_doubles_an_ally_zones_effect() -> void:
 	for id in [2, 3, 4, 5]:
 		_roster[id]._current_health = 0
 	_roster[1]._active_buffs.append(_buff(Types.Buff_Type.Resonance))
-	_resolver.GetZoneResolver().PlaceZone(0, 0, _flicker_skill(Types.Skill_Target.ZoneAlly))
+	TestFactory.place_zone(_resolver, 0, 0, _flicker_zone_effect(), Types.Skill_Target.ZoneAlly)
 
 	var results: Array[CombatResult] = _resolver.GetZoneResolver().TriggerZones(0)
 
@@ -76,7 +71,7 @@ func test_resonance_doubles_an_ally_zones_effect() -> void:
 func test_without_resonance_an_ally_zone_effect_is_not_doubled() -> void:
 	for id in [2, 3, 4, 5]:
 		_roster[id]._current_health = 0
-	_resolver.GetZoneResolver().PlaceZone(0, 0, _flicker_skill(Types.Skill_Target.ZoneAlly))
+	TestFactory.place_zone(_resolver, 0, 0, _flicker_zone_effect(), Types.Skill_Target.ZoneAlly)
 
 	var results: Array[CombatResult] = _resolver.GetZoneResolver().TriggerZones(0)
 

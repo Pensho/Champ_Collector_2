@@ -16,6 +16,5 @@ name = "Rally the Crew"
 description = "Grants one other ally the Empower buff for 2 turns."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Opponent_Active_Skills/Rally_the_Crew/Rally_the_Crew.png"
 target = 9
-skill_type = 5
 effects = Array[ExtResource("1_n0jjk")]([SubResource("Resource_5s8gb")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

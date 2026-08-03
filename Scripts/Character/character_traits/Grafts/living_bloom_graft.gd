@@ -2,6 +2,7 @@ class_name LivingBloomGraft extends GraftEffect
 
 const MAX_CHARGES: int = 10
 const CHARGE_PER_TURN: int = 1
+const SPORE_ZONE_STATUS_DURATION: int = 1
 
 const KNOWLEDGE_BONUS_PER_RARITY: Dictionary[Types.Rarity, float] = {
 	Types.Rarity.Uncommon: 0.15,
@@ -27,15 +28,23 @@ func StartOfBattle(p_owner_ID: int, p_resolver: BattleResolver) -> void:
 	if(free_slots.is_empty()):
 		_bloom_zone_ID = -1
 		return
-	var zone_skill: Skill = Skill.new()
-	zone_skill.name = "Spore Bloom"
-	zone_skill.target = Types.Skill_Target.ZoneAll
-	zone_skill.skill_type = Types.Skill_Type.Spore_Zone
 	var zone_effect: ZoneEffect = ZoneEffect.new()
-	zone_effect.duration = MAX_CHARGES
-	zone_skill.effects = [zone_effect]
+	zone_effect.charges = MAX_CHARGES
+	zone_effect.on_trigger = SporeOnTrigger()
 	_bloom_zone_ID = free_slots[0]
-	p_resolver.GetZoneResolver().PlaceZone(_bloom_zone_ID, p_owner_ID, zone_skill)
+	p_resolver.GetZoneResolver().PlaceZone(_bloom_zone_ID, p_owner_ID, zone_effect, Types.Skill_Target.ZoneAll,
+			p_resolver.GetEffectiveAttributes(p_owner_ID))
+
+static func SporeOnTrigger() -> Array[SkillEffect]:
+	var regeneration: ApplyBuffEffect = ApplyBuffEffect.new()
+	regeneration.buff_type = Types.Buff_Type.Regeneration
+	regeneration.duration = SPORE_ZONE_STATUS_DURATION
+	regeneration.target = Types.Skill_Target.ZoneAlly
+	var blight: ApplyDebuffEffect = ApplyDebuffEffect.new()
+	blight.debuff_type = Types.Debuff_Type.Blight
+	blight.duration = SPORE_ZONE_STATUS_DURATION
+	blight.target = Types.Skill_Target.ZoneEnemy
+	return [regeneration, blight]
 
 func StartOfTurn(_p_owner_ID: int, p_resolver: BattleResolver) -> void:
 	if(-1 == _bloom_zone_ID or not p_resolver.GetZoneResolver().HasZone(_bloom_zone_ID)):

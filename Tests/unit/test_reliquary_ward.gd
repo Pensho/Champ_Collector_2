@@ -18,7 +18,6 @@ func _reliquary_ward_skill() -> Skill:
 	var skill: Skill = TestFactory.make_empty_skill()
 	skill.name = "Reliquary Ward"
 	skill.target = Types.Skill_Target.Single_Ally
-	skill.skill_type = Types.Skill_Type.Status_Effect
 	var barrier: BarrierEffect = BarrierEffect.new()
 	barrier.target = Types.Skill_Target.Single_Ally
 	barrier.source = BarrierEffect.Source.Target_Max_Health

@@ -37,7 +37,7 @@ func test_heal_never_exceeds_max_health() -> void:
 
 func test_clear_zone_removes_a_placed_zone() -> void:
 	var resolver: BattleResolver = _make_resolver()
-	resolver.GetZoneResolver().PlaceZone(0, 0, TestFactory.make_lava_zone_skill())
+	TestFactory.place_zone(resolver, 0, 0, TestFactory.make_lava_zone_effect(), Types.Skill_Target.ZoneAll)
 	assert_true(resolver.GetZoneResolver().HasZone(0))
 
 	resolver.ResolveReagent(0, "Zone_Dissolving_Salts_Rare", 0)
@@ -147,7 +147,7 @@ func test_potency_scales_a_scalar_effect_but_not_a_binary_one() -> void:
 	var zone_resolver: BattleResolver = _make_resolver()
 	var zone_consumer: Character = zone_resolver.GetCharacters()[0]
 	zone_consumer._trait = TestFactory.FakeAmplifyingTrait.new(5.0)
-	zone_resolver.GetZoneResolver().PlaceZone(0, 0, TestFactory.make_lava_zone_skill())
+	TestFactory.place_zone(zone_resolver, 0, 0, TestFactory.make_lava_zone_effect(), Types.Skill_Target.ZoneAll)
 
 	zone_resolver.ResolveReagent(0, "Zone_Dissolving_Salts_Rare", 0)
 

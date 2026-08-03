@@ -8,4 +8,4 @@ class_name TurnBarEffect extends SkillEffect
 
 func Resolve(p_context: SkillCastContext) -> void:
 	for target_ID in p_context.TargetsFor(self):
-		p_context.resolver.BumpTurnBar(target_ID, fraction, p_context.caster_ID)
+		p_context.resolver.BumpTurnBar(target_ID, fraction * p_context.zone_magnitude, p_context.caster_ID)

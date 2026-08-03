@@ -19,6 +19,21 @@ var health_paid: int = 0
 ## scaling off Buffs_Consumed.
 var buffs_consumed: int = 0
 
+## True when this context represents a zone triggering against the single character
+## in target_IDs, rather than a caster resolving a Skill against its cast targets — in
+## which case `skill` is null and effects resolve targets and magnitude off the zone
+## fields below instead.
+var is_zone_trigger: bool = false
+var zone_target: Types.Skill_Target = Types.Skill_Target.ZoneAll
+var zone_ID: int = -1
+var zone_magnitude: float = 1.0
+## Set by an on_trigger buff/debuff application in zone-trigger mode: whether it was
+## attempted at all, and whether it actually landed. ZoneResolver skips the
+## Zone_Affected hook when an attempt was made but nothing landed (e.g. blocked by the
+## status-effect cap or Aegis).
+var status_effect_attempted: bool = false
+var status_effect_landed: bool = false
+
 func _init(
 		p_resolver: BattleResolver,
 		p_caster_ID: int,
@@ -43,12 +58,21 @@ func _init(
 func TargetsForGroup(p_target_type: Types.Skill_Target) -> Array[int]:
 	return ResolveStatusGroupTargets(resolver, caster_ID, target_IDs, skill, p_target_type)
 
-## Resolves an effect's own target group: Skill_Default reuses the skill's own targets
-## (the p_target_IDs the skill was cast at), anything else resolves independently.
 func TargetsFor(p_effect: SkillEffect) -> Array[int]:
+	if(is_zone_trigger):
+		return _TargetsForZoneTrigger(p_effect)
 	var effective_type: Types.Skill_Target = (
 			skill.target if Types.Skill_Target.Skill_Default == p_effect.target else p_effect.target)
 	return TargetsForGroup(effective_type)
+
+func _TargetsForZoneTrigger(p_effect: SkillEffect) -> Array[int]:
+	var characters: Dictionary[int, Character] = resolver.GetCharacters()
+	var alive_targets: Array[int] = target_IDs.filter(
+			func(id): return characters.has(id) and characters[id]._current_health > 0)
+	var effective_type: Types.Skill_Target = (
+			zone_target if Types.Skill_Target.Skill_Default == p_effect.target else p_effect.target)
+	var sides: CombatSides = resolver.GetSides()
+	return alive_targets.filter(func(id): return Skills.CorrectZoneTarget(caster_ID, id, effective_type, sides))
 
 ## Whether p_effect's authored condition (if any) currently holds for this cast's
 ## primary target. A caster with no trait reads as a condition count of 0.0, so

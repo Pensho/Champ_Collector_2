@@ -5,6 +5,12 @@ extends RefCounted
 ## for reach queries (the last query's arguments are recorded for assertions).
 class FakeTurnPositions extends TurnPositions:
 	var characters_in_zones: bool = false
+	# Per-zone occupant override: zone_ID -> the character IDs currently standing in
+	# it. When a zone_ID has no entry here, IsCharacterInZone falls back to the flat
+	# characters_in_zones boolean (everyone in every zone, or nobody) — set an entry
+	# only when a test needs one character to move in or out of one specific zone
+	# (e.g. once-per-visit re-triggering).
+	var occupants_by_zone: Dictionary[int, Array] = {}
 	var behind_IDs: Array[int] = []
 	var last_behind_query: Array = []
 	var proximity_IDs: Array[int] = []
@@ -17,7 +23,9 @@ class FakeTurnPositions extends TurnPositions:
 	# owner-dependent (e.g. mutual-nearest) result rather than one flat answer.
 	var proximity_ordered_by_owner: Dictionary = {}
 
-	func IsCharacterInZone(_p_character_ID: int, _p_zone_ID: int) -> bool:
+	func IsCharacterInZone(p_character_ID: int, p_zone_ID: int) -> bool:
+		if(occupants_by_zone.has(p_zone_ID)):
+			return occupants_by_zone[p_zone_ID].has(p_character_ID)
 		return characters_in_zones
 
 	func GetCharactersBehindBy(p_owner_ID: int, p_bar_percent: float) -> Array[int]:
@@ -214,16 +222,28 @@ static func make_empty_skill() -> Skill:
 	skill.target = Types.Skill_Target.Single_Enemy
 	return skill
 
-static func make_lava_zone_skill() -> Skill:
-	var skill: Skill = Skill.new()
-	skill.name = "Lava Zone"
-	skill.target = Types.Skill_Target.ZoneAll
-	skill.skill_type = Types.Skill_Type.Lava_Zone
+## A Lava-Zone-style ZoneEffect (Burning on trigger) with a generous charge count for
+## tests that trigger it repeatedly.
+static func make_lava_zone_effect() -> ZoneEffect:
+	var burning: ApplyDebuffEffect = ApplyDebuffEffect.new()
+	burning.debuff_type = Types.Debuff_Type.Burning
+	burning.duration = 2
+	return make_zone_effect(10, [burning])
+
+## A bare ZoneEffect with p_charges and no on_trigger effects (or the given ones), for
+## tests that only care about placement/lifecycle, not a specific triggered effect.
+static func make_zone_effect(p_charges: int, p_on_trigger: Array[SkillEffect] = []) -> ZoneEffect:
 	var effect: ZoneEffect = ZoneEffect.new()
-	effect.duration = 10
-	effect.debuffs = [Types.Debuff_Type.Burning]
-	skill.effects = [effect]
-	return skill
+	effect.charges = p_charges
+	effect.on_trigger = p_on_trigger
+	return effect
+
+## Places a zone through the resolver's ZoneResolver, snapshotting the owner's current
+## effective attributes the way ZoneEffect.Resolve would during a real cast.
+static func place_zone(p_resolver: BattleResolver, p_zone_ID: int, p_owner_ID: int,
+		p_zone_effect: ZoneEffect, p_target: Types.Skill_Target) -> Array[CombatResult]:
+	return p_resolver.GetZoneResolver().PlaceZone(
+			p_zone_ID, p_owner_ID, p_zone_effect, p_target, p_resolver.GetEffectiveAttributes(p_owner_ID))
 
 ## A SkillCastContext for effect-class unit tests, skipping ResolveSkill's turn
 ## machinery entirely: effects are exercised directly via effect.Resolve(context).

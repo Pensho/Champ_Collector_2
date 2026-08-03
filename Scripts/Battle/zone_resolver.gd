@@ -1,8 +1,11 @@
 class_name ZoneResolver extends RefCounted
 
-## Owns the per-combat zone lifecycle (placement, triggering, per-type effects,
-## clearing). Holds a back-reference to its owning BattleResolver for the shared
-## batch/emit/snapshot services zone effects need.
+## Owns the per-combat zone lifecycle (placement, once-per-visit triggering, and
+## clearing). A zone's own effect is data (Zone._on_trigger, authored on the placing
+## skill's ZoneEffect) resolved through the same SkillCastContext/SkillEffect loop as
+## any other skill, so this class has no per-zone-kind logic of its own. Holds a
+## back-reference to its owning BattleResolver for the shared batch/emit/snapshot
+## services zone effects need.
 
 var _zones: Dictionary[int, Zone] = {}
 var _resolver: BattleResolver
@@ -16,6 +19,9 @@ func GetZones() -> Dictionary[int, Zone]:
 func HasZone(p_zone_ID: int) -> bool:
 	return _zones.has(p_zone_ID)
 
+## Unoccupied section indices, ascending — so the first entry is always the left-most
+## free section, not merely section 0 (ZoneEffect.Section.Left_Most_Empty relies on
+## this ordering).
 func AvailableZoneIDs() -> Array[int]:
 	var available: Array[int] = []
 	for zone_number in GameBalance.NUMBER_OF_TURN_BAR_ZONES:
@@ -23,42 +29,39 @@ func AvailableZoneIDs() -> Array[int]:
 			available.append(zone_number)
 	return available
 
-func PlaceZone(p_zone_ID: int, p_owner_ID: int, p_skill: Skill) -> Array[CombatResult]:
+## p_owner_attributes should be the owner's full effective attributes (e.g.
+## BattleResolver.GetEffectiveAttributes), snapshotted once at placement — an
+## on_trigger effect may scale off any attribute, not only Knowledge, and this keeps
+## that snapshot identical to what a live cast's own effects would see.
+func PlaceZone(
+		p_zone_ID: int,
+		p_owner_ID: int,
+		p_zone_effect: ZoneEffect,
+		p_target: Types.Skill_Target,
+		p_owner_attributes: Dictionary[Types.Attribute, int]) -> Array[CombatResult]:
 	_resolver._BeginBatch()
 	if(_zones.has(p_zone_ID)):
-		print("Zone is already used")
 		return _resolver._EndBatch()
-	var zone_effect: ZoneEffect = _FindZoneEffect(p_skill)
-	var duration: int = zone_effect.duration if null != zone_effect else 0
-	var zone_debuffs: Array[Types.Debuff_Type] = []
-	if(null != zone_effect):
-		zone_debuffs.assign(zone_effect.debuffs)
 	var zone: Zone = Zone.new()
-	zone.CreateNew(p_skill.skill_type, duration, p_owner_ID, p_skill.target,
-			_resolver._characters[p_owner_ID].GetTotalAttribute(Types.Attribute.Knowledge), zone_debuffs)
+	zone.CreateNew(p_zone_effect.charges, p_owner_ID, p_target, p_owner_attributes,
+			p_zone_effect.on_trigger.duplicate(), p_zone_effect.visual_scene)
 	_zones[p_zone_ID] = zone
 	var result: CombatResult = CombatResult.new(CombatResult.Kind.Zone_Placed)
 	result.zone_ID = p_zone_ID
 	result.source_ID = p_owner_ID
-	result.duration = zone._duration
-	result.skill_type = zone._type
+	result.charges = zone._charges
+	result.visual_scene = zone._visual_scene
 	_resolver._Emit(result)
 	Skills.TriggerZoneConstructedHook(_resolver._characters, p_owner_ID, p_zone_ID, _resolver)
 	return _resolver._EndBatch()
 
-func _FindZoneEffect(p_skill: Skill) -> ZoneEffect:
-	for effect in p_skill.effects:
-		if(effect is ZoneEffect):
-			return effect
-	return null
-
-func SetZoneDuration(p_zone_ID: int, p_duration: int) -> void:
+func SetZoneCharges(p_zone_ID: int, p_charges: int) -> void:
 	if(not _zones.has(p_zone_ID)):
 		return
-	_zones[p_zone_ID]._duration = p_duration
-	var result: CombatResult = CombatResult.new(CombatResult.Kind.Zone_Duration_Changed)
+	_zones[p_zone_ID]._charges = p_charges
+	var result: CombatResult = CombatResult.new(CombatResult.Kind.Zone_Charges_Changed)
 	result.zone_ID = p_zone_ID
-	result.duration = p_duration
+	result.charges = p_charges
 	_resolver._Emit(result)
 
 func ClearZone(p_zone_ID: int) -> void:
@@ -74,44 +77,55 @@ func TriggerZones(p_active_character_ID: int) -> Array[CombatResult]:
 	_resolver._BeginBatch()
 	var characters: Dictionary[int, Character] = _resolver._characters
 	var sides: CombatSides = _resolver._sides
+	for zone_ID in _zones.keys():
+		_ForgetDepartedVisitors(zone_ID)
 	for character_ID in characters.keys():
 		if(character_ID == p_active_character_ID or characters[character_ID]._current_health <= 0):
 			continue
 		for ID in _zones.keys():
-			if(_zones[ID]._duration == 0):
+			var zone: Zone = _zones[ID]
+			if(zone._charges == 0):
 				continue
 			if(not _resolver._turn_positions.IsCharacterInZone(character_ID, ID)):
 				continue
-			if(not Skills.CorrectZoneTarget(_zones[ID]._owner_ID, character_ID, _zones[ID]._target, sides)):
+			if(zone._affected_since_entry.has(character_ID)):
+				continue
+			if(not Skills.CorrectZoneTarget(zone._owner_ID, character_ID, zone._target, sides)):
 				continue
 			if(_resolver._HasBuff(character_ID, Types.Buff_Type.Slipstream)
-					and sides.AreEnemies(character_ID, _zones[ID]._owner_ID)):
+					and sides.AreEnemies(character_ID, zone._owner_ID)):
 				continue
 			var trigger_count: int = (
 					2 if (_resolver._HasBuff(character_ID, Types.Buff_Type.Resonance)
-							and sides.AreAllies(character_ID, _zones[ID]._owner_ID))
+							and sides.AreAllies(character_ID, zone._owner_ID))
 					else 1)
 			for i in trigger_count:
-				_ResolveZoneEffect(_zones[ID], ID, character_ID)
-			_zones[ID]._duration -= 1
+				_ResolveZoneEffect(zone, ID, character_ID)
+			zone._affected_since_entry.append(character_ID)
+			zone._charges -= 1
 			var triggered: CombatResult = CombatResult.new(CombatResult.Kind.Zone_Triggered)
 			triggered.zone_ID = ID
 			triggered.target_ID = character_ID
-			triggered.duration = _zones[ID]._duration
+			triggered.charges = zone._charges
 			_resolver._Emit(triggered)
 			# Restrict the trigger to one zone per character.
 			break
-	for ID in _zones.keys():
-		if(_zones[ID]._duration == 0):
-			_zones[ID].free()
-			_zones.erase(ID)
+	for ID in _zones.keys().duplicate():
+		if(_zones[ID]._charges == 0):
+			ClearZone(ID)
 			_resolver.BroadcastEvent(Types.Combat_Event.Resource_Depleted)
 	return _resolver._EndBatch()
 
+func _ForgetDepartedVisitors(p_zone_ID: int) -> void:
+	var zone: Zone = _zones[p_zone_ID]
+	for character_ID in zone._affected_since_entry.duplicate():
+		if(not _resolver._turn_positions.IsCharacterInZone(character_ID, p_zone_ID)):
+			zone._affected_since_entry.erase(character_ID)
+
 func ReplenishZoneCharge(p_zone_ID: int, p_amount: int, p_max_charges: int) -> void:
-	if(not _zones.has(p_zone_ID) or _zones[p_zone_ID]._duration >= p_max_charges):
+	if(not _zones.has(p_zone_ID) or _zones[p_zone_ID]._charges >= p_max_charges):
 		return
-	SetZoneDuration(p_zone_ID, mini(_zones[p_zone_ID]._duration + p_amount, p_max_charges))
+	SetZoneCharges(p_zone_ID, mini(_zones[p_zone_ID]._charges + p_amount, p_max_charges))
 
 func _ResolveZoneEffect(p_zone: Zone, p_zone_ID: int, p_character_ID: int) -> void:
 	var affected: Character = _resolver._characters[p_character_ID]
@@ -119,48 +133,17 @@ func _ResolveZoneEffect(p_zone: Zone, p_zone_ID: int, p_character_ID: int) -> vo
 	if(null != affected._trait):
 		effect_multiplier = affected._trait.GetIncomingZoneEffectMultiplier(
 				p_character_ID, p_zone._owner_ID, _resolver._sides)
-	match p_zone._type:
-		Types.Skill_Type.Flicker_Zone:
-			_resolver._EmitTurnBarBump(p_character_ID,
-					Skills.ZoneMagnitude(GameBalance.FLICKER_ZONE_BASE_BUMP, p_zone._owner_knowledge)
-							* effect_multiplier, p_zone._owner_ID)
-		Types.Skill_Type.Lava_Zone:
-			var any_landed: bool = false
-			for debuff_type in p_zone._debuff_types:
-				var data: StatusEffectData = StatusEffectRegistry.DebuffData(debuff_type)
-				var burning: StatusEffects.Debuff = StatusEffects.Debuff.new()
-				burning.type = debuff_type
-				burning.duration = data.duration_default if null != data else 0
-				burning.source_ID = p_zone._owner_ID
-				burning.value = (_resolver.GetStatusResolver()._SnapshotStatusValue(data, p_zone._owner_ID)
-						* effect_multiplier)
-				if(not _resolver.GetStatusResolver().ApplyDebuff(p_character_ID, burning).is_empty()):
-					any_landed = true
-			if(not p_zone._debuff_types.is_empty() and not any_landed):
-				return
-		Types.Skill_Type.Barrier_Zone:
-			Skills.ApplyBarrierZone(_resolver, p_zone._owner_ID, p_zone_ID, p_zone._owner_knowledge, p_character_ID)
-		Types.Skill_Type.Spore_Zone:
-			if(_resolver._sides.AreAllies(p_character_ID, p_zone._owner_ID)):
-				var regeneration: StatusEffects.Buff = StatusEffects.Buff.new()
-				regeneration.type = Types.Buff_Type.Regeneration
-				regeneration.name = "Regeneration"
-				regeneration.duration = 1
-				regeneration.value = (Skills.ZoneMagnitude(
-						StatusEffectRegistry.BuffData(Types.Buff_Type.Regeneration).magnitude, p_zone._owner_knowledge)
-						* effect_multiplier)
-				if(_resolver.GetStatusResolver().ApplyBuff(p_character_ID, regeneration).is_empty()):
-					return
-			else:
-				var blight: StatusEffects.Debuff = StatusEffects.Debuff.new()
-				blight.type = Types.Debuff_Type.Blight
-				blight.duration = 1
-				blight.source_ID = p_zone._owner_ID
-				blight.value = (Skills.ZoneMagnitude(
-						StatusEffectRegistry.DebuffData(Types.Debuff_Type.Blight).magnitude, p_zone._owner_knowledge)
-						* effect_multiplier)
-				if(_resolver.GetStatusResolver().ApplyDebuff(p_character_ID, blight).is_empty()):
-					return
+	var context := SkillCastContext.new(_resolver, p_zone._owner_ID, [p_character_ID], null,
+			p_zone._owner_attributes, 0, TraitSkillResult.new())
+	context.is_zone_trigger = true
+	context.zone_target = p_zone._target
+	context.zone_ID = p_zone_ID
+	context.zone_magnitude = Skills.ZoneMagnitude(1.0, p_zone._owner_knowledge) * effect_multiplier
+	for effect in p_zone._on_trigger:
+		if(context.ConditionMet(effect)):
+			effect.Resolve(context)
+	if(context.status_effect_attempted and not context.status_effect_landed):
+		return
 	var reactive: CharacterTrait = Skills.ActiveHook(affected, Types.Combat_Event.Zone_Affected)
 	if(null != reactive):
 		reactive.OnAffectedByZone(p_character_ID, p_zone._owner_ID, _resolver)

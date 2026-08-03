@@ -16,6 +16,5 @@ name = "Flaw Analysis"
 description = "Applies the Exposed Facet debuff to a single enemy for 2 turns."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Flaw_Analysis/Flaw_Analysis.png"
 cooldown = 2
-skill_type = 5
 effects = Array[ExtResource("1_nd7d3")]([SubResource("Resource_ib1th")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

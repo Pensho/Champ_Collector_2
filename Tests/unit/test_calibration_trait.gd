@@ -136,18 +136,13 @@ func test_final_calculation_at_tier_three_erects_a_zone_when_none_exists() -> vo
 	assert_eq(zones.size(), 1, "A construction zone should be re-erected for free")
 	var zone: Zone = zones.values()[0]
 	assert_eq(zone._owner_ID, 0)
-	assert_eq(zone._type, Types.Skill_Type.Barrier_Zone)
-	assert_eq(zone._duration, CalibrationTrait.RAISE_THE_FRAME_ZONE_CHARGES)
+	assert_true(zone._on_trigger[0] is BarrierZoneEffect)
+	assert_eq(zone._charges, CalibrationTrait.RAISE_THE_FRAME_ZONE_CHARGES)
 
 func test_final_calculation_at_tier_three_upgrades_an_existing_zone() -> void:
 	_InitTrait(Types.Rarity.Epic)
-	var zone_skill: Skill = Skill.new()
-	zone_skill.target = Types.Skill_Target.ZoneAlly
-	zone_skill.skill_type = Types.Skill_Type.Barrier_Zone
-	var zone_effect: ZoneEffect = ZoneEffect.new()
-	zone_effect.duration = 2
-	zone_skill.effects = [zone_effect]
-	_resolver.GetZoneResolver().PlaceZone(0, 0, zone_skill)
+	var zone_effect: ZoneEffect = TestFactory.make_zone_effect(2, [BarrierZoneEffect.new()])
+	TestFactory.place_zone(_resolver, 0, 0, zone_effect, Types.Skill_Target.ZoneAlly)
 
 	for i in CalibrationTrait.ZONE_RE_ERECT_THRESHOLD:
 		_trait.OnSkillCast(0, [], "Cornerstone", {}, _resolver)
@@ -155,17 +150,12 @@ func test_final_calculation_at_tier_three_upgrades_an_existing_zone() -> void:
 
 	var zones: Dictionary[int, Zone] = _resolver.GetZoneResolver().GetZones()
 	assert_eq(zones.size(), 1, "The existing zone should be upgraded, not duplicated")
-	assert_eq(zones[0]._duration, CalibrationTrait.ZONE_UPGRADE_CHARGES)
+	assert_eq(zones[0]._charges, CalibrationTrait.ZONE_UPGRADE_CHARGES)
 
 func test_final_calculation_upgrading_an_existing_zone_emits_a_duration_result() -> void:
 	_InitTrait(Types.Rarity.Epic)
-	var zone_skill: Skill = Skill.new()
-	zone_skill.target = Types.Skill_Target.ZoneAlly
-	zone_skill.skill_type = Types.Skill_Type.Barrier_Zone
-	var zone_effect: ZoneEffect = ZoneEffect.new()
-	zone_effect.duration = 2
-	zone_skill.effects = [zone_effect]
-	_resolver.GetZoneResolver().PlaceZone(0, 0, zone_skill)
+	var zone_effect: ZoneEffect = TestFactory.make_zone_effect(2, [BarrierZoneEffect.new()])
+	TestFactory.place_zone(_resolver, 0, 0, zone_effect, Types.Skill_Target.ZoneAlly)
 
 	var received: Array[CombatResult] = []
 	_resolver.result_produced.connect(func(p_result): received.append(p_result))
@@ -174,12 +164,12 @@ func test_final_calculation_upgrading_an_existing_zone_emits_a_duration_result()
 		_trait.OnSkillCast(0, [], "Cornerstone", {}, _resolver)
 	_trait.OnSkillCast(0, [], "Final Calculation", {}, _resolver)
 
-	var duration_results: Array = received.filter(
-		func(p_result): return p_result.kind == CombatResult.Kind.Zone_Duration_Changed)
-	assert_eq(duration_results.size(), 1,
+	var charge_results: Array = received.filter(
+		func(p_result): return p_result.kind == CombatResult.Kind.Zone_Charges_Changed)
+	assert_eq(charge_results.size(), 1,
 		"Upgrading an existing zone should notify listeners so the turn bar label updates")
-	assert_eq(duration_results[0].zone_ID, 0)
-	assert_eq(duration_results[0].duration, CalibrationTrait.ZONE_UPGRADE_CHARGES)
+	assert_eq(charge_results[0].zone_ID, 0)
+	assert_eq(charge_results[0].charges, CalibrationTrait.ZONE_UPGRADE_CHARGES)
 
 # --- Raise the Frame: charge consumption ---
 
@@ -209,13 +199,8 @@ func test_on_zone_constructed_records_capped_invested_charges() -> void:
 	_character._trait = _trait
 	for i in CalibrationTrait.RAISE_THE_FRAME_CONSUME_CAP + 4:
 		_trait.OnSkillCast(0, [], "Cornerstone", {}, _resolver)
-	var zone_skill: Skill = Skill.new()
-	zone_skill.target = Types.Skill_Target.ZoneAlly
-	zone_skill.skill_type = Types.Skill_Type.Barrier_Zone
-	var zone_effect: ZoneEffect = ZoneEffect.new()
-	zone_effect.duration = 5
-	zone_skill.effects = [zone_effect]
-	_resolver.GetZoneResolver().PlaceZone(0, 0, zone_skill)
+	var zone_effect: ZoneEffect = TestFactory.make_zone_effect(5, [BarrierZoneEffect.new()])
+	TestFactory.place_zone(_resolver, 0, 0, zone_effect, Types.Skill_Target.ZoneAlly)
 	assert_eq(_trait._charges_invested_per_zone.get(0, -1), CalibrationTrait.RAISE_THE_FRAME_CONSUME_CAP,
 		"Invested amount should be capped, independent of charges actually consumed")
 	assert_eq(_trait._charges, CalibrationTrait.RAISE_THE_FRAME_CONSUME_CAP + 4,
@@ -225,13 +210,8 @@ func test_on_zone_constructed_ignores_non_barrier_zones() -> void:
 	_InitTrait(Types.Rarity.Epic)
 	_character._trait = _trait
 	_trait.OnSkillCast(0, [], "Cornerstone", {}, _resolver)
-	var zone_skill: Skill = Skill.new()
-	zone_skill.target = Types.Skill_Target.ZoneAlly
-	zone_skill.skill_type = Types.Skill_Type.Flicker_Zone
-	var zone_effect: ZoneEffect = ZoneEffect.new()
-	zone_effect.duration = 5
-	zone_skill.effects = [zone_effect]
-	_resolver.GetZoneResolver().PlaceZone(0, 0, zone_skill)
+	var zone_effect: ZoneEffect = TestFactory.make_zone_effect(5)
+	TestFactory.place_zone(_resolver, 0, 0, zone_effect, Types.Skill_Target.ZoneAlly)
 	assert_false(_trait._charges_invested_per_zone.has(0),
 		"Non-Barrier zones should not record an invested amount")
 
@@ -242,13 +222,8 @@ func test_get_zone_charge_bonus_scales_with_invested_charges_and_potency() -> vo
 	_character._trait = _trait
 	for i in CalibrationTrait.RAISE_THE_FRAME_CONSUME_CAP:
 		_trait.OnSkillCast(0, [], "Cornerstone", {}, _resolver)
-	var zone_skill: Skill = Skill.new()
-	zone_skill.target = Types.Skill_Target.ZoneAlly
-	zone_skill.skill_type = Types.Skill_Type.Barrier_Zone
-	var zone_effect: ZoneEffect = ZoneEffect.new()
-	zone_effect.duration = 5
-	zone_skill.effects = [zone_effect]
-	_resolver.GetZoneResolver().PlaceZone(0, 0, zone_skill)
+	var zone_effect: ZoneEffect = TestFactory.make_zone_effect(5, [BarrierZoneEffect.new()])
+	TestFactory.place_zone(_resolver, 0, 0, zone_effect, Types.Skill_Target.ZoneAlly)
 	assert_almost_eq(_trait.GetZoneChargeBonus(0), CalibrationTrait.RAISE_THE_FRAME_CONSUME_CAP * 0.07, 0.0001)
 
 func test_get_zone_charge_bonus_is_zero_for_unknown_zone() -> void:
@@ -261,13 +236,8 @@ func test_start_of_battle_clears_invested_charges() -> void:
 	_InitTrait(Types.Rarity.Epic)
 	_character._trait = _trait
 	_trait.OnSkillCast(0, [], "Cornerstone", {}, _resolver)
-	var zone_skill: Skill = Skill.new()
-	zone_skill.target = Types.Skill_Target.ZoneAlly
-	zone_skill.skill_type = Types.Skill_Type.Barrier_Zone
-	var zone_effect: ZoneEffect = ZoneEffect.new()
-	zone_effect.duration = 5
-	zone_skill.effects = [zone_effect]
-	_resolver.GetZoneResolver().PlaceZone(0, 0, zone_skill)
+	var zone_effect: ZoneEffect = TestFactory.make_zone_effect(5, [BarrierZoneEffect.new()])
+	TestFactory.place_zone(_resolver, 0, 0, zone_effect, Types.Skill_Target.ZoneAlly)
 	assert_gt(_trait.GetZoneChargeBonus(0), 0.0, "Sanity check: the zone's investment was recorded")
 	_trait.StartOfBattle(0, _resolver)
 	assert_eq(_trait.GetZoneChargeBonus(0), 0.0)

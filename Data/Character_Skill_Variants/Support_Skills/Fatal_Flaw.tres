@@ -17,6 +17,5 @@ description = "Through a trained eye, allowing their allies to deal a monstrous 
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Fatal_Flaw/Fatal_Flaw_1.jpg"
 target = 12
 cooldown = 2
-skill_type = 5
 effects = Array[ExtResource("1_elhoi")]([SubResource("Resource_tljdg")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

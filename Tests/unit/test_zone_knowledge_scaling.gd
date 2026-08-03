@@ -23,12 +23,12 @@ func test_ally_zone_magnitude_higher_knowledge_yields_higher_magnitude() -> void
 
 func test_create_new_stores_owner_knowledge() -> void:
 	var zone: Zone = Zone.new()
-	zone.CreateNew(Types.Skill_Type.Flicker_Zone, 3, 0, Types.Skill_Target.ZoneAlly, 42)
+	zone.CreateNew(3, 0, Types.Skill_Target.ZoneAlly, {Types.Attribute.Knowledge: 42})
 	assert_eq(zone._owner_knowledge, 42, "Zone should snapshot the owner's Knowledge at placement")
 	zone.free()
 
 func test_create_new_defaults_owner_knowledge_to_zero() -> void:
 	var zone: Zone = Zone.new()
-	zone.CreateNew(Types.Skill_Type.Lava_Zone, 3, 3, Types.Skill_Target.ZoneEnemy)
+	zone.CreateNew(3, 3, Types.Skill_Target.ZoneEnemy)
 	assert_eq(zone._owner_knowledge, 0, "Owner knowledge should default to 0 when not provided")
 	zone.free()

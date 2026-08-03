@@ -93,10 +93,10 @@ func test_death_clearing_statuses_does_not_fire_the_broadcast() -> void:
 func test_zone_reaching_zero_duration_fires_the_broadcast() -> void:
 	var recorder: FakeBroadcastRecorder = FakeBroadcastRecorder.new()
 	_roster[1]._trait = recorder
-	var zone_skill: Skill = Skill.new()
-	zone_skill.target = Types.Skill_Target.ZoneAll
-	zone_skill.skill_type = Types.Skill_Type.Flicker_Zone
-	_resolver.GetZoneResolver().PlaceZone(0, 0, zone_skill)
+	# Zero charges: depleted by the very first TriggerZones call regardless of occupancy
+	# (this resolver has no FakeTurnPositions, so nobody is ever "in" the zone).
+	var zone_effect: ZoneEffect = TestFactory.make_zone_effect(0)
+	TestFactory.place_zone(_resolver, 0, 0, zone_effect, Types.Skill_Target.ZoneAll)
 
 	_resolver.GetZoneResolver().TriggerZones(-1)
 

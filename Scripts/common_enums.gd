@@ -102,17 +102,6 @@ enum Attribute
 	CritDamage,
 }
 
-enum Skill_Type
-{
-	Simple_Attack = 0,
-	Flicker_Zone = 2,
-	Lava_Zone = 3,
-	None = 4,
-	Status_Effect = 5,
-	Barrier_Zone = 6,
-	Spore_Zone = 7,
-}
-
 enum Buff_Type
 {
 	Invalid,

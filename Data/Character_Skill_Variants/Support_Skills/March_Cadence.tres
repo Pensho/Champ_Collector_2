@@ -14,6 +14,5 @@ name = "March Cadence"
 description = "All other allies gain 10% turn bar progress."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Opponent_Active_Skills/March_Cadence/March_Cadence.png"
 target = 12
-skill_type = 4
 effects = Array[ExtResource("1_5foht")]([SubResource("Resource_1vvuw")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

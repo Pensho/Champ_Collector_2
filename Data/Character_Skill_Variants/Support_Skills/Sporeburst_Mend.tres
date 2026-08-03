@@ -17,6 +17,5 @@ name = "Sporeburst Mend"
 description = "Restores Health to all allies, scaled by Mysticism."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Opponent_Active_Skills/Sporeburst_Mend/Sporeburst_Mend.png"
 target = 4
-skill_type = 5
 effects = Array[ExtResource("1_yxsct")]([SubResource("Resource_jdfw5")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

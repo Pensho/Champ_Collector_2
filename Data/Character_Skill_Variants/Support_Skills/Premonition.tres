@@ -17,6 +17,5 @@ description = "Grants a single ally the Premonition buff for 1 turn."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Premonition/Premonition.png"
 target = 3
 cooldown = 3
-skill_type = 5
 effects = Array[ExtResource("1_m5xt4")]([SubResource("Resource_s7kka")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

@@ -23,6 +23,5 @@ description = "Grants a single ally the Keen Edge and Lethal Precision buffs for
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Full_Appraisal/Full_Appraisal.png"
 target = 3
 cooldown = 4
-skill_type = 5
 effects = Array[ExtResource("1_1lryt")]([SubResource("Resource_jktjo"), SubResource("Resource_ktias")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

@@ -26,35 +26,50 @@ func after_each() -> void:
 		zone.free()
 
 func _place_lava_zone() -> void:
-	var results: Array[CombatResult] = _resolver.GetZoneResolver().PlaceZone(0, 0, TestFactory.make_lava_zone_skill())
+	var results: Array[CombatResult] = TestFactory.place_zone(
+			_resolver, 0, 0, TestFactory.make_lava_zone_effect(), Types.Skill_Target.ZoneAll)
 	assert_eq(results.size(), 1, "Placing a lava zone should report Zone_Placed")
+
+# Once-per-visit (Concept_Document.md 3.2.4.1) means a character standing still in a
+# zone is only affected once; simulate the victim leaving and re-entering the section
+# so the next TriggerZones call produces a fresh trigger.
+func _reenter_zone(p_zone_ID: int, p_character_ID: int) -> void:
+	_positions.occupants_by_zone[p_zone_ID] = []
+	_resolver.GetZoneResolver().TriggerZones(0)
+	_positions.occupants_by_zone[p_zone_ID] = [p_character_ID]
 
 func test_lava_zone_stacks_burning() -> void:
 	_place_lava_zone()
+	_positions.occupants_by_zone[0] = [3]
 
 	_resolver.GetZoneResolver().TriggerZones(0)
+	_reenter_zone(0, 3)
 	_resolver.GetZoneResolver().TriggerZones(0)
 
 	assert_eq(_roster[3]._active_debuffs.size(), 2,
-		"Each Lava-zone trigger should add another stacking Burning debuff")
+		"Each Lava-zone visit should add another stacking Burning debuff")
 	for debuff in _roster[3]._active_debuffs:
 		assert_eq(debuff.type, Types.Debuff_Type.Burning, "Every stack should be a Burning debuff")
 
 func test_lava_zone_respects_status_cap() -> void:
 	_place_lava_zone()
+	_positions.occupants_by_zone[0] = [3]
 
 	for _i in range(GameBalance.MAX_STATUS_EFFECTS + 3):
 		_resolver.GetZoneResolver().TriggerZones(0)
+		_reenter_zone(0, 3)
 
 	assert_eq(_roster[3]._active_debuffs.size(), GameBalance.MAX_STATUS_EFFECTS,
 		"Stacking Burning must not exceed the status-effect cap")
 
 func test_zone_expires_after_duration_charges() -> void:
 	_place_lava_zone()
+	_positions.occupants_by_zone[0] = [3]
 
-	var zone_effect: ZoneEffect = TestFactory.make_lava_zone_skill().effects[0] as ZoneEffect
-	for _i in range(zone_effect.duration):
+	var zone_effect: ZoneEffect = TestFactory.make_lava_zone_effect()
+	for _i in range(zone_effect.charges):
 		_resolver.GetZoneResolver().TriggerZones(0)
+		_reenter_zone(0, 3)
 
 	assert_false(_resolver.GetZoneResolver().HasZone(0), "A zone should be erased once its charges are spent")
 

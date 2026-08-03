@@ -29,6 +29,5 @@ name = "Reliquary Ward"
 description = "Grants one ally a protection, alternating with each use: odd uses grant a Barrier absorbing 60% of that ally's max Health for 2 turns; even uses grant the Deathward buff for 2 turns."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Opponent_Active_Skills/Reliquary_Ward/Reliquary_Ward.png"
 target = 3
-skill_type = 5
 effects = Array[ExtResource("1_obs55")]([SubResource("Resource_eap4w")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

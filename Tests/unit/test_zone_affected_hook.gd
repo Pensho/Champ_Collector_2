@@ -47,19 +47,19 @@ func after_each() -> void:
 	for zone in _resolver.GetZoneResolver().GetZones().values():
 		zone.free()
 
+func _flicker_on_trigger() -> Array[SkillEffect]:
+	var bump: TurnBarEffect = TurnBarEffect.new()
+	bump.fraction = GameBalance.FLICKER_ZONE_BASE_BUMP
+	return [bump]
+
 func _place_flicker_zone() -> void:
 	_roster[0]._attributes[Types.Attribute.Knowledge] = 0
-	var zone_skill: Skill = Skill.new()
-	zone_skill.target = Types.Skill_Target.ZoneAll
-	zone_skill.skill_type = Types.Skill_Type.Flicker_Zone
-	var zone_effect: ZoneEffect = ZoneEffect.new()
-	zone_effect.duration = 5
-	zone_skill.effects = [zone_effect]
-	_resolver.GetZoneResolver().PlaceZone(0, 0, zone_skill)
+	var zone_effect: ZoneEffect = TestFactory.make_zone_effect(5, _flicker_on_trigger())
+	TestFactory.place_zone(_resolver, 0, 0, zone_effect, Types.Skill_Target.ZoneAll)
 
 func _place_lava_zone() -> void:
 	_roster[0]._attributes[Types.Attribute.Knowledge] = 0
-	_resolver.GetZoneResolver().PlaceZone(0, 0, TestFactory.make_lava_zone_skill())
+	TestFactory.place_zone(_resolver, 0, 0, TestFactory.make_lava_zone_effect(), Types.Skill_Target.ZoneAll)
 
 func _bumps() -> Array[CombatResult]:
 	return _resolver._batch.filter(func(r): return r.kind == CombatResult.Kind.Turn_Bar_Bump)
@@ -108,13 +108,12 @@ func test_spore_zone_does_not_dispatch_when_the_status_application_is_blocked() 
 		filler.type = Types.Buff_Type.Empower
 		filler.ID = i
 		_roster[1]._active_buffs.append(filler)
-	var zone_skill: Skill = Skill.new()
-	zone_skill.target = Types.Skill_Target.ZoneAll
-	zone_skill.skill_type = Types.Skill_Type.Spore_Zone
-	var zone_effect: ZoneEffect = ZoneEffect.new()
-	zone_effect.duration = 5
-	zone_skill.effects = [zone_effect]
-	_resolver.GetZoneResolver().PlaceZone(0, 0, zone_skill)
+	var regeneration: ApplyBuffEffect = ApplyBuffEffect.new()
+	regeneration.buff_type = Types.Buff_Type.Regeneration
+	regeneration.duration = 1
+	regeneration.target = Types.Skill_Target.ZoneAlly
+	var zone_effect: ZoneEffect = TestFactory.make_zone_effect(5, [regeneration])
+	TestFactory.place_zone(_resolver, 0, 0, zone_effect, Types.Skill_Target.ZoneAll)
 
 	_resolver.GetZoneResolver().TriggerZones(0)
 
