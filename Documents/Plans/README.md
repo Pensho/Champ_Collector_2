@@ -6,6 +6,13 @@ body of work. Findings behind these plans are recorded in
 
 Suggested order (dependencies noted inside each plan):
 
+0. `Plan_Blowout_Alignment.md` — the master plan for aligning every system with the
+   design pillar in `Concept_Document.md` section 1.1. Orders the work into phases
+   (calibration, damage math, status channels, cascade, presentation, kits,
+   itemization, encounters) and spawns a sub-plan per phase. Takes precedence over
+   the plans below where they overlap; `Plan_Encounter_Solution_Design.md` is paused
+   until its Phase 7 lands.
+
 1. `Plan_Story_Mode_Systems.md` — the systems that deliver story mode (story
    state handler, dialogue overlay, flag-driven hub variants, act gating,
    scripted battle openings, guest champions). The state handler and dialogue
@@ -16,7 +23,9 @@ Suggested order (dependencies noted inside each plan):
 
 Design-only plans (no code; can run at any time):
 
-- `Plan_Encounter_Solution_Design.md` — the long-run encounter content plan:
+- `Plan_Encounter_Solution_Design.md` — **paused** pending Phase 7 of
+  `Plan_Blowout_Alignment.md`; further volume batches authored under the current
+  production rules add to the retrofit backlog. The long-run encounter content plan:
   designing encounters the Role kits solve (fodder / mini-boss / boss tiers),
   progression-agnostic with volume floors (at least 20 fodder / 10 mini-boss /
   10 boss), tiered overlap tolerance, an optional theme palette, and a coverage
