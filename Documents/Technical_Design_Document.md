@@ -1212,10 +1212,11 @@ accepted as-is — see [Section 15.4](#154-signal-versus-direct-call-usage-is-in
 Tests use **GUT** (Godot Unit Test, 9.5.x), run headlessly from the project root:
 
 ```
-/home/jonas/Documents/Godot_v4.7.1-stable_linux.x86_64 \
-  --headless -s addons/gut/gut_cmdln.gd \
-  -gdir=res://Tests/unit/ -gprefix=test_ -gsuffix=.gd -gexit
+./Tests/run_tests.sh
 ```
+
+`Tests/run_tests.sh` wraps the `gut_cmdln.gd` invocation and filters its output down to
+GUT's run summary; see `Test_Design_Document.md`.
 
 Tests target **pure logic only** — combat resolution (`BattleResolver`, including a full seeded
 3-versus-3 battle in `test_battle_resolver.gd`), combat math, targeting, leveling, loot,

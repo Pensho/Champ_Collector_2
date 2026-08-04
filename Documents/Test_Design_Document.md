@@ -6,10 +6,13 @@ Framework: **GUT** (Godot Unit Test), version 9.5.x.
 
 Run headlessly from the project root:
 ```
-/home/jonas/Documents/Godot_v4.7.1-stable_linux.x86_64 \
-  --headless -s addons/gut/gut_cmdln.gd \
-  -gdir=res://Tests/unit/ -gprefix=test_ -gsuffix=.gd -gexit
+./Tests/run_tests.sh
 ```
+
+`Tests/run_tests.sh` wraps the `gut_cmdln.gd` invocation and prints only GUT's run
+summary — failing tests with their assert texts and line numbers, plus the totals.
+Arguments are passed through to GUT, so `./Tests/run_tests.sh -gtest=res://Tests/unit/test_foo.gd`
+runs a single file.
 
 ## What we test
 
