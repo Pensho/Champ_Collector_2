@@ -111,8 +111,8 @@ static func ResolveIndependentGroup(
 	var sides: CombatSides = p_resolver.GetSides()
 	var characters: Dictionary[int, Character] = p_resolver.GetCharacters()
 	var random: RandomNumberGenerator = p_resolver.GetRandom()
-	var max_health: Callable = func(p_character: Character) -> int:
-		return p_resolver.GetMaxHealth(p_character._instance_ID)
+	var max_health: Callable = func(p_character_ID: int) -> int:
+		return p_resolver.GetMaxHealth(p_character_ID)
 	var group_IDs: Array[int] = []
 	match p_target_type:
 		Types.Skill_Target.Self, Types.Skill_Target.Single_Ally:

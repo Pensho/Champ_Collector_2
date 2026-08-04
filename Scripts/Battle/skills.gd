@@ -161,7 +161,7 @@ static func MostInjured(p_IDs: Array[int], p_characters: Dictionary[int, Charact
 	for id in p_IDs:
 		if(not p_characters.has(id) or p_characters[id]._current_health <= 0):
 			continue
-		var max_health: int = p_max_health.call(p_characters[id])
+		var max_health: int = p_max_health.call(id)
 		var ratio: float = float(p_characters[id]._current_health) / float(max_health)
 		if(ratio < best_ratio or (ratio == best_ratio and id < best_ID)):
 			best_ratio = ratio
