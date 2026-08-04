@@ -97,13 +97,26 @@ Prerequisite for every phase after it.
 **Produces:** `Plan_Status_Effect_Channels.md`.
 
 Every buff and debuff in section 3.2.3 is currently either an attribute modifier or a
-flat effect. Each must be classified as feeding channel 1 (attributes) or channel 2
-(its own factor), and the ones that should contribute a factor but currently cannot need
-reworking. Zone effects (section 3.2.4.1) are part of this pass — a zone is a natural
-factor source and is currently not treated as one.
+flat effect. Each is classified into one of three buckets: channel 1 (attributes),
+channel 2 (its own factor), or **enabler** (section 1.1.3 — creates or protects the burst
+window, produces no damage). Zone effects (section 3.2.4.1) are part of this pass — a zone
+is a natural factor source and is currently not treated as one.
 
-Watch for: the status effect cap interacting with uncapped deliberate resources
-(section 1.1.4).
+A status is broken in one of two ways, and only these two:
+
+* It sits in no bucket — it neither moves an attribute, nor supplies a factor, nor passes
+  the collapse test in section 1.1.6 for an enabler.
+* It is filed as a damage factor but delivers a linear bump.
+
+Watch for:
+
+* **Do not convert enablers into damage factors.** The target is not a roster where every
+  status touches damage; choosing a non-damage line is a decision worth preserving. An
+  enabler that passes the collapse test needs no rework.
+* A status whose nominal bucket is channel 1 but whose real value is denial (Blind reduces
+  Accuracy, but is picked to stop an application) is classified by both: its attribute
+  effect is channel 1, its role is enabler. Reworking it toward a damage factor is wrong.
+* The status effect cap interacting with uncapped deliberate resources (section 1.1.4).
 
 ### Phase 3 — Cascade system
 
@@ -135,8 +148,10 @@ to be deferred as polish.
 **Produces:** `Plan_Kit_Blowout_Audit.md`.
 
 Every Role and champion in section 3.1.3 and every skill in section 3.2.4.2 against the
-rejection test. For each kit: which channel does it feed, does it contribute a factor
-independent of other kits, and can it participate in a burst at all. Expected output is a
+rejection test. For each kit: which channel does it feed — or whether it is an enabler
+passing the collapse test — does it contribute independently of other kits, and can it
+participate in a burst at all. A kit carrying enablers rather than factors is a valid
+result, not a finding. Expected output is a
 list of kits that need rework, not a rewrite of all of them.
 
 Watch for: the capped passives (Momentum, Arcane Instability, Steel and Sea stacks) are
@@ -166,7 +181,7 @@ Two parts:
   three Reanimating Statues, The Ashen Oracle, and the three bosses. All were designed as
   locks whose answers win comfortably, with no burst payoff. The three bosses are the most
   likely to need rework. The coverage ledger needs a column for which channel each
-  encounter's answer feeds.
+  encounter's answer feeds, enabler included.
 
 Feeds back into `Plan_Encounter_Solution_Design.md`, whose production rules must adopt the
 pillar before further volume batches are authored. **That plan is paused until this phase

@@ -48,6 +48,8 @@ Blowout requires terms that grow independently and combine multiplicatively. Dam
 2. **Combined modifier (multiplicative).** Not a meter that is filled — a product assembled at the moment a skill resolves, from every damage-relevant condition true at that instant: buffs on the caster, debuffs and statuses on the target, zone effects, and skill-specific conditions. Each contributing source supplies **its own factor**, so satisfying a further condition multiplies the result rather than adding to it. A buff that raises an attribute instead feeds channel 1; a buff that modifies damage contributes a factor here.
 3. **Cascade (count).** Effects that trigger off other effects, each producing its own resolution. A single action can therefore release many separate damage instances in sequence. Every instance carries its own combined modifier, so instance count and modifier size compound against each other.
 
+**Enablers.** A fourth class of effect produces no damage at all: it creates or protects the window in which the three channels fire. Denying the enemy an answer (Blight against a healing boss), blocking an incoming effect that would break the setup (Aegis, Premonition), and buying a turn (Stun, Anchor) are enablers. They are not a damage channel and are not to be converted into one — section 1.1.1 requires the threat curve to peak before the burst, and enablers are what the player answers that threat with. A roster where every status touches damage carries fewer decisions, not more.
+
 **The composition law:** *contributions grouped by mechanic identity — buff type, debuff type, trait resource, skill effect — add into one factor; distinct mechanics form separate factors that multiply.* Character identity never enters the grouping: the same combination of mechanics scores the same whether one champion contributes all of them or three do, and adding a champion who contributes nothing relevant never changes the result. A single champion stays tame and readable on their own because their kit is usually a small number of distinct mechanics. Two or three kits whose effects contribute independent mechanics are where the fight detonates. Collection is therefore the source of the power fantasy — more kits means more distinct mechanics in play, not additional bodies multiplying the same one.
 
 #### 1.1.4. Rules the channels must obey
@@ -68,7 +70,9 @@ Applied to every new mechanic, skill, item, and encounter:
 
 > If a mechanic's best case is a linear improvement over not having it, it does not serve the pillar.
 
-A mechanic passes by feeding one of the three channels in a way that multiplies with something else in the game. A mechanic that only makes an existing number somewhat larger is rejected regardless of how well it fits the theme.
+A mechanic passes one of two ways: by feeding one of the three channels in a way that multiplies with something else in the game, or by gating a burst that fails without it. A mechanic that only makes an existing number somewhat larger is rejected regardless of how well it fits the theme.
+
+The second route is the enabler class in section 1.1.3, and it is held to the **collapse test**: removing the mechanic has to make the fight go materially differently — the burst does not happen, or does not survive to happen. An enabler that is merely useful to have fails, the same as a linear damage bump does.
 
 ---
 
