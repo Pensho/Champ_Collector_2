@@ -94,7 +94,11 @@ Prerequisite for every phase after it.
 
 ### Phase 2 — Status effect reclassification
 
-**Produced:** `Plan_Status_Effect_Channels.md` — authored, not yet executed.
+**Produced:** `Plan_Status_Effect_Channels.md`. Its classification pass (that plan's Phase 3)
+is done — every status carries a settled verdict. The sub-plan's remaining phases are the
+modifier-boundary prose, the status effect cap decision, the code reworks the classification
+pass specified, and the documentation pass that lands the bucket tags in section 3.2.3; this
+phase is not marked done until those finish.
 
 Every buff and debuff in section 3.2.3 is currently either an attribute modifier or a
 flat effect. Each is classified into one of three buckets: channel 1 (attributes),
@@ -201,6 +205,22 @@ lands** — authoring more encounters under the old rules adds to the retrofit b
   left unresolved: a burst is assembled from a composition rather than a single origin, and
   that composition is what makes an encounter a puzzle, so the baseline is a design question
   to settle against a playable burst rather than to emulate now. Revisit in Phase 5.
+* **Flagged, unresolved: Defence going irrelevant at burst scale is a risk, not a settled
+  win.** Section 1.1.4 already states it as fact — "Defence stops mattering at burst scale...
+  varying Defense_Ignore_Factor from 1.0 to 0.0 moves a burst by under 2%" — and it is a real
+  mathematical consequence of chasing 30–50x bursts against the current (asymptotic)
+  mitigation formula, not an oversight. The risk: Defence is a widely-understood stat players
+  expect to matter, and a tank who stacked it reading as having done nothing at the moment
+  the fight is decided is a legibility problem the pillar doesn't currently answer. Two ways
+  out, neither chosen yet: (a) accept it deliberately and say so in-doc — Defence's job is
+  surviving to the trigger, not blunting the trigger itself, matching 1.1.1's "threat curve
+  peaks before the burst" — or (b) change `Skills.MitigatedDamage` so Defence keeps some
+  burst-scale relevance, which would also move every calibration number in 1.1.2. This is
+  pillar-level text (section 1.1 outranks the rest of the document), so no phase should
+  resolve it as a side effect of its own work — it already load-bears one Phase 2 verdict
+  (Expose_Weakness is filed channel-1-not-channel-2 specifically because a Defence debuff
+  can't move a burst). Settle explicitly before Phase 4 (modifier boundary, which restates
+  this claim) or Phase 7 (encounter Defence tuning) depend on an answer.
 
 ## Documentation
 
