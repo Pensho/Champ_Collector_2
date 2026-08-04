@@ -1,10 +1,8 @@
 class_name BattleResolver extends RefCounted
 
-## Pure combat-resolution core. Owns the per-combat transient state (Heap-On stacks,
-## damage multipliers, zones), a seedable RandomNumberGenerator, and the status-effect
-## identity counter. Mutates Character state and reports everything that happened as
-## CombatResult records — both returned from each entry point and emitted through
-## `result_produced` — and never touches CharacterRepresentation or BattleUI.
+## Pure combat-resolution core. Owns per-combat transient state (Heap-On stacks, damage
+## multipliers, zones), a seedable RNG, and the status-effect identity counter. Mutates
+## Character state and reports everything as CombatResult records, never touching UI nodes.
 
 signal result_produced(p_result: CombatResult)
 
@@ -15,9 +13,8 @@ enum Winner {
 }
 
 ## Combined_Modifier bucket key for the resolver-owned reagent/graft damage bonus (Concept
-## Document 1.1.3): kept as one mechanic because _damage_dealt_bonus already sums reagent and
-## graft contributions before this bucket is contributed. Other resolver-owned contributions
-## are keyed by mechanic identity instead of a shared constant — see _ResolveDamage.
+## Document 1.1.3): kept as one mechanic since _damage_dealt_bonus already sums those
+## contributions before this bucket sees them — see _ResolveDamage.
 const _REAGENT_DAMAGE_BONUS_KEY: StringName = &"reagent_damage_bonus"
 
 const _BROADCASTABLE_EVENTS: Array[Types.Combat_Event] = [
@@ -33,6 +30,8 @@ var _turn_positions: TurnPositions
 var _random: RandomNumberGenerator = RandomNumberGenerator.new()
 var _zone_resolver: ZoneResolver
 var _status_resolver: StatusEffectResolver
+var _cascade_resolver: CascadeResolver
+var _current_cascade_depth: int = 0
 
 var _skill_use_counts: Dictionary[String, int] = {}
 
@@ -55,8 +54,7 @@ var _turn_bar_damage_remainder: Dictionary[int, float] = {}
 var _pending_zone_section: int = -1
 
 
-## Pass a non-negative p_seed for reproducible rolls (e.g. from the encounter);
-## a negative seed randomizes.
+## Pass a non-negative p_seed for reproducible rolls (e.g. from the encounter); negative randomizes.
 func _init(
 		p_characters: Dictionary[int, Character],
 		p_sides: CombatSides,
@@ -65,6 +63,7 @@ func _init(
 	_characters = p_characters
 	_sides = p_sides
 	_turn_positions = p_turn_positions if p_turn_positions != null else TurnPositions.new()
+	_cascade_resolver = CascadeResolver.new(self)
 	_status_resolver = StatusEffectResolver.new(self)
 	_zone_resolver = ZoneResolver.new(self)
 	if(p_seed >= 0):
@@ -100,6 +99,10 @@ func GetZoneResolver() -> ZoneResolver:
 
 func GetStatusResolver() -> StatusEffectResolver:
 	return _status_resolver
+
+
+func GetCascadeResolver() -> CascadeResolver:
+	return _cascade_resolver
 
 
 func SetPendingZoneSection(p_zone_ID: int) -> void:
@@ -178,6 +181,7 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 
 	if(not caster._active_buffs.is_empty()):
 		_status_resolver._TriggerExistingCasterBuffs(p_caster_ID, caster_attributes)
+	_cascade_resolver.Drain()  # so a tick-triggered cascade precedes the effects below
 
 	var use_count: int = _SkillUseCount(p_caster_ID, cast_skill)
 	var context := SkillCastContext.new(self, p_caster_ID, p_target_IDs, cast_skill, caster_attributes,
@@ -185,6 +189,7 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 	for effect in cast_skill.effects:
 		if(context.ConditionMet(effect)):
 			effect.Resolve(context)
+	_cascade_resolver.Drain()  # catches Mirror Coat, posted from CastDebuff above
 
 	var is_non_basic: bool = cast_skill.cooldown > 0
 	_status_resolver._TriggerManaBurn(p_caster_ID, caster_attributes, is_non_basic)
@@ -216,6 +221,7 @@ func ResolveStunTurn(p_caster_ID: int) -> Array[CombatResult]:
 		_status_resolver._TriggerExistingCasterDebuffs(p_caster_ID, caster_attributes)
 	if(not caster._active_buffs.is_empty()):
 		_status_resolver._TriggerExistingCasterBuffs(p_caster_ID, caster_attributes)
+	_cascade_resolver.Drain()
 	_TickCooldowns(caster)
 	_zone_resolver.TriggerZones(p_caster_ID)
 	var end_turn_trait: CharacterTrait = Skills.ActiveHook(caster, Types.Combat_Event.End_Turn)
@@ -270,9 +276,8 @@ func BumpTurnBar(p_target_ID: int, p_fraction: float, p_source_ID: int = -1) -> 
 	_EmitTurnBarBump(p_target_ID, p_fraction, p_source_ID)
 
 
-## Public entry point for a DamageEffect: resolves one hit the same way skill and trait
-## damage already do, including the target's Defend hook (e.g. LancerTrait raising
-## Defence) when the caster is not the target.
+## Public entry point for a DamageEffect: resolves one hit like skill/trait damage,
+## including the target's Defend hook (e.g. LancerTrait raising Defence) when the caster isn't the target.
 func ResolveEffectDamage(
 		p_caster_ID: int,
 		p_target_ID: int,
@@ -497,11 +502,16 @@ func _BeginBatch() -> void:
 
 
 func _EndBatch() -> Array[CombatResult]:
+	if(_batch_depth == 1):
+		_cascade_resolver.Drain()
 	_batch_depth -= 1
+	if(_batch_depth == 0):
+		_cascade_resolver.ResetForNextAction()
 	return _batch
 
 
 func _Emit(p_result: CombatResult) -> void:
+	p_result.cascade_depth = _current_cascade_depth
 	_batch.append(p_result)
 	result_produced.emit(p_result)
 
@@ -666,11 +676,9 @@ func _SkillUseCount(p_caster_ID: int, p_skill: Skill) -> int:
 	return uses
 
 
-## Contributes the caster's channel-2 factors that persist between resolutions (trait
-## outgoing bonus, reagent/graft bonus, Opportunist) into the given modifier. Shared by
-## attack resolution and any tick that needs the caster's current damage-scaling state,
-## e.g. Bleed/Plague/Temporal_Leak. Excludes DamageMultiplier ("next attack") buffs, which
-## are consumed by an attack rather than read by a tick.
+## Contributes the caster's persistent channel-2 factors (trait bonus, reagent/graft bonus,
+## Opportunist) into the modifier — shared by attack resolution and any tick needing the
+## caster's damage-scaling state. Excludes DamageMultiplier buffs, consumed by an attack.
 func _ContributePersistentCasterFactors(
 		p_caster_ID: int, p_target_ID: int, p_modifier: CombinedDamageModifier) -> void:
 	if(not _characters.has(p_caster_ID) or not _characters.has(p_target_ID)):

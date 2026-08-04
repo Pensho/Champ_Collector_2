@@ -23,6 +23,7 @@ enum Kind {
 	Barrier_Absorbed,
 	Turn_Skipped,
 	Status_Effect_Denied,
+	Cascade_Triggered,
 }
 
 var kind: Kind
@@ -44,6 +45,8 @@ var charges: int = 0
 var visual_scene: PackedScene
 var amount_by_source: Dictionary[int, int] = {}
 var combined_damage_modifier: CombinedDamageModifier = null
+var cascade_depth: int = 0
+var cascade_trigger: Types.Cascade_Trigger = Types.Cascade_Trigger.Status_Expired
 
 
 func _init(p_kind: Kind) -> void:

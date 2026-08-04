@@ -66,7 +66,12 @@ func test_plague_tick_scales_with_the_appliers_mysticism() -> void:
 
 func test_plague_spreads_to_a_random_other_living_ally_on_expiry() -> void:
 	# Only 0 and 1 remain alive on the player side, so the spread must land on 1.
+	# The spread now resolves through CastDebuff (Concept_Document.md 1.1.4's cascade
+	# port), so it takes a resist roll against the new holder's Resistance; force it to
+	# land deterministically the same way test_mirror_coat.gd does.
 	_roster[2]._current_health = 0
+	_roster[3]._attributes[Types.Attribute.Accuracy] = 1000
+	_roster[1]._attributes[Types.Attribute.Resistance] = 1
 	_apply_debuff(Types.Debuff_Type.Plague, 0, 3, 1)
 
 	_resolver.ResolveSkill(0, [], 0)

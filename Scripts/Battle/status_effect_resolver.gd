@@ -9,6 +9,30 @@ var _resolver: BattleResolver
 
 func _init(p_resolver: BattleResolver) -> void:
 	_resolver = p_resolver
+	_RegisterCascadeListeners()
+
+
+## Registers the four cascade-channel statuses (Concept_Document.md 1.1.3) this resolver
+## triggers off of. Code-registered rather than data-driven: with only four listeners, a
+## StatusEffectData schema field for this isn't warranted yet.
+func _RegisterCascadeListeners() -> void:
+	var cascade: CascadeResolver = _resolver.GetCascadeResolver()
+	cascade.Subscribe(Types.Cascade_Trigger.Status_Expired,
+			StringName(Types.Buff_Type.keys()[Types.Buff_Type.Overflow]),
+			func(e: CascadeEvent) -> bool: return Types.Buff_Type.Overflow == e.buff_type,
+			_CascadeOverflow)
+	cascade.Subscribe(Types.Cascade_Trigger.Status_Expired,
+			StringName(Types.Buff_Type.keys()[Types.Buff_Type.Rush]),
+			func(e: CascadeEvent) -> bool: return Types.Buff_Type.Rush == e.buff_type,
+			_CascadeRushStun)
+	cascade.Subscribe(Types.Cascade_Trigger.Status_Expired,
+			StringName(Types.Debuff_Type.keys()[Types.Debuff_Type.Plague]),
+			func(e: CascadeEvent) -> bool: return Types.Debuff_Type.Plague == e.debuff_type,
+			_CascadeSpreadPlague)
+	cascade.Subscribe(Types.Cascade_Trigger.Status_Landed,
+			StringName(Types.Buff_Type.keys()[Types.Buff_Type.Mirror_Coat]),
+			func(_e: CascadeEvent) -> bool: return true,
+			_CascadeMirrorCoat)
 
 func ApplyBuff(p_target_ID: int, p_buff_template: StatusEffects.Buff) -> Array[CombatResult]:
 	_resolver._BeginBatch()
@@ -194,7 +218,11 @@ func CastDebuff(
 			p_debuff_template.duration, p_caster_ID, p_tick_bonus_per_debuff, p_always_refresh_duration,
 			Types.Debuff_Type.keys()[p_debuff_template.type])
 	if(p_trigger_mirror_coat and null != created):
-		_TriggerMirrorCoat(p_target_ID, p_caster_ID, p_debuff_template.type)
+		var event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Status_Landed)
+		event.subject_ID = p_target_ID
+		event.origin_ID = p_caster_ID
+		event.debuff_type = p_debuff_template.type
+		_resolver.GetCascadeResolver().Post(event)
 	return _resolver._EndBatch()
 
 func _RollsResistDebuff(
@@ -211,30 +239,33 @@ func _RollsResistDebuff(
 
 ## When a debuff lands on a holder with an active Mirror Coat, a copy of it is
 ## rolled against the attacker's own Resistance and applied directly if it lands.
-func _TriggerMirrorCoat(p_holder_ID: int, p_attacker_ID: int, p_debuff_type: Types.Debuff_Type) -> void:
-	if(not _resolver._HasBuff(p_holder_ID, Types.Buff_Type.Mirror_Coat) or p_holder_ID == p_attacker_ID
-			or not _resolver._characters.has(p_attacker_ID) or _resolver._characters[p_attacker_ID]._current_health <= 0):
+func _CascadeMirrorCoat(p_event: CascadeEvent) -> void:
+	var holder_ID: int = p_event.subject_ID
+	var attacker_ID: int = p_event.origin_ID
+	var debuff_type: Types.Debuff_Type = p_event.debuff_type
+	if(not _resolver._HasBuff(holder_ID, Types.Buff_Type.Mirror_Coat) or holder_ID == attacker_ID
+			or not _resolver._characters.has(attacker_ID) or _resolver._characters[attacker_ID]._current_health <= 0):
 		return
-	var holder_accuracy: int = _resolver.GetEffectiveAttributes(p_holder_ID)[Types.Attribute.Accuracy]
-	var attacker_resistance: int = _resolver.GetEffectiveAttributes(p_attacker_ID)[Types.Attribute.Resistance]
-	if(_RollsResistDebuff(p_attacker_ID, attacker_resistance, p_holder_ID, holder_accuracy)):
+	var holder_accuracy: int = _resolver.GetEffectiveAttributes(holder_ID)[Types.Attribute.Accuracy]
+	var attacker_resistance: int = _resolver.GetEffectiveAttributes(attacker_ID)[Types.Attribute.Resistance]
+	if(_RollsResistDebuff(attacker_ID, attacker_resistance, holder_ID, holder_accuracy)):
 		var resisted: CombatResult = CombatResult.new(CombatResult.Kind.Debuff_Resisted)
-		resisted.target_ID = p_attacker_ID
-		resisted.source_ID = p_holder_ID
+		resisted.target_ID = attacker_ID
+		resisted.source_ID = holder_ID
 		_resolver._Emit(resisted)
 		return
-	if(Skills.HasMaxStatusEffects(_resolver._characters[p_attacker_ID])):
-		_EmitStatusEffectDenied(p_attacker_ID, false, p_debuff_type)
+	if(Skills.HasMaxStatusEffects(_resolver._characters[attacker_ID])):
+		_EmitStatusEffectDenied(attacker_ID, false, debuff_type)
 		return
-	var data: StatusEffectData = StatusEffectRegistry.DebuffData(p_debuff_type)
+	var data: StatusEffectData = StatusEffectRegistry.DebuffData(debuff_type)
 	var mirrored: StatusEffects.Debuff = StatusEffects.Debuff.new()
-	mirrored.type = p_debuff_type
+	mirrored.type = debuff_type
 	mirrored.duration = data.duration_default if null != data else 0
-	mirrored.source_ID = p_holder_ID
-	mirrored.value = _SnapshotStatusValue(data, p_holder_ID, p_attacker_ID)
+	mirrored.source_ID = holder_ID
+	mirrored.value = _SnapshotStatusValue(data, holder_ID, attacker_ID)
 	mirrored.ID = _resolver._NextStatusID()
-	_resolver._characters[p_attacker_ID]._active_debuffs.append(mirrored)
-	_EmitDebuffApplied(p_attacker_ID, mirrored, "")
+	_resolver._characters[attacker_ID]._active_debuffs.append(mirrored)
+	_EmitDebuffApplied(attacker_ID, mirrored, "")
 
 
 func _TriggerExistingCasterDebuffs(
@@ -287,8 +318,18 @@ func _TriggerExistingCasterDebuffs(
 		tick.amount_by_source = tick_damage_by_source
 		_resolver._Emit(tick)
 
-	for plague in expiring_plagues:
-		_SpreadPlague(p_caster_ID, plague)
+	if(not expiring_plagues.is_empty()):
+		# Plague is non-stackable, so expiring_plagues can only ever hold one entry today;
+		# instance_count still carries the count rather than posting once per entry, so a
+		# future stackable Plague wouldn't have instances silently collapsed by the
+		# once-per-(mechanic, subject) dedup rule.
+		var event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Status_Expired)
+		event.subject_ID = p_caster_ID
+		event.debuff_type = Types.Debuff_Type.Plague
+		event.origin_ID = expiring_plagues[0].source_ID
+		event.fraction = expiring_plagues[0].value
+		event.instance_count = expiring_plagues.size()
+		_resolver.GetCascadeResolver().Post(event)
 
 
 func _TriggerExistingCasterBuffs(
@@ -328,11 +369,22 @@ func _TriggerExistingCasterBuffs(
 
 	_ExpireBuffs(p_caster_ID)
 
-	for i in expiring_overflows.size():
-		_TriggerOverflow(p_caster_ID)
+	# instance_count carries how many expired, rather than one Post per entry — the
+	# once-per-(mechanic, subject) dedup rule would otherwise collapse a second Post for
+	# the same holder down to a single instance.
+	if(not expiring_overflows.is_empty()):
+		var overflow_event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Status_Expired)
+		overflow_event.subject_ID = p_caster_ID
+		overflow_event.buff_type = Types.Buff_Type.Overflow
+		overflow_event.instance_count = expiring_overflows.size()
+		_resolver.GetCascadeResolver().Post(overflow_event)
 
-	for i in expiring_rush_count:
-		_TriggerRushStun(p_caster_ID)
+	if(expiring_rush_count > 0):
+		var rush_event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Status_Expired)
+		rush_event.subject_ID = p_caster_ID
+		rush_event.buff_type = Types.Buff_Type.Rush
+		rush_event.instance_count = expiring_rush_count
+		_resolver.GetCascadeResolver().Post(rush_event)
 
 	if(heal_total > 0):
 		var healed: int = _resolver._ApplyHeal(p_caster_ID, heal_total)
@@ -474,49 +526,50 @@ func _TriggerManaBurn(
 
 
 ## Deals Mysticism-scaled damage to every living enemy when Overflow expires.
-func _TriggerOverflow(p_holder_ID: int) -> void:
-	var side: CombatTeam = _resolver._sides.EnemiesOf(p_holder_ID)
+func _CascadeOverflow(p_event: CascadeEvent) -> void:
+	var holder_ID: int = p_event.subject_ID
+	var side: CombatTeam = _resolver._sides.EnemiesOf(holder_ID)
 	if(null == side):
 		return
 	var data: StatusEffectData = StatusEffectRegistry.BuffData(Types.Buff_Type.Overflow)
-	_resolver.ResolveTraitDamage(p_holder_ID, side.AliveMembers(_resolver._characters),
-			_resolver.GetEffectiveAttributes(p_holder_ID), {Types.Attribute.Mysticism: data.magnitude})
+	_resolver.ResolveTraitDamage(holder_ID, side.AliveMembers(_resolver._characters),
+			_resolver.GetEffectiveAttributes(holder_ID), {Types.Attribute.Mysticism: data.magnitude})
 
 
-func _TriggerRushStun(p_holder_ID: int) -> void:
-	if(Skills.HasMaxStatusEffects(_resolver._characters[p_holder_ID])):
-		_EmitStatusEffectDenied(p_holder_ID, false, Types.Debuff_Type.Stun)
+func _CascadeRushStun(p_event: CascadeEvent) -> void:
+	var holder_ID: int = p_event.subject_ID
+	if(Skills.HasMaxStatusEffects(_resolver._characters[holder_ID])):
+		_EmitStatusEffectDenied(holder_ID, false, Types.Debuff_Type.Stun)
 		return
 	var stun: StatusEffects.Debuff = StatusEffects.Debuff.new()
 	stun.type = Types.Debuff_Type.Stun
 	stun.duration = 1
-	stun.source_ID = p_holder_ID
+	stun.source_ID = holder_ID
 	stun.ID = _resolver._NextStatusID()
-	_resolver._characters[p_holder_ID]._active_debuffs.append(stun)
-	_EmitDebuffApplied(p_holder_ID, stun, "")
+	_resolver._characters[holder_ID]._active_debuffs.append(stun)
+	_EmitDebuffApplied(holder_ID, stun, "")
 
 
-func _SpreadPlague(p_holder_ID: int, p_expiring: StatusEffects.Debuff) -> void:
-	var side: CombatTeam = _resolver._sides.AlliesOf(p_holder_ID)
+## Spreads Plague to a random other living ally of the holder when it expires, through
+## the normal CastDebuff path (Concept_Document.md 1.1.4) — resistible, blockable by
+## Aegis/Sequence Lock, and subject to normal stack/refresh rules, unlike the direct
+## application the pre-cascade version used.
+func _CascadeSpreadPlague(p_event: CascadeEvent) -> void:
+	var holder_ID: int = p_event.subject_ID
+	var side: CombatTeam = _resolver._sides.AlliesOf(holder_ID)
 	if(null == side):
 		return
 	var candidates: Array[int] = side.AliveMembers(_resolver._characters)
-	candidates.erase(p_holder_ID)
+	candidates.erase(holder_ID)
 	if(candidates.is_empty()):
 		return
 	var target_ID: int = candidates[_resolver._random.randi_range(0, candidates.size() - 1)]
-	if(Skills.HasMaxStatusEffects(_resolver._characters[target_ID])):
-		_EmitStatusEffectDenied(target_ID, false, Types.Debuff_Type.Plague)
-		return
-	var data: StatusEffectData = StatusEffectRegistry.DebuffData(Types.Debuff_Type.Plague)
 	var spread: StatusEffects.Debuff = StatusEffects.Debuff.new()
 	spread.type = Types.Debuff_Type.Plague
-	spread.duration = data.duration_default if null != data else 0
-	spread.source_ID = p_expiring.source_ID
-	spread.value = p_expiring.value
-	spread.ID = _resolver._NextStatusID()
-	_resolver._characters[target_ID]._active_debuffs.append(spread)
-	_EmitDebuffApplied(target_ID, spread, "")
+	spread.duration = StatusEffectRegistry.DebuffData(Types.Debuff_Type.Plague).duration_default
+	spread.source_ID = p_event.origin_ID
+	spread.value = p_event.fraction
+	CastDebuff(target_ID, spread, p_event.origin_ID)
 
 
 func _SnapshotStatusValue(p_data: StatusEffectData, p_source_ID: int, p_target_ID: int) -> float:

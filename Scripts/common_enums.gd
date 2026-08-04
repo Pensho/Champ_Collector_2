@@ -224,6 +224,17 @@ enum Condition_Test
 	Below,
 }
 
+## What kind of occurrence a CascadeEvent reports (Concept_Document.md 1.1.3's cascade
+## channel). Holds only the two values the currently-ported effects need (a status expiring,
+## a status landing) — a threshold-crossing or cascade-on-cascade trigger needs a new value
+## appended here plus a Post() call site before it can be authored; CascadeEvent.instance_count
+## already covers repetition (a repeated cast or a count-driven detonation) with no enum change.
+enum Cascade_Trigger
+{
+	Status_Expired,
+	Status_Landed,
+}
+
 func RarityName(p_rarity: Types.Rarity) -> String:
 	return Types.Rarity.keys()[p_rarity - 1]
 

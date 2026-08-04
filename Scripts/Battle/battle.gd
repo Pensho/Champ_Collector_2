@@ -428,6 +428,10 @@ func _on_resolver_result_produced(p_result: CombatResult) -> void:
 			_battle_ui._turn_bar.ShowCharacterAsDead(p_result.target_ID)
 			_character_representations[p_result.target_ID]._character_texture.material = GRAYSCALE_MATERIAL
 			UpdateLifeBar(p_result.target_ID)
+		CombatResult.Kind.Cascade_Triggered:
+			# Pacing/escalation of cascade instances (Concept_Document.md 1.1.5) is future
+			# presentation work; this marker exists in the stream for that to consume.
+			pass
 
 # Credits damage to the player who dealt it, for the post-battle totals.
 func AttributeDamage(p_source_ID: int, p_amount: int) -> void:

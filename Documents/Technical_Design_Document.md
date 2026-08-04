@@ -1038,6 +1038,78 @@ cooldown, never fires `Start_Turn`/`End_Turn`, and never advances the turn bar.
   `Awaiting_Player_Input` rather than routing through `ResolveTurn` — the defining trait of
   a free action.
 
+### 7.8. Cascade resolution
+
+`CascadeResolver` (`Scripts/Battle/cascade_resolver.gd`, `RefCounted`) is the cascade channel from
+Concept Document 1.1.3 — effects that trigger off other effects — as a declared system rather than
+per-effect branches. It is a fourth resolver helper alongside `ZoneResolver` and
+`StatusEffectResolver`, constructed in `BattleResolver._init` and reached through
+`GetCascadeResolver()`.
+
+**Post and drain.** A trigger point builds a `CascadeEvent` (`Scripts/Battle/cascade_event.gd`, a
+flat union record in the `CombatResult` style: `trigger`, `subject_ID`, `origin_ID`, `buff_type`,
+`debuff_type`, `zone_ID`, `fraction`, `amount`, `instance_count`, `depth`) and calls
+`CascadeResolver.Post(event)`, which stamps `depth` and enqueues — it does not resolve inline.
+`Drain()` runs the pending queue iteratively (a plain `while` loop, not call-stack recursion).
+`BattleResolver.ResolveSkill`/`ResolveStunTurn` call it explicitly after each phase that can post
+(the caster's own debuff tick, buff tick, and effect loop) so a cascade still resolves relative to
+the rest of the cast the way the branches it replaces did — deferring every cascade to the end of
+the action would read post-cast attributes and reorder results past effects meant to precede them.
+`_EndBatch` also calls `Drain()` at the `_batch_depth` 1→0 transition as a catch-all (a no-op if
+nothing is pending), *before* decrementing, so a listener's own `_BeginBatch`/`_EndBatch` calls
+land in the still-open outer batch; the per-action dedup set and instance counter reset only once
+depth actually reaches 0, so multiple `Drain()` calls within one action share the same bounds.
+
+**Listener matching.** `Subscribe(trigger, mechanic_key, matches, callback)` registers one
+listener per mechanic. `trigger` alone is not enough to dispatch on — every status that can expire
+shares `Status_Expired`, for instance — so `matches(event)` is checked before any dedup or
+fan-out accounting runs; only a matching listener's `callback` executes and consumes budget. This
+guards against exactly the failure mode it was built to catch: an unrelated listener silently
+starving another mechanic's fan-out allowance because both share a trigger enum value.
+
+**Termination (Concept Document 1.1.4).** Two independent bounds, neither substituting for the
+other:
+- `MAX_CASCADE_DEPTH` (4) bounds chain length. `depth` is 0 outside any cascade; `Post` stamps a
+  new event one level deeper than whichever instance is currently resolving, and refuses outright
+  past the cap.
+- `MAX_CASCADE_INSTANCES_PER_ACTION` (16) bounds total fan-out across the whole originating
+  action, checked when a trigger's `instance_count` is expanded into individual instance
+  resolutions.
+
+A trigger source fires at most once per originating action: the dedup set is keyed
+`"mechanic_key:subject_ID"`, checked once a listener has already matched, and cleared at the same
+boundary as the instance counter. Its single firing yields `instance_count` instances without
+re-triggering itself, so a site with several simultaneously expiring instances (e.g. a future
+stackable status) must fold that count into one `Post` rather than posting once per instance — a
+second `Post` for the same mechanic and subject in one action is dropped by the dedup rule, not
+added. Instance count is also the mechanism a repeated cast or a count-driven detonation would
+scale through, unauthored by this phase but expressible by this shape today. An instance count
+read from a live quantity is fixed at `Post` time, immune to that quantity draining while
+instances resolve.
+
+**Stream shape.** Each instance is bracketed by a `CombatResult.Kind.Cascade_Triggered` result
+(mechanic identity in `text`, the firing `Types.Cascade_Trigger` in `cascade_trigger`) emitted
+immediately before it resolves; every result produced by an instance carries the same
+`cascade_depth` via `BattleResolver._current_cascade_depth`, stamped centrally in `_Emit` rather
+than by each result's own construction site.
+
+**The four ported effects**, each now a listener in `StatusEffectResolver._RegisterCascadeListeners`
+rather than a hardcoded branch: Overflow's expiry AoE and Rush's expiry self-Stun (both
+`Status_Expired`, matched on `buff_type`), Plague's expiry spread (`Status_Expired`, matched on
+`debuff_type` — now resolves through `CastDebuff` rather than bypassing it, so it takes a resist
+roll and respects Aegis/Sequence Lock/stack-refresh like any other debuff application), and Mirror
+Coat's reflection (`Status_Landed`, posted from `CastDebuff` when a debuff is created, matched
+unconditionally since any landed debuff type is relevant). Registration is code-driven for this
+phase, not data-driven: with only four listeners, a `StatusEffectData` schema field for this isn't
+warranted yet.
+
+**Vocabulary scope.** `Types.Cascade_Trigger` holds only the two values these four effects need.
+A threshold-crossing trigger (health or status-count) or a cascade-on-cascade trigger (an effect
+listening for another cascade instance landing, per Concept Document 1.1.3's compounding case)
+needs a new enum value and a `Post` call site added at the relevant point before it is authorable
+— the post-and-drain queue and the two termination bounds do not themselves need to change to
+support one, but the vocabulary as shipped does not yet express those shapes.
+
 ---
 
 ## 8. Character progression
@@ -1726,3 +1798,18 @@ multiply" law in Concept Document 1.1.3. `CombinedDamageModifier` replaces the e
 object built at each damage resolution, contributed to by key (mechanic identity, not source
 plumbing), and multiplies the pre-mitigation aggregate uniformly — a new source is one `Contribute`
 call, not a new formula parameter.
+
+### 15.13. Cascade was four hardcoded branches with no shared termination guarantee — resolved
+
+Resolved by `CascadeResolver` (see [Section 7.8](#78-cascade-resolution)): Overflow's expiry AoE,
+Plague's expiry spread, Rush's expiry self-Stun, and Mirror Coat's reflection were each an `if
+type == …` branch inside `StatusEffectResolver`'s tick loop, each independently reinventing the
+same collect-then-resolve pattern because mutating the status list mid-iteration is unsafe. None
+shared a dedup rule, a depth bound, or a representation, and Concept Document 1.1.4's two
+termination bounds existed nowhere in code — termination was a property of the four effects
+happening to be shaped safely, not a system guarantee. `_SpreadPlague` additionally bypassed the
+normal debuff-application path entirely (no resist roll, no Aegis, no Sequence Lock, no
+stack/refresh rules), so on a two-member side it could ping-pong between the same two characters
+with nothing to stop it. `CascadeResolver`'s post-and-drain queue makes both bounds one
+enforcement point instead of four independent judgment calls, and the port routes Plague's spread
+through `CastDebuff` like any other debuff application.

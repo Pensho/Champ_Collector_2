@@ -21,7 +21,7 @@ the game.
 
 ## Status
 
-Phase 0, Phase 1, and Phase 2 are done. Phase 0's harness lives at
+Phase 0, Phase 1, Phase 2, and Phase 3 are done. Phase 0's harness lives at
 `Scripts/Debug/blowout_calibration.gd`. Phase 1 shipped `CombinedDamageModifier`
 (`Scripts/Battle/combined_damage_modifier.gd`) as the multiplicative damage channel, keyed by
 mechanic identity and multiplying the pre-mitigation scaled aggregate; see Technical Design
@@ -38,6 +38,17 @@ status-effect cap (kept at eight, shared across buffs and debuffs, with denials 
 instead of dropped silently), and landed the bucket tagging in `Concept_Document.md` 3.2.3. See
 Technical Design Document 7.4 for the keying and rework mechanisms. Its sub-plan
 (`Plan_Status_Effect_Channels.md`) has been deleted per the retention rule in `Plans/README.md`.
+
+Phase 3 shipped `CascadeResolver` (`Scripts/Battle/cascade_resolver.gd`) as the cascade channel's
+architecture: a post-and-drain trigger queue enforcing the two termination bounds from
+`Concept_Document.md` 1.1.4 (depth and per-action fan-out) at one point, replacing the four
+hardcoded expiry/application branches that stood in for it. Overflow, Plague, Rush, and Mirror
+Coat are now registered listeners rather than bespoke branches; Plague's spread was additionally
+moved onto the normal `CastDebuff` path (a resist roll, Aegis, Sequence Lock, and stack/refresh
+rules now apply to it, where it previously bypassed all four). See Technical Design Document 7.8
+and 15.13. Its sub-plan (`Plan_Cascade_Resolution.md`) has been deleted per the retention rule in
+`Plans/README.md`; the trigger shapes it sized against but did not author remain below under
+`Coverage gaps`.
 
 Phase 0 findings, measured against the balanced bosses (Troll, Vael, Obsidian Stallion,
 Ulfrac, Bor Bulwark). The newer catalog bosses are excluded as untuned and unplayed:
@@ -145,9 +156,9 @@ Watch for:
   effect is channel 1, its role is enabler. Reworking it toward a damage factor is wrong.
 * The status effect cap interacting with uncapped deliberate resources (section 1.1.4).
 
-### Phase 3 — Cascade system
+### Phase 3 — Cascade system — done
 
-**Produces:** `Plan_Cascade_Resolution.md` — written, not yet implemented.
+**Produced:** `Plan_Cascade_Resolution.md` — implemented and deleted per the retention rule.
 
 The "more numbers" channel: effects that trigger off other effects, each producing its own
 resolution. New architecture. Must settle the trigger vocabulary (what an effect can listen
@@ -253,8 +264,12 @@ and its open work has to land somewhere living.
   against sketched content to avoid baking the sparsity into the architecture; populating
   the channel with real statuses, skill effects, and trait triggers is build-out work.
 
-  Phase 3's ledger names the specific shapes the channel has no mechanic for, all of which the
-  architecture is sized to express and none of which it authors:
+  Phase 3's ledger names the specific shapes the channel has no mechanic for, none of which it
+  authors. Repetition is expressible today, through `CascadeEvent.instance_count`, with no
+  further architecture work; the other two need a new `Types.Cascade_Trigger` value and a
+  `Post()` call site added before content can be authored against them — the shipped enum
+  (`Status_Expired`, `Status_Landed`) only covers the two trigger shapes Phase 3's four ported
+  effects needed:
   * **Repetition** — a skill cast that repeats, and a status or zone that detonates once per
     point of remaining duration or charge. Both re-read channels 1 and 2 per instance, so
     instance count becomes a multiplier on the other two channels rather than a sum. This is
