@@ -242,9 +242,9 @@ static func make_zone_effect(p_charges: int, p_on_trigger: Array[SkillEffect] = 
 ## effective attributes the way ZoneEffect.Resolve would during a real cast.
 static func place_zone(p_resolver: BattleResolver, p_zone_ID: int, p_owner_ID: int,
 		p_zone_effect: ZoneEffect, p_target: Types.Skill_Target,
-		p_placing_skill_name: String = "") -> Array[CombatResult]:
+		p_source_name: String = "") -> Array[CombatResult]:
 	return p_resolver.GetZoneResolver().PlaceZone(p_zone_ID, p_owner_ID, p_zone_effect, p_target,
-			p_resolver.GetEffectiveAttributes(p_owner_ID), p_placing_skill_name)
+			p_resolver.GetEffectiveAttributes(p_owner_ID), p_source_name)
 
 ## A SkillCastContext for effect-class unit tests, skipping ResolveSkill's turn
 ## machinery entirely: effects are exercised directly via effect.Resolve(context).

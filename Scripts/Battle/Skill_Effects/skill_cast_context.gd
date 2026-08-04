@@ -27,6 +27,7 @@ var is_zone_trigger: bool = false
 var zone_target: Types.Skill_Target = Types.Skill_Target.ZoneAll
 var zone_ID: int = -1
 var zone_magnitude: float = 1.0
+var zone_source_name: String = ""
 ## Set by an on_trigger buff/debuff application in zone-trigger mode: whether it was
 ## attempted at all, and whether it actually landed. ZoneResolver skips the
 ## Zone_Affected hook when an attempt was made but nothing landed (e.g. blocked by the

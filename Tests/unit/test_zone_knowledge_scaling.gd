@@ -32,3 +32,15 @@ func test_create_new_defaults_owner_knowledge_to_zero() -> void:
 	zone.CreateNew(3, 3, Types.Skill_Target.ZoneEnemy)
 	assert_eq(zone._owner_knowledge, 0, "Owner knowledge should default to 0 when not provided")
 	zone.free()
+
+func test_create_new_stores_source_name() -> void:
+	var zone: Zone = Zone.new()
+	zone.CreateNew(3, 0, Types.Skill_Target.ZoneAlly, {}, [], null, "Unstable Rift")
+	assert_eq(zone._source_name, "Unstable Rift", "Zone should store the placing skill/graft/trait's name")
+	zone.free()
+
+func test_create_new_defaults_source_name_to_empty_string() -> void:
+	var zone: Zone = Zone.new()
+	zone.CreateNew(3, 3, Types.Skill_Target.ZoneEnemy)
+	assert_eq(zone._source_name, "", "Source name should default to empty when not provided")
+	zone.free()

@@ -853,7 +853,7 @@ var _owner_attributes: Dictionary[Types.Attribute, int] = {}  # full snapshot, s
 var _on_trigger: Array[SkillEffect] = []        # the zone's effect, as ordinary skill-effect data
 var _visual_scene: PackedScene
 var _affected_since_entry: Array[int] = []      # character IDs already affected this visit
-var _placing_skill_name: String = ""            # for ClearZoneEffect's cooldown refund
+var _source_name: String = ""                   # placing skill, or graft/trait; see below
 ```
 
 **Placement.** A `ZoneEffect` (see [Section 6.1](#61-resource-templates)) is an ordinary
@@ -862,7 +862,7 @@ var _placing_skill_name: String = ""            # for ClearZoneEffect's cooldown
 consumed once by `ConsumePendingZoneSection`, falling back to random if none is pending — e.g. an
 enemy AI cast; `Left_Most_Empty` / `Random_Empty` pick from `ZoneResolver.AvailableZoneIDs()`
 directly) and calls `ZoneResolver.PlaceZone(zone_ID, owner_ID, zone_effect, target,
-owner_attributes, placing_skill_name)`, which snapshots the owner's full effective attributes
+owner_attributes, source_name)`, which snapshots the owner's full effective attributes
 (`BattleResolver.GetEffectiveAttributes`, not only Knowledge) and reports `Zone_Placed`. Because
 `ZoneEffect` is just one effect among a skill's `effects`, a skill can place a zone *and* do
 something else in the same cast (Inscribe: a direct `DamageEffect` at the skill level plus a
@@ -880,7 +880,8 @@ For every living, non-active character standing in a zone (`TurnPositions.IsChar
 side matches the zone's `ZoneAll`/`ZoneAlly`/`ZoneEnemy` target (`Skills.CorrectZoneTarget`) and who
 is not already recorded in `_affected_since_entry` this visit, `_ResolveZoneEffect` builds a
 `SkillCastContext` (`caster_ID` = the zone owner, `target_IDs` = `[affected_ID]`, the snapshotted
-owner attributes, `is_zone_trigger = true`, `zone_target` / `zone_ID` / `zone_magnitude` set) and
+owner attributes, `is_zone_trigger = true`, `zone_target` / `zone_ID` / `zone_magnitude` /
+`zone_source_name` set) and
 walks `zone._on_trigger` through the same `ConditionMet` / `Resolve` loop as any skill's own
 `effects` — a zone's effect is ordinary `SkillEffect` data, not a hardcoded match on a zone kind.
 `ApplyBuffEffect`/`ApplyDebuffEffect` snapshot their status value from `StatusEffectRegistry` scaled
@@ -933,10 +934,12 @@ deliberately no universal zone-clearing skill"). It resolves a section the same 
 does for `Player_Chosen` (the pending-section channel) or picks a random occupied one for an AI
 cast, then clears it and either damages the placing enemy (`damage_scaling_per_charge` × charges
 remaining, via `BattleResolver.ResolveEffectDamage`) or reduces the placing ally's zone skill's
-`cooldown_left` — found by matching `Zone._placing_skill_name` against the owner's `_skills`, which
+`cooldown_left` — found by matching `Zone._source_name` against the owner's `_skills`, which
 is why `PlaceZone` threads the casting skill's name through from `ZoneEffect.Resolve`
-(`p_context.skill.name`, empty for the two grafts/traits that construct a `ZoneEffect` directly
-rather than through a cast skill). A reagent-consumed clear (`ReagentData.EffectKind.Clear_Zone`)
+(`p_context.skill.name`); the grafts/traits that construct a `ZoneEffect` directly rather than
+through a cast skill (Living Bloom, Calibration's Raise the Frame) pass their own name instead,
+which matches no skill and so is a no-op here — it still identifies the zone for
+`CombinedDamageModifier` keying (Section 7.4). A reagent-consumed clear (`ReagentData.EffectKind.Clear_Zone`)
 is a separate, simpler path straight to `ZoneResolver.ClearZone` with no damage/refund branch.
 
 ### 7.6. Ending combat

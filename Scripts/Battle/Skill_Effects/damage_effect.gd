@@ -4,9 +4,9 @@ class_name DamageEffect extends SkillEffect
 ## Combined_Modifier multiplicative channel (Concept_Document.md 1.1.3-1.1.4). bonus_per's
 ## Uses_This_Battle source ramps the pre-mitigation aggregate (a bucket of its own,
 ## improving Defence penetration as the skill grows); every other bonus_per source sums
-## into one bucket keyed to this skill; bonus_per_debuff_on_target contributes one
-## independent bucket per debuff type present on the target. See Technical Design
-## Document 7.4.
+## into one bucket keyed to this skill (or, in zone-trigger mode, to the triggering
+## zone's source); bonus_per_debuff_on_target contributes one independent bucket per
+## debuff type present on the target. See Technical Design Document 7.4.
 
 @export var damage_scaling: Dictionary[Types.Attribute, float]
 @export var defense_ignore_factor: float = 1.0
@@ -36,11 +36,14 @@ func _RampMultiplier(p_context: SkillCastContext) -> float:
 		return 1.0
 	return 1.0 + per_use * float(p_context.use_count)
 
-## The skill (or, in zone-trigger mode where there is no cast Skill, the zone) this
-## effect belongs to — the mechanic identity its non-ramp bonus_per contributions share.
+## The skill (or, in zone-trigger mode where there is no cast Skill, the triggering
+## zone's source) this effect belongs to — the mechanic identity its non-ramp bonus_per
+## contributions share.
 func _SkillKey(p_context: SkillCastContext) -> StringName:
 	if(p_context.is_zone_trigger):
-		return StringName("Zone %d" % p_context.zone_ID)
+		if("" == p_context.zone_source_name):
+			return &"Zone"
+		return StringName("Zone: %s" % p_context.zone_source_name)
 	return StringName(p_context.skill.name)
 
 func _RampKey(p_context: SkillCastContext) -> StringName:

@@ -62,26 +62,41 @@ Tests extend `Tests/unit/test_combined_damage_modifier.gd` and
 `test_combined_damage_modifier_resolution.gd`: two distinct channel-2 buffs on one caster
 must multiply, two instances of the same mechanic must add.
 
-## Phase 2 — Zone factors keyed by zone, not by turn-bar section
+## Phase 2 — Zone factors keyed by zone, not by turn-bar section — done
 
-`damage_effect.gd:_SkillKey` returns `StringName("Zone %d" % p_context.zone_ID)` in
-zone-trigger mode, and `zone_ID` is the turn-bar section index — `ZoneResolver._zones` is
-keyed by section, five of them (`GameBalance.NUMBER_OF_TURN_BAR_ZONES`). The grouping is
-therefore backwards on both counts: two different zone kinds placed in the same section
-over a fight share one bucket and add, while one zone kind placed in two sections yields
-two independent factors that multiply.
+**Shipped:** `Zone._placing_skill_name` is renamed `_source_name` (its meaning widened to
+"the placing skill's name, or the graft/trait that placed it") and threaded onto
+`SkillCastContext.zone_source_name` at `zone_resolver.gd`'s `_ResolveZoneEffect`.
+`damage_effect.gd:_SkillKey` now returns `StringName("Zone: %s" % p_context.zone_source_name)`
+in zone-trigger mode (falling back to the bare `&"Zone"` only when a zone has no name, which
+no production placement site does after this phase); `zone_ID`/turn-bar section keeps its
+existing meaning everywhere else and is simply no longer read for keying. Of the two callers
+that construct a `ZoneEffect` directly, `living_bloom_graft.gd` placed its zone with no name and
+now passes `"Living Bloom"`; `calibration_trait.gd` already passed `"Raise the Frame"`. `ClearZoneEffect`'s Refutation
+lookup (`_ReduceZoneSkillCooldown`) still matches the source name against the owner's skill
+names and still no-ops for a graft-placed zone, unchanged in behaviour.
 
-`Zone._placing_skill_name` already carries the mechanic identity, populated from
-`zone_effect.gd:17`. Route it into the key. Two callers place zones without a skill —
-`living_bloom_graft.gd:35` and `calibration_trait.gd:109` pass no name and would fall back
-to the empty string, sharing a bucket with each other; give each an identity.
+One correction to this phase's stated defect: the "share one bucket and add" half never
+happens today, because `DamageEffect.Resolve` builds a fresh `CombinedDamageModifier` per
+target per effect, so only one zone key is ever contributed into a given modifier instance.
+The fix is still real — it corrects the bucket *names* surfaced through
+`CombinedDamageModifier.Buckets()` (which Phase 4 of the master plan,
+`Plan_Burst_Presentation.md`, consumes) and restores the mechanic-identity invariant for
+any later phase that lets zone factors reach a shared modifier — but the tests assert on
+bucket keys, not on damage totals, since two zone kinds never actually compounded.
 
-This is the whole of what "a zone is a natural factor source and is currently not treated
-as one" means mechanically. Zones also reach channel 2 through their `on_trigger` effects,
-which resolve through the ordinary `SkillEffect` path and need no separate work.
+Tests landed in `Tests/unit/test_zone_skills.gd` (bucket named for the zone's source, two
+zone kinds in one section getting distinct keys, the same zone kind across two sections
+sharing one key) and `test_zone_knowledge_scaling.gd` (`Zone.CreateNew` stores and defaults
+`_source_name`). A planned fourth case for the ramp key (`bonus_per[Uses_This_Battle]`) was
+dropped: zone-trigger contexts always construct with `use_count = 0`
+(`zone_resolver.gd`'s `_ResolveZoneEffect`), so that ramp bonus can never produce a nonzero
+multiplier in zone mode regardless of this phase's keying — pre-existing dead code, not
+something this phase should paper over with an unreachable assertion.
 
-Tests: `Tests/unit/test_zone_skills.gd` and `test_zone_knowledge_scaling.gd` are the
-nearest homes; a new case covering two zone kinds in one section is the point of the phase.
+`CombinedDamageModifier.TRAIT_RESOURCE_KEY`'s category-keyed nit (both `DamageEffect` and
+`ClearZoneEffect` still contribute under the shared key) was left as-is; Phase 6's Technical
+Design Document write-up owns naming it as the known exception.
 
 ## Phase 3 — Classification pass
 

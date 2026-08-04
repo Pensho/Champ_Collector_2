@@ -18,13 +18,13 @@ func Resolve(p_context: SkillCastContext) -> void:
 	var zone: Zone = zone_resolver.GetZones()[zone_ID]
 	var owner_ID: int = zone._owner_ID
 	var charges_remaining: int = zone._charges
-	var placing_skill_name: String = zone._placing_skill_name
+	var source_name: String = zone._source_name
 	var sides: CombatSides = p_context.resolver.GetSides()
 	zone_resolver.ClearZone(zone_ID)
 	if(sides.AreEnemies(p_context.caster_ID, owner_ID)):
 		_DamagePlacer(p_context, owner_ID, charges_remaining)
 	else:
-		_ReduceZoneSkillCooldown(p_context.resolver, owner_ID, placing_skill_name)
+		_ReduceZoneSkillCooldown(p_context.resolver, owner_ID, source_name)
 
 func _DamagePlacer(p_context: SkillCastContext, p_owner_ID: int, p_charges_remaining: int) -> void:
 	var scaling: Dictionary[Types.Attribute, float] = {}
@@ -37,11 +37,11 @@ func _DamagePlacer(p_context: SkillCastContext, p_owner_ID: int, p_charges_remai
 	p_context.resolver.ResolveEffectDamage(p_context.caster_ID, p_owner_ID, p_context.caster_attributes,
 			scaling, 1.0, combined_damage_modifier)
 
-func _ReduceZoneSkillCooldown(p_resolver: BattleResolver, p_owner_ID: int, p_skill_name: String) -> void:
-	if("" == p_skill_name or not p_resolver.GetCharacters().has(p_owner_ID)):
+func _ReduceZoneSkillCooldown(p_resolver: BattleResolver, p_owner_ID: int, p_source_name: String) -> void:
+	if("" == p_source_name or not p_resolver.GetCharacters().has(p_owner_ID)):
 		return
 	for skill in p_resolver.GetCharacters()[p_owner_ID]._skills:
-		if(p_skill_name == skill.name):
+		if(p_source_name == skill.name):
 			skill.cooldown_left = maxi(0, skill.cooldown_left - cooldown_reduction)
 			return
 

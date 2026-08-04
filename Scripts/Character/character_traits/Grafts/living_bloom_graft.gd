@@ -33,7 +33,7 @@ func StartOfBattle(p_owner_ID: int, p_resolver: BattleResolver) -> void:
 	zone_effect.on_trigger = SporeOnTrigger()
 	_bloom_zone_ID = free_slots[0]
 	p_resolver.GetZoneResolver().PlaceZone(_bloom_zone_ID, p_owner_ID, zone_effect, Types.Skill_Target.ZoneAll,
-			p_resolver.GetEffectiveAttributes(p_owner_ID))
+			p_resolver.GetEffectiveAttributes(p_owner_ID), "Living Bloom")
 
 static func SporeOnTrigger() -> Array[SkillEffect]:
 	var regeneration: ApplyBuffEffect = ApplyBuffEffect.new()

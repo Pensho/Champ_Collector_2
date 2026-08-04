@@ -39,13 +39,13 @@ func PlaceZone(
 		p_zone_effect: ZoneEffect,
 		p_target: Types.Skill_Target,
 		p_owner_attributes: Dictionary[Types.Attribute, int],
-		p_placing_skill_name: String = "") -> Array[CombatResult]:
+		p_source_name: String = "") -> Array[CombatResult]:
 	_resolver._BeginBatch()
 	if(_zones.has(p_zone_ID)):
 		return _resolver._EndBatch()
 	var zone: Zone = Zone.new()
 	zone.CreateNew(p_zone_effect.charges, p_owner_ID, p_target, p_owner_attributes,
-			p_zone_effect.on_trigger.duplicate(), p_zone_effect.visual_scene, p_placing_skill_name)
+			p_zone_effect.on_trigger.duplicate(), p_zone_effect.visual_scene, p_source_name)
 	_zones[p_zone_ID] = zone
 	var result: CombatResult = CombatResult.new(CombatResult.Kind.Zone_Placed)
 	result.zone_ID = p_zone_ID
@@ -140,6 +140,7 @@ func _ResolveZoneEffect(p_zone: Zone, p_zone_ID: int, p_character_ID: int) -> vo
 	context.zone_target = p_zone._target
 	context.zone_ID = p_zone_ID
 	context.zone_magnitude = Skills.ZoneMagnitude(1.0, p_zone._owner_knowledge) * effect_multiplier
+	context.zone_source_name = p_zone._source_name
 	for effect in p_zone._on_trigger:
 		if(context.ConditionMet(effect)):
 			effect.Resolve(context)

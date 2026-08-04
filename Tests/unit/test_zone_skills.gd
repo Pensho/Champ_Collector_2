@@ -129,6 +129,61 @@ func _boost_caster_and_targets() -> void:
 		_roster[id]._attributes[Types.Attribute.Health] = 100000
 		_roster[id]._current_health = 100000
 
+func _damage_zone_effect(p_bonus_per: Dictionary[Types.Trait_Count_Source, float] = {}) -> ZoneEffect:
+	var damage: DamageEffect = DamageEffect.new()
+	damage.damage_scaling = {Types.Attribute.Attack: 0.5}
+	damage.bonus_per = p_bonus_per
+	return TestFactory.make_zone_effect(10, [damage])
+
+func _place_and_trigger(p_zone_ID: int, p_source_name: String,
+		p_bonus_per: Dictionary[Types.Trait_Count_Source, float] = {}) -> Array[CombatResult]:
+	TestFactory.place_zone(_resolver, p_zone_ID, 0, _damage_zone_effect(p_bonus_per),
+			Types.Skill_Target.ZoneAll, p_source_name)
+	_positions.occupants_by_zone[p_zone_ID] = [3]
+	return _resolver.GetZoneResolver().TriggerZones(0)
+
+func _first_damage_modifier(p_results: Array[CombatResult]) -> CombinedDamageModifier:
+	for result in p_results:
+		if(CombatResult.Kind.Damage == result.kind):
+			return result.combined_damage_modifier
+	return null
+
+func test_zone_damage_bucket_is_keyed_by_source_name_not_section() -> void:
+	var results: Array[CombatResult] = _place_and_trigger(0, "Unstable Rift")
+
+	var modifier: CombinedDamageModifier = _first_damage_modifier(results)
+	assert_true(modifier.Buckets().has(&"Zone: Unstable Rift"),
+		"The zone's damage bucket should be named for its source, not its section")
+	assert_false(modifier.Buckets().has(&"Zone 0"), "The bucket must not be keyed by the turn-bar section")
+
+func test_two_zone_kinds_in_the_same_section_get_distinct_keys() -> void:
+	var first_results: Array[CombatResult] = _place_and_trigger(0, "Unstable Rift")
+	var first_key: StringName = _first_damage_modifier(first_results).Buckets().keys()[0]
+	_resolver.GetZoneResolver().ClearZone(0)
+
+	var second_results: Array[CombatResult] = _place_and_trigger(0, "Spore Bloom")
+	var second_key: StringName = _first_damage_modifier(second_results).Buckets().keys()[0]
+
+	assert_ne(first_key, second_key,
+		"Two different zone kinds placed in the same section must not share a bucket")
+
+func test_same_zone_kind_in_two_sections_gets_one_key() -> void:
+	var first_results: Array[CombatResult] = _place_and_trigger(0, "Unstable Rift")
+	var first_key: StringName = _first_damage_modifier(first_results).Buckets().keys()[0]
+
+	# Move the visitor off section 0 so only section 1 can produce the second result —
+	# otherwise a still-occupied section 0 would independently satisfy the assertion
+	# via _affected_since_entry rather than section 1 doing so.
+	_positions.occupants_by_zone[0] = []
+	_positions.occupants_by_zone[1] = [3]
+	TestFactory.place_zone(_resolver, 1, 0, _damage_zone_effect(),
+			Types.Skill_Target.ZoneAll, "Unstable Rift")
+	var second_results: Array[CombatResult] = _resolver.GetZoneResolver().TriggerZones(0)
+	var second_key: StringName = _first_damage_modifier(second_results).Buckets().keys()[0]
+
+	assert_eq(first_key, second_key,
+		"The same zone kind placed in a different section should reuse the same bucket key")
+
 func test_inscription_surge_deals_more_damage_with_zones_standing_on_the_bar() -> void:
 	_boost_caster_and_targets()
 	var baseline_before: int = _roster[3]._current_health
