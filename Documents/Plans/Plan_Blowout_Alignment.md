@@ -302,21 +302,13 @@ and its open work has to land somewhere living.
   that composition is what makes an encounter a puzzle, so the baseline is a design question
   to settle against a playable burst rather than to emulate now. Revisit in Phase 5.
 * **Flagged, unresolved: Defence going irrelevant at burst scale is a risk, not a settled
-  win.** Section 1.1.4 already states it as fact — "Defence stops mattering at burst scale...
-  varying Defense_Ignore_Factor from 1.0 to 0.0 moves a burst by under 2%" — and it is a real
-  mathematical consequence of chasing 30–50x bursts against the current (asymptotic)
-  mitigation formula, not an oversight. The risk: Defence is a widely-understood stat players
-  expect to matter, and a tank who stacked it reading as having done nothing at the moment
-  the fight is decided is a legibility problem the pillar doesn't currently answer. Two ways
-  out, neither chosen yet: (a) accept it deliberately and say so in-doc — Defence's job is
-  surviving to the trigger, not blunting the trigger itself, matching 1.1.1's "threat curve
-  peaks before the burst" — or (b) change `Skills.MitigatedDamage` so Defence keeps some
-  burst-scale relevance, which would also move every calibration number in 1.1.2. This is
-  pillar-level text (section 1.1 outranks the rest of the document), so no phase should
-  resolve it as a side effect of its own work — it already load-bears one Phase 2 verdict
-  (Expose_Weakness is filed channel-1-not-channel-2 specifically because a Defence debuff
-  can't move a burst). Settle explicitly before Phase 4 (modifier boundary, which restates
-  this claim) or Phase 7 (encounter Defence tuning) depend on an answer.
+  win.** Deferred to `FeatureIdeas.md` ("Defence Relevance at Burst Scale") — important but
+  not urgent. Phase 4 and Phase 7 proceed without waiting on it; whichever phase's math
+  restates the current irrelevance (Phase 4's modifier boundary, Phase 7's encounter Defence
+  tuning) should note it as inherited from section 1.1.4, not re-litigate it. It already
+  load-bears one Phase 2 verdict (Expose_Weakness is filed channel-1-not-channel-2
+  specifically because a Defence debuff can't move a burst) — that verdict stands until the
+  backlog item is picked up.
 
 ## Documentation
 
