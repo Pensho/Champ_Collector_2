@@ -216,7 +216,17 @@ Rework does not mean "give it a damage factor". Burning and Temporal_Leak become
 *conditions* other mechanics key off rather than damage sources of their own, which is
 the cheaper and more composable answer.
 
-## Phase 4 — Where the modifier's boundary sits
+## Phase 4 — Where the modifier's boundary sits — done
+
+**Shipped:** all three paths are confirmed to stay outside `CombinedDamageModifier`, and
+`Concept_Document.md` 1.1.4 gains a bullet stating the boundary so Phases 5 and 6 do not
+re-litigate it. Target-side reduction (Spotlight) stays out because it is not a
+caster-side term and moving it pre-mitigation would overshoot its intended strength; crit
+(Exposed_Facet, Cracked_Facet) stays its own multiplicative path because crit chance is a
+probabilistic gate that saturates at 100 and crit damage is countered by target Knowledge,
+neither of which fits the modifier's composition law; Barrier stays out as an enabler that
+absorbs after damage is resolved. No rework follows from this phase — it settles scope,
+not mechanism.
 
 Three damage-relevant status paths run outside `CombinedDamageModifier` today, and the
 plan must state deliberately whether that is right rather than leaving it to accident:
