@@ -14,7 +14,9 @@ Suggested order (dependencies noted inside each plan):
    until its Phase 7 lands. Phases 0–2 (calibration, combined modifier, status
    channels) are done and their sub-plans deleted; sub-plans for the phases after it
    are written when their prerequisites land and deleted with the rest under the
-   retention rule below.
+   retention rule below. It aligns existing systems and does not author new content —
+   channels it finds too thinly populated to align are recorded in its `Coverage gaps`
+   section, which spawns `Plan_System_Buildout.md` once it holds more than one entry.
 
 1. `Plan_Story_Mode_Systems.md` — the systems that deliver story mode (story
    state handler, dialogue overlay, flag-driven hub variants, act gating,

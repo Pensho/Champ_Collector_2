@@ -9,6 +9,16 @@ answer, and spawns a sub-plan per area. Sub-plans are written one at a time, onl
 their prerequisites have landed — writing them all up front would bake in assumptions
 the calibration phase is likely to overturn.
 
+**Scope: this plan aligns what exists, it does not author new content.** Its phases
+classify, rework, and retune the current statuses, kits, items, and encounters against the
+pillar. Where a phase finds that a channel or system is too thinly populated to serve the
+pillar no matter how well the existing entries are aligned, that is recorded under
+`Coverage gaps` below and handed to a separate build-out plan — not solved by authoring
+inside this one. The exception is specification input: a phase that must size an
+architectural decision against content is entitled to sketch the content it needs to size
+it (see Phase 3), because that sketch is a requirement on the system, not an addition to
+the game.
+
 ## Status
 
 Phase 0, Phase 1, and Phase 2 are done. Phase 0's harness lives at
@@ -145,6 +155,17 @@ for), the termination guarantees required by section 1.1.4 (one resolution per t
 source per originating action, plus a depth cap), and how a cascade is represented in the
 `result_produced` stream.
 
+**The vocabulary is sized against sketched content, not against the two cascade sources
+that exist.** Phase 2 left channel 3 populated by Overflow and Plague's expiry spread
+only; a vocabulary settled against those two will express those two and nothing else, and
+widening it later is a code change where authoring the content is not. Before the
+vocabulary is frozen, sketch a dozen or so candidate trigger statements — the shapes an
+effect should be able to listen for (a status expiring, a status being applied, a
+threshold crossed, a kill, a zone entered, a critical hit, another cascade instance
+landing) with a plausible effect behind each. The sketch is specification input, kept in
+the sub-plan; **authoring those effects is not this phase's work** and belongs to the
+build-out plan under `Coverage gaps`.
+
 Depends on Phase 1 — each cascade instance carries its own combined modifier.
 
 ### Phase 4 — Burst presentation
@@ -204,9 +225,44 @@ Feeds back into `Plan_Encounter_Solution_Design.md`, whose production rules must
 pillar before further volume batches are authored. **That plan is paused until this phase
 lands** — authoring more encounters under the old rules adds to the retrofit backlog.
 
+## Coverage gaps
+
+Work this plan deliberately does not do: places where a channel or system is too thinly
+populated to serve the pillar even once every existing entry is correctly aligned. Aligning
+a roster cannot fill a channel that has nothing in it, and authoring the missing content is
+a different body of work with different review criteria.
+
+Distinct from a `Findings` section (see `Plans/README.md`): a finding is work this plan must
+do before a phase is correct, and is deleted when fixed. A coverage gap is work this plan
+is handing off, and is deleted when it migrates to the build-out plan.
+
+Each entry names the under-populated channel or system, the census that shows it, and the
+phase that found it. Once the list holds more than the cascade entry — realistically after
+Phase 5, which is expected to produce the bulk of it — it spawns
+`Plan_System_Buildout.md`, and the entries move there. At the latest that spawn happens
+when this plan completes, since the retention rule in `Plans/README.md` deletes this file
+and its open work has to land somewhere living.
+
+* **Channel 3 has almost no content.** Of the 34 statuses tagged with a damage channel in
+  `Concept_Document.md` 3.2.3, two touch channel 3: Overflow, and Plague's expiry spread —
+  and Plague is primarily a channel 1 + 2 status whose spread is a corner case. Against 23
+  channel 1 and 6 channel 2 tags, cascade is a co-equal pillar channel in section 1.1.3
+  with a two-item corpus. Found by Phase 2, which could not report it: its failure taxonomy
+  ("a status is broken in one of two ways, and only these two") is defined per status, so
+  roster-level under-coverage is not expressible in it. Phase 3 sizes the trigger vocabulary
+  against sketched content to avoid baking the sparsity into the architecture; populating
+  the channel with real statuses, skill effects, and trait triggers is build-out work.
+
 ## Watch for
 
 * Sub-plans are written when their prerequisites land, not up front.
+* **An under-populated channel is a result, not a null result.** Every phase asks its audit
+  question — is each existing entry aligned — and a coverage question alongside it: does the
+  existing corpus populate this channel densely enough to design against at all. A phase that
+  finds nothing to rework has not thereby found nothing; record the gap above rather than
+  closing the phase clean. This runs opposite to the conservative guardrails in Phases 2 and
+  5 (do not convert enablers, do not uncap passives, a list of reworks rather than a rewrite),
+  which are deliberately deflationary and would otherwise be the only pressure in the plan.
 * The calibration targets in section 1.1.2 are estimates until Phase 0 replaces them. Do
   not treat 50x as settled while authoring.
 * The pillar outranks the rest of the Concept Document. When a phase finds a conflict, the
