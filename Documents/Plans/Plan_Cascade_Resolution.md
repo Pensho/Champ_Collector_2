@@ -208,9 +208,10 @@ first behaviour change.
 - `Technical_Design_Document.md` gains a `### 15.13.` entry recording the four hardcoded
   cascade paths as the weakness this work resolves, matching how 15.12 recorded the eight
   fragmented multiplicative damage inputs.
-- `Concept_Document.md` 1.1.4's cascade-termination bullet is extended to name both bounds and
-  the trigger-keyed dedup rule, since "each trigger source resolves at most once" read alone
-  forbids the repetition shapes.
+- `Concept_Document.md` 1.1.4 — **done ahead of implementation.** The cascade-termination
+  bullet now names both bounds (depth and fan-out, neither substituting for the other), and a
+  second bullet settles that a trigger fires once and yields an instance count, so repetition
+  is expressible without re-entry. The implementation is written against that wording.
 - `Plan_Blowout_Alignment.md`'s `Coverage gaps` channel-3 entry gains the shapes this plan
   sized against but did not author: repetition (repeat-a-cast, count-driven detonation),
   threshold crossings (health, status count), and cascade-on-cascade.
