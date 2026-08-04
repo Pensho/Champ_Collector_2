@@ -282,7 +282,10 @@ func _TriggerExistingCasterBuffs(
 		if(null != data and data.applies_on_self_tick):
 			match data.magnitude_kind:
 				StatusEffectData.MagnitudeKind.DamageMultiplier:
-					_resolver._damage_multiplier[p_caster_ID] = _resolver._damage_multiplier.get(p_caster_ID, 1.0) * buff.value
+					var key: StringName = StringName(Types.Buff_Type.keys()[buff.type])
+					var per_caster: Dictionary = _resolver._damage_multiplier.get(p_caster_ID, {})
+					per_caster[key] = per_caster.get(key, 0.0) + (buff.value - 1.0)
+					_resolver._damage_multiplier[p_caster_ID] = per_caster
 				StatusEffectData.MagnitudeKind.MaxHealthPercent:
 					heal_total += int(floor(
 							(p_caster_attributes[Types.Attribute.Health]
@@ -529,15 +532,16 @@ func _AttackerCritDamageBonus(p_target: Character) -> int:
 	return bonus
 
 
-func _OpportunistDamageMultiplier(p_caster_ID: int, p_target: Character) -> float:
+func _OpportunistDamageFactors(p_caster_ID: int, p_target: Character) -> Dictionary[StringName, float]:
+	var factors: Dictionary[StringName, float] = {}
 	if(not _resolver._characters.has(p_caster_ID)):
-		return 1.0
-	var multiplier: float = 1.0
+		return factors
 	for buff in _resolver._characters[p_caster_ID]._active_buffs:
 		var data: StatusEffectData = StatusEffectRegistry.BuffData(buff.type)
 		if(null != data and StatusEffectData.MagnitudeKind.PerTargetDebuffDamagePercent == data.magnitude_kind):
-			multiplier += buff.value * p_target._active_debuffs.size()
-	return multiplier
+			var key: StringName = StringName(Types.Buff_Type.keys()[buff.type])
+			factors[key] = factors.get(key, 0.0) + buff.value * p_target._active_debuffs.size()
+	return factors
 
 
 func _DamageTakenMultiplier(p_character: Character) -> float:

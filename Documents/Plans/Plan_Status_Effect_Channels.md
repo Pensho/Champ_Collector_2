@@ -23,7 +23,19 @@ groups several sources by *category* rather than by mechanic identity, which is 
 while each category holds one status and becomes wrong the moment this plan files a second
 one. Classifying content against keying that is known to be wrong would bake the error in.
 
-## Phase 1 — Bucket keys by mechanic identity
+## Phase 1 — Bucket keys by mechanic identity — done
+
+**Shipped:** `_TRAIT_OUTGOING_BONUS_KEY`, `_DAMAGE_MULTIPLIER_BUFF_KEY`, and
+`_OPPORTUNIST_BUFF_KEY` are gone. Trait outgoing-damage bonus now keys to the trait's own
+class identity; the self-tick damage-multiplier buff and Opportunist each key per buff type,
+accumulating additively within a key (`battle_resolver.gd`'s `_ResolveDamage`,
+`status_effect_resolver.gd`'s `_TriggerExistingCasterBuffs` and the renamed
+`_OpportunistDamageFactors`). `_REAGENT_DAMAGE_BONUS_KEY` was kept as one mechanic — decided,
+not deferred; see its doc comment. Tests landed in `test_combined_damage_modifier_resolution.gd`,
+reading `CombatResult.combined_damage_modifier.Product()` directly rather than final damage
+(`Skills.MitigatedDamage` is nonlinear, so a damage ratio does not equal a modifier ratio);
+the unit-level composition law was already covered in `test_combined_damage_modifier.gd`, so
+that file needed no change. See `## Findings` for two items a fresh-context review raised.
 
 `Scripts/Battle/battle_resolver.gd:21-24` declares four keys — `trait_outgoing_bonus`,
 `reagent_damage_bonus`, `damage_multiplier_buff`, `opportunist_buff` — contributed at
@@ -230,6 +242,26 @@ phase adds one.
   `_ResolveDamage` adds internally and none of the skill-side ones. Left to the cascade
   phase because trait-triggered damage is exactly what that phase re-homes; noted here
   because the Overflow verdict above depends on the answer.
+* **Daunting_Strength can bank its fraction more than once** — Concern, for Phase 3.
+  `_TriggerExistingCasterBuffs` decrements every active buff's duration each turn regardless
+  of `applies_on_self_tick`, but only banks the `DamageMultiplier` fraction into
+  `_damage_multiplier` while doing so; that dictionary is cleared only inside
+  `_ResolveDamage`, which returns early when a skill deals no damage. A caster who is
+  stunned or casts a non-damaging skill while Daunting_Strength (duration 2) is active
+  banks its +100% on both ticks before the buff expires, landing 3x (additive across two
+  banked instances) instead of the intended 2x "next attack". Phase 1's keying fix reduced
+  the error (the old code compounded the same state to 4x) but did not remove it. Phase 3's
+  ledger calls Daunting_Strength "a clean factor, consumed per resolution, already keyed
+  through `_damage_multiplier`" — that description holds only when the buff's one active
+  turn also lands the attack; decide there whether to bank at resolution time instead, or
+  narrow the ledger's claim.
+* **`CombinedDamageModifier.TRAIT_RESOURCE_KEY` still groups by category** — Nit, for
+  Phase 2 or Phase 6's Technical Design Document write-up. `damage_effect.gd` and
+  `clear_zone_effect.gd` both contribute `TraitSkillResult._damage_multiplier` under the
+  shared `&"trait_resource"` key, the same shape Phase 1 removed from the trait
+  outgoing-damage bonus one line away in `battle_resolver.gd`. Harmless today — only one
+  trait can be equipped — but the Technical Design Document write-up should not claim every
+  resolver-owned key is now mechanic-identity-keyed without naming this one exception.
 
 ## Watch for
 

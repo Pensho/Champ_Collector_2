@@ -77,3 +77,59 @@ func test_a_condition_consumed_between_two_resolutions_in_one_action_lowers_the_
 	assert_eq(amounts.size(), 2, "Both hits of the skill should land")
 	assert_gt(amounts[0], amounts[1],
 		"The buff consumed between the two hits must not still pay out the second hit's own, freshly built modifier")
+
+# --- Keying: same mechanic adds, distinct mechanics multiply (Concept_Document.md 1.1.3) ---
+# Read the assembled CombinedDamageModifier straight off the CombatResult rather than
+# comparing final damage: Skills.MitigatedDamage is a nonlinear function of the pre-mitigation
+# aggregate, so a damage ratio does not equal the modifier's own Product() ratio.
+
+func _damage_roster_and_target() -> Dictionary[int, Character]:
+	var roster: Dictionary[int, Character] = TestFactory.make_full_roster()
+	roster[0]._skills.append(TestFactory.make_strike_skill())
+	roster[0]._attributes[Types.Attribute.CritChance] = 0
+	return roster
+
+func _daunting_strength() -> StatusEffects.Buff:
+	var buff: StatusEffects.Buff = StatusEffects.Buff.new()
+	buff.type = Types.Buff_Type.Daunting_Strength
+	buff.value = StatusEffectRegistry.BuffData(Types.Buff_Type.Daunting_Strength).magnitude
+	return buff
+
+func _first_damage_result(p_results: Array[CombatResult]) -> CombatResult:
+	var damage: Array = p_results.filter(func(r): return r.kind == CombatResult.Kind.Damage)
+	return damage[0]
+
+func test_two_instances_of_the_same_damage_multiplier_buff_add_rather_than_compound() -> void:
+	var roster: Dictionary[int, Character] = _damage_roster_and_target()
+	roster[0]._active_buffs.append(_daunting_strength())
+	roster[0]._active_buffs.append(_daunting_strength())
+	var resolver: BattleResolver = TestFactory.make_resolver(roster, TestFactory.make_full_sides())
+	var modifier: CombinedDamageModifier = _first_damage_result(resolver.ResolveSkill(0, [3], 0)).combined_damage_modifier
+
+	# Two 2.0x (i.e. +100%) buffs of the same mechanic add their fractions into one bucket:
+	# (1 + 1.0 + 1.0) = 3x, not (2.0 * 2.0) = 4x compounding.
+	assert_almost_eq(modifier.Product(), 3.0, 0.0001,
+		"Two instances of one mechanic must add into one bucket, not compound multiplicatively")
+
+func test_two_distinct_channel_two_mechanics_multiply() -> void:
+	var roster: Dictionary[int, Character] = _damage_roster_and_target()
+	roster[0]._active_buffs.append(_daunting_strength())
+	var opportunist: StatusEffects.Buff = StatusEffects.Buff.new()
+	opportunist.type = Types.Buff_Type.Opportunist
+	opportunist.value = StatusEffectRegistry.BuffData(Types.Buff_Type.Opportunist).magnitude
+	# Every active buff's duration ticks down at the start of the caster's turn, before this
+	# skill resolves; a positive duration keeps Opportunist alive to be read at resolution.
+	opportunist.duration = 5
+	roster[0]._active_buffs.append(opportunist)
+	# Stun carries no attribute modifiers, so its only effect here is being counted by
+	# Opportunist — it does not itself change the target's mitigation.
+	var one_debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
+	one_debuff.type = Types.Debuff_Type.Stun
+	roster[3]._active_debuffs.append(one_debuff)
+	var resolver: BattleResolver = TestFactory.make_resolver(roster, TestFactory.make_full_sides())
+	var modifier: CombinedDamageModifier = _first_damage_result(resolver.ResolveSkill(0, [3], 0)).combined_damage_modifier
+
+	# Daunting_Strength (2.0x) and Opportunist (+10% for the one debuff present) are distinct
+	# mechanics, so their buckets multiply: 2.0 * 1.10 = 2.2x, not add to 2.1x.
+	assert_almost_eq(modifier.Product(), 2.2, 0.0001,
+		"Two distinct channel-2 mechanics must multiply as separate buckets")

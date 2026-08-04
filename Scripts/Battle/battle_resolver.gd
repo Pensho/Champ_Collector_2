@@ -14,14 +14,11 @@ enum Winner {
 	Monsters_Won,
 }
 
-## Combined_Modifier bucket keys for the resolver-owned damage contributions (Concept
-## Document 1.1.3): a caster's always-on trait outgoing-damage bonus, the battle-persistent
-## reagent/graft damage bonus, a one-shot self-tick damage-multiplier buff, and Opportunist's
-## per-target-debuff damage buff.
-const _TRAIT_OUTGOING_BONUS_KEY: StringName = &"trait_outgoing_bonus"
+## Combined_Modifier bucket key for the resolver-owned reagent/graft damage bonus (Concept
+## Document 1.1.3): kept as one mechanic because _damage_dealt_bonus already sums reagent and
+## graft contributions before this bucket is contributed. Other resolver-owned contributions
+## are keyed by mechanic identity instead of a shared constant — see _ResolveDamage.
 const _REAGENT_DAMAGE_BONUS_KEY: StringName = &"reagent_damage_bonus"
-const _DAMAGE_MULTIPLIER_BUFF_KEY: StringName = &"damage_multiplier_buff"
-const _OPPORTUNIST_BUFF_KEY: StringName = &"opportunist_buff"
 
 const _BROADCASTABLE_EVENTS: Array[Types.Combat_Event] = [
 	Types.Combat_Event.Start_Combat,
@@ -37,7 +34,10 @@ var _random: RandomNumberGenerator = RandomNumberGenerator.new()
 var _zone_resolver: ZoneResolver
 var _status_resolver: StatusEffectResolver
 
-var _damage_multiplier: Dictionary[int, float] = {}
+## Per caster, per buff-type key, an additive fraction contributed by self-tick
+## DamageMultiplier buffs (Concept_Document.md 1.1.3): same-type instances sum within their
+## key, distinct types stay separate so CombinedDamageModifier multiplies them.
+var _damage_multiplier: Dictionary[int, Dictionary] = {}
 
 var _skill_use_counts: Dictionary[String, int] = {}
 
@@ -704,12 +704,16 @@ func _ResolveDamage(
 
 	var attacker_trait: CharacterTrait = _characters[p_caster_ID]._trait
 	if(null != attacker_trait):
-		p_combined_damage_modifier.Contribute(
-				_TRAIT_OUTGOING_BONUS_KEY, attacker_trait.GetOutgoingDamageBonus(p_caster_ID, p_target_ID, self))
+		p_combined_damage_modifier.Contribute(StringName(attacker_trait.get_script().get_global_name()),
+				attacker_trait.GetOutgoingDamageBonus(p_caster_ID, p_target_ID, self))
 	p_combined_damage_modifier.Contribute(_REAGENT_DAMAGE_BONUS_KEY, _damage_dealt_bonus.get(p_caster_ID, 0.0))
-	p_combined_damage_modifier.Contribute(_DAMAGE_MULTIPLIER_BUFF_KEY, _damage_multiplier.get(p_caster_ID, 1.0) - 1.0)
-	p_combined_damage_modifier.Contribute(
-			_OPPORTUNIST_BUFF_KEY, _status_resolver._OpportunistDamageMultiplier(p_caster_ID, target) - 1.0)
+	var damage_multiplier_factors: Dictionary = _damage_multiplier.get(p_caster_ID, {})
+	for key: StringName in damage_multiplier_factors:
+		p_combined_damage_modifier.Contribute(key, damage_multiplier_factors[key])
+	var opportunist_factors: Dictionary[StringName, float] = (
+			_status_resolver._OpportunistDamageFactors(p_caster_ID, target))
+	for key: StringName in opportunist_factors:
+		p_combined_damage_modifier.Contribute(key, opportunist_factors[key])
 	caster_scaled_attribute_aggregate *= p_combined_damage_modifier.Product()
 
 	var effective_defence: float = p_target_attributes[Types.Attribute.Defence] * p_defense_ignore_factor
