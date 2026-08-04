@@ -94,7 +94,7 @@ Prerequisite for every phase after it.
 
 ### Phase 2 — Status effect reclassification
 
-**Produces:** `Plan_Status_Effect_Channels.md`.
+**Produced:** `Plan_Status_Effect_Channels.md` — authored, not yet executed.
 
 Every buff and debuff in section 3.2.3 is currently either an attribute modifier or a
 flat effect. Each is classified into one of three buckets: channel 1 (attributes),
