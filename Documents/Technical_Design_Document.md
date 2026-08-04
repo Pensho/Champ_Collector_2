@@ -805,14 +805,18 @@ Every other `bonus_per` source (`Buffs_On_Caster`, `Buffs_Consumed`, `Trait_Cond
 `bonus_per_debuff_on_target` contributes one independent bucket per debuff type present on the
 target, rather than one summed lump, so satisfying a further target debuff multiplies the result.
 
-The implemented damage formula (`BattleResolver._ResolveDamage`):
+The implemented damage formula (`BattleResolver._ResolveDamage`, via the shared
+`_ContributePersistentCasterFactors` helper):
 
 ```
 combined_damage_modifier.Contribute(...)  # DamageEffect's own contributions, seeded before the call
-combined_damage_modifier.Contribute(trait_outgoing_bonus, CharacterTrait.GetOutgoingDamageBonus(...))
+combined_damage_modifier.Contribute(StringName(attacker_trait.get_script().get_global_name()),
+        CharacterTrait.GetOutgoingDamageBonus(...))
 combined_damage_modifier.Contribute(reagent_damage_bonus, damage_dealt_bonus[caster])
-combined_damage_modifier.Contribute(damage_multiplier_buff, damage_multiplier[caster] - 1.0)
-combined_damage_modifier.Contribute(opportunist_buff, OpportunistDamageMultiplier(caster, target) - 1.0)
+for key in OpportunistDamageFactors(caster, target):  # one bucket per debuff *type* present on target
+    combined_damage_modifier.Contribute(key, opportunist_factors[key])
+for key in ConsumeDamageMultiplierFactors(caster):    # one bucket per DamageMultiplier buff type, consumed here
+    combined_damage_modifier.Contribute(key, damage_multiplier_factors[key])
 caster_scaled = (Σ over attrs ( damage_scaling[attr] * caster[attr] )) * combined_damage_modifier.Product()
 effective_defence = defender.Defence * defense_ignore_factor
 damage_ratio = caster_scaled / (effective_defence + caster_scaled + 1)
@@ -823,20 +827,42 @@ damage = mitigation * caster_scaled * crit * rng.random(0.95..1.05)
 
 `damage_scaling` and `defense_ignore_factor` are the triggering `DamageEffect`'s own fields.
 `GetOutgoingDamageBonus` (an always-on trait effect — its one live override is `BloodscentGraft`'s
-target-Health-based bonus/penalty) and `damage_dealt_bonus[caster]` (the battle-persistent
-reagent/graft bonus, e.g. `GlamourGraft`) are resolver-owned contributions added on top of whatever
-`DamageEffect` already seeded the modifier with; they are not folded back into
-`damage_dealt_bonus[caster]` itself. Citation's Infraction-rate scaling, for example, is entirely
-`bonus_per = {Trait_Counter_On_Target: 1.0}` on its `DamageEffect`: the skill states *that* it
-scales off the target's Infraction tally, `StandingRecordTrait.GetConditionCount` supplies the
-rate, and no shared code names Infractions (Concept Document 3.1.3: "skills state what scales,
-never their own rate"). `CombatResult` carries the assembled `CombinedDamageModifier` on `Kind.Damage`
-results for attribution, unconsumed by any presentation code yet.
+target-Health-based bonus/penalty) keys to the trait's own class identity, and `damage_dealt_bonus[caster]`
+(the battle-persistent reagent/graft bonus, e.g. `GlamourGraft`) keys to the shared
+`reagent_damage_bonus` constant — kept as one mechanic deliberately, since its sources are already
+summed into one running total before the modifier ever sees them (`AggregateDamageMultipliers`).
+Both are resolver-owned contributions added on top of whatever `DamageEffect` already seeded the
+modifier with; they are not folded back into `damage_dealt_bonus[caster]` itself.
+`_OpportunistDamageFactors` and `ConsumeDamageMultiplierFactors` (Daunting_Strength and any other
+"next attack" buff) key per debuff type and per buff type respectively — the same
+`StringName(Types.Debuff_Type.keys()[type])` / `Types.Buff_Type.keys()[type]` pattern
+`DamageEffect._ContributeDebuffFactors`'s `bonus_per_debuff_on_target` already uses — so two
+distinct mechanics compose multiplicatively instead of one class of source sharing a bucket.
+`ConsumeDamageMultiplierFactors` removes every active `DamageMultiplier` buff it reads, so
+Daunting_Strength's fraction is banked exactly once, at the resolution that actually deals damage,
+not at the buff's self-tick; a `DamageMultiplier` buff's duration decrements and expires normally
+except for a one-tick grace (`duration < 0`, not `<= 0`) so it survives to be read by the
+resolution that would otherwise strip it a step early. Bleed, Plague, and Temporal_Leak read the
+same persistent factors through `_ContributePersistentCasterFactors`, but only once, at the moment
+the status is applied — `StatusEffectResolver._SnapshotStatusValue` multiplies the attribute term
+(or, for Temporal_Leak, the bare per-crossing Speed tax) by the modifier's `Product()` at that
+instant and stores the combined number in `debuff.value`, so a caster who grows stronger after
+applying the status does not retroactively empower a tick already running. Citation's
+Infraction-rate scaling, for example, is entirely `bonus_per = {Trait_Counter_On_Target: 1.0}` on
+its `DamageEffect`: the skill states *that* it scales off the target's Infraction tally,
+`StandingRecordTrait.GetConditionCount` supplies the rate, and no shared code names Infractions
+(Concept Document 3.1.3: "skills state what scales, never their own rate"). `CombatResult` carries
+the assembled `CombinedDamageModifier` on `Kind.Damage` results for attribution, unconsumed by any
+presentation code yet.
 
-Status effects are capped at `MAX_STATUS_EFFECTS` (8) per character; Burning is non-overwritable
-while the others refresh duration. The resolver assigns each applied status a battle-unique ID
-(carried on `Status_Applied` results); the scene maps those IDs to the representation's icon slots
-when rendering.
+Status effects are capped at `MAX_STATUS_EFFECTS` (8) per character, a **shared pool across buffs
+and debuffs** (Concept Document 1.1.4); Burning is non-overwritable while the others refresh
+duration. `Skills.HasMaxStatusEffects` gates six call sites in `StatusEffectResolver` (`ApplyBuff`,
+`ApplyDebuff`, `CastDebuff`, `_TriggerMirrorCoat`, `_TriggerRushStun`, `_SpreadPlague`); a status
+denied by the cap emits a `Kind.Status_Effect_Denied` `CombatResult` (`target_ID`, `is_buff`, the
+denied buff/debuff type) instead of applying silently or dropping with no trace. The resolver
+assigns each applied status a battle-unique ID (carried on `Status_Applied` results); the scene
+maps those IDs to the representation's icon slots when rendering.
 
 ### 7.5. Zones
 

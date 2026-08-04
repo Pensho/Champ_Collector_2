@@ -60,6 +60,7 @@ Blowout requires terms that grow independently and combine multiplicatively. Dam
 * **Defence stops mattering at burst scale.** At burst magnitudes the scaled aggregate dwarfs any Defence value, leaving mitigation near 1 regardless: varying `Defense_Ignore_Factor` from 1.0 to 0.0 moves a burst by under 2%. Defence-ignore is a tool for basic and mid-sized hits, and burst skills gain nothing from it.
 * **Base attribute values stay tame.** Growth belongs in the combined modifier and cascade channels. Inflating base attributes to chase the pillar breaks fodder tuning and Health-bar readability.
 * **The combined modifier's boundary is the caster's scaled aggregate, not every damage-relevant term.** Three paths deliberately sit outside it: a target-side reduction (Spotlight's incoming-damage cut) is not a caster-side term and moving it pre-mitigation would make it stronger than intended, so it applies to final damage instead; the crit chance and crit damage bonuses (Exposed_Facet, Cracked_Facet) already multiply alongside the modifier, but crit chance is a probabilistic gate that saturates at 100 and crit damage is countered by target Knowledge — neither behaves like a caster-side factor, so crit stays its own path; and Barrier absorbs after damage is resolved, an enabler with nothing to contribute to the aggregate. None of the three are omissions to close later — they are outside the channel by design.
+* **The status-effect cap is eight, shared across buffs and debuffs.** The pool is not one resource being built (contrast the uncapped stack ceilings above) — it is eight slots holding a mix of self-inflicted stacks, opponent debuffs, and ally buffs, several of which arrive with no cast at all (trait/graft/zone triggers). Assembling many distinct mechanics onto one target competes with your own stacks and with what the opponent has already landed on you; that competition is a deliberate resource constraint, not an oversight to raise or split by category. An attempt to apply a status past the cap is denied outright (no application, no effect) rather than silently dropped, so the player can always see why a status didn't land.
 
 #### 1.1.5. Resolution and presentation
 
@@ -396,71 +397,79 @@ Status effect descriptions are surfaced to the player in two places: a press-and
 tooltip on each status icon during combat, and a browsable glossary tab in the Hollow
 Ledger. Both read the same static, authored description per effect.
 
+Every status effect below is tagged with the damage channel it belongs to per section
+1.1.3, or **Enabler** if it produces no damage and is judged by the collapse test in
+1.1.6 instead: **[Channel 1]** moves an attribute, continuously and additively;
+**[Channel 2]** supplies its own factor to the combined modifier; **[Channel 3 —
+Cascade]** triggers a separate resolution; **[Enabler]** does neither. A status tagged
+with two buckets is dual-classified on purpose — its mechanism and its role can differ
+(Blind, Warped) — not an unresolved case.
+
 ##### 3.2.3.1 Turn Bar Effects
-* Anchor (Debuff): The character cannot be pushed forward or backward on the turn bar by skills.
-* Temporal Leak (Debuff): Every time this character moves 10% of the bar, they take damage equal to 5% of their own Speed, multiplied by the applier's damage-scaling factors (the same channel-2 factors that scale their attacks) as they stood at the moment the debuff was applied.
-* Dead Weight (Debuff): When the character takes damage, they lose 3% turn bar.
-* Slipstream (Buff): The character passes through enemy-placed zones without triggering them.
-* Steadfast (Buff): The character cannot be moved backward on the turn bar.
-* Resonance (Buff): Ally-placed zones affect the character at double effect.
-* Battle Orders (Buff): When the character takes damage, all allies gain 5% turn bar.
+* Anchor (Debuff) [Enabler]: The character cannot be pushed forward or backward on the turn bar by skills.
+* Temporal Leak (Debuff) [Channel 2]: Every time this character moves 10% of the bar, they take damage equal to 5% of their own Speed, multiplied by the applier's damage-scaling factors (the same channel-2 factors that scale their attacks) as they stood at the moment the debuff was applied.
+* Dead Weight (Debuff) [Enabler]: When the character takes damage, they lose 3% turn bar.
+* Slipstream (Buff) [Enabler]: The character passes through enemy-placed zones without triggering them.
+* Steadfast (Buff) [Enabler]: The character cannot be moved backward on the turn bar.
+* Resonance (Buff) [Enabler]: Ally-placed zones affect the character at double effect.
+* Battle Orders (Buff) [Enabler]: When the character takes damage, all allies gain 5% turn bar.
 
 ##### 3.2.3.2 Common Status Effects
 
 Debuffs:
-* Expose Weakness: Reduces Defense by 30%.
-* Enfeeble: Reduces the Attack by 30%.
-* Mana Burn: Deals damage whenever the target uses a non-basic skill, scaling based on the target's Mysticism.
-* Burning: Deals 4% of max Health as damage per stack; Burning stacks, so repeated applications (e.g. standing in a Lava zone) add independent instances up to the status-effect cap.
-* Sequence Lock: Speed cannot be increased or decreased.
-* Suppress: Reduces Mysticism by 30%.
-* Slow: Reduces Speed by 15%, including how fast the character advances on the turn bar.
-* Blind: Reduces Accuracy by 30%.
-* Unravel: Reduces Resistance by 30%.
-* Confound: Reduces Knowledge by 30%.
-* Exposed Facet: Attacks against the character gain +15 percentage points Critical Chance.
-* Cracked Facet: Critical hits against the character deal +25% Critical Damage.
-* Bleed: At the start of the character's turn, they take damage equal to 40% of the caster's Attack, multiplied by the caster's damage-scaling factors, both snapshotted together at the moment of application.
-* Plague: Deals damage each turn equal to 30% of the caster's Mysticism, multiplied by the caster's damage-scaling factors, both snapshotted together at the moment of application; when it expires, it spreads to a random other enemy with fresh duration.
-* Blight: Healing received is reduced by 50%.
-* Severance: The character cannot gain new buffs.
-* Hexed: Roll the critical-chance and debuff-resist checks twice and take the worse result (the damage-variance roll is not favored either way — its spread is too small to matter).
-* Stun: The character skips their next turn.
-* Fatigue: The character's skill cooldowns do not tick down.
-* Refracted: The character's single-target skills hit a random character instead, allies included.
-* Warped: The character's damage dealt scales with Mysticism instead of the skill's normal attribute. Whether other calculations are also forced through Mysticism is not yet decided (damage only is implemented).
-* Signed Writ: The character cannot resist debuffs.
-* Sanction: Reduces all primary attributes except Health by the applier's Standing Record rate per Infraction on the target, set at the moment of application (see the Emissary's passive in section 3.1.3).
+* Expose Weakness [Channel 1]: Reduces Defense by 30%. Defence stops mattering at burst scale (section 1.1.4), so this debuff's role is pressure during build-up rather than a burst contributor.
+* Enfeeble [Channel 1]: Reduces the Attack by 30%.
+* Mana Burn [Enabler]: Deals damage whenever the target uses a non-basic skill, scaling based on the target's Mysticism. The damage is incidental to the punish; it is not a combined-modifier factor.
+* Burning [Enabler]: Deals 4% of max Health as damage per stack; Burning stacks, so repeated applications (e.g. standing in a Lava zone) add independent instances up to the status-effect cap. Its composable value is as a debuff *type* other mechanics key off (Opportunist, and any `bonus_per_debuff_on_target` effect), not a factor of its own.
+* Sequence Lock [Enabler]: Speed cannot be increased or decreased.
+* Suppress [Channel 1]: Reduces Mysticism by 30%.
+* Slow [Channel 1]: Reduces Speed by 15%, including how fast the character advances on the turn bar.
+* Blind [Channel 1 / Enabler]: Reduces Accuracy by 30%. Dual-classified: it moves Accuracy as channel 1, but it is picked for its enabler role — denying an application from landing.
+* Unravel [Channel 1]: Reduces Resistance by 30%.
+* Confound [Channel 1]: Reduces Knowledge by 30%.
+* Exposed Facet [Channel 2]: Attacks against the character gain +15 percentage points Critical Chance. Contributes through the crit path (section 1.1.4) rather than the combined modifier itself.
+* Cracked Facet [Channel 2]: Critical hits against the character deal +25% Critical Damage. Same crit-path note as Exposed Facet.
+* Bleed [Channel 1 + Channel 2]: At the start of the character's turn, they take damage equal to 40% of the caster's Attack, multiplied by the caster's damage-scaling factors, both snapshotted together at the moment of application.
+* Plague [Channel 1 + Channel 2; expiry spread is Channel 3 — Cascade]: Deals damage each turn equal to 30% of the caster's Mysticism, multiplied by the caster's damage-scaling factors, both snapshotted together at the moment of application; when it expires, it spreads to a random other enemy with fresh duration.
+* Blight [Enabler]: Healing received is reduced by 50%.
+* Severance [Enabler]: The character cannot gain new buffs.
+* Hexed [Enabler]: Roll the critical-chance and debuff-resist checks twice and take the worse result (the damage-variance roll is not favored either way — its spread is too small to matter).
+* Stun [Enabler]: The character skips their next turn.
+* Fatigue [Enabler]: The character's skill cooldowns do not tick down.
+* Refracted [Enabler]: The character's single-target skills hit a random character instead, allies included.
+* Warped [Channel 1 / Enabler]: The character's damage dealt scales with Mysticism instead of the skill's normal attribute — damage-scaling only; non-damage calculations (healing, absorb values, turn-bar effects) stay on their native attribute. Dual-classified: channel 1 by mechanism, since it re-points which attribute channel 1 reads rather than adding a term of its own; enabler by role, since forcing a target's real damage through an attribute it's weak in is denial that protects the team, not a passive attribute swap.
+* Signed Writ [Enabler]: The character cannot resist debuffs.
+* Sanction [Channel 1]: Reduces all primary attributes except Health by the applier's Standing Record rate per Infraction on the target, set at the moment of application (see the Emissary's passive in section 3.1.3).
 
 Buffs:
-* Empower: Increases Attack by 30%.
-* Fortify: Increases Defense by 30%.
-* Daunting Strength: Doubles the damage of the next attack. Consumed the moment that attack resolves, so it cannot bank a second bonus across a turn where the holder is stunned or casts a non-damaging skill.
-* Frenzy: Increases Attack and Speed by 30% but reduces Defense and Accuracy by 30%.
-* Rush: Increases all primary attributes except Health by 30%; when the buff expires, it applies the Stun debuff to the character for 1 turn. This Stun cannot be resisted and is applied after other expiring buffs (such as Aegis) are removed.
-* Exhert: Increases all primary attributes except Health by 20%, but the character loses 5% of their max Health every time they take a turn.
-* Luck: Roll the critical-chance and debuff-resist checks twice and take the better result (the damage-variance roll is not favored either way — its spread is too small to matter).
-* Phalanx Guard: Gain bonus defense per stack of momentum consumed. (Lancer Specific)
-* Attune: Increases Mysticism by 30%.
-* Haste: Increases Speed by 20%, including how fast the character advances on the turn bar; Haste stacks, so repeated applications add independent instances up to the status-effect cap.
-* True Aim: Increases Accuracy by 30%.
-* Clarity: Increases Resistance by 30%.
-* Keen Edge: Increases Critical Chance by 15 percentage points.
-* Insight: Increases Knowledge by 30%.
-* Regeneration: Heals 4% of max Health at the start of each turn.
-* Barrier: A shield that absorbs damage up to a set amount before Health is touched. Barriers do not stack; a new Barrier replaces an existing one only if it is larger.
-* Deathward: The next hit that would be fatal instead leaves the character at 1 Health, then the buff is consumed.
-* Aegis: Blocks the next debuff that would land on the character, then the buff is consumed.
-* Mirror Coat: When a debuff lands on the character, a copy is applied to the attacker, checked against the attacker's Resistance as normal.
-* Opportunist: The character's attacks deal +10% damage per debuff *type* present on the target (stacked instances of one debuff type count once).
-* Catalyst: The next reagent the character consumes has +50% effect. Stacks additively with other reagent potency modifiers; has no effect on binary reagents (see section 3.3.3).
-* Wanderlust: At the start of each of the character's turns, gain +20% to one random primary stat until their next turn.
-* Overflow: When this buff expires, it deals damage to all enemies, scaling with the holder's Mysticism.
-* Vigor: Increases max Health by 30%.
-* Lethal Precision: Increases Critical Damage by 50 percentage points.
-* Spotlight: The character is much more likely to be targeted by enemies (1.5x targeting weight) and takes 10% less damage.
-* Premonition: The next attack against the character automatically misses, then the buff is consumed.
-* Rehearsed: The character's next non-basic skill does not go on cooldown, then the buff is consumed.
+* Empower [Channel 1]: Increases Attack by 30%.
+* Fortify [Channel 1]: Increases Defense by 30%.
+* Daunting Strength [Channel 2]: Doubles the damage of the next attack. Consumed the moment that attack resolves, so it cannot bank a second bonus across a turn where the holder is stunned or casts a non-damaging skill.
+* Frenzy [Channel 1]: Increases Attack and Speed by 30% but reduces Defense and Accuracy by 30%.
+* Rush [Channel 1]: Increases all primary attributes except Health by 30%; when the buff expires, it applies the Stun debuff to the character for 1 turn. This Stun cannot be resisted and is applied after other expiring buffs (such as Aegis) are removed.
+* Exhert [Channel 1]: Increases all primary attributes except Health by 20%, but the character loses 5% of their max Health every time they take a turn.
+* Luck [Enabler]: Roll the critical-chance and debuff-resist checks twice and take the better result (the damage-variance roll is not favored either way — its spread is too small to matter).
+* Phalanx Guard [Channel 1]: Gain bonus defense per stack of momentum consumed. (Lancer Specific)
+* Attune [Channel 1]: Increases Mysticism by 30%.
+* Haste [Channel 1]: Increases Speed by 20%, including how fast the character advances on the turn bar; Haste stacks, so repeated applications add independent instances up to the status-effect cap.
+* True Aim [Channel 1]: Increases Accuracy by 30%.
+* Clarity [Channel 1]: Increases Resistance by 30%.
+* Keen Edge [Channel 1]: Increases Critical Chance by 15 percentage points.
+* Insight [Channel 1]: Increases Knowledge by 30%.
+* Regeneration [Enabler]: Heals 4% of max Health at the start of each turn. Sustained self-healing is buying time to survive to the trigger, the same shape as Stun/Anchor buying a turn, only continuous and self-directed.
+* Barrier [Enabler]: A shield that absorbs damage up to a set amount before Health is touched. Barriers do not stack; a new Barrier replaces an existing one only if it is larger.
+* Deathward [Enabler]: The next hit that would be fatal instead leaves the character at 1 Health, then the buff is consumed.
+* Aegis [Enabler]: Blocks the next debuff that would land on the character, then the buff is consumed.
+* Mirror Coat [Enabler]: When a debuff lands on the character, a copy is applied to the attacker, checked against the attacker's Resistance as normal.
+* Opportunist [Channel 2]: The character's attacks deal +10% damage per debuff *type* present on the target (stacked instances of one debuff type count once).
+* Catalyst [Enabler, provisional]: The next reagent the character consumes has +50% effect. Stacks additively with other reagent potency modifiers; has no effect on binary reagents (see section 3.3.3). Passes the collapse test only if reagents gate a burst — ratified by the itemization channels work.
+* Wanderlust [Channel 1]: At the start of each of the character's turns, gain +20% to one random primary stat until their next turn.
+* Overflow [Channel 3 — Cascade]: When this buff expires, it deals damage to all enemies, scaling with the holder's Mysticism.
+* Vigor [Channel 1]: Increases max Health by 30%.
+* Lethal Precision [Channel 1]: Increases Critical Damage by 50 percentage points.
+* Spotlight [Enabler]: The character is much more likely to be targeted by enemies (1.5x targeting weight) and takes 10% less damage. Both halves are one survival tool — drawing focused fire away from the pieces a burst depends on, and taking less of what lands.
+* Premonition [Enabler]: The next attack against the character automatically misses, then the buff is consumed.
+* Rehearsed [Enabler]: The character's next non-basic skill does not go on cooldown, then the buff is consumed.
 
 #### 3.2.4. Skills
 Skills can be categorized into three main types: Turn Bar Skills, Role Specific Skills, and Universal Skills.

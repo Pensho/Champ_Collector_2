@@ -11,11 +11,23 @@ the calibration phase is likely to overturn.
 
 ## Status
 
-Phase 0 and Phase 1 are done. Phase 0's harness lives at `Scripts/Debug/blowout_calibration.gd`.
-Phase 1 shipped `CombinedDamageModifier` (`Scripts/Battle/combined_damage_modifier.gd`) as the multiplicative
-damage channel, keyed by mechanic identity and multiplying the pre-mitigation scaled aggregate;
-see Technical Design Document 7.4 and 15.12. Its sub-plan (`Plan_Combined_Modifier.md`) has been
-deleted per the retention rule in `Plans/README.md`.
+Phase 0, Phase 1, and Phase 2 are done. Phase 0's harness lives at
+`Scripts/Debug/blowout_calibration.gd`. Phase 1 shipped `CombinedDamageModifier`
+(`Scripts/Battle/combined_damage_modifier.gd`) as the multiplicative damage channel, keyed by
+mechanic identity and multiplying the pre-mitigation scaled aggregate; see Technical Design
+Document 7.4 and 15.12. Its sub-plan (`Plan_Combined_Modifier.md`) has been deleted per the
+retention rule in `Plans/README.md`.
+
+Phase 2 classified all 58 statuses into the three damage channels or the enabler class, fixed the
+category-keyed damage buckets Phase 1 left in place (trait outgoing bonus, the self-tick damage
+multiplier, Opportunist, and zone factors — each now keyed by mechanic identity instead of by
+source category), reworked the five statuses whose classification exposed a linear-bump defect
+(Opportunist, Daunting_Strength, Luck/Hexed, Bleed/Plague, Temporal_Leak), settled the combined
+modifier's boundary (target-side reduction, crit, Barrier all stay outside it) and the
+status-effect cap (kept at eight, shared across buffs and debuffs, with denials now reported
+instead of dropped silently), and landed the bucket tagging in `Concept_Document.md` 3.2.3. See
+Technical Design Document 7.4 for the keying and rework mechanisms. Its sub-plan
+(`Plan_Status_Effect_Channels.md`) has been deleted per the retention rule in `Plans/README.md`.
 
 Phase 0 findings, measured against the balanced bosses (Troll, Vael, Obsidian Stallion,
 Ulfrac, Bor Bulwark). The newer catalog bosses are excluded as untuned and unplayed:
@@ -92,13 +104,14 @@ Phases 2 and 5 make as kits are redesigned.
 
 Prerequisite for every phase after it.
 
-### Phase 2 — Status effect reclassification
+### Phase 2 — Status effect reclassification — done
 
-**Produced:** `Plan_Status_Effect_Channels.md`. Its classification pass (that plan's Phase 3)
-is done — every status carries a settled verdict. The sub-plan's remaining phases are the
-modifier-boundary prose, the status effect cap decision, the code reworks the classification
-pass specified, and the documentation pass that lands the bucket tags in section 3.2.3; this
-phase is not marked done until those finish.
+**Produced:** `Plan_Status_Effect_Channels.md`, deleted per the retention rule after completion
+(see Status above and Technical Design Document 7.4). Every one of the 58 statuses carries a
+settled channel or enabler verdict, tagged inline in `Concept_Document.md` 3.2.3; five reworks
+landed (Opportunist, Daunting_Strength, Luck/Hexed, Bleed/Plague, Temporal_Leak); the combined
+modifier's boundary and the status-effect cap are both settled and written into
+`Concept_Document.md` 1.1.4.
 
 Every buff and debuff in section 3.2.3 is currently either an attribute modifier or a
 flat effect. Each is classified into one of three buckets: channel 1 (attributes),
