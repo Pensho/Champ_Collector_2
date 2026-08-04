@@ -11,8 +11,11 @@ the calibration phase is likely to overturn.
 
 ## Status
 
-Phase 0 is done; its harness lives at `Scripts/Debug/blowout_calibration.gd`. Phase 1's
-sub-plan is written (`Plan_Combined_Modifier.md`) and unexecuted.
+Phase 0 and Phase 1 are done. Phase 0's harness lives at `Scripts/Debug/blowout_calibration.gd`.
+Phase 1 shipped `CombinedDamageModifier` (`Scripts/Battle/combined_damage_modifier.gd`) as the multiplicative
+damage channel, keyed by mechanic identity and multiplying the pre-mitigation scaled aggregate;
+see Technical Design Document 7.4 and 15.12. Its sub-plan (`Plan_Combined_Modifier.md`) has been
+deleted per the retention rule in `Plans/README.md`.
 
 Phase 0 findings, measured against the balanced bosses (Troll, Vael, Obsidian Stallion,
 Ulfrac, Bor Bulwark). The newer catalog bosses are excluded as untuned and unplayed:
@@ -71,9 +74,10 @@ Answer three questions before anything is designed against them:
 Output updates the calibration targets in section 1.1.2. This is a spreadsheet-grade
 question and should not become an engineering project.
 
-### Phase 1 — Combined modifier in the damage pipeline
+### Phase 1 — Combined modifier in the damage pipeline — done
 
-**Produced:** `Plan_Combined_Modifier.md`, written and unexecuted.
+**Produced:** `Plan_Combined_Modifier.md`, deleted per the retention rule after completion (see
+Technical Design Document 7.4 and 15.12).
 
 Implement the multiplicative channel, unifying the eight existing modifier inputs into one
 declared channel on the scaled aggregate. Settled there: factors are keyed by **mechanic

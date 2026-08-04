@@ -37,6 +37,9 @@ Effort: **S** = hours, **M** = days, **L** = week+
 - **Additive Damage Bonuses as a Distinct Lever** *(Priority: Low | Effort: S)*
   Per-use ramps (`ramp_per_use`, e.g. Heap On) scale the attack *before* mitigation, so each use improves Defence penetration as well as raw size and the curve is super-linear. A bonus applied additively at the end of the damage formula instead grows strictly linearly and is blunted by high Defence — worth 5–26% less on the ramp skills at 3–5 uses, more the tankier the target. Both forms read as "+X% damage" but behave differently; the additive one suits effects that should stay honest against armored targets (conditional riders, buff-count scaling), the pre-mitigation one suits "this skill grows" identities. Consider using the split deliberately when designing future scaling skills. See Technical_Design_Document.md section 7.4.
 
+- **Crit-Conditional Combined_Damage_Modifier Contribution** *(Priority: Medium | Effort: S)*
+  Critical Hit stays deliberately outside `Combined_Damage_Modifier` (Concept_Document.md 3.2.1) — the base crit roll is a baseline per-swing expectation every character has, not a built condition, so folding it into the channel would silently compound it with the mitigation-ratio effect the same way Daunting Strength is. A crit-focused build-around mechanic instead — a trait or buff contributing its own factor to `Combined_Damage_Modifier` specifically when a hit crits — would give crit-focused kits a blowout hook without touching the universal baseline roll.
+
 ---
 
 ## Characters & Progression

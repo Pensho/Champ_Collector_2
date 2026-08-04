@@ -779,42 +779,59 @@ Fateful Glimpse authors `[DamageEffect, HealthChangeEffect]`, so its `Most_Injur
 target is chosen *after* its own damage has landed — including any `GlassRefractionGraft` backlash
 the hit triggered on the caster. That is the intended reading, not an artifact of migration.
 
-**Unified damage bonuses.** `DamageEffect.bonus_per: Dictionary[Types.Trait_Count_Source, float]`
-replaces what used to be four separate fraction-times-count mechanisms. The bonus is
-`fraction × Count(source)`, so a binary condition (`Trait_Condition`) folds in as count 0 or 1.
-The **application point is a property of the source, not a separate field**:
-`Uses_This_Battle` scales the caster's pre-mitigation damage aggregate (a ramp — `caster_scaled`
-in the formula below), while every other source (`Buffs_On_Caster`, `Buffs_Consumed`,
-`Trait_Condition`, `Trait_Counter_On_Target`, `Trait_Counter_Raw_On_Target`) adds to the final
-damage bonus alongside the battle-persistent `damage_dealt_bonus`. These are genuinely different
-effects — "this skill grows" versus "this hit lands harder" — and the split is deliberate:
-folding the ramp into the additive term instead would have cost Heap On, Breaching Charge, and
-Cinder Sermon between 5% and 26% of their ramped damage, growing with both use count and target
-Defence, because the pre-mitigation form also improves Defence penetration (mitigation rises with
-attack size, so `mitigation(S) < mitigation(S·R)`).
+**Unified damage bonuses and the Combined_Modifier channel.** `DamageEffect.bonus_per:
+Dictionary[Types.Trait_Count_Source, float]` replaces what used to be four separate
+fraction-times-count mechanisms; the bonus is `fraction × Count(source)`, so a binary condition
+(`Trait_Condition`) folds in as count 0 or 1. Every damage-relevant multiplicative contribution —
+`bonus_per`, a caster's trait-resource multiplier, buff- and reagent-sourced damage bonuses — is a
+contribution to `CombinedDamageModifier` (`Scripts/Battle/combined_damage_modifier.gd`, `RefCounted`), the
+multiplicative channel from Concept Document 1.1.3-1.1.4: `Contribute(key, fraction)` adds into
+`key`'s bucket, and `Product()` returns `Π over keys (1 + bucket[key])`. Contributions sharing a
+key add; distinct keys multiply. Keys are mechanic identity (buff type, debuff type, trait
+resource, skill name), never character identity, so which champion supplied a contribution never
+changes the result. A `CombinedDamageModifier` is built fresh for one damage resolution and discarded
+with it — never cached on a character, a skill, or the resolver — so a cascade's repeat instances
+each read live conditions rather than a stored product.
+
+`Uses_This_Battle` is the one exception with its own bucket rather than joining the skill's
+additive one: it scales the caster's pre-mitigation damage aggregate as a ramp, and keeping it
+separate preserves the same multiplicative relationship to the skill's other contributions that
+existed before unification. Folding the ramp into the same additive bucket instead would have cost
+Heap On, Breaching Charge, and Cinder Sermon between 5% and 26% of their ramped damage, growing
+with both use count and target Defence, because the ramp's pre-mitigation placement also improves
+Defence penetration (mitigation rises with attack size, so `mitigation(S) < mitigation(S·R)`).
+Every other `bonus_per` source (`Buffs_On_Caster`, `Buffs_Consumed`, `Trait_Condition`,
+`Trait_Counter_On_Target`, `Trait_Counter_Raw_On_Target`) sums into one bucket keyed to the skill.
+`bonus_per_debuff_on_target` contributes one independent bucket per debuff type present on the
+target, rather than one summed lump, so satisfying a further target debuff multiplies the result.
 
 The implemented damage formula (`BattleResolver._ResolveDamage`):
 
 ```
-caster_scaled = Σ over attrs ( damage_scaling[attr] * caster[attr] * trait_multiplier ) * ramp_multiplier
+combined_damage_modifier.Contribute(...)  # DamageEffect's own contributions, seeded before the call
+combined_damage_modifier.Contribute(trait_outgoing_bonus, CharacterTrait.GetOutgoingDamageBonus(...))
+combined_damage_modifier.Contribute(reagent_damage_bonus, damage_dealt_bonus[caster])
+combined_damage_modifier.Contribute(damage_multiplier_buff, damage_multiplier[caster] - 1.0)
+combined_damage_modifier.Contribute(opportunist_buff, OpportunistDamageMultiplier(caster, target) - 1.0)
+caster_scaled = (Σ over attrs ( damage_scaling[attr] * caster[attr] )) * combined_damage_modifier.Product()
 effective_defence = defender.Defence * defense_ignore_factor
 damage_ratio = caster_scaled / (effective_defence + caster_scaled + 1)
 mitigation = MINIMUM_DMG_PERCENT + (1 - MINIMUM_DMG_PERCENT) * damage_ratio
 crit (if rng.randi(1..100) <= CritChance): max(MINIMUM_CRIT_DAMAGE, CritDamage - defender.Knowledge*0.5) * 0.01
-damage = mitigation * caster_scaled * damage_multiplier[caster] * crit * rng.random(0.95..1.05)
-        * (1 + damage_dealt_bonus[caster] + conditional_bonus)
+damage = mitigation * caster_scaled * crit * rng.random(0.95..1.05)
 ```
 
-`damage_scaling`, `defense_ignore_factor`, and `ramp_multiplier` are the triggering `DamageEffect`'s
-own fields (`ramp_multiplier` from its `bonus_per[Uses_This_Battle]` entry, `1.0` when absent).
-`conditional_bonus` sums `CharacterTrait.GetOutgoingDamageBonus` (an always-on trait effect — its
-one live override is `BloodscentGraft`'s target-Health-based bonus/penalty) and the `DamageEffect`'s
-own additive `bonus_per` total computed above — both are live per-attack additions, not persisted
-back to `damage_dealt_bonus[caster]`. Citation's Infraction-rate scaling, for example, is entirely
+`damage_scaling` and `defense_ignore_factor` are the triggering `DamageEffect`'s own fields.
+`GetOutgoingDamageBonus` (an always-on trait effect — its one live override is `BloodscentGraft`'s
+target-Health-based bonus/penalty) and `damage_dealt_bonus[caster]` (the battle-persistent
+reagent/graft bonus, e.g. `GlamourGraft`) are resolver-owned contributions added on top of whatever
+`DamageEffect` already seeded the modifier with; they are not folded back into
+`damage_dealt_bonus[caster]` itself. Citation's Infraction-rate scaling, for example, is entirely
 `bonus_per = {Trait_Counter_On_Target: 1.0}` on its `DamageEffect`: the skill states *that* it
 scales off the target's Infraction tally, `StandingRecordTrait.GetConditionCount` supplies the
 rate, and no shared code names Infractions (Concept Document 3.1.3: "skills state what scales,
-never their own rate").
+never their own rate"). `CombatResult` carries the assembled `CombinedDamageModifier` on `Kind.Damage`
+results for attribution, unconsumed by any presentation code yet.
 
 Status effects are capped at `MAX_STATUS_EFFECTS` (8) per character; Burning is non-overwritable
 while the others refresh duration. The resolver assigns each applied status a battle-unique ID
@@ -1661,3 +1678,21 @@ mechanic a skill does not list cannot run for it, closing that whole class of bu
 patching the one instance. `CharacterTrait.GetConditionCount` replaced both `IsConditionActive`
 and `StandingRecordTrait`'s damage-bonus override, so the Infraction rate now reaches damage only
 through a `DamageEffect` that explicitly asks for it.
+
+### 15.12. Eight fragmented multiplicative damage inputs, each with its own placement — resolved
+
+Resolved by `CombinedDamageModifier` (see [Section 7.4](#74-skill-resolution-battleresolverresolveskill)):
+before unification, `Skills.MitigatedDamage` took eight separate float parameters
+(`p_trait_multiplier`, `p_ramp_multiplier`, `p_damage_multiplier`, `p_damage_dealt_bonus`,
+`p_opportunist_multiplier`, plus the outgoing-damage-bonus and `bonus_per` totals folded into
+`p_bonus_damage_fraction`), each hardcoded to either the pre-mitigation aggregate or the final
+product depending on which source it happened to be. Adding a ninth source meant deciding its
+placement from scratch and threading a new parameter through `_ResolveDamage`,
+`ResolveEffectDamage`, and `ResolveTraitDamage`. It also grouped by whichever accident of the
+source's own storage applied — most sources were already effectively one bucket per mechanic, but
+`bonus_per_debuff_on_target` summed every target debuff into a single additive lump on the caster,
+so a second qualifying debuff added rather than multiplied, contradicting the "distinct mechanics
+multiply" law in Concept Document 1.1.3. `CombinedDamageModifier` replaces the eight parameters with one
+object built at each damage resolution, contributed to by key (mechanic identity, not source
+plumbing), and multiplies the pre-mitigation aggregate uniformly — a new source is one `Contribute`
+call, not a new formula parameter.

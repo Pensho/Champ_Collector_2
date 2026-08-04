@@ -14,6 +14,15 @@ enum Winner {
 	Monsters_Won,
 }
 
+## Combined_Modifier bucket keys for the resolver-owned damage contributions (Concept
+## Document 1.1.3): a caster's always-on trait outgoing-damage bonus, the battle-persistent
+## reagent/graft damage bonus, a one-shot self-tick damage-multiplier buff, and Opportunist's
+## per-target-debuff damage buff.
+const _TRAIT_OUTGOING_BONUS_KEY: StringName = &"trait_outgoing_bonus"
+const _REAGENT_DAMAGE_BONUS_KEY: StringName = &"reagent_damage_bonus"
+const _DAMAGE_MULTIPLIER_BUFF_KEY: StringName = &"damage_multiplier_buff"
+const _OPPORTUNIST_BUFF_KEY: StringName = &"opportunist_buff"
+
 const _BROADCASTABLE_EVENTS: Array[Types.Combat_Event] = [
 	Types.Combat_Event.Start_Combat,
 	Types.Combat_Event.Start_Turn,
@@ -265,17 +274,15 @@ func ResolveEffectDamage(
 		p_caster_attributes: Dictionary[Types.Attribute, int],
 		p_damage_scaling: Dictionary[Types.Attribute, float],
 		p_defense_ignore_factor: float,
-		p_trait_multiplier: float,
-		p_allow_critical: bool = true,
-		p_ramp_multiplier: float = 1.0,
-		p_bonus_damage_fraction: float = 0.0) -> void:
+		p_combined_damage_modifier: CombinedDamageModifier,
+		p_allow_critical: bool = true) -> void:
 	var target_attributes: Dictionary[Types.Attribute, int] = GetEffectiveAttributes(p_target_ID)
 	if(p_caster_ID != p_target_ID and _characters.has(p_target_ID)):
 		var defend_trait: CharacterTrait = Skills.ActiveHook(_characters[p_target_ID], Types.Combat_Event.Defend)
 		if(null != defend_trait):
 			defend_trait.OnDefend(p_target_ID, target_attributes, _characters)
 	_ResolveDamage(p_caster_ID, p_target_ID, p_caster_attributes, target_attributes, p_damage_scaling,
-			p_defense_ignore_factor, p_trait_multiplier, p_allow_critical, p_ramp_multiplier, p_bonus_damage_fraction)
+			p_defense_ignore_factor, p_combined_damage_modifier, p_allow_critical)
 
 
 ## Applies a Health cost to p_character_ID and emits the resulting Damage result.
@@ -383,7 +390,7 @@ func ResolveTraitDamage(
 			continue
 		target_attributes = GetEffectiveAttributes(target_ID)
 		_ResolveDamage(p_caster_ID, target_ID, p_caster_attributes, target_attributes,
-				p_damage_scaling, 1.0, 1.0, p_allow_critical)
+				p_damage_scaling, 1.0, CombinedDamageModifier.new(), p_allow_critical)
 	return _EndBatch()
 
 
@@ -661,10 +668,8 @@ func _ResolveDamage(
 		p_target_attributes: Dictionary[Types.Attribute, int],
 		p_damage_scaling: Dictionary[Types.Attribute, float],
 		p_defense_ignore_factor: float,
-		p_trait_multiplier: float,
-		p_allow_critical: bool = true,
-		p_ramp_multiplier: float = 1.0,
-		p_bonus_damage_fraction: float = 0.0) -> void:
+		p_combined_damage_modifier: CombinedDamageModifier,
+		p_allow_critical: bool = true) -> void:
 	var random_value: float = _RollFavoring(p_caster_ID, 0.95, 1.05, true)
 	var caster_scaled_attribute_aggregate: float = 0.0
 	var crit_multiplier: float = 1.0
@@ -678,9 +683,7 @@ func _ResolveDamage(
 		effective_scaling = {Types.Attribute.Mysticism: total_weight}
 
 	for key in effective_scaling.keys():
-		caster_scaled_attribute_aggregate += (effective_scaling[key]
-				* float(p_caster_attributes[key]) * p_trait_multiplier)
-	caster_scaled_attribute_aggregate *= p_ramp_multiplier
+		caster_scaled_attribute_aggregate += effective_scaling[key] * float(p_caster_attributes[key])
 	# Some status skills deal no damage. So no need to continue.
 	if(0.0 == caster_scaled_attribute_aggregate):
 		return
@@ -700,35 +703,35 @@ func _ResolveDamage(
 				) * 0.01
 
 	var attacker_trait: CharacterTrait = _characters[p_caster_ID]._trait
-	var conditional_bonus: float = p_bonus_damage_fraction
 	if(null != attacker_trait):
-		conditional_bonus += attacker_trait.GetOutgoingDamageBonus(p_caster_ID, p_target_ID, self)
+		p_combined_damage_modifier.Contribute(
+				_TRAIT_OUTGOING_BONUS_KEY, attacker_trait.GetOutgoingDamageBonus(p_caster_ID, p_target_ID, self))
+	p_combined_damage_modifier.Contribute(_REAGENT_DAMAGE_BONUS_KEY, _damage_dealt_bonus.get(p_caster_ID, 0.0))
+	p_combined_damage_modifier.Contribute(_DAMAGE_MULTIPLIER_BUFF_KEY, _damage_multiplier.get(p_caster_ID, 1.0) - 1.0)
+	p_combined_damage_modifier.Contribute(
+			_OPPORTUNIST_BUFF_KEY, _status_resolver._OpportunistDamageMultiplier(p_caster_ID, target) - 1.0)
+	caster_scaled_attribute_aggregate *= p_combined_damage_modifier.Product()
 
 	var effective_defence: float = p_target_attributes[Types.Attribute.Defence] * p_defense_ignore_factor
 	var damage_dealt: int = Skills.MitigatedDamage(effective_defence,
-			caster_scaled_attribute_aggregate, crit_multiplier, random_value,
-			_damage_multiplier.get(p_caster_ID, 1.0), _damage_dealt_bonus.get(p_caster_ID, 0.0) + conditional_bonus,
-			_status_resolver._OpportunistDamageMultiplier(p_caster_ID, target))
+			caster_scaled_attribute_aggregate, crit_multiplier, random_value)
 
 	var redirect: Array = Skills.FindDamageRedirect(self, p_caster_ID, p_target_ID)
 	var soaker_ID: int = redirect[0]
 	var soaker_damage: int = 0
 	if(soaker_ID != -1):
 		var redirect_fraction: float = float(redirect[1])
-		var soaker: Character = _characters[soaker_ID]
 		var soaker_defence: float = (
 				GetEffectiveAttributes(soaker_ID)[Types.Attribute.Defence] * p_defense_ignore_factor)
 		soaker_damage = Skills.MitigatedDamage(soaker_defence,
-				caster_scaled_attribute_aggregate * redirect_fraction, crit_multiplier, random_value,
-				_damage_multiplier.get(p_caster_ID, 1.0), _damage_dealt_bonus.get(p_caster_ID, 0.0),
-				_status_resolver._OpportunistDamageMultiplier(p_caster_ID, soaker))
+				caster_scaled_attribute_aggregate * redirect_fraction, crit_multiplier, random_value)
 		damage_dealt = int(round(damage_dealt * (1.0 - redirect_fraction)))
 
 	_damage_multiplier.erase(p_caster_ID)
 
 	if(soaker_damage > 0):
 		_ApplyHealthLoss(soaker_ID, soaker_damage)
-		_EmitDamageResult(p_caster_ID, soaker_ID, soaker_damage, rolled_critical)
+		_EmitDamageResult(p_caster_ID, soaker_ID, soaker_damage, rolled_critical, p_combined_damage_modifier)
 
 	if(damage_dealt == 0):
 		return
@@ -739,7 +742,7 @@ func _ResolveDamage(
 		return
 
 	_ApplyHealthLoss(p_target_ID, damage_dealt)
-	_EmitDamageResult(p_caster_ID, p_target_ID, damage_dealt, rolled_critical)
+	_EmitDamageResult(p_caster_ID, p_target_ID, damage_dealt, rolled_critical, p_combined_damage_modifier)
 
 	var caster: Character = _characters[p_caster_ID]
 	var damage_dealt_trait: CharacterTrait = Skills.ActiveHook(caster, Types.Combat_Event.Damage_Dealt)
@@ -756,10 +759,13 @@ func _ResolveDamage(
 			kill_trait.OnKill(p_caster_ID, p_target_ID, self)
 
 
-func _EmitDamageResult(p_source_ID: int, p_target_ID: int, p_amount: int, p_critical: bool) -> void:
+func _EmitDamageResult(
+		p_source_ID: int, p_target_ID: int, p_amount: int, p_critical: bool,
+		p_combined_damage_modifier: CombinedDamageModifier) -> void:
 	var result: CombatResult = CombatResult.new(CombatResult.Kind.Damage)
 	result.source_ID = p_source_ID
 	result.target_ID = p_target_ID
 	result.amount = p_amount
 	result.critical = p_critical
+	result.combined_damage_modifier = p_combined_damage_modifier
 	_Emit(result)

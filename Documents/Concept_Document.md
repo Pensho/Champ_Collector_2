@@ -48,7 +48,7 @@ Blowout requires terms that grow independently and combine multiplicatively. Dam
 2. **Combined modifier (multiplicative).** Not a meter that is filled — a product assembled at the moment a skill resolves, from every damage-relevant condition true at that instant: buffs on the caster, debuffs and statuses on the target, zone effects, and skill-specific conditions. Each contributing source supplies **its own factor**, so satisfying a further condition multiplies the result rather than adding to it. A buff that raises an attribute instead feeds channel 1; a buff that modifies damage contributes a factor here.
 3. **Cascade (count).** Effects that trigger off other effects, each producing its own resolution. A single action can therefore release many separate damage instances in sequence. Every instance carries its own combined modifier, so instance count and modifier size compound against each other.
 
-**The composition law:** *within a champion's kit, effects add into one factor; across kits, effects form separate factors that multiply.* A single champion stays tame and readable on their own. Two or three kits whose effects contribute independent factors are where the fight detonates. Collection is therefore the source of the power fantasy, not character level alone.
+**The composition law:** *contributions grouped by mechanic identity — buff type, debuff type, trait resource, skill effect — add into one factor; distinct mechanics form separate factors that multiply.* Character identity never enters the grouping: the same combination of mechanics scores the same whether one champion contributes all of them or three do, and adding a champion who contributes nothing relevant never changes the result. A single champion stays tame and readable on their own because their kit is usually a small number of distinct mechanics. Two or three kits whose effects contribute independent mechanics are where the fight detonates. Collection is therefore the source of the power fantasy — more kits means more distinct mechanics in play, not additional bodies multiplying the same one.
 
 #### 1.1.4. Rules the channels must obey
 
@@ -305,12 +305,12 @@ against the defender's Defence to produce a mitigation percentage, so no hit is 
 negated by a stat gap.
 
 ```
-Caster_Scaled = Σ over the skill's weighted attributes (attribute_weight * Caster's attribute)
+Combined_Modifier = Π over every damage-relevant condition true at resolution (its factor)
+Caster_Scaled = Σ over the skill's weighted attributes (attribute_weight * Caster's attribute) * Combined_Modifier
 Effective_Defence = Defender's Defence * Skill's Defense_Ignore_Factor
 Damage_Ratio = Caster_Scaled / (Effective_Defence + Caster_Scaled + 1)
 Mitigation = Minimum_Damage_Percent + (1 - Minimum_Damage_Percent) * Damage_Ratio
-Combined_Modifier = Π over every damage-relevant condition true at resolution (its factor)
-Damage = Mitigation * Caster_Scaled * Critical_Multiplier * Random_Multiplier * Combined_Modifier
+Damage = Mitigation * Caster_Scaled * Critical_Multiplier * Random_Multiplier
 ```
 
 - Every skill defines its own attribute weighting rather than a fixed Attack/Mysticism split,
@@ -321,9 +321,10 @@ Damage = Mitigation * Caster_Scaled * Critical_Multiplier * Random_Multiplier * 
 - `Minimum_Damage_Percent` is a mitigation floor: no matter how far Defence outstrips the
   attacker's scaled attributes, every hit still chips away at the target.
 - `Combined_Modifier` is the multiplicative channel described in section 1.1.3: one factor per
-  contributing source (caster buffs, target debuffs and statuses, zones, skill conditions),
-  multiplied together at resolution time rather than accumulated into a stored value. It is the
-  term the blowout is built out of, and it is **not yet implemented**.
+  contributing mechanic (caster buffs, target debuffs and statuses, zones, skill conditions),
+  multiplied together at resolution time rather than accumulated into a stored value. It multiplies
+  `Caster_Scaled` before `Damage_Ratio` is computed, per section 1.1.4 — not the final damage
+  product — so it is the term the blowout is built out of.
 - `Random_Multiplier` keeps a range of 0.95 to 1.05, preventing every hit from being the exact
   same value.
 

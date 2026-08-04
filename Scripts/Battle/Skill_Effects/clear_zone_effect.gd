@@ -30,8 +30,12 @@ func _DamagePlacer(p_context: SkillCastContext, p_owner_ID: int, p_charges_remai
 	var scaling: Dictionary[Types.Attribute, float] = {}
 	for attribute in damage_scaling_per_charge.keys():
 		scaling[attribute] = damage_scaling_per_charge[attribute] * p_charges_remaining
+	var combined_damage_modifier: CombinedDamageModifier = CombinedDamageModifier.new()
+	if(1.0 != p_context.trait_result._damage_multiplier):
+		combined_damage_modifier.Contribute(
+				CombinedDamageModifier.TRAIT_RESOURCE_KEY, p_context.trait_result._damage_multiplier - 1.0)
 	p_context.resolver.ResolveEffectDamage(p_context.caster_ID, p_owner_ID, p_context.caster_attributes,
-			scaling, 1.0, p_context.trait_result._damage_multiplier)
+			scaling, 1.0, combined_damage_modifier)
 
 func _ReduceZoneSkillCooldown(p_resolver: BattleResolver, p_owner_ID: int, p_skill_name: String) -> void:
 	if("" == p_skill_name or not p_resolver.GetCharacters().has(p_owner_ID)):

@@ -84,7 +84,7 @@ func _first_damage(p_results: Array[CombatResult]) -> int:
 	var damage: Array = p_results.filter(func(r): return r.kind == CombatResult.Kind.Damage)
 	return damage[0].amount if not damage.is_empty() else -1
 
-func test_daunting_strength_doubles_the_next_damage_roll() -> void:
+func test_daunting_strength_more_than_doubles_the_next_damage_roll() -> void:
 	var baseline: BattleResolver = _resolver_with_buff(Types.Buff_Type.Invalid)
 	var buffed: BattleResolver = _resolver_with_buff(Types.Buff_Type.Daunting_Strength)
 	for r in [baseline, buffed]:
@@ -93,8 +93,11 @@ func test_daunting_strength_doubles_the_next_damage_roll() -> void:
 	var baseline_damage: int = _first_damage(baseline.ResolveSkill(0, [3], 0))
 	var buffed_damage: int = _first_damage(buffed.ResolveSkill(0, [3], 0))
 
-	assert_eq(buffed_damage, baseline_damage * 2,
-		"Daunting Strength should exactly double the first attack's damage")
+	# Daunting Strength contributes to the Combined_Modifier, which multiplies the
+	# pre-mitigation scaled aggregate (Concept_Document.md 1.1.4): doubling the aggregate
+	# also raises the mitigation ratio, so the result is strictly more than double.
+	assert_gt(buffed_damage, baseline_damage * 2,
+		"Daunting Strength should more than double the first attack's damage, since it also raises mitigation")
 
 func test_empower_increases_the_casters_own_attack_on_self_tick() -> void:
 	var baseline: BattleResolver = _resolver_with_buff(Types.Buff_Type.Invalid)

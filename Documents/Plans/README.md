@@ -13,14 +13,7 @@ Suggested order (dependencies noted inside each plan):
    the plans below where they overlap; `Plan_Encounter_Solution_Design.md` is paused
    until its Phase 7 lands.
 
-1. `Plan_Combined_Modifier.md` — Phase 1 of the master plan above: the multiplicative
-   damage channel, unifying the eight existing modifier inputs into one channel on the
-   scaled attribute aggregate, keyed by mechanic identity and assembled per resolution.
-   Prerequisite for every later Blowout phase. Touches `Scripts/Battle/skills.gd`,
-   `Scripts/Battle/battle_resolver.gd`, `Scripts/Battle/Skill_Effects/`, and
-   `CombatResult`.
-
-2. `Plan_Story_Mode_Systems.md` — the systems that deliver story mode (story
+1. `Plan_Story_Mode_Systems.md` — the systems that deliver story mode (story
    state handler, dialogue overlay, flag-driven hub variants, act gating,
    scripted battle openings, guest champions). The state handler and dialogue
    overlay are independent and can start any time; scripted openings apply

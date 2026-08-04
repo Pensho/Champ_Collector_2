@@ -42,6 +42,7 @@ var zone_ID: int = -1
 var charges: int = 0
 var visual_scene: PackedScene
 var amount_by_source: Dictionary[int, int] = {}
+var combined_damage_modifier: CombinedDamageModifier = null
 
 
 func _init(p_kind: Kind) -> void:

@@ -276,29 +276,21 @@ static func HasMaxStatusEffects(p_character: Character) -> bool:
 		return true
 	return false
 
-static func DamageDealt(p_damage: float, p_bonus_percent: float) -> float:
-	return p_damage * (1.0 + p_bonus_percent)
-
 ## Mitigated damage from a single attack roll against `p_effective_defence`; shared by
 ## the direct hit and any Shield-Wall-style redirected share, which re-mitigates the
-## same roll against the soaker's own Defence.
+## same roll against the soaker's own Defence. `p_caster_scaled_attribute_aggregate` is
+## expected to already carry the Combined_Modifier (Concept_Document.md 1.1.3-1.1.4).
 static func MitigatedDamage(
 		p_effective_defence: float,
 		p_caster_scaled_attribute_aggregate: float,
 		p_crit_multiplier: float,
-		p_random_value: float,
-		p_damage_multiplier: float,
-		p_damage_dealt_bonus: float,
-		p_opportunist_multiplier: float) -> int:
+		p_random_value: float) -> int:
 	var damage_ratio: float = (
 			p_caster_scaled_attribute_aggregate
 			/ (p_effective_defence + p_caster_scaled_attribute_aggregate + 1.0))
 	var mitigation_factor: float = (
 			GameBalance.MINIMUM_DMG_PERCENT + ((1.0 - GameBalance.MINIMUM_DMG_PERCENT) * damage_ratio))
-	return int(ceil(DamageDealt(mitigation_factor
-			* (p_caster_scaled_attribute_aggregate * p_damage_multiplier)
-			* p_crit_multiplier * p_random_value, p_damage_dealt_bonus)
-			* p_opportunist_multiplier))
+	return int(ceil(mitigation_factor * p_caster_scaled_attribute_aggregate * p_crit_multiplier * p_random_value))
 
 ## The first living ally of `p_target_ID` whose trait redirects a share of incoming
 ## attack damage (e.g. Shield Wall); [-1, 0.0] when nobody redirects or the attacker
