@@ -18,7 +18,15 @@ Suggested order (dependencies noted inside each plan):
    channels it finds too thinly populated to align are recorded in its `Coverage gaps`
    section, which spawns `Plan_System_Buildout.md` once it holds more than one entry.
 
-1. `Plan_Story_Mode_Systems.md` — the systems that deliver story mode (story
+1. `Plan_Cascade_Resolution.md` — Phase 3 of the master plan: the cascade damage
+   channel as a declared system (`CascadeResolver`, a posted-and-drained trigger
+   queue) replacing the four hardcoded expiry/application branches that stand in
+   for it today. Settles the trigger vocabulary, the two termination bounds
+   required by `Concept_Document.md` 1.1.4, and how a cascade instance appears in
+   the `result_produced` stream. Depends on Phase 1 (landed); Phase 4
+   (`Plan_Burst_Presentation.md`) consumes what it emits.
+
+2. `Plan_Story_Mode_Systems.md` — the systems that deliver story mode (story
    state handler, dialogue overlay, flag-driven hub variants, act gating,
    scripted battle openings, guest champions). The state handler and dialogue
    overlay are independent and can start any time; scripted openings apply

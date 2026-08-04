@@ -147,7 +147,7 @@ Watch for:
 
 ### Phase 3 — Cascade system
 
-**Produces:** `Plan_Cascade_Resolution.md`.
+**Produces:** `Plan_Cascade_Resolution.md` — written, not yet implemented.
 
 The "more numbers" channel: effects that trigger off other effects, each producing its own
 resolution. New architecture. Must settle the trigger vocabulary (what an effect can listen
@@ -252,6 +252,18 @@ and its open work has to land somewhere living.
   roster-level under-coverage is not expressible in it. Phase 3 sizes the trigger vocabulary
   against sketched content to avoid baking the sparsity into the architecture; populating
   the channel with real statuses, skill effects, and trait triggers is build-out work.
+
+  Phase 3's ledger names the specific shapes the channel has no mechanic for, all of which the
+  architecture is sized to express and none of which it authors:
+  * **Repetition** — a skill cast that repeats, and a status or zone that detonates once per
+    point of remaining duration or charge. Both re-read channels 1 and 2 per instance, so
+    instance count becomes a multiplier on the other two channels rather than a sum. This is
+    the shape that makes cascade a co-equal channel; nothing in the game does it.
+  * **Threshold crossings** — health dropping below a fraction, or a target's status count
+    saturating. The game has stack thresholds (Arcane Instability, Calibration) but no
+    health or status-count trigger at all.
+  * **Cascade-on-cascade** — an effect listening for another cascade instance landing, which
+    `Concept_Document.md` 1.1.3 names outright as the compounding case.
 
 ## Watch for
 
