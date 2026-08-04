@@ -20,7 +20,7 @@ func Resolve(p_context: SkillCastContext) -> void:
 				buff.value = data.magnitude * p_context.zone_magnitude
 			var results: Array[CombatResult] = status_resolver.ApplyBuff(target_ID, buff)
 			p_context.status_effect_attempted = true
-			if(not results.is_empty()):
+			if(results.any(func(r: CombatResult) -> bool: return CombatResult.Kind.Status_Effect_Denied != r.kind)):
 				p_context.status_effect_landed = true
 		else:
 			status_resolver.ApplyBuff(target_ID, buff)

@@ -22,6 +22,7 @@ enum Kind {
 	Debuff_Blocked,
 	Barrier_Absorbed,
 	Turn_Skipped,
+	Status_Effect_Denied,
 }
 
 var kind: Kind

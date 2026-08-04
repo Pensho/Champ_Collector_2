@@ -246,7 +246,44 @@ plan must state deliberately whether that is right rather than leaving it to acc
 Output is prose in `Concept_Document.md` 1.1.4 naming the modifier's boundary, so Phases 5
 and 6 do not each re-litigate it.
 
-## Phase 5 — The status effect cap
+## Phase 5 — The status effect cap — done
+
+**Shipped:** the cap stays eight, shared across buffs and debuffs, unchanged. The decision is
+to keep it as a deliberate ceiling rather than raise it, split it, or exempt deliberately cast
+statuses — the last of those was the option 1.1.4's stack-ceiling rule points toward most
+directly, but it does not cleanly apply here: 1.1.4 distinguishes *automatic accrual* (cap it)
+from *a resource the player deliberately builds* (leave it uncapped), and its own examples
+(Momentum, Arcane Instability, Steel and Sea stacks) are single self-accruing counters, not a
+shared inventory of distinct mechanics competing for slots. The status pool is not one resource
+being built — it is eight independent slots holding a mix of self-inflicted stacks, opponent
+debuffs, and ally buffs, several of which arrive with no cast at all (trait/graft/zone triggers).
+Splitting that pool along "did a skill cast this" would need a flag threaded through
+`ApplyBuff`/`ApplyDebuff`/`CastDebuff` and every one of their roughly twenty call sites, and
+the resulting exemption would not target the problem the pillar actually cares about: a
+stackable mechanic (Burning) crowding out slots that a distinct mechanic could otherwise use.
+Raising the number or splitting by buff/debuff category do not touch that problem either —
+they postpone or relocate the crowding, they do not remove it. Eight slots shared across both
+pools is retained as a real resource-management constraint: assembling many distinct
+mechanics onto one target competes with your own stacks and with what the opponent has already
+landed on you, and that tension is consistent with 1.1.4 read as "the cap is not free to raise
+without a reason," not with reading 1.1.4 as mandating an uncapped path for every deliberately
+cast status.
+
+The legibility half of the phase ships regardless of which way the cap decision went: a new
+`CombatResult.Kind.Status_Effect_Denied` is emitted by `_EmitStatusEffectDenied`
+(`status_effect_resolver.gd`) at all six call sites that check `Skills.HasMaxStatusEffects`
+(`ApplyBuff`, `ApplyDebuff`, `CastDebuff`, `_TriggerMirrorCoat`, `_TriggerRushStun`,
+`_SpreadPlague`), carrying `target_ID`, `is_buff`, and the denied `buff_type`/`debuff_type`.
+`ApplyBuffEffect`/`ApplyDebuffEffect`'s zone-trigger branches previously read "results
+non-empty" as "landed" for `SkillCastContext.status_effect_landed`; since a denial now also
+returns a non-empty result array, both were updated to check for the presence of a
+non-`Status_Effect_Denied` result instead, otherwise a denied zone-triggered status would have
+been misread as having landed. `Skills.HasMaxStatusEffects`'s existing debug `print()` was left
+in place — it is unrelated debug output, not the legibility mechanism.
+
+Tests landed in `Tests/unit/test_status_effect_cap.gd`: a buff and a debuff are each denied
+with the correct `Status_Effect_Denied` result and do not land when the pool is full, and a
+status still lands normally below the cap.
 
 `GameBalance.MAX_STATUS_EFFECTS = 8` (`Scripts/game_balance.gd:76`), enforced by
 `Skills.HasMaxStatusEffects` (`skills.gd:273`) as a **shared pool across buffs and

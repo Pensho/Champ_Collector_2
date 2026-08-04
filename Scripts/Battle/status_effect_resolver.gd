@@ -14,6 +14,7 @@ func ApplyBuff(p_target_ID: int, p_buff_template: StatusEffects.Buff) -> Array[C
 	_resolver._BeginBatch()
 	var target: Character = _resolver._characters[p_target_ID]
 	if(Skills.HasMaxStatusEffects(target)):
+		_EmitStatusEffectDenied(p_target_ID, true, p_buff_template.type)
 		return _resolver._EndBatch()
 	var data: StatusEffectData = StatusEffectRegistry.BuffData(p_buff_template.type)
 	if(_BlockedBySequenceLock(data, target) or _BlockedBySeverance(target)):
@@ -32,6 +33,7 @@ func ApplyDebuff(p_target_ID: int, p_debuff_template: StatusEffects.Debuff) -> A
 	_resolver._BeginBatch()
 	var target: Character = _resolver._characters[p_target_ID]
 	if(Skills.HasMaxStatusEffects(target)):
+		_EmitStatusEffectDenied(p_target_ID, false, p_debuff_template.type)
 		return _resolver._EndBatch()
 	var data: StatusEffectData = StatusEffectRegistry.DebuffData(p_debuff_template.type)
 	if(_BlockedBySequenceLock(data, target)):
@@ -149,6 +151,7 @@ func CastDebuff(
 	_resolver._BeginBatch()
 	var target: Character = _resolver._characters[p_target_ID]
 	if(Skills.HasMaxStatusEffects(target)):
+		_EmitStatusEffectDenied(p_target_ID, false, p_debuff_template.type)
 		return _resolver._EndBatch()
 
 	var data: StatusEffectData = StatusEffectRegistry.DebuffData(p_debuff_template.type)
@@ -202,6 +205,7 @@ func _TriggerMirrorCoat(p_holder_ID: int, p_attacker_ID: int, p_debuff_type: Typ
 		_resolver._Emit(resisted)
 		return
 	if(Skills.HasMaxStatusEffects(_resolver._characters[p_attacker_ID])):
+		_EmitStatusEffectDenied(p_attacker_ID, false, p_debuff_type)
 		return
 	var data: StatusEffectData = StatusEffectRegistry.DebuffData(p_debuff_type)
 	var mirrored: StatusEffects.Debuff = StatusEffects.Debuff.new()
@@ -467,6 +471,7 @@ func _TriggerOverflow(p_holder_ID: int) -> void:
 
 func _TriggerRushStun(p_holder_ID: int) -> void:
 	if(Skills.HasMaxStatusEffects(_resolver._characters[p_holder_ID])):
+		_EmitStatusEffectDenied(p_holder_ID, false, Types.Debuff_Type.Stun)
 		return
 	var stun: StatusEffects.Debuff = StatusEffects.Debuff.new()
 	stun.type = Types.Debuff_Type.Stun
@@ -487,6 +492,7 @@ func _SpreadPlague(p_holder_ID: int, p_expiring: StatusEffects.Debuff) -> void:
 		return
 	var target_ID: int = candidates[_resolver._random.randi_range(0, candidates.size() - 1)]
 	if(Skills.HasMaxStatusEffects(_resolver._characters[target_ID])):
+		_EmitStatusEffectDenied(target_ID, false, Types.Debuff_Type.Plague)
 		return
 	var data: StatusEffectData = StatusEffectRegistry.DebuffData(Types.Debuff_Type.Plague)
 	var spread: StatusEffects.Debuff = StatusEffects.Debuff.new()
@@ -625,6 +631,17 @@ func _EmitBuffApplied(p_target_ID: int, p_buff: StatusEffects.Buff, p_display_na
 	var buff_trait: CharacterTrait = Skills.ActiveHook(target, Types.Combat_Event.Buff_Applied)
 	if(null != buff_trait):
 		buff_trait.OnBuffGained(p_target_ID, p_buff, _resolver)
+
+
+func _EmitStatusEffectDenied(p_target_ID: int, p_is_buff: bool, p_type: int) -> void:
+	var result: CombatResult = CombatResult.new(CombatResult.Kind.Status_Effect_Denied)
+	result.target_ID = p_target_ID
+	result.is_buff = p_is_buff
+	if(p_is_buff):
+		result.buff_type = p_type as Types.Buff_Type
+	else:
+		result.debuff_type = p_type as Types.Debuff_Type
+	_resolver._Emit(result)
 
 
 func _EmitDebuffApplied(p_target_ID: int, p_debuff: StatusEffects.Debuff, p_display_name: String) -> void:

@@ -367,6 +367,9 @@ func _on_resolver_result_produced(p_result: CombatResult) -> void:
 		CombatResult.Kind.Debuff_Resisted:
 			_battle_ui.SpawnCombatText(
 					"Resisted debuff!", CombatTextPosition(p_result.target_ID), Color(0.801, 0.0, 0.0, 1.0))
+		CombatResult.Kind.Status_Effect_Denied:
+			_battle_ui.SpawnCombatText(
+					"Status Effects Full!", CombatTextPosition(p_result.target_ID), Color(0.6, 0.6, 0.6, 1.0))
 		CombatResult.Kind.Status_Applied:
 			ShowStatusApplied(p_result)
 			if(p_result.is_buff and Types.Buff_Type.Barrier == p_result.buff_type):
