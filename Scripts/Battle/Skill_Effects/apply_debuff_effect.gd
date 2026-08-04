@@ -21,7 +21,8 @@ func Resolve(p_context: SkillCastContext) -> void:
 			debuff.source_ID = p_context.caster_ID
 			if(0.0 == debuff.value):
 				var data: StatusEffectData = StatusEffectRegistry.DebuffData(debuff_type)
-				debuff.value = status_resolver._SnapshotStatusValue(data, p_context.caster_ID) * p_context.zone_magnitude
+				debuff.value = (status_resolver._SnapshotStatusValue(data, p_context.caster_ID, target_ID)
+						* p_context.zone_magnitude)
 			var results: Array[CombatResult] = status_resolver.ApplyDebuff(target_ID, debuff)
 			p_context.status_effect_attempted = true
 			if(results.any(func(r: CombatResult) -> bool: return CombatResult.Kind.Status_Effect_Denied != r.kind)):

@@ -398,7 +398,7 @@ Ledger. Both read the same static, authored description per effect.
 
 ##### 3.2.3.1 Turn Bar Effects
 * Anchor (Debuff): The character cannot be pushed forward or backward on the turn bar by skills.
-* Temporal Leak (Debuff): Every time this character moves 10% of the bar, they take damage equal to 5% of their own Speed.
+* Temporal Leak (Debuff): Every time this character moves 10% of the bar, they take damage equal to 5% of their own Speed, multiplied by the applier's damage-scaling factors (the same channel-2 factors that scale their attacks) as they stood at the moment the debuff was applied.
 * Dead Weight (Debuff): When the character takes damage, they lose 3% turn bar.
 * Slipstream (Buff): The character passes through enemy-placed zones without triggering them.
 * Steadfast (Buff): The character cannot be moved backward on the turn bar.
@@ -420,11 +420,11 @@ Debuffs:
 * Confound: Reduces Knowledge by 30%.
 * Exposed Facet: Attacks against the character gain +15 percentage points Critical Chance.
 * Cracked Facet: Critical hits against the character deal +25% Critical Damage.
-* Bleed: At the start of the character's turn, they take damage equal to 40% of the caster's Attack, snapshotted at the moment of application.
-* Plague: Deals damage each turn equal to 30% of the caster's Mysticism, snapshotted at the moment of application; when it expires, it spreads to a random other enemy with fresh duration.
+* Bleed: At the start of the character's turn, they take damage equal to 40% of the caster's Attack, multiplied by the caster's damage-scaling factors, both snapshotted together at the moment of application.
+* Plague: Deals damage each turn equal to 30% of the caster's Mysticism, multiplied by the caster's damage-scaling factors, both snapshotted together at the moment of application; when it expires, it spreads to a random other enemy with fresh duration.
 * Blight: Healing received is reduced by 50%.
 * Severance: The character cannot gain new buffs.
-* Hexed: Roll calculations twice and take the worse result.
+* Hexed: Roll the critical-chance and debuff-resist checks twice and take the worse result (the damage-variance roll is not favored either way — its spread is too small to matter).
 * Stun: The character skips their next turn.
 * Fatigue: The character's skill cooldowns do not tick down.
 * Refracted: The character's single-target skills hit a random character instead, allies included.
@@ -435,11 +435,11 @@ Debuffs:
 Buffs:
 * Empower: Increases Attack by 30%.
 * Fortify: Increases Defense by 30%.
-* Daunting Strength: Doubles the damage of the next attack.
+* Daunting Strength: Doubles the damage of the next attack. Consumed the moment that attack resolves, so it cannot bank a second bonus across a turn where the holder is stunned or casts a non-damaging skill.
 * Frenzy: Increases Attack and Speed by 30% but reduces Defense and Accuracy by 30%.
 * Rush: Increases all primary attributes except Health by 30%; when the buff expires, it applies the Stun debuff to the character for 1 turn. This Stun cannot be resisted and is applied after other expiring buffs (such as Aegis) are removed.
 * Exhert: Increases all primary attributes except Health by 20%, but the character loses 5% of their max Health every time they take a turn.
-* Luck: Roll calculations twice and take the better result.
+* Luck: Roll the critical-chance and debuff-resist checks twice and take the better result (the damage-variance roll is not favored either way — its spread is too small to matter).
 * Phalanx Guard: Gain bonus defense per stack of momentum consumed. (Lancer Specific)
 * Attune: Increases Mysticism by 30%.
 * Haste: Increases Speed by 20%, including how fast the character advances on the turn bar; Haste stacks, so repeated applications add independent instances up to the status-effect cap.
@@ -452,7 +452,7 @@ Buffs:
 * Deathward: The next hit that would be fatal instead leaves the character at 1 Health, then the buff is consumed.
 * Aegis: Blocks the next debuff that would land on the character, then the buff is consumed.
 * Mirror Coat: When a debuff lands on the character, a copy is applied to the attacker, checked against the attacker's Resistance as normal.
-* Opportunist: The character's attacks deal +10% damage per debuff on the target.
+* Opportunist: The character's attacks deal +10% damage per debuff *type* present on the target (stacked instances of one debuff type count once).
 * Catalyst: The next reagent the character consumes has +50% effect. Stacks additively with other reagent potency modifiers; has no effect on binary reagents (see section 3.3.3).
 * Wanderlust: At the start of each of the character's turns, gain +20% to one random primary stat until their next turn.
 * Overflow: When this buff expires, it deals damage to all enemies, scaling with the holder's Mysticism.

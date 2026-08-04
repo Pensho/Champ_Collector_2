@@ -42,7 +42,7 @@ func ApplyDebuff(p_target_ID: int, p_debuff_template: StatusEffects.Debuff) -> A
 		return _resolver._EndBatch()
 
 	var new_value: float = (p_debuff_template.value if 0.0 != p_debuff_template.value
-			else _SnapshotStatusValue(data, p_debuff_template.source_ID))
+			else _SnapshotStatusValue(data, p_debuff_template.source_ID, p_target_ID))
 	_InsertOrRefresh(p_target_ID, false, p_debuff_template.type, data, new_value, p_debuff_template.duration,
 			p_debuff_template.source_ID, 0.0, false, p_debuff_template.name)
 	return _resolver._EndBatch()
@@ -96,11 +96,11 @@ func _ExpireBuffs(p_target_ID: int) -> void:
 	var target: Character = _resolver._characters[p_target_ID]
 	var status_IDs_to_be_removed: Array[int] = []
 	for buff in target._active_buffs:
-		if(buff.duration <= 0):
+		if(_IsBuffExpired(buff)):
 			status_IDs_to_be_removed.append(buff.ID)
 	if(status_IDs_to_be_removed.is_empty()):
 		return
-	target._active_buffs = target._active_buffs.filter(func(buff): return buff.duration > 0)
+	target._active_buffs = target._active_buffs.filter(func(buff): return not _IsBuffExpired(buff))
 	var removed: CombatResult = CombatResult.new(CombatResult.Kind.Statuses_Removed)
 	removed.target_ID = p_target_ID
 	removed.status_IDs = status_IDs_to_be_removed
@@ -108,6 +108,12 @@ func _ExpireBuffs(p_target_ID: int) -> void:
 	target._current_health = mini(target._current_health, _resolver._MaxHealth(target))
 	for i in status_IDs_to_be_removed.size():
 		_resolver.BroadcastEvent(Types.Combat_Event.Resource_Depleted)
+
+func _IsBuffExpired(p_buff: StatusEffects.Buff) -> bool:
+	var data: StatusEffectData = StatusEffectRegistry.BuffData(p_buff.type)
+	if(null != data and StatusEffectData.MagnitudeKind.DamageMultiplier == data.magnitude_kind):
+		return p_buff.duration < 0
+	return p_buff.duration <= 0
 
 func ConsumePremonitionIfPresent(p_target_ID: int, p_caster_ID: int) -> bool:
 	var target: Character = _resolver._characters[p_target_ID]
@@ -129,6 +135,19 @@ func ConsumeDeathwardIfPresent(p_character_ID: int) -> bool:
 			RemoveBuff(p_character_ID, buff)
 			return true
 	return false
+
+func ConsumeDamageMultiplierFactors(p_caster_ID: int) -> Dictionary[StringName, float]:
+	var factors: Dictionary[StringName, float] = {}
+	if(not _resolver._characters.has(p_caster_ID)):
+		return factors
+	var caster: Character = _resolver._characters[p_caster_ID]
+	for buff in caster._active_buffs.duplicate():
+		var data: StatusEffectData = StatusEffectRegistry.BuffData(buff.type)
+		if(null != data and StatusEffectData.MagnitudeKind.DamageMultiplier == data.magnitude_kind):
+			var key: StringName = StringName(Types.Buff_Type.keys()[buff.type])
+			factors[key] = factors.get(key, 0.0) + (buff.value - 1.0)
+			RemoveBuff(p_caster_ID, buff)
+	return factors
 
 ## Consumes the character's Catalyst buff, if any, returning its potency bonus (0.0 if absent).
 func ConsumeCatalystIfPresent(p_consumer_ID: int) -> float:
@@ -170,7 +189,7 @@ func CastDebuff(
 		return _resolver._EndBatch()
 
 	var value: float = (p_debuff_template.value if 0.0 != p_debuff_template.value
-			else _SnapshotStatusValue(data, p_caster_ID))
+			else _SnapshotStatusValue(data, p_caster_ID, p_target_ID))
 	var created: StatusEffects.Effect = _InsertOrRefresh(p_target_ID, false, p_debuff_template.type, data, value,
 			p_debuff_template.duration, p_caster_ID, p_tick_bonus_per_debuff, p_always_refresh_duration,
 			Types.Debuff_Type.keys()[p_debuff_template.type])
@@ -212,7 +231,7 @@ func _TriggerMirrorCoat(p_holder_ID: int, p_attacker_ID: int, p_debuff_type: Typ
 	mirrored.type = p_debuff_type
 	mirrored.duration = data.duration_default if null != data else 0
 	mirrored.source_ID = p_holder_ID
-	mirrored.value = _SnapshotStatusValue(data, p_holder_ID)
+	mirrored.value = _SnapshotStatusValue(data, p_holder_ID, p_attacker_ID)
 	mirrored.ID = _resolver._NextStatusID()
 	_resolver._characters[p_attacker_ID]._active_debuffs.append(mirrored)
 	_EmitDebuffApplied(p_attacker_ID, mirrored, "")
@@ -285,11 +304,6 @@ func _TriggerExistingCasterBuffs(
 		var data: StatusEffectData = StatusEffectRegistry.BuffData(buff.type)
 		if(null != data and data.applies_on_self_tick):
 			match data.magnitude_kind:
-				StatusEffectData.MagnitudeKind.DamageMultiplier:
-					var key: StringName = StringName(Types.Buff_Type.keys()[buff.type])
-					var per_caster: Dictionary = _resolver._damage_multiplier.get(p_caster_ID, {})
-					per_caster[key] = per_caster.get(key, 0.0) + (buff.value - 1.0)
-					_resolver._damage_multiplier[p_caster_ID] = per_caster
 				StatusEffectData.MagnitudeKind.MaxHealthPercent:
 					heal_total += int(floor(
 							(p_caster_attributes[Types.Attribute.Health]
@@ -505,19 +519,27 @@ func _SpreadPlague(p_holder_ID: int, p_expiring: StatusEffects.Debuff) -> void:
 	_EmitDebuffApplied(target_ID, spread, "")
 
 
-func _SnapshotStatusValue(p_data: StatusEffectData, p_source_ID: int) -> float:
+func _SnapshotStatusValue(p_data: StatusEffectData, p_source_ID: int, p_target_ID: int) -> float:
 	if(null == p_data):
 		return 0.0
-	if(StatusEffectData.MagnitudeKind.CasterAttributeSnapshotPercent == p_data.magnitude_kind):
-		if(not _resolver._characters.has(p_source_ID)):
-			return 0.0
-		var source_attributes: Dictionary[Types.Attribute, int] = _resolver._characters[p_source_ID].GetTotalAttributes()
-		_resolver._ApplyLongAttributeBonus(p_source_ID, source_attributes)
-		var value: float = 0.0
-		for attribute in p_data.attribute_modifiers.keys():
-			value += p_data.magnitude * float(source_attributes[attribute])
-		return value
-	return p_data.magnitude
+	match p_data.magnitude_kind:
+		StatusEffectData.MagnitudeKind.CasterAttributeSnapshotPercent:
+			if(not _resolver._characters.has(p_source_ID)):
+				return 0.0
+			var source_attributes: Dictionary[Types.Attribute, int] = _resolver._characters[p_source_ID].GetTotalAttributes()
+			_resolver._ApplyLongAttributeBonus(p_source_ID, source_attributes)
+			var value: float = 0.0
+			for attribute in p_data.attribute_modifiers.keys():
+				value += p_data.magnitude * float(source_attributes[attribute])
+			var modifier: CombinedDamageModifier = CombinedDamageModifier.new()
+			_resolver._ContributePersistentCasterFactors(p_source_ID, p_target_ID, modifier)
+			return value * modifier.Product()
+		StatusEffectData.MagnitudeKind.TurnBarMovementDamagePercent:
+			var leak_modifier: CombinedDamageModifier = CombinedDamageModifier.new()
+			_resolver._ContributePersistentCasterFactors(p_source_ID, p_target_ID, leak_modifier)
+			return leak_modifier.Product()
+		_:
+			return p_data.magnitude
 
 
 func _AttackerCritChanceBonus(p_target: Character) -> int:
@@ -542,11 +564,22 @@ func _OpportunistDamageFactors(p_caster_ID: int, p_target: Character) -> Diction
 	var factors: Dictionary[StringName, float] = {}
 	if(not _resolver._characters.has(p_caster_ID)):
 		return factors
+	var has_opportunist: bool = false
+	var opportunist_value: float = 0.0
 	for buff in _resolver._characters[p_caster_ID]._active_buffs:
 		var data: StatusEffectData = StatusEffectRegistry.BuffData(buff.type)
 		if(null != data and StatusEffectData.MagnitudeKind.PerTargetDebuffDamagePercent == data.magnitude_kind):
-			var key: StringName = StringName(Types.Buff_Type.keys()[buff.type])
-			factors[key] = factors.get(key, 0.0) + buff.value * p_target._active_debuffs.size()
+			has_opportunist = true
+			opportunist_value = buff.value
+			break
+	if(not has_opportunist):
+		return factors
+	var debuff_types_present: Dictionary[Types.Debuff_Type, bool] = {}
+	for debuff in p_target._active_debuffs:
+		debuff_types_present[debuff.type] = true
+	for debuff_type in debuff_types_present:
+		var key: StringName = StringName(Types.Debuff_Type.keys()[debuff_type])
+		factors[key] = factors.get(key, 0.0) + opportunist_value
 	return factors
 
 

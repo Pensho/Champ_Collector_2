@@ -34,11 +34,6 @@ var _random: RandomNumberGenerator = RandomNumberGenerator.new()
 var _zone_resolver: ZoneResolver
 var _status_resolver: StatusEffectResolver
 
-## Per caster, per buff-type key, an additive fraction contributed by self-tick
-## DamageMultiplier buffs (Concept_Document.md 1.1.3): same-type instances sum within their
-## key, distinct types stay separate so CombinedDamageModifier multiplies them.
-var _damage_multiplier: Dictionary[int, Dictionary] = {}
-
 var _skill_use_counts: Dictionary[String, int] = {}
 
 # Inner Dictionary is Dictionary[Types.Attribute, int]
@@ -52,6 +47,7 @@ var _batch: Array[CombatResult] = []
 var _batch_depth: int = 0
 
 var _turn_bar_progress: Dictionary[int, float] = {}
+var _turn_bar_damage_remainder: Dictionary[int, float] = {}
 
 # The turn-bar section a player just clicked, consumed once by the next ZoneEffect
 # placement in the skill they cast it for; -1 when nothing is pending (an enemy's own
@@ -238,27 +234,36 @@ func AccumulateTurnBarMovement(p_character_ID: int, p_fraction_moved: float) -> 
 	var character: Character = _characters[p_character_ID]
 	if(character._current_health <= 0):
 		return _EndBatch()
-	var has_temporal_leak: bool = false
+	var leak: StatusEffects.Debuff = null
 	for debuff in character._active_debuffs:
 		if(Types.Debuff_Type.Temporal_Leak == debuff.type):
-			has_temporal_leak = true
+			leak = debuff
 			break
-	if(not has_temporal_leak):
+	if(null == leak):
 		return _EndBatch()
 
 	var data: StatusEffectData = StatusEffectRegistry.DebuffData(Types.Debuff_Type.Temporal_Leak)
+	# The applier's channel-2 factors are frozen into leak.value at application (see
+	# StatusEffectResolver._SnapshotStatusValue); 0.0 means the debuff was placed directly
+	# rather than through ApplyDebuff/CastDebuff (test setup), so treat that as neutral.
+	var multiplier: float = leak.value if 0.0 != leak.value else 1.0
 	var progress: float = _turn_bar_progress.get(p_character_ID, 0.0) + p_fraction_moved
+	var remainder: float = _turn_bar_damage_remainder.get(p_character_ID, 0.0)
 	while(progress >= GameBalance.TURN_BAR_PROGRESS_TRIGGER_FRACTION and character._current_health > 0):
 		progress -= GameBalance.TURN_BAR_PROGRESS_TRIGGER_FRACTION
 		var speed: int = GetEffectiveAttributes(p_character_ID)[Types.Attribute.Speed]
-		var damage: int = int(floor(speed * data.magnitude))
+		remainder += float(speed) * data.magnitude * multiplier
+		var damage: int = int(floor(remainder))
+		remainder -= float(damage)
 		if(damage > 0):
 			_ApplyHealthLoss(p_character_ID, damage)
 			var result: CombatResult = CombatResult.new(CombatResult.Kind.Debuff_Tick)
+			result.source_ID = leak.source_ID
 			result.target_ID = p_character_ID
 			result.amount = damage
 			_Emit(result)
 	_turn_bar_progress[p_character_ID] = progress
+	_turn_bar_damage_remainder[p_character_ID] = remainder
 	return _EndBatch()
 
 func BumpTurnBar(p_target_ID: int, p_fraction: float, p_source_ID: int = -1) -> void:
@@ -661,6 +666,27 @@ func _SkillUseCount(p_caster_ID: int, p_skill: Skill) -> int:
 	return uses
 
 
+## Contributes the caster's channel-2 factors that persist between resolutions (trait
+## outgoing bonus, reagent/graft bonus, Opportunist) into the given modifier. Shared by
+## attack resolution and any tick that needs the caster's current damage-scaling state,
+## e.g. Bleed/Plague/Temporal_Leak. Excludes DamageMultiplier ("next attack") buffs, which
+## are consumed by an attack rather than read by a tick.
+func _ContributePersistentCasterFactors(
+		p_caster_ID: int, p_target_ID: int, p_modifier: CombinedDamageModifier) -> void:
+	if(not _characters.has(p_caster_ID) or not _characters.has(p_target_ID)):
+		return
+	var target: Character = _characters[p_target_ID]
+	var attacker_trait: CharacterTrait = _characters[p_caster_ID]._trait
+	if(null != attacker_trait):
+		p_modifier.Contribute(StringName(attacker_trait.get_script().get_global_name()),
+				attacker_trait.GetOutgoingDamageBonus(p_caster_ID, p_target_ID, self))
+	p_modifier.Contribute(_REAGENT_DAMAGE_BONUS_KEY, _damage_dealt_bonus.get(p_caster_ID, 0.0))
+	var opportunist_factors: Dictionary[StringName, float] = (
+			_status_resolver._OpportunistDamageFactors(p_caster_ID, target))
+	for key: StringName in opportunist_factors:
+		p_modifier.Contribute(key, opportunist_factors[key])
+
+
 func _ResolveDamage(
 		p_caster_ID: int,
 		p_target_ID: int,
@@ -670,7 +696,7 @@ func _ResolveDamage(
 		p_defense_ignore_factor: float,
 		p_combined_damage_modifier: CombinedDamageModifier,
 		p_allow_critical: bool = true) -> void:
-	var random_value: float = _RollFavoring(p_caster_ID, 0.95, 1.05, true)
+	var random_value: float = _random.randf_range(0.95, 1.05)
 	var caster_scaled_attribute_aggregate: float = 0.0
 	var crit_multiplier: float = 1.0
 	var rolled_critical: bool = false
@@ -702,18 +728,11 @@ func _ResolveDamage(
 						- (p_target_attributes[Types.Attribute.Knowledge] * 0.5))
 				) * 0.01
 
-	var attacker_trait: CharacterTrait = _characters[p_caster_ID]._trait
-	if(null != attacker_trait):
-		p_combined_damage_modifier.Contribute(StringName(attacker_trait.get_script().get_global_name()),
-				attacker_trait.GetOutgoingDamageBonus(p_caster_ID, p_target_ID, self))
-	p_combined_damage_modifier.Contribute(_REAGENT_DAMAGE_BONUS_KEY, _damage_dealt_bonus.get(p_caster_ID, 0.0))
-	var damage_multiplier_factors: Dictionary = _damage_multiplier.get(p_caster_ID, {})
+	_ContributePersistentCasterFactors(p_caster_ID, p_target_ID, p_combined_damage_modifier)
+	var damage_multiplier_factors: Dictionary[StringName, float] = (
+			_status_resolver.ConsumeDamageMultiplierFactors(p_caster_ID))
 	for key: StringName in damage_multiplier_factors:
 		p_combined_damage_modifier.Contribute(key, damage_multiplier_factors[key])
-	var opportunist_factors: Dictionary[StringName, float] = (
-			_status_resolver._OpportunistDamageFactors(p_caster_ID, target))
-	for key: StringName in opportunist_factors:
-		p_combined_damage_modifier.Contribute(key, opportunist_factors[key])
 	caster_scaled_attribute_aggregate *= p_combined_damage_modifier.Product()
 
 	var effective_defence: float = p_target_attributes[Types.Attribute.Defence] * p_defense_ignore_factor
@@ -730,8 +749,6 @@ func _ResolveDamage(
 		soaker_damage = Skills.MitigatedDamage(soaker_defence,
 				caster_scaled_attribute_aggregate * redirect_fraction, crit_multiplier, random_value)
 		damage_dealt = int(round(damage_dealt * (1.0 - redirect_fraction)))
-
-	_damage_multiplier.erase(p_caster_ID)
 
 	if(soaker_damage > 0):
 		_ApplyHealthLoss(soaker_ID, soaker_damage)

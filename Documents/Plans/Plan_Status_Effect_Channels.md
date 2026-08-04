@@ -202,9 +202,9 @@ These are where the real work is.
 | --- | --- | --- | --- |
 | Burning | 1 | 4% of target max Health per stack, per tick | **enabler / factor condition** — its tick stays build-up pressure; its composable value is as a debuff *type* other mechanics key off (`bonus_per_debuff_on_target`, the reworked Opportunist above), the cheap answer this ledger prefers over giving it a factor of its own. Stacking (`stackable = true`) is a Phase 5 cap question, not this phase's. |
 | Regeneration | 1 | heals 4% max Health per tick | **enabler, conforms** — corrected verdict; see the fight-level collapse test note in `## Watch for` below. Sustained self-healing against a slow, hard-hitting matchup is "buying time to survive to the trigger," the same shape as Stun/Anchor buying a turn, only continuous instead of punctual and self-directed rather than requiring a target. No rework. |
-| Bleed | 9 | 40% of caster Attack, snapshotted | **rework** — a snapshot cannot read the modifier assembled at burst time, so it is linear by construction. Phase 6 below routes the tick through `_ResolveDamage` (or an equivalent call that builds a `CombinedDamageModifier` at tick time) instead of reading the frozen `debuff.value`, so a caster's channel-2 state at tick time is what scales the hit. |
+| Bleed | 9 | 40% of caster Attack, snapshotted | **rework** — a snapshot cannot read the modifier assembled at burst time, so it is linear by construction. Phase 6 below folds the caster's channel-2 state into the snapshot at the moment of application (not read fresh at tick time — narrowed from this row's original text during Phase 6, see its writeup), so `debuff.value` carries both the attribute and the multiplier together. |
 | Plague | 9 | 30% of caster Mysticism, snapshotted, spreads on expiry | Two verdicts: the snapshot has Bleed's problem — **rework**, same fix as Bleed. The expiry spread is **channel 3 (cascade)** — a triggered separate resolution — and is out of this plan's scope; it belongs to `Plan_Cascade_Resolution.md` (`Plan_Blowout_Alignment.md` Phase 3), named here as the owning phase. |
-| Temporal_Leak | 11 | 5% of own Speed per 10% bar moved | **rework** — scales off the victim's own Speed, a linear tax with no player-built term. Phase 6 below turns it into tempo denial — a condition other mechanics (a cascade trigger, a factor keyed off "target has Temporal_Leak") can read — rather than a damage source in its own right. |
+| Temporal_Leak | 11 | 5% of own Speed per 10% bar moved | **rework, narrowed during Phase 6** — kept as a damage tick rather than turned into a readable condition (a deliberate change from this row's original text, decided with the user; see Phase 6's writeup). The linear-tax defect is fixed instead by running every tick through the caster's channel-2 factors, snapshotted at application the same way as Bleed/Plague. |
 | Mana_Burn | 0 | damage when the target uses a non-basic skill | **enabler** — denial with damage attached; the damage stays incidental to the punish, and it is not given a factor. |
 | Overflow | 0 | Mysticism AoE on expiry | **channel 3 (cascade)** — an expiry-triggered separate resolution, the same shape as Plague's spread. Its defect (the fresh, unseeded `CombinedDamageModifier` in `ResolveTraitDamage`) is real but is the master plan's Phase 3 cascade work to fix, not this plan's; the corresponding item in `## Findings` below is narrowed to point there instead of asking Phase 3 of *this* plan to resolve it. |
 | Dead_Weight | 14 | −3% own turn bar on damage taken | **enabler, conforms** — corrected verdict. Filed as a debuff, it is placed on a threat and denies that threat's tempo every time it lands a hit — the same shape as Battle_Orders (already an enabler) aimed at an opponent instead of at allies. Slowing a hard hitter's next action is protecting the window exactly as Stun/Anchor do, just incrementally. No rework. |
@@ -310,42 +310,95 @@ ceiling and justify it against 1.1.4. Whichever way it goes, emit a result on th
 No test covers `MAX_STATUS_EFFECTS` today — grep finds no reference under `Tests/`. This
 phase adds one.
 
-## Phase 6 — Status effect reworks
+## Phase 6 — Status effect reworks — done
 
-Implements the **rework** verdicts from Phase 3. Each item names its mechanism change and the
-call sites it touches; per `## Watch for` below, a mechanism change sweeps the trait/graft
-scripts under `Scripts/Character/character_traits/` and the hardcoded status checks in
-`battle_resolver.gd`, `zone_resolver.gd`, `battle.gd`, and `skills.gd`, not only the status's
-`.tres`. Each item lands with its own test in `Tests/unit/`.
+**Shipped:** all five rework verdicts from Phase 3 landed, plus one change of approach on
+Temporal_Leak agreed with the user during planning (recorded below rather than left silent,
+since it reads as a direct contradiction of this phase's original text otherwise).
 
-* **Opportunist** — key `_OpportunistDamageFactors` (`status_effect_resolver.gd:535-544`) per
-  debuff type present on the target, matching `_ContributeDebuffFactors`'s keying
-  (`damage_effect.gd:60-65`). Test: two distinct debuff types multiply; Opportunist and
-  `bonus_per_debuff_on_target` on the same debuff type do not double-count.
-* **Daunting_Strength** — bank the `DamageMultiplier` fraction into `_damage_multiplier` at
-  the point `_ResolveDamage` contributes it, not at `_TriggerExistingCasterBuffs`'s self-tick,
-  so a caster who is stunned or casts a non-damaging skill while it is active cannot bank it
-  twice. Test: the banking scenario in `## Findings` below lands 2x, not 3x.
-* **Luck / Hexed** — stop routing the damage-spread roll through `_RollFavoring` at
-  `battle_resolver.gd:673`; replace with a plain `randf_range(0.95, 1.05)`. Keep
-  `_RollFavoring` for the crit roll (`:695`) and both debuff-resist rolls
-  (`status_effect_resolver.gd:185-186`). Test: holding Luck or Hexed no longer changes the
-  damage-spread roll's distribution.
-* **Bleed / Plague (snapshot)** — replace the frozen `debuff.value` tick read in
-  `_TriggerExistingCasterDebuffs` (`status_effect_resolver.gd:217-268`,
-  `CasterAttributeSnapshotPercent` case) with a tick-time resolution that builds and consults
-  a `CombinedDamageModifier`, so the caster's channel-2 state at tick time scales the hit
-  instead of the state at application time. Test: a channel-2 buff gained on the caster after
-  Bleed/Plague is applied changes the tick's damage.
-* **Temporal_Leak** — remove the Speed-scaled damage tick in `AccumulateTurnBarMovement`
-  (`battle_resolver.gd:234-262`) and replace it with a readable condition (e.g. a flag or
-  count other mechanics can key a factor or a cascade trigger off) rather than a damage
-  source in its own right. Test: Temporal_Leak alone no longer deals damage; the new
-  condition is readable by a test double mechanic.
+* **Opportunist** — `_OpportunistDamageFactors` (`status_effect_resolver.gd`) now iterates the
+  target's active debuffs, dedupes by type, and contributes one bucket per debuff type present
+  keyed `StringName(Types.Debuff_Type.keys()[type])` — the same key `_ContributeDebuffFactors`
+  (`damage_effect.gd:60-65`) already uses, so the two compose in one bucket instead of
+  double-counting. Stacked instances of one debuff type now count once. Tests in
+  `test_opportunist_damage.gd`: two distinct debuff types still multiply (already covered);
+  two stacks of one type deal the same damage as one; Opportunist and
+  `bonus_per_debuff_on_target` on the same debuff type share one `Buckets()` entry.
+* **Daunting_Strength** — the self-tick no longer banks anything. `_damage_multiplier`
+  (the per-caster banking dictionary) is deleted along with the `DamageMultiplier` case in
+  `_TriggerExistingCasterBuffs`'s match block; a new `StatusEffectResolver.
+  ConsumeDamageMultiplierFactors(caster_ID)` is called from `BattleResolver._ResolveDamage`
+  (via the new `_ContributePersistentCasterFactors` helper's sibling call, placed after both
+  early returns and before `Product()`), and it removes every active `DamageMultiplier` buff
+  it reads, contributing each one's fraction exactly once. A first version of this item
+  exempted `DamageMultiplier`-kind buffs from duration decrement/expiry entirely, so they
+  waited indefinitely for the next attack regardless of the duration set on them; the user
+  flagged this as making duration silently dead data — a different, un-signaled contract from
+  every other buff. Duration now decrements and is reported normally
+  (`_EmitStatusDuration`), and `_ExpireBuffs` gained a `DamageMultiplier`-only exception via a
+  new `_IsBuffExpired` helper: `duration < 0` instead of `duration <= 0`, a one-tick grace so
+  the buff survives to be read by the resolution that would otherwise strip it a step early
+  (self-tick decrements-then-expires before the skill's own effects resolve). A buff that
+  goes unused past that grace tick expires for real. Tests in
+  `test_combined_damage_modifier_resolution.gd`: a non-damaging turn while Daunting_Strength
+  (duration 2) is active, followed by an attack, lands exactly 2x, not 3x; a duration-1
+  Daunting_Strength left unused for two non-damaging turns (one past its window plus grace)
+  expires and contributes nothing.
+* **Luck / Hexed** — the damage-spread roll (`battle_resolver.gd`, was `_RollFavoring(...,
+  0.95, 1.05, true)`) now calls `_random.randf_range(0.95, 1.05)` directly. `_RollFavoring`
+  still gates the crit roll and both debuff-resist rolls. `test_luck_hexed_rolls.gd`: the
+  damage-variance distribution test was rewritten to assert Luck no longer changes it; the
+  crit-roll test's manual compensating draw (previously burned to realign RNG position with
+  Luck's extra variance draw) was removed and the resolver seed changed to one (2) whose crit
+  draws still land on opposite sides of the test's threshold without that compensation.
+* **Bleed / Plague (snapshot)** — a new `BattleResolver._ContributePersistentCasterFactors`
+  contributes a caster's *persistent* channel-2 factors (trait outgoing bonus, reagent/graft
+  bonus, Opportunist) into a given `CombinedDamageModifier`; it is shared by `_ResolveDamage`
+  and by `StatusEffectResolver._SnapshotStatusValue`'s `CasterAttributeSnapshotPercent` case,
+  which now multiplies the attribute-based snapshot by `modifier.Product()` **once, at
+  application**, and stores the combined number in `debuff.value` — the same field, same
+  timing as the attribute half it always snapshotted. The user reconsidered a first version of
+  this item that rebuilt the modifier fresh at every tick (state as of application); a
+  half-frozen (attribute)/half-live (multiplier) model was judged an awkward split, so the
+  multiplier now freezes with the attribute instead: a caster who grows stronger after
+  applying Bleed does not retroactively empower the tick already running.
+  `_SnapshotStatusValue` gained a `p_target_ID` parameter (the debuff's target, needed for
+  `_ContributePersistentCasterFactors`'s Opportunist read) threaded through all four call
+  sites (`ApplyDebuff`, `CastDebuff`, `_TriggerMirrorCoat`, `ApplyDebuffEffect`'s zone-trigger
+  branch). DamageMultiplier buffs are deliberately excluded from the shared helper (a
+  snapshot is not an attack, so nothing "next attack" should feed it). Test in
+  `test_bleed_plague_ticks.gd`: a persistent factor present on the caster *at application*
+  scales every tick; a further change to the caster's factors afterward does not.
+* **Temporal_Leak** — **kept as a damage tick**, not converted to a readable condition; this
+  is a deliberate change from this phase's original text, decided with the user during
+  planning. `_SnapshotStatusValue` gained a case for `TurnBarMovementDamagePercent` that
+  returns `_ContributePersistentCasterFactors`'s product (no attribute term — Temporal_Leak
+  has no `attribute_modifiers`) and stores it in `debuff.value`, frozen at application exactly
+  like Bleed/Plague; `AccumulateTurnBarMovement` reads `leak.value` as a per-crossing
+  multiplier (treating the 0.0 default as neutral 1.0, for debuffs placed directly rather than
+  through Apply/CastDebuff — a test-only path). Speed itself stays live per crossing, unchanged
+  from before this phase (`GetEffectiveAttributes` inside the loop) — only the multiplier is
+  frozen, matching Bleed/Plague's attribute-live-until-frozen-at-application shape applied to
+  Temporal_Leak's own base term. Magnitude stays 0.05 — the real defect was precision, not
+  power: `AccumulateTurnBarMovement`'s old `int(floor(speed * magnitude))` per crossing threw
+  away up to ~1 damage on every one of the ten crossings a full bar traversal produces
+  (Speed 49 and Speed 59 ticked identically). A new `_turn_bar_damage_remainder` dictionary,
+  parallel to `_turn_bar_progress`, carries the fractional remainder across crossings instead
+  of flooring it away each time. `_ApplyHealthLoss` already ran Spotlight's
+  `_DamageTakenMultiplier` and `_AbsorbWithBarrier` on every health loss, ticks included, so
+  target-side multiplicative terms already applied before this phase — only the caster-side
+  channel-2 terms were missing, which this change adds. Tests in `test_temporal_leak.gd`:
+  fractional accumulation strictly beats the naive per-tick floor over three crossings; a
+  persistent factor present on the applier *at application* scales every tick and a further
+  change afterward does not; the tick now credits `source_ID`.
 
 Regeneration, Dead_Weight, and Spotlight's −10% were originally scoped here as reworks; the
 fight-level collapse-test correction in `## Watch for` above reclassified all three as
-enablers that already conform, so they carry no implementation item.
+enablers that already conform, so they carried no implementation item.
+
+`Concept_Document.md` 3.2.3's Opportunist, Bleed, Plague, Temporal Leak, Daunting Strength,
+Luck, and Hexed entries were rewritten to match; the fuller per-status bucket tagging is
+Phase 7's, not this phase's.
 
 ## Phase 7 — Documentation
 

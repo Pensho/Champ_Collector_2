@@ -17,6 +17,7 @@ func _buff(p_type: Types.Buff_Type) -> StatusEffects.Buff:
 	var buff: StatusEffects.Buff = StatusEffects.Buff.new()
 	buff.type = p_type
 	buff.value = StatusEffectRegistry.BuffData(p_type).magnitude
+	buff.duration = 1
 	return buff
 
 func test_empower_increases_effective_attack_by_30_percent() -> void:

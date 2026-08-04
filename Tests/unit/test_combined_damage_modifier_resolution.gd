@@ -34,6 +34,7 @@ func test_a_2x_modifier_against_a_defended_target_yields_strictly_more_than_2x_d
 	var daunting_strength: StatusEffects.Buff = StatusEffects.Buff.new()
 	daunting_strength.type = Types.Buff_Type.Daunting_Strength
 	daunting_strength.value = StatusEffectRegistry.BuffData(Types.Buff_Type.Daunting_Strength).magnitude
+	daunting_strength.duration = 1
 	buffed_roster[0]._active_buffs.append(daunting_strength)
 	var buffed_resolver: BattleResolver = TestFactory.make_resolver(buffed_roster, TestFactory.make_full_sides())
 	var buffed_damage: int = _first_damage(buffed_resolver.ResolveSkill(0, [3], 0))
@@ -93,6 +94,7 @@ func _daunting_strength() -> StatusEffects.Buff:
 	var buff: StatusEffects.Buff = StatusEffects.Buff.new()
 	buff.type = Types.Buff_Type.Daunting_Strength
 	buff.value = StatusEffectRegistry.BuffData(Types.Buff_Type.Daunting_Strength).magnitude
+	buff.duration = 1
 	return buff
 
 func _first_damage_result(p_results: Array[CombatResult]) -> CombatResult:
@@ -133,3 +135,37 @@ func test_two_distinct_channel_two_mechanics_multiply() -> void:
 	# mechanics, so their buckets multiply: 2.0 * 1.10 = 2.2x, not add to 2.1x.
 	assert_almost_eq(modifier.Product(), 2.2, 0.0001,
 		"Two distinct channel-2 mechanics must multiply as separate buckets")
+
+func test_daunting_strength_does_not_bank_twice_across_a_non_damaging_turn() -> void:
+	var roster: Dictionary[int, Character] = _damage_roster_and_target()
+	roster[0]._skills.append(TestFactory.make_empty_skill())
+	var daunting_strength: StatusEffects.Buff = _daunting_strength()
+	daunting_strength.duration = 2
+	roster[0]._active_buffs.append(daunting_strength)
+	var resolver: BattleResolver = TestFactory.make_resolver(roster, TestFactory.make_full_sides())
+
+	# Turn 1: a non-damaging skill self-ticks Daunting Strength without consuming it.
+	resolver.ResolveSkill(0, [3], 1)
+	# Turn 2: the caster's actual attack must bank exactly one instance (2.0x), not two.
+	var modifier: CombinedDamageModifier = _first_damage_result(resolver.ResolveSkill(0, [3], 0)).combined_damage_modifier
+
+	assert_almost_eq(modifier.Product(), 2.0, 0.0001,
+		"A non-damaging turn while Daunting Strength is active must not let it bank twice on the next attack")
+
+func test_daunting_strength_expires_unused_if_never_landed_within_its_duration() -> void:
+	var roster: Dictionary[int, Character] = _damage_roster_and_target()
+	roster[0]._skills.append(TestFactory.make_empty_skill())
+	var daunting_strength: StatusEffects.Buff = _daunting_strength()
+	daunting_strength.duration = 1
+	roster[0]._active_buffs.append(daunting_strength)
+	var resolver: BattleResolver = TestFactory.make_resolver(roster, TestFactory.make_full_sides())
+
+	# Duration still ticks down and expires like any other buff (a one-tick grace keeps it
+	# alive for the resolution that would otherwise expire it, but no longer than that):
+	# two non-damaging turns is one more than a duration-1 buff's window plus its grace tick.
+	resolver.ResolveSkill(0, [3], 1)
+	resolver.ResolveSkill(0, [3], 1)
+	var modifier: CombinedDamageModifier = _first_damage_result(resolver.ResolveSkill(0, [3], 0)).combined_damage_modifier
+
+	assert_almost_eq(modifier.Product(), 1.0, 0.0001,
+		"Daunting Strength must expire unused if no attack lands within its duration's window")

@@ -47,6 +47,58 @@ func test_opportunist_increases_damage_per_target_debuff() -> void:
 	assert_gt(buffed_damage, baseline_damage, "Opportunist should add damage per debuff on the target")
 	assert_almost_eq(float(buffed_damage) / float(baseline_damage), 1.2, 0.05)
 
+func test_opportunist_counts_each_debuff_type_once_regardless_of_stack_count() -> void:
+	var single_stack: Dictionary = _resolver_with_caster_buff(Types.Buff_Type.Opportunist)
+	var two_stacks: Dictionary = _resolver_with_caster_buff(Types.Buff_Type.Opportunist)
+	var burning: StatusEffects.Debuff = StatusEffects.Debuff.new()
+	burning.type = Types.Debuff_Type.Burning
+	burning.duration = 5
+	single_stack["roster"][3]._active_debuffs.append(burning)
+	for i in 2:
+		var stacked: StatusEffects.Debuff = StatusEffects.Debuff.new()
+		stacked.type = Types.Debuff_Type.Burning
+		stacked.duration = 5
+		two_stacks["roster"][3]._active_debuffs.append(stacked)
+
+	var single_resolver: BattleResolver = single_stack["resolver"]
+	var stacked_resolver: BattleResolver = two_stacks["resolver"]
+	var single_damage: int = _first_damage(single_resolver.ResolveSkill(0, [3], 0))
+	var stacked_damage: int = _first_damage(stacked_resolver.ResolveSkill(0, [3], 0))
+
+	assert_eq(stacked_damage, single_damage,
+		"Two stacks of one debuff type are still one bucket for Opportunist, matching bonus_per_debuff_on_target")
+
+func test_opportunist_shares_a_bucket_with_bonus_per_debuff_on_target_for_the_same_debuff_type() -> void:
+	var roster: Dictionary[int, Character] = TestFactory.make_full_roster()
+	var skill: Skill = TestFactory.make_empty_skill()
+	skill.name = "Bonus Per Debuff"
+	var hit: DamageEffect = DamageEffect.new()
+	hit.damage_scaling = {Types.Attribute.Attack: 1.0}
+	hit.bonus_per_debuff_on_target = {Types.Debuff_Type.Burning: 0.5}
+	skill.effects = [hit]
+	roster[0]._skills.append(skill)
+	var opportunist: StatusEffects.Buff = StatusEffects.Buff.new()
+	opportunist.type = Types.Buff_Type.Opportunist
+	opportunist.value = StatusEffectRegistry.BuffData(Types.Buff_Type.Opportunist).magnitude
+	opportunist.duration = 5
+	roster[0]._active_buffs.append(opportunist)
+	var burning: StatusEffects.Debuff = StatusEffects.Debuff.new()
+	burning.type = Types.Debuff_Type.Burning
+	burning.duration = 5
+	roster[3]._active_debuffs.append(burning)
+	var resolver: BattleResolver = TestFactory.make_resolver(roster, TestFactory.make_full_sides())
+
+	var results: Array[CombatResult] = resolver.ResolveSkill(0, [3], 0)
+	var modifier: CombinedDamageModifier = null
+	for r in results:
+		if(r.kind == CombatResult.Kind.Damage):
+			modifier = r.combined_damage_modifier
+	var buckets: Dictionary[StringName, float] = modifier.Buckets()
+
+	assert_almost_eq(buckets[&"Burning"],
+			StatusEffectRegistry.BuffData(Types.Buff_Type.Opportunist).magnitude + 0.5, 0.0001,
+			"Opportunist and bonus_per_debuff_on_target for the same debuff type must land in one bucket, not double-count")
+
 func test_opportunist_has_no_effect_with_no_target_debuffs() -> void:
 	var baseline: Dictionary = _resolver_with_caster_buff(Types.Buff_Type.Invalid)
 	var buffed: Dictionary = _resolver_with_caster_buff(Types.Buff_Type.Opportunist)

@@ -39,6 +39,22 @@ func test_bleed_tick_snapshots_the_appliers_attack_at_application() -> void:
 	assert_eq(tick.amount, expected, "Bleed's tick damage should use the Attack snapshotted at application")
 	assert_eq(tick.amount_by_source[1], expected, "The applying source should be credited with the Bleed tick")
 
+func test_bleed_tick_is_scaled_by_the_appliers_persistent_damage_factors_at_application() -> void:
+	_roster[1]._attributes[Types.Attribute.Attack] = 100
+	# The applier's channel-2 factor at the moment of application is baked into the
+	# snapshot alongside the attribute; both are frozen together for the debuff's life.
+	_resolver.AggregateDamageMultipliers(1, 0.5)
+	_apply_debuff(Types.Debuff_Type.Bleed, 0, 1)
+	# A further change to the applier's factors after application must not retroactively
+	# change the already-ticking Bleed.
+	_resolver.AggregateDamageMultipliers(1, 2.0)
+
+	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [], 0)
+	var tick: CombatResult = _debuff_ticks(results)[0]
+	var expected: int = int(floor(100 * StatusEffectRegistry.DebuffData(Types.Debuff_Type.Bleed).magnitude * 1.5))
+	assert_eq(tick.amount, expected,
+		"Bleed's tick must be multiplied by the applier's persistent damage factors as they stood at application")
+
 func test_plague_tick_scales_with_the_appliers_mysticism() -> void:
 	_roster[1]._attributes[Types.Attribute.Mysticism] = 50
 	_apply_debuff(Types.Debuff_Type.Plague, 0, 1)

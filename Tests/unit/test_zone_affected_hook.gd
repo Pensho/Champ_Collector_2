@@ -146,7 +146,7 @@ func test_multiplier_scales_a_lava_debuff_value() -> void:
 	_resolver.GetZoneResolver().TriggerZones(0)
 
 	var base: float = _resolver.GetStatusResolver()._SnapshotStatusValue(
-			StatusEffectRegistry.DebuffData(Types.Debuff_Type.Burning), 0)
+			StatusEffectRegistry.DebuffData(Types.Debuff_Type.Burning), 0, 3)
 	assert_almost_eq(_roster[3]._active_debuffs[0].value, base * 1.5, 0.0001)
 
 func test_default_trait_leaves_a_lava_debuff_value_unscaled() -> void:
@@ -155,5 +155,5 @@ func test_default_trait_leaves_a_lava_debuff_value_unscaled() -> void:
 	_resolver.GetZoneResolver().TriggerZones(0)
 
 	var base: float = _resolver.GetStatusResolver()._SnapshotStatusValue(
-			StatusEffectRegistry.DebuffData(Types.Debuff_Type.Burning), 0)
+			StatusEffectRegistry.DebuffData(Types.Debuff_Type.Burning), 0, 3)
 	assert_almost_eq(_roster[3]._active_debuffs[0].value, base, 0.0001)
