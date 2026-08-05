@@ -4,14 +4,15 @@
 [ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_kos58"]
 [ext_resource type="Resource" uid="uid://jgqxh6bwrie0" path="res://Data/Attribute_Weights/Sturdy.tres" id="2_dmcbt"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_qqxae"]
-[ext_resource type="Resource" uid="uid://dvgwxvsovsldc" path="res://Data/Character_Skill_Variants/Attack_Skills/Stab.tres" id="2_yv8li"]
 [ext_resource type="Resource" uid="uid://bdxe6eob3xgsh" path="res://Data/Attribute_Weights/Fierce.tres" id="3_b3rgr"]
 [ext_resource type="Resource" uid="uid://dvsuv0ji1ueq7" path="res://Data/Character_Skill_Variants/Attack_Skills/Disarm.tres" id="3_pnj57"]
 [ext_resource type="Resource" uid="uid://i4pibjinfd3x" path="res://Data/Attribute_Weights/Gluttonous.tres" id="4_rtnxb"]
 [ext_resource type="Resource" uid="uid://syj6hxvr5t2x" path="res://Data/Attribute_Weights/Dexterous.tres" id="5_kwq6j"]
 [ext_resource type="Resource" uid="uid://c60oh3whnodsm" path="res://Data/Attribute_Weights/Resilient.tres" id="6_e4nbd"]
 [ext_resource type="Resource" uid="uid://bvo4uj38cgjg3" path="res://Data/Attribute_Weights/Calculating.tres" id="7_ls30s"]
+[ext_resource type="Resource" uid="uid://dr1jii8xbnp26" path="res://Data/Character_Skill_Variants/Attack_Skills/Lance_Thrust.tres" id="9_kwq6j"]
 [ext_resource type="Resource" uid="uid://dlancertr3sc0" path="res://Data/Character_Traits/Lancer_Trait.tres" id="10_lncrtr"]
+[ext_resource type="Resource" uid="uid://m3ioadmwsktt" path="res://Data/Character_Skill_Variants/Attack_Skills/Rending_Charge.tres" id="11_e4nbd"]
 
 [resource]
 script = ExtResource("2_qqxae")
@@ -20,7 +21,7 @@ _texture = "res://Assets/Champ_Collector/Creatures/Centaur_Lancer/Centaur_Lancer
 _rarity = 4
 _faction = 6
 _role = 3
-_skills = Array[ExtResource("1_h4jsw")]([ExtResource("2_yv8li"), ExtResource("3_pnj57"), ExtResource("2_yv8li")])
+_skills = Array[ExtResource("1_h4jsw")]([ExtResource("9_kwq6j"), ExtResource("3_pnj57"), ExtResource("11_e4nbd")])
 _health = 90
 _speed = 55
 _attack = 65
