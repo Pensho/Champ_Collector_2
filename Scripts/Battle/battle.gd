@@ -22,6 +22,9 @@ const GRAYSCALE = preload("uid://ia57lns0336p")
 
 const NO_CHARACTERS_TURN: int = -1
 const ENEMY_ID_OFFSET: int = 3
+# Presentation wait ceiling for Concept_Document.md 1.1.5's cascade sequencing: a safety
+# valve so a long cascade cannot stall the battle, not a budget a normal burst should hit.
+const PRESENTATION_DEADLINE: float = 2.0
 
 @export var _character_representations: Array[CharacterRepresentation]
 
@@ -46,6 +49,12 @@ var _pending_turn_bar_reset: Dictionary[int, float] = {}
 # Whether the current Selecting_Zone pick is clearing an occupied section (e.g.
 # Refutation) rather than placing a new zone into an empty one.
 var _clearing_zone_mode: bool = false
+# Cascade instance ordinal within the current action, stamped onto every SpawnCombatText
+# call so BurstPacing can escalate delay/scale/color across a cascade; 0 outside one.
+var _cascade_instance_ordinal: int = 0
+# Counts down while BattleState.Resolving; the turn completes when it reaches zero or the
+# combat text queue drains, whichever comes first.
+var _presentation_deadline: float = 0.0
 
 @onready var _battle_ui: BattleUI = $"Battle UI"
 @onready var _background: TextureRect = %BattleBackground
@@ -198,6 +207,11 @@ func _process(p_delta: float) -> void:
 		BattleState.Awaiting_Player_Input, BattleState.Selecting_Zone:
 			_turn_indicator.position.y = (_character_representations[_turn_character_ID].position.y -
 					_turn_indicator.size.y + (sin(Time.get_ticks_msec() * 0.005) * 5))
+		BattleState.Resolving:
+			_presentation_deadline -= p_delta
+			if(_presentation_deadline <= 0.0 or not _battle_ui.IsPresenting()):
+				_battle_ui.FlushCombatText()
+				CompleteTurn()
 		_:
 			pass
 
@@ -221,6 +235,7 @@ func AdvanceTurnBar(p_delta: float) -> void:
 			return
 
 func StartTurn() -> void:
+	_cascade_instance_ordinal = 0
 	_turn_indicator.position.x = (_character_representations[_turn_character_ID].position.x +
 			(_character_representations[_turn_character_ID]._character_texture.size.x * 0.5) - (_turn_indicator.size.x * 0.5))
 	_turn_indicator.position.y = _character_representations[_turn_character_ID].position.y - _turn_indicator.size.y
@@ -236,7 +251,7 @@ func StartTurn() -> void:
 	if(IsStunned(_turn_character_ID)):
 		_state = BattleState.Resolving
 		_resolver.ResolveStunTurn(_turn_character_ID)
-		CompleteTurn()
+		_presentation_deadline = PRESENTATION_DEADLINE
 		return
 
 	if(_sides.player.Has(_turn_character_ID)):
@@ -313,9 +328,10 @@ func HandleEnemyTurn() -> void:
 		return  # A skill has resolved.
 
 func ResolveTurn(p_target_IDs: Array[int]) -> void:
+	_cascade_instance_ordinal = 0
 	_state = BattleState.Resolving
 	_resolver.ResolveSkill(_turn_character_ID, p_target_IDs, _selected_skill_ID)
-	CompleteTurn()
+	_presentation_deadline = PRESENTATION_DEADLINE
 
 func IsStunned(p_character_ID: int) -> bool:
 	for debuff in _characters[p_character_ID]._active_debuffs:
@@ -353,23 +369,29 @@ func _on_resolver_result_produced(p_result: CombatResult) -> void:
 		CombatResult.Kind.Damage:
 			if(p_result.critical):
 				_battle_ui.SpawnCombatText(
-						"Critical Strike!", CombatTextPosition(p_result.target_ID), Color(1.0, 0.729, 0.0, 1.0))
+						"Critical Strike!", CombatTextPosition(p_result.target_ID), Color(1.0, 0.729, 0.0, 1.0),
+						_cascade_instance_ordinal)
 			if(p_result.amount > 0):
-				_battle_ui.SpawnCombatText(str(p_result.amount), CombatTextPosition(p_result.target_ID))
+				_battle_ui.SpawnCombatText(
+						str(p_result.amount), CombatTextPosition(p_result.target_ID),
+						Color(1.0, 1.0, 1.0, 1.0), _cascade_instance_ordinal)
 				AttributeDamage(p_result.source_ID, p_result.amount)
 			UpdateLifeBar(p_result.target_ID)
 		CombatResult.Kind.Debuff_Tick:
 			_battle_ui.SpawnCombatText(
-					str(p_result.amount), CombatTextPosition(p_result.target_ID), Color(1.0, 0.45, 0.1, 1.0))
+					str(p_result.amount), CombatTextPosition(p_result.target_ID), Color(1.0, 0.45, 0.1, 1.0),
+					_cascade_instance_ordinal)
 			for source_ID in p_result.amount_by_source.keys():
 				AttributeDamage(source_ID, p_result.amount_by_source[source_ID])
 			UpdateLifeBar(p_result.target_ID)
 		CombatResult.Kind.Debuff_Resisted:
 			_battle_ui.SpawnCombatText(
-					"Resisted debuff!", CombatTextPosition(p_result.target_ID), Color(0.801, 0.0, 0.0, 1.0))
+					"Resisted debuff!", CombatTextPosition(p_result.target_ID), Color(0.801, 0.0, 0.0, 1.0),
+					_cascade_instance_ordinal)
 		CombatResult.Kind.Status_Effect_Denied:
 			_battle_ui.SpawnCombatText(
-					"Status Effects Full!", CombatTextPosition(p_result.target_ID), Color(0.6, 0.6, 0.6, 1.0))
+					"Status Effects Full!", CombatTextPosition(p_result.target_ID), Color(0.6, 0.6, 0.6, 1.0),
+					_cascade_instance_ordinal)
 		CombatResult.Kind.Status_Applied:
 			ShowStatusApplied(p_result)
 			if(p_result.is_buff and Types.Buff_Type.Barrier == p_result.buff_type):
@@ -397,7 +419,8 @@ func _on_resolver_result_produced(p_result: CombatResult) -> void:
 		CombatResult.Kind.Barrier_Absorbed:
 			if(p_result.amount > 0):
 				_battle_ui.SpawnCombatText(
-						str(p_result.amount), CombatTextPosition(p_result.target_ID), Color(0.298, 0.565, 0.871, 1.0))
+						str(p_result.amount), CombatTextPosition(p_result.target_ID), Color(0.298, 0.565, 0.871, 1.0),
+						_cascade_instance_ordinal)
 			SetBarrierBar(p_result.target_ID,
 					int(_character_representations[p_result.target_ID]._barrier_bar.value) - p_result.amount)
 		CombatResult.Kind.Turn_Bar_Bump:
@@ -417,21 +440,24 @@ func _on_resolver_result_produced(p_result: CombatResult) -> void:
 		CombatResult.Kind.Heal:
 			if(p_result.amount > 0):
 				_battle_ui.SpawnCombatText(
-						str(p_result.amount), CombatTextPosition(p_result.target_ID), Color(0.2, 0.85, 0.3, 1.0))
+						str(p_result.amount), CombatTextPosition(p_result.target_ID), Color(0.2, 0.85, 0.3, 1.0),
+						_cascade_instance_ordinal)
 			UpdateLifeBar(p_result.target_ID)
 		CombatResult.Kind.Trait_Text:
-			_battle_ui.SpawnCombatText(p_result.text, CombatTextPosition(p_result.target_ID), p_result.color)
+			_battle_ui.SpawnCombatText(
+					p_result.text, CombatTextPosition(p_result.target_ID), p_result.color, _cascade_instance_ordinal)
 		CombatResult.Kind.Turn_Skipped:
 			_battle_ui.SpawnCombatText(
-					"Stunned!", CombatTextPosition(p_result.target_ID), Color(0.801, 0.68, 0.0, 1.0))
+					"Stunned!", CombatTextPosition(p_result.target_ID), Color(0.801, 0.68, 0.0, 1.0),
+					_cascade_instance_ordinal)
 		CombatResult.Kind.Death:
 			_battle_ui._turn_bar.ShowCharacterAsDead(p_result.target_ID)
 			_character_representations[p_result.target_ID]._character_texture.material = GRAYSCALE_MATERIAL
 			UpdateLifeBar(p_result.target_ID)
 		CombatResult.Kind.Cascade_Triggered:
-			# Pacing/escalation of cascade instances (Concept_Document.md 1.1.5) is future
-			# presentation work; this marker exists in the stream for that to consume.
-			pass
+			# Emitted immediately before each cascade instance's own results, so the ordinal
+			# is already correct when those results arrive and drive BurstPacing.
+			_cascade_instance_ordinal += 1
 
 # Credits damage to the player who dealt it, for the post-battle totals.
 func AttributeDamage(p_source_ID: int, p_amount: int) -> void:
@@ -453,7 +479,8 @@ func ShowStatusApplied(p_result: CombatResult) -> void:
 	_status_visual_IDs[p_result.status_ID] = _character_representations[p_result.target_ID].AddStatusEffect(
 			data.icon, p_result.duration, title, data.description)
 	if("" != p_result.text):
-		_battle_ui.SpawnCombatText(p_result.text, CombatTextPosition(p_result.target_ID), text_color)
+		_battle_ui.SpawnCombatText(
+				p_result.text, CombatTextPosition(p_result.target_ID), text_color, _cascade_instance_ordinal)
 
 func _MaxHealthDisplay(p_characterID: int) -> int:
 	return (_characters[p_characterID].GetTotalAttribute(Types.Attribute.Health) *

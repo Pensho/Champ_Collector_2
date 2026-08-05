@@ -5,9 +5,14 @@ extends Node2D
 @export var animation_player: AnimationPlayer
 @export var label_container: Node2D
 
+var escalation_step: int = 0
+
 var _position: Vector2
 var _height: float
 var _spread: float
+var _base_color: Color = Color(1.0, 1.0, 1.0, 1.0)
+var _base_font_size: int = 0
+var _base_outline_size: int = 0
 
 func SetValue(
 		p_text: String,
@@ -16,10 +21,23 @@ func SetValue(
 		p_spread: float,
 		p_color: Color = Color(1.0, 1.0, 1.0, 1.0)) -> void:
 	label.text = p_text
+	_base_color = p_color
+	if(_base_font_size == 0):
+		_base_font_size = label.get_theme_font_size(&"font_size")
+		_base_outline_size = label.get_theme_constant(&"outline_size")
 	label.add_theme_color_override("font_color", p_color)
+	label.add_theme_font_size_override("font_size", _base_font_size)
+	label.add_theme_constant_override("outline_size", _base_outline_size)
 	_position = p_position
 	_height = p_height
 	_spread = p_spread
+
+func ApplyEscalation(p_step: int) -> void:
+	escalation_step = p_step
+	var size_scale: float = BurstPacing.ScaleForStep(p_step)
+	label.add_theme_color_override("font_color", BurstPacing.ColorForStep(_base_color, p_step))
+	label.add_theme_font_size_override("font_size", int(round(_base_font_size * size_scale)))
+	label.add_theme_constant_override("outline_size", maxi(1, int(round(_base_outline_size * size_scale))))
 
 func Animate() -> void:
 	animation_player.play("Damage_Number_Animation")

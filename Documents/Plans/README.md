@@ -11,8 +11,8 @@ Suggested order (dependencies noted inside each plan):
    (calibration, damage math, status channels, cascade, presentation, kits,
    itemization, encounters) and spawns a sub-plan per phase. Takes precedence over
    the plans below where they overlap; `Plan_Encounter_Solution_Design.md` is paused
-   until its Phase 7 lands. Phases 0–3 (calibration, combined modifier, status
-   channels, cascade) are done and their sub-plans deleted; sub-plans for the phases
+   until its Phase 7 lands. Phases 0–4 (calibration, combined modifier, status
+   channels, cascade, burst presentation) are done and their sub-plans deleted; sub-plans for the phases
    after it are written when their prerequisites land and deleted with the rest under
    the retention rule below. It aligns existing systems and does not author new content —
    channels it finds too thinly populated to align are recorded in its `Coverage gaps`

@@ -10,7 +10,6 @@ const COMBAT_EFFECT_TEXT_TEMPLATE = preload("uid://caq22aj34qk1f")
 const BUTTON_WITH_OPTIONS_SCENE = preload("uid://c7smqpmfvs0ih")
 const SKILL_GLOW_POS_HIDDEN: Vector2 = Vector2(-2000.0, 0.0)
 const COMBAT_TEXT_SPAWN_POINT: Vector2 = Vector2(100, 70)
-const TEXT_SPAWN_DELAY: float = 0.25
 
 @export var _skill_buttons: Array[SkillButton]
 @export var _reagent_buttons: Array[ReagentButton]
@@ -78,10 +77,11 @@ func _process(delta: float) -> void:
 	
 	_spawn_timer -= delta
 	if(_spawn_timer <= 0.0 and not _spawn_queue.is_empty()):
-		var text = _spawn_queue.pop_front()
+		var text: CombatEffectText = _spawn_queue.pop_front()
 		add_child(text, true)
+		text.ApplyEscalation(text.escalation_step)
 		text.Animate()
-		_spawn_timer = TEXT_SPAWN_DELAY
+		_spawn_timer = BurstPacing.DelayForStep(text.escalation_step)
 
 func CleanUp() -> void:
 	_allow_new_effects = false
@@ -96,11 +96,27 @@ func LoadSkillTexture(p_texture_path: String) -> void:
 		return
 	_skill_textures[p_texture_path] = load(p_texture_path)
 
-func SpawnCombatText(p_value: String, p_position: Vector2, p_color: Color = Color(1.0, 1.0, 1.0, 1.0)) -> void:
+func SpawnCombatText(
+		p_value: String,
+		p_position: Vector2,
+		p_color: Color = Color(1.0, 1.0, 1.0, 1.0),
+		p_escalation_step: int = 0) -> void:
 	if (_allow_new_effects):
 		var text: CombatEffectText = GetDamageNumber()
 		text.SetValue(p_value, p_position, 100.0, 10.0, p_color)
+		text.escalation_step = p_escalation_step
 		_spawn_queue.append(text)
+
+func IsPresenting() -> bool:
+	return not _spawn_queue.is_empty()
+
+func FlushCombatText() -> void:
+	while not _spawn_queue.is_empty():
+		var text: CombatEffectText = _spawn_queue.pop_front()
+		add_child(text, true)
+		text.ApplyEscalation(text.escalation_step)
+		text.Animate()
+	_spawn_timer = 0.0
 
 func GetDamageNumber() -> CombatEffectText:
 	if (_allow_new_effects):

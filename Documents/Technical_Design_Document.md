@@ -696,8 +696,9 @@ base class doubling as the headless default for tests. Long term the positions b
 - Positions the turn indicator over the active character and calls `resolver.BeginTurn(ID)`,
   which fires the `StartOfTurn` trait hook (e.g. the Plan trait's reach-based Empower).
 - If the active character holds Stun, `StartTurn` calls `resolver.ResolveStunTurn(ID)` (still ticks
-  their own statuses and cooldowns/zones, but casts no skill) and completes the turn immediately via
-  `CompleteTurn()`, skipping skill-button population and enemy-turn handling entirely.
+  their own statuses and cooldowns/zones, but casts no skill), skipping skill-button population and
+  enemy-turn handling entirely, then arms the same presentation wait `ResolveTurn` does (see 7.9)
+  rather than calling `CompleteTurn()` inline.
 - **Player turn** (`_sides.player.Has(ID)`): populates the skill buttons (icon, name,
   description, cooldown) and enters `Awaiting_Player_Input`. Selecting a zone skill enters
   `Selecting_Zone` and enables the zone buttons; selecting a non-zone skill returns to
@@ -709,8 +710,9 @@ base class doubling as the headless default for tests. Long term the positions b
   `resolver.FindSkillTargets()`.
 
 Every resolution path funnels through `Battle.ResolveTurn(target_IDs)`: it enters `Resolving`,
-calls `resolver.ResolveSkill`, marks the turn complete on the bar, refreshes trait visuals, hides
-the skill UI, and returns to `Advancing` (or ends the battle).
+calls `resolver.ResolveSkill`, then arms a presentation wait rather than completing the turn
+inline (see 7.9). Once that wait ends, `CompleteTurn()` marks the turn complete on the bar,
+refreshes trait visuals, hides the skill UI, and returns to `Advancing` (or ends the battle).
 
 ### 7.4. Skill resolution (`BattleResolver.ResolveSkill`)
 
@@ -1109,6 +1111,43 @@ listening for another cascade instance landing, per Concept Document 1.1.3's com
 needs a new enum value and a `Post` call site added at the relevant point before it is authorable
 — the post-and-drain queue and the two termination bounds do not themselves need to change to
 support one, but the vocabulary as shipped does not yet express those shapes.
+
+### 7.9. Burst presentation pacing
+
+The presentation half of Concept Document 1.1.5's cascade requirement — a burst must resolve as a
+visible sequence, tempo and magnitude escalating through the cascade rather than flushing at once —
+sits entirely in the view. `BattleResolver` stays headless and synchronous (see 7.8): every
+`CombatResult` from a cascade is still produced and applied to game state in one frame, in the
+`Cascade_Triggered`-bracketed stream 7.8 describes. This layer paces only the floating combat text
+that presents those results, not the state changes themselves — health bars, status icons, and
+death still land instantly, ahead of the numbers describing them.
+
+**Escalation curve.** `BurstPacing` (`Scripts/Battle/burst_pacing.gd`, static functions only) maps
+a cascade instance ordinal to a per-item spawn delay, text scale, and color shift toward red,
+each independently bounded (`DelayForStep` floors at `MINIMUM_DELAY`, `ScaleForStep` caps at
+`MAXIMUM_SCALE`, `ColorForStep` clamps to `Color.RED` from `FULL_RED_STEP` on). Step `0` — outside
+any cascade — returns each function's unescalated base value, so ordinary combat text is
+unaffected. The ordinal is bounded by construction: `Battle._cascade_instance_ordinal` increments
+once per `Cascade_Triggered` result (`Battle._on_resolver_result_produced`, `Scripts/Battle/battle.gd`),
+which is itself bounded by `CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION`.
+
+**Spawn queue.** `BattleUI` (`Scripts/UI/Battle_UI/battle_ui.gd`) already queued combat text and
+released it one pooled `CombatEffectText` at a time; this layer makes that release rate a function
+of the curve instead of a fixed constant. `SpawnCombatText` takes the ordinal as a defaulted fourth
+argument, stamped onto the queued `CombatEffectText`. On release, `ApplyEscalation` sets the text's
+color and — via the Label's font size override rather than `LabelContainer.scale`, which the
+existing spawn animation already keys — its size, before the animation plays; the next release is
+scheduled by `BurstPacing.DelayForStep` for that instance's ordinal rather than a fixed interval.
+
+**Turn gating.** `Battle.ResolveTurn` and the stunned-turn path in `StartTurn` no longer call
+`CompleteTurn()` inline. Both leave `_state` at `BattleState.Resolving` and arm a
+`_presentation_deadline` of `PRESENTATION_DEADLINE` (2.0s). The `_process` `Resolving` branch counts
+that deadline down each frame and holds while `BattleUI.IsPresenting()` reports queued text; once
+the queue drains or the deadline expires — whichever comes first — it calls
+`BattleUI.FlushCombatText()` (releasing everything remaining in one frame) and then `CompleteTurn()`,
+unchanged from before. The deadline is a ceiling against a stalled battle, not a pacing budget: at
+the curve's current constants a full sixteen-instance cascade totals under two seconds of spawn
+delay on its own.
 
 ---
 

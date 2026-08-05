@@ -21,7 +21,7 @@ the game.
 
 ## Status
 
-Phase 0, Phase 1, Phase 2, and Phase 3 are done. Phase 0's harness lives at
+Phase 0, Phase 1, Phase 2, Phase 3, and Phase 4 are done. Phase 0's harness lives at
 `Scripts/Debug/blowout_calibration.gd`. Phase 1 shipped `CombinedDamageModifier`
 (`Scripts/Battle/combined_damage_modifier.gd`) as the multiplicative damage channel, keyed by
 mechanic identity and multiplying the pre-mitigation scaled aggregate; see Technical Design
@@ -49,6 +49,16 @@ rules now apply to it, where it previously bypassed all four). See Technical Des
 and 15.13. Its sub-plan (`Plan_Cascade_Resolution.md`) has been deleted per the retention rule in
 `Plans/README.md`; the trigger shapes it sized against but did not author remain below under
 `Coverage gaps`.
+
+Phase 4 paced the floating combat text spawned from a cascade's `CombatResult` stream —
+`BurstPacing` (`Scripts/Battle/burst_pacing.gd`) maps each instance's ordinal to a shrinking spawn
+delay, a growing text scale, and a shift toward red, fully red by the tenth instance — while
+`BattleResolver` stays headless and synchronous; game state (health bars, status icons, death)
+still applies instantly. Turn completion now waits for the text queue to drain, capped at 2.0
+seconds. See Technical Design Document 7.9. Per-source attribution (`Concept_Document.md` 1.1.5's
+other requirement) was deliberately not done and is recorded as a `FeatureIdeas.md` entry instead.
+Its sub-plan (`Plan_Burst_Presentation.md`) has been deleted per the retention rule in
+`Plans/README.md`.
 
 Phase 0 findings, measured against the balanced bosses (Troll, Vael, Obsidian Stallion,
 Ulfrac, Bor Bulwark). The newer catalog bosses are excluded as untuned and unplayed:
@@ -179,18 +189,22 @@ build-out plan under `Coverage gaps`.
 
 Depends on Phase 1 — each cascade instance carries its own combined modifier.
 
-### Phase 4 — Burst presentation
+### Phase 4 — Burst presentation — done
 
 **Produces:** `Plan_Burst_Presentation.md`.
 
-Sequential resolution with escalating tempo and per-source attribution, per section 1.1.5.
-The event stream already exists — `battle_resolver.gd` emits one `CombatResult` per atomic
-event and `CombatResult.amount_by_source` already carries attribution. The work is on the
-consuming side in `Scripts/Battle/battle.gd` and the battle UI: pacing, ordering, and
-escalation, rather than flushing a cascade instantly.
+Sequential resolution with escalating tempo, per section 1.1.5. The event stream already
+existed — `battle_resolver.gd` emits one `CombatResult` per atomic event, with a
+`Cascade_Triggered` marker and `cascade_depth` stamped ahead of each cascade instance. The
+work was entirely on the consuming side: `Scripts/Battle/battle.gd` tracks the cascade
+instance ordinal and gates turn completion on the combat-text queue (capped at 2.0 seconds);
+`Scripts/Battle/burst_pacing.gd` and the battle UI's spawn queue turn that ordinal into
+escalating delay, scale, and color. `BattleResolver` remains headless and synchronous
+throughout — game state still applies in one frame. Per-source attribution, section 1.1.5's
+other half, was deliberately deferred; see the plan's `Deliberately not done` section and the
+resulting `FeatureIdeas.md` entry.
 
-Depends on Phase 3. This phase carries as much of the pillar as the math does and is not
-to be deferred as polish.
+Depended on Phase 3.
 
 ### Phase 5 — Champion kit audit
 
