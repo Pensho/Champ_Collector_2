@@ -5,7 +5,14 @@
 # Pass extra GUT arguments through, e.g. -gtest=res://Tests/unit/test_foo.gd
 set -o pipefail
 
-GODOT="/home/jonas/Documents/Godot_v4.7.1-stable_linux.x86_64"
+case "$(uname -s)" in
+	MINGW*|MSYS*|CYGWIN*)
+		GODOT="C:\\Users\\jpens\\Documents\\Godot_v4.7-stable_win64.exe"
+		;;
+	*)
+		GODOT="/home/jonas/Documents/Godot_v4.7.1-stable_linux.x86_64"
+		;;
+esac
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 cd "$PROJECT_ROOT" || exit 1
