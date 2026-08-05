@@ -15,8 +15,9 @@ func before_each() -> void:
 	_sides = TestFactory.make_full_sides()
 	_resolver = TestFactory.make_resolver(_roster, _sides)
 
-func _test_max_health(p_character: Character) -> int:
-	return p_character._attributes[Types.Attribute.Health] * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
+func _test_max_health(p_character_ID: int) -> int:
+	var character: Character = _roster[p_character_ID]
+	return character._attributes[Types.Attribute.Health] * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
 
 
 func test_lowest_ratio_wins_over_lowest_absolute_health() -> void:

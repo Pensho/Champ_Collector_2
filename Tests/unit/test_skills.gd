@@ -14,8 +14,9 @@ func before_each() -> void:
 func _find(p_target_ID: int, p_caster_ID: int, p_target_type: Types.Skill_Target) -> Array[int]:
 	return Skills.FindSkillTargets(p_target_ID, p_caster_ID, p_target_type, _roster, _sides, null, _MaxHealth)
 
-func _MaxHealth(p_character: Character) -> int:
-	return p_character.GetTotalAttribute(Types.Attribute.Health)
+func _MaxHealth(p_character_ID: int) -> int:
+	var character: Character = _roster[p_character_ID]
+	return character.GetTotalAttribute(Types.Attribute.Health)
 
 # --- FindSkillTargets ---
 
