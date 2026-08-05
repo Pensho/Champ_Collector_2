@@ -169,6 +169,8 @@ Each character is defined by a set of core attributes:
 #### 3.1.3. Character Role
 Each character role should define a baseline for a character but not necessarily the specifics of it. It will restrict which skills it could use as well as define its starting primary attributes.
 
+A role is not a 1 to 1 map of a character, it is a field to help describe the character. Much like any other field populated.
+
 Each Role can have one or two main purposes in combat but it doesn't have to restrict their kit of skills. The types:
 - Damage
     - Revolves around either or both relying on other characters or by themselves to deal significant amounts of damage onto the opponents.
@@ -196,70 +198,84 @@ Current roles, their identity and purpose exist as follows:
     - Purpose: Debuffer, Control
     - Passive: Standing Record [Enabler] - Every enemy has a personal Infraction tally that only grows and is never consumed. An enemy gains one Infraction whenever they gain a buff, place a zone, or land a debuff on an ally. The tally is counted up to a cap of 9 for skill effects. The Emissary's skills that scale with Infractions apply a rarity-dependent rate per Infraction on the target; that rate is the only source of Infraction scaling (skills state what scales, never their own rate).
         - 2.5% per Infraction Uncommon, 3% Rare, 3.5% Epic, 4% Legendary
+    - Fielded by: `Emissary.tres`
 - Thief
     - A squishy damage dealer, focusing on set-up through skills and bypassing enemy defenses. Primary attributes: Attack.
     - Purpose: Damage.
     - Passive: Pilfer [Enabler] - Chance to steal a buff from the target when a skill is used.
         - 20% Uncommon, 30% Rare, 40% Epic, 50% Legendary
+    - Fielded by: `Thief.tres`
 - Lancer
     - Always has at least one offensive skill and one defensive skill.
     - Purpose: Damage
     - Passive: Reckless Momentum [Channel 1] - When an offensive skill is used the Lancer gains one Momentum stack (+x% damage, -x/2% defence while stacks are held, maximum 5 stacks). When a defensive skill is used, the Lancer gains Phalanx Guard (a role-unique 2-turn buff, +x% defence) and all Momentum stacks are consumed.
         - 4% Uncommon, 6% Rare, 8% Epic, 10% Legendary
+    - Fielded by: `Centaur_Lancer.tres`, `Knight.tres`
 - Alchemist
     - A support character that focuses on buffing allies and debuffing enemies through various concoctions. Signature zone: Catalyst Cloud (see section 3.2.4.1). Primary attributes: Knowledge, Mysticism.
     - Purpose: Debuffer, Buffer
     - Passive: Fresh Batch [Enabler] - At the start of combat the Alchemist brews one concoction: a reagent drawn at random from an Alchemist-exclusive pool, occupying its own slot beyond the three brought reagents. It follows normal reagent rules (consumable once, by any champion, on their turn) except that it is never added to the inventory - if unconsumed when the battle ends, it is lost. Each fielded Alchemist brews their own concoction.
         - Brew potency: 90% Uncommon, 100% Rare, 110% Epic, 120% Legendary (relative to a standard reagent of equivalent effect); the brew pool holds 3 lesser reagents at Uncommon and Rare, 4 at Epic and Legendary (see section 3.3.3)
         - Brews are self-targeted (the consumer is always the recipient). Magnitudes: Lesser Restorative Brew heals 10% of max Health; Lesser Tincture grants +5% to one random primary attribute, battle-long; Lesser Barrier Brew grants a Barrier absorbing 40% of max Health; Lesser Purging Brew (Epic/Legendary pool only) removes 1 debuff.
+    - Fielded by: `Alchemist.tres`
 - Sorcerer
     - A damage dealer that harnesses the power of magic to deal Area of Effect damage and control the battlefield. Wields the unstable, shunned magic left behind by the God of Magic, and excels at drawing power from reagents scavenged from that era's ruins. Signature zone: Unstable Rift (see section 3.2.4.1). Primary attributes: Mysticism, Knowledge.
     - Purpose: Damage, Debuffer, Control
     - Passive: Arcane Instability (implemented) [Channel 1 + Channel 3] - Using any skill grants one Instability stack (+x% Mysticism per stack, maximum 5). When the Sorcerer consumes a reagent, they gain two Instability stacks and the reagent's effect is amplified by y%. While at maximum stacks, the Sorcerer's next skill also releases a Surge: damage to all characters, allies and the Sorcerer included, scaling 1.5x with the Sorcerer's Mysticism (mitigated by each target's Defence as normal, never a critical hit) - then all stacks reset. Stacks do not persist between combats.
         - Per-stack Mysticism: 4% Uncommon, 6% Rare, 8% Epic, 10% Legendary
         - Reagent amplification: 20% Uncommon, 30% Rare, 40% Epic, 50% Legendary
+    - Fielded by: `Sorcerer.tres`
 - Scholar
     - A support character that focuses on knowledge and strategy to enhance allies' abilities and exploit enemy weaknesses. The zone-clearing specialist: the Scholar's kit is one of the two dedicated ways to remove zones from the turn bar (see section 3.2.4.1). Primary attributes: Knowledge.
     - Purpose: Debuffer, Buffer
     - Passive: Field of Study [Channel 1] - The Scholar has studied every opponent and knows their weaknesses. At the start of combat, each enemy's weakness is identified: their highest primary attribute (ties broken at random). Whenever the Scholar applies a debuff to an enemy, that enemy's identified attribute is additionally reduced for the debuff's duration: Uncommon 4%, Rare 6%, Epic 8%, Legendary 10%. For this passive specifically, "primary attribute" means Attack, Defence, Accuracy, Resistance, Mysticism, or Knowledge.
+    - Fielded by: `Centaur_Archivist.tres`
 - Diviner
     - A squishy support.  Primary attributes: Mysticism.
     - Purpose: Sustain, Debuffer
     - Passive: Foresight [Channel 1] - Place debuffs on enemies if they are close enough behind the Diviner on the turn bar when the Diviners turn starts. Applies Enfeeble for 1 turn, with no resist roll (symmetric to the Tactician's Plan applying Empower).
         - 10% Uncommon, 15% Rare, 20% Epic, 25% Legendary
+    - Fielded by: `Diviner.tres`
 - Appraiser
     - A master at exploiting enemy weaknesses, allowing opportunity for the team to easily deal critical hits. Primary attributes: Critical Chance, Knowledge.
     - Purpose: Debuffer
     - Passive: Strike the Flaw [Channel 2] - The Appraiser's critical hits apply the Cracked Facet debuff to the target (see section 3.2.3.2), with a rarity-dependent duration: Uncommon and Rare 1 turn, Epic and Legendary 2 turns.
+    - Fielded by: `Appraiser.tres`
 - Tactician
     - A squishy support. Primary attributes: Knowledge, Speed.
     - Purpose: Buffer
     - Passive: Plan [Channel 1] - Gives buffs to allies who are within x% behind the Tactician on the turn bar when their turn starts. Applies at every rarity; only the Tactician's own self is excluded.
         - 10% Uncommon, 15% Rare, 20% Epic, 25% Legendary
+    - Fielded by: `Tactician.tres`
 - Symbiote
     - A character weak by default, able to permanently graft itself onto an enemy in battle to gain that enemy's graft effect and an attribute bonus at the cost of a drawback. Primary attributes: Health, Resistance.
     - Purpose: Sustain, Buffer
     - Passive: Graft [Channel 1, mechanism only — the bound graft effect's own channel is
       pool-dependent, see `Symbiote_Graft_Pool.md`] - The Symbiote begins ungrafted and comparatively weak. Once per lifetime, during any battle and as a free action, the Symbiote may target a living enemy and graft onto it, confirmed through a warning that the choice is permanent. Grafting is irreversible: it binds that enemy's graft effect to the Symbiote for the rest of its existence, and can never be undone or replaced. A graft grants the Symbiote its bound effect, a bonus to attributes, and a drawback; the effect and attribute bonus scale with the Symbiote's own rarity, while the drawback does not. A graft takes hold immediately. Once grafted, the graft option is no longer offered for that Symbiote.
+    - Fielded by: `Symbiote.tres`
 - Jester
     - An unconventional tanking character that does not have significantly high Health or Defense but relies on skills that provoke hits to the Jester and dodge them. Primary attributes: Accuracy, Knowledge, Speed.
     - Purpose: Damage, Sustain
     - Passive: "Double the fun!" [Enabler] - A base 5% chance to completely avoid the damage of an incoming attack (debuffs from the attack still land). Each hit that lands instead of being avoided increases the chance by a rarity-dependent amount, up to 3 stacks: Uncommon +3%, Rare +4%, Epic +5%, Legendary +6% per stack. Avoiding damage resets the chance to the 5% base. Increases the chances of being targeted.
+    - Fielded by: `Jester.tres`
 - Cultist
     - Consumes ally buffs or health to empower their own skills, dealing damage or applying debuffs. Primary attributes: Mysticism, Knowledge.
     - Purpose: Debuffer, Damage
     - Passive: Chosen Vessel [Channel 1 + Channel 2] - At the start of combat the Cultist marks a random ally (the Cultist excluded) as their Vessel. Whenever the Cultist uses a non-basic skill, the Vessel loses 5% of their max Health and the skill gains a rarity-dependent power bonus. The drain can kill the Vessel. When the Vessel dies (from any source), the Cultist gains the Attune buff for 3 turns (see section 3.2.3.2) and a new random ally is marked as the Vessel if any is alive. If all allies are dead then nothing happens.
         - Power bonus: 15% Uncommon, 20% Rare, 25% Epic, 30% Legendary
+    - Fielded by: `Cultist.tres`
 - Bar Brawler
     - A health focused character, dealing damage, tanking and applying a few buffs. Attacks scales of health primarily. Primary attributes: Health.
     - Purpose: Sustain, Buffer
     - Passive: "On the House!" [Enabler] - Whenever the Bar Brawler gains a buff, from any source, he shares a round: all living allies (the Bar Brawler included) heal a rarity-dependent percentage of their own max Health. The round is poured at most once between each of the Bar Brawler's turns - further buffs gained before his next turn do not trigger it again.
         - Heal per round: Uncommon 6%, Rare 7%, Epic 8%, Legendary 9%
+    - Fielded by: `Bar_Brawler.tres`
 - Bloodmage
     - Spending their own or allies health for big pay-off skills in terms of damage or applying shields based on sacrificed health. Primary attributes: Health, Mysticism.
     - Purpose: Sustain, Damage
     - Passive: Hemoclarity [Channel 1] - While below 50% health, gain increased Mysticism.
         - 25% Uncommon, 30% Rare, 35% Epic, 40% Legendary
+    - Fielded by: `Bloodmage.tres`
 - Herald of the loom
     - A stance character, using 3 types of stances:
         - Golden thread; All buffs & debuffs only goes to the herald instead of allies.
@@ -273,11 +289,13 @@ Current roles, their identity and purpose exist as follows:
           Woven Blessing) is three plain Mysticism-scaled skills sharing the flavor name only.
           Designing the passive and the stance system is a from-scratch rework, carried to
           `Plan_Kit_Reworks.md`, not a patch to existing behavior.
+    - Fielded by: `Herald_of_the_loom.tres`
 - Chronophage
     - A speed focused character, applying various speed modifying skills onto the turn bar and primarily deals damage based on the Speed attribute. Signature zones: Flicker Zone and Temporal Sinkhole (see section 3.2.4.1). Primary attributes: Speed.
     - Purpose: Control
     - Passive: Time Tithe [Enabler] - When the Chronophage's skills remove or reduce an enemy's turn bar, the Chronophage absorbs a portion of the stolen amount as its own turn-bar progress.
         - 25% Uncommon, 35% Rare, 45% Epic, 55% Legendary
+    - Fielded by: `Chronophage.tres`
 - Architect
     - A methodical charge & support character aligned with the God of Rules. Instead of raw aggression, they construct "Logic Chains" over the course of battle, eventually "solving" the encounter with a massive structural shift. Primary attributes: Knowledge, Defense.
     - Purpose: Buffer, Damage
@@ -290,6 +308,7 @@ Current roles, their identity and purpose exist as follows:
           (`EXPOSE_WEAKNESS_THRESHOLD = 5`, `ZONE_RE_ERECT_THRESHOLD = 9`, `MAX_CHARGES = 12`).
           Per section 1.1's precedence the code is not being silently rewritten here; both drifts
           are recorded for whoever next touches this Role to resolve.
+    - Fielded by: `Architect.tres`
 - Tidal Corsair
     - Damage dealer. Primary attributes: Attack, Speed.
     - The Tidal Corsair is a Combo character where you plan your moves ahead, highly mobile but not inherently strong unless you set up your attacks correctly.
@@ -298,6 +317,7 @@ Current roles, their identity and purpose exist as follows:
       held at a time.
         - Damage per Steel stack: 45% Uncommon, 50% Rare, 55% Epic, 60% Legendary
         - Turn meter per Sea stack: 8% Uncommon, 10% Rare, 12% Epic, 14% Legendary
+    - Fielded by: `Tidal_Corsair.tres`
 - Plague Doctor
     - A debuff focused character, applying various damage over time and stat reducing debuffs to enemies. Signature zone: Miasma (see section 3.2.4.1). Primary attributes: Mysticism, Resistance.
     - Purpose: Debuffer
@@ -307,11 +327,13 @@ Current roles, their identity and purpose exist as follows:
           bypasses the code parameter that carries this bonus — as shipped, Comorbidity has nothing
           in its own kit to boost. See `Plan_Kit_Reworks.md`.
         - Per-debuff tick bonus: 5% Uncommon, 7% Rare, 9% Epic, 11% Legendary
+    - Fielded by: `Plague_Doctor.tres`
 - Warlord
     - A buffing tank character, applying various buffs to self and allies while being able to take a lot of damage. Primary attributes: Health, Defense.
     - Purpose: Sustain
     - Passive: Shield Wall [Enabler] - When an ally within 15% of the Warlord on the turn bar (in front or behind) takes attack damage, a portion of that damage is redirected to the Warlord instead. Proximity is checked at the moment the damage lands. Redirected damage is mitigated by the Warlord's Defense, not the ally's. AoE attacks are soaked separately for each affected ally within the window.
         - Redirected portion: 15% Uncommon, 20% Rare, 25% Epic, 30% Legendary
+    - Fielded by: `Warlord.tres`
 
 ### 3.2. Combat
 The player fields a team of up to 3 characters in a battle. The party is ordered left to right, in the order the characters are picked in the pre-battle menu; some skills target by battlefield position (see the targeting types in section 3.2.4). Combat is turn based, using the Speed attribute of each character to move a representation across a "turn bar". When a characters representation has crossed the entire bar, the game will pause for input to resolve their turn and then finish by putting the representation of the character back to the beginning. Then the system keeps going.

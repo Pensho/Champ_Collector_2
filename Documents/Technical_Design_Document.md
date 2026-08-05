@@ -97,7 +97,10 @@ main.GetInstance()._item_collection   # etc.
 - Seeds a default roster by duplicating preloaded `CharacterPreset` resources (Lancer, Thief,
   Bar Brawler, Jester, Chronophage, Tidal Corsair, Centaur Lancer, Centaur Archivist, Tactician,
   Bloodmage, Sorcerer, Symbiote, Diviner, Appraiser, Emissary, Cultist, Plague Doctor, Warlord,
-  Alchemist) — one preset per implemented Role (`Concept_Document.md` 3.1.3).
+  Alchemist) — one preset per currently fielded champion, not one per Role: a Role can be
+  fielded by more than one preset (Lancer is fielded by both Centaur Lancer and Knight) or by a
+  preset not named after it (Scholar is fielded only by Centaur Archivist; there is no
+  `Scholar.tres`) — see `Concept_Document.md` 3.1.3 for the current Role-to-preset mapping.
 - Builds the initial `ContextContainer` and calls `change_scene()` to load the first scene.
 
 `Main_Instance` also owns scene switching — see [Section 5](#5-scene-management-the-context-container-pattern).
