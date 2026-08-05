@@ -21,7 +21,9 @@ the game.
 
 ## Status
 
-Phase 0, Phase 1, Phase 2, Phase 3, and Phase 4 are done. Phase 0's harness lives at
+Phase 0, Phase 1, Phase 2, Phase 3, and Phase 4 are done. Phase 5 is in progress, re-scoped as
+`Plan_Kit_Burst_Reachability.md` after a first attempt (below) proved insufficient. Phase 0's
+harness lives at
 `Scripts/Debug/blowout_calibration.gd`. Phase 1 shipped `CombinedDamageModifier`
 (`Scripts/Battle/combined_damage_modifier.gd`) as the multiplicative damage channel, keyed by
 mechanic identity and multiplying the pre-mitigation scaled aggregate; see Technical Design
@@ -59,6 +61,29 @@ seconds. See Technical Design Document 7.9. Per-source attribution (`Concept_Doc
 other requirement) was deliberately not done and is recorded as a `FeatureIdeas.md` entry instead.
 Its sub-plan (`Plan_Burst_Presentation.md`) has been deleted per the retention rule in
 `Plans/README.md`.
+
+Phase 5 was first attempted as a per-entry audit: all 79 kit entries (19 Role passives, 60 Role
+skills) in `Concept_Document.md` 3.1.3 and 3.2.4.2 tagged against the rejection test, plus the four
+unassigned/generic entries in 3.2.4.3. The tags landed and are kept — the corpus is overwhelmingly
+**conforms**, Batch 3 (Tactician, Symbiote, Bar Brawler, Warlord, Architect) is enabler-heavy exactly
+as predicted, and two skills (Corsair's Reckoning, Final Calculation) are clean pressure-and-burst
+reference examples — but a per-entry tag cannot answer the pillar's actual question, which is a
+property of a team, not an entry. The one number the first attempt produced by hand, for two
+sample teams (3.12x and 2.80x, against a 26x requirement), showed neither reaching within an order
+of magnitude of the target, but covered 2 of ~1330 possible teams and could not be recomputed after
+a kit changed. Re-scoped and re-run as `Plan_Kit_Burst_Reachability.md`: instead of auditing tags,
+it builds an executable scorer — a kit contribution manifest plus a burst-reachability tool,
+verified live against `BattleResolver` — that computes a team's combined-modifier product and burst
+contrast ratio directly, and sweeps the full roster once for the distribution shape (median versus
+ceiling) rather than ranking teams to act on. The corpus of curated "should this team detonate"
+sets is deliberately left as a pluggable slot, seeded provisionally, because those sets cannot be
+named until kit reworks give the roster real candidates. Documentation-vs-code conflicts found by
+the first attempt were carried into the second rather than lost (Lancer's Reckless Momentum
+offense/defense skill names, Architect's Calibration thresholds and the already-known
+construction-zone claim, the Weigh the Mark/Case the Target name and duration drift, and
+Comorbidity's tick bonus never reaching the Plague Doctor's own signature zone skill). Both
+`Plan_Kit_Blowout_Audit.md` and `Plan_Kit_Reworks.md` are deleted per the retention rule;
+`Plan_Kit_Burst_Reachability.md` carries the phase forward.
 
 Phase 0 findings, measured against the balanced bosses (Troll, Vael, Obsidian Stallion,
 Ulfrac, Bor Bulwark). The newer catalog bosses are excluded as untuned and unplayed:
@@ -206,9 +231,11 @@ resulting `FeatureIdeas.md` entry.
 
 Depended on Phase 3.
 
-### Phase 5 — Champion kit audit
+### Phase 5 — Champion kit audit — done
 
-**Produces:** `Plan_Kit_Blowout_Audit.md`.
+**Produced:** `Plan_Kit_Blowout_Audit.md`, deleted per the retention rule after completion (see
+Status above). **Produces:** `Plan_Kit_Reworks.md`, carrying forward the audit's rework and
+provisional findings.
 
 Every Role and champion in section 3.1.3 and every skill in section 3.2.4.2 against the
 rejection test. For each kit: which channel does it feed — or whether it is an enabler
@@ -293,6 +320,23 @@ and its open work has to land somewhere living.
     health or status-count trigger at all.
   * **Cascade-on-cascade** — an effect listening for another cascade instance landing, which
     `Concept_Document.md` 1.1.3 names outright as the compounding case.
+
+* **Cross-kit Channel 2 composition is mechanically sound but content-thin.** Found by Phase 5.
+  The architecture composes correctly — each `CombinedDamageModifier` is assembled fresh per
+  resolution from only the acting caster's own state, so nothing about the composition law is
+  broken — but only one skill in the entire 79-entry corpus (Sorcerer's Cataclysmic Surge) declares
+  `bonus_per_debuff_on_target`, the main lever by which a debuff-applying kit hands a Channel 2
+  factor to a teammate's burst. Most debuff-appliers (Confound, Suppress, Unravel, and others) have
+  no damage skill anywhere in the roster that reads them as a factor, leaving them Channel-1-only
+  in practice despite being individually correct. Populating more `bonus_per_debuff_on_target`
+  hooks (or an equivalent generic mechanism) across existing damage skills is build-out/rework
+  content, not an architecture change — `Plan_Kit_Reworks.md` inherits the specific findings;
+  broader roster-wide population belongs here once that plan's narrower fixes land.
+
+**This list now holds more than the cascade entry — the spawn condition above is met.**
+`Plan_System_Buildout.md` is due to be created and receive both entries above; not yet spawned as
+part of this update — flagged here per the standing rule rather than left implied, pending a
+decision on scope with the plan's owner.
 
 ## Watch for
 

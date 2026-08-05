@@ -181,74 +181,84 @@ Each Role can have one or two main purposes in combat but it doesn't have to res
 - Buffer
     - Applies various buffs to allies to make them stronger.
 
+Every Role passive below is tagged with the damage channel it belongs to per section 1.1.3, or
+**Enabler** if it produces no damage and is judged by the collapse test in 1.1.6 instead, using
+the same bracket vocabulary as section 3.2.3: **[Channel 1]** moves an attribute, continuously and
+additively; **[Channel 2]** supplies its own factor to the combined modifier; **[Channel 3 —
+Cascade]** triggers a separate resolution; **[Enabler]** does neither. A passive tagged with two
+buckets is dual-classified on purpose, the same as a status can be. Herald of the loom's passive is
+blank — recorded as a finding (`Plan_Kit_Blowout_Audit.md` Phase 4), not tagged, since there is no
+mechanic to classify; designing one is rework, carried to `Plan_Kit_Reworks.md`.
+
 Current roles, their identity and purpose exist as follows:
 - Emissary
     - A field agent of the Iron Ledger who wins by building a case against the enemy rather than overpowering them. Keeps a per-enemy tally of Infractions (see the Standing Record passive) and issues Edicts — formal rulings whose severity is read off the target's Infraction tally. Punishment effects stay gradual rather than binary: no hard skill sealing or turn bar manipulation; instead buff duration reduction, resistance bypass, and attribute sanctions, all scaling with the target's Infraction count. Primary attributes: Accuracy, Knowledge.
     - Purpose: Debuffer, Control
-    - Passive: Standing Record - Every enemy has a personal Infraction tally that only grows and is never consumed. An enemy gains one Infraction whenever they gain a buff, place a zone, or land a debuff on an ally. The tally is counted up to a cap of 9 for skill effects. The Emissary's skills that scale with Infractions apply a rarity-dependent rate per Infraction on the target; that rate is the only source of Infraction scaling (skills state what scales, never their own rate).
+    - Passive: Standing Record [Enabler] - Every enemy has a personal Infraction tally that only grows and is never consumed. An enemy gains one Infraction whenever they gain a buff, place a zone, or land a debuff on an ally. The tally is counted up to a cap of 9 for skill effects. The Emissary's skills that scale with Infractions apply a rarity-dependent rate per Infraction on the target; that rate is the only source of Infraction scaling (skills state what scales, never their own rate).
         - 2.5% per Infraction Uncommon, 3% Rare, 3.5% Epic, 4% Legendary
 - Thief
     - A squishy damage dealer, focusing on set-up through skills and bypassing enemy defenses. Primary attributes: Attack.
     - Purpose: Damage.
-    - Passive: Pilfer - Chance to steal a buff from the target when a skill is used.
+    - Passive: Pilfer [Enabler] - Chance to steal a buff from the target when a skill is used.
         - 20% Uncommon, 30% Rare, 40% Epic, 50% Legendary
 - Lancer
     - Always has at least one offensive skill and one defensive skill.
     - Purpose: Damage
-    - Passive: Reckless Momentum - When an offensive skill is used the Lancer gains one Momentum stack (+x% damage, -x/2% defence while stacks are held, maximum 5 stacks). When a defensive skill is used, the Lancer gains Phalanx Guard (a role-unique 2-turn buff, +x% defence) and all Momentum stacks are consumed.
+    - Passive: Reckless Momentum [Channel 1] - When an offensive skill is used the Lancer gains one Momentum stack (+x% damage, -x/2% defence while stacks are held, maximum 5 stacks). When a defensive skill is used, the Lancer gains Phalanx Guard (a role-unique 2-turn buff, +x% defence) and all Momentum stacks are consumed.
         - 4% Uncommon, 6% Rare, 8% Epic, 10% Legendary
 - Alchemist
     - A support character that focuses on buffing allies and debuffing enemies through various concoctions. Signature zone: Catalyst Cloud (see section 3.2.4.1). Primary attributes: Knowledge, Mysticism.
     - Purpose: Debuffer, Buffer
-    - Passive: Fresh Batch - At the start of combat the Alchemist brews one concoction: a reagent drawn at random from an Alchemist-exclusive pool, occupying its own slot beyond the three brought reagents. It follows normal reagent rules (consumable once, by any champion, on their turn) except that it is never added to the inventory - if unconsumed when the battle ends, it is lost. Each fielded Alchemist brews their own concoction.
+    - Passive: Fresh Batch [Enabler] - At the start of combat the Alchemist brews one concoction: a reagent drawn at random from an Alchemist-exclusive pool, occupying its own slot beyond the three brought reagents. It follows normal reagent rules (consumable once, by any champion, on their turn) except that it is never added to the inventory - if unconsumed when the battle ends, it is lost. Each fielded Alchemist brews their own concoction.
         - Brew potency: 90% Uncommon, 100% Rare, 110% Epic, 120% Legendary (relative to a standard reagent of equivalent effect); the brew pool holds 3 lesser reagents at Uncommon and Rare, 4 at Epic and Legendary (see section 3.3.3)
         - Brews are self-targeted (the consumer is always the recipient). Magnitudes: Lesser Restorative Brew heals 10% of max Health; Lesser Tincture grants +5% to one random primary attribute, battle-long; Lesser Barrier Brew grants a Barrier absorbing 40% of max Health; Lesser Purging Brew (Epic/Legendary pool only) removes 1 debuff.
 - Sorcerer
     - A damage dealer that harnesses the power of magic to deal Area of Effect damage and control the battlefield. Wields the unstable, shunned magic left behind by the God of Magic, and excels at drawing power from reagents scavenged from that era's ruins. Signature zone: Unstable Rift (see section 3.2.4.1). Primary attributes: Mysticism, Knowledge.
     - Purpose: Damage, Debuffer, Control
-    - Passive: Arcane Instability (implemented) - Using any skill grants one Instability stack (+x% Mysticism per stack, maximum 5). When the Sorcerer consumes a reagent, they gain two Instability stacks and the reagent's effect is amplified by y%. While at maximum stacks, the Sorcerer's next skill also releases a Surge: damage to all characters, allies and the Sorcerer included, scaling 1.5x with the Sorcerer's Mysticism (mitigated by each target's Defence as normal, never a critical hit) - then all stacks reset. Stacks do not persist between combats.
+    - Passive: Arcane Instability (implemented) [Channel 1 + Channel 3] - Using any skill grants one Instability stack (+x% Mysticism per stack, maximum 5). When the Sorcerer consumes a reagent, they gain two Instability stacks and the reagent's effect is amplified by y%. While at maximum stacks, the Sorcerer's next skill also releases a Surge: damage to all characters, allies and the Sorcerer included, scaling 1.5x with the Sorcerer's Mysticism (mitigated by each target's Defence as normal, never a critical hit) - then all stacks reset. Stacks do not persist between combats.
         - Per-stack Mysticism: 4% Uncommon, 6% Rare, 8% Epic, 10% Legendary
         - Reagent amplification: 20% Uncommon, 30% Rare, 40% Epic, 50% Legendary
 - Scholar
     - A support character that focuses on knowledge and strategy to enhance allies' abilities and exploit enemy weaknesses. The zone-clearing specialist: the Scholar's kit is one of the two dedicated ways to remove zones from the turn bar (see section 3.2.4.1). Primary attributes: Knowledge.
     - Purpose: Debuffer, Buffer
-    - Passive: Field of Study - The Scholar has studied every opponent and knows their weaknesses. At the start of combat, each enemy's weakness is identified: their highest primary attribute (ties broken at random). Whenever the Scholar applies a debuff to an enemy, that enemy's identified attribute is additionally reduced for the debuff's duration: Uncommon 4%, Rare 6%, Epic 8%, Legendary 10%. For this passive specifically, "primary attribute" means Attack, Defence, Accuracy, Resistance, Mysticism, or Knowledge.
+    - Passive: Field of Study [Channel 1] - The Scholar has studied every opponent and knows their weaknesses. At the start of combat, each enemy's weakness is identified: their highest primary attribute (ties broken at random). Whenever the Scholar applies a debuff to an enemy, that enemy's identified attribute is additionally reduced for the debuff's duration: Uncommon 4%, Rare 6%, Epic 8%, Legendary 10%. For this passive specifically, "primary attribute" means Attack, Defence, Accuracy, Resistance, Mysticism, or Knowledge.
 - Diviner
     - A squishy support.  Primary attributes: Mysticism.
     - Purpose: Sustain, Debuffer
-    - Passive: Foresight - Place debuffs on enemies if they are close enough behind the Diviner on the turn bar when the Diviners turn starts. Applies Enfeeble for 1 turn, with no resist roll (symmetric to the Tactician's Plan applying Empower).
+    - Passive: Foresight [Channel 1] - Place debuffs on enemies if they are close enough behind the Diviner on the turn bar when the Diviners turn starts. Applies Enfeeble for 1 turn, with no resist roll (symmetric to the Tactician's Plan applying Empower).
         - 10% Uncommon, 15% Rare, 20% Epic, 25% Legendary
 - Appraiser
     - A master at exploiting enemy weaknesses, allowing opportunity for the team to easily deal critical hits. Primary attributes: Critical Chance, Knowledge.
     - Purpose: Debuffer
-    - Passive: Strike the Flaw - The Appraiser's critical hits apply the Cracked Facet debuff to the target (see section 3.2.3.2), with a rarity-dependent duration: Uncommon and Rare 1 turn, Epic and Legendary 2 turns.
+    - Passive: Strike the Flaw [Channel 2] - The Appraiser's critical hits apply the Cracked Facet debuff to the target (see section 3.2.3.2), with a rarity-dependent duration: Uncommon and Rare 1 turn, Epic and Legendary 2 turns.
 - Tactician
     - A squishy support. Primary attributes: Knowledge, Speed.
     - Purpose: Buffer
-    - Passive: Plan - Gives buffs to allies who are within x% behind the Tactician on the turn bar when their turn starts. Applies at every rarity; only the Tactician's own self is excluded.
+    - Passive: Plan [Channel 1] - Gives buffs to allies who are within x% behind the Tactician on the turn bar when their turn starts. Applies at every rarity; only the Tactician's own self is excluded.
         - 10% Uncommon, 15% Rare, 20% Epic, 25% Legendary
 - Symbiote
     - A character weak by default, able to permanently graft itself onto an enemy in battle to gain that enemy's graft effect and an attribute bonus at the cost of a drawback. Primary attributes: Health, Resistance.
     - Purpose: Sustain, Buffer
-    - Passive: Graft - The Symbiote begins ungrafted and comparatively weak. Once per lifetime, during any battle and as a free action, the Symbiote may target a living enemy and graft onto it, confirmed through a warning that the choice is permanent. Grafting is irreversible: it binds that enemy's graft effect to the Symbiote for the rest of its existence, and can never be undone or replaced. A graft grants the Symbiote its bound effect, a bonus to attributes, and a drawback; the effect and attribute bonus scale with the Symbiote's own rarity, while the drawback does not. A graft takes hold immediately. Once grafted, the graft option is no longer offered for that Symbiote.
+    - Passive: Graft [Channel 1, mechanism only — the bound graft effect's own channel is
+      pool-dependent, see `Symbiote_Graft_Pool.md`] - The Symbiote begins ungrafted and comparatively weak. Once per lifetime, during any battle and as a free action, the Symbiote may target a living enemy and graft onto it, confirmed through a warning that the choice is permanent. Grafting is irreversible: it binds that enemy's graft effect to the Symbiote for the rest of its existence, and can never be undone or replaced. A graft grants the Symbiote its bound effect, a bonus to attributes, and a drawback; the effect and attribute bonus scale with the Symbiote's own rarity, while the drawback does not. A graft takes hold immediately. Once grafted, the graft option is no longer offered for that Symbiote.
 - Jester
     - An unconventional tanking character that does not have significantly high Health or Defense but relies on skills that provoke hits to the Jester and dodge them. Primary attributes: Accuracy, Knowledge, Speed.
     - Purpose: Damage, Sustain
-    - Passive: "Double the fun!" - A base 5% chance to completely avoid the damage of an incoming attack (debuffs from the attack still land). Each hit that lands instead of being avoided increases the chance by a rarity-dependent amount, up to 3 stacks: Uncommon +3%, Rare +4%, Epic +5%, Legendary +6% per stack. Avoiding damage resets the chance to the 5% base. Increases the chances of being targeted.
+    - Passive: "Double the fun!" [Enabler] - A base 5% chance to completely avoid the damage of an incoming attack (debuffs from the attack still land). Each hit that lands instead of being avoided increases the chance by a rarity-dependent amount, up to 3 stacks: Uncommon +3%, Rare +4%, Epic +5%, Legendary +6% per stack. Avoiding damage resets the chance to the 5% base. Increases the chances of being targeted.
 - Cultist
     - Consumes ally buffs or health to empower their own skills, dealing damage or applying debuffs. Primary attributes: Mysticism, Knowledge.
     - Purpose: Debuffer, Damage
-    - Passive: Chosen Vessel - At the start of combat the Cultist marks a random ally (the Cultist excluded) as their Vessel. Whenever the Cultist uses a non-basic skill, the Vessel loses 5% of their max Health and the skill gains a rarity-dependent power bonus. The drain can kill the Vessel. When the Vessel dies (from any source), the Cultist gains the Attune buff for 3 turns (see section 3.2.3.2) and a new random ally is marked as the Vessel if any is alive. If all allies are dead then nothing happens.
+    - Passive: Chosen Vessel [Channel 1 + Channel 2] - At the start of combat the Cultist marks a random ally (the Cultist excluded) as their Vessel. Whenever the Cultist uses a non-basic skill, the Vessel loses 5% of their max Health and the skill gains a rarity-dependent power bonus. The drain can kill the Vessel. When the Vessel dies (from any source), the Cultist gains the Attune buff for 3 turns (see section 3.2.3.2) and a new random ally is marked as the Vessel if any is alive. If all allies are dead then nothing happens.
         - Power bonus: 15% Uncommon, 20% Rare, 25% Epic, 30% Legendary
 - Bar Brawler
     - A health focused character, dealing damage, tanking and applying a few buffs. Attacks scales of health primarily. Primary attributes: Health.
     - Purpose: Sustain, Buffer
-    - Passive: "On the House!" - Whenever the Bar Brawler gains a buff, from any source, he shares a round: all living allies (the Bar Brawler included) heal a rarity-dependent percentage of their own max Health. The round is poured at most once between each of the Bar Brawler's turns - further buffs gained before his next turn do not trigger it again.
+    - Passive: "On the House!" [Enabler] - Whenever the Bar Brawler gains a buff, from any source, he shares a round: all living allies (the Bar Brawler included) heal a rarity-dependent percentage of their own max Health. The round is poured at most once between each of the Bar Brawler's turns - further buffs gained before his next turn do not trigger it again.
         - Heal per round: Uncommon 6%, Rare 7%, Epic 8%, Legendary 9%
 - Bloodmage
     - Spending their own or allies health for big pay-off skills in terms of damage or applying shields based on sacrificed health. Primary attributes: Health, Mysticism.
     - Purpose: Sustain, Damage
-    - Passive: Hemoclarity - While below 50% health, gain increased Mysticism.
+    - Passive: Hemoclarity [Channel 1] - While below 50% health, gain increased Mysticism.
         - 25% Uncommon, 30% Rare, 35% Epic, 40% Legendary
 - Herald of the loom
     - A stance character, using 3 types of stances:
@@ -256,35 +266,51 @@ Current roles, their identity and purpose exist as follows:
         - Silver thread; All herald buffs & debuffs cast becomes more powerful, adds one attribute value to the accuracy attribute value when attempting to apply debuffs.
         - Black thread; All damage dealt and received scale with mysticism instead of other attributes. One other player & enemy character will have their attributes averaged out while Black thread is in use.  Primary attributes: Mysticism, Accuracy.
     - Purpose: Debuffer, Buffer
-    - Passive: 
+    - Passive: (blank — no mechanic exists to classify)
+        - **Finding (`Plan_Kit_Blowout_Audit.md` Phase 4, severity high):** neither the passive nor
+          the three stances described above (Golden/Silver/Black Thread) exist anywhere in code —
+          no stance enum, no stance-switching effect. The shipped kit (Thread Snap, Thread Lash,
+          Woven Blessing) is three plain Mysticism-scaled skills sharing the flavor name only.
+          Designing the passive and the stance system is a from-scratch rework, carried to
+          `Plan_Kit_Reworks.md`, not a patch to existing behavior.
 - Chronophage
     - A speed focused character, applying various speed modifying skills onto the turn bar and primarily deals damage based on the Speed attribute. Signature zones: Flicker Zone and Temporal Sinkhole (see section 3.2.4.1). Primary attributes: Speed.
     - Purpose: Control
-    - Passive: Time Tithe - When the Chronophage's skills remove or reduce an enemy's turn bar, the Chronophage absorbs a portion of the stolen amount as its own turn-bar progress.
+    - Passive: Time Tithe [Enabler] - When the Chronophage's skills remove or reduce an enemy's turn bar, the Chronophage absorbs a portion of the stolen amount as its own turn-bar progress.
         - 25% Uncommon, 35% Rare, 45% Epic, 55% Legendary
 - Architect
     - A methodical charge & support character aligned with the God of Rules. Instead of raw aggression, they construct "Logic Chains" over the course of battle, eventually "solving" the encounter with a massive structural shift. Primary attributes: Knowledge, Defense.
     - Purpose: Buffer, Damage
-    - Passive: Calibration - The Architect accumulates Calibration charges (maximum 10; charges do not persist between combats). Basic skills grant one charge, and the Architect's constructed zone generates one charge per character that uses it. The Architect's non-basic skills consume charges and scale with the amount consumed: a few charges empower defensive ally buffs, while the finisher consumes all held charges and resolves in tiers - 1-3 charges deal damage only, 4-6 add a structural effect on top of the damage, 7-10 additionally re-erect the Architect's construction zone for free. Tier thresholds are fixed across rarities; rarity scales per-charge potency.
+    - Passive: Calibration [Channel 1 + Channel 2 + Enabler] - The Architect accumulates Calibration charges (maximum 10; charges do not persist between combats). Basic skills grant one charge, and the Architect's constructed zone generates one charge per character that uses it. The Architect's non-basic skills consume charges and scale with the amount consumed: a few charges empower defensive ally buffs, while the finisher consumes all held charges and resolves in tiers - 1-3 charges deal damage only, 4-6 add a structural effect on top of the damage, 7-10 additionally re-erect the Architect's construction zone for free. Tier thresholds are fixed across rarities; rarity scales per-charge potency.
         - Per-charge potency: 4% Uncommon, 6% Rare, 8% Epic, 10% Legendary
-        - Depends on the Architect's construction-zone skill (see `Plans/Plan_Architect_Calibration_Kit.md`); until it exists, charges are generated by basic skills alone.
+        - **Conflict flagged (`Plan_Kit_Blowout_Audit.md` Phase 6):** the construction-zone skill
+          this entry claims doesn't exist yet already ships as `Raise_the_Frame.tres`, and
+          `calibration_trait.gd` grants charges from it, not just from basic skills. The tier
+          thresholds above (1-3/4-6/7-10, cap 10) also disagree with the code
+          (`EXPOSE_WEAKNESS_THRESHOLD = 5`, `ZONE_RE_ERECT_THRESHOLD = 9`, `MAX_CHARGES = 12`).
+          Per section 1.1's precedence the code is not being silently rewritten here; both drifts
+          are recorded for whoever next touches this Role to resolve.
 - Tidal Corsair
     - Damage dealer. Primary attributes: Attack, Speed.
     - The Tidal Corsair is a Combo character where you plan your moves ahead, highly mobile but not inherently strong unless you set up your attacks correctly.
     - Purpose: Damage
-    - Passive: Wrangle the Sea - Boarding Strike grants a Steel stack, Saltwater Shot grants a Sea stack. Corsair's Reckoning consumes all stacks. Up to 3 stacks can be
+    - Passive: Wrangle the Sea [Channel 2 + Enabler] - Boarding Strike grants a Steel stack, Saltwater Shot grants a Sea stack. Corsair's Reckoning consumes all stacks. Up to 3 stacks can be
       held at a time.
         - Damage per Steel stack: 45% Uncommon, 50% Rare, 55% Epic, 60% Legendary
         - Turn meter per Sea stack: 8% Uncommon, 10% Rare, 12% Epic, 14% Legendary
 - Plague Doctor
     - A debuff focused character, applying various damage over time and stat reducing debuffs to enemies. Signature zone: Miasma (see section 3.2.4.1). Primary attributes: Mysticism, Resistance.
     - Purpose: Debuffer
-    - Passive: Comorbidity - Damage-over-time debuffs applied by the Plague Doctor tick for +x% damage per debuff on the target (the ticking debuff included, debuffs from any source counted, up to 5).
+    - Passive: Comorbidity [Channel 2, provisional] - Damage-over-time debuffs applied by the Plague Doctor tick for +x% damage per debuff on the target (the ticking debuff included, debuffs from any source counted, up to 5).
+        - **Provisional (`Plan_Kit_Blowout_Audit.md` Phase 2):** the tick-bonus formula is sound,
+          but the zone-trigger debuff path (used by Miasma, this kit's only self-ticking debuff)
+          bypasses the code parameter that carries this bonus — as shipped, Comorbidity has nothing
+          in its own kit to boost. See `Plan_Kit_Reworks.md`.
         - Per-debuff tick bonus: 5% Uncommon, 7% Rare, 9% Epic, 11% Legendary
 - Warlord
     - A buffing tank character, applying various buffs to self and allies while being able to take a lot of damage. Primary attributes: Health, Defense.
     - Purpose: Sustain
-    - Passive: Shield Wall - When an ally within 15% of the Warlord on the turn bar (in front or behind) takes attack damage, a portion of that damage is redirected to the Warlord instead. Proximity is checked at the moment the damage lands. Redirected damage is mitigated by the Warlord's Defense, not the ally's. AoE attacks are soaked separately for each affected ally within the window.
+    - Passive: Shield Wall [Enabler] - When an ally within 15% of the Warlord on the turn bar (in front or behind) takes attack damage, a portion of that damage is redirected to the Warlord instead. Proximity is checked at the moment the damage lands. Redirected damage is mitigated by the Warlord's Defense, not the ally's. AoE attacks are soaked separately for each affected ally within the window.
         - Redirected portion: 15% Uncommon, 20% Rare, 25% Epic, 30% Legendary
 
 ### 3.2. Combat
@@ -514,282 +540,309 @@ Zone system rules:
 ##### 3.2.4.2 Skills by Role
 Skills allocated to a specific Role, listed in the same order as their entries in section 3.1.3. A Role with no skills assigned yet keeps a placeholder heading so its absence is visible at a glance.
 
+Every skill's `Effect:` line below is tagged with the damage channel it belongs to per section
+1.1.3, or **Enabler** if it produces no damage and is judged by the collapse test in 1.1.6 instead,
+using the same bracket vocabulary as sections 3.1.3 and 3.2.3: **[Channel 1]** moves an attribute,
+continuously and additively; **[Channel 2]** supplies its own factor to the combined modifier;
+**[Channel 3 — Cascade]** triggers a separate resolution; **[Enabler]** does neither. A skill that
+only applies an already-tagged status inherits that status's tag(s) rather than repeating the
+reasoning; a skill combining its own effect with an applied status is tagged with both. See
+`Plan_Kit_Blowout_Audit.md` for the full ledger and evidence behind each tag.
+
 ###### Emissary
 * Citation
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals damage to a single target enemy, scaling with Knowledge, increased by the Standing Record rate per Infraction on the target.
+    * Effect: [Channel 1 + Channel 2] Deals damage to a single target enemy, scaling with Knowledge, increased by the Standing Record rate per Infraction on the target.
 * Signed Writ
     * Type: Debuff
     * Cooldown: 3 turns
-    * Effect: Reduces the durations of all the target's buffs by 1 turn and applies the Signed Writ debuff for 1 turn (see section 3.2.3.2). If the target has 6 or more Infractions, buff durations are reduced by 2 turns and Signed Writ lasts 2 turns instead.
+    * Effect: [Enabler] Reduces the durations of all the target's buffs by 1 turn and applies the Signed Writ debuff for 1 turn (see section 3.2.3.2). If the target has 6 or more Infractions, buff durations are reduced by 2 turns and Signed Writ lasts 2 turns instead.
 * Levied Sanction
     * Type: Debuff
     * Cooldown: 4 turns
-    * Effect: Applies the Sanction debuff to a single enemy for 2 turns (see section 3.2.3.2); its potency is set by the target's Infraction tally at the moment of application.
+    * Effect: [Channel 1] Applies the Sanction debuff to a single enemy for 2 turns (see section 3.2.3.2); its potency is set by the target's Infraction tally at the moment of application.
 
 ###### Thief
 * Stab
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals damage to a single target enemy, scaling with Attack.
+    * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Attack.
 * Pierce Weakness
     * Type: Damage
     * Cooldown: 2 turns
-    * Effect: Deals damage to a single enemy, ignoring 60% of the target's Defense, scaling with Attack.
+    * Effect: [Channel 1] Deals damage to a single enemy, ignoring 60% of the target's Defense, scaling with Attack.
 * Case the Target
     * Type: Buff
     * Cooldown: 3 turns
-    * Effect: The Thief gains the Opportunist buff for 2 turns (see section 3.2.3.2).
+    * Effect: [Channel 2] The Thief gains the Opportunist buff for 2 turns (see section 3.2.3.2).
+        * **Conflict flagged (`Plan_Kit_Blowout_Audit.md` Phase 4):** the shipped resource is
+          `Weigh_the_Mark.tres` — same Opportunist grant, but named "Weigh the Mark" and lasting
+          3 turns, not the 2 documented here. Not silently rewritten per section 1.1's precedence
+          rule; needs a documentation or data fix.
 
 ###### Lancer
 * Lance Thrust
     * Type: Damage (basic skill, no cooldown; counts as an offensive skill)
-    * Effect: Deals damage to a single target enemy, scaling with Attack.
+    * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Attack.
+        * **Bug flagged (`Plan_Kit_Blowout_Audit.md` Phase 1):** `lancer_trait.gd`'s offensive-skill
+          name set contains "Stab" (no Lancer skill has that name) instead of "Lance Thrust", and
+          the defensive-skill name set is never populated at all — Momentum currently accrues from
+          casting Disarm instead, and Phalanx Guard is unreachable. Not rewritten here per section
+          1.1's precedence rule; needs a code fix.
 * Rending Charge
     * Type: Damage, Debuff (counts as an offensive skill)
     * Cooldown: 3 turns
-    * Effect: Deals heavy damage to a single enemy, scaling with Attack, and applies the Bleed debuff for 2 turns (see section 3.2.3.2).
+    * Effect: [Channel 1 + Channel 2] Deals heavy damage to a single enemy, scaling with Attack, and applies the Bleed debuff for 2 turns (see section 3.2.3.2).
 * Disarm
     * Type: Damage, Debuff (counts as a defensive skill)
     * Cooldown: 3 turns
-    * Effect: Deals damage to a single enemy and applies the Enfeeble debuff for 2 turns (see section 3.2.3.2).
+    * Effect: [Channel 1] Deals damage to a single enemy and applies the Enfeeble debuff for 2 turns (see section 3.2.3.2).
 
 ###### Alchemist
 * Acrid Splash
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals damage to a single target enemy, scaling with Knowledge.
+    * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Knowledge.
 * Catalyst Cloud
     * Type: Turn Bar (Zone)
     * Cooldown: 3 turns
-    * Effect: Affected allies gain the Catalyst buff for 2 turns (see section 3.2.3.2). Holds 4 charges.
+    * Effect: [Enabler, provisional] Affected allies gain the Catalyst buff for 2 turns (see section 3.2.3.2). Holds 4 charges.
 * Dissolving Agent
     * Type: Debuff
     * Cooldown: 3 turns
-    * Effect: Applies the Unravel debuff to a single enemy for 2 turns (see section 3.2.3.2).
+    * Effect: [Channel 1] Applies the Unravel debuff to a single enemy for 2 turns (see section 3.2.3.2).
 
 ###### Sorcerer
 * Arc Lash
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals damage to a single target enemy, scaling with Mysticism.
+    * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Mysticism.
 * Unstable Rift
     * Type: Turn Bar (Zone)
     * Cooldown: 3 turns
-    * Effect: All affected characters, allies and enemies alike, gain the Warped debuff for 2 turns (see section 3.2.3.2) and take damage scaling with the Sorcerer's Mysticism — enemies take 30% of a standard hit, allies 15%. Holds 5 charges.
+    * Effect: [Channel 1 / Enabler] All affected characters, allies and enemies alike, gain the Warped debuff for 2 turns (see section 3.2.3.2) and take damage scaling with the Sorcerer's Mysticism — enemies take 30% of a standard hit, allies 15%. Holds 5 charges.
 * Cataclysmic Surge
     * Type: Damage (AoE)
     * Cooldown: 4 turns
-    * Effect: Deals damage to all enemies, scaling with Mysticism. Targets currently affected by the Warped debuff take 30% increased damage.
+    * Effect: [Channel 1 + Channel 2] Deals damage to all enemies, scaling with Mysticism. Targets currently affected by the Warped debuff take 30% increased damage.
 
 ###### Scholar
 * Sharp Rebuttal
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals damage to a single target enemy, scaling with Knowledge.
+    * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Knowledge.
 * Refutation
     * Type: Turn Bar
     * Cooldown: 3 turns
-    * Effect: Removes one zone of the Scholar's choice from the turn bar. If the zone was enemy-placed, the enemy who placed it takes damage scaling with Knowledge — 10% of a standard hit per charge remaining on the zone. If it was ally-placed, the placing ally's zone skill has its cooldown reduced by 2.
+    * Effect: [Channel 1 + Enabler] Removes one zone of the Scholar's choice from the turn bar. If the zone was enemy-placed, the enemy who placed it takes damage scaling with Knowledge — 10% of a standard hit per charge remaining on the zone. If it was ally-placed, the placing ally's zone skill has its cooldown reduced by 2.
 * Expose Fallacy
     * Type: Debuff, Buff
     * Cooldown: 3 turns
-    * Effect: Applies the Confound debuff to a single enemy for 2 turns and grants all allies the Opportunist buff for 2 turns (see section 3.2.3.2).
+    * Effect: [Channel 1 + Channel 2] Applies the Confound debuff to a single enemy for 2 turns and grants all allies the Opportunist buff for 2 turns (see section 3.2.3.2).
 
 ###### Diviner
 * Fateful Glimpse
     * Type: Damage, Heal (basic skill, no cooldown)
-    * Effect: Deals minor damage to a single target enemy and restores a small amount of Health to the most injured ally (the Diviner included), both scaling with Mysticism.
+    * Effect: [Channel 1] Deals minor damage to a single target enemy and restores a small amount of Health to the most injured ally (the Diviner included), both scaling with Mysticism.
 * Premonition
     * Type: Buff
     * Cooldown: 3 turns
-    * Effect: Grants an ally the Premonition buff for 1 turn (see section 3.2.3.2).
+    * Effect: [Enabler] Grants an ally the Premonition buff for 1 turn (see section 3.2.3.2).
 * Ill Omen
     * Type: Damage, Debuff
     * Cooldown: 3 turns
-    * Effect: Deals damage to a single enemy, scaling with Mysticism, and applies the Hexed debuff for 2 turns (see section 3.2.3.2).
+    * Effect: [Channel 1 + Enabler] Deals damage to a single enemy, scaling with Mysticism, and applies the Hexed debuff for 2 turns (see section 3.2.3.2).
 
 ###### Appraiser
 * Sizing Cut
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals damage to a single target enemy, scaling with Knowledge.
+    * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Knowledge.
 * Flaw Analysis
     * Type: Debuff
     * Cooldown: 2 turns
-    * Effect: Applies the Exposed Facet debuff to a single enemy for 2 turns (see section 3.2.3.2).
+    * Effect: [Channel 2] Applies the Exposed Facet debuff to a single enemy for 2 turns (see section 3.2.3.2).
 * Full Appraisal
     * Type: Buff
     * Cooldown: 4 turns
-    * Effect: Grants one ally the Keen Edge and Lethal Precision buffs, both for 2 turns (see section 3.2.3.2).
+    * Effect: [Channel 1] Grants one ally the Keen Edge and Lethal Precision buffs, both for 2 turns (see section 3.2.3.2).
 
 ###### Tactician
 * Signal Strike
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals damage to a single target enemy, scaling with Knowledge.
+    * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Knowledge.
 * Fatal Flaw
     * Type: Buff
     * Cooldown: 2 turns
-    * Effect: One ally gains the Daunting Strength buff for 1 turn (see section 3.2.3.2).
+    * Effect: [Channel 2] One ally gains the Daunting Strength buff for 1 turn (see section 3.2.3.2).
 * Battle Orders
     * Type: Buff (Turn Bar)
     * Cooldown: 4 turns
-    * Effect: One ally gains the Battle Orders turn bar buff for 2 turns (see section 3.2.3.1).
+    * Effect: [Enabler] One ally gains the Battle Orders turn bar buff for 2 turns (see section 3.2.3.1).
 
 ###### Symbiote
 * Spore Lash
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals damage to a single target enemy, scaling with Resistance.
+    * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Resistance.
 * Symbiotic Overdrive
     * Type: Buff
     * Cooldown: 5 turns
-    * Effect: The Symbiote gains the Exhert buff for 4 turns (see section 3.2.3.2).
+    * Effect: [Channel 1] The Symbiote gains the Exhert buff for 4 turns (see section 3.2.3.2).
 * Grafted Flesh
     * Type: Buff, Heal
     * Cooldown: 4 turns
-    * Effect: The Symbiote loses 10% of its max Health; one ally gains the Regeneration buff for 4 turns (see section 3.2.3.2).
+    * Effect: [Enabler] The Symbiote loses 10% of its max Health; one ally gains the Regeneration buff for 4 turns (see section 3.2.3.2).
 
 ###### Jester
 * Pratfall Sting
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals damage to a single target enemy, scaling with Accuracy. Deals +30% damage if the Jester avoided an attack since their last turn.
+    * Effect: [Channel 1 + Channel 2] Deals damage to a single target enemy, scaling with Accuracy. Deals +30% damage if the Jester avoided an attack since their last turn.
 * Burning Bolas
     * Type: Damage, Debuff
     * Cooldown: 2 turns
-    * Effect: Throws flaming bolas at a single enemy, dealing damage scaling with Attack, and applies the Burning debuff for 2 turns (see section 3.2.3.2).
+    * Effect: [Channel 1 + Enabler] Throws flaming bolas at a single enemy, dealing damage scaling with Attack, and applies the Burning debuff for 2 turns (see section 3.2.3.2).
 * Center Stage
     * Type: Buff
     * Cooldown: 3 turns
-    * Effect: The Jester gains the Spotlight buff for 2 turns and the Luck buff for 1 turn (see section 3.2.3.2).
+    * Effect: [Enabler] The Jester gains the Spotlight buff for 2 turns and the Luck buff for 1 turn (see section 3.2.3.2).
 
 ###### Cultist
 * Profane Bolt
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals damage to a single target enemy, scaling with Mysticism.
+    * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Mysticism.
 * Devour Blessing
     * Type: Damage
     * Cooldown: 3 turns
-    * Effect: Consumes all buffs on one ally; deals heavy damage to a single enemy, scaling with Mysticism, +25% damage per buff consumed.
+    * Effect: [Channel 1 + Channel 2] Consumes all buffs on one ally; deals heavy damage to a single enemy, scaling with Mysticism, +25% damage per buff consumed.
 * Rite of Severance
     * Type: Damage, Debuff
     * Cooldown: 4 turns
-    * Effect: Deals damage to a single enemy and applies the Severance debuff for 2 turns (see section 3.2.3.2).
+    * Effect: [Channel 1 + Enabler] Deals damage to a single enemy and applies the Severance debuff for 2 turns (see section 3.2.3.2).
 
 ###### Bar Brawler
 * Heap on
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals damage to one enemy, scaling with Health, and grows stronger with every use.
+    * Effect: [Channel 1 + Channel 2] Deals damage to one enemy, scaling with Health, and grows stronger with every use.
 * Liquid Courage
     * Type: Buff, Heal
     * Cooldown: 3 turns
-    * Effect: The Bar Brawler gains the Vigor buff for 2 turns (see section 3.2.3.2) and heals 15% of max Health.
+    * Effect: [Channel 1] The Bar Brawler gains the Vigor buff for 2 turns (see section 3.2.3.2) and heals 15% of max Health.
 * Headbutt
     * Type: Damage, Debuff (Turn Bar)
     * Cooldown: 3 turns
-    * Effect: Deals damage to a single enemy, scaling with Health, and applies the Dead Weight debuff for 2 turns (see section 3.2.3.1).
+    * Effect: [Channel 1 + Enabler] Deals damage to a single enemy, scaling with Health, and applies the Dead Weight debuff for 2 turns (see section 3.2.3.1).
 
 ###### Bloodmage
 * Blood Bolt
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals damage to a single target enemy, scaling with Mysticism. Costs 3% of the Bloodmage's max Health to cast.
+    * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Mysticism. Costs 3% of the Bloodmage's max Health to cast.
 * Transfusion
     * Type: Buff
     * Cooldown: 3 turns
-    * Effect: The Bloodmage sacrifices 15% of max Health; one ally gains a Barrier absorbing 200% of the Health sacrificed, lasting 2 turns (see section 3.2.3.2).
+    * Effect: [Enabler] The Bloodmage sacrifices 15% of max Health; one ally gains a Barrier absorbing 200% of the Health sacrificed, lasting 2 turns (see section 3.2.3.2).
 * Tithe of Vitality
     * Type: Damage, Debuff
     * Cooldown: 4 turns
-    * Effect: Drains 10% of max Health from each living ally (the Bloodmage excluded). Deals moderate damage to a single enemy, scaling with Mysticism, and applies the Mana Burn debuff for 2 turns (see section 3.2.3.2).
+    * Effect: [Channel 1 + Enabler] Drains 10% of max Health from each living ally (the Bloodmage excluded). Deals moderate damage to a single enemy, scaling with Mysticism, and applies the Mana Burn debuff for 2 turns (see section 3.2.3.2).
 
 ###### Herald of the loom
 * Thread Snap
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals damage to a single target enemy, scaling with Mysticism.
+    * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Mysticism.
 * Thread Lash
     * Type: Damage, Debuff
     * Cooldown: 3 turns
-    * Effect: Deals damage to a single enemy and applies the Suppress debuff for 2 turns (see section 3.2.3.2).
+    * Effect: [Channel 1] Deals damage to a single enemy and applies the Suppress debuff for 2 turns (see section 3.2.3.2).
 * Woven Blessing
     * Type: Buff
     * Cooldown: 3 turns
-    * Effect: One ally gains the Attune buff for 2 turns (see section 3.2.3.2).
+    * Effect: [Channel 1] One ally gains the Attune buff for 2 turns (see section 3.2.3.2).
 
 ###### Chronophage
 * Zap
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals damage to a single target enemy, scaling with Speed. (Also available as a Universal skill, see section 3.2.4.3.)
+    * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Speed. (Also available as a Universal skill, see section 3.2.4.3.)
 * Flicker Zone
     * Type: Turn Bar (Zone)
     * Cooldown: 3 turns
-    * Effect: Affected allies move 15% further on the turn bar. Holds 5 charges.
+    * Effect: [Enabler] Affected allies move 15% further on the turn bar. Holds 5 charges.
 * Temporal Sinkhole
     * Type: Turn Bar (Zone)
     * Cooldown: 4 turns
-    * Effect: Affected enemies lose a portion of their turn bar progress. Holds 4 charges.
+    * Effect: [Enabler] Affected enemies lose a portion of their turn bar progress. Holds 4 charges.
 
 ###### Architect
 * Cornerstone
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals damage to a single target enemy, scaling with Knowledge, and generates one Calibration charge.
+    * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Knowledge, and generates one Calibration charge.
 * Raise the Frame
     * Type: Turn Bar (Zone)
     * Cooldown: 2 turns
-    * Effect: Constructs a zone: affected allies gain the Barrier buff for 2 turns (see section 3.2.3.2), sized by the Architect's Knowledge and boosted by the Calibration charges invested in the construction. Holds 5 charges.
+    * Effect: [Enabler] Constructs a zone: affected allies gain the Barrier buff for 2 turns (see section 3.2.3.2), sized by the Architect's Knowledge and boosted by the Calibration charges invested in the construction. Holds 5 charges.
 * Final Calculation
     * Type: Damage
     * Cooldown: 3 turns
-    * Effect: Consumes all held Calibration charges: 1-3 charges deal damage only; 4-6 also apply the Expose Weakness debuff for 2 turns (see section 3.2.3.2); 7-10 additionally re-erect the Architect's construction zone for free.
+    * Effect: [Channel 1 + Channel 2 + Enabler] Consumes all held Calibration charges: 1-3 charges deal damage only; 4-6 also apply the Expose Weakness debuff for 2 turns (see section 3.2.3.2); 7-10 additionally re-erect the Architect's construction zone for free.
 
 ###### Tidal Corsair
 * Boarding Strike
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals damage to a single target enemy, scaling with Attack, and grants the Tidal Corsair one Steel stack.
+    * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Attack, and grants the Tidal Corsair one Steel stack.
 * Saltwater Shot
     * Type: Damage (no cooldown)
-    * Effect: Deals damage to a single target enemy, scaling with Attack, and grants the Tidal Corsair one Sea stack.
+    * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Attack, and grants the Tidal Corsair one Sea stack.
 * Corsair's Reckoning
     * Type: Damage
     * Cooldown: 3 turns
-    * Effect: A devastating blow consuming all held stacks: bonus damage per Steel stack and target turn bar loss per Sea stack, at the rarity-dependent rates of the Wrangle the Sea passive (see section 3.1.3).
+    * Effect: [Channel 1 + Channel 2 + Enabler] A devastating blow consuming all held stacks: bonus damage per Steel stack and target turn bar loss per Sea stack, at the rarity-dependent rates of the Wrangle the Sea passive (see section 3.1.3).
 
 ###### Plague Doctor
 * Septic Lance
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals damage to a single target enemy, scaling with Mysticism.
+    * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Mysticism.
 * Miasma
     * Type: Turn Bar (Zone)
     * Cooldown: 3 turns
-    * Effect: Affected enemies gain the Plague debuff for 3 turns (see section 3.2.3.2). Holds 4 charges.
+    * Effect: [Channel 1 + Channel 2; Channel 3 — Cascade on expiry] Affected enemies gain the Plague debuff for 3 turns (see section 3.2.3.2). Holds 4 charges.
 * Quarantine Breach
     * Type: Damage, Debuff
     * Cooldown: 4 turns
-    * Effect: Deals damage to a single enemy and applies the Blight debuff for 2 turns (see section 3.2.3.2).
+    * Effect: [Channel 1 + Enabler] Deals damage to a single enemy and applies the Blight debuff for 2 turns (see section 3.2.3.2).
 
 ###### Warlord
 * Shield Slam
     * Type: Damage (basic skill, no cooldown)
-    * Effect: Deals damage to a single target enemy, scaling with Defense.
+    * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Defense.
 * Hold the Line
     * Type: Buff
     * Cooldown: 3 turns
-    * Effect: All allies gain the Fortify buff for 2 turns (see section 3.2.3.2).
+    * Effect: [Channel 1] All allies gain the Fortify buff for 2 turns (see section 3.2.3.2).
 * Brace for Impact
     * Type: Buff
     * Cooldown: 4 turns
-    * Effect: The Warlord gains the Rush buff and the Aegis buff for 1 turn each (see section 3.2.3.2). When Rush expires, the Warlord receives the Stun debuff per the Rush effect.
+    * Effect: [Channel 1 + Enabler] The Warlord gains the Rush buff and the Aegis buff for 1 turn each (see section 3.2.3.2). When Rush expires, the Warlord receives the Stun debuff per the Rush effect.
 
 ##### 3.2.4.3 Unassigned / Generic Skills
 Not yet tied to a specific Role, grouped by mechanical type for lookup.
 
+**Verdict on the two unassigned entries (`Plan_Kit_Blowout_Audit.md` Phase 4):** both are shipped,
+functional, and channel-correct on their own terms, but referenced by no Character Preset — a
+coverage/roster-assignment gap, not a channel defect. `Weigh_the_Mark.tres` and `Power_Tide.tres`
+(the Thief's actual third skill and an orphaned all-ally Empower buff respectively, neither listed
+in this section) are audited alongside these under the Thief and Batch 4 entries in the ledger.
+
 **Turn Bar (Zone Effects)**
 * Weight of Law
-    * Effect: Affected enemies are Stunned for their next turn.
+    * Effect: [Enabler] Affected enemies are Stunned for their next turn.
 
 **Universal**
 * Pagan Curse
     * Type: Debuff
-    * Effect: A ticking debuff. After 3 turns, the character is hit with a massive burst of damage unless they use a specific Chant to cleanse it.
+    * Effect: [cannot be classified — no resource and no code reference exist anywhere in the
+      project; recorded as a coverage gap, not a channel verdict] A ticking debuff. After 3 turns,
+      the character is hit with a massive burst of damage unless they use a specific Chant to
+      cleanse it.
 * Zap
     * Type: Damage
-    * Effect: Deals damage to a single target enemy, scaling with Speed.
+    * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Speed.
 * Stab
     * Type: Damage
-    * Effect: Deals damage to a single target enemy, scaling with Attack.
+    * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Attack.
 
 ##### 3.2.4.4 Opponent Skills
 Skills authored for enemies are cataloged in `Encounter_Design_Document.md` section 1 (Break Guard moved there). Any status effect they reference must exist in the 3.2.3 catalog.
