@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="BiomeRegionData" format=3 uid="uid://bxtvm8prqlvku"]
 
-[ext_resource type="Script" path="res://Scripts/Adventure_Scripts/Visuals/biome_region_data.gd" id="1_region"]
-[ext_resource type="Script" path="res://Scripts/Adventure_Scripts/Visuals/zone_decor_entry.gd" id="2_entry"]
+[ext_resource type="Script" uid="uid://btay6p6jc1rpo" path="res://Scripts/Adventure_Scripts/Visuals/biome_region_data.gd" id="1_region"]
+[ext_resource type="Script" uid="uid://btrh0velk4ydo" path="res://Scripts/Adventure_Scripts/Visuals/zone_decor_entry.gd" id="2_entry"]
 [ext_resource type="Resource" uid="uid://c32p14il4ycae" path="res://Data/Adventure_Data/Biome_Visuals/Decor_Layers/decor_grass_tuft.tres" id="3_grass"]
 [ext_resource type="Resource" uid="uid://c4ptn05lu1o7x" path="res://Data/Adventure_Data/Biome_Visuals/Decor_Layers/decor_pebble_cluster.tres" id="4_pebble"]
 
