@@ -1,9 +1,0 @@
-Trait specific information like "Escalated at Infractions" does not belong in the skill_data. That info will ever only affect holders of the trait and so the trait should manage that information.
-
-Probably the same with "Bonus Damage on Trait Condition", but this is at least possible to utilize by many. However it still smells.
-
-I also notice that there seem to be many fields now that affect conditional damage fractions, so why not just have a "Conditional Damage Fraction" field that can be handled in code instead of separate fields? I suppose that will require some sort of look-up on use to check the right criteria though. But that criteria could be a callable field in the skill then maybe?
-
-Also, there is no "Physical" or "Magical" damage. In descriptions of skills those words are not needed.
-
-Adding a "buff_duration_overrides" seems like a bad bandaid solution, It would be better if each entry in buffs contain a corresponding duration.
