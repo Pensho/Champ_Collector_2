@@ -1,6 +1,6 @@
 extends GutTest
 
-const LANCER_PRESET = preload("res://Data/Character_Player_Variants/Lancer.tres")
+const KNIGHT_PRESET = preload("res://Data/Character_Player_Variants/Knight.tres")
 const RED_BOOTS_PRESET = preload("uid://c3g7cshxhg0rw")
 
 # --- ItemCollection ---
@@ -78,7 +78,7 @@ func test_item_collection_empty_roundtrip() -> void:
 func test_character_collection_serialize_roundtrip() -> void:
 	var col1: CharacterCollection = CharacterCollection.new()
 	seed(42)
-	col1.Add(LANCER_PRESET.duplicate(true))
+	col1.Add(KNIGHT_PRESET.duplicate(true))
 
 	var original: Character = col1.GetAllCharacters().values()[0]
 	original._level = 7
@@ -111,7 +111,7 @@ func test_character_collection_empty_roundtrip() -> void:
 func test_character_collection_skips_unresolvable_preset_path() -> void:
 	var col1: CharacterCollection = CharacterCollection.new()
 	seed(42)
-	col1.Add(LANCER_PRESET.duplicate(true))
+	col1.Add(KNIGHT_PRESET.duplicate(true))
 	var valid_character: Character = col1.GetAllCharacters().values()[0]
 	valid_character._instance_ID = 1
 

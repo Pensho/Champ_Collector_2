@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="CharacterPreset" format=3 uid="uid://foglcohrhsnh"]
+
+[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_0ir7o"]
+[ext_resource type="Resource" uid="uid://jgqxh6bwrie0" path="res://Data/Attribute_Weights/Sturdy.tres" id="2_kmh4c"]
+[ext_resource type="Resource" uid="uid://bdxe6eob3xgsh" path="res://Data/Attribute_Weights/Fierce.tres" id="3_tdvd8"]
+[ext_resource type="Resource" uid="uid://i4pibjinfd3x" path="res://Data/Attribute_Weights/Gluttonous.tres" id="4_n2fs3"]
+[ext_resource type="Resource" uid="uid://bvo4uj38cgjg3" path="res://Data/Attribute_Weights/Calculating.tres" id="5_prhuy"]
+[ext_resource type="Resource" uid="uid://c60oh3whnodsm" path="res://Data/Attribute_Weights/Resilient.tres" id="6_ormtk"]
+[ext_resource type="Resource" uid="uid://bejf1a62v41gq" path="res://Data/Attribute_Weights/Marksman.tres" id="7_o6wx5"]
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="8_h1sgv"]
+[ext_resource type="Resource" uid="uid://dr1jii8xbnp26" path="res://Data/Character_Skill_Variants/Attack_Skills/Lance_Thrust.tres" id="9_7rak7"]
+[ext_resource type="Resource" uid="uid://dvsuv0ji1ueq7" path="res://Data/Character_Skill_Variants/Attack_Skills/Disarm.tres" id="10_h7bk0"]
+[ext_resource type="Resource" uid="uid://m3ioadmwsktt" path="res://Data/Character_Skill_Variants/Attack_Skills/Rending_Charge.tres" id="11_0upro"]
+[ext_resource type="Resource" uid="uid://dlancertr3sc0" path="res://Data/Character_Traits/Lancer_Trait.tres" id="12_5abp1"]
+[ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="13_qfd23"]
+
+[resource]
+script = ExtResource("13_qfd23")
+_name = "Knight"
+_texture = "res://Assets/Champ_Collector/Creatures/Knight/Knight_0004.png"
+_normal_map = "res://Assets/Champ_Collector/Creatures/Knight/Knight_0004_Normal_Map.png"
+_rarity = 2
+_role = 3
+_skills = Array[ExtResource("8_h1sgv")]([ExtResource("9_7rak7"), ExtResource("10_h7bk0"), ExtResource("11_0upro")])
+_health = 80
+_speed = 50
+_attack = 55
+_defence = 65
+_accuracy = 35
+_resistance = 40
+_mysticism = 10
+_knowledge = 20
+_attribute_weight_types_available = Array[ExtResource("1_0ir7o")]([ExtResource("2_kmh4c"), ExtResource("3_tdvd8"), ExtResource("4_n2fs3"), ExtResource("5_prhuy"), ExtResource("6_ormtk"), ExtResource("7_o6wx5")])
+_trait = ExtResource("12_5abp1")
+_preset_path = "res://Data/Character_Player_Variants/Knight.tres"
