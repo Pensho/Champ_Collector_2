@@ -1,6 +1,6 @@
-[gd_resource type="Resource" script_class="FieldOfStudyTrait" format=3]
+[gd_resource type="Resource" script_class="FieldOfStudyTrait" format=3 uid="uid://bys5utcqcm0cr"]
 
-[ext_resource type="Script" path="res://Scripts/Character/character_traits/CharacterSpecificTraits/field_of_study_trait.gd" id="1_fos"]
+[ext_resource type="Script" uid="uid://dxge4xrphtkor" path="res://Scripts/Character/character_traits/CharacterSpecificTraits/field_of_study_trait.gd" id="1_fos"]
 
 [resource]
 script = ExtResource("1_fos")
