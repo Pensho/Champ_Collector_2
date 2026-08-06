@@ -25,7 +25,8 @@ static func GetWeaknessReduction(p_rarity: Types.Rarity) -> float:
 func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
 	_reduction = GetWeaknessReduction(p_rarity)
-	_trait_texture = load("res://Assets/Champ_Collector/Icons/Abilities/Passives/Field_Of_Study_Trait/field_of_study_trait.png")
+	_trait_texture = load(
+			"res://Assets/Champ_Collector/Icons/Abilities/Passives/Field_Of_Study_Trait/field_of_study_trait.png")
 	_execution_steps[Types.Combat_Event.Start_Combat] = Callable(self, "StartOfBattle")
 	_execution_steps[Types.Combat_Event.Debuff_Applied] = Callable(self, "OnDebuffApplied")
 

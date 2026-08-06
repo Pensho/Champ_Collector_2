@@ -1,4 +1,4 @@
-extends SceneTree
+class_name BlowoutCalibration extends SceneTree
 ## Calibration harness for the Blowout design pillar (Concept_Document.md section 1.1).
 ##
 ## Answers how large a Combined_Modifier must be, and how many independent factors it
@@ -6,7 +6,12 @@ extends SceneTree
 ## `Skills.MitigatedDamage` rather than re-deriving it, so the numbers reflect the
 ## implemented formula.
 ##
-## Run: godot --headless -s Scripts/Debug/blowout_calibration.gd
+## Run via Tests/manual/blowout_calibration_report.gd, NOT the bare `-s` entry point below —
+## Skills.MitigatedDamageUnrounded transitively pulls in Character (through Skills's other
+## static helpers), and a bare `-s` script's static dependency graph cannot reach
+## Character.new() before its own compile step runs (see team_corpus_sweep.gd's header for
+## the full explanation):
+##   Tests/run_tests.sh -gtest=res://Tests/manual/blowout_calibration_report.gd -gexit
 
 # Sorcerer preset: Mysticism 100, its basic skill Arc Lash scales 1.0 on Mysticism.
 const CASTER_SCALED_BASE: float = 100.0
@@ -43,23 +48,41 @@ func _initialize() -> void:
 	quit()
 
 
-## Damage as `Skills.MitigatedDamage` computes it, with no critical hit and no random roll.
-func _Damage(p_scaled_aggregate: float, p_effective_defence: float,
+## Damage as `Skills.MitigatedDamageUnrounded` computes it, with no critical hit and no
+## random roll: p_final_multiplier stands in for MitigatedDamage's crit_multiplier parameter,
+## which is just a generic post-mitigation multiplier when crit is neutralized this way. Uses
+## the unrounded core (not Skills.MitigatedDamage's own int(ceil(...))) because these reports
+## compose ratios of ratios — rounding each intermediate damage value first introduces a
+## quantization artifact the real single-roll formula does not have.
+static func _Damage(p_scaled_aggregate: float, p_effective_defence: float,
 		p_final_multiplier: float = 1.0) -> float:
-	var damage_ratio: float = (
-			p_scaled_aggregate / (p_effective_defence + p_scaled_aggregate + 1.0))
-	var mitigation: float = (
-			GameBalance.MINIMUM_DMG_PERCENT
-			+ ((1.0 - GameBalance.MINIMUM_DMG_PERCENT) * damage_ratio))
-	return mitigation * p_scaled_aggregate * p_final_multiplier
+	return Skills.MitigatedDamageUnrounded(p_effective_defence, p_scaled_aggregate, p_final_multiplier, 1.0)
+
+
+## Public entry point: the contrast ratio (Concept_Document.md 1.1.2) an arbitrary,
+## possibly heterogeneous list of independent factors on the scaled aggregate produces —
+## e.g. a composed team's mixed bucket values — generalizing _ReportFactorRequirements's
+## former uniform pow(size, count) shortcut to any Array[float]. Scripts/Debug/burst_reachability.gd
+## does NOT call this — it calls Skills.MitigatedDamage directly against its own already-composed
+## CombinedDamageModifier.Product(), which is a single factor rather than a list of factors.
+static func ContrastRatioForFactors(
+		p_factors: Array[float], p_scaled_aggregate: float, p_defence: float) -> float:
+	var modifier: float = 1.0
+	for factor in p_factors:
+		modifier *= factor
+	var baseline: float = _Damage(p_scaled_aggregate, p_defence)
+	var burst: float = _Damage(p_scaled_aggregate * modifier, p_defence)
+	return burst / baseline
 
 
 ## A boss's hit points, as `BattleResolver` computes them from the Health attribute.
-func _HitPoints(p_health_attribute: float) -> float:
+static func _HitPoints(p_health_attribute: float) -> float:
 	return p_health_attribute * float(GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER)
 
 
-func _ReportBaselines() -> void:
+## Static (not an _initialize()-only instance method) so Tests/manual/blowout_calibration_report.gd
+## can call the five reports directly through a GUT entry path, without instantiating a SceneTree.
+static func _ReportBaselines() -> void:
 	print("--- Baseline basic skill, no modifiers ---")
 	print("(three champions acting each round, all at basic-skill output)")
 	for boss in BOSSES:
@@ -75,7 +98,7 @@ func _ReportBaselines() -> void:
 ## trait and ramp multipliers apply) or the final damage. The placements differ:
 ## the aggregate also feeds the mitigation ratio, so boosting it raises mitigation
 ## as well — superlinear at first, then saturating as mitigation approaches 1.
-func _ReportPlacementComparison() -> void:
+static func _ReportPlacementComparison() -> void:
 	print("--- Modifier placement: on the scaled aggregate vs on final damage ---")
 	var defence: float = BOSSES[0][2]
 	var baseline: float = _Damage(CASTER_SCALED_BASE, defence)
@@ -88,7 +111,7 @@ func _ReportPlacementComparison() -> void:
 	print("")
 
 
-func _ReportFactorRequirements() -> void:
+static func _ReportFactorRequirements() -> void:
 	print("--- Independent factors needed to reach a target contrast ratio ---")
 	var defence: float = BOSSES[0][2]
 	print("(modifier applied to the scaled aggregate; against %s, Defence %.0f)"
@@ -103,9 +126,11 @@ func _ReportFactorRequirements() -> void:
 	for size in FACTOR_SIZES:
 		var row: String = "%-8s" % ("%.2fx" % size)
 		for count in FACTOR_COUNTS:
-			var modifier: float = pow(size, float(count))
-			var damage: float = _Damage(CASTER_SCALED_BASE * modifier, defence)
-			row += "%8.1fx" % (damage / baseline)
+			var factors: Array[float] = []
+			factors.resize(count)
+			factors.fill(size)
+			var ratio: float = ContrastRatioForFactors(factors, CASTER_SCALED_BASE, defence)
+			row += "%8.1fx" % ratio
 		print(row)
 
 	print("")
@@ -120,7 +145,7 @@ func _ReportFactorRequirements() -> void:
 
 ## Smallest multiplier on the scaled aggregate that reaches `p_target` times baseline,
 ## found by bisection. Returns -1.0 when the target is unreachable at any multiplier.
-func _RequiredAggregateMultiplier(
+static func _RequiredAggregateMultiplier(
 		p_target: float, p_defence: float, p_baseline: float) -> float:
 	var low: float = 1.0
 	var high: float = 1.0e6
@@ -135,7 +160,7 @@ func _RequiredAggregateMultiplier(
 	return high
 
 
-func _ReportDefenceIgnoreSweep() -> void:
+static func _ReportDefenceIgnoreSweep() -> void:
 	print("--- Defense_Ignore_Factor, at a 33x aggregate multiplier ---")
 	var defence: float = BOSSES[0][2]
 	var baseline: float = _Damage(CASTER_SCALED_BASE, defence)
@@ -145,7 +170,7 @@ func _ReportDefenceIgnoreSweep() -> void:
 	print("")
 
 
-func _ReportHealthImplications() -> void:
+static func _ReportHealthImplications() -> void:
 	print("--- Burst against current boss hit points, and the Health attribute it implies ---")
 	print("(a burst should land as %.0f%% of a boss, per Concept 1.1.1)"
 			% (100.0 * BURST_SHARE_OF_BOSS))

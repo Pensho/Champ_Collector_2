@@ -11,13 +11,15 @@ Suggested order (dependencies noted inside each plan):
    (calibration, damage math, status channels, cascade, presentation, kits,
    itemization, encounters) and spawns a sub-plan per phase. Takes precedence over
    the plans below where they overlap; `Plan_Encounter_Solution_Design.md` is paused
-   until its Phase 7 lands. Phases 0–4 (calibration, combined modifier, status
-   channels, cascade, burst presentation) are done and their sub-plans deleted; Phase 5 (kit burst
-   reachability) is in progress under `Plan_Kit_Burst_Reachability.md`; sub-plans for the phases
-   after it are written when their prerequisites land and deleted with the rest under
-   the retention rule below. It aligns existing systems and does not author new content —
-   channels it finds too thinly populated to align are recorded in its `Coverage gaps`
-   section, which spawns `Plan_System_Buildout.md` once it holds more than one entry.
+   until its Phase 7 lands. Phases 0–5 (calibration, combined modifier, status
+   channels, cascade, burst presentation, kit burst reachability) are done and their
+   sub-plans deleted; Phase 5 produced `Plan_Channel_Population_Rework.md`, carrying its
+   prescriptions forward. Sub-plans for
+   the phases after it are written when their prerequisites land and deleted with the
+   rest under the retention rule below. It aligns existing systems and does not author
+   new content — channels it finds too thinly populated to align are recorded in its
+   `Coverage gaps` section, which spawns `Plan_System_Buildout.md` once it holds more
+   than one entry.
 
 1. `Plan_Story_Mode_Systems.md` — the systems that deliver story mode (story
    state handler, dialogue overlay, flag-driven hub variants, act gating,

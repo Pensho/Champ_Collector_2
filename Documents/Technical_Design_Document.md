@@ -1152,6 +1152,99 @@ unchanged from before. The deadline is a ceiling against a stalled battle, not a
 the curve's current constants a full sixteen-instance cascade totals under two seconds of spawn
 delay on its own.
 
+### 7.10. Burst reachability scoring
+
+Answers Concept Document 1.1.2's actual question — what burst can a given team reach — as an
+executable function instead of a per-entry channel tag or a hand-computed sample. Four files,
+each with one job:
+
+* **`Scripts/Debug/kit_contribution_manifest.gd`** (`KitContributionManifest`) — a `const`
+  dictionary, one entry per `Types.Role` passive plus its three skills, stating what the kit can
+  put on the table by burst time: the `CombinedDamageModifier` bucket key it lands in (or `""` for
+  Channel 1 or a pure Enabler), its magnitude at Legendary rarity, a stack cap, its
+  `Contribution_Class` (`Channel1`, `Channel2`, `Channel3_Cascade`, `Enabler`), a precondition, a
+  `file.gd:line` citation, and — on an Enabler entry that grants a teammate a modifier-bearing
+  status (Tactician's Fatal Flaw, Thief's Weigh the Mark, Scholar's Expose Fallacy) — an optional
+  `granted_status` field (`bucket_key`, `magnitude`, `per_debuff_anchored`, `citation`) carrying
+  the magnitude the grant contributes once it lands, since that value lives on the status's own
+  `StatusEffectData` resource rather than the granting entry's own bucket. Derived by reading the
+  code, not `Concept_Document.md` 3.1.3/3.2.4.2 — where the two disagree, the disagreement is
+  recorded in the entry's precondition text (and, where it affects a design claim rather than only
+  an implementation detail, corrected in the Concept Document directly — see 3.1.3's Architect and
+  Lancer entries, and 3.2.4.2's Thief entry). To add a new or reworked kit: add one entry with
+  these fields, including `granted_status` if the kit grants a teammate a modifier-bearing status;
+  nothing else reads the Concept Document's tags, so the entry is the only edit needed.
+* **`Scripts/Debug/burst_reachability.gd`** (`BurstReachability`) — given three `CharacterPreset`
+  instances and nothing else, enumerates every damaging skill on the team as a candidate burst
+  resolution, composes the manifest's reachable contributions at each through a real
+  `CombinedDamageModifier`, and ranks candidates by contrast ratio. `ScoreTeam` takes an optional
+  `p_manifest` parameter (defaulting to `KitContributionManifest.MANIFEST`) so a hypothetical kit
+  change can be modeled by passing a duplicated, modified copy — the mechanism Phase 6 prescription
+  modeling uses; nothing mutates the real manifest. Two contract quantities are reported per
+  candidate, both read off the real `CombinedDamageModifier.Product()` and `Skills.MitigatedDamage`
+  rather than a third mirror of either: the combined modifier product, and the burst contrast ratio
+  split into a base term (raw `damage_scaling` aggregate ratio) and a modifier term (what the
+  product alone contributes once mitigated) — so a skill cannot pass Concept Document 1.1.6's
+  rejection test purely by having a fatter Channel-1 base. Also enforces the shared eight-status
+  cap (`GameBalance.MAX_STATUS_EFFECTS`, reporting which buckets were dropped rather than silently
+  scoring them), per-trait stack ceilings, cascade instance bounds, and an `ENABLER_FLOOR` below
+  which a team is marked non-viable and excluded from ranked output (currently `0`; the right value
+  is a design call for once curated teams exist). Two stated simplifications, both documented at
+  the top of the file: uncapped per-instance sources are scored at exactly one instance, and caster
+  attributes are each preset's base values with no accumulated trait mutation.
+* **`Scripts/Debug/team_corpus.gd`** (`TeamCorpus`) — a pluggable input, not a fixed list: three
+  presets, a `Tier` (`Intent`, `Plausible_But_Wrong`, `Control`), and an optional one-sentence note,
+  per row. The bursting champion and skill are never row fields — the scorer derives them, so a row
+  can never assert which resolution should win. `PROVISIONAL_ROWS` seeds this today with the top
+  teams the full-roster sweep found, the two hand-computed teams from the (deleted) kit-rework
+  plan, and three controls, each marked `"provisional": true`; struck once real curated sets exist.
+  The scorer reads this file and nothing else knows it exists.
+* **`Scripts/Debug/blowout_calibration.gd`** (`BlowoutCalibration`) — the calibration harness for
+  Concept Document 1.1's contrast targets, gained one public entry point:
+  `ContrastRatioForFactors(p_factors: Array[float], p_scaled_aggregate: float, p_defence: float)`,
+  generalizing the file's former uniform `pow(size, count)` shortcut to an arbitrary,
+  heterogeneous factor list — e.g. a composed team's mixed bucket values. `burst_reachability.gd`
+  does NOT call this; it calls `Skills.MitigatedDamageUnrounded` directly against its own
+  already-composed `CombinedDamageModifier.Product()`, which is a single factor rather than a
+  list of factors. `Skills.MitigatedDamage` itself now wraps an unrounded `float`-returning core,
+  `MitigatedDamageUnrounded`, with its existing `int(ceil(...))` — both `blowout_calibration.gd`'s
+  own `_Damage` and `burst_reachability.gd` call the unrounded core directly, since both compose
+  ratios of ratios and rounding each intermediate value first would introduce a quantization
+  artifact the real single-roll formula does not have. The file's own five reports (baselines,
+  placement comparison, factor requirements, Defence-ignore sweep, health implications) are
+  unchanged by the split — verified by diffing the pre-split output against the post-split one.
+
+**Entry paths.** `BurstReachability.ScoreTeam` constructs `Character` via `Character.new()` and
+`InstantiateNew`, which requires the `main` autoload to be resolvable — a bare
+`godot --headless -s Scripts/Debug/some_script.gd` SceneTree entry fails this, because a custom
+main-loop script's own static dependency graph compiles before autoloads are available.
+`blowout_calibration.gd` itself now also hits this: `Skills.MitigatedDamageUnrounded`
+transitively pulls in `Character` through `Skills`'s other static helpers, so its bare `-s` entry
+path (still documented in the file's own header as a historical note) no longer compiles either.
+Anything that calls `ScoreTeam` or `Skills.MitigatedDamageUnrounded` — the unit tests and the
+three manual scripts below, including `blowout_calibration_report.gd` — therefore runs through
+GUT (`addons/gut/gut_cmdln.gd`), a different bootstrap path where this resolves cleanly, not
+through a bare `-s` script.
+
+**Manual scripts** (`Tests/manual/`, run explicitly, not part of the default `Tests/unit/` suite):
+`team_corpus_sweep.gd` scores every corpus row plus a full `C(20,3) = 1140`-team sweep of the
+roster, reporting the distribution's median, 90th percentile, and maximum combined-modifier
+product — the direct measurement of whether team choice matters at all — and the single best
+team's bucket decomposition as the roster's current ceiling. Both sweep scripts list the *full*
+known preset roster and reduce it through `TeamSweep.DedupeByRole`
+(`Scripts/Debug/team_sweep.gd`) before scoring — several presets can field the same Role (same
+trait, same three skills; e.g. `Centaur_Lancer.tres` and `Knight.tres` both field Lancer), and
+burst reachability is a property of the Role's kit, not of the preset fielding it, so scoring
+more than one preset per Role would only add duplicate-kit teams to the distribution.
+Deduplicating at run time rather than hand-curating the preset list means a future preset
+sharing an existing Role is excluded automatically. `prescription_sweep.gd` re-runs that
+same full sweep against four modified copies of the manifest (never the real one), reporting each
+prescription's effect on the median as well as the ceiling, since a prescription that lifts both
+equally fails Concept Document 1.1.3's realisation requirement even if it reaches the target.
+`blowout_calibration_report.gd` runs `BlowoutCalibration`'s five reports (now `static`, callable
+without instantiating a `SceneTree`) through the same GUT entry path, since the bare `-s` path
+documented in the file's own header no longer compiles (see "Entry paths" above).
+
 ---
 
 ## 8. Character progression

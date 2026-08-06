@@ -276,6 +276,22 @@ static func HasMaxStatusEffects(p_character: Character) -> bool:
 		return true
 	return false
 
+## Unrounded core of MitigatedDamage, shared with any caller (Scripts/Debug/blowout_calibration.gd,
+## Scripts/Debug/burst_reachability.gd) that composes this result further before rounding, so
+## a chain of ceil(int(...)) roundings never accumulates a quantization artifact the real
+## single-roll formula does not have.
+static func MitigatedDamageUnrounded(
+		p_effective_defence: float,
+		p_caster_scaled_attribute_aggregate: float,
+		p_crit_multiplier: float,
+		p_random_value: float) -> float:
+	var damage_ratio: float = (
+			p_caster_scaled_attribute_aggregate
+			/ (p_effective_defence + p_caster_scaled_attribute_aggregate + 1.0))
+	var mitigation_factor: float = (
+			GameBalance.MINIMUM_DMG_PERCENT + ((1.0 - GameBalance.MINIMUM_DMG_PERCENT) * damage_ratio))
+	return mitigation_factor * p_caster_scaled_attribute_aggregate * p_crit_multiplier * p_random_value
+
 ## Mitigated damage from a single attack roll against `p_effective_defence`; shared by
 ## the direct hit and any Shield-Wall-style redirected share, which re-mitigates the
 ## same roll against the soaker's own Defence. `p_caster_scaled_attribute_aggregate` is
@@ -285,12 +301,8 @@ static func MitigatedDamage(
 		p_caster_scaled_attribute_aggregate: float,
 		p_crit_multiplier: float,
 		p_random_value: float) -> int:
-	var damage_ratio: float = (
-			p_caster_scaled_attribute_aggregate
-			/ (p_effective_defence + p_caster_scaled_attribute_aggregate + 1.0))
-	var mitigation_factor: float = (
-			GameBalance.MINIMUM_DMG_PERCENT + ((1.0 - GameBalance.MINIMUM_DMG_PERCENT) * damage_ratio))
-	return int(ceil(mitigation_factor * p_caster_scaled_attribute_aggregate * p_crit_multiplier * p_random_value))
+	return int(ceil(MitigatedDamageUnrounded(
+			p_effective_defence, p_caster_scaled_attribute_aggregate, p_crit_multiplier, p_random_value)))
 
 ## The first living ally of `p_target_ID` whose trait redirects a share of incoming
 ## attack damage (e.g. Shield Wall); [-1, 0.0] when nobody redirects or the attacker

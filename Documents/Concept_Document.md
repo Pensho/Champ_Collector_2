@@ -189,8 +189,8 @@ the same bracket vocabulary as section 3.2.3: **[Channel 1]** moves an attribute
 additively; **[Channel 2]** supplies its own factor to the combined modifier; **[Channel 3 —
 Cascade]** triggers a separate resolution; **[Enabler]** does neither. A passive tagged with two
 buckets is dual-classified on purpose, the same as a status can be. Herald of the loom's passive is
-blank — recorded as a finding (`Plan_Kit_Blowout_Audit.md` Phase 4), not tagged, since there is no
-mechanic to classify; designing one is rework, carried to `Plan_Kit_Reworks.md`.
+blank — recorded as a zero-contribution kit in `Scripts/Debug/kit_contribution_manifest.gd`, not
+tagged, since there is no mechanic to classify; designing one is rework.
 
 Current roles, their identity and purpose exist as follows:
 - Emissary
@@ -210,6 +210,8 @@ Current roles, their identity and purpose exist as follows:
     - Purpose: Damage
     - Passive: Reckless Momentum [Channel 1] - When an offensive skill is used the Lancer gains one Momentum stack (+x% damage, -x/2% defence while stacks are held, maximum 5 stacks). When a defensive skill is used, the Lancer gains Phalanx Guard (a role-unique 2-turn buff, +x% defence) and all Momentum stacks are consumed.
         - 4% Uncommon, 6% Rare, 8% Epic, 10% Legendary
+        - See the bug flagged under section 3.2.4.2 Lancer / Lance Thrust: the offensive/defensive
+          skill-name matching does not reach this role's own kit as shipped.
     - Fielded by: `Centaur_Lancer.tres`, `Knight.tres`
 - Alchemist
     - A support character that focuses on buffing allies and debuffing enemies through various concoctions. Signature zone: Catalyst Cloud (see section 3.2.4.1). Primary attributes: Knowledge, Mysticism.
@@ -283,12 +285,12 @@ Current roles, their identity and purpose exist as follows:
         - Black thread; All damage dealt and received scale with mysticism instead of other attributes. One other player & enemy character will have their attributes averaged out while Black thread is in use.  Primary attributes: Mysticism, Accuracy.
     - Purpose: Debuffer, Buffer
     - Passive: (blank — no mechanic exists to classify)
-        - **Finding (`Plan_Kit_Blowout_Audit.md` Phase 4, severity high):** neither the passive nor
-          the three stances described above (Golden/Silver/Black Thread) exist anywhere in code —
-          no stance enum, no stance-switching effect. The shipped kit (Thread Snap, Thread Lash,
-          Woven Blessing) is three plain Mysticism-scaled skills sharing the flavor name only.
-          Designing the passive and the stance system is a from-scratch rework, carried to
-          `Plan_Kit_Reworks.md`, not a patch to existing behavior.
+        - **Finding, severity high:** neither the passive nor the three stances described above
+          (Golden/Silver/Black Thread) exist anywhere in code — no stance enum, no
+          stance-switching effect. The shipped kit (Thread Snap, Thread Lash, Woven Blessing) is
+          three plain Mysticism-scaled skills sharing the flavor name only. Designing the passive
+          and the stance system is a from-scratch rework, not a patch to existing behavior. See
+          `Scripts/Debug/kit_contribution_manifest.gd` (Herald of the Loom entry).
     - Fielded by: `Herald_of_the_loom.tres`
 - Chronophage
     - A speed focused character, applying various speed modifying skills onto the turn bar and primarily deals damage based on the Speed attribute. Signature zones: Flicker Zone and Temporal Sinkhole (see section 3.2.4.1). Primary attributes: Speed.
@@ -299,15 +301,14 @@ Current roles, their identity and purpose exist as follows:
 - Architect
     - A methodical charge & support character aligned with the God of Rules. Instead of raw aggression, they construct "Logic Chains" over the course of battle, eventually "solving" the encounter with a massive structural shift. Primary attributes: Knowledge, Defense.
     - Purpose: Buffer, Damage
-    - Passive: Calibration [Channel 1 + Channel 2 + Enabler] - The Architect accumulates Calibration charges (maximum 10; charges do not persist between combats). Basic skills grant one charge, and the Architect's constructed zone generates one charge per character that uses it. The Architect's non-basic skills consume charges and scale with the amount consumed: a few charges empower defensive ally buffs, while the finisher consumes all held charges and resolves in tiers - 1-3 charges deal damage only, 4-6 add a structural effect on top of the damage, 7-10 additionally re-erect the Architect's construction zone for free. Tier thresholds are fixed across rarities; rarity scales per-charge potency.
+    - Passive: Calibration [Channel 1 + Channel 2 + Enabler] - The Architect accumulates Calibration charges (maximum 12; charges do not persist between combats). Basic skills grant one charge, and the Architect's constructed zone (Raise the Frame) generates one charge per character that uses it. The Architect's non-basic skills consume charges and scale with the amount consumed: a few charges empower defensive ally buffs, while the finisher consumes all held charges and resolves in tiers - 1-4 charges deal damage only, 5-8 add a structural effect on top of the damage, 9-12 additionally re-erect the Architect's construction zone for free. Tier thresholds are fixed across rarities; rarity scales per-charge potency.
         - Per-charge potency: 4% Uncommon, 6% Rare, 8% Epic, 10% Legendary
-        - **Conflict flagged (`Plan_Kit_Blowout_Audit.md` Phase 6):** the construction-zone skill
-          this entry claims doesn't exist yet already ships as `Raise_the_Frame.tres`, and
-          `calibration_trait.gd` grants charges from it, not just from basic skills. The tier
-          thresholds above (1-3/4-6/7-10, cap 10) also disagree with the code
-          (`EXPOSE_WEAKNESS_THRESHOLD = 5`, `ZONE_RE_ERECT_THRESHOLD = 9`, `MAX_CHARGES = 12`).
-          Per section 1.1's precedence the code is not being silently rewritten here; both drifts
-          are recorded for whoever next touches this Role to resolve.
+        - Corrected to match shipped code (`calibration_trait.gd`: `MAX_CHARGES = 12`,
+          `EXPOSE_WEAKNESS_THRESHOLD = 5`, `ZONE_RE_ERECT_THRESHOLD = 9`) — `Plan_Architect_Calibration_Kit.md`
+          designed cap 10 with thresholds 4/6/7, but the landed implementation ships 12/5/9. Per
+          section 1.1's precedence the drift is resolved in the code's favour here — this entry's
+          cap and tier bands (1-4/5-8/9-12, above) already state the shipped values, not the
+          original design.
     - Fielded by: `Architect.tres`
 - Tidal Corsair
     - Damage dealer. Primary attributes: Attack, Speed.
@@ -322,10 +323,11 @@ Current roles, their identity and purpose exist as follows:
     - A debuff focused character, applying various damage over time and stat reducing debuffs to enemies. Signature zone: Miasma (see section 3.2.4.1). Primary attributes: Mysticism, Resistance.
     - Purpose: Debuffer
     - Passive: Comorbidity [Channel 2, provisional] - Damage-over-time debuffs applied by the Plague Doctor tick for +x% damage per debuff on the target (the ticking debuff included, debuffs from any source counted, up to 5).
-        - **Provisional (`Plan_Kit_Blowout_Audit.md` Phase 2):** the tick-bonus formula is sound,
-          but the zone-trigger debuff path (used by Miasma, this kit's only self-ticking debuff)
-          bypasses the code parameter that carries this bonus — as shipped, Comorbidity has nothing
-          in its own kit to boost. See `Plan_Kit_Reworks.md`.
+        - **Provisional:** the tick-bonus formula is sound, but the zone-trigger debuff path (used
+          by Miasma, this kit's only self-ticking debuff) bypasses the code parameter that carries
+          this bonus — as shipped, Comorbidity has nothing in its own kit to boost. See
+          `Scripts/Debug/kit_contribution_manifest.gd` (Comorbidity entry) and
+          `comorbidity_trait.gd:3-8,25-33`.
         - Per-debuff tick bonus: 5% Uncommon, 7% Rare, 9% Epic, 11% Legendary
     - Fielded by: `Plague_Doctor.tres`
 - Warlord
@@ -569,7 +571,7 @@ continuously and additively; **[Channel 2]** supplies its own factor to the comb
 **[Channel 3 — Cascade]** triggers a separate resolution; **[Enabler]** does neither. A skill that
 only applies an already-tagged status inherits that status's tag(s) rather than repeating the
 reasoning; a skill combining its own effect with an applied status is tagged with both. See
-`Plan_Kit_Blowout_Audit.md` for the full ledger and evidence behind each tag.
+`Scripts/Debug/kit_contribution_manifest.gd` for the full ledger and evidence behind each tag.
 
 ###### Emissary
 * Citation
@@ -596,20 +598,20 @@ reasoning; a skill combining its own effect with an applied status is tagged wit
     * Type: Buff
     * Cooldown: 3 turns
     * Effect: [Channel 2] The Thief gains the Opportunist buff for 2 turns (see section 3.2.3.2).
-        * **Conflict flagged (`Plan_Kit_Blowout_Audit.md` Phase 4):** the shipped resource is
-          `Weigh_the_Mark.tres` — same Opportunist grant, but named "Weigh the Mark" and lasting
-          3 turns, not the 2 documented here. Not silently rewritten per section 1.1's precedence
-          rule; needs a documentation or data fix.
+        * **Conflict flagged:** the shipped resource is `Weigh_the_Mark.tres` — same Opportunist
+          grant, but named "Weigh the Mark" and lasting 3 turns, not the 2 documented here. Not
+          silently rewritten per section 1.1's precedence rule; needs a documentation or data
+          fix. See `Scripts/Debug/kit_contribution_manifest.gd` (Thief entry).
 
 ###### Lancer
 * Lance Thrust
     * Type: Damage (basic skill, no cooldown; counts as an offensive skill)
     * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Attack.
-        * **Bug flagged (`Plan_Kit_Blowout_Audit.md` Phase 1):** `lancer_trait.gd`'s offensive-skill
-          name set contains "Stab" (no Lancer skill has that name) instead of "Lance Thrust", and
-          the defensive-skill name set is never populated at all — Momentum currently accrues from
-          casting Disarm instead, and Phalanx Guard is unreachable. Not rewritten here per section
-          1.1's precedence rule; needs a code fix.
+        * **Bug flagged:** `lancer_trait.gd`'s offensive-skill name set contains "Stab" (no Lancer
+          skill has that name) instead of "Lance Thrust", and the defensive-skill name set is
+          never populated at all — Momentum currently accrues from casting Disarm instead, and
+          Phalanx Guard is unreachable. Not rewritten here per section 1.1's precedence rule;
+          needs a code fix. See `Scripts/Debug/kit_contribution_manifest.gd` (Lancer entry).
 * Rending Charge
     * Type: Damage, Debuff (counts as an offensive skill)
     * Cooldown: 3 turns
@@ -799,7 +801,7 @@ reasoning; a skill combining its own effect with an applied status is tagged wit
 * Final Calculation
     * Type: Damage
     * Cooldown: 3 turns
-    * Effect: [Channel 1 + Channel 2 + Enabler] Consumes all held Calibration charges: 1-3 charges deal damage only; 4-6 also apply the Expose Weakness debuff for 2 turns (see section 3.2.3.2); 7-10 additionally re-erect the Architect's construction zone for free.
+    * Effect: [Channel 1 + Channel 2 + Enabler] Consumes all held Calibration charges: 1-4 charges deal damage only; 5-8 also apply the Expose Weakness debuff for 2 turns (see section 3.2.3.2); 9-12 additionally re-erect the Architect's construction zone for free.
 
 ###### Tidal Corsair
 * Boarding Strike
@@ -842,7 +844,7 @@ reasoning; a skill combining its own effect with an applied status is tagged wit
 ##### 3.2.4.3 Unassigned / Generic Skills
 Not yet tied to a specific Role, grouped by mechanical type for lookup.
 
-**Verdict on the two unassigned entries (`Plan_Kit_Blowout_Audit.md` Phase 4):** both are shipped,
+**Verdict on the two unassigned entries:** both are shipped,
 functional, and channel-correct on their own terms, but referenced by no Character Preset — a
 coverage/roster-assignment gap, not a channel defect. `Weigh_the_Mark.tres` and `Power_Tide.tres`
 (the Thief's actual third skill and an orphaned all-ally Empower buff respectively, neither listed

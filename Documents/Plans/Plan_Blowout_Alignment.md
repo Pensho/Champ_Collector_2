@@ -81,9 +81,37 @@ named until kit reworks give the roster real candidates. Documentation-vs-code c
 the first attempt were carried into the second rather than lost (Lancer's Reckless Momentum
 offense/defense skill names, Architect's Calibration thresholds and the already-known
 construction-zone claim, the Weigh the Mark/Case the Target name and duration drift, and
-Comorbidity's tick bonus never reaching the Plague Doctor's own signature zone skill). Both
-`Plan_Kit_Blowout_Audit.md` and `Plan_Kit_Reworks.md` are deleted per the retention rule;
-`Plan_Kit_Burst_Reachability.md` carries the phase forward.
+Comorbidity's tick bonus never reaching the Plague Doctor's own signature zone skill; these four
+are now corrected directly in `Concept_Document.md` 3.1.3/3.2.4.2, citing
+`Scripts/Debug/kit_contribution_manifest.gd` rather than a plan file). Both
+`Plan_Kit_Blowout_Audit.md` and `Plan_Kit_Reworks.md` are deleted per the retention rule.
+
+The full `C(20,3) = 1140`-team sweep (`Tests/manual/team_corpus_sweep.gd`, which reduces the
+known preset roster to one preset per Role via `TeamSweep.DedupeByRole` before scoring — several
+presets field the same Role's kit, e.g. `Centaur_Lancer.tres` and `Knight.tres` both field
+Lancer, and scoring both would only add duplicate-kit teams) found the roster's
+combined-modifier-product distribution at **median 1.40x, 90th percentile 2.80x, maximum 5.60x**
+— against the 26x target, roughly 4.6x short at the product level even at the ceiling. The gap
+between the 90th percentile and the maximum is one pairing repeated across every top-decile row
+(Tidal Corsair's Wrangle the Sea composed with Tactician's unconditional Daunting Strength grant),
+not a spread of distinct pairs: no other pair in the 20-champion roster reaches a second distinct
+Channel-2/3 key at all, a single point of failure rather than a discriminating top tail. Four
+prescriptions were quantified by re-running the scorer against a modified manifest copy
+(`Tests/manual/prescription_sweep.gd`, never the real manifest): spreading a
+`bonus_per_debuff_on_target` hook across more Channel-1-only skills, and adding a distinct
+Channel-2 key to each zero-contribution kit (Herald of the Loom, Bloodmage), both leave the
+ceiling and median completely unchanged, because either only ever composes with Tactician's lone
+team-wide grant, never with the actual ceiling pair; a uniform retune of every existing
+Channel-2/3 magnitude — including an Enabler-classed entry's `granted_status` magnitude, since a
+grant like Tactician's Daunting Strength is a real Channel-2 factor once it lands, just carried
+on an Enabler-classed manifest entry — reaches 26x by retuning alone at a 3.03x multiplier; and
+populating Channel 3 via repeated `CascadeEvent.instance_count` stays flat until instance counts
+get large (K=16, the per-action cascade cap, before the ceiling moves at all). Ranked by ceiling
+delta per unit of work: retune (+1.71x at a modest 1.25x patch) > populate channel 3 (+1.20x at
+K=16) > spread-hook and zero-contribution-kit (tied at zero). No prescription here uncaps
+Momentum, Arcane Instability, or Steel and Sea. `Plan_Channel_Population_Rework.md` carries these
+prescriptions forward; `Plan_Kit_Burst_Reachability.md` is deleted per the retention rule once
+these findings have landed here and it has been reviewed.
 
 Phase 0 findings, measured against the balanced bosses (Troll, Vael, Obsidian Stallion,
 Ulfrac, Bor Bulwark). The newer catalog bosses are excluded as untuned and unplayed:
@@ -231,18 +259,18 @@ resulting `FeatureIdeas.md` entry.
 
 Depended on Phase 3.
 
-### Phase 5 — Champion kit audit — done
+### Phase 5 — Kit burst reachability — done
 
-**Produced:** `Plan_Kit_Blowout_Audit.md`, deleted per the retention rule after completion (see
-Status above). **Produces:** `Plan_Kit_Reworks.md`, carrying forward the audit's rework and
-provisional findings.
+**Produced:** `Plan_Kit_Blowout_Audit.md`, then `Plan_Kit_Burst_Reachability.md` (the re-scoped
+executable version), both deleted per the retention rule after completion (see Status above and
+Technical Design Document 7.10). **Produces:** `Plan_Channel_Population_Rework.md`, carrying
+Phase 6's prescriptions forward.
 
-Every Role and champion in section 3.1.3 and every skill in section 3.2.4.2 against the
-rejection test. For each kit: which channel does it feed — or whether it is an enabler
-passing the collapse test — does it contribute independently of other kits, and can it
-participate in a burst at all. A kit carrying enablers rather than factors is a valid
-result, not a finding. Expected output is a
-list of kits that need rework, not a rewrite of all of them.
+Re-scoped from a per-entry tag audit into an executable scorer, because a tag is a property of
+one entry and the pillar's requirement is a property of a team. For each kit: which channel does
+it feed — or whether it is an enabler passing the collapse test — does it contribute
+independently of other kits, and can it participate in a burst at all, now answerable for any
+team rather than by hand for two samples.
 
 Watch for: the capped passives (Momentum, Arcane Instability, Steel and Sea stacks) are
 explicitly correct as written per section 1.1.4 — they accrue automatically. Do not uncap
@@ -321,17 +349,29 @@ and its open work has to land somewhere living.
   * **Cascade-on-cascade** — an effect listening for another cascade instance landing, which
     `Concept_Document.md` 1.1.3 names outright as the compounding case.
 
-* **Cross-kit Channel 2 composition is mechanically sound but content-thin.** Found by Phase 5.
-  The architecture composes correctly — each `CombinedDamageModifier` is assembled fresh per
-  resolution from only the acting caster's own state, so nothing about the composition law is
-  broken — but only one skill in the entire 79-entry corpus (Sorcerer's Cataclysmic Surge) declares
-  `bonus_per_debuff_on_target`, the main lever by which a debuff-applying kit hands a Channel 2
-  factor to a teammate's burst. Most debuff-appliers (Confound, Suppress, Unravel, and others) have
-  no damage skill anywhere in the roster that reads them as a factor, leaving them Channel-1-only
-  in practice despite being individually correct. Populating more `bonus_per_debuff_on_target`
-  hooks (or an equivalent generic mechanism) across existing damage skills is build-out/rework
-  content, not an architecture change — `Plan_Kit_Reworks.md` inherits the specific findings;
-  broader roster-wide population belongs here once that plan's narrower fixes land.
+* **Cross-kit Channel 2/3 composition is mechanically sound but content-thin, quantified.** Found
+  by Phase 5's per-entry pass, quantified by the re-scoped `Plan_Kit_Burst_Reachability.md`'s
+  full-roster sweep. The architecture composes correctly — each `CombinedDamageModifier` is
+  assembled fresh per resolution from only the acting caster's own state, so nothing about the
+  composition law is broken — but the 1140-team sweep's product distribution (median 1.40x, 90th
+  percentile 2.80x, ceiling 5.60x, against the 26x target) shows almost none of that correctness
+  reaching the roster: the ceiling is one pairing (Tidal Corsair's Wrangle the Sea composed with
+  Tactician's unconditional Daunting Strength grant) repeated across every top-decile team, and no
+  other pair reaches a second distinct Channel-2/3 key at all. Only one skill in the 79-entry kit
+  corpus (Sorcerer's Cataclysmic Surge) declares `bonus_per_debuff_on_target`, the main lever by
+  which a debuff-applying kit hands a Channel 2 factor to a teammate's burst; most debuff-appliers
+  (Confound, Suppress, Unravel, and others) have no damage skill anywhere in the roster that reads
+  them as a factor, leaving them Channel-1-only in practice despite being individually correct.
+  `Plan_Kit_Burst_Reachability.md`'s Phase 6 quantified four candidate fixes against this sweep:
+  spreading more `bonus_per_debuff_on_target` hooks and giving each zero-contribution kit (Herald
+  of the Loom, Bloodmage) a distinct factor both left the ceiling and median unchanged, since
+  either only composes with Tactician's lone grant; a uniform retune of existing factors — including
+  an Enabler-classed entry's granted-status magnitude — closes the gap alone at a 3.03x multiplier,
+  the largest single-unit-of-work ceiling gain of the four; populating channel 3 via repeated
+  `CascadeEvent.instance_count` is the next largest, but stays flat until instance counts get
+  large. Populating more composition hooks across existing damage skills is build-out/rework
+  content, not an architecture change — `Plan_Channel_Population_Rework.md` carries these ranked
+  prescriptions forward.
 
 **This list now holds more than the cascade entry — the spawn condition above is met.**
 `Plan_System_Buildout.md` is due to be created and receive both entries above; not yet spawned as
