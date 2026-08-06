@@ -45,14 +45,14 @@ func test_phalanx_guard_defense_table() -> void:
 func test_offensive_skill_increments_momentum() -> void:
 	_InitTrait(Types.Rarity.Epic)
 	var attributes: Dictionary[Types.Attribute, int] = {Types.Attribute.Attack: 100, Types.Attribute.Defence: 100}
-	_trait.OnSkillCast(0, [], "Stab", attributes, _resolver)
+	_trait.OnSkillCast(0, [], "Lance Thrust", attributes, _resolver)
 	assert_eq(_trait._momentum_stacks, 1, "Offensive skill should add one Momentum stack")
 
 func test_momentum_capped_at_max() -> void:
 	_InitTrait(Types.Rarity.Epic)
 	var attributes: Dictionary[Types.Attribute, int] = {Types.Attribute.Attack: 0, Types.Attribute.Defence: 0}
 	for i in LancerTrait.MAX_MOMENTUM_STACKS + 3:
-		_trait.OnSkillCast(0, [], "Stab", attributes, _resolver)
+		_trait.OnSkillCast(0, [], "Lance Thrust", attributes, _resolver)
 	assert_eq(_trait._momentum_stacks, LancerTrait.MAX_MOMENTUM_STACKS,
 		"Momentum stacks must not exceed MAX_MOMENTUM_STACKS")
 
@@ -68,13 +68,13 @@ func test_attack_bonus_scales_with_stacks_and_rarity() -> void:
 	_InitTrait(Types.Rarity.Epic)  # 8% per stack
 	# Build up 2 stacks with zero attack so no bonus is applied during stack accumulation.
 	var stack_attr: Dictionary[Types.Attribute, int] = {Types.Attribute.Attack: 0, Types.Attribute.Defence: 0}
-	_trait.OnSkillCast(0, [], "Stab", stack_attr, _resolver)
-	_trait.OnSkillCast(0, [], "Stab", stack_attr, _resolver)
+	_trait.OnSkillCast(0, [], "Lance Thrust", stack_attr, _resolver)
+	_trait.OnSkillCast(0, [], "Lance Thrust", stack_attr, _resolver)
 	assert_eq(_trait._momentum_stacks, 2)
 
 	# Cast again with real attack value — stacks increment to 3 first, then bonus applies.
 	var measure_attr: Dictionary[Types.Attribute, int] = {Types.Attribute.Attack: 100, Types.Attribute.Defence: 100}
-	_trait.OnSkillCast(0, [], "Stab", measure_attr, _resolver)
+	_trait.OnSkillCast(0, [], "Lance Thrust", measure_attr, _resolver)
 	# 3 stacks × 8% of 100 = ceil(24) = 24
 	assert_eq(measure_attr[Types.Attribute.Attack], 124,
 		"Attack should be boosted by 3 stacks × 8% = 24")
@@ -82,7 +82,7 @@ func test_attack_bonus_scales_with_stacks_and_rarity() -> void:
 func test_first_cast_gains_stack_and_applies_bonus() -> void:
 	_InitTrait(Types.Rarity.Legendary)  # 10% per stack
 	var attributes: Dictionary[Types.Attribute, int] = {Types.Attribute.Attack: 80, Types.Attribute.Defence: 60}
-	_trait.OnSkillCast(0, [], "Stab", attributes, _resolver)
+	_trait.OnSkillCast(0, [], "Lance Thrust", attributes, _resolver)
 	# Stack increments to 1, then bonus = ceil(80 × 10% × 1) = 8
 	assert_eq(attributes[Types.Attribute.Attack], 88,
 		"First offensive cast should increment to 1 stack and apply the bonus")
@@ -92,8 +92,8 @@ func test_first_cast_gains_stack_and_applies_bonus() -> void:
 func test_defend_lowers_defence_proportional_to_stacks() -> void:
 	_InitTrait(Types.Rarity.Epic)  # 8% per stack → penalty 4% per stack
 	var stack_attr: Dictionary[Types.Attribute, int] = {Types.Attribute.Attack: 0, Types.Attribute.Defence: 0}
-	_trait.OnSkillCast(0, [], "Stab", stack_attr, _resolver)
-	_trait.OnSkillCast(0, [], "Stab", stack_attr, _resolver)
+	_trait.OnSkillCast(0, [], "Lance Thrust", stack_attr, _resolver)
+	_trait.OnSkillCast(0, [], "Lance Thrust", stack_attr, _resolver)
 	assert_eq(_trait._momentum_stacks, 2)
 
 	var defend_attr: Dictionary[Types.Attribute, int] = {Types.Attribute.Defence: 100}
@@ -113,11 +113,10 @@ func test_defend_no_penalty_with_zero_stacks() -> void:
 
 func test_defensive_skill_applies_phalanx_guard_buff() -> void:
 	_InitTrait(Types.Rarity.Uncommon)  # 4% Phalanx Guard
-	_trait.defensive_skill_names["Shield_Bash"] = true
 	_trait._momentum_stacks = 3
 
 	var attributes: Dictionary[Types.Attribute, int] = {Types.Attribute.Attack: 0, Types.Attribute.Defence: 0}
-	_trait.OnSkillCast(0, [], "Shield_Bash", attributes, _resolver)
+	_trait.OnSkillCast(0, [], "Disarm", attributes, _resolver)
 
 	assert_eq(_character._active_buffs.size(), 1, "Phalanx Guard buff should be applied")
 	assert_eq(_character._active_buffs[0].type, Types.Buff_Type.Phalanx_Guard)
@@ -126,20 +125,18 @@ func test_defensive_skill_applies_phalanx_guard_buff() -> void:
 
 func test_defensive_skill_clears_all_momentum_stacks() -> void:
 	_InitTrait(Types.Rarity.Rare)
-	_trait.defensive_skill_names["Shield_Bash"] = true
 	_trait._momentum_stacks = 4
 
 	var attributes: Dictionary[Types.Attribute, int] = {Types.Attribute.Attack: 0, Types.Attribute.Defence: 0}
-	_trait.OnSkillCast(0, [], "Shield_Bash", attributes, _resolver)
+	_trait.OnSkillCast(0, [], "Disarm", attributes, _resolver)
 
 	assert_eq(_trait._momentum_stacks, 0, "Defensive skill should consume all Momentum stacks")
 
 func test_defensive_skill_with_zero_stacks_skips_phalanx_guard() -> void:
 	_InitTrait(Types.Rarity.Rare)
-	_trait.defensive_skill_names["Shield_Bash"] = true
 	# _momentum_stacks stays at 0
 
 	var attributes: Dictionary[Types.Attribute, int] = {Types.Attribute.Attack: 0, Types.Attribute.Defence: 0}
-	_trait.OnSkillCast(0, [], "Shield_Bash", attributes, _resolver)
+	_trait.OnSkillCast(0, [], "Disarm", attributes, _resolver)
 
 	assert_eq(_character._active_buffs.size(), 0, "No Phalanx Guard should be applied when stacks are zero")

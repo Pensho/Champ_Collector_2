@@ -16,15 +16,14 @@ const PHALANX_GUARD_DEFENSE: Dictionary[Types.Rarity, float] = {
 
 const MAX_MOMENTUM_STACKS: int = 5
 
-# Offensive skill name set — keyed by name for O(1) lookup.
 const OFFENSIVE_SKILL_NAMES: Dictionary[String, bool] = {
-	"Stab": true,
-	"Disarm": true,
+	"Lance Thrust": true,
+	"Rending Charge": true,
 }
 
-# Defensive skill name set — populated when the preset gains a defensive skill.
-# Declared as var so subclasses and tests can extend it without modifying the const.
-var defensive_skill_names: Dictionary[String, bool] = {}
+const DEFENSIVE_SKILL_NAMES: Dictionary[String, bool] = {
+	"Disarm": true
+}
 
 var _momentum_stacks: int = 0
 var _momentum_per_stack: float = 0.0
@@ -61,7 +60,7 @@ func OnSkillCast(
 
 	if OFFENSIVE_SKILL_NAMES.has(p_skill_name):
 		_momentum_stacks = min(_momentum_stacks + 1, MAX_MOMENTUM_STACKS)
-	elif defensive_skill_names.has(p_skill_name):
+	elif DEFENSIVE_SKILL_NAMES.has(p_skill_name):
 		if _momentum_stacks > 0:
 			_momentum_stacks = 0
 			var phalanx_guard_buff: StatusEffects.Buff = StatusEffects.Buff.new()
