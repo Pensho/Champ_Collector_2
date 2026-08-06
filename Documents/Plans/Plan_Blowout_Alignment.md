@@ -278,12 +278,28 @@ them as part of this pass.
 
 ### Phase 6 — Items, gear, and reagents
 
-**Produces:** `Plan_Itemization_Channels.md`.
+**Produced:** `Plan_Itemization_Channels.md`, written and not yet executed.
 
 Affixes (section 3.3.1) and reagents (section 3.3.3) as factor sources. Gear is the
 long-term progression channel, so this phase decides whether gear grows channel 1 only —
 keeping base attributes tame per section 1.1.4 — or whether specific affixes contribute
 factors, and what that does to the power curve across a full collection.
+
+Four decisions were settled with the plan's owner before the sub-plan was written, and it is
+written as prescriptions to execute rather than questions to litigate: gear feeds channel 1
+only, with Relic rarity's unique effect the single sanctioned place a gear-sourced factor may
+live; reagents are channel 1 effects only, keeping the one existing exception (Fractured Idol)
+rather than reworking it; the Sorcerer's reagent payoff becomes channel 3 — consuming a reagent
+makes the next skill repeat at a fraction of its damage; and the Alchemist gains a team-wide
+channel 2 factor on ally reagent consumption, under a key distinct from the Sorcerer's so the
+two multiply. The last two are shaped against Phase 5's finding: the roster's ceiling is one
+pairing, and a Sorcerer plus an Alchemist is a candidate second one that is not gated on Tidal
+Corsair.
+
+The census behind the sub-plan found gear entirely additive (no affix system exists anywhere in
+`Scripts/`, `Data/`, or `Tests/`) and one reagent family out of 82 resources reaching the
+combined modifier. The one architecture cost the sub-plan surfaces is recorded under
+`Coverage gaps` below.
 
 ### Phase 7 — Encounter tier and catalog retrofit
 
@@ -334,15 +350,24 @@ and its open work has to land somewhere living.
   the channel with real statuses, skill effects, and trait triggers is build-out work.
 
   Phase 3's ledger names the specific shapes the channel has no mechanic for, none of which it
-  authors. Repetition is expressible today, through `CascadeEvent.instance_count`, with no
-  further architecture work; the other two need a new `Types.Cascade_Trigger` value and a
-  `Post()` call site added before content can be authored against them — the shipped enum
-  (`Status_Expired`, `Status_Landed`) only covers the two trigger shapes Phase 3's four ported
-  effects needed:
+  authors. All three need a new `Types.Cascade_Trigger` value and a `Post()` call site added
+  before content can be authored against them — the shipped enum (`Status_Expired`,
+  `Status_Landed`) only covers the two trigger shapes Phase 3's four ported effects needed, and
+  every `Post()` call site in the codebase lives in `status_effect_resolver.gd`:
   * **Repetition** — a skill cast that repeats, and a status or zone that detonates once per
     point of remaining duration or charge. Both re-read channels 1 and 2 per instance, so
     instance count becomes a multiplier on the other two channels rather than a sum. This is
     the shape that makes cascade a co-equal channel; nothing in the game does it.
+
+    **Corrected by Phase 6.** This entry previously read that repetition "is expressible today,
+    through `CascadeEvent.instance_count`, with no further architecture work", and the
+    `Types.Cascade_Trigger` docstring (`Scripts/common_enums.gd:227-231`) still states the same.
+    That is true of the instance *count* and false of the *trigger*: nothing posts a
+    `CascadeEvent` when a skill resolves, so a repeated cast has no trigger to carry a count on.
+    A `Skill_Resolved` value and a `Post()` call site in `BattleResolver.ResolveSkill` are
+    required first — scoped in `Plan_Itemization_Channels.md` Phase 3, which also corrects the
+    code docstring. `Plan_Channel_Population_Rework.md` Phase 2 populates channel 3 through the
+    same shape; whichever plan runs first owns the trigger.
   * **Threshold crossings** — health dropping below a fraction, or a target's status count
     saturating. The game has stack thresholds (Arcane Instability, Calibration) but no
     health or status-count trigger at all.
