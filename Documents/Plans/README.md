@@ -15,14 +15,25 @@ Suggested order (dependencies noted inside each plan):
    channels, cascade, burst presentation, kit burst reachability, itemization
    channels) are done and their sub-plans deleted; Phase 5 produced
    `Plan_Channel_Population_Rework.md`, carrying its prescriptions forward, and Phase 7
-   produced `Plan_Encounter_Blowout_Retrofit.md`, partially executed then paused pending
-   `Plan_Channel_Population_Rework.md`. Sub-plans
+   produced `Plan_Encounter_Blowout_Retrofit.md`, partially executed then paused pending kit
+   rework. `Plan_Channel_Population_Rework.md` is superseded by `Plan_Role_Kit_Rework.md`
+   below and is deleted by that plan's Phase 0. Sub-plans
    are written when their prerequisites land and deleted under the retention rule below. It aligns existing systems and does not author
    new content — channels it finds too thinly populated to align are recorded in its
    `Coverage gaps` section, which spawns `Plan_System_Buildout.md` once it holds more
    than one entry.
 
-1. `Plan_Story_Mode_Systems.md` — the systems that deliver story mode (story
+1. `Plan_Role_Kit_Rework.md` — the authoring counterpart to the master plan, superseding
+   `Plan_Channel_Population_Rework.md`. Reworks the skill kits of all 20 Roles so the three
+   damage channels are populated and several *independent* team combinations reach the
+   aggregate target, rather than the single ceiling pairing the roster has today. Phase 0
+   gates the rest: it makes Defence matter at burst scale (rejecting the `Concept_Document.md`
+   1.1.4 bullet on legibility grounds) and re-derives 1.1.2's calibration figures, so kits are
+   designed once against real targets. Output lands in a new `Documents/Role_Kit_Design.md`
+   (the living channel and synergy ledger) and `Concept_Document.md` 3.2.4.2. Unblocks
+   `Plan_Encounter_Blowout_Retrofit.md`, which was paused pending kit rework.
+
+2. `Plan_Story_Mode_Systems.md` — the systems that deliver story mode (story
    state handler, dialogue overlay, flag-driven hub variants, act gating,
    scripted battle openings, guest champions). The state handler and dialogue
    overlay are independent and can start any time; scripted openings apply
@@ -39,8 +50,9 @@ Design-only plans (no code; can run at any time):
   configuration set are reworked, and boss Health triples so a burst reads as 60–80% of the
   bar. Unpauses the plan below once it completes. Tier definitions and the channel audit are
   done; **paused** before the boss configuration rework, since it would commit specific
-  kit/role pairings to each boss ahead of `Plan_Channel_Population_Rework.md` reworking kit
-  contributions — resume once that plan lands.
+  kit/role pairings to each boss ahead of `Plan_Role_Kit_Rework.md` reworking kit
+  contributions — resume once that plan lands. Note that its Phase 4 Health retune is also
+  downstream of that plan's Phase 0, which changes the mitigation formula.
 - `Plan_Encounter_Solution_Design.md` — **paused** pending execution of
   `Plan_Encounter_Blowout_Retrofit.md`; further volume batches authored under the current
   production rules add to the retrofit backlog. The long-run encounter content plan:
