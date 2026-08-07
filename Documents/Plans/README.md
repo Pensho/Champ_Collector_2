@@ -11,12 +11,12 @@ Suggested order (dependencies noted inside each plan):
    (calibration, damage math, status channels, cascade, presentation, kits,
    itemization, encounters) and spawns a sub-plan per phase. Takes precedence over
    the plans below where they overlap; `Plan_Encounter_Solution_Design.md` is paused
-   until its Phase 7 lands. Phases 0–6 (calibration, combined modifier, status
+   until Phase 7's `Plan_Encounter_Blowout_Retrofit.md` is executed. Phases 0–6 (calibration, combined modifier, status
    channels, cascade, burst presentation, kit burst reachability, itemization
    channels) are done and their sub-plans deleted; Phase 5 produced
-   `Plan_Channel_Population_Rework.md`, carrying its prescriptions forward. Sub-plans for
-   the phases after it are written when their prerequisites land and deleted with the
-   rest under the retention rule below. It aligns existing systems and does not author
+   `Plan_Channel_Population_Rework.md`, carrying its prescriptions forward, and Phase 7
+   produced `Plan_Encounter_Blowout_Retrofit.md`, written and awaiting execution. Sub-plans
+   are written when their prerequisites land and deleted under the retention rule below. It aligns existing systems and does not author
    new content — channels it finds too thinly populated to align are recorded in its
    `Coverage gaps` section, which spawns `Plan_System_Buildout.md` once it holds more
    than one entry.
@@ -31,8 +31,14 @@ Suggested order (dependencies noted inside each plan):
 
 Design-only plans (no code; can run at any time):
 
-- `Plan_Encounter_Solution_Design.md` — **paused** pending Phase 7 of
-  `Plan_Blowout_Alignment.md`; further volume batches authored under the current
+- `Plan_Encounter_Blowout_Retrofit.md` — Phase 7 of `Plan_Blowout_Alignment.md`, written and
+  awaiting execution. Retrofits the encounter tier definitions and the existing 14-entry
+  catalog against the pillar: 5.3's tiers state a burst expectation, every encounter's
+  answers are audited for which damage channel they feed (enabler included), Boss-tier
+  entries with no payoff anywhere in their configuration set are reworked, and boss Health
+  triples so a burst reads as 60–80% of the bar. Unpauses the plan below.
+- `Plan_Encounter_Solution_Design.md` — **paused** pending execution of
+  `Plan_Encounter_Blowout_Retrofit.md`; further volume batches authored under the current
   production rules add to the retrofit backlog. The long-run encounter content plan:
   designing encounters the Role kits solve (fodder / mini-boss / boss tiers),
   progression-agnostic with volume floors (at least 20 fodder / 10 mini-boss /

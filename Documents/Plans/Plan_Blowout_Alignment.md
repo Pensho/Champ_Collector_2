@@ -144,8 +144,11 @@ Ulfrac, Bor Bulwark). The newer catalog bosses are excluded as untuned and unpla
 * **Boss Health needs to roughly triple** (attribute ~300 to ~900–1000) for a 50x burst to
   land as 60–80% of a boss rather than 150–283% of it. Doubling suffices for 30x. Recorded
   in section 1.1.2; Phase 7 carries the retuning.
-* **The current round budget is sound.** Three champions at basic-skill output clear a
-  balanced boss in 5.9–11.1 rounds, against the 10–12 in section 5.3. No change needed.
+* **The current round budget is sound, at current boss Health.** Three champions at
+  basic-skill output clear a balanced boss in 5.9–11.1 rounds, against the 10–12 in section
+  5.3. No change needed to the budget itself — but Phase 7's Health retune takes boss fights
+  out of that budget until a burst exists to shorten them again; see
+  `Plan_Encounter_Blowout_Retrofit.md`'s `Findings`.
 * **The modifier belongs on the scaled aggregate, not on final damage** — worth nearly
   double (33x becomes 63x against Defence 120), because the aggregate also feeds the
   mitigation ratio, and worth more the tankier the target. Section 1.1.4.
@@ -330,9 +333,25 @@ The census behind the sub-plan found gear entirely additive (no affix system exi
 combined modifier. The one architecture cost the sub-plan surfaces is recorded under
 `Coverage gaps` below.
 
-### Phase 7 — Encounter tier and catalog retrofit
+### Phase 7 — Encounter tier and catalog retrofit — in progress
 
-**Produces:** `Plan_Encounter_Blowout_Retrofit.md`.
+**Produced:** `Plan_Encounter_Blowout_Retrofit.md`, written and not yet executed.
+
+Four decisions were settled with the plan's owner before the sub-plan was written, so it is
+written as prescriptions rather than questions: the boss Health retune happens now rather than
+waiting on `Plan_Channel_Population_Rework.md` (its cost is carried as a Finding, see below);
+section 1.1.1's "unsolved is a wall" property is scoped to Boss tier, so the mini-boss keeps
+"roughly double unsolved" and gains 1.1.2's ~10x partial-burst expectation and no mini-boss
+entry's unsolved texture is rewritten; the channel tagging takes two forms, a per-encounter
+audit table in `Encounter_Design_Document.md` alongside inline tags in the existing Role × Tier
+coverage ledger; and the scope guard at the top of this plan binds the retrofit — reshaping a
+boss's configurations toward a payoff is alignment, authoring new opponent skills or entries is
+not.
+
+The audit going in expects nearly the whole catalog to read enabler-only, which is only a defect
+at Boss tier: the Warden of the Reliquary's configuration (3) — the Tactician plus Appraiser crit
+round — is the one entry in the catalog that already describes a burst, and the sub-plan uses it
+as the reference shape for the other two bosses.
 
 Two parts:
 
