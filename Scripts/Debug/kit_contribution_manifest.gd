@@ -38,6 +38,34 @@ class_name KitContributionManifest extends RefCounted
 ##                    here. Shape: {bucket_key, magnitude, per_debuff_anchored, citation} — see
 ##                    burst_reachability.gd's _ContributeGrantedStatuses for how each field is
 ##                    read.
+##   reagent_gated_bonus - optional. Present on a skill or passive entry whose contribution is
+##                    conditioned on a reagent having been consumed (Plan_Itemization_Channels.md
+##                    Phase 3's Sorcerer repeat, Phase 4's Alchemist team factor) — the
+##                    manifest's "reagent assumed available" precondition axis (Phase 5). There
+##                    is no battle simulation here to know whether a reagent was actually
+##                    consumed, so the assumption is modeled as always satisfied rather than
+##                    scored as zero, and surfaced on the result
+##                    (BurstReachability.CandidateResult.reagent_assumed) instead of being
+##                    silently baked in. Shape: {bucket_key, magnitude, class, fold, reach,
+##                    reagent_assumed_available, precondition, citation}.
+##                    `fold` distinguishes two shapes, because not every reagent-gated mechanic
+##                    lands in the SAME CombinedDamageModifier the candidate's own cast
+##                    assembles:
+##                      - "same_instance" (default, omit the field): the bonus lands in the same
+##                        modifier as the candidate's own cast, so it is Contribute()'d straight
+##                        into the scored `buckets`/`product` — the Alchemist's Volatile Mixture
+##                        buff, consumed like any other granted DamageMultiplier factor.
+##                      - "separate_instance": the bonus is its own, independent
+##                        CombinedDamageModifier and damage resolution (the Sorcerer's repeat) —
+##                        folding it into the candidate's own `product` would make that field
+##                        diverge from what Tests/unit/test_burst_reachability_live.gd's replay
+##                        of the real resolver actually assembles for the ORIGINAL cast, so it is
+##                        scored separately into CandidateResult.repeat_contrast_ratio instead.
+##                    `reach` ("team" reaches every candidate on the roster the way
+##                    Ally_Reagent_Consumed's own broadcast does; absent/anything else means
+##                    "only this entry's own skill/caster") only applies to same_instance
+##                    entries. See burst_reachability.gd's _ContributeReagentGatedSkillBonus,
+##                    _ContributeReagentGatedTeamBonuses, and _ReagentGatedRepeatContrastRatio.
 
 enum Contribution_Class
 {
@@ -156,9 +184,22 @@ const MANIFEST: Dictionary = {
 			{"name": "Fresh Batch", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Enabler,
 					"precondition": "Brews one random reagent at combat start; +20% brew potency at " +
-							"Legendary. No Combat_Event execution steps registered at all — purely a " +
-							"reagent-system hook consumed elsewhere. No damage.",
-					"citation": "fresh_batch_trait.gd:3-33"},
+							"Legendary. Whenever any ally (the Alchemist included) consumes a reagent, the " +
+							"whole team gains a Volatile Mixture damage-multiplier buff — see " +
+							"reagent_gated_bonus below, Plan_Itemization_Channels.md Phase 4.",
+					"citation": "fresh_batch_trait.gd:3-33,41,58-62",
+					"reagent_gated_bonus": {"bucket_key": "Volatile_Mixture", "magnitude": 0.29,
+							"class": Contribution_Class.Channel2, "reach": "team",
+							"reagent_assumed_available": true,
+							"precondition": "TEAM_DAMAGE_BONUS at Legendary (0.29); lands under the " +
+									"Volatile_Mixture buff-type key on every teammate, the Alchemist's own " +
+									"casts included, consumed on the holder's next attack via " +
+									"ConsumeDamageMultiplierFactors. Distinct from Fractured Idol's shared " +
+									"'reagent_damage_bonus' key by hard requirement, so the two multiply " +
+									"rather than add. Costs one slot against the shared 8-status cap " +
+									"(GameBalance.MAX_STATUS_EFFECTS) like any other granted buff.",
+							"citation": "fresh_batch_trait.gd:10-15,41-47,58-62; " +
+									"status_effect_resolver.gd:163-174"}},
 		],
 		"skills": [
 			{"name": "Acrid Splash", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
@@ -199,21 +240,53 @@ const MANIFEST: Dictionary = {
 			{"name": "Arc Lash", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Channel1,
 					"precondition": "damage_scaling Mysticism 1.0, no bonus_per.",
-					"citation": "Arc_Lash.tres:6-11"},
+					"citation": "Arc_Lash.tres:6-11",
+					"reagent_gated_bonus": {"bucket_key": "Arc Lash (repeat)", "magnitude": -0.5,
+							"class": Contribution_Class.Channel3_Cascade, "fold": "separate_instance",
+							"reagent_assumed_available": true,
+							"precondition": "Only if the Sorcerer consumed a reagent since their last cast " +
+									"(Plan_Itemization_Channels.md Phase 3). The real resolver re-resolves " +
+									"Arc Lash's DamageEffects as a SECOND, independent CombinedDamageModifier " +
+									"and ResolveEffectDamage call at REPEAT_BONUS (-0.5, i.e. 50% damage) — " +
+									"never folded into the original cast's own product (verified live in " +
+									"test_burst_reachability_live.gd), so this entry is 'fold: " +
+									"separate_instance' and is scored into CandidateResult.repeat_contrast_ratio " +
+									"instead of the shared buckets/product. Magnitude mirrors REPEAT_BONUS " +
+									"exactly, not REPEAT_FRACTION. Exactly one repeat per cast (the " +
+									"consumed-reagent flag clears when it fires), so " +
+									"ASSUMED_UNCAPPED_INSTANCES' cap of 1 already matches the real mechanic " +
+									"here rather than only approximating it.",
+							"citation": "sorcerer_trait.gd:22-25,95-119; skill_cast_context.gd:38; " +
+									"damage_effect.gd:28-29,54-55; battle_resolver.gd:739-744"}},
 			{"name": "Cataclysmic Surge", "bucket_key": "Warped", "magnitude": 0.3, "stack_cap": 0,
 					"class": Contribution_Class.Channel2,
 					"precondition": "+30% (fixed, not rarity-scaled) only against targets currently " +
 							"carrying the Warped debuff, via bonus_per_debuff_on_target. Targets All " +
 							"Enemies. A normal DamageEffect cast (not ResolveTraitDamage), so it does get " +
 							"the full CombinedDamageModifier treatment.",
-					"citation": "Cataclysmic_Surge.tres:6-17; damage_effect.gd:60-65"},
+					"citation": "Cataclysmic_Surge.tres:6-17; damage_effect.gd:60-65",
+					"reagent_gated_bonus": {"bucket_key": "Cataclysmic Surge (repeat)", "magnitude": -0.5,
+							"class": Contribution_Class.Channel3_Cascade, "fold": "separate_instance",
+							"reagent_assumed_available": true,
+							"precondition": "Same reagent-gated repeat as Arc Lash (see that entry), " +
+									"re-resolving Cataclysmic Surge's own DamageEffect (its own Warped bonus " +
+									"included, since the repeat replays the whole effect against the same " +
+									"target) as its own separate instance at REPEAT_BONUS.",
+							"citation": "sorcerer_trait.gd:22-25,95-119; skill_cast_context.gd:38; " +
+									"damage_effect.gd:28-29,54-55; battle_resolver.gd:739-744"}},
 			{"name": "Unstable Rift", "bucket_key": "Zone: Unstable Rift", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Channel1,
 					"precondition": "Zone, 5 charges. On trigger: applies Warped (2 turns) and deals " +
 							"damage scaling Mysticism 0.3 (enemies) / 0.15 (allies) — both DamageEffects " +
 							"share one zone-trigger bucket keyed to the zone's own name; neither has a " +
-							"bonus_per, so the shared bucket contributes 0.0.",
-					"citation": "Unstable_Rift.tres:6-29; damage_effect.gd:43-46; zone_effect.gd:17-19"},
+							"bonus_per, so the shared bucket contributes 0.0. TRAP found in Phase 5: the " +
+							"reagent-gated repeat re-resolves only cast_skill.effects filtered to " +
+							"DamageEffect, and this skill's own top-level effects is a single ZoneEffect — " +
+							"its damage lives inside the zone's on_trigger list instead, so the repeat is a " +
+							"structural no-op for this skill. No reagent_gated_bonus modeled here for that " +
+							"reason, not an oversight.",
+					"citation": "Unstable_Rift.tres:6-29,32-42; damage_effect.gd:43-46; zone_effect.gd:17-19; " +
+							"sorcerer_trait.gd:101-119"},
 		],
 	},
 	Types.Role.Scholar: {

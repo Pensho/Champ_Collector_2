@@ -170,6 +170,8 @@ const STATUS_EFFECT_TABLE: Array = [
 			"color": Color(0.85, 0.75, 0.30, 1.0) },
 	{ "folder": "Status_Effects/Catalyst", "base_name": "Catalyst", "size": 64,
 			"color": Color(0.25, 0.75, 0.65, 1.0) },
+	{ "folder": "Status_Effects/Volatile_Mixture", "base_name": "Volatile_Mixture", "size": 64,
+			"color": Color(0.65, 0.55, 0.15, 1.0) },
 ]
 
 # One row per skill and passive still awaiting real art. Skills aren't rarity-tiered, so

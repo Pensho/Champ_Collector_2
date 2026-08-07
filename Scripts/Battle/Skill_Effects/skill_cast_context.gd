@@ -35,6 +35,8 @@ var zone_source_name: String = ""
 var status_effect_attempted: bool = false
 var status_effect_landed: bool = false
 
+var repeat_bonus: float = 0.0
+
 func _init(
 		p_resolver: BattleResolver,
 		p_caster_ID: int,

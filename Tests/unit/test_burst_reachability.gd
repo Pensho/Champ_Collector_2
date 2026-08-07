@@ -103,15 +103,15 @@ func test_best_candidate_is_not_necessarily_the_first_skill_on_the_first_champio
 	assert_false(result.candidates.is_empty(), "The team must produce at least one damaging-skill candidate")
 	var best: BurstReachability.CandidateResult = result.Best()
 	for candidate in result.candidates:
-		assert_gte(best.contrast_ratio, candidate.contrast_ratio,
-			"Best() must be the highest contrast ratio among all candidates, not index 0")
+		assert_gte(best.total_contrast_ratio, candidate.total_contrast_ratio,
+			"Best() must be the highest total contrast ratio among all candidates, not index 0")
 	assert_true(result.candidates.size() > 1, "A 3-champion team must enumerate more than one damaging skill")
 
 func test_candidates_are_sorted_best_first() -> void:
 	var result: BurstReachability.TeamResult = BurstReachability.ScoreTeam(_corsair_cultist_warlord())
 	for i in result.candidates.size() - 1:
-		assert_gte(result.candidates[i].contrast_ratio, result.candidates[i + 1].contrast_ratio,
-			"Candidates must be sorted by contrast ratio, best first")
+		assert_gte(result.candidates[i].total_contrast_ratio, result.candidates[i + 1].total_contrast_ratio,
+			"Candidates must be sorted by total contrast ratio, best first")
 
 # --- Base term / modifier term separation (Concept_Document.md 1.1.6) ---
 
@@ -148,9 +148,18 @@ func test_sorcerer_scholar_tactician_bursting_cataclysmic_surge_is_pinned() -> v
 	# Opportunist (0.1, anchored to the same Warped debuff Cataclysmic Surge already
 	# requires) land in the SAME bucket and add: 0.3 + 0.1 = 0.4. Tactician's Fatal
 	# Flaw grants Daunting_Strength unconditionally: a distinct bucket at 1.0. Product:
-	# (1 + 0.4) * (1 + 1.0) = 2.8.
+	# (1 + 0.4) * (1 + 1.0) = 2.8, unchanged by Phase 5 — the Sorcerer's reagent-gated repeat
+	# is a separate CombinedDamageModifier instance in the real resolver (never folded into
+	# this one; see kit_contribution_manifest.gd's "fold" field), so it lands in
+	# repeat_contrast_ratio instead of product.
 	assert_almost_eq(pinned.product, 2.8, 0.01,
 		"Regression pin: composed product for this team bursting Cataclysmic Surge")
+	assert_true(pinned.reagent_assumed,
+		"The repeat is assumed reachable even though it does not change this candidate's own product")
+	assert_gt(pinned.repeat_contrast_ratio, 0.0,
+		"The Sorcerer's reagent-gated repeat must contribute a nonzero, separately-tracked contrast ratio")
+	assert_almost_eq(pinned.total_contrast_ratio, pinned.contrast_ratio + pinned.repeat_contrast_ratio, 0.0001,
+		"total_contrast_ratio must be exactly contrast_ratio plus the repeat's own contribution")
 
 # --- Manifest override plumbing: a modeled kit change reaches the scorer without editing
 # the real manifest or the scorer's own logic (used by Tests/manual/prescription_sweep.gd) ---

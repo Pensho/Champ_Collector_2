@@ -48,12 +48,16 @@ static func ScoreAllTeams(
 						"names": [p_presets[i].resource_path.get_file(), p_presets[j].resource_path.get_file(),
 								p_presets[k].resource_path.get_file()],
 						"caster_index": best.caster_index,
+						"caster_role": best.caster_role,
 						"skill_name": best.skill_name,
 						"product": best.product,
 						"contrast_ratio": best.contrast_ratio,
+						"repeat_contrast_ratio": best.repeat_contrast_ratio,
+						"total_contrast_ratio": best.total_contrast_ratio,
 						"distinct_key_count": best.distinct_key_count,
 						"enabler_count": best.enabler_count,
 						"buckets": best.buckets,
+						"reagent_assumed": best.reagent_assumed,
 					})
 	return rows
 

@@ -189,8 +189,8 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 	for effect in cast_skill.effects:
 		if(context.ConditionMet(effect)):
 			effect.Resolve(context)
-	_cascade_resolver.Drain()  # catches Mirror Coat, posted from CastDebuff above
-
+	_cascade_resolver.Post(CascadeEvent.ForSkillResolved(p_caster_ID, p_skill_ID, p_target_IDs))
+	_cascade_resolver.Drain()  # catches Mirror Coat (from CastDebuff above) and Skill_Resolved listeners
 	var is_non_basic: bool = cast_skill.cooldown > 0
 	_status_resolver._TriggerManaBurn(p_caster_ID, caster_attributes, is_non_basic)
 
@@ -366,9 +366,9 @@ func ResolveReagent(
 			potency += reagent_trait.OnReagentConsumed(p_consumer_ID, reagent, self)
 		potency += _status_resolver.ConsumeCatalystIfPresent(p_consumer_ID)
 	_ResolveReagentEffect(p_consumer_ID, p_target_ID, reagent, potency)
+	Skills.TriggerAllyReagentConsumedHook(_sides, _characters, p_consumer_ID, reagent, self)
 	BroadcastEvent(Types.Combat_Event.Resource_Depleted)
 	return _EndBatch()
-
 
 ## Heals each target by a fraction of their max Health, or p_raw_amount (>= 0) when given.
 func ResolveTraitHeal(

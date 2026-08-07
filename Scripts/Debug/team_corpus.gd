@@ -90,7 +90,10 @@ const PROVISIONAL_ROWS: Array[Dictionary] = [
 	{
 		"presets": [ALCHEMIST, CENTAUR_ARCHIVIST, CHRONOPHAGE],
 		"tier": Tier.Control,
-		"note": "",
+		"note": "No longer product 1.0x since Phase 5 of Plan_Itemization_Channels.md: any team " +
+				"with an Alchemist now reaches Fresh Batch's team-wide reagent_gated_bonus " +
+				"(assumed reachable per the manifest's reagent-assumed-available axis), a distinct " +
+				"floor from the other two Control rows below rather than a synergy-free one.",
 		"pinned": {},
 		"provisional": true,
 	},

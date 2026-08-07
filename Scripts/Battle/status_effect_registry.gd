@@ -37,6 +37,7 @@ const BUFFS: Dictionary[Types.Buff_Type, StatusEffectData] = {
 	Types.Buff_Type.Rush: preload("res://Data/Status_Effects/Rush.tres"),
 	Types.Buff_Type.Spotlight: preload("res://Data/Status_Effects/Spotlight.tres"),
 	Types.Buff_Type.Catalyst: preload("res://Data/Status_Effects/Catalyst.tres"),
+	Types.Buff_Type.Volatile_Mixture: preload("res://Data/Status_Effects/Volatile_Mixture.tres"),
 }
 
 const DEBUFFS: Dictionary[Types.Debuff_Type, StatusEffectData] = {

@@ -604,9 +604,11 @@ Tinctures (one family per primary attribute), Restorative Draught, Purging Tonic
 Rewinding Grit, Second Wind Phial, Zone-Dissolving Salts, Chaotic Blessing, and Fractured Idol —
 68 `.tres` files (17 families × 4 rarity tiers). Rewinding Grit targets one ally directly
 (`One_Ally`) and reduces the cooldown of every skill that ally has currently on cooldown, rather
-than requiring a skill-choice target kind. Reagents still deferred until their blocking mechanic
-lands: Barrier Stone, Deathward Charm, Chant Fragment, Notarized Seal, Wayfarer's Draught, and the
-Alchemist brew pool.
+than requiring a skill-choice target kind. The Alchemist brew pool (Lesser Restorative Brew,
+Lesser Tincture, Lesser Barrier Brew, Lesser Purging Brew) has since shipped as well, brewed
+rather than dropped — see `FreshBatchTrait` (Section 7.4) — and is no longer part of this deferred
+list. Reagents still deferred until their blocking mechanic lands: Barrier Stone, Deathward Charm,
+Chant Fragment, Notarized Seal, Wayfarer's Draught.
 
 ### 6.2. Runtime instances
 
@@ -847,7 +849,19 @@ distinct mechanics compose multiplicatively instead of one class of source shari
 Daunting_Strength's fraction is banked exactly once, at the resolution that actually deals damage,
 not at the buff's self-tick; a `DamageMultiplier` buff's duration decrements and expires normally
 except for a one-tick grace (`duration < 0`, not `<= 0`) so it survives to be read by the
-resolution that would otherwise strip it a step early. Bleed, Plague, and Temporal_Leak read the
+resolution that would otherwise strip it a step early. The Alchemist's Fresh Batch passive
+(`FreshBatchTrait`, `Scripts/Character/character_traits/CharacterSpecificTraits/fresh_batch_trait.gd`)
+uses this same path for its team-wide factor rather than adding a new one:
+`BattleResolver.ResolveReagent` calls `Skills.TriggerAllyReagentConsumedHook` after resolving the
+reagent's own effect (`battle_resolver.gd:356-370`), which broadcasts a new `Ally_Reagent_Consumed`
+`Combat_Event` to every living member of the consumer's own team, consumer included — a broadcast
+to each ally's *own* trait, not a consumer-side lookup, because the Alchemist must react to any
+teammate's consumption. `FreshBatchTrait.OnAllyReagentConsumed` applies a `Volatile_Mixture`
+`DamageMultiplier` buff to every living ally, which then flows through the same
+`ConsumeDamageMultiplierFactors` call as any other granted buff. The bucket key (`Volatile_Mixture`,
+the buff-type name) is deliberately distinct from Fractured Idol's shared `reagent_damage_bonus`
+key — the two mechanics multiply rather than add, since the composition law keys by mechanic
+identity, and colliding two independent mechanics onto one key would silently sum them instead. Bleed, Plague, and Temporal_Leak read the
 same persistent factors through `_ContributePersistentCasterFactors`, but only once, at the moment
 the status is applied — `StatusEffectResolver._SnapshotStatusValue` multiplies the attribute term
 (or, for Temporal_Leak, the bare per-crossing Speed tax) by the modifier's `Product()` at that
@@ -1108,12 +1122,35 @@ unconditionally since any landed debuff type is relevant). Registration is code-
 phase, not data-driven: with only four listeners, a `StatusEffectData` schema field for this isn't
 warranted yet.
 
-**Vocabulary scope.** `Types.Cascade_Trigger` holds only the two values these four effects need.
-A threshold-crossing trigger (health or status-count) or a cascade-on-cascade trigger (an effect
-listening for another cascade instance landing, per Concept Document 1.1.3's compounding case)
-needs a new enum value and a `Post` call site added at the relevant point before it is authorable
-— the post-and-drain queue and the two termination bounds do not themselves need to change to
-support one, but the vocabulary as shipped does not yet express those shapes.
+**Vocabulary scope.** `Types.Cascade_Trigger` held only the two values the four ported effects
+needed until `Skill_Resolved` (below) added a third. A threshold-crossing trigger (health or
+status-count) or a cascade-on-cascade trigger (an effect listening for another cascade instance
+landing, per Concept Document 1.1.3's compounding case) still needs a new enum value and a `Post`
+call site added at the relevant point before it is authorable — the post-and-drain queue and the
+two termination bounds do not themselves need to change to support one, but the vocabulary as
+shipped does not yet express those shapes.
+
+**`Skill_Resolved` and the Sorcerer's reagent-triggered repeat.** `BattleResolver.ResolveSkill`
+posts a `Skill_Resolved` `CascadeEvent` (caster, target IDs, and skill index) right after the
+effect loop and before `Drain()` (`battle_resolver.gd:189-193`) — the first trigger point that
+fires on a skill resolving rather than a status expiring or landing, closing the gap the enum's
+own docstring used to describe incorrectly (repetition was expressible through
+`CascadeEvent.instance_count` once a trigger existed to carry it, but no trigger fired on a cast
+at all). `SorcererTrait` (`Scripts/Character/character_traits/CharacterSpecificTraits/sorcerer_trait.gd`)
+subscribes under its own mechanic key (`&"SorcererTrait"`) in `StartOfBattle`, matching on
+`p_event.subject_ID == p_owner_ID and _consumed_reagent_since_cast` — a flag set by the existing
+`OnReagentConsumed` hook and cleared the moment the repeat fires. The callback
+(`_OnSkillResolvedRepeat`) builds a fresh `SkillCastContext` for the same caster, targets, and cast
+skill (use count 0, a new `TraitSkillResult`, deliberately not a continuation of the original
+cast's own state) and re-resolves only the entries in `cast_skill.effects` that are `DamageEffect`
+instances — a repeated `CastDebuff` or zone effect is skipped outright, not merely deduped, since
+the effect loop is filtered before it runs. `SkillCastContext.repeat_bonus` carries the repeat
+fraction (`REPEAT_BONUS = REPEAT_FRACTION - 1.0`, read by `DamageEffect.Resolve`) as its own
+`CombinedDamageModifier` bucket, so the repeat multiplies against channels 1 and 2 rather than
+adding to them, exactly like any other cascade instance. Because the repeat only walks a skill's
+own top-level `effects`, a skill whose damage lives inside a `ZoneEffect`'s `on_trigger` list
+instead (Unstable Rift) has no `DamageEffect` for the loop to find — a structural no-op for that
+skill, documented in `Concept_Document.md` 3.2.4.2 rather than special-cased in code.
 
 ### 7.9. Burst presentation pacing
 
@@ -1948,3 +1985,41 @@ stack/refresh rules), so on a two-member side it could ping-pong between the sam
 with nothing to stop it. `CascadeResolver`'s post-and-drain queue makes both bounds one
 enforcement point instead of four independent judgment calls, and the port routes Plague's spread
 through `CastDebuff` like any other debuff application.
+
+### 15.14. Gear and reagents were entirely additive, and repetition had no trigger to hang a cast on — resolved
+
+Resolved by `Plan_Itemization_Channels.md`. Before this work, gear was purely additive (no affix
+system existed anywhere in `Scripts/`, `Data/`, or `Tests/`) and exactly one reagent family out of
+82 (Fractured Idol) reached `CombinedDamageModifier` — leaving the two roles built around reagents,
+Sorcerer and Alchemist, contributing almost nothing to the burst channels despite reagents being
+their stated identity.
+
+**Gear's verdict is a stated rule, not a rework:** gear feeds the scaled attribute sum only
+([Section 6.1](#61-resource-templates)'s `ITEM_TYPE_ATTRIBUTES`, unchanged), with Relic rarity's
+unique effect the sole sanctioned place a gear-sourced `CombinedDamageModifier` factor may live —
+see `Concept_Document.md` 3.3.1. No code changed; the gap this closed was in the design record, not
+the pipeline.
+
+**Two reagent-gated Role reworks did change the pipeline**, both keyed to a broadcast that did not
+exist before: `Skills.TriggerAllyReagentConsumedHook` (`skills.gd`), called from
+`BattleResolver.ResolveReagent` after the reagent's own effect resolves, fires a new
+`Ally_Reagent_Consumed` `Combat_Event` at every living member of the consumer's own team. The
+Sorcerer's `SorcererTrait` and the Alchemist's `FreshBatchTrait` consume this differently — see
+[Section 7.8](#78-cascade-resolution) for the Sorcerer's `Skill_Resolved`-triggered repeat (Channel
+3, a separate cascade instance) and [Section 7.4](#74-skill-resolution-battleresolverresolveskill)
+for the Alchemist's `Volatile_Mixture` team buff (Channel 2, folded into the same
+`ConsumeDamageMultiplierFactors` path as any other granted `DamageMultiplier`). The two are keyed
+under distinct buckets by construction (`Volatile_Mixture` vs. the Sorcerer's own repeat bucket),
+so they multiply against each other and against Fractured Idol's `reagent_damage_bonus` rather
+than colliding into a shared key.
+
+**The roster-sweep result was mixed, and is recorded rather than smoothed over.** The Alchemist's
+factor raises the roster's pre-existing ceiling pairing (Tidal Corsair plus Tactician, now 7.22x
+product / 19.28x contrast ratio, up from 5.60x / 14x) rather than opening an independent second
+one; the Sorcerer's repeat, scored on its own terms via `CandidateResult.repeat_contrast_ratio`,
+tops out at 5.57x total contrast anywhere in the roster, short of the 7.33x top-decile threshold.
+Whether a second, Tidal-Corsair-independent ceiling exists is therefore still open — a balance
+question for `Plan_Channel_Population_Rework.md`, not a code defect here. See
+`Scripts/Debug/kit_contribution_manifest.gd`'s `reagent_gated_bonus` field and
+`Scripts/Debug/burst_reachability.gd`'s `fold` handling for how the scorer models a reagent
+consumption it cannot itself simulate.

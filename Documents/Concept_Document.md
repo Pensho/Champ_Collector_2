@@ -216,16 +216,18 @@ Current roles, their identity and purpose exist as follows:
 - Alchemist
     - A support character that focuses on buffing allies and debuffing enemies through various concoctions. Signature zone: Catalyst Cloud (see section 3.2.4.1). Primary attributes: Knowledge, Mysticism.
     - Purpose: Debuffer, Buffer
-    - Passive: Fresh Batch [Enabler] - At the start of combat the Alchemist brews one concoction: a reagent drawn at random from an Alchemist-exclusive pool, occupying its own slot beyond the three brought reagents. It follows normal reagent rules (consumable once, by any champion, on their turn) except that it is never added to the inventory - if unconsumed when the battle ends, it is lost. Each fielded Alchemist brews their own concoction.
+    - Passive: Fresh Batch [Enabler + Channel 2] - At the start of combat the Alchemist brews one concoction: a reagent drawn at random from an Alchemist-exclusive pool, occupying its own slot beyond the three brought reagents. It follows normal reagent rules (consumable once, by any champion, on their turn) except that it is never added to the inventory - if unconsumed when the battle ends, it is lost. Each fielded Alchemist brews their own concoction. Whenever any ally, the Alchemist included, consumes a reagent (brewed or brought), the whole team gains a damage buff for 2 turns, under the Alchemist's own bucket key (distinct from Fractured Idol's reagent damage bonus, so the two multiply rather than add).
         - Brew potency: 90% Uncommon, 100% Rare, 110% Epic, 120% Legendary (relative to a standard reagent of equivalent effect); the brew pool holds 3 lesser reagents at Uncommon and Rare, 4 at Epic and Legendary (see section 3.3.3)
         - Brews are self-targeted (the consumer is always the recipient). Magnitudes: Lesser Restorative Brew heals 10% of max Health; Lesser Tincture grants +5% to one random primary attribute, battle-long; Lesser Barrier Brew grants a Barrier absorbing 40% of max Health; Lesser Purging Brew (Epic/Legendary pool only) removes 1 debuff.
+        - Team damage buff: 20% Uncommon, 23% Rare, 26% Epic, 29% Legendary.
     - Fielded by: `Alchemist.tres`
 - Sorcerer
     - A damage dealer that harnesses the power of magic to deal Area of Effect damage and control the battlefield. Wields the unstable, shunned magic left behind by the God of Magic, and excels at drawing power from reagents scavenged from that era's ruins. Signature zone: Unstable Rift (see section 3.2.4.1). Primary attributes: Mysticism, Knowledge.
     - Purpose: Damage, Debuffer, Control
-    - Passive: Arcane Instability (implemented) [Channel 1 + Channel 3] - Using any skill grants one Instability stack (+x% Mysticism per stack, maximum 5). When the Sorcerer consumes a reagent, they gain two Instability stacks and the reagent's effect is amplified by y%. While at maximum stacks, the Sorcerer's next skill also releases a Surge: damage to all characters, allies and the Sorcerer included, scaling 1.5x with the Sorcerer's Mysticism (mitigated by each target's Defence as normal, never a critical hit) - then all stacks reset. Stacks do not persist between combats.
+    - Passive: Arcane Instability (implemented) [Channel 1 + Channel 3] - Using any skill grants one Instability stack (+x% Mysticism per stack, maximum 5). When the Sorcerer consumes a reagent, they gain two Instability stacks, the reagent's effect is amplified by y%, and their next skill repeats at 50% damage (a fresh cascade instance, assembling its own combined damage modifier, so it multiplies against channels 1 and 2 rather than adding to them; a repeated debuff or zone charge is not reapplied, only the damage). While at maximum stacks, the Sorcerer's next skill also releases a Surge: damage to all characters, allies and the Sorcerer included, scaling 1.5x with the Sorcerer's Mysticism (mitigated by each target's Defence as normal, never a critical hit) - then all stacks reset. Stacks do not persist between combats. The repeat scales with the cast skill, never with the reagent's own magnitude, so it does not conflict with 3.3.3's "reagent effects scale with rarity only" rule despite the resemblance. The repeat re-resolves only the cast skill's damage effects; a skill whose damage lives inside a zone's own trigger list rather than as one of its own top-level effects has nothing for the repeat to re-run — see the Sorcerer's own Unstable Rift in section 3.2.4.2.
         - Per-stack Mysticism: 4% Uncommon, 6% Rare, 8% Epic, 10% Legendary
         - Reagent amplification: 20% Uncommon, 30% Rare, 40% Epic, 50% Legendary
+        - Repeat fraction: 50% at every rarity (tuned later)
     - Fielded by: `Sorcerer.tres`
 - Scholar
     - A support character that focuses on knowledge and strategy to enhance allies' abilities and exploit enemy weaknesses. The zone-clearing specialist: the Scholar's kit is one of the two dedicated ways to remove zones from the turn bar (see section 3.2.4.1). Primary attributes: Knowledge.
@@ -641,7 +643,7 @@ reasoning; a skill combining its own effect with an applied status is tagged wit
 * Unstable Rift
     * Type: Turn Bar (Zone)
     * Cooldown: 3 turns
-    * Effect: [Channel 1 / Enabler] All affected characters, allies and enemies alike, gain the Warped debuff for 2 turns (see section 3.2.3.2) and take damage scaling with the Sorcerer's Mysticism — enemies take 30% of a standard hit, allies 15%. Holds 5 charges.
+    * Effect: [Channel 1 / Enabler] All affected characters, allies and enemies alike, gain the Warped debuff for 2 turns (see section 3.2.3.2) and take damage scaling with the Sorcerer's Mysticism — enemies take 30% of a standard hit, allies 15%. Holds 5 charges. This skill's damage lives inside the zone's own trigger list, not as one of its top-level effects, so Arcane Instability's reagent-triggered repeat (section 3.1.3) is a structural no-op here — a reagent consumed before recasting it grants no repeat damage.
 * Cataclysmic Surge
     * Type: Damage (AoE)
     * Cooldown: 4 turns
@@ -884,10 +886,34 @@ Rarity for items:
 * Rare
 * Epic
 * Legendary
-* Relic
+* Relic [Channel 2, sanctioned exception]
     * Has both upsides and downsides. Shall have a unique effect.
 
-Each step in rarity adds one attribute bonus for the equipping character, except for Relic rarity that instead adds a strong unique bonus and a downside.
+**Gear verdict** (settled to resolve the tension between 1.1.3 naming gear a channel 1 input
+and 1.1.4's tame-base-attributes rule; see Technical Design Document 15.14): gear feeds
+the scaled attribute sum only. [Channel 1] Each step in rarity adds one attribute bonus for
+the equipping character; no affix contributes a factor to the combined modifier (section
+1.1.3's second channel). The single exception is Relic rarity's unique effect
+[Channel 2, sanctioned exception]: instead of an attribute bonus, a Relic adds a strong
+unique bonus and a downside, and that bonus may supply a combined-modifier factor. Every
+Relic's unique effect must pass the 1.1.6 rejection test as a *conditional* factor — one that
+always applies is a flat multiplier on every hit its owner ever throws, the median-lifting
+shape channel 2 exists to avoid — and is audited individually rather than opening gear as a
+general affix tier.
+
+At the ceiling — a fully-geared three-slot Legendary loadout (Weapon, Shield, Boots; Trinket
+excluded, as it has no attribute pool in code — see `Plan_Blowout_Alignment.md`'s `Coverage
+gaps`), every item rolled and then fully upgraded (ten times each) — gear raises a
+champion's relevant attribute by 3.1x, which comes out to a 4.2x-5.3x contrast ratio against
+boss-tier Defence once the attribute's own effect on mitigation is included (see
+`Scripts/Debug/blowout_calibration.gd`'s `_ReportGearCeiling()` for the calibration and how
+that ratio was judged).
+Only two of the three slots (Weapon, Shield) can roll the attribute a given caster's skill
+scales on — Boots' attribute pool never includes Mysticism, so a maxed Legendary Boots
+contributes 0 to a Mysticism-scaled skill's damage regardless of how it rolls, even though
+it is still equipped and raises other attributes. That stays below the 10x mini-boss burst
+target, but it is a permanent, no-setup multiplier, which is worth knowing when reading
+section 1.1.4's "stays tame."
 
 Items can exist for general use that most characters can use and Role specific type of items.
 
@@ -948,47 +974,53 @@ consumption; see `Technical_Design_Document.md` sections 6.1, 7.4, 9, and 10.1):
 
 Reagent catalog (designed; magnitudes without listed values are not yet decided):
 
-Families — one entry per rarity tier:
-* Tinctures: one family per primary attribute. A small battle-long +6/9/12/15%
+Families — one entry per rarity tier — tagged using the same bracket vocabulary as section
+3.2.3 (see section 3.1.3's lead-in for the definitions):
+* Tinctures [Channel 1]: one family per primary attribute. A small battle-long +6/9/12/15%
   (by rarity) increase to that attribute. Not a buff: undispellable, unstealable,
   and invisible to buff-counting effects. Deliberately weaker than the equivalent
   30% buff.
-* Restorative Draught: heals the user for 15/20/25/30% (by rarity) of max Health.
-* Purging Tonic: removes up to 1/1/2/2 (by rarity) debuffs from the user.
-* Thief's Regret: destroys (not steals) up to 1/1/2/2 (by rarity) buffs on one enemy.
-* Barrier Stone: grants a Barrier with a flat absorb amount set by rarity to the user.
-* Rewinding Grit: targets one ally and reduces the cooldown of every skill they have
+* Restorative Draught [Channel 1]: heals the user for 15/20/25/30% (by rarity) of max Health.
+* Purging Tonic [Enabler]: removes up to 1/1/2/2 (by rarity) debuffs from the user.
+* Thief's Regret [Enabler]: destroys (not steals) up to 1/1/2/2 (by rarity) buffs on one enemy.
+* Barrier Stone [Enabler] (not yet implemented, see Technical Design Document 6.1): grants a
+  Barrier with a flat absorb amount set by rarity to the user.
+* Rewinding Grit [Enabler]: targets one ally and reduces the cooldown of every skill they have
   currently on cooldown by (1/1/1/2) turns, set by rarity.
-* Second Wind Phial: after the consumer's current turn ends, their turn bar resets to
+* Second Wind Phial [Enabler]: after the consumer's current turn ends, their turn bar resets to
   15/20/25/30% (by rarity) instead of 0. Self-only.
 
 Singletons:
-* Zone-Dissolving Salts (Binary): clears one targeted zone section (one of the two
+* Zone-Dissolving Salts (Binary) [Enabler]: clears one targeted zone section (one of the two
   dedicated zone-clearing effects, see section 3.2.4.1).
-* Deathward Charm (Binary): applies the Deathward buff to the user.
-* Chant Fragment (Binary): cleanses Pagan Curse from one ally. God of Magic lore family.
-* Notarized Seal (Binary): applies the Signed Writ debuff to one enemy for 1 turn. God of Rules
+* Deathward Charm (Binary) [Enabler] (not yet implemented, see Technical Design Document 6.1):
+  applies the Deathward buff to the user.
+* Chant Fragment (Binary) [Enabler] (not yet implemented, see Technical Design Document 6.1):
+  cleanses Pagan Curse from one ally. God of Magic lore family.
+* Notarized Seal (Binary) [Enabler] (not yet implemented, see Technical Design Document 6.1):
+  applies the Signed Writ debuff to one enemy for 1 turn. God of Rules
   lore family.
-* Wayfarer's Draught: applies Wanderlust to the consumer, with the random-stat bonus
+* Wayfarer's Draught [Channel 1] (not yet implemented, see Technical Design Document 6.1):
+  applies Wanderlust to the consumer, with the random-stat bonus
   percentage set by rarity instead of the buff's standard value. God of Adventure
   lore family.
-* Chaotic Blessing: applies one random buff from a fixed pool (Empower, Fortify,
+* Chaotic Blessing [Channel 1]: applies one random buff from a fixed pool (Empower, Fortify,
   Haste, True Aim, Clarity, Attune, Insight, Vigor), with its magnitude overridden to
   15/20/25/30% (by rarity) and its duration set to 3 turns instead of the buff's
   standard values. God of Magic lore family.
-* Fractured Idol: a crumbling artifact of the Forgotten God. Deals 10/14/18/22% (by
-  rarity) of the consumer's max Health as damage (cannot reduce the consumer below
-  1 Health) and grants a battle-long +10/13/16/20% (by rarity) to damage dealt.
+* Fractured Idol [Channel 2, sanctioned exception]: a crumbling artifact of the Forgotten God.
+  Deals 10/14/18/22% (by rarity) of the consumer's max Health as damage (cannot reduce the
+  consumer below 1 Health) and grants a battle-long +10/13/16/20% (by rarity) to damage dealt.
   Potency modifiers raise both the cost and the bonus. God of Magic lore family.
 
 Alchemist brew pool — an Alchemist-exclusive pool of lesser scalar reagents,
 self-targeted (the consumer is always the recipient); pool size is 3 at Uncommon and
 Rare, 4 at Epic and Legendary:
-* Lesser Restorative Brew: heals the consumer for 10% of their max Health.
-* Lesser Tincture: a small battle-long +5% increase to one random primary attribute
+* Lesser Restorative Brew [Channel 1]: heals the consumer for 10% of their max Health.
+* Lesser Tincture [Channel 1]: a small battle-long +5% increase to one random primary attribute
   of the consumer.
-* Lesser Barrier Brew: grants the consumer a Barrier absorbing 40% of their max Health.
-* Lesser Purging Brew (Epic and Legendary Alchemists only): removes up to 1 debuff
+* Lesser Barrier Brew [Enabler]: grants the consumer a Barrier absorbing 40% of their max Health.
+* Lesser Purging Brew [Enabler] (Epic and Legendary Alchemists only): removes up to 1 debuff
   from the consumer.
 
 ### 3.4. Game Modes

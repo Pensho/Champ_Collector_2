@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="StatusEffectData" format=3]
+
+[ext_resource type="Script" uid="uid://sqkdniv48rkg" path="res://Scripts/Battle/status_effect_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://ci1oy2qv2mlwp" path="res://Assets/Champ_Collector/Icons/Status_Effects/Volatile_Mixture/Volatile_Mixture.png" id="2_icon"]
+
+[resource]
+script = ExtResource("1_script")
+magnitude_kind = 2
+magnitude = 1.29
+applies_on_self_tick = false
+icon = ExtResource("2_icon")
+description = "The team's next attack deals bonus damage, granted whenever any ally consumes a reagent."

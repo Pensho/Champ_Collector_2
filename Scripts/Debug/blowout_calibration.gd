@@ -15,6 +15,7 @@ class_name BlowoutCalibration extends SceneTree
 
 # Sorcerer preset: Mysticism 100, its basic skill Arc Lash scales 1.0 on Mysticism.
 const CASTER_SCALED_BASE: float = 100.0
+const CASTER_SCALED_ATTRIBUTE: Types.Attribute = Types.Attribute.Mysticism
 
 # Boss presets, as [name, Health attribute, Defence]. Actual hit points are the Health
 # attribute times GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER. These are the balanced,
@@ -45,6 +46,7 @@ func _initialize() -> void:
 	_ReportFactorRequirements()
 	_ReportDefenceIgnoreSweep()
 	_ReportHealthImplications()
+	_ReportGearCeiling()
 	quit()
 
 
@@ -185,4 +187,64 @@ static func _ReportHealthImplications() -> void:
 			print("    %3.0fx burst = %6.0f damage = %4.0f%% of it; wants Health %5.0f (%.1fx current)"
 					% [target, burst, 100.0 * burst / hit_points,
 					needed_attribute, needed_attribute / boss[1]])
+	print("")
+
+
+## Ceiling bonus to one attribute from a single item of `p_rarity`, fully upgraded
+## (Game_Balance.MAX_ITEM_LEVEL times) with every point landing on that attribute.
+## `Equipment.Upgrade()` only ever picks among attributes the item already carries
+## (`Scripts/Gear/equipment.gd:55-65`), so an item rolled purely into one attribute at
+## `EquipmentPreset.Setup()` stays purely that attribute through every later upgrade.
+static func _ItemCeilingBonus(p_rarity: Types.Rarity) -> int:
+	var rarity_value: int = int(p_rarity)
+	var setup_bonus: int = GameBalance.ITEM_ATTRIBUTE_PER_RARITY * rarity_value
+	var upgrade_bonus: int = (
+			(GameBalance.ITEM_UPGRADE_FLAT_BONUS + rarity_value) * GameBalance.MAX_ITEM_LEVEL)
+	return setup_bonus + upgrade_bonus
+
+
+## Sizes gear's channel 1 ceiling (Concept_Document.md 3.3.1's gear verdict,
+## Plan_Itemization_Channels.md Phase 2): every slot Game_Balance.ITEM_TYPE_ATTRIBUTES
+## defines, at Legendary rarity and fully upgraded, rolled entirely into
+## CASTER_SCALED_ATTRIBUTE wherever that slot's pool allows it. Slots with no entry in
+## ITEM_TYPE_ATTRIBUTES (Trinket and the six flexibility slots) carry no attribute pool
+## in code at all — reported as excluded from the loadout, not as a zero contribution,
+## since Equipment.Upgrade() cannot even run on one today (see the Phase 2 gap notes).
+## Print-only, like the other reports in this file: a growing ceiling is a balance signal
+## to look at, not a hard failure, so this is not asserted against a fixed threshold.
+static func _ReportGearCeiling() -> void:
+	print("--- Gear ceiling: fully-rolled, fully-upgraded Legendary loadout ---")
+	var attribute_name: String = Types.Attribute.keys()[CASTER_SCALED_ATTRIBUTE]
+	var per_item: int = _ItemCeilingBonus(Types.Rarity.Legendary)
+	print("Per-item ceiling at Legendary, rolled and fully upgraded into one attribute: %d"
+			% per_item)
+
+	var slot_names: Array = Types.Slot.keys()
+	var modeled_slots: Array = GameBalance.ITEM_TYPE_ATTRIBUTES.keys()
+	var gear_bonus: int = 0
+	for slot in modeled_slots:
+		var pool: Array = GameBalance.ITEM_TYPE_ATTRIBUTES[slot]
+		if(pool.has(CASTER_SCALED_ATTRIBUTE)):
+			gear_bonus += per_item
+			print("    %-10s can roll %s -> contributes %d"
+					% [slot_names[slot], attribute_name, per_item])
+		else:
+			print("    %-10s cannot roll %s -> contributes 0" % [slot_names[slot], attribute_name])
+
+	var unmodeled_slot_names: Array = []
+	for slot in Types.Slot.values():
+		if(not modeled_slots.has(slot)):
+			unmodeled_slot_names.append(slot_names[slot])
+	if(not unmodeled_slot_names.is_empty()):
+		print("    (no attribute pool in code, excluded from the loadout: %s)"
+				% ", ".join(unmodeled_slot_names))
+
+	var geared_aggregate: float = CASTER_SCALED_BASE + float(gear_bonus)
+	var modifier: float = geared_aggregate / CASTER_SCALED_BASE
+	print("Gear bonus to %s: %d  (aggregate %.0f -> %.0f, %.3fx linear)"
+			% [attribute_name, gear_bonus, CASTER_SCALED_BASE, geared_aggregate, modifier])
+	for boss in BOSSES:
+		var factors: Array[float] = [modifier]
+		var ratio: float = ContrastRatioForFactors(factors, CASTER_SCALED_BASE, boss[2])
+		print("    %-20s Defence %3.0f  contrast ratio %.3fx" % [boss[0], boss[2], ratio])
 	print("")

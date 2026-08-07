@@ -21,7 +21,7 @@ the game.
 
 ## Status
 
-Phase 0, Phase 1, Phase 2, Phase 3, and Phase 4 are done. Phase 5 is in progress, re-scoped as
+Phase 0 through Phase 6 are done. Phase 5 was re-scoped as
 `Plan_Kit_Burst_Reachability.md` after a first attempt (below) proved insufficient. Phase 0's
 harness lives at
 `Scripts/Debug/blowout_calibration.gd`. Phase 1 shipped `CombinedDamageModifier`
@@ -112,6 +112,28 @@ K=16) > spread-hook and zero-contribution-kit (tied at zero). No prescription he
 Momentum, Arcane Instability, or Steel and Sea. `Plan_Channel_Population_Rework.md` carries these
 prescriptions forward; `Plan_Kit_Burst_Reachability.md` is deleted per the retention rule once
 these findings have landed here and it has been reviewed.
+
+Phase 6 shipped the gear verdict (channel 1 only, Relic rarity's unique effect the sole sanctioned
+exception — no code changed, since gear was already purely additive) and two reagent-gated Role
+reworks: the Sorcerer's next skill repeats at 50% damage after consuming a reagent (Channel 3,
+riding a new `Types.Cascade_Trigger.Skill_Resolved` value and `Post()` call site in
+`BattleResolver.ResolveSkill`), and the Alchemist grants the whole team a `Volatile_Mixture` damage
+buff on any ally's reagent consumption (Channel 2, under its own bucket key, distinct from
+Fractured Idol's `reagent_damage_bonus`). Both ride a new `Ally_Reagent_Consumed` broadcast
+(`Skills.TriggerAllyReagentConsumedHook`) rather than the existing consumer-only `Reagent_Consumed`
+hook. See Technical Design Document 7.4, 7.8, and 15.14.
+
+Re-running `Tests/manual/team_corpus_sweep.gd` with both reworks and the manifest's new
+`reagent_gated_bonus` precondition axis moved the roster's combined-modifier-product ceiling from
+5.60x to **7.22x** (Alchemist + Tactician + Tidal Corsair bursting Corsair's Reckoning, 19.28x
+contrast ratio) — the Alchemist's factor composes with the pre-existing Tidal-Corsair-plus-Tactician
+pairing rather than opening an independent second one. Median and 90th percentile were not
+re-measured against this specific change (see `Plan_Itemization_Channels.md` Phase 5 for the full
+write-up); the Sorcerer's own repeat, scored separately as `repeat_contrast_ratio` since it is a
+separate cascade instance rather than part of the same `CombinedDamageModifier`, tops out at 5.57x
+total contrast anywhere in the 1140-team roster — short of the 7.33x top-decile threshold, and
+therefore **not** the second, Tidal-Corsair-independent ceiling pairing Phase 5 was hoping for.
+Recorded as an open balance question below (`Coverage gaps`), not resolved here.
 
 Phase 0 findings, measured against the balanced bosses (Troll, Vael, Obsidian Stallion,
 Ulfrac, Bor Bulwark). The newer catalog bosses are excluded as untuned and unplayed:
@@ -259,6 +281,24 @@ resulting `FeatureIdeas.md` entry.
 
 Depended on Phase 3.
 
+**Flaw found after completion, unresolved: skill/reagent buttons stay visually active through a
+cascade's resolve window.** The click handlers already guard correctly —
+`_on_battle_ui_battle_skill_selected` (`battle.gd:615`) and `_on_battle_ui_battle_reagent_selected`
+(`battle.gd:646`) both check `_state == Awaiting_Player_Input` and silently reject a click made
+while `_state` is `Resolving`, so this is not an exploit. But the buttons' visibility is not keyed
+to that same state: `StartTurn()` shows them once (`_battle_ui._skill_buttons[i].show()`,
+`battle.gd:264`; `_reagent_buttons[i].show()`, `:274`) and `CompleteTurn()` is the only place that
+hides them (`HideSkillUI()` / `HideReagentUI()`, `battle.gd:351-352`). Nothing re-evaluates button
+visibility when `_state` flips to `Resolving` (`battle.gd:332`, also `:252` and `:282`), so for the
+entire async cascade/text-queue drain this phase added — `_process()`'s wait on
+`not _battle_ui.IsPresenting()` and the `_presentation_deadline` countdown, `battle.gd:210-214` — the
+buttons sit visibly enabled while every click on them is silently swallowed. The player has no
+visual signal their turn has already ended. Needs a fix: gate button visibility/interactability off
+`_state` (or the same drain condition `CompleteTurn()` waits on), not off turn-start/turn-complete
+alone. Not yet assigned to a phase or sub-plan; recorded here as a Phase 4 regression rather than a
+new system, since Phase 3's cascades are what expose the gap (a single-instance resolution completes
+fast enough that the window is barely visible; a multi-instance cascade holds it open for seconds).
+
 ### Phase 5 — Kit burst reachability — done
 
 **Produced:** `Plan_Kit_Blowout_Audit.md`, then `Plan_Kit_Burst_Reachability.md` (the re-scoped
@@ -276,9 +316,10 @@ Watch for: the capped passives (Momentum, Arcane Instability, Steel and Sea stac
 explicitly correct as written per section 1.1.4 — they accrue automatically. Do not uncap
 them as part of this pass.
 
-### Phase 6 — Items, gear, and reagents
+### Phase 6 — Items, gear, and reagents — done
 
-**Produced:** `Plan_Itemization_Channels.md`, written and not yet executed.
+**Produced:** `Plan_Itemization_Channels.md`, executed and deleted per the retention rule (see
+Status above and Technical Design Document 7.4, 7.8, and 15.14).
 
 Affixes (section 3.3.1) and reagents (section 3.3.3) as factor sources. Gear is the
 long-term progression channel, so this phase decides whether gear grows channel 1 only —
@@ -354,20 +395,16 @@ and its open work has to land somewhere living.
   before content can be authored against them — the shipped enum (`Status_Expired`,
   `Status_Landed`) only covers the two trigger shapes Phase 3's four ported effects needed, and
   every `Post()` call site in the codebase lives in `status_effect_resolver.gd`:
-  * **Repetition** — a skill cast that repeats, and a status or zone that detonates once per
-    point of remaining duration or charge. Both re-read channels 1 and 2 per instance, so
-    instance count becomes a multiplier on the other two channels rather than a sum. This is
-    the shape that makes cascade a co-equal channel; nothing in the game does it.
-
-    **Corrected by Phase 6.** This entry previously read that repetition "is expressible today,
-    through `CascadeEvent.instance_count`, with no further architecture work", and the
-    `Types.Cascade_Trigger` docstring (`Scripts/common_enums.gd:227-231`) still states the same.
-    That is true of the instance *count* and false of the *trigger*: nothing posts a
-    `CascadeEvent` when a skill resolves, so a repeated cast has no trigger to carry a count on.
-    A `Skill_Resolved` value and a `Post()` call site in `BattleResolver.ResolveSkill` are
-    required first — scoped in `Plan_Itemization_Channels.md` Phase 3, which also corrects the
-    code docstring. `Plan_Channel_Population_Rework.md` Phase 2 populates channel 3 through the
-    same shape; whichever plan runs first owns the trigger.
+  * **Repetition — the trigger now exists, the content is still thin.** A skill cast that
+    repeats, and a status or zone that detonates once per point of remaining duration or charge,
+    both re-read channels 1 and 2 per instance, so instance count becomes a multiplier on the
+    other two channels rather than a sum — the shape that makes cascade a co-equal channel. Phase
+    6 landed the first half: `Types.Cascade_Trigger.Skill_Resolved` and a `Post()` call site in
+    `BattleResolver.ResolveSkill` (see Technical Design Document 7.8), consumed by the Sorcerer's
+    reagent-triggered repeat. A status or zone that detonates per remaining duration/charge still
+    has no trigger or content at all. `Plan_Channel_Population_Rework.md` Phase 2, which planned
+    to populate channel 3 through the same repetition shape, now consumes the landed trigger
+    rather than authoring its own.
   * **Threshold crossings** — health dropping below a fraction, or a target's status count
     saturating. The game has stack thresholds (Arcane Instability, Calibration) but no
     health or status-count trigger at all.
@@ -397,6 +434,29 @@ and its open work has to land somewhere living.
   large. Populating more composition hooks across existing damage skills is build-out/rework
   content, not an architecture change — `Plan_Channel_Population_Rework.md` carries these ranked
   prescriptions forward.
+
+* **Relic rarity has a design slot but no code mechanism.** `Concept_Document.md` 3.3.1 names
+  Relic rarity's unique effect as the sole sanctioned gear-sourced `CombinedDamageModifier`
+  factor, but Relic rarity rolls no attributes and no unique-effect mechanism exists in code at
+  all. Found by Phase 6's census. Build-out work for `Plan_System_Buildout.md`: authoring the
+  mechanism and then auditing each individual Relic's unique effect against the 1.1.6 rejection
+  test as a conditional factor, per the gear verdict.
+* **Trinket has no attribute pool, and crashes on upgrade.** `Game_Balance.ITEM_TYPE_ATTRIBUTES`
+  (`Scripts/game_balance.gd:32-55`) defines Weapon, Shield, and Boots only; `EquipmentPreset.Setup()`
+  silently rolls a Trinket item no attributes, and `Equipment.Upgrade()`
+  (`Scripts/Gear/equipment.gd:55-65`) then crashes on it outright — the candidate-attributes
+  fallback reads a `Trinket` dictionary key that does not exist. Found by Phase 6, which
+  worked around it by sizing the collection power-curve figure off a three-slot (Weapon, Shield,
+  Boots) loadout rather than the four-slot one `Concept_Document.md` 3.3.1 names as the core
+  intended loadout. Build-out work: give Trinket an attribute pool (or a Trinket-specific
+  mechanic, per its own item type) before a four-slot loadout is reachable at all.
+* **The Sorcerer's reagent-triggered repeat does not reach the roster's top decile, as tuned.**
+  Phase 6's full-roster sweep found the strongest Sorcerer-cast candidate anywhere in the 1140-team
+  roster at 5.57x total contrast ratio (5.03x single-hit plus 0.53x repeat), against a 7.33x
+  top-decile threshold — so the Sorcerer-plus-Alchemist pairing Phase 5 hoped would open a second,
+  Tidal-Corsair-independent ceiling does not, as currently tuned. A balance-tuning question
+  (`REPEAT_FRACTION`, the debuff-anchored Warped bonus stacking, or Instability stack magnitude)
+  for `Plan_Channel_Population_Rework.md`, not a code defect.
 
 **This list now holds more than the cascade entry — the spawn condition above is met.**
 `Plan_System_Buildout.md` is due to be created and receive both entries above; not yet spawned as
@@ -432,6 +492,14 @@ decision on scope with the plan's owner.
   load-bears one Phase 2 verdict (Expose_Weakness is filed channel-1-not-channel-2
   specifically because a Defence debuff can't move a burst) — that verdict stands until the
   backlog item is picked up.
+* **Flagged, unresolved: skill/reagent buttons don't hide while a cascade is still resolving.**
+  See the Phase 4 Status note above (`battle.gd:210-214, 264, 274, 332, 351-352, 615, 646`). Clicks
+  during that window are already rejected by the `_state` check in the selection handlers, so this
+  is a UX defect, not a soft-lock or an exploit — but a player watching a cascade play out still
+  sees fully-lit, apparently-clickable skill and reagent buttons for their entire turn, which reads
+  as broken regardless of whether input is actually accepted. Not assigned to a phase; fix by gating
+  button visibility off the same `_state`/drain condition `CompleteTurn()` already waits on, rather
+  than off turn-start/turn-complete alone.
 
 ## Documentation
 

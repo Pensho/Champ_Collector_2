@@ -51,6 +51,21 @@ static func TriggerZoneConstructedHook(
 	if(null != active_trait):
 		active_trait.OnZoneConstructed(p_zone_owner_ID, p_zone_ID, p_resolver)
 
+## Notifies every living member of the consumer's own team (the consumer included) that a
+## reagent was consumed — the Alchemist's Fresh Batch team-wide factor hangs off this, not
+## off the consumer-side Reagent_Consumed hook, since it must fire on any ally's
+## consumption rather than only the Alchemist's own.
+static func TriggerAllyReagentConsumedHook(
+		p_sides: CombatSides,
+		p_characters: Dictionary[int, Character],
+		p_consumer_ID: int,
+		p_reagent: ReagentData,
+		p_resolver: BattleResolver) -> void:
+	for ally_ID in p_sides.AlliesOf(p_consumer_ID).AliveMembers(p_characters):
+		var ally_trait: CharacterTrait = ActiveHook(p_characters[ally_ID], Types.Combat_Event.Ally_Reagent_Consumed)
+		if(null != ally_trait):
+			ally_trait.OnAllyReagentConsumed(ally_ID, p_consumer_ID, p_reagent, p_resolver)
+
 static func ApplyBarrierZone(
 		p_resolver: BattleResolver,
 		p_zone_owner_ID: int,

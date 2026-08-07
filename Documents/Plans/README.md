@@ -11,26 +11,17 @@ Suggested order (dependencies noted inside each plan):
    (calibration, damage math, status channels, cascade, presentation, kits,
    itemization, encounters) and spawns a sub-plan per phase. Takes precedence over
    the plans below where they overlap; `Plan_Encounter_Solution_Design.md` is paused
-   until its Phase 7 lands. Phases 0–5 (calibration, combined modifier, status
-   channels, cascade, burst presentation, kit burst reachability) are done and their
-   sub-plans deleted; Phase 5 produced `Plan_Channel_Population_Rework.md`, carrying its
-   prescriptions forward, and Phase 6 produced `Plan_Itemization_Channels.md`. Sub-plans for
+   until its Phase 7 lands. Phases 0–6 (calibration, combined modifier, status
+   channels, cascade, burst presentation, kit burst reachability, itemization
+   channels) are done and their sub-plans deleted; Phase 5 produced
+   `Plan_Channel_Population_Rework.md`, carrying its prescriptions forward. Sub-plans for
    the phases after it are written when their prerequisites land and deleted with the
    rest under the retention rule below. It aligns existing systems and does not author
    new content — channels it finds too thinly populated to align are recorded in its
    `Coverage gaps` section, which spawns `Plan_System_Buildout.md` once it holds more
    than one entry.
 
-1. `Plan_Itemization_Channels.md` — Phase 6 of `Plan_Blowout_Alignment.md`: the channel
-   census for gear and reagents, the verdict that gear feeds channel 1 only (Relic unique
-   effects the sole sanctioned exception), and the two reagent-gated Role reworks that give
-   the roster a second detonating pairing — the Sorcerer's reagent-triggered skill repeat
-   (channel 3, and the first `Types.Cascade_Trigger` value for a resolving skill) and the
-   Alchemist's team-wide channel 2 factor. Overlaps
-   `Plan_Channel_Population_Rework.md` Phase 2, which populates channel 3 through the same
-   repetition shape; whichever runs first owns the trigger.
-
-2. `Plan_Story_Mode_Systems.md` — the systems that deliver story mode (story
+1. `Plan_Story_Mode_Systems.md` — the systems that deliver story mode (story
    state handler, dialogue overlay, flag-driven hub variants, act gating,
    scripted battle openings, guest champions). The state handler and dialogue
    overlay are independent and can start any time; scripted openings apply

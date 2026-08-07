@@ -84,6 +84,10 @@ func OnDamageDealt(
 func OnAllyDeath(_p_owner_ID: int, _p_dead_ally_ID: int, _p_resolver: BattleResolver) -> void:
 	print("character_trait base class OnAllyDeath() called!")
 
+func OnAllyReagentConsumed(
+		_p_owner_ID: int, _p_consumer_ID: int, _p_reagent: ReagentData, _p_resolver: BattleResolver) -> void:
+	print("character_trait base class OnAllyReagentConsumed() called!")
+
 func OnKill(_p_owner_ID: int, _p_victim_ID: int, _p_resolver: BattleResolver) -> void:
 	print("character_trait base class OnKill() called!")
 

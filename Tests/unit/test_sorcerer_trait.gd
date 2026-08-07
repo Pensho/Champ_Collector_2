@@ -176,5 +176,99 @@ func test_surge_resets_stacks() -> void:
 
 func test_stacks_reset_at_battle_start() -> void:
 	_trait._instability_stacks = 3
-	_trait.StartOfBattle(0, null)
+	_trait.StartOfBattle(0, _resolver)
 	assert_eq(_trait._instability_stacks, 0, "Instability stacks should not persist between combats")
+
+# --- Reagent-triggered skill repeat ---
+
+func _make_repeat_test_skill() -> Skill:
+	var skill: Skill = Skill.new()
+	skill.name = "Bolt"
+	skill.target = Types.Skill_Target.Single_Enemy
+	var damage: DamageEffect = DamageEffect.new()
+	damage.damage_scaling = {Types.Attribute.Attack: 1.0}
+	var burn: ApplyDebuffEffect = ApplyDebuffEffect.new()
+	burn.debuff_type = Types.Debuff_Type.Burning
+	burn.duration = 2
+	skill.effects = [damage, burn]
+	return skill
+
+## A caster with a Sorcerer trait and a damage+debuff skill, and a durable enemy target,
+## with StartOfBattle already broadcast (so the trait's Skill_Resolved subscription is live).
+func _make_repeat_test_setup() -> Dictionary:
+	var caster: Character = TestFactory.make_character()
+	caster._current_health = 10
+	caster._rarity = Types.Rarity.Rare
+	var caster_trait: SorcererTrait = SorcererTrait.new()
+	caster_trait.Init(Types.Rarity.Rare)
+	caster._trait = caster_trait
+	caster._skills = [_make_repeat_test_skill()]
+	var enemy: Character = TestFactory.make_character()
+	enemy._attributes[Types.Attribute.Health] = 1000
+	enemy._current_health = 4000  # Health(1000) x ATTRIBUTE_HEALTH_MULTIPLIER(4)
+	var characters: Dictionary[int, Character] = {0: caster, 1: enemy}
+	var resolver: BattleResolver = TestFactory.make_resolver(characters, CombatSides.new([0], [1]))
+	resolver.BroadcastEvent(Types.Combat_Event.Start_Combat)
+	return {"trait": caster_trait, "resolver": resolver, "enemy": enemy}
+
+func _damage_results_against(p_results: Array[CombatResult], p_target_ID: int) -> Array[CombatResult]:
+	return p_results.filter(
+			func(r: CombatResult) -> bool: return CombatResult.Kind.Damage == r.kind and p_target_ID == r.target_ID)
+
+func test_no_repeat_without_reagent_consumption() -> void:
+	var setup: Dictionary = _make_repeat_test_setup()
+	var resolver: BattleResolver = setup["resolver"]
+	var results: Array[CombatResult] = resolver.ResolveSkill(0, [1], 0)
+	assert_eq(_damage_results_against(results, 1).size(), 1,
+		"With no reagent consumed, a cast should deal damage once, not repeat")
+
+func test_reagent_consumption_repeats_the_next_skill_once() -> void:
+	var setup: Dictionary = _make_repeat_test_setup()
+	var caster_trait: SorcererTrait = setup["trait"]
+	var resolver: BattleResolver = setup["resolver"]
+	caster_trait.OnReagentConsumed(0, ReagentData.new(), resolver)
+
+	var results: Array[CombatResult] = resolver.ResolveSkill(0, [1], 0)
+	var damage_results: Array[CombatResult] = _damage_results_against(results, 1)
+	assert_eq(damage_results.size(), 2,
+		"A reagent consumed before casting should make the cast repeat exactly once")
+	assert_lt(damage_results[1].amount, damage_results[0].amount,
+		"The repeat should deal less damage than the original cast (REPEAT_FRACTION < 1.0)")
+	assert_eq(damage_results[1].cascade_depth, 1, "The repeat is a depth-1 cascade instance")
+
+func test_repeat_bucket_carries_the_repeat_fraction() -> void:
+	var setup: Dictionary = _make_repeat_test_setup()
+	var caster_trait: SorcererTrait = setup["trait"]
+	var resolver: BattleResolver = setup["resolver"]
+	caster_trait.OnReagentConsumed(0, ReagentData.new(), resolver)
+
+	var results: Array[CombatResult] = resolver.ResolveSkill(0, [1], 0)
+	var damage_results: Array[CombatResult] = _damage_results_against(results, 1)
+	var buckets: Dictionary[StringName, float] = damage_results[1].combined_damage_modifier.Buckets()
+	var repeat_key: StringName = StringName("Bolt (repeat)")
+	assert_true(buckets.has(repeat_key), "The repeat's modifier should carry a 'Bolt (repeat)' bucket")
+	assert_eq(buckets.get(repeat_key, 0.0), SorcererTrait.REPEAT_BONUS)
+
+func test_repeat_does_not_reapply_a_stackable_debuff() -> void:
+	var setup: Dictionary = _make_repeat_test_setup()
+	var caster_trait: SorcererTrait = setup["trait"]
+	var resolver: BattleResolver = setup["resolver"]
+	caster_trait.OnReagentConsumed(0, ReagentData.new(), resolver)
+
+	var results: Array[CombatResult] = resolver.ResolveSkill(0, [1], 0)
+	var applied: Array[CombatResult] = results.filter(func(r: CombatResult) -> bool:
+			return (CombatResult.Kind.Status_Applied == r.kind and not r.is_buff
+					and Types.Debuff_Type.Burning == r.debuff_type))
+	assert_eq(applied.size(), 1,
+		"The repeat re-runs DamageEffects only; a stackable debuff must still be applied once")
+
+func test_repeat_consumed_flag_does_not_carry_into_a_second_cast() -> void:
+	var setup: Dictionary = _make_repeat_test_setup()
+	var caster_trait: SorcererTrait = setup["trait"]
+	var resolver: BattleResolver = setup["resolver"]
+	caster_trait.OnReagentConsumed(0, ReagentData.new(), resolver)
+
+	resolver.ResolveSkill(0, [1], 0)
+	var second_results: Array[CombatResult] = resolver.ResolveSkill(0, [1], 0)
+	assert_eq(_damage_results_against(second_results, 1).size(), 1,
+		"A second cast with no fresh reagent consumption must not repeat again")
