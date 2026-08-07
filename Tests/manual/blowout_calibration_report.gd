@@ -27,6 +27,6 @@ func test_prints_all_six_calibration_reports() -> void:
 	BlowoutCalibration._ReportGearCeiling()
 
 	# No hand-carried figure to assert against — this script's whole point is printed stdout,
-	# diffed against a pre-refactor baseline (see Plan_Kit_Burst_Reachability.md Verification).
+	# diffed against a prior baseline by hand when the formula or presets change.
 	# One assertion so GUT does not flag a print-only test as risky/pending.
 	assert_true(true, "Six calibration reports printed above")

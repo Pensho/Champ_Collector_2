@@ -2,10 +2,11 @@ extends GutTest
 
 const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 
-# Coverage for the two resolution-level properties the Combined_Modifier channel must
-# hold (Concept_Document.md 1.1.3-1.1.4, Plan_Combined_Modifier.md step 5): it multiplies
-# the pre-mitigation scaled aggregate rather than final damage, and it is assembled fresh
-# for every damage resolution rather than cached.
+# Coverage for two resolution-level properties the Combined_Modifier channel must hold
+# (Concept_Document.md 1.1.3-1.1.4): it multiplies the pre-mitigation scaled aggregate
+# (damage-equivalent to multiplying final damage now that Defence's mitigation ratio no
+# longer depends on the aggregate), and it is assembled fresh for every damage resolution
+# rather than cached.
 
 func _first_damage(p_results: Array[CombatResult]) -> int:
 	var damage: Array = p_results.filter(func(r): return r.kind == CombatResult.Kind.Damage)
@@ -17,7 +18,7 @@ func _damage_amounts(p_results: Array[CombatResult]) -> Array:
 
 # --- Placement: the modifier multiplies the scaled aggregate, not final damage ---
 
-func test_a_2x_modifier_against_a_defended_target_yields_strictly_more_than_2x_damage() -> void:
+func test_a_2x_modifier_against_a_defended_target_yields_proportionally_2x_damage() -> void:
 	var baseline_roster: Dictionary[int, Character] = TestFactory.make_full_roster()
 	baseline_roster[0]._skills.append(TestFactory.make_strike_skill())
 	baseline_roster[0]._attributes[Types.Attribute.Attack] = 800
@@ -39,9 +40,9 @@ func test_a_2x_modifier_against_a_defended_target_yields_strictly_more_than_2x_d
 	var buffed_resolver: BattleResolver = TestFactory.make_resolver(buffed_roster, TestFactory.make_full_sides())
 	var buffed_damage: int = _first_damage(buffed_resolver.ResolveSkill(0, [3], 0))
 
-	assert_gt(buffed_damage, baseline_damage * 2,
-		"A 2x Combined_Modifier also raises the mitigation ratio, so damage against a defended target " +
-		"must land at strictly more than 2x baseline")
+	assert_almost_eq(float(buffed_damage), float(baseline_damage) * 2.0, 2.0,
+		"A 2x Combined_Modifier must scale damage proportionally against a defended target, since " +
+		"Defence's mitigation ratio no longer depends on the aggregate")
 
 # --- Freshness: each damage resolution in one action assembles its own modifier ---
 

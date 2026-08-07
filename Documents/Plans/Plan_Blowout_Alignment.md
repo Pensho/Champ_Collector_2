@@ -22,7 +22,8 @@ the game.
 ## Status
 
 Phase 0 through Phase 6 are done. Phase 5 was re-scoped as
-`Plan_Kit_Burst_Reachability.md` after a first attempt (below) proved insufficient. Phase 0's
+`Plan_Kit_Burst_Reachability.md` (deleted per the retention rule; superseded by
+`Plan_Role_Kit_Rework.md`) after a first attempt (below) proved insufficient. Phase 0's
 harness lives at
 `Scripts/Debug/blowout_calibration.gd`. Phase 1 shipped `CombinedDamageModifier`
 (`Scripts/Battle/combined_damage_modifier.gd`) as the multiplicative damage channel, keyed by
@@ -71,7 +72,8 @@ reference examples — but a per-entry tag cannot answer the pillar's actual que
 property of a team, not an entry. The one number the first attempt produced by hand, for two
 sample teams (3.12x and 2.80x, against a 26x requirement), showed neither reaching within an order
 of magnitude of the target, but covered 2 of ~1330 possible teams and could not be recomputed after
-a kit changed. Re-scoped and re-run as `Plan_Kit_Burst_Reachability.md`: instead of auditing tags,
+a kit changed. Re-scoped and re-run as `Plan_Kit_Burst_Reachability.md` (deleted per the
+retention rule; superseded by `Plan_Role_Kit_Rework.md`): instead of auditing tags,
 it builds an executable scorer — a kit contribution manifest plus a burst-reachability tool,
 verified live against `BattleResolver` — that computes a team's combined-modifier product and burst
 contrast ratio directly, and sweeps the full roster once for the distribution shape (median versus
@@ -109,9 +111,9 @@ populating Channel 3 via repeated `CascadeEvent.instance_count` stays flat until
 get large (K=16, the per-action cascade cap, before the ceiling moves at all). Ranked by ceiling
 delta per unit of work: retune (+1.71x at a modest 1.25x patch) > populate channel 3 (+1.20x at
 K=16) > spread-hook and zero-contribution-kit (tied at zero). No prescription here uncaps
-Momentum, Arcane Instability, or Steel and Sea. `Plan_Channel_Population_Rework.md` carries these
-prescriptions forward; `Plan_Kit_Burst_Reachability.md` is deleted per the retention rule once
-these findings have landed here and it has been reviewed.
+Momentum, Arcane Instability, or Steel and Sea. Both `Plan_Kit_Burst_Reachability.md` and its
+successor `Plan_Channel_Population_Rework.md` are deleted per the retention rule, superseded by
+`Plan_Role_Kit_Rework.md`, which carries these prescriptions forward as its pre-Phase-0 baseline.
 
 Phase 6 shipped the gear verdict (channel 1 only, Relic rarity's unique effect the sole sanctioned
 exception — no code changed, since gear was already purely additive) and two reagent-gated Role
@@ -294,8 +296,9 @@ enters `Resolving`, instead of relying on `CompleteTurn()` alone.
 
 **Produced:** `Plan_Kit_Blowout_Audit.md`, then `Plan_Kit_Burst_Reachability.md` (the re-scoped
 executable version), both deleted per the retention rule after completion (see Status above and
-Technical Design Document 7.10). **Produces:** `Plan_Channel_Population_Rework.md`, carrying
-Phase 6's prescriptions forward.
+Technical Design Document 7.10). **Produces:** `Plan_Channel_Population_Rework.md` (also
+deleted per the retention rule), which carried Phase 6's prescriptions forward and was itself
+superseded by `Plan_Role_Kit_Rework.md`.
 
 Re-scoped from a per-entry tag audit into an executable scorer, because a tag is a property of
 one entry and the pillar's requirement is a property of a team. For each kit: which channel does
@@ -336,12 +339,13 @@ combined modifier. The one architecture cost the sub-plan surfaces is recorded u
 ### Phase 7 — Encounter tier and catalog retrofit — paused
 
 **Produced:** `Plan_Encounter_Blowout_Retrofit.md`, written and partially executed (Phases 1
-and 2 done, Phase 3 onward paused pending `Plan_Channel_Population_Rework.md` — see that
-sub-plan's Status).
+and 2 done, Phase 3 onward paused pending `Plan_Role_Kit_Rework.md` — see that sub-plan's
+Status; `Plan_Channel_Population_Rework.md`, the plan originally paused on, was deleted per the
+retention rule and superseded by `Plan_Role_Kit_Rework.md` before starting).
 
 Four decisions were settled with the plan's owner before the sub-plan was written, so it is
 written as prescriptions rather than questions: the boss Health retune happens now rather than
-waiting on `Plan_Channel_Population_Rework.md` (its cost is carried as a Finding, see below);
+waiting on the kit rework (its cost is carried as a Finding, see below);
 section 1.1.1's "unsolved is a wall" property is scoped to Boss tier, so the mini-boss keeps
 "roughly double unsolved" and gains 1.1.2's ~10x partial-burst expectation and no mini-boss
 entry's unsolved texture is rewritten; the channel tagging takes two forms, a per-encounter
@@ -411,9 +415,9 @@ and its open work has to land somewhere living.
     6 landed the first half: `Types.Cascade_Trigger.Skill_Resolved` and a `Post()` call site in
     `BattleResolver.ResolveSkill` (see Technical Design Document 7.8), consumed by the Sorcerer's
     reagent-triggered repeat. A status or zone that detonates per remaining duration/charge still
-    has no trigger or content at all. `Plan_Channel_Population_Rework.md` Phase 2, which planned
-    to populate channel 3 through the same repetition shape, now consumes the landed trigger
-    rather than authoring its own.
+    has no trigger or content at all. `Plan_Role_Kit_Rework.md` (successor to
+    `Plan_Channel_Population_Rework.md`, deleted per the retention rule) consumes the landed
+    trigger rather than authoring its own where a batch's kit design calls for repetition.
   * **Threshold crossings** — health dropping below a fraction, or a target's status count
     saturating. The game has stack thresholds (Arcane Instability, Calibration) but no
     health or status-count trigger at all.
@@ -422,27 +426,30 @@ and its open work has to land somewhere living.
 
 * **Cross-kit Channel 2/3 composition is mechanically sound but content-thin, quantified.** Found
   by Phase 5's per-entry pass, quantified by the re-scoped `Plan_Kit_Burst_Reachability.md`'s
-  full-roster sweep. The architecture composes correctly — each `CombinedDamageModifier` is
-  assembled fresh per resolution from only the acting caster's own state, so nothing about the
-  composition law is broken — but the 1140-team sweep's product distribution (median 1.40x, 90th
-  percentile 2.80x, ceiling 5.60x, against the 26x target) shows almost none of that correctness
-  reaching the roster: the ceiling is one pairing (Tidal Corsair's Wrangle the Sea composed with
-  Tactician's unconditional Daunting Strength grant) repeated across every top-decile team, and no
-  other pair reaches a second distinct Channel-2/3 key at all. Only one skill in the 79-entry kit
-  corpus (Sorcerer's Cataclysmic Surge) declares `bonus_per_debuff_on_target`, the main lever by
-  which a debuff-applying kit hands a Channel 2 factor to a teammate's burst; most debuff-appliers
-  (Confound, Suppress, Unravel, and others) have no damage skill anywhere in the roster that reads
-  them as a factor, leaving them Channel-1-only in practice despite being individually correct.
-  `Plan_Kit_Burst_Reachability.md`'s Phase 6 quantified four candidate fixes against this sweep:
-  spreading more `bonus_per_debuff_on_target` hooks and giving each zero-contribution kit (Herald
-  of the Loom, Bloodmage) a distinct factor both left the ceiling and median unchanged, since
-  either only composes with Tactician's lone grant; a uniform retune of existing factors — including
-  an Enabler-classed entry's granted-status magnitude — closes the gap alone at a 3.03x multiplier,
+  full-roster sweep (figures below predate `Plan_Role_Kit_Rework.md` Phase 0's mitigation-formula
+  change; that plan's Status carries the current baseline). The architecture composes correctly —
+  each `CombinedDamageModifier` is assembled fresh per resolution from only the acting caster's
+  own state, so nothing about the composition law is broken — but the 1140-team sweep's product
+  distribution (median 1.40x, 90th percentile 2.80x, ceiling 5.60x, against the then-26x target)
+  shows almost none of that correctness reaching the roster: the ceiling is one pairing (Tidal
+  Corsair's Wrangle the Sea composed with Tactician's unconditional Daunting Strength grant)
+  repeated across every top-decile team, and no other pair reaches a second distinct Channel-2/3
+  key at all. Only one skill in the 79-entry kit corpus (Sorcerer's Cataclysmic Surge) declares
+  `bonus_per_debuff_on_target`, the main lever by which a debuff-applying kit hands a Channel 2
+  factor to a teammate's burst; most debuff-appliers (Confound, Suppress, Unravel, and others)
+  have no damage skill anywhere in the roster that reads them as a factor, leaving them
+  Channel-1-only in practice despite being individually correct. `Plan_Kit_Burst_Reachability.md`'s
+  Phase 6 quantified four candidate fixes against this sweep: spreading more
+  `bonus_per_debuff_on_target` hooks and giving each zero-contribution kit (Herald of the Loom,
+  Bloodmage) a distinct factor both left the ceiling and median unchanged, since either only
+  composes with Tactician's lone grant; a uniform retune of existing factors — including an
+  Enabler-classed entry's granted-status magnitude — closes the gap alone at a 3.03x multiplier,
   the largest single-unit-of-work ceiling gain of the four; populating channel 3 via repeated
   `CascadeEvent.instance_count` is the next largest, but stays flat until instance counts get
   large. Populating more composition hooks across existing damage skills is build-out/rework
-  content, not an architecture change — `Plan_Channel_Population_Rework.md` carries these ranked
-  prescriptions forward.
+  content, not an architecture change — `Plan_Role_Kit_Rework.md` (successor to
+  `Plan_Channel_Population_Rework.md`, deleted per the retention rule) carries this forward as its
+  pairing-web target.
 
 * **Relic rarity has a design slot but no code mechanism.** `Concept_Document.md` 3.3.1 names
   Relic rarity's unique effect as the sole sanctioned gear-sourced `CombinedDamageModifier`
@@ -465,7 +472,8 @@ and its open work has to land somewhere living.
   top-decile threshold — so the Sorcerer-plus-Alchemist pairing Phase 5 hoped would open a second,
   Tidal-Corsair-independent ceiling does not, as currently tuned. A balance-tuning question
   (`REPEAT_FRACTION`, the debuff-anchored Warped bonus stacking, or Instability stack magnitude)
-  for `Plan_Channel_Population_Rework.md`, not a code defect.
+  for `Plan_Role_Kit_Rework.md` (successor to `Plan_Channel_Population_Rework.md`, deleted per
+  the retention rule), not a code defect.
 
 **This list now holds more than the cascade entry — the spawn condition above is met.**
 `Plan_System_Buildout.md` is due to be created and receive both entries above; not yet spawned as

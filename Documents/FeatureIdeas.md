@@ -43,9 +43,6 @@ Effort: **S** = hours, **M** = days, **L** = week+
 - **Per-Source Burst Attribution** *(Priority: Medium | Effort: M)*
   Concept_Document.md 1.1.5 asks for each burst instance to land "attributed to its source", but nothing in battle names a source: floating combat text spawns at the target with no label, and there is no combat log. The `Debuff_Tick` branch in `battle.gd` even collapses `amount_by_source` into one aggregate number despite the per-source breakdown already being on the result — splitting that is the cheapest first step. Fuller options (source-labelled floating text, a per-instance mechanic banner naming the `Cascade_Triggered` mechanic key, or a scrolling combat log) each add a new UI surface with a screen-space cost, so none were taken alongside the tempo and magnitude escalation.
 
-- **Defence Relevance at Burst Scale** *(Priority: Medium | Effort: S)*
-  Concept_Document.md 1.1.4 states that Defence stops mattering at burst scale (varying Defense_Ignore_Factor from 1.0 to 0.0 moves a burst by under 2%, per the Blowout Alignment Phase 0 calibration) — a real consequence of the mitigation formula at 30-50x, not an oversight. The risk: Defence is a stat players expect to matter, and a tank who stacked it appearing to do nothing at the moment the fight is decided is a legibility problem. Two directions, neither chosen: (a) accept it deliberately and state in-doc that Defence's job is surviving to the trigger, not blunting the trigger itself; or (b) change `Skills.MitigatedDamage` so Defence keeps some burst-scale relevance, which would move every calibration number in 1.1.2. Pillar-level (section 1.1), so any resolution should be a deliberate decision, not a side effect of another phase's work.
-
 ---
 
 ## Characters & Progression

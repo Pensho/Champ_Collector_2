@@ -143,10 +143,15 @@ func test_damage_effect_trait_counter_on_target_reads_the_traits_own_rate() -> v
 		"Trait_Counter_On_Target should add the trait's own already-scaled count")
 
 func test_damage_effect_defense_ignore_factor_reduces_the_targets_effective_defence() -> void:
+	# Defence's mitigation ratio is taken against GameBalance.DEFENCE_SCALE_CONSTANT (100), not
+	# the caster's own aggregate — the fixture's default Defence (6) is too small relative to
+	# that constant to move an 8-Attack hit's rounded damage at all, so this test raises target
+	# Defence to a boss-tier value to make the ignore-factor's effect visible.
 	var skill: Skill = TestFactory.make_strike_skill()
 	var full_defence_effect: DamageEffect = DamageEffect.new()
 	full_defence_effect.damage_scaling = {Types.Attribute.Attack: 1.0}
 	full_defence_effect.defense_ignore_factor = 1.0
+	_roster[3]._attributes[Types.Attribute.Defence] = 120
 	var full_defence_before: int = _roster[3]._current_health
 	full_defence_effect.Resolve(TestFactory.make_context(_resolver, 0, [3], skill))
 	var full_defence_damage: int = full_defence_before - _roster[3]._current_health
@@ -156,6 +161,7 @@ func test_damage_effect_defense_ignore_factor_reduces_the_targets_effective_defe
 	var ignoring_effect: DamageEffect = DamageEffect.new()
 	ignoring_effect.damage_scaling = {Types.Attribute.Attack: 1.0}
 	ignoring_effect.defense_ignore_factor = 0.0
+	_roster[3]._attributes[Types.Attribute.Defence] = 120
 	var ignoring_before: int = _roster[3]._current_health
 	ignoring_effect.Resolve(TestFactory.make_context(_resolver, 0, [3], skill))
 	var ignoring_damage: int = ignoring_before - _roster[3]._current_health

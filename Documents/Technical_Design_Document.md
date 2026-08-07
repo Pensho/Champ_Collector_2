@@ -114,8 +114,8 @@ Note: `Scripts/main.gd` also contains editor-only debug input in `_process` (gat
 code, including:
 
 - Combat: `TURN_DURATION_SECONDS = 2.5`, `NUMBER_OF_TURN_BAR_ZONES = 5`,
-  `MAX_STATUS_EFFECTS = 8`, `MINIMUM_DMG_PERCENT = 0.1`, `MINIMUM_CRIT_DAMAGE = 125.0`,
-  `ATTRIBUTE_HEALTH_MULTIPLIER = 4`.
+  `MAX_STATUS_EFFECTS = 8`, `MINIMUM_DMG_PERCENT = 0.1`, `DEFENCE_SCALE_CONSTANT = 100.0`,
+  `MINIMUM_CRIT_DAMAGE = 125.0`, `ATTRIBUTE_HEALTH_MULTIPLIER = 4`.
 - Progression: the experience-curve constants (`EXPERIENCE_FACTOR`, `EXPERIENCE_EXPONENT`,
   `EXPERIENCE_CONSTANT_1..3`), `LEVEL_UP_POINTS_TO_DISTRIBUTE = 20`.
 - Collections, items, adventure energy costs, and the `ITEM_TYPE_ATTRIBUTES` map describing
@@ -826,8 +826,8 @@ for key in ConsumeDamageMultiplierFactors(caster):    # one bucket per DamageMul
     combined_damage_modifier.Contribute(key, damage_multiplier_factors[key])
 caster_scaled = (Σ over attrs ( damage_scaling[attr] * caster[attr] )) * combined_damage_modifier.Product()
 effective_defence = defender.Defence * defense_ignore_factor
-damage_ratio = caster_scaled / (effective_defence + caster_scaled + 1)
-mitigation = MINIMUM_DMG_PERCENT + (1 - MINIMUM_DMG_PERCENT) * damage_ratio
+defence_ratio = effective_defence / (effective_defence + DEFENCE_SCALE_CONSTANT)
+mitigation = 1 - (1 - MINIMUM_DMG_PERCENT) * defence_ratio
 crit (if rng.randi(1..100) <= CritChance): max(MINIMUM_CRIT_DAMAGE, CritDamage - defender.Knowledge*0.5) * 0.01
 damage = mitigation * caster_scaled * crit * rng.random(0.95..1.05)
 ```
@@ -2015,11 +2015,13 @@ than colliding into a shared key.
 
 **The roster-sweep result was mixed, and is recorded rather than smoothed over.** The Alchemist's
 factor raises the roster's pre-existing ceiling pairing (Tidal Corsair plus Tactician, now 7.22x
-product / 19.28x contrast ratio, up from 5.60x / 14x) rather than opening an independent second
-one; the Sorcerer's repeat, scored on its own terms via `CandidateResult.repeat_contrast_ratio`,
-tops out at 5.57x total contrast anywhere in the roster, short of the 7.33x top-decile threshold.
+product — the contrast-ratio figures here predate `Plan_Role_Kit_Rework.md` Phase 0's
+mitigation-formula change; see that plan's Status for the current baseline) rather than opening
+an independent second one; the Sorcerer's repeat, scored on its own terms via
+`CandidateResult.repeat_contrast_ratio`, fell short of the top-decile threshold at last measure.
 Whether a second, Tidal-Corsair-independent ceiling exists is therefore still open — a balance
-question for `Plan_Channel_Population_Rework.md`, not a code defect here. See
+question for `Plan_Role_Kit_Rework.md` (successor to `Plan_Channel_Population_Rework.md`,
+deleted per the retention rule), not a code defect here. See
 `Scripts/Debug/kit_contribution_manifest.gd`'s `reagent_gated_bonus` field and
 `Scripts/Debug/burst_reachability.gd`'s `fold` handling for how the scorer models a reagent
 consumption it cannot itself simulate.

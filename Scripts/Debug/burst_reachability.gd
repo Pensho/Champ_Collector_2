@@ -41,12 +41,13 @@ class_name BurstReachability extends RefCounted
 ##     reachable count: exactly one instance/precondition satisfied. There is no battle
 ##     simulation here to count real ones; a live-verification pass against the actual
 ##     resolver, where the true count is whatever the fight produces, is the way to check this.
-##   - Caster attributes are each preset's own base values (Character._attributes right
-##     after InstantiateNew, no trait delta) — Channel-1 trait mutations (Arcane
-##     Instability's stacks, Hemoclarity's Health-gated bonus) require an accumulated-stack
-##     or battle-state assumption this function has no basis for, and the manifest already
-##     tags them Channel1 precisely because they move an attribute rather than the modifier
-##     product this function scores.
+##   - Caster attributes are each preset's own base values (Character._attributes right after
+##     InstantiateNew), plus any manifest "granted_attribute_buff" reaching the caster
+##     (_ContributeGrantedAttributeBuffs) — fixed one-shot grants (Empower, Attune, Rush,
+##     Fortify, Exhert), scored the same "was the skill cast" way as granted_status. Still
+##     excluded: self-accumulated stack mechanics (Arcane Instability's stacks, Hemoclarity's
+##     Health-gated bonus), which need a battle-state assumption this function has no basis
+##     for — the manifest tags those Channel1 too, but with no granted_attribute_buff entry.
 ##   - A manifest entry's "reagent_gated_bonus" (the Sorcerer's repeat, the Alchemist's team
 ##     factor — Plan_Itemization_Channels.md Phase 3/4) is scored as though a reagent was
 ##     available to consume: there is no battle simulation here to know whether one actually
@@ -195,13 +196,16 @@ static func _HasDamageEffect(p_skill: Skill) -> bool:
 	return false
 
 
-static func _ScaledAggregate(p_skill: Skill, p_character: Character) -> float:
+static func _ScaledAggregate(
+		p_skill: Skill, p_character: Character, p_attribute_bonus: Dictionary = {}) -> float:
 	var total: float = 0.0
 	for effect in p_skill.effects:
 		if(effect is DamageEffect):
 			var damage_effect: DamageEffect = effect
 			for attribute: Types.Attribute in damage_effect.damage_scaling.keys():
-				total += damage_effect.damage_scaling[attribute] * float(p_character._attributes[attribute])
+				var bonus: float = p_attribute_bonus.get(attribute, 0.0)
+				total += (damage_effect.damage_scaling[attribute]
+						* float(p_character._attributes[attribute]) * (1.0 + bonus))
 	return total
 
 
@@ -350,10 +354,11 @@ static func _ScoreCandidate(
 		p_manifest: Dictionary) -> CandidateResult:
 	var caster: Character = p_characters[p_caster_index]
 	var basic_skill: Skill = _BasicSkill(caster)
-	var basic_aggregate: float = _ScaledAggregate(basic_skill, caster)
+	var attribute_bonus: Dictionary = _ContributeGrantedAttributeBuffs(p_characters, p_caster_index, p_manifest)
+	var basic_aggregate: float = _ScaledAggregate(basic_skill, caster, attribute_bonus)
 	if(0.0 == basic_aggregate):
 		return null
-	var skill_aggregate: float = _ScaledAggregate(p_skill, caster)
+	var skill_aggregate: float = _ScaledAggregate(p_skill, caster, attribute_bonus)
 
 	var buckets: Dictionary = {}
 	var caster_role_entry: Dictionary = p_manifest.get(caster._role, {})
@@ -478,6 +483,39 @@ static func _ContributeGrantedStatuses(
 							grant.get("magnitude", 0.0) * float(ASSUMED_UNCAPPED_INSTANCES))
 			else:
 				_Contribute(p_buckets, StringName(String(grant.get("bucket_key", ""))), grant.get("magnitude", 0.0))
+
+
+## Additive per-attribute bonus reaching p_candidate_index from every teammate's manifest
+## "granted_attribute_buff" — skill-scoped grants use the same _GrantReachesCandidate reach
+## rule as _ContributeGrantedStatuses; passive-scoped grants (Tactician's Plan ahead) have no
+## skill target to read, so they mark their own reach as "team" (every candidate, self
+## included) instead.
+static func _ContributeGrantedAttributeBuffs(
+		p_characters: Array[Character], p_candidate_index: int, p_manifest: Dictionary) -> Dictionary:
+	var bonus: Dictionary = {}
+	for granter_index in p_characters.size():
+		var granter: Character = p_characters[granter_index]
+		var role_entry: Dictionary = p_manifest.get(granter._role, {})
+		for passive_entry: Dictionary in role_entry.get("passive", []):
+			var grant: Dictionary = passive_entry.get("granted_attribute_buff", {})
+			if(not grant.is_empty() and "team" == grant.get("reach", "")):
+				_AccumulateAttributeBuff(bonus, grant)
+		var skill_entries: Array = role_entry.get("skills", [])
+		for skill_index in skill_entries.size():
+			var skill_entry: Dictionary = skill_entries[skill_index]
+			var grant: Dictionary = skill_entry.get("granted_attribute_buff", {})
+			if(grant.is_empty() or skill_index >= granter._skills.size()):
+				continue
+			var granting_skill: Skill = granter._skills[skill_index]
+			if(_GrantReachesCandidate(granting_skill, granter_index, p_candidate_index)):
+				_AccumulateAttributeBuff(bonus, grant)
+	return bonus
+
+
+static func _AccumulateAttributeBuff(p_bonus: Dictionary, p_grant: Dictionary) -> void:
+	var magnitude: float = p_grant.get("magnitude", 0.0)
+	for attribute: Types.Attribute in p_grant.get("attributes", []):
+		p_bonus[attribute] = p_bonus.get(attribute, 0.0) + magnitude
 
 
 ## Drops the lowest-magnitude status buckets past GameBalance.MAX_STATUS_EFFECTS, in place

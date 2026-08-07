@@ -6,16 +6,58 @@ and hands it to a build-out plan that was never spawned.
 
 ## Status
 
-Not started.
+Phase 0 done. Phases 1-6 not started.
 
 Per-phase progress is recorded here as it lands. Every batch records the sweep result it
 produced — median, 90th percentile, ceiling, and the count of distinct pairings in the top
 decile — so the roster's *shape* is trackable across the plan, not just its maximum.
 
-Pre-plan baseline, carried from `Plan_Kit_Burst_Reachability.md` Phase 6 before deletion:
-median 1.40x, 90th percentile 2.80x, ceiling 5.60x (7.22x after the itemization phase), with a
-single pairing occupying the entire top decile. Phase 0 replaces this baseline, since the
-mitigation change moves every figure.
+**Phase 0 result.** `Skills.MitigatedDamageUnrounded` (`Scripts/Battle/skills.gd`) now takes
+Defence's mitigation ratio against a fixed scale constant (`GameBalance.DEFENCE_SCALE_CONSTANT
+= 100.0`) instead of the caster's own scaled aggregate — Defence keeps the same percentage
+weight at burst scale as at basic-hit scale, restoring both boss-to-boss differentiation (1.82x
+weakest-vs-toughest boss, unchanged from basic to burst) and `Defense_Ignore_Factor` as a burst
+lever (a ~2x swing, up from under 2%). Side effect: the old "modifier on the aggregate is worth
+nearly double the same modifier on final damage" mechanic (`Concept_Document.md` 1.1.4) is now
+damage-equivalent — mitigation no longer scales with the aggregate — so the required aggregate
+multiplier for the burst target rose from 26x to 50x (1.1.2 re-derived accordingly).
+`Scripts/Debug/burst_reachability.gd` also gained `_ContributeGrantedAttributeBuffs`, crediting
+fixed one-shot Channel-1 attribute grants (Empower, Attune, Rush, Fortify, Exhert) into a
+candidate's scaled aggregate — previously invisible to the scorer, understating any team
+carrying one of these grants (`kit_contribution_manifest.gd`'s new `granted_attribute_buff`
+field on the five entries that carry one).
+
+Post-Phase-0 baseline (`Tests/manual/team_corpus_sweep.gd`, re-run after both fixes): combined-
+modifier-product median 1.62x, 90th percentile 2.80x, ceiling 7.22x (product is unaffected by
+either Phase 0 fix — neither touches bucket contribution — so this matches the itemization-phase
+figure already in place before Phase 0 started). Contrast-ratio ceiling (the figure comparable to
+the 30-50x target) is now **9.39x**, the same Alchemist/Tactician/Tidal Corsair/Corsairs Reckoning
+team as before. The top decile (114 teams) now spans **7 distinct caster-role/skill pairings**
+(Tidal_Corsair/Corsairs Reckoning, Architect/Final Calculation, Bar_Brawler/Headbutt,
+Cultist/Devour Blessing, Diviner/Ill Omen, Sorcerer/Cataclysmic Surge, Thief/Pierce weakness) —
+already better-shaped than the single-pairing baseline this plan opened against, from work
+landed in the itemization phase; Phase 0 itself didn't change this shape, only the contrast-ratio
+scale it's measured on.
+
+Findings carried forward from the two deleted plans (`Plan_Kit_Burst_Reachability.md`,
+`Plan_Channel_Population_Rework.md`):
+
+* **Reach already derives structurally from the granting effect's target**
+  (`BurstReachability._GrantReachesCandidate`), not assumed reachable by every teammate — landed
+  before this plan started; noted here so it isn't rediscovered.
+* **Opportunist's `PerTargetDebuffDamagePercent` bonus keys to whatever debuff is present on the
+  target** (`status_effect_resolver.gd:634`), not a fixed bucket — for a Sorcerer/Scholar/
+  Tactician team this lands in the *same* bucket as Cataclysmic Surge's own Warped requirement
+  and adds rather than multiplying. Worth knowing when authoring a kit meant to compose with
+  Opportunist.
+* **Two known implementation bugs, still unfixed:** Plague Doctor's Comorbidity
+  (`status_effect_resolver.gd:70-71` hardcodes `tick_bonus_per_debuff = 0.0`, so the zone-trigger
+  debuff path Miasma uses never reads it) moves into the Plague Doctor's batch (Phase 2, below).
+  Lancer's Reckless Momentum (`lancer_trait.gd`'s `OFFENSIVE_SKILL_NAMES` names a Thief skill,
+  "Stab", instead of the Lancer's own "Lance Thrust", and no preset ever populates
+  `defensive_skill_names`, so Momentum stacks accrue but only Disarm ever grants them and Phalanx
+  Guard can never spend them) — fix it whenever Lancer's kit lands in a batch (Phase 3-5,
+  composition set at the end of Phase 1).
 
 ## Context
 

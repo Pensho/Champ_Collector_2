@@ -300,11 +300,10 @@ static func MitigatedDamageUnrounded(
 		p_caster_scaled_attribute_aggregate: float,
 		p_crit_multiplier: float,
 		p_random_value: float) -> float:
-	var damage_ratio: float = (
-			p_caster_scaled_attribute_aggregate
-			/ (p_effective_defence + p_caster_scaled_attribute_aggregate + 1.0))
+	var defence_ratio: float = (
+			p_effective_defence / (p_effective_defence + GameBalance.DEFENCE_SCALE_CONSTANT))
 	var mitigation_factor: float = (
-			GameBalance.MINIMUM_DMG_PERCENT + ((1.0 - GameBalance.MINIMUM_DMG_PERCENT) * damage_ratio))
+			1.0 - ((1.0 - GameBalance.MINIMUM_DMG_PERCENT) * defence_ratio))
 	return mitigation_factor * p_caster_scaled_attribute_aggregate * p_crit_multiplier * p_random_value
 
 ## Mitigated damage from a single attack roll against `p_effective_defence`; shared by

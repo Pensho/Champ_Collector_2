@@ -195,3 +195,19 @@ func test_tidal_corsair_cultist_warlord_bursting_corsairs_reckoning_is_pinned() 
 	# caster in this candidate, so it contributes nothing here. Product: 1 + 1.8 = 2.8.
 	assert_almost_eq(pinned.product, 2.8, 0.01,
 		"Regression pin: composed product for this team bursting Corsairs Reckoning")
+
+# --- Channel-1 attribute-buff crediting (_ContributeGrantedAttributeBuffs) ---
+
+func test_granted_attribute_buff_reaches_every_teammate_from_a_team_reach_passive() -> void:
+	var presets: Array[CharacterPreset] = [TACTICIAN, EMISSARY, THIEF]
+	var characters: Array[Character] = []
+	for i in presets.size():
+		var character: Character = Character.new()
+		character.InstantiateNew(presets[i], i)
+		characters.append(character)
+
+	var bonus_for_teammate: Dictionary = BurstReachability._ContributeGrantedAttributeBuffs(
+			characters, 1, KitContributionManifest.MANIFEST)
+
+	assert_almost_eq(bonus_for_teammate.get(Types.Attribute.Attack, 0.0), 0.3, 0.0001,
+		"Tactician's Plan ahead (team-reach passive) must credit Empower's +30% Attack to a teammate")

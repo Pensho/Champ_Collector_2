@@ -15,11 +15,12 @@ under `Settled decisions` below.
 Paused after Phase 2. Phase 1 (tier definitions) and Phase 2 (per-encounter channel
 audit and coverage-ledger tagging) are done. Phase 3 (boss configuration rework) is on
 hold: it commits specific role/kit pairings to each boss's configurations, and
-`Plan_Channel_Population_Rework.md` — not started — is expected to change kit
-contributions (it exists precisely to close the combined-modifier gap the Findings
-entry below describes). Reshaping boss configurations against kits that are about to
-change is wasted work, redone once they do. Phases 4 and 5 depend on Phase 3's output
-and are paused with it. Resume Phase 3 once `Plan_Channel_Population_Rework.md` lands.
+`Plan_Role_Kit_Rework.md` (successor to `Plan_Channel_Population_Rework.md`, deleted per
+the retention rule) is expected to change kit contributions (it exists precisely to
+close the combined-modifier gap the Findings entry below describes). Reshaping boss
+configurations against kits that are about to change is wasted work, redone once they
+do. Phases 4 and 5 depend on Phase 3's output and are paused with it. Resume Phase 3
+once `Plan_Role_Kit_Rework.md` lands.
 
 ## Context
 
@@ -55,7 +56,8 @@ end in a payoff somewhere, and that requirement is currently met by one boss out
 
 ### Settled decisions
 
-1. **The Health retune happens now**, not gated on `Plan_Channel_Population_Rework.md`. Its
+1. **The Health retune happens now**, not gated on the kit rework (`Plan_Role_Kit_Rework.md`,
+   successor to `Plan_Channel_Population_Rework.md`, deleted per the retention rule). Its
    consequence is carried as a Finding below rather than absorbed silently.
 2. **The "unsolved is a wall" property is scoped to Boss tier.** Section 1.1.1's bullet is
    amended to name the tier; the mini-boss keeps "roughly double unsolved" and gains 1.1.2's
@@ -235,17 +237,22 @@ interpolated message — `Tests/unit/test_burst_pacing.gd` is representative):
 ## Findings
 
 * **Concern — boss fight length sits outside its round budget until the channel rework
-  lands.** Resolved by `Plan_Channel_Population_Rework.md`.
+  lands.** Resolved by `Plan_Role_Kit_Rework.md`.
 
   Phase 4 triples boss Health on the strength of a 50x burst the roster cannot yet produce.
   The master plan's Phase 5 and 6 sweeps put the combined-modifier ceiling at 7.22x against
-  a 26x requirement, and `Plan_Channel_Population_Rework.md` — the plan that closes that gap
-  — is `Status: Not started.` `blowout_calibration.gd`'s `_ReportBaselines()` currently has
+  a then-26x requirement (`Plan_Role_Kit_Rework.md` Phase 0 re-derived the target to 50x
+  when it fixed the mitigation formula; see that plan's Status for the current baseline), and
+  `Plan_Role_Kit_Rework.md` — the plan that closes the gap, successor to
+  `Plan_Channel_Population_Rework.md` (deleted per the retention rule) — has Phase 0 done and
+  Phases 1-6 not started. `blowout_calibration.gd`'s `_ReportBaselines()` currently has
   three champions at basic-skill output clearing a balanced boss in 5.9–11.1 rounds against
   5.3's 10–12 budget; tripling Health pushes that to roughly 18–33 rounds with no burst
   available to shorten it. The retune-now sequencing is the owner's decision, taken with this
   consequence stated. Re-measure via `Tests/manual/blowout_calibration_report.gd` once the
-  channel rework lands, and record the real figure here in place of the estimate.
+  kit rework lands, and record the real figure here in place of the estimate. (The 5.9–11.1
+  round range is unchanged by Phase 0's mitigation-formula change — it was calibrated to
+  reproduce the old formula's basic-hit damage almost exactly.)
 
 ## Watch for
 

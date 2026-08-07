@@ -66,6 +66,11 @@ class_name KitContributionManifest extends RefCounted
 ##                    "only this entry's own skill/caster") only applies to same_instance
 ##                    entries. See burst_reachability.gd's _ContributeReagentGatedSkillBonus,
 ##                    _ContributeReagentGatedTeamBonuses, and _ReagentGatedRepeatContrastRatio.
+##   granted_attribute_buff - optional. A Channel1 entry's fixed one-shot buff (Empower, Attune,
+##                    Rush, Fortify, Exhert — not a self-accumulated stack), read by
+##                    burst_reachability.gd's _ContributeGrantedAttributeBuffs. Shape:
+##                    {attributes, magnitude}, plus reach: "team" on a passive entry (no skill
+##                    target to derive reach from — see Tactician's Plan ahead).
 
 enum Contribution_Class
 {
@@ -74,6 +79,13 @@ enum Contribution_Class
 	Channel3_Cascade,
 	Enabler,
 }
+
+## Rush.tres / Exhert.tres both grant every primary attribute but Health.
+const ALL_ATTRIBUTES_EXCEPT_HEALTH: Array[Types.Attribute] = [
+	Types.Attribute.Speed, Types.Attribute.Attack, Types.Attribute.Defence,
+	Types.Attribute.Accuracy, Types.Attribute.Resistance, Types.Attribute.Mysticism,
+	Types.Attribute.Knowledge, Types.Attribute.CritChance, Types.Attribute.CritDamage,
+]
 
 const MANIFEST: Dictionary = {
 	Types.Role.Emissary: {
@@ -393,7 +405,8 @@ const MANIFEST: Dictionary = {
 					"precondition": "At Start_Turn, casts a fixed non-stackable 1-turn Empower (+30% " +
 							"Attack, not rarity-scaled by the trait) on allies within 25% " +
 							"turn-bar-behind range (Legendary threshold).",
-					"citation": "plan_trait.gd:3-8,35-48"},
+					"citation": "plan_trait.gd:3-8,35-48",
+					"granted_attribute_buff": {"attributes": [Types.Attribute.Attack], "magnitude": 0.3, "reach": "team"}},
 		],
 		"skills": [
 			{"name": "Signal Strike", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
@@ -444,7 +457,8 @@ const MANIFEST: Dictionary = {
 					"precondition": "Grants self Exhert (4 turns): +20% all primary attributes except " +
 							"Health, 5% max-Health self-tick cost. A flat attribute add, no " +
 							"CombinedDamageModifier bucket.",
-					"citation": "Symbiotic_Overdrive.tres:6-11"},
+					"citation": "Symbiotic_Overdrive.tres:6-11",
+					"granted_attribute_buff": {"attributes": ALL_ATTRIBUTES_EXCEPT_HEALTH, "magnitude": 0.2}},
 			{"name": "Grafted Flesh", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Enabler,
 					"precondition": "Self-costs 10% max Health; grants one ally Regeneration (4 turns, " +
@@ -603,7 +617,8 @@ const MANIFEST: Dictionary = {
 			{"name": "Woven Blessing", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Channel1,
 					"precondition": "Grants one ally Attune (2 turns, +30% Mysticism). No damage.",
-					"citation": "Woven_Blessing.tres:6-11"},
+					"citation": "Woven_Blessing.tres:6-11",
+					"granted_attribute_buff": {"attributes": [Types.Attribute.Mysticism], "magnitude": 0.3}},
 		],
 	},
 	Types.Role.Chronophage: {
@@ -770,13 +785,15 @@ const MANIFEST: Dictionary = {
 			{"name": "Hold the Line", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Channel1,
 					"precondition": "Grants All Allies Fortify (2 turns, +30% Defence). No damage.",
-					"citation": "Hold_the_Line.tres:6-11"},
+					"citation": "Hold_the_Line.tres:6-11",
+					"granted_attribute_buff": {"attributes": [Types.Attribute.Defence], "magnitude": 0.3}},
 			{"name": "Brace for Impact", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Channel1,
 					"precondition": "Grants self Rush (1 turn: +30% all primary attributes except " +
 							"Health, then an unresistable Stun on expiry) and Aegis (1 turn: blocks the " +
 							"next debuff).",
-					"citation": "Brace_for_Impact.tres:6-16"},
+					"citation": "Brace_for_Impact.tres:6-16",
+					"granted_attribute_buff": {"attributes": ALL_ATTRIBUTES_EXCEPT_HEALTH, "magnitude": 0.3}},
 		],
 	},
 }
