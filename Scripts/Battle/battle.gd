@@ -330,6 +330,9 @@ func HandleEnemyTurn() -> void:
 func ResolveTurn(p_target_IDs: Array[int]) -> void:
 	_cascade_instance_ordinal = 0
 	_state = BattleState.Resolving
+	_battle_ui.HideSkillUI()
+	_battle_ui.HideReagentUI()
+	_battle_ui.HideGraftUI()
 	_resolver.ResolveSkill(_turn_character_ID, p_target_IDs, _selected_skill_ID)
 	_presentation_deadline = PRESENTATION_DEADLINE
 

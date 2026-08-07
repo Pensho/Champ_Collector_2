@@ -281,23 +281,11 @@ resulting `FeatureIdeas.md` entry.
 
 Depended on Phase 3.
 
-**Flaw found after completion, unresolved: skill/reagent buttons stay visually active through a
-cascade's resolve window.** The click handlers already guard correctly —
-`_on_battle_ui_battle_skill_selected` (`battle.gd:615`) and `_on_battle_ui_battle_reagent_selected`
-(`battle.gd:646`) both check `_state == Awaiting_Player_Input` and silently reject a click made
-while `_state` is `Resolving`, so this is not an exploit. But the buttons' visibility is not keyed
-to that same state: `StartTurn()` shows them once (`_battle_ui._skill_buttons[i].show()`,
-`battle.gd:264`; `_reagent_buttons[i].show()`, `:274`) and `CompleteTurn()` is the only place that
-hides them (`HideSkillUI()` / `HideReagentUI()`, `battle.gd:351-352`). Nothing re-evaluates button
-visibility when `_state` flips to `Resolving` (`battle.gd:332`, also `:252` and `:282`), so for the
-entire async cascade/text-queue drain this phase added — `_process()`'s wait on
-`not _battle_ui.IsPresenting()` and the `_presentation_deadline` countdown, `battle.gd:210-214` — the
-buttons sit visibly enabled while every click on them is silently swallowed. The player has no
-visual signal their turn has already ended. Needs a fix: gate button visibility/interactability off
-`_state` (or the same drain condition `CompleteTurn()` waits on), not off turn-start/turn-complete
-alone. Not yet assigned to a phase or sub-plan; recorded here as a Phase 4 regression rather than a
-new system, since Phase 3's cascades are what expose the gap (a single-instance resolution completes
-fast enough that the window is barely visible; a multi-instance cascade holds it open for seconds).
+**Flaw found after completion, since fixed:** skill/reagent/graft buttons stayed visually active
+through a cascade's resolve window — visible and apparently clickable while `_state` was
+`Resolving`, even though the selection handlers already rejected clicks made in that state.
+`ResolveTurn()` (`battle.gd`) now hides the skill, reagent, and graft UI itself the moment it
+enters `Resolving`, instead of relying on `CompleteTurn()` alone.
 
 ### Phase 5 — Kit burst reachability — done
 
@@ -492,14 +480,6 @@ decision on scope with the plan's owner.
   load-bears one Phase 2 verdict (Expose_Weakness is filed channel-1-not-channel-2
   specifically because a Defence debuff can't move a burst) — that verdict stands until the
   backlog item is picked up.
-* **Flagged, unresolved: skill/reagent buttons don't hide while a cascade is still resolving.**
-  See the Phase 4 Status note above (`battle.gd:210-214, 264, 274, 332, 351-352, 615, 646`). Clicks
-  during that window are already rejected by the `_state` check in the selection handlers, so this
-  is a UX defect, not a soft-lock or an exploit — but a player watching a cascade play out still
-  sees fully-lit, apparently-clickable skill and reagent buttons for their entire turn, which reads
-  as broken regardless of whether input is actually accepted. Not assigned to a phase; fix by gating
-  button visibility off the same `_state`/drain condition `CompleteTurn()` already waits on, rather
-  than off turn-start/turn-complete alone.
 
 ## Documentation
 
