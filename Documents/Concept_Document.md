@@ -22,7 +22,7 @@ A solved encounter therefore runs as **pressure and burst**: most of its rounds 
 Two properties follow and must hold:
 
 * **The threat curve peaks before the burst, not after.** The tension is "can I survive to the trigger", not "can I out-damage it". A burst that is guaranteed once set up is a cutscene.
-* **Unsolved is a wall, not a slow fight.** Without the combination there is no burst, and the remaining chip damage cannot finish the encounter inside its round budget.
+* **Unsolved is a wall, not a slow fight, at Boss tier.** Without the combination there is no burst, and the remaining chip damage cannot finish the encounter inside its round budget. Fodder and mini-boss keep their own texture (see 5.3) rather than this property — 1.1.2 already tiers the burst targets, and this bullet is scoped to match rather than stating a document-wide property. Note the inversion: this section normally outranks the rest of the document, but here 5.3 is the tie-breaker, since it already ties "unsolved is a wall" and "roughly double unsolved" to tier, and this bullet is the one that changed to stop contradicting it.
 
 #### 1.1.2. Where the blowout is legible
 
@@ -1253,9 +1253,9 @@ So there now is 3 encounters to choose from for gear farming, one per equippable
 
 Every battle encounter belongs to one of three tiers. Expected fight length is a tier parameter, measured in rounds — one round is each fielded champion acting once. The round targets are starting points, to be tuned as content is placed.
 
-* **Fodder (routine fights):** a stat check tuned below expected player power, with at most one visible mechanic carrying an effect-based shortcut; fully circumventable by raw level and gear. Decided in 3–4 rounds.
-* **Mini-boss (optional puzzle):** one core mechanic; bringing an answer wins comfortably, ignoring it makes the fight substantially slower or riskier but never impossible. 6–10 rounds solved, roughly double unsolved.
-* **Boss (mandatory puzzle):** two or three layered mechanics; beatable by one of two or three specific skill configurations, or by a significantly over-leveled roster (see section 3.2). 10–12 rounds solved; unsolved is a wall, not merely slow.
+* **Fodder** — no dedicated burst; blowout here is overkill on trash. 3–4 rounds.
+* **Mini-boss** — one realisation, a partial burst, around 10x the champion's own basic skill. The threat curve peaks before it. 6–10 rounds solved, roughly double unsolved.
+* **Boss** — layered realisations, a full burst at 30–50x carrying 60–80% of total damage dealt. The threat curve peaks before the burst, not after. 10–12 rounds solved; unsolved is a wall, not merely slow.
 
 Every mechanic states its onset — by which enemy turn it becomes relevant — and that onset must fall inside its tier's expected kill window.
 

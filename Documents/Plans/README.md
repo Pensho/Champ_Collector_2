@@ -15,7 +15,8 @@ Suggested order (dependencies noted inside each plan):
    channels, cascade, burst presentation, kit burst reachability, itemization
    channels) are done and their sub-plans deleted; Phase 5 produced
    `Plan_Channel_Population_Rework.md`, carrying its prescriptions forward, and Phase 7
-   produced `Plan_Encounter_Blowout_Retrofit.md`, written and awaiting execution. Sub-plans
+   produced `Plan_Encounter_Blowout_Retrofit.md`, partially executed then paused pending
+   `Plan_Channel_Population_Rework.md`. Sub-plans
    are written when their prerequisites land and deleted under the retention rule below. It aligns existing systems and does not author
    new content — channels it finds too thinly populated to align are recorded in its
    `Coverage gaps` section, which spawns `Plan_System_Buildout.md` once it holds more
@@ -31,12 +32,15 @@ Suggested order (dependencies noted inside each plan):
 
 Design-only plans (no code; can run at any time):
 
-- `Plan_Encounter_Blowout_Retrofit.md` — Phase 7 of `Plan_Blowout_Alignment.md`, written and
-  awaiting execution. Retrofits the encounter tier definitions and the existing 14-entry
-  catalog against the pillar: 5.3's tiers state a burst expectation, every encounter's
-  answers are audited for which damage channel they feed (enabler included), Boss-tier
-  entries with no payoff anywhere in their configuration set are reworked, and boss Health
-  triples so a burst reads as 60–80% of the bar. Unpauses the plan below.
+- `Plan_Encounter_Blowout_Retrofit.md` — Phase 7 of `Plan_Blowout_Alignment.md`. Retrofits
+  the encounter tier definitions and the existing 14-entry catalog against the pillar: 5.3's
+  tiers state a burst expectation, every encounter's answers are audited for which damage
+  channel they feed (enabler included), Boss-tier entries with no payoff anywhere in their
+  configuration set are reworked, and boss Health triples so a burst reads as 60–80% of the
+  bar. Unpauses the plan below once it completes. Tier definitions and the channel audit are
+  done; **paused** before the boss configuration rework, since it would commit specific
+  kit/role pairings to each boss ahead of `Plan_Channel_Population_Rework.md` reworking kit
+  contributions — resume once that plan lands.
 - `Plan_Encounter_Solution_Design.md` — **paused** pending execution of
   `Plan_Encounter_Blowout_Retrofit.md`; further volume batches authored under the current
   production rules add to the retrofit backlog. The long-run encounter content plan:

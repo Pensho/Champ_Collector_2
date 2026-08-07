@@ -12,7 +12,14 @@ under `Settled decisions` below.
 
 ## Status
 
-Not started.
+Paused after Phase 2. Phase 1 (tier definitions) and Phase 2 (per-encounter channel
+audit and coverage-ledger tagging) are done. Phase 3 (boss configuration rework) is on
+hold: it commits specific role/kit pairings to each boss's configurations, and
+`Plan_Channel_Population_Rework.md` — not started — is expected to change kit
+contributions (it exists precisely to close the combined-modifier gap the Findings
+entry below describes). Reshaping boss configurations against kits that are about to
+change is wasted work, redone once they do. Phases 4 and 5 depend on Phase 3's output
+and are paused with it. Resume Phase 3 once `Plan_Channel_Population_Rework.md` lands.
 
 ## Context
 
@@ -66,7 +73,7 @@ end in a payoff somewhere, and that requirement is currently met by one boss out
 
 ## Phases
 
-### Phase 1 — Tier definitions
+### Phase 1 — Tier definitions — done
 
 `Concept_Document.md` 5.3 and 1.1.1.
 
@@ -95,7 +102,7 @@ Watch for: 5.3 is owned by the Concept Document but restated in two other places
 `Encounter tiers (confirmed decisions)` section. Bring both into sync or re-point them at
 5.3 in the same edit.
 
-### Phase 2 — Per-encounter channel audit
+### Phase 2 — Per-encounter channel audit — done
 
 One row per encounter, covering all 14 catalog entries: 7 fodder (Sporeback Pack, Wake
 Skimmers, Ledger Clerks, Plains Outriders, Ridge Marksmen, Flank Cutter, Line Breaker), 4
@@ -127,7 +134,7 @@ Then tag the Role × Tier coverage ledger in `Plan_Encounter_Solution_Design.md`
 for example `Reanimating Statues 1 (Signed Writ → buff-duration strip) [Enabler]`. Fodder
 cells may be tagged for completeness but carry no burst expectation.
 
-### Phase 3 — Boss configuration rework
+### Phase 3 — Boss configuration rework — paused, see Status
 
 `Encounter_Design_Document.md` section 2.3.
 
@@ -158,7 +165,7 @@ Emissary's Signed Writ is already *at* 3, so no rework may lean on it again.
 Where a boss cannot reach a payoff without a new opponent skill or status, stop and record
 it under the master plan's `Coverage gaps`. Do not author it here.
 
-### Phase 4 — Health retune
+### Phase 4 — Health retune — paused, see Status
 
 `Data/Character_Enemy_Variants/*.tres`, `Scripts/Debug/blowout_calibration.gd`, and
 `Concept_Document.md` 1.1.2.
@@ -210,7 +217,7 @@ interpolated message — `Tests/unit/test_burst_pacing.gd` is representative):
 * `Tests/unit/test_encounter_assembly.gd` asserts compositions and skill membership, not
   attributes, so it should stay green. Confirm it rather than assuming it.
 
-### Phase 5 — Adopt the pillar in the production rules, and unpause
+### Phase 5 — Adopt the pillar in the production rules, and unpause — paused, see Status
 
 `Plan_Encounter_Solution_Design.md` and `Plans/README.md`.
 

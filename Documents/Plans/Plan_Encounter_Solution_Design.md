@@ -80,17 +80,23 @@ specific roster picks matter most at the top tier.
   shortcut (e.g. an enemy that spams self-healing, answered by Blight). The
   mechanic is fully circumventable by raw level and gear — under-leveled or
   under-geared players use the right kit for a simple solution; strong players
-  ignore it.
+  ignore it. No dedicated burst — blowout here is overkill on trash, delivered by
+  routine kit output rather than a build-up-and-burst structure.
 - **Mini-boss:** the optional-puzzle tier. One core mechanic; a player who reads it
   and brings an answer wins comfortably, while ignoring it makes the fight
   substantially slower or riskier but not impossible. Names 2–3 alternative
   effect-based answers, each carried by a different role family, so multiple
-  rosters qualify.
+  rosters qualify. The answer's payoff is a partial burst, around 10x the
+  champion's own basic skill, with the threat curve peaking before it
+  (`Concept_Document.md` 1.1.1, 1.1.2).
 - **Boss:** the mandatory-puzzle tier. Two or three layered mechanics; beatable by
   one of two or three specific skill configurations, or by a significantly
   over-leveled roster (per Concept 3.2). Boss mechanics may demand role-signature
   answers — for example a zone only the Scholar's Refutation or Zone-Dissolving
-  Salts can remove, or a window that only a specific reagent opens.
+  Salts can remove, or a window that only a specific reagent opens. A solved
+  configuration ends in a full burst, 30–50x carrying 60–80% of total damage
+  dealt, with the threat curve peaking before it, not after; unsolved is a wall,
+  not merely slow (`Concept_Document.md` 1.1.1, 1.1.2).
 
 Fight length is a tier parameter, measured in rounds (each fielded champion
 acting once). Targets — starting points, to be tuned: fodder is decided in 3–4
@@ -231,28 +237,32 @@ glance (e.g. a Role that only ever answers fodder stands out). The Boss
 column lists configuration membership only; incidental mitigations named in
 an entry (e.g. Vault Slam's Enfeeble/Barrier softeners) are not tracked.
 
+Inline channel tags per `Plan_Encounter_Blowout_Retrofit.md` Phase 2, read from the same
+sources as the per-encounter audit in `Encounter_Design_Document.md` section 3. Fodder
+cells are tagged for completeness but carry no burst expectation.
+
 | Role | Fodder | Mini-boss | Boss |
 |---|---|---|---|
-| Emissary | Wake Skimmers (buff-duration strip); Ledger Clerks (Signed Writ) | Reanimating Statues 1 (Signed Writ → buff-duration strip) | The Collector of Debts (Signed Writ → strips seized buffs); The Warden of the Reliquary (Signed Writ → shears protection durations) |
-| Thief | Wake Skimmers (Pilfer buff theft) | — | The Collector of Debts (Pilfer → steals seized buffs back) |
-| Lancer | Line Breaker (Disarm → Enfeeble) | Reanimating Statues 2 (Disarm → Enfeeble) | — |
-| Alchemist | Ledger Clerks (Dissolving Agent → Unravel) | — | — |
-| Sorcerer | — | — | The Collector of Debts (Arcane Instability → amplified tincture/Fractured Idol configuration) |
-| Scholar | — | — | The Glyphbound Archivist (Refutation → zone clear, role signature) |
-| Diviner | Ridge Marksmen (Premonition) | The Ashen Oracle (Ill Omen → Hexed) | — |
-| Appraiser | — | — | The Warden of the Reliquary (Full Appraisal → burst-window configuration) |
-| Tactician | — | — | The Warden of the Reliquary (Daunting Strength → burst-window configuration) |
+| Emissary | Wake Skimmers (buff-duration strip) [Enabler]; Ledger Clerks (Signed Writ) [Enabler] | Reanimating Statues 1 (Signed Writ → buff-duration strip) [Enabler] | The Collector of Debts (Signed Writ → strips seized buffs) [Enabler]; The Warden of the Reliquary (Signed Writ → shears protection durations) [Enabler] |
+| Thief | Wake Skimmers (Pilfer buff theft) [Enabler] | — | The Collector of Debts (Pilfer → steals seized buffs back) [Enabler] |
+| Lancer | Line Breaker (Disarm → Enfeeble) [Channel 1] | Reanimating Statues 2 (Disarm → Enfeeble) [Channel 1] | — |
+| Alchemist | Ledger Clerks (Dissolving Agent → Unravel) [Channel 1] | — | — |
+| Sorcerer | — | — | The Collector of Debts (Arcane Instability → amplified tincture/Fractured Idol configuration) [Channel 1 + Channel 2 + Channel 3] |
+| Scholar | — | — | The Glyphbound Archivist (Refutation → zone clear, role signature) [Channel 1 + Enabler] |
+| Diviner | Ridge Marksmen (Premonition) [Enabler] | The Ashen Oracle (Ill Omen → Hexed) [Enabler] | — |
+| Appraiser | — | — | The Warden of the Reliquary (Full Appraisal → burst-window configuration) [Channel 1] |
+| Tactician | — | — | The Warden of the Reliquary (Daunting Strength → burst-window configuration) [Channel 2] |
 | Symbiote | — | — | — |
-| Jester | — | Reanimating Statues 3 (Burning Bolas → Burning) | — |
-| Cultist | — | Reanimating Statues 1 (Rite of Severance → Severance halts the Haste ramp) | The Collector of Debts (Devour Blessing → buff economy); The Warden of the Reliquary (Rite of Severance → blocks the protection grants) |
-| Bar Brawler | — | Reanimating Statues 1 (Headbutt → Dead Weight) | The Glyphbound Archivist (charge-burn sustain) |
-| Bloodmage | Ridge Marksmen, Line Breaker (Barrier) | Reanimating Statues 2 (Transfusion → Barrier); The Ashen Oracle (Tithe of Vitality → Mana Burn) | — |
-| Herald of the loom | Sporeback Pack (Thread Lash → Suppress) | The Ashen Oracle (Thread Lash → Suppress) | — |
-| Chronophage | Plains Outriders (Temporal Sinkhole) | Reanimating Statues 1 (Temporal Sinkhole → turn-bar pressure) | — |
-| Architect | Ridge Marksmen, Flank Cutter (Barrier) | Reanimating Statues 3 (Final Calculation tier 2 → Expose Weakness); Reanimating Statues 2 (Raise the Frame → Barrier) | — |
-| Tidal Corsair | Plains Outriders (Corsair's Reckoning → turn-bar strip) | — | — |
-| Plague Doctor | Sporeback Pack (Quarantine Breach → Blight) | — | — |
-| Warlord | Flank Cutter (Fortify) | Reanimating Statues 2 (Hold the Line → Fortify) | The Glyphbound Archivist (charge-burn sustain) |
+| Jester | — | Reanimating Statues 3 (Burning Bolas → Burning) [Channel 1 + Enabler] | — |
+| Cultist | — | Reanimating Statues 1 (Rite of Severance → Severance halts the Haste ramp) [Channel 1 + Enabler] | The Collector of Debts (Devour Blessing → buff economy) [Channel 1 + Channel 2]; The Warden of the Reliquary (Rite of Severance → blocks the protection grants) [Channel 1 + Enabler] |
+| Bar Brawler | — | Reanimating Statues 1 (Headbutt → Dead Weight) [Channel 1 + Enabler] | The Glyphbound Archivist (charge-burn sustain) [Channel 1] |
+| Bloodmage | Ridge Marksmen, Line Breaker (Barrier) [Enabler] | Reanimating Statues 2 (Transfusion → Barrier) [Enabler]; The Ashen Oracle (Tithe of Vitality → Mana Burn) [Enabler] | — |
+| Herald of the loom | Sporeback Pack (Thread Lash → Suppress) [Channel 1] | The Ashen Oracle (Thread Lash → Suppress) [Channel 1] | — |
+| Chronophage | Plains Outriders (Temporal Sinkhole) [Enabler] | Reanimating Statues 1 (Temporal Sinkhole → turn-bar pressure) [Enabler] | — |
+| Architect | Ridge Marksmen, Flank Cutter (Barrier) [Enabler] | Reanimating Statues 3 (Final Calculation tier 2 → Expose Weakness) [Channel 1 + Channel 2 + Enabler]; Reanimating Statues 2 (Raise the Frame → Barrier) [Enabler] | — |
+| Tidal Corsair | Plains Outriders (Corsair's Reckoning → turn-bar strip) [Channel 1 + Channel 2 + Enabler] | — | — |
+| Plague Doctor | Sporeback Pack (Quarantine Breach → Blight) [Enabler] | — | — |
+| Warlord | Flank Cutter (Fortify) [Channel 1] | Reanimating Statues 2 (Hold the Line → Fortify) [Channel 1] | The Glyphbound Archivist (charge-burn sustain) [Channel 1] |
 
 Sequence Lock has no carrier in the claims ledger; it is noted in the
 Reanimating Statues 1 entry as a future answer and becomes valid once a kit or

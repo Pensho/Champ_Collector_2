@@ -333,9 +333,11 @@ The census behind the sub-plan found gear entirely additive (no affix system exi
 combined modifier. The one architecture cost the sub-plan surfaces is recorded under
 `Coverage gaps` below.
 
-### Phase 7 — Encounter tier and catalog retrofit — in progress
+### Phase 7 — Encounter tier and catalog retrofit — paused
 
-**Produced:** `Plan_Encounter_Blowout_Retrofit.md`, written and not yet executed.
+**Produced:** `Plan_Encounter_Blowout_Retrofit.md`, written and partially executed (Phases 1
+and 2 done, Phase 3 onward paused pending `Plan_Channel_Population_Rework.md` — see that
+sub-plan's Status).
 
 Four decisions were settled with the plan's owner before the sub-plan was written, so it is
 written as prescriptions rather than questions: the boss Health retune happens now rather than

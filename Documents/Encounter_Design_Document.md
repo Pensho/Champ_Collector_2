@@ -365,3 +365,57 @@ Concept Document).
 - **Unsolved texture:** hard wall — chip damage dies on fresh protections
   while Vault Slams grind the party backward down the bar.
 - **Reward hook (deferred):** assigned at placement.
+
+## 3. Channel audit
+
+One row per catalog entry, per `Plans/Plan_Encounter_Blowout_Retrofit.md` Phase 2. The
+channel tag on each answer is read directly from `Concept_Document.md` 3.2.3 (statuses)
+or 3.2.4.2 (skills) and cross-checked against `Scripts/Debug/kit_contribution_manifest.gd`
+— not re-classified here. A verdict of **has a payoff** means at least one answer carries a
+Channel 1, 2, or 3 tag; **enabler-only** means every answer is tagged Enabler alone.
+
+Only a **Boss-tier** `enabler-only` verdict is a defect. Fodder carries no burst
+expectation by definition (1.1.2). A mini-boss `enabler-only` verdict is a correct result
+when paired with a genuine partial-burst answer elsewhere in the encounter, per
+`Plan_Encounter_Blowout_Retrofit.md`'s Settled decision 2 — record it, do not rework it.
+
+### 3.1. Fodder
+
+Fodder carries no burst target; verdicts are recorded for completeness only, per the
+Phase 2 preamble above.
+
+| Encounter | Intended answers (channel) | Verdict |
+|---|---|---|
+| Sporeback Pack | Blight (Quarantine Breach) [Enabler]; Suppress (Thread Lash) [Channel 1] | has a payoff |
+| Wake Skimmers | buff-duration strip (Signed Writ) [Enabler]; buff theft (Pilfer) [Enabler] | enabler-only |
+| Ledger Clerks | Unravel (Dissolving Agent) [Channel 1]; Signed Writ debuff (Signed Writ) [Enabler] | has a payoff |
+| Plains Outriders | turn-bar strip (Corsair's Reckoning) [Channel 1 + Channel 2 + Enabler]; Temporal Sinkhole zone [Enabler] | has a payoff |
+| Ridge Marksmen | Premonition [Enabler]; Barrier (Raise the Frame, Transfusion) [Enabler] | enabler-only |
+| Flank Cutter | Fortify (Hold the Line) [Channel 1]; Barrier (Raise the Frame) [Enabler]; party order (positional, untagged) | has a payoff |
+| Line Breaker | Enfeeble (Disarm) [Channel 1]; Barrier (Transfusion) [Enabler]; party order (positional, untagged) | has a payoff |
+
+### 3.2. Mini-bosses
+
+Burst target: one realisation, a partial burst around 10x the champion's own basic
+skill (Concept Document 1.1.2).
+
+| Encounter | Intended answers (channel) | Verdict |
+|---|---|---|
+| The Ashen Oracle | Suppress (Thread Lash) [Channel 1]; Mana Burn (Tithe of Vitality) [Enabler]; Hexed (Ill Omen) [Enabler] | has a payoff |
+| Reanimating Statues 1 (Boots) | Severance (Rite of Severance) [Channel 1 + Enabler]; buff-duration strip (Signed Writ) [Enabler]; turn-bar pressure (Temporal Sinkhole [Enabler], Dead Weight via Headbutt [Channel 1 + Enabler]) | has a payoff |
+| Reanimating Statues 2 (Weapon) | Enfeeble (Disarm) [Channel 1]; Fortify (Hold the Line) [Channel 1] / Barrier (Raise the Frame, Transfusion) [Enabler] | has a payoff |
+| Reanimating Statues 3 (Off-hands) | Expose Weakness (Final Calculation, 4-6 charges) [Channel 1 + Channel 2 + Enabler]; Burning (Burning Bolas) [Channel 1 + Enabler] | has a payoff |
+
+### 3.3. Bosses
+
+Burst target: layered realisations, a full burst at 30–50x carrying 60–80% of total
+damage dealt (Concept Document 1.1.2).
+
+| Encounter | Intended answers (channel) | Verdict |
+|---|---|---|
+| The Glyphbound Archivist | (1) Refutation [Channel 1 + Enabler], incidental per-charge damage, not a burst-scale contributor; (2) Zone-Dissolving Salts [Enabler]; (3) Fortify (Hold the Line) [Channel 1] / durable-front sustain (Liquid Courage [Channel 1], Headbutt [Channel 1 + Enabler]) — all three configurations are zone-clearing or sustain, none assembles a burst | **enabler-only** |
+| The Collector of Debts | (1) Devour Blessing [Channel 1 + Channel 2], used here as buff-denial rather than a burst hit; (2) Signed Writ [Enabler], Pilfer [Enabler]; (3) reagent roster — tinctures [Channel 1], no named channel-2/3 payoff yet configured onto this boss | **enabler-only** |
+| The Warden of the Reliquary | (1) Rite of Severance [Channel 1 + Enabler]; (2) Signed Writ [Enabler]; (3) Daunting Strength (Tactician) [Channel 2] + Full Appraisal — Keen Edge, Lethal Precision (Appraiser) [Channel 1], breaking the Barrier and killing into the Deathward in one crit round | has a payoff — the catalog's reference shape |
+
+Two Boss-tier `enabler-only` verdicts stand: The Glyphbound Archivist and The Collector
+of Debts. Both are carried into Phase 3 for configuration rework.
