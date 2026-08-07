@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="StatusEffectData" format=3]
+[gd_resource type="Resource" script_class="StatusEffectData" format=3 uid="uid://deqlt722cea2s"]
 
 [ext_resource type="Script" uid="uid://sqkdniv48rkg" path="res://Scripts/Battle/status_effect_data.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://ci1oy2qv2mlwp" path="res://Assets/Champ_Collector/Icons/Status_Effects/Volatile_Mixture/Volatile_Mixture.png" id="2_icon"]
