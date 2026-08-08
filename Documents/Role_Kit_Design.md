@@ -205,3 +205,145 @@ collapse-test payload without inventing new gating mechanics.
   lands — not resolved here to avoid scope creep into code before sign-off.
 * The contrast baseline (bursting champion's own basic vs. team's average per-action output)
   remains open per the plan; not touched by this document.
+
+## 9. Settled kit designs
+
+One entry per Role once its kit is **settled** (brainstormed, picked, and projected against the
+target band) — recorded here *before* any `.tres`, trait script, or status effect is written, per
+the plan's tier-3 loop. This is the record a coverage review reads: what every settled Role's
+passive and three skills actually do and what it projects to, without having to reconstruct that
+from trait scripts. An entry's **Status** line tracks whether it has been implemented yet; a
+settled-but-unimplemented entry is expected and not a problem to fix. Rationale for *why* a kit
+was shaped this way lives in the conversation/PR history that settled it, not here; claimed status
+effects and bucket keys live in section 10's ledger, not duplicated here.
+
+Format per entry: Status, Passive, Skills (name / effect / channel), Projected numbers.
+
+### 9.1 Plague Doctor — debuff-density damage and cascade-breadth passive
+
+**Status:** Implemented (`aca439b`). Batch 1.
+
+**Passive: Comorbidity.** Debuffs placed by this Role's skills tick again once for every distinct
+debuff type on the target (any source, uncapped).
+
+| Slot | Skill | Effect | Channel |
+|---|---|---|---|
+| Basic | Septic Lance | Mysticism-scaled damage to one enemy. | 1 |
+| Signature | Outbreak | Mysticism-scaled damage to one enemy, +8% per distinct debuff type on the target (uncapped); applies a stack of Plague for 3 turns (now stackable, no longer expiry-spread). | 2 |
+| Signature | Miasma | Zone, 4 charges. On trigger, forces every active debuff on the caught enemy to tick again immediately without losing duration, and applies Blight for 2 turns. | 3 (Enabler-classed by the scorer today — see below) |
+
+**Projected numbers:** not separately recorded before implementation (this kit predates section 9
+being split out); see `Tests/manual/team_corpus_sweep.gd`'s post-batch sweep result in the plan's
+own Status section for the roster-level delta this kit produced. The manifest
+(`kit_contribution_manifest.gd`) records a known scorer gap: Comorbidity and Miasma's sustained,
+multi-turn tick repetition has no scoring mechanism yet comparable to `repeat_contrast_ratio`'s
+separate-instance credit, so both carry an empty `bucket_key` rather than being mis-folded into a
+single-cast product — real and resolver-tested in play, understated by the scorer.
+
+### 9.2 Herald of the Loom — The Echo Loom
+
+**Status:** Settled, not yet implemented. Batch 1.
+
+**Passive: Three Threads.** The Herald always holds exactly one thread. Once per turn, as a free
+action, the Herald may switch thread — before or after using a skill, but not both. Max Tension is
+a constant 7 at every rarity.
+* Golden Thread — gain 1 Tension when a cascade instance resolves on an enemy (Cut the Cloth's own
+  instances excluded, to avoid a self-feed loop).
+* Silver Thread — the Herald's debuffs cannot be resisted and last 1 turn longer.
+* Black Thread — the first cascade instance to resolve on an enemy each action resolves one
+  additional time.
+* Cascade instances cast by this champion deal bonus damage: +5% Uncommon, +10% Rare, +15% Epic,
+  +20% Legendary. (Generic wording deliberately — applies to any cascade instance the Herald
+  produces, names no skill, so the passive and the skills stay decoupled.)
+* Starting Tension: 0 Uncommon/Rare, 1 Epic/Legendary. Tension does not persist between combats
+  (matches Arcane Instability's precedent).
+
+| Slot | Skill | Effect | Channel |
+|---|---|---|---|
+| Basic | Thread Snap | Mysticism-scaled damage to one enemy; applies Suppress for 1 turn. | 1 |
+| Signature | Pull the Thread | Mysticism-scaled damage to one enemy, pushes them backward 15% on the turn bar, applies Temporal Leak for 3 turns, and grants the Herald 2 Tension (stance-independent). | 2 |
+| Signature | Cut the Cloth | Damage to one enemy at 90% of a normal Mysticism-scaled hit, resolved once per Tension held (minimum once), then consumes all Tension. | 3 |
+
+**Projected numbers.** Using `Skills.MitigatedDamageUnrounded`'s formula (`skills.gd:298-307`):
+since mitigation depends only on defence and cancels identically between the basic-skill baseline
+and the burst (no defense-ignore in this kit), contrast ratio reduces to `(skill aggregate ratio) ×
+(combined modifier product) × (instance count)`, independent of which boss is used. At Legendary
+(8 instances, 90% per-instance strength, +20% self bonus) against an illustrative team product of
+5.5 (roughly matching section 4's "two independent factors per champion" shape), contrast ratio ≈
+**47.5x** — inside the 30-50x target band. Against a more modest team (product ≈3.0), ≈25.9x. At
+Uncommon (same 8-instance ceiling — rarity affects tempo via starting Tension and the smaller +5%
+self bonus, not the ceiling itself, since max Tension is now rarity-flat) the same strong-team
+scenario gives ≈41.6x. Cut the Cloth's 90% strength (rather than a Sorcerer-style 50% discount) is
+load-bearing: the setup tax is Tension's multi-turn build time, not a second discount on the
+payoff — discounting both would leave the kit short of the target band against any realistic team.
+
+**Implementation needs (not yet built):** a `Combat_Event` value firing on indirect damage (debuff
+ticks, zone triggers, cascade instances) for Golden Thread to hook, since `Combat_Event.Damage_Dealt`
+only fires from the direct-cast path (`battle_resolver.gd:777`); the generalized trait-declared
+free-action button (the graft button's pattern, generalized off its current hardcoded
+Symbiote-Role check at `battle.gd:277-279`) for the once-per-turn stance switch; and a manifest
+scoring shape for Cut the Cloth, which doesn't fit `Channel3_Cascade` (that class folds
+`magnitude × instances` additively into one bucket, right for a stacking tick like Comorbidity, not
+a repeated *separate* resolution) — closer to the Sorcerer's `reagent_gated_bonus` /
+`fold: separate_instance` shape, except that field's reagent-consumption framing doesn't fit a
+Tension gate; needs generalizing.
+
+## 10. Coverage ledger
+
+Successor to the archived `Plan_Role_Skill_Kits.md`'s claims ledger (status effects only) —
+carried forward here and updated as batches land, plus a second table for the mechanism this plan
+actually cares about: **damage-channel bucket keys**, so a new kit doesn't accidentally reuse
+another Role's key string (the composition law's "same bucket key adds" applies to accidental
+collisions too, not only intentional ones). Update both tables at the end of each batch, in the
+same edit that lands the batch's kits — a stale ledger is worse than none.
+
+### 10.1 Status effect claims
+
+Same rules as the archived pass: **identity effects** (a passive or signature zone's own effect) to
+one Role; **commodity effects** (plain attribute buffs/debuffs) to at most two; **turn bar effects**
+to one each. State as of Batch 1's Plague Doctor rework (`aca439b`); everything else reflects the
+archived pass's final state and goes stale as each further batch lands — refresh the claiming
+Role's rows in the same edit, not after.
+
+**Turn bar effects** — unchanged from the archived pass: Dead Weight (Bar Brawler), Battle Orders
+(Tactician); Anchor, Temporal Leak, Slipstream, Steadfast, Resonance unclaimed.
+
+**Debuffs** (rows that changed this batch; all others unchanged from the archived pass — see
+`Plan_Role_Skill_Kits.md` Archive for the full table until the next batch refreshes it here)
+
+| Effect | Claimed by |
+|---|---|
+| Plague | Plague Doctor (Outbreak) — moved from Miasma; now stackable, no longer expiry-spread |
+| Blight | Plague Doctor (Miasma) — moved from Quarantine Breach (renamed Outbreak) |
+| Suppress | Herald of the loom (Thread Snap) — **settled, not yet implemented** (section 9.2); shipped code still has this on Thread Lash until Herald's kit is authored |
+| Temporal Leak | Herald of the loom (Pull the Thread) — **settled, not yet implemented** (section 9.2); newly claimed, retiring part of `FeatureIdeas.md`'s "Rework Orphaned Turn Bar Effects" item once live |
+
+**Buffs** — unchanged from the archived pass this batch, with one pending removal: Attune's second
+claim (Herald of the loom's Woven Blessing, alongside Cultist's Chosen Vessel passive) drops once
+Herald's settled kit (section 9.2) is implemented — Woven Blessing is not part of it and nothing
+in the new kit applies Attune.
+
+### 10.2 Damage-channel bucket keys in use
+
+Sourced from `Scripts/Debug/kit_contribution_manifest.gd`'s `bucket_key` field (the runtime's own
+key, not a doc paraphrase) — the authority the burst-reachability scorer actually reads. A blank
+`bucket_key` means the entry contributes Channel 1 only, or is a pure Enabler; it claims no key.
+
+| Bucket key | Claimed by | Shape |
+|---|---|---|
+| `CombinedDamageModifier.TRAIT_RESOURCE_KEY` | Cultist (Chosen Vessel), Architect (Calibration), Tidal Corsair (Wrangle the Sea) | Shared resource-key identifier — each Role's own trait-resource meter, not a collision: the key names the *mechanism* (caster's own resource-driven bucket), and each caster only ever reads their own resource, so three Roles sharing it composes rather than colliding. |
+| `Citation` | Emissary (Citation) | Skill-name bucket |
+| `Warped` | Sorcerer (Cataclysmic Surge) | Debuff-type bucket — doubles as the debuff identity itself |
+| `Zone: Unstable Rift` | Sorcerer (Unstable Rift) | Zone-name bucket |
+| `Daunting_Strength` (granted status) | Tactician (Fatal Flaw) | Granted `DamageMultiplier` status — lands in whoever consumes it, not the caster's own bucket |
+| `Pratfall Sting` | Jester (Pratfall Sting) | Skill-name bucket |
+| `Devour Blessing` | Cultist (Devour Blessing) | Skill-name bucket |
+| `Heap On (ramp)` | Bar Brawler (Heap On) | Skill-name bucket, per-instance ramp (not a stacking cap) |
+| `Final Calculation` | Architect (Final Calculation) | Skill-name bucket |
+| `Corsairs Reckoning` | Tidal Corsair (Corsairs Reckoning) | Skill-name bucket |
+| `Outbreak` | Plague Doctor (Outbreak) | Skill-name bucket, `bonus_per` keyed to `Target_Debuff_Count` (Batch 1's new generic trait-count source) |
+
+Every other Role/skill in the manifest carries `bucket_key = ""` today — either genuinely Channel 1
+/ Enabler, or a Batch-1-and-later target whose kit hasn't yet earned a bucket key. Batch 1's
+remaining Roles (Herald of the Loom, Sorcerer's second skill if it changes, Bloodmage, Appraiser)
+are expected to add rows here; add them in the same edit that updates the manifest.

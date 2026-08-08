@@ -304,12 +304,18 @@ before any code lands):
    actually exist yet?) — a quick coherence check, not a full settle of those other Roles.
 3. **Concrete kit design**, the expensive-to-revert tier once it becomes `.tres` + trait code +
    tests: brainstorm candidate kits (via the `brainstorm` skill, against `Role_Kit_Design.md`) →
-   settle kits → **compute the settled design's projected numbers against the scorer's own
+   settle kits → compute the settled design's projected numbers against the scorer's own
    formula/methodology (`blowout_calibration.gd`'s approach) and check them against the target
-   band before authoring anything** → author `.tres` under `Data/Character_Skill_Variants/`, plus
-   new `Data/Status_Effects/` entries, trait code, and any new `Cascade_Trigger` value and `Post()`
-   site the designs earn → add/update `Scripts/Debug/kit_contribution_manifest.gd` entries → tests
-   → `./Tests/run_tests.sh` and `gdlint Scripts/` green → re-run the sweep and record the delta.
+   band → **record the settled kit in `Role_Kit_Design.md` §9 (passive, all three skills,
+   rationale, the projected numbers, and its claims) before writing any code** — a session that
+   settles a kit is not required to also implement it in the same sitting; recording first means
+   the next session (or a coverage review) can compare every settled kit's channel spread and
+   route coverage without reading trait scripts → *then*, whenever implementation happens, author
+   `.tres` under `Data/Character_Skill_Variants/`, plus new `Data/Status_Effects/` entries, trait
+   code, and any new `Cascade_Trigger`/`Combat_Event` value and `Post()` site the design earns →
+   add/update `Scripts/Debug/kit_contribution_manifest.gd` entries → tests → `./Tests/run_tests.sh`
+   and `gdlint Scripts/` green → re-run the sweep and record the delta → mark the §9 entry
+   implemented.
 
 ### Phases 3-5 — Batches 2, 3, 4
 
