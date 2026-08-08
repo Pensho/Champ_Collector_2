@@ -246,7 +246,7 @@ resolver-tested in play, layered on top of whatever Comorbidity already scores.
 
 **Status:** Settled, not yet implemented. Batch 1.
 
-**Passive: Three Threads.** The Herald always holds exactly one thread. Once per turn, as a free
+**Passive: Weft and Warp.** The Herald always holds exactly one thread. Once per turn, as a free
 action, the Herald may switch thread — before or after using a skill, but not both. Max Tension is
 a constant 7 at every rarity.
 * Golden Thread — gain 1 Tension when a cascade instance resolves on an enemy (Cut the Cloth's own
