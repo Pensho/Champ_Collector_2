@@ -45,12 +45,12 @@ const ZERO_CONTRIBUTION_SKILL_INDEX: Dictionary = {
 ## Plague_Doctor's own Miasma is already tagged Channel3_Cascade in the manifest, but its
 ## damage lands via the zone-triggered Plague status rather than a direct DamageEffect on
 ## Miasma itself — so it never satisfies BurstReachability._HasDamageEffect and can never
-## become a scored candidate at all, verified below rather than assumed. Quarantine Breach is
+## become a scored candidate at all, verified below rather than assumed. Outbreak is
 ## Plague_Doctor's own direct-damage skill (Mysticism 1.2) instead, standing in as a real
 ## vehicle for the same repeating-factor shape a populated channel 3 would need. Magnitude is
 ## a per-instance rate, not a ceiling — multiplied by the modeled instance count.
 const CASCADE_ROLE: Types.Role = Types.Role.Plague_Doctor
-const CASCADE_SKILL_INDEX: int = 1  # Quarantine Breach
+const CASCADE_SKILL_INDEX: int = 1  # Outbreak
 const CASCADE_BASE_MAGNITUDE_PER_INSTANCE: float = 0.15
 const CASCADE_INSTANCE_COUNTS: Array[int] = [1, 2, 4, 8, 16]  # 16 = CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION
 
@@ -297,7 +297,7 @@ func test_prescription_populate_channel_three_via_cascade_instance_count() -> vo
 			"Miasma must never be a scored candidate under the current scorer, regardless of " +
 			"the magnitude given to it — its damage is zone/status-triggered, not direct")
 
-	gut.p("(Quarantine Breach — Plague_Doctor's own direct-damage skill — stands in instead.)")
+	gut.p("(Outbreak — Plague_Doctor's own direct-damage skill — stands in instead.)")
 	_PrintStatsRow("K=0 (current, inert)", _baseline_stats)
 	var stats_by_k: Dictionary = {}
 	for instances in CASCADE_INSTANCE_COUNTS:

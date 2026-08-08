@@ -4,9 +4,9 @@ const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 
 # Coverage for CascadeResolver's own plumbing (Concept_Document.md 1.1.3/1.1.4): the two
 # termination bounds, the once-per-action dedup rule, instance-count snapshotting, and the
-# Cascade_Triggered stream marker. The four ported effects' own behavior (Overflow, Plague,
-# Rush, Mirror Coat) stays covered by their existing suites — this file is the architecture,
-# not the content.
+# Cascade_Triggered stream marker. The three ported effects' own behavior (Overflow, Rush,
+# Mirror Coat) stays covered by their existing suites — this file is the architecture, not
+# the content.
 
 var _roster: Dictionary[int, Character] = {}
 var _resolver: BattleResolver = null

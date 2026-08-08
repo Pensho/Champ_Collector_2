@@ -2,9 +2,9 @@ extends GutTest
 
 const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 
-# Coverage for Comorbidity at two levels: the trait itself (returns the rarity-dependent
-# per-debuff fraction, and the resolver stamps it onto newly cast debuffs), and the
-# resolver's tick-time scaling of any debuff that carries a tick_bonus_per_debuff.
+# Coverage for Comorbidity at two levels: the trait itself (flags every debuff it casts to
+# repeat its tick per distinct debuff type on the target), and the resolver's tick-time
+# multiplication of any debuff carrying that flag.
 
 var _roster: Dictionary[int, Character] = {}
 var _resolver: BattleResolver = null
@@ -20,12 +20,12 @@ func _add_debuff(
 		p_type: Types.Debuff_Type,
 		p_source_ID: int,
 		p_duration: int,
-		p_tick_bonus_per_debuff: float = 0.0) -> void:
+		p_repeats_per_distinct_debuff: bool = false) -> void:
 	var debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
 	debuff.type = p_type
 	debuff.duration = p_duration
 	debuff.source_ID = p_source_ID
-	debuff.tick_bonus_per_debuff = p_tick_bonus_per_debuff
+	debuff.repeats_per_distinct_debuff = p_repeats_per_distinct_debuff
 	_roster[p_character_ID]._active_debuffs.append(debuff)
 
 func _set_max_health(p_character_ID: int, p_max_health: int) -> void:
@@ -38,28 +38,15 @@ func _expected_tick(p_max_health: int) -> int:
 func _burning_ticks(p_results: Array[CombatResult]) -> Array[CombatResult]:
 	return p_results.filter(func(result): return result.kind == CombatResult.Kind.Debuff_Tick)
 
-# --- Rarity table ---
-
-func test_tick_bonus_per_debuff_table() -> void:
-	var expected: Dictionary[Types.Rarity, float] = {
-		Types.Rarity.Uncommon: 0.05,
-		Types.Rarity.Rare: 0.07,
-		Types.Rarity.Epic: 0.09,
-		Types.Rarity.Legendary: 0.11,
-	}
-	for rarity: Types.Rarity in expected:
-		assert_eq(ComorbidityTrait.GetTickBonusPerDebuff(rarity), expected[rarity],
-			"TICK_BONUS_PER_DEBUFF at %s" % Types.RarityName(rarity))
-
 # --- Trait hook ---
 
-func test_on_skill_cast_returns_the_rarity_bonus() -> void:
+func test_on_skill_cast_flags_the_repeat() -> void:
 	var comorbidity_trait: ComorbidityTrait = ComorbidityTrait.new()
 	comorbidity_trait.Init(Types.Rarity.Epic)
 	var result: TraitSkillResult = comorbidity_trait.OnSkillCast(0, [], "Zap", {}, _resolver)
-	assert_eq(result._tick_bonus_per_debuff, 0.09)
+	assert_true(result._repeats_tick_per_distinct_debuff)
 
-func test_cast_debuff_stamps_the_bonus_onto_the_new_debuff() -> void:
+func test_cast_debuff_stamps_the_flag_onto_the_new_debuff() -> void:
 	var skill: Skill = Skill.new()
 	skill.name = "Toxin"
 	skill.target = Types.Skill_Target.Single_Enemy
@@ -74,9 +61,9 @@ func test_cast_debuff_stamps_the_bonus_onto_the_new_debuff() -> void:
 
 	_resolver.ResolveSkill(0, [3], 0)
 
-	assert_eq(_roster[3]._active_debuffs[0].tick_bonus_per_debuff, 0.07)
+	assert_true(_roster[3]._active_debuffs[0].repeats_per_distinct_debuff)
 
-func test_refreshing_an_existing_debuff_updates_its_bonus() -> void:
+func test_refreshing_an_existing_debuff_updates_the_flag() -> void:
 	var skill: Skill = Skill.new()
 	skill.name = "Toxin"
 	skill.target = Types.Skill_Target.Single_Enemy
@@ -90,59 +77,74 @@ func test_refreshing_an_existing_debuff_updates_its_bonus() -> void:
 	_roster[0]._trait.Init(Types.Rarity.Rare)
 	# A non-stackable, overwritable debuff already sitting on the target from another,
 	# non-Comorbidity source.
-	_add_debuff(3, Types.Debuff_Type.Enfeeble, 5, 1, 0.0)
+	_add_debuff(3, Types.Debuff_Type.Enfeeble, 5, 1, false)
 
 	_resolver.ResolveSkill(0, [3], 0)
 
 	assert_eq(_roster[3]._active_debuffs.size(), 1, "The existing Enfeeble should be refreshed in place, not stacked")
 	assert_eq(_roster[3]._active_debuffs[0].duration, 3, "Duration should be refreshed to the new skill's duration")
-	assert_eq(_roster[3]._active_debuffs[0].tick_bonus_per_debuff, 0.07,
-		"Refreshing should also update the bonus to the Plague Doctor's own rarity value")
+	assert_true(_roster[3]._active_debuffs[0].repeats_per_distinct_debuff,
+		"Refreshing should also stamp the Comorbidity-sourced flag")
 
-# --- Tick-time scaling ---
+# --- Tick-time multiplication ---
 
-func test_tick_scales_with_the_targets_total_debuff_count_at_tick_time() -> void:
+func test_tick_multiplies_by_the_targets_distinct_debuff_type_count_at_tick_time() -> void:
 	_set_max_health(0, 100)
-	_add_debuff(0, Types.Debuff_Type.Burning, 1, 2, 0.05)
+	_add_debuff(0, Types.Debuff_Type.Burning, 1, 2, true)
 	_add_debuff(0, Types.Debuff_Type.Enfeeble, 1, 2)
 	_add_debuff(0, Types.Debuff_Type.Suppress, 1, 2)
-	# 3 active debuffs (the ticking Burning included) => 1 + 0.05 x 3 = 1.15
+	# 3 distinct types (the ticking Burning included) => tick x 3.
 	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [], 0)
 	var tick: CombatResult = _burning_ticks(results)[0]
-	assert_eq(tick.amount, int(floor(_expected_tick(100) * 1.15)))
+	assert_eq(tick.amount, _expected_tick(100) * 3)
 
-func test_stack_count_is_capped_at_five() -> void:
+func test_count_is_distinct_types_not_raw_instance_count() -> void:
 	_set_max_health(0, 100)
-	_add_debuff(0, Types.Debuff_Type.Burning, 1, 2, 0.05)
-	for i in 6:
+	_add_debuff(0, Types.Debuff_Type.Burning, 1, 2, true)
+	for i in 4:
 		_add_debuff(0, Types.Debuff_Type.Enfeeble, 1, 2)
-	# 7 active debuffs total, capped at 5 => 1 + 0.05 x 5 = 1.25
+	# 2 distinct types (Burning, Enfeeble) despite 4 stacked Enfeeble instances => tick x 2.
 	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [], 0)
 	var tick: CombatResult = _burning_ticks(results)[0]
-	assert_eq(tick.amount, int(floor(_expected_tick(100) * 1.25)))
+	assert_eq(tick.amount, _expected_tick(100) * 2)
+
+func test_count_is_uncapped() -> void:
+	_set_max_health(0, 100)
+	_add_debuff(0, Types.Debuff_Type.Burning, 1, 2, true)
+	var other_types: Array[Types.Debuff_Type] = [
+		Types.Debuff_Type.Enfeeble, Types.Debuff_Type.Suppress, Types.Debuff_Type.Unravel,
+		Types.Debuff_Type.Confound, Types.Debuff_Type.Hexed, Types.Debuff_Type.Blight,
+		Types.Debuff_Type.Slow,
+	]
+	for type in other_types:
+		_add_debuff(0, type, 1, 2)
+	# 8 distinct types total => tick x 8, no cap.
+	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [], 0)
+	var tick: CombatResult = _burning_ticks(results)[0]
+	assert_eq(tick.amount, _expected_tick(100) * 8)
 
 func test_debuffs_from_other_casters_are_unaffected() -> void:
 	_set_max_health(0, 100)
-	_add_debuff(0, Types.Debuff_Type.Burning, 1, 2, 0.05)
+	_add_debuff(0, Types.Debuff_Type.Burning, 1, 2, true)
 	_add_debuff(0, Types.Debuff_Type.Burning, 2, 2)
 	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [], 0)
 	var tick: CombatResult = _burning_ticks(results)[0]
-	# Source 1 (Comorbidity, 2 active debuffs): 1 + 0.05 x 2 = 1.10
-	assert_eq(tick.amount_by_source[1], int(floor(_expected_tick(100) * 1.10)))
-	# Source 2's own Burning carries no bonus, so it ticks at the unscaled base amount.
+	# Source 1's own Burning is flagged and 1 distinct type is present => tick x 1.
+	assert_eq(tick.amount_by_source[1], _expected_tick(100))
+	# Source 2's Burning carries no flag, so it ticks at the unscaled base amount.
 	assert_eq(tick.amount_by_source[2], _expected_tick(100))
 
-func test_scaling_recomputes_between_ticks() -> void:
+func test_multiplier_recomputes_between_ticks() -> void:
 	_set_max_health(0, 100)
-	_add_debuff(0, Types.Debuff_Type.Burning, 1, 3, 0.05)
+	_add_debuff(0, Types.Debuff_Type.Burning, 1, 3, true)
 	_add_debuff(0, Types.Debuff_Type.Enfeeble, 1, 1)
 
-	# First tick: 2 active debuffs => 1 + 0.05 x 2 = 1.10.
+	# First tick: 2 distinct types => tick x 2.
 	var first_results: Array[CombatResult] = _resolver.ResolveSkill(0, [], 0)
 	var first_tick: CombatResult = _burning_ticks(first_results)[0]
-	assert_eq(first_tick.amount, int(floor(_expected_tick(100) * 1.10)))
+	assert_eq(first_tick.amount, _expected_tick(100) * 2)
 
 	# The Enfeeble expired after the first tick; only the Burning itself remains.
 	var second_results: Array[CombatResult] = _resolver.ResolveSkill(0, [], 0)
 	var second_tick: CombatResult = _burning_ticks(second_results)[0]
-	assert_eq(second_tick.amount, int(floor(_expected_tick(100) * 1.05)))
+	assert_eq(second_tick.amount, _expected_tick(100))

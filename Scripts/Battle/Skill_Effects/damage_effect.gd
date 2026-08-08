@@ -89,8 +89,19 @@ func _Count(p_context: SkillCastContext, p_target_ID: int, p_source: Types.Trait
 		Types.Trait_Count_Source.Trait_Condition, Types.Trait_Count_Source.Trait_Counter_On_Target, \
 				Types.Trait_Count_Source.Trait_Counter_Raw_On_Target:
 			return _TraitCount(p_context, p_target_ID, p_source)
+		Types.Trait_Count_Source.Target_Debuff_Count:
+			return float(_DistinctDebuffTypeCount(p_context, p_target_ID))
 		_:
 			return 0.0
+
+func _DistinctDebuffTypeCount(p_context: SkillCastContext, p_target_ID: int) -> int:
+	var target_character: Character = p_context.resolver.GetCharacters().get(p_target_ID)
+	if(null == target_character):
+		return 0
+	var distinct_types: Dictionary[Types.Debuff_Type, bool] = {}
+	for debuff in target_character._active_debuffs:
+		distinct_types[debuff.type] = true
+	return distinct_types.size()
 
 func _TraitCount(p_context: SkillCastContext, p_target_ID: int, p_source: Types.Trait_Count_Source) -> float:
 	var caster_trait: CharacterTrait = p_context.resolver.GetCharacters()[p_context.caster_ID]._trait

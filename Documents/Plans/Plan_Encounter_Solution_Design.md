@@ -261,7 +261,7 @@ cells are tagged for completeness but carry no burst expectation.
 | Chronophage | Plains Outriders (Temporal Sinkhole) [Enabler] | Reanimating Statues 1 (Temporal Sinkhole → turn-bar pressure) [Enabler] | — |
 | Architect | Ridge Marksmen, Flank Cutter (Barrier) [Enabler] | Reanimating Statues 3 (Final Calculation tier 2 → Expose Weakness) [Channel 1 + Channel 2 + Enabler]; Reanimating Statues 2 (Raise the Frame → Barrier) [Enabler] | — |
 | Tidal Corsair | Plains Outriders (Corsair's Reckoning → turn-bar strip) [Channel 1 + Channel 2 + Enabler] | — | — |
-| Plague Doctor | Sporeback Pack (Quarantine Breach → Blight) [Enabler] | — | — |
+| Plague Doctor | Sporeback Pack (Miasma → Blight) [Enabler] | — | — |
 | Warlord | Flank Cutter (Fortify) [Channel 1] | Reanimating Statues 2 (Hold the Line → Fortify) [Channel 1] | The Glyphbound Archivist (charge-burn sustain) [Channel 1] |
 
 Sequence Lock has no carrier in the claims ledger; it is noted in the

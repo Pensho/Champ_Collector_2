@@ -65,12 +65,23 @@ Findings carried forward from the two deleted plans (`Plan_Kit_Burst_Reachabilit
   Opportunist.
 * **Two known implementation bugs, still unfixed:** Plague Doctor's Comorbidity
   (`status_effect_resolver.gd:70-71` hardcodes `tick_bonus_per_debuff = 0.0`, so the zone-trigger
-  debuff path Miasma uses never reads it) moves into the Plague Doctor's batch (Phase 2, below).
-  Lancer's Reckless Momentum (`lancer_trait.gd`'s `OFFENSIVE_SKILL_NAMES` names a Thief skill,
-  "Stab", instead of the Lancer's own "Lance Thrust", and no preset ever populates
-  `defensive_skill_names`, so Momentum stacks accrue but only Disarm ever grants them and Phalanx
-  Guard can never spend them) — fix it whenever Lancer's kit lands in a batch (Phase 3-5,
-  composition set at the end of Phase 1).
+  debuff path Miasma uses never reads it) moves into the Plague Doctor's batch (Phase 2, below;
+  **fixed** — see Phase 2's own entry). Lancer's Reckless Momentum (`lancer_trait.gd`'s
+  `OFFENSIVE_SKILL_NAMES` names a Thief skill, "Stab", instead of the Lancer's own "Lance Thrust",
+  and no preset ever populates `defensive_skill_names`, so Momentum stacks accrue but only Disarm
+  ever grants them and Phalanx Guard can never spend them) — fix it whenever Lancer's kit lands in
+  a batch (Phase 3-5, composition set at the end of Phase 1).
+* **Architecture gap, found in Plague Doctor's batch, deliberately not fixed yet:**
+  `StatusEffects.Debuff` (`status_effects.gd`) carries dedicated fields for individual traits'
+  rider data instead of one generic container — `repeats_per_distinct_debuff` (Comorbidity, this
+  batch) and `has_weakness_rider`/`weakness_attribute`/`weakness_reduction` (Field of Study,
+  Scholar's passive, already shipped) are the same shape twice. The fix: a single
+  `trait_riders: Dictionary[StringName, Variant]` on `Debuff`, keyed by mechanic identity, plus
+  generalizing `TraitSkillResult`'s equivalent bespoke field the same way so `CastDebuff`'s
+  signature stops naming individual mechanics. Deferred rather than fixed inline because it
+  touches Field of Study — a different Role's already-shipped, already-tested kit — outside this
+  batch's scope; fix it opportunistically (a third trait needing a debuff rider is the natural
+  trigger) or in a dedicated cleanup pass, not silently while authoring an unrelated Role.
 
 ## Context
 
@@ -278,11 +289,27 @@ worst kits at the same time:
 | Bloodmage | Scores zero contribution today; health-as-resource is an unused condition surface |
 | Appraiser | The crit path is a multiplier axis independent of the combined modifier |
 
-Per batch, in order: brainstorm candidate kits (via the `brainstorm` skill, against
-`Role_Kit_Design.md`) → settle kits → author `.tres` under `Data/Character_Skill_Variants/`, plus
-new `Data/Status_Effects/` entries, trait code, and any new `Cascade_Trigger` value and `Post()`
-site the designs earn → add/update `Scripts/Debug/kit_contribution_manifest.gd` entries → tests →
-`./Tests/run_tests.sh` and `gdlint Scripts/` green → re-run the sweep and record the delta.
+**Per-batch loop, in three cost tiers** (settled during batch 1's review — the point is to catch a
+wrong assumption at the cheapest tier it can be caught at, not to front-load every Role's design
+before any code lands):
+
+1. **Plumbing, fixed opportunistically.** Bugs, missing schema (a new `Trait_Count_Source` or
+   `Cascade_Trigger` value), or scorer blind spots (e.g. a mechanic the scorer structurally can't
+   see yet) are fixed as soon as found, independent of batch boundaries — cheap and low-risk, and
+   finding one early prevents baking the same wrong assumption into several Roles' designs.
+2. **Coverage-level identity**, already carried by `Role_Kit_Design.md` §5-7 (channel identity,
+   route sketches, batch composition) — cheap to revise since it's prose, not code. Before
+   finalizing a batch's concrete numbers, sanity-check its hooks against the *other* batches'
+   still-sketchy anchors for the same pairing-web route (does the shape the other side needs
+   actually exist yet?) — a quick coherence check, not a full settle of those other Roles.
+3. **Concrete kit design**, the expensive-to-revert tier once it becomes `.tres` + trait code +
+   tests: brainstorm candidate kits (via the `brainstorm` skill, against `Role_Kit_Design.md`) →
+   settle kits → **compute the settled design's projected numbers against the scorer's own
+   formula/methodology (`blowout_calibration.gd`'s approach) and check them against the target
+   band before authoring anything** → author `.tres` under `Data/Character_Skill_Variants/`, plus
+   new `Data/Status_Effects/` entries, trait code, and any new `Cascade_Trigger` value and `Post()`
+   site the designs earn → add/update `Scripts/Debug/kit_contribution_manifest.gd` entries → tests
+   → `./Tests/run_tests.sh` and `gdlint Scripts/` green → re-run the sweep and record the delta.
 
 ### Phases 3-5 — Batches 2, 3, 4
 

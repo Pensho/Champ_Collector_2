@@ -129,7 +129,7 @@ Document 3.2.4.3).
   City.
 - **Mechanic:** the Matron's Sporeburst Mend (section 1) heals the whole pack
   every turn while the Hounds attack. Onset: enemy turn 1.
-- **Answers:** Blight (e.g. the Plague Doctor's Quarantine Breach) halves the
+- **Answers:** Blight (e.g. the Plague Doctor's Miasma) halves the
   healing; Suppress (e.g. the Herald of the loom's Thread Lash) guts its
   Mysticism scaling.
 
@@ -386,7 +386,7 @@ Phase 2 preamble above.
 
 | Encounter | Intended answers (channel) | Verdict |
 |---|---|---|
-| Sporeback Pack | Blight (Quarantine Breach) [Enabler]; Suppress (Thread Lash) [Channel 1] | has a payoff |
+| Sporeback Pack | Blight (Miasma) [Enabler]; Suppress (Thread Lash) [Channel 1] | has a payoff |
 | Wake Skimmers | buff-duration strip (Signed Writ) [Enabler]; buff theft (Pilfer) [Enabler] | enabler-only |
 | Ledger Clerks | Unravel (Dissolving Agent) [Channel 1]; Signed Writ debuff (Signed Writ) [Enabler] | has a payoff |
 | Plains Outriders | turn-bar strip (Corsair's Reckoning) [Channel 1 + Channel 2 + Enabler]; Temporal Sinkhole zone [Enabler] | has a payoff |

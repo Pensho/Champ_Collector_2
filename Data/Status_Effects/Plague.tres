@@ -10,5 +10,6 @@ attribute_modifiers = Dictionary[int, float]({
 6: 1.0
 })
 magnitude = 0.3
+stackable = true
 icon = ExtResource("2_icon")
-description = "Deals damage each turn equal to 30% of the caster's Mysticism, snapshotted at the moment of application. When it expires, it spreads to a random other enemy with fresh duration."
+description = "Deals damage each turn equal to 30% of the caster's Mysticism, snapshotted at the moment of application. Multiple stacks tick independently."

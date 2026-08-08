@@ -12,8 +12,8 @@ func _init(p_resolver: BattleResolver) -> void:
 	_RegisterCascadeListeners()
 
 
-## Registers the four cascade-channel statuses (Concept_Document.md 1.1.3) this resolver
-## triggers off of. Code-registered rather than data-driven: with only four listeners, a
+## Registers the cascade-channel statuses (Concept_Document.md 1.1.3) this resolver
+## triggers off of. Code-registered rather than data-driven: with only a few listeners, a
 ## StatusEffectData schema field for this isn't warranted yet.
 func _RegisterCascadeListeners() -> void:
 	var cascade: CascadeResolver = _resolver.GetCascadeResolver()
@@ -25,10 +25,6 @@ func _RegisterCascadeListeners() -> void:
 			StringName(Types.Buff_Type.keys()[Types.Buff_Type.Rush]),
 			func(e: CascadeEvent) -> bool: return Types.Buff_Type.Rush == e.buff_type,
 			_CascadeRushStun)
-	cascade.Subscribe(Types.Cascade_Trigger.Status_Expired,
-			StringName(Types.Debuff_Type.keys()[Types.Debuff_Type.Plague]),
-			func(e: CascadeEvent) -> bool: return Types.Debuff_Type.Plague == e.debuff_type,
-			_CascadeSpreadPlague)
 	cascade.Subscribe(Types.Cascade_Trigger.Status_Landed,
 			StringName(Types.Buff_Type.keys()[Types.Buff_Type.Mirror_Coat]),
 			func(_e: CascadeEvent) -> bool: return true,
@@ -50,7 +46,7 @@ func ApplyBuff(p_target_ID: int, p_buff_template: StatusEffects.Buff) -> Array[C
 		return _resolver._EndBatch()
 
 	_InsertOrRefresh(p_target_ID, true, p_buff_template.type, data, new_value, p_buff_template.duration,
-			-1, 0.0, false, p_buff_template.name)
+			-1, false, false, p_buff_template.name)
 	return _resolver._EndBatch()
 
 func ApplyDebuff(p_target_ID: int, p_debuff_template: StatusEffects.Debuff) -> Array[CombatResult]:
@@ -68,7 +64,7 @@ func ApplyDebuff(p_target_ID: int, p_debuff_template: StatusEffects.Debuff) -> A
 	var new_value: float = (p_debuff_template.value if 0.0 != p_debuff_template.value
 			else _SnapshotStatusValue(data, p_debuff_template.source_ID, p_target_ID))
 	_InsertOrRefresh(p_target_ID, false, p_debuff_template.type, data, new_value, p_debuff_template.duration,
-			p_debuff_template.source_ID, 0.0, false, p_debuff_template.name)
+			p_debuff_template.source_ID, false, false, p_debuff_template.name)
 	return _resolver._EndBatch()
 
 func RemoveBuff(p_target_ID: int, p_buff: StatusEffects.Buff) -> Array[CombatResult]:
@@ -188,7 +184,7 @@ func CastDebuff(
 		p_target_ID: int,
 		p_debuff_template: StatusEffects.Debuff,
 		p_caster_ID: int,
-		p_tick_bonus_per_debuff: float = 0.0,
+		p_repeats_per_distinct_debuff: bool = false,
 		p_always_refresh_duration: bool = false,
 		p_trigger_mirror_coat: bool = false) -> Array[CombatResult]:
 	_resolver._BeginBatch()
@@ -215,7 +211,7 @@ func CastDebuff(
 	var value: float = (p_debuff_template.value if 0.0 != p_debuff_template.value
 			else _SnapshotStatusValue(data, p_caster_ID, p_target_ID))
 	var created: StatusEffects.Effect = _InsertOrRefresh(p_target_ID, false, p_debuff_template.type, data, value,
-			p_debuff_template.duration, p_caster_ID, p_tick_bonus_per_debuff, p_always_refresh_duration,
+			p_debuff_template.duration, p_caster_ID, p_repeats_per_distinct_debuff, p_always_refresh_duration,
 			Types.Debuff_Type.keys()[p_debuff_template.type])
 	if(p_trigger_mirror_coat and null != created):
 		var event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Status_Landed)
@@ -272,36 +268,13 @@ func _TriggerExistingCasterDebuffs(
 		p_caster_ID: int,
 		p_caster_attributes: Dictionary[Types.Attribute, int]) -> void:
 	var caster: Character = _resolver._characters[p_caster_ID]
+	var tick: Dictionary = _ComputeDebuffTickDamage(caster, p_caster_attributes)
 	var status_IDs_to_be_removed: Array[int] = []
-	var tick_damage_by_source: Dictionary[int, int] = {}
-	var tick_damage_total: int = 0
-	var expiring_plagues: Array[StatusEffects.Debuff] = []
 	for debuff in caster._active_debuffs:
-		var data: StatusEffectData = StatusEffectRegistry.DebuffData(debuff.type)
-		if(null != data and data.applies_on_self_tick):
-			var tick_damage: int = 0
-			match data.magnitude_kind:
-				StatusEffectData.MagnitudeKind.MaxHealthPercent:
-					tick_damage = int(floor(
-							(p_caster_attributes[Types.Attribute.Health]
-									* GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER) * data.magnitude))
-				StatusEffectData.MagnitudeKind.CasterAttributeSnapshotPercent:
-					tick_damage = int(floor(debuff.value))
-				_:
-					pass
-			if(tick_damage > 0):
-				if(debuff.tick_bonus_per_debuff > 0.0):
-					var stack_count: int = mini(caster._active_debuffs.size(), GameBalance.DEBUFF_TICK_BONUS_STACK_CAP)
-					tick_damage = int(floor(tick_damage * (1.0 + debuff.tick_bonus_per_debuff * stack_count)))
-				tick_damage_total += tick_damage
-				tick_damage_by_source[debuff.source_ID] = tick_damage_by_source.get(debuff.source_ID, 0) + tick_damage
-
 		debuff.duration -= 1
 		_EmitStatusDuration(p_caster_ID, debuff.ID, debuff.duration)
 		if(debuff.duration <= 0):
 			status_IDs_to_be_removed.append(debuff.ID)
-			if(Types.Debuff_Type.Plague == debuff.type):
-				expiring_plagues.append(debuff)
 
 	caster._active_debuffs = caster._active_debuffs.filter(func(debuff): return debuff.duration > 0)
 	if(not status_IDs_to_be_removed.is_empty()):
@@ -310,26 +283,56 @@ func _TriggerExistingCasterDebuffs(
 		removed.status_IDs = status_IDs_to_be_removed
 		_resolver._Emit(removed)
 
-	if(tick_damage_total > 0):
-		_resolver._ApplyHealthLoss(p_caster_ID, tick_damage_total)
-		var tick: CombatResult = CombatResult.new(CombatResult.Kind.Debuff_Tick)
-		tick.target_ID = p_caster_ID
-		tick.amount = tick_damage_total
-		tick.amount_by_source = tick_damage_by_source
-		_resolver._Emit(tick)
+	_EmitDebuffTickIfAny(p_caster_ID, tick)
 
-	if(not expiring_plagues.is_empty()):
-		# Plague is non-stackable, so expiring_plagues can only ever hold one entry today;
-		# instance_count still carries the count rather than posting once per entry, so a
-		# future stackable Plague wouldn't have instances silently collapsed by the
-		# once-per-(mechanic, subject) dedup rule.
-		var event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Status_Expired)
-		event.subject_ID = p_caster_ID
-		event.debuff_type = Types.Debuff_Type.Plague
-		event.origin_ID = expiring_plagues[0].source_ID
-		event.fraction = expiring_plagues[0].value
-		event.instance_count = expiring_plagues.size()
-		_resolver.GetCascadeResolver().Post(event)
+func _ComputeDebuffTickDamage(
+		p_target: Character, p_target_attributes: Dictionary[Types.Attribute, int]) -> Dictionary:
+	var tick_damage_by_source: Dictionary[int, int] = {}
+	var tick_damage_total: int = 0
+	var distinct_debuff_type_count: int = _DistinctDebuffTypeCount(p_target)
+	for debuff in p_target._active_debuffs:
+		var data: StatusEffectData = StatusEffectRegistry.DebuffData(debuff.type)
+		if(null == data or not data.applies_on_self_tick):
+			continue
+		var tick_damage: int = 0
+		match data.magnitude_kind:
+			StatusEffectData.MagnitudeKind.MaxHealthPercent:
+				tick_damage = int(floor(
+						(p_target_attributes[Types.Attribute.Health]
+								* GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER) * data.magnitude))
+			StatusEffectData.MagnitudeKind.CasterAttributeSnapshotPercent:
+				tick_damage = int(floor(debuff.value))
+			_:
+				pass
+		if(tick_damage <= 0):
+			continue
+		if(debuff.repeats_per_distinct_debuff):
+			tick_damage *= maxi(1, distinct_debuff_type_count)
+		tick_damage_total += tick_damage
+		tick_damage_by_source[debuff.source_ID] = tick_damage_by_source.get(debuff.source_ID, 0) + tick_damage
+	return {"total": tick_damage_total, "by_source": tick_damage_by_source}
+
+func _DistinctDebuffTypeCount(p_character: Character) -> int:
+	var distinct_types: Dictionary[Types.Debuff_Type, bool] = {}
+	for debuff in p_character._active_debuffs:
+		distinct_types[debuff.type] = true
+	return distinct_types.size()
+
+func _EmitDebuffTickIfAny(p_target_ID: int, p_tick: Dictionary) -> void:
+	var total: int = p_tick.get("total", 0)
+	if(total <= 0):
+		return
+	_resolver._ApplyHealthLoss(p_target_ID, total)
+	var result: CombatResult = CombatResult.new(CombatResult.Kind.Debuff_Tick)
+	result.target_ID = p_target_ID
+	result.amount = total
+	result.amount_by_source = p_tick.get("by_source", {})
+	_resolver._Emit(result)
+
+func ForceExtraDebuffTick(p_target_ID: int) -> void:
+	var target: Character = _resolver._characters[p_target_ID]
+	var attributes: Dictionary[Types.Attribute, int] = _resolver.GetEffectiveAttributes(p_target_ID)
+	_EmitDebuffTickIfAny(p_target_ID, _ComputeDebuffTickDamage(target, attributes))
 
 
 func _TriggerExistingCasterBuffs(
@@ -449,7 +452,7 @@ func _InsertOrRefresh(
 		p_value: float,
 		p_duration: int,
 		p_source_ID: int,
-		p_tick_bonus_per_debuff: float,
+		p_repeats_per_distinct_debuff: bool,
 		p_always_refresh_duration: bool,
 		p_display_name: String) -> StatusEffects.Effect:
 	var target: Character = _resolver._characters[p_target_ID]
@@ -465,7 +468,7 @@ func _InsertOrRefresh(
 					if(p_always_refresh_duration or p_duration > active[i].duration):
 						active[i].duration = p_duration
 						if(not p_is_buff):
-							active[i].tick_bonus_per_debuff = p_tick_bonus_per_debuff
+							active[i].repeats_per_distinct_debuff = p_repeats_per_distinct_debuff
 						_EmitStatusDuration(p_target_ID, active[i].ID, p_duration)
 				return null
 
@@ -486,7 +489,7 @@ func _InsertOrRefresh(
 	new_debuff.name = p_display_name
 	new_debuff.source_ID = p_source_ID
 	new_debuff.value = p_value
-	new_debuff.tick_bonus_per_debuff = p_tick_bonus_per_debuff
+	new_debuff.repeats_per_distinct_debuff = p_repeats_per_distinct_debuff
 	new_debuff.ID = _resolver._NextStatusID()
 	target._active_debuffs.append(new_debuff)
 	_EmitDebuffApplied(p_target_ID, new_debuff, p_display_name)
@@ -548,28 +551,6 @@ func _CascadeRushStun(p_event: CascadeEvent) -> void:
 	stun.ID = _resolver._NextStatusID()
 	_resolver._characters[holder_ID]._active_debuffs.append(stun)
 	_EmitDebuffApplied(holder_ID, stun, "")
-
-
-## Spreads Plague to a random other living ally of the holder when it expires, through
-## the normal CastDebuff path (Concept_Document.md 1.1.4) — resistible, blockable by
-## Aegis/Sequence Lock, and subject to normal stack/refresh rules, unlike the direct
-## application the pre-cascade version used.
-func _CascadeSpreadPlague(p_event: CascadeEvent) -> void:
-	var holder_ID: int = p_event.subject_ID
-	var side: CombatTeam = _resolver._sides.AlliesOf(holder_ID)
-	if(null == side):
-		return
-	var candidates: Array[int] = side.AliveMembers(_resolver._characters)
-	candidates.erase(holder_ID)
-	if(candidates.is_empty()):
-		return
-	var target_ID: int = candidates[_resolver._random.randi_range(0, candidates.size() - 1)]
-	var spread: StatusEffects.Debuff = StatusEffects.Debuff.new()
-	spread.type = Types.Debuff_Type.Plague
-	spread.duration = StatusEffectRegistry.DebuffData(Types.Debuff_Type.Plague).duration_default
-	spread.source_ID = p_event.origin_ID
-	spread.value = p_event.fraction
-	CastDebuff(target_ID, spread, p_event.origin_ID)
 
 
 func _SnapshotStatusValue(p_data: StatusEffectData, p_source_ID: int, p_target_ID: int) -> float:

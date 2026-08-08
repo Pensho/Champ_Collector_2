@@ -83,12 +83,32 @@ func test_temporal_sinkhole_only_drains_the_enemy_standing_in_it() -> void:
 	assert_true(affected_IDs.has(3), "The enemy standing in the zone should have its turn bar drained")
 	assert_false(affected_IDs.has(1), "The ally standing in the same zone must not be affected")
 
-func test_miasma_applies_plague_to_the_enemy_standing_in_it() -> void:
+func test_miasma_applies_blight_to_the_enemy_standing_in_it() -> void:
 	_positions.occupants_by_zone[0] = [3]
 
 	_cast(0, "res://Data/Character_Skill_Variants/Zone_Skills/Miasma.tres", [], 0)
 
-	assert_true(_has_debuff(3, Types.Debuff_Type.Plague))
+	assert_true(_has_debuff(3, Types.Debuff_Type.Blight))
+
+func test_miasma_forces_an_extra_tick_on_the_enemys_existing_debuffs() -> void:
+	_positions.occupants_by_zone[0] = [3]
+	_roster[3]._attributes[Types.Attribute.Health] = 100000
+	_roster[3]._current_health = 100000
+	_roster[1]._attributes[Types.Attribute.Mysticism] = 50
+	var plague: StatusEffects.Debuff = StatusEffects.Debuff.new()
+	plague.type = Types.Debuff_Type.Plague
+	plague.duration = 3
+	plague.source_ID = 1
+	_resolver.GetStatusResolver().ApplyDebuff(3, plague)
+	var health_before: int = _roster[3]._current_health
+
+	_cast(0, "res://Data/Character_Skill_Variants/Zone_Skills/Miasma.tres", [], 0)
+
+	var expected_tick: int = int(floor(50 * StatusEffectRegistry.DebuffData(Types.Debuff_Type.Plague).magnitude))
+	assert_eq(health_before - _roster[3]._current_health, expected_tick,
+		"Miasma's trigger should force Plague to tick again immediately")
+	assert_eq(_roster[3]._active_debuffs[0].duration, 3,
+		"The forced extra tick must not cost the debuff a turn of duration")
 
 func test_weight_of_law_stuns_the_enemy_standing_in_it() -> void:
 	_positions.occupants_by_zone[0] = [3]

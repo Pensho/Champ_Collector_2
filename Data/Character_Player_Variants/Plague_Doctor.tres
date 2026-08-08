@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_weight"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_preset"]
 [ext_resource type="Resource" uid="uid://wrfac2d31w0y" path="res://Data/Character_Skill_Variants/Attack_Skills/Septic_Lance.tres" id="3_septic_lance"]
-[ext_resource type="Resource" uid="uid://b1gv84pc8lhid" path="res://Data/Character_Skill_Variants/Attack_Skills/Quarantine_Breach.tres" id="4_quarantine_breach"]
+[ext_resource type="Resource" uid="uid://dqxvj1n0m8fkr" path="res://Data/Character_Skill_Variants/Attack_Skills/Outbreak.tres" id="4_outbreak"]
 [ext_resource type="Resource" path="res://Data/Character_Skill_Variants/Zone_Skills/Miasma.tres" id="5_miasma"]
 [ext_resource type="Resource" uid="uid://4fnej15sbkkv" path="res://Data/Attribute_Weights/Arcane.tres" id="6_arcane"]
 [ext_resource type="Resource" uid="uid://c60oh3whnodsm" path="res://Data/Attribute_Weights/Resilient.tres" id="7_resilient"]
@@ -18,7 +18,7 @@ _texture = "res://Assets/Champ_Collector/Creatures/Jester/Jester_0001.png"
 _normal_map = "res://Assets/Champ_Collector/Creatures/Jester/Jester_0001_Normal_Map.png"
 _rarity = 2
 _role = 20
-_skills = Array[ExtResource("1_skill")]([ExtResource("3_septic_lance"), ExtResource("4_quarantine_breach"), ExtResource("5_miasma")])
+_skills = Array[ExtResource("1_skill")]([ExtResource("3_septic_lance"), ExtResource("4_outbreak"), ExtResource("5_miasma")])
 _health = 50
 _speed = 50
 _attack = 30

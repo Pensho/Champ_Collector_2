@@ -209,6 +209,7 @@ enum Trait_Count_Source
 	Trait_Counter_On_Target,
 	Trait_Counter_Raw_On_Target,
 	Zones_On_Turn_Bar,
+	Target_Debuff_Count,
 }
 
 ## Always reads as the raw (un-multiplied) Trait_Count_Source, even where the member

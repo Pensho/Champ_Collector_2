@@ -727,43 +727,41 @@ const MANIFEST: Dictionary = {
 	Types.Role.Plague_Doctor: {
 		"preset": "Data/Character_Player_Variants/Plague_Doctor.tres",
 		"passive": [
-			{"name": "Comorbidity", "bucket_key": "", "magnitude": 0.11, "stack_cap": 5,
-					"class": Contribution_Class.Channel2,
-					"precondition": "TRAP: on any Skill_Cast unconditionally sets " +
-							"_tick_bonus_per_debuff=0.11 (Legendary) on the TraitSkillResult. Only " +
-							"threads through on a non-zone-trigger ApplyDebuffEffect.Resolve() call (via " +
-							"CastDebuff), which stores it on the created debuff and multiplies that " +
-							"debuff's own self-ticks by 1 + 0.11 * min(active_debuff_count, 5) — capped " +
-							"by GameBalance.DEBUFF_TICK_BONUS_STACK_CAP=5. The zone-trigger path (used " +
-							"by Miasma, Comorbidity's own most natural target) instead calls " +
-							"StatusEffectResolver.ApplyDebuff, which hardcodes " +
-							"tick_bonus_per_debuff=0.0 at the _InsertOrRefresh call and never reads " +
-							"trait_result at all — Comorbidity is structurally inert on Miasma's Plague " +
-							"regardless of rarity.",
-					"citation": "comorbidity_trait.gd:3-8,25-33; apply_debuff_effect.gd:8-32; " +
-							"status_effect_resolver.gd:56-71,293-295; game_balance.gd:82-83"},
+			{"name": "Comorbidity", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
+					"class": Contribution_Class.Channel3_Cascade,
+					"precondition": "KNOWN SCORER GAP: flags every debuff this Role casts to repeat its " +
+							"tick once per distinct debuff type on the holder (any source, uncapped) " +
+							"whenever it ticks — Plague Doctor's Channel-3 claim (Role_Kit_Design.md " +
+							"section 1's 'comparable channel contribution', not a bucket key). Real and " +
+							"resolver-tested, but this scorer has no mechanism yet to credit a sustained, " +
+							"multi-turn tick the way repeat_contrast_ratio credits a separate-instance " +
+							"cascade — bucket_key stays empty rather than mis-folding it into the " +
+							"candidate's own single-cast product; see repeat_contrast_ratio's own shape.",
+					"citation": "comorbidity_trait.gd; status_effect_resolver.gd " +
+							"(_ComputeDebuffTickDamage, ForceExtraDebuffTick)"},
 		],
 		"skills": [
 			{"name": "Septic Lance", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Channel1,
 					"precondition": "damage_scaling Mysticism 0.9, no bonus_per; no debuff applied, so " +
-							"Comorbidity's tick bonus is set on this cast but never consumed.",
+							"Comorbidity's tick flag is set on this cast but never consumed.",
 					"citation": "Septic_Lance.tres:6-11"},
-			{"name": "Quarantine Breach", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
-					"class": Contribution_Class.Channel1,
-					"precondition": "damage_scaling Mysticism 1.2 (no bonus_per) plus Blight (2 turns: " +
-							"-50% healing received). Non-zone-trigger cast, so Comorbidity's tick bonus " +
-							"does thread onto the Blight instance — but Blight doesn't self-tick, so it " +
-							"has nothing to multiply.",
-					"citation": "Quarantine_Breach.tres:6-19"},
+			{"name": "Outbreak", "bucket_key": "Outbreak", "magnitude": 0.08, "stack_cap": 0,
+					"class": Contribution_Class.Channel2,
+					"precondition": "damage_scaling Mysticism 1.2, bonus_per Target_Debuff_Count 0.08 " +
+							"per distinct debuff on the target (any source, uncapped — an uncapped " +
+							"per-instance rate, not a ceiling, per this manifest's own convention), plus " +
+							"a fresh stack of Plague (3 turns, self-ticking DoT scaling Mysticism 0.3, " +
+							"snapshotted at application, now stackable). Comorbidity's tick flag threads " +
+							"onto the new Plague stack correctly here.",
+					"citation": "Outbreak.tres:6-24"},
 			{"name": "Miasma", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
-					"class": Contribution_Class.Channel3_Cascade,
-					"precondition": "Zone, 4 charges; on trigger applies Plague (3 turns, a " +
-							"self-ticking DoT scaling Mysticism 0.3, snapshotted at application, spreads " +
-							"to a random enemy with fresh duration on expiry — the Channel-3 cascade). " +
-							"Comorbidity's tick bonus never reaches this debuff (see passive trap) — the " +
-							"intended interaction is silently inert regardless of rarity.",
-					"citation": "Miasma.tres:6-19"},
+					"class": Contribution_Class.Enabler,
+					"precondition": "Zone, 4 charges; on trigger forces every active debuff on the " +
+							"caught enemy to tick again immediately without losing duration (via " +
+							"ForceExtraDebuffTick — sustained pressure, same scorer gap as Comorbidity " +
+							"above), and applies Blight (2 turns: -50% healing received).",
+					"citation": "Miasma.tres:9-22"},
 		],
 	},
 	Types.Role.Warlord: {
