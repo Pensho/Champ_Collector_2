@@ -286,7 +286,75 @@ scoring shape for Cut the Cloth, which doesn't fit `Channel3_Cascade` (that clas
 `magnitude × instances` additively into one bucket, right for a stacking tick like Comorbidity, not
 a repeated *separate* resolution) — closer to the Sorcerer's `reagent_gated_bonus` /
 `fold: separate_instance` shape, except that field's reagent-consumption framing doesn't fit a
-Tension gate; needs generalizing.
+Tension gate; needs generalizing. Both scoring gaps are consolidated in section 11.
+
+### 9.3 Sorcerer — Echo charges and the Surge that feeds them
+
+**Status:** Settled, not yet implemented. Batch 1.
+
+**Passive: Arcane Instability.** Four clauses, each doing one job:
+
+* Using any skill grants 1 Instability stack, maximum 5. Stacks do not persist between combats.
+* Consuming a reagent grants 2 Instability stacks, amplifies the reagent's effect, and grants
+  1 **Echo** charge.
+* At maximum stacks the next skill also releases a **Surge**: damage to all characters, allies and
+  the Sorcerer included, scaling 1.5x the Sorcerer's Mysticism, never a critical hit — then all
+  stacks reset and the Sorcerer gains 1 Echo charge.
+* Each Echo charge held makes the Sorcerer's next skill repeat one additional time; all charges are
+  consumed when it does. The first Echo deals 50% of the skill's damage and each further Echo
+  compounds on the previous. Each Echo is a fresh cascade instance assembling its own combined
+  damage modifier; a repeated debuff or zone charge is not reapplied, only the damage.
+
+Rarity scales only on the passive, never on the kit's skills: Echo compounding 1.30 Uncommon /
+1.45 Rare / 1.60 Epic / 1.75 Legendary; reagent amplification 20 / 30 / 40 / 50% (unchanged).
+Instability stacks carry no attribute scaling — they are purely the Surge's counter, so the
+per-stack Mysticism ramp of the shipped passive is dropped and the Role's growth lives entirely in
+the channel it anchors.
+
+The Surge is the second Echo source, which is what makes the friendly fire load-bearing rather
+than a flavor tax: the uncontrolled discharge is what widens the next chain. Echo is gated on
+reagent scarcity (3 brought per battle, `Concept_Document.md` 3.3.3, consumable as free actions
+with no per-turn limit) and on the Surge's 5-stack build — independent of Herald's Tension and
+Plague Doctor's debuff count.
+
+| Slot | Skill | Effect | Channel |
+|---|---|---|---|
+| Basic | Arc Lash | Mysticism-scaled damage to one enemy; 25% chance to apply Warped for 1 turn. The rider is Enabler-weight and carries no bucket key — it seeds Cataclysm's condition occasionally, leaving Unstable Rift the reliable Warped source. | 1 |
+| Signature | Cataclysm | Mysticism-scaled damage to all enemies; +30% against targets carrying Warped. Cooldown 4. Renamed from Cataclysmic Surge so "Surge" names only the passive's discharge. | 2 |
+| Signature | Unstable Rift | Zone, 5 charges. On trigger, all affected characters gain Warped for 2 turns and take Mysticism-scaled damage (0.3 enemies / 0.15 allies). When Echoes resolve on a cast that placed a zone, each Echo instead multiplies that zone's on-trigger damage by x1.15, compounding, for the zone's remaining life. | 3 (Enabler-classed by the scorer — section 11) |
+
+The Rift's Echo clause closes the shipped kit's documented no-op (the skill's damage lives in
+`ZoneEffect.on_trigger`, so the repeat had no top-level `DamageEffect` to re-run) without
+converting the zone into a direct cast — the turn-bar object stays a turn-bar object, and the Echo
+makes it more dangerous to the Sorcerer's own team, the same identity clause as the Surge.
+
+**Projected numbers.** Using `Skills.MitigatedDamageUnrounded` (`skills.gd:298-307`) per section
+9.2's methodology: mitigation cancels between the basic-skill baseline and the burst (no
+defence-ignore in this kit) and there is no attribute-ramp term, so contrast reduces to
+`(combined modifier product) x (instance multiplier)`. Echo ceiling is **4**: three banked reagents
+consumed as free actions in the burst turn, plus one charge carried in from the previous cast's
+Surge. At Legendary the four Echoes deal 50 / 87.5 / 153 / 268% — 5.59x in repeats, **6.59x**
+total including the original cast.
+
+| Scenario | Contrast ratio |
+|---|---|
+| Legendary, 4 Echoes, strong team (product 5.5) | **36.2x** — inside the 30-50x band |
+| Legendary, 4 Echoes, modest team (product 3.0) | 19.8x |
+| Legendary, 1 Echo (steady state, no reagents banked) | 8.3x |
+| Uncommon, 4 Echoes, strong team | 22.5x |
+
+The 1.75 compounding factor is steeper than a flat-instance design would need precisely because
+the per-stack Mysticism ramp was dropped: that ramp was worth a flat 1.5x on the aggregate, and
+moving its weight into the compounding curve puts the ceiling in Channel 3 where the Role's
+identity claims it. Peak 4 cascade instances plus the Surge in one action, well inside
+`CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION = 16`.
+
+**Implementation needs (not yet built):** per-instance `SkillCastContext.repeat_bonus`, set once
+per Echo rather than once per cast as `sorcerer_trait.gd:113` does today; a persistent on-trigger
+damage multiplier on `Zone` (`zone.gd` has no such field) plus a way for the Echo to reach the zone
+the cast placed; the `Cataclysmic_Surge.tres` rename to `Cataclysm.tres` with its inbound preset
+and manifest references; and the scorer work in section 11, without which this kit's Echo scores as
+a single flat instance.
 
 ## 10. Coverage ledger
 
@@ -317,6 +385,7 @@ Role's rows in the same edit, not after.
 | Blight | Plague Doctor (Miasma) — moved from Quarantine Breach (renamed Outbreak) |
 | Suppress | Herald of the loom (Thread Snap) — **settled, not yet implemented** (section 9.2); shipped code still has this on Thread Lash until Herald's kit is authored |
 | Temporal Leak | Herald of the loom (Pull the Thread) — **settled, not yet implemented** (section 9.2); newly claimed, retiring part of `FeatureIdeas.md`'s "Rework Orphaned Turn Bar Effects" item once live |
+| Warped | Sorcerer (Unstable Rift reliably, Arc Lash's 25% rider) — **settled, not yet implemented** (section 9.3); both sources are the same Role, so the identity-effect rule still holds |
 
 **Buffs** — unchanged from the archived pass this batch, with one pending removal: Attune's second
 claim (Herald of the loom's Woven Blessing, alongside Cultist's Chosen Vessel passive) drops once
@@ -333,7 +402,7 @@ key, not a doc paraphrase) — the authority the burst-reachability scorer actua
 |---|---|---|
 | `CombinedDamageModifier.TRAIT_RESOURCE_KEY` | Cultist (Chosen Vessel), Architect (Calibration), Tidal Corsair (Wrangle the Sea) | Shared resource-key identifier — each Role's own trait-resource meter, not a collision: the key names the *mechanism* (caster's own resource-driven bucket), and each caster only ever reads their own resource, so three Roles sharing it composes rather than colliding. |
 | `Citation` | Emissary (Citation) | Skill-name bucket |
-| `Warped` | Sorcerer (Cataclysmic Surge) | Debuff-type bucket — doubles as the debuff identity itself |
+| `Warped` | Sorcerer (Cataclysm) | Debuff-type bucket — doubles as the debuff identity itself. Skill renamed from Cataclysmic Surge in section 9.3; the bucket key is the debuff name, so the rename does not move the key |
 | `Zone: Unstable Rift` | Sorcerer (Unstable Rift) | Zone-name bucket |
 | `Daunting_Strength` (granted status) | Tactician (Fatal Flaw) | Granted `DamageMultiplier` status — lands in whoever consumes it, not the caster's own bucket |
 | `Pratfall Sting` | Jester (Pratfall Sting) | Skill-name bucket |
@@ -345,5 +414,26 @@ key, not a doc paraphrase) — the authority the burst-reachability scorer actua
 
 Every other Role/skill in the manifest carries `bucket_key = ""` today — either genuinely Channel 1
 / Enabler, or a Batch-1-and-later target whose kit hasn't yet earned a bucket key. Batch 1's
-remaining Roles (Herald of the Loom, Sorcerer's second skill if it changes, Bloodmage, Appraiser)
-are expected to add rows here; add them in the same edit that updates the manifest.
+remaining Roles (Bloodmage, Appraiser) are expected to add rows here; add them in the same edit
+that updates the manifest.
+
+## 11. Scorer gaps blocking Batch 1
+
+`Scripts/Debug/burst_reachability.gd` and `kit_contribution_manifest.gd` are the authority the
+sweep reads, and they cannot currently represent any of Batch 1's Channel 3 payloads. Three settled
+kits already reference this from their own entries, so it is consolidated here rather than
+rediscovered per Role. This is tier-1 plumbing under the plan's per-batch loop — fixed
+opportunistically and ahead of the kits that need it, not deferred to a later batch.
+
+| Gap | What breaks | What it needs |
+|---|---|---|
+| **Instance count fixed at 1** | `ASSUMED_UNCAPPED_INSTANCES = 1` (`burst_reachability.gd:80,428`) matched the shipped Sorcerer repeat exactly, so nothing forced the issue. The reworked Echo (up to 4) and Cut the Cloth (up to 8) both score as a single instance — a ~5x understatement at the ceiling. | A declared instance count on the `fold: separate_instance` shape, capped against `CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION`. |
+| **No per-instance magnitude curve** | The shape carries one flat `magnitude`. Echo compounds (50% → 268% at the fourth instance); Cut the Cloth is flat at 90%. Only the flat case is expressible. | A per-instance magnitude the scorer can walk, with flat as the degenerate case. |
+| **Gate framing is reagent-specific** | The field is named `reagent_gated_bonus` and its `reagent_assumed_available` / `CandidateResult.reagent_assumed` surfacing assumes reagent consumption. Herald's Tension gate and Plague Doctor's debuff-count gate do not fit it. | Generalize to a cascade-gated bonus with a declared precondition axis, keeping the "assumption surfaced, not silently baked in" property the reagent axis already has. |
+| **Sustained tick repetition unscored** | Comorbidity and Miasma repeat debuff ticks across turns with no mechanism comparable to `repeat_contrast_ratio`'s separate-instance credit, so both ship with an empty `bucket_key` rather than being mis-folded into a single-cast product (section 9.1). | A multi-turn credit shape, or an explicit decision that single-cast contrast is the only scored measure and sustained payloads are reported separately. |
+| **Zone-trigger damage invisible** | `_HasDamageEffect` only sees top-level `DamageEffect`s, so damage inside `ZoneEffect.on_trigger` scores zero at any magnitude — Miasma today, and Unstable Rift's Echo-driven zone amplification (section 9.3) for the same structural reason. | Either score `on_trigger` payloads against expected charge consumption, or state the exclusion as deliberate so kits stop being penalized for it silently. |
+
+**Consequence for measurement.** Until these land, the sweep's ceiling and top-decile figures are a
+**floor** for Channel 3 Roles, not a measurement of them — a batch that moves the sweep less than
+its projected numbers predict has not necessarily failed. Record both figures when a Channel 3
+batch is swept, and do not retune a kit down against a scorer that structurally cannot see it.

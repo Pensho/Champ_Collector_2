@@ -6,8 +6,11 @@ and hands it to a build-out plan that was never spawned.
 
 ## Status
 
-Phase 0 done. Phase 1 drafted, awaiting sign-off (see below) before Phase 2 starts. Phases 2-6 not
-started.
+Phase 0 done. Phase 1 drafted, awaiting sign-off (see below) before Phase 2 starts. Phase 2 in
+progress: Plague Doctor implemented; Herald of the Loom and Sorcerer settled and recorded in
+`Role_Kit_Design.md` §9.2 / §9.3, not yet implemented; Bloodmage and Appraiser not started. The
+scorer gaps blocking all three Channel 3 kits are consolidated in §11 and are the batch's first
+implementation work. Phases 3-6 not started.
 
 **Phase 1 result.** `Documents/Role_Kit_Design.md` created, holding the kit contract, the
 indirect-composition rule, the synergy grammar, Phase 0's re-derived targets, and the two pieces
@@ -296,7 +299,11 @@ before any code lands):
 1. **Plumbing, fixed opportunistically.** Bugs, missing schema (a new `Trait_Count_Source` or
    `Cascade_Trigger` value), or scorer blind spots (e.g. a mechanic the scorer structurally can't
    see yet) are fixed as soon as found, independent of batch boundaries — cheap and low-risk, and
-   finding one early prevents baking the same wrong assumption into several Roles' designs.
+   finding one early prevents baking the same wrong assumption into several Roles' designs. The
+   open ones are consolidated in `Role_Kit_Design.md` §11: the scorer cannot represent any of batch
+   1's Channel 3 payloads (fixed instance count of 1, no per-instance magnitude curve,
+   reagent-specific gate framing, unscored sustained ticks, invisible zone-trigger damage). Three
+   settled kits depend on it, so it is the batch's first implementation work, not a later cleanup.
 2. **Coverage-level identity**, already carried by `Role_Kit_Design.md` §5-7 (channel identity,
    route sketches, batch composition) — cheap to revise since it's prose, not code. Before
    finalizing a batch's concrete numbers, sanity-check its hooks against the *other* batches'
