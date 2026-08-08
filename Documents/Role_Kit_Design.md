@@ -234,11 +234,13 @@ debuff type on the target (any source, uncapped).
 
 **Projected numbers:** not separately recorded before implementation (this kit predates section 9
 being split out); see `Tests/manual/team_corpus_sweep.gd`'s post-batch sweep result in the plan's
-own Status section for the roster-level delta this kit produced. The manifest
-(`kit_contribution_manifest.gd`) records a known scorer gap: Comorbidity and Miasma's sustained,
-multi-turn tick repetition has no scoring mechanism yet comparable to `repeat_contrast_ratio`'s
-separate-instance credit, so both carry an empty `bucket_key` rather than being mis-folded into a
-single-cast product — real and resolver-tested in play, understated by the scorer.
+own Status section for the roster-level delta this kit produced. Comorbidity's sustained,
+multi-turn tick repetition is scored on Outbreak's own manifest entry via a `"sustained_ticks"`
+`gated_bonus` (section 11), reported in `sustained_contrast_ratio` rather than folded into the
+single-cast product — `bucket_key` stays empty on both entries, since the mechanism never lands in
+a `CombinedDamageModifier` bucket. Miasma's own forced retick still carries no independent score
+(no `DamageEffect` of its own to attach a `gated_bonus` to); its pressure is real and
+resolver-tested in play, layered on top of whatever Comorbidity already scores.
 
 ### 9.2 Herald of the Loom — The Echo Loom
 
@@ -279,14 +281,13 @@ payoff — discounting both would leave the kit short of the target band against
 
 **Implementation needs (not yet built):** a `Combat_Event` value firing on indirect damage (debuff
 ticks, zone triggers, cascade instances) for Golden Thread to hook, since `Combat_Event.Damage_Dealt`
-only fires from the direct-cast path (`battle_resolver.gd:777`); the generalized trait-declared
+only fires from the direct-cast path (`battle_resolver.gd:777`); and the generalized trait-declared
 free-action button (the graft button's pattern, generalized off its current hardcoded
-Symbiote-Role check at `battle.gd:277-279`) for the once-per-turn stance switch; and a manifest
-scoring shape for Cut the Cloth, which doesn't fit `Channel3_Cascade` (that class folds
-`magnitude × instances` additively into one bucket, right for a stacking tick like Comorbidity, not
-a repeated *separate* resolution) — closer to the Sorcerer's `reagent_gated_bonus` /
-`fold: separate_instance` shape, except that field's reagent-consumption framing doesn't fit a
-Tension gate; needs generalizing. Both scoring gaps are consolidated in section 11.
+Symbiote-Role check at `battle.gd:277-279`) for the once-per-turn stance switch. The manifest
+scoring shape for Cut the Cloth (section 11's now-generalized `gated_bonus`, `fold:
+"separate_instance"`, `instances: 8`, no `instance_compounding` — the flat curve) is available once
+the kit itself is authored; a `gate` value naming the Tension precondition (e.g. `&"tension_spent"`)
+is a batch-time authoring decision, not a further scorer gap.
 
 ### 9.3 Sorcerer — Echo charges and the Surge that feeds them
 
@@ -352,9 +353,11 @@ identity claims it. Peak 4 cascade instances plus the Surge in one action, well 
 **Implementation needs (not yet built):** per-instance `SkillCastContext.repeat_bonus`, set once
 per Echo rather than once per cast as `sorcerer_trait.gd:113` does today; a persistent on-trigger
 damage multiplier on `Zone` (`zone.gd` has no such field) plus a way for the Echo to reach the zone
-the cast placed; the `Cataclysmic_Surge.tres` rename to `Cataclysm.tres` with its inbound preset
-and manifest references; and the scorer work in section 11, without which this kit's Echo scores as
-a single flat instance.
+the cast placed; and the `Cataclysmic_Surge.tres` rename to `Cataclysm.tres` with its inbound preset
+and manifest references. The scorer's compounding curve (section 11's `gated_bonus`, `fold:
+"separate_instance"`, `instances: 4`, `instance_compounding: 1.75`) is available once the reworked
+kit is authored — verified against this section's own 5.59x/6.59x figures in
+`Tests/unit/test_burst_reachability.gd`.
 
 ## 10. Coverage ledger
 
@@ -417,23 +420,59 @@ Every other Role/skill in the manifest carries `bucket_key = ""` today — eithe
 remaining Roles (Bloodmage, Appraiser) are expected to add rows here; add them in the same edit
 that updates the manifest.
 
-## 11. Scorer gaps blocking Batch 1
+## 11. Scorer plumbing for Channel 3 payloads
 
 `Scripts/Debug/burst_reachability.gd` and `kit_contribution_manifest.gd` are the authority the
-sweep reads, and they cannot currently represent any of Batch 1's Channel 3 payloads. Three settled
-kits already reference this from their own entries, so it is consolidated here rather than
-rediscovered per Role. This is tier-1 plumbing under the plan's per-batch loop — fixed
-opportunistically and ahead of the kits that need it, not deferred to a later batch.
+sweep reads. Batch 1's Channel 3 payloads (the reworked Sorcerer's Echo, Herald's Cut the Cloth,
+Plague Doctor's Comorbidity/Miasma retick, Unstable Rift's zone damage) each needed a scorer
+capability that did not exist; this section previously listed those as open gaps and now records
+what landed. This was tier-1 plumbing under the plan's per-batch loop — fixed ahead of the kits
+that need it, not deferred to a later batch.
 
-| Gap | What breaks | What it needs |
-|---|---|---|
-| **Instance count fixed at 1** | `ASSUMED_UNCAPPED_INSTANCES = 1` (`burst_reachability.gd:80,428`) matched the shipped Sorcerer repeat exactly, so nothing forced the issue. The reworked Echo (up to 4) and Cut the Cloth (up to 8) both score as a single instance — a ~5x understatement at the ceiling. | A declared instance count on the `fold: separate_instance` shape, capped against `CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION`. |
-| **No per-instance magnitude curve** | The shape carries one flat `magnitude`. Echo compounds (50% → 268% at the fourth instance); Cut the Cloth is flat at 90%. Only the flat case is expressible. | A per-instance magnitude the scorer can walk, with flat as the degenerate case. |
-| **Gate framing is reagent-specific** | The field is named `reagent_gated_bonus` and its `reagent_assumed_available` / `CandidateResult.reagent_assumed` surfacing assumes reagent consumption. Herald's Tension gate and Plague Doctor's debuff-count gate do not fit it. | Generalize to a cascade-gated bonus with a declared precondition axis, keeping the "assumption surfaced, not silently baked in" property the reagent axis already has. |
-| **Sustained tick repetition unscored** | Comorbidity and Miasma repeat debuff ticks across turns with no mechanism comparable to `repeat_contrast_ratio`'s separate-instance credit, so both ship with an empty `bucket_key` rather than being mis-folded into a single-cast product (section 9.1). | A multi-turn credit shape, or an explicit decision that single-cast contrast is the only scored measure and sustained payloads are reported separately. |
-| **Zone-trigger damage invisible** | `_HasDamageEffect` only sees top-level `DamageEffect`s, so damage inside `ZoneEffect.on_trigger` scores zero at any magnitude — Miasma today, and Unstable Rift's Echo-driven zone amplification (section 9.3) for the same structural reason. | Either score `on_trigger` payloads against expected charge consumption, or state the exclusion as deliberate so kits stop being penalized for it silently. |
+The manifest's `reagent_gated_bonus` field is renamed **`gated_bonus`** and widened in place:
 
-**Consequence for measurement.** Until these land, the sweep's ceiling and top-decile figures are a
-**floor** for Channel 3 Roles, not a measurement of them — a batch that moves the sweep less than
-its projected numbers predict has not necessarily failed. Record both figures when a Channel 3
-batch is swept, and do not retune a kit down against a scorer that structurally cannot see it.
+* **`fold`** now has three values: `"same_instance"` (default, unchanged), `"separate_instance"`
+  (unchanged — the Sorcerer's repeat), and new **`"sustained_ticks"`** — damage spread across
+  several of the boss's own future turns rather than the one action being scored, reported into a
+  new `CandidateResult.sustained_contrast_ratio` and deliberately excluded from
+  `total_contrast_ratio` (which stays a pure single-action figure, still what gets checked against
+  `Concept_Document.md` 1.1.2's 30-50x burst-band target). A new **`combined_contrast_ratio`**
+  (`total_contrast_ratio + sustained_contrast_ratio`) is what `TeamResult.Best()` and `TeamSweep`
+  actually rank by — folding sustained payload out of the burst-band contract number but back into
+  the ranking key is what lets a DoT/zone-charge combo (Plague Doctor, Unstable Rift) compete
+  against a direct-damage combo (Tidal Corsair + Tactician) for "which team wins" at all, rather
+  than being structurally invisible to that comparison.
+* **`gate`** (`StringName`) replaces the reagent-specific `reagent_assumed_available` framing,
+  naming the precondition axis itself (`&"reagent_consumed"`, `&"debuff_count"`,
+  `&"zone_charges_consumed"`, ...). Every gate a candidate's score depended on is surfaced on
+  `CandidateResult.assumed_gates`; `reagent_assumed` is now derived from it
+  (`assumed_gates.has(&"reagent_consumed")`) rather than independently tracked, so existing
+  regression fixtures naming it are unaffected.
+* **`instances`** (int, default 1, clamped to `CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION`)
+  and **`instance_compounding`** (float, default 1.0 — flat) replace the old fixed-at-1 assumption
+  for `"separate_instance"`/`"sustained_ticks"` folds: each declared instance contributes
+  `(1.0 + magnitude) * instance_compounding^i`, `i` 0-based
+  (`BurstReachability._MultiInstanceContrastRatio`). Verified in
+  `Tests/unit/test_burst_reachability.gd` against this document's own projections: Echo (4
+  instances, −0.5, 1.75 compounding) reproduces section 9.3's 5.586x; Cut the Cloth (8 instances,
+  −0.1, flat) reproduces section 9.2's 7.2x.
+* **Zone-trigger damage** is no longer invisible: a skill with no top-level `DamageEffect` is now
+  enumerated off its enemy-facing `ZoneEffect.on_trigger` `DamageEffect`s instead
+  (`_ZoneTriggerEnemyDamageEffects`) — an ally-facing payload in the same zone (Unstable Rift's own
+  0.15 Mysticism ally hit) is excluded, since this scorer measures damage against the boss. The
+  zone's own first trigger lands in the candidate's ordinary `contrast_ratio`; its remaining
+  charges are declared as a `"sustained_ticks"` `gated_bonus` (`gate: &"zone_charges_consumed"`).
+* **Sustained tick repetition** (Comorbidity, section 9.1) is scored the same way: a
+  `"sustained_ticks"` `gated_bonus` on Outbreak's own manifest entry (the skill that places the
+  debuff the tick rides on), approximated against Outbreak's own scaled aggregate since this
+  scorer has no separate DoT-scaling model — `bucket_key` stays empty, matching the field's
+  existing convention that a mechanism which never reaches a `CombinedDamageModifier` bucket
+  claims no key. Miasma's own forced retick still carries no independent score: it has no
+  `DamageEffect` of its own, top-level or zone-trigger, to attach a `gated_bonus` to.
+
+**Consequence for measurement.** `total_contrast_ratio` stays the pure single-action figure the
+30-50x burst-band target is checked against; `combined_contrast_ratio` is the separate figure
+`Best()` and the sweep's top-decile selection actually rank by, sustained payload included. Reading
+`total_contrast_ratio` alone for a sustained-heavy kit understates its actual standing in the
+roster — `Tests/manual/team_corpus_sweep.gd`'s top-decile report prints both, plus a
+`sustained_driven` flag per row, so which figure moved is visible rather than conflated.

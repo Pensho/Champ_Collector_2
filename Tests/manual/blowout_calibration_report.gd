@@ -1,7 +1,10 @@
 extends GutTest
 
 ## Not part of the default suite (Tests/unit/ only) — run explicitly:
-##   Tests/run_tests.sh -gtest=res://Tests/manual/blowout_calibration_report.gd -gexit
+##  Linux command to get blowout reports:
+##  /home/jonas/Documents/Godot_v4.7.1-stable_linux.x86_64 --headless -s addons/gut/gut_cmdln.gd \
+##  -gtest=res://Tests/manual/blowout_calibration_report.gd -gexit 2>&1 | \
+##   grep -vE '^(WARNING|ERROR):|^   at: '
 ##
 ## Runs Scripts/Debug/blowout_calibration.gd's six reports through the same GUT entry path
 ## as the other Tests/manual/ scripts, rather than the bare `-s` SceneTree entry point the

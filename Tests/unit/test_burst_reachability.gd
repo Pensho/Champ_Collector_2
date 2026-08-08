@@ -103,15 +103,46 @@ func test_best_candidate_is_not_necessarily_the_first_skill_on_the_first_champio
 	assert_false(result.candidates.is_empty(), "The team must produce at least one damaging-skill candidate")
 	var best: BurstReachability.CandidateResult = result.Best()
 	for candidate in result.candidates:
-		assert_gte(best.total_contrast_ratio, candidate.total_contrast_ratio,
-			"Best() must be the highest total contrast ratio among all candidates, not index 0")
+		assert_gte(best.combined_contrast_ratio, candidate.combined_contrast_ratio,
+			"Best() must be the highest combined contrast ratio among all candidates, not index 0")
 	assert_true(result.candidates.size() > 1, "A 3-champion team must enumerate more than one damaging skill")
 
 func test_candidates_are_sorted_best_first() -> void:
 	var result: BurstReachability.TeamResult = BurstReachability.ScoreTeam(_corsair_cultist_warlord())
 	for i in result.candidates.size() - 1:
-		assert_gte(result.candidates[i].total_contrast_ratio, result.candidates[i + 1].total_contrast_ratio,
-			"Candidates must be sorted by total contrast ratio, best first")
+		assert_gte(result.candidates[i].combined_contrast_ratio, result.candidates[i + 1].combined_contrast_ratio,
+			"Candidates must be sorted by combined contrast ratio, best first")
+
+func test_best_prefers_a_weaker_single_action_candidate_whose_sustained_payload_wins_overall() -> void:
+	# Proves the fix directly: a candidate with a modest single-action burst but a large
+	# sustained_ticks payload must outrank a candidate with a stronger single-action burst and
+	# no sustained payload — a DoT/zone-charge combo competing with a direct-damage combo on
+	# equal footing, per Role_Kit_Design.md section 11.
+	var presets: Array[CharacterPreset] = [EMISSARY, THIEF, WARLORD]
+	var modified_manifest: Dictionary = KitContributionManifest.MANIFEST.duplicate(true)
+
+	var strong_single_action_entry: Dictionary = modified_manifest[Types.Role.Warlord]["skills"][0]
+	strong_single_action_entry["bucket_key"] = "Strong Single-Action Factor"
+	strong_single_action_entry["magnitude"] = 2.0
+	strong_single_action_entry["class"] = KitContributionManifest.Contribution_Class.Channel2
+
+	var sustained_entry: Dictionary = modified_manifest[Types.Role.Thief]["skills"][1]
+	sustained_entry["class"] = KitContributionManifest.Contribution_Class.Channel1
+	sustained_entry["gated_bonus"] = {"bucket_key": "", "magnitude": 0.0,
+			"class": KitContributionManifest.Contribution_Class.Channel1, "fold": "sustained_ticks",
+			"gate": &"debuff_count", "instances": 16}
+
+	var result: BurstReachability.TeamResult = BurstReachability.ScoreTeam(presets, 0, modified_manifest)
+	var strong_single_action: BurstReachability.CandidateResult = result.Pinned(2, "Shield Slam")
+	var sustained_driven: BurstReachability.CandidateResult = result.Pinned(1, "Pierce weakness")
+	assert_not_null(strong_single_action, "The modified Warlord entry must still be a scored candidate")
+	assert_not_null(sustained_driven, "The modified Thief entry must still be a scored candidate")
+	assert_gt(strong_single_action.total_contrast_ratio, sustained_driven.total_contrast_ratio,
+		"Sanity: the single-action candidate must win on total_contrast_ratio alone")
+	assert_gt(sustained_driven.combined_contrast_ratio, strong_single_action.combined_contrast_ratio,
+		"The sustained-payload candidate must overtake it once sustained_contrast_ratio is counted")
+	assert_eq(result.Best(), sustained_driven,
+		"Best() must pick the sustained-payload candidate, not the stronger single-action one")
 
 # --- Base term / modifier term separation (Concept_Document.md 1.1.6) ---
 
@@ -211,3 +242,97 @@ func test_granted_attribute_buff_reaches_every_teammate_from_a_team_reach_passiv
 
 	assert_almost_eq(bonus_for_teammate.get(Types.Attribute.Attack, 0.0), 0.3, 0.0001,
 		"Tactician's Plan ahead (team-reach passive) must credit Empower's +30% Attack to a teammate")
+
+# --- gated_bonus instance curve (_MultiInstanceContrastRatio, _GatedContrastRatios) ---
+
+func test_multi_instance_contrast_ratio_compounds_across_declared_instances() -> void:
+	# Role_Kit_Design.md 9.3's Echo curve: 4 instances at -0.5 magnitude, 1.75 compounding.
+	# factor_sum = 0.5 * (1 + 1.75 + 1.75^2 + 1.75^3) = 5.5859375, matching the settled kit's
+	# own 5.59x projection. Fixed defence cancels between skill_aggregate and baseline_damage
+	# (Skills.MitigatedDamageUnrounded is linear in the aggregate), so the ratio reduces to
+	# own_bucket_factor * factor_sum exactly.
+	var skill_entry: Dictionary = {"class": KitContributionManifest.Contribution_Class.Channel1, "magnitude": 0.0}
+	var bonus: Dictionary = {"magnitude": -0.5, "instances": 4, "instance_compounding": 1.75}
+	var baseline_damage: float = Skills.MitigatedDamageUnrounded(100.0, 100.0, 1.0, 1.0)
+	var ratio: float = BurstReachability._MultiInstanceContrastRatio(skill_entry, bonus, 100.0, 100.0, baseline_damage)
+	assert_almost_eq(ratio, 5.5859375, 0.0001,
+		"A compounding gated_bonus must sum (1+magnitude)*compounding^i across its declared instances")
+
+func test_multi_instance_contrast_ratio_is_flat_when_compounding_is_omitted() -> void:
+	# Role_Kit_Design.md 9.2's Cut the Cloth curve: 8 instances at -0.1 magnitude, no
+	# instance_compounding declared (defaults to 1.0, flat) -> 8 * 0.9 = 7.2.
+	var skill_entry: Dictionary = {"class": KitContributionManifest.Contribution_Class.Channel1, "magnitude": 0.0}
+	var bonus: Dictionary = {"magnitude": -0.1, "instances": 8}
+	var baseline_damage: float = Skills.MitigatedDamageUnrounded(100.0, 100.0, 1.0, 1.0)
+	var ratio: float = BurstReachability._MultiInstanceContrastRatio(skill_entry, bonus, 100.0, 100.0, baseline_damage)
+	assert_almost_eq(ratio, 7.2, 0.0001,
+		"An omitted instance_compounding must default to a flat 1.0x curve across instances")
+
+func test_multi_instance_contrast_ratio_clamps_instances_to_the_cascade_cap() -> void:
+	var skill_entry: Dictionary = {"class": KitContributionManifest.Contribution_Class.Channel1, "magnitude": 0.0}
+	var uncapped: Dictionary = {"magnitude": 0.0, "instances": CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION}
+	var overshot: Dictionary = {"magnitude": 0.0, "instances": CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION + 50}
+	var baseline_damage: float = Skills.MitigatedDamageUnrounded(100.0, 100.0, 1.0, 1.0)
+	var uncapped_ratio: float = BurstReachability._MultiInstanceContrastRatio(
+			skill_entry, uncapped, 100.0, 100.0, baseline_damage)
+	var overshot_ratio: float = BurstReachability._MultiInstanceContrastRatio(
+			skill_entry, overshot, 100.0, 100.0, baseline_damage)
+	assert_almost_eq(overshot_ratio, uncapped_ratio, 0.0001,
+		"A declared instance count past the per-action cascade cap must be clamped to it")
+
+func test_gated_contrast_ratio_routes_separate_instance_and_sustained_ticks_to_their_own_field() -> void:
+	var skill_entry: Dictionary = {"class": KitContributionManifest.Contribution_Class.Channel1, "magnitude": 0.0}
+	var baseline_damage: float = Skills.MitigatedDamageUnrounded(100.0, 100.0, 1.0, 1.0)
+	var separate_entry: Dictionary = skill_entry.duplicate()
+	separate_entry["gated_bonus"] = {"magnitude": 0.0, "fold": "separate_instance", "instances": 1}
+	var separate_ratios: Array[float] = BurstReachability._GatedContrastRatios(
+			separate_entry, 100.0, 100.0, baseline_damage)
+	assert_gt(separate_ratios[0], 0.0, "A separate_instance fold must land in the repeat slot")
+	assert_almost_eq(separate_ratios[1], 0.0, 0.0001, "A separate_instance fold must not land in the sustained slot")
+
+	var sustained_entry: Dictionary = skill_entry.duplicate()
+	sustained_entry["gated_bonus"] = {"magnitude": 0.0, "fold": "sustained_ticks", "instances": 1}
+	var sustained_ratios: Array[float] = BurstReachability._GatedContrastRatios(
+			sustained_entry, 100.0, 100.0, baseline_damage)
+	assert_almost_eq(sustained_ratios[0], 0.0, 0.0001, "A sustained_ticks fold must not land in the repeat slot")
+	assert_gt(sustained_ratios[1], 0.0, "A sustained_ticks fold must land in the sustained slot")
+
+# --- Generalized gate surfacing (CandidateResult.assumed_gates / reagent_assumed) ---
+
+func test_a_non_reagent_gate_is_surfaced_without_setting_reagent_assumed() -> void:
+	var presets: Array[CharacterPreset] = [EMISSARY, THIEF, WARLORD]
+	var modified_manifest: Dictionary = KitContributionManifest.MANIFEST.duplicate(true)
+	var warlord_entry: Dictionary = modified_manifest[Types.Role.Warlord]
+	warlord_entry["skills"][0]["gated_bonus"] = {"bucket_key": "", "magnitude": 0.0,
+			"class": KitContributionManifest.Contribution_Class.Channel1, "fold": "sustained_ticks",
+			"gate": &"debuff_count", "instances": 2}
+
+	var result: BurstReachability.TeamResult = BurstReachability.ScoreTeam(presets, 0, modified_manifest)
+	var pinned: BurstReachability.CandidateResult = result.Pinned(2, "Shield Slam")
+	assert_not_null(pinned, "Warlord's Shield Slam must still be a scored candidate")
+	assert_true(pinned.assumed_gates.has(&"debuff_count"),
+		"A declared gate must be surfaced on assumed_gates regardless of which mechanic it names")
+	assert_false(pinned.reagent_assumed,
+		"A non-reagent gate must not set reagent_assumed")
+	assert_gt(pinned.sustained_contrast_ratio, 0.0,
+		"A sustained_ticks gated_bonus must contribute a nonzero sustained_contrast_ratio")
+	assert_almost_eq(pinned.total_contrast_ratio, pinned.contrast_ratio, 0.0001,
+		"sustained_contrast_ratio must never be folded into total_contrast_ratio")
+
+# --- Zone-trigger damage enumeration (_ZoneTriggerEnemyDamageEffects) ---
+
+func test_zone_only_skill_is_enumerated_from_its_enemy_facing_on_trigger_damage() -> void:
+	var result: BurstReachability.TeamResult = BurstReachability.ScoreTeam(_sorcerer_scholar_tactician())
+	var pinned: BurstReachability.CandidateResult = result.Pinned(0, "Unstable Rift")
+	assert_not_null(pinned,
+		"Unstable Rift must be enumerated as a candidate from its zone-trigger damage alone")
+	# Both the enemy (0.3 Mysticism) and ally (0.15 Mysticism) on_trigger DamageEffects scale
+	# the same attribute on the same caster, so the ally-facing half's exclusion is visible
+	# directly in base_term: 0.3, not the combined 0.45, against the Sorcerer's own Mysticism
+	# 1.0 basic skill (Arc Lash).
+	assert_almost_eq(pinned.base_term, 0.3, 0.0001,
+		"Only the enemy-facing on_trigger DamageEffect must be counted, not the ally-facing one")
+	assert_true(pinned.assumed_gates.has(&"zone_charges_consumed"),
+		"Unstable Rift's remaining zone charges must surface their own gate")
+	assert_gt(pinned.sustained_contrast_ratio, 0.0,
+		"Unstable Rift's remaining zone charges must contribute a nonzero sustained_contrast_ratio")

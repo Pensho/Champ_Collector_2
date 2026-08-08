@@ -1,7 +1,8 @@
 extends GutTest
 
 ## Not part of the default suite (Tests/unit/ only) — run explicitly:
-##   Tests/run_tests.sh -gtest=res://Tests/manual/prescription_sweep.gd -gexit
+##   /home/jonas/Documents/Godot_v4.7.1-stable_linux.x86_64 --headless -s addons/gut/gut_cmdln.gd
+##   -gtest=res://Tests/manual/prescription_sweep.gd -gexit 2>&1 |   grep -vE '^(WARNING|ERROR):|^   at: '
 ##
 ## Quantifies candidate kit changes by re-running BurstReachability.ScoreTeam against a
 ## duplicated, modified copy of KitContributionManifest.MANIFEST (see
@@ -13,10 +14,11 @@ extends GutTest
 ## against the unmodified baseline, so a prescription that only lifts the ceiling (and not
 ## the median) is visible as such rather than assumed. A prescription that shows no aggregate
 ## movement is reported as such too — verified directly against a specific candidate, not
-## dismissed as a bug: BurstReachability.TeamResult.Best() picks the highest CONTRAST RATIO,
-## not the highest product, so a small isolated factor can raise its own candidate's product
-## while never becoming any team's actual burst resolution, or becoming one whose product
-## still falls short of every reported statistic's threshold.
+## dismissed as a bug: BurstReachability.TeamResult.Best() picks the highest COMBINED CONTRAST
+## RATIO (single-action burst plus any repeat/sustained payload), not the highest product, so a
+## small isolated factor can raise its own candidate's product while never becoming any team's
+## actual burst resolution, or becoming one whose product still falls short of every reported
+## statistic's threshold.
 
 const AGGREGATE_TARGET: float = 26.0
 

@@ -2022,6 +2022,6 @@ an independent second one; the Sorcerer's repeat, scored on its own terms via
 Whether a second, Tidal-Corsair-independent ceiling exists is therefore still open — a balance
 question for `Plan_Role_Kit_Rework.md` (successor to `Plan_Channel_Population_Rework.md`,
 deleted per the retention rule), not a code defect here. See
-`Scripts/Debug/kit_contribution_manifest.gd`'s `reagent_gated_bonus` field and
+`Scripts/Debug/kit_contribution_manifest.gd`'s `gated_bonus` field and
 `Scripts/Debug/burst_reachability.gd`'s `fold` handling for how the scorer models a reagent
-consumption it cannot itself simulate.
+consumption (or any other gated precondition) it cannot itself simulate.

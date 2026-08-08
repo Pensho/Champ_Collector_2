@@ -3,11 +3,13 @@ class_name BurstReachability extends RefCounted
 ## Given three CharacterPreset instances and nothing else, enumerates every damaging skill
 ## across the team as a candidate burst resolution, composes
 ## Scripts/Debug/kit_contribution_manifest.gd's reachable Channel-2/3 contributions at each,
-## and returns them ranked by total_contrast_ratio — every reachable channel counted, Channel 3
-## included. Which champion bursts and which skill they burst with are OUTPUTS: every damaging
-## skill on the team is scored, never assumed in advance.
+## and returns them ranked by combined_contrast_ratio — every reachable channel counted, sustained
+## payload included, so a DoT/zone-charge combo (Plague Doctor's Comorbidity, Unstable Rift's
+## remaining charges) competes for Best() on equal footing with a pure single-action combo
+## (Tidal Corsair plus Tactician). Which champion bursts and which skill they burst with are
+## OUTPUTS: every damaging skill on the team is scored, never assumed in advance.
 ##
-## Three contract quantities. The first two are read straight off the real
+## Four contract quantities. The first two are read straight off the real
 ## CombinedDamageModifier and Skills.MitigatedDamage for ONE cast — no third mirror of either:
 ##   Combined modifier product  - CombinedDamageModifier.Product() at the candidate: exactly
 ##                                 what the real resolver assembles for the candidate's own
@@ -18,24 +20,41 @@ class_name BurstReachability extends RefCounted
 ##                                 mitigation) and a modifier term (what Product() alone
 ##                                 contributes once run through Skills.MitigatedDamage) so a
 ##                                 skill cannot pass 1.1.6's rejection test purely by having a
-##                                 fatter Channel-1 base.
-## The third is what this file actually ranks and selects Best() by:
+##                                 fatter Channel-1 base. This is the ONE-ACTION figure checked
+##                                 against Concept_Document.md 1.1.2's 30-50x burst-band target —
+##                                 it never includes sustained_contrast_ratio, so a multi-turn
+##                                 payload cannot inflate the "one action" contract number.
+## The third feeds into the fourth, which is what this file actually ranks and selects Best() by:
 ##   Total contrast ratio       - contrast_ratio plus repeat_contrast_ratio (Phase 5): the full
-##                                 burst a candidate reaches, a separate-instance Channel-3
-##                                 repeat included. Concept_Document.md 1.1.3 counts repetition
-##                                 as part of what a burst is; ranking by contrast_ratio alone
-##                                 would silently zero out every Channel-3 repeat mechanic's
+##                                 single-action burst a candidate reaches, a separate-instance
+##                                 Channel-3 repeat included. Concept_Document.md 1.1.3 counts
+##                                 repetition as part of what a burst is; ranking by contrast_ratio
+##                                 alone would silently zero out every Channel-3 repeat mechanic's
 ##                                 contribution to which candidate is "best", since a repeat
 ##                                 cannot be folded into the single CombinedDamageModifier
-##                                 product/contrast_ratio represent (see the third simplification
+##                                 product/contrast_ratio represent (see the stated simplifications
 ##                                 below) without breaking their own live-verified contract. This
 ##                                 file ranked by contrast_ratio alone through the end of
 ##                                 Plan_Itemization_Channels.md Phase 5's first pass — a real bug,
 ##                                 not a design choice, caught and fixed once a
 ##                                 separate-instance mechanic (the Sorcerer's repeat) actually
-##                                 existed to expose it.
+##                                 existed to expose it. Still a one-action figure; still what
+##                                 gets checked wherever a candidate's single-action burst matters
+##                                 on its own.
+##   Combined contrast ratio    - total_contrast_ratio plus sustained_contrast_ratio: what
+##                                 TeamResult.Best() and TeamSweep actually rank by. Excluding
+##                                 sustained payload from ranking made every DoT/zone-charge combo
+##                                 structurally invisible next to a direct-damage combo when
+##                                 comparing team compositions — the two are different shapes of
+##                                 damage output, not different tiers of it, and a scorer meant to
+##                                 answer "what combination reaches what damage output" has to
+##                                 compare them on the same footing. total_contrast_ratio (and the
+##                                 30-50x contract it's checked against) stays a pure single-action
+##                                 figure regardless; combined_contrast_ratio is deliberately a
+##                                 separate field so the two questions — "does this fit the burst
+##                                 band" and "which team wins" — never collapse into one number.
 ##
-## Three stated simplifications:
+## Five stated simplifications:
 ##   - Manifest sources documented as an uncapped per-instance rate (Heap On's ramp,
 ##     Devour Blessing's bonus_per, an Opportunist debuff-count) are scored at the minimum
 ##     reachable count: exactly one instance/precondition satisfied. There is no battle
@@ -48,22 +67,40 @@ class_name BurstReachability extends RefCounted
 ##     excluded: self-accumulated stack mechanics (Arcane Instability's stacks, Hemoclarity's
 ##     Health-gated bonus), which need a battle-state assumption this function has no basis
 ##     for — the manifest tags those Channel1 too, but with no granted_attribute_buff entry.
-##   - A manifest entry's "reagent_gated_bonus" (the Sorcerer's repeat, the Alchemist's team
-##     factor — Plan_Itemization_Channels.md Phase 3/4) is scored as though a reagent was
-##     available to consume: there is no battle simulation here to know whether one actually
-##     was, matching the two simplifications above. CandidateResult.reagent_assumed reports
-##     whether this assumption was load-bearing for the score, per Phase 5's "reagent assumed
-##     available" precondition axis — recording the assumption rather than leaving these
-##     mechanics silently scored at zero. The two mechanics fold differently, per the
-##     manifest's own "fold" field: the Alchemist's team factor lands in the SAME
-##     CombinedDamageModifier as the candidate's own cast (Contribute()'d into
-##     buckets/product, same as a granted_status); the Sorcerer's repeat is its own,
-##     independent CombinedDamageModifier and damage resolution in the real resolver, so
-##     folding it into product would make that field diverge from what the live-verification
-##     suite checks against the real resolver — it is scored into repeat_contrast_ratio /
-##     total_contrast_ratio instead, deliberately excluded from product/contrast_ratio but
-##     fully counted in total_contrast_ratio, which is what Best()'s own ranking uses (see the
-##     third contract quantity above).
+##   - A manifest entry's "gated_bonus" (the Sorcerer's repeat, the Alchemist's team factor,
+##     Plague Doctor's Comorbidity retick, Unstable Rift's remaining zone charges) is scored as
+##     though its precondition was met — a reagent consumed, a debuff present, a zone charge
+##     spent: there is no battle simulation here to know whether it actually was, matching the
+##     simplifications above. CandidateResult.assumed_gates names every such precondition this
+##     score depended on, generalizing the old reagent-specific axis (Role_Kit_Design.md
+##     section 11) rather than leaving these mechanics silently scored at zero.
+##   - A "gated_bonus" folds three ways, per the manifest's own "fold" field:
+##       - "same_instance" (default): lands in the SAME CombinedDamageModifier as the
+##         candidate's own cast (Contribute()'d into buckets/product, same as a granted_status)
+##         — the Alchemist's Volatile Mixture buff.
+##       - "separate_instance": its own, independent CombinedDamageModifier and damage
+##         resolution in the real resolver (the Sorcerer's repeat) — folding it into product
+##         would make that field diverge from what the live-verification suite checks against
+##         the real resolver, so it is scored into repeat_contrast_ratio / total_contrast_ratio
+##         instead, deliberately excluded from product/contrast_ratio but fully counted in
+##         total_contrast_ratio (the third contract quantity above) and, downstream,
+##         combined_contrast_ratio (the fourth).
+##       - "sustained_ticks": damage spread across several of the boss's own future turns
+##         (Comorbidity's extra debuff tick, Unstable Rift's un-triggered zone charges) rather
+##         than the one action total_contrast_ratio measures — scored into its own
+##         sustained_contrast_ratio, excluded from total_contrast_ratio (which stays a pure
+##         one-action figure) but included in combined_contrast_ratio, so a multi-turn payload
+##         is visible to team-comparison ranking without corrupting the single-action contract
+##         number.
+##     "separate_instance" and "sustained_ticks" entries may also declare "instances" (default
+##     1) and "instance_compounding" (default 1.0, flat): each of the declared instances
+##     contributes (1.0 + magnitude) * instance_compounding^i, i 0-based — see
+##     _MultiInstanceContrastRatio.
+##   - A skill's damage may live inside a ZoneEffect.on_trigger instead of a top-level
+##     DamageEffect (Miasma has none either way; Unstable Rift's enemy-facing hit does). Such a
+##     skill is still enumerated as a candidate, scored off its enemy-facing on_trigger
+##     DamageEffects only — an ally-facing payload in the same zone is excluded, since this
+##     scorer measures damage against the boss, not the caster's own team.
 
 const Manifest = preload("res://Scripts/Debug/kit_contribution_manifest.gd")
 const BlowoutCalibration = preload("res://Scripts/Debug/blowout_calibration.gd")
@@ -76,13 +113,16 @@ const BlowoutCalibration = preload("res://Scripts/Debug/blowout_calibration.gd")
 ## is excluded yet. Enabler count is reported on every row regardless.
 const ENABLER_FLOOR: int = 0
 
-## See "Two simplifications" above.
+## Governs a Channel3_Cascade entry's own per-cast rate (_MagnitudeFor) and the
+## per_debuff_anchored grant path — both a per-cast reachable count, not an instance curve.
+## See the header's first stated simplification. A gated_bonus's own instance curve
+## ("instances" / "instance_compounding") is separate — see _MultiInstanceContrastRatio.
 const ASSUMED_UNCAPPED_INSTANCES: int = 1
 
 ## Skill_Target groups that reach a candidate character when a teammate's manifest entry
 ## grants them a status (self, every-other-ally, everyone, or "anyone" for the single-target
 ## family, which is scored best-case just like the rest of this file's simplifications — see
-## the header's "Two stated simplifications"). Mirrors the ally branches of
+## the header's stated simplifications). Mirrors the ally branches of
 ## Skills.FindSkillTargets (Scripts/Battle/skills.gd) — the runtime function itself needs a
 ## live Sides and character dictionary this scorer does not have, so the reachability rule is
 ## re-derived structurally here from the granting SkillEffect's own target instead of assumed.
@@ -90,6 +130,14 @@ const _SELF_ONLY_TARGETS: Array[Types.Skill_Target] = [Types.Skill_Target.Self]
 const _OTHER_ALLIES_TARGETS: Array[Types.Skill_Target] = [
 	Types.Skill_Target.All_Other_Allies, Types.Skill_Target.Ally_Not_Self]
 const _ALL_ALLIES_TARGETS: Array[Types.Skill_Target] = [Types.Skill_Target.All_Allies, Types.Skill_Target.All]
+
+## Enemy-facing Skill_Target values a ZoneEffect.on_trigger DamageEffect may carry — the
+## targets a zone-trigger payload counts as "damage against the boss" for, as opposed to an
+## ally-facing payload in the same zone (Unstable Rift's own 0.15 Mysticism ally hit).
+const _ENEMY_FACING_TARGETS: Array[Types.Skill_Target] = [
+	Types.Skill_Target.Single_Enemy, Types.Skill_Target.All_Enemies, Types.Skill_Target.Random_Enemy,
+	Types.Skill_Target.ZoneAll, Types.Skill_Target.ZoneEnemy, Types.Skill_Target.Left_Most_Enemy,
+	Types.Skill_Target.Right_Most_Enemy, Types.Skill_Target.Most_Injured_Enemy]
 const _ANYONE_TARGETS: Array[Types.Skill_Target] = [
 	Types.Skill_Target.Single_Ally, Types.Skill_Target.Random_Ally,
 	Types.Skill_Target.Most_Injured_Ally, Types.Skill_Target.Most_Buffed_Ally]
@@ -109,31 +157,53 @@ class CandidateResult:
 	var dropped_statuses: Array[StringName] = []
 	var enabler_count: int
 	var is_viable: bool
+	## Every gate this candidate's score depended on being satisfied (a reagent consumed, a
+	## debuff present, a zone charge spent, ...) — the generalized form of the old
+	## reagent-specific assumption axis (Role_Kit_Design.md section 11). Empty when nothing
+	## gated was assumed.
+	var assumed_gates: Array[StringName] = []
+	## True when a &"reagent_consumed" gate is among assumed_gates. Kept as its own field
+	## since every existing regression fixture already names it; derived, not independently set.
 	var reagent_assumed: bool
-	## Damage from a "separate_instance" reagent-gated mechanic (the Sorcerer's repeat),
-	## expressed as its own contrast ratio against the same basic-skill baseline and never
-	## folded into product/contrast_ratio — see the manifest's reagent_gated_bonus field docs.
-	## 0.0 when this candidate has no such contribution.
+	## Damage from a "separate_instance" gated_bonus (the Sorcerer's repeat), expressed as its
+	## own contrast ratio against the same basic-skill baseline and never folded into
+	## product/contrast_ratio — see the manifest's gated_bonus field docs and
+	## _MultiInstanceContrastRatio. 0.0 when this candidate has no such contribution.
 	var repeat_contrast_ratio: float = 0.0
-	## contrast_ratio + repeat_contrast_ratio: the total burst this candidate's action deals
-	## across both the original cast and its reagent-gated repeat, if any — the ranking key
-	## Best()/candidate sorting uses (see TeamResult below). A Channel-3 repeat is part of what
-	## "burst" means (Concept_Document.md 1.1.3's cascade definition) and must count toward it
-	## the same as Channels 1 and 2, even though it cannot be folded into the single
-	## CombinedDamageModifier product/contrast_ratio represent (see repeat_contrast_ratio's own
-	## docs) — total_contrast_ratio is what puts it back in.
+	## Damage from a "sustained_ticks" gated_bonus (Plague Doctor's Comorbidity retick,
+	## Unstable Rift's remaining zone charges) — its own contrast ratio against the same
+	## basic-skill baseline, deliberately excluded from total_contrast_ratio: it spans several
+	## of the boss's own future turns rather than the one action total_contrast_ratio measures,
+	## so folding it in there would mix two different meanings of "burst" into one single-action
+	## contract number. Included in combined_contrast_ratio instead, below. 0.0 when this
+	## candidate has no such contribution.
+	var sustained_contrast_ratio: float = 0.0
+	## contrast_ratio + repeat_contrast_ratio: the total single-action burst this candidate's
+	## action deals, across both the original cast and its separate-instance repeat, if any. A
+	## Channel-3 repeat is part of what "burst" means (Concept_Document.md 1.1.3's cascade
+	## definition) and must count toward it the same as Channels 1 and 2, even though it cannot
+	## be folded into the single CombinedDamageModifier product/contrast_ratio represent (see
+	## repeat_contrast_ratio's own docs). This is the figure checked against 1.1.2's 30-50x
+	## burst-band target; it is no longer the ranking key (see combined_contrast_ratio).
 	var total_contrast_ratio: float = 0.0
+	## total_contrast_ratio + sustained_contrast_ratio: the ranking key Best()/TeamSweep use.
+	## Folding sustained payload back in here (after deliberately excluding it from
+	## total_contrast_ratio above) is what lets a DoT/zone-charge combo compete against a
+	## direct-damage combo for "which team composition wins" — the question TeamSweep exists to
+	## answer — without redefining what total_contrast_ratio's own 30-50x contract check means.
+	var combined_contrast_ratio: float = 0.0
 
-## All candidates for one 3-preset team, ranked best (highest total_contrast_ratio, i.e. every
-## reachable channel including a separate-instance repeat) first.
+## All candidates for one 3-preset team, ranked best (highest combined_contrast_ratio, i.e.
+## every reachable channel including a separate-instance repeat and sustained payload) first.
 class TeamResult:
 	var candidates: Array[CandidateResult] = []
 	var enabler_count: int
 	var is_viable: bool
 
-	## This team's best reachable burst, total_contrast_ratio included — not necessarily the
-	## candidate with the highest single-hit contrast_ratio, if some other candidate's
-	## reagent-gated repeat pushes its total higher.
+	## This team's best reachable damage output, combined_contrast_ratio included — not
+	## necessarily the candidate with the highest single-action total_contrast_ratio, if some
+	## other candidate's sustained payload (a DoT retick, un-triggered zone charges) pushes its
+	## combined total higher.
 	func Best() -> CandidateResult:
 		return candidates[0] if not candidates.is_empty() else null
 
@@ -180,32 +250,63 @@ static func ScoreTeam(
 			if(null != candidate and result.is_viable):
 				result.candidates.append(candidate)
 
-	# total_contrast_ratio, not contrast_ratio: a Channel-3 repeat is part of what "burst" means
-	# (Concept_Document.md 1.1.3) and must be able to win Best() like any other channel, even
-	# though it cannot be folded into the single-hit product/contrast_ratio pair those two
-	# fields protect (see CandidateResult.total_contrast_ratio's own docs).
+	# combined_contrast_ratio, not total_contrast_ratio: a Channel-3 repeat or sustained payload
+	# is part of what a team composition's damage output is (Concept_Document.md 1.1.3) and must
+	# be able to win Best() like any other channel, even though neither can be folded into the
+	# single-hit product/contrast_ratio pair, or the single-action total_contrast_ratio, those
+	# fields protect (see CandidateResult.combined_contrast_ratio's own docs).
 	result.candidates.sort_custom(
-			func(a: CandidateResult, b: CandidateResult) -> bool: return a.total_contrast_ratio > b.total_contrast_ratio)
+			func(a: CandidateResult, b: CandidateResult) -> bool:
+				return a.combined_contrast_ratio > b.combined_contrast_ratio)
 	return result
 
 
 static func _HasDamageEffect(p_skill: Skill) -> bool:
+	return not _TopLevelDamageEffects(p_skill).is_empty() or not _ZoneTriggerEnemyDamageEffects(p_skill).is_empty()
+
+
+static func _TopLevelDamageEffects(p_skill: Skill) -> Array[DamageEffect]:
+	var found: Array[DamageEffect] = []
 	for effect in p_skill.effects:
 		if(effect is DamageEffect and not (effect as DamageEffect).damage_scaling.is_empty()):
-			return true
-	return false
+			found.append(effect)
+	return found
 
 
+## Enemy-facing DamageEffects nested inside a ZoneEffect.on_trigger — the shape Unstable Rift
+## uses instead of a top-level DamageEffect (Role_Kit_Design.md section 11, "Zone-trigger
+## damage invisible"). Ally-facing on_trigger payloads (Unstable Rift's own 0.15 Mysticism ally
+## hit) are excluded — see _ENEMY_FACING_TARGETS.
+static func _ZoneTriggerEnemyDamageEffects(p_skill: Skill) -> Array[DamageEffect]:
+	var found: Array[DamageEffect] = []
+	for effect in p_skill.effects:
+		if(not effect is ZoneEffect):
+			continue
+		for trigger_effect in (effect as ZoneEffect).on_trigger:
+			if(not trigger_effect is DamageEffect
+					or (trigger_effect as DamageEffect).damage_scaling.is_empty()):
+				continue
+			var target: Types.Skill_Target = (
+					p_skill.target if Types.Skill_Target.Skill_Default == trigger_effect.target
+					else trigger_effect.target)
+			if(_ENEMY_FACING_TARGETS.has(target)):
+				found.append(trigger_effect)
+	return found
+
+
+## Falls back to the skill's enemy-facing zone-trigger payload only when it carries no
+## top-level DamageEffect of its own — a skill authoring both would double-count, but none
+## currently do.
 static func _ScaledAggregate(
 		p_skill: Skill, p_character: Character, p_attribute_bonus: Dictionary = {}) -> float:
+	var top_level: Array[DamageEffect] = _TopLevelDamageEffects(p_skill)
+	var effects: Array[DamageEffect] = top_level if not top_level.is_empty() else _ZoneTriggerEnemyDamageEffects(p_skill)
 	var total: float = 0.0
-	for effect in p_skill.effects:
-		if(effect is DamageEffect):
-			var damage_effect: DamageEffect = effect
-			for attribute: Types.Attribute in damage_effect.damage_scaling.keys():
-				var bonus: float = p_attribute_bonus.get(attribute, 0.0)
-				total += (damage_effect.damage_scaling[attribute]
-						* float(p_character._attributes[attribute]) * (1.0 + bonus))
+	for damage_effect in effects:
+		for attribute: Types.Attribute in damage_effect.damage_scaling.keys():
+			var bonus: float = p_attribute_bonus.get(attribute, 0.0)
+			total += (damage_effect.damage_scaling[attribute]
+					* float(p_character._attributes[attribute]) * (1.0 + bonus))
 	return total
 
 
@@ -257,70 +358,91 @@ static func _Contribute(p_buckets: Dictionary, p_key: StringName, p_amount: floa
 	p_buckets[p_key] = p_buckets.get(p_key, 0.0) + p_amount
 
 
-## True for a reagent_gated_bonus dict that lands in the SAME CombinedDamageModifier as the
+## True for a gated_bonus dict that lands in the SAME CombinedDamageModifier as the
 ## candidate's own cast ("same_instance", the default) rather than a wholly separate damage
-## resolution ("separate_instance", the Sorcerer's repeat) — see the manifest's field docs.
-## Only a same_instance entry may ever be Contribute()'d into this candidate's own buckets.
+## resolution or multi-turn payload ("separate_instance" / "sustained_ticks") — see the
+## manifest's field docs. Only a same_instance entry may ever be Contribute()'d into this
+## candidate's own buckets.
 static func _IsSameInstanceFold(p_bonus: Dictionary) -> bool:
-	return "separate_instance" != p_bonus.get("fold", "same_instance")
+	return "same_instance" == p_bonus.get("fold", "same_instance")
 
 
-## The candidate's own skill/passive-scoped reagent_gated_bonus (a same_instance fold only) —
-## see the header's third stated simplification. Returns whether a contribution was made, so
-## the caller can surface the assumption on CandidateResult.
-static func _ContributeReagentGatedSkillBonus(p_buckets: Dictionary, p_entry: Dictionary) -> bool:
-	var bonus: Dictionary = p_entry.get("reagent_gated_bonus", {})
+## The candidate's own skill/passive-scoped gated_bonus (a same_instance fold only) — see the
+## header's stated simplifications. Returns the bonus's own "gate" name (StringName, possibly
+## &"") if a contribution was made, or &"" if none was, so the caller can surface the
+## assumption on CandidateResult.
+static func _ContributeGatedSkillBonus(p_buckets: Dictionary, p_entry: Dictionary) -> StringName:
+	var bonus: Dictionary = p_entry.get("gated_bonus", {})
 	if(bonus.is_empty() or not _IsSameInstanceFold(bonus)):
-		return false
+		return &""
 	_Contribute(p_buckets, StringName(String(bonus.get("bucket_key", ""))), _MagnitudeFor(bonus))
-	return true
+	return StringName(String(bonus.get("gate", "")))
 
 
-## Team-reach reagent_gated_bonus entries (the Alchemist's Volatile Mixture factor): read off
-## every teammate's own passive, not just the candidate's caster, because the mechanic
-## broadcasts to the whole team including its own owner (fresh_batch_trait.gd:58-62's AlliesOf
-## reach). Returns whether a contribution was made, so the caller can surface the assumption on
-## CandidateResult.
-static func _ContributeReagentGatedTeamBonuses(
-		p_characters: Array[Character], p_buckets: Dictionary, p_manifest: Dictionary) -> bool:
-	var contributed: bool = false
+## Team-reach gated_bonus entries (the Alchemist's Volatile Mixture factor): read off every
+## teammate's own passive, not just the candidate's caster, because the mechanic broadcasts to
+## the whole team including its own owner (fresh_batch_trait.gd:58-62's AlliesOf reach).
+## Returns the gate name of every contribution made, so the caller can surface the assumption
+## on CandidateResult.
+static func _ContributeGatedTeamBonuses(
+		p_characters: Array[Character], p_buckets: Dictionary, p_manifest: Dictionary) -> Array[StringName]:
+	var gates: Array[StringName] = []
 	for character in p_characters:
 		var role_entry: Dictionary = p_manifest.get(character._role, {})
 		var passive_entries: Array = role_entry.get("passive", [])
 		if(passive_entries.is_empty()):
 			continue
-		var bonus: Dictionary = passive_entries[0].get("reagent_gated_bonus", {})
+		var bonus: Dictionary = passive_entries[0].get("gated_bonus", {})
 		if(bonus.is_empty() or not _IsSameInstanceFold(bonus) or "team" != bonus.get("reach", "")):
 			continue
 		_Contribute(p_buckets, StringName(String(bonus.get("bucket_key", ""))), _MagnitudeFor(bonus))
-		contributed = true
-	return contributed
+		gates.append(StringName(String(bonus.get("gate", ""))))
+	return gates
 
 
-## A "separate_instance" reagent_gated_bonus (the Sorcerer's repeat): the real resolver
-## re-resolves the cast skill's DamageEffects as their own, independent CombinedDamageModifier
-## and ResolveEffectDamage call, never folded into the original cast's own product — folding it
-## in here would make CandidateResult.product diverge from what
-## Tests/unit/test_burst_reachability_live.gd's replay of the real resolver assembles for the
-## ORIGINAL cast alone. Approximated as the skill's own authored Channel2/3 bucket (if any)
-## composed with the repeat's own factor, mitigated independently against the same baseline —
-## deliberately excluding any team/granted factor (Volatile Mixture, Opportunist, ...), since
-## those are already contributed to (and, for a DamageMultiplier buff, consumed by) the
-## ORIGINAL cast in the real resolver (battle_resolver.gd:739-744's per-instance
-## ConsumeDamageMultiplierFactors call) and would double-count here otherwise.
-static func _ReagentGatedRepeatContrastRatio(
-		p_skill_entry: Dictionary, p_skill_aggregate: float, p_defence: float, p_baseline_damage: float) -> float:
-	var bonus: Dictionary = p_skill_entry.get("reagent_gated_bonus", {})
-	if(bonus.is_empty() or _IsSameInstanceFold(bonus)):
-		return 0.0
+## Shared curve-walk for a "separate_instance" or "sustained_ticks" gated_bonus: each of the
+## declared "instances" (default 1, clamped to CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION)
+## contributes (1.0 + magnitude) * instance_compounding^i, i 0-based — flat when
+## instance_compounding is omitted (default 1.0), compounding otherwise (an Echo-style curve).
+## Mirrors the original repeat approximation's own bucket-factor and mitigation shape: the
+## real resolver re-resolves the cast's DamageEffects as their own, independent
+## CombinedDamageModifier and ResolveEffectDamage call(s), never folded into the original
+## cast's own product — folding it in here would make CandidateResult.product diverge from
+## what Tests/unit/test_burst_reachability_live.gd's replay of the real resolver assembles for
+## the ORIGINAL cast alone. Deliberately excludes any team/granted factor (Volatile Mixture,
+## Opportunist, ...), since those are already contributed to (and, for a DamageMultiplier
+## buff, consumed by) the ORIGINAL cast in the real resolver (battle_resolver.gd:739-744's
+## per-instance ConsumeDamageMultiplierFactors call) and would double-count here otherwise.
+static func _MultiInstanceContrastRatio(
+		p_skill_entry: Dictionary, p_bonus: Dictionary, p_skill_aggregate: float, p_defence: float,
+		p_baseline_damage: float) -> float:
 	var own_bucket_factor: float = 1.0
 	if(Manifest.Contribution_Class.Channel2 == p_skill_entry.get("class") \
 			or Manifest.Contribution_Class.Channel3_Cascade == p_skill_entry.get("class")):
 		own_bucket_factor = 1.0 + _MagnitudeFor(p_skill_entry)
-	var repeat_factor: float = 1.0 + _MagnitudeFor(bonus)
+	var magnitude: float = p_bonus.get("magnitude", 0.0)
+	var compounding: float = p_bonus.get("instance_compounding", 1.0)
+	var instances: int = mini(int(p_bonus.get("instances", 1)), CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION)
+	var factor_sum: float = 0.0
+	for i in instances:
+		factor_sum += (1.0 + magnitude) * pow(compounding, float(i))
 	var repeat_damage: float = Skills.MitigatedDamageUnrounded(
-			p_defence, p_skill_aggregate * own_bucket_factor * repeat_factor, 1.0, 1.0)
+			p_defence, p_skill_aggregate * own_bucket_factor * factor_sum, 1.0, 1.0)
 	return repeat_damage / p_baseline_damage
+
+
+## Splits a skill entry's gated_bonus into [repeat_contrast_ratio, sustained_contrast_ratio] —
+## mutually exclusive folds, so at most one of the two is ever nonzero.
+static func _GatedContrastRatios(
+		p_skill_entry: Dictionary, p_skill_aggregate: float, p_defence: float,
+		p_baseline_damage: float) -> Array[float]:
+	var bonus: Dictionary = p_skill_entry.get("gated_bonus", {})
+	if(bonus.is_empty() or _IsSameInstanceFold(bonus)):
+		return [0.0, 0.0]
+	var ratio: float = _MultiInstanceContrastRatio(p_skill_entry, bonus, p_skill_aggregate, p_defence, p_baseline_damage)
+	if("separate_instance" == bonus.get("fold", "same_instance")):
+		return [ratio, 0.0]
+	return [0.0, ratio]
 
 
 ## True if p_role's passive contribution actually applies when p_skill_index is the skill
@@ -373,9 +495,13 @@ static func _ScoreCandidate(
 		_Contribute(buckets, StringName(String(p_skill_entry.get("bucket_key", ""))),
 				_MagnitudeFor(p_skill_entry))
 
-	var reagent_assumed: bool = _ContributeReagentGatedSkillBonus(buckets, p_skill_entry)
-	if(_ContributeReagentGatedTeamBonuses(p_characters, buckets, p_manifest)):
-		reagent_assumed = true
+	var assumed_gates: Array[StringName] = []
+	var skill_gate: StringName = _ContributeGatedSkillBonus(buckets, p_skill_entry)
+	if(&"" != skill_gate):
+		assumed_gates.append(skill_gate)
+	for gate: StringName in _ContributeGatedTeamBonuses(p_characters, buckets, p_manifest):
+		if(&"" != gate):
+			assumed_gates.append(gate)
 
 	var anchor_debuff_key: StringName = _AnchorDebuffKey(p_skill_entry)
 	_ContributeGrantedStatuses(p_characters, p_caster_index, buckets, anchor_debuff_key, p_manifest)
@@ -394,10 +520,13 @@ static func _ScoreCandidate(
 	var baseline_damage: float = Skills.MitigatedDamageUnrounded(defence, basic_aggregate, 1.0, 1.0)
 	var modifier_only_damage: float = Skills.MitigatedDamageUnrounded(defence, basic_aggregate * product, 1.0, 1.0)
 	var burst_damage: float = Skills.MitigatedDamageUnrounded(defence, skill_aggregate * product, 1.0, 1.0)
-	var repeat_contrast_ratio: float = _ReagentGatedRepeatContrastRatio(
-			p_skill_entry, skill_aggregate, defence, baseline_damage)
-	if(0.0 != repeat_contrast_ratio):
-		reagent_assumed = true
+	var gated_ratios: Array[float] = _GatedContrastRatios(p_skill_entry, skill_aggregate, defence, baseline_damage)
+	var repeat_contrast_ratio: float = gated_ratios[0]
+	var sustained_contrast_ratio: float = gated_ratios[1]
+	if(0.0 != repeat_contrast_ratio or 0.0 != sustained_contrast_ratio):
+		var gate: StringName = StringName(String(p_skill_entry.get("gated_bonus", {}).get("gate", "")))
+		if(&"" != gate):
+			assumed_gates.append(gate)
 
 	var result: CandidateResult = CandidateResult.new()
 	result.caster_index = p_caster_index
@@ -413,9 +542,12 @@ static func _ScoreCandidate(
 	result.dropped_statuses = dropped
 	result.enabler_count = p_enabler_count
 	result.is_viable = p_is_viable
-	result.reagent_assumed = reagent_assumed
+	result.assumed_gates = assumed_gates
+	result.reagent_assumed = assumed_gates.has(&"reagent_consumed")
 	result.repeat_contrast_ratio = repeat_contrast_ratio
+	result.sustained_contrast_ratio = sustained_contrast_ratio
 	result.total_contrast_ratio = result.contrast_ratio + repeat_contrast_ratio
+	result.combined_contrast_ratio = result.total_contrast_ratio + sustained_contrast_ratio
 	return result
 
 
