@@ -6,7 +6,20 @@ and hands it to a build-out plan that was never spawned.
 
 ## Status
 
-Phase 0 done. Phases 1-6 not started.
+Phase 0 done. Phase 1 drafted, awaiting sign-off (see below) before Phase 2 starts. Phases 2-6 not
+started.
+
+**Phase 1 result.** `Documents/Role_Kit_Design.md` created, holding the kit contract, the
+indirect-composition rule, the synergy grammar, Phase 0's re-derived targets, and the two pieces
+of new design work: a channel identity allocation across all 20 Roles (4 Channel 3, 7 Channel 2, 4
+Channel 1, 5 Enabler — up from ~1 real Role-driven Channel 3 anchor and one cross-kit Channel 2
+hook in the baseline) and a five-route pairing web (debuff density, cascade count, crit path,
+stack consumption, Health threshold), each independent of Tidal Corsair's existing ceiling
+pairing and of each other. Batch 1 (fixed by this plan) opens or partially opens four of the five
+routes; batch composition for Phases 3-5 is proposed in the design doc's section 7, sequenced so
+batch 2 closes every route batch 1 opened before batches 3-4 turn to bug fixes and the remaining
+Enablers. **Stop here for review per the plan's own instruction — the allocation is the decision
+everything downstream inherits.**
 
 Per-phase progress is recorded here as it lands. Every batch records the sweep result it
 produced — median, 90th percentile, ceiling, and the count of distinct pairings in the top
