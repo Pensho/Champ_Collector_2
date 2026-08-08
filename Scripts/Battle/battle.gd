@@ -557,6 +557,8 @@ func EndBattle(p_winner: BattleResolver.Winner) -> void:
 			_characters[i]._current_health = (_characters[i].GetTotalAttribute(Types.Attribute.Health) *
 				Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
 
+	_self_context._battle_reagents = _reagent_loadout.GetReagentsForContext()
+
 	_self_context._scene = "uid://d3ooarqabyw0p"
 
 	main.GetInstance().change_scene(_self_context)

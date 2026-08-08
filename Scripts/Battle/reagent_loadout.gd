@@ -46,3 +46,11 @@ func TryConsume(p_index: int, p_reagent_collection: ReagentCollection) -> bool:
 	if(not _brewed[p_index]):
 		p_reagent_collection.Consume(_reagent_keys[p_index])
 	return true
+
+func GetReagentsForContext() -> Array[String]:
+	var remaining_reagents: Array[String] = []
+	for index in _reagent_keys.size():
+		if(_spent[index] or _brewed[index]):
+			continue
+		remaining_reagents.append(_reagent_keys[index])
+	return remaining_reagents
