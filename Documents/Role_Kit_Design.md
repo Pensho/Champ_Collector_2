@@ -359,6 +359,80 @@ and manifest references. The scorer's compounding curve (section 11's `gated_bon
 kit is authored — verified against this section's own 5.59x/6.59x figures in
 `Tests/unit/test_burst_reachability.gd`.
 
+### 9.4 Bloodmage — the missing-Health surface, caster-side and exported
+
+**Status:** Settled, not yet implemented. Batch 1.
+
+**Passive: Hemoclarity.** Changed from a below-50% cliff to a continuous curve, and widened past
+damage: for every 1% of max Health the Bloodmage is missing, gain +1% Mysticism (0.7/0.8/0.9/1.0%
+per rarity, capped at 80% missing), and the same percentage increases all healing and Barrier
+absorption the Bloodmage creates. This is the only place in the kit that reads the Bloodmage's own
+missing Health — every skill below reads someone else's.
+
+| Slot | Skill | Effect | Channel |
+|---|---|---|---|
+| Basic | Blood Bolt | Kept as-is. Mysticism-scaled damage to one enemy; self-costs 3% max Health. | 1 |
+| Signature | Transfusion | Kept: sacrifices 15% max Health, one ally gains a Barrier absorbing 200% of the Health sacrificed (2 turns). Added: the same ally also gains **Sanguine Pact** for 3 turns. Cooldown 4. | Enabler + 2 (granted) |
+| Signature | Tithe of Vitality | Drains 10% max Health from each living ally (caster excluded). Mysticism-scaled damage to one enemy, +35% per living ally currently below half Health (`bonus_per Wounded_Allies`), applies **Hemorrhage** for 3 turns. Mana Burn dropped — nothing in the kit read it. Cooldown 4. | 2 |
+
+**New statuses.**
+
+* **Sanguine Pact** (buff, Channel 2, granted — lands in the holder's own bucket, not the
+  Bloodmage's): the holder's damage is increased by 12% per 10% of *the holder's own* missing
+  Health, and 30% of damage the holder takes is redirected to the Bloodmage instead. Two clauses,
+  read off two different quantities (the holder's own missing Health for the damage bonus; the
+  holder's incoming damage for the redirect) — the Bloodmage's own missing Health feeds nothing in
+  this status, keeping the composition law's "distinct keys multiply" clean.
+* **Hemorrhage** (debuff, Channel 2): attacks against the holder deal +6% damage per 10% of the
+  *holder's own* (i.e. the target's) missing Health. Every teammate's damage reads it, not only the
+  Bloodmage's, and it is a distinct debuff type, so it also feeds route A's density count.
+
+**Composition hook (route E).** Sanguine Pact and Hemorrhage both name no Role, only a missing-
+Health quantity — the caster's own (Hemoclarity), the buff holder's own (Sanguine Pact), or the
+enemy's own (Hemorrhage). Anything that wounds an ally feeds Sanguine Pact (the Bloodmage's own
+Tithe, the Sorcerer's Surge friendly fire per §9.3, Symbiote's Exhert); anything that damages the
+boss feeds Hemorrhage automatically, since it is a standing debuff, not a triggered one.
+
+**Projected numbers.** Using §9.2's methodology (mitigation cancels between the basic-skill
+baseline and the burst; contrast reduces to aggregate ratio × combined modifier product) — with one
+addition this kit needs that 9.1-9.3 didn't: Hemoclarity's missing-Health Mysticism bonus does
+*not* cancel the way ordinary attribute scaling does, because the baseline "own basic" is cast at
+full Health and the burst is deliberately cast at a deep wound, so it contributes to the aggregate
+ratio rather than dropping out.
+
+Bloodmage's own cast, Tithe of Vitality at Legendary, 80% missing Health, 2 allies below half:
+aggregate ratio 1.5 (Tithe's Mysticism scaling vs. Blood Bolt's 1.0) × 1.80 (Hemoclarity's own-
+missing-Health aggregate bonus) × 1.70 (Wounded_Allies bucket, 2 allies) ≈ 4.59x before team
+factors. Against a strong team product of 5.5 (§4's illustrative shape), contrast ratio ≈ **25.2x**;
+against a modest team (product 3.0), ≈13.8x. As a Channel 1/2 kit rather than a Channel 3 anchor,
+this Role is not expected to clear the 30-50x band alone — §1's contract asks for a real bucket in
+the target band and a composition hook, not a solo burst, and the exported factors below are where
+this kit's actual weight lands:
+
+* **Sanguine Pact**, on the carrier: 1.60x at 50% missing Health, up to 1.96x at 80% missing —
+  handed to whichever teammate is bursting, independent of the Bloodmage's own cast.
+* **Hemorrhage**, on the whole team: 1.30x with the boss at half Health, rising to 1.48x as the
+  boss drops to 20% remaining — a standing multiplier every damage dealer on the team reads for
+  free, plus a distinct debuff type for route A.
+
+**Implementation needs (not yet built):**
+
+* `Trait_Count_Source.Wounded_Allies` — one new enum value plus one `_Count` branch in
+  `damage_effect.gd`, counting living allies (caster excluded) currently below 50% Health; same
+  shape as Batch 1's `Target_Debuff_Count`.
+* A continuous-missing-Health damage-multiplier shape, read off a *target's own* missing Health
+  rather than a debuff-type presence — distinct from `bonus_per_debuff_on_target`, needed for both
+  Hemorrhage (reads the enemy holding it) and Sanguine Pact's damage clause (reads the ally holding
+  it). One computation, two status resources.
+* Damage redirection to a *named applier*, not a trait owner — `shield_wall_trait.gd` already
+  redirects damage, but that redirect target is the trait's own owner; Sanguine Pact needs the
+  redirect target to be whoever applied the status, which no existing status carries a field for.
+* `hemoclarity_trait.gd` rewritten for the continuous curve, and extended to reach
+  `HealthChangeEffect`/`BarrierEffect` sizing so the healing/Barrier clause has something to scale.
+* `kit_contribution_manifest.gd`: Tithe of Vitality gains a `bucket_key` (skill-name bucket,
+  `bonus_per Wounded_Allies 0.35`); Sanguine Pact and Hemorrhage are recorded as granted-status /
+  debuff-type bucket keys landing on whoever holds them, not on the Bloodmage's own entry.
+
 ## 10. Coverage ledger
 
 Successor to the archived `Plan_Role_Skill_Kits.md`'s claims ledger (status effects only) —
@@ -389,11 +463,14 @@ Role's rows in the same edit, not after.
 | Suppress | Herald of the loom (Thread Snap) — **settled, not yet implemented** (section 9.2); shipped code still has this on Thread Lash until Herald's kit is authored |
 | Temporal Leak | Herald of the loom (Pull the Thread) — **settled, not yet implemented** (section 9.2); newly claimed, retiring part of `FeatureIdeas.md`'s "Rework Orphaned Turn Bar Effects" item once live |
 | Warped | Sorcerer (Unstable Rift reliably, Arc Lash's 25% rider) — **settled, not yet implemented** (section 9.3); both sources are the same Role, so the identity-effect rule still holds |
+| Hemorrhage | Bloodmage (Tithe of Vitality) — **settled, not yet implemented** (section 9.4); new debuff, no prior claimant |
+| Mana Burn | Unclaimed — dropped from Bloodmage's Tithe of Vitality (section 9.4); nothing in the reworked kit read it |
 
-**Buffs** — unchanged from the archived pass this batch, with one pending removal: Attune's second
+**Buffs** — unchanged from the archived pass this batch, with two pending changes: Attune's second
 claim (Herald of the loom's Woven Blessing, alongside Cultist's Chosen Vessel passive) drops once
 Herald's settled kit (section 9.2) is implemented — Woven Blessing is not part of it and nothing
-in the new kit applies Attune.
+in the new kit applies Attune. Sanguine Pact is a new buff, claimed by Bloodmage (Transfusion) —
+**settled, not yet implemented** (section 9.4).
 
 ### 10.2 Damage-channel bucket keys in use
 
@@ -414,11 +491,14 @@ key, not a doc paraphrase) — the authority the burst-reachability scorer actua
 | `Final Calculation` | Architect (Final Calculation) | Skill-name bucket |
 | `Corsairs Reckoning` | Tidal Corsair (Corsairs Reckoning) | Skill-name bucket |
 | `Outbreak` | Plague Doctor (Outbreak) | Skill-name bucket, `bonus_per` keyed to `Target_Debuff_Count` (Batch 1's new generic trait-count source) |
+| `Tithe of Vitality` | Bloodmage (Tithe of Vitality) — **settled, not yet implemented** (section 9.4) | Skill-name bucket, `bonus_per` keyed to `Wounded_Allies` (new Batch 1 trait-count source) |
+| `Sanguine Pact` (granted status) | Bloodmage (Transfusion) — **settled, not yet implemented** (section 9.4) | Granted holder-missing-Health damage multiplier; lands in whoever holds it, not the caster's own bucket |
+| `Hemorrhage` (debuff on target) | Bloodmage (Tithe of Vitality) — **settled, not yet implemented** (section 9.4) | Debuff-type bucket, holder-missing-Health damage multiplier; readable by any teammate's damage, not only the applier's |
 
 Every other Role/skill in the manifest carries `bucket_key = ""` today — either genuinely Channel 1
 / Enabler, or a Batch-1-and-later target whose kit hasn't yet earned a bucket key. Batch 1's
-remaining Roles (Bloodmage, Appraiser) are expected to add rows here; add them in the same edit
-that updates the manifest.
+remaining Role (Appraiser) is expected to add a row here; add it in the same edit that updates the
+manifest.
 
 ## 11. Scorer plumbing for Channel 3 payloads
 

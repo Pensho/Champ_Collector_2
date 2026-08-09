@@ -7,8 +7,8 @@ and hands it to a build-out plan that was never spawned.
 ## Status
 
 Phase 0 done. Phase 1 drafted, awaiting sign-off (see below) before Phase 2 starts. Phase 2 in
-progress: Plague Doctor implemented; Herald of the Loom and Sorcerer settled and recorded in
-`Role_Kit_Design.md` §9.2 / §9.3, not yet implemented; Bloodmage and Appraiser not started. The
+progress: Plague Doctor implemented; Herald of the Loom, Sorcerer, and Bloodmage settled and
+recorded in `Role_Kit_Design.md` §9.2 / §9.3 / §9.4, not yet implemented; Appraiser not started. The
 scorer gaps blocking all three Channel 3 kits are consolidated in §11 and are the batch's first
 implementation work. Phases 3-6 not started.
 
