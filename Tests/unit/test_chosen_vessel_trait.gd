@@ -36,19 +36,6 @@ func before_each() -> void:
 func _InitTrait(p_rarity: Types.Rarity) -> void:
 	_trait.Init(p_rarity)
 
-# --- Rarity table ---
-
-func test_power_bonus_table() -> void:
-	var expected: Dictionary[Types.Rarity, float] = {
-		Types.Rarity.Uncommon: 0.15,
-		Types.Rarity.Rare: 0.20,
-		Types.Rarity.Epic: 0.25,
-		Types.Rarity.Legendary: 0.30,
-	}
-	for rarity: Types.Rarity in expected:
-		assert_eq(ChosenVesselTrait.GetPowerBonus(rarity), expected[rarity],
-			"POWER_BONUS at %s" % Types.RarityName(rarity))
-
 # --- Marking ---
 
 func test_start_of_battle_marks_a_living_ally_excluding_self() -> void:

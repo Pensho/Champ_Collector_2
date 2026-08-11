@@ -187,6 +187,31 @@ func test_steal_buff_count_skips_a_dead_ward_in_favor_of_a_living_one() -> void:
 	assert_eq(roster[4]._active_buffs.size(), 0, "A dead ward must never receive the stolen buff")
 	assert_eq(roster[5]._active_buffs.size(), 1, "The buff should go to the only living ally")
 
+# --- RemoveBuff ---
+
+func test_remove_buff_erases_from_active_buffs() -> void:
+	var buff: StatusEffects.Buff = _buff(Types.Buff_Type.Empower)
+	_roster[0]._active_buffs.append(buff)
+
+	var results: Array[CombatResult] = _resolver.GetStatusResolver().RemoveBuff(0, buff)
+
+	assert_eq(_roster[0]._active_buffs.size(), 0, "Buff should be erased after RemoveBuff")
+	assert_eq(results.size(), 1, "Removal should be reported")
+	assert_eq(results[0].kind, CombatResult.Kind.Statuses_Removed)
+	assert_eq(results[0].status_IDs, [buff.ID] as Array[int], "The removed buff's status ID should be reported")
+
+func test_remove_buff_only_erases_target_buff() -> void:
+	var buff_a: StatusEffects.Buff = _buff(Types.Buff_Type.Empower, 2)
+	var buff_b: StatusEffects.Buff = _buff(Types.Buff_Type.Fortify, 3)
+	_roster[0]._active_buffs.append(buff_a)
+	_roster[0]._active_buffs.append(buff_b)
+
+	_resolver.GetStatusResolver().RemoveBuff(0, buff_a)
+
+	assert_eq(_roster[0]._active_buffs.size(), 1, "Only the targeted buff should be removed")
+	assert_eq(_roster[0]._active_buffs[0].type, Types.Buff_Type.Fortify,
+		"Remaining buff should be the one that was not removed")
+
 # --- RemoveBuff health reclamp (reachable via ConsumeBuffs / StealBuff) ---
 
 func test_remove_buff_reclamps_current_health_after_removing_a_max_health_buff() -> void:

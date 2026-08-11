@@ -695,6 +695,8 @@ func _EmitBuffApplied(p_target_ID: int, p_buff: StatusEffects.Buff, p_display_na
 	result.text = p_display_name
 	_resolver._Emit(result)
 	var target: Character = _resolver._characters[p_target_ID]
+	if(target._current_health <= 0):
+		return
 	var buff_trait: CharacterTrait = Skills.ActiveHook(target, Types.Combat_Event.Buff_Applied)
 	if(null != buff_trait):
 		buff_trait.OnBuffGained(p_target_ID, p_buff, _resolver)
@@ -723,6 +725,8 @@ func _EmitDebuffApplied(p_target_ID: int, p_debuff: StatusEffects.Debuff, p_disp
 	_resolver._Emit(result)
 	Skills.DispatchDebuffApplied(p_debuff, p_target_ID, _resolver._characters, _resolver)
 	var target: Character = _resolver._characters[p_target_ID]
+	if(target._current_health <= 0):
+		return
 	var debuff_trait: CharacterTrait = Skills.ActiveHook(target, Types.Combat_Event.Debuff_Received)
 	if(null != debuff_trait):
 		debuff_trait.OnDebuffReceived(p_target_ID, p_debuff, _resolver)

@@ -205,9 +205,10 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 
 	_zone_resolver.TriggerZones(p_caster_ID)
 
-	var end_turn_trait: CharacterTrait = Skills.ActiveHook(caster, Types.Combat_Event.End_Turn)
-	if(null != end_turn_trait):
-		end_turn_trait.EndOfTurn(p_caster_ID, self)
+	if(caster._current_health > 0):
+		var end_turn_trait: CharacterTrait = Skills.ActiveHook(caster, Types.Combat_Event.End_Turn)
+		if(null != end_turn_trait):
+			end_turn_trait.EndOfTurn(p_caster_ID, self)
 	return _EndBatch()
 
 
@@ -224,9 +225,10 @@ func ResolveStunTurn(p_caster_ID: int) -> Array[CombatResult]:
 	_cascade_resolver.Drain()
 	_TickCooldowns(caster)
 	_zone_resolver.TriggerZones(p_caster_ID)
-	var end_turn_trait: CharacterTrait = Skills.ActiveHook(caster, Types.Combat_Event.End_Turn)
-	if(null != end_turn_trait):
-		end_turn_trait.EndOfTurn(p_caster_ID, self)
+	if(caster._current_health > 0):
+		var end_turn_trait: CharacterTrait = Skills.ActiveHook(caster, Types.Combat_Event.End_Turn)
+		if(null != end_turn_trait):
+			end_turn_trait.EndOfTurn(p_caster_ID, self)
 	var result: CombatResult = CombatResult.new(CombatResult.Kind.Turn_Skipped)
 	result.target_ID = p_caster_ID
 	_Emit(result)
@@ -287,7 +289,7 @@ func ResolveEffectDamage(
 		p_combined_damage_modifier: CombinedDamageModifier,
 		p_allow_critical: bool = true) -> void:
 	var target_attributes: Dictionary[Types.Attribute, int] = GetEffectiveAttributes(p_target_ID)
-	if(p_caster_ID != p_target_ID and _characters.has(p_target_ID)):
+	if(p_caster_ID != p_target_ID and _characters.has(p_target_ID) and _characters[p_target_ID]._current_health > 0):
 		var defend_trait: CharacterTrait = Skills.ActiveHook(_characters[p_target_ID], Types.Combat_Event.Defend)
 		if(null != defend_trait):
 			defend_trait.OnDefend(p_target_ID, target_attributes, _characters)
@@ -764,9 +766,10 @@ func _ResolveDamage(
 
 	if(damage_dealt == 0):
 		return
-	var damage_taken_trait: CharacterTrait = Skills.ActiveHook(target, Types.Combat_Event.Damage_Taken)
-	if(damage_dealt > 0 and null != damage_taken_trait):
-		damage_dealt = int(round(damage_dealt * damage_taken_trait.OnDamageTaken(p_target_ID, p_caster_ID, self)))
+	if(target._current_health > 0):
+		var damage_taken_trait: CharacterTrait = Skills.ActiveHook(target, Types.Combat_Event.Damage_Taken)
+		if(damage_dealt > 0 and null != damage_taken_trait):
+			damage_dealt = int(round(damage_dealt * damage_taken_trait.OnDamageTaken(p_target_ID, p_caster_ID, self)))
 	if(damage_dealt == 0):
 		return
 
@@ -774,13 +777,14 @@ func _ResolveDamage(
 	_EmitDamageResult(p_caster_ID, p_target_ID, damage_dealt, rolled_critical, p_combined_damage_modifier)
 
 	var caster: Character = _characters[p_caster_ID]
-	var damage_dealt_trait: CharacterTrait = Skills.ActiveHook(caster, Types.Combat_Event.Damage_Dealt)
-	if(null != damage_dealt_trait):
-		damage_dealt_trait.OnDamageDealt(p_caster_ID, p_target_ID, damage_dealt, self)
-	if(rolled_critical):
-		var critical_trait: CharacterTrait = Skills.ActiveHook(caster, Types.Combat_Event.Critical_Hit)
-		if(null != critical_trait):
-			critical_trait.OnCriticalHit(p_caster_ID, p_target_ID, self)
+	if(caster._current_health > 0):
+		var damage_dealt_trait: CharacterTrait = Skills.ActiveHook(caster, Types.Combat_Event.Damage_Dealt)
+		if(null != damage_dealt_trait):
+			damage_dealt_trait.OnDamageDealt(p_caster_ID, p_target_ID, damage_dealt, self)
+		if(rolled_critical):
+			var critical_trait: CharacterTrait = Skills.ActiveHook(caster, Types.Combat_Event.Critical_Hit)
+			if(null != critical_trait):
+				critical_trait.OnCriticalHit(p_caster_ID, p_target_ID, self)
 
 	if(target._current_health <= 0 and caster._current_health > 0):
 		var kill_trait: CharacterTrait = Skills.ActiveHook(caster, Types.Combat_Event.On_Kill)

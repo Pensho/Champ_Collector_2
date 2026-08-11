@@ -20,19 +20,6 @@ func before_each() -> void:
 	_trait.Init(Types.Rarity.Uncommon)
 	_trait.StartOfBattle(0, _resolver)
 
-# --- Rarity table ---
-
-func test_rate_per_infraction_table() -> void:
-	var expected: Dictionary[Types.Rarity, float] = {
-		Types.Rarity.Uncommon: 0.025,
-		Types.Rarity.Rare: 0.03,
-		Types.Rarity.Epic: 0.035,
-		Types.Rarity.Legendary: 0.04,
-	}
-	for rarity: Types.Rarity in expected:
-		assert_eq(StandingRecordTrait.GetRatePerInfraction(rarity), expected[rarity],
-			"RATE_PER_INFRACTION at %s" % Types.RarityName(rarity))
-
 # --- Increment sources ---
 
 func test_enemy_gaining_a_buff_adds_an_infraction() -> void:

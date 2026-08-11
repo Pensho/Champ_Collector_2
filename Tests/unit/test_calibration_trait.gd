@@ -18,19 +18,6 @@ func _InitTrait(p_rarity: Types.Rarity) -> void:
 	_character._rarity = p_rarity
 	_trait.Init(p_rarity)
 
-# --- Rarity table ---
-
-func test_per_charge_potency_table() -> void:
-	var expected: Dictionary[Types.Rarity, float] = {
-		Types.Rarity.Uncommon: 0.04,
-		Types.Rarity.Rare: 0.05,
-		Types.Rarity.Epic: 0.06,
-		Types.Rarity.Legendary: 0.07,
-	}
-	for rarity: Types.Rarity in expected:
-		assert_eq(CalibrationTrait.PER_CHARGE_POTENCY.get(rarity, 0.0), expected[rarity],
-			"PER_CHARGE_POTENCY at %s" % Types.RarityName(rarity))
-
 # --- Charge accumulation ---
 
 func test_cornerstone_grants_one_charge() -> void:

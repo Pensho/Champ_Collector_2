@@ -2,18 +2,12 @@ extends GutTest
 
 const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 
-const WRETCHED_CONSCRIPT_PATH: String = "res://Data/Character_Traits/Grafts/Wretched_Conscript_Graft.tres"
 const SPREADING_ROT_PATH: String = "res://Data/Character_Traits/Grafts/Spreading_Rot_Graft.tres"
 const REACTIVE_PLATING_PATH: String = "res://Data/Character_Traits/Grafts/Reactive_Plating_Graft.tres"
 const STRENGTH_IN_NUMBERS_PATH: String = "res://Data/Character_Traits/Grafts/Strength_In_Numbers_Graft.tres"
 const HOLLOW_HUNGER_PATH: String = "res://Data/Character_Traits/Grafts/Hollow_Hunger_Graft.tres"
 const CARRION_BLOOM_PATH: String = "res://Data/Character_Traits/Grafts/Carrion_Bloom_Graft.tres"
 const OVERGROWTH_PATH: String = "res://Data/Character_Traits/Grafts/Overgrowth_Graft.tres"
-
-func _make_wretched_conscript(p_rarity: Types.Rarity) -> WretchedConscriptGraft:
-	var graft: WretchedConscriptGraft = load(WRETCHED_CONSCRIPT_PATH).duplicate(true)
-	graft.Init(p_rarity)
-	return graft
 
 func _make_spreading_rot(p_rarity: Types.Rarity) -> SpreadingRotGraft:
 	var graft: SpreadingRotGraft = load(SPREADING_ROT_PATH).duplicate(true)
@@ -25,54 +19,12 @@ func _make_reactive_plating(p_rarity: Types.Rarity) -> ReactivePlatingGraft:
 	graft.Init(p_rarity)
 	return graft
 
-func _make_hollow_hunger(p_rarity: Types.Rarity) -> HollowHungerGraft:
-	var graft: HollowHungerGraft = load(HOLLOW_HUNGER_PATH).duplicate(true)
-	graft.Init(p_rarity)
-	return graft
-
-func _make_carrion_bloom(p_rarity: Types.Rarity) -> CarrionBloomGraft:
-	var graft: CarrionBloomGraft = load(CARRION_BLOOM_PATH).duplicate(true)
-	graft.Init(p_rarity)
-	return graft
-
 func _make_overgrowth(p_rarity: Types.Rarity) -> OvergrowthGraft:
 	var graft: OvergrowthGraft = load(OVERGROWTH_PATH).duplicate(true)
 	graft.Init(p_rarity)
 	return graft
 
-# --- Wretched Conscript ---
-
-func test_wretched_conscript_defence_bonus_scales_by_rarity() -> void:
-	for rarity: Types.Rarity in WretchedConscriptGraft.DEFENCE_BONUS_PER_RARITY:
-		var graft: WretchedConscriptGraft = _make_wretched_conscript(rarity)
-		var expected: int = int(ceilf(100 * WretchedConscriptGraft.DEFENCE_BONUS_PER_RARITY[rarity]))
-		assert_eq(graft.GetAttributeDelta(Types.Attribute.Defence, 100), expected,
-				"Defence bonus should scale with rarity %s" % Types.RarityName(rarity))
-
-func test_wretched_conscript_has_no_drawback() -> void:
-	var graft: WretchedConscriptGraft = _make_wretched_conscript(Types.Rarity.Epic)
-	assert_eq(graft.GetAttributeDelta(Types.Attribute.Speed, 100), 0)
-
-func test_wretched_conscript_total_attribute_includes_bonus_and_stays_pristine() -> void:
-	var character: Character = TestFactory.make_character()
-	character._rarity = Types.Rarity.Epic
-	var base_defence: int = character._attributes[Types.Attribute.Defence]
-	var expected_delta: int = int(ceilf(base_defence * WretchedConscriptGraft.DEFENCE_BONUS_PER_RARITY[Types.Rarity.Epic]))
-
-	character.ApplyGraft(load(WRETCHED_CONSCRIPT_PATH))
-
-	assert_eq(character.GetTotalAttribute(Types.Attribute.Defence), base_defence + expected_delta)
-	assert_eq(character._attributes[Types.Attribute.Defence], base_defence,
-			"_attributes must stay the pristine ungrafted base")
-
 # --- Spreading Rot ---
-
-func test_spreading_rot_health_bonus_scales_by_rarity() -> void:
-	for rarity: Types.Rarity in SpreadingRotGraft.HEALTH_BONUS_PER_RARITY:
-		var graft: SpreadingRotGraft = _make_spreading_rot(rarity)
-		var expected: int = int(ceilf(100 * SpreadingRotGraft.HEALTH_BONUS_PER_RARITY[rarity]))
-		assert_eq(graft.GetAttributeDelta(Types.Attribute.Health, 100), expected,
-				"Health bonus should scale with rarity %s" % Types.RarityName(rarity))
 
 func test_spreading_rot_onskillcast_applies_blight_to_enemy_not_ally() -> void:
 	var roster: Dictionary = TestFactory.make_full_roster()
@@ -131,12 +83,6 @@ func test_reactive_plating_defence_bonus_applies_outside_of_defending() -> void:
 	assert_eq(character.GetTotalAttribute(Types.Attribute.Defence), base_defence + expected_delta,
 			"The Hardened bonus is an inherent attribute delta, not conditional on being attacked")
 
-func test_reactive_plating_speed_drawback_stays_flat_across_rarities() -> void:
-	var expected: int = -int(ceilf(100 * absf(ReactivePlatingGraft.SPEED_DRAWBACK)))
-	for rarity: Types.Rarity in ReactivePlatingGraft.DEFENCE_BONUS_PER_STACK:
-		var graft: ReactivePlatingGraft = _make_reactive_plating(rarity)
-		assert_eq(graft.GetAttributeDelta(Types.Attribute.Speed, 100), expected)
-
 # --- Strength in Numbers ---
 
 func test_strength_in_numbers_bonus_scales_with_living_ally_count() -> void:
@@ -190,11 +136,6 @@ func test_hollow_hunger_heals_owner_by_lifesteal_fraction_of_damage_dealt() -> v
 	assert_gt(damage_dealt, 0, "The strike should have dealt damage to size the lifesteal")
 	assert_eq(healed, int(round(damage_dealt * HollowHungerGraft.LIFESTEAL_FRACTION_PER_RARITY[Types.Rarity.Uncommon])))
 
-func test_hollow_hunger_health_drawback_stays_flat_across_rarities() -> void:
-	for rarity: Types.Rarity in HollowHungerGraft.LIFESTEAL_FRACTION_PER_RARITY:
-		var graft: HollowHungerGraft = _make_hollow_hunger(rarity)
-		assert_eq(graft.GetAttributeDelta(Types.Attribute.Health, 100), -15)
-
 # --- Carrion Bloom ---
 
 func test_carrion_bloom_start_of_turn_heals_the_lowest_health_living_ally() -> void:
@@ -232,12 +173,6 @@ func test_carrion_bloom_halves_healing_the_owner_receives() -> void:
 	resolver.ResolveTraitHeal([0], 0.0, 10)
 
 	assert_eq(roster[0]._current_health, 1 + 5, "Healing the owner should be halved by the graft's drawback")
-
-func test_carrion_bloom_health_bonus_scales_by_rarity() -> void:
-	for rarity: Types.Rarity in CarrionBloomGraft.HEALTH_BONUS_PER_RARITY:
-		var graft: CarrionBloomGraft = _make_carrion_bloom(rarity)
-		var expected: int = int(ceilf(100 * CarrionBloomGraft.HEALTH_BONUS_PER_RARITY[rarity]))
-		assert_eq(graft.GetAttributeDelta(Types.Attribute.Health, 100), expected)
 
 # --- Overgrowth ---
 

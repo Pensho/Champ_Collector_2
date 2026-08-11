@@ -97,6 +97,18 @@ class FakeDebuffReceivedRecorder extends CharacterTrait:
 		last_debuff = p_debuff
 		call_count += 1
 
+## Records that the applier's Debuff_Applied hook fired (the applier-side counterpart
+## to FakeDebuffReceivedRecorder's target-side dispatch).
+class FakeDebuffAppliedRecorder extends CharacterTrait:
+	var call_count: int = 0
+
+	func _init() -> void:
+		_execution_steps[Types.Combat_Event.Debuff_Applied] = Callable(self, "OnDebuffApplied")
+
+	func OnDebuffApplied(
+			_p_owner_ID: int, _p_target_ID: int, _p_debuff: StatusEffects.Debuff, _p_resolver: BattleResolver) -> void:
+		call_count += 1
+
 ## Headless stand-in for a trait that extends the duration of any debuff landing on its
 ## owner (e.g. Contagion Bond's drawback).
 class FakeDebuffDurationBonusTrait extends CharacterTrait:

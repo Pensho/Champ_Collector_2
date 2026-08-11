@@ -36,19 +36,6 @@ func before_each() -> void:
 func _InitTrait(p_rarity: Types.Rarity) -> void:
 	_trait.Init(p_rarity)
 
-# --- Rarity table ---
-
-func test_heal_fraction_table() -> void:
-	var expected: Dictionary[Types.Rarity, float] = {
-		Types.Rarity.Uncommon: 0.06,
-		Types.Rarity.Rare: 0.07,
-		Types.Rarity.Epic: 0.08,
-		Types.Rarity.Legendary: 0.09,
-	}
-	for rarity: Types.Rarity in expected:
-		assert_eq(OnTheHouseTrait.GetHealFraction(rarity), expected[rarity],
-			"HEAL_FRACTION at %s" % Types.RarityName(rarity))
-
 # --- Gaining a buff heals the whole living team, each off its own max Health ---
 
 func test_gaining_a_buff_heals_owner_and_every_living_ally_by_their_own_max_health() -> void:

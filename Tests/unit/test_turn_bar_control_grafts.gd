@@ -26,18 +26,6 @@ func _bumps(p_batch: Array[CombatResult]) -> Array[CombatResult]:
 
 # --- Caravan Cadence ---
 
-func test_caravan_cadence_knowledge_bonus_scales_by_rarity() -> void:
-	for rarity: Types.Rarity in CaravanCadenceGraft.KNOWLEDGE_BONUS_PER_RARITY:
-		var graft: CaravanCadenceGraft = _make_caravan_cadence(rarity)
-		var expected: int = int(ceilf(100 * CaravanCadenceGraft.KNOWLEDGE_BONUS_PER_RARITY[rarity]))
-		assert_eq(graft.GetAttributeDelta(Types.Attribute.Knowledge, 100), expected,
-				"Knowledge bonus should scale with rarity %s" % Types.RarityName(rarity))
-
-func test_caravan_cadence_has_no_attribute_drawback() -> void:
-	var graft: CaravanCadenceGraft = _make_caravan_cadence(Types.Rarity.Epic)
-	assert_eq(graft.GetAttributeDelta(Types.Attribute.Speed, 100), 0,
-			"The drawback is the forward-block hook, not an attribute delta")
-
 func test_caravan_cadence_blocks_forward_turn_bar_bumps() -> void:
 	var graft: CaravanCadenceGraft = _make_caravan_cadence(Types.Rarity.Uncommon)
 	assert_true(graft.BlocksForwardTurnBarBump(0))
@@ -94,12 +82,6 @@ func test_gravitic_rot_reach_threshold_matches_the_rear_window_across_rarities()
 		assert_eq(GraviticRotGraft.GetReachThreshold(rarity), GraviticRotGraft.REAR_PROXIMITY,
 				"The rear window doesn't scale by rarity, matching Plan/Foresight's flat-window siblings")
 
-func test_gravitic_rot_speed_drawback_stays_flat_across_rarities() -> void:
-	var expected: int = -int(ceilf(100 * 0.10))
-	for rarity: Types.Rarity in GraviticRotGraft.TURN_BAR_DRAIN_PER_RARITY:
-		var graft: GraviticRotGraft = _make_gravitic_rot(rarity)
-		assert_eq(graft.GetAttributeDelta(Types.Attribute.Speed, 100), expected)
-
 func test_gravitic_rot_drains_every_enemy_behind_and_ignores_allies() -> void:
 	var roster: Dictionary = TestFactory.make_full_roster()
 	var positions: TestFactory.FakeTurnPositions = TestFactory.FakeTurnPositions.new()
@@ -134,11 +116,6 @@ func test_contagion_bond_reach_threshold_matches_the_width_table() -> void:
 	for rarity: Types.Rarity in ContagionBondGraft.CONTAGION_WIDTH_PER_RARITY:
 		assert_eq(ContagionBondGraft.GetReachThreshold(rarity), ContagionBondGraft.CONTAGION_WIDTH_PER_RARITY[rarity],
 				"GetReachThreshold should surface the same per-rarity width the turn bar overlay reads")
-
-func test_contagion_bond_debuff_duration_bonus_stays_flat_across_rarities() -> void:
-	for rarity: Types.Rarity in ContagionBondGraft.CONTAGION_WIDTH_PER_RARITY:
-		var graft: ContagionBondGraft = _make_contagion_bond(rarity)
-		assert_eq(graft.GetIncomingDebuffDurationBonus(0), 2)
 
 func test_contagion_bond_copies_a_gained_buff_to_the_first_ally_returned() -> void:
 	var roster: Dictionary = TestFactory.make_full_roster()

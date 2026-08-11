@@ -35,8 +35,3 @@ func test_multiplier_is_unscaled_against_an_ally_owned_zone() -> void:
 	var sides: CombatSides = TestFactory.make_full_sides()
 
 	assert_eq(graft.GetIncomingZoneEffectMultiplier(0, 1, sides), 1.0)
-
-func test_has_no_attribute_bonus_or_drawback() -> void:
-	var graft: RootfeederGraft = _make_rootfeeder(Types.Rarity.Epic)
-	assert_eq(graft.GetAttributeDelta(Types.Attribute.Health, 100), 0)
-	assert_eq(graft.GetAttributeDelta(Types.Attribute.Speed, 100), 0)

@@ -9,11 +9,6 @@ func _make_detritivore(p_rarity: Types.Rarity) -> DetritivoreGraft:
 	graft.Init(p_rarity)
 	return graft
 
-func test_has_no_attribute_bonus() -> void:
-	var graft: DetritivoreGraft = _make_detritivore(Types.Rarity.Epic)
-	assert_eq(graft.GetAttributeDelta(Types.Attribute.Attack, 100), 0)
-	assert_eq(graft.GetAttributeDelta(Types.Attribute.Defence, 100), 0)
-
 func test_starts_at_twenty_percent_resistance_penalty_before_any_scavenge() -> void:
 	for rarity: Types.Rarity in DetritivoreGraft.SCRAP_PER_RARITY:
 		var graft: DetritivoreGraft = _make_detritivore(rarity)

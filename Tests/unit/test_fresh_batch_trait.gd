@@ -15,17 +15,6 @@ func before_each() -> void:
 	_random = RandomNumberGenerator.new()
 	_random.seed = 1
 
-func test_potency_bonus_table() -> void:
-	var expected: Dictionary[Types.Rarity, float] = {
-		Types.Rarity.Uncommon: -0.10,
-		Types.Rarity.Rare: 0.0,
-		Types.Rarity.Epic: 0.10,
-		Types.Rarity.Legendary: 0.20,
-	}
-	for rarity: Types.Rarity in expected:
-		assert_almost_eq(FreshBatchTrait.POTENCY_BONUS.get(rarity, 0.0), expected[rarity], 0.001,
-			"POTENCY_BONUS at %s" % Types.RarityName(rarity))
-
 func test_get_brew_potency_bonus_matches_init_rarity() -> void:
 	_trait.Init(Types.Rarity.Epic)
 	assert_almost_eq(_trait.GetBrewPotencyBonus(), 0.10, 0.001)
@@ -54,18 +43,7 @@ func test_brew_reagent_key_never_returns_an_out_of_pool_key() -> void:
 		var key: String = _trait.BrewReagentKey(_random)
 		assert_true(full_pool.has(key), "Unexpected brew key: %s" % key)
 
-# --- Team-wide channel 2 factor (Plan_Itemization_Channels.md Phase 4) ---
-
-func test_team_damage_bonus_table() -> void:
-	var expected: Dictionary[Types.Rarity, float] = {
-		Types.Rarity.Uncommon: 0.20,
-		Types.Rarity.Rare: 0.23,
-		Types.Rarity.Epic: 0.26,
-		Types.Rarity.Legendary: 0.29,
-	}
-	for rarity: Types.Rarity in expected:
-		assert_almost_eq(FreshBatchTrait.TEAM_DAMAGE_BONUS.get(rarity, 0.0), expected[rarity], 0.001,
-			"TEAM_DAMAGE_BONUS at %s" % Types.RarityName(rarity))
+# --- Team-wide channel 2 factor ---
 
 func _has_buff(p_character: Character, p_type: Types.Buff_Type) -> bool:
 	for buff: StatusEffects.Buff in p_character._active_buffs:

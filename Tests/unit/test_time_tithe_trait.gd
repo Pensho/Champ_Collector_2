@@ -27,19 +27,6 @@ func _push_skill(p_turn_effect: float) -> Skill:
 func _bumps_for(p_results: Array[CombatResult], p_target_ID: int) -> Array[CombatResult]:
 	return p_results.filter(func(r): return r.kind == CombatResult.Kind.Turn_Bar_Bump and r.target_ID == p_target_ID)
 
-# --- Rarity table ---
-
-func test_tithe_fraction_table() -> void:
-	var expected: Dictionary[Types.Rarity, float] = {
-		Types.Rarity.Uncommon: 0.25,
-		Types.Rarity.Rare: 0.35,
-		Types.Rarity.Epic: 0.45,
-		Types.Rarity.Legendary: 0.55,
-	}
-	for rarity: Types.Rarity in expected:
-		assert_eq(ChronophageTrait.TITHE_FRACTION.get(rarity, 0.0), expected[rarity],
-			"TITHE_FRACTION at %s" % Types.RarityName(rarity))
-
 # --- Hook unit test ---
 
 func test_hook_returns_the_rarity_scaled_tithe_fraction() -> void:

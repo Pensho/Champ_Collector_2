@@ -146,6 +146,8 @@ func _ResolveZoneEffect(p_zone: Zone, p_zone_ID: int, p_character_ID: int) -> vo
 			effect.Resolve(context)
 	if(context.status_effect_attempted and not context.status_effect_landed):
 		return
+	if(affected._current_health <= 0):
+		return
 	var reactive: CharacterTrait = Skills.ActiveHook(affected, Types.Combat_Event.Zone_Affected)
 	if(null != reactive):
 		reactive.OnAffectedByZone(p_character_ID, p_zone._owner_ID, _resolver)

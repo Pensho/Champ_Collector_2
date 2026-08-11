@@ -9,19 +9,6 @@ func _make_symbiotic_anchor(p_rarity: Types.Rarity) -> SymbioticAnchorGraft:
 	graft.Init(p_rarity)
 	return graft
 
-func test_resistance_bonus_scales_by_rarity() -> void:
-	var expected: Dictionary[Types.Rarity, float] = SymbioticAnchorGraft.RESISTANCE_BONUS_PER_RARITY
-	for rarity: Types.Rarity in expected:
-		var graft: SymbioticAnchorGraft = _make_symbiotic_anchor(rarity)
-		var expected_delta: int = int(ceilf(100 * expected[rarity]))
-		assert_eq(graft.GetAttributeDelta(Types.Attribute.Resistance, 100), expected_delta,
-				"Resistance bonus should scale with rarity %s" % Types.RarityName(rarity))
-
-func test_drawback_reduces_defence_and_crit_damage_by_30_percent() -> void:
-	var graft: SymbioticAnchorGraft = _make_symbiotic_anchor(Types.Rarity.Uncommon)
-	assert_eq(graft.GetAttributeDelta(Types.Attribute.Defence, 100), -30)
-	assert_eq(graft.GetAttributeDelta(Types.Attribute.CritDamage, 100), -30)
-
 func test_start_of_battle_shares_resistance_and_attack_with_the_only_living_ally() -> void:
 	var roster: Dictionary = TestFactory.make_full_roster()
 	roster[0]._rarity = Types.Rarity.Uncommon

@@ -29,18 +29,6 @@ func _damage_to(p_batch: Array[CombatResult], p_target_ID: int) -> Array[CombatR
 
 # --- Glass Refraction ---
 
-func test_glass_refraction_mysticism_bonus_scales_by_rarity() -> void:
-	for rarity: Types.Rarity in GlassRefractionGraft.MYSTICISM_BONUS_PER_RARITY:
-		var graft: GlassRefractionGraft = _make_glass_refraction(rarity)
-		var expected: int = int(ceilf(100 * GlassRefractionGraft.MYSTICISM_BONUS_PER_RARITY[rarity]))
-		assert_eq(graft.GetAttributeDelta(Types.Attribute.Mysticism, 100), expected)
-
-func test_glass_refraction_resistance_drawback_stays_flat_across_rarities() -> void:
-	var expected: int = -int(ceilf(100 * 0.40))
-	for rarity: Types.Rarity in GlassRefractionGraft.MYSTICISM_BONUS_PER_RARITY:
-		var graft: GlassRefractionGraft = _make_glass_refraction(rarity)
-		assert_eq(graft.GetAttributeDelta(Types.Attribute.Resistance, 100), expected)
-
 func test_glass_refraction_deals_mysticism_scaled_backlash_to_the_attacker() -> void:
 	var roster: Dictionary = TestFactory.make_full_roster()
 	roster[0]._attributes[Types.Attribute.Mysticism] = 100
@@ -72,17 +60,6 @@ func test_glass_refraction_does_not_retaliate_against_self_damage() -> void:
 	assert_true(_damage_to(resolver._batch, 0).is_empty())
 
 # --- Undertow ---
-
-func test_undertow_health_bonus_scales_by_rarity() -> void:
-	for rarity: Types.Rarity in UndertowGraft.HEALTH_BONUS_PER_RARITY:
-		var graft: UndertowGraft = _make_undertow(rarity)
-		var expected: int = int(ceilf(100 * UndertowGraft.HEALTH_BONUS_PER_RARITY[rarity]))
-		assert_eq(graft.GetAttributeDelta(Types.Attribute.Health, 100), expected)
-
-func test_undertow_has_no_attribute_drawback() -> void:
-	var graft: UndertowGraft = _make_undertow(Types.Rarity.Epic)
-	assert_eq(graft.GetAttributeDelta(Types.Attribute.Speed, 100), 0,
-			"The self turn-bar loss is a graft-inherent behavior, not an attribute delta")
 
 func test_undertow_pulls_an_enemy_attacker_and_self_reduces() -> void:
 	var roster: Dictionary = TestFactory.make_full_roster()
@@ -118,17 +95,6 @@ func test_undertow_ignores_self_damage() -> void:
 	assert_true(_bumps(resolver._batch).is_empty())
 
 # --- Glamour ---
-
-func test_glamour_has_no_attribute_bonus_or_drawback() -> void:
-	var graft: GlamourGraft = _make_glamour(Types.Rarity.Legendary)
-	assert_eq(graft.GetAttributeDelta(Types.Attribute.Mysticism, 100), 0)
-	assert_eq(graft.GetAttributeDelta(Types.Attribute.Resistance, 100), 0)
-
-func test_glamour_redirect_chance_scales_by_rarity() -> void:
-	for rarity: Types.Rarity in GlamourGraft.REDIRECT_CHANCE_PER_RARITY:
-		var graft: GlamourGraft = _make_glamour(rarity)
-		assert_almost_eq(graft.GetIncomingSingleTargetRedirectChance(0),
-				GlamourGraft.REDIRECT_CHANCE_PER_RARITY[rarity], 0.0001)
 
 func test_glamour_targeting_priority_multiplier() -> void:
 	var graft: GlamourGraft = _make_glamour(Types.Rarity.Uncommon)

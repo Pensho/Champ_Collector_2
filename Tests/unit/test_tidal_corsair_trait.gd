@@ -8,30 +8,6 @@ func before_each() -> void:
 func _InitTrait(p_rarity: Types.Rarity) -> void:
 	_trait.Init(p_rarity)
 
-# --- Rarity tables ---
-
-func test_damage_per_steel_stack_table() -> void:
-	var expected: Dictionary[Types.Rarity, float] = {
-		Types.Rarity.Uncommon: 0.45,
-		Types.Rarity.Rare: 0.50,
-		Types.Rarity.Epic: 0.55,
-		Types.Rarity.Legendary: 0.60,
-	}
-	for rarity: Types.Rarity in expected:
-		assert_eq(TidalCorsairTrait.DAMAGE_PER_STEEL_STACK.get(rarity, 0.0), expected[rarity],
-			"DAMAGE_PER_STEEL_STACK at %s" % Types.RarityName(rarity))
-
-func test_turn_bar_per_sea_stack_table() -> void:
-	var expected: Dictionary[Types.Rarity, float] = {
-		Types.Rarity.Uncommon: 0.08,
-		Types.Rarity.Rare: 0.10,
-		Types.Rarity.Epic: 0.12,
-		Types.Rarity.Legendary: 0.14,
-	}
-	for rarity: Types.Rarity in expected:
-		assert_eq(TidalCorsairTrait.TURN_BAR_PER_SEA_STACK.get(rarity, 0.0), expected[rarity],
-			"TURN_BAR_PER_SEA_STACK at %s" % Types.RarityName(rarity))
-
 # --- Stack accumulation ---
 
 func test_boarding_strike_grants_steel_stack() -> void:
@@ -74,18 +50,6 @@ func test_reckoning_applies_turn_bar_bump_per_sea_stack_scaled_by_rarity() -> vo
 	var result: TraitSkillResult = _trait.OnSkillCast(0, [], "Corsairs Reckoning", {}, null)
 	assert_almost_eq(result._turn_bar_bump, -0.10, 0.0001,
 		"One Sea stack at Rare should bump turn bar by -10%")
-
-# --- Stack descriptions ---
-
-func test_steel_description_reflects_rarity_scaled_damage() -> void:
-	_InitTrait(Types.Rarity.Legendary)  # 60% per Steel stack
-	assert_eq(_trait._steel_description._body,
-		"Consumed by Corsair's Reckoning for +60% damage.")
-
-func test_sea_description_reflects_rarity_scaled_turn_bar() -> void:
-	_InitTrait(Types.Rarity.Rare)  # 10% per Sea stack
-	assert_eq(_trait._sea_description._body,
-		"Consumed by Corsair's Reckoning for -10% target turn bar.")
 
 func test_reckoning_consumes_all_stacks() -> void:
 	_InitTrait(Types.Rarity.Epic)

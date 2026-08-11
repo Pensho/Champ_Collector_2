@@ -26,6 +26,12 @@ func _buff(p_type: Types.Buff_Type, p_duration: int = 2) -> StatusEffects.Buff:
 	buff.duration = p_duration
 	return buff
 
+func _debuff(p_type: Types.Debuff_Type, p_duration: int = 2) -> StatusEffects.Debuff:
+	var debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
+	debuff.type = p_type
+	debuff.duration = p_duration
+	return debuff
+
 # --- DamageEffect ---
 
 func test_damage_effect_deals_scaled_damage_to_its_targets() -> void:
@@ -120,6 +126,18 @@ func test_damage_effect_trait_condition_reads_the_casters_trait() -> void:
 
 	assert_gt(conditioned_damage, baseline_damage, "An active Trait_Condition should add its bonus fraction")
 
+func test_damage_effect_trait_condition_with_no_trait_attached_deals_only_base_damage() -> void:
+	var skill: Skill = TestFactory.make_strike_skill()
+	var effect: DamageEffect = DamageEffect.new()
+	effect.damage_scaling = {Types.Attribute.Attack: 1.0}
+	effect.bonus_per = {Types.Trait_Count_Source.Trait_Condition: 0.3}
+
+	var health_before: int = _roster[3]._current_health
+	effect.Resolve(TestFactory.make_context(_resolver, 0, [3], skill))
+
+	assert_gt(health_before - _roster[3]._current_health, 0,
+		"A bonus_per source with no matching trait should still deal the effect's base damage")
+
 func test_damage_effect_trait_counter_on_target_reads_the_traits_own_rate() -> void:
 	# The skill authors fraction 1.0; the trait's GetConditionCount already carries the
 	# per-unit rate (Concept 3.1.3: skills state what scales, never their own rate).
@@ -188,6 +206,55 @@ func test_damage_effect_bonus_per_zones_on_turn_bar_scales_with_zone_count() -> 
 	assert_gt(zoned_damage, baseline_damage, "A zone standing on the bar should add its bonus fraction")
 	for zone in _resolver.GetZoneResolver().GetZones().values():
 		zone.free()
+
+func test_damage_effect_bonus_per_target_debuff_count_scales_with_distinct_types_not_stacks() -> void:
+	var skill: Skill = TestFactory.make_strike_skill()
+	var effect: DamageEffect = DamageEffect.new()
+	effect.damage_scaling = {Types.Attribute.Attack: 1.0}
+	effect.bonus_per = {Types.Trait_Count_Source.Target_Debuff_Count: 0.08}
+	var baseline_before: int = _roster[3]._current_health
+	effect.Resolve(TestFactory.make_context(_resolver, 0, [3], skill))
+	var baseline_damage: int = baseline_before - _roster[3]._current_health
+
+	_roster.assign(TestFactory.make_full_roster())
+	_resolver = TestFactory.make_resolver(_roster, TestFactory.make_full_sides())
+	_roster[3]._active_debuffs.append(_debuff(Types.Debuff_Type.Enfeeble, 2))
+	_roster[3]._active_debuffs.append(_debuff(Types.Debuff_Type.Enfeeble, 2))
+	var stacked_before: int = _roster[3]._current_health
+	effect.Resolve(TestFactory.make_context(_resolver, 0, [3], skill))
+	var stacked_damage: int = stacked_before - _roster[3]._current_health
+
+	assert_eq(stacked_damage, baseline_damage,
+		"Two stacks of the same debuff type must count as zero distinct types beyond the first")
+
+	_roster.assign(TestFactory.make_full_roster())
+	_resolver = TestFactory.make_resolver(_roster, TestFactory.make_full_sides())
+	_roster[3]._active_debuffs.append(_debuff(Types.Debuff_Type.Enfeeble, 2))
+	_roster[3]._active_debuffs.append(_debuff(Types.Debuff_Type.Suppress, 2))
+	var distinct_before: int = _roster[3]._current_health
+	effect.Resolve(TestFactory.make_context(_resolver, 0, [3], skill))
+	var distinct_damage: int = distinct_before - _roster[3]._current_health
+
+	assert_gt(distinct_damage, stacked_damage,
+		"A second distinct debuff type on the target should add another bonus fraction")
+
+func test_damage_effect_bonus_per_absence_means_no_bonus_regardless_of_an_active_trait_condition() -> void:
+	var skill: Skill = TestFactory.make_strike_skill()
+	var effect: DamageEffect = DamageEffect.new()
+	effect.damage_scaling = {Types.Attribute.Attack: 1.0}
+	var baseline_before: int = _roster[3]._current_health
+	effect.Resolve(TestFactory.make_context(_resolver, 0, [3], skill))
+	var baseline_damage: int = baseline_before - _roster[3]._current_health
+
+	_roster.assign(TestFactory.make_full_roster())
+	_resolver = TestFactory.make_resolver(_roster, TestFactory.make_full_sides())
+	_roster[0]._trait = TestFactory.FakeConditionCountTrait.new(Types.Trait_Count_Source.Trait_Counter_On_Target, 5.0)
+	var conditioned_before: int = _roster[3]._current_health
+	effect.Resolve(TestFactory.make_context(_resolver, 0, [3], skill))
+	var conditioned_damage: int = conditioned_before - _roster[3]._current_health
+
+	assert_eq(conditioned_damage, baseline_damage,
+		"An empty bonus_per must not gain a bonus, even from an active counting trait")
 
 func test_damage_effect_bonus_per_debuff_on_target_applies_only_when_the_target_carries_it() -> void:
 	var skill: Skill = TestFactory.make_strike_skill()
@@ -401,6 +468,39 @@ func test_alternating_effect_cycles_by_use_count() -> void:
 	effect.Resolve(TestFactory.make_context(_resolver, 0, [0], skill, 1))
 	assert_eq(_roster[0]._active_buffs[0].type, Types.Buff_Type.Fortify)
 
+func test_alternating_effect_use_count_is_independent_per_resolver() -> void:
+	# ResolveSkill's own per-(resolver, skill name) use-count bookkeeping, not
+	# AlternatingEffect's cycling logic, is under test here: a fresh resolver must start
+	# its own alternation from the first use rather than sharing state with another.
+	var even_effect: ApplyBuffEffect = ApplyBuffEffect.new()
+	even_effect.target = Types.Skill_Target.Single_Ally
+	even_effect.buff_type = Types.Buff_Type.Empower
+	even_effect.duration = 2
+	var odd_effect: ApplyBuffEffect = ApplyBuffEffect.new()
+	odd_effect.target = Types.Skill_Target.Single_Ally
+	odd_effect.buff_type = Types.Buff_Type.Fortify
+	odd_effect.duration = 2
+	var alternating: AlternatingEffect = AlternatingEffect.new()
+	alternating.effects = [even_effect, odd_effect]
+	var skill: Skill = TestFactory.make_empty_skill()
+	skill.name = "Alternating Strike"
+	skill.target = Types.Skill_Target.Single_Ally
+	skill.effects = [alternating]
+
+	var other_roster: Dictionary[int, Character] = {}
+	other_roster.assign(TestFactory.make_full_roster())
+	var other_resolver: BattleResolver = TestFactory.make_resolver(other_roster, TestFactory.make_full_sides())
+	other_roster[0]._skills.append(skill)
+	_roster[0]._skills.append(skill)
+
+	_resolver.ResolveSkill(0, [1], 0)
+	other_resolver.ResolveSkill(0, [1], 0)
+
+	var empower_here: Array = _roster[1]._active_buffs.filter(func(b): return b.type == Types.Buff_Type.Empower)
+	var empower_there: Array = other_roster[1]._active_buffs.filter(func(b): return b.type == Types.Buff_Type.Empower)
+	assert_eq(empower_here.size(), 1)
+	assert_eq(empower_there.size(), 1, "A separate resolver should start its own alternation from the first use")
+
 # --- SkillCastContext.TargetsFor ---
 
 func test_targets_for_uses_the_skills_own_targets_by_default() -> void:
@@ -493,6 +593,41 @@ func test_resolve_skill_skips_an_effect_whose_condition_is_not_met() -> void:
 	_resolver.ResolveSkill(0, [0], 0)
 
 	assert_eq(_roster[0]._active_buffs.size(), 0, "No trait means Trait_Condition can never be met")
+
+func test_condition_mutual_exclusion_below_vs_at_least_on_one_threshold_makes_only_one_attempt() -> void:
+	# Two effects authored as a Below/At_Least split on the same threshold must be mutually
+	# exclusive, not two independent attempts — otherwise a single Aegis on the target would
+	# block only one and leave the other free to land.
+	var skill: Skill = TestFactory.make_empty_skill()
+	skill.target = Types.Skill_Target.Single_Enemy
+	var below_effect: ApplyDebuffEffect = ApplyDebuffEffect.new()
+	below_effect.debuff_type = Types.Debuff_Type.Bleed
+	below_effect.duration = 1
+	below_effect.condition = Types.Skill_Condition.Trait_Condition
+	below_effect.condition_test = Types.Condition_Test.Below
+	below_effect.condition_threshold = 5.0
+	var at_least_effect: ApplyDebuffEffect = ApplyDebuffEffect.new()
+	at_least_effect.debuff_type = Types.Debuff_Type.Bleed
+	at_least_effect.duration = 2
+	at_least_effect.condition = Types.Skill_Condition.Trait_Condition
+	at_least_effect.condition_test = Types.Condition_Test.At_Least
+	at_least_effect.condition_threshold = 5.0
+	skill.effects = [below_effect, at_least_effect]
+	_roster[0]._trait = TestFactory.FakeConditionCountTrait.new(Types.Trait_Count_Source.Trait_Condition, 5.0)
+	_roster[0]._attributes[Types.Attribute.Accuracy] = 1000
+	_roster[3]._attributes[Types.Attribute.Resistance] = 0
+	var aegis: StatusEffects.Buff = StatusEffects.Buff.new()
+	aegis.type = Types.Buff_Type.Aegis
+	aegis.duration = 10
+	_roster[3]._active_buffs.append(aegis)
+	_roster[0]._skills.append(skill)
+
+	_resolver.ResolveSkill(0, [3], 0)
+
+	assert_eq(_roster[3]._active_debuffs.size(), 0,
+		"A single Aegis should block the one attempt whose condition is met")
+	assert_eq(_roster[3]._active_buffs.filter(func(b): return b.type == Types.Buff_Type.Aegis).size(), 0,
+		"Aegis should be consumed by blocking the attempt")
 
 func test_resolve_skill_runs_an_effect_whose_condition_is_met() -> void:
 	var skill: Skill = TestFactory.make_empty_skill()

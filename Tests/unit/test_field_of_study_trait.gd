@@ -31,19 +31,6 @@ func _debuff_template(p_type: Types.Debuff_Type, p_duration: int, p_source_ID: i
 	debuff.source_ID = p_source_ID
 	return debuff
 
-# --- Rarity table ---
-
-func test_weakness_reduction_table() -> void:
-	var expected: Dictionary[Types.Rarity, float] = {
-		Types.Rarity.Uncommon: 0.04,
-		Types.Rarity.Rare: 0.06,
-		Types.Rarity.Epic: 0.08,
-		Types.Rarity.Legendary: 0.10,
-	}
-	for rarity: Types.Rarity in expected:
-		assert_eq(FieldOfStudyTrait.GetWeaknessReduction(rarity), expected[rarity],
-			"WEAKNESS_REDUCTION at %s" % Types.RarityName(rarity))
-
 # --- Weakness identification ---
 
 func test_start_of_battle_picks_the_highest_non_health_primary_attribute() -> void:

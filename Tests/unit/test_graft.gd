@@ -9,6 +9,22 @@ func _make_graft_effect(p_rarity: Types.Rarity) -> TestGraftEffect:
 	graft_effect.Init(p_rarity)
 	return graft_effect
 
+## Fixed outgoing-damage bonus for exercising the On_Kill / conditional-damage primitives
+## in isolation from any one graft's own target-Health branching.
+class FakeOutgoingDamageTrait extends CharacterTrait:
+	var bonus: float = 0.0
+	var kill_calls: Array = []
+
+	func _init(p_bonus: float = 0.0) -> void:
+		bonus = p_bonus
+		_execution_steps[Types.Combat_Event.On_Kill] = Callable(self, "OnKill")
+
+	func GetOutgoingDamageBonus(_p_owner_ID: int, _p_target_ID: int, _p_resolver: BattleResolver) -> float:
+		return bonus
+
+	func OnKill(p_owner_ID: int, p_victim_ID: int, _p_resolver: BattleResolver) -> void:
+		kill_calls.append([p_owner_ID, p_victim_ID])
+
 # --- Attribute delta ---
 
 func test_attribute_delta_scales_bonus_by_rarity() -> void:
@@ -95,6 +111,91 @@ func test_apply_graft_makes_trait_dispatch_the_grafts_hook() -> void:
 
 	assert_true((character._trait as TestGraftEffect).start_of_battle_called)
 	assert_eq(character._active_buffs.size(), 1, "The graft's Start_Combat hook should have applied a buff")
+
+# --- On_Kill hook dispatch ---
+
+func test_on_kill_fires_on_a_lethal_attack() -> void:
+	var roster: Dictionary = TestFactory.make_full_roster()
+	roster[0]._skills.append(TestFactory.make_strike_skill())
+	roster[0]._attributes[Types.Attribute.Attack] = 1000
+	roster[3]._current_health = 1
+	roster[3]._attributes[Types.Attribute.Defence] = 0
+	var trait_probe: FakeOutgoingDamageTrait = FakeOutgoingDamageTrait.new()
+	roster[0]._trait = trait_probe
+	var resolver: BattleResolver = TestFactory.make_resolver(roster, TestFactory.make_full_sides())
+
+	resolver.ResolveSkill(0, [3], 0)
+
+	assert_eq(trait_probe.kill_calls, [[0, 3]], "OnKill should fire with (owner, victim) on the killing blow")
+
+func test_on_kill_does_not_fire_on_a_non_lethal_hit() -> void:
+	var roster: Dictionary = TestFactory.make_full_roster()
+	roster[0]._skills.append(TestFactory.make_strike_skill())
+	var trait_probe: FakeOutgoingDamageTrait = FakeOutgoingDamageTrait.new()
+	roster[0]._trait = trait_probe
+	var resolver: BattleResolver = TestFactory.make_resolver(roster, TestFactory.make_full_sides())
+
+	resolver.ResolveSkill(0, [3], 0)
+
+	assert_true(trait_probe.kill_calls.is_empty(), "A non-lethal hit should not fire On_Kill")
+
+func test_on_kill_does_not_fire_when_deathward_rescues_the_target() -> void:
+	var roster: Dictionary = TestFactory.make_full_roster()
+	roster[0]._skills.append(TestFactory.make_strike_skill())
+	roster[0]._attributes[Types.Attribute.Attack] = 1000
+	roster[3]._current_health = 1
+	roster[3]._attributes[Types.Attribute.Defence] = 0
+	var deathward: StatusEffects.Buff = StatusEffects.Buff.new()
+	deathward.type = Types.Buff_Type.Deathward
+	deathward.duration = 2
+	roster[3]._active_buffs.append(deathward)
+	var trait_probe: FakeOutgoingDamageTrait = FakeOutgoingDamageTrait.new()
+	roster[0]._trait = trait_probe
+	var resolver: BattleResolver = TestFactory.make_resolver(roster, TestFactory.make_full_sides())
+
+	resolver.ResolveSkill(0, [3], 0)
+
+	assert_true(trait_probe.kill_calls.is_empty(), "A Deathward rescue to 1 HP is not a kill")
+	assert_eq(roster[3]._current_health, 1)
+
+# --- GetOutgoingDamageBonus dispatch ---
+
+func test_outgoing_damage_bonus_raises_dealt_damage() -> void:
+	var boosted_damage: int = _strike_damage(FakeOutgoingDamageTrait.new(0.5))
+	var baseline_damage: int = _strike_damage(FakeOutgoingDamageTrait.new(0.0))
+
+	assert_gt(boosted_damage, baseline_damage, "+0.5 should raise the primary target's dealt damage")
+
+func test_outgoing_damage_bonus_lowers_dealt_damage() -> void:
+	var reduced_damage: int = _strike_damage(FakeOutgoingDamageTrait.new(-0.25))
+	var baseline_damage: int = _strike_damage(FakeOutgoingDamageTrait.new(0.0))
+
+	assert_lt(reduced_damage, baseline_damage, "-0.25 should lower the primary target's dealt damage")
+
+func test_default_trait_leaves_damage_unchanged() -> void:
+	var roster: Dictionary = TestFactory.make_full_roster()
+	roster[0]._skills.append(TestFactory.make_strike_skill())
+	roster[0]._attributes[Types.Attribute.Attack] = 200
+	var resolver: BattleResolver = TestFactory.make_resolver(roster, TestFactory.make_full_sides())
+	var results: Array[CombatResult] = resolver.ResolveSkill(0, [3], 0)
+
+	var baseline_damage: int = _strike_damage(FakeOutgoingDamageTrait.new(0.0))
+	assert_eq(_damage_amount(results, 3), baseline_damage)
+
+func _strike_damage(p_trait: CharacterTrait) -> int:
+	var roster: Dictionary = TestFactory.make_full_roster()
+	roster[0]._skills.append(TestFactory.make_strike_skill())
+	roster[0]._attributes[Types.Attribute.Attack] = 200
+	roster[0]._trait = p_trait
+	var resolver: BattleResolver = TestFactory.make_resolver(roster, TestFactory.make_full_sides())
+	var results: Array[CombatResult] = resolver.ResolveSkill(0, [3], 0)
+	return _damage_amount(results, 3)
+
+func _damage_amount(p_results: Array[CombatResult], p_target_ID: int) -> int:
+	for result in p_results:
+		if(CombatResult.Kind.Damage == result.kind and p_target_ID == result.target_ID):
+			return result.amount
+	return -1
 
 # --- Placeholder trait (pre-graft passive display) ---
 

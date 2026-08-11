@@ -37,6 +37,8 @@ static func TriggerZoneUsedHook(
 		p_user_ID: int,
 		p_resolver: BattleResolver) -> void:
 	var zone_owner: Character = p_characters.get(p_zone_owner_ID)
+	if(null != zone_owner and zone_owner._current_health <= 0):
+		return
 	var active_trait: CharacterTrait = ActiveHook(zone_owner, Types.Combat_Event.Zone_Used)
 	if(null != active_trait):
 		active_trait.OnZoneUsed(p_zone_owner_ID, p_user_ID, p_resolver)
@@ -265,6 +267,8 @@ static func DispatchDebuffApplied(
 	if(p_debuff.source_ID < 0 or not p_characters.has(p_debuff.source_ID)):
 		return
 	var applier: Character = p_characters[p_debuff.source_ID]
+	if(applier._current_health <= 0):
+		return
 	var active_trait: CharacterTrait = ActiveHook(applier, Types.Combat_Event.Debuff_Applied)
 	if(null != active_trait):
 		active_trait.OnDebuffApplied(p_debuff.source_ID, p_target_ID, p_debuff, p_resolver)

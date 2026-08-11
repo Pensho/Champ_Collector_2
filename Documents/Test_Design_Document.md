@@ -18,19 +18,78 @@ runs a single file.
 
 Unit tests cover **pure logic only** — functions that transform values and return results without depending on the scene tree, the rendering engine, or Godot autoloads beyond `main` (which can be minimally mocked).
 
-| Area | File | What is covered |
+The suite is organized around **what can break**, not around what content exists. Every
+test file belongs to exactly one of three tiers, and the tier decides its shape.
+
+### Tier 1 — Mechanism tests
+
+One file per engine mechanism, parameterized over that mechanism's cases. This is where
+thoroughness belongs: if a rule can be stated about the engine, its cases live here.
+
+Exemplars: `test_skill_effects.gd` (one section per `SkillEffect` subclass),
+`test_status_effect_hooks.gd`, `test_skill_effect_order.gd`, `test_graft.gd`,
+`test_targeting_order.gd`, `test_skills.gd`, the `test_turn_bar_*` family,
+`test_battle_resolver.gd`.
+
+A new mechanism gets a new Tier 1 file. A new *case* of an existing mechanism gets a new
+test inside the existing file.
+
+### Tier 2 — Contract sweeps
+
+One data-driven test that iterates **all** items of a kind and asserts a semantic
+invariant. A sweep covers content that does not exist yet, which is what makes the
+per-item test file unnecessary.
+
+| Sweep | Iterates | Invariant |
 |---|---|---|
-| Adventure state | `test_adventure_state.gd` | Supply cost tiers, daily reset, serialization roundtrip (via real Serialize/Deserialize), node completion, scaled difficulty |
-| Adventure generation | `test_adventure_generator.gd` | Node count, uniqueness, boss node, biome context |
-| Android export safety | `test_android_export_safety.gd` | No DirAccess or `get_window().size` usage in scripts (packed-export guards) |
-| Loot manager | `test_loot_manager.gd` | Fortunes Favor primary/secondary distribution by difficulty and budget |
-| Level system | `test_level_system.gd` | XP formula monotonicity, level-up threshold, XP consumption, `SetOpponentLevel` guards and attribute scaling |
-| Skills (targeting) | `test_skills.gd` | `FindSkillTargets` for all target types; `CorrectZoneTarget` truth table |
-| Battle resolver | `test_battle_resolver.gd` | Full seeded 3-versus-3 battle to a winner, same-seed reproducibility, per-resolver (non-static) Heap-On state |
-| Resource handler | `test_resource_handler.gd` | `SpendSupplies` success, failure, exact, zero, empty-state paths |
-| Character | `test_character.gd` | Equipment bonus baseline, `GetBattleAttribute` with and without gear, `EquipItem`/`UnequipItem` slot management |
-| Collection serialization | `test_collection_serialization.gd` | `ItemCollection` and `CharacterCollection` Serialize↔Deserialize roundtrips through real methods |
-| Battle over screen | `test_battle_over.gd` | UI focus, Init loss/victory, scene-change calls |
+| `test_trait_contract.gd` | every script in `character_traits/CharacterSpecificTraits/` and `Grafts/`, at every rarity | every `CharacterTrait` hook is callable, returns in range, returns the neutral value for a dead owner; rarity tables are no worse at Legendary than at Uncommon |
+| `test_skill_content_sweep.gd` | every `.tres` in `Data/Character_Skill_Variants/` | every authored enum resolves — buff/debuff types registered in `StatusEffectRegistry`, condition/condition_test/target in range |
+| `test_skill_resources.gd` | the same skill resources | each loads and carries at least one effect |
+| `test_character_preset_skill_invariant.gd` | every `CharacterPreset` resource | slot-0 skill has no cooldown (the enemy-turn fallback depends on it) |
+| `test_android_export_safety.gd` | every script under `Scripts/` | no `DirAccess` or `get_window().size` usage (packed-export guards) |
+
+Two rules govern sweeps:
+
+- **Assert semantics, never cosmetics.** A sweep may assert that an authored enum resolves,
+  that a referenced resource loads, that a hook is neutral for a dead owner. It must not
+  assert description wording, icon not-null, non-empty strings, or expected row counts.
+- **Never pass vacuously.** A directory scan that silently finds nothing looks green and
+  proves nothing, so each sweep's first assert is a non-zero item count. If content moves
+  folder, the sweep must fail loudly rather than skip.
+
+### Tier 3 — Novel behavior
+
+A bespoke file survives only for behavior **no other content has**: `test_shield_wall_trait.gd`'s
+damage-redirect split, `test_standing_record_trait.gd`'s counter source,
+`test_detritivore_graft.gd`'s uncapped scrap stacks. Anything a trait, graft, or skill
+*shares* with its peers — rarity scaling, "the hook fires", "does nothing when the owner is
+dead" — belongs in Tier 1 or Tier 2 instead, and a test restating a data table
+(copying `MOMENTUM_PER_STACK` and asserting it equals itself) detects nothing and does not
+belong anywhere.
+
+### Regression tests outrank the tiers
+
+A test written for a bug that actually shipped is kept verbatim, in whatever file it lives
+in, even where it looks redundant — its value is that the bug happened. Files carrying such
+tests mark them with an explanatory comment (`test_character_skill_isolation.gd`,
+`test_health_result_ordering.gd`, `test_turn_bar_speed.gd`, `test_dead_owner_hook_gating.gd`
+and others). If a regression test moves file, its comment moves with it.
+
+## When adding content, do not add a test file
+
+New traits, grafts, skills, and presets are covered **by construction** — the Tier 2 sweeps
+pick them up from the directory scan the moment the file exists. Adding a champion does not
+imply adding a test.
+
+Write a new test file only when one of these is true:
+
+1. The content introduces a **mechanism no existing content has** (Tier 3), or a mechanism
+   general enough to deserve its own Tier 1 file.
+2. It fixes a **bug that shipped**, and the test locks the fix in.
+
+Otherwise: run the suite, confirm the sweeps pass with the new content in place, and stop.
+If the sweeps would not have caught a plausible authoring mistake in the new content,
+strengthen the sweep — do not write a file about the one item.
 
 ## What we deliberately do NOT unit-test
 

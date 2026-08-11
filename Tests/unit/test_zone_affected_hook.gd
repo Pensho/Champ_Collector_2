@@ -120,6 +120,22 @@ func test_spore_zone_does_not_dispatch_when_the_status_application_is_blocked() 
 	assert_eq(recorder.call_count, 0,
 			"A Regeneration blocked by the status cap should not count as 'affected by the zone'")
 
+func test_does_not_dispatch_when_a_lethal_on_trigger_effect_kills_the_target_first() -> void:
+	var recorder: FakeZoneAffectedRecorder = FakeZoneAffectedRecorder.new()
+	_roster[1]._trait = recorder
+	_roster[1]._current_health = 1
+	_roster[0]._attributes[Types.Attribute.Knowledge] = 0
+	var lethal: DamageEffect = DamageEffect.new()
+	lethal.damage_scaling = {Types.Attribute.Attack: 1.0}
+	_roster[0]._attributes[Types.Attribute.Attack] = 9999
+	var zone_effect: ZoneEffect = TestFactory.make_zone_effect(5, [lethal])
+	TestFactory.place_zone(_resolver, 0, 0, zone_effect, Types.Skill_Target.ZoneAll)
+
+	_resolver.GetZoneResolver().TriggerZones(0)
+
+	assert_eq(_roster[1]._current_health, 0, "The on_trigger effect must actually be lethal for this test to be meaningful")
+	assert_eq(recorder.call_count, 0, "A target killed by the zone's own on_trigger effect must not receive Zone_Affected")
+
 # --- GetIncomingZoneEffectMultiplier ---
 
 func test_multiplier_scales_a_flicker_bump() -> void:

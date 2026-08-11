@@ -17,19 +17,6 @@ func _InitTrait(p_rarity: Types.Rarity) -> void:
 	_owner._rarity = p_rarity
 	_trait.Init(p_rarity)
 
-# --- Rarity table ---
-
-func test_cracked_facet_duration_table() -> void:
-	var expected: Dictionary[Types.Rarity, int] = {
-		Types.Rarity.Uncommon: 1,
-		Types.Rarity.Rare: 1,
-		Types.Rarity.Epic: 2,
-		Types.Rarity.Legendary: 2,
-	}
-	for rarity: Types.Rarity in expected:
-		assert_eq(StrikeTheFlawTrait.GetCrackedFacetDuration(rarity), expected[rarity],
-			"CRACKED_FACET_DURATION at %s" % Types.RarityName(rarity))
-
 # --- Direct hook behavior ---
 
 func test_on_critical_hit_applies_cracked_facet_with_low_rarity_duration() -> void:

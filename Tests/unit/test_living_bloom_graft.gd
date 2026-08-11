@@ -9,17 +9,6 @@ func _make_living_bloom(p_rarity: Types.Rarity) -> LivingBloomGraft:
 	graft.Init(p_rarity)
 	return graft
 
-func test_knowledge_bonus_scales_by_rarity() -> void:
-	for rarity: Types.Rarity in LivingBloomGraft.KNOWLEDGE_BONUS_PER_RARITY:
-		var graft: LivingBloomGraft = _make_living_bloom(rarity)
-		var expected: int = int(ceilf(100 * LivingBloomGraft.KNOWLEDGE_BONUS_PER_RARITY[rarity]))
-		assert_eq(graft.GetAttributeDelta(Types.Attribute.Knowledge, 100), expected,
-				"Knowledge bonus should scale with rarity %s" % Types.RarityName(rarity))
-
-func test_has_no_attribute_drawback() -> void:
-	var graft: LivingBloomGraft = _make_living_bloom(Types.Rarity.Epic)
-	assert_eq(graft.GetAttributeDelta(Types.Attribute.Speed, 100), 0)
-
 func test_start_of_battle_seeds_a_max_charge_spore_zone_in_a_free_slot() -> void:
 	var roster: Dictionary = TestFactory.make_full_roster()
 	roster[0].ApplyGraft(load(LIVING_BLOOM_PATH))

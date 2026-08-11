@@ -29,19 +29,6 @@ func after_each() -> void:
 	_repr.free()
 	_visual_effects.free()
 
-# --- AVOIDANCE_INCREMENT table ---
-
-func test_avoidance_increment_table() -> void:
-	var expected: Dictionary[Types.Rarity, float] = {
-		Types.Rarity.Uncommon: 0.03,
-		Types.Rarity.Rare: 0.04,
-		Types.Rarity.Epic: 0.05,
-		Types.Rarity.Legendary: 0.06,
-	}
-	for rarity: Types.Rarity in expected:
-		assert_eq(DoubleTheFunTrait.AVOIDANCE_INCREMENT.get(rarity, 0.0), expected[rarity],
-			"AVOIDANCE_INCREMENT at %s" % Types.RarityName(rarity))
-
 # --- Chance computation boundaries ---
 
 func test_base_chance_at_zero_stacks() -> void:

@@ -16,19 +16,6 @@ func before_each() -> void:
 func _InitTrait(p_rarity: Types.Rarity) -> void:
 	_trait.Init(p_rarity)
 
-# --- Rarity table ---
-
-func test_redirect_fraction_table() -> void:
-	var expected: Dictionary[Types.Rarity, float] = {
-		Types.Rarity.Uncommon: 0.15,
-		Types.Rarity.Rare: 0.20,
-		Types.Rarity.Epic: 0.25,
-		Types.Rarity.Legendary: 0.30,
-	}
-	for rarity: Types.Rarity in expected:
-		assert_eq(ShieldWallTrait.GetRedirectFraction(rarity), expected[rarity],
-			"REDIRECT_FRACTION at %s" % Types.RarityName(rarity))
-
 # --- Direct hook behavior ---
 
 func test_on_ally_damage_taken_returns_fraction_when_ally_within_proximity() -> void:

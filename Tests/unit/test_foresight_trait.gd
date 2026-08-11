@@ -23,19 +23,6 @@ func _InitTrait(p_rarity: Types.Rarity) -> void:
 	_owner._rarity = p_rarity
 	_trait.Init(p_rarity)
 
-# --- Rarity tables ---
-
-func test_percent_behind_threshold_table() -> void:
-	var expected: Dictionary[Types.Rarity, float] = {
-		Types.Rarity.Uncommon: 0.10,
-		Types.Rarity.Rare: 0.15,
-		Types.Rarity.Epic: 0.20,
-		Types.Rarity.Legendary: 0.25,
-	}
-	for rarity: Types.Rarity in expected:
-		assert_eq(ForesightTrait.PERCENT_BEHIND_THRESHOLD.get(rarity, 0.0), expected[rarity],
-			"PERCENT_BEHIND_THRESHOLD at %s" % Types.RarityName(rarity))
-
 # --- Enemies within threshold are debuffed at every rarity ---
 
 func test_enemy_within_threshold_is_enfeebled_at_low_rarity() -> void:

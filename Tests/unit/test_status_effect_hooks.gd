@@ -65,6 +65,40 @@ func test_debuff_received_does_not_fire_on_the_applier() -> void:
 
 	assert_eq(recorder.call_count, 0)
 
+# --- Hooks must not fire on an already-dead owner ---
+
+func test_buff_applied_hook_does_not_fire_on_a_dead_target() -> void:
+	var recorder: TestFactory.FakeBuffGainedRecorder = TestFactory.FakeBuffGainedRecorder.new()
+	_roster[0]._trait = recorder
+	_roster[0]._current_health = 0
+	_resolver = TestFactory.make_resolver(_roster, TestFactory.make_full_sides())
+
+	_resolver.GetStatusResolver().ApplyBuff(0, _buff(Types.Buff_Type.Empower))
+
+	assert_eq(recorder.call_count, 0, "A dead target must not receive Buff_Applied")
+
+func test_debuff_received_hook_does_not_fire_on_a_dead_target() -> void:
+	var recorder: TestFactory.FakeDebuffReceivedRecorder = TestFactory.FakeDebuffReceivedRecorder.new()
+	_roster[0]._trait = recorder
+	_roster[0]._current_health = 0
+	_resolver = TestFactory.make_resolver(_roster, TestFactory.make_full_sides())
+
+	_resolver.GetStatusResolver().ApplyDebuff(0, _debuff(Types.Debuff_Type.Enfeeble))
+
+	assert_eq(recorder.call_count, 0, "A dead target must not receive Debuff_Received")
+
+func test_debuff_applied_hook_does_not_fire_on_a_dead_applier() -> void:
+	var recorder: TestFactory.FakeDebuffAppliedRecorder = TestFactory.FakeDebuffAppliedRecorder.new()
+	_roster[3]._trait = recorder
+	_roster[3]._current_health = 0
+	_resolver = TestFactory.make_resolver(_roster, TestFactory.make_full_sides())
+	var debuff: StatusEffects.Debuff = _debuff(Types.Debuff_Type.Enfeeble)
+	debuff.source_ID = 3
+
+	_resolver.GetStatusResolver().ApplyDebuff(0, debuff)
+
+	assert_eq(recorder.call_count, 0, "A dead applier must not receive Debuff_Applied")
+
 # --- CastDebuff (the resist-rolled "attempt"; ApplyDebuff always lands unconditionally) ---
 
 func test_cast_debuff_lands_when_accuracy_dominates_resistance() -> void:

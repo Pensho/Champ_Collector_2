@@ -18,28 +18,6 @@ func _InitTrait(p_rarity: Types.Rarity) -> void:
 	_character._rarity = p_rarity
 	_trait.Init(p_rarity)
 
-# --- Rarity tables ---
-
-func test_momentum_per_stack_table() -> void:
-	var expected: Dictionary[Types.Rarity, float] = {
-		Types.Rarity.Uncommon: 0.04,
-		Types.Rarity.Rare: 0.06,
-		Types.Rarity.Epic: 0.08,
-		Types.Rarity.Legendary: 0.10,
-	}
-	for rarity: Types.Rarity in expected:
-		assert_eq(LancerTrait.MOMENTUM_PER_STACK.get(rarity, 0.0), expected[rarity],
-			"MOMENTUM_PER_STACK at %s" % Types.RarityName(rarity))
-
-func test_phalanx_guard_defense_table() -> void:
-	var expected: Dictionary[Types.Rarity, float] = {
-		Types.Rarity.Uncommon: 0.04,
-		Types.Rarity.Legendary: 0.10,
-	}
-	for rarity: Types.Rarity in expected:
-		assert_eq(LancerTrait.PHALANX_GUARD_DEFENSE.get(rarity, 0.0), expected[rarity],
-			"PHALANX_GUARD_DEFENSE at %s" % Types.RarityName(rarity))
-
 # --- Momentum stack accumulation ---
 
 func test_offensive_skill_increments_momentum() -> void:
