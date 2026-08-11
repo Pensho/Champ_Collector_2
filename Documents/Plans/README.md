@@ -33,7 +33,15 @@ Suggested order (dependencies noted inside each plan):
    (the living channel and synergy ledger) and `Concept_Document.md` 3.2.4.2. Unblocks
    `Plan_Encounter_Blowout_Retrofit.md`, which was paused pending kit rework.
 
-2. `Plan_Story_Mode_Systems.md` — the systems that deliver story mode (story
+2. `Plan_Test_Suite_Consolidation.md` — reorganizes the GUT suite around what can break
+   rather than what content exists: three tiers (mechanism tests, data-driven contract
+   sweeps, novel-behavior tests), replacing the near-1:1 test-file-per-trait/graft/kit
+   pattern. Also rewrites `Test_Design_Document.md` (whose coverage table lists 11 of 134
+   files) and the `new-champion` skill, which prescribes the per-trait file. Independent,
+   but best landed **before** `Plan_Role_Kit_Rework.md`, whose 20-kit rework would
+   otherwise spawn a wave of per-kit test files under the old conventions.
+
+3. `Plan_Story_Mode_Systems.md` — the systems that deliver story mode (story
    state handler, dialogue overlay, flag-driven hub variants, act gating,
    scripted battle openings, guest champions). The state handler and dialogue
    overlay are independent and can start any time; scripted openings apply
