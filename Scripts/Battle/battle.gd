@@ -277,6 +277,11 @@ func StartTurn() -> void:
 		if(Types.Role.Symbiote == _characters[_turn_character_ID]._role and
 				null == _characters[_turn_character_ID]._graft):
 			_battle_ui._graft_button.show()
+		if(Types.Role.Herald_Of_The_Loom == _characters[_turn_character_ID]._role):
+			var herald_trait: WeftAndWarpTrait = _characters[_turn_character_ID]._trait as WeftAndWarpTrait
+			if(null != herald_trait):
+				_battle_ui._thread_switch_button.RefreshVisual(herald_trait.GetCurrentThread())
+				_battle_ui._thread_switch_button.show()
 		_state = BattleState.Awaiting_Player_Input
 	elif(_sides.enemy.Has(_turn_character_ID)):
 		_state = BattleState.Enemy_Acting
@@ -333,6 +338,7 @@ func ResolveTurn(p_target_IDs: Array[int]) -> void:
 	_battle_ui.HideSkillUI()
 	_battle_ui.HideReagentUI()
 	_battle_ui.HideGraftUI()
+	_battle_ui.HideThreadSwitchUI()
 	_resolver.ResolveSkill(_turn_character_ID, p_target_IDs, _selected_skill_ID)
 	_presentation_deadline = PRESENTATION_DEADLINE
 
@@ -684,6 +690,15 @@ func _on_battle_ui_battle_graft_selected() -> void:
 
 func _on_battle_ui_graft_confirmed(p_target_ID: int) -> void:
 	_ResolveGraft(_turn_character_ID, p_target_ID)
+
+func _on_battle_ui_thread_switch_selected() -> void:
+	if(BattleState.Awaiting_Player_Input != _state):
+		return
+	var herald_trait: WeftAndWarpTrait = _characters[_turn_character_ID]._trait as WeftAndWarpTrait
+	if(null == herald_trait):
+		return
+	herald_trait.AdvanceThread()
+	_battle_ui._thread_switch_button.RefreshVisual(herald_trait.GetCurrentThread())
 
 func _ResolveGraft(p_symbiote_ID: int, p_target_enemy_ID: int) -> void:
 	var symbiote: Character = _characters[p_symbiote_ID]

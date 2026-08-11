@@ -210,8 +210,12 @@ func CastDebuff(
 
 	var value: float = (p_debuff_template.value if 0.0 != p_debuff_template.value
 			else _SnapshotStatusValue(data, p_caster_ID, p_target_ID))
+	var caster: Character = _resolver._characters.get(p_caster_ID)
+	var duration: int = p_debuff_template.duration
+	if(duration > 0 and null != caster and null != caster._trait):
+		duration += caster._trait.GetOutgoingDebuffDurationBonus(p_caster_ID)
 	var created: StatusEffects.Effect = _InsertOrRefresh(p_target_ID, false, p_debuff_template.type, data, value,
-			p_debuff_template.duration, p_caster_ID, p_repeats_per_distinct_debuff, p_always_refresh_duration,
+			duration, p_caster_ID, p_repeats_per_distinct_debuff, p_always_refresh_duration,
 			Types.Debuff_Type.keys()[p_debuff_template.type])
 	if(p_trigger_mirror_coat and null != created):
 		var event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Status_Landed)
@@ -227,6 +231,9 @@ func _RollsResistDebuff(
 		p_attacker_ID: int,
 		p_attacker_accuracy: int) -> bool:
 	if(_resolver._HasDebuff(p_defender_ID, Types.Debuff_Type.Signed_Writ)):
+		return false
+	var attacker: Character = _resolver._characters.get(p_attacker_ID)
+	if(null != attacker and null != attacker._trait and attacker._trait.DebuffsCannotBeResisted(p_attacker_ID)):
 		return false
 	var random_value: float = _resolver._RollFavoring(p_attacker_ID, 0.95, 1.0, true)
 	var random_value_2: float = _resolver._RollFavoring(p_defender_ID, 0.95, 1.0, true)

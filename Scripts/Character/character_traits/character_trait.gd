@@ -46,6 +46,16 @@ func BlocksForwardTurnBarBump(_p_owner_ID: int) -> bool:
 func GetIncomingDebuffDurationBonus(_p_owner_ID: int) -> int:
 	return 0
 
+## Extra turns this owner's own applied debuffs last (e.g. the Herald of the Loom's
+## Silver Thread), added alongside GetIncomingDebuffDurationBonus rather than in place
+## of it.
+func GetOutgoingDebuffDurationBonus(_p_owner_ID: int) -> int:
+	return 0
+
+## Whether this owner's own applied debuffs bypass the target's resist roll entirely.
+func DebuffsCannotBeResisted(_p_owner_ID: int) -> bool:
+	return false
+
 ## Returns the multiplier applied to incoming damage (1.0 = unchanged, 0.0 = avoided).
 func OnDamageTaken(_p_owner_ID: int, _p_attacker_ID: int, _p_resolver: BattleResolver) -> float:
 	print("character_trait base class DamageTaken() called!")
@@ -130,6 +140,14 @@ func OnEnemyTurnBarReduced(
 
 func OnZoneUsed(_p_owner_ID: int, _p_user_ID: int, _p_resolver: BattleResolver) -> void:
 	print("character_trait base class OnZoneUsed() called!")
+
+## Fires once per real cascade instance (one loop iteration of a matched
+## CascadeResolver listener), for every living character, regardless of whose
+## mechanic actually produced it — lets a passive react to instance count itself
+## (e.g. the Herald of the Loom's Golden Thread).
+func OnCascadeInstanceResolved(
+		_p_owner_ID: int, _p_event: CascadeEvent, _p_resolver: BattleResolver) -> void:
+	pass
 
 func OnZoneConstructed(_p_owner_ID: int, _p_zone_ID: int, _p_resolver: BattleResolver) -> void:
 	print("character_trait base class OnZoneConstructed() called!")

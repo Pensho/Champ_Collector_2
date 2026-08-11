@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="Skill" format=3 uid="uid://dywv5lb2gc3u7"]
+
+[ext_resource type="Script" uid="uid://bmqtglyyora7q" path="res://Scripts/Battle/Skill_Effects/skill_effect.gd" id="1_seff"]
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Script" uid="uid://bn0n72opjy7sb" path="res://Scripts/Battle/Skill_Effects/damage_effect.gd" id="2_dmg"]
+
+[sub_resource type="Resource" id="Resource_dmg"]
+script = ExtResource("2_dmg")
+damage_scaling = Dictionary[int, float]({
+6: 0.9
+})
+
+[resource]
+script = ExtResource("1_skill")
+name = "Cut the Cloth"
+description = "Deals damage to a single enemy, scaled by Mysticism at 90% strength, resolved once per Tension held (minimum once), then consumes all Tension."
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Cut_the_Cloth/Cut_the_Cloth.png"
+cooldown = 4
+effects = Array[ExtResource("1_seff")]([SubResource("Resource_dmg")])
+metadata/_custom_type_script = "uid://glh06y3wvchj"

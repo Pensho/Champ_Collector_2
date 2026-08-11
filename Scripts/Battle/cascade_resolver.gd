@@ -28,6 +28,10 @@ class Listener:
 
 var _resolver: BattleResolver
 var _listeners: Dictionary[Types.Cascade_Trigger, Array] = {}
+# (CascadeEvent) -> int: extra instances to add to whichever listener just matched,
+# summed before the per-instance loop's bound is computed (e.g. the Herald of the
+# Loom's Black Thread). Modifiers amplify an existing match; they never create one.
+var _instance_modifiers: Array[Callable] = []
 var _pending: Array[CascadeEvent] = []
 # Keyed "mechanic_key:subject_ID" — a trigger source fires at most once per
 # originating action (Concept_Document.md 1.1.4), cleared at the action's end.
@@ -55,6 +59,14 @@ func Subscribe(
 	if(not _listeners.has(p_trigger)):
 		_listeners[p_trigger] = []
 	_listeners[p_trigger].append(Listener.new(p_mechanic_key, p_matches, p_callback))
+
+
+## Registers p_callback to amplify a listener's instance count once it has already
+## matched an event (e.g. the Herald of the Loom's Black Thread granting one extra
+## instance to a cascade instance caused by its own action). p_callback receives the
+## CascadeEvent and returns the extra instance count to add (0 for no effect).
+func SubscribeInstanceModifier(p_callback: Callable) -> void:
+	_instance_modifiers.append(p_callback)
 
 
 ## Enqueues p_event for the next Drain. Depth is stamped here, one level deeper than
@@ -88,7 +100,11 @@ func _ResolveEvent(p_event: CascadeEvent) -> void:
 		if(_fired_this_action.get(key, false)):
 			continue
 		_fired_this_action[key] = true
-		var allowed: int = maxi(mini(p_event.instance_count, MAX_CASCADE_INSTANCES_PER_ACTION - _instances_this_action), 0)
+		var extra_instances: int = 0
+		for modifier: Callable in _instance_modifiers:
+			extra_instances += int(modifier.call(p_event))
+		var allowed: int = maxi(mini(p_event.instance_count + extra_instances,
+				MAX_CASCADE_INSTANCES_PER_ACTION - _instances_this_action), 0)
 		for i in allowed:
 			_instances_this_action += 1
 			var saved_depth: int = _active_depth
@@ -96,8 +112,23 @@ func _ResolveEvent(p_event: CascadeEvent) -> void:
 			_resolver._current_cascade_depth = p_event.depth
 			_EmitCascadeTriggered(listener.mechanic_key, p_event)
 			listener.callback.call(p_event)
+			_NotifyCascadeInstanceResolved(p_event)
 			_resolver._current_cascade_depth = 0
 			_active_depth = saved_depth
+
+
+## Notifies every living character's trait that a real cascade instance (one loop
+## iteration of a matched listener, not merely a posted event) resolved, so a passive
+## can react to instance count itself (e.g. the Herald of the Loom's Golden Thread).
+func _NotifyCascadeInstanceResolved(p_event: CascadeEvent) -> void:
+	for character_ID: int in _resolver.GetCharacters().keys():
+		var character: Character = _resolver.GetCharacters()[character_ID]
+		if(character._current_health <= 0):
+			continue
+		var active_trait: CharacterTrait = Skills.ActiveHook(
+				character, Types.Combat_Event.Cascade_Instance_Resolved)
+		if(null != active_trait):
+			active_trait.OnCascadeInstanceResolved(character_ID, p_event, _resolver)
 
 
 func _EmitCascadeTriggered(p_mechanic_key: StringName, p_event: CascadeEvent) -> void:

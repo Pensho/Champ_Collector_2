@@ -184,9 +184,9 @@ const SKILL_ICON_TABLE: Array = [
 	# Herald of the Loom
 	{ "folder": "Abilities/Role_Active_Skills/Thread_Snap", "base_name": "Thread_Snap", "size": 64,
 			"color": Color(0.20, 0.55, 0.60, 1.0) },
-	{ "folder": "Abilities/Role_Active_Skills/Thread_Lash", "base_name": "Thread_Lash", "size": 64,
+	{ "folder": "Abilities/Role_Active_Skills/Pull_the_Thread", "base_name": "Pull_the_Thread", "size": 64,
 			"color": Color(0.15, 0.45, 0.55, 1.0) },
-	{ "folder": "Abilities/Role_Active_Skills/Woven_Blessing", "base_name": "Woven_Blessing", "size": 64,
+	{ "folder": "Abilities/Role_Active_Skills/Cut_the_Cloth", "base_name": "Cut_the_Cloth", "size": 64,
 			"color": Color(0.30, 0.65, 0.60, 1.0) },
 	# Thief
 	{ "folder": "Abilities/Role_Active_Skills/Weigh_the_Mark", "base_name": "Weigh_the_Mark", "size": 64,

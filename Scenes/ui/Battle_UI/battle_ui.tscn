@@ -8,6 +8,7 @@
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="10_rvbdk"]
 [ext_resource type="PackedScene" uid="uid://c6r15fjhq4x2p" path="res://Scenes/ui/Battle_UI/Reagent_Button.tscn" id="11_reagent"]
 [ext_resource type="PackedScene" uid="uid://cvxjm8b0qg1tk" path="res://Scenes/ui/Battle_UI/Graft_Button.tscn" id="12_graft"]
+[ext_resource type="PackedScene" uid="uid://dth3adswb1oom" path="res://Scenes/ui/Battle_UI/Thread_Switch_Button.tscn" id="13_thread_switch"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4blpl"]
 bg_color = Color(0.635797, 0.5513, 0.269355, 0.482353)
@@ -34,7 +35,7 @@ fill = 1
 fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(0.7, 0)
 
-[node name="Battle UI" type="Control" unique_id=2001000775 node_paths=PackedStringArray("_skill_buttons", "_reagent_buttons", "_graft_button", "_battle_duration_label")]
+[node name="Battle UI" type="Control" unique_id=2001000775 node_paths=PackedStringArray("_skill_buttons", "_reagent_buttons", "_graft_button", "_thread_switch_button", "_battle_duration_label")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -45,6 +46,7 @@ script = ExtResource("1_gfldn")
 _skill_buttons = [NodePath("Skill_1"), NodePath("Skill_2"), NodePath("Skill_3")]
 _reagent_buttons = [NodePath("Reagent_1"), NodePath("Reagent_2"), NodePath("Reagent_3"), NodePath("Reagent_4")]
 _graft_button = NodePath("Graft_Button")
+_thread_switch_button = NodePath("Thread_Switch_Button")
 _battle_duration_label = NodePath("Label_Battle_Duration")
 
 [node name="PlayerInfoBox" type="Panel" parent="." unique_id=1195450184 node_paths=PackedStringArray("_character_turn_markers")]
@@ -180,6 +182,14 @@ offset_left = 750.0
 offset_top = 25.0
 offset_right = 825.0
 
+[node name="Thread_Switch_Button" parent="." unique_id=832825450 instance=ExtResource("13_thread_switch")]
+visible = false
+layout_mode = 0
+offset_left = 725.0
+offset_top = 25.0
+offset_right = 845.0
+offset_bottom = 125.0
+
 [node name="Reagent_1" parent="." unique_id=347484170 instance=ExtResource("11_reagent")]
 visible = false
 layout_mode = 0
@@ -212,6 +222,7 @@ offset_right = 1245.0
 [connection signal="button_up" from="Skill_2" to="." method="_on_skill_2_button_up"]
 [connection signal="button_up" from="Skill_3" to="." method="_on_skill_3_button_up"]
 [connection signal="button_up" from="Graft_Button" to="." method="_on_graft_button_button_up"]
+[connection signal="button_up" from="Thread_Switch_Button" to="." method="_on_thread_switch_button_button_up"]
 [connection signal="button_up" from="Reagent_1" to="." method="_on_reagent_1_button_up"]
 [connection signal="button_up" from="Reagent_2" to="." method="_on_reagent_2_button_up"]
 [connection signal="button_up" from="Reagent_3" to="." method="_on_reagent_3_button_up"]

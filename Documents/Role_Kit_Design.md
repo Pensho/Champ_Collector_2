@@ -205,6 +205,14 @@ collapse-test payload without inventing new gating mechanics.
   lands — not resolved here to avoid scope creep into code before sign-off.
 * The contrast baseline (bursting champion's own basic vs. team's average per-action output)
   remains open per the plan; not touched by this document.
+* **Whether Enabler may be a Role-level identity.** Section 1 forbids it and section 5 assigns
+  Appraiser Channel 2, but Appraiser's settled kit (section 9.5) runs entirely through the crit
+  path, which `Concept_Document.md` 1.1.4 places outside the `CombinedDamageModifier` — so it
+  claims no bucket key and cannot meet section 1's contract as written. Either section 1 admits a
+  crit-path contribution as satisfying the contract alongside a bucket key, or Enabler becomes a
+  legitimate Role identity for Roles whose whole output lands on someone else. This governs all 20
+  Roles, so it is not amended here on one kit's account; settle it before Batch 2's kits are
+  designed against the same contract.
 
 ## 9. Settled kit designs
 
@@ -244,16 +252,20 @@ resolver-tested in play, layered on top of whatever Comorbidity already scores.
 
 ### 9.2 Herald of the Loom — The Echo Loom
 
-**Status:** Settled, not yet implemented. Batch 1.
+**Status:** Implemented. Batch 1.
 
-**Passive: Weft and Warp.** The Herald always holds exactly one thread. Once per turn, as a free
-action, the Herald may switch thread — before or after using a skill, but not both. Max Tension is
-a constant 7 at every rarity.
+**Passive: Weft and Warp.** The Herald always holds exactly one thread, starting on Silver at
+battle start. Switching is a free action available any number of times during the Herald's own
+turn (before or after using a skill, in any order) — not a once-per-turn cap, and not a status
+effect with a duration: the active thread is ordinary persistent trait state that carries as-is
+into the next turn until changed again. Max Tension is a constant 7 at every rarity.
 * Golden Thread — gain 1 Tension when a cascade instance resolves on an enemy (Cut the Cloth's own
-  instances excluded, to avoid a self-feed loop).
+  instances excluded, to avoid a self-feed loop — enforced by construction, since Cut the Cloth's
+  repeats never call `CascadeResolver.Post`).
 * Silver Thread — the Herald's debuffs cannot be resisted and last 1 turn longer.
-* Black Thread — the first cascade instance to resolve on an enemy each action resolves one
-  additional time.
+* Black Thread — the cascade instance produced by the Herald's own action resolves one additional
+  time (not a double — a skill that would resolve once now resolves twice). Scoped to the Herald's
+  own action only, since the Herald casts at most one skill per turn.
 * Cascade instances cast by this champion deal bonus damage: +5% Uncommon, +10% Rare, +15% Epic,
   +20% Legendary. (Generic wording deliberately — applies to any cascade instance the Herald
   produces, names no skill, so the passive and the skills stay decoupled.)
@@ -264,7 +276,7 @@ a constant 7 at every rarity.
 |---|---|---|---|
 | Basic | Thread Snap | Mysticism-scaled damage to one enemy; applies Suppress for 1 turn. | 1 |
 | Signature | Pull the Thread | Mysticism-scaled damage to one enemy, pushes them backward 15% on the turn bar, applies Temporal Leak for 3 turns, and grants the Herald 2 Tension (stance-independent). | 2 |
-| Signature | Cut the Cloth | Damage to one enemy at 90% of a normal Mysticism-scaled hit, resolved once per Tension held (minimum once), then consumes all Tension. | 3 |
+| Signature | Cut the Cloth | Damage to one enemy at 90% of a normal Mysticism-scaled hit, resolved once for the base cast plus once more per Tension held (minimum once, at zero Tension), then consumes all Tension. | 3 |
 
 **Projected numbers.** Using `Skills.MitigatedDamageUnrounded`'s formula (`skills.gd:298-307`):
 since mitigation depends only on defence and cancels identically between the basic-skill baseline
@@ -279,15 +291,25 @@ scenario gives ≈41.6x. Cut the Cloth's 90% strength (rather than a Sorcerer-st
 load-bearing: the setup tax is Tension's multi-turn build time, not a second discount on the
 payoff — discounting both would leave the kit short of the target band against any realistic team.
 
-**Implementation needs (not yet built):** a `Combat_Event` value firing on indirect damage (debuff
-ticks, zone triggers, cascade instances) for Golden Thread to hook, since `Combat_Event.Damage_Dealt`
-only fires from the direct-cast path (`battle_resolver.gd:777`); and the generalized trait-declared
-free-action button (the graft button's pattern, generalized off its current hardcoded
-Symbiote-Role check at `battle.gd:277-279`) for the once-per-turn stance switch. The manifest
-scoring shape for Cut the Cloth (section 11's now-generalized `gated_bonus`, `fold:
-"separate_instance"`, `instances: 8`, no `instance_compounding` — the flat curve) is available once
-the kit itself is authored; a `gate` value naming the Tension precondition (e.g. `&"tension_spent"`)
-is a batch-time authoring decision, not a further scorer gap.
+**Implemented as:** `weft_and_warp_trait.gd`, `Thread_Snap.tres` (reworked), `Pull_the_Thread.tres`,
+`Cut_the_Cloth.tres` (new), `Herald_of_the_loom.tres` (rewired). Golden Thread hooks a new
+`Combat_Event.Cascade_Instance_Resolved` broadcast, fired once per real cascade instance from
+`CascadeResolver._ResolveEvent`'s own per-instance loop — narrower than "any indirect damage" (a
+debuff tick still doesn't post to `CascadeResolver` at all; tracked as a gap in `FeatureIdeas.md`,
+not closed here). Black Thread's extra instance is `CascadeResolver.SubscribeInstanceModifier`, new
+plumbing that amplifies an already-matched listener's instance count rather than creating one from
+nothing. Silver Thread's two clauses are `CharacterTrait.GetOutgoingDebuffDurationBonus` (new,
+symmetric to the existing `GetIncomingDebuffDurationBonus`) and `DebuffsCannotBeResisted` (new),
+both read directly by `status_effect_resolver.gd`. The thread switch is a single "Switch Stance"
+toggle button (`ThreadSwitchButton`, `Thread_Switch_Button.tscn`) sharing the Symbiote graft
+button's screen slot in `battle_ui.tscn` rather than adding new screen space or generalizing
+`GraftButton`'s own confirm/target flow — the two are mutually exclusive by whose turn it is. Cut
+the Cloth's repeats resolve as a local loop inside the trait (`_ResolveExtraCutTheClothInstances`)
+that never calls `CascadeResolver.Post`, the deliberate choice that makes Golden Thread's
+self-exclusion automatic rather than a predicate check. The manifest's `gated_bonus` entry uses
+`fold: "separate_instance"`, `instances: 8`, `magnitude: 0.08` (Legendary, the 90% base strength
+and +20% self-bonus folded into one net per-instance multiplier), verified against this section's
+own 8*1.08=8.64 curve in `Tests/unit/test_burst_reachability.gd`.
 
 ### 9.3 Sorcerer — Echo charges and the Surge that feeds them
 
@@ -433,6 +455,106 @@ this kit's actual weight lands:
   `bonus_per Wounded_Allies 0.35`); Sanguine Pact and Hemorrhage are recorded as granted-status /
   debuff-type bucket keys landing on whoever holds them, not on the Bloodmage's own entry.
 
+### 9.5 Appraiser — overflow crit chance and consigned attributes
+
+**Status:** Settled, not yet implemented. Batch 1.
+
+**Identity note.** This kit's entire contribution runs through the crit path, which
+`Concept_Document.md` 1.1.4 places outside the `CombinedDamageModifier` by design. It therefore
+claims **no bucket key at all** and cannot satisfy section 1's "at least one distinct bucket key"
+clause as that section is currently written. Section 5 lists this Role as Channel 2; the settled
+kit is an Enabler. Resolving that tension is a framework-level decision left open here rather than
+amended silently — see section 8.
+
+**Passive: No Wasted Margin.** Team-wide. For every 1 percentage point of an ally's Critical Chance
+above 100, that ally gains Critical Damage: 2 percentage points Uncommon, 3 Rare, 4 Epic, 5
+Legendary. Excess Critical Chance converts instead of being discarded. This is the kit's only
+rarity term — the skills below carry none, matching section 9.3's rule.
+
+The passive needs no guaranteed-critical-hit mechanism: the resolver rolls
+`random_integer(1, 100) <= chance` (`battle_resolver.gd:730`), so any total above 100 already
+crits every time. Saturation is the guarantee, and the conversion is what makes overshooting it
+worth building toward.
+
+| Slot | Skill | Effect | Channel |
+|---|---|---|---|
+| Basic | Sizing Cut | Knowledge-scaled damage to one enemy; applies Exposed Facet for 1 turn. The rider is Enabler-weight and carries no bucket key — the short duration and flat value are what keep a no-cooldown application tame. | 1 |
+| Signature | Flaw Analysis | Applies Confound and Cracked Facet to one enemy for 3 turns. Cooldown 2. | Enabler |
+| Signature | Full Appraisal | Consigns the Appraiser's own crit attributes to one ally (`Ally_Not_Self`) for 3 turns: Keen Edge grants the Appraiser's Critical Chance, Lethal Precision grants its Critical Damage. Both are zero in the Appraiser's own hands while loaned. Cooldown 4. | Enabler |
+
+**Reworked statuses.** All four of this kit's statuses drop their flat magnitudes — the shipped
+values (15 / 25 / 15 / 50) carry no rarity or attribute scaling at all, which is why the kit
+cannot grow.
+
+* **Keen Edge** (buff): Critical Chance increased by the applier's own Critical Chance
+  (`CasterAttributeSnapshotPercent`). Sole claimant is this kit.
+* **Lethal Precision** (buff): Critical Damage increased by the applier's own Critical Damage
+  (same kind). Sole claimant is this kit.
+* **Cracked Facet** (debuff): critical hits against the holder deal bonus Critical Damage equal to
+  60% of the applier's Knowledge (same kind). Moved off the retired Strike the Flaw passive onto
+  Flaw Analysis, so it keeps a source.
+* **Exposed Facet** (debuff): unchanged in shape, a flat Critical Chance add to attackers of the
+  holder. Deliberately the one flat value left, since it rides a no-cooldown basic.
+* **Confound** (debuff): magnitude raised from -30% to -50% Knowledge, roster-wide. This is the
+  term that blunts crit damage (`Critical_Multiplier` subtracts half the defender's Knowledge,
+  `Concept_Document.md` 3.2.1 #4), and nothing in the roster attacked it before. Scholar's Expose
+  Fallacy is the other claimant and gains the same increase.
+
+**Composition hook.** Every piece reads world state and names no Role: Keen Edge and Lethal
+Precision size off *the applier's* attributes, Cracked Facet off the applier's Knowledge, and the
+passive off *any* ally's Critical Chance total, whatever produced it. Any future Role granting
+Critical Chance feeds the conversion automatically. The passive is the roster's only reason to
+build Critical Chance past 100, which is a build axis that currently has no payoff.
+
+**Projected numbers.** Appraiser at Critical Chance 60, Critical Damage 250, Knowledge 200;
+carrying ally at Critical Chance 50, Critical Damage 150; boss Knowledge 70, halved to 35 by
+Confound. Legendary.
+
+| Term | Value |
+|---|---|
+| Ally Critical Chance | 50 own + 60 Keen Edge + 15 Exposed Facet = **125** (always crits) |
+| Overflow conversion | 25 above 100, times 5 = **+125 Critical Damage** |
+| Lethal Precision | **+250** |
+| Cracked Facet | 60% of 200 Knowledge = **+120** |
+| Confound'd blunting | -17.5 rather than -35 |
+| Critical multiplier | (150 + 125 + 250 + 120 - 17.5) / 100 = **6.28x** |
+| Baseline without this kit | chance 50, damage floored at 125 → factor **1.125x** |
+| Contribution | **≈5.58x** |
+
+Against route C's roughly 4x target that overshoots, which is the comfortable direction to
+discover in play. The first dial is the consigned fraction, the second the passive's conversion
+rate. With a crit-poor carrier (Critical Chance 5) the same setup reaches 80 chance, converts
+nothing, and contributes ≈4.17x — so consigning compresses the gap between a crit-geared and a
+crit-poor carrier to about 1.34x rather than eliminating it. Lending sets the floor; only the
+ally's own Critical Chance reaches the conversion.
+
+**Implementation needs (not yet built):**
+
+* Overflow conversion in the resolver's crit path, and the matching term in
+  `BurstReachability._CritFactor` — which currently does `clampf(chance, 0.0, 100.0)`
+  (`burst_reachability.gd:561-564`) and would score this passive as exactly zero. The rest of the
+  scorer's crit model (expected-value factor, `MINIMUM_CRIT_DAMAGE` floor, boss-Knowledge
+  blunting, crit-eligible aggregate share) already landed in `e3d39bd` and needs no further work.
+* Attribute consignment: a granted status that zeroes the applier's own attribute for its
+  duration. `CasterAttributeSnapshotPercent` already computes and snapshots an applier-scaled
+  value (`status_effect_resolver.gd:556-570`); the reciprocal loss on the applier is the new part.
+* Status tooltips render the static `description` string and never see the snapshotted value
+  (`battle.gd:483`), so a consigned magnitude is invisible to the player. Passing the resolved
+  value through and supporting a placeholder in the description text fixes every applier-scaled
+  status at once — Temporal Leak has the same silent problem today.
+* `Confound.tres` magnitude 0.3 → 0.5, and `Concept_Document.md` 3.2.3's Confound entry with it.
+* `strike_the_flaw_trait.gd` retired and replaced by the new passive's trait; `Cracked_Facet.tres`,
+  `Exposed_Facet.tres`, `Keen_Edge.tres`, `Lethal_Precision.tres` re-authored off their flat
+  magnitudes.
+* `kit_contribution_manifest.gd`: all four Appraiser entries rewritten. `bucket_key` stays empty on
+  every one — the crit path never reaches a `CombinedDamageModifier` bucket, matching the field's
+  existing convention.
+
+**Judgment calls made while settling, listed so they can be overruled:** Cracked Facet was placed
+on Flaw Analysis rather than left without a source when Strike the Flaw retired, and it scales off
+Knowledge rather than Critical Damage so it does not double-dip the attribute Lethal Precision
+already consigns.
+
 ## 10. Coverage ledger
 
 Successor to the archived `Plan_Role_Skill_Kits.md`'s claims ledger (status effects only) —
@@ -450,8 +572,9 @@ to one each. State as of Batch 1's Plague Doctor rework (`aca439b`); everything 
 archived pass's final state and goes stale as each further batch lands — refresh the claiming
 Role's rows in the same edit, not after.
 
-**Turn bar effects** — unchanged from the archived pass: Dead Weight (Bar Brawler), Battle Orders
-(Tactician); Anchor, Temporal Leak, Slipstream, Steadfast, Resonance unclaimed.
+**Turn bar effects** — Dead Weight (Bar Brawler), Battle Orders (Tactician), Temporal Leak (Herald
+of the loom, Pull the Thread, claimed this batch); Anchor, Slipstream, Steadfast, Resonance
+unclaimed.
 
 **Debuffs** (rows that changed this batch; all others unchanged from the archived pass — see
 `Plan_Role_Skill_Kits.md` Archive for the full table until the next batch refreshes it here)
@@ -460,17 +583,22 @@ Role's rows in the same edit, not after.
 |---|---|
 | Plague | Plague Doctor (Outbreak) — moved from Miasma; now stackable, no longer expiry-spread |
 | Blight | Plague Doctor (Miasma) — moved from Quarantine Breach (renamed Outbreak) |
-| Suppress | Herald of the loom (Thread Snap) — **settled, not yet implemented** (section 9.2); shipped code still has this on Thread Lash until Herald's kit is authored |
-| Temporal Leak | Herald of the loom (Pull the Thread) — **settled, not yet implemented** (section 9.2); newly claimed, retiring part of `FeatureIdeas.md`'s "Rework Orphaned Turn Bar Effects" item once live |
+| Suppress | Herald of the loom (Thread Snap) — moved off the retired Thread Lash, now 1 turn (was 2) |
+| Temporal Leak | Herald of the loom (Pull the Thread) — newly claimed, retiring part of `FeatureIdeas.md`'s "Rework Orphaned Turn Bar Effects" item |
 | Warped | Sorcerer (Unstable Rift reliably, Arc Lash's 25% rider) — **settled, not yet implemented** (section 9.3); both sources are the same Role, so the identity-effect rule still holds |
 | Hemorrhage | Bloodmage (Tithe of Vitality) — **settled, not yet implemented** (section 9.4); new debuff, no prior claimant |
 | Mana Burn | Unclaimed — dropped from Bloodmage's Tithe of Vitality (section 9.4); nothing in the reworked kit read it |
+| Exposed Facet | Appraiser (Sizing Cut) — **settled, not yet implemented** (section 9.5); moved onto the basic skill's 1-turn rider |
+| Cracked Facet | Appraiser (Flaw Analysis) — **settled, not yet implemented** (section 9.5); moved off the retired Strike the Flaw passive, now scaled by the applier's Knowledge |
+| Confound | Scholar (Expose Fallacy), Appraiser (Flaw Analysis) — **settled, not yet implemented** (section 9.5). Second claimant, within the commodity-debuff limit of two. Magnitude rises -30% → -50% roster-wide, so Scholar's existing skill gains the same increase |
 
-**Buffs** — unchanged from the archived pass this batch, with two pending changes: Attune's second
-claim (Herald of the loom's Woven Blessing, alongside Cultist's Chosen Vessel passive) drops once
-Herald's settled kit (section 9.2) is implemented — Woven Blessing is not part of it and nothing
-in the new kit applies Attune. Sanguine Pact is a new buff, claimed by Bloodmage (Transfusion) —
-**settled, not yet implemented** (section 9.4).
+**Buffs** — Attune's second claim (Herald of the loom's Woven Blessing, alongside Cultist's Chosen
+Vessel passive) has dropped: Woven Blessing is no longer part of the Herald's kit (section 9.2,
+implemented) and nothing in the new kit applies Attune, so Attune is now solely Cultist's (Chosen
+Vessel passive). One further pending change: Sanguine Pact is a new buff, claimed by Bloodmage (Transfusion) —
+**settled, not yet implemented** (section 9.4). Keen Edge and Lethal Precision stay claimed solely
+by Appraiser (Full Appraisal), re-authored as consigned applier-scaled grants — **settled, not yet
+implemented** (section 9.5); no other skill in the corpus applies either.
 
 ### 10.2 Damage-channel bucket keys in use
 
@@ -496,9 +624,34 @@ key, not a doc paraphrase) — the authority the burst-reachability scorer actua
 | `Hemorrhage` (debuff on target) | Bloodmage (Tithe of Vitality) — **settled, not yet implemented** (section 9.4) | Debuff-type bucket, holder-missing-Health damage multiplier; readable by any teammate's damage, not only the applier's |
 
 Every other Role/skill in the manifest carries `bucket_key = ""` today — either genuinely Channel 1
-/ Enabler, or a Batch-1-and-later target whose kit hasn't yet earned a bucket key. Batch 1's
-remaining Role (Appraiser) is expected to add a row here; add it in the same edit that updates the
-manifest.
+/ Enabler, or a Batch-1-and-later target whose kit hasn't yet earned a bucket key. Batch 1 adds no
+further rows: Appraiser's settled kit (section 9.5) claims **no bucket key at all**, because the
+crit path sits outside the `CombinedDamageModifier` by design (`Concept_Document.md` 1.1.4). Its
+contribution is real and now scoreable — the scorer gained a crit model in `e3d39bd` — but it is
+not a bucket, and recording an empty `bucket_key` on all four of its manifest entries is the
+correct outcome rather than a gap to close.
+
+### 10.3 Turn bar zones in use
+
+Zones stay signature (one per Role, per the anti-overlap rules in section 4), so this table is the
+check against a new kit accidentally claiming a second one. State as of Batch 1.
+
+| Zone skill | Claimed by |
+|---|---|
+| Catalyst Cloud | Alchemist |
+| Flicker Zone | Chronophage |
+| Temporal Sinkhole | Chronophage |
+| Miasma | Plague Doctor |
+| Raise the Frame | Architect |
+| Unstable Rift | Sorcerer |
+| Lava Zone | Enemy only (Obsidian Stallion) |
+| Inscribe | Enemy only (Glyphbound Archivist) |
+| Weight of Law | **Orphaned — no player or enemy fields it** |
+
+Six player-facing zones across five Roles, Chronophage holding two — the one existing exception to
+the one-per-Role rule, and consistent with its turn-bar identity. Weight of Law having no owner at
+all is a loose end this plan did not create and does not close; note it for whichever batch takes
+Emissary, whose theme it matches.
 
 ## 11. Scorer plumbing for Channel 3 payloads
 
@@ -535,7 +688,8 @@ The manifest's `reagent_gated_bonus` field is renamed **`gated_bonus`** and wide
   (`BurstReachability._MultiInstanceContrastRatio`). Verified in
   `Tests/unit/test_burst_reachability.gd` against this document's own projections: Echo (4
   instances, −0.5, 1.75 compounding) reproduces section 9.3's 5.586x; Cut the Cloth (8 instances,
-  −0.1, flat) reproduces section 9.2's 7.2x.
+  +0.08 at Legendary — the 90% base strength and the passive's own self-bonus folded into one net
+  per-instance multiplier — flat) reproduces section 9.2's 8.64 curve.
 * **Zone-trigger damage** is no longer invisible: a skill with no top-level `DamageEffect` is now
   enumerated off its enemy-facing `ZoneEffect.on_trigger` `DamageEffect`s instead
   (`_ZoneTriggerEnemyDamageEffects`) — an ally-facing payload in the same zone (Unstable Rift's own

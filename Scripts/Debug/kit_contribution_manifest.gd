@@ -654,26 +654,57 @@ const MANIFEST: Dictionary = {
 	},
 	Types.Role.Herald_Of_The_Loom: {
 		"preset": "Data/Character_Player_Variants/Herald_of_the_loom.tres",
-		"note": "No passive entry: the preset has no `_trait` field at all — no Herald trait " +
-				"resource and no corresponding .gd script exist anywhere in the codebase. Not " +
-				"merely blank per Concept_Document.md 3.1.3, genuinely unwired; recorded as a " +
-				"finding here rather than tagged with an invented mechanic.",
-		"passive": [],
+		"passive": [
+			{"name": "Weft and Warp", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
+					"class": Contribution_Class.Channel3_Cascade,
+					"precondition": "Always holds exactly one of three threads, freely switchable " +
+							"during the Herald's own turn (persistent trait state, not a status effect). " +
+							"Golden: +1 Tension (capped at 7) whenever a cascade instance resolves on an " +
+							"enemy, via the generic Cascade_Instance_Resolved hook. Silver: this Herald's " +
+							"own applied debuffs cannot be resisted and last 1 turn longer " +
+							"(GetOutgoingDebuffDurationBonus/DebuffsCannotBeResisted). Black: the cascade " +
+							"instance produced by the Herald's own action resolves one additional time, " +
+							"via CascadeResolver.SubscribeInstanceModifier — new plumbing this kit added. " +
+							"Cascade instances this Herald produces (i.e. Cut the Cloth's own repeats) " +
+							"deal +20% damage (Legendary), scored on Cut the Cloth's own entry below.",
+					"citation": "weft_and_warp_trait.gd; cascade_resolver.gd " +
+							"(SubscribeInstanceModifier, Cascade_Instance_Resolved)"},
+		],
 		"skills": [
 			{"name": "Thread Snap", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Channel1,
-					"precondition": "damage_scaling Mysticism 0.9, no bonus_per.",
-					"citation": "Thread_Snap.tres:6-11"},
-			{"name": "Thread Lash", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
-					"class": Contribution_Class.Channel1,
-					"precondition": "damage_scaling Mysticism 1.1 (no bonus_per) plus Suppress (2 " +
-							"turns, -30% Mysticism).",
-					"citation": "Thread_Lash.tres:6-19"},
-			{"name": "Woven Blessing", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
-					"class": Contribution_Class.Channel1,
-					"precondition": "Grants one ally Attune (2 turns, +30% Mysticism). No damage.",
-					"citation": "Woven_Blessing.tres:6-11",
-					"granted_attribute_buff": {"attributes": [Types.Attribute.Mysticism], "magnitude": 0.3}},
+					"precondition": "damage_scaling Mysticism 0.9, no bonus_per, plus Suppress (1 turn " +
+							"— moved off the retired Thread Lash, halved from 2 turns).",
+					"citation": "Thread_Snap.tres:6-19"},
+			{"name": "Pull the Thread", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
+					"class": Contribution_Class.Enabler,
+					"precondition": "damage_scaling Mysticism 0.9, no bonus_per; pushes the target " +
+							"backward 15% on the turn bar (TurnBarEffect, this class's first .tres " +
+							"consumer) and applies Temporal Leak (3 turns). Grants the Herald 2 Tension, " +
+							"stance-independent (trait-side, not a skill-data field).",
+					"citation": "Pull_the_Thread.tres:6-24; weft_and_warp_trait.gd (OnSkillCast)"},
+			{"name": "Cut the Cloth", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
+					"class": Contribution_Class.Channel3_Cascade,
+					"precondition": "damage_scaling Mysticism 0.9 (90% strength), no bonus_per, no " +
+							"debuff. Resolves once for the base cast plus once per Tension held (Tension: " +
+							"0 Uncommon/Rare start, 1 Epic/Legendary, max 7 flat every rarity), then " +
+							"consumes all Tension — up to 8 total resolves at max Tension. Resolved as a " +
+							"local loop inside the trait that never calls CascadeResolver.Post, so these " +
+							"repeats cannot feed this Herald's own Golden Thread.",
+					"citation": "Cut_the_Cloth.tres:6-16; weft_and_warp_trait.gd " +
+							"(OnSkillCast, _ResolveExtraCutTheClothInstances)",
+					"gated_bonus": {"bucket_key": "", "magnitude": 0.08,
+							"class": Contribution_Class.Channel3_Cascade, "fold": "separate_instance",
+							"gate": &"tension_spent", "instances": 8,
+							"precondition": "Net per-instance multiplier folding both dials into one: 90% " +
+									"base strength times the passive's own +20% (Legendary) self-bonus on " +
+									"every cascade instance this Herald produces, 0.9*1.20-1 = +0.08. At " +
+									"Uncommon (5% self-bonus): 0.9*1.05-1 = -0.055. Flat across all 8 " +
+									"instances (no instance_compounding) — reproduces Role_Kit_Design.md " +
+									"section 9.2's own worked figures (8*1.08=8.64 -> ~47.5x at Legendary " +
+									"against an illustrative 5.5 team product).",
+							"citation": "weft_and_warp_trait.gd (SELF_BONUS_BY_RARITY, " +
+									"_ResolveExtraCutTheClothInstances)"}},
 		],
 	},
 	Types.Role.Chronophage: {

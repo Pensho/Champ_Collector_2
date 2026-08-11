@@ -46,6 +46,9 @@ Effort: **S** = hours, **M** = days, **L** = week+
 - **Per-Source Burst Attribution** *(Priority: Medium | Effort: M)*
   Concept_Document.md 1.1.5 asks for each burst instance to land "attributed to its source", but nothing in battle names a source: floating combat text spawns at the target with no label, and there is no combat log. The `Debuff_Tick` branch in `battle.gd` even collapses `amount_by_source` into one aggregate number despite the per-source breakdown already being on the result — splitting that is the cheapest first step. Fuller options (source-labelled floating text, a per-instance mechanic banner naming the `Cascade_Triggered` mechanic key, or a scrolling combat log) each add a new UI surface with a screen-space cost, so none were taken alongside the tempo and magnitude escalation.
 
+- **Debuff Ticks Invisible to the Cascade Channel** *(Priority: Medium | Effort: M)*
+  A debuff tick (including a Comorbidity-driven repeat) never posts a `CascadeEvent`, so nothing reacting to real cascade instances — the Herald of the Loom's Golden Thread today, any future listener tomorrow — can see a DoT-driven repeat. Closing this means posting from inside `status_effect_resolver.gd`'s `_EmitDebuffTickIfAny` (or wherever a tick actually resolves) when it fires, on the same `Combat_Event.Cascade_Instance_Resolved` broadcast `cascade_resolver.gd` already fires for listener-driven instances. Found while implementing the Herald's kit (Role_Kit_Design.md section 9.2); deliberately not fixed there since it touches a different Role's already-shipped mechanic (Comorbidity) outside that batch's scope.
+
 ---
 
 ## Characters & Progression

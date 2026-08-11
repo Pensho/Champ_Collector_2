@@ -195,6 +195,7 @@ enum Combat_Event
 	On_Kill,
 	Zone_Affected,
 	Resource_Depleted,
+	Cascade_Instance_Resolved,
 }
 
 ## Source a DamageEffect's bonus_per fraction, or a SkillEffect's condition, scales

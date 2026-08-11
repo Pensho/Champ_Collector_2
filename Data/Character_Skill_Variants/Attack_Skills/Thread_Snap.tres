@@ -3,6 +3,13 @@
 [ext_resource type="Script" uid="uid://bmqtglyyora7q" path="res://Scripts/Battle/Skill_Effects/skill_effect.gd" id="1_nlevt"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
 [ext_resource type="Script" uid="uid://bn0n72opjy7sb" path="res://Scripts/Battle/Skill_Effects/damage_effect.gd" id="2_4wwy3"]
+[ext_resource type="Script" uid="uid://bonwfsp34aafb" path="res://Scripts/Battle/Skill_Effects/apply_debuff_effect.gd" id="2_dbf"]
+
+[sub_resource type="Resource" id="Resource_dbf"]
+script = ExtResource("2_dbf")
+debuff_type = 3
+duration = 1
+target = 0
 
 [sub_resource type="Resource" id="Resource_fii10"]
 script = ExtResource("2_4wwy3")
@@ -13,7 +20,7 @@ damage_scaling = Dictionary[int, float]({
 [resource]
 script = ExtResource("1_skill")
 name = "Thread Snap"
-description = "Deals damage to a single enemy, scaled by Mysticism."
+description = "Deals damage to a single enemy, scaled by Mysticism, and applies Suppress for 1 turn."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Thread_Snap/Thread_Snap.png"
-effects = Array[ExtResource("1_nlevt")]([SubResource("Resource_fii10")])
+effects = Array[ExtResource("1_nlevt")]([SubResource("Resource_dbf"), SubResource("Resource_fii10")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

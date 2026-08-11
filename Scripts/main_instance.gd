@@ -75,6 +75,7 @@ func Init() -> void:
 	_character_collection.Add(WARLORD.duplicate(true))
 	_character_collection.Add(ALCHEMIST.duplicate(true))
 	_character_collection.Add(ARCHITECT.duplicate(true))
+	_character_collection.Add(HERALD_OF_THE_LOOM.duplicate(true))
 
 	var reagent_keys: Array = ReagentRegistry.REAGENTS.keys()
 	for i in 3:

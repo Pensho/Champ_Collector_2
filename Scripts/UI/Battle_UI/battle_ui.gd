@@ -5,6 +5,7 @@ signal battle_reagent_selected(p_reagent_index: int)
 signal reagent_confirmed(p_reagent_index: int)
 signal battle_graft_selected
 signal graft_confirmed(p_target_ID: int)
+signal thread_switch_selected
 
 const COMBAT_EFFECT_TEXT_TEMPLATE = preload("uid://caq22aj34qk1f")
 const BUTTON_WITH_OPTIONS_SCENE = preload("uid://c7smqpmfvs0ih")
@@ -14,6 +15,7 @@ const COMBAT_TEXT_SPAWN_POINT: Vector2 = Vector2(100, 70)
 @export var _skill_buttons: Array[SkillButton]
 @export var _reagent_buttons: Array[ReagentButton]
 @export var _graft_button: GraftButton
+@export var _thread_switch_button: ThreadSwitchButton
 @export var _battle_duration_label: Label
 
 var SKILL_GLOW_POS_1: Vector2
@@ -68,6 +70,9 @@ func Init(p_environment_effects: Array[PackedScene]) -> void:
 	_graft_permanence_confirm.position = Vector2i(
 			(get_viewport_rect().size * 0.5) - (_graft_permanence_confirm.GetSize() * 0.5))
 	_graft_permanence_confirm.hide()
+
+	_thread_switch_button.SetToolTip("Switch Stance", "A toggle to change stance in order of;\n" + 
+	"Silver -> Gold -> Black -> Silver")
 
 func _process(delta: float) -> void:
 	_battle_duration += delta
@@ -170,6 +175,12 @@ func _on_graft_permanence_confirmed() -> void:
 func HideGraftUI() -> void:
 	_graft_button.hide()
 	_graft_focus.hide()
+
+func HideThreadSwitchUI() -> void:
+	_thread_switch_button.hide()
+
+func _on_thread_switch_button_button_up() -> void:
+	thread_switch_selected.emit()
 
 func ShowGraftHighlight() -> void:
 	_graft_focus.show()

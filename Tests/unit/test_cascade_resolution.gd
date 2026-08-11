@@ -3,10 +3,21 @@ extends GutTest
 const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 
 # Coverage for CascadeResolver's own plumbing (Concept_Document.md 1.1.3/1.1.4): the two
-# termination bounds, the once-per-action dedup rule, instance-count snapshotting, and the
-# Cascade_Triggered stream marker. The three ported effects' own behavior (Overflow, Rush,
-# Mirror Coat) stays covered by their existing suites — this file is the architecture, not
-# the content.
+# termination bounds, the once-per-action dedup rule, instance-count snapshotting, the
+# Cascade_Triggered stream marker, the instance-count modifier hook, and the per-instance
+# Cascade_Instance_Resolved notification. The three ported effects' own behavior (Overflow,
+# Rush, Mirror Coat) stays covered by their existing suites — this file is the architecture,
+# not the content.
+
+class FakeCascadeInstanceListenerTrait extends CharacterTrait:
+	var _notified_count: int = 0
+
+	func _init() -> void:
+		_execution_steps[Types.Combat_Event.Cascade_Instance_Resolved] = Callable(self, "OnCascadeInstanceResolved")
+
+	func OnCascadeInstanceResolved(
+			_p_owner_ID: int, _p_event: CascadeEvent, _p_resolver: BattleResolver) -> void:
+		_notified_count += 1
 
 var _roster: Dictionary[int, Character] = {}
 var _resolver: BattleResolver = null
@@ -156,3 +167,77 @@ func test_repeat_instances_each_read_live_conditions_via_a_fresh_combined_modifi
 	assert_gt(damage_amounts[0], damage_amounts[1],
 		"The first instance should consume Daunting_Strength; a modifier cached across " +
 		"instances would let the second instance keep benefiting from an already-consumed buff")
+
+func test_instance_modifier_adds_extra_instances_to_a_matched_listener() -> void:
+	var run_count: Array[int] = [0]
+	_cascade.Subscribe(Types.Cascade_Trigger.Status_Expired, &"BaseListener",
+			func(_p_event: CascadeEvent) -> bool: return true,
+			func(_p_event: CascadeEvent) -> void: run_count[0] += 1)
+	_cascade.SubscribeInstanceModifier(func(_p_event: CascadeEvent) -> int: return 2)
+
+	_resolver._BeginBatch()
+	var event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Status_Expired)
+	event.subject_ID = 0
+	event.instance_count = 1
+	_cascade.Post(event)
+	_resolver._EndBatch()
+
+	assert_eq(run_count[0], 3,
+		"A modifier returning 2 extra instances should add to the listener's own base count of 1")
+
+func test_instance_modifier_never_fires_without_a_matched_listener() -> void:
+	var modifier_calls: Array[int] = [0]
+	_cascade.SubscribeInstanceModifier(func(_p_event: CascadeEvent) -> int:
+		modifier_calls[0] += 1
+		return 5)
+
+	_resolver._BeginBatch()
+	var event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Status_Expired)
+	event.subject_ID = 0
+	event.instance_count = 1
+	_cascade.Post(event)
+	_resolver._EndBatch()
+
+	assert_eq(modifier_calls[0], 0,
+		"A modifier must not run when no listener actually matched the event")
+
+func test_instance_modifier_still_respects_the_fan_out_cap() -> void:
+	var run_count: Array[int] = [0]
+	_cascade.Subscribe(Types.Cascade_Trigger.Status_Expired, &"CappedListener",
+			func(_p_event: CascadeEvent) -> bool: return true,
+			func(_p_event: CascadeEvent) -> void: run_count[0] += 1)
+	_cascade.SubscribeInstanceModifier(
+			func(_p_event: CascadeEvent) -> int: return CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION)
+
+	_resolver._BeginBatch()
+	var event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Status_Expired)
+	event.subject_ID = 0
+	event.instance_count = 1
+	_cascade.Post(event)
+	_resolver._EndBatch()
+
+	assert_eq(run_count[0], CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION,
+		"Extra instances from a modifier must still be bounded by the per-action fan-out cap")
+
+func test_cascade_instance_resolved_notifies_every_living_characters_trait() -> void:
+	for id in _roster.keys():
+		_roster[id]._trait = FakeCascadeInstanceListenerTrait.new()
+		_roster[id]._trait.Init(Types.Rarity.Common)
+	_roster[4]._current_health = 0
+	_cascade.Subscribe(Types.Cascade_Trigger.Status_Expired, &"Notifier",
+			func(_p_event: CascadeEvent) -> bool: return true,
+			func(_p_event: CascadeEvent) -> void: pass)
+
+	_resolver._BeginBatch()
+	var event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Status_Expired)
+	event.subject_ID = 0
+	event.instance_count = 2
+	_cascade.Post(event)
+	_resolver._EndBatch()
+
+	for id in _roster.keys():
+		var observed: int = (_roster[id]._trait as FakeCascadeInstanceListenerTrait)._notified_count
+		if(id == 4):
+			assert_eq(observed, 0, "A dead character's trait must not be notified")
+		else:
+			assert_eq(observed, 2, "Every living character's trait should be notified once per real instance")

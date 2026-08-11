@@ -7,10 +7,39 @@ and hands it to a build-out plan that was never spawned.
 ## Status
 
 Phase 0 done. Phase 1 drafted, awaiting sign-off (see below) before Phase 2 starts. Phase 2 in
-progress: Plague Doctor implemented; Herald of the Loom, Sorcerer, and Bloodmage settled and
-recorded in `Role_Kit_Design.md` §9.2 / §9.3 / §9.4, not yet implemented; Appraiser not started. The
-scorer gaps blocking all three Channel 3 kits are consolidated in §11 and are the batch's first
-implementation work. Phases 3-6 not started.
+progress: Plague Doctor and Herald of the Loom implemented; Sorcerer, Bloodmage, and Appraiser
+settled and recorded in `Role_Kit_Design.md` §9.3 / §9.4 / §9.5, not yet implemented. Herald of the
+Loom's implementation (`weft_and_warp_trait.gd`) added the batch's second and third pieces of new
+Channel 3 plumbing beyond §11's original scope: `Combat_Event.Cascade_Instance_Resolved` (a
+per-real-instance broadcast off `CascadeResolver._ResolveEvent`'s own loop) and
+`CascadeResolver.SubscribeInstanceModifier` (lets a subscriber amplify an already-matched
+listener's instance count) — both exercised directly in `Tests/unit/test_cascade_resolution.gd`
+ahead of the Herald trait itself, per the plan's own tier-1-before-tier-3 ordering. Two Roles left
+in Phase 2. The scorer gaps blocking the remaining two Channel 3 kits are consolidated in §11 and
+are the batch's first implementation work; the crit scorer's own gap closed in `e3d39bd`, leaving
+only the above-100 Critical Chance clamp that Appraiser's passive needs (§9.5). One framework
+question is open and blocks nothing in Batch 1 but governs Batch 2's designs: whether Enabler may
+be a Role-level identity, raised by Appraiser's kit claiming no bucket key at all (§8). Phases 3-6
+not started.
+
+**Post-Herald sweep** (`Tests/manual/team_corpus_sweep.gd`, re-run after Herald of the Loom
+landed). Combined-modifier-product distribution is unchanged from the post-Defence baseline
+(median 1.36x, 90th percentile 2.80x, ceiling 7.22x) — expected, since Cut the Cloth's Channel 3
+contribution lands in `combined_contrast_ratio`, not the bucket product. The ceiling *contrast*
+team is still Alchemist/Tactician/Tidal Corsair (9.39x). The top decile (114 teams) has fully
+flipped: **every** top-decile team is now a Herald of the Loom/Cut the Cloth pairing
+(9.64x-11.22x combined contrast ratio), having displaced Tidal Corsair+Tactician entirely from the
+top of the ranking (still present in the roster, `tidal+tactician: true` confirms it's reachable,
+just no longer top-decile). This opens the intended independent, non-Tidal-Corsair-routed ceiling
+pairing the batch set out for — but the top decile's own **distinct-pairing count dropped from 7 to
+1**, the opposite direction from the plan's own shape target (§6's "several independent team
+combinations", "a populated top decile with distinct member pairs"). Cut the Cloth's per-Tension
+curve is strong enough on its own (floor ~9.64x with *any* two teammates, uncoupled from what they
+contribute) to swamp the ranking regardless of partner. Not a regression to fix inside this Role's
+own batch — Sorcerer and Bloodmage still to come in Phase 2 are exactly what's meant to repopulate
+the top decile with further distinct pairings — but worth flagging now rather than only at Phase 6:
+if the shape doesn't diversify once Batch 1 completes, Cut the Cloth's curve (0.08 magnitude, 8 flat
+instances) is the first thing to revisit, not a symptom of the framework.
 
 **Phase 1 result.** `Documents/Role_Kit_Design.md` created, holding the kit contract, the
 indirect-composition rule, the synergy grammar, Phase 0's re-derived targets, and the two pieces

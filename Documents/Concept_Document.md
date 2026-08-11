@@ -188,9 +188,7 @@ Every Role passive below is tagged with the damage channel it belongs to per sec
 the same bracket vocabulary as section 3.2.3: **[Channel 1]** moves an attribute, continuously and
 additively; **[Channel 2]** supplies its own factor to the combined modifier; **[Channel 3 —
 Cascade]** triggers a separate resolution; **[Enabler]** does neither. A passive tagged with two
-buckets is dual-classified on purpose, the same as a status can be. Herald of the loom's passive is
-blank — recorded as a zero-contribution kit in `Scripts/Debug/kit_contribution_manifest.gd`, not
-tagged, since there is no mechanic to classify; designing one is rework.
+buckets is dual-classified on purpose, the same as a status can be.
 
 Current roles, their identity and purpose exist as follows:
 - Emissary
@@ -281,18 +279,11 @@ Current roles, their identity and purpose exist as follows:
         - 25% Uncommon, 30% Rare, 35% Epic, 40% Legendary
     - Fielded by: `Bloodmage.tres`
 - Herald of the loom
-    - A stance character, using 3 types of stances:
-        - Golden thread; All buffs & debuffs only goes to the herald instead of allies.
-        - Silver thread; All herald buffs & debuffs cast becomes more powerful, adds one attribute value to the accuracy attribute value when attempting to apply debuffs.
-        - Black thread; All damage dealt and received scale with mysticism instead of other attributes. One other player & enemy character will have their attributes averaged out while Black thread is in use.  Primary attributes: Mysticism, Accuracy.
+    - A stance character whose three threads shape how its cascade instances and debuffs behave. Primary attributes: Mysticism, Accuracy.
     - Purpose: Debuffer, Buffer
-    - Passive: (blank — no mechanic exists to classify)
-        - **Finding, severity high:** neither the passive nor the three stances described above
-          (Golden/Silver/Black Thread) exist anywhere in code — no stance enum, no
-          stance-switching effect. The shipped kit (Thread Snap, Thread Lash, Woven Blessing) is
-          three plain Mysticism-scaled skills sharing the flavor name only. Designing the passive
-          and the stance system is a from-scratch rework, not a patch to existing behavior. See
-          `Scripts/Debug/kit_contribution_manifest.gd` (Herald of the Loom entry).
+    - Passive: Weft and Warp [Channel 3 — Cascade] - The Herald always holds exactly one thread, starting on Silver at battle start; switching is a free action available any number of times during the Herald's own turn, and the active thread persists as ordinary trait state (not a status effect) until changed again. Golden Thread: gain 1 Tension (capped at 7) whenever a cascade instance resolves on an enemy, Cut the Cloth's own instances excluded. Silver Thread: the Herald's own applied debuffs cannot be resisted and last 1 turn longer. Black Thread: the cascade instance produced by the Herald's own action resolves one additional time. Cascade instances the Herald produces deal bonus damage.
+        - Self-bonus: +5% Uncommon, +10% Rare, +15% Epic, +20% Legendary
+        - Starting Tension: 0 Uncommon/Rare, 1 Epic/Legendary. Tension does not persist between combats.
     - Fielded by: `Herald_of_the_loom.tres`
 - Chronophage
     - A speed focused character, applying various speed modifying skills onto the turn bar and primarily deals damage based on the Speed attribute. Signature zones: Flicker Zone and Temporal Sinkhole (see section 3.2.4.1). Primary attributes: Speed.
@@ -768,16 +759,16 @@ reasoning; a skill combining its own effect with an applied status is tagged wit
 
 ###### Herald of the loom
 * Thread Snap
-    * Type: Damage (basic skill, no cooldown)
-    * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Mysticism.
-* Thread Lash
-    * Type: Damage, Debuff
-    * Cooldown: 3 turns
-    * Effect: [Channel 1] Deals damage to a single enemy and applies the Suppress debuff for 2 turns (see section 3.2.3.2).
-* Woven Blessing
-    * Type: Buff
-    * Cooldown: 3 turns
-    * Effect: [Channel 1] One ally gains the Attune buff for 2 turns (see section 3.2.3.2).
+    * Type: Damage, Debuff (basic skill, no cooldown)
+    * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Mysticism, and applies the Suppress debuff for 1 turn (see section 3.2.3.2).
+* Pull the Thread
+    * Type: Damage, Debuff, Turn Bar
+    * Cooldown: 4 turns
+    * Effect: [Enabler] Deals damage to a single enemy, scaling with Mysticism, pushes them backward 15% on the turn bar, and applies the Temporal Leak debuff for 3 turns (see section 3.2.3.2). Grants the Herald 2 Tension, regardless of the currently held thread (see the Weft and Warp passive).
+* Cut the Cloth
+    * Type: Damage
+    * Cooldown: 4 turns
+    * Effect: [Channel 3 — Cascade] Deals damage to a single enemy at 90% of a normal Mysticism-scaled hit, resolved once for the base cast plus once more per Tension held (minimum once, at zero Tension), then consumes all Tension.
 
 ###### Chronophage
 * Zap
