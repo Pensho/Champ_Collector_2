@@ -100,10 +100,13 @@ func test_corpus_table_prints_every_row_scored() -> void:
 		for preset in row["presets"]:
 			names.append((preset as CharacterPreset).resource_path.get_file())
 		gut.p(("%s  tier=%s  caster=%d skill=%s  product=%.2fx ratio=%.2fx " +
-				"(base=%.2fx mod=%.2fx)  keys=%d enablers=%d reagent_assumed=%s")
+				"(base=%.2fx mod=%.2fx)  crit=%.0f%%/%.2fx (factor=%.3fx burst=%.3fx)  " +
+				"keys=%d enablers=%d reagent_assumed=%s")
 				% [names, TeamCorpus.Tier.keys()[row["tier"]], candidate.caster_index, candidate.skill_name,
 				candidate.product, candidate.contrast_ratio, candidate.base_term, candidate.modifier_term,
-				candidate.distinct_key_count, candidate.enabler_count, candidate.reagent_assumed])
+				candidate.crit_chance, candidate.crit_damage_multiplier, candidate.crit_factor,
+				candidate.burst_crit_factor, candidate.distinct_key_count, candidate.enabler_count,
+				candidate.reagent_assumed])
 
 
 ## The two outputs that matter: the achievable-product distribution across the full roster,
@@ -248,7 +251,8 @@ func test_export_full_roster_ranking_to_csv() -> void:
 
 	file.store_line(_CSVRow(["rank", "champion_1", "champion_2", "champion_3", "caster_role",
 			"caster_index", "skill_name", "product", "contrast_ratio", "repeat_contrast_ratio",
-			"sustained_contrast_ratio", "combined_contrast_ratio", "distinct_key_count", "enabler_count",
+			"sustained_contrast_ratio", "combined_contrast_ratio", "crit_chance", "crit_damage_multiplier",
+			"crit_factor", "burst_crit_factor", "distinct_key_count", "enabler_count",
 			"assumed_gates", "buckets"]))
 	for i in ranked.size():
 		var row: Dictionary = ranked[i]
@@ -257,6 +261,8 @@ func test_export_full_roster_ranking_to_csv() -> void:
 				Types.Role.find_key(row["caster_role"]), row["caster_index"], row["skill_name"],
 				"%.4f" % row["product"], "%.4f" % row["contrast_ratio"], "%.4f" % row["repeat_contrast_ratio"],
 				"%.4f" % row["sustained_contrast_ratio"], "%.4f" % row["combined_contrast_ratio"],
+				"%.2f" % row["crit_chance"], "%.4f" % row["crit_damage_multiplier"],
+				"%.4f" % row["crit_factor"], "%.4f" % row["burst_crit_factor"],
 				row["distinct_key_count"], row["enabler_count"],
 				";".join(row["assumed_gates"].map(func(g): return str(g))), _FormatBuckets(row["buckets"])]))
 	file.close()

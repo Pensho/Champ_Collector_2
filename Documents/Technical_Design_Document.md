@@ -1217,18 +1217,35 @@ each with one job:
   `CombinedDamageModifier`, and ranks candidates by contrast ratio. `ScoreTeam` takes an optional
   `p_manifest` parameter (defaulting to `KitContributionManifest.MANIFEST`) so a hypothetical kit
   change can be modeled by passing a duplicated, modified copy — the mechanism Phase 6 prescription
-  modeling uses; nothing mutates the real manifest. Two contract quantities are reported per
-  candidate, both read off the real `CombinedDamageModifier.Product()` and `Skills.MitigatedDamage`
-  rather than a third mirror of either: the combined modifier product, and the burst contrast ratio
-  split into a base term (raw `damage_scaling` aggregate ratio) and a modifier term (what the
-  product alone contributes once mitigated) — so a skill cannot pass Concept Document 1.1.6's
-  rejection test purely by having a fatter Channel-1 base. Also enforces the shared eight-status
-  cap (`GameBalance.MAX_STATUS_EFFECTS`, reporting which buckets were dropped rather than silently
-  scoring them), per-trait stack ceilings, cascade instance bounds, and an `ENABLER_FLOOR` below
-  which a team is marked non-viable and excluded from ranked output (currently `0`; the right value
-  is a design call for once curated teams exist). Two stated simplifications, both documented at
-  the top of the file: uncapped per-instance sources are scored at exactly one instance, and caster
-  attributes are each preset's base values with no accumulated trait mutation.
+  modeling uses; nothing mutates the real manifest. Five contract quantities are reported per
+  candidate — combined modifier product, burst contrast ratio (split into a base term and a
+  modifier term, so a skill cannot pass Concept Document 1.1.6's rejection test purely by having a
+  fatter Channel-1 base), total contrast ratio, combined contrast ratio (the ranking key), and a
+  critical-strike factor — read straight off the real `CombinedDamageModifier.Product()` and
+  `Skills.MitigatedDamage` rather than a third mirror of either. The crit factor is an EXPECTED
+  VALUE (`1 + (crit_chance/100) * (crit_damage_multiplier - 1)`), mirroring
+  `battle_resolver.gd`'s own crit roll and multiplier formula (Concept Document 3.2.1 #4) but as an
+  expectation rather than a per-roll ceiling, since the scorer has no battle to roll a crit
+  against; an always-crit ceiling would make crit CHANCE sources (Appraiser's Flaw Analysis, Keen
+  Edge, its own base 30) contribute nothing to any score. Crit stays outside
+  `CombinedDamageModifier`, matching the real resolver's own crit-before-`Product()` ordering, and
+  is blended per skill by `DamageEffect.allow_critical` share. Because a caster's crit factor is
+  symmetric between a candidate's burst skill and its basic-skill baseline, it cancels out of
+  contrast ratio for any skill where every `DamageEffect` allows crit (true of every current
+  `.tres`) — it becomes visible in the reported `crit_chance`/`crit_damage_multiplier`/
+  `crit_factor` fields and in ranking wherever that symmetry breaks (`allow_critical = false`).
+  Boss Knowledge (which blunts crit damage) is read off `BlowoutCalibration.BOSSES[0]`'s own 4th
+  tuple element. Also enforces the shared eight-status cap (`GameBalance.MAX_STATUS_EFFECTS`,
+  reporting which buckets were dropped rather than silently scoring them), per-trait stack
+  ceilings, cascade instance bounds, and an `ENABLER_FLOOR` below which a team is marked
+  non-viable and excluded from ranked output (currently `0`; the right value is a design call for
+  once curated teams exist). Six stated simplifications, all documented at the top of the file:
+  uncapped per-instance sources are scored at exactly one instance; caster attributes are each
+  preset's base values plus manifest-granted one-shot buffs, with no accumulated trait mutation; a
+  `gated_bonus`'s precondition is assumed satisfied and surfaced on `assumed_gates`; zone-trigger
+  damage is scored from its enemy-facing payload only; and a caster-side crit buff is excluded from
+  the shared status cap while a target-side crit facet debuff is scored as granted regardless of
+  the boss's own state.
 * **`Scripts/Debug/team_corpus.gd`** (`TeamCorpus`) — a pluggable input, not a fixed list: three
   presets, a `Tier` (`Intent`, `Plausible_But_Wrong`, `Control`), and an optional one-sentence note,
   per row. The bursting champion and skill are never row fields — the scorer derives them, so a row

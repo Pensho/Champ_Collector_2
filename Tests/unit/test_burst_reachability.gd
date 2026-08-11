@@ -239,8 +239,9 @@ func test_granted_attribute_buff_reaches_every_teammate_from_a_team_reach_passiv
 
 	var bonus_for_teammate: Dictionary = BurstReachability._ContributeGrantedAttributeBuffs(
 			characters, 1, KitContributionManifest.MANIFEST)
+	var fractions_for_teammate: Dictionary = bonus_for_teammate.get("fractions", {})
 
-	assert_almost_eq(bonus_for_teammate.get(Types.Attribute.Attack, 0.0), 0.3, 0.0001,
+	assert_almost_eq(fractions_for_teammate.get(Types.Attribute.Attack, 0.0), 0.3, 0.0001,
 		"Tactician's Plan ahead (team-reach passive) must credit Empower's +30% Attack to a teammate")
 
 # --- gated_bonus instance curve (_MultiInstanceContrastRatio, _GatedContrastRatios) ---
@@ -254,7 +255,8 @@ func test_multi_instance_contrast_ratio_compounds_across_declared_instances() ->
 	var skill_entry: Dictionary = {"class": KitContributionManifest.Contribution_Class.Channel1, "magnitude": 0.0}
 	var bonus: Dictionary = {"magnitude": -0.5, "instances": 4, "instance_compounding": 1.75}
 	var baseline_damage: float = Skills.MitigatedDamageUnrounded(100.0, 100.0, 1.0, 1.0)
-	var ratio: float = BurstReachability._MultiInstanceContrastRatio(skill_entry, bonus, 100.0, 100.0, baseline_damage)
+	var ratio: float = BurstReachability._MultiInstanceContrastRatio(
+			skill_entry, bonus, 100.0, 100.0, baseline_damage, 1.0)
 	assert_almost_eq(ratio, 5.5859375, 0.0001,
 		"A compounding gated_bonus must sum (1+magnitude)*compounding^i across its declared instances")
 
@@ -264,7 +266,8 @@ func test_multi_instance_contrast_ratio_is_flat_when_compounding_is_omitted() ->
 	var skill_entry: Dictionary = {"class": KitContributionManifest.Contribution_Class.Channel1, "magnitude": 0.0}
 	var bonus: Dictionary = {"magnitude": -0.1, "instances": 8}
 	var baseline_damage: float = Skills.MitigatedDamageUnrounded(100.0, 100.0, 1.0, 1.0)
-	var ratio: float = BurstReachability._MultiInstanceContrastRatio(skill_entry, bonus, 100.0, 100.0, baseline_damage)
+	var ratio: float = BurstReachability._MultiInstanceContrastRatio(
+			skill_entry, bonus, 100.0, 100.0, baseline_damage, 1.0)
 	assert_almost_eq(ratio, 7.2, 0.0001,
 		"An omitted instance_compounding must default to a flat 1.0x curve across instances")
 
@@ -274,9 +277,9 @@ func test_multi_instance_contrast_ratio_clamps_instances_to_the_cascade_cap() ->
 	var overshot: Dictionary = {"magnitude": 0.0, "instances": CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION + 50}
 	var baseline_damage: float = Skills.MitigatedDamageUnrounded(100.0, 100.0, 1.0, 1.0)
 	var uncapped_ratio: float = BurstReachability._MultiInstanceContrastRatio(
-			skill_entry, uncapped, 100.0, 100.0, baseline_damage)
+			skill_entry, uncapped, 100.0, 100.0, baseline_damage, 1.0)
 	var overshot_ratio: float = BurstReachability._MultiInstanceContrastRatio(
-			skill_entry, overshot, 100.0, 100.0, baseline_damage)
+			skill_entry, overshot, 100.0, 100.0, baseline_damage, 1.0)
 	assert_almost_eq(overshot_ratio, uncapped_ratio, 0.0001,
 		"A declared instance count past the per-action cascade cap must be clamped to it")
 
@@ -286,14 +289,14 @@ func test_gated_contrast_ratio_routes_separate_instance_and_sustained_ticks_to_t
 	var separate_entry: Dictionary = skill_entry.duplicate()
 	separate_entry["gated_bonus"] = {"magnitude": 0.0, "fold": "separate_instance", "instances": 1}
 	var separate_ratios: Array[float] = BurstReachability._GatedContrastRatios(
-			separate_entry, 100.0, 100.0, baseline_damage)
+			separate_entry, 100.0, 100.0, baseline_damage, 1.0)
 	assert_gt(separate_ratios[0], 0.0, "A separate_instance fold must land in the repeat slot")
 	assert_almost_eq(separate_ratios[1], 0.0, 0.0001, "A separate_instance fold must not land in the sustained slot")
 
 	var sustained_entry: Dictionary = skill_entry.duplicate()
 	sustained_entry["gated_bonus"] = {"magnitude": 0.0, "fold": "sustained_ticks", "instances": 1}
 	var sustained_ratios: Array[float] = BurstReachability._GatedContrastRatios(
-			sustained_entry, 100.0, 100.0, baseline_damage)
+			sustained_entry, 100.0, 100.0, baseline_damage, 1.0)
 	assert_almost_eq(sustained_ratios[0], 0.0, 0.0001, "A sustained_ticks fold must not land in the repeat slot")
 	assert_gt(sustained_ratios[1], 0.0, "A sustained_ticks fold must land in the sustained slot")
 

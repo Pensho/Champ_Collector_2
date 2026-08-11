@@ -17,15 +17,18 @@ class_name BlowoutCalibration extends SceneTree
 const CASTER_SCALED_BASE: float = 100.0
 const CASTER_SCALED_ATTRIBUTE: Types.Attribute = Types.Attribute.Mysticism
 
-# Boss presets, as [name, Health attribute, Defence]. Actual hit points are the Health
-# attribute times GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER. These are the balanced,
-# playtested bosses; the newer catalog entries are excluded as untuned.
+# Boss presets, as [name, Health attribute, Defence, Knowledge]. Actual hit points are the
+# Health attribute times GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER. These are the balanced,
+# playtested bosses; the newer catalog entries are excluded as untuned. Knowledge blunts
+# incoming critical damage (Concept_Document.md 3.2.1 #4); Troll and Obsidian Stallion read
+# their real preset values (Data/Character_Enemy_Variants/{Troll,Obsidian_Stallion}.tres),
+# the other three have no preset in the game and take the Troll's Knowledge as a stand-in.
 const BOSSES: Array = [
-	["Troll", 300.0, 120.0],
-	["Vael", 300.0, 90.0],
-	["Obsidian Stallion", 330.0, 100.0],
-	["Ulfrac", 270.0, 75.0],
-	["Bor Bulwark", 280.0, 280.0],
+	["Troll", 300.0, 120.0, 10.0],
+	["Vael", 300.0, 90.0, 10.0],
+	["Obsidian Stallion", 330.0, 100.0, 50.0],
+	["Ulfrac", 270.0, 75.0, 10.0],
+	["Bor Bulwark", 280.0, 280.0, 10.0],
 ]
 
 # Fraction of a boss's hit points the burst should account for (Concept 1.1.1).

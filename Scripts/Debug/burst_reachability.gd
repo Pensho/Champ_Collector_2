@@ -53,8 +53,32 @@ class_name BurstReachability extends RefCounted
 ##                                 figure regardless; combined_contrast_ratio is deliberately a
 ##                                 separate field so the two questions — "does this fit the burst
 ##                                 band" and "which team wins" — never collapse into one number.
+##   Crit factor                - the caster's own EXPECTED critical-strike multiplier on the
+##                                 candidate's scaled aggregate: 1 + (crit_chance / 100) *
+##                                 (crit_damage_multiplier - 1), mirroring battle_resolver.gd's
+##                                 own _ResolveDamage roll and multiplier formula
+##                                 (Concept_Document.md 3.2.1 #4) as an expectation rather than a
+##                                 per-roll ceiling — there is no battle here to roll a crit
+##                                 against, and an always-crit ceiling would make crit CHANCE
+##                                 sources (Flaw Analysis, Keen Edge, the Appraiser's own base 30)
+##                                 contribute nothing to any score. Deliberately outside
+##                                 CombinedDamageModifier, matching the real resolver: the crit
+##                                 roll happens before Product() is applied and is passed to
+##                                 Skills.MitigatedDamage as its own argument
+##                                 (battle_resolver.gd:698-748), so every Appraiser manifest entry
+##                                 keeps its empty bucket_key/magnitude — see
+##                                 kit_contribution_manifest.gd's Appraiser block. Blended per
+##                                 candidate by DamageEffect.allow_critical share
+##                                 (_EffectiveCritFactor) into baseline_crit_factor (basic skill)
+##                                 and burst_crit_factor (the burst skill) — a caster's crit
+##                                 factor is symmetric between the two, so it mostly cancels out
+##                                 of contrast_ratio by construction; it moves a score wherever
+##                                 crit chance/damage/allow_critical genuinely differs between the
+##                                 burst skill and the basic-skill baseline, exactly where crit
+##                                 SHOULD matter. Boss Knowledge (which blunts crit damage) comes
+##                                 from BlowoutCalibration.BOSSES[0]'s own 4th element.
 ##
-## Five stated simplifications:
+## Six stated simplifications:
 ##   - Manifest sources documented as an uncapped per-instance rate (Heap On's ramp,
 ##     Devour Blessing's bonus_per, an Opportunist debuff-count) are scored at the minimum
 ##     reachable count: exactly one instance/precondition satisfied. There is no battle
@@ -101,6 +125,14 @@ class_name BurstReachability extends RefCounted
 ##     skill is still enumerated as a candidate, scored off its enemy-facing on_trigger
 ##     DamageEffects only — an ally-facing payload in the same zone is excluded, since this
 ##     scorer measures damage against the boss, not the caster's own team.
+##   - A caster-side crit buff (Keen Edge, Lethal Precision) is excluded from
+##     _EnforceStatusCap's shared eight-status contest: its point magnitude (a flat CritChance/
+##     CritDamage add) is not commensurable with the fractional CombinedDamageModifier buckets
+##     that contest sorts by, and it never lands in `buckets` at all (crit stays outside the
+##     modifier, per the crit-factor contract quantity above). A target-side facet debuff
+##     (Exposed Facet, Cracked Facet) lives in the boss's own debuff pool, which this scorer does
+##     not model — both are scored as though granted regardless of the shared cap or the boss's
+##     own state, consistent with this file's other "assume the gate is satisfied" simplifications.
 
 const Manifest = preload("res://Scripts/Debug/kit_contribution_manifest.gd")
 const BlowoutCalibration = preload("res://Scripts/Debug/blowout_calibration.gd")
@@ -192,6 +224,28 @@ class CandidateResult:
 	## direct-damage combo for "which team composition wins" — the question TeamSweep exists to
 	## answer — without redefining what total_contrast_ratio's own 30-50x contract check means.
 	var combined_contrast_ratio: float = 0.0
+	## The caster's own reachable Critical Chance, percentage points, after every fraction and
+	## point grant reaching this candidate (Full Appraisal's Keen Edge, Flaw Analysis's Exposed
+	## Facet, ...) — clamped to [0, 100] the same way the resolver's crit roll saturates.
+	var crit_chance: float = 0.0
+	## The caster's own reachable Critical Damage multiplier against BlowoutCalibration.BOSSES[0]'s
+	## Knowledge, floored at GameBalance.MINIMUM_CRIT_DAMAGE * 0.01 — see _CritFactor.
+	var crit_damage_multiplier: float = 1.0
+	## Expected-value crit multiplier on a fully crit-eligible aggregate: 1 + (crit_chance/100) *
+	## (crit_damage_multiplier - 1). An EXPECTED value, not a per-roll ceiling, because this
+	## scorer has no battle to roll a crit against — see _CritFactor's own docs and the file
+	## header's crit contract quantity.
+	var crit_factor: float = 1.0
+	## crit_factor blended by the basic skill's own allow_critical-eligible aggregate share
+	## (_EffectiveCritFactor) — what baseline_damage/modifier_only_damage were actually mitigated
+	## through. Equal to crit_factor unless the basic skill mixes crit-eligible and
+	## crit-ineligible DamageEffects.
+	var baseline_crit_factor: float = 1.0
+	## crit_factor blended by the BURST skill's own allow_critical-eligible aggregate share —
+	## what burst_damage (and contrast_ratio) were actually mitigated through. A skill with
+	## allow_critical = false throughout scores burst_crit_factor == 1.0 regardless of how high
+	## crit_factor is, and is penalized relative to a crit-eligible skill of the same base power.
+	var burst_crit_factor: float = 1.0
 
 ## All candidates for one 3-preset team, ranked best (highest combined_contrast_ratio, i.e.
 ## every reachable channel including a separate-instance repeat and sustained payload) first.
@@ -297,12 +351,33 @@ static func _ZoneTriggerEnemyDamageEffects(p_skill: Skill) -> Array[DamageEffect
 ## Falls back to the skill's enemy-facing zone-trigger payload only when it carries no
 ## top-level DamageEffect of its own — a skill authoring both would double-count, but none
 ## currently do.
+static func _EffectsForAggregate(p_skill: Skill) -> Array[DamageEffect]:
+	var top_level: Array[DamageEffect] = _TopLevelDamageEffects(p_skill)
+	return top_level if not top_level.is_empty() else _ZoneTriggerEnemyDamageEffects(p_skill)
+
+
 static func _ScaledAggregate(
 		p_skill: Skill, p_character: Character, p_attribute_bonus: Dictionary = {}) -> float:
-	var top_level: Array[DamageEffect] = _TopLevelDamageEffects(p_skill)
-	var effects: Array[DamageEffect] = top_level if not top_level.is_empty() else _ZoneTriggerEnemyDamageEffects(p_skill)
 	var total: float = 0.0
-	for damage_effect in effects:
+	for damage_effect in _EffectsForAggregate(p_skill):
+		for attribute: Types.Attribute in damage_effect.damage_scaling.keys():
+			var bonus: float = p_attribute_bonus.get(attribute, 0.0)
+			total += (damage_effect.damage_scaling[attribute]
+					* float(p_character._attributes[attribute]) * (1.0 + bonus))
+	return total
+
+
+## The portion of _ScaledAggregate's total that comes from DamageEffects with
+## allow_critical == true (damage_effect.gd:17) — the share of a candidate's aggregate a
+## critical hit actually multiplies. Every current .tres DamageEffect defaults allow_critical
+## true, but a skill mixing crit-eligible and crit-ineligible payloads in one cast (or a future
+## non-critting effect) must not be scored as if the whole aggregate could crit.
+static func _CritEligibleAggregate(
+		p_skill: Skill, p_character: Character, p_attribute_bonus: Dictionary = {}) -> float:
+	var total: float = 0.0
+	for damage_effect in _EffectsForAggregate(p_skill):
+		if(not damage_effect.allow_critical):
+			continue
 		for attribute: Types.Attribute in damage_effect.damage_scaling.keys():
 			var bonus: float = p_attribute_bonus.get(attribute, 0.0)
 			total += (damage_effect.damage_scaling[attribute]
@@ -413,9 +488,13 @@ static func _ContributeGatedTeamBonuses(
 ## Opportunist, ...), since those are already contributed to (and, for a DamageMultiplier
 ## buff, consumed by) the ORIGINAL cast in the real resolver (battle_resolver.gd:739-744's
 ## per-instance ConsumeDamageMultiplierFactors call) and would double-count here otherwise.
+## p_crit_factor is the burst skill's own expected crit factor (BurstReachability._CritFactor,
+## blended by allow_critical share) — a separate-instance repeat is its own damage resolution
+## in the real resolver and rolls its own crit the same way the original cast does, so it is
+## mitigated through the same expected factor rather than 1.0.
 static func _MultiInstanceContrastRatio(
 		p_skill_entry: Dictionary, p_bonus: Dictionary, p_skill_aggregate: float, p_defence: float,
-		p_baseline_damage: float) -> float:
+		p_baseline_damage: float, p_crit_factor: float) -> float:
 	var own_bucket_factor: float = 1.0
 	if(Manifest.Contribution_Class.Channel2 == p_skill_entry.get("class") \
 			or Manifest.Contribution_Class.Channel3_Cascade == p_skill_entry.get("class")):
@@ -427,7 +506,7 @@ static func _MultiInstanceContrastRatio(
 	for i in instances:
 		factor_sum += (1.0 + magnitude) * pow(compounding, float(i))
 	var repeat_damage: float = Skills.MitigatedDamageUnrounded(
-			p_defence, p_skill_aggregate * own_bucket_factor * factor_sum, 1.0, 1.0)
+			p_defence, p_skill_aggregate * own_bucket_factor * factor_sum, p_crit_factor, 1.0)
 	return repeat_damage / p_baseline_damage
 
 
@@ -435,11 +514,12 @@ static func _MultiInstanceContrastRatio(
 ## mutually exclusive folds, so at most one of the two is ever nonzero.
 static func _GatedContrastRatios(
 		p_skill_entry: Dictionary, p_skill_aggregate: float, p_defence: float,
-		p_baseline_damage: float) -> Array[float]:
+		p_baseline_damage: float, p_crit_factor: float) -> Array[float]:
 	var bonus: Dictionary = p_skill_entry.get("gated_bonus", {})
 	if(bonus.is_empty() or _IsSameInstanceFold(bonus)):
 		return [0.0, 0.0]
-	var ratio: float = _MultiInstanceContrastRatio(p_skill_entry, bonus, p_skill_aggregate, p_defence, p_baseline_damage)
+	var ratio: float = _MultiInstanceContrastRatio(
+			p_skill_entry, bonus, p_skill_aggregate, p_defence, p_baseline_damage, p_crit_factor)
 	if("separate_instance" == bonus.get("fold", "same_instance")):
 		return [ratio, 0.0]
 	return [0.0, ratio]
@@ -465,6 +545,45 @@ static func _PassiveApplies(p_role: Types.Role, p_skill: Skill, p_skill_index: i
 			return true
 
 
+## The caster's expected crit factor against p_boss_knowledge — mirrors
+## battle_resolver.gd's own _ResolveDamage roll (chance) and crit-multiplier formula
+## (Concept_Document.md 3.2.1 #4) as an EXPECTED VALUE rather than a roll, since this scorer
+## has no battle to roll against: crit_factor = 1 + (chance/100) * (multiplier - 1), so a crit
+## CHANCE source (Flaw Analysis, Keen Edge, the Appraiser's own base 30) actually moves the
+## score, not just crit damage. p_fractions/p_points are the CritChance/CritDamage entries of
+## _ContributeGrantedAttributeBuffs's own return value. The chance clamp mirrors the resolver's
+## roll saturating at its [1.0, 100.0] range; the damage floor is GameBalance.MINIMUM_CRIT_DAMAGE,
+## same as the runtime.
+static func _CritFactor(
+		p_caster: Character, p_fractions: Dictionary, p_points: Dictionary, p_boss_knowledge: float) -> Dictionary:
+	var base_chance: float = float(p_caster._attributes[Types.Attribute.CritChance])
+	var base_damage: float = float(p_caster._attributes[Types.Attribute.CritDamage])
+	var chance: float = clampf(
+			base_chance * (1.0 + p_fractions.get(Types.Attribute.CritChance, 0.0))
+					+ p_points.get(Types.Attribute.CritChance, 0.0),
+			0.0, 100.0)
+	var damage_multiplier: float = maxf(
+			GameBalance.MINIMUM_CRIT_DAMAGE,
+			base_damage * (1.0 + p_fractions.get(Types.Attribute.CritDamage, 0.0))
+					+ p_points.get(Types.Attribute.CritDamage, 0.0) - p_boss_knowledge * 0.5
+			) * 0.01
+	var factor: float = 1.0 + (chance / 100.0) * (damage_multiplier - 1.0)
+	return {"chance": chance, "damage_multiplier": damage_multiplier, "factor": factor}
+
+
+## Blends a skill's expected crit factor by the share of its aggregate that can actually crit
+## (_CritEligibleAggregate vs _ScaledAggregate) — a skill mixing crit-eligible and
+## crit-ineligible DamageEffects, or one with allow_critical = false outright (eligible share
+## 0.0), must not be scored as if the whole aggregate rolled the caster's crit factor.
+static func _EffectiveCritFactor(
+		p_skill: Skill, p_character: Character, p_attribute_bonus: Dictionary, p_total_aggregate: float,
+		p_crit_factor: float) -> float:
+	if(0.0 == p_total_aggregate):
+		return 1.0
+	var eligible_share: float = _CritEligibleAggregate(p_skill, p_character, p_attribute_bonus) / p_total_aggregate
+	return 1.0 + eligible_share * (p_crit_factor - 1.0)
+
+
 static func _ScoreCandidate(
 		p_characters: Array[Character],
 		p_caster_index: int,
@@ -477,10 +596,12 @@ static func _ScoreCandidate(
 	var caster: Character = p_characters[p_caster_index]
 	var basic_skill: Skill = _BasicSkill(caster)
 	var attribute_bonus: Dictionary = _ContributeGrantedAttributeBuffs(p_characters, p_caster_index, p_manifest)
-	var basic_aggregate: float = _ScaledAggregate(basic_skill, caster, attribute_bonus)
+	var fractions: Dictionary = attribute_bonus.get("fractions", {})
+	var points: Dictionary = attribute_bonus.get("points", {})
+	var basic_aggregate: float = _ScaledAggregate(basic_skill, caster, fractions)
 	if(0.0 == basic_aggregate):
 		return null
-	var skill_aggregate: float = _ScaledAggregate(p_skill, caster, attribute_bonus)
+	var skill_aggregate: float = _ScaledAggregate(p_skill, caster, fractions)
 
 	var buckets: Dictionary = {}
 	var caster_role_entry: Dictionary = p_manifest.get(caster._role, {})
@@ -502,6 +623,8 @@ static func _ScoreCandidate(
 	for gate: StringName in _ContributeGatedTeamBonuses(p_characters, buckets, p_manifest):
 		if(&"" != gate):
 			assumed_gates.append(gate)
+	for gate: StringName in attribute_bonus.get("gates", []):
+		assumed_gates.append(gate)
 
 	var anchor_debuff_key: StringName = _AnchorDebuffKey(p_skill_entry)
 	_ContributeGrantedStatuses(p_characters, p_caster_index, buckets, anchor_debuff_key, p_manifest)
@@ -514,13 +637,22 @@ static func _ScoreCandidate(
 	var product: float = modifier.Product()
 
 	var defence: float = BlowoutCalibration.BOSSES[0][2]
+	var boss_knowledge: float = BlowoutCalibration.BOSSES[0][3]
+	var crit: Dictionary = _CritFactor(caster, fractions, points, boss_knowledge)
+	var baseline_crit_factor: float = _EffectiveCritFactor(
+			basic_skill, caster, fractions, basic_aggregate, crit.get("factor"))
+	var burst_crit_factor: float = _EffectiveCritFactor(
+			p_skill, caster, fractions, skill_aggregate, crit.get("factor"))
 	# Unrounded core, not Skills.MitigatedDamage's own int(ceil(...)) — contrast_ratio and
 	# modifier_term are ratios of these three, and rounding each one first would introduce a
 	# quantization artifact the real single-roll formula does not have.
-	var baseline_damage: float = Skills.MitigatedDamageUnrounded(defence, basic_aggregate, 1.0, 1.0)
-	var modifier_only_damage: float = Skills.MitigatedDamageUnrounded(defence, basic_aggregate * product, 1.0, 1.0)
-	var burst_damage: float = Skills.MitigatedDamageUnrounded(defence, skill_aggregate * product, 1.0, 1.0)
-	var gated_ratios: Array[float] = _GatedContrastRatios(p_skill_entry, skill_aggregate, defence, baseline_damage)
+	var baseline_damage: float = Skills.MitigatedDamageUnrounded(defence, basic_aggregate, baseline_crit_factor, 1.0)
+	var modifier_only_damage: float = Skills.MitigatedDamageUnrounded(
+			defence, basic_aggregate * product, baseline_crit_factor, 1.0)
+	var burst_damage: float = Skills.MitigatedDamageUnrounded(
+			defence, skill_aggregate * product, burst_crit_factor, 1.0)
+	var gated_ratios: Array[float] = _GatedContrastRatios(
+			p_skill_entry, skill_aggregate, defence, baseline_damage, burst_crit_factor)
 	var repeat_contrast_ratio: float = gated_ratios[0]
 	var sustained_contrast_ratio: float = gated_ratios[1]
 	if(0.0 != repeat_contrast_ratio or 0.0 != sustained_contrast_ratio):
@@ -537,6 +669,11 @@ static func _ScoreCandidate(
 	result.base_term = skill_aggregate / basic_aggregate
 	result.modifier_term = modifier_only_damage / baseline_damage
 	result.contrast_ratio = burst_damage / baseline_damage
+	result.crit_chance = crit.get("chance")
+	result.crit_damage_multiplier = crit.get("damage_multiplier")
+	result.crit_factor = crit.get("factor")
+	result.baseline_crit_factor = baseline_crit_factor
+	result.burst_crit_factor = burst_crit_factor
 	result.buckets = buckets
 	result.distinct_key_count = buckets.size()
 	result.dropped_statuses = dropped
@@ -617,37 +754,73 @@ static func _ContributeGrantedStatuses(
 				_Contribute(p_buckets, StringName(String(grant.get("bucket_key", ""))), grant.get("magnitude", 0.0))
 
 
+## Normalizes a "granted_attribute_buff" field to an Array of grant dicts — the field may hold
+## a single dict (every pre-crit entry) or an Array of dicts (a grant applying two different
+## magnitudes to two different attributes in one action, e.g. Full Appraisal's Keen Edge +15
+## CritChance and Lethal Precision +50 CritDamage). An empty/absent field normalizes to [].
+static func _NormalizeGrantList(p_field: Variant) -> Array[Dictionary]:
+	if(p_field is Array):
+		var grants: Array[Dictionary] = []
+		for entry in p_field:
+			grants.append(entry)
+		return grants
+	if(p_field is Dictionary and not (p_field as Dictionary).is_empty()):
+		return [p_field]
+	return []
+
+
 ## Additive per-attribute bonus reaching p_candidate_index from every teammate's manifest
-## "granted_attribute_buff" — skill-scoped grants use the same _GrantReachesCandidate reach
-## rule as _ContributeGrantedStatuses; passive-scoped grants (Tactician's Plan ahead) have no
-## skill target to read, so they mark their own reach as "team" (every candidate, self
-## included) instead.
+## "granted_attribute_buff" entries, split into a multiplicative "fractions" dict and a flat
+## "points" dict per the field's own "kind" (see kit_contribution_manifest.gd's field docs),
+## plus every "gate" named along the way. Skill-scoped grants use the same _GrantReachesCandidate
+## reach rule as _ContributeGrantedStatuses, unless the grant itself declares "team" reach
+## (Flaw Analysis's Exposed Facet sits on the target and buffs every attacker of it, not an
+## ally-target grant at all); passive-scoped grants (Tactician's Plan ahead, Strike the Flaw)
+## have no skill target to read, so "team" is their only reach.
 static func _ContributeGrantedAttributeBuffs(
 		p_characters: Array[Character], p_candidate_index: int, p_manifest: Dictionary) -> Dictionary:
-	var bonus: Dictionary = {}
+	var fractions: Dictionary = {}
+	var points: Dictionary = {}
+	var gates: Array[StringName] = []
 	for granter_index in p_characters.size():
 		var granter: Character = p_characters[granter_index]
 		var role_entry: Dictionary = p_manifest.get(granter._role, {})
 		for passive_entry: Dictionary in role_entry.get("passive", []):
-			var grant: Dictionary = passive_entry.get("granted_attribute_buff", {})
-			if(not grant.is_empty() and "team" == grant.get("reach", "")):
-				_AccumulateAttributeBuff(bonus, grant)
+			for grant: Dictionary in _NormalizeGrantList(passive_entry.get("granted_attribute_buff", {})):
+				if("team" == grant.get("reach", "")):
+					_AccumulateAttributeBuff(fractions, points, grant)
+					_AppendGate(gates, grant)
 		var skill_entries: Array = role_entry.get("skills", [])
 		for skill_index in skill_entries.size():
 			var skill_entry: Dictionary = skill_entries[skill_index]
-			var grant: Dictionary = skill_entry.get("granted_attribute_buff", {})
-			if(grant.is_empty() or skill_index >= granter._skills.size()):
+			if(skill_index >= granter._skills.size()):
 				continue
-			var granting_skill: Skill = granter._skills[skill_index]
-			if(_GrantReachesCandidate(granting_skill, granter_index, p_candidate_index)):
-				_AccumulateAttributeBuff(bonus, grant)
-	return bonus
+			for grant: Dictionary in _NormalizeGrantList(skill_entry.get("granted_attribute_buff", {})):
+				if("team" == grant.get("reach", "")):
+					_AccumulateAttributeBuff(fractions, points, grant)
+					_AppendGate(gates, grant)
+					continue
+				var granting_skill: Skill = granter._skills[skill_index]
+				if(_GrantReachesCandidate(granting_skill, granter_index, p_candidate_index)):
+					_AccumulateAttributeBuff(fractions, points, grant)
+					_AppendGate(gates, grant)
+	return {"fractions": fractions, "points": points, "gates": gates}
 
 
-static func _AccumulateAttributeBuff(p_bonus: Dictionary, p_grant: Dictionary) -> void:
+## Routes a grant's magnitude into p_fractions (the default "percentage" kind, a multiplicative
+## fraction of the attribute's base value) or p_points ("percentage_point", a flat add) per the
+## grant's own "kind" field.
+static func _AccumulateAttributeBuff(p_fractions: Dictionary, p_points: Dictionary, p_grant: Dictionary) -> void:
 	var magnitude: float = p_grant.get("magnitude", 0.0)
+	var target: Dictionary = p_points if "percentage_point" == p_grant.get("kind", "percentage") else p_fractions
 	for attribute: Types.Attribute in p_grant.get("attributes", []):
-		p_bonus[attribute] = p_bonus.get(attribute, 0.0) + magnitude
+		target[attribute] = target.get(attribute, 0.0) + magnitude
+
+
+static func _AppendGate(p_gates: Array[StringName], p_grant: Dictionary) -> void:
+	var gate: StringName = StringName(String(p_grant.get("gate", "")))
+	if(&"" != gate):
+		p_gates.append(gate)
 
 
 ## Drops the lowest-magnitude status buckets past GameBalance.MAX_STATUS_EFFECTS, in place

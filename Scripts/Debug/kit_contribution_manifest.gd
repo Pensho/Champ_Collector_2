@@ -85,8 +85,25 @@ class_name KitContributionManifest extends RefCounted
 ##   granted_attribute_buff - optional. A Channel1 entry's fixed one-shot buff (Empower, Attune,
 ##                    Rush, Fortify, Exhert — not a self-accumulated stack), read by
 ##                    burst_reachability.gd's _ContributeGrantedAttributeBuffs. Shape:
-##                    {attributes, magnitude}, plus reach: "team" on a passive entry (no skill
-##                    target to derive reach from — see Tactician's Plan ahead).
+##                    {attributes, magnitude, kind, reach, gate}, plus reach: "team" on a passive
+##                    entry (no skill target to derive reach from — see Tactician's Plan ahead).
+##                    `kind` distinguishes how `magnitude` combines with the attribute's base
+##                    value, mirroring the runtime's own StatusEffectData.magnitude_kind shapes:
+##                      - "percentage" (default, omit the field): a multiplicative fraction of
+##                        the base value — Empower, Rush, Exhert.
+##                      - "percentage_point": a flat point add, independent of the base value —
+##                        every crit status (Keen Edge, Lethal Precision, Exposed Facet, Cracked
+##                        Facet all use MagnitudeKind.AttributePercentagePointAdd /
+##                        AttackerCritChanceBonus / AttackerCritDamageBonus at runtime, never a
+##                        fraction of CritChance/CritDamage's own base value).
+##                    `gate` (StringName, optional) names a precondition this grant depends on
+##                    beyond "was the granting skill/passive triggered" — Strike the Flaw's
+##                    Cracked Facet only exists after a crit has already landed — surfaced on
+##                    CandidateResult.assumed_gates the same way a skill's own gated_bonus is.
+##                    A field may hold a single dict or an Array of dicts, for a grant that
+##                    applies two different magnitudes to two different attributes in one grant
+##                    (Full Appraisal's Keen Edge +15 CritChance and Lethal Precision +50
+##                    CritDamage are not the same magnitude, so they cannot share one dict).
 
 enum Contribution_Class
 {
@@ -402,8 +419,12 @@ const MANIFEST: Dictionary = {
 					"class": Contribution_Class.Channel1,
 					"precondition": "On Critical_Hit, applies Cracked Facet (2 turns at Legendary) to " +
 							"the target — grants attackers +25 CritDamage percentage points against it, " +
-							"folded into crit math in _ResolveDamage, not a CombinedDamageModifier bucket.",
-					"citation": "strike_the_flaw_trait.gd:3-8,28-30; battle_resolver.gd:735"},
+							"folded into crit math in _ResolveDamage, not a CombinedDamageModifier bucket. " +
+							"Gated on a critical hit already having landed, so it is scored as though " +
+							"satisfied like this file's other gated_bonus assumptions.",
+					"citation": "strike_the_flaw_trait.gd:3-8,28-30; battle_resolver.gd:735",
+					"granted_attribute_buff": {"attributes": [Types.Attribute.CritDamage], "kind": "percentage_point",
+							"magnitude": 25.0, "reach": "team", "gate": &"prior_critical_hit"}},
 		],
 		"skills": [
 			{"name": "Sizing Cut", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
@@ -414,14 +435,21 @@ const MANIFEST: Dictionary = {
 					"class": Contribution_Class.Channel1,
 					"precondition": "Applies Exposed Facet (2 turns): +15 CritChance percentage points " +
 							"to attackers of the target, consumed in _AttackerCritChanceBonus. No damage " +
-							"of its own.",
-					"citation": "Flaw_Analysis.tres:6-11; status_effect_resolver.gd:598-604"},
+							"of its own. Sits on the target and buffs every attacker of it, not an " +
+							"ally-target grant, so it is modeled with team reach.",
+					"citation": "Flaw_Analysis.tres:6-11; status_effect_resolver.gd:598-604",
+					"granted_attribute_buff": {"attributes": [Types.Attribute.CritChance], "kind": "percentage_point",
+							"magnitude": 15.0, "reach": "team"}},
 			{"name": "Full Appraisal", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Channel1,
 					"precondition": "Grants one ally Keen Edge (+15 CritChance, 2 turns) and Lethal " +
 							"Precision (+50 CritDamage, 2 turns) — both flat attribute-percentage-point " +
 							"adds, no CombinedDamageModifier bucket.",
-					"citation": "Full_Appraisal.tres:6-16"},
+					"citation": "Full_Appraisal.tres:6-16",
+					"granted_attribute_buff": [
+						{"attributes": [Types.Attribute.CritChance], "kind": "percentage_point", "magnitude": 15.0},
+						{"attributes": [Types.Attribute.CritDamage], "kind": "percentage_point", "magnitude": 50.0},
+					]},
 		],
 	},
 	Types.Role.Tactician: {
