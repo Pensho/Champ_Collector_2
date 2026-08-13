@@ -315,13 +315,11 @@ Current roles, their identity and purpose exist as follows:
 - Plague Doctor
     - A debuff focused character, applying various damage over time and stat reducing debuffs to enemies. Signature zone: Miasma (see section 3.2.4.1). Primary attributes: Mysticism, Resistance.
     - Purpose: Debuffer
-    - Passive: Comorbidity [Channel 2, provisional] - Damage-over-time debuffs applied by the Plague Doctor tick for +x% damage per debuff on the target (the ticking debuff included, debuffs from any source counted, up to 5).
-        - **Provisional:** the tick-bonus formula is sound, but the zone-trigger debuff path (used
-          by Miasma, this kit's only self-ticking debuff) bypasses the code parameter that carries
-          this bonus — as shipped, Comorbidity has nothing in its own kit to boost. See
-          `Scripts/Debug/kit_contribution_manifest.gd` (Comorbidity entry) and
-          `comorbidity_trait.gd:3-8,25-33`.
-        - Per-debuff tick bonus: 5% Uncommon, 7% Rare, 9% Epic, 11% Legendary
+    - Passive: Comorbidity [Channel 3] - Debuffs placed by the Plague Doctor's skills trigger a cascading extra tick once for every other distinct debuff type present on the target (any source, uncapped, subject to the shared cascade fan-out cap in section 1.1.4). Total damage per turn is unchanged from a flat multiplier — the difference is that each repeat resolves as its own cascade instance, visible to other Channel 3 effects that react to cascade instances.
+        - Known gap: the zone-trigger debuff path (used by Miasma's Blight) does not thread the
+          Comorbidity flag, so Blight itself never repeats — only debuffs placed by non-zone
+          skills (e.g. Outbreak's Plague) do. See `Scripts/Debug/kit_contribution_manifest.gd`
+          (Comorbidity entry) and `apply_debuff_effect.gd`'s zone-trigger branch.
     - Fielded by: `Plague_Doctor.tres`
 - Warlord
     - A buffing tank character, applying various buffs to self and allies while being able to take a lot of damage. Primary attributes: Health, Defense.

@@ -29,6 +29,10 @@ func _RegisterCascadeListeners() -> void:
 			StringName(Types.Buff_Type.keys()[Types.Buff_Type.Mirror_Coat]),
 			func(_e: CascadeEvent) -> bool: return true,
 			_CascadeMirrorCoat)
+	cascade.Subscribe(Types.Cascade_Trigger.Debuff_Ticked,
+			&"Comorbidity",
+			func(_e: CascadeEvent) -> bool: return true,
+			_CascadeComorbidityRetick)
 
 func ApplyBuff(p_target_ID: int, p_buff_template: StatusEffects.Buff) -> Array[CombatResult]:
 	_resolver._BeginBatch()
@@ -291,13 +295,24 @@ func _TriggerExistingCasterDebuffs(
 		_resolver._Emit(removed)
 
 	_EmitDebuffTickIfAny(p_caster_ID, tick)
+	_PostComorbidityCascadeIfAny(p_caster_ID, tick)
 
+## Sums tick damage across p_target's active debuffs. With p_only_repeating_source_id left at
+## -1, sums every ticking debuff at its own (unmultiplied) magnitude — Comorbidity's repeat is a
+## separate cascade instance (see _CascadeComorbidityRetick), not a multiplier on this sum. Pass
+## a source ID to instead sum only that source's Comorbidity-flagged debuffs, for resolving a
+## single repeat instance.
 func _ComputeDebuffTickDamage(
-		p_target: Character, p_target_attributes: Dictionary[Types.Attribute, int]) -> Dictionary:
+		p_target: Character,
+		p_target_attributes: Dictionary[Types.Attribute, int],
+		p_only_repeating_source_id: int = -1) -> Dictionary:
 	var tick_damage_by_source: Dictionary[int, int] = {}
 	var tick_damage_total: int = 0
-	var distinct_debuff_type_count: int = _DistinctDebuffTypeCount(p_target)
+	var repeating_source_ids: Dictionary[int, bool] = {}
 	for debuff in p_target._active_debuffs:
+		if(p_only_repeating_source_id >= 0
+				and (not debuff.repeats_per_distinct_debuff or debuff.source_ID != p_only_repeating_source_id)):
+			continue
 		var data: StatusEffectData = StatusEffectRegistry.DebuffData(debuff.type)
 		if(null == data or not data.applies_on_self_tick):
 			continue
@@ -313,11 +328,16 @@ func _ComputeDebuffTickDamage(
 				pass
 		if(tick_damage <= 0):
 			continue
-		if(debuff.repeats_per_distinct_debuff):
-			tick_damage *= maxi(1, distinct_debuff_type_count)
+		if(p_only_repeating_source_id < 0 and debuff.repeats_per_distinct_debuff):
+			repeating_source_ids[debuff.source_ID] = true
 		tick_damage_total += tick_damage
 		tick_damage_by_source[debuff.source_ID] = tick_damage_by_source.get(debuff.source_ID, 0) + tick_damage
-	return {"total": tick_damage_total, "by_source": tick_damage_by_source}
+	return {
+		"total": tick_damage_total,
+		"by_source": tick_damage_by_source,
+		"distinct_count": _DistinctDebuffTypeCount(p_target),
+		"repeating_source_ids": repeating_source_ids.keys(),
+	}
 
 func _DistinctDebuffTypeCount(p_character: Character) -> int:
 	var distinct_types: Dictionary[Types.Debuff_Type, bool] = {}
@@ -336,10 +356,44 @@ func _EmitDebuffTickIfAny(p_target_ID: int, p_tick: Dictionary) -> void:
 	result.amount_by_source = p_tick.get("by_source", {})
 	_resolver._Emit(result)
 
+## Comorbidity (Concept_Document.md 1.1.3's cascade channel): a debuff that carries
+## repeats_per_distinct_debuff resolves one extra cascade instance per distinct debuff type on
+## the target beyond itself, each instance re-ticking only that source's own flagged debuffs.
+## Posted per source so two different casters' Comorbidity-flagged debuffs on the same target
+## each get their own instances.
+func _PostComorbidityCascadeIfAny(p_target_ID: int, p_tick: Dictionary) -> void:
+	if(p_tick.get("total", 0) <= 0):
+		return
+	if(_resolver._characters[p_target_ID]._current_health <= 0):
+		return
+	var extra_instances: int = maxi(0, int(p_tick.get("distinct_count", 0)) - 1)
+	if(extra_instances <= 0):
+		return
+	for source_ID in p_tick.get("repeating_source_ids", []):
+		var event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Debuff_Ticked)
+		event.subject_ID = p_target_ID
+		event.origin_ID = source_ID
+		event.instance_count = extra_instances
+		_resolver.GetCascadeResolver().Post(event)
+
+## Resolves one Comorbidity cascade instance: re-ticks only p_event.origin_ID's own
+## repeats_per_distinct_debuff-flagged debuffs on p_event.subject_ID, at their own unmultiplied
+## magnitude. Does not itself post further cascade events — CascadeResolver's once-per-action
+## dedup already covers the originating trigger.
+func _CascadeComorbidityRetick(p_event: CascadeEvent) -> void:
+	var target: Character = _resolver._characters.get(p_event.subject_ID)
+	if(null == target or target._current_health <= 0):
+		return
+	var attributes: Dictionary[Types.Attribute, int] = _resolver.GetEffectiveAttributes(p_event.subject_ID)
+	var tick: Dictionary = _ComputeDebuffTickDamage(target, attributes, p_event.origin_ID)
+	_EmitDebuffTickIfAny(p_event.subject_ID, tick)
+
 func ForceExtraDebuffTick(p_target_ID: int) -> void:
 	var target: Character = _resolver._characters[p_target_ID]
 	var attributes: Dictionary[Types.Attribute, int] = _resolver.GetEffectiveAttributes(p_target_ID)
-	_EmitDebuffTickIfAny(p_target_ID, _ComputeDebuffTickDamage(target, attributes))
+	var tick: Dictionary = _ComputeDebuffTickDamage(target, attributes)
+	_EmitDebuffTickIfAny(p_target_ID, tick)
+	_PostComorbidityCascadeIfAny(p_target_ID, tick)
 
 
 func _TriggerExistingCasterBuffs(

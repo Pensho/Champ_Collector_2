@@ -1123,12 +1123,17 @@ phase, not data-driven: with only four listeners, a `StatusEffectData` schema fi
 warranted yet.
 
 **Vocabulary scope.** `Types.Cascade_Trigger` held only the two values the four ported effects
-needed until `Skill_Resolved` (below) added a third. A threshold-crossing trigger (health or
-status-count) or a cascade-on-cascade trigger (an effect listening for another cascade instance
-landing, per Concept Document 1.1.3's compounding case) still needs a new enum value and a `Post`
-call site added at the relevant point before it is authorable — the post-and-drain queue and the
-two termination bounds do not themselves need to change to support one, but the vocabulary as
-shipped does not yet express those shapes.
+needed until `Skill_Resolved` (below) added a third, and `Debuff_Ticked` a fourth — posted from
+`StatusEffectResolver._PostComorbidityCascadeIfAny` whenever a debuff carrying
+`repeats_per_distinct_debuff` (the Plague Doctor's Comorbidity) ticks with more than one distinct
+debuff type present on the target, one extra instance per type beyond itself, matched unconditionally
+and keyed per debuff source so two casters' flagged debuffs on the same target repeat
+independently. A threshold-crossing trigger (health or status-count) or a cascade-on-cascade
+trigger (an effect listening for another cascade instance landing, per Concept Document 1.1.3's
+compounding case) still needs a new enum value and a `Post` call site added at the relevant point
+before it is authorable — the post-and-drain queue and the two termination bounds do not
+themselves need to change to support one, but the vocabulary as shipped does not yet express those
+shapes.
 
 **`Skill_Resolved` and the Sorcerer's reagent-triggered repeat.** `BattleResolver.ResolveSkill`
 posts a `Skill_Resolved` `CascadeEvent` (caster, target IDs, and skill index) right after the

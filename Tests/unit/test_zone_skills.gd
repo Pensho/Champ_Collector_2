@@ -110,6 +110,36 @@ func test_miasma_forces_an_extra_tick_on_the_enemys_existing_debuffs() -> void:
 	assert_eq(_roster[3]._active_debuffs[0].duration, 3,
 		"The forced extra tick must not cost the debuff a turn of duration")
 
+func test_miasmas_forced_tick_also_cascades_a_comorbidity_flagged_debuff() -> void:
+	_positions.occupants_by_zone[0] = [3]
+	_roster[3]._attributes[Types.Attribute.Health] = 100000
+	_roster[3]._current_health = 100000
+	_roster[1]._attributes[Types.Attribute.Mysticism] = 50
+	# Appended directly (rather than through ApplyDebuff, whose zone-trigger path does not
+	# thread the Comorbidity flag - a separate, pre-existing gap) so the flag is actually set.
+	var plague: StatusEffects.Debuff = StatusEffects.Debuff.new()
+	plague.type = Types.Debuff_Type.Plague
+	plague.duration = 3
+	plague.source_ID = 1
+	plague.repeats_per_distinct_debuff = true
+	plague.value = floor(50 * StatusEffectRegistry.DebuffData(Types.Debuff_Type.Plague).magnitude)
+	_roster[3]._active_debuffs.append(plague)
+	var enfeeble: StatusEffects.Debuff = StatusEffects.Debuff.new()
+	enfeeble.type = Types.Debuff_Type.Enfeeble
+	enfeeble.duration = 3
+	enfeeble.source_ID = 1
+	_roster[3]._active_debuffs.append(enfeeble)
+	var health_before: int = _roster[3]._current_health
+
+	_cast(0, "res://Data/Character_Skill_Variants/Zone_Skills/Miasma.tres", [], 0)
+
+	# Blight also lands and applies_on_self_tick=false by default is irrelevant here; only
+	# Plague and the forced retick's Comorbidity cascade should reduce health.
+	var plague_tick: int = int(floor(50 * StatusEffectRegistry.DebuffData(Types.Debuff_Type.Plague).magnitude))
+	# 2 distinct types (Plague, Enfeeble) on Miasma's forced tick => 1 base + 1 cascade repeat.
+	assert_eq(health_before - _roster[3]._current_health, plague_tick * 2,
+		"Miasma's forced tick should drain and resolve a Comorbidity cascade instance")
+
 func test_weight_of_law_stuns_the_enemy_standing_in_it() -> void:
 	_positions.occupants_by_zone[0] = [3]
 

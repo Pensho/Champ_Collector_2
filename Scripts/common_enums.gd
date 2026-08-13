@@ -234,6 +234,7 @@ enum Cascade_Trigger
 	Status_Expired,
 	Status_Landed,
 	Skill_Resolved,
+	Debuff_Ticked,
 }
 
 func RarityName(p_rarity: Types.Rarity) -> String:

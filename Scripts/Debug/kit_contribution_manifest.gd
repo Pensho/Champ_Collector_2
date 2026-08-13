@@ -815,14 +815,18 @@ const MANIFEST: Dictionary = {
 		"passive": [
 			{"name": "Comorbidity", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Channel3_Cascade,
-					"precondition": "Flags every debuff this Role casts to repeat its tick once per " +
-							"distinct debuff type on the holder (any source, uncapped) whenever it ticks " +
-							"— Plague Doctor's Channel-3 claim (Role_Kit_Design.md section 1's 'comparable " +
-							"channel contribution', not a bucket key). Scored on Outbreak's own entry " +
-							"below (the skill that actually places the debuff the tick rides on), not " +
-							"here — see Outbreak's gated_bonus.",
+					"precondition": "Flags every debuff this Role casts to trigger a cascading extra " +
+							"tick (Types.Cascade_Trigger.Debuff_Ticked) once per other distinct debuff " +
+							"type on the holder (any source, uncapped, bounded by the shared cascade " +
+							"fan-out cap) whenever it ticks — Plague Doctor's Channel-3 claim " +
+							"(Role_Kit_Design.md section 1's 'comparable channel contribution', not a " +
+							"bucket key). Each repeat is a real cascade instance, not a multiplier on " +
+							"one aggregated number. Scored on Outbreak's own entry below (the skill that " +
+							"actually places the debuff the tick rides on), not here — see Outbreak's " +
+							"gated_bonus.",
 					"citation": "comorbidity_trait.gd; status_effect_resolver.gd " +
-							"(_ComputeDebuffTickDamage, ForceExtraDebuffTick)"},
+							"(_ComputeDebuffTickDamage, _PostComorbidityCascadeIfAny, " +
+							"_CascadeComorbidityRetick, ForceExtraDebuffTick)"},
 		],
 		"skills": [
 			{"name": "Septic Lance", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,

@@ -231,8 +231,12 @@ Format per entry: Status, Passive, Skills (name / effect / channel), Projected n
 
 **Status:** Implemented (`aca439b`). Batch 1.
 
-**Passive: Comorbidity.** Debuffs placed by this Role's skills tick again once for every distinct
-debuff type on the target (any source, uncapped).
+**Passive: Comorbidity.** Debuffs placed by this Role's skills trigger a cascading extra tick
+(`Types.Cascade_Trigger.Debuff_Ticked`) once for every other distinct debuff type on the target
+(any source, uncapped, bounded by the shared `MAX_CASCADE_INSTANCES_PER_ACTION` fan-out cap). Each
+repeat is a real cascade instance — its own `Cascade_Triggered` marker and its own
+`Cascade_Instance_Resolved` broadcast — rather than a multiplier folded into one aggregated tick
+number, so the passive is a genuine Channel 3 anchor, not Channel 2 dressed as one.
 
 | Slot | Skill | Effect | Channel |
 |---|---|---|---|

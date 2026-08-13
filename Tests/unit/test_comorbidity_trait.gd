@@ -3,17 +3,29 @@ extends GutTest
 const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 
 # Coverage for Comorbidity at two levels: the trait itself (flags every debuff it casts to
-# repeat its tick per distinct debuff type on the target), and the resolver's tick-time
-# multiplication of any debuff carrying that flag.
+# repeat as a cascade instance per distinct debuff type on the target), and the resolver's
+# cascade-driven retick of any debuff carrying that flag.
+
+class FakeCascadeInstanceListenerTrait extends CharacterTrait:
+	var _notified_count: int = 0
+
+	func _init() -> void:
+		_execution_steps[Types.Combat_Event.Cascade_Instance_Resolved] = Callable(self, "OnCascadeInstanceResolved")
+
+	func OnCascadeInstanceResolved(
+			_p_owner_ID: int, _p_event: CascadeEvent, _p_resolver: BattleResolver) -> void:
+		_notified_count += 1
 
 var _roster: Dictionary[int, Character] = {}
 var _resolver: BattleResolver = null
+var _cascade: CascadeResolver = null
 
 func before_each() -> void:
 	_roster.assign(TestFactory.make_full_roster())
 	for id in _roster.keys():
 		_roster[id]._skills.append(TestFactory.make_empty_skill())
 	_resolver = TestFactory.make_resolver(_roster, TestFactory.make_full_sides())
+	_cascade = _resolver.GetCascadeResolver()
 
 func _add_debuff(
 		p_character_ID: int,
@@ -86,29 +98,47 @@ func test_refreshing_an_existing_debuff_updates_the_flag() -> void:
 	assert_true(_roster[3]._active_debuffs[0].repeats_per_distinct_debuff,
 		"Refreshing should also stamp the Comorbidity-sourced flag")
 
-# --- Tick-time multiplication ---
+# --- Cascade-driven retick ---
 
-func test_tick_multiplies_by_the_targets_distinct_debuff_type_count_at_tick_time() -> void:
+func _cascade_triggers(p_results: Array[CombatResult]) -> Array[CombatResult]:
+	return p_results.filter(func(result):
+		return (result.kind == CombatResult.Kind.Cascade_Triggered
+				and result.cascade_trigger == Types.Cascade_Trigger.Debuff_Ticked))
+
+func test_base_tick_is_no_longer_multiplied() -> void:
 	_set_max_health(0, 100)
 	_add_debuff(0, Types.Debuff_Type.Burning, 1, 2, true)
 	_add_debuff(0, Types.Debuff_Type.Enfeeble, 1, 2)
 	_add_debuff(0, Types.Debuff_Type.Suppress, 1, 2)
-	# 3 distinct types (the ticking Burning included) => tick x 3.
 	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [], 0)
-	var tick: CombatResult = _burning_ticks(results)[0]
-	assert_eq(tick.amount, _expected_tick(100) * 3)
+	var ticks: Array[CombatResult] = _burning_ticks(results)
+	assert_eq(ticks[0].amount, _expected_tick(100), "The base tick stays at its own magnitude")
+
+func test_repeats_once_per_other_distinct_debuff_type_as_cascade_instances() -> void:
+	_set_max_health(0, 100)
+	_add_debuff(0, Types.Debuff_Type.Burning, 1, 2, true)
+	_add_debuff(0, Types.Debuff_Type.Enfeeble, 1, 2)
+	_add_debuff(0, Types.Debuff_Type.Suppress, 1, 2)
+	# 3 distinct types => 1 base tick + 2 cascade repeats.
+	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [], 0)
+	assert_eq(_cascade_triggers(results).size(), 2)
+	assert_eq(_burning_ticks(results).size(), 3)
+	var total: int = 0
+	for tick in _burning_ticks(results):
+		total += tick.amount
+	assert_eq(total, _expected_tick(100) * 3, "Total damage over the turn matches the old multiplier's total")
 
 func test_count_is_distinct_types_not_raw_instance_count() -> void:
 	_set_max_health(0, 100)
 	_add_debuff(0, Types.Debuff_Type.Burning, 1, 2, true)
 	for i in 4:
 		_add_debuff(0, Types.Debuff_Type.Enfeeble, 1, 2)
-	# 2 distinct types (Burning, Enfeeble) despite 4 stacked Enfeeble instances => tick x 2.
+	# 2 distinct types (Burning, Enfeeble) despite 4 stacked Enfeeble instances => 1 repeat.
 	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [], 0)
-	var tick: CombatResult = _burning_ticks(results)[0]
-	assert_eq(tick.amount, _expected_tick(100) * 2)
+	assert_eq(_cascade_triggers(results).size(), 1)
+	assert_eq(_burning_ticks(results).size(), 2)
 
-func test_count_is_uncapped() -> void:
+func test_count_is_uncapped_but_bounded_by_the_cascade_fan_out_cap() -> void:
 	_set_max_health(0, 100)
 	_add_debuff(0, Types.Debuff_Type.Burning, 1, 2, true)
 	var other_types: Array[Types.Debuff_Type] = [
@@ -118,33 +148,68 @@ func test_count_is_uncapped() -> void:
 	]
 	for type in other_types:
 		_add_debuff(0, type, 1, 2)
-	# 8 distinct types total => tick x 8, no cap.
+	# 8 distinct types total => 7 repeats, well under the fan-out cap.
 	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [], 0)
-	var tick: CombatResult = _burning_ticks(results)[0]
-	assert_eq(tick.amount, _expected_tick(100) * 8)
+	assert_eq(_cascade_triggers(results).size(), 7)
+	assert_eq(_burning_ticks(results).size(), 8)
 
 func test_debuffs_from_other_casters_are_unaffected() -> void:
 	_set_max_health(0, 100)
 	_add_debuff(0, Types.Debuff_Type.Burning, 1, 2, true)
 	_add_debuff(0, Types.Debuff_Type.Burning, 2, 2)
 	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [], 0)
-	var tick: CombatResult = _burning_ticks(results)[0]
-	# Source 1's own Burning is flagged and 1 distinct type is present => tick x 1.
-	assert_eq(tick.amount_by_source[1], _expected_tick(100))
-	# Source 2's Burning carries no flag, so it ticks at the unscaled base amount.
-	assert_eq(tick.amount_by_source[2], _expected_tick(100))
+	var ticks: Array[CombatResult] = _burning_ticks(results)
+	# Source 1's own Burning is flagged and 1 distinct type is present => no repeat, one base tick.
+	assert_eq(ticks.size(), 1)
+	assert_eq(ticks[0].amount_by_source[1], _expected_tick(100))
+	# Source 2's Burning carries no flag, and contributes to the same base tick unscaled.
+	assert_eq(ticks[0].amount_by_source[2], _expected_tick(100))
 
-func test_multiplier_recomputes_between_ticks() -> void:
+func test_only_the_flagged_source_repeats_when_multiple_casters_debuff_the_same_target() -> void:
+	_set_max_health(0, 100)
+	_add_debuff(0, Types.Debuff_Type.Burning, 1, 2, true)
+	_add_debuff(0, Types.Debuff_Type.Enfeeble, 2, 2)
+	# 2 distinct types => 1 repeat, and the repeat re-ticks only source 1's flagged Burning.
+	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [], 0)
+	var ticks: Array[CombatResult] = _burning_ticks(results)
+	assert_eq(ticks.size(), 2)
+	assert_eq(ticks[1].amount_by_source.get(1, 0), _expected_tick(100))
+	assert_false(ticks[1].amount_by_source.has(2), "The unflagged Enfeeble source must not repeat")
+
+func test_recomputes_between_turns_as_debuffs_expire() -> void:
 	_set_max_health(0, 100)
 	_add_debuff(0, Types.Debuff_Type.Burning, 1, 3, true)
 	_add_debuff(0, Types.Debuff_Type.Enfeeble, 1, 1)
 
-	# First tick: 2 distinct types => tick x 2.
+	# First turn: 2 distinct types => 1 repeat.
 	var first_results: Array[CombatResult] = _resolver.ResolveSkill(0, [], 0)
-	var first_tick: CombatResult = _burning_ticks(first_results)[0]
-	assert_eq(first_tick.amount, _expected_tick(100) * 2)
+	assert_eq(_cascade_triggers(first_results).size(), 1)
 
 	# The Enfeeble expired after the first tick; only the Burning itself remains.
 	var second_results: Array[CombatResult] = _resolver.ResolveSkill(0, [], 0)
-	var second_tick: CombatResult = _burning_ticks(second_results)[0]
-	assert_eq(second_tick.amount, _expected_tick(100))
+	assert_eq(_cascade_triggers(second_results).size(), 0)
+	var second_ticks: Array[CombatResult] = _burning_ticks(second_results)
+	assert_eq(second_ticks.size(), 1)
+	assert_eq(second_ticks[0].amount, _expected_tick(100))
+
+func test_a_target_killed_by_the_base_tick_produces_no_cascade_instances() -> void:
+	_set_max_health(0, 1)
+	_add_debuff(0, Types.Debuff_Type.Burning, 1, 2, true)
+	_add_debuff(0, Types.Debuff_Type.Enfeeble, 1, 2)
+
+	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [], 0)
+
+	assert_eq(_cascade_triggers(results).size(), 0)
+
+func test_instances_are_visible_to_the_cascade_instance_resolved_hook() -> void:
+	_set_max_health(0, 100)
+	var listener: FakeCascadeInstanceListenerTrait = FakeCascadeInstanceListenerTrait.new()
+	listener.Init(Types.Rarity.Common)
+	_roster[3]._trait = listener
+
+	_add_debuff(0, Types.Debuff_Type.Burning, 1, 2, true)
+	_add_debuff(0, Types.Debuff_Type.Enfeeble, 1, 2)
+	_add_debuff(0, Types.Debuff_Type.Suppress, 1, 2)
+	_resolver.ResolveSkill(0, [], 0)
+
+	assert_eq(listener._notified_count, 2, "One notification per real cascade instance (2 repeats)")
