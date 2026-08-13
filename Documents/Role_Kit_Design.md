@@ -40,6 +40,12 @@ A kit clearing the contract with one ~2x factor and a hook is a finished kit. "C
 contribute more damage?" is not a reason to keep designing, and a kit is never revised upward to
 close a gap against another Role's recorded number.
 
+**A declared identity is a claim on one term of a product the team assembles, never a self-contained
+total.** A Role supplies its term; the other channels come from teammates (`Concept_Document.md`
+1.1.3). Reading a Channel 3 kit's small Channel 2 bucket as a shortfall measures a term the Role
+never claimed, and pushes every kit toward being a self-sufficient damage dealer. Judge a kit on the
+term it declared, in that term's own kind (section 4).
+
 ### 1.1 Contribution direction
 
 Direction is **whose sheet the Role's primary contribution is measured on** — not what kind of
@@ -77,7 +83,13 @@ primary identity and field no damage factor at all, and it is measured on the co
 That is a complete pass, not a concession.
 
 Every Role still fields a basic skill, which is Channel 1 by default simply by scaling an
-attribute; that is not a channel identity claim. A Role of any identity may carry zero or more
+attribute; that is not a channel identity claim. A basic may also carry a rider — a low-chance
+status application, a small heal, a stack grant — or a Channel 2 bucket key, **provided the key is
+conditional**: gated on world state the player has to produce (Pratfall Sting's avoidance, Citation's
+Infraction tally). An *unconditional* key on a no-cooldown cast makes channel contribution free and
+is the one shape forbidden — Bar Brawler's Heap On ramp is the roster's only case, to fix at its own
+batch. Most basics stay plain: the allowance lets a kit put its identity on its basic, not a licence
+for every Role's basic to grow a second clause. A Role of any identity may carry zero or more
 Enabler-tagged skills or riders — a basic skill's secondary rider, a dedicated protection/denial
 skill, a heal — each held to the **collapse test** (`Concept_Document.md` 1.1.6) on its own
 merits: removing it makes the burst not happen, or not survive to happen. "Useful to have" fails.
@@ -111,8 +123,8 @@ extend this list):
 * current or missing Health, on either side; the caster's own resource or stack count;
 * turn-bar state — zone presence, section occupancy, relative position;
 * whether the target acted, was hit, or crit since the caster's last turn;
-* how many distinct debuff *types* are on the target (`bonus_per_debuff_on_target` gives each type
-  its own bucket, so each further type multiplies).
+* how many distinct debuff *types* are on the target (`bonus_per: {Target_Debuff_Count}` counts any
+  type from any source, including types authored later).
 
 ## 3. The synergy grammar
 
@@ -121,8 +133,8 @@ that actually multiply (`Technical_Design_Document.md` 7.4):
 
 | Mechanism | Schema | Why it multiplies |
 |---|---|---|
-| Per-debuff-type factor | `DamageEffect.bonus_per_debuff_on_target: {Debuff_Type: float}` | **One independent bucket per debuff type** — each further debuff on the target multiplies. The primary cross-kit hook, and the most under-used. |
-| Trait-counter factor | `DamageEffect.bonus_per: {Trait_Count_Source: float}` | Reads a counter another kit can feed. |
+| Trait-counter factor | `DamageEffect.bonus_per: {Trait_Count_Source: float}` | Reads a counter another kit can feed. `Target_Debuff_Count` is the debuff-density surface: it counts any distinct debuff type from any source, so a type authored in a later batch feeds it without editing the skill. Sums into the skill's own single bucket, so density is a linear payoff. |
+| Per-named-debuff factor | `DamageEffect.bonus_per_debuff_on_target: {Debuff_Type: float}` | One independent bucket per **named** debuff type, so each named type present multiplies. **Identity-scoped, not a general hook**: the dictionary enumerates its debuff types at authoring time, so it reads nothing invented later and is a step toward the named coupling section 2 forbids. Sole claimant is the Sorcerer's Cataclysm reading Warped, and it stays that way — a kit wanting debuff density uses the counter above. |
 | Granted modifier-bearing status | `ApplyBuffEffect` of a `DamageMultiplier` / `PerTargetDebuffDamagePercent` status | Lands the factor on whoever consumes it. |
 | Cascade instance count | `Types.Cascade_Trigger` | Each instance re-reads channels 1 and 2, so count multiplies against them. |
 | Zone `on_trigger` payload | `ZoneEffect.on_trigger: Array[SkillEffect]` | A separate resolution on a schedule the enemy walks into. |
@@ -130,6 +142,13 @@ that actually multiply (`Technical_Design_Document.md` 7.4):
 Governed by the composition law (`Concept_Document.md` 1.1.3): **same bucket key adds, distinct
 keys multiply, and keys are mechanic identity — never character identity.** Two Roles applying the
 same debuff type produce one factor, not two.
+
+**Using the cascade machinery is not the same as being Channel 3.** An effect qualifies only if it
+yields an instance **count that varies with something** — a resource, a debuff tally, a duration, a
+charge count — since 1.1.3 puts the channel's whole weight on that count compounding against
+channels 1 and 2. Fixed at one instance it multiplies nothing and belongs to whichever channel its
+scaling puts it in, whatever plumbing delivers it. Overflow is the worked example: a real
+`Status_Expired` listener posting a real instance, and still Channel 1.
 
 **Channel 3's vocabulary is explicitly open.** `Types.Cascade_Trigger` currently holds only
 `Status_Expired`, `Status_Landed`, and `Skill_Resolved`. The named gaps with no trigger at all:
@@ -164,6 +183,26 @@ and is never a bar another Role is expected to match.
   **1.62x**, 90th percentile **2.80x**, ceiling **7.22x**; contrast-ratio ceiling **9.39x**. Every
   batch records its delta against this baseline as the distribution's *shape* (median, 90th
   percentile, ceiling, count of distinct top-decile pairings), not only the maximum.
+
+### The roster-level distribution of per-Role factors
+
+The figure above sizes one kit; this is what the *set* of them should look like.
+
+**Target: the Roles declaring a damage identity cluster at the contract figure**, most between 1.5x
+and 3x, no long tail either way. A few Roles at 5-8x with the rest at 1.3-1.5x fails section 1 in
+both directions — the high kits carry a team's whole burst alone, and fielding one becomes the only
+route to the band.
+
+**Factors are only comparable within their own kind** — bucket product, cascade instance count,
+crit-path multiplier, exported factor on a carrier. One ranked column across all four is not a
+measurement.
+
+**Current state: bimodal.** Instance counts: Herald 8.64x, Sorcerer 6.59x at its gated ceiling (1.5x
+steady state), Plague Doctor's Comorbidity never projected (§9.1). Bucket products: Architect,
+Tactician, Tidal Corsair, Bloodmage at 1.7-2.2x; Emissary, Alchemist, Scholar, Lancer at 1.3-1.5x.
+Appraiser's ≈5.58x is the only crit-path figure. Closing this runs one way: **a Role above the band
+is pulled down at its own batch; a Role below it is not raised to match** — a low figure is first a
+question about whether the Role's declared identity is honest (section 1.2).
 
 ### What the sweep is, and is not
 
@@ -217,6 +256,10 @@ Consequently:
 * **Base attributes stay tame** — growth belongs in channels 2 and 3.
 * Existing anti-overlap rules: identity effects to one Role, commodity buffs/debuffs to at most
   two, turn-bar effects to one, zones stay signature.
+* **Accumulate-then-spend stays at its current claimants** — Tidal Corsair, Architect, Lancer,
+  Herald, Sorcerer. A legitimate RPG idiom and a fair allocation at five; no further Role takes it
+  absent new information. Cultist's per-cast bonus and Bar Brawler's Heap On ramp are continuous
+  growth, not build-then-spend, and are not counted here.
 
 ## 5. Channel identity allocation
 
@@ -224,8 +267,8 @@ Current shipped tags (`Concept_Document.md` 3.1.3 / 3.2.4.2) are a byproduct of 
 a considered allocation — most Roles are tagged Channel 1 today simply because that's what a plain
 damage or attribute-debuff skill defaults to. This section states the *intended* primary identity
 for the reworked kit, chosen to fix the two shortfalls the current baseline exposes: Channel 3 is
-nearly empty (3 real entries against 23 Channel-1 statuses) and Channel 2 has almost no cross-kit
-hooks (one skill in 79 declares `bonus_per_debuff_on_target`).
+nearly empty (see section 3's instance-count test — one real entry when this plan opened) and
+Channel 2's buckets are almost all private (section 8).
 
 Target shape: 4 Channel 3 anchors (up from ~1 real Role-driven anchor), 9 Channel 2 anchors, 7
 Channel 1 anchors.
@@ -255,10 +298,10 @@ A Role's basic skill is always self-facing; direction describes the declared-ide
 | Plague Doctor | Debuffer | **Channel 3** | Self | Debuff density on the target feeds cascade instance count — the deepest identity claim in the roster (Batch 1 anchor; absorbs the Comorbidity fix). |
 | Sorcerer | Damage, Debuffer, Control | **Channel 3** | Self | Reagent-triggered repeat re-resolves channels 1 and 2 as a fresh instance; the second, independently-gated cascade anchor (Batch 1). |
 | Herald of the Loom | Debuffer, Buffer | **Channel 3** | Self | No passive exists in code today — free design space. A stance-driven status-expiry cascade (reads `Status_Expired`, the trigger already wired for Plague/Overflow) gives the roster a third cascade source gated by duration management rather than reagents or debuff count (Batch 1; needs a passive authored from scratch). |
-| Chronophage | Control | **Channel 3** | Exported | Turn-bar threshold crossing (pushing an enemy across a section boundary) is a named gap in the Channel 3 vocabulary — a new `Cascade_Trigger` value earned here, gated by turn-bar manipulation rather than any existing mechanic. Exported because the trigger is world state: any teammate's cascade listener reads it, not only the Chronophage's (Batch 2). |
+| Chronophage | Control | **Channel 3** | Exported | Turn-bar threshold crossing (pushing an enemy across a section boundary) is a named gap in the Channel 3 vocabulary — a new `Cascade_Trigger` value earned here, gated by turn-bar manipulation rather than any existing mechanic. Exported because the trigger is world state: any teammate's cascade listener reads it, not only the Chronophage's (Batch 2). The five existing turn-bar manipulators outside this Role (Herald's push, Corsair's Sea stacks, Dead Weight, Battle Orders, Temporal Leak) are the installed base that feeds such a trigger — spread across the roster, turn-bar movement is the substrate this design reads, not competition for the Role's identity. |
 | Emissary | Debuffer, Control | **Channel 2** | Exported | The Infraction tally is already a growing, target-side counter with nothing reading it as a `bonus_per` source; turning it into one gives debuff-density pairings a second, independently-fed debuff type, readable by any teammate (Batch 2). |
 | Alchemist | Debuffer, Buffer | **Channel 2** | Exported | Fresh Batch's team damage buff on reagent consumption already fits — keep as the reagent-consumption anchor; the factor lands on the whole team, not the Alchemist (Batch 4). |
-| Appraiser | Debuffer | **Channel 2** | Exported | Strike the Flaw (crit applies Cracked Facet) is the crit-path anchor — independent of the debuff-density and cascade routes, since it multiplies through the crit-damage path outside the combined modifier (1.1.4). The settled kit (§9.5) consigns the whole contribution to a carrier (Batch 1). |
+| Appraiser | Debuffer | **Enabler** | Exported | Settled (§9.5), moved off this table's Phase 1 proposal of Channel 2: the whole contribution runs through the crit path, which claims no bucket key. Strike the Flaw (crit applies Cracked Facet) was the crit-path anchor — independent of the debuff-density and cascade routes, since it multiplies through the crit-damage path outside the combined modifier (1.1.4). The settled kit (§9.5) consigns the whole contribution to a carrier (Batch 1). |
 | Cultist | Debuffer, Damage | **Channel 2** | Self | Chosen Vessel's escalating per-cast power bonus is a growing modifier factor; Vessel death granting Attune ties it to the Health-threshold surface as a secondary hook (Batch 2). |
 | Jester | Damage, Sustain | **Enabler** | Exported | Hexed on the boss degrades every roll it makes in its own favor — crit checks, resist checks against the team's debuffs, its own Burning ticks — so a debuff-density burst becomes reliable rather than a coin flip; Spotlight pulls focused fire onto the champion built to dodge it. Settled (§9.6), and moved off this table's Phase 1 proposal of Channel 2 / self-facing: the kit declares no damage contribution (Batch 2). |
 | Architect | Buffer, Damage | **Channel 2** | Self | Calibration's tiered finisher (Expose Weakness at 5-8 charges) is a self-contained stack-consumption payload, independent of Tidal Corsair's Steel/Sea (Batch 2). |
@@ -284,7 +327,7 @@ mechanics.
 
 | Route | Gating mechanic | Anchor Roles | Batch |
 |---|---|---|---|
-| **A — Debuff density** | Distinct debuff *types* on the target, each its own `bonus_per_debuff_on_target` bucket | Plague Doctor (Plague, Blight) + Emissary (Infraction-scaled Sanction, a further distinct type) | 1 → 2 |
+| **A — Debuff density** | Count of distinct debuff *types* on the target, read through `bonus_per: {Target_Debuff_Count}` (open to any source, linear in the count) | Plague Doctor (Plague, Blight) + Emissary (Infraction-scaled Sanction, a further distinct type) | 1 → 2 |
 | **B — Cascade count** | Repeat/expiry-triggered re-resolution compounding fan-out | Sorcerer (reagent repeat) + Herald of the Loom (status-expiry cascade) | 1 |
 | **C — Crit path** | Crit chance/damage growth, outside the combined modifier (1.1.4) | Appraiser (§9.5). **Second anchor open** — the Jester was the Phase 1 proposal and is no longer a candidate (§9.6). Any Role not yet settled may fill it if its kit genuinely wants the crit path; none is assumed to. | 1 → open |
 | **D — Stack consumption (non-Corsair)** | Self-contained accumulate-then-spend payload | Architect (Calibration finisher) and, independently, Lancer (Momentum/Phalanx Guard once fixed) | 2, 3 |
@@ -343,6 +386,19 @@ collapse-test payload without inventing new gating mechanics.
 
 ## 8. Open items for later batches
 
+* **Cross-kit Channel 2 is thin, and one of the remaining kits must widen it.** Counting section
+  10.2 by what reads the key: nine are self-facing skill-name buckets, three more share the
+  self-facing trait-resource key, and only `Daunting_Strength`, `Volatile_Mixture` and Bloodmage's
+  two settled grants export a factor (`Warped` alone reads state another kit supplies). **At least
+  one Role in Batches 2-4 lands a Channel 2 bucket that is exported or reads world state.** Which
+  Role is not assigned here — it goes to whichever kit wants it, per section 6. The same privacy
+  runs through the seven accumulate-then-spend counters, which feed nothing outside their own kit;
+  most are expected to stay that way, but it is the axis to check whenever a kit could export
+  instead.
+* Damage redirection is claimed twice — Warlord's Shield Wall (the Role's whole collapse-test claim)
+  and Bloodmage's settled Sanguine Pact. Judged minor, since one redirects to protect and the other
+  as the price of a damage buff. Revisit at Warlord's batch if its redesign leans harder on
+  redirection; no change now.
 * Whether route D needs a third anchor beyond Architect and Lancer once Tidal Corsair is
   re-verified in batch 3 — not decided here.
 * The exact `Trait_Count_Source` / debuff-type identifiers for Emissary's Infraction hook and
@@ -631,10 +687,9 @@ inside §1's ~2x contract. The exported factors below are where this kit's weigh
 
 **Identity note.** This kit's entire contribution runs through the crit path, which
 `Concept_Document.md` 1.1.4 places outside the `CombinedDamageModifier` by design. It therefore
-claims **no bucket key at all** and cannot satisfy section 1's "at least one distinct bucket key"
-clause as that section is currently written. Section 5 lists this Role as Channel 2; the settled
-kit is an Enabler. Resolving that tension is a framework-level decision left open here rather than
-amended silently — see section 8.
+claims **no bucket key at all**. Section 1 admits a crit-path contribution alongside a bucket key,
+so the kit satisfies the contract as an **Enabler** identity — settled, and section 5's row updated
+to match its Phase 1 proposal of Channel 2.
 
 **Passive: No Wasted Margin.** Team-wide. For every 1 percentage point of an ally's Critical Chance
 above 100, that ally gains Critical Damage: 2 percentage points Uncommon, 3 Rare, 4 Epic, 5
@@ -777,8 +832,8 @@ Hexed, per section 2.
   every roll the boss makes in its own favor — its critical-chance roll, its resist checks against
   the team's debuffs, and its own Burning ticks. A debuff-density team needs its debuffs to land;
   this is what makes that reliable rather than a coin flip, and it names no Role.
-* **Burning** is a distinct debuff type, so it feeds any teammate's `bonus_per_debuff_on_target`
-  bucket and the density count generally.
+* **Burning** is a distinct debuff type, so it feeds any teammate's `Target_Debuff_Count` reader and
+  the density count generally.
 * **Spotlight** redirects the boss's target selection onto the Jester by targeting weight.
 
 **Collapse-test claims** (section 1.2), the whole of what this kit is measured on:
@@ -786,9 +841,12 @@ Hexed, per section 2.
 * **Center Stage.** The Jester draws focused fire onto the champion built to dodge it, across
   exactly the build-up turns where `Concept_Document.md` 1.1.1 puts the threat peak. Remove it and
   that damage lands on the burst carrier instead, and the burst does not survive to happen.
-* **Burning Bolas' Hexed.** Remove it and the team's debuff applications go back to being decided
-  by an uncontested Accuracy-versus-Resistance check; a burst gated on debuff density stops being
-  reliable enough to plan around.
+* **Burning Bolas' Hexed.** Claimed on the *breadth* of rolls it degrades, not on debuff landing
+  alone: the boss's crit roll against the team, its own Burning ticks, and every other chance roll
+  except damage variance all turn against it at once, for two turns, off a 2-cooldown skill. Remove
+  it and the build-up turns become a run of coin flips the player cannot plan around. The
+  debuff-resist clause alone would not carry this claim — Emissary's Signed Writ removes resistance
+  outright and is strictly stronger on that one axis.
 * **Double the fun! and Luck.** The passive is what makes drawing fire survivable rather than
   suicidal, and self-Luck is what makes the dodge roll trend the Jester's way. Neither produces
   damage; together they are the reason Center Stage's claim holds.
@@ -837,7 +895,11 @@ same edit that lands the batch's kits — a stale ledger is worse than none.
 
 Same rules as the archived pass: **identity effects** (a passive or signature zone's own effect) to
 one Role; **commodity effects** (plain attribute buffs/debuffs) to at most two; **turn bar effects**
-to one each. State as of Batch 1's Plague Doctor rework (`aca439b`); everything else reflects the
+to one each.
+
+**Claiming an existing status is preferred to authoring a new one.** Check the unclaimed list below
+before adding a status resource; a new status needs a shape no unclaimed one covers. A preference,
+not a rule — never hand a kit a status it does not want to shorten the list. State as of Batch 1's Plague Doctor rework (`aca439b`); everything else reflects the
 archived pass's final state and goes stale as each further batch lands — refresh the claiming
 Role's rows in the same edit, not after.
 
@@ -870,6 +932,18 @@ Vessel passive). One further pending change: Sanguine Pact is a new buff, claime
 **settled, not yet implemented** (section 9.4). Keen Edge and Lethal Precision stay claimed solely
 by Appraiser (Full Appraisal), re-authored as consigned applier-scaled grants — **settled, not yet
 implemented** (section 9.5); no other skill in the corpus applies either.
+
+**Unclaimed inventory**, as of this review — "unclaimed" means *nothing in the game applies it*.
+Refresh in the same edit that lands a batch.
+
+* **No source — debuffs:** Slow, Blind, Sequence Lock, Fatigue, Refracted. Stun only via the
+  ownerless Weight of Law zone (section 10.3) and Rush's expiry. Mana Burn joins when 9.4 lands.
+* **No source — buffs:** True Aim, Clarity, Insight, Mirror Coat, Rehearsed, Wanderlust, Overflow.
+  Turn bar buffs Anchor, Slipstream, Steadfast, Resonance are listed above.
+* **Enemy-only:** Frenzy, Haste, Deathward.
+* **Trait code only, never a skill:** Empower (Plan), Attune (Chosen Vessel), Expose Weakness
+  (Calibration), Cracked Facet (Strike the Flaw, retiring in 9.5), Phalanx Guard (Reckless
+  Momentum, unreachable behind that passive's skill-name bug).
 
 ### 10.2 Damage-channel bucket keys in use
 

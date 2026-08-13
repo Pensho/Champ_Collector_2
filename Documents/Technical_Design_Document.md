@@ -302,7 +302,7 @@ The effect subclasses, all under `Scripts/Battle/Skill_Effects/`:
 
 | Effect | Fields | Resolves |
 |---|---|---|
-| `DamageEffect` | `damage_scaling`, `defense_ignore_factor`, `bonus_per: Dictionary[Types.Trait_Count_Source, float]`, `bonus_per_debuff_on_target: Dictionary[Types.Debuff_Type, float]`, `allow_critical` | Damage to the target group, scaled and bonused — see the damage-bonus discussion in [Section 7.4](#74-skill-resolution-battleresolverresolveskill). `bonus_per_debuff_on_target` sums an additive bonus per debuff type currently on each individual target (e.g. Cataclysmic Surge's +30% against Warped) — keyed by debuff type rather than `Trait_Count_Source` because the source is which debuff is present, not a count |
+| `DamageEffect` | `damage_scaling`, `defense_ignore_factor`, `bonus_per: Dictionary[Types.Trait_Count_Source, float]`, `bonus_per_debuff_on_target: Dictionary[Types.Debuff_Type, float]`, `allow_critical` | Damage to the target group, scaled and bonused — see the damage-bonus discussion in [Section 7.4](#74-skill-resolution-battleresolverresolveskill). `bonus_per_debuff_on_target` contributes one independent combined-modifier bucket per debuff type currently on each individual target (e.g. Cataclysmic Surge's +30% against Warped), so a further matching debuff multiplies — see [Section 7.4](#74-skill-resolution-battleresolverresolveskill). Keyed by debuff type rather than `Trait_Count_Source` because the source is which debuff is present, not a count |
 | `HealthChangeEffect` | `fraction`, `scaling: Dictionary[Types.Attribute, float]` | A signed max-Health-fraction transfer: negative is a cost (writes `context.health_paid` when the target is the caster), non-negative plus attribute scaling is a heal |
 | `ApplyBuffEffect` | `buff_type`, `duration` | Applies one buff type, with its own duration, to the target group (a second buff on the same skill with a different duration is just a second `ApplyBuffEffect`) |
 | `ApplyDebuffEffect` | `debuff_type`, `duration` | Applies one debuff type; consults `CharacterTrait.GetAppliedStatusValue` for a value override before casting |
@@ -459,9 +459,11 @@ reported amount honest. `CasterAttributeSnapshotPercent` (Bleed, Attack; Plague,
 resolved once, at application, by `BattleResolver._SnapshotStatusValue()` — called from `CastDebuff`,
 `ApplyDebuff`, and the zone path alike — into the instance's `value`, per the Phalanx Guard
 per-instance precedent; the self-tick loop then just reads that already-resolved `value` instead of
-re-deriving it from the source's current (possibly changed) attributes. Plague additionally spreads
-to a random other living member of its own side when it expires (`BattleResolver._SpreadPlague`),
-a dedicated per-type hook in the same spirit as the Sequence Lock block above — no other effect
+re-deriving it from the source's current (possibly changed) attributes. Plague stacks, and each
+stack ticks independently; it carries no expiry behaviour of its own. (It previously spread to a
+random other living member of its own side on expiry, through a dedicated per-type hook and later a
+cascade listener. That clause was removed with the Plague Doctor's kit rework — nothing in the
+project spreads a debuff on expiry, and `_SpreadPlague` no longer exists.) No other effect
 needs "copy myself onto someone else on expiry" today. `TurnBarMovementDamagePercent` (Temporal
 Leak) is the one magnitude kind with no self-tick or target-snapshot involvement at all: it is read
 by the new public entry point `BattleResolver.AccumulateTurnBarMovement(character_ID, fraction_moved)`,
@@ -489,7 +491,7 @@ The consumed and event-triggered effects: two more `MagnitudeKind` values
 `CombatResult.Kind` entries (`Attack_Missed`, `Debuff_Blocked`, `Barrier_Absorbed`). The
 consume-on-trigger buffs (Premonition, Deathward, Aegis, Rehearsed) each get one dedicated
 resolver method checking their own trigger condition and calling the existing `RemoveBuff()` to
-consume themselves, in the same spirit as `_BlockedBySequenceLock` and `_SpreadPlague` — no shared
+consume themselves, in the same spirit as `_BlockedBySequenceLock` — no shared
 "consumable" field, since each trigger site differs (an incoming hit, a fatal hit, a landing
 debuff, a cooldown assignment). Barrier is read directly in `_ApplyHealthLoss` ahead of the normal
 clamp, absorbing as much of an incoming loss as its per-instance `value` covers and consuming
@@ -497,11 +499,12 @@ itself when exhausted; its reapplication rule is the one exception to the standa
 duration-refresh overwrite logic — `ApplyBuff`/`_CastBuff` special-case it to replace the existing
 instance only when the new value is larger. Mirror Coat is wired only at `CastDebuff` (it needs a
 real attacker): a debuff that lands on a Mirror Coat holder is rolled again, holder Accuracy vs.
-attacker Resistance, and copied directly onto the attacker on success, the same direct-append
-pattern as `_SpreadPlague` rather than a recursive `CastDebuff` call (which is what keeps mutual
-Mirror Coat from looping). Overflow is an expiry hook collected the same way as Plague's spread,
-dealing Mysticism-scaled damage (30%) to every living enemy through the existing
-`ResolveTraitDamage` entry point when the buff's duration lapses. Wanderlust's
+attacker Resistance, and copied directly onto the attacker on success, a direct append rather than
+a recursive `CastDebuff` call (which is what keeps mutual Mirror Coat from looping). Overflow is an
+expiry hook, dealing Mysticism-scaled damage (30%) to every living enemy through the existing
+`ResolveTraitDamage` entry point when the buff's duration lapses — one instance per expiry, which
+is why `Concept_Document.md` 3.2.3 tags it Channel 1 despite it resolving through the cascade
+listener machinery. Wanderlust's
 `RandomAttributePercent` case lives in the ordinary self-tick `match` block, picking one attribute
 each tick via `ReagentResolver.RandomTinctureAttribute()` (the same random-primary-attribute pool
 reagents already use) and applying it only to that turn's `p_caster_attributes` copy — never
@@ -876,8 +879,8 @@ presentation code yet.
 
 Status effects are capped at `MAX_STATUS_EFFECTS` (8) per character, a **shared pool across buffs
 and debuffs** (Concept Document 1.1.4); Burning is non-overwritable while the others refresh
-duration. `Skills.HasMaxStatusEffects` gates six call sites in `StatusEffectResolver` (`ApplyBuff`,
-`ApplyDebuff`, `CastDebuff`, `_TriggerMirrorCoat`, `_TriggerRushStun`, `_SpreadPlague`); a status
+duration. `Skills.HasMaxStatusEffects` gates five call sites in `StatusEffectResolver` (`ApplyBuff`,
+`ApplyDebuff`, `CastDebuff`, `_CascadeMirrorCoat`, `_CascadeRushStun`); a status
 denied by the cap emits a `Kind.Status_Effect_Denied` `CombatResult` (`target_ID`, `is_buff`, the
 denied buff/debuff type) instead of applying silently or dropping with no trace. The resolver
 assigns each applied status a battle-unique ID (carried on `Status_Applied` results); the scene
@@ -1112,17 +1115,15 @@ immediately before it resolves; every result produced by an instance carries the
 `cascade_depth` via `BattleResolver._current_cascade_depth`, stamped centrally in `_Emit` rather
 than by each result's own construction site.
 
-**The four ported effects**, each now a listener in `StatusEffectResolver._RegisterCascadeListeners`
+**The ported effects**, each now a listener in `StatusEffectResolver._RegisterCascadeListeners`
 rather than a hardcoded branch: Overflow's expiry AoE and Rush's expiry self-Stun (both
-`Status_Expired`, matched on `buff_type`), Plague's expiry spread (`Status_Expired`, matched on
-`debuff_type` — now resolves through `CastDebuff` rather than bypassing it, so it takes a resist
-roll and respects Aegis/Sequence Lock/stack-refresh like any other debuff application), and Mirror
+`Status_Expired`, matched on `buff_type`), and Mirror
 Coat's reflection (`Status_Landed`, posted from `CastDebuff` when a debuff is created, matched
 unconditionally since any landed debuff type is relevant). Registration is code-driven for this
-phase, not data-driven: with only four listeners, a `StatusEffectData` schema field for this isn't
+phase, not data-driven: at this listener count, a `StatusEffectData` schema field for this isn't
 warranted yet.
 
-**Vocabulary scope.** `Types.Cascade_Trigger` held only the two values the four ported effects
+**Vocabulary scope.** `Types.Cascade_Trigger` held only the two values the ported effects
 needed until `Skill_Resolved` (below) added a third, and `Debuff_Ticked` a fourth — posted from
 `StatusEffectResolver._PostComorbidityCascadeIfAny` whenever a debuff carrying
 `repeats_per_distinct_debuff` (the Plague Doctor's Comorbidity) ticks with more than one distinct
@@ -1900,7 +1901,7 @@ internal to `BattleResolver`, calls `_zone_resolver` directly).
 The buff/debuff lifecycle moved the same way, into `StatusEffectResolver`
 (`Scripts/Battle/status_effect_resolver.gd`) — the resolver's largest remaining source of
 per-effect method growth (one bespoke private method per status: `_TriggerManaBurn`,
-`_SpreadPlague`, `_TriggerMirrorCoat`, `_ConsumeAegisIfPresent`, `_BlockedBySequenceLock`, …).
+`_CascadeMirrorCoat`, `_ConsumeAegisIfPresent`, `_BlockedBySequenceLock`, …).
 `StatusEffectResolver` owns `ApplyBuff`/`ApplyDebuff`/`RemoveBuff`, the `_CastBuff`/`CastDebuff`/
 `_TriggerExistingCasterBuffs`/`Debuffs` skill-resolution helpers, every status-specific block/
 consume/trigger rule, the status-derived damage and healing multipliers, and the `Status_Applied`/
@@ -2013,8 +2014,10 @@ happening to be shaped safely, not a system guarantee. `_SpreadPlague` additiona
 normal debuff-application path entirely (no resist roll, no Aegis, no Sequence Lock, no
 stack/refresh rules), so on a two-member side it could ping-pong between the same two characters
 with nothing to stop it. `CascadeResolver`'s post-and-drain queue makes both bounds one
-enforcement point instead of four independent judgment calls, and the port routes Plague's spread
-through `CastDebuff` like any other debuff application.
+enforcement point instead of four independent judgment calls, and the port routed Plague's spread
+through `CastDebuff` like any other debuff application. (Plague's spread has since been removed
+outright with the Plague Doctor's kit rework; it is described here because it was one of the four
+effects that motivated `CascadeResolver`, not as a listener that still exists.)
 
 ### 15.14. Gear and reagents were entirely additive, and repetition had no trigger to hang a cast on — resolved
 

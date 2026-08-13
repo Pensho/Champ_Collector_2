@@ -60,6 +60,30 @@ becomes a rolled 2-10% of max Health roster-wide. Four Roles left in Batch 2. Ro
 anchor is now open rather than assigned: the Jester was Phase 1's proposal and is no longer a
 candidate, and no unsettled Role is assumed into it. Phases 4-6 not started.
 
+**Coverage review findings**, from a roster-wide read of all 20 Roles against the corrected contract.
+
+* **Per-Role factors are bimodal within a kind** — instance counts 6.59-8.64x, bucket products split
+  1.7-2.2x and 1.3-1.5x, almost nothing at the ~2x figure. `Role_Kit_Design.md` §4 gained a
+  roster-level distribution target and the per-kind comparability rule; §1 gained the reading rule
+  this review's own first pass got wrong (a declared identity claims one term of a team's product).
+  Nothing retuned; the target exists to be measured against in Phases 3-6.
+* **§9.1's Plague Doctor entry has no projected numbers** in any kind, the only implemented kit that
+  cannot be placed in the distribution. Project Comorbidity as an instance count when Batch 1 closes.
+* **Cross-kit Channel 2 is thin** — the Context shortfall Batch 1 did not close. Standing requirement
+  on the remaining batches, recorded in `Role_Kit_Design.md` §8.
+* **`bonus_per_debuff_on_target` is identity-scoped, not a general hook.** It enumerates its debuff
+  types at authoring time, so it reads nothing a later batch invents. Its single claimant (Cataclysm
+  reading Warped) is the intended state, not to be expanded; debuff density runs through
+  `bonus_per: {Target_Debuff_Count}`. §2, §3 and §6's route A updated, plus this plan's Context.
+* **A long tail of the status catalog has no source in the game.** Settled posture: claiming an
+  existing status is preferred to authoring a new one. Inventory in `Role_Kit_Design.md` §10.1,
+  checked in the per-batch loop's tier 3.
+* **Overflow is not Channel 3, and Channel 3's corpus was one entry, not three.** Overflow posts a
+  real cascade instance but always exactly one, so it multiplies nothing — retagged Channel 1, with
+  the general test in `Role_Kit_Design.md` §3. Plague's expiry spread, the other entry Context
+  counted, no longer exists. Stale references cleaned from `Concept_Document.md`,
+  `Technical_Design_Document.md` and this plan's Context.
+
 **Post-Herald sweep** (`Tests/manual/team_corpus_sweep.gd`, re-run after Herald of the Loom
 landed). Combined-modifier-product distribution is unchanged from the post-Defence baseline
 (median 1.36x, 90th percentile 2.80x, ceiling 7.22x) — expected, since Cut the Cloth's Channel 3
@@ -176,14 +200,24 @@ product multiplies. It makes that pairing stronger, not weaker.)
 
 Three structural causes, all in the kits rather than the architecture:
 
-* **Channel 3 is nearly empty.** Its whole corpus is Overflow, Plague's expiry spread, and the
-  Sorcerer's reagent-triggered repeat — and the repeat tops out at 5.57x, below the roster's own
-  top-decile threshold. Against 23 Channel-1-tagged statuses, a co-equal pillar channel has
-  effectively three entries.
-* **Channel 2 has almost no cross-kit hooks.** `bonus_per_debuff_on_target` is the main lever by
-  which a debuff-applying kit hands a factor to a teammate's burst, and exactly **one** skill in
-  the 79-entry corpus declares it (Cataclysmic Surge). Confound, Suppress, Unravel and the rest
-  are Channel-1-only in practice, because nothing in the roster reads them.
+* **Channel 3 is empty apart from one entry.** This bullet originally counted three — Overflow,
+  Plague's expiry spread, and the Sorcerer's reagent-triggered repeat. Only the repeat was ever
+  real: **Overflow is not Channel 3** (it yields exactly one instance, so it multiplies nothing —
+  see `Role_Kit_Design.md` §3's instance-count test) and has no source in the game anyway, and
+  **Plague's expiry spread no longer exists**, removed when the Plague Doctor's kit was reworked
+  around debuff density. The repeat tops out at 5.57x, below the roster's own top-decile threshold.
+  Against 23 Channel-1-tagged statuses, a co-equal pillar channel had a one-item corpus — a worse
+  starting position than this plan opened by claiming, and the reason Batch 1's Channel 3 work is
+  load-bearing rather than incremental.
+* **Channel 2 has almost no cross-kit hooks.** Almost every Channel 2 bucket in the roster is a
+  skill-name or trait-resource key that only its own caster's skill reads; the levers by which a
+  kit hands a factor to a teammate's burst — a granted modifier-bearing status, a debuff every
+  attacker reads, an open counter another kit feeds — are held by a handful of entries. Confound,
+  Suppress, Unravel and the rest are Channel-1-only in practice, because nothing in the roster
+  reads them. (This bullet originally named `bonus_per_debuff_on_target` as the main lever and its
+  single declarer as the shortfall. That field is **identity-scoped by design** — see the grammar
+  table above — so its one claimant is the intended state, not evidence of the gap. The gap itself
+  is real and is restated above without it.)
 * **Most kits are three Channel-1 skills**, and many are one-note — a single effect and nothing
   else. That is the exact shape 1.1.6's rejection test rejects.
 
@@ -211,9 +245,9 @@ different mechanics — so that finding one is a discovery, not the only option.
    rather than be cut. "Keep as-is" is a fallback.
 4. **The 3-skill cap stays** (`Concept_Document.md` 3.2.4), *but the basic is a design slot too.*
    A no-cooldown basic may carry a secondary rider — a low-chance debuff or buff application, a
-   small heal (Fateful Glimpse is the existing precedent), a stack grant. Riders are
-   Enabler-weight only: a basic never carries a Channel-2/3 bucket key, or channel contribution
-   becomes free.
+   small heal (Fateful Glimpse is the existing precedent), a stack grant — and a **conditional**
+   Channel 2 bucket key. Only an unconditional one is forbidden. Rule and rationale in
+   `Role_Kit_Design.md` §1.2; this decision originally banned the key outright.
 5. **Defence is being made to matter** (see Phase 0). The 1.1.4 rule that Defence stops mattering
    at burst scale is rejected on legibility grounds: Defence and defence-ignore are terms every
    RPG player arrives already understanding, and teaching them that the expectation is inverted
@@ -261,8 +295,8 @@ list):
 * current or missing Health, on either side; the caster's own resource or stack count;
 * turn-bar state — zone presence, section occupancy, relative position;
 * whether the target acted, was hit, or crit since the caster's last turn;
-* how many distinct debuff *types* are on the target (`bonus_per_debuff_on_target` gives each type
-  its own bucket, so each further type multiplies).
+* how many distinct debuff *types* are on the target (`bonus_per: {Target_Debuff_Count}` counts any
+  type from any source, including types authored later).
 
 ### The synergy grammar
 
@@ -271,8 +305,8 @@ actually multiply (see `Technical_Design_Document.md` 7.4):
 
 | Mechanism | Schema | Why it multiplies |
 |---|---|---|
-| Per-debuff-type factor | `DamageEffect.bonus_per_debuff_on_target: {Debuff_Type: float}` | **One independent bucket per debuff type** — each further debuff on the target multiplies. The primary cross-kit hook, and the most under-used. |
-| Trait-counter factor | `DamageEffect.bonus_per: {Trait_Count_Source: float}` | Reads a counter another kit can feed. |
+| Trait-counter factor | `DamageEffect.bonus_per: {Trait_Count_Source: float}` | Reads a counter another kit can feed. `Target_Debuff_Count` is the debuff-density surface — open to any source, linear in the count. |
+| Per-named-debuff factor | `DamageEffect.bonus_per_debuff_on_target: {Debuff_Type: float}` | One bucket per **named** debuff type, so each multiplies — but the dictionary enumerates its types at authoring time and reads nothing invented later. **Identity-scoped**, sole claimant the Sorcerer's Cataclysm reading Warped. See `Role_Kit_Design.md` §3. |
 | Granted modifier-bearing status | `ApplyBuffEffect` of a `DamageMultiplier` / `PerTargetDebuffDamagePercent` status | Lands the factor on whoever consumes it. |
 | Cascade instance count | `Types.Cascade_Trigger` | Each instance re-reads channels 1 and 2, so count multiplies against them. |
 | Zone `on_trigger` payload | `ZoneEffect.on_trigger: Array[SkillEffect]` | A separate resolution on a schedule the enemy walks into. |
@@ -397,7 +431,8 @@ before any code lands):
    still-sketchy anchors for the same pairing-web route (does the shape the other side needs
    actually exist yet?) — a quick coherence check, not a full settle of those other Roles.
 3. **Concrete kit design**, the expensive-to-revert tier once it becomes `.tres` + trait code +
-   tests: brainstorm candidate kits (via the `brainstorm` skill, against `Role_Kit_Design.md`) →
+   tests: brainstorm candidate kits (via the `brainstorm` skill, against `Role_Kit_Design.md`,
+   checking §10.1's unclaimed-status inventory before any new status resource is proposed) →
    settle kits → compute the settled design's projected numbers against the scorer's own
    formula/methodology (`blowout_calibration.gd`'s approach) and check the Role's *own* factors
    against `Role_Kit_Design.md` §4's per-Role ~2x figure, never against the 30-50x team figure
@@ -471,6 +506,10 @@ the pairing web exists. Same per-batch loop, same measurement.
 
 * **A high-scoring roster is not the goal; a discriminating one is.** Check the median on every
   change, not only the ceiling — a change that lifts both equally has failed.
+* **Check the spread of per-Role factors, not only each kit against its own contract.** Every kit can
+  pass section 1 individually while the set of them is bimodal (`Role_Kit_Design.md` §4). Compare
+  only within a kind, and read a low figure as a question about the Role's declared identity before
+  reading it as a gap.
 * **Do not railroad Roles into damage kits.** Every Role reaching for a burst-sized number is the
   failure this plan opened against, not the goal. A kit meeting §1's contract with one ~2x factor
   and a hook is finished; a kit whose honest identity is Enabler declares Enabler and fields no

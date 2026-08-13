@@ -476,7 +476,7 @@ Debuffs:
 * Expose Weakness [Channel 1]: Reduces Defense by 30%. Defence stops mattering at burst scale (section 1.1.4), so this debuff's role is pressure during build-up rather than a burst contributor.
 * Enfeeble [Channel 1]: Reduces the Attack by 30%.
 * Mana Burn [Enabler]: Deals damage whenever the target uses a non-basic skill, scaling based on the target's Mysticism. The damage is incidental to the punish; it is not a combined-modifier factor.
-* Burning [Enabler]: Deals 4% of max Health as damage per stack; Burning stacks, so repeated applications (e.g. standing in a Lava zone) add independent instances up to the status-effect cap. Its composable value is as a debuff *type* other mechanics key off (Opportunist, and any `bonus_per_debuff_on_target` effect), not a factor of its own.
+* Burning [Enabler]: Deals 4% of max Health as damage per stack; Burning stacks, so repeated applications (e.g. standing in a Lava zone) add independent instances up to the status-effect cap. Its composable value is as a debuff *type* other mechanics key off (Opportunist, and any effect counting distinct debuff types on the target), not a factor of its own.
 * Sequence Lock [Enabler]: Speed cannot be increased or decreased.
 * Suppress [Channel 1]: Reduces Mysticism by 30%.
 * Slow [Channel 1]: Reduces Speed by 15%, including how fast the character advances on the turn bar.
@@ -486,7 +486,7 @@ Debuffs:
 * Exposed Facet [Channel 2]: Attacks against the character gain +15 percentage points Critical Chance. Contributes through the crit path (section 1.1.4) rather than the combined modifier itself.
 * Cracked Facet [Channel 2]: Critical hits against the character deal +25% Critical Damage. Same crit-path note as Exposed Facet.
 * Bleed [Channel 1 + Channel 2]: At the start of the character's turn, they take damage equal to 40% of the caster's Attack, multiplied by the caster's damage-scaling factors, both snapshotted together at the moment of application.
-* Plague [Channel 1 + Channel 2; expiry spread is Channel 3 — Cascade]: Deals damage each turn equal to 30% of the caster's Mysticism, multiplied by the caster's damage-scaling factors, both snapshotted together at the moment of application; when it expires, it spreads to a random other enemy with fresh duration.
+* Plague [Channel 1 + Channel 2]: Deals damage each turn equal to 30% of the caster's Mysticism, multiplied by the caster's damage-scaling factors, both snapshotted together at the moment of application. Stacks, and each stack ticks independently.
 * Blight [Enabler]: Healing received is reduced by 50%.
 * Severance [Enabler]: The character cannot gain new buffs.
 * Hexed [Enabler]: Roll the critical-chance and debuff-resist checks twice and take the worse result (the damage-variance roll is not favored either way — its spread is too small to matter).
@@ -520,7 +520,7 @@ Buffs:
 * Opportunist [Channel 2]: The character's attacks deal +10% damage per debuff *type* present on the target (stacked instances of one debuff type count once).
 * Catalyst [Enabler, provisional]: The next reagent the character consumes has +50% effect. Stacks additively with other reagent potency modifiers; has no effect on binary reagents (see section 3.3.3). Passes the collapse test only if reagents gate a burst — ratified by the itemization channels work.
 * Wanderlust [Channel 1]: At the start of each of the character's turns, gain +20% to one random primary stat until their next turn.
-* Overflow [Channel 3 — Cascade]: When this buff expires, it deals damage to all enemies, scaling with the holder's Mysticism.
+* Overflow [Channel 1]: When this buff expires, it deals damage to all enemies, scaling with the holder's Mysticism. Resolves through the cascade machinery but always yields exactly one instance, so it multiplies nothing (section 1.1.3) — a delayed area hit, not a cascade contribution.
 * Vigor [Channel 1]: Increases max Health by 30%.
 * Lethal Precision [Channel 1]: Increases Critical Damage by 50 percentage points.
 * Spotlight [Enabler]: The character is much more likely to be targeted by enemies (1.5x targeting weight) and takes 10% less damage. Both halves are one survival tool — drawing focused fire away from the pieces a burst depends on, and taking less of what lands.
@@ -827,7 +827,7 @@ reasoning; a skill combining its own effect with an applied status is tagged wit
 * Miasma
     * Type: Turn Bar (Zone)
     * Cooldown: 3 turns
-    * Effect: [Channel 1 + Channel 2; Channel 3 — Cascade on expiry] Affected enemies gain the Plague debuff for 3 turns (see section 3.2.3.2). Holds 4 charges.
+    * Effect: [Channel 1 + Channel 2] Affected enemies gain the Plague debuff for 3 turns (see section 3.2.3.2). Holds 4 charges.
 * Quarantine Breach
     * Type: Damage, Debuff
     * Cooldown: 4 turns
