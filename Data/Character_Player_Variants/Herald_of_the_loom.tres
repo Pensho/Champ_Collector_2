@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_cgy53"]
 [ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_yuery"]
-[ext_resource type="Resource" path="res://Data/Character_Skill_Variants/Attack_Skills/Cut_the_Cloth.tres" id="2_cut_the_cloth"]
+[ext_resource type="Resource" uid="uid://dywv5lb2gc3u7" path="res://Data/Character_Skill_Variants/Attack_Skills/Cut_the_Cloth.tres" id="2_cut_the_cloth"]
 [ext_resource type="Resource" uid="uid://bdxe6eob3xgsh" path="res://Data/Attribute_Weights/Fierce.tres" id="2_kgg4d"]
-[ext_resource type="Resource" path="res://Data/Character_Skill_Variants/Attack_Skills/Pull_the_Thread.tres" id="2_pull_the_thread"]
+[ext_resource type="Resource" uid="uid://dye1xejhes405" path="res://Data/Character_Skill_Variants/Attack_Skills/Pull_the_Thread.tres" id="2_pull_the_thread"]
 [ext_resource type="Resource" uid="uid://cyuqb7w3ymgww" path="res://Data/Character_Skill_Variants/Attack_Skills/Thread_Snap.tres" id="2_thread_snap"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_uspd6"]
 [ext_resource type="Resource" uid="uid://syj6hxvr5t2x" path="res://Data/Attribute_Weights/Dexterous.tres" id="3_atjrr"]

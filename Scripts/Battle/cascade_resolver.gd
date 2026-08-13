@@ -132,8 +132,4 @@ func _NotifyCascadeInstanceResolved(p_event: CascadeEvent) -> void:
 
 
 func _EmitCascadeTriggered(p_mechanic_key: StringName, p_event: CascadeEvent) -> void:
-	var result: CombatResult = CombatResult.new(CombatResult.Kind.Cascade_Triggered)
-	result.target_ID = p_event.subject_ID
-	result.text = String(p_mechanic_key)
-	result.cascade_trigger = p_event.trigger
-	_resolver._Emit(result)
+	_resolver.EmitBurstInstance(p_mechanic_key, p_event.subject_ID, p_event.trigger)

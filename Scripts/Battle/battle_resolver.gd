@@ -189,6 +189,14 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 	for effect in cast_skill.effects:
 		if(context.ConditionMet(effect)):
 			effect.Resolve(context)
+
+	if(caster._current_health > 0):
+		var skill_effects_resolved_trait: CharacterTrait = Skills.ActiveHook(
+				caster, Types.Combat_Event.Skill_Effects_Resolved)
+		if(null != skill_effects_resolved_trait):
+			skill_effects_resolved_trait.OnSkillEffectsResolved(
+					p_caster_ID, p_target_IDs, cast_skill.name, caster_attributes, self)
+
 	_cascade_resolver.Post(CascadeEvent.ForSkillResolved(p_caster_ID, p_skill_ID, p_target_IDs))
 	_cascade_resolver.Drain()  # catches Mirror Coat (from CastDebuff above) and Skill_Resolved listeners
 	var is_non_basic: bool = cast_skill.cooldown > 0
@@ -336,6 +344,20 @@ func EmitTraitText(p_target_ID: int, p_text: String, p_color: Color = Color.WHIT
 	result.target_ID = p_target_ID
 	result.text = p_text
 	result.color = p_color
+	_Emit(result)
+
+
+## Emits the presentation-only marker that precedes one burst instance's results, so the
+## battle view can escalate their combat text (Concept_Document.md 1.1.5). Emitted by the
+## cascade channel and by trait-local instance loops that bypass it.
+func EmitBurstInstance(
+		p_mechanic_key: StringName,
+		p_subject_ID: int,
+		p_trigger: Types.Cascade_Trigger) -> void:
+	var result: CombatResult = CombatResult.new(CombatResult.Kind.Cascade_Triggered)
+	result.target_ID = p_subject_ID
+	result.text = String(p_mechanic_key)
+	result.cascade_trigger = p_trigger
 	_Emit(result)
 
 

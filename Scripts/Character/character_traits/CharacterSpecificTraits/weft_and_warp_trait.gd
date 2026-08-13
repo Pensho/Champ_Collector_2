@@ -30,6 +30,7 @@ const STARTING_TENSION_BY_RARITY: Dictionary[Types.Rarity, int] = {
 var _current_thread: Thread_Type = Thread_Type.Silver
 var _tension: int = 0
 var _self_bonus: float = 0.0
+var _pending_cut_the_cloth_instances: int = 0
 
 func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
@@ -46,6 +47,7 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_execution_steps[Types.Combat_Event.Start_Combat] = Callable(self, "StartOfBattle")
 	_execution_steps[Types.Combat_Event.Skill_Cast] = Callable(self, "OnSkillCast")
 	_execution_steps[Types.Combat_Event.Cascade_Instance_Resolved] = Callable(self, "OnCascadeInstanceResolved")
+	_execution_steps[Types.Combat_Event.Skill_Effects_Resolved] = Callable(self, "OnSkillEffectsResolved")
 
 func StartOfBattle(p_owner_ID: int, p_resolver: BattleResolver) -> void:
 	_current_thread = Thread_Type.Silver
@@ -95,11 +97,11 @@ func OnCascadeInstanceResolved(
 	_tension = mini(_tension + 1, TENSION_MAX)
 
 func OnSkillCast(
-		p_owner_ID: int,
-		p_target_IDs: Array[int],
+		_p_owner_ID: int,
+		_p_target_IDs: Array[int],
 		p_skill_name: String,
-		p_caster_attributes: Dictionary[Types.Attribute, int],
-		p_resolver: BattleResolver) -> TraitSkillResult:
+		_p_caster_attributes: Dictionary[Types.Attribute, int],
+		_p_resolver: BattleResolver) -> TraitSkillResult:
 	var result: TraitSkillResult = TraitSkillResult.new()
 	match p_skill_name:
 		"Pull the Thread":
@@ -107,18 +109,30 @@ func OnSkillCast(
 			_tension = mini(_tension + PULL_THE_THREAD_TENSION, TENSION_MAX)
 		"Cut the Cloth":
 			result._damage_multiplier = 1.0 + _self_bonus
-			var extra_instances: int = _tension
+			_pending_cut_the_cloth_instances = _tension
 			_tension = 0
-			_ResolveExtraCutTheClothInstances(
-					p_owner_ID, p_target_IDs, p_caster_attributes, extra_instances, p_resolver)
 	return result
+
+## Resolves the extra instances a Cut the Cloth cast banked in OnSkillCast, once
+## BattleResolver.ResolveSkill's own effect loop for that cast has finished — so the
+## burst reads base hit first, then repeats.
+func OnSkillEffectsResolved(
+		p_owner_ID: int,
+		p_target_IDs: Array[int],
+		p_skill_name: String,
+		p_caster_attributes: Dictionary[Types.Attribute, int],
+		p_resolver: BattleResolver) -> void:
+	if("Cut the Cloth" != p_skill_name):
+		return
+	var extra_instances: int = _pending_cut_the_cloth_instances
+	_pending_cut_the_cloth_instances = 0
+	_ResolveExtraCutTheClothInstances(p_owner_ID, p_target_IDs, p_caster_attributes, extra_instances, p_resolver)
 
 ## Resolves Cut the Cloth's Tension-driven repeats as a local loop that never calls
 ## CascadeResolver.Post — deliberately so these repeats cannot feed this Herald's own
 ## Golden Thread (a self-feed loop), unlike a Skill_Resolved-based repeat mechanic.
-## The first instance is left to the normal skill-cast effect loop in BattleResolver.
-## ResolveSkill, using the TraitSkillResult OnSkillCast already returned; this only
-## resolves the instances beyond that first one.
+## Each instance still emits a BattleResolver.EmitBurstInstance marker so the battle view
+## escalates its combat text the same as a real cascade instance would.
 func _ResolveExtraCutTheClothInstances(
 		p_owner_ID: int,
 		p_target_IDs: Array[int],
@@ -139,6 +153,7 @@ func _ResolveExtraCutTheClothInstances(
 	if(null == cast_skill):
 		return
 	for i in p_extra_instances:
+		p_resolver.EmitBurstInstance(&"Cut the Cloth", p_owner_ID, Types.Cascade_Trigger.Skill_Resolved)
 		var trait_result := TraitSkillResult.new()
 		trait_result._damage_multiplier = 1.0 + _self_bonus
 		var context := SkillCastContext.new(

@@ -34,6 +34,14 @@ func OnSkillCast(
 	print("character_trait base class SkillCast() called!")
 	return null
 
+func OnSkillEffectsResolved(
+		_p_owner_ID: int,
+		_p_target_IDs: Array[int],
+		_p_skill_name: String,
+		_p_caster_attributes: Dictionary[Types.Attribute, int],
+		_p_resolver: BattleResolver) -> void:
+	print("character_trait base class OnSkillEffectsResolved() called!")
+
 func OnDefend(
 		_p_defender_ID: int,
 		_p_defender_attributes: Dictionary[Types.Attribute, int],

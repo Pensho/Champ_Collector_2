@@ -6,7 +6,7 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_execution_steps[Types.Combat_Event.Skill_Cast] = Callable(self, "OnSkillCast")
 
 	_title = "Comorbidity"
-	_body = "Debuffs placed by this skill tick again once for every distinct debuff type" \
+	_body = "Debuffs placed by this character tick again once for every distinct debuff type" \
 			+ " on the target."
 
 func OnSkillCast(

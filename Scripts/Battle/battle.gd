@@ -464,8 +464,9 @@ func _on_resolver_result_produced(p_result: CombatResult) -> void:
 			_character_representations[p_result.target_ID]._character_texture.material = GRAYSCALE_MATERIAL
 			UpdateLifeBar(p_result.target_ID)
 		CombatResult.Kind.Cascade_Triggered:
-			# Emitted immediately before each cascade instance's own results, so the ordinal
-			# is already correct when those results arrive and drive BurstPacing.
+			# Emitted immediately before each burst instance's own results (a real cascade
+			# instance or a trait-local repeat routed through EmitBurstInstance), so the
+			# ordinal is already correct when those results arrive and drive BurstPacing.
 			_cascade_instance_ordinal += 1
 
 # Credits damage to the player who dealt it, for the post-battle totals.

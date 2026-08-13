@@ -11,9 +11,9 @@ const BASE_DELAY: float = 0.25
 const MINIMUM_DELAY: float = 0.06
 const DELAY_FALLOFF: float = 0.82
 const BASE_SCALE: float = 1.0
-const SCALE_GROWTH: float = 0.12
-const MAXIMUM_SCALE: float = 2.0
-const FULL_RED_STEP: int = 10
+const SCALE_GROWTH: float = 0.25
+const MAXIMUM_SCALE: float = 3.0
+const FULL_RED_STEP: int = 5
 
 
 static func DelayForStep(p_step: int) -> float:

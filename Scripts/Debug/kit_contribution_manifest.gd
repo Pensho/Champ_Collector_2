@@ -692,7 +692,7 @@ const MANIFEST: Dictionary = {
 							"local loop inside the trait that never calls CascadeResolver.Post, so these " +
 							"repeats cannot feed this Herald's own Golden Thread.",
 					"citation": "Cut_the_Cloth.tres:6-16; weft_and_warp_trait.gd " +
-							"(OnSkillCast, _ResolveExtraCutTheClothInstances)",
+							"(OnSkillCast, OnSkillEffectsResolved, _ResolveExtraCutTheClothInstances)",
 					"gated_bonus": {"bucket_key": "", "magnitude": 0.08,
 							"class": Contribution_Class.Channel3_Cascade, "fold": "separate_instance",
 							"gate": &"tension_spent", "instances": 8,

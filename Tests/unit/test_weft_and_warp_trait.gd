@@ -243,6 +243,7 @@ func _make_cut_the_cloth_skill() -> Skill:
 func _make_cut_the_cloth_setup() -> Dictionary:
 	var caster: Character = TestFactory.make_character()
 	caster._rarity = Types.Rarity.Rare
+	caster._current_health = caster._attributes[Types.Attribute.Health]
 	var herald_trait: WeftAndWarpTrait = WeftAndWarpTrait.new()
 	herald_trait.Init(Types.Rarity.Rare)
 	caster._trait = herald_trait
@@ -298,6 +299,71 @@ func test_cut_the_clouth_repeats_do_not_feed_golden_thread() -> void:
 
 	assert_eq(herald_trait._tension, 0,
 		"Cut the Cloth's own repeats must never re-fill Tension through Golden Thread")
+
+func test_cut_the_cloth_base_hit_lands_before_any_burst_marker() -> void:
+	var setup: Dictionary = _make_cut_the_cloth_setup()
+	var herald_trait: WeftAndWarpTrait = setup["trait"]
+	var resolver: BattleResolver = setup["resolver"]
+	herald_trait._tension = 3
+
+	var results: Array[CombatResult] = resolver.ResolveSkill(0, [1], 0)
+
+	var first_damage_index: int = -1
+	var first_marker_index: int = -1
+	for i in results.size():
+		if(-1 == first_damage_index and CombatResult.Kind.Damage == results[i].kind
+				and 1 == results[i].target_ID):
+			first_damage_index = i
+		if(-1 == first_marker_index and CombatResult.Kind.Cascade_Triggered == results[i].kind):
+			first_marker_index = i
+	assert_ne(first_damage_index, -1, "Cut the Cloth should still deal damage")
+	assert_ne(first_marker_index, -1, "Tension repeats should each emit a burst marker")
+	assert_lt(first_damage_index, first_marker_index,
+		"The base cast's damage must land before any Tension repeat's burst marker")
+
+func test_cut_the_cloth_emits_one_burst_marker_per_tension_repeat() -> void:
+	var setup: Dictionary = _make_cut_the_cloth_setup()
+	var herald_trait: WeftAndWarpTrait = setup["trait"]
+	var resolver: BattleResolver = setup["resolver"]
+	herald_trait._tension = WeftAndWarpTrait.TENSION_MAX
+
+	var results: Array[CombatResult] = resolver.ResolveSkill(0, [1], 0)
+
+	var markers: Array[CombatResult] = results.filter(
+			func(r: CombatResult) -> bool:
+				return CombatResult.Kind.Cascade_Triggered == r.kind and "Cut the Cloth" == r.text)
+	assert_eq(markers.size(), WeftAndWarpTrait.TENSION_MAX,
+		"Exactly one burst marker per Tension repeat, none for the base cast")
+
+func test_cut_the_cloth_burst_marker_immediately_precedes_its_repeat_damage() -> void:
+	var setup: Dictionary = _make_cut_the_cloth_setup()
+	var herald_trait: WeftAndWarpTrait = setup["trait"]
+	var resolver: BattleResolver = setup["resolver"]
+	herald_trait._tension = 3
+
+	var results: Array[CombatResult] = resolver.ResolveSkill(0, [1], 0)
+
+	for i in results.size():
+		if(CombatResult.Kind.Cascade_Triggered != results[i].kind or "Cut the Cloth" != results[i].text):
+			continue
+		var next_target_result: CombatResult = null
+		for j in range(i + 1, results.size()):
+			if(1 == results[j].target_ID):
+				next_target_result = results[j]
+				break
+		assert_not_null(next_target_result, "A burst marker must be followed by its instance's results")
+		assert_eq(next_target_result.kind, CombatResult.Kind.Damage,
+			"The result immediately after a Cut the Cloth burst marker must be that repeat's damage")
+
+func test_cut_the_cloth_at_zero_tension_emits_no_burst_marker() -> void:
+	var setup: Dictionary = _make_cut_the_cloth_setup()
+	var resolver: BattleResolver = setup["resolver"]
+
+	var results: Array[CombatResult] = resolver.ResolveSkill(0, [1], 0)
+
+	var markers: Array[CombatResult] = results.filter(
+			func(r: CombatResult) -> bool: return CombatResult.Kind.Cascade_Triggered == r.kind)
+	assert_true(markers.is_empty(), "The minimum-once base cast alone must not emit a burst marker")
 
 # --- Resolver-integration: Thread Snap / Pull the Thread ---
 
