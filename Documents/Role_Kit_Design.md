@@ -260,7 +260,7 @@ A Role's basic skill is always self-facing; direction describes the declared-ide
 | Alchemist | Debuffer, Buffer | **Channel 2** | Exported | Fresh Batch's team damage buff on reagent consumption already fits — keep as the reagent-consumption anchor; the factor lands on the whole team, not the Alchemist (Batch 4). |
 | Appraiser | Debuffer | **Channel 2** | Exported | Strike the Flaw (crit applies Cracked Facet) is the crit-path anchor — independent of the debuff-density and cascade routes, since it multiplies through the crit-damage path outside the combined modifier (1.1.4). The settled kit (§9.5) consigns the whole contribution to a carrier (Batch 1). |
 | Cultist | Debuffer, Damage | **Channel 2** | Self | Chosen Vessel's escalating per-cast power bonus is a growing modifier factor; Vessel death granting Attune ties it to the Health-threshold surface as a secondary hook (Batch 2). |
-| Jester | Damage, Sustain | **Channel 2** | Self | Pratfall Sting's avoided-hit bonus is a conditional factor keyed to "was I hit/did I dodge since my last turn" — the crit-path pairing's second half alongside Appraiser (Batch 2). |
+| Jester | Damage, Sustain | **Enabler** | Exported | Hexed on the boss degrades every roll it makes in its own favor — crit checks, resist checks against the team's debuffs, its own Burning ticks — so a debuff-density burst becomes reliable rather than a coin flip; Spotlight pulls focused fire onto the champion built to dodge it. Settled (§9.6), and moved off this table's Phase 1 proposal of Channel 2 / self-facing: the kit declares no damage contribution (Batch 2). |
 | Architect | Buffer, Damage | **Channel 2** | Self | Calibration's tiered finisher (Expose Weakness at 5-8 charges) is a self-contained stack-consumption payload, independent of Tidal Corsair's Steel/Sea (Batch 2). |
 | Tidal Corsair | Damage | **Channel 2** | Self | Wrangle the Sea — the existing, already-working ceiling pairing. Kept as-is; the plan's goal is added independent routes, not replacing this one (no batch change planned). |
 | Thief | Damage | **Channel 1** | Self | Pierce Weakness's Defence-ignore is a restored burst lever now that Defence keeps its full weight at burst scale; Pilfer's buff-steal is a secondary Enabler-tagged skill (denies a teammate condition to the enemy) (Batch 3). |
@@ -286,12 +286,13 @@ mechanics.
 |---|---|---|---|
 | **A — Debuff density** | Distinct debuff *types* on the target, each its own `bonus_per_debuff_on_target` bucket | Plague Doctor (Plague, Blight) + Emissary (Infraction-scaled Sanction, a further distinct type) | 1 → 2 |
 | **B — Cascade count** | Repeat/expiry-triggered re-resolution compounding fan-out | Sorcerer (reagent repeat) + Herald of the Loom (status-expiry cascade) | 1 |
-| **C — Crit path** | Crit chance/damage growth, outside the combined modifier (1.1.4) | Appraiser (Strike the Flaw) + Jester (avoided-hit conditional damage) | 1 → 2 |
+| **C — Crit path** | Crit chance/damage growth, outside the combined modifier (1.1.4) | Appraiser (§9.5). **Second anchor open** — the Jester was the Phase 1 proposal and is no longer a candidate (§9.6). Any Role not yet settled may fill it if its kit genuinely wants the crit path; none is assumed to. | 1 → open |
 | **D — Stack consumption (non-Corsair)** | Self-contained accumulate-then-spend payload | Architect (Calibration finisher) and, independently, Lancer (Momentum/Phalanx Guard once fixed) | 2, 3 |
 | **E — Health threshold** | Missing-Health percentage as a `bonus_per` surface | Bloodmage (missing-Health hook) + Cultist (Vessel-death Health event) | 1 → 2 |
 
 **Direction mix across the routes.** A route with one exported anchor and one self-facing anchor is
-the healthy shape — one kit hands the factor over, the other spends it. Routes A, C, and E have it.
+the healthy shape — one kit hands the factor over, the other spends it. Routes A and E have it;
+route C has only its exported anchor so far.
 **Routes B (cascade count) and D (stack consumption) are entirely self-facing**: Sorcerer and Herald
 both multiply their own damage, as do Architect and Lancer. Those two routes therefore compose only
 by both champions bursting, not by one enabling the other, which makes them the routes most likely
@@ -319,9 +320,10 @@ absorb the Comorbidity fix.
 Batches 2-4 (Phases 3-5), proposed here per the plan's instruction that composition is fixed once
 the pairing web exists:
 
-* **Batch 2 — close every route batch 1 opened.** Emissary (closes A), Jester (closes C),
-  Architect (opens D independently), Chronophage (new Channel 3 anchor, no route dependency yet),
-  Cultist (closes E). By the end of this batch all five sketched routes have both anchors landed.
+* **Batch 2 — close the routes batch 1 opened.** Emissary (closes A), Architect (opens D
+  independently), Chronophage (new Channel 3 anchor, no route dependency yet), Cultist (closes E),
+  Jester (settled as an Enabler kit, §9.6 — it strengthens route A's reliability rather than
+  anchoring a route, and route C's second anchor stays open).
 * **Batch 3 — the stack-consumption and Enabler pass.** Lancer (closes D's second anchor, absorbs
   the Reckless Momentum bug fix), Thief, Scholar, Tactician (add the second hook so it isn't the
   pairing web's sole Channel-2 source), Tidal Corsair (re-verify against the widened roster,
@@ -723,6 +725,105 @@ on Flaw Analysis rather than left without a source when Strike the Flaw retired,
 Knowledge rather than Critical Damage so it does not double-dip the attribute Lethal Precision
 already consigns.
 
+### 9.6 Jester — the luck Role
+
+**Status:** Settled, not yet implemented. Batch 2.
+
+**Identity: Enabler, exported.** The Jester declares no damage contribution. Its kit holds the
+window the burst fires in — pulling focused fire onto the one champion built to survive it — and
+denies the boss its favorable rolls. Both attack skills carry ordinary Channel 1 damage and the
+basic carries one small conditional factor, but neither is a declared contribution and neither is
+sized against section 4's per-Role figure. Section 5's Phase 1 proposal of Channel 2 / self-facing
+does not survive contact with the kit.
+
+**The kit is an adaptation, not a rework.** Passive, all three skills, and the Role's shipped
+attribute spread (Accuracy, Knowledge, Speed) stand; the changes below are Luck's reach, Hexed's
+addition, and Burning's magnitude shape.
+
+**Passive: Double the fun!** Unchanged — 5% base chance to avoid an incoming attack's damage,
+ramping by rarity per hit taken to a cap of 3 stacks, resetting on a successful avoidance,
+and raising the Jester's targeting weight. Its avoidance roll now goes through
+`BattleResolver._RollFavoring` rather than a bare `randf()`, so Luck and Hexed reach it.
+
+| Slot | Skill | Effect | Channel |
+|---|---|---|---|
+| Basic | Pratfall Sting | Accuracy-scaled damage to one enemy, +30% if the Jester avoided an attack since its last turn. | 1 + 2 |
+| Signature | Burning Bolas | Attack-scaled damage to one enemy; applies Burning and **Hexed** for 2 turns. Cooldown 2. | 1 + Enabler |
+| Signature | Center Stage | The Jester gains Spotlight for 2 turns and Luck for 1 turn. Cooldown 3. | Enabler |
+
+**Luck and Hexed apply to every chance roll in combat except the damage-variance roll.** Previously
+they reached only the critical-chance roll and the debuff-resist contest. The damage-variance roll
+stays excluded, as `Concept_Document.md` 3.2.3 already states: a 0.95-1.05 band is too narrow for
+a reroll to matter. Stating the rule as "every roll except variance" means a roll added later is
+covered without a further decision.
+
+**The debuff-resist contest band widens from 0.95-1.0 to 0.85-1.0** (`Concept_Document.md` 3.2.1
+#3). This is a roster-wide mechanics change, not Jester kit content, and it is what makes Luck and
+Hexed worth having on that contest at all: inside the old 5%-wide band, taking the worse of two
+rolls shifted the outcome by roughly 2 percentage points of the stat, leaving Hexed's
+debuff-resistance clause very nearly inert. At 0.85-1.0 a reroll is worth roughly 5 points of
+effective Accuracy or Resistance — decisive when the two are close, while 3.2.1 #3's "no base
+chance and no floor or ceiling" still holds and a large stat gap still settles the contest outright.
+
+**Burning's tick becomes a rolled 2-10% of max Health** (mean 6%, previously a flat 4%), per stack,
+roster-wide — Lava Zone included. Because Hexed makes its holder take the worse of two rolls, a
+Hexed target's expected tick is **7.33%**. Burning stays a shared commodity debuff rather than
+becoming a Jester-exclusive status, so any kit that applies it benefits from any kit that applies
+Hexed, per section 2.
+
+**Composition hooks (exported).**
+
+* **Hexed on the boss** is the kit's primary export and its most load-bearing piece. It degrades
+  every roll the boss makes in its own favor — its critical-chance roll, its resist checks against
+  the team's debuffs, and its own Burning ticks. A debuff-density team needs its debuffs to land;
+  this is what makes that reliable rather than a coin flip, and it names no Role.
+* **Burning** is a distinct debuff type, so it feeds any teammate's `bonus_per_debuff_on_target`
+  bucket and the density count generally.
+* **Spotlight** redirects the boss's target selection onto the Jester by targeting weight.
+
+**Collapse-test claims** (section 1.2), the whole of what this kit is measured on:
+
+* **Center Stage.** The Jester draws focused fire onto the champion built to dodge it, across
+  exactly the build-up turns where `Concept_Document.md` 1.1.1 puts the threat peak. Remove it and
+  that damage lands on the burst carrier instead, and the burst does not survive to happen.
+* **Burning Bolas' Hexed.** Remove it and the team's debuff applications go back to being decided
+  by an uncontested Accuracy-versus-Resistance check; a burst gated on debuff density stops being
+  reliable enough to plan around.
+* **Double the fun! and Luck.** The passive is what makes drawing fire survivable rather than
+  suicidal, and self-Luck is what makes the dodge roll trend the Jester's way. Neither produces
+  damage; together they are the reason Center Stage's claim holds.
+
+**Projected numbers.** None recorded, and none owed. The kit declares an Enabler identity, so
+section 1's contract asks it for the collapse test rather than a damage factor, and section 4
+forbids assigning synthetic scores to enabler contributions to make them visible to the sweep. Its
+one measurable factor is Pratfall Sting's conditional **1.30x**, which is not the Role's declared
+contribution and is not sized against any target. The Jester is expected to be invisible in
+`team_corpus_sweep.gd`'s ranking; that is a known limit of the ranking, not a verdict on the kit.
+
+**Implementation needs (not yet built):**
+
+* `double_the_fun_trait.gd:66` — the avoidance roll moves from `p_resolver.GetRandom().randf()` onto
+  `_RollFavoring`.
+* `BattleResolver._RollFavoring` reaches every remaining chance roll except the damage-variance
+  roll in `_ResolveDamage`.
+* `status_effect_resolver.gd:242-243` — the resist contest's random band widens to 0.85-1.0.
+* `Burning.tres` — `magnitude_kind` stays `MaxHealthPercent`, but the tick reads a rolled range
+  rather than a fixed `magnitude`; the range needs a representation on `StatusEffectData` and a
+  roll site in the tick path that routes through `_RollFavoring` so Hexed and Luck bias it.
+* `Burning_Bolas.tres` — a second `ApplyDebuffEffect` for Hexed, 2 turns.
+* `kit_contribution_manifest.gd` — Burning Bolas' entry gains Hexed; all four Jester entries stay
+  `bucket_key`-less apart from Pratfall Sting's existing `Pratfall Sting` key.
+* `Concept_Document.md` at promotion: 3.1.3's Jester passive entry (Luck reaching the dodge roll),
+  3.2.1 #3 (the widened band), 3.2.3's Luck, Hexed and Burning entries, and 3.2.4.2's Burning Bolas.
+* `Encounter_Design_Document.md:267,407` — Reanimating Statues 3 names Burning Bolas as its
+  intended solution for burning past Defence; the 4% → 6% mean is a buff to that solution. Recorded,
+  not tuned: encounter values are not being balanced at this stage.
+
+**Judgment calls made while settling, listed so they can be overruled:** Burning was reworked in
+place rather than given a Jester-exclusive successor status, which spreads the rolled tick to Lava
+Zone; Hexed's second claimant (alongside Diviner's Ill Omen) puts it at the commodity-debuff limit
+of two, so no later Role can take it.
+
 ## 10. Coverage ledger
 
 Successor to the archived `Plan_Role_Skill_Kits.md`'s claims ledger (status effects only) —
@@ -759,6 +860,8 @@ unclaimed.
 | Exposed Facet | Appraiser (Sizing Cut) — **settled, not yet implemented** (section 9.5); moved onto the basic skill's 1-turn rider |
 | Cracked Facet | Appraiser (Flaw Analysis) — **settled, not yet implemented** (section 9.5); moved off the retired Strike the Flaw passive, now scaled by the applier's Knowledge |
 | Confound | Scholar (Expose Fallacy), Appraiser (Flaw Analysis) — **settled, not yet implemented** (section 9.5). Second claimant, within the commodity-debuff limit of two. Magnitude rises -30% → -50% roster-wide, so Scholar's existing skill gains the same increase |
+| Hexed | Diviner (Ill Omen), Jester (Burning Bolas) — **settled, not yet implemented** (section 9.6). Second claimant, at the commodity-debuff limit of two, so no later Role may take it. Scope widens roster-wide from the crit and resist rolls to every chance roll except damage variance |
+| Burning | Jester (Burning Bolas), Lava Zone — unchanged claimants. Tick becomes a rolled 2-10% of max Health (mean 6%, was a flat 4%) roster-wide, biased by the holder's Luck or Hexed — **settled, not yet implemented** (section 9.6) |
 
 **Buffs** — Attune's second claim (Herald of the loom's Woven Blessing, alongside Cultist's Chosen
 Vessel passive) has dropped: Woven Blessing is no longer part of the Herald's kit (section 9.2,

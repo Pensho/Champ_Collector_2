@@ -46,7 +46,19 @@ sweep is, and is not"). It does establish the thing this plan is measured on —
 distinct combinations reach the burst band — and comparisons between damage routes are like-for-
 like; it cannot say whether a team is good, since damage is one factor among many. No survival term
 is being added and enabler/sustain/exported-window contributions get no synthetic scores; they are
-judged by 1.1.6's collapse test in each batch's review. Phases 3-6 not started.
+judged by 1.1.6's collapse test in each batch's review.
+
+Phase 3 (Batch 2) design started ahead of Phase 2's remaining implementation, which the tier-3 loop
+permits — settling a kit does not require implementing it in the same sitting. **Jester settled
+(§9.6)**, the first kit designed under the corrected contract and the first to declare an **Enabler**
+primary identity with no damage contribution at all. It carries two roster-wide mechanics changes
+its export depends on: Luck and Hexed widen from the crit and resist rolls to every chance roll
+except damage variance, and the debuff-resist contest's random band widens from 0.95-1.0 to
+0.85-1.0 (`Concept_Document.md` 3.2.1 #3) — inside the old band a reroll was worth about 2
+percentage points of the stat, leaving Hexed's resistance clause nearly inert. Burning's tick
+becomes a rolled 2-10% of max Health roster-wide. Four Roles left in Batch 2. Route C's second
+anchor is now open rather than assigned: the Jester was Phase 1's proposal and is no longer a
+candidate, and no unsettled Role is assumed into it. Phases 4-6 not started.
 
 **Post-Herald sweep** (`Tests/manual/team_corpus_sweep.gd`, re-run after Herald of the Loom
 landed). Combined-modifier-product distribution is unchanged from the post-Defence baseline
