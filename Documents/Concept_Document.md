@@ -183,6 +183,20 @@ Each Role can have one or two main purposes in combat but it doesn't have to res
 - Buffer
     - Applies various buffs to allies to make them stronger.
 
+**Sustain, Control, and denial purposes are discharged through the enabler class of section
+1.1.3.** They are ways to *reach* the burst rather than to build it — they create or protect the
+window the three damage channels fire in — so a Role carrying one of them needs no damage channel
+allocated to it on that purpose's account. What it does need is for those skills to be **authored
+with intent and counted as kit content**: each one is held to 1.1.6's collapse test on its own
+merits, and a Role that fills all three slots with damage while its declared Sustain or Control
+purpose goes unserved has failed its Role, whatever its damage channels score. A roster in which
+every skill feeds a damage bucket is the failure state section 1.1.3 already names.
+
+A Role's contribution also has a **direction** — self-facing when its kit's value shows up in its
+own output, exported when the value shows up on teammates, whether as a damage factor they carry or
+as the window they survive in. Both are load-bearing; the intended per-Role allocation across the
+roster lives in `Role_Kit_Design.md` section 5.
+
 Every Role passive below is tagged with the damage channel it belongs to per section 1.1.3, or
 **Enabler** if it produces no damage and is judged by the collapse test in 1.1.6 instead, using
 the same bracket vocabulary as section 3.2.3: **[Channel 1]** moves an attribute, continuously and

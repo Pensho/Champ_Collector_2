@@ -17,10 +17,19 @@ listener's instance count) — both exercised directly in `Tests/unit/test_casca
 ahead of the Herald trait itself, per the plan's own tier-1-before-tier-3 ordering. Two Roles left
 in Phase 2. The scorer gaps blocking the remaining two Channel 3 kits are consolidated in §11 and
 are the batch's first implementation work; the crit scorer's own gap closed in `e3d39bd`, leaving
-only the above-100 Critical Chance clamp that Appraiser's passive needs (§9.5). One framework
-question is open and blocks nothing in Batch 1 but governs Batch 2's designs: whether Enabler may
-be a Role-level identity, raised by Appraiser's kit claiming no bucket key at all (§8). Phases 3-6
-not started.
+only the above-100 Critical Chance clamp that Appraiser's passive needs (§9.5). The framework
+question that governed Batch 2's designs — whether Enabler may be a Role-level identity, raised by
+Appraiser's kit claiming no bucket key at all — is **settled** (§8): Enabler stays a skill-level
+tag, the contract admits crit-path contribution, and it gained a second declared axis,
+**contribution direction** (self-facing or exported, §1.1), with a per-Role allocation and a
+10-of-20-exported roster target in §5. A Sustain or Control purpose is now explicitly discharged
+through Enabler-tagged skills authored as kit content (§1.2, `Concept_Document.md` 3.1.3). Also
+settled: **the sweep is a sanity check on one calculable factor, not a design gate** (§4, "What the
+sweep is, and is not"). It does establish the thing this plan is measured on — whether several
+distinct combinations reach the burst band — and comparisons between damage routes are like-for-
+like; it cannot say whether a team is good, since damage is one factor among many. No survival term
+is being added and enabler/sustain/exported-window contributions get no synthetic scores; they are
+judged by 1.1.6's collapse test in each batch's review. Phases 3-6 not started.
 
 **Post-Herald sweep** (`Tests/manual/team_corpus_sweep.gd`, re-run after Herald of the Loom
 landed). Combined-modifier-product distribution is unchanged from the post-Defence baseline
@@ -43,9 +52,10 @@ instances) is the first thing to revisit, not a symptom of the framework.
 
 **Phase 1 result.** `Documents/Role_Kit_Design.md` created, holding the kit contract, the
 indirect-composition rule, the synergy grammar, Phase 0's re-derived targets, and the two pieces
-of new design work: a channel identity allocation across all 20 Roles (4 Channel 3, 7 Channel 2, 4
-Channel 1, 5 Enabler — up from ~1 real Role-driven Channel 3 anchor and one cross-kit Channel 2
-hook in the baseline) and a five-route pairing web (debuff density, cascade count, crit path,
+of new design work: a channel identity allocation across all 20 Roles (4 Channel 3, 9 Channel 2, 7
+Channel 1, no Role-level Enabler — up from ~1 real Role-driven Channel 3 anchor and one cross-kit
+Channel 2 hook in the baseline), a contribution-direction allocation across the same 20 (10
+exported, 10 self-facing), and a five-route pairing web (debuff density, cascade count, crit path,
 stack consumption, Health threshold), each independent of Tidal Corsair's existing ceiling
 pairing and of each other. Batch 1 (fixed by this plan) opens or partially opens four of the five
 routes; batch composition for Phases 3-5 is proposed in the design doc's section 7, sequenced so
@@ -244,8 +254,16 @@ cascade-on-cascade — which 1.1.3 names outright as the compounding case.
 The failure to fix is that one pairing is the ceiling. Target: **at least four independent
 ceiling pairings**, each reaching a comparable product through a *different* gating mechanic
 (debuff density, cascade count, crit path, stack consumption, zone payload, health thresholds),
-and none of them routed through Tidal Corsair or Tactician's grants. Success is measured on the
-sweep's *shape* — a populated top decile with distinct member pairs — not only on the maximum.
+and none of them routed through Tidal Corsair or Tactician's grants.
+
+The sweep's *shape* — a populated top decile with distinct member pairs — is how this target is
+read, and it is the measurement this plan's central claim rests on: several distinct combinations
+reaching the band is the evidence that the damage design works, and it is calculable, unlike most
+of what decides a fight. Its limit is scope, not reliability: the scorer sees single-action damage
+only, so it establishes that the routes reach the target and whether they have gone monocultural,
+while whether a *team* is good depends on factors it does not model. See `Role_Kit_Design.md` §4,
+"What the sweep is, and is not". Whether two routes are genuinely independent is confirmed by
+reading the mechanics in review, since identical numbers can come from the same gating mechanic.
 
 ### Constraints that bind the design
 
@@ -362,7 +380,11 @@ the pairing web exists. Same per-batch loop, same measurement.
 ### Phase 6 — Measure, promote, hand off
 
 * Final sweep against Phase 0's re-derived target, reported as a distribution: median, 90th
-  percentile, ceiling, **and the count of distinct pairings in the top decile**.
+  percentile, ceiling, **and the count of distinct pairings in the top decile**. The pass this plan
+  is after is several distinct combinations reaching the band, with nothing far above it and
+  nothing nowhere near it. That is a real result within the scorer's domain and a partial one
+  overall — it does not decide whether a team is good, and the exported-window kits are absent from
+  it by design (`Role_Kit_Design.md` §4, §8).
 * Promote settled kits into `Concept_Document.md` 3.2.4.2 and updated passives into 3.1.3; add
   new status entries to 3.2.3.
 * `Technical_Design_Document.md` gains entries for the mitigation change and any new effect type,

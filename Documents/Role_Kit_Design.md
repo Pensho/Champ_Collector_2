@@ -6,20 +6,52 @@ promoted into `Concept_Document.md` 3.2.4.2, which stays the authority once a ki
 document carries the allocation and the reasoning behind it, and the in-flight synergy ledger
 before that promotion happens.
 
-**Status:** Phase 1 draft — channel identity allocation and pairing web sketched, batches 2-4
-proposed. Awaiting sign-off per the plan before Phase 2 authoring starts. Design only; no skill or
+**Status:** Phase 1 draft — channel identity allocation, contribution direction, and pairing web
+sketched, batches 2-4 proposed. Awaiting sign-off per the plan before Phase 2 authoring starts.
+Design only; no skill or
 status `.tres` exists yet for anything below beyond what already ships (Concept_Document.md
 3.2.4.2).
 
 ## 1. The per-Role kit contract
 
-Each Role declares **one primary channel identity — Channel 1, Channel 2, or Channel 3** — and
-must be able to put on the table by burst time:
+Each Role declares two things — **one primary channel identity** (Channel 1, Channel 2, or
+Channel 3) and **one contribution direction** (self-facing or exported) — and must be able to put
+on the table by burst time:
 
-* **at least one distinct `CombinedDamageModifier` bucket key** (Channel 2) or comparable channel
-  contribution matching its declared identity, at a magnitude in the target band (section 4);
+* **at least one distinct damage factor at a magnitude in the target band** (section 4), matching
+  its declared identity: a `CombinedDamageModifier` bucket key, or a crit-path contribution —
+  `Concept_Document.md` 1.1.4 places the crit path outside the combined modifier by design, so a
+  crit-path kit claims no bucket key and is measured where its factor lands instead;
 * **at least one composition hook** — something it reliably puts into the world that another
   kit's condition can read.
+
+### 1.1 Contribution direction
+
+Direction is **whose sheet the Role's primary contribution is measured on** — not what kind of
+effect produces it.
+
+* **Self-facing.** The kit's value shows up in the Role's own output. Its factor multiplies its
+  own damage (Outbreak's debuff-count bucket, Corsair's Reckoning, Cut the Cloth's instance
+  count). Played alone it still does its job, worse but intact.
+* **Exported.** The kit's value shows up on teammates. Either as a damage factor they carry — a
+  granted modifier-bearing status (Daunting Strength, Sanguine Pact), a debuff every attacker
+  reads (Hemorrhage), a consigned attribute (Keen Edge, Lethal Precision) — or as the window they
+  survive in: damage redirection (Shield Wall), a blocked application (Premonition, Aegis), a
+  granted defensive attribute (Fortify). Played alone the kit does very little; its output is
+  defined by who it is played with.
+
+The test is: **remove the teammates — does the kit still do its job?** If no, it is exported. Both
+directions satisfy the contract equally, and both are held to the same standards — an exported
+damage factor to the target band, an exported window to the collapse test (section 1.2).
+
+An exported Role is **not expected to clear the 30-50x band on its own cast**, and section 9
+records its contribution where it lands — the factor's magnitude on the carrier (§9.4's Bloodmage,
+§9.5's Appraiser), or the collapse-test claim its protective skill makes. Direction is already
+half-visible in section 10.2, where a granted-status row and a skill-name row are the two bucket
+shapes; declaring it per Role extends that to the protective kits, which claim no bucket at all,
+and makes it a design target rather than a byproduct. The roster target is in section 5.
+
+### 1.2 Enabler, and where a Sustain purpose lands
 
 **Enabler is a skill-level tag, not a Role-level identity.** No Role's primary identity is
 Enabler — every Role fields real channel contribution, starting with its basic skill (a
@@ -31,6 +63,16 @@ happen, or not survive to happen. "Useful to have" fails. A Role whose flavor ce
 protection or denial (Scholar, Diviner, Symbiote, Bar Brawler, Warlord — section 5) still carries
 a genuine Channel 1 or Channel 2 anchor; the protection/denial piece is one skill in its kit, not
 the whole kit's identity.
+
+**A Sustain purpose is discharged through Enabler-tagged skills.** Sustain, Control, and denial
+(`Concept_Document.md` 3.1.3's purpose vocabulary) are ways to *reach* the burst, not to build
+it — they create or protect the window the three channels fire in, which is exactly 1.1.3's
+enabler class. A Role carrying one of those purposes therefore needs no separate channel
+allocation for it; it needs its Enabler skills to be **authored with intent and recorded as kit
+content**, not left as whatever the third slot ended up holding after the damage anchor was
+designed. Each settled kit's section 9 entry names its Enabler skills and the collapse-test claim
+each one makes. A Role that satisfies its channel contract with three damage skills while its
+declared Sustain or Control purpose goes unserved has failed the contract, not passed it.
 
 ## 2. Composition is indirect — never named coupling
 
@@ -83,8 +125,44 @@ and its `Post()` call site when a batch's design earns it.
   team.
 * Current roster baseline (`Tests/manual/team_corpus_sweep.gd`): combined-modifier-product median
   **1.62x**, 90th percentile **2.80x**, ceiling **7.22x**; contrast-ratio ceiling **9.39x**. Every
-  batch is measured against this baseline, tracking the distribution's *shape* (median, 90th
+  batch records its delta against this baseline as the distribution's *shape* (median, 90th
   percentile, ceiling, count of distinct top-decile pairings), not only the maximum.
+
+### What the sweep is, and is not
+
+**The sweep is a sanity check on one calculable factor, not a design gate.** Within its own
+domain — single-action damage against a boss — it answers three questions well, and they are the
+reason it exists:
+
+* **Is the burst target reachable at all, and through which combinations?** This is the sweep's
+  main positive result and the one the plan opened against: the roster failed it, with a single
+  pairing as the only route to the ceiling. A run that shows several distinct combinations reaching
+  the band is real evidence the damage design works, not merely the absence of a problem.
+* **Is any kit landing far above the band?**
+* **Is nothing in the roster anywhere near it?**
+
+Comparisons *inside* that domain are meaningful — one damage route against another is a like-for-
+like calculation, and the distinct-pairing count is the direct measure of whether those routes have
+gone monocultural.
+
+What it cannot do is say a team is good, because damage is one factor among many and the rest are
+not in the model. It is single-action and damage-only: no view of the champions' own Health, the
+opponent's, incoming damage, turn count, encounter composition, or whether a team survives long
+enough to cast anything. A team topping the ranking can be useless in the wrong fight, and the
+scorer cannot tell. That gap is structural and will not be closed — the game's factors are not
+reducible to what this model holds.
+
+Consequently:
+
+* **A kit is never designed to raise its number.** The number reports on the design; it does not
+  direct it. Being inside the band is the claim being checked, not a score to maximize.
+* **Enabler, sustain, and exported-window contributions are not given synthetic scores.** Assigning
+  arbitrary values to a redirect, a blocked debuff, or a heal to make them visible to the sweep
+  would produce numbers with no meaning behind them. These kits are judged by 1.1.6's collapse test
+  in the batch's own review, and that is a complete answer, not a gap awaiting a scorer feature.
+  Their absence from the ranking is a known limit of the ranking, not a verdict on the kits.
+* **A kit far outside the band is a prompt to look, not a verdict.** The post-Herald sweep's
+  top-decile flip is exactly that kind of prompt (see the plan's Status).
 * Pairing web target: **at least four independent ceiling pairings**, each reaching a comparable
   product through a *different* gating mechanic, none of them routed through Tidal Corsair or
   Tactician's grants alone.
@@ -119,28 +197,38 @@ each still anchor a genuine Channel 1 or Channel 2 skill; their protection/denia
 Premonition, the graft's baseline, On the House, Shield Wall) is an Enabler-tagged skill within the
 kit, not the kit's whole identity.
 
-| Role | Purpose (unchanged) | Primary identity | Composition hook (sketch) |
-|---|---|---|---|
-| Plague Doctor | Debuffer | **Channel 3** | Debuff density on the target feeds cascade instance count — the deepest identity claim in the roster (Batch 1 anchor; absorbs the Comorbidity fix). |
-| Sorcerer | Damage, Debuffer, Control | **Channel 3** | Reagent-triggered repeat re-resolves channels 1 and 2 as a fresh instance; the second, independently-gated cascade anchor (Batch 1). |
-| Herald of the Loom | Debuffer, Buffer | **Channel 3** | No passive exists in code today — free design space. A stance-driven status-expiry cascade (reads `Status_Expired`, the trigger already wired for Plague/Overflow) gives the roster a third cascade source gated by duration management rather than reagents or debuff count (Batch 1; needs a passive authored from scratch). |
-| Chronophage | Control | **Channel 3** | Turn-bar threshold crossing (pushing an enemy across a section boundary) is a named gap in the Channel 3 vocabulary — a new `Cascade_Trigger` value earned here, gated by turn-bar manipulation rather than any existing mechanic (Batch 2). |
-| Emissary | Debuffer, Control | **Channel 2** | The Infraction tally is already a growing, target-side counter with nothing reading it as a `bonus_per` source; turning it into one gives debuff-density pairings a second, independently-fed debuff type (Batch 2). |
-| Alchemist | Debuffer, Buffer | **Channel 2** | Fresh Batch's team damage buff on reagent consumption already fits — keep as the reagent-consumption anchor (Batch 4). |
-| Appraiser | Debuffer | **Channel 2** | Strike the Flaw (crit applies Cracked Facet) is the crit-path anchor — independent of the debuff-density and cascade routes, since it multiplies through the crit-damage path outside the combined modifier (1.1.4) (Batch 1). |
-| Cultist | Debuffer, Damage | **Channel 2** | Chosen Vessel's escalating per-cast power bonus is a growing modifier factor; Vessel death granting Attune ties it to the Health-threshold surface as a secondary hook (Batch 2). |
-| Jester | Damage, Sustain | **Channel 2** | Pratfall Sting's avoided-hit bonus is a conditional factor keyed to "was I hit/did I dodge since my last turn" — the crit-path pairing's second half alongside Appraiser (Batch 2). |
-| Architect | Buffer, Damage | **Channel 2** | Calibration's tiered finisher (Expose Weakness at 5-8 charges) is a self-contained stack-consumption payload, independent of Tidal Corsair's Steel/Sea (Batch 2). |
-| Tidal Corsair | Damage | **Channel 2** | Wrangle the Sea — the existing, already-working ceiling pairing. Kept as-is; the plan's goal is added independent routes, not replacing this one (no batch change planned). |
-| Thief | Damage | **Channel 1** | Pierce Weakness's Defence-ignore is a restored burst lever now that Defence keeps its full weight at burst scale; Pilfer's buff-steal is a secondary Enabler-tagged skill (denies a teammate condition to the enemy) (Batch 3). |
-| Lancer | Damage | **Channel 1** | Momentum/Phalanx Guard, once the offensive/defensive skill-name bug is fixed, is the roster's second stack-consumption anchor, independently gated from Corsair's and Architect's (Batch 3). |
-| Tactician | Buffer | **Channel 1** | Plan's attribute grant stays, but the rework should add a second hook beyond Daunting Strength so this Role is one of several Channel-2 feeds into a pairing, not the roster's sole one (Batch 3). |
-| Bloodmage | Sustain, Damage | **Channel 1** | Hemoclarity's Health-threshold Mysticism surge is already Channel 1 by mechanism; its damage skill gains a `bonus_per` keyed to the caster's own missing-Health percentage as the Health-threshold composition hook (Batch 1 — currently a zero-contribution kit). |
-| Scholar | Debuffer, Buffer | **Channel 2** | Expose Fallacy's Opportunist grant is the modifier-bucket anchor (feeds any per-debuff-type reader on the team). Refutation's zone removal stays an Enabler-tagged skill within the kit — denying the enemy's own zone setup, held to the collapse test on its own, not claimed as the Role's identity (Batch 3). |
-| Diviner | Sustain, Debuffer | **Channel 1** | Foresight's pre-emptive Enfeeble is the attribute-channel anchor. Premonition (auto-miss protection) stays an Enabler-tagged skill within the kit (Batch 4). |
-| Symbiote | Sustain, Buffer | **Channel 1** | Exhert's attribute buff is the baseline anchor, present from the ungrafted state on. Post-graft, a second hook may lean into whatever channel the bound graft effect supplies (pool-dependent, `Symbiote_Graft_Pool.md`), but the base kit always carries a genuine Channel 1 contribution on its own (Batch 4). |
-| Bar Brawler | Sustain, Buffer | **Channel 2** | Heap On already grows stronger with every use — the basic skill itself is the modifier-bucket anchor. On the House's heal-on-buff stays an Enabler-tagged skill within the kit, not the Role's identity (Batch 4). |
-| Warlord | Sustain | **Channel 1** | Shield Slam scales with Defence and Hold the Line grants Fortify — the attribute-channel anchor, meaningful now that Defence keeps its weight at burst scale. Shield Wall's damage redirection stays an Enabler-tagged skill within the kit (Batch 4). |
+**Direction target: at least half the roster exports its primary contribution** (section 1.1). This
+is the roster-shape guard against 20 kits that each only multiply their own damage — the allocation
+below sets **10 exported against 10 self-facing**. The two groups are not tiers: an exported Role
+is as load-bearing as a self-facing one, and several of them (Tactician, Scholar, Alchemist) are
+already what the current ceiling pairings run through.
+
+Direction is settled for the Roles whose kits are settled (sections 9.1-9.5) and **proposed** for
+the rest — confirm or overturn it at that Role's own batch, before its concrete numbers are fixed.
+A Role's basic skill is always self-facing; direction describes the declared-identity contribution.
+
+| Role | Purpose (unchanged) | Primary identity | Direction | Composition hook (sketch) |
+|---|---|---|---|---|
+| Plague Doctor | Debuffer | **Channel 3** | Self | Debuff density on the target feeds cascade instance count — the deepest identity claim in the roster (Batch 1 anchor; absorbs the Comorbidity fix). |
+| Sorcerer | Damage, Debuffer, Control | **Channel 3** | Self | Reagent-triggered repeat re-resolves channels 1 and 2 as a fresh instance; the second, independently-gated cascade anchor (Batch 1). |
+| Herald of the Loom | Debuffer, Buffer | **Channel 3** | Self | No passive exists in code today — free design space. A stance-driven status-expiry cascade (reads `Status_Expired`, the trigger already wired for Plague/Overflow) gives the roster a third cascade source gated by duration management rather than reagents or debuff count (Batch 1; needs a passive authored from scratch). |
+| Chronophage | Control | **Channel 3** | Exported | Turn-bar threshold crossing (pushing an enemy across a section boundary) is a named gap in the Channel 3 vocabulary — a new `Cascade_Trigger` value earned here, gated by turn-bar manipulation rather than any existing mechanic. Exported because the trigger is world state: any teammate's cascade listener reads it, not only the Chronophage's (Batch 2). |
+| Emissary | Debuffer, Control | **Channel 2** | Exported | The Infraction tally is already a growing, target-side counter with nothing reading it as a `bonus_per` source; turning it into one gives debuff-density pairings a second, independently-fed debuff type, readable by any teammate (Batch 2). |
+| Alchemist | Debuffer, Buffer | **Channel 2** | Exported | Fresh Batch's team damage buff on reagent consumption already fits — keep as the reagent-consumption anchor; the factor lands on the whole team, not the Alchemist (Batch 4). |
+| Appraiser | Debuffer | **Channel 2** | Exported | Strike the Flaw (crit applies Cracked Facet) is the crit-path anchor — independent of the debuff-density and cascade routes, since it multiplies through the crit-damage path outside the combined modifier (1.1.4). The settled kit (§9.5) consigns the whole contribution to a carrier (Batch 1). |
+| Cultist | Debuffer, Damage | **Channel 2** | Self | Chosen Vessel's escalating per-cast power bonus is a growing modifier factor; Vessel death granting Attune ties it to the Health-threshold surface as a secondary hook (Batch 2). |
+| Jester | Damage, Sustain | **Channel 2** | Self | Pratfall Sting's avoided-hit bonus is a conditional factor keyed to "was I hit/did I dodge since my last turn" — the crit-path pairing's second half alongside Appraiser (Batch 2). |
+| Architect | Buffer, Damage | **Channel 2** | Self | Calibration's tiered finisher (Expose Weakness at 5-8 charges) is a self-contained stack-consumption payload, independent of Tidal Corsair's Steel/Sea (Batch 2). |
+| Tidal Corsair | Damage | **Channel 2** | Self | Wrangle the Sea — the existing, already-working ceiling pairing. Kept as-is; the plan's goal is added independent routes, not replacing this one (no batch change planned). |
+| Thief | Damage | **Channel 1** | Self | Pierce Weakness's Defence-ignore is a restored burst lever now that Defence keeps its full weight at burst scale; Pilfer's buff-steal is a secondary Enabler-tagged skill (denies a teammate condition to the enemy) (Batch 3). |
+| Lancer | Damage | **Channel 1** | Self | Momentum/Phalanx Guard, once the offensive/defensive skill-name bug is fixed, is the roster's second stack-consumption anchor, independently gated from Corsair's and Architect's (Batch 3). |
+| Tactician | Buffer | **Channel 1** | Exported | Plan's attribute grant stays, but the rework should add a second hook beyond Daunting Strength so this Role is one of several Channel-2 feeds into a pairing, not the roster's sole one (Batch 3). |
+| Bloodmage | Sustain, Damage | **Channel 1** | Exported | Hemoclarity's Health-threshold Mysticism surge is already Channel 1 by mechanism; the kit's weight lands in Sanguine Pact (on the carrier) and Hemorrhage (on the boss, readable by every attacker) rather than on the Bloodmage's own cast (Batch 1 — currently a zero-contribution kit). |
+| Scholar | Debuffer, Buffer | **Channel 2** | Exported | Expose Fallacy's Opportunist grant is the modifier-bucket anchor (feeds any per-debuff-type reader on the team). Refutation's zone removal stays an Enabler-tagged skill within the kit — denying the enemy's own zone setup, held to the collapse test on its own, not claimed as the Role's identity (Batch 3). |
+| Diviner | Sustain, Debuffer | **Channel 1** | Exported | Foresight's pre-emptive Enfeeble is the attribute-channel anchor, and it lands on the enemy for the whole team's benefit; Premonition's auto-miss protection is the exported window. Not a damage carrier — the kit is measured on what it keeps alive and what it blunts (Batch 4). |
+| Symbiote | Sustain, Buffer | **Channel 1** | Exported | Exhert's attribute buff is the baseline anchor, present from the ungrafted state on, and lands on the ally it targets. Post-graft the kit may read as self-facing depending on which graft the player binds (pool-dependent, `Symbiote_Graft_Pool.md`); the ungrafted baseline is what fixes the declared direction (Batch 4). |
+| Bar Brawler | Sustain, Buffer | **Channel 2** | Self | Heap On already grows stronger with every use — the basic skill itself is the modifier-bucket anchor. On the House's heal-on-buff stays an Enabler-tagged skill within the kit, not the Role's identity (Batch 4). |
+| Warlord | Sustain | **Channel 1** | Exported | Shield Slam scales with Defence as the self-facing floor, but the kit's weight is the window it holds open: Shield Wall's damage redirection and Hold the Line's granted Fortify. Measured on the collapse test, not on a damage factor (Batch 4). |
 
 ## 6. The pairing web
 
@@ -158,6 +246,17 @@ mechanics.
 | **C — Crit path** | Crit chance/damage growth, outside the combined modifier (1.1.4) | Appraiser (Strike the Flaw) + Jester (avoided-hit conditional damage) | 1 → 2 |
 | **D — Stack consumption (non-Corsair)** | Self-contained accumulate-then-spend payload | Architect (Calibration finisher) and, independently, Lancer (Momentum/Phalanx Guard once fixed) | 2, 3 |
 | **E — Health threshold** | Missing-Health percentage as a `bonus_per` surface | Bloodmage (missing-Health hook) + Cultist (Vessel-death Health event) | 1 → 2 |
+
+**Direction mix across the routes.** A route with one exported anchor and one self-facing anchor is
+the healthy shape — one kit hands the factor over, the other spends it. Routes A, C, and E have it.
+**Routes B (cascade count) and D (stack consumption) are entirely self-facing**: Sorcerer and Herald
+both multiply their own damage, as do Architect and Lancer. Those two routes therefore compose only
+by both champions bursting, not by one enabling the other, which makes them the routes most likely
+to produce the "every kit is its own damage dealer" shape section 1.1 guards against. Not corrected
+here — Batch 1's cascade anchors are already settled or implemented — but it is the first thing to
+look at if the sweep's top decile collapses onto a single cascade pairing again (see the plan's
+post-Herald sweep note), and Batch 2's Chronophage is deliberately the exported cascade anchor that
+route B lacks.
 
 Each route is a candidate combination to validate during its batch's own 1.1.6 review, not a
 scripted pair enforced in code — per section 2, no skill in any of these kits may name the other
@@ -205,14 +304,20 @@ collapse-test payload without inventing new gating mechanics.
   lands — not resolved here to avoid scope creep into code before sign-off.
 * The contrast baseline (bursting champion's own basic vs. team's average per-action output)
   remains open per the plan; not touched by this document.
-* **Whether Enabler may be a Role-level identity.** Section 1 forbids it and section 5 assigns
-  Appraiser Channel 2, but Appraiser's settled kit (section 9.5) runs entirely through the crit
-  path, which `Concept_Document.md` 1.1.4 places outside the `CombinedDamageModifier` — so it
-  claims no bucket key and cannot meet section 1's contract as written. Either section 1 admits a
-  crit-path contribution as satisfying the contract alongside a bucket key, or Enabler becomes a
-  legitimate Role identity for Roles whose whole output lands on someone else. This governs all 20
-  Roles, so it is not amended here on one kit's account; settle it before Batch 2's kits are
-  designed against the same contract.
+* ~~**Whether Enabler may be a Role-level identity.**~~ **Settled.** Enabler stays a skill-level
+  tag; the contract instead gained a second declared axis, **contribution direction** (section 1.1),
+  and now admits a crit-path contribution alongside a bucket key. Appraiser and Bloodmage are
+  exported Roles measured where their factors land, not contract violations. Section 5 carries the
+  per-Role allocation and the 10-exported roster target.
+
+* ~~**Sustain is not measured by anything.**~~ **Settled — and it is not a gap to close.** The
+  sweep scores damage only; `sustained_contrast_ratio` means sustained *damage*, not survivability,
+  so every exported-window kit (Warlord, Diviner, Symbiote, and every Enabler skill in an otherwise
+  self-facing kit) is invisible to it. No survival term is being added and no synthetic values are
+  being assigned to enabler or sustain contributions — see section 4, "What the sweep is, and is
+  not". Those kits are judged by 1.1.6's collapse test in their batch's review, which is why section
+  1.2 requires each settled kit's section 9 entry to state the collapse-test claim its Enabler
+  skills make. The scorer stays a two-sided sanity check on damage magnitude.
 
 ## 9. Settled kit designs
 
