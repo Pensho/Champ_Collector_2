@@ -6,6 +6,23 @@ and hands it to a build-out plan that was never spawned.
 
 ## Status
 
+**Framework correction, applied before Batch 2 design.** `Role_Kit_Design.md` had drifted from
+`Concept_Document.md` in a way that railroaded every Role toward a burst-sized damage kit: §1's kit
+contract required "one distinct damage factor at a magnitude in the target band (section 4)", and
+§4's band was the **30-50x team figure**. 1.1.2 is unambiguous that 30-50x describes a team at one
+resolution and decomposes to roughly two ~2x factors per champion, but no per-Role figure was ever
+stated in §4, so the contract pointed every kit at the team number. §9 compounded it: the Herald
+and Sorcerer entries reported team-inclusive figures (both assuming a teammate product of 5.5) as
+those Roles' own results and called them "inside the 30-50x band", while §9.4 said the Bloodmage
+"is not expected to clear the band alone" — two incompatible readings in one section, with the
+first acting as a ratchet on every Role designed after it. §1.2 separately forbade an Enabler
+primary identity, which `Concept_Document.md` 1.1.3 permits and arguably requires ("not a damage
+channel and … not to be converted into one"). Fixed in §1, §1.2, §4, §5, §8, §9.2, §9.3 and §9.4,
+and in this plan's own contract restatement, Context, per-batch loop, and Watch-for list. **Batch
+1's five settled kits were all designed under the wrong reading and should be re-read against the
+corrected contract** before Phase 6 — Sorcerer, Bloodmage and Appraiser are not yet implemented, so
+that re-read is still cheap for three of the five.
+
 Phase 0 done. Phase 1 drafted, awaiting sign-off (see below) before Phase 2 starts. Phase 2 in
 progress: Plague Doctor and Herald of the Loom implemented; Sorcerer, Bloodmage, and Appraiser
 settled and recorded in `Role_Kit_Design.md` §9.3 / §9.4 / §9.5, not yet implemented. Herald of the
@@ -19,8 +36,8 @@ in Phase 2. The scorer gaps blocking the remaining two Channel 3 kits are consol
 are the batch's first implementation work; the crit scorer's own gap closed in `e3d39bd`, leaving
 only the above-100 Critical Chance clamp that Appraiser's passive needs (§9.5). The framework
 question that governed Batch 2's designs — whether Enabler may be a Role-level identity, raised by
-Appraiser's kit claiming no bucket key at all — is **settled** (§8): Enabler stays a skill-level
-tag, the contract admits crit-path contribution, and it gained a second declared axis,
+Appraiser's kit claiming no bucket key at all — is **settled** (§8): Enabler **is** permitted as a
+primary identity, the contract admits crit-path contribution, and it gained a second declared axis,
 **contribution direction** (self-facing or exported, §1.1), with a per-Role allocation and a
 10-of-20-exported roster target in §5. A Sustain or Control purpose is now explicitly discharged
 through Enabler-tagged skills authored as kit content (§1.2, `Concept_Document.md` 3.1.3). Also
@@ -128,8 +145,10 @@ Findings carried forward from the two deleted plans (`Plan_Kit_Burst_Reachabilit
 ## Context
 
 `Concept_Document.md` 1.1 requires a solved boss to produce a burst of **30-50x** the champion's
-own basic, which 1.1.2 sizes at a **26x multiplier on the scaled attribute aggregate** — about
-one to two independent factors per champion across a three-champion team.
+own basic — a figure describing **a team at one resolution**, not any single Role. 1.1.2 sizes it
+at a **50x multiplier on the scaled attribute aggregate** (26x before Phase 0's mitigation change
+re-derived it), decomposed as roughly **two independent factors of ~2x per champion** across a
+three-champion team. The per-champion figure is the one kits are designed against.
 
 The roster does not come close, and the measurement already exists. The full 1140-team sweep
 (`Tests/manual/team_corpus_sweep.gd`) recorded a combined-modifier-product distribution of
@@ -196,16 +215,25 @@ different mechanics — so that finding one is a discovery, not the only option.
 
 ### The per-Role kit contract
 
+**The 30-50x burst figure is a team-level, single-resolution figure and is never a per-Role
+target** (`Concept_Document.md` 1.1.2 decomposes it as roughly two factors of ~2x per champion
+across a three-champion team). The figure a kit is designed and checked against is **a factor of
+roughly 2x, one or two of them**. See `Role_Kit_Design.md` §1 and §4, which are authoritative here.
+
 Each Role must be able to put on the table by burst time:
 
 * **one declared primary channel identity** — Channel 1, Channel 2, Channel 3, or Enabler;
-* **at least one distinct `CombinedDamageModifier` bucket key** at a magnitude in the target band
-  Phase 0 sets, unless its primary identity is Enabler;
+* **at least one distinct damage factor of roughly 2x** matching that identity — a
+  `CombinedDamageModifier` bucket key, a cascade instance count, or a crit-path contribution —
+  unless its primary identity is Enabler;
 * **at least one composition hook** — something it reliably puts into the world that another
   kit's condition can read.
 
-An Enabler-identity Role carries no bucket key and is held to 1.1.6's **collapse test**: removing
-it makes the burst not happen, or not survive to happen. "Useful to have" fails.
+An Enabler-identity Role carries no bucket key and no damage factor, and is held to 1.1.6's
+**collapse test** instead: removing it makes the burst not happen, or not survive to happen.
+"Useful to have" fails. `Concept_Document.md` 1.1.3 requires enablers to stay a real class —
+"not a damage channel and … not to be converted into one" — so an Enabler identity is a complete
+pass, and a kit is never given a damage anchor it does not want in order to avoid declaring one.
 
 ### Composition is indirect — never named coupling
 
@@ -359,8 +387,9 @@ before any code lands):
 3. **Concrete kit design**, the expensive-to-revert tier once it becomes `.tres` + trait code +
    tests: brainstorm candidate kits (via the `brainstorm` skill, against `Role_Kit_Design.md`) →
    settle kits → compute the settled design's projected numbers against the scorer's own
-   formula/methodology (`blowout_calibration.gd`'s approach) and check them against the target
-   band → **record the settled kit in `Role_Kit_Design.md` §9 (passive, all three skills,
+   formula/methodology (`blowout_calibration.gd`'s approach) and check the Role's *own* factors
+   against `Role_Kit_Design.md` §4's per-Role ~2x figure, never against the 30-50x team figure
+   → **record the settled kit in `Role_Kit_Design.md` §9 (passive, all three skills,
    rationale, the projected numbers, and its claims) before writing any code** — a session that
    settles a kit is not required to also implement it in the same sitting; recording first means
    the next session (or a coverage review) can compare every settled kit's channel spread and
@@ -430,6 +459,13 @@ the pairing web exists. Same per-batch loop, same measurement.
 
 * **A high-scoring roster is not the goal; a discriminating one is.** Check the median on every
   change, not only the ceiling — a change that lifts both equally has failed.
+* **Do not railroad Roles into damage kits.** Every Role reaching for a burst-sized number is the
+  failure this plan opened against, not the goal. A kit meeting §1's contract with one ~2x factor
+  and a hook is finished; a kit whose honest identity is Enabler declares Enabler and fields no
+  damage factor at all (`Concept_Document.md` 1.1.3). Symptoms to catch in a batch's own review:
+  every settled kit reading Channel 2 or 3, a Sustain/Control Role whose purpose went unserved
+  while three damage skills were authored, or a design revised upward to close a gap against
+  another Role's recorded number.
 * **Do not reference this plan or its batch numbers in code comments or commit messages.** Plans
   are deleted on completion.
 * Phase 0's re-derived figures are still estimates until a burst is playable and can be felt.

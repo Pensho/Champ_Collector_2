@@ -14,16 +14,31 @@ status `.tres` exists yet for anything below beyond what already ships (Concept_
 
 ## 1. The per-Role kit contract
 
-Each Role declares two things — **one primary channel identity** (Channel 1, Channel 2, or
-Channel 3) and **one contribution direction** (self-facing or exported) — and must be able to put
+**The 30-50x burst figure is not a per-Role target.** `Concept_Document.md` 1.1.2 sizes it as a
+team-level, single-resolution figure: a 50x burst is "about six independent factors of 2x, ten of
+1.5x, or four of 3x", spread across a three-champion team — "roughly two factors per champion,
+which normal kits can carry". **The figure a kit is designed and checked against is a factor of
+roughly 2x, one or two of them.** No Role is required to reach 30-50x, on its own cast or at all.
+A kit that does is carrying the team's whole burst by itself, which is the monoculture this
+document exists to prevent, not a kit that passed with distinction. Section 4 keeps the two
+figures separate.
+
+Each Role declares two things — **one primary channel identity** (Channel 1, Channel 2, Channel 3,
+or Enabler) and **one contribution direction** (self-facing or exported) — and must be able to put
 on the table by burst time:
 
-* **at least one distinct damage factor at a magnitude in the target band** (section 4), matching
-  its declared identity: a `CombinedDamageModifier` bucket key, or a crit-path contribution —
-  `Concept_Document.md` 1.1.4 places the crit path outside the combined modifier by design, so a
-  crit-path kit claims no bucket key and is measured where its factor lands instead;
+* **one contribution matching its declared identity.** For a Channel 1/2/3 identity that is at
+  least one distinct damage factor of roughly 2x — a `CombinedDamageModifier` bucket key, a cascade
+  instance count, or a crit-path contribution (`Concept_Document.md` 1.1.4 places the crit path
+  outside the combined modifier by design, so a crit-path kit claims no bucket key and is measured
+  where its factor lands instead). For an Enabler identity it is the collapse test (section 1.2)
+  in place of a damage factor;
 * **at least one composition hook** — something it reliably puts into the world that another
   kit's condition can read.
+
+A kit clearing the contract with one ~2x factor and a hook is a finished kit. "Could it be made to
+contribute more damage?" is not a reason to keep designing, and a kit is never revised upward to
+close a gap against another Role's recorded number.
 
 ### 1.1 Contribution direction
 
@@ -42,27 +57,35 @@ effect produces it.
 
 The test is: **remove the teammates — does the kit still do its job?** If no, it is exported. Both
 directions satisfy the contract equally, and both are held to the same standards — an exported
-damage factor to the target band, an exported window to the collapse test (section 1.2).
+damage factor to the same ~2x figure, an exported window to the collapse test (section 1.2).
 
-An exported Role is **not expected to clear the 30-50x band on its own cast**, and section 9
-records its contribution where it lands — the factor's magnitude on the carrier (§9.4's Bloodmage,
-§9.5's Appraiser), or the collapse-test claim its protective skill makes. Direction is already
-half-visible in section 10.2, where a granted-status row and a skill-name row are the two bucket
-shapes; declaring it per Role extends that to the protective kits, which claim no bucket at all,
-and makes it a design target rather than a byproduct. The roster target is in section 5.
+Section 9 records an exported Role's contribution where it lands — the factor's magnitude on the
+carrier (§9.4's Bloodmage, §9.5's Appraiser), or the collapse-test claim its protective skill
+makes. Direction is already half-visible in section 10.2, where a granted-status row and a
+skill-name row are the two bucket shapes; declaring it per Role extends that to the protective
+kits, which claim no bucket at all, and makes it a design target rather than a byproduct. The
+roster target is in section 5.
 
 ### 1.2 Enabler, and where a Sustain purpose lands
 
-**Enabler is a skill-level tag, not a Role-level identity.** No Role's primary identity is
-Enabler — every Role fields real channel contribution, starting with its basic skill (a
-no-cooldown skill is Channel 1 by default, scaling an attribute) and its declared-identity skill
-on top of that. A Role may additionally carry zero or more Enabler-tagged skills or riders — a
-basic skill's secondary rider, a dedicated protection/denial skill, a heal — each held to the
-**collapse test** (`Concept_Document.md` 1.1.6) on its own merits: removing it makes the burst not
-happen, or not survive to happen. "Useful to have" fails. A Role whose flavor centers on
-protection or denial (Scholar, Diviner, Symbiote, Bar Brawler, Warlord — section 5) still carries
-a genuine Channel 1 or Channel 2 anchor; the protection/denial piece is one skill in its kit, not
-the whole kit's identity.
+**Enabler is both a skill-level tag and a permitted Role-level identity.**
+`Concept_Document.md` 1.1.3 establishes enablers as a fourth class of effect that produces no
+damage at all, and states plainly that they "are not a damage channel and are not to be converted
+into one — … A roster where every status touches damage carries fewer decisions, not more." A Role
+whose flavor centers on protection, denial, or control may therefore declare **Enabler** as its
+primary identity and field no damage factor at all, and it is measured on the collapse test alone.
+That is a complete pass, not a concession.
+
+Every Role still fields a basic skill, which is Channel 1 by default simply by scaling an
+attribute; that is not a channel identity claim. A Role of any identity may carry zero or more
+Enabler-tagged skills or riders — a basic skill's secondary rider, a dedicated protection/denial
+skill, a heal — each held to the **collapse test** (`Concept_Document.md` 1.1.6) on its own
+merits: removing it makes the burst not happen, or not survive to happen. "Useful to have" fails.
+
+Whether a protection-flavored Role (Scholar, Diviner, Symbiote, Bar Brawler, Warlord — section 5)
+declares Enabler or a damage channel is a per-Role decision made at its own batch, from what the
+kit actually wants to be. It is not a target to be met: do not add a damage anchor to a kit that
+does not want one merely so its section 5 row reads Channel 1 or Channel 2.
 
 **A Sustain purpose is discharged through Enabler-tagged skills.** Sustain, Control, and denial
 (`Concept_Document.md` 3.1.3's purpose vocabulary) are ways to *reach* the burst, not to build
@@ -116,13 +139,27 @@ and its `Post()` call site when a batch's design earns it.
 
 ## 4. Targets and current baseline
 
-* Boss-tier burst target: **30-50x** a champion's own basic, preferring 50x
-  (`Concept_Document.md` 1.1.2).
-* Against a boss-tier Defence of 120 (Defence's mitigation ratio is taken against the fixed
-  `GameBalance.DEFENCE_SCALE_CONSTANT = 100.0`, per `Concept_Document.md` 1.1.4, so it keeps its
-  full percentage weight at burst scale), a 50x burst needs a **50x multiplier on the scaled
-  attribute aggregate** — roughly two independent factors per champion across a three-champion
-  team.
+**Two different figures, never interchangeable.** Conflating them is the failure mode this section
+exists to prevent: it turns every Role into a burst carrier and produces exactly the monoculture
+the plan opened against.
+
+* **The team figure — 30-50x.** A boss-tier burst resolution deals 30-50x the champion's own basic,
+  preferring 50x (`Concept_Document.md` 1.1.2). This is a property of a **team in an encounter at
+  the moment of one resolution**, never of a Role. Nothing is designed against it directly; the
+  sweep reports it, and it is the only place the number belongs.
+* **The per-Role figure — roughly 2x, one or two factors.** Against a boss-tier Defence of 120
+  (Defence's mitigation ratio is taken against the fixed `GameBalance.DEFENCE_SCALE_CONSTANT =
+  100.0`, per `Concept_Document.md` 1.1.4, so it keeps its full percentage weight at burst scale),
+  a 50x burst needs a 50x multiplier on the scaled attribute aggregate — which 1.1.2 decomposes as
+  "about six independent factors of 2x, ten of 1.5x, or four of 3x", spread across three champions.
+  **This is the figure a kit is designed and checked against.** A Role landing one or two factors
+  in the 1.5-3x range has met the target; a Role declaring an Enabler identity (section 1.2) meets
+  it with no damage factor at all.
+
+**A per-Role projection in section 9 that reads 30-50x is a team figure.** Those projections
+multiply the Role's own factors by an assumed teammate product (§9.2 and §9.3 both assume 5.5) to
+show the kit *composing*. The resulting number belongs to the illustrative team, not to the Role,
+and is never a bar another Role is expected to match.
 * Current roster baseline (`Tests/manual/team_corpus_sweep.gd`): combined-modifier-product median
   **1.62x**, 90th percentile **2.80x**, ceiling **7.22x**; contrast-ratio ceiling **9.39x**. Every
   batch records its delta against this baseline as the distribution's *shape* (median, 90th
@@ -191,11 +228,17 @@ nearly empty (3 real entries against 23 Channel-1 statuses) and Channel 2 has al
 hooks (one skill in 79 declares `bonus_per_debuff_on_target`).
 
 Target shape: 4 Channel 3 anchors (up from ~1 real Role-driven anchor), 9 Channel 2 anchors, 7
-Channel 1 anchors. No Role's primary identity is Enabler (section 1) — the five Roles whose
-flavor leans hardest into protection or denial (Scholar, Diviner, Symbiote, Bar Brawler, Warlord)
-each still anchor a genuine Channel 1 or Channel 2 skill; their protection/denial skill (Refutation,
-Premonition, the graft's baseline, On the House, Shield Wall) is an Enabler-tagged skill within the
-kit, not the kit's whole identity.
+Channel 1 anchors.
+
+**This shape is a starting proposal, not a quota.** It was allocated in Phase 1 before any kit was
+designed, and the identity a Role ends up declaring comes from what its kit wants to be at its own
+batch — including **Enabler**, which section 1.2 permits as a primary identity. A Role moving off
+its proposed row is an ordinary outcome to record, not a deviation to justify; the roster-level
+concern is that Channel 3 and cross-kit Channel 2 hooks stop being nearly empty, which several
+Roles moving one row does not endanger. In particular, the five Roles whose flavor leans hardest
+into protection or denial (Scholar, Diviner, Symbiote, Bar Brawler, Warlord) are proposed as
+Channel 1 or Channel 2 here, but each is a legitimate Enabler-identity candidate and none should
+be given a damage anchor it does not want in order to hold its proposed row.
 
 **Direction target: at least half the roster exports its primary contribution** (section 1.1). This
 is the roster-shape guard against 20 kits that each only multiply their own damage — the allocation
@@ -260,7 +303,10 @@ route B lacks.
 
 Each route is a candidate combination to validate during its batch's own 1.1.6 review, not a
 scripted pair enforced in code — per section 2, no skill in any of these kits may name the other
-Role. A team assembling route A's debuff types, for instance, is satisfied by *any* kit that
+Role. **A Role's route assignment is likewise a proposal, not an obligation.** A kit that turns out
+to want a different mechanic, or no damage route at all, changes the table; it is not bent to serve
+the route it was pencilled into. A route left with one anchor is a gap to fill from any Role that
+genuinely fits, or to drop — never a reason to give an unwilling kit a damage anchor. A team assembling route A's debuff types, for instance, is satisfied by *any* kit that
 produces Plague, Blight, or an Infraction-scaled debuff, not specifically Plague Doctor and
 Emissary.
 
@@ -304,10 +350,13 @@ collapse-test payload without inventing new gating mechanics.
   lands — not resolved here to avoid scope creep into code before sign-off.
 * The contrast baseline (bursting champion's own basic vs. team's average per-action output)
   remains open per the plan; not touched by this document.
-* ~~**Whether Enabler may be a Role-level identity.**~~ **Settled.** Enabler stays a skill-level
-  tag; the contract instead gained a second declared axis, **contribution direction** (section 1.1),
-  and now admits a crit-path contribution alongside a bucket key. Appraiser and Bloodmage are
-  exported Roles measured where their factors land, not contract violations. Section 5 carries the
+* ~~**Whether Enabler may be a Role-level identity.**~~ **Settled — Enabler is permitted as a
+  primary identity** (section 1.2), per `Concept_Document.md` 1.1.3's requirement that enablers
+  stay a real class and not be converted into a damage channel. An earlier ruling here held the
+  opposite (Enabler as a skill-level tag only); it was overturned as part of the correction
+  described in section 4, having been made under the reading that every Role owed a damage factor
+  in the burst band. The contract also gained a second declared axis, **contribution direction**
+  (section 1.1), and admits a crit-path contribution alongside a bucket key. Section 5 carries the
   per-Role allocation and the 10-exported roster target.
 
 * ~~**Sustain is not measured by anything.**~~ **Settled — and it is not a gap to close.** The
@@ -321,8 +370,9 @@ collapse-test payload without inventing new gating mechanics.
 
 ## 9. Settled kit designs
 
-One entry per Role once its kit is **settled** (brainstormed, picked, and projected against the
-target band) — recorded here *before* any `.tres`, trait script, or status effect is written, per
+One entry per Role once its kit is **settled** (brainstormed, picked, and projected against
+section 4's per-Role ~2x figure) — recorded here *before* any `.tres`, trait script, or status
+effect is written, per
 the plan's tier-3 loop. This is the record a coverage review reads: what every settled Role's
 passive and three skills actually do and what it projects to, without having to reconstruct that
 from trait scripts. An entry's **Status** line tracks whether it has been implemented yet; a
@@ -393,12 +443,17 @@ and the burst (no defense-ignore in this kit), contrast ratio reduces to `(skill
 (combined modifier product) × (instance count)`, independent of which boss is used. At Legendary
 (8 instances, 90% per-instance strength, +20% self bonus) against an illustrative team product of
 5.5 (roughly matching section 4's "two independent factors per champion" shape), contrast ratio ≈
-**47.5x** — inside the 30-50x target band. Against a more modest team (product ≈3.0), ≈25.9x. At
-Uncommon (same 8-instance ceiling — rarity affects tempo via starting Tension and the smaller +5%
-self bonus, not the ceiling itself, since max Tension is now rarity-flat) the same strong-team
-scenario gives ≈41.6x. Cut the Cloth's 90% strength (rather than a Sorcerer-style 50% discount) is
-load-bearing: the setup tax is Tension's multi-turn build time, not a second discount on the
-payoff — discounting both would leave the kit short of the target band against any realistic team.
+**47.5x** for that whole team. Against a more modest team (product ≈3.0), ≈25.9x. At Uncommon
+(same 8-instance ceiling — rarity affects tempo via starting Tension and the smaller +5% self
+bonus, not the ceiling itself, since max Tension is now rarity-flat) the same strong-team scenario
+gives ≈41.6x.
+
+**These are team figures, not the Herald's own contribution** (section 4). The Herald's own factor
+is the instance count: **8.64x at Legendary**, which is well above section 4's per-Role ~2x target
+and is why the post-Herald sweep's top decile collapsed onto a single pairing (see the plan's
+Status). That is a flag on this kit, not a bar for the next one. Cut the Cloth's 90% strength
+(rather than a Sorcerer-style 50% discount) reflects that the setup tax is Tension's multi-turn
+build time rather than a second discount on the payoff.
 
 **Implemented as:** `weft_and_warp_trait.gd`, `Thread_Snap.tres` (reworked), `Pull_the_Thread.tres`,
 `Cut_the_Cloth.tres` (new), `Herald_of_the_loom.tres` (rewired). Golden Thread hooks a new
@@ -468,12 +523,17 @@ consumed as free actions in the burst turn, plus one charge carried in from the 
 Surge. At Legendary the four Echoes deal 50 / 87.5 / 153 / 268% — 5.59x in repeats, **6.59x**
 total including the original cast.
 
-| Scenario | Contrast ratio |
+| Scenario | Team contrast ratio |
 |---|---|
-| Legendary, 4 Echoes, strong team (product 5.5) | **36.2x** — inside the 30-50x band |
+| Legendary, 4 Echoes, strong team (product 5.5) | **36.2x** |
 | Legendary, 4 Echoes, modest team (product 3.0) | 19.8x |
 | Legendary, 1 Echo (steady state, no reagents banked) | 8.3x |
 | Uncommon, 4 Echoes, strong team | 22.5x |
+
+**These are team figures, not the Sorcerer's own contribution** (section 4). The Sorcerer's own
+factor is the Echo multiplier: **6.59x at the 4-Echo ceiling**, 1.5x in the 1-Echo steady state —
+above section 4's per-Role ~2x target at the ceiling, which is the deliberate shape of a Channel 3
+anchor whose ceiling is gated behind spending three banked reagents in one turn.
 
 The 1.75 compounding factor is steeper than a flat-instance design would need precisely because
 the per-stack Mysticism ramp was dropped: that ramp was worth a flat 1.5x on the aggregate, and
@@ -535,10 +595,9 @@ Bloodmage's own cast, Tithe of Vitality at Legendary, 80% missing Health, 2 alli
 aggregate ratio 1.5 (Tithe's Mysticism scaling vs. Blood Bolt's 1.0) × 1.80 (Hemoclarity's own-
 missing-Health aggregate bonus) × 1.70 (Wounded_Allies bucket, 2 allies) ≈ 4.59x before team
 factors. Against a strong team product of 5.5 (§4's illustrative shape), contrast ratio ≈ **25.2x**;
-against a modest team (product 3.0), ≈13.8x. As a Channel 1/2 kit rather than a Channel 3 anchor,
-this Role is not expected to clear the 30-50x band alone — §1's contract asks for a real bucket in
-the target band and a composition hook, not a solo burst, and the exported factors below are where
-this kit's actual weight lands:
+against a modest team (product 3.0), ≈13.8x. Both are team figures (section 4); the Bloodmage's own
+factors are the 1.70x Wounded_Allies bucket and Hemoclarity's 1.80x aggregate bonus, comfortably
+inside §1's ~2x contract. The exported factors below are where this kit's weight actually lands:
 
 * **Sanguine Pact**, on the carrier: 1.60x at 50% missing Health, up to 1.96x at 80% missing —
   handed to whichever teammate is bursting, independent of the Bloodmage's own cast.
