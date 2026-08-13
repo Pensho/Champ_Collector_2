@@ -1168,21 +1168,29 @@ that presents those results, not the state changes themselves — health bars, s
 death still land instantly, ahead of the numbers describing them.
 
 **Escalation curve.** `BurstPacing` (`Scripts/Battle/burst_pacing.gd`, static functions only) maps
-a cascade instance ordinal to a per-item spawn delay, text scale, and color shift toward red,
-each independently bounded (`DelayForStep` floors at `MINIMUM_DELAY`, `ScaleForStep` caps at
-`MAXIMUM_SCALE`, `ColorForStep` clamps to `Color.RED` from `FULL_RED_STEP` on). Step `0` — outside
-any cascade — returns each function's unescalated base value, so ordinary combat text is
-unaffected. The ordinal is bounded by construction: `Battle._cascade_instance_ordinal` increments
-once per `Cascade_Triggered` result (`Battle._on_resolver_result_produced`, `Scripts/Battle/battle.gd`),
+a cascade instance ordinal to a per-item spawn delay, text scale, spawn-pop overshoot, and color
+shift toward red, each independently bounded (`DelayForStep` floors at `MINIMUM_DELAY`,
+`ScaleForStep` caps at `MAXIMUM_SCALE`, `OvershootForStep` caps at `MAXIMUM_OVERSHOOT`,
+`ColorForStep` clamps to `Color.RED` from `FULL_RED_STEP` on). Step `0` — outside any cascade —
+returns each function's unescalated base value, so ordinary combat text is unaffected. The ordinal
+is bounded by construction: `Battle._cascade_instance_ordinal` increments once per
+`Cascade_Triggered` result (`Battle._on_resolver_result_produced`, `Scripts/Battle/battle.gd`),
 which is itself bounded by `CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION`.
 
 **Spawn queue.** `BattleUI` (`Scripts/UI/Battle_UI/battle_ui.gd`) already queued combat text and
 released it one pooled `CombatEffectText` at a time; this layer makes that release rate a function
 of the curve instead of a fixed constant. `SpawnCombatText` takes the ordinal as a defaulted fourth
 argument, stamped onto the queued `CombatEffectText`. On release, `ApplyEscalation` sets the text's
-color and — via the Label's font size override rather than `LabelContainer.scale`, which the
-existing spawn animation already keys — its size, before the animation plays; the next release is
-scheduled by `BurstPacing.DelayForStep` for that instance's ordinal rather than a fixed interval.
+color and — via the Label's font size override, independent of `LabelContainer.scale` — its settled
+size, before the animation plays; the next release is scheduled by `BurstPacing.DelayForStep` for
+that instance's ordinal rather than a fixed interval. `LabelContainer.scale` itself carries a
+separate, transient spawn-pop tween built in `CombatEffectText.Animate()`: it grows from near-zero
+past the settled size to `BurstPacing.OvershootForStep(escalation_step)`, then settles back to
+`Vector2.ONE` and holds until the scene animation's fade/shrink takes over — so a deeper cascade
+instance punches in harder on top of being larger and redder. The scene's
+`Damage_Number_Animation` (`Scenes/ui/Battle_UI/Damage_Number.tscn`) no longer keys
+`LabelContainer:scale` itself; it retains only the modulate fade and the `remove()` method track
+that defines the 2.0s lifetime.
 
 **Turn gating.** `Battle.ResolveTurn` and the stunned-turn path in `StartTurn` no longer call
 `CompleteTurn()` inline. Both leave `_state` at `BattleState.Resolving` and arm a

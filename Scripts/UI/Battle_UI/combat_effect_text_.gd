@@ -1,6 +1,11 @@
 class_name CombatEffectText
 extends Node2D
 
+const MINIMUM_SPAWN_SCALE: float = 0.00001
+const GROW_DURATION: float = 0.18
+const SETTLE_DURATION: float = 0.15
+const SHRINK_DURATION: float = 0.45
+
 @export var label: Label
 @export var animation_player: AnimationPlayer
 @export var label_container: Node2D
@@ -13,6 +18,8 @@ var _spread: float
 var _base_color: Color = Color(1.0, 1.0, 1.0, 1.0)
 var _base_font_size: int = 0
 var _base_outline_size: int = 0
+var _position_tween: Tween
+var _scale_tween: Tween
 
 func SetValue(
 		p_text: String,
@@ -42,13 +49,33 @@ func ApplyEscalation(p_step: int) -> void:
 func Animate() -> void:
 	animation_player.play("Damage_Number_Animation")
 
-	var tween = create_tween()
+	if(_position_tween):
+		_position_tween.kill()
+	if(_scale_tween):
+		_scale_tween.kill()
+
 	var end_position = Vector2(randf_range(-_spread, _spread), -_height) + _position
 	var tween_length = animation_player.get_animation("Damage_Number_Animation").length
 
-	tween.tween_property(label_container, "position", end_position, tween_length).from(_position)
+	_position_tween = create_tween()
+	_position_tween.tween_property(label_container, "position", end_position, tween_length).from(_position)
+
+	var peak_scale: float = BurstPacing.OvershootForStep(escalation_step)
+	var hold_duration: float = tween_length - GROW_DURATION - SETTLE_DURATION - SHRINK_DURATION
+
+	_scale_tween = create_tween()
+	_scale_tween.tween_property(label_container, "scale", Vector2.ONE * peak_scale, GROW_DURATION) \
+			.from(Vector2.ONE * MINIMUM_SPAWN_SCALE).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	_scale_tween.tween_property(label_container, "scale", Vector2.ONE, SETTLE_DURATION) \
+			.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)
+	_scale_tween.tween_interval(hold_duration)
+	_scale_tween.tween_property(label_container, "scale", Vector2.ZERO, SHRINK_DURATION)
 
 func remove() -> void:
 	animation_player.stop()
+	if(_position_tween):
+		_position_tween.kill()
+	if(_scale_tween):
+		_scale_tween.kill()
 	if(is_inside_tree()):
 		get_parent().remove_child(self)

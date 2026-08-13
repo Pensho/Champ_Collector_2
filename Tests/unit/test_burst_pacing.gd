@@ -9,6 +9,7 @@ const MAX_STEP: int = CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION
 func test_step_zero_is_the_unescalated_base_case() -> void:
 	assert_almost_eq(BurstPacing.DelayForStep(0), BurstPacing.BASE_DELAY, 0.0001)
 	assert_almost_eq(BurstPacing.ScaleForStep(0), BurstPacing.BASE_SCALE, 0.0001)
+	assert_almost_eq(BurstPacing.OvershootForStep(0), BurstPacing.BASE_OVERSHOOT, 0.0001)
 	var base_color: Color = Color(0.298, 0.565, 0.871, 1.0)
 	assert_eq(BurstPacing.ColorForStep(base_color, 0), base_color)
 
@@ -44,6 +45,20 @@ func test_scale_increases_strictly_until_it_holds_at_the_maximum() -> void:
 		previous_scale = scale
 	assert_true(reached_maximum, "The maximum should be reached within MAX_STEP steps.")
 
+func test_overshoot_increases_strictly_or_holds_at_the_maximum() -> void:
+	var previous_overshoot: float = BurstPacing.OvershootForStep(1)
+	for step in range(2, MAX_STEP + 1):
+		var overshoot: float = BurstPacing.OvershootForStep(step)
+		var at_maximum: bool = is_equal_approx(previous_overshoot, BurstPacing.MAXIMUM_OVERSHOOT)
+		if(at_maximum):
+			assert_almost_eq(overshoot, BurstPacing.MAXIMUM_OVERSHOOT, 0.0001,
+					"Step %d should hold at the maximum once reached." % step)
+		else:
+			assert_true(overshoot > previous_overshoot,
+					"Step %d (%f) should be strictly greater than step %d (%f) before the maximum." %
+							[step, overshoot, step - 1, previous_overshoot])
+		previous_overshoot = overshoot
+
 func test_color_is_exactly_red_at_and_beyond_the_full_red_step() -> void:
 	var base_colors: Array[Color] = [Color.WHITE, Color(1.0, 0.45, 0.1, 1.0), Color(0.6, 0.6, 0.6, 1.0)]
 	for base_color in base_colors:
@@ -59,6 +74,9 @@ func test_no_function_returns_an_out_of_bounds_value_across_the_full_step_range(
 		var scale: float = BurstPacing.ScaleForStep(step)
 		assert_true(scale >= BurstPacing.BASE_SCALE and scale <= BurstPacing.MAXIMUM_SCALE,
 				"Scale at step %d (%f) is out of bounds." % [step, scale])
+		var overshoot: float = BurstPacing.OvershootForStep(step)
+		assert_true(overshoot > BurstPacing.BASE_SCALE and overshoot <= BurstPacing.MAXIMUM_OVERSHOOT,
+				"Overshoot at step %d (%f) is out of bounds." % [step, overshoot])
 		var color: Color = BurstPacing.ColorForStep(Color.WHITE, step)
 		assert_true(color.r <= 1.0 and color.g >= 0.0 and color.g <= 1.0 and color.b >= 0.0 and color.b <= 1.0,
 				"Color at step %d (%s) is out of bounds." % [step, color])

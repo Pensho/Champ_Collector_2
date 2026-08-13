@@ -14,6 +14,9 @@ const BASE_SCALE: float = 1.0
 const SCALE_GROWTH: float = 0.25
 const MAXIMUM_SCALE: float = 3.0
 const FULL_RED_STEP: int = 5
+const BASE_OVERSHOOT: float = 1.4
+const OVERSHOOT_GROWTH: float = 0.15
+const MAXIMUM_OVERSHOOT: float = 5.0
 
 
 static func DelayForStep(p_step: int) -> float:
@@ -28,6 +31,13 @@ static func ScaleForStep(p_step: int) -> float:
 		return BASE_SCALE
 	var scale: float = BASE_SCALE + SCALE_GROWTH * p_step
 	return minf(scale, MAXIMUM_SCALE)
+
+
+static func OvershootForStep(p_step: int) -> float:
+	if p_step <= 0:
+		return BASE_OVERSHOOT
+	var overshoot: float = BASE_OVERSHOOT + OVERSHOOT_GROWTH * p_step
+	return minf(overshoot, MAXIMUM_OVERSHOOT)
 
 
 static func ColorForStep(p_base_color: Color, p_step: int) -> Color:
