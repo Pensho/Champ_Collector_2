@@ -26,6 +26,7 @@ func Init() -> void:
 	_sound_effects_volume_slider.value = settings.sound_effects_volume
 	_screen_shake_check_box.button_pressed = settings.screen_shake_enabled
 	_fullscreen_check_box.button_pressed = settings.fullscreen
+	_fullscreen_check_box.visible = not OS.has_feature("mobile")
 
 	for language_id in LOCALE_BY_LANGUAGE_ID:
 		if LOCALE_BY_LANGUAGE_ID[language_id] == settings.locale:

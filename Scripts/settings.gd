@@ -101,8 +101,15 @@ func _apply_bus_volume(p_bus_name: String, p_linear_volume: float) -> void:
 		AudioServer.set_bus_volume_db(bus_index, linear_to_db(p_linear_volume))
 
 func _apply_fullscreen() -> void:
+	# Handheld window mode toggles system bars / immersive mode; the fullscreen
+	# setting only applies to desktop windowing.
+	if _is_handheld():
+		return
 	var mode: int = DisplayServer.WINDOW_MODE_FULLSCREEN if fullscreen else DisplayServer.WINDOW_MODE_WINDOWED
 	DisplayServer.window_set_mode(mode)
 
 func _apply_locale() -> void:
 	TranslationServer.set_locale(locale)
+
+func _is_handheld() -> bool:
+	return OS.has_feature("mobile")
