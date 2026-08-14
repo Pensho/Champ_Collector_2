@@ -35,38 +35,28 @@ through Enabler-tagged skills authored as kit content (§1.2, `Concept_Document.
 (`Role_Kit_Design.md` §4).
 
 Phase 3 (Batch 2) design started ahead of Phase 2's remaining implementation, which the tier-3 loop
-permits — settling a kit does not require implementing it in the same sitting. **Jester settled
-(§9.6)**, the first kit designed under the corrected contract and the first to declare an **Enabler**
-primary identity with no damage contribution at all. It carries two roster-wide mechanics changes
-its export depends on: Luck and Hexed widen from the crit and resist rolls to every chance roll
-except damage variance, and the debuff-resist contest's random band widens from 0.95-1.0 to
-0.85-1.0 (`Concept_Document.md` 3.2.1 #3) — inside the old band a reroll was worth about 2
-percentage points of the stat, leaving Hexed's resistance clause nearly inert. Burning's tick
-becomes a rolled 2-10% of max Health roster-wide. **Emissary settled (§9.7)** as an adaptation —
-only Levied Sanction's payload changes: Sanction gains a snapshotted per-Infraction damage
-multiplier every attacker on the team reads (1.72x at the tally cap), and Signed Writ credits an
-Infraction per buff it strips to zero. That closes route A and discharges the standing
-exported-Channel-2 requirement the coverage review left open. **Cultist settled (§9.8)**, also an
-adaptation: the passive's flat per-cast bonus stays flat (an automatic ramp is a timer, not a
-decision) and gains Devotion, a permanent damage bucket per Vessel that dies, while the basic reads
-the Vessel's half-Health threshold. Route E closes. **Chronophage settled (§9.9)** as route B's
-exported cascade anchor, fielding no damage factor of its own: Time Tithe grants Borrowed Time to an
-ally it boosts *alone* on the turn bar, and that ally's next skill resolves once more at 30-60%.
-The threshold-crossing `Cascade_Trigger` §5 proposed is **not** authored — counting section
-boundaries is arithmetic a player cannot read off the screen. Two roster-wide notes came out of
-settling it: §5's allocation predates the Enabler correction, so every unsettled row is now
-explicitly a proposal at most; and §3's instance-count test is reworded to compare **total**
-resolutions (an additional resolution is Channel 3 at any fixed count; Overflow fails because its
-total is one, not because its count is fixed). **Architect settled (§9.10) and Batch 2's design is
-complete** — the kit is kept as it ships (its finisher already meets the contract, its zone already
-consumes charges against it), with one change: Expose Weakness's Defence reduction scales with the
-charges spent, -30% at 5 up to -44% at 12. Phase 0 is what made that worth doing: with Defence
-keeping its weight at burst scale, the debuff is a 1.16-1.25x factor for every attacker on the team,
-and `Concept_Document.md` 3.2.3's claim that it was build-up pressure only is corrected in this
-turn. Batch 2's five kits are settled; **none of Batch 2 is implemented yet**, and Batch 1 still has
-Sorcerer, Bloodmage and Appraiser outstanding. Route C's second
-anchor is now open rather than assigned: the Jester was Phase 1's proposal and is no longer a
-candidate, and no unsettled Role is assumed into it. Phases 4-6 not started.
+permits — settling a kit does not require implementing it in the same sitting. All five settled,
+**none implemented**: Jester (§9.6), Emissary (§9.7), Cultist (§9.8), Chronophage (§9.9), Architect
+(§9.10). Routes A and E close; route C's second anchor is open rather than assigned, since the
+Jester was Phase 1's proposal and is no longer a candidate, and no unsettled Role is assumed into
+it. Chronophage's threshold-crossing `Cascade_Trigger` is **not** authored — counting section
+boundaries is arithmetic a player cannot read off the screen.
+
+Phase 4 (Batch 3) started, one Role at a time. Three settled, none implemented:
+
+* **Lancer (§9.11)** — the batch's only replacement, and the first kit gated on *position* rather
+  than a resource. Opens route F; accumulate-then-spend drops to four claimants.
+* **Thief (§9.12)** — a base-referenced Defence bypass, opening route G with the Architect. One
+  scorer gap follows, now `Role_Kit_Design.md` §11's open item: **the scorer models no defence
+  ignore at all**, so both the Thief's and the Architect's contributions are invisible to the sweep
+  until it does.
+* **Tidal Corsair (§9.13)** — an adaptation closing route D. Prompted the description soft cap
+  (`Concept_Document.md` 3.2.4), and its Slipstream claim retires part of `FeatureIdeas.md`'s
+  orphaned-turn-bar-effects item and narrows its Outrider sketch.
+
+Two Roles left in Phase 4. **Roster-wide mechanics changes that settled kits depend on are held in
+`Role_Kit_Design.md` §12** until each one ships, rather than promoted into `Concept_Document.md`
+ahead of the game.
 
 **Coverage review findings**, from a roster-wide read of all 20 Roles against the corrected contract.
 
@@ -167,14 +157,9 @@ Findings carried forward from the two deleted plans (`Plan_Kit_Burst_Reachabilit
   Tactician team this lands in the *same* bucket as Cataclysmic Surge's own Warped requirement
   and adds rather than multiplying. Worth knowing when authoring a kit meant to compose with
   Opportunist.
-* **Two known implementation bugs, still unfixed:** Plague Doctor's Comorbidity
-  (`status_effect_resolver.gd:70-71` hardcodes `tick_bonus_per_debuff = 0.0`, so the zone-trigger
-  debuff path Miasma uses never reads it) moves into the Plague Doctor's batch (Phase 2, below;
-  **fixed** — see Phase 2's own entry). Lancer's Reckless Momentum (`lancer_trait.gd`'s
-  `OFFENSIVE_SKILL_NAMES` names a Thief skill, "Stab", instead of the Lancer's own "Lance Thrust",
-  and no preset ever populates `defensive_skill_names`, so Momentum stacks accrue but only Disarm
-  ever grants them and Phalanx Guard can never spend them) — fix it whenever Lancer's kit lands in
-  a batch (Phase 3-5, composition set at the end of Phase 1).
+* **Plague Doctor's Comorbidity bug** (`status_effect_resolver.gd:70-71` hardcoded
+  `tick_bonus_per_debuff = 0.0`, so the zone-trigger debuff path Miasma uses never read it) moved
+  into the Plague Doctor's batch and is fixed — see Phase 2's own entry.
 * **Architecture gap, found in Plague Doctor's batch, deliberately not fixed yet:**
   `StatusEffects.Debuff` (`status_effects.gd`) carries dedicated fields for individual traits'
   rider data instead of one generic container — `repeats_per_distinct_debuff` (Comorbidity, this
@@ -213,20 +198,15 @@ Three structural causes, all in the kits rather than the architecture:
   Plague's expiry spread, and the Sorcerer's reagent-triggered repeat. Only the repeat was ever
   real: **Overflow is not Channel 3** (it yields exactly one instance, so it multiplies nothing —
   see `Role_Kit_Design.md` §3's instance-count test) and has no source in the game anyway, and
-  **Plague's expiry spread no longer exists**, removed when the Plague Doctor's kit was reworked
-  around debuff density. The repeat tops out at 5.57x, below the roster's own top-decile threshold.
-  Against 23 Channel-1-tagged statuses, a co-equal pillar channel had a one-item corpus — a worse
-  starting position than this plan opened by claiming, and the reason Batch 1's Channel 3 work is
-  load-bearing rather than incremental.
+  **Plague's expiry spread no longer exists**, removed in the Plague Doctor's rework. The repeat tops out at 5.57x, below the roster's own top-decile threshold.
+  Against 23 Channel-1-tagged statuses, a co-equal pillar channel had a one-item corpus, which is
+  why Batch 1's Channel 3 work is load-bearing rather than incremental.
 * **Channel 2 has almost no cross-kit hooks.** Almost every Channel 2 bucket in the roster is a
   skill-name or trait-resource key that only its own caster's skill reads; the levers by which a
   kit hands a factor to a teammate's burst — a granted modifier-bearing status, a debuff every
   attacker reads, an open counter another kit feeds — are held by a handful of entries. Confound,
   Suppress, Unravel and the rest are Channel-1-only in practice, because nothing in the roster
-  reads them. (This bullet originally named `bonus_per_debuff_on_target` as the main lever and its
-  single declarer as the shortfall. That field is **identity-scoped by design** — see the grammar
-  table above — so its one claimant is the intended state, not evidence of the gap. The gap itself
-  is real and is restated above without it.)
+  reads them.
 * **Most kits are three Channel-1 skills**, and many are one-note — a single effect and nothing
   else. That is the exact shape 1.1.6's rejection test rejects.
 

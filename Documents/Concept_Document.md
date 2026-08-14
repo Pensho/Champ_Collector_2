@@ -544,6 +544,8 @@ Positional targeting (Left-most Enemy, Right-most Enemy) is absolute: it follows
 
 Of the skills a character has, they always have 1 basic skill that has no cooldown but in general is weaker or more basic than other skills.
 
+**Description length is soft-capped**: 60 words for a skill's effect line (3.2.4.2), 120 for a passive (3.1.3). Over it, cut a clause before accepting the length — a mechanic that genuinely needs more words earns them by saying what no shorter wording can.
+
 ##### 3.2.4.1 Zone System Rules
 Turn bar skills apply effects to specific zones on the turn bar.
 
@@ -589,13 +591,10 @@ the fix belongs in the data or the document.
     * Type: Damage
     * Cooldown: 2 turns
     * Effect: [Channel 1] Deals damage to a single enemy, ignoring 60% of the target's Defense, scaling with Attack.
-* Case the Target
+* Weigh the Mark
     * Type: Buff
-    * Cooldown: 3 turns
-    * Effect: [Channel 2] The Thief gains the Opportunist buff for 2 turns.
-        * **Conflict flagged:** the shipped resource is `Weigh_the_Mark.tres` — same Opportunist
-          grant, but named "Weigh the Mark" and lasting 3 turns, not the 2 documented here.
-          Needs a documentation or data fix.
+    * Cooldown: 4 turns
+    * Effect: [Channel 2] The Thief gains the Opportunist buff for 3 turns.
 
 ###### Lancer
 * Lance Thrust

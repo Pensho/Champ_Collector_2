@@ -187,12 +187,13 @@ both directions — the high kits carry a team's whole burst alone, and fielding
 route to the band.
 
 **Factors are only comparable within their own kind** — bucket product, cascade instance count,
-crit-path multiplier, exported factor on a carrier. One ranked column across all four is not a
+crit-path multiplier, mitigation-term factor (§9.12's bypass, §9.10's Defence debuff), exported
+factor on a carrier. One ranked column across all four is not a
 measurement.
 
 **Current state: bimodal.** Instance counts: Herald 8.64x, Sorcerer 6.59x at its gated ceiling (1.5x
 steady state), Plague Doctor's Comorbidity never projected (§9.1). Bucket products: Architect,
-Tactician, Tidal Corsair, Bloodmage at 1.7-2.2x; Emissary, Alchemist, Scholar, Lancer at 1.3-1.5x.
+Tactician, Tidal Corsair, Bloodmage at 1.7-2.2x, Lancer at 1.54-1.90x; Emissary, Alchemist, Scholar at 1.3-1.5x.
 Appraiser's ≈5.58x is the only crit-path figure. Closing this runs one way: **a Role above the band
 is pulled down at its own batch; a Role below it is not raised to match** — a low figure is first a
 question about whether the Role's declared identity is honest (section 1.2).
@@ -221,11 +222,12 @@ says whether a team is good. Two rules follow:
 * **Do not uncap** Momentum, Arcane Instability, or Steel and Sea; magnitude-per-stack is the
   dial, not stack count.
 * **Base attributes stay tame** — growth belongs in channels 2 and 3.
+* **Skill and passive description length is soft-capped** (`Concept_Document.md` 3.2.4).
 * Existing anti-overlap rules: identity effects to one Role, commodity buffs/debuffs to at most
   two, turn-bar effects to one, zones stay signature.
-* **Accumulate-then-spend stays at its current claimants** — Tidal Corsair, Architect, Lancer,
-  Herald, Sorcerer. A legitimate RPG idiom and a fair allocation at five; no further Role takes it
-  absent new information. Cultist's per-cast bonus and Bar Brawler's Heap On ramp are continuous
+* **Accumulate-then-spend stays at its current claimants** — Tidal Corsair, Architect, Herald,
+  Sorcerer. A legitimate RPG idiom and a fair allocation at four; no further Role takes it
+  absent new information. The Lancer left when its passive settled onto a positional gate (§9.11). Cultist's per-cast bonus and Bar Brawler's Heap On ramp are continuous
   growth, not build-then-spend, and are not counted here.
 
 ## 5. Channel identity allocation
@@ -273,9 +275,9 @@ A Role's basic skill is always self-facing; direction describes the declared-ide
 | Cultist | Debuffer, Damage | **Channel 2** | Self | Settled (§9.8), confirming this row. Chosen Vessel's flat per-cast bonus stays flat; Vessel death now also grants permanent Devotion, and the basic reads the Vessel's half-Health threshold (Batch 2). |
 | Jester | Damage, Sustain | **Enabler** | Exported | Hexed on the boss degrades every roll it makes in its own favor — crit checks, resist checks against the team's debuffs, its own Burning ticks — so a debuff-density burst becomes reliable rather than a coin flip; Spotlight pulls focused fire onto the champion built to dodge it. Settled (§9.6), and moved off this table's Phase 1 proposal of Channel 2 / self-facing: the kit declares no damage contribution (Batch 2). |
 | Architect | Buffer, Damage | **Channel 2** | Self | Settled (§9.10), confirming this row. The kit is kept as it ships — the finisher's charge bucket already meets the contract and the zone already consumes charges against it. Only Expose Weakness changes, scaling with the charges spent (Batch 2). |
-| Tidal Corsair | Damage | **Channel 2** | Self | Wrangle the Sea — the existing, already-working ceiling pairing. Kept as-is; the plan's goal is added independent routes, not replacing this one (no batch change planned). |
-| Thief | Damage | **Channel 1** | Self | Pierce Weakness's Defence-ignore is a restored burst lever now that Defence keeps its full weight at burst scale; Pilfer's buff-steal is a secondary Enabler-tagged skill (denies a teammate condition to the enemy) (Batch 3). |
-| Lancer | Damage | **Channel 1** | Self | Momentum/Phalanx Guard, once the offensive/defensive skill-name bug is fixed, is the roster's second stack-consumption anchor, independently gated from Corsair's and Architect's (Batch 3). |
+| Tidal Corsair | Damage | **Channel 2** | Self | Settled (§9.13), confirming this row. An adaptation: Corsair's Reckoning resolves by the composition of the stacks it consumes, and Sea's turn-bar push retires for Undertow, a bank on the target that only a pure Steel hand converts (Batch 3). |
+| Thief | Damage | **Channel 1** | Self | Settled (§9.12), confirming this row. Pilfer retires for Between the Plates, a passive bypass reading a fraction of the target's *base* Defence, so a teammate's Defence shred compounds with it instead of being eaten by it; Weigh the Mark is rebuilt as Cut Purse (Batch 3). |
+| Lancer | Damage | **Channel 2** | Self | Settled (§9.11), moved off this table's Phase 1 proposal of Channel 1. Momentum and Phalanx Guard retire for Charge Distance: the charge scales with the turn-bar sections it touches and throws the Lancer back half that distance. The Role reads turn-bar position rather than accumulating stacks, so it is no longer route D's second anchor (Batch 3). |
 | Tactician | Buffer | **Channel 1** | Exported | Plan's attribute grant stays, but the rework should add a second hook beyond Daunting Strength so this Role is one of several Channel-2 feeds into a pairing, not the roster's sole one (Batch 3). |
 | Bloodmage | Sustain, Damage | **Channel 1** | Exported | Hemoclarity's Health-threshold Mysticism surge is already Channel 1 by mechanism; the kit's weight lands in Sanguine Pact (on the carrier) and Hemorrhage (on the boss, readable by every attacker) rather than on the Bloodmage's own cast (Batch 1 — currently a zero-contribution kit). |
 | Scholar | Debuffer, Buffer | **Channel 2** | Exported | Expose Fallacy's Opportunist grant is the modifier-bucket anchor (feeds any per-debuff-type reader on the team). Refutation's zone removal stays an Enabler-tagged skill within the kit — denying the enemy's own zone setup, held to the collapse test on its own, not claimed as the Role's identity (Batch 3). |
@@ -287,19 +289,21 @@ A Role's basic skill is always self-facing; direction describes the declared-ide
 ## 6. The pairing web
 
 Tidal Corsair's Steel/Sea route already reaches the ceiling and stays as-is. The gap the current
-baseline exposes is that it was the *only* route — the top decile was one repeated pairing. Five
-new, independent routes are sketched below, each gated by a different mechanic and none dependent
-on Tidal Corsair or Tactician's grant alone. "Independent" means: remove any one route's anchor
-Roles from the roster and the other four still reach a comparable product through unrelated
-mechanics.
+baseline exposes is that it was the *only* route — the top decile was one repeated pairing. The
+routes below are each gated by a different mechanic and none depends on Tidal Corsair or on
+Tactician's grant alone. "Independent" means: remove any one route's anchor Roles from the roster
+and the rest still reach a comparable product through unrelated mechanics. Routes A-E were sketched
+in Phase 1; route F was opened by a settled kit, and a later batch may open another the same way.
 
 | Route | Gating mechanic | Anchor Roles | Batch |
 |---|---|---|---|
 | **A — Debuff density** | Count of distinct debuff *types* on the target, read through `bonus_per: {Target_Debuff_Count}` (open to any source, linear in the count) | **Closed.** Plague Doctor (Plague, Blight, self-facing) + Emissary (Sanction, exported — §9.7) | 1 → 2 |
 | **B — Cascade count** | Repeat/expiry-triggered re-resolution compounding fan-out | Sorcerer (reagent repeat) + Herald of the Loom (status-expiry cascade) | 1 |
 | **C — Crit path** | Crit chance/damage growth, outside the combined modifier (1.1.4) | Appraiser (§9.5). **Second anchor open** — the Jester was the Phase 1 proposal and is no longer a candidate (§9.6). Any Role not yet settled may fill it if its kit genuinely wants the crit path; none is assumed to. | 1 → open |
-| **D — Stack consumption (non-Corsair)** | Self-contained accumulate-then-spend payload | Architect (Calibration finisher, §9.10) and, independently, Lancer (Momentum/Phalanx Guard once fixed) | 2, 3 |
+| **D — Stack consumption** | Self-contained accumulate-then-spend payload | **Closed.** Architect (Calibration finisher, exported through Expose Weakness — §9.10) + Tidal Corsair (the Reckoning's composition modes, self — §9.13). The route's original "non-Corsair" framing was a guard against the shipped ceiling pairing, which the post-Herald sweep has already displaced. | 2 → 3 |
 | **E — Health threshold** | Missing-Health percentage as a `bonus_per` surface | **Closed.** Bloodmage (caster-own and enemy-own missing Health, §9.4) + Cultist (the Vessel's threshold and its death, §9.8) | 1 → 2 |
+| **F — Turn-bar distance** | The turn-bar span between attacker and target, read at the moment of impact | Lancer (Charge Distance, §9.11). Every kit that pushes an enemy back feeds it — the Corsair's Sea stacks, the Chronophage's theft, Dead Weight, Temporal Leak — so the route's other half is any turn-bar writer, not a designated anchor. | 3 |
+| **G — Armour removal** | The target's effective Defence at the moment of impact, outside the combined modifier | **Closed.** Architect (Expose Weakness, exported — §9.10) + Thief (base-referenced bypass, self — §9.12). The two compose because the bypass subtracts a fraction of *base* Defence rather than scaling what is left. | 2, 3 |
 
 **Direction mix across the routes.** A route with one exported anchor and one self-facing anchor is
 the healthy shape — one kit hands the factor over, the other spends it. Routes A and E have it;
@@ -335,10 +339,11 @@ the pairing web exists:
   independently), Chronophage (new Channel 3 anchor, no route dependency yet), Cultist (closes E),
   Jester (settled as an Enabler kit, §9.6 — it strengthens route A's reliability rather than
   anchoring a route, and route C's second anchor stays open).
-* **Batch 3 — the stack-consumption and Enabler pass.** Lancer (closes D's second anchor, absorbs
-  the Reckless Momentum bug fix), Thief, Scholar, Tactician (add the second hook so it isn't the
-  pairing web's sole Channel-2 source), Tidal Corsair (re-verify against the widened roster,
-  confirm it's no longer the only ceiling pairing).
+* **Batch 3 — the positional and Enabler pass.** Lancer (**settled, §9.11** — replaced its passive
+  with a turn-bar read, leaving route D's second anchor open), Thief (**settled, §9.12** — a
+  base-referenced bypass passive, opening route G with the Architect), Scholar, Tactician (add the
+  second hook so it isn't the pairing web's sole Channel-2 source), Tidal Corsair (**settled,
+  §9.13** — a composition-reading Reckoning, closing route D).
 * **Batch 4 — remaining protection/denial kits and expansion-only kits.** Alchemist, Diviner,
   Symbiote, Bar Brawler, Warlord — sharpen each Role's Channel 1/2 anchor into a real bucket-key
   contribution and confirm its protection/denial skill (Premonition, the graft baseline, On the
@@ -364,8 +369,6 @@ collapse-test payload without inventing new gating mechanics.
   and Bloodmage's settled Sanguine Pact. Judged minor, since one redirects to protect and the other
   as the price of a damage buff. Revisit at Warlord's batch if its redesign leans harder on
   redirection; no change now.
-* Whether route D needs a third anchor beyond Architect and Lancer once Tidal Corsair is
-  re-verified in batch 3 — not decided here.
 * The exact `Trait_Count_Source` / debuff-type identifiers for Emissary's Infraction hook and
   Bloodmage's missing-Health hook are batch-time authoring decisions, not Phase 1 commitments.
 * Whether Chronophage's new threshold-crossing `Cascade_Trigger` should also serve a future
@@ -652,10 +655,9 @@ cannot grow.
   Flaw Analysis, so it keeps a source.
 * **Exposed Facet** (debuff): unchanged in shape, a flat Critical Chance add to attackers of the
   holder. Deliberately the one flat value left, since it rides a no-cooldown basic.
-* **Confound** (debuff): magnitude raised from -30% to -50% Knowledge, roster-wide. This is the
-  term that blunts crit damage (`Critical_Multiplier` subtracts half the defender's Knowledge,
-  `Concept_Document.md` 3.2.1 #4), and nothing in the roster attacked it before. Scholar's Expose
-  Fallacy is the other claimant and gains the same increase.
+* **Confound** (debuff): magnitude rises roster-wide (section 12) — the term that blunts crit
+  damage, which nothing in the roster attacked before. Scholar's Expose Fallacy is the other
+  claimant.
 
 **Composition hook.** Every piece reads world state and names no Role: Keen Edge and Lethal
 Precision size off *the applier's* attributes, Cracked Facet off the applier's Knowledge, and the
@@ -738,25 +740,11 @@ and raising the Jester's targeting weight. Its avoidance roll now goes through
 | Signature | Burning Bolas | Attack-scaled damage to one enemy; applies Burning and **Hexed** for 2 turns. Cooldown 2. | 1 + Enabler |
 | Signature | Center Stage | The Jester gains Spotlight for 2 turns and Luck for 1 turn. Cooldown 3. | Enabler |
 
-**Luck and Hexed apply to every chance roll in combat except the damage-variance roll.** Previously
-they reached only the critical-chance roll and the debuff-resist contest. The damage-variance roll
-stays excluded, as `Concept_Document.md` 3.2.3 already states: a 0.95-1.05 band is too narrow for
-a reroll to matter. Stating the rule as "every roll except variance" means a roll added later is
-covered without a further decision.
-
-**The debuff-resist contest band widens from 0.95-1.0 to 0.85-1.0** (`Concept_Document.md` 3.2.1
-#3). This is a roster-wide mechanics change, not Jester kit content, and it is what makes Luck and
-Hexed worth having on that contest at all: inside the old 5%-wide band, taking the worse of two
-rolls shifted the outcome by roughly 2 percentage points of the stat, leaving Hexed's
-debuff-resistance clause very nearly inert. At 0.85-1.0 a reroll is worth roughly 5 points of
-effective Accuracy or Resistance — decisive when the two are close, while 3.2.1 #3's "no base
-chance and no floor or ceiling" still holds and a large stat gap still settles the contest outright.
-
-**Burning's tick becomes a rolled 2-10% of max Health** (mean 6%, previously a flat 4%), per stack,
-roster-wide — Lava Zone included. Because Hexed makes its holder take the worse of two rolls, a
-Hexed target's expected tick is **7.33%**. Burning stays a shared commodity debuff rather than
-becoming a Jester-exclusive status, so any kit that applies it benefits from any kit that applies
-Hexed, per section 2.
+**The kit depends on three roster-wide mechanics changes** — Luck and Hexed's reach, the
+debuff-resist contest band, and Burning's tick — which are not Jester kit content and are recorded
+in section 12. What they buy this kit: Hexed's resistance clause stops being nearly inert, and
+because Hexed makes its holder take the worse of two rolls, a Hexed target's expected Burning tick
+is **7.33%** against the 6% mean.
 
 **Composition hooks (exported).**
 
@@ -1044,6 +1032,213 @@ contribution is unchanged at 1.84x.
 re-erect is left as the only reward for a maximum spend beyond raw magnitude, rather than gaining an
 exported clause of its own — route D stays predominantly self-facing.
 
+### 9.11 Lancer — the charge and the ride back
+
+**Status:** Settled, not yet implemented. Batch 3.
+
+**Identity: Channel 2, self-facing**, moved off section 5's Phase 1 proposal of Channel 1: the
+charge's magnitude is a bucket on its own skill, not an attribute change. The passive is
+**replaced** — Reckless Momentum and Phalanx Guard both retire — and all three skills are kept.
+
+**Passive: Charge Distance.** Rending Charge deals **+9/12/15/18% by rarity per turn-bar section the
+charge touches**, counting the Lancer's own section and the target's: the same section is 1, the
+opposite ends of the bar is 5, so the ceiling is +90% at Legendary. **After the charge resolves the
+Lancer is thrown back 10% of the turn bar per section touched** — half the ground it covered.
+
+**The recoil is what makes the distance a decision.** The Lancer's own charge resets its phase
+against the target, so the gap it reads keeps moving instead of settling into a constant the player
+cannot influence. The cost is proportional, so a maximum impact cannot be farmed for free, and the
+span is bounded by the bar, so a slow build buys no magnitude at all — a *fast* Lancer takes several
+turns per enemy action and chooses which one to spend the charge on. The Role reads turn-bar
+position and never writes to it, which is what keeps it clear of the Chronophage's identity.
+
+| Slot | Skill | Effect | Channel |
+|---|---|---|---|
+| Basic | Lance Thrust | Kept as-is. Attack-scaled damage to one enemy — the cheap action taken while riding back into position. | 1 |
+| Signature | Rending Charge | Kept, and now the passive's only reader: Attack-scaled damage carrying the per-section bonus in its own bucket, plus Bleed for 2 turns. Cooldown 3. | 1 + 2 |
+| Signature | Disarm | Kept as-is. Attack-scaled damage, applies Enfeeble for 2 turns. Cooldown 3. | 1 + Enabler |
+
+**Composition hooks.** The passive reads the turn-bar gap, so anything that pushes an enemy back
+lengthens the Lancer's run-up — Sea stacks, stolen time, Dead Weight, Temporal Leak — with no skill
+in this kit naming any of them. Bleed is a distinct debuff type feeding any `Target_Debuff_Count`
+reader, and it snapshots the caster's damage factors at application, so a full-bar charge writes its
+own size into every subsequent tick. Enfeeble is the kit's Enabler clause: it blunts what the team
+absorbs during the window it bursts in.
+
+**What retires with the passive.** The Lancer keeps no defensive half. The roster carries three
+dedicated defensive Roles and four more that touch survival, and nobody reading the turn bar, so the
+Role's Damage purpose (`Concept_Document.md` 3.1.3) is finally what its passive does. Phalanx Guard
+returns to unclaimed, and the accumulate-then-spend idiom drops from five claimants to four.
+
+**Projected numbers.** **1.18x** at one section, **1.54x** at three, **1.90x** at five — one factor,
+inside section 1's contract, in the same bucket-product kind as Architect (1.84x) and Tidal Corsair
+(2.80x). The kit needs nothing further to pass, which is why Disarm keeps its shipped payload.
+
+**Implementation needs (not yet built):**
+
+* `lancer_trait.gd` — Momentum, the Defence penalty, Phalanx Guard and the offensive/defensive skill
+  name sets all go. The trait reads the inclusive section span between the Lancer and the charge's
+  target at cast resolution, and applies the self-pushback after the damage resolves.
+* `Rending_Charge.tres` — a `bonus_per` keyed to the new section-span count source, 0.18 per section
+  at Legendary.
+* A new count source for the span, plus the turn-bar self-pushback as a trait-driven effect: the
+  existing pushback paths write to a *target's* bar, not the caster's own.
+* `kit_contribution_manifest.gd` — Reckless Momentum's entry becomes Charge Distance; Rending Charge
+  gains `bucket_key: "Rending Charge"`, magnitude 0.90 at the five-section ceiling. Both TRAP notes
+  are stale and go with it — the skill-name bug they describe is fixed.
+* `burst_reachability.gd` — the scorer has no model for a positional gate, so the charge's magnitude
+  is declared as a `gated_bonus` (`gate: &"charge_distance"`) at an assumed three-section span, the
+  same shape section 11's other gates use.
+* `Concept_Document.md` at promotion: 3.1.3's Lancer entry — the passive, and the description line
+  and primary attributes (Attack, Speed) the Role has never had; 3.2.3.2's Phalanx Guard entry
+  retires; 3.2.4.2's Rending Charge and the Lancer's stale bug note.
+
+**Judgment calls made while settling, listed so they can be overruled:** Disarm keeps its shipped
+payload rather than gaining a deliberate distance lever, since the passive already carries the loop
+and the kit clears its contract without a second one; and the recoil is a fixed half of the span
+rather than an amount the player chooses at cast time.
+
+### 9.12 Thief — between the plates
+
+**Status:** Settled, not yet implemented. Batch 3.
+
+**Identity: Channel 1, self-facing.** Confirms section 5's proposal — the whole contribution is a
+mitigation term, which claims no bucket key. The passive is **replaced**, the third skill is
+**rebuilt**, and Pierce Weakness keeps its shape while its magnitude moves onto the passive's rate.
+
+**Passive: Between the Plates.** The Thief's attacks ignore **10/13/16/20% by rarity of the target's
+base Defence**, subtracted in points after every other Defence modifier has applied and floored at
+zero. Pilfer retires; the bypass is what the Role is rather than one skill it owns, and it is the
+half that scales with rarity naturally. The passive owns the rate and a skill may state a **multiple**
+of it, never a rate of its own (the convention §9.7 established).
+
+**Reading the base Defence is the point.** A multiplicative ignore lands on the same term as a
+Defence debuff, so each one makes the other worth less — the Thief's own factor *fell* from 1.39x to
+1.31x when a teammate shredded first. Subtracting a base-referenced amount inverts that: the
+teammate's reduction survives intact and the Thief's cut is worth more against a target already
+opened up.
+
+| Slot | Skill | Effect | Channel |
+|---|---|---|---|
+| Basic | Stab | Kept as-is. Attack-scaled damage to one enemy, carrying the passive's bypass like any attack. | 1 |
+| Signature | Pierce Weakness | Kept, with its magnitude restated as a multiple: ignores **2.5× the passive's rate** instead of the usual 1×. Cooldown 2. | 1 |
+| Signature | Cut Purse | Rebuilt from Weigh the Mark. Attack-scaled damage to one enemy; **steals one buff, which lasts an extra turn on the Thief**; grants the Thief Opportunist for 2 turns. Cooldown 3. | 1 + 2 |
+
+**Cut Purse replaces a bare slot.** Weigh the Mark was one unconditional self-buff. The rebuilt skill
+asks three questions at once — is there a buff worth taking, is the boss carrying enough debuff
+types for Opportunist to be worth the turn, does the damage matter now — and the theft rides on a
+skill that pays regardless, so it no longer resolves to nothing against a boss carrying no buffs.
+Moving theft off the passive costs frequency (a per-cast roll becomes one guaranteed steal every
+three turns) and buys reliability and the extra turn.
+
+**No skill in the kit carries a rarity-scaled number.** Pierce Weakness states a multiple, Cut
+Purse's extra turn is flat, and Opportunist's magnitude lives in the status resource.
+
+**Composition hooks.** The bypass reads the target's *current* Defence at impact, so every Defence
+reduction in the roster is worth more when the Thief attacks — the Architect's Expose Weakness above
+all, which is what opens route G. Opportunist puts the Thief on the thin spender side of route A: it
+reads distinct debuff types from any source without producing any. The steal removes enemy buff
+state, which is world state any later kit may read.
+
+**Projected numbers.** Against a boss-tier base Defence of 120: the passive is **1.10x** on every
+attack, Pierce Weakness **1.30x** alone, **1.40x** against a boss under Expose Weakness at −30%, and
+**1.47x** at −44%. Opportunist is **1.40x** at four distinct debuff types. Two factors, **1.82x** on
+the Pierce turn. Against a base Defence of 40 the same skill is worth 1.14x — the mechanic pays only
+against armour, which is the fantasy stating its own limit.
+
+**Implementation needs (not yet built):**
+
+* `damage_effect.gd`'s `defense_ignore_factor` changes shape to a base-Defence fraction subtracted in
+  points. Pierce Weakness is its only user in the entire data set, so the field changes in place.
+* `battle_resolver.gd:770` and the Shield Wall re-mitigation at `:780` both compute effective Defence
+  from the *effective* attribute; both need the target's base Defence as well.
+* A new Thief trait carrying the rate and applying it to every attack the Thief makes;
+  `pilfer_trait.gd` retires.
+* `Pierce_Weakness.tres` — cooldown 1 → 2, ignore expressed as 2.5× the trait's rate.
+* `Weigh_the_Mark.tres` → `Cut_Purse.tres` — damage, the steal, and the Opportunist grant.
+  `StatusEffectResolver.StealBuff` already takes a duration override it never uses; the extra turn
+  goes there.
+* `kit_contribution_manifest.gd` — Pilfer's entry becomes Between the Plates; Pierce Weakness's
+  precondition drops the stale "stops mattering at burst scale" note, superseded by Phase 0; Weigh
+  the Mark's entry is renamed and its doc/code conflict note deleted.
+* `burst_reachability.gd` — **the scorer models no defence ignore at all** (section 11), so the
+  Thief's declared contribution is invisible to it until that lands.
+* `Concept_Document.md` at promotion: 3.1.3's Thief passive, 3.2.4.2's skill entries (the rename, the
+  cooldowns, and the ignore restated as a multiple), and 3.2.4.3's stale note claiming Weigh the Mark
+  is fielded by no preset — `Thief.tres` fields it.
+
+**Judgment calls made while settling, listed so they can be overruled:** the passive's bypass applies
+to the basic skill too, which is a mitigation gain on a no-cooldown cast rather than the
+unconditional bucket key §1.2 forbids; and Cut Purse steals exactly one buff at every rarity, since
+the rate that scales already lives in the passive.
+
+### 9.13 Tidal Corsair — the hand decides the Reckoning
+
+**Status:** Settled, not yet implemented. Batch 3.
+
+**Identity: Channel 2, self-facing**, confirming section 5's row on both axes. An **adaptation**: the
+three slots, the two stack types, the passive's skill-name switch and the `TRAIT_RESOURCE_KEY`
+bucket all stay. Corsair's Reckoning now reads *which* stacks it consumes, and the Sea half pays the
+Corsair back instead of taxing it.
+
+**The defect closed.** Steel and Sea compete for the same three slots, but a Sea slot cost 60%
+Reckoning damage at Legendary and bought a 14% turn-bar push the Corsair converts into nothing. On a
+burst turn that trade is never correct, so the "Combo character where you plan your moves ahead"
+(`Concept_Document.md` 3.1.3) had exactly one line — Boarding Strike three times, then Reckoning —
+and Saltwater Shot was Boarding Strike with a different icon: same scaling, same cooldown, no rider.
+
+**Passive: Wrangle the Sea.** Unchanged in shape. The per-Steel damage rate drops to **28/32/36/40%
+by rarity** and gains **+6/7/8/9% per Undertow spent**; the per-Sea turn-bar push retires.
+
+**The Reckoning resolves by composition; count sets the size.** Ten possible hands, three rules — so
+a hand of one or two stacks resolves as itself, and casting early is a tempo decision rather than a
+failed Reckoning.
+
+| Hand | Mode | Effect (Legendary) | Channel |
+|---|---|---|---|
+| Steel only | **Broadside** | Consumes all Undertow on the target; per-Steel rate 0.40 + 0.09 per Undertow spent. | 1 + 2 |
+| Sea only | **Chart the Course** | One Undertow per Sea, no damage bonus, cooldown 1 instead of 3. | 2 |
+| Mixed | **Cut of the Haul** | Steel damages at the base rate, reading no Undertow and spending none; Sea applies its Undertow; every other living ally gains Slipstream and Empower for 2 turns. | 1 + Enabler |
+
+**Only a pure Steel hand ever touches the bank.** That one rule is what lets the crew cast keep the
+Corsair's investment intact, and it is also why the mixed hand is not strictly better than Broadside:
+the bank is convertible into damage by nothing else.
+
+**Undertow** is a new stacking debuff on the target, cap 3 — the investment sits on the enemy, so a
+target switch or an early kill loses it. That is the cost that keeps banking a decision.
+
+**Composition hooks.** Undertow is a distinct debuff type, so it feeds any `Target_Debuff_Count`
+reader (route A) without this kit naming a Role. Slipstream and Empower are existing statuses and
+Channel 1 / Enabler grants, **not** a Channel 2 export — the declared contribution stays Broadside
+on the Corsair's own sheet, which is what holds the self-facing direction. The kit closes route D's
+open second anchor (section 6) as the self-facing half against Architect's exported one.
+
+**Projected numbers.** Broadside at 3 Steel: **2.20x** bare, **3.01x** off a full bank — a
+redistribution of the shipped 2.80x, not a raised ceiling, and the un-invested line now sits below
+it. Cut of the Haul at 2 Steel is 1.80x plus Empower's +30% Attack on each ally, which lands in the
+aggregate rather than the modifier product. Reaching the bank costs two Reckonings on one target
+about six turns apart: inside a boss's 10-12 rounds, outside a fodder fight's 3-4, so the Role is
+deliberately weakest in trash.
+
+**Implementation needs (not yet built):**
+
+* `tidal_corsair_trait.gd` — the `OnSkillCast` "Corsairs Reckoning" branch reads the consumed hand's
+  composition and dispatches one of three payloads instead of summing per-stack effects;
+  `_turn_bar_bump` goes. The per-Steel rate reads the target's Undertow count at resolution.
+* `Data/Status_Effects/` — Undertow, stacking to 3. `Corsairs_Reckoning.tres` and
+  `Saltwater_Shot.tres` gain their new payloads; Saltwater Shot stops being a scaling clone.
+* `kit_contribution_manifest.gd` — Wrangle the Sea's magnitude rises 1.8 → 2.01 and its stale TRAP
+  note about the apostrophe bug goes; the Slipstream/Empower grants are declared as a
+  `granted_attribute_buff` so the scorer credits Empower into the ally's aggregate.
+* `Concept_Document.md` at promotion: 3.1.3's Wrangle the Sea entry, 3.2.3's Undertow entry and
+  Slipstream's claimant, 3.2.4.2's Saltwater Shot and Corsair's Reckoning.
+
+**Judgment calls made while settling, listed so they can be overruled:** Chart the Course keeps its
+cooldown clause, which is the first thing to cut if the description outgrows 3.2.4's soft cap; the
+mixed hand grants two existing statuses rather than one new bespoke buff, so the kit adds one status
+to the catalog instead of two; and Boarding Strike is untouched, since the dominance defect was
+Sea's payload rather than the basic's.
+
 ## 10. Coverage ledger
 
 Successor to the archived `Plan_Role_Skill_Kits.md`'s claims ledger (status effects only) —
@@ -1066,8 +1261,9 @@ archived pass's final state and goes stale as each further batch lands — refre
 Role's rows in the same edit, not after.
 
 **Turn bar effects** — Dead Weight (Bar Brawler), Battle Orders (Tactician), Temporal Leak (Herald
-of the loom, Pull the Thread, claimed this batch); Anchor, Slipstream, Steadfast, Resonance
-unclaimed.
+of the loom, Pull the Thread), Slipstream (Tidal Corsair, Corsair's Reckoning — **settled, not yet
+implemented**, section 9.13, granted as a rider alongside Empower rather than costing a slot);
+Anchor, Steadfast, Resonance unclaimed.
 
 **Debuffs** (rows that changed this batch; all others unchanged from the archived pass — see
 `Plan_Role_Skill_Kits.md` Archive for the full table until the next batch refreshes it here)
@@ -1084,9 +1280,10 @@ unclaimed.
 | Mana Burn | Unclaimed — dropped from Bloodmage's Tithe of Vitality (section 9.4); nothing in the reworked kit read it |
 | Exposed Facet | Appraiser (Sizing Cut) — **settled, not yet implemented** (section 9.5); moved onto the basic skill's 1-turn rider |
 | Cracked Facet | Appraiser (Flaw Analysis) — **settled, not yet implemented** (section 9.5); moved off the retired Strike the Flaw passive, now scaled by the applier's Knowledge |
-| Confound | Scholar (Expose Fallacy), Appraiser (Flaw Analysis) — **settled, not yet implemented** (section 9.5). Second claimant, within the commodity-debuff limit of two. Magnitude rises -30% → -50% roster-wide, so Scholar's existing skill gains the same increase |
-| Hexed | Diviner (Ill Omen), Jester (Burning Bolas) — **settled, not yet implemented** (section 9.6). Second claimant, at the commodity-debuff limit of two, so no later Role may take it. Scope widens roster-wide from the crit and resist rolls to every chance roll except damage variance |
-| Burning | Jester (Burning Bolas), Lava Zone — unchanged claimants. Tick becomes a rolled 2-10% of max Health (mean 6%, was a flat 4%) roster-wide, biased by the holder's Luck or Hexed — **settled, not yet implemented** (section 9.6) |
+| Confound | Scholar (Expose Fallacy), Appraiser (Flaw Analysis) — **settled, not yet implemented** (section 9.5). Second claimant, within the commodity-debuff limit of two. Magnitude rises roster-wide (section 12) |
+| Hexed | Diviner (Ill Omen), Jester (Burning Bolas) — **settled, not yet implemented** (section 9.6). Second claimant, at the commodity-debuff limit of two, so no later Role may take it. Scope widens roster-wide (section 12) |
+| Undertow | Tidal Corsair (Saltwater Shot's Sea stacks, spent by Corsair's Reckoning) — **settled, not yet implemented** (section 9.13); new debuff, no prior claimant, stacks to 3 |
+| Burning | Jester (Burning Bolas), Lava Zone — unchanged claimants. Tick changes roster-wide (section 12) — **settled, not yet implemented** (section 9.6) |
 
 **Buffs** — Borrowed Time is a new buff, claimed by Chronophage (Time Tithe) — **settled, not yet
 implemented** (section 9.9); no prior claimant, and the only buff in the roster granting a cascade
@@ -1103,12 +1300,16 @@ Refresh in the same edit that lands a batch.
 
 * **No source — debuffs:** Slow, Blind, Sequence Lock, Fatigue, Refracted. Stun only via the
   ownerless Weight of Law zone (section 10.3) and Rush's expiry. Mana Burn joins when 9.4 lands.
-* **No source — buffs:** True Aim, Clarity, Insight, Mirror Coat, Rehearsed, Wanderlust, Overflow.
-  Turn bar buffs Anchor, Slipstream, Steadfast, Resonance are listed above.
+* **No source — buffs:** True Aim, Clarity, Insight, Mirror Coat, Rehearsed, Wanderlust, Overflow;
+  Phalanx Guard joins when 9.11 lands.
+  Turn bar buffs Anchor, Steadfast, Resonance are listed above.
 * **Enemy-only:** Frenzy, Haste, Deathward.
-* **Trait code only, never a skill:** Empower (Plan), Attune (Chosen Vessel), Expose Weakness
-  (Calibration — magnitude becomes charge-scaled, §9.10), Cracked Facet (Strike the Flaw, retiring in 9.5), Phalanx Guard (Reckless
-  Momentum, unreachable behind that passive's skill-name bug).
+* **Trait code only, never a skill:** Empower (Plan; Tidal Corsair's Corsair's Reckoning becomes a
+  second claimant and its first skill source when 9.13 lands, within the commodity-buff limit of
+  two), Attune (Chosen Vessel), Expose Weakness
+  (Calibration — magnitude becomes charge-scaled, §9.10), Cracked Facet (Strike the Flaw, retiring
+  in 9.5). Phalanx Guard leaves this list for the unclaimed buffs when 9.11 lands — Reckless
+  Momentum, its only source, retires with the Lancer's passive.
 
 ### 10.2 Damage-channel bucket keys in use
 
@@ -1127,6 +1328,7 @@ key, not a doc paraphrase) — the authority the burst-reachability scorer actua
 | `Devour Blessing` | Cultist (Devour Blessing) | Skill-name bucket |
 | `Devotion` | Cultist (Chosen Vessel) — **settled, not yet implemented** (section 9.8) | Passive counter bucket, permanent per dead Vessel; distinct from the same passive's per-cast `TRAIT_RESOURCE_KEY` bonus so the two multiply |
 | `Profane Bolt` | Cultist (Profane Bolt) — **settled, not yet implemented** (section 9.8) | Skill-name bucket, conditional on the Vessel being below half Health |
+| `Rending Charge` | Lancer (Rending Charge) — **settled, not yet implemented** (section 9.11) | Skill-name bucket, `bonus_per` keyed to the turn-bar section span the charge touches |
 | `Heap On (ramp)` | Bar Brawler (Heap On) | Skill-name bucket, per-instance ramp (not a stacking cap) |
 | `Final Calculation` | Architect (Final Calculation) | Skill-name bucket |
 | `Corsairs Reckoning` | Tidal Corsair (Corsairs Reckoning) | Skill-name bucket |
@@ -1211,9 +1413,31 @@ did not exist. What the manifest carries now:
   claims no key. Miasma's own forced retick still carries no independent score: it has no
   `DamageEffect` of its own, top-level or zone-trigger, to attach a `gated_bonus` to.
 
+**Open gap, found while settling Batch 3.** The scorer models no defence ignore: it mitigates every
+candidate against the boss's full Defence, so a skill that halves the mitigation term scores
+identically to one that does not. Phase 0 made that term a real lever again and §9.12's whole
+declared contribution runs through it, as does §9.10's Expose Weakness. The burst skill's mitigation
+needs the same effective-Defence computation `battle_resolver.gd` performs, base-referenced
+subtraction included.
+
 **Consequence for measurement.** `total_contrast_ratio` stays the pure single-action figure the
 30-50x burst-band target is checked against; `combined_contrast_ratio` is the separate figure
 `Best()` and the sweep's top-decile selection actually rank by, sustained payload included. Reading
 `total_contrast_ratio` alone for a sustained-heavy kit understates its actual standing in the
 roster — `Tests/manual/team_corpus_sweep.gd`'s top-decile report prints both, plus a
 `sustained_driven` flag per row, so which figure moved is visible rather than conflated.
+
+## 12. Roster-wide mechanics changes awaiting implementation
+
+Changes a settled kit depends on that are **not** that kit's content — they alter shared mechanics
+every Role touches. `Concept_Document.md` stays the authority, but it describes the game as it
+runs, so nothing here is promoted into it until the change ships. This section owns each one
+meanwhile, and the kit entry that produced it links here rather than restating it. Delete an entry
+in the same edit that promotes it.
+
+| Change | Today | Becomes | Promotes to | From |
+|---|---|---|---|---|
+| **Luck and Hexed's reach** | The critical-chance roll and the debuff-resist contest only | Every chance roll in combat except the damage-variance roll (a 0.95-1.05 band is too narrow for a reroll to matter), so a roll added later is covered without a further decision | 3.2.3 | §9.6 |
+| **Debuff-resist contest band** | 0.95-1.0 | 0.85-1.0. In the old 5%-wide band, taking the worse of two rolls moved the outcome about 2 percentage points of the stat, leaving Hexed's resistance clause nearly inert; at 0.85-1.0 a reroll is worth roughly 5 points of effective Accuracy or Resistance. 3.2.1 #3's "no base chance and no floor or ceiling" still holds, and a large stat gap still settles the contest outright | 3.2.1 #3 | §9.6 |
+| **Burning's tick** | Flat 4% of max Health per stack | A rolled 2-10% (mean 6%) per stack, biased by the holder's Luck or Hexed. Every source, Lava Zone included — Burning stays a shared commodity debuff | 3.2.3 | §9.6 |
+| **Confound's magnitude** | -30% Knowledge | -50% Knowledge, so Scholar's Expose Fallacy gains the same increase. Knowledge halves crit damage (3.2.1 #4) and nothing in the roster attacked that term before | 3.2.3 | §9.5 |
