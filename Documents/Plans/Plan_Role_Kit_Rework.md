@@ -42,7 +42,29 @@ its export depends on: Luck and Hexed widen from the crit and resist rolls to ev
 except damage variance, and the debuff-resist contest's random band widens from 0.95-1.0 to
 0.85-1.0 (`Concept_Document.md` 3.2.1 #3) — inside the old band a reroll was worth about 2
 percentage points of the stat, leaving Hexed's resistance clause nearly inert. Burning's tick
-becomes a rolled 2-10% of max Health roster-wide. Four Roles left in Batch 2. Route C's second
+becomes a rolled 2-10% of max Health roster-wide. **Emissary settled (§9.7)** as an adaptation —
+only Levied Sanction's payload changes: Sanction gains a snapshotted per-Infraction damage
+multiplier every attacker on the team reads (1.72x at the tally cap), and Signed Writ credits an
+Infraction per buff it strips to zero. That closes route A and discharges the standing
+exported-Channel-2 requirement the coverage review left open. **Cultist settled (§9.8)**, also an
+adaptation: the passive's flat per-cast bonus stays flat (an automatic ramp is a timer, not a
+decision) and gains Devotion, a permanent damage bucket per Vessel that dies, while the basic reads
+the Vessel's half-Health threshold. Route E closes. **Chronophage settled (§9.9)** as route B's
+exported cascade anchor, fielding no damage factor of its own: Time Tithe grants Borrowed Time to an
+ally it boosts *alone* on the turn bar, and that ally's next skill resolves once more at 30-60%.
+The threshold-crossing `Cascade_Trigger` §5 proposed is **not** authored — counting section
+boundaries is arithmetic a player cannot read off the screen. Two roster-wide notes came out of
+settling it: §5's allocation predates the Enabler correction, so every unsettled row is now
+explicitly a proposal at most; and §3's instance-count test is reworded to compare **total**
+resolutions (an additional resolution is Channel 3 at any fixed count; Overflow fails because its
+total is one, not because its count is fixed). **Architect settled (§9.10) and Batch 2's design is
+complete** — the kit is kept as it ships (its finisher already meets the contract, its zone already
+consumes charges against it), with one change: Expose Weakness's Defence reduction scales with the
+charges spent, -30% at 5 up to -44% at 12. Phase 0 is what made that worth doing: with Defence
+keeping its weight at burst scale, the debuff is a 1.16-1.25x factor for every attacker on the team,
+and `Concept_Document.md` 3.2.3's claim that it was build-up pressure only is corrected in this
+turn. Batch 2's five kits are settled; **none of Batch 2 is implemented yet**, and Batch 1 still has
+Sorcerer, Bloodmage and Appraiser outstanding. Route C's second
 anchor is now open rather than assigned: the Jester was Phase 1's proposal and is no longer a
 candidate, and no unsettled Role is assumed into it. Phases 4-6 not started.
 
@@ -55,8 +77,9 @@ candidate, and no unsettled Role is assumed into it. Phases 4-6 not started.
   Nothing retuned; the target exists to be measured against in Phases 3-6.
 * **§9.1's Plague Doctor entry has no projected numbers** in any kind, the only implemented kit that
   cannot be placed in the distribution. Project Comorbidity as an instance count when Batch 1 closes.
-* **Cross-kit Channel 2 is thin** — the Context shortfall Batch 1 did not close. Standing requirement
-  on the remaining batches, recorded in `Role_Kit_Design.md` §8.
+* **Cross-kit Channel 2 is thin** — the Context shortfall Batch 1 did not close; Emissary's Sanction
+  is the first exported bucket answering it (§9.7). Still the axis to check per batch,
+  `Role_Kit_Design.md` §8.
 * **`bonus_per_debuff_on_target` is identity-scoped, not a general hook.** It enumerates its debuff
   types at authoring time, so it reads nothing a later batch invents. Its single claimant (Cataclysm
   reading Warped) is the intended state, not to be expanded; debuff density runs through
@@ -225,10 +248,12 @@ different mechanics — so that finding one is a discovery, not the only option.
    is premature.
 2. **All 20 Roles, authored in batches.** Channel spread and the pairing web are only assessable
    roster-wide; the sweep re-runs between batches.
-3. **Replacement is the default posture, not the exception.** A skill is kept only when it earns
-   its slot against the framework. Expansion is the middle option and is expected to be common:
-   most one-note skills (a lone debuff, a lone buff, plain damage) should gain a second dimension
-   rather than be cut. "Keep as-is" is a fallback.
+3. **Adaptation is the default posture; replacement is the exception.** A kit already meeting its
+   contract is not redesigned to look reworked. Change the smallest thing that closes the gap: a
+   one-note skill (a lone debuff, a lone buff, plain damage) gains a second dimension, a dead slot
+   gets a new payload. A skill is replaced only when it scores zero and cannot be widened into its
+   Role's declared identity — Levied Sanction's payload swap (§9.7) is the shape to copy, not a
+   three-skill rewrite.
 4. **The 3-skill cap stays** (`Concept_Document.md` 3.2.4), *but the basic is a design slot too.*
    A no-cooldown basic may carry a secondary rider — a low-chance debuff or buff application, a
    small heal (Fateful Glimpse is the existing precedent), a stack grant — and a **conditional**

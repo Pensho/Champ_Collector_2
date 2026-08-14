@@ -464,7 +464,7 @@ the dual-classified cases.
 ##### 3.2.3.2 Common Status Effects
 
 Debuffs:
-* Expose Weakness [Channel 1]: Reduces Defense by 30%. Defence stops mattering at burst scale (section 1.1.4), so this debuff's role is pressure during build-up rather than a burst contributor.
+* Expose Weakness [Channel 1]: Reduces Defense by 30%. Defence keeps its full percentage weight at burst scale (section 1.1.4), so every attacker against the holder benefits, at burst magnitudes as much as during build-up.
 * Enfeeble [Channel 1]: Reduces the Attack by 30%.
 * Mana Burn [Enabler]: Deals damage whenever the target uses a non-basic skill, scaling based on the target's Mysticism. The damage is incidental to the punish; it is not a combined-modifier factor.
 * Burning [Enabler]: Deals 4% of max Health as damage per stack; Burning stacks, so repeated applications (e.g. standing in a Lava zone) add independent instances up to the status-effect cap. Its composable value is as a debuff *type* other mechanics key off (Opportunist, and any effect counting distinct debuff types on the target), not a factor of its own.
