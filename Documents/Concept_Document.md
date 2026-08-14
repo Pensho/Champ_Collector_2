@@ -22,7 +22,7 @@ A solved encounter therefore runs as **pressure and burst**: most of its rounds 
 Two properties follow and must hold:
 
 * **The threat curve peaks before the burst, not after.** The tension is "can I survive to the trigger", not "can I out-damage it". A burst that is guaranteed once set up is a cutscene.
-* **Unsolved is a wall, not a slow fight, at Boss tier.** Without the combination there is no burst, and the remaining chip damage cannot finish the encounter inside its round budget. Fodder and mini-boss keep their own texture (see 5.3) rather than this property — 1.1.2 already tiers the burst targets, and this bullet is scoped to match rather than stating a document-wide property. Note the inversion: this section normally outranks the rest of the document, but here 5.3 is the tie-breaker, since it already ties "unsolved is a wall" and "roughly double unsolved" to tier, and this bullet is the one that changed to stop contradicting it.
+* **Unsolved is a wall, not a slow fight, at Boss tier.** Without the combination there is no burst, and the remaining chip damage cannot finish the encounter inside its round budget. Fodder and mini-boss keep their own texture, per 5.3 — which is the tie-breaker on this bullet specifically, despite this section otherwise outranking the document.
 
 #### 1.1.2. Where the blowout is legible
 
@@ -50,6 +50,15 @@ Blowout requires terms that grow independently and combine multiplicatively. Dam
 
 **Enablers.** A fourth class of effect produces no damage at all: it creates or protects the window in which the three channels fire. Denying the enemy an answer (Blight against a healing boss), blocking an incoming effect that would break the setup (Aegis, Premonition), and buying a turn (Stun, Anchor) are enablers. They are not a damage channel and are not to be converted into one — section 1.1.1 requires the threat curve to peak before the burst, and enablers are what the player answers that threat with. A roster where every status touches damage carries fewer decisions, not more.
 
+**Channel tag vocabulary.** Role passives (3.1.3), status effects (3.2.3), skills (3.2.4.2) and
+reagents (3.3.3) are each tagged with the channel they belong to: **[Channel 1]** moves an
+attribute, continuously and additively; **[Channel 2]** supplies its own factor to the combined
+modifier; **[Channel 3 — Cascade]** triggers a separate resolution; **[Enabler]** does neither and
+is judged by 1.1.6's collapse test instead. A double tag is dual classification on purpose — a
+mechanism and a role can differ. A skill that only applies an already-tagged status inherits that
+status's tags. `Scripts/Debug/kit_contribution_manifest.gd` holds the full ledger and the evidence
+behind each tag.
+
 **The composition law:** *contributions grouped by mechanic identity — buff type, debuff type, trait resource, skill effect — add into one factor; distinct mechanics form separate factors that multiply.* Character identity never enters the grouping: the same combination of mechanics scores the same whether one champion contributes all of them or three do, and adding a champion who contributes nothing relevant never changes the result. A single champion stays tame and readable on their own because their kit is usually a small number of distinct mechanics. Two or three kits whose effects contribute independent mechanics are where the fight detonates. Collection is therefore the source of the power fantasy — more kits means more distinct mechanics in play, not additional bodies multiplying the same one.
 
 #### 1.1.4. Rules the channels must obey
@@ -57,11 +66,11 @@ Blowout requires terms that grow independently and combine multiplicatively. Dam
 * **Stack ceilings:** cap what accrues automatically; leave uncapped what costs the player an action or a resource. The existing capped passives (Momentum, Arcane Instability, Steel and Sea stacks) are correct as written — they accrue on their own. A resource the player deliberately builds may run without a ceiling.
 * **Cascade termination:** every cascade must terminate, under two independent bounds. **Depth** bounds chain length — an effect triggered from inside a cascade instance sits one level deeper, and a chain able to re-enter itself is a defect, not a large number. **Fan-out** bounds how many instances one originating action may release in total, which depth does not constrain: many instances at the same level are breadth, not depth. The two do not substitute for each other.
 * **A trigger fires once; the instances it yields are not separately re-triggered.** Each trigger source fires at most once per originating action, and that single firing yields an instance count. Repetition is therefore expressible without re-entry — an effect may deliberately resolve once per point of a status's remaining duration or once per remaining zone charge, and repeat instances are what make instance count multiply against the other two channels rather than add to them. A count read from a live quantity is fixed when the trigger fires, not re-read as the instances drain it.
-* **The combined modifier multiplies the scaled attribute aggregate, not the final damage.** Defence's mitigation ratio no longer depends on the aggregate (see the next bullet), so this placement is now damage-equivalent to multiplying final damage — there is no superlinear bonus to it either way. It stays on the aggregate because that is where the existing trait and ramp multipliers already apply, keeping one multiplicative pipeline rather than two.
+* **The combined modifier multiplies the scaled attribute aggregate, not the final damage.** The placement is damage-equivalent either way, since Defence's mitigation ratio no longer depends on the aggregate (see the next bullet); it stays on the aggregate to keep one multiplicative pipeline, where the trait and ramp multipliers already apply.
 * **Defence keeps its full percentage weight at burst scale.** Defence's mitigation ratio is taken against a fixed scale constant, not against the caster's own scaled aggregate, so a given Defence value cuts the same percentage of damage whether the hit is a basic swing or a burst: varying `Defense_Ignore_Factor` from 1.0 to 0.0 nearly doubles a burst's damage. Defence-ignore is a legitimate lever at every scale, not only on basic and mid-sized hits.
 * **Base attribute values stay tame.** Growth belongs in the combined modifier and cascade channels. Inflating base attributes to chase the pillar breaks fodder tuning and Health-bar readability.
-* **The combined modifier's boundary is the caster's scaled aggregate, not every damage-relevant term.** Three paths deliberately sit outside it: a target-side reduction (Spotlight's incoming-damage cut) is not a caster-side term and moving it pre-mitigation would make it stronger than intended, so it applies to final damage instead; the crit chance and crit damage bonuses (Exposed_Facet, Cracked_Facet) already multiply alongside the modifier, but crit chance is a probabilistic gate that saturates at 100 and crit damage is countered by target Knowledge — neither behaves like a caster-side factor, so crit stays its own path; and Barrier absorbs after damage is resolved, an enabler with nothing to contribute to the aggregate. None of the three are omissions to close later — they are outside the channel by design.
-* **The status-effect cap is eight, shared across buffs and debuffs.** The pool is not one resource being built (contrast the uncapped stack ceilings above) — it is eight slots holding a mix of self-inflicted stacks, opponent debuffs, and ally buffs, several of which arrive with no cast at all (trait/graft/zone triggers). Assembling many distinct mechanics onto one target competes with your own stacks and with what the opponent has already landed on you; that competition is a deliberate resource constraint, not an oversight to raise or split by category. An attempt to apply a status past the cap is denied outright (no application, no effect) rather than silently dropped, so the player can always see why a status didn't land.
+* **The combined modifier's boundary is the caster's scaled aggregate, not every damage-relevant term.** Three paths sit outside it by design, not as omissions to close later: target-side reductions (Spotlight's incoming-damage cut) apply to final damage, since pre-mitigation placement would make them stronger than intended; the crit path (Exposed_Facet, Cracked_Facet) stays its own, since crit chance saturates at 100 and crit damage is countered by target Knowledge; and Barrier absorbs after damage resolves.
+* **The status-effect cap is eight, shared across buffs and debuffs.** Eight slots hold a mix of self-inflicted stacks, opponent debuffs, and ally buffs, several arriving with no cast at all (trait/graft/zone triggers). Assembling many distinct mechanics onto one target competes with your own stacks and with what the opponent has landed on you — a deliberate resource constraint, not to be raised or split by category. An application past the cap is denied outright (no application, no effect) rather than silently dropped, so the player can see why a status didn't land.
 
 #### 1.1.5. Resolution and presentation
 
@@ -184,25 +193,18 @@ Each Role can have one or two main purposes in combat but it doesn't have to res
     - Applies various buffs to allies to make them stronger.
 
 **Sustain, Control, and denial purposes are discharged through the enabler class of section
-1.1.3.** They are ways to *reach* the burst rather than to build it — they create or protect the
-window the three damage channels fire in — so a Role carrying one of them needs no damage channel
-allocated to it on that purpose's account. What it does need is for those skills to be **authored
-with intent and counted as kit content**: each one is held to 1.1.6's collapse test on its own
-merits, and a Role that fills all three slots with damage while its declared Sustain or Control
-purpose goes unserved has failed its Role, whatever its damage channels score. A roster in which
-every skill feeds a damage bucket is the failure state section 1.1.3 already names.
+1.1.3.** They reach the burst rather than build it, so a Role carrying one of them needs no damage
+channel allocated on that purpose's account. Those skills must be **authored with intent and
+counted as kit content**, each held to 1.1.6's collapse test: a Role that fills all three slots
+with damage while its declared Sustain or Control purpose goes unserved has failed its Role,
+whatever its damage channels score.
 
 A Role's contribution also has a **direction** — self-facing when its kit's value shows up in its
 own output, exported when the value shows up on teammates, whether as a damage factor they carry or
 as the window they survive in. Both are load-bearing; the intended per-Role allocation across the
 roster lives in `Role_Kit_Design.md` section 5.
 
-Every Role passive below is tagged with the damage channel it belongs to per section 1.1.3, or
-**Enabler** if it produces no damage and is judged by the collapse test in 1.1.6 instead, using
-the same bracket vocabulary as section 3.2.3: **[Channel 1]** moves an attribute, continuously and
-additively; **[Channel 2]** supplies its own factor to the combined modifier; **[Channel 3 —
-Cascade]** triggers a separate resolution; **[Enabler]** does neither. A passive tagged with two
-buckets is dual-classified on purpose, the same as a status can be.
+Every Role passive below carries a channel tag (see 1.1.3's tag vocabulary).
 
 Current roles, their identity and purpose exist as follows:
 - Emissary
@@ -310,12 +312,6 @@ Current roles, their identity and purpose exist as follows:
     - Purpose: Buffer, Damage
     - Passive: Calibration [Channel 1 + Channel 2 + Enabler] - The Architect accumulates Calibration charges (maximum 12; charges do not persist between combats). Basic skills grant one charge, and the Architect's constructed zone (Raise the Frame) generates one charge per character that uses it. The Architect's non-basic skills consume charges and scale with the amount consumed: a few charges empower defensive ally buffs, while the finisher consumes all held charges and resolves in tiers - 1-4 charges deal damage only, 5-8 add a structural effect on top of the damage, 9-12 additionally re-erect the Architect's construction zone for free. Tier thresholds are fixed across rarities; rarity scales per-charge potency.
         - Per-charge potency: 4% Uncommon, 6% Rare, 8% Epic, 10% Legendary
-        - Corrected to match shipped code (`calibration_trait.gd`: `MAX_CHARGES = 12`,
-          `EXPOSE_WEAKNESS_THRESHOLD = 5`, `ZONE_RE_ERECT_THRESHOLD = 9`) — `Plan_Architect_Calibration_Kit.md`
-          designed cap 10 with thresholds 4/6/7, but the landed implementation ships 12/5/9. Per
-          section 1.1's precedence the drift is resolved in the code's favour here — this entry's
-          cap and tier bands (1-4/5-8/9-12, above) already state the shipped values, not the
-          original design.
     - Fielded by: `Architect.tres`
 - Tidal Corsair
     - Damage dealer. Primary attributes: Attack, Speed.
@@ -411,7 +407,7 @@ Contest = Caster's Accuracy * Random_Multiplier_A vs Target's Resistance * Rando
   the intended solution must be tuned so that counter-play's Accuracy beats the target's
   Resistance.
 
-This formula makes Accuracy a key stat for your Strategist or Jester roles, who might rely more on disrupting enemies than on raw damage. Conversely, a high Resistance is crucial for a tank-like Knight to avoid crippling debuffs.
+Accuracy is therefore a key stat for the Emissary and Jester, who rely on disrupting enemies rather than on raw damage, and high Resistance is what keeps a tank like the Warlord from being crippled by debuffs.
 
 ##### 4. Critical Hits
 Critical Chance and Critical Damage are primary attributes, rolled per hit rather than fixed
@@ -426,8 +422,8 @@ Crits if: random_integer(1, 100) <= Attacker's Critical Chance
 ```
 Critical_Multiplier = max(Minimum_Crit_Damage, Attacker's Critical Damage - Defender's Knowledge * 0.5)
 ```
-- A defender's Knowledge blunts incoming critical hits, giving Knowledge-scaling roles (e.g. the
-  Strategist) a secondary defensive niche.
+- A defender's Knowledge blunts incoming critical hits, giving Knowledge-scaling roles (Scholar,
+  Appraiser, Architect) a secondary defensive niche.
 - `Minimum_Crit_Damage` ensures a critical hit always deals meaningfully more damage than a
   normal hit even against a very high-Knowledge defender.
 
@@ -453,13 +449,8 @@ Status effect descriptions are surfaced to the player in two places: a press-and
 tooltip on each status icon during combat, and a browsable glossary tab in the Hollow
 Ledger. Both read the same static, authored description per effect.
 
-Every status effect below is tagged with the damage channel it belongs to per section
-1.1.3, or **Enabler** if it produces no damage and is judged by the collapse test in
-1.1.6 instead: **[Channel 1]** moves an attribute, continuously and additively;
-**[Channel 2]** supplies its own factor to the combined modifier; **[Channel 3 —
-Cascade]** triggers a separate resolution; **[Enabler]** does neither. A status tagged
-with two buckets is dual-classified on purpose — its mechanism and its role can differ
-(Blind, Warped) — not an unresolved case.
+Every status effect below carries a channel tag (see 1.1.3's tag vocabulary); Blind and Warped are
+the dual-classified cases.
 
 ##### 3.2.3.1 Turn Bar Effects
 * Anchor (Debuff) [Enabler]: The character cannot be pushed forward or backward on the turn bar by skills.
@@ -569,14 +560,13 @@ Zone system rules:
 ##### 3.2.4.2 Skills by Role
 Skills allocated to a specific Role, listed in the same order as their entries in section 3.1.3. A Role with no skills assigned yet keeps a placeholder heading so its absence is visible at a glance.
 
-Every skill's `Effect:` line below is tagged with the damage channel it belongs to per section
-1.1.3, or **Enabler** if it produces no damage and is judged by the collapse test in 1.1.6 instead,
-using the same bracket vocabulary as sections 3.1.3 and 3.2.3: **[Channel 1]** moves an attribute,
-continuously and additively; **[Channel 2]** supplies its own factor to the combined modifier;
-**[Channel 3 — Cascade]** triggers a separate resolution; **[Enabler]** does neither. A skill that
-only applies an already-tagged status inherits that status's tag(s) rather than repeating the
-reasoning; a skill combining its own effect with an applied status is tagged with both. See
-`Scripts/Debug/kit_contribution_manifest.gd` for the full ledger and evidence behind each tag.
+Every skill's `Effect:` line below carries a channel tag (see 1.1.3's tag vocabulary); a skill
+combining its own effect with an applied status is tagged with both. Named status effects are
+cataloged in 3.2.3.
+
+Where a skill entry disagrees with the shipped `.tres`, the disagreement is **flagged, not silently
+rewritten** — section 1.1's precedence rule makes that a fix to make, and each flag names whether
+the fix belongs in the data or the document.
 
 ###### Emissary
 * Citation
@@ -585,11 +575,11 @@ reasoning; a skill combining its own effect with an applied status is tagged wit
 * Signed Writ
     * Type: Debuff
     * Cooldown: 3 turns
-    * Effect: [Enabler] Reduces the durations of all the target's buffs by 1 turn and applies the Signed Writ debuff for 1 turn (see section 3.2.3.2). If the target has 6 or more Infractions, buff durations are reduced by 2 turns and Signed Writ lasts 2 turns instead.
+    * Effect: [Enabler] Reduces the durations of all the target's buffs by 1 turn and applies the Signed Writ debuff for 1 turn. If the target has 6 or more Infractions, buff durations are reduced by 2 turns and Signed Writ lasts 2 turns instead.
 * Levied Sanction
     * Type: Debuff
     * Cooldown: 4 turns
-    * Effect: [Channel 1] Applies the Sanction debuff to a single enemy for 2 turns (see section 3.2.3.2); its potency is set by the target's Infraction tally at the moment of application.
+    * Effect: [Channel 1] Applies the Sanction debuff to a single enemy for 2 turns; its potency is set by the target's Infraction tally at the moment of application.
 
 ###### Thief
 * Stab
@@ -602,11 +592,10 @@ reasoning; a skill combining its own effect with an applied status is tagged wit
 * Case the Target
     * Type: Buff
     * Cooldown: 3 turns
-    * Effect: [Channel 2] The Thief gains the Opportunist buff for 2 turns (see section 3.2.3.2).
+    * Effect: [Channel 2] The Thief gains the Opportunist buff for 2 turns.
         * **Conflict flagged:** the shipped resource is `Weigh_the_Mark.tres` — same Opportunist
-          grant, but named "Weigh the Mark" and lasting 3 turns, not the 2 documented here. Not
-          silently rewritten per section 1.1's precedence rule; needs a documentation or data
-          fix. See `Scripts/Debug/kit_contribution_manifest.gd` (Thief entry).
+          grant, but named "Weigh the Mark" and lasting 3 turns, not the 2 documented here.
+          Needs a documentation or data fix.
 
 ###### Lancer
 * Lance Thrust
@@ -615,16 +604,15 @@ reasoning; a skill combining its own effect with an applied status is tagged wit
         * **Bug flagged:** `lancer_trait.gd`'s offensive-skill name set contains "Stab" (no Lancer
           skill has that name) instead of "Lance Thrust", and the defensive-skill name set is
           never populated at all — Momentum currently accrues from casting Disarm instead, and
-          Phalanx Guard is unreachable. Not rewritten here per section 1.1's precedence rule;
-          needs a code fix. See `Scripts/Debug/kit_contribution_manifest.gd` (Lancer entry).
+          Phalanx Guard is unreachable. Needs a code fix.
 * Rending Charge
     * Type: Damage, Debuff (counts as an offensive skill)
     * Cooldown: 3 turns
-    * Effect: [Channel 1 + Channel 2] Deals heavy damage to a single enemy, scaling with Attack, and applies the Bleed debuff for 2 turns (see section 3.2.3.2).
+    * Effect: [Channel 1 + Channel 2] Deals heavy damage to a single enemy, scaling with Attack, and applies the Bleed debuff for 2 turns.
 * Disarm
     * Type: Damage, Debuff (counts as a defensive skill)
     * Cooldown: 3 turns
-    * Effect: [Channel 1] Deals damage to a single enemy and applies the Enfeeble debuff for 2 turns (see section 3.2.3.2).
+    * Effect: [Channel 1] Deals damage to a single enemy and applies the Enfeeble debuff for 2 turns.
 
 ###### Alchemist
 * Acrid Splash
@@ -633,11 +621,11 @@ reasoning; a skill combining its own effect with an applied status is tagged wit
 * Catalyst Cloud
     * Type: Turn Bar (Zone)
     * Cooldown: 3 turns
-    * Effect: [Enabler, provisional] Affected allies gain the Catalyst buff for 2 turns (see section 3.2.3.2). Holds 4 charges.
+    * Effect: [Enabler, provisional] Affected allies gain the Catalyst buff for 2 turns. Holds 4 charges.
 * Dissolving Agent
     * Type: Debuff
     * Cooldown: 3 turns
-    * Effect: [Channel 1] Applies the Unravel debuff to a single enemy for 2 turns (see section 3.2.3.2).
+    * Effect: [Channel 1] Applies the Unravel debuff to a single enemy for 2 turns.
 
 ###### Sorcerer
 * Arc Lash
@@ -646,7 +634,7 @@ reasoning; a skill combining its own effect with an applied status is tagged wit
 * Unstable Rift
     * Type: Turn Bar (Zone)
     * Cooldown: 3 turns
-    * Effect: [Channel 1 / Enabler] All affected characters, allies and enemies alike, gain the Warped debuff for 2 turns (see section 3.2.3.2) and take damage scaling with the Sorcerer's Mysticism — enemies take 30% of a standard hit, allies 15%. Holds 5 charges. This skill's damage lives inside the zone's own trigger list, not as one of its top-level effects, so Arcane Instability's reagent-triggered repeat (section 3.1.3) is a structural no-op here — a reagent consumed before recasting it grants no repeat damage.
+    * Effect: [Channel 1 / Enabler] All affected characters, allies and enemies alike, gain the Warped debuff for 2 turns and take damage scaling with the Sorcerer's Mysticism — enemies take 30% of a standard hit, allies 15%. Holds 5 charges. This skill's damage lives inside the zone's own trigger list, not as one of its top-level effects, so Arcane Instability's reagent-triggered repeat (section 3.1.3) is a structural no-op here — a reagent consumed before recasting it grants no repeat damage.
 * Cataclysmic Surge
     * Type: Damage (AoE)
     * Cooldown: 4 turns
@@ -663,7 +651,7 @@ reasoning; a skill combining its own effect with an applied status is tagged wit
 * Expose Fallacy
     * Type: Debuff, Buff
     * Cooldown: 3 turns
-    * Effect: [Channel 1 + Channel 2] Applies the Confound debuff to a single enemy for 2 turns and grants all allies the Opportunist buff for 2 turns (see section 3.2.3.2).
+    * Effect: [Channel 1 + Channel 2] Applies the Confound debuff to a single enemy for 2 turns and grants all allies the Opportunist buff for 2 turns.
 
 ###### Diviner
 * Fateful Glimpse
@@ -672,11 +660,11 @@ reasoning; a skill combining its own effect with an applied status is tagged wit
 * Premonition
     * Type: Buff
     * Cooldown: 3 turns
-    * Effect: [Enabler] Grants an ally the Premonition buff for 1 turn (see section 3.2.3.2).
+    * Effect: [Enabler] Grants an ally the Premonition buff for 1 turn.
 * Ill Omen
     * Type: Damage, Debuff
     * Cooldown: 3 turns
-    * Effect: [Channel 1 + Enabler] Deals damage to a single enemy, scaling with Mysticism, and applies the Hexed debuff for 2 turns (see section 3.2.3.2).
+    * Effect: [Channel 1 + Enabler] Deals damage to a single enemy, scaling with Mysticism, and applies the Hexed debuff for 2 turns.
 
 ###### Appraiser
 * Sizing Cut
@@ -685,11 +673,11 @@ reasoning; a skill combining its own effect with an applied status is tagged wit
 * Flaw Analysis
     * Type: Debuff
     * Cooldown: 2 turns
-    * Effect: [Channel 2] Applies the Exposed Facet debuff to a single enemy for 2 turns (see section 3.2.3.2).
+    * Effect: [Channel 2] Applies the Exposed Facet debuff to a single enemy for 2 turns.
 * Full Appraisal
     * Type: Buff
     * Cooldown: 4 turns
-    * Effect: [Channel 1] Grants one ally the Keen Edge and Lethal Precision buffs, both for 2 turns (see section 3.2.3.2).
+    * Effect: [Channel 1] Grants one ally the Keen Edge and Lethal Precision buffs, both for 2 turns.
 
 ###### Tactician
 * Signal Strike
@@ -698,11 +686,11 @@ reasoning; a skill combining its own effect with an applied status is tagged wit
 * Fatal Flaw
     * Type: Buff
     * Cooldown: 2 turns
-    * Effect: [Channel 2] One ally gains the Daunting Strength buff for 1 turn (see section 3.2.3.2).
+    * Effect: [Channel 2] One ally gains the Daunting Strength buff for 1 turn.
 * Battle Orders
     * Type: Buff (Turn Bar)
     * Cooldown: 4 turns
-    * Effect: [Enabler] One ally gains the Battle Orders turn bar buff for 2 turns (see section 3.2.3.1).
+    * Effect: [Enabler] One ally gains the Battle Orders turn bar buff for 2 turns.
 
 ###### Symbiote
 * Spore Lash
@@ -711,11 +699,11 @@ reasoning; a skill combining its own effect with an applied status is tagged wit
 * Symbiotic Overdrive
     * Type: Buff
     * Cooldown: 5 turns
-    * Effect: [Channel 1] The Symbiote gains the Exhert buff for 4 turns (see section 3.2.3.2).
+    * Effect: [Channel 1] The Symbiote gains the Exhert buff for 4 turns.
 * Grafted Flesh
     * Type: Buff, Heal
     * Cooldown: 4 turns
-    * Effect: [Enabler] The Symbiote loses 10% of its max Health; one ally gains the Regeneration buff for 4 turns (see section 3.2.3.2).
+    * Effect: [Enabler] The Symbiote loses 10% of its max Health; one ally gains the Regeneration buff for 4 turns.
 
 ###### Jester
 * Pratfall Sting
@@ -724,11 +712,11 @@ reasoning; a skill combining its own effect with an applied status is tagged wit
 * Burning Bolas
     * Type: Damage, Debuff
     * Cooldown: 2 turns
-    * Effect: [Channel 1 + Enabler] Throws flaming bolas at a single enemy, dealing damage scaling with Attack, and applies the Burning debuff for 2 turns (see section 3.2.3.2).
+    * Effect: [Channel 1 + Enabler] Throws flaming bolas at a single enemy, dealing damage scaling with Attack, and applies the Burning debuff for 2 turns.
 * Center Stage
     * Type: Buff
     * Cooldown: 3 turns
-    * Effect: [Enabler] The Jester gains the Spotlight buff for 2 turns and the Luck buff for 1 turn (see section 3.2.3.2).
+    * Effect: [Enabler] The Jester gains the Spotlight buff for 2 turns and the Luck buff for 1 turn.
 
 ###### Cultist
 * Profane Bolt
@@ -741,7 +729,7 @@ reasoning; a skill combining its own effect with an applied status is tagged wit
 * Rite of Severance
     * Type: Damage, Debuff
     * Cooldown: 4 turns
-    * Effect: [Channel 1 + Enabler] Deals damage to a single enemy and applies the Severance debuff for 2 turns (see section 3.2.3.2).
+    * Effect: [Channel 1 + Enabler] Deals damage to a single enemy and applies the Severance debuff for 2 turns.
 
 ###### Bar Brawler
 * Heap on
@@ -750,11 +738,11 @@ reasoning; a skill combining its own effect with an applied status is tagged wit
 * Liquid Courage
     * Type: Buff, Heal
     * Cooldown: 3 turns
-    * Effect: [Channel 1] The Bar Brawler gains the Vigor buff for 2 turns (see section 3.2.3.2) and heals 15% of max Health.
+    * Effect: [Channel 1] The Bar Brawler gains the Vigor buff for 2 turns and heals 15% of max Health.
 * Headbutt
     * Type: Damage, Debuff (Turn Bar)
     * Cooldown: 3 turns
-    * Effect: [Channel 1 + Enabler] Deals damage to a single enemy, scaling with Health, and applies the Dead Weight debuff for 2 turns (see section 3.2.3.1).
+    * Effect: [Channel 1 + Enabler] Deals damage to a single enemy, scaling with Health, and applies the Dead Weight debuff for 2 turns.
 
 ###### Bloodmage
 * Blood Bolt
@@ -763,20 +751,20 @@ reasoning; a skill combining its own effect with an applied status is tagged wit
 * Transfusion
     * Type: Buff
     * Cooldown: 3 turns
-    * Effect: [Enabler] The Bloodmage sacrifices 15% of max Health; one ally gains a Barrier absorbing 200% of the Health sacrificed, lasting 2 turns (see section 3.2.3.2).
+    * Effect: [Enabler] The Bloodmage sacrifices 15% of max Health; one ally gains a Barrier absorbing 200% of the Health sacrificed, lasting 2 turns.
 * Tithe of Vitality
     * Type: Damage, Debuff
     * Cooldown: 4 turns
-    * Effect: [Channel 1 + Enabler] Drains 10% of max Health from each living ally (the Bloodmage excluded). Deals moderate damage to a single enemy, scaling with Mysticism, and applies the Mana Burn debuff for 2 turns (see section 3.2.3.2).
+    * Effect: [Channel 1 + Enabler] Drains 10% of max Health from each living ally (the Bloodmage excluded). Deals moderate damage to a single enemy, scaling with Mysticism, and applies the Mana Burn debuff for 2 turns.
 
 ###### Herald of the loom
 * Thread Snap
     * Type: Damage, Debuff (basic skill, no cooldown)
-    * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Mysticism, and applies the Suppress debuff for 1 turn (see section 3.2.3.2).
+    * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Mysticism, and applies the Suppress debuff for 1 turn.
 * Pull the Thread
     * Type: Damage, Debuff, Turn Bar
     * Cooldown: 4 turns
-    * Effect: [Enabler] Deals damage to a single enemy, scaling with Mysticism, pushes them backward 15% on the turn bar, and applies the Temporal Leak debuff for 3 turns (see section 3.2.3.2). Grants the Herald 2 Tension, regardless of the currently held thread (see the Weft and Warp passive).
+    * Effect: [Enabler] Deals damage to a single enemy, scaling with Mysticism, pushes them backward 15% on the turn bar, and applies the Temporal Leak debuff for 3 turns. Grants the Herald 2 Tension, regardless of the currently held thread (see the Weft and Warp passive).
 * Cut the Cloth
     * Type: Damage
     * Cooldown: 4 turns
@@ -802,11 +790,11 @@ reasoning; a skill combining its own effect with an applied status is tagged wit
 * Raise the Frame
     * Type: Turn Bar (Zone)
     * Cooldown: 2 turns
-    * Effect: [Enabler] Constructs a zone: affected allies gain the Barrier buff for 2 turns (see section 3.2.3.2), sized by the Architect's Knowledge and boosted by the Calibration charges invested in the construction. Holds 5 charges.
+    * Effect: [Enabler] Constructs a zone: affected allies gain the Barrier buff for 2 turns, sized by the Architect's Knowledge and boosted by the Calibration charges invested in the construction. Holds 5 charges.
 * Final Calculation
     * Type: Damage
     * Cooldown: 3 turns
-    * Effect: [Channel 1 + Channel 2 + Enabler] Consumes all held Calibration charges: 1-4 charges deal damage only; 5-8 also apply the Expose Weakness debuff for 2 turns (see section 3.2.3.2); 9-12 additionally re-erect the Architect's construction zone for free.
+    * Effect: [Channel 1 + Channel 2 + Enabler] Consumes all held Calibration charges: 1-4 charges deal damage only; 5-8 also apply the Expose Weakness debuff for 2 turns; 9-12 additionally re-erect the Architect's construction zone for free.
 
 ###### Tidal Corsair
 * Boarding Strike
@@ -827,11 +815,11 @@ reasoning; a skill combining its own effect with an applied status is tagged wit
 * Miasma
     * Type: Turn Bar (Zone)
     * Cooldown: 3 turns
-    * Effect: [Channel 1 + Channel 2] Affected enemies gain the Plague debuff for 3 turns (see section 3.2.3.2). Holds 4 charges.
+    * Effect: [Channel 1 + Channel 2] Affected enemies gain the Plague debuff for 3 turns. Holds 4 charges.
 * Quarantine Breach
     * Type: Damage, Debuff
     * Cooldown: 4 turns
-    * Effect: [Channel 1 + Enabler] Deals damage to a single enemy and applies the Blight debuff for 2 turns (see section 3.2.3.2).
+    * Effect: [Channel 1 + Enabler] Deals damage to a single enemy and applies the Blight debuff for 2 turns.
 
 ###### Warlord
 * Shield Slam
@@ -840,20 +828,18 @@ reasoning; a skill combining its own effect with an applied status is tagged wit
 * Hold the Line
     * Type: Buff
     * Cooldown: 3 turns
-    * Effect: [Channel 1] All allies gain the Fortify buff for 2 turns (see section 3.2.3.2).
+    * Effect: [Channel 1] All allies gain the Fortify buff for 2 turns.
 * Brace for Impact
     * Type: Buff
     * Cooldown: 4 turns
-    * Effect: [Channel 1 + Enabler] The Warlord gains the Rush buff and the Aegis buff for 1 turn each (see section 3.2.3.2). When Rush expires, the Warlord receives the Stun debuff per the Rush effect.
+    * Effect: [Channel 1 + Enabler] The Warlord gains the Rush buff and the Aegis buff for 1 turn each. When Rush expires, the Warlord receives the Stun debuff per the Rush effect.
 
 ##### 3.2.4.3 Unassigned / Generic Skills
 Not yet tied to a specific Role, grouped by mechanical type for lookup.
 
-**Verdict on the two unassigned entries:** both are shipped,
-functional, and channel-correct on their own terms, but referenced by no Character Preset — a
-coverage/roster-assignment gap, not a channel defect. `Weigh_the_Mark.tres` and `Power_Tide.tres`
-(the Thief's actual third skill and an orphaned all-ally Empower buff respectively, neither listed
-in this section) are audited alongside these under the Thief and Batch 4 entries in the ledger.
+The two entries below are shipped and functional but referenced by no Character Preset, as are
+`Weigh_the_Mark.tres` (the Thief's actual third skill) and `Power_Tide.tres` (an orphaned all-ally
+Empower buff) — a roster-assignment gap to close.
 
 **Turn Bar (Zone Effects)**
 * Weight of Law
@@ -892,8 +878,7 @@ Rarity for items:
 * Relic [Channel 2, sanctioned exception]
     * Has both upsides and downsides. Shall have a unique effect.
 
-**Gear verdict** (settled to resolve the tension between 1.1.3 naming gear a channel 1 input
-and 1.1.4's tame-base-attributes rule; see Technical Design Document 15.14): gear feeds
+**Gear verdict:** gear feeds
 the scaled attribute sum only. [Channel 1] Each step in rarity adds one attribute bonus for
 the equipping character; no affix contributes a factor to the combined modifier (section
 1.1.3's second channel). The single exception is Relic rarity's unique effect

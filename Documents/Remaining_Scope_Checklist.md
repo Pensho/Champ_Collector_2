@@ -30,18 +30,7 @@ that holds (or will hold) the detail.
 Not player-facing scope, but tracked here so the checklist covers everything
 outstanding. Detail and suggested order live in `Plans/` (see `Plans/README.md`).
 
-- [x] Combat correctness fixes — completed; plan removed and findings struck from
-  `Technical_Design_Document.md` section 15
-- [x] Documentation parity — completed; plan removed and findings struck from
-  `Technical_Design_Document.md` section 15
-- [x] Team and roster abstraction — completed; plan deleted and
-  `Technical_Design_Document.md` section 15.7 marked resolved
-- [ ] Headless combat core (Plans/Plan_Headless_Combat_Core.md) — also unlocks the
-  "Run Multiplier" auto-battle idea from FeatureIdeas.md
-- [x] Data-driven status effects — completed; plan deleted and
-  `Technical_Design_Document.md` section 15.8 marked resolved
-- [x] Naming convention alignment — completed; plan deleted and
-  `Technical_Design_Document.md` section 15.3 marked resolved
+Nothing outstanding. Completed groundwork is deleted from this list, not checked off.
 
 ## Optional
 

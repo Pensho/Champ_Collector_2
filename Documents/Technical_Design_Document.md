@@ -262,7 +262,8 @@ load time. There is a consistent **preset (template) vs instance (runtime)** spl
 
 `Skill` holds only what the UI and turn machinery read directly — everything a skill *does* is an
 ordered array of self-resolving `SkillEffect` resources instead of an optional flat field per
-mechanic:
+mechanic. A new skill mechanic adds a `SkillEffect` subclass under `Scripts/Battle/Skill_Effects/`;
+it never adds a flat `Skill` field plus a branch in `ResolveSkill`:
 
 ```gdscript
 class_name Skill extends Resource
@@ -367,8 +368,7 @@ enum MagnitudeKind {
 per-rarity in `LancerTrait`). Debuffs resolve `value` the same way buffs do (`ApplyDebuff`/
 `CastDebuff` default it to `data.magnitude`), so both buff and debuff read one instance value
 instead of buffs reading `value` and debuffs reading `data.magnitude` directly. `ApplyBuff`/
-`ApplyDebuff`/`_CastBuff`/`CastDebuff` (`StatusEffectResolver`, see
-[Section 15.10](#1510-battle_resolvergd-growth-the-zoneresolver-and-statuseffectresolver-splits))
+`ApplyDebuff`/`_CastBuff`/`CastDebuff` (`StatusEffectResolver`)
 all resolve `stackable`/`overwritable` from the registry instead of the old
 `Skills.OverwritableBuff`/`OverwritableDebuff` match statements.
 
@@ -1502,9 +1502,9 @@ appear:
 5. **Dictionary arguments.** `ContextContainer._arguments` carries free-form, stringly-typed data
    across scene transitions (difficulty, per-character damage, battle result).
 
-The `CLAUDE.md` convention (prefer signals for cross-node communication) is now honored at the
-combat seam. The remaining direct-call seams (view-internal wiring, `main.GetInstance()`) are
-accepted as-is — see [Section 15.4](#154-signal-versus-direct-call-usage-is-inconsistent-with-the-stated-convention).
+The `CLAUDE.md` convention (prefer signals for cross-node communication) applies to cross-subsystem
+boundaries, not every node interaction: the combat seam is signal-driven, while view-internal
+wiring and `main.GetInstance()` access stay direct calls.
 
 ---
 
@@ -1741,17 +1741,10 @@ early returns (max status effects, Aegis consumed), and the new Spore arm checks
 duration wasn't longer) before falling through to the dispatch — so Rootfeeder's heal never fires
 for a zone effect that didn't actually apply.
 
-`CharacterTrait`'s hook surface reached exactly `gdlintrc`'s `max-public-methods` ceiling (30) with
-these two new virtuals (32 total). Unlike `battle_resolver.gd`'s growth
-([Section 15.10](#1510-battle_resolvergd-growth-the-zoneresolver-and-statuseffectresolver-splits)),
-this base class cannot be split into a `RefCounted` subsystem the way `ZoneResolver`/
-`StatusEffectResolver` were — it is a `Resource` base class extended by every trait and graft
-subclass in the project, and its public surface *is* the hook interface by design, so there is no
-"internal implementation detail" half to move out. The ceiling was raised to 34 (two methods of
-headroom over the current count, rather than the exact count) — the same category of decision as
-the resolver bumps, but with no split available, growth here will keep consuming that headroom one
-hook at a time until future work needs to revisit the shape of the interface itself (e.g.
-grouping related hooks behind a smaller number of dispatch entry points).
+`character_trait.gd` cannot be split — its public surface *is* the hook interface, extended by every
+trait and graft subclass — so each new hook consumes `gdlintrc`'s `max-public-methods` headroom
+directly. It sits at that ceiling today (40 of 40); the next hook needs either a raise or a rework
+of the interface shape.
 
 One graft, `DetritivoreGraft`, lands on a broadcast-dispatch
 primitive. `BattleResolver.BroadcastEvent(event: Types.Combat_Event) -> void` iterates every
@@ -1800,43 +1793,16 @@ Every enemy `_graft_effect` stays null until a future pass assigns sources.
 
 ## 15. Known weaknesses and recommendations
 
-This section is **forward-looking**. The items below are not yet acted on; they record where the
-current architecture is likely to cause friction and suggest directions. Nothing here describes
-existing behavior.
+Open items only. A weakness that gets fixed is deleted from this section, not annotated.
 
-### 15.1. User-interface and combat logic are tightly coupled — resolved
+### 15.1. Turn-bar positions are still view state
 
-Resolved by the headless combat core: `BattleResolver` owns all combat mutation and reports
-`CombatResult` records; `battle.gd` is input handling, a turn-flow state machine, and rendering
-([Section 7](#7-combat-system-as-implemented)). The resolution path is unit-tested without the
-scene tree (`test_battle_resolver.gd`). One residue remains: turn-bar *positions* are still view
-state, reached through the `TurnPositions` interface — moving them into the core is the follow-up.
+The headless combat core leaves turn-bar *positions* on the view side, reached through the
+`TurnPositions` interface ([Section 7](#7-combat-system-as-implemented)).
 
-### 15.2. Static mutable state in `Skills` — resolved
+*Direction:* move them into the core.
 
-Resolved: the per-combat state (`_skill_ramp_uses`, `_damage_multiplier`) lives
-on the battle-scoped `BattleResolver` instance and is created and discarded with the battle;
-`Skills.Reset()` is gone and `Skills` keeps only stateless helpers (plus a static texture cache).
-Combat rolls all go through the resolver's injectable, seedable `RandomNumberGenerator`.
-
-### 15.3. File and identifier casing diverges from the snake_case convention — resolved
-
-Resolved by the completed naming-convention-alignment plan: `skills.gd`, `zone.gd`,
-`level_system.gd`, `context_container.gd`, `static_context.gd`, and the `character_traits/`
-folder now use `snake_case`; the stray camelCase `Character` members and the
-`Repr`/`char`/`attr` abbreviations in `_character_representations`, `_character_turn_markers`,
-and `p_caster_attributes` are spelled out. `class_name`s were left unchanged; `.tres`/scene
-script paths were updated alongside the renamed files.
-
-### 15.4. Signal-versus-direct-call usage is inconsistent with the stated convention — resolved for the combat seam
-
-The highest-traffic boundary is now signal-driven: `BattleResolver.result_produced` carries every
-combat event to the battle scene ([Section 12](#12-communication-patterns)). The remaining
-direct-call seams (view-internal wiring, `main.GetInstance()` access, Callable-based zone
-selection) are accepted as-is; the `CLAUDE.md` convention should be read as applying to
-cross-subsystem boundaries, not every node interaction.
-
-### 15.5. Stringly-typed cross-scene arguments
+### 15.2. Stringly-typed cross-scene arguments
 
 `ContextContainer._arguments` passes data between scenes as untyped string keys
 (`"Difficulty"`, `"Boss_Scale"`, `"character_dmg_<i>"`, `"Battle_Result"`).
@@ -1844,217 +1810,3 @@ cross-subsystem boundaries, not every node interaction.
 *Impact:* no compile-time safety; typos surface only at runtime.
 *Direction:* promote the recurring keys to typed fields on `Static_Context` subclasses (as
 `Context_Battle` already does for battle setup), reserving the dictionary for genuinely dynamic data.
-
-### 15.7. Duplicated team-membership logic and fixed 3-versus-3 assumptions — resolved
-
-Resolved by the completed team-and-roster-abstraction plan: team membership,
-alive-filtering, and random selection now live in `CombatTeam`/`CombatSides`
-(see section 4), built once in `Battle.Init` from the actual roster sizes. The
-`PLAYER_IDS`/`MONSTER_IDS`/`ENEMY_IDS` constants and the six-slot static arrays in
-`skills.gd` (now dictionaries keyed by slot ID) are gone, and `turn_bar.gd` receives the
-player team instead of reaching back into `Battle`.
-
-### 15.8. Status-effect behavior is hardcoded and duplicated — resolved
-
-Resolved by the completed data-driven-status-effects plan: buff/debuff magnitude,
-overwrite/stack rules, application sites, and icons now live on one `StatusEffectData`
-resource per effect under `Data/Status_Effects/`, looked up through
-`StatusEffectRegistry` (see section 6.1). `skills.gd`/`BattleResolver`'s per-type
-`match` blocks and the `Statuses.BUFF_ICONS`/`DEBUFF_ICONS` maps are gone; the effect-application
-methods dispatch generically on `StatusEffectData.magnitude_kind` (see section 6.1's
-"always live" note for how that dispatch is wired today).
-
-### 15.9. The Symbiote's Graft passive needed generic effect + attribute-bonus machinery — resolved
-
-Resolved by the completed Graft passive plan
-([Section 9.2](#92-the-graft-passive-grafteffect)): `GraftEffect` reuses the `CharacterTrait`
-hook surface for the graft's effect and layers a derived, percent-of-base attribute delta on top
-of `Character`'s base attributes, so a graft can do anything a trait can (buff, debuff, zone,
-damage) without any new dispatch code. The in-battle flow models the reagent free-action seam;
-persistence stores only the graft's resource UID. Ships no graft content itself — enemy
-`_graft_effect` sourcing is populated separately by the graft-pool plan.
-
-### 15.10. `battle_resolver.gd` growth: the `ZoneResolver` and `StatusEffectResolver` splits
-
-`Scripts/Battle/battle_resolver.gd` previously sat at exactly `gdlintrc`'s then-current
-`max-file-lines` (1320) and `max-public-methods` (26) — the healing-primitives graft content
-(section 9.2) landed by extending an existing public method (`ResolveTraitHeal`'s optional
-`p_raw_amount`) rather than adding a new one, specifically to stay under budget.
-
-The zone lifecycle (`_zones` state, `PlaceZone`, `TriggerZones`, `SetZoneDuration`,
-`AvailableZoneIDs`, `HasZone`, `GetZones`, `ClearZone`, `_ResolveZoneEffect`) moved first,
-into `ZoneResolver` (`Scripts/Battle/zone_resolver.gd`), a `RefCounted` subsystem constructed
-by `BattleResolver._init` and held as `_zone_resolver`, mirroring `CombatSides`/`TurnPositions`/
-`ReagentLoadout`'s pattern of small `RefCounted` collaborators rather than `Node`-based
-utilities like `Skills`/`ReagentResolver`. `ZoneResolver` holds a back-reference to its owning
-`BattleResolver` and reaches its `_characters`/`_sides`/`_turn_positions` state and
-`_BeginBatch`/`_EndBatch`/`_Emit`/`_EmitTurnBarBump`/`_NextStatusID`/`_HasBuff` services directly
-through it, plus the status-effect services below through `GetStatusResolver()` — GDScript does
-not enforce `_`-privacy, so no method needed to become public to support this. `BattleResolver`
-exposes the subsystem through a single `GetZoneResolver() -> ZoneResolver` accessor, mirroring
-the existing `GetSides()`/`GetTurnPositions()` pattern of handing back an owned collaborator
-rather than re-forwarding each of its methods; callers reach the zone API as
-`resolver.GetZoneResolver().PlaceZone(...)` etc. (`battle.gd`, `calibration_trait.gd`, and the
-zone-touching tests were updated to the new call shape; the `Clear_Zone` reagent branch, being
-internal to `BattleResolver`, calls `_zone_resolver` directly).
-
-The buff/debuff lifecycle moved the same way, into `StatusEffectResolver`
-(`Scripts/Battle/status_effect_resolver.gd`) — the resolver's largest remaining source of
-per-effect method growth (one bespoke private method per status: `_TriggerManaBurn`,
-`_CascadeMirrorCoat`, `_ConsumeAegisIfPresent`, `_BlockedBySequenceLock`, …).
-`StatusEffectResolver` owns `ApplyBuff`/`ApplyDebuff`/`RemoveBuff`, the `_CastBuff`/`CastDebuff`/
-`_TriggerExistingCasterBuffs`/`Debuffs` skill-resolution helpers, every status-specific block/
-consume/trigger rule, the status-derived damage and healing multipliers, and the `Status_Applied`/
-`Status_Duration` emitters — constructed and held the same way as `_zone_resolver`, exposed
-through `GetStatusResolver() -> StatusEffectResolver`. `BattleResolver` itself keeps only the
-shared substrate (`_characters`, `_sides`, batch/emit, `_NextStatusID`, `_HasBuff`/`_HasDebuff`,
-the health primitives `_ApplyHealthLoss`/`_ApplyHeal`) and damage/turn orchestration
-(`ResolveSkill`, `_ResolveDamage`, `_TickCooldowns`, `_HandleDeath`, …); two checks that were
-previously inlined in that orchestration — the Premonition miss and the Deathward fatal-hit
-save — became named `ConsumePremonitionIfPresent`/`ConsumeDeathwardIfPresent` on
-`StatusEffectResolver` so the damage/health path calls one line instead of scanning the buff
-array itself. Because `ApplyBuff`/`ApplyDebuff`/`RemoveBuff` are the resolver's trait-facing
-public API (called from most `CharacterTrait` subclasses, `skills.gd`, `battle.gd`, and debug
-tooling — an order of magnitude more external callers than zones had), every call site was
-updated to the `resolver.GetStatusResolver().ApplyBuff(...)` shape rather than adding thin
-forwarders on `BattleResolver`, for consistency with the `ZoneResolver` accessor precedent.
-The four insertion methods' shared skeleton (max-status guard, stackable/overwritable scan with
-duration-refresh, append, emit) was also collapsed onto one `_InsertOrRefresh` helper; it takes
-an `p_always_refresh_duration` flag because `CastDebuff` alone refreshes an existing debuff's
-duration unconditionally (the other three only refresh when the new duration is longer), and
-returns the created instance (or `null` when nothing new was created) so `CastDebuff` alone can
-gate its Mirror Coat trigger on an actual creation, not a mere refresh.
-
-`Skill.health_change`/`heal_scaling` resolution landed the same way from the start, as
-`HealthTransferResolver` (`Scripts/Battle/health_transfer_resolver.gd`) rather than as new
-`BattleResolver` methods, since the addition alone would have pushed the file past
-`max-file-lines`. It owned `ResolveHealthCosts`/`ResolveHealthGains`, constructed and held as
-`_health_transfer_resolver` the same way as `_zone_resolver`/`_status_resolver`, called directly
-from `ResolveSkill`. It reached `GetStatusResolver()._ResolveStatusGroupTargets` and
-`_MaxHealth`/`_ApplyHealthCost`/`_ApplyHeal`/`_Emit` on the owning `BattleResolver` directly, same
-as the other two subsystems.
-
-This freed real budget back: `battle_resolver.gd` dropped from roughly 1230 to 656 lines and 19
-public methods, with the buff/debuff machinery now in its own 599-line file. `gdlintrc`'s
-`max-file-lines`/`max-public-methods` were retightened from 1320/26 to 800/25 — headroom over the
-current largest file and highest public-method count (`character_trait.gd`'s 24 hook methods at
-the time), not a return to the original pre-split values, since those predate this work entirely.
-
-The skill effect components pass (see [Section 6.1](#61-resource-templates) and
-[Section 7.4](#74-skill-resolution-battleresolverresolveskill)) later dissolved
-`HealthTransferResolver` and `BuffManipulationResult` (`Scripts/Battle/buff_manipulation_result.gd`,
-a small standalone return-value class that used to carry a cast's additive damage-bonus fraction
-and duration bonus) along with the flat `Skill` fields they existed to resolve.
-`HealthChangeEffect.Resolve` now calls `BattleResolver.ResolveHealthCost`/`ResolveHealthGain`
-directly, and `SkillCastContext.buffs_consumed` replaced `BuffManipulationResult`'s accumulator.
-`_SkillRampMultiplier`'s inline per-(caster, skill) counter became `DamageEffect._RampMultiplier`
-reading the still-resolver-side `_SkillUseCount` (which `AlternatingEffect` also reads for its
-rotation), and `CharacterTrait.IsConditionActive` was replaced by the source-parameterized
-`GetConditionCount` (see [Section 9](#9-trait-hook-system)). `StatusEffectResolver`'s
-`_ResolveStatusGroups`/`_ResolveStatusGroupTargets`/`_ResolveIndependentStatusGroup` were absorbed
-into `SkillCastContext.TargetsFor`/`TargetsForGroup`/the static `ResolveStatusGroupTargets`/
-`ResolveIndependentGroup` — the group-resolution logic moved once more, from the resolver
-subsystem to the per-cast context object that now owns skill resolution's shared state.
-
-`max-public-methods` has since ratcheted up several more times, one method at a time, as later
-content (grafts, then skill effects) pushed `character_trait.gd`'s hook count past each successive
-ceiling — it is currently `35`, project-wide (`gdlintrc` has always set a single ceiling for every
-`.gd` file, never split per class, despite this section's history reading like a per-file budget).
-`character_trait.gd` sits exactly at that ceiling (35 public hook methods, its surface *is* the
-hook interface by design — see Section 9.2's `GraftEffect` note, no split available). `max-file-lines`
-is currently `800`; `battle_resolver.gd` (`747` lines, `26` public methods) has headroom on both.
-
-The skill effect components pass is the current answer to `battle_resolver.gd`'s recurring growth
-pressure: a new skill mechanic now adds one small `SkillEffect` subclass under
-`Scripts/Battle/Skill_Effects/` instead of a new flat `Skill` field plus an `if` in `ResolveSkill`,
-so per-mechanic growth no longer lands on the resolver's own file or method budget at all.
-
-### 15.11. `Skill`'s flat field bag grew unboundedly and let mechanics leak into each other — resolved
-
-Resolved by the completed skill-effect-components plan (see [Section 6.1](#61-resource-templates)
-and [Section 7.4](#74-skill-resolution-battleresolverresolveskill)): `Skill` had grown to 25
-optional fields, and `ResolveSkill` ran every optional mechanic on every cast behind an `if` guard,
-so a mechanic could read state left over from an unrelated field on the same skill. One live bug
-came from this shape: `StandingRecordTrait.GetOutgoingDamageBonus` applied its Infraction-rate
-bonus to *every* damaging skill the Emissary cast, not just Citation, violating Concept Document
-3.1.3's "skills state what scales, never their own rate" — harmless only because the Emissary's
-other skills dealt no damage. `Skill.effects: Array[SkillEffect]` replaces the field bag: a
-mechanic a skill does not list cannot run for it, closing that whole class of bug rather than
-patching the one instance. `CharacterTrait.GetConditionCount` replaced both `IsConditionActive`
-and `StandingRecordTrait`'s damage-bonus override, so the Infraction rate now reaches damage only
-through a `DamageEffect` that explicitly asks for it.
-
-### 15.12. Eight fragmented multiplicative damage inputs, each with its own placement — resolved
-
-Resolved by `CombinedDamageModifier` (see [Section 7.4](#74-skill-resolution-battleresolverresolveskill)):
-before unification, `Skills.MitigatedDamage` took eight separate float parameters
-(`p_trait_multiplier`, `p_ramp_multiplier`, `p_damage_multiplier`, `p_damage_dealt_bonus`,
-`p_opportunist_multiplier`, plus the outgoing-damage-bonus and `bonus_per` totals folded into
-`p_bonus_damage_fraction`), each hardcoded to either the pre-mitigation aggregate or the final
-product depending on which source it happened to be. Adding a ninth source meant deciding its
-placement from scratch and threading a new parameter through `_ResolveDamage`,
-`ResolveEffectDamage`, and `ResolveTraitDamage`. It also grouped by whichever accident of the
-source's own storage applied — most sources were already effectively one bucket per mechanic, but
-`bonus_per_debuff_on_target` summed every target debuff into a single additive lump on the caster,
-so a second qualifying debuff added rather than multiplied, contradicting the "distinct mechanics
-multiply" law in Concept Document 1.1.3. `CombinedDamageModifier` replaces the eight parameters with one
-object built at each damage resolution, contributed to by key (mechanic identity, not source
-plumbing), and multiplies the pre-mitigation aggregate uniformly — a new source is one `Contribute`
-call, not a new formula parameter.
-
-### 15.13. Cascade was four hardcoded branches with no shared termination guarantee — resolved
-
-Resolved by `CascadeResolver` (see [Section 7.8](#78-cascade-resolution)): Overflow's expiry AoE,
-Plague's expiry spread, Rush's expiry self-Stun, and Mirror Coat's reflection were each an `if
-type == …` branch inside `StatusEffectResolver`'s tick loop, each independently reinventing the
-same collect-then-resolve pattern because mutating the status list mid-iteration is unsafe. None
-shared a dedup rule, a depth bound, or a representation, and Concept Document 1.1.4's two
-termination bounds existed nowhere in code — termination was a property of the four effects
-happening to be shaped safely, not a system guarantee. `_SpreadPlague` additionally bypassed the
-normal debuff-application path entirely (no resist roll, no Aegis, no Sequence Lock, no
-stack/refresh rules), so on a two-member side it could ping-pong between the same two characters
-with nothing to stop it. `CascadeResolver`'s post-and-drain queue makes both bounds one
-enforcement point instead of four independent judgment calls, and the port routed Plague's spread
-through `CastDebuff` like any other debuff application. (Plague's spread has since been removed
-outright with the Plague Doctor's kit rework; it is described here because it was one of the four
-effects that motivated `CascadeResolver`, not as a listener that still exists.)
-
-### 15.14. Gear and reagents were entirely additive, and repetition had no trigger to hang a cast on — resolved
-
-Resolved by `Plan_Itemization_Channels.md`. Before this work, gear was purely additive (no affix
-system existed anywhere in `Scripts/`, `Data/`, or `Tests/`) and exactly one reagent family out of
-82 (Fractured Idol) reached `CombinedDamageModifier` — leaving the two roles built around reagents,
-Sorcerer and Alchemist, contributing almost nothing to the burst channels despite reagents being
-their stated identity.
-
-**Gear's verdict is a stated rule, not a rework:** gear feeds the scaled attribute sum only
-([Section 6.1](#61-resource-templates)'s `ITEM_TYPE_ATTRIBUTES`, unchanged), with Relic rarity's
-unique effect the sole sanctioned place a gear-sourced `CombinedDamageModifier` factor may live —
-see `Concept_Document.md` 3.3.1. No code changed; the gap this closed was in the design record, not
-the pipeline.
-
-**Two reagent-gated Role reworks did change the pipeline**, both keyed to a broadcast that did not
-exist before: `Skills.TriggerAllyReagentConsumedHook` (`skills.gd`), called from
-`BattleResolver.ResolveReagent` after the reagent's own effect resolves, fires a new
-`Ally_Reagent_Consumed` `Combat_Event` at every living member of the consumer's own team. The
-Sorcerer's `SorcererTrait` and the Alchemist's `FreshBatchTrait` consume this differently — see
-[Section 7.8](#78-cascade-resolution) for the Sorcerer's `Skill_Resolved`-triggered repeat (Channel
-3, a separate cascade instance) and [Section 7.4](#74-skill-resolution-battleresolverresolveskill)
-for the Alchemist's `Volatile_Mixture` team buff (Channel 2, folded into the same
-`ConsumeDamageMultiplierFactors` path as any other granted `DamageMultiplier`). The two are keyed
-under distinct buckets by construction (`Volatile_Mixture` vs. the Sorcerer's own repeat bucket),
-so they multiply against each other and against Fractured Idol's `reagent_damage_bonus` rather
-than colliding into a shared key.
-
-**The roster-sweep result was mixed, and is recorded rather than smoothed over.** The Alchemist's
-factor raises the roster's pre-existing ceiling pairing (Tidal Corsair plus Tactician, now 7.22x
-product — the contrast-ratio figures here predate `Plan_Role_Kit_Rework.md` Phase 0's
-mitigation-formula change; see that plan's Status for the current baseline) rather than opening
-an independent second one; the Sorcerer's repeat, scored on its own terms via
-`CandidateResult.repeat_contrast_ratio`, fell short of the top-decile threshold at last measure.
-Whether a second, Tidal-Corsair-independent ceiling exists is therefore still open — a balance
-question for `Plan_Role_Kit_Rework.md` (successor to `Plan_Channel_Population_Rework.md`,
-deleted per the retention rule), not a code defect here. See
-`Scripts/Debug/kit_contribution_manifest.gd`'s `gated_bonus` field and
-`Scripts/Debug/burst_reachability.gd`'s `fold` handling for how the scorer models a reagent
-consumption (or any other gated precondition) it cannot itself simulate.

@@ -6,22 +6,13 @@ and hands it to a build-out plan that was never spawned.
 
 ## Status
 
-**Framework correction, applied before Batch 2 design.** `Role_Kit_Design.md` had drifted from
-`Concept_Document.md` in a way that railroaded every Role toward a burst-sized damage kit: §1's kit
-contract required "one distinct damage factor at a magnitude in the target band (section 4)", and
-§4's band was the **30-50x team figure**. 1.1.2 is unambiguous that 30-50x describes a team at one
-resolution and decomposes to roughly two ~2x factors per champion, but no per-Role figure was ever
-stated in §4, so the contract pointed every kit at the team number. §9 compounded it: the Herald
-and Sorcerer entries reported team-inclusive figures (both assuming a teammate product of 5.5) as
-those Roles' own results and called them "inside the 30-50x band", while §9.4 said the Bloodmage
-"is not expected to clear the band alone" — two incompatible readings in one section, with the
-first acting as a ratchet on every Role designed after it. §1.2 separately forbade an Enabler
-primary identity, which `Concept_Document.md` 1.1.3 permits and arguably requires ("not a damage
-channel and … not to be converted into one"). Fixed in §1, §1.2, §4, §5, §8, §9.2, §9.3 and §9.4,
-and in this plan's own contract restatement, Context, per-batch loop, and Watch-for list. **Batch
-1's five settled kits were all designed under the wrong reading and should be re-read against the
-corrected contract** before Phase 6 — Sorcerer, Bloodmage and Appraiser are not yet implemented, so
-that re-read is still cheap for three of the five.
+**Framework correction, applied before Batch 2 design.** `Role_Kit_Design.md`'s kit contract had
+pointed every Role at the 30-50x team figure rather than a per-Role one, and forbade an Enabler
+primary identity that `Concept_Document.md` 1.1.3 permits. Both are corrected there (§1, §1.2, §4,
+§5, §8, §9.2-§9.4) and in this plan's own contract restatement. **Batch 1's five settled kits were
+designed under the wrong reading and should be re-read against the corrected contract** before
+Phase 6 — Sorcerer, Bloodmage and Appraiser are not yet implemented, so that re-read is cheap for
+three of the five.
 
 Phase 0 done. Phase 1 drafted, awaiting sign-off (see below) before Phase 2 starts. Phase 2 in
 progress: Plague Doctor and Herald of the Loom implemented; Sorcerer, Bloodmage, and Appraiser
@@ -40,13 +31,8 @@ Appraiser's kit claiming no bucket key at all — is **settled** (§8): Enabler 
 primary identity, the contract admits crit-path contribution, and it gained a second declared axis,
 **contribution direction** (self-facing or exported, §1.1), with a per-Role allocation and a
 10-of-20-exported roster target in §5. A Sustain or Control purpose is now explicitly discharged
-through Enabler-tagged skills authored as kit content (§1.2, `Concept_Document.md` 3.1.3). Also
-settled: **the sweep is a sanity check on one calculable factor, not a design gate** (§4, "What the
-sweep is, and is not"). It does establish the thing this plan is measured on — whether several
-distinct combinations reach the burst band — and comparisons between damage routes are like-for-
-like; it cannot say whether a team is good, since damage is one factor among many. No survival term
-is being added and enabler/sustain/exported-window contributions get no synthetic scores; they are
-judged by 1.1.6's collapse test in each batch's review.
+through Enabler-tagged skills authored as kit content (§1.2, `Concept_Document.md` 3.1.3). Also settled: **the sweep is a sanity check on one calculable factor, not a design gate**
+(`Role_Kit_Design.md` §4).
 
 Phase 3 (Batch 2) design started ahead of Phase 2's remaining implementation, which the tier-3 loop
 permits — settling a kit does not require implementing it in the same sitting. **Jester settled
@@ -257,101 +243,12 @@ different mechanics — so that finding one is a discovery, not the only option.
    ledger); settled kits are promoted into `Concept_Document.md` 3.2.4.2, which stays the
    authority.
 
-## The design framework (Phase 1 output, stated here so batches are executable)
+## The design framework
 
-### The per-Role kit contract
-
-**The 30-50x burst figure is a team-level, single-resolution figure and is never a per-Role
-target** (`Concept_Document.md` 1.1.2 decomposes it as roughly two factors of ~2x per champion
-across a three-champion team). The figure a kit is designed and checked against is **a factor of
-roughly 2x, one or two of them**. See `Role_Kit_Design.md` §1 and §4, which are authoritative here.
-
-Each Role must be able to put on the table by burst time:
-
-* **one declared primary channel identity** — Channel 1, Channel 2, Channel 3, or Enabler;
-* **at least one distinct damage factor of roughly 2x** matching that identity — a
-  `CombinedDamageModifier` bucket key, a cascade instance count, or a crit-path contribution —
-  unless its primary identity is Enabler;
-* **at least one composition hook** — something it reliably puts into the world that another
-  kit's condition can read.
-
-An Enabler-identity Role carries no bucket key and no damage factor, and is held to 1.1.6's
-**collapse test** instead: removing it makes the burst not happen, or not survive to happen.
-"Useful to have" fails. `Concept_Document.md` 1.1.3 requires enablers to stay a real class —
-"not a damage channel and … not to be converted into one" — so an Enabler identity is a complete
-pass, and a kit is never given a damage anchor it does not want in order to avoid declaring one.
-
-### Composition is indirect — never named coupling
-
-**A skill must never reference another Role, champion, or skill.** Hooks read *world state*, and
-any kit that can produce that state satisfies them. That is what makes a combination a discovery
-rather than a scripted pair, and what keeps every future Role automatically compatible.
-
-Legitimate condition surfaces (illustrative, not exhaustive — the brainstorm should extend this
-list):
-
-* a named status effect being present on the target, or on the caster, or on an ally;
-* the *absence* of a status, or the target's total status count;
-* current or missing Health, on either side; the caster's own resource or stack count;
-* turn-bar state — zone presence, section occupancy, relative position;
-* whether the target acted, was hit, or crit since the caster's last turn;
-* how many distinct debuff *types* are on the target (`bonus_per: {Target_Debuff_Count}` counts any
-  type from any source, including types authored later).
-
-### The synergy grammar
-
-"Synergy" has to be expressible in the `.tres` schema, so the plan works from the mechanisms that
-actually multiply (see `Technical_Design_Document.md` 7.4):
-
-| Mechanism | Schema | Why it multiplies |
-|---|---|---|
-| Trait-counter factor | `DamageEffect.bonus_per: {Trait_Count_Source: float}` | Reads a counter another kit can feed. `Target_Debuff_Count` is the debuff-density surface — open to any source, linear in the count. |
-| Per-named-debuff factor | `DamageEffect.bonus_per_debuff_on_target: {Debuff_Type: float}` | One bucket per **named** debuff type, so each multiplies — but the dictionary enumerates its types at authoring time and reads nothing invented later. **Identity-scoped**, sole claimant the Sorcerer's Cataclysm reading Warped. See `Role_Kit_Design.md` §3. |
-| Granted modifier-bearing status | `ApplyBuffEffect` of a `DamageMultiplier` / `PerTargetDebuffDamagePercent` status | Lands the factor on whoever consumes it. |
-| Cascade instance count | `Types.Cascade_Trigger` | Each instance re-reads channels 1 and 2, so count multiplies against them. |
-| Zone `on_trigger` payload | `ZoneEffect.on_trigger: Array[SkillEffect]` | A separate resolution on a schedule the enemy walks into. |
-
-Governed by the composition law: **same bucket key adds, distinct keys multiply, and keys are
-mechanic identity — never character identity.** Two Roles applying the same debuff type produce
-one factor, not two.
-
-**Channel 3's vocabulary is explicitly open.** `Types.Cascade_Trigger` currently holds only
-`Status_Expired`, `Status_Landed`, and `Skill_Resolved` — three values sized to the four effects
-that happened to need them, not a considered vocabulary. The channel is new and under-explored,
-so brainstorming may propose **new trigger values, new bucket shapes, and new condition
-surfaces**, and the plan authors the enum value plus its `Post()` call site when a design earns
-it. The named gaps with no trigger at all: threshold crossings (health, status count), and
-cascade-on-cascade — which 1.1.3 names outright as the compounding case.
-
-### The pairing web
-
-The failure to fix is that one pairing is the ceiling. Target: **at least four independent
-ceiling pairings**, each reaching a comparable product through a *different* gating mechanic
-(debuff density, cascade count, crit path, stack consumption, zone payload, health thresholds),
-and none of them routed through Tidal Corsair or Tactician's grants.
-
-The sweep's *shape* — a populated top decile with distinct member pairs — is how this target is
-read, and it is the measurement this plan's central claim rests on: several distinct combinations
-reaching the band is the evidence that the damage design works, and it is calculable, unlike most
-of what decides a fight. Its limit is scope, not reliability: the scorer sees single-action damage
-only, so it establishes that the routes reach the target and whether they have gone monocultural,
-while whether a *team* is good depends on factors it does not model. See `Role_Kit_Design.md` §4,
-"What the sweep is, and is not". Whether two routes are genuinely independent is confirmed by
-reading the mechanics in review, since identical numbers can come from the same gating mechanic.
-
-### Constraints that bind the design
-
-* **The 8-status cap is shared across buffs and debuffs** (1.1.4). A combination that needs six
-  debuffs on the boss is fighting the cap against the player's own stacks and the enemy's
-  debuffs. Debuff-density payoffs must be designed to land inside it.
-* **Burst payload skills need a top-level `DamageEffect`.** Damage nested inside
-  `ZoneEffect.on_trigger` is invisible to the Sorcerer's repeat and can never be scored by
-  `BurstReachability._HasDamageEffect` — the reason Miasma scores zero at any magnitude.
-* **Do not uncap** Momentum, Arcane Instability, or Steel and Sea; magnitude-per-stack is the
-  dial, not stack count.
-* **Base attributes stay tame** — growth belongs in channels 2 and 3.
-* Existing anti-overlap rules from the archived claims ledger still hold: identity effects to one
-  Role, commodity buffs/debuffs to at most two, turn-bar effects to one, zones stay signature.
+Phase 1's output is `Role_Kit_Design.md`, which is authoritative for all of it and is what a batch
+reads before designing: the per-Role kit contract and contribution direction (§1), indirect
+composition (§2), the synergy grammar (§3), the per-Role ~2x figure and the constraints that bind
+a design (§4), channel identity allocation (§5), and the pairing web (§6).
 
 ## Phases
 
@@ -376,13 +273,6 @@ Gating: kit design happens once, against real targets.
   the modifier product. If Channel-1 grants are uncredited, the recorded contrast ratios
   understate the ceiling pairing and the baseline needs correcting before anything is measured
   against it.
-* Delete `Plan_Kit_Burst_Reachability.md` (complete but undeleted) and
-  `Plan_Channel_Population_Rework.md` (superseded), migrating surviving findings here. Use `rm`.
-  Both have live inbound references that must be repointed at this plan in the same change —
-  `Plan_Blowout_Alignment.md` (Phase 5's `Produces:`, Phase 7's pause reason, three
-  `Coverage gaps` entries), `Plan_Encounter_Blowout_Retrofit.md` (its Status, settled decision
-  1, and its open Finding), and `Technical_Design_Document.md:2022`. Deleting the files without
-  this leaves a dozen dangling references.
 * Re-run `Tests/manual/team_corpus_sweep.gd` and record the post-Defence baseline. Every later
   batch is measured against it.
 

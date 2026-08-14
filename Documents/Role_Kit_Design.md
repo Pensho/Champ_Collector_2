@@ -1,27 +1,20 @@
 # Role Kit Design
 
-Living design document for the Blowout pillar's kit layer. Authored by `Plan_Role_Kit_Rework.md`
-Phase 1; successor to the archived `Plan_Role_Skill_Kits.md` claims ledger. Settled kits are
-promoted into `Concept_Document.md` 3.2.4.2, which stays the authority once a kit lands — this
-document carries the allocation and the reasoning behind it, and the in-flight synergy ledger
-before that promotion happens.
+Living design document for the Blowout pillar's kit layer. Settled kits are promoted into
+`Concept_Document.md` 3.2.4.2, which stays the authority once a kit lands; this document carries
+the allocation and the in-flight synergy ledger before that promotion.
 
-**Status:** Phase 1 draft — channel identity allocation, contribution direction, and pairing web
-sketched, batches 2-4 proposed. Awaiting sign-off per the plan before Phase 2 authoring starts.
-Design only; no skill or
-status `.tres` exists yet for anything below beyond what already ships (Concept_Document.md
-3.2.4.2).
+**Status:** channel identity allocation, contribution direction, and pairing web settled; batches
+2-4 proposed. No skill or status `.tres` exists yet beyond what already ships
+(`Concept_Document.md` 3.2.4.2).
 
 ## 1. The per-Role kit contract
 
-**The 30-50x burst figure is not a per-Role target.** `Concept_Document.md` 1.1.2 sizes it as a
-team-level, single-resolution figure: a 50x burst is "about six independent factors of 2x, ten of
-1.5x, or four of 3x", spread across a three-champion team — "roughly two factors per champion,
-which normal kits can carry". **The figure a kit is designed and checked against is a factor of
-roughly 2x, one or two of them.** No Role is required to reach 30-50x, on its own cast or at all.
-A kit that does is carrying the team's whole burst by itself, which is the monoculture this
-document exists to prevent, not a kit that passed with distinction. Section 4 keeps the two
-figures separate.
+**The 30-50x burst figure is not a per-Role target** — it is a team figure, and section 4 owns the
+distinction. **The figure a kit is designed and checked against is a factor of roughly 2x, one or
+two of them.** No Role is required to reach 30-50x, on its own cast or at all; a kit that does is
+carrying the team's whole burst by itself, which is the monoculture this document exists to
+prevent.
 
 Each Role declares two things — **one primary channel identity** (Channel 1, Channel 2, Channel 3,
 or Enabler) and **one contribution direction** (self-facing or exported) — and must be able to put
@@ -158,9 +151,7 @@ and its `Post()` call site when a batch's design earns it.
 
 ## 4. Targets and current baseline
 
-**Two different figures, never interchangeable.** Conflating them is the failure mode this section
-exists to prevent: it turns every Role into a burst carrier and produces exactly the monoculture
-the plan opened against.
+**Two different figures, never interchangeable.**
 
 * **The team figure — 30-50x.** A boss-tier burst resolution deals 30-50x the champion's own basic,
   preferring 50x (`Concept_Document.md` 1.1.2). This is a property of a **team in an encounter at
@@ -204,44 +195,18 @@ Appraiser's ≈5.58x is the only crit-path figure. Closing this runs one way: **
 is pulled down at its own batch; a Role below it is not raised to match** — a low figure is first a
 question about whether the Role's declared identity is honest (section 1.2).
 
-### What the sweep is, and is not
+### What the sweep measures
 
-**The sweep is a sanity check on one calculable factor, not a design gate.** Within its own
-domain — single-action damage against a boss — it answers three questions well, and they are the
-reason it exists:
-
-* **Is the burst target reachable at all, and through which combinations?** This is the sweep's
-  main positive result and the one the plan opened against: the roster failed it, with a single
-  pairing as the only route to the ceiling. A run that shows several distinct combinations reaching
-  the band is real evidence the damage design works, not merely the absence of a problem.
-* **Is any kit landing far above the band?**
-* **Is nothing in the roster anywhere near it?**
-
-Comparisons *inside* that domain are meaningful — one damage route against another is a like-for-
-like calculation, and the distinct-pairing count is the direct measure of whether those routes have
-gone monocultural.
-
-What it cannot do is say a team is good, because damage is one factor among many and the rest are
-not in the model. It is single-action and damage-only: no view of the champions' own Health, the
-opponent's, incoming damage, turn count, encounter composition, or whether a team survives long
-enough to cast anything. A team topping the ranking can be useless in the wrong fight, and the
-scorer cannot tell. That gap is structural and will not be closed — the game's factors are not
-reducible to what this model holds.
-
-Consequently:
+The sweep is a sanity check on one calculable factor — single-action damage against a boss. It
+reports whether the burst band is reachable and through how many distinct pairings, and whether a
+kit lands far outside the band. It holds no survival, turn-count, or encounter term, so it never
+says whether a team is good. Two rules follow:
 
 * **A kit is never designed to raise its number.** The number reports on the design; it does not
-  direct it. Being inside the band is the claim being checked, not a score to maximize.
-* **Enabler, sustain, and exported-window contributions are not given synthetic scores.** Assigning
-  arbitrary values to a redirect, a blocked debuff, or a heal to make them visible to the sweep
-  would produce numbers with no meaning behind them. These kits are judged by 1.1.6's collapse test
-  in the batch's own review, and that is a complete answer, not a gap awaiting a scorer feature.
-  Their absence from the ranking is a known limit of the ranking, not a verdict on the kits.
-* **A kit far outside the band is a prompt to look, not a verdict.** The post-Herald sweep's
-  top-decile flip is exactly that kind of prompt (see the plan's Status).
-* Pairing web target: **at least four independent ceiling pairings**, each reaching a comparable
-  product through a *different* gating mechanic, none of them routed through Tidal Corsair or
-  Tactician's grants alone.
+  direct it.
+* **Enabler, sustain, and exported-window contributions get no synthetic scores.** They are judged
+  by 1.1.6's collapse test in the batch's own review, and are absent from the ranking by design.
+* **A kit far outside the band is a prompt to look, not a verdict.**
 
 ### Binding constraints
 
@@ -273,15 +238,13 @@ Channel 2's buckets are almost all private (section 8).
 Target shape: 4 Channel 3 anchors (up from ~1 real Role-driven anchor), 9 Channel 2 anchors, 7
 Channel 1 anchors.
 
-**This shape is a starting proposal, not a quota.** It was allocated in Phase 1 before any kit was
-designed, and the identity a Role ends up declaring comes from what its kit wants to be at its own
-batch — including **Enabler**, which section 1.2 permits as a primary identity. A Role moving off
-its proposed row is an ordinary outcome to record, not a deviation to justify; the roster-level
-concern is that Channel 3 and cross-kit Channel 2 hooks stop being nearly empty, which several
-Roles moving one row does not endanger. In particular, the five Roles whose flavor leans hardest
-into protection or denial (Scholar, Diviner, Symbiote, Bar Brawler, Warlord) are proposed as
-Channel 1 or Channel 2 here, but each is a legitimate Enabler-identity candidate and none should
-be given a damage anchor it does not want in order to hold its proposed row.
+**This shape is a proposal, not a quota.** The identity a Role declares comes from what its kit
+wants to be at its own batch, including **Enabler** (section 1.2); a Role moving off its proposed
+row is an ordinary outcome to record. The five Roles leaning hardest into protection or denial
+(Scholar, Diviner, Symbiote, Bar Brawler, Warlord) are proposed as Channel 1 or 2 here but are all
+legitimate Enabler candidates — none is given a damage anchor it does not want to hold its row.
+The roster-level concern is only that Channel 3 and cross-kit Channel 2 hooks stop being nearly
+empty.
 
 **Direction target: at least half the roster exports its primary contribution** (section 1.1). This
 is the roster-shape guard against 20 kits that each only multiply their own damage — the allocation
@@ -347,12 +310,10 @@ route B lacks.
 
 Each route is a candidate combination to validate during its batch's own 1.1.6 review, not a
 scripted pair enforced in code — per section 2, no skill in any of these kits may name the other
-Role. **A Role's route assignment is likewise a proposal, not an obligation.** A kit that turns out
-to want a different mechanic, or no damage route at all, changes the table; it is not bent to serve
-the route it was pencilled into. A route left with one anchor is a gap to fill from any Role that
-genuinely fits, or to drop — never a reason to give an unwilling kit a damage anchor. A team assembling route A's debuff types, for instance, is satisfied by *any* kit that
-produces Plague, Blight, or an Infraction-scaled debuff, not specifically Plague Doctor and
-Emissary.
+Role. A team assembling route A's debuff types is satisfied by *any* kit producing Plague, Blight,
+or an Infraction-scaled debuff, not specifically Plague Doctor and Emissary. Route assignments are
+proposals on the same terms as section 5's rows: a route left with one anchor is a gap to fill from
+any Role that genuinely fits, or to drop.
 
 ## 7. Batch composition for Phases 2-5
 
@@ -408,35 +369,18 @@ collapse-test payload without inventing new gating mechanics.
   lands — not resolved here to avoid scope creep into code before sign-off.
 * The contrast baseline (bursting champion's own basic vs. team's average per-action output)
   remains open per the plan; not touched by this document.
-* ~~**Whether Enabler may be a Role-level identity.**~~ **Settled — Enabler is permitted as a
-  primary identity** (section 1.2), per `Concept_Document.md` 1.1.3's requirement that enablers
-  stay a real class and not be converted into a damage channel. An earlier ruling here held the
-  opposite (Enabler as a skill-level tag only); it was overturned as part of the correction
-  described in section 4, having been made under the reading that every Role owed a damage factor
-  in the burst band. The contract also gained a second declared axis, **contribution direction**
-  (section 1.1), and admits a crit-path contribution alongside a bucket key. Section 5 carries the
-  per-Role allocation and the 10-exported roster target.
-
-* ~~**Sustain is not measured by anything.**~~ **Settled — and it is not a gap to close.** The
-  sweep scores damage only; `sustained_contrast_ratio` means sustained *damage*, not survivability,
-  so every exported-window kit (Warlord, Diviner, Symbiote, and every Enabler skill in an otherwise
-  self-facing kit) is invisible to it. No survival term is being added and no synthetic values are
-  being assigned to enabler or sustain contributions — see section 4, "What the sweep is, and is
-  not". Those kits are judged by 1.1.6's collapse test in their batch's review, which is why section
-  1.2 requires each settled kit's section 9 entry to state the collapse-test claim its Enabler
-  skills make. The scorer stays a two-sided sanity check on damage magnitude.
 
 ## 9. Settled kit designs
 
 One entry per Role once its kit is **settled** (brainstormed, picked, and projected against
-section 4's per-Role ~2x figure) — recorded here *before* any `.tres`, trait script, or status
-effect is written, per
-the plan's tier-3 loop. This is the record a coverage review reads: what every settled Role's
-passive and three skills actually do and what it projects to, without having to reconstruct that
-from trait scripts. An entry's **Status** line tracks whether it has been implemented yet; a
-settled-but-unimplemented entry is expected and not a problem to fix. Rationale for *why* a kit
-was shaped this way lives in the conversation/PR history that settled it, not here; claimed status
-effects and bucket keys live in section 10's ledger, not duplicated here.
+section 4's per-Role ~2x figure), recorded *before* any `.tres`, trait script, or status effect is
+written. This is the record a coverage review reads: what every settled Role's passive and three
+skills do and what they project to. An entry's **Status** line tracks whether it has been
+implemented yet; a settled-but-unimplemented entry is expected. Rationale for *why* a kit was
+shaped this way lives in the history that settled it, not here; claimed status effects and bucket
+keys live in section 10's ledger, not duplicated here. **An entry's "Implementation needs" block is
+deleted when the kit lands** — never annotated as done, and never rewritten into a description of
+what shipped.
 
 Format per entry: Status, Passive, Skills (name / effect / channel), Projected numbers.
 
@@ -457,9 +401,7 @@ number, so the passive is a genuine Channel 3 anchor, not Channel 2 dressed as o
 | Signature | Outbreak | Mysticism-scaled damage to one enemy, +8% per distinct debuff type on the target (uncapped); applies a stack of Plague for 3 turns (now stackable, no longer expiry-spread). | 2 |
 | Signature | Miasma | Zone, 4 charges. On trigger, forces every active debuff on the caught enemy to tick again immediately without losing duration, and applies Blight for 2 turns. | 3 (Enabler-classed by the scorer today — see below) |
 
-**Projected numbers:** not separately recorded before implementation (this kit predates section 9
-being split out); see `Tests/manual/team_corpus_sweep.gd`'s post-batch sweep result in the plan's
-own Status section for the roster-level delta this kit produced. Comorbidity's sustained,
+**Projected numbers:** not separately recorded before implementation. Comorbidity's sustained,
 multi-turn tick repetition is scored on Outbreak's own manifest entry via a `"sustained_ticks"`
 `gated_bonus` (section 11), reported in `sustained_contrast_ratio` rather than folded into the
 single-cast product — `bucket_key` stays empty on both entries, since the mechanism never lands in
@@ -514,24 +456,10 @@ Status). That is a flag on this kit, not a bar for the next one. Cut the Cloth's
 build time rather than a second discount on the payoff.
 
 **Implemented as:** `weft_and_warp_trait.gd`, `Thread_Snap.tres` (reworked), `Pull_the_Thread.tres`,
-`Cut_the_Cloth.tres` (new), `Herald_of_the_loom.tres` (rewired). Golden Thread hooks a new
-`Combat_Event.Cascade_Instance_Resolved` broadcast, fired once per real cascade instance from
-`CascadeResolver._ResolveEvent`'s own per-instance loop — narrower than "any indirect damage" (a
-debuff tick still doesn't post to `CascadeResolver` at all; tracked as a gap in `FeatureIdeas.md`,
-not closed here). Black Thread's extra instance is `CascadeResolver.SubscribeInstanceModifier`, new
-plumbing that amplifies an already-matched listener's instance count rather than creating one from
-nothing. Silver Thread's two clauses are `CharacterTrait.GetOutgoingDebuffDurationBonus` (new,
-symmetric to the existing `GetIncomingDebuffDurationBonus`) and `DebuffsCannotBeResisted` (new),
-both read directly by `status_effect_resolver.gd`. The thread switch is a single "Switch Stance"
-toggle button (`ThreadSwitchButton`, `Thread_Switch_Button.tscn`) sharing the Symbiote graft
-button's screen slot in `battle_ui.tscn` rather than adding new screen space or generalizing
-`GraftButton`'s own confirm/target flow — the two are mutually exclusive by whose turn it is. Cut
-the Cloth's repeats resolve as a local loop inside the trait (`_ResolveExtraCutTheClothInstances`)
-that never calls `CascadeResolver.Post`, the deliberate choice that makes Golden Thread's
-self-exclusion automatic rather than a predicate check. The manifest's `gated_bonus` entry uses
-`fold: "separate_instance"`, `instances: 8`, `magnitude: 0.08` (Legendary, the 90% base strength
-and +20% self-bonus folded into one net per-instance multiplier), verified against this section's
-own 8*1.08=8.64 curve in `Tests/unit/test_burst_reachability.gd`.
+`Cut_the_Cloth.tres` (new), `Herald_of_the_loom.tres` (rewired), `Thread_Switch_Button.tscn` (shares
+the Symbiote graft button's slot — the two are mutually exclusive by whose turn it is). A debuff
+tick still doesn't post to `CascadeResolver` at all, so Golden Thread does not see one; tracked as a
+gap in `FeatureIdeas.md`.
 
 ### 9.3 Sorcerer — Echo charges and the Surge that feeds them
 
@@ -851,12 +779,10 @@ Hexed, per section 2.
   suicidal, and self-Luck is what makes the dodge roll trend the Jester's way. Neither produces
   damage; together they are the reason Center Stage's claim holds.
 
-**Projected numbers.** None recorded, and none owed. The kit declares an Enabler identity, so
-section 1's contract asks it for the collapse test rather than a damage factor, and section 4
-forbids assigning synthetic scores to enabler contributions to make them visible to the sweep. Its
-one measurable factor is Pratfall Sting's conditional **1.30x**, which is not the Role's declared
-contribution and is not sized against any target. The Jester is expected to be invisible in
-`team_corpus_sweep.gd`'s ranking; that is a known limit of the ranking, not a verdict on the kit.
+**Projected numbers.** None recorded, and none owed — an Enabler identity is measured on the
+collapse test (section 1). Its one measurable factor is Pratfall Sting's conditional **1.30x**,
+which is not the declared contribution and is sized against no target. The Jester is expected to be
+invisible in `team_corpus_sweep.gd`'s ranking.
 
 **Implementation needs (not yet built):**
 
@@ -969,12 +895,8 @@ key, not a doc paraphrase) — the authority the burst-reachability scorer actua
 | `Hemorrhage` (debuff on target) | Bloodmage (Tithe of Vitality) — **settled, not yet implemented** (section 9.4) | Debuff-type bucket, holder-missing-Health damage multiplier; readable by any teammate's damage, not only the applier's |
 
 Every other Role/skill in the manifest carries `bucket_key = ""` today — either genuinely Channel 1
-/ Enabler, or a Batch-1-and-later target whose kit hasn't yet earned a bucket key. Batch 1 adds no
-further rows: Appraiser's settled kit (section 9.5) claims **no bucket key at all**, because the
-crit path sits outside the `CombinedDamageModifier` by design (`Concept_Document.md` 1.1.4). Its
-contribution is real and now scoreable — the scorer gained a crit model in `e3d39bd` — but it is
-not a bucket, and recording an empty `bucket_key` on all four of its manifest entries is the
-correct outcome rather than a gap to close.
+/ Enabler, or a kit that hasn't yet earned a bucket key. Appraiser's settled kit (section 9.5)
+claims none by design, its contribution running through the crit path instead.
 
 ### 10.3 Turn bar zones in use
 
@@ -1001,13 +923,11 @@ Emissary, whose theme it matches.
 ## 11. Scorer plumbing for Channel 3 payloads
 
 `Scripts/Debug/burst_reachability.gd` and `kit_contribution_manifest.gd` are the authority the
-sweep reads. Batch 1's Channel 3 payloads (the reworked Sorcerer's Echo, Herald's Cut the Cloth,
-Plague Doctor's Comorbidity/Miasma retick, Unstable Rift's zone damage) each needed a scorer
-capability that did not exist; this section previously listed those as open gaps and now records
-what landed. This was tier-1 plumbing under the plan's per-batch loop — fixed ahead of the kits
-that need it, not deferred to a later batch.
+sweep reads. Batch 1's Channel 3 payloads (the Sorcerer's Echo, Herald's Cut the Cloth, Plague
+Doctor's Comorbidity/Miasma retick, Unstable Rift's zone damage) each needed scorer capability that
+did not exist. What the manifest carries now:
 
-The manifest's `reagent_gated_bonus` field is renamed **`gated_bonus`** and widened in place:
+`gated_bonus` (formerly `reagent_gated_bonus`, widened in place):
 
 * **`fold`** now has three values: `"same_instance"` (default, unchanged), `"separate_instance"`
   (unchanged — the Sorcerer's repeat), and new **`"sustained_ticks"`** — damage spread across

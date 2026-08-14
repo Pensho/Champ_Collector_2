@@ -94,8 +94,9 @@ belongs in `Watch for` instead, and a deviation from the plan belongs in its own
 entry, phrased as what shipped. Plans with no open findings have no such section.
 
 When a plan completes: run `/review-implementation` against the plan, then update
-the documentation sections it names, strike the matching entries from
-`Technical_Design_Document.md` section 15, and **delete** the plan file. A completed
+the documentation sections it names, **delete** the matching entries from
+`Technical_Design_Document.md` section 15 — never annotate them as resolved — and
+**delete** the plan file. A completed
 plan's content belongs in the living documents; the file itself is history and git
 keeps that. Archive to `Archive/` only when the file stays useful as a future
 reference in its own right — content the living documents do not absorb.
