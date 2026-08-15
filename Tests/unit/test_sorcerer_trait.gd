@@ -37,25 +37,17 @@ func test_stacks_capped_at_max_without_reagents() -> void:
 	assert_eq(_trait._instability_stacks, SorcererTrait.MAX_INSTABILITY_STACKS,
 		"Instability stacks must not exceed MAX_INSTABILITY_STACKS")
 
-func test_mysticism_bonus_scales_with_stacks_and_rarity() -> void:
-	_InitTrait(Types.Rarity.Epic)  # 8% per stack
-	var stack_attr: Dictionary[Types.Attribute, int] = {Types.Attribute.Mysticism: 0}
-	_trait.OnSkillCast(0, [], "Zap", stack_attr, _resolver)
-	_trait.OnSkillCast(0, [], "Zap", stack_attr, _resolver)
-	assert_eq(_trait._instability_stacks, 2)
-
-	var measure_attr: Dictionary[Types.Attribute, int] = {Types.Attribute.Mysticism: 100}
-	_trait.OnSkillCast(0, [], "Zap", measure_attr, _resolver)
-	# 3 stacks x 8% of 100 = ceil(24) = 24
-	assert_eq(measure_attr[Types.Attribute.Mysticism], 124,
-		"Mysticism should be boosted by 3 stacks x 8% = 24")
-
 # --- Reagent consumption hook ---
 
 func test_reagent_consumption_grants_two_stacks() -> void:
 	_InitTrait(Types.Rarity.Rare)
 	_trait.OnReagentConsumed(0, ReagentData.new(), _resolver)
 	assert_eq(_trait._instability_stacks, 2, "Consuming a reagent should grant two stacks")
+
+func test_reagent_consumption_grants_an_echo_charge() -> void:
+	_InitTrait(Types.Rarity.Rare)
+	_trait.OnReagentConsumed(0, ReagentData.new(), _resolver)
+	assert_eq(_trait._echo_charges, 1, "Consuming a reagent should grant one Echo charge")
 
 func test_reagent_consumption_capped_at_max() -> void:
 	_InitTrait(Types.Rarity.Rare)
@@ -148,6 +140,17 @@ func test_surge_resets_stacks() -> void:
 
 	assert_eq(_trait._instability_stacks, 0, "Surge should reset all stacks after release")
 
+func test_surge_grants_an_echo_charge_not_consumed_by_the_triggering_cast() -> void:
+	_InitTrait(Types.Rarity.Epic)
+	_trait._instability_stacks = SorcererTrait.MAX_INSTABILITY_STACKS
+
+	var attributes: Dictionary[Types.Attribute, int] = {Types.Attribute.Mysticism: 100}
+	_trait.OnSkillCast(0, [], "Zap", attributes, _resolver)
+
+	assert_eq(_trait._echo_charges, 1, "Releasing a Surge should grant one Echo charge")
+	assert_eq(_trait._echoes_for_this_cast, 0,
+		"The Surge's own Echo charge is banked for the NEXT cast, not consumed by this one")
+
 # --- Battle start ---
 
 func test_stacks_reset_at_battle_start() -> void:
@@ -155,7 +158,7 @@ func test_stacks_reset_at_battle_start() -> void:
 	_trait.StartOfBattle(0, _resolver)
 	assert_eq(_trait._instability_stacks, 0, "Instability stacks should not persist between combats")
 
-# --- Reagent-triggered skill repeat ---
+# --- Echo-triggered skill repeat ---
 
 func _make_repeat_test_skill() -> Skill:
 	var skill: Skill = Skill.new()
@@ -167,6 +170,19 @@ func _make_repeat_test_skill() -> Skill:
 	burn.debuff_type = Types.Debuff_Type.Burning
 	burn.duration = 2
 	skill.effects = [damage, burn]
+	return skill
+
+func _make_zone_test_skill() -> Skill:
+	var skill: Skill = Skill.new()
+	skill.name = "Rift"
+	skill.target = Types.Skill_Target.ZoneAll
+	var damage: DamageEffect = DamageEffect.new()
+	damage.damage_scaling = {Types.Attribute.Attack: 0.5}
+	var zone: ZoneEffect = ZoneEffect.new()
+	zone.charges = 5
+	zone.section = ZoneEffect.Section.Left_Most_Empty
+	zone.on_trigger = [damage]
+	skill.effects = [zone]
 	return skill
 
 ## A caster with a Sorcerer trait and a damage+debuff skill, and a durable enemy target,
@@ -223,7 +239,46 @@ func test_repeat_bucket_carries_the_repeat_fraction() -> void:
 	var buckets: Dictionary[StringName, float] = damage_results[1].combined_damage_modifier.Buckets()
 	var repeat_key: StringName = StringName("Bolt (repeat)")
 	assert_true(buckets.has(repeat_key), "The repeat's modifier should carry a 'Bolt (repeat)' bucket")
-	assert_eq(buckets.get(repeat_key, 0.0), SorcererTrait.REPEAT_BONUS)
+	assert_eq(buckets.get(repeat_key, 0.0), SorcererTrait.REPEAT_FRACTION - 1.0)
+
+func test_multiple_echo_charges_repeat_the_skill_multiple_times_with_compounding_damage() -> void:
+	var setup: Dictionary = _make_repeat_test_setup()
+	var caster_trait: SorcererTrait = setup["trait"]
+	var resolver: BattleResolver = setup["resolver"]
+	caster_trait.OnReagentConsumed(0, ReagentData.new(), resolver)
+	caster_trait.OnReagentConsumed(0, ReagentData.new(), resolver)
+
+	var results: Array[CombatResult] = resolver.ResolveSkill(0, [1], 0)
+	var damage_results: Array[CombatResult] = _damage_results_against(results, 1)
+	assert_eq(damage_results.size(), 3,
+		"Two banked Echo charges should make the cast repeat twice, plus the original cast")
+	assert_lt(damage_results[1].amount, damage_results[2].amount,
+		"Each further Echo should compound and deal more than the previous Echo")
+
+func test_echo_charges_clear_after_the_cast_that_consumes_them() -> void:
+	var setup: Dictionary = _make_repeat_test_setup()
+	var caster_trait: SorcererTrait = setup["trait"]
+	var resolver: BattleResolver = setup["resolver"]
+	caster_trait.OnReagentConsumed(0, ReagentData.new(), resolver)
+
+	resolver.ResolveSkill(0, [1], 0)
+
+	assert_eq(caster_trait._echo_charges, 0, "Echo charges should be consumed by the cast that repeats")
+	assert_eq(caster_trait._echoes_for_this_cast, 0, "The per-cast Echo counter should clear once spent")
+
+func test_echo_on_a_zone_placing_cast_amplifies_the_zone_instead_of_repeating_damage() -> void:
+	var setup: Dictionary = _make_repeat_test_setup()
+	var caster_trait: SorcererTrait = setup["trait"]
+	var resolver: BattleResolver = setup["resolver"]
+	var caster: Character = resolver.GetCharacters()[0]
+	caster._skills = [_make_zone_test_skill()]
+	caster_trait.OnReagentConsumed(0, ReagentData.new(), resolver)
+
+	resolver.ResolveSkill(0, [], 0)
+
+	assert_almost_eq(resolver.GetZoneResolver().GetZones()[0]._damage_multiplier,
+			SorcererTrait.ECHO_ZONE_AMPLIFICATION, 0.0001,
+			"An Echo on a zone-placing cast should amplify the zone rather than repeat its damage")
 
 func test_repeat_does_not_reapply_a_stackable_debuff() -> void:
 	var setup: Dictionary = _make_repeat_test_setup()

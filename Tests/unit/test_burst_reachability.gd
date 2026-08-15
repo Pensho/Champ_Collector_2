@@ -149,7 +149,7 @@ func test_best_prefers_a_weaker_single_action_candidate_whose_sustained_payload_
 func test_base_and_modifier_terms_are_reported_separately_and_do_not_simply_multiply() -> void:
 	# Corsairs Reckoning's own Attack 1.3 scaling differs from Boarding Strike's Attack 1.0
 	# basic skill (base_term = 1.3 != 1.0), so this candidate actually exercises the
-	# nonlinearity Cataclysmic Surge's identical 1.0 base scaling would mask.
+	# nonlinearity Cataclysm's identical 1.0 base scaling would mask.
 	var result: BurstReachability.TeamResult = BurstReachability.ScoreTeam(_corsair_cultist_warlord())
 	var pinned: BurstReachability.CandidateResult = result.Pinned(0, "Corsairs Reckoning")
 	assert_not_null(pinned, "Tidal Corsair's Corsairs Reckoning must be a scored candidate")
@@ -171,26 +171,40 @@ func test_a_channel_one_only_candidate_has_a_modifier_term_of_one() -> void:
 	assert_almost_eq(pinned.product, 1.0, 0.0001, "No reachable bucket means an untouched 1.0x product")
 	assert_almost_eq(pinned.modifier_term, 1.0, 0.0001, "A 1.0x product must contribute nothing through mitigation")
 
-func test_sorcerer_scholar_tactician_bursting_cataclysmic_surge_is_pinned() -> void:
+func test_sorcerer_scholar_tactician_bursting_cataclysm_is_pinned() -> void:
 	var result: BurstReachability.TeamResult = BurstReachability.ScoreTeam(_sorcerer_scholar_tactician())
-	var pinned: BurstReachability.CandidateResult = result.Pinned(0, "Cataclysmic Surge")
-	assert_not_null(pinned, "Sorcerer's Cataclysmic Surge must be a scored candidate")
-	# Cataclysmic Surge's own Warped bucket (0.3) and Scholar's Expose-Fallacy-granted
-	# Opportunist (0.1, anchored to the same Warped debuff Cataclysmic Surge already
+	var pinned: BurstReachability.CandidateResult = result.Pinned(0, "Cataclysm")
+	assert_not_null(pinned, "Sorcerer's Cataclysm must be a scored candidate")
+	# Cataclysm's own Warped bucket (0.3) and Scholar's Expose-Fallacy-granted
+	# Opportunist (0.1, anchored to the same Warped debuff Cataclysm already
 	# requires) land in the SAME bucket and add: 0.3 + 0.1 = 0.4. Tactician's Fatal
 	# Flaw grants Daunting_Strength unconditionally: a distinct bucket at 1.0. Product:
-	# (1 + 0.4) * (1 + 1.0) = 2.8, unchanged by Phase 5 — the Sorcerer's reagent-gated repeat
-	# is a separate CombinedDamageModifier instance in the real resolver (never folded into
-	# this one; see kit_contribution_manifest.gd's "fold" field), so it lands in
+	# (1 + 0.4) * (1 + 1.0) = 2.8, unchanged — the Sorcerer's Echoes are separate
+	# CombinedDamageModifier instances in the real resolver (never folded into this one;
+	# see kit_contribution_manifest.gd's "fold" field), so they land in
 	# repeat_contrast_ratio instead of product.
 	assert_almost_eq(pinned.product, 2.8, 0.01,
-		"Regression pin: composed product for this team bursting Cataclysmic Surge")
+		"Regression pin: composed product for this team bursting Cataclysm")
 	assert_true(pinned.reagent_assumed,
-		"The repeat is assumed reachable even though it does not change this candidate's own product")
+		"The Echoes are assumed reachable even though they do not change this candidate's own product")
+	# Cataclysm's own Warped bucket (Channel2) multiplies into every Echo replay too, so
+	# this candidate's own repeat_contrast_ratio runs higher than Arc Lash's own 5.586x
+	# figure (Role_Kit_Design.md section 9.3) — see the dedicated Arc Lash test below.
 	assert_gt(pinned.repeat_contrast_ratio, 0.0,
-		"The Sorcerer's reagent-gated repeat must contribute a nonzero, separately-tracked contrast ratio")
+		"The Sorcerer's Echoes must contribute a nonzero, separately-tracked contrast ratio")
 	assert_almost_eq(pinned.total_contrast_ratio, pinned.contrast_ratio + pinned.repeat_contrast_ratio, 0.0001,
-		"total_contrast_ratio must be exactly contrast_ratio plus the repeat's own contribution")
+		"total_contrast_ratio must be exactly contrast_ratio plus the Echoes' own contribution")
+
+func test_sorcerer_arc_lash_echoes_match_role_kit_designs_own_figure() -> void:
+	# Role_Kit_Design.md section 9.3's own methodology measures the Echo curve against the
+	# basic skill's baseline, where no other bucket (Cataclysm's Warped bonus, Arc Lash has
+	# none) inflates the repeat — 4 Echoes at Legendary compounding (1.75) deal
+	# 50/87.5/153/268% — 5.586x in repeats alone.
+	var result: BurstReachability.TeamResult = BurstReachability.ScoreTeam(_sorcerer_scholar_tactician())
+	var pinned: BurstReachability.CandidateResult = result.Pinned(0, "Arc Lash")
+	assert_not_null(pinned, "Sorcerer's Arc Lash must be a scored candidate")
+	assert_almost_eq(pinned.repeat_contrast_ratio, 5.586, 0.01,
+		"The Sorcerer's Echoes must reproduce Role_Kit_Design.md section 9.3's own 5.586x figure")
 
 # --- Manifest override plumbing: a modeled kit change reaches the scorer without editing
 # the real manifest or the scorer's own logic (used by Tests/manual/prescription_sweep.gd) ---

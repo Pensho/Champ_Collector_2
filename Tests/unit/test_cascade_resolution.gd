@@ -173,7 +173,7 @@ func test_instance_modifier_adds_extra_instances_to_a_matched_listener() -> void
 	_cascade.Subscribe(Types.Cascade_Trigger.Status_Expired, &"BaseListener",
 			func(_p_event: CascadeEvent) -> bool: return true,
 			func(_p_event: CascadeEvent) -> void: run_count[0] += 1)
-	_cascade.SubscribeInstanceModifier(func(_p_event: CascadeEvent) -> int: return 2)
+	_cascade.SubscribeInstanceModifier(func(_p_event: CascadeEvent, _p_mechanic_key: StringName) -> int: return 2)
 
 	_resolver._BeginBatch()
 	var event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Status_Expired)
@@ -187,7 +187,7 @@ func test_instance_modifier_adds_extra_instances_to_a_matched_listener() -> void
 
 func test_instance_modifier_never_fires_without_a_matched_listener() -> void:
 	var modifier_calls: Array[int] = [0]
-	_cascade.SubscribeInstanceModifier(func(_p_event: CascadeEvent) -> int:
+	_cascade.SubscribeInstanceModifier(func(_p_event: CascadeEvent, _p_mechanic_key: StringName) -> int:
 		modifier_calls[0] += 1
 		return 5)
 
@@ -207,7 +207,8 @@ func test_instance_modifier_still_respects_the_fan_out_cap() -> void:
 			func(_p_event: CascadeEvent) -> bool: return true,
 			func(_p_event: CascadeEvent) -> void: run_count[0] += 1)
 	_cascade.SubscribeInstanceModifier(
-			func(_p_event: CascadeEvent) -> int: return CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION)
+			func(_p_event: CascadeEvent, _p_mechanic_key: StringName) -> int:
+				return CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION)
 
 	_resolver._BeginBatch()
 	var event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Status_Expired)
@@ -218,6 +219,24 @@ func test_instance_modifier_still_respects_the_fan_out_cap() -> void:
 
 	assert_eq(run_count[0], CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION,
 		"Extra instances from a modifier must still be bounded by the per-action fan-out cap")
+
+func test_instance_modifier_receives_the_matched_listeners_mechanic_key() -> void:
+	var run_count: Array[int] = [0]
+	_cascade.Subscribe(Types.Cascade_Trigger.Status_Expired, &"ScopedListener",
+			func(_p_event: CascadeEvent) -> bool: return true,
+			func(_p_event: CascadeEvent) -> void: run_count[0] += 1)
+	_cascade.SubscribeInstanceModifier(func(_p_event: CascadeEvent, p_mechanic_key: StringName) -> int:
+		return 1 if &"ScopedListener" == p_mechanic_key else 0)
+
+	_resolver._BeginBatch()
+	var event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Status_Expired)
+	event.subject_ID = 0
+	event.instance_count = 1
+	_cascade.Post(event)
+	_resolver._EndBatch()
+
+	assert_eq(run_count[0], 2,
+		"A modifier scoped to the matched listener's own mechanic_key should apply to it")
 
 func test_cascade_instance_resolved_notifies_every_living_characters_trait() -> void:
 	for id in _roster.keys():

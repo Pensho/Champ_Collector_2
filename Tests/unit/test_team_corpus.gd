@@ -45,15 +45,15 @@ func test_pinned_rows_resolve_to_the_named_candidate() -> void:
 			"A row's pinned resolution must actually be a scored candidate: %s" % [pinned])
 
 func test_the_two_hand_computed_regression_teams_are_present_and_pinned() -> void:
-	var found_cataclysmic_surge: bool = false
+	var found_cataclysm: bool = false
 	var found_corsairs_reckoning: bool = false
 	for row: Dictionary in TeamCorpus.PROVISIONAL_ROWS:
 		var pinned: Dictionary = row.get("pinned", {})
-		if("Cataclysmic Surge" == pinned.get("skill_name", "")):
-			found_cataclysmic_surge = true
+		if("Cataclysm" == pinned.get("skill_name", "")):
+			found_cataclysm = true
 		if("Corsairs Reckoning" == pinned.get("skill_name", "") and TeamCorpus.Tier.Intent == row.get("tier", -1)):
 			found_corsairs_reckoning = true
-	assert_true(found_cataclysmic_surge,
+	assert_true(found_cataclysm,
 		"The Sorcerer/Scholar/Tactician regression fixture must be present in the corpus")
 	assert_true(found_corsairs_reckoning,
 		"The Tidal Corsair/Cultist/Warlord regression fixture must be present in the corpus")

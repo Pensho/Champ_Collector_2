@@ -27,6 +27,8 @@ func Resolve(p_context: SkillCastContext) -> void:
 					CombinedDamageModifier.TRAIT_RESOURCE_KEY, p_context.trait_result._damage_multiplier - 1.0)
 		if(0.0 != p_context.repeat_bonus):
 			combined_damage_modifier.Contribute(_RepeatKey(p_context), p_context.repeat_bonus)
+		if(p_context.is_zone_trigger and 1.0 != p_context.zone_damage_multiplier):
+			combined_damage_modifier.Contribute(_AmplifiedKey(p_context), p_context.zone_damage_multiplier - 1.0)
 		combined_damage_modifier.Contribute(_SkillKey(p_context), _SkillCountBonus(p_context, target_ID))
 		_ContributeDebuffFactors(p_context, target_ID, combined_damage_modifier)
 		p_context.resolver.ResolveEffectDamage(p_context.caster_ID, target_ID, p_context.caster_attributes,
@@ -53,6 +55,9 @@ func _RampKey(p_context: SkillCastContext) -> StringName:
 
 func _RepeatKey(p_context: SkillCastContext) -> StringName:
 	return StringName("%s (repeat)" % _SkillKey(p_context))
+
+func _AmplifiedKey(p_context: SkillCastContext) -> StringName:
+	return StringName("%s (amplified)" % _SkillKey(p_context))
 
 func _SkillCountBonus(p_context: SkillCastContext, p_target_ID: int) -> float:
 	var bonus: float = 0.0

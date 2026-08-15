@@ -408,7 +408,7 @@ static func _TeamEnablerCount(p_characters: Array[Character], p_manifest: Dictio
 
 
 ## The debuff-type bucket the candidate skill's own bonus_per_debuff_on_target already
-## keys to (e.g. Cataclysmic Surge's "Warped"), if any — the one debuff Opportunist can be
+## keys to (e.g. Cataclysm's "Warped"), if any — the one debuff Opportunist can be
 ## assumed present on the target without simulating one, per ASSUMED_UNCAPPED_INSTANCES.
 ## "" when the candidate skill carries no such precondition, in which case a
 ## per_debuff_anchored grant contributes nothing rather than inventing a target state.

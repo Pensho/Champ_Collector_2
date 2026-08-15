@@ -1,10 +1,10 @@
 class_name SorcererTrait extends CharacterTrait
 
-const MYSTICISM_PER_STACK: Dictionary[Types.Rarity, float] = {
-	Types.Rarity.Uncommon: 0.04,
-	Types.Rarity.Rare: 0.06,
-	Types.Rarity.Epic: 0.08,
-	Types.Rarity.Legendary: 0.10,
+const ECHO_COMPOUNDING: Dictionary[Types.Rarity, float] = {
+	Types.Rarity.Uncommon: 1.30,
+	Types.Rarity.Rare: 1.45,
+	Types.Rarity.Epic: 1.60,
+	Types.Rarity.Legendary: 1.75,
 }
 
 const REAGENT_AMPLIFICATION: Dictionary[Types.Rarity, float] = {
@@ -19,10 +19,14 @@ const MAX_INSTABILITY_STACKS: int = 5
 # Damage coefficient scaling Surge with the Sorcerer's Mysticism.
 const SURGE_MYSTICISM_SCALING: float = 1.5
 
-# Fraction of the repeated skill's damage the reagent-triggered repeat deals, contributed
-# as a CombinedDamageModifier bucket (Contribute(key, REPEAT_BONUS), i.e. -0.5 -> 50%).
+# The first Echo's fraction of the repeated skill's damage; each further Echo compounds
+# on this by ECHO_COMPOUNDING (fraction_i = REPEAT_FRACTION * compounding^i, i 0-based),
+# contributed as a CombinedDamageModifier bucket (Contribute(key, fraction - 1.0)).
 const REPEAT_FRACTION: float = 0.5
-const REPEAT_BONUS: float = REPEAT_FRACTION - 1.0
+
+# Flat, non-rarity-scaled per-Echo multiplier applied to a zone this cast placed,
+# compounding across Echoes via repeated ZoneResolver.AmplifyZoneDamage calls.
+const ECHO_ZONE_AMPLIFICATION: float = 1.15
 
 # Cascade mechanic identity for the Skill_Resolved subscription (Concept_Document.md
 # 1.1.3's composition-law currency) — a trait resource, not this Sorcerer's character
@@ -30,45 +34,65 @@ const REPEAT_BONUS: float = REPEAT_FRACTION - 1.0
 const _CASCADE_MECHANIC_KEY: StringName = &"SorcererTrait"
 
 var _instability_stacks: int = 0
-var _mysticism_per_stack: float = 0.0
+var _echo_compounding: float = 1.0
 var _reagent_amplification: float = 0.0
-# Set by OnReagentConsumed, cleared when the repeat fires (or a fresh battle starts):
-# whether this Sorcerer has consumed a reagent since their last cast.
-var _consumed_reagent_since_cast: bool = false
+# Echo charges banked for the Sorcerer's NEXT skill cast — granted by a reagent or by
+# releasing a Surge, consumed (snapshotted into _echoes_for_this_cast) when that cast fires.
+var _echo_charges: int = 0
+# Set once per OnSkillCast from _echo_charges: how many Echoes this cast's own repeat
+# resolves. Read by the Skill_Resolved subscription's matches/instance-modifier callbacks.
+var _echoes_for_this_cast: int = 0
+# 0-based counter driving each Echo's own compounding fraction within one cast's repeat.
+var _echo_index: int = 0
+# The zone this cast placed, if any (-1 otherwise) — set by OnZoneConstructed, read by
+# the repeat callback so an Echo amplifies the zone instead of re-resolving damage.
+var _placed_zone_ID_this_cast: int = -1
 
 func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
-	_mysticism_per_stack = MYSTICISM_PER_STACK.get(p_rarity, 0.0)
+	_echo_compounding = ECHO_COMPOUNDING.get(p_rarity, 1.0)
 	_reagent_amplification = REAGENT_AMPLIFICATION.get(p_rarity, 0.0)
 	_trait_texture = load(
 		"res://Assets/Champ_Collector/Icons/Abilities/Passives/Arcane_Instability/arcane_instability_trait.png"
 	)
 	_title = "Arcane Instability"
-	_body = ("Using any skill grants an Instability stack that gives more Mysticism per stack. " +
-			"Consuming a reagent grants two stacks, amplifies the reagent's effect, and makes " +
-			"the Sorcerer's next skill repeat at %d%% damage. " % int(REPEAT_FRACTION * 100) +
-			"At maximum stacks, the next skill also releases a Surge: damage to all " +
-			"characters, allies and the Sorcerer included, then all stacks reset.")
+	_body = ("Using a skill grants a stack, maximum %d.\nA reagent grants two, " %
+				MAX_INSTABILITY_STACKS +
+			"is amplified, and grants a charge.\n" +
+			"At maximum stacks the next skill also releases a Surge: damaging everyone.\n" +
+			"Stacks reset and a charge is gained.\n" +
+			"Each charge makes the next skill repeat once more, spending all of them.\n" +
+			"Every repeat hits harder than the last.")
 	_execution_steps[Types.Combat_Event.Start_Combat] = Callable(self, "StartOfBattle")
 	_execution_steps[Types.Combat_Event.Skill_Cast] = Callable(self, "OnSkillCast")
 	_execution_steps[Types.Combat_Event.Reagent_Consumed] = Callable(self, "OnReagentConsumed")
+	_execution_steps[Types.Combat_Event.Zone_Constructed] = Callable(self, "OnZoneConstructed")
 
 func StartOfBattle(p_owner_ID: int, p_resolver: BattleResolver) -> void:
 	_instability_stacks = 0
-	_consumed_reagent_since_cast = false
+	_echo_charges = 0
+	_echoes_for_this_cast = 0
+	_echo_index = 0
+	_placed_zone_ID_this_cast = -1
 	# Re-subscribed every battle: p_resolver (and its CascadeResolver) is fresh per combat,
 	# so there is nothing to unsubscribe from a previous one.
 	p_resolver.GetCascadeResolver().Subscribe(
 			Types.Cascade_Trigger.Skill_Resolved,
 			_CASCADE_MECHANIC_KEY,
-			func(p_event: CascadeEvent) -> bool: return p_event.subject_ID == p_owner_ID and _consumed_reagent_since_cast,
+			func(p_event: CascadeEvent) -> bool: return p_event.subject_ID == p_owner_ID and _echoes_for_this_cast > 0,
 			func(p_event: CascadeEvent) -> void: _OnSkillResolvedRepeat(p_owner_ID, p_event, p_resolver))
+	p_resolver.GetCascadeResolver().SubscribeInstanceModifier(
+			func(p_event: CascadeEvent, p_mechanic_key: StringName) -> int:
+				if(_CASCADE_MECHANIC_KEY != p_mechanic_key or p_event.subject_ID != p_owner_ID):
+					return 0
+				return maxi(_echoes_for_this_cast - 1, 0))
 
 func RefreshVisuals(p_character_repr: CharacterRepresentation) -> void:
-	var body_with_stacks: String = (_body + "\n" +
-			"Current Instability Stacks: " + str(_instability_stacks))
+	var body_with_state: String = (_body + "\n" +
+			"Current Stacks: " + str(_instability_stacks) + "\n" +
+			"Current Charges: " + str(_echo_charges))
 	p_character_repr.SetTraitElement(_trait_texture, 0)
-	p_character_repr.SetTraitElementToolTip(_title, body_with_stacks, 0)
+	p_character_repr.SetTraitElementToolTip(_title, body_with_state, 0)
 
 func OnSkillCast(
 		p_owner_ID: int,
@@ -77,29 +101,41 @@ func OnSkillCast(
 		p_caster_attributes: Dictionary[Types.Attribute, int],
 		p_resolver: BattleResolver) -> TraitSkillResult:
 	var result: TraitSkillResult = TraitSkillResult.new()
+	_echoes_for_this_cast = _echo_charges
+	_echo_charges = 0
+	_echo_index = 0
+	_placed_zone_ID_this_cast = -1
 	var releases_surge: bool = _instability_stacks >= MAX_INSTABILITY_STACKS
 
 	if not releases_surge:
 		_instability_stacks = min(_instability_stacks + 1, MAX_INSTABILITY_STACKS)
 
-	if _instability_stacks > 0:
-		p_caster_attributes[Types.Attribute.Mysticism] += int(ceilf(
-				p_caster_attributes[Types.Attribute.Mysticism] * _mysticism_per_stack * _instability_stacks))
-
 	if releases_surge:
 		_ReleaseSurge(p_owner_ID, p_caster_attributes, p_resolver)
 		_instability_stacks = 0
+		_echo_charges += 1
 
 	return result
 
 func OnReagentConsumed(
 		_p_consumer_ID: int, _p_reagent: ReagentData, _p_resolver: BattleResolver) -> float:
 	_instability_stacks = min(_instability_stacks + 2, MAX_INSTABILITY_STACKS)
-	_consumed_reagent_since_cast = true
+	_echo_charges += 1
 	return _reagent_amplification
 
+func OnZoneConstructed(_p_owner_ID: int, p_zone_ID: int, _p_resolver: BattleResolver) -> void:
+	_placed_zone_ID_this_cast = p_zone_ID
+
 func _OnSkillResolvedRepeat(p_owner_ID: int, p_event: CascadeEvent, p_resolver: BattleResolver) -> void:
-	_consumed_reagent_since_cast = false
+	var index: int = _echo_index
+	_echo_index += 1
+	if(index + 1 >= _echoes_for_this_cast):
+		_echoes_for_this_cast = 0
+
+	if(-1 != _placed_zone_ID_this_cast and p_resolver.GetZoneResolver().HasZone(_placed_zone_ID_this_cast)):
+		p_resolver.GetZoneResolver().AmplifyZoneDamage(_placed_zone_ID_this_cast, ECHO_ZONE_AMPLIFICATION)
+		return
+
 	var characters: Dictionary[int, Character] = p_resolver.GetCharacters()
 	if(not characters.has(p_owner_ID)):
 		return
@@ -112,7 +148,7 @@ func _OnSkillResolvedRepeat(p_owner_ID: int, p_event: CascadeEvent, p_resolver: 
 	# definition), not a continuation of the original cast's TraitSkillResult or use count.
 	var context := SkillCastContext.new(p_resolver, p_owner_ID, p_event.target_IDs, cast_skill,
 			caster_attributes, 0, TraitSkillResult.new())
-	context.repeat_bonus = REPEAT_BONUS
+	context.repeat_bonus = REPEAT_FRACTION * pow(_echo_compounding, float(index)) - 1.0
 	for effect in cast_skill.effects:
 		if(effect is DamageEffect and context.ConditionMet(effect)):
 			effect.Resolve(context)

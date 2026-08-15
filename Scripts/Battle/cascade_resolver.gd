@@ -28,9 +28,10 @@ class Listener:
 
 var _resolver: BattleResolver
 var _listeners: Dictionary[Types.Cascade_Trigger, Array] = {}
-# (CascadeEvent) -> int: extra instances to add to whichever listener just matched,
-# summed before the per-instance loop's bound is computed (e.g. the Herald of the
-# Loom's Black Thread). Modifiers amplify an existing match; they never create one.
+# (CascadeEvent, StringName) -> int: extra instances to add to whichever listener just
+# matched (identified by its own mechanic_key), summed before the per-instance loop's
+# bound is computed (e.g. the Herald of the Loom's Black Thread, the Sorcerer's Echo
+# charges). Modifiers amplify an existing match; they never create one.
 var _instance_modifiers: Array[Callable] = []
 var _pending: Array[CascadeEvent] = []
 # Keyed "mechanic_key:subject_ID" — a trigger source fires at most once per
@@ -63,8 +64,10 @@ func Subscribe(
 
 ## Registers p_callback to amplify a listener's instance count once it has already
 ## matched an event (e.g. the Herald of the Loom's Black Thread granting one extra
-## instance to a cascade instance caused by its own action). p_callback receives the
-## CascadeEvent and returns the extra instance count to add (0 for no effect).
+## instance to a cascade instance caused by its own action, or the Sorcerer's Echo
+## charges scoped to its own mechanic_key). p_callback receives the CascadeEvent and the
+## matched listener's mechanic_key, and returns the extra instance count to add (0 for
+## no effect).
 func SubscribeInstanceModifier(p_callback: Callable) -> void:
 	_instance_modifiers.append(p_callback)
 
@@ -102,7 +105,7 @@ func _ResolveEvent(p_event: CascadeEvent) -> void:
 		_fired_this_action[key] = true
 		var extra_instances: int = 0
 		for modifier: Callable in _instance_modifiers:
-			extra_instances += int(modifier.call(p_event))
+			extra_instances += int(modifier.call(p_event, listener.mechanic_key))
 		var allowed: int = maxi(mini(p_event.instance_count + extra_instances,
 				MAX_CASCADE_INSTANCES_PER_ACTION - _instances_this_action), 0)
 		for i in allowed:

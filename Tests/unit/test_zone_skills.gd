@@ -3,7 +3,7 @@ extends GutTest
 const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 
 ## Coverage for the zone-placement and zone-scaling skills (Catalyst Cloud, Unstable
-## Rift, Temporal Sinkhole, Miasma, Weight of Law, Inscribe, Cataclysmic Surge,
+## Rift, Temporal Sinkhole, Miasma, Weight of Law, Inscribe, Cataclysm,
 ## Inscription Surge), cast through the real ResolveSkill pipeline so the shipped .tres
 ## data (charges, target filtering, on_trigger effects) is exercised end to end rather
 ## than hand-built SkillEffects.
@@ -159,7 +159,7 @@ func test_inscribe_damages_its_cast_target_and_places_a_left_most_glyph_that_dam
 		"3 charges minus the one immediate trigger on the visitor")
 	assert_true(_has_debuff(4, Types.Debuff_Type.Warped), "A visitor to the glyph should be Warped")
 
-func test_cataclysmic_surge_deals_more_damage_to_a_warped_target() -> void:
+func test_cataclysm_deals_more_damage_to_a_warped_target() -> void:
 	var warped: StatusEffects.Debuff = StatusEffects.Debuff.new()
 	warped.type = Types.Debuff_Type.Warped
 	warped.duration = 2
@@ -167,7 +167,7 @@ func test_cataclysmic_surge_deals_more_damage_to_a_warped_target() -> void:
 	var warped_health_before: int = _roster[3]._current_health
 	var plain_health_before: int = _roster[4]._current_health
 
-	_cast(0, "res://Data/Character_Skill_Variants/Attack_Skills/Cataclysmic_Surge.tres", [3, 4, 5])
+	_cast(0, "res://Data/Character_Skill_Variants/Attack_Skills/Cataclysm.tres", [3, 4, 5])
 
 	var warped_damage: int = warped_health_before - _roster[3]._current_health
 	var plain_damage: int = plain_health_before - _roster[4]._current_health
@@ -233,6 +233,27 @@ func test_same_zone_kind_in_two_sections_gets_one_key() -> void:
 
 	assert_eq(first_key, second_key,
 		"The same zone kind placed in a different section should reuse the same bucket key")
+
+func test_amplify_zone_damage_contributes_its_own_bucket_on_the_next_trigger() -> void:
+	TestFactory.place_zone(_resolver, 0, 0, _damage_zone_effect(), Types.Skill_Target.ZoneAll, "Unstable Rift")
+	_resolver.GetZoneResolver().AmplifyZoneDamage(0, 1.15)
+	_positions.occupants_by_zone[0] = [3]
+	var results: Array[CombatResult] = _resolver.GetZoneResolver().TriggerZones(0)
+
+	var modifier: CombinedDamageModifier = _first_damage_modifier(results)
+	assert_almost_eq(modifier.Buckets().get(&"Zone: Unstable Rift (amplified)", 0.0), 0.15, 0.0001,
+		"AmplifyZoneDamage should contribute its own bucket, additive with the zone's own key")
+
+func test_amplify_zone_damage_compounds_across_repeated_calls() -> void:
+	TestFactory.place_zone(_resolver, 0, 0, _damage_zone_effect(), Types.Skill_Target.ZoneAll, "Unstable Rift")
+	_resolver.GetZoneResolver().AmplifyZoneDamage(0, 1.15)
+	_resolver.GetZoneResolver().AmplifyZoneDamage(0, 1.15)
+	_positions.occupants_by_zone[0] = [3]
+	var results: Array[CombatResult] = _resolver.GetZoneResolver().TriggerZones(0)
+
+	var modifier: CombinedDamageModifier = _first_damage_modifier(results)
+	assert_almost_eq(modifier.Buckets().get(&"Zone: Unstable Rift (amplified)", 0.0), 0.3225, 0.0001,
+		"Repeated AmplifyZoneDamage calls should compound (1.15^2 - 1.0)")
 
 func test_inscription_surge_deals_more_damage_with_zones_standing_on_the_bar() -> void:
 	_boost_caster_and_targets()

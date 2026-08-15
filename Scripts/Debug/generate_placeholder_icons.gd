@@ -203,7 +203,7 @@ const SKILL_ICON_TABLE: Array = [
 			"color": Color(0.50, 0.25, 0.80, 1.0) },
 	{ "folder": "Abilities/Role_Active_Skills/Unstable_Rift", "base_name": "Unstable_Rift", "size": 64,
 			"color": Color(0.40, 0.15, 0.70, 1.0) },
-	{ "folder": "Abilities/Role_Active_Skills/Cataclysmic_Surge", "base_name": "Cataclysmic_Surge", "size": 64,
+	{ "folder": "Abilities/Role_Active_Skills/Cataclysm", "base_name": "Cataclysm", "size": 64,
 			"color": Color(0.60, 0.20, 0.85, 1.0) },
 	# Scholar
 	{ "folder": "Abilities/Role_Active_Skills/Sharp_Rebuttal", "base_name": "Sharp_Rebuttal", "size": 64,

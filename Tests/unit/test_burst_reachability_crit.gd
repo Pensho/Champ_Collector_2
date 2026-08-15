@@ -186,7 +186,7 @@ func test_non_appraiser_pinned_product_is_unaffected_by_crit_scoring() -> void:
 		preload("res://Data/Character_Player_Variants/Tactician.tres"),
 	]
 	var result: BurstReachability.TeamResult = BurstReachability.ScoreTeam(sorcerer_scholar_tactician)
-	var pinned: BurstReachability.CandidateResult = result.Pinned(0, "Cataclysmic Surge")
-	assert_not_null(pinned, "Sorcerer's Cataclysmic Surge must be a scored candidate")
+	var pinned: BurstReachability.CandidateResult = result.Pinned(0, "Cataclysm")
+	assert_not_null(pinned, "Sorcerer's Cataclysm must be a scored candidate")
 	assert_almost_eq(pinned.product, 2.8, 0.01,
-		"Regression pin, unchanged by crit scoring: composed product for this team bursting Cataclysmic Surge")
+		"Regression pin, unchanged by crit scoring: composed product for this team bursting Cataclysm")

@@ -6,8 +6,8 @@ the allocation and the in-flight synergy ledger before that promotion.
 
 **Status:** channel identity allocation, contribution direction, and pairing web settled; all four
 batches designed and all 20 Roles settled — 19 with a section 9 entry, the Tactician kept unchanged
-in section 7's table. No skill or status `.tres` exists yet
-beyond what already ships (`Concept_Document.md` 3.2.4.2).
+in section 7's table. Three of Batch 1's five implemented: Plague Doctor, Herald of the Loom,
+Sorcerer.
 
 ## 1. The per-Role kit contract
 
@@ -468,7 +468,7 @@ gap in `FeatureIdeas.md`.
 
 ### 9.3 Sorcerer — Echo charges and the Surge that feeds them
 
-**Status:** Settled, not yet implemented. Batch 1.
+**Status:** Implemented. Batch 1.
 
 **Passive: Arcane Instability.** Four clauses, each doing one job:
 
@@ -531,15 +531,6 @@ the per-stack Mysticism ramp was dropped: that ramp was worth a flat 1.5x on the
 moving its weight into the compounding curve puts the ceiling in Channel 3 where the Role's
 identity claims it. Peak 4 cascade instances plus the Surge in one action, well inside
 `CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION = 16`.
-
-**Implementation needs (not yet built):** per-instance `SkillCastContext.repeat_bonus`, set once
-per Echo rather than once per cast as `sorcerer_trait.gd:113` does today; a persistent on-trigger
-damage multiplier on `Zone` (`zone.gd` has no such field) plus a way for the Echo to reach the zone
-the cast placed; and the `Cataclysmic_Surge.tres` rename to `Cataclysm.tres` with its inbound preset
-and manifest references. The scorer's compounding curve (section 11's `gated_bonus`, `fold:
-"separate_instance"`, `instances: 4`, `instance_compounding: 1.75`) is available once the reworked
-kit is authored — verified against this section's own 5.59x/6.59x figures in
-`Tests/unit/test_burst_reachability.gd`.
 
 ### 9.4 Bloodmage — the missing-Health surface, caster-side and exported
 
@@ -1561,7 +1552,7 @@ Anchor, Steadfast, Resonance unclaimed.
 | Blight | Plague Doctor (Miasma) — moved from Quarantine Breach (renamed Outbreak) |
 | Suppress | Herald of the loom (Thread Snap) — moved off the retired Thread Lash, now 1 turn (was 2); Scholar (Sharp Rebuttal's zone-gated rider) — **settled, not yet implemented** (§9.14). At the commodity-debuff limit of two, so no later Role may take it |
 | Temporal Leak | Herald of the loom (Pull the Thread) — newly claimed, retiring part of `FeatureIdeas.md`'s "Rework Orphaned Turn Bar Effects" item |
-| Warped | Sorcerer (Unstable Rift reliably, Arc Lash's 25% rider) — **settled, not yet implemented** (section 9.3); both sources are the same Role, so the identity-effect rule still holds |
+| Warped | Sorcerer (Unstable Rift reliably, Arc Lash's 25% rider) — **implemented** (section 9.3); both sources are the same Role, so the identity-effect rule still holds |
 | Sanction | Emissary (Levied Sanction) — unchanged claimant; widened from an attribute reduction to a per-Infraction damage multiplier every attacker reads, **settled, not yet implemented** (section 9.7) |
 | Hemorrhage | Bloodmage (Tithe of Vitality) — **settled, not yet implemented** (section 9.4); new debuff, no prior claimant |
 | Mana Burn | Unclaimed — dropped from Bloodmage's Tithe of Vitality (section 9.4); nothing in the reworked kit read it |

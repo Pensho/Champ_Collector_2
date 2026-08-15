@@ -267,57 +267,62 @@ const MANIFEST: Dictionary = {
 		"preset": "Data/Character_Player_Variants/Sorcerer.tres",
 		"passive": [
 			{"name": "Arcane Instability", "bucket_key": "", "magnitude": 0.0, "stack_cap": 5,
-					"class": Contribution_Class.Channel1,
-					"precondition": "TRAP: on every Skill_Cast gains 1 stack (max 5, +10% " +
-							"Mysticism/stack at Legendary, a Channel-1 attribute mutation applied before " +
-							"the cast's own DamageEffect reads it). At 5 stacks the NEXT cast instead " +
-							"fires a Surge via ResolveTraitDamage(..., CombinedDamageModifier.new()) — " +
-							"an empty modifier, so the Surge hit contributes to NO CombinedDamageModifier " +
-							"bucket at all (no reagent bonus, no Opportunist, no trait_resource), even " +
-							"though the boosted Mysticism from the same OnSkillCast call still applies to " +
-							"its raw magnitude (1.5x Mysticism, hits all characters, no crit). Stacks " +
-							"reset to 0 after the Surge.",
-					"citation": "sorcerer_trait.gd:3-20,51-84; battle_resolver.gd:390-404 " +
-							"(ResolveTraitDamage's empty modifier)"},
+					"class": Contribution_Class.Channel3_Cascade,
+					"precondition": "Passive carries no Channel-1 attribute mutation and no bucket of " +
+							"its own — its whole contribution is the Echo charges it grants, scored on the " +
+							"skills below. On every Skill_Cast gains 1 Instability stack (max 5, no effect " +
+							"of its own). Consuming a reagent grants 2 stacks and 1 Echo charge. At 5 " +
+							"stacks the NEXT cast instead fires a Surge via " +
+							"ResolveTraitDamage(..., CombinedDamageModifier.new()) — an empty modifier, so " +
+							"the Surge hit contributes to NO CombinedDamageModifier bucket at all (no " +
+							"reagent bonus, no Opportunist, no trait_resource) — then stacks reset to 0 and " +
+							"1 Echo charge is granted, banked for the FOLLOWING cast (the Surge's own cast " +
+							"does not repeat itself from this charge).",
+					"citation": "sorcerer_trait.gd (OnSkillCast, OnReagentConsumed, _ReleaseSurge); " +
+							"battle_resolver.gd:390-404 (ResolveTraitDamage's empty modifier)"},
 		],
 		"skills": [
 			{"name": "Arc Lash", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Channel1,
-					"precondition": "damage_scaling Mysticism 1.0, no bonus_per.",
-					"citation": "Arc_Lash.tres:6-11",
+					"precondition": "damage_scaling Mysticism 1.0, no bonus_per. Carries a 25% chance to " +
+							"apply Warped for 1 turn (Enabler-weight, no bucket key of its own — seeds " +
+							"Cataclysm's condition occasionally).",
+					"citation": "Arc_Lash.tres:6-19",
 					"gated_bonus": {"bucket_key": "Arc Lash (repeat)", "magnitude": -0.5,
 							"class": Contribution_Class.Channel3_Cascade, "fold": "separate_instance",
-							"gate": &"reagent_consumed",
-							"precondition": "Only if the Sorcerer consumed a reagent since their last cast " +
-									"(Plan_Itemization_Channels.md Phase 3). The real resolver re-resolves " +
-									"Arc Lash's DamageEffects as a SECOND, independent CombinedDamageModifier " +
-									"and ResolveEffectDamage call at REPEAT_BONUS (-0.5, i.e. 50% damage) — " +
-									"never folded into the original cast's own product (verified live in " +
-									"test_burst_reachability_live.gd), so this entry is 'fold: " +
-									"separate_instance' and is scored into CandidateResult.repeat_contrast_ratio " +
-									"instead of the shared buckets/product. Magnitude mirrors REPEAT_BONUS " +
-									"exactly, not REPEAT_FRACTION. Exactly one repeat per cast (the " +
-									"consumed-reagent flag clears when it fires), so " +
-									"ASSUMED_UNCAPPED_INSTANCES' cap of 1 already matches the real mechanic " +
-									"here rather than only approximating it.",
-							"citation": "sorcerer_trait.gd:22-25,95-119; skill_cast_context.gd:38; " +
-									"damage_effect.gd:28-29,54-55; battle_resolver.gd:739-744"}},
-			{"name": "Cataclysmic Surge", "bucket_key": "Warped", "magnitude": 0.3, "stack_cap": 0,
+							"gate": &"reagent_consumed", "instances": 4, "instance_compounding": 1.75,
+							"precondition": "One Echo per charge held (reagents consumed as free actions " +
+									"before the cast, or a Surge's own carried-in charge), all consumed by " +
+									"this cast. The real resolver re-resolves Arc Lash's DamageEffects as an " +
+									"independent CombinedDamageModifier and ResolveEffectDamage call per Echo " +
+									"(verified live in test_burst_reachability_live.gd), so this entry is " +
+									"'fold: separate_instance' and is scored into " +
+									"CandidateResult.repeat_contrast_ratio instead of the shared " +
+									"buckets/product. Magnitude is the first Echo's fraction minus 1.0 " +
+									"(REPEAT_FRACTION - 1.0); instance_compounding is Legendary's " +
+									"ECHO_COMPOUNDING (1.75); instances: 4 is the design's own ceiling (three " +
+									"banked reagents plus one carried Surge charge, Role_Kit_Design.md " +
+									"section 9.3) — reproduces its 5.586x figure.",
+							"citation": "sorcerer_trait.gd (ECHO_COMPOUNDING, REPEAT_FRACTION, " +
+									"_OnSkillResolvedRepeat); skill_cast_context.gd; damage_effect.gd; " +
+									"battle_resolver.gd:739-744"}},
+			{"name": "Cataclysm", "bucket_key": "Warped", "magnitude": 0.3, "stack_cap": 0,
 					"class": Contribution_Class.Channel2,
 					"precondition": "+30% (fixed, not rarity-scaled) only against targets currently " +
 							"carrying the Warped debuff, via bonus_per_debuff_on_target. Targets All " +
 							"Enemies. A normal DamageEffect cast (not ResolveTraitDamage), so it does get " +
 							"the full CombinedDamageModifier treatment.",
-					"citation": "Cataclysmic_Surge.tres:6-17; damage_effect.gd:60-65",
-					"gated_bonus": {"bucket_key": "Cataclysmic Surge (repeat)", "magnitude": -0.5,
+					"citation": "Cataclysm.tres:6-17; damage_effect.gd:60-65",
+					"gated_bonus": {"bucket_key": "Cataclysm (repeat)", "magnitude": -0.5,
 							"class": Contribution_Class.Channel3_Cascade, "fold": "separate_instance",
-							"gate": &"reagent_consumed",
-							"precondition": "Same reagent-gated repeat as Arc Lash (see that entry), " +
-									"re-resolving Cataclysmic Surge's own DamageEffect (its own Warped bonus " +
-									"included, since the repeat replays the whole effect against the same " +
-									"target) as its own separate instance at REPEAT_BONUS.",
-							"citation": "sorcerer_trait.gd:22-25,95-119; skill_cast_context.gd:38; " +
-									"damage_effect.gd:28-29,54-55; battle_resolver.gd:739-744"}},
+							"gate": &"reagent_consumed", "instances": 4, "instance_compounding": 1.75,
+							"precondition": "Same Echo mechanic as Arc Lash (see that entry), re-resolving " +
+									"Cataclysm's own DamageEffect (its own Warped bonus included, since each " +
+									"Echo replays the whole effect against the same targets) as its own " +
+									"separate instances.",
+							"citation": "sorcerer_trait.gd (ECHO_COMPOUNDING, REPEAT_FRACTION, " +
+									"_OnSkillResolvedRepeat); skill_cast_context.gd; damage_effect.gd; " +
+									"battle_resolver.gd:739-744"}},
 			{"name": "Unstable Rift", "bucket_key": "Zone: Unstable Rift", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Channel1,
 					"precondition": "Zone, 5 charges. On trigger: applies Warped (2 turns) and deals " +
@@ -327,12 +332,15 @@ const MANIFEST: Dictionary = {
 							"effects is a single ZoneEffect, no top-level DamageEffect — the scorer now " +
 							"enumerates this skill as a candidate off the enemy-facing on_trigger " +
 							"DamageEffect (0.3 Mysticism) directly, excluding the 0.15 ally-facing one (see " +
-							"burst_reachability.gd's _ZoneTriggerEnemyDamageEffects). Still a structural " +
-							"no-op for the Sorcerer's reagent-gated repeat, which only re-resolves " +
-							"cast_skill.effects filtered to top-level DamageEffect — no gate: " +
-							"&\"reagent_consumed\" gated_bonus modeled here for that reason, not an oversight.",
+							"burst_reachability.gd's _ZoneTriggerEnemyDamageEffects). An Echo on a cast that " +
+							"placed this zone amplifies its on_trigger damage by a flat 15% (Contribution_" +
+							"Class.Enabler), compounding across Echoes and persisting for the zone's " +
+							"remaining life — not modeled here: the skill's gated_bonus slot below is " +
+							"already the remaining-charges sustained_ticks entry, and this scorer has no " +
+							"second slot for a per-Echo zone multiplier. A known gap, not an oversight " +
+							"(Role_Kit_Design.md section 11).",
 					"citation": "Unstable_Rift.tres:6-29,32-42; damage_effect.gd:43-46; zone_effect.gd:17-19; " +
-							"sorcerer_trait.gd:101-119",
+							"sorcerer_trait.gd (OnZoneConstructed, _OnSkillResolvedRepeat)",
 					"gated_bonus": {"bucket_key": "", "magnitude": 0.0, "class": Contribution_Class.Channel1,
 							"fold": "sustained_ticks", "gate": &"zone_charges_consumed", "instances": 4,
 							"precondition": "The candidate's own contrast_ratio already counts one trigger " +

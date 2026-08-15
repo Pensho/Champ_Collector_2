@@ -12,6 +12,10 @@ var _visual_scene: PackedScene
 # visit; cleared per-character when ZoneResolver detects they have left the section.
 var _affected_since_entry: Array[int] = []
 var _source_name: String = ""
+# Multiplies every future on_trigger DamageEffect this zone resolves, applied as its own
+# CombinedDamageModifier bucket (see damage_effect.gd) rather than mutating damage_scaling —
+# set by ZoneResolver.AmplifyZoneDamage, e.g. the Sorcerer's Echo compounding on Unstable Rift.
+var _damage_multiplier: float = 1.0
 
 func CreateNew(
 		p_charges: int,

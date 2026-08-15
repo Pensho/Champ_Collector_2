@@ -128,6 +128,14 @@ func ReplenishZoneCharge(p_zone_ID: int, p_amount: int, p_max_charges: int) -> v
 		return
 	SetZoneCharges(p_zone_ID, mini(_zones[p_zone_ID]._charges + p_amount, p_max_charges))
 
+## Multiplies the zone's on_trigger damage by p_factor going forward, compounding with
+## any prior call (e.g. the Sorcerer's Echo, which amplifies the zone its own cast placed
+## once per Echo).
+func AmplifyZoneDamage(p_zone_ID: int, p_factor: float) -> void:
+	if(not _zones.has(p_zone_ID)):
+		return
+	_zones[p_zone_ID]._damage_multiplier *= p_factor
+
 func _ResolveZoneEffect(p_zone: Zone, p_zone_ID: int, p_character_ID: int) -> void:
 	var affected: Character = _resolver._characters[p_character_ID]
 	var effect_multiplier: float = 1.0
@@ -141,6 +149,7 @@ func _ResolveZoneEffect(p_zone: Zone, p_zone_ID: int, p_character_ID: int) -> vo
 	context.zone_ID = p_zone_ID
 	context.zone_magnitude = Skills.ZoneMagnitude(1.0, p_zone._owner_knowledge) * effect_multiplier
 	context.zone_source_name = p_zone._source_name
+	context.zone_damage_multiplier = p_zone._damage_multiplier
 	for effect in p_zone._on_trigger:
 		if(context.ConditionMet(effect)):
 			effect.Resolve(context)

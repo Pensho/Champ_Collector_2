@@ -558,6 +558,32 @@ func test_condition_met_below_is_unmet_once_the_traits_count_reaches_the_thresho
 
 	assert_false(context.ConditionMet(effect))
 
+func test_condition_met_chance_zero_never_resolves() -> void:
+	var effect: SkillEffect = SkillEffect.new()
+	effect.chance = 0.0
+	var context: SkillCastContext = TestFactory.make_context(_resolver, 0, [3], TestFactory.make_empty_skill())
+
+	assert_false(context.ConditionMet(effect))
+
+func test_condition_met_chance_one_always_resolves() -> void:
+	var effect: SkillEffect = SkillEffect.new()
+	effect.chance = 1.0
+	var context: SkillCastContext = TestFactory.make_context(_resolver, 0, [3], TestFactory.make_empty_skill())
+
+	assert_true(context.ConditionMet(effect))
+
+func test_condition_met_chance_rolls_independently_of_condition() -> void:
+	# A chance of 0.0 must gate the effect out even when its authored condition would
+	# otherwise pass.
+	var effect: SkillEffect = SkillEffect.new()
+	effect.chance = 0.0
+	effect.condition = Types.Skill_Condition.Trait_Condition
+	effect.condition_test = Types.Condition_Test.Below
+	effect.condition_threshold = 6.0
+	var context: SkillCastContext = TestFactory.make_context(_resolver, 0, [3], TestFactory.make_empty_skill())
+
+	assert_false(context.ConditionMet(effect))
+
 # --- ResolveSkill wiring (effects array runs alongside the flat-field pipeline) ---
 
 func test_resolve_skill_runs_the_effects_array_in_authored_order() -> void:

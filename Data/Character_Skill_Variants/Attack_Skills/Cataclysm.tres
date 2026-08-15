@@ -15,9 +15,9 @@ bonus_per_debuff_on_target = Dictionary[int, float]({
 
 [resource]
 script = ExtResource("1_skill")
-name = "Cataclysmic Surge"
+name = "Cataclysm"
 description = "Deals damage to all enemies, scaling with Mysticism. Targets currently affected by the Warped debuff take 30% increased damage."
-icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Cataclysmic_Surge/Cataclysmic_Surge.png"
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Cataclysm/Cataclysm.png"
 target = 1
 cooldown = 4
 effects = Array[ExtResource("1_effect")]([SubResource("Resource_surge")])

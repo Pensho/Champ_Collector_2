@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ctbqtpsnk1vod"
-path="res://.godot/imported/Cataclysmic_Surge.png-69f74a455e223131193567a796070fb0.ctex"
+path="res://.godot/imported/Cataclysm.png-486a92e4164f17359384e13d2397963c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Cataclysmic_Surge/Cataclysmic_Surge.png"
-dest_files=["res://.godot/imported/Cataclysmic_Surge.png-69f74a455e223131193567a796070fb0.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Cataclysm/Cataclysm.png"
+dest_files=["res://.godot/imported/Cataclysm.png-486a92e4164f17359384e13d2397963c.ctex"]
 
 [params]
 

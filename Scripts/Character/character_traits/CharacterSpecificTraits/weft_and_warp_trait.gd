@@ -54,7 +54,7 @@ func StartOfBattle(p_owner_ID: int, p_resolver: BattleResolver) -> void:
 	_tension = STARTING_TENSION_BY_RARITY.get(_owner_rarity, 0)
 	# Re-subscribed every battle: p_resolver (and its CascadeResolver) is fresh per combat.
 	p_resolver.GetCascadeResolver().SubscribeInstanceModifier(
-			func(p_event: CascadeEvent) -> int:
+			func(p_event: CascadeEvent, _p_mechanic_key: StringName) -> int:
 				if(Thread_Type.Black != _current_thread):
 					return 0
 				if(_EventCasterID(p_event) != p_owner_ID):

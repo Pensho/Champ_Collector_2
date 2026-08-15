@@ -15,17 +15,21 @@ Phase 6 — Sorcerer, Bloodmage and Appraiser are not yet implemented, so that r
 three of the five.
 
 Phase 0 done. Phase 1 drafted, awaiting sign-off (see below) before Phase 2 starts. Phase 2 in
-progress: Plague Doctor and Herald of the Loom implemented; Sorcerer, Bloodmage, and Appraiser
-settled and recorded in `Role_Kit_Design.md` §9.3 / §9.4 / §9.5, not yet implemented. Herald of the
+progress: Plague Doctor, Herald of the Loom, and Sorcerer implemented; Bloodmage and Appraiser
+settled and recorded in `Role_Kit_Design.md` §9.4 / §9.5, not yet implemented. Herald of the
 Loom's implementation (`weft_and_warp_trait.gd`) added the batch's second and third pieces of new
 Channel 3 plumbing beyond §11's original scope: `Combat_Event.Cascade_Instance_Resolved` (a
 per-real-instance broadcast off `CascadeResolver._ResolveEvent`'s own loop) and
 `CascadeResolver.SubscribeInstanceModifier` (lets a subscriber amplify an already-matched
 listener's instance count) — both exercised directly in `Tests/unit/test_cascade_resolution.gd`
-ahead of the Herald trait itself, per the plan's own tier-1-before-tier-3 ordering. Two Roles left
-in Phase 2. The scorer gaps blocking the remaining two Channel 3 kits are consolidated in §11 and
-are the batch's first implementation work; the crit scorer's own gap closed in `e3d39bd`, leaving
-only the above-100 Critical Chance clamp that Appraiser's passive needs (§9.5). The framework
+ahead of the Herald trait itself, per the plan's own tier-1-before-tier-3 ordering. The Sorcerer's
+implementation widened `SubscribeInstanceModifier` to pass the matched listener's own
+`mechanic_key` to the callback, so a modifier can scope itself to one mechanic (its Echo count)
+rather than amplifying every cascade instance in the game — the Herald's own Black Thread callback
+updated to the new two-argument signature, unscoped as before. One Role left in Phase 2. The
+scorer gaps blocking the remaining Channel 3 kit are consolidated in §11 and are the batch's first
+implementation work; the crit scorer's own gap closed in `e3d39bd`, leaving only the above-100
+Critical Chance clamp that Appraiser's passive needs (§9.5). The framework
 question that governed Batch 2's designs — whether Enabler may be a Role-level identity, raised by
 Appraiser's kit claiming no bucket key at all — is **settled** (§8): Enabler **is** permitted as a
 primary identity, the contract admits crit-path contribution, and it gained a second declared axis,
@@ -139,6 +143,19 @@ own batch — Sorcerer and Bloodmage still to come in Phase 2 are exactly what's
 the top decile with further distinct pairings — but worth flagging now rather than only at Phase 6:
 if the shape doesn't diversify once Batch 1 completes, Cut the Cloth's curve (0.08 magnitude, 8 flat
 instances) is the first thing to revisit, not a symptom of the framework.
+
+**Post-Sorcerer sweep** (`Tests/manual/team_corpus_sweep.gd`, re-run after the Sorcerer landed).
+Combined-modifier-product distribution: median 1.30x, 90th percentile 2.80x, ceiling 7.22x (max
+unchanged — the Sorcerer's Echoes land in `repeat_contrast_ratio`, not the bucket product; the
+median's small drop from 1.36x is not attributable to this batch, which touches no other Role's
+buckets). The ceiling *contrast* team is still Alchemist/Tactician/Tidal Corsair (9.39x). The top
+decile (114 teams) **regains a second distinct pairing**, the diversification this batch was meant
+to produce: 97 Herald of the Loom/Cut the Cloth teams (9.64x-11.22x) and **17 Sorcerer/Cataclysm
+teams** (9.86x-10.62x, Echo-driven — `sorcerer_repeat_driven: true` confirms the top entry is
+actually driven by the Echo repeat, not merely riding a teammate's grant), up from the Post-Herald
+sweep's single pairing. Still short of the pre-Phase-0 baseline's 7 distinct pairings and of §6's
+"several independent" target — Bloodmage, still to come in Phase 2, is the next candidate to widen
+this further.
 
 **Phase 1 result.** `Documents/Role_Kit_Design.md` created, holding the kit contract, the
 indirect-composition rule, the synergy grammar, Phase 0's re-derived targets, and the two pieces

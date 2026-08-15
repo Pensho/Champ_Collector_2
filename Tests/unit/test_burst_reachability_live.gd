@@ -13,7 +13,7 @@ extends GutTest
 ## roles (kit_contribution_manifest.gd's own field docs, lines 16-32):
 ##   - A skill's own bonus_per_debuff_on_target bucket, a per-debuff-anchored granted-status
 ##     bucket landing in that SAME key, and a granted DamageMultiplier bucket in a distinct
-##     key — Sorcerer's Cataclysmic Surge, matching test_burst_reachability.gd's own 2.8x pin.
+##     key — Sorcerer's Cataclysm, matching test_burst_reachability.gd's own 2.8x pin.
 ##   - The shared trait_resource key fed by internal trait stack state (not a StatusEffects
 ##     buff/debuff at all) — Tidal Corsair's Wrangle the Sea, matching the other 2.8x pin.
 ##   - The ramp key, whose per-instance rate is 0-indexed by actual battle use count — a
@@ -84,7 +84,7 @@ func _skill_index(p_character: Character, p_skill_name: String) -> int:
 # --- Shape 1: skill's own bonus_per_debuff_on_target bucket, a per-debuff-anchored granted
 # status landing in that same bucket, and a granted DamageMultiplier bucket in a distinct key ---
 
-func test_cataclysmic_surge_measured_product_matches_the_scored_prediction() -> void:
+func test_cataclysm_measured_product_matches_the_scored_prediction() -> void:
 	var roster: Dictionary[int, Character] = {}
 	var sorcerer: Character = Character.new()
 	sorcerer.InstantiateNew(SORCERER, 0)
@@ -112,14 +112,14 @@ func test_cataclysmic_surge_measured_product_matches_the_scored_prediction() -> 
 	roster[3] = target
 
 	var resolver: BattleResolver = TestFactory.make_resolver(roster, CombatSides.new([0], [3]))
-	var cataclysmic_surge_index: int = _skill_index(sorcerer, "Cataclysmic Surge")
+	var cataclysm_index: int = _skill_index(sorcerer, "Cataclysm")
 	var modifier: CombinedDamageModifier = _first_damage_modifier(
-			resolver.ResolveSkill(0, [3], cataclysmic_surge_index))
-	assert_not_null(modifier, "Cataclysmic Surge against a living target must produce a Damage result")
+			resolver.ResolveSkill(0, [3], cataclysm_index))
+	assert_not_null(modifier, "Cataclysm against a living target must produce a Damage result")
 
 	var predicted: BurstReachability.CandidateResult = BurstReachability.ScoreTeam(
-			_sorcerer_scholar_tactician()).Pinned(0, "Cataclysmic Surge")
-	assert_not_null(predicted, "The scorer must produce a pinned Cataclysmic Surge candidate to compare against")
+			_sorcerer_scholar_tactician()).Pinned(0, "Cataclysm")
+	assert_not_null(predicted, "The scorer must produce a pinned Cataclysm candidate to compare against")
 	assert_almost_eq(modifier.Product(), predicted.product, 0.0001,
 			"The real resolver's composed product must match the manifest-derived prediction " +
 			"for this precondition set")
@@ -223,18 +223,18 @@ func test_thief_self_scoped_opportunist_does_not_reach_a_non_thief_caster() -> v
 	assert_true(thief._active_buffs.any(func(b: StatusEffects.Buff) -> bool: return Types.Buff_Type.Opportunist == b.type),
 			"Weigh the Mark must actually grant the Thief itself Opportunist")
 
-	var cataclysmic_surge_index: int = _skill_index(sorcerer, "Cataclysmic Surge")
+	var cataclysm_index: int = _skill_index(sorcerer, "Cataclysm")
 	var modifier: CombinedDamageModifier = _first_damage_modifier(
-			resolver.ResolveSkill(0, [3], cataclysmic_surge_index))
-	assert_not_null(modifier, "Cataclysmic Surge against a living target must produce a Damage result")
+			resolver.ResolveSkill(0, [3], cataclysm_index))
+	assert_not_null(modifier, "Cataclysm against a living target must produce a Damage result")
 
 	var predicted: BurstReachability.CandidateResult = BurstReachability.ScoreTeam(
-			_sorcerer_thief_warlord()).Pinned(0, "Cataclysmic Surge")
-	assert_not_null(predicted, "The scorer must produce a pinned Cataclysmic Surge candidate to compare against")
+			_sorcerer_thief_warlord()).Pinned(0, "Cataclysm")
+	assert_not_null(predicted, "The scorer must produce a pinned Cataclysm candidate to compare against")
 	assert_almost_eq(modifier.Product(), predicted.product, 0.0001,
 			"The real resolver's composed product must match the manifest-derived prediction")
 	assert_almost_eq(modifier.Product(), 1.3, 0.0001,
-			"Only Cataclysmic Surge's own Warped bucket (0.3) must land: the Thief's Self-scoped " +
+			"Only Cataclysm's own Warped bucket (0.3) must land: the Thief's Self-scoped " +
 			"Opportunist must NOT reach the Sorcerer, a different character")
 
 

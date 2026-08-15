@@ -28,6 +28,9 @@ var zone_target: Types.Skill_Target = Types.Skill_Target.ZoneAll
 var zone_ID: int = -1
 var zone_magnitude: float = 1.0
 var zone_source_name: String = ""
+## Multiplies a zone-trigger DamageEffect's damage, as its own CombinedDamageModifier
+## bucket (see damage_effect.gd) — set from Zone._damage_multiplier by ZoneResolver.
+var zone_damage_multiplier: float = 1.0
 ## Set by an on_trigger buff/debuff application in zone-trigger mode: whether it was
 ## attempted at all, and whether it actually landed. ZoneResolver skips the
 ## Zone_Affected hook when an attempt was made but nothing landed (e.g. blocked by the
@@ -78,9 +81,12 @@ func _TargetsForZoneTrigger(p_effect: SkillEffect) -> Array[int]:
 	return alive_targets.filter(func(id): return Skills.CorrectZoneTarget(caster_ID, id, effective_type, sides))
 
 ## Whether p_effect's authored condition (if any) currently holds for this cast's
-## primary target. A caster with no trait reads as a condition count of 0.0, so
-## Condition_Test.Below is satisfiable (and At_Least never is) even without a trait.
+## primary target, AND its chance roll (if any) succeeds. A caster with no trait reads
+## as a condition count of 0.0, so Condition_Test.Below is satisfiable (and At_Least
+## never is) even without a trait.
 func ConditionMet(p_effect: SkillEffect) -> bool:
+	if(p_effect.chance < 1.0 and resolver.GetRandom().randf() >= p_effect.chance):
+		return false
 	if(Types.Skill_Condition.None == p_effect.condition):
 		return true
 	var caster_trait: CharacterTrait = resolver.GetCharacters()[caster_ID]._trait

@@ -22,7 +22,7 @@ extends GutTest
 
 const AGGREGATE_TARGET: float = 26.0
 
-## Matches Cataclysmic Surge's own bonus_per_debuff_on_target size
+## Matches Cataclysm's own bonus_per_debuff_on_target size
 ## (kit_contribution_manifest.gd's Sorcerer entry) — the one precedent for this hook shape
 ## already in the roster.
 const STANDARD_HOOK_MAGNITUDE: float = 0.3
@@ -137,7 +137,7 @@ func _PrintStatsRow(p_label: String, p_stats: Dictionary) -> void:
 
 func test_prescription_spread_debuff_anchored_hooks() -> void:
 	gut.p(("=== Prescription: spread a bonus_per_debuff_on_target hook (%.2f, matching " +
-			"Cataclysmic Surge) across N Channel1-only skills ===") % STANDARD_HOOK_MAGNITUDE)
+			"Cataclysm) across N Channel1-only skills ===") % STANDARD_HOOK_MAGNITUDE)
 	_PrintStatsRow("N=0 (current roster)", _baseline_stats)
 	var roles: Array = HOOK_SKILL_INDEX_BY_ROLE.keys()
 	var last_stats: Dictionary = _baseline_stats

@@ -238,10 +238,11 @@ Current roles, their identity and purpose exist as follows:
 - Sorcerer
     - A damage dealer that harnesses the power of magic to deal Area of Effect damage and control the battlefield. Wields the unstable, shunned magic left behind by the God of Magic, and excels at drawing power from reagents scavenged from that era's ruins. Signature zone: Unstable Rift (see section 3.2.4.1). Primary attributes: Mysticism, Knowledge.
     - Purpose: Damage, Debuffer, Control
-    - Passive: Arcane Instability (implemented) [Channel 1 + Channel 3] - Using any skill grants one Instability stack (+x% Mysticism per stack, maximum 5). When the Sorcerer consumes a reagent, they gain two Instability stacks, the reagent's effect is amplified by y%, and their next skill repeats at 50% damage (a fresh cascade instance, assembling its own combined damage modifier, so it multiplies against channels 1 and 2 rather than adding to them; a repeated debuff or zone charge is not reapplied, only the damage). While at maximum stacks, the Sorcerer's next skill also releases a Surge: damage to all characters, allies and the Sorcerer included, scaling 1.5x with the Sorcerer's Mysticism (mitigated by each target's Defence as normal, never a critical hit) - then all stacks reset. Stacks do not persist between combats. The repeat scales with the cast skill, never with the reagent's own magnitude, so it does not conflict with 3.3.3's "reagent effects scale with rarity only" rule despite the resemblance. The repeat re-resolves only the cast skill's damage effects; a skill whose damage lives inside a zone's own trigger list rather than as one of its own top-level effects has nothing for the repeat to re-run — see the Sorcerer's own Unstable Rift in section 3.2.4.2.
-        - Per-stack Mysticism: 4% Uncommon, 6% Rare, 8% Epic, 10% Legendary
+    - Passive: Arcane Instability (implemented) [Channel 3] - Using any skill grants one Instability stack (maximum 5); stacks do not persist between combats. Consuming a reagent grants two stacks, amplifies the reagent's effect, and grants one Echo charge. At maximum stacks the next skill also releases a Surge — damage to every character, the Sorcerer included, scaling 1.5x with the Sorcerer's Mysticism, never a critical hit — then stacks reset and one Echo charge is granted, banked for the following cast. Each Echo charge makes the next skill repeat once more, all charges consumed when it does, each Echo compounding on the previous; a repeated debuff or zone charge is not reapplied, only the damage. A cast that placed a zone instead has each Echo amplify that zone (see Unstable Rift, section 3.2.4.2).
+        - Echo compounding: 1.30 Uncommon, 1.45 Rare, 1.60 Epic, 1.75 Legendary
         - Reagent amplification: 20% Uncommon, 30% Rare, 40% Epic, 50% Legendary
-        - Repeat fraction: 50% at every rarity (tuned later)
+        - First Echo fraction: 50% at every rarity
+        - Echo zone amplification: 15% per Echo, compounding, at every rarity
     - Fielded by: `Sorcerer.tres`
 - Scholar
     - A support character that focuses on knowledge and strategy to enhance allies' abilities and exploit enemy weaknesses. The zone-clearing specialist: the Scholar's kit is one of the two dedicated ways to remove zones from the turn bar (see section 3.2.4.1). Primary attributes: Knowledge.
@@ -629,12 +630,12 @@ the fix belongs in the data or the document.
 ###### Sorcerer
 * Arc Lash
     * Type: Damage (basic skill, no cooldown)
-    * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Mysticism.
+    * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Mysticism. 25% chance to apply Warped for 1 turn.
 * Unstable Rift
     * Type: Turn Bar (Zone)
     * Cooldown: 3 turns
-    * Effect: [Channel 1 / Enabler] All affected characters, allies and enemies alike, gain the Warped debuff for 2 turns and take damage scaling with the Sorcerer's Mysticism — enemies take 30% of a standard hit, allies 15%. Holds 5 charges. This skill's damage lives inside the zone's own trigger list, not as one of its top-level effects, so Arcane Instability's reagent-triggered repeat (section 3.1.3) is a structural no-op here — a reagent consumed before recasting it grants no repeat damage.
-* Cataclysmic Surge
+    * Effect: [Channel 1 / Enabler] All affected characters, allies and enemies alike, gain the Warped debuff for 2 turns and take damage scaling with the Sorcerer's Mysticism — enemies take 30% of a standard hit, allies 15%. Holds 5 charges. Echoes amplify this zone rather than repeating its damage (see Arcane Instability, section 3.1.3).
+* Cataclysm
     * Type: Damage (AoE)
     * Cooldown: 4 turns
     * Effect: [Channel 1 + Channel 2] Deals damage to all enemies, scaling with Mysticism. Targets currently affected by the Warped debuff take 30% increased damage.

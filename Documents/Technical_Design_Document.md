@@ -281,7 +281,7 @@ var cooldown_left: int = 0
 `SkillEffect` (`Scripts/Battle/Skill_Effects/skill_effect.gd`) is the base class every effect
 subclass extends. `ResolveSkill` (see [Section 7.4](#74-skill-resolution-battleresolverresolveskill))
 knows nothing about effect kinds — it walks `Skill.effects` in authored order and calls
-`Resolve(context)` on each one whose condition is met. Every subclass inherits four fields from
+`Resolve(context)` on each one whose condition is met. Every subclass inherits five fields from
 the base class:
 
 ```gdscript
@@ -291,19 +291,22 @@ class_name SkillEffect extends Resource
 @export var condition: Types.Skill_Condition = Types.Skill_Condition.None
 @export var condition_test: Types.Condition_Test = Types.Condition_Test.At_Least
 @export var condition_threshold: float = 0.0
+@export var chance: float = 1.0
 ```
 
 `target` defaults to `Skill_Default`, meaning "resolve against the same targets the skill itself
 was cast at"; any other value resolves that one effect's target group independently (e.g. a
 self-buff on an otherwise offensive skill). `condition`/`condition_test`/`condition_threshold`
 gate the whole effect on a trait's `GetConditionCount` reading for the primary target — see
-[Section 9](#9-trait-hook-system).
+[Section 9](#9-trait-hook-system). `chance` (default `1.0`) gates the effect on an independent roll,
+checked in `SkillCastContext.ConditionMet` before the condition check — one roll per `Resolve` call,
+covering the whole target group (e.g. Arc Lash's 25% chance to apply Warped).
 
 The effect subclasses, all under `Scripts/Battle/Skill_Effects/`:
 
 | Effect | Fields | Resolves |
 |---|---|---|
-| `DamageEffect` | `damage_scaling`, `defense_ignore_factor`, `bonus_per: Dictionary[Types.Trait_Count_Source, float]`, `bonus_per_debuff_on_target: Dictionary[Types.Debuff_Type, float]`, `allow_critical` | Damage to the target group, scaled and bonused — see the damage-bonus discussion in [Section 7.4](#74-skill-resolution-battleresolverresolveskill). `bonus_per_debuff_on_target` contributes one independent combined-modifier bucket per debuff type currently on each individual target (e.g. Cataclysmic Surge's +30% against Warped), so a further matching debuff multiplies — see [Section 7.4](#74-skill-resolution-battleresolverresolveskill). Keyed by debuff type rather than `Trait_Count_Source` because the source is which debuff is present, not a count |
+| `DamageEffect` | `damage_scaling`, `defense_ignore_factor`, `bonus_per: Dictionary[Types.Trait_Count_Source, float]`, `bonus_per_debuff_on_target: Dictionary[Types.Debuff_Type, float]`, `allow_critical` | Damage to the target group, scaled and bonused — see the damage-bonus discussion in [Section 7.4](#74-skill-resolution-battleresolverresolveskill). `bonus_per_debuff_on_target` contributes one independent combined-modifier bucket per debuff type currently on each individual target (e.g. Cataclysm's +30% against Warped), so a further matching debuff multiplies — see [Section 7.4](#74-skill-resolution-battleresolverresolveskill). Keyed by debuff type rather than `Trait_Count_Source` because the source is which debuff is present, not a count |
 | `HealthChangeEffect` | `fraction`, `scaling: Dictionary[Types.Attribute, float]` | A signed max-Health-fraction transfer: negative is a cost (writes `context.health_paid` when the target is the caster), non-negative plus attribute scaling is a heal |
 | `ApplyBuffEffect` | `buff_type`, `duration` | Applies one buff type, with its own duration, to the target group (a second buff on the same skill with a different duration is just a second `ApplyBuffEffect`) |
 | `ApplyDebuffEffect` | `debuff_type`, `duration` | Applies one debuff type; consults `CharacterTrait.GetAppliedStatusValue` for a value override before casting |
@@ -902,6 +905,7 @@ var _on_trigger: Array[SkillEffect] = []        # the zone's effect, as ordinary
 var _visual_scene: PackedScene
 var _affected_since_entry: Array[int] = []      # character IDs already affected this visit
 var _source_name: String = ""                   # placing skill, or graft/trait; see below
+var _damage_multiplier: float = 1.0             # ZoneResolver.AmplifyZoneDamage, see below
 ```
 
 **Placement.** A `ZoneEffect` (see [Section 6.1](#61-resource-templates)) is an ordinary
@@ -967,6 +971,16 @@ multiply by `zone_magnitude`, which is `1.0` outside a zone trigger, so non-zone
 unaffected. `GetIncomingZoneEffectMultiplier` (default `1.0`) lets a character's own trait amplify
 or dampen what they receive from *any* zone, independent of the owner's Knowledge (e.g.
 `RootfeederGraft` at 150% against enemy-owned zones).
+
+**Damage amplification.** `ZoneResolver.AmplifyZoneDamage(zone_ID, factor)` multiplies
+`Zone._damage_multiplier` in place (so repeated calls compound), read into
+`context.zone_damage_multiplier` by `_ResolveZoneEffect` and contributed by `DamageEffect.Resolve`
+as its own `"<source> (amplified)"` `CombinedDamageModifier` bucket whenever it is not `1.0` — a
+distinct bucket from the zone's own trigger key, so the two multiply rather than collide. Generic
+plumbing, not authored on any specific zone; the Sorcerer's Echo is the first caller (see 7.1's
+`SkillCastContext.repeat_bonus`), amplifying a zone its own cast placed instead of repeating the
+zone's damage directly, since the zone's damage lives in `on_trigger`, not the skill's own
+top-level effects.
 
 **Visuals.** `ZoneEffect.visual_scene` is an exported `PackedScene`, resolved when the `.tres` loads
 at battle setup; `SpawnZoneEffect` only pays `instantiate()`, no per-placement `load()`. The three
@@ -1136,27 +1150,37 @@ before it is authorable — the post-and-drain queue and the two termination bou
 themselves need to change to support one, but the vocabulary as shipped does not yet express those
 shapes.
 
-**`Skill_Resolved` and the Sorcerer's reagent-triggered repeat.** `BattleResolver.ResolveSkill`
-posts a `Skill_Resolved` `CascadeEvent` (caster, target IDs, and skill index) right after the
-effect loop and before `Drain()` (`battle_resolver.gd:189-193`) — the first trigger point that
-fires on a skill resolving rather than a status expiring or landing, closing the gap the enum's
-own docstring used to describe incorrectly (repetition was expressible through
-`CascadeEvent.instance_count` once a trigger existed to carry it, but no trigger fired on a cast
-at all). `SorcererTrait` (`Scripts/Character/character_traits/CharacterSpecificTraits/sorcerer_trait.gd`)
+**`Skill_Resolved` and the Sorcerer's Echo repeat.** `BattleResolver.ResolveSkill`
+posts a `Skill_Resolved` `CascadeEvent` (caster, target IDs, and skill index, `instance_count = 1`)
+right after the effect loop and before `Drain()` (`battle_resolver.gd:189-193`) — the first trigger
+point that fires on a skill resolving rather than a status expiring or landing.
+`SorcererTrait` (`Scripts/Character/character_traits/CharacterSpecificTraits/sorcerer_trait.gd`)
 subscribes under its own mechanic key (`&"SorcererTrait"`) in `StartOfBattle`, matching on
-`p_event.subject_ID == p_owner_ID and _consumed_reagent_since_cast` — a flag set by the existing
-`OnReagentConsumed` hook and cleared the moment the repeat fires. The callback
-(`_OnSkillResolvedRepeat`) builds a fresh `SkillCastContext` for the same caster, targets, and cast
-skill (use count 0, a new `TraitSkillResult`, deliberately not a continuation of the original
-cast's own state) and re-resolves only the entries in `cast_skill.effects` that are `DamageEffect`
-instances — a repeated `CastDebuff` or zone effect is skipped outright, not merely deduped, since
-the effect loop is filtered before it runs. `SkillCastContext.repeat_bonus` carries the repeat
-fraction (`REPEAT_BONUS = REPEAT_FRACTION - 1.0`, read by `DamageEffect.Resolve`) as its own
-`CombinedDamageModifier` bucket, so the repeat multiplies against channels 1 and 2 rather than
-adding to them, exactly like any other cascade instance. Because the repeat only walks a skill's
-own top-level `effects`, a skill whose damage lives inside a `ZoneEffect`'s `on_trigger` list
-instead (Unstable Rift) has no `DamageEffect` for the loop to find — a structural no-op for that
-skill, documented in `Concept_Document.md` 3.2.4.2 rather than special-cased in code.
+`p_event.subject_ID == p_owner_ID and _echoes_for_this_cast > 0` — a per-cast count snapshotted from
+`_echo_charges` (granted by a consumed reagent or a released Surge) in `OnSkillCast`, and expanded
+past the event's own `instance_count = 1` by a `SubscribeInstanceModifier` returning
+`_echoes_for_this_cast - 1` (see below), so the listener's callback fires once per Echo. Each call to
+the callback (`_OnSkillResolvedRepeat`) either amplifies a zone this same cast placed
+(`ZoneResolver.AmplifyZoneDamage`, see 7.5) if one exists, or builds a fresh `SkillCastContext` for
+the same caster, targets, and cast skill (use count 0, a new `TraitSkillResult`, deliberately not a
+continuation of the original cast's own state) and re-resolves only the entries in
+`cast_skill.effects` that are `DamageEffect` instances — a repeated `CastDebuff` or zone placement is
+skipped outright, not merely deduped, since the effect loop is filtered before it runs.
+`SkillCastContext.repeat_bonus` carries that Echo's own fraction minus 1.0
+(`REPEAT_FRACTION * ECHO_COMPOUNDING^i - 1.0`, `i` the 0-based Echo index) as its own
+`CombinedDamageModifier` bucket, so each Echo multiplies against channels 1 and 2 rather than adding
+to them, exactly like any other cascade instance.
+
+**`SubscribeInstanceModifier` and mechanic-key scoping.** `CascadeResolver.SubscribeInstanceModifier
+(callback: (CascadeEvent, StringName) -> int)` registers a callback that amplifies a listener's
+instance count once a `Subscribe`d `matches` predicate has already matched an event — the modifier
+never creates a match on its own. `_ResolveEvent` sums every registered modifier's return value
+(passing the matched listener's own `mechanic_key` as the second argument, so a modifier can scope
+itself to one mechanic rather than firing for every cascade instance in the game) and adds it to the
+event's own `instance_count` before the per-instance loop, still bounded by
+`MAX_CASCADE_INSTANCES_PER_ACTION`. Two callers: the Herald of the Loom's Black Thread (unscoped —
+amplifies any cascade instance the Herald's own action produces against an enemy) and the Sorcerer's
+Echo count (scoped to `&"SorcererTrait"`, so it only ever amplifies its own listener).
 
 ### 7.9. Burst presentation pacing
 

@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_05mxh"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_r2vnm"]
-[ext_resource type="Resource" path="res://Data/Character_Skill_Variants/Support_Skills/Center_Stage.tres" id="2_centerstage"]
+[ext_resource type="Resource" uid="uid://cf43fi4d1tijk" path="res://Data/Character_Skill_Variants/Support_Skills/Center_Stage.tres" id="2_centerstage"]
 [ext_resource type="Resource" uid="uid://jgqxh6bwrie0" path="res://Data/Attribute_Weights/Sturdy.tres" id="2_mb06o"]
-[ext_resource type="Resource" path="res://Data/Character_Skill_Variants/Attack_Skills/Pratfall_Sting.tres" id="2_pratfall"]
+[ext_resource type="Resource" uid="uid://c1omq8x7bxvb" path="res://Data/Character_Skill_Variants/Attack_Skills/Pratfall_Sting.tres" id="2_pratfall"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="3_7g6n5"]
 [ext_resource type="Resource" uid="uid://b5174xlhufd0j" path="res://Data/Character_Skill_Variants/Attack_Skills/Burning_Bolas.tres" id="3_efesd"]
 [ext_resource type="Resource" uid="uid://bdxe6eob3xgsh" path="res://Data/Attribute_Weights/Fierce.tres" id="3_s0jyj"]

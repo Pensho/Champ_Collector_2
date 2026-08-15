@@ -5,7 +5,7 @@
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_preset"]
 [ext_resource type="Resource" uid="uid://wrfac2d31w0y" path="res://Data/Character_Skill_Variants/Attack_Skills/Septic_Lance.tres" id="3_septic_lance"]
 [ext_resource type="Resource" uid="uid://dqxvj1n0m8fkr" path="res://Data/Character_Skill_Variants/Attack_Skills/Outbreak.tres" id="4_outbreak"]
-[ext_resource type="Resource" path="res://Data/Character_Skill_Variants/Zone_Skills/Miasma.tres" id="5_miasma"]
+[ext_resource type="Resource" uid="uid://d1qvddj38mg3y" path="res://Data/Character_Skill_Variants/Zone_Skills/Miasma.tres" id="5_miasma"]
 [ext_resource type="Resource" uid="uid://4fnej15sbkkv" path="res://Data/Attribute_Weights/Arcane.tres" id="6_arcane"]
 [ext_resource type="Resource" uid="uid://c60oh3whnodsm" path="res://Data/Attribute_Weights/Resilient.tres" id="7_resilient"]
 [ext_resource type="Resource" uid="uid://b8nee1hs4g663" path="res://Data/Attribute_Weights/Conjurer.tres" id="8_conjurer"]

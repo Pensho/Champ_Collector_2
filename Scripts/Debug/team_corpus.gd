@@ -45,9 +45,9 @@ const PROVISIONAL_ROWS: Array[Dictionary] = [
 	{
 		"presets": [SORCERER, CENTAUR_ARCHIVIST, TACTICIAN],
 		"tier": Tier.Intent,
-		"note": "Cataclysmic Surge's Warped bucket, Scholar's Opportunist grant anchored to " +
+		"note": "Cataclysm's Warped bucket, Scholar's Opportunist grant anchored to " +
 				"the same debuff, and Tactician's unconditional Daunting Strength.",
-		"pinned": {"caster_index": 0, "skill_name": "Cataclysmic Surge"},
+		"pinned": {"caster_index": 0, "skill_name": "Cataclysm"},
 		"provisional": true,
 	},
 	{
