@@ -187,9 +187,9 @@ both directions — the high kits carry a team's whole burst alone, and fielding
 route to the band.
 
 **Factors are only comparable within their own kind** — bucket product, cascade instance count,
-crit-path multiplier, mitigation-term factor (§9.12's bypass, §9.10's Defence debuff), exported
-factor on a carrier. One ranked column across all four is not a
-measurement.
+crit-path multiplier, mitigation-term factor (§9.12's bypass, §9.10's Defence debuff),
+aggregate-term factor (§9.14's attribute-modifier amplification), exported factor on a carrier. One
+ranked column across all of them is not a measurement.
 
 **Current state: bimodal.** Instance counts: Herald 8.64x, Sorcerer 6.59x at its gated ceiling (1.5x
 steady state), Plague Doctor's Comorbidity never projected (§9.1). Bucket products: Architect,
@@ -278,9 +278,9 @@ A Role's basic skill is always self-facing; direction describes the declared-ide
 | Tidal Corsair | Damage | **Channel 2** | Self | Settled (§9.13), confirming this row. An adaptation: Corsair's Reckoning resolves by the composition of the stacks it consumes, and Sea's turn-bar push retires for Undertow, a bank on the target that only a pure Steel hand converts (Batch 3). |
 | Thief | Damage | **Channel 1** | Self | Settled (§9.12), confirming this row. Pilfer retires for Between the Plates, a passive bypass reading a fraction of the target's *base* Defence, so a teammate's Defence shred compounds with it instead of being eaten by it; Weigh the Mark is rebuilt as Cut Purse (Batch 3). |
 | Lancer | Damage | **Channel 2** | Self | Settled (§9.11), moved off this table's Phase 1 proposal of Channel 1. Momentum and Phalanx Guard retire for Charge Distance: the charge scales with the turn-bar sections it touches and throws the Lancer back half that distance. The Role reads turn-bar position rather than accumulating stacks, so it is no longer route D's second anchor (Batch 3). |
-| Tactician | Buffer | **Channel 1** | Exported | Plan's attribute grant stays, but the rework should add a second hook beyond Daunting Strength so this Role is one of several Channel-2 feeds into a pairing, not the roster's sole one (Batch 3). |
+| Tactician | Buffer | **Channel 1** | Exported | **Settled: kept as shipped.** A second hook was explored (Batch 3) and shelved — no addition fit without a clearer read on the Role's team fantasy than a sweep figure can give; open to revisiting outside this plan. |
 | Bloodmage | Sustain, Damage | **Channel 1** | Exported | Hemoclarity's Health-threshold Mysticism surge is already Channel 1 by mechanism; the kit's weight lands in Sanguine Pact (on the carrier) and Hemorrhage (on the boss, readable by every attacker) rather than on the Bloodmage's own cast (Batch 1 — currently a zero-contribution kit). |
-| Scholar | Debuffer, Buffer | **Channel 2** | Exported | Expose Fallacy's Opportunist grant is the modifier-bucket anchor (feeds any per-debuff-type reader on the team). Refutation's zone removal stays an Enabler-tagged skill within the kit — denying the enemy's own zone setup, held to the collapse test on its own, not claimed as the Role's identity (Batch 3). |
+| Scholar | Debuffer, Buffer | **Channel 2** | Exported | Settled (§9.14), confirming this row. Opportunist stays the modifier-bucket anchor; the passive is replaced with an amplifier on every attribute modification the team applies, giving the roster its first reader of the Channel 1 attribute layer, and the basic gains a zone-gated Suppress rider (Batch 3). |
 | Diviner | Sustain, Debuffer | **Channel 1** | Exported | Foresight's pre-emptive Enfeeble is the attribute-channel anchor, and it lands on the enemy for the whole team's benefit; Premonition's auto-miss protection is the exported window. Not a damage carrier — the kit is measured on what it keeps alive and what it blunts (Batch 4). |
 | Symbiote | Sustain, Buffer | **Channel 1** | Exported | Exhert's attribute buff is the baseline anchor, present from the ungrafted state on, and lands on the ally it targets. Post-graft the kit may read as self-facing depending on which graft the player binds (pool-dependent, `Symbiote_Graft_Pool.md`); the ungrafted baseline is what fixes the declared direction (Batch 4). |
 | Bar Brawler | Sustain, Buffer | **Channel 2** | Self | Heap On already grows stronger with every use — the basic skill itself is the modifier-bucket anchor. On the House's heal-on-buff stays an Enabler-tagged skill within the kit, not the Role's identity (Batch 4). |
@@ -341,8 +341,8 @@ the pairing web exists:
   anchoring a route, and route C's second anchor stays open).
 * **Batch 3 — the positional and Enabler pass.** Lancer (**settled, §9.11** — replaced its passive
   with a turn-bar read, leaving route D's second anchor open), Thief (**settled, §9.12** — a
-  base-referenced bypass passive, opening route G with the Architect), Scholar, Tactician (add the
-  second hook so it isn't the pairing web's sole Channel-2 source), Tidal Corsair (**settled,
+  base-referenced bypass passive, opening route G with the Architect), Scholar, Tactician
+  (**settled, kept as shipped** — see this table's row), Tidal Corsair (**settled,
   §9.13** — a composition-reading Reckoning, closing route D).
 * **Batch 4 — remaining protection/denial kits and expansion-only kits.** Alchemist, Diviner,
   Symbiote, Bar Brawler, Warlord — sharpen each Role's Channel 1/2 anchor into a real bucket-key
@@ -1239,6 +1239,88 @@ mixed hand grants two existing statuses rather than one new bespoke buff, so the
 to the catalog instead of two; and Boarding Strike is untouched, since the dominance defect was
 Sea's payload rather than the basic's.
 
+### 9.14 Scholar — every advantage sharpened
+
+**Status:** Settled, not yet implemented. Batch 3.
+
+**Identity: Channel 2, exported**, confirming section 5's row on both axes. An **adaptation**: the
+passive is **replaced** and the basic gains a conditional rider. Expose Fallacy and Refutation are
+kept exactly as they ship.
+
+**Passive: Field of Study** (replaced). Attribute buffs and debuffs applied by the Scholar's team
+are **+7/8/9/11 percentage points by rarity** stronger. Scope: the six primary attributes plus Speed
+and Health. Critical Chance and Critical Damage are excluded — amplifying them would put the Scholar
+on the crit path, which is the Appraiser's whole declared contribution (§9.5). Enemy self-buffs are
+not amplified.
+
+**What the replacement reaches.** Nothing in the roster reads the Channel 1 attribute layer —
+Confound, Suppress, Unravel and Blind are Channel-1-only in practice because nothing makes them
+worth casting (section 2). This passive is what reads them. It lands on the scaled attribute
+aggregate rather than a `CombinedDamageModifier` bucket, so it multiplies with every Channel 2 and 3
+factor a teammate brings instead of sharing a bucket with any of them; and being second-order — a
+modifier on a modifier — it reaches the entire roster at a magnitude that cannot run away.
+
+| Slot | Skill | Effect | Channel |
+|---|---|---|---|
+| Basic | Sharp Rebuttal | Kept, plus a rider: if any zone stands on the turn bar, also applies **Suppress** for 1 turn. | 1 |
+| Signature | Expose Fallacy | Kept as-is. Confound to one enemy and Opportunist to all allies, 2 turns each. Cooldown 3. | 1 + 2 |
+| Signature | Refutation | Kept as-is. Removes one zone from the turn bar. Cooldown 3. | 1 + Enabler |
+
+**The rider's gate is the kit's own tension.** Refutation clears zones; the rider needs one
+standing. The Scholar chooses between denying the enemy's setup and holding its own condition open —
+the first real decision the kit has ever carried, and it gives Refutation's ally-placed branch a cost
+it needed to pass the collapse test on its own merits.
+
+**Why Suppress.** The passive amplifies whatever the basic applies at near-permanent uptime, so the
+rider is chosen for what is safe to hold inflated, not for what gains most from inflation. Suppress
+is purely defensive: at 41% it cuts an enemy's magic output and inflates no part of the team's burst,
+where Slow's tempo denial or Expose Weakness's Defence shred would. Duration carries the whole
+restraint — every attribute debuff in the catalog is 30% except Slow at 15%, so there is no minor one
+to reach for — and 1 turn makes it upkeep the Scholar spends its basic on rather than banked value.
+
+**Composition hooks.** Three, none naming another Role:
+
+* The passive amplifies any attribute modification the team applies — Empower, Fortify, Attune,
+  Exhert, Enfeeble, Expose Weakness, and every attribute status a later batch authors.
+* Opportunist stays the exported bucket anchor, and the kit now feeds the density it reads: Suppress
+  and Confound are two distinct types the Scholar produces itself.
+* Suppress is inert against a physical boss and bites once that boss's damage is re-pointed through
+  Mysticism — Warped (§9.3) makes the Scholar's basic matter in fights where it otherwise would not.
+
+**Projected numbers.** The passive is an **aggregate-term factor**, a kind no other Role fields
+(section 4). One amplified 30% modification is **1.085x** at Legendary; a team running three is
+**≈1.27x**. Opportunist is unchanged at **1.40x** on four distinct debuff types, and easier to reach
+now that the Scholar produces two of them. The Role's exported contribution is **≈1.78x** from two
+terms that multiply rather than share a bucket — inside section 4's band, with no damage factor on
+the Scholar's own sheet.
+
+**Implementation needs (not yet built):**
+
+* A new Scholar trait applying the amplification wherever attribute modifiers resolve;
+  `field_of_study_trait.gd` retires, and its description string carries a live defect — it says the
+  passive identifies each enemy's *weakest* attribute while the code and `Concept_Document.md` both
+  say highest. The replacement moots it.
+* `StatusEffects.Debuff`'s `has_weakness_rider` / `weakness_attribute` / `weakness_reduction` fields
+  retire with the old passive — half of the bespoke-rider architecture defect goes with them, leaving
+  `repeats_per_distinct_debuff` as the only claimant of the generic `trait_riders` container.
+* `Sharp_Rebuttal.tres` gains the conditional Suppress application; the gate needs an "any zone
+  standing on the turn bar" condition, which no skill currently expresses.
+* `kit_contribution_manifest.gd` — Field of Study's entry is replaced, Sharp Rebuttal's gains the
+  rider, and Refutation's stale note about reading an unset `_damage_multiplier` goes.
+* `burst_reachability.gd` — section 11's new gap: the scorer credits granted attribute buffs but
+  nothing amplifies them, so the passive is invisible to the sweep until it does.
+* **Open decision:** `Concept_Document.md` 3.2.4.2 promises Refutation deals damage per remaining
+  charge on an enemy-placed zone; `Refutation.tres` carries no damage parameters. Resolve in either
+  direction at promotion — this kit keeps the skill as it ships and does not settle it.
+* `Concept_Document.md` at promotion: 3.1.3's passive, 3.2.4.2's Sharp Rebuttal, 3.2.3's Suppress
+  claimant.
+
+**Judgment calls made while settling, listed so they can be overruled:** the rider applies Suppress
+at the status's own magnitude, with duration carrying all of the restraint; the passive's scope is
+modifications the Scholar's *team* applies, so an enemy's own Frenzy is untouched; and Slow was
+considered and rejected for the basic — tempo denial is unsafe at permanent uptime regardless of
+magnitude, and the passive makes it more dangerous rather than more interesting.
+
 ## 10. Coverage ledger
 
 Successor to the archived `Plan_Role_Skill_Kits.md`'s claims ledger (status effects only) —
@@ -1272,7 +1354,7 @@ Anchor, Steadfast, Resonance unclaimed.
 |---|---|
 | Plague | Plague Doctor (Outbreak) — moved from Miasma; now stackable, no longer expiry-spread |
 | Blight | Plague Doctor (Miasma) — moved from Quarantine Breach (renamed Outbreak) |
-| Suppress | Herald of the loom (Thread Snap) — moved off the retired Thread Lash, now 1 turn (was 2) |
+| Suppress | Herald of the loom (Thread Snap) — moved off the retired Thread Lash, now 1 turn (was 2); Scholar (Sharp Rebuttal's zone-gated rider) — **settled, not yet implemented** (§9.14). At the commodity-debuff limit of two, so no later Role may take it |
 | Temporal Leak | Herald of the loom (Pull the Thread) — newly claimed, retiring part of `FeatureIdeas.md`'s "Rework Orphaned Turn Bar Effects" item |
 | Warped | Sorcerer (Unstable Rift reliably, Arc Lash's 25% rider) — **settled, not yet implemented** (section 9.3); both sources are the same Role, so the identity-effect rule still holds |
 | Sanction | Emissary (Levied Sanction) — unchanged claimant; widened from an attribute reduction to a per-Infraction damage multiplier every attacker reads, **settled, not yet implemented** (section 9.7) |
@@ -1298,8 +1380,19 @@ implemented** (section 9.5); no other skill in the corpus applies either.
 **Unclaimed inventory**, as of this review — "unclaimed" means *nothing in the game applies it*.
 Refresh in the same edit that lands a batch.
 
-* **No source — debuffs:** Slow, Blind, Sequence Lock, Fatigue, Refracted. Stun only via the
-  ownerless Weight of Law zone (section 10.3) and Rush's expiry. Mana Burn joins when 9.4 lands.
+* **No source — debuffs:** Slow, Blind, Refracted. Mana Burn joins when 9.4 lands. Unravel belongs
+  here in practice: its only source is the Dissolving Agent reagent, so no Role fields it.
+* **Unclaimed by policy, not available to claim:** Fatigue, Stun, Sequence Lock, Signed Writ,
+  Severance. Fights are puzzles, and a status that freezes an enemy's cooldowns, turns, or ability
+  to resist can break one single-handedly. No Role applies these without a severe drawback, and
+  never from a basic skill. Stun's only current source is the ownerless Weight of Law zone
+  (section 10.3) and Rush's expiry, both of which fall on the holder rather than being aimed.
+* **Reserved for Batch 4, not to be claimed earlier:** Enfeeble wants a second source on the
+  **Warlord**, whose row already measures the kit on the window it holds open — cutting enemy Attack
+  is Fortify's job from the other side, and Brace for Impact is the kit's weakest slot. Expose
+  Weakness wants its second on the **Alchemist**, whose Dissolving Agent already applies an
+  attribute debuff and whose declared direction is exported, which is what Defence shred is. Both
+  are standing expectations that these two effects have two Role sources each.
 * **No source — buffs:** True Aim, Clarity, Insight, Mirror Coat, Rehearsed, Wanderlust, Overflow;
   Phalanx Guard joins when 9.11 lands.
   Turn bar buffs Anchor, Steadfast, Resonance are listed above.
@@ -1419,6 +1512,12 @@ identically to one that does not. Phase 0 made that term a real lever again and 
 declared contribution runs through it, as does §9.10's Expose Weakness. The burst skill's mitigation
 needs the same effective-Defence computation `battle_resolver.gd` performs, base-referenced
 subtraction included.
+
+**Open gap, found while settling §9.14.** The scorer credits granted attribute buffs into a
+candidate's scaled aggregate (`_ContributeGrantedAttributeBuffs`) but nothing can amplify them, so
+the Scholar's passive — which raises every attribute modification the team applies — is structurally
+invisible to the sweep. It needs a manifest field declaring an amplification of the aggregate term,
+applied after the granted buffs are credited.
 
 **Consequence for measurement.** `total_contrast_ratio` stays the pure single-action figure the
 30-50x burst-band target is checked against; `combined_contrast_ratio` is the separate figure

@@ -42,7 +42,7 @@ Jester was Phase 1's proposal and is no longer a candidate, and no unsettled Rol
 it. Chronophage's threshold-crossing `Cascade_Trigger` is **not** authored — counting section
 boundaries is arithmetic a player cannot read off the screen.
 
-Phase 4 (Batch 3) started, one Role at a time. Three settled, none implemented:
+Phase 4 (Batch 3) **complete**, settled one Role at a time. Four settled, none implemented:
 
 * **Lancer (§9.11)** — the batch's only replacement, and the first kit gated on *position* rather
   than a resource. Opens route F; accumulate-then-spend drops to four claimants.
@@ -53,8 +53,21 @@ Phase 4 (Batch 3) started, one Role at a time. Three settled, none implemented:
 * **Tidal Corsair (§9.13)** — an adaptation closing route D. Prompted the description soft cap
   (`Concept_Document.md` 3.2.4), and its Slipstream claim retires part of `FeatureIdeas.md`'s
   orphaned-turn-bar-effects item and narrows its Outrider sketch.
+* **Scholar (§9.14)** — an adaptation. The passive is replaced with an amplifier on every attribute
+  modification the team applies, giving the roster its first reader of the Channel 1 attribute layer,
+  which nothing has ever made worth casting. The basic gains a zone-gated Suppress rider whose gate
+  Refutation can clear, so the kit carries an internal decision for the first time. One scorer gap
+  follows (`Role_Kit_Design.md` §11): the sweep can credit granted attribute buffs but cannot amplify
+  them, so the passive is invisible to it.
+* **Tactician** — settled as kept, unchanged. A second Channel-2 hook was explored and every
+  candidate shelved (a niche buff on an automatic-target passive, a debuff taxing Accuracy,
+  stacking onto Fatal Flaw's already-strong grant, and a rider assuming Fatal Flaw was
+  single-target when it is already team-wide); revisiting the Role's kit is deferred outside this
+  plan until its team fantasy is clearer than a sweep figure can make it.
 
-Two Roles left in Phase 4. **Roster-wide mechanics changes that settled kits depend on are held in
+Phase 5 (Batch 4) is next: Alchemist, Diviner, Symbiote, Bar Brawler, Warlord. Two allocations are
+already reserved for it in `Role_Kit_Design.md` §10.1 — Enfeeble's second Role source on the Warlord
+and Expose Weakness's on the Alchemist. **Roster-wide mechanics changes that settled kits depend on are held in
 `Role_Kit_Design.md` §12** until each one ships, rather than promoted into `Concept_Document.md`
 ahead of the game.
 
