@@ -65,9 +65,34 @@ Phase 4 (Batch 3) **complete**, settled one Role at a time. Four settled, none i
   single-target when it is already team-wide); revisiting the Role's kit is deferred outside this
   plan until its team fantasy is clearer than a sweep figure can make it.
 
-Phase 5 (Batch 4) is next: Alchemist, Diviner, Symbiote, Bar Brawler, Warlord. Two allocations are
-already reserved for it in `Role_Kit_Design.md` §10.1 — Enfeeble's second Role source on the Warlord
-and Expose Weakness's on the Alchemist. **Roster-wide mechanics changes that settled kits depend on are held in
+Phase 5 (Batch 4) in progress, settled one Role at a time: Alchemist, Diviner, Symbiote, Bar
+Brawler, Warlord. Each Role's declared identity is re-derived from what its kit wants to be before
+its slots are touched, rather than inherited from `Role_Kit_Design.md` §5's row. Settled so far:
+
+* **Alchemist (§9.15)** — an adaptation. Passive and basic kept; Catalyst gains a brew refund on
+  every non-brew reagent consumed, making the zone the thing that keeps the passive's window live
+  rather than a potency add-on; Dissolving Agent gains damage and a second debuff, discharging
+  Expose Weakness's reserved second source and putting a third feeder on route G.
+* **Diviner (§9.16)** — an adaptation, and the batch's first redeclared identity: Channel 1 becomes
+  Enabler, since every effect in the kit is mitigation or denial. Premonition keeps its prediction
+  decision and gains a counter-attack with the holder's basic, the roster's first counter-attack
+  and a minor exported instance count.
+* **Symbiote (§9.17)** — settled as kept. Direction corrected to self-facing (§5's row had Exhert
+  landing on an ally; it targets the Symbiote), and the kit's composition hook turned out to already
+  exist: the Symbiote's own self-wounding feeds route E's `Wounded_Allies` surface.
+* **Bar Brawler (§9.18)** — settled as kept. Heap On's ramp violates two of the framework's own
+  constraints (an unconditional Channel 2 key on a no-cooldown cast, and uncapped growth) and stands
+  as a sanctioned exception on the rule of cool; §1.2's "to fix at its own batch" is retired.
+* **Warlord (§9.19)** — an adaptation, and the second redeclared identity: Channel 1 becomes
+  Enabler. Brace for Impact, the kit's weakest slot, gains a reactive Enfeeble on anything whose
+  attack lands on the Warlord, redirected damage included — discharging Enfeeble's reserved second
+  source and closing the kit into one loop. §8's twice-claimed damage-redirection item closes here
+  unchanged.
+
+**Phase 5 (Batch 4) design complete. None of the five is implemented.** The batch found no
+zero-contribution or one-note kit needing replacement, as expected; its substantive finding is that
+§5's rows for the protection kits had each assumed a damage term the kit does not owe, corrected on
+the Diviner and the Warlord (now Enabler) and on the Symbiote (direction). **Roster-wide mechanics changes that settled kits depend on are held in
 `Role_Kit_Design.md` §12** until each one ships, rather than promoted into `Concept_Document.md`
 ahead of the game.
 

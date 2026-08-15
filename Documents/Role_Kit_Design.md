@@ -4,9 +4,10 @@ Living design document for the Blowout pillar's kit layer. Settled kits are prom
 `Concept_Document.md` 3.2.4.2, which stays the authority once a kit lands; this document carries
 the allocation and the in-flight synergy ledger before that promotion.
 
-**Status:** channel identity allocation, contribution direction, and pairing web settled; batches
-2-4 proposed. No skill or status `.tres` exists yet beyond what already ships
-(`Concept_Document.md` 3.2.4.2).
+**Status:** channel identity allocation, contribution direction, and pairing web settled; all four
+batches designed and all 20 Roles settled — 19 with a section 9 entry, the Tactician kept unchanged
+in section 7's table. No skill or status `.tres` exists yet
+beyond what already ships (`Concept_Document.md` 3.2.4.2).
 
 ## 1. The per-Role kit contract
 
@@ -80,8 +81,9 @@ attribute; that is not a channel identity claim. A basic may also carry a rider 
 status application, a small heal, a stack grant — or a Channel 2 bucket key, **provided the key is
 conditional**: gated on world state the player has to produce (Pratfall Sting's avoidance, Citation's
 Infraction tally). An *unconditional* key on a no-cooldown cast makes channel contribution free and
-is the one shape forbidden — Bar Brawler's Heap On ramp is the roster's only case, to fix at its own
-batch. Most basics stay plain: the allowance lets a kit put its identity on its basic, not a licence
+is the one shape forbidden. Bar Brawler's Heap On ramp is a **sanctioned exception** to both this
+rule and section 4's uncapped-growth constraint, kept on the rule of cool (§9.18).
+Most basics stay plain: the allowance lets a kit put its identity on its basic, not a licence
 for every Role's basic to grow a second clause. A Role of any identity may carry zero or more
 Enabler-tagged skills or riders — a basic skill's secondary rider, a dedicated protection/denial
 skill, a heal — each held to the **collapse test** (`Concept_Document.md` 1.1.6) on its own
@@ -281,10 +283,10 @@ A Role's basic skill is always self-facing; direction describes the declared-ide
 | Tactician | Buffer | **Channel 1** | Exported | **Settled: kept as shipped.** A second hook was explored (Batch 3) and shelved — no addition fit without a clearer read on the Role's team fantasy than a sweep figure can give; open to revisiting outside this plan. |
 | Bloodmage | Sustain, Damage | **Channel 1** | Exported | Hemoclarity's Health-threshold Mysticism surge is already Channel 1 by mechanism; the kit's weight lands in Sanguine Pact (on the carrier) and Hemorrhage (on the boss, readable by every attacker) rather than on the Bloodmage's own cast (Batch 1 — currently a zero-contribution kit). |
 | Scholar | Debuffer, Buffer | **Channel 2** | Exported | Settled (§9.14), confirming this row. Opportunist stays the modifier-bucket anchor; the passive is replaced with an amplifier on every attribute modification the team applies, giving the roster its first reader of the Channel 1 attribute layer, and the basic gains a zone-gated Suppress rider (Batch 3). |
-| Diviner | Sustain, Debuffer | **Channel 1** | Exported | Foresight's pre-emptive Enfeeble is the attribute-channel anchor, and it lands on the enemy for the whole team's benefit; Premonition's auto-miss protection is the exported window. Not a damage carrier — the kit is measured on what it keeps alive and what it blunts (Batch 4). |
-| Symbiote | Sustain, Buffer | **Channel 1** | Exported | Exhert's attribute buff is the baseline anchor, present from the ungrafted state on, and lands on the ally it targets. Post-graft the kit may read as self-facing depending on which graft the player binds (pool-dependent, `Symbiote_Graft_Pool.md`); the ungrafted baseline is what fixes the declared direction (Batch 4). |
+| Diviner | Sustain, Debuffer | **Enabler** | Exported | Redeclared from Channel 1 at Batch 4 (§9.16): Enfeeble, Premonition and Hexed are all mitigation and denial, and the kit owes no damage factor. Measured on the collapse test. |
+| Symbiote | Sustain, Buffer | **Channel 1** | Self | Exhert's attribute buff is the baseline anchor, present from the ungrafted state on, and it lands on the Symbiote itself. Direction corrected from Exported at Batch 4 (§9.17); post-graft the kit may read either way depending on which graft the player binds (pool-dependent, `Symbiote_Graft_Pool.md`), and the ungrafted baseline is what fixes the declaration. |
 | Bar Brawler | Sustain, Buffer | **Channel 2** | Self | Heap On already grows stronger with every use — the basic skill itself is the modifier-bucket anchor. On the House's heal-on-buff stays an Enabler-tagged skill within the kit, not the Role's identity (Batch 4). |
-| Warlord | Sustain | **Channel 1** | Exported | Shield Slam scales with Defence as the self-facing floor, but the kit's weight is the window it holds open: Shield Wall's damage redirection and Hold the Line's granted Fortify. Measured on the collapse test, not on a damage factor (Batch 4). |
+| Warlord | Sustain | **Enabler** | Exported | Redeclared from Channel 1 at Batch 4 (§9.19): Fortify raises Defence, which is no damage term, and the whole kit is mitigation. The weight is the window it holds open — Shield Wall's redirection, Hold the Line's Fortify, Brace for Impact's Enfeeble. Measured on the collapse test. |
 
 ## 6. The pairing web
 
@@ -303,7 +305,7 @@ in Phase 1; route F was opened by a settled kit, and a later batch may open anot
 | **D — Stack consumption** | Self-contained accumulate-then-spend payload | **Closed.** Architect (Calibration finisher, exported through Expose Weakness — §9.10) + Tidal Corsair (the Reckoning's composition modes, self — §9.13). The route's original "non-Corsair" framing was a guard against the shipped ceiling pairing, which the post-Herald sweep has already displaced. | 2 → 3 |
 | **E — Health threshold** | Missing-Health percentage as a `bonus_per` surface | **Closed.** Bloodmage (caster-own and enemy-own missing Health, §9.4) + Cultist (the Vessel's threshold and its death, §9.8) | 1 → 2 |
 | **F — Turn-bar distance** | The turn-bar span between attacker and target, read at the moment of impact | Lancer (Charge Distance, §9.11). Every kit that pushes an enemy back feeds it — the Corsair's Sea stacks, the Chronophage's theft, Dead Weight, Temporal Leak — so the route's other half is any turn-bar writer, not a designated anchor. | 3 |
-| **G — Armour removal** | The target's effective Defence at the moment of impact, outside the combined modifier | **Closed.** Architect (Expose Weakness, exported — §9.10) + Thief (base-referenced bypass, self — §9.12). The two compose because the bypass subtracts a fraction of *base* Defence rather than scaling what is left. | 2, 3 |
+| **G — Armour removal** | The target's effective Defence at the moment of impact, outside the combined modifier | **Closed.** Architect (Expose Weakness, exported — §9.10) + Thief (base-referenced bypass, self — §9.12). The two compose because the bypass subtracts a fraction of *base* Defence rather than scaling what is left. The Alchemist's Dissolving Agent is a third feeder (§9.15). | 2, 3 |
 
 **Direction mix across the routes.** A route with one exported anchor and one self-facing anchor is
 the healthy shape — one kit hands the factor over, the other spends it. Routes A and E have it;
@@ -344,13 +346,13 @@ the pairing web exists:
   base-referenced bypass passive, opening route G with the Architect), Scholar, Tactician
   (**settled, kept as shipped** — see this table's row), Tidal Corsair (**settled,
   §9.13** — a composition-reading Reckoning, closing route D).
-* **Batch 4 — remaining protection/denial kits and expansion-only kits.** Alchemist, Diviner,
-  Symbiote, Bar Brawler, Warlord — sharpen each Role's Channel 1/2 anchor into a real bucket-key
-  contribution and confirm its protection/denial skill (Premonition, the graft baseline, On the
-  House, Shield Wall) earns its collapse-test claim as an Enabler-tagged skill within the kit,
-  rather than being promoted into a bucket key itself; expected to be mostly "expand, don't
-  replace" per the plan's default posture, since none of these were flagged as zero-contribution
-  or one-note in the baseline findings.
+* **Batch 4 — remaining protection/denial kits and expansion-only kits.** Alchemist (**settled,
+  §9.15** — passive kept, a refund payload on Catalyst and a two-debuff third slot), Diviner
+  (**settled, §9.16** — redeclared Enabler, one reworked slot), Symbiote (**settled, §9.17** —
+  kept, direction corrected), Bar Brawler (**settled, §9.18** — kept, Heap On sanctioned),
+  Warlord (**settled, §9.19** — redeclared Enabler, one reworked slot). **Batch complete.** All five
+  are adaptations or kept kits; two Roles' declared channels were redeclared and one's direction
+  corrected, since §5's rows for the protection kits had assumed a damage term each kit does not owe.
 
 This grouping favors closing routes early over leaving half-pairings scattered across three
 batches — batch 2 alone completes the pairing web's every proposed route, leaving batches 3-4 to
@@ -365,10 +367,6 @@ collapse-test payload without inventing new gating mechanics.
   Sanction). The same privacy runs through the seven accumulate-then-spend counters, which feed
   nothing outside their own kit; most are expected to stay that way, but check it whenever a kit
   could export instead.
-* Damage redirection is claimed twice — Warlord's Shield Wall (the Role's whole collapse-test claim)
-  and Bloodmage's settled Sanguine Pact. Judged minor, since one redirects to protect and the other
-  as the price of a damage buff. Revisit at Warlord's batch if its redesign leans harder on
-  redirection; no change now.
 * The exact `Trait_Count_Source` / debuff-type identifiers for Emissary's Infraction hook and
   Bloodmage's missing-Health hook are batch-time authoring decisions, not Phase 1 commitments.
 * Whether Chronophage's new threshold-crossing `Cascade_Trigger` should also serve a future
@@ -1321,6 +1319,213 @@ modifications the Scholar's *team* applies, so an enemy's own Frenzy is untouche
 considered and rejected for the basic — tempo denial is unsafe at permanent uptime regardless of
 magnitude, and the passive makes it more dangerous rather than more interesting.
 
+### 9.15 Alchemist — the reagent economy kept running
+
+**Status:** Settled, not yet implemented. Batch 4.
+
+**Identity: Channel 2, exported**, confirming section 5's row on both axes. An **adaptation**: the
+passive and the basic are kept exactly as they ship; the zone gains a payload and the third slot
+gains two clauses. The passive's 1.29x sits below section 4's band and stays there — the factor is
+unconditional, reaches all three champions, and is one of two effects the passive pays.
+
+**Passive: Fresh Batch** (kept). Brews one battle-scoped reagent from the Alchemist pool; any ally
+consuming any reagent grants the team Volatile Mixture, +20/23/26/29% damage by rarity for 2 turns.
+
+| Slot | Skill | Effect | Channel |
+|---|---|---|---|
+| Basic | Acrid Splash | Kept as-is. Knowledge-scaled single-target damage, no rider. | 1 |
+| Signature | Catalyst Cloud | Kept, plus a payload on Catalyst: when the holder consumes a **non-brew** reagent, one reagent from the Alchemist brew pool is refunded. Zone, 4 charges, cooldown 3. | Enabler |
+| Signature | Dissolving Agent | Modest Knowledge-scaled damage, plus **Unravel** and **Expose Weakness** to one enemy. Cooldown 3. | 1 |
+
+**Catalyst Cloud's claim is the window, not the magnitude.** The refund multiplies the *number* of
+reagent consumptions, and every consumption re-arms Volatile Mixture and pays its own reagent
+payload. Volatile Mixture refreshes rather than stacks, so the zone's collapse-test claim is that
+the buff is live when the burst lands and the team has not run dry — never that the factor is
+deeper. The chain terminates on its own: refunded brews are non-refunding, and the pool is the
+lesser one, so the loop trades power for volume.
+
+**Dissolving Agent's damage is a floor, not a payload.** It stops the slot being a pure application
+on the turn it is spent; the value is the two debuffs. Expose Weakness lands outside the combined
+modifier, so it multiplies against the passive's bucket rather than sharing it, and discharges
+section 10.1's standing reservation of the effect's second Role source.
+
+**Composition hooks.** Volatile Mixture stays the exported bucket every teammate consumes; Expose
+Weakness puts a third feeder on route G, readable by any attacker; the refund raises the reagent
+consumption count any reagent-reading kit sees.
+
+**Projected numbers.** Bucket product unchanged at **1.29x** at Legendary. Expose Weakness is a
+mitigation-term factor, the kind section 4 holds separate from the bucket product, and it is
+comparable to §9.10's Defence debuff rather than to the passive.
+
+**Implementation needs (not yet built):**
+
+* `Catalyst_Cloud.tres` / the Catalyst status gains the refund clause; the refund needs a path that
+  adds a brew-pool reagent to the shared slots mid-battle, which `fresh_batch_trait.gd` currently
+  only does at combat start, and a marker distinguishing brews from brought reagents so the loop
+  terminates.
+* `Dissolving_Agent.tres` gains a `DamageEffect` and the second debuff application.
+* `kit_contribution_manifest.gd` — Catalyst Cloud's and Dissolving Agent's entries.
+* `Concept_Document.md` at promotion: 3.2.4.2's two skills, 3.2.3's Expose Weakness claimant.
+* **Watch item, parked outside this plan:** the refund loop makes Lesser Barrier Brew (a Barrier
+  absorbing 40% of max Health) repeatable where it was once per battle. Brew-pool magnitudes are the
+  lever, and tuning them is out of scope here.
+
+### 9.16 Diviner — the read pays back
+
+**Status:** Settled, not yet implemented. Batch 4.
+
+**Identity: Enabler, exported**, redeclaring section 5's Channel 1 row. Enfeeble cuts the enemy's
+Attack, Premonition blocks a hit, Hexed denies rolls — all mitigation and denial, and §1.2's
+Enabler identity is what the kit already is. An **adaptation**: one skill gains a clause, everything
+else is kept.
+
+**Passive: Foresight** (kept). At turn start, applies Enfeeble for 1 turn with no resist roll to
+every enemy within 10/15/20/25% turn-bar-behind reach by rarity.
+
+| Slot | Skill | Effect | Channel |
+|---|---|---|---|
+| Basic | Fateful Glimpse | Kept as-is. Mysticism-scaled damage plus a heal to the most injured ally. | 1 |
+| Signature | Premonition | Kept, plus a clause: the attack the holder avoids is answered by an **immediate counter-attack with the holder's basic skill**. One ally, 1 turn, cooldown 3. | Enabler |
+| Signature | Ill Omen | Kept as-is. Mysticism-scaled damage plus Hexed, 2 turns. Cooldown 3. | 1 + Enabler |
+
+**The counter pays a correct read.** Premonition's decision is predicting who the enemy attacks —
+a readable, repeatable call, not a guess, since targeting follows gear and stats rather than
+changing turn to turn. A team-wide version was considered and rejected: it removes the target choice
+and turns the skill into an on-cooldown cast. The counter leaves the prediction as the whole
+decision and returns tempo for calling it right; calling it wrong still costs the cast.
+
+Three details settled with it: the counter resolves at **full basic strength** (rarity ladders live
+on the passive, so a fraction here would sit in the wrong place); the auto-miss and the counter are
+**one event** — the attack whiffs, the buff is consumed, the counter fires, including when the
+holder is one target of an enemy AoE; and the counter **costs the holder nothing** — no turn-bar
+movement, no turn spent.
+
+**Composition hooks.** Enfeeble and Hexed are world state any kit can read. The counter is the third
+and the only exported one: an off-turn resolution on a teammate's sheet.
+
+**The counter is a minor exported instance count.** By §3's total-resolutions test an off-turn basic
+is one more resolution than would otherwise happen, the same *kind* of contribution as §9.9's
+Borrowed Time. Recorded here so a later coverage review reads it as what it is rather than as an
+unclaimed Channel 3 anchor. The two are distinguishable in shape — Borrowed Time's holder chooses
+when to spend it, the counter is triggered by the enemy — and this one is a single basic behind a
+correct prediction and a 3-turn cooldown. It does not unseat the Enabler declaration: an identity is
+a claim on one term, not a ceiling on the rest of the kit.
+
+**Projected numbers.** None. The kit fields no damage factor and is measured on the collapse test,
+absent from the sweep's ranking by design (§4).
+
+**Implementation needs (not yet built):**
+
+* The Premonition buff's consumption path (`ConsumePremonitionIfPresent` in `battle_resolver.gd`)
+  gains the counter-attack resolution — nothing in the roster counter-attacks today, so the
+  off-turn basic resolution is new plumbing. Check it against the Symbiote graft pool's retaliatory
+  pull when that kit settles, so the two stay distinct effects.
+* `kit_contribution_manifest.gd` — Premonition's entry.
+* `Concept_Document.md` at promotion: 3.1.3's Diviner identity tag, 3.2.4.2's Premonition, 3.2.3's
+  Premonition buff.
+
+### 9.17 Symbiote — kept
+
+**Status:** Settled as kept, unchanged. Batch 4.
+
+**Identity: Channel 1, self-facing.** Exhert is a real attribute-layer anchor — +20% on every
+primary attribute except Health — and it points inward: Symbiotic Overdrive targets the Symbiote,
+not an ally. Section 5's row is corrected on direction only. Post-graft the kit may read either way,
+which is what the graft pool is for.
+
+Passive Graft, Spore Lash, Symbiotic Overdrive and Grafted Flesh all keep exactly as they ship. The
+Role's variety is meant to come from the graft pool, not from its three fixed slots, and §1's
+contract is met without touching them.
+
+**Composition hook: the Symbiote wounds itself, reliably and repeatedly.** Exhert's per-turn tick
+and Grafted Flesh's 10% self-cost are the world state §9.4's `Wounded_Allies` counter reads and
+route E is built on. The hook already exists and needed only naming.
+
+**Two decisions made and closed, so they are not rediscovered as gaps:**
+
+* **The Buffer purpose is served by the graft pool, not by the fixed kit.** Several grafts are
+  ally-facing; the three slots are not required to duplicate them.
+* **The 5- and 4-turn cooldowns stay.** Both skills cost Health rather than tempo, which is the
+  Role's fiction. Their durations nearly cover their cooldowns, so re-casting is upkeep rather than
+  a spend-or-hold gamble; widening that gap is a tuning change, out of this plan's scope.
+
+**Projected numbers.** Exhert's +20% is an aggregate-term contribution on the Symbiote's own sheet,
+comparable only to §9.14's kind. No bucket key, by design.
+
+### 9.18 Bar Brawler — kept, Heap On sanctioned
+
+**Status:** Settled as kept, unchanged. Batch 4.
+
+**Identity: Channel 2, self-facing**, confirming section 5's row on both axes. Heap On's ramp is the
+bucket anchor; On the House is Enabler content beside it, not the Role's identity.
+
+Passive On the House!, Heap On, Liquid Courage and Headbutt all keep exactly as they ship.
+
+**Heap On's ramp is a sanctioned exception, on the rule of cool.** It is an unconditional Channel 2
+key on a no-cooldown cast (§1.2's one forbidden shape) and it is uncapped (§4). Both stand: the
+skill is more fun than the rules it breaks, and fun wins. Consequence, recorded so a later review
+reads it as the exception working rather than a regression: a long fight can carry Heap On above the
+roster's ceiling in the sweep, and it is expected to.
+
+**Composition hook.** On the House reads any buff the Bar Brawler gains from any source, so every
+Buffer kit in the roster feeds it without either side naming the other. Liquid Courage is the kit's
+own trigger for it.
+
+**Projected numbers.** Heap On's bucket is +20% per use with no ceiling, so it has no fixed figure
+to place in section 4's distribution — the only entry in the roster of which that is true.
+
+### 9.19 Warlord — everything that strikes the wall pays for it
+
+**Status:** Settled, not yet implemented. Batch 4.
+
+**Identity: Enabler, exported**, redeclaring section 5's Channel 1 row. Fortify raises Defence, which
+is no damage term; redirection, Fortify and Aegis are all mitigation. An **adaptation**: one slot
+gains a clause.
+
+**Passive: Shield Wall** (kept). Allies within 15% turn-bar proximity have 15/20/25/30% of incoming
+attack damage redirected to the Warlord by rarity, re-mitigated against his own Defence.
+
+| Slot | Skill | Effect | Channel |
+|---|---|---|---|
+| Basic | Shield Slam | Kept as-is. Defence-scaled single-target damage. | 1 |
+| Signature | Hold the Line | Kept as-is. All allies gain Fortify, 2 turns. Cooldown 3. | Enabler |
+| Signature | Brace for Impact | Kept, plus a clause: while it holds, any enemy whose attack lands on the Warlord — **including damage redirected to him by Shield Wall** — gains **Enfeeble for 2 turns**. Rush and Aegis 1 turn each, Rush's expiry self-Stun kept as the price. Cooldown 4. | Enabler |
+
+**The reactive form is the design.** An all-enemies Enfeeble would be a generic debuff button; keying
+it to attackers makes it proportional to the pressure the team is actually under, and Shield Wall
+already guarantees the trigger by making the Warlord the thing being hit. Counting redirected damage
+closes the kit into one loop: proximity pulls the hit, the hit taxes the attacker, Fortify and Aegis
+hold him through it. It also completes the mitigation triangle — Fortify raises the team's Defence,
+Shield Wall moves the damage, Enfeeble cuts it at the source — and discharges §10.1's reservation of
+Enfeeble's second Role source.
+
+**Enfeeble lands on impact, not before it.** An attack's damage is computed from the attacker's
+attributes when the skill resolves, so a debuff applied at the moment of impact cannot shrink that
+same hit; making it genuinely pre-hit would mean applying it at the start of the attacker's action,
+which is new plumbing and reads on screen as an icon appearing for no visible cause. The first blow
+lands full — which is what bracing *for* an impact means — and the 2-turn duration taxes every
+follow-up.
+
+**Composition hooks.** Enfeeble is world state any kit can read, and the redirection window is the
+exported one: an ally standing inside it survives a resolution it otherwise would not.
+
+**Damage redirection stays claimed twice**, closing §8's open item at the batch it named. This kit
+does not lean harder on redirection, so Shield Wall and Bloodmage's Sanguine Pact remain
+distinguishable — one redirects to protect, the other prices a damage buff.
+
+**Projected numbers.** None. The kit fields no damage factor and is measured on the collapse test,
+absent from the sweep's ranking by design (§4).
+
+**Implementation needs (not yet built):**
+
+* `Brace_for_Impact.tres` gains the reactive clause; it needs a "while this buff holds, on damage
+  landing on the holder, debuff the attacker" hook, which no skill currently expresses. The
+  redirected-damage case must route through it too — `shield_wall_trait.gd`'s redirection carries the
+  original attacker's identity to the trigger.
+* `kit_contribution_manifest.gd` — Brace for Impact's entry.
+* `Concept_Document.md` at promotion: 3.1.3's Warlord identity tag, 3.2.4.2's Brace for Impact,
+  3.2.3's Enfeeble claimants.
+
 ## 10. Coverage ledger
 
 Successor to the archived `Plan_Role_Skill_Kits.md`'s claims ledger (status effects only) —
@@ -1365,6 +1570,9 @@ Anchor, Steadfast, Resonance unclaimed.
 | Confound | Scholar (Expose Fallacy), Appraiser (Flaw Analysis) — **settled, not yet implemented** (section 9.5). Second claimant, within the commodity-debuff limit of two. Magnitude rises roster-wide (section 12) |
 | Hexed | Diviner (Ill Omen), Jester (Burning Bolas) — **settled, not yet implemented** (section 9.6). Second claimant, at the commodity-debuff limit of two, so no later Role may take it. Scope widens roster-wide (section 12) |
 | Undertow | Tidal Corsair (Saltwater Shot's Sea stacks, spent by Corsair's Reckoning) — **settled, not yet implemented** (section 9.13); new debuff, no prior claimant, stacks to 3 |
+| Enfeeble | Diviner (Foresight), Warlord (Brace for Impact's reactive clause) — **settled, not yet implemented** (section 9.19). Second claimant, at the commodity-debuff limit of two |
+| Unravel | Alchemist (Dissolving Agent) — unchanged claimant; the skill keeps it alongside a second debuff, **settled, not yet implemented** (section 9.15) |
+| Expose Weakness | Architect (Calibration), Alchemist (Dissolving Agent) — **settled, not yet implemented** (section 9.15). Second claimant, at the commodity-debuff limit of two, and its first skill source |
 | Burning | Jester (Burning Bolas), Lava Zone — unchanged claimants. Tick changes roster-wide (section 12) — **settled, not yet implemented** (section 9.6) |
 
 **Buffs** — Borrowed Time is a new buff, claimed by Chronophage (Time Tithe) — **settled, not yet
@@ -1380,19 +1588,13 @@ implemented** (section 9.5); no other skill in the corpus applies either.
 **Unclaimed inventory**, as of this review — "unclaimed" means *nothing in the game applies it*.
 Refresh in the same edit that lands a batch.
 
-* **No source — debuffs:** Slow, Blind, Refracted. Mana Burn joins when 9.4 lands. Unravel belongs
-  here in practice: its only source is the Dissolving Agent reagent, so no Role fields it.
+* **No source — debuffs:** Slow, Blind, Refracted. Mana Burn joins when 9.4 lands.
 * **Unclaimed by policy, not available to claim:** Fatigue, Stun, Sequence Lock, Signed Writ,
   Severance. Fights are puzzles, and a status that freezes an enemy's cooldowns, turns, or ability
   to resist can break one single-handedly. No Role applies these without a severe drawback, and
   never from a basic skill. Stun's only current source is the ownerless Weight of Law zone
   (section 10.3) and Rush's expiry, both of which fall on the holder rather than being aimed.
-* **Reserved for Batch 4, not to be claimed earlier:** Enfeeble wants a second source on the
-  **Warlord**, whose row already measures the kit on the window it holds open — cutting enemy Attack
-  is Fortify's job from the other side, and Brace for Impact is the kit's weakest slot. Expose
-  Weakness wants its second on the **Alchemist**, whose Dissolving Agent already applies an
-  attribute debuff and whose declared direction is exported, which is what Defence shred is. Both
-  are standing expectations that these two effects have two Role sources each.
+* Enfeeble's reservation for the Warlord is discharged — see the debuff table above.
 * **No source — buffs:** True Aim, Clarity, Insight, Mirror Coat, Rehearsed, Wanderlust, Overflow;
   Phalanx Guard joins when 9.11 lands.
   Turn bar buffs Anchor, Steadfast, Resonance are listed above.
@@ -1400,7 +1602,8 @@ Refresh in the same edit that lands a batch.
 * **Trait code only, never a skill:** Empower (Plan; Tidal Corsair's Corsair's Reckoning becomes a
   second claimant and its first skill source when 9.13 lands, within the commodity-buff limit of
   two), Attune (Chosen Vessel), Expose Weakness
-  (Calibration — magnitude becomes charge-scaled, §9.10), Cracked Facet (Strike the Flaw, retiring
+  (Calibration — magnitude becomes charge-scaled, §9.10; gains its first skill source when 9.15
+  lands), Cracked Facet (Strike the Flaw, retiring
   in 9.5). Phalanx Guard leaves this list for the unclaimed buffs when 9.11 lands — Reckless
   Momentum, its only source, retires with the Lancer's passive.
 
@@ -1413,6 +1616,7 @@ key, not a doc paraphrase) — the authority the burst-reachability scorer actua
 | Bucket key | Claimed by | Shape |
 |---|---|---|
 | `CombinedDamageModifier.TRAIT_RESOURCE_KEY` | Cultist (Chosen Vessel), Architect (Calibration), Tidal Corsair (Wrangle the Sea) | Shared resource-key identifier — each Role's own trait-resource meter, not a collision: the key names the *mechanism* (caster's own resource-driven bucket), and each caster only ever reads their own resource, so three Roles sharing it composes rather than colliding. |
+| `Volatile_Mixture` (granted status) | Alchemist (Fresh Batch) | Granted `DamageMultiplier` status on reagent consumption — lands on every teammate, refreshed rather than stacked |
 | `Citation` | Emissary (Citation) | Skill-name bucket |
 | `Warped` | Sorcerer (Cataclysm) | Debuff-type bucket — doubles as the debuff identity itself. Skill renamed from Cataclysmic Surge in section 9.3; the bucket key is the debuff name, so the rename does not move the key |
 | `Zone: Unstable Rift` | Sorcerer (Unstable Rift) | Zone-name bucket |
