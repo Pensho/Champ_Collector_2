@@ -589,8 +589,8 @@ the fix belongs in the data or the document.
     * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Attack.
 * Pierce Weakness
     * Type: Damage
-    * Cooldown: 2 turns
-    * Effect: [Channel 1] Deals damage to a single enemy, ignoring 60% of the target's Defense, scaling with Attack.
+    * Cooldown: 1 turn
+    * Effect: [Channel 1] Deals damage to a single enemy, ignoring 70% of the target's Defense, scaling with Attack.
 * Weigh the Mark
     * Type: Buff
     * Cooldown: 4 turns
@@ -610,7 +610,7 @@ the fix belongs in the data or the document.
     * Effect: [Channel 1 + Channel 2] Deals heavy damage to a single enemy, scaling with Attack, and applies the Bleed debuff for 2 turns.
 * Disarm
     * Type: Damage, Debuff (counts as a defensive skill)
-    * Cooldown: 3 turns
+    * Cooldown: 2 turns
     * Effect: [Channel 1] Deals damage to a single enemy and applies the Enfeeble debuff for 2 turns.
 
 ###### Alchemist
@@ -685,7 +685,7 @@ the fix belongs in the data or the document.
 * Fatal Flaw
     * Type: Buff
     * Cooldown: 2 turns
-    * Effect: [Channel 2] One ally gains the Daunting Strength buff for 1 turn.
+    * Effect: [Channel 2] All other allies gain the Daunting Strength buff for 1 turn.
 * Battle Orders
     * Type: Buff (Turn Bar)
     * Cooldown: 4 turns
@@ -724,7 +724,7 @@ the fix belongs in the data or the document.
 * Devour Blessing
     * Type: Damage
     * Cooldown: 3 turns
-    * Effect: [Channel 1 + Channel 2] Consumes all buffs on one ally; deals heavy damage to a single enemy, scaling with Mysticism, +25% damage per buff consumed.
+    * Effect: [Channel 1 + Channel 2] Consumes all buffs from the ally holding the most; deals heavy damage to a single enemy, scaling with Mysticism, +25% damage per buff consumed.
 * Rite of Severance
     * Type: Damage, Debuff
     * Cooldown: 4 turns
@@ -750,7 +750,7 @@ the fix belongs in the data or the document.
 * Transfusion
     * Type: Buff
     * Cooldown: 3 turns
-    * Effect: [Enabler] The Bloodmage sacrifices 15% of max Health; one ally gains a Barrier absorbing 200% of the Health sacrificed, lasting 2 turns.
+    * Effect: [Enabler] The Bloodmage sacrifices 15% of max Health; all other allies gain a Barrier absorbing 200% of the Health sacrificed, lasting 2 turns.
 * Tithe of Vitality
     * Type: Damage, Debuff
     * Cooldown: 4 turns
@@ -775,7 +775,7 @@ the fix belongs in the data or the document.
     * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Speed. (Also available as a Universal skill, see section 3.2.4.3.)
 * Flicker Zone
     * Type: Turn Bar (Zone)
-    * Cooldown: 3 turns
+    * Cooldown: 2 turns
     * Effect: [Enabler] Affected allies move 15% further on the turn bar. Holds 5 charges.
 * Temporal Sinkhole
     * Type: Turn Bar (Zone)
