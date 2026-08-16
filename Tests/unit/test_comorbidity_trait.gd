@@ -44,8 +44,11 @@ func _set_max_health(p_character_ID: int, p_max_health: int) -> void:
 	_roster[p_character_ID]._attributes[Types.Attribute.Health] = p_max_health
 	_roster[p_character_ID]._current_health = p_max_health * GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER
 
-func _expected_tick(p_max_health: int) -> int:
-	return int(floor((p_max_health * GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER) * 0.04))
+func _min_tick(p_max_health: int) -> int:
+	return int(floor((p_max_health * GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER) * 0.02))
+
+func _max_tick(p_max_health: int) -> int:
+	return int(floor((p_max_health * GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER) * 0.1))
 
 func _burning_ticks(p_results: Array[CombatResult]) -> Array[CombatResult]:
 	return p_results.filter(func(result): return result.kind == CombatResult.Kind.Debuff_Tick)
@@ -112,7 +115,7 @@ func test_base_tick_is_no_longer_multiplied() -> void:
 	_add_debuff(0, Types.Debuff_Type.Suppress, 1, 2)
 	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [], 0)
 	var ticks: Array[CombatResult] = _burning_ticks(results)
-	assert_eq(ticks[0].amount, _expected_tick(100), "The base tick stays at its own magnitude")
+	assert_between(ticks[0].amount, _min_tick(100), _max_tick(100), "The base tick stays at its own magnitude")
 
 func test_repeats_once_per_other_distinct_debuff_type_as_cascade_instances() -> void:
 	_set_max_health(0, 100)
@@ -126,7 +129,8 @@ func test_repeats_once_per_other_distinct_debuff_type_as_cascade_instances() -> 
 	var total: int = 0
 	for tick in _burning_ticks(results):
 		total += tick.amount
-	assert_eq(total, _expected_tick(100) * 3, "Total damage over the turn matches the old multiplier's total")
+	assert_between(total, _min_tick(100) * 3, _max_tick(100) * 3,
+		"Total damage over the turn sums three independently rolled ticks")
 
 func test_count_is_distinct_types_not_raw_instance_count() -> void:
 	_set_max_health(0, 100)
@@ -161,9 +165,9 @@ func test_debuffs_from_other_casters_are_unaffected() -> void:
 	var ticks: Array[CombatResult] = _burning_ticks(results)
 	# Source 1's own Burning is flagged and 1 distinct type is present => no repeat, one base tick.
 	assert_eq(ticks.size(), 1)
-	assert_eq(ticks[0].amount_by_source[1], _expected_tick(100))
+	assert_between(ticks[0].amount_by_source[1], _min_tick(100), _max_tick(100))
 	# Source 2's Burning carries no flag, and contributes to the same base tick unscaled.
-	assert_eq(ticks[0].amount_by_source[2], _expected_tick(100))
+	assert_between(ticks[0].amount_by_source[2], _min_tick(100), _max_tick(100))
 
 func test_only_the_flagged_source_repeats_when_multiple_casters_debuff_the_same_target() -> void:
 	_set_max_health(0, 100)
@@ -173,7 +177,7 @@ func test_only_the_flagged_source_repeats_when_multiple_casters_debuff_the_same_
 	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [], 0)
 	var ticks: Array[CombatResult] = _burning_ticks(results)
 	assert_eq(ticks.size(), 2)
-	assert_eq(ticks[1].amount_by_source.get(1, 0), _expected_tick(100))
+	assert_between(ticks[1].amount_by_source.get(1, 0), _min_tick(100), _max_tick(100))
 	assert_false(ticks[1].amount_by_source.has(2), "The unflagged Enfeeble source must not repeat")
 
 func test_recomputes_between_turns_as_debuffs_expire() -> void:
@@ -190,7 +194,7 @@ func test_recomputes_between_turns_as_debuffs_expire() -> void:
 	assert_eq(_cascade_triggers(second_results).size(), 0)
 	var second_ticks: Array[CombatResult] = _burning_ticks(second_results)
 	assert_eq(second_ticks.size(), 1)
-	assert_eq(second_ticks[0].amount, _expected_tick(100))
+	assert_between(second_ticks[0].amount, _min_tick(100), _max_tick(100))
 
 func test_a_target_killed_by_the_base_tick_produces_no_cascade_instances() -> void:
 	_set_max_health(0, 1)

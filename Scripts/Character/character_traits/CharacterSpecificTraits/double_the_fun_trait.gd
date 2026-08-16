@@ -50,9 +50,9 @@ func GetConditionCount(
 	return 1.0 if _avoided_since_last_turn else 0.0
 
 func RefreshVisuals(p_character_repr: CharacterRepresentation) -> void:
-	var body_with_stacks: String = _body + "\nAvoidance chance: " \
+	var body_with_stacks: String = _body + "\nAvoidance chance:\n" \
 	+ str(100.0 * (BASE_AVOID_CHANCE + (_avoidance_stacks * _avoidance_increment))) + "% / " \
-	+ str(100.0 * (BASE_AVOID_CHANCE + (MAX_AVOIDANCE_STACKS * _avoidance_increment))) + "% (max)"
+	+ str(100.0 * (BASE_AVOID_CHANCE + (MAX_AVOIDANCE_STACKS * _avoidance_increment))) + "%"
 	p_character_repr.SetTraitElement(_trait_texture, 0)
 	p_character_repr.SetTraitElementToolTip(_title, body_with_stacks, 0)
 	p_character_repr.GetVisualEffects().SetSpriteEchoes(_avoidance_stacks)
@@ -63,7 +63,7 @@ func GetAvoidChance() -> float:
 func OnDamageTaken(p_owner_ID: int, _p_attacker_ID: int, p_resolver: BattleResolver) -> float:
 	var chance: float = GetAvoidChance()
 
-	if(p_resolver.GetRandom().randf() < chance):
+	if(p_resolver.RollFavoring(p_owner_ID, 0.0, 1.0, false) < chance):
 		_avoidance_stacks = 0
 		_avoided_since_last_turn = true
 		p_resolver.EmitTraitText(p_owner_ID, "Avoided!")

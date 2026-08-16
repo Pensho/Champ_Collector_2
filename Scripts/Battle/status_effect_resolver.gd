@@ -240,8 +240,8 @@ func _RollsResistDebuff(
 	var attacker: Character = _resolver._characters.get(p_attacker_ID)
 	if(null != attacker and null != attacker._trait and attacker._trait.DebuffsCannotBeResisted(p_attacker_ID)):
 		return false
-	var random_value: float = _resolver._RollFavoring(p_attacker_ID, 0.95, 1.0, true)
-	var random_value_2: float = _resolver._RollFavoring(p_defender_ID, 0.95, 1.0, true)
+	var random_value: float = _resolver.RollFavoring(p_attacker_ID, 0.85, 1.0, true)
+	var random_value_2: float = _resolver.RollFavoring(p_defender_ID, 0.85, 1.0, true)
 	return p_attacker_accuracy * random_value < p_defender_resistance * random_value_2
 
 
@@ -320,9 +320,13 @@ func _ComputeDebuffTickDamage(
 		var tick_damage: int = 0
 		match data.magnitude_kind:
 			StatusEffectData.MagnitudeKind.MaxHealthPercent:
+				var rolled_magnitude: float = data.magnitude
+				if(data.magnitude_max > data.magnitude):
+					rolled_magnitude = _resolver.RollFavoring(
+							p_target._instance_ID, data.magnitude, data.magnitude_max, false)
 				tick_damage = int(floor(
 						(p_target_attributes[Types.Attribute.Health]
-								* GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER) * data.magnitude))
+								* GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER) * rolled_magnitude))
 			StatusEffectData.MagnitudeKind.CasterAttributeSnapshotPercent:
 				tick_damage = int(floor(debuff.value))
 			_:

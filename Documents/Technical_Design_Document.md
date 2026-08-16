@@ -345,6 +345,10 @@ enum MagnitudeKind {
 @export var magnitude: float = 0.0                         # 0.0 = no static default; the
                                                              # applier sets the instance's value
                                                              # directly (e.g. Phalanx Guard)
+@export var magnitude_max: float = 0.0                     # > magnitude: MaxHealthPercent ticks
+                                                             # roll uniformly in [magnitude,
+                                                             # magnitude_max], biased by Luck/Hexed
+                                                             # (Burning)
 @export var caster_scaled: bool = false                     # snapshot value = magnitude * sum of
                                                              # the applier's own attribute_modifiers
                                                              # attributes, independent of
@@ -520,12 +524,15 @@ written back to the `Character`, so the bonus does not persist. Mana Burn is cas
 tick-triggered: `ResolveSkill` computes `is_non_basic := cast_skill.cooldown > 0` once and a
 dedicated `_TriggerManaBurn()` call deals 30%-Mysticism-scaled self-damage whenever a Mana Burn
 holder casts a non-basic skill; the same `is_non_basic` flag gates Rehearsed's cooldown skip.
-Luck and Hexed wrap every existing roll site (`_ResolveDamage`'s damage-variance and crit-chance
-rolls, `CastDebuff`'s two resist-roll components) through a new `_RollFavoring()` helper that
-rolls twice and keeps the better or worse result for whichever character owns that roll; a holder
-with both active cancels out to a single normal roll (user decision). `Skills.RollsCritical` is no
-longer called by the resolver (replaced by `_RollFavoring` at the crit-chance site) but remains for
-its own direct unit tests.
+Luck and Hexed wrap every pass/fail chance roll in combat (crit chance, `CastDebuff`'s two
+resist-roll components, the `SkillEffect.chance` gate, Glamour Graft's incoming redirect, Double
+the fun!'s avoidance roll, Pilfer's steal chance) through the public `BattleResolver.RollFavoring()`
+helper, which rolls twice and keeps the better or worse result for whichever character owns that
+roll; a holder with both active cancels out to a single normal roll (user decision).
+`_ResolveDamage`'s damage-variance roll is the one deliberate exception, staying a bare
+`randf_range` — its spread is too small for a reroll to matter. `Skills.RollsCritical` is no longer
+called by the resolver (replaced by `RollFavoring` at the crit-chance site) but remains for its own
+direct unit tests.
 
 The turn-bar reactions and rule switches, the last of the status-effect catalog. Three more
 `MagnitudeKind` values: `SelfTurnBarLossOnDamage` (Dead Weight), `AllyTurnBarGainOnDamage` (Battle

@@ -110,3 +110,33 @@ func test_targeting_priority_multiplier_is_one_point_five() -> void:
 func test_base_class_targeting_priority_multiplier_is_one() -> void:
 	var base_trait: CharacterTrait = CharacterTrait.new()
 	assert_eq(base_trait.GetTargetingPriorityMultiplier(), 1.0)
+
+# --- Luck / Hexed reach (the avoidance roll now goes through RollFavoring) ---
+
+func _avoid_count(p_samples: int) -> int:
+	var avoided: int = 0
+	for i in p_samples:
+		_trait._avoidance_stacks = 0
+		if(_trait.OnDamageTaken(0, -1, _resolver) == 0.0):
+			avoided += 1
+	return avoided
+
+func test_hexed_lowers_the_avoid_rate_over_many_rolls() -> void:
+	_InitTrait(Types.Rarity.Legendary)
+	var baseline: int = _avoid_count(400)
+	var hexed: StatusEffects.Debuff = StatusEffects.Debuff.new()
+	hexed.type = Types.Debuff_Type.Hexed
+	hexed.duration = 5
+	_character._active_debuffs.append(hexed)
+	var with_hexed: int = _avoid_count(400)
+	assert_lt(with_hexed, baseline, "Hexed should take the worse (lower-chance) of two avoidance rolls")
+
+func test_luck_raises_the_avoid_rate_over_many_rolls() -> void:
+	_InitTrait(Types.Rarity.Legendary)
+	var baseline: int = _avoid_count(400)
+	var luck: StatusEffects.Buff = StatusEffects.Buff.new()
+	luck.type = Types.Buff_Type.Luck
+	luck.duration = 5
+	_character._active_buffs.append(luck)
+	var with_luck: int = _avoid_count(400)
+	assert_gt(with_luck, baseline, "Luck should take the better (higher-chance) of two avoidance rolls")

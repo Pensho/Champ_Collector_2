@@ -83,7 +83,7 @@ func _TargetsForZoneTrigger(p_effect: SkillEffect) -> Array[int]:
 ## as a condition count of 0.0, so Condition_Test.Below is satisfiable (and At_Least
 ## never is) even without a trait.
 func ConditionMet(p_effect: SkillEffect) -> bool:
-	if(p_effect.chance < 1.0 and resolver.GetRandom().randf() >= p_effect.chance):
+	if(p_effect.chance < 1.0 and resolver.RollFavoring(caster_ID, 0.0, 1.0, false) >= p_effect.chance):
 		return false
 	if(Types.Skill_Condition.None == p_effect.condition):
 		return true

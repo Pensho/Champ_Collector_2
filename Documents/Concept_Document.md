@@ -401,7 +401,7 @@ Main attributes: Accuracy and Resistance.
 ```
 Contest = Caster's Accuracy * Random_Multiplier_A vs Target's Resistance * Random_Multiplier_B
 ```
-- Both sides roll an independent random multiplier (0.95 to 1.0) against their stat; the debuff
+- Both sides roll an independent random multiplier (0.85 to 1.0) against their stat; the debuff
   lands if the caster's rolled Accuracy exceeds the target's rolled Resistance.
 - There is no base chance and no floor or ceiling: a sufficiently large Accuracy-Resistance gap
   makes a debuff land (or resist) with effective certainty. Encounters that rely on a debuff as
@@ -468,7 +468,7 @@ Debuffs:
 * Expose Weakness [Channel 1]: Reduces Defense by 30%. Defence keeps its full percentage weight at burst scale (section 1.1.4), so every attacker against the holder benefits, at burst magnitudes as much as during build-up.
 * Enfeeble [Channel 1]: Reduces the Attack by 30%.
 * Mana Burn [Enabler]: Deals damage whenever the target uses a non-basic skill, scaling based on the target's Mysticism. The damage is incidental to the punish; it is not a combined-modifier factor.
-* Burning [Enabler]: Deals 4% of max Health as damage per stack; Burning stacks, so repeated applications (e.g. standing in a Lava zone) add independent instances up to the status-effect cap. Its composable value is as a debuff *type* other mechanics key off (Opportunist, and any effect counting distinct debuff types on the target), not a factor of its own.
+* Burning [Enabler]: Deals a rolled 2-10% of max Health as damage per stack (mean 6%), biased by the holder's Luck or Hexed; Burning stacks, so repeated applications (e.g. standing in a Lava zone) add independent instances up to the status-effect cap. Its composable value is as a debuff *type* other mechanics key off (Opportunist, and any effect counting distinct debuff types on the target), not a factor of its own.
 * Sequence Lock [Enabler]: Speed cannot be increased or decreased.
 * Suppress [Channel 1]: Reduces Mysticism by 30%.
 * Slow [Channel 1]: Reduces Speed by 15%, including how fast the character advances on the turn bar.
@@ -482,7 +482,7 @@ Debuffs:
 * Plague [Channel 1 + Channel 2]: Deals damage each turn equal to 30% of the caster's Mysticism, multiplied by the caster's damage-scaling factors, both snapshotted together at the moment of application. Stacks, and each stack ticks independently.
 * Blight [Enabler]: Healing received is reduced by 50%.
 * Severance [Enabler]: The character cannot gain new buffs.
-* Hexed [Enabler]: Roll the critical-chance and debuff-resist checks twice and take the worse result (the damage-variance roll is not favored either way — its spread is too small to matter).
+* Hexed [Enabler]: Roll every chance roll in combat twice and take the worse result (the damage-variance roll is not favored either way — its spread is too small to matter).
 * Stun [Enabler]: The character skips their next turn.
 * Fatigue [Enabler]: The character's skill cooldowns do not tick down.
 * Refracted [Enabler]: The character's single-target skills hit a random character instead, allies included.
@@ -498,7 +498,7 @@ Buffs:
 * Frenzy [Channel 1]: Increases Attack and Speed by 30% but reduces Defense and Accuracy by 30%.
 * Rush [Channel 1]: Increases all primary attributes except Health by 30%; when the buff expires, it applies the Stun debuff to the character for 1 turn. This Stun cannot be resisted and is applied after other expiring buffs (such as Aegis) are removed.
 * Exhert [Channel 1]: Increases all primary attributes except Health by 20%, but the character loses 5% of their max Health every time they take a turn.
-* Luck [Enabler]: Roll the critical-chance and debuff-resist checks twice and take the better result (the damage-variance roll is not favored either way — its spread is too small to matter).
+* Luck [Enabler]: Roll every chance roll in combat twice and take the better result (the damage-variance roll is not favored either way — its spread is too small to matter).
 * Phalanx Guard [Channel 1]: Gain bonus defense per stack of momentum consumed. (Lancer Specific)
 * Attune [Channel 1]: Increases Mysticism by 30%.
 * Haste [Channel 1]: Increases Speed by 20%, including how fast the character advances on the turn bar; Haste stacks, so repeated applications add independent instances up to the status-effect cap.
@@ -715,7 +715,7 @@ the fix belongs in the data or the document.
 * Burning Bolas
     * Type: Damage, Debuff
     * Cooldown: 2 turns
-    * Effect: [Channel 1 + Enabler] Throws flaming bolas at a single enemy, dealing damage scaling with Attack, and applies the Burning debuff for 2 turns.
+    * Effect: [Channel 1 + Enabler] Throws flaming bolas at a single enemy, dealing damage scaling with Attack, and applies the Burning and Hexed debuffs for 2 turns.
 * Center Stage
     * Type: Buff
     * Cooldown: 3 turns

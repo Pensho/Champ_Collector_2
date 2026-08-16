@@ -568,7 +568,7 @@ func _RollsIncomingRedirect(p_target_ID: int) -> bool:
 	if(null == target or null == target._trait):
 		return false
 	var chance: float = target._trait.GetIncomingSingleTargetRedirectChance(p_target_ID)
-	return chance > 0.0 and _random.randf() < chance
+	return chance > 0.0 and RollFavoring(p_target_ID, 0.0, 1.0, false) < chance
 
 
 func _RandomOtherCharacter(p_excluded_ID: int) -> int:
@@ -581,7 +581,7 @@ func _RandomOtherCharacter(p_excluded_ID: int) -> int:
 
 ## Rolls once, or twice keeping the better/worse result for the roll's owner when
 ## they hold Luck or Hexed (an owner holding both cancels out to a single roll).
-func _RollFavoring(p_character_ID: int, p_min: float, p_max: float, p_higher_is_better: bool) -> float:
+func RollFavoring(p_character_ID: int, p_min: float, p_max: float, p_higher_is_better: bool) -> float:
 	var first: float = _random.randf_range(p_min, p_max)
 	var has_luck: bool = _HasBuff(p_character_ID, Types.Buff_Type.Luck)
 	var has_hexed: bool = _HasDebuff(p_character_ID, Types.Debuff_Type.Hexed)
@@ -754,7 +754,7 @@ func _ResolveDamage(
 		return
 
 	var target: Character = _characters[p_target_ID]
-	var crit_roll: float = _RollFavoring(p_caster_ID, 1.0, 100.0, false)
+	var crit_roll: float = RollFavoring(p_caster_ID, 1.0, 100.0, false)
 	if(p_allow_critical):
 		var total_crit_chance: float = float(
 				p_caster_attributes[Types.Attribute.CritChance] + _status_resolver._AttackerCritChanceBonus(target))

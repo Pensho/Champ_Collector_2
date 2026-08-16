@@ -673,7 +673,7 @@ already consigns.
 
 ### 9.6 Jester — the luck Role
 
-**Status:** Settled, not yet implemented. Batch 2.
+**Status:** Implemented. Batch 2.
 
 **Identity: Enabler, exported.** The Jester declares no damage contribution. Its kit holds the
 window the burst fires in — pulling focused fire onto the one champion built to survive it — and
@@ -689,7 +689,7 @@ addition, and Burning's magnitude shape.
 **Passive: Double the fun!** Unchanged — 5% base chance to avoid an incoming attack's damage,
 ramping by rarity per hit taken to a cap of 3 stacks, resetting on a successful avoidance,
 and raising the Jester's targeting weight. Its avoidance roll now goes through
-`BattleResolver._RollFavoring` rather than a bare `randf()`, so Luck and Hexed reach it.
+`BattleResolver.RollFavoring` rather than a bare `randf()`, so Luck and Hexed reach it.
 
 | Slot | Skill | Effect | Channel |
 |---|---|---|---|
@@ -697,11 +697,11 @@ and raising the Jester's targeting weight. Its avoidance roll now goes through
 | Signature | Burning Bolas | Attack-scaled damage to one enemy; applies Burning and **Hexed** for 2 turns. Cooldown 2. | 1 + Enabler |
 | Signature | Center Stage | The Jester gains Spotlight for 2 turns and Luck for 1 turn. Cooldown 3. | Enabler |
 
-**The kit depends on three roster-wide mechanics changes** — Luck and Hexed's reach, the
-debuff-resist contest band, and Burning's tick — which are not Jester kit content and are recorded
-in section 12. What they buy this kit: Hexed's resistance clause stops being nearly inert, and
-because Hexed makes its holder take the worse of two rolls, a Hexed target's expected Burning tick
-is **7.33%** against the 6% mean.
+**The kit depended on three roster-wide mechanics changes** — Luck and Hexed's reach, the
+debuff-resist contest band, and Burning's tick — which were not Jester kit content and have shipped
+(`Concept_Document.md` 3.2.1 #3, 3.2.3). What they buy this kit: Hexed's resistance clause stops
+being nearly inert, and because Hexed makes its holder take the worse of two rolls, a Hexed
+target's expected Burning tick is **7.33%** against the 6% mean.
 
 **Composition hooks (exported).**
 
@@ -733,24 +733,9 @@ collapse test (section 1). Its one measurable factor is Pratfall Sting's conditi
 which is not the declared contribution and is sized against no target. The Jester is expected to be
 invisible in `team_corpus_sweep.gd`'s ranking.
 
-**Implementation needs (not yet built):**
-
-* `double_the_fun_trait.gd:66` — the avoidance roll moves from `p_resolver.GetRandom().randf()` onto
-  `_RollFavoring`.
-* `BattleResolver._RollFavoring` reaches every remaining chance roll except the damage-variance
-  roll in `_ResolveDamage`.
-* `status_effect_resolver.gd:242-243` — the resist contest's random band widens to 0.85-1.0.
-* `Burning.tres` — `magnitude_kind` stays `MaxHealthPercent`, but the tick reads a rolled range
-  rather than a fixed `magnitude`; the range needs a representation on `StatusEffectData` and a
-  roll site in the tick path that routes through `_RollFavoring` so Hexed and Luck bias it.
-* `Burning_Bolas.tres` — a second `ApplyDebuffEffect` for Hexed, 2 turns.
-* `kit_contribution_manifest.gd` — Burning Bolas' entry gains Hexed; all four Jester entries stay
-  `bucket_key`-less apart from Pratfall Sting's existing `Pratfall Sting` key.
-* `Concept_Document.md` at promotion: 3.1.3's Jester passive entry (Luck reaching the dodge roll),
-  3.2.1 #3 (the widened band), 3.2.3's Luck, Hexed and Burning entries, and 3.2.4.2's Burning Bolas.
-* `Encounter_Design_Document.md:267,407` — Reanimating Statues 3 names Burning Bolas as its
-  intended solution for burning past Defence; the 4% → 6% mean is a buff to that solution. Recorded,
-  not tuned: encounter values are not being balanced at this stage.
+`Encounter_Design_Document.md:267,407`'s Reanimating Statues 3 names Burning Bolas as its intended
+solution for burning past Defence; the 4% → 6% mean is a buff to that solution. Recorded, not
+tuned: encounter values are not being balanced at this stage.
 
 **Judgment calls made while settling, listed so they can be overruled:** Burning was reworked in
 place rather than given a Jester-exclusive successor status, which spreads the rolled tick to Lava
@@ -1706,17 +1691,3 @@ Facet all read this way now.
 `total_contrast_ratio` alone for a sustained-heavy kit understates its actual standing in the
 roster — `Tests/manual/team_corpus_sweep.gd`'s top-decile report prints both, plus a
 `sustained_driven` flag per row, so which figure moved is visible rather than conflated.
-
-## 12. Roster-wide mechanics changes awaiting implementation
-
-Changes a settled kit depends on that are **not** that kit's content — they alter shared mechanics
-every Role touches. `Concept_Document.md` stays the authority, but it describes the game as it
-runs, so nothing here is promoted into it until the change ships. This section owns each one
-meanwhile, and the kit entry that produced it links here rather than restating it. Delete an entry
-in the same edit that promotes it.
-
-| Change | Today | Becomes | Promotes to | From |
-|---|---|---|---|---|
-| **Luck and Hexed's reach** | The critical-chance roll and the debuff-resist contest only | Every chance roll in combat except the damage-variance roll (a 0.95-1.05 band is too narrow for a reroll to matter), so a roll added later is covered without a further decision | 3.2.3 | §9.6 |
-| **Debuff-resist contest band** | 0.95-1.0 | 0.85-1.0. In the old 5%-wide band, taking the worse of two rolls moved the outcome about 2 percentage points of the stat, leaving Hexed's resistance clause nearly inert; at 0.85-1.0 a reroll is worth roughly 5 points of effective Accuracy or Resistance. 3.2.1 #3's "no base chance and no floor or ceiling" still holds, and a large stat gap still settles the contest outright | 3.2.1 #3 | §9.6 |
-| **Burning's tick** | Flat 4% of max Health per stack | A rolled 2-10% (mean 6%) per stack, biased by the holder's Luck or Hexed. Every source, Lava Zone included — Burning stays a shared commodity debuff | 3.2.3 | §9.6 |

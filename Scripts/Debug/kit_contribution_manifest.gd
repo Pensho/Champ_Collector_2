@@ -574,9 +574,10 @@ const MANIFEST: Dictionary = {
 			{"name": "Burning Bolas", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Channel1,
 					"precondition": "damage_scaling Attack 0.8 (no bonus_per) plus Burning (2 turns, " +
-							"stackable DoT, 4%-max-Health tick). Skill's own name field is 'Burning " +
-							"bolas' (lowercase b).",
-					"citation": "Burning_Bolas.tres:6-19"},
+							"stackable DoT, rolled 2-10%-max-Health tick) and Hexed (2 turns, " +
+							"reroll-worse on every remaining chance roll except damage variance). " +
+							"Skill's own name field is 'Burning bolas' (lowercase b).",
+					"citation": "Burning_Bolas.tres:6-24"},
 		],
 	},
 	Types.Role.Cultist: {

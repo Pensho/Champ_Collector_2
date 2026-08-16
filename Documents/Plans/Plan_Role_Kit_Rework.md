@@ -36,12 +36,23 @@ through Enabler-tagged skills authored as kit content (§1.2, `Concept_Document.
 (`Role_Kit_Design.md` §4).
 
 Phase 3 (Batch 2) design started ahead of Phase 2's remaining implementation, which the tier-3 loop
-permits — settling a kit does not require implementing it in the same sitting. All five settled,
-**none implemented**: Jester (§9.6), Emissary (§9.7), Cultist (§9.8), Chronophage (§9.9), Architect
-(§9.10). Routes A and E close; route C's second anchor is open rather than assigned, since the
+permits — settling a kit does not require implementing it in the same sitting. All five settled.
+**Jester (§9.6) implemented**; Emissary (§9.7), Cultist (§9.8), Chronophage (§9.9), Architect
+(§9.10) remain. Routes A and E close; route C's second anchor is open rather than assigned, since the
 Jester was Phase 1's proposal and is no longer a candidate, and no unsettled Role is assumed into
 it. Chronophage's threshold-crossing `Cascade_Trigger` is **not** authored — counting section
 boundaries is arithmetic a player cannot read off the screen.
+
+**Jester's implementation** made `BattleResolver._RollFavoring` public (`RollFavoring`) and widened
+it to every remaining pass/fail chance gate in combat (`SkillEffect.chance`, Glamour Graft's
+incoming redirect, Double the fun!'s avoidance roll, Pilfer's steal chance), alongside its existing
+crit-chance and debuff-resist sites; the damage-variance roll stays a bare `randf_range`, per §12's
+own exception. The debuff-resist band widened to 0.85-1.0, and `StatusEffectData` gained
+`magnitude_max` so `MaxHealthPercent` ticks can roll a range — Burning now rolls 2-10% per stack
+(mean 6%), biased the same way, and `Burning_Bolas.tres` gained a second `ApplyDebuffEffect` for
+Hexed. `Concept_Document.md` 3.2.1 #3, 3.2.3 and 3.2.4.2's Jester entry updated to match.
+Post-Jester sweep: median 1.62x, 90th percentile 3.68x, ceiling 16.24x — unchanged from the
+post-Appraiser baseline, as §9.6 predicted for an Enabler kit invisible to the scorer.
 
 Phase 4 (Batch 3) **complete**, settled one Role at a time. Four settled, none implemented:
 

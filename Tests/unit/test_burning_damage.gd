@@ -28,8 +28,11 @@ func _set_max_health(p_character_ID: int, p_max_health: int) -> void:
 	_roster[p_character_ID]._attributes[Types.Attribute.Health] = p_max_health
 	_roster[p_character_ID]._current_health = p_max_health * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
 
-func _expected_tick(p_max_health: int) -> int:
-	return int(floor((p_max_health * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER) * 0.04))
+func _min_tick(p_max_health: int) -> int:
+	return int(floor((p_max_health * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER) * 0.02))
+
+func _max_tick(p_max_health: int) -> int:
+	return int(floor((p_max_health * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER) * 0.1))
 
 func _burning_ticks(p_results: Array[CombatResult]) -> Array[CombatResult]:
 	return p_results.filter(func(result): return result.kind == CombatResult.Kind.Debuff_Tick)
@@ -40,13 +43,14 @@ func test_burning_tick_produces_burning_result() -> void:
 	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [], 0)
 	assert_eq(_burning_ticks(results).size(), 1, "A burning character's action should report one Debuff_Tick")
 
-func test_burning_tick_reduces_health_by_expected_amount() -> void:
+func test_burning_tick_reduces_health_within_rolled_bounds() -> void:
 	_set_max_health(0, 100)
 	_add_burning(0, 1)
 	var health_before: int = _roster[0]._current_health
 	_resolver.ResolveSkill(0, [], 0)
-	assert_eq(_roster[0]._current_health, health_before - _expected_tick(100),
-		"Burning should reduce health by 4% of max Health")
+	var lost: int = health_before - _roster[0]._current_health
+	assert_between(lost, _min_tick(100), _max_tick(100),
+		"Burning should reduce health by 2-10% of max Health")
 
 func test_burning_damage_attributed_to_source() -> void:
 	_set_max_health(0, 100)
@@ -54,8 +58,8 @@ func test_burning_damage_attributed_to_source() -> void:
 	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [], 0)
 	var tick: CombatResult = _burning_ticks(results)[0]
 	assert_true(tick.amount_by_source.has(1), "Damage should be keyed by the applying source ID")
-	assert_eq(tick.amount_by_source[1], _expected_tick(100),
-		"The source should be credited with the full Burning tick damage")
+	assert_between(tick.amount_by_source[1], _min_tick(100), _max_tick(100),
+		"The source should be credited with the full rolled Burning tick damage")
 
 func test_stacked_burning_from_same_source_accumulates() -> void:
 	_set_max_health(0, 100)
@@ -63,7 +67,7 @@ func test_stacked_burning_from_same_source_accumulates() -> void:
 	_add_burning(0, 2)
 	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [], 0)
 	var tick: CombatResult = _burning_ticks(results)[0]
-	assert_eq(tick.amount_by_source[2], _expected_tick(100) * 2,
+	assert_between(tick.amount_by_source[2], _min_tick(100) * 2, _max_tick(100) * 2,
 		"Two Burning stacks from one source should sum in that source's attribution")
 
 func test_stacked_burning_from_different_sources_kept_separate() -> void:
@@ -72,8 +76,8 @@ func test_stacked_burning_from_different_sources_kept_separate() -> void:
 	_add_burning(0, 4)
 	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [], 0)
 	var tick: CombatResult = _burning_ticks(results)[0]
-	assert_eq(tick.amount_by_source[3], _expected_tick(100), "Source 3 credited with its own stack")
-	assert_eq(tick.amount_by_source[4], _expected_tick(100), "Source 4 credited with its own stack")
+	assert_between(tick.amount_by_source[3], _min_tick(100), _max_tick(100), "Source 3 credited with its own stack")
+	assert_between(tick.amount_by_source[4], _min_tick(100), _max_tick(100), "Source 4 credited with its own stack")
 
 func test_non_damaging_debuff_reports_no_burning_tick() -> void:
 	var debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()

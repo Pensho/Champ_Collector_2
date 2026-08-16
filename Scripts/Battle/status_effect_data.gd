@@ -33,6 +33,9 @@ enum MagnitudeKind {
 # shared `magnitude` below by AttributePercent and AttributePercentagePointAdd.
 @export var attribute_modifiers: Dictionary[Types.Attribute, float] = {}
 @export var magnitude: float = 0.0
+# Upper bound of a rolled per-tick magnitude. When > magnitude, the tick rolls uniformly in
+# [magnitude, magnitude_max] and the holder's Luck or Hexed biases the roll.
+@export var magnitude_max: float = 0.0
 @export var caster_scaled: bool = false
 @export var duration_default: int = 2
 @export var overwritable: bool = true

@@ -30,7 +30,7 @@ func OnSkillCast(
 	var result: TraitSkillResult = TraitSkillResult.new()
 	var characters: Dictionary[int, Character] = p_resolver.GetCharacters()
 
-	if (p_resolver.GetRandom().randf() >= _steal_chance):
+	if (p_resolver.RollFavoring(p_owner_ID, 0.0, 1.0, false) >= _steal_chance):
 		return result
 
 	if (p_target_IDs.is_empty()):
