@@ -566,7 +566,7 @@ const MANIFEST: Dictionary = {
 					"citation": "Pratfall_Sting.tres:6-13; double_the_fun_trait.gd:43-50"},
 			{"name": "Center Stage", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Enabler,
-					"precondition": "Grants self Spotlight (2 turns: -10% incoming damage, 1.5x " +
+					"precondition": "Grants self Spotlight (2 turns: -20% incoming damage, 1.5x " +
 							"targeting weight) and Luck (1 turn: reroll-better). Neither is a " +
 							"CombinedDamageModifier bucket — Spotlight applies to final incoming damage " +
 							"by design (1.1.4).",

@@ -11,4 +11,4 @@ magnitude_max = 0.1
 overwritable = false
 stackable = true
 icon = ExtResource("2_icon")
-description = "Deals 2-10% of max Health as damage per stack each turn (rolled, biased by Luck or Hexed). Burning stacks, so repeated applications add independent instances up to the status-effect cap."
+description = "Deals 2-10% of max Health as damage per stack each turn (rolled, biased by Luck or Hexed)."

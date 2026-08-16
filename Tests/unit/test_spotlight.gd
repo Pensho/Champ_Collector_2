@@ -2,7 +2,7 @@ extends GutTest
 
 const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 
-# Coverage for Spotlight's damage-reduction half: the holder takes 10% less damage
+# Coverage for Spotlight's damage-reduction half: the holder takes 20% less damage
 # (Concept_Document.md 3.2.3.2). The targeting-weight half is dormant, deferred to
 # the enemy-AI targeting work.
 
@@ -16,7 +16,7 @@ func _damage_amount(p_results: Array[CombatResult]) -> int:
 	var damage: Array = p_results.filter(func(r): return r.kind == CombatResult.Kind.Damage)
 	return damage[0].amount if not damage.is_empty() else 0
 
-func test_spotlight_reduces_incoming_damage_by_ten_percent() -> void:
+func test_spotlight_reduces_incoming_damage_by_twenty_percent() -> void:
 	var baseline: Dictionary = TestFactory.make_full_roster()
 	baseline[3]._skills.append(TestFactory.make_strike_skill())
 	var resolver_a: BattleResolver = TestFactory.make_resolver(baseline, TestFactory.make_full_sides())
@@ -30,8 +30,8 @@ func test_spotlight_reduces_incoming_damage_by_ten_percent() -> void:
 
 	var damage_without: int = _damage_amount(results_a)
 	var damage_with: int = _damage_amount(results_b)
-	assert_almost_eq(float(damage_with), float(damage_without) * 0.9, 1.0,
-		"Spotlight should reduce incoming damage by 10%")
+	assert_almost_eq(float(damage_with), float(damage_without) * 0.8, 1.0,
+		"Spotlight should reduce incoming damage by 20%")
 
 func test_spotlight_reduction_matches_actual_health_lost() -> void:
 	var roster: Dictionary[int, Character] = TestFactory.make_full_roster()

@@ -517,7 +517,7 @@ Buffs:
 * Overflow [Channel 1]: When this buff expires, it deals damage to all enemies, scaling with the holder's Mysticism. Resolves through the cascade machinery but always yields exactly one instance, so it multiplies nothing (section 1.1.3) — a delayed area hit, not a cascade contribution.
 * Vigor [Channel 1]: Increases max Health by 30%.
 * Lethal Precision [Channel 1]: Increases Critical Damage by the applier's own Critical Damage, snapshotted at application.
-* Spotlight [Enabler]: The character is much more likely to be targeted by enemies (1.5x targeting weight) and takes 10% less damage. Both halves are one survival tool — drawing focused fire away from the pieces a burst depends on, and taking less of what lands.
+* Spotlight [Enabler]: The character is much more likely to be targeted by enemies (1.5x targeting weight) and takes 20% less damage. Both halves are one survival tool — drawing focused fire away from the pieces a burst depends on, and taking less of what lands.
 * Premonition [Enabler]: The next attack against the character automatically misses, then the buff is consumed.
 * Rehearsed [Enabler]: The character's next non-basic skill does not go on cooldown, then the buff is consumed.
 * Sanguine Pact [Channel 2, granted]: Increases the holder's damage by 12% per 10% of the holder's own missing Health, and redirects 30% of damage the holder takes to whoever applied the Pact instead.
