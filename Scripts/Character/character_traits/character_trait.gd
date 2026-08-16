@@ -155,6 +155,10 @@ func OnEnemyTurnBarReduced(
 func OnZoneUsed(_p_owner_ID: int, _p_user_ID: int, _p_resolver: BattleResolver) -> void:
 	print("character_trait base class OnZoneUsed() called!")
 
+func OnAllyTurnBarIncreased(
+		_p_owner_ID: int, _p_target_ID: int, _p_fraction: float, _p_resolver: BattleResolver) -> void:
+	print("character_trait base class OnAllyTurnBarIncreased() called!")
+
 ## Fires once per real cascade instance (one loop iteration of a matched
 ## CascadeResolver listener), for every living character, regardless of whose
 ## mechanic actually produced it — lets a passive react to instance count itself

@@ -779,11 +779,24 @@ const MANIFEST: Dictionary = {
 		"preset": "Data/Character_Player_Variants/Chronophage.tres",
 		"passive": [
 			{"name": "Time Tithe", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
-					"class": Contribution_Class.Channel1,
+					"class": Contribution_Class.Channel3_Cascade,
 					"precondition": "On Enemy_Turn_Bar_Reduced by the Chronophage's own effects, " +
 							"converts 55% (Legendary) of the stolen amount into its own turn-bar " +
-							"progress. A turn-bar mechanic, no CombinedDamageModifier bucket.",
-					"citation": "chronophage_trait.gd:3-8,23-28"},
+							"progress. A turn-bar mechanic, no CombinedDamageModifier bucket. Added: " +
+							"when the Chronophage moves an ally forward and no other ally (the " +
+							"Chronophage included) shares that ally's turn-bar section, the ally " +
+							"gains Borrowed Time — its next damaging skill resolves once more at " +
+							"60% strength (Legendary). The scorer cannot represent an instance count " +
+							"granted to another champion (Role_Kit_Design.md §11): " +
+							"_ContributeGatedTeamBonuses requires a same_instance fold and " +
+							"_MultiInstanceContrastRatio only reads the candidate's own skill entry, " +
+							"so this gated_bonus is declared for the record and is not read by " +
+							"burst_reachability.gd.",
+					"gated_bonus": {"bucket_key": "", "magnitude": -0.40,
+							"class": Contribution_Class.Channel3_Cascade, "fold": "separate_instance",
+							"reach": "team", "instances": 1, "gate": &"ally_boosted_alone_in_section",
+							"precondition": "Not read by the scorer; see precondition above."},
+					"citation": "time_tithe_trait.gd:23-63"},
 		],
 		"skills": [
 			{"name": "Zap", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,

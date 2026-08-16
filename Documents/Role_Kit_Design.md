@@ -369,9 +369,6 @@ collapse-test payload without inventing new gating mechanics.
   could export instead.
 * The exact `Trait_Count_Source` / debuff-type identifiers for Emissary's Infraction hook and
   Bloodmage's missing-Health hook are batch-time authoring decisions, not Phase 1 commitments.
-* Whether Chronophage's new threshold-crossing `Cascade_Trigger` should also serve a future
-  Health-threshold design (the other named gap in section 3) is worth revisiting once batch 2
-  lands — not resolved here to avoid scope creep into code before sign-off.
 * The contrast baseline (bursting champion's own basic vs. team's average per-action output)
   remains open per the plan; not touched by this document.
 
@@ -859,7 +856,7 @@ Vessel death stays something the drain produces rather than something a skill ex
 
 ### 9.9 Chronophage — time given away, not spent
 
-**Status:** Settled, not yet implemented. Batch 2.
+**Status:** Implemented. Batch 2.
 
 **Identity: Channel 3, exported — with no damage factor of its own.** The Chronophage brings no
 damage to the table; its entire contribution is an extra resolution on a teammate's skill. Zap,
@@ -898,24 +895,21 @@ handed to someone else once per boost. In the exported kind it sits alongside §
 is; the Role fields no factor of its own and is expected to be near-invisible in the sweep's
 ranking.
 
-**Implementation needs (not yet built):**
-
-* `Borrowed_Time.tres` — new buff. Its payload is an instance-count grant, not a damage modifier:
-  the holder's next damaging skill resolves once more at the recorded fraction.
-* `chronophage_trait.gd` — the ally-forward branch, gated on the moved ally being the only ally in
-  its turn-bar section at the moment the boost lands, plus the grant itself.
-  `CascadeResolver.SubscribeInstanceModifier` is the existing seam for adding a resolution to a
-  skill the trait's owner did not cast.
-* A reduced-strength cascade instance: the extra resolution re-reads channels 1 and 2 like any
-  cascade instance but at a fraction of magnitude. The Herald's thread already modulates the damage
-  of instances it produces; this needs the same modulation applied to an instance the *holder*
-  produces.
-* `kit_contribution_manifest.gd` — Time Tithe's entry records Borrowed Time as an exported
-  instance-count grant landing on the holder, not on the Chronophage. The scorer has no
-  representation for an instance count granted to another champion; expect this to need the same
-  kind of plumbing work section 11 lists for Batch 1's Channel 3 payloads.
-* `Concept_Document.md` at promotion: 3.1.3's Time Tithe entry, 3.2.3's buff catalog (Borrowed
-  Time).
+**Implementation.** `SubscribeInstanceModifier` turned out to be the wrong seam — it only amplifies
+a listener that already matched, and nothing matches a plain teammate's cast. The alone-clause fires
+off a new `Combat_Event.Ally_Turn_Bar_Increased` hook (`Skills.DispatchAllyTurnBarIncreased`, the
+positive/ally mirror of the existing tithe's `TurnBarTithe`), checked against a new
+`TurnPositions.GetSectionIndex` query (the base class returns -1 for "unknown", which declines the
+grant rather than assuming aloneness). The Chronophage counts as an occupant of its own section. The
+replay itself is a `Cascade_Trigger.Skill_Resolved` `Subscribe` in `StatusEffectResolver`, gated on
+the holder carrying Borrowed Time *and* the cast skill carrying a `DamageEffect` — so a non-damaging
+cast leaves the buff untouched for a later damaging one, matching Daunting Strength's own
+`ConsumeDamageMultiplierFactors` semantics. The one-turn buff needed `_IsBuffExpired`'s existing
+`DamageMultiplier` one-shot survival rule (`duration < 0` rather than `<= 0`) widened to cover
+Borrowed Time too, or the start-of-cast duration decrement kills it before its own cast's cascade
+gets a chance to consume it. `kit_contribution_manifest.gd`'s Time Tithe entry records Borrowed Time
+as an exported `separate_instance` `gated_bonus`, reclassified to `Channel3_Cascade`; the scorer does
+not read it (§11).
 
 **Judgment calls made while settling, listed so they can be overruled:** the buff does not stack,
 so a champion boosted twice before acting still echoes once — the alone-clause already limits
@@ -1664,6 +1658,13 @@ applied after the granted buffs are credited.
 changing mid-team-score, so Full Appraisal's reciprocal loss (Consigned zeroing the Appraiser's own
 crit attributes while lent out) is not modeled — the Appraiser's own candidate scores as though it
 kept them.
+
+**Open gap, found implementing §9.9.** The scorer cannot represent an instance count granted to
+another champion. `_ContributeGatedTeamBonuses` requires a `same_instance` fold, and
+`_MultiInstanceContrastRatio` only ever reads the candidate's own skill entry — so Time Tithe's
+`separate_instance` + `reach: "team"` `gated_bonus` is declared in the manifest but structurally
+invisible to the sweep, and Chronophage teams score exactly as before implementation (confirmed:
+median 1.95x, 90th percentile 4.68x, ceiling 16.24x, 8 distinct top-decile pairings, all unchanged).
 
 **Closed while settling §9.4.** `granted_status` gained a `"reach": "team"` option
 (`BurstReachability._ContributeGrantedStatuses`), for a status that sits on the enemy target itself

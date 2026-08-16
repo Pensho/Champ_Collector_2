@@ -139,6 +139,7 @@ enum Buff_Type
 	Catalyst,
 	Volatile_Mixture,
 	Sanguine_Pact,
+	Borrowed_Time,
 }
 
 enum Debuff_Type
@@ -192,6 +193,7 @@ enum Combat_Event
 	Debuff_Applied,
 	Debuff_Received,
 	Enemy_Turn_Bar_Reduced,
+	Ally_Turn_Bar_Increased,
 	Zone_Used,
 	Zone_Constructed,
 	Damage_Dealt,

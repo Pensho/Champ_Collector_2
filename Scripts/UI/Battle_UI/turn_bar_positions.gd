@@ -25,3 +25,7 @@ func GetCharactersBehindOrdered(p_owner_ID: int) -> Array[int]:
 
 func GetCharactersByProximityOrdered(p_owner_ID: int, p_bar_percent: float) -> Array[int]:
 	return _turn_bar.GetCharactersByProximityOrdered(p_owner_ID, p_bar_percent)
+
+
+func GetSectionIndex(p_character_ID: int) -> int:
+	return _turn_bar.GetSectionIndex(p_character_ID)

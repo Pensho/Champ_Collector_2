@@ -1194,6 +1194,35 @@ event's own `instance_count` before the per-instance loop, still bounded by
 amplifies any cascade instance the Herald's own action produces against an enemy) and the Sorcerer's
 Echo count (scoped to `&"SorcererTrait"`, so it only ever amplifies its own listener).
 
+**Borrowed Time: a `Skill_Resolved` listener granted by another champion.** The Chronophage's Time
+Tithe passive grants an ally the `Borrowed_Time` buff rather than subscribing anything itself — the
+buff, not the passive, owns the extra resolution. `StatusEffectResolver._RegisterCascadeListeners`
+subscribes under the buff's own type name, matching on the holder carrying `Borrowed_Time` *and* the
+cast skill carrying at least one `DamageEffect` (`_CastSkillHasDamageEffect`), so a non-damaging cast
+leaves the buff untouched rather than burning it. The callback (`_CascadeBorrowedTime`) removes the
+buff, reads its `value` as the resolution's strength fraction, and replays the cast the same way the
+Sorcerer's Echo does: a fresh `SkillCastContext` (use count 0, new `TraitSkillResult`), `repeat_bonus
+= fraction - 1.0`, only `DamageEffect`s re-resolved. Because `StatusEffectResolver`'s cascade
+listeners are registered once in its constructor rather than per-caster, this is the first ported
+effect whose *subject* (the buff holder) need not be the trait that granted it.
+
+The grant side is a new `Combat_Event.Ally_Turn_Bar_Increased` hook, dispatched from
+`BattleResolver._EmitTurnBarBump` via `Skills.DispatchAllyTurnBarIncreased` — the positive/ally
+mirror of the existing `Skills.TurnBarTithe`, gated on a positive fraction and the source and target
+being allies rather than enemies. `TimeTitheTrait.OnAllyTurnBarIncreased` checks a new
+`TurnPositions.GetSectionIndex(character_ID) -> int` query (the bar's five sections, matching
+`Game_Balance.NUMBER_OF_TURN_BAR_ZONES`; the base class returns `-1` for "unknown", the headless
+default, which declines the grant rather than assuming aloneness) against every living ally of the
+target — the trait's own owner included, since the alone-clause treats the Chronophage as an
+occupant of its own section like anyone else.
+
+**A one-turn buff surviving its own holder's next cast.** `Borrowed_Time` needed the same duration
+trick `DamageMultiplier` buffs (Daunting Strength, Volatile Mixture) already use:
+`StatusEffectResolver._IsBuffExpired` treats both kinds as `duration < 0` rather than `<= 0`, so the
+start-of-cast decrement in `_TriggerExistingCasterBuffs` brings a 1-turn buff to 0 without expiring
+it, leaving that same cast's own `Skill_Resolved` cascade the chance to consume it before natural
+expiry would.
+
 ### 7.9. Burst presentation pacing
 
 The presentation half of Concept Document 1.1.5's cascade requirement — a burst must resolve as a

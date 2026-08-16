@@ -22,6 +22,9 @@ class FakeTurnPositions extends TurnPositions:
 	# Per-owner override for GetCharactersByProximityOrdered, for tests needing an
 	# owner-dependent (e.g. mutual-nearest) result rather than one flat answer.
 	var proximity_ordered_by_owner: Dictionary = {}
+	# Per-character turn-bar section override; a character with no entry here reads
+	# as -1 (unknown), the same conservative default the base class returns.
+	var sections_by_character: Dictionary[int, int] = {}
 
 	func IsCharacterInZone(p_character_ID: int, p_zone_ID: int) -> bool:
 		if(occupants_by_zone.has(p_zone_ID)):
@@ -47,6 +50,9 @@ class FakeTurnPositions extends TurnPositions:
 			result.assign(proximity_ordered_by_owner[p_owner_ID])
 			return result
 		return proximity_ordered_IDs
+
+	func GetSectionIndex(p_character_ID: int) -> int:
+		return sections_by_character.get(p_character_ID, -1)
 
 ## Headless stand-in for a reagent-amplifying trait (e.g. the Sorcerer's Arcane
 ## Instability): always contributes a fixed additive potency amount, for testing

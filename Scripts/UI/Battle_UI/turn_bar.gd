@@ -287,4 +287,12 @@ func IsCharacterInZone(p_character_ID: int, p_zone_ID: int) -> bool:
 	if(!_character_turn_markers[p_character_ID].get_rect().intersects(_zone_buttons[p_zone_ID].get_rect())):
 		return false
 	return true
-	
+
+## Which of the bar's Game_Balance.NUMBER_OF_TURN_BAR_ZONES sections the character's
+## marker center currently falls in.
+func GetSectionIndex(p_character_ID: int) -> int:
+	var marker: TextureRect = _character_turn_markers[p_character_ID]
+	var center_x: float = marker.position.x + marker.size.x * 0.5
+	var section_width: float = self.size.x / Game_Balance.NUMBER_OF_TURN_BAR_ZONES
+	return clampi(int(center_x / section_width), 0, Game_Balance.NUMBER_OF_TURN_BAR_ZONES - 1)
+

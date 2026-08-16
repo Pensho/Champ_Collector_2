@@ -606,6 +606,7 @@ func _EmitTurnBarBump(p_target_ID: int, p_fraction: float, p_source_ID: int = -1
 	bump.target_ID = p_target_ID
 	bump.fraction = p_fraction
 	_Emit(bump)
+	Skills.DispatchAllyTurnBarIncreased(p_source_ID, p_target_ID, p_fraction, _characters, _sides, self)
 	_EmitTurnBarBump(p_source_ID, Skills.TurnBarTithe(p_source_ID, p_target_ID, p_fraction, _characters, _sides, self))
 
 func _TickCooldowns(p_caster: Character) -> void:

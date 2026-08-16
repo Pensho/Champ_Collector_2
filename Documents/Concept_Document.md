@@ -306,8 +306,9 @@ Current roles, their identity and purpose exist as follows:
 - Chronophage
     - A speed focused character, applying various speed modifying skills onto the turn bar and primarily deals damage based on the Speed attribute. Signature zones: Flicker Zone and Temporal Sinkhole (see section 3.2.4.1). Primary attributes: Speed.
     - Purpose: Control
-    - Passive: Time Tithe [Enabler] - When the Chronophage's skills remove or reduce an enemy's turn bar, the Chronophage absorbs a portion of the stolen amount as its own turn-bar progress.
-        - 25% Uncommon, 35% Rare, 45% Epic, 55% Legendary
+    - Passive: Time Tithe [Channel 3 — Cascade] - When the Chronophage's skills remove or reduce an enemy's turn bar, the Chronophage absorbs a portion of the stolen amount as its own turn-bar progress. When the Chronophage's effects move an ally forward on the turn bar and no other ally (the Chronophage included) is in that ally's turn-bar section, the ally gains Borrowed Time for 1 turn (see section 3.2.3).
+        - Tithe: 25% Uncommon, 35% Rare, 45% Epic, 55% Legendary
+        - Borrowed Time strength: 30% Uncommon, 40% Rare, 50% Epic, 60% Legendary
     - Fielded by: `Chronophage.tres`
 - Architect
     - A methodical charge & support character aligned with the God of Rules. Instead of raw aggression, they construct "Logic Chains" over the course of battle, eventually "solving" the encounter with a massive structural shift. Primary attributes: Knowledge, Defense.
@@ -522,6 +523,7 @@ Buffs:
 * Premonition [Enabler]: The next attack against the character automatically misses, then the buff is consumed.
 * Rehearsed [Enabler]: The character's next non-basic skill does not go on cooldown, then the buff is consumed.
 * Sanguine Pact [Channel 2, granted]: Increases the holder's damage by 12% per 10% of the holder's own missing Health, and redirects 30% of damage the holder takes to whoever applied the Pact instead.
+* Borrowed Time [Channel 3 — Cascade, granted]: The holder's next damaging skill resolves one additional time, at 30-60% strength by the applier's rarity. Does not stack. Consumed only by a damaging cast; a non-damaging skill leaves it untouched for a later one.
 
 #### 3.2.4. Skills
 Skills can be categorized into three main types: Turn Bar Skills, Role Specific Skills, and Universal Skills.

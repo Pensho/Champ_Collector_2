@@ -37,11 +37,12 @@ through Enabler-tagged skills authored as kit content (§1.2, `Concept_Document.
 
 Phase 3 (Batch 2) design started ahead of Phase 2's remaining implementation, which the tier-3 loop
 permits — settling a kit does not require implementing it in the same sitting. All five settled.
-**Jester (§9.6), Emissary (§9.7) and Cultist (§9.8) implemented**; Chronophage (§9.9), Architect
-(§9.10) remain. Routes A and E close; route C's second anchor is open rather than assigned, since the
+**Jester (§9.6), Emissary (§9.7), Cultist (§9.8) and Chronophage (§9.9) implemented**; Architect
+(§9.10) remains. Routes A and E close; route C's second anchor is open rather than assigned, since the
 Jester was Phase 1's proposal and is no longer a candidate, and no unsettled Role is assumed into
-it. Chronophage's threshold-crossing `Cascade_Trigger` is **not** authored — counting section
-boundaries is arithmetic a player cannot read off the screen.
+it. Chronophage's threshold-crossing `Cascade_Trigger` was **not** authored — counting section
+boundaries is arithmetic a player cannot read off the screen; the shipped Borrowed Time grant reads
+turn-bar sections instead (already on screen as the bar's dividers).
 
 **Jester's implementation** made `BattleResolver._RollFavoring` public (`RollFavoring`) and widened
 it to every remaining pass/fail chance gate in combat (`SkillEffect.chance`, Glamour Graft's
@@ -85,6 +86,22 @@ threshold), alongside Bloodmage/Tithe of Vitality (7), Herald of the Loom/Cut th
 Sorcerer/Cataclysm (3), Tidal Corsair/Corsairs Reckoning (45), Architect/Final Calculation (17),
 Emissary/Citation (15), Diviner/Ill Omen (2), Bar Brawler/Headbutt (2), Lancer/Rending Charge (2),
 Thief/Pierce weakness (2), Plague Doctor/Outbreak (2).
+
+**Chronophage's implementation** needed one wrong-seam correction against §9.9's own note:
+`CascadeResolver.SubscribeInstanceModifier` only amplifies a listener that has already matched, and
+nothing matches a plain teammate's cast, so the grant runs through a new `Combat_Event`
+(`Ally_Turn_Bar_Increased`, dispatched from `_EmitTurnBarBump` via the new
+`Skills.DispatchAllyTurnBarIncreased`, the positive/ally mirror of the existing tithe's
+`TurnBarTithe`) and a new `TurnPositions.GetSectionIndex` query (base class returns -1, declining
+the grant on an unknown position rather than assuming aloneness) instead. The extra resolution is a
+`Skill_Resolved` cascade listener owned by the `Borrowed_Time` buff itself in
+`StatusEffectResolver`, not by the Chronophage's trait — matching "the Chronophage never fires it."
+The buff also needed `_IsBuffExpired`'s existing `DamageMultiplier` one-shot survival rule (`duration
+< 0`, not `<= 0`) widened to cover it, or the start-of-cast duration decrement kills a 1-turn buff
+before its own holder's next cast gets a chance to consume it — the same problem Daunting Strength
+already solved. Post-Chronophage sweep: median 1.95x, 90th percentile 4.68x, ceiling 16.24x, top
+decile 114 teams across 8 distinct pairings — all unchanged from the pre-implementation baseline, as
+§9.9 and §11 both predicted for a grant the scorer cannot represent.
 
 Phase 4 (Batch 3) **complete**, settled one Role at a time. Four settled, none implemented:
 

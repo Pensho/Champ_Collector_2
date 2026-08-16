@@ -257,8 +257,8 @@ static func ApplyWeaknessRider(
 	var attribute: Types.Attribute = p_debuff.weakness_attribute
 	p_attributes[attribute] -= int(ceilf(p_attributes[attribute] * p_debuff.weakness_reduction))
 
-## Fraction (e.g. Chronophage's Time Tithe) p_source_ID gains for itself when its own
-## effect reduced enemy p_target_ID's turn bar by p_fraction (0.0 = no tithe).
+## Fraction (e.g. Time Tithe) p_source_ID gains for itself when its own effect
+## reduced enemy p_target_ID's turn bar by p_fraction (0.0 = no tithe).
 static func TurnBarTithe(
 			p_source_ID: int, p_target_ID: int, p_fraction: float,
 			p_characters: Dictionary[int, Character], p_sides: CombatSides, p_resolver: BattleResolver) -> float:
@@ -270,6 +270,24 @@ static func TurnBarTithe(
 	if(null == active_trait):
 		return 0.0
 	return active_trait.OnEnemyTurnBarReduced(p_source_ID, -p_fraction, p_resolver)
+
+## Notifies p_source_ID's own trait when its effect moved ally p_target_ID forward on
+## the turn bar by p_fraction (e.g. Time Tithe granting Borrowed Time). The ally
+## counterpart to TurnBarTithe: positive fraction, and the two must be allies rather
+## than enemies.
+static func DispatchAllyTurnBarIncreased(
+			p_source_ID: int, p_target_ID: int, p_fraction: float,
+			p_characters: Dictionary[int, Character], p_sides: CombatSides, p_resolver: BattleResolver) -> void:
+	if(p_fraction <= 0.0 or p_source_ID < 0 or p_source_ID == p_target_ID
+			or p_sides.AreEnemies(p_source_ID, p_target_ID)):
+		return
+	var source: Character = p_characters.get(p_source_ID)
+	if(null == source):
+		return
+	var active_trait: CharacterTrait = ActiveHook(source, Types.Combat_Event.Ally_Turn_Bar_Increased)
+	if(null == active_trait):
+		return
+	active_trait.OnAllyTurnBarIncreased(p_source_ID, p_target_ID, p_fraction, p_resolver)
 
 ## Fires an applier's Debuff_Applied trait hook when their debuff lands on someone
 ## else — the applier-side counterpart to _EmitBuffApplied's target-side dispatch.

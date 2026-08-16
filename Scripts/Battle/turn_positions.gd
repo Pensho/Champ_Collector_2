@@ -25,3 +25,6 @@ func GetCharactersBehindOrdered(_p_owner_ID: int) -> Array[int]:
 ## nearest-first.
 func GetCharactersByProximityOrdered(_p_owner_ID: int, _p_bar_percent: float) -> Array[int]:
 	return []
+
+func GetSectionIndex(_p_character_ID: int) -> int:
+	return -1

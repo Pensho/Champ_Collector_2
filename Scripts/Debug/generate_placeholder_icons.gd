@@ -176,6 +176,8 @@ const STATUS_EFFECT_TABLE: Array = [
 			"color": Color(0.65, 0.55, 0.15, 1.0) },
 	{ "folder": "Status_Effects/Sanguine_Pact", "base_name": "Sanguine_Pact", "size": 64,
 			"color": Color(0.70, 0.15, 0.30, 1.0) },
+	{ "folder": "Status_Effects/Borrowed_Time", "base_name": "Borrowed_Time", "size": 64,
+			"color": Color(0.35, 0.60, 0.80, 1.0) },
 ]
 
 # One row per skill and passive still awaiting real art. Skills aren't rarity-tiered, so

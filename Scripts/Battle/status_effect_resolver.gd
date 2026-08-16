@@ -33,6 +33,12 @@ func _RegisterCascadeListeners() -> void:
 			&"Comorbidity",
 			func(_e: CascadeEvent) -> bool: return true,
 			_CascadeComorbidityRetick)
+	cascade.Subscribe(Types.Cascade_Trigger.Skill_Resolved,
+			StringName(Types.Buff_Type.keys()[Types.Buff_Type.Borrowed_Time]),
+			func(e: CascadeEvent) -> bool:
+				return (_resolver._HasBuff(e.subject_ID, Types.Buff_Type.Borrowed_Time)
+						and _CastSkillHasDamageEffect(e.subject_ID, e.skill_ID)),
+			_CascadeBorrowedTime)
 
 func ApplyBuff(p_target_ID: int, p_buff_template: StatusEffects.Buff) -> Array[CombatResult]:
 	_resolver._BeginBatch()
@@ -137,7 +143,11 @@ func _ExpireBuffs(p_target_ID: int, p_source_ID: int = -1) -> void:
 
 func _IsBuffExpired(p_buff: StatusEffects.Buff) -> bool:
 	var data: StatusEffectData = StatusEffectRegistry.BuffData(p_buff.type)
-	if(null != data and StatusEffectData.MagnitudeKind.DamageMultiplier == data.magnitude_kind):
+	# Both DamageMultiplier and Borrowed Time are one-shot, consumed-on-use buffs meant
+	# to survive the holder's own next cast's start-of-cast decrement, not expire before
+	# that cast's Skill_Resolved cascade gets a chance to consume them.
+	if(null != data and (StatusEffectData.MagnitudeKind.DamageMultiplier == data.magnitude_kind
+			or Types.Buff_Type.Borrowed_Time == p_buff.type)):
 		return p_buff.duration < 0
 	return p_buff.duration <= 0
 
@@ -393,6 +403,42 @@ func _CascadeComorbidityRetick(p_event: CascadeEvent) -> void:
 	var attributes: Dictionary[Types.Attribute, int] = _resolver.GetEffectiveAttributes(p_event.subject_ID)
 	var tick: Dictionary = _ComputeDebuffTickDamage(target, attributes, p_event.origin_ID)
 	_EmitDebuffTickIfAny(p_event.subject_ID, tick)
+
+func _CastSkillHasDamageEffect(p_caster_ID: int, p_skill_ID: int) -> bool:
+	var caster: Character = _resolver._characters.get(p_caster_ID)
+	if(null == caster or p_skill_ID < 0 or p_skill_ID >= caster._skills.size()):
+		return false
+	for effect in caster._skills[p_skill_ID].effects:
+		if(effect is DamageEffect):
+			return true
+	return false
+
+func _CascadeBorrowedTime(p_event: CascadeEvent) -> void:
+	var holder_ID: int = p_event.subject_ID
+	var holder: Character = _resolver._characters.get(holder_ID)
+	if(null == holder or holder._current_health <= 0):
+		return
+	var fraction: float = 0.0
+	for buff in holder._active_buffs:
+		if(Types.Buff_Type.Borrowed_Time == buff.type):
+			fraction = buff.value
+			RemoveBuff(holder_ID, buff)
+			break
+	if(0.0 == fraction):
+		return
+	var cast_skill: Skill = holder._skills[p_event.skill_ID]
+	var caster_attributes: Dictionary[Types.Attribute, int] = _resolver.GetEffectiveAttributes(holder_ID)
+	var context := SkillCastContext.new(_resolver, holder_ID, p_event.target_IDs, cast_skill,
+			caster_attributes, 0, TraitSkillResult.new())
+	context.repeat_bonus = fraction - 1.0
+	var resolved_any: bool = false
+	for effect in cast_skill.effects:
+		if(effect is DamageEffect and context.ConditionMet(effect)):
+			resolved_any = true
+			effect.Resolve(context)
+	if(resolved_any):
+		_resolver.EmitBurstInstance(&"Borrowed Time", holder_ID, Types.Cascade_Trigger.Skill_Resolved)
+
 
 func ForceExtraDebuffTick(p_target_ID: int) -> void:
 	var target: Character = _resolver._characters[p_target_ID]
