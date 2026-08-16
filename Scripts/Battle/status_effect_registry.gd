@@ -38,6 +38,7 @@ const BUFFS: Dictionary[Types.Buff_Type, StatusEffectData] = {
 	Types.Buff_Type.Spotlight: preload("res://Data/Status_Effects/Spotlight.tres"),
 	Types.Buff_Type.Catalyst: preload("res://Data/Status_Effects/Catalyst.tres"),
 	Types.Buff_Type.Volatile_Mixture: preload("res://Data/Status_Effects/Volatile_Mixture.tres"),
+	Types.Buff_Type.Sanguine_Pact: preload("res://Data/Status_Effects/Sanguine_Pact.tres"),
 }
 
 const DEBUFFS: Dictionary[Types.Debuff_Type, StatusEffectData] = {
@@ -67,6 +68,7 @@ const DEBUFFS: Dictionary[Types.Debuff_Type, StatusEffectData] = {
 	Types.Debuff_Type.Severance: preload("res://Data/Status_Effects/Severance.tres"),
 	Types.Debuff_Type.Sanction: preload("res://Data/Status_Effects/Sanction.tres"),
 	Types.Debuff_Type.Anchor: preload("res://Data/Status_Effects/Anchor.tres"),
+	Types.Debuff_Type.Hemorrhage: preload("res://Data/Status_Effects/Hemorrhage.tres"),
 }
 
 static func BuffData(p_type: Types.Buff_Type) -> StatusEffectData:

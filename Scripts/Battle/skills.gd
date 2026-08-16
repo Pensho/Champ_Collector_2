@@ -322,14 +322,14 @@ static func MitigatedDamage(
 	return int(ceil(MitigatedDamageUnrounded(
 			p_effective_defence, p_caster_scaled_attribute_aggregate, p_crit_multiplier, p_random_value)))
 
-## The first living ally of `p_target_ID` whose trait redirects a share of incoming
-## attack damage (e.g. Shield Wall); [-1, 0.0] when nobody redirects or the attacker
-## is not an enemy of the target.
 static func FindDamageRedirect(
 		p_resolver: BattleResolver, p_caster_ID: int, p_target_ID: int) -> Array:
 	if(not p_resolver.GetSides().AreEnemies(p_caster_ID, p_target_ID)):
 		return [-1, 0.0]
 	var characters: Dictionary[int, Character] = p_resolver.GetCharacters()
+	var status_redirect: Array = _FindStatusDamageRedirect(characters, p_target_ID)
+	if(-1 != status_redirect[0]):
+		return status_redirect
 	for ally_ID in p_resolver.GetSides().AlliesOf(p_target_ID).AliveMembers(characters):
 		if(ally_ID == p_target_ID):
 			continue
@@ -340,4 +340,19 @@ static func FindDamageRedirect(
 		var fraction: float = active_trait.OnAllyDamageTaken(ally_ID, p_target_ID, p_resolver)
 		if(fraction > 0.0):
 			return [ally_ID, fraction]
+	return [-1, 0.0]
+
+static func _FindStatusDamageRedirect(
+		p_characters: Dictionary[int, Character], p_target_ID: int) -> Array:
+	var target: Character = p_characters.get(p_target_ID)
+	if(null == target):
+		return [-1, 0.0]
+	for buff in target._active_buffs:
+		var data: StatusEffectData = StatusEffectRegistry.BuffData(buff.type)
+		if(null == data or data.damage_redirect_to_applier_fraction <= 0.0):
+			continue
+		var applier: Character = p_characters.get(buff.source_ID)
+		if(null == applier or applier._current_health <= 0):
+			continue
+		return [buff.source_ID, data.damage_redirect_to_applier_fraction]
 	return [-1, 0.0]

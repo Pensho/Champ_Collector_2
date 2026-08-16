@@ -743,9 +743,10 @@ static func _ContributeGrantedStatuses(
 			var grant: Dictionary = skill_entry.get("granted_status", {})
 			if(grant.is_empty() or skill_index >= granter._skills.size()):
 				continue
-			var granting_skill: Skill = granter._skills[skill_index]
-			if(not _GrantReachesCandidate(granting_skill, granter_index, p_candidate_index)):
-				continue
+			if("team" != grant.get("reach", "")):
+				var granting_skill: Skill = granter._skills[skill_index]
+				if(not _GrantReachesCandidate(granting_skill, granter_index, p_candidate_index)):
+					continue
 			if(grant.get("per_debuff_anchored", false)):
 				if(&"" != p_anchor_debuff_key):
 					_Contribute(p_buckets, p_anchor_debuff_key,

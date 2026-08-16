@@ -84,20 +84,22 @@ func _TargetHasDebuff(p_context: SkillCastContext, p_target_ID: int, p_debuff_ty
 	return false
 
 func _Count(p_context: SkillCastContext, p_target_ID: int, p_source: Types.Trait_Count_Source) -> float:
+	var count: float = 0.0
 	match p_source:
 		Types.Trait_Count_Source.Buffs_On_Caster:
-			return float(p_context.resolver.GetCharacters()[p_context.caster_ID]._active_buffs.size())
+			count = float(p_context.resolver.GetCharacters()[p_context.caster_ID]._active_buffs.size())
 		Types.Trait_Count_Source.Buffs_Consumed:
-			return float(p_context.buffs_consumed)
+			count = float(p_context.buffs_consumed)
 		Types.Trait_Count_Source.Zones_On_Turn_Bar:
-			return float(p_context.resolver.GetZoneResolver().GetZones().size())
+			count = float(p_context.resolver.GetZoneResolver().GetZones().size())
 		Types.Trait_Count_Source.Trait_Condition, Types.Trait_Count_Source.Trait_Counter_On_Target, \
 				Types.Trait_Count_Source.Trait_Counter_Raw_On_Target:
-			return _TraitCount(p_context, p_target_ID, p_source)
+			count = _TraitCount(p_context, p_target_ID, p_source)
 		Types.Trait_Count_Source.Target_Debuff_Count:
-			return float(_DistinctDebuffTypeCount(p_context, p_target_ID))
-		_:
-			return 0.0
+			count = float(_DistinctDebuffTypeCount(p_context, p_target_ID))
+		Types.Trait_Count_Source.Wounded_Allies:
+			count = float(_WoundedAllyCount(p_context))
+	return count
 
 func _DistinctDebuffTypeCount(p_context: SkillCastContext, p_target_ID: int) -> int:
 	var target_character: Character = p_context.resolver.GetCharacters().get(p_target_ID)
@@ -107,6 +109,21 @@ func _DistinctDebuffTypeCount(p_context: SkillCastContext, p_target_ID: int) -> 
 	for debuff in target_character._active_debuffs:
 		distinct_types[debuff.type] = true
 	return distinct_types.size()
+
+## Living allies of the caster, caster excluded, currently below half their own max Health.
+func _WoundedAllyCount(p_context: SkillCastContext) -> int:
+	var resolver: BattleResolver = p_context.resolver
+	var characters: Dictionary[int, Character] = resolver.GetCharacters()
+	var count: int = 0
+	for ally_ID in resolver.GetSides().AlliesOf(p_context.caster_ID).AliveMembers(characters):
+		if(ally_ID == p_context.caster_ID):
+			continue
+		var max_health: int = resolver.GetMaxHealth(ally_ID)
+		if(max_health <= 0):
+			continue
+		if(float(characters[ally_ID]._current_health) / float(max_health) < 0.5):
+			count += 1
+	return count
 
 func _TraitCount(p_context: SkillCastContext, p_target_ID: int, p_source: Types.Trait_Count_Source) -> float:
 	var caster_trait: CharacterTrait = p_context.resolver.GetCharacters()[p_context.caster_ID]._trait

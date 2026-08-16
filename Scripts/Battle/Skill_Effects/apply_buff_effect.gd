@@ -14,6 +14,7 @@ func Resolve(p_context: SkillCastContext) -> void:
 		buff.type = buff_type
 		buff.duration = duration
 		buff.name = Types.Buff_Type.keys()[buff_type]
+		buff.source_ID = p_context.caster_ID
 		if(p_context.is_zone_trigger):
 			var data: StatusEffectData = StatusEffectRegistry.BuffData(buff_type)
 			if(null != data):

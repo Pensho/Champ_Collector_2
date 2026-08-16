@@ -10,7 +10,7 @@ func test_tithe_of_vitality_orders_cost_before_status_before_damage() -> void:
 	var skill: Skill = load("res://Data/Character_Skill_Variants/Attack_Skills/Tithe_of_Vitality.tres")
 	var kinds: Array = skill.effects.map(func(e): return e.get_script())
 	assert_eq(kinds, [HealthChangeEffect, ApplyDebuffEffect, DamageEffect] as Array[Script],
-		"Tithe of Vitality should pay its cost, apply Mana Burn, then deal damage, in that order")
+		"Tithe of Vitality should pay its cost, apply Hemorrhage, then deal damage, in that order")
 
 func test_devour_blessing_orders_buff_manipulation_before_damage() -> void:
 	var skill: Skill = load("res://Data/Character_Skill_Variants/Attack_Skills/Devour_Blessing.tres")

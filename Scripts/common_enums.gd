@@ -138,6 +138,7 @@ enum Buff_Type
 	Spotlight,
 	Catalyst,
 	Volatile_Mixture,
+	Sanguine_Pact,
 }
 
 enum Debuff_Type
@@ -168,6 +169,7 @@ enum Debuff_Type
 	Severance,
 	Sanction,
 	Anchor,
+	Hemorrhage,
 	Invalid,
 }
 
@@ -212,6 +214,7 @@ enum Trait_Count_Source
 	Trait_Counter_Raw_On_Target,
 	Zones_On_Turn_Bar,
 	Target_Debuff_Count,
+	Wounded_Allies,
 }
 
 ## Always reads as the raw (un-multiplied) Trait_Count_Source, even where the member

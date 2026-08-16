@@ -13,8 +13,8 @@ target = 12
 
 [sub_resource type="Resource" id="Resource_1qo26"]
 script = ExtResource("3_f1y8h")
-debuff_type = 15
-duration = 2
+debuff_type = 26
+duration = 3
 target = 0
 
 [sub_resource type="Resource" id="Resource_bk538"]
@@ -22,11 +22,14 @@ script = ExtResource("4_536ub")
 damage_scaling = Dictionary[int, float]({
 6: 1.5
 })
+bonus_per = Dictionary[int, float]({
+8: 0.35
+})
 
 [resource]
 script = ExtResource("1_skill")
 name = "Tithe of Vitality"
-description = "Drains 10% of max Health from each living ally (caster excluded). Deals damage to a single enemy, scaled by Mysticism, and applies Mana Burn for 2 turns."
+description = "Drains 10% of max Health from each living ally (caster excluded). Deals damage to a single enemy, scaled by Mysticism (+35% per wounded ally), and applies Hemorrhage for 3 turns."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Tithe_of_Vitality/Tithe_of_Vitality.png"
 cooldown = 4
 effects = Array[ExtResource("1_jc03f")]([SubResource("Resource_u4o0w"), SubResource("Resource_1qo26"), SubResource("Resource_bk538")])

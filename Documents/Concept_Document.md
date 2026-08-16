@@ -292,8 +292,8 @@ Current roles, their identity and purpose exist as follows:
 - Bloodmage
     - Spending their own or allies health for big pay-off skills in terms of damage or applying shields based on sacrificed health. Primary attributes: Health, Mysticism.
     - Purpose: Sustain, Damage
-    - Passive: Hemoclarity [Channel 1] - While below 50% health, gain increased Mysticism.
-        - 25% Uncommon, 30% Rare, 35% Epic, 40% Legendary
+    - Passive: Hemoclarity [Channel 1] - For every 1% of max Health missing (capped at 80%), gain increased Mysticism, and the same percentage increases all healing and Barrier absorption the Bloodmage creates.
+        - Per 1% missing: 0.7% Uncommon, 0.8% Rare, 0.9% Epic, 1.0% Legendary
     - Fielded by: `Bloodmage.tres`
 - Herald of the loom
     - A stance character whose three threads shape how its cascade instances and debuffs behave. Primary attributes: Mysticism, Accuracy.
@@ -488,6 +488,7 @@ Debuffs:
 * Warped [Channel 1 / Enabler]: The character's damage dealt scales with Mysticism instead of the skill's normal attribute — damage-scaling only; non-damage calculations (healing, absorb values, turn-bar effects) stay on their native attribute. Dual-classified: channel 1 by mechanism, since it re-points which attribute channel 1 reads rather than adding a term of its own; enabler by role, since forcing a target's real damage through an attribute it's weak in is denial that protects the team, not a passive attribute swap.
 * Signed Writ [Enabler]: The character cannot resist debuffs.
 * Sanction [Channel 1]: Reduces all primary attributes except Health by the applier's Standing Record rate per Infraction on the target, set at the moment of application (see the Emissary's passive in section 3.1.3).
+* Hemorrhage [Channel 2]: Attacks against the character deal +6% damage per 10% of the character's own missing Health. Readable by any attacker, not only the applier's.
 
 Buffs:
 * Empower [Channel 1]: Increases Attack by 30%.
@@ -518,6 +519,7 @@ Buffs:
 * Spotlight [Enabler]: The character is much more likely to be targeted by enemies (1.5x targeting weight) and takes 10% less damage. Both halves are one survival tool — drawing focused fire away from the pieces a burst depends on, and taking less of what lands.
 * Premonition [Enabler]: The next attack against the character automatically misses, then the buff is consumed.
 * Rehearsed [Enabler]: The character's next non-basic skill does not go on cooldown, then the buff is consumed.
+* Sanguine Pact [Channel 2, granted]: Increases the holder's damage by 12% per 10% of the holder's own missing Health, and redirects 30% of damage the holder takes to whoever applied the Pact instead.
 
 #### 3.2.4. Skills
 Skills can be categorized into three main types: Turn Bar Skills, Role Specific Skills, and Universal Skills.
@@ -750,12 +752,12 @@ the fix belongs in the data or the document.
     * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Mysticism. Costs 3% of the Bloodmage's max Health to cast.
 * Transfusion
     * Type: Buff
-    * Cooldown: 3 turns
-    * Effect: [Enabler] The Bloodmage sacrifices 15% of max Health; all other allies gain a Barrier absorbing 200% of the Health sacrificed, lasting 2 turns.
+    * Cooldown: 4 turns
+    * Effect: [Enabler + Channel 2 (granted)] The Bloodmage sacrifices 15% of max Health; all other allies gain a Barrier absorbing 200% of the Health sacrificed (2 turns) and the Sanguine Pact buff for 2 turns.
 * Tithe of Vitality
     * Type: Damage, Debuff
     * Cooldown: 4 turns
-    * Effect: [Channel 1 + Enabler] Drains 10% of max Health from each living ally (the Bloodmage excluded). Deals moderate damage to a single enemy, scaling with Mysticism, and applies the Mana Burn debuff for 2 turns.
+    * Effect: [Channel 2] Drains 10% of max Health from each living ally (the Bloodmage excluded). Deals damage to a single enemy, scaling with Mysticism, increased 35% per living ally currently below half Health, and applies the Hemorrhage debuff for 3 turns.
 
 ###### Herald of the loom
 * Thread Snap

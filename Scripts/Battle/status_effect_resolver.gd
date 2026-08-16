@@ -50,7 +50,7 @@ func ApplyBuff(p_target_ID: int, p_buff_template: StatusEffects.Buff) -> Array[C
 		return _resolver._EndBatch()
 
 	_InsertOrRefresh(p_target_ID, true, p_buff_template.type, data, new_value, p_buff_template.duration,
-			-1, false, false, p_buff_template.name)
+			p_buff_template.source_ID, false, false, p_buff_template.name)
 	return _resolver._EndBatch()
 
 func ApplyDebuff(p_target_ID: int, p_debuff_template: StatusEffects.Debuff) -> Array[CombatResult]:
@@ -539,6 +539,7 @@ func _InsertOrRefresh(
 		new_buff.duration = p_duration
 		new_buff.name = p_display_name
 		new_buff.value = p_value
+		new_buff.source_ID = p_source_ID
 		new_buff.ID = _resolver._NextStatusID()
 		target._active_buffs.append(new_buff)
 		_EmitBuffApplied(p_target_ID, new_buff, p_display_name)
@@ -675,6 +676,33 @@ func _OpportunistDamageFactors(p_caster_ID: int, p_target: Character) -> Diction
 	for debuff_type in debuff_types_present:
 		var key: StringName = StringName(Types.Debuff_Type.keys()[debuff_type])
 		factors[key] = factors.get(key, 0.0) + opportunist_value
+	return factors
+
+func _MissingHealthFraction(p_character_ID: int) -> float:
+	var max_health: int = _resolver.GetMaxHealth(p_character_ID)
+	if(max_health <= 0):
+		return 0.0
+	var character: Character = _resolver._characters[p_character_ID]
+	return clampf(1.0 - float(character._current_health) / float(max_health), 0.0, 1.0)
+
+func _MissingHealthDamageFactors(
+		p_caster_ID: int, p_target_ID: int, p_target: Character) -> Dictionary[StringName, float]:
+	var factors: Dictionary[StringName, float] = {}
+	if(_resolver._characters.has(p_caster_ID)):
+		for buff in _resolver._characters[p_caster_ID]._active_buffs:
+			var data: StatusEffectData = StatusEffectRegistry.BuffData(buff.type)
+			if(null != data and StatusEffectData.MagnitudeKind.HolderMissingHealthDamagePercent == data.magnitude_kind):
+				var contribution: float = buff.value * _MissingHealthFraction(p_caster_ID)
+				if(0.0 != contribution):
+					var key: StringName = StringName(Types.Buff_Type.keys()[buff.type])
+					factors[key] = factors.get(key, 0.0) + contribution
+	for debuff in p_target._active_debuffs:
+		var data: StatusEffectData = StatusEffectRegistry.DebuffData(debuff.type)
+		if(null != data and StatusEffectData.MagnitudeKind.AttackerDamagePerHolderMissingHealth == data.magnitude_kind):
+			var contribution: float = debuff.value * _MissingHealthFraction(p_target_ID)
+			if(0.0 != contribution):
+				var key: StringName = StringName(Types.Debuff_Type.keys()[debuff.type])
+				factors[key] = factors.get(key, 0.0) + contribution
 	return factors
 
 

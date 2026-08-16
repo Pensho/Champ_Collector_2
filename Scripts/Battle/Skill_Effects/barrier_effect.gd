@@ -10,11 +10,15 @@ enum Source { Health_Paid, Target_Max_Health }
 @export var duration: int = 0
 
 func Resolve(p_context: SkillCastContext) -> void:
-	var status_resolver: StatusEffectResolver = p_context.resolver.GetStatusResolver()
+	var resolver: BattleResolver = p_context.resolver
+	var status_resolver: StatusEffectResolver = resolver.GetStatusResolver()
+	var caster_trait: CharacterTrait = resolver.GetCharacters()[p_context.caster_ID]._trait
+	var restoration_multiplier: float = (caster_trait.GetOutgoingRestorationMultiplier(p_context.caster_ID, resolver)
+			if null != caster_trait else 1.0)
 	for target_ID in p_context.TargetsFor(self):
 		var base: float = (float(p_context.health_paid) if Source.Health_Paid == source
-				else float(p_context.resolver.GetMaxHealth(target_ID)))
-		var value: float = base * fraction
+				else float(resolver.GetMaxHealth(target_ID)))
+		var value: float = base * fraction * restoration_multiplier
 		if(value <= 0.0):
 			# ApplyBuff treats an explicit value of 0.0 as "no value given" and falls back
 			# to the registry's default magnitude; skip entirely rather than grant that.

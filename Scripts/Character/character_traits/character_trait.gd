@@ -87,6 +87,12 @@ func GetTargetingPriorityMultiplier() -> float:
 func GetIncomingHealMultiplier(_p_owner_ID: int) -> float:
 	return 1.0
 
+## Permanent multiplier this owner's trait applies to healing and Barrier absorption it
+## creates (1.0 = unchanged), read at the skill-effect layer (HealthChangeEffect's heal
+## branch, BarrierEffect) rather than the resolver's generic heal path.
+func GetOutgoingRestorationMultiplier(_p_owner_ID: int, _p_resolver: BattleResolver) -> float:
+	return 1.0
+
 func OnReagentConsumed(
 		_p_consumer_ID: int, _p_reagent: ReagentData, _p_resolver: BattleResolver) -> float:
 	print("character_trait base class OnReagentConsumed() called!")

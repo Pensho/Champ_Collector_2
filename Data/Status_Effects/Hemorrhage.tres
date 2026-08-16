@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="StatusEffectData" format=3]
+
+[ext_resource type="Script" uid="uid://sqkdniv48rkg" path="res://Scripts/Battle/status_effect_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://24lcfi5o3g43" path="res://Assets/Champ_Collector/Icons/Status_Effects/Hemorrhage/Hemorrhage.png" id="2_icon"]
+
+[resource]
+script = ExtResource("1_script")
+magnitude_kind = 18
+magnitude = 0.6
+duration_default = 3
+applies_on_self_tick = false
+icon = ExtResource("2_icon")
+description = "Attacks against the holder deal +6% damage per 10% of the holder's own missing Health."

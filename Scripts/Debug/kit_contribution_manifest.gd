@@ -637,9 +637,13 @@ const MANIFEST: Dictionary = {
 		"passive": [
 			{"name": "Hemoclarity", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Channel1,
-					"precondition": "On any Skill_Cast while current/max Health < 50%, adds +40% " +
-							"(Legendary) to Mysticism before that cast's own DamageEffect reads it.",
-					"citation": "hemoclarity_trait.gd:3-10,26-44"},
+					"precondition": "On every Skill_Cast, adds +1.0% (Legendary) Mysticism per 1% of " +
+							"the Bloodmage's own missing max Health (capped at 80% missing) before " +
+							"that cast's own DamageEffect reads it — a continuous curve, no threshold. " +
+							"The same bonus also multiplies the Bloodmage's own outgoing healing and " +
+							"Barrier absorption (GetOutgoingRestorationMultiplier), read by " +
+							"HealthChangeEffect's heal branch and BarrierEffect.",
+					"citation": "hemoclarity_trait.gd:3-10,29-46"},
 		],
 		"skills": [
 			{"name": "Blood Bolt", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
@@ -649,15 +653,33 @@ const MANIFEST: Dictionary = {
 					"citation": "Blood_Bolt.tres:6-17"},
 			{"name": "Transfusion", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Enabler,
-					"precondition": "Self-costs 15% max Health; grants one ally a Barrier (2 turns) " +
-							"absorbing 200% of the Health sacrificed. No damage.",
-					"citation": "Transfusion.tres:6-17"},
-			{"name": "Tithe of Vitality", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
-					"class": Contribution_Class.Channel1,
+					"precondition": "Self-costs 15% max Health; grants All_Other_Allies (target 12) a " +
+							"Barrier (2 turns) absorbing 200% of the Health sacrificed, scaled by " +
+							"Hemoclarity, plus Sanguine Pact (3 turns). No damage of its own.",
+					"citation": "Transfusion.tres:6-24",
+					"granted_status": {"bucket_key": "Sanguine_Pact", "magnitude": 0.96,
+							"per_debuff_anchored": false,
+							"citation": "Data/Status_Effects/Sanguine_Pact.tres:8-9 (magnitude_kind " +
+									"HolderMissingHealthDamagePercent, magnitude 1.2 per 10% missing, " +
+									"ceiling at 80% missing = 0.96); status_effect_resolver.gd " +
+									"_MissingHealthDamageFactors. Also carries a 30% incoming-damage " +
+									"redirect to the applier (skills.gd FindDamageRedirect), not itself " +
+									"a damage-modifier contribution."}},
+			{"name": "Tithe of Vitality", "bucket_key": "Tithe of Vitality", "magnitude": 0.70,
+					"stack_cap": 0,
+					"class": Contribution_Class.Channel2,
 					"precondition": "Costs living allies (excl. caster) 10% max Health each; " +
-							"damage_scaling Mysticism 1.5 (no bonus_per) plus Mana Burn (2 turns: " +
-							"bespoke damage-on-non-basic-cast punish, outside CombinedDamageModifier).",
-					"citation": "Tithe_of_Vitality.tres:6-24"},
+							"damage_scaling Mysticism 1.5, bonus_per Wounded_Allies 0.35 (magnitude " +
+							"shown is 2 wounded allies), plus Hemorrhage (3 turns) on the target.",
+					"citation": "Tithe_of_Vitality.tres:6-27; damage_effect.gd _WoundedAllyCount",
+					"granted_status": {"bucket_key": "Hemorrhage", "magnitude": 0.48,
+							"per_debuff_anchored": false, "reach": "team",
+							"citation": "Data/Status_Effects/Hemorrhage.tres:8-9 (magnitude_kind " +
+									"AttackerDamagePerHolderMissingHealth, magnitude 0.6 per 10% " +
+									"missing, ceiling at 80% missing = 0.48); status_effect_resolver.gd " +
+									"_MissingHealthDamageFactors. Sits on the target and buffs every " +
+									"attacker of it, not an ally-target grant — modeled with team " +
+									"reach, same shape as Flaw Analysis's Exposed Facet."}},
 		],
 	},
 	Types.Role.Herald_Of_The_Loom: {

@@ -20,5 +20,9 @@ func Resolve(p_context: SkillCastContext) -> void:
 			var requested: int = int(round(resolver.GetMaxHealth(target_ID) * fraction))
 			for attribute: Types.Attribute in scaling.keys():
 				requested += int(round(float(scaling[attribute]) * float(p_context.caster_attributes[attribute])))
+			var caster_trait: CharacterTrait = resolver.GetCharacters()[p_context.caster_ID]._trait
+			if(null != caster_trait):
+				requested = int(round(requested * caster_trait.GetOutgoingRestorationMultiplier(
+						p_context.caster_ID, resolver)))
 			if(requested > 0):
 				resolver.ResolveHealthGain(target_ID, requested)

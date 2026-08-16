@@ -15,9 +15,9 @@ Phase 6 — Sorcerer, Bloodmage and Appraiser are not yet implemented, so that r
 three of the five.
 
 Phase 0 done. Phase 1 drafted, awaiting sign-off (see below) before Phase 2 starts. Phase 2 in
-progress: Plague Doctor, Herald of the Loom, and Sorcerer implemented; Bloodmage and Appraiser
-settled and recorded in `Role_Kit_Design.md` §9.4 / §9.5, not yet implemented. Herald of the
-Loom's implementation (`weft_and_warp_trait.gd`) added the batch's second and third pieces of new
+progress: Plague Doctor, Herald of the Loom, Sorcerer, and Bloodmage implemented; Appraiser
+settled and recorded in `Role_Kit_Design.md` §9.5, not yet implemented — the batch's last Role.
+Herald of the Loom's implementation (`weft_and_warp_trait.gd`) added the batch's second and third pieces of new
 Channel 3 plumbing beyond §11's original scope: `Combat_Event.Cascade_Instance_Resolved` (a
 per-real-instance broadcast off `CascadeResolver._ResolveEvent`'s own loop) and
 `CascadeResolver.SubscribeInstanceModifier` (lets a subscriber amplify an already-matched
@@ -154,8 +154,19 @@ to produce: 97 Herald of the Loom/Cut the Cloth teams (9.64x-11.22x) and **17 So
 teams** (9.86x-10.62x, Echo-driven — `sorcerer_repeat_driven: true` confirms the top entry is
 actually driven by the Echo repeat, not merely riding a teammate's grant), up from the Post-Herald
 sweep's single pairing. Still short of the pre-Phase-0 baseline's 7 distinct pairings and of §6's
-"several independent" target — Bloodmage, still to come in Phase 2, is the next candidate to widen
-this further.
+"several independent" target.
+
+**Post-Bloodmage sweep** (`Tests/manual/team_corpus_sweep.gd`, re-run after Bloodmage landed).
+Combined-modifier-product distribution: median 1.62x, 90th percentile 3.68x, ceiling 16.24x — the
+new ceiling team is Bloodmage/Tactician/Tidal Corsair (Corsairs Reckoning), Sanguine Pact and
+Hemorrhage stacking onto the existing Daunting Strength grant rather than opening an independent
+line. Contrast-ratio ceiling is now **21.12x**, same team. The top decile (114 teams) **regains the
+pre-Phase-0 baseline's shape**: 7 distinct pairings — Herald of the Loom/Cut the Cloth (51 teams,
+9.64x-14.44x), Sorcerer/Cataclysm (29, 9.86x-14.80x), Tidal Corsair/Corsairs Reckoning (16,
+10.56x-21.12x), Architect/Final Calculation (15, 9.91x-19.82x), Diviner/Ill Omen (1, 11.60x),
+Cultist/Devour Blessing (1, 13.62x), Bar Brawler/Headbutt (1, 13.05x) — meeting §6's "several
+independent team combinations" target with Batch 1 complete on the Bloodmage's side; Appraiser is
+the batch's remaining Role.
 
 **Phase 1 result.** `Documents/Role_Kit_Design.md` created, holding the kit contract, the
 indirect-composition rule, the synergy grammar, Phase 0's re-derived targets, and the two pieces

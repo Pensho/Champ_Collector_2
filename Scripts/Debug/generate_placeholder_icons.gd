@@ -155,6 +155,8 @@ const STATUS_EFFECT_TABLE: Array = [
 			"color": Color(0.55, 0.35, 0.10, 1.0) },
 	{ "folder": "Status_Effects/Anchor", "base_name": "Anchor", "size": 64,
 			"color": Color(0.25, 0.20, 0.35, 1.0) },
+	{ "folder": "Status_Effects/Hemorrhage", "base_name": "Hemorrhage", "size": 64,
+			"color": Color(0.60, 0.05, 0.10, 1.0) },
 	# Buffs (green/blue family)
 	{ "folder": "Status_Effects/Steadfast", "base_name": "Steadfast", "size": 64,
 			"color": Color(0.20, 0.55, 0.45, 1.0) },
@@ -172,6 +174,8 @@ const STATUS_EFFECT_TABLE: Array = [
 			"color": Color(0.25, 0.75, 0.65, 1.0) },
 	{ "folder": "Status_Effects/Volatile_Mixture", "base_name": "Volatile_Mixture", "size": 64,
 			"color": Color(0.65, 0.55, 0.15, 1.0) },
+	{ "folder": "Status_Effects/Sanguine_Pact", "base_name": "Sanguine_Pact", "size": 64,
+			"color": Color(0.70, 0.15, 0.30, 1.0) },
 ]
 
 # One row per skill and passive still awaiting real art. Skills aren't rarity-tiered, so

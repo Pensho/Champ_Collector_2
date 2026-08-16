@@ -238,6 +238,80 @@ func test_damage_effect_bonus_per_target_debuff_count_scales_with_distinct_types
 	assert_gt(distinct_damage, stacked_damage,
 		"A second distinct debuff type on the target should add another bonus fraction")
 
+func test_damage_effect_bonus_per_wounded_allies_counts_living_allies_below_half_health() -> void:
+	var skill: Skill = TestFactory.make_strike_skill()
+	var effect: DamageEffect = DamageEffect.new()
+	effect.damage_scaling = {Types.Attribute.Attack: 1.0}
+	effect.bonus_per = {Types.Trait_Count_Source.Wounded_Allies: 0.35}
+	# A large target max-Health pool (current_health follows, uncapped by _ApplyHealthLoss's
+	# own clamp to the target's real max) so the bonus's damage swing is never clipped.
+	_roster[0]._attributes[Types.Attribute.Attack] = 1000
+	_roster[3]._attributes[Types.Attribute.Health] = 100000
+	_roster[3]._current_health = _resolver.GetMaxHealth(3)
+
+	for ally_ID in [1, 2]:
+		_roster[ally_ID]._current_health = _resolver.GetMaxHealth(ally_ID)
+	var full_health_before: int = _roster[3]._current_health
+	effect.Resolve(TestFactory.make_context(_resolver, 0, [3], skill))
+	var full_health_damage: int = full_health_before - _roster[3]._current_health
+
+	_roster.assign(TestFactory.make_full_roster())
+	_resolver = TestFactory.make_resolver(_roster, TestFactory.make_full_sides())
+	_roster[0]._attributes[Types.Attribute.Attack] = 1000
+	_roster[3]._attributes[Types.Attribute.Health] = 100000
+	_roster[3]._current_health = _resolver.GetMaxHealth(3)
+	_roster[1]._current_health = int(round(_resolver.GetMaxHealth(1) * 0.4))
+	_roster[2]._current_health = _resolver.GetMaxHealth(2)
+	var one_wounded_before: int = _roster[3]._current_health
+	effect.Resolve(TestFactory.make_context(_resolver, 0, [3], skill))
+	var one_wounded_damage: int = one_wounded_before - _roster[3]._current_health
+
+	assert_gt(one_wounded_damage, full_health_damage,
+		"A wounded ally below half Health should add a bonus fraction")
+
+	_roster.assign(TestFactory.make_full_roster())
+	_resolver = TestFactory.make_resolver(_roster, TestFactory.make_full_sides())
+	_roster[0]._attributes[Types.Attribute.Attack] = 1000
+	_roster[3]._attributes[Types.Attribute.Health] = 100000
+	_roster[3]._current_health = _resolver.GetMaxHealth(3)
+	_roster[1]._current_health = int(round(_resolver.GetMaxHealth(1) * 0.4))
+	_roster[2]._current_health = int(round(_resolver.GetMaxHealth(2) * 0.4))
+	var two_wounded_before: int = _roster[3]._current_health
+	effect.Resolve(TestFactory.make_context(_resolver, 0, [3], skill))
+	var two_wounded_damage: int = two_wounded_before - _roster[3]._current_health
+
+	assert_gt(two_wounded_damage, one_wounded_damage,
+		"A second wounded ally should add another bonus fraction")
+
+func test_damage_effect_bonus_per_wounded_allies_excludes_the_caster() -> void:
+	var skill: Skill = TestFactory.make_strike_skill()
+	var effect: DamageEffect = DamageEffect.new()
+	effect.damage_scaling = {Types.Attribute.Attack: 1.0}
+	effect.bonus_per = {Types.Trait_Count_Source.Wounded_Allies: 0.35}
+	_roster[0]._attributes[Types.Attribute.Attack] = 1000
+	_roster[3]._attributes[Types.Attribute.Health] = 100000
+	_roster[3]._current_health = _resolver.GetMaxHealth(3)
+	for ally_ID in [1, 2]:
+		_roster[ally_ID]._current_health = _resolver.GetMaxHealth(ally_ID)
+	var baseline_before: int = _roster[3]._current_health
+	effect.Resolve(TestFactory.make_context(_resolver, 0, [3], skill))
+	var baseline_damage: int = baseline_before - _roster[3]._current_health
+
+	_roster.assign(TestFactory.make_full_roster())
+	_resolver = TestFactory.make_resolver(_roster, TestFactory.make_full_sides())
+	_roster[0]._attributes[Types.Attribute.Attack] = 1000
+	_roster[3]._attributes[Types.Attribute.Health] = 100000
+	_roster[3]._current_health = _resolver.GetMaxHealth(3)
+	for ally_ID in [1, 2]:
+		_roster[ally_ID]._current_health = _resolver.GetMaxHealth(ally_ID)
+	_roster[0]._current_health = int(round(_resolver.GetMaxHealth(0) * 0.1))
+	var caster_wounded_before: int = _roster[3]._current_health
+	effect.Resolve(TestFactory.make_context(_resolver, 0, [3], skill))
+	var caster_wounded_damage: int = caster_wounded_before - _roster[3]._current_health
+
+	assert_eq(caster_wounded_damage, baseline_damage,
+		"The caster's own missing Health must not count toward Wounded_Allies")
+
 func test_damage_effect_bonus_per_absence_means_no_bonus_regardless_of_an_active_trait_condition() -> void:
 	var skill: Skill = TestFactory.make_strike_skill()
 	var effect: DamageEffect = DamageEffect.new()

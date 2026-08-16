@@ -1450,6 +1450,24 @@ Both getters are consulted from inside the effect loop (see
 [Section 7.4](#74-skill-resolution-battleresolverresolveskill)), not gated by `_execution_steps`,
 the same "always polled" shape as the rest of this getter family.
 
+**The Bloodmage's missing-Health surface.** `Trait_Count_Source.Wounded_Allies` is answered
+directly in `DamageEffect._Count` rather than through `GetConditionCount`, since the count (living
+allies of the caster, caster excluded, below half their own max Health) is world state, not
+trait state. Two `StatusEffectData.MagnitudeKind` values —
+`HolderMissingHealthDamagePercent` (Sanguine Pact: the holder's own missing Health raises the
+holder's own outgoing damage) and `AttackerDamagePerHolderMissingHealth` (Hemorrhage: the target's
+own missing Health raises any attacker's damage against it) — share one computation
+(`StatusEffectResolver._MissingHealthDamageFactors`, called from
+`_ContributePersistentCasterFactors` alongside the existing Opportunist read), each keyed to its
+own status type name so the two stack as distinct `CombinedDamageModifier` buckets rather than one.
+A new `StatusEffectData.damage_redirect_to_applier_fraction` field (Sanguine Pact) lets
+`Skills.FindDamageRedirect` check the target's own buffs, by applier `source_ID`, ahead of the
+existing ally-trait sweep (Shield Wall) — a status-named redirect takes precedence over a
+positional one. `CharacterTrait.GetOutgoingRestorationMultiplier(owner_ID, resolver) -> float`
+(default `1.0`) is a new unconditional getter, the same category as `GetIncomingHealMultiplier`,
+read by `HealthChangeEffect`'s heal branch and `BarrierEffect` so Hemoclarity's curve scales the
+Bloodmage's own healing and Barrier grants.
+
 ---
 
 ## 10. Collections and the save system
