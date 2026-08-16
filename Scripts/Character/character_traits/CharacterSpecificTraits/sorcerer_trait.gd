@@ -1,10 +1,10 @@
 class_name SorcererTrait extends CharacterTrait
 
 const ECHO_COMPOUNDING: Dictionary[Types.Rarity, float] = {
-	Types.Rarity.Uncommon: 1.30,
-	Types.Rarity.Rare: 1.45,
+	Types.Rarity.Uncommon: 1.40,
+	Types.Rarity.Rare: 1.50,
 	Types.Rarity.Epic: 1.60,
-	Types.Rarity.Legendary: 1.75,
+	Types.Rarity.Legendary: 1.70,
 }
 
 const REAGENT_AMPLIFICATION: Dictionary[Types.Rarity, float] = {
@@ -15,13 +15,7 @@ const REAGENT_AMPLIFICATION: Dictionary[Types.Rarity, float] = {
 }
 
 const MAX_INSTABILITY_STACKS: int = 5
-
-# Damage coefficient scaling Surge with the Sorcerer's Mysticism.
-const SURGE_MYSTICISM_SCALING: float = 1.5
-
-# The first Echo's fraction of the repeated skill's damage; each further Echo compounds
-# on this by ECHO_COMPOUNDING (fraction_i = REPEAT_FRACTION * compounding^i, i 0-based),
-# contributed as a CombinedDamageModifier bucket (Contribute(key, fraction - 1.0)).
+const SURGE_MYSTICISM_SCALING: float = 1.4
 const REPEAT_FRACTION: float = 0.5
 
 # Flat, non-rarity-scaled per-Echo multiplier applied to a zone this cast placed,
@@ -36,16 +30,10 @@ const _CASCADE_MECHANIC_KEY: StringName = &"SorcererTrait"
 var _instability_stacks: int = 0
 var _echo_compounding: float = 1.0
 var _reagent_amplification: float = 0.0
-# Echo charges banked for the Sorcerer's NEXT skill cast — granted by a reagent or by
-# releasing a Surge, consumed (snapshotted into _echoes_for_this_cast) when that cast fires.
 var _echo_charges: int = 0
-# Set once per OnSkillCast from _echo_charges: how many Echoes this cast's own repeat
-# resolves. Read by the Skill_Resolved subscription's matches/instance-modifier callbacks.
 var _echoes_for_this_cast: int = 0
 # 0-based counter driving each Echo's own compounding fraction within one cast's repeat.
 var _echo_index: int = 0
-# The zone this cast placed, if any (-1 otherwise) — set by OnZoneConstructed, read by
-# the repeat callback so an Echo amplifies the zone instead of re-resolving damage.
 var _placed_zone_ID_this_cast: int = -1
 
 func Init(p_rarity: Types.Rarity) -> void:
@@ -58,11 +46,11 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_title = "Arcane Instability"
 	_body = ("Using a skill grants a stack, maximum %d.\nA reagent grants two, " %
 				MAX_INSTABILITY_STACKS +
-			"is amplified, and grants a charge.\n" +
+			"is amplified by " + str(_reagent_amplification * 100.0) + "%, and grants a charge.\n" +
 			"At maximum stacks the next skill also releases a Surge: damaging everyone.\n" +
 			"Stacks reset and a charge is gained.\n" +
 			"Each charge makes the next skill repeat once more, spending all of them.\n" +
-			"Every repeat hits harder than the last.")
+			"Every repeat hits " + str((_echo_compounding - 1.0) * 100.0) + "% harder than the last.")
 	_execution_steps[Types.Combat_Event.Start_Combat] = Callable(self, "StartOfBattle")
 	_execution_steps[Types.Combat_Event.Skill_Cast] = Callable(self, "OnSkillCast")
 	_execution_steps[Types.Combat_Event.Reagent_Consumed] = Callable(self, "OnReagentConsumed")
@@ -157,11 +145,6 @@ func _ReleaseSurge(
 		p_owner_ID: int,
 		p_caster_attributes: Dictionary[Types.Attribute, int],
 		p_resolver: BattleResolver) -> void:
-	# Like every other ResolveTraitDamage call (e.g. Overflow's cascade damage), Surge still
-	# picks up the caster's persistent channel-2 factors (trait bonus, reagent/graft bonus,
-	# Opportunist) via _ContributePersistentCasterFactors inside _ResolveDamage, but carries
-	# no skill/ramp/trait-resource bucket — those belong to a specific cast Skill, and Surge
-	# is trait damage, not a skill effect. Deliberate, not a gap this phase closes.
 	var all_target_IDs: Array[int] = p_resolver.GetSides().AllMembers()
 	p_resolver.ResolveTraitDamage(p_owner_ID, all_target_IDs, p_caster_attributes,
 			{Types.Attribute.Mysticism: SURGE_MYSTICISM_SCALING}, false)

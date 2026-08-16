@@ -9,9 +9,6 @@ class_name SkillEffect extends Resource
 @export var condition: Types.Skill_Condition = Types.Skill_Condition.None
 @export var condition_test: Types.Condition_Test = Types.Condition_Test.At_Least
 @export var condition_threshold: float = 0.0
-## Probability this effect resolves at all, rolled once per Resolve() call (covering the
-## whole target group), independent of condition/condition_test above. 1.0 (default)
-## always resolves.
 @export var chance: float = 1.0
 
 func Resolve(_p_context: SkillCastContext) -> void:

@@ -193,7 +193,7 @@ crit-path multiplier, mitigation-term factor (§9.12's bypass, §9.10's Defence 
 aggregate-term factor (§9.14's attribute-modifier amplification), exported factor on a carrier. One
 ranked column across all of them is not a measurement.
 
-**Current state: bimodal.** Instance counts: Herald 8.64x, Sorcerer 6.59x at its gated ceiling (1.5x
+**Current state: bimodal.** Instance counts: Herald 8.64x, Sorcerer 6.25x at its gated ceiling (1.5x
 steady state), Plague Doctor's Comorbidity never projected (§9.1). Bucket products: Architect,
 Tactician, Tidal Corsair, Bloodmage at 1.7-2.2x, Lancer at 1.54-1.90x; Emissary, Alchemist, Scholar at 1.3-1.5x.
 Appraiser's ≈5.58x is the only crit-path figure. Closing this runs one way: **a Role above the band
@@ -476,15 +476,15 @@ gap in `FeatureIdeas.md`.
 * Consuming a reagent grants 2 Instability stacks, amplifies the reagent's effect, and grants
   1 **Echo** charge.
 * At maximum stacks the next skill also releases a **Surge**: damage to all characters, allies and
-  the Sorcerer included, scaling 1.5x the Sorcerer's Mysticism, never a critical hit — then all
+  the Sorcerer included, scaling 1.4x the Sorcerer's Mysticism, never a critical hit — then all
   stacks reset and the Sorcerer gains 1 Echo charge.
 * Each Echo charge held makes the Sorcerer's next skill repeat one additional time; all charges are
   consumed when it does. The first Echo deals 50% of the skill's damage and each further Echo
   compounds on the previous. Each Echo is a fresh cascade instance assembling its own combined
   damage modifier; a repeated debuff or zone charge is not reapplied, only the damage.
 
-Rarity scales only on the passive, never on the kit's skills: Echo compounding 1.30 Uncommon /
-1.45 Rare / 1.60 Epic / 1.75 Legendary; reagent amplification 20 / 30 / 40 / 50% (unchanged).
+Rarity scales only on the passive, never on the kit's skills: Echo compounding 1.40 Uncommon /
+1.50 Rare / 1.60 Epic / 1.70 Legendary; reagent amplification 20 / 30 / 40 / 50% (unchanged).
 Instability stacks carry no attribute scaling — they are purely the Surge's counter, so the
 per-stack Mysticism ramp of the shipped passive is dropped and the Role's growth lives entirely in
 the channel it anchors.
@@ -511,22 +511,22 @@ makes it more dangerous to the Sorcerer's own team, the same identity clause as 
 defence-ignore in this kit) and there is no attribute-ramp term, so contrast reduces to
 `(combined modifier product) x (instance multiplier)`. Echo ceiling is **4**: three banked reagents
 consumed as free actions in the burst turn, plus one charge carried in from the previous cast's
-Surge. At Legendary the four Echoes deal 50 / 87.5 / 153 / 268% — 5.59x in repeats, **6.59x**
+Surge. At Legendary the four Echoes deal 50 / 85 / 144.5 / 245.65% — 5.25x in repeats, **6.25x**
 total including the original cast.
 
 | Scenario | Team contrast ratio |
 |---|---|
-| Legendary, 4 Echoes, strong team (product 5.5) | **36.2x** |
-| Legendary, 4 Echoes, modest team (product 3.0) | 19.8x |
+| Legendary, 4 Echoes, strong team (product 5.5) | **34.4x** |
+| Legendary, 4 Echoes, modest team (product 3.0) | 18.8x |
 | Legendary, 1 Echo (steady state, no reagents banked) | 8.3x |
-| Uncommon, 4 Echoes, strong team | 22.5x |
+| Uncommon, 4 Echoes, strong team | 25.0x |
 
 **These are team figures, not the Sorcerer's own contribution** (section 4). The Sorcerer's own
-factor is the Echo multiplier: **6.59x at the 4-Echo ceiling**, 1.5x in the 1-Echo steady state —
+factor is the Echo multiplier: **6.25x at the 4-Echo ceiling**, 1.5x in the 1-Echo steady state —
 above section 4's per-Role ~2x target at the ceiling, which is the deliberate shape of a Channel 3
 anchor whose ceiling is gated behind spending three banked reagents in one turn.
 
-The 1.75 compounding factor is steeper than a flat-instance design would need precisely because
+The 1.70 compounding factor is steeper than a flat-instance design would need precisely because
 the per-stack Mysticism ramp was dropped: that ramp was worth a flat 1.5x on the aggregate, and
 moving its weight into the compounding curve puts the ceiling in Channel 3 where the Role's
 identity claims it. Peak 4 cascade instances plus the Surge in one action, well inside
@@ -926,7 +926,7 @@ it. It names no Role and reads only turn-bar position, so a kit authored later b
 either side knowing about the other.
 
 **Projected numbers.** Instance-count factor **1.6x** at Legendary, landing on whichever teammate
-holds the buff — below §9.2's Herald (8.64x) and §9.3's Sorcerer (6.59x), which is correct: those
+holds the buff — below §9.2's Herald (8.64x) and §9.3's Sorcerer (6.25x), which is correct: those
 are self-facing counts a champion builds toward across a fight, and this is a free extra resolution
 handed to someone else once per boost. In the exported kind it sits alongside §9.4's Sanguine Pact
 (1.60-1.96x) and Hemorrhage (1.30-1.48x). The Chronophage's own damage is Zap and stays where it
@@ -1666,7 +1666,7 @@ did not exist. What the manifest carries now:
   `(1.0 + magnitude) * instance_compounding^i`, `i` 0-based
   (`BurstReachability._MultiInstanceContrastRatio`). Verified in
   `Tests/unit/test_burst_reachability.gd` against this document's own projections: Echo (4
-  instances, −0.5, 1.75 compounding) reproduces section 9.3's 5.586x; Cut the Cloth (8 instances,
+  instances, −0.5, 1.70 compounding) reproduces section 9.3's 5.2515x; Cut the Cloth (8 instances,
   +0.08 at Legendary — the 90% base strength and the passive's own self-bonus folded into one net
   per-instance multiplier — flat) reproduces section 9.2's 8.64 curve.
 * **Zone-trigger damage** is no longer invisible: a skill with no top-level `DamageEffect` is now

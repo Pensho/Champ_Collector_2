@@ -290,7 +290,7 @@ const MANIFEST: Dictionary = {
 					"citation": "Arc_Lash.tres:6-19",
 					"gated_bonus": {"bucket_key": "Arc Lash (repeat)", "magnitude": -0.5,
 							"class": Contribution_Class.Channel3_Cascade, "fold": "separate_instance",
-							"gate": &"reagent_consumed", "instances": 4, "instance_compounding": 1.75,
+							"gate": &"reagent_consumed", "instances": 4, "instance_compounding": 1.70,
 							"precondition": "One Echo per charge held (reagents consumed as free actions " +
 									"before the cast, or a Surge's own carried-in charge), all consumed by " +
 									"this cast. The real resolver re-resolves Arc Lash's DamageEffects as an " +
@@ -300,9 +300,9 @@ const MANIFEST: Dictionary = {
 									"CandidateResult.repeat_contrast_ratio instead of the shared " +
 									"buckets/product. Magnitude is the first Echo's fraction minus 1.0 " +
 									"(REPEAT_FRACTION - 1.0); instance_compounding is Legendary's " +
-									"ECHO_COMPOUNDING (1.75); instances: 4 is the design's own ceiling (three " +
+									"ECHO_COMPOUNDING (1.70); instances: 4 is the design's own ceiling (three " +
 									"banked reagents plus one carried Surge charge, Role_Kit_Design.md " +
-									"section 9.3) — reproduces its 5.586x figure.",
+									"section 9.3) — reproduces its 5.2515x figure.",
 							"citation": "sorcerer_trait.gd (ECHO_COMPOUNDING, REPEAT_FRACTION, " +
 									"_OnSkillResolvedRepeat); skill_cast_context.gd; damage_effect.gd; " +
 									"battle_resolver.gd:739-744"}},
@@ -315,7 +315,7 @@ const MANIFEST: Dictionary = {
 					"citation": "Cataclysm.tres:6-17; damage_effect.gd:60-65",
 					"gated_bonus": {"bucket_key": "Cataclysm (repeat)", "magnitude": -0.5,
 							"class": Contribution_Class.Channel3_Cascade, "fold": "separate_instance",
-							"gate": &"reagent_consumed", "instances": 4, "instance_compounding": 1.75,
+							"gate": &"reagent_consumed", "instances": 4, "instance_compounding": 1.70,
 							"precondition": "Same Echo mechanic as Arc Lash (see that entry), re-resolving " +
 									"Cataclysm's own DamageEffect (its own Warped bonus included, since each " +
 									"Echo replays the whole effect against the same targets) as its own " +

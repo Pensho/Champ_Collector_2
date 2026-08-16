@@ -28,8 +28,6 @@ var zone_target: Types.Skill_Target = Types.Skill_Target.ZoneAll
 var zone_ID: int = -1
 var zone_magnitude: float = 1.0
 var zone_source_name: String = ""
-## Multiplies a zone-trigger DamageEffect's damage, as its own CombinedDamageModifier
-## bucket (see damage_effect.gd) — set from Zone._damage_multiplier by ZoneResolver.
 var zone_damage_multiplier: float = 1.0
 ## Set by an on_trigger buff/debuff application in zone-trigger mode: whether it was
 ## attempted at all, and whether it actually landed. ZoneResolver skips the

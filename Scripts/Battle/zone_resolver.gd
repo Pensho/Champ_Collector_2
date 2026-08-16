@@ -19,9 +19,6 @@ func GetZones() -> Dictionary[int, Zone]:
 func HasZone(p_zone_ID: int) -> bool:
 	return _zones.has(p_zone_ID)
 
-## Unoccupied section indices, ascending — so the first entry is always the left-most
-## free section, not merely section 0 (ZoneEffect.Section.Left_Most_Empty relies on
-## this ordering).
 func AvailableZoneIDs() -> Array[int]:
 	var available: Array[int] = []
 	for zone_number in GameBalance.NUMBER_OF_TURN_BAR_ZONES:
@@ -29,10 +26,6 @@ func AvailableZoneIDs() -> Array[int]:
 			available.append(zone_number)
 	return available
 
-## p_owner_attributes should be the owner's full effective attributes (e.g.
-## BattleResolver.GetEffectiveAttributes), snapshotted once at placement — an
-## on_trigger effect may scale off any attribute, not only Knowledge, and this keeps
-## that snapshot identical to what a live cast's own effects would see.
 func PlaceZone(
 		p_zone_ID: int,
 		p_owner_ID: int,
@@ -128,9 +121,6 @@ func ReplenishZoneCharge(p_zone_ID: int, p_amount: int, p_max_charges: int) -> v
 		return
 	SetZoneCharges(p_zone_ID, mini(_zones[p_zone_ID]._charges + p_amount, p_max_charges))
 
-## Multiplies the zone's on_trigger damage by p_factor going forward, compounding with
-## any prior call (e.g. the Sorcerer's Echo, which amplifies the zone its own cast placed
-## once per Echo).
 func AmplifyZoneDamage(p_zone_ID: int, p_factor: float) -> void:
 	if(not _zones.has(p_zone_ID)):
 		return
