@@ -133,3 +133,91 @@ func test_no_living_allies_leaves_the_vessel_unmarked() -> void:
 	_resolver.SetCurrentHealth(1, 0)
 
 	assert_eq(_trait._vessel_ID, -1, "With no living allies left, the Vessel should stay unmarked")
+
+# --- Devotion ---
+
+func test_devotion_is_zero_before_any_vessel_has_died() -> void:
+	_InitTrait(Types.Rarity.Legendary)
+
+	assert_eq(_trait.GetOutgoingDamageBonus(0, 3, _resolver), 0.0)
+
+func test_devotion_increments_when_the_drain_kills_the_vessel() -> void:
+	_InitTrait(Types.Rarity.Legendary)
+	_trait._vessel_ID = 1
+	_ally_a._current_health = 1
+
+	_trait.OnSkillCast(0, [], "Burning Bolas", {}, _resolver)
+
+	assert_eq(_trait._devotion_count, 1)
+	assert_eq(_trait.GetOutgoingDamageBonus(0, 3, _resolver), 0.20)
+
+func test_devotion_increments_when_an_outside_source_kills_the_vessel() -> void:
+	_InitTrait(Types.Rarity.Legendary)
+	_trait._vessel_ID = 1
+
+	_resolver.SetCurrentHealth(1, 0)
+
+	assert_eq(_trait._devotion_count, 1)
+	assert_eq(_trait.GetOutgoingDamageBonus(0, 3, _resolver), 0.20)
+
+func test_devotion_stacks_across_multiple_vessel_deaths() -> void:
+	_InitTrait(Types.Rarity.Legendary)
+	_trait._vessel_ID = 1
+
+	_resolver.SetCurrentHealth(1, 0)
+	_resolver.SetCurrentHealth(2, 0)
+
+	assert_eq(_trait._devotion_count, 2)
+	assert_eq(_trait.GetOutgoingDamageBonus(0, 3, _resolver), 0.40)
+
+func test_devotion_resets_at_start_of_battle() -> void:
+	_InitTrait(Types.Rarity.Legendary)
+	_trait._devotion_count = 2
+
+	_trait.StartOfBattle(0, _resolver)
+
+	assert_eq(_trait._devotion_count, 0)
+
+func test_devotion_bonus_scales_by_rarity() -> void:
+	_InitTrait(Types.Rarity.Uncommon)
+	_trait._vessel_ID = 1
+
+	_resolver.SetCurrentHealth(1, 0)
+
+	assert_eq(_trait.GetOutgoingDamageBonus(0, 3, _resolver), 0.10)
+
+# --- Trait_Condition: the Vessel below half Health ---
+
+func test_condition_count_is_zero_with_a_full_health_vessel() -> void:
+	_InitTrait(Types.Rarity.Legendary)
+	_trait._vessel_ID = 1
+	_ally_a._current_health = _resolver.GetMaxHealth(1)
+
+	assert_eq(_trait.GetConditionCount(0, 3, Types.Trait_Count_Source.Trait_Condition, _resolver), 0.0)
+
+func test_condition_count_is_one_with_a_sub_half_health_vessel() -> void:
+	_InitTrait(Types.Rarity.Legendary)
+	_trait._vessel_ID = 1
+	_ally_a._current_health = 5
+
+	assert_eq(_trait.GetConditionCount(0, 3, Types.Trait_Count_Source.Trait_Condition, _resolver), 1.0)
+
+func test_condition_count_is_zero_with_a_dead_vessel() -> void:
+	_InitTrait(Types.Rarity.Legendary)
+	_trait._vessel_ID = 1
+	_ally_a._current_health = 0
+
+	assert_eq(_trait.GetConditionCount(0, 3, Types.Trait_Count_Source.Trait_Condition, _resolver), 0.0)
+
+func test_condition_count_is_zero_with_no_vessel_marked() -> void:
+	_InitTrait(Types.Rarity.Legendary)
+	_trait._vessel_ID = -1
+
+	assert_eq(_trait.GetConditionCount(0, 3, Types.Trait_Count_Source.Trait_Condition, _resolver), 0.0)
+
+func test_condition_count_ignores_other_trait_count_sources() -> void:
+	_InitTrait(Types.Rarity.Legendary)
+	_trait._vessel_ID = 1
+	_ally_a._current_health = 5
+
+	assert_eq(_trait.GetConditionCount(0, 3, Types.Trait_Count_Source.Buffs_On_Caster, _resolver), 0.0)

@@ -794,7 +794,7 @@ zone would have to displace Levied Sanction, which is where the export now lives
 
 ### 9.8 Cultist — the sacrifice pays out
 
-**Status:** Settled, not yet implemented. Batch 2.
+**Status:** Implemented. Batch 2.
 
 **Identity: Channel 2, self-facing.** Confirms section 5's proposal on both axes. **Exporting is
 against the Role's pillar** — the Cultist profits from what allies lose, so no clause in this kit
@@ -830,18 +830,27 @@ conditional 1.25x is on the basic and is not the declared contribution. Devour B
 buff consumed is unchanged. Inside section 1's contract; the ceiling is self-limiting by
 construction.
 
-**Implementation needs (not yet built):**
+**Implementation.**
 
-* `chosen_vessel_trait.gd` — a Devotion count incremented on Vessel death, contributing its own
-  `CombinedDamageModifier` bucket key rather than the shared `TRAIT_RESOURCE_KEY` the per-cast
-  bonus uses, so the two multiply. The Vessel-death branch that grants Attune is the hook.
-* `Profane_Bolt.tres` — `bonus_per: {Trait_Condition: 0.25}`; the trait answers `Trait_Condition`
-  with 1.0 while the Vessel is alive and below half max Health, 0.0 otherwise. No new enum value.
-* `kit_contribution_manifest.gd` — Chosen Vessel's entry gains Devotion as a second passive row
-  (`bucket_key: "Devotion"`, magnitude 0.20, `stack_cap` = living allies at battle start); Profane
-  Bolt gains `bucket_key: "Profane Bolt"` with its condition stated.
-* `Concept_Document.md` at promotion: 3.1.3's Chosen Vessel entry (Devotion), 3.2.4.2's Profane
-  Bolt.
+* `chosen_vessel_trait.gd` — Devotion is a permanent per-cast-independent count, incremented on
+  the existing Vessel-death branch. It contributes through `CharacterTrait.GetOutgoingDamageBonus`
+  (`battle_resolver.gd`'s `_ContributePersistentCasterFactors`), which keys the bucket by the
+  trait's own script global name — `&"ChosenVesselTrait"`, not a literal `"Devotion"` string — so
+  it lands distinct from the per-cast bonus's shared `TRAIT_RESOURCE_KEY` bucket and the two
+  multiply. Reusing this existing hook needed no new plumbing and correctly covers every damage
+  source the Cultist has, not only skill casts.
+* `Profane_Bolt.tres` — `bonus_per: {Trait_Condition: 0.25}`; `GetConditionCount` answers
+  `Trait_Condition` with 1.0 while the Vessel is alive and below half its own max Health, 0.0
+  otherwise. No new enum value.
+* `kit_contribution_manifest.gd` — Chosen Vessel's entry gains Devotion as a `gated_bonus` (not a
+  second passive row — `burst_reachability.gd` reads only a Role's first passive entry, so a
+  second row would be invisible to the scorer) with `reach: "self"`, `bucket_key:
+  "ChosenVesselTrait"`, magnitude 0.20, gated on "a Vessel has died"; Profane Bolt's entry gains
+  `bucket_key: "Profane Bolt"`, magnitude 0.25, with its condition stated. `burst_reachability.gd`
+  gained `_ContributeGatedCasterPassiveBonus`, the self-reach counterpart to the existing
+  team-reach `_ContributeGatedTeamBonuses`, to read it.
+* `Concept_Document.md` 3.1.3's Chosen Vessel entry (Devotion) and 3.2.4.2's Profane Bolt entry
+  (the threshold rider) updated.
 
 **Judgment calls made while settling, listed so they can be overruled:** the party is Devotion's
 only cap, which is honest but means a wipe-adjacent team reads as the Cultist's strongest state;
@@ -1551,8 +1560,8 @@ key, not a doc paraphrase) — the authority the burst-reachability scorer actua
 | `Daunting_Strength` (granted status) | Tactician (Fatal Flaw) | Granted `DamageMultiplier` status — lands in whoever consumes it, not the caster's own bucket |
 | `Pratfall Sting` | Jester (Pratfall Sting) | Skill-name bucket |
 | `Devour Blessing` | Cultist (Devour Blessing) | Skill-name bucket |
-| `Devotion` | Cultist (Chosen Vessel) — **settled, not yet implemented** (section 9.8) | Passive counter bucket, permanent per dead Vessel; distinct from the same passive's per-cast `TRAIT_RESOURCE_KEY` bonus so the two multiply |
-| `Profane Bolt` | Cultist (Profane Bolt) — **settled, not yet implemented** (section 9.8) | Skill-name bucket, conditional on the Vessel being below half Health |
+| `ChosenVesselTrait` | Cultist (Chosen Vessel's Devotion) | `GetOutgoingDamageBonus` bucket (the trait's own script global name, `battle_resolver.gd`'s shared contribution key for that hook) — permanent per dead Vessel; distinct from the same passive's per-cast `TRAIT_RESOURCE_KEY` bonus so the two multiply |
+| `Profane Bolt` | Cultist (Profane Bolt) | Skill-name bucket, conditional on the Vessel being alive and below half its own max Health |
 | `Rending Charge` | Lancer (Rending Charge) — **settled, not yet implemented** (section 9.11) | Skill-name bucket, `bonus_per` keyed to the turn-bar section span the charge touches |
 | `Heap On (ramp)` | Bar Brawler (Heap On) | Skill-name bucket, per-instance ramp (not a stacking cap) |
 | `Final Calculation` | Architect (Final Calculation) | Skill-name bucket |

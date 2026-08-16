@@ -37,7 +37,7 @@ through Enabler-tagged skills authored as kit content (§1.2, `Concept_Document.
 
 Phase 3 (Batch 2) design started ahead of Phase 2's remaining implementation, which the tier-3 loop
 permits — settling a kit does not require implementing it in the same sitting. All five settled.
-**Jester (§9.6) and Emissary (§9.7) implemented**; Cultist (§9.8), Chronophage (§9.9), Architect
+**Jester (§9.6), Emissary (§9.7) and Cultist (§9.8) implemented**; Chronophage (§9.9), Architect
 (§9.10) remain. Routes A and E close; route C's second anchor is open rather than assigned, since the
 Jester was Phase 1's proposal and is no longer a candidate, and no unsettled Role is assumed into
 it. Chronophage's threshold-crossing `Cascade_Trigger` is **not** authored — counting section
@@ -69,6 +69,22 @@ pairings**, with Bloodmage/Tithe of Vitality displaced by **Emissary/Citation** 
 exported bucket lifting three Bloodmage/Tidal-Corsair/Architect-partnered teams (17.05x-18.16x)
 past the threshold, and Citation itself, stacked with Sanction and Hemorrhage, becoming the
 Emissary's own top-decile entry.
+
+**Cultist's implementation** reused the existing `CharacterTrait.GetOutgoingDamageBonus` hook for
+Devotion rather than adding new plumbing — it lands in a `&"ChosenVesselTrait"` bucket (the
+trait's script global name), distinct from the per-cast bonus's shared `trait_resource` bucket, so
+the two multiply. Devotion is modeled in `kit_contribution_manifest.gd` as a self-reach
+`gated_bonus` on Chosen Vessel's existing passive entry rather than a second passive row, since
+`burst_reachability.gd` reads only a Role's first passive entry; the scorer gained
+`_ContributeGatedCasterPassiveBonus`, the self-reach counterpart to the existing team-reach
+`_ContributeGatedTeamBonuses`. Post-Cultist sweep: median 1.95x, 90th percentile 4.68x, ceiling
+16.24x (unchanged — the ceiling team carries no Cultist). The top decile (115 teams) gains a
+twelfth distinct pairing: Cultist/Devour Blessing rises from 1 team (13.62x) to **16 teams**
+(13.62x-16.34x, Devotion's added bucket lifting several Bloodmage-partnered teams past the
+threshold), alongside Bloodmage/Tithe of Vitality (7), Herald of the Loom/Cut the Cloth (2),
+Sorcerer/Cataclysm (3), Tidal Corsair/Corsairs Reckoning (45), Architect/Final Calculation (17),
+Emissary/Citation (15), Diviner/Ill Omen (2), Bar Brawler/Headbutt (2), Lancer/Rending Charge (2),
+Thief/Pierce weakness (2), Plague Doctor/Outbreak (2).
 
 Phase 4 (Batch 3) **complete**, settled one Role at a time. Four settled, none implemented:
 

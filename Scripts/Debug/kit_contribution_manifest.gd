@@ -603,16 +603,27 @@ const MANIFEST: Dictionary = {
 							"Corsair's Corsairs Reckoning; only actually collides if two such traits' " +
 							"casts ever fed one CombinedDamageModifier instance, which the current " +
 							"per-caster/per-cast architecture does not allow. If the Vessel dies, " +
-							"Cultist gains Attune (3 turns, +30% Mysticism, Channel 1) and a new Vessel " +
-							"is marked.",
-					"citation": "chosen_vessel_trait.gd:3-11,49-77; damage_effect.gd:25-27"},
+							"Cultist gains Attune (3 turns, +30% Mysticism, Channel 1), a new Vessel " +
+							"is marked, and Devotion (see gated_bonus) permanently increments.",
+					"citation": "chosen_vessel_trait.gd:3-16,55-90; damage_effect.gd:25-27",
+					"gated_bonus": {"bucket_key": "ChosenVesselTrait", "magnitude": 0.20,
+							"class": Contribution_Class.Channel2, "reach": "self",
+							"gate": "a Vessel has died",
+							"precondition": "Permanent +20% (Legendary) per dead Vessel, in its own " +
+									"ChosenVesselTrait bucket via GetOutgoingDamageBonus — distinct from " +
+									"the per-cast trait_resource bucket above, so the two multiply " +
+									"(1.30 * 1.20 = 1.56x with one Vessel spent). Never expires or is " +
+									"spent; the party is the only cap (two dead Vessels on a full team).",
+							"citation": "chosen_vessel_trait.gd:59-64,80-83; battle_resolver.gd:705-726"}},
 		],
 		"skills": [
-			{"name": "Profane Bolt", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
-					"class": Contribution_Class.Channel1,
-					"precondition": "damage_scaling Mysticism 0.9, no bonus_per. Basic skill (no " +
-							"cooldown) — does not trigger Chosen Vessel.",
-					"citation": "Profane_Bolt.tres:6-11"},
+			{"name": "Profane Bolt", "bucket_key": "Profane Bolt", "magnitude": 0.25, "stack_cap": 0,
+					"class": Contribution_Class.Channel2,
+					"precondition": "damage_scaling Mysticism 0.9, bonus_per Trait_Condition=0.25 " +
+							"(fixed, not rarity-scaled) while the Vessel is alive and below half its " +
+							"own max Health. Basic skill (no cooldown) — does not trigger Chosen " +
+							"Vessel's per-cast drain.",
+					"citation": "Profane_Bolt.tres:6-14; chosen_vessel_trait.gd:85-102"},
 			{"name": "Devour Blessing", "bucket_key": "Devour Blessing", "magnitude": 0.25, "stack_cap": 0,
 					"class": Contribution_Class.Channel2,
 					"precondition": "Consumes the ally holding the most buffs, then damage_scaling " +

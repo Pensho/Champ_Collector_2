@@ -280,8 +280,9 @@ Current roles, their identity and purpose exist as follows:
 - Cultist
     - Consumes ally buffs or health to empower their own skills, dealing damage or applying debuffs. Primary attributes: Mysticism, Knowledge.
     - Purpose: Debuffer, Damage
-    - Passive: Chosen Vessel [Channel 1 + Channel 2] - At the start of combat the Cultist marks a random ally (the Cultist excluded) as their Vessel. Whenever the Cultist uses a non-basic skill, the Vessel loses 5% of their max Health and the skill gains a rarity-dependent power bonus. The drain can kill the Vessel. When the Vessel dies (from any source), the Cultist gains the Attune buff for 3 turns (see section 3.2.3.2) and a new random ally is marked as the Vessel if any is alive. If all allies are dead then nothing happens.
+    - Passive: Chosen Vessel [Channel 1 + Channel 2] - At the start of combat the Cultist marks a random ally (the Cultist excluded) as their Vessel. Whenever the Cultist uses a non-basic skill, the Vessel loses 5% of their max Health and the skill gains a rarity-dependent power bonus. The drain can kill the Vessel. When the Vessel dies (from any source), the Cultist gains the Attune buff for 3 turns (see section 3.2.3.2), a new random ally is marked as the Vessel if any is alive, and the Cultist permanently gains Devotion: a rarity-dependent damage bonus for the rest of the fight, in its own bucket, uncapped and never spent. If all allies are dead then nothing happens.
         - Power bonus: 15% Uncommon, 20% Rare, 25% Epic, 30% Legendary
+        - Devotion bonus: 10% Uncommon, 13% Rare, 16% Epic, 20% Legendary
     - Fielded by: `Cultist.tres`
 - Bar Brawler
     - A health focused character, dealing damage, tanking and applying a few buffs. Attacks scales of health primarily. Primary attributes: Health.
@@ -724,7 +725,7 @@ the fix belongs in the data or the document.
 ###### Cultist
 * Profane Bolt
     * Type: Damage (basic skill, no cooldown)
-    * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Mysticism.
+    * Effect: [Channel 1 + Channel 2] Deals damage to a single target enemy, scaling with Mysticism. +25% damage while the Vessel is alive and below half its own max Health.
 * Devour Blessing
     * Type: Damage
     * Cooldown: 3 turns

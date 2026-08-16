@@ -244,6 +244,19 @@ func test_tidal_corsair_cultist_warlord_bursting_corsairs_reckoning_is_pinned() 
 	assert_almost_eq(pinned.product, 2.8, 0.01,
 		"Regression pin: composed product for this team bursting Corsairs Reckoning")
 
+func test_cultist_devotion_gated_bonus_multiplies_with_the_per_cast_trait_resource_bucket() -> void:
+	# Devotion (Role_Kit_Design.md section 9.8) is a self-reach gated_bonus on Chosen Vessel's
+	# own manifest entry, landing in a distinct ChosenVesselTrait bucket from both the shared
+	# trait_resource key (Chosen Vessel's per-cast bonus) and Devour Blessing's own "Devour
+	# Blessing" bucket — three distinct buckets multiply: (1+0.30) * (1+0.20) * (1+0.25) = 1.95.
+	var result: BurstReachability.TeamResult = BurstReachability.ScoreTeam(_corsair_cultist_warlord())
+	var pinned: BurstReachability.CandidateResult = result.Pinned(1, "Devour Blessing")
+	assert_not_null(pinned, "Cultist's Devour Blessing must be a scored candidate")
+	assert_true(pinned.assumed_gates.has(&"a Vessel has died"),
+		"Devotion's gate must be surfaced on assumed_gates")
+	assert_almost_eq(pinned.product, 1.95, 0.01,
+		"Chosen Vessel's trait_resource, Devotion, and Devour Blessing buckets must all multiply")
+
 # --- Channel-1 attribute-buff crediting (_ContributeGrantedAttributeBuffs) ---
 
 func test_granted_attribute_buff_reaches_every_teammate_from_a_team_reach_passive() -> void:

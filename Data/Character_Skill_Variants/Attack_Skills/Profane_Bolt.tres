@@ -9,11 +9,14 @@ script = ExtResource("2_356yp")
 damage_scaling = Dictionary[int, float]({
 6: 0.9
 })
+bonus_per = Dictionary[int, float]({
+3: 0.25
+})
 
 [resource]
 script = ExtResource("1_skill")
 name = "Profane Bolt"
-description = "Deals damage to a single enemy, scaled by Mysticism."
+description = "Deals damage to a single enemy, scaled by Mysticism. +25% damage while the Vessel is below half max Health."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Profane_Bolt/Profane_Bolt.png"
 effects = Array[ExtResource("1_fup4h")]([SubResource("Resource_wixkm")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

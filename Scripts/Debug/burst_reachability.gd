@@ -475,6 +475,24 @@ static func _ContributeGatedTeamBonuses(
 	return gates
 
 
+## Self-reach gated_bonus on the candidate's OWN passive entry (Chosen Vessel's Devotion): a
+## permanent per-Vessel-death factor in its own bucket, distinct from the passive's own
+## bucket_key so the two multiply rather than share a bucket. Returns the gate name if a
+## contribution was made, or &"" if none was, mirroring _ContributeGatedSkillBonus's return
+## shape.
+static func _ContributeGatedCasterPassiveBonus(
+		p_caster: Character, p_buckets: Dictionary, p_manifest: Dictionary) -> StringName:
+	var role_entry: Dictionary = p_manifest.get(p_caster._role, {})
+	var passive_entries: Array = role_entry.get("passive", [])
+	if(passive_entries.is_empty()):
+		return &""
+	var bonus: Dictionary = passive_entries[0].get("gated_bonus", {})
+	if(bonus.is_empty() or not _IsSameInstanceFold(bonus) or "self" != bonus.get("reach", "")):
+		return &""
+	_Contribute(p_buckets, StringName(String(bonus.get("bucket_key", ""))), _MagnitudeFor(bonus))
+	return StringName(String(bonus.get("gate", "")))
+
+
 ## Shared curve-walk for a "separate_instance" or "sustained_ticks" gated_bonus: each of the
 ## declared "instances" (default 1, clamped to CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION)
 ## contributes (1.0 + magnitude) * instance_compounding^i, i 0-based — flat when
@@ -636,6 +654,9 @@ static func _ScoreCandidate(
 	var skill_gate: StringName = _ContributeGatedSkillBonus(buckets, p_skill_entry)
 	if(&"" != skill_gate):
 		assumed_gates.append(skill_gate)
+	var caster_passive_gate: StringName = _ContributeGatedCasterPassiveBonus(caster, buckets, p_manifest)
+	if(&"" != caster_passive_gate):
+		assumed_gates.append(caster_passive_gate)
 	for gate: StringName in _ContributeGatedTeamBonuses(p_characters, buckets, p_manifest):
 		if(&"" != gate):
 			assumed_gates.append(gate)
