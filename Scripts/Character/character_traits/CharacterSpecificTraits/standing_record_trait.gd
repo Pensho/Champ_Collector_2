@@ -51,6 +51,10 @@ func _OnResultProduced(p_result: CombatResult) -> void:
 	elif(CombatResult.Kind.Zone_Placed == p_result.kind):
 		if(sides.AreEnemies(_owner_ID, p_result.source_ID)):
 			_AddInfraction(p_result.source_ID)
+	elif(CombatResult.Kind.Statuses_Removed == p_result.kind):
+		if(_owner_ID == p_result.source_ID and sides.AreEnemies(_owner_ID, p_result.target_ID)):
+			for i in p_result.status_IDs.size():
+				_AddInfraction(p_result.target_ID)
 
 func _AddInfraction(p_enemy_ID: int) -> void:
 	_infractions[p_enemy_ID] = mini(_infractions.get(p_enemy_ID, 0) + 1, INFRACTION_CAP)

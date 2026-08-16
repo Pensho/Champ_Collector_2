@@ -720,6 +720,10 @@ func _ContributePersistentCasterFactors(
 			_status_resolver._MissingHealthDamageFactors(p_caster_ID, p_target_ID, target))
 	for key: StringName in missing_health_factors:
 		p_modifier.Contribute(key, missing_health_factors[key])
+	var debuff_value_factors: Dictionary[StringName, float] = (
+			_status_resolver._DebuffValueDamageFactors(target))
+	for key: StringName in debuff_value_factors:
+		p_modifier.Contribute(key, debuff_value_factors[key])
 
 
 func _ResolveDamage(

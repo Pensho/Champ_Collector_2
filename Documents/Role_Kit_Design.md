@@ -744,7 +744,7 @@ of two, so no later Role can take it.
 
 ### 9.7 Emissary — the verdict the whole team reads
 
-**Status:** Settled, not yet implemented. Batch 2.
+**Status:** Implemented. Batch 2.
 
 **Identity: Channel 2, exported.** Confirms section 5's proposal. The kit is an **adaptation**:
 passive, basic skill and Signed Writ keep their shape, and only Levied Sanction's payload changes —
@@ -785,21 +785,6 @@ rider, not two full-weight jobs on one debuff.
 mid-fight tally of 6 — inside section 1's ~2x contract and in the same kind as §9.4's Hemorrhage
 (1.30-1.48x), the roster's other debuff-type bucket. The Emissary's own self-facing Citation bucket
 is unchanged at 1.36x at cap. Nothing here is sized against the team figure.
-
-**Implementation needs (not yet built):**
-
-* `Sanction.tres` gains the damage-taken clause. Both clauses read the single float
-  `standing_record_trait.gd:GetAppliedStatusValue` already snapshots (tally × applier rate) as
-  fixed multiples — 2× and 0.5× — so no second snapshot field is added.
-* The "damage multiplier read off a debuff the target holds" computation is shared with §9.4's
-  Hemorrhage; Emissary's is snapshot-valued where Hemorrhage's is continuous.
-* `Signed_Writ.tres` / `standing_record_trait.gd` — the strip rider needs the duration-reduction
-  path to report which buffs it zeroed so the trait can credit an Infraction each.
-* `kit_contribution_manifest.gd` — Levied Sanction's entry gains `bucket_key: "Sanction"`
-  (debuff-type bucket, exported, magnitude 0.72); Signed Writ's precondition gains the rider.
-* `Concept_Document.md` at promotion: 3.1.3's passive (skills may state a multiple of the rate),
-  3.2.3's Sanction entry (retag Channel 1 → Channel 2, both clauses), 3.2.4.2's Signed Writ and
-  Levied Sanction.
 
 **Judgment calls made while settling, listed so they can be overruled:** the tally stays a
 caster-side counter rather than becoming a stacking debuff on the enemy — a real status would let
@@ -1506,7 +1491,7 @@ Anchor, Steadfast, Resonance unclaimed.
 | Suppress | Herald of the loom (Thread Snap) — moved off the retired Thread Lash, now 1 turn (was 2); Scholar (Sharp Rebuttal's zone-gated rider) — **settled, not yet implemented** (§9.14). At the commodity-debuff limit of two, so no later Role may take it |
 | Temporal Leak | Herald of the loom (Pull the Thread) — newly claimed, retiring part of `FeatureIdeas.md`'s "Rework Orphaned Turn Bar Effects" item |
 | Warped | Sorcerer (Unstable Rift reliably, Arc Lash's 25% rider) — **implemented** (section 9.3); both sources are the same Role, so the identity-effect rule still holds |
-| Sanction | Emissary (Levied Sanction) — unchanged claimant; widened from an attribute reduction to a per-Infraction damage multiplier every attacker reads, **settled, not yet implemented** (section 9.7) |
+| Sanction | Emissary (Levied Sanction) — unchanged claimant; widened from an attribute reduction to a per-Infraction damage multiplier every attacker reads, **implemented** (section 9.7) |
 | Hemorrhage | Bloodmage (Tithe of Vitality) — **implemented** (section 9.4); new debuff, no prior claimant |
 | Mana Burn | Unclaimed — dropped from Bloodmage's Tithe of Vitality (section 9.4); nothing in the reworked kit read it |
 | Exposed Facet | Appraiser (Sizing Cut) — **implemented** (section 9.5); moved onto the basic skill's 1-turn rider |
@@ -1575,7 +1560,7 @@ key, not a doc paraphrase) — the authority the burst-reachability scorer actua
 | `Outbreak` | Plague Doctor (Outbreak) | Skill-name bucket, `bonus_per` keyed to `Target_Debuff_Count` (Batch 1's new generic trait-count source) |
 | `Tithe of Vitality` | Bloodmage (Tithe of Vitality) — **implemented** (section 9.4) | Skill-name bucket, `bonus_per` keyed to `Wounded_Allies` (new Batch 1 trait-count source) |
 | `Sanguine Pact` (granted status) | Bloodmage (Transfusion) — **implemented** (section 9.4) | Granted holder-missing-Health damage multiplier; lands in whoever holds it, not the caster's own bucket |
-| `Sanction` (debuff on target) | Emissary (Levied Sanction) — **settled, not yet implemented** (section 9.7) | Debuff-type bucket, per-Infraction damage multiplier snapshotted at application; readable by any teammate's damage, not only the applier's |
+| `Sanction` (debuff on target) | Emissary (Levied Sanction) — **implemented** (section 9.7) | Debuff-type bucket, per-Infraction damage multiplier snapshotted at application; readable by any teammate's damage, not only the applier's |
 | `Hemorrhage` (debuff on target) | Bloodmage (Tithe of Vitality) — **implemented** (section 9.4) | Debuff-type bucket, holder-missing-Health damage multiplier; readable by any teammate's damage, not only the applier's |
 
 Every other Role/skill in the manifest carries `bucket_key = ""` today — either genuinely Channel 1

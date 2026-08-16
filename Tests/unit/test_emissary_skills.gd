@@ -110,3 +110,106 @@ func test_signed_writ_escalation_threshold_is_rarity_independent() -> void:
 	var applied: Array = roster[3]._active_debuffs.filter(func(d): return d.type == Types.Debuff_Type.Signed_Writ)
 	assert_eq(applied[0].duration, 1,
 		"5 Infractions should not escalate Signed Writ at any rarity")
+
+func _damage_modifier(p_results: Array[CombatResult]) -> CombinedDamageModifier:
+	for r in p_results:
+		if(r.kind == CombatResult.Kind.Damage):
+			return r.combined_damage_modifier
+	return null
+
+func _sanction_debuff(p_value: float) -> StatusEffects.Debuff:
+	var sanction: StatusEffects.Debuff = StatusEffects.Debuff.new()
+	sanction.type = Types.Debuff_Type.Sanction
+	sanction.value = p_value
+	sanction.duration = 2
+	sanction.source_ID = 0
+	return sanction
+
+func test_sanction_damage_clause_is_exported_to_any_teammates_attack() -> void:
+	# Route A / section 8: Sanction's damage clause must land in a CombinedDamageModifier
+	# bucket every attacker reads, not only the Emissary's own.
+	var roster: Dictionary[int, Character] = TestFactory.make_full_roster()
+	roster[1]._skills.append(TestFactory.make_strike_skill())
+	roster[3]._active_debuffs.append(_sanction_debuff(0.36))
+	var resolver: BattleResolver = TestFactory.make_resolver(roster, TestFactory.make_full_sides())
+
+	var modifier: CombinedDamageModifier = _damage_modifier(resolver.ResolveSkill(1, [3], 0))
+
+	assert_almost_eq(modifier.Buckets()[&"Sanction"], 0.72, 0.0001,
+		"attacker_damage_value_multiple 2.0 on a 0.36 snapshot should contribute 0.72")
+
+func test_sanction_damage_clause_tracks_the_snapshotted_value_not_a_live_tally() -> void:
+	var roster: Dictionary[int, Character] = TestFactory.make_full_roster()
+	roster[1]._skills.append(TestFactory.make_strike_skill())
+	roster[3]._active_debuffs.append(_sanction_debuff(0.24)) # 6 Infractions at Legendary
+	var resolver: BattleResolver = TestFactory.make_resolver(roster, TestFactory.make_full_sides())
+
+	var modifier: CombinedDamageModifier = _damage_modifier(resolver.ResolveSkill(1, [3], 0))
+
+	assert_almost_eq(modifier.Buckets()[&"Sanction"], 0.48, 0.0001,
+		"a mid-fight tally of 6 (0.24 snapshot) should contribute 0.48, independent of the live tally")
+
+func test_sanction_attribute_clause_is_half_the_snapshotted_value() -> void:
+	var setup: Dictionary = _make_setup(Types.Rarity.Legendary)
+	var roster: Dictionary[int, Character] = setup["roster"]
+	var resolver: BattleResolver = setup["resolver"]
+	var record_trait: StandingRecordTrait = setup["trait"]
+	_guarantee_debuffs_land(roster)
+	for i in 9:
+		record_trait._AddInfraction(3)
+	var levied_sanction: Skill = TestFactory.make_empty_skill()
+	levied_sanction.name = "Levied Sanction"
+	var apply_sanction: ApplyDebuffEffect = ApplyDebuffEffect.new()
+	apply_sanction.target = Types.Skill_Target.Single_Enemy
+	apply_sanction.debuff_type = Types.Debuff_Type.Sanction
+	apply_sanction.duration = 2
+	levied_sanction.effects = [apply_sanction]
+	roster[0]._skills.append(levied_sanction)
+	var attack_before: int = roster[3]._attributes[Types.Attribute.Attack]
+
+	resolver.ResolveSkill(0, [3], 0)
+
+	var effective_attack: int = resolver.GetEffectiveAttributes(3)[Types.Attribute.Attack]
+	# 9 Infractions at Legendary (rate 0.04) snapshots 0.36; ApplyAttributeModifiers scales the
+	# snapshot itself by the resource's -0.5 sign, matching the engine's own order of operations.
+	var expected_attack: int = attack_before + int(-0.5 * ceilf(attack_before * 0.36))
+	assert_eq(effective_attack, expected_attack,
+		"Sanction's attribute clause should be 0.5x the snapshotted per-Infraction value")
+
+func test_signed_writ_strip_credits_one_infraction_per_buff_zeroed() -> void:
+	var setup: Dictionary = _make_setup(Types.Rarity.Legendary)
+	var roster: Dictionary[int, Character] = setup["roster"]
+	var resolver: BattleResolver = setup["resolver"]
+	var record_trait: StandingRecordTrait = setup["trait"]
+	_guarantee_debuffs_land(roster)
+	var short_buff: StatusEffects.Buff = StatusEffects.Buff.new()
+	short_buff.type = Types.Buff_Type.Empower
+	short_buff.duration = 1
+	roster[3]._active_buffs.append(short_buff)
+	var long_buff: StatusEffects.Buff = StatusEffects.Buff.new()
+	long_buff.type = Types.Buff_Type.Fortify
+	long_buff.duration = 5
+	roster[3]._active_buffs.append(long_buff)
+	roster[0]._skills.append(_signed_writ_skill())
+	var infractions_before: int = record_trait.GetInfractions(3)
+
+	resolver.ResolveSkill(0, [3], 0)
+
+	assert_eq(record_trait.GetInfractions(3), infractions_before + 1,
+		"Only the buff Signed Writ strips to zero duration should add an Infraction")
+
+func test_natural_buff_expiry_credits_no_infraction() -> void:
+	var setup: Dictionary = _make_setup(Types.Rarity.Legendary)
+	var roster: Dictionary[int, Character] = setup["roster"]
+	var resolver: BattleResolver = setup["resolver"]
+	var record_trait: StandingRecordTrait = setup["trait"]
+	var expiring_buff: StatusEffects.Buff = StatusEffects.Buff.new()
+	expiring_buff.type = Types.Buff_Type.Empower
+	expiring_buff.duration = 0
+	roster[3]._active_buffs.append(expiring_buff)
+	var infractions_before: int = record_trait.GetInfractions(3)
+
+	resolver.GetStatusResolver()._ExpireBuffs(3)
+
+	assert_eq(record_trait.GetInfractions(3), infractions_before,
+		"Natural expiry has no attributable source and must not credit an Infraction")

@@ -85,14 +85,14 @@ func RemoveBuff(p_target_ID: int, p_buff: StatusEffects.Buff) -> Array[CombatRes
 	_resolver._Emit(result)
 	return _resolver._EndBatch()
 
-func ReduceBuffDurations(p_target_ID: int, p_amount: int) -> void:
+func ReduceBuffDurations(p_target_ID: int, p_amount: int, p_source_ID: int = -1) -> void:
 	if(p_amount <= 0):
 		return
 	var target: Character = _resolver._characters[p_target_ID]
 	for buff in target._active_buffs:
 		buff.duration -= p_amount
 		_EmitStatusDuration(p_target_ID, buff.ID, buff.duration)
-	_ExpireBuffs(p_target_ID)
+	_ExpireBuffs(p_target_ID, p_source_ID)
 
 func ConsumeBuffs(p_target_ID: int, p_count: int) -> int:
 	var target: Character = _resolver._characters[p_target_ID]
@@ -117,7 +117,7 @@ func StealBuff(p_from_ID: int, p_to_ID: int, p_duration: int = -1) -> bool:
 	ApplyBuff(p_to_ID, stolen)
 	return true
 
-func _ExpireBuffs(p_target_ID: int) -> void:
+func _ExpireBuffs(p_target_ID: int, p_source_ID: int = -1) -> void:
 	var target: Character = _resolver._characters[p_target_ID]
 	var status_IDs_to_be_removed: Array[int] = []
 	for buff in target._active_buffs:
@@ -128,6 +128,7 @@ func _ExpireBuffs(p_target_ID: int) -> void:
 	target._active_buffs = target._active_buffs.filter(func(buff): return not _IsBuffExpired(buff))
 	var removed: CombatResult = CombatResult.new(CombatResult.Kind.Statuses_Removed)
 	removed.target_ID = p_target_ID
+	removed.source_ID = p_source_ID
 	removed.status_IDs = status_IDs_to_be_removed
 	_resolver._Emit(removed)
 	target._current_health = mini(target._current_health, _resolver._MaxHealth(target))
@@ -712,6 +713,20 @@ func _MissingHealthDamageFactors(
 			if(0.0 != contribution):
 				var key: StringName = StringName(Types.Debuff_Type.keys()[debuff.type])
 				factors[key] = factors.get(key, 0.0) + contribution
+	return factors
+
+## Debuffs on p_target whose value (usually snapshotted at application, e.g. Sanction's
+## Infraction tally) scales the attacker's own damage, independent of magnitude_kind.
+func _DebuffValueDamageFactors(p_target: Character) -> Dictionary[StringName, float]:
+	var factors: Dictionary[StringName, float] = {}
+	for debuff in p_target._active_debuffs:
+		var data: StatusEffectData = StatusEffectRegistry.DebuffData(debuff.type)
+		if(null == data or 0.0 == data.attacker_damage_value_multiple):
+			continue
+		var contribution: float = debuff.value * data.attacker_damage_value_multiple
+		if(0.0 != contribution):
+			var key: StringName = StringName(Types.Debuff_Type.keys()[debuff.type])
+			factors[key] = factors.get(key, 0.0) + contribution
 	return factors
 
 

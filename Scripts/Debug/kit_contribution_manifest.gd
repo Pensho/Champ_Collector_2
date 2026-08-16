@@ -146,15 +146,25 @@ const MANIFEST: Dictionary = {
 			{"name": "Signed Writ", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Enabler,
 					"precondition": "Reduces target buff durations by 1 turn (2 if raw Infractions >= 6) " +
-							"and applies Signed Writ (1-2 turns, unresistable). No damage.",
-					"citation": "Signed_Writ.tres:6-42; standing_record_trait.gd:67-68"},
-			{"name": "Levied Sanction", "bucket_key": "", "magnitude": 0.36, "stack_cap": 0,
-					"class": Contribution_Class.Channel1,
-					"precondition": "Applies Sanction (2 turns): reduces every primary attribute but " +
-							"Health by target Infractions * 0.04 (Legendary, ceiling 0.36), set at " +
-							"application via GetAppliedStatusValue. A raw attribute reduction, not a " +
-							"CombinedDamageModifier bucket.",
-					"citation": "Levied_Sanction.tres:6-11; standing_record_trait.gd:73-77"},
+							"and applies Signed Writ (1-2 turns, unresistable). Every buff this strips to " +
+							"zero duration adds an Infraction. No damage.",
+					"citation": "Signed_Writ.tres:6-42; standing_record_trait.gd:67-68," +
+							"_OnResultProduced Statuses_Removed branch"},
+			{"name": "Levied Sanction", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
+					"class": Contribution_Class.Channel2,
+					"precondition": "Applies Sanction (2 turns), value set at application from target " +
+							"Infractions * 0.04 (Legendary, ceiling 0.36): reduces every primary " +
+							"attribute but Health by 0.5x that value (ceiling 18%), and (see " +
+							"granted_status) adds 2x that value as an exported damage bucket every " +
+							"attacker of the target reads.",
+					"citation": "Levied_Sanction.tres:6-11; standing_record_trait.gd:73-77",
+					"granted_status": {"bucket_key": "Sanction", "magnitude": 0.72,
+							"per_debuff_anchored": false, "reach": "team",
+							"citation": "Data/Status_Effects/Sanction.tres (attacker_damage_value_multiple " +
+									"2.0, magnitude shown is 9 Infractions at Legendary = 0.36 * 2.0); " +
+									"status_effect_resolver.gd _DebuffValueDamageFactors. Sits on the " +
+									"target and buffs every attacker of it, not an ally-target grant — " +
+									"modeled with team reach, same shape as Bloodmage's Hemorrhage."}},
 		],
 	},
 	Types.Role.Thief: {

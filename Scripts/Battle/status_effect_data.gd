@@ -47,6 +47,9 @@ enum MagnitudeKind {
 # Extra self-tick max-Health cost, independent of magnitude_kind.
 @export var self_tick_max_health_cost_percent: float = 0.0
 @export var damage_redirect_to_applier_fraction: float = 0.0
+# Attacks against the holder gain this multiple of the instance's own value as a damage
+# bucket, independent of magnitude_kind (e.g. Sanction's damage clause).
+@export var attacker_damage_value_multiple: float = 0.0
 @export var targeting_weight_multiplier: float = 1.0
 @export var icon: Texture2D
 @export_multiline var description: String = ""

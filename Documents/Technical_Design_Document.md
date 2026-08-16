@@ -1472,6 +1472,10 @@ own missing Health raises any attacker's damage against it) — share one comput
 (`StatusEffectResolver._MissingHealthDamageFactors`, called from
 `_ContributePersistentCasterFactors` alongside the existing Opportunist read), each keyed to its
 own status type name so the two stack as distinct `CombinedDamageModifier` buckets rather than one.
+A third field, `StatusEffectData.attacker_damage_value_multiple` (Sanction), contributes a debuff's
+own snapshotted value as a fixed multiple into the same kind of `CombinedDamageModifier` bucket,
+independent of `magnitude_kind`, via a sibling `StatusEffectResolver._DebuffValueDamageFactors` read
+from the same `_ContributePersistentCasterFactors` call site.
 A new `StatusEffectData.damage_redirect_to_applier_fraction` field (Sanguine Pact) lets
 `Skills.FindDamageRedirect` check the target's own buffs, by applier `source_ID`, ahead of the
 existing ally-trait sweep (Shield Wall) — a status-named redirect takes precedence over a

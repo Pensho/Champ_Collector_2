@@ -37,7 +37,7 @@ through Enabler-tagged skills authored as kit content (§1.2, `Concept_Document.
 
 Phase 3 (Batch 2) design started ahead of Phase 2's remaining implementation, which the tier-3 loop
 permits — settling a kit does not require implementing it in the same sitting. All five settled.
-**Jester (§9.6) implemented**; Emissary (§9.7), Cultist (§9.8), Chronophage (§9.9), Architect
+**Jester (§9.6) and Emissary (§9.7) implemented**; Cultist (§9.8), Chronophage (§9.9), Architect
 (§9.10) remain. Routes A and E close; route C's second anchor is open rather than assigned, since the
 Jester was Phase 1's proposal and is no longer a candidate, and no unsettled Role is assumed into
 it. Chronophage's threshold-crossing `Cascade_Trigger` is **not** authored — counting section
@@ -53,6 +53,22 @@ own exception. The debuff-resist band widened to 0.85-1.0, and `StatusEffectData
 Hexed. `Concept_Document.md` 3.2.1 #3, 3.2.3 and 3.2.4.2's Jester entry updated to match.
 Post-Jester sweep: median 1.62x, 90th percentile 3.68x, ceiling 16.24x — unchanged from the
 post-Appraiser baseline, as §9.6 predicted for an Enabler kit invisible to the scorer.
+
+**Emissary's implementation** added `StatusEffectData.attacker_damage_value_multiple`, a
+`magnitude_kind`-independent rider read by the new `StatusEffectResolver._DebuffValueDamageFactors`
+(sibling to `_MissingHealthDamageFactors`, same `_ContributePersistentCasterFactors` call site) so
+`Sanction.tres` contributes a `&"Sanction"` `CombinedDamageModifier` bucket to any attacker of its
+holder, not only the Emissary's own. `Sanction.tres`'s attribute clause dropped from -1.0 to -0.5
+per attribute. `ReduceBuffDurations`/`_ExpireBuffs` gained an optional `source_ID`, threaded from
+`ReduceBuffDurationsEffect`, so `Statuses_Removed` can be attributed to a caster; natural expiry
+keeps the default and credits nothing. `standing_record_trait.gd` credits an Infraction per buff
+Signed Writ strips to zero duration. Post-Emissary sweep: median 1.84x, 90th percentile 4.47x,
+ceiling 16.24x (unchanged — Sanction contributes to the modifier product on teams that already
+route through it, not a new ceiling path). The top decile (114 teams) keeps its **8 distinct
+pairings**, with Bloodmage/Tithe of Vitality displaced by **Emissary/Citation** — Sanction's
+exported bucket lifting three Bloodmage/Tidal-Corsair/Architect-partnered teams (17.05x-18.16x)
+past the threshold, and Citation itself, stacked with Sanction and Hemorrhage, becoming the
+Emissary's own top-decile entry.
 
 Phase 4 (Batch 3) **complete**, settled one Role at a time. Four settled, none implemented:
 

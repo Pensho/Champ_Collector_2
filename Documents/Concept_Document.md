@@ -210,7 +210,7 @@ Current roles, their identity and purpose exist as follows:
 - Emissary
     - A field agent of the Iron Ledger who wins by building a case against the enemy rather than overpowering them. Keeps a per-enemy tally of Infractions (see the Standing Record passive) and issues Edicts — formal rulings whose severity is read off the target's Infraction tally. Punishment effects stay gradual rather than binary: no hard skill sealing or turn bar manipulation; instead buff duration reduction, resistance bypass, and attribute sanctions, all scaling with the target's Infraction count. Primary attributes: Accuracy, Knowledge.
     - Purpose: Debuffer, Control
-    - Passive: Standing Record [Enabler] - Every enemy has a personal Infraction tally that only grows and is never consumed. An enemy gains one Infraction whenever they gain a buff, place a zone, or land a debuff on an ally. The tally is counted up to a cap of 9 for skill effects. The Emissary's skills that scale with Infractions apply a rarity-dependent rate per Infraction on the target; that rate is the only source of Infraction scaling (skills state what scales, never their own rate).
+    - Passive: Standing Record [Enabler] - Every enemy has a personal Infraction tally that only grows and is never consumed. An enemy gains one Infraction whenever they gain a buff, place a zone, land a debuff on an ally, or has one of their own buffs stripped to zero duration by Signed Writ. The tally is counted up to a cap of 9 for skill effects. The passive owns a rarity-dependent rate per Infraction on the target; a skill may state its own multiple of that rate, never a rate of its own.
         - 2.5% per Infraction Uncommon, 3% Rare, 3.5% Epic, 4% Legendary
     - Fielded by: `Emissary.tres`
 - Thief
@@ -488,7 +488,7 @@ Debuffs:
 * Refracted [Enabler]: The character's single-target skills hit a random character instead, allies included.
 * Warped [Channel 1 / Enabler]: The character's damage dealt scales with Mysticism instead of the skill's normal attribute — damage-scaling only; non-damage calculations (healing, absorb values, turn-bar effects) stay on their native attribute. Dual-classified: channel 1 by mechanism, since it re-points which attribute channel 1 reads rather than adding a term of its own; enabler by role, since forcing a target's real damage through an attribute it's weak in is denial that protects the team, not a passive attribute swap.
 * Signed Writ [Enabler]: The character cannot resist debuffs.
-* Sanction [Channel 1]: Reduces all primary attributes except Health by the applier's Standing Record rate per Infraction on the target, set at the moment of application (see the Emissary's passive in section 3.1.3).
+* Sanction [Channel 2]: Attacks against the character deal +2x the applier's Standing Record rate per Infraction on the target, and all primary attributes except Health are reduced by 0.5x that rate, both set at the moment of application (see the Emissary's passive in section 3.1.3). Readable by any attacker, not only the applier's.
 * Hemorrhage [Channel 2]: Attacks against the character deal +6% damage per 10% of the character's own missing Health. Readable by any attacker, not only the applier's.
 
 Buffs:
@@ -581,11 +581,11 @@ the fix belongs in the data or the document.
 * Signed Writ
     * Type: Debuff
     * Cooldown: 3 turns
-    * Effect: [Enabler] Reduces the durations of all the target's buffs by 1 turn and applies the Signed Writ debuff for 1 turn. If the target has 6 or more Infractions, buff durations are reduced by 2 turns and Signed Writ lasts 2 turns instead.
+    * Effect: [Enabler] Reduces the durations of all the target's buffs by 1 turn and applies the Signed Writ debuff for 1 turn. If the target has 6 or more Infractions, buff durations are reduced by 2 turns and Signed Writ lasts 2 turns instead. Every buff this strips to zero duration adds an Infraction to the target's tally.
 * Levied Sanction
     * Type: Debuff
     * Cooldown: 4 turns
-    * Effect: [Channel 1] Applies the Sanction debuff to a single enemy for 2 turns; its potency is set by the target's Infraction tally at the moment of application.
+    * Effect: [Channel 2] Applies the Sanction debuff to a single enemy for 2 turns; its potency is set by the target's Infraction tally at the moment of application.
 
 ###### Thief
 * Stab

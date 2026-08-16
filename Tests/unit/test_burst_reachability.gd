@@ -14,6 +14,7 @@ const CULTIST = preload("res://Data/Character_Player_Variants/Cultist.tres")
 const WARLORD = preload("res://Data/Character_Player_Variants/Warlord.tres")
 const EMISSARY = preload("res://Data/Character_Player_Variants/Emissary.tres")
 const THIEF = preload("res://Data/Character_Player_Variants/Thief.tres")
+const CHRONOPHAGE = preload("res://Data/Character_Player_Variants/Chronophage.tres")
 
 func _sorcerer_scholar_tactician() -> Array[CharacterPreset]:
 	var presets: Array[CharacterPreset] = [SORCERER, CENTAUR_ARCHIVIST, TACTICIAN]
@@ -161,10 +162,12 @@ func test_base_and_modifier_terms_are_reported_separately_and_do_not_simply_mult
 		"The full contrast ratio must not equal the terms' naive product, per the nonlinear mitigation curve")
 
 func test_a_channel_one_only_candidate_has_a_modifier_term_of_one() -> void:
-	# Emissary and Thief have no bucket-keyed Channel-2/3 entries reachable by a candidate
+	# Chronophage and Thief have no bucket-keyed Channel-2/3 entries reachable by a candidate
 	# whose own skill is Channel 1 and grants nothing to a teammate either, so the composed
 	# product — and therefore the modifier term run through mitigation — must be neutral.
-	var presets: Array[CharacterPreset] = [EMISSARY, THIEF, WARLORD]
+	# (Emissary is not used here: Levied Sanction's Sanction debuff is now an exported bucket
+	# reachable by any teammate's attack, per Role_Kit_Design.md section 9.7.)
+	var presets: Array[CharacterPreset] = [CHRONOPHAGE, THIEF, WARLORD]
 	var result: BurstReachability.TeamResult = BurstReachability.ScoreTeam(presets)
 	var pinned: BurstReachability.CandidateResult = result.Pinned(2, "Shield Slam")
 	assert_not_null(pinned, "Warlord's Shield Slam must be a scored candidate")
@@ -210,7 +213,7 @@ func test_sorcerer_arc_lash_echoes_match_role_kit_designs_own_figure() -> void:
 # the real manifest or the scorer's own logic (used by Tests/manual/prescription_sweep.gd) ---
 
 func test_a_modified_manifest_changes_scoring_without_touching_the_real_one() -> void:
-	var presets: Array[CharacterPreset] = [EMISSARY, THIEF, WARLORD]
+	var presets: Array[CharacterPreset] = [CHRONOPHAGE, THIEF, WARLORD]
 	var baseline: BurstReachability.TeamResult = BurstReachability.ScoreTeam(presets)
 	var baseline_pinned: BurstReachability.CandidateResult = baseline.Pinned(2, "Shield Slam")
 	assert_almost_eq(baseline_pinned.product, 1.0, 0.0001,
