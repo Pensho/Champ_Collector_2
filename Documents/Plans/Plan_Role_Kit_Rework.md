@@ -9,15 +9,12 @@ and hands it to a build-out plan that was never spawned.
 **Framework correction, applied before Batch 2 design.** `Role_Kit_Design.md`'s kit contract had
 pointed every Role at the 30-50x team figure rather than a per-Role one, and forbade an Enabler
 primary identity that `Concept_Document.md` 1.1.3 permits. Both are corrected there (§1, §1.2, §4,
-§5, §8, §9.2-§9.4) and in this plan's own contract restatement. **Batch 1's five settled kits were
-designed under the wrong reading and should be re-read against the corrected contract** before
-Phase 6 — Sorcerer, Bloodmage and Appraiser are not yet implemented, so that re-read is cheap for
-three of the five.
+§5, §8, §9.2-§9.4) and in this plan's own contract restatement.
 
-Phase 0 done. Phase 1 drafted, awaiting sign-off (see below) before Phase 2 starts. Phase 2 in
-progress: Plague Doctor, Herald of the Loom, Sorcerer, and Bloodmage implemented; Appraiser
-settled and recorded in `Role_Kit_Design.md` §9.5, not yet implemented — the batch's last Role.
-Herald of the Loom's implementation (`weft_and_warp_trait.gd`) added the batch's second and third pieces of new
+**Phase 0-2 complete.** All five Batch 1 kits are implemented: Plague Doctor, Herald of the Loom,
+Sorcerer, Bloodmage, and Appraiser (§9.5) — the crit path (No Wasted Margin's overflow conversion,
+Sizing Cut/Flaw Analysis's applier-scaled crit grants, Full Appraisal's consignment) closing the
+batch's last open route (route C). Herald of the Loom's implementation (`weft_and_warp_trait.gd`) added the batch's second and third pieces of new
 Channel 3 plumbing beyond §11's original scope: `Combat_Event.Cascade_Instance_Resolved` (a
 per-real-instance broadcast off `CascadeResolver._ResolveEvent`'s own loop) and
 `CascadeResolver.SubscribeInstanceModifier` (lets a subscriber amplify an already-matched
@@ -26,10 +23,10 @@ ahead of the Herald trait itself, per the plan's own tier-1-before-tier-3 orderi
 implementation widened `SubscribeInstanceModifier` to pass the matched listener's own
 `mechanic_key` to the callback, so a modifier can scope itself to one mechanic (its Echo count)
 rather than amplifying every cascade instance in the game — the Herald's own Black Thread callback
-updated to the new two-argument signature, unscoped as before. One Role left in Phase 2. The
-scorer gaps blocking the remaining Channel 3 kit are consolidated in §11 and are the batch's first
-implementation work; the crit scorer's own gap closed in `e3d39bd`, leaving only the above-100
-Critical Chance clamp that Appraiser's passive needs (§9.5). The framework
+updated to the new two-argument signature, unscoped as before. The
+scorer gaps blocking Channel 3 kits are consolidated in §11; the crit scorer's own gap closed in
+`e3d39bd`, and the above-100 Critical Chance clamp Appraiser's passive needed closed in its own
+batch (§11). The framework
 question that governed Batch 2's designs — whether Enabler may be a Role-level identity, raised by
 Appraiser's kit claiming no bucket key at all — is **settled** (§8): Enabler **is** permitted as a
 primary identity, the contract admits crit-path contribution, and it gained a second declared axis,
@@ -167,6 +164,23 @@ pre-Phase-0 baseline's shape**: 7 distinct pairings — Herald of the Loom/Cut t
 Cultist/Devour Blessing (1, 13.62x), Bar Brawler/Headbutt (1, 13.05x) — meeting §6's "several
 independent team combinations" target with Batch 1 complete on the Bloodmage's side; Appraiser is
 the batch's remaining Role.
+
+**Post-Appraiser sweep** (`Tests/manual/team_corpus_sweep.gd`, re-run after Appraiser landed —
+Batch 1 complete). Combined-modifier-product distribution is unchanged (median 1.62x, 90th
+percentile 3.68x, ceiling 16.24x) — expected, since the whole kit routes through the crit path
+outside the combined modifier, matching the Sorcerer's and Bloodmage's own prior notes. The top
+decile (114 teams) **gains an eighth distinct pairing**: Bloodmage/Tithe of Vitality (1 team,
+9.74x) joins Herald of the Loom/Cut the Cloth (61 teams, 9.64x-14.44x — up from 51, several
+Appraiser-partnered teams crossing the threshold on Sizing Cut/Flaw Analysis's team-reach crit
+grants), Sorcerer/Cataclysm (18, 10.18x-14.37x — down from 29, displaced by the same crit lift
+raising other pairings past it), Tidal Corsair/Corsairs Reckoning (16, 10.56x-21.12x),
+Architect/Final Calculation (15, 9.91x-19.82x), Diviner/Ill Omen (1, 11.60x), Cultist/Devour
+Blessing (1, 13.62x), Bar Brawler/Headbutt (1, 13.05x). No team's own best skill is an Appraiser
+skill at the roster's base (ungeared) attribute levels the sweep uses — expected, since §9.5's own
+≈5.58x projection assumes Legendary rarity and specific investment (Critical Chance 60, Critical
+Damage 250, Knowledge 200) the sweep's preset-only attributes don't reach; the kit's contribution
+still surfaces indirectly, lifting *other* Roles' crit factors when paired with the Appraiser.
+**Batch 1 complete: all five Roles implemented.**
 
 **Phase 1 result.** `Documents/Role_Kit_Design.md` created, holding the kit contract, the
 indirect-composition rule, the synergy grammar, Phase 0's re-derived targets, and the two pieces

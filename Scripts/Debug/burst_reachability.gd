@@ -548,27 +548,43 @@ static func _PassiveApplies(p_role: Types.Role, p_skill: Skill, p_skill_index: i
 ## The caster's expected crit factor against p_boss_knowledge — mirrors
 ## battle_resolver.gd's own _ResolveDamage roll (chance) and crit-multiplier formula
 ## (Concept_Document.md 3.2.1 #4) as an EXPECTED VALUE rather than a roll, since this scorer
-## has no battle to roll against: crit_factor = 1 + (chance/100) * (multiplier - 1), so a crit
+## has no battle to roll against: crit_factor = 1 + (probability) * (multiplier - 1), so a crit
 ## CHANCE source (Flaw Analysis, Keen Edge, the Appraiser's own base 30) actually moves the
 ## score, not just crit damage. p_fractions/p_points are the CritChance/CritDamage entries of
-## _ContributeGrantedAttributeBuffs's own return value. The chance clamp mirrors the resolver's
-## roll saturating at its [1.0, 100.0] range; the damage floor is GameBalance.MINIMUM_CRIT_DAMAGE,
-## same as the runtime.
+## _ContributeGrantedAttributeBuffs's own return value. p_overflow_rate is the Appraiser's No
+## Wasted Margin rate (0.0 = no conversion): chance is left unclamped so the excess above 100
+## converts into extra crit-damage points the same way _ResolveDamage's overflow term does,
+## while `probability` (the roll's own [0.0, 1.0] chance of landing at all) still saturates at
+## 1.0. The damage floor is GameBalance.MINIMUM_CRIT_DAMAGE, same as the runtime.
 static func _CritFactor(
-		p_caster: Character, p_fractions: Dictionary, p_points: Dictionary, p_boss_knowledge: float) -> Dictionary:
+		p_caster: Character, p_fractions: Dictionary, p_points: Dictionary, p_boss_knowledge: float,
+		p_overflow_rate: float = 0.0) -> Dictionary:
 	var base_chance: float = float(p_caster._attributes[Types.Attribute.CritChance])
 	var base_damage: float = float(p_caster._attributes[Types.Attribute.CritDamage])
-	var chance: float = clampf(
+	var chance: float = maxf(0.0,
 			base_chance * (1.0 + p_fractions.get(Types.Attribute.CritChance, 0.0))
-					+ p_points.get(Types.Attribute.CritChance, 0.0),
-			0.0, 100.0)
+					+ p_points.get(Types.Attribute.CritChance, 0.0))
+	var overflow_crit_damage: float = maxf(0.0, chance - 100.0) * p_overflow_rate
+	var probability: float = clampf(chance, 0.0, 100.0) / 100.0
 	var damage_multiplier: float = maxf(
 			GameBalance.MINIMUM_CRIT_DAMAGE,
 			base_damage * (1.0 + p_fractions.get(Types.Attribute.CritDamage, 0.0))
-					+ p_points.get(Types.Attribute.CritDamage, 0.0) - p_boss_knowledge * 0.5
+					+ p_points.get(Types.Attribute.CritDamage, 0.0) + overflow_crit_damage - p_boss_knowledge * 0.5
 			) * 0.01
-	var factor: float = 1.0 + (chance / 100.0) * (damage_multiplier - 1.0)
+	var factor: float = 1.0 + probability * (damage_multiplier - 1.0)
 	return {"chance": chance, "damage_multiplier": damage_multiplier, "factor": factor}
+
+
+## Sums every teammate's passive-level Critical Chance overflow-conversion rate (the
+## Appraiser's No Wasted Margin) — team-wide, mirroring Skills.CritChanceOverflowRate's
+## runtime counterpart.
+static func _CritChanceOverflowRate(p_characters: Array[Character], p_manifest: Dictionary) -> float:
+	var rate: float = 0.0
+	for character in p_characters:
+		var role_entry: Dictionary = p_manifest.get(character._role, {})
+		for passive_entry: Dictionary in role_entry.get("passive", []):
+			rate += float(passive_entry.get("crit_overflow_rate", 0.0))
+	return rate
 
 
 ## Blends a skill's expected crit factor by the share of its aggregate that can actually crit
@@ -638,7 +654,8 @@ static func _ScoreCandidate(
 
 	var defence: float = BlowoutCalibration.BOSSES[0][2]
 	var boss_knowledge: float = BlowoutCalibration.BOSSES[0][3]
-	var crit: Dictionary = _CritFactor(caster, fractions, points, boss_knowledge)
+	var overflow_rate: float = _CritChanceOverflowRate(p_characters, p_manifest)
+	var crit: Dictionary = _CritFactor(caster, fractions, points, boss_knowledge, overflow_rate)
 	var baseline_crit_factor: float = _EffectiveCritFactor(
 			basic_skill, caster, fractions, basic_aggregate, crit.get("factor"))
 	var burst_crit_factor: float = _EffectiveCritFactor(
@@ -775,9 +792,9 @@ static func _NormalizeGrantList(p_field: Variant) -> Array[Dictionary]:
 ## "points" dict per the field's own "kind" (see kit_contribution_manifest.gd's field docs),
 ## plus every "gate" named along the way. Skill-scoped grants use the same _GrantReachesCandidate
 ## reach rule as _ContributeGrantedStatuses, unless the grant itself declares "team" reach
-## (Flaw Analysis's Exposed Facet sits on the target and buffs every attacker of it, not an
-## ally-target grant at all); passive-scoped grants (Tactician's Plan ahead, Strike the Flaw)
-## have no skill target to read, so "team" is their only reach.
+## (Sizing Cut's Exposed Facet sits on the target and buffs every attacker of it, not an
+## ally-target grant at all); passive-scoped grants (Tactician's Plan ahead) have no skill
+## target to read, so "team" is their only reach.
 static func _ContributeGrantedAttributeBuffs(
 		p_characters: Array[Character], p_candidate_index: int, p_manifest: Dictionary) -> Dictionary:
 	var fractions: Dictionary = {}
@@ -789,7 +806,7 @@ static func _ContributeGrantedAttributeBuffs(
 		for passive_entry: Dictionary in role_entry.get("passive", []):
 			for grant: Dictionary in _NormalizeGrantList(passive_entry.get("granted_attribute_buff", {})):
 				if("team" == grant.get("reach", "")):
-					_AccumulateAttributeBuff(fractions, points, grant)
+					_AccumulateAttributeBuff(fractions, points, grant, granter)
 					_AppendGate(gates, grant)
 		var skill_entries: Array = role_entry.get("skills", [])
 		for skill_index in skill_entries.size():
@@ -798,22 +815,30 @@ static func _ContributeGrantedAttributeBuffs(
 				continue
 			for grant: Dictionary in _NormalizeGrantList(skill_entry.get("granted_attribute_buff", {})):
 				if("team" == grant.get("reach", "")):
-					_AccumulateAttributeBuff(fractions, points, grant)
+					_AccumulateAttributeBuff(fractions, points, grant, granter)
 					_AppendGate(gates, grant)
 					continue
 				var granting_skill: Skill = granter._skills[skill_index]
 				if(_GrantReachesCandidate(granting_skill, granter_index, p_candidate_index)):
-					_AccumulateAttributeBuff(fractions, points, grant)
+					_AccumulateAttributeBuff(fractions, points, grant, granter)
 					_AppendGate(gates, grant)
 	return {"fractions": fractions, "points": points, "gates": gates}
 
 
 ## Routes a grant's magnitude into p_fractions (the default "percentage" kind, a multiplicative
-## fraction of the attribute's base value) or p_points ("percentage_point", a flat add) per the
-## grant's own "kind" field.
-static func _AccumulateAttributeBuff(p_fractions: Dictionary, p_points: Dictionary, p_grant: Dictionary) -> void:
+## fraction of the attribute's base value), p_points ("percentage_point", a flat add), or also
+## p_points via "source_attribute" (a flat add sized off p_granter's own "source_attribute"
+## value — Keen Edge/Lethal Precision/Cracked Facet, consumed the same way
+## AttackerCritChanceBonus/AttackerCritDamageBonus consume a flat point value at runtime) per
+## the grant's own "kind" field. p_granter is required for "source_attribute" grants only.
+static func _AccumulateAttributeBuff(
+		p_fractions: Dictionary, p_points: Dictionary, p_grant: Dictionary, p_granter: Character = null) -> void:
+	var kind: String = p_grant.get("kind", "percentage")
 	var magnitude: float = p_grant.get("magnitude", 0.0)
-	var target: Dictionary = p_points if "percentage_point" == p_grant.get("kind", "percentage") else p_fractions
+	if("source_attribute" == kind and null != p_granter):
+		var source_attribute: Types.Attribute = p_grant.get("source_attribute", Types.Attribute.Health)
+		magnitude *= float(p_granter._attributes[source_attribute])
+	var target: Dictionary = p_fractions if "percentage" == kind else p_points
 	for attribute: Types.Attribute in p_grant.get("attributes", []):
 		target[attribute] = target.get(attribute, 0.0) + magnitude
 

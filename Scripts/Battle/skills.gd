@@ -68,6 +68,20 @@ static func TriggerAllyReagentConsumedHook(
 		if(null != ally_trait):
 			ally_trait.OnAllyReagentConsumed(ally_ID, p_consumer_ID, p_reagent, p_resolver)
 
+static func CritChanceOverflowRate(
+		p_sides: CombatSides,
+		p_characters: Dictionary[int, Character],
+		p_character_ID: int) -> float:
+	var rate: float = 0.0
+	var team: CombatTeam = p_sides.AlliesOf(p_character_ID)
+	if(null == team):
+		return rate
+	for ally_ID in team.AliveMembers(p_characters):
+		var ally: Character = p_characters[ally_ID]
+		if(null != ally._trait):
+			rate += ally._trait.GetCritChanceOverflowRate()
+	return rate
+
 static func ApplyBarrierZone(
 		p_resolver: BattleResolver,
 		p_zone_owner_ID: int,

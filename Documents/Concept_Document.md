@@ -257,8 +257,8 @@ Current roles, their identity and purpose exist as follows:
     - Fielded by: `Diviner.tres`
 - Appraiser
     - A master at exploiting enemy weaknesses, allowing opportunity for the team to easily deal critical hits. Primary attributes: Critical Chance, Knowledge.
-    - Purpose: Debuffer
-    - Passive: Strike the Flaw [Channel 2] - The Appraiser's critical hits apply the Cracked Facet debuff to the target (see section 3.2.3.2), with a rarity-dependent duration: Uncommon and Rare 1 turn, Epic and Legendary 2 turns.
+    - Purpose: Debuffer, Buffer
+    - Passive: No Wasted Margin [Enabler] - Team-wide. For every percentage point of an ally's Critical Chance above 100, that ally gains Critical Damage instead of the excess being discarded: 2 percentage points Uncommon, 3 Rare, 4 Epic, 5 Legendary.
     - Fielded by: `Appraiser.tres`
 - Tactician
     - A squishy support. Primary attributes: Knowledge, Speed.
@@ -474,9 +474,10 @@ Debuffs:
 * Slow [Channel 1]: Reduces Speed by 15%, including how fast the character advances on the turn bar.
 * Blind [Channel 1 / Enabler]: Reduces Accuracy by 30%. Dual-classified: it moves Accuracy as channel 1, but it is picked for its enabler role — denying an application from landing.
 * Unravel [Channel 1]: Reduces Resistance by 30%.
-* Confound [Channel 1]: Reduces Knowledge by 30%.
+* Confound [Channel 1]: Reduces Knowledge by 50%.
 * Exposed Facet [Channel 2]: Attacks against the character gain +15 percentage points Critical Chance. Contributes through the crit path (section 1.1.4) rather than the combined modifier itself.
-* Cracked Facet [Channel 2]: Critical hits against the character deal +25% Critical Damage. Same crit-path note as Exposed Facet.
+* Cracked Facet [Channel 2]: Critical hits against the character deal bonus Critical Damage equal to 60% of the applier's own Knowledge, snapshotted at application. Same crit-path note as Exposed Facet.
+* Consigned [Channel 1]: Critical Chance and Critical Damage are reduced to zero.
 * Bleed [Channel 1 + Channel 2]: At the start of the character's turn, they take damage equal to 40% of the caster's Attack, multiplied by the caster's damage-scaling factors, both snapshotted together at the moment of application.
 * Plague [Channel 1 + Channel 2]: Deals damage each turn equal to 30% of the caster's Mysticism, multiplied by the caster's damage-scaling factors, both snapshotted together at the moment of application. Stacks, and each stack ticks independently.
 * Blight [Enabler]: Healing received is reduced by 50%.
@@ -503,7 +504,7 @@ Buffs:
 * Haste [Channel 1]: Increases Speed by 20%, including how fast the character advances on the turn bar; Haste stacks, so repeated applications add independent instances up to the status-effect cap.
 * True Aim [Channel 1]: Increases Accuracy by 30%.
 * Clarity [Channel 1]: Increases Resistance by 30%.
-* Keen Edge [Channel 1]: Increases Critical Chance by 15 percentage points.
+* Keen Edge [Channel 1]: Increases Critical Chance by the applier's own Critical Chance, snapshotted at application.
 * Insight [Channel 1]: Increases Knowledge by 30%.
 * Regeneration [Enabler]: Heals 4% of max Health at the start of each turn. Sustained self-healing is buying time to survive to the trigger, the same shape as Stun/Anchor buying a turn, only continuous and self-directed.
 * Barrier [Enabler]: A shield that absorbs damage up to a set amount before Health is touched. Barriers do not stack; a new Barrier replaces an existing one only if it is larger.
@@ -515,7 +516,7 @@ Buffs:
 * Wanderlust [Channel 1]: At the start of each of the character's turns, gain +20% to one random primary stat until their next turn.
 * Overflow [Channel 1]: When this buff expires, it deals damage to all enemies, scaling with the holder's Mysticism. Resolves through the cascade machinery but always yields exactly one instance, so it multiplies nothing (section 1.1.3) — a delayed area hit, not a cascade contribution.
 * Vigor [Channel 1]: Increases max Health by 30%.
-* Lethal Precision [Channel 1]: Increases Critical Damage by 50 percentage points.
+* Lethal Precision [Channel 1]: Increases Critical Damage by the applier's own Critical Damage, snapshotted at application.
 * Spotlight [Enabler]: The character is much more likely to be targeted by enemies (1.5x targeting weight) and takes 10% less damage. Both halves are one survival tool — drawing focused fire away from the pieces a burst depends on, and taking less of what lands.
 * Premonition [Enabler]: The next attack against the character automatically misses, then the buff is consumed.
 * Rehearsed [Enabler]: The character's next non-basic skill does not go on cooldown, then the buff is consumed.
@@ -670,16 +671,16 @@ the fix belongs in the data or the document.
 
 ###### Appraiser
 * Sizing Cut
-    * Type: Damage (basic skill, no cooldown)
-    * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Knowledge.
+    * Type: Damage, Debuff (basic skill, no cooldown)
+    * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Knowledge, and applies the Exposed Facet debuff for 1 turn.
 * Flaw Analysis
     * Type: Debuff
     * Cooldown: 2 turns
-    * Effect: [Channel 2] Applies the Exposed Facet debuff to a single enemy for 2 turns.
+    * Effect: [Enabler] Applies the Confound and Cracked Facet debuffs to a single enemy for 3 turns.
 * Full Appraisal
-    * Type: Buff
+    * Type: Buff, Debuff
     * Cooldown: 4 turns
-    * Effect: [Channel 1] Grants one ally the Keen Edge and Lethal Precision buffs, both for 2 turns.
+    * Effect: [Enabler] Consigns the caster's own Critical Chance and Critical Damage to one ally (not self) for 3 turns as the Keen Edge and Lethal Precision buffs, and applies the Consigned debuff to the caster for the same duration.
 
 ###### Tactician
 * Signal Strike

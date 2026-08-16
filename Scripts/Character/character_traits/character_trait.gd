@@ -171,6 +171,9 @@ func OnZoneConstructed(_p_owner_ID: int, _p_zone_ID: int, _p_resolver: BattleRes
 func GetZoneChargeBonus(_p_zone_ID: int) -> float:
 	return 0.0
 
+func GetCritChanceOverflowRate() -> float:
+	return 0.0
+
 func OnAffectedByZone(_p_owner_ID: int, _p_zone_owner_ID: int, _p_resolver: BattleResolver) -> void:
 	print("character_trait base class OnAffectedByZone() called!")
 

@@ -44,7 +44,8 @@ func ApplyBuff(p_target_ID: int, p_buff_template: StatusEffects.Buff) -> Array[C
 	if(_BlockedBySequenceLock(data, target) or _BlockedBySeverance(target)):
 		return _resolver._EndBatch()
 
-	var new_value: float = p_buff_template.value if 0.0 != p_buff_template.value or null == data else data.magnitude
+	var new_value: float = (p_buff_template.value if 0.0 != p_buff_template.value
+			else _SnapshotStatusValue(data, p_buff_template.source_ID, p_target_ID))
 	if(Types.Buff_Type.Barrier == p_buff_template.type
 			and _KeepsExistingBarrier(p_target_ID, target, new_value)):
 		return _resolver._EndBatch()
@@ -618,24 +619,28 @@ func _CascadeRushStun(p_event: CascadeEvent) -> void:
 func _SnapshotStatusValue(p_data: StatusEffectData, p_source_ID: int, p_target_ID: int) -> float:
 	if(null == p_data):
 		return 0.0
-	match p_data.magnitude_kind:
-		StatusEffectData.MagnitudeKind.CasterAttributeSnapshotPercent:
-			if(not _resolver._characters.has(p_source_ID)):
-				return 0.0
-			var source_attributes: Dictionary[Types.Attribute, int] = _resolver._characters[p_source_ID].GetTotalAttributes()
-			_resolver._ApplyLongAttributeBonus(p_source_ID, source_attributes)
-			var value: float = 0.0
+	var reads_source_attributes: bool = (p_data.caster_scaled
+			or StatusEffectData.MagnitudeKind.CasterAttributeSnapshotPercent == p_data.magnitude_kind)
+	if(reads_source_attributes):
+		if(not _resolver._characters.has(p_source_ID)):
+			return 0.0
+		var source_attributes: Dictionary[Types.Attribute, int] = _resolver._characters[p_source_ID].GetTotalAttributes()
+		_resolver._ApplyLongAttributeBonus(p_source_ID, source_attributes)
+		var value: float = 0.0
+		if(p_data.caster_scaled):
 			for attribute in p_data.attribute_modifiers.keys():
-				value += p_data.magnitude * float(source_attributes[attribute])
-			var modifier: CombinedDamageModifier = CombinedDamageModifier.new()
-			_resolver._ContributePersistentCasterFactors(p_source_ID, p_target_ID, modifier)
-			return value * modifier.Product()
-		StatusEffectData.MagnitudeKind.TurnBarMovementDamagePercent:
-			var leak_modifier: CombinedDamageModifier = CombinedDamageModifier.new()
-			_resolver._ContributePersistentCasterFactors(p_source_ID, p_target_ID, leak_modifier)
-			return leak_modifier.Product()
-		_:
-			return p_data.magnitude
+				value += p_data.magnitude * absf(p_data.attribute_modifiers[attribute]) * float(source_attributes[attribute])
+			return value
+		for attribute in p_data.attribute_modifiers.keys():
+			value += p_data.magnitude * float(source_attributes[attribute])
+		var modifier: CombinedDamageModifier = CombinedDamageModifier.new()
+		_resolver._ContributePersistentCasterFactors(p_source_ID, p_target_ID, modifier)
+		return value * modifier.Product()
+	if(StatusEffectData.MagnitudeKind.TurnBarMovementDamagePercent == p_data.magnitude_kind):
+		var leak_modifier: CombinedDamageModifier = CombinedDamageModifier.new()
+		_resolver._ContributePersistentCasterFactors(p_source_ID, p_target_ID, leak_modifier)
+		return leak_modifier.Product()
+	return p_data.magnitude
 
 
 func _AttackerCritChanceBonus(p_target: Character) -> int:
@@ -810,6 +815,7 @@ func _EmitDebuffApplied(p_target_ID: int, p_debuff: StatusEffects.Debuff, p_disp
 	result.debuff_type = p_debuff.type
 	result.duration = p_debuff.duration
 	result.source_ID = p_debuff.source_ID
+	result.amount = int(p_debuff.value)
 	result.text = p_display_name
 	_resolver._Emit(result)
 	Skills.DispatchDebuffApplied(p_debuff, p_target_ID, _resolver._characters, _resolver)

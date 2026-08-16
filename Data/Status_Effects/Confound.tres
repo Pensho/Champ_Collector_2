@@ -8,8 +8,8 @@ script = ExtResource("1_script")
 attribute_modifiers = Dictionary[int, float]({
 7: -1.0
 })
-magnitude = 0.3
+magnitude = 0.5
 applies_on_self_tick = false
 applies_on_target_snapshot = true
 icon = ExtResource("2_icon")
-description = "Reduces Knowledge by 30%."
+description = "Reduces Knowledge by 50%."

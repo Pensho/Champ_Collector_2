@@ -4,8 +4,8 @@ extends GutTest
 ## crit factor formula (_CritFactor), its allow_critical blending (_EffectiveCritFactor /
 ## _CritEligibleAggregate), and the Appraiser Role's manifest-driven crit grants — the gap this
 ## file closes is that every damaging skill was previously scored with the crit multiplier
-## hardcoded to 1.0, so the whole Appraiser Role (Strike the Flaw, Flaw Analysis, Full
-## Appraisal) scored bit-identically whether present on a team or not.
+## hardcoded to 1.0, so the whole Appraiser Role (No Wasted Margin, Sizing Cut, Flaw Analysis,
+## Full Appraisal) scored bit-identically whether present on a team or not.
 
 const APPRAISER = preload("res://Data/Character_Player_Variants/Appraiser.tres")
 const EMISSARY = preload("res://Data/Character_Player_Variants/Emissary.tres")
@@ -38,11 +38,21 @@ func test_crit_factor_floors_the_multiplier_at_minimum_crit_damage() -> void:
 	assert_almost_eq(crit.get("damage_multiplier"), GameBalance.MINIMUM_CRIT_DAMAGE * 0.01, 0.0001,
 		"The multiplier must never fall below GameBalance.MINIMUM_CRIT_DAMAGE, matching the runtime's own floor")
 
-func test_crit_factor_clamps_chance_to_one_hundred() -> void:
+func test_crit_factor_leaves_chance_unclamped_for_overflow_conversion() -> void:
 	var points: Dictionary = {Types.Attribute.CritChance: 500.0}
 	var crit: Dictionary = BurstReachability._CritFactor(_character(WARLORD), {}, points, 10.0)
-	assert_almost_eq(crit.get("chance"), 100.0, 0.0001,
-		"Chance must saturate at 100, matching the resolver's own [1.0, 100.0] roll range")
+	assert_almost_eq(crit.get("chance"), 505.0, 0.0001,
+		"Chance must stay unclamped so the excess above 100 is visible to No Wasted Margin's conversion")
+
+func test_crit_factor_converts_chance_overflow_into_crit_damage() -> void:
+	var points: Dictionary = {Types.Attribute.CritChance: 200.0}
+	var crit: Dictionary = BurstReachability._CritFactor(_character(WARLORD), {}, points, 10.0, 3.0)
+	# chance = 5 + 200 = 205; overflow = (205 - 100) * 3.0 = 315 crit-damage points;
+	# damage_multiplier = (150 + 315 - 10*0.5) * 0.01 = 4.6; probability saturates at 1.0.
+	assert_almost_eq(crit.get("damage_multiplier"), 4.6, 0.0001,
+		"Critical Chance above 100 must convert into Critical Damage at the given overflow rate")
+	assert_almost_eq(crit.get("factor"), 4.6, 0.0001,
+		"With probability saturated at 1.0, factor equals the damage_multiplier directly")
 
 func test_crit_factor_reads_a_higher_base_crit_chance_off_the_preset() -> void:
 	# The Appraiser's own preset sets _critical_chance = 30, unlike Warlord's base-5 default.
@@ -112,19 +122,20 @@ func test_allow_critical_false_scores_a_strictly_lower_contrast_ratio() -> void:
 
 # --- Manifest-driven Appraiser grants, through the real ScoreTeam path ---
 
-## The real manifest with every Appraiser granted_attribute_buff (Full Appraisal, Flaw
-## Analysis, Strike the Flaw) stripped back to empty — isolates their crit contribution from
-## everything else the Appraiser Role does.
+## The real manifest with every Appraiser granted_attribute_buff (Sizing Cut, Flaw Analysis,
+## Full Appraisal) and the passive's crit_overflow_rate stripped back to empty — isolates their
+## crit contribution from everything else the Appraiser Role does.
 func _manifest_without_appraiser_crit_grants() -> Dictionary:
 	var modified: Dictionary = KitContributionManifest.MANIFEST.duplicate(true)
 	var appraiser_entry: Dictionary = modified[Types.Role.Appraiser]
-	appraiser_entry["passive"][0].erase("granted_attribute_buff")
+	appraiser_entry["passive"][0].erase("crit_overflow_rate")
+	appraiser_entry["skills"][0].erase("granted_attribute_buff")
 	appraiser_entry["skills"][1].erase("granted_attribute_buff")
 	appraiser_entry["skills"][2].erase("granted_attribute_buff")
 	return modified
 
 func test_appraiser_present_raises_crit_chance_on_a_teammates_own_candidate() -> void:
-	# Flaw Analysis's Exposed Facet has "team" reach: it must raise the Warlord's own crit_chance
+	# Sizing Cut's Exposed Facet has "team" reach: it must raise the Warlord's own crit_chance
 	# even though the Warlord never cast it, precisely because it debuffs the shared enemy
 	# rather than buffing an ally.
 	var with_appraiser: BurstReachability.TeamResult = BurstReachability.ScoreTeam(_appraiser_emissary_warlord())
@@ -164,18 +175,24 @@ func test_crit_chance_change_cancels_out_of_contrast_ratio_for_a_symmetric_skill
 	assert_almost_eq(with_pinned.combined_contrast_ratio, without_pinned.combined_contrast_ratio, 0.0001,
 		"combined_contrast_ratio must be unaffected for the same reason")
 
-func test_strike_the_flaw_gate_is_surfaced_on_assumed_gates() -> void:
-	var result: BurstReachability.TeamResult = BurstReachability.ScoreTeam(_appraiser_emissary_warlord())
-	var appraiser_index: int = -1
-	for candidate in result.candidates:
-		if(Types.Role.Appraiser == candidate.caster_role):
-			appraiser_index = candidate.caster_index
-			break
-	assert_ne(appraiser_index, -1, "The Appraiser must have a scored candidate on this team")
-	var pinned: BurstReachability.CandidateResult = result.Pinned(appraiser_index, "Sizing Cut")
-	assert_not_null(pinned, "Appraiser's Sizing Cut must be a scored candidate")
-	assert_true(pinned.assumed_gates.has(&"prior_critical_hit"),
-		"Strike the Flaw's Cracked Facet grant depends on a crit already having landed and must surface its own gate")
+func test_full_appraisal_grant_scales_with_the_appraisers_own_crit_attributes() -> void:
+	# Keen Edge/Lethal Precision are "source_attribute" grants: they must scale with whichever
+	# Critical Chance/Critical Damage the granting Appraiser actually has, not a fixed number.
+	var appraiser: Character = _character(APPRAISER)
+	appraiser._attributes[Types.Attribute.CritChance] = 60
+	appraiser._attributes[Types.Attribute.CritDamage] = 250
+	var characters: Array[Character] = [appraiser, _character(WARLORD, 1)]
+	var bonus: Dictionary = BurstReachability._ContributeGrantedAttributeBuffs(
+			characters, 1, KitContributionManifest.MANIFEST)
+	var points: Dictionary = bonus.get("points", {})
+	# 15 (Sizing Cut's flat Exposed Facet) + 60 (Full Appraisal's Keen Edge, the Appraiser's own
+	# Critical Chance).
+	assert_almost_eq(points.get(Types.Attribute.CritChance, 0.0), 75.0, 0.0001,
+		"The Warlord's Critical Chance points must include the Appraiser's own 60 via Keen Edge")
+	# 0.6 * 45 Knowledge (Flaw Analysis's Cracked Facet) + 250 (Full Appraisal's Lethal
+	# Precision, the Appraiser's own Critical Damage).
+	assert_almost_eq(points.get(Types.Attribute.CritDamage, 0.0), 277.0, 0.0001,
+		"The Warlord's Critical Damage points must include the Appraiser's own 250 via Lethal Precision")
 
 # --- Regression guard: a non-Appraiser team's pinned product/ratio must be untouched ---
 

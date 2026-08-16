@@ -9,6 +9,7 @@ magnitude_kind = 4
 attribute_modifiers = Dictionary[int, float]({
 9: 1.0
 })
-magnitude = 50.0
+magnitude = 1.0
+caster_scaled = true
 icon = ExtResource("2_icon")
-description = "Increases Critical Damage by 50 percentage points."
+description = "Increases Critical Damage by the applier's own Critical Damage ({value} percentage points)."

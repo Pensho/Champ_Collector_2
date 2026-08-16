@@ -3,25 +3,32 @@
 [ext_resource type="Script" uid="uid://bmqtglyyora7q" path="res://Scripts/Battle/Skill_Effects/skill_effect.gd" id="1_1lryt"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
 [ext_resource type="Script" uid="uid://bay8tvxoeo0tu" path="res://Scripts/Battle/Skill_Effects/apply_buff_effect.gd" id="2_nikl5"]
+[ext_resource type="Script" uid="uid://bonwfsp34aafb" path="res://Scripts/Battle/Skill_Effects/apply_debuff_effect.gd" id="3_debuff"]
 
 [sub_resource type="Resource" id="Resource_jktjo"]
 script = ExtResource("2_nikl5")
 buff_type = 11
-duration = 2
-target = 3
+duration = 3
+target = 9
 
 [sub_resource type="Resource" id="Resource_ktias"]
 script = ExtResource("2_nikl5")
 buff_type = 12
-duration = 2
-target = 3
+duration = 3
+target = 9
+
+[sub_resource type="Resource" id="Resource_consigned"]
+script = ExtResource("3_debuff")
+debuff_type = 27
+duration = 3
+target = 13
 
 [resource]
 script = ExtResource("1_skill")
 name = "Full Appraisal"
-description = "Grants a single ally the Keen Edge and Lethal Precision buffs for 2 turns."
+description = "Consigns the caster's own Critical Chance and Critical Damage to an ally for 3 turns as Keen Edge and Lethal Precision, zeroing both in the caster's own hands meanwhile."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Full_Appraisal/Full_Appraisal.png"
-target = 3
+target = 9
 cooldown = 4
-effects = Array[ExtResource("1_1lryt")]([SubResource("Resource_jktjo"), SubResource("Resource_ktias")])
+effects = Array[ExtResource("1_1lryt")]([SubResource("Resource_jktjo"), SubResource("Resource_ktias"), SubResource("Resource_consigned")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

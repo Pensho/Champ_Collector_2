@@ -486,8 +486,9 @@ func ShowStatusApplied(p_result: CombatResult) -> void:
 		data = StatusEffectRegistry.DebuffData(p_result.debuff_type)
 		title = Types.DebuffName(p_result.debuff_type)
 		text_color = Color(0.681, 0.152, 0.31, 1.0)
+	var description: String = data.description.replace("{value}", str(p_result.amount))
 	_status_visual_IDs[p_result.status_ID] = _character_representations[p_result.target_ID].AddStatusEffect(
-			data.icon, p_result.duration, title, data.description)
+			data.icon, p_result.duration, title, description)
 	if("" != p_result.text):
 		_battle_ui.SpawnCombatText(
 				p_result.text, CombatTextPosition(p_result.target_ID), text_color, _cascade_instance_ordinal)

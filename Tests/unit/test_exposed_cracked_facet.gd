@@ -5,10 +5,10 @@ const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 # Exposed Facet / Cracked Facet: attacker-side crit bonuses read from the *target's*
 # active debuffs in BattleResolver._ResolveDamage, not from the attacker's own statuses.
 
-func _add_debuff(p_character: Character, p_type: Types.Debuff_Type) -> void:
+func _add_debuff(p_character: Character, p_type: Types.Debuff_Type, p_value: float = -1.0) -> void:
 	var debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
 	debuff.type = p_type
-	debuff.value = StatusEffectRegistry.DebuffData(p_type).magnitude
+	debuff.value = p_value if 0.0 <= p_value else StatusEffectRegistry.DebuffData(p_type).magnitude
 	debuff.duration = 5
 	p_character._active_debuffs.append(debuff)
 
@@ -26,9 +26,9 @@ func test_cracked_facet_grants_the_attacker_crit_damage_points() -> void:
 	var resolver: BattleResolver = TestFactory.make_resolver(roster, TestFactory.make_full_sides())
 	assert_eq(resolver.GetStatusResolver()._AttackerCritDamageBonus(roster[3]), 0, "No debuff, no crit-damage bonus")
 
-	_add_debuff(roster[3], Types.Debuff_Type.Cracked_Facet)
-	assert_eq(resolver.GetStatusResolver()._AttackerCritDamageBonus(roster[3]), 25,
-		"Cracked Facet should grant a flat +25 crit-damage bonus to the attacker")
+	_add_debuff(roster[3], Types.Debuff_Type.Cracked_Facet, 120.0)
+	assert_eq(resolver.GetStatusResolver()._AttackerCritDamageBonus(roster[3]), 120,
+		"Cracked Facet should grant its snapshotted crit-damage points to the attacker")
 
 func test_cracked_facet_increases_actual_crit_damage_dealt() -> void:
 	var baseline_roster: Dictionary[int, Character] = TestFactory.make_full_roster()
@@ -36,7 +36,7 @@ func test_cracked_facet_increases_actual_crit_damage_dealt() -> void:
 	for roster in [baseline_roster, facet_roster]:
 		roster[0]._skills.append(TestFactory.make_strike_skill())
 		roster[0]._attributes[Types.Attribute.CritChance] = 100
-	_add_debuff(facet_roster[3], Types.Debuff_Type.Cracked_Facet)
+	_add_debuff(facet_roster[3], Types.Debuff_Type.Cracked_Facet, 100.0)
 
 	var baseline_resolver: BattleResolver = TestFactory.make_resolver(baseline_roster, TestFactory.make_full_sides())
 	var facet_resolver: BattleResolver = TestFactory.make_resolver(facet_roster, TestFactory.make_full_sides())

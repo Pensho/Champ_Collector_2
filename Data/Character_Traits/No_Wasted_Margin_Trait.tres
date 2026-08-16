@@ -1,0 +1,6 @@
+[gd_resource type="Resource" script_class="NoWastedMarginTrait" format=3]
+
+[ext_resource type="Script" path="res://Scripts/Character/character_traits/CharacterSpecificTraits/no_wasted_margin_trait.gd" id="1_nwm"]
+
+[resource]
+script = ExtResource("1_nwm")

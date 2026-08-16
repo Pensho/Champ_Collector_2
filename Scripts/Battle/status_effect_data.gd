@@ -33,6 +33,7 @@ enum MagnitudeKind {
 # shared `magnitude` below by AttributePercent and AttributePercentagePointAdd.
 @export var attribute_modifiers: Dictionary[Types.Attribute, float] = {}
 @export var magnitude: float = 0.0
+@export var caster_scaled: bool = false
 @export var duration_default: int = 2
 @export var overwritable: bool = true
 @export var stackable: bool = false

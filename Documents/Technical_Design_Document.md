@@ -345,6 +345,11 @@ enum MagnitudeKind {
 @export var magnitude: float = 0.0                         # 0.0 = no static default; the
                                                              # applier sets the instance's value
                                                              # directly (e.g. Phalanx Guard)
+@export var caster_scaled: bool = false                     # snapshot value = magnitude * sum of
+                                                             # the applier's own attribute_modifiers
+                                                             # attributes, independent of
+                                                             # magnitude_kind (Keen Edge, Lethal
+                                                             # Precision, Cracked Facet)
 @export var duration_default: int = 2
 @export var overwritable: bool = true                       # re-apply refreshes duration
 @export var stackable: bool = false                         # re-apply adds an independent instance

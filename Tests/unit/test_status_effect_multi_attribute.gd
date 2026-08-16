@@ -50,12 +50,15 @@ func test_unravel_reduces_effective_resistance() -> void:
 
 func test_keen_edge_adds_flat_crit_chance_points_not_a_percent() -> void:
 	var character: Character = TestFactory.make_character()
-	character._active_buffs.append(_buff(Types.Buff_Type.Keen_Edge))
+	var buff: StatusEffects.Buff = StatusEffects.Buff.new()
+	buff.type = Types.Buff_Type.Keen_Edge
+	buff.value = 15.0
+	character._active_buffs.append(buff)
 	var attrs: Dictionary[Types.Attribute, int] = {Types.Attribute.CritChance: 20}
 	Skills.ApplyAttributeModifiers(StatusEffectRegistry.BuffData(Types.Buff_Type.Keen_Edge),
 			character._active_buffs[0].value, attrs)
 	assert_eq(attrs[Types.Attribute.CritChance], 35,
-		"Keen Edge should add 15 flat crit-chance points, not 15% of the current value")
+		"Keen Edge should add its snapshotted crit-chance points, not a percent of the current value")
 
 func test_lethal_precision_adds_flat_crit_damage_points() -> void:
 	var attrs: Dictionary[Types.Attribute, int] = {Types.Attribute.CritDamage: 150}

@@ -755,14 +755,18 @@ func _ResolveDamage(
 
 	var target: Character = _characters[p_target_ID]
 	var crit_roll: float = _RollFavoring(p_caster_ID, 1.0, 100.0, false)
-	if(p_allow_critical and crit_roll <= float(
-			p_caster_attributes[Types.Attribute.CritChance] + _status_resolver._AttackerCritChanceBonus(target))):
-		rolled_critical = true
-		crit_multiplier = max(
-				GameBalance.MINIMUM_CRIT_DAMAGE,
-				float(p_caster_attributes[Types.Attribute.CritDamage] + _status_resolver._AttackerCritDamageBonus(target)
-						- (p_target_attributes[Types.Attribute.Knowledge] * 0.5))
-				) * 0.01
+	if(p_allow_critical):
+		var total_crit_chance: float = float(
+				p_caster_attributes[Types.Attribute.CritChance] + _status_resolver._AttackerCritChanceBonus(target))
+		if(crit_roll <= total_crit_chance):
+			rolled_critical = true
+			var overflow_rate: float = Skills.CritChanceOverflowRate(_sides, _characters, p_caster_ID)
+			var overflow_crit_damage: float = maxf(0.0, total_crit_chance - 100.0) * overflow_rate
+			crit_multiplier = max(
+					GameBalance.MINIMUM_CRIT_DAMAGE,
+					float(p_caster_attributes[Types.Attribute.CritDamage] + _status_resolver._AttackerCritDamageBonus(target))
+							+ overflow_crit_damage - (p_target_attributes[Types.Attribute.Knowledge] * 0.5)
+					) * 0.01
 
 	_ContributePersistentCasterFactors(p_caster_ID, p_target_ID, p_combined_damage_modifier)
 	var damage_multiplier_factors: Dictionary[StringName, float] = (

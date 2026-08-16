@@ -589,7 +589,7 @@ inside §1's ~2x contract. The exported factors below are where this kit's weigh
 
 ### 9.5 Appraiser — overflow crit chance and consigned attributes
 
-**Status:** Settled, not yet implemented. Batch 1.
+**Status:** Implemented.
 
 **Identity note.** This kit's entire contribution runs through the crit path, which
 `Concept_Document.md` 1.1.4 places outside the `CombinedDamageModifier` by design. It therefore
@@ -658,27 +658,13 @@ nothing, and contributes ≈4.17x — so consigning compresses the gap between a
 crit-poor carrier to about 1.34x rather than eliminating it. Lending sets the floor; only the
 ally's own Critical Chance reaches the conversion.
 
-**Implementation needs (not yet built):**
-
-* Overflow conversion in the resolver's crit path, and the matching term in
-  `BurstReachability._CritFactor` — which currently does `clampf(chance, 0.0, 100.0)`
-  (`burst_reachability.gd:561-564`) and would score this passive as exactly zero. The rest of the
-  scorer's crit model (expected-value factor, `MINIMUM_CRIT_DAMAGE` floor, boss-Knowledge
-  blunting, crit-eligible aggregate share) already landed in `e3d39bd` and needs no further work.
-* Attribute consignment: a granted status that zeroes the applier's own attribute for its
-  duration. `CasterAttributeSnapshotPercent` already computes and snapshots an applier-scaled
-  value (`status_effect_resolver.gd:556-570`); the reciprocal loss on the applier is the new part.
-* Status tooltips render the static `description` string and never see the snapshotted value
-  (`battle.gd:483`), so a consigned magnitude is invisible to the player. Passing the resolved
-  value through and supporting a placeholder in the description text fixes every applier-scaled
-  status at once — Temporal Leak has the same silent problem today.
-* `Confound.tres` magnitude 0.3 → 0.5, and `Concept_Document.md` 3.2.3's Confound entry with it.
-* `strike_the_flaw_trait.gd` retired and replaced by the new passive's trait; `Cracked_Facet.tres`,
-  `Exposed_Facet.tres`, `Keen_Edge.tres`, `Lethal_Precision.tres` re-authored off their flat
-  magnitudes.
-* `kit_contribution_manifest.gd`: all four Appraiser entries rewritten. `bucket_key` stays empty on
-  every one — the crit path never reaches a `CombinedDamageModifier` bucket, matching the field's
-  existing convention.
+A `StatusEffectData.caster_scaled` field generalizes the applier-scaled snapshot beyond
+`CasterAttributeSnapshotPercent` (`status_effect_resolver.gd`'s `_SnapshotStatusValue`), so Keen
+Edge, Lethal Precision, and Cracked Facet snapshot off the applier while keeping their own
+`magnitude_kind` (their existing readers — `ApplyAttributeModifiers`, `_AttackerCritDamageBonus` —
+are unchanged). Status tooltips now substitute a `{value}` placeholder with the resolved instance
+value (`battle.gd`'s `ShowStatusApplied`), fixing every applier-scaled status's previously-silent
+magnitude at once.
 
 **Judgment calls made while settling, listed so they can be overruled:** Cracked Facet was placed
 on Flaw Analysis rather than left without a source when Strike the Flaw retired, and it scales off
@@ -1538,9 +1524,9 @@ Anchor, Steadfast, Resonance unclaimed.
 | Sanction | Emissary (Levied Sanction) — unchanged claimant; widened from an attribute reduction to a per-Infraction damage multiplier every attacker reads, **settled, not yet implemented** (section 9.7) |
 | Hemorrhage | Bloodmage (Tithe of Vitality) — **implemented** (section 9.4); new debuff, no prior claimant |
 | Mana Burn | Unclaimed — dropped from Bloodmage's Tithe of Vitality (section 9.4); nothing in the reworked kit read it |
-| Exposed Facet | Appraiser (Sizing Cut) — **settled, not yet implemented** (section 9.5); moved onto the basic skill's 1-turn rider |
-| Cracked Facet | Appraiser (Flaw Analysis) — **settled, not yet implemented** (section 9.5); moved off the retired Strike the Flaw passive, now scaled by the applier's Knowledge |
-| Confound | Scholar (Expose Fallacy), Appraiser (Flaw Analysis) — **settled, not yet implemented** (section 9.5). Second claimant, within the commodity-debuff limit of two. Magnitude rises roster-wide (section 12) |
+| Exposed Facet | Appraiser (Sizing Cut) — **implemented** (section 9.5); moved onto the basic skill's 1-turn rider |
+| Cracked Facet | Appraiser (Flaw Analysis) — **implemented** (section 9.5); moved off the retired Strike the Flaw passive, now scaled by the applier's Knowledge |
+| Confound | Scholar (Expose Fallacy), Appraiser (Flaw Analysis) — **implemented** (section 9.5). Second claimant, within the commodity-debuff limit of two |
 | Hexed | Diviner (Ill Omen), Jester (Burning Bolas) — **settled, not yet implemented** (section 9.6). Second claimant, at the commodity-debuff limit of two, so no later Role may take it. Scope widens roster-wide (section 12) |
 | Undertow | Tidal Corsair (Saltwater Shot's Sea stacks, spent by Corsair's Reckoning) — **settled, not yet implemented** (section 9.13); new debuff, no prior claimant, stacks to 3 |
 | Enfeeble | Diviner (Foresight), Warlord (Brace for Impact's reactive clause) — **settled, not yet implemented** (section 9.19). Second claimant, at the commodity-debuff limit of two |
@@ -1555,8 +1541,8 @@ Vessel passive) has dropped: Woven Blessing is no longer part of the Herald's ki
 implemented) and nothing in the new kit applies Attune, so Attune is now solely Cultist's (Chosen
 Vessel passive). Sanguine Pact is a new buff, claimed by Bloodmage (Transfusion) — **implemented**
 (section 9.4). Keen Edge and Lethal Precision stay claimed solely
-by Appraiser (Full Appraisal), re-authored as consigned applier-scaled grants — **settled, not yet
-implemented** (section 9.5); no other skill in the corpus applies either.
+by Appraiser (Full Appraisal), re-authored as consigned applier-scaled grants — **implemented**
+(section 9.5); no other skill in the corpus applies either.
 
 **Unclaimed inventory**, as of this review — "unclaimed" means *nothing in the game applies it*.
 Refresh in the same edit that lands a batch.
@@ -1576,8 +1562,7 @@ Refresh in the same edit that lands a batch.
   second claimant and its first skill source when 9.13 lands, within the commodity-buff limit of
   two), Attune (Chosen Vessel), Expose Weakness
   (Calibration — magnitude becomes charge-scaled, §9.10; gains its first skill source when 9.15
-  lands), Cracked Facet (Strike the Flaw, retiring
-  in 9.5). Phalanx Guard leaves this list for the unclaimed buffs when 9.11 lands — Reckless
+  lands). Phalanx Guard leaves this list for the unclaimed buffs when 9.11 lands — Reckless
   Momentum, its only source, retires with the Lancer's passive.
 
 ### 10.2 Damage-channel bucket keys in use
@@ -1696,11 +1681,24 @@ the Scholar's passive — which raises every attribute modification the team app
 invisible to the sweep. It needs a manifest field declaring an amplification of the aggregate term,
 applied after the granted buffs are credited.
 
+**Open gap, found while settling §9.5.** The scorer has no notion of a candidate's own state
+changing mid-team-score, so Full Appraisal's reciprocal loss (Consigned zeroing the Appraiser's own
+crit attributes while lent out) is not modeled — the Appraiser's own candidate scores as though it
+kept them.
+
 **Closed while settling §9.4.** `granted_status` gained a `"reach": "team"` option
 (`BurstReachability._ContributeGrantedStatuses`), for a status that sits on the enemy target itself
 and is read by every attacker rather than granted to an ally — Hemorrhage's shape, generalizing the
-`granted_attribute_buff` field's existing team reach (Flaw Analysis's Exposed Facet) to the
+`granted_attribute_buff` field's existing team reach (Sizing Cut's Exposed Facet) to the
 `CombinedDamageModifier`-bucket case.
+
+**Closed while settling §9.5.** `_CritFactor`'s chance clamp (`clampf(chance, 0.0, 100.0)`) dropped
+the excess above 100 entirely, scoring No Wasted Margin's conversion as zero. Chance is now left
+unclamped for the overflow term while the roll's own probability still saturates at 1.0
+(`BurstReachability._CritChanceOverflowRate`). `granted_attribute_buff` also gained a
+`"source_attribute"` kind, sizing a grant off the granting champion's own attribute
+(`_AccumulateAttributeBuff`) rather than a fixed number — Keen Edge, Lethal Precision, and Cracked
+Facet all read this way now.
 
 **Consequence for measurement.** `total_contrast_ratio` stays the pure single-action figure the
 30-50x burst-band target is checked against; `combined_contrast_ratio` is the separate figure
@@ -1722,4 +1720,3 @@ in the same edit that promotes it.
 | **Luck and Hexed's reach** | The critical-chance roll and the debuff-resist contest only | Every chance roll in combat except the damage-variance roll (a 0.95-1.05 band is too narrow for a reroll to matter), so a roll added later is covered without a further decision | 3.2.3 | §9.6 |
 | **Debuff-resist contest band** | 0.95-1.0 | 0.85-1.0. In the old 5%-wide band, taking the worse of two rolls moved the outcome about 2 percentage points of the stat, leaving Hexed's resistance clause nearly inert; at 0.85-1.0 a reroll is worth roughly 5 points of effective Accuracy or Resistance. 3.2.1 #3's "no base chance and no floor or ceiling" still holds, and a large stat gap still settles the contest outright | 3.2.1 #3 | §9.6 |
 | **Burning's tick** | Flat 4% of max Health per stack | A rolled 2-10% (mean 6%) per stack, biased by the holder's Luck or Hexed. Every source, Lava Zone included — Burning stays a shared commodity debuff | 3.2.3 | §9.6 |
-| **Confound's magnitude** | -30% Knowledge | -50% Knowledge, so Scholar's Expose Fallacy gains the same increase. Knowledge halves crit damage (3.2.1 #4) and nothing in the roster attacked that term before | 3.2.3 | §9.5 |

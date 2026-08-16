@@ -170,6 +170,7 @@ enum Debuff_Type
 	Sanction,
 	Anchor,
 	Hemorrhage,
+	Consigned,
 	Invalid,
 }
 

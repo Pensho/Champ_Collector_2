@@ -92,18 +92,23 @@ class_name KitContributionManifest extends RefCounted
 ##                      - "percentage" (default, omit the field): a multiplicative fraction of
 ##                        the base value — Empower, Rush, Exhert.
 ##                      - "percentage_point": a flat point add, independent of the base value —
-##                        every crit status (Keen Edge, Lethal Precision, Exposed Facet, Cracked
-##                        Facet all use MagnitudeKind.AttributePercentagePointAdd /
-##                        AttackerCritChanceBonus / AttackerCritDamageBonus at runtime, never a
-##                        fraction of CritChance/CritDamage's own base value).
+##                        Exposed Facet uses MagnitudeKind.AttackerCritChanceBonus at runtime,
+##                        never a fraction of CritChance's own base value.
+##                      - "source_attribute": a flat point add sized off the granting champion's
+##                        own attribute (`source_attribute`, required) rather than a fixed number
+##                        — Keen Edge, Lethal Precision, and Cracked Facet all snapshot off the
+##                        applier's attributes at runtime (StatusEffectData.caster_scaled).
 ##                    `gate` (StringName, optional) names a precondition this grant depends on
-##                    beyond "was the granting skill/passive triggered" — Strike the Flaw's
-##                    Cracked Facet only exists after a crit has already landed — surfaced on
+##                    beyond "was the granting skill/passive triggered", surfaced on
 ##                    CandidateResult.assumed_gates the same way a skill's own gated_bonus is.
 ##                    A field may hold a single dict or an Array of dicts, for a grant that
 ##                    applies two different magnitudes to two different attributes in one grant
-##                    (Full Appraisal's Keen Edge +15 CritChance and Lethal Precision +50
-##                    CritDamage are not the same magnitude, so they cannot share one dict).
+##                    (Full Appraisal's Keen Edge and Lethal Precision are not the same
+##                    magnitude, so they cannot share one dict).
+##   crit_overflow_rate - optional, passive entries only. Team-wide Critical Damage points
+##                    granted per point of an ally's Critical Chance above 100 (the Appraiser's
+##                    No Wasted Margin), read by burst_reachability.gd's _CritChanceOverflowRate
+##                    and folded into _CritFactor's damage term.
 
 enum Contribution_Class
 {
@@ -423,40 +428,51 @@ const MANIFEST: Dictionary = {
 	Types.Role.Appraiser: {
 		"preset": "Data/Character_Player_Variants/Appraiser.tres",
 		"passive": [
-			{"name": "Strike the Flaw", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
-					"class": Contribution_Class.Channel1,
-					"precondition": "On Critical_Hit, applies Cracked Facet (2 turns at Legendary) to " +
-							"the target — grants attackers +25 CritDamage percentage points against it, " +
-							"folded into crit math in _ResolveDamage, not a CombinedDamageModifier bucket. " +
-							"Gated on a critical hit already having landed, so it is scored as though " +
-							"satisfied like this file's other gated_bonus assumptions.",
-					"citation": "strike_the_flaw_trait.gd:3-8,28-30; battle_resolver.gd:735",
-					"granted_attribute_buff": {"attributes": [Types.Attribute.CritDamage], "kind": "percentage_point",
-							"magnitude": 25.0, "reach": "team", "gate": &"prior_critical_hit"}},
+			{"name": "No Wasted Margin", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
+					"class": Contribution_Class.Enabler,
+					"precondition": "Team-wide. For every point of an ally's Critical Chance above 100, " +
+							"that ally's Critical Damage gains 5 points (Legendary) instead of the excess " +
+							"being discarded. Folded into the crit-damage term of _ResolveDamage's crit " +
+							"math, not a CombinedDamageModifier bucket — the kit's whole contribution runs " +
+							"through the crit path (Concept_Document.md 1.1.4).",
+					"citation": "no_wasted_margin_trait.gd:3-19; battle_resolver.gd:757-767",
+					"crit_overflow_rate": 5.0},
 		],
 		"skills": [
 			{"name": "Sizing Cut", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Channel1,
-					"precondition": "damage_scaling Knowledge 0.7, no bonus_per.",
-					"citation": "Sizing_Cut.tres:6-11"},
-			{"name": "Flaw Analysis", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
-					"class": Contribution_Class.Channel1,
-					"precondition": "Applies Exposed Facet (2 turns): +15 CritChance percentage points " +
-							"to attackers of the target, consumed in _AttackerCritChanceBonus. No damage " +
-							"of its own. Sits on the target and buffs every attacker of it, not an " +
-							"ally-target grant, so it is modeled with team reach.",
-					"citation": "Flaw_Analysis.tres:6-11; status_effect_resolver.gd:598-604",
+					"precondition": "damage_scaling Knowledge 0.7, no bonus_per. Applies Exposed Facet " +
+							"(1 turn): +15 CritChance percentage points to attackers of the target, " +
+							"consumed in _AttackerCritChanceBonus. Sits on the target and buffs every " +
+							"attacker of it, so it is modeled with team reach.",
+					"citation": "Sizing_Cut.tres:6-21; status_effect_resolver.gd:641-648",
 					"granted_attribute_buff": {"attributes": [Types.Attribute.CritChance], "kind": "percentage_point",
 							"magnitude": 15.0, "reach": "team"}},
+			{"name": "Flaw Analysis", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
+					"class": Contribution_Class.Channel1,
+					"precondition": "Applies Confound and Cracked Facet (3 turns) to a single enemy. " +
+							"Confound blunts the target's own Knowledge — not modeled here, since this " +
+							"scorer holds boss Knowledge fixed. Cracked Facet grants attackers Critical " +
+							"Damage equal to 60% of the applier's own Knowledge, consumed in " +
+							"_AttackerCritDamageBonus — sits on the target and buffs every attacker of " +
+							"it, so it is modeled with team reach.",
+					"citation": "Flaw_Analysis.tres:6-24; status_effect_resolver.gd:650-657",
+					"granted_attribute_buff": {"attributes": [Types.Attribute.CritDamage], "kind": "source_attribute",
+							"source_attribute": Types.Attribute.Knowledge, "magnitude": 0.6, "reach": "team"}},
 			{"name": "Full Appraisal", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Channel1,
-					"precondition": "Grants one ally Keen Edge (+15 CritChance, 2 turns) and Lethal " +
-							"Precision (+50 CritDamage, 2 turns) — both flat attribute-percentage-point " +
-							"adds, no CombinedDamageModifier bucket.",
-					"citation": "Full_Appraisal.tres:6-16",
+					"precondition": "Consigns the caster's own crit attributes to one ally (Ally_Not_Self, " +
+							"3 turns) as Keen Edge and Lethal Precision, each scaled off the caster's own " +
+							"Critical Chance/Critical Damage — and applies Consigned to the caster itself, " +
+							"zeroing both attributes there for the same duration. The reciprocal loss is not " +
+							"modeled here: this scorer has no notion of a candidate's own state changing " +
+							"mid-team-score (Role_Kit_Design.md section 11).",
+					"citation": "Full_Appraisal.tres:6-31; status_effect_resolver.gd:47-48,618-632",
 					"granted_attribute_buff": [
-						{"attributes": [Types.Attribute.CritChance], "kind": "percentage_point", "magnitude": 15.0},
-						{"attributes": [Types.Attribute.CritDamage], "kind": "percentage_point", "magnitude": 50.0},
+						{"attributes": [Types.Attribute.CritChance], "kind": "source_attribute",
+								"source_attribute": Types.Attribute.CritChance, "magnitude": 1.0},
+						{"attributes": [Types.Attribute.CritDamage], "kind": "source_attribute",
+								"source_attribute": Types.Attribute.CritDamage, "magnitude": 1.0},
 					]},
 		],
 	},

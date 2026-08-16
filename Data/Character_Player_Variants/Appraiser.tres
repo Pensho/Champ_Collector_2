@@ -9,7 +9,7 @@
 [ext_resource type="Resource" uid="uid://bejf1a62v41gq" path="res://Data/Attribute_Weights/Marksman.tres" id="6_marksman"]
 [ext_resource type="Resource" uid="uid://bvo4uj38cgjg3" path="res://Data/Attribute_Weights/Calculating.tres" id="7_calculating"]
 [ext_resource type="Resource" uid="uid://ytl3g36itqfs" path="res://Data/Attribute_Weights/Learned.tres" id="8_learned"]
-[ext_resource type="Resource" path="res://Data/Character_Traits/Strike_The_Flaw_Trait.tres" id="9_trait"]
+[ext_resource type="Resource" path="res://Data/Character_Traits/No_Wasted_Margin_Trait.tres" id="9_trait"]
 
 [resource]
 script = ExtResource("2_preset")

@@ -4,17 +4,23 @@
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
 [ext_resource type="Script" uid="uid://bonwfsp34aafb" path="res://Scripts/Battle/Skill_Effects/apply_debuff_effect.gd" id="2_hrva3"]
 
-[sub_resource type="Resource" id="Resource_ib1th"]
+[sub_resource type="Resource" id="Resource_confound"]
 script = ExtResource("2_hrva3")
-debuff_type = 8
-duration = 2
+debuff_type = 7
+duration = 3
+target = 0
+
+[sub_resource type="Resource" id="Resource_cracked"]
+script = ExtResource("2_hrva3")
+debuff_type = 9
+duration = 3
 target = 0
 
 [resource]
 script = ExtResource("1_skill")
 name = "Flaw Analysis"
-description = "Applies the Exposed Facet debuff to a single enemy for 2 turns."
+description = "Applies Confound and Cracked Facet to a single enemy for 3 turns."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Flaw_Analysis/Flaw_Analysis.png"
 cooldown = 2
-effects = Array[ExtResource("1_nd7d3")]([SubResource("Resource_ib1th")])
+effects = Array[ExtResource("1_nd7d3")]([SubResource("Resource_confound"), SubResource("Resource_cracked")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"
