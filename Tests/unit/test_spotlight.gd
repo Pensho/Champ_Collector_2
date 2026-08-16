@@ -32,3 +32,17 @@ func test_spotlight_reduces_incoming_damage_by_ten_percent() -> void:
 	var damage_with: int = _damage_amount(results_b)
 	assert_almost_eq(float(damage_with), float(damage_without) * 0.9, 1.0,
 		"Spotlight should reduce incoming damage by 10%")
+
+func test_spotlight_reduction_matches_actual_health_lost() -> void:
+	var roster: Dictionary[int, Character] = TestFactory.make_full_roster()
+	roster[3]._skills.append(TestFactory.make_strike_skill())
+	roster[0]._active_buffs.append(_buff(Types.Buff_Type.Spotlight))
+	var resolver: BattleResolver = TestFactory.make_resolver(roster, TestFactory.make_full_sides())
+	var health_before: int = roster[0]._current_health
+
+	var results: Array[CombatResult] = resolver.ResolveSkill(3, [0], 0)
+
+	var reported: int = _damage_amount(results)
+	var health_lost: int = health_before - roster[0]._current_health
+	assert_eq(health_lost, reported,
+		"The reported Damage amount must match the Health actually lost, not the pre-Spotlight amount")

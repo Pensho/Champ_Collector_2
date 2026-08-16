@@ -88,6 +88,22 @@ func test_non_damaging_debuff_reports_no_burning_tick() -> void:
 	assert_eq(_burning_ticks(results).size(), 0,
 		"A non-damaging debuff should report no Burning tick")
 
+func test_burning_tick_report_matches_actual_health_lost_under_spotlight() -> void:
+	# Regression: the Debuff_Tick's reported amount must reflect Spotlight's damage
+	# reduction, not the pre-reduction rolled magnitude.
+	_set_max_health(0, 100)
+	_add_burning(0, 1)
+	var spotlight: StatusEffects.Buff = StatusEffects.Buff.new()
+	spotlight.type = Types.Buff_Type.Spotlight
+	spotlight.duration = 2
+	_roster[0]._active_buffs.append(spotlight)
+	var health_before: int = _roster[0]._current_health
+	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [], 0)
+	var tick: CombatResult = _burning_ticks(results)[0]
+	var health_lost: int = health_before - _roster[0]._current_health
+	assert_eq(tick.amount, health_lost,
+		"The reported tick amount must match the Health actually lost, not the pre-Spotlight roll")
+
 func test_burning_can_kill_and_reports_death() -> void:
 	_set_max_health(0, 100)
 	_add_burning(0, 1)

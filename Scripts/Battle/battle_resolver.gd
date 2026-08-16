@@ -272,11 +272,11 @@ func AccumulateTurnBarMovement(p_character_ID: int, p_fraction_moved: float) -> 
 		var damage: int = int(floor(remainder))
 		remainder -= float(damage)
 		if(damage > 0):
-			_ApplyHealthLoss(p_character_ID, damage)
+			var actual_damage: int = _ApplyHealthLoss(p_character_ID, damage)
 			var result: CombatResult = CombatResult.new(CombatResult.Kind.Debuff_Tick)
 			result.source_ID = leak.source_ID
 			result.target_ID = p_character_ID
-			result.amount = damage
+			result.amount = actual_damage
 			_Emit(result)
 	_turn_bar_progress[p_character_ID] = progress
 	_turn_bar_damage_remainder[p_character_ID] = remainder
@@ -466,10 +466,10 @@ func _ResolveReagentEffect(
 			var cost: int = ReagentResolver.HealthCostAmount(
 					_MaxHealth(consumer), p_reagent.magnitude, p_potency, consumer._current_health)
 			if(cost > 0):
-				_ApplyHealthLoss(p_consumer_ID, cost)
+				var actual_cost: int = _ApplyHealthLoss(p_consumer_ID, cost)
 				var result: CombatResult = CombatResult.new(CombatResult.Kind.Damage)
 				result.target_ID = p_consumer_ID
-				result.amount = cost
+				result.amount = actual_cost
 				_Emit(result)
 			AggregateDamageMultipliers(p_consumer_ID,
 					ReagentResolver.PercentFraction(p_reagent.secondary_magnitude, p_potency))
@@ -631,14 +631,12 @@ func _MaxHealth(p_character: Character) -> int:
 			health += int(ceilf(health * buff.value))
 	return health * GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER
 
-
-## Loses health, clamps, and handles the alive-to-dead transition.
-func _ApplyHealthLoss(p_character_ID: int, p_amount: int) -> void:
+func _ApplyHealthLoss(p_character_ID: int, p_amount: int) -> int:
 	var reduced_amount: int = int(floor(
 			float(p_amount) * _status_resolver._DamageTakenMultiplier(_characters[p_character_ID])))
 	var remaining: int = _status_resolver._AbsorbWithBarrier(p_character_ID, reduced_amount)
 	if(remaining <= 0):
-		return
+		return 0
 	_status_resolver._TriggerDamageTakenReactions(p_character_ID)
 	var character: Character = _characters[p_character_ID]
 	var was_alive: bool = character._current_health > 0
@@ -649,6 +647,7 @@ func _ApplyHealthLoss(p_character_ID: int, p_amount: int) -> void:
 	character._current_health = new_health
 	if(was_alive and character._current_health <= 0):
 		_HandleDeath(p_character_ID)
+	return remaining
 
 
 ## Returns the Health actually gained, after any healing-reduction debuff and clamping.
@@ -791,8 +790,8 @@ func _ResolveDamage(
 		damage_dealt = int(round(damage_dealt * (1.0 - redirect_fraction)))
 
 	if(soaker_damage > 0):
-		_ApplyHealthLoss(soaker_ID, soaker_damage)
-		_EmitDamageResult(p_caster_ID, soaker_ID, soaker_damage, rolled_critical, p_combined_damage_modifier)
+		var actual_soaker_damage: int = _ApplyHealthLoss(soaker_ID, soaker_damage)
+		_EmitDamageResult(p_caster_ID, soaker_ID, actual_soaker_damage, rolled_critical, p_combined_damage_modifier)
 
 	if(damage_dealt == 0):
 		return
@@ -803,14 +802,14 @@ func _ResolveDamage(
 	if(damage_dealt == 0):
 		return
 
-	_ApplyHealthLoss(p_target_ID, damage_dealt)
-	_EmitDamageResult(p_caster_ID, p_target_ID, damage_dealt, rolled_critical, p_combined_damage_modifier)
+	var actual_damage_dealt: int = _ApplyHealthLoss(p_target_ID, damage_dealt)
+	_EmitDamageResult(p_caster_ID, p_target_ID, actual_damage_dealt, rolled_critical, p_combined_damage_modifier)
 
 	var caster: Character = _characters[p_caster_ID]
 	if(caster._current_health > 0):
 		var damage_dealt_trait: CharacterTrait = Skills.ActiveHook(caster, Types.Combat_Event.Damage_Dealt)
 		if(null != damage_dealt_trait):
-			damage_dealt_trait.OnDamageDealt(p_caster_ID, p_target_ID, damage_dealt, self)
+			damage_dealt_trait.OnDamageDealt(p_caster_ID, p_target_ID, actual_damage_dealt, self)
 		if(rolled_critical):
 			var critical_trait: CharacterTrait = Skills.ActiveHook(caster, Types.Combat_Event.Critical_Hit)
 			if(null != critical_trait):

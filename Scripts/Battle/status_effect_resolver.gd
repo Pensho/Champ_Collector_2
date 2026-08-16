@@ -354,10 +354,10 @@ func _EmitDebuffTickIfAny(p_target_ID: int, p_tick: Dictionary) -> void:
 	var total: int = p_tick.get("total", 0)
 	if(total <= 0):
 		return
-	_resolver._ApplyHealthLoss(p_target_ID, total)
+	var actual_total: int = _resolver._ApplyHealthLoss(p_target_ID, total)
 	var result: CombatResult = CombatResult.new(CombatResult.Kind.Debuff_Tick)
 	result.target_ID = p_target_ID
-	result.amount = total
+	result.amount = actual_total
 	result.amount_by_source = p_tick.get("by_source", {})
 	_resolver._Emit(result)
 
@@ -463,10 +463,10 @@ func _TriggerExistingCasterBuffs(
 		_resolver._Emit(heal_result)
 
 	if(self_cost_total > 0 and caster._current_health > 0):
-		_resolver._ApplyHealthLoss(p_caster_ID, self_cost_total)
+		var actual_self_cost: int = _resolver._ApplyHealthLoss(p_caster_ID, self_cost_total)
 		var cost_result: CombatResult = CombatResult.new(CombatResult.Kind.Damage)
 		cost_result.target_ID = p_caster_ID
-		cost_result.amount = self_cost_total
+		cost_result.amount = actual_self_cost
 		_resolver._Emit(cost_result)
 
 
@@ -586,11 +586,11 @@ func _TriggerManaBurn(
 			var data: StatusEffectData = StatusEffectRegistry.DebuffData(Types.Debuff_Type.Mana_Burn)
 			var damage: int = int(floor(p_caster_attributes[Types.Attribute.Mysticism] * data.magnitude))
 			if(damage > 0):
-				_resolver._ApplyHealthLoss(p_caster_ID, damage)
+				var actual_damage: int = _resolver._ApplyHealthLoss(p_caster_ID, damage)
 				var result: CombatResult = CombatResult.new(CombatResult.Kind.Damage)
 				result.source_ID = debuff.source_ID
 				result.target_ID = p_caster_ID
-				result.amount = damage
+				result.amount = actual_damage
 				_resolver._Emit(result)
 			return
 
