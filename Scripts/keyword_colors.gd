@@ -22,6 +22,8 @@ const KEYWORDS: Dictionary[String, Color] = {
 	"Burn": Color(1.0, 0.0, 0.0, 1.0),
 	"Burning": Color(1.0, 0.0, 0.0, 1.0),
 
+	"Bleed": Color(1.0, 0.29, 0.29, 1.0),
+
 	"Barrier": Color(0.6, 0.85, 1.0, 1.0),
 }
 

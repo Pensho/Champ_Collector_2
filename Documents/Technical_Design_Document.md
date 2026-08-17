@@ -1486,7 +1486,10 @@ count, always what `Skill_Condition`'s member of the same name reads, regardless
 `Trait_Count_Source` member shares its name); it returns 0 for `Trait_Condition`, which is instead
 answered by the Jester's `DoubleTheFunTrait`, tracking `_avoided_since_last_turn` — set on a
 successful avoidance and cleared on the Jester's own `End_Turn` — for Pratfall Sting's conditional
-bonus.
+bonus. `LancerTrait` answers `Turn_Bar_Section_Span` — the inclusive turn-bar section count between
+the Lancer and Rending Charge's target, cached at cast (`OnSkillCast`) and multiplied by the
+trait's own rarity-scaled rate, the same "skill states that it scales, trait states the rate"
+split as `Trait_Counter_On_Target`.
 Both getters are consulted from inside the effect loop (see
 [Section 7.4](#74-skill-resolution-battleresolverresolveskill)), not gated by `_execution_steps`,
 the same "always polled" shape as the rest of this getter family.

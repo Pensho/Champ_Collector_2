@@ -6,115 +6,155 @@ var _character: Character = null
 var _trait: LancerTrait = null
 var _characters: Dictionary[int, Character]
 var _resolver: BattleResolver = null
+var _fake_positions: TestFactory.FakeTurnPositions = null
 
 func before_each() -> void:
 	_character = Character.new()
 	_character._current_health = 10
 	_trait = LancerTrait.new()
-	_characters = {0: _character}
-	_resolver = TestFactory.make_resolver(_characters, CombatSides.new([0], []))
+	_characters = {0: _character, 1: Character.new()}
+	_characters[1]._current_health = 10
+	_fake_positions = TestFactory.FakeTurnPositions.new()
+	_resolver = TestFactory.make_resolver(_characters, CombatSides.new([0], [1]), _fake_positions)
 
 func _InitTrait(p_rarity: Types.Rarity) -> void:
 	_character._rarity = p_rarity
 	_trait.Init(p_rarity)
 
-# --- Momentum stack accumulation ---
+func _attrs() -> Dictionary[Types.Attribute, int]:
+	return {Types.Attribute.Attack: 100, Types.Attribute.Defence: 100}
 
-func test_offensive_skill_increments_momentum() -> void:
+func _bumps_for(p_results: Array[CombatResult], p_target_ID: int) -> Array[CombatResult]:
+	return p_results.filter(func(r): return r.kind == CombatResult.Kind.Turn_Bar_Bump and r.target_ID == p_target_ID)
+
+# --- Turn-bar section span ---
+
+func test_span_is_one_when_owner_and_target_share_a_section() -> void:
 	_InitTrait(Types.Rarity.Epic)
-	var attributes: Dictionary[Types.Attribute, int] = {Types.Attribute.Attack: 100, Types.Attribute.Defence: 100}
-	_trait.OnSkillCast(0, [], "Lance Thrust", attributes, _resolver)
-	assert_eq(_trait._momentum_stacks, 1, "Offensive skill should add one Momentum stack")
+	_fake_positions.sections_by_character = {0: 2, 1: 2}
+	_trait.OnSkillCast(0, [1], "Rending Charge", _attrs(), _resolver)
+	assert_eq(_trait._charge_span, 1, "Same section should be a span of 1")
 
-func test_momentum_capped_at_max() -> void:
+func test_span_is_five_at_opposite_ends_of_the_bar() -> void:
 	_InitTrait(Types.Rarity.Epic)
-	var attributes: Dictionary[Types.Attribute, int] = {Types.Attribute.Attack: 0, Types.Attribute.Defence: 0}
-	for i in LancerTrait.MAX_MOMENTUM_STACKS + 3:
-		_trait.OnSkillCast(0, [], "Lance Thrust", attributes, _resolver)
-	assert_eq(_trait._momentum_stacks, LancerTrait.MAX_MOMENTUM_STACKS,
-		"Momentum stacks must not exceed MAX_MOMENTUM_STACKS")
+	_fake_positions.sections_by_character = {0: 0, 1: 4}
+	_trait.OnSkillCast(0, [1], "Rending Charge", _attrs(), _resolver)
+	assert_eq(_trait._charge_span, 5, "Opposite ends of a 5-section bar should be a span of 5")
 
-func test_unknown_skill_does_not_change_stacks() -> void:
+func test_unknown_owner_section_yields_zero_span() -> void:
 	_InitTrait(Types.Rarity.Epic)
-	var attributes: Dictionary[Types.Attribute, int] = {Types.Attribute.Attack: 100, Types.Attribute.Defence: 100}
-	_trait.OnSkillCast(0, [], "Fireball", attributes, _resolver)
-	assert_eq(_trait._momentum_stacks, 0, "Unknown skill should leave stacks unchanged")
+	_fake_positions.sections_by_character = {1: 2}  # owner (0) reads -1
+	_trait.OnSkillCast(0, [1], "Rending Charge", _attrs(), _resolver)
+	assert_eq(_trait._charge_span, 0, "An unknown owner section must decline, not assume a span")
 
-# --- Attack bonus from OnSkillCast ---
+func test_unknown_target_section_yields_zero_span() -> void:
+	_InitTrait(Types.Rarity.Epic)
+	_fake_positions.sections_by_character = {0: 2}  # target (1) reads -1
+	_trait.OnSkillCast(0, [1], "Rending Charge", _attrs(), _resolver)
+	assert_eq(_trait._charge_span, 0, "An unknown target section must decline, not assume a span")
 
-func test_attack_bonus_scales_with_stacks_and_rarity() -> void:
-	_InitTrait(Types.Rarity.Epic)  # 8% per stack
-	# Build up 2 stacks with zero attack so no bonus is applied during stack accumulation.
-	var stack_attr: Dictionary[Types.Attribute, int] = {Types.Attribute.Attack: 0, Types.Attribute.Defence: 0}
-	_trait.OnSkillCast(0, [], "Lance Thrust", stack_attr, _resolver)
-	_trait.OnSkillCast(0, [], "Lance Thrust", stack_attr, _resolver)
-	assert_eq(_trait._momentum_stacks, 2)
+func test_a_different_skill_clears_the_span() -> void:
+	_InitTrait(Types.Rarity.Epic)
+	_fake_positions.sections_by_character = {0: 0, 1: 4}
+	_trait.OnSkillCast(0, [1], "Rending Charge", _attrs(), _resolver)
+	assert_eq(_trait._charge_span, 5)
 
-	# Cast again with real attack value — stacks increment to 3 first, then bonus applies.
-	var measure_attr: Dictionary[Types.Attribute, int] = {Types.Attribute.Attack: 100, Types.Attribute.Defence: 100}
-	_trait.OnSkillCast(0, [], "Lance Thrust", measure_attr, _resolver)
-	# 3 stacks × 8% of 100 = ceil(24) = 24
-	assert_eq(measure_attr[Types.Attribute.Attack], 124,
-		"Attack should be boosted by 3 stacks × 8% = 24")
+	_trait.OnSkillCast(0, [1], "Lance Thrust", _attrs(), _resolver)
+	assert_eq(_trait._charge_span, 0, "Casting a different skill should clear the cached span")
 
-func test_first_cast_gains_stack_and_applies_bonus() -> void:
-	_InitTrait(Types.Rarity.Legendary)  # 10% per stack
-	var attributes: Dictionary[Types.Attribute, int] = {Types.Attribute.Attack: 80, Types.Attribute.Defence: 60}
-	_trait.OnSkillCast(0, [], "Lance Thrust", attributes, _resolver)
-	# Stack increments to 1, then bonus = ceil(80 × 10% × 1) = 8
-	assert_eq(attributes[Types.Attribute.Attack], 88,
-		"First offensive cast should increment to 1 stack and apply the bonus")
+# --- GetConditionCount ---
 
-# --- OnDefend defence penalty ---
+func test_condition_count_scales_with_span_and_rarity() -> void:
+	var expected: Dictionary[Types.Rarity, float] = {
+		Types.Rarity.Uncommon: 0.09,
+		Types.Rarity.Rare: 0.12,
+		Types.Rarity.Epic: 0.15,
+		Types.Rarity.Legendary: 0.18,
+	}
+	for rarity in expected.keys():
+		_InitTrait(rarity)
+		_fake_positions.sections_by_character = {0: 0, 1: 2}  # span 3
+		_trait.OnSkillCast(0, [1], "Rending Charge", _attrs(), _resolver)
 
-func test_defend_lowers_defence_proportional_to_stacks() -> void:
-	_InitTrait(Types.Rarity.Epic)  # 8% per stack → penalty 4% per stack
-	var stack_attr: Dictionary[Types.Attribute, int] = {Types.Attribute.Attack: 0, Types.Attribute.Defence: 0}
-	_trait.OnSkillCast(0, [], "Lance Thrust", stack_attr, _resolver)
-	_trait.OnSkillCast(0, [], "Lance Thrust", stack_attr, _resolver)
-	assert_eq(_trait._momentum_stacks, 2)
+		var count: float = _trait.GetConditionCount(0, 1, Types.Trait_Count_Source.Turn_Bar_Section_Span, _resolver)
 
-	var defend_attr: Dictionary[Types.Attribute, int] = {Types.Attribute.Defence: 100}
-	_trait.OnDefend(0, defend_attr, _characters)
-	# 2 stacks × (8%/2) of 100 = ceil(8) = 8 penalty
-	assert_eq(defend_attr[Types.Attribute.Defence], 92,
-		"Defence should drop by 2 stacks × 4% = 8")
+		assert_almost_eq(count, 3.0 * expected[rarity], 0.0001, "Rarity %s" % rarity)
 
-func test_defend_no_penalty_with_zero_stacks() -> void:
+func test_condition_count_is_zero_for_every_other_source() -> void:
 	_InitTrait(Types.Rarity.Legendary)
-	var defend_attr: Dictionary[Types.Attribute, int] = {Types.Attribute.Defence: 100}
-	_trait.OnDefend(0, defend_attr, _characters)
-	assert_eq(defend_attr[Types.Attribute.Defence], 100,
-		"Zero stacks should produce no defence penalty")
+	_fake_positions.sections_by_character = {0: 0, 1: 4}
+	_trait.OnSkillCast(0, [1], "Rending Charge", _attrs(), _resolver)
 
-# --- Phalanx Guard buff on defensive skill ---
+	for source in Types.Trait_Count_Source.values():
+		if(Types.Trait_Count_Source.Turn_Bar_Section_Span == source):
+			continue
+		assert_eq(_trait.GetConditionCount(0, 1, source, _resolver), 0.0, "Source %s" % source)
 
-func test_defensive_skill_applies_phalanx_guard_buff() -> void:
-	_InitTrait(Types.Rarity.Uncommon)  # 4% Phalanx Guard
-	_trait._momentum_stacks = 3
+func test_condition_count_is_zero_with_no_charge_cast() -> void:
+	_InitTrait(Types.Rarity.Legendary)
+	assert_eq(_trait.GetConditionCount(0, 1, Types.Trait_Count_Source.Turn_Bar_Section_Span, _resolver), 0.0)
 
-	var attributes: Dictionary[Types.Attribute, int] = {Types.Attribute.Attack: 0, Types.Attribute.Defence: 0}
-	_trait.OnSkillCast(0, [], "Disarm", attributes, _resolver)
+# --- Recoil on OnSkillEffectsResolved ---
 
-	assert_eq(_character._active_buffs.size(), 1, "Phalanx Guard buff should be applied")
-	assert_eq(_character._active_buffs[0].type, Types.Buff_Type.Phalanx_Guard)
-	assert_eq(_character._active_buffs[0].duration, 2)
-	assert_almost_eq(_character._active_buffs[0].value, 0.04, 0.0001)
+func test_rending_charge_throws_the_lancer_back_half_the_span() -> void:
+	_InitTrait(Types.Rarity.Epic)
+	_fake_positions.sections_by_character = {0: 0, 1: 2}  # span 3
+	var received: Array[CombatResult] = []
+	_resolver.result_produced.connect(func(p_result): received.append(p_result))
 
-func test_defensive_skill_clears_all_momentum_stacks() -> void:
-	_InitTrait(Types.Rarity.Rare)
-	_trait._momentum_stacks = 4
+	_trait.OnSkillCast(0, [1], "Rending Charge", _attrs(), _resolver)
+	_trait.OnSkillEffectsResolved(0, [1], "Rending Charge", _attrs(), _resolver)
 
-	var attributes: Dictionary[Types.Attribute, int] = {Types.Attribute.Attack: 0, Types.Attribute.Defence: 0}
-	_trait.OnSkillCast(0, [], "Disarm", attributes, _resolver)
+	var bumps: Array[CombatResult] = _bumps_for(received, 0)
+	assert_eq(bumps.size(), 1, "The Lancer should be bumped back exactly once")
+	assert_almost_eq(bumps[0].fraction, -0.30, 0.0001, "3 sections * 10% recoil per section")
 
-	assert_eq(_trait._momentum_stacks, 0, "Defensive skill should consume all Momentum stacks")
+func test_no_recoil_with_zero_span() -> void:
+	_InitTrait(Types.Rarity.Epic)
+	# sections_by_character left empty: span resolves to 0
+	var received: Array[CombatResult] = []
+	_resolver.result_produced.connect(func(p_result): received.append(p_result))
 
-func test_defensive_skill_with_zero_stacks_skips_phalanx_guard() -> void:
-	_InitTrait(Types.Rarity.Rare)
-	# _momentum_stacks stays at 0
+	_trait.OnSkillCast(0, [1], "Rending Charge", _attrs(), _resolver)
+	_trait.OnSkillEffectsResolved(0, [1], "Rending Charge", _attrs(), _resolver)
 
-	var attributes: Dictionary[Types.Attribute, int] = {Types.Attribute.Attack: 0, Types.Attribute.Defence: 0}
-	_trait.OnSkillCast(0, [], "Disarm", attributes, _resolver)
+	assert_eq(_bumps_for(received, 0).size(), 0, "A zero span should throw no recoil")
 
-	assert_eq(_character._active_buffs.size(), 0, "No Phalanx Guard should be applied when stacks are zero")
+func test_no_recoil_for_a_different_skill() -> void:
+	_InitTrait(Types.Rarity.Epic)
+	_fake_positions.sections_by_character = {0: 0, 1: 2}
+	var received: Array[CombatResult] = []
+	_resolver.result_produced.connect(func(p_result): received.append(p_result))
+
+	_trait.OnSkillCast(0, [1], "Lance Thrust", _attrs(), _resolver)
+	_trait.OnSkillEffectsResolved(0, [1], "Lance Thrust", _attrs(), _resolver)
+
+	assert_eq(_bumps_for(received, 0).size(), 0, "Only Rending Charge should throw recoil")
+
+func test_recoil_reads_the_span_cached_at_cast_not_at_resolution() -> void:
+	_InitTrait(Types.Rarity.Epic)
+	_fake_positions.sections_by_character = {0: 0, 1: 2}  # span 3 at cast
+	var received: Array[CombatResult] = []
+	_resolver.result_produced.connect(func(p_result): received.append(p_result))
+
+	_trait.OnSkillCast(0, [1], "Rending Charge", _attrs(), _resolver)
+	_fake_positions.sections_by_character = {0: 0, 1: 4}  # the bar moved before effects resolved
+	_trait.OnSkillEffectsResolved(0, [1], "Rending Charge", _attrs(), _resolver)
+
+	var bumps: Array[CombatResult] = _bumps_for(received, 0)
+	assert_almost_eq(bumps[0].fraction, -0.30, 0.0001, "Recoil must use the span read at cast, not resolution")
+
+func test_steadfast_on_the_lancer_suppresses_recoil() -> void:
+	_InitTrait(Types.Rarity.Epic)
+	_fake_positions.sections_by_character = {0: 0, 1: 2}
+	var steadfast: StatusEffects.Buff = StatusEffects.Buff.new()
+	steadfast.type = Types.Buff_Type.Steadfast
+	steadfast.duration = 2
+	_character._active_buffs.append(steadfast)
+	var received: Array[CombatResult] = []
+	_resolver.result_produced.connect(func(p_result): received.append(p_result))
+
+	_trait.OnSkillCast(0, [1], "Rending Charge", _attrs(), _resolver)
+	_trait.OnSkillEffectsResolved(0, [1], "Rending Charge", _attrs(), _resolver)
+
+	assert_eq(_bumps_for(received, 0).size(), 0, "Steadfast should block the Lancer's own recoil")

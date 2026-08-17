@@ -160,6 +160,30 @@ func test_damage_effect_trait_counter_on_target_reads_the_traits_own_rate() -> v
 	assert_gt(boosted_damage, baseline_damage,
 		"Trait_Counter_On_Target should add the trait's own already-scaled count")
 
+func test_damage_effect_bonus_per_turn_bar_section_span_reads_the_traits_own_rate() -> void:
+	# Same shape as Trait_Counter_On_Target: the trait's GetConditionCount already carries the
+	# span-times-rate figure (the Lancer's own Turn_Bar_Section_Span source), and the skill's
+	# bonus_per fraction is a flat 1.0 pass-through, landing in the "Rending Charge" skill bucket.
+	var skill: Skill = TestFactory.make_strike_skill()
+	skill.name = "Rending Charge"
+	var effect: DamageEffect = DamageEffect.new()
+	effect.damage_scaling = {Types.Attribute.Attack: 1.0}
+	effect.bonus_per = {Types.Trait_Count_Source.Turn_Bar_Section_Span: 1.0}
+
+	var baseline_before: int = _roster[3]._current_health
+	effect.Resolve(TestFactory.make_context(_resolver, 0, [3], skill))
+	var baseline_damage: int = baseline_before - _roster[3]._current_health
+
+	_roster.assign(TestFactory.make_full_roster())
+	_resolver = TestFactory.make_resolver(_roster, TestFactory.make_full_sides())
+	_roster[0]._trait = TestFactory.FakeConditionCountTrait.new(Types.Trait_Count_Source.Turn_Bar_Section_Span, 0.45)
+	var boosted_before: int = _roster[3]._current_health
+	effect.Resolve(TestFactory.make_context(_resolver, 0, [3], skill))
+	var boosted_damage: int = boosted_before - _roster[3]._current_health
+
+	assert_gt(boosted_damage, baseline_damage,
+		"Turn_Bar_Section_Span should add the trait's own already-scaled span bonus")
+
 func test_damage_effect_defense_ignore_factor_reduces_the_targets_effective_defence() -> void:
 	# Defence's mitigation ratio is taken against GameBalance.DEFENCE_SCALE_CONSTANT (100), not
 	# the caster's own aggregate — the fixture's default Defence (6) is too small relative to

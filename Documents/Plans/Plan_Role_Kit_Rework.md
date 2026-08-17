@@ -127,10 +127,19 @@ defence ignore at all, so a Defence reduction scores identically to none. Closin
 deferred to `FeatureIdeas.md` rather than taken up here. **Batch 2 complete: all five Roles
 implemented.**
 
-Phase 4 (Batch 3) **complete**, settled one Role at a time. Four settled, none implemented:
+Phase 4 (Batch 3) **complete**, settled one Role at a time. Four settled; Lancer implemented:
 
-* **Lancer (§9.11)** — the batch's only replacement, and the first kit gated on *position* rather
-  than a resource. Opens route F; accumulate-then-spend drops to four claimants.
+* **Lancer (§9.11) — implemented.** The batch's only replacement, and the first kit gated on
+  *position* rather than a resource. Opens route F; accumulate-then-spend drops to four claimants.
+  Needed a new `Trait_Count_Source` (`Turn_Bar_Section_Span`) resolved through the same
+  `GetConditionCount` delegation as `Trait_Counter_On_Target`, and a same-caster
+  `BattleResolver.BumpTurnBar` call for the recoil — the existing pushback paths only ever wrote to
+  a *target's* bar, but a self-targeted `BumpTurnBar` call turns out not to recurse through the
+  tithe/ally-dispatch tail (both bail when source equals target), so no new plumbing was needed
+  there. Post-Lancer sweep: median 1.95x, 90th percentile 4.68x, ceiling 16.24x (unchanged — the
+  gate lands in `combined_contrast_ratio`, not the shared bucket product). Top decile (114 teams)
+  gains a **ninth distinct pairing**: Lancer/Rending Charge (2 teams, 10.45x-12.15x, both
+  `charge_distance`-gated).
 * **Thief (§9.12)** — a base-referenced Defence bypass, opening route G with the Architect. One
   scorer gap follows, now `Role_Kit_Design.md` §11's open item: **the scorer models no defence
   ignore at all**, so both the Thief's and the Architect's contributions are invisible to the sweep

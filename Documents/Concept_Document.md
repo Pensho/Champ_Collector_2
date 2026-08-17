@@ -220,12 +220,10 @@ Current roles, their identity and purpose exist as follows:
         - 20% Uncommon, 30% Rare, 40% Epic, 50% Legendary
     - Fielded by: `Thief.tres`
 - Lancer
-    - Always has at least one offensive skill and one defensive skill.
+    - A shock cavalry fighter who reads distance on the turn bar and turns it into a heavier hit, at the cost of its own tempo. Primary attributes: Attack, Speed.
     - Purpose: Damage
-    - Passive: Reckless Momentum [Channel 1] - When an offensive skill is used the Lancer gains one Momentum stack (+x% damage, -x/2% defence while stacks are held, maximum 5 stacks). When a defensive skill is used, the Lancer gains Phalanx Guard (a role-unique 2-turn buff, +x% defence) and all Momentum stacks are consumed.
-        - 4% Uncommon, 6% Rare, 8% Epic, 10% Legendary
-        - See the bug flagged under section 3.2.4.2 Lancer / Lance Thrust: the offensive/defensive
-          skill-name matching does not reach this role's own kit as shipped.
+    - Passive: Couched Lance [Channel 2] - Rending Charge deals x% more damage per turn-bar section between the Lancer and its target (counting both their own sections, so the same section is 1 and opposite ends of the bar is 5), then throws the Lancer back 10% of the turn bar per section charged.
+        - +9% per turn-bar section Uncommon, +12% Rare, +15% Epic, +18% Legendary
     - Fielded by: `Centaur_Lancer.tres`, `Knight.tres`
 - Alchemist
     - A support character that focuses on buffing allies and debuffing enemies through various concoctions. Signature zone: Catalyst Cloud (see section 3.2.4.1). Primary attributes: Knowledge, Mysticism.
@@ -501,7 +499,7 @@ Buffs:
 * Rush [Channel 1]: Increases all primary attributes except Health by 30%; when the buff expires, it applies the Stun debuff to the character for 1 turn. This Stun cannot be resisted and is applied after other expiring buffs (such as Aegis) are removed.
 * Exhert [Channel 1]: Increases all primary attributes except Health by 20%, but the character loses 5% of their max Health every time they take a turn.
 * Luck [Enabler]: Roll every chance roll in combat twice and take the better result (the damage-variance roll is not favored either way — its spread is too small to matter).
-* Phalanx Guard [Channel 1]: Gain bonus defense per stack of momentum consumed. (Lancer Specific)
+* Phalanx Guard [Channel 1]: Gain bonus defense.
 * Attune [Channel 1]: Increases Mysticism by 30%.
 * Haste [Channel 1]: Increases Speed by 20%, including how fast the character advances on the turn bar; Haste stacks, so repeated applications add independent instances up to the status-effect cap.
 * True Aim [Channel 1]: Increases Accuracy by 30%.
@@ -605,18 +603,14 @@ the fix belongs in the data or the document.
 
 ###### Lancer
 * Lance Thrust
-    * Type: Damage (basic skill, no cooldown; counts as an offensive skill)
+    * Type: Damage (basic skill, no cooldown)
     * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Attack.
-        * **Bug flagged:** `lancer_trait.gd`'s offensive-skill name set contains "Stab" (no Lancer
-          skill has that name) instead of "Lance Thrust", and the defensive-skill name set is
-          never populated at all — Momentum currently accrues from casting Disarm instead, and
-          Phalanx Guard is unreachable. Needs a code fix.
 * Rending Charge
-    * Type: Damage, Debuff (counts as an offensive skill)
+    * Type: Damage, Debuff
     * Cooldown: 3 turns
-    * Effect: [Channel 1 + Channel 2] Deals heavy damage to a single enemy, scaling with Attack, and applies the Bleed debuff for 2 turns.
+    * Effect: [Channel 1 + Channel 2] Deals heavy damage to a single enemy, scaling with Attack and the Couched Lance passive, and applies the Bleed debuff for 2 turns.
 * Disarm
-    * Type: Damage, Debuff (counts as a defensive skill)
+    * Type: Damage, Debuff
     * Cooldown: 2 turns
     * Effect: [Channel 1] Deals damage to a single enemy and applies the Enfeeble debuff for 2 turns.
 

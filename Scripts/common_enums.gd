@@ -218,6 +218,7 @@ enum Trait_Count_Source
 	Zones_On_Turn_Bar,
 	Target_Debuff_Count,
 	Wounded_Allies,
+	Turn_Bar_Section_Span,
 }
 
 ## Always reads as the raw (un-multiplied) Trait_Count_Source, even where the member

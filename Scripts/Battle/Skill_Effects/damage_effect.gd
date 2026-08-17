@@ -93,7 +93,8 @@ func _Count(p_context: SkillCastContext, p_target_ID: int, p_source: Types.Trait
 		Types.Trait_Count_Source.Zones_On_Turn_Bar:
 			count = float(p_context.resolver.GetZoneResolver().GetZones().size())
 		Types.Trait_Count_Source.Trait_Condition, Types.Trait_Count_Source.Trait_Counter_On_Target, \
-				Types.Trait_Count_Source.Trait_Counter_Raw_On_Target:
+				Types.Trait_Count_Source.Trait_Counter_Raw_On_Target, \
+				Types.Trait_Count_Source.Turn_Bar_Section_Span:
 			count = _TraitCount(p_context, p_target_ID, p_source)
 		Types.Trait_Count_Source.Target_Debuff_Count:
 			count = float(_DistinctDebuffTypeCount(p_context, p_target_ID))

@@ -279,7 +279,7 @@ A Role's basic skill is always self-facing; direction describes the declared-ide
 | Architect | Buffer, Damage | **Channel 2** | Self | Settled (§9.10), confirming this row. The kit is kept as it ships — the finisher's charge bucket already meets the contract and the zone already consumes charges against it. Only Expose Weakness changes, scaling with the charges spent (Batch 2). |
 | Tidal Corsair | Damage | **Channel 2** | Self | Settled (§9.13), confirming this row. An adaptation: Corsair's Reckoning resolves by the composition of the stacks it consumes, and Sea's turn-bar push retires for Undertow, a bank on the target that only a pure Steel hand converts (Batch 3). |
 | Thief | Damage | **Channel 1** | Self | Settled (§9.12), confirming this row. Pilfer retires for Between the Plates, a passive bypass reading a fraction of the target's *base* Defence, so a teammate's Defence shred compounds with it instead of being eaten by it; Weigh the Mark is rebuilt as Cut Purse (Batch 3). |
-| Lancer | Damage | **Channel 2** | Self | Settled (§9.11), moved off this table's Phase 1 proposal of Channel 1. Momentum and Phalanx Guard retire for Charge Distance: the charge scales with the turn-bar sections it touches and throws the Lancer back half that distance. The Role reads turn-bar position rather than accumulating stacks, so it is no longer route D's second anchor (Batch 3). |
+| Lancer | Damage | **Channel 2** | Self | Settled (§9.11), moved off this table's Phase 1 proposal of Channel 1. Momentum and Phalanx Guard retire for Couched Lance: the charge scales with the turn-bar sections it touches and throws the Lancer back half that distance. The Role reads turn-bar position rather than accumulating stacks, so it is no longer route D's second anchor (Batch 3). |
 | Tactician | Buffer | **Channel 1** | Exported | **Settled: kept as shipped.** A second hook was explored (Batch 3) and shelved — no addition fit without a clearer read on the Role's team fantasy than a sweep figure can give; open to revisiting outside this plan. |
 | Bloodmage | Sustain, Damage | **Channel 1** | Exported | Settled (§9.4), implemented. Hemoclarity's missing-Health Mysticism curve is already Channel 1 by mechanism; the kit's weight lands in Sanguine Pact (on the carrier) and Hemorrhage (on the boss, readable by every attacker) rather than on the Bloodmage's own cast. |
 | Scholar | Debuffer, Buffer | **Channel 2** | Exported | Settled (§9.14), confirming this row. Opportunist stays the modifier-bucket anchor; the passive is replaced with an amplifier on every attribute modification the team applies, giving the roster its first reader of the Channel 1 attribute layer, and the basic gains a zone-gated Suppress rider (Batch 3). |
@@ -304,7 +304,7 @@ in Phase 1; route F was opened by a settled kit, and a later batch may open anot
 | **C — Crit path** | Crit chance/damage growth, outside the combined modifier (1.1.4) | Appraiser (§9.5). **Second anchor open** — the Jester was the Phase 1 proposal and is no longer a candidate (§9.6). Any Role not yet settled may fill it if its kit genuinely wants the crit path; none is assumed to. | 1 → open |
 | **D — Stack consumption** | Self-contained accumulate-then-spend payload | **Closed.** Architect (Calibration finisher, exported through Expose Weakness — §9.10) + Tidal Corsair (the Reckoning's composition modes, self — §9.13). The route's original "non-Corsair" framing was a guard against the shipped ceiling pairing, which the post-Herald sweep has already displaced. | 2 → 3 |
 | **E — Health threshold** | Missing-Health percentage as a `bonus_per` surface | **Closed.** Bloodmage (caster-own and enemy-own missing Health, §9.4) + Cultist (the Vessel's threshold and its death, §9.8) | 1 → 2 |
-| **F — Turn-bar distance** | The turn-bar span between attacker and target, read at the moment of impact | Lancer (Charge Distance, §9.11). Every kit that pushes an enemy back feeds it — the Corsair's Sea stacks, the Chronophage's theft, Dead Weight, Temporal Leak — so the route's other half is any turn-bar writer, not a designated anchor. | 3 |
+| **F — Turn-bar distance** | The turn-bar span between attacker and target, read at the moment of impact | Lancer (Couched Lance, §9.11). Every kit that pushes an enemy back feeds it — the Corsair's Sea stacks, the Chronophage's theft, Dead Weight, Temporal Leak — so the route's other half is any turn-bar writer, not a designated anchor. | 3 |
 | **G — Armour removal** | The target's effective Defence at the moment of impact, outside the combined modifier | **Closed.** Architect (Expose Weakness, exported — §9.10) + Thief (base-referenced bypass, self — §9.12). The two compose because the bypass subtracts a fraction of *base* Defence rather than scaling what is left. The Alchemist's Dissolving Agent is a third feeder (§9.15). | 2, 3 |
 
 **Direction mix across the routes.** A route with one exported anchor and one self-facing anchor is
@@ -952,13 +952,13 @@ exported clause of its own — route D stays predominantly self-facing.
 
 ### 9.11 Lancer — the charge and the ride back
 
-**Status:** Settled, not yet implemented. Batch 3.
+**Status:** Implemented. Batch 3.
 
 **Identity: Channel 2, self-facing**, moved off section 5's Phase 1 proposal of Channel 1: the
 charge's magnitude is a bucket on its own skill, not an attribute change. The passive is
 **replaced** — Reckless Momentum and Phalanx Guard both retire — and all three skills are kept.
 
-**Passive: Charge Distance.** Rending Charge deals **+9/12/15/18% by rarity per turn-bar section the
+**Passive: Couched Lance.** Rending Charge deals **+9/12/15/18% by rarity per turn-bar section the
 charge touches**, counting the Lancer's own section and the target's: the same section is 1, the
 opposite ends of the bar is 5, so the ceiling is +90% at Legendary. **After the charge resolves the
 Lancer is thrown back 10% of the turn bar per section touched** — half the ground it covered.
@@ -992,24 +992,35 @@ returns to unclaimed, and the accumulate-then-spend idiom drops from five claima
 inside section 1's contract, in the same bucket-product kind as Architect (1.84x) and Tidal Corsair
 (2.80x). The kit needs nothing further to pass, which is why Disarm keeps its shipped payload.
 
-**Implementation needs (not yet built):**
+**Implementation.**
 
 * `lancer_trait.gd` — Momentum, the Defence penalty, Phalanx Guard and the offensive/defensive skill
-  name sets all go. The trait reads the inclusive section span between the Lancer and the charge's
-  target at cast resolution, and applies the self-pushback after the damage resolves.
-* `Rending_Charge.tres` — a `bonus_per` keyed to the new section-span count source, 0.18 per section
-  at Legendary.
-* A new count source for the span, plus the turn-bar self-pushback as a trait-driven effect: the
-  existing pushback paths write to a *target's* bar, not the caster's own.
-* `kit_contribution_manifest.gd` — Reckless Momentum's entry becomes Charge Distance; Rending Charge
-  gains `bucket_key: "Rending Charge"`, magnitude 0.90 at the five-section ceiling. Both TRAP notes
-  are stale and go with it — the skill-name bug they describe is fixed.
-* `burst_reachability.gd` — the scorer has no model for a positional gate, so the charge's magnitude
-  is declared as a `gated_bonus` (`gate: &"charge_distance"`) at an assumed three-section span, the
-  same shape section 11's other gates use.
-* `Concept_Document.md` at promotion: 3.1.3's Lancer entry — the passive, and the description line
-  and primary attributes (Attack, Speed) the Role has never had; 3.2.3.2's Phalanx Guard entry
-  retires; 3.2.4.2's Rending Charge and the Lancer's stale bug note.
+  name sets are gone. The trait reads the inclusive section span between the Lancer and Rending
+  Charge's target at cast (`OnSkillCast`, cached), and throws the Lancer back after the damage
+  resolves (`OnSkillEffectsResolved`, reading the cached span rather than re-querying the bar).
+* `Rending_Charge.tres` carries `bonus_per` keyed to the new `Turn_Bar_Section_Span` count source at
+  a flat 1.0 — the rarity ladder (9/12/15/18% per section) lives on the trait's own
+  `GetConditionCount`, not the `.tres`, since `bonus_per` is a single float and the Role is fielded
+  at two different rarities (`Centaur_Lancer.tres` Epic, `Knight.tres` Uncommon).
+* `Types.Trait_Count_Source` gained `Turn_Bar_Section_Span`; `damage_effect.gd`'s `_Count` routes it
+  through `_TraitCount` alongside the other trait-delegated sources. The self-pushback runs through
+  `BattleResolver.BumpTurnBar(owner_ID, -fraction, owner_ID)` — a same-ID bump neither recurses
+  through `_EmitTurnBarBump`'s tithe tail nor fires `Skills.DispatchAllyTurnBarIncreased` (both bail
+  when source equals target), and Anchor/Steadfast on the Lancer gate its own recoil the same as any
+  other bump.
+* `kit_contribution_manifest.gd` — Reckless Momentum's entry is Couched Lance; Rending Charge's own
+  entry carries `bucket_key: ""` (magnitude folded entirely into its `gated_bonus`, to avoid double-
+  counting the same bucket) with `gated_bonus.bucket_key: "Rending Charge"`, `magnitude: 0.45`
+  (`gate: &"charge_distance"`, an assumed three-section span at Epic rarity: 3 * 0.15).
+* `Concept_Document.md` 3.1.3's Lancer entry, 3.2.3.2's Phalanx Guard entry, and 3.2.4.2's Rending
+  Charge entry updated to match.
+
+Post-Lancer sweep: median 1.95x, 90th percentile 4.68x, ceiling 16.24x — unchanged, as expected
+since the gate's contribution lands in `combined_contrast_ratio`, not the shared bucket product. The
+top decile (114 teams) **gains a ninth distinct pairing**: Lancer/Rending Charge (2 teams,
+10.45x-12.15x, both `charge_distance`-gated) joins Herald of the Loom/Cut the Cloth,
+Sorcerer/Cataclysm, Tidal Corsair/Corsairs Reckoning, Architect/Final Calculation,
+Emissary/Citation, Diviner/Ill Omen, Cultist/Devour Blessing, Bar Brawler/Headbutt.
 
 **Judgment calls made while settling, listed so they can be overruled:** Disarm keeps its shipped
 payload rather than gaining a deliberate distance lever, since the passive already carries the loop
@@ -1515,16 +1526,14 @@ Refresh in the same edit that lands a batch.
   never from a basic skill. Stun's only current source is the ownerless Weight of Law zone
   (section 10.3) and Rush's expiry, both of which fall on the holder rather than being aimed.
 * Enfeeble's reservation for the Warlord is discharged — see the debuff table above.
-* **No source — buffs:** True Aim, Clarity, Insight, Mirror Coat, Rehearsed, Wanderlust, Overflow;
-  Phalanx Guard joins when 9.11 lands.
+* **No source — buffs:** True Aim, Clarity, Insight, Mirror Coat, Rehearsed, Wanderlust, Overflow,
+  Phalanx Guard.
   Turn bar buffs Anchor, Steadfast, Resonance are listed above.
 * **Enemy-only:** Frenzy, Haste, Deathward.
 * **Trait code only, never a skill:** Empower (Plan; Tidal Corsair's Corsair's Reckoning becomes a
   second claimant and its first skill source when 9.13 lands, within the commodity-buff limit of
   two), Attune (Chosen Vessel), Expose Weakness
-  (Calibration, charge-scaled — gains its first skill source when 9.15 lands). Phalanx Guard
-  leaves this list for the unclaimed buffs when 9.11 lands — Reckless
-  Momentum, its only source, retires with the Lancer's passive.
+  (Calibration, charge-scaled — gains its first skill source when 9.15 lands).
 
 ### 10.2 Damage-channel bucket keys in use
 
@@ -1544,7 +1553,7 @@ key, not a doc paraphrase) — the authority the burst-reachability scorer actua
 | `Devour Blessing` | Cultist (Devour Blessing) | Skill-name bucket |
 | `ChosenVesselTrait` | Cultist (Chosen Vessel's Devotion) | `GetOutgoingDamageBonus` bucket (the trait's own script global name, `battle_resolver.gd`'s shared contribution key for that hook) — permanent per dead Vessel; distinct from the same passive's per-cast `TRAIT_RESOURCE_KEY` bonus so the two multiply |
 | `Profane Bolt` | Cultist (Profane Bolt) | Skill-name bucket, conditional on the Vessel being alive and below half its own max Health |
-| `Rending Charge` | Lancer (Rending Charge) — **settled, not yet implemented** (section 9.11) | Skill-name bucket, `bonus_per` keyed to the turn-bar section span the charge touches |
+| `Rending Charge` | Lancer (Rending Charge) — **implemented** (section 9.11) | Skill-name bucket, `bonus_per` keyed to the turn-bar section span the charge touches |
 | `Heap On (ramp)` | Bar Brawler (Heap On) | Skill-name bucket, per-instance ramp (not a stacking cap) |
 | `Final Calculation` | Architect (Final Calculation) | Skill-name bucket |
 | `Corsairs Reckoning` | Tidal Corsair (Corsairs Reckoning) | Skill-name bucket |

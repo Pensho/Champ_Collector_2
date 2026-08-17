@@ -207,35 +207,38 @@ const MANIFEST: Dictionary = {
 		"preset": "Data/Character_Player_Variants/Centaur_Lancer.tres (also Knight.tres — both " +
 				"share Lancer_Trait.tres and the same 3 skills)",
 		"passive": [
-			{"name": "Reckless Momentum", "bucket_key": "", "magnitude": 0.0, "stack_cap": 5,
-					"class": Contribution_Class.Channel1,
-					"precondition": "TRAP: OFFENSIVE_SKILL_NAMES = {'Stab', 'Disarm'} — 'Stab' is a " +
-							"Thief skill, not Lancer's own 'Lance Thrust', so only Disarm actually " +
-							"grants Momentum among Lancer's 3 skills. defensive_skill_names is a var " +
-							"initialized empty and never populated by any preset, so Phalanx Guard is " +
-							"unreachable — stacks accrue (max 5, +10% Attack/stack at Legendary via " +
-							"OnSkillCast) but are never spent. -5% Defence/stack applied via OnDefend.",
-					"citation": "lancer_trait.gd:3-27,54-88 — code, not Concept_Document.md 3.1.3, " +
-							"which assumes Lance Thrust grants Momentum and Phalanx Guard is reachable"},
+			{"name": "Couched Lance", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
+					"class": Contribution_Class.Channel2,
+					"precondition": "Reads the inclusive turn-bar section span between the Lancer and " +
+							"Rending Charge's target at cast (same section = 1, opposite ends of a " +
+							"5-section bar = 5); the span feeds Rending Charge's own bonus_per, and " +
+							"after the charge resolves the Lancer is bumped back 10% of the turn bar " +
+							"per section of that span. No contribution outside a Rending Charge cast.",
+					"citation": "lancer_trait.gd:16-58"},
 		],
 		"skills": [
 			{"name": "Lance Thrust", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Channel1,
-					"precondition": "damage_scaling Attack 0.9, no bonus_per. Despite being Lancer's " +
-							"actual offensive basic skill, does NOT grant Momentum (name mismatch above).",
-					"citation": "Lance_Thrust.tres:6-11; lancer_trait.gd:20-23"},
+					"precondition": "Basic skill: damage_scaling Attack 0.9, no bonus_per.",
+					"citation": "Lance_Thrust.tres:6-11"},
 			{"name": "Disarm", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Channel1,
 					"precondition": "damage_scaling Attack 0.8, no bonus_per, plus Enfeeble (2 turns). " +
-							"The one skill whose literal name matches OFFENSIVE_SKILL_NAMES, so this is " +
-							"Lancer's actual Momentum trigger.",
-					"citation": "Disarm.tres:6-19; lancer_trait.gd:21"},
+							"Kept as shipped — no distance lever of its own.",
+					"citation": "Disarm.tres:6-19"},
 			{"name": "Rending Charge", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
-					"class": Contribution_Class.Channel1,
-					"precondition": "damage_scaling Attack 1.3, no bonus_per, plus Bleed (2 turns). " +
-							"Does not match OFFENSIVE_SKILL_NAMES despite being Lancer's heaviest " +
-							"offensive skill — grants no Momentum.",
-					"citation": "Rending_Charge.tres:6-19; lancer_trait.gd:20-23"},
+					"class": Contribution_Class.Channel2,
+					"precondition": "damage_scaling Attack 1.3, plus Bleed (2 turns). bonus_per keyed " +
+							"to Turn_Bar_Section_Span: +9/12/15/18% by rarity per section of span, " +
+							"ceiling +90% at Legendary (0.18 * 5 sections) — carried entirely by " +
+							"gated_bonus below so the two don't double-count the same bucket.",
+					"citation": "Rending_Charge.tres:6-21; lancer_trait.gd:16-58",
+					"gated_bonus": {"bucket_key": "Rending Charge", "magnitude": 0.45,
+							"class": Contribution_Class.Channel2,
+							"gate": &"charge_distance",
+							"precondition": "Scorer has no positional model — assumes a 3-section span " +
+									"(Centaur_Lancer.tres fields Epic rarity: 3 * 0.15).",
+							"citation": "lancer_trait.gd:16-58; Rending_Charge.tres:6-21"}},
 		],
 	},
 	Types.Role.Alchemist: {
