@@ -3,10 +3,14 @@ class_name CalibrationTrait extends CharacterTrait
 const MAX_CHARGES: int = 12
 const EXPOSE_WEAKNESS_THRESHOLD: int = 5
 const EXPOSE_WEAKNESS_DURATION: int = 2
+const EXPOSE_WEAKNESS_BASE_REDUCTION: float = 0.30
+const EXPOSE_WEAKNESS_REDUCTION_PER_EXTRA_CHARGE: float = 0.02
 const ZONE_RE_ERECT_THRESHOLD: int = 9
 const ZONE_UPGRADE_CHARGES: int = 8
 const RAISE_THE_FRAME_ZONE_CHARGES: int = 5
 const RAISE_THE_FRAME_CONSUME_CAP: int = 3
+const RAISE_THE_FRAME_VISUAL_SCENE: PackedScene = preload(
+		"res://Scenes/ui/Turn_Bar_Zones/Turn_Bar_Raise_the_Frame.tscn")
 
 const PER_CHARGE_POTENCY: Dictionary[Types.Rarity, float] = {
 	Types.Rarity.Uncommon: 0.04,
@@ -68,6 +72,8 @@ func OnSkillCast(
 			skill_result._damage_multiplier += _per_charge_potency * _charges
 			if(_charges >= EXPOSE_WEAKNESS_THRESHOLD):
 				_expose_weakness_debuff.source_ID = _p_owner_ID
+				_expose_weakness_debuff.value = (EXPOSE_WEAKNESS_BASE_REDUCTION
+						+ (_charges - EXPOSE_WEAKNESS_THRESHOLD) * EXPOSE_WEAKNESS_REDUCTION_PER_EXTRA_CHARGE)
 				for target_ID in p_target_IDs:
 					p_resolver.GetStatusResolver().ApplyDebuff(target_ID, _expose_weakness_debuff)
 			if(_charges >= ZONE_RE_ERECT_THRESHOLD):
@@ -106,5 +112,6 @@ func _ReErectZone(p_owner_ID: int, p_resolver: BattleResolver) -> void:
 	var zone_effect: ZoneEffect = ZoneEffect.new()
 	zone_effect.charges = RAISE_THE_FRAME_ZONE_CHARGES
 	zone_effect.on_trigger = [BarrierZoneEffect.new()]
+	zone_effect.visual_scene = RAISE_THE_FRAME_VISUAL_SCENE
 	zone_resolver.PlaceZone(available_zone_IDs[0], p_owner_ID, zone_effect, Types.Skill_Target.ZoneAlly,
 			p_resolver.GetEffectiveAttributes(p_owner_ID), "Raise the Frame")

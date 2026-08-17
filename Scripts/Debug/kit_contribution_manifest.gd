@@ -820,17 +820,17 @@ const MANIFEST: Dictionary = {
 			{"name": "Calibration", "bucket_key": CombinedDamageModifier.TRAIT_RESOURCE_KEY,
 					"magnitude": 0.84, "stack_cap": 12,
 					"class": Contribution_Class.Channel2,
-					"precondition": "TRAP (doc disagreement): real code constants are MAX_CHARGES=12, " +
-							"EXPOSE_WEAKNESS_THRESHOLD=5, ZONE_RE_ERECT_THRESHOLD=9 " +
-							"(Concept_Document.md 3.1.3 claims tiers 1-3/4-6/7-10, cap 10). +1 charge " +
-							"per Cornerstone cast or Zone_Used event, capped at 12. Final Calculation " +
-							"consumes all charges into the shared trait_resource bucket at 0.07/charge " +
-							"(Legendary), up to +84% at 12 charges; >=5 charges also applies Expose " +
-							"Weakness (2 turns); >=9 charges re-erects/upgrades the Raise the Frame zone " +
-							"for free. Raise the Frame separately banks min(charges,3) into " +
-							"GetZoneChargeBonus (up to +21% Legendary), read by the zone's own Barrier " +
-							"sizing outside CombinedDamageModifier.",
-					"citation": "calibration_trait.gd:3-16,55-110 — code, not Concept_Document.md 3.1.3"},
+					"precondition": "+1 charge per Cornerstone cast or Zone_Used event, capped at 12. " +
+							"Final Calculation consumes all charges into the shared trait_resource bucket " +
+							"at 0.07/charge (Legendary), up to +84% at 12 charges; >=5 charges also " +
+							"applies Expose Weakness (2 turns, -30% Defence rising +2%/charge beyond the " +
+							"threshold to -44% at 12) — an exported rider read by every attacker on the " +
+							"team, not scored here (no manifest shape for a mitigation-term contribution " +
+							"until section 11's defence-ignore gap closes); >=9 charges re-erects/upgrades " +
+							"the Raise the Frame zone for free. Raise the Frame separately banks " +
+							"min(charges,3) into GetZoneChargeBonus (up to +21% Legendary), read by the " +
+							"zone's own Barrier sizing outside CombinedDamageModifier.",
+					"citation": "calibration_trait.gd:3-18,57-112"},
 		],
 		"skills": [
 			{"name": "Cornerstone", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,

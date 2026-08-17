@@ -37,8 +37,9 @@ through Enabler-tagged skills authored as kit content (§1.2, `Concept_Document.
 
 Phase 3 (Batch 2) design started ahead of Phase 2's remaining implementation, which the tier-3 loop
 permits — settling a kit does not require implementing it in the same sitting. All five settled.
-**Jester (§9.6), Emissary (§9.7), Cultist (§9.8) and Chronophage (§9.9) implemented**; Architect
-(§9.10) remains. Routes A and E close; route C's second anchor is open rather than assigned, since the
+**Jester (§9.6), Emissary (§9.7), Cultist (§9.8), Chronophage (§9.9) and Architect (§9.10)
+implemented — Batch 2 complete.** Routes A and E close; route C's second anchor is open rather
+than assigned, since the
 Jester was Phase 1's proposal and is no longer a candidate, and no unsettled Role is assumed into
 it. Chronophage's threshold-crossing `Cascade_Trigger` was **not** authored — counting section
 boundaries is arithmetic a player cannot read off the screen; the shipped Borrowed Time grant reads
@@ -102,6 +103,29 @@ before its own holder's next cast gets a chance to consume it — the same probl
 already solved. Post-Chronophage sweep: median 1.95x, 90th percentile 4.68x, ceiling 16.24x, top
 decile 114 teams across 8 distinct pairings — all unchanged from the pre-implementation baseline, as
 §9.9 and §11 both predicted for a grant the scorer cannot represent.
+
+**Architect's implementation** needed no new plumbing: Calibration already applies the Expose
+Weakness debuff and already holds the charge count, so `OnSkillCast`'s Final Calculation branch
+sets the debuff instance's own `value` to a charge-scaled reduction (-30% at the 5-charge
+threshold, +2% per charge beyond it, -44% at 12) before the existing apply loop, and
+`ApplyDebuff`/`ApplyAttributeModifiers`'s own value-override convention (already used by every
+other per-instance-value debuff) reads it through unchanged. Rendering the fractional magnitude in
+the status tooltip needed one addition: `CombatResult.fraction` (already declared, unused on this
+result kind) now carries the debuff's own value from `_EmitDebuffApplied`, and `battle.gd`'s
+description substitution gained a `{percent}` token alongside the existing `{value}` one.
+Play verification (this plan's own final checklist item) surfaced a pre-existing crash, unrelated
+to the debuff change: `_ReErectZone`'s fallback branch (the code path that re-erects the
+construction zone when the Architect owns none) built its `ZoneEffect` without a `visual_scene`,
+so `SpawnZoneEffect` silently no-opped and left the turn bar's `_zone_effects` slot null; a second
+Final Calculation crossing the same threshold then found the zone already owned, called
+`SetZoneCharges` to upgrade it, and crashed reading `.label` off that null slot. Fixed by giving
+the fallback the same `Turn_Bar_Raise_the_Frame.tscn` visual scene `Raise_the_Frame.tres` itself
+carries, with a regression test asserting the re-erected zone's `_visual_scene` is set.
+Post-Architect sweep: median 1.95x, 90th percentile 4.68x, ceiling 16.24x, top decile 114 teams
+across 8 distinct pairings — unchanged, as §11's own open item predicts: the scorer models no
+defence ignore at all, so a Defence reduction scores identically to none. Closing that gap is
+deferred to `FeatureIdeas.md` rather than taken up here. **Batch 2 complete: all five Roles
+implemented.**
 
 Phase 4 (Batch 3) **complete**, settled one Role at a time. Four settled, none implemented:
 

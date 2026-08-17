@@ -919,7 +919,7 @@ burst outright.
 
 ### 9.10 Architect — kept, with the debuff scaled to the spend
 
-**Status:** Settled, not yet implemented. Batch 2.
+**Status:** Implemented. Batch 2 complete.
 
 **Identity: Channel 2, self-facing.** Confirms section 5's proposal. **The kit is kept.** Calibration,
 Cornerstone, Raise the Frame and Final Calculation all ship as they are; the only change is Expose
@@ -945,18 +945,6 @@ a distinct debuff type feeding route A's density count.
 for the whole team. Phase 0 is what created this factor: under the old formula Defence lost its
 weight at burst scale and the debuff was build-up pressure only. The Architect's own declared
 contribution is unchanged at 1.84x.
-
-**Implementation needs (not yet built):**
-
-* `calibration_trait.gd` — Expose Weakness's magnitude reads the charge count at the moment of
-  application instead of a fixed value. The trait already applies the debuff and already holds the
-  count.
-* `kit_contribution_manifest.gd` — delete Calibration's stale `TRAP (doc disagreement)` note:
-  `Concept_Document.md` 3.1.3 already states maximum 12 with tiers 1-4 / 5-8 / 9-12, matching
-  `MAX_CHARGES`, `EXPOSE_WEAKNESS_THRESHOLD` and `ZONE_RE_ERECT_THRESHOLD`. Record Expose Weakness
-  as an exported factor rather than leaving the entry reading Channel 2 only.
-* `Concept_Document.md` at promotion: 3.2.3's Expose Weakness entry (charge-scaled magnitude) and
-  3.2.4.2's Final Calculation.
 
 **Judgment calls made while settling, listed so they can be overruled:** the 9-12 tier's free zone
 re-erect is left as the only reward for a maximum spend beyond raw magnitude, rather than gaining an
@@ -1534,8 +1522,8 @@ Refresh in the same edit that lands a batch.
 * **Trait code only, never a skill:** Empower (Plan; Tidal Corsair's Corsair's Reckoning becomes a
   second claimant and its first skill source when 9.13 lands, within the commodity-buff limit of
   two), Attune (Chosen Vessel), Expose Weakness
-  (Calibration — magnitude becomes charge-scaled, §9.10; gains its first skill source when 9.15
-  lands). Phalanx Guard leaves this list for the unclaimed buffs when 9.11 lands — Reckless
+  (Calibration, charge-scaled — gains its first skill source when 9.15 lands). Phalanx Guard
+  leaves this list for the unclaimed buffs when 9.11 lands — Reckless
   Momentum, its only source, retires with the Lancer's passive.
 
 ### 10.2 Damage-channel bucket keys in use

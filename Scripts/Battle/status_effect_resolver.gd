@@ -881,6 +881,7 @@ func _EmitDebuffApplied(p_target_ID: int, p_debuff: StatusEffects.Debuff, p_disp
 	result.duration = p_debuff.duration
 	result.source_ID = p_debuff.source_ID
 	result.amount = int(p_debuff.value)
+	result.fraction = p_debuff.value
 	result.text = p_display_name
 	_resolver._Emit(result)
 	Skills.DispatchDebuffApplied(p_debuff, p_target_ID, _resolver._characters, _resolver)

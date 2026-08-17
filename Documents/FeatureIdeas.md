@@ -25,6 +25,9 @@ Effort: **S** = hours, **M** = days, **L** = week+
 - **Tidal Corsair: Tide instead of Undertow** *(Priority: Low | Effort: S)*
   Fallback if Corsair's Reckoning's description outgrows 3.2.4's soft cap: drop the Undertow debuff for a Corsair-side Tide counter raising the per-Steel rate the same way. Removes a status entry, its 8-status-cap claim and the target-switch risk; costs the `Target_Debuff_Count` hook and the route-A feed. Design in Role_Kit_Design.md section 9.13.
 
+- **Scorer: model defence ignore in burst reachability** *(Priority: Medium | Effort: M)*
+  `Scripts/Debug/burst_reachability.gd` mitigates every candidate against the boss's full Defence, so a Defence reduction or bypass scores identically to no reduction at all. The Architect's Expose Weakness and the Thief's base-referenced bypass both run their contribution through that term and are invisible to the sweep. Needs the same effective-Defence computation `battle_resolver.gd` performs, base-referenced subtraction included, plus a manifest field to declare it. Design in Role_Kit_Design.md section 11.
+
 - **Knowledge-Bypass Variant of Cracked Facet** *(Priority: Low | Effort: S)*
   Alternative effect for the Appraiser's Cracked Facet debuff: instead of flat bonus Critical Damage taken, the target's Knowledge does not blunt critical hits while the debuff holds (bypassing the `Defender's Knowledge * 0.5` term in the Critical Damage formula). Thematic for the Knowledge-scaling Appraiser but swingy — worthless against low-Knowledge enemies, huge against high-Knowledge ones. Shelved in favor of the flat bonus.
 

@@ -88,6 +88,43 @@ func test_final_calculation_at_threshold_applies_expose_weakness() -> void:
 	assert_eq(target._active_debuffs[0].type, Types.Debuff_Type.Expose_Weakness)
 	assert_eq(target._active_debuffs[0].duration, CalibrationTrait.EXPOSE_WEAKNESS_DURATION)
 
+func test_expose_weakness_at_threshold_is_the_base_reduction() -> void:
+	_InitTrait(Types.Rarity.Epic)
+	var target: Character = Character.new()
+	target._current_health = 10
+	_characters[1] = target
+	for i in CalibrationTrait.EXPOSE_WEAKNESS_THRESHOLD:
+		_trait.OnSkillCast(0, [], "Cornerstone", {}, _resolver)
+	_trait.OnSkillCast(0, [1], "Final Calculation", {}, _resolver)
+	assert_almost_eq(target._active_debuffs[0].value,
+			CalibrationTrait.EXPOSE_WEAKNESS_BASE_REDUCTION, 0.0001)
+
+func test_expose_weakness_at_max_charges_is_the_full_reduction() -> void:
+	_InitTrait(Types.Rarity.Epic)
+	var target: Character = Character.new()
+	target._current_health = 10
+	_characters[1] = target
+	for i in CalibrationTrait.MAX_CHARGES:
+		_trait.OnSkillCast(0, [], "Cornerstone", {}, _resolver)
+	_trait.OnSkillCast(0, [1], "Final Calculation", {}, _resolver)
+	var expected: float = (CalibrationTrait.EXPOSE_WEAKNESS_BASE_REDUCTION
+			+ (CalibrationTrait.MAX_CHARGES - CalibrationTrait.EXPOSE_WEAKNESS_THRESHOLD)
+					* CalibrationTrait.EXPOSE_WEAKNESS_REDUCTION_PER_EXTRA_CHARGE)
+	assert_almost_eq(target._active_debuffs[0].value, expected, 0.0001)
+
+func test_expose_weakness_scales_at_an_intermediate_charge_count() -> void:
+	_InitTrait(Types.Rarity.Epic)
+	var target: Character = Character.new()
+	target._current_health = 10
+	_characters[1] = target
+	var charges: int = CalibrationTrait.EXPOSE_WEAKNESS_THRESHOLD + 2
+	for i in charges:
+		_trait.OnSkillCast(0, [], "Cornerstone", {}, _resolver)
+	_trait.OnSkillCast(0, [1], "Final Calculation", {}, _resolver)
+	var expected: float = (CalibrationTrait.EXPOSE_WEAKNESS_BASE_REDUCTION
+			+ 2 * CalibrationTrait.EXPOSE_WEAKNESS_REDUCTION_PER_EXTRA_CHARGE)
+	assert_almost_eq(target._active_debuffs[0].value, expected, 0.0001)
+
 func test_final_calculation_consumes_all_charges() -> void:
 	_InitTrait(Types.Rarity.Epic)
 	var target: Character = Character.new()
@@ -125,6 +162,9 @@ func test_final_calculation_at_tier_three_erects_a_zone_when_none_exists() -> vo
 	assert_eq(zone._owner_ID, 0)
 	assert_true(zone._on_trigger[0] is BarrierZoneEffect)
 	assert_eq(zone._charges, CalibrationTrait.RAISE_THE_FRAME_ZONE_CHARGES)
+	assert_eq(zone._visual_scene, CalibrationTrait.RAISE_THE_FRAME_VISUAL_SCENE,
+		"A re-erected zone must carry a visual scene, or the turn bar UI silently fails to " +
+		"spawn its effect and later crashes when a second re-erect tries to update its label")
 
 func test_final_calculation_at_tier_three_upgrades_an_existing_zone() -> void:
 	_InitTrait(Types.Rarity.Epic)

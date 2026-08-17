@@ -13,7 +13,7 @@ damage_scaling = Dictionary[int, float]({
 [resource]
 script = ExtResource("1_fnlclc")
 name = "Final Calculation"
-description = "Consumes all held Calibration charges, dealing damage scaling with Knowledge and charges consumed, applying Expose Weakness at 4 or more charges and re-erecting (or upgrading) the construction zone for free at 7 or more. Finisher skill."
+description = "Consumes all held Calibration charges, dealing damage scaling with Knowledge and charges consumed, applying Expose Weakness (deepening with charges spent) at 5 or more charges and re-erecting (or upgrading) the construction zone for free at 9 or more. Finisher skill."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Final_Calculation/Final_Calculation_1.jpg"
 cooldown = 3
 effects = Array[ExtResource("1_ff23i")]([SubResource("Resource_k3ihl")])
