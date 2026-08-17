@@ -16,7 +16,7 @@ attribute_modifiers = Dictionary[int, float]({
 8: -0.5,
 9: -0.5
 })
-attacker_damage_value_multiple = 2.0
 applies_on_target_snapshot = true
+attacker_damage_value_multiple = 2.0
 icon = ExtResource("2_icon")
 description = "Attacks against the holder deal bonus damage, and all primary attributes except Health are reduced, both scaled to the applier's Standing Record rate per Infraction on the target, set at the moment of application."

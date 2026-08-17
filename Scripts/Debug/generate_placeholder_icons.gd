@@ -340,7 +340,7 @@ const SKILL_ICON_TABLE: Array = [
 			"color": Color(0.40, 0.35, 0.45, 1.0) },
 	{ "folder": "Abilities/Passives/Wardens_Failsafe", "base_name": "Wardens_Failsafe", "size": 64,
 			"color": Color(0.35, 0.30, 0.40, 1.0) },
-	{ "folder": "Abilities/Passives/Standing_Record", "base_name": "Standing_Record", "size": 64,
+	{ "folder": "Abilities/Passives/Standing_Record_Trait", "base_name": "standing_record_trait", "size": 64,
 			"color": Color(0.50, 0.42, 0.28, 1.0) },
 ]
 

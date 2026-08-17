@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b6jeqhbdgv7qj"
-path="res://.godot/imported/Standing_Record.png-426b4b92e8abd0ed7e1d6dc9b67fe440.ctex"
+uid="uid://co3t3pqlcqxmq"
+path="res://.godot/imported/standing_record_trait.png-5d9dc978eb52066cb53dbc9b550686c2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Abilities/Passives/Standing_Record/Standing_Record.png"
-dest_files=["res://.godot/imported/Standing_Record.png-426b4b92e8abd0ed7e1d6dc9b67fe440.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Abilities/Passives/Standing_Record_Trait/standing_record_trait.png"
+dest_files=["res://.godot/imported/standing_record_trait.png-5d9dc978eb52066cb53dbc9b550686c2.ctex"]
 
 [params]
 
