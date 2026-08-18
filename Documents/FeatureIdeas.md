@@ -22,8 +22,11 @@ Effort: **S** = hours, **M** = days, **L** = week+
 - **Rework Orphaned Turn Bar Effects** *(Priority: Medium | Effort: M)*
   Three of the seven turn bar effects in Concept_Document 3.2.3.1 (Anchor, Steadfast, Resonance) are still unclaimed, largely because their effects are too weak to spend a skill slot on. Revisit them — strengthen, replace, or design new turn bar effects — before assigning them to future kits, opponent skills, or the passive pass. Slipstream left the list by being granted as a rider bundled with Empower rather than costing a slot (Role_Kit_Design.md section 9.13), which is one answer to the weakness.
 
-- **Tidal Corsair: Tide instead of Undertow** *(Priority: Low | Effort: S)*
-  Fallback if Corsair's Reckoning's description outgrows 3.2.4's soft cap: drop the Undertow debuff for a Corsair-side Tide counter raising the per-Steel rate the same way. Removes a status entry, its 8-status-cap claim and the target-switch risk; costs the `Target_Debuff_Count` hook and the route-A feed. Design in Role_Kit_Design.md section 9.13.
+- **Attack is under-represented across the roster** *(Priority: Medium | Effort: M)*
+  Attack is a primary attribute on 3 of 20 Roles, against Knowledge's 9, Mysticism's 7 and Speed's 5 (Concept_Document 3.1.3). Any effect keyed to Attack is therefore near-dead for most teams — the constraint that pushed Sea Legs onto a per-holder attribute (Role_Kit_Design.md section 9.13). Consider moving some Roles onto Attack as their kits are reworked, so the attribute spread supports fixed-attribute grants at all.
+
+- **Zone placement should not be blocked outright** *(Priority: Medium | Effort: M)*
+  Concept_Document 3.2.4.1 blocks placing a zone into an occupied section until that zone is gone, so a zone cast can be dead on arrival. Proposal: placement resolves to the nearest free section instead of failing, keeping one-zone-per-section. Affects all six player zones and both enemy zones, and removes section-occupancy denial as an emergent tactic — hence its own pass rather than riding in on one kit. The Gilded Deck (Role_Kit_Design.md section 9.13) already needs a local fallback because it is auto-placed.
 
 - **Knowledge-Bypass Variant of Cracked Facet** *(Priority: Low | Effort: S)*
   Alternative effect for the Appraiser's Cracked Facet debuff: instead of flat bonus Critical Damage taken, the target's Knowledge does not blunt critical hits while the debuff holds (bypassing the `Defender's Knowledge * 0.5` term in the Critical Damage formula). Thematic for the Knowledge-scaling Appraiser but swingy — worthless against low-Knowledge enemies, huge against high-Knowledge ones. Shelved in favor of the flat bonus.

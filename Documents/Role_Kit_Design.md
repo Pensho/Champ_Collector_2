@@ -277,7 +277,7 @@ A Role's basic skill is always self-facing; direction describes the declared-ide
 | Cultist | Debuffer, Damage | **Channel 2** | Self | Settled (§9.8), confirming this row. Chosen Vessel's flat per-cast bonus stays flat; Vessel death now also grants permanent Devotion, and the basic reads the Vessel's half-Health threshold (Batch 2). |
 | Jester | Damage, Sustain | **Enabler** | Exported | Hexed on the boss degrades every roll it makes in its own favor — crit checks, resist checks against the team's debuffs, its own Burning ticks — so a debuff-density burst becomes reliable rather than a coin flip; Spotlight pulls focused fire onto the champion built to dodge it. Settled (§9.6), and moved off this table's Phase 1 proposal of Channel 2 / self-facing: the kit declares no damage contribution (Batch 2). |
 | Architect | Buffer, Damage | **Channel 2** | Self | Settled (§9.10), confirming this row. The kit is kept as it ships — the finisher's charge bucket already meets the contract and the zone already consumes charges against it. Only Expose Weakness changes, scaling with the charges spent (Batch 2). |
-| Tidal Corsair | Damage | **Channel 2** | Self | Settled (§9.13), confirming this row. An adaptation: Corsair's Reckoning resolves by the composition of the stacks it consumes, and Sea's turn-bar push retires for Undertow, a bank on the target that only a pure Steel hand converts (Batch 3). |
+| Tidal Corsair | Damage | **Channel 2** | Self | Settled (§9.13), confirming this row. Corsair's Reckoning resolves by the composition of the stacks it consumes; Sea's turn-bar push retires and Sea instead raises The Gilded Deck, a signature zone granting boarding allies permanent Sea Legs stacks (Batch 3). |
 | Thief | Damage | **Channel 1** | Self | Implemented (§9.12), confirming this row. Pilfer retired for Between the Plates, a passive bypass reading a fraction of a debuff-free reference Defence, so a teammate's Defence shred compounds with it instead of being eaten by it; Weigh the Mark rebuilt as Cut Purse. |
 | Lancer | Damage | **Channel 2** | Self | Settled (§9.11), moved off this table's Phase 1 proposal of Channel 1. Momentum and Phalanx Guard retire for Couched Lance: the charge scales with the turn-bar sections it touches and throws the Lancer back half that distance. The Role reads turn-bar position rather than accumulating stacks, so it is no longer route D's second anchor (Batch 3). |
 | Tactician | Buffer | **Channel 1** | Exported | **Settled: kept as shipped.** A second hook was explored (Batch 3) and shelved — no addition fit without a clearer read on the Role's team fantasy than a sweep figure can give; open to revisiting outside this plan. |
@@ -1093,361 +1093,88 @@ the rate that scales already lives in the passive; and the debuff-free reference
 the settled "base Defence" to include equipment, trait deltas, battle-long bonuses, and Defence
 buffs, since a plain base-Defence reference would have gone stale the moment gear existed.
 
-### 9.13 Tidal Corsair — the hand decides the Reckoning
+### 9.13 Tidal Corsair — the ship the crew boards
 
 **Status:** Settled, not yet implemented. Batch 3.
 
-**Identity: Channel 2, self-facing**, confirming section 5's row on both axes. An **adaptation**: the
-three slots, the two stack types, the passive's skill-name switch and the `TRAIT_RESOURCE_KEY`
-bucket all stay. Corsair's Reckoning now reads *which* stacks it consumes, and the Sea half pays the
-Corsair back instead of taxing it.
+**Identity: Channel 2, self-facing**, confirming section 5's row: the declared contribution is
+Broadside's bucket on the Corsair's own sheet. The kit carries a large exported second clause in the
+ship, and if play or the sweep shows that is where the Role's weight actually lands, the direction
+row moves to exported — noted rather than pre-empted.
 
-**The defect closed.** Steel and Sea compete for the same three slots, but a Sea slot cost 60%
-Reckoning damage at Legendary and bought a 14% turn-bar push the Corsair converts into nothing. On a
-burst turn that trade is never correct, so the "Combo character where you plan your moves ahead"
-(`Concept_Document.md` 3.1.3) had exactly one line — Boarding Strike three times, then Reckoning —
-and Saltwater Shot was Boarding Strike with a different icon: same scaling, same cooldown, no rider.
+**The defect closed.** Steel and Sea competed for the same three slots while both paid in the same
+currency — Reckoning damage — so the comparison collapsed to a scalar the player solves once, and it
+solved *against* Sea: banking three Sea and then spending three Steel yields 11.21 damage units over
+eight turns against 11.72 for two pure Steel cycles, and break-even needs a per-stack rate that
+would push the Role outside section 4's band. Saltwater Shot was also Boarding Strike with a
+different icon — same scaling, same cooldown, no rider.
 
-**Passive: Wrangle the Sea.** Unchanged in shape. The per-Steel damage rate drops to **28/32/36/40%
-by rarity** and gains **+6/7/8/9% per Undertow spent**; the per-Sea turn-bar push retires.
+**Sea now pays in a currency Steel cannot.** Steel buys the Corsair's own spike, resolved now; Sea
+buys the crew permanent growth, worth more the earlier it is spent and nothing once the fight ends.
+A permanent bonus decays in value across a fight while a spike does not, so the question is *when*,
+not *how much* — and fight length is uncertain, so it does not solve.
 
-**The Reckoning resolves by composition; count sets the size.** Ten possible hands, three rules — so
-a hand of one or two stacks resolves as itself, and casting early is a tempo decision rather than a
-failed Reckoning.
+**Passive: Wrangle the Sea.** Unchanged in shape and in its per-Steel damage rate (45/50/55/60% by
+rarity). The per-Sea turn-bar push retires.
 
 | Hand | Mode | Effect (Legendary) | Channel |
 |---|---|---|---|
-| Steel only | **Broadside** | Consumes all Undertow on the target; per-Steel rate 0.40 + 0.09 per Undertow spent. | 1 + 2 |
-| Sea only | **Chart the Course** | One Undertow per Sea, no damage bonus, cooldown 1 instead of 3. | 2 |
-| Mixed | **Cut of the Haul** | Steel damages at the base rate, reading no Undertow and spending none; Sea applies its Undertow; every other living ally gains Slipstream and Empower for 2 turns. | 1 + Enabler |
+| Steel only | **Broadside** | Per-Steel rate 0.60; 3 Steel = **2.80x**. No ship. | 1 + 2 |
+| Sea only | **Bring Her Alongside** | No damage bonus. The Gilded Deck is raised or resupplied, **2 charges per Sea** — 6 at three. | Enabler |
+| Mixed | **Boarding Party** | Steel damages at the base rate, **1 charge per Sea** (2 maximum), and every other living ally gains Slipstream and Empower for 2 turns. | 1 + Enabler |
 
-**Only a pure Steel hand ever touches the bank.** That one rule is what lets the crew cast keep the
-Corsair's investment intact, and it is also why the mixed hand is not strictly better than Broadside:
-the bank is convertible into damage by nothing else.
+Three time horizons rather than three sizes: the Corsair's spike now, the team's window now, the
+team's growth for the rest of the fight.
 
-**Undertow** is a new stacking debuff on the target, cap 3 — the investment sits on the enemy, so a
-target switch or an early kill loses it. That is the cost that keeps banking a decision.
+**The Gilded Deck** is the Corsair's signature zone (Zone Ally, momentum family) and the only zone in
+the roster placed without the player choosing its section, since Corsair's Reckoning spends its
+targeting on an enemy. It resolves to the free section holding the most allies, ties breaking toward
+the end of the bar; failing that, a random free section; and if all five are occupied the Reckoning
+deals its damage and no ship is raised. One deck stands at a time — further Sea resupplies it rather
+than raising a second.
 
-**Composition hooks.** Undertow is a distinct debuff type, so it feeds any `Target_Debuff_Count`
-reader (route A) without this kit naming a Role. Slipstream and Empower are existing statuses and
-Channel 1 / Enabler grants, **not** a Channel 2 export — the declared contribution stays Broadside
-on the Corsair's own sheet, which is what holds the self-facing direction. The kit closes route D's
-open second anchor (section 6) as the self-facing half against Architect's exported one.
+**Sea Legs** is a new permanent buff. An ally whose turn starts on the deck gains one stack:
+**+5/6/7/8% by rarity to that character's highest base primary attribute, Health excluded**, scaled
+by the Corsair's Knowledge through the existing ally-zone rule
+(`GameBalance.ZONE_KNOWLEDGE_SCALING`). Never expires, never spent, capped at 4 stacks per
+character. Health is excluded because its values run 270-330 against roughly 100-200 for every other
+attribute, so it would otherwise always be the highest.
 
-**Projected numbers.** Broadside at 3 Steel: **2.20x** bare, **3.01x** off a full bank — a
-redistribution of the shipped 2.80x, not a raised ceiling, and the un-invested line now sits below
-it. Cut of the Haul at 2 Steel is 1.80x plus Empower's +30% Attack on each ally, which lands in the
-aggregate rather than the modifier product. Reaching the bank costs two Reckonings on one target
-about six turns apart: inside a boss's 10-12 rounds, outside a fodder fight's 3-4, so the Role is
-deliberately weakest in trash.
+**Per-holder targeting is what makes the ship universal.** Attack is a primary attribute on 3 of the
+roster's 20 Roles, against Knowledge's 9 and Mysticism's 7. A fixed-attribute grant would be worth
+nothing to most of any team, making the Corsair a Role that only pays off beside the two other
+Attack Roles — the opposite of a ship the whole crew boards.
 
-**Implementation needs (not yet built):**
+**Composition hooks.** The deck reads nothing and names no Role: any ally advancing into it boards.
+Sea Legs lands entirely on teammates' sheets and scales with the Corsair's own Knowledge, so a
+Knowledge-built Corsair doubles what the crew gets while giving up its own Attack scaling. The kit
+closes route D as the self-facing half against the Architect's exported one.
 
-* `tidal_corsair_trait.gd` — the `OnSkillCast` "Corsairs Reckoning" branch reads the consumed hand's
-  composition and dispatches one of three payloads instead of summing per-stack effects;
-  `_turn_bar_bump` goes. The per-Steel rate reads the target's Undertow count at resolution.
-* `Data/Status_Effects/` — Undertow, stacking to 3. `Corsairs_Reckoning.tres` and
-  `Saltwater_Shot.tres` gain their new payloads; Saltwater Shot stops being a scaling clone.
-* `kit_contribution_manifest.gd` — Wrangle the Sea's magnitude rises 1.8 → 2.01 and its stale TRAP
-  note about the apostrophe bug goes; the Slipstream/Empower grants are declared as a
-  `granted_attribute_buff` so the scorer credits Empower into the ally's aggregate.
-* `Concept_Document.md` at promotion: 3.1.3's Wrangle the Sea entry, 3.2.3's Undertow entry and
-  Slipstream's claimant, 3.2.4.2's Saltwater Shot and Corsair's Reckoning.
-
-**Judgment calls made while settling, listed so they can be overruled:** Chart the Course keeps its
-cooldown clause, which is the first thing to cut if the description outgrows 3.2.4's soft cap; the
-mixed hand grants two existing statuses rather than one new bespoke buff, so the kit adds one status
-to the catalog instead of two; and Boarding Strike is untouched, since the dominance defect was
-Sea's payload rather than the basic's.
-
-### 9.14 Scholar — every advantage sharpened
-
-**Status:** Settled, not yet implemented. Batch 3.
-
-**Identity: Channel 2, exported**, confirming section 5's row on both axes. An **adaptation**: the
-passive is **replaced** and the basic gains a conditional rider. Expose Fallacy and Refutation are
-kept exactly as they ship.
-
-**Passive: Field of Study** (replaced). Attribute buffs and debuffs applied by the Scholar's team
-are **+7/8/9/11 percentage points by rarity** stronger. Scope: the six primary attributes plus Speed
-and Health. Critical Chance and Critical Damage are excluded — amplifying them would put the Scholar
-on the crit path, which is the Appraiser's whole declared contribution (§9.5). Enemy self-buffs are
-not amplified.
-
-**What the replacement reaches.** Nothing in the roster reads the Channel 1 attribute layer —
-Confound, Suppress, Unravel and Blind are Channel-1-only in practice because nothing makes them
-worth casting (section 2). This passive is what reads them. It lands on the scaled attribute
-aggregate rather than a `CombinedDamageModifier` bucket, so it multiplies with every Channel 2 and 3
-factor a teammate brings instead of sharing a bucket with any of them; and being second-order — a
-modifier on a modifier — it reaches the entire roster at a magnitude that cannot run away.
-
-| Slot | Skill | Effect | Channel |
-|---|---|---|---|
-| Basic | Sharp Rebuttal | Kept, plus a rider: if any zone stands on the turn bar, also applies **Suppress** for 1 turn. | 1 |
-| Signature | Expose Fallacy | Kept as-is. Confound to one enemy and Opportunist to all allies, 2 turns each. Cooldown 3. | 1 + 2 |
-| Signature | Refutation | Kept as-is. Removes one zone from the turn bar. Cooldown 3. | 1 + Enabler |
-
-**The rider's gate is the kit's own tension.** Refutation clears zones; the rider needs one
-standing. The Scholar chooses between denying the enemy's setup and holding its own condition open —
-the first real decision the kit has ever carried, and it gives Refutation's ally-placed branch a cost
-it needed to pass the collapse test on its own merits.
-
-**Why Suppress.** The passive amplifies whatever the basic applies at near-permanent uptime, so the
-rider is chosen for what is safe to hold inflated, not for what gains most from inflation. Suppress
-is purely defensive: at 41% it cuts an enemy's magic output and inflates no part of the team's burst,
-where Slow's tempo denial or Expose Weakness's Defence shred would. Duration carries the whole
-restraint — every attribute debuff in the catalog is 30% except Slow at 15%, so there is no minor one
-to reach for — and 1 turn makes it upkeep the Scholar spends its basic on rather than banked value.
-
-**Composition hooks.** Three, none naming another Role:
-
-* The passive amplifies any attribute modification the team applies — Empower, Fortify, Attune,
-  Exhert, Enfeeble, Expose Weakness, and every attribute status a later batch authors.
-* Opportunist stays the exported bucket anchor, and the kit now feeds the density it reads: Suppress
-  and Confound are two distinct types the Scholar produces itself.
-* Suppress is inert against a physical boss and bites once that boss's damage is re-pointed through
-  Mysticism — Warped (§9.3) makes the Scholar's basic matter in fights where it otherwise would not.
-
-**Projected numbers.** The passive is an **aggregate-term factor**, a kind no other Role fields
-(section 4). One amplified 30% modification is **1.085x** at Legendary; a team running three is
-**≈1.27x**. Opportunist is unchanged at **1.40x** on four distinct debuff types, and easier to reach
-now that the Scholar produces two of them. The Role's exported contribution is **≈1.78x** from two
-terms that multiply rather than share a bucket — inside section 4's band, with no damage factor on
-the Scholar's own sheet.
+**Projected numbers.** Broadside 2.80x, unchanged from what ships and inside section 4's band. The
+ship is an aggregate contribution rather than a modifier-product one, landing in the same term as
+Empower and Attune: at Corsair Knowledge 120 (multiplier 1.60) a full deck gives each ally 2 stacks
+at +12.8% on their highest attribute, and a second full deck reaches the 4-stack cap at +51%. Two
+pure-Sea Reckonings is the price, which is why the investment is only correct early.
 
 **Implementation needs (not yet built):**
 
-* A new Scholar trait applying the amplification wherever attribute modifiers resolve;
-  `field_of_study_trait.gd` retires, and its description string carries a live defect — it says the
-  passive identifies each enemy's *weakest* attribute while the code and `Concept_Document.md` both
-  say highest. The replacement moots it.
-* `StatusEffects.Debuff`'s `has_weakness_rider` / `weakness_attribute` / `weakness_reduction` fields
-  retire with the old passive — half of the bespoke-rider architecture defect goes with them, leaving
-  `repeats_per_distinct_debuff` as the only claimant of the generic `trait_riders` container.
-* `Sharp_Rebuttal.tres` gains the conditional Suppress application; the gate needs an "any zone
-  standing on the turn bar" condition, which no skill currently expresses.
-* `kit_contribution_manifest.gd` — Field of Study's entry is replaced, Sharp Rebuttal's gains the
-  rider, and Refutation's stale note about reading an unset `_damage_multiplier` goes.
-* `burst_reachability.gd` — section 11's new gap: the scorer credits granted attribute buffs but
-  nothing amplifies them, so the passive is invisible to the sweep until it does.
-* **Open decision:** `Concept_Document.md` 3.2.4.2 promises Refutation deals damage per remaining
-  charge on an enemy-placed zone; `Refutation.tres` carries no damage parameters. Resolve in either
-  direction at promotion — this kit keeps the skill as it ships and does not settle it.
-* `Concept_Document.md` at promotion: 3.1.3's passive, 3.2.4.2's Sharp Rebuttal, 3.2.3's Suppress
-  claimant.
+* `tidal_corsair_trait.gd` — the Reckoning branch dispatches on the consumed hand's composition;
+  `_turn_bar_bump` goes. Sea Legs resolves its per-holder attribute from base attributes at
+  boarding, ties broken by a fixed attribute order declared in the trait.
+* `Data/Status_Effects/` — Sea Legs, permanent, stacking to 4; a zone resource for The Gilded Deck
+  plus the auto-placement resolution, which no existing zone needs.
+* `Corsairs_Reckoning.tres` and `Saltwater_Shot.tres` gain their new payloads.
+* `kit_contribution_manifest.gd` — Wrangle the Sea keeps magnitude 1.8; the deck is declared as a
+  team-reaching granted attribute buff. The stale TRAP note about the apostrophe bug goes.
+* `burst_reachability.gd` — `_ContributeGrantedAttributeBuffs` credits fixed one-shot grants; a
+  stacking, zone-delivered, per-holder-attribute grant is a shape it cannot represent (section 11).
+* `Concept_Document.md` at promotion: 3.1.3's Wrangle the Sea entry, 3.2.3's Sea Legs, 3.2.4.1's
+  auto-placement rule, 3.2.4.2's Saltwater Shot and Corsair's Reckoning.
 
-**Judgment calls made while settling, listed so they can be overruled:** the rider applies Suppress
-at the status's own magnitude, with duration carrying all of the restraint; the passive's scope is
-modifications the Scholar's *team* applies, so an enemy's own Frenzy is untouched; and Slow was
-considered and rejected for the basic — tempo denial is unsafe at permanent uptime regardless of
-magnitude, and the passive makes it more dangerous rather than more interesting.
-
-### 9.15 Alchemist — the reagent economy kept running
-
-**Status:** Settled, not yet implemented. Batch 4.
-
-**Identity: Channel 2, exported**, confirming section 5's row on both axes. An **adaptation**: the
-passive and the basic are kept exactly as they ship; the zone gains a payload and the third slot
-gains two clauses. The passive's 1.29x sits below section 4's band and stays there — the factor is
-unconditional, reaches all three champions, and is one of two effects the passive pays.
-
-**Passive: Fresh Batch** (kept). Brews one battle-scoped reagent from the Alchemist pool; any ally
-consuming any reagent grants the team Volatile Mixture, +20/23/26/29% damage by rarity for 2 turns.
-
-| Slot | Skill | Effect | Channel |
-|---|---|---|---|
-| Basic | Acrid Splash | Kept as-is. Knowledge-scaled single-target damage, no rider. | 1 |
-| Signature | Catalyst Cloud | Kept, plus a payload on Catalyst: when the holder consumes a **non-brew** reagent, one reagent from the Alchemist brew pool is refunded. Zone, 4 charges, cooldown 3. | Enabler |
-| Signature | Dissolving Agent | Modest Knowledge-scaled damage, plus **Unravel** and **Expose Weakness** to one enemy. Cooldown 3. | 1 |
-
-**Catalyst Cloud's claim is the window, not the magnitude.** The refund multiplies the *number* of
-reagent consumptions, and every consumption re-arms Volatile Mixture and pays its own reagent
-payload. Volatile Mixture refreshes rather than stacks, so the zone's collapse-test claim is that
-the buff is live when the burst lands and the team has not run dry — never that the factor is
-deeper. The chain terminates on its own: refunded brews are non-refunding, and the pool is the
-lesser one, so the loop trades power for volume.
-
-**Dissolving Agent's damage is a floor, not a payload.** It stops the slot being a pure application
-on the turn it is spent; the value is the two debuffs. Expose Weakness lands outside the combined
-modifier, so it multiplies against the passive's bucket rather than sharing it, and discharges
-section 10.1's standing reservation of the effect's second Role source.
-
-**Composition hooks.** Volatile Mixture stays the exported bucket every teammate consumes; Expose
-Weakness puts a third feeder on route G, readable by any attacker; the refund raises the reagent
-consumption count any reagent-reading kit sees.
-
-**Projected numbers.** Bucket product unchanged at **1.29x** at Legendary. Expose Weakness is a
-mitigation-term factor, the kind section 4 holds separate from the bucket product, and it is
-comparable to §9.10's Defence debuff rather than to the passive.
-
-**Implementation needs (not yet built):**
-
-* `Catalyst_Cloud.tres` / the Catalyst status gains the refund clause; the refund needs a path that
-  adds a brew-pool reagent to the shared slots mid-battle, which `fresh_batch_trait.gd` currently
-  only does at combat start, and a marker distinguishing brews from brought reagents so the loop
-  terminates.
-* `Dissolving_Agent.tres` gains a `DamageEffect` and the second debuff application.
-* `kit_contribution_manifest.gd` — Catalyst Cloud's and Dissolving Agent's entries.
-* `Concept_Document.md` at promotion: 3.2.4.2's two skills, 3.2.3's Expose Weakness claimant.
-* **Watch item, parked outside this plan:** the refund loop makes Lesser Barrier Brew (a Barrier
-  absorbing 40% of max Health) repeatable where it was once per battle. Brew-pool magnitudes are the
-  lever, and tuning them is out of scope here.
-
-### 9.16 Diviner — the read pays back
-
-**Status:** Settled, not yet implemented. Batch 4.
-
-**Identity: Enabler, exported**, redeclaring section 5's Channel 1 row. Enfeeble cuts the enemy's
-Attack, Premonition blocks a hit, Hexed denies rolls — all mitigation and denial, and §1.2's
-Enabler identity is what the kit already is. An **adaptation**: one skill gains a clause, everything
-else is kept.
-
-**Passive: Foresight** (kept). At turn start, applies Enfeeble for 1 turn with no resist roll to
-every enemy within 10/15/20/25% turn-bar-behind reach by rarity.
-
-| Slot | Skill | Effect | Channel |
-|---|---|---|---|
-| Basic | Fateful Glimpse | Kept as-is. Mysticism-scaled damage plus a heal to the most injured ally. | 1 |
-| Signature | Premonition | Kept, plus a clause: the attack the holder avoids is answered by an **immediate counter-attack with the holder's basic skill**. One ally, 1 turn, cooldown 3. | Enabler |
-| Signature | Ill Omen | Kept as-is. Mysticism-scaled damage plus Hexed, 2 turns. Cooldown 3. | 1 + Enabler |
-
-**The counter pays a correct read.** Premonition's decision is predicting who the enemy attacks —
-a readable, repeatable call, not a guess, since targeting follows gear and stats rather than
-changing turn to turn. A team-wide version was considered and rejected: it removes the target choice
-and turns the skill into an on-cooldown cast. The counter leaves the prediction as the whole
-decision and returns tempo for calling it right; calling it wrong still costs the cast.
-
-Three details settled with it: the counter resolves at **full basic strength** (rarity ladders live
-on the passive, so a fraction here would sit in the wrong place); the auto-miss and the counter are
-**one event** — the attack whiffs, the buff is consumed, the counter fires, including when the
-holder is one target of an enemy AoE; and the counter **costs the holder nothing** — no turn-bar
-movement, no turn spent.
-
-**Composition hooks.** Enfeeble and Hexed are world state any kit can read. The counter is the third
-and the only exported one: an off-turn resolution on a teammate's sheet.
-
-**The counter is a minor exported instance count.** By §3's total-resolutions test an off-turn basic
-is one more resolution than would otherwise happen, the same *kind* of contribution as §9.9's
-Borrowed Time. Recorded here so a later coverage review reads it as what it is rather than as an
-unclaimed Channel 3 anchor. The two are distinguishable in shape — Borrowed Time's holder chooses
-when to spend it, the counter is triggered by the enemy — and this one is a single basic behind a
-correct prediction and a 3-turn cooldown. It does not unseat the Enabler declaration: an identity is
-a claim on one term, not a ceiling on the rest of the kit.
-
-**Projected numbers.** None. The kit fields no damage factor and is measured on the collapse test,
-absent from the sweep's ranking by design (§4).
-
-**Implementation needs (not yet built):**
-
-* The Premonition buff's consumption path (`ConsumePremonitionIfPresent` in `battle_resolver.gd`)
-  gains the counter-attack resolution — nothing in the roster counter-attacks today, so the
-  off-turn basic resolution is new plumbing. Check it against the Symbiote graft pool's retaliatory
-  pull when that kit settles, so the two stay distinct effects.
-* `kit_contribution_manifest.gd` — Premonition's entry.
-* `Concept_Document.md` at promotion: 3.1.3's Diviner identity tag, 3.2.4.2's Premonition, 3.2.3's
-  Premonition buff.
-
-### 9.17 Symbiote — kept
-
-**Status:** Settled as kept, unchanged. Batch 4.
-
-**Identity: Channel 1, self-facing.** Exhert is a real attribute-layer anchor — +20% on every
-primary attribute except Health — and it points inward: Symbiotic Overdrive targets the Symbiote,
-not an ally. Section 5's row is corrected on direction only. Post-graft the kit may read either way,
-which is what the graft pool is for.
-
-Passive Graft, Spore Lash, Symbiotic Overdrive and Grafted Flesh all keep exactly as they ship. The
-Role's variety is meant to come from the graft pool, not from its three fixed slots, and §1's
-contract is met without touching them.
-
-**Composition hook: the Symbiote wounds itself, reliably and repeatedly.** Exhert's per-turn tick
-and Grafted Flesh's 10% self-cost are the world state §9.4's `Wounded_Allies` counter reads and
-route E is built on. The hook already exists and needed only naming.
-
-**Two decisions made and closed, so they are not rediscovered as gaps:**
-
-* **The Buffer purpose is served by the graft pool, not by the fixed kit.** Several grafts are
-  ally-facing; the three slots are not required to duplicate them.
-* **The 5- and 4-turn cooldowns stay.** Both skills cost Health rather than tempo, which is the
-  Role's fiction. Their durations nearly cover their cooldowns, so re-casting is upkeep rather than
-  a spend-or-hold gamble; widening that gap is a tuning change, out of this plan's scope.
-
-**Projected numbers.** Exhert's +20% is an aggregate-term contribution on the Symbiote's own sheet,
-comparable only to §9.14's kind. No bucket key, by design.
-
-### 9.18 Bar Brawler — kept, Heap On sanctioned
-
-**Status:** Settled as kept, unchanged. Batch 4.
-
-**Identity: Channel 2, self-facing**, confirming section 5's row on both axes. Heap On's ramp is the
-bucket anchor; On the House is Enabler content beside it, not the Role's identity.
-
-Passive On the House!, Heap On, Liquid Courage and Headbutt all keep exactly as they ship.
-
-**Heap On's ramp is a sanctioned exception, on the rule of cool.** It is an unconditional Channel 2
-key on a no-cooldown cast (§1.2's one forbidden shape) and it is uncapped (§4). Both stand: the
-skill is more fun than the rules it breaks, and fun wins. Consequence, recorded so a later review
-reads it as the exception working rather than a regression: a long fight can carry Heap On above the
-roster's ceiling in the sweep, and it is expected to.
-
-**Composition hook.** On the House reads any buff the Bar Brawler gains from any source, so every
-Buffer kit in the roster feeds it without either side naming the other. Liquid Courage is the kit's
-own trigger for it.
-
-**Projected numbers.** Heap On's bucket is +20% per use with no ceiling, so it has no fixed figure
-to place in section 4's distribution — the only entry in the roster of which that is true.
-
-### 9.19 Warlord — everything that strikes the wall pays for it
-
-**Status:** Settled, not yet implemented. Batch 4.
-
-**Identity: Enabler, exported**, redeclaring section 5's Channel 1 row. Fortify raises Defence, which
-is no damage term; redirection, Fortify and Aegis are all mitigation. An **adaptation**: one slot
-gains a clause.
-
-**Passive: Shield Wall** (kept). Allies within 15% turn-bar proximity have 15/20/25/30% of incoming
-attack damage redirected to the Warlord by rarity, re-mitigated against his own Defence.
-
-| Slot | Skill | Effect | Channel |
-|---|---|---|---|
-| Basic | Shield Slam | Kept as-is. Defence-scaled single-target damage. | 1 |
-| Signature | Hold the Line | Kept as-is. All allies gain Fortify, 2 turns. Cooldown 3. | Enabler |
-| Signature | Brace for Impact | Kept, plus a clause: while it holds, any enemy whose attack lands on the Warlord — **including damage redirected to him by Shield Wall** — gains **Enfeeble for 2 turns**. Rush and Aegis 1 turn each, Rush's expiry self-Stun kept as the price. Cooldown 4. | Enabler |
-
-**The reactive form is the design.** An all-enemies Enfeeble would be a generic debuff button; keying
-it to attackers makes it proportional to the pressure the team is actually under, and Shield Wall
-already guarantees the trigger by making the Warlord the thing being hit. Counting redirected damage
-closes the kit into one loop: proximity pulls the hit, the hit taxes the attacker, Fortify and Aegis
-hold him through it. It also completes the mitigation triangle — Fortify raises the team's Defence,
-Shield Wall moves the damage, Enfeeble cuts it at the source — and discharges §10.1's reservation of
-Enfeeble's second Role source.
-
-**Enfeeble lands on impact, not before it.** An attack's damage is computed from the attacker's
-attributes when the skill resolves, so a debuff applied at the moment of impact cannot shrink that
-same hit; making it genuinely pre-hit would mean applying it at the start of the attacker's action,
-which is new plumbing and reads on screen as an icon appearing for no visible cause. The first blow
-lands full — which is what bracing *for* an impact means — and the 2-turn duration taxes every
-follow-up.
-
-**Composition hooks.** Enfeeble is world state any kit can read, and the redirection window is the
-exported one: an ally standing inside it survives a resolution it otherwise would not.
-
-**Damage redirection stays claimed twice**, closing §8's open item at the batch it named. This kit
-does not lean harder on redirection, so Shield Wall and Bloodmage's Sanguine Pact remain
-distinguishable — one redirects to protect, the other prices a damage buff.
-
-**Projected numbers.** None. The kit fields no damage factor and is measured on the collapse test,
-absent from the sweep's ranking by design (§4).
-
-**Implementation needs (not yet built):**
-
-* `Brace_for_Impact.tres` gains the reactive clause; it needs a "while this buff holds, on damage
-  landing on the holder, debuff the attacker" hook, which no skill currently expresses. The
-  redirected-damage case must route through it too — `shield_wall_trait.gd`'s redirection carries the
-  original attacker's identity to the trigger.
-* `kit_contribution_manifest.gd` — Brace for Impact's entry.
-* `Concept_Document.md` at promotion: 3.1.3's Warlord identity tag, 3.2.4.2's Brace for Impact,
-  3.2.3's Enfeeble claimants.
+**Judgment calls made while settling, listed so they can be overruled:** the mixed mode keeps the
+Slipstream and Empower grants rather than only a reduced charge count, which is a third clause on
+one mode but is what makes it a distinct choice rather than a blend; and the direction row stays
+self-facing on the strength of Broadside being the declared contribution.
 
 ## 10. Coverage ledger
 
@@ -1492,13 +1219,14 @@ Anchor, Steadfast, Resonance unclaimed.
 | Cracked Facet | Appraiser (Flaw Analysis) — **implemented** (section 9.5); moved off the retired Strike the Flaw passive, now scaled by the applier's Knowledge |
 | Confound | Scholar (Expose Fallacy), Appraiser (Flaw Analysis) — **implemented** (section 9.5). Second claimant, within the commodity-debuff limit of two |
 | Hexed | Diviner (Ill Omen), Jester (Burning Bolas) — **settled, not yet implemented** (section 9.6). Second claimant, at the commodity-debuff limit of two, so no later Role may take it. Scope widens roster-wide (section 12) |
-| Undertow | Tidal Corsair (Saltwater Shot's Sea stacks, spent by Corsair's Reckoning) — **settled, not yet implemented** (section 9.13); new debuff, no prior claimant, stacks to 3 |
 | Enfeeble | Diviner (Foresight), Warlord (Brace for Impact's reactive clause) — **settled, not yet implemented** (section 9.19). Second claimant, at the commodity-debuff limit of two |
 | Unravel | Alchemist (Dissolving Agent) — unchanged claimant; the skill keeps it alongside a second debuff, **settled, not yet implemented** (section 9.15) |
 | Expose Weakness | Architect (Calibration), Alchemist (Dissolving Agent) — **settled, not yet implemented** (section 9.15). Second claimant, at the commodity-debuff limit of two, and its first skill source |
 | Burning | Jester (Burning Bolas), Lava Zone — unchanged claimants. Tick changes roster-wide (section 12) — **settled, not yet implemented** (section 9.6) |
 
-**Buffs** — Borrowed Time is a new buff, claimed by Chronophage (Time Tithe) — **settled, not yet
+**Buffs** — Sea Legs is a new buff, claimed by Tidal Corsair (The Gilded Deck) — **settled, not yet
+implemented** (section 9.13); no prior claimant, and the roster's only permanent stacking attribute
+grant, sized per holder rather than by a fixed attribute. Borrowed Time is a new buff, claimed by Chronophage (Time Tithe) — **settled, not yet
 implemented** (section 9.9); no prior claimant, and the only buff in the roster granting a cascade
 instance. Attune's second claim (Herald of the loom's Woven Blessing, alongside Cultist's Chosen
 Vessel passive) has dropped: Woven Blessing is no longer part of the Herald's kit (section 9.2,
@@ -1574,9 +1302,10 @@ check against a new kit accidentally claiming a second one. State as of Batch 1.
 | Unstable Rift | Sorcerer |
 | Lava Zone | Enemy only (Obsidian Stallion) |
 | Inscribe | Enemy only (Glyphbound Archivist) |
+| The Gilded Deck | Tidal Corsair — **settled, not yet implemented** (section 9.13); the only zone placed without the player choosing its section |
 | Weight of Law | **Orphaned — no player or enemy fields it** |
 
-Six player-facing zones across five Roles, Chronophage holding two — the one existing exception to
+Seven player-facing zones across six Roles, Chronophage holding two — the one existing exception to
 the one-per-Role rule, and consistent with its turn-bar identity. Weight of Law having no owner at
 all is a loose end this plan did not create and does not close; note it for whichever batch takes
 Emissary, whose theme it matches.

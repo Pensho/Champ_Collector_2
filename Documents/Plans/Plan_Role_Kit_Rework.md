@@ -158,9 +158,14 @@ implemented:
   out of `contrast_ratio` for any candidate without its own asymmetric ignore, which is every
   Role but the Thief). Top decile (114 teams) gains a **tenth distinct pairing**:
   Thief/Pierce weakness (1 team, 10.80x).
-* **Tidal Corsair (§9.13)** — an adaptation closing route D. Prompted the description soft cap
-  (`Concept_Document.md` 3.2.4), and its Slipstream claim retires part of `FeatureIdeas.md`'s
-  orphaned-turn-bar-effects item and narrows its Outrider sketch.
+* **Tidal Corsair (§9.13)** — Sea stacks stopped paying in Reckoning damage, which had made them a
+  strictly worse Steel stack: the invested line lost 11.21 damage units to 11.72 over eight turns,
+  and break-even needed a rate that broke §4's band. They now raise **The Gilded Deck**, the
+  Corsair's signature zone — allies who board gain permanent **Sea Legs** stacks on their own
+  highest attribute. Steel spikes now, Sea grows the crew for the rest of the fight, so the choice is
+  *when* rather than *how much*. Closes route D; prompted the description soft cap
+  (`Concept_Document.md` 3.2.4) and two `FeatureIdeas.md` items — Attack's under-representation
+  across the roster, and zone placement being blocked outright.
 * **Scholar (§9.14)** — an adaptation. The passive is replaced with an amplifier on every attribute
   modification the team applies, giving the roster its first reader of the Channel 1 attribute layer,
   which nothing has ever made worth casting. The basic gains a zone-gated Suppress rider whose gate
