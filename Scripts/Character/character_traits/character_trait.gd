@@ -13,17 +13,17 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_owner_rarity = p_rarity
 
 func StartOfBattle(_p_owner_ID: int, _p_resolver: BattleResolver) -> void:
-	print("character_trait base class StartOfBattle() called!")
+	pass
 
 func RefreshVisuals(p_character_repr: CharacterRepresentation) -> void:
 	p_character_repr.SetTraitElement(_trait_texture, 0)
 	p_character_repr.SetTraitElementToolTip(_title, _body, 0)
 
 func StartOfTurn(_p_owner_ID: int, _p_resolver: BattleResolver) -> void:
-	print("character_trait base class StartOfTurn() called!")
+	pass
 
 func EndOfTurn(_p_owner_ID: int, _p_resolver: BattleResolver) -> void:
-	print("character_trait base class EndOfTurn() called!")
+	pass
 
 func OnSkillCast(
 		_p_owner_ID: int,
@@ -31,7 +31,6 @@ func OnSkillCast(
 		_p_skill_name: String,
 		_p_caster_attributes: Dictionary[Types.Attribute, int],
 		_p_resolver: BattleResolver) -> TraitSkillResult:
-	print("character_trait base class SkillCast() called!")
 	return null
 
 func OnSkillEffectsResolved(
@@ -40,13 +39,13 @@ func OnSkillEffectsResolved(
 		_p_skill_name: String,
 		_p_caster_attributes: Dictionary[Types.Attribute, int],
 		_p_resolver: BattleResolver) -> void:
-	print("character_trait base class OnSkillEffectsResolved() called!")
+	pass
 
 func OnDefend(
 		_p_defender_ID: int,
 		_p_defender_attributes: Dictionary[Types.Attribute, int],
 		_p_characters: Dictionary[int, Character]) -> void:
-	print("character_trait base class OnDefend() called!")
+	pass
 
 func BlocksForwardTurnBarBump(_p_owner_ID: int) -> bool:
 	return false
@@ -66,14 +65,13 @@ func DebuffsCannotBeResisted(_p_owner_ID: int) -> bool:
 
 ## Returns the multiplier applied to incoming damage (1.0 = unchanged, 0.0 = avoided).
 func OnDamageTaken(_p_owner_ID: int, _p_attacker_ID: int, _p_resolver: BattleResolver) -> float:
-	print("character_trait base class DamageTaken() called!")
 	return 1.0
 
 func GetIncomingSingleTargetRedirectChance(_p_owner_ID: int) -> float:
 	return 0.0
 
 func OnDeath() -> void:
-	print("character_trait base class OnDeath() called!")
+	pass
 
 ## Multiplier applied to this owner's whole enemy-AI targeting priority score
 ## (Health + Defence), not just its Defence component — a value above 1.0 makes
@@ -95,25 +93,24 @@ func GetOutgoingRestorationMultiplier(_p_owner_ID: int, _p_resolver: BattleResol
 
 func OnReagentConsumed(
 		_p_consumer_ID: int, _p_reagent: ReagentData, _p_resolver: BattleResolver) -> float:
-	print("character_trait base class OnReagentConsumed() called!")
 	return 0.0
 
 func OnCriticalHit(_p_owner_ID: int, _p_target_ID: int, _p_resolver: BattleResolver) -> void:
-	print("character_trait base class OnCriticalHit() called!")
+	pass
 
 func OnDamageDealt(
 		_p_owner_ID: int, _p_target_ID: int, _p_amount: int, _p_resolver: BattleResolver) -> void:
-	print("character_trait base class OnDamageDealt() called!")
+	pass
 
 func OnAllyDeath(_p_owner_ID: int, _p_dead_ally_ID: int, _p_resolver: BattleResolver) -> void:
-	print("character_trait base class OnAllyDeath() called!")
+	pass
 
 func OnAllyReagentConsumed(
 		_p_owner_ID: int, _p_consumer_ID: int, _p_reagent: ReagentData, _p_resolver: BattleResolver) -> void:
-	print("character_trait base class OnAllyReagentConsumed() called!")
+	pass
 
 func OnKill(_p_owner_ID: int, _p_victim_ID: int, _p_resolver: BattleResolver) -> void:
-	print("character_trait base class OnKill() called!")
+	pass
 
 func GetOutgoingDamageBonus(_p_owner_ID: int, _p_target_ID: int, _p_resolver: BattleResolver) -> float:
 	return 0.0
@@ -137,32 +134,31 @@ func GetBrewPotencyBonus() -> float:
 
 func OnBuffGained(
 		_p_owner_ID: int, _p_buff: StatusEffects.Buff, _p_resolver: BattleResolver) -> void:
-	print("character_trait base class OnBuffGained() called!")
+	pass
 
 func OnDebuffReceived(
 		_p_owner_ID: int, _p_debuff: StatusEffects.Debuff, _p_resolver: BattleResolver) -> void:
-	print("character_trait base class OnDebuffReceived() called!")
+	pass
 
 func OnDebuffApplied(
 		_p_owner_ID: int,
 		_p_target_ID: int,
 		_p_debuff: StatusEffects.Debuff,
 		_p_resolver: BattleResolver) -> void:
-	print("character_trait base class OnDebuffApplied() called!")
+	pass
 
 ## Returns the fraction of turn bar the owner tithes for itself when its own effect
 ## reduced an enemy's turn bar by p_reduction (0.0 = no tithe).
 func OnEnemyTurnBarReduced(
 		_p_owner_ID: int, _p_reduction: float, _p_resolver: BattleResolver) -> float:
-	print("character_trait base class OnEnemyTurnBarReduced() called!")
 	return 0.0
 
 func OnZoneUsed(_p_owner_ID: int, _p_user_ID: int, _p_resolver: BattleResolver) -> void:
-	print("character_trait base class OnZoneUsed() called!")
+	pass
 
 func OnAllyTurnBarIncreased(
 		_p_owner_ID: int, _p_target_ID: int, _p_fraction: float, _p_resolver: BattleResolver) -> void:
-	print("character_trait base class OnAllyTurnBarIncreased() called!")
+	pass
 
 ## Fires once per real cascade instance (one loop iteration of a matched
 ## CascadeResolver listener), for every living character, regardless of whose
@@ -173,7 +169,7 @@ func OnCascadeInstanceResolved(
 	pass
 
 func OnZoneConstructed(_p_owner_ID: int, _p_zone_ID: int, _p_resolver: BattleResolver) -> void:
-	print("character_trait base class OnZoneConstructed() called!")
+	pass
 
 ## Returns a scalar bonus (e.g. Calibration's charge investment) folded into the size
 ## of the owner's own zone effect (0.0 = no bonus).
@@ -184,7 +180,7 @@ func GetCritChanceOverflowRate() -> float:
 	return 0.0
 
 func OnAffectedByZone(_p_owner_ID: int, _p_zone_owner_ID: int, _p_resolver: BattleResolver) -> void:
-	print("character_trait base class OnAffectedByZone() called!")
+	pass
 
 func GetIncomingZoneEffectMultiplier(
 		_p_owner_ID: int, _p_zone_owner_ID: int, _p_sides: CombatSides) -> float:
