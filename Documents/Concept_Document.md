@@ -319,10 +319,13 @@ Current roles, their identity and purpose exist as follows:
     - Damage dealer. Primary attributes: Attack, Speed.
     - The Tidal Corsair is a Combo character where you plan your moves ahead, highly mobile but not inherently strong unless you set up your attacks correctly.
     - Purpose: Damage
-    - Passive: Wrangle the Sea [Channel 2 + Enabler] - Boarding Strike grants a Steel stack, Saltwater Shot grants a Sea stack. Corsair's Reckoning consumes all stacks. Up to 3 stacks can be
-      held at a time.
+    - Passive: Wrangle the Sea [Channel 2 + Enabler] - Boarding Strike grants a Steel stack, Saltwater Shot grants a Sea stack (up to 3 held). Corsair's Reckoning consumes all stacks and resolves by composition: Steel only (Broadside) adds bonus damage per Steel stack; Sea only (Bring Her Alongside) raises or resupplies The Gilded Deck at 2 charges per Sea; mixed (Boarding Party) deals base damage, adds 1 Deck charge per Sea (capped at 2), and grants every other living ally Slipstream and Empower for 2 turns. An ally whose turn starts on the Deck gains a permanent Sea Legs stack, boosting their own highest primary attribute (not Health), scaled by the Corsair's Knowledge, capped at 4.
         - Damage per Steel stack: 45% Uncommon, 50% Rare, 55% Epic, 60% Legendary
-        - Turn meter per Sea stack: 8% Uncommon, 10% Rare, 12% Epic, 14% Legendary
+        - Sea Legs bonus per stack: 5% Uncommon, 6% Rare, 7% Epic, 8% Legendary
+        - Known bug: the in-combat Sea Legs tooltip has been observed showing a lower percent on a
+          later stack than an earlier one on the same standing deck. The resolver's own stacking
+          math and emitted `CombatResult` are confirmed correct (`Role_Kit_Design.md` section 9.13);
+          the defect is somewhere in the live UI rendering, unreproduced outside actual play.
     - Fielded by: `Tidal_Corsair.tres`
 - Plague Doctor
     - A debuff focused character, applying various damage over time and stat reducing debuffs to enemies. Signature zone: Miasma (see section 3.2.4.1). Primary attributes: Mysticism, Resistance.
@@ -523,6 +526,7 @@ Buffs:
 * Rehearsed [Enabler]: The character's next non-basic skill does not go on cooldown, then the buff is consumed.
 * Sanguine Pact [Channel 2, granted]: Increases the holder's damage by 12% per 10% of the holder's own missing Health, and redirects 30% of damage the holder takes to whoever applied the Pact instead.
 * Borrowed Time [Channel 3 — Cascade, granted]: The holder's next damaging skill resolves one additional time, at 30-60% strength by the applier's rarity. Does not stack. Consumed only by a damaging cast; a non-damaging skill leaves it untouched for a later one.
+* Sea Legs [Channel 1, granted]: Boosts the holder's own highest primary attribute other than Health, by an amount its applier sets. Permanent; never expires. Stacks in place up to 4 times rather than as separate instances, each stack recomputing the boost against the current stack count.
 
 #### 3.2.4. Skills
 Skills can be categorized into three main types: Turn Bar Skills, Role Specific Skills, and Universal Skills.
@@ -557,7 +561,7 @@ Turn bar skills apply effects to specific zones on the turn bar.
 
 Zone system rules:
 * The turn bar is divided into 5 sections. Each section can hold at most one zone at a time.
-* When placing a zone, the player chooses which section it goes into. A section that already holds a zone cannot be targeted; the placement is blocked until that zone is gone.
+* When placing a zone, the player chooses which section it goes into. A section that already holds a zone cannot be targeted; the placement is blocked until that zone is gone. The Tidal Corsair's Gilded Deck is the sole exception: it auto-places to the free section holding the most allies (ties toward the end of the bar, then a random free section), since Corsair's Reckoning spends its targeting on an enemy.
 * Trigger: when any character's turn starts, every character standing inside a zone is affected by it — but only once per visit. A character that has been affected by a zone is not affected by it again until they leave the section and re-enter it.
 * Zones do not expire with time. A zone holds a set number of charges; each time it affects a character, one charge is consumed, and when the last charge is consumed the zone dissipates.
 * Zones are removed only by dedicated clearing effects — the Scholar's kit and a zone-clearing reagent. There is deliberately no universal zone-clearing skill.
@@ -807,11 +811,11 @@ the fix belongs in the data or the document.
     * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Attack, and grants the Tidal Corsair one Steel stack.
 * Saltwater Shot
     * Type: Damage (no cooldown)
-    * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Attack, and grants the Tidal Corsair one Sea stack.
+    * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Attack, and grants the Tidal Corsair one Sea stack, spent by Corsair's Reckoning to raise or resupply The Gilded Deck.
 * Corsair's Reckoning
     * Type: Damage
     * Cooldown: 3 turns
-    * Effect: [Channel 1 + Channel 2 + Enabler] A devastating blow consuming all held stacks: bonus damage per Steel stack and target turn bar loss per Sea stack, at the rarity-dependent rates of the Wrangle the Sea passive (see section 3.1.3).
+    * Effect: [Channel 1 + Channel 2 + Enabler] Consumes all held Stacks. Steel only: bonus damage per Steel. Sea only: raises or resupplies The Gilded Deck. Mixed: base damage, fewer Deck charges, and Slipstream plus Empower for every other ally. Rates per the Wrangle the Sea passive (section 3.1.3).
 
 ###### Plague Doctor
 * Septic Lance

@@ -126,6 +126,29 @@ func AmplifyZoneDamage(p_zone_ID: int, p_factor: float) -> void:
 		return
 	_zones[p_zone_ID]._damage_multiplier *= p_factor
 
+func SectionWithMostAllies(p_owner_ID: int) -> int:
+	var available: Array[int] = AvailableZoneIDs()
+	if(available.is_empty()):
+		return -1
+	var allies: Array[int] = _resolver.GetSides().AlliesOf(p_owner_ID).AliveMembers(_resolver.GetCharacters())
+	var turn_positions: TurnPositions = _resolver.GetTurnPositions()
+	var counts_by_section: Dictionary[int, int] = {}
+	for section in available:
+		counts_by_section[section] = 0
+	for ally_ID in allies:
+		var section: int = turn_positions.GetSectionIndex(ally_ID)
+		if(counts_by_section.has(section)):
+			counts_by_section[section] += 1
+	var best_section: int = -1
+	var best_count: int = 0
+	for section in available:
+		if(counts_by_section[section] >= best_count):
+			best_count = counts_by_section[section]
+			best_section = section
+	if(best_count <= 0):
+		return available[_resolver.GetRandom().randi_range(0, available.size() - 1)]
+	return best_section
+
 func _ResolveZoneEffect(p_zone: Zone, p_zone_ID: int, p_character_ID: int) -> void:
 	var affected: Character = _resolver._characters[p_character_ID]
 	var effect_multiplier: float = 1.0

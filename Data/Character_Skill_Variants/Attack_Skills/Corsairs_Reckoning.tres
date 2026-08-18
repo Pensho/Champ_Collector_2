@@ -13,7 +13,7 @@ damage_scaling = Dictionary[int, float]({
 [resource]
 script = ExtResource("1_c405q")
 name = "Corsairs Reckoning"
-description = "A devastating blow consuming all Stacks, dealing damage per Steel and reducing a turn per Sea. Scales with Attack."
+description = "Consumes all Stacks. Steel only: bonus damage per Steel. Sea only: raises or resupplies The Gilded Deck. Mixed: base damage, fewer Deck charges, and Slipstream plus Empower for every other ally. Scales with Attack."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Corsairs_Reckoning/Corsairs_Reckoning_1.jpg"
 cooldown = 3
 effects = Array[ExtResource("1_vtysj")]([SubResource("Resource_ef0if")])

@@ -890,17 +890,22 @@ const MANIFEST: Dictionary = {
 			{"name": "Wrangle the Sea", "bucket_key": CombinedDamageModifier.TRAIT_RESOURCE_KEY,
 					"magnitude": 1.8, "stack_cap": 3,
 					"class": Contribution_Class.Channel2,
-					"precondition": "No trap found: all three skill-name string matches ('Boarding " +
-							"Strike', 'Saltwater Shot', 'Corsairs Reckoning', no apostrophe throughout) " +
-							"are consistent between tidal_corsair_trait.gd and the shipped .tres name " +
-							"fields — the design doc's claimed apostrophe bug does not reproduce. 3 " +
-							"stack slots, filled left-to-right on the matching cast; Corsairs Reckoning " +
-							"consumes all 3: each Steel stack adds 0.60 (Legendary) to the shared " +
-							"trait_resource bucket (up to +180% at 3 Steel), each Sea stack instead " +
-							"reduces target turn bar by 0.14 (Legendary, up to -0.42 at 3 Sea) via a " +
-							"separate _turn_bar_bump field outside CombinedDamageModifier. Slots reset " +
-							"to Empty after Reckoning.",
-					"citation": "tidal_corsair_trait.gd:1-24,79-105"},
+					"precondition": "3 stack slots, filled left-to-right on the matching cast. " +
+							"Corsairs Reckoning consumes all 3 and dispatches by composition: a Steel-only " +
+							"hand (Broadside) adds 0.60 (Legendary) per Steel to the shared trait_resource " +
+							"bucket (up to +180% at 3 Steel, the figure scored here); a Sea-only hand " +
+							"(Bring Her Alongside) raises or resupplies The Gilded Deck at 2 charges per " +
+							"Sea, no damage bucket; a mixed hand (Boarding Party) adds no bucket " +
+							"contribution (Steel damages at the skill's own base rate), raises or " +
+							"resupplies the Deck at 1 charge per Sea (2 max), and grants every other " +
+							"living ally Slipstream and Empower (2 turns). The Gilded Deck's own Sea " +
+							"Legs grant is not declared here (Role_Kit_Design.md section 11): it is a " +
+							"stacking, zone-delivered, per-holder-attribute grant, a shape " +
+							"granted_attribute_buff cannot represent (fixed one-shot, fixed attribute) " +
+							"without either misrepresenting which attribute it scales or perturbing " +
+							"unrelated base-term/modifier-term invariants for every team that carries " +
+							"this Role.",
+					"citation": "tidal_corsair_trait.gd"},
 		],
 		"skills": [
 			{"name": "Boarding Strike", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
@@ -916,8 +921,8 @@ const MANIFEST: Dictionary = {
 					"stack_cap": 0,
 					"class": Contribution_Class.Channel2,
 					"precondition": "damage_scaling Attack 1.3 (own bucket contributes 0.0), plus the " +
-							"shared trait_resource bucket from consumed Steel stacks (see passive) and a " +
-							"target turn-bar reduction from consumed Sea stacks, outside " +
+							"shared trait_resource bucket from a Steel-only hand (see passive); a Sea-only " +
+							"or mixed hand instead raises or resupplies The Gilded Deck, outside " +
 							"CombinedDamageModifier.",
 					"citation": "Corsairs_Reckoning.tres:6-11"},
 		],

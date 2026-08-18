@@ -316,8 +316,9 @@ The effect subclasses, all under `Scripts/Battle/Skill_Effects/`:
 | `ReduceBuffDurationsEffect` | `amount` | Shaves `amount` turns off every buff already on the target group |
 | `TurnBarEffect` | `fraction` | Bumps the target group's turn bar by the skill's own contribution, independent of any trait turn-bar bump |
 | `AlternatingEffect` | `effects: Array[SkillEffect]` | Cycles through `effects` by this cast's use count, so a skill can behave differently on alternating (or any N-way rotating) casts |
-| `ZoneEffect` | `charges`, `section` (`Player_Chosen`/`Left_Most_Empty`/`Random_Empty`), `on_trigger: Array[SkillEffect]`, `visual_scene: PackedScene` | Resolves a turn-bar section (see [Section 7.5](#75-zones)) and calls `ZoneResolver.PlaceZone` with itself; an ordinary effect in the effect loop like any other, so a skill can place a zone alongside a direct effect (e.g. Inscribe's damage-plus-glyph) |
+| `ZoneEffect` | `charges`, `section` (`Player_Chosen`/`Left_Most_Empty`/`Random_Empty`/`Most_Allies`), `on_trigger: Array[SkillEffect]`, `visual_scene: PackedScene` | Resolves a turn-bar section (see [Section 7.5](#75-zones)) and calls `ZoneResolver.PlaceZone` with itself; an ordinary effect in the effect loop like any other, so a skill can place a zone alongside a direct effect (e.g. Inscribe's damage-plus-glyph) |
 | `BarrierZoneEffect` | *(none)* | The Architect's charge-scaled turn-bar Barrier (`Skills.ApplyBarrierZone`), kept as its own effect rather than a generic `BarrierEffect` zone case so the Calibration trait's charge-investment bonus and `Zone_Used` hook stay intact |
+| `SeaLegsZoneEffect` | `per_stack_rate: float` | The Gilded Deck's own payload: grants the boarding character one Sea Legs stack sized on *their own* highest base primary attribute (Health excluded, `FieldOfStudyTrait.PRIMARY_ATTRIBUTES`' own list and tie order), via `StatusEffectResolver.ApplySeaLegs`. Constructed by `tidal_corsair_trait.gd` with the rarity's own rate, not authored on a `.tres` |
 | `ClearZoneEffect` | `damage_scaling_per_charge: Dictionary[Types.Attribute, float]`, `cooldown_reduction` | Removes one zone from the turn bar (Refutation): a player-chosen or random occupied section; damages the placing enemy scaled by remaining charges, or reduces the placing ally's zone skill's cooldown |
 
 There are 81 `.tres` files under `Data/Character_Skill_Variants/` (skill variants, mostly split
@@ -336,7 +337,10 @@ enum MagnitudeKind {
     AttributePercent, MaxHealthPercent, DamageMultiplier, TurnBarBump,
     AttributePercentagePointAdd, MaxHealthAttributePercent, PerTargetDebuffDamagePercent,
     AttackerCritChanceBonus, AttackerCritDamageBonus, CasterAttributeSnapshotPercent,
-    IncomingHealReduction, TurnBarMovementDamagePercent,
+    IncomingHealReduction, TurnBarMovementDamagePercent, DamageAbsorb, RandomAttributePercent,
+    SelfTurnBarLossOnDamage, AllyTurnBarGainOnDamage, IncomingDamageReduction,
+    HolderMissingHealthDamagePercent, AttackerDamagePerHolderMissingHealth,
+    HighestBasePrimaryAttributePercent,
 }
 @export var magnitude_kind: MagnitudeKind
 @export var attribute_modifiers: Dictionary[Types.Attribute, float] = {}  # attribute -> sign
@@ -372,6 +376,8 @@ enum MagnitudeKind {
 @export var targeting_weight_multiplier: float = 1.0          # multiplies the holder's enemy-AI
                                                              # targeting priority, independent of
                                                              # magnitude_kind (Spotlight, 1.5x)
+@export var permanent: bool = false                         # never expires or ticks its duration
+                                                             # down (Sea Legs)
 @export var icon: Texture2D
 ```
 
@@ -490,13 +496,29 @@ resolver and is tested without the view. `CombatResult.Kind.Burning_Tick` was re
 `Debuff_Tick` since Bleed and Plague now report through the same self-tick damage result Burning
 used exclusively before.
 
-`StatusEffects.Debuff` also carries a small but growing set of fields useful to only one trait
-each, instead of every field being generic across all debuffs: `tick_bonus_per_debuff`
-(Comorbidity) and the `has_weakness_rider`/`weakness_attribute`/`weakness_reduction` trio (the
-Scholar's Field of Study, stamped in `OnDebuffApplied` onto whichever debuff triggered it, read by
-`Skills.ApplyWeaknessRider` wherever `GetEffectiveAttributes` folds in active statuses, always
-live) both sit unused on every debuff instance that isn't theirs. Fine at two, but this is a shape to watch — see FeatureIdeas.md's
-"Watch Debuff Class Field Bloat" entry for the reassessment trigger.
+`StatusEffects.Effect` carries `trait_riders: Dictionary[StringName, Variant]`, one generic
+container for mechanic-specific per-instance state instead of a named field per claimant — the
+shape three one-off claimants converged on: Comorbidity's `&"repeats_per_distinct_debuff"` flag,
+Field of Study's `&"weakness_attribute"`/`&"weakness_reduction"` pair (stamped in `OnDebuffApplied`
+onto whichever debuff triggered it, read by `Skills.ApplyWeaknessRider` wherever
+`GetEffectiveAttributes` folds in active statuses, always live), and the Tidal Corsair's Sea Legs
+`&"attribute"`/`&"stacks"` pair (section 7.5). `TraitSkillResult._trait_riders` carries the same
+shape for a rider not yet attached to an applied instance — Comorbidity's flag, read off the trait
+hook's own result by `ApplyDebuffEffect` before the debuff is cast.
+
+Sea Legs also needed its own resolver entry point, `StatusEffectResolver.ApplySeaLegs` — a second
+special case beside Barrier's "keep the larger one" rule (both bypass the standard
+overwritable/stackable pair, which can express "replace" or "duplicate" but not "accumulate in
+place"). It finds an existing Sea Legs buff and increments its stack count and value in place, up
+to a 4-stack cap, rather than creating a second instance — the runtime's usual stacking shape (a new
+independent instance per application, e.g. Burning, Haste) would otherwise cost each stack its own
+slot against the shared 8-status cap. Restacking re-emits `Status_Applied` under the buff's own
+existing `status_ID`, so `battle.gd`'s `ShowStatusApplied` now checks `_status_visual_IDs` and calls
+`CharacterRepresentation.UpdateStatusEffect` (new, alongside `AddStatusEffect`) rather than
+allocating a second icon slot for a status that, in combat state, never left the character — the
+same one-instance-per-`status_ID` assumption `SetStatusEffectDuration`/`RemoveStatusEffects` already
+made. The tooltip's `{percent}` token now reads `CombatResult.fraction`, which `_EmitBuffApplied`
+stamps from the buff's own `value` the same way `_EmitDebuffApplied` already did for debuffs.
 
 The consumed and event-triggered effects: two more `MagnitudeKind` values
 (`DamageAbsorb` for Barrier, `RandomAttributePercent` for Wanderlust) and three more
@@ -938,9 +960,17 @@ var _damage_multiplier: float = 1.0             # ZoneResolver.AmplifyZoneDamage
 (`Player_Chosen` reads a pending section the UI set via `BattleResolver.SetPendingZoneSection`,
 consumed once by `ConsumePendingZoneSection`, falling back to random if none is pending — e.g. an
 enemy AI cast; `Left_Most_Empty` / `Random_Empty` pick from `ZoneResolver.AvailableZoneIDs()`
-directly) and calls `ZoneResolver.PlaceZone(zone_ID, owner_ID, zone_effect, target,
+directly; `Most_Allies` delegates to `ZoneResolver.SectionWithMostAllies(owner_ID)`, the free
+section holding the most of the owner's living allies, ties toward the highest index, falling back
+to random when no free section holds one) and calls `ZoneResolver.PlaceZone(zone_ID, owner_ID, zone_effect, target,
 owner_attributes, source_name)`, which snapshots the owner's full effective attributes
-(`BattleResolver.GetEffectiveAttributes`, not only Knowledge) and reports `Zone_Placed`. Because
+(`BattleResolver.GetEffectiveAttributes`, not only Knowledge) and reports `Zone_Placed`. The Tidal
+Corsair's Gilded Deck (`Most_Allies`) is placed without the player choosing a section, since
+Corsair's Reckoning spends its targeting on an enemy, and is raised trait-side rather than through a
+skill's own `ZoneEffect` — the same shape Calibration's `_ReErectZone` uses: the trait calls
+`ZoneResolver.PlaceZone` directly, or `SetZoneCharges` on an already-standing deck to resupply
+instead of raising a second, with a charge count the consumed hand decides, which a static
+`.tres`-authored `ZoneEffect.charges` export can't express. Because
 `ZoneEffect` is just one effect among a skill's `effects`, a skill can place a zone *and* do
 something else in the same cast (Inscribe: a direct `DamageEffect` at the skill level plus a
 `ZoneEffect` placing a Wild Glyph). An already-occupied target section is a silent no-op for

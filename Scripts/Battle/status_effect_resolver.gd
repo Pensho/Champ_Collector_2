@@ -5,6 +5,8 @@ class_name StatusEffectResolver extends RefCounted
 ## and health paths need. Holds a back-reference to its owning BattleResolver for the
 ## shared batch/emit/snapshot services status effects need, mirroring ZoneResolver.
 
+const MAX_SEA_LEGS_STACKS: int = 4
+
 var _resolver: BattleResolver
 
 func _init(p_resolver: BattleResolver) -> void:
@@ -57,7 +59,7 @@ func ApplyBuff(p_target_ID: int, p_buff_template: StatusEffects.Buff) -> Array[C
 		return _resolver._EndBatch()
 
 	_InsertOrRefresh(p_target_ID, true, p_buff_template.type, data, new_value, p_buff_template.duration,
-			p_buff_template.source_ID, false, false, p_buff_template.name)
+			p_buff_template.source_ID, p_buff_template.trait_riders, false, p_buff_template.name)
 	return _resolver._EndBatch()
 
 func ApplyDebuff(p_target_ID: int, p_debuff_template: StatusEffects.Debuff) -> Array[CombatResult]:
@@ -75,7 +77,35 @@ func ApplyDebuff(p_target_ID: int, p_debuff_template: StatusEffects.Debuff) -> A
 	var new_value: float = (p_debuff_template.value if 0.0 != p_debuff_template.value
 			else _SnapshotStatusValue(data, p_debuff_template.source_ID, p_target_ID))
 	_InsertOrRefresh(p_target_ID, false, p_debuff_template.type, data, new_value, p_debuff_template.duration,
-			p_debuff_template.source_ID, false, false, p_debuff_template.name)
+			p_debuff_template.source_ID, p_debuff_template.trait_riders, false, p_debuff_template.name)
+	return _resolver._EndBatch()
+
+func ApplySeaLegs(
+		p_target_ID: int,
+		p_source_ID: int,
+		p_attribute: Types.Attribute,
+		p_value_per_stack: float) -> Array[CombatResult]:
+	_resolver._BeginBatch()
+	var target: Character = _resolver._characters[p_target_ID]
+	for buff in target._active_buffs:
+		if(Types.Buff_Type.Sea_Legs == buff.type):
+			var stacks: int = int(buff.trait_riders.get(&"stacks", 1))
+			if(stacks >= MAX_SEA_LEGS_STACKS):
+				return _resolver._EndBatch()
+			stacks += 1
+			buff.trait_riders[&"stacks"] = stacks
+			buff.value = p_value_per_stack * stacks
+			_EmitBuffApplied(p_target_ID, buff, buff.name)
+			return _resolver._EndBatch()
+	if(Skills.HasMaxStatusEffects(target)):
+		_EmitStatusEffectDenied(p_target_ID, true, Types.Buff_Type.Sea_Legs)
+		return _resolver._EndBatch()
+	if(_BlockedBySeverance(target)):
+		return _resolver._EndBatch()
+	var trait_riders: Dictionary[StringName, Variant] = {&"attribute": p_attribute, &"stacks": 1}
+	_InsertOrRefresh(p_target_ID, true, Types.Buff_Type.Sea_Legs,
+			StatusEffectRegistry.BuffData(Types.Buff_Type.Sea_Legs), p_value_per_stack, 0,
+			p_source_ID, trait_riders, false, "Sea Legs")
 	return _resolver._EndBatch()
 
 func RemoveBuff(p_target_ID: int, p_buff: StatusEffects.Buff) -> Array[CombatResult]:
@@ -143,6 +173,8 @@ func _ExpireBuffs(p_target_ID: int, p_source_ID: int = -1) -> void:
 
 func _IsBuffExpired(p_buff: StatusEffects.Buff) -> bool:
 	var data: StatusEffectData = StatusEffectRegistry.BuffData(p_buff.type)
+	if(null != data and data.permanent):
+		return false
 	# Both DamageMultiplier and Borrowed Time are one-shot, consumed-on-use buffs meant
 	# to survive the holder's own next cast's start-of-cast decrement, not expire before
 	# that cast's Skill_Resolved cascade gets a chance to consume them.
@@ -200,7 +232,7 @@ func CastDebuff(
 		p_target_ID: int,
 		p_debuff_template: StatusEffects.Debuff,
 		p_caster_ID: int,
-		p_repeats_per_distinct_debuff: bool = false,
+		p_trait_riders: Dictionary[StringName, Variant] = {},
 		p_always_refresh_duration: bool = false,
 		p_trigger_mirror_coat: bool = false) -> Array[CombatResult]:
 	_resolver._BeginBatch()
@@ -231,7 +263,7 @@ func CastDebuff(
 	if(duration > 0 and null != caster and null != caster._trait):
 		duration += caster._trait.GetOutgoingDebuffDurationBonus(p_caster_ID)
 	var created: StatusEffects.Effect = _InsertOrRefresh(p_target_ID, false, p_debuff_template.type, data, value,
-			duration, p_caster_ID, p_repeats_per_distinct_debuff, p_always_refresh_duration,
+			duration, p_caster_ID, p_trait_riders, p_always_refresh_duration,
 			Types.Debuff_Type.keys()[p_debuff_template.type])
 	if(p_trigger_mirror_coat and null != created):
 		var event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Status_Landed)
@@ -323,7 +355,8 @@ func _ComputeDebuffTickDamage(
 	var repeating_source_ids: Dictionary[int, bool] = {}
 	for debuff in p_target._active_debuffs:
 		if(p_only_repeating_source_id >= 0
-				and (not debuff.repeats_per_distinct_debuff or debuff.source_ID != p_only_repeating_source_id)):
+				and (not debuff.trait_riders.get(&"repeats_per_distinct_debuff", false)
+						or debuff.source_ID != p_only_repeating_source_id)):
 			continue
 		var data: StatusEffectData = StatusEffectRegistry.DebuffData(debuff.type)
 		if(null == data or not data.applies_on_self_tick):
@@ -344,7 +377,8 @@ func _ComputeDebuffTickDamage(
 				pass
 		if(tick_damage <= 0):
 			continue
-		if(p_only_repeating_source_id < 0 and debuff.repeats_per_distinct_debuff):
+		if(p_only_repeating_source_id < 0
+				and debuff.trait_riders.get(&"repeats_per_distinct_debuff", false)):
 			repeating_source_ids[debuff.source_ID] = true
 		tick_damage_total += tick_damage
 		tick_damage_by_source[debuff.source_ID] = tick_damage_by_source.get(debuff.source_ID, 0) + tick_damage
@@ -475,6 +509,8 @@ func _TriggerExistingCasterBuffs(
 						(p_caster_attributes[Types.Attribute.Health]
 								* GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER) * data.self_tick_max_health_cost_percent))
 
+		if(null != data and data.permanent):
+			continue
 		buff.duration -= 1
 		_EmitStatusDuration(p_caster_ID, buff.ID, buff.duration)
 		if(buff.duration <= 0):
@@ -565,7 +601,7 @@ func _InsertOrRefresh(
 		p_value: float,
 		p_duration: int,
 		p_source_ID: int,
-		p_repeats_per_distinct_debuff: bool,
+		p_trait_riders: Dictionary[StringName, Variant],
 		p_always_refresh_duration: bool,
 		p_display_name: String) -> StatusEffects.Effect:
 	var target: Character = _resolver._characters[p_target_ID]
@@ -580,8 +616,7 @@ func _InsertOrRefresh(
 				if(null == p_data or p_data.overwritable):
 					if(p_always_refresh_duration or p_duration > active[i].duration):
 						active[i].duration = p_duration
-						if(not p_is_buff):
-							active[i].repeats_per_distinct_debuff = p_repeats_per_distinct_debuff
+						active[i].trait_riders = p_trait_riders
 						_EmitStatusDuration(p_target_ID, active[i].ID, p_duration)
 				return null
 
@@ -592,6 +627,7 @@ func _InsertOrRefresh(
 		new_buff.name = p_display_name
 		new_buff.value = p_value
 		new_buff.source_ID = p_source_ID
+		new_buff.trait_riders = p_trait_riders
 		new_buff.ID = _resolver._NextStatusID()
 		target._active_buffs.append(new_buff)
 		_EmitBuffApplied(p_target_ID, new_buff, p_display_name)
@@ -603,7 +639,7 @@ func _InsertOrRefresh(
 	new_debuff.name = p_display_name
 	new_debuff.source_ID = p_source_ID
 	new_debuff.value = p_value
-	new_debuff.repeats_per_distinct_debuff = p_repeats_per_distinct_debuff
+	new_debuff.trait_riders = p_trait_riders
 	new_debuff.ID = _resolver._NextStatusID()
 	target._active_debuffs.append(new_debuff)
 	_EmitDebuffApplied(p_target_ID, new_debuff, p_display_name)
@@ -851,6 +887,7 @@ func _EmitBuffApplied(p_target_ID: int, p_buff: StatusEffects.Buff, p_display_na
 	result.buff_type = p_buff.type
 	result.duration = p_buff.duration
 	result.amount = int(p_buff.value)
+	result.fraction = p_buff.value
 	result.text = p_display_name
 	_resolver._Emit(result)
 	var target: Character = _resolver._characters[p_target_ID]

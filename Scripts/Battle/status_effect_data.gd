@@ -26,6 +26,8 @@ enum MagnitudeKind {
 	IncomingDamageReduction,        # -magnitude fraction off any damage the holder takes (Spotlight)
 	HolderMissingHealthDamagePercent,
 	AttackerDamagePerHolderMissingHealth,
+	HighestBasePrimaryAttributePercent, # +magnitude * the holder's own highest base primary
+	# attribute (Health excluded)
 }
 
 @export var magnitude_kind: MagnitudeKind
@@ -40,6 +42,7 @@ enum MagnitudeKind {
 @export var duration_default: int = 2
 @export var overwritable: bool = true
 @export var stackable: bool = false
+@export var permanent: bool = false
 @export var applies_on_self_tick: bool = true
 # Vestigial: attribute modifiers no longer read this flag (always live). Kept only so the 59
 # existing .tres resources don't need a values migration; not consulted anywhere in code.

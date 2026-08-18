@@ -121,7 +121,7 @@ func test_miasmas_forced_tick_also_cascades_a_comorbidity_flagged_debuff() -> vo
 	plague.type = Types.Debuff_Type.Plague
 	plague.duration = 3
 	plague.source_ID = 1
-	plague.repeats_per_distinct_debuff = true
+	plague.trait_riders[&"repeats_per_distinct_debuff"] = true
 	plague.value = floor(50 * StatusEffectRegistry.DebuffData(Types.Debuff_Type.Plague).magnitude)
 	_roster[3]._active_debuffs.append(plague)
 	var enfeeble: StatusEffects.Debuff = StatusEffects.Debuff.new()

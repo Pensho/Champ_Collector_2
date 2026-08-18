@@ -127,8 +127,8 @@ defence ignore at all, so a Defence reduction scores identically to none. Closin
 deferred to `FeatureIdeas.md` rather than taken up here. **Batch 2 complete: all five Roles
 implemented.**
 
-Phase 4 (Batch 3) **complete**, settled one Role at a time. Five settled; Lancer and Thief
-implemented:
+Phase 4 (Batch 3) **complete**, settled one Role at a time. Five settled; Lancer, Thief and Tidal
+Corsair implemented:
 
 * **Lancer (§9.11) — implemented.** The batch's only replacement, and the first kit gated on
   *position* rather than a resource. Opens route F; accumulate-then-spend drops to four claimants.
@@ -158,14 +158,24 @@ implemented:
   out of `contrast_ratio` for any candidate without its own asymmetric ignore, which is every
   Role but the Thief). Top decile (114 teams) gains a **tenth distinct pairing**:
   Thief/Pierce weakness (1 team, 10.80x).
-* **Tidal Corsair (§9.13)** — Sea stacks stopped paying in Reckoning damage, which had made them a
-  strictly worse Steel stack: the invested line lost 11.21 damage units to 11.72 over eight turns,
-  and break-even needed a rate that broke §4's band. They now raise **The Gilded Deck**, the
-  Corsair's signature zone — allies who board gain permanent **Sea Legs** stacks on their own
+* **Tidal Corsair (§9.13) — implemented.** Sea stacks stopped paying in Reckoning damage, which had
+  made them a strictly worse Steel stack: the invested line lost 11.21 damage units to 11.72 over
+  eight turns, and break-even needed a rate that broke §4's band. They now raise **The Gilded Deck**,
+  the Corsair's signature zone — allies who board gain permanent **Sea Legs** stacks on their own
   highest attribute. Steel spikes now, Sea grows the crew for the rest of the fight, so the choice is
-  *when* rather than *how much*. Closes route D; prompted the description soft cap
-  (`Concept_Document.md` 3.2.4) and two `FeatureIdeas.md` items — Attack's under-representation
-  across the roster, and zone placement being blocked outright.
+  *when* rather than *how much*. Closes route D; per-holder rather than fixed-attribute targeting is
+  what answers `FeatureIdeas.md`'s Attack-under-representation item without making the Role only pay
+  off beside the roster's two other Attack Roles. Needed the plan's own long-deferred
+  `trait_riders` generalization (Comorbidity's repeat flag and Field of Study's weakness rider
+  migrated onto it) so Sea Legs' per-holder attribute had a home without a fourth bespoke field, and
+  a new `StatusEffectData.permanent` flag so a never-expiring buff doesn't need a fake duration.
+  Sea Legs itself is one buff instance accumulating a stack count rather than four separate
+  instances, which would have permanently spent half of every ally's 8-slot status cap. The deck's
+  own grant is left undeclared in `kit_contribution_manifest.gd` (`Role_Kit_Design.md` §11): its
+  shape — stacking, zone-delivered, sized on the holder's own highest attribute — doesn't fit
+  `granted_attribute_buff`'s fixed-attribute, one-shot contract. Post-Tidal-Corsair sweep: median
+  1.95x, 90th percentile 4.68x, ceiling 16.24x, 114 teams across 10 distinct top-decile pairings —
+  all unchanged, as expected for a passive whose rate didn't move and a ship the scorer cannot see.
 * **Scholar (§9.14)** — an adaptation. The passive is replaced with an amplifier on every attribute
   modification the team applies, giving the roster its first reader of the Channel 1 attribute layer,
   which nothing has ever made worth casting. The basic gains a zone-gated Suppress rider whose gate

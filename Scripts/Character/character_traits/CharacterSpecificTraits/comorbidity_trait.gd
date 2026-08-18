@@ -16,5 +16,5 @@ func OnSkillCast(
 		_p_caster_attributes: Dictionary[Types.Attribute, int],
 		_p_resolver: BattleResolver) -> TraitSkillResult:
 	var result: TraitSkillResult = TraitSkillResult.new()
-	result._repeats_tick_per_distinct_debuff = true
+	result._trait_riders[&"repeats_per_distinct_debuff"] = true
 	return result

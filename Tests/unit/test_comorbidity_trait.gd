@@ -37,7 +37,7 @@ func _add_debuff(
 	debuff.type = p_type
 	debuff.duration = p_duration
 	debuff.source_ID = p_source_ID
-	debuff.repeats_per_distinct_debuff = p_repeats_per_distinct_debuff
+	debuff.trait_riders[&"repeats_per_distinct_debuff"] = p_repeats_per_distinct_debuff
 	_roster[p_character_ID]._active_debuffs.append(debuff)
 
 func _set_max_health(p_character_ID: int, p_max_health: int) -> void:
@@ -59,7 +59,7 @@ func test_on_skill_cast_flags_the_repeat() -> void:
 	var comorbidity_trait: ComorbidityTrait = ComorbidityTrait.new()
 	comorbidity_trait.Init(Types.Rarity.Epic)
 	var result: TraitSkillResult = comorbidity_trait.OnSkillCast(0, [], "Zap", {}, _resolver)
-	assert_true(result._repeats_tick_per_distinct_debuff)
+	assert_true(result._trait_riders.get(&"repeats_per_distinct_debuff", false))
 
 func test_cast_debuff_stamps_the_flag_onto_the_new_debuff() -> void:
 	var skill: Skill = Skill.new()
@@ -76,7 +76,7 @@ func test_cast_debuff_stamps_the_flag_onto_the_new_debuff() -> void:
 
 	_resolver.ResolveSkill(0, [3], 0)
 
-	assert_true(_roster[3]._active_debuffs[0].repeats_per_distinct_debuff)
+	assert_true(_roster[3]._active_debuffs[0].trait_riders.get(&"repeats_per_distinct_debuff", false))
 
 func test_refreshing_an_existing_debuff_updates_the_flag() -> void:
 	var skill: Skill = Skill.new()
@@ -98,7 +98,7 @@ func test_refreshing_an_existing_debuff_updates_the_flag() -> void:
 
 	assert_eq(_roster[3]._active_debuffs.size(), 1, "The existing Enfeeble should be refreshed in place, not stacked")
 	assert_eq(_roster[3]._active_debuffs[0].duration, 3, "Duration should be refreshed to the new skill's duration")
-	assert_true(_roster[3]._active_debuffs[0].repeats_per_distinct_debuff,
+	assert_true(_roster[3]._active_debuffs[0].trait_riders.get(&"repeats_per_distinct_debuff", false),
 		"Refreshing should also stamp the Comorbidity-sourced flag")
 
 # --- Cascade-driven retick ---

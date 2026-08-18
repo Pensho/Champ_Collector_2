@@ -34,9 +34,6 @@ Effort: **S** = hours, **M** = days, **L** = week+
 - **Speed as a Field of Study Weakness** *(Priority: Low | Effort: S)*
   The Scholar's Field of Study still excludes Speed from `PRIMARY_ATTRIBUTES` (`field_of_study_trait.gd`), a holdover from when turn order read only base Speed and a Speed weakness would have been identified but done nothing. Turn order now reads live, status-inclusive Speed (`BattleResolver.GetEffectiveAttributes`, `Battle.RefreshTurnBarSpeeds`), so the original blocker is gone — a Field of Study weakness rider reducing Speed would now genuinely slow the target's turn-bar advance. Revisit whether to add Speed back to the identifiable set.
 
-- **Watch Debuff Class Field Bloat** *(Priority: Low | Effort: M)*
-  `StatusEffects.Debuff` already carries two fields useful to only one trait each: `repeats_per_distinct_debuff` (Comorbidity) and the `has_weakness_rider`/`weakness_attribute`/`weakness_reduction` trio (Field of Study). Fine at this size, but every future trait needing per-instance debuff state adds more fields that sit unused on every other debuff in the game. If a third one-off case shows up, stop and reassess the shared class's shape rather than adding a fourth. See Technical_Design_Document.md section 6.1.
-
 - **Calibration Zone "Upgrade" Feel** *(Priority: Low | Effort: S)*
   Final Calculation's tier-3 effect (7+ charges) re-erects the Architect's construction zone for free, or "upgrades" it if one is already standing (Concept_Document.md 3.1.3 / 3.2.4.3). The current implementation collapses "upgrade" to simply setting the existing zone's remaining charges to 8 — functionally correct but flavorless. Brainstorm a more distinct upgrade effect (e.g. a stronger Barrier size, bonus duration, or a visual/mechanical tell that the zone was reinforced rather than merely refilled) before this reads as a real tier-3 payoff.
 

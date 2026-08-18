@@ -82,9 +82,9 @@ func test_applying_a_debuff_on_a_studied_enemy_stamps_the_weakness_rider() -> vo
 
 	assert_eq(_enemy_a._active_debuffs.size(), 1, "The rider must ride the triggering debuff, not add a second one")
 	var applied: StatusEffects.Debuff = _enemy_a._active_debuffs[0]
-	assert_true(applied.has_weakness_rider)
-	assert_eq(applied.weakness_attribute, _trait._weakness_by_enemy[2])
-	assert_almost_eq(applied.weakness_reduction, FieldOfStudyTrait.GetWeaknessReduction(Types.Rarity.Epic), 0.0001)
+	assert_true(applied.trait_riders.has(&"weakness_attribute"))
+	assert_eq(applied.trait_riders[&"weakness_attribute"], _trait._weakness_by_enemy[2])
+	assert_almost_eq(applied.trait_riders[&"weakness_reduction"], FieldOfStudyTrait.GetWeaknessReduction(Types.Rarity.Epic), 0.0001)
 
 func test_debuff_on_an_unstudied_target_gets_no_rider() -> void:
 	_InitTrait(Types.Rarity.Epic)
@@ -94,7 +94,7 @@ func test_debuff_on_an_unstudied_target_gets_no_rider() -> void:
 	_resolver.GetStatusResolver().ApplyDebuff(1, _debuff_template(Types.Debuff_Type.Enfeeble, 3, 0))
 
 	var applied: StatusEffects.Debuff = _ally._active_debuffs[0]
-	assert_false(applied.has_weakness_rider, "A debuff on an unstudied target must get no rider")
+	assert_false(applied.trait_riders.has(&"weakness_attribute"), "A debuff on an unstudied target must get no rider")
 
 func test_each_debuff_on_a_studied_enemy_carries_its_own_rider() -> void:
 	_InitTrait(Types.Rarity.Epic)
@@ -105,9 +105,9 @@ func test_each_debuff_on_a_studied_enemy_carries_its_own_rider() -> void:
 
 	assert_eq(_enemy_a._active_debuffs.size(), 2)
 	for applied: StatusEffects.Debuff in _enemy_a._active_debuffs:
-		assert_true(applied.has_weakness_rider)
-		assert_eq(applied.weakness_attribute, _trait._weakness_by_enemy[2])
-		assert_almost_eq(applied.weakness_reduction, FieldOfStudyTrait.GetWeaknessReduction(Types.Rarity.Epic), 0.0001)
+		assert_true(applied.trait_riders.has(&"weakness_attribute"))
+		assert_eq(applied.trait_riders[&"weakness_attribute"], _trait._weakness_by_enemy[2])
+		assert_almost_eq(applied.trait_riders[&"weakness_reduction"], FieldOfStudyTrait.GetWeaknessReduction(Types.Rarity.Epic), 0.0001)
 
 # --- The reduction actually lowers the identified attribute, live ---
 

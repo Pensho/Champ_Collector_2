@@ -29,4 +29,4 @@ func Resolve(p_context: SkillCastContext) -> void:
 				p_context.status_effect_landed = true
 		else:
 			status_resolver.CastDebuff(target_ID, debuff, p_context.caster_ID,
-					p_context.trait_result._repeats_tick_per_distinct_debuff, true, true)
+					p_context.trait_result._trait_riders, true, true)

@@ -140,6 +140,7 @@ enum Buff_Type
 	Volatile_Mixture,
 	Sanguine_Pact,
 	Borrowed_Time,
+	Sea_Legs,
 }
 
 enum Debuff_Type

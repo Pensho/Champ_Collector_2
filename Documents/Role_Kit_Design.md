@@ -277,7 +277,7 @@ A Role's basic skill is always self-facing; direction describes the declared-ide
 | Cultist | Debuffer, Damage | **Channel 2** | Self | Settled (§9.8), confirming this row. Chosen Vessel's flat per-cast bonus stays flat; Vessel death now also grants permanent Devotion, and the basic reads the Vessel's half-Health threshold (Batch 2). |
 | Jester | Damage, Sustain | **Enabler** | Exported | Hexed on the boss degrades every roll it makes in its own favor — crit checks, resist checks against the team's debuffs, its own Burning ticks — so a debuff-density burst becomes reliable rather than a coin flip; Spotlight pulls focused fire onto the champion built to dodge it. Settled (§9.6), and moved off this table's Phase 1 proposal of Channel 2 / self-facing: the kit declares no damage contribution (Batch 2). |
 | Architect | Buffer, Damage | **Channel 2** | Self | Settled (§9.10), confirming this row. The kit is kept as it ships — the finisher's charge bucket already meets the contract and the zone already consumes charges against it. Only Expose Weakness changes, scaling with the charges spent (Batch 2). |
-| Tidal Corsair | Damage | **Channel 2** | Self | Settled (§9.13), confirming this row. Corsair's Reckoning resolves by the composition of the stacks it consumes; Sea's turn-bar push retires and Sea instead raises The Gilded Deck, a signature zone granting boarding allies permanent Sea Legs stacks (Batch 3). |
+| Tidal Corsair | Damage | **Channel 2** | Self | Implemented (§9.13), confirming this row. Corsair's Reckoning resolves by the composition of the stacks it consumes; Sea's turn-bar push retires and Sea instead raises The Gilded Deck, a signature zone granting boarding allies permanent Sea Legs stacks (Batch 3). |
 | Thief | Damage | **Channel 1** | Self | Implemented (§9.12), confirming this row. Pilfer retired for Between the Plates, a passive bypass reading a fraction of a debuff-free reference Defence, so a teammate's Defence shred compounds with it instead of being eaten by it; Weigh the Mark rebuilt as Cut Purse. |
 | Lancer | Damage | **Channel 2** | Self | Settled (§9.11), moved off this table's Phase 1 proposal of Channel 1. Momentum and Phalanx Guard retire for Couched Lance: the charge scales with the turn-bar sections it touches and throws the Lancer back half that distance. The Role reads turn-bar position rather than accumulating stacks, so it is no longer route D's second anchor (Batch 3). |
 | Tactician | Buffer | **Channel 1** | Exported | **Settled: kept as shipped.** A second hook was explored (Batch 3) and shelved — no addition fit without a clearer read on the Role's team fantasy than a sweep figure can give; open to revisiting outside this plan. |
@@ -1095,7 +1095,7 @@ buffs, since a plain base-Defence reference would have gone stale the moment gea
 
 ### 9.13 Tidal Corsair — the ship the crew boards
 
-**Status:** Settled, not yet implemented. Batch 3.
+**Status:** Implemented.
 
 **Identity: Channel 2, self-facing**, confirming section 5's row: the declared contribution is
 Broadside's bucket on the Corsair's own sheet. The kit carries a large exported second clause in the
@@ -1156,25 +1156,49 @@ Empower and Attune: at Corsair Knowledge 120 (multiplier 1.60) a full deck gives
 at +12.8% on their highest attribute, and a second full deck reaches the 4-stack cap at +51%. Two
 pure-Sea Reckonings is the price, which is why the investment is only correct early.
 
-**Implementation needs (not yet built):**
+**Implementation.** `tidal_corsair_trait.gd`'s Reckoning branch counts the consumed hand and
+dispatches; `_turn_bar_bump` is gone. Sea Legs holds as **one buff instance carrying a stack count**
+(`trait_riders[&"stacks"]`), not four separate instances — four would permanently occupy half of
+every ally's 8-slot status cap. Restacking reuses the buff's own `status_ID` rather than emitting a
+fresh one, and `CharacterRepresentation` gained `UpdateStatusEffect` (refreshing an existing icon's
+tooltip and duration) alongside `AddStatusEffect`, so a restack updates the holder's one icon in
+place instead of claiming a second slot for what is still one instance; the tooltip reads the
+current total through a new `{percent}` token, `_EmitBuffApplied` now stamping `CombatResult.fraction`
+for buffs the same way debuffs already did. The per-holder attribute rides a new generic
+`trait_riders: Dictionary[StringName, Variant]` on `StatusEffects.Effect`, which also absorbed the
+two prior bespoke rider fields (Comorbidity's repeat flag, Field of Study's weakness rider) — the
+plan's own long-carried deferred fix, closed here since Sea Legs was its third claimant. The Gilded
+Deck's section resolution (`ZoneResolver.SectionWithMostAllies`) and its own `Section.Most_Allies`
+zone-placement kind are new; the deck's payload is `SeaLegsZoneEffect`, constructed by the trait with
+the rarity's own per-stack rate. Boarding Party raises a fresh deck when none stands, not only
+resupplying one that does. Saltwater Shot gained no new payload of its own — the settled kit's
+"gains a new payload" line for it does not match the hand table, where every mode-specific effect is
+trait-side; only its description changed, to say what a Sea stack now buys. The deck's Sea Legs
+grant is not declared in `kit_contribution_manifest.gd` as a `granted_attribute_buff`: the shape
+(stacking, zone-delivered, per-holder-attribute) doesn't fit the field's fixed-attribute,
+one-shot contract, and forcing an approximation onto one attribute both misrepresents the mechanic
+and perturbed an unrelated base-term/modifier-term invariant in the scorer's own test suite — left
+as an explicit gap in section 11 instead. Post-implementation sweep: median 1.95x, 90th percentile
+4.68x, ceiling 16.24x, 114 teams across 10 distinct top-decile pairings — all unchanged, as predicted
+for a passive whose rate didn't move and a ship the scorer cannot see.
 
-* `tidal_corsair_trait.gd` — the Reckoning branch dispatches on the consumed hand's composition;
-  `_turn_bar_bump` goes. Sea Legs resolves its per-holder attribute from base attributes at
-  boarding, ties broken by a fixed attribute order declared in the trait.
-* `Data/Status_Effects/` — Sea Legs, permanent, stacking to 4; a zone resource for The Gilded Deck
-  plus the auto-placement resolution, which no existing zone needs.
-* `Corsairs_Reckoning.tres` and `Saltwater_Shot.tres` gain their new payloads.
-* `kit_contribution_manifest.gd` — Wrangle the Sea keeps magnitude 1.8; the deck is declared as a
-  team-reaching granted attribute buff. The stale TRAP note about the apostrophe bug goes.
-* `burst_reachability.gd` — `_ContributeGrantedAttributeBuffs` credits fixed one-shot grants; a
-  stacking, zone-delivered, per-holder-attribute grant is a shape it cannot represent (section 11).
-* `Concept_Document.md` at promotion: 3.1.3's Wrangle the Sea entry, 3.2.3's Sea Legs, 3.2.4.1's
-  auto-placement rule, 3.2.4.2's Saltwater Shot and Corsair's Reckoning.
+**Known bug, unresolved.** In live play, the Sea Legs tooltip's displayed percent does not track
+the stack count correctly — a report of 6% on the first stack followed by 5% on the second, on the
+same standing deck with no re-raise. `StatusEffectResolver.ApplySeaLegs`'s own math and the
+`CombatResult` it emits are confirmed correct by both the unit suite and a direct headless
+simulation of the same scenario (linearly increasing: 6%, 12%, 18%), so the defect is somewhere
+between that emitted result and the live tooltip's rendered text — a surface `Tests/unit/` cannot
+reach (GUT does not exercise `battle.gd`/`CharacterRepresentation`/`ToolTip`) and manual repro
+attempts have not isolated. A latent, likely-unrelated ID mismatch in
+`CharacterRepresentation.AddStatusEffect` (passing a recycled texture slot where an effect ID was
+expected) was found and fixed alongside this, but does not explain the percent discrepancy.
 
 **Judgment calls made while settling, listed so they can be overruled:** the mixed mode keeps the
 Slipstream and Empower grants rather than only a reduced charge count, which is a third clause on
-one mode but is what makes it a distinct choice rather than a blend; and the direction row stays
-self-facing on the strength of Broadside being the declared contribution.
+one mode but is what makes it a distinct choice rather than a blend; the direction row stays
+self-facing on the strength of Broadside being the declared contribution; and the three
+implementation-time calls above (one-instance Sea Legs, the generic rider dictionary, Boarding Party
+raising rather than only resupplying).
 
 ## 10. Coverage ledger
 
@@ -1198,9 +1222,9 @@ archived pass's final state and goes stale as each further batch lands — refre
 Role's rows in the same edit, not after.
 
 **Turn bar effects** — Dead Weight (Bar Brawler), Battle Orders (Tactician), Temporal Leak (Herald
-of the loom, Pull the Thread), Slipstream (Tidal Corsair, Corsair's Reckoning — **settled, not yet
-implemented**, section 9.13, granted as a rider alongside Empower rather than costing a slot);
-Anchor, Steadfast, Resonance unclaimed.
+of the loom, Pull the Thread), Slipstream (Tidal Corsair, Corsair's Reckoning — **implemented**,
+section 9.13, granted alongside Empower on the mixed hand rather than costing a slot); Anchor,
+Steadfast, Resonance unclaimed.
 
 **Debuffs** (rows that changed this batch; all others unchanged from the archived pass — see
 `Plan_Role_Skill_Kits.md` Archive for the full table until the next batch refreshes it here)
@@ -1224,9 +1248,9 @@ Anchor, Steadfast, Resonance unclaimed.
 | Expose Weakness | Architect (Calibration), Alchemist (Dissolving Agent) — **settled, not yet implemented** (section 9.15). Second claimant, at the commodity-debuff limit of two, and its first skill source |
 | Burning | Jester (Burning Bolas), Lava Zone — unchanged claimants. Tick changes roster-wide (section 12) — **settled, not yet implemented** (section 9.6) |
 
-**Buffs** — Sea Legs is a new buff, claimed by Tidal Corsair (The Gilded Deck) — **settled, not yet
-implemented** (section 9.13); no prior claimant, and the roster's only permanent stacking attribute
-grant, sized per holder rather than by a fixed attribute. Borrowed Time is a new buff, claimed by Chronophage (Time Tithe) — **settled, not yet
+**Buffs** — Sea Legs is a new buff, claimed by Tidal Corsair (The Gilded Deck) — **implemented**
+(section 9.13); no prior claimant, and the roster's only permanent stacking attribute grant, sized
+per holder rather than by a fixed attribute. Borrowed Time is a new buff, claimed by Chronophage (Time Tithe) — **settled, not yet
 implemented** (section 9.9); no prior claimant, and the only buff in the roster granting a cascade
 instance. Attune's second claim (Herald of the loom's Woven Blessing, alongside Cultist's Chosen
 Vessel passive) has dropped: Woven Blessing is no longer part of the Herald's kit (section 9.2,
@@ -1302,7 +1326,7 @@ check against a new kit accidentally claiming a second one. State as of Batch 1.
 | Unstable Rift | Sorcerer |
 | Lava Zone | Enemy only (Obsidian Stallion) |
 | Inscribe | Enemy only (Glyphbound Archivist) |
-| The Gilded Deck | Tidal Corsair — **settled, not yet implemented** (section 9.13); the only zone placed without the player choosing its section |
+| The Gilded Deck | Tidal Corsair — **implemented** (section 9.13); the only zone placed without the player choosing its section |
 | Weight of Law | **Orphaned — no player or enemy fields it** |
 
 Seven player-facing zones across six Roles, Chronophage holding two — the one existing exception to
@@ -1397,3 +1421,9 @@ Facet all read this way now.
 `total_contrast_ratio` alone for a sustained-heavy kit understates its actual standing in the
 roster — `Tests/manual/team_corpus_sweep.gd`'s top-decile report prints both, plus a
 `sustained_driven` flag per row, so which figure moved is visible rather than conflated.
+
+**Open gap, found implementing §9.13.** `granted_attribute_buff` only models a fixed one-shot grant
+on a fixed attribute. The Gilded Deck's Sea Legs is stacking, zone-delivered, and sized on whichever
+attribute is highest on the *holder* — a shape the field cannot represent without either naming a
+wrong attribute or forcing an aggregate contribution that isn't there for most teams. Left
+undeclared; the Tidal Corsair's contribution to the sweep is Broadside's bucket only.

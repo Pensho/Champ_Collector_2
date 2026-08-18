@@ -33,7 +33,7 @@ func AddStatusEffect(
 			_status_effect[_status_effect_counter] = slot
 			_status_effect_counter += 1
 			_status_effect_textures[slot].show()
-			SetStatusEffectDuration(slot, p_duration)
+			SetStatusEffectDuration(_status_effect_counter - 1, p_duration)
 			_status_effect_tooltips[slot].title_text = p_title
 			_status_effect_tooltips[slot].description_text = p_description
 			return _status_effect_counter - 1
@@ -45,6 +45,15 @@ func SetStatusEffectDuration(p_effect_ID: int, p_duration: int) -> void:
 		_status_effect_textures[_status_effect[p_effect_ID]].get_child(0).text = str(p_duration)
 	else:
 		print("No status effect found at ID: ", p_effect_ID)
+
+func UpdateStatusEffect(p_effect_ID: int, p_duration: int, p_title: String, p_description: String) -> void:
+	if(not _status_effect.has(p_effect_ID)):
+		print("No status effect found at ID: ", p_effect_ID)
+		return
+	var slot: int = _status_effect[p_effect_ID]
+	SetStatusEffectDuration(p_effect_ID, p_duration)
+	_status_effect_tooltips[slot].title_text = p_title
+	_status_effect_tooltips[slot].description_text = p_description
 
 func RemoveStatusEffects(p_effect_IDs: Array[int]) -> void:
 	for effect_ID in p_effect_IDs:

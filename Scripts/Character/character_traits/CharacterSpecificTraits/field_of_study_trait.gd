@@ -48,9 +48,8 @@ func OnDebuffApplied(
 		_p_resolver: BattleResolver) -> void:
 	if(not _weakness_by_enemy.has(p_target_ID)):
 		return
-	p_debuff.has_weakness_rider = true
-	p_debuff.weakness_attribute = _weakness_by_enemy[p_target_ID]
-	p_debuff.weakness_reduction = _reduction
+	p_debuff.trait_riders[&"weakness_attribute"] = _weakness_by_enemy[p_target_ID]
+	p_debuff.trait_riders[&"weakness_reduction"] = _reduction
 
 func _IdentifyWeakness(
 		p_attributes: Dictionary[Types.Attribute, int],

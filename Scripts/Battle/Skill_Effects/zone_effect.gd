@@ -1,6 +1,12 @@
 class_name ZoneEffect extends SkillEffect
 
-enum Section { Player_Chosen, Left_Most_Empty, Random_Empty }
+enum Section
+{
+	Player_Chosen,
+	Left_Most_Empty,
+	Random_Empty,
+	Most_Allies
+}
 
 @export var charges: int = 0
 @export var section: Section = Section.Player_Chosen
@@ -25,6 +31,8 @@ func _ResolveSection(p_context: SkillCastContext, p_zone_resolver: ZoneResolver)
 			return available[0] if not available.is_empty() else -1
 		Section.Random_Empty:
 			return _RandomFrom(available, p_context)
+		Section.Most_Allies:
+			return p_zone_resolver.SectionWithMostAllies(p_context.caster_ID)
 		_:
 			var pending: int = p_context.resolver.ConsumePendingZoneSection()
 			# A player made no choice (an enemy cast this skill) — fall back to a random

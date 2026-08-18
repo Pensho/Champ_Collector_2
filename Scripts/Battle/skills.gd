@@ -230,16 +230,24 @@ static func TargetingWeightMultiplier(p_character: Character) -> float:
 
 static func IsAttributeModifierKind(p_kind: StatusEffectData.MagnitudeKind) -> bool:
 	return (StatusEffectData.MagnitudeKind.AttributePercent == p_kind
-			or StatusEffectData.MagnitudeKind.AttributePercentagePointAdd == p_kind)
+			or StatusEffectData.MagnitudeKind.AttributePercentagePointAdd == p_kind
+			or StatusEffectData.MagnitudeKind.HighestBasePrimaryAttributePercent == p_kind)
 
 static func ApplyAttributeModifiers(
 							p_data: StatusEffectData,
 							p_value: float,
-							p_attributes: Dictionary[Types.Attribute, int]) -> void:
+							p_attributes: Dictionary[Types.Attribute, int],
+							p_trait_riders: Dictionary[StringName, Variant] = {}) -> void:
 	# 0.0 means the instance never had its own value set (e.g. a debuff built directly by
 	# a zone or a test) — fall back to the resource's static magnitude, same convention
 	# ApplyBuff/ApplyDebuff already use when resolving a template's default value.
 	var resolved_value: float = p_value if 0.0 != p_value else p_data.magnitude
+	if(StatusEffectData.MagnitudeKind.HighestBasePrimaryAttributePercent == p_data.magnitude_kind):
+		if(not p_trait_riders.has(&"attribute")):
+			return
+		var attribute: Types.Attribute = p_trait_riders[&"attribute"]
+		p_attributes[attribute] += int(ceilf(p_attributes[attribute] * resolved_value))
+		return
 	for attribute in p_data.attribute_modifiers.keys():
 		var modifier_sign: float = p_data.attribute_modifiers[attribute]
 		if(StatusEffectData.MagnitudeKind.AttributePercentagePointAdd == p_data.magnitude_kind):
@@ -252,10 +260,11 @@ static func ApplyAttributeModifiers(
 static func ApplyWeaknessRider(
 							p_debuff: StatusEffects.Debuff,
 							p_attributes: Dictionary[Types.Attribute, int]) -> void:
-	if(not p_debuff.has_weakness_rider):
+	if(not p_debuff.trait_riders.has(&"weakness_attribute")):
 		return
-	var attribute: Types.Attribute = p_debuff.weakness_attribute
-	p_attributes[attribute] -= int(ceilf(p_attributes[attribute] * p_debuff.weakness_reduction))
+	var attribute: Types.Attribute = p_debuff.trait_riders[&"weakness_attribute"]
+	var reduction: float = p_debuff.trait_riders.get(&"weakness_reduction", 0.0)
+	p_attributes[attribute] -= int(ceilf(p_attributes[attribute] * reduction))
 
 ## Fraction (e.g. Time Tithe) p_source_ID gains for itself when its own effect
 ## reduced enemy p_target_ID's turn bar by p_fraction (0.0 = no tithe).
@@ -312,7 +321,7 @@ static func ApplyActiveAttributeModifiers(
 	for buff in p_character._active_buffs:
 		var data: StatusEffectData = StatusEffectRegistry.BuffData(buff.type)
 		if(null != data and IsAttributeModifierKind(data.magnitude_kind)):
-			ApplyAttributeModifiers(data, buff.value, p_attributes)
+			ApplyAttributeModifiers(data, buff.value, p_attributes, buff.trait_riders)
 	if(not p_include_debuffs):
 		return
 	for debuff in p_character._active_debuffs:
