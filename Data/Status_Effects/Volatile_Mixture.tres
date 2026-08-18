@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1_script")
 magnitude_kind = 2
-magnitude = 1.29
+magnitude = 1.20
 applies_on_self_tick = false
 icon = ExtResource("2_icon")
-description = "The team's next attack deals bonus damage, granted whenever any ally consumes a reagent."
+description = "The team's next attack deals +{percent}% damage, granted whenever any ally consumes a reagent."

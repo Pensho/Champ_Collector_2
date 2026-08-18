@@ -271,6 +271,8 @@ static func DisplayedAttributeModifierFraction(
 							p_value: float,
 							p_trait_riders: Dictionary[StringName, Variant]) -> float:
 	var resolved_value: float = p_value if 0.0 != p_value else p_data.magnitude
+	if(StatusEffectData.MagnitudeKind.DamageMultiplier == p_data.magnitude_kind):
+		return resolved_value - 1.0
 	if(not IsAmplifiableKind(p_data.magnitude_kind)
 			or StatusEffectData.MagnitudeKind.AttributePercentagePointAdd == p_data.magnitude_kind):
 		return resolved_value

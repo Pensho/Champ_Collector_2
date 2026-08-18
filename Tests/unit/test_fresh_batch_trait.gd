@@ -19,6 +19,26 @@ func test_get_brew_potency_bonus_matches_init_rarity() -> void:
 	_trait.Init(Types.Rarity.Epic)
 	assert_almost_eq(_trait.GetBrewPotencyBonus(), 0.10, 0.001)
 
+## Volatile Mixture's Uncommon-tier magnitude (the base rarity) lives on Volatile_Mixture.tres,
+## not restated in the trait; this guards the derivation against silent drift between the two.
+func test_team_damage_bonus_at_uncommon_matches_the_status_resources_own_magnitude() -> void:
+	var base_multiplier: float = StatusEffectRegistry.BuffData(Types.Buff_Type.Volatile_Mixture).magnitude
+	_trait.Init(Types.Rarity.Uncommon)
+
+	var alchemist: Character = TestFactory.make_character()
+	alchemist._current_health = alchemist._attributes[Types.Attribute.Health]
+	alchemist._trait = _trait
+	var characters: Dictionary[int, Character] = {0: alchemist}
+	var resolver: BattleResolver = TestFactory.make_resolver(characters, CombatSides.new([0], []))
+
+	var results: Array[CombatResult] = resolver.ResolveReagent(0, "Restorative_Draught_Rare", 0)
+	var applied: CombatResult = results.filter(func(r: CombatResult) -> bool:
+			return (CombatResult.Kind.Status_Applied == r.kind
+					and Types.Buff_Type.Volatile_Mixture == r.buff_type))[0]
+
+	assert_almost_eq(applied.fraction, base_multiplier - 1.0, 0.001,
+			"The {percent} description token must show the bonus fraction, not the raw multiplier")
+
 func test_brew_pool_excludes_purging_below_epic() -> void:
 	_trait.Init(Types.Rarity.Uncommon)
 	for i in 20:
