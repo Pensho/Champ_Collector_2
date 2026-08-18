@@ -48,8 +48,8 @@ turn-bar sections instead (already on screen as the bar's dividers).
 **Jester's implementation** made `BattleResolver._RollFavoring` public (`RollFavoring`) and widened
 it to every remaining pass/fail chance gate in combat (`SkillEffect.chance`, Glamour Graft's
 incoming redirect, Double the fun!'s avoidance roll, Pilfer's steal chance), alongside its existing
-crit-chance and debuff-resist sites; the damage-variance roll stays a bare `randf_range`, per §12's
-own exception. The debuff-resist band widened to 0.85-1.0, and `StatusEffectData` gained
+crit-chance and debuff-resist sites; the damage-variance roll stays a bare `randf_range`, its 0.95-1.05
+band too narrow for a reroll to matter. The debuff-resist band widened to 0.85-1.0, and `StatusEffectData` gained
 `magnitude_max` so `MaxHealthPercent` ticks can roll a range — Burning now rolls 2-10% per stack
 (mean 6%), biased the same way, and `Burning_Bolas.tres` gained a second `ApplyDebuffEffect` for
 Hexed. `Concept_Document.md` 3.2.1 #3, 3.2.3 and 3.2.4.2's Jester entry updated to match.
@@ -215,9 +215,8 @@ its slots are touched, rather than inherited from `Role_Kit_Design.md` §5's row
 **Phase 5 (Batch 4) design complete. None of the five is implemented.** The batch found no
 zero-contribution or one-note kit needing replacement, as expected; its substantive finding is that
 §5's rows for the protection kits had each assumed a damage term the kit does not owe, corrected on
-the Diviner and the Warlord (now Enabler) and on the Symbiote (direction). **Roster-wide mechanics changes that settled kits depend on are held in
-`Role_Kit_Design.md` §12** until each one ships, rather than promoted into `Concept_Document.md`
-ahead of the game.
+the Diviner and the Warlord (now Enabler) and on the Symbiote (direction). None of the five depends
+on a roster-wide mechanics change; the Jester's four all shipped with its implementation.
 
 **Coverage review findings**, from a roster-wide read of all 20 Roles against the corrected contract.
 
