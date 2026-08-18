@@ -262,8 +262,21 @@ Unravel one, discharging section 10.1's standing reservation of Expose Weakness'
 source and putting a third feeder on route G. Post-Alchemist sweep: median 1.95x, 90th percentile
 4.68x, ceiling 16.24x, 114 top-decile teams across 10 pairings — unchanged, as §9.15 predicted:
 the bucket product doesn't move, and the scorer has no representation for the refund's raised
-reagent-consumption count. Diviner, Symbiote and Bar Brawler remain settled but not yet
-implemented.
+reagent-consumption count.
+
+**Diviner's implementation** needed no new schema. The counter-attack is a full first resolution of
+the holder's basic skill against the attacker — the trait `Skill_Cast` hook, a real advancing
+`_SkillUseCount`, every effect the basic carries — run from a new `_ResolvePremonitionCounter` in
+`status_effect_resolver.gd`, called from `ConsumePremonitionIfPresent`. Full fidelity (not the
+stripped, damage-only repeat shape Borrowed Time and the Sorcerer's Echo use) is required here
+because Premonition is generic across holders: a Bar Brawler's Heap-On ramp and any trait-bonus-
+bearing basic both have to reach the counter, or it silently underpays whichever Role holds it.
+Everything past the effect loop in `ResolveSkill` is skipped, which is what makes the counter free.
+A shared `Skills.BasicSkill` helper replaced the private copy `burst_reachability.gd` already had. A
+mutual-Premonition exchange terminates once both sides' buffs are spent rather than being guarded by
+a depth counter. Post-Diviner sweep: median 1.95x, 90th percentile 4.68x, ceiling 16.24x, 114
+top-decile teams — unchanged, as expected for a kit fielding no damage factor. Symbiote and Bar
+Brawler remain settled but not yet implemented.
 
 **Coverage review findings**, from a roster-wide read of all 20 Roles against the corrected contract.
 

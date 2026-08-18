@@ -193,6 +193,31 @@ class FakeConditionCountTrait extends CharacterTrait:
 			_p_resolver: BattleResolver) -> float:
 		return count if p_source == source else 0.0
 
+## Headless stand-in for a trait contributing a per-cast damage multiplier and turn-bar
+## bump on Skill_Cast (e.g. Chosen Vessel's per-cast bonus), for asserting a resolution
+## path runs the trait hook rather than skipping it.
+class FakeSkillCastTrait extends CharacterTrait:
+	var damage_multiplier: float = 1.0
+	var turn_bar_bump: float = 0.0
+	var call_count: int = 0
+
+	func _init(p_damage_multiplier: float = 1.0, p_turn_bar_bump: float = 0.0) -> void:
+		damage_multiplier = p_damage_multiplier
+		turn_bar_bump = p_turn_bar_bump
+		_execution_steps[Types.Combat_Event.Skill_Cast] = Callable(self, "OnSkillCast")
+
+	func OnSkillCast(
+			_p_owner_ID: int,
+			_p_target_IDs: Array[int],
+			_p_skill_name: String,
+			_p_caster_attributes: Dictionary[Types.Attribute, int],
+			_p_resolver: BattleResolver) -> TraitSkillResult:
+		call_count += 1
+		var result := TraitSkillResult.new()
+		result._damage_multiplier = damage_multiplier
+		result._turn_bar_bump = turn_bar_bump
+		return result
+
 static func make_character() -> Character:
 	var c: Character = Character.new()
 	c._name = "TestCharacter"

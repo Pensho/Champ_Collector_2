@@ -13,7 +13,7 @@ target = 3
 [resource]
 script = ExtResource("1_skill")
 name = "Premonition"
-description = "Grants a single ally the Premonition buff for 1 turn."
+description = "Grants a single ally the Premonition buff for 1 turn: the next attack against them automatically misses and is relaiated with their basic skill."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Premonition/Premonition.png"
 target = 3
 cooldown = 3

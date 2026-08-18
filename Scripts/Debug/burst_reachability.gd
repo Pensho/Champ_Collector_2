@@ -386,12 +386,8 @@ static func _CritEligibleAggregate(
 
 
 ## The character's cooldown-0 skill (Concept_Document.md 1.1.2's basic-skill baseline).
-## Falls back to the first skill if the kit has no cooldown-0 entry — none currently do.
 static func _BasicSkill(p_character: Character) -> Skill:
-	for skill: Skill in p_character._skills:
-		if(0 == skill.cooldown):
-			return skill
-	return p_character._skills[0] if not p_character._skills.is_empty() else null
+	return Skills.BasicSkill(p_character)
 
 
 static func _TeamEnablerCount(p_characters: Array[Character], p_manifest: Dictionary) -> int:

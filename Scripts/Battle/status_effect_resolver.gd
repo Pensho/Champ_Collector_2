@@ -192,8 +192,41 @@ func ConsumePremonitionIfPresent(p_target_ID: int, p_caster_ID: int) -> bool:
 			missed.target_ID = p_target_ID
 			missed.source_ID = p_caster_ID
 			_resolver._Emit(missed)
+			_ResolvePremonitionCounter(p_target_ID, p_caster_ID)
 			return true
 	return false
+
+## Answers the attack Premonition just negated with an immediate resolution of the
+## holder's own basic skill against the attacker (Role_Kit_Design.md 9.16) — a full first
+## resolution (trait hook, real use count, every effect), not the stripped repeat shape
+## Borrowed Time and the Sorcerer's Echo use, since Premonition is generic across holders
+## and its counter has to be faithful to whatever basic it triggers on. Everything past
+## the effect loop in BattleResolver.ResolveSkill is deliberately skipped, which is what
+## makes the counter cost the holder nothing: no cooldown, no turn-bar movement, no turn.
+func _ResolvePremonitionCounter(p_holder_ID: int, p_attacker_ID: int) -> void:
+	var holder: Character = _resolver._characters.get(p_holder_ID)
+	if(null == holder or holder._current_health <= 0):
+		return
+	var attacker: Character = _resolver._characters.get(p_attacker_ID)
+	if(null == attacker or attacker._current_health <= 0):
+		return
+	var basic: Skill = Skills.BasicSkill(holder)
+	if(null == basic):
+		return
+
+	var attributes: Dictionary[Types.Attribute, int] = _resolver.GetEffectiveAttributes(p_holder_ID)
+	var trait_result: TraitSkillResult = TraitSkillResult.new()
+	var skill_cast_trait: CharacterTrait = Skills.ActiveHook(holder, Types.Combat_Event.Skill_Cast)
+	if(null != skill_cast_trait):
+		trait_result = skill_cast_trait.OnSkillCast(
+				p_holder_ID, [p_attacker_ID], basic.name, attributes, _resolver)
+
+	var use_count: int = _resolver._SkillUseCount(p_holder_ID, basic)
+	var context := SkillCastContext.new(
+			_resolver, p_holder_ID, [p_attacker_ID], basic, attributes, use_count, trait_result)
+	for effect in basic.effects:
+		if(context.ConditionMet(effect)):
+			effect.Resolve(context)
 
 ## Saves a character from a fatal hit by consuming their Deathward buff, if any.
 func ConsumeDeathwardIfPresent(p_character_ID: int) -> bool:

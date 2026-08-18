@@ -251,7 +251,7 @@ Current roles, their identity and purpose exist as follows:
 - Diviner
     - A squishy support.  Primary attributes: Mysticism.
     - Purpose: Sustain, Debuffer
-    - Passive: Foresight [Channel 1] - Place debuffs on enemies if they are close enough behind the Diviner on the turn bar when the Diviners turn starts. Applies Enfeeble for 1 turn, with no resist roll (symmetric to the Tactician's Plan applying Empower).
+    - Passive: Foresight [Enabler] - Place debuffs on enemies if they are close enough behind the Diviner on the turn bar when the Diviners turn starts. Applies Enfeeble for 1 turn, with no resist roll (symmetric to the Tactician's Plan applying Empower).
         - 10% Uncommon, 15% Rare, 20% Epic, 25% Legendary
     - Fielded by: `Diviner.tres`
 - Appraiser
@@ -522,7 +522,7 @@ Buffs:
 * Vigor [Channel 1]: Increases max Health by 30%.
 * Lethal Precision [Channel 1]: Increases Critical Damage by the applier's own Critical Damage, snapshotted at application.
 * Spotlight [Enabler]: The character is much more likely to be targeted by enemies (1.5x targeting weight) and takes 20% less damage. Both halves are one survival tool — drawing focused fire away from the pieces a burst depends on, and taking less of what lands.
-* Premonition [Enabler]: The next attack against the character automatically misses, then the buff is consumed.
+* Premonition [Enabler]: The next attack against the character automatically misses, the buff is consumed, and the character immediately answers with their own basic skill against the attacker, at full strength and at no cost.
 * Rehearsed [Enabler]: The character's next non-basic skill does not go on cooldown, then the buff is consumed.
 * Sanguine Pact [Channel 2, granted]: Increases the holder's damage by 12% per 10% of the holder's own missing Health, and redirects 30% of damage the holder takes to whoever applied the Pact instead.
 * Borrowed Time [Channel 3 — Cascade, granted]: The holder's next damaging skill resolves one additional time, at 30-60% strength by the applier's rarity. Does not stack. Consumed only by a damaging cast; a non-damaging skill leaves it untouched for a later one.
@@ -669,7 +669,7 @@ the fix belongs in the data or the document.
 * Premonition
     * Type: Buff
     * Cooldown: 3 turns
-    * Effect: [Enabler] Grants an ally the Premonition buff for 1 turn.
+    * Effect: [Enabler] Grants an ally the Premonition buff for 1 turn: the next attack against them automatically misses and is answered with their own basic skill.
 * Ill Omen
     * Type: Damage, Debuff
     * Cooldown: 3 turns

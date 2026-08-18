@@ -451,7 +451,7 @@ const MANIFEST: Dictionary = {
 		"preset": "Data/Character_Player_Variants/Diviner.tres",
 		"passive": [
 			{"name": "Foresight", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
-					"class": Contribution_Class.Channel1,
+					"class": Contribution_Class.Enabler,
 					"precondition": "At Start_Turn, applies a fixed 1-turn Enfeeble (not rarity-scaled " +
 							"by the trait) to any enemy within 25% turn-bar-behind range (Legendary " +
 							"threshold) that is a valid Single_Enemy target.",
@@ -467,8 +467,11 @@ const MANIFEST: Dictionary = {
 			{"name": "Premonition", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Enabler,
 					"precondition": "Grants one ally Premonition (1 turn): next attack against them " +
-							"auto-misses, consumed via ConsumePremonitionIfPresent. No damage.",
-					"citation": "Premonition.tres:6-11; battle_resolver.gd:725-726"},
+							"auto-misses, consumed via ConsumePremonitionIfPresent, and is answered by an " +
+							"immediate, cost-free resolution of the holder's own basic skill against the " +
+							"attacker (a real use, trait hook included). No declared bucket — this is an " +
+							"off-turn instance count, not a damage factor.",
+					"citation": "status_effect_resolver.gd:186-227; skills.gd (BasicSkill)"},
 			{"name": "Ill Omen", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Channel1,
 					"precondition": "damage_scaling Mysticism 1.2 (no bonus_per) plus Hexed (2 turns, " +

@@ -1365,7 +1365,7 @@ count.
 
 ### 9.16 Diviner — the read pays back
 
-**Status:** Settled, not yet implemented. Batch 4.
+**Status:** Implemented. Batch 4.
 
 **Identity: Enabler, exported**, redeclaring section 5's Channel 1 row. Enfeeble cuts the enemy's
 Attack, Premonition blocks a hit, Hexed denies rolls — all mitigation and denial, and §1.2's
@@ -1407,15 +1407,23 @@ a claim on one term, not a ceiling on the rest of the kit.
 **Projected numbers.** None. The kit fields no damage factor and is measured on the collapse test,
 absent from the sweep's ranking by design (§4).
 
-**Implementation needs (not yet built):**
-
-* The Premonition buff's consumption path (`ConsumePremonitionIfPresent` in `battle_resolver.gd`)
-  gains the counter-attack resolution — nothing in the roster counter-attacks today, so the
-  off-turn basic resolution is new plumbing. Check it against the Symbiote graft pool's retaliatory
-  pull when that kit settles, so the two stay distinct effects.
-* `kit_contribution_manifest.gd` — Premonition's entry.
-* `Concept_Document.md` at promotion: 3.1.3's Diviner identity tag, 3.2.4.2's Premonition, 3.2.3's
-  Premonition buff.
+**Implementation.** `ConsumePremonitionIfPresent` (`status_effect_resolver.gd`) calls a new
+`_ResolvePremonitionCounter`, which is a **full first resolution of the holder's basic skill**
+against the attacker — the holder's `Skill_Cast` trait hook, a real (advancing)
+`_SkillUseCount`, and every effect the basic carries, not the stripped repeat-only shape Borrowed
+Time and the Sorcerer's Echo use. Full fidelity is load-bearing here rather than optional: Premonition
+is generic across holders, so a Bar Brawler's counter has to carry Heap On's ramp and a
+trait-bonus-bearing basic has to carry its multiplier, or the counter silently underpays whichever
+Role holds it. Everything past the effect loop in `BattleResolver.ResolveSkill` (cooldown, turn-bar
+bump, cascade post, zone trigger) is skipped, which is what makes the counter free. New shared helper
+`Skills.BasicSkill` (the character's cooldown-0 skill) backs both this and `burst_reachability.gd`'s
+existing private copy. A mutual-Premonition exchange is bounded by the number of buffs in play, not
+guarded by a depth counter — each step consumes one buff, so a 1-buff exchange ends in a miss and a
+landed counter, a 2-buff exchange ends in two misses and one landed hit once both buffs are spent
+(pinned by `test_mutual_premonition_terminates_once_both_buffs_are_spent`). Post-Diviner sweep:
+median 1.95x, 90th percentile 4.68x, ceiling 16.24x, 114 top-decile teams — unchanged, as predicted:
+the manifest declares no bucket for the counter, and the scorer has no representation for an
+off-turn resolution.
 
 ### 9.17 Symbiote — kept
 

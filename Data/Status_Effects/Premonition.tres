@@ -8,4 +8,4 @@ script = ExtResource("1_script")
 duration_default = 1
 applies_on_self_tick = false
 icon = ExtResource("2_icon")
-description = "The next attack against the character automatically misses, then the buff is consumed."
+description = "The next attack against the character automatically misses, the buff is consumed, and the character immediately retaliates with their basic skill."

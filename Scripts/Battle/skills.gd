@@ -16,6 +16,14 @@ static func ActiveHook(p_character: Character, p_event: Types.Combat_Event) -> C
 		return p_character._trait
 	return null
 
+## The character's cooldown-0 skill (Concept_Document.md 1.1.2's basic-skill baseline).
+## Falls back to the first skill when the kit has no cooldown-0 entry.
+static func BasicSkill(p_character: Character) -> Skill:
+	for skill: Skill in p_character._skills:
+		if(0 == skill.cooldown):
+			return skill
+	return p_character._skills[0] if not p_character._skills.is_empty() else null
+
 ## Additive attribute-scaled Barrier value, shared by the barrier zone and any future
 ## direct-cast Barrier skill (use GameBalance.BARRIER_DIRECT_BASE / _COEFF and the
 ## casting skill's own scaling attribute for the latter).
