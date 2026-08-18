@@ -9,7 +9,13 @@ class_name DamageEffect extends SkillEffect
 ## debuff type present on the target. See Technical Design Document 7.4.
 
 @export var damage_scaling: Dictionary[Types.Attribute, float]
-@export var defense_ignore_factor: float = 1.0
+@export var defence_ignore_factor: float = 1.0
+## A multiple of the caster's own base-referenced Defence-ignore rate (Between the Plates),
+## never a rate of its own — 1.0 means "carry the passive's rate unmodified." A caster with
+## no declared rate contributes no ignore regardless of this value. Independent of
+## defence_ignore_factor above: this subtracts points from a debuff-free reference Defence, so
+## a teammate's Defence debuff is never eaten by the caster's own bypass.
+@export var defence_ignore_multiple: float = 1.0
 @export var bonus_per: Dictionary[Types.Trait_Count_Source, float]
 ## Per-target bonus, one multiplying bucket per debuff type currently on the target —
 ## distinct from bonus_per because the source is a debuff type, not a Trait_Count_Source.
@@ -32,7 +38,8 @@ func Resolve(p_context: SkillCastContext) -> void:
 		combined_damage_modifier.Contribute(_SkillKey(p_context), _SkillCountBonus(p_context, target_ID))
 		_ContributeDebuffFactors(p_context, target_ID, combined_damage_modifier)
 		p_context.resolver.ResolveEffectDamage(p_context.caster_ID, target_ID, p_context.caster_attributes,
-				damage_scaling, defense_ignore_factor, combined_damage_modifier, allow_critical)
+				damage_scaling, defence_ignore_multiple, combined_damage_modifier, allow_critical,
+				defence_ignore_factor)
 
 func _RampMultiplier(p_context: SkillCastContext) -> float:
 	var per_use: float = bonus_per.get(Types.Trait_Count_Source.Uses_This_Battle, 0.0)

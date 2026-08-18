@@ -184,15 +184,17 @@ func test_damage_effect_bonus_per_turn_bar_section_span_reads_the_traits_own_rat
 	assert_gt(boosted_damage, baseline_damage,
 		"Turn_Bar_Section_Span should add the trait's own already-scaled span bonus")
 
-func test_damage_effect_defense_ignore_factor_reduces_the_targets_effective_defence() -> void:
-	# Defence's mitigation ratio is taken against GameBalance.DEFENCE_SCALE_CONSTANT (100), not
-	# the caster's own aggregate — the fixture's default Defence (6) is too small relative to
-	# that constant to move an 8-Attack hit's rounded damage at all, so this test raises target
-	# Defence to a boss-tier value to make the ignore-factor's effect visible.
+func test_damage_effect_defence_ignore_factor_reduces_the_targets_effective_defence() -> void:
+	# defence_ignore_factor is the general-purpose lever: independent of any caster trait, any
+	# skill may set it directly. Defence's mitigation ratio is taken against
+	# GameBalance.DEFENCE_SCALE_CONSTANT (100), not the caster's own aggregate — the fixture's
+	# default Defence (6) is too small relative to that constant to move an 8-Attack hit's
+	# rounded damage at all, so this test raises target Defence to a boss-tier value to make the
+	# ignore's effect visible.
 	var skill: Skill = TestFactory.make_strike_skill()
 	var full_defence_effect: DamageEffect = DamageEffect.new()
 	full_defence_effect.damage_scaling = {Types.Attribute.Attack: 1.0}
-	full_defence_effect.defense_ignore_factor = 1.0
+	full_defence_effect.defence_ignore_factor = 1.0
 	_roster[3]._attributes[Types.Attribute.Defence] = 120
 	var full_defence_before: int = _roster[3]._current_health
 	full_defence_effect.Resolve(TestFactory.make_context(_resolver, 0, [3], skill))
@@ -202,14 +204,104 @@ func test_damage_effect_defense_ignore_factor_reduces_the_targets_effective_defe
 	_resolver = TestFactory.make_resolver(_roster, TestFactory.make_full_sides())
 	var ignoring_effect: DamageEffect = DamageEffect.new()
 	ignoring_effect.damage_scaling = {Types.Attribute.Attack: 1.0}
-	ignoring_effect.defense_ignore_factor = 0.0
+	ignoring_effect.defence_ignore_factor = 0.0
 	_roster[3]._attributes[Types.Attribute.Defence] = 120
 	var ignoring_before: int = _roster[3]._current_health
 	ignoring_effect.Resolve(TestFactory.make_context(_resolver, 0, [3], skill))
 	var ignoring_damage: int = ignoring_before - _roster[3]._current_health
 
 	assert_gt(ignoring_damage, full_defence_damage,
-		"A lower defense_ignore_factor should shrink effective Defence and deal more damage")
+		"A lower defence_ignore_factor should shrink effective Defence and deal more damage")
+
+func test_damage_effect_defence_ignore_multiple_scales_a_casters_base_referenced_ignore() -> void:
+	# Defence's mitigation ratio is taken against GameBalance.DEFENCE_SCALE_CONSTANT (100), not
+	# the caster's own aggregate — the fixture's default Defence (6) is too small relative to
+	# that constant to move an 8-Attack hit's rounded damage at all, so this test raises target
+	# Defence to a boss-tier value to make the ignore's effect visible. defence_ignore_multiple
+	# is a multiple of the caster's OWN base-referenced rate (Between the Plates), never a rate
+	# of its own, so the caster needs a trait declaring one for the field to move anything.
+	_roster[0]._trait = TestFactory.FakeDefenceIgnoringTrait.new(0.20)
+	var skill: Skill = TestFactory.make_strike_skill()
+	var base_multiple_effect: DamageEffect = DamageEffect.new()
+	base_multiple_effect.damage_scaling = {Types.Attribute.Attack: 1.0}
+	base_multiple_effect.defence_ignore_multiple = 1.0
+	_roster[3]._attributes[Types.Attribute.Defence] = 120
+	var base_multiple_before: int = _roster[3]._current_health
+	base_multiple_effect.Resolve(TestFactory.make_context(_resolver, 0, [3], skill))
+	var base_multiple_damage: int = base_multiple_before - _roster[3]._current_health
+
+	_roster.assign(TestFactory.make_full_roster())
+	_roster[0]._trait = TestFactory.FakeDefenceIgnoringTrait.new(0.20)
+	_resolver = TestFactory.make_resolver(_roster, TestFactory.make_full_sides())
+	var higher_multiple_effect: DamageEffect = DamageEffect.new()
+	higher_multiple_effect.damage_scaling = {Types.Attribute.Attack: 1.0}
+	higher_multiple_effect.defence_ignore_multiple = 2.5
+	_roster[3]._attributes[Types.Attribute.Defence] = 120
+	var higher_multiple_before: int = _roster[3]._current_health
+	higher_multiple_effect.Resolve(TestFactory.make_context(_resolver, 0, [3], skill))
+	var higher_multiple_damage: int = higher_multiple_before - _roster[3]._current_health
+
+	assert_gt(higher_multiple_damage, base_multiple_damage,
+		"A higher defence_ignore_multiple should ignore more Defence and deal more damage")
+
+func test_damage_effect_defence_ignore_factor_and_multiple_compose() -> void:
+	# The two levers are independent: a skill-authored flat factor and a caster-trait-driven
+	# base-referenced ignore both reduce the same effective Defence. Attack raised and Defence
+	# put at boss scale so the ~38-point gap between the two scenarios survives the damage
+	# roll's own +/-5% variance and the final ceil() rounding.
+	_roster[0]._trait = TestFactory.FakeDefenceIgnoringTrait.new(0.20)
+	_roster[0]._attributes[Types.Attribute.Attack] = 100
+	var skill: Skill = TestFactory.make_strike_skill()
+	var factor_only_effect: DamageEffect = DamageEffect.new()
+	factor_only_effect.damage_scaling = {Types.Attribute.Attack: 1.0}
+	factor_only_effect.defence_ignore_factor = 0.5
+	factor_only_effect.defence_ignore_multiple = 0.0
+	_roster[3]._attributes[Types.Attribute.Defence] = 300
+	_roster[3]._attributes[Types.Attribute.Health] = 100000
+	_roster[3]._current_health = 100000
+	var factor_only_before: int = _roster[3]._current_health
+	factor_only_effect.Resolve(TestFactory.make_context(_resolver, 0, [3], skill))
+	var factor_only_damage: int = factor_only_before - _roster[3]._current_health
+
+	_roster.assign(TestFactory.make_full_roster())
+	_roster[0]._trait = TestFactory.FakeDefenceIgnoringTrait.new(0.20)
+	_roster[0]._attributes[Types.Attribute.Attack] = 100
+	_resolver = TestFactory.make_resolver(_roster, TestFactory.make_full_sides())
+	var both_effect: DamageEffect = DamageEffect.new()
+	both_effect.damage_scaling = {Types.Attribute.Attack: 1.0}
+	both_effect.defence_ignore_factor = 0.5
+	both_effect.defence_ignore_multiple = 1.0
+	_roster[3]._attributes[Types.Attribute.Defence] = 300
+	_roster[3]._attributes[Types.Attribute.Health] = 100000
+	_roster[3]._current_health = 100000
+	var both_before: int = _roster[3]._current_health
+	both_effect.Resolve(TestFactory.make_context(_resolver, 0, [3], skill))
+	var both_damage: int = both_before - _roster[3]._current_health
+
+	assert_gt(both_damage, factor_only_damage,
+		"Adding the caster's own base-referenced ignore on top of the flat factor should deal more damage")
+
+func test_damage_effect_defence_ignore_multiple_does_nothing_without_a_caster_rate() -> void:
+	var skill: Skill = TestFactory.make_strike_skill()
+	var effect: DamageEffect = DamageEffect.new()
+	effect.damage_scaling = {Types.Attribute.Attack: 1.0}
+	effect.defence_ignore_multiple = 2.5
+	_roster[3]._attributes[Types.Attribute.Defence] = 120
+	var health_before: int = _roster[3]._current_health
+
+	effect.Resolve(TestFactory.make_context(_resolver, 0, [3], skill))
+
+	_roster.assign(TestFactory.make_full_roster())
+	_resolver = TestFactory.make_resolver(_roster, TestFactory.make_full_sides())
+	var no_ignore_effect: DamageEffect = DamageEffect.new()
+	no_ignore_effect.damage_scaling = {Types.Attribute.Attack: 1.0}
+	no_ignore_effect.defence_ignore_multiple = 1.0
+	_roster[3]._attributes[Types.Attribute.Defence] = 120
+	var no_ignore_before: int = _roster[3]._current_health
+	no_ignore_effect.Resolve(TestFactory.make_context(_resolver, 0, [3], skill))
+
+	assert_eq(health_before - _roster[3]._current_health, no_ignore_before - _roster[3]._current_health,
+		"A caster with no declared base rate must deal the same damage regardless of the multiple")
 
 func test_damage_effect_bonus_per_zones_on_turn_bar_scales_with_zone_count() -> void:
 	var skill: Skill = TestFactory.make_strike_skill()
@@ -500,6 +592,33 @@ func test_steal_buff_effect_can_grant_a_fresh_duration() -> void:
 	effect.Resolve(context)
 
 	assert_eq(_roster[0]._active_buffs[0].duration, 5)
+
+func test_steal_buff_effect_duration_bonus_adds_on_top_of_the_stolen_duration() -> void:
+	_roster[3]._active_buffs.append(_buff(Types.Buff_Type.Empower, 3))
+	var effect: StealBuffEffect = StealBuffEffect.new()
+	effect.count = 1
+	effect.to = Types.Skill_Target.Self
+	effect.duration_bonus = 1
+	var context: SkillCastContext = TestFactory.make_context(_resolver, 0, [3], TestFactory.make_strike_skill())
+
+	effect.Resolve(context)
+
+	assert_eq(_roster[0]._active_buffs[0].duration, 4,
+		"duration_bonus should add on top of the stolen buff's own remaining duration")
+
+func test_steal_buff_effect_duration_bonus_adds_on_top_of_an_override() -> void:
+	_roster[3]._active_buffs.append(_buff(Types.Buff_Type.Empower, 3))
+	var effect: StealBuffEffect = StealBuffEffect.new()
+	effect.count = 1
+	effect.to = Types.Skill_Target.Self
+	effect.duration_override = 5
+	effect.duration_bonus = 1
+	var context: SkillCastContext = TestFactory.make_context(_resolver, 0, [3], TestFactory.make_strike_skill())
+
+	effect.Resolve(context)
+
+	assert_eq(_roster[0]._active_buffs[0].duration, 6,
+		"duration_bonus should add on top of an explicit duration_override too")
 
 # --- ConsumeBuffsEffect ---
 

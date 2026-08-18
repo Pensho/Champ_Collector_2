@@ -118,6 +118,11 @@ func OnKill(_p_owner_ID: int, _p_victim_ID: int, _p_resolver: BattleResolver) ->
 func GetOutgoingDamageBonus(_p_owner_ID: int, _p_target_ID: int, _p_resolver: BattleResolver) -> float:
 	return 0.0
 
+## Fraction of this owner's own attacks that bypasses the target's Defence, subtracted in
+## points from a debuff-free reference Defence (Between the Plates). 0.0 = no bypass.
+func GetBaseDefenceIgnoreRate(_p_owner_ID: int) -> float:
+	return 0.0
+
 ## Returns the fraction of an ally's incoming attack damage this owner redirects to
 ## itself (0.0 = no redirect).
 func OnAllyDamageTaken(

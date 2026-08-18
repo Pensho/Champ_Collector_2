@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bdsbax78fcvo5"
-path="res://.godot/imported/pilfer_trait.png-8aaba38570dea048ffa9552963328b8f.ctex"
+uid="uid://cg2cu74mvmn83"
+path="res://.godot/imported/between_the_plates_trait.png-ffb0040b26f58f9c9ee9c55afbd048d9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Abilities/Passives/Pilfer_Trait/pilfer_trait.png"
-dest_files=["res://.godot/imported/pilfer_trait.png-8aaba38570dea048ffa9552963328b8f.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Abilities/Passives/Between_The_Plates_Trait/between_the_plates_trait.png"
+dest_files=["res://.godot/imported/between_the_plates_trait.png-ffb0040b26f58f9c9ee9c55afbd048d9.ctex"]
 
 [params]
 

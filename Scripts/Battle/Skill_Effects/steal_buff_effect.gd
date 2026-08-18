@@ -7,6 +7,7 @@ class_name StealBuffEffect extends SkillEffect
 @export var to: Types.Skill_Target = Types.Skill_Target.Self
 ## -1 keeps each stolen buff's own remaining duration.
 @export var duration_override: int = -1
+@export var duration_bonus: int = 0
 
 func Resolve(p_context: SkillCastContext) -> void:
 	var resolver: BattleResolver = p_context.resolver
@@ -17,4 +18,4 @@ func Resolve(p_context: SkillCastContext) -> void:
 	var recipient_ID: int = recipients[resolver.GetRandom().randi_range(0, recipients.size() - 1)]
 	for target_ID in p_context.TargetsFor(self):
 		for i in count:
-			status_resolver.StealBuff(target_ID, recipient_ID, duration_override)
+			status_resolver.StealBuff(target_ID, recipient_ID, duration_override, duration_bonus)

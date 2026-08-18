@@ -127,7 +127,8 @@ defence ignore at all, so a Defence reduction scores identically to none. Closin
 deferred to `FeatureIdeas.md` rather than taken up here. **Batch 2 complete: all five Roles
 implemented.**
 
-Phase 4 (Batch 3) **complete**, settled one Role at a time. Four settled; Lancer implemented:
+Phase 4 (Batch 3) **complete**, settled one Role at a time. Five settled; Lancer and Thief
+implemented:
 
 * **Lancer (§9.11) — implemented.** The batch's only replacement, and the first kit gated on
   *position* rather than a resource. Opens route F; accumulate-then-spend drops to four claimants.
@@ -140,10 +141,23 @@ Phase 4 (Batch 3) **complete**, settled one Role at a time. Four settled; Lancer
   gate lands in `combined_contrast_ratio`, not the shared bucket product). Top decile (114 teams)
   gains a **ninth distinct pairing**: Lancer/Rending Charge (2 teams, 10.45x-12.15x, both
   `charge_distance`-gated).
-* **Thief (§9.12)** — a base-referenced Defence bypass, opening route G with the Architect. One
-  scorer gap follows, now `Role_Kit_Design.md` §11's open item: **the scorer models no defence
-  ignore at all**, so both the Thief's and the Architect's contributions are invisible to the sweep
-  until it does.
+* **Thief (§9.12) — implemented.** A base-referenced Defence bypass, closing route G with the
+  Architect. `DamageEffect.defense_ignore_factor` (a multiplicative field, Pierce Weakness's only
+  user) is replaced by `defence_ignore_multiple`, a multiple of the caster's own
+  `CharacterTrait.GetBaseDefenceIgnoreRate` — 0.0 on the base class, so every other Role's damage
+  is unaffected. `BattleResolver._EffectiveDefenceAfterIgnore` subtracts the ignore in points from
+  a debuff-free reference Defence (`GetEffectiveAttributes`'s new `p_include_debuffs` parameter),
+  not the target's *actual* effective Defence, so a teammate's Defence debuff is never eaten by the
+  Thief's own bypass. Closed alongside it: `Role_Kit_Design.md` §11's own open item, **the scorer
+  modeled no defence ignore at all** — `burst_reachability.gd` now computes each candidate's
+  effective boss Defence the same two-step way (a team-reach shred via a new manifest
+  `defence_reduction` field, the Architect's Final Calculation entry the first to carry one; then a
+  caster-side ignore via new `defence_ignore` fields), so route G's contribution is now measured
+  rather than assumed invisible. Post-Thief sweep: median 1.95x, 90th percentile 4.68x, ceiling
+  16.24x (unchanged — Thief/Architect isn't the ceiling team, and a symmetric Defence shred cancels
+  out of `contrast_ratio` for any candidate without its own asymmetric ignore, which is every
+  Role but the Thief). Top decile (114 teams) gains a **tenth distinct pairing**:
+  Thief/Pierce weakness (1 team, 10.80x).
 * **Tidal Corsair (§9.13)** — an adaptation closing route D. Prompted the description soft cap
   (`Concept_Document.md` 3.2.4), and its Slipstream claim retires part of `FeatureIdeas.md`'s
   orphaned-turn-bar-effects item and narrows its Outrider sketch.

@@ -109,6 +109,21 @@ class_name KitContributionManifest extends RefCounted
 ##                    granted per point of an ally's Critical Chance above 100 (the Appraiser's
 ##                    No Wasted Margin), read by burst_reachability.gd's _CritChanceOverflowRate
 ##                    and folded into _CritFactor's damage term.
+##   defence_ignore - optional. `{rate}` on a passive entry (Between the Plates' own
+##                    base-referenced rate at Legendary rarity) or `{multiple}` on a skill entry
+##                    (a multiple of the caster's own passive rate, never a rate of its own —
+##                    Pierce Weakness's 2.5x). Read together by burst_reachability.gd's
+##                    _DefenceIgnorePoints as rate * multiple * the scorer's fixed boss Defence,
+##                    subtracted in points — mirrors battle_resolver.gd's own
+##                    _EffectiveDefenceAfterIgnore. A caster with no passive `rate` contributes
+##                    no ignore regardless of any skill's `multiple`.
+##   defence_reduction - optional, skill entries only. `{fraction, reach, gate}`, a fractional
+##                    shred of the scorer's fixed boss Defence (the Architect's Expose Weakness).
+##                    `reach` is always "team" — the rider is read by every attacker on the
+##                    team, not just its own caster. Read by burst_reachability.gd's
+##                    _ContributeDefenceReduction, applied to the UNSHREDDED Defence reference
+##                    before any defence_ignore subtraction — the reason the Thief's ignore and
+##                    the Architect's shred compound (route G) instead of one eating the other.
 
 enum Contribution_Class
 {
@@ -170,34 +185,43 @@ const MANIFEST: Dictionary = {
 	Types.Role.Thief: {
 		"preset": "Data/Character_Player_Variants/Thief.tres",
 		"passive": [
-			{"name": "Pilfer", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
-					"class": Contribution_Class.Enabler,
-					"precondition": "50% chance (Legendary) on any Skill_Cast to steal a buff from the " +
-							"primary target. No damage.",
-					"citation": "pilfer_trait.gd:3-8,24-45"},
+			{"name": "Between the Plates", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
+					"class": Contribution_Class.Channel1,
+					"precondition": "Every attack ignores 20% (Legendary) of a debuff-free reference " +
+							"Defence (base + equipment + trait deltas + battle-long bonuses + Defence " +
+							"buffs, excluding Defence debuffs), subtracted in points from the target's " +
+							"actual effective Defence and floored at zero. See defence_ignore on this " +
+							"entry and on each skill below.",
+					"citation": "between_the_plates_trait.gd:3-22; battle_resolver.gd " +
+							"_EffectiveDefenceAfterIgnore",
+					"defence_ignore": {"rate": 0.20,
+							"citation": "between_the_plates_trait.gd:5-10 (Legendary)"}},
 		],
 		"skills": [
 			{"name": "Stab", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Channel1,
 					"precondition": "Basic skill: damage_scaling Attack 0.7, no bonus_per — pure " +
-							"scaled-attribute damage.",
-					"citation": "Stab.tres:6-10"},
+							"scaled-attribute damage, carrying the passive's ignore at its base rate.",
+					"citation": "Stab.tres:6-10",
+					"defence_ignore": {"multiple": 1.0, "citation": "damage_effect.gd default"}},
 			{"name": "Pierce Weakness", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Channel1,
-					"precondition": "damage_scaling Attack 1.1, defense_ignore_factor 0.7. The ignore " +
-							"factor scales effective Defence directly, not a CombinedDamageModifier " +
-							"bucket, and per 1.1.4 stops mattering at burst scale.",
-					"citation": "Pierce_Weakness.tres:6-11"},
-			{"name": "Weigh the Mark", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
+					"precondition": "damage_scaling Attack 1.1, ignores 2.5x the passive's rate " +
+							"(defence_ignore_multiple). The ignore is a base-referenced points " +
+							"subtraction, not a CombinedDamageModifier bucket, and stays meaningful at " +
+							"burst scale per Phase 0's mitigation change.",
+					"citation": "Pierce_Weakness.tres:6-12",
+					"defence_ignore": {"multiple": 2.5, "citation": "Pierce_Weakness.tres:12"}},
+			{"name": "Cut Purse", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Enabler,
-					"precondition": "Grants self (target Self) Opportunist for 3 turns. " +
-							"Concept_Document.md 3.2.4.2 documents this skill as 'Case the Target' at 2 " +
-							"turns; the shipped resource is Weigh_the_Mark.tres at 3 turns — a known " +
-							"doc/code conflict, not rewritten here. Opportunist itself contributes +0.1 " +
-							"per distinct debuff type on whatever target Thief later attacks, keyed to " +
-							"that debuff's own name — the magnitude now lives in granted_status on this " +
-							"same entry, gated to the granter (Self-scoped) rather than any teammate.",
-					"citation": "Weigh_the_Mark.tres:6-11; Opportunist.tres; status_effect_resolver.gd:616-636",
+					"precondition": "damage_scaling Attack 1.2, no bonus_per. Steals one buff from the " +
+							"target (lasting one extra turn on the Thief) and grants self Opportunist " +
+							"for 2 turns. Opportunist itself contributes +0.1 per distinct debuff type on " +
+							"whatever target the Thief later attacks, keyed to that debuff's own name — " +
+							"the magnitude lives in granted_status on this entry, gated to the granter " +
+							"(Self-scoped) rather than any teammate.",
+					"citation": "Cut_Purse.tres:8-25; Opportunist.tres; status_effect_resolver.gd:616-636",
+					"defence_ignore": {"multiple": 1.0, "citation": "damage_effect.gd default"},
 					"granted_status": {"bucket_key": "", "magnitude": 0.1, "per_debuff_anchored": true,
 							"citation": "Data/Status_Effects/Opportunist.tres:8-9 (magnitude_kind " +
 									"PerTargetDebuffDamagePercent); status_effect_resolver.gd:616-636"}},
@@ -828,8 +852,8 @@ const MANIFEST: Dictionary = {
 							"at 0.07/charge (Legendary), up to +84% at 12 charges; >=5 charges also " +
 							"applies Expose Weakness (2 turns, -30% Defence rising +2%/charge beyond the " +
 							"threshold to -44% at 12) — an exported rider read by every attacker on the " +
-							"team, not scored here (no manifest shape for a mitigation-term contribution " +
-							"until section 11's defence-ignore gap closes); >=9 charges re-erects/upgrades " +
+							"team (see defence_reduction on Final Calculation's own entry below); " +
+							">=9 charges re-erects/upgrades " +
 							"the Raise the Frame zone for free. Raise the Frame separately banks " +
 							"min(charges,3) into GetZoneChargeBonus (up to +21% Legendary), read by the " +
 							"zone's own Barrier sizing outside CombinedDamageModifier.",
@@ -853,7 +877,11 @@ const MANIFEST: Dictionary = {
 					"precondition": "damage_scaling Knowledge 1.3 (no bonus_per, own bucket " +
 							"contributes 0.0), plus the shared trait_resource bucket from Calibration " +
 							"(see passive, up to +84% Legendary) — consumes ALL held charges (0-12).",
-					"citation": "Final_Calculation.tres:6-11; calibration_trait.gd:67-75"},
+					"citation": "Final_Calculation.tres:6-11; calibration_trait.gd:67-75",
+					"defence_reduction": {"fraction": 0.44, "reach": "team",
+							"gate": "defence_reduction_applied",
+							"citation": "calibration_trait.gd (Expose Weakness -44% at 12 charges, " +
+									"Legendary)"}},
 		],
 	},
 	Types.Role.Tidal_Corsair: {

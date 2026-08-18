@@ -23,7 +23,7 @@ extends GutTest
 ##   - A granted status's real target scope (`Skill_Target`), replaying the actual granting
 ##     skill through the resolver rather than placing the buff directly on whichever character
 ##     is convenient — the only way to catch a scope bug like the one that shipped: neither a
-##     `Self` grant (Thief's Weigh the Mark) nor an `All_Other_Allies` grant (Tactician's Fatal
+##     `Self` grant (Thief's Cut Purse) nor an `All_Other_Allies` grant (Tactician's Fatal
 ##     Flaw) previously excluded the granter's own resolution when the scorer composed them,
 ##     and this shape is exactly what a granted-status-carrying team with a `Self`- or
 ##     `All_Other_Allies`-scoped grant needs covered.
@@ -213,15 +213,13 @@ func test_thief_self_scoped_opportunist_does_not_reach_a_non_thief_caster() -> v
 	var sides: CombatSides = CombatSides.new([0, 1, 2], [3])
 	var resolver: BattleResolver = TestFactory.make_resolver(roster, sides)
 
-	# Weigh the Mark's own target is Self — grant it to the Thief exactly as a real cast
-	# would, via the same caster-relative resolution burst_reachability.gd's own
-	# _GrantReachesCandidate predicate mirrors.
-	var weigh_the_mark_index: int = _skill_index(thief, "Weigh the Mark")
-	var self_targets: Array[int] = Skills.FindSkillTargets(
-			1, 1, Types.Skill_Target.Self, resolver.GetCharacters(), sides)
-	resolver.ResolveSkill(1, self_targets, weigh_the_mark_index)
+	# Cut Purse's Opportunist grant targets Self, independent of the skill's own enemy
+	# target — cast it against the living boss exactly as a real cast would, via the same
+	# caster-relative resolution burst_reachability.gd's own _GrantReachesCandidate mirrors.
+	var cut_purse_index: int = _skill_index(thief, "Cut Purse")
+	resolver.ResolveSkill(1, [3], cut_purse_index)
 	assert_true(thief._active_buffs.any(func(b: StatusEffects.Buff) -> bool: return Types.Buff_Type.Opportunist == b.type),
-			"Weigh the Mark must actually grant the Thief itself Opportunist")
+			"Cut Purse must actually grant the Thief itself Opportunist")
 
 	var cataclysm_index: int = _skill_index(sorcerer, "Cataclysm")
 	var modifier: CombinedDamageModifier = _first_damage_modifier(

@@ -15,6 +15,7 @@ const WARLORD = preload("res://Data/Character_Player_Variants/Warlord.tres")
 const EMISSARY = preload("res://Data/Character_Player_Variants/Emissary.tres")
 const THIEF = preload("res://Data/Character_Player_Variants/Thief.tres")
 const CHRONOPHAGE = preload("res://Data/Character_Player_Variants/Chronophage.tres")
+const ARCHITECT = preload("res://Data/Character_Player_Variants/Architect.tres")
 
 func _sorcerer_scholar_tactician() -> Array[CharacterPreset]:
 	var presets: Array[CharacterPreset] = [SORCERER, CENTAUR_ARCHIVIST, TACTICIAN]
@@ -391,3 +392,78 @@ func test_zone_only_skill_is_enumerated_from_its_enemy_facing_on_trigger_damage(
 		"Unstable Rift's remaining zone charges must surface their own gate")
 	assert_gt(pinned.sustained_contrast_ratio, 0.0,
 		"Unstable Rift's remaining zone charges must contribute a nonzero sustained_contrast_ratio")
+
+# --- Defence-ignore / Defence-reduction (Role_Kit_Design.md section 11's closed gap) ---
+
+func test_defence_ignore_points_reads_passive_rate_times_skill_multiple() -> void:
+	var role_entry: Dictionary = {"passive": [{"defence_ignore": {"rate": 0.20}}]}
+	var skill_entry: Dictionary = {"defence_ignore": {"multiple": 2.5}}
+	var points: float = BurstReachability._DefenceIgnorePoints(role_entry, skill_entry, 120.0)
+	assert_almost_eq(points, 60.0, 0.0001, "0.20 rate * 2.5 multiple * 120 Defence = 60 points")
+
+func test_defence_ignore_points_is_zero_without_a_passive_rate() -> void:
+	var role_entry: Dictionary = {"passive": [{}]}
+	var skill_entry: Dictionary = {"defence_ignore": {"multiple": 2.5}}
+	assert_eq(BurstReachability._DefenceIgnorePoints(role_entry, skill_entry, 120.0), 0.0,
+		"A caster with no declared passive rate must ignore nothing, regardless of the skill's multiple")
+
+func test_defence_ignore_points_is_zero_without_a_skill_multiple() -> void:
+	var role_entry: Dictionary = {"passive": [{"defence_ignore": {"rate": 0.20}}]}
+	assert_eq(BurstReachability._DefenceIgnorePoints(role_entry, {}, 120.0), 0.0,
+		"A skill entry with no declared multiple must not carry the passive's rate")
+
+func test_defence_reduction_reaches_from_any_teammates_declared_team_reach_shred() -> void:
+	var attacker: Character = Character.new()
+	attacker._role = Types.Role.Thief
+	var shredder: Character = Character.new()
+	shredder._role = Types.Role.Architect
+	var manifest: Dictionary = {
+		Types.Role.Architect: {"skills": [{"defence_reduction":
+				{"fraction": 0.44, "reach": "team", "gate": &"defence_reduction_applied"}}]},
+	}
+	var characters: Array[Character] = [attacker, shredder]
+
+	var result: Dictionary = BurstReachability._ContributeDefenceReduction(characters, manifest)
+
+	assert_almost_eq(result.get("fraction", 0.0), 0.44, 0.0001,
+		"The Architect's exported shred must reach a teammate's own candidate")
+	assert_true((result.get("gates", []) as Array).has(&"defence_reduction_applied"),
+		"The shred's own gate must be surfaced for the caller to append")
+
+func test_defence_reduction_ignores_an_entry_without_team_reach() -> void:
+	var character: Character = Character.new()
+	character._role = Types.Role.Architect
+	var manifest: Dictionary = {
+		Types.Role.Architect: {"skills": [{"defence_reduction": {"fraction": 0.44}}]},
+	}
+	var characters: Array[Character] = [character]
+
+	var result: Dictionary = BurstReachability._ContributeDefenceReduction(characters, manifest)
+
+	assert_eq(result.get("fraction", 0.0), 0.0, "A non-team-reach entry must not contribute a shred")
+
+func test_effective_defence_for_candidate_applies_the_shred_before_the_ignore_points() -> void:
+	# Shredded first: 120 * (1 - 0.44) = 67.2; the ignore's own 24 points then come off
+	# that — the same two-step order battle_resolver.gd's real mitigation performs.
+	var effective: float = BurstReachability._EffectiveDefenceForCandidate(120.0, 0.44, 24.0)
+	assert_almost_eq(effective, 43.2, 0.01)
+
+func test_effective_defence_for_candidate_floors_at_zero() -> void:
+	var effective: float = BurstReachability._EffectiveDefenceForCandidate(50.0, 0.0, 1000.0)
+	assert_eq(effective, 0.0, "Defence must floor at zero, never go negative")
+
+func test_thief_pierce_weakness_gains_contrast_from_the_architects_exported_shred() -> void:
+	# Route G (Role_Kit_Design.md section 9.12/9.10): the Thief's own base-referenced ignore
+	# and the Architect's exported Defence shred must compound rather than one eating the
+	# other's contribution — end-to-end, through the real MANIFEST.
+	var without_architect: Array[CharacterPreset] = [THIEF, WARLORD, CHRONOPHAGE]
+	var with_architect: Array[CharacterPreset] = [THIEF, WARLORD, ARCHITECT]
+	var baseline: BurstReachability.CandidateResult = (
+			BurstReachability.ScoreTeam(without_architect).Pinned(0, "Pierce weakness"))
+	var shredded: BurstReachability.CandidateResult = (
+			BurstReachability.ScoreTeam(with_architect).Pinned(0, "Pierce weakness"))
+
+	assert_not_null(baseline, "Pierce weakness must be a scored candidate without the Architect")
+	assert_not_null(shredded, "Pierce weakness must be a scored candidate with the Architect")
+	assert_gt(shredded.contrast_ratio, baseline.contrast_ratio,
+		"The Architect's exported Defence shred must raise the Thief's own contrast ratio")

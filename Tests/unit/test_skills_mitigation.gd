@@ -20,13 +20,13 @@ func test_two_defence_values_differentiate_damage_the_same_at_basic_and_burst_sc
 	assert_almost_eq(burst_ratio, basic_ratio, 0.01,
 		"Defence must differentiate damage by the same ratio at burst scale as at basic-hit scale")
 
-func test_defence_ignore_factor_still_moves_burst_damage_significantly() -> void:
+func test_defence_ignore_still_moves_burst_damage_significantly() -> void:
 	var burst_aggregate: float = 100.0 * 33.0
 	var full_defence_damage: float = Skills.MitigatedDamageUnrounded(120.0, burst_aggregate, 1.0, 1.0)
 	var ignored_defence_damage: float = Skills.MitigatedDamageUnrounded(0.0, burst_aggregate, 1.0, 1.0)
 
 	assert_gt(ignored_defence_damage, full_defence_damage * 1.5,
-		"Defense_Ignore_Factor must still meaningfully move damage at burst scale")
+		"A Defence-ignoring effective Defence must still meaningfully move damage at burst scale")
 
 func test_mitigated_damage_pinned_regression() -> void:
 	assert_almost_eq(

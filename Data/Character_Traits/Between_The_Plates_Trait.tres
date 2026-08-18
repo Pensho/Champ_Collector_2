@@ -1,0 +1,6 @@
+[gd_resource type="Resource" script_class="BetweenThePlatesTrait" format=3]
+
+[ext_resource type="Script" path="res://Scripts/Character/character_traits/CharacterSpecificTraits/between_the_plates_trait.gd" id="1_btp"]
+
+[resource]
+script = ExtResource("1_btp")

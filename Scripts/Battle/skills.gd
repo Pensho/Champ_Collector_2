@@ -307,11 +307,14 @@ static func DispatchDebuffApplied(
 
 static func ApplyActiveAttributeModifiers(
 							p_character: Character,
-							p_attributes: Dictionary[Types.Attribute, int]) -> void:
+							p_attributes: Dictionary[Types.Attribute, int],
+							p_include_debuffs: bool = true) -> void:
 	for buff in p_character._active_buffs:
 		var data: StatusEffectData = StatusEffectRegistry.BuffData(buff.type)
 		if(null != data and IsAttributeModifierKind(data.magnitude_kind)):
 			ApplyAttributeModifiers(data, buff.value, p_attributes)
+	if(not p_include_debuffs):
+		return
 	for debuff in p_character._active_debuffs:
 		var data: StatusEffectData = StatusEffectRegistry.DebuffData(debuff.type)
 		if(null != data and IsAttributeModifierKind(data.magnitude_kind)):

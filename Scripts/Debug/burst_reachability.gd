@@ -618,6 +618,54 @@ static func _EffectiveCritFactor(
 	return 1.0 + eligible_share * (p_crit_factor - 1.0)
 
 
+## Base-referenced Defence-ignore points a candidate's caster carries against p_defence: its
+## own declared passive rate (Between the Plates, Role_Kit_Design.md section 9.12) times the
+## given skill's own declared multiple. p_defence here is always the scorer's fixed,
+## debuff-free boss constant, never a shredded value — see _EffectiveDefenceForCandidate for
+## why the two references stay separate.
+static func _DefenceIgnorePoints(
+		p_caster_role_entry: Dictionary, p_skill_entry: Dictionary, p_defence: float) -> float:
+	var passive_entries: Array = p_caster_role_entry.get("passive", [])
+	if(passive_entries.is_empty()):
+		return 0.0
+	var rate: float = float(passive_entries[0].get("defence_ignore", {}).get("rate", 0.0))
+	if(0.0 == rate):
+		return 0.0
+	var multiple: float = float(p_skill_entry.get("defence_ignore", {}).get("multiple", 0.0))
+	return rate * multiple * p_defence
+
+
+## Team-reach Defence-shred fraction (the Architect's Expose Weakness, Role_Kit_Design.md
+## section 9.10): read off every teammate's own skill entries and exported to every candidate
+## regardless of caster, mirroring the rider's own reach in the real game. Sources do not
+## currently stack, so the largest declared fraction wins rather than summing, avoiding a
+## stacking rule this scorer has no battle state to justify. Returns the fraction plus the
+## gate name of every contribution.
+static func _ContributeDefenceReduction(p_characters: Array[Character], p_manifest: Dictionary) -> Dictionary:
+	var fraction: float = 0.0
+	var gates: Array[StringName] = []
+	for character in p_characters:
+		var role_entry: Dictionary = p_manifest.get(character._role, {})
+		for skill_entry: Dictionary in role_entry.get("skills", []):
+			var reduction: Dictionary = skill_entry.get("defence_reduction", {})
+			if(reduction.is_empty() or "team" != reduction.get("reach", "")):
+				continue
+			fraction = maxf(fraction, float(reduction.get("fraction", 0.0)))
+			gates.append(StringName(String(reduction.get("gate", ""))))
+	return {"fraction": fraction, "gates": gates}
+
+
+## Effective Defence after a team-reach shred (fractional, applied to the raw p_defence
+## reference) and then a caster-side base-referenced ignore (points, also read off the
+## UNSHREDDED p_defence) — the same two-step order battle_resolver.gd's
+## _EffectiveDefenceAfterIgnore performs, and the reason route G (Thief + Architect) compounds
+## instead of the ignore eating the shred.
+static func _EffectiveDefenceForCandidate(
+		p_defence: float, p_shred_fraction: float, p_ignore_points: float) -> float:
+	var shredded: float = p_defence * (1.0 - p_shred_fraction)
+	return maxf(0.0, shredded - p_ignore_points)
+
+
 static func _ScoreCandidate(
 		p_characters: Array[Character],
 		p_caster_index: int,
@@ -681,16 +729,33 @@ static func _ScoreCandidate(
 			basic_skill, caster, fractions, basic_aggregate, crit.get("factor"))
 	var burst_crit_factor: float = _EffectiveCritFactor(
 			p_skill, caster, fractions, skill_aggregate, crit.get("factor"))
+
+	var caster_skill_entries: Array = caster_role_entry.get("skills", [])
+	var basic_skill_index: int = caster._skills.find(basic_skill)
+	var basic_skill_entry: Dictionary = (
+			caster_skill_entries[basic_skill_index]
+			if basic_skill_index >= 0 and basic_skill_index < caster_skill_entries.size() else {})
+	var shred: Dictionary = _ContributeDefenceReduction(p_characters, p_manifest)
+	var shred_fraction: float = shred.get("fraction", 0.0)
+	if(0.0 != shred_fraction):
+		for gate: StringName in shred.get("gates", []):
+			assumed_gates.append(gate)
+	var baseline_defence: float = _EffectiveDefenceForCandidate(
+			defence, shred_fraction, _DefenceIgnorePoints(caster_role_entry, basic_skill_entry, defence))
+	var burst_defence: float = _EffectiveDefenceForCandidate(
+			defence, shred_fraction, _DefenceIgnorePoints(caster_role_entry, p_skill_entry, defence))
+
 	# Unrounded core, not Skills.MitigatedDamage's own int(ceil(...)) — contrast_ratio and
 	# modifier_term are ratios of these three, and rounding each one first would introduce a
 	# quantization artifact the real single-roll formula does not have.
-	var baseline_damage: float = Skills.MitigatedDamageUnrounded(defence, basic_aggregate, baseline_crit_factor, 1.0)
+	var baseline_damage: float = (
+			Skills.MitigatedDamageUnrounded(baseline_defence, basic_aggregate, baseline_crit_factor, 1.0))
 	var modifier_only_damage: float = Skills.MitigatedDamageUnrounded(
-			defence, basic_aggregate * product, baseline_crit_factor, 1.0)
+			baseline_defence, basic_aggregate * product, baseline_crit_factor, 1.0)
 	var burst_damage: float = Skills.MitigatedDamageUnrounded(
-			defence, skill_aggregate * product, burst_crit_factor, 1.0)
+			burst_defence, skill_aggregate * product, burst_crit_factor, 1.0)
 	var gated_ratios: Array[float] = _GatedContrastRatios(
-			p_skill_entry, skill_aggregate, defence, baseline_damage, burst_crit_factor)
+			p_skill_entry, skill_aggregate, burst_defence, baseline_damage, burst_crit_factor)
 	var repeat_contrast_ratio: float = gated_ratios[0]
 	var sustained_contrast_ratio: float = gated_ratios[1]
 	if(0.0 != repeat_contrast_ratio or 0.0 != sustained_contrast_ratio):

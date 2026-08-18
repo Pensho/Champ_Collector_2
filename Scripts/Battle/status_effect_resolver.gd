@@ -109,7 +109,7 @@ func ConsumeBuffs(p_target_ID: int, p_count: int) -> int:
 		RemoveBuff(p_target_ID, buff)
 	return to_remove.size()
 
-func StealBuff(p_from_ID: int, p_to_ID: int, p_duration: int = -1) -> bool:
+func StealBuff(p_from_ID: int, p_to_ID: int, p_duration: int = -1, p_duration_bonus: int = 0) -> bool:
 	var source: Character = _resolver._characters[p_from_ID]
 	if(source._active_buffs.is_empty()):
 		return false
@@ -118,7 +118,7 @@ func StealBuff(p_from_ID: int, p_to_ID: int, p_duration: int = -1) -> bool:
 	var stolen: StatusEffects.Buff = StatusEffects.Buff.new()
 	stolen.type = buff.type
 	stolen.value = buff.value
-	stolen.duration = p_duration if p_duration >= 0 else buff.duration
+	stolen.duration = (p_duration if p_duration >= 0 else buff.duration) + p_duration_bonus
 	stolen.name = buff.name
 	ApplyBuff(p_to_ID, stolen)
 	return true

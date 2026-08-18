@@ -278,7 +278,7 @@ A Role's basic skill is always self-facing; direction describes the declared-ide
 | Jester | Damage, Sustain | **Enabler** | Exported | Hexed on the boss degrades every roll it makes in its own favor — crit checks, resist checks against the team's debuffs, its own Burning ticks — so a debuff-density burst becomes reliable rather than a coin flip; Spotlight pulls focused fire onto the champion built to dodge it. Settled (§9.6), and moved off this table's Phase 1 proposal of Channel 2 / self-facing: the kit declares no damage contribution (Batch 2). |
 | Architect | Buffer, Damage | **Channel 2** | Self | Settled (§9.10), confirming this row. The kit is kept as it ships — the finisher's charge bucket already meets the contract and the zone already consumes charges against it. Only Expose Weakness changes, scaling with the charges spent (Batch 2). |
 | Tidal Corsair | Damage | **Channel 2** | Self | Settled (§9.13), confirming this row. An adaptation: Corsair's Reckoning resolves by the composition of the stacks it consumes, and Sea's turn-bar push retires for Undertow, a bank on the target that only a pure Steel hand converts (Batch 3). |
-| Thief | Damage | **Channel 1** | Self | Settled (§9.12), confirming this row. Pilfer retires for Between the Plates, a passive bypass reading a fraction of the target's *base* Defence, so a teammate's Defence shred compounds with it instead of being eaten by it; Weigh the Mark is rebuilt as Cut Purse (Batch 3). |
+| Thief | Damage | **Channel 1** | Self | Implemented (§9.12), confirming this row. Pilfer retired for Between the Plates, a passive bypass reading a fraction of a debuff-free reference Defence, so a teammate's Defence shred compounds with it instead of being eaten by it; Weigh the Mark rebuilt as Cut Purse. |
 | Lancer | Damage | **Channel 2** | Self | Settled (§9.11), moved off this table's Phase 1 proposal of Channel 1. Momentum and Phalanx Guard retire for Couched Lance: the charge scales with the turn-bar sections it touches and throws the Lancer back half that distance. The Role reads turn-bar position rather than accumulating stacks, so it is no longer route D's second anchor (Batch 3). |
 | Tactician | Buffer | **Channel 1** | Exported | **Settled: kept as shipped.** A second hook was explored (Batch 3) and shelved — no addition fit without a clearer read on the Role's team fantasy than a sweep figure can give; open to revisiting outside this plan. |
 | Bloodmage | Sustain, Damage | **Channel 1** | Exported | Settled (§9.4), implemented. Hemoclarity's missing-Health Mysticism curve is already Channel 1 by mechanism; the kit's weight lands in Sanguine Pact (on the carrier) and Hemorrhage (on the boss, readable by every attacker) rather than on the Bloodmage's own cast. |
@@ -305,7 +305,7 @@ in Phase 1; route F was opened by a settled kit, and a later batch may open anot
 | **D — Stack consumption** | Self-contained accumulate-then-spend payload | **Closed.** Architect (Calibration finisher, exported through Expose Weakness — §9.10) + Tidal Corsair (the Reckoning's composition modes, self — §9.13). The route's original "non-Corsair" framing was a guard against the shipped ceiling pairing, which the post-Herald sweep has already displaced. | 2 → 3 |
 | **E — Health threshold** | Missing-Health percentage as a `bonus_per` surface | **Closed.** Bloodmage (caster-own and enemy-own missing Health, §9.4) + Cultist (the Vessel's threshold and its death, §9.8) | 1 → 2 |
 | **F — Turn-bar distance** | The turn-bar span between attacker and target, read at the moment of impact | Lancer (Couched Lance, §9.11). Every kit that pushes an enemy back feeds it — the Corsair's Sea stacks, the Chronophage's theft, Dead Weight, Temporal Leak — so the route's other half is any turn-bar writer, not a designated anchor. | 3 |
-| **G — Armour removal** | The target's effective Defence at the moment of impact, outside the combined modifier | **Closed.** Architect (Expose Weakness, exported — §9.10) + Thief (base-referenced bypass, self — §9.12). The two compose because the bypass subtracts a fraction of *base* Defence rather than scaling what is left. The Alchemist's Dissolving Agent is a third feeder (§9.15). | 2, 3 |
+| **G — Armour removal** | The target's effective Defence at the moment of impact, outside the combined modifier | **Closed and implemented.** Architect (Expose Weakness, exported — §9.10) + Thief (base-referenced bypass, self — §9.12). The two compose because the bypass subtracts points off a debuff-free reference Defence rather than scaling what a shred leaves behind. The Alchemist's Dissolving Agent is a third feeder (§9.15). | 2, 3 |
 
 **Direction mix across the routes.** A route with one exported anchor and one self-facing anchor is
 the healthy shape — one kit hands the factor over, the other spends it. Routes A and E have it;
@@ -1029,23 +1029,25 @@ rather than an amount the player chooses at cast time.
 
 ### 9.12 Thief — between the plates
 
-**Status:** Settled, not yet implemented. Batch 3.
+**Status:** Implemented.
 
 **Identity: Channel 1, self-facing.** Confirms section 5's proposal — the whole contribution is a
 mitigation term, which claims no bucket key. The passive is **replaced**, the third skill is
 **rebuilt**, and Pierce Weakness keeps its shape while its magnitude moves onto the passive's rate.
 
-**Passive: Between the Plates.** The Thief's attacks ignore **10/13/16/20% by rarity of the target's
-base Defence**, subtracted in points after every other Defence modifier has applied and floored at
-zero. Pilfer retires; the bypass is what the Role is rather than one skill it owns, and it is the
-half that scales with rarity naturally. The passive owns the rate and a skill may state a **multiple**
-of it, never a rate of its own (the convention §9.7 established).
+**Passive: Between the Plates.** The Thief's attacks ignore **10/13/16/20% by rarity of a
+debuff-free reference Defence** — base + equipment + trait deltas + battle-long bonuses + Defence
+buffs, excluding Defence debuffs — subtracted in points from the target's actual effective Defence
+and floored at zero. Pilfer retires; the bypass is what the Role is rather than one skill it owns,
+and it is the half that scales with rarity naturally. The passive owns the rate and a skill may
+state a **multiple** of it, never a rate of its own (the convention §9.7 established).
 
-**Reading the base Defence is the point.** A multiplicative ignore lands on the same term as a
-Defence debuff, so each one makes the other worth less — the Thief's own factor *fell* from 1.39x to
-1.31x when a teammate shredded first. Subtracting a base-referenced amount inverts that: the
-teammate's reduction survives intact and the Thief's cut is worth more against a target already
-opened up.
+**Excluding debuffs from the reference is the point.** A multiplicative ignore lands on the same
+term as a Defence debuff, so each one makes the other worth less — the Thief's own factor *fell*
+from 1.39x to 1.31x when a teammate shredded first. Reading every durable contributor except a
+Defence debuff inverts that: the teammate's shred survives intact against the target's actual
+effective Defence, and the Thief's own points come off the unshredded reference — the two compound
+(route G) instead of one eating the other's contribution.
 
 | Slot | Skill | Effect | Channel |
 |---|---|---|---|
@@ -1069,37 +1071,27 @@ all, which is what opens route G. Opportunist puts the Thief on the thin spender
 reads distinct debuff types from any source without producing any. The steal removes enemy buff
 state, which is world state any later kit may read.
 
-**Projected numbers.** Against a boss-tier base Defence of 120: the passive is **1.10x** on every
-attack, Pierce Weakness **1.30x** alone, **1.40x** against a boss under Expose Weakness at −30%, and
+**Projected numbers.** Against a boss-tier reference Defence of 120 (no equipment or buffs on a
+boss, so the debuff-free reference equals its base): the passive is **1.10x** on every attack,
+Pierce Weakness **1.30x** alone, **1.40x** against a boss under Expose Weakness at −30%, and
 **1.47x** at −44%. Opportunist is **1.40x** at four distinct debuff types. Two factors, **1.82x** on
-the Pierce turn. Against a base Defence of 40 the same skill is worth 1.14x — the mechanic pays only
-against armour, which is the fantasy stating its own limit.
+the Pierce turn. Against a reference Defence of 40 the same skill is worth 1.14x — the mechanic
+pays only against armour, which is the fantasy stating its own limit.
 
-**Implementation needs (not yet built):**
-
-* `damage_effect.gd`'s `defense_ignore_factor` changes shape to a base-Defence fraction subtracted in
-  points. Pierce Weakness is its only user in the entire data set, so the field changes in place.
-* `battle_resolver.gd:770` and the Shield Wall re-mitigation at `:780` both compute effective Defence
-  from the *effective* attribute; both need the target's base Defence as well.
-* A new Thief trait carrying the rate and applying it to every attack the Thief makes;
-  `pilfer_trait.gd` retires.
-* `Pierce_Weakness.tres` — cooldown 1 → 2, ignore expressed as 2.5× the trait's rate.
-* `Weigh_the_Mark.tres` → `Cut_Purse.tres` — damage, the steal, and the Opportunist grant.
-  `StatusEffectResolver.StealBuff` already takes a duration override it never uses; the extra turn
-  goes there.
-* `kit_contribution_manifest.gd` — Pilfer's entry becomes Between the Plates; Pierce Weakness's
-  precondition drops the stale "stops mattering at burst scale" note, superseded by Phase 0; Weigh
-  the Mark's entry is renamed and its doc/code conflict note deleted.
-* `burst_reachability.gd` — **the scorer models no defence ignore at all** (section 11), so the
-  Thief's declared contribution is invisible to it until that lands.
-* `Concept_Document.md` at promotion: 3.1.3's Thief passive, 3.2.4.2's skill entries (the rename, the
-  cooldowns, and the ignore restated as a multiple), and 3.2.4.3's stale note claiming Weigh the Mark
-  is fielded by no preset — `Thief.tres` fields it.
+**Scorer plumbing implemented alongside the kit** (closing section 11's defence-ignore gap):
+`burst_reachability.gd` now computes each candidate's effective boss Defence the same two-step way
+`battle_resolver.gd` does — a team-reach shred first, then a caster-side base-referenced ignore off
+the unshredded reference — via new manifest fields `defence_ignore` (a passive's rate, a skill's
+multiple) and `defence_reduction` (a skill's exported shred fraction), read by
+`_DefenceIgnorePoints`/`_ContributeDefenceReduction`/`_EffectiveDefenceForCandidate`. The
+Architect's Final Calculation entry carries the matching `defence_reduction`.
 
 **Judgment calls made while settling, listed so they can be overruled:** the passive's bypass applies
 to the basic skill too, which is a mitigation gain on a no-cooldown cast rather than the
 unconditional bucket key §1.2 forbids; and Cut Purse steals exactly one buff at every rarity, since
-the rate that scales already lives in the passive.
+the rate that scales already lives in the passive; and the debuff-free reference was widened past
+the settled "base Defence" to include equipment, trait deltas, battle-long bonuses, and Defence
+buffs, since a plain base-Defence reference would have gone stale the moment gear existed.
 
 ### 9.13 Tidal Corsair — the hand decides the Reckoning
 
@@ -1637,13 +1629,6 @@ did not exist. What the manifest carries now:
   existing convention that a mechanism which never reaches a `CombinedDamageModifier` bucket
   claims no key. Miasma's own forced retick still carries no independent score: it has no
   `DamageEffect` of its own, top-level or zone-trigger, to attach a `gated_bonus` to.
-
-**Open gap, found while settling Batch 3.** The scorer models no defence ignore: it mitigates every
-candidate against the boss's full Defence, so a skill that halves the mitigation term scores
-identically to one that does not. Phase 0 made that term a real lever again and §9.12's whole
-declared contribution runs through it, as does §9.10's Expose Weakness. The burst skill's mitigation
-needs the same effective-Defence computation `battle_resolver.gd` performs, base-referenced
-subtraction included.
 
 **Open gap, found while settling §9.14.** The scorer credits granted attribute buffs into a
 candidate's scaled aggregate (`_ContributeGrantedAttributeBuffs`) but nothing can amplify them, so

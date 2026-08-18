@@ -306,7 +306,7 @@ The effect subclasses, all under `Scripts/Battle/Skill_Effects/`:
 
 | Effect | Fields | Resolves |
 |---|---|---|
-| `DamageEffect` | `damage_scaling`, `defense_ignore_factor`, `bonus_per: Dictionary[Types.Trait_Count_Source, float]`, `bonus_per_debuff_on_target: Dictionary[Types.Debuff_Type, float]`, `allow_critical` | Damage to the target group, scaled and bonused — see the damage-bonus discussion in [Section 7.4](#74-skill-resolution-battleresolverresolveskill). `bonus_per_debuff_on_target` contributes one independent combined-modifier bucket per debuff type currently on each individual target (e.g. Cataclysm's +30% against Warped), so a further matching debuff multiplies — see [Section 7.4](#74-skill-resolution-battleresolverresolveskill). Keyed by debuff type rather than `Trait_Count_Source` because the source is which debuff is present, not a count |
+| `DamageEffect` | `damage_scaling`, `defence_ignore_factor`, `defence_ignore_multiple`, `bonus_per: Dictionary[Types.Trait_Count_Source, float]`, `bonus_per_debuff_on_target: Dictionary[Types.Debuff_Type, float]`, `allow_critical` | Damage to the target group, scaled and bonused — see the damage-bonus discussion in [Section 7.4](#74-skill-resolution-battleresolverresolveskill). `bonus_per_debuff_on_target` contributes one independent combined-modifier bucket per debuff type currently on each individual target (e.g. Cataclysm's +30% against Warped), so a further matching debuff multiplies — see [Section 7.4](#74-skill-resolution-battleresolverresolveskill). Keyed by debuff type rather than `Trait_Count_Source` because the source is which debuff is present, not a count |
 | `HealthChangeEffect` | `fraction`, `scaling: Dictionary[Types.Attribute, float]` | A signed max-Health-fraction transfer: negative is a cost (writes `context.health_paid` when the target is the caster), non-negative plus attribute scaling is a heal |
 | `ApplyBuffEffect` | `buff_type`, `duration` | Applies one buff type, with its own duration, to the target group (a second buff on the same skill with a different duration is just a second `ApplyBuffEffect`) |
 | `ApplyDebuffEffect` | `debuff_type`, `duration` | Applies one debuff type; consults `CharacterTrait.GetAppliedStatusValue` for a value override before casting |
@@ -526,7 +526,7 @@ dedicated `_TriggerManaBurn()` call deals 30%-Mysticism-scaled self-damage whene
 holder casts a non-basic skill; the same `is_non_basic` flag gates Rehearsed's cooldown skip.
 Luck and Hexed wrap every pass/fail chance roll in combat (crit chance, `CastDebuff`'s two
 resist-roll components, the `SkillEffect.chance` gate, Glamour Graft's incoming redirect, Double
-the fun!'s avoidance roll, Pilfer's steal chance) through the public `BattleResolver.RollFavoring()`
+the fun!'s avoidance roll) through the public `BattleResolver.RollFavoring()`
 helper, which rolls twice and keeps the better or worse result for whichever character owns that
 roll; a holder with both active cancels out to a single normal roll (user decision).
 `_ResolveDamage`'s damage-variance roll is the one deliberate exception, staying a bare
@@ -843,14 +843,27 @@ for key in OpportunistDamageFactors(caster, target):  # one bucket per debuff *t
 for key in ConsumeDamageMultiplierFactors(caster):    # one bucket per DamageMultiplier buff type, consumed here
     combined_damage_modifier.Contribute(key, damage_multiplier_factors[key])
 caster_scaled = (Σ over attrs ( damage_scaling[attr] * caster[attr] )) * combined_damage_modifier.Product()
-effective_defence = defender.Defence * defense_ignore_factor
+scaled_defence = defender.EffectiveDefence(include_debuffs=true) * defence_ignore_factor
+ignore_rate = caster.trait.GetBaseDefenceIgnoreRate(caster)              # 0.0 for any trait without an override
+ignore_points = ignore_rate * defence_ignore_multiple * defender.EffectiveDefence(include_debuffs=false)
+effective_defence = max(0, scaled_defence - ignore_points)
 defence_ratio = effective_defence / (effective_defence + DEFENCE_SCALE_CONSTANT)
 mitigation = 1 - (1 - MINIMUM_DMG_PERCENT) * defence_ratio
 crit (if rng.randi(1..100) <= CritChance): max(MINIMUM_CRIT_DAMAGE, CritDamage - defender.Knowledge*0.5) * 0.01
 damage = mitigation * caster_scaled * crit * rng.random(0.95..1.05)
 ```
 
-`damage_scaling` and `defense_ignore_factor` are the triggering `DamageEffect`'s own fields.
+`damage_scaling`, `defence_ignore_factor` and `defence_ignore_multiple` are the triggering
+`DamageEffect`'s own fields. The two ignore levers are independent: `defence_ignore_factor` is a
+general-purpose multiplicative ignore any skill may set directly (1.0 = no ignore, 0.0 = ignores
+all Defence), applied first against the defender's actual `EffectiveDefence(include_debuffs=true)`.
+`defence_ignore_multiple` is a multiple of the caster's own `GetBaseDefenceIgnoreRate` (0.0 for any
+trait without an override, e.g. the Thief's Between the Plates), never a rate of its own, and is
+base-referenced rather than multiplicative: its points come off
+`EffectiveDefence(include_debuffs=false)` (base + equipment + trait deltas + battle-long bonuses +
+Defence buffs) so a teammate's Defence debuff on the defender is never eaten by the caster's own
+bypass, then subtracted from the already-scaled effective Defence and floored at zero
+(`BattleResolver._EffectiveDefenceAfterIgnore`).
 `GetOutgoingDamageBonus` (an always-on trait effect — its one live override is `BloodscentGraft`'s
 target-Health-based bonus/penalty) keys to the trait's own class identity, and `damage_dealt_bonus[caster]`
 (the battle-persistent reagent/graft bonus, e.g. `GlamourGraft`) keys to the shared
@@ -1280,7 +1293,7 @@ each with one job:
   Channel 1 or a pure Enabler), its magnitude at Legendary rarity, a stack cap, its
   `Contribution_Class` (`Channel1`, `Channel2`, `Channel3_Cascade`, `Enabler`), a precondition, a
   `file.gd:line` citation, and — on an Enabler entry that grants a teammate a modifier-bearing
-  status (Tactician's Fatal Flaw, Thief's Weigh the Mark, Scholar's Expose Fallacy) — an optional
+  status (Tactician's Fatal Flaw, Thief's Cut Purse, Scholar's Expose Fallacy) — an optional
   `granted_status` field (`bucket_key`, `magnitude`, `per_debuff_anchored`, `citation`) carrying
   the magnitude the grant contributes once it lands, since that value lives on the status's own
   `StatusEffectData` resource rather than the granting entry's own bucket. Derived by reading the
@@ -1314,7 +1327,11 @@ each with one job:
   `.tres`) — it becomes visible in the reported `crit_chance`/`crit_damage_multiplier`/
   `crit_factor` fields and in ranking wherever that symmetry breaks (`allow_critical = false`).
   Boss Knowledge (which blunts crit damage) is read off `BlowoutCalibration.BOSSES[0]`'s own 4th
-  tuple element. Also enforces the shared eight-status cap (`GameBalance.MAX_STATUS_EFFECTS`,
+  tuple element. Each candidate's effective boss Defence is computed the same two-step way
+  `battle_resolver.gd` does — a team-reach shred first, then a caster-side base-referenced ignore
+  off the unshredded reference — from the manifest's own `defence_ignore`/`defence_reduction`
+  fields (documented in `kit_contribution_manifest.gd`'s own header). Also enforces the shared
+  eight-status cap (`GameBalance.MAX_STATUS_EFFECTS`,
   reporting which buckets were dropped rather than silently scoring them), per-trait stack
   ceilings, cascade instance bounds, and an `ENABLER_FLOOR` below which a team is marked
   non-viable and excluded from ranked output (currently `0`; the right value is a design call for

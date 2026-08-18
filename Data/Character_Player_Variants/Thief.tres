@@ -7,11 +7,11 @@
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_r2vnm"]
 [ext_resource type="Resource" uid="uid://54q7s3jjny1w" path="res://Data/Character_Skill_Variants/Attack_Skills/Pierce_Weakness.tres" id="3_3tcpa"]
 [ext_resource type="Resource" uid="uid://bdxe6eob3xgsh" path="res://Data/Attribute_Weights/Fierce.tres" id="3_lvnnc"]
-[ext_resource type="Resource" uid="uid://5l0gnsec2vge" path="res://Data/Character_Skill_Variants/Support_Skills/Weigh_the_Mark.tres" id="3_weigh_the_mark"]
+[ext_resource type="Resource" path="res://Data/Character_Skill_Variants/Attack_Skills/Cut_Purse.tres" id="3_cut_purse"]
 [ext_resource type="Resource" uid="uid://bejf1a62v41gq" path="res://Data/Attribute_Weights/Marksman.tres" id="4_gh1m0"]
 [ext_resource type="Resource" uid="uid://ytl3g36itqfs" path="res://Data/Attribute_Weights/Learned.tres" id="5_wgxjw"]
 [ext_resource type="Resource" uid="uid://bqqsowpn2kvlu" path="res://Data/Attribute_Weights/Reckless.tres" id="6_lvnnc"]
-[ext_resource type="Resource" uid="uid://bq5puiyy6bugf" path="res://Data/Character_Traits/Pilfer_Trait.tres" id="10_gh1m0"]
+[ext_resource type="Resource" path="res://Data/Character_Traits/Between_The_Plates_Trait.tres" id="10_gh1m0"]
 
 [resource]
 script = ExtResource("2_r2vnm")
@@ -21,7 +21,7 @@ _normal_map = "res://Assets/Champ_Collector/Creatures/Thief/Thief_0001_Normal_Ma
 _rarity = 2
 _faction = 2
 _role = 2
-_skills = Array[ExtResource("1_n4f0a")]([ExtResource("2_3tcpa"), ExtResource("3_3tcpa"), ExtResource("3_weigh_the_mark")])
+_skills = Array[ExtResource("1_n4f0a")]([ExtResource("2_3tcpa"), ExtResource("3_3tcpa"), ExtResource("3_cut_purse")])
 _health = 60
 _speed = 60
 _attack = 75

@@ -67,6 +67,17 @@ class FakeAmplifyingTrait extends CharacterTrait:
 	func OnReagentConsumed(_p_consumer_ID: int, _p_reagent: ReagentData, _p_resolver: BattleResolver) -> float:
 		return contribution
 
+## Headless stand-in for a base-referenced Defence-ignore trait (e.g. Between the Plates):
+## always contributes a fixed rate, independent of any real Role's rarity ladder.
+class FakeDefenceIgnoringTrait extends CharacterTrait:
+	var rate: float = 0.0
+
+	func _init(p_rate: float) -> void:
+		rate = p_rate
+
+	func GetBaseDefenceIgnoreRate(_p_owner_ID: int) -> float:
+		return rate
+
 ## Headless stand-in for a trait that blocks forward turn-bar bumps (e.g. Caravan
 ## Cadence's drawback) without applying any status.
 class FakeForwardBlockingTrait extends CharacterTrait:

@@ -216,8 +216,9 @@ Current roles, their identity and purpose exist as follows:
 - Thief
     - A squishy damage dealer, focusing on set-up through skills and bypassing enemy defenses. Primary attributes: Attack.
     - Purpose: Damage.
-    - Passive: Pilfer [Enabler] - Chance to steal a buff from the target when a skill is used.
-        - 20% Uncommon, 30% Rare, 40% Epic, 50% Legendary
+    - Passive: Between the Plates [Channel 1] - Every attack ignores a percentage of the target's
+      Defense, subtracted in points after every other Defense modifier has applied.
+        - 10% Uncommon, 13% Rare, 16% Epic, 20% Legendary
     - Fielded by: `Thief.tres`
 - Lancer
     - A shock cavalry fighter who reads distance on the turn bar and turns it into a heavier hit, at the cost of its own tempo. Primary attributes: Attack, Speed.
@@ -591,15 +592,19 @@ the fix belongs in the data or the document.
 ###### Thief
 * Stab
     * Type: Damage (basic skill, no cooldown)
-    * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Attack.
+    * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Attack. Carries the
+      passive's Defense-ignore like any attack.
 * Pierce Weakness
     * Type: Damage
-    * Cooldown: 1 turn
-    * Effect: [Channel 1] Deals damage to a single enemy, ignoring 70% of the target's Defense, scaling with Attack.
-* Weigh the Mark
-    * Type: Buff
-    * Cooldown: 4 turns
-    * Effect: [Channel 2] The Thief gains the Opportunist buff for 3 turns.
+    * Cooldown: 2 turns
+    * Effect: [Channel 1] Deals damage to a single enemy, scaling with Attack. Ignores 2.5x the
+      passive's Defense-ignore rate.
+* Cut Purse
+    * Type: Damage, Buff
+    * Cooldown: 3 turns
+    * Effect: [Channel 1 + Enabler] Deals damage to a single enemy, scaling with Attack. Steals one
+      of its buffs, which lasts one extra turn on the Thief, and grants the Thief the Opportunist
+      buff for 2 turns.
 
 ###### Lancer
 * Lance Thrust
@@ -837,9 +842,8 @@ the fix belongs in the data or the document.
 ##### 3.2.4.3 Unassigned / Generic Skills
 Not yet tied to a specific Role, grouped by mechanical type for lookup.
 
-The two entries below are shipped and functional but referenced by no Character Preset, as are
-`Weigh_the_Mark.tres` (the Thief's actual third skill) and `Power_Tide.tres` (an orphaned all-ally
-Empower buff) — a roster-assignment gap to close.
+The two entries below are shipped and functional but referenced by no Character Preset, as is
+`Power_Tide.tres` (an orphaned all-ally Empower buff) — a roster-assignment gap to close.
 
 **Turn Bar (Zone Effects)**
 * Weight of Law

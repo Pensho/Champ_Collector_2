@@ -116,13 +116,14 @@ func ConsumePendingZoneSection() -> int:
 	return section
 
 
-func GetEffectiveAttributes(p_character_ID: int) -> Dictionary[Types.Attribute, int]:
+func GetEffectiveAttributes(
+		p_character_ID: int, p_include_debuffs: bool = true) -> Dictionary[Types.Attribute, int]:
 	var character: Character = _characters[p_character_ID]
 	var attributes: Dictionary[Types.Attribute, int] = character.GetBaseAttributes()
 	character.ApplyEquipmentBonuses(attributes)
 	character.ApplyTraitAttributeBonus(attributes)
 	_ApplyLongAttributeBonus(p_character_ID, attributes)
-	Skills.ApplyActiveAttributeModifiers(character, attributes)
+	Skills.ApplyActiveAttributeModifiers(character, attributes, p_include_debuffs)
 	return attributes
 
 func _ApplyLongAttributeBonus(p_character_ID: int, p_attributes: Dictionary[Types.Attribute, int]) -> void:
@@ -293,16 +294,17 @@ func ResolveEffectDamage(
 		p_target_ID: int,
 		p_caster_attributes: Dictionary[Types.Attribute, int],
 		p_damage_scaling: Dictionary[Types.Attribute, float],
-		p_defense_ignore_factor: float,
+		p_defence_ignore_multiple: float,
 		p_combined_damage_modifier: CombinedDamageModifier,
-		p_allow_critical: bool = true) -> void:
+		p_allow_critical: bool = true,
+		p_defence_ignore_factor: float = 1.0) -> void:
 	var target_attributes: Dictionary[Types.Attribute, int] = GetEffectiveAttributes(p_target_ID)
 	if(p_caster_ID != p_target_ID and _characters.has(p_target_ID) and _characters[p_target_ID]._current_health > 0):
 		var defend_trait: CharacterTrait = Skills.ActiveHook(_characters[p_target_ID], Types.Combat_Event.Defend)
 		if(null != defend_trait):
 			defend_trait.OnDefend(p_target_ID, target_attributes, _characters)
 	_ResolveDamage(p_caster_ID, p_target_ID, p_caster_attributes, target_attributes, p_damage_scaling,
-			p_defense_ignore_factor, p_combined_damage_modifier, p_allow_critical)
+			p_defence_ignore_multiple, p_combined_damage_modifier, p_allow_critical, p_defence_ignore_factor)
 
 
 ## Applies a Health cost to p_character_ID and emits the resulting Damage result.
@@ -726,6 +728,31 @@ func _ContributePersistentCasterFactors(
 	for key: StringName in debuff_value_factors:
 		p_modifier.Contribute(key, debuff_value_factors[key])
 
+## Effective Defence for p_defender_ID after two independent ignore levers: a general-purpose
+## multiplicative p_defence_ignore_factor (any skill may set this directly, no trait required —
+## the original design path, kept general so a future kit can still use a flat ignore without
+## needing a rate-carrying passive), then a Between the Plates-style base-referenced subtraction
+## (p_caster_ID's own GetBaseDefenceIgnoreRate times p_defence_ignore_multiple times
+## p_defender_ID's debuff-free effective Defence), floored at zero. A caster with no declared
+## rate (0.0) skips the subtraction entirely, leaving only the multiplicative factor's effect.
+func _EffectiveDefenceAfterIgnore(
+		p_caster_ID: int,
+		p_defender_ID: int,
+		p_full_effective_defence: float,
+		p_defence_ignore_multiple: float,
+		p_defence_ignore_factor: float = 1.0) -> float:
+	var scaled_defence: float = p_full_effective_defence * p_defence_ignore_factor
+	var caster: Character = _characters.get(p_caster_ID)
+	var rate: float = 0.0
+	if(null != caster and null != caster._trait):
+		rate = caster._trait.GetBaseDefenceIgnoreRate(p_caster_ID)
+	if(0.0 == rate):
+		return scaled_defence
+	var debuff_free_defence: float = float(
+			GetEffectiveAttributes(p_defender_ID, false)[Types.Attribute.Defence])
+	var ignore_points: float = rate * p_defence_ignore_multiple * debuff_free_defence
+	return maxf(0.0, scaled_defence - ignore_points)
+
 
 func _ResolveDamage(
 		p_caster_ID: int,
@@ -733,9 +760,10 @@ func _ResolveDamage(
 		p_caster_attributes: Dictionary[Types.Attribute, int],
 		p_target_attributes: Dictionary[Types.Attribute, int],
 		p_damage_scaling: Dictionary[Types.Attribute, float],
-		p_defense_ignore_factor: float,
+		p_defence_ignore_multiple: float,
 		p_combined_damage_modifier: CombinedDamageModifier,
-		p_allow_critical: bool = true) -> void:
+		p_allow_critical: bool = true,
+		p_defence_ignore_factor: float = 1.0) -> void:
 	var random_value: float = _random.randf_range(0.95, 1.05)
 	var caster_scaled_attribute_aggregate: float = 0.0
 	var crit_multiplier: float = 1.0
@@ -779,7 +807,9 @@ func _ResolveDamage(
 		p_combined_damage_modifier.Contribute(key, damage_multiplier_factors[key])
 	caster_scaled_attribute_aggregate *= p_combined_damage_modifier.Product()
 
-	var effective_defence: float = p_target_attributes[Types.Attribute.Defence] * p_defense_ignore_factor
+	var effective_defence: float = _EffectiveDefenceAfterIgnore(
+			p_caster_ID, p_target_ID, float(p_target_attributes[Types.Attribute.Defence]),
+			p_defence_ignore_multiple, p_defence_ignore_factor)
 	var damage_dealt: int = Skills.MitigatedDamage(effective_defence,
 			caster_scaled_attribute_aggregate, crit_multiplier, random_value)
 
@@ -788,8 +818,9 @@ func _ResolveDamage(
 	var soaker_damage: int = 0
 	if(soaker_ID != -1):
 		var redirect_fraction: float = float(redirect[1])
-		var soaker_defence: float = (
-				GetEffectiveAttributes(soaker_ID)[Types.Attribute.Defence] * p_defense_ignore_factor)
+		var soaker_defence: float = _EffectiveDefenceAfterIgnore(
+				p_caster_ID, soaker_ID, float(GetEffectiveAttributes(soaker_ID)[Types.Attribute.Defence]),
+				p_defence_ignore_multiple, p_defence_ignore_factor)
 		soaker_damage = Skills.MitigatedDamage(soaker_defence,
 				caster_scaled_attribute_aggregate * redirect_fraction, crit_multiplier, random_value)
 		damage_dealt = int(round(damage_dealt * (1.0 - redirect_fraction)))
