@@ -78,3 +78,51 @@ func test_try_consume_on_a_brewed_slot_never_touches_the_collection() -> void:
 	assert_eq(collection.GetCount("Lesser_Restorative_Brew"), 0,
 			"A brewed slot must never be added to or removed from the persistent inventory")
 	collection.free()
+
+func test_is_brewed_reflects_the_slot_origin() -> void:
+	var loadout: ReagentLoadout = ReagentLoadout.new([A_REAGENT_KEY])
+	loadout.AddBrewed("Lesser_Restorative_Brew", 0.0)
+
+	assert_false(loadout.IsBrewed(0))
+	assert_true(loadout.IsBrewed(1))
+
+func test_refill_with_brew_restores_a_spent_slot_as_brewed() -> void:
+	var collection: ReagentCollection = ReagentCollection.new()
+	collection.Add(A_REAGENT_KEY)
+	var loadout: ReagentLoadout = ReagentLoadout.new([A_REAGENT_KEY])
+	loadout.TryConsume(0, collection)
+
+	assert_true(loadout.RefillWithBrew(0, "Lesser_Barrier_Brew", 0.1))
+
+	assert_false(loadout.IsSpent(0))
+	assert_true(loadout.IsBrewed(0))
+	assert_eq(loadout.KeyAt(0), "Lesser_Barrier_Brew")
+	assert_almost_eq(loadout.PotencyBonusAt(0), 0.1, 0.001)
+	collection.free()
+
+func test_refill_with_brew_rejects_an_unspent_slot() -> void:
+	var loadout: ReagentLoadout = ReagentLoadout.new([A_REAGENT_KEY])
+
+	assert_false(loadout.RefillWithBrew(0, "Lesser_Barrier_Brew", 0.1))
+	assert_eq(loadout.KeyAt(0), A_REAGENT_KEY, "An unspent slot must not be overwritten")
+
+func test_refill_with_brew_rejects_out_of_range_index() -> void:
+	var loadout: ReagentLoadout = ReagentLoadout.new([])
+
+	assert_false(loadout.RefillWithBrew(0, "Lesser_Barrier_Brew", 0.1))
+	assert_false(loadout.RefillWithBrew(-1, "Lesser_Barrier_Brew", 0.1))
+
+func test_refilled_slot_is_dropped_by_get_reagents_for_context_and_never_hits_the_collection() -> void:
+	var collection: ReagentCollection = ReagentCollection.new()
+	collection.Add(A_REAGENT_KEY)
+	var loadout: ReagentLoadout = ReagentLoadout.new([A_REAGENT_KEY])
+	loadout.TryConsume(0, collection)
+	loadout.RefillWithBrew(0, "Lesser_Barrier_Brew", 0.0)
+
+	assert_true(loadout.TryConsume(0, collection))
+
+	assert_eq(collection.GetCount("Lesser_Barrier_Brew"), 0,
+			"A refunded brew must never be added to or removed from the persistent inventory")
+	assert_eq(loadout.GetReagentsForContext(), [],
+			"A refilled-then-consumed slot must not persist into the next battle's context")
+	collection.free()

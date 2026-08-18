@@ -303,12 +303,21 @@ const MANIFEST: Dictionary = {
 					"precondition": "Zone, 4 charges; grants Catalyst (2 turns) to affected allies — " +
 							"amplifies the next reagent each holder consumes by +50% potency, consumed " +
 							"as a `potency` add-on in ResolveReagentEffect, not a CombinedDamageModifier " +
-							"bucket.",
-					"citation": "Catalyst_Cloud.tres:6-21; status_effect_resolver.gd:177-184"},
+							"bucket. While Catalyst is held, consuming a non-brew reagent also refunds one " +
+							"Alchemist brew-pool reagent into the spent slot — raises the number of " +
+							"reagent consumptions (and so Volatile Mixture re-arms), which this scorer has " +
+							"no representation for.",
+					"citation": "Catalyst_Cloud.tres:6-21; status_effect_resolver.gd:177-184,221-236; " +
+							"battle_resolver.gd:TryRefundBrew"},
 			{"name": "Dissolving Agent", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Channel1,
-					"precondition": "Applies Unravel (2 turns, -30% Resistance). No damage of its own.",
-					"citation": "Dissolving_Agent.tres:6-11"},
+					"precondition": "damage_scaling Knowledge 0.9, no bonus_per. Also applies Unravel " +
+							"(2 turns, -30% Resistance) and Expose Weakness (2 turns, -30% Defence) — the " +
+							"latter is an exported rider read by every attacker on the team.",
+					"citation": "Dissolving_Agent.tres:6-27",
+					"defence_reduction": {"fraction": 0.3, "reach": "team",
+							"gate": "defence_reduction_applied",
+							"citation": "Dissolving_Agent.tres (Expose Weakness, fixed -30%)"}},
 		],
 	},
 	Types.Role.Sorcerer: {

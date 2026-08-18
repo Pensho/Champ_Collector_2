@@ -11,3 +11,7 @@ func SetToolTip(p_title: String, p_description: String) -> void:
 func MarkSpent() -> void:
 	self.modulate = SPENT_MODULATE
 	self.disabled = true
+
+func ClearSpent() -> void:
+	self.modulate = Color.WHITE
+	self.disabled = false

@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
 [ext_resource type="Script" uid="uid://bmqtglyyora7q" path="res://Scripts/Battle/Skill_Effects/skill_effect.gd" id="1_xg8gh"]
 [ext_resource type="Script" uid="uid://bonwfsp34aafb" path="res://Scripts/Battle/Skill_Effects/apply_debuff_effect.gd" id="2_b7m61"]
+[ext_resource type="Script" uid="uid://bn0n72opjy7sb" path="res://Scripts/Battle/Skill_Effects/damage_effect.gd" id="3_damage"]
 
 [sub_resource type="Resource" id="Resource_gic27"]
 script = ExtResource("2_b7m61")
@@ -10,11 +11,23 @@ debuff_type = 6
 duration = 2
 target = 0
 
+[sub_resource type="Resource" id="Resource_expose"]
+script = ExtResource("2_b7m61")
+debuff_type = 2
+duration = 2
+target = 0
+
+[sub_resource type="Resource" id="Resource_damage"]
+script = ExtResource("3_damage")
+damage_scaling = Dictionary[int, float]({
+7: 0.9
+})
+
 [resource]
 script = ExtResource("1_skill")
 name = "Dissolving Agent"
-description = "Applies the Unravel debuff to a single enemy for 2 turns."
+description = "Deals damage to a single enemy, scaled by Knowledge, and applies the Unravel and Expose Weakness debuffs for 2 turns."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Dissolving_Agent/Dissolving_Agent.png"
 cooldown = 3
-effects = Array[ExtResource("1_xg8gh")]([SubResource("Resource_gic27")])
+effects = Array[ExtResource("1_xg8gh")]([SubResource("Resource_gic27"), SubResource("Resource_expose"), SubResource("Resource_damage")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

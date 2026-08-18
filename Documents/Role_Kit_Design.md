@@ -305,7 +305,7 @@ in Phase 1; route F was opened by a settled kit, and a later batch may open anot
 | **D — Stack consumption** | Self-contained accumulate-then-spend payload | **Closed.** Architect (Calibration finisher, exported through Expose Weakness — §9.10) + Tidal Corsair (the Reckoning's composition modes, self — §9.13). The route's original "non-Corsair" framing was a guard against the shipped ceiling pairing, which the post-Herald sweep has already displaced. | 2 → 3 |
 | **E — Health threshold** | Missing-Health percentage as a `bonus_per` surface | **Closed.** Bloodmage (caster-own and enemy-own missing Health, §9.4) + Cultist (the Vessel's threshold and its death, §9.8) | 1 → 2 |
 | **F — Turn-bar distance** | The turn-bar span between attacker and target, read at the moment of impact | Lancer (Couched Lance, §9.11). Every kit that pushes an enemy back feeds it — the Corsair's Sea stacks, the Chronophage's theft, Dead Weight, Temporal Leak — so the route's other half is any turn-bar writer, not a designated anchor. | 3 |
-| **G — Armour removal** | The target's effective Defence at the moment of impact, outside the combined modifier | **Closed and implemented.** Architect (Expose Weakness, exported — §9.10) + Thief (base-referenced bypass, self — §9.12). The two compose because the bypass subtracts points off a debuff-free reference Defence rather than scaling what a shred leaves behind. The Alchemist's Dissolving Agent is a third feeder (§9.15). | 2, 3 |
+| **G — Armour removal** | The target's effective Defence at the moment of impact, outside the combined modifier | **Closed and implemented.** Architect (Expose Weakness, exported — §9.10) + Thief (base-referenced bypass, self — §9.12). The two compose because the bypass subtracts points off a debuff-free reference Defence rather than scaling what a shred leaves behind. The Alchemist's Dissolving Agent is a third feeder, implemented (§9.15). | 2, 3, 4 |
 
 **Direction mix across the routes.** A route with one exported anchor and one self-facing anchor is
 the healthy shape — one kit hands the factor over, the other spends it. Routes A and E have it;
@@ -1308,7 +1308,7 @@ magnitude, and the passive makes it more dangerous rather than more interesting.
 
 ### 9.15 Alchemist — the reagent economy kept running
 
-**Status:** Settled, not yet implemented. Batch 4.
+**Status:** Implemented.
 
 **Identity: Channel 2, exported**, confirming section 5's row on both axes. An **adaptation**: the
 passive and the basic are kept exactly as they ship; the zone gains a payload and the third slot
@@ -1344,18 +1344,24 @@ consumption count any reagent-reading kit sees.
 mitigation-term factor, the kind section 4 holds separate from the bucket product, and it is
 comparable to §9.10's Defence debuff rather than to the passive.
 
-**Implementation needs (not yet built):**
+**Implementation.** The refund refills the just-spent reagent slot in place
+(`ReagentLoadout.RefillWithBrew`) rather than appending one — the battle UI exports a fixed four
+reagent buttons, so an appended slot would render nowhere. It fires when the consumer held Catalyst
+before the cast and the spent slot was not itself brewed
+(`BattleResolver.TryRefundBrew`, `battle.gd:_ResolveReagentConsumption`); gating on presence rather
+than on Catalyst actually being consumed also covers binary reagents, which skip the potency-add
+path that would otherwise consume it. Brewed slots refunding themselves would never terminate, so
+`ReagentLoadout.IsBrewed` gates every refund. `Dissolving_Agent.tres` gained a `DamageEffect`
+(Knowledge 0.9) and the Expose Weakness `ApplyDebuffEffect` alongside the existing Unravel one.
 
-* `Catalyst_Cloud.tres` / the Catalyst status gains the refund clause; the refund needs a path that
-  adds a brew-pool reagent to the shared slots mid-battle, which `fresh_batch_trait.gd` currently
-  only does at combat start, and a marker distinguishing brews from brought reagents so the loop
-  terminates.
-* `Dissolving_Agent.tres` gains a `DamageEffect` and the second debuff application.
-* `kit_contribution_manifest.gd` — Catalyst Cloud's and Dissolving Agent's entries.
-* `Concept_Document.md` at promotion: 3.2.4.2's two skills, 3.2.3's Expose Weakness claimant.
-* **Watch item, parked outside this plan:** the refund loop makes Lesser Barrier Brew (a Barrier
-  absorbing 40% of max Health) repeatable where it was once per battle. Brew-pool magnitudes are the
-  lever, and tuning them is out of scope here.
+**Watch item, parked outside this plan:** the refund loop makes Lesser Barrier Brew (a Barrier
+absorbing 40% of max Health) repeatable where it was once per battle. Brew-pool magnitudes are the
+lever, and tuning them is out of scope here.
+
+Post-Alchemist sweep: median 1.95x, 90th percentile 4.68x, ceiling 16.24x, 114 top-decile teams
+across 10 distinct pairings — all unchanged, as this section's own projection predicted: the bucket
+product doesn't move, and the scorer has no representation for the refund's raised consumption
+count.
 
 ### 9.16 Diviner — the read pays back
 
@@ -1562,8 +1568,8 @@ Steadfast, Resonance unclaimed.
 | Confound | Scholar (Expose Fallacy), Appraiser (Flaw Analysis) — **implemented** (section 9.5). Second claimant, within the commodity-debuff limit of two |
 | Hexed | Diviner (Ill Omen), Jester (Burning Bolas) — **implemented** (section 9.6). Second claimant, at the commodity-debuff limit of two, so no later Role may take it. Scope now covers every chance roll in combat except damage variance |
 | Enfeeble | Lancer (Disarm, shipped before this ledger's commodity-debuff limit was adopted), Diviner (Foresight), Warlord (Brace for Impact's reactive clause) — **implemented** (section 9.19). Three claimants, one over the commodity-debuff limit of two; no later Role may take it |
-| Unravel | Alchemist (Dissolving Agent) — unchanged claimant; the skill keeps it alongside a second debuff, **settled, not yet implemented** (section 9.15) |
-| Expose Weakness | Architect (Calibration), Alchemist (Dissolving Agent) — **settled, not yet implemented** (section 9.15). Second claimant, at the commodity-debuff limit of two, and its first skill source |
+| Unravel | Alchemist (Dissolving Agent) — unchanged claimant; the skill keeps it alongside a second debuff — **implemented** (section 9.15) |
+| Expose Weakness | Architect (Calibration), Alchemist (Dissolving Agent) — **implemented** (section 9.15). Second claimant, at the commodity-debuff limit of two, and its first skill source |
 | Burning | Jester (Burning Bolas), Lava Zone — unchanged claimants. Tick rolls 2-10% of max Health per stack roster-wide — **implemented** (section 9.6) |
 
 **Buffs** — Sea Legs is a new buff, claimed by Tidal Corsair (The Gilded Deck) — **implemented**
@@ -1751,3 +1757,9 @@ on a fixed attribute. The Gilded Deck's Sea Legs is stacking, zone-delivered, an
 attribute is highest on the *holder* — a shape the field cannot represent without either naming a
 wrong attribute or forcing an aggregate contribution that isn't there for most teams. Left
 undeclared; the Tidal Corsair's contribution to the sweep is Broadside's bucket only.
+
+**Open gap, found implementing §9.15.** The scorer has no model of the reagent economy at all — no
+notion of a consumption count, a shared slot, or a refund. Catalyst Cloud's payload raises how many
+times a team consumes a reagent within a battle, which re-arms Volatile Mixture more often than the
+sweep's single-action scoring can see. Left undeclared, the same posture the Tidal Corsair's zone
+grant took in §9.13.

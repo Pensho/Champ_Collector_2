@@ -721,12 +721,20 @@ func _ResolveGraft(p_symbiote_ID: int, p_target_enemy_ID: int) -> void:
 	_state = BattleState.Awaiting_Player_Input
 
 func _ResolveReagentConsumption(p_reagent_index: int, p_target_ID: int) -> void:
+	var was_brewed: bool = _reagent_loadout.IsBrewed(p_reagent_index)
+	var had_catalyst: bool = _resolver.GetStatusResolver().HasBuffOfType(_turn_character_ID, Types.Buff_Type.Catalyst)
 	if(not _reagent_loadout.TryConsume(p_reagent_index, main.GetInstance()._reagent_collection)):
 		return
 	var reagent: ReagentData = ReagentRegistry.Get(_reagent_loadout.KeyAt(p_reagent_index))
 	_resolver.ResolveReagent(_turn_character_ID, _reagent_loadout.KeyAt(p_reagent_index), p_target_ID,
 			_reagent_loadout.PotencyBonusAt(p_reagent_index))
-	_battle_ui._reagent_buttons[p_reagent_index].MarkSpent()
+	if(_resolver.TryRefundBrew(_reagent_loadout, p_reagent_index, _turn_character_ID, had_catalyst, was_brewed)):
+		var refunded_reagent: ReagentData = ReagentRegistry.Get(_reagent_loadout.KeyAt(p_reagent_index))
+		_battle_ui._reagent_buttons[p_reagent_index].ClearSpent()
+		_battle_ui.SetReagent(refunded_reagent.icon, refunded_reagent.display_name,
+				refunded_reagent.description, p_reagent_index)
+	else:
+		_battle_ui._reagent_buttons[p_reagent_index].MarkSpent()
 	_battle_ui.SpawnCombatText(reagent.display_name, CombatTextPosition(_turn_character_ID), Color(0.6, 0.9, 1.0, 1.0))
 	RefreshAllTraitVisuals()
 	_selected_reagent_index = -1

@@ -226,8 +226,7 @@ passed at both the direct-hit and Shield-Wall-soaker sites, forwarded into
 `_TriggerDamageTakenReactions` (`status_effect_resolver.gd`), which now also debuffs the attacker
 through the normal resist roll when the holder carries the rider. Post-Warlord sweep: median 1.95x,
 90th percentile 4.68x, ceiling 16.24x, 114 top-decile teams across 10 pairings — unchanged, as
-expected for a kit fielding no damage factor. Alchemist, Diviner, Symbiote and Bar Brawler remain
-settled but not yet implemented.
+expected for a kit fielding no damage factor.
 
 **Scholar's implementation** closed `Role_Kit_Design.md` §11's own gap: a new
 `CharacterTrait.GetAppliedAttributeAmplification()` virtual and `Skills.AppliedAttributeAmplification`
@@ -248,8 +247,23 @@ switched from a hardcoded percentage to the existing `{percent}` token conventio
 Legs), fed by a new `Skills.DisplayedAttributeModifierFraction` mirroring `ApplyAttributeModifiers`'s own
 branching. Vigor's `MaxHealthAttributePercent` sits outside that path entirely
 (`BattleResolver._MaxHealth`) and needed its own `Skills.IsAmplifiableKind` gate, caught only after this
-implementation was first reported done — Health is inside Field of Study's declared scope. Alchemist,
-Diviner, Symbiote and Bar Brawler remain settled but not yet implemented.
+implementation was first reported done — Health is inside Field of Study's declared scope.
+
+**Alchemist's implementation** needed no new schema. The refund refills the just-spent reagent
+slot in place (`ReagentLoadout.RefillWithBrew`) rather than appending one — the battle UI exports
+a fixed four reagent buttons, so an appended slot would render nowhere — and only fires when the
+consumer held Catalyst before the cast (`StatusEffectResolver.HasBuffOfType`, read ahead of
+`ResolveReagent` since the binary-reagent path never consumes Catalyst) and the spent slot was
+not itself brewed (`ReagentLoadout.IsBrewed` gates the loop's own termination).
+`BattleResolver.TryRefundBrew` owns the gate so it stays unit-testable off the Battle node, the
+same posture the rest of the reagent path already takes. `Dissolving_Agent.tres` gained a
+`DamageEffect` (Knowledge 0.9) and an Expose Weakness `ApplyDebuffEffect` beside its existing
+Unravel one, discharging section 10.1's standing reservation of Expose Weakness's second Role
+source and putting a third feeder on route G. Post-Alchemist sweep: median 1.95x, 90th percentile
+4.68x, ceiling 16.24x, 114 top-decile teams across 10 pairings — unchanged, as §9.15 predicted:
+the bucket product doesn't move, and the scorer has no representation for the refund's raised
+reagent-consumption count. Diviner, Symbiote and Bar Brawler remain settled but not yet
+implemented.
 
 **Coverage review findings**, from a roster-wide read of all 20 Roles against the corrected contract.
 

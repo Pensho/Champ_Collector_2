@@ -236,6 +236,20 @@ func _add_catalyst(p_character: Character) -> void:
 	catalyst.duration = 2
 	p_character._active_buffs.append(catalyst)
 
+func test_has_buff_of_type_reports_catalyst_presence_without_consuming_it() -> void:
+	var resolver: BattleResolver = _make_resolver()
+	var consumer: Character = resolver.GetCharacters()[0]
+	_add_catalyst(consumer)
+
+	assert_true(resolver.GetStatusResolver().HasBuffOfType(0, Types.Buff_Type.Catalyst))
+	assert_true(consumer._active_buffs.any(func(b): return b.type == Types.Buff_Type.Catalyst),
+			"HasBuffOfType must be a read-only query")
+
+func test_has_buff_of_type_returns_false_when_absent() -> void:
+	var resolver: BattleResolver = _make_resolver()
+
+	assert_false(resolver.GetStatusResolver().HasBuffOfType(0, Types.Buff_Type.Catalyst))
+
 func test_catalyst_buff_amplifies_a_scalar_reagent_and_is_consumed() -> void:
 	var catalyst_resolver: BattleResolver = _make_resolver()
 	var catalyst_consumer: Character = catalyst_resolver.GetCharacters()[0]

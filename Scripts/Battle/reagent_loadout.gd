@@ -32,11 +32,25 @@ func PotencyBonusAt(p_index: int) -> float:
 	return _potency_bonus[p_index]
 
 
+func IsBrewed(p_index: int) -> bool:
+	return _brewed[p_index]
+
+
 func AddBrewed(p_key: String, p_potency_bonus: float) -> void:
 	_reagent_keys.append(p_key)
 	_spent.append(false)
 	_brewed.append(true)
 	_potency_bonus.append(p_potency_bonus)
+
+
+func RefillWithBrew(p_index: int, p_key: String, p_potency_bonus: float) -> bool:
+	if(p_index < 0 or p_index >= _spent.size() or not _spent[p_index]):
+		return false
+	_reagent_keys[p_index] = p_key
+	_potency_bonus[p_index] = p_potency_bonus
+	_brewed[p_index] = true
+	_spent[p_index] = false
+	return true
 
 
 func TryConsume(p_index: int, p_reagent_collection: ReagentCollection) -> bool:

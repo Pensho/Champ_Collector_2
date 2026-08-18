@@ -217,6 +217,13 @@ func ConsumeDamageMultiplierFactors(p_caster_ID: int) -> Dictionary[StringName, 
 			RemoveBuff(p_caster_ID, buff)
 	return factors
 
+func HasBuffOfType(p_character_ID: int, p_type: Types.Buff_Type) -> bool:
+	var character: Character = _resolver._characters[p_character_ID]
+	for buff in character._active_buffs:
+		if(p_type == buff.type):
+			return true
+	return false
+
 ## Consumes the character's Catalyst buff, if any, returning its potency bonus (0.0 if absent).
 func ConsumeCatalystIfPresent(p_consumer_ID: int) -> float:
 	var consumer: Character = _resolver._characters[p_consumer_ID]

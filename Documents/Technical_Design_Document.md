@@ -1105,6 +1105,13 @@ cooldown, never fires `Start_Turn`/`End_Turn`, and never advances the turn bar.
   reagent, and the Alchemist's own rarity (fixed at brew time) still sets its potency.
   `ReagentData.brew_only` marks the four brew-pool reagents (`Data/Reagents/Alchemist_Brews/`)
   so `ReagentRegistry.GetRandomKeyForRarity` (ordinary loot rolls) never returns one.
+- **Refilled slot (Catalyst Cloud).** `ReagentLoadout.RefillWithBrew(index, key,
+  potency_bonus)` overwrites an already-spent slot in place — key, potency and the `_brewed`
+  flag replaced, `_spent` cleared — rather than appending, since the battle UI exports a fixed
+  four reagent buttons. `BattleResolver.TryRefundBrew` calls it when the consumer held the
+  Catalyst buff before the cast (checked via `StatusEffectResolver.HasBuffOfType` ahead of
+  `ResolveReagent`, since the binary-reagent path never consumes Catalyst) and the spent slot
+  was not itself brewed — a brewed slot refunding itself would never terminate.
 - **Battle-long mechanisms.** Two effects persist for the rest of the battle without being a
   `StatusEffects.Buff` (undispellable, unstealable, invisible to buff-counting):
   `_battle_long_attribute_bonus` (Tinctures — folded into

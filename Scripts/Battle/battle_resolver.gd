@@ -396,6 +396,22 @@ func ResolveReagent(
 	BroadcastEvent(Types.Combat_Event.Resource_Depleted)
 	return _EndBatch()
 
+func TryRefundBrew(
+		p_reagent_loadout: ReagentLoadout, p_reagent_index: int, p_consumer_ID: int,
+		p_had_catalyst: bool, p_was_brewed: bool) -> bool:
+	if(p_was_brewed or not p_had_catalyst):
+		return false
+	var allies: Array[int] = _sides.AlliesOf(p_consumer_ID).AliveMembers(_characters)
+	for ally_ID in allies:
+		if(null == _characters[ally_ID]._trait):
+			continue
+		var brew_key: String = _characters[ally_ID]._trait.BrewReagentKey(_random)
+		if("" == brew_key):
+			continue
+		return p_reagent_loadout.RefillWithBrew(
+				p_reagent_index, brew_key, _characters[ally_ID]._trait.GetBrewPotencyBonus())
+	return false
+
 ## Heals each target by a fraction of their max Health, or p_raw_amount (>= 0) when given.
 func ResolveTraitHeal(
 		p_target_IDs: Array[int], p_max_health_fraction: float, p_raw_amount: int = -1) -> Array[CombatResult]:
