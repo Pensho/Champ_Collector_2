@@ -10,4 +10,4 @@ overwritable = false
 permanent = true
 applies_on_self_tick = false
 icon = ExtResource("2_icon")
-description = "Boosts the holder's own highest attribute other than Health by {percent}%. Gained by starting a turn on The Gilded Deck, up to 4 times."
+description = "Boosts the holder's own highest attribute other than Health by {percent_decimal}%. Gained by starting a turn on The Gilded Deck, up to 4 times."

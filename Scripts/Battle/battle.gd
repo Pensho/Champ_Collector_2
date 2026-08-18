@@ -487,7 +487,8 @@ func ShowStatusApplied(p_result: CombatResult) -> void:
 		title = Types.DebuffName(p_result.debuff_type)
 		text_color = Color(0.681, 0.152, 0.31, 1.0)
 	var description: String = data.description.replace("{value}", str(p_result.amount)) \
-			.replace("{percent}", str(roundi(p_result.fraction * 100.0)))
+			.replace("{percent}", str(roundi(p_result.fraction * 100.0))) \
+			.replace("{percent_decimal}", ("%.1f" % (p_result.fraction * 100.0)))
 	var repr: CharacterRepresentation = _character_representations[p_result.target_ID]
 	if(_status_visual_IDs.has(p_result.status_ID)):
 		repr.UpdateStatusEffect(_status_visual_IDs[p_result.status_ID], p_result.duration, title, description)
