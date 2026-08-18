@@ -605,6 +605,19 @@ static func _CritChanceOverflowRate(p_characters: Array[Character], p_manifest: 
 	return rate
 
 
+## Largest team-wide "attribute_amplification" magnitude (the Scholar's Field of Study),
+## mirroring Skills.AppliedAttributeAmplification's own highest-wins fold rather than
+## _CritChanceOverflowRate's sum — a second amplifying passive adds nothing.
+static func _AttributeAmplification(p_characters: Array[Character], p_manifest: Dictionary) -> float:
+	var amplification: float = 0.0
+	for character in p_characters:
+		var role_entry: Dictionary = p_manifest.get(character._role, {})
+		for passive_entry: Dictionary in role_entry.get("passive", []):
+			amplification = maxf(
+					amplification, float(passive_entry.get("attribute_amplification", {}).get("magnitude", 0.0)))
+	return amplification
+
+
 ## Blends a skill's expected crit factor by the share of its aggregate that can actually crit
 ## (_CritEligibleAggregate vs _ScaledAggregate) — a skill mixing crit-eligible and
 ## crit-ineligible DamageEffects, or one with allow_critical = false outright (eligible share
@@ -886,13 +899,14 @@ static func _ContributeGrantedAttributeBuffs(
 	var fractions: Dictionary = {}
 	var points: Dictionary = {}
 	var gates: Array[StringName] = []
+	var amplification: float = _AttributeAmplification(p_characters, p_manifest)
 	for granter_index in p_characters.size():
 		var granter: Character = p_characters[granter_index]
 		var role_entry: Dictionary = p_manifest.get(granter._role, {})
 		for passive_entry: Dictionary in role_entry.get("passive", []):
 			for grant: Dictionary in _NormalizeGrantList(passive_entry.get("granted_attribute_buff", {})):
 				if("team" == grant.get("reach", "")):
-					_AccumulateAttributeBuff(fractions, points, grant, granter)
+					_AccumulateAttributeBuff(fractions, points, grant, granter, amplification)
 					_AppendGate(gates, grant)
 		var skill_entries: Array = role_entry.get("skills", [])
 		for skill_index in skill_entries.size():
@@ -901,12 +915,12 @@ static func _ContributeGrantedAttributeBuffs(
 				continue
 			for grant: Dictionary in _NormalizeGrantList(skill_entry.get("granted_attribute_buff", {})):
 				if("team" == grant.get("reach", "")):
-					_AccumulateAttributeBuff(fractions, points, grant, granter)
+					_AccumulateAttributeBuff(fractions, points, grant, granter, amplification)
 					_AppendGate(gates, grant)
 					continue
 				var granting_skill: Skill = granter._skills[skill_index]
 				if(_GrantReachesCandidate(granting_skill, granter_index, p_candidate_index)):
-					_AccumulateAttributeBuff(fractions, points, grant, granter)
+					_AccumulateAttributeBuff(fractions, points, grant, granter, amplification)
 					_AppendGate(gates, grant)
 	return {"fractions": fractions, "points": points, "gates": gates}
 
@@ -917,13 +931,21 @@ static func _ContributeGrantedAttributeBuffs(
 ## value — Keen Edge/Lethal Precision/Cracked Facet, consumed the same way
 ## AttackerCritChanceBonus/AttackerCritDamageBonus consume a flat point value at runtime) per
 ## the grant's own "kind" field. p_granter is required for "source_attribute" grants only.
+## p_amplification (the Scholar's Field of Study, Role_Kit_Design.md 9.14) adds onto a
+## "percentage" grant's own magnitude before it lands in p_fractions, the scorer's counterpart
+## to Skills.ApplyAttributeModifiers reading the same &"attribute_amplification" rider — every
+## crit-attribute grant in the manifest uses "percentage_point"/"source_attribute", so no
+## per-attribute exclusion is needed here to keep the crit path unamplified.
 static func _AccumulateAttributeBuff(
-		p_fractions: Dictionary, p_points: Dictionary, p_grant: Dictionary, p_granter: Character = null) -> void:
+		p_fractions: Dictionary, p_points: Dictionary, p_grant: Dictionary, p_granter: Character = null,
+		p_amplification: float = 0.0) -> void:
 	var kind: String = p_grant.get("kind", "percentage")
 	var magnitude: float = p_grant.get("magnitude", 0.0)
 	if("source_attribute" == kind and null != p_granter):
 		var source_attribute: Types.Attribute = p_grant.get("source_attribute", Types.Attribute.Health)
 		magnitude *= float(p_granter._attributes[source_attribute])
+	elif("percentage" == kind):
+		magnitude += p_amplification
 	var target: Dictionary = p_fractions if "percentage" == kind else p_points
 	for attribute: Types.Attribute in p_grant.get("attributes", []):
 		target[attribute] = target.get(attribute, 0.0) + magnitude

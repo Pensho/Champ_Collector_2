@@ -4,142 +4,47 @@ const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 
 var _owner: Character = null
 var _ally: Character = null
-var _enemy_a: Character = null
-var _enemy_b: Character = null
+var _enemy: Character = null
 var _trait: FieldOfStudyTrait = null
 var _resolver: BattleResolver = null
 
 func before_each() -> void:
 	_owner = TestFactory.make_character()
 	_ally = TestFactory.make_character()
-	_enemy_a = TestFactory.make_character()
-	_enemy_b = TestFactory.make_character()
-	for character in [_owner, _ally, _enemy_a, _enemy_b]:
+	_enemy = TestFactory.make_character()
+	for character in [_owner, _ally, _enemy]:
 		character._current_health = character._attributes[Types.Attribute.Health] * GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER
-	var characters: Dictionary[int, Character] = {0: _owner, 1: _ally, 2: _enemy_a, 3: _enemy_b}
-	_resolver = TestFactory.make_resolver(characters, CombatSides.new([0, 1], [2, 3]))
+	var characters: Dictionary[int, Character] = {0: _owner, 1: _ally, 2: _enemy}
+	_resolver = TestFactory.make_resolver(characters, CombatSides.new([0, 1], [2]))
 	_trait = FieldOfStudyTrait.new()
 	_owner._trait = _trait
 
-func _InitTrait(p_rarity: Types.Rarity) -> void:
-	_trait.Init(p_rarity)
+# --- Rarity ladder ---
 
-func _debuff_template(p_type: Types.Debuff_Type, p_duration: int, p_source_ID: int) -> StatusEffects.Debuff:
-	var debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
-	debuff.type = p_type
-	debuff.duration = p_duration
-	debuff.source_ID = p_source_ID
-	return debuff
+func test_amplification_by_rarity() -> void:
+	assert_almost_eq(FieldOfStudyTrait.GetAmplification(Types.Rarity.Uncommon), 0.07, 0.0001)
+	assert_almost_eq(FieldOfStudyTrait.GetAmplification(Types.Rarity.Rare), 0.08, 0.0001)
+	assert_almost_eq(FieldOfStudyTrait.GetAmplification(Types.Rarity.Epic), 0.09, 0.0001)
+	assert_almost_eq(FieldOfStudyTrait.GetAmplification(Types.Rarity.Legendary), 0.11, 0.0001)
 
-# --- Weakness identification ---
+func test_get_applied_attribute_amplification_reads_the_rarity_ladder() -> void:
+	_trait.Init(Types.Rarity.Legendary)
+	assert_almost_eq(_trait.GetAppliedAttributeAmplification(), 0.11, 0.0001)
 
-func test_start_of_battle_picks_the_highest_non_health_primary_attribute() -> void:
-	_InitTrait(Types.Rarity.Uncommon)
-	# make_character(): Attack 8 is the unique highest among the primary attributes
-	# (Attack 8, Defence 6, Accuracy 7, Resistance 6, Mysticism 4, Knowledge 4);
-	# CritChance 5 and CritDamage 150 must be excluded as they are not primary attributes.
-	_trait.StartOfBattle(0, _resolver)
+# --- Sharp Rebuttal's zone gate ---
 
-	assert_eq(_trait._weakness_by_enemy[2], Types.Attribute.Attack)
-	assert_eq(_trait._weakness_by_enemy[3], Types.Attribute.Attack)
+func test_get_condition_count_is_zero_with_no_zones_standing() -> void:
+	_trait.Init(Types.Rarity.Legendary)
+	assert_eq(_trait.GetConditionCount(0, 2, Types.Trait_Count_Source.Trait_Condition, _resolver), 0.0)
 
-func test_start_of_battle_excludes_speed_even_when_it_is_highest() -> void:
-	_InitTrait(Types.Rarity.Uncommon)
-	_enemy_a._attributes[Types.Attribute.Speed] = 999
+func test_get_condition_count_reads_the_live_zone_count() -> void:
+	_trait.Init(Types.Rarity.Legendary)
+	TestFactory.place_zone(_resolver, 0, 0, TestFactory.make_zone_effect(3), Types.Skill_Target.Skill_Default)
 
-	_trait.StartOfBattle(0, _resolver)
+	assert_eq(_trait.GetConditionCount(0, 2, Types.Trait_Count_Source.Trait_Condition, _resolver), 1.0)
 
-	assert_eq(_trait._weakness_by_enemy[2], Types.Attribute.Attack,
-		"Speed must never be identified as the weakness, even when it is the highest attribute")
+func test_get_condition_count_ignores_other_count_sources() -> void:
+	_trait.Init(Types.Rarity.Legendary)
+	TestFactory.place_zone(_resolver, 0, 0, TestFactory.make_zone_effect(3), Types.Skill_Target.Skill_Default)
 
-func test_start_of_battle_tie_resolves_to_one_of_the_tied_attributes() -> void:
-	_InitTrait(Types.Rarity.Uncommon)
-	_enemy_a._attributes[Types.Attribute.Attack] = 8
-	_enemy_a._attributes[Types.Attribute.Accuracy] = 8
-
-	_trait.StartOfBattle(0, _resolver)
-
-	var identified: Types.Attribute = _trait._weakness_by_enemy[2]
-	assert_true(identified == Types.Attribute.Attack or identified == Types.Attribute.Accuracy,
-		"A tie must resolve to one of the tied attributes")
-
-func test_start_of_battle_ignores_dead_enemies() -> void:
-	_InitTrait(Types.Rarity.Uncommon)
-	_enemy_b._current_health = 0
-
-	_trait.StartOfBattle(0, _resolver)
-
-	assert_true(_trait._weakness_by_enemy.has(2))
-	assert_false(_trait._weakness_by_enemy.has(3), "A dead enemy must not have a weakness identified")
-
-# --- Applying a debuff carries the Studied Weakness rider ---
-
-func test_applying_a_debuff_on_a_studied_enemy_stamps_the_weakness_rider() -> void:
-	_InitTrait(Types.Rarity.Epic)
-	_trait.StartOfBattle(0, _resolver)
-
-	_resolver.GetStatusResolver().ApplyDebuff(2, _debuff_template(Types.Debuff_Type.Enfeeble, 3, 0))
-
-	assert_eq(_enemy_a._active_debuffs.size(), 1, "The rider must ride the triggering debuff, not add a second one")
-	var applied: StatusEffects.Debuff = _enemy_a._active_debuffs[0]
-	assert_true(applied.trait_riders.has(&"weakness_attribute"))
-	assert_eq(applied.trait_riders[&"weakness_attribute"], _trait._weakness_by_enemy[2])
-	assert_almost_eq(applied.trait_riders[&"weakness_reduction"], FieldOfStudyTrait.GetWeaknessReduction(Types.Rarity.Epic), 0.0001)
-
-func test_debuff_on_an_unstudied_target_gets_no_rider() -> void:
-	_InitTrait(Types.Rarity.Epic)
-	_trait.StartOfBattle(0, _resolver)
-
-	# The ally was never a studied enemy, so it is absent from _weakness_by_enemy.
-	_resolver.GetStatusResolver().ApplyDebuff(1, _debuff_template(Types.Debuff_Type.Enfeeble, 3, 0))
-
-	var applied: StatusEffects.Debuff = _ally._active_debuffs[0]
-	assert_false(applied.trait_riders.has(&"weakness_attribute"), "A debuff on an unstudied target must get no rider")
-
-func test_each_debuff_on_a_studied_enemy_carries_its_own_rider() -> void:
-	_InitTrait(Types.Rarity.Epic)
-	_trait.StartOfBattle(0, _resolver)
-	_resolver.GetStatusResolver().ApplyDebuff(2, _debuff_template(Types.Debuff_Type.Enfeeble, 2, 0))
-
-	_resolver.GetStatusResolver().ApplyDebuff(2, _debuff_template(Types.Debuff_Type.Blind, 5, 0))
-
-	assert_eq(_enemy_a._active_debuffs.size(), 2)
-	for applied: StatusEffects.Debuff in _enemy_a._active_debuffs:
-		assert_true(applied.trait_riders.has(&"weakness_attribute"))
-		assert_eq(applied.trait_riders[&"weakness_attribute"], _trait._weakness_by_enemy[2])
-		assert_almost_eq(applied.trait_riders[&"weakness_reduction"], FieldOfStudyTrait.GetWeaknessReduction(Types.Rarity.Epic), 0.0001)
-
-# --- The reduction actually lowers the identified attribute, live ---
-
-func test_weakness_rider_reduces_the_identified_attribute() -> void:
-	_InitTrait(Types.Rarity.Epic)
-	_trait.StartOfBattle(0, _resolver)
-	_resolver.GetStatusResolver().ApplyDebuff(2, _debuff_template(Types.Debuff_Type.Enfeeble, 3, 0))
-	var identified: Types.Attribute = _trait._weakness_by_enemy[2]
-
-	# Attribute modifiers are always live now, so Enfeeble's own -30% on the identified
-	# attribute (Attack) is folded in too, before the rider's -8% of the reduced value:
-	# 100 -> 70 (Enfeeble) -> 64 (rider).
-	var attrs: Dictionary[Types.Attribute, int] = _enemy_a.GetTotalAttributes()
-	attrs[identified] = 100
-	Skills.ApplyActiveAttributeModifiers(_enemy_a, attrs)
-
-	assert_eq(attrs[identified], 64,
-		"Epic Studied Weakness should reduce the identified attribute by 8%% on top of Enfeeble's own -30%%")
-
-func test_two_riders_on_the_same_attribute_compound() -> void:
-	_InitTrait(Types.Rarity.Epic)
-	_trait.StartOfBattle(0, _resolver)
-	_resolver.GetStatusResolver().ApplyDebuff(2, _debuff_template(Types.Debuff_Type.Enfeeble, 2, 0))
-	_resolver.GetStatusResolver().ApplyDebuff(2, _debuff_template(Types.Debuff_Type.Blind, 5, 0))
-	var identified: Types.Attribute = _trait._weakness_by_enemy[2]
-
-	var attrs: Dictionary[Types.Attribute, int] = _enemy_a.GetTotalAttributes()
-	attrs[identified] = 100
-	Skills.ApplyActiveAttributeModifiers(_enemy_a, attrs)
-
-	# Enfeeble's own -30% on the identified attribute (Attack), then its 8% rider, then
-	# Blind's rider (Blind's own effect is on Accuracy, not Attack, so only its rider
-	# touches the identified attribute here): 100 -> 70 -> 64 -> 58.
-	assert_eq(attrs[identified], 58,
-		"Two simultaneous Scholar debuffs on the same enemy each carry their own rider")
+	assert_eq(_trait.GetConditionCount(0, 2, Types.Trait_Count_Source.Buffs_On_Caster, _resolver), 0.0)

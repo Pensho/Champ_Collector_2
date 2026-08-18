@@ -233,6 +233,14 @@ static func IsAttributeModifierKind(p_kind: StatusEffectData.MagnitudeKind) -> b
 			or StatusEffectData.MagnitudeKind.AttributePercentagePointAdd == p_kind
 			or StatusEffectData.MagnitudeKind.HighestBasePrimaryAttributePercent == p_kind)
 
+static func IsAmplifiableKind(p_kind: StatusEffectData.MagnitudeKind) -> bool:
+	return (IsAttributeModifierKind(p_kind)
+			or StatusEffectData.MagnitudeKind.MaxHealthAttributePercent == p_kind)
+
+static func _IsCritAttribute(p_attribute: Types.Attribute) -> bool:
+	return (Types.Attribute.CritChance == p_attribute
+			or Types.Attribute.CritDamage == p_attribute)
+
 static func ApplyAttributeModifiers(
 							p_data: StatusEffectData,
 							p_value: float,
@@ -242,29 +250,55 @@ static func ApplyAttributeModifiers(
 	# a zone or a test) — fall back to the resource's static magnitude, same convention
 	# ApplyBuff/ApplyDebuff already use when resolving a template's default value.
 	var resolved_value: float = p_value if 0.0 != p_value else p_data.magnitude
+	var amplification: float = p_trait_riders.get(&"attribute_amplification", 0.0)
 	if(StatusEffectData.MagnitudeKind.HighestBasePrimaryAttributePercent == p_data.magnitude_kind):
 		if(not p_trait_riders.has(&"attribute")):
 			return
 		var attribute: Types.Attribute = p_trait_riders[&"attribute"]
-		p_attributes[attribute] += int(ceilf(p_attributes[attribute] * resolved_value))
+		var amplified_value: float = resolved_value + (0.0 if _IsCritAttribute(attribute) else amplification)
+		p_attributes[attribute] += int(ceilf(p_attributes[attribute] * amplified_value))
 		return
 	for attribute in p_data.attribute_modifiers.keys():
 		var modifier_sign: float = p_data.attribute_modifiers[attribute]
 		if(StatusEffectData.MagnitudeKind.AttributePercentagePointAdd == p_data.magnitude_kind):
 			p_attributes[attribute] += int(modifier_sign * resolved_value)
 		else:
-			p_attributes[attribute] += int(modifier_sign * ceilf(p_attributes[attribute] * resolved_value))
+			var amplified_value: float = resolved_value + (0.0 if _IsCritAttribute(attribute) else amplification)
+			p_attributes[attribute] += int(modifier_sign * ceilf(p_attributes[attribute] * amplified_value))
 
-## Applies a debuff's Field-of-Study weakness rider, if any, wherever the debuff's own
-## attribute snapshot is taken — independent of the carrying debuff's own magnitude_kind.
-static func ApplyWeaknessRider(
-							p_debuff: StatusEffects.Debuff,
-							p_attributes: Dictionary[Types.Attribute, int]) -> void:
-	if(not p_debuff.trait_riders.has(&"weakness_attribute")):
-		return
-	var attribute: Types.Attribute = p_debuff.trait_riders[&"weakness_attribute"]
-	var reduction: float = p_debuff.trait_riders.get(&"weakness_reduction", 0.0)
-	p_attributes[attribute] -= int(ceilf(p_attributes[attribute] * reduction))
+static func DisplayedAttributeModifierFraction(
+							p_data: StatusEffectData,
+							p_value: float,
+							p_trait_riders: Dictionary[StringName, Variant]) -> float:
+	var resolved_value: float = p_value if 0.0 != p_value else p_data.magnitude
+	if(not IsAmplifiableKind(p_data.magnitude_kind)
+			or StatusEffectData.MagnitudeKind.AttributePercentagePointAdd == p_data.magnitude_kind):
+		return resolved_value
+	var amplification: float = p_trait_riders.get(&"attribute_amplification", 0.0)
+	if(StatusEffectData.MagnitudeKind.MaxHealthAttributePercent == p_data.magnitude_kind):
+		return resolved_value + amplification
+	if(StatusEffectData.MagnitudeKind.HighestBasePrimaryAttributePercent == p_data.magnitude_kind):
+		var attribute: Types.Attribute = p_trait_riders.get(&"attribute", Types.Attribute.Health)
+		return resolved_value + (0.0 if _IsCritAttribute(attribute) else amplification)
+	if(p_data.attribute_modifiers.keys().all(_IsCritAttribute)):
+		return resolved_value
+	return resolved_value + amplification
+
+static func AppliedAttributeAmplification(
+			p_source_ID: int,
+			p_characters: Dictionary[int, Character],
+			p_sides: CombatSides) -> float:
+	if(p_source_ID < 0 or not p_characters.has(p_source_ID)):
+		return 0.0
+	var side: CombatTeam = p_sides.AlliesOf(p_source_ID)
+	if(null == side):
+		return 0.0
+	var amplification: float = 0.0
+	for member_ID in side.AliveMembers(p_characters):
+		var character: Character = p_characters[member_ID]
+		if(null != character._trait):
+			amplification = maxf(amplification, character._trait.GetAppliedAttributeAmplification())
+	return amplification
 
 ## Fraction (e.g. Time Tithe) p_source_ID gains for itself when its own effect
 ## reduced enemy p_target_ID's turn bar by p_fraction (0.0 = no tithe).
@@ -327,8 +361,7 @@ static func ApplyActiveAttributeModifiers(
 	for debuff in p_character._active_debuffs:
 		var data: StatusEffectData = StatusEffectRegistry.DebuffData(debuff.type)
 		if(null != data and IsAttributeModifierKind(data.magnitude_kind)):
-			ApplyAttributeModifiers(data, debuff.value, p_attributes)
-		ApplyWeaknessRider(debuff, p_attributes)
+			ApplyAttributeModifiers(data, debuff.value, p_attributes, debuff.trait_riders)
 
 static func RollsCritical(p_crit_chance: int, p_random: RandomNumberGenerator) -> bool:
 	return p_random.randi_range(1, 100) <= p_crit_chance

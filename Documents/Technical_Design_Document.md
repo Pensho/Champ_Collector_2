@@ -1541,6 +1541,24 @@ Both getters are consulted from inside the effect loop (see
 [Section 7.4](#74-skill-resolution-battleresolverresolveskill)), not gated by `_execution_steps`,
 the same "always polled" shape as the rest of this getter family.
 
+`CharacterTrait.GetAppliedAttributeAmplification() -> float` (default `0.0`) is a further
+unconditional getter in the same family, read once per applied status rather than per effect:
+`Skills.AppliedAttributeAmplification(source_ID, characters, sides)` takes the highest value across
+the source's own living side (not summed, so a second amplifying teammate adds nothing) and
+`StatusEffectResolver._InsertOrRefresh` stamps it into the status instance's own `trait_riders` under
+`&"attribute_amplification"` at apply time, covering both the new-instance and refresh paths.
+`Skills.ApplyAttributeModifiers` reads the stamp and adds it onto the modification's own percentage
+before the attribute math, for every attribute but Critical Chance and Critical Damage. `FieldOfStudyTrait`
+(the Scholar's passive) is the only override.
+`Skills.DisplayedAttributeModifierFraction(data, value, trait_riders) -> float` is the read-only
+counterpart consulted by `_EmitBuffApplied`/`_EmitDebuffApplied` when stamping `CombatResult.fraction`
+(see the Sea Legs `{percent}` token above), so a status's own description reads the amplified number
+rather than the `.tres`'s flat one. `Skills.IsAmplifiableKind` widens the stamping gate (and this
+display check) to `MaxHealthAttributePercent` (Vigor) on top of `IsAttributeModifierKind`'s own three
+kinds — Vigor's own max-Health math lives in `BattleResolver._MaxHealth`, entirely outside
+`ApplyAttributeModifiers`/`GetEffectiveAttributes`, so it reads the `&"attribute_amplification"` rider
+directly off the buff rather than through that shared path.
+
 **The Bloodmage's missing-Health surface.** `Trait_Count_Source.Wounded_Allies` is answered
 directly in `DamageEffect._Count` rather than through `GetConditionCount`, since the count (living
 allies of the caster, caster excluded, below half their own max Health) is world state, not

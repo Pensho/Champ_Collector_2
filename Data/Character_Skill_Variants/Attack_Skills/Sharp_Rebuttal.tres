@@ -3,17 +3,26 @@
 [ext_resource type="Script" uid="uid://bmqtglyyora7q" path="res://Scripts/Battle/Skill_Effects/skill_effect.gd" id="1_ja2i2"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
 [ext_resource type="Script" uid="uid://bn0n72opjy7sb" path="res://Scripts/Battle/Skill_Effects/damage_effect.gd" id="2_8lr5r"]
+[ext_resource type="Script" uid="uid://bonwfsp34aafb" path="res://Scripts/Battle/Skill_Effects/apply_debuff_effect.gd" id="3_dbf"]
+
+[sub_resource type="Resource" id="Resource_dbf"]
+script = ExtResource("3_dbf")
+debuff_type = 3
+duration = 1
+target = 0
+condition = 1
+condition_threshold = 1.0
 
 [sub_resource type="Resource" id="Resource_l5lrx"]
 script = ExtResource("2_8lr5r")
 damage_scaling = Dictionary[int, float]({
-7: 0.7
+7: 0.6
 })
 
 [resource]
 script = ExtResource("1_skill")
 name = "Sharp Rebuttal"
-description = "Deals damage to a single enemy, scaled by Knowledge."
+description = "Deals damage to a single enemy, scaled by Knowledge. If any zone stands on the turn bar, also applies Suppress for 1 turn."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Sharp_Rebuttal/Sharp_Rebuttal.png"
-effects = Array[ExtResource("1_ja2i2")]([SubResource("Resource_l5lrx")])
+effects = Array[ExtResource("1_ja2i2")]([SubResource("Resource_dbf"), SubResource("Resource_l5lrx")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

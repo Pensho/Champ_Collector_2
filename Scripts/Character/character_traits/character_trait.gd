@@ -204,3 +204,6 @@ func GetConditionCount(
 		_p_source: Types.Trait_Count_Source,
 		_p_resolver: BattleResolver) -> float:
 	return 0.0
+
+func GetAppliedAttributeAmplification() -> float:
+	return 0.0

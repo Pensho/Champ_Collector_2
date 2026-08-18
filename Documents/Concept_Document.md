@@ -246,7 +246,7 @@ Current roles, their identity and purpose exist as follows:
 - Scholar
     - A support character that focuses on knowledge and strategy to enhance allies' abilities and exploit enemy weaknesses. The zone-clearing specialist: the Scholar's kit is one of the two dedicated ways to remove zones from the turn bar (see section 3.2.4.1). Primary attributes: Knowledge.
     - Purpose: Debuffer, Buffer
-    - Passive: Field of Study [Channel 1] - The Scholar has studied every opponent and knows their weaknesses. At the start of combat, each enemy's weakness is identified: their highest primary attribute (ties broken at random). Whenever the Scholar applies a debuff to an enemy, that enemy's identified attribute is additionally reduced for the debuff's duration: Uncommon 4%, Rare 6%, Epic 8%, Legendary 10%. For this passive specifically, "primary attribute" means Attack, Defence, Accuracy, Resistance, Mysticism, or Knowledge.
+    - Passive: Field of Study [Channel 2, exported] - Every attribute buff or debuff the Scholar's team applies is amplified additional percentage points: Uncommon 7%, Rare 8%, Epic 9%, Legendary 11%. Critical Chance and Critical Damage are excluded.
     - Fielded by: `Centaur_Archivist.tres`
 - Diviner
     - A squishy support.  Primary attributes: Mysticism.
@@ -651,8 +651,8 @@ the fix belongs in the data or the document.
 
 ###### Scholar
 * Sharp Rebuttal
-    * Type: Damage (basic skill, no cooldown)
-    * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Knowledge.
+    * Type: Damage, Debuff (basic skill, no cooldown)
+    * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Knowledge. If any zone stands on the turn bar, also applies Suppress to the target for 1 turn.
 * Refutation
     * Type: Turn Bar
     * Cooldown: 3 turns

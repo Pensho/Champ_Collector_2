@@ -124,6 +124,12 @@ class_name KitContributionManifest extends RefCounted
 ##                    _ContributeDefenceReduction, applied to the UNSHREDDED Defence reference
 ##                    before any defence_ignore subtraction — the reason the Thief's ignore and
 ##                    the Architect's shred compound (route G) instead of one eating the other.
+##   attribute_amplification - optional, passive entries only. `{magnitude, reach}`, extra
+##                    percentage points added to every granted_attribute_buff a teammate
+##                    contributes (the Scholar's Field of Study). `reach` is always "team" — read
+##                    by every attribute grant on the roster, not just the Scholar's own. Read by
+##                    burst_reachability.gd's _ContributeGrantedAttributeBuffs, which takes the
+##                    highest amplification on the granter's own side rather than summing several.
 
 enum Contribution_Class
 {
@@ -401,36 +407,35 @@ const MANIFEST: Dictionary = {
 		"passive": [
 			{"name": "Field of Study", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Channel1,
-					"precondition": "At Start_Combat, profiles each enemy's highest primary attribute. " +
-							"On any debuff the Scholar applies to a profiled enemy, additionally reduces " +
-							"that identified attribute by 0.10 (Legendary) for the debuff's duration — " +
-							"rides on the debuff instance as a second Channel-1 reduction, not a " +
-							"CombinedDamageModifier bucket.",
-					"citation": "field_of_study_trait.gd:3-8,43-65"},
+					"precondition": "Every attribute buff or debuff the team applies (Critical Chance " +
+							"and Critical Damage excluded) is amplified 0.11 (Legendary) additional " +
+							"percentage points — a second-order modifier on the scaled attribute " +
+							"aggregate, not a CombinedDamageModifier bucket.",
+					"citation": "field_of_study_trait.gd",
+					"attribute_amplification": {"magnitude": 0.11, "reach": "team"}},
 		],
 		"skills": [
 			{"name": "Sharp Rebuttal", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Channel1,
-					"precondition": "damage_scaling Knowledge 0.7, no bonus_per.",
-					"citation": "Sharp_Rebuttal.tres:6-11"},
+					"precondition": "damage_scaling Knowledge 0.7, no bonus_per. Rider: if any zone " +
+							"stands on the turn bar, also applies Suppress for 1 turn (Trait_Condition " +
+							"gate, read off Field of Study's own GetConditionCount).",
+					"citation": "Sharp_Rebuttal.tres"},
 			{"name": "Expose Fallacy", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Enabler,
 					"precondition": "Grants All Allies (target All_Allies, reaches the granter too) " +
 							"Opportunist (2 turns — see Thief's Weigh the Mark; the magnitude lives in " +
-							"granted_status on this same entry) and applies Confound (2 turns, -30% " +
+							"granted_status on this same entry) and applies Confound (2 turns, -50% " +
 							"Knowledge) to one enemy. No direct damage.",
-					"citation": "Expose_Fallacy.tres:6-19",
+					"citation": "Expose_Fallacy.tres",
 					"granted_status": {"bucket_key": "", "magnitude": 0.1, "per_debuff_anchored": true,
-							"citation": "Data/Status_Effects/Opportunist.tres:8-9; " +
-									"status_effect_resolver.gd:616-636"}},
+							"citation": "Data/Status_Effects/Opportunist.tres; " +
+									"status_effect_resolver.gd"}},
 			{"name": "Refutation", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Enabler,
-					"precondition": "ClearZoneEffect — removes one zone from the turn bar. Its own " +
-							"code path reads trait_result._damage_multiplier into the shared " +
-							"trait_resource bucket, but Field of Study never sets _damage_multiplier " +
-							"(no OnSkillCast override), so that bucket is always 0.0 here. No exported " +
+					"precondition": "ClearZoneEffect — removes one zone from the turn bar. No exported " +
 							"damage parameters on this .tres.",
-					"citation": "Refutation.tres:6-11; clear_zone_effect.gd"},
+					"citation": "Refutation.tres; clear_zone_effect.gd"},
 		],
 	},
 	Types.Role.Diviner: {

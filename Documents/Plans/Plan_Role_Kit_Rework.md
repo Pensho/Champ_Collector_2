@@ -176,12 +176,10 @@ Corsair implemented:
   `granted_attribute_buff`'s fixed-attribute, one-shot contract. Post-Tidal-Corsair sweep: median
   1.95x, 90th percentile 4.68x, ceiling 16.24x, 114 teams across 10 distinct top-decile pairings —
   all unchanged, as expected for a passive whose rate didn't move and a ship the scorer cannot see.
-* **Scholar (§9.14)** — an adaptation. The passive is replaced with an amplifier on every attribute
-  modification the team applies, giving the roster its first reader of the Channel 1 attribute layer,
-  which nothing has ever made worth casting. The basic gains a zone-gated Suppress rider whose gate
-  Refutation can clear, so the kit carries an internal decision for the first time. One scorer gap
-  follows (`Role_Kit_Design.md` §11): the sweep can credit granted attribute buffs but cannot amplify
-  them, so the passive is invisible to it.
+* **Scholar (§9.14) — implemented.** An adaptation. The passive is replaced with an amplifier on every
+  attribute modification the team applies, giving the roster its first reader of the Channel 1
+  attribute layer, which nothing has ever made worth casting. The basic gains a zone-gated Suppress
+  rider whose gate Refutation can clear, so the kit carries an internal decision for the first time.
 * **Tactician** — settled as kept, unchanged. A second Channel-2 hook was explored and every
   candidate shelved (a niche buff on an automatic-target passive, a debuff taxing Accuracy,
   stacking onto Fatal Flaw's already-strong grant, and a rider assuming Fatal Flaw was
@@ -230,6 +228,28 @@ through the normal resist roll when the holder carries the rider. Post-Warlord s
 90th percentile 4.68x, ceiling 16.24x, 114 top-decile teams across 10 pairings — unchanged, as
 expected for a kit fielding no damage factor. Alchemist, Diviner, Symbiote and Bar Brawler remain
 settled but not yet implemented.
+
+**Scholar's implementation** closed `Role_Kit_Design.md` §11's own gap: a new
+`CharacterTrait.GetAppliedAttributeAmplification()` virtual and `Skills.AppliedAttributeAmplification`
+(highest across the source's own side, not summed) feed a `trait_riders` stamp written once in
+`StatusEffectResolver._InsertOrRefresh`, read by `Skills.ApplyAttributeModifiers` for every non-crit
+attribute; `burst_reachability.gd`'s `_ContributeGrantedAttributeBuffs` now amplifies a teammate's
+granted attribute buff the same way (confirmed against the real manifest: Tactician's Plan ahead reads
+0.41 instead of 0.3 with the Scholar present). `field_of_study_trait.gd` was rewritten in place rather
+than replaced — its `PRIMARY_ATTRIBUTES` constant stayed, since the Tidal Corsair's `SeaLegsZoneEffect`
+already depends on it (§9.13), a cross-Role dependency the original settle missed. Post-Scholar sweep:
+median 1.95x, 90th percentile 4.68x, ceiling 16.24x, 114 top-decile teams across 10 pairings —
+unchanged, for a structural reason rather than a wiring gap: every kit in the roster scales its basic
+and its burst off the same attribute, so a uniform amplification cancels in the contrast-ratio metric
+exactly the way Tactician's own Empower grant already does. A follow-up made the amplification legible
+in-battle: every amplifiable status's `.tres` description (Attune, Blind, Clarity, Confound, Empower,
+Enfeeble, Exhert, Fortify, Frenzy, Haste, Insight, Rush, Slow, Suppress, True Aim, Unravel, Vigor)
+switched from a hardcoded percentage to the existing `{percent}` token convention (Expose Weakness, Sea
+Legs), fed by a new `Skills.DisplayedAttributeModifierFraction` mirroring `ApplyAttributeModifiers`'s own
+branching. Vigor's `MaxHealthAttributePercent` sits outside that path entirely
+(`BattleResolver._MaxHealth`) and needed its own `Skills.IsAmplifiableKind` gate, caught only after this
+implementation was first reported done — Health is inside Field of Study's declared scope. Alchemist,
+Diviner, Symbiote and Bar Brawler remain settled but not yet implemented.
 
 **Coverage review findings**, from a roster-wide read of all 20 Roles against the corrected contract.
 

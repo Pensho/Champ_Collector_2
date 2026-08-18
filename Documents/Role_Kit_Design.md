@@ -282,7 +282,7 @@ A Role's basic skill is always self-facing; direction describes the declared-ide
 | Lancer | Damage | **Channel 2** | Self | Settled (§9.11), moved off this table's Phase 1 proposal of Channel 1. Momentum and Phalanx Guard retire for Couched Lance: the charge scales with the turn-bar sections it touches and throws the Lancer back half that distance. The Role reads turn-bar position rather than accumulating stacks, so it is no longer route D's second anchor (Batch 3). |
 | Tactician | Buffer | **Channel 1** | Exported | **Settled: kept as shipped.** A second hook was explored (Batch 3) and shelved — no addition fit without a clearer read on the Role's team fantasy than a sweep figure can give; open to revisiting outside this plan. |
 | Bloodmage | Sustain, Damage | **Channel 1** | Exported | Settled (§9.4), implemented. Hemoclarity's missing-Health Mysticism curve is already Channel 1 by mechanism; the kit's weight lands in Sanguine Pact (on the carrier) and Hemorrhage (on the boss, readable by every attacker) rather than on the Bloodmage's own cast. |
-| Scholar | Debuffer, Buffer | **Channel 2** | Exported | Settled (§9.14), confirming this row. Opportunist stays the modifier-bucket anchor; the passive is replaced with an amplifier on every attribute modification the team applies, giving the roster its first reader of the Channel 1 attribute layer, and the basic gains a zone-gated Suppress rider (Batch 3). |
+| Scholar | Debuffer, Buffer | **Channel 2** | Exported | Implemented (§9.14), confirming this row. Opportunist stays the modifier-bucket anchor; the passive is replaced with an amplifier on every attribute modification the team applies, giving the roster its first reader of the Channel 1 attribute layer, and the basic gains a zone-gated Suppress rider (Batch 3). |
 | Diviner | Sustain, Debuffer | **Enabler** | Exported | Redeclared from Channel 1 at Batch 4 (§9.16): Enfeeble, Premonition and Hexed are all mitigation and denial, and the kit owes no damage factor. Measured on the collapse test. |
 | Symbiote | Sustain, Buffer | **Channel 1** | Self | Exhert's attribute buff is the baseline anchor, present from the ungrafted state on, and it lands on the Symbiote itself. Direction corrected from Exported at Batch 4 (§9.17); post-graft the kit may read either way depending on which graft the player binds (pool-dependent, `Symbiote_Graft_Pool.md`), and the ungrafted baseline is what fixes the declaration. |
 | Bar Brawler | Sustain, Buffer | **Channel 2** | Self | Heap On already grows stronger with every use — the basic skill itself is the modifier-bucket anchor. On the House's heal-on-buff stays an Enabler-tagged skill within the kit, not the Role's identity (Batch 4). |
@@ -1202,7 +1202,7 @@ raising rather than only resupplying).
 
 ### 9.14 Scholar — every advantage sharpened
 
-**Status:** Settled, not yet implemented. Batch 3.
+**Status:** Implemented. Batch 3.
 
 **Identity: Channel 2, exported**, confirming section 5's row on both axes. An **adaptation**: the
 passive is **replaced** and the basic gains a conditional rider. Expose Fallacy and Refutation are
@@ -1255,25 +1255,50 @@ now that the Scholar produces two of them. The Role's exported contribution is *
 terms that multiply rather than share a bucket — inside section 4's band, with no damage factor on
 the Scholar's own sheet.
 
-**Implementation needs (not yet built):**
+**Implementation.** `field_of_study_trait.gd` was rewritten in place (kept the filename and the
+`Field_of_Study_Trait.tres` resource) rather than replaced, retiring `StartOfBattle`/`OnDebuffApplied`/
+`_IdentifyWeakness`/`_weakness_by_enemy` along with `Skills.ApplyWeaknessRider` and its call site — the
+old passive's defective "identifies each enemy's *weakest* attribute" description (the code and
+`Concept_Document.md` both said highest) is moot. `PRIMARY_ATTRIBUTES` stayed on the class: Tidal
+Corsair's `SeaLegsZoneEffect._HighestBasePrimaryAttribute` reads it too (section 9.13), an external
+dependency the original settle missed.
 
-* A new Scholar trait applying the amplification wherever attribute modifiers resolve;
-  `field_of_study_trait.gd` retires, and its description string carries a live defect — it says the
-  passive identifies each enemy's *weakest* attribute while the code and `Concept_Document.md` both
-  say highest. The replacement moots it.
-* The old passive's `weakness_attribute` / `weakness_reduction` entries in `trait_riders` retire with
-  it, along with `Skills.ApplyWeaknessRider`'s read of them.
-* `Sharp_Rebuttal.tres` gains the conditional Suppress application; the gate needs an "any zone
-  standing on the turn bar" condition, which no skill currently expresses.
-* `kit_contribution_manifest.gd` — Field of Study's entry is replaced, Sharp Rebuttal's gains the
-  rider, and Refutation's stale note about reading an unset `_damage_multiplier` goes.
-* `burst_reachability.gd` — section 11's new gap: the scorer credits granted attribute buffs but
-  nothing amplifies them, so the passive is invisible to the sweep until it does.
-* **Open decision:** `Concept_Document.md` 3.2.4.2 promises Refutation deals damage per remaining
-  charge on an enemy-placed zone; `Refutation.tres` carries no damage parameters. Resolve in either
-  direction at promotion — this kit keeps the skill as it ships and does not settle it.
-* `Concept_Document.md` at promotion: 3.1.3's passive, 3.2.4.2's Sharp Rebuttal, 3.2.3's Suppress
-  claimant.
+A new `CharacterTrait.GetAppliedAttributeAmplification()` virtual (default 0.0) and
+`Skills.AppliedAttributeAmplification` (highest value among the source's own living side, not summed —
+answering this batch's own "two amplifying teammates" judgment call) feed a stamp
+(`&"attribute_amplification"` in `trait_riders`) written once in `StatusEffectResolver._InsertOrRefresh`
+for any attribute-modifier-kind status, covering both the new-instance and refresh branches so a
+refreshed status keeps the amplification. `Skills.ApplyAttributeModifiers` adds the stamped value onto
+`resolved_value` for every non-crit attribute; `ApplyActiveAttributeModifiers` now threads
+`debuff.trait_riders` through on the debuff side too (previously buffs only). `Sharp_Rebuttal.tres`
+gained the Suppress rider gated on `Skill_Condition.Trait_Condition`, read through a new
+`FieldOfStudyTrait.GetConditionCount` override (`GetZoneResolver().GetZones().size()`) — no new
+`Skill_Condition` member needed. `kit_contribution_manifest.gd`'s Field of Study entry carries the new
+`attribute_amplification` field; Sharp Rebuttal's precondition notes the rider; Expose Fallacy's stale
+"-30% Knowledge" (Confound is -50%) and Refutation's stale `_damage_multiplier` note are both gone.
+`burst_reachability.gd`'s `_ContributeGrantedAttributeBuffs`/`_AccumulateAttributeBuff` close section
+11's gap — see that section for the sweep's own result. Rarity ladder invented for Uncommon/Rare/Epic
+(0.07/0.08/0.09), mirroring the retired passive's ladder shape; only Legendary (0.11) was fixed by this
+section's own projected numbers.
+
+The team's own status tooltips needed a follow-up so the amplification is legible, not just
+mechanically real: every `Data/Status_Effects/*.tres` description that hardcoded a flat percentage for
+an amplifiable status (Attune, Blind, Clarity, Confound, Empower, Enfeeble, Exhert, Fortify, Frenzy,
+Haste, Insight, Rush, Slow, Suppress, True Aim, Unravel, Vigor) now reads a `{percent}` token instead,
+matching Expose Weakness's and Sea Legs' own existing convention. `Skills.DisplayedAttributeModifierFraction`
+(mirrors `ApplyAttributeModifiers`'s own branching, crit attributes excluded) feeds
+`StatusEffectResolver._EmitBuffApplied`/`_EmitDebuffApplied`'s `CombatResult.fraction`, so a Fortify
+applied alongside the Scholar reads its own 41%, not the .tres's flat 30%. Vigor needed its own gate:
+`MaxHealthAttributePercent` is computed in `BattleResolver._MaxHealth`, entirely outside
+`ApplyAttributeModifiers`/`GetEffectiveAttributes` (`IsAttributeModifierKind` doesn't cover it), so a new
+`Skills.IsAmplifiableKind` widens the `StatusEffectResolver._InsertOrRefresh` stamping gate to cover it
+too and `_MaxHealth` reads the `&"attribute_amplification"` rider directly off the buff — Health is
+inside Field of Study's own declared scope (the six primary attributes plus Speed and Health) and was
+missed in the first implementation pass.
+
+**Open decision, unchanged:** `Concept_Document.md` 3.2.4.2 promises Refutation deals damage per
+remaining charge on an enemy-placed zone; `Refutation.tres` carries no damage parameters. Left
+unresolved, as this kit's own settle already declined to take a position on it.
 
 **Judgment calls made while settling, listed so they can be overruled:** the rider applies Suppress
 at the status's own magnitude, with duration carrying all of the restraint; the passive's scope is
@@ -1526,7 +1551,7 @@ Steadfast, Resonance unclaimed.
 |---|---|
 | Plague | Plague Doctor (Outbreak) — moved from Miasma; now stackable, no longer expiry-spread |
 | Blight | Plague Doctor (Miasma) — moved from Quarantine Breach (renamed Outbreak) |
-| Suppress | Herald of the loom (Thread Snap) — moved off the retired Thread Lash, now 1 turn (was 2); Scholar (Sharp Rebuttal's zone-gated rider) — **settled, not yet implemented** (§9.14). At the commodity-debuff limit of two, so no later Role may take it |
+| Suppress | Herald of the loom (Thread Snap) — moved off the retired Thread Lash, now 1 turn (was 2); Scholar (Sharp Rebuttal's zone-gated rider) — **implemented** (section 9.14). At the commodity-debuff limit of two, so no later Role may take it |
 | Temporal Leak | Herald of the loom (Pull the Thread) — newly claimed, retiring part of `FeatureIdeas.md`'s "Rework Orphaned Turn Bar Effects" item |
 | Warped | Sorcerer (Unstable Rift reliably, Arc Lash's 25% rider) — **implemented** (section 9.3); both sources are the same Role, so the identity-effect rule still holds |
 | Sanction | Emissary (Levied Sanction) — unchanged claimant; widened from an attribute reduction to a per-Infraction damage multiplier every attacker reads, **implemented** (section 9.7) |
@@ -1675,11 +1700,18 @@ did not exist. What the manifest carries now:
   claims no key. Miasma's own forced retick still carries no independent score: it has no
   `DamageEffect` of its own, top-level or zone-trigger, to attach a `gated_bonus` to.
 
-**Open gap, found while settling §9.14.** The scorer credits granted attribute buffs into a
-candidate's scaled aggregate (`_ContributeGrantedAttributeBuffs`) but nothing can amplify them, so
-the Scholar's passive — which raises every attribute modification the team applies — is structurally
-invisible to the sweep. It needs a manifest field declaring an amplification of the aggregate term,
-applied after the granted buffs are credited.
+**Closed implementing §9.14.** A new `attribute_amplification` manifest field
+(`kit_contribution_manifest.gd`) and `_AttributeAmplification` (highest-wins across the team, mirroring
+`Skills.AppliedAttributeAmplification`'s own runtime fold) let `_AccumulateAttributeBuff` add the
+Scholar's own percentage points onto any "percentage"-kind grant before it lands in `fractions` —
+confirmed against the real manifest (Tactician's Plan ahead: 0.3 becomes 0.41 with the Scholar
+present). The sweep's recorded distribution is unchanged by this (median 1.95x, 90th percentile
+4.68x, ceiling 16.24x, 114 top-decile teams across 10 pairings) for a structural reason rather than a
+wiring gap: `_ScaledAggregate` divides the burst skill's aggregate by the basic skill's own, and every
+kit in the roster scales its basic and its burst off the same attribute, so a uniform percentage-point
+amplification cancels in the ratio exactly the way Tactician's own Empower grant already does (noted
+in this plan's Context section). The amplification still inflates both aggregates in absolute terms —
+real burst damage rises — just not the contrast-ratio metric this scorer reports.
 
 **Open gap, found while settling §9.5.** The scorer has no notion of a candidate's own state
 changing mid-team-score, so Full Appraisal's reciprocal loss (Consigned zeroing the Appraiser's own

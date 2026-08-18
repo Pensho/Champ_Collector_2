@@ -9,4 +9,4 @@ magnitude_kind = 5
 magnitude = 0.3
 applies_on_self_tick = false
 icon = ExtResource("2_icon")
-description = "Increases max Health by 30%."
+description = "Increases max Health by {percent}%."

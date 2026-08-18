@@ -275,6 +275,25 @@ func test_granted_attribute_buff_reaches_every_teammate_from_a_team_reach_passiv
 	assert_almost_eq(fractions_for_teammate.get(Types.Attribute.Attack, 0.0), 0.3, 0.0001,
 		"Tactician's Plan ahead (team-reach passive) must credit Empower's +30% Attack to a teammate")
 
+func test_scholars_field_of_study_amplifies_a_teammates_granted_attribute_buff() -> void:
+	# Role_Kit_Design.md 9.14, closing section 11's open gap: the scorer credits granted
+	# attribute buffs but previously had no way to amplify them. Tactician's Plan ahead
+	# grants +30% Attack (team reach); the Scholar's Field of Study adds 0.11 (Legendary)
+	# percentage points on top: 0.3 + 0.11 = 0.41.
+	var presets: Array[CharacterPreset] = [TACTICIAN, CENTAUR_ARCHIVIST, THIEF]
+	var characters: Array[Character] = []
+	for i in presets.size():
+		var character: Character = Character.new()
+		character.InstantiateNew(presets[i], i)
+		characters.append(character)
+
+	var bonus_for_teammate: Dictionary = BurstReachability._ContributeGrantedAttributeBuffs(
+			characters, 2, KitContributionManifest.MANIFEST)
+	var fractions_for_teammate: Dictionary = bonus_for_teammate.get("fractions", {})
+
+	assert_almost_eq(fractions_for_teammate.get(Types.Attribute.Attack, 0.0), 0.41, 0.0001,
+		"Field of Study must add its own percentage points onto Plan ahead's granted fraction")
+
 # --- gated_bonus instance curve (_MultiInstanceContrastRatio, _GatedContrastRatios) ---
 
 func test_multi_instance_contrast_ratio_compounds_across_declared_instances() -> void:

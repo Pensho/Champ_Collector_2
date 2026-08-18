@@ -14,4 +14,4 @@ attribute_modifiers = Dictionary[int, float]({
 magnitude = 0.3
 applies_on_target_snapshot = true
 icon = ExtResource("2_icon")
-description = "Increases Attack and Speed by 30% but reduces Defense and Accuracy by 30%."
+description = "Increases Attack and Speed by {percent}% but reduces Defense and Accuracy by {percent}%."

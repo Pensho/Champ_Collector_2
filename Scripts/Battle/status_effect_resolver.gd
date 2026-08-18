@@ -610,6 +610,16 @@ func _InsertOrRefresh(
 	if(not p_is_buff and p_duration > 0 and null != target._trait):
 		p_duration += target._trait.GetIncomingDebuffDurationBonus(p_target_ID)
 
+	if(null != p_data and Skills.IsAmplifiableKind(p_data.magnitude_kind)):
+		var amplification: float = Skills.AppliedAttributeAmplification(
+				p_source_ID, _resolver._characters, _resolver.GetSides())
+		if(amplification > 0.0):
+			# Duplicated so the stamp never leaks onto the caster's own shared
+			# trait_result._trait_riders dictionary, which several callers pass by
+			# reference across multiple targets.
+			p_trait_riders = p_trait_riders.duplicate()
+			p_trait_riders[&"attribute_amplification"] = amplification
+
 	if(null == p_data or not p_data.stackable):
 		for i in active.size():
 			if(active[i].type == p_type):
@@ -903,7 +913,9 @@ func _EmitBuffApplied(p_target_ID: int, p_buff: StatusEffects.Buff, p_display_na
 	result.buff_type = p_buff.type
 	result.duration = p_buff.duration
 	result.amount = int(p_buff.value)
-	result.fraction = p_buff.value
+	var buff_data: StatusEffectData = StatusEffectRegistry.BuffData(p_buff.type)
+	result.fraction = (Skills.DisplayedAttributeModifierFraction(buff_data, p_buff.value, p_buff.trait_riders)
+			if null != buff_data else p_buff.value)
 	result.text = p_display_name
 	_resolver._Emit(result)
 	var target: Character = _resolver._characters[p_target_ID]
@@ -934,7 +946,9 @@ func _EmitDebuffApplied(p_target_ID: int, p_debuff: StatusEffects.Debuff, p_disp
 	result.duration = p_debuff.duration
 	result.source_ID = p_debuff.source_ID
 	result.amount = int(p_debuff.value)
-	result.fraction = p_debuff.value
+	var debuff_data: StatusEffectData = StatusEffectRegistry.DebuffData(p_debuff.type)
+	result.fraction = (Skills.DisplayedAttributeModifierFraction(debuff_data, p_debuff.value, p_debuff.trait_riders)
+			if null != debuff_data else p_debuff.value)
 	result.text = p_display_name
 	_resolver._Emit(result)
 	Skills.DispatchDebuffApplied(p_debuff, p_target_ID, _resolver._characters, _resolver)

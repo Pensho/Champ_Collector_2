@@ -631,7 +631,8 @@ func _MaxHealth(p_character: Character) -> int:
 	for buff in p_character._active_buffs:
 		var data: StatusEffectData = StatusEffectRegistry.BuffData(buff.type)
 		if(null != data and StatusEffectData.MagnitudeKind.MaxHealthAttributePercent == data.magnitude_kind):
-			health += int(ceilf(health * buff.value))
+			var amplified_value: float = buff.value + buff.trait_riders.get(&"attribute_amplification", 0.0)
+			health += int(ceilf(health * amplified_value))
 	return health * GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER
 
 func _ApplyHealthLoss(p_character_ID: int, p_amount: int, p_attacker_ID: int = -1) -> int:
