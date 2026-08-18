@@ -182,3 +182,100 @@ func test_AoE_hitting_two_allies_soaks_each_separately() -> void:
 			3, [0, 2], resolver.GetEffectiveAttributes(3), {Types.Attribute.Attack: 1.0})
 
 	assert_eq(_damage_to(results, 1).size(), 2, "Each AoE hit is soaked as its own separate redirect")
+
+# --- OnSkillCast: the Brace for Impact rider ---
+
+func test_on_skill_cast_returns_rider_for_brace_for_impact() -> void:
+	_InitTrait(Types.Rarity.Uncommon)
+
+	var result: TraitSkillResult = _trait.OnSkillCast(
+			1, [], "Brace for Impact", {}, null)
+
+	assert_true(result._trait_riders.has(ShieldWallTrait.ENFEEBLE_RIDER_KEY))
+	var rider: Dictionary = result._trait_riders[ShieldWallTrait.ENFEEBLE_RIDER_KEY]
+	assert_eq(rider[&"type"], Types.Debuff_Type.Enfeeble)
+	assert_eq(rider[&"duration"], 2)
+
+func test_on_skill_cast_returns_no_rider_for_other_skills() -> void:
+	_InitTrait(Types.Rarity.Uncommon)
+
+	var result: TraitSkillResult = _trait.OnSkillCast(
+			1, [], "Hold the Line", {}, null)
+
+	assert_false(result._trait_riders.has(ShieldWallTrait.ENFEEBLE_RIDER_KEY))
+
+# --- Resolver integration: the reactive Enfeeble on Brace for Impact ---
+
+func _give_brace_for_impact_rider(p_character: Character) -> void:
+	var rush: StatusEffects.Buff = StatusEffects.Buff.new()
+	rush.type = Types.Buff_Type.Rush
+	rush.duration = 1
+	rush.trait_riders = {ShieldWallTrait.ENFEEBLE_RIDER_KEY:
+			{&"type": Types.Debuff_Type.Enfeeble, &"duration": 2}}
+	p_character._active_buffs.append(rush)
+	# Overwhelm the resist roll so the reactive debuff's landing isn't left to chance.
+	p_character._attributes[Types.Attribute.Accuracy] = 9999
+
+func test_direct_hit_on_warlord_enfeebles_the_attacker_while_brace_holds() -> void:
+	var roster: Dictionary[int, Character] = _make_roster_with_warlord(30)
+	_give_brace_for_impact_rider(roster[1])
+	var positions: TestFactory.FakeTurnPositions = TestFactory.FakeTurnPositions.new()
+	positions.proximity_IDs = []
+	var resolver: BattleResolver = TestFactory.make_resolver(
+			roster, TestFactory.make_full_sides(), positions)
+
+	resolver.ResolveTraitDamage(
+			3, [1], resolver.GetEffectiveAttributes(3), {Types.Attribute.Attack: 1.0})
+
+	var attacker: Character = roster[3]
+	assert_true(attacker._active_debuffs.any(
+			func(d): return Types.Debuff_Type.Enfeeble == d.type), "The attacker should be Enfeebled")
+
+func test_redirected_hit_on_warlord_enfeebles_the_original_attacker() -> void:
+	var roster: Dictionary[int, Character] = _make_roster_with_warlord(30)
+	_give_brace_for_impact_rider(roster[1])
+	var positions: TestFactory.FakeTurnPositions = TestFactory.FakeTurnPositions.new()
+	positions.proximity_IDs = [0]
+	var resolver: BattleResolver = TestFactory.make_resolver(
+			roster, TestFactory.make_full_sides(), positions)
+
+	resolver.ResolveTraitDamage(
+			3, [0], resolver.GetEffectiveAttributes(3), {Types.Attribute.Attack: 1.0})
+
+	var attacker: Character = roster[3]
+	assert_true(attacker._active_debuffs.any(
+			func(d): return Types.Debuff_Type.Enfeeble == d.type),
+			"The attacker should be Enfeebled by the redirected share landing on the Warlord")
+
+func test_no_enfeeble_without_the_brace_for_impact_rider() -> void:
+	var roster: Dictionary[int, Character] = _make_roster_with_warlord(30)
+	var positions: TestFactory.FakeTurnPositions = TestFactory.FakeTurnPositions.new()
+	positions.proximity_IDs = []
+	var resolver: BattleResolver = TestFactory.make_resolver(
+			roster, TestFactory.make_full_sides(), positions)
+
+	resolver.ResolveTraitDamage(
+			3, [1], resolver.GetEffectiveAttributes(3), {Types.Attribute.Attack: 1.0})
+
+	var attacker: Character = roster[3]
+	assert_false(attacker._active_debuffs.any(func(d): return Types.Debuff_Type.Enfeeble == d.type))
+
+func test_barrier_absorbing_the_full_hit_does_not_trigger_enfeeble() -> void:
+	var roster: Dictionary[int, Character] = _make_roster_with_warlord(30)
+	_give_brace_for_impact_rider(roster[1])
+	var barrier: StatusEffects.Buff = StatusEffects.Buff.new()
+	barrier.type = Types.Buff_Type.Barrier
+	barrier.duration = 2
+	barrier.value = 999999.0
+	roster[1]._active_buffs.append(barrier)
+	var positions: TestFactory.FakeTurnPositions = TestFactory.FakeTurnPositions.new()
+	positions.proximity_IDs = []
+	var resolver: BattleResolver = TestFactory.make_resolver(
+			roster, TestFactory.make_full_sides(), positions)
+
+	resolver.ResolveTraitDamage(
+			3, [1], resolver.GetEffectiveAttributes(3), {Types.Attribute.Attack: 1.0})
+
+	var attacker: Character = roster[3]
+	assert_false(attacker._active_debuffs.any(func(d): return Types.Debuff_Type.Enfeeble == d.type),
+			"A fully absorbed hit never reaches the damage-taken reaction")

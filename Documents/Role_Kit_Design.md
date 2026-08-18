@@ -1438,7 +1438,7 @@ to place in section 4's distribution — the only entry in the roster of which t
 
 ### 9.19 Warlord — everything that strikes the wall pays for it
 
-**Status:** Settled, not yet implemented. Batch 4.
+**Status:** Implemented. Batch 4.
 
 **Identity: Enabler, exported**, redeclaring section 5's Channel 1 row. Fortify raises Defence, which
 is no damage term; redirection, Fortify and Aegis are all mitigation. An **adaptation**: one slot
@@ -1451,7 +1451,7 @@ attack damage redirected to the Warlord by rarity, re-mitigated against his own 
 |---|---|---|---|
 | Basic | Shield Slam | Kept as-is. Defence-scaled single-target damage. | 1 |
 | Signature | Hold the Line | Kept as-is. All allies gain Fortify, 2 turns. Cooldown 3. | Enabler |
-| Signature | Brace for Impact | Kept, plus a clause: while it holds, any enemy whose attack lands on the Warlord — **including damage redirected to him by Shield Wall** — gains **Enfeeble for 2 turns**. Rush and Aegis 1 turn each, Rush's expiry self-Stun kept as the price. Cooldown 4. | Enabler |
+| Signature | Brace for Impact | Kept, plus a clause: while it holds, any enemy whose attack lands on the Warlord — **including damage redirected to him by Shield Wall** — gains **Enfeeble for 2 turns**, rolled against the Warlord's own Accuracy like any other applied debuff. Rush and Aegis 1 turn each, Rush's expiry self-Stun kept as the price. Cooldown 4. | Enabler |
 
 **The reactive form is the design.** An all-enemies Enfeeble would be a generic debuff button; keying
 it to attackers makes it proportional to the pressure the team is actually under, and Shield Wall
@@ -1478,15 +1478,20 @@ distinguishable — one redirects to protect, the other prices a damage buff.
 **Projected numbers.** None. The kit fields no damage factor and is measured on the collapse test,
 absent from the sweep's ranking by design (§4).
 
-**Implementation needs (not yet built):**
-
-* `Brace_for_Impact.tres` gains the reactive clause; it needs a "while this buff holds, on damage
-  landing on the holder, debuff the attacker" hook, which no skill currently expresses. The
-  redirected-damage case must route through it too — `shield_wall_trait.gd`'s redirection carries the
-  original attacker's identity to the trigger.
-* `kit_contribution_manifest.gd` — Brace for Impact's entry.
-* `Concept_Document.md` at promotion: 3.1.3's Warlord identity tag, 3.2.4.2's Brace for Impact,
-  3.2.3's Enfeeble claimants.
+**Implementation.** No new `Combat_Event`, status resource, or `StatusEffectData` field — the clause
+reuses `StatusEffects.Effect.trait_riders` (already generalized for Comorbidity and Field of Study).
+`shield_wall_trait.gd` gains an `OnSkillCast` hook that, only when the cast is Brace for Impact, sets
+an `&"attacker_debuff_on_damage"` rider (Enfeeble, 2 turns) on `TraitSkillResult`, threaded onto the
+Rush and Aegis buffs the cast applies (`apply_buff_effect.gd` now copies `trait_result._trait_riders`
+onto every buff template, the missing symmetric half of the debuff path). `_ApplyHealthLoss`
+(`battle_resolver.gd`) gained an `p_attacker_ID` parameter, passed at both the direct-hit and
+Shield-Wall-soaker call sites — the one place both paths already converge — forwarded into
+`_TriggerDamageTakenReactions` (`status_effect_resolver.gd`), which now also scans the holder's buffs
+for the rider and calls `CastDebuff` on the attacker through the normal resist roll. A fully
+Barrier-absorbed hit never reaches the reaction, matching "lands on the Warlord."
+`kit_contribution_manifest.gd`'s Brace for Impact entry updated. Post-implementation sweep: median
+1.95x, 90th percentile 4.68x, ceiling 16.24x, 114 top-decile teams across 10 pairings — unchanged, as
+predicted for a kit the scorer cannot see.
 
 ## 10. Coverage ledger
 
@@ -1531,7 +1536,7 @@ Steadfast, Resonance unclaimed.
 | Cracked Facet | Appraiser (Flaw Analysis) — **implemented** (section 9.5); moved off the retired Strike the Flaw passive, now scaled by the applier's Knowledge |
 | Confound | Scholar (Expose Fallacy), Appraiser (Flaw Analysis) — **implemented** (section 9.5). Second claimant, within the commodity-debuff limit of two |
 | Hexed | Diviner (Ill Omen), Jester (Burning Bolas) — **implemented** (section 9.6). Second claimant, at the commodity-debuff limit of two, so no later Role may take it. Scope now covers every chance roll in combat except damage variance |
-| Enfeeble | Diviner (Foresight), Warlord (Brace for Impact's reactive clause) — **settled, not yet implemented** (section 9.19). Second claimant, at the commodity-debuff limit of two |
+| Enfeeble | Lancer (Disarm, shipped before this ledger's commodity-debuff limit was adopted), Diviner (Foresight), Warlord (Brace for Impact's reactive clause) — **implemented** (section 9.19). Three claimants, one over the commodity-debuff limit of two; no later Role may take it |
 | Unravel | Alchemist (Dissolving Agent) — unchanged claimant; the skill keeps it alongside a second debuff, **settled, not yet implemented** (section 9.15) |
 | Expose Weakness | Architect (Calibration), Alchemist (Dissolving Agent) — **settled, not yet implemented** (section 9.15). Second claimant, at the commodity-debuff limit of two, and its first skill source |
 | Burning | Jester (Burning Bolas), Lava Zone — unchanged claimants. Tick rolls 2-10% of max Health per stack roster-wide — **implemented** (section 9.6) |
@@ -1557,7 +1562,6 @@ Refresh in the same edit that lands a batch.
   to resist can break one single-handedly. No Role applies these without a severe drawback, and
   never from a basic skill. Stun's only current source is the ownerless Weight of Law zone
   (section 10.3) and Rush's expiry, both of which fall on the holder rather than being aimed.
-* Enfeeble's reservation for the Warlord is discharged — see the debuff table above.
 * **No source — buffs:** True Aim, Clarity, Insight, Mirror Coat, Rehearsed, Wanderlust, Overflow,
   Phalanx Guard.
   Turn bar buffs Anchor, Steadfast, Resonance are listed above.

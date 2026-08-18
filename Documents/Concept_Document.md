@@ -841,7 +841,7 @@ the fix belongs in the data or the document.
 * Brace for Impact
     * Type: Buff
     * Cooldown: 4 turns
-    * Effect: [Channel 1 + Enabler] The Warlord gains the Rush buff and the Aegis buff for 1 turn each. When Rush expires, the Warlord receives the Stun debuff per the Rush effect.
+    * Effect: [Channel 1 + Enabler] The Warlord gains the Rush buff and the Aegis buff for 1 turn each. When Rush expires, the Warlord receives the Stun debuff per the Rush effect. While either buff holds, any enemy whose attack lands on the Warlord — including damage redirected to him by Shield Wall — gains the Enfeeble debuff for 2 turns, rolled against the Warlord's Accuracy like any other applied debuff.
 
 ##### 3.2.4.3 Unassigned / Generic Skills
 Not yet tied to a specific Role, grouped by mechanical type for lookup.

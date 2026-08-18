@@ -833,7 +833,7 @@ func _HealingMultiplier(p_character_ID: int) -> float:
 	return maxf(multiplier * trait_multiplier, 0.0)
 
 
-func _TriggerDamageTakenReactions(p_character_ID: int) -> void:
+func _TriggerDamageTakenReactions(p_character_ID: int, p_attacker_ID: int = -1) -> void:
 	var character: Character = _resolver._characters[p_character_ID]
 	for debuff in character._active_debuffs:
 		if(Types.Debuff_Type.Dead_Weight == debuff.type):
@@ -848,6 +848,22 @@ func _TriggerDamageTakenReactions(p_character_ID: int) -> void:
 				for ally_ID in allies.AliveMembers(_resolver._characters):
 					if(ally_ID != p_character_ID):
 						_resolver._EmitTurnBarBump(ally_ID, data.magnitude)
+			break
+	_TriggerAttackerDebuffOnDamage(p_character_ID, p_attacker_ID)
+
+func _TriggerAttackerDebuffOnDamage(p_character_ID: int, p_attacker_ID: int) -> void:
+	if(p_attacker_ID == -1 or p_attacker_ID == p_character_ID
+			or not _resolver._characters.has(p_attacker_ID)
+			or not _resolver.GetSides().AreEnemies(p_character_ID, p_attacker_ID)):
+		return
+	var character: Character = _resolver._characters[p_character_ID]
+	for buff in character._active_buffs:
+		var rider: Variant = buff.trait_riders.get(&"attacker_debuff_on_damage")
+		if(rider is Dictionary):
+			var debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
+			debuff.type = rider.get(&"type")
+			debuff.duration = rider.get(&"duration", 0)
+			CastDebuff(p_attacker_ID, debuff, p_character_ID)
 			break
 
 

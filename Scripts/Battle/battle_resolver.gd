@@ -634,13 +634,13 @@ func _MaxHealth(p_character: Character) -> int:
 			health += int(ceilf(health * buff.value))
 	return health * GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER
 
-func _ApplyHealthLoss(p_character_ID: int, p_amount: int) -> int:
+func _ApplyHealthLoss(p_character_ID: int, p_amount: int, p_attacker_ID: int = -1) -> int:
 	var reduced_amount: int = int(floor(
 			float(p_amount) * _status_resolver._DamageTakenMultiplier(_characters[p_character_ID])))
 	var remaining: int = _status_resolver._AbsorbWithBarrier(p_character_ID, reduced_amount)
 	if(remaining <= 0):
 		return 0
-	_status_resolver._TriggerDamageTakenReactions(p_character_ID)
+	_status_resolver._TriggerDamageTakenReactions(p_character_ID, p_attacker_ID)
 	var character: Character = _characters[p_character_ID]
 	var was_alive: bool = character._current_health > 0
 	var new_health: int = clampi(character._current_health - remaining, 0, _MaxHealth(character))
@@ -826,7 +826,7 @@ func _ResolveDamage(
 		damage_dealt = int(round(damage_dealt * (1.0 - redirect_fraction)))
 
 	if(soaker_damage > 0):
-		var actual_soaker_damage: int = _ApplyHealthLoss(soaker_ID, soaker_damage)
+		var actual_soaker_damage: int = _ApplyHealthLoss(soaker_ID, soaker_damage, p_caster_ID)
 		_EmitDamageResult(p_caster_ID, soaker_ID, actual_soaker_damage, rolled_critical, p_combined_damage_modifier)
 
 	if(damage_dealt == 0):
@@ -838,7 +838,7 @@ func _ResolveDamage(
 	if(damage_dealt == 0):
 		return
 
-	var actual_damage_dealt: int = _ApplyHealthLoss(p_target_ID, damage_dealt)
+	var actual_damage_dealt: int = _ApplyHealthLoss(p_target_ID, damage_dealt, p_caster_ID)
 	_EmitDamageResult(p_caster_ID, p_target_ID, actual_damage_dealt, rolled_critical, p_combined_damage_modifier)
 
 	var caster: Character = _characters[p_caster_ID]

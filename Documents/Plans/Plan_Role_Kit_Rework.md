@@ -212,11 +212,24 @@ its slots are touched, rather than inherited from `Role_Kit_Design.md` §5's row
   source and closing the kit into one loop. §8's twice-claimed damage-redirection item closes here
   unchanged.
 
-**Phase 5 (Batch 4) design complete. None of the five is implemented.** The batch found no
-zero-contribution or one-note kit needing replacement, as expected; its substantive finding is that
-§5's rows for the protection kits had each assumed a damage term the kit does not owe, corrected on
-the Diviner and the Warlord (now Enabler) and on the Symbiote (direction). None of the five depends
-on a roster-wide mechanics change; the Jester's four all shipped with its implementation.
+**Phase 5 (Batch 4) design complete.** The batch found no zero-contribution or one-note kit needing
+replacement, as expected; its substantive finding is that §5's rows for the protection kits had each
+assumed a damage term the kit does not owe, corrected on the Diviner and the Warlord (now Enabler)
+and on the Symbiote (direction). None of the five depends on a roster-wide mechanics change; the
+Jester's four all shipped with its implementation.
+
+**Warlord's implementation** needed no new `Combat_Event`, status resource, or `StatusEffectData`
+field — the reactive Enfeeble is a rider on `StatusEffects.Effect.trait_riders`, already generalized
+by the Tidal Corsair batch. `shield_wall_trait.gd` gained an `OnSkillCast` hook that tags Brace for
+Impact's Rush and Aegis grants with an `&"attacker_debuff_on_damage"` rider; `apply_buff_effect.gd`
+now copies the cast's trait riders onto every applied buff, the symmetric half of the debuff path
+`apply_debuff_effect.gd` already had. `_ApplyHealthLoss` (`battle_resolver.gd`) gained an attacker ID,
+passed at both the direct-hit and Shield-Wall-soaker sites, forwarded into
+`_TriggerDamageTakenReactions` (`status_effect_resolver.gd`), which now also debuffs the attacker
+through the normal resist roll when the holder carries the rider. Post-Warlord sweep: median 1.95x,
+90th percentile 4.68x, ceiling 16.24x, 114 top-decile teams across 10 pairings — unchanged, as
+expected for a kit fielding no damage factor. Alchemist, Diviner, Symbiote and Bar Brawler remain
+settled but not yet implemented.
 
 **Coverage review findings**, from a roster-wide read of all 20 Roles against the corrected contract.
 

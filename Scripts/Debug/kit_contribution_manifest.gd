@@ -1011,8 +1011,11 @@ const MANIFEST: Dictionary = {
 					"class": Contribution_Class.Channel1,
 					"precondition": "Grants self Rush (1 turn: +30% all primary attributes except " +
 							"Health, then an unresistable Stun on expiry) and Aegis (1 turn: blocks the " +
-							"next debuff).",
-					"citation": "Brace_for_Impact.tres:6-16",
+							"next debuff). While either buff holds, any enemy whose attack lands on the " +
+							"Warlord - direct or redirected to him by Shield Wall - gains a fixed 2-turn " +
+							"Enfeeble (normal resist roll against the Warlord's Accuracy). No damage.",
+					"citation": "Brace_for_Impact.tres:6-16; shield_wall_trait.gd (OnSkillCast); " +
+							"status_effect_resolver.gd (_TriggerAttackerDebuffOnDamage)",
 					"granted_attribute_buff": {"attributes": ALL_ATTRIBUTES_EXCEPT_HEALTH, "magnitude": 0.3}},
 		],
 	},

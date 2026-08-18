@@ -19,7 +19,7 @@ target = 13
 [resource]
 script = ExtResource("1_skill")
 name = "Brace for Impact"
-description = "Grants the caster the Rush and Aegis buffs for 1 turn."
+description = "Grants the caster the Rush and Aegis buffs for 1 turn. While it holds, any enemy whose attack lands on the caster - gains Enfeeble for 2 turns."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Brace_for_Impact/Brace_for_Impact.png"
 target = 13
 cooldown = 4
