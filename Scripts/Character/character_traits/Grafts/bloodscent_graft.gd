@@ -17,8 +17,8 @@ func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
 	_lowest_health_bonus = LOWEST_HEALTH_BONUS_PER_RARITY.get(p_rarity, 0.0)
 	_title = "Bloodscent"
-	_body = ("Deals " + str(int(ABOVE_HALF_PENALTY * 100)) + "% less damage to any enemy above 50% Health."
-			+ "Otherwise, deal " + str(int(_lowest_health_bonus * 100)) + "% more damage to the enemy"
+	_body = ("Deals " + str(roundi(ABOVE_HALF_PENALTY * 100)) + "% less damage to any enemy above 50% Health."
+			+ "Otherwise, deal " + str(roundi(_lowest_health_bonus * 100)) + "% more damage to the enemy"
 			+ " with the lowest current Health, and heals 15% of its own max Health on a killing blow.")
 	_execution_steps[Types.Combat_Event.On_Kill] = Callable(self, "OnKill")
 

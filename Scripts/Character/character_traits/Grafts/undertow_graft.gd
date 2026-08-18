@@ -22,9 +22,9 @@ func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
 	_pull = PULL_PER_RARITY.get(p_rarity, 0.0)
 	_title = "Undertow"
-	_body = ("When hit by an enemy, pulls that attacker back " + str(int(_pull * 100))
-			+ "% on the turn bar, at the cost of losing " + str(int(SELF_TURN_BAR_LOSS * 100))
-			+ "% of its own. Gains " + str(int(HEALTH_BONUS_PER_RARITY.get(p_rarity, 0.0) * 100)) + "% Health.")
+	_body = ("When hit by an enemy, pulls that attacker back " + str(roundi(_pull * 100))
+			+ "% on the turn bar, at the cost of losing " + str(roundi(SELF_TURN_BAR_LOSS * 100))
+			+ "% of its own. Gains " + str(roundi(HEALTH_BONUS_PER_RARITY.get(p_rarity, 0.0) * 100)) + "% Health.")
 	_execution_steps[Types.Combat_Event.Damage_Taken] = Callable(self, "OnDamageTaken")
 
 func OnDamageTaken(p_owner_ID: int, p_attacker_ID: int, p_resolver: BattleResolver) -> float:

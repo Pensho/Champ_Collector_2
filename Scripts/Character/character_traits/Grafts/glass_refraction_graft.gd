@@ -15,9 +15,9 @@ func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
 	_title = "Glass Refraction"
 	_body = ("When hit by an attack, a chaotic backlash strikes the attacker for damage"
-			+ " equal to " + str(int(MYSTICISM_BACKLASH * 100)) + "% of its own Mysticism. Gains "
-			+ str(int(MYSTICISM_BONUS_PER_RARITY.get(p_rarity, 0.0) * 100)) + "% Mysticism, at the cost of "
-			+ str(int(-RESISTANCE_DRAWBACK * 100)) + "% Resistance.")
+			+ " equal to " + str(roundi(MYSTICISM_BACKLASH * 100)) + "% of its own Mysticism. Gains "
+			+ str(roundi(MYSTICISM_BONUS_PER_RARITY.get(p_rarity, 0.0) * 100)) + "% Mysticism, at the cost of "
+			+ str(roundi(-RESISTANCE_DRAWBACK * 100)) + "% Resistance.")
 	_execution_steps[Types.Combat_Event.Damage_Taken] = Callable(self, "OnDamageTaken")
 
 func OnDamageTaken(p_owner_ID: int, p_attacker_ID: int, p_resolver: BattleResolver) -> float:

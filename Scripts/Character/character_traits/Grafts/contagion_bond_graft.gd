@@ -23,7 +23,7 @@ func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
 	_width = GetReachThreshold(p_rarity)
 	_title = "Contagion Bond"
-	_body = ("When it gains a buff, the nearest ally within " + str(int(_width * 100))
+	_body = ("When it gains a buff, the nearest ally within " + str(roundi(_width * 100))
 			+ "% of the turn bar gains a copy for 1 turn. When a debuff lands on it, the"
 			+ " nearest enemy within that width catches a copy, contested against the"
 			+ " enemy's Resistance. Debuffs on it last " + str(DEBUFF_DURATION_BONUS)

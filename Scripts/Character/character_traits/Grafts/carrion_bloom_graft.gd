@@ -22,11 +22,11 @@ func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
 	_heal_fraction = HEAL_FRACTION_PER_RARITY.get(p_rarity, 0.0)
 	_title = "Carrion Bloom"
-	_body = ("Gains " + str(int(HEALTH_BONUS_PER_RARITY.get(p_rarity, 0.0) * 100)) + "% max Health."
+	_body = ("Gains " + str(roundi(HEALTH_BONUS_PER_RARITY.get(p_rarity, 0.0) * 100)) + "% max Health."
 			+ "\nAt the start of its turn, heals the lowest-Health living ally for "
-			+ str(int(_heal_fraction * 100)) + "% of that ally's max Health."
+			+ str(roundi(_heal_fraction * 100)) + "% of that ally's max Health."
 			+ "\nHealing it receives itself is reduced by "
-			+ str(int((1.0 - SELF_HEAL_MULTIPLIER) * 100)) + "%.")
+			+ str(roundi((1.0 - SELF_HEAL_MULTIPLIER) * 100)) + "%.")
 	_execution_steps[Types.Combat_Event.Start_Turn] = Callable(self, "StartOfTurn")
 
 func StartOfTurn(p_owner_ID: int, p_resolver: BattleResolver) -> void:

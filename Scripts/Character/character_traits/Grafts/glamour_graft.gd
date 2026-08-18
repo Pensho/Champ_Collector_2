@@ -17,11 +17,11 @@ func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
 	_redirect_chance = REDIRECT_CHANCE_PER_RARITY.get(p_rarity, 0.0)
 	_title = "Glamour"
-	_body = ("Single-target attacks have a " + str(int(_redirect_chance * 100))
+	_body = ("Single-target attacks have a " + str(roundi(_redirect_chance * 100))
 			+ "% chance to be redirected onto a random other character. Deals "
-			+ str(int(DAMAGE_DEALT_BONUS * 100)) + "% more damage, but takes "
-			+ str(int((DAMAGE_TAKEN_MULTIPLIER - 1.0) * 100)) + "% more damage and is targeted "
-			+ str(int((TARGETING_PRIORITY_MULTIPLIER - 1.0) * 100)) + "% more often.")
+			+ str(roundi(DAMAGE_DEALT_BONUS * 100)) + "% more damage, but takes "
+			+ str(roundi((DAMAGE_TAKEN_MULTIPLIER - 1.0) * 100)) + "% more damage and is targeted "
+			+ str(roundi((TARGETING_PRIORITY_MULTIPLIER - 1.0) * 100)) + "% more often.")
 	_execution_steps[Types.Combat_Event.Start_Combat] = Callable(self, "StartOfBattle")
 	_execution_steps[Types.Combat_Event.Damage_Taken] = Callable(self, "OnDamageTaken")
 

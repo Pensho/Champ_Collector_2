@@ -15,9 +15,9 @@ func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
 	_heal_fraction = HEAL_FRACTION_PER_RARITY.get(p_rarity, 0.0)
 	_title = "Rootfeeder"
-	_body = ("Whenever affected by any zone, heals for " + str(int(_heal_fraction * 100))
+	_body = ("Whenever affected by any zone, heals for " + str(roundi(_heal_fraction * 100))
 			+ "% of max Health on top of the zone's own effect."
-			+ "\nZone effects from enemy-owned zones are " + str(int(ENEMY_ZONE_EFFECT_MULTIPLIER * 100))
+			+ "\nZone effects from enemy-owned zones are " + str(roundi(ENEMY_ZONE_EFFECT_MULTIPLIER * 100))
 			+ "% as strong.")
 	_execution_steps[Types.Combat_Event.Zone_Affected] = Callable(self, "OnAffectedByZone")
 

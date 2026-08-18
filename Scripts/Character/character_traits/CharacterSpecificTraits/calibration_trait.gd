@@ -41,7 +41,7 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_title = "Calibration"
 	_body = ("Gain Calibration charges with basic skills and spend them with others for effects." +
 			"\n\nFinisher skills consume all held charges for " +
-			str(int(round(100.0 * _per_charge_potency))) + "% bonus damage per charge, beyond their own effects.")
+			str(roundi(100.0 * _per_charge_potency)) + "% bonus damage per charge, beyond their own effects.")
 
 func StartOfBattle(_p_owner_ID: int, _p_resolver: BattleResolver) -> void:
 	_charges = 0

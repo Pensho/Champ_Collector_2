@@ -22,7 +22,7 @@ func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
 	_title = "Spreading Rot"
 	_body = ("Attacks apply Blight to their targets for " + str(BLIGHT_DURATION_PER_RARITY.get(p_rarity, 1))
-			+ " turn(s). Gaining " + str(int(HEALTH_BONUS_PER_RARITY.get(p_rarity, 0.0) * 100)) + "% Health."
+			+ " turn(s). Gaining " + str(roundi(HEALTH_BONUS_PER_RARITY.get(p_rarity, 0.0) * 100)) + "% Health."
 			+ " At the start of each of its turns, the Symbiote takes rot damage equal to 3% of its max Health.")
 	_execution_steps[Types.Combat_Event.Skill_Cast] = Callable(self, "OnSkillCast")
 	_execution_steps[Types.Combat_Event.Start_Turn] = Callable(self, "StartOfTurn")

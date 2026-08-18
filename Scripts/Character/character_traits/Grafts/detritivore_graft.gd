@@ -18,10 +18,10 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_scrap_per_stack = SCRAP_PER_RARITY.get(p_rarity, 0.0)
 	_title = "Detritivore"
 	_body = ("Whenever a reagent is consumed, a buff expires, or a zone dissipates anywhere in"
-			+ " battle, heals " + str(int(SCAVENGE_HEAL_FRACTION * 100)) + "% of max Health and"
-			+ " gains a permanent Scrap stack worth +" + str(int(_scrap_per_stack * 100))
+			+ " battle, heals " + str(roundi(SCAVENGE_HEAL_FRACTION * 100)) + "% of max Health and"
+			+ " gains a permanent Scrap stack worth +" + str(roundi(_scrap_per_stack * 100))
 			+ "% Resistance, uncapped. Starts each battle at "
-			+ str(int(STARTING_RESISTANCE_PENALTY * 100)) + "% Resistance.")
+			+ str(roundi(STARTING_RESISTANCE_PENALTY * 100)) + "% Resistance.")
 	_execution_steps[Types.Combat_Event.Start_Combat] = Callable(self, "StartOfBattle")
 	_execution_steps[Types.Combat_Event.Resource_Depleted] = Callable(self, "OnScavenge")
 
@@ -36,8 +36,8 @@ func OnScavenge(p_owner_ID: int, p_resolver: BattleResolver) -> void:
 	p_resolver.ResolveTraitHeal([p_owner_ID], SCAVENGE_HEAL_FRACTION)
 
 func RefreshVisuals(p_character_repr: CharacterRepresentation) -> void:
-	var current_resistance_percent: int = int(round(
-			_attribute_percent_delta.get(Types.Attribute.Resistance, 0.0) * 100))
+	var current_resistance_percent: int = roundi(
+			_attribute_percent_delta.get(Types.Attribute.Resistance, 0.0) * 100)
 	var body_with_modifier: String = (_body + "\nCurrent Resistance modifier: "
 			+ str(current_resistance_percent) + "%")
 	p_character_repr.SetTraitElement(_trait_texture, 0)

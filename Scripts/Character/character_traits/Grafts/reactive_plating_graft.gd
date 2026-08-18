@@ -18,8 +18,8 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_defence_bonus_per_stack = DEFENCE_BONUS_PER_STACK.get(p_rarity, 0.0)
 	_title = "Reactive Plating"
 	_body = ("Gains a Hardened stack each time taking attack damage, raising Defense by "
-			+ str(int(_defence_bonus_per_stack * 100)) + "% per stack, up to 9 stacks lasting the rest"
-			+ " of the battle. Losing " + str(int(-SPEED_DRAWBACK * 100)) + "% Speed.")
+			+ str(roundi(_defence_bonus_per_stack * 100)) + "% per stack, up to 9 stacks lasting the rest"
+			+ " of the battle. Losing " + str(roundi(-SPEED_DRAWBACK * 100)) + "% Speed.")
 	_execution_steps[Types.Combat_Event.Start_Combat] = Callable(self, "StartOfBattle")
 	_execution_steps[Types.Combat_Event.Damage_Taken] = Callable(self, "OnDamageTaken")
 

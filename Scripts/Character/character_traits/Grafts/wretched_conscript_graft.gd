@@ -11,7 +11,7 @@ func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
 	_title = "Wretched Conscript"
 	_body = ("A soldier fused on and worn like a second hide. Gaining "
-			+ str(int(DEFENCE_BONUS_PER_RARITY.get(p_rarity, 0.0) * 100)) + "% Defence.")
+			+ str(roundi(DEFENCE_BONUS_PER_RARITY.get(p_rarity, 0.0) * 100)) + "% Defence.")
 
 func _BonusForRarity(p_rarity: Types.Rarity) -> Dictionary[Types.Attribute, float]:
 	return {Types.Attribute.Defence: DEFENCE_BONUS_PER_RARITY.get(p_rarity, 0.0)}

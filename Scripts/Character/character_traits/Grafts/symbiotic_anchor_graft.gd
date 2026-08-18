@@ -17,11 +17,11 @@ var _tethered_ally_ID: int = -1
 func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
 	_title = "Symbiotic Anchor"
-	_body = ("Tethers to a random living ally, sharing " + str(int(SHARE_FRACTION * 100))
+	_body = ("Tethers to a random living ally, sharing " + str(roundi(SHARE_FRACTION * 100))
 			+ "% of this Symbiote's Resistance and Attack. Re-tethers to a new ally if the"
-			+ " tethered ally dies. Gains " + str(int(RESISTANCE_BONUS_PER_RARITY.get(p_rarity, 0.0) * 100))
-			+ "% Resistance, but loses " + str(int(-DEFENCE_PENALTY * 100)) + "% Defense and "
-			+ str(int(-CRIT_DAMAGE_PENALTY * 100)) + "% Crit Damage.")
+			+ " tethered ally dies. Gains " + str(roundi(RESISTANCE_BONUS_PER_RARITY.get(p_rarity, 0.0) * 100))
+			+ "% Resistance, but loses " + str(roundi(-DEFENCE_PENALTY * 100)) + "% Defense and "
+			+ str(roundi(-CRIT_DAMAGE_PENALTY * 100)) + "% Crit Damage.")
 	_execution_steps[Types.Combat_Event.Start_Combat] = Callable(self, "StartOfBattle")
 	_execution_steps[Types.Combat_Event.Ally_Death] = Callable(self, "OnAllyDeath")
 

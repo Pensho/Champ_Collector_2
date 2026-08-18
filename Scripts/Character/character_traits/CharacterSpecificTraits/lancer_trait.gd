@@ -18,9 +18,9 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_bonus_per_section = CHARGE_BONUS_PER_SECTION.get(p_rarity, 0.0)
 	_trait_texture = load("res://Assets/Champ_Collector/Icons/Abilities/Passives/Lancer_Trait/lancer_trait.png")
 	_title = "Couched Lance"
-	_body = ("Rending Charge deals " + str(int(_bonus_per_section * 100)) + "% more damage per " +
+	_body = ("Rending Charge deals " + str(roundi(_bonus_per_section * 100)) + "% more damage per " +
 			"turn-bar section between the Lancer and its target, then throws the Lancer back " +
-			str(int(RECOIL_PER_SECTION * 100)) + "% of the turn bar per section charged.")
+			str(roundi(RECOIL_PER_SECTION * 100)) + "% of the turn bar per section charged.")
 	_execution_steps[Types.Combat_Event.Skill_Cast] = Callable(self, "OnSkillCast")
 	_execution_steps[Types.Combat_Event.Skill_Effects_Resolved] = Callable(self, "OnSkillEffectsResolved")
 

@@ -21,8 +21,8 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_push = TURN_BAR_PUSH_PER_RARITY.get(p_rarity, 0.0)
 	_title = "Caravan Cadence"
 	_body = ("At the start of its turn, pushes the ally furthest behind themself on the turn bar"
-			+ " forward " + str(int(_push * 100)) + "%. Gains "
-			+ str(int(KNOWLEDGE_BONUS_PER_RARITY.get(p_rarity, 0.0) * 100)) + "% Knowledge."
+			+ " forward " + str(roundi(_push * 100)) + "%. Gains "
+			+ str(roundi(KNOWLEDGE_BONUS_PER_RARITY.get(p_rarity, 0.0) * 100)) + "% Knowledge."
 			+ " Can never be pushed forward on the turn bar itself.")
 	_execution_steps[Types.Combat_Event.Start_Turn] = Callable(self, "StartOfTurn")
 

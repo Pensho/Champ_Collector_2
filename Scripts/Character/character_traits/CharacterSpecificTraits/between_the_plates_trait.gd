@@ -15,7 +15,7 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_trait_texture = load(
 			"res://Assets/Champ_Collector/Icons/Abilities/Passives/Between_The_Plates_Trait/between_the_plates_trait.png")
 	_title = "Between the Plates"
-	_body = ("Every attack ignores " + str(int(_ignore_rate * 100))
+	_body = ("Every attack ignores " + str(roundi(_ignore_rate * 100))
 			+ "% of the target's Defence.")
 
 func GetBaseDefenceIgnoreRate(_p_owner_ID: int) -> float:

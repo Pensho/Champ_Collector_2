@@ -55,7 +55,7 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_steel_description = StackDescription.new()
 	_steel_description._title = "Steel Stack"
 	_steel_description._body = ("On a Steel-only Corsair's Reckoning, adds +" +
-			str(int(round(100.0 * _damage_per_steel_stack))) + "% damage per Steel stack.")
+			str(roundi(100.0 * _damage_per_steel_stack)) + "% damage per Steel stack.")
 
 	_sea_description = StackDescription.new()
 	_sea_description._title = "Sea Stack"

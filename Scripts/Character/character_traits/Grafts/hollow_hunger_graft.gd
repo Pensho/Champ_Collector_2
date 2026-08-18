@@ -13,7 +13,7 @@ func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
 	_lifesteal_fraction = LIFESTEAL_FRACTION_PER_RARITY.get(p_rarity, 0.0)
 	_title = "Hollow Hunger"
-	_body = ("Heals for " + str(int(_lifesteal_fraction * 100))
+	_body = ("Heals for " + str(roundi(_lifesteal_fraction * 100))
 			+ "% of the damage it deals. Losing 15% max Health.")
 	_execution_steps[Types.Combat_Event.Damage_Dealt] = Callable(self, "OnDamageDealt")
 

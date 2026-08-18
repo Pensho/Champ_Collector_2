@@ -16,8 +16,8 @@ func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
 	_bonus_per_ally = RESISTANCE_DEFENCE_BONUS_PER_ALLY.get(p_rarity, 0.0)
 	_title = "Strength in Numbers"
-	_body = ("Gains " + str(int(_bonus_per_ally * 100)) + "% Resistance and Defense for each other"
-			+ " living ally, up to two. While alone, loses " + str(int(-NO_ALLY_PENALTY * 100))
+	_body = ("Gains " + str(roundi(_bonus_per_ally * 100)) + "% Resistance and Defense for each other"
+			+ " living ally, up to two. While alone, loses " + str(roundi(-NO_ALLY_PENALTY * 100))
 			+ "% Resistance instead.")
 	_execution_steps[Types.Combat_Event.Start_Combat] = Callable(self, "StartOfBattle")
 	_execution_steps[Types.Combat_Event.Start_Turn] = Callable(self, "StartOfTurn")

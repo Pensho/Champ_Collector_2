@@ -20,9 +20,9 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_drain = TURN_BAR_DRAIN_PER_RARITY.get(p_rarity, 0.0)
 	_title = "Gravitic Rot"
 	_body = ("At the start of its turn, every enemy within "
-			+ str(int(REAR_PROXIMITY * 100)) + "% behind on the turn bar loses "
-			+ str(int(_drain * 100)) + "% turn bar. Losing "
-			+ str(int(-SPEED_DRAWBACK * 100)) + "% Speed.")
+			+ str(roundi(REAR_PROXIMITY * 100)) + "% behind on the turn bar loses "
+			+ str(roundi(_drain * 100)) + "% turn bar. Losing "
+			+ str(roundi(-SPEED_DRAWBACK * 100)) + "% Speed.")
 	_execution_steps[Types.Combat_Event.Start_Turn] = Callable(self, "StartOfTurn")
 
 func StartOfTurn(p_owner_ID: int, p_resolver: BattleResolver) -> void:

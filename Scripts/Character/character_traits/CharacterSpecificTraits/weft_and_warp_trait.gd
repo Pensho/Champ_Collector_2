@@ -43,7 +43,7 @@ func Init(p_rarity: Types.Rarity) -> void:
 			"Silver: The owners debuffs cannot be resisted and last 1 turn longer.\n" +
 			"Black: the cascade instance this owners action produces resolves one " +
 			"additional time. Cascade instances the owner produces deal +%d%% damage." %
-			int(round(100.0 * _self_bonus)))
+			roundi(100.0 * _self_bonus))
 	_execution_steps[Types.Combat_Event.Start_Combat] = Callable(self, "StartOfBattle")
 	_execution_steps[Types.Combat_Event.Skill_Cast] = Callable(self, "OnSkillCast")
 	_execution_steps[Types.Combat_Event.Cascade_Instance_Resolved] = Callable(self, "OnCascadeInstanceResolved")

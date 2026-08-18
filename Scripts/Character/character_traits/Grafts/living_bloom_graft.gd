@@ -16,7 +16,7 @@ var _bloom_zone_ID: int = -1
 func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
 	_title = "Living Bloom"
-	_body = ("Gains " + str(int(KNOWLEDGE_BONUS_PER_RARITY.get(p_rarity, 0.0) * 100)) + "% Knowledge."
+	_body = ("Gains " + str(roundi(KNOWLEDGE_BONUS_PER_RARITY.get(p_rarity, 0.0) * 100)) + "% Knowledge."
 			+ "\nAt the start of combat, plants a Spore Bloom with " + str(MAX_CHARGES)
 			+ " charges that regenerates allies standing in it and blights enemies."
 			+ "\nThe Bloom regains " + str(CHARGE_PER_TURN) + " charge at the start of each of its turns.")
