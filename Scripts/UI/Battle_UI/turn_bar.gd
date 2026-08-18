@@ -295,4 +295,3 @@ func GetSectionIndex(p_character_ID: int) -> int:
 	var center_x: float = marker.position.x + marker.size.x * 0.5
 	var section_width: float = self.size.x / Game_Balance.NUMBER_OF_TURN_BAR_ZONES
 	return clampi(int(center_x / section_width), 0, Game_Balance.NUMBER_OF_TURN_BAR_ZONES - 1)
-
