@@ -7,7 +7,11 @@ the allocation and the in-flight synergy ledger before that promotion.
 **Status:** channel identity allocation, contribution direction, and pairing web settled; all four
 batches designed and all 20 Roles settled — 19 with a section 9 entry, the Tactician kept unchanged
 in section 7's table. **All 20 implemented**: 17 kits changed, and the Tactician, Symbiote (§9.17)
-and Bar Brawler (§9.18) settled as kept, owing no code.
+and Bar Brawler (§9.18) settled as kept, owing no code. **`Plan_Role_Kit_Rework.md`'s final sweep**
+(`Tests/manual/team_corpus_sweep.gd`): combined-modifier-product median 1.95x, 90th percentile
+4.68x, ceiling 16.24x; contrast-ratio ceiling 21.12x; top decile (114 teams) across **10 distinct
+pairings**, meeting section 4's roster-shape target. This document remains the living record; the
+plan itself is retained only for review before deletion.
 
 ## 1. The per-Role kit contract
 
@@ -461,7 +465,7 @@ build time rather than a second discount on the payoff.
 `Cut_the_Cloth.tres` (new), `Herald_of_the_loom.tres` (rewired), `Thread_Switch_Button.tscn` (shares
 the Symbiote graft button's slot — the two are mutually exclusive by whose turn it is). A debuff
 tick still doesn't post to `CascadeResolver` at all, so Golden Thread does not see one; tracked as a
-gap in `FeatureIdeas.md`.
+gap in `Plan_System_Buildout.md`.
 
 ### 9.3 Sorcerer — Echo charges and the Surge that feeds them
 
@@ -908,8 +912,9 @@ cast leaves the buff untouched for a later damaging one, matching Daunting Stren
 `DamageMultiplier` one-shot survival rule (`duration < 0` rather than `<= 0`) widened to cover
 Borrowed Time too, or the start-of-cast duration decrement kills it before its own cast's cascade
 gets a chance to consume it. `kit_contribution_manifest.gd`'s Time Tithe entry records Borrowed Time
-as an exported `separate_instance` `gated_bonus`, reclassified to `Channel3_Cascade`; the scorer does
-not read it (§11).
+as an exported `separate_instance` `gated_bonus`, reclassified to `Channel3_Cascade`; the scorer
+reads it via `_ExternalGatedContrastRatios` (§11), reaching every non-Chronophage candidate on the
+team.
 
 **Judgment calls made while settling, listed so they can be overruled:** the buff does not stack,
 so a champion boosted twice before acting still echoes once — the alone-clause already limits
@@ -1295,10 +1300,6 @@ applied alongside the Scholar reads its own 41%, not the .tres's flat 30%. Vigor
 too and `_MaxHealth` reads the `&"attribute_amplification"` rider directly off the buff — Health is
 inside Field of Study's own declared scope (the six primary attributes plus Speed and Health) and was
 missed in the first implementation pass.
-
-**Open decision, unchanged:** `Concept_Document.md` 3.2.4.2 promises Refutation deals damage per
-remaining charge on an enemy-placed zone; `Refutation.tres` carries no damage parameters. Left
-unresolved, as this kit's own settle already declined to take a position on it.
 
 **Judgment calls made while settling, listed so they can be overruled:** the rider applies Suppress
 at the status's own magnitude, with duration carrying all of the restraint; the passive's scope is
@@ -1711,8 +1712,11 @@ did not exist. What the manifest carries now:
   debuff the tick rides on), approximated against Outbreak's own scaled aggregate since this
   scorer has no separate DoT-scaling model — `bucket_key` stays empty, matching the field's
   existing convention that a mechanism which never reaches a `CombinedDamageModifier` bucket
-  claims no key. Miasma's own forced retick still carries no independent score: it has no
-  `DamageEffect` of its own, top-level or zone-trigger, to attach a `gated_bonus` to.
+  claims no key. Miasma's own forced retick remains unscored: it has no `DamageEffect` of its
+  own, top-level or zone-trigger, so it never becomes a candidate at all — and even a
+  passive-scoped external `gated_bonus` (the shape added for the Chronophage's Time Tithe below)
+  would still need a defensible magnitude for a retick this scorer has no battle state to size,
+  so it stays undeclared rather than guessed.
 
 **Closed implementing §9.14.** A new `attribute_amplification` manifest field
 (`kit_contribution_manifest.gd`) and `_AttributeAmplification` (highest-wins across the team, mirroring
@@ -1721,23 +1725,18 @@ Scholar's own percentage points onto any "percentage"-kind grant before it lands
 confirmed against the real manifest (Tactician's Plan ahead: 0.3 becomes 0.41 with the Scholar
 present). The sweep's recorded distribution is unchanged by this (median 1.95x, 90th percentile
 4.68x, ceiling 16.24x, 114 top-decile teams across 10 pairings) for a structural reason rather than a
-wiring gap: `_ScaledAggregate` divides the burst skill's aggregate by the basic skill's own, and every
-kit in the roster scales its basic and its burst off the same attribute, so a uniform percentage-point
-amplification cancels in the ratio exactly the way Tactician's own Empower grant already does (noted
-in this plan's Context section). The amplification still inflates both aggregates in absolute terms —
-real burst damage rises — just not the contrast-ratio metric this scorer reports.
+wiring gap: `_ScaledAggregate` divides the burst skill's aggregate by the basic skill's own, and 19 of
+the roster's 20 kits scale their basic and their burst off the same attribute, so a uniform
+percentage-point amplification cancels in the ratio exactly the way Tactician's own Empower grant
+already does (noted in this plan's Context section). The amplification still inflates both aggregates
+in absolute terms — real burst damage rises — just not the contrast-ratio metric this scorer reports.
+The Jester is the one exception (Pratfall Sting scales Accuracy, Burning Bolas scales Attack); whether
+its damage skill and basic should share an attribute is an open design question, not a code change.
 
-**Open gap, found while settling §9.5.** The scorer has no notion of a candidate's own state
-changing mid-team-score, so Full Appraisal's reciprocal loss (Consigned zeroing the Appraiser's own
-crit attributes while lent out) is not modeled — the Appraiser's own candidate scores as though it
-kept them.
-
-**Open gap, found implementing §9.9.** The scorer cannot represent an instance count granted to
-another champion. `_ContributeGatedTeamBonuses` requires a `same_instance` fold, and
-`_MultiInstanceContrastRatio` only ever reads the candidate's own skill entry — so Time Tithe's
-`separate_instance` + `reach: "team"` `gated_bonus` is declared in the manifest but structurally
-invisible to the sweep, and Chronophage teams score exactly as before implementation (confirmed:
-median 1.95x, 90th percentile 4.68x, ceiling 16.24x, 8 distinct top-decile pairings, all unchanged).
+**Verified while settling §9.5.** Full Appraisal's reciprocal loss (Consigned zeroing the
+Appraiser's own crit attributes while lent out) is not modeled, but cannot move the metric either
+way: it scales the Appraiser's own numerator and denominator alike, the same cancellation
+`test_burst_reachability_crit.gd`'s crit test already pins.
 
 **Closed while settling §9.4.** `granted_status` gained a `"reach": "team"` option
 (`BurstReachability._ContributeGrantedStatuses`), for a status that sits on the enemy target itself

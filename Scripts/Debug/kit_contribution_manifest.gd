@@ -73,8 +73,14 @@ class_name KitContributionManifest extends RefCounted
 ##                        combo rather than being invisible to that ranking.
 ##                    `reach` ("team" reaches every candidate on the roster the way
 ##                    Ally_Reagent_Consumed's own broadcast does; absent/anything else means
-##                    "only this entry's own skill/caster") only applies to same_instance
-##                    entries. `gate` (StringName) names the precondition axis itself —
+##                    "only this entry's own skill/caster") applies to every fold: a
+##                    same_instance entry with team reach is read by burst_reachability.gd's
+##                    _ContributeGatedTeamBonuses (the Alchemist's Volatile Mixture); a
+##                    separate_instance/sustained_ticks PASSIVE entry with team reach is read
+##                    by _ExternalGatedContrastRatios instead — every candidate but the
+##                    granter's own gains the granter's repeat/sustained payload (the
+##                    Chronophage's Time Tithe granting Borrowed Time to an ally). `gate`
+##                    (StringName) names the precondition axis itself —
 ##                    &"reagent_consumed", &"debuff_count", &"zone_charges_consumed", etc. —
 ##                    surfaced verbatim on CandidateResult.assumed_gates. `instances` (int,
 ##                    default 1) and `instance_compounding` (float, default 1.0, flat) apply
@@ -124,6 +130,12 @@ class_name KitContributionManifest extends RefCounted
 ##                    _ContributeDefenceReduction, applied to the UNSHREDDED Defence reference
 ##                    before any defence_ignore subtraction — the reason the Thief's ignore and
 ##                    the Architect's shred compound (route G) instead of one eating the other.
+##   bucket_applies - optional, passive entries only. Gates the passive's OWN bucket_key
+##                    contribution to a specific cast shape — absent means every cast. Read by
+##                    burst_reachability.gd's _PassiveBucketApplies as {"kind": "non_basic_cast"}
+##                    (Chosen Vessel) or {"kind": "skill_index", "skill_index": N} (Calibration,
+##                    Wrangle the Sea). Does not gate defence_ignore or the passive's own
+##                    gated_bonus — those are per-attack hooks that apply on every cast.
 ##   attribute_amplification - optional, passive entries only. `{magnitude, reach}`, extra
 ##                    percentage points added to every granted_attribute_buff a teammate
 ##                    contributes (the Scholar's Field of Study). `reach` is always "team" — read
@@ -263,11 +275,11 @@ const MANIFEST: Dictionary = {
 							"ceiling +90% at Legendary (0.18 * 5 sections) — carried entirely by " +
 							"gated_bonus below so the two don't double-count the same bucket.",
 					"citation": "Rending_Charge.tres:6-21; lancer_trait.gd:16-58",
-					"gated_bonus": {"bucket_key": "Rending Charge", "magnitude": 0.45,
+					"gated_bonus": {"bucket_key": "Rending Charge", "magnitude": 0.54,
 							"class": Contribution_Class.Channel2,
 							"gate": &"charge_distance",
 							"precondition": "Scorer has no positional model — assumes a 3-section span " +
-									"(Centaur_Lancer.tres fields Epic rarity: 3 * 0.15).",
+									"at Legendary rarity (3 * 0.18).",
 							"citation": "lancer_trait.gd:16-58; Rending_Charge.tres:6-21"}},
 		],
 	},
@@ -640,6 +652,7 @@ const MANIFEST: Dictionary = {
 			{"name": "Chosen Vessel", "bucket_key": CombinedDamageModifier.TRAIT_RESOURCE_KEY,
 					"magnitude": 0.3, "stack_cap": 0,
 					"class": Contribution_Class.Channel2,
+					"bucket_applies": {"kind": "non_basic_cast"},
 					"precondition": "TRAP (shared bucket): on any non-basic (cooldown > 0) Skill_Cast " +
 							"with a living Vessel, drains 5% of the Vessel's max Health and sets " +
 							"_damage_multiplier=1.30 (Legendary) — lands in the SHARED trait_resource " +
@@ -830,16 +843,13 @@ const MANIFEST: Dictionary = {
 							"when the Chronophage moves an ally forward and no other ally (the " +
 							"Chronophage included) shares that ally's turn-bar section, the ally " +
 							"gains Borrowed Time — its next damaging skill resolves once more at " +
-							"60% strength (Legendary). The scorer cannot represent an instance count " +
-							"granted to another champion (Role_Kit_Design.md §11): " +
-							"_ContributeGatedTeamBonuses requires a same_instance fold and " +
-							"_MultiInstanceContrastRatio only reads the candidate's own skill entry, " +
-							"so this gated_bonus is declared for the record and is not read by " +
-							"burst_reachability.gd.",
+							"60% strength (Legendary). Read by burst_reachability.gd's " +
+							"_ExternalGatedContrastRatios: every non-Chronophage candidate on the team " +
+							"gains this repeat, since the granter cannot grant itself the instance.",
 					"gated_bonus": {"bucket_key": "", "magnitude": -0.40,
 							"class": Contribution_Class.Channel3_Cascade, "fold": "separate_instance",
 							"reach": "team", "instances": 1, "gate": &"ally_boosted_alone_in_section",
-							"precondition": "Not read by the scorer; see precondition above."},
+							"precondition": "See the passive's own precondition above."},
 					"citation": "time_tithe_trait.gd:23-63"},
 		],
 		"skills": [
@@ -864,6 +874,7 @@ const MANIFEST: Dictionary = {
 			{"name": "Calibration", "bucket_key": CombinedDamageModifier.TRAIT_RESOURCE_KEY,
 					"magnitude": 0.84, "stack_cap": 12,
 					"class": Contribution_Class.Channel2,
+					"bucket_applies": {"kind": "skill_index", "skill_index": 2},
 					"precondition": "+1 charge per Cornerstone cast or Zone_Used event, capped at 12. " +
 							"Final Calculation consumes all charges into the shared trait_resource bucket " +
 							"at 0.07/charge (Legendary), up to +84% at 12 charges; >=5 charges also " +
@@ -907,6 +918,7 @@ const MANIFEST: Dictionary = {
 			{"name": "Wrangle the Sea", "bucket_key": CombinedDamageModifier.TRAIT_RESOURCE_KEY,
 					"magnitude": 1.8, "stack_cap": 3,
 					"class": Contribution_Class.Channel2,
+					"bucket_applies": {"kind": "skill_index", "skill_index": 2},
 					"precondition": "3 stack slots, filled left-to-right on the matching cast. " +
 							"Corsairs Reckoning consumes all 3 and dispatches by composition: a Steel-only " +
 							"hand (Broadside) adds 0.60 (Legendary) per Steel to the shared trait_resource " +

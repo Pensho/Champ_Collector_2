@@ -119,7 +119,9 @@ class_name BurstReachability extends RefCounted
 ##     "separate_instance" and "sustained_ticks" entries may also declare "instances" (default
 ##     1) and "instance_compounding" (default 1.0, flat): each of the declared instances
 ##     contributes (1.0 + magnitude) * instance_compounding^i, i 0-based — see
-##     _MultiInstanceContrastRatio.
+##     _MultiInstanceContrastRatio. A "separate_instance"/"sustained_ticks" entry on a PASSIVE
+##     with "reach": "team" (the Chronophage's Time Tithe granting Borrowed Time to an ally)
+##     reaches every candidate but the granter's own, via _ExternalGatedContrastRatios.
 ##   - A skill's damage may live inside a ZoneEffect.on_trigger instead of a top-level
 ##     DamageEffect (Miasma has none either way; Unstable Rift's enemy-facing hit does). Such a
 ##     skill is still enumerated as a candidate, scored off its enemy-facing on_trigger
@@ -282,6 +284,14 @@ static func ScoreTeam(
 	for i in p_presets.size():
 		var character: Character = Character.new()
 		character.InstantiateNew(p_presets[i], i)
+		# The manifest's magnitudes are stated at Legendary rarity (its own header). A Role can
+		# be fielded by presets of different rarities (the Lancer's Centaur_Lancer.tres is Epic,
+		# Knight.tres is Uncommon), so "the preset's own rarity" is not even well-defined for a
+		# Role — pin every candidate to Legendary instead, re-Init'ing the trait since
+		# InstantiateNew already Init'd it at the preset's own rarity.
+		character._rarity = Types.Rarity.Legendary
+		if(null != character._trait):
+			character._trait.Init(Types.Rarity.Legendary)
 		characters.append(character)
 
 	var result: TeamResult = TeamResult.new()
@@ -356,14 +366,22 @@ static func _EffectsForAggregate(p_skill: Skill) -> Array[DamageEffect]:
 	return top_level if not top_level.is_empty() else _ZoneTriggerEnemyDamageEffects(p_skill)
 
 
+## p_attribute_points (a grant's flat "percentage_point"/"source_attribute" add, see
+## kit_contribution_manifest.gd's granted_attribute_buff field docs) is added to the
+## attribute's own base value before the fractional bonus multiplies it — no manifest entry
+## currently grants a point on a damage_scaling attribute (every points entry targets
+## CritChance/CritDamage, which no damage_scaling names), so this is inert today; wired so a
+## future point grant on a scaling attribute is not silently dropped.
 static func _ScaledAggregate(
-		p_skill: Skill, p_character: Character, p_attribute_bonus: Dictionary = {}) -> float:
+		p_skill: Skill, p_character: Character, p_attribute_bonus: Dictionary = {},
+		p_attribute_points: Dictionary = {}) -> float:
 	var total: float = 0.0
 	for damage_effect in _EffectsForAggregate(p_skill):
 		for attribute: Types.Attribute in damage_effect.damage_scaling.keys():
 			var bonus: float = p_attribute_bonus.get(attribute, 0.0)
+			var point: float = p_attribute_points.get(attribute, 0.0)
 			total += (damage_effect.damage_scaling[attribute]
-					* float(p_character._attributes[attribute]) * (1.0 + bonus))
+					* (float(p_character._attributes[attribute]) + point) * (1.0 + bonus))
 	return total
 
 
@@ -371,17 +389,20 @@ static func _ScaledAggregate(
 ## allow_critical == true (damage_effect.gd:17) — the share of a candidate's aggregate a
 ## critical hit actually multiplies. Every current .tres DamageEffect defaults allow_critical
 ## true, but a skill mixing crit-eligible and crit-ineligible payloads in one cast (or a future
-## non-critting effect) must not be scored as if the whole aggregate could crit.
+## non-critting effect) must not be scored as if the whole aggregate could crit. See
+## _ScaledAggregate's own docs for p_attribute_points.
 static func _CritEligibleAggregate(
-		p_skill: Skill, p_character: Character, p_attribute_bonus: Dictionary = {}) -> float:
+		p_skill: Skill, p_character: Character, p_attribute_bonus: Dictionary = {},
+		p_attribute_points: Dictionary = {}) -> float:
 	var total: float = 0.0
 	for damage_effect in _EffectsForAggregate(p_skill):
 		if(not damage_effect.allow_critical):
 			continue
 		for attribute: Types.Attribute in damage_effect.damage_scaling.keys():
 			var bonus: float = p_attribute_bonus.get(attribute, 0.0)
+			var point: float = p_attribute_points.get(attribute, 0.0)
 			total += (damage_effect.damage_scaling[attribute]
-					* float(p_character._attributes[attribute]) * (1.0 + bonus))
+					* (float(p_character._attributes[attribute]) + point) * (1.0 + bonus))
 	return total
 
 
@@ -460,33 +481,30 @@ static func _ContributeGatedTeamBonuses(
 	var gates: Array[StringName] = []
 	for character in p_characters:
 		var role_entry: Dictionary = p_manifest.get(character._role, {})
-		var passive_entries: Array = role_entry.get("passive", [])
-		if(passive_entries.is_empty()):
-			continue
-		var bonus: Dictionary = passive_entries[0].get("gated_bonus", {})
-		if(bonus.is_empty() or not _IsSameInstanceFold(bonus) or "team" != bonus.get("reach", "")):
+		for passive_entry: Dictionary in role_entry.get("passive", []):
+			var bonus: Dictionary = passive_entry.get("gated_bonus", {})
+			if(bonus.is_empty() or not _IsSameInstanceFold(bonus) or "team" != bonus.get("reach", "")):
+				continue
+			_Contribute(p_buckets, StringName(String(bonus.get("bucket_key", ""))), _MagnitudeFor(bonus))
+			gates.append(StringName(String(bonus.get("gate", ""))))
+	return gates
+
+
+## Self-reach gated_bonus on the candidate's OWN passive entries (Chosen Vessel's Devotion): a
+## permanent per-Vessel-death factor in its own bucket, distinct from the passive's own
+## bucket_key so the two multiply rather than share a bucket. Returns the gate name of every
+## contribution made, mirroring _ContributeGatedTeamBonuses's return shape.
+static func _ContributeGatedCasterPassiveBonus(
+		p_caster: Character, p_buckets: Dictionary, p_manifest: Dictionary) -> Array[StringName]:
+	var gates: Array[StringName] = []
+	var role_entry: Dictionary = p_manifest.get(p_caster._role, {})
+	for passive_entry: Dictionary in role_entry.get("passive", []):
+		var bonus: Dictionary = passive_entry.get("gated_bonus", {})
+		if(bonus.is_empty() or not _IsSameInstanceFold(bonus) or "self" != bonus.get("reach", "")):
 			continue
 		_Contribute(p_buckets, StringName(String(bonus.get("bucket_key", ""))), _MagnitudeFor(bonus))
 		gates.append(StringName(String(bonus.get("gate", ""))))
 	return gates
-
-
-## Self-reach gated_bonus on the candidate's OWN passive entry (Chosen Vessel's Devotion): a
-## permanent per-Vessel-death factor in its own bucket, distinct from the passive's own
-## bucket_key so the two multiply rather than share a bucket. Returns the gate name if a
-## contribution was made, or &"" if none was, mirroring _ContributeGatedSkillBonus's return
-## shape.
-static func _ContributeGatedCasterPassiveBonus(
-		p_caster: Character, p_buckets: Dictionary, p_manifest: Dictionary) -> StringName:
-	var role_entry: Dictionary = p_manifest.get(p_caster._role, {})
-	var passive_entries: Array = role_entry.get("passive", [])
-	if(passive_entries.is_empty()):
-		return &""
-	var bonus: Dictionary = passive_entries[0].get("gated_bonus", {})
-	if(bonus.is_empty() or not _IsSameInstanceFold(bonus) or "self" != bonus.get("reach", "")):
-		return &""
-	_Contribute(p_buckets, StringName(String(bonus.get("bucket_key", ""))), _MagnitudeFor(bonus))
-	return StringName(String(bonus.get("gate", "")))
 
 
 ## Shared curve-walk for a "separate_instance" or "sustained_ticks" gated_bonus: each of the
@@ -539,24 +557,60 @@ static func _GatedContrastRatios(
 	return [0.0, ratio]
 
 
-## True if p_role's passive contribution actually applies when p_skill_index is the skill
-## being cast — most Channel-2 passives in the manifest apply on any of their owner's
-## casts, but three are gated to one specific trigger, per their own precondition text.
-static func _PassiveApplies(p_role: Types.Role, p_skill: Skill, p_skill_index: int) -> bool:
-	match p_role:
-		# Chosen Vessel: "on any non-basic (cooldown > 0) Skill_Cast" (chosen_vessel_trait.gd:3-11).
-		Types.Role.Cultist:
+## External gated_bonus entries reaching a candidate from a TEAMMATE's own passive (the
+## Chronophage's Time Tithe granting Borrowed Time to an ally) — the counterpart to
+## _GatedContrastRatios, which only reads the candidate's own skill entry. Walks every
+## character but the candidate's own caster (a granter cannot grant itself the instance),
+## taking each granter's passive gated_bonus where the fold is not same_instance and
+## reach == "team". The existing _MultiInstanceContrastRatio already splits own_bucket_factor
+## (supplied by the CANDIDATE's own skill entry — Borrowed Time re-resolves the ally's whole
+## skill, buckets included) from the granter's own magnitude/instances/compounding, so no new
+## curve-walk is needed, only routing an external bonus through it. Sums across granters per
+## fold and collects every granter's own gate, matching _GatedContrastRatios' two-slot shape.
+static func _ExternalGatedContrastRatios(
+		p_characters: Array[Character], p_caster_index: int, p_skill_entry: Dictionary,
+		p_skill_aggregate: float, p_defence: float, p_baseline_damage: float, p_crit_factor: float,
+		p_manifest: Dictionary) -> Dictionary:
+	var repeat_ratio: float = 0.0
+	var sustained_ratio: float = 0.0
+	var gates: Array[StringName] = []
+	for granter_index in p_characters.size():
+		if(granter_index == p_caster_index):
+			continue
+		var granter: Character = p_characters[granter_index]
+		var role_entry: Dictionary = p_manifest.get(granter._role, {})
+		for passive_entry: Dictionary in role_entry.get("passive", []):
+			var bonus: Dictionary = passive_entry.get("gated_bonus", {})
+			if(bonus.is_empty() or _IsSameInstanceFold(bonus) or "team" != bonus.get("reach", "")):
+				continue
+			var ratio: float = _MultiInstanceContrastRatio(
+					p_skill_entry, bonus, p_skill_aggregate, p_defence, p_baseline_damage, p_crit_factor)
+			if("separate_instance" == bonus.get("fold", "same_instance")):
+				repeat_ratio += ratio
+			else:
+				sustained_ratio += ratio
+			gates.append(StringName(String(bonus.get("gate", ""))))
+	return {"repeat": repeat_ratio, "sustained": sustained_ratio, "gates": gates}
+
+
+## True if p_passive_entry's own bucket contribution applies when p_skill_index is the skill
+## being cast, per its "bucket_applies" field (absent means every cast — most Channel-2
+## passives in the manifest apply on any of their owner's casts, but three are gated to one
+## specific trigger). Gates only the passive's bucket contribution — defence_ignore and a
+## passive's own gated_bonus are per-attack hooks that apply on every cast regardless (see
+## chosen_vessel_trait.gd's GetOutgoingDamageBonus).
+static func _PassiveBucketApplies(p_passive_entry: Dictionary, p_skill: Skill, p_skill_index: int) -> bool:
+	var applies: Dictionary = p_passive_entry.get("bucket_applies", {})
+	if(applies.is_empty()):
+		return true
+	match String(applies.get("kind", "")):
+		"non_basic_cast":
 			return p_skill.cooldown > 0
-		# Calibration: "Final Calculation consumes all charges" (calibration_trait.gd:67-75) —
-		# skills[2] in the manifest's own Architect entry.
-		Types.Role.Architect:
-			return 2 == p_skill_index
-		# Wrangle the Sea: "Corsairs Reckoning consumes all 3" (tidal_corsair_trait.gd:79-105) —
-		# skills[2] in the manifest's own Tidal_Corsair entry.
-		Types.Role.Tidal_Corsair:
-			return 2 == p_skill_index
+		"skill_index":
+			return int(applies.get("skill_index", -1)) == p_skill_index
 		_:
-			return true
+			push_error("Unrecognised bucket_applies kind: %s" % applies.get("kind"))
+			return false
 
 
 ## The caster's expected crit factor against p_boss_knowledge — mirrors
@@ -620,24 +674,25 @@ static func _AttributeAmplification(p_characters: Array[Character], p_manifest: 
 ## 0.0), must not be scored as if the whole aggregate rolled the caster's crit factor.
 static func _EffectiveCritFactor(
 		p_skill: Skill, p_character: Character, p_attribute_bonus: Dictionary, p_total_aggregate: float,
-		p_crit_factor: float) -> float:
+		p_crit_factor: float, p_attribute_points: Dictionary = {}) -> float:
 	if(0.0 == p_total_aggregate):
 		return 1.0
-	var eligible_share: float = _CritEligibleAggregate(p_skill, p_character, p_attribute_bonus) / p_total_aggregate
+	var eligible_share: float = (
+			_CritEligibleAggregate(p_skill, p_character, p_attribute_bonus, p_attribute_points)
+			/ p_total_aggregate)
 	return 1.0 + eligible_share * (p_crit_factor - 1.0)
 
 
 ## Base-referenced Defence-ignore points a candidate's caster carries against p_defence: its
-## own declared passive rate (Between the Plates, Role_Kit_Design.md section 9.12) times the
-## given skill's own declared multiple. p_defence here is always the scorer's fixed,
-## debuff-free boss constant, never a shredded value — see _EffectiveDefenceForCandidate for
-## why the two references stay separate.
+## own declared passive rate (Between the Plates, Role_Kit_Design.md section 9.12), summed
+## across every passive row, times the given skill's own declared multiple. p_defence here is
+## always the scorer's fixed, debuff-free boss constant, never a shredded value — see
+## _EffectiveDefenceForCandidate for why the two references stay separate.
 static func _DefenceIgnorePoints(
 		p_caster_role_entry: Dictionary, p_skill_entry: Dictionary, p_defence: float) -> float:
-	var passive_entries: Array = p_caster_role_entry.get("passive", [])
-	if(passive_entries.is_empty()):
-		return 0.0
-	var rate: float = float(passive_entries[0].get("defence_ignore", {}).get("rate", 0.0))
+	var rate: float = 0.0
+	for passive_entry: Dictionary in p_caster_role_entry.get("passive", []):
+		rate += float(passive_entry.get("defence_ignore", {}).get("rate", 0.0))
 	if(0.0 == rate):
 		return 0.0
 	var multiple: float = float(p_skill_entry.get("defence_ignore", {}).get("multiple", 0.0))
@@ -689,17 +744,15 @@ static func _ScoreCandidate(
 	var attribute_bonus: Dictionary = _ContributeGrantedAttributeBuffs(p_characters, p_caster_index, p_manifest)
 	var fractions: Dictionary = attribute_bonus.get("fractions", {})
 	var points: Dictionary = attribute_bonus.get("points", {})
-	var basic_aggregate: float = _ScaledAggregate(basic_skill, caster, fractions)
+	var basic_aggregate: float = _ScaledAggregate(basic_skill, caster, fractions, points)
 	if(0.0 == basic_aggregate):
 		return null
-	var skill_aggregate: float = _ScaledAggregate(p_skill, caster, fractions)
+	var skill_aggregate: float = _ScaledAggregate(p_skill, caster, fractions, points)
 
 	var buckets: Dictionary = {}
 	var caster_role_entry: Dictionary = p_manifest.get(caster._role, {})
-	var caster_passive_entries: Array = caster_role_entry.get("passive", [])
-	if(not caster_passive_entries.is_empty()):
-		var passive_entry: Dictionary = caster_passive_entries[0]
-		if(_PassiveApplies(caster._role, p_skill, p_skill_index)):
+	for passive_entry: Dictionary in caster_role_entry.get("passive", []):
+		if(_PassiveBucketApplies(passive_entry, p_skill, p_skill_index)):
 			_Contribute(buckets, StringName(String(passive_entry.get("bucket_key", ""))),
 					_MagnitudeFor(passive_entry))
 	if(Manifest.Contribution_Class.Channel2 == p_skill_entry.get("class") \
@@ -711,9 +764,9 @@ static func _ScoreCandidate(
 	var skill_gate: StringName = _ContributeGatedSkillBonus(buckets, p_skill_entry)
 	if(&"" != skill_gate):
 		assumed_gates.append(skill_gate)
-	var caster_passive_gate: StringName = _ContributeGatedCasterPassiveBonus(caster, buckets, p_manifest)
-	if(&"" != caster_passive_gate):
-		assumed_gates.append(caster_passive_gate)
+	for gate: StringName in _ContributeGatedCasterPassiveBonus(caster, buckets, p_manifest):
+		if(&"" != gate):
+			assumed_gates.append(gate)
 	for gate: StringName in _ContributeGatedTeamBonuses(p_characters, buckets, p_manifest):
 		if(&"" != gate):
 			assumed_gates.append(gate)
@@ -735,9 +788,9 @@ static func _ScoreCandidate(
 	var overflow_rate: float = _CritChanceOverflowRate(p_characters, p_manifest)
 	var crit: Dictionary = _CritFactor(caster, fractions, points, boss_knowledge, overflow_rate)
 	var baseline_crit_factor: float = _EffectiveCritFactor(
-			basic_skill, caster, fractions, basic_aggregate, crit.get("factor"))
+			basic_skill, caster, fractions, basic_aggregate, crit.get("factor"), points)
 	var burst_crit_factor: float = _EffectiveCritFactor(
-			p_skill, caster, fractions, skill_aggregate, crit.get("factor"))
+			p_skill, caster, fractions, skill_aggregate, crit.get("factor"), points)
 
 	var caster_skill_entries: Array = caster_role_entry.get("skills", [])
 	var basic_skill_index: int = caster._skills.find(basic_skill)
@@ -769,6 +822,14 @@ static func _ScoreCandidate(
 	var sustained_contrast_ratio: float = gated_ratios[1]
 	if(0.0 != repeat_contrast_ratio or 0.0 != sustained_contrast_ratio):
 		var gate: StringName = StringName(String(p_skill_entry.get("gated_bonus", {}).get("gate", "")))
+		if(&"" != gate):
+			assumed_gates.append(gate)
+	var external_ratios: Dictionary = _ExternalGatedContrastRatios(
+			p_characters, p_caster_index, p_skill_entry, skill_aggregate, burst_defence, baseline_damage,
+			burst_crit_factor, p_manifest)
+	repeat_contrast_ratio += float(external_ratios.get("repeat", 0.0))
+	sustained_contrast_ratio += float(external_ratios.get("sustained", 0.0))
+	for gate: StringName in external_ratios.get("gates", []):
 		if(&"" != gate):
 			assumed_gates.append(gate)
 
@@ -813,15 +874,43 @@ static func _MagnitudeFor(p_entry: Dictionary) -> float:
 
 ## The granting SkillEffect's own target group, or the skill's own target when the effect
 ## defers to it (Skill_Default) — the same fallback SkillCastContext.TargetsFor uses at
-## runtime. The first ApplyBuffEffect on the skill is the granting effect for all three
-## manifest entries that carry a granted_status today; a skill with more than one ApplyBuffEffect
-## would need a more specific selector than "first" here.
-static func _GrantingEffectTarget(p_skill: Skill) -> Types.Skill_Target:
+## runtime. p_buff_type (optional) selects among several ApplyBuffEffects on the same skill
+## by their own buff_type — required when a grant dict needs a specific one of them (a skill
+## carrying more than one ApplyBuffEffect). Omitted, the first ApplyBuffEffect is the granting
+## effect, and every other ApplyBuffEffect on the skill must resolve to the same target group
+## or this is ambiguous (push_error) — true today for all three multi-effect skills
+## (Full_Appraisal.tres, Brace_for_Impact.tres, Center_Stage.tres).
+static func _GrantingEffectTarget(p_skill: Skill, p_buff_type: Variant = null) -> Types.Skill_Target:
+	var buff_effects: Array[ApplyBuffEffect] = []
 	for effect in p_skill.effects:
 		if(effect is ApplyBuffEffect):
-			var buff_effect: ApplyBuffEffect = effect
-			return p_skill.target if Types.Skill_Target.Skill_Default == buff_effect.target else buff_effect.target
-	return p_skill.target
+			buff_effects.append(effect)
+	if(buff_effects.is_empty()):
+		return p_skill.target
+	var selected: ApplyBuffEffect = buff_effects[0]
+	if(null != p_buff_type):
+		var matched: ApplyBuffEffect = null
+		for buff_effect in buff_effects:
+			if(buff_effect.buff_type == p_buff_type):
+				matched = buff_effect
+				break
+		if(null == matched):
+			push_error("%s: no ApplyBuffEffect matches declared buff_type %s" % [p_skill.name, p_buff_type])
+		else:
+			selected = matched
+	elif(buff_effects.size() > 1):
+		var first_target: Types.Skill_Target = (
+				p_skill.target if Types.Skill_Target.Skill_Default == buff_effects[0].target
+				else buff_effects[0].target)
+		for buff_effect in buff_effects:
+			var target: Types.Skill_Target = (
+					p_skill.target if Types.Skill_Target.Skill_Default == buff_effect.target else buff_effect.target)
+			if(target != first_target):
+				push_error(
+						"%s: multiple ApplyBuffEffects disagree on target; a grant reading this skill " % p_skill.name +
+						"needs an explicit buff_type")
+				break
+	return p_skill.target if Types.Skill_Target.Skill_Default == selected.target else selected.target
 
 
 ## True if a status granted by p_granter's p_granting_skill reaches p_candidate_index, given
@@ -829,9 +918,12 @@ static func _GrantingEffectTarget(p_skill: Skill) -> Types.Skill_Target:
 ## rather than assumed. See the _..._TARGETS group constants above for the mapping; the
 ## single-target-family case (Single_Ally, Random_Ally, Most_Injured_Ally, Most_Buffed_Ally)
 ## is scored best-case ("anyone"), consistent with this file's other stated simplifications.
+## p_buff_type (optional) is the grant dict's own "buff_type", forwarded to
+## _GrantingEffectTarget to disambiguate a skill with more than one ApplyBuffEffect.
 static func _GrantReachesCandidate(
-		p_granting_skill: Skill, p_granter_index: int, p_candidate_index: int) -> bool:
-	var target: Types.Skill_Target = _GrantingEffectTarget(p_granting_skill)
+		p_granting_skill: Skill, p_granter_index: int, p_candidate_index: int,
+		p_buff_type: Variant = null) -> bool:
+	var target: Types.Skill_Target = _GrantingEffectTarget(p_granting_skill, p_buff_type)
 	if(_SELF_ONLY_TARGETS.has(target)):
 		return p_granter_index == p_candidate_index
 	if(_OTHER_ALLIES_TARGETS.has(target)):
@@ -857,7 +949,8 @@ static func _ContributeGrantedStatuses(
 				continue
 			if("team" != grant.get("reach", "")):
 				var granting_skill: Skill = granter._skills[skill_index]
-				if(not _GrantReachesCandidate(granting_skill, granter_index, p_candidate_index)):
+				if(not _GrantReachesCandidate(
+						granting_skill, granter_index, p_candidate_index, grant.get("buff_type"))):
 					continue
 			if(grant.get("per_debuff_anchored", false)):
 				if(&"" != p_anchor_debuff_key):
@@ -915,7 +1008,8 @@ static func _ContributeGrantedAttributeBuffs(
 					_AppendGate(gates, grant)
 					continue
 				var granting_skill: Skill = granter._skills[skill_index]
-				if(_GrantReachesCandidate(granting_skill, granter_index, p_candidate_index)):
+				if(_GrantReachesCandidate(
+						granting_skill, granter_index, p_candidate_index, grant.get("buff_type"))):
 					_AccumulateAttributeBuff(fractions, points, grant, granter, amplification)
 					_AppendGate(gates, grant)
 	return {"fractions": fractions, "points": points, "gates": gates}
@@ -937,12 +1031,21 @@ static func _AccumulateAttributeBuff(
 		p_amplification: float = 0.0) -> void:
 	var kind: String = p_grant.get("kind", "percentage")
 	var magnitude: float = p_grant.get("magnitude", 0.0)
-	if("source_attribute" == kind and null != p_granter):
-		var source_attribute: Types.Attribute = p_grant.get("source_attribute", Types.Attribute.Health)
-		magnitude *= float(p_granter._attributes[source_attribute])
-	elif("percentage" == kind):
-		magnitude += p_amplification
-	var target: Dictionary = p_fractions if "percentage" == kind else p_points
+	var target: Dictionary
+	match kind:
+		"percentage":
+			magnitude += p_amplification
+			target = p_fractions
+		"percentage_point":
+			target = p_points
+		"source_attribute":
+			if(null != p_granter):
+				var source_attribute: Types.Attribute = p_grant.get("source_attribute", Types.Attribute.Health)
+				magnitude *= float(p_granter._attributes[source_attribute])
+			target = p_points
+		_:
+			push_error("Unrecognised granted_attribute_buff kind: %s" % kind)
+			return
 	for attribute: Types.Attribute in p_grant.get("attributes", []):
 		target[attribute] = target.get(attribute, 0.0) + magnitude
 
