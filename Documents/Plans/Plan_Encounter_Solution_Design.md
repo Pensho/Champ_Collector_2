@@ -64,7 +64,7 @@ three proving batches are complete. Next up: volume batches.
 
 Depends on the Role kits (complete): an encounter's intended solutions may only
 reference effects that at least one designed kit in 3.2.4.2 or a reagent in 3.3.3
-actually carries. The claims ledger in `Archive/Plan_Role_Skill_Kits.md` is the
+actually carries. The coverage ledger in `Archive/Role_Kit_Design.md` section 10 is the
 lookup table for carriers.
 
 ## Encounter tiers (confirmed decisions)
@@ -218,7 +218,7 @@ that tier can be produced in bulk without padding.
 
 ## Coverage ledger
 
-The mirror image of the claims ledger in `Archive/Plan_Role_Skill_Kits.md`: one row per Role,
+The mirror image of the coverage ledger in `Archive/Role_Kit_Design.md` section 10: one row per Role,
 tracking which encounters its kit is an intended answer for. Rows per catalog effect
 can be added later if role rows prove too coarse.
 

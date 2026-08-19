@@ -1,17 +1,18 @@
 # Role Kit Design
 
-Living design document for the Blowout pillar's kit layer. Settled kits are promoted into
-`Concept_Document.md` 3.2.4.2, which stays the authority once a kit lands; this document carries
-the allocation and the in-flight synergy ledger before that promotion.
+Archived design record for the Blowout pillar's kit layer, produced by the completed
+`Plan_Role_Kit_Rework.md` and kept as the balancing reference for every kit's channel contract,
+synergy grammar, and coverage ledger — the content `Concept_Document.md` 3.2.4.2 (the current
+authority for what each Role's kit does) does not carry. Supersedes the older
+`Plan_Role_Skill_Kits.md` in that role.
 
 **Status:** channel identity allocation, contribution direction, and pairing web settled; all four
 batches designed and all 20 Roles settled — 19 with a section 9 entry, the Tactician kept unchanged
 in section 7's table. **All 20 implemented**: 17 kits changed, and the Tactician, Symbiote (§9.17)
-and Bar Brawler (§9.18) settled as kept, owing no code. **`Plan_Role_Kit_Rework.md`'s final sweep**
+and Bar Brawler (§9.18) settled as kept, owing no code. **Final sweep**
 (`Tests/manual/team_corpus_sweep.gd`): combined-modifier-product median 1.95x, 90th percentile
 4.68x, ceiling 16.24x; contrast-ratio ceiling 21.12x; top decile (114 teams) across **10 distinct
-pairings**, meeting section 4's roster-shape target. This document remains the living record; the
-plan itself is retained only for review before deletion.
+pairings**, meeting section 4's roster-shape target.
 
 ## 1. The per-Role kit contract
 

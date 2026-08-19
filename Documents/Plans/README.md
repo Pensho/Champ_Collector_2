@@ -16,22 +16,18 @@ Suggested order (dependencies noted inside each plan):
    channels) are done and their sub-plans deleted; Phase 5 produced
    `Plan_Channel_Population_Rework.md`, carrying its prescriptions forward, and Phase 7
    produced `Plan_Encounter_Blowout_Retrofit.md`, partially executed then paused pending kit
-   rework. `Plan_Channel_Population_Rework.md` is superseded by `Plan_Role_Kit_Rework.md`
-   below and is deleted by that plan's Phase 0. Sub-plans
+   rework. `Plan_Channel_Population_Rework.md` was superseded by the now-complete and
+   deleted `Plan_Role_Kit_Rework.md`, whose living record is
+   `Archive/Role_Kit_Design.md`. Sub-plans
    are written when their prerequisites land and deleted under the retention rule below. It aligns existing systems and does not author
    new content — channels it finds too thinly populated to align are recorded in its
-   `Coverage gaps` section, which spawns `Plan_System_Buildout.md` once it holds more
-   than one entry.
+   `Coverage gaps` section, which spawned `Plan_System_Buildout.md`.
 
-1. `Plan_Role_Kit_Rework.md` — the authoring counterpart to the master plan, superseding
-   `Plan_Channel_Population_Rework.md`. Reworks the skill kits of all 20 Roles so the three
-   damage channels are populated and several *independent* team combinations reach the
-   aggregate target, rather than the single ceiling pairing the roster has today. Phase 0
-   gates the rest: it makes Defence matter at burst scale (rejecting the `Concept_Document.md`
-   1.1.4 bullet on legibility grounds) and re-derives 1.1.2's calibration figures, so kits are
-   designed once against real targets. Output lands in a new `Documents/Role_Kit_Design.md`
-   (the living channel and synergy ledger) and `Concept_Document.md` 3.2.4.2. Unblocks
-   `Plan_Encounter_Blowout_Retrofit.md`, which was paused pending kit rework.
+1. `Plan_System_Buildout.md` — the coverage-gap catch-all spawned by `Plan_Blowout_Alignment.md`
+   and the completed `Plan_Role_Kit_Rework.md`: content and mechanisms those two plans found too
+   thinly populated or promised but never built (Channel 3's threshold-crossing and
+   cascade-on-cascade triggers, Relic and Trinket gear mechanisms, Refutation's
+   undocumented-but-missing damage, the orphaned Weight of Law zone). Not yet started.
 
 2. `Plan_Story_Mode_Systems.md` — the systems that deliver story mode (story
    state handler, dialogue overlay, flag-driven hub variants, act gating,
@@ -50,9 +46,9 @@ Design-only plans (no code; can run at any time):
   configuration set are reworked, and boss Health triples so a burst reads as 60–80% of the
   bar. Unpauses the plan below once it completes. Tier definitions and the channel audit are
   done; **paused** before the boss configuration rework, since it would commit specific
-  kit/role pairings to each boss ahead of `Plan_Role_Kit_Rework.md` reworking kit
-  contributions — resume once that plan lands. Note that its Phase 4 Health retune is also
-  downstream of that plan's Phase 0, which changes the mitigation formula.
+  kit/role pairings to each boss ahead of the Role Kit Rework — resume now that it has
+  landed (`Archive/Role_Kit_Design.md`). Note that its Phase 4 Health retune is also
+  downstream of that rework's Phase 0, which changes the mitigation formula.
 - `Plan_Encounter_Solution_Design.md` — **paused** pending execution of
   `Plan_Encounter_Blowout_Retrofit.md`; further volume batches authored under the current
   production rules add to the retrofit backlog. The long-run encounter content plan:
@@ -100,5 +96,7 @@ the documentation sections it names, **delete** the matching entries from
 plan's content belongs in the living documents; the file itself is history and git
 keeps that. Archive to `Archive/` only when the file stays useful as a future
 reference in its own right — content the living documents do not absorb.
-`Plan_Role_Skill_Kits.md` is the example: its claims ledger is the balancing
-reference for effect assignments.
+`Archive/Role_Kit_Design.md` is the example: the channel contract, synergy grammar,
+and per-Role coverage ledger `Plan_Role_Kit_Rework.md` produced remain the balancing
+reference for every kit, superseding the older `Plan_Role_Skill_Kits.md` it replaced
+there.

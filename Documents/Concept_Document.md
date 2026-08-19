@@ -824,11 +824,11 @@ the fix belongs in the data or the document.
 * Miasma
     * Type: Turn Bar (Zone)
     * Cooldown: 3 turns
-    * Effect: [Channel 1 + Channel 2] Affected enemies gain the Plague debuff for 3 turns. Holds 4 charges.
-* Quarantine Breach
+    * Effect: [Channel 3] Enemies caught by the trigger have all their active debuffs tick again immediately, without losing a turn of duration, and gain the Blight debuff for 2 turns. Holds 4 charges.
+* Outbreak
     * Type: Damage, Debuff
     * Cooldown: 4 turns
-    * Effect: [Channel 1 + Enabler] Deals damage to a single enemy and applies the Blight debuff for 2 turns.
+    * Effect: [Channel 2] Deals damage to a single enemy, scaling with Mysticism, +8% per distinct debuff type on the target (any source, uncapped), and applies a stack of the Plague debuff for 3 turns.
 
 ###### Warlord
 * Shield Slam

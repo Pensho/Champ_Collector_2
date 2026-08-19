@@ -31,8 +31,9 @@ harness is kept at `Scripts/Debug/blowout_calibration.gd` and re-answers those q
 the formula or the presets change. Every sub-plan spawned by Phases 1-6 is deleted per the
 retention rule.
 
-The roster sweep baseline these phases moved is `Role_Kit_Design.md` section 4's, which owns the
-current figures; `Plan_Role_Kit_Rework.md` carries the pairing-web work forward.
+The roster sweep baseline these phases moved is `Archive/Role_Kit_Design.md` section 4's, which owns
+the current figures; the pairing-web work it carried forward is complete
+(`Plan_Role_Kit_Rework.md`, deleted).
 
 ## Phases
 
@@ -41,8 +42,8 @@ Phases 0-6 are complete and their sections are deleted per the retention rule.
 ### Phase 7 — Encounter tier and catalog retrofit — paused
 
 **Produced:** `Plan_Encounter_Blowout_Retrofit.md`, written and partially executed (Phases 1
-and 2 done, Phase 3 onward paused pending `Plan_Role_Kit_Rework.md` — see that sub-plan's
-Status).
+and 2 done, Phase 3 onward paused pending the kit rework — now complete, see
+`Archive/Role_Kit_Design.md`).
 
 Four decisions were settled with the plan's owner before the sub-plan was written, so it is
 written as prescriptions rather than questions: the boss Health retune happens now rather than
@@ -83,98 +84,10 @@ populated to serve the pillar even once every existing entry is correctly aligne
 a roster cannot fill a channel that has nothing in it, and authoring the missing content is
 a different body of work with different review criteria.
 
-Distinct from a `Findings` section (see `Plans/README.md`): a finding is work this plan must
-do before a phase is correct, and is deleted when fixed. A coverage gap is work this plan
-is handing off, and is deleted when it migrates to the build-out plan.
-
-Each entry names the under-populated channel or system, the census that shows it, and the
-phase that found it. Once the list holds more than the cascade entry — realistically after
-Phase 5, which is expected to produce the bulk of it — it spawns
-`Plan_System_Buildout.md`, and the entries move there. At the latest that spawn happens
-when this plan completes, since the retention rule in `Plans/README.md` deletes this file
-and its open work has to land somewhere living.
-
-* **Channel 3 has almost no content.** Of the 34 statuses tagged with a damage channel in
-  `Concept_Document.md` 3.2.3, two touch channel 3: Overflow, and Plague's expiry spread —
-  and Plague is primarily a channel 1 + 2 status whose spread is a corner case. Against 23
-  channel 1 and 6 channel 2 tags, cascade is a co-equal pillar channel in section 1.1.3
-  with a two-item corpus. Found by Phase 2, which could not report it: its failure taxonomy
-  ("a status is broken in one of two ways, and only these two") is defined per status, so
-  roster-level under-coverage is not expressible in it. Phase 3 sizes the trigger vocabulary
-  against sketched content to avoid baking the sparsity into the architecture; populating
-  the channel with real statuses, skill effects, and trait triggers is build-out work.
-
-  Phase 3's ledger names the specific shapes the channel has no mechanic for, none of which it
-  authors. All three need a new `Types.Cascade_Trigger` value and a `Post()` call site added
-  before content can be authored against them — the shipped enum (`Status_Expired`,
-  `Status_Landed`) only covers the two trigger shapes Phase 3's four ported effects needed, and
-  every `Post()` call site in the codebase lives in `status_effect_resolver.gd`:
-  * **Repetition — the trigger now exists, the content is still thin.** A skill cast that
-    repeats, and a status or zone that detonates once per point of remaining duration or charge,
-    both re-read channels 1 and 2 per instance, so instance count becomes a multiplier on the
-    other two channels rather than a sum — the shape that makes cascade a co-equal channel. Phase
-    6 landed the first half: `Types.Cascade_Trigger.Skill_Resolved` and a `Post()` call site in
-    `BattleResolver.ResolveSkill` (see Technical Design Document 7.8), consumed by the Sorcerer's
-    reagent-triggered repeat. A status or zone that detonates per remaining duration/charge still
-    has no trigger or content at all. `Plan_Role_Kit_Rework.md` consumes the landed
-    trigger rather than authoring its own where a batch's kit design calls for repetition.
-  * **Threshold crossings** — health dropping below a fraction, or a target's status count
-    saturating. The game has stack thresholds (Arcane Instability, Calibration) but no
-    health or status-count trigger at all.
-  * **Cascade-on-cascade** — an effect listening for another cascade instance landing, which
-    `Concept_Document.md` 1.1.3 names outright as the compounding case.
-
-* **Cross-kit Channel 2/3 composition is mechanically sound but content-thin, quantified.** Found
-  by Phase 5's per-entry pass, quantified by the re-scoped full-roster sweep (figures below predate `Plan_Role_Kit_Rework.md` Phase 0's mitigation-formula
-  change; that plan's Status carries the current baseline). The architecture composes correctly —
-  each `CombinedDamageModifier` is assembled fresh per resolution from only the acting caster's
-  own state, so nothing about the composition law is broken — but the 1140-team sweep's product
-  distribution (median 1.40x, 90th percentile 2.80x, ceiling 5.60x, against the then-26x target)
-  shows almost none of that correctness reaching the roster: the ceiling is one pairing (Tidal
-  Corsair's Wrangle the Sea composed with Tactician's unconditional Daunting Strength grant)
-  repeated across every top-decile team, and no other pair reaches a second distinct Channel-2/3
-  key at all. Only one skill in the 79-entry kit corpus (Sorcerer's Cataclysmic Surge) declares
-  `bonus_per_debuff_on_target`, the main lever by which a debuff-applying kit hands a Channel 2
-  factor to a teammate's burst; most debuff-appliers (Confound, Suppress, Unravel, and others)
-  have no damage skill anywhere in the roster that reads them as a factor, leaving them
-  Channel-1-only in practice despite being individually correct. that sweep's own phase quantified four candidate fixes against this sweep: spreading more
-  `bonus_per_debuff_on_target` hooks and giving each zero-contribution kit (Herald of the Loom,
-  Bloodmage) a distinct factor both left the ceiling and median unchanged, since either only
-  composes with Tactician's lone grant; a uniform retune of existing factors — including an
-  Enabler-classed entry's granted-status magnitude — closes the gap alone at a 3.03x multiplier,
-  the largest single-unit-of-work ceiling gain of the four; populating channel 3 via repeated
-  `CascadeEvent.instance_count` is the next largest, but stays flat until instance counts get
-  large. Populating more composition hooks across existing damage skills is build-out/rework
-  content, not an architecture change — `Plan_Role_Kit_Rework.md` carries this forward as its
-  pairing-web target.
-
-* **Relic rarity has a design slot but no code mechanism.** `Concept_Document.md` 3.3.1 names
-  Relic rarity's unique effect as the sole sanctioned gear-sourced `CombinedDamageModifier`
-  factor, but Relic rarity rolls no attributes and no unique-effect mechanism exists in code at
-  all. Found by Phase 6's census. Build-out work for `Plan_System_Buildout.md`: authoring the
-  mechanism and then auditing each individual Relic's unique effect against the 1.1.6 rejection
-  test as a conditional factor, per the gear verdict.
-* **Trinket has no attribute pool, and crashes on upgrade.** `Game_Balance.ITEM_TYPE_ATTRIBUTES`
-  (`Scripts/game_balance.gd:32-55`) defines Weapon, Shield, and Boots only; `EquipmentPreset.Setup()`
-  silently rolls a Trinket item no attributes, and `Equipment.Upgrade()`
-  (`Scripts/Gear/equipment.gd:55-65`) then crashes on it outright — the candidate-attributes
-  fallback reads a `Trinket` dictionary key that does not exist. Found by Phase 6, which
-  worked around it by sizing the collection power-curve figure off a three-slot (Weapon, Shield,
-  Boots) loadout rather than the four-slot one `Concept_Document.md` 3.3.1 names as the core
-  intended loadout. Build-out work: give Trinket an attribute pool (or a Trinket-specific
-  mechanic, per its own item type) before a four-slot loadout is reachable at all.
-* **The Sorcerer's reagent-triggered repeat does not reach the roster's top decile, as tuned.**
-  Phase 6's full-roster sweep found the strongest Sorcerer-cast candidate anywhere in the 1140-team
-  roster at 5.57x total contrast ratio (5.03x single-hit plus 0.53x repeat), against a 7.33x
-  top-decile threshold — so the Sorcerer-plus-Alchemist pairing Phase 5 hoped would open a second,
-  Tidal-Corsair-independent ceiling does not, as currently tuned. A balance-tuning question
-  (`REPEAT_FRACTION`, the debuff-anchored Warped bonus stacking, or Instability stack magnitude)
-  for `Plan_Role_Kit_Rework.md`, not a code defect.
-
-**This list now holds more than the cascade entry — the spawn condition above is met.**
-`Plan_System_Buildout.md` is due to be created and receive both entries above; not yet spawned as
-part of this update — flagged here per the standing rule rather than left implied, pending a
-decision on scope with the plan's owner.
+Spawned to `Plan_System_Buildout.md`, which carries every open entry — the roster's cross-kit
+composition thinness and the Sorcerer's repeat both closed instead, by `Plan_Role_Kit_Rework.md`'s
+own final sweep (median 1.95x, 90th percentile 4.68x, ceiling 16.24x, 114 top-decile teams across
+10 distinct pairings; the Sorcerer/Cataclysm pairing itself reaches the top decile at 19 teams).
 
 ## Watch for
 
