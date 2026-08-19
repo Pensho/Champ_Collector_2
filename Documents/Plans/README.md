@@ -13,18 +13,15 @@ Suggested order (dependencies noted inside each plan):
    the plans below where they overlap; `Plan_Encounter_Solution_Design.md` is paused
    until Phase 7's `Plan_Encounter_Blowout_Retrofit.md` is executed. Phases 0–6 (calibration, combined modifier, status
    channels, cascade, burst presentation, kit burst reachability, itemization
-   channels) are done and their sub-plans deleted; Phase 5 produced
-   `Plan_Channel_Population_Rework.md`, carrying its prescriptions forward, and Phase 7
-   produced `Plan_Encounter_Blowout_Retrofit.md`, partially executed then paused pending kit
-   rework. `Plan_Channel_Population_Rework.md` was superseded by the now-complete and
-   deleted `Plan_Role_Kit_Rework.md`, whose living record is
-   `Archive/Role_Kit_Design.md`. Sub-plans
+   channels) are done and their sub-plans deleted; the kit rework Phase 5 spawned is
+   complete, with `Archive/Role_Kit_Design.md` as its living record. Phase 7 produced
+   `Plan_Encounter_Blowout_Retrofit.md`, executed through Phase 2 and now unblocked. Sub-plans
    are written when their prerequisites land and deleted under the retention rule below. It aligns existing systems and does not author
    new content — channels it finds too thinly populated to align are recorded in its
    `Coverage gaps` section, which spawned `Plan_System_Buildout.md`.
 
 1. `Plan_System_Buildout.md` — the coverage-gap catch-all spawned by `Plan_Blowout_Alignment.md`
-   and the completed `Plan_Role_Kit_Rework.md`: content and mechanisms those two plans found too
+   and the completed kit rework: content and mechanisms those two plans found too
    thinly populated or promised but never built (Channel 3's threshold-crossing and
    cascade-on-cascade triggers, Relic and Trinket gear mechanisms, Refutation's
    undocumented-but-missing damage, the orphaned Weight of Law zone). Not yet started.
@@ -45,10 +42,9 @@ Design-only plans (no code; can run at any time):
   channel they feed (enabler included), Boss-tier entries with no payoff anywhere in their
   configuration set are reworked, and boss Health triples so a burst reads as 60–80% of the
   bar. Unpauses the plan below once it completes. Tier definitions and the channel audit are
-  done; **paused** before the boss configuration rework, since it would commit specific
-  kit/role pairings to each boss ahead of the Role Kit Rework — resume now that it has
-  landed (`Archive/Role_Kit_Design.md`). Note that its Phase 4 Health retune is also
-  downstream of that rework's Phase 0, which changes the mitigation formula.
+  done; the boss configuration rework waited on the Role Kit Rework and **resumes now that it
+  has landed** (`Archive/Role_Kit_Design.md`), behind a Phase 2b that re-derives the audit's
+  channel tags against the reworked kits.
 - `Plan_Encounter_Solution_Design.md` — **paused** pending execution of
   `Plan_Encounter_Blowout_Retrofit.md`; further volume batches authored under the current
   production rules add to the retrofit backlog. The long-run encounter content plan:

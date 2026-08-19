@@ -21,7 +21,7 @@ the game.
 
 ## Status
 
-Phases 0-6 are done; **Phase 7 is paused and is the only remaining work in this plan.**
+Phases 0-6 are done; **Phase 7 is the only remaining work in this plan, and is unblocked.**
 
 Each completed phase's outcome lives in the documents it updated, not here: the combined modifier
 and the cascade architecture in `Technical_Design_Document.md` 7.4 and 7.8, burst pacing in 7.9,
@@ -32,18 +32,17 @@ the formula or the presets change. Every sub-plan spawned by Phases 1-6 is delet
 retention rule.
 
 The roster sweep baseline these phases moved is `Archive/Role_Kit_Design.md` section 4's, which owns
-the current figures; the pairing-web work it carried forward is complete
-(`Plan_Role_Kit_Rework.md`, deleted).
+the current figures; the pairing-web work it carried forward is complete.
 
 ## Phases
 
 Phases 0-6 are complete and their sections are deleted per the retention rule.
 
-### Phase 7 — Encounter tier and catalog retrofit — paused
+### Phase 7 — Encounter tier and catalog retrofit — in progress
 
-**Produced:** `Plan_Encounter_Blowout_Retrofit.md`, written and partially executed (Phases 1
-and 2 done, Phase 3 onward paused pending the kit rework — now complete, see
-`Archive/Role_Kit_Design.md`).
+**Produced:** `Plan_Encounter_Blowout_Retrofit.md`, executed through Phase 2 (tier definitions
+and the channel audit). The kit rework it waited on is complete
+(`Archive/Role_Kit_Design.md`), so Phase 2b onward is unblocked.
 
 Four decisions were settled with the plan's owner before the sub-plan was written, so it is
 written as prescriptions rather than questions: the boss Health retune happens now rather than

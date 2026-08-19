@@ -39,9 +39,9 @@ class_name KitContributionManifest extends RefCounted
 ##                    burst_reachability.gd's _ContributeGrantedStatuses for how each field is
 ##                    read.
 ##   gated_bonus   - optional. Present on a skill or passive entry whose contribution is
-##                    conditioned on some precondition being met (a reagent consumed — Plan_
-##                    Itemization_Channels.md Phase 3's Sorcerer repeat, Phase 4's Alchemist
-##                    team factor; a debuff present — Plague Doctor's Comorbidity retick; a
+##                    conditioned on some precondition being met (a reagent consumed — the
+##                    Sorcerer's Echo repeat and the Alchemist's team factor; a debuff
+##                    present — Plague Doctor's Comorbidity retick; a
 ##                    zone charge consumed — Unstable Rift's remaining triggers) — the
 ##                    manifest's "assumed satisfied" precondition axis (Role_Kit_Design.md
 ##                    section 11). There is no battle simulation here to know whether the

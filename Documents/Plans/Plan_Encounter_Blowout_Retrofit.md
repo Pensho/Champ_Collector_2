@@ -16,10 +16,13 @@ Paused after Phase 2, pending the kit rework. Phase 1 (tier definitions) and Pha
 (per-encounter channel audit and coverage-ledger tagging) are done. Phase 3 (boss
 configuration rework) was on hold because it commits specific role/kit pairings to each
 boss's configurations, and reshaping them against kits that were about to change would
-have been wasted work. The kit rework has now landed (`Archive/Role_Kit_Design.md`,
-successor to `Plan_Channel_Population_Rework.md` and, before that, `Plan_Role_Skill_Kits.md`)
-and the combined-modifier gap the Findings entry below describes is closed — **Phase 3 is
-unblocked.** Phases 4 and 5 depend on Phase 3's output and remain paused until it runs.
+have been wasted work. The kit rework has now landed (`Archive/Role_Kit_Design.md`) and the
+combined-modifier gap the Findings entry below describes is closed — **Phase 3 is unblocked,
+behind Phase 2b.** Phases 4 and 5 depend on Phase 3's output and remain paused until it runs.
+
+Phase 2's audit was committed before the kit rework was written, and 17 of the 20 kits
+changed after it, so its channel tags read a skill set that no longer exists. **Phase 2b
+re-derives the audit before Phase 3 keys off its verdicts.**
 
 ## Context
 
@@ -55,10 +58,9 @@ end in a payoff somewhere, and that requirement is currently met by one boss out
 
 ### Settled decisions
 
-1. **The Health retune happens now**, not gated on the kit rework (`Plan_Role_Kit_Rework.md`,
-   successor to `Plan_Channel_Population_Rework.md`, and itself now complete and deleted per
-   the retention rule). Its consequence is carried as a Finding below rather than absorbed
-   silently.
+1. **The Health retune happens now**, not gated on the kit rework
+   (`Archive/Role_Kit_Design.md`, complete). Its consequence is carried as a Finding below
+   rather than absorbed silently.
 2. **The "unsolved is a wall" property is scoped to Boss tier.** Section 1.1.1's bullet is
    amended to name the tier; the mini-boss keeps "roughly double unsolved" and gains 1.1.2's
    ~10x partial-burst expectation. This is consistent with 1.1.2, which already tiers the
@@ -136,6 +138,22 @@ Then tag the Role × Tier coverage ledger in `Plan_Encounter_Solution_Design.md`
 for example `Reanimating Statues 1 (Signed Writ → buff-duration strip) [Enabler]`. Fodder
 cells may be tagged for completeness but carry no burst expectation.
 
+### Phase 2b — Re-derive the audit against the reworked kits
+
+`Encounter_Design_Document.md` section 3.
+
+Phase 2's tables were derived from the pre-rework kits; the reworked skills they name behave
+differently now (Corsair's Reckoning composes off the hand, Dissolving Agent gained damage,
+Expose Weakness scales with charges spent, Field of Study amplifies attributes, Premonition
+counter-attacks). Re-read every row's channel tag off the current
+`Scripts/Debug/kit_contribution_manifest.gd` and `Concept_Document.md` 3.2.3 / 3.2.4.2, and
+rewrite the tags and verdicts in place.
+
+Expect flips to run enabler-only → has a payoff, since the rework added damage surfaces; a
+flip in the other direction is a finding worth raising before Phase 3 consumes it. What Phase
+3 actually keys off is the Boss table's two `enabler-only` verdicts, so re-derive that table
+first and let its result set Phase 3's scope.
+
 ### Phase 3 — Boss configuration rework — paused, see Status
 
 `Encounter_Design_Document.md` section 2.3.
@@ -147,16 +165,19 @@ kits. Expected per boss:
 * **The Warden of the Reliquary** — already conforms. Configuration (3) is the Tactician
   plus Appraiser crit round. Confirm against the Phase 2 audit and cite it as the model
   rather than reworking it.
-* **The Glyphbound Archivist** — all three configurations are zone-clearing or sustain. Its
-  Wild Glyph zones and the standing-zone count are a natural quantity for the player side to
-  read as a channel-2 factor or a channel-3 instance count, so a payoff configuration is
-  reachable without authoring a new mechanic. Confirm against the manifest before committing
-  to it.
+* **The Glyphbound Archivist** — the hard one, and the likeliest to end in a coverage gap.
+  All three configurations are zone-clearing or sustain. The standing-zone count would be the
+  natural quantity for the player side to read as a channel-2 factor or channel-3 instance
+  count, but **no kit reads a zone count as a `bonus_per` factor** in the current manifest,
+  and Refutation still carries no damage parameters (`Plan_System_Buildout.md`'s open entry).
+  Reaching a payoff here without a new mechanism is unproven — settle that question before
+  reshaping configurations, and take the coverage-gap branch below rather than authoring.
 * **The Collector of Debts** — configurations are buff denial, buff repossession, and a
-  reagent roster. The master plan's Phase 6 landed the Alchemist's team-wide channel-2
-  factor on ally reagent consumption and the Sorcerer's channel-3 reagent-triggered repeat,
-  both of which live in exactly the reagent space configuration (3) already names. The
-  payoff is available with no new content at all.
+  reagent roster. The Alchemist's team-wide channel-2 factor on ally reagent consumption and
+  the Sorcerer's channel-3 repeat both still gate on `reagent_consumed` after the rework (the
+  repeat now runs on Echo charges, four instances at 1.70 compounding), and both live in
+  exactly the reagent space configuration (3) already names. The payoff is available with no
+  new content at all.
 
 Every reworked configuration must still satisfy `Plan_Encounter_Solution_Design.md`'s
 production rules: 2–3 distinct valid configurations per boss, at most 2 dedicated roster
@@ -191,11 +212,14 @@ attribute times `GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER` (`Scripts/game_balance
   makes the two equal and erases the relationship the entry describes. Decide whether the
   Core scales alongside it or the entry's framing is restated, and write the decision into
   the entry text.
-* **Defence does not move.** Inherited from `Concept_Document.md` 1.1.4, not re-litigated:
-  varying `Defense_Ignore_Factor` across its full range moves a burst by under 2%. There is
-  also a hard coupling — `Scripts/Debug/burst_reachability.gd` resolves every reachability
-  score against `BlowoutCalibration.BOSSES[0][2]`, Troll's Defence of 120 — so moving it
-  would silently invalidate every measurement the master plan's Phases 5 and 6 recorded.
+* **Defence and Knowledge do not move.** Defence is inherited from `Concept_Document.md`
+  1.1.4, not re-litigated: varying `Defense_Ignore_Factor` across its full range moves a burst
+  by under 2%. Both are hard-coupled to the scorer — `Scripts/Debug/burst_reachability.gd`
+  resolves every reachability score against `BlowoutCalibration.BOSSES[0][2]` (Troll's Defence
+  of 120) and `BOSSES[0][3]` (its Knowledge of 10, which blunts critical damage) — so moving
+  either would silently invalidate every measurement the master plan's Phases 5 and 6 and the
+  kit rework's sweeps recorded. Nothing reads `BOSSES[i][1]`, so the Health retune cannot move
+  a reachability figure; that is what makes the sweep a usable tripwire under Verification.
 * **Data-only enemies.** `Troll.tres` (300) and `Obsidian_Stallion.tres` (330) sit in Phase
   0's balanced-boss list but have no `Encounter_Design_Document.md` entry;
   `Plan_Encounter_Solution_Design.md` calls the Obsidian Stallion a mini-boss and the Troll
@@ -211,9 +235,11 @@ Tests, in `Tests/unit/` following the house shape (`extends GutTest`, a file-top
 citing the design-doc section, snake_case sentence-style test names, every assert carrying an
 interpolated message — `Tests/unit/test_burst_pacing.gd` is representative):
 
-* A test asserting `BlowoutCalibration.BOSSES` matches the Health and Defence values in the
-  corresponding `Data/Character_Enemy_Variants/*.tres`, which closes the duplication risk
-  permanently rather than only for this retune.
+* A test asserting `BlowoutCalibration.BOSSES` matches the Health, Defence and Knowledge
+  values in the corresponding `Data/Character_Enemy_Variants/*.tres`, which closes the
+  duplication risk permanently rather than only for this retune. Only Troll and the Obsidian
+  Stallion have presets; the other three rows take the Troll's Knowledge as a stand-in and
+  have nothing to compare against.
 * A test asserting each boss-tier preset's Health sits in the band 5.3 now names, and each
   mini-boss preset's likewise.
 * `Tests/unit/test_encounter_assembly.gd` asserts compositions and skill membership, not
@@ -236,15 +262,11 @@ interpolated message — `Tests/unit/test_burst_pacing.gd` is representative):
 
 ## Findings
 
-* **Concern — boss fight length sits outside its round budget until the channel rework
-  lands.** The kit rework has landed (`Archive/Role_Kit_Design.md`); re-measurement is what
-  remains open.
+* **Concern — boss fight length sits outside its round budget until re-measured.**
 
-  Phase 4 triples boss Health on the strength of a 50x burst the roster could not yet produce
-  when this was written. The master plan's Phase 5 and 6 sweeps put the combined-modifier
-  ceiling at 7.22x against a then-26x requirement (the kit rework's own Phase 0 re-derived the
-  target to 50x when it fixed the mitigation formula; the final roster sweep put the ceiling
-  at 16.24x / 21.12x contrast, `Archive/Role_Kit_Design.md` section 4). `blowout_calibration.gd`'s
+  Phase 4 triples boss Health on the strength of a 50x burst the roster could not produce when
+  this was written; the kit rework has since put the combined-modifier ceiling at 16.24x, 21.12x
+  contrast (`Archive/Role_Kit_Design.md` section 4). `blowout_calibration.gd`'s
   `_ReportBaselines()` measured three champions at basic-skill output clearing a balanced boss
   in 5.9–11.1 rounds against 5.3's 10–12 budget before the retune; tripling Health pushed that
   to roughly 18–33 rounds with no burst available to shorten it. The retune-now sequencing was
@@ -284,8 +306,10 @@ interpolated message — `Tests/unit/test_burst_pacing.gd` is representative):
   estimate in the Findings entry above; `_ReportHealthImplications()` should report the
   retuned bosses satisfying the 60–80% burst share at 30–50x.
 * `Tests/run_tests.sh -gtest=res://Tests/manual/team_corpus_sweep.gd -gexit` re-run after
-  Phase 4, with the ceiling still reading 7.22x. A moved number means the Defence coupling in
-  `burst_reachability.gd` was disturbed.
+  Phase 4, still reading the post-rework distribution: median 1.95x, 90th percentile 4.68x,
+  ceiling 16.24x, contrast-ratio ceiling 21.12x (`Archive/Role_Kit_Design.md` section 4). A
+  moved number means the Defence or Knowledge coupling in `burst_reachability.gd` was
+  disturbed.
 * One boss played end to end through a reworked configuration, launched via
   `Scripts/Debug/debug_catalog.gd`'s battle picker, confirming the fight reads as
   long-but-survivable rather than a stalemate.
