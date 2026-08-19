@@ -186,9 +186,11 @@ Corsair implemented:
   single-target when it is already team-wide); revisiting the Role's kit is deferred outside this
   plan until its team fantasy is clearer than a sweep figure can make it.
 
-Phase 5 (Batch 4) in progress, settled one Role at a time: Alchemist, Diviner, Symbiote, Bar
+Phase 5 (Batch 4) **complete**, settled one Role at a time: Alchemist, Diviner, Symbiote, Bar
 Brawler, Warlord. Each Role's declared identity is re-derived from what its kit wants to be before
-its slots are touched, rather than inherited from `Role_Kit_Design.md` §5's row. Settled so far:
+its slots are touched, rather than inherited from `Role_Kit_Design.md` §5's row. Symbiote and Bar
+Brawler settled as kept and owe no code, so all 20 Roles are now implemented and **Phase 6 is the
+remaining work**.
 
 * **Alchemist (§9.15)** — an adaptation. Passive and basic kept; Catalyst gains a brew refund on
   every non-brew reagent consumed, making the zone the thing that keeps the passive's window live
@@ -210,7 +212,7 @@ its slots are touched, rather than inherited from `Role_Kit_Design.md` §5's row
   source and closing the kit into one loop. §8's twice-claimed damage-redirection item closes here
   unchanged.
 
-**Phase 5 (Batch 4) design complete.** The batch found no zero-contribution or one-note kit needing
+The batch found no zero-contribution or one-note kit needing
 replacement, as expected; its substantive finding is that §5's rows for the protection kits had each
 assumed a damage term the kit does not owe, corrected on the Diviner and the Warlord (now Enabler)
 and on the Symbiote (direction). None of the five depends on a roster-wide mechanics change; the
@@ -275,8 +277,7 @@ Everything past the effect loop in `ResolveSkill` is skipped, which is what make
 A shared `Skills.BasicSkill` helper replaced the private copy `burst_reachability.gd` already had. A
 mutual-Premonition exchange terminates once both sides' buffs are spent rather than being guarded by
 a depth counter. Post-Diviner sweep: median 1.95x, 90th percentile 4.68x, ceiling 16.24x, 114
-top-decile teams — unchanged, as expected for a kit fielding no damage factor. Symbiote and Bar
-Brawler remain settled but not yet implemented.
+top-decile teams — unchanged, as expected for a kit fielding no damage factor.
 
 **Coverage review findings**, from a roster-wide read of all 20 Roles against the corrected contract.
 

@@ -5,7 +5,9 @@ class_name SymbioteTrait extends CharacterTrait
 ## ApplyGraft() overwrites _trait with the acquired GraftEffect once grafting happens.
 func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
-	_trait_texture = load("res://Assets/Champ_Collector/Icons/Abilities/Passives/Grafted_Flesh_Trait/grafted_flesh_trait_2.png")
+	_trait_texture = load(
+			"res://Assets/Champ_Collector/Icons/Abilities/Passives/Grafted_Flesh_Trait/" +
+			"grafted_flesh_trait_2.png")
 	_title = "Graft"
 	_body = ("Target a living enemy and graft onto it. " +
 			"This grants an effect, scaling with " +

@@ -6,8 +6,8 @@ the allocation and the in-flight synergy ledger before that promotion.
 
 **Status:** channel identity allocation, contribution direction, and pairing web settled; all four
 batches designed and all 20 Roles settled — 19 with a section 9 entry, the Tactician kept unchanged
-in section 7's table. Three of Batch 1's five implemented: Plague Doctor, Herald of the Loom,
-Sorcerer.
+in section 7's table. **All 20 implemented**: 17 kits changed, and the Tactician, Symbiote (§9.17)
+and Bar Brawler (§9.18) settled as kept, owing no code.
 
 ## 1. The per-Role kit contract
 
@@ -261,31 +261,31 @@ below sets **10 exported against 10 self-facing**. The two groups are not tiers:
 is as load-bearing as a self-facing one, and several of them (Tactician, Scholar, Alchemist) are
 already what the current ceiling pairings run through.
 
-Direction is settled for the Roles whose kits are settled (sections 9.1-9.5) and **proposed** for
-the rest — confirm or overturn it at that Role's own batch, before its concrete numbers are fixed.
+Direction is settled for all 20 Roles; each Role's own section 9 entry owns its status and what it
+ships, and this table records only the allocation.
 A Role's basic skill is always self-facing; direction describes the declared-identity contribution.
 
-| Role | Purpose (unchanged) | Primary identity | Direction | Composition hook (sketch) |
+| Role | Purpose (unchanged) | Primary identity | Direction | Composition hook |
 |---|---|---|---|---|
-| Plague Doctor | Debuffer | **Channel 3** | Self | Debuff density on the target feeds cascade instance count — the deepest identity claim in the roster (Batch 1 anchor; absorbs the Comorbidity fix). |
-| Sorcerer | Damage, Debuffer, Control | **Channel 3** | Self | Reagent-triggered repeat re-resolves channels 1 and 2 as a fresh instance; the second, independently-gated cascade anchor (Batch 1). |
-| Herald of the Loom | Debuffer, Buffer | **Channel 3** | Self | No passive exists in code today — free design space. A stance-driven status-expiry cascade (reads `Status_Expired`, the trigger already wired for Plague/Overflow) gives the roster a third cascade source gated by duration management rather than reagents or debuff count (Batch 1; needs a passive authored from scratch). |
-| Chronophage | Control | **Channel 3** | Exported | Settled (§9.9), confirming this row without the threshold-crossing trigger it originally proposed — a boundary-counting gate reads as arithmetic the player cannot see. Instead the passive grants Borrowed Time to an ally it boosts alone, and that ally's next skill resolves once more. The Role fields no damage factor of its own (Batch 2). |
-| Emissary | Debuffer, Control | **Channel 2** | Exported | Settled (§9.7), confirming this row. Sanction carries a snapshotted per-Infraction damage multiplier every attacker on the team reads, and stays a distinct debuff type feeding the density count (Batch 2). |
-| Alchemist | Debuffer, Buffer | **Channel 2** | Exported | Fresh Batch's team damage buff on reagent consumption already fits — keep as the reagent-consumption anchor; the factor lands on the whole team, not the Alchemist (Batch 4). |
-| Appraiser | Debuffer | **Enabler** | Exported | Settled (§9.5), moved off this table's Phase 1 proposal of Channel 2: the whole contribution runs through the crit path, which claims no bucket key. Strike the Flaw (crit applies Cracked Facet) was the crit-path anchor — independent of the debuff-density and cascade routes, since it multiplies through the crit-damage path outside the combined modifier (1.1.4). The settled kit (§9.5) consigns the whole contribution to a carrier (Batch 1). |
-| Cultist | Debuffer, Damage | **Channel 2** | Self | Settled (§9.8), confirming this row. Chosen Vessel's flat per-cast bonus stays flat; Vessel death now also grants permanent Devotion, and the basic reads the Vessel's half-Health threshold (Batch 2). |
-| Jester | Damage, Sustain | **Enabler** | Exported | Hexed on the boss degrades every roll it makes in its own favor — crit checks, resist checks against the team's debuffs, its own Burning ticks — so a debuff-density burst becomes reliable rather than a coin flip; Spotlight pulls focused fire onto the champion built to dodge it. Settled (§9.6), and moved off this table's Phase 1 proposal of Channel 2 / self-facing: the kit declares no damage contribution (Batch 2). |
-| Architect | Buffer, Damage | **Channel 2** | Self | Settled (§9.10), confirming this row. The kit is kept as it ships — the finisher's charge bucket already meets the contract and the zone already consumes charges against it. Only Expose Weakness changes, scaling with the charges spent (Batch 2). |
-| Tidal Corsair | Damage | **Channel 2** | Self | Implemented (§9.13), confirming this row. Corsair's Reckoning resolves by the composition of the stacks it consumes; Sea's turn-bar push retires and Sea instead raises The Gilded Deck, a signature zone granting boarding allies permanent Sea Legs stacks (Batch 3). |
-| Thief | Damage | **Channel 1** | Self | Implemented (§9.12), confirming this row. Pilfer retired for Between the Plates, a passive bypass reading a fraction of a debuff-free reference Defence, so a teammate's Defence shred compounds with it instead of being eaten by it; Weigh the Mark rebuilt as Cut Purse. |
-| Lancer | Damage | **Channel 2** | Self | Settled (§9.11), moved off this table's Phase 1 proposal of Channel 1. Momentum and Phalanx Guard retire for Couched Lance: the charge scales with the turn-bar sections it touches and throws the Lancer back half that distance. The Role reads turn-bar position rather than accumulating stacks, so it is no longer route D's second anchor (Batch 3). |
+| Plague Doctor | Debuffer | **Channel 3** | Self | §9.1. Debuff density on the target feeds cascade instance count — the deepest identity claim in the roster. |
+| Sorcerer | Damage, Debuffer, Control | **Channel 3** | Self | §9.3. Reagent-triggered repeat re-resolves channels 1 and 2 as a fresh instance; the second, independently-gated cascade anchor. |
+| Herald of the Loom | Debuffer, Buffer | **Channel 3** | Self | §9.2, which replaced this row's Phase 1 sketch of a status-expiry cascade. Weft and Warp's three threads carry the identity, and Cut the Cloth resolves once more per Tension held — the roster's deepest instance count. |
+| Chronophage | Control | **Channel 3** | Exported | §9.9, confirming this row without the threshold-crossing trigger it originally proposed — a boundary-counting gate reads as arithmetic the player cannot see. Instead the passive grants Borrowed Time to an ally it boosts alone, and that ally's next skill resolves once more. The Role fields no damage factor of its own (Batch 2). |
+| Emissary | Debuffer, Control | **Channel 2** | Exported | §9.7, confirming this row. Sanction carries a snapshotted per-Infraction damage multiplier every attacker on the team reads, and stays a distinct debuff type feeding the density count (Batch 2). |
+| Alchemist | Debuffer, Buffer | **Channel 2** | Exported | §9.15, confirming this row. Fresh Batch's team damage buff stays the reagent-consumption anchor and Catalyst Cloud's refund keeps the consumption count up; the factor lands on the whole team, not the Alchemist. |
+| Appraiser | Debuffer | **Enabler** | Exported | §9.5, moved off this table's Phase 1 proposal of Channel 2: the whole contribution runs through the crit path, which claims no bucket key and multiplies outside the combined modifier (1.1.4), independent of the debuff-density and cascade routes. The kit consigns that contribution to a carrier. |
+| Cultist | Debuffer, Damage | **Channel 2** | Self | §9.8, confirming this row. Chosen Vessel's flat per-cast bonus stays flat; Vessel death now also grants permanent Devotion, and the basic reads the Vessel's half-Health threshold (Batch 2). |
+| Jester | Damage, Sustain | **Enabler** | Exported | Hexed on the boss degrades every roll it makes in its own favor — crit checks, resist checks against the team's debuffs, its own Burning ticks — so a debuff-density burst becomes reliable rather than a coin flip; Spotlight pulls focused fire onto the champion built to dodge it. §9.6, and moved off this table's Phase 1 proposal of Channel 2 / self-facing: the kit declares no damage contribution (Batch 2). |
+| Architect | Buffer, Damage | **Channel 2** | Self | §9.10, confirming this row. The kit is kept as it ships — the finisher's charge bucket already meets the contract and the zone already consumes charges against it. Only Expose Weakness changes, scaling with the charges spent (Batch 2). |
+| Tidal Corsair | Damage | **Channel 2** | Self | §9.13, confirming this row. Corsair's Reckoning resolves by the composition of the stacks it consumes; Sea's turn-bar push retires and Sea instead raises The Gilded Deck, a signature zone granting boarding allies permanent Sea Legs stacks (Batch 3). |
+| Thief | Damage | **Channel 1** | Self | §9.12, confirming this row. Pilfer retired for Between the Plates, a passive bypass reading a fraction of a debuff-free reference Defence, so a teammate's Defence shred compounds with it instead of being eaten by it; Weigh the Mark rebuilt as Cut Purse. |
+| Lancer | Damage | **Channel 2** | Self | §9.11, moved off this table's Phase 1 proposal of Channel 1. Momentum and Phalanx Guard retire for Couched Lance: the charge scales with the turn-bar sections it touches and throws the Lancer back half that distance. The Role reads turn-bar position rather than accumulating stacks, so it is no longer route D's second anchor (Batch 3). |
 | Tactician | Buffer | **Channel 1** | Exported | **Settled: kept as shipped.** A second hook was explored (Batch 3) and shelved — no addition fit without a clearer read on the Role's team fantasy than a sweep figure can give; open to revisiting outside this plan. |
-| Bloodmage | Sustain, Damage | **Channel 1** | Exported | Settled (§9.4), implemented. Hemoclarity's missing-Health Mysticism curve is already Channel 1 by mechanism; the kit's weight lands in Sanguine Pact (on the carrier) and Hemorrhage (on the boss, readable by every attacker) rather than on the Bloodmage's own cast. |
-| Scholar | Debuffer, Buffer | **Channel 2** | Exported | Implemented (§9.14), confirming this row. Opportunist stays the modifier-bucket anchor; the passive is replaced with an amplifier on every attribute modification the team applies, giving the roster its first reader of the Channel 1 attribute layer, and the basic gains a zone-gated Suppress rider (Batch 3). |
+| Bloodmage | Sustain, Damage | **Channel 1** | Exported | §9.4. Hemoclarity's missing-Health Mysticism curve is already Channel 1 by mechanism; the kit's weight lands in Sanguine Pact (on the carrier) and Hemorrhage (on the boss, readable by every attacker) rather than on the Bloodmage's own cast. |
+| Scholar | Debuffer, Buffer | **Channel 2** | Exported | §9.14, confirming this row. Opportunist stays the modifier-bucket anchor; the passive is replaced with an amplifier on every attribute modification the team applies, giving the roster its first reader of the Channel 1 attribute layer, and the basic gains a zone-gated Suppress rider (Batch 3). |
 | Diviner | Sustain, Debuffer | **Enabler** | Exported | Redeclared from Channel 1 at Batch 4 (§9.16): Enfeeble, Premonition and Hexed are all mitigation and denial, and the kit owes no damage factor. Measured on the collapse test. |
 | Symbiote | Sustain, Buffer | **Channel 1** | Self | Exhert's attribute buff is the baseline anchor, present from the ungrafted state on, and it lands on the Symbiote itself. Direction corrected from Exported at Batch 4 (§9.17); post-graft the kit may read either way depending on which graft the player binds (pool-dependent, `Symbiote_Graft_Pool.md`), and the ungrafted baseline is what fixes the declaration. |
-| Bar Brawler | Sustain, Buffer | **Channel 2** | Self | Heap On already grows stronger with every use — the basic skill itself is the modifier-bucket anchor. On the House's heal-on-buff stays an Enabler-tagged skill within the kit, not the Role's identity (Batch 4). |
+| Bar Brawler | Sustain, Buffer | **Channel 2** | Self | §9.18, kept as shipped. Heap On already grows stronger with every use — the basic skill itself is the modifier-bucket anchor. On the House's heal-on-buff stays an Enabler-tagged skill within the kit, not the Role's identity. |
 | Warlord | Sustain | **Enabler** | Exported | Redeclared from Channel 1 at Batch 4 (§9.19): Fortify raises Defence, which is no damage term, and the whole kit is mitigation. The weight is the window it holds open — Shield Wall's redirection, Hold the Line's Fortify, Brace for Impact's Enfeeble. Measured on the collapse test. |
 
 ## 6. The pairing web
@@ -1582,9 +1582,9 @@ Steadfast, Resonance unclaimed.
 
 **Buffs** — Sea Legs is a new buff, claimed by Tidal Corsair (The Gilded Deck) — **implemented**
 (section 9.13); no prior claimant, and the roster's only permanent stacking attribute grant, sized
-per holder rather than by a fixed attribute. Borrowed Time is a new buff, claimed by Chronophage (Time Tithe) — **settled, not yet
-implemented** (section 9.9); no prior claimant, and the only buff in the roster granting a cascade
-instance. Attune's second claim (Herald of the loom's Woven Blessing, alongside Cultist's Chosen
+per holder rather than by a fixed attribute. Borrowed Time is a new buff, claimed by Chronophage
+(Time Tithe) — **implemented** (section 9.9); no prior claimant, and the only buff in the roster
+granting a cascade instance. Attune's second claim (Herald of the loom's Woven Blessing, alongside Cultist's Chosen
 Vessel passive) has dropped: Woven Blessing is no longer part of the Herald's kit (section 9.2,
 implemented) and nothing in the new kit applies Attune, so Attune is now solely Cultist's (Chosen
 Vessel passive). Sanguine Pact is a new buff, claimed by Bloodmage (Transfusion) — **implemented**

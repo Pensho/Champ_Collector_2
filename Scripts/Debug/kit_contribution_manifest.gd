@@ -31,7 +31,7 @@ class_name KitContributionManifest extends RefCounted
 ##   precondition  - what must be true for the contribution to land, and any known code trap.
 ##   citation      - file:line for the mechanic.
 ##   granted_status - optional. Present only on an Enabler entry that grants a teammate a
-##                    modifier-bearing status (Tactician's Fatal Flaw, Thief's Weigh the Mark,
+##                    modifier-bearing status (Tactician's Fatal Flaw, Thief's Cut Purse,
 ##                    Scholar's Expose Fallacy): the magnitude the granted status itself
 ##                    contributes once it lands on whichever character consumes it, resolved
 ##                    by burst_reachability.gd's own target-scope predicate rather than fixed
@@ -433,7 +433,7 @@ const MANIFEST: Dictionary = {
 			{"name": "Expose Fallacy", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Enabler,
 					"precondition": "Grants All Allies (target All_Allies, reaches the granter too) " +
-							"Opportunist (2 turns — see Thief's Weigh the Mark; the magnitude lives in " +
+							"Opportunist (2 turns — see Thief's Cut Purse; the magnitude lives in " +
 							"granted_status on this same entry) and applies Confound (2 turns, -50% " +
 							"Knowledge) to one enemy. No direct damage.",
 					"citation": "Expose_Fallacy.tres",
@@ -785,8 +785,8 @@ const MANIFEST: Dictionary = {
 		"skills": [
 			{"name": "Thread Snap", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Channel1,
-					"precondition": "damage_scaling Mysticism 0.9, no bonus_per, plus Suppress (1 turn " +
-							"— moved off the retired Thread Lash, halved from 2 turns).",
+					"precondition": "damage_scaling Mysticism 0.9, no bonus_per, plus Suppress " +
+							"(1 turn).",
 					"citation": "Thread_Snap.tres:6-19"},
 			{"name": "Pull the Thread", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Enabler,

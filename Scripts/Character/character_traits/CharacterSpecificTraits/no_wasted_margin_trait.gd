@@ -11,7 +11,9 @@ const OVERFLOW_RATE: Dictionary[Types.Rarity, float] = {
 
 func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
-	_trait_texture = load("res://Assets/Champ_Collector/Icons/Abilities/Passives/No_Wasted_Margin_Trait/no_wasted_margin_trait_1.png")
+	_trait_texture = load(
+			"res://Assets/Champ_Collector/Icons/Abilities/Passives/No_Wasted_Margin_Trait/" +
+			"no_wasted_margin_trait_1.png")
 	_title = "No Wasted Margin"
 	_body = ("For every point of an ally's own Critical Chance above 100%%, that ally " +
 			"gains %d Critical Damage per %% point instead.") % int(OVERFLOW_RATE.get(p_rarity, 0.0))

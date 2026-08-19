@@ -1244,6 +1244,14 @@ event's own `instance_count` before the per-instance loop, still bounded by
 amplifies any cascade instance the Herald's own action produces against an enemy) and the Sorcerer's
 Echo count (scoped to `&"SorcererTrait"`, so it only ever amplifies its own listener).
 
+**`Cascade_Instance_Resolved`: the per-instance broadcast.** `_ResolveEvent`'s own per-instance loop
+calls `_NotifyCascadeInstanceResolved`, which dispatches `Types.Combat_Event.
+Cascade_Instance_Resolved` and `CharacterTrait.OnCascadeInstanceResolved(owner_ID, event, resolver)`
+to every living character's trait — one call per *real* instance, not per posted event, so a passive
+can read instance count itself. Its one consumer is the Herald of the Loom's Golden Thread, which
+gains 1 Tension per instance resolving against an enemy. Cut the Cloth's own repeats never call
+`Post`, which is what keeps the thread from feeding itself.
+
 **Borrowed Time: a `Skill_Resolved` listener granted by another champion.** The Chronophage's Time
 Tithe passive grants an ally the `Borrowed_Time` buff rather than subscribing anything itself — the
 buff, not the passive, owns the extra resolution. `StatusEffectResolver._RegisterCascadeListeners`
