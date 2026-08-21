@@ -308,7 +308,7 @@ const MANIFEST: Dictionary = {
 		"skills": [
 			{"name": "Acrid Splash", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Channel1,
-					"precondition": "damage_scaling Knowledge 0.7, no bonus_per.",
+					"precondition": "damage_scaling Attack 0.7, no bonus_per.",
 					"citation": "Acrid_Splash.tres:6-11"},
 			{"name": "Catalyst Cloud", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Enabler,
@@ -556,7 +556,7 @@ const MANIFEST: Dictionary = {
 		"skills": [
 			{"name": "Signal Strike", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Channel1,
-					"precondition": "damage_scaling Knowledge 0.7, no bonus_per.",
+					"precondition": "damage_scaling Attack 0.7, no bonus_per.",
 					"citation": "Signal_Strike.tres:6-11"},
 			{"name": "Fatal Flaw", "bucket_key": "", "magnitude": 1.0, "stack_cap": 0,
 					"class": Contribution_Class.Enabler,
@@ -674,17 +674,17 @@ const MANIFEST: Dictionary = {
 							"citation": "chosen_vessel_trait.gd:59-64,80-83; battle_resolver.gd:705-726"}},
 		],
 		"skills": [
-			{"name": "Profane Bolt", "bucket_key": "Profane Bolt", "magnitude": 0.25, "stack_cap": 0,
+			{"name": "Desecrated Blade", "bucket_key": "Desecrated Blade", "magnitude": 0.25, "stack_cap": 0,
 					"class": Contribution_Class.Channel2,
-					"precondition": "damage_scaling Mysticism 0.9, bonus_per Trait_Condition=0.25 " +
+					"precondition": "damage_scaling Attack 0.9, bonus_per Trait_Condition=0.25 " +
 							"(fixed, not rarity-scaled) while the Vessel is alive and below half its " +
 							"own max Health. Basic skill (no cooldown) — does not trigger Chosen " +
 							"Vessel's per-cast drain.",
-					"citation": "Profane_Bolt.tres:6-14; chosen_vessel_trait.gd:85-102"},
+					"citation": "Desecrated_Blade.tres:6-14; chosen_vessel_trait.gd:85-102"},
 			{"name": "Devour Blessing", "bucket_key": "Devour Blessing", "magnitude": 0.25, "stack_cap": 0,
 					"class": Contribution_Class.Channel2,
 					"precondition": "Consumes the ally holding the most buffs, then damage_scaling " +
-							"Mysticism 1.3 with bonus_per Buffs_Consumed=0.25 (fixed, not rarity-scaled) " +
+							"Attack 1.3 with bonus_per Buffs_Consumed=0.25 (fixed, not rarity-scaled) " +
 							"per buff consumed — magnitude shown is per-instance, uncapped by this skill. " +
 							"Non-basic (cooldown 3) — also triggers Chosen Vessel's shared trait_resource " +
 							"bucket (+30% Legendary) on the same cast.",

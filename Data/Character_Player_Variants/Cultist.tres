@@ -3,9 +3,9 @@
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
 [ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_weight"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_preset"]
-[ext_resource type="Resource" uid="uid://b8i3mwnidb5u2" path="res://Data/Character_Skill_Variants/Attack_Skills/Profane_Bolt.tres" id="3_profane_bolt"]
-[ext_resource type="Resource" path="res://Data/Character_Skill_Variants/Attack_Skills/Devour_Blessing.tres" id="4_devour"]
-[ext_resource type="Resource" path="res://Data/Character_Skill_Variants/Attack_Skills/Rite_of_Severance.tres" id="5_severance"]
+[ext_resource type="Resource" uid="uid://b8i3mwnidb5u2" path="res://Data/Character_Skill_Variants/Attack_Skills/Desecrated_Blade.tres" id="3_desecrated_blade"]
+[ext_resource type="Resource" uid="uid://b12lcjnggwykm" path="res://Data/Character_Skill_Variants/Attack_Skills/Devour_Blessing.tres" id="4_devour"]
+[ext_resource type="Resource" uid="uid://ctjv4pmuj87jr" path="res://Data/Character_Skill_Variants/Attack_Skills/Rite_of_Severance.tres" id="5_severance"]
 [ext_resource type="Resource" uid="uid://4fnej15sbkkv" path="res://Data/Attribute_Weights/Arcane.tres" id="6_arcane"]
 [ext_resource type="Resource" uid="uid://b8nee1hs4g663" path="res://Data/Attribute_Weights/Conjurer.tres" id="7_conjurer"]
 [ext_resource type="Resource" uid="uid://ytl3g36itqfs" path="res://Data/Attribute_Weights/Learned.tres" id="8_learned"]
@@ -17,14 +17,14 @@ _name = "Cultist"
 _texture = "res://Assets/Champ_Collector/Creatures/Bloodmage/Bloodmage_0001.png"
 _rarity = 2
 _role = 12
-_skills = Array[ExtResource("1_skill")]([ExtResource("3_profane_bolt"), ExtResource("4_devour"), ExtResource("5_severance")])
+_skills = Array[ExtResource("1_skill")]([ExtResource("3_desecrated_blade"), ExtResource("4_devour"), ExtResource("5_severance")])
 _health = 40
 _speed = 60
-_attack = 30
+_attack = 65
 _defence = 30
-_accuracy = 60
+_accuracy = 55
 _resistance = 40
-_mysticism = 90
+_mysticism = 60
 _knowledge = 10
 _attribute_weight_types_available = Array[ExtResource("1_weight")]([ExtResource("6_arcane"), ExtResource("7_conjurer"), ExtResource("8_learned")])
 _trait = ExtResource("9_trait")

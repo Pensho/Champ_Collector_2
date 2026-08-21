@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bgu5dmo16dpyi"
-path="res://.godot/imported/Profane_Bolt.png-a975091e117bb1f65c8669f30e29b07e.ctex"
+uid="uid://da0jprsjtmdpe"
+path="res://.godot/imported/Desecrated_Blade.png-74f91b349b111fe46051c05d632f9084.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Profane_Bolt/Profane_Bolt.png"
-dest_files=["res://.godot/imported/Profane_Bolt.png-a975091e117bb1f65c8669f30e29b07e.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Desecrated_Blade/Desecrated_Blade.png"
+dest_files=["res://.godot/imported/Desecrated_Blade.png-74f91b349b111fe46051c05d632f9084.ctex"]
 
 [params]
 

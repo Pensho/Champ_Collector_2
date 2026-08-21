@@ -814,21 +814,21 @@ has no cap of its own; the party is the cap, so a full team affords two.
 
 | Slot | Skill | Effect | Channel |
 |---|---|---|---|
-| Basic | Profane Bolt | Mysticism-scaled damage to one enemy, **+25% while the Vessel is below half Health**. | 1 + 2 (conditional) |
-| Signature | Devour Blessing | Kept as-is. Consumes all buffs on the ally holding the most; Mysticism-scaled damage to one enemy, +25% per buff consumed. Cooldown 3. | 1 + 2 |
+| Basic | Desecrated Blade | Attack-scaled damage to one enemy, **+25% while the Vessel is below half Health**. | 1 + 2 (conditional) |
+| Signature | Devour Blessing | Kept as-is. Consumes all buffs on the ally holding the most; Attack-scaled damage to one enemy, +25% per buff consumed. Cooldown 3. | 1 + 2 |
 | Signature | Rite of Severance | Kept as-is. Mysticism-scaled damage to one enemy, applies Severance for 2 turns. Cooldown 4. | 1 + Enabler |
 
 **What the kit now reads.** Vessel death stops being a consolation event and becomes the
 transaction the Role is built on — the sacrifice has a price the player pays and a payout they
-keep. Profane Bolt's rider is the threshold read on the way there: the drain that used to be a pure
+keep. Desecrated Blade's rider is the threshold read on the way there: the drain that used to be a pure
 tax now moves the basic across a line the player can aim at. Both surfaces are the Vessel's own
 Health, distinct from §9.4's caster-own and enemy-own reads, so route E's two anchors multiply
 rather than share a key.
 
 **Projected numbers.** Chosen Vessel's per-cast 1.30x is unchanged. Devotion adds **1.20x** per
 dead Vessel in a distinct bucket — 1.56x combined with one Vessel spent, 1.87x with two, at which
-point the Cultist is the last champion standing and the team's other terms are gone. Profane Bolt's
-conditional 1.25x is on the basic and is not the declared contribution. Devour Blessing's 1.25x per
+point the Cultist is the last champion standing and the team's other terms are gone. Desecrated
+Blade's conditional 1.25x is on the basic and is not the declared contribution. Devour Blessing's 1.25x per
 buff consumed is unchanged. Inside section 1's contract; the ceiling is self-limiting by
 construction.
 
@@ -841,18 +841,18 @@ construction.
   it lands distinct from the per-cast bonus's shared `TRAIT_RESOURCE_KEY` bucket and the two
   multiply. Reusing this existing hook needed no new plumbing and correctly covers every damage
   source the Cultist has, not only skill casts.
-* `Profane_Bolt.tres` — `bonus_per: {Trait_Condition: 0.25}`; `GetConditionCount` answers
+* `Desecrated_Blade.tres` — `bonus_per: {Trait_Condition: 0.25}`; `GetConditionCount` answers
   `Trait_Condition` with 1.0 while the Vessel is alive and below half its own max Health, 0.0
   otherwise. No new enum value.
 * `kit_contribution_manifest.gd` — Chosen Vessel's entry gains Devotion as a `gated_bonus` (not a
   second passive row — `burst_reachability.gd` reads only a Role's first passive entry, so a
   second row would be invisible to the scorer) with `reach: "self"`, `bucket_key:
-  "ChosenVesselTrait"`, magnitude 0.20, gated on "a Vessel has died"; Profane Bolt's entry gains
-  `bucket_key: "Profane Bolt"`, magnitude 0.25, with its condition stated. `burst_reachability.gd`
+  "ChosenVesselTrait"`, magnitude 0.20, gated on "a Vessel has died"; Desecrated Blade's entry gains
+  `bucket_key: "Desecrated Blade"`, magnitude 0.25, with its condition stated. `burst_reachability.gd`
   gained `_ContributeGatedCasterPassiveBonus`, the self-reach counterpart to the existing
   team-reach `_ContributeGatedTeamBonuses`, to read it.
-* `Concept_Document.md` 3.1.3's Chosen Vessel entry (Devotion) and 3.2.4.2's Profane Bolt entry
-  (the threshold rider) updated.
+* `Concept_Document.md` 3.1.3's Chosen Vessel entry (Devotion) and 3.2.4.2's Desecrated Blade
+  entry (the threshold rider) updated.
 
 **Judgment calls made while settling, listed so they can be overruled:** the party is Devotion's
 only cap, which is honest but means a wipe-adjacent team reads as the Cultist's strongest state;
@@ -1629,7 +1629,7 @@ key, not a doc paraphrase) — the authority the burst-reachability scorer actua
 | `Pratfall Sting` | Jester (Pratfall Sting) | Skill-name bucket |
 | `Devour Blessing` | Cultist (Devour Blessing) | Skill-name bucket |
 | `ChosenVesselTrait` | Cultist (Chosen Vessel's Devotion) | `GetOutgoingDamageBonus` bucket (the trait's own script global name, `battle_resolver.gd`'s shared contribution key for that hook) — permanent per dead Vessel; distinct from the same passive's per-cast `TRAIT_RESOURCE_KEY` bonus so the two multiply |
-| `Profane Bolt` | Cultist (Profane Bolt) | Skill-name bucket, conditional on the Vessel being alive and below half its own max Health |
+| `Desecrated Blade` | Cultist (Desecrated Blade) | Skill-name bucket, conditional on the Vessel being alive and below half its own max Health |
 | `Rending Charge` | Lancer (Rending Charge) — **implemented** (section 9.11) | Skill-name bucket, `bonus_per` keyed to the turn-bar section span the charge touches |
 | `Heap On (ramp)` | Bar Brawler (Heap On) | Skill-name bucket, per-instance ramp (not a stacking cap) |
 | `Final Calculation` | Architect (Final Calculation) | Skill-name bucket |

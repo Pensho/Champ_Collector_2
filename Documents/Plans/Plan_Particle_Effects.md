@@ -297,7 +297,7 @@ their roles land:
   existing zone particles, not battlefield particles; decide when implemented.
 - Signature spectacle skills (for example Cataclysmic Surge, Final Calculation,
   Devour Blessing) — candidates for the bespoke exception.
-- Projectile-flavored skills (Blood Bolt, Profane Bolt, Burning Bolas) — a travel
+- Projectile-flavored skills (Blood Bolt, Burning Bolas) — a travel
   archetype (origin → target) does not exist yet; decide whether impact-only reads
   well enough before adding one.
 

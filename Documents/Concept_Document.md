@@ -277,7 +277,7 @@ Current roles, their identity and purpose exist as follows:
     - Passive: "Double the fun!" [Enabler] - A base 5% chance to completely avoid the damage of an incoming attack (debuffs from the attack still land). Each hit that lands instead of being avoided increases the chance by a rarity-dependent amount, up to 3 stacks: Uncommon +3%, Rare +4%, Epic +5%, Legendary +6% per stack. Avoiding damage resets the chance to the 5% base. Increases the chances of being targeted.
     - Fielded by: `Jester.tres`
 - Cultist
-    - Consumes ally buffs or health to empower their own skills, dealing damage or applying debuffs. Primary attributes: Mysticism, Knowledge.
+    - Consumes ally buffs or health to empower their own skills, dealing damage or applying debuffs. Primary attributes: Mysticism, Attack.
     - Purpose: Debuffer, Damage
     - Passive: Chosen Vessel [Channel 1 + Channel 2] - At the start of combat the Cultist marks a random ally (the Cultist excluded) as their Vessel. Whenever the Cultist uses a non-basic skill, the Vessel loses 5% of their max Health and the skill gains a rarity-dependent power bonus. The drain can kill the Vessel. When the Vessel dies (from any source), the Cultist gains the Attune buff for 3 turns (see section 3.2.3.2), a new random ally is marked as the Vessel if any is alive, and the Cultist permanently gains Devotion: a rarity-dependent damage bonus for the rest of the fight, in its own bucket, uncapped and never spent. If all allies are dead then nothing happens.
         - Power bonus: 15% Uncommon, 20% Rare, 25% Epic, 30% Legendary
@@ -691,7 +691,7 @@ the fix belongs in the data or the document.
 ###### Tactician
 * Signal Strike
     * Type: Damage (basic skill, no cooldown)
-    * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Knowledge.
+    * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Attack.
 * Fatal Flaw
     * Type: Buff
     * Cooldown: 2 turns
@@ -728,17 +728,17 @@ the fix belongs in the data or the document.
     * Effect: [Enabler] The Jester gains the Spotlight buff for 2 turns and the Luck buff for 1 turn.
 
 ###### Cultist
-* Profane Bolt
+* Desecrated Blade
     * Type: Damage (basic skill, no cooldown)
-    * Effect: [Channel 1 + Channel 2] Deals damage to a single target enemy, scaling with Mysticism. +25% damage while the Vessel is alive and below half its own max Health.
+    * Effect: [Channel 1 + Channel 2] Deals damage to a single target enemy, scaling with Attack. +25% damage while the Vessel is alive and below half its own max Health.
 * Devour Blessing
     * Type: Damage
     * Cooldown: 3 turns
-    * Effect: [Channel 1 + Channel 2] Consumes all buffs from the ally holding the most; deals heavy damage to a single enemy, scaling with Mysticism, +25% damage per buff consumed.
+    * Effect: [Channel 1 + Channel 2] Consumes all buffs from the ally holding the most; deals heavy damage to a single enemy, scaling with Attack, +25% damage per buff consumed.
 * Rite of Severance
     * Type: Damage, Debuff
     * Cooldown: 4 turns
-    * Effect: [Channel 1 + Enabler] Deals damage to a single enemy and applies the Severance debuff for 2 turns.
+    * Effect: [Channel 1 + Enabler] Deals damage to a single enemy, scaled by Mysticism and applies the Severance debuff for 2 turns.
 
 ###### Bar Brawler
 * Heap on

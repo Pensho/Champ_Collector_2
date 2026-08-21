@@ -2,7 +2,7 @@ extends GutTest
 
 const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 
-# Regression coverage for the Cultist's Devotion bucket and Profane Bolt's below-half-Health
+# Regression coverage for the Cultist's Devotion bucket and Desecrated Blade's below-half-Health
 # rider (Role_Kit_Design.md section 9.8) — the load-bearing claim being that Devotion and the
 # per-cast trait_resource bonus land in two distinct CombinedDamageModifier buckets and
 # therefore multiply rather than add.
@@ -15,12 +15,12 @@ func _damage_modifier(p_results: Array[CombatResult]) -> CombinedDamageModifier:
 			return r.combined_damage_modifier
 	return null
 
-func _profane_bolt_skill() -> Skill:
+func _desecrated_blade_skill() -> Skill:
 	var skill: Skill = Skill.new()
-	skill.name = "Profane Bolt"
+	skill.name = "Desecrated Blade"
 	skill.target = Types.Skill_Target.Single_Enemy
 	var effect: DamageEffect = DamageEffect.new()
-	effect.damage_scaling = {Types.Attribute.Mysticism: 0.9}
+	effect.damage_scaling = {Types.Attribute.Attack: 0.9}
 	effect.bonus_per = {Types.Trait_Count_Source.Trait_Condition: 0.25}
 	skill.effects = [effect]
 	return skill
@@ -31,12 +31,12 @@ func _setup() -> Dictionary:
 	var cultist_trait: ChosenVesselTrait = ChosenVesselTrait.new()
 	cultist_trait.Init(Types.Rarity.Legendary)
 	roster[0]._trait = cultist_trait
-	roster[0]._skills = [_profane_bolt_skill(), TestFactory.make_strike_skill()]
+	roster[0]._skills = [_desecrated_blade_skill(), TestFactory.make_strike_skill()]
 	var resolver: BattleResolver = TestFactory.make_resolver(roster, TestFactory.make_full_sides())
 	cultist_trait.StartOfBattle(0, resolver)
 	return {"roster": roster, "resolver": resolver, "trait": cultist_trait}
 
-func test_profane_bolt_has_no_rider_with_a_full_health_vessel() -> void:
+func test_desecrated_blade_has_no_rider_with_a_full_health_vessel() -> void:
 	var setup: Dictionary = _setup()
 	var roster: Dictionary[int, Character] = setup["roster"]
 	var resolver: BattleResolver = setup["resolver"]
@@ -46,10 +46,10 @@ func test_profane_bolt_has_no_rider_with_a_full_health_vessel() -> void:
 
 	var modifier: CombinedDamageModifier = _damage_modifier(resolver.ResolveSkill(0, [3], 0))
 
-	assert_eq(modifier.Buckets().get(&"Profane Bolt", 0.0), 0.0,
-		"A full-Health Vessel should not trigger Profane Bolt's rider")
+	assert_eq(modifier.Buckets().get(&"Desecrated Blade", 0.0), 0.0,
+		"A full-Health Vessel should not trigger Desecrated Blade's rider")
 
-func test_profane_bolt_gains_the_rider_with_a_sub_half_health_vessel() -> void:
+func test_desecrated_blade_gains_the_rider_with_a_sub_half_health_vessel() -> void:
 	var setup: Dictionary = _setup()
 	var roster: Dictionary[int, Character] = setup["roster"]
 	var resolver: BattleResolver = setup["resolver"]
@@ -60,8 +60,8 @@ func test_profane_bolt_gains_the_rider_with_a_sub_half_health_vessel() -> void:
 
 	var modifier: CombinedDamageModifier = _damage_modifier(resolver.ResolveSkill(0, [3], 0))
 
-	assert_almost_eq(modifier.Buckets()[&"Profane Bolt"], 0.25, 0.0001,
-		"A sub-half-Health Vessel should trigger Profane Bolt's +25% rider")
+	assert_almost_eq(modifier.Buckets()[&"Desecrated Blade"], 0.25, 0.0001,
+		"A sub-half-Health Vessel should trigger Desecrated Blade's +25% rider")
 
 func test_devotion_and_the_per_cast_bonus_land_in_distinct_buckets_and_multiply() -> void:
 	var setup: Dictionary = _setup()

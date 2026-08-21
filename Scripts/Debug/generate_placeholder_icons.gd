@@ -252,7 +252,7 @@ const SKILL_ICON_TABLE: Array = [
 	{ "folder": "Abilities/Role_Active_Skills/Center_Stage", "base_name": "Center_Stage", "size": 64,
 			"color": Color(0.85, 0.35, 0.60, 1.0) },
 	# Cultist
-	{ "folder": "Abilities/Role_Active_Skills/Profane_Bolt", "base_name": "Profane_Bolt", "size": 64,
+	{ "folder": "Abilities/Role_Active_Skills/Desecrated_Blade", "base_name": "Desecrated_Blade", "size": 64,
 			"color": Color(0.45, 0.15, 0.35, 1.0) },
 	{ "folder": "Abilities/Role_Active_Skills/Devour_Blessing", "base_name": "Devour_Blessing", "size": 64,
 			"color": Color(0.50, 0.10, 0.30, 1.0) },
