@@ -67,3 +67,64 @@ Damaging skills deal +25 / 30 / 35 / 45 / 60% damage.
 Buffs the wearer applies are 50 / 55 / 60 / 70 / 85% stronger.
 
 **Compositional drawback:** the wearer's allies cannot critically hit.
+
+## Off-Hand
+
+### The Set Watch
+
+*Audience: Warlord, Bar Brawler, Symbiote.* [Channel 2] · hooks `OnDamageTaken`,
+`GetOutgoingDamageBonus`
+
+After the wearer takes a single hit exceeding 15% of their max Health, their next damaging skill
+deals +30 / 35 / 40 / 50 / 65% damage.
+
+**Drawback:** enemies target the wearer at 1.5x weight, permanently.
+
+### Lantern of the Standing Ward
+
+*Audience: Chronophage, Architect, Plague Doctor, Tidal Corsair.* [Channel 3 — Cascade] · hook
+`OnZoneUsed`
+
+The first charge each zone the wearer places spends resolves its `on_trigger` payload a second
+time, at 40 / 45 / 50 / 60 / 75% strength. That zone's remaining charges resolve once.
+
+**Compositional drawback:** every reagent consumed by anyone on the wearer's team has half effect.
+
+### The Answering Boss
+
+*Audience: Warlord, Symbiote, Bar Brawler, Bloodmage.* [Channel 2] · hooks `OnBuffGained`,
+`GetOutgoingDamageBonus`
+
+While the wearer holds a Barrier, damaging skills deal +25 / 30 / 35 / 45 / 60% damage.
+
+**Drawback:** the wearer's max Health is reduced by 30%.
+
+### The Sealed Docket
+
+*Audience: Emissary, Plague Doctor, Scholar, Diviner.* [Channel 2] · hook
+`GetOutgoingDamageBonus`
+
+While the target carries four or more distinct debuff types, damaging skills deal
++35 / 42 / 50 / 62 / 80% damage.
+
+**Compositional drawback:** cascade instances produced by anyone on the wearer's team resolve at
+half strength.
+
+### The Unguarded Glass
+
+*Audience: Thief, Tidal Corsair, Lancer.* [Channel 2 — crit path] · hooks `OnBuffGained`,
+`OnCriticalHit`
+
+While the wearer holds a buff granted by an ally, critical hits deal +25 / 30 / 35 / 45 / 60%
+Critical Damage.
+
+**Drawback:** the wearer can hold at most one buff at a time — a new buff replaces the one they
+hold.
+
+### The Ossuary Ledger
+
+*Audience: Cultist, Bloodmage, Jester.* [Channel 2] · hook `OnAllyDeath`
+
+When an ally dies, the wearer deals +25 / 30 / 35 / 45 / 60% damage for the rest of the battle.
+
+**Drawback:** the wearer can never gain a buff, from any source (Severance, permanently).

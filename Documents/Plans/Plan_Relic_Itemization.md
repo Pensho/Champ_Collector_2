@@ -10,8 +10,8 @@ Design only — this plan authors no code. The mechanism is owed separately; the
 
 ## Status
 
-Created 2026-08-21. Phases 1 and 4 are complete. Phase 2's Weapon batch is written into
-`Relic_Design.md`; Off-Hand and Boots remain, then Phase 3.
+Created 2026-08-21. Phases 1 and 4 are complete. Phase 2's Weapon and Off-Hand batches are written
+into `Relic_Design.md`; Boots remains, then Phase 3.
 
 ## Why the axis moves
 
