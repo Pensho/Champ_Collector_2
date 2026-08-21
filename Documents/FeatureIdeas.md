@@ -28,9 +28,6 @@ Effort: **S** = hours, **M** = days, **L** = week+
 - **Knowledge-Bypass Variant of Cracked Facet** *(Priority: Low | Effort: S)*
   Alternative effect for the Appraiser's Cracked Facet debuff: instead of flat bonus Critical Damage taken, the target's Knowledge does not blunt critical hits while the debuff holds (bypassing the `Defender's Knowledge * 0.5` term in the Critical Damage formula). Thematic for the Knowledge-scaling Appraiser but swingy — worthless against low-Knowledge enemies, huge against high-Knowledge ones. Shelved in favor of the flat bonus.
 
-- **Speed as a Field of Study Weakness** *(Priority: Low | Effort: S)*
-  The Scholar's Field of Study still excludes Speed from `PRIMARY_ATTRIBUTES` (`field_of_study_trait.gd`), a holdover from when turn order read only base Speed and a Speed weakness would have been identified but done nothing. Turn order now reads live, status-inclusive Speed (`BattleResolver.GetEffectiveAttributes`, `Battle.RefreshTurnBarSpeeds`), so the original blocker is gone — a Field of Study weakness rider reducing Speed would now genuinely slow the target's turn-bar advance. Revisit whether to add Speed back to the identifiable set.
-
 - **Calibration Zone "Upgrade" Feel** *(Priority: Low | Effort: S)*
   Final Calculation's tier-3 effect (7+ charges) re-erects the Architect's construction zone for free, or "upgrades" it if one is already standing (Concept_Document.md 3.1.3 / 3.2.4.3). The current implementation collapses "upgrade" to simply setting the existing zone's remaining charges to 8 — functionally correct but flavorless. Brainstorm a more distinct upgrade effect (e.g. a stronger Barrier size, bonus duration, or a visual/mechanical tell that the zone was reinforced rather than merely refilled) before this reads as a real tier-3 payoff.
 
