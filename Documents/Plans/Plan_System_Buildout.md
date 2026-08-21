@@ -20,17 +20,14 @@ pillar. Each entry names the gap, the phase that found it, and what closing it n
   Tension when a cascade instance resolves on an enemy, but a plain debuff tick (Plague, Burning,
   Hemorrhage) is not itself a cascade instance, so Golden Thread never sees one. Needs a `Post()`
   call site on the debuff-tick path. Found implementing `Role_Kit_Design.md` section 9.2.
-* **Relic rarity has a design slot but no code mechanism.** `Concept_Document.md` 3.3.1 names
-  Relic rarity's unique effect as the sole sanctioned gear-sourced `CombinedDamageModifier` factor,
-  but Relic rarity rolls no attributes and no unique-effect mechanism exists in code. Needs the
-  mechanism authored, then each Relic's unique effect audited against the 1.1.6 rejection test as a
-  conditional factor. Found by `Plan_Blowout_Alignment.md` Phase 6.
-* **Trinket has no attribute pool, and crashes on upgrade.** `Game_Balance.ITEM_TYPE_ATTRIBUTES`
-  (`Scripts/game_balance.gd`) defines Weapon, Shield, and Boots only; `EquipmentPreset.Setup()`
-  silently rolls a Trinket no attributes, and `Equipment.Upgrade()` (`Scripts/Gear/equipment.gd`)
-  crashes on it — the candidate-attributes fallback reads a `Trinket` dictionary key that does not
-  exist. Needs an attribute pool (or a Trinket-specific mechanic) before a four-slot loadout is
-  reachable at all. Found by `Plan_Blowout_Alignment.md` Phase 6.
+* **The Relic item type has a settled contract but no code mechanism.** `Concept_Document.md`
+  3.3.1 defines Relic as an item type orthogonal to rarity, carrying a unique effect and a fixed
+  drawback; `Plan_Relic_Itemization.md` owns the design and the catalog. Nothing of it exists in
+  code — `Types.Rarity` still carries `Relic` as a sixth tier, `EquipmentPreset.Setup()` rolls it
+  no attributes, and there is no effect mechanism, no item-type roll, and no dispatch reaching a
+  character's equipped Relic effects. Needs a code plan of its own; its main expense is that
+  character-trait dispatch is wired to a single `_trait` field across roughly forty call sites in
+  `Scripts/Battle/`. Found by `Plan_Blowout_Alignment.md` Phase 6.
 * **Refutation's documented damage never shipped.** `Concept_Document.md` 3.2.4.2 says Refutation
   deals damage to an enemy whose zone it removes, scaling with Knowledge at 10% of a standard hit
   per remaining charge; `Refutation.tres` carries no damage parameters. The Scholar's kit passed its

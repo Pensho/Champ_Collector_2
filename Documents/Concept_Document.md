@@ -103,7 +103,7 @@ The core gameplay follows a cyclical "Prepare, Engage, Reward, Grow" loop design
 
 - Tactical Puzzles: Players must carefully time skills and manage Accuracy/Resistance to overcome specific boss mechanics.
 
-**Reward Acquisition:** Victory grants Experience, Currencies (Area Unlocks/Thematic resources), and loot ranging from Common to Relic rarity.
+**Reward Acquisition:** Victory grants Experience, Currencies (Area Unlocks/Thematic resources), and loot ranging from Common to Legendary rarity.
 
 **Character Progression:** Players use rewards to Ascend characters, upgrade skills, and refine item affixes, increasing their power to unlock the next Tier of challenges.
 
@@ -111,7 +111,7 @@ The core gameplay follows a cyclical "Prepare, Engage, Reward, Grow" loop design
 | Loop Type | Focus | Primary Activity |
 |-----------|-------|------------------|
 | Short-Term (Daily) | Efficiency | Spending Energy on routine fights to gather crafting materials and XP; completing daily God-themed events. |
-| Mid-Term (Weekly) | Strategy | Solving "Puzzle" encounters and bosses to acquire Role-specific gear or rare Trinkets; participating in rotating God events (e.g., God of Rules’ floor dungeon). |
+| Mid-Term (Weekly) | Strategy | Solving "Puzzle" encounters and bosses to acquire Role-specific gear or rare Relics; participating in rotating God events (e.g., God of Rules’ floor dungeon). |
 | Long-Term (Monthly) | Collection | Using Commissions of guilds to acquire new characters, completing faction-specific synergies, and uncovering the "Forgotten God" through world exploration. |
 
 
@@ -129,7 +129,7 @@ The core gameplay follows a cyclical "Prepare, Engage, Reward, Grow" loop design
 
 ### 3.1. Champions
 The terms Champion, Character, Hero are synonymous for the playable characters a player can acquire and use.
-For now there are no Common Characters that are usable by a player. Also, there will be no Relic tier Characters, that tier level is restricted for Items.
+For now there are no Common Characters that are usable by a player.
 There is a maximum level of 50, with a future idea to use duplicate heroes as a mean to increase it a few steps at most (or to upgrade skills).
 
 #### 3.1.1. Character Attributes
@@ -873,9 +873,9 @@ Skills authored for enemies are cataloged in `Encounter_Design_Document.md` sect
 ### 3.3. Items and Resources
 
 #### 3.3.1. Itemization
-Each character can have 3 or 4 types of equipment, a weapon, off-hand (shield, book or something), boots and if certain a talent tree node has been acquired then a "trinket" can also be equipped. These four pieces (Weapon, Off-hand, Boots, Trinket) are the core intended loadout.
+Each character equips three types of equipment: a weapon, an off-hand (shield, book or something), and boots. These three pieces are the core intended loadout.
 
-The codebase additionally defines six more equipment slots (Helmet, Chest, Pants, Gloves, Ring, Amulet) for future flexibility. These are optional and not currently in scope for itemization design or content — no items or drop tables target them yet.
+The codebase additionally defines seven more equipment slots (Helmet, Chest, Pants, Gloves, Ring, Amulet, Trinket) for future flexibility. These are optional and not currently in scope for itemization design or content — no items or drop tables target them yet. A talent-tree-gated fourth slot is a candidate feature rather than committed scope; see `FeatureIdeas.md`.
 
 Rarity for items:
 * Common
@@ -883,23 +883,50 @@ Rarity for items:
 * Rare
 * Epic
 * Legendary
-* Relic [Channel 2, sanctioned exception]
-    * Has both upsides and downsides. Shall have a unique effect.
 
-**Gear verdict:** gear feeds
-the scaled attribute sum only. [Channel 1] Each step in rarity adds one attribute bonus for
-the equipping character; no affix contributes a factor to the combined modifier (section
-1.1.3's second channel). The single exception is Relic rarity's unique effect
-[Channel 2, sanctioned exception]: instead of an attribute bonus, a Relic adds a strong
-unique bonus and a downside, and that bonus may supply a combined-modifier factor. Every
-Relic's unique effect must pass the 1.1.6 rejection test as a *conditional* factor — one that
-always applies is a flat multiplier on every hit its owner ever throws, the median-lifting
-shape channel 2 exists to avoid — and is audited individually rather than opening gear as a
-general affix tier.
+Every item also carries an **item type**, orthogonal to rarity: **Standard** or **Relic**. The
+type decides what a rarity step buys. A Relic occupies one of the same slots and competes with a
+standard item for it.
 
-At the ceiling — a fully-geared three-slot Legendary loadout (Weapon, Off-Hand, Boots; Trinket
-excluded, as it has no attribute pool in code — see `Plan_Blowout_Alignment.md`'s `Coverage
-gaps`), every item rolled and then fully upgraded (ten times each) — gear raises a
+| | Standard | Relic |
+|---|---|---|
+| Attribute steps | rarity (1–5) | ceil(rarity / 2) — 1, 1, 2, 2, 3 |
+| Unique effect | none | one, magnitude scaling with rarity |
+| Downside | none | one, fixed at every rarity |
+
+**Gear verdict:** standard gear feeds the scaled attribute sum only. [Channel 1] Each step in
+rarity adds one attribute bonus for the equipping character; no affix contributes a factor to
+the combined modifier (section 1.1.3's second channel). A Relic trades attribute steps for a
+unique effect and a fixed drawback, and its effect may feed any channel: a conditional
+combined-modifier factor [Channel 2], a cascade trigger [Channel 3 — Cascade], or a pure
+[Enabler]. Every Relic is channel-tagged in section 1.1.3's vocabulary and audited individually
+against the 1.1.6 rejection test.
+
+**The upside is conditional, the downside is not.** A Relic's unique effect fires on a trigger, a
+state, or a threshold; its drawback is always on. The player pays every turn and collects only
+when the condition holds, which is what keeps a Relic off the median. An always-on flat damage
+multiplier — a multiplier on every hit its owner ever throws — is the shape 1.1.6 rejects and is
+not an admissible Relic effect. Rarity scales the upside only, so a higher-rarity copy of the
+same Relic is strictly better.
+
+Relic effects are written against the same hook vocabulary as character traits, firing across the
+range of battle situations rather than through a narrow interface of their own.
+
+**Multi-Relic bound:** the number of equipped Relics is not capped. Each Relic's contribution
+must be conditional on a distinct mechanic identity, so section 1.1.3's composition law governs a
+multi-Relic loadout the same way it governs multiple champions. The per-Relic audit and the
+worst-case three-slot product live in `Relic_Design.md`.
+
+**Relic acquisition:** item type is rolled independently of the loot budget. Every gear drop
+rolls its rarity from the encounter's reward budget as normal, then a flat 5% roll decides Relic
+instead of Standard at that rarity, and the Relic costs the same budget as the standard item
+would. Availability therefore does not scale with difficulty — a Common Relic is reachable from
+the first encounter. The shop's gear slots roll the same
+chance (section 3.6.4). Every Relic in the current catalog is a general drop; boss-specific
+Relics are a later addition, once bosses exist to carry them.
+
+At the ceiling — a fully-geared Legendary loadout (Weapon, Off-Hand, Boots), every item rolled
+and then fully upgraded (ten times each) — gear raises a
 champion's relevant attribute by 3.1x, which comes out to a 4.2x-5.3x contrast ratio against
 boss-tier Defence once the attribute's own effect on mitigation is included (see
 `Scripts/Debug/blowout_calibration.gd`'s `_ReportGearCeiling()` for the calibration and how
@@ -910,6 +937,9 @@ contributes 0 to a Mysticism-scaled skill's damage regardless of how it rolls, e
 it is still equipped and raises other attributes. That stays below the 10x mini-boss burst
 target, but it is a permanent, no-setup multiplier, which is worth knowing when reading
 section 1.1.4's "stays tame."
+That figure is an upper bound a Relic loadout can only sit below: a Relic displaces a standard
+item rather than adding to the loadout, and rolls fewer attribute steps. What a Relic raises is
+channels 2 and 3, which the per-Relic audit governs.
 
 Items can exist for general use that most characters can use and Role specific type of items.
 
@@ -1054,7 +1084,10 @@ There is a chance when using a Fortune’s Favor to get a champion, or they coul
 
 #### 3.6.4. The shop
 Six stock slots: 3 gear, 1 reagent, 1 Supplies bundle, 1 featured Fortune's Favor offer.
-Gear and reagent rarity scale with player progress. The Favor slot always offers a Bone
+Gear and reagent rarity scale with player progress. Each gear slot rolls its item type on the
+same flat 5% chance a drop uses (section 3.3.1), so a Relic can appear in the shop at any
+progress level; a Relic is priced at a substantially higher markup than a standard item of its
+rarity. The Favor slot always offers a Bone
 tier Favor for a fixed Silver price. Stock restocks on a one-hour real-world timer; the
 Favor slot instead waits out its own three-day cooldown after purchase. A purchased slot
 stays sold out until its next restock (or, for Favor, until its cooldown ends).
@@ -1067,7 +1100,9 @@ The idea is to have every encounter hold a "loot table" of possible drops. Some 
 Then each drop is given a "reward value", where e.g.
 - X silver is Y reward value points
 - X experience is Y reward value points
-- Gear of rarity Z is Y reward value points equivalent
+- Gear of rarity Z is Y reward value points equivalent, keyed by rarity alone — a Relic costs
+  the same as the standard item of its rarity, since item type is rolled outside the budget
+  (section 3.3.1)
 
 Then every encounter will be given a reward value points buffer depending on difficulty and cost of supplies to engage.
 

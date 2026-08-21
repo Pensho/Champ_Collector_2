@@ -22,7 +22,8 @@ that holds (or will hold) the detail.
 - [ ] More big battles as puzzles — encounter design (Concept_Document.md 3.2 "Tactical Puzzles")
 - [ ] Upgrading items — stat-value upgrades done; rarity/affix rerolling still pending (Concept_Document.md 3.3.1)
 - [ ] Additional biomes — beyond Reclaimed City (World_Building.md 4.3)
-- [ ] Relic items — implement Relic rarity tier (Concept_Document.md 3.3.1)
+- [ ] Relic items — implement the Relic item type: unique effects, drawbacks, and the item-type
+      roll (Concept_Document.md 3.3.1)
 - [ ] Ascension system — post-level-cap progression (Concept_Document.md 3.1.2)
 
 ## Technical Groundwork

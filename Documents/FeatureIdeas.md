@@ -47,6 +47,9 @@ Effort: **S** = hours, **M** = days, **L** = week+
 
 ## Characters & Progression
 
+- **Trinket: a talent-tree-gated fourth gear slot** *(Priority: Low | Effort: M)*
+  A fourth equipment slot unlocked by a talent tree node, on top of the committed three (Weapon, Off-Hand, Boots). Cut from itemization scope as unlikely to fit the schedule; the `Trinket` slot enum value and its UI plumbing remain in code. Picking it up needs an attribute pool in `Game_Balance.ITEM_TYPE_ATTRIBUTES` — without one `EquipmentPreset.Setup()` rolls a blank item and `Equipment.Upgrade()` crashes on the missing dictionary key — plus a reason for the slot to exist that the other three do not already cover.
+
 - **New Role: The Abacist (Control/Sustain)** *(Priority: Medium | Effort: M)*
   A stillness-control role — the Chronophage's opposite: it forbids turn-bar movement instead of causing it, claiming the orphaned Anchor, Steadfast, and Sequence Lock effects. Unblocks the shelved turn-bar-tyrant boss concept and completes the Reanimating Statues 1 answer set; lore home: the Silent Monks of the Abacus (World_Building 5.2).
 
