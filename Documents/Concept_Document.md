@@ -897,14 +897,14 @@ always applies is a flat multiplier on every hit its owner ever throws, the medi
 shape channel 2 exists to avoid — and is audited individually rather than opening gear as a
 general affix tier.
 
-At the ceiling — a fully-geared three-slot Legendary loadout (Weapon, Shield, Boots; Trinket
+At the ceiling — a fully-geared three-slot Legendary loadout (Weapon, Off-Hand, Boots; Trinket
 excluded, as it has no attribute pool in code — see `Plan_Blowout_Alignment.md`'s `Coverage
 gaps`), every item rolled and then fully upgraded (ten times each) — gear raises a
 champion's relevant attribute by 3.1x, which comes out to a 4.2x-5.3x contrast ratio against
 boss-tier Defence once the attribute's own effect on mitigation is included (see
 `Scripts/Debug/blowout_calibration.gd`'s `_ReportGearCeiling()` for the calibration and how
 that ratio was judged).
-Only two of the three slots (Weapon, Shield) can roll the attribute a given caster's skill
+Only two of the three slots (Weapon, Off-Hand) can roll the attribute a given caster's skill
 scales on — Boots' attribute pool never includes Mysticism, so a maxed Legendary Boots
 contributes 0 to a Mysticism-scaled skill's damage regardless of how it rolls, even though
 it is still equipped and raises other attributes. That stays below the 10x mini-boss burst
@@ -1053,7 +1053,11 @@ Where players recruit new characters using Fortune’s Favors.
 There is a chance when using a Fortune’s Favor to get a champion, or they could get supplies or currency as a filler.
 
 #### 3.6.4. The shop
-Where players can purchase consumables, gear, and other items using various currencies.
+Six stock slots: 3 gear, 1 reagent, 1 Supplies bundle, 1 featured Fortune's Favor offer.
+Gear and reagent rarity scale with player progress. The Favor slot always offers a Bone
+tier Favor for a fixed Silver price. Stock restocks on a one-hour real-world timer; the
+Favor slot instead waits out its own three-day cooldown after purchase. A purchased slot
+stays sold out until its next restock (or, for Favor, until its cooldown ends).
 
 ### 3.7 Energy Systems
 To limit daily player activity, an energy system will be implemented. Players will have a set amount of Energy (Supplies) that depletes when entering combat nodes. Supplies regenerate over time at a rate of +10 per 10 real-world minutes, up to a cap of 100, and can also be replenished through in-game actions or purchases. Regeneration is offline-aware: elapsed real time is applied on load, with partial progress toward the next +10 preserved.

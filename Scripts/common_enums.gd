@@ -51,7 +51,7 @@ enum Slot
 {
 	Helmet,
 	Weapon,
-	Shield,
+	OffHand,
 	Chest,
 	Pants,
 	Boots,
@@ -59,6 +59,14 @@ enum Slot
 	Ring,
 	Amulet,
 	Trinket,
+}
+
+enum Category
+{
+	Gear,
+	Reagent,
+	Supplies,
+	FortunesFavor,
 }
 
 enum Skill_Target

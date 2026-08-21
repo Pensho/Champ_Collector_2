@@ -37,7 +37,7 @@ const ITEM_TYPE_ATTRIBUTES: Dictionary = {
 		Types.Attribute.CritChance,
 		Types.Attribute.CritDamage,],
 		
-	Types.Slot.Shield: [
+	Types.Slot.OffHand: [
 		Types.Attribute.Health,
 		Types.Attribute.Defence,
 		Types.Attribute.Resistance,
@@ -90,6 +90,16 @@ const SUPPLY_REGEN_AMOUNT: int = 10
 const SUPPLY_REGEN_INTERVAL_SECONDS: int = 600
 const ENCOUNTER_BASE_SUPPLY_COST: int = 6 # base; surcharges (e.g. adventure tier) add on top
 const ADVENTURE_SUPPLY_COST_TIER_INCREASE: int = 3
+
+# Shop
+const SHOP_SLOT_COUNT: int = 6
+const SHOP_GEAR_SLOTS: int = 3
+const SHOP_RESTOCK_INTERVAL_SECONDS: int = 3600
+const SHOP_FORTUNES_FAVOR_COOLDOWN_SECONDS: int = 259200 # 3 days
+const SHOP_BUY_MARKUP: float = 2.5
+const SHOP_SUPPLIES_BUNDLE_AMOUNT: int = 25
+const SHOP_SUPPLIES_PRICE: int = 400
+const SHOP_FORTUNES_FAVOR_PRICE: int = 1200
 
 # Adventure
 const ADVENTURE_DAILY_TIER_THRESHOLD: int = 3

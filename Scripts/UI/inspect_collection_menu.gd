@@ -164,11 +164,11 @@ func ShowSelectedCharacter(p_instance_ID: int) -> void:
 				main.GetInstance()._item_collection.GetItemTexture(Types.Slot.Weapon))
 		_item_slots_equipped[0].SetTextureOutline(
 				_item_collection[_character_collection[p_instance_ID]._held_items[Types.Slot.Weapon]]._rarity)
-	if(_character_collection[p_instance_ID]._held_items.has(Types.Slot.Shield)):
+	if(_character_collection[p_instance_ID]._held_items.has(Types.Slot.OffHand)):
 		_item_slots_equipped[1].SetHeldObjectTexture(
-				main.GetInstance()._item_collection.GetItemTexture(Types.Slot.Shield))
+				main.GetInstance()._item_collection.GetItemTexture(Types.Slot.OffHand))
 		_item_slots_equipped[1].SetTextureOutline(
-				_item_collection[_character_collection[p_instance_ID]._held_items[Types.Slot.Shield]]._rarity)
+				_item_collection[_character_collection[p_instance_ID]._held_items[Types.Slot.OffHand]]._rarity)
 	if(_character_collection[p_instance_ID]._held_items.has(Types.Slot.Boots)):
 		_item_slots_equipped[2].SetHeldObjectTexture(
 				main.GetInstance()._item_collection.GetItemTexture(Types.Slot.Boots))
@@ -343,7 +343,7 @@ func TriggerUnequipItem(p_item_type: Types.Slot) -> void:
 	match p_item_type:
 		Types.Slot.Weapon:
 			_item_slots_equipped[0].SetHeldObjectTexture(null)
-		Types.Slot.Shield:
+		Types.Slot.OffHand:
 			_item_slots_equipped[1].SetHeldObjectTexture(null)
 		Types.Slot.Boots:
 			_item_slots_equipped[2].SetHeldObjectTexture(null)
@@ -363,8 +363,8 @@ func EquipedItemSlotButton(p_slot_ID: int) -> void:
 			if(_character_collection[_selected_character_ID]._held_items.has(Types.Slot.Weapon)):
 				TriggerUnequipItem(Types.Slot.Weapon)
 		1:
-			if(_character_collection[_selected_character_ID]._held_items.has(Types.Slot.Shield)):
-				TriggerUnequipItem(Types.Slot.Shield)
+			if(_character_collection[_selected_character_ID]._held_items.has(Types.Slot.OffHand)):
+				TriggerUnequipItem(Types.Slot.OffHand)
 		2:
 			if(_character_collection[_selected_character_ID]._held_items.has(Types.Slot.Boots)):
 				TriggerUnequipItem(Types.Slot.Boots)

@@ -74,8 +74,8 @@ func GetItemTexture(p_item_type: Types.Slot) -> Texture:
 			texture = _used_item_textures[Types.Slot.Helmet]
 		Types.Slot.Weapon:
 			texture = _used_item_textures[Types.Slot.Weapon]
-		Types.Slot.Shield:
-			texture = _used_item_textures[Types.Slot.Shield]
+		Types.Slot.OffHand:
+			texture = _used_item_textures[Types.Slot.OffHand]
 		Types.Slot.Chest:
 			texture = _used_item_textures[Types.Slot.Chest]
 		Types.Slot.Pants:

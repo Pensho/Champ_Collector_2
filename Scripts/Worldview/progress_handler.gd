@@ -30,6 +30,11 @@ func GetCurrentEncounterDifficulty(p_encounter_ID: String) -> int:
 	print("GetCurrentEncounterDifficulty for: ", p_encounter_ID, " has difficulty: ", _stage_difficulty[p_encounter_ID])
 	return _stage_difficulty[p_encounter_ID]
 
+func GetHighestDifficulty() -> int:
+	if (_stage_difficulty.is_empty()):
+		return 1
+	return _stage_difficulty.values().max()
+
 func MarkDifficultyCompleted(p_encounter_ID: String, p_difficulty: int) -> void:
 	if (!_stage_difficulty.has(p_encounter_ID)):
 		RegisterEncounter(p_encounter_ID)

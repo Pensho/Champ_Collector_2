@@ -85,7 +85,7 @@ const DEBUG_ITEM_TEXTURE_FALLBACK: String = "res://Assets/Champ_Collector/Icons/
 ## Known item icons per slot, used so constructed debug items have a real texture.
 const ITEM_SLOT_TEXTURES: Dictionary[Types.Slot, String] = {
 	Types.Slot.Weapon: "res://Assets/Champ_Collector/Icons/Items/Spear/Spear_0002.png",
-	Types.Slot.Shield: "res://Assets/Champ_Collector/Icons/Items/Shield/Shield_0002.png",
+	Types.Slot.OffHand: "res://Assets/Champ_Collector/Icons/Items/Shield/Shield_0002.png",
 	Types.Slot.Boots: "res://Assets/Champ_Collector/Icons/Items/Red_Boot/Red_Boot_0003.png",
 }
 

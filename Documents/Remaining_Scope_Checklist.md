@@ -14,7 +14,7 @@ that holds (or will hold) the detail.
   (data structure landed: `BiomeVisualData`/`DecorLayerData`; see
   Adventure_Background_Visuals_Checklist.md for the art backlog and remaining
   rendering-integration work)
-- [ ] The shop (Concept_Document.md 3.6.4 The shop)
+- [x] The shop (Concept_Document.md 3.6.4 The shop)
 - [ ] Music
 - [ ] Sound effects
 - [ ] More skills — expand role-specific and universal skill rosters (Concept_Document.md 3.2.4)

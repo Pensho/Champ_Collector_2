@@ -1,0 +1,151 @@
+[gd_scene format=3 uid="uid://befbxkp7nk7jg"]
+
+[ext_resource type="Script" uid="uid://cna3isrsgfjsv" path="res://Scripts/UI/shop_slot.gd" id="1_shop_slot"]
+[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="2_theme"]
+[ext_resource type="Shader" uid="uid://pqr1x86j3fq5" path="res://Assets/Champ_Collector/Shaders/outline.gdshader" id="3_outline"]
+[ext_resource type="Script" uid="uid://bumae467d28vx" path="res://Scripts/UI/tooltip.gd" id="4_tooltip"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_shop_slot"]
+resource_local_to_scene = true
+shader = ExtResource("3_outline")
+shader_parameter/color = Color(0, 0, 0, 0)
+shader_parameter/width = 3.0000001425
+shader_parameter/pattern = 0
+shader_parameter/inside = false
+shader_parameter/add_margins = true
+
+[node name="ShopSlot" type="Control" unique_id=979228855 node_paths=PackedStringArray("_tooltip")]
+custom_minimum_size = Vector2(380, 170)
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_shop_slot")
+_tooltip = NodePath("ToolTipArea")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1313282045]
+layout_mode = 0
+offset_right = 380.0
+offset_bottom = 170.0
+color = Color(0, 0, 0, 0.6666667)
+
+[node name="Label_Category" type="Label" parent="." unique_id=2086837785]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 4.0
+offset_right = 160.0
+offset_bottom = 20.0
+theme = ExtResource("2_theme")
+theme_override_font_sizes/font_size = 14
+
+[node name="Label_Ribbon" type="Label" parent="." unique_id=1826720748]
+visible = false
+layout_mode = 0
+offset_left = 240.0
+offset_top = 4.0
+offset_right = 372.0
+offset_bottom = 20.0
+theme = ExtResource("2_theme")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 14
+horizontal_alignment = 2
+
+[node name="TextureRect_Icon" type="TextureRect" parent="." unique_id=1771423758]
+material = SubResource("ShaderMaterial_shop_slot")
+custom_minimum_size = Vector2(110, 98)
+layout_mode = 0
+offset_left = 8.0
+offset_top = 24.0
+offset_right = 118.0
+offset_bottom = 122.0
+expand_mode = 1
+
+[node name="TextureRect_IconDarken" type="TextureRect" parent="." unique_id=88361027]
+visible = false
+modulate = Color(0, 0, 0, 0.65)
+layout_mode = 0
+offset_left = 8.0
+offset_top = 24.0
+offset_right = 118.0
+offset_bottom = 122.0
+mouse_filter = 2
+expand_mode = 1
+
+[node name="Content" type="Control" parent="." unique_id=519742794]
+anchors_preset = 0
+offset_right = 380.0
+offset_bottom = 170.0
+mouse_filter = 2
+
+[node name="Label_Name" type="Label" parent="Content" unique_id=1678829635]
+layout_mode = 0
+offset_left = 126.0
+offset_top = 24.0
+offset_right = 372.0
+offset_bottom = 122.0
+theme = ExtResource("2_theme")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 18
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="TextureRect_Silver" type="TextureRect" parent="Content" unique_id=978043755]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 0
+offset_left = 8.0
+offset_top = 138.0
+offset_right = 28.0
+offset_bottom = 158.0
+expand_mode = 1
+
+[node name="Label_Price" type="Label" parent="Content" unique_id=708988405]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 136.0
+offset_right = 245.0
+offset_bottom = 160.0
+theme = ExtResource("2_theme")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 16
+vertical_alignment = 1
+
+[node name="Button_Buy" type="Button" parent="Content" unique_id=1873686719]
+layout_mode = 0
+offset_left = 250.0
+offset_top = 136.0
+offset_right = 372.0
+offset_bottom = 164.0
+theme = ExtResource("2_theme")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+text = "Buy"
+
+[node name="ToolTipArea" type="Control" parent="." unique_id=546885536]
+custom_minimum_size = Vector2(380, 170)
+anchors_preset = 0
+offset_right = 380.0
+offset_bottom = 170.0
+mouse_filter = 2
+script = ExtResource("4_tooltip")
+
+[node name="Label_Cooldown" type="Label" parent="." unique_id=1547839022]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_theme")
+theme_override_colors/font_color = Color(0.9019608, 0.8235294, 0.61960787, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.44313726)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 5
+theme_override_constants/shadow_outline_size = 12
+theme_override_font_sizes/font_size = 32
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2

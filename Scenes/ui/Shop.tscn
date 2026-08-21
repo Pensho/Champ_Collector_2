@@ -1,0 +1,99 @@
+[gd_scene format=3 uid="uid://cx2tcva01eitk"]
+
+[ext_resource type="Script" uid="uid://cb7hqr2etlnbw" path="res://Scripts/UI/shop_menu.gd" id="1_shop_menu"]
+[ext_resource type="Texture2D" uid="uid://buloq01pashmn" path="res://Assets/Champ_Collector/Hubs/Reclaimed_City/Reclaimed_1.jpg" id="2_background"]
+[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="3_theme"]
+[ext_resource type="PackedScene" uid="uid://bm6xwrr37gevr" path="res://Scenes/ui/Resources/Resource_Bar.tscn" id="4_resource_bar"]
+[ext_resource type="Texture2D" uid="uid://cxe2lffkbra47" path="res://Assets/Champ_Collector/Scenery/Grasslands.png" id="5_shopkeeper"]
+
+[node name="ShopMenu" type="Control" unique_id=873498712]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_shop_menu")
+
+[node name="Background" type="TextureRect" parent="." unique_id=2046603646]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("2_background")
+
+[node name="ResourceBar" parent="." unique_id=1782088106 instance=ExtResource("4_resource_bar")]
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -193.0
+offset_top = 20.0
+offset_right = 193.0
+offset_bottom = 60.0
+grow_horizontal = 2
+
+[node name="Label_Title" type="Label" parent="." unique_id=1321728713]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 20.0
+offset_right = 330.0
+offset_bottom = 60.0
+theme = ExtResource("3_theme")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 32
+text = "Shop"
+
+[node name="Label_Restock" type="Label" parent="." unique_id=939291887]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 64.0
+offset_right = 330.0
+offset_bottom = 90.0
+theme = ExtResource("3_theme")
+theme_override_colors/font_color = Color(0.9019608, 0.8235294, 0.6196079, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+text = "Restocks in 00:00:00"
+
+[node name="Button_Back" type="Button" parent="." unique_id=667005527]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -80.0
+offset_top = 20.0
+offset_bottom = 60.0
+theme = ExtResource("3_theme")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+text = "Back"
+
+[node name="TextureRect_Shopkeeper" type="TextureRect" parent="." unique_id=1271374635]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.15
+anchor_bottom = 0.95
+offset_left = -16.0
+offset_right = 400.0
+offset_bottom = 56.0
+texture = ExtResource("5_shopkeeper")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="GridArea" type="CenterContainer" parent="." unique_id=1455216789]
+layout_mode = 0
+anchor_left = 0.3333
+anchor_top = 0.15
+anchor_right = 1.0
+anchor_bottom = 0.95
+offset_right = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GridContainer" type="GridContainer" parent="GridArea" unique_id=362603256]
+layout_mode = 2
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 20
+columns = 2
+
+[connection signal="button_up" from="Button_Back" to="." method="_on_back_button_up"]

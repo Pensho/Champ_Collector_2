@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_haydv")
-_name = "Uncommon Shield"
+_name = "Shield"
 _slot = 2
 _rarity = 2
 _texture_path = "res://Assets/Champ_Collector/Icons/Items/Shield/Shield_0002.png"

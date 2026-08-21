@@ -59,6 +59,7 @@ SceneTree
         ├── ItemCollection                         │ all added as children,
         ├── ResourceHandler                        │ several joined to the
         ├── ProgressHandler                        │ "saveable" group
+        ├── ShopHandler                            │
         ├── SaveManager                            │
         ├── AdventureStateHandler                  │
         └── _current_scene (the active gameplay screen) ─┘
@@ -92,7 +93,7 @@ main.GetInstance()._item_collection   # etc.
 `Scripts/main_instance.gd` (`class_name Main_Instance`) is the heart of the application. `Init()`:
 
 - Constructs and adds the long-lived state nodes: `CharacterCollection`, `ItemCollection`,
-  `ResourceHandler`, `ProgressHandler`, `SaveManager`, `AdventureStateHandler`.
+  `ResourceHandler`, `ProgressHandler`, `ShopHandler`, `SaveManager`, `AdventureStateHandler`.
 - Adds `AdventureStateHandler` to the `SaveManager.GROUP_SAVEABLE` group.
 - Seeds a default roster by duplicating preloaded `CharacterPreset` resources (Lancer, Thief,
   Bar Brawler, Jester, Chronophage, Tidal Corsair, Centaur Lancer, Centaur Archivist, Tactician,
@@ -1612,6 +1613,11 @@ and in the saveable group, but holds a `Dictionary[String, int]` of owned counts
 `ReagentRegistry` identifier string rather than an instance-ID dictionary, since reagents are
 fungible (no per-instance state). `Deserialize` tolerates both pre-reagent saves (missing data)
 and stale keys no longer in `ReagentRegistry.REAGENTS`.
+
+`ShopHandler` (`Scripts/Worldview/shop_handler.gd`) is likewise owned by `Main_Instance` and in
+the saveable group. It holds the six current stock entries plus a restock anchor and a Fortune's
+Favor purchase timestamp, both wall-clock unix seconds so restock and cooldown state survive
+offline time (`Concept_Document.md` 3.6.4).
 
 ### 10.2. Save format and ordering
 
