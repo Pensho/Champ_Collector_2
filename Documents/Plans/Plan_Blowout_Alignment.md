@@ -31,7 +31,7 @@ harness is kept at `Scripts/Debug/blowout_calibration.gd` and re-answers those q
 the formula or the presets change. Every sub-plan spawned by Phases 1-6 is deleted per the
 retention rule.
 
-The roster sweep baseline these phases moved is `Archive/Role_Kit_Design.md` section 4's, which owns
+The roster sweep baseline these phases moved is `Role_Kit_Design.md` section 4's, which owns
 the current figures; the pairing-web work it carried forward is complete.
 
 ## Phases
@@ -42,7 +42,7 @@ Phases 0-6 are complete and their sections are deleted per the retention rule.
 
 **Produced:** `Plan_Encounter_Blowout_Retrofit.md`, executed through Phase 2 (tier definitions
 and the channel audit). The kit rework it waited on is complete
-(`Archive/Role_Kit_Design.md`), so Phase 2b onward is unblocked.
+(`Role_Kit_Design.md`), so Phase 2b onward is unblocked.
 
 Four decisions were settled with the plan's owner before the sub-plan was written, so it is
 written as prescriptions rather than questions: the boss Health retune happens now rather than

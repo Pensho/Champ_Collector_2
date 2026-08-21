@@ -16,7 +16,7 @@ Paused after Phase 2, pending the kit rework. Phase 1 (tier definitions) and Pha
 (per-encounter channel audit and coverage-ledger tagging) are done. Phase 3 (boss
 configuration rework) was on hold because it commits specific role/kit pairings to each
 boss's configurations, and reshaping them against kits that were about to change would
-have been wasted work. The kit rework has now landed (`Archive/Role_Kit_Design.md`) and the
+have been wasted work. The kit rework has now landed (`Role_Kit_Design.md`) and the
 combined-modifier gap the Findings entry below describes is closed — **Phase 3 is unblocked,
 behind Phase 2b.** Phases 4 and 5 depend on Phase 3's output and remain paused until it runs.
 
@@ -59,7 +59,7 @@ end in a payoff somewhere, and that requirement is currently met by one boss out
 ### Settled decisions
 
 1. **The Health retune happens now**, not gated on the kit rework
-   (`Archive/Role_Kit_Design.md`, complete). Its consequence is carried as a Finding below
+   (`Role_Kit_Design.md`, complete). Its consequence is carried as a Finding below
    rather than absorbed silently.
 2. **The "unsolved is a wall" property is scoped to Boss tier.** Section 1.1.1's bullet is
    amended to name the tier; the mini-boss keeps "roughly double unsolved" and gains 1.1.2's
@@ -266,7 +266,7 @@ interpolated message — `Tests/unit/test_burst_pacing.gd` is representative):
 
   Phase 4 triples boss Health on the strength of a 50x burst the roster could not produce when
   this was written; the kit rework has since put the combined-modifier ceiling at 16.24x, 21.12x
-  contrast (`Archive/Role_Kit_Design.md` section 4). `blowout_calibration.gd`'s
+  contrast (`Role_Kit_Design.md` section 4). `blowout_calibration.gd`'s
   `_ReportBaselines()` measured three champions at basic-skill output clearing a balanced boss
   in 5.9–11.1 rounds against 5.3's 10–12 budget before the retune; tripling Health pushed that
   to roughly 18–33 rounds with no burst available to shorten it. The retune-now sequencing was
@@ -307,7 +307,7 @@ interpolated message — `Tests/unit/test_burst_pacing.gd` is representative):
   retuned bosses satisfying the 60–80% burst share at 30–50x.
 * `Tests/run_tests.sh -gtest=res://Tests/manual/team_corpus_sweep.gd -gexit` re-run after
   Phase 4, still reading the post-rework distribution: median 1.95x, 90th percentile 4.68x,
-  ceiling 16.24x, contrast-ratio ceiling 21.12x (`Archive/Role_Kit_Design.md` section 4). A
+  ceiling 16.24x, contrast-ratio ceiling 21.12x (`Role_Kit_Design.md` section 4). A
   moved number means the Defence or Knowledge coupling in `burst_reachability.gd` was
   disturbed.
 * One boss played end to end through a reworked configuration, launched via

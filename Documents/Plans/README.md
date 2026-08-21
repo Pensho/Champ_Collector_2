@@ -14,7 +14,7 @@ Suggested order (dependencies noted inside each plan):
    until Phase 7's `Plan_Encounter_Blowout_Retrofit.md` is executed. Phases 0–6 (calibration, combined modifier, status
    channels, cascade, burst presentation, kit burst reachability, itemization
    channels) are done and their sub-plans deleted; the kit rework Phase 5 spawned is
-   complete, with `Archive/Role_Kit_Design.md` as its living record. Phase 7 produced
+   complete, with `Role_Kit_Design.md` as its living record. Phase 7 produced
    `Plan_Encounter_Blowout_Retrofit.md`, executed through Phase 2 and now unblocked. Sub-plans
    are written when their prerequisites land and deleted under the retention rule below. It aligns existing systems and does not author
    new content — channels it finds too thinly populated to align are recorded in its
@@ -43,7 +43,7 @@ Design-only plans (no code; can run at any time):
   configuration set are reworked, and boss Health triples so a burst reads as 60–80% of the
   bar. Unpauses the plan below once it completes. Tier definitions and the channel audit are
   done; the boss configuration rework waited on the Role Kit Rework and **resumes now that it
-  has landed** (`Archive/Role_Kit_Design.md`), behind a Phase 2b that re-derives the audit's
+  has landed** (`Role_Kit_Design.md`), behind a Phase 2b that re-derives the audit's
   channel tags against the reworked kits.
 - `Plan_Encounter_Solution_Design.md` — **paused** pending execution of
   `Plan_Encounter_Blowout_Retrofit.md`; further volume batches authored under the current
@@ -91,8 +91,9 @@ the documentation sections it names, **delete** the matching entries from
 **delete** the plan file. A completed
 plan's content belongs in the living documents; the file itself is history and git
 keeps that. Archive to `Archive/` only when the file stays useful as a future
-reference in its own right — content the living documents do not absorb.
-`Archive/Role_Kit_Design.md` is the example: the channel contract, synergy grammar,
-and per-Role coverage ledger `Plan_Role_Kit_Rework.md` produced remain the balancing
-reference for every kit, superseding the older `Plan_Role_Skill_Kits.md` it replaced
-there.
+reference in its own right but doesn't fit the shape of an existing living document —
+content the living documents do not absorb. If it does fit that shape, it moves to
+`Documents/` as a design doc in its own right instead. `Role_Kit_Design.md` is the
+latter case: the channel contract, synergy grammar, and per-Role coverage ledger
+`Plan_Role_Kit_Rework.md` produced remain the balancing reference for every kit,
+superseding the older `Plan_Role_Skill_Kits.md` it replaced there.
