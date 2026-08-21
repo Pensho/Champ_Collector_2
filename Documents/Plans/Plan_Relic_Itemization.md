@@ -10,8 +10,8 @@ Design only — this plan authors no code. The mechanism is owed separately; the
 
 ## Status
 
-Created 2026-08-21. Phases 1 and 4 are complete. Phases 2–3 are the brainstorm pass and have not
-started; they run against Phase 1's settled wording.
+Created 2026-08-21. Phases 1 and 4 are complete. Phase 2's Weapon batch is written into
+`Relic_Design.md`; Off-Hand and Boots remain, then Phase 3.
 
 ## Why the axis moves
 
@@ -49,15 +49,33 @@ A brainstorm pass, run against Phase 1's settled wording. Output lands in a new
 `Relic_Design.md`, which outlives this plan as the living balancing reference for every Relic. It
 opens with a one-line pointer to 3.3.1 for the contract and does not restate it.
 
-A first batch of **12 Relics**, four per slot (Weapon, Off-Hand, Boots). Each entry names its
-slot, its unique effect and how rarity ladders the magnitude, its fixed drawback, its channel
-tag, and the character-trait-vocabulary hook it fires on.
+Runs one slot at a time (Weapon, Off-Hand, Boots), each slot's batch sized by what survives rather
+than to a fixed count. Each entry names its slot, its Role audience, its unique effect and how
+rarity ladders the magnitude, its fixed drawback, its channel tag, and the
+character-trait-vocabulary hook it fires on.
 
 Every entry in this batch is a **general drop** — no Relic is tied to a named boss. Boss-specific
 Relics are a later addition, once bosses exist to carry them.
 
-Nothing here prescribes what a Relic's condition reads, or which channel it feeds. 3.3.1's
-contract is the only constraint on effect shape, and the brainstorm is open past it.
+**A Relic's condition is written in mechanic vocabulary any character could meet** — missing
+Health, a consumed reagent, cascade instances produced, turn-bar distance. The Role is the
+intended audience because that Role meets the condition best and most often, never because the
+condition names its passive or its skill. A Relic reading a named skill is a rare exception,
+justified as one where it appears.
+
+**An upside may take any effect shape the battle vocabulary offers**: damage, buffs, debuffs,
+zones, tempo, cooldowns, resource generation, and the denial of any of those to the enemy. A
+[Channel 2] damage factor and a pure [Enabler] are equally admissible.
+
+**A drawback may be compositional** — paid at the roster screen by handicapping allies who supply
+a given mechanic, rather than per turn in the fight. It creates a decision only where the
+mechanic it monopolises is one several champions compete to supply, and the strongest form lands
+the handicap on a different mechanic than the upside uses.
+
+Both the condition and the drawback read what the character sheet shows. Schema fields the player
+never sees — a Role's Purpose, a character's primary attributes — are not admissible vocabulary.
+
+Past these rules, 3.3.1's contract is the only constraint on effect shape.
 
 ## Phase 3 — The audit ledger
 
@@ -89,6 +107,9 @@ whichever shipped — not both.
 - **The main code expense, for whoever writes the mechanism plan:** character-trait dispatch is
   wired to a single `_trait` field across roughly forty call sites in `Scripts/Battle/`. Serving a
   character's trait *plus* their equipped Relic effects means routing those through a collection.
+- A compositional drawback makes a teammate's presence change the result, which 1.1.3's
+  composition law does not currently anticipate. The catalog keys on mechanics rather than names,
+  so it stays inside the letter of the law; 3.3.1 or 1.1.3 owes a sentence sanctioning the shape.
 - Enabler-identity Relics with no damage factor are a full pass, not a weak entry.
 - Drawbacks must not pressure the owner into building Accuracy; that attribute is already
   overloaded.
