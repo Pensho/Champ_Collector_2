@@ -46,9 +46,8 @@ Rewrites the authoritative wording. Net-neutral: superseded text is deleted, not
 ## Phase 2 — The catalog
 
 A brainstorm pass, run against Phase 1's settled wording. Output lands in a new
-`Relic_Design.md`, which outlives this plan as the living balancing reference for every Relic —
-the same role `Role_Kit_Design.md` plays for kits. It opens with a one-line pointer to 3.3.1 for
-the contract and does not restate it.
+`Relic_Design.md`, which outlives this plan as the living balancing reference for every Relic. It
+opens with a one-line pointer to 3.3.1 for the contract and does not restate it.
 
 A first batch of **12 Relics**, four per slot (Weapon, Off-Hand, Boots). Each entry names its
 slot, its unique effect and how rarity ladders the magnitude, its fixed drawback, its channel
@@ -57,12 +56,8 @@ tag, and the character-trait-vocabulary hook it fires on.
 Every entry in this batch is a **general drop** — no Relic is tied to a named boss. Boss-specific
 Relics are a later addition, once bosses exist to carry them.
 
-Channel spread across the batch: at least four [Channel 2], three [Channel 3 — Cascade], three
-[Enabler], with dual tags where a mechanism genuinely serves two roles.
-
-Favour intricate conditions — on crit, on a death, while a named status is present, on a
-threshold crossing — over lightly-conditioned flat bonuses. At most one or two entries sit at the
-simple end.
+Nothing here prescribes what a Relic's condition reads, or which channel it feeds. 3.3.1's
+contract is the only constraint on effect shape, and the brainstorm is open past it.
 
 ## Phase 3 — The audit ledger
 
@@ -97,8 +92,8 @@ whichever shipped — not both.
 - Enabler-identity Relics with no damage factor are a full pass, not a weak entry.
 - Drawbacks must not pressure the owner into building Accuracy; that attribute is already
   overloaded.
-- Fatigue/Stun-class denial cannot ride a Relic without a severe drawback, per the
-  puzzle-breaking-status policy in `Role_Kit_Design.md` 10.1.
+- Fatigue/Stun-class denial breaks a puzzle encounter outright, so it cannot ride a source as
+  cheap as an equipped item without a severe drawback attached.
 - Build-specific upsides (crit, for instance) need deliberate targeting, not automatic or
   positional triggers.
 - The eight-status cap is a readability constraint; a Relic applying statuses competes for those
