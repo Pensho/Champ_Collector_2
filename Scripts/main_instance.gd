@@ -80,7 +80,10 @@ func Init() -> void:
 	_character_collection.Add(ARCHITECT.duplicate(true))
 	_character_collection.Add(HERALD_OF_THE_LOOM.duplicate(true))
 
-	var reagent_keys: Array = ReagentRegistry.REAGENTS.keys()
+	var reagent_keys: Array[String] = []
+	for reagent_key in ReagentRegistry.REAGENTS.keys():
+		if(not ReagentRegistry.REAGENTS[reagent_key].brew_only):
+			reagent_keys.append(reagent_key)
 	for i in 3:
 		_reagent_collection.Add(reagent_keys[randi_range(0, reagent_keys.size() - 1)])
 
