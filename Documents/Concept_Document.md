@@ -904,10 +904,8 @@ against the 1.1.6 rejection test.
 
 **The upside is conditional, the downside is not.** A Relic's unique effect fires on a trigger, a
 state, or a threshold; its drawback is always on. The player pays every turn and collects only
-when the condition holds, which is what keeps a Relic off the median. An always-on flat damage
-multiplier — a multiplier on every hit its owner ever throws — is the shape 1.1.6 rejects and is
-not an admissible Relic effect. Rarity scales the upside only, so a higher-rarity copy of the
-same Relic is strictly better.
+when the condition holds, which is what keeps a Relic off the median. Rarity scales the upside
+only, so a higher-rarity copy of the same Relic is strictly better.
 
 Relic effects are written against the same hook vocabulary as character traits, firing across the
 range of battle situations rather than through a narrow interface of their own.
