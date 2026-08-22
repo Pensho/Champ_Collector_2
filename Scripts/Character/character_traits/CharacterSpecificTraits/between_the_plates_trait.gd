@@ -1,10 +1,10 @@
 class_name BetweenThePlatesTrait extends CharacterTrait
 
 const IGNORE_RATE: Dictionary[Types.Rarity, float] = {
-	Types.Rarity.Uncommon: 0.10,
-	Types.Rarity.Rare: 0.13,
-	Types.Rarity.Epic: 0.16,
-	Types.Rarity.Legendary: 0.20,
+	Types.Rarity.Uncommon: 0.12,
+	Types.Rarity.Rare: 0.16,
+	Types.Rarity.Epic: 0.20,
+	Types.Rarity.Legendary: 0.25,
 }
 
 var _ignore_rate: float = 0.0

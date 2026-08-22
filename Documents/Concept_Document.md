@@ -218,7 +218,7 @@ Current roles, their identity and purpose exist as follows:
     - Purpose: Damage.
     - Passive: Between the Plates [Channel 1] - Every attack ignores a percentage of the target's
       Defense, subtracted in points after every other Defense modifier has applied.
-        - 10% Uncommon, 13% Rare, 16% Epic, 20% Legendary
+        - 12% Uncommon, 16% Rare, 20% Epic, 25% Legendary
     - Fielded by: `Thief.tres`
 - Lancer
     - A shock cavalry fighter who reads distance on the turn bar and turns it into a heavier hit, at the cost of its own tempo. Primary attributes: Attack, Speed.
@@ -488,7 +488,7 @@ Debuffs:
 * Sequence Lock [Enabler]: Speed cannot be increased or decreased.
 * Suppress [Channel 1]: Reduces Mysticism by 30%.
 * Slow [Channel 1]: Reduces Speed by 15%, including how fast the character advances on the turn bar.
-* Blind [Channel 1 / Enabler]: Reduces Accuracy by 30%. Dual-classified: it moves Accuracy as channel 1, but it is picked for its enabler role — denying an application from landing.
+* Blind [Channel 1 / Enabler]: Reduces Accuracy by 30%.
 * Unravel [Channel 1]: Reduces Resistance by 30%.
 * Confound [Channel 1]: Reduces Knowledge by 50%.
 * Exposed Facet [Channel 2]: Attacks against the character gain +15 percentage points Critical Chance. Contributes through the crit path (section 1.1.4) rather than the combined modifier itself.
@@ -608,8 +608,7 @@ the fix belongs in the data or the document.
 ###### Thief
 * Stab
     * Type: Damage (basic skill, no cooldown)
-    * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Attack. Carries the
-      passive's Defense-ignore like any attack.
+    * Effect: [Channel 1] Deals damage to a single target enemy, scaling with Attack.
 * Pierce Weakness
     * Type: Damage
     * Cooldown: 2 turns
