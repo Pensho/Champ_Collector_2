@@ -10,8 +10,8 @@ Design only — this plan authors no code. The mechanism is owed separately; the
 
 ## Status
 
-Created 2026-08-21. Phases 1 and 4 are complete. Phase 2's Weapon and Off-Hand batches are written
-into `Relic_Design.md`; Boots remains, then Phase 3.
+Created 2026-08-21. Phases 1 and 4 are complete. Phase 2 is mid-run in `Relic_Design.md`; Phase 3
+follows once the catalog is broad enough to assign slots.
 
 ## Why the axis moves
 
@@ -49,10 +49,12 @@ A brainstorm pass, run against Phase 1's settled wording. Output lands in a new
 `Relic_Design.md`, which outlives this plan as the living balancing reference for every Relic. It
 opens with a one-line pointer to 3.3.1 for the contract and does not restate it.
 
-Runs one slot at a time (Weapon, Off-Hand, Boots), each slot's batch sized by what survives rather
-than to a fixed count. Each entry names its slot, its Role audience, its unique effect and how
-rarity ladders the magnitude, its fixed drawback, its channel tag, and the
-character-trait-vocabulary hook it fires on.
+Runs batch by batch against the coverage gaps `Relic_Design.md` records — an empty payout group, a
+Role with no audience row, an unreached hook — each batch sized by what survives rather than to a
+fixed count. Every entry answers that document's design pillar, and names its Role audience, its
+unique effect and how rarity ladders the magnitude, its fixed drawback, its channel tag, and the
+character-trait-vocabulary hook it fires on. Slots are assigned across the finished catalog, after
+the batches.
 
 Every entry in this batch is a **general drop** — no Relic is tied to a named boss. Boss-specific
 Relics are a later addition, once bosses exist to carry them.
@@ -111,6 +113,9 @@ whichever shipped — not both.
   composition law does not currently anticipate. The catalog keys on mechanics rather than names,
   so it stays inside the letter of the law; 3.3.1 or 1.1.3 owes a sentence sanctioning the shape.
 - Enabler-identity Relics with no damage factor are a full pass, not a weak entry.
+- An effect reading "a status the wearer applied" needs the status instance to carry its applier,
+  and an effect firing on an ally's event needs that hook to reach the wearer's Relic. Neither is
+  wired today; both belong in the mechanism plan.
 - Drawbacks must not pressure the owner into building Accuracy; that attribute is already
   overloaded.
 - Fatigue/Stun-class denial breaks a puzzle encounter outright, so it cannot ride a source as

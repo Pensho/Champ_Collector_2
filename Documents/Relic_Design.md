@@ -3,6 +3,8 @@
 The Relic contract — item type, rarity ladder, conditional upside, fixed drawback — is
 `Concept_Document.md` section 3.3.1.
 
+**Design pillar.** A Relic should change how a player thinks about using a skill or a team composition in turn for giving out a significant but most often conditional upside.
+
 Each entry names its Role audience: the Role that meets the condition best and most often. No
 entry requires that Role, except where marked.
 
@@ -135,12 +137,27 @@ The first 2 / 2 / 3 / 3 / 4 debuffs applied to each enemy in a battle cannot be 
 
 **Drawback:** the wearer cannot resist debuffs (Signed Writ, permanently).
 
+## Sustain
+
+### The Consignment Bond
+
+*Audience: Appraiser, Tactician, Warlord.* [Enabler] · hooks `OnCriticalHit`,
+`GetIncomingHealMultiplier`
+
+When an ally holding a buff the wearer applied lands a critical hit, that ally heals for
+8 / 10 / 12 / 14 / 17% of the damage dealt.
+
+**Drawback:** the wearer cannot be healed or Barriered by any source.
+
+*Flagged for cut:* a team fielding a dedicated tank pays close to nothing for that drawback, so
+the entry needs a cost that bites on any composition before it is final.
+
 ## Coverage
 
 Refresh every table below in the same edit that lands a batch. Role names and channel tags follow
 `Role_Kit_Design.md` sections 5 and 1.1.3.
 
-**Payout groups:** Damage 11 · Buff 1 · Debuff 1 · Sustain 0 · Control 0.
+**Payout groups:** Damage 11 · Buff 1 · Debuff 1 · Sustain 1 · Control 0.
 
 ### Role coverage
 
@@ -152,7 +169,7 @@ listed.
 | Role | Audience of | Won't wear | Won't sit beside |
 |---|---|---|---|
 | Alchemist | Draught-Fed Edge | Vein-Split Athame | Lantern of the Standing Ward, The Closed Wound |
-| Appraiser | — | — | The Even Hand |
+| Appraiser | The Consignment Bond | — | The Even Hand |
 | Architect | Lantern of the Standing Ward | Vein-Split Athame | — |
 | Bar Brawler | The Set Watch, The Answering Boss | The Ossuary Ledger, The Unguarded Glass, Vein-Split Athame | The Closed Wound |
 | Bloodmage | Vein-Split Athame, The Closed Wound, The Answering Boss, The Ossuary Ledger | — | — |
@@ -167,10 +184,10 @@ listed.
 | Scholar | The Even Hand, The Sealed Docket | — | — |
 | Sorcerer | Draught-Fed Edge, Threefold Bite | — | Lantern of the Standing Ward, The Sealed Docket |
 | Symbiote | The Set Watch, The Answering Boss | The Ossuary Ledger, The Unguarded Glass | — |
-| Tactician | The Even Hand | — | — |
+| Tactician | The Even Hand, The Consignment Bond | — | — |
 | Thief | The Unguarded Glass | — | — |
 | Tidal Corsair | Lantern of the Standing Ward, The Unguarded Glass | — | — |
-| Warlord | The Even Hand, The Set Watch, The Answering Boss | — | — |
+| Warlord | The Even Hand, The Set Watch, The Answering Boss, The Consignment Bond | — | — |
 
 **Roster-wide deterrents, listed here instead of in every row.** Threefold Bite's −30% on
 non-cascade damage rules it out for the sixteen Roles holding no cascade. The Even Hand's
@@ -186,7 +203,7 @@ Closed Wound both pay in damage for healing the kit would otherwise deliver.
 | Channel 2 | 7 | Vein-Split Athame, Draught-Fed Edge, The Closed Wound, The Set Watch, The Answering Boss, The Sealed Docket, The Ossuary Ledger |
 | Channel 2 — crit path | 1 | The Unguarded Glass |
 | Channel 3 — Cascade | 3 | The Long Furrow, Threefold Bite, Lantern of the Standing Ward |
-| Enabler | 2 | Signatory's Edge, The Even Hand |
+| Enabler | 3 | Signatory's Edge, The Even Hand, The Consignment Bond |
 
 No entry feeds Channel 1; the contract routes a Relic's attribute steps there instead.
 
@@ -204,6 +221,7 @@ What the upside reads. Two entries sharing a surface is a duplication to justify
 | Incoming event | The Set Watch (hit above 15% max Health), The Ossuary Ledger (ally death) |
 | Turn-bar distance | The Long Furrow (4 or 5 sections) |
 | Application the wearer makes | The Even Hand (any buff applied) |
+| Ally holding the wearer's buff | The Consignment Bond (that ally's critical hits) |
 | None — always on | The Closed Wound |
 
 This row is capped at one entry by section 3.3.1.
@@ -220,14 +238,15 @@ This row is capped at one entry by section 3.3.1.
 | `OnCascadeInstanceResolved` | 1 | Threefold Bite |
 | `OnDamageTaken` | 1 | The Set Watch |
 | `OnZoneUsed` | 1 | Lantern of the Standing Ward |
-| `OnCriticalHit` | 1 | The Unguarded Glass |
+| `OnCriticalHit` | 2 | The Unguarded Glass, The Consignment Bond |
 | `OnAllyDeath` | 1 | The Ossuary Ledger |
 | `OnDebuffApplied` | 1 | Signatory's Edge |
 | `GetAppliedStatusValue` | 1 | The Even Hand |
+| `GetIncomingHealMultiplier` | 1 | The Consignment Bond |
 
 Unreached surfaces in `character_trait.gd` that suit a Relic: `StartOfTurn`, `EndOfTurn`, `OnKill`,
 `OnDeath`, `OnDefend`, `OnDebuffReceived`, `OnAllyDamageTaken`, `OnEnemyTurnBarReduced`,
-`OnZoneConstructed`, `OnAffectedByZone`, `GetAttributeDelta`, `GetIncomingHealMultiplier`.
+`OnZoneConstructed`, `OnAffectedByZone`, `GetAttributeDelta`.
 
 ### Status and mechanic surface
 
@@ -242,8 +261,8 @@ Unreached surfaces in `character_trait.gd` that suit a Relic: `StartOfTurn`, `En
 | Distinct debuff types | read | The Sealed Docket |
 | Reagents | suppressed | Draught-Fed Edge (wearer), Lantern of the Standing Ward (team) |
 | Cascade instances | amplified / suppressed | Threefold Bite, Lantern of the Standing Ward, The Long Furrow / The Sealed Docket |
-| Healing and Barriers | suppressed | Vein-Split Athame (created), The Closed Wound (received) |
-| Critical hits | amplified / denied | The Unguarded Glass / The Long Furrow, The Even Hand |
+| Healing and Barriers | granted / suppressed | The Consignment Bond (to a buffed ally) / Vein-Split Athame (created), The Closed Wound (received), The Consignment Bond (wearer) |
+| Critical hits | amplified / denied / read | The Unguarded Glass / The Long Furrow, The Even Hand / The Consignment Bond |
 | Enemy targeting weight | raised | The Set Watch |
 
 Signed Writ and Severance are on `Role_Kit_Design.md` section 10.1's *unclaimed by policy* list.
