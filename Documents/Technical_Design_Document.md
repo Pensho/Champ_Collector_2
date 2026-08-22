@@ -571,8 +571,9 @@ it no-ops for a target holding Anchor, and blocks negative fractions for a targe
 `_ApplyHealthLoss` gained two more steps ahead of the existing Barrier absorption: `_DamageTakenMultiplier`
 (Spotlight's `IncomingDamageReduction`, mirroring `_HealingMultiplier`) reduces the incoming amount,
 and — once real Health is lost — `_TriggerDamageTakenReactions` fires Dead Weight's self-bump and
-Battle Orders' ally-bump (excluding the holder) through `_EmitTurnBarBump`, uniformly for any source
-of Health loss (attacks, DOT ticks, self-inflicted costs), not just attacker-dealt damage. Stun's
+Battle Orders' ally-bump (excluding the holder) through `_EmitTurnBarBump`, gated on `_ApplyHealthLoss`
+receiving a real attacker ID (the same `-1` sentinel `_TriggerAttackerDebuffOnDamage` already used),
+so DOT ticks and self-inflicted Health costs never trigger them. Stun's
 turn-skip needed a resolver entry point outside `ResolveSkill`: `ResolveStunTurn()` still ticks the
 caster's existing buffs/debuffs (so Stun's own duration decrements and clears itself, and other
 DOTs/heals still fire) and cooldowns/zones/`EndOfTurn`, but casts no skill, reporting a new

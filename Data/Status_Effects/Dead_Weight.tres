@@ -9,4 +9,4 @@ magnitude_kind = 14
 magnitude = 0.03
 applies_on_self_tick = false
 icon = ExtResource("2_icon")
-description = "When the character takes damage, they lose 3% turn bar."
+description = "When the character takes damage from an attacker, they lose 3% turn bar."

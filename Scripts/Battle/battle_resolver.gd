@@ -12,6 +12,8 @@ enum Winner {
 	Monsters_Won,
 }
 
+const NO_ATTACKER: int = -1
+
 ## Combined_Modifier bucket key for the resolver-owned reagent/graft damage bonus (Concept
 ## Document 1.1.3): kept as one mechanic since _damage_dealt_bonus already sums those
 ## contributions before this bucket sees them — see _ResolveDamage.
@@ -651,7 +653,7 @@ func _MaxHealth(p_character: Character) -> int:
 			health += int(ceilf(health * amplified_value))
 	return health * GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER
 
-func _ApplyHealthLoss(p_character_ID: int, p_amount: int, p_attacker_ID: int = -1) -> int:
+func _ApplyHealthLoss(p_character_ID: int, p_amount: int, p_attacker_ID: int = NO_ATTACKER) -> int:
 	var reduced_amount: int = int(floor(
 			float(p_amount) * _status_resolver._DamageTakenMultiplier(_characters[p_character_ID])))
 	var remaining: int = _status_resolver._AbsorbWithBarrier(p_character_ID, reduced_amount)

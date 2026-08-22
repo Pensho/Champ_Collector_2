@@ -4,7 +4,8 @@ const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 
 # Coverage for the turn-bar bump gate: Anchor blocks any skill-driven push, Steadfast
 # blocks only pushback, and the damage-taken reactions (Dead Weight, Battle Orders)
-# route through that same gate (Concept_Document.md 3.2.3.1).
+# route through that same gate (Concept_Document.md 3.2.3.1). Those reactions only
+# fire on attacker-dealt damage, not on DOT ticks like Temporal Leak.
 
 var _roster: Dictionary[int, Character] = {}
 var _resolver: BattleResolver = null
@@ -120,3 +121,30 @@ func test_battle_orders_bumps_living_allies_forward_on_the_holders_damage_taken(
 		var bumps: Array[CombatResult] = _bumps_for(results, ally_ID)
 		assert_eq(bumps.size(), 1, "Ally %d should be bumped once" % ally_ID)
 		assert_almost_eq(bumps[0].fraction, 0.05, 0.0001, "Battle Orders should grant 5% turn bar")
+
+func test_dead_weight_does_not_bump_on_a_temporal_leak_tick() -> void:
+	_roster[0]._active_debuffs.append(_debuff(Types.Debuff_Type.Dead_Weight))
+	_roster[0]._active_debuffs.append(_debuff(Types.Debuff_Type.Temporal_Leak))
+	_roster[0]._attributes[Types.Attribute.Speed] = 20
+	_resolver = TestFactory.make_resolver(_roster, TestFactory.make_full_sides())
+
+	var results: Array[CombatResult] = _resolver.AccumulateTurnBarMovement(
+			0, Game_Balance.TURN_BAR_PROGRESS_TRIGGER_FRACTION)
+
+	var ticks: Array = results.filter(func(r): return r.kind == CombatResult.Kind.Debuff_Tick)
+	assert_eq(ticks.size(), 1, "Temporal Leak should still tick")
+	assert_eq(_bumps_for(results, 0).size(), 0, "Dead Weight should not bump on a DOT tick")
+
+func test_battle_orders_does_not_bump_allies_on_a_temporal_leak_tick() -> void:
+	_roster[0]._active_buffs.append(_buff(Types.Buff_Type.Battle_Orders))
+	_roster[0]._active_debuffs.append(_debuff(Types.Debuff_Type.Temporal_Leak))
+	_roster[0]._attributes[Types.Attribute.Speed] = 20
+	_resolver = TestFactory.make_resolver(_roster, TestFactory.make_full_sides())
+
+	var results: Array[CombatResult] = _resolver.AccumulateTurnBarMovement(
+			0, Game_Balance.TURN_BAR_PROGRESS_TRIGGER_FRACTION)
+
+	var ticks: Array = results.filter(func(r): return r.kind == CombatResult.Kind.Debuff_Tick)
+	assert_eq(ticks.size(), 1, "Temporal Leak should still tick")
+	for ally_ID in [1, 2]:
+		assert_eq(_bumps_for(results, ally_ID).size(), 0, "Battle Orders should not bump allies on a DOT tick")

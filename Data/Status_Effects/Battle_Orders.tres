@@ -9,4 +9,4 @@ magnitude_kind = 15
 magnitude = 0.05
 applies_on_self_tick = false
 icon = ExtResource("2_icon")
-description = "When the character takes damage, all allies gain 5% turn bar."
+description = "When the character takes damage from an attacker, all allies gain 5% turn bar."

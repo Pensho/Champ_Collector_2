@@ -472,11 +472,11 @@ the dual-classified cases.
 ##### 3.2.3.1 Turn Bar Effects
 * Anchor (Debuff) [Enabler]: The character cannot be pushed forward or backward on the turn bar by skills.
 * Temporal Leak (Debuff) [Channel 2]: Every time this character moves 10% of the bar, they take damage equal to 5% of their own Speed, multiplied by the applier's damage-scaling factors (the same channel-2 factors that scale their attacks) as they stood at the moment the debuff was applied.
-* Dead Weight (Debuff) [Enabler]: When the character takes damage, they lose 3% turn bar.
+* Dead Weight (Debuff) [Enabler]: When the character takes damage from an attacker, they lose 3% turn bar.
 * Slipstream (Buff) [Enabler]: The character passes through enemy-placed zones without triggering them.
 * Steadfast (Buff) [Enabler]: The character cannot be moved backward on the turn bar.
 * Resonance (Buff) [Enabler]: Ally-placed zones affect the character at double effect.
-* Battle Orders (Buff) [Enabler]: When the character takes damage, all allies gain 5% turn bar.
+* Battle Orders (Buff) [Enabler]: When the character takes damage from an attacker, all allies gain 5% turn bar.
 
 ##### 3.2.3.2 Common Status Effects
 
