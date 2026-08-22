@@ -13,7 +13,7 @@ damage_scaling = Dictionary[int, float]({
 [resource]
 script = ExtResource("1_skill")
 name = "Cut the Cloth"
-description = "Deals damage to a single enemy, scaled by Mysticism at 90% strength, resolved once per Tension held (minimum once), then consumes all Tension."
+description = "Deals damage to a single enemy, scaled by Mysticism at 90% strength, resolved once more per Tension held, then consumes all Tension."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Cut_the_Cloth/Cut_the_Cloth.png"
 cooldown = 4
 effects = Array[ExtResource("1_seff")]([SubResource("Resource_dmg")])

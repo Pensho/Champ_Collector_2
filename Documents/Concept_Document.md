@@ -432,6 +432,18 @@ Critical_Multiplier = max(Minimum_Crit_Damage, Attacker's Critical Damage - Defe
 - `Minimum_Crit_Damage` ensures a critical hit always deals meaningfully more damage than a
   normal hit even against a very high-Knowledge defender.
 
+##### 5. Enemy Target Selection
+
+**Targeting Priority Formula:**
+```
+Priority = (Health + Defence) * Trait_Weight_Multiplier * Buff_Weight_Multiplier
+```
+- Enemies attack the highest-priority character their skill can legally target, recomputed at the
+  start of every turn. Selection is an ordering, not a chance roll — the same character stays the
+  target until the ordering changes.
+- The baseline is durability, so building a tank is what draws fire. Trait and buff multipliers
+  (Spotlight's 1.5x) shift a character up or down that order; multiple multipliers combine.
+
 #### 3.2.2. Magic system (only as a potential idea, might be discarded)
 Strengths and weaknesses.
 Most often require;
@@ -892,20 +904,21 @@ standard item for it.
 |---|---|---|
 | Attribute steps | rarity (1–5) | ceil(rarity / 2) — 1, 1, 2, 2, 3 |
 | Unique effect | none | one, magnitude scaling with rarity |
-| Downside | none | one, fixed at every rarity |
+| Downside | none | one, magnitude may scale with rarity |
 
 **Gear verdict:** standard gear feeds the scaled attribute sum only. [Channel 1] Each step in
 rarity adds one attribute bonus for the equipping character; no affix contributes a factor to
 the combined modifier (section 1.1.3's second channel). A Relic trades attribute steps for a
-unique effect and a fixed drawback, and its effect may feed any channel: a conditional
+unique effect and a drawback, and its effect may feed any channel: a conditional
 combined-modifier factor [Channel 2], a cascade trigger [Channel 3 — Cascade], or a pure
 [Enabler]. Every Relic is channel-tagged in section 1.1.3's vocabulary and audited individually
 against the 1.1.6 rejection test.
 
 **The upside is conditional, the downside is not.** A Relic's unique effect fires on a trigger, a
 state, or a threshold; its drawback is always on. The player pays every turn and collects only
-when the condition holds, which is what keeps a Relic off the median. Rarity scales the upside
-only, so a higher-rarity copy of the same Relic is strictly better.
+when the condition holds, which is what keeps a Relic off the median. Rarity may scale the
+drawback alongside the effect, so a higher-rarity copy is a larger swing in both directions and
+a sharper decision rather than an automatic upgrade.
 
 Relic effects are written against the same hook vocabulary as character traits, firing across the
 range of battle situations rather than through a narrow interface of their own.
