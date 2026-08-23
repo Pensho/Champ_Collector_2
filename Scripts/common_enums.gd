@@ -7,7 +7,12 @@ enum Rarity
 	Rare = 3,
 	Epic = 4,
 	Legendary = 5,
-	Relic = 6, # Items only
+}
+
+enum Item_Type
+{
+	Standard,
+	Relic,
 }
 
 enum Faction

@@ -81,9 +81,7 @@ func test_roll_stock_gear_entries_have_already_rolled_attributes() -> void:
 		var total: int = 0
 		for attribute_name in entry["attributes"].keys():
 			total += entry["attributes"][attribute_name]
-		var expected_total: int = (
-				0 if Types.Rarity.Relic == entry["rarity"]
-				else int(entry["rarity"]) * GameBalance.ITEM_ATTRIBUTE_PER_RARITY)
+		var expected_total: int = int(entry["rarity"]) * GameBalance.ITEM_ATTRIBUTE_PER_RARITY
 		assert_eq(total, expected_total, "Rolled attribute total should match the entry's rarity")
 
 

@@ -42,7 +42,7 @@ func test_rarity_ladder_returns_expected_rates() -> void:
 		var trait_instance: BetweenThePlatesTrait = BetweenThePlatesTrait.new()
 		trait_instance.Init(rarity)
 		assert_almost_eq(trait_instance.GetBaseDefenceIgnoreRate(0), expected[rarity], 0.001,
-			"Rarity %s should carry the documented ignore rate" % Types.Rarity.keys()[rarity])
+			"Rarity %s should carry the documented ignore rate" % Types.RarityName(rarity))
 
 func test_common_rarity_defaults_to_zero_rate() -> void:
 	var trait_instance: BetweenThePlatesTrait = BetweenThePlatesTrait.new()

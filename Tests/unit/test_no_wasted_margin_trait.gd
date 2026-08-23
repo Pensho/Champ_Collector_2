@@ -19,7 +19,7 @@ func test_overflow_rate_by_rarity() -> void:
 	for rarity: Types.Rarity in rates:
 		_trait.Init(rarity)
 		assert_almost_eq(_trait.GetCritChanceOverflowRate(), rates[rarity], 0.0001,
-			"Overflow rate must match the rarity table for %s" % Types.Rarity.keys()[rarity])
+			"Overflow rate must match the rarity table for %s" % Types.RarityName(rarity))
 
 func test_overflow_rate_defaults_to_zero_for_unlisted_rarity() -> void:
 	_trait.Init(Types.Rarity.Common)

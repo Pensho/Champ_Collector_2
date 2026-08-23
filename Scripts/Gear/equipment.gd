@@ -10,6 +10,7 @@ var _texture: String = ""
 
 var _rarity: Types.Rarity
 var _slot: Types.Slot
+var _item_type: Types.Item_Type = Types.Item_Type.Standard
 
 var _preset_path: String = ""
 
@@ -33,6 +34,7 @@ func InstantiateNew(preset: EquipmentPreset, instance_ID: int) -> void:
 	_texture = preset._texture_path
 	_rarity = preset._rarity
 	_slot = preset._slot
+	_item_type = preset._item_type
 	_preset_path = preset._preset_path
 
 	_attributes[Types.Attribute.Health] = preset._attributes[Types.Attribute.Health]
@@ -49,8 +51,19 @@ func InstantiateNew(preset: EquipmentPreset, instance_ID: int) -> void:
 func CanUpgrade() -> bool:
 	return _level < Game_Balance.MAX_ITEM_LEVEL
 
+static func SetupAttributeGain(p_item_type: Types.Item_Type) -> int:
+	if(Types.Item_Type.Relic == p_item_type):
+		return ceili(Game_Balance.ITEM_ATTRIBUTE_PER_RARITY / 2.0)
+	return Game_Balance.ITEM_ATTRIBUTE_PER_RARITY
+
+static func UpgradeAttributeGain(p_rarity: Types.Rarity, p_item_type: Types.Item_Type) -> int:
+	var gain: int = Game_Balance.ITEM_UPGRADE_FLAT_BONUS + int(p_rarity)
+	if(Types.Item_Type.Relic == p_item_type):
+		return ceili(gain / 2.0)
+	return gain
+
 func GetUpgradeGain() -> int:
-	return Game_Balance.ITEM_UPGRADE_FLAT_BONUS + int(_rarity)
+	return Equipment.UpgradeAttributeGain(_rarity, _item_type)
 
 func Upgrade() -> void:
 	var candidate_attributes: Array = []

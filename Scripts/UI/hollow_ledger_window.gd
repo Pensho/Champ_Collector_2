@@ -24,7 +24,6 @@ const RARITY_COLORS: Dictionary[Types.Rarity, Color] = {
 	Types.Rarity.Rare: Color(0.178, 0.515, 1.0, 1.0),
 	Types.Rarity.Epic: Color(0.582, 0.136, 1.0, 1.0),
 	Types.Rarity.Legendary: Color(0.934, 0.254, 0.0, 1.0),
-	Types.Rarity.Relic: Color(0.9, 0.0, 0.0, 1.0),
 }
 
 @export var _tier_list: VBoxContainer

@@ -21,8 +21,9 @@ const RARITY_WEIGHTING: Dictionary[Types.Rarity, int] = {
 	Types.Rarity.Rare: 72,			# budget 1188 required
 	Types.Rarity.Epic: 36,			# budget 3418 required
 	Types.Rarity.Legendary: 18,		# budget 9830 required
-	Types.Rarity.Relic: 7,			# budget 28,268 required
 }
+
+const RELIC_ROLL_CHANCE: float = 0.05
 const GEAR_RARITY_RANGE: int = 3
 const REAGENT_RARITY_RANGE: int = 3
 const FORTUNE_FAVOR_TIER_RANGE: int = 2 # only 3 tiers exist, so range can cover all
@@ -50,13 +51,18 @@ static func CalculateBudget(p_difficulty: int) -> int:
 static func GetBestRarityForItem(p_budget: int) -> int:
 	var rarity_power_value = log(float(p_budget))/log(LOOT_VALUE[LootType.Equipment])
 	var best_outcome = int((rarity_power_value - 1.0) / RARITY_VALUE_POWER)
-	
+
 	if(Types.Rarity.Common >= best_outcome):
 		return Types.Rarity.Common as int
-	if(Types.Rarity.Relic < best_outcome):
-		best_outcome = Types.Rarity.Relic as int
-	
+	if(Types.Rarity.Legendary < best_outcome):
+		best_outcome = Types.Rarity.Legendary as int
+
 	return best_outcome
+
+static func RollItemType() -> Types.Item_Type:
+	if(randf() < RELIC_ROLL_CHANCE):
+		return Types.Item_Type.Relic
+	return Types.Item_Type.Standard
 
 static func RollRarityForItem(p_best_outcome: int) -> Types.Rarity:
 	print("rarity for Equipment available: ", p_best_outcome)

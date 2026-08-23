@@ -111,8 +111,20 @@ func test_rarity_rates_sum_to_100() -> void:
 func test_upgrade_cost_matches_formula() -> void:
 	assert_eq(LootManager.GetUpgradeCost(Types.Rarity.Common, 0), GameBalance.BASE_ITEM_UPGRADE_COST * 1 * 1, "Common, level 0")
 	assert_eq(LootManager.GetUpgradeCost(Types.Rarity.Common, 3), GameBalance.BASE_ITEM_UPGRADE_COST * 4 * 1, "Common, level 3")
-	assert_eq(LootManager.GetUpgradeCost(Types.Rarity.Relic, 0), GameBalance.BASE_ITEM_UPGRADE_COST * 1 * 6, "Relic, level 0")
+	assert_eq(LootManager.GetUpgradeCost(Types.Rarity.Legendary, 0), GameBalance.BASE_ITEM_UPGRADE_COST * 1 * 5, "Legendary, level 0")
 	assert_eq(LootManager.GetUpgradeCost(Types.Rarity.Epic, 5), GameBalance.BASE_ITEM_UPGRADE_COST * 6 * 4, "Epic, level 5")
+
+
+func test_get_best_rarity_for_item_clamps_at_legendary() -> void:
+	assert_eq(LootManager.GetBestRarityForItem(999999999), Types.Rarity.Legendary as int,
+		"Even an enormous budget should clamp at Legendary now that Relic is not a rarity")
+
+
+func test_roll_item_type_is_bounded_and_independent_of_budget() -> void:
+	for i in range(50):
+		var item_type: Types.Item_Type = LootManager.RollItemType()
+		assert_true(item_type == Types.Item_Type.Standard or item_type == Types.Item_Type.Relic,
+			"RollItemType should only ever return Standard or Relic")
 
 
 func test_rarity_rates_only_include_present_rarities() -> void:

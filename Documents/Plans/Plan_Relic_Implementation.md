@@ -43,7 +43,7 @@ roll usefully.
   and `Setup()`. These are item rules, so they live on `Equipment`; `game_balance.gd` holds
   constants only.
 - `Scripts/Gear/item_collection.gd`: serialize and deserialize `item_type`, defaulting a missing key
-  to `Standard`; a legacy `rarity == 6` record migrates to Legendary plus Relic.
+  to `Standard`. No live save carries the old rarity-6 Relic value, so no migration is needed.
 - `Scripts/Battle/loot_manager.gd`: drop the Relic weighting row, clamp `GetBestRarityForItem()` at
   Legendary, add `RollItemType()` — an independent 5% roll that neither reads nor spends the budget.
   `GetSellValue()` and `GetUpgradeCost()` key off rarity alone and are unchanged.
@@ -51,8 +51,8 @@ roll usefully.
   `Rarity.Relic` colour branch. Item type gets its own tell in Phase 2.
 
 Tests: a Relic's setup roll and upgrade gain each grant half the standard item's attribute points at
-the same rarity, rounded up; `RollItemType()` is bounded and budget-independent; a legacy rarity-6
-record deserializes to Legendary plus Relic.
+the same rarity, rounded up; `RollItemType()` is bounded and budget-independent; `item_type`
+survives an `ItemCollection` roundtrip and defaults to `Standard` when absent.
 
 ### 2. Relic carrier, presets, icons
 

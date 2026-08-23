@@ -148,6 +148,4 @@ func _RarityColor(p_rarity: int) -> Color:
 			col = Color(0.413, 0.0, 0.484, 1.0)
 		Types.Rarity.Legendary:
 			col = Color(0.651, 0.381, 0.0, 1.0)
-		Types.Rarity.Relic:
-			col = Color(0.606, 0.0, 0.0, 1.0)
 	return col

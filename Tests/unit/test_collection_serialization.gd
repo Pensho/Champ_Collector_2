@@ -43,6 +43,55 @@ func test_item_collection_serialize_roundtrip() -> void:
 	col1.free()
 	col2.free()
 
+func test_item_collection_serialize_roundtrip_preserves_item_type() -> void:
+	var col1: ItemCollection = ItemCollection.new()
+	var eq: Equipment = Equipment.new()
+	eq._slot = Types.Slot.Boots
+	eq._rarity = Types.Rarity.Rare
+	eq._item_type = Types.Item_Type.Relic
+	eq._preset_path = "res://Data/Item_Presets/Red_Boots.tres"
+	eq._texture = "res://Assets/Champ_Collector/Icons/Items/Red_Boot/Red_Boot_0003.png"
+	eq._held_by = -1
+	eq._instance_ID = 0
+	col1._items[0] = eq
+	col1._next_id = 1
+
+	var data: Dictionary = col1.Serialize()
+
+	var col2: ItemCollection = ItemCollection.new()
+	col2.Deserialize(data)
+
+	var restored: Equipment = col2._items[0]
+	assert_eq(restored._item_type, Types.Item_Type.Relic, "item_type must survive ItemCollection roundtrip")
+
+	for item in col2._items.values():
+		item.free()
+	eq.free()
+	col1.free()
+	col2.free()
+
+func test_item_collection_deserialize_missing_item_type_defaults_standard() -> void:
+	var col2: ItemCollection = ItemCollection.new()
+	col2.Deserialize({
+		"items": [{
+			"preset_UID": "uid://c3g7cshxhg0rw",
+			"attributes": {},
+			"instance_ID": 0,
+			"held_by": -1,
+			"rarity": Types.Rarity.Rare,
+			"level": 0,
+		}],
+		"next_ID": 1,
+	})
+
+	var restored: Equipment = col2._items[0]
+	assert_eq(restored._item_type, Types.Item_Type.Standard,
+		"A save with no item_type key must default to Standard")
+
+	for item in col2._items.values():
+		item.free()
+	col2.free()
+
 func test_item_collection_deserialize_legacy_preset_uid_key() -> void:
 	var col2: ItemCollection = ItemCollection.new()
 	col2.Deserialize({
