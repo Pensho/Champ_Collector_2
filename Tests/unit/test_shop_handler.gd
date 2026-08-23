@@ -81,13 +81,38 @@ func test_roll_stock_gear_entries_have_already_rolled_attributes() -> void:
 		var total: int = 0
 		for attribute_name in entry["attributes"].keys():
 			total += entry["attributes"][attribute_name]
-		var expected_total: int = int(entry["rarity"]) * GameBalance.ITEM_ATTRIBUTE_PER_RARITY
-		assert_eq(total, expected_total, "Rolled attribute total should match the entry's rarity")
+		var per_step: int = Equipment.SetupAttributeGain(entry["item_type"] as Types.Item_Type)
+		var expected_total: int = int(entry["rarity"]) * per_step
+		assert_eq(total, expected_total, "Rolled attribute total should match the entry's rarity and item type")
 
 
 func test_gear_price_matches_sell_value_times_markup() -> void:
 	var expected: int = int(LootManager.GetSellValue(Types.Rarity.Rare) * GameBalance.SHOP_BUY_MARKUP)
 	assert_eq(ShopHandler.GetGearPrice(Types.Rarity.Rare), expected, "Gear price should equal sell value times markup")
+
+
+func test_relic_gear_price_carries_the_relic_markup_on_top() -> void:
+	var standard_price: int = ShopHandler.GetGearPrice(Types.Rarity.Rare, Types.Item_Type.Standard)
+	var relic_price: int = ShopHandler.GetGearPrice(Types.Rarity.Rare, Types.Item_Type.Relic)
+	assert_eq(relic_price, int(standard_price * GameBalance.SHOP_RELIC_MARKUP_MULTIPLIER),
+		"A Relic gear slot should price the standard rarity price times the Relic markup")
+
+
+func test_roll_stock_can_produce_a_relic_gear_slot() -> void:
+	# RollItemType() is a flat 5% roll per slot; 300 rerolls of the three gear slots makes
+	# never seeing a Relic vanishingly unlikely while staying a fast, non-hanging unit test.
+	var saw_relic: bool = false
+	for i in range(300):
+		var stock: Array[Dictionary] = ShopHandler.RollStock(5000)
+		for j in range(0, GameBalance.SHOP_GEAR_SLOTS):
+			var entry: Dictionary = stock[j]
+			if(Types.Item_Type.Relic == entry["item_type"]):
+				saw_relic = true
+				assert_true(EquipmentPresetRegistry.RELIC_PRESETS.has(entry["payload"]),
+					"A Relic gear slot's payload key should resolve in the Relic registry")
+				assert_eq(entry["price"], ShopHandler.GetGearPrice(entry["rarity"], Types.Item_Type.Relic),
+					"A Relic gear slot should be priced with the Relic markup")
+	assert_true(saw_relic, "300 rerolls of three gear slots at 5% each should produce at least one Relic")
 
 
 func test_reagent_price_matches_sell_value_times_markup() -> void:

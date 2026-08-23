@@ -11,6 +11,7 @@ var _texture: String = ""
 var _rarity: Types.Rarity
 var _slot: Types.Slot
 var _item_type: Types.Item_Type = Types.Item_Type.Standard
+var _relic_effect: RelicEffect = null
 
 var _preset_path: String = ""
 
@@ -36,6 +37,10 @@ func InstantiateNew(preset: EquipmentPreset, instance_ID: int) -> void:
 	_slot = preset._slot
 	_item_type = preset._item_type
 	_preset_path = preset._preset_path
+
+	if(null != preset._relic_effect):
+		_relic_effect = preset._relic_effect.duplicate(true)
+		_relic_effect.Init(_rarity)
 
 	_attributes[Types.Attribute.Health] = preset._attributes[Types.Attribute.Health]
 	_attributes[Types.Attribute.Speed] = preset._attributes[Types.Attribute.Speed]

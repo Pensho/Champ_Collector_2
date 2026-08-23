@@ -220,6 +220,9 @@ func AvailableItemButton(p_slot_ID: int) -> void:
 			elif (0 > item._attributes[type]):
 				equip_difference_text += Types.Attribute.keys()[type] + " -" + str(item._attributes[type]) + "\n"
 	
+	if(null != item._relic_effect):
+		equip_difference_text += "\n" + item._relic_effect._body
+
 	_select_item_option.SetText(item._name, equip_difference_text)
 	_select_item_option.SetLeftButton("Equip", TriggerEquipItem)
 	_select_item_option.SetMiddleButton("Sell", TrySell)

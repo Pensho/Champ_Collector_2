@@ -8,6 +8,7 @@ class_name EquipmentPreset extends Resource
 @export var _item_type: Types.Item_Type = Types.Item_Type.Standard
 @export var _texture_path: String = ""
 @export var _preset_path: String = ""
+@export var _relic_effect: RelicEffect = null
 
 var _attributes: Dictionary[Types.Attribute, int] = {
 	Types.Attribute.Health: 0,

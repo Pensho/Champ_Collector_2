@@ -46,28 +46,33 @@ func Deserialize(p_data: Dictionary) -> void:
 				[preset_path, item_data.get("instance_ID", -1)])
 			continue
 		var preset: EquipmentPreset = preset_resource.duplicate(true)
+		if(item_data.has("rarity")):
+			preset._rarity = item_data["rarity"]
 		var new_equipment: Equipment = Equipment.new()
 		new_equipment.InstantiateNew(preset, item_data["instance_ID"])
-		
+
 		for attribute in item_data["attributes"].keys():
 			new_equipment._attributes[int(attribute)] = item_data["attributes"][attribute] as int
-		
+
 		new_equipment._held_by = item_data["held_by"]
-		if(item_data.has("rarity")):
-			new_equipment._rarity = item_data["rarity"]
 		new_equipment._item_type = item_data.get("item_type", Types.Item_Type.Standard) as Types.Item_Type
 		new_equipment._level = item_data.get("level", 0)
 
 		_items[new_equipment._instance_ID] = new_equipment
 		if(!_collected_types.has(new_equipment._slot)):
 			_collected_types[new_equipment._slot] = new_equipment._texture
-			_used_item_textures[new_equipment._slot] = load(new_equipment._texture)
+			_used_item_textures[new_equipment._slot] = _LoadItemTexture(new_equipment._texture)
 	print("Calling Deserialize for ItemCollection, data:\n", p_data)
 
 func LoadTextures() -> void:
 	for type in _collected_types.keys():
 		if(!_used_item_textures.has(type)):
-			_used_item_textures[type] = load(_collected_types[type])
+			_used_item_textures[type] = _LoadItemTexture(_collected_types[type])
+
+static func _LoadItemTexture(p_path: String) -> Texture:
+	if(ResourceLoader.exists(p_path)):
+		return load(p_path)
+	return null
 
 func GetItemTexture(p_item_type: Types.Slot) -> Texture:
 	var texture: Texture = null
@@ -103,7 +108,7 @@ func AddPreset(preset: EquipmentPreset) -> void:
 	
 	if(!_collected_types.has(new_equipment._slot)):
 		_collected_types[new_equipment._slot] = new_equipment._texture
-		_used_item_textures[new_equipment._slot] = load(new_equipment._texture)
+		_used_item_textures[new_equipment._slot] = _LoadItemTexture(new_equipment._texture)
 
 func UnequipCollectionItem(p_instanceID: int) -> void:
 	_items[p_instanceID]._held_by = UNEQUIPPED

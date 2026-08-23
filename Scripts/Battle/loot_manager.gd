@@ -157,7 +157,13 @@ static func DistributeRewards(p_loot_table: LootTable, p_difficulty: int) -> voi
 					var best_rarity_outcome = GetBestRarityForItem(p_loot_table._budget)
 					var rarity: Types.Rarity = RollRarityForItem(best_rarity_outcome)
 					var cost: int = int(pow(LOOT_VALUE[LootType.Equipment], 1.0 + (best_rarity_outcome as float * RARITY_VALUE_POWER)))
-					p_loot_table._drop_result._equipment = p_loot_table._gear_loot.duplicate(true)
+					var relic_key: String = (
+							EquipmentPresetRegistry.GetRandomRelicKeyForSlot(p_loot_table._gear_loot._slot)
+							if Types.Item_Type.Relic == RollItemType() else "")
+					if(!relic_key.is_empty()):
+						p_loot_table._drop_result._equipment = EquipmentPresetRegistry.GetRelic(relic_key).duplicate(true)
+					else:
+						p_loot_table._drop_result._equipment = p_loot_table._gear_loot.duplicate(true)
 					p_loot_table._drop_result._equipment._rarity = rarity
 					p_loot_table._drop_result._equipment.Setup()
 					p_loot_table._budget -= cost

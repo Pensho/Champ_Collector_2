@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="EquipmentPreset" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Gear/equipment_preset.gd" id="1_preset"]
+[ext_resource type="Script" path="res://Scripts/Character/character_traits/Relics/ceded_ground_relic.gd" id="2_effect"]
+
+[sub_resource type="Resource" id="SubResource_1"]
+script = ExtResource("2_effect")
+
+[resource]
+script = ExtResource("1_preset")
+_name = "Ceded Ground"
+_slot = 5
+_rarity = 1
+_item_type = 1
+_texture_path = "res://Assets/Champ_Collector/Icons/Items/Relics/Ceded_Ground/Ceded_Ground.png"
+_preset_path = "res://Data/Item_Presets/Relics/Ceded_Ground.tres"
+_relic_effect = SubResource("SubResource_1")

@@ -127,6 +127,41 @@ func test_roll_item_type_is_bounded_and_independent_of_budget() -> void:
 			"RollItemType should only ever return Standard or Relic")
 
 
+func test_equipment_drop_costs_the_standard_rarity_price_regardless_of_item_type() -> void:
+	# Item type is rolled independently of the rarity budget (Concept_Document.md 3.3.1):
+	# whichever preset a drop ends up using, the budget spent must depend on rarity alone.
+	# Budget 100 resolves to Common, whose ~143 cost exceeds the starting budget, so the
+	# post-primary-loot secondary-loot loop never fires and the delta isolates the
+	# Equipment branch's own cost.
+	const STARTING_BUDGET: int = 100
+	var gear_loot: EquipmentPreset = EquipmentPresetRegistry.Get("Red_Boots")
+	var best_rarity_outcome: int = LootManager.GetBestRarityForItem(STARTING_BUDGET)
+	var expected_cost: int = int(pow(
+			LootManager.LOOT_VALUE[LootManager.LootType.Equipment],
+			1.0 + (best_rarity_outcome as float * LootManager.RARITY_VALUE_POWER)))
+	var saw_relic: bool = false
+	var saw_standard: bool = false
+	for i in range(300):
+		var table := LootTable.new()
+		table._primary_loot[LootManager.LootType.Equipment] = 1
+		table._gear_loot = gear_loot
+		table._budget = STARTING_BUDGET
+
+		LootManager.DistributeRewards(table, 1)
+
+		var equipment: EquipmentPreset = table._drop_result._equipment
+		assert_eq(STARTING_BUDGET - table._budget, expected_cost,
+			"Budget spent on an Equipment drop should equal the standard-rarity cost regardless of item type")
+		assert_eq(equipment._slot, gear_loot._slot,
+			"A guaranteed-slot loot table must keep that slot even when the item-type roll swaps in a Relic")
+		if(Types.Item_Type.Relic == equipment._item_type):
+			saw_relic = true
+		else:
+			saw_standard = true
+	assert_true(saw_standard, "300 rolls at a 5% Relic chance should include Standard drops")
+	assert_true(saw_relic, "300 rolls at a 5% Relic chance should include at least one Relic drop")
+
+
 func test_rarity_rates_only_include_present_rarities() -> void:
 	var grouped: Dictionary[Types.Rarity, Array] = {
 		Types.Rarity.Common: [1],

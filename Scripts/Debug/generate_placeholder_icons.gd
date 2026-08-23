@@ -5,8 +5,8 @@ extends EditorScript
 ## Scripts/Debug/generate_placeholder_textures.gd's recipe.
 ##
 ## Reagent rows are rarity-tiered: each writes one PNG per tier, the base hue blended
-## toward that tier's tint, to <ICON_ROOT>/<folder>/<base_name>_<rarity>.png. Status-effect
-## and skill rows are flat: each writes a single <ICON_ROOT>/<folder>/<base_name>.png.
+## toward that tier's tint, to <ICON_ROOT>/<folder>/<base_name>_<rarity>.png. Status-effect,
+## skill and Relic rows are flat: each writes a single <ICON_ROOT>/<folder>/<base_name>.png.
 ##
 ## Existing files are skipped so hand-replaced real art is never clobbered; set
 ## OVERWRITE to true to force regeneration.
@@ -401,6 +401,61 @@ const CREATURE_PLACEHOLDER_TABLE: Array = [
 			"color": Color(0.30, 0.30, 0.50, 1.0) },
 ]
 
+# One row per Relic_Design.md catalog entry, grouped by payout group (Damage, Buff,
+# Debuff, Sustain, Control, Auxiliary) with each group sharing a hue family so a Relic's
+# icon reads as its payout group at a glance while staying individually distinct.
+#   folder, base_name, size, color
+const RELIC_ICON_TABLE: Array = [
+	{ "folder": "Items/Relics/The_Long_Furrow", "base_name": "The_Long_Furrow", "size": 64,
+			"color": Color(0.62, 0.28, 0.29, 1.0) },
+	{ "folder": "Items/Relics/Draught_Fed_Edge", "base_name": "Draught_Fed_Edge", "size": 64,
+			"color": Color(0.70, 0.28, 0.28, 1.0) },
+	{ "folder": "Items/Relics/Threefold_Bite", "base_name": "Threefold_Bite", "size": 64,
+			"color": Color(0.55, 0.20, 0.19, 1.0) },
+	{ "folder": "Items/Relics/The_Closed_Wound", "base_name": "The_Closed_Wound", "size": 64,
+			"color": Color(0.62, 0.30, 0.28, 1.0) },
+	{ "folder": "Items/Relics/The_Planted_Heel", "base_name": "The_Planted_Heel", "size": 64,
+			"color": Color(0.70, 0.31, 0.28, 1.0) },
+	{ "folder": "Items/Relics/Lantern_of_the_Standing_Ward", "base_name": "Lantern_of_the_Standing_Ward", "size": 64,
+			"color": Color(0.55, 0.23, 0.19, 1.0) },
+	{ "folder": "Items/Relics/The_Answering_Boss", "base_name": "The_Answering_Boss", "size": 64,
+			"color": Color(0.62, 0.32, 0.28, 1.0) },
+	{ "folder": "Items/Relics/The_Sealed_Docket", "base_name": "The_Sealed_Docket", "size": 64,
+			"color": Color(0.70, 0.34, 0.28, 1.0) },
+	{ "folder": "Items/Relics/The_Unguarded_Glass", "base_name": "The_Unguarded_Glass", "size": 64,
+			"color": Color(0.55, 0.25, 0.19, 1.0) },
+	{ "folder": "Items/Relics/The_Ossuary_Ledger", "base_name": "The_Ossuary_Ledger", "size": 64,
+			"color": Color(0.62, 0.35, 0.28, 1.0) },
+	{ "folder": "Items/Relics/The_Frayed_Hour", "base_name": "The_Frayed_Hour", "size": 64,
+			"color": Color(0.70, 0.37, 0.28, 1.0) },
+	{ "folder": "Items/Relics/Kiln_Brand", "base_name": "Kiln_Brand", "size": 64,
+			"color": Color(0.55, 0.28, 0.19, 1.0) },
+	{ "folder": "Items/Relics/Sunderplate_Nail", "base_name": "Sunderplate_Nail", "size": 64,
+			"color": Color(0.62, 0.37, 0.28, 1.0) },
+	{ "folder": "Items/Relics/The_Even_Tread", "base_name": "The_Even_Tread", "size": 64,
+			"color": Color(0.28, 0.62, 0.33, 1.0) },
+	{ "folder": "Items/Relics/Prism_of_Small_Favors", "base_name": "Prism_of_Small_Favors", "size": 64,
+			"color": Color(0.28, 0.70, 0.46, 1.0) },
+	{ "folder": "Items/Relics/Signatorys_Seal", "base_name": "Signatorys_Seal", "size": 64,
+			"color": Color(0.46, 0.28, 0.62, 1.0) },
+	{ "folder": "Items/Relics/The_Solvent_Mark", "base_name": "The_Solvent_Mark", "size": 64,
+			"color": Color(0.57, 0.28, 0.70, 1.0) },
+	{ "folder": "Items/Relics/Quorum_Bell", "base_name": "Quorum_Bell", "size": 64,
+			"color": Color(0.49, 0.19, 0.55, 1.0) },
+	{ "folder": "Items/Relics/Ceded_Ground", "base_name": "Ceded_Ground", "size": 64,
+			"color": Color(0.28, 0.57, 0.62, 1.0) },
+	{ "folder": "Items/Relics/The_Quiet_Mass", "base_name": "The_Quiet_Mass", "size": 64,
+			"color": Color(0.28, 0.57, 0.70, 1.0) },
+	{ "folder": "Items/Relics/Mercy_Stitch", "base_name": "Mercy_Stitch", "size": 64,
+			"color": Color(0.19, 0.39, 0.55, 1.0) },
+	{ "folder": "Items/Relics/The_Long_Second", "base_name": "The_Long_Second", "size": 64,
+			"color": Color(0.62, 0.46, 0.28, 1.0) },
+	{ "folder": "Items/Relics/Understudys_Coat", "base_name": "Understudys_Coat", "size": 64,
+			"color": Color(0.70, 0.62, 0.28, 1.0) },
+	{ "folder": "Items/Relics/Laden_Coffer", "base_name": "Laden_Coffer", "size": 64,
+			"color": Color(0.62, 0.50, 0.28, 1.0) },
+]
+
 # Rarity tier order, tint color, and blend strength (how far the base hue shifts
 # toward the tint). Blend strength increases with rarity.
 const RARITY_TINTS: Array = [
@@ -442,6 +497,9 @@ func _run() -> void:
 	var skill_counts: Vector2i = _write_flat_icon_table(SKILL_ICON_TABLE)
 	written_count += skill_counts.x
 	skipped_count += skill_counts.y
+	var relic_counts: Vector2i = _write_flat_icon_table(RELIC_ICON_TABLE)
+	written_count += relic_counts.x
+	skipped_count += relic_counts.y
 	var creature_counts: Vector2i = _write_flat_icon_table(CREATURE_PLACEHOLDER_TABLE, CREATURE_ROOT)
 	written_count += creature_counts.x
 	skipped_count += creature_counts.y

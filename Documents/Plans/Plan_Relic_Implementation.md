@@ -9,7 +9,7 @@ Spawned by `Plan_System_Buildout.md`'s Relic coverage gap.
 
 ## Status
 
-Created 2026-08-23; nothing implemented. Phases land in order, each ending with a green suite and
+Created 2026-08-23. Phases 1 and 2 landed. Phases land in order, each ending with a green suite and
 clean `gdlint Scripts/`, and each separately committable. Phase 4's batches are approved one at a
 time.
 
@@ -67,15 +67,18 @@ survives an `ItemCollection` roundtrip and defaults to `Standard` when absent.
   existing map. `GetRandomKey()` stays standard-only.
 - 24 presets under `Data/Item_Presets/Relics/`, each naming its slot, effect script and icon path.
 - Drop and shop routing: the `LootType.Equipment` branch of `LootManager.DistributeRewards()` and
-  the gear loop of `ShopHandler.RollStock()` each call `RollItemType()` after the rarity roll and,
-  on Relic, swap the preset for `GetRandomRelicKey()` at that same rarity. Budget spent stays what
-  the standard item of that rarity would have cost. The shop applies the Relic markup on top of
-  `GetGearPrice()`.
+  the gear loop of `ShopHandler.RollStock()` each call `RollItemType()` after the rarity roll.
+  `RollStock()` swaps in `GetRandomRelicKey()` unrestricted, matching the shop's existing
+  unrestricted-slot standard roll. `DistributeRewards()` swaps in `GetRandomRelicKeyForSlot()`
+  instead, scoped to `_gear_loot`'s own slot — some loot tables guarantee a slot (e.g.
+  `Statue_Weapon_Loot.tres` always Weapon), which the item-type roll must not override. Budget
+  spent stays what the standard item of that rarity would have cost either way. The shop applies
+  the Relic markup on top of `GetGearPrice()`.
 - Icons: a `RELIC_ICON_TABLE` in `Scripts/Debug/generate_placeholder_icons.gd`, 24 rows writing
   `Items/Relics/<Relic_Name>/<Relic_Name>.png` at 64px with the hue grouped by payout group, reusing
   `_write_flat_icon_table()`. The EditorScript is run by hand from the open editor.
 - UI: the item tooltip in `inspect_collection_menu.gd` shows the Relic's effect and drawback from
-  `_title` and `_body`; `MenuItemSlot` gets an item-type tell distinct from the rarity outline.
+  `_title` and `_body`.
 
 Tests: a Relic preset instantiates its effect at the equipping rarity's ladder step; the drop and
 shop paths produce a Relic at the rolled rarity, spending what the standard item would have.

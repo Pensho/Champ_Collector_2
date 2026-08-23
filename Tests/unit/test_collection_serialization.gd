@@ -92,6 +92,34 @@ func test_item_collection_deserialize_missing_item_type_defaults_standard() -> v
 		item.free()
 	col2.free()
 
+func test_item_collection_deserialize_relic_reads_the_saved_rarity_ladder_step() -> void:
+	# Regression: InstantiateNew() Init()s the preset's _relic_effect using whatever rarity
+	# the preset carries at that moment, so the saved rarity must land on the preset before
+	# InstantiateNew() runs — applying it to new_equipment afterward would leave the effect
+	# stuck reading the preset's placeholder ladder step (Common) instead of the saved one.
+	var col2: ItemCollection = ItemCollection.new()
+	col2.Deserialize({
+		"items": [{
+			"preset_path": "res://Data/Item_Presets/Relics/The_Long_Furrow.tres",
+			"attributes": {},
+			"instance_ID": 0,
+			"held_by": -1,
+			"rarity": Types.Rarity.Legendary,
+			"item_type": Types.Item_Type.Relic,
+			"level": 0,
+		}],
+		"next_ID": 1,
+	})
+
+	var restored: Equipment = col2._items[0]
+	assert_eq(restored._rarity, Types.Rarity.Legendary, "Saved rarity should survive the roundtrip")
+	assert_almost_eq(restored._relic_effect.Magnitude(), 0.55, 0.0001,
+		"The reloaded Relic's effect should read the saved Legendary step, not the preset's placeholder rarity")
+
+	for item in col2._items.values():
+		item.free()
+	col2.free()
+
 func test_item_collection_deserialize_legacy_preset_uid_key() -> void:
 	var col2: ItemCollection = ItemCollection.new()
 	col2.Deserialize({
