@@ -67,8 +67,7 @@ Damaging skills deal +25 / 30 / 35 / 45 / 60% damage.
 
 ### The Planted Heel
 
-*Audience: Warlord, Bar Brawler, Symbiote.* **Boots.** [Channel 2]  hooks `OnDamageTaken`,
-`GetOutgoingDamageBonus`
+*Audience: Warlord, Bar Brawler, Symbiote.* **Boots.** [Channel 2]  hook `OnSkillCast`
 
 After the wearer takes a single hit exceeding 15% of their max Health, their next damaging skill
 deals +30 / 35 / 40 / 50 / 65% damage.
@@ -87,8 +86,7 @@ time, at 40 / 45 / 50 / 60 / 75% strength. That zone's remaining charges resolve
 
 ### The Answering Boss
 
-*Audience: Warlord, Symbiote, Bar Brawler.* **Off-Hand.** [Channel 2]  hooks `OnBuffGained`,
-`GetOutgoingDamageBonus`
+*Audience: Warlord, Symbiote, Bar Brawler.* **Off-Hand.** [Channel 2]  hook `GetOutgoingDamageBonus`
 
 While the wearer holds a Barrier, damaging skills deal +25 / 30 / 35 / 45 / 60% damage.
 
@@ -134,7 +132,7 @@ Temporal Leak applied by the wearer has +200 / 250 / 275 / 300 / 350% its effect
 
 ### Kiln Brand
 
-*Audience: Tidal Corsair, Thief.* **Weapon.** [Channel 2]  hooks `OnSkillCast`, `GetOutgoingDamageBonus`
+*Audience: Tidal Corsair, Thief.* **Weapon.** [Channel 2]  hook `OnSkillCast`
 
 Skills carrying a cooldown deal +20 / 30 / 40 / 50 / 65% damage.
 

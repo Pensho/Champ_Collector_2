@@ -9,9 +9,9 @@ Spawned by `Plan_System_Buildout.md`'s Relic coverage gap.
 
 ## Status
 
-Created 2026-08-23. Phases 1 through 3 landed. Phases land in order, each ending with a green suite and
-clean `gdlint Scripts/`, and each separately committable. Phase 4's batches are approved one at a
-time.
+Created 2026-08-23. Phases 1 through 3 landed. Phase 4 batch 1 landed. Phases land in order, each
+ending with a green suite and clean `gdlint Scripts/`, and each separately committable. Phase 4's
+batches are approved one at a time.
 
 ## The blocking defect
 

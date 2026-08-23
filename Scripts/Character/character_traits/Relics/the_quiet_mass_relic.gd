@@ -15,5 +15,13 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_title = "The Quiet Mass"
 	_magnitude_by_rarity = [0.25, 0.30, 0.35, 0.40, 0.50]
 	_body = ("Gain +" + str(roundi(Magnitude() * 100)) + "% max Health.\n" +
-			"Drawback: the wearer's targeting weight is multiplied by " +
-			str(snappedf(TargetingWeightMultiplier(), 0.01)) + ".")
+			"Enemies target the wearer " + str(roundi((1.0 - TargetingWeightMultiplier()) * 100)) +
+			"% less likely.")
+
+func GetAttributeDelta(p_attribute: Types.Attribute, p_base_value: int) -> int:
+	if(Types.Attribute.Health != p_attribute):
+		return 0
+	return int(ceilf(p_base_value * Magnitude()))
+
+func GetTargetingPriorityMultiplier() -> float:
+	return TargetingWeightMultiplier()
