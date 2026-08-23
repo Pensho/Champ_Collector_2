@@ -21,6 +21,9 @@ becoming a flat denial, never by adding a cost to the wearer.
 damage multiplier reaches +60% at Legendary. An entry above the band carries a correspondingly
 harder condition or drawback.
 
+An equipped item is a cheap source, so Fatigue and Stun-class denial rides one only with a severe
+drawback attached.
+
 Entries are grouped by what the upside pays out in, and each carries one of the three live slots —
 Weapon, Off-Hand, Boots. Slot is the stacking control: see *Slots and stacking* below.
 

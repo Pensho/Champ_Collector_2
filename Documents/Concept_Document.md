@@ -924,6 +924,12 @@ must be conditional on a distinct mechanic identity, so section 1.1.3's composit
 multi-Relic loadout the same way it governs multiple champions. The per-Relic audit and the
 worst-case three-slot product live in `Relic_Design.md`.
 
+**A Relic's drawback may be compositional** — handicapping the wearer's whole team rather than the
+wearer alone, so a teammate's presence changes the result. It is always keyed to a mechanic
+(healing, cascade instances, reagents), never to a Role or a champion, which is what keeps it inside
+section 1.1.3's composition law: the grouping stays by mechanic identity, and a teammate supplying
+none of the handicapped mechanic still changes nothing.
+
 **Relic acquisition:** item type is rolled independently of the loot budget. Every gear drop
 rolls its rarity from the encounter's reward budget as normal, then a flat 5% roll decides Relic
 instead of Standard at that rarity, and the Relic costs the same budget as the standard item

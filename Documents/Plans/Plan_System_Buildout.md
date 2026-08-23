@@ -22,12 +22,12 @@ pillar. Each entry names the gap, the phase that found it, and what closing it n
   call site on the debuff-tick path. Found implementing `Role_Kit_Design.md` section 9.2.
 * **The Relic item type has a settled contract but no code mechanism.** `Concept_Document.md`
   3.3.1 defines Relic as an item type orthogonal to rarity, carrying a unique effect and a fixed
-  drawback; `Plan_Relic_Itemization.md` owns the design and the catalog. Nothing of it exists in
+  drawback; `Relic_Design.md` owns the catalog. Nothing of it exists in
   code — `Types.Rarity` still carries `Relic` as a sixth tier, `EquipmentPreset.Setup()` rolls it
   no attributes, and there is no effect mechanism, no item-type roll, and no dispatch reaching a
-  character's equipped Relic effects. Needs a code plan of its own; its main expense is that
-  character-trait dispatch is wired to a single `_trait` field across roughly forty call sites in
-  `Scripts/Battle/`. Found by `Plan_Blowout_Alignment.md` Phase 6.
+  character's equipped Relic effects. Needs a code plan of its own; `FeatureIdeas.md`'s
+  *Split Relic from the rarity enum* entry holds what that plan owes. Found by
+  `Plan_Blowout_Alignment.md` Phase 6.
 * **Refutation's documented damage never shipped.** `Concept_Document.md` 3.2.4.2 says Refutation
   deals damage to an enemy whose zone it removes, scaling with Knowledge at 10% of a standard hit
   per remaining charge; `Refutation.tres` carries no damage parameters. The Scholar's kit passed its

@@ -36,11 +36,6 @@ Suggested order (dependencies noted inside each plan):
 
 Design-only plans (no code; can run at any time):
 
-- `Plan_Relic_Itemization.md` — moves Relic off the rarity ladder onto an orthogonal item-type
-  axis (Standard or Relic), so Relics drop alongside regular gear at every rarity instead of only
-  at the top of the difficulty budget. Settles the contract in `Concept_Document.md` 3.3.1, then
-  brainstorms a first Relic catalog into a new `Relic_Design.md` that outlives the plan. The code
-  mechanism stays owed to `Plan_System_Buildout.md`.
 - `Plan_Encounter_Blowout_Retrofit.md` — Phase 7 of `Plan_Blowout_Alignment.md`. Retrofits
   the encounter tier definitions and the existing 14-entry catalog against the pillar: 5.3's
   tiers state a burst expectation, every encounter's answers are audited for which damage
