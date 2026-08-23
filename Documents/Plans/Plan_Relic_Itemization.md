@@ -10,8 +10,9 @@ Design only — this plan authors no code. The mechanism is owed separately; the
 
 ## Status
 
-Created 2026-08-21. Phases 1 and 4 are complete. Phase 2 is mid-run in `Relic_Design.md`; Phase 3
-follows once the catalog is broad enough to assign slots.
+Created 2026-08-21. Phases 1, 2 and 4 are complete — the catalog is closed at 24 entries in
+`Relic_Design.md`. Slots are assigned and Phase 3's worst-case product is recorded in that
+document's *Slots and stacking*; Phase 3's per-Relic 1.1.6 verdict ledger is what remains.
 
 ## Why the axis moves
 
@@ -49,9 +50,8 @@ A brainstorm pass, run against Phase 1's settled wording. Output lands in a new
 `Relic_Design.md`, which outlives this plan as the living balancing reference for every Relic. It
 opens with a one-line pointer to 3.3.1 for the contract and does not restate it.
 
-Runs batch by batch against the coverage gaps `Relic_Design.md` records — an empty payout group, a
-Role with no audience row, an unreached hook — each batch sized by what survives rather than to a
-fixed count. Every entry answers that document's design pillar, and names its Role audience, its
+Ran batch by batch, each batch aimed at the gaps read off `Relic_Design.md`'s coverage tables and
+re-derived from them once the batch landed. Every entry answers that document's design pillar, and names its Role audience, its
 unique effect and how rarity ladders the magnitude, its fixed drawback, its channel tag, and the
 character-trait-vocabulary hook it fires on. Slots are assigned across the finished catalog, after
 the batches.
@@ -78,6 +78,11 @@ Both the condition and the drawback read what the character sheet shows. Schema 
 never sees — a Role's Purpose, a character's primary attributes — are not admissible vocabulary.
 
 Past these rules, 3.3.1's contract is the only constraint on effect shape.
+
+The catalog is closed. Control stays at two entries, and a Damage-purpose Role reached by damage
+factors alone — Lancer, Thief, Tidal Corsair — is correctly served rather than owed a non-damage
+entry. `GetBaseDefenceIgnoreRate` stays closed, for the reason `Relic_Design.md` records under
+Sunderplate Nail.
 
 ## Phase 3 — The audit ledger
 
@@ -116,6 +121,8 @@ whichever shipped — not both.
 - An effect reading "a status the wearer applied" needs the status instance to carry its applier,
   and an effect firing on an ally's event needs that hook to reach the wearer's Relic. Neither is
   wired today; both belong in the mechanism plan.
+- `Skills.AppliedAttributeAmplification()` resolves attribute amplification with `maxf` across the
+  team, so a second source is discarded. Amplification sums instead, which the mechanism plan owes.
 - Drawbacks must not pressure the owner into building Accuracy; that attribute is already
   overloaded.
 - Fatigue/Stun-class denial breaks a puzzle encounter outright, so it cannot ride a source as
