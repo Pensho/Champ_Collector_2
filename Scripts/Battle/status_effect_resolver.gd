@@ -215,11 +215,8 @@ func _ResolvePremonitionCounter(p_holder_ID: int, p_attacker_ID: int) -> void:
 		return
 
 	var attributes: Dictionary[Types.Attribute, int] = _resolver.GetEffectiveAttributes(p_holder_ID)
-	var trait_result: TraitSkillResult = TraitSkillResult.new()
-	var skill_cast_trait: CharacterTrait = Skills.ActiveHook(holder, Types.Combat_Event.Skill_Cast)
-	if(null != skill_cast_trait):
-		trait_result = skill_cast_trait.OnSkillCast(
-				p_holder_ID, [p_attacker_ID], basic.name, attributes, _resolver)
+	var trait_result: TraitSkillResult = Skills.DispatchSkillCast(
+			holder, p_holder_ID, [p_attacker_ID], basic.name, attributes, _resolver)
 
 	var use_count: int = _resolver._SkillUseCount(p_holder_ID, basic)
 	var context := SkillCastContext.new(
@@ -300,8 +297,8 @@ func CastDebuff(
 			else _SnapshotStatusValue(data, p_caster_ID, p_target_ID))
 	var caster: Character = _resolver._characters.get(p_caster_ID)
 	var duration: int = p_debuff_template.duration
-	if(duration > 0 and null != caster and null != caster._trait):
-		duration += caster._trait.GetOutgoingDebuffDurationBonus(p_caster_ID)
+	if(duration > 0):
+		duration += Skills.OutgoingDebuffDurationBonus(caster, p_caster_ID)
 	var created: StatusEffects.Effect = _InsertOrRefresh(p_target_ID, false, p_debuff_template.type, data, value,
 			duration, p_caster_ID, p_trait_riders, p_always_refresh_duration,
 			Types.Debuff_Type.keys()[p_debuff_template.type])
@@ -321,7 +318,7 @@ func _RollsResistDebuff(
 	if(_resolver._HasDebuff(p_defender_ID, Types.Debuff_Type.Signed_Writ)):
 		return false
 	var attacker: Character = _resolver._characters.get(p_attacker_ID)
-	if(null != attacker and null != attacker._trait and attacker._trait.DebuffsCannotBeResisted(p_attacker_ID)):
+	if(Skills.DebuffsCannotBeResisted(attacker, p_attacker_ID)):
 		return false
 	var random_value: float = _resolver.RollFavoring(p_attacker_ID, 0.85, 1.0, true)
 	var random_value_2: float = _resolver.RollFavoring(p_defender_ID, 0.85, 1.0, true)
@@ -647,8 +644,8 @@ func _InsertOrRefresh(
 	var target: Character = _resolver._characters[p_target_ID]
 	var active: Array = target._active_buffs if p_is_buff else target._active_debuffs
 
-	if(not p_is_buff and p_duration > 0 and null != target._trait):
-		p_duration += target._trait.GetIncomingDebuffDurationBonus(p_target_ID)
+	if(not p_is_buff and p_duration > 0):
+		p_duration += Skills.IncomingDebuffDurationBonus(target, p_target_ID)
 
 	if(null != p_data and Skills.IsAmplifiableKind(p_data.magnitude_kind)):
 		var amplification: float = Skills.AppliedAttributeAmplification(
@@ -878,8 +875,7 @@ func _HealingMultiplier(p_character_ID: int) -> float:
 		var data: StatusEffectData = StatusEffectRegistry.DebuffData(debuff.type)
 		if(null != data and StatusEffectData.MagnitudeKind.IncomingHealReduction == data.magnitude_kind):
 			multiplier -= (debuff.value if 0.0 != debuff.value else data.magnitude)
-	var trait_multiplier: float = (character._trait.GetIncomingHealMultiplier(p_character_ID)
-			if null != character._trait else 1.0)
+	var trait_multiplier: float = Skills.IncomingHealMultiplier(character, p_character_ID)
 	return maxf(multiplier * trait_multiplier, 0.0)
 
 
@@ -962,8 +958,7 @@ func _EmitBuffApplied(p_target_ID: int, p_buff: StatusEffects.Buff, p_display_na
 	var target: Character = _resolver._characters[p_target_ID]
 	if(target._current_health <= 0):
 		return
-	var buff_trait: CharacterTrait = Skills.ActiveHook(target, Types.Combat_Event.Buff_Applied)
-	if(null != buff_trait):
+	for buff_trait: CharacterTrait in Skills.ActiveHooks(target, Types.Combat_Event.Buff_Applied):
 		buff_trait.OnBuffGained(p_target_ID, p_buff, _resolver)
 
 
@@ -996,6 +991,5 @@ func _EmitDebuffApplied(p_target_ID: int, p_debuff: StatusEffects.Debuff, p_disp
 	var target: Character = _resolver._characters[p_target_ID]
 	if(target._current_health <= 0):
 		return
-	var debuff_trait: CharacterTrait = Skills.ActiveHook(target, Types.Combat_Event.Debuff_Received)
-	if(null != debuff_trait):
+	for debuff_trait: CharacterTrait in Skills.ActiveHooks(target, Types.Combat_Event.Debuff_Received):
 		debuff_trait.OnDebuffReceived(p_target_ID, p_debuff, _resolver)

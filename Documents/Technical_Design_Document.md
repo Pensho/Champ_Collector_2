@@ -859,15 +859,14 @@ The implemented damage formula (`BattleResolver._ResolveDamage`, via the shared
 
 ```
 combined_damage_modifier.Contribute(...)  # DamageEffect's own contributions, seeded before the call
-combined_damage_modifier.Contribute(StringName(attacker_trait.get_script().get_global_name()),
-        CharacterTrait.GetOutgoingDamageBonus(...))
+combined_damage_modifier.Contribute(trait_damage_bonus, Skills.OutgoingDamageBonus(caster, ...))  # summed across every hook source
 combined_damage_modifier.Contribute(reagent_damage_bonus, damage_dealt_bonus[caster])
 for key in OpportunistDamageFactors(caster, target):  # one bucket per debuff *type* present on target
     combined_damage_modifier.Contribute(key, opportunist_factors[key])
 for key in ConsumeDamageMultiplierFactors(caster):    # one bucket per DamageMultiplier buff type, consumed here
     combined_damage_modifier.Contribute(key, damage_multiplier_factors[key])
 caster_scaled = (Σ over attrs ( damage_scaling[attr] * caster[attr] )) * combined_damage_modifier.Product()
-scaled_defence = defender.EffectiveDefence(include_debuffs=true) * defence_ignore_factor
+scaled_defence = defender.EffectiveDefence(include_debuffs=true) * defence_ignore_factor * Skills.OutgoingDefenceIgnoreFactor(caster, ...)
 ignore_rate = caster.trait.GetBaseDefenceIgnoreRate(caster)              # 0.0 for any trait without an override
 ignore_points = ignore_rate * defence_ignore_multiple * defender.EffectiveDefence(include_debuffs=false)
 effective_defence = max(0, scaled_defence - ignore_points)
@@ -1501,15 +1500,31 @@ tooltips, and battlefield effects (e.g. sprite echoes) from current trait state.
 calls it after `StartOfBattle` and after every resolved action; the resolver never does.
 
 A concrete trait subclasses `CharacterTrait`, registers the events it cares about in
-`_execution_steps`, and overrides the matching hooks. Callers always guard with
-`_trait._execution_steps.has(<event>)`, so a trait only pays for the hooks it opts into.
+`_execution_steps`, and overrides the matching hooks.
 
-Two hooks sit outside the `_execution_steps`/`Combat_Event` dispatch entirely and are called
-unconditionally on every character's trait, relying on a no-op base-class default instead of an
-opt-in guard: `BrewReagentKey(random) -> String` and `GetBrewPotencyBonus() -> float`, called once
-per character during `Battle.Init`'s `StartOfBattle` loop so the Alchemist's Fresh Batch passive
-can add a brewed slot to the `ReagentLoadout` (section 7.7) without `Battle.gd` needing an
-Alchemist-specific branch.
+`Character.HookSources() -> Array[CharacterTrait]` is every hook source a character carries: its
+own `_trait` (if any) followed by each equipped item's `RelicEffect`
+(`Scripts/Character/character_traits/Relics/relic_effect.gd`, `extends CharacterTrait`, read off
+`_held_items` through `ItemCollection`). `Skills.ActiveHooks(character, event) -> Array[CharacterTrait]`
+filters that list to the sources whose `_execution_steps` holds `event`; a call site iterates it
+rather than firing a single trait, so a trait only pays for the hooks it opts into and a Relic
+reaches every hook the same way its wearer's trait does. A hook returning a value composes across
+however many sources fired: `Skills.OutgoingDamageBonus`/`IncomingDebuffDurationBonus`/
+`OutgoingDebuffDurationBonus` sum; `Skills.OutgoingDefenceIgnoreFactor`/`DamageTakenMultiplier`/
+`IncomingHealMultiplier`/`TargetingPriorityMultiplier`/`IncomingZoneEffectMultiplier` multiply;
+`Skills.DebuffsCannotBeResisted`/`BlocksForwardTurnBarBump` are true if any source says so;
+`Skills.AppliedStatusValue` takes the first source with a non-negative opinion;
+`Skills.DispatchSkillCast` merges every source's own `OnSkillCast` `TraitSkillResult` (damage
+multiplier and turn-bar bump add, trait riders union). `Skills.RewardMultiplier(fielded_team)`
+takes the single largest `GetRewardMultiplier()` across every fielded character's own hook
+sources, applied to `LootManager.DistributeRewards`'s budget before rewards are rolled.
+
+`GetBaseDefenceIgnoreRate`, `BrewReagentKey`, `GetBrewPotencyBonus`, and
+`GetIncomingSingleTargetRedirectChance` stay read off `_trait` only, unconditionally, relying on a
+no-op base-class default instead of an opt-in guard — `BrewReagentKey`/`GetBrewPotencyBonus` are
+called once per character during `Battle.Init`'s `StartOfBattle` loop so the Alchemist's Fresh
+Batch passive can add a brewed slot to the `ReagentLoadout` (section 7.7) without `Battle.gd`
+needing an Alchemist-specific branch.
 
 `OnSkillCast` returns a `TraitSkillResult`
 (`Scripts/Character/character_traits/TraitHookResults/trait_skill_result.gd`) carrying a
@@ -1560,8 +1575,9 @@ the same "always polled" shape as the rest of this getter family.
 
 `CharacterTrait.GetAppliedAttributeAmplification() -> float` (default `0.0`) is a further
 unconditional getter in the same family, read once per applied status rather than per effect:
-`Skills.AppliedAttributeAmplification(source_ID, characters, sides)` takes the highest value across
-the source's own living side (not summed, so a second amplifying teammate adds nothing) and
+`Skills.AppliedAttributeAmplification(source_ID, characters, sides)` sums every hook source's own
+value across the source's own living side (so a second amplifying teammate, or a Relic's own
+amplification, adds onto the rest) and
 `StatusEffectResolver._InsertOrRefresh` stamps it into the status instance's own `trait_riders` under
 `&"attribute_amplification"` at apply time, covering both the new-instance and refresh paths.
 `Skills.ApplyAttributeModifiers` reads the stamp and adds it onto the modification's own percentage

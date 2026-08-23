@@ -88,13 +88,11 @@ func SetTargetingOrder() -> void:
 
 		var priority_a: float = (obj_a.GetTotalAttribute(Types.Attribute.Health)
 				+ obj_a.GetTotalAttribute(Types.Attribute.Defence))
-		if obj_a._trait != null:
-			priority_a *= obj_a._trait.GetTargetingPriorityMultiplier()
+		priority_a *= Skills.TargetingPriorityMultiplier(obj_a)
 		priority_a *= Skills.TargetingWeightMultiplier(obj_a)
 		var priority_b: float = (obj_b.GetTotalAttribute(Types.Attribute.Health)
 				+ obj_b.GetTotalAttribute(Types.Attribute.Defence))
-		if obj_b._trait != null:
-			priority_b *= obj_b._trait.GetTargetingPriorityMultiplier()
+		priority_b *= Skills.TargetingPriorityMultiplier(obj_b)
 		priority_b *= Skills.TargetingWeightMultiplier(obj_b)
 
 		return priority_a > priority_b
@@ -555,7 +553,10 @@ func EndBattle(p_winner: BattleResolver.Winner) -> void:
 	elif(p_winner == BattleResolver.Winner.Player_Won):
 		_self_context._arguments["Battle_Result"] = "Victory"
 		_battlecontext._loot_table._budget = LootManager.CalculateBudget(_self_context._arguments["Difficulty"])
-		LootManager.DistributeRewards(_battlecontext._loot_table, _self_context._arguments["Difficulty"])
+		var fielded_team: Array[Character] = []
+		for player_ID in _sides.player.members:
+			fielded_team.append(_characters[player_ID])
+		LootManager.DistributeRewards(_battlecontext._loot_table, _self_context._arguments["Difficulty"], fielded_team)
 		if (null != _battlecontext._loot_table._drop_result._equipment):
 			main.GetInstance()._item_collection.AddPreset(_battlecontext._loot_table._drop_result._equipment)
 

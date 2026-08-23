@@ -11,12 +11,11 @@ func Resolve(p_context: SkillCastContext) -> void:
 		var debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
 		debuff.type = debuff_type
 		debuff.duration = duration
-		var caster_trait: CharacterTrait = p_context.resolver.GetCharacters()[p_context.caster_ID]._trait
-		if(null != caster_trait):
-			var value_override: float = caster_trait.GetAppliedStatusValue(
-					p_context.caster_ID, target_ID, debuff_type, p_context.resolver)
-			if(value_override >= 0.0):
-				debuff.value = value_override
+		var caster: Character = p_context.resolver.GetCharacters()[p_context.caster_ID]
+		var value_override: float = Skills.AppliedStatusValue(
+				caster, p_context.caster_ID, target_ID, debuff_type, p_context.resolver)
+		if(value_override >= 0.0):
+			debuff.value = value_override
 		if(p_context.is_zone_trigger):
 			debuff.source_ID = p_context.caster_ID
 			if(0.0 == debuff.value):

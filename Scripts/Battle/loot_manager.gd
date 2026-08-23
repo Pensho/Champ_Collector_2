@@ -141,7 +141,9 @@ static func RollFortuneFavorTier(p_best_outcome: int) -> FortuneFavorTier.TierTy
 
 	return result
 
-static func DistributeRewards(p_loot_table: LootTable, p_difficulty: int) -> void:
+static func DistributeRewards(
+		p_loot_table: LootTable, p_difficulty: int, p_fielded_team: Array[Character] = []) -> void:
+	p_loot_table._budget = int(p_loot_table._budget * Skills.RewardMultiplier(p_fielded_team))
 	print("Loot budget from battle is: ", p_loot_table._budget)
 	for type in p_loot_table._primary_loot.keys():
 		match type:

@@ -128,9 +128,8 @@ func _NotifyCascadeInstanceResolved(p_event: CascadeEvent) -> void:
 		var character: Character = _resolver.GetCharacters()[character_ID]
 		if(character._current_health <= 0):
 			continue
-		var active_trait: CharacterTrait = Skills.ActiveHook(
-				character, Types.Combat_Event.Cascade_Instance_Resolved)
-		if(null != active_trait):
+		for active_trait: CharacterTrait in Skills.ActiveHooks(
+				character, Types.Combat_Event.Cascade_Instance_Resolved):
 			active_trait.OnCascadeInstanceResolved(character_ID, p_event, _resolver)
 
 

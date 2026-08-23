@@ -96,6 +96,18 @@ func GetEquipmentBonus(p_attribute: Types.Attribute) -> int:
 		bonus_stat += main.GetInstance()._item_collection._items[i]._attributes[p_attribute]
 	return bonus_stat
 
+## This character's own trait, if any, followed by every equipped item's Relic effect —
+## every source a combat hook can fire from (Concept_Document.md 3.3.1).
+func HookSources() -> Array[CharacterTrait]:
+	var sources: Array[CharacterTrait] = []
+	if(null != _trait):
+		sources.append(_trait)
+	for equipment_ID: int in _held_items.values():
+		var relic_effect: RelicEffect = main.GetInstance()._item_collection._items[equipment_ID]._relic_effect
+		if(null != relic_effect):
+			sources.append(relic_effect)
+	return sources
+
 func GetBaseAttributes() -> Dictionary[Types.Attribute, int]:
 	return _attributes.duplicate(true)
 
@@ -104,10 +116,11 @@ func ApplyEquipmentBonuses(p_attributes: Dictionary[Types.Attribute, int]) -> vo
 		p_attributes[attribute] += GetEquipmentBonus(attribute)
 
 func ApplyTraitAttributeBonus(p_attributes: Dictionary[Types.Attribute, int]) -> void:
-	if(null == _trait):
-		return
+	var sources: Array[CharacterTrait] = HookSources()
 	for attribute in p_attributes.keys():
-		p_attributes[attribute] += _trait.GetAttributeDelta(attribute, p_attributes[attribute])
+		var base_value: int = p_attributes[attribute]
+		for source: CharacterTrait in sources:
+			p_attributes[attribute] += source.GetAttributeDelta(attribute, base_value)
 
 func GetTotalAttributes() -> Dictionary[Types.Attribute, int]:
 	var attributes: Dictionary[Types.Attribute, int] = GetBaseAttributes()

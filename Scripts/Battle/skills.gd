@@ -10,11 +10,140 @@ const ZoneType = preload("uid://bdjrfif0s60v4")
 static func ZoneMagnitude(p_base: float, p_owner_knowledge: int) -> float:
 	return p_base * (1.0 + p_owner_knowledge * Game_Balance.ZONE_KNOWLEDGE_SCALING)
 
-static func ActiveHook(p_character: Character, p_event: Types.Combat_Event) -> CharacterTrait:
-	if(null != p_character and null != p_character._trait
-			and p_character._trait._execution_steps.has(p_event)):
-		return p_character._trait
-	return null
+static func ActiveHooks(p_character: Character, p_event: Types.Combat_Event) -> Array[CharacterTrait]:
+	var sources: Array[CharacterTrait] = []
+	if(null == p_character):
+		return sources
+	for source: CharacterTrait in p_character.HookSources():
+		if(source._execution_steps.has(p_event)):
+			sources.append(source)
+	return sources
+
+static func OutgoingDamageBonus(
+		p_character: Character, p_owner_ID: int, p_target_ID: int, p_resolver: BattleResolver) -> float:
+	var total: float = 0.0
+	if(null == p_character):
+		return total
+	for source: CharacterTrait in p_character.HookSources():
+		total += source.GetOutgoingDamageBonus(p_owner_ID, p_target_ID, p_resolver)
+	return total
+
+static func OutgoingDefenceIgnoreFactor(
+		p_character: Character, p_owner_ID: int, p_target_ID: int, p_resolver: BattleResolver) -> float:
+	var factor: float = 1.0
+	if(null == p_character):
+		return factor
+	for source: CharacterTrait in p_character.HookSources():
+		factor *= source.GetOutgoingDefenceIgnoreFactor(p_owner_ID, p_target_ID, p_resolver)
+	return factor
+
+static func IncomingDebuffDurationBonus(p_character: Character, p_owner_ID: int) -> int:
+	var total: int = 0
+	if(null == p_character):
+		return total
+	for source: CharacterTrait in p_character.HookSources():
+		total += source.GetIncomingDebuffDurationBonus(p_owner_ID)
+	return total
+
+static func OutgoingDebuffDurationBonus(p_character: Character, p_owner_ID: int) -> int:
+	var total: int = 0
+	if(null == p_character):
+		return total
+	for source: CharacterTrait in p_character.HookSources():
+		total += source.GetOutgoingDebuffDurationBonus(p_owner_ID)
+	return total
+
+static func DamageTakenMultiplier(
+		p_character: Character, p_owner_ID: int, p_attacker_ID: int, p_resolver: BattleResolver) -> float:
+	var multiplier: float = 1.0
+	if(null == p_character):
+		return multiplier
+	for source: CharacterTrait in p_character.HookSources():
+		multiplier *= source.OnDamageTaken(p_owner_ID, p_attacker_ID, p_resolver)
+	return multiplier
+
+static func IncomingHealMultiplier(p_character: Character, p_owner_ID: int) -> float:
+	var multiplier: float = 1.0
+	if(null == p_character):
+		return multiplier
+	for source: CharacterTrait in p_character.HookSources():
+		multiplier *= source.GetIncomingHealMultiplier(p_owner_ID)
+	return multiplier
+
+static func TargetingPriorityMultiplier(p_character: Character) -> float:
+	var multiplier: float = 1.0
+	if(null == p_character):
+		return multiplier
+	for source: CharacterTrait in p_character.HookSources():
+		multiplier *= source.GetTargetingPriorityMultiplier()
+	return multiplier
+
+static func IncomingZoneEffectMultiplier(
+		p_character: Character, p_owner_ID: int, p_zone_owner_ID: int, p_sides: CombatSides) -> float:
+	var multiplier: float = 1.0
+	if(null == p_character):
+		return multiplier
+	for source: CharacterTrait in p_character.HookSources():
+		multiplier *= source.GetIncomingZoneEffectMultiplier(p_owner_ID, p_zone_owner_ID, p_sides)
+	return multiplier
+
+static func DebuffsCannotBeResisted(p_character: Character, p_owner_ID: int) -> bool:
+	if(null == p_character):
+		return false
+	for source: CharacterTrait in p_character.HookSources():
+		if(source.DebuffsCannotBeResisted(p_owner_ID)):
+			return true
+	return false
+
+static func BlocksForwardTurnBarBump(p_character: Character, p_owner_ID: int) -> bool:
+	if(null == p_character):
+		return false
+	for source: CharacterTrait in p_character.HookSources():
+		if(source.BlocksForwardTurnBarBump(p_owner_ID)):
+			return true
+	return false
+
+## First-opinion-wins: the first active hook source with a non-negative override for
+## this debuff type sets its value; -1.0 (no opinion) if none do.
+static func AppliedStatusValue(
+		p_character: Character, p_owner_ID: int, p_target_ID: int,
+		p_debuff_type: Types.Debuff_Type, p_resolver: BattleResolver) -> float:
+	if(null == p_character):
+		return -1.0
+	for source: CharacterTrait in p_character.HookSources():
+		var value: float = source.GetAppliedStatusValue(p_owner_ID, p_target_ID, p_debuff_type, p_resolver)
+		if(value >= 0.0):
+			return value
+	return -1.0
+
+## Merges every active Skill_Cast hook source's own TraitSkillResult into one: damage-
+## multiplier deltas and turn-bar bumps add, trait riders union (a later source
+## overwrites an earlier one's same key).
+static func DispatchSkillCast(
+		p_character: Character,
+		p_owner_ID: int,
+		p_target_IDs: Array[int],
+		p_skill_name: String,
+		p_caster_attributes: Dictionary[Types.Attribute, int],
+		p_resolver: BattleResolver) -> TraitSkillResult:
+	var merged: TraitSkillResult = TraitSkillResult.new()
+	if(null == p_character):
+		return merged
+	for source: CharacterTrait in ActiveHooks(p_character, Types.Combat_Event.Skill_Cast):
+		var result: TraitSkillResult = source.OnSkillCast(
+				p_owner_ID, p_target_IDs, p_skill_name, p_caster_attributes, p_resolver)
+		merged._damage_multiplier += result._damage_multiplier - 1.0
+		merged._turn_bar_bump += result._turn_bar_bump
+		for key: StringName in result._trait_riders:
+			merged._trait_riders[key] = result._trait_riders[key]
+	return merged
+
+static func RewardMultiplier(p_fielded_team: Array[Character]) -> float:
+	var largest_bonus: float = 0.0
+	for character: Character in p_fielded_team:
+		for source: CharacterTrait in character.HookSources():
+			largest_bonus = maxf(largest_bonus, source.GetRewardMultiplier() - 1.0)
+	return 1.0 + largest_bonus
 
 ## The character's cooldown-0 skill (Concept_Document.md 1.1.2's basic-skill baseline).
 ## Falls back to the first skill when the kit has no cooldown-0 entry.
@@ -47,8 +176,7 @@ static func TriggerZoneUsedHook(
 	var zone_owner: Character = p_characters.get(p_zone_owner_ID)
 	if(null != zone_owner and zone_owner._current_health <= 0):
 		return
-	var active_trait: CharacterTrait = ActiveHook(zone_owner, Types.Combat_Event.Zone_Used)
-	if(null != active_trait):
+	for active_trait: CharacterTrait in ActiveHooks(zone_owner, Types.Combat_Event.Zone_Used):
 		active_trait.OnZoneUsed(p_zone_owner_ID, p_user_ID, p_resolver)
 
 static func TriggerZoneConstructedHook(
@@ -57,8 +185,7 @@ static func TriggerZoneConstructedHook(
 		p_zone_ID: int,
 		p_resolver: BattleResolver) -> void:
 	var zone_owner: Character = p_characters.get(p_zone_owner_ID)
-	var active_trait: CharacterTrait = ActiveHook(zone_owner, Types.Combat_Event.Zone_Constructed)
-	if(null != active_trait):
+	for active_trait: CharacterTrait in ActiveHooks(zone_owner, Types.Combat_Event.Zone_Constructed):
 		active_trait.OnZoneConstructed(p_zone_owner_ID, p_zone_ID, p_resolver)
 
 ## Notifies every living member of the consumer's own team (the consumer included) that a
@@ -72,8 +199,7 @@ static func TriggerAllyReagentConsumedHook(
 		p_reagent: ReagentData,
 		p_resolver: BattleResolver) -> void:
 	for ally_ID in p_sides.AlliesOf(p_consumer_ID).AliveMembers(p_characters):
-		var ally_trait: CharacterTrait = ActiveHook(p_characters[ally_ID], Types.Combat_Event.Ally_Reagent_Consumed)
-		if(null != ally_trait):
+		for ally_trait: CharacterTrait in ActiveHooks(p_characters[ally_ID], Types.Combat_Event.Ally_Reagent_Consumed):
 			ally_trait.OnAllyReagentConsumed(ally_ID, p_consumer_ID, p_reagent, p_resolver)
 
 static func CritChanceOverflowRate(
@@ -86,8 +212,8 @@ static func CritChanceOverflowRate(
 		return rate
 	for ally_ID in team.AliveMembers(p_characters):
 		var ally: Character = p_characters[ally_ID]
-		if(null != ally._trait):
-			rate += ally._trait.GetCritChanceOverflowRate()
+		for source: CharacterTrait in ally.HookSources():
+			rate += source.GetCritChanceOverflowRate()
 	return rate
 
 static func ApplyBarrierZone(
@@ -99,8 +225,9 @@ static func ApplyBarrierZone(
 	var characters: Dictionary[int, Character] = p_resolver.GetCharacters()
 	var zone_owner: Character = characters.get(p_zone_owner_ID)
 	var charge_bonus: float = 0.0
-	if(null != zone_owner and null != zone_owner._trait):
-		charge_bonus = zone_owner._trait.GetZoneChargeBonus(p_zone_ID)
+	if(null != zone_owner):
+		for source: CharacterTrait in zone_owner.HookSources():
+			charge_bonus += source.GetZoneChargeBonus(p_zone_ID)
 	p_resolver.GetStatusResolver().ApplyBuff(p_character_ID, MakeBarrierZoneBuff(p_owner_knowledge, charge_bonus))
 	TriggerZoneUsedHook(characters, p_zone_owner_ID, p_character_ID, p_resolver)
 
@@ -306,8 +433,8 @@ static func AppliedAttributeAmplification(
 	var amplification: float = 0.0
 	for member_ID in side.AliveMembers(p_characters):
 		var character: Character = p_characters[member_ID]
-		if(null != character._trait):
-			amplification = maxf(amplification, character._trait.GetAppliedAttributeAmplification())
+		for source: CharacterTrait in character.HookSources():
+			amplification += source.GetAppliedAttributeAmplification()
 	return amplification
 
 ## Fraction (e.g. Time Tithe) p_source_ID gains for itself when its own effect
@@ -318,11 +445,11 @@ static func TurnBarTithe(
 	if(p_fraction >= 0.0 or p_source_ID < 0 or p_source_ID == p_target_ID
 			or not p_sides.AreEnemies(p_source_ID, p_target_ID)):
 		return 0.0
-	var source: Character = p_characters[p_source_ID]
-	var active_trait: CharacterTrait = ActiveHook(source, Types.Combat_Event.Enemy_Turn_Bar_Reduced)
-	if(null == active_trait):
-		return 0.0
-	return active_trait.OnEnemyTurnBarReduced(p_source_ID, -p_fraction, p_resolver)
+	var source_character: Character = p_characters[p_source_ID]
+	var tithe: float = 0.0
+	for active_trait: CharacterTrait in ActiveHooks(source_character, Types.Combat_Event.Enemy_Turn_Bar_Reduced):
+		tithe += active_trait.OnEnemyTurnBarReduced(p_source_ID, -p_fraction, p_resolver)
+	return tithe
 
 ## Notifies p_source_ID's own trait when its effect moved ally p_target_ID forward on
 ## the turn bar by p_fraction (e.g. Time Tithe granting Borrowed Time). The ally
@@ -334,13 +461,11 @@ static func DispatchAllyTurnBarIncreased(
 	if(p_fraction <= 0.0 or p_source_ID < 0 or p_source_ID == p_target_ID
 			or p_sides.AreEnemies(p_source_ID, p_target_ID)):
 		return
-	var source: Character = p_characters.get(p_source_ID)
-	if(null == source):
+	var source_character: Character = p_characters.get(p_source_ID)
+	if(null == source_character):
 		return
-	var active_trait: CharacterTrait = ActiveHook(source, Types.Combat_Event.Ally_Turn_Bar_Increased)
-	if(null == active_trait):
-		return
-	active_trait.OnAllyTurnBarIncreased(p_source_ID, p_target_ID, p_fraction, p_resolver)
+	for active_trait: CharacterTrait in ActiveHooks(source_character, Types.Combat_Event.Ally_Turn_Bar_Increased):
+		active_trait.OnAllyTurnBarIncreased(p_source_ID, p_target_ID, p_fraction, p_resolver)
 
 ## Fires an applier's Debuff_Applied trait hook when their debuff lands on someone
 ## else — the applier-side counterpart to _EmitBuffApplied's target-side dispatch.
@@ -354,8 +479,7 @@ static func DispatchDebuffApplied(
 	var applier: Character = p_characters[p_debuff.source_ID]
 	if(applier._current_health <= 0):
 		return
-	var active_trait: CharacterTrait = ActiveHook(applier, Types.Combat_Event.Debuff_Applied)
-	if(null != active_trait):
+	for active_trait: CharacterTrait in ActiveHooks(applier, Types.Combat_Event.Debuff_Applied):
 		active_trait.OnDebuffApplied(p_debuff.source_ID, p_target_ID, p_debuff, p_resolver)
 
 static func ApplyActiveAttributeModifiers(
@@ -421,12 +545,10 @@ static func FindDamageRedirect(
 		if(ally_ID == p_target_ID):
 			continue
 		var ally: Character = characters[ally_ID]
-		var active_trait: CharacterTrait = ActiveHook(ally, Types.Combat_Event.Ally_Damage_Taken)
-		if(null == active_trait):
-			continue
-		var fraction: float = active_trait.OnAllyDamageTaken(ally_ID, p_target_ID, p_resolver)
-		if(fraction > 0.0):
-			return [ally_ID, fraction]
+		for active_trait: CharacterTrait in ActiveHooks(ally, Types.Combat_Event.Ally_Damage_Taken):
+			var fraction: float = active_trait.OnAllyDamageTaken(ally_ID, p_target_ID, p_resolver)
+			if(fraction > 0.0):
+				return [ally_ID, fraction]
 	return [-1, 0.0]
 
 static func _FindStatusDamageRedirect(

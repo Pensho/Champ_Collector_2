@@ -19,6 +19,8 @@ const NO_ATTACKER: int = -1
 ## contributions before this bucket sees them — see _ResolveDamage.
 const _REAGENT_DAMAGE_BONUS_KEY: StringName = &"reagent_damage_bonus"
 
+const _TRAIT_DAMAGE_BONUS_KEY: StringName = &"trait_damage_bonus"
+
 const _BROADCASTABLE_EVENTS: Array[Types.Combat_Event] = [
 	Types.Combat_Event.Start_Combat,
 	Types.Combat_Event.Start_Turn,
@@ -160,8 +162,7 @@ func IsTheBattleOver() -> Winner:
 func BeginTurn(p_character_ID: int) -> Array[CombatResult]:
 	_BeginBatch()
 	var character: Character = _characters[p_character_ID]
-	var active_trait: CharacterTrait = Skills.ActiveHook(character, Types.Combat_Event.Start_Turn)
-	if(null != active_trait):
+	for active_trait: CharacterTrait in Skills.ActiveHooks(character, Types.Combat_Event.Start_Turn):
 		active_trait.StartOfTurn(p_character_ID, self)
 	return _EndBatch()
 
@@ -174,10 +175,8 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 	var cast_skill: Skill = caster._skills[p_skill_ID]
 	var caster_attributes: Dictionary[Types.Attribute, int] = GetEffectiveAttributes(p_caster_ID)
 
-	var trait_result: TraitSkillResult = TraitSkillResult.new()
-	var skill_cast_trait: CharacterTrait = Skills.ActiveHook(caster, Types.Combat_Event.Skill_Cast)
-	if(null != skill_cast_trait):
-		trait_result = skill_cast_trait.OnSkillCast(p_caster_ID, p_target_IDs, cast_skill.name, caster_attributes, self)
+	var trait_result: TraitSkillResult = Skills.DispatchSkillCast(
+			caster, p_caster_ID, p_target_IDs, cast_skill.name, caster_attributes, self)
 
 	if(not caster._active_debuffs.is_empty()):
 		_status_resolver._TriggerExistingCasterDebuffs(p_caster_ID, caster_attributes)
@@ -194,9 +193,8 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 			effect.Resolve(context)
 
 	if(caster._current_health > 0):
-		var skill_effects_resolved_trait: CharacterTrait = Skills.ActiveHook(
-				caster, Types.Combat_Event.Skill_Effects_Resolved)
-		if(null != skill_effects_resolved_trait):
+		for skill_effects_resolved_trait: CharacterTrait in Skills.ActiveHooks(
+				caster, Types.Combat_Event.Skill_Effects_Resolved):
 			skill_effects_resolved_trait.OnSkillEffectsResolved(
 					p_caster_ID, p_target_IDs, cast_skill.name, caster_attributes, self)
 
@@ -217,8 +215,7 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 	_zone_resolver.TriggerZones(p_caster_ID)
 
 	if(caster._current_health > 0):
-		var end_turn_trait: CharacterTrait = Skills.ActiveHook(caster, Types.Combat_Event.End_Turn)
-		if(null != end_turn_trait):
+		for end_turn_trait: CharacterTrait in Skills.ActiveHooks(caster, Types.Combat_Event.End_Turn):
 			end_turn_trait.EndOfTurn(p_caster_ID, self)
 	return _EndBatch()
 
@@ -237,8 +234,7 @@ func ResolveStunTurn(p_caster_ID: int) -> Array[CombatResult]:
 	_TickCooldowns(caster)
 	_zone_resolver.TriggerZones(p_caster_ID)
 	if(caster._current_health > 0):
-		var end_turn_trait: CharacterTrait = Skills.ActiveHook(caster, Types.Combat_Event.End_Turn)
-		if(null != end_turn_trait):
+		for end_turn_trait: CharacterTrait in Skills.ActiveHooks(caster, Types.Combat_Event.End_Turn):
 			end_turn_trait.EndOfTurn(p_caster_ID, self)
 	var result: CombatResult = CombatResult.new(CombatResult.Kind.Turn_Skipped)
 	result.target_ID = p_caster_ID
@@ -302,8 +298,7 @@ func ResolveEffectDamage(
 		p_defence_ignore_factor: float = 1.0) -> void:
 	var target_attributes: Dictionary[Types.Attribute, int] = GetEffectiveAttributes(p_target_ID)
 	if(p_caster_ID != p_target_ID and _characters.has(p_target_ID) and _characters[p_target_ID]._current_health > 0):
-		var defend_trait: CharacterTrait = Skills.ActiveHook(_characters[p_target_ID], Types.Combat_Event.Defend)
-		if(null != defend_trait):
+		for defend_trait: CharacterTrait in Skills.ActiveHooks(_characters[p_target_ID], Types.Combat_Event.Defend):
 			defend_trait.OnDefend(p_target_ID, target_attributes, _characters)
 	_ResolveDamage(p_caster_ID, p_target_ID, p_caster_attributes, target_attributes, p_damage_scaling,
 			p_defence_ignore_multiple, p_combined_damage_modifier, p_allow_critical, p_defence_ignore_factor)
@@ -339,8 +334,8 @@ func BroadcastEvent(p_event: Types.Combat_Event) -> void:
 			"BroadcastEvent only supports owner/resolver-shaped hooks; got " + Types.Combat_Event.keys()[p_event])
 	for character_ID in _characters.keys():
 		var character: Character = _characters[character_ID]
-		if(null != character._trait and character._trait._execution_steps.has(p_event)):
-			character._trait._execution_steps[p_event].call(character_ID, self)
+		for source: CharacterTrait in Skills.ActiveHooks(character, p_event):
+			source._execution_steps[p_event].call(character_ID, self)
 
 ## Trait flavor text ("Stole buff!", "Avoided!") routed through the result stream.
 func EmitTraitText(p_target_ID: int, p_text: String, p_color: Color = Color.WHITE) -> void:
@@ -389,8 +384,7 @@ func ResolveReagent(
 	var consumer: Character = _characters[p_consumer_ID]
 	var potency: float = 1.0 + p_extra_potency
 	if(not reagent.binary):
-		var reagent_trait: CharacterTrait = Skills.ActiveHook(consumer, Types.Combat_Event.Reagent_Consumed)
-		if(null != reagent_trait):
+		for reagent_trait: CharacterTrait in Skills.ActiveHooks(consumer, Types.Combat_Event.Reagent_Consumed):
 			potency += reagent_trait.OnReagentConsumed(p_consumer_ID, reagent, self)
 		potency += _status_resolver.ConsumeCatalystIfPresent(p_consumer_ID)
 	_ResolveReagentEffect(p_consumer_ID, p_target_ID, reagent, potency)
@@ -619,8 +613,7 @@ func _EmitTurnBarBump(p_target_ID: int, p_fraction: float, p_source_ID: int = -1
 	if(p_fraction < 0.0 and _HasBuff(p_target_ID, Types.Buff_Type.Steadfast)):
 		return
 	var target: Character = _characters.get(p_target_ID)
-	if(p_fraction > 0.0 and null != target and null != target._trait
-			and target._trait.BlocksForwardTurnBarBump(p_target_ID)):
+	if(p_fraction > 0.0 and Skills.BlocksForwardTurnBarBump(target, p_target_ID)):
 		return
 	var bump: CombatResult = CombatResult.new(CombatResult.Kind.Turn_Bar_Bump)
 	bump.target_ID = p_target_ID
@@ -696,8 +689,7 @@ func _HandleDeath(p_character_ID: int) -> void:
 	var cleared: CombatResult = CombatResult.new(CombatResult.Kind.Statuses_Cleared)
 	cleared.target_ID = p_character_ID
 	_Emit(cleared)
-	var death_trait: CharacterTrait = Skills.ActiveHook(character, Types.Combat_Event.On_Death)
-	if(null != death_trait):
+	for death_trait: CharacterTrait in Skills.ActiveHooks(character, Types.Combat_Event.On_Death):
 		death_trait.OnDeath()
 	var death: CombatResult = CombatResult.new(CombatResult.Kind.Death)
 	death.target_ID = p_character_ID
@@ -707,8 +699,7 @@ func _HandleDeath(p_character_ID: int) -> void:
 	if(null != allies):
 		for ally_ID in allies.AliveMembers(_characters):
 			var ally: Character = _characters[ally_ID]
-			var ally_death_trait: CharacterTrait = Skills.ActiveHook(ally, Types.Combat_Event.Ally_Death)
-			if(null != ally_death_trait):
+			for ally_death_trait: CharacterTrait in Skills.ActiveHooks(ally, Types.Combat_Event.Ally_Death):
 				ally_death_trait.OnAllyDeath(ally_ID, p_character_ID, self)
 
 
@@ -729,10 +720,8 @@ func _ContributePersistentCasterFactors(
 	if(not _characters.has(p_caster_ID) or not _characters.has(p_target_ID)):
 		return
 	var target: Character = _characters[p_target_ID]
-	var attacker_trait: CharacterTrait = _characters[p_caster_ID]._trait
-	if(null != attacker_trait):
-		p_modifier.Contribute(StringName(attacker_trait.get_script().get_global_name()),
-				attacker_trait.GetOutgoingDamageBonus(p_caster_ID, p_target_ID, self))
+	p_modifier.Contribute(_TRAIT_DAMAGE_BONUS_KEY,
+			Skills.OutgoingDamageBonus(_characters[p_caster_ID], p_caster_ID, p_target_ID, self))
 	p_modifier.Contribute(_REAGENT_DAMAGE_BONUS_KEY, _damage_dealt_bonus.get(p_caster_ID, 0.0))
 	var opportunist_factors: Dictionary[StringName, float] = (
 			_status_resolver._OpportunistDamageFactors(p_caster_ID, target))
@@ -760,8 +749,9 @@ func _EffectiveDefenceAfterIgnore(
 		p_full_effective_defence: float,
 		p_defence_ignore_multiple: float,
 		p_defence_ignore_factor: float = 1.0) -> float:
-	var scaled_defence: float = p_full_effective_defence * p_defence_ignore_factor
 	var caster: Character = _characters.get(p_caster_ID)
+	var scaled_defence: float = (p_full_effective_defence * p_defence_ignore_factor
+			* Skills.OutgoingDefenceIgnoreFactor(caster, p_caster_ID, p_defender_ID, self))
 	var rate: float = 0.0
 	if(null != caster and null != caster._trait):
 		rate = caster._trait.GetBaseDefenceIgnoreRate(p_caster_ID)
@@ -850,10 +840,8 @@ func _ResolveDamage(
 
 	if(damage_dealt == 0):
 		return
-	if(target._current_health > 0):
-		var damage_taken_trait: CharacterTrait = Skills.ActiveHook(target, Types.Combat_Event.Damage_Taken)
-		if(damage_dealt > 0 and null != damage_taken_trait):
-			damage_dealt = int(round(damage_dealt * damage_taken_trait.OnDamageTaken(p_target_ID, p_caster_ID, self)))
+	if(target._current_health > 0 and damage_dealt > 0):
+		damage_dealt = int(round(damage_dealt * Skills.DamageTakenMultiplier(target, p_target_ID, p_caster_ID, self)))
 	if(damage_dealt == 0):
 		return
 
@@ -862,17 +850,14 @@ func _ResolveDamage(
 
 	var caster: Character = _characters[p_caster_ID]
 	if(caster._current_health > 0):
-		var damage_dealt_trait: CharacterTrait = Skills.ActiveHook(caster, Types.Combat_Event.Damage_Dealt)
-		if(null != damage_dealt_trait):
+		for damage_dealt_trait: CharacterTrait in Skills.ActiveHooks(caster, Types.Combat_Event.Damage_Dealt):
 			damage_dealt_trait.OnDamageDealt(p_caster_ID, p_target_ID, actual_damage_dealt, self)
 		if(rolled_critical):
-			var critical_trait: CharacterTrait = Skills.ActiveHook(caster, Types.Combat_Event.Critical_Hit)
-			if(null != critical_trait):
+			for critical_trait: CharacterTrait in Skills.ActiveHooks(caster, Types.Combat_Event.Critical_Hit):
 				critical_trait.OnCriticalHit(p_caster_ID, p_target_ID, self)
 
 	if(target._current_health <= 0 and caster._current_health > 0):
-		var kill_trait: CharacterTrait = Skills.ActiveHook(caster, Types.Combat_Event.On_Kill)
-		if(null != kill_trait):
+		for kill_trait: CharacterTrait in Skills.ActiveHooks(caster, Types.Combat_Event.On_Kill):
 			kill_trait.OnKill(p_caster_ID, p_target_ID, self)
 
 

@@ -207,3 +207,11 @@ func GetConditionCount(
 
 func GetAppliedAttributeAmplification() -> float:
 	return 0.0
+
+## Multiplicative Defence-ignore factor from this owner's own effect (1.0 = no ignore),
+## distinct from GetBaseDefenceIgnoreRate's subtraction-based ignore.
+func GetOutgoingDefenceIgnoreFactor(_p_owner_ID: int, _p_target_ID: int, _p_resolver: BattleResolver) -> float:
+	return 1.0
+
+func GetRewardMultiplier() -> float:
+	return 1.0

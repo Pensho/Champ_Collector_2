@@ -151,10 +151,8 @@ func SectionWithMostAllies(p_owner_ID: int) -> int:
 
 func _ResolveZoneEffect(p_zone: Zone, p_zone_ID: int, p_character_ID: int) -> void:
 	var affected: Character = _resolver._characters[p_character_ID]
-	var effect_multiplier: float = 1.0
-	if(null != affected._trait):
-		effect_multiplier = affected._trait.GetIncomingZoneEffectMultiplier(
-				p_character_ID, p_zone._owner_ID, _resolver._sides)
+	var effect_multiplier: float = Skills.IncomingZoneEffectMultiplier(
+			affected, p_character_ID, p_zone._owner_ID, _resolver._sides)
 	var context := SkillCastContext.new(_resolver, p_zone._owner_ID, [p_character_ID], null,
 			p_zone._owner_attributes, 0, TraitSkillResult.new())
 	context.is_zone_trigger = true
@@ -170,6 +168,5 @@ func _ResolveZoneEffect(p_zone: Zone, p_zone_ID: int, p_character_ID: int) -> vo
 		return
 	if(affected._current_health <= 0):
 		return
-	var reactive: CharacterTrait = Skills.ActiveHook(affected, Types.Combat_Event.Zone_Affected)
-	if(null != reactive):
+	for reactive: CharacterTrait in Skills.ActiveHooks(affected, Types.Combat_Event.Zone_Affected):
 		reactive.OnAffectedByZone(p_character_ID, p_zone._owner_ID, _resolver)

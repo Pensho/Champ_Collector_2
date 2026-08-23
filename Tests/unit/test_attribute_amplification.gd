@@ -56,13 +56,13 @@ func test_crit_attributes_are_never_amplified() -> void:
 	assert_eq(_resolver.GetEffectiveAttributes(1)[Types.Attribute.CritChance],
 			_ally._attributes[Types.Attribute.CritChance] + 20)
 
-func test_two_amplifying_teammates_take_the_highest_not_the_sum() -> void:
+func test_two_amplifying_teammates_amplifications_add() -> void:
 	_ally._trait = FieldOfStudyTrait.new()
 	_ally._trait.Init(Types.Rarity.Uncommon)
 
 	assert_almost_eq(
 			Skills.AppliedAttributeAmplification(0, _resolver.GetCharacters(), _resolver.GetSides()),
-			0.11, 0.0001, "The Uncommon ally must not add onto the Legendary Scholar's own amplification")
+			0.18, 0.0001, "The Uncommon ally's amplification must add onto the Legendary Scholar's own")
 
 func test_amplification_survives_a_refresh() -> void:
 	_resolver.GetStatusResolver().ApplyDebuff(2, _enfeeble(1))
