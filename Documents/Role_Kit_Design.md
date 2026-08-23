@@ -1041,7 +1041,7 @@ rather than an amount the player chooses at cast time.
 mitigation term, which claims no bucket key. The passive is **replaced**, the third skill is
 **rebuilt**, and Pierce Weakness keeps its shape while its magnitude moves onto the passive's rate.
 
-**Passive: Between the Plates.** The Thief's attacks ignore **10/13/16/20% by rarity of a
+**Passive: Between the Plates.** The Thief's attacks ignore **12/16/20/25% by rarity of a
 debuff-free reference Defence** — base + equipment + trait deltas + battle-long bonuses + Defence
 buffs, excluding Defence debuffs — subtracted in points from the target's actual effective Defence
 and floored at zero. Pilfer retires; the bypass is what the Role is rather than one skill it owns,

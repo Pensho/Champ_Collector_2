@@ -205,14 +205,14 @@ const MANIFEST: Dictionary = {
 		"passive": [
 			{"name": "Between the Plates", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Channel1,
-					"precondition": "Every attack ignores 20% (Legendary) of a debuff-free reference " +
+					"precondition": "Every attack ignores 25% (Legendary) of a debuff-free reference " +
 							"Defence (base + equipment + trait deltas + battle-long bonuses + Defence " +
 							"buffs, excluding Defence debuffs), subtracted in points from the target's " +
 							"actual effective Defence and floored at zero. See defence_ignore on this " +
 							"entry and on each skill below.",
 					"citation": "between_the_plates_trait.gd:3-22; battle_resolver.gd " +
 							"_EffectiveDefenceAfterIgnore",
-					"defence_ignore": {"rate": 0.20,
+					"defence_ignore": {"rate": 0.25,
 							"citation": "between_the_plates_trait.gd:5-10 (Legendary)"}},
 		],
 		"skills": [

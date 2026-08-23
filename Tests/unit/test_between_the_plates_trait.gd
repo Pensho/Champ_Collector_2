@@ -33,10 +33,10 @@ func _expose_weakness(p_value: float) -> StatusEffects.Debuff:
 
 func test_rarity_ladder_returns_expected_rates() -> void:
 	var expected: Dictionary[Types.Rarity, float] = {
-		Types.Rarity.Uncommon: 0.10,
-		Types.Rarity.Rare: 0.13,
-		Types.Rarity.Epic: 0.16,
-		Types.Rarity.Legendary: 0.20,
+		Types.Rarity.Uncommon: 0.12,
+		Types.Rarity.Rare: 0.16,
+		Types.Rarity.Epic: 0.20,
+		Types.Rarity.Legendary: 0.25,
 	}
 	for rarity: Types.Rarity in expected:
 		var trait_instance: BetweenThePlatesTrait = BetweenThePlatesTrait.new()
@@ -59,8 +59,8 @@ func test_ignore_subtracts_points_not_a_fraction() -> void:
 
 	var effective: float = _resolver._EffectiveDefenceAfterIgnore(0, 3, 120.0, 1.0)
 
-	assert_almost_eq(effective, 96.0, 0.01,
-		"Legendary's 20% of a 120 reference should subtract 24 points, not scale the total")
+	assert_almost_eq(effective, 90.0, 0.01,
+		"Legendary's 25% of a 120 reference should subtract 30 points, not scale the total")
 
 func test_multiple_scales_the_ignore() -> void:
 	_roster[0]._trait = BetweenThePlatesTrait.new()
@@ -70,7 +70,7 @@ func test_multiple_scales_the_ignore() -> void:
 	var base_multiple: float = _resolver._EffectiveDefenceAfterIgnore(0, 3, 120.0, 1.0)
 	var pierce_multiple: float = _resolver._EffectiveDefenceAfterIgnore(0, 3, 120.0, 2.5)
 
-	assert_almost_eq(pierce_multiple, 60.0, 0.01, "2.5x the 20% rate should subtract 60 of 120")
+	assert_almost_eq(pierce_multiple, 45.0, 0.01, "2.5x the 25% rate should subtract 75 of 120")
 	assert_lt(pierce_multiple, base_multiple, "A higher multiple must ignore more Defence")
 
 func test_ignore_floors_at_zero() -> void:
@@ -102,9 +102,9 @@ func test_a_defence_debuff_on_the_target_does_not_shrink_the_ignores_own_points(
 	var effective: float = _resolver._EffectiveDefenceAfterIgnore(0, 3, shredded_defence, 1.0)
 
 	assert_almost_eq(shredded_defence, 67.0, 1.0, "Expose Weakness at -44% should shred 120 to ~67")
-	# 20% of the UNSHREDDED 120 reference is 24 points, not 20% of the shredded 67 (13.4) —
+	# 25% of the UNSHREDDED 120 reference is 30 points, not 25% of the shredded 67 (16.75) —
 	# the two effects compound rather than one eating the other's contribution.
-	assert_almost_eq(effective, shredded_defence - 24.0, 1.0,
+	assert_almost_eq(effective, shredded_defence - 30.0, 1.0,
 		"The ignore's own points must come off the debuff-free reference, not the shredded value")
 
 func test_a_defence_buff_on_the_target_raises_the_ignores_reference() -> void:
