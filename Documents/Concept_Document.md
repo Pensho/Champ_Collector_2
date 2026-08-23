@@ -901,7 +901,7 @@ standard item for it.
 
 | | Standard | Relic |
 |---|---|---|
-| Attribute steps | rarity (1–5) | ceil(rarity / 2) — 1, 1, 2, 2, 3 |
+| Attribute contribution | full | half of a standard item at the same rarity — half the setup roll and half the per-upgrade gain, each rounded up |
 | Unique effect | none | one, magnitude scaling with rarity |
 | Downside | none | one, magnitude may scale with rarity |
 
@@ -913,11 +913,8 @@ combined-modifier factor [Channel 2], a cascade trigger [Channel 3 — Cascade],
 [Enabler]. Every Relic is channel-tagged in section 1.1.3's vocabulary and audited individually
 against the 1.1.6 rejection test.
 
-**The upside is conditional, the downside is not.** A Relic's unique effect fires on a trigger, a
-state, or a threshold; its drawback is always on. The player pays every turn and collects only
-when the condition holds, which is what keeps a Relic off the median. Rarity may scale the
-drawback alongside the effect, so a higher-rarity copy is a larger swing in both directions and
-a sharper decision rather than an automatic upgrade.
+Rarity may scale the drawback alongside the effect, so a higher-rarity copy is a larger swing in
+both directions and a sharper decision rather than an automatic upgrade.
 
 Relic effects are written against the same hook vocabulary as character traits, firing across the
 range of battle situations rather than through a narrow interface of their own.
@@ -948,8 +945,8 @@ it is still equipped and raises other attributes. That stays below the 10x mini-
 target, but it is a permanent, no-setup multiplier, which is worth knowing when reading
 section 1.1.4's "stays tame."
 That figure is an upper bound a Relic loadout can only sit below: a Relic displaces a standard
-item rather than adding to the loadout, and rolls fewer attribute steps. What a Relic raises is
-channels 2 and 3, which the per-Relic audit governs.
+item rather than adding to the loadout, and contributes half its attributes. What a Relic raises
+is channels 2 and 3, which the per-Relic audit governs.
 
 Items can exist for general use that most characters can use and Role specific type of items.
 
