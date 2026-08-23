@@ -23,10 +23,15 @@ Suggested order (dependencies noted inside each plan):
 1. `Plan_System_Buildout.md` — the coverage-gap catch-all spawned by `Plan_Blowout_Alignment.md`
    and the completed kit rework: content and mechanisms those two plans found too
    thinly populated or promised but never built (Channel 3's threshold-crossing and
-   cascade-on-cascade triggers, the Relic gear mechanism, Refutation's
-   undocumented-but-missing damage, the orphaned Weight of Law zone). Not yet started.
+   cascade-on-cascade triggers, Refutation's undocumented-but-missing damage, the
+   orphaned Weight of Law zone). Not yet started.
 
-2. `Plan_Story_Mode_Systems.md` — the systems that deliver story mode (story
+2. `Plan_Relic_Implementation.md` — the Relic item type's code mechanism, spawned by
+   `Plan_System_Buildout.md`'s coverage gap: splitting item type from rarity, carrying
+   a Relic's effect, dispatching it alongside the wearer's trait, and implementing
+   `Relic_Design.md`'s 24-entry catalog. Blocks nothing else; not yet started.
+
+3. `Plan_Story_Mode_Systems.md` — the systems that deliver story mode (story
    state handler, dialogue overlay, flag-driven hub variants, act gating,
    scripted battle openings, guest champions). The state handler and dialogue
    overlay are independent and can start any time; scripted openings apply
