@@ -1,8 +1,8 @@
 extends GutTest
 
-# Coverage for the Relic carrier (Documents/Plans/Plan_Relic_Implementation.md Phase 2): a
-# Relic preset's effect resource instantiates per-equip at the wearer's rolled rarity, reading
-# Relic_Design.md's five-step ladder off RelicEffect.Magnitude().
+# Coverage for the Relic carrier: a Relic preset's effect resource instantiates per-equip at
+# the wearer's rolled rarity, reading Relic_Design.md's five-step ladder off
+# RelicEffect.Magnitude().
 
 func test_all_relic_presets_are_registered_and_resolve() -> void:
 	var relic_keys: Array[String] = EquipmentPresetRegistry.RELIC_PRESETS.keys()

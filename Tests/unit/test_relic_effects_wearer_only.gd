@@ -1,8 +1,8 @@
 extends GutTest
 
-## Coverage for Plan_Relic_Implementation.md Phase 4 batch 1 (wearer-only, existing hooks):
-## The Quiet Mass, The Planted Heel, The Answering Boss, Kiln Brand, Sunderplate Nail, and
-## The Ossuary Ledger. Each Relic effect is exercised at two rarity steps, plus its drawback.
+## The Relics whose effect and drawback both act on the wearer alone: The Quiet Mass, The
+## Planted Heel, The Answering Boss, Kiln Brand, Sunderplate Nail, and The Ossuary Ledger.
+## Each Relic effect is exercised at two rarity steps, plus its drawback.
 
 const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 

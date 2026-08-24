@@ -1,8 +1,8 @@
 extends GutTest
 
-## Coverage for Plan_Relic_Implementation.md Phase 3: Character.HookSources() carries the
-## champion's own trait alongside every equipped item's Relic effect, and the sum/product/
-## any-style aggregate helpers on Skills each compose correctly across them.
+## Character.HookSources() carries the champion's own trait alongside every equipped item's
+## Relic effect, and the sum/product/any-style aggregate helpers on Skills each compose
+## correctly across them.
 
 const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 
