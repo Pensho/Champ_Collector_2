@@ -7,4 +7,4 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_title = "The Closed Wound"
 	_magnitude_by_rarity = [0.25, 0.30, 0.35, 0.45, 0.60]
 	_body = ("Damaging skills deal +" + str(roundi(Magnitude() * 100)) + "% damage.\n" +
-			"Compositional drawback: no one on the wearer's team can be healed, by any source.")
+			"No one on the wearer's team can be healed, by any source.")

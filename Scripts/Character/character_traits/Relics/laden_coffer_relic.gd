@@ -8,5 +8,5 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_magnitude_by_rarity = [0.10, 0.15, 0.20, 0.25, 0.35]
 	_body = ("Rewards from a battle the wearer fought in are increased by +" +
 			str(roundi(Magnitude() * 100)) + "%. Only the largest bonus among the fielded " +
-			"team applies; copies do not add.\n" +
-			"Drawback: the wearer's Speed is reduced by 30%.")
+			"team applies.\n" +
+			"The wearer's Speed is reduced by 30%.")

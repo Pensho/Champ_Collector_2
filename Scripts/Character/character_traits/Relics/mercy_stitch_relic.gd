@@ -9,5 +9,5 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_body = ("Once per battle, damage that would take the wearer below 25% Health " +
 			"instead leaves them there, and heals them for " + str(roundi(Magnitude() * 100)) +
 			"% of max Health.\n" +
-			"Drawback: while at or below 40% Health, the wearer's damaging skills deal " +
+			"While at or below 40% Health, the wearer's damaging skills deal " +
 			"40% less damage.")

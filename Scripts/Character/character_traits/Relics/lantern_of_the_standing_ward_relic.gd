@@ -6,7 +6,6 @@ func Init(p_rarity: Types.Rarity) -> void:
 			"Lantern_of_the_Standing_Ward/Lantern_of_the_Standing_Ward.png")
 	_title = "Lantern of the Standing Ward"
 	_magnitude_by_rarity = [0.40, 0.45, 0.50, 0.60, 0.75]
-	_body = ("The first charge each zone the wearer places spends resolves its trigger " +
-			"payload a second time, at " + str(roundi(Magnitude() * 100)) + "% strength.\n" +
-			"Compositional drawback: every reagent consumed by anyone on the wearer's team " +
-			"has half effect.")
+	_body = ("The first charge spent by a zone the wearer placed Echoes once, at " +
+			str(roundi(Magnitude() * 100)) + "% strength.\n" +
+			"Every reagent consumed by anyone on the wearer's team has 50% effect.")

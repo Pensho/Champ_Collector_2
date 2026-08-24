@@ -9,4 +9,4 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_body = ("Unravel, Expose Weakness, Blight and Blind applied by the wearer are +" +
 			str(roundi(Magnitude() * 100)) + "% stronger, and none of the four can be " +
 			"applied to the wearer.\n" +
-			"Drawback: debuffs affecting the wearer have double magnitude.")
+			"Debuffs affecting the wearer have double effect.")

@@ -8,5 +8,4 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_magnitude_by_rarity = [0.20, 0.25, 0.30, 0.35, 0.45]
 	_body = ("Forward turn-bar bumps the wearer grants an ally gain +" +
 			str(roundi(Magnitude() * 100)) + "% increased effect.\n" +
-			"Compositional drawback: buffs placed by the wearer's team have 30% reduced " +
-			"magnitude.")
+			"Buffs placed by the wearer's team have 30% reduced effect.")

@@ -9,4 +9,4 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_body = ("Enemy single-target skills aimed at any other ally with the lowest " +
 			"current Health strike the wearer instead, at " + str(roundi(Magnitude() * 100)) +
 			"% of the damage.\n" +
-			"Drawback: the wearer's damaging skills deal 35% less damage.")
+			"The wearer's damaging skills deal 35% less damage.")

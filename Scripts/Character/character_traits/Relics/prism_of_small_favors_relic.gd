@@ -7,5 +7,5 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_title = "Prism of Small Favors"
 	_magnitude_by_rarity = [2.0, 2.0, 3.0, 3.0, 4.0]
 	_body = ("Each buff the wearer holds, up to " + str(roundi(Magnitude())) +
-			" of them, grants +12 percentage points Critical Chance.\n" +
-			"Drawback: buffs the wearer holds have half their magnitude.")
+			" of them, grants +12% points Critical Chance.\n" +
+			"Buffs the wearer holds have half their effect.")

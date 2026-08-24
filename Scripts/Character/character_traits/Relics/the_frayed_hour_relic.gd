@@ -8,4 +8,4 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_magnitude_by_rarity = [200.0, 250.0, 275.0, 300.0, 350.0]
 	_body = ("Temporal Leak applied by the wearer has +" + str(roundi(Magnitude())) +
 			"% its effect.\n" +
-			"Compositional drawback: Barriers on the wearer's team have 25% effect.")
+			"Barriers on the wearer's team have 75% less effect.")

@@ -8,4 +8,4 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_magnitude_by_rarity = [0.25, 0.30, 0.35, 0.45, 0.60]
 	_body = ("The first damaging skill cast after consuming a reagent deals +" +
 			str(roundi(Magnitude() * 100)) + "% damage.\n" +
-			"Drawback: reagents the wearer consumes have 40% less effect.")
+			"Reagents the wearer consumes have 40% less effect.")

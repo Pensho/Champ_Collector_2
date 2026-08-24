@@ -8,4 +8,4 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_magnitude_by_rarity = [2.0, 2.0, 3.0, 3.0, 4.0]
 	_body = ("The first " + str(roundi(Magnitude())) +
 			" debuffs applied to each enemy in a battle cannot be resisted.\n" +
-			"Drawback: the wearer cannot resist debuffs (Signed Writ, permanently).")
+			"The wearer can never resist debuffs.")

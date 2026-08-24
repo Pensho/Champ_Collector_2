@@ -8,4 +8,4 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_magnitude_by_rarity = [0.50, 0.55, 0.60, 0.70, 0.85]
 	_body = ("Buffs the wearer applies are +" + str(roundi(Magnitude() * 100)) +
 			"% stronger.\n" +
-			"Compositional drawback: the wearer's allies cannot critically hit.")
+			"The wearer's allies cannot critically hit.")
