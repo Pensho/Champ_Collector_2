@@ -58,7 +58,7 @@ const REAGENT_FAMILY_TABLE: Array = [
 			"color": Color(0.35, 0.12, 0.12, 1.0) },
 ]
 
-# One row per batch-1 status effect (Plan_Status_Effect_Implementation.md). Status
+# One row per status effect. Status
 # effects aren't rarity-tiered, so each row writes a single flat-color PNG rather than
 # one per RARITY_TINTS entry. Buffs use a green/blue hue family, debuffs a red/purple
 # one; each effect gets a distinct hue within its family.

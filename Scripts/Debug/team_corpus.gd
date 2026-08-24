@@ -39,9 +39,8 @@ const APPRAISER = preload("res://Data/Character_Player_Variants/Appraiser.tres")
 ## team_corpus_sweep.gd run over the full roster, not a curated set. Struck once real
 ## Intent/Plausible-but-wrong/Control sets exist.
 const PROVISIONAL_ROWS: Array[Dictionary] = [
-	# --- Intent: the two hand-computed teams from the deleted Plan_Kit_Reworks.md, now
-	# reproduced by the scorer itself and pinned as regression fixtures (also pinned
-	# directly in test_burst_reachability.gd). ---
+	# --- Intent: two hand-computed teams, reproduced by the scorer itself and pinned as
+	# regression fixtures (also pinned directly in test_burst_reachability.gd). ---
 	{
 		"presets": [SORCERER, CENTAUR_ARCHIVIST, TACTICIAN],
 		"tier": Tier.Intent,
@@ -90,8 +89,8 @@ const PROVISIONAL_ROWS: Array[Dictionary] = [
 	{
 		"presets": [ALCHEMIST, CENTAUR_ARCHIVIST, CHRONOPHAGE],
 		"tier": Tier.Control,
-		"note": "No longer product 1.0x since Phase 5 of Plan_Itemization_Channels.md: any team " +
-				"with an Alchemist now reaches Fresh Batch's team-wide reagent_gated_bonus " +
+		"note": "Not product 1.0x: any team " +
+				"with an Alchemist reaches Fresh Batch's team-wide reagent_gated_bonus " +
 				"(assumed reachable per the manifest's reagent-assumed-available axis), a distinct " +
 				"floor from the other two Control rows below rather than a synergy-free one.",
 		"pinned": {},

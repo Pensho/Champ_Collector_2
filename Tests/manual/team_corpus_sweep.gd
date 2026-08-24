@@ -145,10 +145,10 @@ func test_full_roster_sweep_reports_distribution_and_ceiling() -> void:
 			"The roster's ceiling team must reach at least one composed bucket")
 
 
-## Concept_Document.md 1.1's discrimination requirement, Plan_Itemization_Channels.md Phase 5:
+## Concept_Document.md 1.1's discrimination requirement:
 ## a large-magnitude factor that is available to every champion regardless of kit lifts the
 ## median as much as the ceiling and makes the roster less discriminating even while raising
-## its numbers (see the plan's "What Phase 5 requires of any new factor"). The target outcome
+## its numbers. The target outcome
 ## of the Sorcerer/Alchemist rework is a second top-decile pairing, distinct from Tidal
 ## Corsair's Wrangle the Sea composed with Tactician's Daunting Strength grant — not a uniform
 ## lift, AND actually driven by the Sorcerer's own repeat, not merely by the Sorcerer riding
@@ -202,10 +202,9 @@ func test_full_roster_sweep_finds_a_second_distinct_ceiling_pairing() -> void:
 	assert_true(found_tidal_tactician,
 			"Sanity: the pre-existing Tidal Corsair+Tactician pairing must still reach the top decile")
 	# Whether a Sorcerer-repeat-driven or sustained-payload-driven pairing ALSO reaches the top
-	# decile is recorded as a finding, per the plan's own fallback ("recording the blind spot
-	# instead of closing it... leaves the claim unverified") — not asserted, since whether either
-	# mechanic is tuned strongly enough to actually contend for the roster's ceiling is a balance
-	# question for the plan owner, not something this scorer should force to pass.
+	# decile is recorded as a finding rather than asserted: whether either mechanic is tuned
+	# strongly enough to actually contend for the roster's ceiling is a balance question, not
+	# something this scorer should force to pass.
 
 
 # --- CSV export: every team, ranked best-first by combined_contrast_ratio ---

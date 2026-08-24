@@ -24,6 +24,6 @@ func Product() -> float:
 		product *= 1.0 + _buckets[key]
 	return product
 
-## Read-only view of the assembled buckets, for Phase 4's per-source attribution.
+## Read-only view of the assembled buckets, for per-source damage attribution.
 func Buckets() -> Dictionary[StringName, float]:
 	return _buckets

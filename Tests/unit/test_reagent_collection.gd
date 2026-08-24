@@ -1,7 +1,7 @@
 extends GutTest
 
 # Coverage for Scripts/Gear/reagent_collection.gd, parallel to test_collection_serialization.gd's
-# ItemCollection section (Plan_Reagent_Inventory_And_Storage_UI.md step 4).
+# ItemCollection section.
 
 const A_REAGENT_KEY: String = "Tincture_Speed_Uncommon"
 const ANOTHER_REAGENT_KEY: String = "Restorative_Draught_Rare"

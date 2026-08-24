@@ -227,7 +227,7 @@ const MANIFEST: Dictionary = {
 					"precondition": "damage_scaling Attack 1.1, ignores 2.5x the passive's rate " +
 							"(defence_ignore_multiple). The ignore is a base-referenced points " +
 							"subtraction, not a CombinedDamageModifier bucket, and stays meaningful at " +
-							"burst scale per Phase 0's mitigation change.",
+							"burst scale, since mitigation is taken against a fixed scale constant.",
 					"citation": "Pierce_Weakness.tres:6-12",
 					"defence_ignore": {"multiple": 2.5, "citation": "Pierce_Weakness.tres:12"}},
 			{"name": "Cut Purse", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
@@ -291,7 +291,7 @@ const MANIFEST: Dictionary = {
 					"precondition": "Brews one random reagent at combat start; +20% brew potency at " +
 							"Legendary. Whenever any ally (the Alchemist included) consumes a reagent, the " +
 							"whole team gains a Volatile Mixture damage-multiplier buff — see " +
-							"gated_bonus below, Plan_Itemization_Channels.md Phase 4.",
+							"gated_bonus below.",
 					"citation": "fresh_batch_trait.gd:3-33,41,58-62",
 					"gated_bonus": {"bucket_key": "Volatile_Mixture", "magnitude": 0.29,
 							"class": Contribution_Class.Channel2, "reach": "team", "gate": &"reagent_consumed",
@@ -588,7 +588,7 @@ const MANIFEST: Dictionary = {
 							"no numeric mechanic — grafting overwrites _trait entirely with one of 17 " +
 							"Graft resources (Data/Character_Traits/Grafts/*.tres), chosen at the " +
 							"meta/collection layer. No single Legendary magnitude exists for 'the " +
-							"Symbiote passive'; enumerating all 17 Grafts is out of Phase 1 scope — each " +
+							"Symbiote passive'; all 17 Grafts are left unenumerated — each " +
 							"would need its own manifest treatment if fielded in the team corpus.",
 					"citation": "symbiote_trait.gd:1-13; character.gd:121"},
 		],

@@ -2,8 +2,8 @@ extends GutTest
 
 ## Smoke coverage for BattleResolver.ResolveReagent / ReagentResolver, driven the same
 ## headless way as test_battle_resolver.gd and test_skills.gd. Full free-action,
-## once-per-battle, and UI-facing coverage is Plan_Reagent_Combat_Application.md step 5;
-## this only exercises the resolution core landed in step 3.
+## once-per-battle, and UI-facing behaviour is covered elsewhere; this only exercises the
+## resolution core.
 
 const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 

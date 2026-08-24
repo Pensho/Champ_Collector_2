@@ -1,7 +1,7 @@
 extends GutTest
 
-# Coverage for the reagent loot-integration pieces of LootManager/LootTable/ReagentRegistry
-# (Plan_Reagent_Inventory_And_Storage_UI.md step 4), parallel in style to test_loot_manager.gd.
+# Coverage for the reagent loot-integration pieces of LootManager/LootTable/ReagentRegistry,
+# parallel in style to test_loot_manager.gd.
 
 func test_roll_rarity_for_reagent_respects_max_rarity_cap() -> void:
 	for i in range(200):

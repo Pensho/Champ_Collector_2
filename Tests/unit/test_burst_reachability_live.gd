@@ -406,7 +406,7 @@ func _case_lancer_rending_charge(p_name: String) -> void:
 
 	var positions: TestFactory.FakeTurnPositions = TestFactory.FakeTurnPositions.new()
 	# Span = |owner_section - target_section| + 1 (lancer_trait.gd): sections 0 and 2
-	# give a 3-section span, matching step 5's pinned 0.54 (3 * 0.18 at Legendary).
+	# give a 3-section span, matching the manifest's pinned 0.54 (3 * 0.18 at Legendary).
 	positions.sections_by_character = {0: 0, 3: 2}
 	var resolver: BattleResolver = TestFactory.make_resolver(
 			{0: lancer, 3: _high_health_target()}, CombatSides.new([0], [3]), positions)
@@ -418,7 +418,7 @@ func _case_lancer_rending_charge(p_name: String) -> void:
 	var declared: float = (
 			KitContributionManifest.MANIFEST[Types.Role.Lancer]["skills"][2]["gated_bonus"]["magnitude"])
 	assert_almost_eq(modifier.Buckets().get(&"Rending Charge", 0.0), declared, 0.001,
-			"%s: a real 3-section span must reproduce step 5's pinned 0.54 magnitude" % p_name)
+			"%s: a real 3-section span must reproduce the manifest's pinned 0.54 magnitude" % p_name)
 
 # --- Tier 1: Alchemist — Volatile Mixture from an actual reagent consumption ---
 
@@ -450,7 +450,7 @@ func _case_jester_pratfall_sting(p_name: String) -> void:
 	var jester: Character = roster[0]
 	var resolver: BattleResolver = _resolver_for(roster, [0])
 	# The avoidance roll itself is covered by test_double_the_fun_trait.gd; this row only
-	## needs the flag set, per the plan's own guidance on driving this case.
+	# needs the flag set to drive this case.
 	(jester._trait as DoubleTheFunTrait)._avoided_since_last_turn = true
 
 	var pratfall_sting_index: int = _skill_index(jester, "Pratfall Sting")
@@ -627,7 +627,7 @@ func _case_chronophage_borrowed_time_instances(p_name: String) -> void:
 			damage_count += 1
 	assert_eq(damage_count, 2,
 			"%s: Borrowed Time must produce 2 total resolutions (1 original + 1 repeat) for a non-Chronophage " %
-			p_name + "candidate, the live proof of step 6's _ExternalGatedContrastRatios")
+			p_name + "candidate, the live proof of _ExternalGatedContrastRatios")
 
 # --- Tier 3: the bucketless Roles — no phantom bucket, and a declared scalar checked
 # against its real source where one is cheap to call directly ---

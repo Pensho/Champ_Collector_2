@@ -206,13 +206,13 @@ static func _ItemCeilingBonus(p_rarity: Types.Rarity) -> int:
 	return setup_bonus + upgrade_bonus
 
 
-## Sizes gear's channel 1 ceiling (Concept_Document.md 3.3.1's gear verdict,
-## Plan_Itemization_Channels.md Phase 2): every slot Game_Balance.ITEM_TYPE_ATTRIBUTES
+## Sizes gear's channel 1 ceiling (Concept_Document.md 3.3.1's gear verdict): every slot
+## Game_Balance.ITEM_TYPE_ATTRIBUTES
 ## defines, at Legendary rarity and fully upgraded, rolled entirely into
 ## CASTER_SCALED_ATTRIBUTE wherever that slot's pool allows it. Slots with no entry in
 ## ITEM_TYPE_ATTRIBUTES (Trinket and the six flexibility slots) carry no attribute pool
 ## in code at all — reported as excluded from the loadout, not as a zero contribution,
-## since Equipment.Upgrade() cannot even run on one today (see the Phase 2 gap notes).
+## since Equipment.Upgrade() cannot even run on one today.
 ## Print-only, like the other reports in this file: a growing ceiling is a balance signal
 ## to look at, not a hard failure, so this is not asserted against a fixed threshold.
 static func _ReportGearCeiling() -> void:

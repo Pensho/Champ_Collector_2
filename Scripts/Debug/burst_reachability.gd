@@ -25,7 +25,7 @@ class_name BurstReachability extends RefCounted
 ##                                 it never includes sustained_contrast_ratio, so a multi-turn
 ##                                 payload cannot inflate the "one action" contract number.
 ## The third feeds into the fourth, which is what this file actually ranks and selects Best() by:
-##   Total contrast ratio       - contrast_ratio plus repeat_contrast_ratio (Phase 5): the full
+##   Total contrast ratio       - contrast_ratio plus repeat_contrast_ratio: the full
 ##                                 single-action burst a candidate reaches, a separate-instance
 ##                                 Channel-3 repeat included. Concept_Document.md 1.1.3 counts
 ##                                 repetition as part of what a burst is; ranking by contrast_ratio
@@ -34,8 +34,7 @@ class_name BurstReachability extends RefCounted
 ##                                 cannot be folded into the single CombinedDamageModifier
 ##                                 product/contrast_ratio represent (see the stated simplifications
 ##                                 below) without breaking their own live-verified contract. This
-##                                 file ranked by contrast_ratio alone through the end of
-##                                 Plan_Itemization_Channels.md Phase 5's first pass — a real bug,
+##                                 file once ranked by contrast_ratio alone — a real bug,
 ##                                 not a design choice, caught and fixed once a
 ##                                 separate-instance mechanic (the Sorcerer's repeat) actually
 ##                                 existed to expose it. Still a one-action figure; still what

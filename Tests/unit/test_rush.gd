@@ -2,7 +2,7 @@ extends GutTest
 
 const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 
-# Coverage for Rush: batch-1-style attribute modifiers (all primary attributes except
+# Coverage for Rush: attribute modifiers (all primary attributes except
 # Health, matching Exhert's set) plus an unresistable 1-turn Stun on expiry, ordered
 # after other expiries (Concept_Document.md 3.2.3.2).
 

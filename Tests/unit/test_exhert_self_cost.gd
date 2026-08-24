@@ -2,7 +2,7 @@ extends GutTest
 
 const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 
-# Coverage for Exhert: a batch-1-style AttributePercent buff (all primary attributes
+# Coverage for Exhert: an AttributePercent buff (all primary attributes
 # except Health, +20%) layered with self_tick_max_health_cost_percent, the new
 # StatusEffectData field that lets a buff cost Health each self-tick independent of its
 # magnitude_kind.

@@ -2,7 +2,7 @@ class_name BurstPacing extends RefCounted
 
 ## Presentation-only escalation curve for cascade floating text (Concept_Document.md 1.1.5,
 ## Technical_Design_Document.md 7.9). Pure static functions: no state, no game-rule effect.
-## p_step is the cascade instance ordinal within the current action; step 0 means "not part
+## p_step is the Echo ordinal within the current action; step 0 means "not part
 ## of a cascade" and every function returns its unescalated base value in that case, so
 ## existing non-cascade text is unaffected. Bounded by CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION
 ## by construction of the callers, not enforced here.

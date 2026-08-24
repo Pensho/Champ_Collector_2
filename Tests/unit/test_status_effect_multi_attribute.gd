@@ -2,8 +2,8 @@ extends GutTest
 
 const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 
-# Coverage for the multi-attribute StatusEffectData extension (batch 1 of
-# Plan_Status_Effect_Implementation.md): Skills.ApplyAttributeModifiers must apply every
+# Coverage for the multi-attribute StatusEffectData extension:
+# Skills.ApplyAttributeModifiers must apply every
 # attribute in attribute_modifiers with its own sign, and buffs/debuffs must resolve their
 # instance value the same way (unifying the previous buff-only `value` convention).
 

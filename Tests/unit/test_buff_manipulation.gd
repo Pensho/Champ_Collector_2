@@ -2,7 +2,7 @@ extends GutTest
 
 const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 
-# Coverage for the batch-4 buff-manipulation primitives on StatusEffectResolver:
+# Coverage for the buff-manipulation primitives on StatusEffectResolver:
 # ReduceBuffDurations (shear and expire), ConsumeBuffs (capped removal), and StealBuff
 # (theft with a fresh or preserved duration, respecting Severance on the recipient). Also
 # covers Skill.steal_buff_count/steal_buff_to's wiring through ResolveSkill (Writ of
