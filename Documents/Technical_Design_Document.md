@@ -1207,7 +1207,7 @@ needed until `Skill_Resolved` (below) added a third, and `Debuff_Ticked` a fourt
 debuff type present on the target, one extra instance per type beyond itself, matched unconditionally
 and keyed per debuff source so two casters' flagged debuffs on the same target repeat
 independently. A threshold-crossing trigger (health or status-count) or a cascade-on-cascade
-trigger (an effect listening for another cascade instance landing, per Concept Document 1.1.3's
+trigger (an effect listening for another Echo landing, per Concept Document 1.1.3's
 compounding case) still needs a new enum value and a `Post` call site added at the relevant point
 before it is authorable — the post-and-drain queue and the two termination bounds do not
 themselves need to change to support one, but the vocabulary as shipped does not yet express those
@@ -1232,17 +1232,17 @@ skipped outright, not merely deduped, since the effect loop is filtered before i
 `SkillCastContext.repeat_bonus` carries that Echo's own fraction minus 1.0
 (`REPEAT_FRACTION * ECHO_COMPOUNDING^i - 1.0`, `i` the 0-based Echo index) as its own
 `CombinedDamageModifier` bucket, so each Echo multiplies against channels 1 and 2 rather than adding
-to them, exactly like any other cascade instance.
+to them, exactly like any other Echo.
 
 **`SubscribeInstanceModifier` and mechanic-key scoping.** `CascadeResolver.SubscribeInstanceModifier
 (callback: (CascadeEvent, StringName) -> int)` registers a callback that amplifies a listener's
 instance count once a `Subscribe`d `matches` predicate has already matched an event — the modifier
 never creates a match on its own. `_ResolveEvent` sums every registered modifier's return value
 (passing the matched listener's own `mechanic_key` as the second argument, so a modifier can scope
-itself to one mechanic rather than firing for every cascade instance in the game) and adds it to the
+itself to one mechanic rather than firing for every Echo in the game) and adds it to the
 event's own `instance_count` before the per-instance loop, still bounded by
 `MAX_CASCADE_INSTANCES_PER_ACTION`. Two callers: the Herald of the Loom's Black Thread (unscoped —
-amplifies any cascade instance the Herald's own action produces against an enemy) and the Sorcerer's
+amplifies any Echo the Herald's own action produces against an enemy) and the Sorcerer's
 Echo count (scoped to `&"SorcererTrait"`, so it only ever amplifies its own listener).
 
 **`Cascade_Instance_Resolved`: the per-instance broadcast.** `_ResolveEvent`'s own per-instance loop
@@ -1293,7 +1293,7 @@ that presents those results, not the state changes themselves — health bars, s
 death still land instantly, ahead of the numbers describing them.
 
 **Escalation curve.** `BurstPacing` (`Scripts/Battle/burst_pacing.gd`, static functions only) maps
-a cascade instance ordinal to a per-item spawn delay, text scale, spawn-pop overshoot, and color
+an Echo ordinal to a per-item spawn delay, text scale, spawn-pop overshoot, and color
 shift toward red, each independently bounded (`DelayForStep` floors at `MINIMUM_DELAY`,
 `ScaleForStep` caps at `MAXIMUM_SCALE`, `OvershootForStep` caps at `MAXIMUM_OVERSHOOT`,
 `ColorForStep` clamps to `Color.RED` from `FULL_RED_STEP` on). Step `0` — outside any cascade —
@@ -1379,7 +1379,7 @@ each with one job:
   fields (documented in `kit_contribution_manifest.gd`'s own header). Also enforces the shared
   eight-status cap (`GameBalance.MAX_STATUS_EFFECTS`,
   reporting which buckets were dropped rather than silently scoring them), per-trait stack
-  ceilings, cascade instance bounds, and an `ENABLER_FLOOR` below which a team is marked
+  ceilings, Echo bounds, and an `ENABLER_FLOOR` below which a team is marked
   non-viable and excluded from ranked output (currently `0`; the right value is a design call for
   once curated teams exist). Six stated simplifications, all documented at the top of the file:
   uncapped per-instance sources are scored at exactly one instance; caster attributes are each

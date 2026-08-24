@@ -46,7 +46,7 @@ Blowout requires terms that grow independently and combine multiplicatively. Dam
 
 1. **Scaled attributes (additive).** Attributes and gear accumulate into the skill's scaled attribute sum, as described in section 3.2.1. This channel grows steadily and stays readable, and it is the only channel a champion has access to without setup.
 2. **Combined modifier (multiplicative).** Not a meter that is filled — a product assembled at the moment a skill resolves, from every damage-relevant condition true at that instant: buffs on the caster, debuffs and statuses on the target, zone effects, and skill-specific conditions. Each contributing source supplies **its own factor**, so satisfying a further condition multiplies the result rather than adding to it. A buff that raises an attribute instead feeds channel 1; a buff that modifies damage contributes a factor here.
-3. **Cascade (count).** Effects that trigger off other effects, each producing its own resolution. A single action can therefore release many separate damage instances in sequence. Every instance carries its own combined modifier, so instance count and modifier size compound against each other.
+3. **Cascade (count).** Effects that trigger off other effects, each producing its own resolution — an **Echo**. A cascade is the sequence of Echoes one action releases, which is how a single action puts many separate damage instances on screen. Every Echo carries its own combined modifier, so Echo count and modifier size compound against each other. *Echo* names the individual resolution and is the term skill, status and item text uses; *cascade* names the sequence and stays a design and code term.
 
 **Enablers.** A fourth class of effect produces no damage at all: it creates or protects the window in which the three channels fire. Denying the enemy an answer (Blight against a healing boss), blocking an incoming effect that would break the setup (Aegis, Premonition), and buying a turn (Stun, Anchor) are enablers. They are not a damage channel and are not to be converted into one — section 1.1.1 requires the threat curve to peak before the burst, and enablers are what the player answers that threat with. A roster where every status touches damage carries fewer decisions, not more.
 
@@ -64,8 +64,8 @@ behind each tag.
 #### 1.1.4. Rules the channels must obey
 
 * **Stack ceilings:** cap what accrues automatically; leave uncapped what costs the player an action or a resource. The existing capped passives (Momentum, Arcane Instability, Steel and Sea stacks) are correct as written — they accrue on their own. A resource the player deliberately builds may run without a ceiling.
-* **Cascade termination:** every cascade must terminate, under two independent bounds. **Depth** bounds chain length — an effect triggered from inside a cascade instance sits one level deeper, and a chain able to re-enter itself is a defect, not a large number. **Fan-out** bounds how many instances one originating action may release in total, which depth does not constrain: many instances at the same level are breadth, not depth. The two do not substitute for each other.
-* **A trigger fires once; the instances it yields are not separately re-triggered.** Each trigger source fires at most once per originating action, and that single firing yields an instance count. Repetition is therefore expressible without re-entry — an effect may deliberately resolve once per point of a status's remaining duration or once per remaining zone charge, and repeat instances are what make instance count multiply against the other two channels rather than add to them. A count read from a live quantity is fixed when the trigger fires, not re-read as the instances drain it.
+* **Cascade termination:** every cascade must terminate, under two independent bounds. **Depth** bounds chain length — an effect triggered from inside an Echo sits one level deeper, and a chain able to re-enter itself is a defect, not a large number. **Fan-out** bounds how many Echoes one originating action may release in total, which depth does not constrain: many Echoes at the same level are breadth, not depth. The two do not substitute for each other.
+* **A trigger fires once; the Echoes it yields are not separately re-triggered.** Each trigger source fires at most once per originating action, and that single firing yields an Echo count. Repetition is therefore expressible without re-entry — an effect may deliberately resolve once per point of a status's remaining duration or once per remaining zone charge, and repeat Echoes are what make Echo count multiply against the other two channels rather than add to them. A count read from a live quantity is fixed when the trigger fires, not re-read as the Echoes drain it.
 * **The combined modifier multiplies the scaled attribute aggregate, not the final damage.** The placement is damage-equivalent either way, since Defence's mitigation ratio no longer depends on the aggregate (see the next bullet); it stays on the aggregate to keep one multiplicative pipeline, where the trait and ramp multipliers already apply.
 * **Defence keeps its full percentage weight at burst scale.** Defence's mitigation ratio is taken against a fixed scale constant, not against the caster's own scaled aggregate, so a given Defence value cuts the same percentage of damage whether the hit is a basic swing or a burst: varying `Defense_Ignore_Factor` from 1.0 to 0.0 nearly doubles a burst's damage. Defence-ignore is a legitimate lever at every scale, not only on basic and mid-sized hits.
 * **Base attribute values stay tame.** Growth belongs in the combined modifier and cascade channels. Inflating base attributes to chase the pillar breaks fodder tuning and Health-bar readability.
@@ -74,7 +74,7 @@ behind each tag.
 
 #### 1.1.5. Resolution and presentation
 
-The burst is a mechanic, not an effect layer applied afterwards — how it resolves on screen carries as much of the emotion as the numbers do. A burst resolves as a **visible sequence**: each instance lands one at a time, attributed to its source, with the tempo and magnitude escalating through the cascade rather than flushing at once.
+The burst is a mechanic, not an effect layer applied afterwards — how it resolves on screen carries as much of the emotion as the numbers do. A burst resolves as a **visible sequence**: each Echo lands one at a time, attributed to its source, with the tempo and magnitude escalating through the cascade rather than flushing at once.
 
 #### 1.1.6. Rejection test
 
@@ -296,9 +296,9 @@ Current roles, their identity and purpose exist as follows:
         - Per 1% missing: 0.7% Uncommon, 0.8% Rare, 0.9% Epic, 1.0% Legendary
     - Fielded by: `Bloodmage.tres`
 - Herald of the loom
-    - A stance character whose three threads shape how its cascade instances and debuffs behave. Primary attributes: Mysticism, Accuracy.
+    - A stance character whose three threads shape how its Echoes and debuffs behave. Primary attributes: Mysticism, Accuracy.
     - Purpose: Debuffer, Buffer
-    - Passive: Weft and Warp [Channel 3 — Cascade] - The Herald always holds exactly one thread, starting on Silver at battle start; switching is a free action available any number of times during the Herald's own turn, and the active thread persists as ordinary trait state (not a status effect) until changed again. Golden Thread: gain 1 Tension (capped at 7) whenever a cascade instance resolves on an enemy, Cut the Cloth's own instances excluded. Silver Thread: the Herald's own applied debuffs cannot be resisted and last 1 turn longer. Black Thread: the cascade instance produced by the Herald's own action resolves one additional time. Cascade instances the Herald produces deal bonus damage.
+    - Passive: Weft and Warp [Channel 3 — Cascade] - The Herald always holds exactly one thread, starting on Silver at battle start; switching is a free action available any number of times during the Herald's own turn, and the active thread persists as ordinary trait state (not a status effect) until changed again. Golden Thread: gain 1 Tension (capped at 7) whenever an Echo resolves on an enemy, Cut the Cloth's own Echoes excluded. Silver Thread: the Herald's own applied debuffs cannot be resisted and last 1 turn longer. Black Thread: the Echo produced by the Herald's own action resolves one additional time. Echoes the Herald produces deal bonus damage.
         - Self-bonus: +5% Uncommon, +10% Rare, +15% Epic, +20% Legendary
         - Starting Tension: 0 Uncommon/Rare, 1 Epic/Legendary. Tension does not persist between combats.
     - Fielded by: `Herald_of_the_loom.tres`
@@ -330,7 +330,7 @@ Current roles, their identity and purpose exist as follows:
 - Plague Doctor
     - A debuff focused character, applying various damage over time and stat reducing debuffs to enemies. Signature zone: Miasma (see section 3.2.4.1). Primary attributes: Mysticism, Resistance.
     - Purpose: Debuffer
-    - Passive: Comorbidity [Channel 3] - Debuffs placed by the Plague Doctor's skills trigger a cascading extra tick once for every other distinct debuff type present on the target (any source, uncapped, subject to the shared cascade fan-out cap in section 1.1.4). Total damage per turn is unchanged from a flat multiplier — the difference is that each repeat resolves as its own cascade instance, visible to other Channel 3 effects that react to cascade instances.
+    - Passive: Comorbidity [Channel 3] - Debuffs placed by the Plague Doctor's skills trigger a cascading extra tick once for every other distinct debuff type present on the target (any source, uncapped, subject to the shared cascade fan-out cap in section 1.1.4). Total damage per turn is unchanged from a flat multiplier — the difference is that each repeat resolves as its own Echo, visible to other Channel 3 effects that react to Echoes.
         - Known gap: the zone-trigger debuff path (used by Miasma's Blight) does not thread the
           Comorbidity flag, so Blight itself never repeats — only debuffs placed by non-zone
           skills (e.g. Outbreak's Plague) do. See `Scripts/Debug/kit_contribution_manifest.gd`
@@ -530,7 +530,7 @@ Buffs:
 * Opportunist [Channel 2]: The character's attacks deal +10% damage per debuff *type* present on the target (stacked instances of one debuff type count once).
 * Catalyst [Enabler, provisional]: The next reagent the character consumes has +50% effect. Stacks additively with other reagent potency modifiers; has no effect on binary reagents (see section 3.3.3). Passes the collapse test only if reagents gate a burst — ratified by the itemization channels work.
 * Wanderlust [Channel 1]: At the start of each of the character's turns, gain +20% to one random primary stat until their next turn.
-* Overflow [Channel 1]: When this buff expires, it deals damage to all enemies, scaling with the holder's Mysticism. Resolves through the cascade machinery but always yields exactly one instance, so it multiplies nothing (section 1.1.3) — a delayed area hit, not a cascade contribution.
+* Overflow [Channel 1]: When this buff expires, it deals damage to all enemies, scaling with the holder's Mysticism. Resolves through the cascade machinery but always yields exactly one resolution, never an Echo count that can vary, so it multiplies nothing (section 1.1.3) — a delayed area hit, not a cascade contribution.
 * Vigor [Channel 1]: Increases max Health by 30%.
 * Lethal Precision [Channel 1]: Increases Critical Damage by the applier's own Critical Damage, snapshotted at application.
 * Spotlight [Enabler]: The character is much more likely to be targeted by enemies (1.5x targeting weight) and takes 20% less damage. Both halves are one survival tool — drawing focused fire away from the pieces a burst depends on, and taking less of what lands.
@@ -926,7 +926,7 @@ worst-case three-slot product live in `Relic_Design.md`.
 
 **A Relic's drawback may be compositional** — handicapping the wearer's whole team rather than the
 wearer alone, so a teammate's presence changes the result. It is always keyed to a mechanic
-(healing, cascade instances, reagents), never to a Role or a champion, which is what keeps it inside
+(healing, Echoes, reagents), never to a Role or a champion, which is what keeps it inside
 section 1.1.3's composition law: the grouping stays by mechanic identity, and a teammate supplying
 none of the handicapped mechanic still changes nothing.
 

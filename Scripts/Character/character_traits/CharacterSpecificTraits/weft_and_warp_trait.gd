@@ -39,10 +39,10 @@ func Init(p_rarity: Types.Rarity) -> void:
 		"res://Assets/Champ_Collector/Icons/Abilities/Passives/Weft_And_Warp_Trait/weft_and_warp_trait.png")
 	_title = "Weft and Warp"
 	_body = ("Always holds one thread, freely switchable during its own turn.\n" +
-			"Golden: gain 1 Tension when a cascade instance resolves on an enemy.\n" +
-			"Silver: The owners debuffs cannot be resisted and last 1 turn longer.\n" +
-			"Black: the cascade instance this owners action produces resolves one " +
-			"additional time. Cascade instances the owner produces deal +%d%% damage." %
+			"Golden: gain 1 Tension when an Echo resolves on an enemy.\n" +
+			"Silver: The owner's debuffs cannot be resisted and last 1 turn longer.\n" +
+			"Black: the Echo this owner's action produces resolves one " +
+			"additional time. Echoes the owner produces deal +%d%% damage." %
 			roundi(100.0 * _self_bonus))
 	_execution_steps[Types.Combat_Event.Start_Combat] = Callable(self, "StartOfBattle")
 	_execution_steps[Types.Combat_Event.Skill_Cast] = Callable(self, "OnSkillCast")

@@ -33,7 +33,7 @@ Weapon, Off-Hand, Boots. Slot is the stacking control: see *Slots and stacking* 
 
 *Audience: Lancer.* **Weapon.** [Channel 3 — Cascade]  hooks `OnSkillCast`, `OnSkillEffectsResolved`
 
-Rending Charge cast at 4 or 5 sections of turn-bar distance resolves a second time, at
+Rending Charge cast at 4 or 5 sections of turn-bar distance Echoes once, at
 25 / 30 / 35 / 45 / 55% strength.
 
 **Drawback:** Rending Charge can never critically hit.
@@ -53,9 +53,9 @@ The first damaging skill cast after consuming a reagent deals +25 / 30 / 35 / 45
 *Audience: Herald of the Loom, Plague Doctor, Sorcerer.* **Weapon.** [Channel 3 — Cascade]  hook
 `OnCascadeInstanceResolved`
 
-Every third cascade instance a single action produces deals +60 / 80 / 100 / 130 / 170% damage.
+Every third Echo a single action produces deals +60 / 80 / 100 / 130 / 170% damage.
 
-**Drawback:** damage that is not a cascade instance is reduced by 30%.
+**Drawback:** damage that is not an Echo is reduced by 30%.
 
 ### The Closed Wound
 
@@ -79,8 +79,8 @@ deals +30 / 35 / 40 / 50 / 65% damage.
 *Audience: Chronophage, Architect, Plague Doctor, Tidal Corsair.* **Off-Hand.** [Channel 3 — Cascade]  hook
 `OnZoneUsed`
 
-The first charge each zone the wearer places spends resolves its `on_trigger` payload a second
-time, at 40 / 45 / 50 / 60 / 75% strength. That zone's remaining charges resolve once.
+The first charge each zone the wearer places spends Echoes once, at
+40 / 45 / 50 / 60 / 75% strength. That zone's remaining charges resolve once.
 
 **Compositional drawback:** every reagent consumed by anyone on the wearer's team has half effect.
 
@@ -100,7 +100,7 @@ While the wearer holds a Barrier, damaging skills deal +25 / 30 / 35 / 45 / 60% 
 While the target carries four or more distinct debuff types, damaging skills deal
 +35 / 42 / 50 / 62 / 80% damage.
 
-**Compositional drawback:** cascade instances produced by anyone on the wearer's team resolve at
+**Compositional drawback:** Echoes produced by anyone on the wearer's team resolve at
 half strength.
 
 ### The Unguarded Glass
@@ -325,8 +325,8 @@ Five entries is the soft ceiling on any one Role's audience, checked whenever an
 | Warlord | The Even Tread, The Planted Heel, The Answering Boss, Ceded Ground, The Quiet Mass | — | Sunderplate Nail, The Long Second |
 
 **Roster-wide entries, listed here instead of in every row.** Laden Coffer pays out in currency
-rather than in a battle effect, so every Role is its audience. Threefold Bite's −30% on non-cascade
-damage rules it out for the sixteen Roles holding no cascade. The Even Tread's ally-no-crit clause
+rather than in a battle effect, so every Role is its audience. Threefold Bite's −30% on non-Echo
+damage rules it out for the sixteen Roles that produce no Echoes. The Even Tread's ally-no-crit clause
 reaches any teammate carrying a crit-path entry, not only Appraiser. Quorum Bell's tax lands on
 every Role's basic; the two rows listing it are the Roles routing real payload through a
 no-cooldown skill.
@@ -351,7 +351,7 @@ What the upside reads. Two entries sharing a surface is a duplication to justify
 | Buff or Barrier the wearer holds | The Answering Boss (Barrier), The Unguarded Glass (ally-granted buff), Prism of Small Favors (count of buffs held) |
 | Target's state | The Sealed Docket (4+ distinct debuff types) |
 | Resource consumed | Draught-Fed Edge (reagent), Lantern of the Standing Ward (zone charge) |
-| Event count within the battle | Threefold Bite (every third cascade instance), Signatory's Seal (first N debuffs per enemy) |
+| Event count within the battle | Threefold Bite (every third Echo), Signatory's Seal (first N debuffs per enemy) |
 | Incoming event | The Planted Heel (hit above 15% max Health), The Ossuary Ledger (ally death), Mercy Stitch (damage crossing 25% of the wearer's max Health) |
 | Turn-bar distance | The Long Furrow (4 or 5 sections) |
 | Application the wearer makes | The Even Tread (any buff applied), The Frayed Hour (Temporal Leak applied), The Solvent Mark (Unravel, Expose Weakness, Blight or Blind applied), The Long Second (forward bump granted to an ally) |
@@ -413,7 +413,7 @@ What the upside reads. Two entries sharing a surface is a duplication to justify
 | Unravel, Expose Weakness, Blight, Blind | amplified, and denied on the wearer | The Solvent Mark |
 | Distinct debuff types | read | The Sealed Docket |
 | Reagents | suppressed | Draught-Fed Edge (wearer), Lantern of the Standing Ward (team) |
-| Cascade instances | amplified / suppressed | Threefold Bite, Lantern of the Standing Ward, The Long Furrow / The Sealed Docket |
+| Echoes | amplified / suppressed | Threefold Bite, Lantern of the Standing Ward, The Long Furrow / The Sealed Docket |
 | Healing and Barriers | granted / denied | Ceded Ground (to a buffed ally, out of the wearer's Health), Mercy Stitch (to the wearer, on a Health threshold) / The Closed Wound (healing, team), The Frayed Hour (Barriers, team) |
 | Damaging skills while the wearer is wounded | suppressed | Mercy Stitch (wearer) |
 | Damaging skills, unconditionally | suppressed | Understudy's Coat (wearer) |

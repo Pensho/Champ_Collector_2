@@ -120,7 +120,7 @@ rarity steps and the drawback firing. Batches are ordered by the plumbing they l
    Sunderplate Nail, The Ossuary Ledger.
 2. Applied-status amplification — The Even Tread, The Frayed Hour, The Solvent Mark, Signatory's
    Seal, Quorum Bell, Prism of Small Favors.
-3. Cascade, zone and reagent — The Long Furrow, Draught-Fed Edge, Threefold Bite, Lantern of the
+3. Echo, zone and reagent — The Long Furrow, Draught-Fed Edge, Threefold Bite, Lantern of the
    Standing Ward.
 4. Compositional drawbacks needing team reach — The Closed Wound, The Sealed Docket, The Long
    Second, The Unguarded Glass.

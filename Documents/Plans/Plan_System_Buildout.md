@@ -13,12 +13,12 @@ pillar. Each entry names the gap, the phase that found it, and what closing it n
   `Plan_Role_Kit_Rework.md`, consumed by the Sorcerer's Echo, Herald's Cut the Cloth, and Plague
   Doctor's Comorbidity). Two shapes `Concept_Document.md` 1.1.3 names have no trigger or content at
   all: a status or zone detonating on a Health or status-count threshold crossing, and an effect
-  listening for another cascade instance landing. Needs a new `Types.Cascade_Trigger` value and
+  listening for another Echo landing. Needs a new `Types.Cascade_Trigger` value and
   `Post()` call site per shape before content can be authored against it. Found by
   `Plan_Blowout_Alignment.md` Phase 3.
 * **Debuff ticks never post to `CascadeResolver`.** Herald of the Loom's Golden Thread gains
-  Tension when a cascade instance resolves on an enemy, but a plain debuff tick (Plague, Burning,
-  Hemorrhage) is not itself a cascade instance, so Golden Thread never sees one. Needs a `Post()`
+  Tension when an Echo resolves on an enemy, but a plain debuff tick (Plague, Burning,
+  Hemorrhage) is not itself an Echo, so Golden Thread never sees one. Needs a `Post()`
   call site on the debuff-tick path. Found implementing `Role_Kit_Design.md` section 9.2.
 * **Refutation's documented damage never shipped.** `Concept_Document.md` 3.2.4.2 says Refutation
   deals damage to an enemy whose zone it removes, scaling with Knowledge at 10% of a standard hit

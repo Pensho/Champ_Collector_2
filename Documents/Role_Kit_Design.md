@@ -136,7 +136,7 @@ that actually multiply (`Technical_Design_Document.md` 7.4):
 | Trait-counter factor | `DamageEffect.bonus_per: {Trait_Count_Source: float}` | Reads a counter another kit can feed. `Target_Debuff_Count` is the debuff-density surface: it counts any distinct debuff type from any source, so a type authored in a later batch feeds it without editing the skill. Sums into the skill's own single bucket, so density is a linear payoff. |
 | Per-named-debuff factor | `DamageEffect.bonus_per_debuff_on_target: {Debuff_Type: float}` | One independent bucket per **named** debuff type, so each named type present multiplies. **Identity-scoped, not a general hook**: the dictionary enumerates its debuff types at authoring time, so it reads nothing invented later and is a step toward the named coupling section 2 forbids. Sole claimant is the Sorcerer's Cataclysm reading Warped, and it stays that way — a kit wanting debuff density uses the counter above. |
 | Granted modifier-bearing status | `ApplyBuffEffect` of a `DamageMultiplier` / `PerTargetDebuffDamagePercent` status | Lands the factor on whoever consumes it. |
-| Cascade instance count | `Types.Cascade_Trigger` | Each instance re-reads channels 1 and 2, so count multiplies against them. |
+| Echo count | `Types.Cascade_Trigger` | Each Echo re-reads channels 1 and 2, so count multiplies against them. |
 | Zone `on_trigger` payload | `ZoneEffect.on_trigger: Array[SkillEffect]` | A separate resolution on a schedule the enemy walks into. |
 
 Governed by the composition law (`Concept_Document.md` 1.1.3): **same bucket key adds, distinct
@@ -193,7 +193,7 @@ and 3x, no long tail either way. A few Roles at 5-8x with the rest at 1.3-1.5x f
 both directions — the high kits carry a team's whole burst alone, and fielding one becomes the only
 route to the band.
 
-**Factors are only comparable within their own kind** — bucket product, cascade instance count,
+**Factors are only comparable within their own kind** — bucket product, Echo count,
 crit-path multiplier, mitigation-term factor (§9.12's bypass, §9.10's Defence debuff),
 aggregate-term factor (§9.14's attribute-modifier amplification), exported factor on a carrier. One
 ranked column across all of them is not a measurement.
@@ -272,7 +272,7 @@ A Role's basic skill is always self-facing; direction describes the declared-ide
 
 | Role | Purpose (unchanged) | Primary identity | Direction | Composition hook |
 |---|---|---|---|---|
-| Plague Doctor | Debuffer | **Channel 3** | Self | §9.1. Debuff density on the target feeds cascade instance count — the deepest identity claim in the roster. |
+| Plague Doctor | Debuffer | **Channel 3** | Self | §9.1. Debuff density on the target feeds Echo count — the deepest identity claim in the roster. |
 | Sorcerer | Damage, Debuffer, Control | **Channel 3** | Self | §9.3. Reagent-triggered repeat re-resolves channels 1 and 2 as a fresh instance; the second, independently-gated cascade anchor. |
 | Herald of the Loom | Debuffer, Buffer | **Channel 3** | Self | §9.2, which replaced this row's Phase 1 sketch of a status-expiry cascade. Weft and Warp's three threads carry the identity, and Cut the Cloth resolves once more per Tension held — the roster's deepest instance count. |
 | Chronophage | Control | **Channel 3** | Exported | §9.9, confirming this row without the threshold-crossing trigger it originally proposed — a boundary-counting gate reads as arithmetic the player cannot see. Instead the passive grants Borrowed Time to an ally it boosts alone, and that ally's next skill resolves once more. The Role fields no damage factor of its own (Batch 2). |
@@ -398,7 +398,7 @@ Format per entry: Status, Passive, Skills (name / effect / channel), Projected n
 **Passive: Comorbidity.** Debuffs placed by this Role's skills trigger a cascading extra tick
 (`Types.Cascade_Trigger.Debuff_Ticked`) once for every other distinct debuff type on the target
 (any source, uncapped, bounded by the shared `MAX_CASCADE_INSTANCES_PER_ACTION` fan-out cap). Each
-repeat is a real cascade instance — its own `Cascade_Triggered` marker and its own
+repeat is a real Echo — its own `Cascade_Triggered` marker and its own
 `Cascade_Instance_Resolved` broadcast — rather than a multiplier folded into one aggregated tick
 number, so the passive is a genuine Channel 3 anchor, not Channel 2 dressed as one.
 
@@ -425,15 +425,15 @@ battle start. Switching is a free action available any number of times during th
 turn (before or after using a skill, in any order) — not a once-per-turn cap, and not a status
 effect with a duration: the active thread is ordinary persistent trait state that carries as-is
 into the next turn until changed again. Max Tension is a constant 7 at every rarity.
-* Golden Thread — gain 1 Tension when a cascade instance resolves on an enemy (Cut the Cloth's own
+* Golden Thread — gain 1 Tension when an Echo resolves on an enemy (Cut the Cloth's own
   instances excluded, to avoid a self-feed loop — enforced by construction, since Cut the Cloth's
   repeats never call `CascadeResolver.Post`).
 * Silver Thread — the Herald's debuffs cannot be resisted and last 1 turn longer.
-* Black Thread — the cascade instance produced by the Herald's own action resolves one additional
+* Black Thread — the Echo produced by the Herald's own action resolves one additional
   time (not a double — a skill that would resolve once now resolves twice). Scoped to the Herald's
   own action only, since the Herald casts at most one skill per turn.
-* Cascade instances cast by this champion deal bonus damage: +5% Uncommon, +10% Rare, +15% Epic,
-  +20% Legendary. (Generic wording deliberately — applies to any cascade instance the Herald
+* Echoes cast by this champion deal bonus damage: +5% Uncommon, +10% Rare, +15% Epic,
+  +20% Legendary. (Generic wording deliberately — applies to any Echo the Herald
   produces, names no skill, so the passive and the skills stay decoupled.)
 * Starting Tension: 0 Uncommon/Rare, 1 Epic/Legendary. Tension does not persist between combats
   (matches Arcane Instability's precedent).
@@ -482,7 +482,7 @@ gap in `Plan_System_Buildout.md`.
   stacks reset and the Sorcerer gains 1 Echo charge.
 * Each Echo charge held makes the Sorcerer's next skill repeat one additional time; all charges are
   consumed when it does. The first Echo deals 50% of the skill's damage and each further Echo
-  compounds on the previous. Each Echo is a fresh cascade instance assembling its own combined
+  compounds on the previous. Each Echo assembles its own combined
   damage modifier; a repeated debuff or zone charge is not reapplied, only the damage.
 
 Rarity scales only on the passive, never on the kit's skills: Echo compounding 1.40 Uncommon /
@@ -531,7 +531,7 @@ anchor whose ceiling is gated behind spending three banked reagents in one turn.
 The 1.70 compounding factor is steeper than a flat-instance design would need precisely because
 the per-stack Mysticism ramp was dropped: that ramp was worth a flat 1.5x on the aggregate, and
 moving its weight into the compounding curve puts the ceiling in Channel 3 where the Role's
-identity claims it. Peak 4 cascade instances plus the Surge in one action, well inside
+identity claims it. Peak 4 Echoes plus the Surge in one action, well inside
 `CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION = 16`.
 
 ### 9.4 Bloodmage — the missing-Health surface, caster-side and exported
@@ -1586,7 +1586,7 @@ Steadfast, Resonance unclaimed.
 (section 9.13); no prior claimant, and the roster's only permanent stacking attribute grant, sized
 per holder rather than by a fixed attribute. Borrowed Time is a new buff, claimed by Chronophage
 (Time Tithe) — **implemented** (section 9.9); no prior claimant, and the only buff in the roster
-granting a cascade instance. Attune's second claim (Herald of the loom's Woven Blessing, alongside Cultist's Chosen
+granting an Echo. Attune's second claim (Herald of the loom's Woven Blessing, alongside Cultist's Chosen
 Vessel passive) has dropped: Woven Blessing is no longer part of the Herald's kit (section 9.2,
 implemented) and nothing in the new kit applies Attune, so Attune is now solely Cultist's (Chosen
 Vessel passive). Sanguine Pact is a new buff, claimed by Bloodmage (Transfusion) — **implemented**

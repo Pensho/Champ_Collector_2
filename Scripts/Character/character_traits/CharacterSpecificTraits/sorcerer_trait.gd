@@ -49,8 +49,8 @@ func Init(p_rarity: Types.Rarity) -> void:
 			"is amplified by " + str(_reagent_amplification * 100.0) + "%, and grants a charge.\n" +
 			"At maximum stacks the next skill also releases a Surge: damaging everyone.\n" +
 			"Stacks reset and a charge is gained.\n" +
-			"Each charge makes the next skill repeat once more, spending all of them.\n" +
-			"Every repeat hits " + str((_echo_compounding - 1.0) * 100.0) + "% harder than the last.")
+			"Each charge makes the next skill Echo once more, spending all of them.\n" +
+			"Every Echo hits " + str((_echo_compounding - 1.0) * 100.0) + "% harder than the last.")
 	_execution_steps[Types.Combat_Event.Start_Combat] = Callable(self, "StartOfBattle")
 	_execution_steps[Types.Combat_Event.Skill_Cast] = Callable(self, "OnSkillCast")
 	_execution_steps[Types.Combat_Event.Reagent_Consumed] = Callable(self, "OnReagentConsumed")
