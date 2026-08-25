@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="EquipmentPreset" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="EquipmentPreset" format=3 uid="uid://b2tuy8k5dreh2"]
 
-[ext_resource type="Script" path="res://Scripts/Gear/equipment_preset.gd" id="1_preset"]
-[ext_resource type="Script" path="res://Scripts/Character/character_traits/Relics/sunderplate_nail_relic.gd" id="2_effect"]
+[ext_resource type="Script" uid="uid://8knbs7yij5eh" path="res://Scripts/Gear/equipment_preset.gd" id="1_preset"]
+[ext_resource type="Script" uid="uid://d4j353yg7h8ia" path="res://Scripts/Character/character_traits/Relics/sunderplate_nail_relic.gd" id="2_effect"]
 
 [sub_resource type="Resource" id="SubResource_1"]
 script = ExtResource("2_effect")
