@@ -87,11 +87,11 @@ static func IncomingZoneEffectMultiplier(
 		multiplier *= source.GetIncomingZoneEffectMultiplier(p_owner_ID, p_zone_owner_ID, p_sides)
 	return multiplier
 
-static func DebuffsCannotBeResisted(p_character: Character, p_owner_ID: int) -> bool:
+static func DebuffsCannotBeResisted(p_character: Character, p_owner_ID: int, p_target_ID: int) -> bool:
 	if(null == p_character):
 		return false
 	for source: CharacterTrait in p_character.HookSources():
-		if(source.DebuffsCannotBeResisted(p_owner_ID)):
+		if(source.DebuffsCannotBeResisted(p_owner_ID, p_target_ID)):
 			return true
 	return false
 
@@ -116,6 +116,17 @@ static func AppliedStatusValue(
 			return value
 	return -1.0
 
+static func AppliedBuffValue(
+		p_character: Character, p_owner_ID: int, p_target_ID: int,
+		p_buff_type: Types.Buff_Type, p_resolver: BattleResolver) -> float:
+	if(null == p_character):
+		return -1.0
+	for source: CharacterTrait in p_character.HookSources():
+		var value: float = source.GetAppliedBuffValue(p_owner_ID, p_target_ID, p_buff_type, p_resolver)
+		if(value >= 0.0):
+			return value
+	return -1.0
+
 ## Merges every active Skill_Cast hook source's own TraitSkillResult into one: damage-
 ## multiplier deltas and turn-bar bumps add, trait riders union (a later source
 ## overwrites an earlier one's same key).
@@ -136,6 +147,11 @@ static func DispatchSkillCast(
 		merged._turn_bar_bump += result._turn_bar_bump
 		for key: StringName in result._trait_riders:
 			merged._trait_riders[key] = result._trait_riders[key]
+	for cast_skill: Skill in p_character._skills:
+		if(cast_skill.name == p_skill_name and 0 == cast_skill.cooldown):
+			merged._damage_multiplier -= TeamCooldownlessDamagePenalty(
+					p_resolver.GetSides(), p_resolver.GetCharacters(), p_owner_ID)
+			break
 	return merged
 
 static func RewardMultiplier(p_fielded_team: Array[Character]) -> float:
@@ -216,6 +232,42 @@ static func CritChanceOverflowRate(
 			rate += source.GetCritChanceOverflowRate()
 	return rate
 
+static func TeamCooldownlessDamagePenalty(
+		p_sides: CombatSides, p_characters: Dictionary[int, Character], p_character_ID: int) -> float:
+	var penalty: float = 0.0
+	var team: CombatTeam = p_sides.AlliesOf(p_character_ID)
+	if(null == team):
+		return penalty
+	for ally_ID in team.AliveMembers(p_characters):
+		var ally: Character = p_characters[ally_ID]
+		for source: CharacterTrait in ally.HookSources():
+			penalty += source.GetTeamCooldownlessDamagePenalty()
+	return penalty
+
+static func AllyDeniesCriticalHits(
+		p_sides: CombatSides, p_characters: Dictionary[int, Character], p_character_ID: int) -> bool:
+	var team: CombatTeam = p_sides.AlliesOf(p_character_ID)
+	if(null == team):
+		return false
+	for ally_ID in team.AliveMembers(p_characters):
+		if(ally_ID == p_character_ID):
+			continue
+		for source: CharacterTrait in p_characters[ally_ID].HookSources():
+			if(source.DeniesAlliesCriticalHits()):
+				return true
+	return false
+
+static func TeamBarrierMultiplier(
+		p_sides: CombatSides, p_characters: Dictionary[int, Character], p_target_ID: int) -> float:
+	var multiplier: float = 1.0
+	var team: CombatTeam = p_sides.AlliesOf(p_target_ID)
+	if(null == team):
+		return multiplier
+	for ally_ID in team.AliveMembers(p_characters):
+		for source: CharacterTrait in p_characters[ally_ID].HookSources():
+			multiplier *= source.GetTeamBarrierMultiplier()
+	return multiplier
+
 static func ApplyBarrierZone(
 		p_resolver: BattleResolver,
 		p_zone_owner_ID: int,
@@ -228,7 +280,9 @@ static func ApplyBarrierZone(
 	if(null != zone_owner):
 		for source: CharacterTrait in zone_owner.HookSources():
 			charge_bonus += source.GetZoneChargeBonus(p_zone_ID)
-	p_resolver.GetStatusResolver().ApplyBuff(p_character_ID, MakeBarrierZoneBuff(p_owner_knowledge, charge_bonus))
+	var barrier: StatusEffects.Buff = MakeBarrierZoneBuff(p_owner_knowledge, charge_bonus)
+	barrier.value *= TeamBarrierMultiplier(p_resolver.GetSides(), characters, p_character_ID)
+	p_resolver.GetStatusResolver().ApplyBuff(p_character_ID, barrier)
 	TriggerZoneUsedHook(characters, p_zone_owner_ID, p_character_ID, p_resolver)
 
 static func CorrectZoneTarget(

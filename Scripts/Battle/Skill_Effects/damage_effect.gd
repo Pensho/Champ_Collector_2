@@ -134,7 +134,8 @@ func _WoundedAllyCount(p_context: SkillCastContext) -> int:
 	return count
 
 func _TraitCount(p_context: SkillCastContext, p_target_ID: int, p_source: Types.Trait_Count_Source) -> float:
-	var caster_trait: CharacterTrait = p_context.resolver.GetCharacters()[p_context.caster_ID]._trait
-	if(null == caster_trait):
-		return 0.0
-	return caster_trait.GetConditionCount(p_context.caster_ID, p_target_ID, p_source, p_context.resolver)
+	var caster: Character = p_context.resolver.GetCharacters()[p_context.caster_ID]
+	var count: float = 0.0
+	for source: CharacterTrait in caster.HookSources():
+		count += source.GetConditionCount(p_context.caster_ID, p_target_ID, p_source, p_context.resolver)
+	return count

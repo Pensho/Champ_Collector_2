@@ -53,7 +53,7 @@ func ApplyBuff(p_target_ID: int, p_buff_template: StatusEffects.Buff) -> Array[C
 		return _resolver._EndBatch()
 
 	var new_value: float = (p_buff_template.value if 0.0 != p_buff_template.value
-			else _SnapshotStatusValue(data, p_buff_template.source_ID, p_target_ID))
+			else SnapshotStatusValue(data, p_buff_template.source_ID, p_target_ID))
 	if(Types.Buff_Type.Barrier == p_buff_template.type
 			and _KeepsExistingBarrier(p_target_ID, target, new_value)):
 		return _resolver._EndBatch()
@@ -69,13 +69,13 @@ func ApplyDebuff(p_target_ID: int, p_debuff_template: StatusEffects.Debuff) -> A
 		_EmitStatusEffectDenied(p_target_ID, false, p_debuff_template.type)
 		return _resolver._EndBatch()
 	var data: StatusEffectData = StatusEffectRegistry.DebuffData(p_debuff_template.type)
-	if(_BlockedBySequenceLock(data, target)):
+	if(_BlockedBySequenceLock(data, target) or _BlockedByDebuffTypeBlock(target, p_debuff_template.type)):
 		return _resolver._EndBatch()
 	if(_ConsumeAegisIfPresent(p_target_ID, p_debuff_template.source_ID)):
 		return _resolver._EndBatch()
 
 	var new_value: float = (p_debuff_template.value if 0.0 != p_debuff_template.value
-			else _SnapshotStatusValue(data, p_debuff_template.source_ID, p_target_ID))
+			else SnapshotStatusValue(data, p_debuff_template.source_ID, p_target_ID))
 	_InsertOrRefresh(p_target_ID, false, p_debuff_template.type, data, new_value, p_debuff_template.duration,
 			p_debuff_template.source_ID, p_debuff_template.trait_riders, false, p_debuff_template.name)
 	return _resolver._EndBatch()
@@ -279,7 +279,7 @@ func CastDebuff(
 		return _resolver._EndBatch()
 
 	var data: StatusEffectData = StatusEffectRegistry.DebuffData(p_debuff_template.type)
-	if(_BlockedBySequenceLock(data, target)):
+	if(_BlockedBySequenceLock(data, target) or _BlockedByDebuffTypeBlock(target, p_debuff_template.type)):
 		return _resolver._EndBatch()
 	if(_ConsumeAegisIfPresent(p_target_ID, p_caster_ID)):
 		return _resolver._EndBatch()
@@ -294,7 +294,7 @@ func CastDebuff(
 		return _resolver._EndBatch()
 
 	var value: float = (p_debuff_template.value if 0.0 != p_debuff_template.value
-			else _SnapshotStatusValue(data, p_caster_ID, p_target_ID))
+			else SnapshotStatusValue(data, p_caster_ID, p_target_ID))
 	var caster: Character = _resolver._characters.get(p_caster_ID)
 	var duration: int = p_debuff_template.duration
 	if(duration > 0):
@@ -318,7 +318,7 @@ func _RollsResistDebuff(
 	if(_resolver._HasDebuff(p_defender_ID, Types.Debuff_Type.Signed_Writ)):
 		return false
 	var attacker: Character = _resolver._characters.get(p_attacker_ID)
-	if(Skills.DebuffsCannotBeResisted(attacker, p_attacker_ID)):
+	if(Skills.DebuffsCannotBeResisted(attacker, p_attacker_ID, p_defender_ID)):
 		return false
 	var random_value: float = _resolver.RollFavoring(p_attacker_ID, 0.85, 1.0, true)
 	var random_value_2: float = _resolver.RollFavoring(p_defender_ID, 0.85, 1.0, true)
@@ -350,7 +350,7 @@ func _CascadeMirrorCoat(p_event: CascadeEvent) -> void:
 	mirrored.type = debuff_type
 	mirrored.duration = data.duration_default if null != data else 0
 	mirrored.source_ID = holder_ID
-	mirrored.value = _SnapshotStatusValue(data, holder_ID, attacker_ID)
+	mirrored.value = SnapshotStatusValue(data, holder_ID, attacker_ID)
 	mirrored.ID = _resolver._NextStatusID()
 	_resolver._characters[attacker_ID]._active_debuffs.append(mirrored)
 	_EmitDebuffApplied(attacker_ID, mirrored, "")
@@ -598,6 +598,12 @@ func _BlockedBySequenceLock(p_data: StatusEffectData, p_target: Character) -> bo
 			return true
 	return false
 
+func _BlockedByDebuffTypeBlock(p_target: Character, p_debuff_type: Types.Debuff_Type) -> bool:
+	for source: CharacterTrait in p_target.HookSources():
+		if(source.BlocksIncomingDebuffType(p_debuff_type)):
+			return true
+	return false
+
 
 func _BlockedBySeverance(p_target: Character) -> bool:
 	for debuff in p_target._active_debuffs:
@@ -750,7 +756,7 @@ func _CascadeRushStun(p_event: CascadeEvent) -> void:
 	_EmitDebuffApplied(holder_ID, stun, "")
 
 
-func _SnapshotStatusValue(p_data: StatusEffectData, p_source_ID: int, p_target_ID: int) -> float:
+func SnapshotStatusValue(p_data: StatusEffectData, p_source_ID: int, p_target_ID: int) -> float:
 	if(null == p_data):
 		return 0.0
 	var reads_source_attributes: bool = (p_data.caster_scaled

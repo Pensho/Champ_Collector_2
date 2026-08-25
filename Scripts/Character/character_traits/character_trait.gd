@@ -59,8 +59,7 @@ func GetIncomingDebuffDurationBonus(_p_owner_ID: int) -> int:
 func GetOutgoingDebuffDurationBonus(_p_owner_ID: int) -> int:
 	return 0
 
-## Whether this owner's own applied debuffs bypass the target's resist roll entirely.
-func DebuffsCannotBeResisted(_p_owner_ID: int) -> bool:
+func DebuffsCannotBeResisted(_p_owner_ID: int, _p_target_ID: int) -> bool:
 	return false
 
 ## Returns the multiplier applied to incoming damage (1.0 = unchanged, 0.0 = avoided).
@@ -196,6 +195,10 @@ func GetAppliedStatusValue(
 		_p_owner_ID: int, _p_target_ID: int, _p_debuff_type: Types.Debuff_Type, _p_resolver: BattleResolver) -> float:
 	return -1.0
 
+func GetAppliedBuffValue(
+		_p_owner_ID: int, _p_target_ID: int, _p_buff_type: Types.Buff_Type, _p_resolver: BattleResolver) -> float:
+	return -1.0
+
 ## Answers a DamageEffect's bonus_per count, or a SkillEffect's condition test, for one
 ## Trait_Count_Source. The base class has none of them.
 func GetConditionCount(
@@ -215,3 +218,15 @@ func GetOutgoingDefenceIgnoreFactor(_p_owner_ID: int, _p_target_ID: int, _p_reso
 
 func GetRewardMultiplier() -> float:
 	return 1.0
+
+func GetTeamCooldownlessDamagePenalty() -> float:
+	return 0.0
+
+func DeniesAlliesCriticalHits() -> bool:
+	return false
+
+func GetTeamBarrierMultiplier() -> float:
+	return 1.0
+
+func BlocksIncomingDebuffType(_p_debuff_type: Types.Debuff_Type) -> bool:
+	return false

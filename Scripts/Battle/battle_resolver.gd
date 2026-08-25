@@ -259,7 +259,7 @@ func AccumulateTurnBarMovement(p_character_ID: int, p_fraction_moved: float) -> 
 
 	var data: StatusEffectData = StatusEffectRegistry.DebuffData(Types.Debuff_Type.Temporal_Leak)
 	# The applier's channel-2 factors are frozen into leak.value at application (see
-	# StatusEffectResolver._SnapshotStatusValue); 0.0 means the debuff was placed directly
+	# StatusEffectResolver.SnapshotStatusValue); 0.0 means the debuff was placed directly
 	# rather than through ApplyDebuff/CastDebuff (test setup), so treat that as neutral.
 	var multiplier: float = leak.value if 0.0 != leak.value else 1.0
 	var progress: float = _turn_bar_progress.get(p_character_ID, 0.0) + p_fraction_moved
@@ -796,7 +796,7 @@ func _ResolveDamage(
 
 	var target: Character = _characters[p_target_ID]
 	var crit_roll: float = RollFavoring(p_caster_ID, 1.0, 100.0, false)
-	if(p_allow_critical):
+	if(p_allow_critical and not Skills.AllyDeniesCriticalHits(_sides, _characters, p_caster_ID)):
 		var total_crit_chance: float = float(
 				p_caster_attributes[Types.Attribute.CritChance] + _status_resolver._AttackerCritChanceBonus(target))
 		if(crit_roll <= total_crit_chance):

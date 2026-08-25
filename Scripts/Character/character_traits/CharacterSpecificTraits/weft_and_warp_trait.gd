@@ -85,7 +85,7 @@ func AdvanceThread() -> void:
 func GetOutgoingDebuffDurationBonus(_p_owner_ID: int) -> int:
 	return 1 if Thread_Type.Silver == _current_thread else 0
 
-func DebuffsCannotBeResisted(_p_owner_ID: int) -> bool:
+func DebuffsCannotBeResisted(_p_owner_ID: int, _p_target_ID: int) -> bool:
 	return Thread_Type.Silver == _current_thread
 
 func OnCascadeInstanceResolved(

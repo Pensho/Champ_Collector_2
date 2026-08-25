@@ -430,7 +430,8 @@ the given attributes dictionary unconditionally — there is no gating flag. The
 `GetCombatAttributes()` (base + gear + graft + reagent, but never statuses) is retired; the few
 combat-time sites that deliberately want the pre-status value (reagent %-scaling in
 `_ApplyReagentAttributeIncrease`, so a semi-permanent bonus can't compound off a temporary buff;
-`_SnapshotStatusValue`'s snapshot-at-application reads for `CasterAttributeSnapshotPercent` DoTs)
+`StatusEffectResolver.SnapshotStatusValue`'s snapshot-at-application reads for
+`CasterAttributeSnapshotPercent` DoTs)
 call `Character.GetTotalAttributes()` plus `BattleResolver._ApplyLongAttributeBonus()` explicitly,
 so no accessor silently hides statuses again.
 
@@ -475,7 +476,7 @@ is the single site all healing flows through — reagent heals and Regeneration'
 and now returns the Health actually gained instead of void, since `IncomingHealReduction` (Blight)
 halves the request there before the caller's `CombatResult.Kind.Heal` is built, keeping the
 reported amount honest. `CasterAttributeSnapshotPercent` (Bleed, Attack; Plague, Mysticism) is
-resolved once, at application, by `BattleResolver._SnapshotStatusValue()` — called from `CastDebuff`,
+resolved once, at application, by `StatusEffectResolver.SnapshotStatusValue()` — called from `CastDebuff`,
 `ApplyDebuff`, and the zone path alike — into the instance's `value`, per the Phalanx Guard
 per-instance precedent; the self-tick loop then just reads that already-resolved `value` instead of
 re-deriving it from the source's current (possibly changed) attributes. Plague stacks, and each
@@ -917,7 +918,7 @@ the buff-type name) is deliberately distinct from Fractured Idol's shared `reage
 key — the two mechanics multiply rather than add, since the composition law keys by mechanic
 identity, and colliding two independent mechanics onto one key would silently sum them instead. Bleed, Plague, and Temporal_Leak read the
 same persistent factors through `_ContributePersistentCasterFactors`, but only once, at the moment
-the status is applied — `StatusEffectResolver._SnapshotStatusValue` multiplies the attribute term
+the status is applied — `StatusEffectResolver.SnapshotStatusValue` multiplies the attribute term
 (or, for Temporal_Leak, the bare per-crossing Speed tax) by the modifier's `Product()` at that
 instant and stores the combined number in `debuff.value`, so a caster who grows stronger after
 applying the status does not retroactively empower a tick already running. Citation's
@@ -1512,8 +1513,11 @@ reaches every hook the same way its wearer's trait does. A hook returning a valu
 however many sources fired: `Skills.OutgoingDamageBonus`/`IncomingDebuffDurationBonus`/
 `OutgoingDebuffDurationBonus` sum; `Skills.OutgoingDefenceIgnoreFactor`/`DamageTakenMultiplier`/
 `IncomingHealMultiplier`/`TargetingPriorityMultiplier`/`IncomingZoneEffectMultiplier` multiply;
-`Skills.DebuffsCannotBeResisted`/`BlocksForwardTurnBarBump` are true if any source says so;
-`Skills.AppliedStatusValue` takes the first source with a non-negative opinion;
+`Skills.DebuffsCannotBeResisted(character, owner_ID, target_ID)`/`BlocksForwardTurnBarBump` are
+true if any source says so — the former takes the debuff's target as well as its owner, since a
+source's opinion can be scoped to one target rather than blanket (Signatory's Seal's first-N-per-
+enemy guarantee); `Skills.AppliedStatusValue`/`AppliedBuffValue` take the first source with a
+non-negative opinion, the debuff- and buff-side halves of the same override pattern;
 `Skills.DispatchSkillCast` merges every source's own `OnSkillCast` `TraitSkillResult` (damage
 multiplier and turn-bar bump add, trait riders union). `Skills.RewardMultiplier(fielded_team)`
 takes the single largest `GetRewardMultiplier()` across every fielded character's own hook
@@ -1551,7 +1555,11 @@ non-negative return becomes the new debuff's value instead of the usual snapshot
 `StandingRecordTrait` overrides it for `Sanction` only, returning
 `GetInfractions(target_ID) * _rate_per_infraction` — this is Sanction's magnitude source
 (section 3.2.3.2) going live; every other debuff type still falls through to the existing
-`_SnapshotStatusValue` path.
+`SnapshotStatusValue` path. `CharacterTrait.GetAppliedBuffValue(owner_ID, target_ID, buff_type,
+resolver) -> float` is the buff-side twin, read in `ApplyBuffEffect.Resolve` the same way; Relics
+that strengthen a buff they apply (The Even Tread, Prism of Small Favors) read
+`StatusEffectResolver.SnapshotStatusValue` themselves to get the un-amplified base before scaling
+it, rather than duplicating the registry lookup.
 
 `CharacterTrait.GetConditionCount(owner_ID, target_ID, source: Types.Trait_Count_Source,
 resolver) -> float` (default `0.0`) is the shared answer to two different questions: a
@@ -1581,8 +1589,29 @@ amplification, adds onto the rest) and
 `StatusEffectResolver._InsertOrRefresh` stamps it into the status instance's own `trait_riders` under
 `&"attribute_amplification"` at apply time, covering both the new-instance and refresh paths.
 `Skills.ApplyAttributeModifiers` reads the stamp and adds it onto the modification's own percentage
-before the attribute math, for every attribute but Critical Chance and Critical Damage. `FieldOfStudyTrait`
-(the Scholar's passive) is the only override.
+before the attribute math, for every attribute but Critical Chance and Critical Damage.
+`FieldOfStudyTrait` (the Scholar's passive) overrides it unconditionally; `QuorumBellRelic` overrides
+it conditionally, caching whether a zone stands on the turn bar each `StartOfTurn` since the getter
+itself takes no resolver to check live.
+
+A further category reaches past the hook's own owner to every living member of that owner's side,
+the owner included: `Skills.CritChanceOverflowRate`, `TeamCooldownlessDamagePenalty`,
+`AllyDeniesCriticalHits`, and `TeamBarrierMultiplier` each walk `CombatSides.AlliesOf(...).
+AliveMembers(...)` and poll every member's own `HookSources()`, rather than only the ID passed in —
+the shape a compositional drawback needs to tax or deny the wearer's whole team, not just the
+wearer's own cast. `CharacterTrait.GetTeamCooldownlessDamagePenalty() -> float` (default `0.0`,
+summed) is subtracted from `Skills.DispatchSkillCast`'s merged damage multiplier whenever the cast
+skill carries no cooldown, for whichever character casts it (Quorum Bell). `DeniesAlliesCriticalHits()
+-> bool` (default `false`, any-true) gates the crit roll in `BattleResolver._ResolveDamage` for
+every ally but the trait's own owner (The Even Tread). `GetTeamBarrierMultiplier() -> float`
+(default `1.0`, product) is read by `BarrierEffect.Resolve` and `Skills.ApplyBarrierZone` against
+the Barrier's target, covering both the skill-cast and zone paths a Barrier can be granted through
+(The Frayed Hour).
+
+`CharacterTrait.BlocksIncomingDebuffType(debuff_type) -> bool` (default `false`, any-true) is
+checked against the target in `StatusEffectResolver.ApplyDebuff`/`CastDebuff` alongside the existing
+Sequence-Lock guard, letting a trait refuse specific debuff types outright rather than only
+resisting them probabilistically (The Solvent Mark shields its own four amplified types).
 `Skills.DisplayedAttributeModifierFraction(data, value, trait_riders) -> float` is the read-only
 counterpart consulted by `_EmitBuffApplied`/`_EmitDebuffApplied` when stamping `CombatResult.fraction`
 (see the Sea Legs `{percent}` token above), so a status's own description reads the amplified number

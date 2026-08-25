@@ -22,7 +22,7 @@ func _add_temporal_leak(p_character_ID: int) -> void:
 	_roster[p_character_ID]._active_debuffs.append(debuff)
 
 ## Applies through the resolver rather than by direct construction, so
-## StatusEffectResolver._SnapshotStatusValue freezes the source's persistent damage
+## StatusEffectResolver.SnapshotStatusValue freezes the source's persistent damage
 ## factors at this moment, matching how a real cast would apply the debuff.
 func _add_temporal_leak_with_source(p_target_ID: int, p_source_ID: int) -> void:
 	var template: StatusEffects.Debuff = StatusEffects.Debuff.new()

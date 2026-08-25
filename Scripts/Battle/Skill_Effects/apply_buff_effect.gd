@@ -16,6 +16,11 @@ func Resolve(p_context: SkillCastContext) -> void:
 		buff.name = Types.Buff_Type.keys()[buff_type]
 		buff.source_ID = p_context.caster_ID
 		buff.trait_riders = p_context.trait_result._trait_riders
+		var caster: Character = p_context.resolver.GetCharacters()[p_context.caster_ID]
+		var value_override: float = Skills.AppliedBuffValue(
+				caster, p_context.caster_ID, target_ID, buff_type, p_context.resolver)
+		if(value_override >= 0.0):
+			buff.value = value_override
 		if(p_context.is_zone_trigger):
 			var data: StatusEffectData = StatusEffectRegistry.BuffData(buff_type)
 			if(null != data):
