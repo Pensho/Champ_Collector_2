@@ -28,6 +28,7 @@ main="*res://Scripts/main.gd"
 Game_Balance="*res://Scripts/game_balance.gd"
 Types="*res://Scripts/common_enums.gd"
 Game_Settings="*res://Scripts/settings.gd"
+Notification_Handler="*res://Scripts/UI/notification_handler.gd"
 
 [display]
 

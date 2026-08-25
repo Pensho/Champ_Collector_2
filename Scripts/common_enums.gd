@@ -258,6 +258,12 @@ enum Cascade_Trigger
 	Debuff_Ticked,
 }
 
+enum Notification_Kind
+{
+	Info,
+	Failure,
+}
+
 func RarityName(p_rarity: Types.Rarity) -> String:
 	return Types.Rarity.keys()[p_rarity - 1]
 

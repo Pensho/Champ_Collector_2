@@ -9,38 +9,45 @@ var _played_time: int
 func HasSaveSlot(p_slot: int) -> bool:
 	return FileAccess.file_exists(SAVE_DIR + "profile_" + str(p_slot) + ".save")
 
-func Save(p_slot: int) -> void:
+func Save(p_slot: int) -> bool:
 	var data := {}
 	data["meta"] = BuildMetaData(p_slot)
 	for node in get_tree().get_nodes_in_group(GROUP_SAVEABLE):
-		print("Calling save for node: ", node.name)
 		data[node.name] = node.Serialize()
-	
+
 	var save_file: FileAccess = FileAccess.open(
 		SAVE_DIR + "profile_" + str(p_slot) + ".save", FileAccess.WRITE)
-	
-	save_file.store_string(JSON.stringify(data, "\t"))
+	if (not save_file):
+		return false
 
-func Load(p_slot: int) -> void:
+	save_file.store_string(JSON.stringify(data, "\t"))
+	return true
+
+func Load(p_slot: int) -> bool:
 	if (not HasSaveSlot(p_slot)):
-		print("There is no saved data for: ", SAVE_DIR + "profile_" + str(p_slot) + ".save")
-		return
-	
+		return false
+
 	var save_file: FileAccess = FileAccess.open(
 		SAVE_DIR + "profile_" + str(p_slot) + ".save", FileAccess.READ)
-	var data: Dictionary = JSON.parse_string(save_file.get_as_text())
-	
+	if (not save_file):
+		return false
+
+	var parsed: Variant = JSON.parse_string(save_file.get_as_text())
+	if (not (parsed is Dictionary)):
+		return false
+	var data: Dictionary = parsed
+
 	# Items must load before characters so gear can be re-equipped
 	_deserialize_group_by_type(data, ItemCollection)
 	_deserialize_group_by_type(data, CharacterCollection)
-	
+
 	for node in get_tree().get_nodes_in_group(GROUP_SAVEABLE):
 		if not (node is ItemCollection) and not (node is CharacterCollection):
 			node.Deserialize(data.get(node.name, {}))
-	
+
 	#_restore_equipped_gear()
-	
-	print ("Full data from load:\n\n", data)
+
+	return true
 
 func _deserialize_group_by_type(data: Dictionary, type) -> void:
 	for node in get_tree().get_nodes_in_group(GROUP_SAVEABLE):
@@ -71,5 +78,11 @@ func GetSlotMetadata(p_slot: int) -> Dictionary:
 	
 	var save_file: FileAccess = FileAccess.open(
 		"user://profile_" + str(p_slot) + ".save", FileAccess.READ)
-	var data: Dictionary = JSON.parse_string(save_file.get_as_text())
+	if (not save_file):
+		return {}
+
+	var parsed: Variant = JSON.parse_string(save_file.get_as_text())
+	if (not (parsed is Dictionary)):
+		return {}
+	var data: Dictionary = parsed
 	return data.get("meta", {})

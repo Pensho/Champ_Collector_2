@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://bwq2n8p7yqk4d"]
+
+[ext_resource type="Script" path="res://Scripts/UI/notification_box.gd" id="1_script"]
+
+[node name="Notification_Box" type="Control" node_paths=PackedStringArray("_label", "_background")]
+custom_minimum_size = Vector2(240, 56)
+offset_right = 240.0
+offset_bottom = 56.0
+script = ExtResource("1_script")
+_label = NodePath("Label")
+_background = NodePath("ColorRect")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0784314, 0.0784314, 0.0901961, 0.94902)
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 20
+text = "Notification"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2

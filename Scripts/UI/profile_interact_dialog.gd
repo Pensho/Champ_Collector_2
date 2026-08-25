@@ -16,7 +16,6 @@ func Init(p_meta_data: Dictionary) -> void:
 		_name = p_meta_data["profile_name"]
 		_name_input.placeholder_text = _name
 	if (p_meta_data.has("played_time")):
-		print("p_meta_data.has(played_time): ", p_meta_data["played_time"])
 		_played_time_label.text = "Played time: " + str(p_meta_data["played_time"])
 	if (p_meta_data.has("saved_at")):
 		_saved_at_label.text = "Last saved at: " + str(p_meta_data["saved_at"])
@@ -34,12 +33,19 @@ func _on_cancel_button_up() -> void:
 	self.hide()
 
 func _on_save_button_up() -> void:
-	print("writing to _save_manager._active_profile_name with: ", _name_input.text)
 	if(not _name_input.text.is_empty()):
 		main.GetInstance()._save_manager._active_profile_name = _name_input.text
-	_save_func.call()
+	var succeeded: bool = _save_func.call()
+	if(succeeded):
+		Notification_Handler.Notify("Game saved")
+	else:
+		Notification_Handler.Notify("Could not save the game", Types.Notification_Kind.Failure)
 	self.hide()
 
 func _on_load_button_up() -> void:
-	_load_func.call()
+	var succeeded: bool = _load_func.call()
+	if(succeeded):
+		Notification_Handler.Notify("Game loaded")
+	else:
+		Notification_Handler.Notify("Could not load the game", Types.Notification_Kind.Failure)
 	self.hide()

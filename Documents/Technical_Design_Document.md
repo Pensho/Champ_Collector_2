@@ -76,9 +76,11 @@ Declared in `project.godot`:
 
 ```
 [autoload]
-main          = "*res://Scripts/main.gd"
-Game_Balance  = "*res://Scripts/game_balance.gd"
-Types         = "*res://Scripts/common_enums.gd"
+main                  = "*res://Scripts/main.gd"
+Game_Balance          = "*res://Scripts/game_balance.gd"
+Types                 = "*res://Scripts/common_enums.gd"
+Game_Settings         = "*res://Scripts/settings.gd"
+Notification_Handler  = "*res://Scripts/UI/notification_handler.gd"
 ```
 
 ### 3.1. `main` → `Main_Instance`
@@ -150,6 +152,19 @@ The autoload key (`Game_Settings`) intentionally differs from the class name (`S
 matching `Game_Balance`/`GameBalance` — because an autoload's registered name shadows a
 same-named `class_name` in the global scope, which would otherwise make `Settings.new()`
 resolve to the singleton instance instead of the class.
+
+### 3.5. `Notification_Handler` (`class_name NotificationHandler`)
+
+`Scripts/UI/notification_handler.gd` is a `CanvasLayer` that shows a small text box
+centred on screen, on request, from any system: `Notification_Handler.Notify("Game saved")`
+(optionally with a `Types.Notification_Kind` — `Info` or `Failure` — to tint the text).
+It owns a queue: only one `NotificationBox` (`Scripts/UI/notification_box.gd`,
+`Scenes/ui/General_UI/Notification_Box.tscn`) is shown at a time, capped at
+`MAX_QUEUE_LENGTH` pending entries. Each box fades in, holds, then rises while fading out
+and frees itself, emitting `finished` so the handler can promote the next queued entry.
+Centring uses `get_viewport().get_visible_rect().size`, the `CanvasLayer` equivalent of
+the `get_viewport_rect().size` convention documented in
+[Section 4.1](#41-ui-positioning-and-viewport-space).
 
 ---
 
@@ -1676,6 +1691,10 @@ as JSON to `user://profile_<slot>.save`.
 before characters**, so that gear referenced by a character's `_held_items` already exists in the
 `ItemCollection` when the character is restored. `_deserialize_group_by_type` is used to force this
 order, and remaining saveable nodes are deserialized afterward.
+
+Both `Save(slot)` and `Load(slot)` return `bool` (`false` on a missing slot, an unopenable
+file, or unparsable JSON) so callers can report success or failure to the player via
+[`Notification_Handler`](#35-notification_handler-class_name-notificationhandler).
 
 What persists: per-character `_preset_path`, level, experience, attributes, and held-item IDs;
 per-item slot/rarity/attributes; plus resource and adventure state. On load, characters are
