@@ -23,15 +23,25 @@ Suggested order (dependencies noted inside each plan):
 1. `Plan_System_Buildout.md` — the coverage-gap catch-all spawned by `Plan_Blowout_Alignment.md`
    and the completed kit rework: content and mechanisms those two plans found too
    thinly populated or promised but never built (Channel 3's threshold-crossing and
-   cascade-on-cascade triggers, Refutation's undocumented-but-missing damage, the
-   orphaned Weight of Law zone). Not yet started.
+   Refutation's undocumented-but-missing damage, the orphaned Weight of Law zone). Not
+   yet started. Its Channel 3 entries moved to `Plan_Channel_3_Unification.md`.
 
-2. `Plan_Relic_Implementation.md` — the Relic item type's code mechanism, spawned by
+2. `Plan_Channel_3_Unification.md` — makes `CascadeResolver` the only producer of an
+   Echo, so Channel 3 contributions stack on one cascade instead of running as isolated
+   repeat loops. Ports Cut the Cloth, the Sorcerer's charges, The Long Furrow, Borrowed
+   Time, Comorbidity and Black Thread onto a shared enabler/extender contribution model,
+   brings zone Echoes and forced debuff ticks inside the fan-out and depth bounds, adds
+   the Echo strength channel The Sealed Docket's drawback needs, and owns the cascade
+   trigger vocabulary — including the cascade-on-cascade and threshold-crossing shapes
+   `Concept_Document.md` 1.1.3 names but nothing implements. Blocks nothing else; not
+   yet started.
+
+3. `Plan_Relic_Implementation.md` — the Relic item type's code mechanism, spawned by
    `Plan_System_Buildout.md`'s coverage gap: splitting item type from rarity, carrying
    a Relic's effect, dispatching it alongside the wearer's trait, and implementing
    `Relic_Design.md`'s 24-entry catalog. Blocks nothing else; not yet started.
 
-3. `Plan_Story_Mode_Systems.md` — the systems that deliver story mode (story
+4. `Plan_Story_Mode_Systems.md` — the systems that deliver story mode (story
    state handler, dialogue overlay, flag-driven hub variants, act gating,
    scripted battle openings, guest champions). The state handler and dialogue
    overlay are independent and can start any time; scripted openings apply
