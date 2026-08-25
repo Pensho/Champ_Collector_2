@@ -22,6 +22,14 @@ const WARLORD = preload("res://Data/Character_Player_Variants/Warlord.tres")
 const ALCHEMIST = preload("res://Data/Character_Player_Variants/Alchemist.tres")
 const ARCHITECT = preload("res://Data/Character_Player_Variants/Architect.tres")
 
+# TEMPORARY test scaffolding — delete alongside the seeding loop in Init().
+const TEST_RELIC_KEYS: Array[String] = [
+	# "The_Long_Furrow",
+	# "Draught_Fed_Edge",
+	# "Threefold_Bite",
+	# "Lantern_of_the_Standing_Ward",
+]
+
 var _current_scene = null
 var _character_collection: CharacterCollection
 var _item_collection: ItemCollection
@@ -86,6 +94,13 @@ func Init() -> void:
 			reagent_keys.append(reagent_key)
 	for i in 3:
 		_reagent_collection.Add(reagent_keys[randi_range(0, reagent_keys.size() - 1)])
+
+	# TEMPORARY test scaffolding — delete this block and TEST_RELIC_KEYS when done.
+	for relic_key: String in TEST_RELIC_KEYS:
+		var relic_preset: EquipmentPreset = EquipmentPresetRegistry.GetRelic(relic_key).duplicate(true)
+		relic_preset._rarity = Types.Rarity.Legendary
+		relic_preset.Setup()
+		_item_collection.AddPreset(relic_preset)
 
 	context_container._scene = "uid://c6c1o3oabj0pf"
 	change_scene(context_container)

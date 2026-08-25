@@ -14,6 +14,8 @@ enum Winner {
 
 const NO_ATTACKER: int = -1
 
+const DEBUG_PRINT_ECHO_DAMAGE: bool = false
+
 ## Combined_Modifier bucket key for the resolver-owned reagent/graft damage bonus (Concept
 ## Document 1.1.3): kept as one mechanic since _damage_dealt_bonus already sums those
 ## contributions before this bucket sees them — see _ResolveDamage.
@@ -36,6 +38,8 @@ var _zone_resolver: ZoneResolver
 var _status_resolver: StatusEffectResolver
 var _cascade_resolver: CascadeResolver
 var _current_cascade_depth: int = 0
+var _echoes_this_action: int = 0
+var _echo_scope_depth: int = 0
 
 var _skill_use_counts: Dictionary[String, int] = {}
 
@@ -359,6 +363,22 @@ func EmitBurstInstance(
 	result.cascade_trigger = p_trigger
 	_Emit(result)
 
+func BeginEchoInstance(
+		p_mechanic_key: StringName,
+		p_subject_ID: int,
+		p_trigger: Types.Cascade_Trigger) -> void:
+	_echoes_this_action += 1
+	_echo_scope_depth += 1
+	EmitBurstInstance(p_mechanic_key, p_subject_ID, p_trigger)
+
+func EndEchoInstance() -> void:
+	_echo_scope_depth = maxi(_echo_scope_depth - 1, 0)
+
+func IsResolvingEcho() -> bool:
+	return _echo_scope_depth > 0
+
+func EchoOrdinalThisAction() -> int:
+	return _echoes_this_action
 
 ## Sets health directly (debug tools), running the same clamp and death handling as
 ## combat damage.
@@ -386,6 +406,7 @@ func ResolveReagent(
 	if(not reagent.binary):
 		for reagent_trait: CharacterTrait in Skills.ActiveHooks(consumer, Types.Combat_Event.Reagent_Consumed):
 			potency += reagent_trait.OnReagentConsumed(p_consumer_ID, reagent, self)
+		potency += Skills.TeamReagentPotencyBonus(_sides, _characters, p_consumer_ID, self)
 		potency += _status_resolver.ConsumeCatalystIfPresent(p_consumer_ID)
 	_ResolveReagentEffect(p_consumer_ID, p_target_ID, reagent, potency)
 	Skills.TriggerAllyReagentConsumedHook(_sides, _characters, p_consumer_ID, reagent, self)
@@ -545,6 +566,7 @@ func _EndBatch() -> Array[CombatResult]:
 	_batch_depth -= 1
 	if(_batch_depth == 0):
 		_cascade_resolver.ResetForNextAction()
+		_echoes_this_action = 0
 	return _batch
 
 
@@ -870,4 +892,19 @@ func _EmitDamageResult(
 	result.amount = p_amount
 	result.critical = p_critical
 	result.combined_damage_modifier = p_combined_damage_modifier
+	if(DEBUG_PRINT_ECHO_DAMAGE):
+		_DebugPrintEchoDamage(p_source_ID, p_target_ID, p_amount, p_critical, p_combined_damage_modifier)
 	_Emit(result)
+
+## TEMPORARY debug scaffolding — delete with DEBUG_PRINT_ECHO_DAMAGE and its call above.
+func _DebugPrintEchoDamage(
+		p_source_ID: int, p_target_ID: int, p_amount: int, p_critical: bool,
+		p_combined_damage_modifier: CombinedDamageModifier) -> void:
+	var label: String = ("Echo %d" % _echoes_this_action if IsResolvingEcho() else "base hit")
+	var buckets: Dictionary[StringName, float] = p_combined_damage_modifier.Buckets()
+	var bucket_text: String = ""
+	for key: StringName in buckets:
+		bucket_text += " %s=%+.2f" % [key, buckets[key]]
+	print("[damage] %-8s src=%d dst=%d amount=%d%s  total=x%.3f |%s" % [
+			label, p_source_ID, p_target_ID, p_amount, " CRIT" if p_critical else "",
+			p_combined_damage_modifier.Product(), bucket_text])

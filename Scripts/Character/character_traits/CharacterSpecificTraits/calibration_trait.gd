@@ -53,7 +53,7 @@ func RefreshVisuals(p_character_repr: CharacterRepresentation) -> void:
 	p_character_repr.SetTraitElement(_trait_texture, 0)
 	p_character_repr.SetTraitElementToolTip(_title, body_with_charges, 0)
 
-func OnZoneUsed(_p_owner_ID: int, _p_user_ID: int, _p_resolver: BattleResolver) -> void:
+func OnZoneUsed(_p_owner_ID: int, _p_user_ID: int, _p_zone_ID: int, _p_resolver: BattleResolver) -> void:
 	_charges = min(_charges + 1, MAX_CHARGES)
 
 func OnSkillCast(

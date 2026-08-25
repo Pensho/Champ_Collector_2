@@ -97,6 +97,7 @@ func TriggerZones(p_active_character_ID: int) -> Array[CombatResult]:
 				_ResolveZoneEffect(zone, ID, character_ID)
 			zone._affected_since_entry.append(character_ID)
 			zone._charges -= 1
+			Skills.TriggerZoneUsedHook(characters, zone._owner_ID, character_ID, ID, _resolver)
 			var triggered: CombatResult = CombatResult.new(CombatResult.Kind.Zone_Triggered)
 			triggered.zone_ID = ID
 			triggered.target_ID = character_ID
@@ -149,7 +150,14 @@ func SectionWithMostAllies(p_owner_ID: int) -> int:
 		return available[_resolver.GetRandom().randi_range(0, available.size() - 1)]
 	return best_section
 
-func _ResolveZoneEffect(p_zone: Zone, p_zone_ID: int, p_character_ID: int) -> void:
+func ResolveZoneEffectEcho(p_zone_ID: int, p_character_ID: int, p_strength_multiplier: float) -> void:
+	var affected: Character = _resolver._characters.get(p_character_ID)
+	if(not _zones.has(p_zone_ID) or null == affected or affected._current_health <= 0):
+		return
+	_ResolveZoneEffect(_zones[p_zone_ID], p_zone_ID, p_character_ID, p_strength_multiplier)
+
+func _ResolveZoneEffect(
+		p_zone: Zone, p_zone_ID: int, p_character_ID: int, p_strength_multiplier: float = 1.0) -> void:
 	var affected: Character = _resolver._characters[p_character_ID]
 	var effect_multiplier: float = Skills.IncomingZoneEffectMultiplier(
 			affected, p_character_ID, p_zone._owner_ID, _resolver._sides)
@@ -158,9 +166,10 @@ func _ResolveZoneEffect(p_zone: Zone, p_zone_ID: int, p_character_ID: int) -> vo
 	context.is_zone_trigger = true
 	context.zone_target = p_zone._target
 	context.zone_ID = p_zone_ID
-	context.zone_magnitude = Skills.ZoneMagnitude(1.0, p_zone._owner_knowledge) * effect_multiplier
+	context.zone_magnitude = (Skills.ZoneMagnitude(1.0, p_zone._owner_knowledge)
+			* effect_multiplier * p_strength_multiplier)
 	context.zone_source_name = p_zone._source_name
-	context.zone_damage_multiplier = p_zone._damage_multiplier
+	context.zone_damage_multiplier = p_zone._damage_multiplier * p_strength_multiplier
 	for effect in p_zone._on_trigger:
 		if(context.ConditionMet(effect)):
 			effect.Resolve(context)

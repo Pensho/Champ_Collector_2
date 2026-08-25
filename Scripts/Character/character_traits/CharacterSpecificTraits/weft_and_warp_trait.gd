@@ -153,7 +153,7 @@ func _ResolveExtraCutTheClothInstances(
 	if(null == cast_skill):
 		return
 	for i in p_extra_instances:
-		p_resolver.EmitBurstInstance(&"Cut the Cloth", p_owner_ID, Types.Cascade_Trigger.Skill_Resolved)
+		p_resolver.BeginEchoInstance(&"Cut the Cloth", p_owner_ID, Types.Cascade_Trigger.Skill_Resolved)
 		var trait_result := TraitSkillResult.new()
 		trait_result._damage_multiplier = 1.0 + _self_bonus
 		var context := SkillCastContext.new(
@@ -161,6 +161,7 @@ func _ResolveExtraCutTheClothInstances(
 		for effect in cast_skill.effects:
 			if(effect is DamageEffect and context.ConditionMet(effect)):
 				effect.Resolve(context)
+		p_resolver.EndEchoInstance()
 
 func _EventCasterID(p_event: CascadeEvent) -> int:
 	return p_event.origin_ID if -1 != p_event.origin_ID else p_event.subject_ID

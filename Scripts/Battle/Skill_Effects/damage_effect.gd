@@ -38,8 +38,14 @@ func Resolve(p_context: SkillCastContext) -> void:
 		combined_damage_modifier.Contribute(_SkillKey(p_context), _SkillCountBonus(p_context, target_ID))
 		_ContributeDebuffFactors(p_context, target_ID, combined_damage_modifier)
 		p_context.resolver.ResolveEffectDamage(p_context.caster_ID, target_ID, p_context.caster_attributes,
-				damage_scaling, defence_ignore_multiple, combined_damage_modifier, allow_critical,
+				damage_scaling, defence_ignore_multiple, combined_damage_modifier, _AllowCritical(p_context),
 				defence_ignore_factor)
+
+func _AllowCritical(p_context: SkillCastContext) -> bool:
+	if(not allow_critical or p_context.is_zone_trigger or null == p_context.skill):
+		return allow_critical
+	var caster: Character = p_context.resolver.GetCharacters().get(p_context.caster_ID)
+	return not Skills.OwnCriticalHitSuppressed(caster, p_context.caster_ID, p_context.skill.name)
 
 func _RampMultiplier(p_context: SkillCastContext) -> float:
 	var per_use: float = bonus_per.get(Types.Trait_Count_Source.Uses_This_Battle, 0.0)

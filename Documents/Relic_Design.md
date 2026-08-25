@@ -51,7 +51,7 @@ The first damaging skill cast after consuming a reagent deals +25 / 30 / 35 / 45
 ### Threefold Bite
 
 *Audience: Herald of the Loom, Plague Doctor, Sorcerer.* **Weapon.** [Channel 3 — Cascade]  hook
-`OnCascadeInstanceResolved`
+`GetOutgoingDamageBonus`
 
 Every third Echo a single action produces deals +60 / 80 / 100 / 130 / 170% damage.
 
@@ -77,10 +77,10 @@ deals +30 / 35 / 40 / 50 / 65% damage.
 ### Lantern of the Standing Ward
 
 *Audience: Chronophage, Architect, Plague Doctor, Tidal Corsair.* **Off-Hand.** [Channel 3 — Cascade]  hook
-`OnZoneUsed`
+`OnZoneConstructed`, `OnZoneUsed`
 
-The first charge each zone the wearer places spends Echoes once, at
-40 / 45 / 50 / 60 / 75% strength. That zone's remaining charges resolve once.
+Each zone the wearer places Echoes once for the first charge spent, at
+40 / 45 / 50 / 60 / 75% strength.
 
 **Compositional drawback:** every reagent consumed by anyone on the wearer's team has half effect.
 
@@ -365,12 +365,12 @@ What the upside reads. Two entries sharing a surface is a duplication to justify
 
 | Hook | Count | Entries |
 |---|---|---|
-| `GetOutgoingDamageBonus` | 8 | Kiln Brand, The Closed Wound, The Planted Heel, The Answering Boss, The Sealed Docket, Quorum Bell, Mercy Stitch, Understudy's Coat |
+| `GetOutgoingDamageBonus` | 9 | Kiln Brand, The Closed Wound, The Planted Heel, The Answering Boss, The Sealed Docket, Quorum Bell, Mercy Stitch, Understudy's Coat, Threefold Bite |
 | `OnBuffGained` | 5 | The Answering Boss, The Unguarded Glass, The Even Tread, Sunderplate Nail, Prism of Small Favors |
 | `OnSkillCast` | 3 | The Long Furrow, Kiln Brand, Quorum Bell |
 | `OnSkillEffectsResolved` | 1 | The Long Furrow |
 | `OnReagentConsumed` | 1 | Draught-Fed Edge |
-| `OnCascadeInstanceResolved` | 1 | Threefold Bite |
+| `OnCascadeInstanceResolved` | 0 | — |
 | `OnDamageTaken` | 2 | The Planted Heel, Mercy Stitch |
 | `OnZoneUsed` | 1 | Lantern of the Standing Ward |
 | `OnCriticalHit` | 2 | The Unguarded Glass, Ceded Ground |
@@ -393,7 +393,7 @@ What the upside reads. Two entries sharing a surface is a duplication to justify
 | `OnDefend` | 0 | — |
 | `OnAllyDamageTaken` | 1 | Understudy's Coat |
 | `OnEnemyTurnBarReduced` | 0 | — |
-| `OnZoneConstructed` | 0 | — |
+| `OnZoneConstructed` | 1 | Lantern of the Standing Ward |
 | `OnAffectedByZone` | 0 | — |
 | `GetZoneChargeBonus` | 0 | — |
 

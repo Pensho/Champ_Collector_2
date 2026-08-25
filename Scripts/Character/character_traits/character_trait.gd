@@ -94,8 +94,14 @@ func OnReagentConsumed(
 		_p_consumer_ID: int, _p_reagent: ReagentData, _p_resolver: BattleResolver) -> float:
 	return 0.0
 
+func GetTeamReagentPotencyBonus(_p_owner_ID: int, _p_resolver: BattleResolver) -> float:
+	return 0.0
+
 func OnCriticalHit(_p_owner_ID: int, _p_target_ID: int, _p_resolver: BattleResolver) -> void:
 	pass
+
+func SuppressesOwnCriticalHit(_p_owner_ID: int, _p_skill_name: String) -> bool:
+	return false
 
 func OnDamageDealt(
 		_p_owner_ID: int, _p_target_ID: int, _p_amount: int, _p_resolver: BattleResolver) -> void:
@@ -152,7 +158,7 @@ func OnEnemyTurnBarReduced(
 		_p_owner_ID: int, _p_reduction: float, _p_resolver: BattleResolver) -> float:
 	return 0.0
 
-func OnZoneUsed(_p_owner_ID: int, _p_user_ID: int, _p_resolver: BattleResolver) -> void:
+func OnZoneUsed(_p_owner_ID: int, _p_user_ID: int, _p_zone_ID: int, _p_resolver: BattleResolver) -> void:
 	pass
 
 func OnAllyTurnBarIncreased(

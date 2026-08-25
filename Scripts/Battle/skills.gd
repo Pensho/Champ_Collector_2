@@ -28,6 +28,29 @@ static func OutgoingDamageBonus(
 		total += source.GetOutgoingDamageBonus(p_owner_ID, p_target_ID, p_resolver)
 	return total
 
+static func OwnCriticalHitSuppressed(
+		p_character: Character, p_owner_ID: int, p_skill_name: String) -> bool:
+	if(null == p_character):
+		return false
+	for source: CharacterTrait in p_character.HookSources():
+		if(source.SuppressesOwnCriticalHit(p_owner_ID, p_skill_name)):
+			return true
+	return false
+
+static func TeamReagentPotencyBonus(
+		p_sides: CombatSides,
+		p_characters: Dictionary[int, Character],
+		p_consumer_ID: int,
+		p_resolver: BattleResolver) -> float:
+	var bonus: float = 0.0
+	var team: CombatTeam = p_sides.AlliesOf(p_consumer_ID)
+	if(null == team):
+		return bonus
+	for ally_ID in team.AliveMembers(p_characters):
+		for source: CharacterTrait in p_characters[ally_ID].HookSources():
+			bonus += source.GetTeamReagentPotencyBonus(ally_ID, p_resolver)
+	return bonus
+
 static func OutgoingDefenceIgnoreFactor(
 		p_character: Character, p_owner_ID: int, p_target_ID: int, p_resolver: BattleResolver) -> float:
 	var factor: float = 1.0
@@ -188,12 +211,13 @@ static func TriggerZoneUsedHook(
 		p_characters: Dictionary[int, Character],
 		p_zone_owner_ID: int,
 		p_user_ID: int,
+		p_zone_ID: int,
 		p_resolver: BattleResolver) -> void:
 	var zone_owner: Character = p_characters.get(p_zone_owner_ID)
 	if(null != zone_owner and zone_owner._current_health <= 0):
 		return
 	for active_trait: CharacterTrait in ActiveHooks(zone_owner, Types.Combat_Event.Zone_Used):
-		active_trait.OnZoneUsed(p_zone_owner_ID, p_user_ID, p_resolver)
+		active_trait.OnZoneUsed(p_zone_owner_ID, p_user_ID, p_zone_ID, p_resolver)
 
 static func TriggerZoneConstructedHook(
 		p_characters: Dictionary[int, Character],
@@ -273,7 +297,8 @@ static func ApplyBarrierZone(
 		p_zone_owner_ID: int,
 		p_zone_ID: int,
 		p_owner_knowledge: int,
-		p_character_ID: int) -> void:
+		p_character_ID: int,
+		p_magnitude_multiplier: float = 1.0) -> void:
 	var characters: Dictionary[int, Character] = p_resolver.GetCharacters()
 	var zone_owner: Character = characters.get(p_zone_owner_ID)
 	var charge_bonus: float = 0.0
@@ -281,9 +306,9 @@ static func ApplyBarrierZone(
 		for source: CharacterTrait in zone_owner.HookSources():
 			charge_bonus += source.GetZoneChargeBonus(p_zone_ID)
 	var barrier: StatusEffects.Buff = MakeBarrierZoneBuff(p_owner_knowledge, charge_bonus)
+	barrier.value *= p_magnitude_multiplier
 	barrier.value *= TeamBarrierMultiplier(p_resolver.GetSides(), characters, p_character_ID)
 	p_resolver.GetStatusResolver().ApplyBuff(p_character_ID, barrier)
-	TriggerZoneUsedHook(characters, p_zone_owner_ID, p_character_ID, p_resolver)
 
 static func CorrectZoneTarget(
 		p_zone_owner_ID: int,

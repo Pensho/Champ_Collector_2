@@ -1621,7 +1621,52 @@ skill carries no cooldown, for whichever character casts it (Quorum Bell). `Deni
 every ally but the trait's own owner (The Even Tread). `GetTeamBarrierMultiplier() -> float`
 (default `1.0`, product) is read by `BarrierEffect.Resolve` and `Skills.ApplyBarrierZone` against
 the Barrier's target, covering both the skill-cast and zone paths a Barrier can be granted through
-(The Frayed Hour).
+(The Frayed Hour). `CharacterTrait.GetTeamReagentPotencyBonus(owner_ID, resolver) -> float`
+(default `0.0`, summed) follows the same shape: `Skills.TeamReagentPotencyBonus` walks the
+consumer's own side and is added into `BattleResolver.ResolveReagent`'s potency alongside the
+consumer's own `OnReagentConsumed` contribution, so a compositional drawback can tax any
+teammate's reagent, not only the wearer's own (Lantern of the Standing Ward).
+
+`CharacterTrait.SuppressesOwnCriticalHit(owner_ID, skill_name) -> bool` (default `false`,
+any-true) lets a trait deny a critical hit for one named skill of its own owner's, read by
+`DamageEffect._AllowCritical` alongside `allow_critical`'s own `.tres` export (The Long Furrow's
+drawback on Rending Charge) — the catalog's one hook keyed to a skill name rather than a mechanic.
+
+**What counts as an Echo.** An Echo resolves through three paths: `CascadeResolver._ResolveEvent`'s
+per-instance loop, and two trait-local repeat loops that deliberately bypass the cascade channel —
+`WeftAndWarpTrait`'s Cut the Cloth Tension repeats (kept out of it so they cannot feed the Herald's
+own Golden Thread) and `StatusEffectResolver`'s Borrowed Time repeat. All three call
+`BattleResolver.BeginEchoInstance(mechanic_key, subject_ID, trigger)` and `EndEchoInstance()` around
+the effects they resolve; `BeginEchoInstance` increments the action's Echo ordinal, opens the Echo
+scope, and emits the `EmitBurstInstance` marker the battle view escalates burst text from.
+`IsResolvingEcho() -> bool` and `EchoOrdinalThisAction() -> int` are the single answer to "is this
+damage an Echo, and which one of this action" — the pair Threefold Bite reads. The ordinal resets
+with `CascadeResolver.ResetForNextAction()` at batch depth 0.
+
+`_current_cascade_depth` remains separate and narrower: it stamps `CombatResult.cascade_depth` and is
+set only by the cascade channel, so it answers cascade *depth*, not Echo identity. A hook asking
+whether it is looking at an Echo must use `IsResolvingEcho()`, since the trait-local loops leave
+`_current_cascade_depth` at 0.
+
+**Bounds gap.** `CascadeResolver`'s depth and fan-out bounds (Concept_Document.md 1.1.4) apply only
+to its own path. The two trait-local loops resolve their instances outside that accounting, so
+neither is capped by `MAX_CASCADE_INSTANCES_PER_ACTION` nor stamped with a depth.
+
+`Types.Combat_Event.Zone_Used`/`CharacterTrait.OnZoneUsed(owner_ID, user_ID, zone_ID, resolver)`
+fires from `ZoneResolver.TriggerZones` whenever any zone spends a charge, for every zone type —
+not only `Skills.ApplyBarrierZone`, which no longer fires it itself. A zone ID is a turn-bar
+section, reused once the zone standing in it clears, so a trait keying per-zone state off one
+registers it on `OnZoneConstructed` rather than on first use: re-registration is what separates a
+later zone in that section from the one before it (Lantern of the Standing Ward).
+
+`ZoneResolver.ResolveZoneEffectEcho(zone_ID, character_ID, strength_multiplier)` re-resolves a
+zone's own `on_trigger` effects against one character at a fraction of their normal strength — the
+zone-side counterpart to a skill repeat's Echo, and the one entry point a trait uses rather than
+assembling a zone `SkillCastContext` itself. `_ResolveZoneEffect`'s `p_strength_multiplier` scales
+both `zone_magnitude` (what every status and turn-bar zone effect reads) and
+`zone_damage_multiplier` (what `DamageEffect` and `BarrierZoneEffect` read), since a scaled repeat
+owes the same fraction whatever kind of effect the zone carries. `Skills.ApplyBarrierZone`'s
+`p_magnitude_multiplier` (default `1.0`) is how the Barrier arm receives it.
 
 `CharacterTrait.BlocksIncomingDebuffType(debuff_type) -> bool` (default `false`, any-true) is
 checked against the target in `StatusEffectResolver.ApplyDebuff`/`CastDebuff` alongside the existing

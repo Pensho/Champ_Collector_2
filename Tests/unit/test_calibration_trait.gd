@@ -45,13 +45,13 @@ func test_start_of_battle_resets_charges() -> void:
 
 func test_zone_used_grants_one_charge() -> void:
 	_InitTrait(Types.Rarity.Epic)
-	_trait.OnZoneUsed(0, 1, _resolver)
+	_trait.OnZoneUsed(0, 1, 0, _resolver)
 	assert_eq(_trait._charges, 1)
 
 func test_zone_used_capped_at_max() -> void:
 	_InitTrait(Types.Rarity.Epic)
 	for i in CalibrationTrait.MAX_CHARGES + 3:
-		_trait.OnZoneUsed(0, 1, _resolver)
+		_trait.OnZoneUsed(0, 1, 0, _resolver)
 	assert_eq(_trait._charges, CalibrationTrait.MAX_CHARGES,
 		"Charges must not exceed MAX_CHARGES from zone use either")
 

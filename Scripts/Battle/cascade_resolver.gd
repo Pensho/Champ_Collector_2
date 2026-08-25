@@ -87,7 +87,6 @@ func Drain() -> void:
 	while(not _pending.is_empty()):
 		_ResolveEvent(_pending.pop_front())
 
-
 ## Clears the per-originating-action dedup set and instance counter, once the batch
 ## that started at BattleResolver._batch_depth 0 has fully drained.
 func ResetForNextAction() -> void:
@@ -113,9 +112,10 @@ func _ResolveEvent(p_event: CascadeEvent) -> void:
 			var saved_depth: int = _active_depth
 			_active_depth = p_event.depth
 			_resolver._current_cascade_depth = p_event.depth
-			_EmitCascadeTriggered(listener.mechanic_key, p_event)
+			_resolver.BeginEchoInstance(listener.mechanic_key, p_event.subject_ID, p_event.trigger)
 			listener.callback.call(p_event)
 			_NotifyCascadeInstanceResolved(p_event)
+			_resolver.EndEchoInstance()
 			_resolver._current_cascade_depth = 0
 			_active_depth = saved_depth
 
@@ -132,6 +132,3 @@ func _NotifyCascadeInstanceResolved(p_event: CascadeEvent) -> void:
 				character, Types.Combat_Event.Cascade_Instance_Resolved):
 			active_trait.OnCascadeInstanceResolved(character_ID, p_event, _resolver)
 
-
-func _EmitCascadeTriggered(p_mechanic_key: StringName, p_event: CascadeEvent) -> void:
-	_resolver.EmitBurstInstance(p_mechanic_key, p_event.subject_ID, p_event.trigger)
