@@ -4,8 +4,10 @@
 [ext_resource type="Texture2D" uid="uid://2cqmliidmlr7" path="res://Assets/Champ_Collector/UI/Pre_Battle_Screen/Pre_Battle_2.png" id="2_etxva"]
 [ext_resource type="PackedScene" uid="uid://cr3osdcoith57" path="res://Scenes/ui/Save_Load_Menu/Profile_Data_Slot.tscn" id="3_0tvep"]
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="4_xt7wm"]
+[ext_resource type="Script" path="res://Scripts/UI/profile_details_panel.gd" id="5_details"]
+[ext_resource type="PackedScene" uid="uid://b7uy4gm5xk3q1" path="res://Scenes/ui/Save_Load_Menu/Confirm_Delete_Dialog.tscn" id="6_confirm"]
 
-[node name="ProfileMenu" type="Control" unique_id=1842347494 node_paths=PackedStringArray("_profiles")]
+[node name="ProfileMenu" type="Control" unique_id=1842347494 node_paths=PackedStringArray("_profiles", "_details_panel", "_button_save", "_button_load", "_button_delete")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -14,6 +16,10 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_7ldts")
 _profiles = [NodePath("TextureRect/HBoxContainer/VBoxContainer/ProfileDataSlot"), NodePath("TextureRect/HBoxContainer/VBoxContainer/ProfileDataSlot2"), NodePath("TextureRect/HBoxContainer/VBoxContainer/ProfileDataSlot3")]
+_details_panel = NodePath("TextureRect/HBoxContainer/ColorRect_Save_Details")
+_button_save = NodePath("HBoxContainer_Actions/Button_Save")
+_button_load = NodePath("HBoxContainer_Actions/Button_Load")
+_button_delete = NodePath("HBoxContainer_Actions/Button_Delete")
 
 [node name="TextureRect" type="TextureRect" parent="." unique_id=330437269]
 layout_mode = 0
@@ -44,10 +50,19 @@ size_flags_horizontal = 0
 [node name="ProfileDataSlot3" parent="TextureRect/HBoxContainer/VBoxContainer" unique_id=225632896 instance=ExtResource("3_0tvep")]
 layout_mode = 2
 
-[node name="ColorRect_Save_Details" type="ColorRect" parent="TextureRect/HBoxContainer" unique_id=1685422234]
+[node name="ColorRect_Save_Details" type="ColorRect" parent="TextureRect/HBoxContainer" unique_id=1685422234 node_paths=PackedStringArray("_empty_label", "_stats_container", "_highest_difficulty_label", "_highest_character_level_label", "_character_count_label", "_unique_characters_label", "_silver_label", "_supplies_label")]
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 color = Color(0, 0, 0, 0.5294118)
+script = ExtResource("5_details")
+_empty_label = NodePath("MarginContainer/Label_Empty")
+_stats_container = NodePath("MarginContainer/VBoxContainer_Stats")
+_highest_difficulty_label = NodePath("MarginContainer/VBoxContainer_Stats/HBoxContainer_Difficulty/Label_Value")
+_highest_character_level_label = NodePath("MarginContainer/VBoxContainer_Stats/HBoxContainer_HighestLevel/Label_Value")
+_character_count_label = NodePath("MarginContainer/VBoxContainer_Stats/HBoxContainer_CharacterCount/Label_Value")
+_unique_characters_label = NodePath("MarginContainer/VBoxContainer_Stats/HBoxContainer_UniqueCharacters/Label_Value")
+_silver_label = NodePath("MarginContainer/VBoxContainer_Stats/HBoxContainer_Silver/Label_Value")
+_supplies_label = NodePath("MarginContainer/VBoxContainer_Stats/HBoxContainer_Supplies/Label_Value")
 
 [node name="MarginContainer" type="MarginContainer" parent="TextureRect/HBoxContainer/ColorRect_Save_Details" unique_id=1178886661]
 layout_mode = 1
@@ -56,10 +71,117 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="Label_Empty" type="Label" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer"]
+layout_mode = 2
+theme = ExtResource("4_xt7wm")
+theme_override_font_sizes/font_size = 18
+text = "No save data"
+
+[node name="VBoxContainer_Stats" type="VBoxContainer" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="HBoxContainer_Difficulty" type="HBoxContainer" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats"]
+layout_mode = 2
+
+[node name="Label_Name" type="Label" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats/HBoxContainer_Difficulty"]
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+theme = ExtResource("4_xt7wm")
+theme_override_font_sizes/font_size = 18
+text = "Highest difficulty"
+
+[node name="Label_Value" type="Label" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats/HBoxContainer_Difficulty"]
+layout_mode = 2
+theme = ExtResource("4_xt7wm")
+theme_override_font_sizes/font_size = 18
+text = "—"
+
+[node name="HBoxContainer_HighestLevel" type="HBoxContainer" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats"]
+layout_mode = 2
+
+[node name="Label_Name" type="Label" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats/HBoxContainer_HighestLevel"]
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+theme = ExtResource("4_xt7wm")
+theme_override_font_sizes/font_size = 18
+text = "Highest champion"
+
+[node name="Label_Value" type="Label" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats/HBoxContainer_HighestLevel"]
+layout_mode = 2
+theme = ExtResource("4_xt7wm")
+theme_override_font_sizes/font_size = 18
+text = "—"
+
+[node name="HBoxContainer_CharacterCount" type="HBoxContainer" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats"]
+layout_mode = 2
+
+[node name="Label_Name" type="Label" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats/HBoxContainer_CharacterCount"]
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+theme = ExtResource("4_xt7wm")
+theme_override_font_sizes/font_size = 18
+text = "Champions"
+
+[node name="Label_Value" type="Label" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats/HBoxContainer_CharacterCount"]
+layout_mode = 2
+theme = ExtResource("4_xt7wm")
+theme_override_font_sizes/font_size = 18
+text = "—"
+
+[node name="HBoxContainer_UniqueCharacters" type="HBoxContainer" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats"]
+layout_mode = 2
+
+[node name="Label_Name" type="Label" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats/HBoxContainer_UniqueCharacters"]
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+theme = ExtResource("4_xt7wm")
+theme_override_font_sizes/font_size = 18
+text = "Unique champions"
+
+[node name="Label_Value" type="Label" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats/HBoxContainer_UniqueCharacters"]
+layout_mode = 2
+theme = ExtResource("4_xt7wm")
+theme_override_font_sizes/font_size = 18
+text = "—"
+
+[node name="HBoxContainer_Silver" type="HBoxContainer" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats"]
+layout_mode = 2
+
+[node name="Label_Name" type="Label" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats/HBoxContainer_Silver"]
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+theme = ExtResource("4_xt7wm")
+theme_override_font_sizes/font_size = 18
+text = "Silver"
+
+[node name="Label_Value" type="Label" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats/HBoxContainer_Silver"]
+layout_mode = 2
+theme = ExtResource("4_xt7wm")
+theme_override_font_sizes/font_size = 18
+text = "—"
+
+[node name="HBoxContainer_Supplies" type="HBoxContainer" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats"]
+layout_mode = 2
+
+[node name="Label_Name" type="Label" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats/HBoxContainer_Supplies"]
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+theme = ExtResource("4_xt7wm")
+theme_override_font_sizes/font_size = 18
+text = "Supplies"
+
+[node name="Label_Value" type="Label" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats/HBoxContainer_Supplies"]
+layout_mode = 2
+theme = ExtResource("4_xt7wm")
+theme_override_font_sizes/font_size = 18
+text = "—"
 
 [node name="Label_Header" type="Label" parent="TextureRect" unique_id=809790384]
 layout_mode = 0
@@ -73,9 +195,41 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 3
 theme_override_constants/shadow_offset_y = 3
 theme_override_constants/outline_size = 3
-text = "Load Profile"
+text = "Profiles"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="HBoxContainer_Actions" type="HBoxContainer" parent="." unique_id=1440139861]
+layout_mode = 0
+offset_left = 227.0
+offset_top = 620.0
+offset_right = 700.0
+offset_bottom = 650.0
+theme_override_constants/separation = 20
+
+[node name="Button_Save" type="Button" parent="HBoxContainer_Actions" unique_id=1440139862]
+layout_mode = 2
+disabled = true
+theme = ExtResource("4_xt7wm")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+text = "Save"
+
+[node name="Button_Load" type="Button" parent="HBoxContainer_Actions" unique_id=1440139863]
+layout_mode = 2
+disabled = true
+theme = ExtResource("4_xt7wm")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+text = "Load"
+
+[node name="Button_Delete" type="Button" parent="HBoxContainer_Actions" unique_id=1440139864]
+layout_mode = 2
+disabled = true
+theme = ExtResource("4_xt7wm")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+text = "Delete"
 
 [node name="Button_Back" type="Button" parent="." unique_id=379839095]
 layout_mode = 0
@@ -88,4 +242,11 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
 text = "Back"
 
+[node name="ConfirmDeleteDialog" parent="." unique_id=1440139865 instance=ExtResource("6_confirm")]
+layout_mode = 1
+visible = false
+
+[connection signal="button_up" from="HBoxContainer_Actions/Button_Save" to="." method="_on_save_button_up"]
+[connection signal="button_up" from="HBoxContainer_Actions/Button_Load" to="." method="_on_load_button_up"]
+[connection signal="button_up" from="HBoxContainer_Actions/Button_Delete" to="." method="_on_delete_button_up"]
 [connection signal="button_up" from="Button_Back" to="." method="_on_back_button_up"]

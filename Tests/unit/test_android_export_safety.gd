@@ -1,7 +1,9 @@
 extends GutTest
 
 # Static source scans guarding against Android packed-export bugs:
-# - DirAccess directory scans fail on packed exports.
+# - DirAccess directory scans (open + list_dir_begin/get_next) fail on packed
+#   exports. Single-path operations on a known absolute path (remove_absolute,
+#   make_dir_recursive_absolute, etc.) don't scan a directory and are unaffected.
 # - get_window().size returns physical OS-window pixels instead of logical
 #   viewport pixels, which spilled dialogs off-screen on Android.
 #
@@ -9,9 +11,9 @@ extends GutTest
 # Android build (run manually via `godot --headless -s ...`), so it is
 # excluded from both scans below.
 
-func test_no_diraccess_in_scripts() -> void:
-	var offenders: Array = _scan_for_string("res://Scripts/", "DirAccess.")
-	assert_eq(offenders.size(), 0, "DirAccess found in: " + str(offenders))
+func test_no_diraccess_scanning_in_scripts() -> void:
+	var offenders: Array = _scan_for_string("res://Scripts/", "DirAccess.open(")
+	assert_eq(offenders.size(), 0, "DirAccess directory scanning found in: " + str(offenders))
 
 func test_no_get_window_size_in_scripts() -> void:
 	var offenders: Array = _scan_for_string("res://Scripts/", "get_window().size")

@@ -124,3 +124,12 @@ func GetAllCharacters() -> Dictionary[int, Character]:
 
 func Size() -> int:
 	return _characters.size()
+
+func GetCollectedTypeCount() -> int:
+	return _collected_types.size()
+
+func GetHighestCharacterLevel() -> int:
+	var highest_level: int = 0
+	for character : Character in _characters.values():
+		highest_level = max(highest_level, character._level)
+	return highest_level
