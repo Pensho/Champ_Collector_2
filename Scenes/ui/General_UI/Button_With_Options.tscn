@@ -54,7 +54,7 @@ theme_override_styles/hover = SubResource("StyleBoxEmpty_e6x3c")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_vj1of")
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=1630449368]
-custom_minimum_size = Vector2(460, 260)
+custom_minimum_size = Vector2(460, 340)
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
@@ -102,7 +102,7 @@ layout_mode = 2
 theme = ExtResource("2_g4psy")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 2
-theme_override_font_sizes/normal_font_size = 20
+theme_override_font_sizes/normal_font_size = 17
 bbcode_enabled = true
 text = "This is my Description"
 fit_content = true
