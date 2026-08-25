@@ -169,7 +169,8 @@ func _ResolveZoneEffect(
 	context.zone_magnitude = (Skills.ZoneMagnitude(1.0, p_zone._owner_knowledge)
 			* effect_multiplier * p_strength_multiplier)
 	context.zone_source_name = p_zone._source_name
-	context.zone_damage_multiplier = p_zone._damage_multiplier * p_strength_multiplier
+	context.zone_damage_multiplier = p_zone._damage_multiplier
+	context.zone_strength_multiplier = p_strength_multiplier
 	for effect in p_zone._on_trigger:
 		if(context.ConditionMet(effect)):
 			effect.Resolve(context)

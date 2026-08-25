@@ -39,6 +39,15 @@ func test_next_damaging_skill_resolves_twice() -> void:
 	assert_eq(_damage_results(results, 3).size(), 2,
 			"A held Borrowed Time should resolve the next damaging skill's DamageEffect twice")
 
+func test_the_repeat_is_a_depth_1_cascade_instance() -> void:
+	_grant_borrowed_time(0, 0.5)
+	_roster[0]._skills.append(TestFactory.make_strike_skill())
+
+	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [3], 0)
+
+	var damage_results: Array[CombatResult] = _damage_results(results, 3)
+	assert_eq(damage_results[1].cascade_depth, 1, "The repeat is a depth-1 cascade instance")
+
 func test_the_buff_is_consumed_and_does_not_fire_on_a_later_cast() -> void:
 	_grant_borrowed_time(0, 0.5)
 	_roster[0]._skills.append(TestFactory.make_strike_skill())

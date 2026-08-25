@@ -268,3 +268,25 @@ func test_start_of_battle_clears_invested_charges() -> void:
 	assert_gt(_trait.GetZoneChargeBonus(0), 0.0, "Sanity check: the zone's investment was recorded")
 	_trait.StartOfBattle(0, _resolver)
 	assert_eq(_trait.GetZoneChargeBonus(0), 0.0)
+
+# --- Zone ID recycling (a turn-bar section index handed back out once the standing
+# zone clears; see ZoneResolver.AvailableZoneIDs) ---
+
+func test_a_zone_placed_at_a_recycled_ID_records_its_own_fresh_investment() -> void:
+	_InitTrait(Types.Rarity.Epic)
+	_character._trait = _trait
+	_trait.OnSkillCast(0, [], "Cornerstone", {}, _resolver)
+	var first_zone_effect: ZoneEffect = TestFactory.make_zone_effect(5, [BarrierZoneEffect.new()])
+	TestFactory.place_zone(_resolver, 0, 0, first_zone_effect, Types.Skill_Target.ZoneAlly)
+	assert_eq(_trait._charges_invested_per_zone.get(0, -1), 1,
+		"Sanity check: the first zone recorded its own investment")
+
+	_resolver.GetZoneResolver().ClearZone(0)
+	for i in CalibrationTrait.RAISE_THE_FRAME_CONSUME_CAP + 4:
+		_trait.OnSkillCast(0, [], "Cornerstone", {}, _resolver)
+	var second_zone_effect: ZoneEffect = TestFactory.make_zone_effect(5, [BarrierZoneEffect.new()])
+	TestFactory.place_zone(_resolver, 0, 0, second_zone_effect, Types.Skill_Target.ZoneAlly)
+
+	assert_eq(_trait._charges_invested_per_zone.get(0, -1), CalibrationTrait.RAISE_THE_FRAME_CONSUME_CAP,
+		"A later zone placed at the same recycled section ID must record its own fresh " +
+		"investment, not the previous zone's")

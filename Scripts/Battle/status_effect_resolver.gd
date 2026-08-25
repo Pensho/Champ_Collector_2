@@ -502,8 +502,6 @@ func _CascadeBorrowedTime(p_event: CascadeEvent) -> void:
 	var context := SkillCastContext.new(_resolver, holder_ID, p_event.target_IDs, cast_skill,
 			caster_attributes, 0, TraitSkillResult.new())
 	context.repeat_bonus = fraction - 1.0
-	# Structural pre-check rather than the old resolve-then-emit: the Echo scope has to be open
-	# before the effects resolve, and ConditionMet cannot be asked twice without re-rolling.
 	var carries_damage: bool = false
 	for effect in cast_skill.effects:
 		if(effect is DamageEffect):
@@ -511,11 +509,9 @@ func _CascadeBorrowedTime(p_event: CascadeEvent) -> void:
 			break
 	if(not carries_damage):
 		return
-	_resolver.BeginEchoInstance(&"Borrowed Time", holder_ID, Types.Cascade_Trigger.Skill_Resolved)
 	for effect in cast_skill.effects:
 		if(effect is DamageEffect and context.ConditionMet(effect)):
 			effect.Resolve(context)
-	_resolver.EndEchoInstance()
 
 
 func ForceExtraDebuffTick(p_target_ID: int) -> void:

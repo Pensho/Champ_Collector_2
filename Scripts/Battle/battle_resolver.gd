@@ -37,9 +37,9 @@ var _random: RandomNumberGenerator = RandomNumberGenerator.new()
 var _zone_resolver: ZoneResolver
 var _status_resolver: StatusEffectResolver
 var _cascade_resolver: CascadeResolver
-var _current_cascade_depth: int = 0
 var _echoes_this_action: int = 0
-var _echo_scope_depth: int = 0
+var _echo_depth: int = 0
+var _echo_depth_stack: Array[int] = []
 
 var _skill_use_counts: Dictionary[String, int] = {}
 
@@ -366,19 +366,27 @@ func EmitBurstInstance(
 func BeginEchoInstance(
 		p_mechanic_key: StringName,
 		p_subject_ID: int,
-		p_trigger: Types.Cascade_Trigger) -> void:
+		p_trigger: Types.Cascade_Trigger,
+		p_depth: int = 0) -> bool:
+	if(_echoes_this_action >= CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION):
+		return false
 	_echoes_this_action += 1
-	_echo_scope_depth += 1
+	_echo_depth_stack.append(_echo_depth)
+	_echo_depth = p_depth if 0 != p_depth else _echo_depth + 1
 	EmitBurstInstance(p_mechanic_key, p_subject_ID, p_trigger)
+	return true
 
 func EndEchoInstance() -> void:
-	_echo_scope_depth = maxi(_echo_scope_depth - 1, 0)
+	_echo_depth = _echo_depth_stack.pop_back() if not _echo_depth_stack.is_empty() else 0
 
 func IsResolvingEcho() -> bool:
-	return _echo_scope_depth > 0
+	return _echo_depth > 0
 
 func EchoOrdinalThisAction() -> int:
 	return _echoes_this_action
+
+func CurrentEchoDepth() -> int:
+	return _echo_depth
 
 ## Sets health directly (debug tools), running the same clamp and death handling as
 ## combat damage.
@@ -567,11 +575,13 @@ func _EndBatch() -> Array[CombatResult]:
 	if(_batch_depth == 0):
 		_cascade_resolver.ResetForNextAction()
 		_echoes_this_action = 0
+		_echo_depth = 0
+		_echo_depth_stack.clear()
 	return _batch
 
 
 func _Emit(p_result: CombatResult) -> void:
-	p_result.cascade_depth = _current_cascade_depth
+	p_result.cascade_depth = _echo_depth
 	_batch.append(p_result)
 	result_produced.emit(p_result)
 

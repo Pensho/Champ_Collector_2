@@ -238,6 +238,22 @@ func test_instance_modifier_receives_the_matched_listeners_mechanic_key() -> voi
 	assert_eq(run_count[0], 2,
 		"A modifier scoped to the matched listener's own mechanic_key should apply to it")
 
+func test_a_cascade_posted_from_inside_a_trait_local_echo_is_stamped_depth_2() -> void:
+	assert_true(_resolver.BeginEchoInstance(&"FakeTraitLocalRepeat", 0, Types.Cascade_Trigger.Skill_Resolved),
+		"Sanity check: the trait-local Echo should open")
+	var event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Status_Expired)
+	event.subject_ID = 0
+	_cascade.Post(event)
+	_resolver.EndEchoInstance()
+
+	assert_eq(event.depth, 2,
+		"A trait-local repeat resolves at depth 1, so a cascade it posts must be stamped depth 2")
+
+func test_begin_echo_instance_refuses_once_the_fan_out_cap_is_spent() -> void:
+	_resolver._echoes_this_action = CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION
+	assert_false(_resolver.BeginEchoInstance(&"FakeTraitLocalRepeat", 0, Types.Cascade_Trigger.Skill_Resolved),
+		"BeginEchoInstance must refuse once the shared per-action Echo budget is spent")
+
 func test_cascade_instance_resolved_notifies_every_living_characters_trait() -> void:
 	for id in _roster.keys():
 		_roster[id]._trait = FakeCascadeInstanceListenerTrait.new()

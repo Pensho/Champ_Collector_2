@@ -355,6 +355,19 @@ func test_cut_the_cloth_burst_marker_immediately_precedes_its_repeat_damage() ->
 		assert_eq(next_target_result.kind, CombatResult.Kind.Damage,
 			"The result immediately after a Cut the Cloth burst marker must be that repeat's damage")
 
+func test_cut_the_cloth_repeats_are_capped_by_the_shared_echo_budget() -> void:
+	var setup: Dictionary = _make_cut_the_cloth_setup()
+	var herald_trait: WeftAndWarpTrait = setup["trait"]
+	var resolver: BattleResolver = setup["resolver"]
+	herald_trait._tension = WeftAndWarpTrait.TENSION_MAX
+	resolver._echoes_this_action = CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION - 3
+
+	var results: Array[CombatResult] = resolver.ResolveSkill(0, [1], 0)
+
+	assert_eq(_damage_results_against(results, 1).size(), 1 + 3,
+		"Tension repeats must stop once the shared per-action Echo budget runs out, " +
+		"leaving the base cast plus only the instances the remaining budget allowed")
+
 func test_cut_the_cloth_at_zero_tension_emits_no_burst_marker() -> void:
 	var setup: Dictionary = _make_cut_the_cloth_setup()
 	var resolver: BattleResolver = setup["resolver"]

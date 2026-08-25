@@ -153,7 +153,8 @@ func _ResolveExtraCutTheClothInstances(
 	if(null == cast_skill):
 		return
 	for i in p_extra_instances:
-		p_resolver.BeginEchoInstance(&"Cut the Cloth", p_owner_ID, Types.Cascade_Trigger.Skill_Resolved)
+		if(not p_resolver.BeginEchoInstance(&"Cut the Cloth", p_owner_ID, Types.Cascade_Trigger.Skill_Resolved)):
+			break
 		var trait_result := TraitSkillResult.new()
 		trait_result._damage_multiplier = 1.0 + _self_bonus
 		var context := SkillCastContext.new(

@@ -4,10 +4,12 @@ class_name CascadeResolver extends RefCounted
 ## 1.1.3's cascade channel: effects that trigger off other effects. Trigger points call
 ## Post() and return immediately; Drain() runs the pending queue iteratively once the
 ## current resolution completes (BattleResolver._EndBatch, at batch depth 0), rather than
-## recursing on the call stack — this is the one place both termination bounds required by
-## 1.1.4 are enforced, instead of each effect being shaped safely by convention. Holds a
-## back-reference to its owning BattleResolver, matching StatusEffectResolver and
-## ZoneResolver.
+## recursing on the call stack. Concept_Document.md 1.1.4's two termination bounds are
+## enforced on every Echo path, not only this one: Post() refuses past MAX_CASCADE_DEPTH,
+## and BattleResolver.BeginEchoInstance — the single choke point this class and the
+## trait-local repeat loops that bypass it all call — refuses past
+## MAX_CASCADE_INSTANCES_PER_ACTION. Holds a back-reference to its owning BattleResolver,
+## matching StatusEffectResolver and ZoneResolver.
 
 const MAX_CASCADE_DEPTH: int = 4
 const MAX_CASCADE_INSTANCES_PER_ACTION: int = 16
@@ -37,10 +39,6 @@ var _pending: Array[CascadeEvent] = []
 # Keyed "mechanic_key:subject_ID" — a trigger source fires at most once per
 # originating action (Concept_Document.md 1.1.4), cleared at the action's end.
 var _fired_this_action: Dictionary[String, bool] = {}
-var _instances_this_action: int = 0
-# The depth of the instance currently resolving; 0 while nothing is. Post() stamps a
-# new event one level deeper than this.
-var _active_depth: int = 0
 
 
 func _init(p_resolver: BattleResolver) -> void:
@@ -77,7 +75,7 @@ func SubscribeInstanceModifier(p_callback: Callable) -> void:
 ## originating action) — callers never set it. A cascade past MAX_CASCADE_DEPTH is
 ## silently refused, per Concept_Document.md 1.1.4.
 func Post(p_event: CascadeEvent) -> void:
-	p_event.depth = _active_depth + 1
+	p_event.depth = _resolver.CurrentEchoDepth() + 1
 	if(p_event.depth > MAX_CASCADE_DEPTH):
 		return
 	_pending.append(p_event)
@@ -91,7 +89,6 @@ func Drain() -> void:
 ## that started at BattleResolver._batch_depth 0 has fully drained.
 func ResetForNextAction() -> void:
 	_fired_this_action.clear()
-	_instances_this_action = 0
 
 
 func _ResolveEvent(p_event: CascadeEvent) -> void:
@@ -105,19 +102,14 @@ func _ResolveEvent(p_event: CascadeEvent) -> void:
 		var extra_instances: int = 0
 		for modifier: Callable in _instance_modifiers:
 			extra_instances += int(modifier.call(p_event, listener.mechanic_key))
-		var allowed: int = maxi(mini(p_event.instance_count + extra_instances,
-				MAX_CASCADE_INSTANCES_PER_ACTION - _instances_this_action), 0)
-		for i in allowed:
-			_instances_this_action += 1
-			var saved_depth: int = _active_depth
-			_active_depth = p_event.depth
-			_resolver._current_cascade_depth = p_event.depth
-			_resolver.BeginEchoInstance(listener.mechanic_key, p_event.subject_ID, p_event.trigger)
+		var requested: int = maxi(p_event.instance_count + extra_instances, 0)
+		for i in requested:
+			if(not _resolver.BeginEchoInstance(
+					listener.mechanic_key, p_event.subject_ID, p_event.trigger, p_event.depth)):
+				break
 			listener.callback.call(p_event)
 			_NotifyCascadeInstanceResolved(p_event)
 			_resolver.EndEchoInstance()
-			_resolver._current_cascade_depth = 0
-			_active_depth = saved_depth
 
 
 ## Notifies every living character's trait that a real cascade instance (one loop

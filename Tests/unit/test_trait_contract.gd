@@ -1,15 +1,30 @@
 extends GutTest
 
-# Every character-specific trait and graft is instantiated at every rarity and every
-# hook declared on CharacterTrait is exercised once with an alive owner and once with a
-# dead owner, so a new trait is covered by construction instead of needing its own
+# Every character-specific trait, graft and Relic is instantiated at every rarity and
+# every hook declared on CharacterTrait is exercised once with an alive owner and once
+# with a dead owner, so a new trait is covered by construction instead of needing its own
 # bespoke test file. Also scans every script constant keyed by Types.Rarity and asserts
-# it is no worse at Legendary than at Uncommon.
+# it is no worse at Legendary than at Uncommon, and checks the ungated getter family for
+# purity (see UNGATED_GETTERS below).
 
 const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 
 const TRAIT_ROOT: String = "res://Scripts/Character/character_traits/CharacterSpecificTraits"
 const GRAFT_ROOT: String = "res://Scripts/Character/character_traits/Grafts"
+const RELIC_ROOT: String = "res://Scripts/Character/character_traits/Relics"
+
+# CharacterTrait's Get*/Blocks*/Denies*/Suppresses*/DebuffsCannotBeResisted family: none
+# may hold state. BrewReagentKey is excluded (RNG-driven by design).
+const UNGATED_GETTERS: Array[String] = [
+	"GetIncomingDebuffDurationBonus", "GetOutgoingDebuffDurationBonus", "DebuffsCannotBeResisted",
+	"GetIncomingSingleTargetRedirectChance", "GetTargetingPriorityMultiplier", "GetIncomingHealMultiplier",
+	"GetOutgoingRestorationMultiplier", "GetTeamReagentPotencyBonus", "SuppressesOwnCriticalHit",
+	"GetOutgoingDamageBonus", "GetBaseDefenceIgnoreRate", "GetBrewPotencyBonus", "BlocksForwardTurnBarBump",
+	"GetZoneChargeBonus", "GetCritChanceOverflowRate", "GetIncomingZoneEffectMultiplier", "GetAttributeDelta",
+	"GetAppliedStatusValue", "GetAppliedBuffValue", "GetConditionCount", "GetAppliedAttributeAmplification",
+	"GetOutgoingDefenceIgnoreFactor", "GetRewardMultiplier", "GetTeamCooldownlessDamagePenalty",
+	"DeniesAlliesCriticalHits", "GetTeamBarrierMultiplier", "BlocksIncomingDebuffType",
+]
 
 const RARITIES: Array[Types.Rarity] = [
 	Types.Rarity.Common,
@@ -77,6 +92,55 @@ func test_rarity_scaling_tables_are_never_worse_at_legendary_than_uncommon() -> 
 						[path, constant_name, legendary_value, uncommon_value])
 	assert_true(checked_any, "Sanity check: at least one rarity-scaling table should be found")
 
+func test_ungated_getters_are_pure_across_repeated_calls_with_identical_arguments() -> void:
+	var paths: Array[String] = _CollectScriptPaths()
+	for path in paths:
+		var script: GDScript = load(path)
+		var instance: CharacterTrait = script.new()
+		instance.Init(Types.Rarity.Legendary)
+		for getter_name in UNGATED_GETTERS:
+			var args: Array = _GetterArgs(getter_name, 0, 1)
+			var first: Variant = instance.callv(getter_name, args)
+			var second: Variant = instance.callv(getter_name, args)
+			assert_eq(first, second,
+					"%s.%s must be pure (read-only, stateless): identical arguments answered differently" %
+					[path, getter_name])
+
+func _GetterArgs(p_getter_name: String, p_owner_ID: int, p_other_ID: int) -> Array:
+	match p_getter_name:
+		"GetIncomingDebuffDurationBonus", "GetOutgoingDebuffDurationBonus", \
+				"GetIncomingSingleTargetRedirectChance", "GetIncomingHealMultiplier", \
+				"GetBaseDefenceIgnoreRate", "BlocksForwardTurnBarBump":
+			return [p_owner_ID]
+		"DebuffsCannotBeResisted":
+			return [p_owner_ID, p_other_ID]
+		"GetTargetingPriorityMultiplier", "GetBrewPotencyBonus", "GetCritChanceOverflowRate", \
+				"GetAppliedAttributeAmplification", "GetRewardMultiplier", \
+				"GetTeamCooldownlessDamagePenalty", "DeniesAlliesCriticalHits", "GetTeamBarrierMultiplier":
+			return []
+		"GetOutgoingRestorationMultiplier", "GetTeamReagentPotencyBonus":
+			return [p_owner_ID, _resolver]
+		"SuppressesOwnCriticalHit":
+			return [p_owner_ID, "Some Skill"]
+		"GetOutgoingDamageBonus", "GetOutgoingDefenceIgnoreFactor":
+			return [p_owner_ID, p_other_ID, _resolver]
+		"GetZoneChargeBonus":
+			return [0]
+		"GetIncomingZoneEffectMultiplier":
+			return [p_owner_ID, p_other_ID, _sides]
+		"GetAttributeDelta":
+			return [Types.Attribute.Health, 100]
+		"GetAppliedStatusValue":
+			return [p_owner_ID, p_other_ID, Types.Debuff_Type.Bleed, _resolver]
+		"GetAppliedBuffValue":
+			return [p_owner_ID, p_other_ID, Types.Buff_Type.Luck, _resolver]
+		"GetConditionCount":
+			return [p_owner_ID, p_other_ID, Types.Trait_Count_Source.Buffs_On_Caster, _resolver]
+		"BlocksIncomingDebuffType":
+			return [Types.Debuff_Type.Bleed]
+		_:
+			return []
+
 func _ExerciseHooks(p_instance: CharacterTrait, p_owner_ID: int, p_other_ID: int, p_path: String) -> void:
 	var caster_attributes: Dictionary[Types.Attribute, int] = _resolver.GetEffectiveAttributes(p_owner_ID)
 	var buff: StatusEffects.Buff = StatusEffects.Buff.new()
@@ -139,6 +203,7 @@ func _CollectScriptPaths() -> Array[String]:
 	var paths: Array[String] = []
 	_CollectGDScriptPaths(TRAIT_ROOT, paths)
 	_CollectGDScriptPaths(GRAFT_ROOT, paths)
+	_CollectGDScriptPaths(RELIC_ROOT, paths)
 	return paths
 
 func _CollectGDScriptPaths(p_dir_path: String, p_out: Array[String]) -> void:

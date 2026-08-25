@@ -1594,7 +1594,10 @@ trait's own rarity-scaled rate, the same "skill states that it scales, trait sta
 split as `Trait_Counter_On_Target`.
 Both getters are consulted from inside the effect loop (see
 [Section 7.4](#74-skill-resolution-battleresolverresolveskill)), not gated by `_execution_steps`,
-the same "always polled" shape as the rest of this getter family.
+the same "always polled" shape as the rest of this getter family — `CharacterTrait`'s `Get*`,
+`Blocks*`, `Denies*`, `Suppresses*` methods and `DebuffsCannotBeResisted`, all required to be pure
+(no state of their own; `Tests/unit/test_trait_contract.gd` asserts this for every shipped trait,
+graft and Relic).
 
 `CharacterTrait.GetAppliedAttributeAmplification() -> float` (default `0.0`) is a further
 unconditional getter in the same family, read once per applied status rather than per effect:
@@ -1636,21 +1639,22 @@ drawback on Rending Charge) — the catalog's one hook keyed to a skill name rat
 per-instance loop, and two trait-local repeat loops that deliberately bypass the cascade channel —
 `WeftAndWarpTrait`'s Cut the Cloth Tension repeats (kept out of it so they cannot feed the Herald's
 own Golden Thread) and `StatusEffectResolver`'s Borrowed Time repeat. All three call
-`BattleResolver.BeginEchoInstance(mechanic_key, subject_ID, trigger)` and `EndEchoInstance()` around
-the effects they resolve; `BeginEchoInstance` increments the action's Echo ordinal, opens the Echo
+`BattleResolver.BeginEchoInstance`/`EndEchoInstance` (signature below) around the effects they
+resolve; a successful `BeginEchoInstance` call increments the action's Echo ordinal, opens the Echo
 scope, and emits the `EmitBurstInstance` marker the battle view escalates burst text from.
 `IsResolvingEcho() -> bool` and `EchoOrdinalThisAction() -> int` are the single answer to "is this
 damage an Echo, and which one of this action" — the pair Threefold Bite reads. The ordinal resets
 with `CascadeResolver.ResetForNextAction()` at batch depth 0.
 
-`_current_cascade_depth` remains separate and narrower: it stamps `CombatResult.cascade_depth` and is
-set only by the cascade channel, so it answers cascade *depth*, not Echo identity. A hook asking
-whether it is looking at an Echo must use `IsResolvingEcho()`, since the trait-local loops leave
-`_current_cascade_depth` at 0.
-
-**Bounds gap.** `CascadeResolver`'s depth and fan-out bounds (Concept_Document.md 1.1.4) apply only
-to its own path. The two trait-local loops resolve their instances outside that accounting, so
-neither is capped by `MAX_CASCADE_INSTANCES_PER_ACTION` nor stamped with a depth.
+Both bounds are enforced on every one of the three paths above, not only `CascadeResolver`'s own:
+`BattleResolver.BeginEchoInstance(mechanic_key, subject_ID, trigger, depth := 0) -> bool` is the
+single choke point all three call, refusing past `MAX_CASCADE_INSTANCES_PER_ACTION`; a trait-local
+loop's `if(not BeginEchoInstance(...)): break` reproduces `CascadeResolver`'s own per-instance
+clamp. `depth` left at its default `0` means "one deeper than `CurrentEchoDepth()`";
+`CascadeResolver` passes `p_event.depth` instead, so a drained event keeps its stamped depth.
+`BattleResolver._echo_depth` holds the currently-resolving instance's depth, saved and restored by
+`BeginEchoInstance`/`EndEchoInstance` across nesting, and is what `CombatResult.cascade_depth` is
+stamped from in `_Emit`.
 
 `Types.Combat_Event.Zone_Used`/`CharacterTrait.OnZoneUsed(owner_ID, user_ID, zone_ID, resolver)`
 fires from `ZoneResolver.TriggerZones` whenever any zone spends a charge, for every zone type —
