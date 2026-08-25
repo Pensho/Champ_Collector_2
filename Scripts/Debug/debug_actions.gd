@@ -1,5 +1,26 @@
 class_name DebugActions extends Node
 
+## The Relic presets whose effect script has real hook overrides rather than the title/
+## body/magnitude-only stub every catalog entry starts as (Plan_Relic_Implementation.md
+## Phase 4's batches 1 and 2). Kept as an explicit list rather than a "does it override
+## anything" runtime check, since a stub is a valid, inspectable RelicEffect too.
+const IMPLEMENTED_RELIC_KEYS: Array[String] = [
+	"The_Quiet_Mass", "The_Planted_Heel", "The_Answering_Boss", "Kiln_Brand",
+	"Sunderplate_Nail", "The_Ossuary_Ledger",
+	"The_Even_Tread", "The_Frayed_Hour", "The_Solvent_Mark", "Signatorys_Seal",
+	"Quorum_Bell", "Prism_of_Small_Favors",
+]
+
+## Adds one copy of every implemented Relic to the collection at the given rarity,
+## following the same duplicate-set_rarity-Setup sequence LootManager and ShopHandler
+## use when they roll a Relic drop.
+static func grant_all_implemented_relics(p_item_collection: ItemCollection, p_rarity: Types.Rarity) -> void:
+	for key in IMPLEMENTED_RELIC_KEYS:
+		var preset: EquipmentPreset = EquipmentPresetRegistry.GetRelic(key).duplicate(true)
+		preset._rarity = p_rarity
+		preset.Setup()
+		p_item_collection.AddPreset(preset)
+
 ## Builds an equipment preset with exact attribute values, bypassing the
 ## random rolls in EquipmentPreset.Setup(), so the debug item construction
 ## page can hand the collection an item with precisely chosen stats.

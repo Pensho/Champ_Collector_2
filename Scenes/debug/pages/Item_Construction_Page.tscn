@@ -151,4 +151,9 @@ layout_mode = 2
 layout_mode = 2
 text = "Add to Collection"
 
+[node name="Button_GrantAllRelics" type="Button" parent="MarginContainer/VBoxContainer" unique_id=554325620]
+layout_mode = 2
+text = "Grant All Implemented Relics (Uncommon)"
+
 [connection signal="button_up" from="MarginContainer/VBoxContainer/Button_AddToCollection" to="." method="_on_add_to_collection_button_up"]
+[connection signal="button_up" from="MarginContainer/VBoxContainer/Button_GrantAllRelics" to="." method="_on_grant_all_relics_button_up"]

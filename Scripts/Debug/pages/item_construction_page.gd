@@ -44,3 +44,6 @@ func _on_add_to_collection_button_up() -> void:
 	var rarity: Types.Rarity = _rarity_option.get_selected_id() as Types.Rarity
 	var preset: EquipmentPreset = DebugActions.build_equipment_preset(item_name, slot, rarity, attributes)
 	main.GetInstance()._item_collection.AddPreset(preset)
+
+func _on_grant_all_relics_button_up() -> void:
+	DebugActions.grant_all_implemented_relics(main.GetInstance()._item_collection, Types.Rarity.Uncommon)

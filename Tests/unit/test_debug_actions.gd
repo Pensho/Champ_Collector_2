@@ -78,3 +78,15 @@ func test_set_character_level_same_level_is_noop() -> void:
 	assert_eq(c._attributes[Types.Attribute.Attack], attack_before,
 		"No-op should not touch attributes")
 
+func test_grant_all_implemented_relics_adds_one_of_each_at_the_requested_rarity() -> void:
+	var collection: ItemCollection = ItemCollection.new()
+
+	DebugActions.grant_all_implemented_relics(collection, Types.Rarity.Uncommon)
+
+	assert_eq(collection._items.size(), DebugActions.IMPLEMENTED_RELIC_KEYS.size(),
+		"Should add exactly one item per implemented Relic key")
+	for item: Equipment in collection._items.values():
+		assert_eq(item._item_type, Types.Item_Type.Relic, "Every granted item should be a Relic")
+		assert_eq(item._rarity, Types.Rarity.Uncommon, "Every granted item should be the requested rarity")
+		assert_not_null(item._relic_effect, "Every granted item should carry its effect resource")
+
