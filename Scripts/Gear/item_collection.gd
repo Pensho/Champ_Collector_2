@@ -4,14 +4,21 @@ const GEARDATA = preload("res://Scripts/Gear/equipment_preset.gd")
 
 const UNEQUIPPED: int = -1
 
-var _collected_types: Dictionary[Types.Slot, String]
-var _used_item_textures: Dictionary[Types.Slot, Texture]
 var _items: Dictionary[int, Equipment] = {}
 var _next_id: int = 0
+
+var _texture_cache: Dictionary[String, Texture] = {}
 
 func _ready() -> void:
 	self.name = self.get_script().get_global_name()
 	add_to_group(SaveManager.GROUP_SAVEABLE)
+	_PreloadItemTextures()
+
+func _PreloadItemTextures() -> void:
+	for preset: EquipmentPreset in EquipmentPresetRegistry.PRESETS.values():
+		_CachedTexture(preset._texture_path)
+	for preset: EquipmentPreset in EquipmentPresetRegistry.RELIC_PRESETS.values():
+		_CachedTexture(preset._texture_path)
 
 func Serialize() -> Dictionary:
 	var items_data: Array = []
@@ -59,56 +66,27 @@ func Deserialize(p_data: Dictionary) -> void:
 		new_equipment._level = item_data.get("level", 0)
 
 		_items[new_equipment._instance_ID] = new_equipment
-		if(!_collected_types.has(new_equipment._slot)):
-			_collected_types[new_equipment._slot] = new_equipment._texture
-			_used_item_textures[new_equipment._slot] = _LoadItemTexture(new_equipment._texture)
 	print("Calling Deserialize for ItemCollection, data:\n", p_data)
-
-func LoadTextures() -> void:
-	for type in _collected_types.keys():
-		if(!_used_item_textures.has(type)):
-			_used_item_textures[type] = _LoadItemTexture(_collected_types[type])
 
 static func _LoadItemTexture(p_path: String) -> Texture:
 	if(ResourceLoader.exists(p_path)):
 		return load(p_path)
 	return null
 
-func GetItemTexture(p_item_type: Types.Slot) -> Texture:
-	var texture: Texture = null
-	match p_item_type:
-		Types.Slot.Helmet:
-			texture = _used_item_textures[Types.Slot.Helmet]
-		Types.Slot.Weapon:
-			texture = _used_item_textures[Types.Slot.Weapon]
-		Types.Slot.OffHand:
-			texture = _used_item_textures[Types.Slot.OffHand]
-		Types.Slot.Chest:
-			texture = _used_item_textures[Types.Slot.Chest]
-		Types.Slot.Pants:
-			texture = _used_item_textures[Types.Slot.Pants]
-		Types.Slot.Boots:
-			texture = _used_item_textures[Types.Slot.Boots]
-		Types.Slot.Gloves:
-			texture = _used_item_textures[Types.Slot.Gloves]
-		Types.Slot.Ring:
-			texture = _used_item_textures[Types.Slot.Ring]
-		Types.Slot.Amulet:
-			texture = _used_item_textures[Types.Slot.Amulet]
-		Types.Slot.Trinket:
-			texture = _used_item_textures[Types.Slot.Trinket]
-		_:
-			print("Item_Collection.gd/GetItemTexture() Unspecified item type!")
-	return texture
+func _CachedTexture(p_path: String) -> Texture:
+	if(not _texture_cache.has(p_path)):
+		_texture_cache[p_path] = _LoadItemTexture(p_path)
+	return _texture_cache[p_path]
+
+func GetItemTexture(p_instance_ID: int) -> Texture:
+	if(not _items.has(p_instance_ID)):
+		return null
+	return _CachedTexture(_items[p_instance_ID]._texture)
 
 func AddPreset(preset: EquipmentPreset) -> void:
 	var new_equipment: Equipment = Equipment.new()
 	new_equipment.InstantiateNew(preset, CreateNextInstanceID())
 	_items[new_equipment._instance_ID] = new_equipment
-	
-	if(!_collected_types.has(new_equipment._slot)):
-		_collected_types[new_equipment._slot] = new_equipment._texture
-		_used_item_textures[new_equipment._slot] = _LoadItemTexture(new_equipment._texture)
 
 func UnequipCollectionItem(p_instanceID: int) -> void:
 	_items[p_instanceID]._held_by = UNEQUIPPED
@@ -116,7 +94,6 @@ func UnequipCollectionItem(p_instanceID: int) -> void:
 func Remove(instanceID: int) -> void:
 	if(!_items.erase(instanceID)):
 		print("There was no such item to be removed! ID: ", instanceID)
-	# TODO: If there no longer is a type of role in the collection, remove it from _collected_types.
 
 func CreateNextInstanceID() -> int:
 	_next_id += 1
