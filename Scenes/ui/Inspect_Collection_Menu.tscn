@@ -22,6 +22,28 @@ shader_parameter/texture_albedo = ExtResource("7_lgjj3")
 shader = ExtResource("5_lsdxp")
 shader_parameter/texture_albedo = ExtResource("6_35r4v")
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lgjj3"]
+bg_color = Color(0.5529412, 0.3529412, 0.5254902, 0.21960784)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+expand_margin_right = 2.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u3wy6"]
+bg_color = Color(0.75081414, 0.17742631, 0.72142476, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_bottom = 2
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_reagent_close"]
 
 [node name="InspectCollection" type="Control" unique_id=226476496 node_paths=PackedStringArray("_attribute_labels", "_selected_char_label", "_selected_char_level", "_selected_char_nature", "_selected_char_nature_tooltip", "_selected_char_graft", "_selected_char_graft_tooltip", "_experience_bar", "_experience_bar_text")]
@@ -264,6 +286,8 @@ theme_override_constants/separation = 8
 custom_minimum_size = Vector2(0, 25)
 layout_mode = 2
 theme = ExtResource("1_riq8p")
+theme_override_styles/background = SubResource("StyleBoxFlat_lgjj3")
+theme_override_styles/fill = SubResource("StyleBoxFlat_u3wy6")
 show_percentage = false
 
 [node name="Label" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/ProgressBar" unique_id=855714334]
@@ -416,6 +440,7 @@ text = "0"
 [node name="Label_Character_Nature" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer" unique_id=1136376217]
 layout_mode = 2
 theme = ExtResource("1_riq8p")
+theme_override_colors/font_color = Color(0.5137255, 1, 0.5058824, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.47058824)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 3

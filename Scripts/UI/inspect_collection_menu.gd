@@ -158,7 +158,7 @@ func ShowSelectedCharacter(p_instance_ID: int) -> void:
 
 	_experience_bar.max_value = LevelSystem.GetExperienceRequirement(_character_collection[p_instance_ID]._level)
 	_experience_bar.value = _character_collection[p_instance_ID]._experience
-	_experience_bar_text.text = (str(_character_collection[p_instance_ID]._experience)
+	_experience_bar_text.text = "experience: " + (str(_character_collection[p_instance_ID]._experience)
 			+ " / " + str(int(_experience_bar.max_value)))
 	
 	if(_character_collection[p_instance_ID]._held_items.has(Types.Slot.Weapon)):
