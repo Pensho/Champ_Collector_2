@@ -32,6 +32,8 @@ var _item_collection: Dictionary[int, Equipment] = main.GetInstance()._item_coll
 var _reagent_collection: ReagentCollection = main.GetInstance()._reagent_collection
 var _selected_character_ID: int = -1
 var _selected_item_slot_ID: int = -1
+var _selected_equipped_item_ID: int = -1
+var _selected_equipped_slot_type: Types.Slot = Types.Slot.Weapon
 
 @onready var v_box_container_equipped_items: VBoxContainer = $MarginContainer/HBoxContainer2/VBoxContainer2
 
@@ -164,22 +166,26 @@ func ShowSelectedCharacter(p_instance_ID: int) -> void:
 		_item_slots_equipped[0].SetHeldObjectTexture(
 				main.GetInstance()._item_collection.GetItemTexture(weapon_ID))
 		_item_slots_equipped[0].SetTextureOutline(_item_collection[weapon_ID]._rarity)
+		_item_slots_equipped[0].level.text = str(_item_collection[weapon_ID]._level)
 	if(_character_collection[p_instance_ID]._held_items.has(Types.Slot.OffHand)):
 		var off_hand_ID: int = _character_collection[p_instance_ID]._held_items[Types.Slot.OffHand]
 		_item_slots_equipped[1].SetHeldObjectTexture(
 				main.GetInstance()._item_collection.GetItemTexture(off_hand_ID))
 		_item_slots_equipped[1].SetTextureOutline(_item_collection[off_hand_ID]._rarity)
+		_item_slots_equipped[1].level.text = str(_item_collection[off_hand_ID]._level)
 	if(_character_collection[p_instance_ID]._held_items.has(Types.Slot.Boots)):
 		var boots_ID: int = _character_collection[p_instance_ID]._held_items[Types.Slot.Boots]
 		_item_slots_equipped[2].SetHeldObjectTexture(
 				main.GetInstance()._item_collection.GetItemTexture(boots_ID))
 		_item_slots_equipped[2].SetTextureOutline(_item_collection[boots_ID]._rarity)
+		_item_slots_equipped[2].level.text = str(_item_collection[boots_ID]._level)
 
 func ShowCharacters() -> void:
 	_scroll_container_characters.show()
 	_scroll_container_items.hide()
 	for i in _item_slots_equipped.size():
 		_item_slots_equipped[i].SetHeldObjectTexture(null)
+		_item_slots_equipped[i].level.text = ""
 
 func ShowItems() -> void:
 	_scroll_container_characters.hide()
@@ -201,34 +207,40 @@ func CanEquipFromMenuID(p_instance_ID: int) -> bool:
 	var selected_item_type: Types.Slot = _item_collection[p_instance_ID]._slot
 	return not _character_collection[_selected_character_ID]._held_items.has(selected_item_type)
 
-func AvailableItemButton(p_slot_ID: int) -> void:
-	var equip_difference_text: String = ""
-	var item : Equipment = _item_collection[_displayed_item_ids[p_slot_ID]]
-	if(_character_collection[_selected_character_ID]._held_items.has(item._slot)):
-		var held_item_id = _character_collection[_selected_character_ID]._held_items[item._slot]
+func GetItemDescriptionText(p_item: Equipment, p_compare_item: Equipment = null) -> String:
+	var description_text: String = ""
+	if(null != p_compare_item):
 		var differing_value: int = 0
-		for type in item._attributes.keys():
-			differing_value = item._attributes[type] - _item_collection[held_item_id]._attributes[type]
+		for type in p_item._attributes.keys():
+			differing_value = p_item._attributes[type] - p_compare_item._attributes[type]
 			if(0 < differing_value):
-				equip_difference_text += Types.Attribute.keys()[type] + " +" + str(differing_value) + "\n"
+				description_text += Types.Attribute.keys()[type] + " +" + str(differing_value) + "\n"
 			elif(0 > differing_value):
-				equip_difference_text += Types.Attribute.keys()[type] + " -" + str(differing_value) + "\n"
+				description_text += Types.Attribute.keys()[type] + " -" + str(differing_value) + "\n"
 	else:
-		for type in item._attributes.keys():
-			if(0 < item._attributes[type]):
-				equip_difference_text += Types.Attribute.keys()[type] + " +" + str(item._attributes[type]) + "\n"
-			elif (0 > item._attributes[type]):
-				equip_difference_text += Types.Attribute.keys()[type] + " -" + str(item._attributes[type]) + "\n"
-	
-	if(null != item._relic_effect):
-		equip_difference_text += "\n" + item._relic_effect._body
+		for type in p_item._attributes.keys():
+			if(0 < p_item._attributes[type]):
+				description_text += Types.Attribute.keys()[type] + " +" + str(p_item._attributes[type]) + "\n"
+			elif (0 > p_item._attributes[type]):
+				description_text += Types.Attribute.keys()[type] + " -" + str(p_item._attributes[type]) + "\n"
 
-	_select_item_option.SetText(item._name, equip_difference_text)
+	if(null != p_item._relic_effect):
+		description_text += "\n" + p_item._relic_effect._body
+	return description_text
+
+func AvailableItemButton(p_slot_ID: int) -> void:
+	var item: Equipment = _item_collection[_displayed_item_ids[p_slot_ID]]
+	var compare_item: Equipment = null
+	if(_character_collection[_selected_character_ID]._held_items.has(item._slot)):
+		compare_item = _item_collection[_character_collection[_selected_character_ID]._held_items[item._slot]]
+
+	_select_item_option.SetText(item._name, GetItemDescriptionText(item, compare_item))
 	_select_item_option.SetLeftButton("Equip", TriggerEquipItem)
 	_select_item_option.SetMiddleButton("Sell", TrySell)
 	_select_item_option.SetUpgradeButton("Upgrade", TryUpgrade)
 	_select_item_option.show()
 	_selected_item_slot_ID = p_slot_ID
+	_selected_equipped_item_ID = -1
 
 func TrySell() -> void:
 	var sell_value: int = LootManager.GetSellValue(_item_collection[_displayed_item_ids[_selected_item_slot_ID]]._rarity)
@@ -246,8 +258,13 @@ func SellItem() -> void:
 	_confirm_option.hide()
 	_select_item_option.hide()
 
+func GetSelectedItemID() -> int:
+	if(-1 != _selected_equipped_item_ID):
+		return _selected_equipped_item_ID
+	return _displayed_item_ids[_selected_item_slot_ID]
+
 func TryUpgrade() -> void:
-	var item: Equipment = _item_collection[_displayed_item_ids[_selected_item_slot_ID]]
+	var item: Equipment = _item_collection[GetSelectedItemID()]
 	if(not item.CanUpgrade()):
 		_confirm_option.SetText("Upgrade", "This item is already at maximum level.")
 		_confirm_option.show()
@@ -259,7 +276,7 @@ func TryUpgrade() -> void:
 	_confirm_option.show()
 
 func UpgradeItem() -> void:
-	var item: Equipment = _item_collection[_displayed_item_ids[_selected_item_slot_ID]]
+	var item: Equipment = _item_collection[GetSelectedItemID()]
 	if(not item.CanUpgrade()):
 		return
 
@@ -268,7 +285,8 @@ func UpgradeItem() -> void:
 		return
 
 	item.Upgrade()
-	_available_items[_selected_item_slot_ID].level.text = str(item._level)
+	if(-1 != _selected_item_slot_ID):
+		_available_items[_selected_item_slot_ID].level.text = str(item._level)
 	ShowSelectedCharacter(_selected_character_ID)
 	_confirm_option.hide()
 	_select_item_option.hide()
@@ -346,10 +364,13 @@ func TriggerUnequipItem(p_item_type: Types.Slot) -> void:
 	match p_item_type:
 		Types.Slot.Weapon:
 			_item_slots_equipped[0].SetHeldObjectTexture(null)
+			_item_slots_equipped[0].level.text = ""
 		Types.Slot.OffHand:
 			_item_slots_equipped[1].SetHeldObjectTexture(null)
+			_item_slots_equipped[1].level.text = ""
 		Types.Slot.Boots:
 			_item_slots_equipped[2].SetHeldObjectTexture(null)
+			_item_slots_equipped[2].level.text = ""
 
 	main.GetInstance()._item_collection.UnequipCollectionItem(held_item_ID)
 	_character_collection[_selected_character_ID].UnequipItem(p_item_type)
@@ -361,16 +382,30 @@ func TriggerUnequipItem(p_item_type: Types.Slot) -> void:
 func EquipedItemSlotButton(p_slot_ID: int) -> void:
 	if _selected_character_ID == -1:
 		return
+	var slot_type: Types.Slot
 	match p_slot_ID:
-		0:
-			if(_character_collection[_selected_character_ID]._held_items.has(Types.Slot.Weapon)):
-				TriggerUnequipItem(Types.Slot.Weapon)
-		1:
-			if(_character_collection[_selected_character_ID]._held_items.has(Types.Slot.OffHand)):
-				TriggerUnequipItem(Types.Slot.OffHand)
-		2:
-			if(_character_collection[_selected_character_ID]._held_items.has(Types.Slot.Boots)):
-				TriggerUnequipItem(Types.Slot.Boots)
+		0: slot_type = Types.Slot.Weapon
+		1: slot_type = Types.Slot.OffHand
+		2: slot_type = Types.Slot.Boots
+	if(not _character_collection[_selected_character_ID]._held_items.has(slot_type)):
+		return
+
+	var item_id: int = _character_collection[_selected_character_ID]._held_items[slot_type]
+	var item: Equipment = _item_collection[item_id]
+	_selected_equipped_item_ID = item_id
+	_selected_equipped_slot_type = slot_type
+	_selected_item_slot_ID = -1
+
+	_select_item_option.SetText(item._name, GetItemDescriptionText(item))
+	_select_item_option.SetLeftButton("Unequip", TriggerUnequipSelectedItem)
+	_select_item_option.HideMiddleButton()
+	_select_item_option.SetUpgradeButton("Upgrade", TryUpgrade)
+	_select_item_option.show()
+
+func TriggerUnequipSelectedItem() -> void:
+	TriggerUnequipItem(_selected_equipped_slot_type)
+	_selected_equipped_item_ID = -1
+	_select_item_option.hide()
 
 func _on_button_deselect_char_button_up() -> void:
 	_selected_character_texture.texture = null

@@ -162,21 +162,21 @@ mouse_filter = 2
 theme_override_constants/separation = 50
 
 [node name="ScrollContainer_Characters" type="ScrollContainer" parent="MarginContainer/HBoxContainer2" unique_id=2084637322]
-custom_minimum_size = Vector2(520, 0)
+custom_minimum_size = Vector2(420, 0)
 layout_mode = 2
 
 [node name="GridContainer" type="GridContainer" parent="MarginContainer/HBoxContainer2/ScrollContainer_Characters" unique_id=1499657250]
 layout_mode = 2
-columns = 5
+columns = 4
 
 [node name="ScrollContainer_Items" type="ScrollContainer" parent="MarginContainer/HBoxContainer2" unique_id=483209083]
 visible = false
-custom_minimum_size = Vector2(520, 0)
+custom_minimum_size = Vector2(420, 0)
 layout_mode = 2
 
 [node name="GridContainer" type="GridContainer" parent="MarginContainer/HBoxContainer2/ScrollContainer_Items" unique_id=205271624]
 layout_mode = 2
-columns = 5
+columns = 4
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/HBoxContainer2" unique_id=2003231855]
 custom_minimum_size = Vector2(500, 0)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://di0y70sbai3yw"]
+[gd_scene format=3 uid="uid://di0y70sbai3yw"]
 
 [ext_resource type="Script" uid="uid://dql0n3rqcrd15" path="res://Scripts/UI/menu_item_slot.gd" id="1_vybhe"]
 [ext_resource type="Texture2D" uid="uid://bs4q3kt7agwa6" path="res://Assets/Champ_Collector/Icons/Character_Frames/Character_Frame_1.png" id="2_n5d1g"]
@@ -14,13 +14,13 @@ shader_parameter/pattern = 0
 shader_parameter/inside = false
 shader_parameter/add_margins = true
 
-[node name="MenuItemSlot" type="Control"]
+[node name="MenuItemSlot" type="Control" unique_id=891749718]
 custom_minimum_size = Vector2(100, 150)
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_vybhe")
 
-[node name="TextureRect" type="TextureRect" parent="."]
+[node name="TextureRect" type="TextureRect" parent="." unique_id=1234920]
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 0
 offset_right = 100.0
@@ -28,7 +28,7 @@ offset_bottom = 150.0
 texture = ExtResource("2_n5d1g")
 expand_mode = 1
 
-[node name="TextureRect" type="TextureRect" parent="TextureRect"]
+[node name="TextureRect" type="TextureRect" parent="TextureRect" unique_id=648801008]
 material = SubResource("ShaderMaterial_e5jka")
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 0
@@ -37,18 +37,19 @@ offset_right = 100.0
 offset_bottom = 135.0
 expand_mode = 1
 
-[node name="Label" type="Label" parent="TextureRect"]
+[node name="Label" type="Label" parent="TextureRect" unique_id=1026314887]
 layout_mode = 0
 offset_left = 5.0
-offset_top = 5.0
+offset_top = 20.0
 offset_right = 45.0
-offset_bottom = 35.0
+offset_bottom = 50.0
 theme = ExtResource("2_vybhe")
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 24
 
-[node name="Button" type="Button" parent="TextureRect"]
+[node name="Button" type="Button" parent="TextureRect" unique_id=803586343]
 custom_minimum_size = Vector2(100, 150)
 layout_mode = 0
 offset_right = 8.0

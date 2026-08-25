@@ -16,6 +16,7 @@ func SetText(p_title: String, p_body: String) -> void:
 	rich_text_label_info.text = _apply_keyword_colors(p_body)
 
 func SetLeftButton(p_name: String, p_func_ptr: Callable, p_color: Color = Color.WHITE) -> void:
+	_disconnect_all(button_left, "button_up")
 	button_left.text = p_name
 	if(!p_func_ptr.is_null()):
 		button_left.connect("button_up", p_func_ptr)
@@ -23,6 +24,7 @@ func SetLeftButton(p_name: String, p_func_ptr: Callable, p_color: Color = Color.
 	button_left.show()
 
 func SetMiddleButton(p_name: String, p_func_ptr: Callable, p_color: Color = Color.WHITE) -> void:
+	_disconnect_all(button_middle, "button_up")
 	button_middle.text = p_name
 	if(!p_func_ptr.is_null()):
 		button_middle.connect("button_up", p_func_ptr)
@@ -30,11 +32,20 @@ func SetMiddleButton(p_name: String, p_func_ptr: Callable, p_color: Color = Colo
 	button_middle.show()
 
 func SetUpgradeButton(p_name: String, p_func_ptr: Callable, p_color: Color = Color.WHITE) -> void:
+	_disconnect_all(button_upgrade, "button_up")
 	button_upgrade.text = p_name
 	if(!p_func_ptr.is_null()):
 		button_upgrade.connect("button_up", p_func_ptr)
 	button_upgrade.add_theme_color_override("font_color", p_color)
 	button_upgrade.show()
+
+func HideMiddleButton() -> void:
+	_disconnect_all(button_middle, "button_up")
+	button_middle.hide()
+
+func _disconnect_all(p_button: Button, p_signal_name: String) -> void:
+	for connection in p_button.get_signal_connection_list(p_signal_name):
+		p_button.disconnect(p_signal_name, connection["callable"])
 
 func _on_cancel_button_up() -> void:
 	self.hide()
