@@ -172,9 +172,9 @@ func Init(p_context: ContextContainer) -> void:
 	for i in _characters.keys():
 		for j in _characters[i]._skills.size():
 			_battle_ui.LoadSkillTexture(_characters[i]._skills[j].icon_path)
+		for active_trait: CharacterTrait in Skills.ActiveHooks(_characters[i], Types.Combat_Event.Start_Combat):
+			active_trait.StartOfBattle(i, _resolver)
 		if(null != _characters[i]._trait):
-			if(_characters[i]._trait._execution_steps.has(Types.Combat_Event.Start_Combat)):
-				_characters[i]._trait.StartOfBattle(i, _resolver)
 			var brew_key: String = _characters[i]._trait.BrewReagentKey(_resolver.GetRandom())
 			if("" != brew_key):
 				_reagent_loadout.AddBrewed(brew_key, _characters[i]._trait.GetBrewPotencyBonus())
@@ -717,8 +717,8 @@ func _ResolveGraft(p_symbiote_ID: int, p_target_enemy_ID: int) -> void:
 			main.GetInstance()._character_collection.GetCharacter(symbiote._instance_ID))
 	if(null != collection_character and collection_character != symbiote):
 		collection_character.ApplyGraft(graft_effect)
-	if(symbiote._trait._execution_steps.has(Types.Combat_Event.Start_Combat)):
-		symbiote._trait.StartOfBattle(p_symbiote_ID, _resolver)
+	for active_trait: CharacterTrait in Skills.ActiveHooks(symbiote, Types.Combat_Event.Start_Combat):
+		active_trait.StartOfBattle(p_symbiote_ID, _resolver)
 	RefreshAllTraitVisuals()
 	_state = BattleState.Awaiting_Player_Input
 
