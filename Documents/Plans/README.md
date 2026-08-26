@@ -25,7 +25,12 @@ Suggested order (dependencies noted inside each plan):
    carrying a Relic's effect, dispatching it alongside the wearer's trait, and implementing
    `Relic_Design.md`'s 24-entry catalog. Blocks nothing else; not yet started.
 
-2. `Plan_Story_Mode_Systems.md` — the systems that deliver story mode (story
+2. `Plan_Cascade_Channel_Cleanup.md` — the follow-up to the completed Channel 3 unification:
+   retires the leftover Echo plumbing, moves Overflow, Rush and Mirror Coat off the Channel 3
+   machinery their `Concept_Document.md` channel tags exclude them from, and realigns
+   `Technical_Design_Document.md` 7.8. Blocks nothing; not yet started.
+
+3. `Plan_Story_Mode_Systems.md` — the systems that deliver story mode (story
    state handler, dialogue overlay, flag-driven hub variants, act gating,
    scripted battle openings, guest champions). The state handler and dialogue
    overlay are independent and can start any time; scripted openings apply
