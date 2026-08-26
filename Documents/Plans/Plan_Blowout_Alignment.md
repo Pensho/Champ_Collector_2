@@ -83,10 +83,10 @@ populated to serve the pillar even once every existing entry is correctly aligne
 a roster cannot fill a channel that has nothing in it, and authoring the missing content is
 a different body of work with different review criteria.
 
-Spawned to `Plan_System_Buildout.md`, which carries every open entry — the roster's cross-kit
-composition thinness and the Sorcerer's repeat both closed instead, by `Plan_Role_Kit_Rework.md`'s
-own final sweep (median 1.95x, 90th percentile 4.68x, ceiling 16.24x, 114 top-decile teams across
-10 distinct pairings; the Sorcerer/Cataclysm pairing itself reaches the top decile at 19 teams).
+All entries closed. The roster's cross-kit composition thinness and the Sorcerer's repeat were
+closed by `Plan_Role_Kit_Rework.md`'s own final sweep (median 1.95x, 90th percentile 4.68x,
+ceiling 16.24x, 114 top-decile teams across 10 distinct pairings; the Sorcerer/Cataclysm pairing
+itself reaches the top decile at 19 teams). The remaining entries were closed.
 
 ## Watch for
 

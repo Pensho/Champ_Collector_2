@@ -297,7 +297,7 @@ New coverage (logic only — assert Echo *counts* and per-Echo strengths, not de
 
 ## Step 9 — Channel 3 trigger vocabulary
 
-Carried from `Plan_System_Buildout.md`, which owned these before this plan existed.
+Carried from the now-deleted `Plan_System_Buildout.md`, which owned these before this plan existed.
 
 **Every debuff tick posts `Debuff_Ticked`.** Today the only `Post` on the tick path is
 `_PostComorbidityCascadeIfAny` (`status_effect_resolver.gd:459-464`), which fires only when a
@@ -309,9 +309,9 @@ contributor read them.
 
 Note what this does *not* change: a plain Plague or Burning tick posts an event, no contributor
 contributes, zero Echoes resolve, and the Herald's Golden Thread still gains nothing. That is
-correct — a status's ordinary tick is not a repeat of anything, so it is not an Echo. The
-`Plan_System_Buildout.md` entry framed the absence of Tension here as the gap; the gap is the
-missing `Post`, and the Tension behavior is the Echo definition working as intended.
+correct — a status's ordinary tick is not a repeat of anything, so it is not an Echo. The gap is
+the missing `Post`, not the absence of Tension; the Tension behavior is the Echo definition
+working as intended.
 
 **Still open, owned by this plan, not scheduled in it:**
 

@@ -466,7 +466,7 @@ build time rather than a second discount on the payoff.
 `Cut_the_Cloth.tres` (new), `Herald_of_the_loom.tres` (rewired), `Thread_Switch_Button.tscn` (shares
 the Symbiote graft button's slot — the two are mutually exclusive by whose turn it is). A debuff
 tick still doesn't post to `CascadeResolver` at all, so Golden Thread does not see one; tracked as a
-gap in `Plan_System_Buildout.md`.
+gap in `Plan_Channel_3_Unification.md`'s Step 9.
 
 ### 9.3 Sorcerer — Echo charges and the Surge that feeds them
 
@@ -1660,12 +1660,10 @@ check against a new kit accidentally claiming a second one. State as of Batch 1.
 | Lava Zone | Enemy only (Obsidian Stallion) |
 | Inscribe | Enemy only (Glyphbound Archivist) |
 | The Gilded Deck | Tidal Corsair — **implemented** (section 9.13); the only zone placed without the player choosing its section |
-| Weight of Law | **Orphaned — no player or enemy fields it** |
+| Weight of Law | **Unclaimed — no player or enemy fields it** |
 
 Seven player-facing zones across six Roles, Chronophage holding two — the one existing exception to
-the one-per-Role rule, and consistent with its turn-bar identity. Weight of Law having no owner at
-all is a loose end this plan did not create and does not close; note it for whichever batch takes
-Emissary, whose theme it matches.
+the one-per-Role rule, and consistent with its turn-bar identity.
 
 ## 11. Scorer plumbing for Channel 3 payloads
 

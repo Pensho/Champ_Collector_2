@@ -168,8 +168,7 @@ kits. Expected per boss:
 * **The Glyphbound Archivist** — the hard one, and the likeliest to end in a coverage gap.
   All three configurations are zone-clearing or sustain. The standing-zone count would be the
   natural quantity for the player side to read as a channel-2 factor or channel-3 instance
-  count, but **no kit reads a zone count as a `bonus_per` factor** in the current manifest,
-  and Refutation still carries no damage parameters (`Plan_System_Buildout.md`'s open entry).
+  count, but **no kit reads a zone count as a `bonus_per` factor** in the current manifest.
   Reaching a payoff here without a new mechanism is unproven — settle that question before
   reshaping configurations, and take the coverage-gap branch below rather than authoring.
 * **The Collector of Debts** — configurations are buff denial, buff repossession, and a
@@ -286,11 +285,11 @@ interpolated message — `Tests/unit/test_burst_pacing.gd` is representative):
   to `Coverage gaps` and the volume batches, never to this retrofit.
 * **The `BOSSES` constant and the `.tres` files move together**, and Defence moves not at
   all.
-* **`Plan_System_Buildout.md` is still due.** The master plan already flags it as overdue
-  against a one-entry spawn threshold, and this plan adds at least one more entry (catalog
-  entries for the data-only Troll, Obsidian Stallion, and Militia battles). Spawning it
-  is a separate decision with the plan's owner rather than this plan's work — but Phase 7
-  must not close without raising it, since the retention rule in `Plans/README.md` deletes
+* **A new coverage-gap catch-all may be needed.** This plan adds at least one coverage-gap
+  entry (catalog entries for the data-only Troll, Obsidian Stallion, and Militia battles), and
+  `Plan_System_Buildout.md`, the previous catch-all, is complete and deleted. Spawning a new one
+  is a separate decision with the plan's owner rather than this plan's work — but Phase 7 must
+  not close without raising it, since the retention rule in `Plans/README.md` deletes
   `Plan_Blowout_Alignment.md` on completion and its open work has to land somewhere living.
 * Spell words out in full in identifiers and prose, per the naming convention.
 
