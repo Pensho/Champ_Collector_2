@@ -256,6 +256,8 @@ enum Cascade_Trigger
 	Status_Landed,
 	Skill_Resolved,
 	Debuff_Ticked,
+	Zone_Triggered,
+	Debuff_Tick_Forced,
 }
 
 enum Notification_Kind

@@ -1214,78 +1214,121 @@ rather than a hardcoded branch: Overflow's expiry AoE and Rush's expiry self-Stu
 Coat's reflection (`Status_Landed`, posted from `CastDebuff` when a debuff is created, matched
 unconditionally since any landed debuff type is relevant). Registration is code-driven for this
 phase, not data-driven: at this listener count, a `StatusEffectData` schema field for this isn't
-warranted yet.
+warranted yet. These three keep a fixed count and are not reachable by the contributor model below
+— `Listen`ed triggers other than `Skill_Resolved` never query Extenders (see the single-plumbing
+invariant), which is what keeps Black Thread off Overflow, Rush and Mirror Coat without a separate
+flag.
 
-**Vocabulary scope.** `Types.Cascade_Trigger` held only the two values the ported effects
-needed until `Skill_Resolved` (below) added a third, and `Debuff_Ticked` a fourth — posted from
-`StatusEffectResolver._PostComorbidityCascadeIfAny` whenever a debuff carrying
-`repeats_per_distinct_debuff` (the Plague Doctor's Comorbidity) ticks with more than one distinct
-debuff type present on the target, one extra instance per type beyond itself, matched unconditionally
-and keyed per debuff source so two casters' flagged debuffs on the same target repeat
-independently. A threshold-crossing trigger (health or status-count) or a cascade-on-cascade
-trigger (an effect listening for another Echo landing, per Concept Document 1.1.3's
-compounding case) still needs a new enum value and a `Post` call site added at the relevant point
-before it is authorable — the post-and-drain queue and the two termination bounds do not
-themselves need to change to support one, but the vocabulary as shipped does not yet express those
-shapes.
+**Vocabulary.** `Types.Cascade_Trigger` covers `Status_Expired`, `Status_Landed`, `Skill_Resolved`,
+`Debuff_Ticked`, `Zone_Triggered` and `Debuff_Tick_Forced`. A threshold-crossing trigger (health or
+status-count) or a cascade-on-cascade trigger (an effect listening for another Echo landing, per
+Concept Document 1.1.3's compounding case) still needs a new enum value and a `Post` call site
+added at the relevant point before it is authorable — the post-and-drain queue and the two
+termination bounds do not themselves need to change to support one.
 
-**`Skill_Resolved` and the Sorcerer's Echo repeat.** `BattleResolver.ResolveSkill`
-posts a `Skill_Resolved` `CascadeEvent` (caster, target IDs, and skill index, `instance_count = 1`)
-right after the effect loop and before `Drain()` (`battle_resolver.gd:189-193`) — the first trigger
-point that fires on a skill resolving rather than a status expiring or landing.
-`SorcererTrait` (`Scripts/Character/character_traits/CharacterSpecificTraits/sorcerer_trait.gd`)
-subscribes under its own mechanic key (`&"SorcererTrait"`) in `StartOfBattle`, matching on
-`p_event.subject_ID == p_owner_ID and _echoes_for_this_cast > 0` — a per-cast count snapshotted from
-`_echo_charges` (granted by a consumed reagent or a released Surge) in `OnSkillCast`, and expanded
-past the event's own `instance_count = 1` by a `SubscribeInstanceModifier` returning
-`_echoes_for_this_cast - 1` (see below), so the listener's callback fires once per Echo. Each call to
-the callback (`_OnSkillResolvedRepeat`) either amplifies a zone this same cast placed
-(`ZoneResolver.AmplifyZoneDamage`, see 7.5) if one exists, or builds a fresh `SkillCastContext` for
-the same caster, targets, and cast skill (use count 0, a new `TraitSkillResult`, deliberately not a
-continuation of the original cast's own state) and re-resolves only the entries in
-`cast_skill.effects` that are `DamageEffect` instances — a repeated `CastDebuff` or zone placement is
-skipped outright, not merely deduped, since the effect loop is filtered before it runs.
-`SkillCastContext.repeat_bonus` carries that Echo's own fraction minus 1.0
-(`REPEAT_FRACTION * ECHO_COMPOUNDING^i - 1.0`, `i` the 0-based Echo index) as its own
-`CombinedDamageModifier` bucket, so each Echo multiplies against channels 1 and 2 rather than adding
-to them, exactly like any other Echo.
+**The governing rule: `CascadeResolver` is the only thing that produces an Echo.** Every Channel 3
+effect — skill repeat, status re-tick, zone re-trigger — declares a contribution and a resolution,
+never its own loop. `BattleResolver.BeginEchoInstance`/`EndEchoInstance` are called from exactly one
+place, `CascadeResolver`'s own instance loop; nothing else calls them, which is what makes the fan-
+out bound, the depth bound, the `Cascade_Triggered` marker, `IsResolvingEcho()`, the strength
+channel (below) and the `Cascade_Instance_Resolved` broadcast unbypassable rather than merely
+conventional. `Tests/unit/test_cascade_resolution.gd` scans `Scripts/` and fails if any file other
+than `cascade_resolver.gd` calls `BeginEchoInstance`, so a kit reaching for a private repeat loop
+fails the suite instead of shipping a sixth isolated handler.
 
-**`SubscribeInstanceModifier` and mechanic-key scoping.** `CascadeResolver.SubscribeInstanceModifier
-(callback: (CascadeEvent, StringName) -> int)` registers a callback that amplifies a listener's
-instance count once a `Subscribe`d `matches` predicate has already matched an event — the modifier
-never creates a match on its own. `_ResolveEvent` sums every registered modifier's return value
-(passing the matched listener's own `mechanic_key` as the second argument, so a modifier can scope
-itself to one mechanic rather than firing for every Echo in the game) and adds it to the
-event's own `instance_count` before the per-instance loop, still bounded by
-`MAX_CASCADE_INSTANCES_PER_ACTION`. Two callers: the Herald of the Loom's Black Thread (unscoped —
-amplifies any Echo the Herald's own action produces against an enemy) and the Sorcerer's
-Echo count (scoped to `&"SorcererTrait"`, so it only ever amplifies its own listener).
+**Contributors: `CascadeContribution` and the attribution table.**
+`CascadeResolver.SubscribeCascadeContributor(callback: (CascadeEvent) -> CascadeContribution)`
+registers a callback queried for every posted event. A `CascadeContribution`
+(`Scripts/Battle/cascade_contribution.gd`) carries `mechanic_key`, `instances`,
+`strength_multiplier`, a `Kind` (`Base` or `Extender`), and an optional `resolve` Callable — an
+unset `resolve` means the canonical skill replay (`ResolveSkillEcho`, below). `_ResolveContributions`
+queries every contributor for the drained event, then:
+1. Sums `Base` instances and `Extender` instances separately, applying the same once-per-action
+   dedup (`"mechanic_key:subject_ID"`) contributors and `Subscribe` listeners share.
+2. **If no Base contributed, Extenders contribute nothing** — an extender extends, it cannot enable.
+   This is what makes Black Thread a pure extender and Borrowed Time enabler-or-extender depending
+   on what it lands on.
+3. **Extenders are queried only for `Skill_Resolved`** — the one restriction that keeps Black
+   Thread off status-triggered cascades (Comorbidity, Overflow, Mirror Coat) without a separate
+   flag.
+4. The attribution table: each Base owns a slice of `instances` at its own `strength_multiplier`
+   and `resolve`. Extender instances append to the slice of the Base with the most instances (ties
+   by registration order) — the cascade's dominant mechanic.
+5. Loops the total, calling `BeginEchoInstance` per instance at that slice's strength; still
+   truncated by `MAX_CASCADE_INSTANCES_PER_ACTION` and refused past `MAX_CASCADE_DEPTH`.
 
-**`Cascade_Instance_Resolved`: the per-instance broadcast.** `_ResolveEvent`'s own per-instance loop
-calls `_NotifyCascadeInstanceResolved`, which dispatches `Types.Combat_Event.
-Cascade_Instance_Resolved` and `CharacterTrait.OnCascadeInstanceResolved(owner_ID, event, resolver)`
-to every living character's trait — one call per *real* instance, not per posted event, so a passive
-can read instance count itself. Its one consumer is the Herald of the Loom's Golden Thread, which
-gains 1 Tension per instance resolving against an enemy. Cut the Cloth's own repeats never call
-`Post`, which is what keeps the thread from feeding itself.
+**The canonical skill replay.** `BattleResolver.ResolveSkillEcho(caster_ID, skill_ID, target_IDs,
+strength_multiplier)` builds a fresh `SkillCastContext` (use count 0, new `TraitSkillResult`), sets
+`repeat_bonus = strength_multiplier - 1.0`, and re-resolves only the `DamageEffect` entries whose
+`ConditionMet` holds. It is the default `resolve` for any Base contribution that supplies none. The
+Sorcerer's zone-amplification branch (below) is the one contributor whose `resolve` does something
+other than replay the skill.
 
-**Borrowed Time: a `Skill_Resolved` listener granted by another champion.** The Chronophage's Time
-Tithe passive grants an ally the `Borrowed_Time` buff rather than subscribing anything itself — the
-buff, not the passive, owns the extra resolution. `StatusEffectResolver._RegisterCascadeListeners`
-subscribes under the buff's own type name, matching on the holder carrying `Borrowed_Time` *and* the
-cast skill carrying at least one `DamageEffect` (`_CastSkillHasDamageEffect`), so a non-damaging cast
-leaves the buff untouched rather than burning it. The callback (`_CascadeBorrowedTime`) removes the
-buff, reads its `value` as the resolution's strength fraction, and replays the cast the same way the
-Sorcerer's Echo does: a fresh `SkillCastContext` (use count 0, new `TraitSkillResult`), `repeat_bonus
-= fraction - 1.0`, only `DamageEffect`s re-resolved. Because `StatusEffectResolver`'s cascade
-listeners are registered once in its constructor rather than per-caster, this is the first ported
-effect whose *subject* (the buff holder) need not be the trait that granted it.
+**The strength channel.** `BeginEchoInstance` takes a fifth argument,
+`p_strength_contributions: Dictionary[StringName, float]`, keyed by contributing mechanic so
+Concept Document 1.1.3's composition law (contributions group by mechanic identity; distinct
+mechanics multiply) is preserved for Echo strength too. It is pushed/popped alongside
+`_echo_depth_stack` and read back via `CurrentEchoStrengthContributions()`.
+`DamageEffect.Resolve` contributes each entry to `CombinedDamageModifier` under its own key,
+beside the existing `repeat_bonus` bucket — every Echo path picks this up for free, including one
+that supplies its own `resolve`. `SubscribeStrengthModifier(callback: (CascadeEvent, StringName) ->
+CascadeContribution)` is a scalar applied to every Echo its scope matches, on any path, multiplied
+on top of the slice strength — where the Herald's self-bonus and The Sealed Docket's team-wide
+×0.5 live. A modifier scopes by `CascadeEvent.origin_ID`, the Echo's producer, not `subject_ID`:
+the two coincide for a skill replay (the caster is both) but not for a Zone_Triggered event
+(subject is the character the zone affected, origin is the zone's owner) or a Comorbidity re-tick
+(subject is the debuff-bearer, origin is whichever source's debuff is re-ticking, one per instance
+via `CascadeContribution.origin_for_instance`). `_ResolveContributions`/`_ResolveEvent` stamp
+`origin_ID` right before computing an instance's strength contributions. `repeat_bonus` keeps its
+own job, the *intrinsic* strength a mechanic defines for its own Echoes; external scalars go
+through this channel instead.
 
-The grant side is a new `Combat_Event.Ally_Turn_Bar_Increased` hook, dispatched from
+**The five skill-replay mechanics as contributors.** Cut the Cloth (`WeftAndWarpTrait`), the
+Sorcerer's Echo charges, The Long Furrow, Borrowed Time and Comorbidity all register a Base
+contributor rather than running a private loop:
+- **Cut the Cloth.** `OnSkillCast` banks `_pending_cut_the_cloth_instances = _tension` and zeros
+  Tension; a Base contributor on `Skill_Resolved` (matched on `subject_ID == owner_ID`) returns
+  those instances at strength 1.0, consuming the pending count — the skill's own 90% scaling lives
+  on `Cut_the_Cloth.tres`, not the contribution.
+- **Sorcerer.** A Base contributor returns `_echoes_for_this_cast` instances with its own `resolve`
+  (`_OnSkillResolvedRepeat`), since each Echo's strength compounds by index
+  (`REPEAT_FRACTION * ECHO_COMPOUNDING^i`) — genuinely the mechanic's own business rather than a
+  flat `strength_multiplier`. That `resolve` either amplifies a zone this same cast placed
+  (`ZoneResolver.AmplifyZoneDamage`, see 7.5) or replays the cast's `DamageEffect`s directly.
+- **The Long Furrow.** A Base contributor returns 1 instance at `Magnitude()`, gated on the
+  charge-span check already computed in `OnSkillCast`.
+- **Borrowed Time.** A Base contributor on `Skill_Resolved`, gated on the holder carrying the buff
+  and the cast skill carrying a `DamageEffect` (`_CastSkillHasDamageEffect`); its own `resolve`
+  consumes the buff and calls `ResolveSkillEcho` at the buff's fraction. Being a Base rather than an
+  Extender, it enables on a plain attacker and extends on a Herald with no code distinguishing the
+  two cases.
+- **Comorbidity.** A Base contributor on `Debuff_Ticked`. Every debuff tick posts `Debuff_Ticked`
+  (`StatusEffectResolver._PostDebuffTick`, called from both the natural tick path and
+  `ForceExtraDebuffTick`), carrying the tick's `distinct_debuff_type_count` and
+  `repeating_source_ids` on the event — a plain Burning tick posts the event and the contributor
+  returns null, resolving no Echo. When a `repeats_per_distinct_debuff`-flagged debuff (the Plague
+  Doctor's Comorbidity) is present, the contributor returns `(distinct_count - 1) *
+  repeating_source_ids.size()` instances, its `resolve` cycling through the source IDs so each
+  source's own flagged debuffs re-tick independently at their own unmultiplied magnitude.
+
+**Black Thread**, the one pure Extender: 1 instance, once per originating action (reset in
+`OnSkillCast`), gated on `subject_ID == owner_ID` and the event concerning an enemy
+(`_EventConcernsEnemyOf`) — self-only, never an ally's or enemy's own cascade. Because extenders are
+queried only for `Skill_Resolved` and need a Base, it cannot inflate Comorbidity, Mirror Coat or
+Overflow.
+
+**Golden Thread and the generic self-bonus.** `CascadeEvent.mechanic_key`, stamped by
+`_ResolveContributions`/`_ResolveEvent` right before `_NotifyCascadeInstanceResolved`, is what
+`OnCascadeInstanceResolved` checks to exclude Cut the Cloth's own instances from feeding Golden
+Thread — an explicit exclusion rather than an accident of which paths called `Post`. The Herald's
+self-bonus is a `SubscribeStrengthModifier` scoped to `origin_ID == owner_ID`, so it applies to
+any Echo the Herald produces regardless of mechanic, not only Cut the Cloth's.
+
+**Borrowed Time's grant side** is a `Combat_Event.Ally_Turn_Bar_Increased` hook, dispatched from
 `BattleResolver._EmitTurnBarBump` via `Skills.DispatchAllyTurnBarIncreased` — the positive/ally
-mirror of the existing `Skills.TurnBarTithe`, gated on a positive fraction and the source and target
-being allies rather than enemies. `TimeTitheTrait.OnAllyTurnBarIncreased` checks a new
-`TurnPositions.GetSectionIndex(character_ID) -> int` query (the bar's five sections, matching
+mirror of `Skills.TurnBarTithe`, gated on a positive fraction and the source and target being
+allies. `TimeTitheTrait.OnAllyTurnBarIncreased` checks
+`TurnPositions.GetSectionIndex(character_ID) -> int` (the bar's five sections, matching
 `Game_Balance.NUMBER_OF_TURN_BAR_ZONES`; the base class returns `-1` for "unknown", the headless
 default, which declines the grant rather than assuming aloneness) against every living ally of the
 target — the trait's own owner included, since the alone-clause treats the Chronophage as an
@@ -1297,6 +1340,14 @@ trick `DamageMultiplier` buffs (Daunting Strength, Volatile Mixture) already use
 start-of-cast decrement in `_TriggerExistingCasterBuffs` brings a 1-turn buff to 0 without expiring
 it, leaving that same cast's own `Skill_Resolved` cascade the chance to consume it before natural
 expiry would.
+
+**The two previously-uncounted paths.** Lantern of the Standing Ward posts a `Zone_Triggered` event
+(zone ID, affected character) with a Base contribution of 1 instance at `Magnitude()`, whose
+`resolve` calls `ZoneResolver.ResolveZoneEffectEcho(zone_ID, character_ID, strength_multiplier)` —
+a plain "resolve this zone against this character at this strength", with no bounds responsibility
+of its own. `TriggerDebuffTicksEffect` posts a `Debuff_Tick_Forced` event per target with a Base
+contribution of 1 instance, whose `resolve` is `ForceExtraDebuffTick`. Both now consume fan-out
+budget, are visible to Golden Thread, and no longer take Threefold Bite's non-Echo penalty.
 
 ### 7.9. Burst presentation pacing
 
@@ -1635,24 +1686,22 @@ any-true) lets a trait deny a critical hit for one named skill of its own owner'
 `DamageEffect._AllowCritical` alongside `allow_critical`'s own `.tres` export (The Long Furrow's
 drawback on Rending Charge) — the catalog's one hook keyed to a skill name rather than a mechanic.
 
-**What counts as an Echo.** An Echo resolves through three paths: `CascadeResolver._ResolveEvent`'s
-per-instance loop, and two trait-local repeat loops that deliberately bypass the cascade channel —
-`WeftAndWarpTrait`'s Cut the Cloth Tension repeats (kept out of it so they cannot feed the Herald's
-own Golden Thread) and `StatusEffectResolver`'s Borrowed Time repeat. All three call
-`BattleResolver.BeginEchoInstance`/`EndEchoInstance` (signature below) around the effects they
-resolve; a successful `BeginEchoInstance` call increments the action's Echo ordinal, opens the Echo
-scope, and emits the `EmitBurstInstance` marker the battle view escalates burst text from.
-`IsResolvingEcho() -> bool` and `EchoOrdinalThisAction() -> int` are the single answer to "is this
-damage an Echo, and which one of this action" — the pair Threefold Bite reads. The ordinal resets
-with `CascadeResolver.ResetForNextAction()` at batch depth 0.
+**What counts as an Echo.** Every Echo resolves through `CascadeResolver`'s own per-instance loop
+(`_ResolveEvent`/`_ResolveContributions`) — skill repeats (Cut the Cloth, the Sorcerer, The Long
+Furrow, Borrowed Time), status re-ticks (Comorbidity, a forced debuff tick), and zone re-triggers
+(Lantern of the Standing Ward) alike, per the governing rule in 7.8. A successful
+`BeginEchoInstance` call increments the action's Echo ordinal, opens the Echo scope, and emits the
+`EmitBurstInstance` marker the battle view escalates burst text from. `IsResolvingEcho() -> bool`
+and `EchoOrdinalThisAction() -> int` are the single answer to "is this damage an Echo, and which
+one of this action" — the pair Threefold Bite reads. The ordinal resets with
+`CascadeResolver.ResetForNextAction()` at batch depth 0.
 
-Both bounds are enforced on every one of the three paths above, not only `CascadeResolver`'s own:
-`BattleResolver.BeginEchoInstance(mechanic_key, subject_ID, trigger, depth := 0) -> bool` is the
-single choke point all three call, refusing past `MAX_CASCADE_INSTANCES_PER_ACTION`; a trait-local
-loop's `if(not BeginEchoInstance(...)): break` reproduces `CascadeResolver`'s own per-instance
-clamp. `depth` left at its default `0` means "one deeper than `CurrentEchoDepth()`";
-`CascadeResolver` passes `p_event.depth` instead, so a drained event keeps its stamped depth.
-`BattleResolver._echo_depth` holds the currently-resolving instance's depth, saved and restored by
+`BattleResolver.BeginEchoInstance(mechanic_key, subject_ID, trigger, depth := 0,
+strength_contributions := {}) -> bool` is the single choke point `CascadeResolver` calls, refusing
+past `MAX_CASCADE_INSTANCES_PER_ACTION`. `depth` left at its default `0` means "one deeper than
+`CurrentEchoDepth()`"; `CascadeResolver` passes `p_event.depth` instead, so a drained event keeps
+its stamped depth. `BattleResolver._echo_depth` holds the currently-resolving instance's depth,
+saved and restored by
 `BeginEchoInstance`/`EndEchoInstance` across nesting, and is what `CombatResult.cascade_depth` is
 stamped from in `_Emit`.
 

@@ -31,16 +31,9 @@ func _RegisterCascadeListeners() -> void:
 			StringName(Types.Buff_Type.keys()[Types.Buff_Type.Mirror_Coat]),
 			func(_e: CascadeEvent) -> bool: return true,
 			_CascadeMirrorCoat)
-	cascade.Subscribe(Types.Cascade_Trigger.Debuff_Ticked,
-			&"Comorbidity",
-			func(_e: CascadeEvent) -> bool: return true,
-			_CascadeComorbidityRetick)
-	cascade.Subscribe(Types.Cascade_Trigger.Skill_Resolved,
-			StringName(Types.Buff_Type.keys()[Types.Buff_Type.Borrowed_Time]),
-			func(e: CascadeEvent) -> bool:
-				return (_resolver._HasBuff(e.subject_ID, Types.Buff_Type.Borrowed_Time)
-						and _CastSkillHasDamageEffect(e.subject_ID, e.skill_ID)),
-			_CascadeBorrowedTime)
+	cascade.SubscribeCascadeContributor(_ContributeComorbidity)
+	cascade.SubscribeCascadeContributor(_ContributeBorrowedTime)
+	cascade.SubscribeCascadeContributor(_ContributeForcedDebuffTick)
 
 func ApplyBuff(p_target_ID: int, p_buff_template: StatusEffects.Buff) -> Array[CombatResult]:
 	_resolver._BeginBatch()
@@ -376,7 +369,7 @@ func _TriggerExistingCasterDebuffs(
 		_resolver._Emit(removed)
 
 	_EmitDebuffTickIfAny(p_caster_ID, tick)
-	_PostComorbidityCascadeIfAny(p_caster_ID, tick)
+	_PostDebuffTick(p_caster_ID, tick)
 
 ## Sums tick damage across p_target's active debuffs. With p_only_repeating_source_id left at
 ## -1, sums every ticking debuff at its own (unmultiplied) magnitude — Comorbidity's repeat is a
@@ -443,37 +436,72 @@ func _EmitDebuffTickIfAny(p_target_ID: int, p_tick: Dictionary) -> void:
 	result.amount_by_source = p_tick.get("by_source", {})
 	_resolver._Emit(result)
 
-## Comorbidity (Concept_Document.md 1.1.3's cascade channel): a debuff that carries
-## repeats_per_distinct_debuff resolves one extra cascade instance per distinct debuff type on
-## the target beyond itself, each instance re-ticking only that source's own flagged debuffs.
-## Posted per source so two different casters' Comorbidity-flagged debuffs on the same target
-## each get their own instances.
-func _PostComorbidityCascadeIfAny(p_target_ID: int, p_tick: Dictionary) -> void:
+func _PostDebuffTick(p_target_ID: int, p_tick: Dictionary) -> void:
 	if(p_tick.get("total", 0) <= 0):
 		return
 	if(_resolver._characters[p_target_ID]._current_health <= 0):
 		return
-	var extra_instances: int = maxi(0, int(p_tick.get("distinct_count", 0)) - 1)
-	if(extra_instances <= 0):
-		return
-	for source_ID in p_tick.get("repeating_source_ids", []):
-		var event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Debuff_Ticked)
-		event.subject_ID = p_target_ID
-		event.origin_ID = source_ID
-		event.instance_count = extra_instances
-		_resolver.GetCascadeResolver().Post(event)
+	var event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Debuff_Ticked)
+	event.subject_ID = p_target_ID
+	event.distinct_debuff_type_count = int(p_tick.get("distinct_count", 0))
+	var repeating_source_ids: Array[int] = []
+	repeating_source_ids.assign(p_tick.get("repeating_source_ids", []))
+	event.repeating_source_ids = repeating_source_ids
+	_resolver.GetCascadeResolver().Post(event)
 
-## Resolves one Comorbidity cascade instance: re-ticks only p_event.origin_ID's own
+func _ContributeComorbidity(p_event: CascadeEvent) -> CascadeContribution:
+	if(Types.Cascade_Trigger.Debuff_Ticked != p_event.trigger
+			or p_event.repeating_source_ids.is_empty()):
+		return null
+	var extra_instances: int = maxi(0, p_event.distinct_debuff_type_count - 1)
+	if(extra_instances <= 0):
+		return null
+	var target: Character = _resolver._characters.get(p_event.subject_ID)
+	if(null == target or target._current_health <= 0):
+		return null
+	var repeating_source_ids: Array[int] = p_event.repeating_source_ids
+	var contribution: CascadeContribution = CascadeContribution.new(
+			&"Comorbidity", extra_instances * repeating_source_ids.size(),
+			CascadeContribution.Kind.Base, 1.0,
+			func(e: CascadeEvent) -> void: _CascadeComorbidityRetick(e, e.origin_ID))
+	contribution.origin_for_instance = (
+			func(i: int) -> int: return repeating_source_ids[i / extra_instances])
+	return contribution
+
+## Resolves one Comorbidity cascade instance: re-ticks only p_source_ID's own
 ## repeats_per_distinct_debuff-flagged debuffs on p_event.subject_ID, at their own unmultiplied
-## magnitude. Does not itself post further cascade events — CascadeResolver's once-per-action
-## dedup already covers the originating trigger.
-func _CascadeComorbidityRetick(p_event: CascadeEvent) -> void:
+## magnitude scaled by the current Echo's strength channel (e.g. The Sealed Docket). Does not
+## itself post further cascade events — CascadeResolver's once-per-action dedup already covers
+## the originating trigger.
+func _CascadeComorbidityRetick(p_event: CascadeEvent, p_source_ID: int) -> void:
 	var target: Character = _resolver._characters.get(p_event.subject_ID)
 	if(null == target or target._current_health <= 0):
 		return
 	var attributes: Dictionary[Types.Attribute, int] = _resolver.GetEffectiveAttributes(p_event.subject_ID)
-	var tick: Dictionary = _ComputeDebuffTickDamage(target, attributes, p_event.origin_ID)
+	var tick: Dictionary = _ApplyEchoStrength(_ComputeDebuffTickDamage(target, attributes, p_source_ID))
 	_EmitDebuffTickIfAny(p_event.subject_ID, tick)
+
+func _ApplyEchoStrength(p_tick: Dictionary) -> Dictionary:
+	var contributions: Dictionary[StringName, float] = _resolver.CurrentEchoStrengthContributions()
+	if(contributions.is_empty()):
+		return p_tick
+	var modifier: CombinedDamageModifier = CombinedDamageModifier.new()
+	for key: StringName in contributions:
+		modifier.Contribute(key, contributions[key])
+	var factor: float = modifier.Product()
+	var scaled_by_source: Dictionary[int, int] = {}
+	var scaled_total: int = 0
+	var by_source: Dictionary = p_tick.get("by_source", {})
+	for source_ID: int in by_source.keys():
+		var scaled: int = int(floor(by_source[source_ID] * factor))
+		scaled_by_source[source_ID] = scaled
+		scaled_total += scaled
+	return {
+		"total": scaled_total,
+		"by_source": scaled_by_source,
+		"distinct_count": p_tick.get("distinct_count", 0),
+		"repeating_source_ids": p_tick.get("repeating_source_ids", []),
+	}
 
 func _CastSkillHasDamageEffect(p_caster_ID: int, p_skill_ID: int) -> bool:
 	var caster: Character = _resolver._characters.get(p_caster_ID)
@@ -484,42 +512,48 @@ func _CastSkillHasDamageEffect(p_caster_ID: int, p_skill_ID: int) -> bool:
 			return true
 	return false
 
-func _CascadeBorrowedTime(p_event: CascadeEvent) -> void:
-	var holder_ID: int = p_event.subject_ID
-	var holder: Character = _resolver._characters.get(holder_ID)
-	if(null == holder or holder._current_health <= 0):
-		return
+func _ContributeBorrowedTime(p_event: CascadeEvent) -> CascadeContribution:
+	if(Types.Cascade_Trigger.Skill_Resolved != p_event.trigger
+			or not _resolver._HasBuff(p_event.subject_ID, Types.Buff_Type.Borrowed_Time)
+			or not _CastSkillHasDamageEffect(p_event.subject_ID, p_event.skill_ID)):
+		return null
 	var fraction: float = 0.0
-	for buff in holder._active_buffs:
+	for buff in _resolver._characters[p_event.subject_ID]._active_buffs:
 		if(Types.Buff_Type.Borrowed_Time == buff.type):
 			fraction = buff.value
-			RemoveBuff(holder_ID, buff)
 			break
-	if(0.0 == fraction):
-		return
-	var cast_skill: Skill = holder._skills[p_event.skill_ID]
-	var caster_attributes: Dictionary[Types.Attribute, int] = _resolver.GetEffectiveAttributes(holder_ID)
-	var context := SkillCastContext.new(_resolver, holder_ID, p_event.target_IDs, cast_skill,
-			caster_attributes, 0, TraitSkillResult.new())
-	context.repeat_bonus = fraction - 1.0
-	var carries_damage: bool = false
-	for effect in cast_skill.effects:
-		if(effect is DamageEffect):
-			carries_damage = true
+	return CascadeContribution.new(
+			StringName(Types.Buff_Type.keys()[Types.Buff_Type.Borrowed_Time]), 1,
+			CascadeContribution.Kind.Base, 1.0,
+			func(e: CascadeEvent) -> void: _ResolveBorrowedTime(e, fraction))
+
+func _ResolveBorrowedTime(p_event: CascadeEvent, p_fraction: float) -> void:
+	var holder: Character = _resolver._characters[p_event.subject_ID]
+	for buff in holder._active_buffs:
+		if(Types.Buff_Type.Borrowed_Time == buff.type):
+			RemoveBuff(p_event.subject_ID, buff)
 			break
-	if(not carries_damage):
-		return
-	for effect in cast_skill.effects:
-		if(effect is DamageEffect and context.ConditionMet(effect)):
-			effect.Resolve(context)
+	_resolver.ResolveSkillEcho(p_event.subject_ID, p_event.skill_ID, p_event.target_IDs, p_fraction)
 
 
-func ForceExtraDebuffTick(p_target_ID: int) -> void:
-	var target: Character = _resolver._characters[p_target_ID]
-	var attributes: Dictionary[Types.Attribute, int] = _resolver.GetEffectiveAttributes(p_target_ID)
-	var tick: Dictionary = _ComputeDebuffTickDamage(target, attributes)
-	_EmitDebuffTickIfAny(p_target_ID, tick)
-	_PostComorbidityCascadeIfAny(p_target_ID, tick)
+func _ContributeForcedDebuffTick(p_event: CascadeEvent) -> CascadeContribution:
+	if(Types.Cascade_Trigger.Debuff_Tick_Forced != p_event.trigger):
+		return null
+	var contribution: CascadeContribution = CascadeContribution.new(
+			&"Debuff_Tick_Forced", 1, CascadeContribution.Kind.Base, 1.0, ForceExtraDebuffTick)
+	var origin_ID: int = p_event.origin_ID
+	contribution.origin_for_instance = func(_i: int) -> int: return origin_ID
+	return contribution
+
+func ForceExtraDebuffTick(p_event: CascadeEvent) -> void:
+	var target_ID: int = p_event.subject_ID
+	var target: Character = _resolver._characters.get(target_ID)
+	if(null == target or target._current_health <= 0):
+		return
+	var attributes: Dictionary[Types.Attribute, int] = _resolver.GetEffectiveAttributes(target_ID)
+	var tick: Dictionary = _ApplyEchoStrength(_ComputeDebuffTickDamage(target, attributes))
+	_EmitDebuffTickIfAny(target_ID, tick)
+	_PostDebuffTick(target_ID, tick)
 
 
 func _TriggerExistingCasterBuffs(

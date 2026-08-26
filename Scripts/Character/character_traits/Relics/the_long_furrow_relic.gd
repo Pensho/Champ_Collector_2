@@ -20,12 +20,13 @@ func Init(p_rarity: Types.Rarity) -> void:
 
 func StartOfBattle(p_owner_ID: int, p_resolver: BattleResolver) -> void:
 	_charge_span = 0
-	p_resolver.GetCascadeResolver().Subscribe(
-			Types.Cascade_Trigger.Skill_Resolved,
-			_CASCADE_MECHANIC_KEY,
-			func(p_event: CascadeEvent) -> bool:
-				return p_event.subject_ID == p_owner_ID and _charge_span >= _MINIMUM_CHARGE_SPAN,
-			func(p_event: CascadeEvent) -> void: _EchoRendingCharge(p_owner_ID, p_event, p_resolver))
+	p_resolver.GetCascadeResolver().SubscribeCascadeContributor(
+			func(p_event: CascadeEvent) -> CascadeContribution:
+				if(Types.Cascade_Trigger.Skill_Resolved != p_event.trigger or p_event.subject_ID != p_owner_ID
+						or _charge_span < _MINIMUM_CHARGE_SPAN):
+					return null
+				return CascadeContribution.new(
+						_CASCADE_MECHANIC_KEY, 1, CascadeContribution.Kind.Base, Magnitude()))
 
 func OnSkillCast(
 		p_owner_ID: int,
@@ -46,20 +47,3 @@ func OnSkillCast(
 
 func SuppressesOwnCriticalHit(_p_owner_ID: int, p_skill_name: String) -> bool:
 	return CHARGE_SKILL_NAME == p_skill_name
-
-func _EchoRendingCharge(p_owner_ID: int, p_event: CascadeEvent, p_resolver: BattleResolver) -> void:
-	_charge_span = 0
-	var characters: Dictionary[int, Character] = p_resolver.GetCharacters()
-	if(not characters.has(p_owner_ID)):
-		return
-	var caster: Character = characters[p_owner_ID]
-	if(p_event.skill_ID < 0 or p_event.skill_ID >= caster._skills.size()):
-		return
-	var cast_skill: Skill = caster._skills[p_event.skill_ID]
-	var caster_attributes: Dictionary[Types.Attribute, int] = p_resolver.GetEffectiveAttributes(p_owner_ID)
-	var context := SkillCastContext.new(p_resolver, p_owner_ID, p_event.target_IDs, cast_skill,
-			caster_attributes, 0, TraitSkillResult.new())
-	context.repeat_bonus = Magnitude() - 1.0
-	for effect in cast_skill.effects:
-		if(effect is DamageEffect and context.ConditionMet(effect)):
-			effect.Resolve(context)

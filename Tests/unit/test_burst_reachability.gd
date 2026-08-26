@@ -322,10 +322,10 @@ func test_multi_instance_contrast_ratio_is_flat_when_compounding_is_omitted() ->
 		"An omitted instance_compounding must default to a flat 1.0x curve across instances")
 
 func test_cut_the_cloth_manifest_entry_reproduces_its_projected_legendary_curve() -> void:
-	# Role_Kit_Design.md 9.2's own worked figure: 8 instances (base cast + 7 Tension) at
-	# 0.9 base strength * 1.20 (Legendary self-bonus) - 1 = +0.08 magnitude, flat (no
-	# instance_compounding) -> 8 * 1.08 = 8.64, reproducing the doc's ~47.5x contrast ratio
-	# against an illustrative 5.5 team product (8.64 * 5.5 ~= 47.5).
+	# Role_Kit_Design.md 9.2's own worked figure: 9 instances (base cast + 7 Tension + Black
+	# Thread's extra instance) at 0.9 base strength * 1.20 (Legendary self-bonus) - 1 = +0.08
+	# magnitude, flat (no instance_compounding) -> 9 * 1.08 = 9.72, reproducing the doc's
+	# ~53.5x contrast ratio against an illustrative 5.5 team product (9.72 * 5.5 ~= 53.5).
 	var herald_entry: Dictionary = KitContributionManifest.MANIFEST[Types.Role.Herald_Of_The_Loom]
 	var cut_the_cloth: Dictionary = {}
 	for skill: Dictionary in herald_entry["skills"]:
@@ -333,15 +333,15 @@ func test_cut_the_cloth_manifest_entry_reproduces_its_projected_legendary_curve(
 			cut_the_cloth = skill
 	assert_true(cut_the_cloth.has("gated_bonus"), "Cut the Cloth must declare a gated_bonus")
 	var bonus: Dictionary = cut_the_cloth["gated_bonus"]
-	assert_eq(bonus["instances"], 8)
+	assert_eq(bonus["instances"], 9)
 	assert_almost_eq(bonus["magnitude"], 0.08, 0.0001)
 	assert_eq(bonus["fold"], "separate_instance")
 
 	var baseline_damage: float = Skills.MitigatedDamageUnrounded(100.0, 100.0, 1.0, 1.0)
 	var ratio: float = BurstReachability._MultiInstanceContrastRatio(
 			cut_the_cloth, bonus, 100.0, 100.0, baseline_damage, 1.0)
-	assert_almost_eq(ratio, 8.64, 0.0001,
-		"Cut the Cloth's manifest entry should reproduce Role_Kit_Design.md 9.2's 8*1.08 curve")
+	assert_almost_eq(ratio, 9.72, 0.0001,
+		"Cut the Cloth's manifest entry should reproduce Role_Kit_Design.md 9.2's 9*1.08 curve")
 
 func test_multi_instance_contrast_ratio_clamps_instances_to_the_cascade_cap() -> void:
 	var skill_entry: Dictionary = {"class": KitContributionManifest.Contribution_Class.Channel1, "magnitude": 0.0}

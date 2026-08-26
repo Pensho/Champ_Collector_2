@@ -73,9 +73,9 @@ func test_silver_extends_outgoing_debuff_duration() -> void:
 
 func test_silver_makes_debuffs_unresistable() -> void:
 	_InitTrait(Types.Rarity.Rare)
-	assert_true(_trait.DebuffsCannotBeResisted(0))
+	assert_true(_trait.DebuffsCannotBeResisted(0, 1))
 	_trait.AdvanceThread()  # Golden
-	assert_false(_trait.DebuffsCannotBeResisted(0))
+	assert_false(_trait.DebuffsCannotBeResisted(0, 1))
 
 # --- Pull the Thread: stance-independent Tension grant ---
 
@@ -140,6 +140,18 @@ func test_golden_tension_caps_at_max() -> void:
 
 	assert_eq(_trait._tension, WeftAndWarpTrait.TENSION_MAX)
 
+func test_golden_gains_no_tension_from_a_plain_debuff_tick_with_no_contributor() -> void:
+	_InitTrait(Types.Rarity.Uncommon)
+	_trait.AdvanceThread()  # Golden
+	var enemy: Character = TestFactory.make_character()
+	_characters[1] = enemy
+	var sided_resolver: BattleResolver = TestFactory.make_resolver(_characters, CombatSides.new([0], [1]))
+	sided_resolver.GetCascadeResolver().Post(CascadeEvent.new(Types.Cascade_Trigger.Debuff_Ticked))
+	sided_resolver.GetCascadeResolver().Drain()
+
+	assert_eq(_trait._tension, 0,
+		"A plain debuff tick with no contributor should post but resolve no Echo, granting no Tension")
+
 func test_non_golden_threads_do_not_gain_tension_from_cascade_instances() -> void:
 	_InitTrait(Types.Rarity.Uncommon)  # Silver
 	var enemy: Character = TestFactory.make_character()
@@ -170,20 +182,24 @@ func _make_black_thread_setup() -> Dictionary:
 	herald_trait.AdvanceThread()  # Black
 	return {"trait": herald_trait, "resolver": resolver}
 
+## A Base contributor standing in for a real skill-replay mechanic (e.g. Cut the Cloth):
+## Black Thread only extends a contributor-driven Base, never a raw Subscribe listener.
+func _subscribe_test_base_contributor(p_cascade: CascadeResolver, p_run_count: Array[int]) -> void:
+	p_cascade.SubscribeCascadeContributor(func(_p_event: CascadeEvent) -> CascadeContribution:
+		return CascadeContribution.new(&"TestBase", 1, CascadeContribution.Kind.Base, 1.0,
+				func(_e: CascadeEvent) -> void: p_run_count[0] += 1))
+
 func test_black_thread_grants_one_extra_instance_to_the_herald_own_cascade() -> void:
 	var setup: Dictionary = _make_black_thread_setup()
 	var resolver: BattleResolver = setup["resolver"]
 	var cascade: CascadeResolver = resolver.GetCascadeResolver()
 	var run_count: Array[int] = [0]
-	cascade.Subscribe(Types.Cascade_Trigger.Skill_Resolved, &"TestListener",
-			func(_p_event: CascadeEvent) -> bool: return true,
-			func(_p_event: CascadeEvent) -> void: run_count[0] += 1)
+	_subscribe_test_base_contributor(cascade, run_count)
 
 	resolver._BeginBatch()
 	var event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Skill_Resolved)
 	event.subject_ID = 0
 	event.target_IDs = [1]
-	event.instance_count = 1
 	cascade.Post(event)
 	resolver._EndBatch()
 
@@ -194,19 +210,38 @@ func test_black_thread_does_not_affect_another_characters_cascade() -> void:
 	var resolver: BattleResolver = setup["resolver"]
 	var cascade: CascadeResolver = resolver.GetCascadeResolver()
 	var run_count: Array[int] = [0]
-	cascade.Subscribe(Types.Cascade_Trigger.Skill_Resolved, &"TestListener",
-			func(_p_event: CascadeEvent) -> bool: return true,
-			func(_p_event: CascadeEvent) -> void: run_count[0] += 1)
+	_subscribe_test_base_contributor(cascade, run_count)
 
 	resolver._BeginBatch()
 	var event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Skill_Resolved)
 	event.subject_ID = 1  # not the Herald
 	event.target_IDs = [0]
-	event.instance_count = 1
 	cascade.Post(event)
 	resolver._EndBatch()
 
 	assert_eq(run_count[0], 1, "Black Thread must not amplify a cascade it did not cause")
+
+func test_black_thread_does_not_extend_a_status_triggered_cascade() -> void:
+	var setup: Dictionary = _make_black_thread_setup()
+	var resolver: BattleResolver = setup["resolver"]
+	var cascade: CascadeResolver = resolver.GetCascadeResolver()
+	var run_count: Array[int] = [0]
+	# A Base contributor on Debuff_Ticked, standing in for Comorbidity: extenders are only
+	# queried for Skill_Resolved, so Black Thread must not reach it.
+	cascade.SubscribeCascadeContributor(func(_p_event: CascadeEvent) -> CascadeContribution:
+		if(Types.Cascade_Trigger.Debuff_Ticked != _p_event.trigger):
+			return null
+		return CascadeContribution.new(&"TestStatusBase", 1, CascadeContribution.Kind.Base,
+				1.0, func(_e: CascadeEvent) -> void: run_count[0] += 1))
+
+	resolver._BeginBatch()
+	var event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Debuff_Ticked)
+	event.subject_ID = 0
+	cascade.Post(event)
+	resolver._EndBatch()
+
+	assert_eq(run_count[0], 1,
+		"Black Thread must not add an instance to a cascade triggered off a status tick")
 
 func test_non_black_thread_does_not_grant_extra_instances() -> void:
 	var setup: Dictionary = _make_black_thread_setup()
@@ -215,15 +250,12 @@ func test_non_black_thread_does_not_grant_extra_instances() -> void:
 	var resolver: BattleResolver = setup["resolver"]
 	var cascade: CascadeResolver = resolver.GetCascadeResolver()
 	var run_count: Array[int] = [0]
-	cascade.Subscribe(Types.Cascade_Trigger.Skill_Resolved, &"TestListener",
-			func(_p_event: CascadeEvent) -> bool: return true,
-			func(_p_event: CascadeEvent) -> void: run_count[0] += 1)
+	_subscribe_test_base_contributor(cascade, run_count)
 
 	resolver._BeginBatch()
 	var event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Skill_Resolved)
 	event.subject_ID = 0
 	event.target_IDs = [1]
-	event.instance_count = 1
 	cascade.Post(event)
 	resolver._EndBatch()
 
@@ -367,6 +399,79 @@ func test_cut_the_cloth_repeats_are_capped_by_the_shared_echo_budget() -> void:
 	assert_eq(_damage_results_against(results, 1).size(), 1 + 3,
 		"Tension repeats must stop once the shared per-action Echo budget runs out, " +
 		"leaving the base cast plus only the instances the remaining budget allowed")
+
+func test_cut_the_cloth_combines_with_black_thread_and_borrowed_time() -> void:
+	var setup: Dictionary = _make_cut_the_cloth_setup()
+	var herald_trait: WeftAndWarpTrait = setup["trait"]
+	var resolver: BattleResolver = setup["resolver"]
+	herald_trait._tension = 3
+	herald_trait.AdvanceThread()  # Golden
+	herald_trait.AdvanceThread()  # Black
+	var buff: StatusEffects.Buff = StatusEffects.Buff.new()
+	buff.type = Types.Buff_Type.Borrowed_Time
+	buff.duration = 1
+	buff.value = 0.4
+	resolver.GetStatusResolver().ApplyBuff(0, buff)
+
+	var results: Array[CombatResult] = resolver.ResolveSkill(0, [1], 0)
+
+	var markers: Array[CombatResult] = results.filter(
+			func(r: CombatResult) -> bool: return CombatResult.Kind.Cascade_Triggered == r.kind)
+	assert_eq(markers.size(), 5,
+		"3 Tension + Black Thread's extra Cut the Cloth Echo + Borrowed Time's own Echo = 5 markers")
+	for marker in markers:
+		assert_eq(marker.cascade_depth, 1, "Every contribution to this cast shares one cascade")
+
+	var damage_results: Array[CombatResult] = _damage_results_against(results, 1)
+	assert_eq(damage_results.size(), 6, "The base cast plus those 5 Echoes should each deal damage")
+	for damage_result in damage_results.slice(1):
+		assert_eq(damage_result.cascade_depth, 1, "Every Echo's damage shares the cast's cascade depth")
+
+	var borrowed_time_echoes: Array[CombatResult] = damage_results.filter(
+			func(r: CombatResult) -> bool: return r.combined_damage_modifier.Buckets().has(&"Cut the Cloth (repeat)"))
+	assert_eq(borrowed_time_echoes.size(), 1,
+		"Only Borrowed Time's own Echo carries a repeat bucket — Black Thread's Echo inherits " +
+		"Cut the Cloth's dominant strength (1.0, no bucket) instead of Borrowed Time's fraction")
+	assert_almost_eq(borrowed_time_echoes[0].combined_damage_modifier.Buckets()[&"Cut the Cloth (repeat)"],
+		0.4 - 1.0, 0.0001, "Borrowed Time's Echo resolves at its own buff fraction, not the dominant Base's")
+
+func test_max_tension_combined_with_black_thread_and_borrowed_time_still_respects_the_fan_out_cap() -> void:
+	var setup: Dictionary = _make_cut_the_cloth_setup()
+	var herald_trait: WeftAndWarpTrait = setup["trait"]
+	var resolver: BattleResolver = setup["resolver"]
+	herald_trait._tension = WeftAndWarpTrait.TENSION_MAX
+	herald_trait.AdvanceThread()  # Golden
+	herald_trait.AdvanceThread()  # Black
+	var buff: StatusEffects.Buff = StatusEffects.Buff.new()
+	buff.type = Types.Buff_Type.Borrowed_Time
+	buff.duration = 1
+	buff.value = 0.4
+	resolver.GetStatusResolver().ApplyBuff(0, buff)
+	# 7 Tension + Black Thread's extra + Borrowed Time's own Echo request 9 instances, still
+	# under MAX_CASCADE_INSTANCES_PER_ACTION on its own; consuming most of the shared budget
+	# beforehand forces the cap to actually bind.
+	resolver._echoes_this_action = CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION - 4
+
+	var results: Array[CombatResult] = resolver.ResolveSkill(0, [1], 0)
+
+	assert_eq(_damage_results_against(results, 1).size(), 1 + 4,
+		"The base cast plus only the instances the remaining shared Echo budget allowed")
+
+func test_self_bonus_applies_to_echo_damage_but_not_the_base_cast() -> void:
+	var setup: Dictionary = _make_cut_the_cloth_setup()
+	var herald_trait: WeftAndWarpTrait = setup["trait"]
+	var resolver: BattleResolver = setup["resolver"]
+	herald_trait._tension = 1
+
+	var results: Array[CombatResult] = resolver.ResolveSkill(0, [1], 0)
+	var damage_results: Array[CombatResult] = _damage_results_against(results, 1)
+
+	assert_eq(damage_results.size(), 2, "One base cast plus one Echo from 1 Tension")
+	assert_false(damage_results[0].combined_damage_modifier.Buckets().has(&"Weft and Warp"),
+		"The self-bonus must not apply to the base cast, only to Echoes")
+	assert_almost_eq(damage_results[1].combined_damage_modifier.Buckets().get(&"Weft and Warp", 0.0),
+		WeftAndWarpTrait.SELF_BONUS_BY_RARITY[Types.Rarity.Rare], 0.0001,
+		"The self-bonus should apply to the Echo, keyed under its own mechanic identity")
 
 func test_cut_the_cloth_at_zero_tension_emits_no_burst_marker() -> void:
 	var setup: Dictionary = _make_cut_the_cloth_setup()

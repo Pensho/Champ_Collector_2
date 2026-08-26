@@ -40,6 +40,8 @@ var _cascade_resolver: CascadeResolver
 var _echoes_this_action: int = 0
 var _echo_depth: int = 0
 var _echo_depth_stack: Array[int] = []
+var _echo_strength_contributions: Dictionary[StringName, float] = {}
+var _echo_strength_stack: Array[Dictionary] = []
 
 var _skill_use_counts: Dictionary[String, int] = {}
 
@@ -351,8 +353,8 @@ func EmitTraitText(p_target_ID: int, p_text: String, p_color: Color = Color.WHIT
 
 
 ## Emits the presentation-only marker that precedes one burst instance's results, so the
-## battle view can escalate their combat text (Concept_Document.md 1.1.5). Emitted by the
-## cascade channel and by trait-local instance loops that bypass it.
+## battle view can escalate their combat text (Concept_Document.md 1.1.5). Emitted by
+## BeginEchoInstance, the single choke point every Echo path resolves through.
 func EmitBurstInstance(
 		p_mechanic_key: StringName,
 		p_subject_ID: int,
@@ -367,17 +369,25 @@ func BeginEchoInstance(
 		p_mechanic_key: StringName,
 		p_subject_ID: int,
 		p_trigger: Types.Cascade_Trigger,
-		p_depth: int = 0) -> bool:
+		p_depth: int = 0,
+		p_strength_contributions: Dictionary[StringName, float] = {}) -> bool:
 	if(_echoes_this_action >= CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION):
 		return false
 	_echoes_this_action += 1
 	_echo_depth_stack.append(_echo_depth)
 	_echo_depth = p_depth if 0 != p_depth else _echo_depth + 1
+	_echo_strength_stack.append(_echo_strength_contributions)
+	_echo_strength_contributions = p_strength_contributions
 	EmitBurstInstance(p_mechanic_key, p_subject_ID, p_trigger)
 	return true
 
 func EndEchoInstance() -> void:
 	_echo_depth = _echo_depth_stack.pop_back() if not _echo_depth_stack.is_empty() else 0
+	_echo_strength_contributions = (
+			_echo_strength_stack.pop_back() if not _echo_strength_stack.is_empty() else {})
+
+func CurrentEchoStrengthContributions() -> Dictionary[StringName, float]:
+	return _echo_strength_contributions
 
 func IsResolvingEcho() -> bool:
 	return _echo_depth > 0
@@ -387,6 +397,25 @@ func EchoOrdinalThisAction() -> int:
 
 func CurrentEchoDepth() -> int:
 	return _echo_depth
+
+func ResolveSkillEcho(
+		p_caster_ID: int,
+		p_skill_ID: int,
+		p_target_IDs: Array[int],
+		p_strength_multiplier: float) -> void:
+	if(not _characters.has(p_caster_ID)):
+		return
+	var caster: Character = _characters[p_caster_ID]
+	if(p_skill_ID < 0 or p_skill_ID >= caster._skills.size()):
+		return
+	var cast_skill: Skill = caster._skills[p_skill_ID]
+	var caster_attributes: Dictionary[Types.Attribute, int] = GetEffectiveAttributes(p_caster_ID)
+	var context := SkillCastContext.new(
+			self, p_caster_ID, p_target_IDs, cast_skill, caster_attributes, 0, TraitSkillResult.new())
+	context.repeat_bonus = p_strength_multiplier - 1.0
+	for effect in cast_skill.effects:
+		if(effect is DamageEffect and context.ConditionMet(effect)):
+			effect.Resolve(context)
 
 ## Sets health directly (debug tools), running the same clamp and death handling as
 ## combat damage.

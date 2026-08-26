@@ -4,7 +4,7 @@ const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 
 # Coverage for CascadeResolver's own plumbing (Concept_Document.md 1.1.3/1.1.4): the two
 # termination bounds, the once-per-action dedup rule, instance-count snapshotting, the
-# Cascade_Triggered stream marker, the instance-count modifier hook, and the per-instance
+# Cascade_Triggered stream marker, the contributor/attribution model, and the per-instance
 # Cascade_Instance_Resolved notification. The three ported effects' own behavior (Overflow,
 # Rush, Mirror Coat) stays covered by their existing suites — this file is the architecture,
 # not the content.
@@ -168,76 +168,6 @@ func test_repeat_instances_each_read_live_conditions_via_a_fresh_combined_modifi
 		"The first instance should consume Daunting_Strength; a modifier cached across " +
 		"instances would let the second instance keep benefiting from an already-consumed buff")
 
-func test_instance_modifier_adds_extra_instances_to_a_matched_listener() -> void:
-	var run_count: Array[int] = [0]
-	_cascade.Subscribe(Types.Cascade_Trigger.Status_Expired, &"BaseListener",
-			func(_p_event: CascadeEvent) -> bool: return true,
-			func(_p_event: CascadeEvent) -> void: run_count[0] += 1)
-	_cascade.SubscribeInstanceModifier(func(_p_event: CascadeEvent, _p_mechanic_key: StringName) -> int: return 2)
-
-	_resolver._BeginBatch()
-	var event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Status_Expired)
-	event.subject_ID = 0
-	event.instance_count = 1
-	_cascade.Post(event)
-	_resolver._EndBatch()
-
-	assert_eq(run_count[0], 3,
-		"A modifier returning 2 extra instances should add to the listener's own base count of 1")
-
-func test_instance_modifier_never_fires_without_a_matched_listener() -> void:
-	var modifier_calls: Array[int] = [0]
-	_cascade.SubscribeInstanceModifier(func(_p_event: CascadeEvent, _p_mechanic_key: StringName) -> int:
-		modifier_calls[0] += 1
-		return 5)
-
-	_resolver._BeginBatch()
-	var event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Status_Expired)
-	event.subject_ID = 0
-	event.instance_count = 1
-	_cascade.Post(event)
-	_resolver._EndBatch()
-
-	assert_eq(modifier_calls[0], 0,
-		"A modifier must not run when no listener actually matched the event")
-
-func test_instance_modifier_still_respects_the_fan_out_cap() -> void:
-	var run_count: Array[int] = [0]
-	_cascade.Subscribe(Types.Cascade_Trigger.Status_Expired, &"CappedListener",
-			func(_p_event: CascadeEvent) -> bool: return true,
-			func(_p_event: CascadeEvent) -> void: run_count[0] += 1)
-	_cascade.SubscribeInstanceModifier(
-			func(_p_event: CascadeEvent, _p_mechanic_key: StringName) -> int:
-				return CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION)
-
-	_resolver._BeginBatch()
-	var event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Status_Expired)
-	event.subject_ID = 0
-	event.instance_count = 1
-	_cascade.Post(event)
-	_resolver._EndBatch()
-
-	assert_eq(run_count[0], CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION,
-		"Extra instances from a modifier must still be bounded by the per-action fan-out cap")
-
-func test_instance_modifier_receives_the_matched_listeners_mechanic_key() -> void:
-	var run_count: Array[int] = [0]
-	_cascade.Subscribe(Types.Cascade_Trigger.Status_Expired, &"ScopedListener",
-			func(_p_event: CascadeEvent) -> bool: return true,
-			func(_p_event: CascadeEvent) -> void: run_count[0] += 1)
-	_cascade.SubscribeInstanceModifier(func(_p_event: CascadeEvent, p_mechanic_key: StringName) -> int:
-		return 1 if &"ScopedListener" == p_mechanic_key else 0)
-
-	_resolver._BeginBatch()
-	var event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Status_Expired)
-	event.subject_ID = 0
-	event.instance_count = 1
-	_cascade.Post(event)
-	_resolver._EndBatch()
-
-	assert_eq(run_count[0], 2,
-		"A modifier scoped to the matched listener's own mechanic_key should apply to it")
-
 func test_a_cascade_posted_from_inside_a_trait_local_echo_is_stamped_depth_2() -> void:
 	assert_true(_resolver.BeginEchoInstance(&"FakeTraitLocalRepeat", 0, Types.Cascade_Trigger.Skill_Resolved),
 		"Sanity check: the trait-local Echo should open")
@@ -253,6 +183,181 @@ func test_begin_echo_instance_refuses_once_the_fan_out_cap_is_spent() -> void:
 	_resolver._echoes_this_action = CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION
 	assert_false(_resolver.BeginEchoInstance(&"FakeTraitLocalRepeat", 0, Types.Cascade_Trigger.Skill_Resolved),
 		"BeginEchoInstance must refuse once the shared per-action Echo budget is spent")
+
+func test_contributor_base_alone_creates_a_cascade() -> void:
+	var run_count: Array[int] = [0]
+	_cascade.SubscribeCascadeContributor(func(_p_event: CascadeEvent) -> CascadeContribution:
+		return CascadeContribution.new(&"BaseContributor", 2, CascadeContribution.Kind.Base,
+				1.0, func(_e: CascadeEvent) -> void: run_count[0] += 1))
+
+	_resolver._BeginBatch()
+	_cascade.Post(CascadeEvent.ForSkillResolved(0, 0, []))
+	_resolver._EndBatch()
+
+	assert_eq(run_count[0], 2, "A Base contributor's own instances should resolve on their own")
+
+func test_contributor_base_with_no_resolve_falls_back_to_the_canonical_skill_replay() -> void:
+	_roster[0]._skills.append(TestFactory.make_strike_skill())
+	_cascade.SubscribeCascadeContributor(func(_p_event: CascadeEvent) -> CascadeContribution:
+		return CascadeContribution.new(&"NoResolve", 1, CascadeContribution.Kind.Base, 1.0))
+
+	_resolver._BeginBatch()
+	_cascade.Post(CascadeEvent.ForSkillResolved(0, 0, [3]))
+	var results: Array[CombatResult] = _resolver._EndBatch()
+
+	var damage_results: Array[CombatResult] = results.filter(
+			func(r: CombatResult) -> bool: return CombatResult.Kind.Damage == r.kind)
+	assert_false(damage_results.is_empty(),
+		"A Base contribution with no resolve should fall back to ResolveSkillEcho and deal damage")
+
+func test_contributor_extender_without_a_base_contributes_nothing() -> void:
+	var run_count: Array[int] = [0]
+	_cascade.SubscribeCascadeContributor(func(_p_event: CascadeEvent) -> CascadeContribution:
+		return CascadeContribution.new(&"ExtenderOnly", 3, CascadeContribution.Kind.Extender,
+				1.0, func(_e: CascadeEvent) -> void: run_count[0] += 1))
+
+	_resolver._BeginBatch()
+	_cascade.Post(CascadeEvent.ForSkillResolved(0, 0, []))
+	_resolver._EndBatch()
+
+	assert_eq(run_count[0], 0, "An extender cannot enable a cascade with no Base contributing")
+
+func test_contributor_extender_appends_to_the_dominant_base() -> void:
+	var base_runs: Array[int] = [0]
+	var extender_runs: Array[int] = [0]
+	_cascade.SubscribeCascadeContributor(func(_p_event: CascadeEvent) -> CascadeContribution:
+		return CascadeContribution.new(&"Dominant", 2, CascadeContribution.Kind.Base,
+				1.0, func(_e: CascadeEvent) -> void: base_runs[0] += 1))
+	_cascade.SubscribeCascadeContributor(func(_p_event: CascadeEvent) -> CascadeContribution:
+		return CascadeContribution.new(&"MinorExtender", 1, CascadeContribution.Kind.Extender,
+				1.0, func(_e: CascadeEvent) -> void: extender_runs[0] += 1))
+
+	_resolver._BeginBatch()
+	_cascade.Post(CascadeEvent.ForSkillResolved(0, 0, []))
+	_resolver._EndBatch()
+
+	assert_eq(base_runs[0], 3,
+		"The dominant Base's slice should absorb the Extender's instance and resolve at its own strength")
+	assert_eq(extender_runs[0], 0,
+		"An Extender never runs its own resolve — its instance is folded into the Base's slice")
+
+func test_contributor_respects_the_once_per_action_dedup() -> void:
+	var run_count: Array[int] = [0]
+	_cascade.SubscribeCascadeContributor(func(_p_event: CascadeEvent) -> CascadeContribution:
+		return CascadeContribution.new(&"Repeatable", 1, CascadeContribution.Kind.Base,
+				1.0, func(_e: CascadeEvent) -> void: run_count[0] += 1))
+
+	_resolver._BeginBatch()
+	_cascade.Post(CascadeEvent.ForSkillResolved(0, 0, []))
+	_cascade.Post(CascadeEvent.ForSkillResolved(0, 0, []))
+	_resolver._EndBatch()
+
+	assert_eq(run_count[0], 1,
+		"A second Skill_Resolved event for the same mechanic and subject in one action must not fire again")
+
+func test_echo_strength_contributions_are_visible_during_the_instance_and_restored_after() -> void:
+	assert_eq(_resolver.CurrentEchoStrengthContributions(), {},
+		"No Echo is resolving, so there should be no strength contributions")
+
+	_resolver.BeginEchoInstance(&"Outer", 0, Types.Cascade_Trigger.Skill_Resolved, 0, {&"Outer": 0.5})
+	assert_eq(_resolver.CurrentEchoStrengthContributions(), {&"Outer": 0.5},
+		"The contributions passed to BeginEchoInstance should be visible while it resolves")
+
+	_resolver.BeginEchoInstance(&"Inner", 0, Types.Cascade_Trigger.Skill_Resolved, 0, {&"Inner": 0.25})
+	assert_eq(_resolver.CurrentEchoStrengthContributions(), {&"Inner": 0.25},
+		"A nested Echo's own contributions should apply while it resolves, not the outer one's")
+	_resolver.EndEchoInstance()
+
+	assert_eq(_resolver.CurrentEchoStrengthContributions(), {&"Outer": 0.5},
+		"Ending the inner Echo should restore the outer Echo's contributions")
+	_resolver.EndEchoInstance()
+
+	assert_eq(_resolver.CurrentEchoStrengthContributions(), {},
+		"Ending the outermost Echo should leave no strength contributions active")
+
+func test_strength_modifier_reaches_a_listener_driven_echo() -> void:
+	var seen_contributions: Array[Dictionary] = []
+	_cascade.Subscribe(Types.Cascade_Trigger.Status_Expired, &"BaseListener",
+			func(_p_event: CascadeEvent) -> bool: return true,
+			func(_p_event: CascadeEvent) -> void:
+				seen_contributions.append(_resolver.CurrentEchoStrengthContributions()))
+	_cascade.SubscribeStrengthModifier(func(_p_event: CascadeEvent, _p_mechanic_key: StringName) -> CascadeContribution:
+		return CascadeContribution.new(&"SomeModifier", 1, CascadeContribution.Kind.Base, 1.5))
+
+	_resolver._BeginBatch()
+	var event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Status_Expired)
+	event.subject_ID = 0
+	_cascade.Post(event)
+	_resolver._EndBatch()
+
+	assert_eq(seen_contributions, [{&"SomeModifier": 0.5}],
+		"A strength modifier should reach a plain Subscribe-driven Echo, keyed by its own mechanic_key")
+
+func test_strength_modifier_reaches_a_contributor_driven_echo() -> void:
+	var seen_contributions: Array[Dictionary] = []
+	_cascade.SubscribeCascadeContributor(func(_p_event: CascadeEvent) -> CascadeContribution:
+		return CascadeContribution.new(&"Contributor", 1, CascadeContribution.Kind.Base, 1.0,
+				func(_e: CascadeEvent) -> void:
+					seen_contributions.append(_resolver.CurrentEchoStrengthContributions())))
+	_cascade.SubscribeStrengthModifier(func(_p_event: CascadeEvent, _p_mechanic_key: StringName) -> CascadeContribution:
+		return CascadeContribution.new(&"Modifier", 1, CascadeContribution.Kind.Base, 1.5))
+
+	_resolver._BeginBatch()
+	_cascade.Post(CascadeEvent.ForSkillResolved(0, 0, []))
+	_resolver._EndBatch()
+
+	assert_eq(seen_contributions, [{&"Modifier": 0.5}],
+		"A strength modifier should reach a contributor-driven Echo too")
+
+func test_strength_modifier_returning_null_or_no_multiplier_contributes_nothing() -> void:
+	var seen_contributions: Array[Dictionary] = []
+	_cascade.Subscribe(Types.Cascade_Trigger.Status_Expired, &"BaseListener",
+			func(_p_event: CascadeEvent) -> bool: return true,
+			func(_p_event: CascadeEvent) -> void:
+				seen_contributions.append(_resolver.CurrentEchoStrengthContributions()))
+	_cascade.SubscribeStrengthModifier(func(_p_event: CascadeEvent, _p_mechanic_key: StringName) -> CascadeContribution:
+		return null)
+	_cascade.SubscribeStrengthModifier(func(_p_event: CascadeEvent, _p_mechanic_key: StringName) -> CascadeContribution:
+		return CascadeContribution.new(&"Inert", 1, CascadeContribution.Kind.Base, 1.0))
+
+	_resolver._BeginBatch()
+	var event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Status_Expired)
+	event.subject_ID = 0
+	_cascade.Post(event)
+	_resolver._EndBatch()
+
+	assert_eq(seen_contributions, [{}],
+		"A null modifier and one at multiplier 1.0 (no effect) should both contribute nothing")
+
+## The governing principle behind this plan: BeginEchoInstance is called from exactly one
+## place, CascadeResolver's own instance loop. A script anywhere else that calls it has grown
+## a sixth private Echo loop instead of declaring a contribution.
+func test_begin_echo_instance_is_called_only_from_cascade_resolver() -> void:
+	var offending_files: Array[String] = []
+	var directories: Array[String] = ["res://Scripts"]
+	while(not directories.is_empty()):
+		var directory_path: String = directories.pop_back()
+		var directory: DirAccess = DirAccess.open(directory_path)
+		assert_not_null(directory, "Could not open %s" % directory_path)
+		directory.list_dir_begin()
+		var entry: String = directory.get_next()
+		while(not entry.is_empty()):
+			var full_path: String = "%s/%s" % [directory_path, entry]
+			if(directory.current_is_dir()):
+				directories.append(full_path)
+			elif(entry.ends_with(".gd") and "cascade_resolver.gd" != entry):
+				var contents: String = FileAccess.get_file_as_string(full_path)
+				for line in contents.split("\n"):
+					var trimmed: String = line.strip_edges()
+					if(trimmed.contains("BeginEchoInstance(") and not trimmed.begins_with("func BeginEchoInstance(")):
+						offending_files.append(full_path)
+						break
+			entry = directory.get_next()
+		directory.list_dir_end()
+
+	assert_eq(offending_files, [],
+		"Only cascade_resolver.gd may call BeginEchoInstance; a Channel 3 mechanic must " +
+		"declare a CascadeContribution instead of opening its own Echo loop")
 
 func test_cascade_instance_resolved_notifies_every_living_characters_trait() -> void:
 	for id in _roster.keys():

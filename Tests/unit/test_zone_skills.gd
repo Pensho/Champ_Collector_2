@@ -130,15 +130,47 @@ func test_miasmas_forced_tick_also_cascades_a_comorbidity_flagged_debuff() -> vo
 	enfeeble.source_ID = 1
 	_roster[3]._active_debuffs.append(enfeeble)
 	var health_before: int = _roster[3]._current_health
+	var received: Array[CombatResult] = []
+	_resolver.result_produced.connect(func(r: CombatResult) -> void: received.append(r))
 
 	_cast(0, "res://Data/Character_Skill_Variants/Zone_Skills/Miasma.tres", [], 0)
 
-	# Blight also lands and applies_on_self_tick=false by default is irrelevant here; only
-	# Plague and the forced retick's Comorbidity cascade should reduce health.
+	# Blight (applies_on_self_tick=false) deals no tick damage of its own, but Miasma's own
+	# on_trigger list applies it before the forced tick's cascade drains, so it still counts
+	# toward Comorbidity's distinct-type tally: Plague, Enfeeble, Blight => 1 base tick plus
+	# 2 cascade repeats of Plague (the only repeats_per_distinct_debuff-flagged debuff).
 	var plague_tick: int = int(floor(50 * StatusEffectRegistry.DebuffData(Types.Debuff_Type.Plague).magnitude))
-	# 2 distinct types (Plague, Enfeeble) on Miasma's forced tick => 1 base + 1 cascade repeat.
-	assert_eq(health_before - _roster[3]._current_health, plague_tick * 2,
-		"Miasma's forced tick should drain and resolve a Comorbidity cascade instance")
+	assert_eq(health_before - _roster[3]._current_health, plague_tick * 3,
+		"Miasma's forced tick should drain and resolve a Comorbidity cascade instance per distinct debuff type")
+
+	var ticks: Array[CombatResult] = received.filter(
+			func(r: CombatResult) -> bool: return CombatResult.Kind.Debuff_Tick == r.kind and 3 == r.target_ID)
+	assert_eq(ticks.size(), 3, "The forced tick plus its two Comorbidity repeats")
+	assert_eq(ticks[0].cascade_depth, 1, "The forced tick is itself a depth-1 Echo")
+	assert_eq(ticks[1].cascade_depth, 2, "Comorbidity's repeat nests one level deeper than the forced tick")
+	assert_eq(ticks[2].cascade_depth, 2, "Comorbidity's second repeat is at the same nested depth as the first")
+
+## Miasma's forced tick now goes through CascadeResolver like any other Echo, so it must be
+## visible to a mechanic entirely unrelated to Comorbidity: the Herald of the Loom's Golden
+## Thread, which gains Tension from any real cascade instance concerning an enemy.
+func test_miasmas_forced_tick_is_seen_as_an_echo_by_golden_thread() -> void:
+	_positions.occupants_by_zone[0] = [3]
+	_roster[3]._attributes[Types.Attribute.Health] = 100000
+	_roster[3]._current_health = 100000
+	var plague: StatusEffects.Debuff = StatusEffects.Debuff.new()
+	plague.type = Types.Debuff_Type.Plague
+	plague.duration = 3
+	plague.source_ID = 1
+	_resolver.GetStatusResolver().ApplyDebuff(3, plague)
+	var herald_trait: WeftAndWarpTrait = WeftAndWarpTrait.new()
+	herald_trait.Init(Types.Rarity.Uncommon)
+	herald_trait.AdvanceThread()  # Golden
+	_roster[0]._trait = herald_trait
+
+	_cast(0, "res://Data/Character_Skill_Variants/Zone_Skills/Miasma.tres", [], 0)
+
+	assert_eq(herald_trait._tension, 1,
+		"The forced tick is a real cascade instance concerning an enemy, so Golden Thread should gain Tension")
 
 func test_weight_of_law_stuns_the_enemy_standing_in_it() -> void:
 	_positions.occupants_by_zone[0] = [3]

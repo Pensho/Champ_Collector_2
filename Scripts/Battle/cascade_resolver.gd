@@ -5,11 +5,10 @@ class_name CascadeResolver extends RefCounted
 ## Post() and return immediately; Drain() runs the pending queue iteratively once the
 ## current resolution completes (BattleResolver._EndBatch, at batch depth 0), rather than
 ## recursing on the call stack. Concept_Document.md 1.1.4's two termination bounds are
-## enforced on every Echo path, not only this one: Post() refuses past MAX_CASCADE_DEPTH,
-## and BattleResolver.BeginEchoInstance — the single choke point this class and the
-## trait-local repeat loops that bypass it all call — refuses past
-## MAX_CASCADE_INSTANCES_PER_ACTION. Holds a back-reference to its owning BattleResolver,
-## matching StatusEffectResolver and ZoneResolver.
+## enforced on every Echo path: Post() refuses past MAX_CASCADE_DEPTH, and
+## BattleResolver.BeginEchoInstance — called from nowhere but this class's own instance
+## loops — refuses past MAX_CASCADE_INSTANCES_PER_ACTION. Holds a back-reference to its
+## owning BattleResolver, matching StatusEffectResolver and ZoneResolver.
 
 const MAX_CASCADE_DEPTH: int = 4
 const MAX_CASCADE_INSTANCES_PER_ACTION: int = 16
@@ -30,11 +29,8 @@ class Listener:
 
 var _resolver: BattleResolver
 var _listeners: Dictionary[Types.Cascade_Trigger, Array] = {}
-# (CascadeEvent, StringName) -> int: extra instances to add to whichever listener just
-# matched (identified by its own mechanic_key), summed before the per-instance loop's
-# bound is computed (e.g. the Herald of the Loom's Black Thread, the Sorcerer's Echo
-# charges). Modifiers amplify an existing match; they never create one.
-var _instance_modifiers: Array[Callable] = []
+var _contributors: Array[Callable] = []
+var _strength_modifiers: Array[Callable] = []
 var _pending: Array[CascadeEvent] = []
 # Keyed "mechanic_key:subject_ID" — a trigger source fires at most once per
 # originating action (Concept_Document.md 1.1.4), cleared at the action's end.
@@ -60,15 +56,11 @@ func Subscribe(
 	_listeners[p_trigger].append(Listener.new(p_mechanic_key, p_matches, p_callback))
 
 
-## Registers p_callback to amplify a listener's instance count once it has already
-## matched an event (e.g. the Herald of the Loom's Black Thread granting one extra
-## instance to a cascade instance caused by its own action, or the Sorcerer's Echo
-## charges scoped to its own mechanic_key). p_callback receives the CascadeEvent and the
-## matched listener's mechanic_key, and returns the extra instance count to add (0 for
-## no effect).
-func SubscribeInstanceModifier(p_callback: Callable) -> void:
-	_instance_modifiers.append(p_callback)
+func SubscribeCascadeContributor(p_callback: Callable) -> void:
+	_contributors.append(p_callback)
 
+func SubscribeStrengthModifier(p_callback: Callable) -> void:
+	_strength_modifiers.append(p_callback)
 
 ## Enqueues p_event for the next Drain. Depth is stamped here, one level deeper than
 ## whichever instance is currently resolving (1 for a trigger fired directly from the
@@ -99,17 +91,70 @@ func _ResolveEvent(p_event: CascadeEvent) -> void:
 		if(_fired_this_action.get(key, false)):
 			continue
 		_fired_this_action[key] = true
-		var extra_instances: int = 0
-		for modifier: Callable in _instance_modifiers:
-			extra_instances += int(modifier.call(p_event, listener.mechanic_key))
-		var requested: int = maxi(p_event.instance_count + extra_instances, 0)
-		for i in requested:
+		if(p_event.origin_ID < 0):
+			p_event.origin_ID = p_event.subject_ID
+		for i in p_event.instance_count:
 			if(not _resolver.BeginEchoInstance(
-					listener.mechanic_key, p_event.subject_ID, p_event.trigger, p_event.depth)):
+					listener.mechanic_key, p_event.subject_ID, p_event.trigger, p_event.depth,
+					_StrengthContributionsFor(p_event, listener.mechanic_key))):
 				break
 			listener.callback.call(p_event)
+			p_event.mechanic_key = listener.mechanic_key
 			_NotifyCascadeInstanceResolved(p_event)
 			_resolver.EndEchoInstance()
+	_ResolveContributions(p_event)
+
+func _ResolveContributions(p_event: CascadeEvent) -> void:
+	var extenders_allowed: bool = Types.Cascade_Trigger.Skill_Resolved == p_event.trigger
+	var bases: Array[CascadeContribution] = []
+	var extra_instances: int = 0
+	for contributor: Callable in _contributors:
+		var contribution: CascadeContribution = contributor.call(p_event)
+		if(contribution == null or contribution.instances <= 0):
+			continue
+		if(CascadeContribution.Kind.Extender == contribution.kind and not extenders_allowed):
+			continue
+		var key: String = "%s:%d" % [contribution.mechanic_key, p_event.subject_ID]
+		if(_fired_this_action.get(key, false)):
+			continue
+		_fired_this_action[key] = true
+		if(CascadeContribution.Kind.Base == contribution.kind):
+			bases.append(contribution)
+		else:
+			extra_instances += contribution.instances
+	if(bases.is_empty()):
+		return
+	var dominant: CascadeContribution = bases[0]
+	for base: CascadeContribution in bases:
+		if(base.instances > dominant.instances):
+			dominant = base
+	dominant.instances += extra_instances
+	for base: CascadeContribution in bases:
+		for i in base.instances:
+			p_event.origin_ID = (base.origin_for_instance.call(i) if base.origin_for_instance.is_valid()
+					else p_event.subject_ID)
+			if(not _resolver.BeginEchoInstance(
+					base.mechanic_key, p_event.subject_ID, p_event.trigger, p_event.depth,
+					_StrengthContributionsFor(p_event, base.mechanic_key))):
+				return
+			if(base.resolve.is_valid()):
+				base.resolve.call(p_event)
+			else:
+				_resolver.ResolveSkillEcho(
+						p_event.subject_ID, p_event.skill_ID, p_event.target_IDs, base.strength_multiplier)
+			p_event.mechanic_key = base.mechanic_key
+			_NotifyCascadeInstanceResolved(p_event)
+			_resolver.EndEchoInstance()
+
+func _StrengthContributionsFor(
+		p_event: CascadeEvent, p_mechanic_key: StringName) -> Dictionary[StringName, float]:
+	var contributions: Dictionary[StringName, float] = {}
+	for modifier: Callable in _strength_modifiers:
+		var contribution: CascadeContribution = modifier.call(p_event, p_mechanic_key)
+		if(contribution == null or 1.0 == contribution.strength_multiplier):
+			continue
+		contributions[contribution.mechanic_key] = contribution.strength_multiplier - 1.0
+	return contributions
 
 
 ## Notifies every living character's trait that a real cascade instance (one loop

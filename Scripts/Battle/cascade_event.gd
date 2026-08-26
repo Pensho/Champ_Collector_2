@@ -17,9 +17,14 @@ var instance_count: int = 1
 ## resolved target IDs, so a listener can re-resolve that skill's effects.
 var skill_ID: int = -1
 var target_IDs: Array[int] = []
+var distinct_debuff_type_count: int = 0
+var repeating_source_ids: Array[int] = []
 ## Stamped by CascadeResolver.Post; never set by the poster. 0 means "not part of a
 ## cascade" — the first cascade level is 1, matching CombatResult.cascade_depth.
 var depth: int = 0
+## Stamped by CascadeResolver right before an instance's Cascade_Instance_Resolved
+## notification: the mechanic that instance belongs to.
+var mechanic_key: StringName = &""
 
 
 func _init(p_trigger: Types.Cascade_Trigger) -> void:

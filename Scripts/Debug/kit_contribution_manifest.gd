@@ -785,15 +785,16 @@ const MANIFEST: Dictionary = {
 					"precondition": "Always holds exactly one of three threads, freely switchable " +
 							"during the Herald's own turn (persistent trait state, not a status effect). " +
 							"Golden: +1 Tension (capped at 7) whenever a cascade instance resolves on an " +
-							"enemy, via the generic Cascade_Instance_Resolved hook. Silver: this Herald's " +
-							"own applied debuffs cannot be resisted and last 1 turn longer " +
-							"(GetOutgoingDebuffDurationBonus/DebuffsCannotBeResisted). Black: the cascade " +
-							"instance produced by the Herald's own action resolves one additional time, " +
-							"via CascadeResolver.SubscribeInstanceModifier — new plumbing this kit added. " +
-							"Cascade instances this Herald produces (i.e. Cut the Cloth's own repeats) " +
-							"deal +20% damage (Legendary), scored on Cut the Cloth's own entry below.",
+							"enemy, via the generic Cascade_Instance_Resolved hook (excluded for Cut the " +
+							"Cloth's own instances by an explicit mechanic_key check, so the Herald cannot " +
+							"feed its own Tension). Silver: this Herald's own applied debuffs cannot be " +
+							"resisted and last 1 turn longer (GetOutgoingDebuffDurationBonus/" +
+							"DebuffsCannotBeResisted). Black: an Extender contribution that adds one " +
+							"instance to whatever cascade the Herald's own action produced (Cut the Cloth's " +
+							"Tension repeats included — the two now compose). Cascade instances this Herald " +
+							"produces deal +20% damage (Legendary), scored on Cut the Cloth's own entry below.",
 					"citation": "weft_and_warp_trait.gd; cascade_resolver.gd " +
-							"(SubscribeInstanceModifier, Cascade_Instance_Resolved)"},
+							"(SubscribeCascadeContributor, Cascade_Instance_Resolved)"},
 		],
 		"skills": [
 			{"name": "Thread Snap", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
@@ -813,23 +814,24 @@ const MANIFEST: Dictionary = {
 					"precondition": "damage_scaling Mysticism 0.9 (90% strength), no bonus_per, no " +
 							"debuff. Resolves once for the base cast plus once per Tension held (Tension: " +
 							"0 Uncommon/Rare start, 1 Epic/Legendary, max 7 flat every rarity), then " +
-							"consumes all Tension — up to 8 total resolves at max Tension. Resolved as a " +
-							"local loop inside the trait that never calls CascadeResolver.Post, so these " +
-							"repeats cannot feed this Herald's own Golden Thread.",
+							"consumes all Tension — up to 8 total resolves at max Tension, 9 with Black " +
+							"Thread's extra instance. A CascadeContribution Base on Skill_Resolved, so Black " +
+							"Thread (an Extender) and Borrowed Time (a Base of its own) can add to the same " +
+							"cascade instead of running as isolated repeats.",
 					"citation": "Cut_the_Cloth.tres:6-16; weft_and_warp_trait.gd " +
-							"(OnSkillCast, OnSkillEffectsResolved, _ResolveExtraCutTheClothInstances)",
+							"(OnSkillCast, SubscribeCascadeContributor)",
 					"gated_bonus": {"bucket_key": "", "magnitude": 0.08,
 							"class": Contribution_Class.Channel3_Cascade, "fold": "separate_instance",
-							"gate": &"tension_spent", "instances": 8,
+							"gate": &"tension_spent", "instances": 9,
 							"precondition": "Net per-instance multiplier folding both dials into one: 90% " +
 									"base strength times the passive's own +20% (Legendary) self-bonus on " +
 									"every cascade instance this Herald produces, 0.9*1.20-1 = +0.08. At " +
-									"Uncommon (5% self-bonus): 0.9*1.05-1 = -0.055. Flat across all 8 " +
-									"instances (no instance_compounding) — reproduces Role_Kit_Design.md " +
-									"section 9.2's own worked figures (8*1.08=8.64 -> ~47.5x at Legendary " +
-									"against an illustrative 5.5 team product).",
-							"citation": "weft_and_warp_trait.gd (SELF_BONUS_BY_RARITY, " +
-									"_ResolveExtraCutTheClothInstances)"}},
+									"Uncommon (5% self-bonus): 0.9*1.05-1 = -0.055. Flat across all 9 " +
+									"instances (base cast plus 7 Tension plus Black Thread's extension, no " +
+									"instance_compounding) — reproduces Role_Kit_Design.md section 9.2's own " +
+									"worked figures (9*1.08=9.72 -> ~53.5x at Legendary against an " +
+									"illustrative 5.5 team product).",
+							"citation": "weft_and_warp_trait.gd (SELF_BONUS_BY_RARITY)"}},
 		],
 	},
 	Types.Role.Chronophage: {

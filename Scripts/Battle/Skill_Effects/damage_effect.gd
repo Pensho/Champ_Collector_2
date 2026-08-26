@@ -33,6 +33,10 @@ func Resolve(p_context: SkillCastContext) -> void:
 					CombinedDamageModifier.TRAIT_RESOURCE_KEY, p_context.trait_result._damage_multiplier - 1.0)
 		if(0.0 != p_context.repeat_bonus):
 			combined_damage_modifier.Contribute(_RepeatKey(p_context), p_context.repeat_bonus)
+		var strength_contributions: Dictionary[StringName, float] = (
+				p_context.resolver.CurrentEchoStrengthContributions())
+		for mechanic_key: StringName in strength_contributions:
+			combined_damage_modifier.Contribute(mechanic_key, strength_contributions[mechanic_key])
 		if(p_context.is_zone_trigger and 1.0 != p_context.zone_damage_multiplier):
 			combined_damage_modifier.Contribute(_AmplifiedKey(p_context), p_context.zone_damage_multiplier - 1.0)
 		if(p_context.is_zone_trigger and 1.0 != p_context.zone_strength_multiplier):

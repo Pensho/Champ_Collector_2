@@ -66,6 +66,7 @@ behind each tag.
 * **Stack ceilings:** cap what accrues automatically; leave uncapped what costs the player an action or a resource. The existing capped passives (Momentum, Arcane Instability, Steel and Sea stacks) are correct as written — they accrue on their own. A resource the player deliberately builds may run without a ceiling.
 * **Cascade termination:** every cascade must terminate, under two independent bounds. **Depth** bounds chain length — an effect triggered from inside an Echo sits one level deeper, and a chain able to re-enter itself is a defect, not a large number. **Fan-out** bounds how many Echoes one originating action may release in total, which depth does not constrain: many Echoes at the same level are breadth, not depth. The two do not substitute for each other.
 * **A trigger fires once; the Echoes it yields are not separately re-triggered.** Each trigger source fires at most once per originating action, and that single firing yields an Echo count. Repetition is therefore expressible without re-entry — an effect may deliberately resolve once per point of a status's remaining duration or once per remaining zone charge, and repeat Echoes are what make Echo count multiply against the other two channels rather than add to them. A count read from a live quantity is fixed when the trigger fires, not re-read as the Echoes drain it.
+* **Every Channel 3 contribution to the same cascade adds into one Echo count.** A contribution is either an **enabler**, which can create a cascade where the action had none, or an **extender**, which only adds to a cascade an enabler already created — an extender contributes nothing when nothing else enabled. The same mechanic can be either depending on what it lands on.
 * **The combined modifier multiplies the scaled attribute aggregate, not the final damage.** The placement is damage-equivalent either way, since Defence's mitigation ratio no longer depends on the aggregate (see the next bullet); it stays on the aggregate to keep one multiplicative pipeline, where the trait and ramp multipliers already apply.
 * **Defence keeps its full percentage weight at burst scale.** Defence's mitigation ratio is taken against a fixed scale constant, not against the caster's own scaled aggregate, so a given Defence value cuts the same percentage of damage whether the hit is a basic swing or a burst: varying `Defense_Ignore_Factor` from 1.0 to 0.0 nearly doubles a burst's damage. Defence-ignore is a legitimate lever at every scale, not only on basic and mid-sized hits.
 * **Base attribute values stay tame.** Growth belongs in the combined modifier and cascade channels. Inflating base attributes to chase the pillar breaks fodder tuning and Health-bar readability.
@@ -298,7 +299,7 @@ Current roles, their identity and purpose exist as follows:
 - Herald of the loom
     - A stance character whose three threads shape how its Echoes and debuffs behave. Primary attributes: Mysticism, Accuracy.
     - Purpose: Debuffer, Buffer
-    - Passive: Weft and Warp [Channel 3 — Cascade] - The Herald always holds exactly one thread, starting on Silver at battle start; switching is a free action available any number of times during the Herald's own turn, and the active thread persists as ordinary trait state (not a status effect) until changed again. Golden Thread: gain 1 Tension (capped at 7) whenever an Echo resolves on an enemy, Cut the Cloth's own Echoes excluded. Silver Thread: the Herald's own applied debuffs cannot be resisted and last 1 turn longer. Black Thread: the Echo produced by the Herald's own action resolves one additional time. Echoes the Herald produces deal bonus damage.
+    - Passive: Weft and Warp [Channel 3 — Cascade] - The Herald always holds exactly one thread, starting on Silver at battle start; switching is a free action available any number of times during the Herald's own turn, and the active thread persists as ordinary trait state (not a status effect) until changed again. Golden Thread: gain 1 Tension (capped at 7) whenever an Echo resolves on an enemy, Cut the Cloth's own Echoes excluded. Silver Thread: the Herald's own applied debuffs cannot be resisted and last 1 turn longer. Black Thread: extends the cascade the Herald's own action produces by one Echo (an extender — it adds nothing on a cast that has no Echo of its own). Echoes the Herald produces deal bonus damage.
         - Self-bonus: +5% Uncommon, +10% Rare, +15% Epic, +20% Legendary
         - Starting Tension: 0 Uncommon/Rare, 1 Epic/Legendary. Tension does not persist between combats.
     - Fielded by: `Herald_of_the_loom.tres`
@@ -330,7 +331,7 @@ Current roles, their identity and purpose exist as follows:
 - Plague Doctor
     - A debuff focused character, applying various damage over time and stat reducing debuffs to enemies. Signature zone: Miasma (see section 3.2.4.1). Primary attributes: Mysticism, Resistance.
     - Purpose: Debuffer
-    - Passive: Comorbidity [Channel 3] - Debuffs placed by the Plague Doctor's skills trigger a cascading extra tick once for every other distinct debuff type present on the target (any source, uncapped, subject to the shared cascade fan-out cap in section 1.1.4). Total damage per turn is unchanged from a flat multiplier — the difference is that each repeat resolves as its own Echo, visible to other Channel 3 effects that react to Echoes.
+    - Passive: Comorbidity [Channel 3] - An enabler: a debuff placed by the Plague Doctor's skills enables a cascade whose Echo count is every distinct debuff type present on the target beyond itself (any source, uncapped, subject to the shared cascade fan-out cap in section 1.1.4), damaging or not — a non-damaging debuff type raises the count without echoing itself. Total damage per turn is unchanged from a flat multiplier — the difference is that each repeat resolves as its own Echo, visible to other Channel 3 effects that react to Echoes.
         - Known gap: the zone-trigger debuff path (used by Miasma's Blight) does not thread the
           Comorbidity flag, so Blight itself never repeats — only debuffs placed by non-zone
           skills (e.g. Outbreak's Plague) do. See `Scripts/Debug/kit_contribution_manifest.gd`
@@ -537,7 +538,7 @@ Buffs:
 * Premonition [Enabler]: The next attack against the character automatically misses, the buff is consumed, and the character immediately answers with their own basic skill against the attacker, at full strength and at no cost.
 * Rehearsed [Enabler]: The character's next non-basic skill does not go on cooldown, then the buff is consumed.
 * Sanguine Pact [Channel 2, granted]: Increases the holder's damage by 12% per 10% of the holder's own missing Health, and redirects 30% of damage the holder takes to whoever applied the Pact instead.
-* Borrowed Time [Channel 3 — Cascade, granted]: The holder's next damaging skill resolves one additional time, at 30-60% strength by the applier's rarity. Does not stack. Consumed only by a damaging cast; a non-damaging skill leaves it untouched for a later one.
+* Borrowed Time [Channel 3 — Cascade, granted]: The holder's next damaging skill resolves one additional time, at 30-60% strength by the applier's rarity. Does not stack. Consumed only by a damaging cast; a non-damaging skill leaves it untouched for a later one. An enabler on a cast with no Echo of its own, an extender on one that already has one.
 * Sea Legs [Channel 1, granted]: Boosts the holder's own highest primary attribute other than Health, by an amount its applier sets. Permanent; never expires. Stacks in place up to 4 times rather than as separate instances, each stack recomputing the boost against the current stack count.
 
 #### 3.2.4. Skills
@@ -788,7 +789,7 @@ the fix belongs in the data or the document.
 * Cut the Cloth
     * Type: Damage
     * Cooldown: 4 turns
-    * Effect: [Channel 3 — Cascade] Deals damage to a single enemy at 90% of a normal Mysticism-scaled hit, resolved once for the base cast plus once more per Tension held (minimum once, at zero Tension), then consumes all Tension.
+    * Effect: [Channel 3 — Cascade] Deals damage to a single enemy at 90% of a normal Mysticism-scaled hit, resolved once for the base cast plus once more per Tension held (minimum once, at zero Tension), then consumes all Tension. An enabler: other Channel 3 extenders on the same cast add to its Echo count at its 90% strength.
 
 ###### Chronophage
 * Zap

@@ -64,16 +64,14 @@ func StartOfBattle(p_owner_ID: int, p_resolver: BattleResolver) -> void:
 	_placed_zone_ID_this_cast = -1
 	# Re-subscribed every battle: p_resolver (and its CascadeResolver) is fresh per combat,
 	# so there is nothing to unsubscribe from a previous one.
-	p_resolver.GetCascadeResolver().Subscribe(
-			Types.Cascade_Trigger.Skill_Resolved,
-			_CASCADE_MECHANIC_KEY,
-			func(p_event: CascadeEvent) -> bool: return p_event.subject_ID == p_owner_ID and _echoes_for_this_cast > 0,
-			func(p_event: CascadeEvent) -> void: _OnSkillResolvedRepeat(p_owner_ID, p_event, p_resolver))
-	p_resolver.GetCascadeResolver().SubscribeInstanceModifier(
-			func(p_event: CascadeEvent, p_mechanic_key: StringName) -> int:
-				if(_CASCADE_MECHANIC_KEY != p_mechanic_key or p_event.subject_ID != p_owner_ID):
-					return 0
-				return maxi(_echoes_for_this_cast - 1, 0))
+	p_resolver.GetCascadeResolver().SubscribeCascadeContributor(
+			func(p_event: CascadeEvent) -> CascadeContribution:
+				if(Types.Cascade_Trigger.Skill_Resolved != p_event.trigger or p_event.subject_ID != p_owner_ID
+						or _echoes_for_this_cast <= 0):
+					return null
+				return CascadeContribution.new(_CASCADE_MECHANIC_KEY, _echoes_for_this_cast,
+						CascadeContribution.Kind.Base, 1.0,
+						func(e: CascadeEvent) -> void: _OnSkillResolvedRepeat(p_owner_ID, e, p_resolver)))
 
 func RefreshVisuals(p_character_repr: CharacterRepresentation) -> void:
 	var body_with_state: String = (_body + "\n" +

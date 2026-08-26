@@ -198,7 +198,7 @@ crit-path multiplier, mitigation-term factor (§9.12's bypass, §9.10's Defence 
 aggregate-term factor (§9.14's attribute-modifier amplification), exported factor on a carrier. One
 ranked column across all of them is not a measurement.
 
-**Current state: bimodal.** Instance counts: Herald 8.64x, Sorcerer 6.25x at its gated ceiling (1.5x
+**Current state: bimodal.** Instance counts: Herald 9.72x, Sorcerer 6.25x at its gated ceiling (1.5x
 steady state), Plague Doctor's Comorbidity never projected (§9.1). Bucket products: Architect,
 Tactician, Tidal Corsair, Bloodmage at 1.7-2.2x, Lancer at 1.54-1.90x; Emissary, Alchemist, Scholar at 1.3-1.5x.
 Appraiser's ≈5.58x is the only crit-path figure. Closing this runs one way: **a Role above the band
@@ -395,12 +395,15 @@ Format per entry: Status, Passive, Skills (name / effect / channel), Projected n
 
 **Status:** Implemented (`aca439b`). Batch 1.
 
-**Passive: Comorbidity.** Debuffs placed by this Role's skills trigger a cascading extra tick
-(`Types.Cascade_Trigger.Debuff_Ticked`) once for every other distinct debuff type on the target
-(any source, uncapped, bounded by the shared `MAX_CASCADE_INSTANCES_PER_ACTION` fan-out cap). Each
-repeat is a real Echo — its own `Cascade_Triggered` marker and its own
-`Cascade_Instance_Resolved` broadcast — rather than a multiplier folded into one aggregated tick
-number, so the passive is a genuine Channel 3 anchor, not Channel 2 dressed as one.
+**Passive: Comorbidity.** An enabler: a debuff placed by this Role's skills enables a cascade
+(`Types.Cascade_Trigger.Debuff_Ticked`) whose Echo count is (every other distinct debuff type on
+the target, any source) times (the number of independently repeating Comorbidity sources present),
+uncapped, bounded by the shared `MAX_CASCADE_INSTANCES_PER_ACTION` fan-out cap — a non-damaging
+debuff type raises the count without echoing itself, and each source's own flagged debuffs re-tick
+independently at their own unmultiplied magnitude. Each repeat is a real Echo — its own
+`Cascade_Triggered` marker and its own `Cascade_Instance_Resolved` broadcast — rather than a
+multiplier folded into one aggregated tick number, so the passive is a genuine Channel 3 anchor,
+not Channel 2 dressed as one.
 
 | Slot | Skill | Effect | Channel |
 |---|---|---|---|
@@ -426,12 +429,13 @@ turn (before or after using a skill, in any order) — not a once-per-turn cap, 
 effect with a duration: the active thread is ordinary persistent trait state that carries as-is
 into the next turn until changed again. Max Tension is a constant 7 at every rarity.
 * Golden Thread — gain 1 Tension when an Echo resolves on an enemy (Cut the Cloth's own
-  instances excluded, to avoid a self-feed loop — enforced by construction, since Cut the Cloth's
-  repeats never call `CascadeResolver.Post`).
+  instances excluded by an explicit mechanic-key check on `CascadeEvent`, to avoid a self-feed
+  loop).
 * Silver Thread — the Herald's debuffs cannot be resisted and last 1 turn longer.
-* Black Thread — the Echo produced by the Herald's own action resolves one additional
-  time (not a double — a skill that would resolve once now resolves twice). Scoped to the Herald's
-  own action only, since the Herald casts at most one skill per turn.
+* Black Thread — an Extender: adds one Echo to whatever cascade the Herald's own action
+  produced (Cut the Cloth's Tension repeats included), contributing nothing on a cast with no
+  Echo of its own. Self-only and once per action, since the Herald casts at most one skill per
+  turn.
 * Echoes cast by this champion deal bonus damage: +5% Uncommon, +10% Rare, +15% Epic,
   +20% Legendary. (Generic wording deliberately — applies to any Echo the Herald
   produces, names no skill, so the passive and the skills stay decoupled.)
@@ -448,25 +452,22 @@ into the next turn until changed again. Max Tension is a constant 7 at every rar
 since mitigation depends only on defence and cancels identically between the basic-skill baseline
 and the burst (no defense-ignore in this kit), contrast ratio reduces to `(skill aggregate ratio) ×
 (combined modifier product) × (instance count)`, independent of which boss is used. At Legendary
-(8 instances, 90% per-instance strength, +20% self bonus) against an illustrative team product of
-5.5 (roughly matching section 4's "two independent factors per champion" shape), contrast ratio ≈
-**47.5x** for that whole team. Against a more modest team (product ≈3.0), ≈25.9x. At Uncommon
-(same 8-instance ceiling — rarity affects tempo via starting Tension and the smaller +5% self
-bonus, not the ceiling itself, since max Tension is now rarity-flat) the same strong-team scenario
-gives ≈41.6x.
+(9 instances — base cast, 7 Tension, and Black Thread's extension, 90% per-instance strength, +20%
+self bonus) against an illustrative team product of 5.5 (roughly matching section 4's "two
+independent factors per champion" shape), contrast ratio ≈ **53.5x** for that whole team. Against a
+more modest team (product ≈3.0), ≈29.2x. At Uncommon (same 9-instance ceiling — rarity affects
+tempo via starting Tension and the smaller +5% self bonus, not the ceiling itself, since max
+Tension is now rarity-flat) the same strong-team scenario gives ≈46.8x.
 
 **These are team figures, not the Herald's own contribution** (section 4). The Herald's own factor
-is the instance count: **8.64x at Legendary**, which is well above section 4's per-Role ~2x target
-and is why the post-Herald sweep's top decile collapsed onto a single pairing (see the plan's
-Status). That is a flag on this kit, not a bar for the next one. Cut the Cloth's 90% strength
+is the instance count: **9.72x at Legendary**, which is well above section 4's per-Role ~2x target.
+That is a flag on this kit, not a bar for the next one. Cut the Cloth's 90% strength
 (rather than a Sorcerer-style 50% discount) reflects that the setup tax is Tension's multi-turn
 build time rather than a second discount on the payoff.
 
 **Implemented as:** `weft_and_warp_trait.gd`, `Thread_Snap.tres` (reworked), `Pull_the_Thread.tres`,
 `Cut_the_Cloth.tres` (new), `Herald_of_the_loom.tres` (rewired), `Thread_Switch_Button.tscn` (shares
-the Symbiote graft button's slot — the two are mutually exclusive by whose turn it is). A debuff
-tick still doesn't post to `CascadeResolver` at all, so Golden Thread does not see one; tracked as a
-gap in `Plan_Channel_3_Unification.md`'s Step 9.
+the Symbiote graft button's slot — the two are mutually exclusive by whose turn it is).
 
 ### 9.3 Sorcerer — Echo charges and the Surge that feeds them
 
@@ -878,7 +879,9 @@ thief, time given to an ally stays with that ally. Nothing grants a bystander a 
 enemy being drained.
 
 **Borrowed Time** (new buff): the holder's next damaging skill resolves **one additional time**, at
-**30/40/50/60%** strength by the applier's rarity. Does not stack.
+**30/40/50/60%** strength by the applier's rarity. Does not stack. An enabler on a cast with no
+Echo of its own, an extender on one that already has one — nothing about the buff distinguishes
+the two cases.
 
 **The alone-clause is the design, not a balance gate.** The roster already pays champions to bunch
 up on the turn bar — three separate passives grant to whoever sits close behind or within a window
@@ -893,7 +896,7 @@ it. It names no Role and reads only turn-bar position, so a kit authored later b
 either side knowing about the other.
 
 **Projected numbers.** Instance-count factor **1.6x** at Legendary, landing on whichever teammate
-holds the buff — below §9.2's Herald (8.64x) and §9.3's Sorcerer (6.25x), which is correct: those
+holds the buff — below §9.2's Herald (9.72x) and §9.3's Sorcerer (6.25x), which is correct: those
 are self-facing counts a champion builds toward across a fight, and this is a free extra resolution
 handed to someone else once per boost. In the exported kind it sits alongside §9.4's Sanguine Pact
 (1.60-1.96x) and Hemorrhage (1.30-1.48x). The Chronophage's own damage is Zap and stays where it
@@ -906,9 +909,10 @@ off a new `Combat_Event.Ally_Turn_Bar_Increased` hook (`Skills.DispatchAllyTurnB
 positive/ally mirror of the existing tithe's `TurnBarTithe`), checked against a new
 `TurnPositions.GetSectionIndex` query (the base class returns -1 for "unknown", which declines the
 grant rather than assuming aloneness). The Chronophage counts as an occupant of its own section. The
-replay itself is a `Cascade_Trigger.Skill_Resolved` `Subscribe` in `StatusEffectResolver`, gated on
-the holder carrying Borrowed Time *and* the cast skill carrying a `DamageEffect` — so a non-damaging
-cast leaves the buff untouched for a later damaging one, matching Daunting Strength's own
+replay itself is a `Cascade_Trigger.Skill_Resolved` Base `CascadeContribution` in
+`StatusEffectResolver`, gated on the holder carrying Borrowed Time *and* the cast skill carrying a
+`DamageEffect` — so a non-damaging cast leaves the buff untouched for a later damaging one, matching
+Daunting Strength's own
 `ConsumeDamageMultiplierFactors` semantics. The one-turn buff needed `_IsBuffExpired`'s existing
 `DamageMultiplier` one-shot survival rule (`duration < 0` rather than `<= 0`) widened to cover
 Borrowed Time too, or the start-of-cast duration decrement kills it before its own cast's cascade
@@ -1697,9 +1701,9 @@ did not exist. What the manifest carries now:
   `(1.0 + magnitude) * instance_compounding^i`, `i` 0-based
   (`BurstReachability._MultiInstanceContrastRatio`). Verified in
   `Tests/unit/test_burst_reachability.gd` against this document's own projections: Echo (4
-  instances, −0.5, 1.70 compounding) reproduces section 9.3's 5.2515x; Cut the Cloth (8 instances,
+  instances, −0.5, 1.70 compounding) reproduces section 9.3's 5.2515x; Cut the Cloth (9 instances,
   +0.08 at Legendary — the 90% base strength and the passive's own self-bonus folded into one net
-  per-instance multiplier — flat) reproduces section 9.2's 8.64 curve.
+  per-instance multiplier — flat) reproduces section 9.2's 9.72 curve.
 * **Zone-trigger damage** is no longer invisible: a skill with no top-level `DamageEffect` is now
   enumerated off its enemy-facing `ZoneEffect.on_trigger` `DamageEffect`s instead
   (`_ZoneTriggerEnemyDamageEffects`) — an ally-facing payload in the same zone (Unstable Rift's own

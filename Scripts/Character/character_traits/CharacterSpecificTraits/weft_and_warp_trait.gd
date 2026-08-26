@@ -47,21 +47,34 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_execution_steps[Types.Combat_Event.Start_Combat] = Callable(self, "StartOfBattle")
 	_execution_steps[Types.Combat_Event.Skill_Cast] = Callable(self, "OnSkillCast")
 	_execution_steps[Types.Combat_Event.Cascade_Instance_Resolved] = Callable(self, "OnCascadeInstanceResolved")
-	_execution_steps[Types.Combat_Event.Skill_Effects_Resolved] = Callable(self, "OnSkillEffectsResolved")
 
 func StartOfBattle(p_owner_ID: int, p_resolver: BattleResolver) -> void:
 	_current_thread = Thread_Type.Silver
 	_tension = STARTING_TENSION_BY_RARITY.get(_owner_rarity, 0)
+	_pending_cut_the_cloth_instances = 0
 	# Re-subscribed every battle: p_resolver (and its CascadeResolver) is fresh per combat.
-	p_resolver.GetCascadeResolver().SubscribeInstanceModifier(
-			func(p_event: CascadeEvent, _p_mechanic_key: StringName) -> int:
-				if(Thread_Type.Black != _current_thread):
-					return 0
-				if(_EventCasterID(p_event) != p_owner_ID):
-					return 0
-				if(not _EventConcernsEnemyOf(p_owner_ID, p_event, p_resolver)):
-					return 0
-				return 1)
+	var cascade: CascadeResolver = p_resolver.GetCascadeResolver()
+	cascade.SubscribeCascadeContributor(
+			func(p_event: CascadeEvent) -> CascadeContribution:
+				if(Types.Cascade_Trigger.Skill_Resolved != p_event.trigger or p_event.subject_ID != p_owner_ID):
+					return null
+				var instances: int = _pending_cut_the_cloth_instances
+				_pending_cut_the_cloth_instances = 0
+				if(instances <= 0):
+					return null
+				return CascadeContribution.new(&"Cut the Cloth", instances, CascadeContribution.Kind.Base, 1.0))
+	cascade.SubscribeCascadeContributor(
+			func(p_event: CascadeEvent) -> CascadeContribution:
+				if(Types.Cascade_Trigger.Skill_Resolved != p_event.trigger or Thread_Type.Black != _current_thread
+						or p_event.subject_ID != p_owner_ID
+						or not _EventConcernsEnemyOf(p_owner_ID, p_event, p_resolver)):
+					return null
+				return CascadeContribution.new(&"Black Thread", 1, CascadeContribution.Kind.Extender))
+	cascade.SubscribeStrengthModifier(
+			func(p_event: CascadeEvent, _p_mechanic_key: StringName) -> CascadeContribution:
+				if(p_event.origin_ID != p_owner_ID):
+					return null
+				return CascadeContribution.new(&"Weft and Warp", 1, CascadeContribution.Kind.Base, 1.0 + _self_bonus))
 
 func RefreshVisuals(p_character_repr: CharacterRepresentation) -> void:
 	var body_with_state: String = (_body + "\n\n" +
@@ -92,6 +105,8 @@ func OnCascadeInstanceResolved(
 		p_owner_ID: int, p_event: CascadeEvent, p_resolver: BattleResolver) -> void:
 	if(Thread_Type.Golden != _current_thread):
 		return
+	if(&"Cut the Cloth" == p_event.mechanic_key):
+		return
 	if(not _EventConcernsEnemyOf(p_owner_ID, p_event, p_resolver)):
 		return
 	_tension = mini(_tension + 1, TENSION_MAX)
@@ -108,64 +123,9 @@ func OnSkillCast(
 			# Stance-independent: granted regardless of the currently active thread.
 			_tension = mini(_tension + PULL_THE_THREAD_TENSION, TENSION_MAX)
 		"Cut the Cloth":
-			result._damage_multiplier = 1.0 + _self_bonus
 			_pending_cut_the_cloth_instances = _tension
 			_tension = 0
 	return result
-
-## Resolves the extra instances a Cut the Cloth cast banked in OnSkillCast, once
-## BattleResolver.ResolveSkill's own effect loop for that cast has finished — so the
-## burst reads base hit first, then repeats.
-func OnSkillEffectsResolved(
-		p_owner_ID: int,
-		p_target_IDs: Array[int],
-		p_skill_name: String,
-		p_caster_attributes: Dictionary[Types.Attribute, int],
-		p_resolver: BattleResolver) -> void:
-	if("Cut the Cloth" != p_skill_name):
-		return
-	var extra_instances: int = _pending_cut_the_cloth_instances
-	_pending_cut_the_cloth_instances = 0
-	_ResolveExtraCutTheClothInstances(p_owner_ID, p_target_IDs, p_caster_attributes, extra_instances, p_resolver)
-
-## Resolves Cut the Cloth's Tension-driven repeats as a local loop that never calls
-## CascadeResolver.Post — deliberately so these repeats cannot feed this Herald's own
-## Golden Thread (a self-feed loop), unlike a Skill_Resolved-based repeat mechanic.
-## Each instance still emits a BattleResolver.EmitBurstInstance marker so the battle view
-## escalates its combat text the same as a real cascade instance would.
-func _ResolveExtraCutTheClothInstances(
-		p_owner_ID: int,
-		p_target_IDs: Array[int],
-		p_caster_attributes: Dictionary[Types.Attribute, int],
-		p_extra_instances: int,
-		p_resolver: BattleResolver) -> void:
-	if(p_extra_instances <= 0):
-		return
-	var characters: Dictionary[int, Character] = p_resolver.GetCharacters()
-	if(not characters.has(p_owner_ID)):
-		return
-	var caster: Character = characters[p_owner_ID]
-	var cast_skill: Skill = null
-	for skill: Skill in caster._skills:
-		if("Cut the Cloth" == skill.name):
-			cast_skill = skill
-			break
-	if(null == cast_skill):
-		return
-	for i in p_extra_instances:
-		if(not p_resolver.BeginEchoInstance(&"Cut the Cloth", p_owner_ID, Types.Cascade_Trigger.Skill_Resolved)):
-			break
-		var trait_result := TraitSkillResult.new()
-		trait_result._damage_multiplier = 1.0 + _self_bonus
-		var context := SkillCastContext.new(
-				p_resolver, p_owner_ID, p_target_IDs, cast_skill, p_caster_attributes, 0, trait_result)
-		for effect in cast_skill.effects:
-			if(effect is DamageEffect and context.ConditionMet(effect)):
-				effect.Resolve(context)
-		p_resolver.EndEchoInstance()
-
-func _EventCasterID(p_event: CascadeEvent) -> int:
-	return p_event.origin_ID if -1 != p_event.origin_ID else p_event.subject_ID
 
 func _EventConcernsEnemyOf(p_owner_ID: int, p_event: CascadeEvent, p_resolver: BattleResolver) -> bool:
 	var sides: CombatSides = p_resolver.GetSides()

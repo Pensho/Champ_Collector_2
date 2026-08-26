@@ -92,6 +92,29 @@ func test_long_furrow_does_not_echo_at_span_three() -> void:
 	assert_eq(_damage_results_against(results, 1).size(), 1,
 		"A span outside 4-5 should not Echo")
 
+## Two enablers on the same cast combine into one cascade of two Echoes instead of two
+## separate one-Echo cascades.
+func test_long_furrow_combines_with_borrowed_time_into_one_two_echo_cascade() -> void:
+	var setup: Dictionary = _make_long_furrow_setup(Types.Rarity.Common, 0, 3)  # span 4
+	var resolver: BattleResolver = setup["resolver"]
+	var caster: Character = resolver.GetCharacters()[0]
+	var buff: StatusEffects.Buff = StatusEffects.Buff.new()
+	buff.type = Types.Buff_Type.Borrowed_Time
+	buff.duration = 1
+	buff.value = 0.4
+	resolver.GetStatusResolver().ApplyBuff(0, buff)
+
+	var results: Array[CombatResult] = resolver.ResolveSkill(0, [1], 0)
+
+	var markers: Array[CombatResult] = results.filter(
+			func(r: CombatResult) -> bool: return CombatResult.Kind.Cascade_Triggered == r.kind)
+	assert_eq(markers.size(), 2,
+		"The Long Furrow and Borrowed Time should both enable, combining into one two-Echo cascade")
+	assert_eq(_damage_results_against(results, 1).size(), 3,
+		"The base cast plus both enablers' Echoes should each deal damage")
+	assert_true(caster._active_buffs.all(func(b: StatusEffects.Buff) -> bool: return Types.Buff_Type.Borrowed_Time != b.type),
+		"Borrowed Time should be consumed once it enables")
+
 func test_long_furrow_suppresses_critical_hits_on_rending_charge_only() -> void:
 	var relic: TheLongFurrowRelic = TheLongFurrowRelic.new()
 	relic.Init(Types.Rarity.Legendary)
@@ -425,3 +448,38 @@ func test_lantern_team_reagent_drawback_is_flat_not_laddered() -> void:
 
 		assert_almost_eq(relic.GetTeamReagentPotencyBonus(0, null), -0.50, 0.0001,
 			"Rarity %s" % Types.RarityName(rarity))
+
+## A Lantern zone Echo now goes through CascadeResolver like any other Echo, so it must
+## consume the shared fan-out budget and read as an Echo to another mechanic entirely.
+func test_lantern_zone_echo_is_seen_as_an_echo_by_threefold_bite() -> void:
+	var wearer: Character = TestFactory.make_character()
+	wearer._current_health = 10
+	var lantern: LanternOfTheStandingWardRelic = LanternOfTheStandingWardRelic.new()
+	lantern.Init(Types.Rarity.Legendary)
+	wearer._trait = lantern
+	var threefold_bite: ThreefoldBiteRelic = ThreefoldBiteRelic.new()
+	threefold_bite.Init(Types.Rarity.Legendary)
+	_equip_relic(wearer, Types.Slot.Weapon, threefold_bite)
+	var target: Character = TestFactory.make_character()
+	target._attributes[Types.Attribute.Health] = 100000
+	target._current_health = 400000
+	var characters: Dictionary[int, Character] = {0: wearer, 1: target}
+	var fake_positions: TestFactory.FakeTurnPositions = TestFactory.FakeTurnPositions.new()
+	fake_positions.characters_in_zones = true
+	var resolver: BattleResolver = TestFactory.make_resolver(
+			characters, CombatSides.new([0], [1]), fake_positions)
+	resolver.BroadcastEvent(Types.Combat_Event.Start_Combat)
+	_place_test_zone(resolver, 0, 1)
+	var received: Array[CombatResult] = []
+	resolver.result_produced.connect(func(r: CombatResult) -> void: received.append(r))
+
+	resolver.GetZoneResolver().TriggerZones(0)
+
+	var damage_results: Array[CombatResult] = _damage_results_against(received, 1)
+	assert_eq(damage_results.size(), 2, "The base zone hit plus the Lantern's Echo")
+	var bonus_key: StringName = &"trait_damage_bonus"
+	assert_almost_eq(damage_results[0].combined_damage_modifier.Buckets().get(bonus_key, 0.0), -0.30, 0.0001,
+		"The base zone trigger is not an Echo, so Threefold Bite's non-Echo penalty applies")
+	assert_eq(damage_results[1].combined_damage_modifier.Buckets().get(bonus_key, 0.0), 0.0,
+		"The Lantern's zone Echo must not take Threefold Bite's non-Echo penalty")
+	assert_eq(damage_results[1].cascade_depth, 1, "The zone Echo should carry a real cascade depth")

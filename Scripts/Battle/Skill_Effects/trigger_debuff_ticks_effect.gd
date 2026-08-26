@@ -4,6 +4,9 @@ class_name TriggerDebuffTicksEffect extends SkillEffect
 ## deal their tick damage again immediately, without losing a turn of duration.
 
 func Resolve(p_context: SkillCastContext) -> void:
-	var status_resolver: StatusEffectResolver = p_context.resolver.GetStatusResolver()
+	var cascade: CascadeResolver = p_context.resolver.GetCascadeResolver()
 	for target_ID in p_context.TargetsFor(self):
-		status_resolver.ForceExtraDebuffTick(target_ID)
+		var event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Debuff_Tick_Forced)
+		event.subject_ID = target_ID
+		event.origin_ID = p_context.caster_ID
+		cascade.Post(event)

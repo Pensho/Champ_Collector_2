@@ -102,6 +102,47 @@ func test_different_seeds_can_differ() -> void:
 	assert_ne(first_rolls, second_rolls,
 		"Two different seeds should produce different damage-roll sequences")
 
+func test_resolve_skill_echo_applies_the_strength_multiplier_as_repeat_bonus() -> void:
+	var resolver_normal: BattleResolver = TestFactory.make_resolver(
+			_make_roster(), TestFactory.make_full_sides(), null, BATTLE_SEED)
+	resolver_normal._BeginBatch()
+	resolver_normal.ResolveSkillEcho(0, 0, [3], 1.0)
+	var base_damage: int = _first_damage_amount(resolver_normal._EndBatch())
+
+	var resolver_echoed: BattleResolver = TestFactory.make_resolver(
+			_make_roster(), TestFactory.make_full_sides(), null, BATTLE_SEED)
+	resolver_echoed._BeginBatch()
+	resolver_echoed.ResolveSkillEcho(0, 0, [3], 2.0)
+	var echoed_damage: int = _first_damage_amount(resolver_echoed._EndBatch())
+
+	assert_gt(echoed_damage, base_damage,
+		"A higher strength multiplier should deal noticeably more damage than a plain repeat")
+
+func test_damage_effect_applies_the_current_echo_strength_contributions() -> void:
+	var resolver_plain: BattleResolver = TestFactory.make_resolver(
+			_make_roster(), TestFactory.make_full_sides(), null, BATTLE_SEED)
+	var base_damage: int = _first_damage_amount(resolver_plain.ResolveSkill(0, [3], 0))
+
+	var resolver_boosted: BattleResolver = TestFactory.make_resolver(
+			_make_roster(), TestFactory.make_full_sides(), null, BATTLE_SEED)
+	resolver_boosted.BeginEchoInstance(
+			&"Test", 0, Types.Cascade_Trigger.Skill_Resolved, 0, {&"SomeMechanic": 1.0})
+	var boosted_damage: int = _first_damage_amount(resolver_boosted.ResolveSkill(0, [3], 0))
+	resolver_boosted.EndEchoInstance()
+
+	assert_gt(boosted_damage, base_damage,
+		"A strength contribution active while a DamageEffect resolves should scale its damage")
+
+func test_resolve_skill_echo_is_a_no_op_for_an_out_of_range_skill_id() -> void:
+	var resolver: BattleResolver = TestFactory.make_resolver(
+			_make_roster(), TestFactory.make_full_sides(), null, BATTLE_SEED)
+	resolver._BeginBatch()
+	resolver.ResolveSkillEcho(0, 99, [3], 2.0)
+	var results: Array[CombatResult] = resolver._EndBatch()
+
+	assert_true(_kinds(results, CombatResult.Kind.Damage).is_empty(),
+		"An out-of-range skill_ID should resolve no damage rather than crash")
+
 func test_heap_on_state_is_per_resolver_not_global() -> void:
 	# Regression for the old `static var` state on Skills: two battles must not share
 	# Heap-On stacks. The first cast of Heap On must behave identically in a fresh

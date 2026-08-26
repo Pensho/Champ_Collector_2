@@ -31,7 +31,7 @@ Weapon, Off-Hand, Boots. Slot is the stacking control: see *Slots and stacking* 
 
 ### The Long Furrow
 
-*Audience: Lancer.* **Weapon.** [Channel 3 — Cascade]  hooks `OnSkillCast`, `OnSkillEffectsResolved`
+*Audience: Lancer.* **Weapon.** [Channel 3 — Cascade]  hook `OnSkillCast`
 
 Rending Charge cast at 4 or 5 sections of turn-bar distance Echoes once, at
 25 / 30 / 35 / 45 / 55% strength.
@@ -94,8 +94,8 @@ While the wearer holds a Barrier, damaging skills deal +25 / 30 / 35 / 45 / 60% 
 
 ### The Sealed Docket
 
-*Audience: Architect, Diviner, Emissary, Lancer, Tidal Corsair.* **Off-Hand.** [Channel 2]  hook
-`GetOutgoingDamageBonus`
+*Audience: Architect, Diviner, Emissary, Lancer, Tidal Corsair.* **Off-Hand.** [Channel 2]  hooks
+`GetOutgoingDamageBonus`, `Start_Combat`
 
 While the target carries four or more distinct debuff types, damaging skills deal
 +35 / 42 / 50 / 62 / 80% damage.

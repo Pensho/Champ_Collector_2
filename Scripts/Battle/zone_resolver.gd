@@ -105,6 +105,10 @@ func TriggerZones(p_active_character_ID: int) -> Array[CombatResult]:
 			_resolver._Emit(triggered)
 			# Restrict the trigger to one zone per character.
 			break
+	# A zone Echo consumes the triggering zone through CascadeResolver, so it must resolve
+	# before a spent zone is cleared below rather than after (BeginEchoInstance's caller
+	# would otherwise find the zone already erased).
+	_resolver.GetCascadeResolver().Drain()
 	for ID in _zones.keys().duplicate():
 		if(_zones[ID]._charges == 0):
 			ClearZone(ID)
