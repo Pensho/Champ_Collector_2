@@ -1,0 +1,61 @@
+[gd_scene format=3 uid="uid://bklqxrodicmr4"]
+
+[ext_resource type="Script" uid="uid://bf5u84dl3q3c1" path="res://Scripts/UI/Post_Battle_UI/reward_summary.gd" id="1_script"]
+[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="1_theme"]
+
+[node name="RewardSummary" type="Control" unique_id=335036891 node_paths=PackedStringArray("_label_experience", "_label_silver", "_label_supplies", "_h_box_container_items")]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1216.0
+offset_bottom = 160.0
+script = ExtResource("1_script")
+_label_experience = NodePath("VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer_Text/Label_Experience")
+_label_silver = NodePath("VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer_Text/Label_Silver")
+_label_supplies = NodePath("VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer_Text/Label_Supplies")
+_h_box_container_items = NodePath("VBoxContainer/MarginContainer/HBoxContainer/HBoxContainer_Items")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1277893763]
+layout_mode = 0
+anchor_right = 1.0
+offset_right = 0.0
+
+[node name="Label_Heading" type="Label" parent="VBoxContainer" unique_id=1448781913]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_theme")
+theme_override_font_sizes/font_size = 24
+text = "Rewards"
+horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 353
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer" unique_id=704554014]
+layout_mode = 2
+theme_override_constants/separation = 32
+
+[node name="VBoxContainer_Text" type="VBoxContainer" parent="VBoxContainer/MarginContainer/HBoxContainer" unique_id=820017802]
+layout_mode = 2
+
+[node name="Label_Experience" type="Label" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer_Text" unique_id=175201053]
+layout_mode = 2
+theme = ExtResource("1_theme")
+theme_override_font_sizes/font_size = 20
+text = "Experience: 0"
+
+[node name="Label_Silver" type="Label" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer_Text" unique_id=1896906000]
+layout_mode = 2
+theme = ExtResource("1_theme")
+theme_override_font_sizes/font_size = 20
+text = "Silver: 0"
+
+[node name="Label_Supplies" type="Label" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer_Text" unique_id=1700976999]
+layout_mode = 2
+theme = ExtResource("1_theme")
+theme_override_font_sizes/font_size = 20
+text = "Supplies: 0"
+
+[node name="HBoxContainer_Items" type="HBoxContainer" parent="VBoxContainer/MarginContainer/HBoxContainer" unique_id=1214789249]
+layout_mode = 2
+theme_override_constants/separation = 16

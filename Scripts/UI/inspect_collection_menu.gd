@@ -218,11 +218,7 @@ func GetItemDescriptionText(p_item: Equipment, p_compare_item: Equipment = null)
 			elif(0 > differing_value):
 				description_text += Types.Attribute.keys()[type] + " -" + str(differing_value) + "\n"
 	else:
-		for type in p_item._attributes.keys():
-			if(0 < p_item._attributes[type]):
-				description_text += Types.Attribute.keys()[type] + " +" + str(p_item._attributes[type]) + "\n"
-			elif (0 > p_item._attributes[type]):
-				description_text += Types.Attribute.keys()[type] + " -" + str(p_item._attributes[type]) + "\n"
+		return Equipment.DescriptionText(p_item._slot, p_item._attributes, p_item._relic_effect)
 
 	if(null != p_item._relic_effect):
 		description_text += "\n" + p_item._relic_effect._body

@@ -1,6 +1,7 @@
 extends Control
 
 @export var _character_result_UI: Array[CharacterDamageResultUI]
+@export var _reward_summary: RewardSummaryUI
 
 var _context: ContextContainer = ContextContainer.new()
 
@@ -26,6 +27,8 @@ func Init(p_context_container: ContextContainer) -> void:
 		_heading.text = "Lost"
 		var paid: int = int(_context._arguments.get("Supply_Cost_Paid", GameBalance.ENCOUNTER_BASE_SUPPLY_COST))
 		main.GetInstance()._resources.AddSupplies(paid / 2)
+		if(null != _reward_summary):
+			_reward_summary.hide()
 	elif(p_context_container._arguments["Battle_Result"] == "Victory"):
 		var biome_path: String = _context._arguments.get("Biome_Path", "")
 		if biome_path.is_empty():
@@ -40,6 +43,8 @@ func Init(p_context_container: ContextContainer) -> void:
 		main.GetInstance()._resources.AddSupplies(battle_context._loot_table._drop_result._supplies)
 		for reagent_key in battle_context._loot_table._drop_result._reagents:
 			main.GetInstance()._reagent_collection.Add(reagent_key)
+		if(null != _reward_summary):
+			_reward_summary.SetRewards(battle_context._loot_table._drop_result)
 		if _context._adventure_state != null:
 			_context._adventure_state.MarkCurrentNodeComplete()
 			_context._adventure_state.DecrementAdventureEffects()

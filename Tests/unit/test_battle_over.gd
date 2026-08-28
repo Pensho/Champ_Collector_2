@@ -164,6 +164,11 @@ func test_03_init_sets_loss_screen():
 	# Stub GetCharacterTexture (called during character loop)
 	stub(character_collection_mock, "GetCharacterTexture").to_return(ImageTexture.new())
 
+	var reward_summary := RewardSummaryUI.new()
+	reward_summary.visible = true
+	add_child_autoqfree(reward_summary)
+	screen._reward_summary = reward_summary
+
 	# Setup mock context with Loss result and 3 characters
 	var mock_context = MockContextContainer.new()
 	mock_context._arguments["Battle_Result"] = "Loss"
@@ -183,6 +188,8 @@ func test_03_init_sets_loss_screen():
 
 	var heading = screen.get_node("MarginContainer/VBoxContainer/Label")
 	assert_eq(heading.text, "Lost")
+
+	assert_false(reward_summary.visible, "Loss should hide the reward summary")
 
 func test_07_on_button_edit_team_changes_to_pre_battle_menu():
 	print(get_stack()[0]["function"])
@@ -235,6 +242,11 @@ func test_10_init_populates_character_result_UI_calls():
 	stub(progress_mock, "MarkDifficultyCompleted")
 	MainMock_Instance._progress = progress_mock
 
+	var reward_summary_script = preload("res://Scripts/UI/Post_Battle_UI/reward_summary.gd")
+	var reward_summary_mock = double(reward_summary_script).new()
+	stub(reward_summary_mock, "SetRewards")
+	screen._reward_summary = reward_summary_mock
+
 	# Setup mock context with 3 characters and damage values
 	var mock_context = MockContextContainer.new()
 	mock_context._arguments["Battle_Result"] = "Victory"
@@ -259,3 +271,6 @@ func test_10_init_populates_character_result_UI_calls():
 
 	# Verify progress was marked
 	assert_call_count(progress_mock, "MarkDifficultyCompleted", 1)
+
+	# Verify the reward summary was populated with the battle's drop result
+	assert_call_count(reward_summary_mock, "SetRewards", 1)

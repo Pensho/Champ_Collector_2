@@ -162,6 +162,25 @@ func test_equipment_drop_costs_the_standard_rarity_price_regardless_of_item_type
 	assert_true(saw_relic, "300 rolls at a 5% Relic chance should include at least one Relic drop")
 
 
+func test_distribute_rewards_does_not_accumulate_across_calls() -> void:
+	var table := LootTable.new()
+	table._primary_loot[LootManager.LootType.Silver] = 1
+	table._primary_loot[LootManager.LootType.Experience] = 1
+	table._budget = LootManager.CalculateBudget(1)
+
+	LootManager.DistributeRewards(table, 1)
+	var first_silver: int = table._drop_result._silver
+	var first_experience: int = table._drop_result._experience
+
+	table._budget = LootManager.CalculateBudget(1)
+	LootManager.DistributeRewards(table, 1)
+
+	assert_eq(table._drop_result._silver, first_silver,
+		"Replaying an encounter should not add to the previous silver drop")
+	assert_eq(table._drop_result._experience, first_experience,
+		"Replaying an encounter should not add to the previous experience drop")
+
+
 func test_rarity_rates_only_include_present_rarities() -> void:
 	var grouped: Dictionary[Types.Rarity, Array] = {
 		Types.Rarity.Common: [1],

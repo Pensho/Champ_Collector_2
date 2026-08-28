@@ -56,6 +56,20 @@ func InstantiateNew(preset: EquipmentPreset, instance_ID: int) -> void:
 func CanUpgrade() -> bool:
 	return _level < Game_Balance.MAX_ITEM_LEVEL
 
+static func DescriptionText(
+		p_slot: Types.Slot,
+		p_attributes: Dictionary[Types.Attribute, int],
+		p_relic_effect: RelicEffect = null) -> String:
+	var description_text: String = Types.Slot.keys()[p_slot] + "\n"
+	for attribute in p_attributes.keys():
+		if(0 < p_attributes[attribute]):
+			description_text += Types.Attribute.keys()[attribute] + " +" + str(p_attributes[attribute]) + "\n"
+		elif(0 > p_attributes[attribute]):
+			description_text += Types.Attribute.keys()[attribute] + " -" + str(p_attributes[attribute]) + "\n"
+	if(null != p_relic_effect):
+		description_text += "\n" + p_relic_effect._body
+	return description_text
+
 static func SetupAttributeGain(p_item_type: Types.Item_Type) -> int:
 	if(Types.Item_Type.Relic == p_item_type):
 		return ceili(Game_Balance.ITEM_ATTRIBUTE_PER_RARITY / 2.0)

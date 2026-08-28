@@ -249,8 +249,9 @@ Transition flow (`Main_Instance.change_scene` → `_deferred_change_scene`):
 This is a **one-way initialization** contract: the scene receives a context once at load and does
 not hold a live reference back to global state except through `main.GetInstance()`. Results that
 must survive the transition (battle outcome, damage dealt, chosen difficulty) are written back
-into `_arguments` on the same context, which is then re-used for the next `change_scene` call (the
-post-battle screen reads them).
+into `_arguments` on the same context, which is then re-used for the next `change_scene` call. The
+post-battle screen reads `_arguments` for damage dealt, and reads the battle's `LootTable`
+(via `_static_context`) to render a `RewardSummaryUI` of what was granted.
 
 ---
 
@@ -1085,6 +1086,8 @@ on victory: computes the loot budget (`LootManager.CalculateBudget`), distribute
 experience via `LevelSystem.AddExperience`, restores player HP, then transitions to the
 post-battle scene through `main.GetInstance().change_scene()`. The resolver (and all its
 per-combat state) is simply discarded with the scene — there is no global state to reset.
+`DistributeRewards` clears the `LootTable`'s previous `DropResult` on entry, since the table is a
+shared `Resource` that would otherwise accumulate rewards across a replayed encounter.
 
 ### 7.7. Reagent consumption
 

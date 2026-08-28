@@ -87,7 +87,6 @@ func _GrantNodeLoot(p_node: NodeData, p_difficulty: int) -> void:
 	if loot_table == null:
 		return
 	loot_table._budget = int(LootManager.CalculateBudget(p_difficulty) * fraction)
-	loot_table._drop_result = LootTable.DropResult.new()
 	LootManager.DistributeRewards(loot_table, p_difficulty)
 
 func _on_interaction_resolved() -> void:
