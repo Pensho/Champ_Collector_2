@@ -16,8 +16,7 @@ func Init(p_rarity: Types.Rarity) -> void:
 
 func StartOfBattle(p_owner_ID: int, p_resolver: BattleResolver) -> void:
 	p_resolver.GetCascadeResolver().SubscribeStrengthModifier(
-			func(p_event: CascadeEvent, _p_mechanic_key: StringName) -> CascadeContribution:
+			func(p_event: CascadeEvent) -> CascadeStrength:
 				if(not p_resolver.GetSides().AreAllies(p_owner_ID, p_event.origin_ID)):
 					return null
-				return CascadeContribution.new(
-						_CASCADE_MECHANIC_KEY, 1, CascadeContribution.Kind.Base, TEAM_ECHO_STRENGTH))
+				return CascadeStrength.new(_CASCADE_MECHANIC_KEY, TEAM_ECHO_STRENGTH))

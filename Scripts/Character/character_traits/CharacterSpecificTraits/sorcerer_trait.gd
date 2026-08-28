@@ -66,12 +66,12 @@ func StartOfBattle(p_owner_ID: int, p_resolver: BattleResolver) -> void:
 	# so there is nothing to unsubscribe from a previous one.
 	p_resolver.GetCascadeResolver().SubscribeCascadeContributor(
 			func(p_event: CascadeEvent) -> CascadeContribution:
-				if(Types.Cascade_Trigger.Skill_Resolved != p_event.trigger or p_event.subject_ID != p_owner_ID
-						or _echoes_for_this_cast <= 0):
+				if(p_event.subject_ID != p_owner_ID or _echoes_for_this_cast <= 0):
 					return null
 				return CascadeContribution.new(_CASCADE_MECHANIC_KEY, _echoes_for_this_cast,
 						CascadeContribution.Kind.Base, 1.0,
-						func(e: CascadeEvent) -> void: _OnSkillResolvedRepeat(p_owner_ID, e, p_resolver)))
+						func(e: CascadeEvent) -> void: _OnSkillResolvedRepeat(p_owner_ID, e, p_resolver)),
+			Types.Cascade_Trigger.Skill_Resolved)
 
 func RefreshVisuals(p_character_repr: CharacterRepresentation) -> void:
 	var body_with_state: String = (_body + "\n" +

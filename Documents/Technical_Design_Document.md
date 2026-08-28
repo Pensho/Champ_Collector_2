@@ -1171,29 +1171,41 @@ flat union record in the `CombatResult` style: `trigger`, `subject_ID`, `origin_
 the rest of the cast the way the branches it replaces did — deferring every cascade to the end of
 the action would read post-cast attributes and reorder results past effects meant to precede them.
 `_EndBatch` also calls `Drain()` at the `_batch_depth` 1→0 transition as a catch-all (a no-op if
-nothing is pending), *before* decrementing, so a listener's own `_BeginBatch`/`_EndBatch` calls
-land in the still-open outer batch; the per-action dedup set and instance counter reset only once
-depth actually reaches 0, so multiple `Drain()` calls within one action share the same bounds.
+nothing is pending), *before* decrementing, so a deferred trigger's own `_BeginBatch`/`_EndBatch`
+calls land in the still-open outer batch; the per-action dedup set and instance counters reset only
+once depth actually reaches 0, so multiple `Drain()` calls within one action share the same bounds.
 
-**Listener matching.** `Subscribe(trigger, mechanic_key, matches, callback)` registers one
-listener per mechanic. `trigger` alone is not enough to dispatch on — every status that can expire
-shares `Status_Expired`, for instance — so `matches(event)` is checked before any dedup or
-fan-out accounting runs; only a matching listener's `callback` executes and consumes budget. This
-guards against exactly the failure mode it was built to catch: an unrelated listener silently
-starving another mechanic's fan-out allowance because both share a trigger enum value.
+**Deferred triggers.** `SubscribeDeferredTrigger(trigger, mechanic_key, matches, callback)`
+registers a callback that resolves after its matched event but produces no Echo — no
+`BeginEchoInstance`, no `Cascade_Triggered` marker, no `Cascade_Instance_Resolved` notification, no
+Echo strength. `trigger` alone is not enough to dispatch on — every status that can expire shares
+`Status_Expired`, for instance — so `matches(event)` is checked before any dedup or fan-out
+accounting runs. Overflow's expiry AoE and Rush's expiry self-Stun (both `Status_Expired`, matched
+on `buff_type`) and Mirror Coat's reflection (`Status_Landed`, posted from `CastDebuff`, matched
+unconditionally) register here instead of through `SubscribeCascadeContributor`: Concept Document
+tags them Channel 1 (Overflow, Rush) and Enabler (Mirror Coat), not Channel 3, so they need the
+post-and-drain queue for ordering only, and carry their own fan-out bound rather than sharing
+Channel 3's (below). Registered in `StatusEffectResolver._RegisterDeferredTriggers`, code-driven
+rather than data-driven — at this trigger count, a `StatusEffectData` schema field isn't warranted
+yet. `IsResolvingEcho()` (see "What counts as an Echo", below) is false throughout, so Threefold
+Bite's non-Echo penalty applies to their damage same as any base hit — correct, since none of the
+three is a Channel 3 mechanic.
 
 **Termination (Concept Document 1.1.4).** Two independent bounds, neither substituting for the
-other:
+other, hold on both the contributor and deferred-trigger paths:
 - `MAX_CASCADE_DEPTH` (4) bounds chain length. `depth` is 0 outside any cascade; `Post` stamps a
-  new event one level deeper than whichever instance is currently resolving, and refuses outright
-  past the cap.
-- `MAX_CASCADE_INSTANCES_PER_ACTION` (16) bounds total fan-out across the whole originating
-  action, checked when a trigger's `instance_count` is expanded into individual instance
-  resolutions.
+  new event one level deeper than whichever is currently resolving — an open Echo
+  (`BattleResolver.CurrentEchoDepth()`) or, for a deferred trigger which opens none, the event
+  `CascadeResolver._ResolveEvent` is itself mid-resolving (`_current_event_depth`) — and refuses
+  outright past the cap.
+- Fan-out is bounded separately per path: `MAX_CASCADE_INSTANCES_PER_ACTION` (16) for Channel 3
+  contributions, checked in `BeginEchoInstance`; `MAX_DEFERRED_TRIGGER_INSTANCES_PER_ACTION` (16)
+  for deferred triggers, checked in `CascadeResolver`'s own loop. Neither shares the other's
+  budget.
 
 A trigger source fires at most once per originating action: the dedup set is keyed
-`"mechanic_key:subject_ID"`, checked once a listener has already matched, and cleared at the same
-boundary as the instance counter. Its single firing yields `instance_count` instances without
+`"mechanic_key:subject_ID"`, checked once a deferred trigger or contributor has already matched, and
+cleared at the same boundary as the instance counters. Its single firing yields `instance_count` instances without
 re-triggering itself, so a site with several simultaneously expiring instances (e.g. a future
 stackable status) must fold that count into one `Post` rather than posting once per instance — a
 second `Post` for the same mechanic and subject in one action is dropped by the dedup rule, not
@@ -1205,19 +1217,8 @@ instances resolve.
 **Stream shape.** Each instance is bracketed by a `CombatResult.Kind.Cascade_Triggered` result
 (mechanic identity in `text`, the firing `Types.Cascade_Trigger` in `cascade_trigger`) emitted
 immediately before it resolves; every result produced by an instance carries the same
-`cascade_depth` via `BattleResolver._current_cascade_depth`, stamped centrally in `_Emit` rather
+`cascade_depth` via `BattleResolver._echo_depth`, stamped centrally in `_Emit` rather
 than by each result's own construction site.
-
-**The ported effects**, each now a listener in `StatusEffectResolver._RegisterCascadeListeners`
-rather than a hardcoded branch: Overflow's expiry AoE and Rush's expiry self-Stun (both
-`Status_Expired`, matched on `buff_type`), and Mirror
-Coat's reflection (`Status_Landed`, posted from `CastDebuff` when a debuff is created, matched
-unconditionally since any landed debuff type is relevant). Registration is code-driven for this
-phase, not data-driven: at this listener count, a `StatusEffectData` schema field for this isn't
-warranted yet. These three keep a fixed count and are not reachable by the contributor model below
-— `Listen`ed triggers other than `Skill_Resolved` never query Extenders (see the single-plumbing
-invariant), which is what keeps Black Thread off Overflow, Rush and Mirror Coat without a separate
-flag.
 
 **Vocabulary.** `Types.Cascade_Trigger` covers `Status_Expired`, `Status_Landed`, `Skill_Resolved`,
 `Debuff_Ticked`, `Zone_Triggered` and `Debuff_Tick_Forced`. A threshold-crossing trigger (health or
@@ -1229,28 +1230,31 @@ termination bounds do not themselves need to change to support one.
 **The governing rule: `CascadeResolver` is the only thing that produces an Echo.** Every Channel 3
 effect — skill repeat, status re-tick, zone re-trigger — declares a contribution and a resolution,
 never its own loop. `BattleResolver.BeginEchoInstance`/`EndEchoInstance` are called from exactly one
-place, `CascadeResolver`'s own instance loop; nothing else calls them, which is what makes the fan-
-out bound, the depth bound, the `Cascade_Triggered` marker, `IsResolvingEcho()`, the strength
+place, `CascadeResolver._ResolveContributions`, and resolve only Channel 3 contributions — the
+deferred-trigger loop above calls neither, and nothing else calls them, which is what makes the
+fan-out bound, the depth bound, the `Cascade_Triggered` marker, `IsResolvingEcho()`, the strength
 channel (below) and the `Cascade_Instance_Resolved` broadcast unbypassable rather than merely
 conventional. `Tests/unit/test_cascade_resolution.gd` scans `Scripts/` and fails if any file other
 than `cascade_resolver.gd` calls `BeginEchoInstance`, so a kit reaching for a private repeat loop
 fails the suite instead of shipping a sixth isolated handler.
 
 **Contributors: `CascadeContribution` and the attribution table.**
-`CascadeResolver.SubscribeCascadeContributor(callback: (CascadeEvent) -> CascadeContribution)`
-registers a callback queried for every posted event. A `CascadeContribution`
-(`Scripts/Battle/cascade_contribution.gd`) carries `mechanic_key`, `instances`,
-`strength_multiplier`, a `Kind` (`Base` or `Extender`), and an optional `resolve` Callable — an
-unset `resolve` means the canonical skill replay (`ResolveSkillEcho`, below). `_ResolveContributions`
-queries every contributor for the drained event, then:
+`CascadeResolver.SubscribeCascadeContributor(callback: (CascadeEvent) -> CascadeContribution,
+trigger: Variant = null)` registers a callback. An omitted `trigger` means queried
+for every posted event; a given `trigger` filters to that one, so callbacks no longer hand-roll
+their own `p_event.trigger` check. A `CascadeContribution` (`Scripts/Battle/cascade_contribution.gd`)
+carries `mechanic_key`, `instances`, `strength_multiplier`, a `Kind` (`Base` or `Extender`), and an
+optional `resolve` Callable — an unset `resolve` means the canonical skill replay
+(`ResolveSkillEcho`, below). `_ResolveContributions` queries every applicable contributor for the
+drained event, then:
 1. Sums `Base` instances and `Extender` instances separately, applying the same once-per-action
-   dedup (`"mechanic_key:subject_ID"`) contributors and `Subscribe` listeners share.
+   dedup (`"mechanic_key:subject_ID"`) contributors and deferred triggers share.
 2. **If no Base contributed, Extenders contribute nothing** — an extender extends, it cannot enable.
    This is what makes Black Thread a pure extender and Borrowed Time enabler-or-extender depending
    on what it lands on.
 3. **Extenders are queried only for `Skill_Resolved`** — the one restriction that keeps Black
-   Thread off status-triggered cascades (Comorbidity, Overflow, Mirror Coat) without a separate
-   flag.
+   Thread off Comorbidity, the only status-triggered contributor. Overflow, Rush and Mirror Coat
+   never reach Black Thread at all: they are deferred triggers, not contributors.
 4. The attribution table: each Base owns a slice of `instances` at its own `strength_multiplier`
    and `resolve`. Extender instances append to the slice of the Base with the most instances (ties
    by registration order) — the cascade's dominant mechanic.
@@ -1267,21 +1271,25 @@ other than replay the skill.
 **The strength channel.** `BeginEchoInstance` takes a fifth argument,
 `p_strength_contributions: Dictionary[StringName, float]`, keyed by contributing mechanic so
 Concept Document 1.1.3's composition law (contributions group by mechanic identity; distinct
-mechanics multiply) is preserved for Echo strength too. It is pushed/popped alongside
-`_echo_depth_stack` and read back via `CurrentEchoStrengthContributions()`.
-`DamageEffect.Resolve` contributes each entry to `CombinedDamageModifier` under its own key,
-beside the existing `repeat_bonus` bucket — every Echo path picks this up for free, including one
-that supplies its own `resolve`. `SubscribeStrengthModifier(callback: (CascadeEvent, StringName) ->
-CascadeContribution)` is a scalar applied to every Echo its scope matches, on any path, multiplied
-on top of the slice strength — where the Herald's self-bonus and The Sealed Docket's team-wide
-×0.5 live. A modifier scopes by `CascadeEvent.origin_ID`, the Echo's producer, not `subject_ID`:
-the two coincide for a skill replay (the caster is both) but not for a Zone_Triggered event
-(subject is the character the zone affected, origin is the zone's owner) or a Comorbidity re-tick
-(subject is the debuff-bearer, origin is whichever source's debuff is re-ticking, one per instance
-via `CascadeContribution.origin_for_instance`). `_ResolveContributions`/`_ResolveEvent` stamp
-`origin_ID` right before computing an instance's strength contributions. `repeat_bonus` keeps its
-own job, the *intrinsic* strength a mechanic defines for its own Echoes; external scalars go
-through this channel instead.
+mechanics multiply) is preserved for Echo strength too. It is pushed/popped in its own
+`_echo_strength_stack`, alongside `_echo_depth_stack`, and read back via
+`CurrentEchoStrengthContributions()`. `DamageEffect.Resolve` and
+`StatusEffectResolver._ApplyEchoStrength` both fold it through
+`CombinedDamageModifier.ContributeAll`, beside the existing `repeat_bonus` bucket — every Echo path
+picks this up for free, including one that supplies its own `resolve`.
+`SubscribeStrengthModifier(callback: (CascadeEvent) -> CascadeStrength)` returns a `CascadeStrength`
+(`mechanic_key`, `multiplier`), a scalar applied to every Channel 3 Echo its scope matches — never a
+deferred trigger, which opens no Echo — multiplied on top of the slice strength, where the Herald's
+self-bonus and The Sealed Docket's team-wide ×0.5 live. `CascadeResolver._StrengthContributionsFor`
+sums same-key modifiers into one bucket rather than the last one overwriting, matching
+`CombinedDamageModifier`'s own composition law. A modifier scopes by `CascadeEvent.origin_ID`, the
+Echo's producer, not `subject_ID`: the two coincide for a skill replay (the caster is both) but not
+for a Zone_Triggered event (subject is the character the zone affected, origin is the zone's owner)
+or a Comorbidity re-tick (subject is the debuff-bearer, origin is whichever source's debuff is
+re-ticking, one per instance via `CascadeContribution.origin_for_instance`).
+`_ResolveContributions` stamps `origin_ID` right before computing an instance's strength
+contributions. `repeat_bonus` keeps its own job, the *intrinsic* strength a mechanic defines for its
+own Echoes; external scalars go through this channel instead.
 
 **The five skill-replay mechanics as contributors.** Cut the Cloth (`WeftAndWarpTrait`), the
 Sorcerer's Echo charges, The Long Furrow, Borrowed Time and Comorbidity all register a Base
@@ -1304,7 +1312,7 @@ contributor rather than running a private loop:
   two cases.
 - **Comorbidity.** A Base contributor on `Debuff_Ticked`. Every debuff tick posts `Debuff_Ticked`
   (`StatusEffectResolver._PostDebuffTick`, called from both the natural tick path and
-  `ForceExtraDebuffTick`), carrying the tick's `distinct_debuff_type_count` and
+  `_ForceExtraDebuffTick`), carrying the tick's `distinct_debuff_type_count` and
   `repeating_source_ids` on the event — a plain Burning tick posts the event and the contributor
   returns null, resolving no Echo. When a `repeats_per_distinct_debuff`-flagged debuff (the Plague
   Doctor's Comorbidity) is present, the contributor returns `(distinct_count - 1) *
@@ -1313,9 +1321,9 @@ contributor rather than running a private loop:
 
 **Black Thread**, the one pure Extender: 1 instance, once per originating action (reset in
 `OnSkillCast`), gated on `subject_ID == owner_ID` and the event concerning an enemy
-(`_EventConcernsEnemyOf`) — self-only, never an ally's or enemy's own cascade. Because extenders are
-queried only for `Skill_Resolved` and need a Base, it cannot inflate Comorbidity, Mirror Coat or
-Overflow.
+(`_EventConcernsEnemyOf`) — self-only, never an ally's or enemy's own cascade. Extenders are
+queried only for `Skill_Resolved` and need a Base, so it cannot inflate Comorbidity (`Debuff_Ticked`);
+Mirror Coat and Overflow are deferred triggers, unreachable by any contributor at all.
 
 **Golden Thread and the generic self-bonus.** `CascadeEvent.mechanic_key`, stamped by
 `_ResolveContributions`/`_ResolveEvent` right before `_NotifyCascadeInstanceResolved`, is what
@@ -1342,12 +1350,13 @@ it, leaving that same cast's own `Skill_Resolved` cascade the chance to consume 
 expiry would.
 
 **The two previously-uncounted paths.** Lantern of the Standing Ward posts a `Zone_Triggered` event
-(zone ID, affected character) with a Base contribution of 1 instance at `Magnitude()`, whose
-`resolve` calls `ZoneResolver.ResolveZoneEffectEcho(zone_ID, character_ID, strength_multiplier)` —
+(zone ID, affected character) with a Base contribution of 1 instance at strength 1.0, whose
+`resolve` calls `ZoneResolver.ResolveZoneEffectEcho(zone_ID, character_ID, Magnitude())` directly —
 a plain "resolve this zone against this character at this strength", with no bounds responsibility
-of its own. `TriggerDebuffTicksEffect` posts a `Debuff_Tick_Forced` event per target with a Base
-contribution of 1 instance, whose `resolve` is `ForceExtraDebuffTick`. Both now consume fan-out
-budget, are visible to Golden Thread, and no longer take Threefold Bite's non-Echo penalty.
+of its own. `TriggerDebuffTicksEffect` posts a `Debuff_Tick_Forced` event per target; the Base
+contribution for it is registered inline in `_RegisterDeferredTriggers` (`Debuff_Tick_Forced` has
+no condition of its own, only the trigger), `resolve` is `_ForceExtraDebuffTick`. Both now consume
+fan-out budget, are visible to Golden Thread, and no longer take Threefold Bite's non-Echo penalty.
 
 ### 7.9. Burst presentation pacing
 

@@ -41,7 +41,7 @@ func test_depth_cap_refuses_a_chain_past_the_bound() -> void:
 		var next_event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Status_Expired)
 		next_event.subject_ID = next_subject_ID[0]
 		_cascade.Post(next_event)
-	_cascade.Subscribe(Types.Cascade_Trigger.Status_Expired, &"SelfReentrant",
+	_cascade.SubscribeDeferredTrigger(Types.Cascade_Trigger.Status_Expired, &"SelfReentrant",
 			func(_p_event: CascadeEvent) -> bool: return true, callback)
 
 	_resolver._BeginBatch()
@@ -53,25 +53,26 @@ func test_depth_cap_refuses_a_chain_past_the_bound() -> void:
 	assert_eq(run_count[0], CascadeResolver.MAX_CASCADE_DEPTH,
 		"A chain moving to a fresh subject each level must stop at the depth cap, not recurse forever")
 
-func test_fan_out_cap_bounds_a_high_instance_count() -> void:
+func test_deferred_trigger_fan_out_cap_bounds_a_high_instance_count() -> void:
 	var run_count: Array[int] = [0]
-	_cascade.Subscribe(Types.Cascade_Trigger.Status_Expired, &"HighFanout",
+	_cascade.SubscribeDeferredTrigger(Types.Cascade_Trigger.Status_Expired, &"HighFanout",
 			func(_p_event: CascadeEvent) -> bool: return true,
 			func(_p_event: CascadeEvent) -> void: run_count[0] += 1)
 
 	_resolver._BeginBatch()
 	var event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Status_Expired)
 	event.subject_ID = 0
-	event.instance_count = CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION + 10
+	event.instance_count = CascadeResolver.MAX_DEFERRED_TRIGGER_INSTANCES_PER_ACTION + 10
 	_cascade.Post(event)
 	_resolver._EndBatch()
 
-	assert_eq(run_count[0], CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION,
-		"A single trigger's instance count must not exceed the per-action fan-out cap")
+	assert_eq(run_count[0], CascadeResolver.MAX_DEFERRED_TRIGGER_INSTANCES_PER_ACTION,
+		"A single deferred trigger's instance count must not exceed its own fan-out cap, " +
+		"which is not shared with Channel 3's MAX_CASCADE_INSTANCES_PER_ACTION")
 
 func test_trigger_fires_once_per_action_but_yields_its_full_instance_count() -> void:
 	var run_count: Array[int] = [0]
-	_cascade.Subscribe(Types.Cascade_Trigger.Status_Expired, &"Repeatable",
+	_cascade.SubscribeDeferredTrigger(Types.Cascade_Trigger.Status_Expired, &"Repeatable",
 			func(_p_event: CascadeEvent) -> bool: return true,
 			func(_p_event: CascadeEvent) -> void: run_count[0] += 1)
 
@@ -92,7 +93,7 @@ func test_trigger_fires_once_per_action_but_yields_its_full_instance_count() -> 
 
 func test_snapshotted_instance_count_is_unaffected_by_later_mutation() -> void:
 	var run_count: Array[int] = [0]
-	_cascade.Subscribe(Types.Cascade_Trigger.Status_Expired, &"Snapshotted",
+	_cascade.SubscribeDeferredTrigger(Types.Cascade_Trigger.Status_Expired, &"Snapshotted",
 			func(_p_event: CascadeEvent) -> bool: return true,
 			func(_p_event: CascadeEvent) -> void: run_count[0] += 1)
 	var live_quantity: Dictionary[String, int] = {"remaining": 5}
@@ -108,7 +109,7 @@ func test_snapshotted_instance_count_is_unaffected_by_later_mutation() -> void:
 	assert_eq(run_count[0], 5,
 		"An instance count fixed at Post time must not be affected by the live quantity draining")
 
-func test_overflow_cascade_triggered_precedes_its_instance_and_carries_depth() -> void:
+func test_overflow_expiry_emits_no_burst_marker_and_stamps_depth_zero() -> void:
 	for id in _roster.keys():
 		_roster[id]._skills.append(TestFactory.make_empty_skill())
 	var buff: StatusEffects.Buff = StatusEffects.Buff.new()
@@ -126,14 +127,11 @@ func test_overflow_cascade_triggered_precedes_its_instance_and_carries_depth() -
 			triggered_index = i
 		if(CombatResult.Kind.Damage == results[i].kind and -1 == damage_index):
 			damage_index = i
-	assert_ne(triggered_index, -1, "Overflow's expiry should emit a Cascade_Triggered marker")
+	assert_eq(triggered_index, -1,
+		"Overflow is a deferred trigger, not a Channel 3 mechanic, and must not emit a Cascade_Triggered marker")
 	assert_ne(damage_index, -1, "Overflow's expiry should still deal damage")
-	assert_lt(triggered_index, damage_index,
-		"Cascade_Triggered must bracket the instance, landing immediately before its results")
-	assert_eq(results[triggered_index].cascade_depth, 1,
-		"A trigger fired directly from the originating action is cascade depth 1")
-	assert_eq(results[damage_index].cascade_depth, 1,
-		"Results produced inside the instance should carry the same depth as its marker")
+	assert_eq(results[damage_index].cascade_depth, 0,
+		"Overflow's damage resolves outside any Echo, so it carries the base-hit depth of 0")
 
 func test_repeat_instances_each_read_live_conditions_via_a_fresh_combined_modifier() -> void:
 	# A single alive enemy so each Overflow instance hits exactly one target once,
@@ -241,6 +239,28 @@ func test_contributor_extender_appends_to_the_dominant_base() -> void:
 	assert_eq(extender_runs[0], 0,
 		"An Extender never runs its own resolve — its instance is folded into the Base's slice")
 
+## An Extender contributing to no Base must not spend its per-action dedup slot: the mechanic
+## it stands for should still be free to extend a later Base in the same action.
+func test_extender_without_a_base_does_not_burn_its_dedup_slot() -> void:
+	var base_runs: Array[int] = [0]
+	_cascade.SubscribeCascadeContributor(func(_p_event: CascadeEvent) -> CascadeContribution:
+		return CascadeContribution.new(&"LonelyExtender", 1, CascadeContribution.Kind.Extender))
+	# Only fires for the second event, standing in for a Base that does not exist yet
+	# when the Extender is first queried.
+	_cascade.SubscribeCascadeContributor(func(_p_event: CascadeEvent) -> CascadeContribution:
+		if(2 != _p_event.skill_ID):
+			return null
+		return CascadeContribution.new(&"LateBase", 1, CascadeContribution.Kind.Base,
+				1.0, func(_e: CascadeEvent) -> void: base_runs[0] += 1))
+
+	_resolver._BeginBatch()
+	_cascade.Post(CascadeEvent.ForSkillResolved(0, 1, []))  # no Base yet: the Extender contributes nothing
+	_cascade.Post(CascadeEvent.ForSkillResolved(0, 2, []))  # a Base now exists, in the same action
+	_resolver._EndBatch()
+
+	assert_eq(base_runs[0], 2,
+		"The Base should resolve once for itself and once for the Extender's appended instance")
+
 func test_contributor_respects_the_once_per_action_dedup() -> void:
 	var run_count: Array[int] = [0]
 	_cascade.SubscribeCascadeContributor(func(_p_event: CascadeEvent) -> CascadeContribution:
@@ -275,50 +295,14 @@ func test_echo_strength_contributions_are_visible_during_the_instance_and_restor
 	assert_eq(_resolver.CurrentEchoStrengthContributions(), {},
 		"Ending the outermost Echo should leave no strength contributions active")
 
-func test_strength_modifier_reaches_a_listener_driven_echo() -> void:
+func test_strength_modifiers_do_not_reach_a_deferred_trigger() -> void:
 	var seen_contributions: Array[Dictionary] = []
-	_cascade.Subscribe(Types.Cascade_Trigger.Status_Expired, &"BaseListener",
+	_cascade.SubscribeDeferredTrigger(Types.Cascade_Trigger.Status_Expired, &"DeferredMechanic",
 			func(_p_event: CascadeEvent) -> bool: return true,
 			func(_p_event: CascadeEvent) -> void:
 				seen_contributions.append(_resolver.CurrentEchoStrengthContributions()))
-	_cascade.SubscribeStrengthModifier(func(_p_event: CascadeEvent, _p_mechanic_key: StringName) -> CascadeContribution:
-		return CascadeContribution.new(&"SomeModifier", 1, CascadeContribution.Kind.Base, 1.5))
-
-	_resolver._BeginBatch()
-	var event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Status_Expired)
-	event.subject_ID = 0
-	_cascade.Post(event)
-	_resolver._EndBatch()
-
-	assert_eq(seen_contributions, [{&"SomeModifier": 0.5}],
-		"A strength modifier should reach a plain Subscribe-driven Echo, keyed by its own mechanic_key")
-
-func test_strength_modifier_reaches_a_contributor_driven_echo() -> void:
-	var seen_contributions: Array[Dictionary] = []
-	_cascade.SubscribeCascadeContributor(func(_p_event: CascadeEvent) -> CascadeContribution:
-		return CascadeContribution.new(&"Contributor", 1, CascadeContribution.Kind.Base, 1.0,
-				func(_e: CascadeEvent) -> void:
-					seen_contributions.append(_resolver.CurrentEchoStrengthContributions())))
-	_cascade.SubscribeStrengthModifier(func(_p_event: CascadeEvent, _p_mechanic_key: StringName) -> CascadeContribution:
-		return CascadeContribution.new(&"Modifier", 1, CascadeContribution.Kind.Base, 1.5))
-
-	_resolver._BeginBatch()
-	_cascade.Post(CascadeEvent.ForSkillResolved(0, 0, []))
-	_resolver._EndBatch()
-
-	assert_eq(seen_contributions, [{&"Modifier": 0.5}],
-		"A strength modifier should reach a contributor-driven Echo too")
-
-func test_strength_modifier_returning_null_or_no_multiplier_contributes_nothing() -> void:
-	var seen_contributions: Array[Dictionary] = []
-	_cascade.Subscribe(Types.Cascade_Trigger.Status_Expired, &"BaseListener",
-			func(_p_event: CascadeEvent) -> bool: return true,
-			func(_p_event: CascadeEvent) -> void:
-				seen_contributions.append(_resolver.CurrentEchoStrengthContributions()))
-	_cascade.SubscribeStrengthModifier(func(_p_event: CascadeEvent, _p_mechanic_key: StringName) -> CascadeContribution:
-		return null)
-	_cascade.SubscribeStrengthModifier(func(_p_event: CascadeEvent, _p_mechanic_key: StringName) -> CascadeContribution:
-		return CascadeContribution.new(&"Inert", 1, CascadeContribution.Kind.Base, 1.0))
+	_cascade.SubscribeStrengthModifier(func(_p_event: CascadeEvent) -> CascadeStrength:
+		return CascadeStrength.new(&"SomeModifier", 1.5))
 
 	_resolver._BeginBatch()
 	var event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Status_Expired)
@@ -327,11 +311,63 @@ func test_strength_modifier_returning_null_or_no_multiplier_contributes_nothing(
 	_resolver._EndBatch()
 
 	assert_eq(seen_contributions, [{}],
+		"A deferred trigger produces no Echo, so a registered strength modifier must never reach it")
+
+func test_strength_modifier_reaches_a_contributor_driven_echo() -> void:
+	var seen_contributions: Array[Dictionary] = []
+	_cascade.SubscribeCascadeContributor(func(_p_event: CascadeEvent) -> CascadeContribution:
+		return CascadeContribution.new(&"Contributor", 1, CascadeContribution.Kind.Base, 1.0,
+				func(_e: CascadeEvent) -> void:
+					seen_contributions.append(_resolver.CurrentEchoStrengthContributions())))
+	_cascade.SubscribeStrengthModifier(func(_p_event: CascadeEvent) -> CascadeStrength:
+		return CascadeStrength.new(&"Modifier", 1.5))
+
+	_resolver._BeginBatch()
+	_cascade.Post(CascadeEvent.ForSkillResolved(0, 0, []))
+	_resolver._EndBatch()
+
+	assert_eq(seen_contributions, [{&"Modifier": 0.5}],
+		"A strength modifier should reach a contributor-driven Echo too")
+
+func test_two_strength_modifiers_sharing_a_key_compose_rather_than_clobber() -> void:
+	var seen_contributions: Array[Dictionary] = []
+	_cascade.SubscribeCascadeContributor(func(_p_event: CascadeEvent) -> CascadeContribution:
+		return CascadeContribution.new(&"Contributor", 1, CascadeContribution.Kind.Base, 1.0,
+				func(_e: CascadeEvent) -> void:
+					seen_contributions.append(_resolver.CurrentEchoStrengthContributions())))
+	_cascade.SubscribeStrengthModifier(func(_p_event: CascadeEvent) -> CascadeStrength:
+		return CascadeStrength.new(&"Shared", 1.5))
+	_cascade.SubscribeStrengthModifier(func(_p_event: CascadeEvent) -> CascadeStrength:
+		return CascadeStrength.new(&"Shared", 1.2))
+
+	_resolver._BeginBatch()
+	_cascade.Post(CascadeEvent.ForSkillResolved(0, 0, []))
+	_resolver._EndBatch()
+
+	assert_eq(seen_contributions, [{&"Shared": 0.7}],
+		"Two strength modifiers keyed the same must sum (0.5 + 0.2), not have the second overwrite the first")
+
+func test_strength_modifier_returning_null_or_no_multiplier_contributes_nothing() -> void:
+	var seen_contributions: Array[Dictionary] = []
+	_cascade.SubscribeCascadeContributor(func(_p_event: CascadeEvent) -> CascadeContribution:
+		return CascadeContribution.new(&"Contributor", 1, CascadeContribution.Kind.Base, 1.0,
+				func(_e: CascadeEvent) -> void:
+					seen_contributions.append(_resolver.CurrentEchoStrengthContributions())))
+	_cascade.SubscribeStrengthModifier(func(_p_event: CascadeEvent) -> CascadeStrength:
+		return null)
+	_cascade.SubscribeStrengthModifier(func(_p_event: CascadeEvent) -> CascadeStrength:
+		return CascadeStrength.new(&"Inert", 1.0))
+
+	_resolver._BeginBatch()
+	_cascade.Post(CascadeEvent.ForSkillResolved(0, 0, []))
+	_resolver._EndBatch()
+
+	assert_eq(seen_contributions, [{}],
 		"A null modifier and one at multiplier 1.0 (no effect) should both contribute nothing")
 
-## The governing principle behind this plan: BeginEchoInstance is called from exactly one
-## place, CascadeResolver's own instance loop. A script anywhere else that calls it has grown
-## a sixth private Echo loop instead of declaring a contribution.
+## The governing rule: BeginEchoInstance is called from exactly one place, CascadeResolver's
+## own instance loop. A script anywhere else that calls it has grown a private Echo loop
+## instead of declaring a contribution.
 func test_begin_echo_instance_is_called_only_from_cascade_resolver() -> void:
 	var offending_files: Array[String] = []
 	var directories: Array[String] = ["res://Scripts"]
@@ -364,7 +400,26 @@ func test_cascade_instance_resolved_notifies_every_living_characters_trait() -> 
 		_roster[id]._trait = FakeCascadeInstanceListenerTrait.new()
 		_roster[id]._trait.Init(Types.Rarity.Common)
 	_roster[4]._current_health = 0
-	_cascade.Subscribe(Types.Cascade_Trigger.Status_Expired, &"Notifier",
+	_cascade.SubscribeCascadeContributor(func(_p_event: CascadeEvent) -> CascadeContribution:
+		return CascadeContribution.new(&"Notifier", 2, CascadeContribution.Kind.Base,
+				1.0, func(_e: CascadeEvent) -> void: pass))
+
+	_resolver._BeginBatch()
+	_cascade.Post(CascadeEvent.ForSkillResolved(0, 0, []))
+	_resolver._EndBatch()
+
+	for id in _roster.keys():
+		var observed: int = (_roster[id]._trait as FakeCascadeInstanceListenerTrait)._notified_count
+		if(id == 4):
+			assert_eq(observed, 0, "A dead character's trait must not be notified")
+		else:
+			assert_eq(observed, 2, "Every living character's trait should be notified once per real instance")
+
+func test_deferred_trigger_does_not_notify_cascade_instance_resolved() -> void:
+	for id in _roster.keys():
+		_roster[id]._trait = FakeCascadeInstanceListenerTrait.new()
+		_roster[id]._trait.Init(Types.Rarity.Common)
+	_cascade.SubscribeDeferredTrigger(Types.Cascade_Trigger.Status_Expired, &"DeferredNotifier",
 			func(_p_event: CascadeEvent) -> bool: return true,
 			func(_p_event: CascadeEvent) -> void: pass)
 
@@ -377,7 +432,5 @@ func test_cascade_instance_resolved_notifies_every_living_characters_trait() -> 
 
 	for id in _roster.keys():
 		var observed: int = (_roster[id]._trait as FakeCascadeInstanceListenerTrait)._notified_count
-		if(id == 4):
-			assert_eq(observed, 0, "A dead character's trait must not be notified")
-		else:
-			assert_eq(observed, 2, "Every living character's trait should be notified once per real instance")
+		assert_eq(observed, 0,
+			"A deferred trigger produces no Echo, so it must never fire Cascade_Instance_Resolved")

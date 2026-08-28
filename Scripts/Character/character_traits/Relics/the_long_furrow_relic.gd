@@ -22,11 +22,11 @@ func StartOfBattle(p_owner_ID: int, p_resolver: BattleResolver) -> void:
 	_charge_span = 0
 	p_resolver.GetCascadeResolver().SubscribeCascadeContributor(
 			func(p_event: CascadeEvent) -> CascadeContribution:
-				if(Types.Cascade_Trigger.Skill_Resolved != p_event.trigger or p_event.subject_ID != p_owner_ID
-						or _charge_span < _MINIMUM_CHARGE_SPAN):
+				if(p_event.subject_ID != p_owner_ID or _charge_span < _MINIMUM_CHARGE_SPAN):
 					return null
 				return CascadeContribution.new(
-						_CASCADE_MECHANIC_KEY, 1, CascadeContribution.Kind.Base, Magnitude()))
+						_CASCADE_MECHANIC_KEY, 1, CascadeContribution.Kind.Base, Magnitude()),
+			Types.Cascade_Trigger.Skill_Resolved)
 
 func OnSkillCast(
 		p_owner_ID: int,

@@ -12,6 +12,7 @@ enum Thread_Type
 
 const TENSION_MAX: int = 7
 const PULL_THE_THREAD_TENSION: int = 2
+const _CASCADE_MECHANIC_KEY: StringName = &"Cut the Cloth"
 
 const SELF_BONUS_BY_RARITY: Dictionary[Types.Rarity, float] = {
 	Types.Rarity.Uncommon: 0.10,
@@ -56,25 +57,28 @@ func StartOfBattle(p_owner_ID: int, p_resolver: BattleResolver) -> void:
 	var cascade: CascadeResolver = p_resolver.GetCascadeResolver()
 	cascade.SubscribeCascadeContributor(
 			func(p_event: CascadeEvent) -> CascadeContribution:
-				if(Types.Cascade_Trigger.Skill_Resolved != p_event.trigger or p_event.subject_ID != p_owner_ID):
+				if(p_event.subject_ID != p_owner_ID or _pending_cut_the_cloth_instances <= 0):
 					return null
-				var instances: int = _pending_cut_the_cloth_instances
-				_pending_cut_the_cloth_instances = 0
-				if(instances <= 0):
-					return null
-				return CascadeContribution.new(&"Cut the Cloth", instances, CascadeContribution.Kind.Base, 1.0))
+				return CascadeContribution.new(
+						_CASCADE_MECHANIC_KEY, _pending_cut_the_cloth_instances,
+						CascadeContribution.Kind.Base, 1.0,
+						func(p_resolved_event: CascadeEvent) -> void:
+							_pending_cut_the_cloth_instances = 0
+							p_resolver.ResolveSkillEcho(p_resolved_event.subject_ID,
+									p_resolved_event.skill_ID, p_resolved_event.target_IDs, 1.0)),
+			Types.Cascade_Trigger.Skill_Resolved)
 	cascade.SubscribeCascadeContributor(
 			func(p_event: CascadeEvent) -> CascadeContribution:
-				if(Types.Cascade_Trigger.Skill_Resolved != p_event.trigger or Thread_Type.Black != _current_thread
-						or p_event.subject_ID != p_owner_ID
+				if(Thread_Type.Black != _current_thread or p_event.subject_ID != p_owner_ID
 						or not _EventConcernsEnemyOf(p_owner_ID, p_event, p_resolver)):
 					return null
-				return CascadeContribution.new(&"Black Thread", 1, CascadeContribution.Kind.Extender))
+				return CascadeContribution.new(&"Black Thread", 1, CascadeContribution.Kind.Extender),
+			Types.Cascade_Trigger.Skill_Resolved)
 	cascade.SubscribeStrengthModifier(
-			func(p_event: CascadeEvent, _p_mechanic_key: StringName) -> CascadeContribution:
+			func(p_event: CascadeEvent) -> CascadeStrength:
 				if(p_event.origin_ID != p_owner_ID):
 					return null
-				return CascadeContribution.new(&"Weft and Warp", 1, CascadeContribution.Kind.Base, 1.0 + _self_bonus))
+				return CascadeStrength.new(&"Weft and Warp", 1.0 + _self_bonus))
 
 func RefreshVisuals(p_character_repr: CharacterRepresentation) -> void:
 	var body_with_state: String = (_body + "\n\n" +
@@ -105,7 +109,7 @@ func OnCascadeInstanceResolved(
 		p_owner_ID: int, p_event: CascadeEvent, p_resolver: BattleResolver) -> void:
 	if(Thread_Type.Golden != _current_thread):
 		return
-	if(&"Cut the Cloth" == p_event.mechanic_key):
+	if(_CASCADE_MECHANIC_KEY == p_event.mechanic_key):
 		return
 	if(not _EventConcernsEnemyOf(p_owner_ID, p_event, p_resolver)):
 		return
@@ -118,13 +122,12 @@ func OnSkillCast(
 		_p_caster_attributes: Dictionary[Types.Attribute, int],
 		_p_resolver: BattleResolver) -> TraitSkillResult:
 	var result: TraitSkillResult = TraitSkillResult.new()
-	match p_skill_name:
-		"Pull the Thread":
-			# Stance-independent: granted regardless of the currently active thread.
-			_tension = mini(_tension + PULL_THE_THREAD_TENSION, TENSION_MAX)
-		"Cut the Cloth":
-			_pending_cut_the_cloth_instances = _tension
-			_tension = 0
+	if("Pull the Thread" == p_skill_name):
+		# Stance-independent: granted regardless of the currently active thread.
+		_tension = mini(_tension + PULL_THE_THREAD_TENSION, TENSION_MAX)
+	elif(String(_CASCADE_MECHANIC_KEY) == p_skill_name):
+		_pending_cut_the_cloth_instances = _tension
+		_tension = 0
 	return result
 
 func _EventConcernsEnemyOf(p_owner_ID: int, p_event: CascadeEvent, p_resolver: BattleResolver) -> bool:

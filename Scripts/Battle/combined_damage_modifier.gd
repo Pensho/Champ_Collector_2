@@ -18,6 +18,10 @@ var _buckets: Dictionary[StringName, float] = {}
 func Contribute(p_key: StringName, p_fraction: float) -> void:
 	_buckets[p_key] = maxf(_buckets.get(p_key, 0.0) + p_fraction, -1.0)
 
+func ContributeAll(p_contributions: Dictionary[StringName, float]) -> void:
+	for key: StringName in p_contributions:
+		Contribute(key, p_contributions[key])
+
 func Product() -> float:
 	var product: float = 1.0
 	for key: StringName in _buckets:

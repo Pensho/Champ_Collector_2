@@ -152,6 +152,24 @@ func test_golden_gains_no_tension_from_a_plain_debuff_tick_with_no_contributor()
 	assert_eq(_trait._tension, 0,
 		"A plain debuff tick with no contributor should post but resolve no Echo, granting no Tension")
 
+func test_overflow_expiry_does_not_feed_golden_thread() -> void:
+	_InitTrait(Types.Rarity.Uncommon)
+	_trait.AdvanceThread()  # Golden
+	_character._trait = _trait
+	var enemy: Character = TestFactory.make_character()
+	enemy._skills.append(TestFactory.make_empty_skill())
+	var overflow: StatusEffects.Buff = StatusEffects.Buff.new()
+	overflow.type = Types.Buff_Type.Overflow
+	overflow.duration = 1
+	enemy._active_buffs.append(overflow)
+	_characters[1] = enemy
+	var sided_resolver: BattleResolver = TestFactory.make_resolver(_characters, CombatSides.new([0], [1]))
+
+	sided_resolver.ResolveSkill(1, [], 0)
+
+	assert_eq(_trait._tension, 0,
+		"Overflow is a deferred trigger, not a Channel 3 Echo, so its expiry must not feed Golden Thread")
+
 func test_non_golden_threads_do_not_gain_tension_from_cascade_instances() -> void:
 	_InitTrait(Types.Rarity.Uncommon)  # Silver
 	var enemy: Character = TestFactory.make_character()
@@ -320,6 +338,34 @@ func test_cut_the_cloth_consumes_all_tension() -> void:
 
 	assert_eq(herald_trait._tension, 0)
 
+## A contributor is polled speculatively — its contribution can still be discarded by the
+## once-per-action dedup after the fact. Cut the Cloth's contributor must only consume banked
+## Tension from its resolve callback, never merely from being queried, or a discarded
+## contribution silently drops Tension the player never spent.
+func test_a_dedup_blocked_cut_the_cloth_contribution_does_not_consume_pending_tension() -> void:
+	var setup: Dictionary = _make_cut_the_cloth_setup()
+	var herald_trait: WeftAndWarpTrait = setup["trait"]
+	var resolver: BattleResolver = setup["resolver"]
+	var cascade: CascadeResolver = resolver.GetCascadeResolver()
+	# Shares Cut the Cloth's own mechanic key and, on resolving, banks Tension as a side
+	# effect — standing in for a second Cut the Cloth cast landing while this action's
+	# cascade is still draining.
+	cascade.SubscribeCascadeContributor(func(_p_event: CascadeEvent) -> CascadeContribution:
+		return CascadeContribution.new(StringName("Cut the Cloth"), 1, CascadeContribution.Kind.Base,
+				1.0, func(_e: CascadeEvent) -> void: herald_trait._pending_cut_the_cloth_instances = 3))
+
+	resolver._BeginBatch()
+	# Event 1: no Tension banked yet, so the trait's own contributor contributes nothing;
+	# the stand-in above fires instead and banks Tension as its resolve runs.
+	cascade.Post(CascadeEvent.ForSkillResolved(0, 0, []))
+	# Event 2: Tension is now banked, so the trait's contributor is queried and returns a real
+	# contribution — but "Cut the Cloth:0" is already claimed from event 1, so it is discarded.
+	cascade.Post(CascadeEvent.ForSkillResolved(0, 0, []))
+	resolver._EndBatch()
+
+	assert_eq(herald_trait._pending_cut_the_cloth_instances, 3,
+		"A dedup-discarded contribution's query must not consume Tension its own query merely read")
+
 func test_cut_the_clouth_repeats_do_not_feed_golden_thread() -> void:
 	var setup: Dictionary = _make_cut_the_cloth_setup()
 	var herald_trait: WeftAndWarpTrait = setup["trait"]
@@ -399,6 +445,28 @@ func test_cut_the_cloth_repeats_are_capped_by_the_shared_echo_budget() -> void:
 	assert_eq(_damage_results_against(results, 1).size(), 1 + 3,
 		"Tension repeats must stop once the shared per-action Echo budget runs out, " +
 		"leaving the base cast plus only the instances the remaining budget allowed")
+
+func test_overflow_expiry_does_not_reduce_the_echo_budget_available_to_a_cut_the_cloth_burst() -> void:
+	var setup: Dictionary = _make_cut_the_cloth_setup()
+	var herald_trait: WeftAndWarpTrait = setup["trait"]
+	var resolver: BattleResolver = setup["resolver"]
+	herald_trait._tension = WeftAndWarpTrait.TENSION_MAX
+	var caster: Character = resolver.GetCharacters()[0]
+	var overflow: StatusEffects.Buff = StatusEffects.Buff.new()
+	overflow.type = Types.Buff_Type.Overflow
+	overflow.duration = 1
+	caster._active_buffs.append(overflow)
+	# Exactly enough Channel 3 budget for Cut the Cloth's own repeats and nothing more — if
+	# Overflow's expiry, resolving in this same action, spent any of it, a repeat would be lost.
+	resolver._echoes_this_action = CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION - WeftAndWarpTrait.TENSION_MAX
+
+	var results: Array[CombatResult] = resolver.ResolveSkill(0, [1], 0)
+
+	var cut_the_cloth_markers: Array[CombatResult] = results.filter(
+			func(r: CombatResult) -> bool: return CombatResult.Kind.Cascade_Triggered == r.kind and "Cut the Cloth" == r.text)
+	assert_eq(cut_the_cloth_markers.size(), WeftAndWarpTrait.TENSION_MAX,
+		"Overflow's expiry uses the deferred path's own fan-out bound, not Channel 3's, so it " +
+		"must not shrink the budget Cut the Cloth's repeats draw from")
 
 func test_cut_the_cloth_combines_with_black_thread_and_borrowed_time() -> void:
 	var setup: Dictionary = _make_cut_the_cloth_setup()

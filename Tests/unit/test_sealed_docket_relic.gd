@@ -35,9 +35,9 @@ func _make_setup(p_rarity: Types.Rarity) -> Dictionary:
 func _strength_contributions_for(p_resolver: BattleResolver, p_subject_ID: int) -> Array[Dictionary]:
 	var cascade: CascadeResolver = p_resolver.GetCascadeResolver()
 	var seen: Array[Dictionary] = []
-	cascade.Subscribe(Types.Cascade_Trigger.Status_Expired, &"TestListener",
-			func(_e: CascadeEvent) -> bool: return true,
-			func(_e: CascadeEvent) -> void: seen.append(p_resolver.CurrentEchoStrengthContributions()))
+	cascade.SubscribeCascadeContributor(func(_e: CascadeEvent) -> CascadeContribution:
+		return CascadeContribution.new(&"TestContributor", 1, CascadeContribution.Kind.Base,
+				1.0, func(_e2: CascadeEvent) -> void: seen.append(p_resolver.CurrentEchoStrengthContributions())))
 	var event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Status_Expired)
 	event.subject_ID = p_subject_ID
 	p_resolver._BeginBatch()

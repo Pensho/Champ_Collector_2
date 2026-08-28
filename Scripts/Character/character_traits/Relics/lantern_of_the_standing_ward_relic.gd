@@ -22,17 +22,17 @@ func StartOfBattle(_p_owner_ID: int, p_resolver: BattleResolver) -> void:
 	_echoed_zone_IDs.clear()
 	p_resolver.GetCascadeResolver().SubscribeCascadeContributor(
 			func(p_event: CascadeEvent) -> CascadeContribution:
-				if(Types.Cascade_Trigger.Zone_Triggered != p_event.trigger
-						or not _echoed_zone_IDs.has(p_event.zone_ID)):
+				if(not _echoed_zone_IDs.has(p_event.zone_ID)):
 					return null
 				var contribution: CascadeContribution = CascadeContribution.new(
-						_CASCADE_MECHANIC_KEY, 1, CascadeContribution.Kind.Base, Magnitude(),
+						_CASCADE_MECHANIC_KEY, 1, CascadeContribution.Kind.Base, 1.0,
 						func(p_zone_event: CascadeEvent) -> void:
 							p_resolver.GetZoneResolver().ResolveZoneEffectEcho(
 									p_zone_event.zone_ID, p_zone_event.subject_ID, Magnitude()))
 				var zone_owner_ID: int = p_event.origin_ID
 				contribution.origin_for_instance = func(_i: int) -> int: return zone_owner_ID
-				return contribution)
+				return contribution,
+			Types.Cascade_Trigger.Zone_Triggered)
 
 func GetTeamReagentPotencyBonus(_p_owner_ID: int, _p_resolver: BattleResolver) -> float:
 	return TEAM_REAGENT_PENALTY

@@ -383,8 +383,10 @@ func BeginEchoInstance(
 
 func EndEchoInstance() -> void:
 	_echo_depth = _echo_depth_stack.pop_back() if not _echo_depth_stack.is_empty() else 0
-	_echo_strength_contributions = (
-			_echo_strength_stack.pop_back() if not _echo_strength_stack.is_empty() else {})
+	if(_echo_strength_stack.is_empty()):
+		_echo_strength_contributions = {}
+	else:
+		_echo_strength_contributions = _echo_strength_stack.pop_back()
 
 func CurrentEchoStrengthContributions() -> Dictionary[StringName, float]:
 	return _echo_strength_contributions
@@ -606,6 +608,8 @@ func _EndBatch() -> Array[CombatResult]:
 		_echoes_this_action = 0
 		_echo_depth = 0
 		_echo_depth_stack.clear()
+		_echo_strength_contributions = {}
+		_echo_strength_stack.clear()
 	return _batch
 
 

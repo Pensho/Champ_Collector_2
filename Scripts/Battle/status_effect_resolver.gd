@@ -11,29 +11,34 @@ var _resolver: BattleResolver
 
 func _init(p_resolver: BattleResolver) -> void:
 	_resolver = p_resolver
-	_RegisterCascadeListeners()
+	_RegisterDeferredTriggers()
 
-
-## Registers the cascade-channel statuses (Concept_Document.md 1.1.3) this resolver
-## triggers off of. Code-registered rather than data-driven: with only a few listeners, a
-## StatusEffectData schema field for this isn't warranted yet.
-func _RegisterCascadeListeners() -> void:
+func _RegisterDeferredTriggers() -> void:
 	var cascade: CascadeResolver = _resolver.GetCascadeResolver()
-	cascade.Subscribe(Types.Cascade_Trigger.Status_Expired,
+	cascade.SubscribeDeferredTrigger(Types.Cascade_Trigger.Status_Expired,
 			StringName(Types.Buff_Type.keys()[Types.Buff_Type.Overflow]),
 			func(e: CascadeEvent) -> bool: return Types.Buff_Type.Overflow == e.buff_type,
-			_CascadeOverflow)
-	cascade.Subscribe(Types.Cascade_Trigger.Status_Expired,
+			_DeferredOverflow)
+	cascade.SubscribeDeferredTrigger(Types.Cascade_Trigger.Status_Expired,
 			StringName(Types.Buff_Type.keys()[Types.Buff_Type.Rush]),
 			func(e: CascadeEvent) -> bool: return Types.Buff_Type.Rush == e.buff_type,
-			_CascadeRushStun)
-	cascade.Subscribe(Types.Cascade_Trigger.Status_Landed,
+			_DeferredRushStun)
+	cascade.SubscribeDeferredTrigger(Types.Cascade_Trigger.Status_Landed,
 			StringName(Types.Buff_Type.keys()[Types.Buff_Type.Mirror_Coat]),
 			func(_e: CascadeEvent) -> bool: return true,
-			_CascadeMirrorCoat)
-	cascade.SubscribeCascadeContributor(_ContributeComorbidity)
-	cascade.SubscribeCascadeContributor(_ContributeBorrowedTime)
-	cascade.SubscribeCascadeContributor(_ContributeForcedDebuffTick)
+			_DeferredMirrorCoat)
+	# Registration order is load-bearing: CascadeResolver._ResolveContributions breaks
+	# dominant-Base ties by it. Keep this order stable.
+	cascade.SubscribeCascadeContributor(_ContributeComorbidity, Types.Cascade_Trigger.Debuff_Ticked)
+	cascade.SubscribeCascadeContributor(_ContributeBorrowedTime, Types.Cascade_Trigger.Skill_Resolved)
+	cascade.SubscribeCascadeContributor(
+			func(p_event: CascadeEvent) -> CascadeContribution:
+				var contribution: CascadeContribution = CascadeContribution.new(
+						&"Debuff_Tick_Forced", 1, CascadeContribution.Kind.Base, 1.0, _ForceExtraDebuffTick)
+				var origin_ID: int = p_event.origin_ID
+				contribution.origin_for_instance = func(_i: int) -> int: return origin_ID
+				return contribution,
+			Types.Cascade_Trigger.Debuff_Tick_Forced)
 
 func ApplyBuff(p_target_ID: int, p_buff_template: StatusEffects.Buff) -> Array[CombatResult]:
 	_resolver._BeginBatch()
@@ -320,7 +325,7 @@ func _RollsResistDebuff(
 
 ## When a debuff lands on a holder with an active Mirror Coat, a copy of it is
 ## rolled against the attacker's own Resistance and applied directly if it lands.
-func _CascadeMirrorCoat(p_event: CascadeEvent) -> void:
+func _DeferredMirrorCoat(p_event: CascadeEvent) -> void:
 	var holder_ID: int = p_event.subject_ID
 	var attacker_ID: int = p_event.origin_ID
 	var debuff_type: Types.Debuff_Type = p_event.debuff_type
@@ -450,8 +455,7 @@ func _PostDebuffTick(p_target_ID: int, p_tick: Dictionary) -> void:
 	_resolver.GetCascadeResolver().Post(event)
 
 func _ContributeComorbidity(p_event: CascadeEvent) -> CascadeContribution:
-	if(Types.Cascade_Trigger.Debuff_Ticked != p_event.trigger
-			or p_event.repeating_source_ids.is_empty()):
+	if(p_event.repeating_source_ids.is_empty()):
 		return null
 	var extra_instances: int = maxi(0, p_event.distinct_debuff_type_count - 1)
 	if(extra_instances <= 0):
@@ -486,8 +490,7 @@ func _ApplyEchoStrength(p_tick: Dictionary) -> Dictionary:
 	if(contributions.is_empty()):
 		return p_tick
 	var modifier: CombinedDamageModifier = CombinedDamageModifier.new()
-	for key: StringName in contributions:
-		modifier.Contribute(key, contributions[key])
+	modifier.ContributeAll(contributions)
 	var factor: float = modifier.Product()
 	var scaled_by_source: Dictionary[int, int] = {}
 	var scaled_total: int = 0
@@ -513,8 +516,7 @@ func _CastSkillHasDamageEffect(p_caster_ID: int, p_skill_ID: int) -> bool:
 	return false
 
 func _ContributeBorrowedTime(p_event: CascadeEvent) -> CascadeContribution:
-	if(Types.Cascade_Trigger.Skill_Resolved != p_event.trigger
-			or not _resolver._HasBuff(p_event.subject_ID, Types.Buff_Type.Borrowed_Time)
+	if(not _resolver._HasBuff(p_event.subject_ID, Types.Buff_Type.Borrowed_Time)
 			or not _CastSkillHasDamageEffect(p_event.subject_ID, p_event.skill_ID)):
 		return null
 	var fraction: float = 0.0
@@ -536,16 +538,7 @@ func _ResolveBorrowedTime(p_event: CascadeEvent, p_fraction: float) -> void:
 	_resolver.ResolveSkillEcho(p_event.subject_ID, p_event.skill_ID, p_event.target_IDs, p_fraction)
 
 
-func _ContributeForcedDebuffTick(p_event: CascadeEvent) -> CascadeContribution:
-	if(Types.Cascade_Trigger.Debuff_Tick_Forced != p_event.trigger):
-		return null
-	var contribution: CascadeContribution = CascadeContribution.new(
-			&"Debuff_Tick_Forced", 1, CascadeContribution.Kind.Base, 1.0, ForceExtraDebuffTick)
-	var origin_ID: int = p_event.origin_ID
-	contribution.origin_for_instance = func(_i: int) -> int: return origin_ID
-	return contribution
-
-func ForceExtraDebuffTick(p_event: CascadeEvent) -> void:
+func _ForceExtraDebuffTick(p_event: CascadeEvent) -> void:
 	var target_ID: int = p_event.subject_ID
 	var target: Character = _resolver._characters.get(target_ID)
 	if(null == target or target._current_health <= 0):
@@ -767,9 +760,7 @@ func _TriggerManaBurn(
 				_resolver._Emit(result)
 			return
 
-
-## Deals Mysticism-scaled damage to every living enemy when Overflow expires.
-func _CascadeOverflow(p_event: CascadeEvent) -> void:
+func _DeferredOverflow(p_event: CascadeEvent) -> void:
 	var holder_ID: int = p_event.subject_ID
 	var side: CombatTeam = _resolver._sides.EnemiesOf(holder_ID)
 	if(null == side):
@@ -778,8 +769,7 @@ func _CascadeOverflow(p_event: CascadeEvent) -> void:
 	_resolver.ResolveTraitDamage(holder_ID, side.AliveMembers(_resolver._characters),
 			_resolver.GetEffectiveAttributes(holder_ID), {Types.Attribute.Mysticism: data.magnitude})
 
-
-func _CascadeRushStun(p_event: CascadeEvent) -> void:
+func _DeferredRushStun(p_event: CascadeEvent) -> void:
 	var holder_ID: int = p_event.subject_ID
 	if(Skills.HasMaxStatusEffects(_resolver._characters[holder_ID])):
 		_EmitStatusEffectDenied(holder_ID, false, Types.Debuff_Type.Stun)

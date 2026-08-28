@@ -193,11 +193,11 @@ func _make_threefold_bite_setup(p_rarity: Types.Rarity) -> Dictionary:
 
 var _echo_bonuses_call_count: int = 0
 
-## Drives p_count real cascade instances through a plain Subscribe/Post/Drain, collecting the
-## Relic's answer once per target in p_target_IDs per instance — the same "callback runs while
-## CascadeResolver has an active depth" shape any real Echo-producing mechanic uses, and the
-## same once-per-target polling BattleResolver._ResolveDamage does. Each call subscribes under
-## a fresh mechanic key so an earlier call's still-registered listener (a test-harness
+## Drives p_count real Channel 3 Echoes through a plain contributor/Post/Drain, collecting
+## the Relic's answer once per target in p_target_IDs per instance — the same "callback runs
+## while CascadeResolver has an active depth" shape any real Echo-producing mechanic uses, and
+## the same once-per-target polling BattleResolver._ResolveDamage does. Each call subscribes
+## under a fresh mechanic key so an earlier call's still-registered contributor (a test-harness
 ## artifact; a real mechanic subscribes once per battle) never shadows its dedup entry.
 func _echo_bonuses(
 		p_resolver: BattleResolver,
@@ -207,16 +207,12 @@ func _echo_bonuses(
 	var bonuses: Array[float] = []
 	_echo_bonuses_call_count += 1
 	var mechanic_key: StringName = StringName("TestMechanic%d" % _echo_bonuses_call_count)
-	p_resolver.GetCascadeResolver().Subscribe(
-			Types.Cascade_Trigger.Skill_Resolved,
-			mechanic_key,
-			func(_e: CascadeEvent) -> bool: return true,
-			func(_e: CascadeEvent) -> void:
-				for target_ID: int in p_target_IDs:
-					bonuses.append(p_relic.GetOutgoingDamageBonus(0, target_ID, p_resolver)))
-	var event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Skill_Resolved)
-	event.subject_ID = 0
-	event.instance_count = p_count
+	p_resolver.GetCascadeResolver().SubscribeCascadeContributor(func(_e: CascadeEvent) -> CascadeContribution:
+		return CascadeContribution.new(mechanic_key, p_count, CascadeContribution.Kind.Base, 1.0,
+				func(_e2: CascadeEvent) -> void:
+					for target_ID: int in p_target_IDs:
+						bonuses.append(p_relic.GetOutgoingDamageBonus(0, target_ID, p_resolver))))
+	var event: CascadeEvent = CascadeEvent.ForSkillResolved(0, 0, [])
 	p_resolver.GetCascadeResolver().Post(event)
 	p_resolver.GetCascadeResolver().Drain()
 	return bonuses
@@ -329,6 +325,33 @@ func test_threefold_bite_resets_the_echo_count_on_a_new_action() -> void:
 	assert_eq(bonuses, [0.0, 0.0, 1.70],
 		"A new action's third Echo should bonus again rather than continuing the old count")
 
+## Overflow's expiry AoE is a deferred trigger, not a Channel 3 Echo, so it opens no Echo scope
+## and takes the same non-Echo penalty a plain base hit would.
+func test_threefold_bite_penalizes_an_overflow_expiry() -> void:
+	var caster: Character = TestFactory.make_character()
+	caster._current_health = 10
+	var relic: ThreefoldBiteRelic = ThreefoldBiteRelic.new()
+	relic.Init(Types.Rarity.Legendary)
+	_equip_relic(caster, Types.Slot.Weapon, relic)
+	var buff: StatusEffects.Buff = StatusEffects.Buff.new()
+	buff.type = Types.Buff_Type.Overflow
+	buff.duration = 1
+	caster._active_buffs.append(buff)
+	caster._attributes[Types.Attribute.Mysticism] = 200
+	var enemy: Character = TestFactory.make_character()
+	enemy._current_health = enemy._attributes[Types.Attribute.Health]
+	var characters: Dictionary[int, Character] = {0: caster, 1: enemy}
+	var resolver: BattleResolver = TestFactory.make_resolver(characters, CombatSides.new([0], [1]))
+	resolver.BroadcastEvent(Types.Combat_Event.Start_Combat)
+	caster._skills.append(TestFactory.make_empty_skill())
+
+	var results: Array[CombatResult] = resolver.ResolveSkill(0, [], 0)
+
+	var damage_results: Array[CombatResult] = _damage_results_against(results, 1)
+	assert_eq(damage_results.size(), 1, "Overflow's expiry hits the one living enemy")
+	assert_almost_eq(damage_results[0].combined_damage_modifier.Buckets().get(&"trait_damage_bonus", 0.0),
+			-0.30, 0.0001, "An Overflow expiry is not an Echo, so it takes the penalty")
+
 # --- Lantern of the Standing Ward ---
 
 func _place_test_zone(p_resolver: BattleResolver, p_owner_ID: int, p_charges: int) -> void:
@@ -407,6 +430,24 @@ func test_lantern_echoes_again_for_a_second_zone_in_a_recycled_section() -> void
 
 	assert_eq(_damage_results_against(received, 1).size(), 2,
 		"A second zone placed in the same section should Echo on its own first charge")
+
+## The spent-zone sweep runs after CascadeResolver's own drain closes, not interleaved with
+## it, so a zone Echo must still resolve against the zone before its last charge clears it.
+func test_lantern_echo_resolves_before_the_spent_zone_is_cleared() -> void:
+	var setup: Dictionary = _make_lantern_setup(Types.Rarity.Legendary)
+	var resolver: BattleResolver = setup["resolver"]
+	_place_test_zone(resolver, 0, 1)  # one charge: spends and clears on the first trigger
+	var received: Array[CombatResult] = []
+	resolver.result_produced.connect(func(r: CombatResult) -> void: received.append(r))
+
+	resolver.GetZoneResolver().TriggerZones(0)
+
+	assert_eq(_damage_results_against(received, 1).size(), 2,
+		"The Echo must resolve against the zone before its last charge clears it")
+	assert_false(resolver.GetZoneResolver().HasZone(0), "The spent zone should still be cleared")
+	var cleared_results: Array[CombatResult] = received.filter(
+			func(r: CombatResult) -> bool: return CombatResult.Kind.Zone_Cleared == r.kind)
+	assert_eq(cleared_results.size(), 1, "The zone should be cleared exactly once")
 
 func test_lantern_does_not_echo_a_zone_the_wearer_did_not_place() -> void:
 	var setup: Dictionary = _make_lantern_setup(Types.Rarity.Legendary)

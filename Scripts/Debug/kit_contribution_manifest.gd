@@ -974,7 +974,7 @@ const MANIFEST: Dictionary = {
 							"gated_bonus.",
 					"citation": "comorbidity_trait.gd; status_effect_resolver.gd " +
 							"(_ComputeDebuffTickDamage, _PostComorbidityCascadeIfAny, " +
-							"_CascadeComorbidityRetick, ForceExtraDebuffTick)"},
+							"_CascadeComorbidityRetick, _ForceExtraDebuffTick)"},
 		],
 		"skills": [
 			{"name": "Septic Lance", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
@@ -1009,7 +1009,7 @@ const MANIFEST: Dictionary = {
 					"class": Contribution_Class.Enabler,
 					"precondition": "Zone, 4 charges; on trigger forces every active debuff on the " +
 							"caught enemy to tick again immediately without losing duration (via " +
-							"ForceExtraDebuffTick — sustained pressure layered on top of whatever " +
+							"_ForceExtraDebuffTick — sustained pressure layered on top of whatever " +
 							"Comorbidity's own retick already scores on Outbreak, not modeled again " +
 							"separately here since Miasma carries no DamageEffect of its own, top-level " +
 							"or zone-trigger, to attach a gated_bonus to), and applies Blight (2 turns: " +
