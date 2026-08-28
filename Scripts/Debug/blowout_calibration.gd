@@ -13,22 +13,24 @@ class_name BlowoutCalibration extends SceneTree
 ## the full explanation):
 ##   Tests/run_tests.sh -gtest=res://Tests/manual/blowout_calibration_report.gd -gexit
 
-# Sorcerer preset: Mysticism 100, its basic skill Arc Lash scales 1.0 on Mysticism.
+# Declared reference basic-skill output (Concept_Document.md 1.1.2's contrast baseline) — not
+# any shipped champion's own basic skill, so a roster change never moves the ruler.
 const CASTER_SCALED_BASE: float = 100.0
 const CASTER_SCALED_ATTRIBUTE: Types.Attribute = Types.Attribute.Mysticism
 
-# Boss presets, as [name, Health attribute, Defence, Knowledge]. Actual hit points are the
-# Health attribute times GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER. These are the balanced,
-# playtested bosses; the newer catalog entries are excluded as untuned. Knowledge blunts
-# incoming critical damage (Concept_Document.md 3.2.1 #4); Troll and Obsidian Stallion read
-# their real preset values (Data/Character_Enemy_Variants/{Troll,Obsidian_Stallion}.tres),
-# the other three have no preset in the game and take the Troll's Knowledge as a stand-in.
-const BOSSES: Array = [
-	["Troll", 300.0, 120.0, 10.0],
-	["Vael", 300.0, 90.0, 10.0],
-	["Obsidian Stallion", 330.0, 100.0, 50.0],
-	["Ulfrac", 270.0, 75.0, 10.0],
-	["Bor Bulwark", 280.0, 280.0, 10.0],
+# Reference calibration profiles, as [tier name, Health attribute, Defence, Knowledge]. None
+# corresponds to a shipped enemy — Data/Character_Enemy_Variants/*.tres presets are real
+# content and change with the roster, while these are declared design constants a burst is
+# measured against. Actual hit points are the Health attribute times
+# GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER. Knowledge blunts incoming critical damage
+# (Concept_Document.md 3.2.1 #4). Index 0 (Boss) is the only entry Scripts/Debug/burst_reachability.gd
+# scores against; Mini-boss and Fodder exist so Concept_Document.md 5.3's tier definitions have
+# something concrete to be stated against. Health is unset by design — it waits on progression
+# and gear tiers existing before an absolute value means anything.
+const REFERENCE_PROFILES: Array = [
+	["Boss", 300.0, 120.0, 80.0],
+	["Mini-boss", 300.0, 90.0, 40.0],
+	["Fodder", 150.0, 60.0, 10.0],
 ]
 
 # Fraction of a boss's hit points the burst should account for (Concept 1.1.1).
@@ -90,7 +92,7 @@ static func _HitPoints(p_health_attribute: float) -> float:
 static func _ReportBaselines() -> void:
 	print("--- Baseline basic skill, no modifiers ---")
 	print("(three champions acting each round, all at basic-skill output)")
-	for boss in BOSSES:
+	for boss in REFERENCE_PROFILES:
 		var hit_points: float = _HitPoints(boss[1])
 		var damage: float = _Damage(CASTER_SCALED_BASE, boss[2])
 		var rounds: float = hit_points / (damage * 3.0)
@@ -105,7 +107,7 @@ static func _ReportBaselines() -> void:
 ## as well — superlinear at first, then saturating as mitigation approaches 1.
 static func _ReportPlacementComparison() -> void:
 	print("--- Modifier placement: on the scaled aggregate vs on final damage ---")
-	var defence: float = BOSSES[0][2]
+	var defence: float = REFERENCE_PROFILES[0][2]
 	var baseline: float = _Damage(CASTER_SCALED_BASE, defence)
 	print("%-10s %14s %10s %14s %10s" % ["Modifier", "on aggregate", "ratio", "on final", "ratio"])
 	for modifier in [2.0, 5.0, 10.0, 33.0, 100.0, 1000.0]:
@@ -118,9 +120,9 @@ static func _ReportPlacementComparison() -> void:
 
 static func _ReportFactorRequirements() -> void:
 	print("--- Independent factors needed to reach a target contrast ratio ---")
-	var defence: float = BOSSES[0][2]
+	var defence: float = REFERENCE_PROFILES[0][2]
 	print("(modifier applied to the scaled aggregate; against %s, Defence %.0f)"
-			% [BOSSES[0][0], defence])
+			% [REFERENCE_PROFILES[0][0], defence])
 	var baseline: float = _Damage(CASTER_SCALED_BASE, defence)
 
 	print("%-8s %s" % ["", "resulting contrast ratio by factor count"])
@@ -167,7 +169,7 @@ static func _RequiredAggregateMultiplier(
 
 static func _ReportDefenceIgnoreSweep() -> void:
 	print("--- Defense_Ignore_Factor, at a 33x aggregate multiplier ---")
-	var defence: float = BOSSES[0][2]
+	var defence: float = REFERENCE_PROFILES[0][2]
 	var baseline: float = _Damage(CASTER_SCALED_BASE, defence)
 	for ignore_factor in [1.0, 0.75, 0.5, 0.25, 0.0]:
 		var damage: float = _Damage(CASTER_SCALED_BASE * 33.0, defence * ignore_factor)
@@ -179,7 +181,7 @@ static func _ReportHealthImplications() -> void:
 	print("--- Burst against current boss hit points, and the Health attribute it implies ---")
 	print("(a burst should land as %.0f%% of a boss, per Concept 1.1.1)"
 			% (100.0 * BURST_SHARE_OF_BOSS))
-	for boss in BOSSES:
+	for boss in REFERENCE_PROFILES:
 		var baseline: float = _Damage(CASTER_SCALED_BASE, boss[2])
 		var hit_points: float = _HitPoints(boss[1])
 		print("%s (Health attribute %.0f = %.0f hit points):" % [boss[0], boss[1], hit_points])
@@ -246,7 +248,7 @@ static func _ReportGearCeiling() -> void:
 	var modifier: float = geared_aggregate / CASTER_SCALED_BASE
 	print("Gear bonus to %s: %d  (aggregate %.0f -> %.0f, %.3fx linear)"
 			% [attribute_name, gear_bonus, CASTER_SCALED_BASE, geared_aggregate, modifier])
-	for boss in BOSSES:
+	for boss in REFERENCE_PROFILES:
 		var factors: Array[float] = [modifier]
 		var ratio: float = ContrastRatioForFactors(factors, CASTER_SCALED_BASE, boss[2])
 		print("    %-20s Defence %3.0f  contrast ratio %.3fx" % [boss[0], boss[2], ratio])

@@ -149,18 +149,24 @@ func test_best_prefers_a_weaker_single_action_candidate_whose_sustained_payload_
 # --- Base term / modifier term separation (Concept_Document.md 1.1.6) ---
 
 func test_base_and_modifier_terms_are_reported_separately_and_do_not_simply_multiply() -> void:
-	# Corsairs Reckoning's own Attack 1.3 scaling differs from Boarding Strike's Attack 1.0
-	# basic skill (base_term = 1.3 != 1.0), so this candidate actually exercises the
-	# nonlinearity Cataclysm's identical 1.0 base scaling would mask.
-	var result: BurstReachability.TeamResult = BurstReachability.ScoreTeam(_corsair_cultist_warlord())
-	var pinned: BurstReachability.CandidateResult = result.Pinned(0, "Corsairs Reckoning")
-	assert_not_null(pinned, "Tidal Corsair's Corsairs Reckoning must be a scored candidate")
+	# Mitigation itself is linear in the scaled aggregate for a FIXED effective Defence
+	# (Skills.MitigatedDamageUnrounded's mitigation_factor depends only on Defence), so the
+	# terms' naive product only diverges from the full ratio when burst and baseline resolve
+	# against different effective Defence. Pierce weakness's defence_ignore multiple (2.5x
+	# the Thief's Between the Plates rate) does that against the basic skill's own 1.0x —
+	# Emissary's team-reach Sanction bucket also gives this candidate a >1.0x product, so
+	# both terms are exercised at once.
+	var presets: Array[CharacterPreset] = [THIEF, EMISSARY, WARLORD]
+	var result: BurstReachability.TeamResult = BurstReachability.ScoreTeam(presets)
+	var pinned: BurstReachability.CandidateResult = result.Pinned(0, "Pierce weakness")
+	assert_not_null(pinned, "Thief's Pierce weakness must be a scored candidate")
 	assert_gt(pinned.base_term, 0.0, "Base term must be a positive aggregate ratio")
 	assert_gt(pinned.modifier_term, 1.0, "A >1.0x product must contribute more than nothing through mitigation")
-	# Skills.MitigatedDamage is nonlinear, so the full ratio is not the terms' product —
-	# separating them is what makes 1.1.6's rejection test mechanically checkable.
+	# Separating the terms is what makes 1.1.6's rejection test mechanically checkable, and a
+	# defence-ignore difference is a real, non-floating-point-noise source of divergence.
 	assert_ne(pinned.contrast_ratio, pinned.base_term * pinned.modifier_term,
-		"The full contrast ratio must not equal the terms' naive product, per the nonlinear mitigation curve")
+		"The full contrast ratio must not equal the terms' naive product when burst and baseline " +
+		"resolve against different effective Defence")
 
 func test_a_channel_one_only_candidate_has_a_modifier_term_of_one() -> void:
 	# Chronophage and Thief have no bucket-keyed Channel-2/3 entries reachable by a candidate

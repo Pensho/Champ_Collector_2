@@ -1448,8 +1448,8 @@ each with one job:
   contrast ratio for any skill where every `DamageEffect` allows crit (true of every current
   `.tres`) — it becomes visible in the reported `crit_chance`/`crit_damage_multiplier`/
   `crit_factor` fields and in ranking wherever that symmetry breaks (`allow_critical = false`).
-  Boss Knowledge (which blunts crit damage) is read off `BlowoutCalibration.BOSSES[0]`'s own 4th
-  tuple element. Each candidate's effective boss Defence is computed the same two-step way
+  Boss Knowledge (which blunts crit damage) is read off
+  `BlowoutCalibration.REFERENCE_PROFILES[0]`'s own 4th tuple element. Each candidate's effective boss Defence is computed the same two-step way
   `battle_resolver.gd` does — a team-reach shred first, then a caster-side base-referenced ignore
   off the unshredded reference — from the manifest's own `defence_ignore`/`defence_reduction`
   fields (documented in `kit_contribution_manifest.gd`'s own header). Also enforces the shared

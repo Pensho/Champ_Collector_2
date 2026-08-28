@@ -24,7 +24,8 @@ func _character(p_preset: CharacterPreset, p_index: int = 0) -> Character:
 
 func test_crit_factor_matches_base_attributes_with_no_grants() -> void:
 	# Warlord carries no preset override, so CritChance/CritDamage are GameBalance's base
-	# values (5, 150). Troll's own Knowledge (BlowoutCalibration.BOSSES[0][3]) is 10.
+	# values (5, 150). 10.0 here is an arbitrary test value, unrelated to the reference
+	# profile's own Knowledge (BlowoutCalibration.REFERENCE_PROFILES[0][3]).
 	var crit: Dictionary = BurstReachability._CritFactor(_character(WARLORD), {}, {}, 10.0)
 	assert_almost_eq(crit.get("chance"), 5.0, 0.0001, "Chance must equal the base CritChance attribute")
 	assert_almost_eq(crit.get("damage_multiplier"), 1.45, 0.0001,
@@ -108,8 +109,8 @@ func test_allow_critical_false_scores_a_strictly_lower_contrast_ratio() -> void:
 	# is allow_critical. A caster with a real crit chance/damage must score the crit-eligible
 	# skill strictly higher via Skills.MitigatedDamageUnrounded's own crit_multiplier argument.
 	var character: Character = _character(APPRAISER)
-	var defence: float = BlowoutCalibration.BOSSES[0][2]
-	var boss_knowledge: float = BlowoutCalibration.BOSSES[0][3]
+	var defence: float = BlowoutCalibration.REFERENCE_PROFILES[0][2]
+	var boss_knowledge: float = BlowoutCalibration.REFERENCE_PROFILES[0][3]
 	var crit: Dictionary = BurstReachability._CritFactor(character, {}, {}, boss_knowledge)
 	assert_gt(crit.get("factor"), 1.0, "Sanity: the Appraiser's own base 30% crit chance must produce a >1.0 factor")
 

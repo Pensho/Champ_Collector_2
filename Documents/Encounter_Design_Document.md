@@ -368,16 +368,21 @@ Concept Document).
 
 ## 3. Channel audit
 
-One row per catalog entry, per `Plans/Plan_Encounter_Blowout_Retrofit.md` Phase 2. The
-channel tag on each answer is read directly from `Concept_Document.md` 3.2.3 (statuses)
-or 3.2.4.2 (skills) and cross-checked against `Scripts/Debug/kit_contribution_manifest.gd`
-— not re-classified here. A verdict of **has a payoff** means at least one answer carries a
-Channel 1, 2, or 3 tag; **enabler-only** means every answer is tagged Enabler alone.
+One row per catalog entry, added by the now-deleted `Plan_Encounter_Blowout_Retrofit.md`
+Phase 2. The channel tag on each answer is read directly from `Concept_Document.md` 3.2.3
+(statuses) or 3.2.4.2 (skills) and cross-checked against
+`Scripts/Debug/kit_contribution_manifest.gd` — not re-classified here. A verdict of
+**has a payoff** means at least one answer carries a Channel 1, 2, or 3 tag; **enabler-only**
+means every answer is tagged Enabler alone.
 
 Only a **Boss-tier** `enabler-only` verdict is a defect. Fodder carries no burst
 expectation by definition (1.1.2). A mini-boss `enabler-only` verdict is a correct result
-when paired with a genuine partial-burst answer elsewhere in the encounter, per
-`Plan_Encounter_Blowout_Retrofit.md`'s Settled decision 2 — record it, do not rework it.
+when paired with a genuine partial-burst answer elsewhere in the encounter — record it, do
+not rework it.
+
+The tags below date from before the Role Kit Rework (`Role_Kit_Design.md`); re-derive an
+entry's tags only when a batch actually touches it, per
+`Plans/Plan_Encounter_Solution_Design.md`.
 
 ### 3.1. Fodder
 

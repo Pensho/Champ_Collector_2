@@ -67,6 +67,14 @@ reference effects that at least one designed kit in 3.2.4.2 or a reagent in 3.3.
 actually carries. The coverage ledger in `Role_Kit_Design.md` section 10 is the
 lookup table for carriers.
 
+Inherited from the completed `Plan_Blowout_Alignment.md` (now-deleted): boss Health bands
+stay unset until progression and gear tiers exist; The Glyphbound Archivist and The
+Collector of Debts read enabler-only against the pre-kit-rework audit in
+`Encounter_Design_Document.md` section 3, and whether that still holds against the current
+kits is unverified; and `Troll.tres`, `Obsidian_Stallion.tres`, and `Militia.tres` have no
+catalog entry or tier assignment. Pick these up when a volume batch or the placement pass
+actually reaches them, not as a dedicated pass.
+
 ## Encounter tiers (confirmed decisions)
 
 Solution anchoring is tiered: fodder and mini-bosses name catalog *effects* as
@@ -192,6 +200,10 @@ that tier can be produced in bulk without padding.
   new status effect to Concept 3.2.3.
 - **Intended solutions:** effect names plus example carrier roles; for bosses, the
   2–3 valid configurations spelled out.
+- **Burst expectation (mini-boss and boss only):** which channel (1.1.3) the intended
+  answers feed and where the payoff lands in the configuration set. The Warden of the
+  Reliquary's configuration (3), the Tactician plus Appraiser crit round, is the
+  reference shape.
 - **Unsolved texture:** what the fight looks like when the player ignores the
   mechanic (slower, riskier, or a hard wall — hard walls are boss-only).
 - **Reward hook (deferred):** assigned during the placement pass, per Concept 5.2.
@@ -207,6 +219,10 @@ that tier can be produced in bulk without padding.
 - **Solutions must exist:** an encounter must never require an answer that no
   designed kit or reagent carries, and no encounter's only answer may be a universal
   skill (none exist by design).
+- **A boss answer set must end in a payoff:** per `Concept_Document.md` 1.1.6's rejection
+  test, a boss whose intended answers are all enabler-only is rejected. An enabler answer
+  elsewhere in the set is held to the collapse test (1.1.6) instead of being converted
+  into damage (1.1.3).
 - **Answer diversity:** every mechanic names at least two distinct answers; every
   boss names 2–3 distinct valid configurations.
 - **Enemies never use reagents** (3.3.3).
@@ -237,9 +253,11 @@ glance (e.g. a Role that only ever answers fodder stands out). The Boss
 column lists configuration membership only; incidental mitigations named in
 an entry (e.g. Vault Slam's Enfeeble/Barrier softeners) are not tracked.
 
-Inline channel tags per `Plan_Encounter_Blowout_Retrofit.md` Phase 2, read from the same
-sources as the per-encounter audit in `Encounter_Design_Document.md` section 3. Fodder
-cells are tagged for completeness but carry no burst expectation.
+Inline channel tags, read from the same sources as the per-encounter audit in
+`Encounter_Design_Document.md` section 3 (added by the now-deleted
+`Plan_Encounter_Blowout_Retrofit.md`). Both tables date from the pre-kit-rework skill set;
+re-derive an encounter's tags only when a batch actually touches it, rather than as a
+dedicated pass. Fodder cells are tagged for completeness but carry no burst expectation.
 
 | Role | Fodder | Mini-boss | Boss |
 |---|---|---|---|

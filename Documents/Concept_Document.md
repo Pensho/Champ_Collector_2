@@ -28,17 +28,17 @@ Two properties follow and must hold:
 
 Enemy Health scales alongside player power, so the burst is never large relative to the enemy's Health bar. The contrast is read **inside the fight**, against the numbers the player saw during the build-up.
 
-The calibration target is that a burst resolution deals **30 to 50 times** what the same champion's basic skill deals in the same fight, aiming at the upper end of that band. Per tier:
+The calibration target is that a burst resolution deals **30 to 50 times** a declared reference basic-skill output, aiming at the upper end of that band. Per tier:
 
 * **Fodder:** no dedicated burst. Blowout here is overkill on trash — encounters die to routine kit output.
 * **Mini-boss:** one realisation, a partial burst, target around 10x.
 * **Boss:** layered realisations, full burst, target 30–50x, preferring 50x.
 
-These ratios are confirmed reachable through kit design. Against a boss-tier Defence of 120, a 50x burst needs a 50x multiplier on the scaled attribute aggregate — about six independent factors of 2x, ten of 1.5x, or four of 3x. Spread across a three-champion team under the composition law below, that is roughly two factors per champion, which normal kits can carry.
+These ratios are confirmed reachable through kit design. Against the Boss reference profile's Defence of 120, a 50x burst needs a 50x multiplier on the scaled attribute aggregate — about six independent factors of 2x, ten of 1.5x, or four of 3x. Spread across a three-champion team under the composition law below, that is roughly two factors per champion, which normal kits can carry.
 
-Enemy Health is the value that has to move. Against the balanced bosses (Health attribute 270–330, so roughly 1080–1320 hit points) a 50x burst lands at 150–284% of a boss — overkill, but not by an order of magnitude. For a burst to land as 60–80% of a boss, boss Health attributes need to roughly **triple** (2.1–4.1x, depending on the boss). A 30x burst needs roughly double (1.3–2.4x).
+Enemy Health is deferred: an absolute value means nothing until progression and gear tiers exist, so no boss or mini-boss Health attribute is sized against these ratios yet.
 
-The ratios remain open to revision once the burst is playable and can be felt rather than computed. `Scripts/Debug/blowout_calibration.gd` recomputes all of the above when the formula or the presets change.
+`Scripts/Debug/blowout_calibration.gd` holds the reference profiles (`REFERENCE_PROFILES`) and the basic-skill baseline (`CASTER_SCALED_BASE`) these ratios are measured against — declared constants that correspond to no shipped champion or enemy, so a roster change never moves the ruler — and recomputes all of the above when the formula or the profiles change.
 
 #### 1.1.3. The three damage channels
 

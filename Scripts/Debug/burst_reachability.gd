@@ -75,7 +75,7 @@ class_name BurstReachability extends RefCounted
 ##                                 crit chance/damage/allow_critical genuinely differs between the
 ##                                 burst skill and the basic-skill baseline, exactly where crit
 ##                                 SHOULD matter. Boss Knowledge (which blunts crit damage) comes
-##                                 from BlowoutCalibration.BOSSES[0]'s own 4th element.
+##                                 from BlowoutCalibration.REFERENCE_PROFILES[0]'s own 4th element.
 ##
 ## Six stated simplifications:
 ##   - Manifest sources documented as an uncapped per-instance rate (Heap On's ramp,
@@ -229,8 +229,9 @@ class CandidateResult:
 	## point grant reaching this candidate (Full Appraisal's Keen Edge, Flaw Analysis's Exposed
 	## Facet, ...) — clamped to [0, 100] the same way the resolver's crit roll saturates.
 	var crit_chance: float = 0.0
-	## The caster's own reachable Critical Damage multiplier against BlowoutCalibration.BOSSES[0]'s
-	## Knowledge, floored at GameBalance.MINIMUM_CRIT_DAMAGE * 0.01 — see _CritFactor.
+	## The caster's own reachable Critical Damage multiplier against
+	## BlowoutCalibration.REFERENCE_PROFILES[0]'s Knowledge, floored at
+	## GameBalance.MINIMUM_CRIT_DAMAGE * 0.01 — see _CritFactor.
 	var crit_damage_multiplier: float = 1.0
 	## Expected-value crit multiplier on a fully crit-eligible aggregate: 1 + (crit_chance/100) *
 	## (crit_damage_multiplier - 1). An EXPECTED value, not a per-roll ceiling, because this
@@ -782,8 +783,8 @@ static func _ScoreCandidate(
 		modifier.Contribute(key, buckets[key])
 	var product: float = modifier.Product()
 
-	var defence: float = BlowoutCalibration.BOSSES[0][2]
-	var boss_knowledge: float = BlowoutCalibration.BOSSES[0][3]
+	var defence: float = BlowoutCalibration.REFERENCE_PROFILES[0][2]
+	var boss_knowledge: float = BlowoutCalibration.REFERENCE_PROFILES[0][3]
 	var overflow_rate: float = _CritChanceOverflowRate(p_characters, p_manifest)
 	var crit: Dictionary = _CritFactor(caster, fractions, points, boss_knowledge, overflow_rate)
 	var baseline_crit_factor: float = _EffectiveCritFactor(
