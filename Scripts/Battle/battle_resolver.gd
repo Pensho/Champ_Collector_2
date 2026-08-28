@@ -680,12 +680,16 @@ func _EmitTurnBarBump(p_target_ID: int, p_fraction: float, p_source_ID: int = -1
 	var target: Character = _characters.get(p_target_ID)
 	if(p_fraction > 0.0 and Skills.BlocksForwardTurnBarBump(target, p_target_ID)):
 		return
+	var final_fraction: float = p_fraction
+	if(p_fraction > 0.0 and p_source_ID >= 0 and p_source_ID != p_target_ID
+			and _sides.AreAllies(p_source_ID, p_target_ID)):
+		final_fraction += p_fraction * Skills.AllyTurnBarBumpAmplification(_characters.get(p_source_ID), p_source_ID)
 	var bump: CombatResult = CombatResult.new(CombatResult.Kind.Turn_Bar_Bump)
 	bump.target_ID = p_target_ID
-	bump.fraction = p_fraction
+	bump.fraction = final_fraction
 	_Emit(bump)
-	Skills.DispatchAllyTurnBarIncreased(p_source_ID, p_target_ID, p_fraction, _characters, _sides, self)
-	_EmitTurnBarBump(p_source_ID, Skills.TurnBarTithe(p_source_ID, p_target_ID, p_fraction, _characters, _sides, self))
+	Skills.DispatchAllyTurnBarIncreased(p_source_ID, p_target_ID, final_fraction, _characters, _sides, self)
+	_EmitTurnBarBump(p_source_ID, Skills.TurnBarTithe(p_source_ID, p_target_ID, final_fraction, _characters, _sides, self))
 
 func _TickCooldowns(p_caster: Character) -> void:
 	if(_BlockedByFatigue(p_caster)):

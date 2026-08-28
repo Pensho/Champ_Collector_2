@@ -292,6 +292,36 @@ static func TeamBarrierMultiplier(
 			multiplier *= source.GetTeamBarrierMultiplier()
 	return multiplier
 
+static func TeamHealMultiplier(
+		p_sides: CombatSides, p_characters: Dictionary[int, Character], p_target_ID: int) -> float:
+	var multiplier: float = 1.0
+	var team: CombatTeam = p_sides.AlliesOf(p_target_ID)
+	if(null == team):
+		return multiplier
+	for ally_ID in team.AliveMembers(p_characters):
+		for source: CharacterTrait in p_characters[ally_ID].HookSources():
+			multiplier *= source.GetTeamHealMultiplier()
+	return multiplier
+
+static func TeamAppliedBuffMultiplier(
+		p_sides: CombatSides, p_characters: Dictionary[int, Character], p_source_ID: int) -> float:
+	var multiplier: float = 1.0
+	var team: CombatTeam = p_sides.AlliesOf(p_source_ID)
+	if(null == team):
+		return multiplier
+	for ally_ID in team.AliveMembers(p_characters):
+		for source: CharacterTrait in p_characters[ally_ID].HookSources():
+			multiplier *= source.GetTeamAppliedBuffMultiplier()
+	return multiplier
+
+static func AllyTurnBarBumpAmplification(p_character: Character, p_owner_ID: int) -> float:
+	var total: float = 0.0
+	if(null == p_character):
+		return total
+	for source: CharacterTrait in p_character.HookSources():
+		total += source.GetOutgoingAllyTurnBarBumpAmplification(p_owner_ID)
+	return total
+
 static func ApplyBarrierZone(
 		p_resolver: BattleResolver,
 		p_zone_owner_ID: int,

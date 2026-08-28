@@ -236,3 +236,12 @@ func GetTeamBarrierMultiplier() -> float:
 
 func BlocksIncomingDebuffType(_p_debuff_type: Types.Debuff_Type) -> bool:
 	return false
+
+func GetTeamHealMultiplier() -> float:
+	return 1.0
+
+func GetTeamAppliedBuffMultiplier() -> float:
+	return 1.0
+
+func GetOutgoingAllyTurnBarBumpAmplification(_p_owner_ID: int) -> float:
+	return 0.0

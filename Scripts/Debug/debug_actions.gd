@@ -2,13 +2,15 @@ class_name DebugActions extends Node
 
 ## The Relic presets whose effect script has real hook overrides rather than the title/
 ## body/magnitude-only stub every catalog entry starts as (Plan_Relic_Implementation.md
-## Phase 4's batches 1 and 2). Kept as an explicit list rather than a "does it override
+## Phase 4's batches 1 through 4). Kept as an explicit list rather than a "does it override
 ## anything" runtime check, since a stub is a valid, inspectable RelicEffect too.
 const IMPLEMENTED_RELIC_KEYS: Array[String] = [
 	"The_Quiet_Mass", "The_Planted_Heel", "The_Answering_Boss", "Kiln_Brand",
 	"Sunderplate_Nail", "The_Ossuary_Ledger",
 	"The_Even_Tread", "The_Frayed_Hour", "The_Solvent_Mark", "Signatorys_Seal",
 	"Quorum_Bell", "Prism_of_Small_Favors",
+	"The_Long_Furrow", "Draught_Fed_Edge", "Threefold_Bite", "Lantern_of_the_Standing_Ward",
+	"The_Closed_Wound", "The_Sealed_Docket", "The_Long_Second", "The_Unguarded_Glass",
 ]
 
 ## Adds one copy of every implemented Relic to the collection at the given rarity,

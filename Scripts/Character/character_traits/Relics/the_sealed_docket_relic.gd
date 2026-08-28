@@ -14,6 +14,15 @@ func Init(p_rarity: Types.Rarity) -> void:
 			"Echoes produced by anyone on the wearer's team resolve at half strength.")
 	_execution_steps[Types.Combat_Event.Start_Combat] = Callable(self, "StartOfBattle")
 
+func GetOutgoingDamageBonus(_p_owner_ID: int, p_target_ID: int, p_resolver: BattleResolver) -> float:
+	var target: Character = p_resolver.GetCharacters().get(p_target_ID)
+	if(null == target):
+		return 0.0
+	var distinct_types: Dictionary[Types.Debuff_Type, bool] = {}
+	for debuff: StatusEffects.Debuff in target._active_debuffs:
+		distinct_types[debuff.type] = true
+	return Magnitude() if distinct_types.size() >= 4 else 0.0
+
 func StartOfBattle(p_owner_ID: int, p_resolver: BattleResolver) -> void:
 	p_resolver.GetCascadeResolver().SubscribeStrengthModifier(
 			func(p_event: CascadeEvent) -> CascadeStrength:

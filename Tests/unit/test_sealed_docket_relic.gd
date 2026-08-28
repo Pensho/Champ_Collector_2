@@ -45,6 +45,38 @@ func _strength_contributions_for(p_resolver: BattleResolver, p_subject_ID: int) 
 	p_resolver._EndBatch()
 	return seen
 
+func test_grants_damage_bonus_while_the_target_carries_four_debuff_types_at_two_rarities() -> void:
+	for rarity_and_expected in [[Types.Rarity.Common, 0.35], [Types.Rarity.Legendary, 0.80]]:
+		var relic: TheSealedDocketRelic = TheSealedDocketRelic.new()
+		relic.Init(rarity_and_expected[0])
+		var target: Character = TestFactory.make_character()
+		var types: Array[Types.Debuff_Type] = [
+			Types.Debuff_Type.Enfeeble, Types.Debuff_Type.Plague,
+			Types.Debuff_Type.Blind, Types.Debuff_Type.Burning]
+		for type in types:
+			var debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
+			debuff.type = type
+			debuff.duration = 2
+			target._active_debuffs.append(debuff)
+		var characters: Dictionary[int, Character] = {0: TestFactory.make_character(), 1: target}
+		var resolver: BattleResolver = TestFactory.make_resolver(characters, CombatSides.new([0], [1]))
+
+		assert_almost_eq(relic.GetOutgoingDamageBonus(0, 1, resolver), rarity_and_expected[1], 0.0001,
+			"Rarity %s should grant its own ladder step at four distinct debuff types" % Types.RarityName(rarity_and_expected[0]))
+
+func test_gives_no_bonus_below_four_distinct_debuff_types() -> void:
+	var relic: TheSealedDocketRelic = TheSealedDocketRelic.new()
+	relic.Init(Types.Rarity.Legendary)
+	var target: Character = TestFactory.make_character()
+	var debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
+	debuff.type = Types.Debuff_Type.Enfeeble
+	debuff.duration = 2
+	target._active_debuffs.append(debuff)
+	var characters: Dictionary[int, Character] = {0: TestFactory.make_character(), 1: target}
+	var resolver: BattleResolver = TestFactory.make_resolver(characters, CombatSides.new([0], [1]))
+
+	assert_eq(relic.GetOutgoingDamageBonus(0, 1, resolver), 0.0)
+
 func test_halves_the_wearers_own_echo() -> void:
 	var setup: Dictionary = _make_setup(Types.Rarity.Legendary)
 	var resolver: BattleResolver = setup["resolver"]

@@ -52,6 +52,8 @@ func ApplyBuff(p_target_ID: int, p_buff_template: StatusEffects.Buff) -> Array[C
 
 	var new_value: float = (p_buff_template.value if 0.0 != p_buff_template.value
 			else SnapshotStatusValue(data, p_buff_template.source_ID, p_target_ID))
+	new_value *= Skills.TeamAppliedBuffMultiplier(
+			_resolver.GetSides(), _resolver._characters, p_buff_template.source_ID)
 	if(Types.Buff_Type.Barrier == p_buff_template.type
 			and _KeepsExistingBarrier(p_target_ID, target, new_value)):
 		return _resolver._EndBatch()
@@ -909,7 +911,8 @@ func _HealingMultiplier(p_character_ID: int) -> float:
 		if(null != data and StatusEffectData.MagnitudeKind.IncomingHealReduction == data.magnitude_kind):
 			multiplier -= (debuff.value if 0.0 != debuff.value else data.magnitude)
 	var trait_multiplier: float = Skills.IncomingHealMultiplier(character, p_character_ID)
-	return maxf(multiplier * trait_multiplier, 0.0)
+	var team_multiplier: float = Skills.TeamHealMultiplier(_resolver.GetSides(), _resolver._characters, p_character_ID)
+	return maxf(multiplier * trait_multiplier * team_multiplier, 0.0)
 
 
 func _TriggerDamageTakenReactions(p_character_ID: int, p_attacker_ID: int = BattleResolver.NO_ATTACKER) -> void:

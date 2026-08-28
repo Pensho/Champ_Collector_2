@@ -24,10 +24,7 @@ const ARCHITECT = preload("res://Data/Character_Player_Variants/Architect.tres")
 
 # TEMPORARY test scaffolding — delete alongside the seeding loop in Init().
 const TEST_RELIC_KEYS: Array[String] = [
-	# "The_Long_Furrow",
-	# "Draught_Fed_Edge",
-	# "Threefold_Bite",
-	# "Lantern_of_the_Standing_Ward",
+	# "The_Closed_Wound", "The_Sealed_Docket", "The_Long_Second", "The_Unguarded_Glass",
 ]
 
 var _current_scene = null
