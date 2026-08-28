@@ -245,3 +245,10 @@ func GetTeamAppliedBuffMultiplier() -> float:
 
 func GetOutgoingAllyTurnBarBumpAmplification(_p_owner_ID: int) -> float:
 	return 0.0
+
+func OnAllyCriticalHit(
+		_p_owner_ID: int, _p_ally_ID: int, _p_target_ID: int, _p_amount: int, _p_resolver: BattleResolver) -> void:
+	pass
+
+func GetDamageTakenHealthFloor(_p_owner_ID: int, _p_incoming_health: int, _p_max_health: int) -> int:
+	return -1

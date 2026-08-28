@@ -248,8 +248,9 @@ Forward turn-bar bumps the wearer grants an ally gain 20 / 25 / 30 / 35 / 45% in
 *Audience: Jester, Symbiote, Bar Brawler.* **Off-Hand.** [Enabler]  hooks `OnAllyDamageTaken`,
 `GetOutgoingDamageBonus`
 
-Enemy single-target skills aimed at any other ally with the lowest current Health strike the wearer
-instead, at 85 / 80 / 75 / 70 / 60% of the damage.
+Enemy single-target skills aimed at any other ally with the lowest current Health redirect
+85 / 80 / 75 / 70 / 60% of the damage to the wearer, mitigated by the wearer's own Defence; the
+rest still lands on the original target.
 
 **Drawback:** the wearer's damaging skills deal 35% less damage.
 

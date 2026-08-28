@@ -725,10 +725,19 @@ func _ApplyHealthLoss(p_character_ID: int, p_amount: int, p_attacker_ID: int = N
 	var character: Character = _characters[p_character_ID]
 	var was_alive: bool = character._current_health > 0
 	var new_health: int = clampi(character._current_health - remaining, 0, _MaxHealth(character))
+	var floor_health: int = Skills.DamageTakenHealthFloor(character, p_character_ID, new_health, _MaxHealth(character))
+	var restored: int = maxi(0, floor_health - new_health)
+	if(floor_health >= 0):
+		new_health = floor_health
 	if(was_alive and new_health <= 0):
 		if(_status_resolver.ConsumeDeathwardIfPresent(p_character_ID)):
 			new_health = 1
 	character._current_health = new_health
+	if(restored > 0):
+		var heal_result: CombatResult = CombatResult.new(CombatResult.Kind.Heal)
+		heal_result.target_ID = p_character_ID
+		heal_result.amount = restored
+		_Emit(heal_result)
 	if(was_alive and character._current_health <= 0):
 		_HandleDeath(p_character_ID)
 	return remaining
@@ -924,6 +933,7 @@ func _ResolveDamage(
 		if(rolled_critical):
 			for critical_trait: CharacterTrait in Skills.ActiveHooks(caster, Types.Combat_Event.Critical_Hit):
 				critical_trait.OnCriticalHit(p_caster_ID, p_target_ID, self)
+			Skills.TriggerAllyCriticalHitHook(_sides, _characters, p_caster_ID, p_target_ID, actual_damage_dealt, self)
 
 	if(target._current_health <= 0 and caster._current_health > 0):
 		for kill_trait: CharacterTrait in Skills.ActiveHooks(caster, Types.Combat_Event.On_Kill):

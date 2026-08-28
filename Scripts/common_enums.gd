@@ -203,6 +203,7 @@ enum Combat_Event
 	Ally_Death,
 	Ally_Damage_Taken,
 	Ally_Reagent_Consumed,
+	Ally_Critical_Hit,
 	Buff_Applied,
 	Debuff_Applied,
 	Debuff_Received,

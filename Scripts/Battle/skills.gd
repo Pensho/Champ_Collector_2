@@ -242,6 +242,32 @@ static func TriggerAllyReagentConsumedHook(
 		for ally_trait: CharacterTrait in ActiveHooks(p_characters[ally_ID], Types.Combat_Event.Ally_Reagent_Consumed):
 			ally_trait.OnAllyReagentConsumed(ally_ID, p_consumer_ID, p_reagent, p_resolver)
 
+static func TriggerAllyCriticalHitHook(
+		p_sides: CombatSides,
+		p_characters: Dictionary[int, Character],
+		p_caster_ID: int,
+		p_target_ID: int,
+		p_amount: int,
+		p_resolver: BattleResolver) -> void:
+	var team: CombatTeam = p_sides.AlliesOf(p_caster_ID)
+	if(null == team):
+		return
+	for ally_ID in team.AliveMembers(p_characters):
+		if(ally_ID == p_caster_ID):
+			continue
+		for ally_trait: CharacterTrait in ActiveHooks(p_characters[ally_ID], Types.Combat_Event.Ally_Critical_Hit):
+			ally_trait.OnAllyCriticalHit(ally_ID, p_caster_ID, p_target_ID, p_amount, p_resolver)
+
+static func DamageTakenHealthFloor(
+		p_character: Character, p_owner_ID: int, p_incoming_health: int, p_max_health: int) -> int:
+	if(null == p_character):
+		return -1
+	for source: CharacterTrait in p_character.HookSources():
+		var floor_health: int = source.GetDamageTakenHealthFloor(p_owner_ID, p_incoming_health, p_max_health)
+		if(floor_health >= 0):
+			return floor_health
+	return -1
+
 static func CritChanceOverflowRate(
 		p_sides: CombatSides,
 		p_characters: Dictionary[int, Character],
