@@ -183,6 +183,21 @@ func test_quorum_bell_grants_no_amplification_without_a_standing_zone() -> void:
 
 	assert_eq(relic.GetAppliedAttributeAmplification(), 0.0)
 
+func test_quorum_bell_zone_standing_does_not_survive_into_the_next_battle() -> void:
+	var setup: Dictionary = _wearer_and_resolver()
+	var relic: QuorumBellRelic = QuorumBellRelic.new()
+	relic.Init(Types.Rarity.Legendary)
+	setup.wearer._trait = relic
+	TestFactory.place_zone(setup.resolver, 0, 0, TestFactory.make_zone_effect(1), Types.Skill_Target.Single_Enemy)
+	relic.StartOfTurn(0, setup.resolver)
+	assert_almost_eq(relic.GetAppliedAttributeAmplification(), 0.20, 0.0001,
+		"Sanity: a standing zone should amplify")
+
+	relic.ResetForBattle()
+
+	assert_eq(relic.GetAppliedAttributeAmplification(), 0.0,
+		"A zone standing at the end of one battle must not amplify before the wearer's first turn of the next")
+
 func test_quorum_bell_taxes_a_teammates_cooldownless_damage() -> void:
 	var setup: Dictionary = _wearer_and_resolver()
 	var wearer: Character = setup.wearer
@@ -225,6 +240,24 @@ func test_prism_of_small_favors_grants_no_crit_chance_before_a_buff_is_gained() 
 	relic.Init(Types.Rarity.Legendary)
 
 	assert_eq(relic.GetAttributeDelta(Types.Attribute.CritChance, 0), 0)
+
+func test_prism_of_small_favors_stale_owner_does_not_survive_into_the_next_battle() -> void:
+	var setup: Dictionary = _wearer_and_resolver()
+	var relic: PrismOfSmallFavorsRelic = PrismOfSmallFavorsRelic.new()
+	relic.Init(Types.Rarity.Legendary)
+	setup.wearer._trait = relic
+	var buff: StatusEffects.Buff = StatusEffects.Buff.new()
+	buff.type = Types.Buff_Type.Fortify
+	buff.duration = 3
+	buff.name = "Fortify"
+	setup.wearer._active_buffs.append(buff)
+	relic.OnBuffGained(0, null, setup.resolver)
+	assert_gt(relic.GetAttributeDelta(Types.Attribute.CritChance, 0), 0, "Sanity: a held buff should grant crit chance")
+
+	relic.ResetForBattle()
+
+	assert_eq(relic.GetAttributeDelta(Types.Attribute.CritChance, 0), 0,
+		"Owner and resolver cached from the previous battle must not leak into the next one before a new buff lands")
 
 func test_prism_of_small_favors_halves_a_buff_applied_to_the_wearer() -> void:
 	var setup: Dictionary = _wearer_and_resolver()

@@ -17,9 +17,8 @@ func Init(p_rarity: Types.Rarity) -> void:
 			"% of max Health.\n" +
 			"While at or below 40% Health, the wearer's damaging skills deal " +
 			"40% less damage.")
-	_execution_steps[Types.Combat_Event.Start_Combat] = Callable(self, "StartOfBattle")
 
-func StartOfBattle(_p_owner_ID: int, _p_resolver: BattleResolver) -> void:
+func ResetForBattle() -> void:
 	_triggered_this_battle = false
 
 func GetDamageTakenHealthFloor(_p_owner_ID: int, p_incoming_health: int, p_max_health: int) -> int:

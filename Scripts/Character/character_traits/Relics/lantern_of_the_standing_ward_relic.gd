@@ -18,8 +18,10 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_execution_steps[Types.Combat_Event.Zone_Constructed] = Callable(self, "OnZoneConstructed")
 	_execution_steps[Types.Combat_Event.Zone_Used] = Callable(self, "OnZoneUsed")
 
-func StartOfBattle(_p_owner_ID: int, p_resolver: BattleResolver) -> void:
+func ResetForBattle() -> void:
 	_echoed_zone_IDs.clear()
+
+func StartOfBattle(_p_owner_ID: int, p_resolver: BattleResolver) -> void:
 	p_resolver.GetCascadeResolver().SubscribeCascadeContributor(
 			func(p_event: CascadeEvent) -> CascadeContribution:
 				if(not _echoed_zone_IDs.has(p_event.zone_ID)):

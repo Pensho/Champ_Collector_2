@@ -19,13 +19,17 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_execution_steps[Types.Combat_Event.Start_Combat] = Callable(self, "StartOfBattle")
 	_execution_steps[Types.Combat_Event.Skill_Cast] = Callable(self, "OnSkillCast")
 
+func ResetForBattle() -> void:
+	_owner_ID = -1
+	_resolver = null
+	_pending_bonus = false
+
 ## A single hit's own size isn't a hook parameter (OnDamageTaken fires before mitigation is
 ## known), so this reads the resolver's result stream instead, the same pattern
 ## StandingRecordTrait uses to watch events its hook vocabulary doesn't carry as arguments.
 func StartOfBattle(p_owner_ID: int, p_resolver: BattleResolver) -> void:
 	_owner_ID = p_owner_ID
 	_resolver = p_resolver
-	_pending_bonus = false
 	if(not p_resolver.result_produced.is_connected(_OnResultProduced)):
 		p_resolver.result_produced.connect(_OnResultProduced)
 

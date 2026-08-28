@@ -18,8 +18,10 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_execution_steps[Types.Combat_Event.Start_Combat] = Callable(self, "StartOfBattle")
 	_execution_steps[Types.Combat_Event.Skill_Cast] = Callable(self, "OnSkillCast")
 
-func StartOfBattle(p_owner_ID: int, p_resolver: BattleResolver) -> void:
+func ResetForBattle() -> void:
 	_charge_span = 0
+
+func StartOfBattle(p_owner_ID: int, p_resolver: BattleResolver) -> void:
 	p_resolver.GetCascadeResolver().SubscribeCascadeContributor(
 			func(p_event: CascadeEvent) -> CascadeContribution:
 				if(p_event.subject_ID != p_owner_ID or _charge_span < _MINIMUM_CHARGE_SPAN):

@@ -655,16 +655,14 @@ static func _CritChanceOverflowRate(p_characters: Array[Character], p_manifest: 
 	return rate
 
 
-## Largest team-wide "attribute_amplification" magnitude (the Scholar's Field of Study),
-## mirroring Skills.AppliedAttributeAmplification's own highest-wins fold rather than
-## _CritChanceOverflowRate's sum — a second amplifying passive adds nothing.
+## Team-wide sum of "attribute_amplification" magnitude (the Scholar's Field of Study,
+## Quorum Bell), mirroring Skills.AppliedAttributeAmplification's own summing fold.
 static func _AttributeAmplification(p_characters: Array[Character], p_manifest: Dictionary) -> float:
 	var amplification: float = 0.0
 	for character in p_characters:
 		var role_entry: Dictionary = p_manifest.get(character._role, {})
 		for passive_entry: Dictionary in role_entry.get("passive", []):
-			amplification = maxf(
-					amplification, float(passive_entry.get("attribute_amplification", {}).get("magnitude", 0.0)))
+			amplification += float(passive_entry.get("attribute_amplification", {}).get("magnitude", 0.0))
 	return amplification
 
 

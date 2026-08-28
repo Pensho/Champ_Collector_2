@@ -19,6 +19,9 @@ func Init(p_rarity: Types.Rarity) -> void:
 			"on the wearer's team.")
 	_execution_steps[Types.Combat_Event.Start_Turn] = Callable(self, "StartOfTurn")
 
+func ResetForBattle() -> void:
+	_zone_standing = false
+
 func StartOfTurn(_p_owner_ID: int, p_resolver: BattleResolver) -> void:
 	_zone_standing = not p_resolver.GetZoneResolver().GetZones().is_empty()
 

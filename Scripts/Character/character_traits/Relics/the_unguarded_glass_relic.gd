@@ -15,6 +15,10 @@ func Init(p_rarity: Types.Rarity) -> void:
 			"the one they hold.")
 	_execution_steps[Types.Combat_Event.Buff_Applied] = Callable(self, "OnBuffGained")
 
+func ResetForBattle() -> void:
+	_owner_ID = -1
+	_resolver = null
+
 func OnBuffGained(p_owner_ID: int, p_buff: StatusEffects.Buff, p_resolver: BattleResolver) -> void:
 	_owner_ID = p_owner_ID
 	_resolver = p_resolver

@@ -15,6 +15,9 @@ func Init(p_rarity: Types.Rarity) -> void:
 func StartOfBattle(_p_owner_ID: int, _p_resolver: BattleResolver) -> void:
 	pass
 
+func ResetForBattle() -> void:
+	pass
+
 func RefreshVisuals(p_character_repr: CharacterRepresentation) -> void:
 	p_character_repr.SetTraitElement(_trait_texture, 0)
 	p_character_repr.SetTraitElementToolTip(_title, _body, 0)

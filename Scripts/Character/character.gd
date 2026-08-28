@@ -97,7 +97,9 @@ func GetEquipmentBonus(p_attribute: Types.Attribute) -> int:
 	return bonus_stat
 
 ## This character's own trait, if any, followed by every equipped item's Relic effect —
-## every source a combat hook can fire from (Concept_Document.md 3.3.1).
+## every source a combat hook can fire from (Concept_Document.md 3.3.1). This is also the
+## precedence order a first-opinion-wins helper (e.g. Skills.AppliedStatusValue) resolves by:
+## the trait outranks any Relic, and Relics are ranked by equip-slot dictionary order.
 func HookSources() -> Array[CharacterTrait]:
 	var sources: Array[CharacterTrait] = []
 	if(null != _trait):

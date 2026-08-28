@@ -171,6 +171,18 @@ func test_draught_fed_edge_bonus_stays_banked_through_a_non_damaging_cast() -> v
 	assert_almost_eq(strike_result._damage_multiplier, 1.60, 0.0001,
 		"The first damaging cast after the reagent should still get the bonus")
 
+func test_draught_fed_edge_pending_bonus_does_not_survive_into_the_next_battle() -> void:
+	var setup: Dictionary = _make_draught_fed_edge_setup(Types.Rarity.Legendary)
+	var relic: DraughtFedEdgeRelic = setup["relic"]
+	var resolver: BattleResolver = setup["resolver"]
+	relic.OnReagentConsumed(0, ReagentData.new(), resolver)
+
+	relic.ResetForBattle()
+
+	var result: TraitSkillResult = relic.OnSkillCast(0, [3], "Strike", {}, resolver)
+	assert_almost_eq(result._damage_multiplier, 1.0, 0.0001,
+		"A reagent consumed but unspent before the battle ended must not carry a bonus into the next one")
+
 func test_draught_fed_edge_own_reagent_drawback_is_flat_not_laddered() -> void:
 	for rarity in [Types.Rarity.Common, Types.Rarity.Legendary]:
 		var setup: Dictionary = _make_draught_fed_edge_setup(rarity)

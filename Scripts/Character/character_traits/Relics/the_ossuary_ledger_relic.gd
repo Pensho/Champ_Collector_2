@@ -14,8 +14,10 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_execution_steps[Types.Combat_Event.Start_Combat] = Callable(self, "StartOfBattle")
 	_execution_steps[Types.Combat_Event.Ally_Death] = Callable(self, "OnAllyDeath")
 
-func StartOfBattle(p_owner_ID: int, p_resolver: BattleResolver) -> void:
+func ResetForBattle() -> void:
 	_triggered = false
+
+func StartOfBattle(p_owner_ID: int, p_resolver: BattleResolver) -> void:
 	var severance: StatusEffects.Debuff = StatusEffects.Debuff.new()
 	severance.type = Types.Debuff_Type.Severance
 	severance.duration = GameBalance.BATTLE_PERMANENT_EFFECT

@@ -14,8 +14,10 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_execution_steps[Types.Combat_Event.Start_Combat] = Callable(self, "StartOfBattle")
 	_execution_steps[Types.Combat_Event.Debuff_Applied] = Callable(self, "OnDebuffApplied")
 
-func StartOfBattle(p_owner_ID: int, p_resolver: BattleResolver) -> void:
+func ResetForBattle() -> void:
 	_landed_count_by_target = {}
+
+func StartOfBattle(p_owner_ID: int, p_resolver: BattleResolver) -> void:
 	var signed_writ: StatusEffects.Debuff = StatusEffects.Debuff.new()
 	signed_writ.type = Types.Debuff_Type.Signed_Writ
 	signed_writ.duration = GameBalance.BATTLE_PERMANENT_EFFECT

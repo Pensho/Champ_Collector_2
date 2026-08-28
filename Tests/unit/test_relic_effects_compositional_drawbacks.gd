@@ -118,6 +118,24 @@ func test_unguarded_glass_gives_no_bonus_for_a_self_granted_buff() -> void:
 	assert_eq(relic.GetAttributeDelta(Types.Attribute.CritDamage, 100), 0,
 		"A buff the wearer granted themself should not qualify")
 
+func test_unguarded_glass_stale_owner_does_not_survive_into_the_next_battle() -> void:
+	var setup: Dictionary = _wearer_and_ally()
+	var relic: TheUnguardedGlassRelic = TheUnguardedGlassRelic.new()
+	relic.Init(Types.Rarity.Legendary)
+	setup.wearer._trait = relic
+	var fortify: StatusEffects.Buff = StatusEffects.Buff.new()
+	fortify.type = Types.Buff_Type.Fortify
+	fortify.duration = 3
+	fortify.source_ID = 1
+	setup.resolver.GetStatusResolver().ApplyBuff(0, fortify)
+	assert_gt(relic.GetAttributeDelta(Types.Attribute.CritDamage, 100), 0,
+		"Sanity: holding an ally's buff should grant Critical Damage")
+
+	relic.ResetForBattle()
+
+	assert_eq(relic.GetAttributeDelta(Types.Attribute.CritDamage, 100), 0,
+		"Owner and resolver cached from the previous battle must not leak into the next one before a new buff lands")
+
 func test_unguarded_glass_caps_the_wearer_at_one_buff() -> void:
 	var setup: Dictionary = _wearer_and_ally()
 	var relic: TheUnguardedGlassRelic = TheUnguardedGlassRelic.new()

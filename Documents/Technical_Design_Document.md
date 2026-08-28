@@ -1553,7 +1553,8 @@ provides default (no-op, debug-printing) implementations of each hook. The comba
 
 | Hook | `Combat_Event` | Fired when… | Returns |
 |---|---|---|---|
-| `StartOfBattle(owner_ID, resolver)` | `Start_Combat` | during `Battle.Init`, once per character (logic reset) | — |
+| `ResetForBattle()` | — (unconditional, not gated by `_execution_steps`) | during `Battle.Init`, before `StartOfBattle`, on every hook source | — |
+| `StartOfBattle(owner_ID, resolver)` | `Start_Combat` | during `Battle.Init`, once per character; also re-fires mid-battle when a graft lands on a symbiote | — |
 | `StartOfTurn(owner_ID, resolver)` | `Start_Turn` | in `BeginTurn` for the active character | — |
 | `EndOfTurn(owner_ID, resolver)` | `End_Turn` | at the end of `ResolveSkill` | — |
 | `OnSkillCast(owner_ID, target_IDs, skill_name, caster_attributes, resolver)` | `Skill_Cast` | at the start of `ResolveSkill` | `TraitSkillResult` |
@@ -1567,9 +1568,13 @@ provides default (no-op, debug-printing) implementations of each hook. The comba
 | `OnAllyDamageTaken(owner_ID, damaged_ally_ID, resolver)` | `Ally_Damage_Taken` | in `_ResolveDamage`, polled on the target's living allies before mitigation; returns the fraction of the incoming hit this owner redirects to itself (0.0 base) | `float` |
 
 `StartOfBattle`'s `owner_ID`/`resolver` parameters were added specifically so traits can subscribe
-to resolver signals (`resolver.result_produced`) or mark battle-start state (e.g. the Cultist's
-Vessel) before the character's own first turn — a lazily-initialized equivalent would miss events
-that fire before then.
+to resolver signals (`resolver.result_produced`) or apply battle-start status effects (e.g. the
+Cultist's Vessel) before the character's own first turn — a lazily-initialized equivalent would
+miss events that fire before then. Because it re-fires mid-battle for a symbiote gaining a graft,
+it cannot double as a reset: a hook source holding battle-scoped state (a `RelicEffect` in
+particular, since it is duplicated once at item creation and outlives every battle) clears that
+state in `ResetForBattle()` instead, the one hook every source receives unconditionally and
+exactly once per battle.
 
 One **view hook** complements them: `RefreshVisuals(character_repr)` repaints the trait's icons,
 tooltips, and battlefield effects (e.g. sprite echoes) from current trait state. The battle scene

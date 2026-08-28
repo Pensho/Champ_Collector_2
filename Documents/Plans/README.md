@@ -1,17 +1,11 @@
 # Plans
 
 One document per topic, sized so each can be executed and reviewed as an isolated
-body of work. Findings behind these plans are recorded in
-`Technical_Design_Document.md` sections 15.7–15.9.
+body of work.
 
 Suggested order (dependencies noted inside each plan):
 
-1. `Plan_Relic_Implementation.md` — the Relic item type's code mechanism, spawned by
-   the now-deleted `Plan_System_Buildout.md`'s coverage gap: splitting item type from rarity,
-   carrying a Relic's effect, dispatching it alongside the wearer's trait, and implementing
-   `Relic_Design.md`'s 24-entry catalog. Blocks nothing else; not yet started.
-
-2. `Plan_Story_Mode_Systems.md` — the systems that deliver story mode (story
+1. `Plan_Story_Mode_Systems.md` — the systems that deliver story mode (story
    state handler, dialogue overlay, flag-driven hub variants, act gating,
    scripted battle openings, guest champions). The state handler and dialogue
    overlay are independent and can start any time; scripted openings apply

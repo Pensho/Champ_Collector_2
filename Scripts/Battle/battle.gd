@@ -172,6 +172,8 @@ func Init(p_context: ContextContainer) -> void:
 	for i in _characters.keys():
 		for j in _characters[i]._skills.size():
 			_battle_ui.LoadSkillTexture(_characters[i]._skills[j].icon_path)
+		for source: CharacterTrait in _characters[i].HookSources():
+			source.ResetForBattle()
 		for active_trait: CharacterTrait in Skills.ActiveHooks(_characters[i], Types.Combat_Event.Start_Combat):
 			active_trait.StartOfBattle(i, _resolver)
 		if(null != _characters[i]._trait):

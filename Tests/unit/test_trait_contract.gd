@@ -4,8 +4,10 @@ extends GutTest
 # every hook declared on CharacterTrait is exercised once with an alive owner and once
 # with a dead owner, so a new trait is covered by construction instead of needing its own
 # bespoke test file. Also scans every script constant keyed by Types.Rarity and asserts
-# it is no worse at Legendary than at Uncommon, and checks the ungated getter family for
-# purity (see UNGATED_GETTERS below).
+# it is no worse at Legendary than at Uncommon, checks the ungated getter family for
+# purity (see UNGATED_GETTERS below), and, for Relics only, asserts every script variable
+# forgets whatever a battle wrote to it once ResetForBattle() runs (see
+# RESET_FOR_BATTLE_EXCLUSIONS below).
 
 const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 
@@ -33,6 +35,11 @@ const RARITIES: Array[Types.Rarity] = [
 	Types.Rarity.Epic,
 	Types.Rarity.Legendary,
 ]
+
+# Script variables that legitimately do not round-trip through Init() -> exercise ->
+# ResetForBattle() -> compare-to-post-Init. Empty today: every Relic's battle-scoped state
+# is expected to fully reset.
+const RESET_FOR_BATTLE_EXCLUSIONS: Array[String] = []
 
 var _roster: Dictionary[int, Character] = {}
 var _sides: CombatSides = null
@@ -105,6 +112,37 @@ func test_ungated_getters_are_pure_across_repeated_calls_with_identical_argument
 			assert_eq(first, second,
 					"%s.%s must be pure (read-only, stateless): identical arguments answered differently" %
 					[path, getter_name])
+
+func test_relic_battle_state_resets_after_a_battle() -> void:
+	var paths: Array[String] = []
+	_CollectGDScriptPaths(RELIC_ROOT, paths)
+	assert_gt(paths.size(), 0, "Sanity check: the Relic directory scan should find files")
+	for path in paths:
+		var script: GDScript = load(path)
+		var instance: CharacterTrait = script.new()
+		instance.Init(Types.Rarity.Legendary)
+		var baseline: Dictionary = _SnapshotScriptVariables(instance)
+		_ExerciseHooks(instance, 0, 1, path)
+		instance.ResetForBattle()
+		var after_reset: Dictionary = _SnapshotScriptVariables(instance)
+		for variable_name in baseline:
+			if RESET_FOR_BATTLE_EXCLUSIONS.has(variable_name):
+				continue
+			assert_eq(after_reset[variable_name], baseline[variable_name],
+					"%s.%s must forget battle state in ResetForBattle()" % [path, variable_name])
+
+func _SnapshotScriptVariables(p_instance: CharacterTrait) -> Dictionary:
+	var snapshot: Dictionary = {}
+	for property: Dictionary in p_instance.get_property_list():
+		if 0 == (int(property["usage"]) & PROPERTY_USAGE_SCRIPT_VARIABLE):
+			continue
+		var value: Variant = p_instance.get(property["name"])
+		# Dictionary/Array script variables are held by reference, so a snapshot taken before
+		# a later mutation would otherwise silently reflect that mutation too.
+		if value is Dictionary or value is Array:
+			value = value.duplicate(true)
+		snapshot[property["name"]] = value
+	return snapshot
 
 func _GetterArgs(p_getter_name: String, p_owner_ID: int, p_other_ID: int) -> Array:
 	match p_getter_name:

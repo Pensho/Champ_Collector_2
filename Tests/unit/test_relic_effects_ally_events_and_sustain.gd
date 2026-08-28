@@ -125,7 +125,7 @@ func test_mercy_stitch_only_triggers_once_per_battle() -> void:
 	assert_true(relic.GetDamageTakenHealthFloor(0, -500, 1000) >= 0, "First trigger should fire")
 	assert_eq(relic.GetDamageTakenHealthFloor(0, -500, 1000), -1, "A second trigger in the same battle should not fire")
 
-	relic.StartOfBattle(0, null)
+	relic.ResetForBattle()
 	assert_true(relic.GetDamageTakenHealthFloor(0, -500, 1000) >= 0, "A new battle should reset the trigger")
 
 func test_mercy_stitch_gives_no_opinion_above_the_floor() -> void:
@@ -162,7 +162,6 @@ func test_mercy_stitch_fires_through_a_real_lethal_range_hit() -> void:
 	setup.wearer._attributes[Types.Attribute.Health] = 1000
 	setup.wearer._current_health = 4000  # Health(1000) x ATTRIBUTE_HEALTH_MULTIPLIER(4)
 	setup.wearer._attributes[Types.Attribute.Defence] = 0
-	relic.StartOfBattle(0, setup.resolver)
 	var attack_attributes: Dictionary[Types.Attribute, int] = {Types.Attribute.Attack: 100000}
 	var damage_scaling: Dictionary[Types.Attribute, float] = {Types.Attribute.Attack: 1.0}
 	var received: Array[CombatResult] = []
