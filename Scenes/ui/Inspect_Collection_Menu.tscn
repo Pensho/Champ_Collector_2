@@ -178,6 +178,7 @@ layout_mode = 2
 
 [node name="GridContainer" type="GridContainer" parent="MarginContainer/HBoxContainer2/ScrollContainer_Characters" unique_id=1499657250]
 layout_mode = 2
+mouse_filter = 1
 columns = 4
 
 [node name="ScrollContainer_Items" type="ScrollContainer" parent="MarginContainer/HBoxContainer2" unique_id=483209083]
@@ -187,6 +188,7 @@ layout_mode = 2
 
 [node name="GridContainer" type="GridContainer" parent="MarginContainer/HBoxContainer2/ScrollContainer_Items" unique_id=205271624]
 layout_mode = 2
+mouse_filter = 1
 columns = 4
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/HBoxContainer2" unique_id=2003231855]
