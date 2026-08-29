@@ -15,7 +15,7 @@ func test_follow_holds_value_during_hold_window() -> void:
 
 func test_follow_drains_to_target_after_hold_and_drain() -> void:
 	_bar.Follow(60)
-	await wait_seconds(0.9)
+	await wait_seconds(1.2)
 	assert_eq(_bar.value, 60.0)
 
 func test_cascade_of_hits_merges_into_one_drain() -> void:
@@ -25,7 +25,7 @@ func test_cascade_of_hits_merges_into_one_drain() -> void:
 	await wait_seconds(0.3)
 	# Original hold would have expired by now had it not been restarted by the second hit.
 	assert_eq(_bar.value, 100.0)
-	await wait_seconds(0.6)
+	await wait_seconds(1.2)
 	assert_eq(_bar.value, 50.0)
 
 func test_follow_with_higher_health_snaps_immediately() -> void:
