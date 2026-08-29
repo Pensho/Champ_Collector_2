@@ -54,7 +54,7 @@ class FakeZoneUsedRecorder extends CharacterTrait:
 	func _init() -> void:
 		_execution_steps[Types.Combat_Event.Zone_Used] = Callable(self, "OnZoneUsed")
 
-	func OnZoneUsed(_p_owner_ID: int, _p_user_ID: int, _p_resolver: BattleResolver) -> void:
+	func OnZoneUsed(_p_owner_ID: int, _p_user_ID: int, _p_zone_ID: int, _p_resolver: BattleResolver) -> void:
 		call_count += 1
 
 var _roster: Dictionary[int, Character] = {}
@@ -147,6 +147,6 @@ func test_zone_used_hook_does_not_fire_when_the_zone_owner_is_dead() -> void:
 	_roster[0]._trait = recorder
 	_roster[0]._current_health = 0
 
-	Skills.TriggerZoneUsedHook(_resolver.GetCharacters(), 0, 1, _resolver)
+	Skills.TriggerZoneUsedHook(_resolver.GetCharacters(), 0, 1, 0, _resolver)
 
 	assert_eq(recorder.call_count, 0, "A dead zone owner must not receive Zone_Used")
