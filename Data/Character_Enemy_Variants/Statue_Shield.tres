@@ -5,16 +5,34 @@
 [ext_resource type="Resource" path="res://Data/Character_Traits/Grafts/Reactive_Plating_Graft.tres" id="2_3xnmi"]
 [ext_resource type="Resource" uid="uid://dpduy25aqyibo" path="res://Data/Character_Skill_Variants/Bash.tres" id="2_cxef6"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_w1xr5"]
+[ext_resource type="Script" uid="uid://bmqtglyyora7q" path="res://Scripts/Battle/Skill_Effects/skill_effect.gd" id="5_kmn0o"]
+[ext_resource type="Script" uid="uid://bay8tvxoeo0tu" path="res://Scripts/Battle/Skill_Effects/apply_buff_effect.gd" id="6_xr5kt"]
+
+[sub_resource type="Resource" id="Resource_oban7"]
+script = ExtResource("6_xr5kt")
+buff_type = 2
+duration = 2
+target = 4
+
+[sub_resource type="Resource" id="Resource_wvtj4"]
+script = ExtResource("1_1t4tc")
+name = "Hold the Line"
+description = "Grants all allies the Fortify buff for 2 turns."
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Hold_the_Line/Hold_the_Line.jpg"
+target = 4
+cooldown = 5
+effects = Array[ExtResource("5_kmn0o")]([SubResource("Resource_oban7")])
+metadata/_custom_type_script = "uid://glh06y3wvchj"
 
 [resource]
 script = ExtResource("2_w1xr5")
 _name = "Bor Bulwark"
-_thematic_hint = "Armored thick enough that ordinary blows barely mark it."
 _texture = "res://Assets/Champ_Collector/Creatures/Opponents/Gear_Statues/Statue_Shield.png"
 _rarity = 4
 _faction = 4
 _role = 13
-_skills = Array[ExtResource("1_1t4tc")]([ExtResource("2_cxef6"), ExtResource("2_cxef6"), ExtResource("2_cxef6")])
+_skills = Array[ExtResource("1_1t4tc")]([ExtResource("2_cxef6"), ExtResource("2_cxef6"), SubResource("Resource_wvtj4")])
+_thematic_hint = "Armored thick enough that ordinary blows barely mark it."
 _health = 280
 _speed = 45
 _attack = 20

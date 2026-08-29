@@ -8,12 +8,12 @@
 [resource]
 script = ExtResource("2_u4t3b")
 _name = "Vael"
-_thematic_hint = "Winding up, turn by turn, toward something faster."
 _texture = "res://Assets/Champ_Collector/Creatures/Opponents/Gear_Statues/Statue_Boots.png"
 _rarity = 4
 _faction = 4
 _role = 13
 _skills = Array[ExtResource("1_nk3ru")]([ExtResource("2_d65ud"), ExtResource("2_d65ud"), ExtResource("2_d65ud")])
+_thematic_hint = "Winding up, turn by turn, toward something faster."
 _health = 260
 _speed = 90
 _attack = 40

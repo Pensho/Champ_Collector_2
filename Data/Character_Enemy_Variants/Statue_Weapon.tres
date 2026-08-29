@@ -11,12 +11,12 @@
 [resource]
 script = ExtResource("2_m7np0")
 _name = "Ulfrac"
-_thematic_hint = "Telegraphing a blow that will land eventually."
 _texture = "res://Assets/Champ_Collector/Creatures/Opponents/Gear_Statues/Statue_Weapon.png"
 _rarity = 4
 _faction = 4
 _role = 13
 _skills = Array[ExtResource("1_e4125")]([ExtResource("2_ttuqr"), ExtResource("5_bgrd0"), ExtResource("3_ttuqr")])
+_thematic_hint = "Telegraphing a blow that will land eventually."
 _health = 270
 _speed = 45
 _attack = 110

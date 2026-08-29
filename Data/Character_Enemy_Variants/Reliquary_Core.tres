@@ -1,21 +1,21 @@
-[gd_resource type="Resource" script_class="CharacterPreset" format=3]
+[gd_resource type="Resource" script_class="CharacterPreset" format=3 uid="uid://dc383fym1l20k"]
 
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="1_preset"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_yqkqm"]
 [ext_resource type="Resource" uid="uid://di33fmejkr3ua" path="res://Data/Character_Skill_Variants/Support_Skills/Reliquary_Ward.tres" id="2_ward"]
 
 [resource]
 script = ExtResource("1_preset")
 _name = "Reliquary Core"
-_thematic_hint = "Does not fight back, but everything flows through it."
 _texture = "res://Assets/Champ_Collector/Creatures/Opponents/Reliquary_Core/Reliquary_Core.png"
 _rarity = 5
 _faction = 1
 _role = 13
 _skills = Array[ExtResource("1_skill")]([ExtResource("2_ward")])
+_thematic_hint = "Does not fight back, but everything flows through it."
 _health = 900
 _speed = 40
-_attack = 0
 _defence = 200
 _accuracy = 20
 _resistance = 40

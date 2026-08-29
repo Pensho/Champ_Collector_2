@@ -1,17 +1,18 @@
-[gd_resource type="Resource" script_class="CharacterPreset" format=3]
+[gd_resource type="Resource" script_class="CharacterPreset" format=3 uid="uid://d0cwao0dacsj2"]
 
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="1_preset"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_slxhx"]
 [ext_resource type="Resource" uid="uid://dl0s23m0g4w3i" path="res://Data/Character_Skill_Variants/Zap.tres" id="2_zap"]
 
 [resource]
 script = ExtResource("1_preset")
 _name = "Warded Clerk"
-_thematic_hint = "Paperwork this dense turns most blows aside."
 _texture = "res://Assets/Champ_Collector/Creatures/Opponents/Warded_Clerk/Warded_Clerk.png"
 _faction = 1
 _role = 13
 _skills = Array[ExtResource("1_skill")]([ExtResource("2_zap")])
+_thematic_hint = "Paperwork this dense turns most blows aside."
 _health = 70
 _speed = 35
 _attack = 30

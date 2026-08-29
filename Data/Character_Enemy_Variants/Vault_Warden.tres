@@ -1,5 +1,6 @@
-[gd_resource type="Resource" script_class="CharacterPreset" format=3]
+[gd_resource type="Resource" script_class="CharacterPreset" format=3 uid="uid://bt5dag6k2dr0o"]
 
+[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_jjmw7"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="1_preset"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
 [ext_resource type="Resource" uid="uid://dvgwxvsovsldc" path="res://Data/Character_Skill_Variants/Attack_Skills/Stab.tres" id="2_stab"]
@@ -9,12 +10,12 @@
 [resource]
 script = ExtResource("1_preset")
 _name = "Vault Warden"
-_thematic_hint = "Well protected for as long as its ward holds out."
 _texture = "res://Assets/Champ_Collector/Creatures/Opponents/Vault_Warden/Vault_Warden.png"
 _rarity = 5
 _faction = 1
 _role = 13
 _skills = Array[ExtResource("1_skill")]([ExtResource("2_stab"), ExtResource("3_slam")])
+_thematic_hint = "Well protected for as long as its ward holds out."
 _health = 300
 _speed = 45
 _attack = 75

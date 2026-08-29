@@ -1,5 +1,6 @@
-[gd_resource type="Resource" script_class="CharacterPreset" format=3]
+[gd_resource type="Resource" script_class="CharacterPreset" format=3 uid="uid://csp6wkyx3cmxk"]
 
+[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_kske0"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="1_preset"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
 [ext_resource type="Resource" uid="uid://blurw27uy2cvi" path="res://Data/Character_Skill_Variants/Support_Skills/Rally_the_Crew.tres" id="2_rally"]
@@ -8,11 +9,11 @@
 [resource]
 script = ExtResource("1_preset")
 _name = "Bosun"
-_thematic_hint = "Keeps barking orders the crew is eager to follow."
 _texture = "res://Assets/Champ_Collector/Creatures/Opponents/Bosun/Bosun.png"
 _faction = 4
 _role = 13
 _skills = Array[ExtResource("1_skill")]([ExtResource("2_rally"), ExtResource("3_stab")])
+_thematic_hint = "Keeps barking orders the crew is eager to follow."
 _health = 85
 _speed = 40
 _attack = 35

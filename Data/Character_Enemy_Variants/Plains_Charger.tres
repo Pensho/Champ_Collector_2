@@ -1,5 +1,6 @@
-[gd_resource type="Resource" script_class="CharacterPreset" format=3]
+[gd_resource type="Resource" script_class="CharacterPreset" format=3 uid="uid://cjyh1nn4fenst"]
 
+[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_aubwk"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="1_preset"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
 [ext_resource type="Resource" uid="uid://dkponwva6f3ai" path="res://Data/Character_Skill_Variants/Attack_Skills/Breaching_Charge.tres" id="2_charge"]
@@ -7,11 +8,11 @@
 [resource]
 script = ExtResource("1_preset")
 _name = "Plains Charger"
-_thematic_hint = "Building toward a charge aimed at whoever's closest."
 _texture = "res://Assets/Champ_Collector/Creatures/Opponents/Plains_Charger/Plains_Charger.png"
 _faction = 4
 _role = 13
 _skills = Array[ExtResource("1_skill")]([ExtResource("2_charge")])
+_thematic_hint = "Building toward a charge aimed at whoever's closest."
 _health = 110
 _speed = 45
 _attack = 70

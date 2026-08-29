@@ -1,5 +1,6 @@
-[gd_resource type="Resource" script_class="CharacterPreset" format=3]
+[gd_resource type="Resource" script_class="CharacterPreset" format=3 uid="uid://dktauljfox1n3"]
 
+[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_n461q"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="1_preset"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
 [ext_resource type="Resource" uid="uid://cptvcpnt0n8kb" path="res://Data/Character_Skill_Variants/Attack_Skills/Writ_of_Seizure.tres" id="2_writ"]
@@ -7,12 +8,12 @@
 [resource]
 script = ExtResource("1_preset")
 _name = "Warded Notary"
-_thematic_hint = "Handles the paperwork for someone else's theft."
 _texture = "res://Assets/Champ_Collector/Creatures/Opponents/Warded_Notary/Warded_Notary.png"
 _rarity = 4
 _faction = 1
 _role = 13
 _skills = Array[ExtResource("1_skill")]([ExtResource("2_writ")])
+_thematic_hint = "Handles the paperwork for someone else's theft."
 _health = 150
 _speed = 45
 _attack = 30

@@ -1,5 +1,6 @@
-[gd_resource type="Resource" script_class="CharacterPreset" format=3]
+[gd_resource type="Resource" script_class="CharacterPreset" format=3 uid="uid://bqnmr6iug64du"]
 
+[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_50lcn"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="1_preset"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
 [ext_resource type="Resource" uid="uid://dddik7cttb1p3" path="res://Data/Character_Skill_Variants/Support_Skills/March_Cadence.tres" id="2_march"]
@@ -8,11 +9,11 @@
 [resource]
 script = ExtResource("1_preset")
 _name = "War Drummer"
-_thematic_hint = "Every beat pushes the riders further ahead."
 _texture = "res://Assets/Champ_Collector/Creatures/Opponents/War_Drummer/War_Drummer.png"
 _faction = 4
 _role = 13
 _skills = Array[ExtResource("1_skill")]([ExtResource("2_march"), ExtResource("3_stab")])
+_thematic_hint = "Every beat pushes the riders further ahead."
 _health = 85
 _speed = 45
 _attack = 30

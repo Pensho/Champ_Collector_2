@@ -6,7 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://di0y70sbai3yw" path="res://Scenes/ui/Menu_Item_Slot.tscn" id="5_1jdpx"]
 [ext_resource type="PackedScene" path="res://Scenes/ui/Battle_UI/Opponent_Preview.tscn" id="6_opponent"]
 
-[node name="PreBattleMenu" type="Control" node_paths=PackedStringArray("_difficulty_option", "_chosen_character_slots", "_chosen_reagent_slots", "_grid_container_characters", "_grid_container_reagents", "_opponent_slots", "_h_box_container_drops", "_part_briefing", "_part_team", "_part_reagents", "_footer", "_button_back", "_button_next", "_button_start")]
+[node name="PreBattleMenu" type="Control" unique_id=1325280994 node_paths=PackedStringArray("_difficulty_option", "_chosen_character_slots", "_chosen_reagent_slots", "_grid_container_characters", "_grid_container_reagents", "_opponent_slots", "_h_box_container_drops", "_part_briefing", "_part_team", "_part_reagents", "_footer", "_button_back", "_button_next", "_button_start")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -29,41 +29,40 @@ _button_back = NodePath("Footer/Back")
 _button_next = NodePath("Footer/Next")
 _button_start = NodePath("Footer/Start")
 
-[node name="TextureRect" type="TextureRect" parent="."]
+[node name="TextureRect" type="TextureRect" parent="." unique_id=2073567539]
 layout_mode = 0
 offset_right = 1280.0
 offset_bottom = 720.0
 texture = ExtResource("1_bs66k")
 
-[node name="Part_Briefing" type="Control" parent="."]
-layout_mode = 0
+[node name="Part_Briefing" type="Control" parent="." unique_id=698853333]
+anchors_preset = 0
 offset_right = 1280.0
 offset_bottom = 720.0
 
-[node name="ColorRect_Black" type="ColorRect" parent="Part_Briefing"]
-mouse_filter = 2
+[node name="ColorRect_Black" type="ColorRect" parent="Part_Briefing" unique_id=90677733]
 layout_mode = 0
 offset_right = 1280.0
 offset_bottom = 720.0
+mouse_filter = 2
 color = Color(0, 0, 0, 1)
 
-[node name="MarginContainer" type="MarginContainer" parent="Part_Briefing"]
-mouse_filter = 2
+[node name="MarginContainer" type="MarginContainer" parent="Part_Briefing" unique_id=751904529]
 layout_mode = 0
 offset_right = 1280.0
 offset_bottom = 720.0
+mouse_filter = 2
 theme_override_constants/margin_left = 64
 theme_override_constants/margin_top = 32
 theme_override_constants/margin_right = 64
 theme_override_constants/margin_bottom = 32
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Part_Briefing/MarginContainer"]
-mouse_filter = 2
+[node name="VBoxContainer" type="VBoxContainer" parent="Part_Briefing/MarginContainer" unique_id=924573576]
 layout_mode = 2
+mouse_filter = 2
 theme_override_constants/separation = 24
 
-[node name="Label" type="Label" parent="Part_Briefing/MarginContainer/VBoxContainer"]
-mouse_filter = 2
+[node name="Label" type="Label" parent="Part_Briefing/MarginContainer/VBoxContainer" unique_id=1595092030]
 layout_mode = 2
 theme = ExtResource("1_fbx8u")
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -73,42 +72,37 @@ theme_override_font_sizes/font_size = 48
 text = "Opposing force"
 horizontal_alignment = 1
 
-[node name="HBoxContainer_Opponents" type="HBoxContainer" parent="Part_Briefing/MarginContainer/VBoxContainer"]
-mouse_filter = 2
+[node name="HBoxContainer_Opponents" type="HBoxContainer" parent="Part_Briefing/MarginContainer/VBoxContainer" unique_id=1240784751]
 layout_mode = 2
 size_flags_horizontal = 4
+mouse_filter = 2
 theme_override_constants/separation = 48
 
-[node name="Opponent_1" parent="Part_Briefing/MarginContainer/VBoxContainer/HBoxContainer_Opponents" instance=ExtResource("6_opponent")]
-layout_mode = 2
+[node name="Opponent_1" parent="Part_Briefing/MarginContainer/VBoxContainer/HBoxContainer_Opponents" unique_id=1559162288 instance=ExtResource("6_opponent")]
 
-[node name="Opponent_2" parent="Part_Briefing/MarginContainer/VBoxContainer/HBoxContainer_Opponents" instance=ExtResource("6_opponent")]
-layout_mode = 2
+[node name="Opponent_2" parent="Part_Briefing/MarginContainer/VBoxContainer/HBoxContainer_Opponents" unique_id=1715973802 instance=ExtResource("6_opponent")]
 
-[node name="Opponent_3" parent="Part_Briefing/MarginContainer/VBoxContainer/HBoxContainer_Opponents" instance=ExtResource("6_opponent")]
-layout_mode = 2
+[node name="Opponent_3" parent="Part_Briefing/MarginContainer/VBoxContainer/HBoxContainer_Opponents" unique_id=1843283676 instance=ExtResource("6_opponent")]
 
-[node name="VBoxContainer_Drops" type="VBoxContainer" parent="Part_Briefing/MarginContainer/VBoxContainer"]
+[node name="VBoxContainer_Drops" type="VBoxContainer" parent="Part_Briefing/MarginContainer/VBoxContainer" unique_id=985566700]
+layout_mode = 2
 mouse_filter = 2
-layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="Label" type="Label" parent="Part_Briefing/MarginContainer/VBoxContainer/VBoxContainer_Drops"]
-mouse_filter = 2
+[node name="Label" type="Label" parent="Part_Briefing/MarginContainer/VBoxContainer/VBoxContainer_Drops" unique_id=1159780893]
 layout_mode = 2
 theme = ExtResource("1_fbx8u")
 theme_override_font_sizes/font_size = 24
 text = "Possible drops"
 horizontal_alignment = 1
 
-[node name="HBoxContainer_Drops" type="HBoxContainer" parent="Part_Briefing/MarginContainer/VBoxContainer/VBoxContainer_Drops"]
-mouse_filter = 2
+[node name="HBoxContainer_Drops" type="HBoxContainer" parent="Part_Briefing/MarginContainer/VBoxContainer/VBoxContainer_Drops" unique_id=503622401]
 layout_mode = 2
 size_flags_horizontal = 4
+mouse_filter = 2
 theme_override_constants/separation = 24
 
-[node name="Label_Continue_Hint" type="Label" parent="Part_Briefing/MarginContainer/VBoxContainer"]
-mouse_filter = 2
+[node name="Label_Continue_Hint" type="Label" parent="Part_Briefing/MarginContainer/VBoxContainer" unique_id=1724369282]
 layout_mode = 2
 size_flags_vertical = 10
 theme = ExtResource("1_fbx8u")
@@ -116,7 +110,7 @@ theme_override_font_sizes/font_size = 20
 text = "Tap anywhere to continue"
 horizontal_alignment = 1
 
-[node name="OptionButton_Difficulty" type="OptionButton" parent="Part_Briefing"]
+[node name="OptionButton_Difficulty" type="OptionButton" parent="Part_Briefing" unique_id=1392597429]
 custom_minimum_size = Vector2(200, 50)
 layout_mode = 0
 offset_left = 1014.0
@@ -131,13 +125,13 @@ theme_override_colors/font_hover_color = Color(0.66656864, 0.6665687, 0.6665685,
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
 
-[node name="Part_Team" type="Control" parent="."]
+[node name="Part_Team" type="Control" parent="." unique_id=55862237]
 visible = false
-layout_mode = 0
+anchors_preset = 0
 offset_right = 1280.0
 offset_bottom = 720.0
 
-[node name="MarginContainer" type="MarginContainer" parent="Part_Team"]
+[node name="MarginContainer" type="MarginContainer" parent="Part_Team" unique_id=1475023495]
 layout_mode = 0
 offset_right = 1280.0
 offset_bottom = 720.0
@@ -146,11 +140,11 @@ theme_override_constants/margin_top = 32
 theme_override_constants/margin_right = 64
 theme_override_constants/margin_bottom = 32
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Part_Team/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Part_Team/MarginContainer" unique_id=174574329]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="Label" type="Label" parent="Part_Team/MarginContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="Part_Team/MarginContainer/VBoxContainer" unique_id=1049345997]
 layout_mode = 2
 theme = ExtResource("1_fbx8u")
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -160,38 +154,37 @@ theme_override_font_sizes/font_size = 48
 text = "Select champions for battle"
 horizontal_alignment = 1
 
-[node name="Chosen_Characters" type="HBoxContainer" parent="Part_Team/MarginContainer/VBoxContainer"]
+[node name="Chosen_Characters" type="HBoxContainer" parent="Part_Team/MarginContainer/VBoxContainer" unique_id=1099753082]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/separation = 100
 
-[node name="Chosen_Char_1" parent="Part_Team/MarginContainer/VBoxContainer/Chosen_Characters" instance=ExtResource("5_1jdpx")]
+[node name="Chosen_Char_1" parent="Part_Team/MarginContainer/VBoxContainer/Chosen_Characters" unique_id=1829896111 instance=ExtResource("5_1jdpx")]
 layout_mode = 2
 
-[node name="Chosen_Char_2" parent="Part_Team/MarginContainer/VBoxContainer/Chosen_Characters" instance=ExtResource("5_1jdpx")]
+[node name="Chosen_Char_2" parent="Part_Team/MarginContainer/VBoxContainer/Chosen_Characters" unique_id=1312635659 instance=ExtResource("5_1jdpx")]
 layout_mode = 2
 
-[node name="Chosen_Char_3" parent="Part_Team/MarginContainer/VBoxContainer/Chosen_Characters" instance=ExtResource("5_1jdpx")]
+[node name="Chosen_Char_3" parent="Part_Team/MarginContainer/VBoxContainer/Chosen_Characters" unique_id=2094787841 instance=ExtResource("5_1jdpx")]
 layout_mode = 2
 
-[node name="ScrollContainer_Characters" type="ScrollContainer" parent="Part_Team/MarginContainer/VBoxContainer"]
+[node name="ScrollContainer_Characters" type="ScrollContainer" parent="Part_Team/MarginContainer/VBoxContainer" unique_id=1033901681]
 custom_minimum_size = Vector2(0, 420)
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="GridContainer" type="GridContainer" parent="Part_Team/MarginContainer/VBoxContainer/ScrollContainer_Characters"]
+[node name="GridContainer" type="GridContainer" parent="Part_Team/MarginContainer/VBoxContainer/ScrollContainer_Characters" unique_id=555991057]
 layout_mode = 2
 size_flags_horizontal = 3
-mouse_filter = 1
 columns = 9
 
-[node name="Part_Reagents" type="Control" parent="."]
+[node name="Part_Reagents" type="Control" parent="." unique_id=505262394]
 visible = false
-layout_mode = 0
+anchors_preset = 0
 offset_right = 1280.0
 offset_bottom = 720.0
 
-[node name="MarginContainer" type="MarginContainer" parent="Part_Reagents"]
+[node name="MarginContainer" type="MarginContainer" parent="Part_Reagents" unique_id=1253844748]
 layout_mode = 0
 offset_right = 1280.0
 offset_bottom = 720.0
@@ -200,11 +193,11 @@ theme_override_constants/margin_top = 32
 theme_override_constants/margin_right = 64
 theme_override_constants/margin_bottom = 32
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Part_Reagents/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Part_Reagents/MarginContainer" unique_id=906581708]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="Label" type="Label" parent="Part_Reagents/MarginContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="Part_Reagents/MarginContainer/VBoxContainer" unique_id=1489038338]
 layout_mode = 2
 theme = ExtResource("1_fbx8u")
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -214,32 +207,31 @@ theme_override_font_sizes/font_size = 48
 text = "Select reagents for battle"
 horizontal_alignment = 1
 
-[node name="Chosen_Reagents" type="HBoxContainer" parent="Part_Reagents/MarginContainer/VBoxContainer"]
+[node name="Chosen_Reagents" type="HBoxContainer" parent="Part_Reagents/MarginContainer/VBoxContainer" unique_id=1552287031]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/separation = 100
 
-[node name="Chosen_Reagent_1" parent="Part_Reagents/MarginContainer/VBoxContainer/Chosen_Reagents" instance=ExtResource("5_1jdpx")]
+[node name="Chosen_Reagent_1" parent="Part_Reagents/MarginContainer/VBoxContainer/Chosen_Reagents" unique_id=711768156 instance=ExtResource("5_1jdpx")]
 layout_mode = 2
 
-[node name="Chosen_Reagent_2" parent="Part_Reagents/MarginContainer/VBoxContainer/Chosen_Reagents" instance=ExtResource("5_1jdpx")]
+[node name="Chosen_Reagent_2" parent="Part_Reagents/MarginContainer/VBoxContainer/Chosen_Reagents" unique_id=472146835 instance=ExtResource("5_1jdpx")]
 layout_mode = 2
 
-[node name="Chosen_Reagent_3" parent="Part_Reagents/MarginContainer/VBoxContainer/Chosen_Reagents" instance=ExtResource("5_1jdpx")]
+[node name="Chosen_Reagent_3" parent="Part_Reagents/MarginContainer/VBoxContainer/Chosen_Reagents" unique_id=1077790753 instance=ExtResource("5_1jdpx")]
 layout_mode = 2
 
-[node name="ScrollContainer_Reagents" type="ScrollContainer" parent="Part_Reagents/MarginContainer/VBoxContainer"]
+[node name="ScrollContainer_Reagents" type="ScrollContainer" parent="Part_Reagents/MarginContainer/VBoxContainer" unique_id=1930188731]
 custom_minimum_size = Vector2(0, 420)
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="GridContainer" type="GridContainer" parent="Part_Reagents/MarginContainer/VBoxContainer/ScrollContainer_Reagents"]
+[node name="GridContainer" type="GridContainer" parent="Part_Reagents/MarginContainer/VBoxContainer/ScrollContainer_Reagents" unique_id=1168852071]
 layout_mode = 2
 size_flags_horizontal = 3
-mouse_filter = 1
 columns = 9
 
-[node name="Footer" type="HBoxContainer" parent="."]
+[node name="Footer" type="HBoxContainer" parent="." unique_id=23505360]
 visible = false
 layout_mode = 0
 offset_left = 64.0
@@ -249,19 +241,19 @@ offset_bottom = 688.0
 theme_override_constants/separation = 32
 alignment = 2
 
-[node name="Back" type="Button" parent="Footer"]
+[node name="Back" type="Button" parent="Footer" unique_id=2028651255]
 layout_mode = 2
 theme = ExtResource("1_fbx8u")
 theme_override_constants/outline_size = 5
 text = "Back"
 
-[node name="Exit" type="Button" parent="Footer"]
+[node name="Exit" type="Button" parent="Footer" unique_id=1791402004]
 layout_mode = 2
 theme = ExtResource("1_fbx8u")
 theme_override_constants/outline_size = 5
 text = "Exit"
 
-[node name="Next" type="Button" parent="Footer"]
+[node name="Next" type="Button" parent="Footer" unique_id=1183982505]
 visible = false
 layout_mode = 2
 theme = ExtResource("1_fbx8u")
@@ -269,7 +261,7 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
 text = "Next"
 
-[node name="Start" type="Button" parent="Footer"]
+[node name="Start" type="Button" parent="Footer" unique_id=1226735069]
 visible = false
 layout_mode = 2
 theme = ExtResource("1_fbx8u")

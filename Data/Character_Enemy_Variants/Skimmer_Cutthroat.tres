@@ -1,5 +1,6 @@
-[gd_resource type="Resource" script_class="CharacterPreset" format=3]
+[gd_resource type="Resource" script_class="CharacterPreset" format=3 uid="uid://eqwklui0gijb"]
 
+[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_flkuk"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="1_preset"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
 [ext_resource type="Resource" uid="uid://dvgwxvsovsldc" path="res://Data/Character_Skill_Variants/Attack_Skills/Stab.tres" id="2_stab"]
@@ -7,11 +8,11 @@
 [resource]
 script = ExtResource("1_preset")
 _name = "Skimmer Cutthroat"
-_thematic_hint = "Hungry for an edge it hasn't earned yet."
 _texture = "res://Assets/Champ_Collector/Creatures/Opponents/Skimmer_Cutthroat/Skimmer_Cutthroat.png"
 _faction = 4
 _role = 13
 _skills = Array[ExtResource("1_skill")]([ExtResource("2_stab")])
+_thematic_hint = "Hungry for an edge it hasn't earned yet."
 _health = 65
 _speed = 50
 _attack = 55

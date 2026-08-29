@@ -1,19 +1,20 @@
-[gd_resource type="Resource" script_class="CharacterPreset" format=3]
+[gd_resource type="Resource" script_class="CharacterPreset" format=3 uid="uid://fh1x5bdevliu"]
 
+[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_000cs"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="1_preset"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
 [ext_resource type="Resource" uid="uid://yj5qjv18f6k2" path="res://Data/Character_Skill_Variants/Attack_Skills/Inscribe.tres" id="2_inscribe"]
-[ext_resource type="Resource" path="res://Data/Character_Skill_Variants/Attack_Skills/Inscription_Surge.tres" id="3_surge"]
+[ext_resource type="Resource" uid="uid://cgcgdvtpg5cua" path="res://Data/Character_Skill_Variants/Attack_Skills/Inscription_Surge.tres" id="3_surge"]
 
 [resource]
 script = ExtResource("1_preset")
 _name = "The Glyphbound Archivist"
-_thematic_hint = "Writes something onto the battle itself with every turn."
 _texture = "res://Assets/Champ_Collector/Creatures/Opponents/Glyphbound_Archivist/Glyphbound_Archivist.png"
 _rarity = 5
 _faction = 4
 _role = 13
 _skills = Array[ExtResource("1_skill")]([ExtResource("2_inscribe"), ExtResource("3_surge")])
+_thematic_hint = "Writes something onto the battle itself with every turn."
 _health = 500
 _speed = 50
 _attack = 40
