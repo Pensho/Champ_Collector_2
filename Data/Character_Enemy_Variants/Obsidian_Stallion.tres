@@ -8,6 +8,7 @@
 [resource]
 script = ExtResource("2_hvruf")
 _name = "Obsidian Stallion"
+_thematic_hint = "The ground itself turns hostile wherever it stands."
 _texture = "res://Assets/Champ_Collector/Creatures/Obsidian_Stallion/Obsidian_Stallion.png"
 _rarity = 4
 _faction = 4

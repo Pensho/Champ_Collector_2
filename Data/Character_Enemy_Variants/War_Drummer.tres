@@ -8,6 +8,7 @@
 [resource]
 script = ExtResource("1_preset")
 _name = "War Drummer"
+_thematic_hint = "Every beat pushes the riders further ahead."
 _texture = "res://Assets/Champ_Collector/Creatures/Opponents/War_Drummer/War_Drummer.png"
 _faction = 4
 _role = 13

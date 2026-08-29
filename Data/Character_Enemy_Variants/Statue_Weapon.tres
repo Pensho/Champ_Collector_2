@@ -11,6 +11,7 @@
 [resource]
 script = ExtResource("2_m7np0")
 _name = "Ulfrac"
+_thematic_hint = "Telegraphing a blow that will land eventually."
 _texture = "res://Assets/Champ_Collector/Creatures/Opponents/Gear_Statues/Statue_Weapon.png"
 _rarity = 4
 _faction = 4

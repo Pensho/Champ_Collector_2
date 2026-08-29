@@ -8,6 +8,7 @@
 [resource]
 script = ExtResource("1_preset")
 _name = "Ridge Marksman"
+_thematic_hint = "Watching for whoever looks weakest."
 _texture = "res://Assets/Champ_Collector/Creatures/Opponents/Ridge_Marksman/Ridge_Marksman.png"
 _faction = 4
 _role = 13

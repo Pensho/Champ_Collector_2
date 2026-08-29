@@ -1,0 +1,48 @@
+[gd_scene format=3]
+
+[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="1_theme"]
+[ext_resource type="Script" path="res://Scripts/UI/Battle_UI/drop_preview_slot.gd" id="1_script"]
+
+[node name="DropPreviewSlot" type="Control" node_paths=PackedStringArray("_texture_rect", "_label_type", "_label_band")]
+custom_minimum_size = Vector2(120, 100)
+layout_mode = 2
+mouse_filter = 1
+script = ExtResource("1_script")
+_texture_rect = NodePath("VBoxContainer/TextureRect")
+_label_type = NodePath("VBoxContainer/Label_Type")
+_label_band = NodePath("VBoxContainer/Label_Band")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_right = 120.0
+offset_bottom = 100.0
+mouse_filter = 2
+theme_override_constants/separation = 2
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label_Type" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("1_theme")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 16
+text = "Type"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Label_Band" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("1_theme")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 14
+text = "Band"
+horizontal_alignment = 1

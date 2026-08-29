@@ -8,6 +8,7 @@
 [resource]
 script = ExtResource("1_preset")
 _name = "The Collector of Debts"
+_thematic_hint = "Whatever the party gains, it intends to take."
 _texture = "res://Assets/Champ_Collector/Creatures/Opponents/Collector_of_Debts/Collector_of_Debts.png"
 _rarity = 5
 _faction = 1

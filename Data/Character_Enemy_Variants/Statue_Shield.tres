@@ -9,6 +9,7 @@
 [resource]
 script = ExtResource("2_w1xr5")
 _name = "Bor Bulwark"
+_thematic_hint = "Armored thick enough that ordinary blows barely mark it."
 _texture = "res://Assets/Champ_Collector/Creatures/Opponents/Gear_Statues/Statue_Shield.png"
 _rarity = 4
 _faction = 4

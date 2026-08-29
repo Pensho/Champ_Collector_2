@@ -9,6 +9,7 @@
 [resource]
 script = ExtResource("2_ltt6g")
 _name = "Militia"
+_thematic_hint = "Just another conscript with a blade — nothing more."
 _texture = "res://Assets/Champ_Collector/Creatures/Militia/Militia_0002.png"
 _normal_map = "res://Assets/Champ_Collector/Creatures/Militia/Militia_0002_Normal_Map.png"
 _role = 13

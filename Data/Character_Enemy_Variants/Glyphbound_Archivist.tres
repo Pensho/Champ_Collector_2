@@ -8,6 +8,7 @@
 [resource]
 script = ExtResource("1_preset")
 _name = "The Glyphbound Archivist"
+_thematic_hint = "Writes something onto the battle itself with every turn."
 _texture = "res://Assets/Champ_Collector/Creatures/Opponents/Glyphbound_Archivist/Glyphbound_Archivist.png"
 _rarity = 5
 _faction = 4

@@ -7,6 +7,7 @@
 [resource]
 script = ExtResource("1_preset")
 _name = "Warded Notary"
+_thematic_hint = "Handles the paperwork for someone else's theft."
 _texture = "res://Assets/Champ_Collector/Creatures/Opponents/Warded_Notary/Warded_Notary.png"
 _rarity = 4
 _faction = 1

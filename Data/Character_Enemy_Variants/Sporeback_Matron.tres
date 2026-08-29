@@ -8,6 +8,7 @@
 [resource]
 script = ExtResource("1_preset")
 _name = "Sporeback Matron"
+_thematic_hint = "The pack does not stay hurt for long around her."
 _texture = "res://Assets/Champ_Collector/Creatures/Opponents/Sporeback_Matron/Sporeback_Matron.png"
 _faction = 4
 _role = 13

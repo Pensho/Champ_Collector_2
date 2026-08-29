@@ -9,6 +9,7 @@ class_name CharacterPreset extends Resource
 @export var _faction: Types.Faction
 @export var _role: Types.Role
 @export var _skills: Array[Skill]
+@export var _thematic_hint: String = ""
 
 # Default Attributes
 @export var _health: int = 0

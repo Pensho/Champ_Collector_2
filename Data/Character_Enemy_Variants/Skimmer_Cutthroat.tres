@@ -7,6 +7,7 @@
 [resource]
 script = ExtResource("1_preset")
 _name = "Skimmer Cutthroat"
+_thematic_hint = "Hungry for an edge it hasn't earned yet."
 _texture = "res://Assets/Champ_Collector/Creatures/Opponents/Skimmer_Cutthroat/Skimmer_Cutthroat.png"
 _faction = 4
 _role = 13

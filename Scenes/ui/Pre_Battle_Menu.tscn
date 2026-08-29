@@ -4,8 +4,9 @@
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="1_fbx8u"]
 [ext_resource type="Script" uid="uid://cpeob6aj52f4r" path="res://Scripts/UI/Battle_UI/pre_battle_menu.gd" id="1_i4o5r"]
 [ext_resource type="PackedScene" uid="uid://di0y70sbai3yw" path="res://Scenes/ui/Menu_Item_Slot.tscn" id="5_1jdpx"]
+[ext_resource type="PackedScene" path="res://Scenes/ui/Battle_UI/Opponent_Preview.tscn" id="6_opponent"]
 
-[node name="PreBattleMenu" type="Control" unique_id=347484161 node_paths=PackedStringArray("_difficulty_option", "_chosen_character_slots", "_chosen_reagent_slots", "_grid_container_reagents")]
+[node name="PreBattleMenu" type="Control" node_paths=PackedStringArray("_difficulty_option", "_chosen_character_slots", "_chosen_reagent_slots", "_grid_container_characters", "_grid_container_reagents", "_opponent_slots", "_h_box_container_drops", "_part_briefing", "_part_team", "_part_reagents", "_footer", "_button_back", "_button_next", "_button_start")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -13,18 +14,41 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_i4o5r")
-_difficulty_option = NodePath("OptionButton_Difficulty")
-_chosen_character_slots = [NodePath("MarginContainer/VBoxContainer/Chosen_Characters/Chosen_Char_1"), NodePath("MarginContainer/VBoxContainer/Chosen_Characters/Chosen_Char_2"), NodePath("MarginContainer/VBoxContainer/Chosen_Characters/Chosen_Char_3")]
-_chosen_reagent_slots = [NodePath("MarginContainer/VBoxContainer/Chosen_Reagents/Chosen_Reagent_1"), NodePath("MarginContainer/VBoxContainer/Chosen_Reagents/Chosen_Reagent_2"), NodePath("MarginContainer/VBoxContainer/Chosen_Reagents/Chosen_Reagent_3")]
-_grid_container_reagents = NodePath("MarginContainer/VBoxContainer/HBoxContainer/Available_Reagents/ScrollContainer/GridContainer")
+_difficulty_option = NodePath("Part_Briefing/OptionButton_Difficulty")
+_chosen_character_slots = [NodePath("Part_Team/MarginContainer/VBoxContainer/Chosen_Characters/Chosen_Char_1"), NodePath("Part_Team/MarginContainer/VBoxContainer/Chosen_Characters/Chosen_Char_2"), NodePath("Part_Team/MarginContainer/VBoxContainer/Chosen_Characters/Chosen_Char_3")]
+_chosen_reagent_slots = [NodePath("Part_Reagents/MarginContainer/VBoxContainer/Chosen_Reagents/Chosen_Reagent_1"), NodePath("Part_Reagents/MarginContainer/VBoxContainer/Chosen_Reagents/Chosen_Reagent_2"), NodePath("Part_Reagents/MarginContainer/VBoxContainer/Chosen_Reagents/Chosen_Reagent_3")]
+_grid_container_characters = NodePath("Part_Team/MarginContainer/VBoxContainer/ScrollContainer_Characters/GridContainer")
+_grid_container_reagents = NodePath("Part_Reagents/MarginContainer/VBoxContainer/ScrollContainer_Reagents/GridContainer")
+_opponent_slots = [NodePath("Part_Briefing/MarginContainer/VBoxContainer/HBoxContainer_Opponents/Opponent_1"), NodePath("Part_Briefing/MarginContainer/VBoxContainer/HBoxContainer_Opponents/Opponent_2"), NodePath("Part_Briefing/MarginContainer/VBoxContainer/HBoxContainer_Opponents/Opponent_3")]
+_h_box_container_drops = NodePath("Part_Briefing/MarginContainer/VBoxContainer/VBoxContainer_Drops/HBoxContainer_Drops")
+_part_briefing = NodePath("Part_Briefing")
+_part_team = NodePath("Part_Team")
+_part_reagents = NodePath("Part_Reagents")
+_footer = NodePath("Footer")
+_button_back = NodePath("Footer/Back")
+_button_next = NodePath("Footer/Next")
+_button_start = NodePath("Footer/Start")
 
-[node name="TextureRect" type="TextureRect" parent="." unique_id=844320544]
+[node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 0
 offset_right = 1280.0
 offset_bottom = 720.0
 texture = ExtResource("1_bs66k")
 
-[node name="MarginContainer" type="MarginContainer" parent="." unique_id=166099539]
+[node name="Part_Briefing" type="Control" parent="."]
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+
+[node name="ColorRect_Black" type="ColorRect" parent="Part_Briefing"]
+mouse_filter = 2
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+color = Color(0, 0, 0, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="Part_Briefing"]
+mouse_filter = 2
 layout_mode = 0
 offset_right = 1280.0
 offset_bottom = 720.0
@@ -33,217 +57,72 @@ theme_override_constants/margin_top = 32
 theme_override_constants/margin_right = 64
 theme_override_constants/margin_bottom = 32
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=910479141]
+[node name="VBoxContainer" type="VBoxContainer" parent="Part_Briefing/MarginContainer"]
+mouse_filter = 2
 layout_mode = 2
-theme_override_constants/separation = 0
+theme_override_constants/separation = 24
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer" unique_id=327892692]
+[node name="Label" type="Label" parent="Part_Briefing/MarginContainer/VBoxContainer"]
+mouse_filter = 2
 layout_mode = 2
 theme = ExtResource("1_fbx8u")
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 3
 theme_override_constants/shadow_offset_y = 3
-theme_override_font_sizes/font_size = 64
-text = "Select champions for battle"
+theme_override_font_sizes/font_size = 48
+text = "Opposing force"
 horizontal_alignment = 1
-vertical_alignment = 1
 
-[node name="Chosen_Characters" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1279021260]
+[node name="HBoxContainer_Opponents" type="HBoxContainer" parent="Part_Briefing/MarginContainer/VBoxContainer"]
+mouse_filter = 2
 layout_mode = 2
 size_flags_horizontal = 4
-size_flags_vertical = 6
-theme_override_constants/separation = 100
+theme_override_constants/separation = 48
 
-[node name="Chosen_Char_1" parent="MarginContainer/VBoxContainer/Chosen_Characters" unique_id=39152867 instance=ExtResource("5_1jdpx")]
+[node name="Opponent_1" parent="Part_Briefing/MarginContainer/VBoxContainer/HBoxContainer_Opponents" instance=ExtResource("6_opponent")]
 layout_mode = 2
 
-[node name="Chosen_Char_2" parent="MarginContainer/VBoxContainer/Chosen_Characters" unique_id=669761649 instance=ExtResource("5_1jdpx")]
+[node name="Opponent_2" parent="Part_Briefing/MarginContainer/VBoxContainer/HBoxContainer_Opponents" instance=ExtResource("6_opponent")]
 layout_mode = 2
 
-[node name="Chosen_Char_3" parent="MarginContainer/VBoxContainer/Chosen_Characters" unique_id=1387407584 instance=ExtResource("5_1jdpx")]
+[node name="Opponent_3" parent="Part_Briefing/MarginContainer/VBoxContainer/HBoxContainer_Opponents" instance=ExtResource("6_opponent")]
 layout_mode = 2
 
-[node name="Chosen_Reagents" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=347484162]
+[node name="VBoxContainer_Drops" type="VBoxContainer" parent="Part_Briefing/MarginContainer/VBoxContainer"]
+mouse_filter = 2
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 6
-theme_override_constants/separation = 100
-
-[node name="Chosen_Reagent_1" parent="MarginContainer/VBoxContainer/Chosen_Reagents" unique_id=347484163 instance=ExtResource("5_1jdpx")]
-layout_mode = 2
-
-[node name="Chosen_Reagent_2" parent="MarginContainer/VBoxContainer/Chosen_Reagents" unique_id=347484164 instance=ExtResource("5_1jdpx")]
-layout_mode = 2
-
-[node name="Chosen_Reagent_3" parent="MarginContainer/VBoxContainer/Chosen_Reagents" unique_id=347484165 instance=ExtResource("5_1jdpx")]
-layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1900067397]
-layout_mode = 2
-theme_override_constants/separation = 0
-
-[node name="Available_Characters" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1754266383]
-layout_mode = 2
-theme_override_constants/separation = 0
-
-[node name="Available_Characters_1" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters" unique_id=638101068]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-theme_override_constants/separation = 0
-
-[node name="MenuItemSlot" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1" unique_id=452765765 instance=ExtResource("5_1jdpx")]
-layout_mode = 2
-
-[node name="MenuItemSlot2" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1" unique_id=1183119111 instance=ExtResource("5_1jdpx")]
-layout_mode = 2
-
-[node name="MenuItemSlot3" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1" unique_id=156714943 instance=ExtResource("5_1jdpx")]
-layout_mode = 2
-
-[node name="MenuItemSlot4" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1" unique_id=713409768 instance=ExtResource("5_1jdpx")]
-layout_mode = 2
-
-[node name="MenuItemSlot5" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1" unique_id=2139981860 instance=ExtResource("5_1jdpx")]
-layout_mode = 2
-
-[node name="MenuItemSlot6" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1" unique_id=111937904 instance=ExtResource("5_1jdpx")]
-layout_mode = 2
-
-[node name="MenuItemSlot7" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1" unique_id=54860351 instance=ExtResource("5_1jdpx")]
-layout_mode = 2
-
-[node name="MenuItemSlot8" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1" unique_id=1445183591 instance=ExtResource("5_1jdpx")]
-layout_mode = 2
-
-[node name="MenuItemSlot9" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_1" unique_id=1433821970 instance=ExtResource("5_1jdpx")]
-layout_mode = 2
-
-[node name="Available_Characters_2" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters" unique_id=681389692]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-theme_override_constants/separation = 0
-
-[node name="MenuItemSlot10" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2" unique_id=2066191970 instance=ExtResource("5_1jdpx")]
-layout_mode = 2
-
-[node name="MenuItemSlot11" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2" unique_id=1632393684 instance=ExtResource("5_1jdpx")]
-layout_mode = 2
-
-[node name="MenuItemSlot12" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2" unique_id=1059998544 instance=ExtResource("5_1jdpx")]
-layout_mode = 2
-
-[node name="MenuItemSlot13" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2" unique_id=1474767828 instance=ExtResource("5_1jdpx")]
-layout_mode = 2
-
-[node name="MenuItemSlot14" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2" unique_id=1303293246 instance=ExtResource("5_1jdpx")]
-layout_mode = 2
-
-[node name="MenuItemSlot15" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2" unique_id=789875655 instance=ExtResource("5_1jdpx")]
-layout_mode = 2
-
-[node name="MenuItemSlot16" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2" unique_id=1055636824 instance=ExtResource("5_1jdpx")]
-layout_mode = 2
-
-[node name="MenuItemSlot17" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2" unique_id=1773332750 instance=ExtResource("5_1jdpx")]
-layout_mode = 2
-
-[node name="MenuItemSlot18" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_2" unique_id=1110368213 instance=ExtResource("5_1jdpx")]
-layout_mode = 2
-
-[node name="Available_Characters_3" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters" unique_id=204864281]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-theme_override_constants/separation = 0
-
-[node name="MenuItemSlot19" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3" unique_id=1062964090 instance=ExtResource("5_1jdpx")]
-layout_mode = 2
-
-[node name="MenuItemSlot20" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3" unique_id=189694735 instance=ExtResource("5_1jdpx")]
-layout_mode = 2
-
-[node name="MenuItemSlot21" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3" unique_id=341193914 instance=ExtResource("5_1jdpx")]
-layout_mode = 2
-
-[node name="MenuItemSlot22" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3" unique_id=1243028715 instance=ExtResource("5_1jdpx")]
-layout_mode = 2
-
-[node name="MenuItemSlot23" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3" unique_id=1289011601 instance=ExtResource("5_1jdpx")]
-layout_mode = 2
-
-[node name="MenuItemSlot24" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3" unique_id=977026519 instance=ExtResource("5_1jdpx")]
-layout_mode = 2
-
-[node name="MenuItemSlot25" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3" unique_id=998378586 instance=ExtResource("5_1jdpx")]
-layout_mode = 2
-
-[node name="MenuItemSlot26" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3" unique_id=142841253 instance=ExtResource("5_1jdpx")]
-layout_mode = 2
-
-[node name="MenuItemSlot27" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Characters/Available_Characters_3" unique_id=90776822 instance=ExtResource("5_1jdpx")]
-layout_mode = 2
-
-[node name="Available_Reagents" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=347484166]
-custom_minimum_size = Vector2(220, 0)
-layout_mode = 2
-size_flags_horizontal = 3
 theme_override_constants/separation = 8
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Reagents" unique_id=347484167]
+[node name="Label" type="Label" parent="Part_Briefing/MarginContainer/VBoxContainer/VBoxContainer_Drops"]
+mouse_filter = 2
 layout_mode = 2
 theme = ExtResource("1_fbx8u")
-text = "Reagents"
+theme_override_font_sizes/font_size = 24
+text = "Possible drops"
 horizontal_alignment = 1
 
-[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Reagents" unique_id=347484168]
+[node name="HBoxContainer_Drops" type="HBoxContainer" parent="Part_Briefing/MarginContainer/VBoxContainer/VBoxContainer_Drops"]
+mouse_filter = 2
 layout_mode = 2
-size_flags_vertical = 3
+size_flags_horizontal = 4
+theme_override_constants/separation = 24
 
-[node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/Available_Reagents/ScrollContainer" unique_id=347484169]
+[node name="Label_Continue_Hint" type="Label" parent="Part_Briefing/MarginContainer/VBoxContainer"]
+mouse_filter = 2
 layout_mode = 2
-size_flags_horizontal = 3
-columns = 3
-
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1476464824]
-layout_direction = 3
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
-theme_override_constants/separation = 64
-
-[node name="Start" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=927004820]
-layout_mode = 2
-focus_neighbor_top = NodePath("../Exit")
-focus_neighbor_bottom = NodePath("../Exit")
-focus_next = NodePath("../Exit")
-focus_previous = NodePath("../Exit")
+size_flags_vertical = 10
 theme = ExtResource("1_fbx8u")
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 5
-text = "Start Battle"
+theme_override_font_sizes/font_size = 20
+text = "Tap anywhere to continue"
+horizontal_alignment = 1
 
-[node name="Exit" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=1463416166]
-layout_mode = 2
-focus_neighbor_top = NodePath("../Start")
-focus_neighbor_bottom = NodePath("../Start")
-focus_next = NodePath("../Start")
-focus_previous = NodePath("../Start")
-theme = ExtResource("1_fbx8u")
-theme_override_constants/outline_size = 5
-text = "Exit
-"
-
-[node name="OptionButton_Difficulty" type="OptionButton" parent="." unique_id=674461108]
+[node name="OptionButton_Difficulty" type="OptionButton" parent="Part_Briefing"]
 custom_minimum_size = Vector2(200, 50)
 layout_mode = 0
 offset_left = 1014.0
-offset_top = 214.0
+offset_top = 32.0
 offset_right = 1214.0
-offset_bottom = 264.0
-size_flags_horizontal = 8
-size_flags_vertical = 8
+offset_bottom = 82.0
 theme = ExtResource("1_fbx8u")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
@@ -252,5 +131,155 @@ theme_override_colors/font_hover_color = Color(0.66656864, 0.6665687, 0.6665685,
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
 
-[connection signal="button_up" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/Start" to="." method="_on_start_button_up"]
-[connection signal="button_up" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/Exit" to="." method="_on_exit_button_up"]
+[node name="Part_Team" type="Control" parent="."]
+visible = false
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+
+[node name="MarginContainer" type="MarginContainer" parent="Part_Team"]
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+theme_override_constants/margin_left = 64
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 64
+theme_override_constants/margin_bottom = 32
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Part_Team/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Label" type="Label" parent="Part_Team/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_fbx8u")
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_font_sizes/font_size = 48
+text = "Select champions for battle"
+horizontal_alignment = 1
+
+[node name="Chosen_Characters" type="HBoxContainer" parent="Part_Team/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 100
+
+[node name="Chosen_Char_1" parent="Part_Team/MarginContainer/VBoxContainer/Chosen_Characters" instance=ExtResource("5_1jdpx")]
+layout_mode = 2
+
+[node name="Chosen_Char_2" parent="Part_Team/MarginContainer/VBoxContainer/Chosen_Characters" instance=ExtResource("5_1jdpx")]
+layout_mode = 2
+
+[node name="Chosen_Char_3" parent="Part_Team/MarginContainer/VBoxContainer/Chosen_Characters" instance=ExtResource("5_1jdpx")]
+layout_mode = 2
+
+[node name="ScrollContainer_Characters" type="ScrollContainer" parent="Part_Team/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 420)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="GridContainer" type="GridContainer" parent="Part_Team/MarginContainer/VBoxContainer/ScrollContainer_Characters"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 1
+columns = 9
+
+[node name="Part_Reagents" type="Control" parent="."]
+visible = false
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+
+[node name="MarginContainer" type="MarginContainer" parent="Part_Reagents"]
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+theme_override_constants/margin_left = 64
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 64
+theme_override_constants/margin_bottom = 32
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Part_Reagents/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Label" type="Label" parent="Part_Reagents/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_fbx8u")
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_font_sizes/font_size = 48
+text = "Select reagents for battle"
+horizontal_alignment = 1
+
+[node name="Chosen_Reagents" type="HBoxContainer" parent="Part_Reagents/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 100
+
+[node name="Chosen_Reagent_1" parent="Part_Reagents/MarginContainer/VBoxContainer/Chosen_Reagents" instance=ExtResource("5_1jdpx")]
+layout_mode = 2
+
+[node name="Chosen_Reagent_2" parent="Part_Reagents/MarginContainer/VBoxContainer/Chosen_Reagents" instance=ExtResource("5_1jdpx")]
+layout_mode = 2
+
+[node name="Chosen_Reagent_3" parent="Part_Reagents/MarginContainer/VBoxContainer/Chosen_Reagents" instance=ExtResource("5_1jdpx")]
+layout_mode = 2
+
+[node name="ScrollContainer_Reagents" type="ScrollContainer" parent="Part_Reagents/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 420)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="GridContainer" type="GridContainer" parent="Part_Reagents/MarginContainer/VBoxContainer/ScrollContainer_Reagents"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 1
+columns = 9
+
+[node name="Footer" type="HBoxContainer" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 64.0
+offset_top = 620.0
+offset_right = 1216.0
+offset_bottom = 688.0
+theme_override_constants/separation = 32
+alignment = 2
+
+[node name="Back" type="Button" parent="Footer"]
+layout_mode = 2
+theme = ExtResource("1_fbx8u")
+theme_override_constants/outline_size = 5
+text = "Back"
+
+[node name="Exit" type="Button" parent="Footer"]
+layout_mode = 2
+theme = ExtResource("1_fbx8u")
+theme_override_constants/outline_size = 5
+text = "Exit"
+
+[node name="Next" type="Button" parent="Footer"]
+visible = false
+layout_mode = 2
+theme = ExtResource("1_fbx8u")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+text = "Next"
+
+[node name="Start" type="Button" parent="Footer"]
+visible = false
+layout_mode = 2
+theme = ExtResource("1_fbx8u")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+text = "Start Battle"
+
+[connection signal="gui_input" from="Part_Briefing" to="." method="_on_part_briefing_gui_input"]
+[connection signal="item_selected" from="Part_Briefing/OptionButton_Difficulty" to="." method="_on_difficulty_option_item_selected"]
+[connection signal="button_up" from="Footer/Back" to="." method="_on_back_button_up"]
+[connection signal="button_up" from="Footer/Exit" to="." method="_on_exit_button_up"]
+[connection signal="button_up" from="Footer/Next" to="." method="_on_next_button_up"]
+[connection signal="button_up" from="Footer/Start" to="." method="_on_start_button_up"]

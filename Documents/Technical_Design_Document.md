@@ -264,7 +264,7 @@ load time. There is a consistent **preset (template) vs instance (runtime)** spl
 
 | Class | File | Role |
 |---|---|---|
-| `CharacterPreset` | `Scripts/Character/character_preset.gd` | Champion archetype: base stats, skills, available attribute-weight presets, trait, `_preset_path` |
+| `CharacterPreset` | `Scripts/Character/character_preset.gd` | Champion archetype: base stats, skills, available attribute-weight presets, trait, `_preset_path`, `_thematic_hint` (vague pre-battle tooltip text for enemy variants) |
 | `Skill` | `Scripts/Character/skill_data.gd` | Skill definition: name/description/icon, default target, type, cooldown, and an ordered `effects` array |
 | `SkillEffect` | `Scripts/Battle/Skill_Effects/skill_effect.gd` | Base class for one self-resolving skill effect (see [Section 7.4](#74-skill-resolution-battleresolverresolveskill)) |
 | `AttributeWeightPreset` | `Scripts/Character/attribute_weight_preset.gd` | Per-attribute weight distribution used at level-up |

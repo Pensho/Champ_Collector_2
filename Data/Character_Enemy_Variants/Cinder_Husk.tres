@@ -7,6 +7,7 @@
 [resource]
 script = ExtResource("1_preset")
 _name = "Cinder Husk"
+_thematic_hint = "Fragile — but its death feeds something worse."
 _texture = "res://Assets/Champ_Collector/Creatures/Opponents/Cinder_Husk/Cinder_Husk.png"
 _faction = 4
 _role = 13

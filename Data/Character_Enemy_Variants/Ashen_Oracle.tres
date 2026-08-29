@@ -9,6 +9,7 @@
 [resource]
 script = ExtResource("1_preset")
 _name = "The Ashen Oracle"
+_thematic_hint = "Its sermon grows uglier the longer it's allowed to speak."
 _texture = "res://Assets/Champ_Collector/Creatures/Opponents/Ashen_Oracle/Ashen_Oracle.png"
 _rarity = 4
 _faction = 4

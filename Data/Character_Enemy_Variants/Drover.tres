@@ -7,6 +7,7 @@
 [resource]
 script = ExtResource("1_preset")
 _name = "Drover"
+_thematic_hint = "Keeps the Charger's flank from being ignored."
 _texture = "res://Assets/Champ_Collector/Creatures/Opponents/Drover/Drover.png"
 _faction = 4
 _role = 13

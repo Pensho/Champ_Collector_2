@@ -1,6 +1,7 @@
 class_name MenuItemSlot extends Control
 
 @export var _ID: int = -1
+@export var _tooltip: ToolTip
 
 @onready var texture_rect: TextureRect = $TextureRect/TextureRect
 @onready var button: Button = $TextureRect/Button
@@ -8,6 +9,14 @@ class_name MenuItemSlot extends Control
 
 func ConnectButton(p_callback: Callable) -> void:
 	button.connect("button_up", p_callback.bind(_ID))
+
+func SetToolTip(p_title: String, p_description: String) -> void:
+	_tooltip.title_text = p_title
+	_tooltip.description_text = p_description
+	_tooltip.visible = true
+
+func ClearToolTip() -> void:
+	_tooltip.visible = false
 
 func SetHeldObjectTexture(p_texture: Texture) -> void:
 	texture_rect.texture = p_texture

@@ -7,6 +7,7 @@
 [resource]
 script = ExtResource("1_preset")
 _name = "Flank Cutter"
+_thematic_hint = "Fast, and fixated on one side of the line."
 _texture = "res://Assets/Champ_Collector/Creatures/Opponents/Flank_Cutter/Flank_Cutter.png"
 _faction = 4
 _role = 13

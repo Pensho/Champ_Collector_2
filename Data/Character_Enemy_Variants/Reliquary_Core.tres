@@ -7,6 +7,7 @@
 [resource]
 script = ExtResource("1_preset")
 _name = "Reliquary Core"
+_thematic_hint = "Does not fight back, but everything flows through it."
 _texture = "res://Assets/Champ_Collector/Creatures/Opponents/Reliquary_Core/Reliquary_Core.png"
 _rarity = 5
 _faction = 1

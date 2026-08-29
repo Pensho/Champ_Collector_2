@@ -8,6 +8,7 @@
 [resource]
 script = ExtResource("1_preset")
 _name = "Bosun"
+_thematic_hint = "Keeps barking orders the crew is eager to follow."
 _texture = "res://Assets/Champ_Collector/Creatures/Opponents/Bosun/Bosun.png"
 _faction = 4
 _role = 13

@@ -9,6 +9,7 @@
 [resource]
 script = ExtResource("1_preset")
 _name = "Vault Warden"
+_thematic_hint = "Well protected for as long as its ward holds out."
 _texture = "res://Assets/Champ_Collector/Creatures/Opponents/Vault_Warden/Vault_Warden.png"
 _rarity = 5
 _faction = 1
