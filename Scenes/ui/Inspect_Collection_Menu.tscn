@@ -47,11 +47,23 @@ corner_radius_bottom_left = 2
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_reagent_close"]
 
-[node name="InspectCollection" type="Control" unique_id=226476496 node_paths=PackedStringArray("_selected_char_label", "_selected_char_level", "_selected_char_nature", "_selected_char_nature_tooltip", "_experience_bar", "_experience_bar_text", "_skill_rows", "_passive_row")]
+[node name="InspectCollection" type="Control" unique_id=226476496 node_paths=PackedStringArray("_attribute_labels", "_selected_char_label", "_selected_char_level", "_selected_char_nature", "_selected_char_nature_tooltip", "_experience_bar", "_experience_bar_text", "_skill_rows", "_passive_row")]
 custom_minimum_size = Vector2(1280, 720)
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_jlkm0")
+_attribute_labels = {
+0: NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3/Label_Health_Val"),
+1: NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3/Label_Speed_Val"),
+2: NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3/Label_Attack_Val"),
+3: NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3/Label_Defense_Val"),
+4: NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3/Label_Accuracy_Val"),
+5: NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer4/Label_Resistance_Val"),
+6: NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer4/Label_Mysticism_Val"),
+7: NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer4/Label_Knowledge_Val"),
+8: NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer4/Label_CritCh_Val"),
+9: NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer4/Label_CritDmg_Val")
+}
 _selected_char_label = NodePath("MarginContainer/ColorRect2/Label_Character_Name")
 _selected_char_level = NodePath("MarginContainer/ColorRect2/Label_Level")
 _selected_char_nature = NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/Label_Character_Nature")
@@ -178,7 +190,6 @@ layout_mode = 2
 
 [node name="GridContainer" type="GridContainer" parent="MarginContainer/HBoxContainer2/ScrollContainer_Characters" unique_id=1499657250]
 layout_mode = 2
-mouse_filter = 1
 columns = 4
 
 [node name="ScrollContainer_Items" type="ScrollContainer" parent="MarginContainer/HBoxContainer2" unique_id=483209083]
@@ -188,7 +199,6 @@ layout_mode = 2
 
 [node name="GridContainer" type="GridContainer" parent="MarginContainer/HBoxContainer2/ScrollContainer_Items" unique_id=205271624]
 layout_mode = 2
-mouse_filter = 1
 columns = 4
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/HBoxContainer2" unique_id=2003231855]
