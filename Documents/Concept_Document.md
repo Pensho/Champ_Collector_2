@@ -1095,6 +1095,10 @@ Where players can manage their character roster, equip gear, and upgrade skills.
 #### 3.6.3. The Adventurer's Guild
 Where players recruit new characters using Fortune’s Favors.
 There is a chance when using a Fortune’s Favor to get a champion, or they could get supplies or currency as a filler.
+Each Favor tier tracks its own streak of consecutive duplicate champions. Past 5 duplicates
+in a row, every following Favor of that tier gains a cumulative +10 percentage points chance
+for its champion reward to be one the player doesn't already own, reaching a guarantee at 15.
+The bonus has no effect once the player owns every champion in that tier's pool.
 
 #### 3.6.4. The shop
 Six stock slots: 3 gear, 1 reagent, 1 Supplies bundle, 1 featured Fortune's Favor offer.

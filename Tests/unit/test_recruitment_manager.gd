@@ -139,3 +139,68 @@ func test_pick_champion_by_rarity_single_rarity_pool_always_returns_that_champio
 	for i in 10:
 		var champion: CharacterPreset = RecruitmentManager.PickChampionByRarity(grouped, LootManager.RARITY_WEIGHTING)
 		assert_eq(champion, single_preset, "Single-rarity pool should always return the only champion")
+
+
+func test_pity_bonus_is_zero_below_threshold() -> void:
+	assert_eq(RecruitmentManager.PityBonus(0), 0.0, "Zero duplicates should have no bonus")
+	assert_eq(RecruitmentManager.PityBonus(5), 0.0, "Five duplicates should have no bonus")
+
+
+func test_pity_bonus_starts_at_threshold() -> void:
+	assert_eq(RecruitmentManager.PityBonus(6), 0.10, "Sixth duplicate should grant the first +10% bonus")
+
+
+func test_pity_bonus_accumulates_past_threshold() -> void:
+	assert_almost_eq(RecruitmentManager.PityBonus(7), 0.20, 0.0001, "Seventh duplicate should grant +20%")
+	assert_almost_eq(RecruitmentManager.PityBonus(8), 0.30, 0.0001, "Eighth duplicate should grant +30%")
+
+
+func test_pity_bonus_caps_at_one_hundred_percent() -> void:
+	assert_eq(RecruitmentManager.PityBonus(15), 1.0, "Bonus should reach a guaranteed 100% by the 15th duplicate")
+	assert_eq(RecruitmentManager.PityBonus(30), 1.0, "Bonus should stay capped past the guarantee point")
+
+
+func test_unowned_presets_filters_by_owned_names() -> void:
+	var owned: Dictionary = {"Common Champion": true}
+	var unowned: Array[CharacterPreset] = RecruitmentManager.UnownedPresets(_tier.recruitable_champions, owned)
+
+	assert_eq(unowned.size(), 1, "Only the unowned preset should remain")
+	assert_eq(unowned[0]._name, "Uncommon Champion", "Uncommon Champion should be the unowned preset")
+
+
+func test_unowned_presets_with_no_owned_names_returns_full_pool() -> void:
+	var unowned: Array[CharacterPreset] = RecruitmentManager.UnownedPresets(_tier.recruitable_champions, {})
+	assert_eq(unowned.size(), _tier.recruitable_champions.size(), "Empty owned set should leave the whole pool unowned")
+
+
+func test_unowned_presets_with_everything_owned_returns_empty() -> void:
+	var owned: Dictionary = {"Common Champion": true, "Uncommon Champion": true}
+	var unowned: Array[CharacterPreset] = RecruitmentManager.UnownedPresets(_tier.recruitable_champions, owned)
+	assert_true(unowned.is_empty(), "Fully-owned pool should yield no unowned presets")
+
+
+func test_pick_champion_with_pity_at_full_bonus_only_returns_unowned() -> void:
+	var owned: Dictionary = {"Common Champion": true}
+	for i in 10:
+		var champion: CharacterPreset = RecruitmentManager.PickChampionWithPity(
+				_tier.recruitable_champions, LootManager.RARITY_WEIGHTING, owned, 1.0)
+		assert_eq(champion._name, "Uncommon Champion", "Full pity bonus should always pick the unowned champion")
+
+
+func test_pick_champion_with_pity_at_zero_bonus_can_return_owned() -> void:
+	var single_preset := CharacterPreset.new()
+	single_preset._name = "Only Champion"
+	single_preset._rarity = Types.Rarity.Rare
+	var presets: Array[CharacterPreset] = [single_preset]
+	var owned: Dictionary = {"Only Champion": true}
+
+	var champion: CharacterPreset = RecruitmentManager.PickChampionWithPity(
+			presets, LootManager.RARITY_WEIGHTING, owned, 0.0)
+	assert_eq(champion, single_preset, "Zero pity bonus should pick normally even if it is owned")
+
+
+func test_pick_champion_with_pity_and_fully_owned_pool_still_returns_a_champion() -> void:
+	var owned: Dictionary = {"Common Champion": true, "Uncommon Champion": true}
+	var champion: CharacterPreset = RecruitmentManager.PickChampionWithPity(
+			_tier.recruitable_champions, LootManager.RARITY_WEIGHTING, owned, 1.0)
+	assert_not_null(champion, "A fully-owned pool should still yield a valid champion")

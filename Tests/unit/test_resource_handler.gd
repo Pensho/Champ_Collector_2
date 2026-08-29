@@ -107,6 +107,48 @@ func test_fortunes_favor_deserialize_migrates_old_flat_key_into_bone() -> void:
 	assert_eq(rh.GetFortunesFavor(FortuneFavorTier.TierType.PARCHMENT), 0, "Parchment should default to zero on migration")
 	rh.free()
 
+func test_fortunes_favor_pity_increments_and_resets_independently_per_tier() -> void:
+	var rh: ResourceHandler = ResourceHandler.new()
+	rh.IncrementFortunesFavorPity(FortuneFavorTier.TierType.BONE)
+	rh.IncrementFortunesFavorPity(FortuneFavorTier.TierType.BONE)
+	rh.IncrementFortunesFavorPity(FortuneFavorTier.TierType.BRASS)
+
+	assert_eq(rh.GetFortunesFavorPity(FortuneFavorTier.TierType.BONE), 2, "Bone pity should track its own increments")
+	assert_eq(rh.GetFortunesFavorPity(FortuneFavorTier.TierType.BRASS), 1, "Brass pity should track its own increments")
+	assert_eq(rh.GetFortunesFavorPity(FortuneFavorTier.TierType.PARCHMENT), 0, "Parchment pity should remain zero")
+
+	rh.ResetFortunesFavorPity(FortuneFavorTier.TierType.BONE)
+	assert_eq(rh.GetFortunesFavorPity(FortuneFavorTier.TierType.BONE), 0, "Bone pity should reset to zero")
+	assert_eq(rh.GetFortunesFavorPity(FortuneFavorTier.TierType.BRASS), 1, "Brass pity should be unaffected by Bone's reset")
+	rh.free()
+
+func test_fortunes_favor_pity_serialize_deserialize_round_trip() -> void:
+	var rh: ResourceHandler = ResourceHandler.new()
+	rh.IncrementFortunesFavorPity(FortuneFavorTier.TierType.BONE)
+	for i in 5:
+		rh.IncrementFortunesFavorPity(FortuneFavorTier.TierType.BRASS)
+	rh.IncrementFortunesFavorPity(FortuneFavorTier.TierType.PARCHMENT)
+
+	var data: Dictionary = rh.Serialize()
+
+	var rh2: ResourceHandler = ResourceHandler.new()
+	rh2.Deserialize(data)
+
+	assert_eq(rh2.GetFortunesFavorPity(FortuneFavorTier.TierType.BONE), 1, "Bone pity should round-trip")
+	assert_eq(rh2.GetFortunesFavorPity(FortuneFavorTier.TierType.BRASS), 5, "Brass pity should round-trip")
+	assert_eq(rh2.GetFortunesFavorPity(FortuneFavorTier.TierType.PARCHMENT), 1, "Parchment pity should round-trip")
+	rh.free()
+	rh2.free()
+
+func test_fortunes_favor_pity_defaults_to_zero_on_legacy_save() -> void:
+	var rh: ResourceHandler = ResourceHandler.new()
+	rh.Deserialize({"silver": 0, "supplies": 0, "fortunes_favor": 7})
+
+	assert_eq(rh.GetFortunesFavorPity(FortuneFavorTier.TierType.BONE), 0, "Legacy save without pity keys should default Bone pity to zero")
+	assert_eq(rh.GetFortunesFavorPity(FortuneFavorTier.TierType.BRASS), 0, "Legacy save without pity keys should default Brass pity to zero")
+	assert_eq(rh.GetFortunesFavorPity(FortuneFavorTier.TierType.PARCHMENT), 0, "Legacy save without pity keys should default Parchment pity to zero")
+	rh.free()
+
 func test_spend_silver_succeeds_when_enough_silver() -> void:
 	var rh: ResourceHandler = ResourceHandler.new()
 	rh._silver = 100

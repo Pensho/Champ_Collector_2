@@ -128,6 +128,12 @@ func Size() -> int:
 func GetCollectedTypeCount() -> int:
 	return _collected_types.size()
 
+func GetOwnedChampionNames() -> Dictionary[String, bool]:
+	var owned_names: Dictionary[String, bool] = {}
+	for character : Character in _characters.values():
+		owned_names[character._name] = true
+	return owned_names
+
 func GetHighestCharacterLevel() -> int:
 	var highest_level: int = 0
 	for character : Character in _characters.values():

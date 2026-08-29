@@ -31,6 +31,9 @@ const RARITY_COLORS: Dictionary[Types.Rarity, Color] = {
 @export var _nature_option_button: OptionButton
 @export var _nature_attribute_list: VBoxContainer
 @export var _glossary_list: VBoxContainer
+@export var _pity_row_bone: Label
+@export var _pity_row_brass: Label
+@export var _pity_row_parchment: Label
 
 func GetSize() -> Vector2:
 	return Vector2(_background.get_rect().size.x, _background.get_rect().size.y)
@@ -48,6 +51,7 @@ func Init() -> void:
 
 	BuildNatureList(NATURE_PRESETS[0])
 	BuildGlossary()
+	RefreshPity()
 
 func BuildTierSection(p_tier: FortuneFavorTier) -> VBoxContainer:
 	var section: VBoxContainer = VBoxContainer.new()
@@ -70,6 +74,28 @@ func BuildTierSection(p_tier: FortuneFavorTier) -> VBoxContainer:
 		section.add_child(row)
 
 	return section
+
+func RefreshPity() -> void:
+	var owned_names: Dictionary = main.GetInstance()._character_collection.GetOwnedChampionNames()
+	var pity_rows: Dictionary[FortuneFavorTier.TierType, Label] = {
+		FortuneFavorTier.TierType.BONE: _pity_row_bone,
+		FortuneFavorTier.TierType.BRASS: _pity_row_brass,
+		FortuneFavorTier.TierType.PARCHMENT: _pity_row_parchment,
+	}
+
+	for tier in [BONE_TIER, BRASS_TIER, PARCHMENT_TIER]:
+		var counter: int = main.GetInstance()._resources.GetFortunesFavorPity(tier.tier_type)
+		var bonus: float = RecruitmentManager.PityBonus(counter)
+		var unowned_count: int = RecruitmentManager.UnownedPresets(tier.recruitable_champions, owned_names).size()
+
+		pity_rows[tier.tier_type].text = PityRowText(
+				FortuneFavorTier.TierType.keys()[tier.tier_type], counter, bonus, unowned_count)
+
+static func PityRowText(p_tier_name: String, p_counter: int, p_bonus: float, p_unowned_count: int) -> String:
+	if p_unowned_count == 0:
+		return "%s - %d duplicates in a row (all Champions owned)" % [p_tier_name, p_counter]
+	return "%s - %d duplicates in a row, +%.0f%% bonus, %d unowned" % [
+			p_tier_name, p_counter, p_bonus * 100.0, p_unowned_count]
 
 func BuildNatureList(p_preset: AttributeWeightPreset) -> void:
 	for child in _nature_attribute_list.get_children():

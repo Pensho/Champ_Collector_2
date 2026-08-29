@@ -21,4 +21,5 @@ func _on_fortunes_favor_button_up() -> void:
 	main.GetInstance().change_scene(context_container)
 
 func _on_drop_rates_button_up() -> void:
+	_hollow_ledger_window.RefreshPity()
 	_hollow_ledger_window.show()

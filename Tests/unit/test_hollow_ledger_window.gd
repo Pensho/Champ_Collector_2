@@ -32,3 +32,15 @@ func test_describe_weight_boundary_low_edge() -> void:
 func test_describe_weight_boundary_high_edge() -> void:
 	# weight >= max - 0.25 * range: range=20, threshold=30-5=25
 	assert_eq(HollowLedgerWindow.DescribeWeight(25, 10, 30), "High")
+
+func test_pity_row_text_below_threshold_shows_no_bonus() -> void:
+	var text: String = HollowLedgerWindow.PityRowText("Bone", 3, 0.0, 7)
+	assert_eq(text, "Bone - 3 duplicates in a row, +0% bonus, 7 unowned")
+
+func test_pity_row_text_with_active_bonus() -> void:
+	var text: String = HollowLedgerWindow.PityRowText("Brass", 6, 0.20, 3)
+	assert_eq(text, "Brass - 6 duplicates in a row, +20% bonus, 3 unowned")
+
+func test_pity_row_text_fully_owned_tier_omits_bonus() -> void:
+	var text: String = HollowLedgerWindow.PityRowText("Parchment", 12, 1.0, 0)
+	assert_eq(text, "Parchment - 12 duplicates in a row (all Champions owned)")

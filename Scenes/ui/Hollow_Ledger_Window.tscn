@@ -1,11 +1,11 @@
-[gd_scene format=3 uid="uid://cn10jucb2twm6"]
+[gd_scene format=3 uid="uid://dcoox5k4y8t48"]
 
 [ext_resource type="Script" uid="uid://brrp21ilua4un" path="res://Scripts/UI/hollow_ledger_window.gd" id="1_script"]
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="1_theme"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_close"]
 
-[node name="HollowLedgerWindow" type="Control" unique_id=1838529508 node_paths=PackedStringArray("_tier_list", "_background", "_nature_option_button", "_nature_attribute_list", "_glossary_list")]
+[node name="HollowLedgerWindow" type="Control" unique_id=1838529508 node_paths=PackedStringArray("_tier_list", "_background", "_nature_option_button", "_nature_attribute_list", "_glossary_list", "_pity_row_bone", "_pity_row_brass", "_pity_row_parchment")]
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_script")
@@ -14,6 +14,9 @@ _background = NodePath("ColorRect")
 _nature_option_button = NodePath("ColorRect/MarginContainer/VBoxContainer/TabContainer/Natures/Natures_Content/Nature_Option_Button")
 _nature_attribute_list = NodePath("ColorRect/MarginContainer/VBoxContainer/TabContainer/Natures/Natures_Content/Nature_Scroll/Nature_Attribute_List")
 _glossary_list = NodePath("ColorRect/MarginContainer/VBoxContainer/TabContainer/Effects/Effects_Content/Effects_Scroll/Effect_List")
+_pity_row_bone = NodePath("ColorRect/MarginContainer/VBoxContainer/TabContainer/Pity/Pity_Content/Pity_Scroll/Pity_List/Pity_Row_Bone")
+_pity_row_brass = NodePath("ColorRect/MarginContainer/VBoxContainer/TabContainer/Pity/Pity_Content/Pity_Scroll/Pity_List/Pity_Row_Brass")
+_pity_row_parchment = NodePath("ColorRect/MarginContainer/VBoxContainer/TabContainer/Pity/Pity_Content/Pity_Scroll/Pity_List/Pity_Row_Parchment")
 
 [node name="ColorRect2" type="ColorRect" parent="." unique_id=244225679]
 layout_mode = 1
@@ -78,6 +81,7 @@ layout_mode = 2
 size_flags_vertical = 3
 current_tab = 0
 tab_0/title = "Fortune Favor Odds"
+tab_3/title = "Fortune Mercy"
 
 [node name="Champion_Odds" type="MarginContainer" parent="ColorRect/MarginContainer/VBoxContainer/TabContainer" unique_id=100000009]
 layout_mode = 2
@@ -181,6 +185,55 @@ size_flags_vertical = 3
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 12
+
+[node name="Pity" type="MarginContainer" parent="ColorRect/MarginContainer/VBoxContainer/TabContainer" unique_id=100000030]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+metadata/_tab_index = 3
+metadata/_tab_name = "Fortune Mercy"
+
+[node name="Pity_Content" type="VBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer/TabContainer/Pity" unique_id=100000031]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Pity_Description" type="Label" parent="ColorRect/MarginContainer/VBoxContainer/TabContainer/Pity/Pity_Content" unique_id=100000032]
+layout_mode = 2
+theme = ExtResource("1_theme")
+theme_override_font_sizes/font_size = 24
+text = "Each tier of Fortunes Favor tracks its own streak of duplicate Champions. Past 5 duplicates in a row, every following Favor of that tier gains a cumulative +10% chance for its Champion reward to be one you don't already own."
+autowrap_mode = 3
+
+[node name="Pity_Divider" type="HSeparator" parent="ColorRect/MarginContainer/VBoxContainer/TabContainer/Pity/Pity_Content" unique_id=100000033]
+layout_mode = 2
+
+[node name="Pity_Scroll" type="ScrollContainer" parent="ColorRect/MarginContainer/VBoxContainer/TabContainer/Pity/Pity_Content" unique_id=100000034]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Pity_List" type="VBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer/TabContainer/Pity/Pity_Content/Pity_Scroll" unique_id=100000035]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 16
+
+[node name="Pity_Row_Bone" type="Label" parent="ColorRect/MarginContainer/VBoxContainer/TabContainer/Pity/Pity_Content/Pity_Scroll/Pity_List" unique_id=100000036]
+layout_mode = 2
+theme = ExtResource("1_theme")
+theme_override_font_sizes/font_size = 22
+
+[node name="Pity_Row_Brass" type="Label" parent="ColorRect/MarginContainer/VBoxContainer/TabContainer/Pity/Pity_Content/Pity_Scroll/Pity_List" unique_id=100000037]
+layout_mode = 2
+theme = ExtResource("1_theme")
+theme_override_font_sizes/font_size = 22
+
+[node name="Pity_Row_Parchment" type="Label" parent="ColorRect/MarginContainer/VBoxContainer/TabContainer/Pity/Pity_Content/Pity_Scroll/Pity_List" unique_id=100000038]
+layout_mode = 2
+theme = ExtResource("1_theme")
+theme_override_font_sizes/font_size = 22
 
 [node name="Button_Close_Bottom" type="Button" parent="ColorRect/MarginContainer/VBoxContainer" unique_id=533184899]
 layout_mode = 2

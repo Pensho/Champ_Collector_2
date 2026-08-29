@@ -15,6 +15,11 @@ var _fortunes_favor: Dictionary[FortuneFavorTier.TierType, int] = {
 	FortuneFavorTier.TierType.BRASS: 0,
 	FortuneFavorTier.TierType.PARCHMENT: 0,
 }
+var _fortunes_favor_pity: Dictionary[FortuneFavorTier.TierType, int] = {
+	FortuneFavorTier.TierType.BONE: 0,
+	FortuneFavorTier.TierType.BRASS: 0,
+	FortuneFavorTier.TierType.PARCHMENT: 0,
+}
 var _last_supply_update_unix: int
 
 func _ready() -> void:
@@ -38,6 +43,9 @@ func Serialize() -> Dictionary:
 		"fortunes_favor_bone": _fortunes_favor[FortuneFavorTier.TierType.BONE],
 		"fortunes_favor_brass": _fortunes_favor[FortuneFavorTier.TierType.BRASS],
 		"fortunes_favor_parchment": _fortunes_favor[FortuneFavorTier.TierType.PARCHMENT],
+		"fortunes_favor_pity_bone": _fortunes_favor_pity[FortuneFavorTier.TierType.BONE],
+		"fortunes_favor_pity_brass": _fortunes_favor_pity[FortuneFavorTier.TierType.BRASS],
+		"fortunes_favor_pity_parchment": _fortunes_favor_pity[FortuneFavorTier.TierType.PARCHMENT],
 		"last_supply_update_unix": _last_supply_update_unix,
 	}
 
@@ -50,6 +58,9 @@ func Deserialize(p_data: Dictionary) -> void:
 		_fortunes_favor[FortuneFavorTier.TierType.PARCHMENT] = p_data.get("fortunes_favor_parchment", 0)
 	else:
 		_fortunes_favor[FortuneFavorTier.TierType.BONE] = p_data.get("fortunes_favor", 0)
+	_fortunes_favor_pity[FortuneFavorTier.TierType.BONE] = p_data.get("fortunes_favor_pity_bone", 0)
+	_fortunes_favor_pity[FortuneFavorTier.TierType.BRASS] = p_data.get("fortunes_favor_pity_brass", 0)
+	_fortunes_favor_pity[FortuneFavorTier.TierType.PARCHMENT] = p_data.get("fortunes_favor_pity_parchment", 0)
 	_last_supply_update_unix = p_data.get("last_supply_update_unix", 0)
 	UpdateSupplies()
 
@@ -117,6 +128,15 @@ func SpendFortunesFavor(p_tier_type: FortuneFavorTier.TierType, p_amount: int) -
 		resources_changed.emit()
 		return true
 	return false
+
+func GetFortunesFavorPity(p_tier_type: FortuneFavorTier.TierType) -> int:
+	return _fortunes_favor_pity[p_tier_type]
+
+func IncrementFortunesFavorPity(p_tier_type: FortuneFavorTier.TierType) -> void:
+	_fortunes_favor_pity[p_tier_type] += 1
+
+func ResetFortunesFavorPity(p_tier_type: FortuneFavorTier.TierType) -> void:
+	_fortunes_favor_pity[p_tier_type] = 0
 
 func GetSilver() -> int:
 	return _silver
