@@ -8,10 +8,10 @@ const BUTTON_WITH_OPTIONS_SCENE = preload("uid://c7smqpmfvs0ih")
 @export var _selected_char_level: Label
 @export var _selected_char_nature: Label
 @export var _selected_char_nature_tooltip: ToolTip
-@export var _selected_char_graft: Label
-@export var _selected_char_graft_tooltip: ToolTip
 @export var _experience_bar: ProgressBar
 @export var _experience_bar_text: Label
+@export var _skill_rows: Array[SkillListRow]
+@export var _passive_row: SkillListRow
 
 var _select_item_option: ButtonWithOptions
 var _confirm_option: ButtonWithOptions
@@ -34,6 +34,7 @@ var _selected_character_ID: int = -1
 var _selected_item_slot_ID: int = -1
 var _selected_equipped_item_ID: int = -1
 var _selected_equipped_slot_type: Types.Slot = Types.Slot.Weapon
+var _skills_tab_title: String = ""
 
 @onready var v_box_container_equipped_items: VBoxContainer = $MarginContainer/HBoxContainer2/VBoxContainer2
 
@@ -46,6 +47,14 @@ var _selected_equipped_slot_type: Types.Slot = Types.Slot.Weapon
 @onready var _reagent_window: Control = $ReagentWindow
 @onready var _grid_container_reagents: GridContainer = (
 		$ReagentWindow/ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GridContainer)
+
+@onready var _tab_bar_gear_skills: TabBar = $MarginContainer/HBoxContainer2/VBoxContainer2/TabBar_GearSkills
+@onready var _gear_tab_nodes: Array[Control] = [
+	$MarginContainer/HBoxContainer2/VBoxContainer2/HBoxContainer,
+	$MarginContainer/HBoxContainer2/VBoxContainer2/Boots_Slot,
+	$MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect,
+]
+@onready var _skills_panel: Control = $MarginContainer/HBoxContainer2/VBoxContainer2/SkillsPanel
 
 func Init(_p_context_container: ContextContainer) -> void:
 	_available_items.resize(_item_collection.size())
@@ -79,7 +88,11 @@ func Init(_p_context_container: ContextContainer) -> void:
 	
 	_selected_char_nature_tooltip.title_text = "Character Nature"
 	_selected_char_nature_tooltip.description_text = ""
-	
+
+	_skills_tab_title = _tab_bar_gear_skills.get_tab_title(1)
+	_tab_bar_gear_skills.remove_tab(1)
+	_tab_bar_gear_skills.current_tab = 0
+
 	_select_item_option = BUTTON_WITH_OPTIONS_SCENE.instantiate()
 	add_child(_select_item_option)
 	_select_item_option.SetText("Title", "Body")
@@ -146,16 +159,6 @@ func ShowSelectedCharacter(p_instance_ID: int) -> void:
 	_selected_char_nature_tooltip.description_text = str(
 			_character_collection[p_instance_ID]._attributes_weights._description)
 
-	if(Types.Role.Symbiote == _character_collection[p_instance_ID]._role):
-		_selected_char_graft.show()
-		var symbiote_trait: CharacterTrait = _character_collection[p_instance_ID]._trait
-		_selected_char_graft.text = ("Graft: Ungrafted" if null == _character_collection[p_instance_ID]._graft
-				else "Graft: " + symbiote_trait._title)
-		_selected_char_graft_tooltip.title_text = symbiote_trait._title
-		_selected_char_graft_tooltip.description_text = symbiote_trait._body
-	else:
-		_selected_char_graft.hide()
-
 	_experience_bar.max_value = LevelSystem.GetExperienceRequirement(_character_collection[p_instance_ID]._level)
 	_experience_bar.value = _character_collection[p_instance_ID]._experience
 	_experience_bar_text.text = "experience: " + (str(_character_collection[p_instance_ID]._experience)
@@ -179,6 +182,30 @@ func ShowSelectedCharacter(p_instance_ID: int) -> void:
 				main.GetInstance()._item_collection.GetItemTexture(boots_ID))
 		_item_slots_equipped[2].SetTextureOutline(_item_collection[boots_ID]._rarity)
 		_item_slots_equipped[2].level.text = str(_item_collection[boots_ID]._level)
+
+	if(1 == _tab_bar_gear_skills.tab_count):
+		_tab_bar_gear_skills.add_tab(_skills_tab_title)
+	RefreshSkillsTab(p_instance_ID)
+
+func RefreshSkillsTab(p_instance_ID: int) -> void:
+	var character: Character = _character_collection[p_instance_ID]
+	for i in _skill_rows.size():
+		if(i < character._skills.size()):
+			_skill_rows[i].SetSkill(character._skills[i])
+			_skill_rows[i].show()
+		else:
+			_skill_rows[i].hide()
+
+	if(null != character._trait):
+		_passive_row.SetPassive(character._trait, SkillListRow.PassiveLabel(character))
+		_passive_row.show()
+	else:
+		_passive_row.hide()
+
+func _on_tab_bar_gear_skills_tab_changed(p_tab: int) -> void:
+	for node in _gear_tab_nodes:
+		node.visible = (0 == p_tab)
+	_skills_panel.visible = (1 == p_tab)
 
 func ShowCharacters() -> void:
 	_scroll_container_characters.show()
@@ -412,10 +439,13 @@ func _on_button_deselect_char_button_up() -> void:
 	_selected_char_nature.text = "Nature: "
 	_selected_char_nature_tooltip.title_text = "Character Nature"
 	_selected_char_nature_tooltip.description_text = ""
-	_selected_char_graft.hide()
 	_experience_bar.max_value = 100.0
 	_experience_bar.value = 0.0
 	_experience_bar_text.text = ""
+	if(1 < _tab_bar_gear_skills.tab_count):
+		_tab_bar_gear_skills.remove_tab(1)
+	_tab_bar_gear_skills.current_tab = 0
+	_on_tab_bar_gear_skills_tab_changed(0)
 	for slot_nr in _available_characters.size(): #_displayed_character_ids
 		if(slot_nr < _character_collection.size()):
 			_available_characters[slot_nr].SetHeldObjectTexture(

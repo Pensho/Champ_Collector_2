@@ -6,6 +6,9 @@ const PRESSED_TIME: float = 0.3
 
 @export var title_text: String = "Item Title"
 @export var description_text: String = "This is a detailed description that will wrap automatically."
+## When true a press inside this control opens the tooltip immediately instead of
+## requiring a PRESSED_TIME hold.
+@export var show_on_press: bool = false
 
 var visuals: PanelContainer
 var timer: Timer
@@ -25,7 +28,10 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		var is_over_me = get_global_rect().has_point(get_global_mouse_position())
 		if event.pressed and is_over_me:
-			timer.start()
+			if show_on_press:
+				_show_tooltip()
+			else:
+				timer.start()
 		else:
 			timer.stop()
 

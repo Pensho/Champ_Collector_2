@@ -1,0 +1,54 @@
+[gd_scene format=3 uid="uid://di4m8t74hovq0"]
+
+[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="1_theme"]
+[ext_resource type="Script" uid="uid://qk0v80yhnj62" path="res://Scripts/UI/skill_list_row.gd" id="2_script"]
+
+[node name="Skill_List_Row" type="Control" unique_id=1091749904]
+custom_minimum_size = Vector2(0, 88)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 248.0
+offset_bottom = 88.0
+size_flags_horizontal = 3
+mouse_filter = 1
+script = ExtResource("2_script")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=970641447]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer" unique_id=1876892552]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/HBoxContainer" unique_id=373145535]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+expand_mode = 1
+
+[node name="Label_Name" type="Label" parent="MarginContainer/HBoxContainer" unique_id=428572545]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_theme")
+theme_override_font_sizes/font_size = 28
+text = "Skill Name"
+vertical_alignment = 1
+
+[node name="Label_Cooldown" type="Label" parent="MarginContainer/HBoxContainer" unique_id=1819485222]
+layout_mode = 2
+theme = ExtResource("1_theme")
+theme_override_font_sizes/font_size = 24
+horizontal_alignment = 2
+vertical_alignment = 1
