@@ -513,7 +513,9 @@ func _RefreshHealthLabel(p_characterID: int) -> void:
 
 # Display-only: combat mutation (clamping, death handling) happens in the resolver.
 func UpdateLifeBar(p_characterID: int) -> void:
-	_character_representations[p_characterID]._lifebar.value = _characters[p_characterID]._current_health
+	var current_health: int = _characters[p_characterID]._current_health
+	_character_representations[p_characterID]._lifebar.value = current_health
+	_character_representations[p_characterID]._damage_trail_bar.Follow(current_health)
 	_RefreshHealthLabel(p_characterID)
 
 func SetBarrierBar(p_characterID: int, p_barrier: int) -> void:
@@ -534,7 +536,9 @@ func VisualizeCharacter(p_characterID: int) -> void:
 	_character_representations[p_characterID]._character_texture.texture = character_canvas_texture
 	var max_health: int = _MaxHealthDisplay(p_characterID)
 	_character_representations[p_characterID]._lifebar.max_value = max_health
+	_character_representations[p_characterID]._damage_trail_bar.max_value = max_health
 	_character_representations[p_characterID]._barrier_bar.max_value = max_health
+	_character_representations[p_characterID]._damage_trail_bar.SnapTo(_characters[p_characterID]._current_health)
 	UpdateLifeBar(p_characterID)
 	SetBarrierBar(p_characterID, 0)
 	_character_representations[p_characterID].show()

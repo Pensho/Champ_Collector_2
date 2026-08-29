@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://di021l42jy53d" path="res://Scripts/Battle/character_battle_repr.gd" id="1_hd4xr"]
 [ext_resource type="Script" uid="uid://2re1qsu3nr22" path="res://Scripts/Battle/character_visual_effects.gd" id="6_echovx"]
+[ext_resource type="Script" path="res://Scripts/UI/Battle_UI/damage_trail_bar.gd" id="7_dmgtrl"]
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="2_6p7dp"]
 [ext_resource type="Material" uid="uid://2tvv2h51laxc" path="res://Assets/Champ_Collector/Material/Unshaded.tres" id="2_7qair"]
 [ext_resource type="Texture2D" uid="uid://cdwqpx4sgt42a" path="res://Assets/Champ_Collector/Icons/Trait_UI_Element_Blank.png" id="4_wjchg"]
@@ -25,6 +26,16 @@ fill_to = Vector2(0.9, 0)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_barrier_fill"]
 bg_color = Color(0.298039, 0.564706, 0.870588, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_bottom = 2
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_damage_trail_fill"]
+bg_color = Color(0.815686, 0.203922, 0.203922, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_bottom = 2
@@ -78,6 +89,18 @@ offset_bottom = 200.0
 expand_mode = 1
 metadata/_edit_use_anchors_ = true
 
+[node name="DamageTrailBar" type="ProgressBar" parent="." unique_id=132554162]
+material = ExtResource("2_7qair")
+offset_left = 25.0
+offset_top = 200.0
+offset_right = 200.0
+offset_bottom = 225.0
+theme = ExtResource("2_6p7dp")
+theme_override_styles/fill = SubResource("StyleBoxFlat_damage_trail_fill")
+script = ExtResource("7_dmgtrl")
+value = 100.0
+show_percentage = false
+
 [node name="ProgressBar" type="ProgressBar" parent="." unique_id=132554160]
 material = ExtResource("2_7qair")
 offset_left = 25.0
@@ -85,6 +108,7 @@ offset_top = 200.0
 offset_right = 200.0
 offset_bottom = 225.0
 theme = ExtResource("2_6p7dp")
+theme_override_styles/background = SubResource("StyleBoxEmpty_barrier_bg")
 value = 100.0
 show_percentage = false
 
