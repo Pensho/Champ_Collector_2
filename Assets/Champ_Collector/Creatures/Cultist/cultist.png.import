@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://pdvlg8agkqti"
-path="res://.godot/imported/Bloodmage_0004_Normal_Map.png-902bf3ee0784bd5dfe54e9e354211fd8.ctex"
+uid="uid://cpof2qn3e4pem"
+path="res://.godot/imported/cultist.png-ce6d7bb11c5f8f4437c4970c9352fc5f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Creatures/Bloodmage/Bloodmage_0004_Normal_Map.png"
-dest_files=["res://.godot/imported/Bloodmage_0004_Normal_Map.png-902bf3ee0784bd5dfe54e9e354211fd8.ctex"]
+source_file="res://Assets/Champ_Collector/Creatures/Cultist/cultist.png"
+dest_files=["res://.godot/imported/cultist.png-ce6d7bb11c5f8f4437c4970c9352fc5f.ctex"]
 
 [params]
 

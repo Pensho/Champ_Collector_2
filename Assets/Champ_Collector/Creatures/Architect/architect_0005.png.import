@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://di6n6rsc67ool"
-path="res://.godot/imported/Bloodmage_0005.png-26dfde461a7e6fd71f410d54e2ebb762.ctex"
+uid="uid://cjlcs38xg0j26"
+path="res://.godot/imported/architect_0005.png-b15e00a0e4849e63acee652757a063d9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Creatures/Bloodmage/Bloodmage_0005.png"
-dest_files=["res://.godot/imported/Bloodmage_0005.png-26dfde461a7e6fd71f410d54e2ebb762.ctex"]
+source_file="res://Assets/Champ_Collector/Creatures/Architect/architect_0005.png"
+dest_files=["res://.godot/imported/architect_0005.png-b15e00a0e4849e63acee652757a063d9.ctex"]
 
 [params]
 

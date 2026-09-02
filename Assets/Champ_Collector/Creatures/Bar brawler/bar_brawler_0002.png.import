@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://blf7hp32aoxnf"
-path="res://.godot/imported/Bar_Brawler_0003.png-11564362ac70e5b33cefa0dd73ae25ef.ctex"
+uid="uid://0fa0uufwtl42"
+path="res://.godot/imported/bar_brawler_0002.png-c82aeaf731d2c836d0be2a55a1a42dd3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Creatures/Bar brawler/Bar_Brawler_0003.png"
-dest_files=["res://.godot/imported/Bar_Brawler_0003.png-11564362ac70e5b33cefa0dd73ae25ef.ctex"]
+source_file="res://Assets/Champ_Collector/Creatures/Bar brawler/bar_brawler_0002.png"
+dest_files=["res://.godot/imported/bar_brawler_0002.png-c82aeaf731d2c836d0be2a55a1a42dd3.ctex"]
 
 [params]
 

@@ -17,8 +17,7 @@
 [resource]
 script = ExtResource("3_7g6n5")
 _name = "Jester"
-_texture = "res://Assets/Champ_Collector/Creatures/Jester/Jester_0001.png"
-_normal_map = "res://Assets/Champ_Collector/Creatures/Jester/Jester_0001_Normal_Map.png"
+_texture = "res://Assets/Champ_Collector/Creatures/Jester/jester_0006.png"
 _rarity = 2
 _role = 11
 _skills = Array[ExtResource("1_r2vnm")]([ExtResource("2_pratfall"), ExtResource("2_centerstage"), ExtResource("3_efesd")])

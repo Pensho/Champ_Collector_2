@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dvk71nj8oabe5"
-path="res://.godot/imported/Bar_Brawler_0009.png-b1a8a089130ff5f46e0b23eadef6f4dc.ctex"
+uid="uid://gtrj3iieep5y"
+path="res://.godot/imported/bloodmage_0009.png-21cd47d864f18db9651532c8f0a029d0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Creatures/Bar brawler/Bar_Brawler_0009.png"
-dest_files=["res://.godot/imported/Bar_Brawler_0009.png-b1a8a089130ff5f46e0b23eadef6f4dc.ctex"]
+source_file="res://Assets/Champ_Collector/Creatures/Bloodmage/bloodmage_0009.png"
+dest_files=["res://.godot/imported/bloodmage_0009.png-21cd47d864f18db9651532c8f0a029d0.ctex"]
 
 [params]
 

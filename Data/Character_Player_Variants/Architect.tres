@@ -9,15 +9,15 @@
 [ext_resource type="Resource" uid="uid://syj6hxvr5t2x" path="res://Data/Attribute_Weights/Dexterous.tres" id="5_drmfa"]
 [ext_resource type="Resource" uid="uid://ytl3g36itqfs" path="res://Data/Attribute_Weights/Learned.tres" id="6_mtgtk"]
 [ext_resource type="Resource" uid="uid://i4pibjinfd3x" path="res://Data/Attribute_Weights/Gluttonous.tres" id="7_frc1v"]
-[ext_resource type="Resource" path="res://Data/Character_Skill_Variants/Attack_Skills/Cornerstone.tres" id="8_crnrst"]
-[ext_resource type="Resource" path="res://Data/Character_Skill_Variants/Attack_Skills/Final_Calculation.tres" id="9_fnlclc"]
+[ext_resource type="Resource" uid="uid://ckxgcu38awm24" path="res://Data/Character_Skill_Variants/Attack_Skills/Cornerstone.tres" id="8_crnrst"]
+[ext_resource type="Resource" uid="uid://cvublmll0mby4" path="res://Data/Character_Skill_Variants/Attack_Skills/Final_Calculation.tres" id="9_fnlclc"]
 [ext_resource type="Resource" path="res://Data/Character_Traits/Calibration_Trait.tres" id="10_clbrt"]
-[ext_resource type="Resource" path="res://Data/Character_Skill_Variants/Zone_Skills/Raise_the_Frame.tres" id="11_rsthfrm"]
+[ext_resource type="Resource" uid="uid://dhvrivll22w8w" path="res://Data/Character_Skill_Variants/Zone_Skills/Raise_the_Frame.tres" id="11_rsthfrm"]
 
 [resource]
 script = ExtResource("2_mo6rh")
 _name = "Architect"
-_texture = "res://Assets/Champ_Collector/Creatures/Architect/Architect_0004.png"
+_texture = "res://Assets/Champ_Collector/Creatures/Architect/architect_0005.png"
 _rarity = 3
 _faction = 1
 _role = 18

@@ -14,7 +14,7 @@
 [resource]
 script = ExtResource("2_preset")
 _name = "Alchemist"
-_texture = "res://Assets/Champ_Collector/Creatures/Alchemist/Alchemist_0003.png"
+_texture = "res://Assets/Champ_Collector/Creatures/Alchemist/alchemist_0001.png"
 _rarity = 2
 _role = 4
 _skills = Array[ExtResource("1_skill")]([ExtResource("3_acrid_splash"), ExtResource("4_catalyst_cloud"), ExtResource("5_dissolving_agent")])

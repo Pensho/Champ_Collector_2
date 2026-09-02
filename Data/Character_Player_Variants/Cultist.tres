@@ -14,7 +14,7 @@
 [resource]
 script = ExtResource("2_preset")
 _name = "Cultist"
-_texture = "res://Assets/Champ_Collector/Creatures/Bloodmage/Bloodmage_0001.png"
+_texture = "res://Assets/Champ_Collector/Creatures/Cultist/cultist.png"
 _rarity = 2
 _role = 12
 _skills = Array[ExtResource("1_skill")]([ExtResource("3_desecrated_blade"), ExtResource("4_devour"), ExtResource("5_severance")])
