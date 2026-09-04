@@ -14,13 +14,14 @@ var _status_effect: Dictionary[int, int]
 var _status_effect_counter: int = 0
 
 @warning_ignore_start("unused_private_class_variable")
-@onready var _character_texture: TextureRect = $TextureRect
+@onready var _character_texture: TextureRect = $Sprite_Pivot/TextureRect
 @onready var _lifebar: ProgressBar = $ProgressBar
 @onready var _damage_trail_bar: DamageTrailBar = $DamageTrailBar
 @onready var _lifebar_text: Label = $Label
 @onready var _barrier_bar: ProgressBar = $BarrierBar
 @onready var _level: Label = $ColorRect/Label
 @onready var _visual_effects: CharacterVisualEffects = $VisualEffects
+@onready var _sprite_animator: CharacterSpriteAnimator = $SpriteAnimator
 @warning_ignore_restore("unused_private_class_variable")
 
 func _on_button_target_button_up() -> void:
@@ -91,3 +92,6 @@ func SetTraitElementToolTip(p_title: String, p_body: String, p_slot: int) -> voi
 
 func GetVisualEffects() -> CharacterVisualEffects:
 	return _visual_effects
+
+func GetSpriteAnimator() -> CharacterSpriteAnimator:
+	return _sprite_animator

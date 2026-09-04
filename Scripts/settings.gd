@@ -13,7 +13,6 @@ const DEFAULT_LOCALE: String = "en"
 var master_volume: float = DEFAULT_MASTER_VOLUME
 var music_volume: float = DEFAULT_MUSIC_VOLUME
 var sound_effects_volume: float = DEFAULT_SOUND_EFFECTS_VOLUME
-# Read by future screen-shake effect code to decide whether to apply camera shake.
 var screen_shake_enabled: bool = DEFAULT_SCREEN_SHAKE_ENABLED
 var fullscreen: bool = DEFAULT_FULLSCREEN
 var locale: String = DEFAULT_LOCALE

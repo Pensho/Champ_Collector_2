@@ -178,12 +178,18 @@ Representative scenes:
 | Scene | Root | Purpose |
 |---|---|---|
 | `Scenes/ui/Battle_UI/battle.tscn` | `Node2D` (`battle.gd`) | 3-versus-3 combat arena |
-| `Scenes/ui/Battle_UI/battle_ui.tscn` | `CanvasLayer` (`battle_ui.gd`) | In-combat UI overlay |
+| `Scenes/ui/Battle_UI/battle_ui.tscn` | `Control` (`battle_ui.gd`) | In-combat UI overlay, instanced under `battle.tscn`'s `CanvasLayer` |
 | `Scenes/Adventure_Scenes/Adventure.tscn` | `Control` (`adventure_ui.gd`) | Adventure run / node graph |
 | `Scenes/Hubs/Reclaimed_City_Scene/Reclaimed_City.tscn` | `Control` (`hub_menu.gd`) | Home base / resources |
 | `Scenes/ui/MainMenu.tscn` | `Control` | Top-level navigation |
 | `Scenes/Characters/Character.tscn` | `Node2D` (`character.gd`) | Character logic node |
 | `Scenes/Characters/Character_Battle_Repr.tscn` | `Node2D` | Visual battle representation |
+
+`battle.tscn` holds one `Camera2D` (world space: parallax bands, character representations,
+the turn indicator) and one `CanvasLayer` holding `battle_ui.tscn` (screen space, so camera
+shake never moves the UI). `Battle.WorldToUI()` converts a world position through
+`get_viewport().get_canvas_transform()` for the one place they meet: combat text spawn
+points (`Battle.CombatTextPosition()`).
 
 A key split: **`Character` (logic) is separate from `CharacterRepresentation` (visuals).** The
 `battle.gd` orchestrator holds `_characters: Dictionary[int, Character]` for game state and an
@@ -1368,8 +1374,13 @@ visible sequence, tempo and magnitude escalating through the cascade rather than
 sits entirely in the view. `BattleResolver` stays headless and synchronous (see 7.8): every
 `CombatResult` from a cascade is still produced and applied to game state in one frame, in the
 `Cascade_Triggered`-bracketed stream 7.8 describes. This layer paces only the floating combat text
-that presents those results, not the state changes themselves — health bars, status icons, and
-death still land instantly, ahead of the numbers describing them.
+that presents those results, not the state changes themselves — health bars and status icons still
+land instantly, ahead of the numbers describing them. The impact reaction (stretch, flash, shake;
+see 9.3) fires alongside the state change instead, not the paced number: an early attempt gated
+it on the same queue release as its combat text and, on any simultaneous multi-target hit (an
+AoE, not only a genuine cascade), every target's bar dropped in the same frame while the
+reactions still drained through the queue one at a time — bars and numbers in sync, the physical
+hit reaction visibly lagging behind both by however long the backlog took to clear.
 
 **Escalation curve.** `BurstPacing` (`Scripts/Battle/burst_pacing.gd`, static functions only) maps
 an Echo ordinal to a per-item spawn delay, text scale, spawn-pop overshoot, and color
@@ -2144,6 +2155,55 @@ stripped from a still-living prior ally. It also carries a rarity-scaled Resista
 and a flat −30% Defence/CritDamage drawback on its own attribute layer.
 
 Every enemy `_graft_effect` stays null until a future pass assigns sources.
+
+### 9.3. Impact feedback layer: `CharacterSpriteAnimator` and `ImpactIntensity`
+
+Art_Style_Guide.md 6.3's code-side impact layer (squash/stretch, hit flash, screen shake), built
+as the parallel-to-VFX-art pass it calls for. Idle bob is scaffolded but disabled
+(`CharacterSpriteAnimator.IDLE_SCALE_AMOUNT = 0.0`): scaling the sprite `TextureRect`'s own
+`scale` — the same property the hit reaction uses — produced visible tearing between the texture
+and its outline at most non-integer scale values, a playtest finding rather than a design
+rejection. Death is the grayscale fade only; an earlier transform drop/skew read badly in
+practice and was cut, with a particle-based replacement planned as art VFX rather than a code fix.
+Hitstop was cut outright: a per-action budget that decayed across a cascade meant early hits in
+a burst froze the game and later ones in the same burst didn't, reading as stutter rather than
+weight.
+
+`ImpactIntensity` (`Scripts/Battle/impact_intensity.gd`, static functions only, the same shape
+as `BurstPacing`) maps a hit's damage as a fraction of the target's max health
+(`Normalize(amount, max_health)`) to a stretch amount, screen-shake amplitude and duration, and
+flash duration. Below `MINIMUM_SHAKE_INTENSITY`, shake returns zero — chip damage still flashes
+and stretches but does not shake the camera.
+
+`CharacterSpriteAnimator` (`Scripts/Battle/character_sprite_animator.gd`, `extends Node2D`) is a
+second view-only component on `Character_Battle_Representation.tscn`, alongside
+`CharacterVisualEffects` (9.1) and for the same reason: kept off `CharacterRepresentation` so
+view-only effects don't leak trait-specific methods into the shared view. It owns the sprite's
+transform outright — idle motion and Tween-driven reactions (`PlayImpact`, `PlayLunge`,
+`PlayDeath`) each write to their own members, and `_process` composes them into one value
+written to a `Sprite_Pivot` (`Node2D`, carries knockback/lunge translation and `skew`) and the
+sprite `TextureRect` (carries stretch `scale`, pivot anchored at the feet) each frame, so idle
+motion and a reaction never fight over the same property. `PlayImpact(intensity, direction)`
+grows the sprite taller (not the original shrink-on-y squash — that read as the character being
+crushed rather than hit) and knocks it back horizontally along `direction`; `Battle` derives that
+direction from which side of the arena the target is on, not a tracked attacker position, since
+players and enemies always face each other across a fixed left/right split. A `ShaderMaterial`
+unique per character (`Assets/Champ_Collector/Shaders/character_sprite.gdshader`, `flash_amount`
+and `grayscale_amount` uniforms) replaced the shared grayscale material the death handler used to
+assign; `Revive()` (used by the in-battle debug page) resets both the shader and the transform.
+`CharacterRepresentation` exposes the component via `GetSpriteAnimator()`.
+
+`Battle.PlayImpactReaction(target_ID, amount)` is called directly from
+`_on_resolver_result_produced`, alongside `UpdateLifeBar`, rather than gated on the paced combat
+text describing the hit (see 7.9 for why an earlier version coupled the two). Screen shake tweens
+`Battle`'s `Camera2D.offset` (see the scene-architecture note in section 4) and is gated on
+`Settings.screen_shake_enabled`. Attack lunge fires from `Battle.ResolveTurn` when a
+skill has a target, not from a `CombatResult`, since nothing in the result stream represents
+"a skill is about to resolve."
+
+Coverage: `test_impact_intensity.gd` (the curve) and `test_character_sprite_animator.gd` (idle
+bob, reaction settle-and-return, interrupted-reaction cleanup, death/revive), both built directly
+rather than through the packed scene, matching `test_burst_pacing.gd`/`test_damage_trail_bar.gd`.
 
 ---
 

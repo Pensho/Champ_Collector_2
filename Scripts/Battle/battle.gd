@@ -18,7 +18,6 @@ enum BattleState
 }
 
 const ZoneType = preload("uid://bdjrfif0s60v4")
-const GRAYSCALE = preload("uid://ia57lns0336p")
 
 const NO_CHARACTERS_TURN: int = -1
 const ENEMY_ID_OFFSET: int = 3
@@ -27,8 +26,6 @@ const ENEMY_ID_OFFSET: int = 3
 const PRESENTATION_DEADLINE: float = 2.0
 
 @export var _character_representations: Array[CharacterRepresentation]
-
-var GRAYSCALE_MATERIAL: ShaderMaterial
 
 var _self_context: ContextContainer
 var _battlecontext: Context_Battle
@@ -55,10 +52,12 @@ var _cascade_instance_ordinal: int = 0
 # Counts down while BattleState.Resolving; the turn completes when it reaches zero or the
 # combat text queue drains, whichever comes first.
 var _presentation_deadline: float = 0.0
+var _shake_tween: Tween
 
-@onready var _battle_ui: BattleUI = $"Battle UI"
+@onready var _battle_ui: BattleUI = $"CanvasLayer/Battle UI"
 @onready var _background: TextureRect = %BattleBackground
 @onready var _turn_indicator: TextureRect = $Turn_Indicator
+@onready var _camera: Camera2D = $Camera2D
 @onready var _characters: Dictionary[int, Character]
 @onready var _global_scene_darkness: DirectionalLight2D = $DirectionalLight2D
 @onready var _global_scene_light: PointLight2D = $PointLight2D
@@ -181,9 +180,6 @@ func Init(p_context: ContextContainer) -> void:
 			if("" != brew_key):
 				_reagent_loadout.AddBrewed(brew_key, _characters[i]._trait.GetBrewPotencyBonus())
 			_characters[i]._trait.RefreshVisuals(_character_representations[i])
-
-	GRAYSCALE_MATERIAL = ShaderMaterial.new()
-	GRAYSCALE_MATERIAL.shader = GRAYSCALE
 
 	_battle_ui.Init(_battlecontext._environment_effects)
 	_battle_ui._turn_bar.Init(_characters, _on_turn_bar_zone_selected, _sides.player)
@@ -339,8 +335,16 @@ func ResolveTurn(p_target_IDs: Array[int]) -> void:
 	_battle_ui.HideReagentUI()
 	_battle_ui.HideGraftUI()
 	_battle_ui.HideThreadSwitchUI()
+	if(not p_target_IDs.is_empty()):
+		_PlayAttackLunge(_turn_character_ID, p_target_IDs[0])
 	_resolver.ResolveSkill(_turn_character_ID, p_target_IDs, _selected_skill_ID)
 	_presentation_deadline = PRESENTATION_DEADLINE
+
+func _PlayAttackLunge(p_caster_ID: int, p_target_ID: int) -> void:
+	var caster_position: Vector2 = _character_representations[p_caster_ID].position
+	var target_position: Vector2 = _character_representations[p_target_ID].position
+	var direction: float = signf(target_position.x - caster_position.x)
+	_character_representations[p_caster_ID].GetSpriteAnimator().PlayLunge(direction)
 
 func IsStunned(p_character_ID: int) -> bool:
 	for debuff in _characters[p_character_ID]._active_debuffs:
@@ -369,8 +373,11 @@ func RefreshAllTraitVisuals() -> void:
 		if(null != _characters[i]._trait):
 			_characters[i]._trait.RefreshVisuals(_character_representations[i])
 
+func WorldToUI(p_world_position: Vector2) -> Vector2:
+	return get_viewport().get_canvas_transform() * p_world_position
+
 func CombatTextPosition(p_character_ID: int) -> Vector2:
-	return _character_representations[p_character_ID].position + _battle_ui.COMBAT_TEXT_SPAWN_POINT
+	return WorldToUI(_character_representations[p_character_ID].position + _battle_ui.COMBAT_TEXT_SPAWN_POINT)
 
 # Translates one resolver result into visuals (and post-battle damage attribution).
 func _on_resolver_result_produced(p_result: CombatResult) -> void:
@@ -384,12 +391,14 @@ func _on_resolver_result_produced(p_result: CombatResult) -> void:
 				_battle_ui.SpawnCombatText(
 						str(p_result.amount), CombatTextPosition(p_result.target_ID),
 						Color(1.0, 1.0, 1.0, 1.0), _cascade_instance_ordinal)
+				PlayImpactReaction(p_result.target_ID, p_result.amount)
 				AttributeDamage(p_result.source_ID, p_result.amount)
 			UpdateLifeBar(p_result.target_ID)
 		CombatResult.Kind.Debuff_Tick:
 			_battle_ui.SpawnCombatText(
 					str(p_result.amount), CombatTextPosition(p_result.target_ID), Color(1.0, 0.45, 0.1, 1.0),
 					_cascade_instance_ordinal)
+			PlayImpactReaction(p_result.target_ID, p_result.amount)
 			for source_ID in p_result.amount_by_source.keys():
 				AttributeDamage(source_ID, p_result.amount_by_source[source_ID])
 			UpdateLifeBar(p_result.target_ID)
@@ -461,7 +470,7 @@ func _on_resolver_result_produced(p_result: CombatResult) -> void:
 					_cascade_instance_ordinal)
 		CombatResult.Kind.Death:
 			_battle_ui._turn_bar.ShowCharacterAsDead(p_result.target_ID)
-			_character_representations[p_result.target_ID]._character_texture.material = GRAYSCALE_MATERIAL
+			_character_representations[p_result.target_ID].GetSpriteAnimator().PlayDeath()
 			UpdateLifeBar(p_result.target_ID)
 		CombatResult.Kind.Cascade_Triggered:
 			# Emitted immediately before each burst instance's own results (a real cascade
@@ -748,3 +757,32 @@ func _ResolveReagentConsumption(p_reagent_index: int, p_target_ID: int) -> void:
 	_selected_reagent_index = -1
 	_state = BattleState.Awaiting_Player_Input
 	_battle_ui._turn_bar.DisableZones(true)
+
+func PlayImpactReaction(p_target_ID: int, p_amount: int) -> void:
+	var intensity: float = ImpactIntensity.Normalize(p_amount, _MaxHealthDisplay(p_target_ID))
+	var knockback_direction: float = -1.0 if _sides.player.Has(p_target_ID) else 1.0
+	_character_representations[p_target_ID].GetSpriteAnimator().PlayImpact(intensity, knockback_direction)
+	_PlayScreenShake(intensity)
+
+func _PlayScreenShake(p_intensity: float) -> void:
+	if(not _GetSettings().screen_shake_enabled):
+		return
+	var amplitude: float = ImpactIntensity.ShakeAmplitudeForIntensity(p_intensity)
+	if(amplitude <= 0.0):
+		return
+	var duration: float = ImpactIntensity.ShakeSecondsForIntensity(p_intensity)
+	if(_shake_tween):
+		_shake_tween.kill()
+	_camera.offset = Vector2.ZERO
+	_shake_tween = create_tween()
+	const SHAKE_STEPS: int = 5
+	var step_duration: float = duration / SHAKE_STEPS
+	for step in SHAKE_STEPS:
+		var step_amplitude: float = amplitude * (1.0 - (float(step) / float(SHAKE_STEPS)))
+		_shake_tween.tween_property(_camera, "offset",
+				Vector2(randf_range(-step_amplitude, step_amplitude), randf_range(-step_amplitude, step_amplitude)),
+				step_duration)
+	_shake_tween.tween_property(_camera, "offset", Vector2.ZERO, step_duration)
+
+func _GetSettings() -> Settings:
+	return get_node("/root/Game_Settings")
