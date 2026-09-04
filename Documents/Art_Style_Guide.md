@@ -14,8 +14,9 @@ Every asset in the game obeys these. If an output breaks one, reject it regardle
 2. **Flat color fields, hard-edged shadows, four value bands.** No gradients, no soft shading, no ambient occlusion. Four bands is a **value** rule, not a color-count rule — see section 1.
 3. **One saturated accent per character**, flat and uniform, covering roughly
 15–20% of the figure.
-4. **Faces are lit and the eyes are visible.** Champions are people the player is meant to care about, and a concealed face reads as a prop. See section 3.
-5. **Perspective spec** (section 8) is identical across every character, background, effect and icon. This is what makes assets composite without looking assembled from different games.
+4. **Hue is a free axis inside every band, including band 1.** Value structure is what makes the style cohere; desaturation is not, and was never a rule. See section 2.6.
+5. **Faces are lit and the eyes are visible.** Champions are people the player is meant to care about, and a concealed face reads as a prop. See section 3.
+6. **Perspective spec** (section 8) is identical across every character, background, effect and icon. This is what makes assets composite without looking assembled from different games.
 
 **Leonardo has no negative prompt field.** Every exclusion must be phrased as a positive opposite. Never paste a list of unwanted terms into the prompt — it reads as a request and you will get it.
 
@@ -40,10 +41,32 @@ Value structure is what makes the style cohere. Hue variety is what makes it not
 - **Each material occupies at most two adjacent bands.** That is what keeps eight fills reading as a flat woodcut rather than a painting.
 - **Band 1 covers roughly half the figure.** Large committed areas of solid black are what make the rest read as bright. This is the single biggest difference from the earlier sepia version.
 - **Bone white is a highlight, not a fill.** Target 5% or less of the figure. If bone white is doing area work, the whole asset goes pale.
-- **The outline black and the deepest shadow are the same value**, so shadow can eat part of a figure and merge it into the outline.
-- **Ink black is tinted slightly toward blue-violet.** A true neutral black reads as photocopy; a tinted one reads as printed.
+- **The outline black and the deepest shadow are the same value**, so shadow can eat part of a figure and merge it into the outline. Same value — not necessarily the same hue. See 1.1.
+- **The outline is always ink black `#14121A`**, tinted slightly toward blue-violet, on every character. A true neutral black reads as photocopy; a tinted one reads as printed. The outline is the one part of band 1 that never varies.
 
-**The light-dominant exception.** One Role may invert this and be built on a light garment main, as the Jester is. For such a figure, the band 1 and bone white rules above do not apply. Judge it instead on whether black still holds the outline and roughly a third of the figure, carried by hose, boots and one split sleeve rather than by the torso. This is a deliberate identity for a single Role, not a second option — a second light-dominant character would cost the first one its distinctiveness.
+### 1.1 Tinted band 1 — the shadow black is a per-character slot
+
+Band 1 is half the figure. Holding it at one blue-violet black across twenty Roles was throwing away the largest colored area available, for no reason the value rules require.
+
+**The shadow fill may be tinted per character**, at the same L\* as the outline. The outline stays `#14121A` so cohesion still runs through every contour in the game; the mass behind it carries hue.
+
+Starting points, all to be measured to L\* 6–12 before use:
+
+| Shadow black | Hex | Reads as |
+|---|---|---|
+| Blue-violet (default) | `#14121A` | The neutral option, and the outline value |
+| Green-black | `#101A15` | Ruin damp, forest, verdigris |
+| Aubergine-black | `#191220` | Arcane, corrupt |
+| Umber-black | `#1A150F` | Warm, earthen, worked |
+| Ash-blue-black | `#101519` | Cold, institutional |
+
+**Two things to watch.**
+
+**State the same-value rule in the prompt explicitly.** Given a tinted shadow, Leonardo renders it lighter than the outline by default, and the result reads as a mistake rather than a choice. The phrase has to say that the shadow mass and the contour sit at the same value.
+
+**Tint against the garment main, not with it.** A green-black shadow under a green mantle reinforces a hue the figure already has, so half the figure changed and the figure still reads as two hues plus the accent. An umber or aubergine black under that same green mantle buys a genuine third hue. The cost is that the shadow stops reading as the mantle's own shadow and starts reading as its own material, which is the tension the lever creates — generate both on any character where it matters.
+
+**The light-dominant exception.** One Role may invert the band 1 rules and be built on a light garment main, as the Jester is. For such a figure, the band 1 and bone white rules above do not apply. Judge it instead on whether black still holds the outline and roughly a third of the figure, carried by hose, boots and one split sleeve rather than by the torso. This is a deliberate identity for a single Role, not a second option — a second light-dominant character would cost the first one its distinctiveness.
 
 ---
 
@@ -51,26 +74,36 @@ Value structure is what makes the style cohere. Hue variety is what makes it not
 
 Color is assigned by **what a thing is made of**, not by a global palette limit. Cohesion comes from the shared slots, which are identical on every character in the roster.
 
-### 2.1 Shared slots — fixed across all twenty Roles
+### 2.1 Shared slots
 
 | Slot | Light value | Dark value | Notes |
 |---|---|---|---|
-| Ink black | — | `#14121A` | Outline, deep shadow. Blue-violet tinted. |
+| Outline black | — | `#14121A` | Contour only. Never varies. |
+| Shadow black | — | per character | Band 1 fill. Same value as the outline, own hue. See 1.1. |
 | Bone white | `#EFE6D2` | — | Highlights and eyes only. |
-| Leather | `#4A3527` | `#2A1D15` | Belts, straps, boots, satchels. |
 | Metal, pewter | `#6E727A` | `#3F444B` | Non-accent hardware. Buckles, fittings, plain blades. |
+
+Leather **left the shared slot list** — see 2.3.
 
 ### 2.2 Per-character slots — where the variety lives
 
 | Slot | Rule |
 |---|---|
-| Garment main | Two values. The largest colored area on the figure. |
-| Material neutral | One or two values. **Deliberately the opposite temperature to the accent.** This is what makes the accent read as saturated rather than as one more brown. |
+| Garment main | Two values. The largest colored area on the figure. **May be saturated.** |
+| Material neutral | One or two values. Opposite temperature to the accent by default; may be saturated under 2.6. |
 | Accent | One flat value, no texture, 15–20% coverage, head and chest region. |
+| Shadow black | Band 1 fill hue, at the outline's value. |
+| Leather | Two values, per character. |
 
-The temperature rule on the material neutral is the load-bearing part. Brass on warm leather disappears; brass on cold grey reads as metal. Terracotta on umber disappears; terracotta on slate reads as clay.
+The temperature rule on the material neutral remains the default: brass on warm leather disappears; brass on cold grey reads as metal. Terracotta on umber disappears; terracotta on slate reads as clay.
 
 **When temperature separation can be dropped.** The rule exists so the accent has something to push against. If the garment main already sits at an extreme value — bone white, or near-black — the value contrast does that job on its own and the material neutral may be the same temperature as the accent. The Jester's scarlet neutral under a saffron accent works because both sit on white. Do not invoke this to rescue a mid-value garment; it only holds at the ends of the ramp.
+
+### 2.3 Leather is per character
+
+One warm brown `#4A3527` on every belt, strap, boot and satchel in the roster was a large share of the shared mud, and it bought nothing that the outline and the value ramp were not already buying.
+
+Leather now varies: blackened, tar-dark, oxblood-stained, bark-brown, bleached grey-tan. Pick per character and keep it inside two adjacent bands like any other material. The old warm brown remains available; it is now a choice rather than a default.
 
 ### 2.4 Accent hexes that need attention
 
@@ -90,11 +123,31 @@ Warm and neutral alternatives that still serve: bone buff, sand tan, oxblood, sc
 
 **Rule of thumb: no more than half the fielded roster on cool neutrals.** When a new Role's accent is warm and a cold neutral is the obvious pick, take a warm option if cool is already crowded. The Bar Brawler is the easiest existing Role to move if rebalancing is needed — dirty cream with warm leather works as well as the cold slate.
 
+Note that 2.6 relieves some of this pressure: with a saturated garment main and a tinted shadow black carrying hue, the material neutral is no longer the only place variety can live, so a cool neutral costs less than it used to.
+
+### 2.6 Saturation — why every character was beige, and the two levers
+
+This section exists because six characters in, every figure was arriving as a different grade of beige with one muted accent, and the cause was arithmetic rather than prompting.
+
+**The arithmetic.** The old shared slots were four neutrals — brown leather, grey pewter, tan skin, black — and they appeared on every figure. Band 1 was specified at roughly half the figure and held at one hue. Accent was capped at 15–20%. That left about a quarter of the figure for the two variable slots, and the material neutral rule then asked one of those two to be a *neutral*. Essentially nothing on the figure was permitted to carry saturated color except the accent, which is exactly what the outputs showed.
+
+**Nothing in the rules ever required the garment main to be desaturated.** The temperature rule in 2.2 applies to the material neutral only. But all six worked examples — dirty cream, ash grey, oatmeal, near-black charcoal, slate-violet, bone white — chose a neutral anyway, and the precedent hardened into a rule nobody wrote.
+
+**Lever one: saturate the garment main.** Give it real chroma and place it at a value the accent is not at. Value does the separating instead of chroma, which is what 2.2 already concedes at the ends of the ramp. Check garment and accent hue adjacency per character; when they merge, move the garment a full value band, never shift either hue.
+
+**Lever two: tint band 1** — section 1.1. Half the figure becomes colored and no value band moves.
+
+**Saturating the material neutral as well is a third step, and it is not free.** It was taken on the Sorcerer and it worked, because garment, neutral and accent sat at three clearly separated values. But it removes the thing the accent pushes against, and it is the first change to roll back if a figure comes back noisy or if the accent stops reading at 300 px. Treat it as per-character permission, not as a new default.
+
+**What is *not* the fix:** the scene-light LUT (section 10). It tints everything uniformly, so it moves area mood without touching the sameness *within* a figure. Keep it as the mood dial it is.
+
+**Open decision.** The five characters approved before these levers were built under the old arithmetic. Either they get regenerated or the roster carries a visible split. Composite any new lever-built character next to the approved Bar Brawler before going further: if the new one sings and the Brawler now reads as a placeholder, that is the answer, and it is much cheaper to act on at six characters than at fifteen.
+
 ---
 
 ## 3. Faces and proportion
 
-This section exists because both failure modes here were expensive to find.
+This section exists because every failure mode here was expensive to find.
 
 ### 3.1 The rules
 
@@ -104,13 +157,39 @@ This section exists because both failure modes here were expensive to find.
 - **The head is the lightest region of the figure.** One bright area in a mostly dark figure pulls the eye straight to the face at any size.
 - **Hair and beard are single flat masses.** No interior detail.
 
-### 3.2 Concealed faces are an exception, not a tier
+### 3.2 State an age, and vary the noun cluster
+
+Left unstated, Leonardo returns its average man: roughly forty, conventionally handsome, and identical from character to character. Two rules follow.
+
+**Name the age in the prompt.** "A man in his late twenties with a smooth unlined face" is a target. Nothing is not.
+
+**Watch the noun cluster, not the individual nouns.** Hollow cheeks, shelf brow, hooked nose and a hard-set jaw are four nouns from one gaunt-severe cluster, and any two of them land on forty-year-old man regardless of the stated age. Build each Role's face from a different cluster — round and heavy, narrow and fine, broad and flat, young and unmarked — and check the last approved character before writing the next.
+
+**Age is characterisation, not decoration.** A young face makes scarring read as a story; the same scars on a middle-aged face read as ordinary wear. Pick the age the Role's motive implies.
+
+### 3.3 Hair length is a silhouette tool
+
+Hair is a single flat mass with no interior detail, so hair length costs nothing in detail budget and changes the outline of the head. Long hair past the shoulders gives a wider, softer head shape than anything else available, and on a roster of cropped and bearded men it is one of the cheapest ways to make a figure recognisable in pure black.
+
+### 3.4 Expression in flat woodcut
+
+Three things carry expression at four values with no interior modelling. Everything else is lost.
+
+- **Brow asymmetry** — one eyebrow raised higher than the other
+- **Head tilt** — toward or away from what the figure is holding or facing
+- **Mouth line** — flat, parted, or set
+
+Chin up reads as interest; chin tucked reads as caution. Curiosity is brow plus tilt plus a slightly parted mouth. Note that a young face with a raised brow and parted lips sits close to the cartoon attractor (3.6) — if it goes goofy, cut the parted lips first and keep the brow and the tilt.
+
+### 3.5 Concealed faces are an exception, not a tier
 
 A hidden face is permitted only when concealment **is** the character's identity, and it costs that Role its most direct expression tool. The Architect earns it through the hat brim; most Roles do not. When in doubt, show the face.
 
+A hood is not automatically a concealed face. Worn up but pushed back off the brow, it keeps the silhouette and the accent placement while leaving the whole face open and lit — this is how the Sorcerer keeps his hood.
+
 Fodder enemies are the one place faces stay dark and anonymous, which is a free legibility win and matches the reduced detail tier in section 4.6.
 
-### 3.3 Tone comes from word choice
+### 3.6 Tone comes from word choice
 
 Leonardo builds mood from adjectives more than from anything structural. The same design reads gritty or neutral depending on vocabulary:
 
@@ -127,7 +206,7 @@ a direction to watch out for, because it was reached by accident:
   a status, and `hunched` in particular is useful for getting weight into an
   asymmetric silhouette.
 
-### 3.4 Genre attractors
+### 3.7 Genre attractors
 
 Leonardo has strong genre basins, and a prompt that puts several of their keywords together will land in one no matter what else it says. There is no negative field, so **the only fix is to change the vocabulary wholesale.** Adding qualifiers reinforces the basin.
 
@@ -139,9 +218,13 @@ Attractors hit so far, with the words that summoned them:
 | Barbarian / nomad | torn strips, bare chest, hard muscle, notched blade, hide |
 | Shaman | bone cords, antlers, bound bones at the belt, ritual bowl |
 | Modern working man | plain buttoned coat, flat cap, ordinary, unremarkable |
+| Modern outdoorsman | travel coat, gaiters, pack roll, tarp, harness, staff as walking pole |
+| Generic wizard | robe, hood, staff, tome, wand, "sorcerer" |
 | Cartoon | soft floppy cap, wide grin, `wiry`, large head relative to body |
 
 When an attractor lands, rewrite the costume from a different occupation rather than negating. The Bloodmage escaped Dracula by becoming a debt collector in a uniform; nothing about the words "not a vampire" would have done it.
+
+**The two basins on either side of a magic Role are close together.** Fleeing the generic-wizard basin with surveyor and travel vocabulary lands in the modern-outdoorsman basin, which is the same failure as the Bloodmage's plain working coat: the fantasy content is gone and there is nothing a player wants to field. The Sorcerer escaped by taking his nouns from the ruins themselves — ruin masonry, ruin ironwork, a shoulder yoke, a chained slab — rather than from either travel gear or wizardry.
 
 ---
 
@@ -157,7 +240,17 @@ Three characters cost several rounds each because the prompt was being rewritten
 
 **Flavour text is not a costume brief.** "Hides from the Iron Ledger" taken literally produced a man in a plain working coat with no fantasy content and nothing for a player to want. Concealment survives as *style* — a brand showing at an open collar, dye that will not wash off — not as ordinary clothing.
 
-### 4.2 The canonical general block
+### 4.2 Wear is shape, not texture
+
+Dirt, grime, stains and grease do not survive the post-processing pass — four flat value bands quantize a smudge into nothing, and asking for them costs prompt words for no visible result.
+
+Wear that reads at 300 px is structural: a sleeve burned off at the elbow, a hem torn and re-panelled, a mended patch with hard angular edges, a strap replaced with the wrong material, a scar as a solid band 1 shape.
+
+**Tie the wear to the Role's mechanics wherever possible.** The Sorcerer's Arcane Instability surges damage him along with everyone else, so his burned-away right sleeve and blackened forearm are the visible cost of how he fights — a mark no other Role can carry. Wear derived from the kit is characterisation; wear applied for grit is texture.
+
+**Scarring is band 1, never the accent.** Accent on skin breaks the acceptance checklist. Burn marks, brands and glyph scars are solid ink black shapes.
+
+### 4.3 The canonical general block
 
 Substitute the bracketed slots from section 2. Everything else is identical in every character prompt, word for word. The repetition is doing most of the consistency work.
 
@@ -165,18 +258,19 @@ Substitute the bracketed slots from section 2. Everything else is identical in e
 bold woodcut illustration with engraved structural linework, very thick
 uniform black contour outline on the outer silhouette, clean uninterrupted
 silhouette edge, flat color fields, hard-edged shadows, high contrast with
-large areas of solid ink black, colors assigned by material: {SKIN} skin,
-{GARMENT MAIN}, {MATERIAL NEUTRAL},
-dull pewter grey metal fittings, all flat and unmodulated, warm bone white
-reserved for small highlight shapes and the eyes, ink black tinted slightly
-toward blue-violet, light from the upper left casting a narrow bone white
-edge along the upper left contour, {FOCAL REGION} carrying the heaviest
-engraved detail and reading as the focal point of the figure, the rest of the
-body held as large flat angular panels with only sparse structural marks,
-all marks large and structural, with
-saturated {ACCENT} as the single accent covering roughly a fifth of the
-figure, flat and uniform with little texture, used only on {PLACEMENT},
-hand-carved edge quality.
+large areas of solid shadow in a deep {SHADOW BLACK}, that shadow mass and
+the outline sitting at the same value, colors assigned by material: {SKIN}
+skin, {GARMENT MAIN}, {MATERIAL NEUTRAL}, {LEATHER} leather straps and
+boots, dull pewter grey metal fittings, all flat and unmodulated, warm bone
+white reserved for small highlight shapes and the eyes, outline black
+tinted slightly toward blue-violet, light from the upper left casting a
+narrow bone white edge along the upper left contour, {FOCAL REGION}
+carrying the heaviest engraved detail and reading as the focal point of the
+figure, the rest of the body held as large flat angular panels with only
+sparse structural marks, all marks large and structural, with saturated
+{ACCENT} as the single accent covering roughly a fifth of the figure, flat
+and uniform with little texture, used only on {PLACEMENT}, hand-carved edge
+quality.
 ```
 
 **Detail vocabulary.** Ask for *structural* detail, and derive the nouns from
@@ -185,7 +279,7 @@ character. The test is size, not vocabulary: any mark that survives the round-tr
 
 **Always use numeric counts, never adjectives.** "Three or four wrap bands" is a target the model can hit. "Moderate detail" is not, and it will revert to maximalism.
 
-### 4.3 Decide the silhouette and the pose before anything else
+### 4.4 Decide the silhouette and the pose before anything else
 
 Two phrases, written before a word of the prompt exists: what shape is this,
 and what is the body doing. `strongly asymmetric silhouette, one human hand
@@ -200,7 +294,9 @@ matter will follow from the shape; the parts that do not should stay flat.
 The subject block has no fixed running order. The only fixed element is the
 composition tail in 8.2.
 
-### 4.4 Reference example — Bar Brawler (a sample, not a form)
+### 4.5 Reference example — Bar Brawler (pre-levers)
+
+Kept as the reference for the subject block's shape. Its slot assignments predate section 2.6 and should not be copied.
 
 ```
 [GENERAL BLOCK with warm tan skin, a dirty cream shirt, cold slate blue-grey
@@ -222,9 +318,22 @@ orthographic, isolated on a plain flat background of one uniform color,
 full figure visible with headroom.
 ```
 
-Architect and Alchemist subject blocks follow the same seven-step pattern with their own slot assignments; both are generated and approved.
+### 4.6 Reference example — Sorcerer (post-levers, approved)
 
-### 4.5 Silhouette discipline
+The working example of sections 1.1, 2.6, 3.2–3.4 and 4.2 together. Three real hues on the figure — saturated bottle green garment, saturated warm ochre neutral, cobalt accent — separated by value rather than by desaturating two of them, over a green-black band 1.
+
+Slots: garment main saturated deep bottle green, material neutral saturated warm ochre, leather blackened, shadow black green-black, accent unstable cobalt `#2F52C4` on the slab inscriptions, hood lining and rod crown, focal region the chained slab and the hands. Occupation: a ruin-breaker who pries relics out of dead temples.
+
+```
+[GENERAL BLOCK with the slots above]
+full body character, a young ruin-breaker who pries relics out of dead temples, heavy hooded mantle over a shorter under-robe cut at mid-calf above laced boots, a dark iron shoulder yoke across the back carrying a broken slab of carved ruin masonry chained flat against his chest, weight settled back on the rear foot, a thick cord-wrapped length of ruin ironwork planted forward as one hard diagonal across the whole figure ending in swirling in weird shapes, realistic adult head proportion, a man in his late twenties with a smooth unlined face and a lean jaw, long hair falling past the shoulders as one flat mass inside the hood, deep hood worn up but pushed back off the brow so the entire face is open and lit, face lit with no shadow across the eyes, shadow falling on the side of the head away from the light and beneath the jaw, eyes as two bone white almond shapes each with a solid ink black pupil, sized to read clearly but no larger than an adult eye, one eyebrow raised higher than the other, lips slightly parted, chin up, head tilted toward the slab at his chest, three ink black glyph scars burned across the temple, four rough ruin-stone reagent chunks held in a hinged case at the chest, the mantle burned away at the right sleeve leaving the bare forearm blackened to the elbow, the mantle falling into solid green-black shadow on the lower right side and inside the hood, the free hand closed hard around the cord grip, the rod crown broken and asymmetric with three iron teeth swirling around a carved stone, boots with a simple sole division, in contact with a single flat ground line, three-quarter view facing right, eye-level camera at chest height, orthographic, isolated on a plain flat background of one uniform color, full figure visible with headroom.
+```
+
+Counted groups: glyph scars at the temple, reagent chunks at the chest, iron teeth on the rod crown — three, in three regions. The mended hem panels are a borderline fourth and are the first cut if a variant comes back busy.
+
+Architect and Alchemist subject blocks follow the same pattern with their own slot assignments; both are generated and approved under the pre-lever rules.
+
+### 4.7 Silhouette discipline
 
 Each Role must be identifiable in pure black at 300 px. Assign a distinct silhouette family and hold to it:
 
@@ -238,6 +347,9 @@ Each Role must be identifiable in pure black at 300 px. Assign a distinct silhou
 | Off balance | Jester | leaning back off the vertical, one arm out as counterweight |
 | Top-heavy | Alchemist | loaded chest, narrow legs |
 | Narrow and vertical | Thief, Diviner | tight outline, no shoulder mass |
+| Planted diagonal | Sorcerer | mid-calf hem over boots, yoke across the back, rod planted forward across the figure |
+
+**Robed Roles are crowded.** Cultist, Diviner and Sorcerer are all robed, and the Sorcerer stays out of that family on two cues: the hem is cut at mid-calf over visible boots rather than falling to the ankle, and the planted rod puts a hard diagonal through a silhouette the other two hold as a clean vertical. Giving up the ankle hem is the single cheapest separation available to any robed character.
 
 **Pose is the cheapest silhouette tool available.**
 A squatting Lancer, a braced shield stance, a kneeling reload and a
@@ -248,9 +360,9 @@ is doing work.
 The pose is a *held* combat stance, not a moment inside an action,
 and it has to keep the face lit and the accent visible.
 
-If two fielded Roles share a family, that is a design problem, not a prompt problem. Architect and Emissary are the pair to composite side by side early, and their material neutrals must not converge. Cultist and Diviner are the second pair to watch, since both are robed narrow verticals; the Cultist has room to go wider through the shoulders if they converge.
+If two fielded Roles share a family, that is a design problem, not a prompt problem. Architect and Emissary are the pair to composite side by side early, and their material neutrals must not converge.
 
-### 4.6 Detail tier by content tier
+### 4.8 Detail tier by content tier
 
 - **Player Roles** — the block as written.
 - **Fodder enemies** — drop to `minimal interior detail, large simple shapes, three values`, faces dark and anonymous, no accent or a heavily reduced one.
@@ -280,6 +392,8 @@ Each area gets a **scene light color**. It is not a Role accent and never appear
 | Clockwork Spire | TBD | TBD |
 
 Ember dusk is the one warm area, and it is deliberately reserved for the Adventure content so that expeditions feel different from the city work.
+
+**Characters now carry saturated hue of their own** (2.6), so check each new area against a fielded team of three: a saturated garment main can collide with a scene light in a way a beige one never did. The fix is the area, not the character.
 
 ## 6. Effects and VFX
 
@@ -315,7 +429,7 @@ A lot of context and content is not yet written down here yet, like one subchapt
 
 - **Target size first.** Decide the pixel size (map nodes ~48–64 px, skill icons ~64–96 px) and judge every candidate at exactly that size, never at full resolution.
 - **Drop to three values.**
-- **Drop the material slot system.** At icon scale there is no room for eight fills. Icons use ink black, bone white, one mid neutral and the accent.
+- **Drop the material slot system.** At icon scale there is no room for eight fills. Icons use ink black, bone white, one mid neutral and the accent. The tinted band 1 of 1.1 does not apply at icon scale.
 - **One idea per icon.** A single object, centered, filling the frame.
 - **Silhouette must survive being filled black.**
 - **Outline gets proportionally thicker**, not thinner, as size drops.
@@ -388,7 +502,7 @@ One color per Role, no sharing. Hue alone cannot separate twenty entries at phon
 | Plague Doctor | deep moss | #2F5D3A | dark | beak lenses, vial rack |
 | Tidal Corsair | sea teal | #2E8C8C | mid | coat sash, pistol furniture |
 | Chronophage | ice cyan | #8FD4DC | light | clock-face at chest |
-| Sorcerer | unstable cobalt | #2F52C4 | mid | rift glow at hands and inside hood |
+| Sorcerer | unstable cobalt | #2F52C4 | mid | slab inscriptions at the chest, hood lining, stone in the rod crown |
 | Emissary | ink indigo | #26326B | dark | seal wax on chest documents, badge |
 | Diviner | pale lilac | #B9A5D9 | light | veil trim, throat sigil |
 | Cultist | deep amethyst | #5B2A78 | dark | throat brand, robe lining, stained fingers |
@@ -398,7 +512,11 @@ One color per Role, no sharing. Hue alone cannot separate twenty entries at phon
 
 **Watch these three pairs:** Architect brass / Appraiser gold, Sorcerer cobalt / Emissary indigo, Cultist amethyst / Herald magenta. The value gap does the separating in each case, so if a hex is adjusted, never adjust it toward its neighbour's brightness. Placement differs in all three pairs as a backup.
 
+**With saturated garments in play, check the accent against the garment too.** Hue adjacency between a Role's own garment main and its accent is a new failure mode — the Sorcerer's bottle green sits next to cobalt and holds only because the garment is a full value band darker. When they merge, move the garment's value; never shift either hue.
+
 **Eyes are never the accent.** Cultist and Chronophage previously listed eye placements; both have been moved to chest elements. Accent-colored eyes read as menacing and break section 3.
+
+**Accent never lands on skin.** Scars, brands and burns are band 1 shapes (4.2).
 
 **Only three champions are fielded at a time**, so full-roster clashes are largely theoretical. What matters is that any three the player picks stay separable.
 
@@ -415,6 +533,8 @@ Uniformity of this pass matters more than any individual generation. Run it even
 3. One shared overlay (grain or paper), identical settings every time
 4. One LUT per area, identical within that area
 5. Downscale to target in-game size, then judge
+
+**The quantize step must snap L\* while preserving hue.** A greyscale-ramp implementation strips the tinted band 1 (1.1) and the saturated garment (2.6) straight back out, and the levers appear to have done nothing. If a lever-built character comes back muted, check the quantize step before blaming the generation.
 
 **The LUT is the mood dial, and it lives in the engine.** Because every asset quantizes to a known ramp and the accent is a maskable flat fill, area mood can be tuned live in Godot rather than baked into generations. Build the scene light as a layer: a `CanvasModulate` for the global cast, a colored haze quad at low alpha between parallax bands, and the area LUT. Then a biome's color is a value you can iterate on in seconds instead of forty regenerations.
 
@@ -443,17 +563,21 @@ Cutout skeletal animation suits this style — flat fields and hard outlines sur
 Run before any asset enters the project.
 
 - [ ] Outer silhouette is unbroken and reads at target size when filled pure black
-- [ ] Outline thickness matches the rest of the set
+- [ ] Outline thickness matches the rest of the set, and the outline is ink black `#14121A`
 - [ ] Four value bands; no gradients anywhere
-- [ ] Band 1 covers roughly half the figure
+- [ ] Band 1 covers roughly half the figure, and its tint sits at the outline's value
 - [ ] Bone white is under 5% and is not doing area work
 - [ ] Every material sits in at most two adjacent bands
-- [ ] Shared slots (skin, leather, pewter, black, bone) match the rest of the roster
-- [ ] Material neutral is the opposite temperature to the accent
+- [ ] Shared slots (skin, pewter, outline black, bone) match the rest of the roster
+- [ ] Garment main, accent and shadow black are separated by value, not by desaturation
+- [ ] Material neutral is the opposite temperature to the accent, unless 2.6 permission was taken deliberately
 - [ ] Exactly one accent, flat and uniform, roughly 15–20% coverage
 - [ ] Accent has not bled onto skin, hair or background
 - [ ] Face is lit, eyes are visible, head proportion is adult
+- [ ] An age is stated and the face nouns are not the last character's cluster
+- [ ] Expression reads through brow, tilt or mouth line
 - [ ] Eyes hand-placed and consistent with the last approved character
+- [ ] Wear is structural, not textural
 - [ ] Limbs carry light detail, not blank
 - [ ] Ground line, horizon, camera height and light direction match the spec
 - [ ] Post-processing pass applied with the same settings as everything else
@@ -470,12 +594,15 @@ Recorded so they are not retried. Each of these was generated and judged, not re
 
 - **Enlarged head plus enlarged eyes.** Moving both dials at once is the cartoon recipe. The lit face was the fix for distance; the proportions were not, and changing them read as goofy.
 - **Bone white eyes glowing out of a shadowed upper face.** A horror device. Pushed the tone further toward menacing, which was the opposite of the goal.
-- **Bloodmage as a pale nobleman in a high-collared coat.** Landed on Dracula immediately, cape and fangs included. See 3.4.
+- **Bloodmage as a pale nobleman in a high-collared coat.** Landed on Dracula immediately, cape and fangs included. See 3.7.
 - **Bloodmage as a frail wilderness outcast.** Read as an NPC. Low status is what "shunned" looks like, and no amount of gear fixes it.
 - **Bloodmage as a composed sorcerer in bone regalia.** The overcorrection from frail. Regal, clean, and no longer transgressive.
 - **Cultist in torn strips with a bare chest and a notched blade.** Reads as a barbarian, and it was also four counted groups deep.
 - **Cultist in a plain working coat and flat cap.** Taking "hides from the Ledger" literally removed all fantasy content and left nothing a player would want to field.
 - **Jester with a soft floppy cap, wide grin and a wiry build.** Cartoon. `wiry` shrinks the body and makes the head read as oversized.
+- **Sorcerer as a field surveyor in a travel coat, gaiters and pack roll.** Competent and legible, and completely bland — modern hiking gear with no fantasy content, and the staff came back as a plain walking pole. Fleeing the wizard basin with travel vocabulary lands in the outdoorsman basin.
+- **Sorcerer with hollow cheeks, shelf brow, hooked nose and a hard-set jaw.** Four nouns from one cluster, no stated age: returned the model's default forty-year-old handsome man, indistinguishable from the other male heads in the set.
+- **Desaturated garment main as an unwritten default.** Not a generation failure but a documentation one — six characters were built on a rule nobody had written, and the roster came out as grades of beige with one muted accent each. See 2.6.
 
 ---
 
@@ -484,6 +611,8 @@ Recorded so they are not retried. Each of these was generated and judged, not re
 **Lock the model and settings.** Same Leonardo model, same Style Reference / Elements, same generation settings across the whole set. Record them here once chosen. Changing model mid-roster is the single fastest way to break cohesion.
 
 **Composite early.** Perspective and value problems are obvious in a composite and nearly invisible when looking at assets one at a time in a browser tab. Never accept a character without dropping it into the battle scene next to one already approved.
+
+**Sync the Concept Document.** Concept_Document.md section 7 duplicates parts of this guide and is now behind it in three places: it asks for detail *spread evenly* where section 4.3 here asks for one focal region, its 7.1 slot table lists the pre-lever assignments and the retired shared leather slot, and it has no equivalent of 1.1 or 2.6. This guide is the authority on style; the concept doc should point at it rather than restate it.
 
 **Steam disclosure.** Valve requires disclosure of AI-generated content that ships with the game and is consumed by players, including in-game art and store-page marketing. AI dev tools used behind the scenes are exempt under the January 2026 rewrite. Write the disclosure as the public-facing document it is — it appears on the store page.
 
