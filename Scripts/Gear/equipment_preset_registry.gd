@@ -12,7 +12,7 @@ const PRESETS: Dictionary[String, EquipmentPreset] = {
 
 const RELIC_PRESETS: Dictionary[String, EquipmentPreset] = {
 	"The_Long_Furrow": preload("res://Data/Item_Presets/Relics/The_Long_Furrow.tres"),
-	"Draught_Fed_Edge": preload("res://Data/Item_Presets/Relics/Draught_Fed_Edge.tres"),
+	"Remnant_Fed_Edge": preload("res://Data/Item_Presets/Relics/Remnant_Fed_Edge.tres"),
 	"Threefold_Bite": preload("res://Data/Item_Presets/Relics/Threefold_Bite.tres"),
 	"The_Closed_Wound": preload("res://Data/Item_Presets/Relics/The_Closed_Wound.tres"),
 	"The_Planted_Heel": preload("res://Data/Item_Presets/Relics/The_Planted_Heel.tres"),

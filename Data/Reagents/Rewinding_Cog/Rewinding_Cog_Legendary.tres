@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ReagentData" format=3 uid="uid://cfj16mfgjsboa"]
+
+[ext_resource type="Script" uid="uid://t3vvjqg3kas0" path="res://Scripts/Battle/reagent_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://dqn0hrg5p4x0s" path="res://Assets/Champ_Collector/Icons/Reagents/Rewinding_Cog/Rewinding_Cog_Legendary.png" id="2_icon"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "Rewinding Cog"
+description = "Reduces an allies cooldown of all skills by 2 turn."
+icon = ExtResource("2_icon")
+rarity = 5
+effect_kind = 4
+target_kind = 1
+magnitude = 2.0

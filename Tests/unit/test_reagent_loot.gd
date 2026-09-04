@@ -77,13 +77,13 @@ func test_reagent_sell_value_increases_with_rarity() -> void:
 
 func test_selling_consumes_and_credits_at_the_collection_level() -> void:
 	var collection: ReagentCollection = ReagentCollection.new()
-	collection.Add("Tincture_Speed_Uncommon", 2)
+	collection.Add("Sigil_Speed_Uncommon", 2)
 
-	var sell_value: int = LootManager.GetReagentSellValue(ReagentRegistry.Get("Tincture_Speed_Uncommon").rarity)
+	var sell_value: int = LootManager.GetReagentSellValue(ReagentRegistry.Get("Sigil_Speed_Uncommon").rarity)
 	assert_gt(sell_value, 0, "Sell value should be positive")
 
-	assert_true(collection.Consume("Tincture_Speed_Uncommon"), "Selling should be able to consume an owned reagent")
-	assert_eq(collection.GetCount("Tincture_Speed_Uncommon"), 1, "Count should never go negative after selling")
+	assert_true(collection.Consume("Sigil_Speed_Uncommon"), "Selling should be able to consume an owned reagent")
+	assert_eq(collection.GetCount("Sigil_Speed_Uncommon"), 1, "Count should never go negative after selling")
 	collection.free()
 
 func test_random_key_for_rarity_matches_requested_rarity() -> void:

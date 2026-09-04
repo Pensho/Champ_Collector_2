@@ -980,6 +980,11 @@ Reagents are universal consumable items left over from the era of the God of Mag
 looted primarily from that god's ruins and other encounters (rarer reagents drop only
 from bosses). They are stored in a persistent player inventory.
 
+A reagent is an object carrying a lingering remnant of that magic — a trinket, tablet,
+book, seal, chime, carved idol or statuette, dug out of a ruin or stolen from a wealthy
+holding. It is spent when the remnant is drawn out of it. Reagents are never powders,
+potions, herbs or spices; name and describe them as objects. The Alchemist is the exception to this rules as she concocts potions and other things that could be of these types.
+
 Rules (designed and implemented — data model, catalog, persistent inventory, loot
 acquisition, storage/sell UI, pre-battle loadout selection, and in-battle free-action
 consumption; see `Technical_Design_Document.md` sections 6.1, 7.4, 9, and 10.1):
@@ -1009,29 +1014,30 @@ consumption; see `Technical_Design_Document.md` sections 6.1, 7.4, 9, and 10.1):
 - The Alchemist is the reagent producer counterpart: its Fresh Batch passive
   (section 3.1.3) brews a battle-scoped concoction at the start of combat, in a
   slot beyond the three brought reagents. Brews follow normal reagent rules but
-  never enter the inventory.
+  never enter the inventory. They are the one exception to the theme above: genuine
+  potions, mixed on the spot, sharing the reagent slot and rules rather than the flavor.
 - Enemies never use reagents.
 
 Reagent catalog (designed; magnitudes without listed values are not yet decided):
 
 Families — one entry per rarity tier — tagged using the same bracket vocabulary as section
 3.2.3 (see section 3.1.3's lead-in for the definitions):
-* Tinctures [Channel 1]: one family per primary attribute. A small battle-long +6/9/12/15%
+* Sigils [Channel 1]: one family per primary attribute. A small battle-long +6/9/12/15%
   (by rarity) increase to that attribute. Not a buff: undispellable, unstealable,
   and invisible to buff-counting effects. Deliberately weaker than the equivalent
   30% buff.
-* Restorative Draught [Channel 1]: heals the user for 15/20/25/30% (by rarity) of max Health.
-* Purging Tonic [Enabler]: removes up to 1/1/2/2 (by rarity) debuffs from the user.
+* Mending Icon [Channel 1]: heals the user for 15/20/25/30% (by rarity) of max Health.
+* Absolving Tablet [Enabler]: removes up to 1/1/2/2 (by rarity) debuffs from the user.
 * Thief's Regret [Enabler]: destroys (not steals) up to 1/1/2/2 (by rarity) buffs on one enemy.
 * Barrier Stone [Enabler] (not yet implemented, see Technical Design Document 6.1): grants a
   Barrier with a flat absorb amount set by rarity to the user.
-* Rewinding Grit [Enabler]: targets one ally and reduces the cooldown of every skill they have
+* Rewinding Cog [Enabler]: targets one ally and reduces the cooldown of every skill they have
   currently on cooldown by (1/1/1/2) turns, set by rarity.
-* Second Wind Phial [Enabler]: after the consumer's current turn ends, their turn bar resets to
+* Second Wind Chime [Enabler]: after the consumer's current turn ends, their turn bar resets to
   15/20/25/30% (by rarity) instead of 0. Self-only.
 
 Singletons:
-* Zone-Dissolving Salts (Binary) [Enabler]: clears one targeted zone section (one of the two
+* Unbinding Shard (Binary) [Enabler]: clears one targeted zone section (one of the two
   dedicated zone-clearing effects, see section 3.2.4.1).
 * Deathward Charm (Binary) [Enabler] (not yet implemented, see Technical Design Document 6.1):
   applies the Deathward buff to the user.
@@ -1040,7 +1046,7 @@ Singletons:
 * Notarized Seal (Binary) [Enabler] (not yet implemented, see Technical Design Document 6.1):
   applies the Signed Writ debuff to one enemy for 1 turn. God of Rules
   lore family.
-* Wayfarer's Draught [Channel 1] (not yet implemented, see Technical Design Document 6.1):
+* Wayfarer's Compass [Channel 1] (not yet implemented, see Technical Design Document 6.1):
   applies Wanderlust to the consumer, with the random-stat bonus
   percentage set by rarity instead of the buff's standard value. God of Adventure
   lore family.
@@ -1317,3 +1323,127 @@ Encounter entries, opponent skills, and the production rules (overlap tolerance,
 ## 6. Development tools
 - Godot Engine version 4.7
 
+## 7. Aesthetics
+
+Style name: **Lit Woodcut**. `Art_Style_Guide.md` is authoritative for anything in this section; what follows is the summary.
+
+Value and color specification
+* Four **value** bands, not four colors: L\* 6–12 (ink black), 28–36, 52–62, 78–86, plus bone white at 90–94 for highlights and eyes only
+* Band 1 covers roughly half of every figure; large committed areas of solid black are what make the rest read as bright
+* Bone white is a highlight, never a fill — 5% of the figure or less
+* Ink black is tinted slightly toward blue-violet; a true neutral reads as photocopy
+* Color is assigned by **material slot**, not by a global palette limit (see 7.2)
+* One saturated accent per character, 15–20% coverage, head and chest region
+
+Face specification
+* The face is lit; shadow falls on the side of the head away from the light and beneath the jaw, never across the eyes
+* Eyes are two bone white almond shapes with solid ink black pupils, no larger than an adult eye
+* Realistic adult head proportion, and the head is the lightest region of the figure
+* Concealed faces are an exception permitted only where concealment is the character's identity (the Architect's hat brim), never a tier convention
+* Eye shapes are hand-placed in post; Leonardo will not size them consistently across twenty Roles
+
+Perspective specification
+* Camera at chest height, straight on, no tilt
+* Horizon line at a fixed screen fraction, pick one and never move it
+* Orthographic, no vanishing point, state it explicitly
+* All characters on one ground line; depth comes from scale and overlap (this one is up for discussion)
+* Light from upper left in every asset without exception
+* Grey-box the battle scene in Godot first, generate art to fill known boxes
+
+### 7.1. Material slots
+
+Cohesion comes from the shared slots, which are identical on every Role. Variety comes from the two per-character slots.
+
+Shared across the roster: ink black `#14121A`, bone white `#EFE6D2`, warm skin `#C08A63` / `#7E5238` (pale variant `#D6BBA0` / `#937059`), leather `#4A3527` / `#2A1D15`, pewter `#6E727A` / `#3F444B`.
+
+Per character: a **garment main** in two values, a **material neutral** deliberately at the opposite temperature to the accent, and the **accent** itself. The temperature rule is load-bearing — brass on warm leather disappears, brass on cold grey reads as metal.
+
+| Role | Garment main | Material neutral | Accent |
+|---|---|---|---|
+| Bar Brawler | dirty cream `#D8C9A8` / `#9E8E70` | cold slate blue-grey `#4E5A66` / `#2E3740` | terracotta |
+| Architect | cold ash grey `#9A9C94` / `#5A5D56` | dark blue-grey `#39424D` | muted brass |
+| Alchemist | warm oatmeal `#D5C29A` / `#9C8A63` | deep oxblood `#6B2F2C` / `#40191A` | acid chartreuse |
+| Bloodmage | near-black charcoal `#2A2A2E` / `#17171A` | cold pewter-blue `#7C8894` / `#4B545E` | crimson |
+| Cultist | deep slate-violet `#3D3548` / `#231E2B` | warm bone-buff `#CBBB9C` / `#8F8266` | deep amethyst |
+| Jester | bleached bone white `#E4DACA` / `#A29786` | scarlet vermilion `#C4322C` / `#7A1D1C` | saffron |
+
+Two exceptions are in force. The Jester is **light-dominant**: bone white garment main, black carried by hose and one split sleeve rather than the torso, and the material neutral is warm despite the warm accent, because the extreme value contrast separates them without help. Only one Role may be built this way. The Bloodmage uses the **pale skin variant**, earned by his concept rather than chosen for looks.
+
+Watch for cool-neutral drift: most accents are warm, which pushes every material neutral toward blue-grey. No more than half the fielded roster should sit on cool neutrals.
+
+Backgrounds run cool by default and carry no character accent. Each area instead gets a **scene light** color that lives in the sky field, the haze band and the floor tint — the sky is one flat saturated field, never a midtone neutral.
+
+### 7.2. Role colors
+
+| Role | Accent | Hex | Value | Placement |
+|---|---|---|---|---|
+| Thief | rust orange | #C25A1E | mid | hood lining, blade edges at belt |
+| Bloodmage | crimson | #A32036 | dark | chest channels, forearm staining, belt-chain cord |
+| Bar Brawler | terracotta | #B8563A | mid | apron, knuckle wraps |
+| Lancer | flame copper | #E07B2C | light | trident pennant, helmet crest |
+| Jester | saffron | #EDB431 | light | cap bells, collar motley, wrapped knife grips |
+| Architect | muted brass | #C69A4B | mid-light | drafting instruments on chest, hat band |
+| Appraiser | antique gold | #8F7326 | dark | loupe, scale beam, tally gorget |
+| Scholar | ledger parchment | #DCCFA8 | lightest | open ledger at chest, spectacle rims |
+| Alchemist | acid chartreuse | #A8BF3A | light | flask contents, apron spill stain |
+| Symbiote | verdant green | #4E8C3F | mid | fungal mass on shoulder and head |
+| Plague Doctor | deep moss | #2F5D3A | dark | beak lenses, vial rack |
+| Tidal Corsair | sea teal | #2E8C8C | mid | coat sash, pistol furniture |
+| Chronophage | ice cyan | #8FD4DC | light | clock-face at chest |
+| Sorcerer | unstable cobalt | #2F52C4 | mid | rift glow at hands and inside hood |
+| Emissary | ink indigo | #26326B | dark | seal wax on chest documents, badge |
+| Diviner | pale lilac | #B9A5D9 | light | veil trim, throat sigil |
+| Cultist | deep amethyst | #5B2A78 | dark | throat brand, robe lining, stained fingers |
+| Herald of the Loom | violet magenta | #8E3A91 | mid | active thread through the chest loom-frame |
+| Tactician | rose magenta | #C2447A | mid | map case, marker rods |
+| Warlord | steel blue-grey | #6B7A88 | mid | shield device, helmet plume |
+
+### 7.3. Character prompt style
+
+Eyes are never the accent. Accent-colored eyes read as menacing and break the face specification above.
+
+The general block, with material slots substituted:
+
+bold woodcut illustration with engraved structural linework, very thick
+uniform black contour outline on the outer silhouette, clean uninterrupted
+silhouette edge, flat color fields, hard-edged shadows, high contrast with
+large areas of solid ink black, colors assigned by material: {SKIN} skin,
+{GARMENT MAIN}, {MATERIAL NEUTRAL}, dark brown leather straps and boots,
+dull pewter grey metal fittings, all flat and unmodulated, warm bone white
+reserved for small highlight shapes and the eyes, ink black tinted slightly
+toward blue-violet, light from the upper left casting a narrow bone white
+edge along the upper left contour, two levels of detail: the torso, clothing
+and face carry moderate engraved detail through seams, folds, straps and
+panel divisions; the limbs carry light detail through wraps and fold lines
+rather than being left empty, detail spread evenly across the body rather
+than concentrated in one area, all marks large and structural, with
+saturated {ACCENT} as the single accent covering roughly a fifth of the
+figure, flat and uniform with little texture, used only on {PLACEMENT},
+hand-carved edge quality.
+
+The subject block that follows it covers, in order: body type and silhouette
+family, head proportion and the face rules, the chest focal element with a
+counted detail, where the solid black shadow falls, limbs with counted fold
+or wrap lines, pose and hands, then the composition tail unchanged.
+
+Design the Role before writing the prompt. Every Role needs an **occupation**, not a power
+source — a job comes with clothes, tools and a posture, whereas a magic system does not.
+Derive the look from the skill list, which is already a character description: the
+Bloodmage's Transfusion and Tithe of Vitality make him a debt collector, the Cultist's
+Chosen Vessel makes him a predator on his own team, and the Jester's dodge tanking makes
+him the character who wants to be looked at. When two attempts fail in opposite directions,
+the concept is undecided and no rewording will fix it.
+
+Detail budget: no more than **three counted groups** per character (bells, wrap bands, blade
+notches, hanging charms), and never two of them in the same body region.
+
+Pose is square and still by default. Non-neutral poses are reserved for Roles whose mechanics
+earn them, and no more than two or three across the whole roster.
+
+Tone is carried by adjectives more than by structure. Prefer shape language
+over grit: "wide flattened nose" not "broken nose", "worn apron" not
+"stained apron", "fists raised ready" not "fists loosely raised".
+
+Rejected and not to be retried: midtone sky;
+enlarging head and eyes together, which reads as goofy; and bone white eyes
+glowing out of a shadowed upper face, which reads as horror.

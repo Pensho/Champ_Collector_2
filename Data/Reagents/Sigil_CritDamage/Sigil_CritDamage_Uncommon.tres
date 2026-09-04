@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ReagentData" format=3 uid="uid://ium4o66lcpaq"]
+
+[ext_resource type="Script" uid="uid://t3vvjqg3kas0" path="res://Scripts/Battle/reagent_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://ci7h1784qllu2" path="res://Assets/Champ_Collector/Icons/Reagents/Sigil_CritDamage/Sigil_CritDamage_Uncommon.png" id="2_icon"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "Sigil of Critical Damage"
+description = "+6% increase to Critical Damage."
+icon = ExtResource("2_icon")
+rarity = 2
+affected_attribute = 9
+magnitude = 6.0

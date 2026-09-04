@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ReagentData" format=3 uid="uid://xxqv3ipymayi"]
+
+[ext_resource type="Script" uid="uid://t3vvjqg3kas0" path="res://Scripts/Battle/reagent_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://dqr4e8dt4htwc" path="res://Assets/Champ_Collector/Icons/Reagents/Sigil_CritChance/Sigil_CritChance_Rare.png" id="2_icon"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "Sigil of Critical Chance"
+description = "+9% increase to Critical Chance."
+icon = ExtResource("2_icon")
+rarity = 3
+affected_attribute = 8
+magnitude = 9.0

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ReagentData" format=3 uid="uid://iwdydsb16htu"]
+
+[ext_resource type="Script" uid="uid://t3vvjqg3kas0" path="res://Scripts/Battle/reagent_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://xihjfr3e6ih3" path="res://Assets/Champ_Collector/Icons/Reagents/Second_Wind_Chime/Second_Wind_Chime_Rare.png" id="2_icon"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "Second Wind Chime"
+description = "Next turn starts at 20% progress on the turn bar."
+icon = ExtResource("2_icon")
+rarity = 3
+effect_kind = 5
+magnitude = 20.0

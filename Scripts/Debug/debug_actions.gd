@@ -10,7 +10,7 @@ const IMPLEMENTED_RELIC_KEYS: Array[String] = [
 	"Sunderplate_Nail", "The_Ossuary_Ledger",
 	"The_Even_Tread", "The_Frayed_Hour", "The_Solvent_Mark", "Signatorys_Seal",
 	"Quorum_Bell", "Prism_of_Small_Favors",
-	"The_Long_Furrow", "Draught_Fed_Edge", "Threefold_Bite", "Lantern_of_the_Standing_Ward",
+	"The_Long_Furrow", "Remnant_Fed_Edge", "Threefold_Bite", "Lantern_of_the_Standing_Ward",
 	"The_Closed_Wound", "The_Sealed_Docket", "The_Long_Second", "The_Unguarded_Glass",
 	"Ceded_Ground", "Mercy_Stitch", "Understudys_Coat", "Laden_Coffer",
 ]

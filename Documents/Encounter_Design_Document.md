@@ -292,7 +292,7 @@ Concept Document).
   stays full.
 - **Intended solutions (configurations):** (1) the Scholar — Refutation
   removes a glyph every 3 turns and punishes the Archivist per remaining
-  charge; (2) the reagent configuration — up to 3 Zone-Dissolving Salts,
+  charge; (2) the reagent configuration — up to 3 Unbinding Shards,
   spent just before Surges; (3) charge-burn sustain — a durable front (e.g.
   the Warlord's Hold the Line, the Bar Brawler's bulk and healing)
   deliberately walks glyphs to drain their 3 charges between Surges, keeping
@@ -326,7 +326,7 @@ Concept Document).
   buff-light play starves the Writ, leaving only the slow Lien drip to
   manage; (2) buff repossession — the Emissary's Signed Writ shears the
   Collector's stacked durations, the Thief's Pilfer steals them back;
-  (3) the reagent configuration — tinctures and the Fractured Idol are
+  (3) the reagent configuration — Sigils and the Fractured Idol are
   explicitly not buffs (undispellable, invisible to buff counting), so a
   reagent-powered roster fights at full strength with nothing to seize; the
   Sorcerer's Arcane Instability amplifies them and makes it the natural
@@ -418,8 +418,8 @@ damage dealt (Concept Document 1.1.2).
 
 | Encounter | Intended answers (channel) | Verdict |
 |---|---|---|
-| The Glyphbound Archivist | (1) Refutation [Channel 1 + Enabler], incidental per-charge damage, not a burst-scale contributor; (2) Zone-Dissolving Salts [Enabler]; (3) Fortify (Hold the Line) [Channel 1] / durable-front sustain (Liquid Courage [Channel 1], Headbutt [Channel 1 + Enabler]) — all three configurations are zone-clearing or sustain, none assembles a burst | **enabler-only** |
-| The Collector of Debts | (1) Devour Blessing [Channel 1 + Channel 2], used here as buff-denial rather than a burst hit; (2) Signed Writ [Enabler], Pilfer [Enabler]; (3) reagent roster — tinctures [Channel 1], no named channel-2/3 payoff yet configured onto this boss | **enabler-only** |
+| The Glyphbound Archivist | (1) Refutation [Channel 1 + Enabler], incidental per-charge damage, not a burst-scale contributor; (2) Unbinding Shards [Enabler]; (3) Fortify (Hold the Line) [Channel 1] / durable-front sustain (Liquid Courage [Channel 1], Headbutt [Channel 1 + Enabler]) — all three configurations are zone-clearing or sustain, none assembles a burst | **enabler-only** |
+| The Collector of Debts | (1) Devour Blessing [Channel 1 + Channel 2], used here as buff-denial rather than a burst hit; (2) Signed Writ [Enabler], Pilfer [Enabler]; (3) reagent roster — Sigils [Channel 1], no named channel-2/3 payoff yet configured onto this boss | **enabler-only** |
 | The Warden of the Reliquary | (1) Rite of Severance [Channel 1 + Enabler]; (2) Signed Writ [Enabler]; (3) Daunting Strength (Tactician) [Channel 2] + Full Appraisal — Keen Edge, Lethal Precision (Appraiser) [Channel 1], breaking the Barrier and killing into the Deathward in one crit round | has a payoff — the catalog's reference shape |
 
 Two Boss-tier `enabler-only` verdicts stand: The Glyphbound Archivist and The Collector

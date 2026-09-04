@@ -100,8 +100,8 @@ specific roster picks matter most at the top tier.
 - **Boss:** the mandatory-puzzle tier. Two or three layered mechanics; beatable by
   one of two or three specific skill configurations, or by a significantly
   over-leveled roster (per Concept 3.2). Boss mechanics may demand role-signature
-  answers — for example a zone only the Scholar's Refutation or Zone-Dissolving
-  Salts can remove, or a window that only a specific reagent opens. A solved
+  answers — for example a zone only the Scholar's Refutation or Unbinding
+  Shard can remove, or a window that only a specific reagent opens. A solved
   configuration ends in a full burst, 30–50x carrying 60–80% of total damage
   dealt, with the threat curve peaking before it, not after; unsolved is a wall,
   not merely slow (`Concept_Document.md` 1.1.1, 1.1.2).
@@ -265,7 +265,7 @@ dedicated pass. Fodder cells are tagged for completeness but carry no burst expe
 | Thief | Wake Skimmers (Pilfer buff theft) [Enabler] | — | The Collector of Debts (Pilfer → steals seized buffs back) [Enabler] |
 | Lancer | Line Breaker (Disarm → Enfeeble) [Channel 1] | Reanimating Statues 2 (Disarm → Enfeeble) [Channel 1] | — |
 | Alchemist | Ledger Clerks (Dissolving Agent → Unravel) [Channel 1] | — | — |
-| Sorcerer | — | — | The Collector of Debts (Arcane Instability → amplified tincture/Fractured Idol configuration) [Channel 1 + Channel 2 + Channel 3] |
+| Sorcerer | — | — | The Collector of Debts (Arcane Instability → amplified Sigil/Fractured Idol configuration) [Channel 1 + Channel 2 + Channel 3] |
 | Scholar | — | — | The Glyphbound Archivist (Refutation → zone clear, role signature) [Channel 1 + Enabler] |
 | Diviner | Ridge Marksmen (Premonition) [Enabler] | The Ashen Oracle (Ill Omen → Hexed) [Enabler] | — |
 | Appraiser | — | — | The Warden of the Reliquary (Full Appraisal → burst-window configuration) [Channel 1] |
@@ -292,7 +292,7 @@ Post-batch review check (boss proving batch): the Emissary's Signed Writ now
 answers 3 mini-boss/boss encounters — exactly at the review threshold; the
 next encounter leaning on it triggers the review. Severance sits at 2. Each
 boss keeps at least one configuration no other boss uses (Archivist: all
-three; Collector: the Cultist buff economy and the tincture reagent
+three; Collector: the Cultist buff economy and the Sigil reagent
 configuration; Warden: the Tactician + Appraiser burst window).
 
 Opponent skills authored so far (`Encounter_Design_Document.md` section 1):

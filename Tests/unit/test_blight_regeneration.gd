@@ -67,7 +67,7 @@ func test_blight_halves_reagent_healing() -> void:
 	var unreduced: int = ReagentResolver.HealAmount(100 * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER, 15.0, 1.0)
 	var expected: int = int(floor(unreduced * 0.5))
 
-	var results: Array[CombatResult] = _resolver.ResolveReagent(0, "Restorative_Draught_Uncommon", 0)
+	var results: Array[CombatResult] = _resolver.ResolveReagent(0, "Mending_Icon_Uncommon", 0)
 
 	var heals: Array = results.filter(func(r): return r.kind == CombatResult.Kind.Heal)
 	assert_eq(heals.size(), 1)

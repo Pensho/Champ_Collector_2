@@ -40,7 +40,7 @@ Rending Charge cast at 4 or 5 sections of turn-bar distance Echoes once, at
 
 The catalog's one exception to the mechanic-vocabulary rule: it reads a named skill.
 
-### Draught-Fed Edge
+### Remnant-Fed Edge
 
 *Audience: Sorcerer, Alchemist.* **Weapon.** [Channel 2]  hook `OnReagentConsumed`
 
@@ -282,7 +282,7 @@ added to the catalog is checked against that figure by its audience, not by its 
 
 | Slot | Count | Entries |
 |---|---|---|
-| Weapon | 6 | The Long Furrow, Draught-Fed Edge, Threefold Bite, Kiln Brand, Sunderplate Nail, Quorum Bell |
+| Weapon | 6 | The Long Furrow, Remnant-Fed Edge, Threefold Bite, Kiln Brand, Sunderplate Nail, Quorum Bell |
 | Off-Hand | 11 | The Closed Wound, Lantern of the Standing Ward, The Answering Boss, The Sealed Docket, The Unguarded Glass, The Ossuary Ledger, Prism of Small Favors, Signatory's Seal, The Solvent Mark, The Quiet Mass, Understudy's Coat |
 | Boots | 7 | The Planted Heel, The Frayed Hour, The Even Tread, Ceded Ground, Mercy Stitch, The Long Second, Laden Coffer |
 
@@ -304,7 +304,7 @@ Five entries is the soft ceiling on any one Role's audience, checked whenever an
 
 | Role | Audience of | Won't wear | Won't sit beside |
 |---|---|---|---|
-| Alchemist | Draught-Fed Edge, The Solvent Mark | Kiln Brand | Lantern of the Standing Ward, The Closed Wound, The Frayed Hour, The Long Second |
+| Alchemist | Remnant-Fed Edge, The Solvent Mark | Kiln Brand | Lantern of the Standing Ward, The Closed Wound, The Frayed Hour, The Long Second |
 | Appraiser | Prism of Small Favors, Ceded Ground | — | The Even Tread |
 | Architect | Lantern of the Standing Ward, The Sealed Docket, The Solvent Mark | Kiln Brand | The Frayed Hour |
 | Bar Brawler | The Planted Heel, The Answering Boss, The Quiet Mass, Mercy Stitch, Understudy's Coat | The Ossuary Ledger, The Unguarded Glass | The Closed Wound, The Long Second |
@@ -318,7 +318,7 @@ Five entries is the soft ceiling on any one Role's audience, checked whenever an
 | Lancer | Prism of Small Favors, Sunderplate Nail, The Long Furrow, The Sealed Docket, The Unguarded Glass | Kiln Brand | — |
 | Plague Doctor | Threefold Bite, Signatory's Seal, Lantern of the Standing Ward, The Solvent Mark | Kiln Brand | The Sealed Docket |
 | Scholar | The Even Tread, Quorum Bell | Kiln Brand | Sunderplate Nail, The Long Second |
-| Sorcerer | Draught-Fed Edge, Threefold Bite, Mercy Stitch | — | Lantern of the Standing Ward, The Sealed Docket |
+| Sorcerer | Remnant-Fed Edge, Threefold Bite, Mercy Stitch | — | Lantern of the Standing Ward, The Sealed Docket |
 | Symbiote | The Planted Heel, The Answering Boss, Mercy Stitch, Understudy's Coat | The Ossuary Ledger, The Unguarded Glass | The Closed Wound, The Long Second |
 | Tactician | The Even Tread, Ceded Ground, Quorum Bell | — | Sunderplate Nail, The Long Second |
 | Thief | Kiln Brand, Prism of Small Favors, Sunderplate Nail, The Unguarded Glass | — | Quorum Bell |
@@ -337,7 +337,7 @@ no-cooldown skill.
 | Channel | Count | Entries |
 |---|---|---|
 | Channel 1 | 1 | Sunderplate Nail |
-| Channel 2 | 8 | Draught-Fed Edge, Kiln Brand, The Closed Wound, The Planted Heel, The Answering Boss, The Sealed Docket, The Ossuary Ledger, The Frayed Hour |
+| Channel 2 | 8 | Remnant-Fed Edge, Kiln Brand, The Closed Wound, The Planted Heel, The Answering Boss, The Sealed Docket, The Ossuary Ledger, The Frayed Hour |
 | Channel 2 — crit path | 2 | The Unguarded Glass, Prism of Small Favors |
 | Channel 3 — Cascade | 3 | The Long Furrow, Threefold Bite, Lantern of the Standing Ward |
 | Enabler | 9 | Signatory's Seal, The Solvent Mark, Quorum Bell, The Even Tread, Ceded Ground, The Quiet Mass, Mercy Stitch, The Long Second, Understudy's Coat |
@@ -351,7 +351,7 @@ What the upside reads. Two entries sharing a surface is a duplication to justify
 |---|---|
 | Buff or Barrier the wearer holds | The Answering Boss (Barrier), The Unguarded Glass (ally-granted buff), Prism of Small Favors (count of buffs held) |
 | Target's state | The Sealed Docket (4+ distinct debuff types) |
-| Resource consumed | Draught-Fed Edge (reagent), Lantern of the Standing Ward (zone charge) |
+| Resource consumed | Remnant-Fed Edge (reagent), Lantern of the Standing Ward (zone charge) |
 | Event count within the battle | Threefold Bite (every third Echo), Signatory's Seal (first N debuffs per enemy) |
 | Incoming event | The Planted Heel (hit above 15% max Health), The Ossuary Ledger (ally death), Mercy Stitch (damage crossing 25% of the wearer's max Health) |
 | Turn-bar distance | The Long Furrow (4 or 5 sections) |
@@ -370,7 +370,7 @@ What the upside reads. Two entries sharing a surface is a duplication to justify
 | `OnBuffGained` | 5 | The Answering Boss, The Unguarded Glass, The Even Tread, Sunderplate Nail, Prism of Small Favors |
 | `OnSkillCast` | 3 | The Long Furrow, Kiln Brand, Quorum Bell |
 | `OnSkillEffectsResolved` | 1 | The Long Furrow |
-| `OnReagentConsumed` | 1 | Draught-Fed Edge |
+| `OnReagentConsumed` | 1 | Remnant-Fed Edge |
 | `OnCascadeInstanceResolved` | 0 | — |
 | `OnDamageTaken` | 2 | The Planted Heel, Mercy Stitch |
 | `OnZoneUsed` | 1 | Lantern of the Standing Ward |
@@ -413,7 +413,7 @@ What the upside reads. Two entries sharing a surface is a duplication to justify
 | Debuffs on the wearer | amplified against the wearer | The Solvent Mark |
 | Unravel, Expose Weakness, Blight, Blind | amplified, and denied on the wearer | The Solvent Mark |
 | Distinct debuff types | read | The Sealed Docket |
-| Reagents | suppressed | Draught-Fed Edge (wearer), Lantern of the Standing Ward (team) |
+| Reagents | suppressed | Remnant-Fed Edge (wearer), Lantern of the Standing Ward (team) |
 | Echoes | amplified / suppressed | Threefold Bite, Lantern of the Standing Ward, The Long Furrow / The Sealed Docket |
 | Healing and Barriers | granted / denied | Ceded Ground (to a buffed ally, out of the wearer's Health), Mercy Stitch (to the wearer, on a Health threshold) / The Closed Wound (healing, team), The Frayed Hour (Barriers, team) |
 | Damaging skills while the wearer is wounded | suppressed | Mercy Stitch (wearer) |

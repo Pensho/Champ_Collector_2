@@ -31,7 +31,7 @@ func test_team_damage_bonus_at_uncommon_matches_the_status_resources_own_magnitu
 	var characters: Dictionary[int, Character] = {0: alchemist}
 	var resolver: BattleResolver = TestFactory.make_resolver(characters, CombatSides.new([0], []))
 
-	var results: Array[CombatResult] = resolver.ResolveReagent(0, "Restorative_Draught_Rare", 0)
+	var results: Array[CombatResult] = resolver.ResolveReagent(0, "Mending_Icon_Rare", 0)
 	var applied: CombatResult = results.filter(func(r: CombatResult) -> bool:
 			return (CombatResult.Kind.Status_Applied == r.kind
 					and Types.Buff_Type.Volatile_Mixture == r.buff_type))[0]
@@ -84,7 +84,7 @@ func test_ally_reagent_consumption_grants_the_buff_to_the_whole_team() -> void:
 	var resolver: BattleResolver = TestFactory.make_resolver(characters, CombatSides.new([0, 1], []))
 
 	# The Alchemist did not consume this reagent — its teammate did.
-	resolver.ResolveReagent(1, "Restorative_Draught_Rare", 1)
+	resolver.ResolveReagent(1, "Mending_Icon_Rare", 1)
 
 	assert_true(_has_buff(alchemist, Types.Buff_Type.Volatile_Mixture),
 		"An ally's consumption should grant the whole team the buff, the Alchemist included")
@@ -101,7 +101,7 @@ func test_alchemists_own_consumption_also_grants_the_team_buff() -> void:
 	var characters: Dictionary[int, Character] = {0: alchemist}
 	var resolver: BattleResolver = TestFactory.make_resolver(characters, CombatSides.new([0], []))
 
-	resolver.ResolveReagent(0, "Restorative_Draught_Rare", 0)
+	resolver.ResolveReagent(0, "Mending_Icon_Rare", 0)
 
 	assert_true(_has_buff(alchemist, Types.Buff_Type.Volatile_Mixture),
 		"The Alchemist's own reagent consumption must also trigger its team-wide factor")
@@ -118,7 +118,7 @@ func test_reagent_consumption_across_enemy_lines_does_not_leak_the_buff() -> voi
 	var characters: Dictionary[int, Character] = {0: alchemist, 1: enemy}
 	var resolver: BattleResolver = TestFactory.make_resolver(characters, CombatSides.new([0], [1]))
 
-	resolver.ResolveReagent(1, "Restorative_Draught_Rare", 1)
+	resolver.ResolveReagent(1, "Mending_Icon_Rare", 1)
 
 	assert_false(_has_buff(alchemist, Types.Buff_Type.Volatile_Mixture),
 		"An enemy's reagent consumption must never grant the player team's factor")

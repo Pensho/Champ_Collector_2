@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ReagentData" format=3 uid="uid://dapneqome84c5"]
+
+[ext_resource type="Script" uid="uid://t3vvjqg3kas0" path="res://Scripts/Battle/reagent_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://cowf730djy17m" path="res://Assets/Champ_Collector/Icons/Reagents/Mending_Icon/Mending_Icon_Rare.png" id="2_icon"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "Mending Icon"
+description = "Heals for 20% of max Health."
+icon = ExtResource("2_icon")
+rarity = 3
+effect_kind = 1
+target_kind = 1
+magnitude = 20.0

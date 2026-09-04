@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ReagentData" format=3 uid="uid://dbk551b1ye6p6"]
+
+[ext_resource type="Script" uid="uid://t3vvjqg3kas0" path="res://Scripts/Battle/reagent_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://de2gol2et4jiw" path="res://Assets/Champ_Collector/Icons/Reagents/Absolving_Tablet/Absolving_Tablet_Rare.png" id="2_icon"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "Absolving Tablet"
+description = "Removes up to 1 debuff."
+icon = ExtResource("2_icon")
+rarity = 3
+effect_kind = 2
+magnitude = 1.0

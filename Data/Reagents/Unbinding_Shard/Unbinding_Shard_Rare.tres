@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ReagentData" format=3 uid="uid://djuxffqjdk3iw"]
+
+[ext_resource type="Script" uid="uid://t3vvjqg3kas0" path="res://Scripts/Battle/reagent_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://dk5gf1wy08e84" path="res://Assets/Champ_Collector/Icons/Reagents/Unbinding_Shard/Unbinding_Shard_Rare.png" id="2_icon"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "Unbinding Shard"
+description = "Clears one targeted zone section."
+icon = ExtResource("2_icon")
+rarity = 3
+binary = true
+effect_kind = 6
+target_kind = 3

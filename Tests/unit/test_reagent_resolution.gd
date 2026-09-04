@@ -20,9 +20,9 @@ func test_heal_restores_health_without_ending_the_turn() -> void:
 	target._current_health = 5
 	target._skills[0].cooldown_left = 2
 
-	resolver.ResolveReagent(0, "Restorative_Draught_Rare", 0)
+	resolver.ResolveReagent(0, "Mending_Icon_Rare", 0)
 
-	assert_gt(target._current_health, 5, "Restorative Draught must heal the target")
+	assert_gt(target._current_health, 5, "Mending Icon must heal the target")
 	assert_eq(target._skills[0].cooldown_left, 2, "A reagent is a free action: cooldown must be untouched")
 
 func test_heal_never_exceeds_max_health() -> void:
@@ -30,7 +30,7 @@ func test_heal_never_exceeds_max_health() -> void:
 	var target: Character = resolver.GetCharacters()[0]
 	target._current_health = 39
 
-	resolver.ResolveReagent(0, "Restorative_Draught_Legendary", 0)
+	resolver.ResolveReagent(0, "Mending_Icon_Legendary", 0)
 
 	var max_health: int = target.GetTotalAttribute(Types.Attribute.Health) * GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER
 	assert_eq(target._current_health, max_health)
@@ -40,16 +40,16 @@ func test_clear_zone_removes_a_placed_zone() -> void:
 	TestFactory.place_zone(resolver, 0, 0, TestFactory.make_lava_zone_effect(), Types.Skill_Target.ZoneAll)
 	assert_true(resolver.GetZoneResolver().HasZone(0))
 
-	resolver.ResolveReagent(0, "Zone_Dissolving_Salts_Rare", 0)
+	resolver.ResolveReagent(0, "Unbinding_Shard_Rare", 0)
 
-	assert_false(resolver.GetZoneResolver().HasZone(0), "Zone-Dissolving Salts must remove the targeted zone")
+	assert_false(resolver.GetZoneResolver().HasZone(0), "Unbinding Shard must remove the targeted zone")
 
 func test_reduce_cooldown_lowers_every_skill_on_the_target_floored_at_zero() -> void:
 	var resolver: BattleResolver = _make_resolver()
 	var target: Character = resolver.GetCharacters()[1]
 	target._skills[0].cooldown_left = 1
 
-	resolver.ResolveReagent(0, "Rewinding_Grit_Rare", 1)
+	resolver.ResolveReagent(0, "Rewinding_Cog_Rare", 1)
 
 	assert_eq(target._skills[0].cooldown_left, 0)
 
@@ -63,18 +63,18 @@ func test_remove_debuffs_removes_up_to_the_reagent_count() -> void:
 		debuff.ID = i
 		target._active_debuffs.append(debuff)
 
-	resolver.ResolveReagent(0, "Purging_Tonic_Rare", 1)
+	resolver.ResolveReagent(0, "Absolving_Tablet_Rare", 1)
 
-	assert_eq(target._active_debuffs.size(), 1, "Rare Purging Tonic removes up to 1 debuff")
+	assert_eq(target._active_debuffs.size(), 1, "Rare Absolving Tablet removes up to 1 debuff")
 
 func test_attribute_increase_is_visible_through_combat_attributes() -> void:
 	var resolver: BattleResolver = _make_resolver()
 	var before: int = resolver.GetEffectiveAttributes(0)[Types.Attribute.Speed]
 
-	resolver.ResolveReagent(0, "Tincture_Speed_Rare", 0)
+	resolver.ResolveReagent(0, "Sigil_Speed_Rare", 0)
 
 	var after: int = resolver.GetEffectiveAttributes(0)[Types.Attribute.Speed]
-	assert_gt(after, before, "The Tincture bonus must be visible on the consumer's combat attributes")
+	assert_gt(after, before, "The Sigil bonus must be visible on the consumer's combat attributes")
 
 func test_fractured_idol_never_reduces_consumer_below_one_health() -> void:
 	var resolver: BattleResolver = _make_resolver()
@@ -120,12 +120,12 @@ func test_destroy_enemy_buffs_removes_up_to_the_reagent_count() -> void:
 func test_turn_bar_reset_emits_a_pending_result_with_the_reagent_percent() -> void:
 	var resolver: BattleResolver = _make_resolver()
 
-	var results: Array[CombatResult] = resolver.ResolveReagent(0, "Second_Wind_Phial_Rare", 0)
+	var results: Array[CombatResult] = resolver.ResolveReagent(0, "Second_Wind_Chime_Rare", 0)
 
 	var pending_resets: Array = results.filter(
 			func(r): return r.kind == CombatResult.Kind.Turn_Bar_Reset_Pending and r.target_ID == 0)
-	assert_eq(pending_resets.size(), 1, "Second Wind Phial must report exactly one pending reset")
-	assert_almost_eq(pending_resets[0].fraction, 0.20, 0.001, "Rare Second Wind Phial resets to 20%")
+	assert_eq(pending_resets.size(), 1, "Second Wind Chime must report exactly one pending reset")
+	assert_almost_eq(pending_resets[0].fraction, 0.20, 0.001, "Rare Second Wind Chime resets to 20%")
 
 func test_potency_scales_a_scalar_effect_but_not_a_binary_one() -> void:
 	var scaled_resolver: BattleResolver = _make_resolver()
@@ -137,8 +137,8 @@ func test_potency_scales_a_scalar_effect_but_not_a_binary_one() -> void:
 	var baseline_target: Character = baseline_resolver.GetCharacters()[0]
 	baseline_target._current_health = 5
 
-	scaled_resolver.ResolveReagent(0, "Restorative_Draught_Rare", 0)
-	baseline_resolver.ResolveReagent(0, "Restorative_Draught_Rare", 0)
+	scaled_resolver.ResolveReagent(0, "Mending_Icon_Rare", 0)
+	baseline_resolver.ResolveReagent(0, "Mending_Icon_Rare", 0)
 
 	assert_gt(scaled_target._current_health, baseline_target._current_health,
 			"A scalar heal must scale with the consumer's potency modifier")
@@ -149,7 +149,7 @@ func test_potency_scales_a_scalar_effect_but_not_a_binary_one() -> void:
 	zone_consumer._trait = TestFactory.FakeAmplifyingTrait.new(5.0)
 	TestFactory.place_zone(zone_resolver, 0, 0, TestFactory.make_lava_zone_effect(), Types.Skill_Target.ZoneAll)
 
-	zone_resolver.ResolveReagent(0, "Zone_Dissolving_Salts_Rare", 0)
+	zone_resolver.ResolveReagent(0, "Unbinding_Shard_Rare", 0)
 
 	assert_false(zone_resolver.GetZoneResolver().HasZone(0), "A binary effect resolves the same regardless of potency")
 
@@ -191,7 +191,7 @@ func test_extra_potency_stacks_additively_with_a_traits_own_amplification() -> v
 	trait_only_target._current_health = 5
 
 	var trait_only_healed: int = trait_only_resolver.ResolveReagent(
-			0, "Restorative_Draught_Rare", 0)[0].amount
+			0, "Mending_Icon_Rare", 0)[0].amount
 
 	var stacked_resolver: BattleResolver = _make_resolver()
 	var stacked_target: Character = stacked_resolver.GetCharacters()[0]
@@ -199,7 +199,7 @@ func test_extra_potency_stacks_additively_with_a_traits_own_amplification() -> v
 	stacked_target._current_health = 5
 
 	var stacked_healed: int = stacked_resolver.ResolveReagent(
-			0, "Restorative_Draught_Rare", 0, 0.2)[0].amount
+			0, "Mending_Icon_Rare", 0, 0.2)[0].amount
 
 	assert_gt(stacked_healed, trait_only_healed,
 			"p_extra_potency (a brew's potency bonus) must add on top of the trait's own bonus")
@@ -260,8 +260,8 @@ func test_catalyst_buff_amplifies_a_scalar_reagent_and_is_consumed() -> void:
 	var baseline_consumer: Character = baseline_resolver.GetCharacters()[0]
 	baseline_consumer._current_health = 5
 
-	catalyst_resolver.ResolveReagent(0, "Restorative_Draught_Rare", 0)
-	baseline_resolver.ResolveReagent(0, "Restorative_Draught_Rare", 0)
+	catalyst_resolver.ResolveReagent(0, "Mending_Icon_Rare", 0)
+	baseline_resolver.ResolveReagent(0, "Mending_Icon_Rare", 0)
 
 	assert_gt(catalyst_consumer._current_health, baseline_consumer._current_health,
 			"Catalyst must amplify a scalar reagent's effect")
@@ -274,9 +274,9 @@ func test_catalyst_buff_does_not_affect_a_binary_reagent_and_is_not_consumed() -
 	_add_catalyst(consumer)
 	TestFactory.place_zone(resolver, 0, 0, TestFactory.make_lava_zone_effect(), Types.Skill_Target.ZoneAll)
 
-	resolver.ResolveReagent(0, "Zone_Dissolving_Salts_Rare", 0)
+	resolver.ResolveReagent(0, "Unbinding_Shard_Rare", 0)
 
-	assert_false(resolver.GetZoneResolver().HasZone(0), "Zone-Dissolving Salts still resolves without amplification")
+	assert_false(resolver.GetZoneResolver().HasZone(0), "Unbinding Shard still resolves without amplification")
 	assert_true(consumer._active_buffs.any(func(b): return b.type == Types.Buff_Type.Catalyst),
 			"A binary reagent must not consume the Catalyst buff")
 
@@ -294,7 +294,7 @@ func test_catalyst_stacks_additively_with_a_traits_own_amplification() -> void:
 	_add_catalyst(stacked_target)
 
 	var stacked_healed: int = _heal_amount(
-			stacked_resolver.ResolveReagent(0, "Restorative_Draught_Rare", 0))
+			stacked_resolver.ResolveReagent(0, "Mending_Icon_Rare", 0))
 
 	# Additive potency: 1.0 base + 0.5 trait + 0.5 Catalyst = 2.0, not 1.5 * 1.5.
 	var max_health: int = stacked_target.GetTotalAttribute(

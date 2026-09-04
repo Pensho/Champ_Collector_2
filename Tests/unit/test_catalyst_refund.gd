@@ -6,7 +6,7 @@ extends GutTest
 
 const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 
-const A_REAGENT_KEY: String = "Tincture_Speed_Uncommon"
+const A_REAGENT_KEY: String = "Sigil_Speed_Uncommon"
 
 var _collection: ReagentCollection = null
 

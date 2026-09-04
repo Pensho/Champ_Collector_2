@@ -4,8 +4,8 @@ extends GutTest
 ## inventory deletion, kept independent of the Battle scene node so this is testable
 ## headlessly (Test_Design_Document.md: test pure logic, not node trees).
 
-const A_REAGENT_KEY: String = "Tincture_Speed_Uncommon"
-const ANOTHER_REAGENT_KEY: String = "Restorative_Draught_Rare"
+const A_REAGENT_KEY: String = "Sigil_Speed_Uncommon"
+const ANOTHER_REAGENT_KEY: String = "Mending_Icon_Rare"
 
 func test_try_consume_marks_spent_and_consumes_from_collection() -> void:
 	var collection: ReagentCollection = ReagentCollection.new()

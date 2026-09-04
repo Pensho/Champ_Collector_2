@@ -1,6 +1,6 @@
 extends GutTest
 
-## The Relics built on the Echo, zone, and reagent plumbing: The Long Furrow, Draught-Fed
+## The Relics built on the Echo, zone, and reagent plumbing: The Long Furrow, Remnant-Fed
 ## Edge, Threefold Bite, and Lantern of the Standing Ward. Each Relic effect is exercised at
 ## two rarity steps, plus its drawback.
 
@@ -124,21 +124,21 @@ func test_long_furrow_suppresses_critical_hits_on_rending_charge_only() -> void:
 	assert_false(relic.SuppressesOwnCriticalHit(0, "Lance Thrust"),
 		"Every other skill should be unaffected")
 
-# --- Draught-Fed Edge ---
+# --- Remnant-Fed Edge ---
 
-func _make_draught_fed_edge_setup(p_rarity: Types.Rarity) -> Dictionary:
+func _make_remnant_fed_edge_setup(p_rarity: Types.Rarity) -> Dictionary:
 	var character: Character = TestFactory.make_character()
-	var relic: DraughtFedEdgeRelic = DraughtFedEdgeRelic.new()
+	var relic: RemnantFedEdgeRelic = RemnantFedEdgeRelic.new()
 	relic.Init(p_rarity)
 	character._trait = relic
 	character._skills = [_strike_skill("Strike"), TestFactory.make_empty_skill()]
 	var resolver: BattleResolver = TestFactory.make_resolver({0: character}, TestFactory.make_full_sides())
 	return {"relic": relic, "resolver": resolver}
 
-func test_draught_fed_edge_boosts_the_first_damaging_skill_after_a_reagent_at_two_rarities() -> void:
+func test_remnant_fed_edge_boosts_the_first_damaging_skill_after_a_reagent_at_two_rarities() -> void:
 	for rarity_and_expected in [[Types.Rarity.Common, 0.25], [Types.Rarity.Legendary, 0.60]]:
-		var setup: Dictionary = _make_draught_fed_edge_setup(rarity_and_expected[0])
-		var relic: DraughtFedEdgeRelic = setup["relic"]
+		var setup: Dictionary = _make_remnant_fed_edge_setup(rarity_and_expected[0])
+		var relic: RemnantFedEdgeRelic = setup["relic"]
 		var resolver: BattleResolver = setup["resolver"]
 		relic.OnReagentConsumed(0, ReagentData.new(), resolver)
 
@@ -148,18 +148,18 @@ func test_draught_fed_edge_boosts_the_first_damaging_skill_after_a_reagent_at_tw
 			"Rarity %s should boost the following damaging cast by its own ladder step" %
 					Types.RarityName(rarity_and_expected[0]))
 
-func test_draught_fed_edge_gives_no_bonus_without_a_reagent() -> void:
-	var setup: Dictionary = _make_draught_fed_edge_setup(Types.Rarity.Legendary)
-	var relic: DraughtFedEdgeRelic = setup["relic"]
+func test_remnant_fed_edge_gives_no_bonus_without_a_reagent() -> void:
+	var setup: Dictionary = _make_remnant_fed_edge_setup(Types.Rarity.Legendary)
+	var relic: RemnantFedEdgeRelic = setup["relic"]
 	var resolver: BattleResolver = setup["resolver"]
 
 	var result: TraitSkillResult = relic.OnSkillCast(0, [3], "Strike", {}, resolver)
 
 	assert_almost_eq(result._damage_multiplier, 1.0, 0.0001)
 
-func test_draught_fed_edge_bonus_stays_banked_through_a_non_damaging_cast() -> void:
-	var setup: Dictionary = _make_draught_fed_edge_setup(Types.Rarity.Legendary)
-	var relic: DraughtFedEdgeRelic = setup["relic"]
+func test_remnant_fed_edge_bonus_stays_banked_through_a_non_damaging_cast() -> void:
+	var setup: Dictionary = _make_remnant_fed_edge_setup(Types.Rarity.Legendary)
+	var relic: RemnantFedEdgeRelic = setup["relic"]
 	var resolver: BattleResolver = setup["resolver"]
 	relic.OnReagentConsumed(0, ReagentData.new(), resolver)
 
@@ -171,9 +171,9 @@ func test_draught_fed_edge_bonus_stays_banked_through_a_non_damaging_cast() -> v
 	assert_almost_eq(strike_result._damage_multiplier, 1.60, 0.0001,
 		"The first damaging cast after the reagent should still get the bonus")
 
-func test_draught_fed_edge_pending_bonus_does_not_survive_into_the_next_battle() -> void:
-	var setup: Dictionary = _make_draught_fed_edge_setup(Types.Rarity.Legendary)
-	var relic: DraughtFedEdgeRelic = setup["relic"]
+func test_remnant_fed_edge_pending_bonus_does_not_survive_into_the_next_battle() -> void:
+	var setup: Dictionary = _make_remnant_fed_edge_setup(Types.Rarity.Legendary)
+	var relic: RemnantFedEdgeRelic = setup["relic"]
 	var resolver: BattleResolver = setup["resolver"]
 	relic.OnReagentConsumed(0, ReagentData.new(), resolver)
 
@@ -183,10 +183,10 @@ func test_draught_fed_edge_pending_bonus_does_not_survive_into_the_next_battle()
 	assert_almost_eq(result._damage_multiplier, 1.0, 0.0001,
 		"A reagent consumed but unspent before the battle ended must not carry a bonus into the next one")
 
-func test_draught_fed_edge_own_reagent_drawback_is_flat_not_laddered() -> void:
+func test_remnant_fed_edge_own_reagent_drawback_is_flat_not_laddered() -> void:
 	for rarity in [Types.Rarity.Common, Types.Rarity.Legendary]:
-		var setup: Dictionary = _make_draught_fed_edge_setup(rarity)
-		var relic: DraughtFedEdgeRelic = setup["relic"]
+		var setup: Dictionary = _make_remnant_fed_edge_setup(rarity)
+		var relic: RemnantFedEdgeRelic = setup["relic"]
 		var resolver: BattleResolver = setup["resolver"]
 
 		var potency: float = relic.OnReagentConsumed(0, ReagentData.new(), resolver)

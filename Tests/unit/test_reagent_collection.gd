@@ -3,8 +3,8 @@ extends GutTest
 # Coverage for Scripts/Gear/reagent_collection.gd, parallel to test_collection_serialization.gd's
 # ItemCollection section.
 
-const A_REAGENT_KEY: String = "Tincture_Speed_Uncommon"
-const ANOTHER_REAGENT_KEY: String = "Restorative_Draught_Rare"
+const A_REAGENT_KEY: String = "Sigil_Speed_Uncommon"
+const ANOTHER_REAGENT_KEY: String = "Mending_Icon_Rare"
 
 func test_add_increments_count() -> void:
 	var collection: ReagentCollection = ReagentCollection.new()

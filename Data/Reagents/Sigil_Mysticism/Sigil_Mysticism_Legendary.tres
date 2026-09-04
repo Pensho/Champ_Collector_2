@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ReagentData" format=3 uid="uid://nbdxgji4yr4b"]
+
+[ext_resource type="Script" uid="uid://t3vvjqg3kas0" path="res://Scripts/Battle/reagent_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://cq0jq6mdj5yhq" path="res://Assets/Champ_Collector/Icons/Reagents/Sigil_Mysticism/Sigil_Mysticism_Legendary.png" id="2_icon"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "Sigil of Mysticism"
+description = "+15% increase to Mysticism."
+icon = ExtResource("2_icon")
+rarity = 5
+affected_attribute = 6
+magnitude = 15.0

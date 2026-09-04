@@ -428,7 +428,7 @@ func _case_alchemist_volatile_mixture(p_name: String) -> void:
 	_pin_legendary(alchemist)
 	var resolver: BattleResolver = _resolver_for(roster, [0])
 
-	resolver.ResolveReagent(0, "Restorative_Draught_Rare", 0)
+	resolver.ResolveReagent(0, "Mending_Icon_Rare", 0)
 	assert_true(
 			alchemist._active_buffs.any(func(b: StatusEffects.Buff) -> bool: return Types.Buff_Type.Volatile_Mixture == b.type),
 			"%s: consuming a reagent must grant the Alchemist itself Volatile Mixture" % p_name)
@@ -591,7 +591,7 @@ func _case_sorcerer_echo_instances(p_name: String) -> void:
 	# structurally faithful proof of the repeat mechanism (N charges -> N+1 resolutions)
 	# rather than a reproduction of Role_Kit_Design.md 9.3's full 4-charge figure, which
 	# would also trigger a Surge and complicate the resolution count.
-	resolver.ResolveReagent(0, "Restorative_Draught_Rare", 0)
+	resolver.ResolveReagent(0, "Mending_Icon_Rare", 0)
 
 	var arc_lash_index: int = _skill_index(sorcerer, "Arc Lash")
 	var results: Array[CombatResult] = resolver.ResolveSkill(0, [3], arc_lash_index)

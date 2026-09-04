@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ReagentData" format=3 uid="uid://cgrwqotqcjrvj"]
+
+[ext_resource type="Script" uid="uid://t3vvjqg3kas0" path="res://Scripts/Battle/reagent_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://gqjl4bus6xx4" path="res://Assets/Champ_Collector/Icons/Reagents/Sigil_Speed/Sigil_Speed_Legendary.png" id="2_icon"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "Sigil of Speed"
+description = "+15% increase to Speed."
+icon = ExtResource("2_icon")
+rarity = 5
+affected_attribute = 1
+magnitude = 15.0

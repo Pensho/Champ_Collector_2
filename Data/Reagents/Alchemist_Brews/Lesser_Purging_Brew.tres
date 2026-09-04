@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="ReagentData" format=3 uid="uid://dtymmt8wnr31m"]
 
 [ext_resource type="Script" uid="uid://t3vvjqg3kas0" path="res://Scripts/Battle/reagent_data.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://tsk3pcbsh8ho" path="res://Assets/Champ_Collector/Icons/Reagents/Purging_Tonic/Purging_Tonic_Uncommon.png" id="2_icon"]
+[ext_resource type="Texture2D" uid="uid://tsk3pcbsh8ho" path="res://Assets/Champ_Collector/Icons/Reagents/Absolving_Tablet/Absolving_Tablet_Uncommon.png" id="2_icon"]
 
 [resource]
 script = ExtResource("1_script")

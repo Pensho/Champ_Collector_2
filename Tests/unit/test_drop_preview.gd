@@ -76,5 +76,5 @@ func test_should_show_reagent_step_false_when_none_owned() -> void:
 
 func test_should_show_reagent_step_true_when_any_owned() -> void:
 	assert_true(
-			PreBattleMenu.ShouldShowReagentStep({"Restorative_Draught_Common": 2}),
+			PreBattleMenu.ShouldShowReagentStep({"Mending_Icon_Common": 2}),
 			"Owning any reagent should require the reagent step")

@@ -6,10 +6,10 @@ extends GutTest
 
 const VALID_TARGET_KINDS_BY_EFFECT: Dictionary[ReagentData.EffectKind, Array] = {
 	ReagentData.EffectKind.Attribute_Increase: [ReagentData.TargetKind.Self_Target],
-	# One_Ally: standard Restorative Draught; Self_Target: the Alchemist's brewed
+	# One_Ally: standard Mending Icon; Self_Target: the Alchemist's brewed
 	# Lesser Restorative Brew, consumed on the drinker's own turn.
 	ReagentData.EffectKind.Heal: [ReagentData.TargetKind.One_Ally, ReagentData.TargetKind.Self_Target],
-	# One_Ally: standard Purging Tonic; Self_Target: the brewed Lesser Purging Brew.
+	# One_Ally: standard Absolving Tablet; Self_Target: the brewed Lesser Purging Brew.
 	ReagentData.EffectKind.Remove_Debuffs: [ReagentData.TargetKind.One_Ally, ReagentData.TargetKind.Self_Target],
 	ReagentData.EffectKind.Destroy_Enemy_Buffs: [ReagentData.TargetKind.One_Enemy],
 	ReagentData.EffectKind.Reduce_Cooldown: [ReagentData.TargetKind.One_Ally],

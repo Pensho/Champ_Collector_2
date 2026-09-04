@@ -645,7 +645,7 @@ family — since reagent magnitudes scale with rarity only, never with the consu
 (deliberately no attribute-snapshot fields on the resource). Looked up by `ReagentRegistry`
 (`Scripts/Battle/reagent_registry.gd`, same preload-not-`DirAccess` pattern as
 `StatusEffectRegistry`) through a stable string identifier matching the `.tres` base file name
-(e.g. `"Tincture_Speed_Uncommon"`):
+(e.g. `"Sigil_Speed_Uncommon"`):
 
 ```gdscript
 class_name ReagentData extends Resource
@@ -665,15 +665,15 @@ enum TargetKind { Self_Target, One_Ally, One_Enemy, Zone_Section }
 ```
 
 The catalog currently covers the "feasible subset" whose combat mechanics already exist:
-Tinctures (one family per primary attribute), Restorative Draught, Purging Tonic, Thief's Regret,
-Rewinding Grit, Second Wind Phial, Zone-Dissolving Salts, Chaotic Blessing, and Fractured Idol —
-68 `.tres` files (17 families × 4 rarity tiers). Rewinding Grit targets one ally directly
+Sigils (one family per primary attribute), Mending Icon, Absolving Tablet, Thief's Regret,
+Rewinding Cog, Second Wind Chime, Unbinding Shard, Chaotic Blessing, and Fractured Idol —
+68 `.tres` files (17 families × 4 rarity tiers). Rewinding Cog targets one ally directly
 (`One_Ally`) and reduces the cooldown of every skill that ally has currently on cooldown, rather
 than requiring a skill-choice target kind. The Alchemist brew pool (Lesser Restorative Brew,
 Lesser Tincture, Lesser Barrier Brew, Lesser Purging Brew) has since shipped as well, brewed
 rather than dropped — see `FreshBatchTrait` (Section 7.4) — and is no longer part of this deferred
 list. Reagents still deferred until their blocking mechanic lands: Barrier Stone, Deathward Charm,
-Chant Fragment, Notarized Seal, Wayfarer's Draught.
+Chant Fragment, Notarized Seal, Wayfarer's Compass.
 
 ### 6.2. Runtime instances
 
@@ -1140,11 +1140,11 @@ cooldown, never fires `Start_Turn`/`End_Turn`, and never advances the turn bar.
   was not itself brewed — a brewed slot refunding itself would never terminate.
 - **Battle-long mechanisms.** Two effects persist for the rest of the battle without being a
   `StatusEffects.Buff` (undispellable, unstealable, invisible to buff-counting):
-  `_battle_long_attribute_bonus` (Tinctures — folded into
+  `_battle_long_attribute_bonus` (Sigils — folded into
   `GetEffectiveAttributes()` via `_ApplyLongAttributeBonus()`) and `_damage_dealt_bonus` (Fractured Idol — folded into
   `_ResolveDamage` via `Skills.DamageDealt`). Both are plain resolver-owned dictionaries
   that disappear with the resolver at battle end, needing no explicit cleanup.
-- **Deferred turn-bar reset.** Second Wind Phial's reset can't apply at consumption time
+- **Deferred turn-bar reset.** Second Wind Chime's reset can't apply at consumption time
   (the consumer's turn hasn't ended yet), so `ResolveReagent` reports a
   `Turn_Bar_Reset_Pending` result instead; `Battle` stores it in a local dictionary and
   consults it at the one call site where `TurnCompleteForCharacter` actually resets the bar,

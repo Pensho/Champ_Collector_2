@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ReagentData" format=3 uid="uid://c56amc2kolv83"]
+
+[ext_resource type="Script" uid="uid://t3vvjqg3kas0" path="res://Scripts/Battle/reagent_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://csc5n4uix0lq6" path="res://Assets/Champ_Collector/Icons/Reagents/Sigil_Accuracy/Sigil_Accuracy_Epic.png" id="2_icon"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "Sigil of Accuracy"
+description = "+12% increase to Accuracy."
+icon = ExtResource("2_icon")
+rarity = 4
+affected_attribute = 4
+magnitude = 12.0

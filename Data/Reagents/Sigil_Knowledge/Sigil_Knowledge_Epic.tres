@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ReagentData" format=3 uid="uid://4b1j0f47q6s3"]
+
+[ext_resource type="Script" uid="uid://t3vvjqg3kas0" path="res://Scripts/Battle/reagent_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://difimf2bjaux6" path="res://Assets/Champ_Collector/Icons/Reagents/Sigil_Knowledge/Sigil_Knowledge_Epic.png" id="2_icon"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "Sigil of Knowledge"
+description = "+12% increase to Knowledge."
+icon = ExtResource("2_icon")
+rarity = 4
+affected_attribute = 7
+magnitude = 12.0

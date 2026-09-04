@@ -109,6 +109,6 @@ func test_reagent_consumed_by_another_character_fires_the_broadcast_on_the_symbi
 	var recorder: FakeBroadcastRecorder = FakeBroadcastRecorder.new()
 	_roster[0]._trait = recorder
 
-	_resolver.ResolveReagent(1, "Restorative_Draught_Rare", 1)
+	_resolver.ResolveReagent(1, "Mending_Icon_Rare", 1)
 
 	assert_eq(recorder.call_count, 1)
