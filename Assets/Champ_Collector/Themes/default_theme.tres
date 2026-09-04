@@ -1,6 +1,6 @@
 [gd_resource type="Theme" format=3 uid="uid://c8irweh6md2jy"]
 
-[ext_resource type="FontFile" uid="uid://yjb867fn5vve" path="res://Assets/Champ_Collector/Fonts/alagard.ttf" id="1_dnldn"]
+[ext_resource type="FontFile" uid="uid://ff8omyesm1hs" path="res://Assets/Champ_Collector/Fonts/IMFeDPrm28P.ttf" id="1_sbo1l"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dnldn"]
 
@@ -38,7 +38,7 @@ corner_radius_bottom_right = 2
 corner_radius_bottom_left = 2
 
 [resource]
-default_font = ExtResource("1_dnldn")
+default_font = ExtResource("1_sbo1l")
 default_font_size = 32
 Button/colors/font_color = Color(1, 1, 1, 1)
 Button/colors/font_focus_color = Color(0.683048, 0.353277, 0.367087, 1)

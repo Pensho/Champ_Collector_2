@@ -23,6 +23,8 @@ position = Vector2(640, 360)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=565446240]
 
+[node name="Battle UI" parent="CanvasLayer" unique_id=623550734 instance=ExtResource("2_1ruyk")]
+
 [node name="DirectionalLight2D" type="DirectionalLight2D" parent="." unique_id=565446238]
 visible = false
 light_mask = 1024
@@ -92,8 +94,6 @@ _target_ID = 1
 position = Vector2(400, 205)
 _target_ID = 2
 
-[node name="Battle UI" parent="CanvasLayer" unique_id=623550734 instance=ExtResource("2_1ruyk")]
-
 [node name="Turn_Indicator" type="TextureRect" parent="." unique_id=1253183384]
 material = ExtResource("6_qeyqd")
 offset_left = -100.0
@@ -112,15 +112,15 @@ texture = ExtResource("6_lrv64")
 texture_scale = 2.31
 height = 35.0
 
-[connection signal="battle_target_selected" from="Enemy_1" to="." method="_on_character_battle_target_selected"]
-[connection signal="battle_target_selected" from="Enemy_2" to="." method="_on_character_battle_target_selected"]
-[connection signal="battle_target_selected" from="Enemy_3" to="." method="_on_character_battle_target_selected"]
-[connection signal="battle_target_selected" from="Character_1" to="." method="_on_character_battle_target_selected"]
-[connection signal="battle_target_selected" from="Character_2" to="." method="_on_character_battle_target_selected"]
-[connection signal="battle_target_selected" from="Character_3" to="." method="_on_character_battle_target_selected"]
 [connection signal="battle_graft_selected" from="CanvasLayer/Battle UI" to="." method="_on_battle_ui_battle_graft_selected"]
 [connection signal="battle_reagent_selected" from="CanvasLayer/Battle UI" to="." method="_on_battle_ui_battle_reagent_selected"]
 [connection signal="battle_skill_selected" from="CanvasLayer/Battle UI" to="." method="_on_battle_ui_battle_skill_selected"]
 [connection signal="graft_confirmed" from="CanvasLayer/Battle UI" to="." method="_on_battle_ui_graft_confirmed"]
 [connection signal="reagent_confirmed" from="CanvasLayer/Battle UI" to="." method="_on_battle_ui_reagent_confirmed"]
 [connection signal="thread_switch_selected" from="CanvasLayer/Battle UI" to="." method="_on_battle_ui_thread_switch_selected"]
+[connection signal="battle_target_selected" from="Enemy_1" to="." method="_on_character_battle_target_selected"]
+[connection signal="battle_target_selected" from="Enemy_2" to="." method="_on_character_battle_target_selected"]
+[connection signal="battle_target_selected" from="Enemy_3" to="." method="_on_character_battle_target_selected"]
+[connection signal="battle_target_selected" from="Character_1" to="." method="_on_character_battle_target_selected"]
+[connection signal="battle_target_selected" from="Character_2" to="." method="_on_character_battle_target_selected"]
+[connection signal="battle_target_selected" from="Character_3" to="." method="_on_character_battle_target_selected"]
