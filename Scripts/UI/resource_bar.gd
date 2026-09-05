@@ -9,11 +9,15 @@ const SUPPLIES_DESCRIPTION: String = "Spend to run content. Half are refunded if
 const FORTUNES_FAVOR_TITLE: String = "Fortune's Favor"
 const FORTUNES_FAVOR_DESCRIPTION: String = "Used to recruit new champions."
 
+const TALLY_TITLE: String = "Tallies"
+const TALLY_DESCRIPTION: String = "Earned by releasing champions. Spent at the Tally Board."
+
 const SUPPLY_REGEN_COUNTDOWN_COLOR: String = "#E6D29E" # pale gold
 
 @export var _fortunes_favor_UI: FortunesFavorUISlot
 @export var _silver_UI: ResourceUISlot
 @export var _supplies_UI: ResourceUISlot
+@export var _tallies_UI: ResourceUISlot
 
 func _ready() -> void:
 	Refresh()
@@ -35,6 +39,10 @@ func Refresh() -> void:
 	_supplies_UI.SetText(str(resources._supplies) + "/" + str(GameBalance.MAX_SUPPLIES))
 	_supplies_UI.SetTexture(resources.SUPPLIES_TEXTURE)
 	_RefreshSuppliesTooltip()
+
+	_tallies_UI.SetText(str(resources.GetTallies()))
+	_tallies_UI.SetTexture(resources.TALLY_TEXTURE)
+	_tallies_UI.SetToolTip(TALLY_TITLE, TALLY_DESCRIPTION)
 
 	var total_fortunes_favor: int = (
 			resources.GetFortunesFavor(FortuneFavorTier.TierType.BONE)

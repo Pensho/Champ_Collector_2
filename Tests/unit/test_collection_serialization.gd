@@ -176,6 +176,50 @@ func test_character_collection_serialize_roundtrip() -> void:
 	col1.free()
 	col2.free()
 
+func test_character_collection_renown_survives_roundtrip() -> void:
+	var col1: CharacterCollection = CharacterCollection.new()
+	seed(42)
+	col1.Add(KNIGHT_PRESET.duplicate(true))
+
+	var original: Character = col1.GetAllCharacters().values()[0]
+	original.AddRenown(Types.Attribute.Speed)
+	original.AddRenown(Types.Attribute.Speed)
+	original.AddRenown(Types.Attribute.Attack)
+
+	var data: Dictionary = col1.Serialize()
+
+	var col2: CharacterCollection = CharacterCollection.new()
+	col2.Deserialize(data)
+
+	var restored: Character = col2.GetAllCharacters().values()[0]
+	assert_eq(restored.GetRenownRankFor(Types.Attribute.Speed), 2, "Speed Renown rank must survive roundtrip")
+	assert_eq(restored.GetRenownRankFor(Types.Attribute.Attack), 1, "Attack Renown rank must survive roundtrip")
+
+	col1.free()
+	col2.free()
+
+func test_character_collection_deserialize_missing_renown_defaults_to_rank_zero() -> void:
+	var col2: CharacterCollection = CharacterCollection.new()
+	col2.Deserialize({
+		"characters": [{
+			"preset_path": KNIGHT_PRESET._preset_path,
+			"experience": 0,
+			"level": 1,
+			"attributes": {},
+			"held_items": {},
+			"instance_ID": 1,
+			"attribute_weights": "",
+			"graft": "",
+		}],
+		"max_amount": Game_Balance.COLLECTION_START_ROSTER_SIZE,
+		"next_ID": 1,
+	})
+
+	var restored: Character = col2.GetAllCharacters().values()[0]
+	assert_eq(restored.GetRenownRank(), 0, "A save with no 'renown' key must load at rank 0")
+
+	col2.free()
+
 func test_character_collection_empty_roundtrip() -> void:
 	var col1: CharacterCollection = CharacterCollection.new()
 	var data: Dictionary = col1.Serialize()

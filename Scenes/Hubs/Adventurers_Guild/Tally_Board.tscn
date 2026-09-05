@@ -1,0 +1,87 @@
+[gd_scene format=3 uid="uid://c1ulirph1xhq"]
+
+[ext_resource type="Script" uid="uid://vn7d6dp8jbsx" path="res://Scripts/UI/tally_board_menu.gd" id="1_tally_board_menu"]
+[ext_resource type="Texture2D" uid="uid://b12fxr5wjhc44" path="res://Assets/Champ_Collector/Scenery/Adventurers_Guild/Adventurers_Guild_1.jpg" id="2_background"]
+[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="3_theme"]
+[ext_resource type="PackedScene" uid="uid://bm6xwrr37gevr" path="res://Scenes/ui/Resources/Resource_Bar.tscn" id="4_resource_bar"]
+
+[node name="TallyBoardMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_tally_board_menu")
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("2_background")
+
+[node name="ResourceBar" parent="." instance=ExtResource("4_resource_bar")]
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -193.0
+offset_top = 20.0
+offset_right = 193.0
+offset_bottom = 60.0
+grow_horizontal = 2
+
+[node name="Label_Title" type="Label" parent="."]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 20.0
+offset_right = 330.0
+offset_bottom = 60.0
+theme = ExtResource("3_theme")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 32
+text = "Tally Board"
+
+[node name="Label_Restock" type="Label" parent="."]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 64.0
+offset_right = 330.0
+offset_bottom = 90.0
+theme = ExtResource("3_theme")
+theme_override_colors/font_color = Color(0.9019608, 0.8235294, 0.6196079, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+text = "Restocks in 00:00:00"
+
+[node name="Button_Back" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -80.0
+offset_top = 20.0
+offset_bottom = 60.0
+theme = ExtResource("3_theme")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+text = "Back"
+
+[node name="GridArea" type="CenterContainer" parent="."]
+layout_mode = 0
+anchor_left = 0.0
+anchor_top = 0.15
+anchor_right = 1.0
+anchor_bottom = 0.95
+offset_left = 20.0
+offset_right = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GridContainer" type="GridContainer" parent="GridArea"]
+layout_mode = 2
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 20
+columns = 3
+
+[connection signal="button_up" from="Button_Back" to="." method="_on_back_button_up"]

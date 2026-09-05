@@ -12,11 +12,6 @@ Suggested order (dependencies noted inside each plan):
    through the landed `BattleResolver`, and guest champions ride on the
    completed team and roster abstraction (`CombatTeam`/`CombatSides`).
    Design counterpart: `Plan_Story_Mode.md`.
-2. `Plan_Renown_And_Duplicate_Sink.md` — the sink for extra champions: Release,
-   the Tally currency, Renown ranks bought with duplicates, the Renown Board in
-   the Adventurer's Guild, and the roster-slot purchase. Independent of story
-   mode; builds on the existing `ShopHandler`, `ResourceHandler` and
-   `CharacterCollection`. Renown rank art is supplied separately.
 
 Design-only plans (no code; can run at any time):
 

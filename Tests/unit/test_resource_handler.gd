@@ -149,6 +149,40 @@ func test_fortunes_favor_pity_defaults_to_zero_on_legacy_save() -> void:
 	assert_eq(rh.GetFortunesFavorPity(FortuneFavorTier.TierType.PARCHMENT), 0, "Legacy save without pity keys should default Parchment pity to zero")
 	rh.free()
 
+func test_add_and_spend_tallies() -> void:
+	var rh: ResourceHandler = ResourceHandler.new()
+	rh.AddTallies(10)
+	assert_eq(rh.GetTallies(), 10, "Tally balance should reflect added amount")
+	assert_true(rh.SpendTallies(4), "Should succeed when tallies >= amount")
+	assert_eq(rh.GetTallies(), 6, "Tallies should decrease by the spent amount")
+	rh.free()
+
+func test_spend_tallies_fails_when_insufficient() -> void:
+	var rh: ResourceHandler = ResourceHandler.new()
+	rh.AddTallies(3)
+	assert_false(rh.SpendTallies(4), "Should fail when tallies < amount")
+	assert_eq(rh.GetTallies(), 3, "Tallies should be unchanged on failed spend")
+	rh.free()
+
+func test_tallies_serialize_deserialize_round_trip() -> void:
+	var rh: ResourceHandler = ResourceHandler.new()
+	rh.AddTallies(7)
+
+	var data: Dictionary = rh.Serialize()
+
+	var rh2: ResourceHandler = ResourceHandler.new()
+	rh2.Deserialize(data)
+
+	assert_eq(rh2.GetTallies(), 7, "Tallies should round-trip through serialize/deserialize")
+	rh.free()
+	rh2.free()
+
+func test_tallies_default_to_zero_on_legacy_save_without_tallies_key() -> void:
+	var rh: ResourceHandler = ResourceHandler.new()
+	rh.Deserialize({"silver": 0, "supplies": 0})
+	assert_eq(rh.GetTallies(), 0, "A legacy save with no tallies key should load as 0")
+	rh.free()
+
 func test_spend_silver_succeeds_when_enough_silver() -> void:
 	var rh: ResourceHandler = ResourceHandler.new()
 	rh._silver = 100

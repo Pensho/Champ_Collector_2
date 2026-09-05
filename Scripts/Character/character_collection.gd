@@ -18,6 +18,7 @@ func Serialize() -> Dictionary:
 			"experience": character._experience,
 			"level": character._level,
 			"attributes": character._attributes.duplicate(true),
+			"renown": character._renown.duplicate(true),
 			"held_items": character._held_items.duplicate(true),
 			"instance_ID": character._instance_ID,
 			"attribute_weights": character._attributes_weights._name,
@@ -62,7 +63,11 @@ func Deserialize(p_data: Dictionary) -> void:
 		
 		for attribute in character_data["attributes"].keys():
 			new_character._attributes[attribute as int] = character_data["attributes"][attribute] as int
-		
+
+		if(character_data.has("renown")):
+			for attribute in character_data["renown"].keys():
+				new_character._renown[attribute as int] = character_data["renown"][attribute] as int
+
 		for held_item in character_data["held_items"].keys():
 			new_character._held_items[held_item as int] = character_data["held_items"][held_item] as int
 
@@ -98,10 +103,21 @@ func Remove(instanceID: int) -> void:
 		print("There was no such character to be removed! ID: ", instanceID)
 	# TODO: If there no longer is a type of role in the collection, remove it from _collected_types.
 
-func IncreaseCollectionSize() -> void:
-	if(_current_max_amount <= (Game_Balance.COLLECTION_LIMIT - Game_Balance.COLLECTION_SIZE_INCREMENT)):
-		_current_max_amount += Game_Balance.COLLECTION_SIZE_INCREMENT
-	print("The maximum size of a collection has been reached.")
+func IsRosterAtMaxSize() -> bool:
+	return _current_max_amount > (Game_Balance.COLLECTION_LIMIT - Game_Balance.COLLECTION_SIZE_INCREMENT)
+
+func IncreaseCollectionSize() -> bool:
+	if(IsRosterAtMaxSize()):
+		print("The maximum size of a collection has been reached.")
+		return false
+	_current_max_amount += Game_Balance.COLLECTION_SIZE_INCREMENT
+	return true
+
+static func GetRosterSlotPrice(p_current_max: int) -> int:
+	@warning_ignore("integer_division")
+	var purchased_increments: int = (
+			(p_current_max - Game_Balance.COLLECTION_START_ROSTER_SIZE) / Game_Balance.COLLECTION_SIZE_INCREMENT)
+	return Game_Balance.ROSTER_SLOT_BASE_PRICE + purchased_increments * Game_Balance.ROSTER_SLOT_PRICE_INCREMENT
 
 func IsTheCollectionFull() -> bool:
 	if (_characters.size() >= _current_max_amount):

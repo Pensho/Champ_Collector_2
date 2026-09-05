@@ -1,13 +1,34 @@
 class_name MenuItemSlot extends Control
 
+const PIP_FILLED_TEXTURE = preload("uid://ehuiuw7sp7b1")
+const PIP_EMPTY_TEXTURE = preload("uid://b5din3anosuf2")
+
 @export var _ID: int = -1
 @export var _tooltip: ToolTip
 
 @onready var texture_rect: TextureRect = $TextureRect/TextureRect
 @onready var button: Button = $TextureRect/Button
 @onready var level: Label = $TextureRect/Label
+@onready var _renown_pips_row: HBoxContainer = $TextureRect/HBoxContainer_Renown_Pips
+@onready var _renown_pips: Array[TextureRect] = [
+	$TextureRect/HBoxContainer_Renown_Pips/Pip_0,
+	$TextureRect/HBoxContainer_Renown_Pips/Pip_1,
+	$TextureRect/HBoxContainer_Renown_Pips/Pip_2,
+	$TextureRect/HBoxContainer_Renown_Pips/Pip_3,
+	$TextureRect/HBoxContainer_Renown_Pips/Pip_4,
+]
+
+func SetRenownRank(p_rank: int) -> void:
+	_renown_pips_row.show()
+	for i in _renown_pips.size():
+		_renown_pips[i].texture = PIP_FILLED_TEXTURE if i < p_rank else PIP_EMPTY_TEXTURE
+
+func ClearRenownPips() -> void:
+	_renown_pips_row.hide()
 
 func ConnectButton(p_callback: Callable) -> void:
+	for connection in button.get_signal_connection_list("button_up"):
+		button.disconnect("button_up", connection["callable"])
 	button.connect("button_up", p_callback.bind(_ID))
 
 func SetToolTip(p_title: String, p_description: String) -> void:

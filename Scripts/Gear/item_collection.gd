@@ -91,6 +91,12 @@ func AddPreset(preset: EquipmentPreset) -> void:
 func UnequipCollectionItem(p_instanceID: int) -> void:
 	_items[p_instanceID]._held_by = UNEQUIPPED
 
+func UnequipAllHeldItems(p_character: Character) -> void:
+	for held_item_ID: int in p_character._held_items.values():
+		if(_items.has(held_item_ID)):
+			UnequipCollectionItem(held_item_ID)
+	p_character._held_items.clear()
+
 func Remove(instanceID: int) -> void:
 	if(!_items.erase(instanceID)):
 		print("There was no such item to be removed! ID: ", instanceID)

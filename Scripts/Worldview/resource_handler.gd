@@ -4,12 +4,14 @@ signal resources_changed
 
 const SILVER_COIN_TEXTURE = preload("uid://cqc2eqqmdc30j")
 const SUPPLIES_TEXTURE = preload("uid://64keags07tr4")
+const TALLY_TEXTURE = preload("uid://bmmqvp1iw712t")
 const FORTUNES_FAVOR_BONE_1 = preload("uid://d3ribnb76plyc")
 const FORTUNES_FAVOR_BRASS_1 = preload("uid://dq3fohqivkweb")
 const FORTUNES_FAVOR_PARCHMENT_1 = preload("uid://d1le2k5exvc1b")
 
 var _silver: int
 var _supplies: int
+var _tallies: int
 var _fortunes_favor: Dictionary[FortuneFavorTier.TierType, int] = {
 	FortuneFavorTier.TierType.BONE: 0,
 	FortuneFavorTier.TierType.BRASS: 0,
@@ -40,6 +42,7 @@ func Serialize() -> Dictionary:
 	return {
 		"silver": _silver,
 		"supplies": _supplies,
+		"tallies": _tallies,
 		"fortunes_favor_bone": _fortunes_favor[FortuneFavorTier.TierType.BONE],
 		"fortunes_favor_brass": _fortunes_favor[FortuneFavorTier.TierType.BRASS],
 		"fortunes_favor_parchment": _fortunes_favor[FortuneFavorTier.TierType.PARCHMENT],
@@ -52,6 +55,7 @@ func Serialize() -> Dictionary:
 func Deserialize(p_data: Dictionary) -> void:
 	_silver = p_data["silver"]
 	_supplies = p_data["supplies"]
+	_tallies = p_data.get("tallies", 0)
 	if(p_data.has("fortunes_favor_bone")):
 		_fortunes_favor[FortuneFavorTier.TierType.BONE] = p_data["fortunes_favor_bone"]
 		_fortunes_favor[FortuneFavorTier.TierType.BRASS] = p_data.get("fortunes_favor_brass", 0)
@@ -151,6 +155,20 @@ func AddSilver(p_amount: int) -> void:
 func SpendSilver(p_amount: int) -> bool:
 	if (_silver >= p_amount):
 		_silver -= p_amount
+		resources_changed.emit()
+		return true
+	return false
+
+func GetTallies() -> int:
+	return _tallies
+
+func AddTallies(p_amount: int) -> void:
+	_tallies += p_amount
+	resources_changed.emit()
+
+func SpendTallies(p_amount: int) -> bool:
+	if (_tallies >= p_amount):
+		_tallies -= p_amount
 		resources_changed.emit()
 		return true
 	return false

@@ -58,6 +58,47 @@ offset_right = 8.0
 offset_bottom = 8.0
 theme = ExtResource("2_vybhe")
 
+[node name="HBoxContainer_Renown_Pips" type="HBoxContainer" parent="TextureRect"]
+visible = false
+layout_mode = 0
+offset_left = 5.0
+offset_top = 137.0
+offset_right = 95.0
+offset_bottom = 145.0
+mouse_filter = 2
+alignment = 1
+theme_override_constants/separation = 1
+
+[node name="Pip_0" type="TextureRect" parent="TextureRect/HBoxContainer_Renown_Pips"]
+custom_minimum_size = Vector2(6, 6)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+
+[node name="Pip_1" type="TextureRect" parent="TextureRect/HBoxContainer_Renown_Pips"]
+custom_minimum_size = Vector2(6, 6)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+
+[node name="Pip_2" type="TextureRect" parent="TextureRect/HBoxContainer_Renown_Pips"]
+custom_minimum_size = Vector2(6, 6)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+
+[node name="Pip_3" type="TextureRect" parent="TextureRect/HBoxContainer_Renown_Pips"]
+custom_minimum_size = Vector2(6, 6)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+
+[node name="Pip_4" type="TextureRect" parent="TextureRect/HBoxContainer_Renown_Pips"]
+custom_minimum_size = Vector2(6, 6)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+
 [node name="ToolTipArea" type="Control" parent="TextureRect/Button"]
 visible = false
 layout_mode = 1

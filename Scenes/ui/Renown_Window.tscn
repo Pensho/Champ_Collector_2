@@ -1,0 +1,119 @@
+[gd_scene format=3 uid="uid://cfmbg0g334eri"]
+
+[ext_resource type="Script" uid="uid://dokdwbp7vysw4" path="res://Scripts/UI/renown_window.gd" id="1_script"]
+[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="2_theme"]
+
+[node name="RenownWindow" type="Control" unique_id=184608766 node_paths=PackedStringArray("_attribute_buttons")]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_script")
+_attribute_buttons = {
+0: NodePath("ColorRect_Card/MarginContainer/VBoxContainer/VBoxContainer_Attributes/Button_Health"),
+1: NodePath("ColorRect_Card/MarginContainer/VBoxContainer/VBoxContainer_Attributes/Button_Speed"),
+2: NodePath("ColorRect_Card/MarginContainer/VBoxContainer/VBoxContainer_Attributes/Button_Attack"),
+3: NodePath("ColorRect_Card/MarginContainer/VBoxContainer/VBoxContainer_Attributes/Button_Defence"),
+4: NodePath("ColorRect_Card/MarginContainer/VBoxContainer/VBoxContainer_Attributes/Button_Accuracy"),
+5: NodePath("ColorRect_Card/MarginContainer/VBoxContainer/VBoxContainer_Attributes/Button_Resistance"),
+6: NodePath("ColorRect_Card/MarginContainer/VBoxContainer/VBoxContainer_Attributes/Button_Mysticism"),
+7: NodePath("ColorRect_Card/MarginContainer/VBoxContainer/VBoxContainer_Attributes/Button_Knowledge")
+}
+
+[node name="ColorRect_Backdrop" type="ColorRect" parent="." unique_id=1055928371]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -2000.0
+offset_top = -1000.0
+offset_right = 2000.0
+offset_bottom = 1000.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.33333334)
+
+[node name="ColorRect_Card" type="ColorRect" parent="." unique_id=1627223734]
+custom_minimum_size = Vector2(520, 560)
+layout_mode = 0
+offset_left = 380.0
+offset_top = 80.0
+offset_right = 900.0
+offset_bottom = 640.0
+color = Color(0, 0, 0, 0.9607843)
+
+[node name="MarginContainer" type="MarginContainer" parent="ColorRect_Card" unique_id=1429294567]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ColorRect_Card/MarginContainer" unique_id=1974864751]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Label_Title" type="Label" parent="ColorRect_Card/MarginContainer/VBoxContainer" unique_id=1897071074]
+layout_mode = 2
+theme = ExtResource("2_theme")
+theme_override_font_sizes/font_size = 24
+text = "Choose a Bonus"
+horizontal_alignment = 1
+
+[node name="VBoxContainer_Attributes" type="VBoxContainer" parent="ColorRect_Card/MarginContainer/VBoxContainer" unique_id=1990194574]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 6
+
+[node name="Button_Health" type="Button" parent="ColorRect_Card/MarginContainer/VBoxContainer/VBoxContainer_Attributes" unique_id=1675968948]
+layout_mode = 2
+theme = ExtResource("2_theme")
+text = "Health"
+
+[node name="Button_Speed" type="Button" parent="ColorRect_Card/MarginContainer/VBoxContainer/VBoxContainer_Attributes" unique_id=366112975]
+layout_mode = 2
+theme = ExtResource("2_theme")
+text = "Speed"
+
+[node name="Button_Attack" type="Button" parent="ColorRect_Card/MarginContainer/VBoxContainer/VBoxContainer_Attributes" unique_id=1817924037]
+layout_mode = 2
+theme = ExtResource("2_theme")
+text = "Attack"
+
+[node name="Button_Defence" type="Button" parent="ColorRect_Card/MarginContainer/VBoxContainer/VBoxContainer_Attributes" unique_id=1020750687]
+layout_mode = 2
+theme = ExtResource("2_theme")
+text = "Defence"
+
+[node name="Button_Accuracy" type="Button" parent="ColorRect_Card/MarginContainer/VBoxContainer/VBoxContainer_Attributes" unique_id=1424686865]
+layout_mode = 2
+theme = ExtResource("2_theme")
+text = "Accuracy"
+
+[node name="Button_Resistance" type="Button" parent="ColorRect_Card/MarginContainer/VBoxContainer/VBoxContainer_Attributes" unique_id=1165849630]
+layout_mode = 2
+theme = ExtResource("2_theme")
+text = "Resistance"
+
+[node name="Button_Mysticism" type="Button" parent="ColorRect_Card/MarginContainer/VBoxContainer/VBoxContainer_Attributes" unique_id=1790211310]
+layout_mode = 2
+theme = ExtResource("2_theme")
+text = "Mysticism"
+
+[node name="Button_Knowledge" type="Button" parent="ColorRect_Card/MarginContainer/VBoxContainer/VBoxContainer_Attributes" unique_id=321558175]
+layout_mode = 2
+theme = ExtResource("2_theme")
+text = "Knowledge"
+
+[node name="Button_Cancel" type="Button" parent="ColorRect_Card/MarginContainer/VBoxContainer" unique_id=1735055052]
+layout_mode = 2
+theme = ExtResource("2_theme")
+text = "Cancel"
+
+[connection signal="button_up" from="ColorRect_Card/MarginContainer/VBoxContainer/Button_Cancel" to="." method="_on_button_cancel_button_up"]

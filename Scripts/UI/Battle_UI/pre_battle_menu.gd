@@ -141,6 +141,7 @@ func _BuildCharacterGrid() -> void:
 		slot.SetHeldObjectTexture(
 				main.GetInstance()._character_collection.GetCharacterTexture(_character_collection[i]._name))
 		slot.level.text = str(_character_collection[i]._level)
+		slot.SetRenownRank(_character_collection[i].GetRenownRank())
 		_available_character_slots.append(slot)
 
 func _ShowPart(p_part: Part) -> void:
@@ -210,6 +211,7 @@ func _on_remove_char_button_up(p_char_slot: int) -> void:
 	if (_chosen_characters.has(p_char_slot)):
 		_chosen_characters.erase(p_char_slot)
 		_chosen_character_slots[p_char_slot].SetHeldObjectTexture(null)
+		_chosen_character_slots[p_char_slot].ClearRenownPips()
 		_available_character_slots[_available_to_chosen_ids[p_char_slot]].SetHeldObjectModulate(
 				CHARACTER_AVAILABLE_COLOR)
 	else:
@@ -234,6 +236,7 @@ func _on_add_char_button_up(p_char_slot: int) -> void:
 			_chosen_characters[i] = _character_collection[p_char_slot]
 			_chosen_character_slots[i].SetHeldObjectTexture(
 					_available_character_slots[p_char_slot].texture_rect.texture)
+			_chosen_character_slots[i].SetRenownRank(_character_collection[p_char_slot].GetRenownRank())
 			_available_character_slots[p_char_slot].SetHeldObjectModulate(CHARACTER_CHOSEN_COLOR)
 			_available_to_chosen_ids[i] = p_char_slot
 			return

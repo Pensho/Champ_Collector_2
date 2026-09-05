@@ -24,7 +24,8 @@ that holds (or will hold) the detail.
 - [ ] Additional biomes — beyond Reclaimed City (World_Building.md 4.3)
 - [ ] Relic items — implement the Relic item type: unique effects, drawbacks, and the item-type
       roll (Concept_Document.md 3.3.1)
-- [ ] Ascension system — post-level-cap progression (Concept_Document.md 3.1.2)
+- [x] Renown system — post-level-cap progression via duplicate-funded attribute ranks
+  (Concept_Document.md 3.1.2); rank pip art is still a placeholder texture
 
 ## Technical Groundwork
 

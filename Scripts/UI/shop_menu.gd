@@ -92,12 +92,21 @@ func _on_countdown_tick() -> void:
 
 	var now: int = int(Time.get_unix_time_from_system())
 	var seconds_left: int = ShopHandler.GetSecondsUntilRestock(shop._restock_anchor_unix, now)
-	@warning_ignore("integer_division")
-	var minutes: int = (seconds_left + 59) / 60
-	_label_restock.text = "Restocks in " + str(minutes) + " minutes"
+	_label_restock.text = "Restocks in " + FormatRestockCountdown(seconds_left)
 
 	if(_favor_slot != null and is_instance_valid(_favor_slot)):
 		_RefreshFavorCooldownDisplay(shop, now)
+
+static func FormatRestockCountdown(p_seconds_left: int) -> String:
+	if(p_seconds_left <= 3600):
+		@warning_ignore("integer_division")
+		var minutes_only: int = (p_seconds_left + 59) / 60
+		return str(minutes_only) + " minutes"
+	@warning_ignore("integer_division")
+	var hours: int = p_seconds_left / 3600
+	@warning_ignore("integer_division")
+	var remaining_minutes: int = (p_seconds_left % 3600) / 60
+	return str(hours) + "h " + str(remaining_minutes) + "m"
 
 func _on_slot_pressed(p_slot_index: int) -> void:
 	var shop: ShopHandler = main.GetInstance()._shop

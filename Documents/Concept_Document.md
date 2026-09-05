@@ -131,7 +131,7 @@ The core gameplay follows a cyclical "Prepare, Engage, Reward, Grow" loop design
 ### 3.1. Champions
 The terms Champion, Character, Hero are synonymous for the playable characters a player can acquire and use.
 For now there are no Common Characters that are usable by a player.
-There is a maximum level of 50, with a future idea to use duplicate heroes as a mean to increase it a few steps at most (or to upgrade skills).
+There is a maximum level of 50.
 
 #### 3.1.1. Character Attributes
 Each character is defined by a set of core attributes:
@@ -164,11 +164,13 @@ Each character is defined by a set of core attributes:
     * Faction
     * Rarity
     * Name
-    * Rank
+    * Renown
 
 #### 3.1.2. Progression Systems
-* Ascension
-    * Lets a character be upgraded beyond max level using duplicate characters, unlocking a new passive or stat ceiling.
+* Renown
+    * Five ranks per champion. Each rank costs one duplicate of that champion and grants +6% of
+      the base value in a chosen attribute (Speed +3%), stacking uncapped within an attribute.
+      Applied to the base sheet before gear. Critical chance and Critical damage are excluded.
 * ~~Aura~~
 * Synergy through combination of faction or characters
 * Area?
@@ -1097,6 +1099,9 @@ Transports the player to a new screen, the world atlas. Where the player can acc
 
 #### 3.6.2. The Armory
 Where players can manage their character roster, equip gear, and upgrade skills.
+Champions can be Released for Silver, Supplies, and Tallies scaled by rarity; the Silver payout
+also scales up with the champion's level. The roster cap can be expanded in fixed batches for a
+rising Silver price, up to a hard cap.
 
 #### 3.6.3. The Adventurer's Guild
 Where players recruit new characters using Fortune’s Favors.
@@ -1105,6 +1110,9 @@ Each Favor tier tracks its own streak of consecutive duplicate champions. Past 5
 in a row, every following Favor of that tier gains a cumulative +10 percentage points chance
 for its champion reward to be one the player doesn't already own, reaching a guarantee at 15.
 The bonus has no effect once the player owns every champion in that tier's pool.
+The Tally Board offers three slots of guaranteed champions, priced in Tallies by rarity and
+restocking on a one-day timer. A champion bought here still arrives with a randomly rolled
+Nature.
 
 #### 3.6.4. The shop
 Six stock slots: 3 gear, 1 reagent, 1 Supplies bundle, 1 featured Fortune's Favor offer.

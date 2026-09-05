@@ -30,6 +30,8 @@ var _attributes: Dictionary[Types.Attribute, int] = {
 	Types.Attribute.CritDamage: 0,
 }
 
+var _renown: Dictionary[Types.Attribute, int] = {}
+
 # Dictionary of [Slot type, item instance ID]
 var _held_items: Dictionary[Types.Slot, int]
 
@@ -111,7 +113,40 @@ func HookSources() -> Array[CharacterTrait]:
 	return sources
 
 func GetBaseAttributes() -> Dictionary[Types.Attribute, int]:
-	return _attributes.duplicate(true)
+	var attributes: Dictionary[Types.Attribute, int] = _attributes.duplicate(true)
+	for attribute: Types.Attribute in _renown.keys():
+		attributes[attribute] += GetRenownBonus(attribute, _renown[attribute])
+	return attributes
+
+func GetRenownRank() -> int:
+	var total: int = 0
+	for attribute: Types.Attribute in _renown.keys():
+		total += _renown[attribute]
+	return total
+
+func GetRenownRankFor(p_attribute: Types.Attribute) -> int:
+	return _renown.get(p_attribute, 0)
+
+func GetRenownBonus(p_attribute: Types.Attribute, p_rank: int) -> int:
+	return int(_attributes[p_attribute] * p_rank * GetRenownPercentPerRank(p_attribute) / 100.0)
+
+func GetRenownPercentPerRank(p_attribute: Types.Attribute) -> int:
+	return (Game_Balance.RENOWN_SPEED_BONUS_PERCENT
+			if Types.Attribute.Speed == p_attribute
+			else Game_Balance.RENOWN_ATTRIBUTE_BONUS_PERCENT)
+
+func GetRenownPercentBonus(p_attribute: Types.Attribute) -> int:
+	return GetRenownRankFor(p_attribute) * GetRenownPercentPerRank(p_attribute)
+
+func CanGainRenown() -> bool:
+	return GetRenownRank() < Game_Balance.RENOWN_MAX_RANK
+
+func AddRenown(p_attribute: Types.Attribute) -> void:
+	if(not Game_Balance.RENOWN_ATTRIBUTES.has(p_attribute)):
+		return
+	if(not CanGainRenown()):
+		return
+	_renown[p_attribute] = _renown.get(p_attribute, 0) + 1
 
 func ApplyEquipmentBonuses(p_attributes: Dictionary[Types.Attribute, int]) -> void:
 	for attribute in p_attributes.keys():

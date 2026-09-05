@@ -258,6 +258,15 @@ static func GetReagentSellValue(p_rarity: Types.Rarity) -> int:
 static func GetUpgradeCost(p_rarity: Types.Rarity, p_current_level: int) -> int:
 	return GameBalance.BASE_ITEM_UPGRADE_COST * (p_current_level + 1) * int(p_rarity)
 
+static func GetReleaseValue(p_rarity: Types.Rarity, p_level: int) -> Dictionary:
+	var silver: int = int(GameBalance.RELEASE_SILVER_PER_RARITY[p_rarity]
+			* (1.0 + float(p_level) / GameBalance.RELEASE_SILVER_LEVEL_DIVISOR))
+	return {
+		"silver": silver,
+		"supplies": GameBalance.RELEASE_SUPPLIES_PER_RARITY[p_rarity],
+		"tallies": GameBalance.TALLY_VALUE_PER_RARITY[p_rarity],
+	}
+
 static func GetRarityRates(p_grouped: Dictionary[Types.Rarity, Array]) -> Dictionary[Types.Rarity, float]:
 	var total_weight: int = 0
 	for rarity in RARITY_WEIGHTING.keys():

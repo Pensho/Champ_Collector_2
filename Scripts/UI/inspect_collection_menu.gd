@@ -2,8 +2,10 @@ class_name InspectCollectionMenu extends Control
 
 const MENU_ITEM_SLOT = preload("uid://di0y70sbai3yw")
 const BUTTON_WITH_OPTIONS_SCENE = preload("uid://c7smqpmfvs0ih")
+const ROSTER_SLOT_PLUS_TEXTURE = preload("uid://cavc4wk33n2m")
 
 @export var _attribute_labels: Dictionary[Types.Attribute, Label]
+@export var _attribute_renown_labels: Dictionary[Types.Attribute, Label]
 @export var _selected_char_label: Label
 @export var _selected_char_level: Label
 @export var _selected_char_nature: Label
@@ -37,6 +39,10 @@ var _selected_equipped_slot_type: Types.Slot = Types.Slot.Weapon
 var _skills_tab_title: String = ""
 var _sort_level_descending: bool = true
 
+var _in_sacrifice_picker: bool = false
+var _picker_candidate_ids: Array[int] = []
+var _picker_selected_candidate_id: int = -1
+
 @onready var v_box_container_equipped_items: VBoxContainer = $MarginContainer/HBoxContainer2/VBoxContainer2
 
 @onready var _characters_panel: VBoxContainer = $MarginContainer/HBoxContainer2/VBoxContainer_Characters
@@ -48,6 +54,20 @@ var _sort_level_descending: bool = true
 @onready var _grid_container_items: GridContainer = $MarginContainer/HBoxContainer2/ScrollContainer_Items/GridContainer
 @onready var _selected_character_texture: TextureRect = $MarginContainer/ColorRect2/TextureRect
 @onready var _reagent_window: Control = $ReagentWindow
+@onready var _release_button: Button = $MarginContainer/HBoxContainer_Bottom_Actions/Button_Release
+@onready var _ascend_button: Button = $MarginContainer/HBoxContainer_Bottom_Actions/Button_Ascend
+@onready var _renown_window: RenownWindow = $RenownWindow
+@onready var _cancel_sacrifice_button: Button = (
+		$MarginContainer/HBoxContainer2/VBoxContainer_Characters/HBoxContainer_Sort/Button_Cancel_Sacrifice)
+@onready var _buy_roster_slot: MenuItemSlot = (
+		_grid_container_characters.get_node("MenuItemSlot_BuyRosterSlot"))
+@onready var _selected_char_renown_pips: Array[TextureRect] = [
+	$MarginContainer/ColorRect2/HBoxContainer_Renown_Pips/Pip_0,
+	$MarginContainer/ColorRect2/HBoxContainer_Renown_Pips/Pip_1,
+	$MarginContainer/ColorRect2/HBoxContainer_Renown_Pips/Pip_2,
+	$MarginContainer/ColorRect2/HBoxContainer_Renown_Pips/Pip_3,
+	$MarginContainer/ColorRect2/HBoxContainer_Renown_Pips/Pip_4,
+]
 @onready var _grid_container_reagents: GridContainer = (
 		$ReagentWindow/ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GridContainer)
 
@@ -78,6 +98,12 @@ func Init(_p_context_container: ContextContainer) -> void:
 		_available_characters[i]._ID = i
 		_available_characters[i].ConnectButton(AvailableCharacterButton)
 	ApplyCharacterSort()
+
+	_buy_roster_slot.SetHeldObjectTexture(ROSTER_SLOT_PLUS_TEXTURE)
+	_buy_roster_slot.ConnectButton(BuyRosterSlotButton)
+	_buy_roster_slot.SetToolTip("Expand Roster", "Increase your roster capacity by "
+			+ str(Game_Balance.COLLECTION_SIZE_INCREMENT) + " for Silver.")
+	_grid_container_characters.move_child(_buy_roster_slot, _grid_container_characters.get_child_count() - 1)
 
 	_item_slots_equipped.append_array(GetMenuItemSlotChildren(v_box_container_equipped_items))
 	for i in _item_slots_equipped.size():
@@ -138,9 +164,9 @@ func GetMenuItemSlotChildren(p_start_node: Node) -> Array[MenuItemSlot]:
 func ShowSelectedCharacter(p_instance_ID: int) -> void:
 	_selected_character_texture.texture = main.GetInstance()._character_collection.GetCharacterTexture(
 			_character_collection[p_instance_ID]._name)
+	var character: Character = _character_collection[p_instance_ID]
 	for attr in _attribute_labels.keys():
-		var total_attribute: int = (_character_collection[p_instance_ID]._attributes[attr]
-				+ _character_collection[p_instance_ID].GetEquipmentBonus(attr))
+		var total_attribute: int = character.GetBaseAttributes()[attr] + character.GetEquipmentBonus(attr)
 		if(Types.Attribute.Health == attr):
 			_attribute_labels[attr].text = str(total_attribute * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
 		elif(Types.Attribute.CritChance == attr):
@@ -149,8 +175,12 @@ func ShowSelectedCharacter(p_instance_ID: int) -> void:
 			_attribute_labels[attr].text = str(total_attribute) + "%"
 		else:
 			_attribute_labels[attr].text = str(total_attribute)
+		var renown_percent: int = character.GetRenownPercentBonus(attr)
+		_attribute_renown_labels[attr].text = "+" + str(renown_percent) + "%" if renown_percent > 0 else ""
 	_selected_char_label.text = _character_collection[p_instance_ID]._name
 	_selected_char_level.text = "Level: " + str(_character_collection[p_instance_ID]._level)
+	UpdateSelectedCharacterRenownPips(_character_collection[p_instance_ID].GetRenownRank())
+	_ascend_button.disabled = not _character_collection[p_instance_ID].CanGainRenown()
 	_selected_char_nature.text = "Nature: " + str(_character_collection[p_instance_ID]._attributes_weights._name)
 	_selected_char_nature_tooltip.title_text = str(
 			_character_collection[p_instance_ID]._attributes_weights._name) + " Nature"
@@ -184,6 +214,11 @@ func ShowSelectedCharacter(p_instance_ID: int) -> void:
 	if(1 == _tab_bar_gear_skills.tab_count):
 		_tab_bar_gear_skills.add_tab(_skills_tab_title)
 	RefreshSkillsTab(p_instance_ID)
+
+func UpdateSelectedCharacterRenownPips(p_rank: int) -> void:
+	for i in _selected_char_renown_pips.size():
+		_selected_char_renown_pips[i].texture = (
+				MenuItemSlot.PIP_FILLED_TEXTURE if i < p_rank else MenuItemSlot.PIP_EMPTY_TEXTURE)
 
 func RefreshSkillsTab(p_instance_ID: int) -> void:
 	var character: Character = _character_collection[p_instance_ID]
@@ -241,6 +276,19 @@ static func SortCharacterIDsByLevel(
 		return a < b)
 	return sorted_ids
 
+static func GetDuplicateCandidateIDs(
+		p_collection: Dictionary[int, Character], p_character_id: int) -> Array[int]:
+	var character_name: String = p_collection[p_character_id]._name
+	var candidate_ids: Array[int] = []
+	for id: int in p_collection.keys():
+		if id != p_character_id and p_collection[id]._name == character_name:
+			candidate_ids.append(id)
+	candidate_ids.sort()
+	return candidate_ids
+
+static func CanReleaseCharacter(p_collection: Dictionary[int, Character], p_character_id: int) -> bool:
+	return -1 != p_character_id and p_collection.has(p_character_id) and p_collection.size() > 1
+
 func ApplyCharacterSort() -> void:
 	_displayed_character_ids = SortCharacterIDsByLevel(
 			_character_collection, _character_collection.keys(), _sort_level_descending)
@@ -250,6 +298,7 @@ func ApplyCharacterSort() -> void:
 func RefreshCharacterGrid() -> void:
 	for slot_nr in _available_characters.size():
 		if(slot_nr < _displayed_character_ids.size()):
+			_available_characters[slot_nr].show()
 			_available_characters[slot_nr].SetHeldObjectTexture(
 					main.GetInstance()._character_collection.GetCharacterTexture(
 						_character_collection[_displayed_character_ids[slot_nr]]._name))
@@ -257,8 +306,13 @@ func RefreshCharacterGrid() -> void:
 					_character_collection[_displayed_character_ids[slot_nr]]._rarity)
 			_available_characters[slot_nr].level.text = str(
 					_character_collection[_displayed_character_ids[slot_nr]]._level)
+			_available_characters[slot_nr].SetRenownRank(
+					_character_collection[_displayed_character_ids[slot_nr]].GetRenownRank())
 		else:
 			_available_characters[slot_nr].SetHeldObjectTexture(null)
+			_available_characters[slot_nr].level.text = ""
+			_available_characters[slot_nr].ClearRenownPips()
+			_available_characters[slot_nr].hide()
 
 func _on_button_sort_level_button_up() -> void:
 	_sort_level_descending = not _sort_level_descending
@@ -314,6 +368,124 @@ func SellItem() -> void:
 	ShowItems()
 	_confirm_option.hide()
 	_select_item_option.hide()
+
+func _on_button_release_button_up() -> void:
+	TryRelease()
+
+func TryRelease() -> void:
+	if(not CanReleaseCharacter(_character_collection, _selected_character_ID)):
+		return
+	var character: Character = _character_collection[_selected_character_ID]
+	var payout: Dictionary = LootManager.GetReleaseValue(character._rarity, character._level)
+	_confirm_option.SetText(
+			"Release", "Are you sure you want to release this champion? You will gain "
+			+ str(payout["silver"]) + " silver, " + str(payout["supplies"]) + " supplies, and "
+			+ str(payout["tallies"]) + " tallies.")
+	_confirm_option.SetLeftButton("Release", ReleaseCharacter, Color(0.863, 0.0, 0.0, 1.0))
+	_confirm_option.show()
+
+func ReleaseCharacter() -> void:
+	var character: Character = _character_collection[_selected_character_ID]
+	var payout: Dictionary = LootManager.GetReleaseValue(character._rarity, character._level)
+	main.GetInstance()._resources.AddSilver(payout["silver"])
+	main.GetInstance()._resources.AddSupplies(payout["supplies"])
+	main.GetInstance()._resources.AddTallies(payout["tallies"])
+
+	main.GetInstance()._item_collection.UnequipAllHeldItems(character)
+	main.GetInstance()._character_collection.Remove(_selected_character_ID)
+	_character_collection.erase(_selected_character_ID)
+	RefreshDisplayedItems()
+
+	_confirm_option.hide()
+	ApplyCharacterSort()
+	_on_button_deselect_char_button_up()
+
+func _on_button_ascend_button_up() -> void:
+	TryAscend()
+
+func TryAscend() -> void:
+	if(-1 == _selected_character_ID):
+		return
+	if(GetDuplicateCandidateIDs(_character_collection, _selected_character_ID).is_empty()):
+		_confirm_option.SetText("Ascend", "You need a duplicate of this champion to Ascend.")
+		_confirm_option.show()
+		return
+	EnterSacrificePicker()
+
+func EnterSacrificePicker() -> void:
+	_picker_candidate_ids = GetDuplicateCandidateIDs(_character_collection, _selected_character_ID)
+	_in_sacrifice_picker = true
+	for slot: MenuItemSlot in _available_characters:
+		slot.ConnectButton(SacrificeCharacterButton)
+	_cancel_sacrifice_button.show()
+	_buy_roster_slot.hide()
+	RefreshSacrificeGrid()
+	ShowCharacters()
+
+func RefreshSacrificeGrid() -> void:
+	for slot_nr in _available_characters.size():
+		if(slot_nr < _picker_candidate_ids.size()):
+			var candidate_id: int = _picker_candidate_ids[slot_nr]
+			_available_characters[slot_nr].show()
+			_available_characters[slot_nr].SetHeldObjectTexture(
+					main.GetInstance()._character_collection.GetCharacterTexture(
+						_character_collection[candidate_id]._name))
+			_available_characters[slot_nr].SetTextureOutline(_character_collection[candidate_id]._rarity)
+			_available_characters[slot_nr].level.text = str(_character_collection[candidate_id]._level)
+			_available_characters[slot_nr].SetRenownRank(_character_collection[candidate_id].GetRenownRank())
+		else:
+			_available_characters[slot_nr].SetHeldObjectTexture(null)
+			_available_characters[slot_nr].level.text = ""
+			_available_characters[slot_nr].ClearRenownPips()
+			_available_characters[slot_nr].hide()
+
+func SacrificeCharacterButton(p_slot_ID: int) -> void:
+	_picker_selected_candidate_id = _picker_candidate_ids[p_slot_ID]
+	var candidate: Character = _character_collection[_picker_selected_candidate_id]
+	_confirm_option.SetText(
+			"Ascend", "Ascend using " + candidate._name + " (Level " + str(candidate._level) + ", "
+			+ str(candidate._attributes_weights._name) + " Nature)? It is spent once you choose the bonus.")
+	_confirm_option.SetLeftButton("Continue", OpenRenownWindow)
+	_confirm_option.show()
+
+func OpenRenownWindow() -> void:
+	_confirm_option.hide()
+	ExitSacrificePicker()
+	_renown_window.Refresh(_character_collection[_selected_character_ID])
+	_renown_window.show()
+
+func ConsumeSacrificeCandidate() -> void:
+	var candidate: Character = _character_collection[_picker_selected_candidate_id]
+	main.GetInstance()._item_collection.UnequipAllHeldItems(candidate)
+	main.GetInstance()._character_collection.Remove(_picker_selected_candidate_id)
+	_character_collection.erase(_picker_selected_candidate_id)
+	_picker_selected_candidate_id = -1
+	RefreshDisplayedItems()
+	ApplyCharacterSort()
+
+func _on_renown_window_attribute_selected(p_attribute: Types.Attribute) -> void:
+	_character_collection[_selected_character_ID].AddRenown(p_attribute)
+	ConsumeSacrificeCandidate()
+	_renown_window.hide()
+	ShowSelectedCharacter(_selected_character_ID)
+
+func _on_renown_window_cancelled() -> void:
+	_picker_selected_candidate_id = -1
+	_renown_window.hide()
+	ShowSelectedCharacter(_selected_character_ID)
+
+func ExitSacrificePicker() -> void:
+	_in_sacrifice_picker = false
+	_cancel_sacrifice_button.hide()
+	_buy_roster_slot.show()
+	for slot: MenuItemSlot in _available_characters:
+		slot.ConnectButton(AvailableCharacterButton)
+	ApplyCharacterSort()
+	ShowItems()
+	ShowSelectedCharacter(_selected_character_ID)
+
+func _on_button_cancel_sacrifice_button_up() -> void:
+	ExitSacrificePicker()
 
 func GetSelectedItemID() -> int:
 	if(-1 != _selected_equipped_item_ID):
@@ -388,6 +560,30 @@ func SellReagent() -> void:
 	_reagent_confirm_option.hide()
 	_reagent_select_option.hide()
 
+func BuyRosterSlotButton(_p_slot_ID: int) -> void:
+	TryBuyRosterSlot()
+
+func TryBuyRosterSlot() -> void:
+	var collection: CharacterCollection = main.GetInstance()._character_collection
+	if(collection.IsRosterAtMaxSize()):
+		_confirm_option.SetText("Expand Roster", "Your roster is already at its maximum capacity.")
+		_confirm_option.show()
+		return
+
+	var price: int = CharacterCollection.GetRosterSlotPrice(collection._current_max_amount)
+	_confirm_option.SetText(
+			"Expand Roster", "Increase your roster capacity by "
+			+ str(Game_Balance.COLLECTION_SIZE_INCREMENT) + " for " + str(price) + " silver?")
+	_confirm_option.SetLeftButton("Buy", BuyRosterSlot)
+	_confirm_option.show()
+
+func BuyRosterSlot() -> void:
+	var collection: CharacterCollection = main.GetInstance()._character_collection
+	var price: int = CharacterCollection.GetRosterSlotPrice(collection._current_max_amount)
+	if(main.GetInstance()._resources.SpendSilver(price)):
+		collection.IncreaseCollectionSize()
+	_confirm_option.hide()
+
 func _on_button_reagents_button_up() -> void:
 	RefreshReagentGrid()
 	_reagent_window.show()
@@ -399,6 +595,8 @@ func AvailableCharacterButton(p_slot_ID: int) -> void:
 	_selected_character_ID = _displayed_character_ids[p_slot_ID]
 	ShowSelectedCharacter(_displayed_character_ids[p_slot_ID])
 	ShowItems()
+	_release_button.show()
+	_ascend_button.show()
 
 func TriggerEquipItem() -> void:
 	var item_id: int = _displayed_item_ids[_selected_item_slot_ID]
@@ -465,11 +663,17 @@ func TriggerUnequipSelectedItem() -> void:
 	_select_item_option.hide()
 
 func _on_button_deselect_char_button_up() -> void:
+	if(_renown_window.visible):
+		return
+	if(_in_sacrifice_picker):
+		ExitSacrificePicker()
 	_selected_character_texture.texture = null
 	for attr in _attribute_labels.keys():
 		_attribute_labels[attr].text = "0"
+		_attribute_renown_labels[attr].text = ""
 	_selected_char_label.text = ""
 	_selected_char_level.text = ""
+	UpdateSelectedCharacterRenownPips(0)
 	_selected_char_nature.text = "Nature: "
 	_selected_char_nature_tooltip.title_text = "Character Nature"
 	_selected_char_nature_tooltip.description_text = ""
@@ -484,6 +688,8 @@ func _on_button_deselect_char_button_up() -> void:
 	for i in _item_slots_equipped.size():
 		_item_slots_equipped[i].SetHeldObjectTexture(null)
 	_selected_character_ID = -1
+	_release_button.hide()
+	_ascend_button.hide()
 	ShowCharacters()
 
 func _on_exit_button_up() -> void:

@@ -456,6 +456,30 @@ const RELIC_ICON_TABLE: Array = [
 			"color": Color(0.62, 0.50, 0.28, 1.0) },
 ]
 
+# One row per non-art resource currency icon.
+#   folder, base_name, size, color
+const RESOURCE_ICON_TABLE: Array = [
+	{ "folder": "Resources/Tally", "base_name": "Tally", "size": 64,
+			"color": Color(0.55, 0.55, 0.60, 1.0) },
+]
+
+# Roster expansion "+" tile (Armory buy-a-slot affordance). Drawn as a cross rather than
+# a flat fill so it reads as an add action even as a placeholder.
+#   folder, base_name, size, color
+const ROSTER_SLOT_ICON_TABLE: Array = [
+	{ "folder": "Character_Frames/Roster_Slot_Plus", "base_name": "Roster_Slot_Plus", "size": 64,
+			"color": Color(0.85, 0.85, 0.85, 1.0) },
+]
+
+# Renown rank pip icons: one filled, one empty.
+#   folder, base_name, size, color
+const RENOWN_ICON_TABLE: Array = [
+	{ "folder": "Renown/Renown_Pip_Filled", "base_name": "Renown_Pip_Filled", "size": 32,
+			"color": Color(0.85, 0.70, 0.20, 1.0) },
+	{ "folder": "Renown/Renown_Pip_Empty", "base_name": "Renown_Pip_Empty", "size": 32,
+			"color": Color(0.30, 0.30, 0.32, 1.0) },
+]
+
 # Rarity tier order, tint color, and blend strength (how far the base hue shifts
 # toward the tint). Blend strength increases with rarity.
 const RARITY_TINTS: Array = [
@@ -500,6 +524,15 @@ func _run() -> void:
 	var relic_counts: Vector2i = _write_flat_icon_table(RELIC_ICON_TABLE)
 	written_count += relic_counts.x
 	skipped_count += relic_counts.y
+	var resource_counts: Vector2i = _write_flat_icon_table(RESOURCE_ICON_TABLE)
+	written_count += resource_counts.x
+	skipped_count += resource_counts.y
+	var renown_counts: Vector2i = _write_flat_icon_table(RENOWN_ICON_TABLE)
+	written_count += renown_counts.x
+	skipped_count += renown_counts.y
+	var roster_slot_counts: Vector2i = _write_plus_icon_table(ROSTER_SLOT_ICON_TABLE)
+	written_count += roster_slot_counts.x
+	skipped_count += roster_slot_counts.y
 	var creature_counts: Vector2i = _write_flat_icon_table(CREATURE_PLACEHOLDER_TABLE, CREATURE_ROOT)
 	written_count += creature_counts.x
 	skipped_count += creature_counts.y
@@ -526,6 +559,43 @@ func _write_flat_icon_table(table: Array, output_root: String = ICON_ROOT) -> Ve
 		var size: int = row["size"]
 		var image := Image.create(size, size, false, Image.FORMAT_RGBA8)
 		image.fill(row["color"])
+		var save_result: int = image.save_png(path)
+		if save_result != OK:
+			push_error("Failed to write: %s" % path)
+			continue
+		print("wrote: %s (%dx%d)" % [path, size, size])
+		written += 1
+	return Vector2i(written, skipped)
+
+
+## Writes one transparent PNG per row of a table, with a plus-shaped cross drawn in the
+## row's color rather than a flat fill, honoring the same skip-if-exists guard.
+## Returns the written and skipped counts as (x, y).
+func _write_plus_icon_table(table: Array, output_root: String = ICON_ROOT) -> Vector2i:
+	var written: int = 0
+	var skipped: int = 0
+	for row in table:
+		var folder_path: String = "%s/%s" % [output_root, row["folder"]]
+		var make_result: int = DirAccess.make_dir_recursive_absolute(folder_path)
+		if make_result != OK and not DirAccess.dir_exists_absolute(folder_path):
+			push_error("Could not create folder: %s" % folder_path)
+			continue
+		var path: String = "%s/%s.png" % [folder_path, row["base_name"]]
+		if not OVERWRITE and FileAccess.file_exists(path):
+			print("skip (exists): %s" % path)
+			skipped += 1
+			continue
+		var size: int = row["size"]
+		var image := Image.create(size, size, false, Image.FORMAT_RGBA8)
+		image.fill(Color(0.0, 0.0, 0.0, 0.0))
+		@warning_ignore("integer_division")
+		var bar_thickness: int = size / 4
+		@warning_ignore("integer_division")
+		var bar_margin: int = size / 6
+		@warning_ignore("integer_division")
+		var bar_offset: int = (size - bar_thickness) / 2
+		image.fill_rect(Rect2i(bar_margin, bar_offset, size - bar_margin * 2, bar_thickness), row["color"])
+		image.fill_rect(Rect2i(bar_offset, bar_margin, bar_thickness, size - bar_margin * 2), row["color"])
 		var save_result: int = image.save_png(path)
 		if save_result != OK:
 			push_error("Failed to write: %s" % path)

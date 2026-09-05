@@ -30,6 +30,7 @@ var _reagent_collection: ReagentCollection
 var _resources: ResourceHandler
 var _progress: ProgressHandler
 var _shop: ShopHandler
+var _tally_board: TallyBoardHandler
 var _save_manager: SaveManager
 var _adventure_state_handler: AdventureStateHandler
 
@@ -50,6 +51,8 @@ func Init() -> void:
 	add_child(_progress)
 	_shop = ShopHandler.new()
 	add_child(_shop)
+	_tally_board = TallyBoardHandler.new()
+	add_child(_tally_board)
 	_save_manager = SaveManager.new()
 	add_child(_save_manager)
 	_adventure_state_handler = AdventureStateHandler.new()

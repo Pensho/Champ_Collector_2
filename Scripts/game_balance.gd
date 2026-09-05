@@ -11,6 +11,60 @@ const ATTRIBUTE_HEALTH_MULTIPLIER: int = 4
 const COLLECTION_START_ROSTER_SIZE: int = 50
 const COLLECTION_SIZE_INCREMENT: int = 10
 const COLLECTION_LIMIT: int = 200
+const ROSTER_SLOT_BASE_PRICE: int = 1000
+const ROSTER_SLOT_PRICE_INCREMENT: int = 500
+
+## Tallies
+const TALLY_VALUE_PER_RARITY: Dictionary[Types.Rarity, int] = {
+	Types.Rarity.Common: 0,
+	Types.Rarity.Uncommon: 1,
+	Types.Rarity.Rare: 4,
+	Types.Rarity.Epic: 20,
+	Types.Rarity.Legendary: 100,
+}
+
+## Release
+const RELEASE_SILVER_PER_RARITY: Dictionary[Types.Rarity, int] = {
+	Types.Rarity.Common: 0,
+	Types.Rarity.Uncommon: 200,
+	Types.Rarity.Rare: 600,
+	Types.Rarity.Epic: 2000,
+	Types.Rarity.Legendary: 8000,
+}
+const RELEASE_SUPPLIES_PER_RARITY: Dictionary[Types.Rarity, int] = {
+	Types.Rarity.Common: 0,
+	Types.Rarity.Uncommon: 5,
+	Types.Rarity.Rare: 15,
+	Types.Rarity.Epic: 40,
+	Types.Rarity.Legendary: 100,
+}
+const RELEASE_SILVER_LEVEL_DIVISOR: int = 25
+
+## Tally Board
+const TALLY_BOARD_SLOTS: int = 3
+const TALLY_BOARD_RESTOCK_INTERVAL_SECONDS: int = 86400
+const TALLY_BOARD_PRICE_PER_RARITY: Dictionary[Types.Rarity, int] = {
+	Types.Rarity.Common: 0,
+	Types.Rarity.Uncommon: 40,
+	Types.Rarity.Rare: 150,
+	Types.Rarity.Epic: 600,
+	Types.Rarity.Legendary: 2500,
+}
+
+## Renown
+const RENOWN_MAX_RANK: int = 5
+const RENOWN_ATTRIBUTE_BONUS_PERCENT: int = 6
+const RENOWN_SPEED_BONUS_PERCENT: int = 3
+const RENOWN_ATTRIBUTES: Array[Types.Attribute] = [
+	Types.Attribute.Health,
+	Types.Attribute.Speed,
+	Types.Attribute.Attack,
+	Types.Attribute.Defence,
+	Types.Attribute.Accuracy,
+	Types.Attribute.Resistance,
+	Types.Attribute.Mysticism,
+	Types.Attribute.Knowledge,
+]
 
 ## Experience Formula
 # XPrequired =

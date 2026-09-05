@@ -2,6 +2,7 @@ extends DebugPage
 
 @export var _silver_spin: SpinBox
 @export var _supplies_spin: SpinBox
+@export var _tallies_spin: SpinBox
 @export var _fortunes_favor_bone_spin: SpinBox
 @export var _fortunes_favor_brass_spin: SpinBox
 @export var _fortunes_favor_parchment_spin: SpinBox
@@ -18,6 +19,7 @@ func Refresh() -> void:
 	var resources: ResourceHandler = main.GetInstance()._resources
 	_silver_spin.value = resources._silver
 	_supplies_spin.value = resources._supplies
+	_tallies_spin.value = resources._tallies
 	_fortunes_favor_bone_spin.value = resources.GetFortunesFavor(FortuneFavorTier.TierType.BONE)
 	_fortunes_favor_brass_spin.value = resources.GetFortunesFavor(FortuneFavorTier.TierType.BRASS)
 	_fortunes_favor_parchment_spin.value = resources.GetFortunesFavor(FortuneFavorTier.TierType.PARCHMENT)
@@ -37,6 +39,7 @@ func _on_apply_currencies_button_up() -> void:
 	var resources: ResourceHandler = main.GetInstance()._resources
 	resources._silver = int(_silver_spin.value)
 	resources._supplies = int(_supplies_spin.value)
+	resources._tallies = int(_tallies_spin.value)
 	resources._fortunes_favor[FortuneFavorTier.TierType.BONE] = int(_fortunes_favor_bone_spin.value)
 	resources._fortunes_favor[FortuneFavorTier.TierType.BRASS] = int(_fortunes_favor_brass_spin.value)
 	resources._fortunes_favor[FortuneFavorTier.TierType.PARCHMENT] = int(_fortunes_favor_parchment_spin.value)

@@ -60,6 +60,7 @@ SceneTree
         ├── ResourceHandler                        │ several joined to the
         ├── ProgressHandler                        │ "saveable" group
         ├── ShopHandler                            │
+        ├── TallyBoardHandler                      │
         ├── SaveManager                            │
         ├── AdventureStateHandler                  │
         └── _current_scene (the active gameplay screen) ─┘
@@ -95,7 +96,8 @@ main.GetInstance()._item_collection   # etc.
 `Scripts/main_instance.gd` (`class_name Main_Instance`) is the heart of the application. `Init()`:
 
 - Constructs and adds the long-lived state nodes: `CharacterCollection`, `ItemCollection`,
-  `ResourceHandler`, `ProgressHandler`, `ShopHandler`, `SaveManager`, `AdventureStateHandler`.
+  `ResourceHandler`, `ProgressHandler`, `ShopHandler`, `TallyBoardHandler`, `SaveManager`,
+  `AdventureStateHandler`.
 - Adds `AdventureStateHandler` to the `SaveManager.GROUP_SAVEABLE` group.
 - Seeds a default roster by duplicating preloaded `CharacterPreset` resources (Lancer, Thief,
   Bar Brawler, Jester, Chronophage, Tidal Corsair, Centaur Lancer, Centaur Archivist, Tactician,
@@ -428,7 +430,7 @@ matters, since the trait delta and status percentages both read the running tota
 ```gdscript
 func GetEffectiveAttributes(p_character_ID: int) -> Dictionary[Types.Attribute, int]:
     var character: Character = _characters[p_character_ID]
-    var attributes: Dictionary[Types.Attribute, int] = character.GetBaseAttributes()  # 1. base
+    var attributes: Dictionary[Types.Attribute, int] = character.GetBaseAttributes()  # 1. base + Renown
     character.ApplyEquipmentBonuses(attributes)                                      # 2. gear
     character.ApplyTraitAttributeBonus(attributes)                                   # 3. trait
     _ApplyLongAttributeBonus(p_character_ID, attributes)                # 4. reagent long-bonus
@@ -1806,6 +1808,10 @@ the saveable group. It holds the six current stock entries plus a restock anchor
 Favor purchase timestamp, both wall-clock unix seconds so restock and cooldown state survive
 offline time (`Concept_Document.md` 3.6.4).
 
+`TallyBoardHandler` (`Scripts/Worldview/tally_board_handler.gd`) mirrors `ShopHandler`'s shape:
+owned by `Main_Instance`, in the saveable group, holding its three current champion offers plus
+a restock anchor in wall-clock unix seconds (`Concept_Document.md` 3.6.3).
+
 ### 10.2. Save format and ordering
 
 `SaveManager` (`Scripts/Worldview/save_manager.gd`) implements **group-based serialization**.
@@ -2226,3 +2232,13 @@ The headless combat core leaves turn-bar *positions* on the view side, reached t
 *Impact:* no compile-time safety; typos surface only at runtime.
 *Direction:* promote the recurring keys to typed fields on `Static_Context` subclasses (as
 `Context_Battle` already does for battle setup), reserving the dictionary for genuinely dynamic data.
+
+### 15.3. `Equipment._held_by` does not name its holder
+
+`ItemCollection.EquipCollectionItem()` writes the item's own instance ID into `_held_by`, so the
+field only distinguishes equipped from unequipped and cannot say which character holds an item.
+Ownership lives solely in `Character._held_items`, and the two must be unwound together.
+
+*Impact:* any path that removes a character has to know to unequip through `ItemCollection` as well,
+or the gear stays permanently hidden.
+*Direction:* store the holding character's instance ID, and derive the item list from it.

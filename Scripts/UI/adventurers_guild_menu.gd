@@ -23,3 +23,9 @@ func _on_fortunes_favor_button_up() -> void:
 func _on_drop_rates_button_up() -> void:
 	_hollow_ledger_window.RefreshPity()
 	_hollow_ledger_window.show()
+
+func _on_tally_board_button_up() -> void:
+	var context_container: ContextContainer = ContextContainer.new()
+	context_container._scene = "uid://c1ulirph1xhq"
+	context_container._previous_scene = "uid://bx1wl65s4cu0j"
+	main.GetInstance().change_scene(context_container)

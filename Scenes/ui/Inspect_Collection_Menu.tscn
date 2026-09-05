@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://d75871c7uh43" path="res://Assets/Champ_Collector/Icons/Items/Shield_Icon.png" id="7_lgjj3"]
 [ext_resource type="Script" uid="uid://bumae467d28vx" path="res://Scripts/UI/tooltip.gd" id="9_lgjj3"]
 [ext_resource type="PackedScene" uid="uid://di4m8t74hovq0" path="res://Scenes/ui/Skill_List_Row.tscn" id="10_skillrow"]
+[ext_resource type="PackedScene" uid="uid://cfmbg0g334eri" path="res://Scenes/ui/Renown_Window.tscn" id="11_renown"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_u3wy6"]
 shader = ExtResource("5_lsdxp")
@@ -47,7 +48,7 @@ corner_radius_bottom_left = 2
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_reagent_close"]
 
-[node name="InspectCollection" type="Control" unique_id=226476496 node_paths=PackedStringArray("_attribute_labels", "_selected_char_label", "_selected_char_level", "_selected_char_nature", "_selected_char_nature_tooltip", "_experience_bar", "_experience_bar_text", "_skill_rows", "_passive_row")]
+[node name="InspectCollection" type="Control" unique_id=226476496 node_paths=PackedStringArray("_attribute_labels", "_attribute_renown_labels", "_selected_char_label", "_selected_char_level", "_selected_char_nature", "_selected_char_nature_tooltip", "_experience_bar", "_experience_bar_text", "_skill_rows", "_passive_row")]
 custom_minimum_size = Vector2(1280, 720)
 layout_mode = 3
 anchors_preset = 0
@@ -63,6 +64,18 @@ _attribute_labels = {
 7: NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer4/Label_Knowledge_Val"),
 8: NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer4/Label_CritCh_Val"),
 9: NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer4/Label_CritDmg_Val")
+}
+_attribute_renown_labels = {
+0: NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer_Renown1/Label_Health_Renown"),
+1: NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer_Renown1/Label_Speed_Renown"),
+2: NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer_Renown1/Label_Attack_Renown"),
+3: NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer_Renown1/Label_Defense_Renown"),
+4: NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer_Renown1/Label_Accuracy_Renown"),
+5: NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer_Renown2/Label_Resistance_Renown"),
+6: NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer_Renown2/Label_Mysticism_Renown"),
+7: NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer_Renown2/Label_Knowledge_Renown"),
+8: NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer_Renown2/Label_CritCh_Renown"),
+9: NodePath("MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer_Renown2/Label_CritDmg_Renown")
 }
 _selected_char_label = NodePath("MarginContainer/ColorRect2/Label_Character_Name")
 _selected_char_level = NodePath("MarginContainer/ColorRect2/Label_Level")
@@ -152,6 +165,49 @@ theme_override_constants/shadow_outline_size = 5
 theme_override_font_sizes/font_size = 20
 horizontal_alignment = 1
 
+[node name="HBoxContainer_Renown_Pips" type="HBoxContainer" parent="MarginContainer/ColorRect2" unique_id=1912403501]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -47.0
+offset_top = 110.0
+offset_right = 47.0
+offset_bottom = 124.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="Pip_0" type="TextureRect" parent="MarginContainer/ColorRect2/HBoxContainer_Renown_Pips" unique_id=135882506]
+custom_minimum_size = Vector2(14, 14)
+layout_mode = 2
+expand_mode = 1
+
+[node name="Pip_1" type="TextureRect" parent="MarginContainer/ColorRect2/HBoxContainer_Renown_Pips" unique_id=18902592]
+custom_minimum_size = Vector2(14, 14)
+layout_mode = 2
+expand_mode = 1
+
+[node name="Pip_2" type="TextureRect" parent="MarginContainer/ColorRect2/HBoxContainer_Renown_Pips" unique_id=910033753]
+custom_minimum_size = Vector2(14, 14)
+layout_mode = 2
+expand_mode = 1
+
+[node name="Pip_3" type="TextureRect" parent="MarginContainer/ColorRect2/HBoxContainer_Renown_Pips" unique_id=818781727]
+custom_minimum_size = Vector2(14, 14)
+layout_mode = 2
+expand_mode = 1
+
+[node name="Pip_4" type="TextureRect" parent="MarginContainer/ColorRect2/HBoxContainer_Renown_Pips" unique_id=1487903658]
+custom_minimum_size = Vector2(14, 14)
+layout_mode = 2
+expand_mode = 1
+
 [node name="Label_Character_Name" type="Label" parent="MarginContainer/ColorRect2" unique_id=474828763]
 layout_mode = 1
 anchors_preset = 7
@@ -199,6 +255,14 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
 text = "Level ↓"
 
+[node name="Button_Cancel_Sacrifice" type="Button" parent="MarginContainer/HBoxContainer2/VBoxContainer_Characters/HBoxContainer_Sort" unique_id=900000014]
+visible = false
+layout_mode = 2
+theme = ExtResource("1_riq8p")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+text = "Cancel"
+
 [node name="ScrollContainer_Characters" type="ScrollContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer_Characters" unique_id=2084637322]
 layout_mode = 2
 size_flags_vertical = 3
@@ -206,6 +270,9 @@ size_flags_vertical = 3
 [node name="GridContainer" type="GridContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer_Characters/ScrollContainer_Characters" unique_id=1499657250]
 layout_mode = 2
 columns = 4
+
+[node name="MenuItemSlot_BuyRosterSlot" parent="MarginContainer/HBoxContainer2/VBoxContainer_Characters/ScrollContainer_Characters/GridContainer" instance=ExtResource("4_xwg4m")]
+layout_mode = 2
 
 [node name="ScrollContainer_Items" type="ScrollContainer" parent="MarginContainer/HBoxContainer2" unique_id=483209083]
 visible = false
@@ -323,9 +390,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -77.0
-offset_top = -13.5
+offset_top = -15.5
 offset_right = 77.0
-offset_bottom = 16.5
+offset_bottom = 14.5
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_riq8p")
@@ -399,6 +466,40 @@ theme = ExtResource("1_riq8p")
 theme_override_colors/font_color = Color(1, 0.741176, 0, 1)
 text = "0"
 
+[node name="VBoxContainer_Renown1" type="VBoxContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer" unique_id=900000020]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label_Health_Renown" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer_Renown1" unique_id=900000021]
+layout_mode = 2
+theme = ExtResource("1_riq8p")
+theme_override_colors/font_color = Color(0.5137255, 1, 0.5058824, 1)
+text = ""
+
+[node name="Label_Attack_Renown" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer_Renown1" unique_id=900000022]
+layout_mode = 2
+theme = ExtResource("1_riq8p")
+theme_override_colors/font_color = Color(0.5137255, 1, 0.5058824, 1)
+text = ""
+
+[node name="Label_Defense_Renown" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer_Renown1" unique_id=900000023]
+layout_mode = 2
+theme = ExtResource("1_riq8p")
+theme_override_colors/font_color = Color(0.5137255, 1, 0.5058824, 1)
+text = ""
+
+[node name="Label_Speed_Renown" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer_Renown1" unique_id=900000024]
+layout_mode = 2
+theme = ExtResource("1_riq8p")
+theme_override_colors/font_color = Color(0.5137255, 1, 0.5058824, 1)
+text = ""
+
+[node name="Label_Accuracy_Renown" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer_Renown1" unique_id=900000025]
+layout_mode = 2
+theme = ExtResource("1_riq8p")
+theme_override_colors/font_color = Color(0.5137255, 1, 0.5058824, 1)
+text = ""
+
 [node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer" unique_id=1518137742]
 layout_mode = 2
 theme_override_constants/separation = 10
@@ -461,6 +562,40 @@ layout_mode = 2
 theme = ExtResource("1_riq8p")
 theme_override_colors/font_color = Color(1, 0.741176, 0, 1)
 text = "0"
+
+[node name="VBoxContainer_Renown2" type="VBoxContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer" unique_id=900000026]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label_Mysticism_Renown" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer_Renown2" unique_id=900000027]
+layout_mode = 2
+theme = ExtResource("1_riq8p")
+theme_override_colors/font_color = Color(0.5137255, 1, 0.5058824, 1)
+text = ""
+
+[node name="Label_Resistance_Renown" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer_Renown2" unique_id=900000028]
+layout_mode = 2
+theme = ExtResource("1_riq8p")
+theme_override_colors/font_color = Color(0.5137255, 1, 0.5058824, 1)
+text = ""
+
+[node name="Label_Knowledge_Renown" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer_Renown2" unique_id=900000029]
+layout_mode = 2
+theme = ExtResource("1_riq8p")
+theme_override_colors/font_color = Color(0.5137255, 1, 0.5058824, 1)
+text = ""
+
+[node name="Label_CritCh_Renown" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer_Renown2" unique_id=900000030]
+layout_mode = 2
+theme = ExtResource("1_riq8p")
+theme_override_colors/font_color = Color(0.5137255, 1, 0.5058824, 1)
+text = ""
+
+[node name="Label_CritDmg_Renown" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer_Renown2" unique_id=900000031]
+layout_mode = 2
+theme = ExtResource("1_riq8p")
+theme_override_colors/font_color = Color(0.5137255, 1, 0.5058824, 1)
+text = ""
 
 [node name="Label_Character_Nature" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect/MarginContainer/VBoxContainer" unique_id=1136376217]
 layout_mode = 2
@@ -541,14 +676,46 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
 text = "Exit"
 
-[node name="Button_Reagents" type="Button" parent="MarginContainer" unique_id=900000001]
+[node name="HBoxContainer_Bottom_Actions" type="HBoxContainer" parent="MarginContainer" unique_id=900000013]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 8
+theme_override_constants/separation = 20
+
+[node name="Button_Reagents" type="Button" parent="MarginContainer/HBoxContainer_Bottom_Actions" unique_id=900000001]
+layout_mode = 2
 theme = ExtResource("1_riq8p")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
 text = "Reagents"
+
+[node name="Button_Release" type="Button" parent="MarginContainer/HBoxContainer_Bottom_Actions" unique_id=900000012]
+visible = false
+layout_mode = 2
+theme = ExtResource("1_riq8p")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+text = "Release"
+
+[node name="Button_Ascend" type="Button" parent="MarginContainer/HBoxContainer_Bottom_Actions" unique_id=900000015]
+visible = false
+layout_mode = 2
+theme = ExtResource("1_riq8p")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+text = "Ascend"
+
+[node name="RenownWindow" parent="." unique_id=900000016 node_paths=PackedStringArray("_attribute_buttons") instance=ExtResource("11_renown")]
+_attribute_buttons = {
+0: NodePath("ColorRect_Card/MarginContainer/VBoxContainer/VBoxContainer_Attributes/Button_Health"),
+1: NodePath("ColorRect_Card/MarginContainer/VBoxContainer/VBoxContainer_Attributes/Button_Speed"),
+2: NodePath("ColorRect_Card/MarginContainer/VBoxContainer/VBoxContainer_Attributes/Button_Attack"),
+3: NodePath("ColorRect_Card/MarginContainer/VBoxContainer/VBoxContainer_Attributes/Button_Defence"),
+4: NodePath("ColorRect_Card/MarginContainer/VBoxContainer/VBoxContainer_Attributes/Button_Accuracy"),
+5: NodePath("ColorRect_Card/MarginContainer/VBoxContainer/VBoxContainer_Attributes/Button_Resistance"),
+6: NodePath("ColorRect_Card/MarginContainer/VBoxContainer/VBoxContainer_Attributes/Button_Mysticism"),
+7: NodePath("ColorRect_Card/MarginContainer/VBoxContainer/VBoxContainer_Attributes/Button_Knowledge")
+}
 
 [node name="ReagentWindow" type="Control" parent="." unique_id=900000002]
 visible = false
@@ -632,8 +799,13 @@ text = "Close"
 
 [connection signal="button_up" from="MarginContainer/ColorRect2/Button_Deselect_Char" to="." method="_on_button_deselect_char_button_up"]
 [connection signal="button_up" from="MarginContainer/HBoxContainer2/VBoxContainer_Characters/HBoxContainer_Sort/Button_Sort_Level" to="." method="_on_button_sort_level_button_up"]
+[connection signal="button_up" from="MarginContainer/HBoxContainer2/VBoxContainer_Characters/HBoxContainer_Sort/Button_Cancel_Sacrifice" to="." method="_on_button_cancel_sacrifice_button_up"]
 [connection signal="tab_changed" from="MarginContainer/HBoxContainer2/VBoxContainer2/TabBar_GearSkills" to="." method="_on_tab_bar_gear_skills_tab_changed"]
 [connection signal="button_up" from="MarginContainer/HBoxContainer/Exit" to="." method="_on_exit_button_up"]
-[connection signal="button_up" from="MarginContainer/Button_Reagents" to="." method="_on_button_reagents_button_up"]
+[connection signal="button_up" from="MarginContainer/HBoxContainer_Bottom_Actions/Button_Reagents" to="." method="_on_button_reagents_button_up"]
+[connection signal="button_up" from="MarginContainer/HBoxContainer_Bottom_Actions/Button_Release" to="." method="_on_button_release_button_up"]
+[connection signal="button_up" from="MarginContainer/HBoxContainer_Bottom_Actions/Button_Ascend" to="." method="_on_button_ascend_button_up"]
+[connection signal="attribute_selected" from="RenownWindow" to="." method="_on_renown_window_attribute_selected"]
+[connection signal="cancelled" from="RenownWindow" to="." method="_on_renown_window_cancelled"]
 [connection signal="button_up" from="ReagentWindow/Button_Close" to="." method="_on_reagent_window_close_button_up"]
 [connection signal="button_up" from="ReagentWindow/ColorRect/MarginContainer/VBoxContainer/Button_Close_Bottom" to="." method="_on_reagent_window_close_button_up"]
