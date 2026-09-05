@@ -59,6 +59,9 @@ Effort: **S** = hours, **M** = days, **L** = week+
 - **New Role: The Underwriter (declared wagers)** *(Priority: Medium | Effort: L)*
   A role built on a mechanic type new to the genre: its skills declare a wager on an outcome before it happens (e.g. "this enemy dies within 3 of the Underwriter's turns", "this ally takes no Health damage before my next turn") and settle later — a party payoff if the prediction holds, a penalty on the Underwriter if it fails. Skill effects are placeholders to be tweaked; the declare-then-settle structure is the idea. Lore home: Iron Ledger actuarial insurance or the Arrears' Grey Ledger.
 
+- **Nature Reroll for Tallies** *(Priority: Low | Effort: S)*
+  Spend the duplicate-conversion currency to reroll an owned champion's Nature, with the current Nature excluded from the pool so the roll always changes. Sits on the existing inspect screen as a button and a confirm. The price is the design: it must stay worse in expectation than pulling for the Nature, so it reads as a pity valve for a champion the player has already committed to rather than a replacement for the hunt.
+
 ---
 
 ## Content & Encounters
