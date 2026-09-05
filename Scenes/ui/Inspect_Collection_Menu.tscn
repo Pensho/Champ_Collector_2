@@ -184,11 +184,26 @@ layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 50
 
-[node name="ScrollContainer_Characters" type="ScrollContainer" parent="MarginContainer/HBoxContainer2" unique_id=2084637322]
+[node name="VBoxContainer_Characters" type="VBoxContainer" parent="MarginContainer/HBoxContainer2" unique_id=900000200]
 custom_minimum_size = Vector2(420, 0)
 layout_mode = 2
 
-[node name="GridContainer" type="GridContainer" parent="MarginContainer/HBoxContainer2/ScrollContainer_Characters" unique_id=1499657250]
+[node name="HBoxContainer_Sort" type="HBoxContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer_Characters" unique_id=900000201]
+layout_mode = 2
+alignment = 2
+
+[node name="Button_Sort_Level" type="Button" parent="MarginContainer/HBoxContainer2/VBoxContainer_Characters/HBoxContainer_Sort" unique_id=900000202]
+layout_mode = 2
+theme = ExtResource("1_riq8p")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+text = "Level ↓"
+
+[node name="ScrollContainer_Characters" type="ScrollContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer_Characters" unique_id=2084637322]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer_Characters/ScrollContainer_Characters" unique_id=1499657250]
 layout_mode = 2
 columns = 4
 
@@ -528,6 +543,7 @@ text = "Exit"
 
 [node name="Button_Reagents" type="Button" parent="MarginContainer" unique_id=900000001]
 layout_mode = 2
+size_flags_horizontal = 4
 size_flags_vertical = 8
 theme = ExtResource("1_riq8p")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
@@ -615,6 +631,7 @@ theme_override_constants/outline_size = 3
 text = "Close"
 
 [connection signal="button_up" from="MarginContainer/ColorRect2/Button_Deselect_Char" to="." method="_on_button_deselect_char_button_up"]
+[connection signal="button_up" from="MarginContainer/HBoxContainer2/VBoxContainer_Characters/HBoxContainer_Sort/Button_Sort_Level" to="." method="_on_button_sort_level_button_up"]
 [connection signal="tab_changed" from="MarginContainer/HBoxContainer2/VBoxContainer2/TabBar_GearSkills" to="." method="_on_tab_bar_gear_skills_tab_changed"]
 [connection signal="button_up" from="MarginContainer/HBoxContainer/Exit" to="." method="_on_exit_button_up"]
 [connection signal="button_up" from="MarginContainer/Button_Reagents" to="." method="_on_button_reagents_button_up"]

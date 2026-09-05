@@ -35,13 +35,16 @@ var _selected_item_slot_ID: int = -1
 var _selected_equipped_item_ID: int = -1
 var _selected_equipped_slot_type: Types.Slot = Types.Slot.Weapon
 var _skills_tab_title: String = ""
+var _sort_level_descending: bool = true
 
 @onready var v_box_container_equipped_items: VBoxContainer = $MarginContainer/HBoxContainer2/VBoxContainer2
 
-@onready var _scroll_container_characters: ScrollContainer = $MarginContainer/HBoxContainer2/ScrollContainer_Characters
+@onready var _characters_panel: VBoxContainer = $MarginContainer/HBoxContainer2/VBoxContainer_Characters
 @onready var _scroll_container_items: ScrollContainer = $MarginContainer/HBoxContainer2/ScrollContainer_Items
 @onready var _grid_container_characters: GridContainer = (
-		$MarginContainer/HBoxContainer2/ScrollContainer_Characters/GridContainer)
+		$MarginContainer/HBoxContainer2/VBoxContainer_Characters/ScrollContainer_Characters/GridContainer)
+@onready var _button_sort_level: Button = (
+		$MarginContainer/HBoxContainer2/VBoxContainer_Characters/HBoxContainer_Sort/Button_Sort_Level)
 @onready var _grid_container_items: GridContainer = $MarginContainer/HBoxContainer2/ScrollContainer_Items/GridContainer
 @onready var _selected_character_texture: TextureRect = $MarginContainer/ColorRect2/TextureRect
 @onready var _reagent_window: Control = $ReagentWindow
@@ -74,13 +77,8 @@ func Init(_p_context_container: ContextContainer) -> void:
 		_available_characters[i] = character_slot
 		_available_characters[i]._ID = i
 		_available_characters[i].ConnectButton(AvailableCharacterButton)
-		
-		_displayed_character_ids[i] = _character_collection.keys()[i]
-		_available_characters[i].SetHeldObjectTexture(
-					main.GetInstance()._character_collection.GetCharacterTexture(
-						_character_collection[_displayed_character_ids[i]]._name))
-		_available_characters[i].level.text = str(_character_collection[_displayed_character_ids[i]]._level)
-	
+	ApplyCharacterSort()
+
 	_item_slots_equipped.append_array(GetMenuItemSlotChildren(v_box_container_equipped_items))
 	for i in _item_slots_equipped.size():
 		_item_slots_equipped[i]._ID = i
@@ -208,14 +206,14 @@ func _on_tab_bar_gear_skills_tab_changed(p_tab: int) -> void:
 	_skills_panel.visible = (1 == p_tab)
 
 func ShowCharacters() -> void:
-	_scroll_container_characters.show()
+	_characters_panel.show()
 	_scroll_container_items.hide()
 	for i in _item_slots_equipped.size():
 		_item_slots_equipped[i].SetHeldObjectTexture(null)
 		_item_slots_equipped[i].level.text = ""
 
 func ShowItems() -> void:
-	_scroll_container_characters.hide()
+	_characters_panel.hide()
 	_scroll_container_items.show()
 	for slot in _available_items.size():
 		if slot < _displayed_item_ids.size():
@@ -229,6 +227,42 @@ func ShowItems() -> void:
 			_available_items[slot].SetHeldObjectTexture(null)
 			_available_items[slot].level.text = ""
 			_available_items[slot].hide()
+
+static func SortCharacterIDsByLevel(
+		p_collection: Dictionary[int, Character],
+		p_character_ids: Array[int],
+		p_descending: bool) -> Array[int]:
+	var sorted_ids: Array[int] = p_character_ids.duplicate()
+	sorted_ids.sort_custom(func(a: int, b: int) -> bool:
+		if p_collection[a]._level != p_collection[b]._level:
+			if p_descending:
+				return p_collection[a]._level > p_collection[b]._level
+			return p_collection[a]._level < p_collection[b]._level
+		return a < b)
+	return sorted_ids
+
+func ApplyCharacterSort() -> void:
+	_displayed_character_ids = SortCharacterIDsByLevel(
+			_character_collection, _character_collection.keys(), _sort_level_descending)
+	_button_sort_level.text = "Level ↓" if _sort_level_descending else "Level ↑"
+	RefreshCharacterGrid()
+
+func RefreshCharacterGrid() -> void:
+	for slot_nr in _available_characters.size():
+		if(slot_nr < _displayed_character_ids.size()):
+			_available_characters[slot_nr].SetHeldObjectTexture(
+					main.GetInstance()._character_collection.GetCharacterTexture(
+						_character_collection[_displayed_character_ids[slot_nr]]._name))
+			_available_characters[slot_nr].SetTextureOutline(
+					_character_collection[_displayed_character_ids[slot_nr]]._rarity)
+			_available_characters[slot_nr].level.text = str(
+					_character_collection[_displayed_character_ids[slot_nr]]._level)
+		else:
+			_available_characters[slot_nr].SetHeldObjectTexture(null)
+
+func _on_button_sort_level_button_up() -> void:
+	_sort_level_descending = not _sort_level_descending
+	ApplyCharacterSort()
 
 func CanEquipFromMenuID(p_instance_ID: int) -> bool:
 	var selected_item_type: Types.Slot = _item_collection[p_instance_ID]._slot
@@ -446,17 +480,7 @@ func _on_button_deselect_char_button_up() -> void:
 		_tab_bar_gear_skills.remove_tab(1)
 	_tab_bar_gear_skills.current_tab = 0
 	_on_tab_bar_gear_skills_tab_changed(0)
-	for slot_nr in _available_characters.size(): #_displayed_character_ids
-		if(slot_nr < _character_collection.size()):
-			_available_characters[slot_nr].SetHeldObjectTexture(
-					main.GetInstance()._character_collection.GetCharacterTexture(
-						_character_collection[_displayed_character_ids[slot_nr]]._name))
-			_available_characters[slot_nr].SetTextureOutline(
-					_character_collection[_displayed_character_ids[slot_nr]]._rarity)
-			_available_characters[slot_nr].level.text = str(
-					_character_collection[_displayed_character_ids[slot_nr]]._level)
-		else:
-			_available_characters[slot_nr].SetHeldObjectTexture(null)
+	RefreshCharacterGrid()
 	for i in _item_slots_equipped.size():
 		_item_slots_equipped[i].SetHeldObjectTexture(null)
 	_selected_character_ID = -1
