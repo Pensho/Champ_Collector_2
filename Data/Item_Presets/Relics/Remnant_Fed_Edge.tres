@@ -1,10 +1,11 @@
 [gd_resource type="Resource" script_class="EquipmentPreset" format=3 uid="uid://cixojc5wn6df6"]
 
+[ext_resource type="Script" uid="uid://uj8sdntvdbwt" path="res://Scripts/Character/character_traits/Relics/remnant_fed_edge_relic.gd" id="1_2opfo"]
 [ext_resource type="Script" uid="uid://8knbs7yij5eh" path="res://Scripts/Gear/equipment_preset.gd" id="1_preset"]
-[ext_resource type="Script" uid="uid://dj7qekwt2ben4" path="res://Scripts/Character/character_traits/Relics/remnant_fed_edge_relic.gd" id="2_effect"]
 
-[sub_resource type="Resource" id="SubResource_1"]
-script = ExtResource("2_effect")
+[sub_resource type="Resource" id="Resource_2opfo"]
+script = ExtResource("1_2opfo")
+metadata/_custom_type_script = "uid://dj7qekwt2ben4"
 
 [resource]
 script = ExtResource("1_preset")
@@ -14,4 +15,4 @@ _rarity = 1
 _item_type = 1
 _texture_path = "res://Assets/Champ_Collector/Icons/Items/Relics/Remnant_Fed_Edge/Remnant_Fed_Edge.png"
 _preset_path = "res://Data/Item_Presets/Relics/Remnant_Fed_Edge.tres"
-_relic_effect = SubResource("SubResource_1")
+_relic_effect = SubResource("Resource_2opfo")
