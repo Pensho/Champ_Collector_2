@@ -996,9 +996,9 @@ consumption; see `Technical_Design_Document.md` sections 6.1, 7.4, 9, and 10.1):
   strictly on the consumer's own turn, never reactively.
 - A consumed reagent is permanently deleted; reagents brought but not used return to
   the inventory.
-- Reagents can be sold for Silver from the reagent storage screen (in the collection
-  menu). Sell value scales with rarity: `60 ^ (1 + rarity * 0.15)`, the same formula
-  shape used for equipment sell values (`LootManager.GetReagentSellValue`).
+- Reagents can be sold for Silver from the Reagents tab of the collection menu. Sell
+  value scales with rarity: `60 ^ (1 + rarity * 0.15)`, the same formula shape used
+  for equipment sell values (`LootManager.GetReagentSellValue`).
 - Reagents are currently loot-only (dropped by bosses and the Escalate adventure node,
   see below); shop purchase is a tracked follow-up (see `FeatureIdeas.md`).
 - Reagents come in rarities (Uncommon, Rare, Epic, Legendary). Reagent effects scale

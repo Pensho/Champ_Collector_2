@@ -39,6 +39,10 @@ func SetUpgradeButton(p_name: String, p_func_ptr: Callable, p_color: Color = Col
 	button_upgrade.add_theme_color_override("font_color", p_color)
 	button_upgrade.show()
 
+func HideLeftButton() -> void:
+	_disconnect_all(button_left, "button_up")
+	button_left.hide()
+
 func HideMiddleButton() -> void:
 	_disconnect_all(button_middle, "button_up")
 	button_middle.hide()

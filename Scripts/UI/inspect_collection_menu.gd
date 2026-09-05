@@ -14,6 +14,25 @@ const ROSTER_SLOT_PLUS_TEXTURE = preload("uid://cavc4wk33n2m")
 @export var _experience_bar_text: Label
 @export var _skill_rows: Array[SkillListRow]
 @export var _passive_row: SkillListRow
+@export var v_box_container_equipped_items: VBoxContainer
+@export var _tab_bar_collection: TabBar
+@export var _characters_panel: ScrollContainer
+@export var _scroll_container_items: ScrollContainer
+@export var _scroll_container_reagents: ScrollContainer
+@export var _grid_container_characters: GridContainer
+@export var _button_sort_level: Button
+@export var _cancel_sacrifice_button: Button
+@export var _grid_container_items: GridContainer
+@export var _selected_character_texture: TextureRect
+@export var _release_button: Button
+@export var _ascend_button: Button
+@export var _renown_window: RenownWindow
+@export var _buy_roster_slot: MenuItemSlot
+@export var _selected_char_renown_pips: Array[TextureRect]
+@export var _grid_container_reagents: GridContainer
+@export var _tab_bar_gear_skills: TabBar
+@export var _gear_tab_nodes: Array[Control]
+@export var _skills_panel: Control
 
 var _select_item_option: ButtonWithOptions
 var _confirm_option: ButtonWithOptions
@@ -43,41 +62,11 @@ var _in_sacrifice_picker: bool = false
 var _picker_candidate_ids: Array[int] = []
 var _picker_selected_candidate_id: int = -1
 
-@onready var v_box_container_equipped_items: VBoxContainer = $MarginContainer/HBoxContainer2/VBoxContainer2
-
-@onready var _characters_panel: VBoxContainer = $MarginContainer/HBoxContainer2/VBoxContainer_Characters
-@onready var _scroll_container_items: ScrollContainer = $MarginContainer/HBoxContainer2/ScrollContainer_Items
-@onready var _grid_container_characters: GridContainer = (
-		$MarginContainer/HBoxContainer2/VBoxContainer_Characters/ScrollContainer_Characters/GridContainer)
-@onready var _button_sort_level: Button = (
-		$MarginContainer/HBoxContainer2/VBoxContainer_Characters/HBoxContainer_Sort/Button_Sort_Level)
-@onready var _grid_container_items: GridContainer = $MarginContainer/HBoxContainer2/ScrollContainer_Items/GridContainer
-@onready var _selected_character_texture: TextureRect = $MarginContainer/ColorRect2/TextureRect
-@onready var _reagent_window: Control = $ReagentWindow
-@onready var _release_button: Button = $MarginContainer/HBoxContainer_Bottom_Actions/Button_Release
-@onready var _ascend_button: Button = $MarginContainer/HBoxContainer_Bottom_Actions/Button_Ascend
-@onready var _renown_window: RenownWindow = $RenownWindow
-@onready var _cancel_sacrifice_button: Button = (
-		$MarginContainer/HBoxContainer2/VBoxContainer_Characters/HBoxContainer_Sort/Button_Cancel_Sacrifice)
-@onready var _buy_roster_slot: MenuItemSlot = (
-		_grid_container_characters.get_node("MenuItemSlot_BuyRosterSlot"))
-@onready var _selected_char_renown_pips: Array[TextureRect] = [
-	$MarginContainer/ColorRect2/HBoxContainer_Renown_Pips/Pip_0,
-	$MarginContainer/ColorRect2/HBoxContainer_Renown_Pips/Pip_1,
-	$MarginContainer/ColorRect2/HBoxContainer_Renown_Pips/Pip_2,
-	$MarginContainer/ColorRect2/HBoxContainer_Renown_Pips/Pip_3,
-	$MarginContainer/ColorRect2/HBoxContainer_Renown_Pips/Pip_4,
+@onready var _collection_tab_pages: Array[Control] = [
+	_characters_panel,
+	_scroll_container_items,
+	_scroll_container_reagents,
 ]
-@onready var _grid_container_reagents: GridContainer = (
-		$ReagentWindow/ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GridContainer)
-
-@onready var _tab_bar_gear_skills: TabBar = $MarginContainer/HBoxContainer2/VBoxContainer2/TabBar_GearSkills
-@onready var _gear_tab_nodes: Array[Control] = [
-	$MarginContainer/HBoxContainer2/VBoxContainer2/HBoxContainer,
-	$MarginContainer/HBoxContainer2/VBoxContainer2/Boots_Slot,
-	$MarginContainer/HBoxContainer2/VBoxContainer2/ColorRect,
-]
-@onready var _skills_panel: Control = $MarginContainer/HBoxContainer2/VBoxContainer2/SkillsPanel
 
 func Init(_p_context_container: ContextContainer) -> void:
 	_available_items.resize(_item_collection.size())
@@ -145,7 +134,9 @@ func Init(_p_context_container: ContextContainer) -> void:
 			Vector2i((get_viewport_rect().size * 0.5) - (_reagent_confirm_option.GetSize() * 0.5)))
 	_reagent_confirm_option.hide()
 
-	ShowCharacters()
+	_tab_bar_collection.current_tab = 0
+	_on_tab_bar_collection_tab_changed(0)
+	RefreshItemGrid()
 
 func RefreshDisplayedItems() -> void:
 	_displayed_item_ids.clear()
@@ -240,16 +231,13 @@ func _on_tab_bar_gear_skills_tab_changed(p_tab: int) -> void:
 		node.visible = (0 == p_tab)
 	_skills_panel.visible = (1 == p_tab)
 
-func ShowCharacters() -> void:
-	_characters_panel.show()
-	_scroll_container_items.hide()
-	for i in _item_slots_equipped.size():
-		_item_slots_equipped[i].SetHeldObjectTexture(null)
-		_item_slots_equipped[i].level.text = ""
+func _on_tab_bar_collection_tab_changed(p_tab: int) -> void:
+	for i in _collection_tab_pages.size():
+		_collection_tab_pages[i].visible = (i == p_tab)
+	if(2 == p_tab):
+		RefreshReagentGrid()
 
-func ShowItems() -> void:
-	_characters_panel.hide()
-	_scroll_container_items.show()
+func RefreshItemGrid() -> void:
 	for slot in _available_items.size():
 		if slot < _displayed_item_ids.size():
 			var item_id: int = _displayed_item_ids[slot]
@@ -295,6 +283,11 @@ func ApplyCharacterSort() -> void:
 	_button_sort_level.text = "Level ↓" if _sort_level_descending else "Level ↑"
 	RefreshCharacterGrid()
 
+static func GetSlotModulate(p_slot_character_id: int, p_selected_character_id: int) -> Color:
+	if(p_slot_character_id == p_selected_character_id):
+		return Color(0.45, 0.45, 0.45, 1.0)
+	return Color(1.0, 1.0, 1.0, 1.0)
+
 func RefreshCharacterGrid() -> void:
 	for slot_nr in _available_characters.size():
 		if(slot_nr < _displayed_character_ids.size()):
@@ -308,6 +301,8 @@ func RefreshCharacterGrid() -> void:
 					_character_collection[_displayed_character_ids[slot_nr]]._level)
 			_available_characters[slot_nr].SetRenownRank(
 					_character_collection[_displayed_character_ids[slot_nr]].GetRenownRank())
+			_available_characters[slot_nr].SetHeldObjectModulate(
+					GetSlotModulate(_displayed_character_ids[slot_nr], _selected_character_ID))
 		else:
 			_available_characters[slot_nr].SetHeldObjectTexture(null)
 			_available_characters[slot_nr].level.text = ""
@@ -342,11 +337,14 @@ func GetItemDescriptionText(p_item: Equipment, p_compare_item: Equipment = null)
 func AvailableItemButton(p_slot_ID: int) -> void:
 	var item: Equipment = _item_collection[_displayed_item_ids[p_slot_ID]]
 	var compare_item: Equipment = null
-	if(_character_collection[_selected_character_ID]._held_items.has(item._slot)):
+	if(-1 != _selected_character_ID and _character_collection[_selected_character_ID]._held_items.has(item._slot)):
 		compare_item = _item_collection[_character_collection[_selected_character_ID]._held_items[item._slot]]
 
 	_select_item_option.SetText(item._name, GetItemDescriptionText(item, compare_item))
-	_select_item_option.SetLeftButton("Equip", TriggerEquipItem)
+	if(-1 != _selected_character_ID):
+		_select_item_option.SetLeftButton("Equip", TriggerEquipItem)
+	else:
+		_select_item_option.HideLeftButton()
 	_select_item_option.SetMiddleButton("Sell", TrySell)
 	_select_item_option.SetUpgradeButton("Upgrade", TryUpgrade)
 	_select_item_option.show()
@@ -365,7 +363,7 @@ func SellItem() -> void:
 	main.GetInstance()._resources._silver += LootManager.GetSellValue(_item_collection[item_id]._rarity)
 	main.GetInstance()._item_collection.Remove(item_id)
 	RefreshDisplayedItems()
-	ShowItems()
+	RefreshItemGrid()
 	_confirm_option.hide()
 	_select_item_option.hide()
 
@@ -408,6 +406,7 @@ func TryAscend() -> void:
 		return
 	if(GetDuplicateCandidateIDs(_character_collection, _selected_character_ID).is_empty()):
 		_confirm_option.SetText("Ascend", "You need a duplicate of this champion to Ascend.")
+		_confirm_option.HideLeftButton()
 		_confirm_option.show()
 		return
 	EnterSacrificePicker()
@@ -419,8 +418,11 @@ func EnterSacrificePicker() -> void:
 		slot.ConnectButton(SacrificeCharacterButton)
 	_cancel_sacrifice_button.show()
 	_buy_roster_slot.hide()
+	_tab_bar_collection.set_tab_disabled(1, true)
+	_tab_bar_collection.set_tab_disabled(2, true)
+	_tab_bar_collection.current_tab = 0
+	_on_tab_bar_collection_tab_changed(0)
 	RefreshSacrificeGrid()
-	ShowCharacters()
 
 func RefreshSacrificeGrid() -> void:
 	for slot_nr in _available_characters.size():
@@ -433,6 +435,7 @@ func RefreshSacrificeGrid() -> void:
 			_available_characters[slot_nr].SetTextureOutline(_character_collection[candidate_id]._rarity)
 			_available_characters[slot_nr].level.text = str(_character_collection[candidate_id]._level)
 			_available_characters[slot_nr].SetRenownRank(_character_collection[candidate_id].GetRenownRank())
+			_available_characters[slot_nr].SetHeldObjectModulate(Color(1.0, 1.0, 1.0, 1.0))
 		else:
 			_available_characters[slot_nr].SetHeldObjectTexture(null)
 			_available_characters[slot_nr].level.text = ""
@@ -480,8 +483,10 @@ func ExitSacrificePicker() -> void:
 	_buy_roster_slot.show()
 	for slot: MenuItemSlot in _available_characters:
 		slot.ConnectButton(AvailableCharacterButton)
+	_tab_bar_collection.set_tab_disabled(1, false)
+	_tab_bar_collection.set_tab_disabled(2, false)
 	ApplyCharacterSort()
-	ShowItems()
+	RefreshItemGrid()
 	ShowSelectedCharacter(_selected_character_ID)
 
 func _on_button_cancel_sacrifice_button_up() -> void:
@@ -496,6 +501,7 @@ func TryUpgrade() -> void:
 	var item: Equipment = _item_collection[GetSelectedItemID()]
 	if(not item.CanUpgrade()):
 		_confirm_option.SetText("Upgrade", "This item is already at maximum level.")
+		_confirm_option.HideLeftButton()
 		_confirm_option.show()
 		return
 
@@ -516,7 +522,8 @@ func UpgradeItem() -> void:
 	item.Upgrade()
 	if(-1 != _selected_item_slot_ID):
 		_available_items[_selected_item_slot_ID].level.text = str(item._level)
-	ShowSelectedCharacter(_selected_character_ID)
+	if(-1 != _selected_character_ID):
+		ShowSelectedCharacter(_selected_character_ID)
 	_confirm_option.hide()
 	_select_item_option.hide()
 
@@ -567,6 +574,7 @@ func TryBuyRosterSlot() -> void:
 	var collection: CharacterCollection = main.GetInstance()._character_collection
 	if(collection.IsRosterAtMaxSize()):
 		_confirm_option.SetText("Expand Roster", "Your roster is already at its maximum capacity.")
+		_confirm_option.HideLeftButton()
 		_confirm_option.show()
 		return
 
@@ -584,17 +592,11 @@ func BuyRosterSlot() -> void:
 		collection.IncreaseCollectionSize()
 	_confirm_option.hide()
 
-func _on_button_reagents_button_up() -> void:
-	RefreshReagentGrid()
-	_reagent_window.show()
-
-func _on_reagent_window_close_button_up() -> void:
-	_reagent_window.hide()
-
 func AvailableCharacterButton(p_slot_ID: int) -> void:
 	_selected_character_ID = _displayed_character_ids[p_slot_ID]
 	ShowSelectedCharacter(_displayed_character_ids[p_slot_ID])
-	ShowItems()
+	RefreshCharacterGrid()
+	RefreshItemGrid()
 	_release_button.show()
 	_ascend_button.show()
 
@@ -608,7 +610,7 @@ func TriggerEquipItem() -> void:
 	_character_collection[_selected_character_ID].EquipItem(item_id)
 	main.GetInstance()._item_collection.EquipCollectionItem(item_id)
 	RefreshDisplayedItems()
-	ShowItems()
+	RefreshItemGrid()
 	ShowSelectedCharacter(_selected_character_ID)
 	_selected_item_slot_ID = -1
 	_select_item_option.hide()
@@ -631,7 +633,7 @@ func TriggerUnequipItem(p_item_type: Types.Slot) -> void:
 	_character_collection[_selected_character_ID].UnequipItem(p_item_type)
 
 	RefreshDisplayedItems()
-	ShowItems()
+	RefreshItemGrid()
 	ShowSelectedCharacter(_selected_character_ID)
 
 func EquipedItemSlotButton(p_slot_ID: int) -> void:
@@ -684,13 +686,13 @@ func _on_button_deselect_char_button_up() -> void:
 		_tab_bar_gear_skills.remove_tab(1)
 	_tab_bar_gear_skills.current_tab = 0
 	_on_tab_bar_gear_skills_tab_changed(0)
-	RefreshCharacterGrid()
 	for i in _item_slots_equipped.size():
 		_item_slots_equipped[i].SetHeldObjectTexture(null)
+		_item_slots_equipped[i].level.text = ""
 	_selected_character_ID = -1
 	_release_button.hide()
 	_ascend_button.hide()
-	ShowCharacters()
+	RefreshCharacterGrid()
 
 func _on_exit_button_up() -> void:
 	var context_container: ContextContainer = ContextContainer.new()
