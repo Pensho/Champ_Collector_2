@@ -1094,7 +1094,7 @@ Maybe a rotating schedule composed of one type of event per god? E.g.
 The hub areas will be almost identical but for visual themes, minor differences in NPCs and decorations.
 The biggest differences will come along the theme of the hub as it can be either neutral or run by one or more factions. This will affect the recruitment weighting of characters.
 
-#### 3.6.1. The war room (Gate out of town etc)
+#### 3.6.1. TBD (Gate out of town etc)
 Transports the player to a new screen, the world atlas. Where the player can access different playable encounters.
 
 #### 3.6.2. The Armory
@@ -1127,6 +1127,8 @@ stays sold out until its next restock (or, for Favor, until its cooldown ends).
 ### 3.7 Energy Systems
 To limit daily player activity, an energy system will be implemented. Players will have a set amount of Energy (Supplies) that depletes when entering combat nodes. Supplies regenerate over time at a rate of +10 per 10 real-world minutes, up to a cap of 100, and can also be replenished through in-game actions or purchases. Regeneration is offline-aware: elapsed real time is applied on load, with partial progress toward the next +10 preserved.
 
+This is up for change, the energy system might not be helpful for the game. Consider changing this to a spendable resource to help in certain types of content or another use.
+
 ### 3.8 Reward structure
 The idea is to have every encounter hold a "loot table" of possible drops. Some drops may always drop for certain encounters.
 Then each drop is given a "reward value", where e.g.
@@ -1156,6 +1158,7 @@ directly in the adventure scene without entering battle:
 - **Escalate**: offers Silver and/or Supplies (15% of the encounter's reward budget) plus a
   guaranteed reagent (Uncommon-Epic; Legendary is boss-exclusive, see section 3.3.3) in
   exchange for a permanent +1 to the adventure's difficulty for its remainder.
+- **Unique**: This nodes intent is mainly to be used for game progression purposes like unlocking future content. This node type is supposed to be instantiated by multiple variants but each variant should be a appear once only if completed, hence "unique".
 
 Buffs and debuffs granted by these nodes are **adventure-spanning effects**: they are
 tracked on `AdventureState` as combats-remaining (rather than turns) and are applied to
@@ -1172,6 +1175,8 @@ seeded from the adventure's own generation seed, so revisiting the same adventur
 shows the same scenery. Each node also scatters a deterministic ring of node-type-themed
 props around it — reusing the same density, scale, rotation, and texture-variant mechanics
 as zone decor — so every node's surroundings vary while still reading clearly as their type.
+
+A node might be tagged as Mandatory, many Unique type nodes will need the tag so an Adventure always gets a permanent progress node included per run if available.
 
 
 ---
@@ -1294,27 +1299,47 @@ Developed in World_Building.md section 5; listed here for reference:
 
 
 ## 5. Playable content
-Most forms of encounters shall have difficulty options, this is for several reasons. One is to have more challenging content for players whose account have outgrown certain encounters. Another is to scale the reward given to be able to farm specific gear/experience/currency to manage other difficult content.
+Forms of encounters shall have difficulty options, this is for several reasons. One is to have more challenging content for players whose account have outgrown certain encounters. Another is to scale the reward given to be able to farm specific gear/experience/currency to manage other difficult content.
 
 ### 5.1. Longform
-Intended to be adventures aimed to span days to weeks to complete.
+Intended to be adventures aimed to span days to complete.
+
+When a player enters the adventure screen they should be met with 2 options that cover the left and correspondingly the right side of the screen.
+In the top right an Exit button.
+Centered there should be a difficulty option if the first one has been completed and a start button.
+The player should be expected to click on either the left or right side to choose adventure biome, then difficulty if available and lastly the start button. If an adventure is already in progress darken the difficulty option and do not allow edits, only to show which was the current difficulty.
+
+An adventures content is a series of connected nodes of various types where the player has to unlock following nodes by completing a currently available one. It will have branching paths of nodes and end in a boss battle to complete the Adventure at which point new difficulties will unlock and the player may start a new one.
+A failed encounter in Adventure will not affect the state of the Adventure and the state is persistent over sessions.
+
+#### 5.1.1. Adventure biomes
+
+##### 5.1.1.1. Jungle (Reclaimed City)
+
+##### 5.1.1.2. Magic Ruins (Reclaimed City)
+
+##### 5.1.1.3. Factory (Clockwork Spire)
+
+##### 5.1.1.4. Greese-Pits (Clockwork Spire)
+
+##### 5.1.1.5. Shanty town (Pirate Coves)
+
+##### 5.1.1.6. Islands (Pirate Coves)
+
+##### 5.1.1.7. Slums (Iron Ledger)
+
+##### 5.1.1.8. Inner city (Iron Ledger)
+
 
 ### 5.2. Shortform
 Intended to be singlular encounters with specific, targetable and grindable rewards.
 
-#### 5.2.1. Quest Board (Experience encounter)
-A quest board is accessible where one randomized encounter (out of two or three) will be available, with the purpose of having different characters/strategies be more efficient at different encounters.
-
-The intended way to engage is to bring one suitable character to deal with the encounter and two weak characters to grow from the encounter reward, the experience points.
+#### 5.2.1. Quest Board
+The quest board shall be a board to house both guidance for permanent progress, most often tied to Adventures and also small randomized single encounters to yield randomized rewards (silver, gear, experience and maybe other)
 
 #### 5.2.2. Reanimating Statues 1, 2 and 3 (Gear encounter)
-In the future the intent is to have one type of encounter per type of gear set, where all types of equippable items or a subset can be a drop for that set.
-For now though in the meantime as gear sets doesn't exist yet, the intention is for each encounter to drop one type of equippable item as e.g. one encounter for boots, one for weapons and one for off-hands.
-
-So there now is 3 encounters to choose from for gear farming, one per equippable item: Reanimating Statues 1 (Boots), 2 (Weapons), and 3 (Off-hands). All three are Mini-boss tier (see section 5.3); their mechanics, compositions, and intended solutions are cataloged in `Encounter_Design_Document.md` section 2.2.
-
-#### 5.2.3. Caravan (Currency encounter)
-
+There now is 3 encounters to choose from for gear farming, one per equippable item: Reanimating Statues 1 (Boots), 2 (Weapons), and 3 (Off-hands). All three are Mini-boss tier (see section 5.3); their mechanics, compositions, and intended solutions are cataloged in `Encounter_Design_Document.md` section 2.2.
+This is subject to change, to divert the way to engage with gear encounters. These 3 statues might become part of a corresponding type of node for Clockwork Spire, other Acts will have need to access this via another mean.
 
 ### 5.3. Encounter tiers
 
@@ -1328,8 +1353,47 @@ Every mechanic states its onset — by which enemy turn it becomes relevant — 
 
 Encounter entries, opponent skills, and the production rules (overlap tolerance, answer anchoring, volume targets) live in `Encounter_Design_Document.md` and `Plans/Plan_Encounter_Solution_Design.md`.
 
+### 5.4. Game progression
+
+start in a hand-authored mini adventure to act as the tutorial, when won the player gets to see the overworld.
+
+The overworld shows the 4 different acts in order:
+* 1. Reclaimed City
+* 2. Clockwork Spire
+* 3. Pirate Coves
+* 4. The Iron Ledger
+
+Each Act holds a hub and its own adventure consisting of 2 biomes.
+
+#### 5.5. Act 1 Reclaimed City
+
+At first the Adventurers guild & shop is closed. to not diverge the attention of the player too wide yet. And the progression lies in its adventures.
+
+In the Reclaimed City adventures one unlock node should be made mandatory until all unlocks are completed.
+
+Unlocks via nodes in order:
+1. Shopkeeper (makes the shop available in the Reclaimed city hub)
+2. Magic Ruins biome
+3. Caravan to the overworld unlocks the next Act (Clockwork Spire)
+
+Only one biome should be available and the other greyed out until unlocked.
+When the first adventure is completed they should also be directed to the newly opened Adventurers guild and taught how to get new characters.
+
+Last in the Act is to use the Caravan to navigate the Overworld and move into the next Act of Clockwork Spire.
+
+#### 5.6. Act 2 Clockwork Spire
+
+
+#### 5.7. Act 3 Pirate Coves
+
+
+#### 5.8 Act 4 Iron Ledger
+
+
+
 ## 6. Development tools
 - Godot Engine version 4.7
+
 ## 7. Aesthetics
 
 Style name: **Lit Woodcut**. `Art_Style_Guide.md` is the sole authority on visual
