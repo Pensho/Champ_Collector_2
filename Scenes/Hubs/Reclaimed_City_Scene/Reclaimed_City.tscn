@@ -172,9 +172,9 @@ text = "Quit"
 
 [node name="ResourceBar" parent="." unique_id=620940085 instance=ExtResource("8_vvjq3")]
 layout_mode = 0
-offset_left = 383.0
+offset_left = 298.0
 offset_top = 20.0
-offset_right = 383.0
+offset_right = 298.0
 offset_bottom = 20.0
 
 [connection signal="button_up" from="Navigation_Buttons/Button_Adventure_guild" to="." method="_on_adventure_guild_button_up"]

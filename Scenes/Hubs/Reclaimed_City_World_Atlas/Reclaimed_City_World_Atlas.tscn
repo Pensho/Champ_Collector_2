@@ -5,7 +5,7 @@
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="2_75jl7"]
 [ext_resource type="Texture2D" uid="uid://be4d7es1t3q0k" path="res://Data/Texture_Data/Button_hover_highligt.tres" id="3_8g887"]
 [ext_resource type="Theme" uid="uid://bcg5pku1fyhst" path="res://Assets/Champ_Collector/Themes/hub_theme.tres" id="4_75jl7"]
-[ext_resource type="PackedScene" path="res://Scenes/ui/Resources/Resource_Bar.tscn" id="6_14bt2"]
+[ext_resource type="PackedScene" uid="uid://bm6xwrr37gevr" path="res://Scenes/ui/Resources/Resource_Bar.tscn" id="6_14bt2"]
 
 [node name="ReclaimedCityWorldAtlas" type="Control" unique_id=795738096]
 layout_mode = 3
@@ -131,11 +131,11 @@ text = "Adventure
 "
 horizontal_alignment = 1
 
-[node name="ResourceBar" parent="." instance=ExtResource("6_14bt2")]
+[node name="ResourceBar" parent="." unique_id=1494947395 instance=ExtResource("6_14bt2")]
 layout_mode = 0
-offset_left = 834.0
+offset_left = 727.0
 offset_top = 20.0
-offset_right = 834.0
+offset_right = 727.0
 offset_bottom = 20.0
 
 [connection signal="button_up" from="Navigation_Buttons/Button_Experience_Quests" to="." method="_on_experience_quests_button_up"]
