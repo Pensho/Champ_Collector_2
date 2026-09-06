@@ -5,13 +5,11 @@ body of work.
 
 Suggested order (dependencies noted inside each plan):
 
-1. `Plan_Story_Mode_Systems.md` — the systems that deliver story mode (story
-   state handler, dialogue overlay, flag-driven hub variants, act gating,
-   scripted battle openings, guest champions). The state handler and dialogue
-   overlay are independent and can start any time; scripted openings apply
-   through the landed `BattleResolver`, and guest champions ride on the
-   completed team and roster abstraction (`CombatTeam`/`CombatSides`).
-   Design counterpart: `Plan_Story_Mode.md`.
+1. `Plan_Battle_Visual_Bands.md` — context-aware battle stages built from the four
+   visual bands: a per-variant resource chain, an authored slot rig in `battle.tscn`,
+   and a seeded composer that picks elements from the variant's pool. Soft dependency
+   on `Plan_Lighting.md`, which owns the `LightingProfile` the variant resource points
+   at; output also fills the `Not yet written` stubs in `Art_Style_Guide.md` 10.3.
 
 Design-only plans (no code; can run at any time):
 
@@ -38,6 +36,14 @@ Design-only plans (no code; can run at any time):
   (flicker/pulse) light archetypes. Design with a staged rollout; independent, but
   soft ties to `Plan_Particle_Effects.md` (paired light/emitter scenes) and
   `Adventure_Background_Visuals_Checklist.md` (glow-accent props).
+
+Held (revise before scheduling):
+
+- `Plan_Story_Mode_Systems.md` — the systems that deliver story mode (story state
+  handler, dialogue overlay, flag-driven hub variants, act gating, scripted battle
+  openings, guest champions). Held while the game's scope is being cut: what story
+  mode needs from these systems is moving, so the plan is reviewed against the
+  settled scope before it enters the order. Design counterpart: `Plan_Story_Mode.md`.
 
 ## Findings section
 

@@ -8,9 +8,10 @@ presentation, hub reactivity, act gating, and story-flavored battle setup.
 ## Status
 
 Created 2026-07-12 from the story-mode systems brainstorm; nothing implemented.
-The story state handler and the dialogue overlay are design-independent and can
-start before the act beat sheets exist; the remaining systems sequence per the
-dependencies noted in each section.
+
+**Held as of 2026-09-06.** The game's scope is being cut, and what story mode
+needs from these systems is moving with it. Review this plan against the settled
+scope before scheduling any of it — the system list below predates those cuts.
 
 ## Boundary (confirmed)
 
