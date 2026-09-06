@@ -7,7 +7,7 @@
 [ext_resource type="Script" uid="uid://bumae467d28vx" path="res://Scripts/UI/tooltip.gd" id="5_7k67v"]
 [ext_resource type="Script" path="res://Scripts/Battle/character_visual_effects.gd" id="6_echovx"]
 [ext_resource type="Script" uid="uid://dbranfugtf4s5" path="res://Scripts/UI/Battle_UI/damage_trail_bar.gd" id="7_dmgtrl"]
-[ext_resource type="Script" path="res://Scripts/Battle/character_sprite_animator.gd" id="8_sprtan"]
+[ext_resource type="Script" uid="uid://bbvo728rdy2xv" path="res://Scripts/Battle/character_sprite_animator.gd" id="8_sprtan"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_damage_trail_fill"]
 bg_color = Color(0.815686, 0.203922, 0.203922, 1)
@@ -61,8 +61,8 @@ _echo_textures = [NodePath("Echo_1"), NodePath("Echo_2"), NodePath("Echo_3")]
 visible = false
 self_modulate = Color(1, 1, 1, 0.45)
 offset_left = 35.0
-offset_right = 235.0
-offset_bottom = 200.0
+offset_right = 285.0
+offset_bottom = 250.0
 mouse_filter = 2
 expand_mode = 1
 
@@ -70,8 +70,8 @@ expand_mode = 1
 visible = false
 self_modulate = Color(1, 1, 1, 0.4)
 offset_left = -35.0
-offset_right = 165.0
-offset_bottom = 200.0
+offset_right = 215.0
+offset_bottom = 250.0
 mouse_filter = 2
 expand_mode = 1
 
@@ -79,8 +79,8 @@ expand_mode = 1
 visible = false
 self_modulate = Color(1, 1, 1, 0.3)
 offset_left = 70.0
-offset_right = 270.0
-offset_bottom = 200.0
+offset_right = 320.0
+offset_bottom = 250.0
 mouse_filter = 2
 expand_mode = 1
 

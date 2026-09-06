@@ -16,7 +16,6 @@ var _avoidance_stacks: int = 0
 var _avoidance_increment: float = 0.0
 var _avoided_since_last_turn: bool = false
 
-# Temporary icon borrowed from Hemoclarity until dedicated Jester art exists.
 func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
 	_avoidance_increment = AVOIDANCE_INCREMENT.get(p_rarity, 0.0)
