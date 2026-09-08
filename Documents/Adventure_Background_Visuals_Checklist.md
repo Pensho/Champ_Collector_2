@@ -125,8 +125,8 @@ Forest and Clearing zones. Wire the finished `regions` array, `region_noise`, an
 ## Placeholder assets
 
 Flat-color placeholder PNGs were originally generated for every Tier 1, Tier 2, and Tier 3
-element of the five live biomes (Reclaimed City, Pirate Coves, Clockwork Spire, Holy City
-Plains, Glass Weald) under `Assets/Adventure/Background/`, via
+element of the biomes live at the time (Reclaimed City, Pirate Coves, Clockwork Spire, Holy
+City Plains, Glass Weald) under `Assets/Adventure/Background/`, via
 `Scripts/Debug/generate_placeholder_textures.gd` (re-runnable; skips files that already
 exist so hand-replaced real art is never clobbered). Real art has since replaced the
 placeholders for most of Tier 1 and the Reclaimed City Tier 3 set (checked above);

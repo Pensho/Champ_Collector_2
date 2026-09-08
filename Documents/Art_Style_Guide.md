@@ -296,7 +296,7 @@ Uniformity of this pass matters more than any individual generation. Run it even
 
 **The quantize step must snap L\* while preserving hue.** A greyscale-ramp implementation strips the tinted band 1 (2.2) and the saturated garment (3.5) straight back out, and the levers appear to have done nothing. If a lever-built character comes back muted, check the quantize step before blaming the generation.
 
-**The LUT is the mood dial, and it lives in the engine.** Because every asset quantizes to a known ramp and the accent is a maskable flat fill, area mood can be tuned live in Godot rather than baked into generations. Build the scene light as a layer: a `CanvasModulate` for the global cast, a colored haze quad at low alpha between parallax bands, and the area LUT. Then a biome's color is a value you can iterate on in seconds instead of forty regenerations.
+**The LUT is the mood dial, and it lives in the engine.** Because every asset quantizes to a known ramp and the accent is a maskable flat fill, area mood can be tuned live in Godot rather than baked into generations. Build the scene light as a layer: a `CanvasModulate` for the global cast, a colored haze quad at low alpha between bands, and the area LUT. Then a biome's color is a value you can iterate on in seconds instead of forty regenerations.
 
 **The round-trip detail test.** Downscale to target size, posterize to the ramp, upscale back with nearest-neighbour. Detail that survives is detail worth keeping.
 
@@ -342,7 +342,7 @@ Run before any asset enters the project. Section 7.1 applies to everything; the 
 
 ### 7.4 Environments
 
-> **Not yet written.** Empty-center sizing, scene-light conformance, no accent bleed, parallax band separation, composite against a fielded team of three.
+> **Not yet written.** Empty-center sizing, scene-light conformance, no accent bleed, band separation, composite against a fielded team of three.
 
 ### 7.5 Items, gear and reagents
 
@@ -655,35 +655,32 @@ Applies to battle stages. Overworld views take the last two bullets only.
 
 ### 10.2 Scene light — the mood dial
 
-Each area gets a **scene light color**. It is not a Role accent and never appears on a character's costume. It lives in the sky field, the haze band between parallax layers, and the tint of the floor strip.
+Each variant gets a **scene light color** — one per variant, not one per area, since a jungle and a ruin under the same sickly teal-green read as the same place. It is not a Role accent and never appears on a character's costume. It lives in the sky field, the haze band between bands, and the tint of the floor strip.
 
-| Area | Sky field | Ground / skyline |
-|---|---|---|
-| Iron Ledger / Holy City | cold slate blue #33414D | #10161B |
-| Reclaimed City | sickly teal-green #2E5A50 | #0E1614 |
-| Magic ruins | violet #3A2A52 | #120E1A |
-| Pirate Coves / coast | cold teal #2C5F72 | #0E1418 |
-| Caravan / Adventure | ember orange dusk #C4562A | #14100C |
-| Clockwork Spire | TBD | TBD |
+| Area | Variant | Sky field | Ground / skyline |
+|---|---|---|---|
+| Reclaimed City | Jungle | sickly teal-green #2E5A50 | #0E1614 |
+| Reclaimed City | Ruins | violet #3A2A52 | #120E1A |
+| Clockwork Spire | Construction areas | TBD | TBD |
+| Clockwork Spire | Mine slums | TBD | TBD |
+| Pirate Coves | Rocky islands | cold teal #2C5F72 | #0E1418 |
+| Pirate Coves | Shanty town | TBD, warm (10.6) | TBD |
+| The Iron Ledger | Slums | cold slate blue #33414D | #10161B |
+| The Iron Ledger | Inner city | TBD (10.6) | TBD |
 
-Ember dusk is the one warm entry, and it was reserved for the Adventure content so that expeditions feel different from the city work. That reservation is now in tension with 10.7, where Adventure takes its look from whichever area variant a run starts in.
-
-**Characters now carry saturated hue of their own** (3.5), so check each new area against a fielded team of three: a saturated garment main can collide with a scene light in a way a beige one never did. The fix is the area, not the character.
-
-**This table predates the four-area plan in 10.6 and no longer matches it.** Magic
-ruins is not among the four areas and is either a variant inside one of them or
-dropped. Caravan / Adventure is not an area at all — Adventure derives from the
-four (10.7), so this row is a mood reservation rather than a place, and 10.7.4
-has to resolve it. Decide before any plate is generated, because the scene light
-is what a variant is built around. Every area also needs **one scene light per variant**,
-not one per area — a jungle and a ruin under the same sickly teal-green will
-read as the same place.
+**Characters now carry saturated hue of their own** (3.5), so check each new variant against a fielded team of three: a saturated garment main can collide with a scene light in a way a beige one never did. The fix is the variant, not the character.
 
 ### 10.3 Battle stages — the four bands
 
-Every battle stage is assembled from four bands in draw order. A band is a
-budget as much as a layer: content that belongs to one band does not appear in
-another, which is what lets elements be reused across stages within an area.
+Every battle stage is a scene authored by hand, laying its elements out across
+four bands. A band is a budget as much as a layer: content that belongs to one
+band does not appear in another, which is what lets elements be reused across
+stages within an area.
+
+They draw in the order **Background, Floor, Midband, characters, Foreground**.
+Midband elements stand on the ground, so their bases must cover the floor's top
+edge; drawing the floor after them cuts a hard horizontal line across every
+trunk and shrub.
 
 #### 10.3.1 Background
 
@@ -691,7 +688,10 @@ Sky, clouds, moon, sun, mountains, silhouettes of far-away things. Carries the
 scene light's sky field (10.2) as one flat saturated field. Lowest detail of the
 four bands, and the only band permitted to reduce below the full value ramp.
 
-> **Not yet written.** Value range allowed, whether distant masses are silhouette-only, and whether the sky is a separate scrolling asset from the far masses.
+One plate per stage, drawn to the full 1280×720 frame. The camera does not
+scroll (10.3.5), so the sky and the far masses are one asset.
+
+> **Not yet written.** Value range allowed, and whether distant masses are silhouette-only.
 
 #### 10.3.2 Midband
 
@@ -699,7 +699,12 @@ The visible surroundings of the combat: buildings, trees, foliage, rocks, walls,
 waterfalls. This is the band that says which area the player is in, and the band
 where the empty-center rule in 10.1 is actually enforced.
 
-> **Not yet written.** Detail budget relative to a champion, how the empty center is composed rather than merely left blank, and whether the midband is one plate per stage or assembled from keyed elements.
+Assembled from keyed elements, placed one by one in the stage scene. The empty
+center is guaranteed by that placement rather than by a rule the engine
+enforces, so it is checked against the character line while the stage is laid
+out (10.3.5).
+
+> **Not yet written.** Detail budget relative to a champion, and how the empty center is composed rather than merely left blank.
 
 #### 10.3.3 Floor
 
@@ -708,7 +713,12 @@ small ground clutter — rocks, grass tufts, dirt piles, trash — breaks the st
 up. Everything here must sit below the ground line established in section 4, and
 clutter must not compete with a character's silhouette for the same value.
 
-> **Not yet written.** Clutter density per stage, minimum clear area around each character slot, and whether clutter is baked into the floor plate or scattered by the engine from a small element set.
+The strip itself is one shader-driven surface. The clutter over it is not baked
+in: it is scattered by the engine from a small element set, authored per stage
+as scatter rules — an element's textures, its density, its scale and rotation
+jitter, and the radius it holds clear around every character's feet, which is
+what keeps the empty center (10.1) open on a band nobody places by hand. The
+scatter is seeded per battle, so the same fight re-entered looks the same.
 
 #### 10.3.4 Foreground
 
@@ -717,15 +727,38 @@ occasional silhouettes intruding from the bottom edge — crates, bushes, trash,
 similar. Foreground reads as pure band 1 by default, since anything with
 interior detail here fights the characters.
 
-> **Not yet written.** Maximum screen coverage so the fight stays readable, whether weather is art or shader, and whether a foreground occluder may ever cross a character slot.
+**No foreground element crosses a character slot.** Silhouettes are placed by
+hand along the bottom edge, clear of the character line. Weather is neither art
+nor shader in this band: it is a particle scene, chosen per encounter rather
+than per stage, and it plays in front of the silhouettes — which is what keeps
+an indoor fight dry on a stage otherwise used outdoors.
 
-#### 10.3.5 Layer and parallax spec
+> **Not yet written.** Maximum screen coverage so the fight stays readable.
 
-> **Not yet written.** Scroll ratio per band, pixel dimensions, and how much of each band is off-screen at rest. Section 6 already assumes a haze quad between bands, so state where the haze sits relative to the four. Grey-box this (4.3) before generating anything.
+#### 10.3.5 Layer spec
+
+The battle camera does not scroll, so the bands have no parallax ratio and
+nothing sits off-screen at rest. Every band is authored to the full 1280×720
+frame. Camera shake moves the whole stage as one, bands and characters
+together — a band that lagged behind the others under shake would read as a
+seam.
+
+A stage is laid out against the six character positions and judged there, which
+is the grey-box step (4.3) for this section.
+
+> **Not yet written.** Section 6 already assumes a haze quad between bands, so state where the haze sits relative to the four.
 
 #### 10.3.6 Element catalog and reuse
 
-> **Not yet written.** Each area variant owns a catalog of elements per band, and a stage is a composition of them. Needs: how many elements a variant needs before it stops looking repetitive, the rule for what may be reused across variants inside an area, and whether elements are generated individually and keyed or cut from generated plates.
+Each variant owns a catalog of elements per band, and its stages are laid out
+from that catalog — two or three stages per variant, so an element is seen again
+across them. Reuse is what the catalog is for: a stage earns its distinctness
+from its layout and its background plate, not from elements nothing else uses.
+
+Elements are keyed individually rather than cut from a generated plate, since a
+stage places them one at a time and at its own scale.
+
+> **Not yet written.** How many elements a variant needs before its stages stop reading as the same place, and the rule for what may be reused across the two variants inside an area.
 
 ### 10.4 Overworld and navigation views
 
@@ -754,6 +787,7 @@ and shop live (`Concept_Document.md` 3.6).
 
 Four areas are planned. Each has **two variants**, one hub (10.5), at least one
 overview screen (10.4), and its own element catalog per battle band (10.3.6).
+Each variant owes two or three battle stages (10.3) laid out from that catalog.
 Variants are as distinct from each other as two areas would be, so treat a
 variant, not an area, as the unit of work. Each also owes Adventure an element
 set (10.7), since a run starts from a chosen variant.
@@ -775,8 +809,9 @@ discovered in a composite.
 
 **Pirate Coves variant B is the only candle-lit interior in the set**, which
 means a warm scene light and a light source that is not upper-left at region
-scale. Section 4's light rule holds for the assets themselves; how a warm
-interior coexists with the one-warm-area reservation in 10.2 is open.
+scale. Section 4's light rule holds for the assets themselves; it is the only
+warm entry in the 10.2 table, so it carries the contrast against the other seven
+on its own.
 
 #### 10.6.1 Reclaimed City
 
@@ -804,9 +839,10 @@ look from there. Every variant therefore owes Adventure an element set, and
 It is a third camera case rather than a third kind of environment. Like an
 overview (10.4) it shows a region the player clicks through, but it is not a
 finished plate: the map is **composed at runtime from many small elements**,
-which makes it the only environment in the game where art is authored as parts
-and assembled by code. That inverts the usual acceptance route — a single
-element can pass every check in section 7 and the assembled map still fail.
+which makes it the only environment in the game whose layout is decided by code
+rather than by hand — a battle stage scatters only its floor clutter (10.3.3).
+That inverts the usual acceptance route — a single element can pass every check
+in section 7 and the assembled map still fail.
 
 #### 10.7.1 Element set requirements
 
@@ -822,7 +858,9 @@ element can pass every check in section 7 and the assembled map still fail.
 
 #### 10.7.4 Scene light for Adventure
 
-> **Not yet written.** Ember dusk (10.2) was reserved to make expeditions feel unlike the city work, but that predates Adventure deriving its look from a chosen variant. The two cannot both hold as written: either a run keeps its source variant's light and loses the reserved mood, or ember dusk overrides it and the eight element sets read as one place. Resolve before generating any of them.
+A run keeps the scene light of the variant it starts in (10.2). Adventure has no
+light of its own: an expedition reads as a journey through that variant, and the
+eight element sets stay eight places.
 
 ---
 
@@ -1029,11 +1067,9 @@ Collected so they are visible in one place rather than buried in the sections th
 
 - **The pre-lever five.** Five characters were approved under the old arithmetic and either get regenerated or the roster carries a visible split. See 3.5; act on it at six characters rather than at fifteen.
 - **Warlord accent.** `#6B7A88` is a neutral, not an accent. Either it becomes a real color or this Role is declared the drab one on purpose (8.9.1).
-- **Scene light table versus the four-area plan.** The 10.2 table lists six areas; 10.6 plans four with two variants each. Magic ruins and Caravan / Adventure need a home or a deletion, and scene light needs to be assigned per variant rather than per area.
 - **Clockwork Spire scene light.** Unassigned for both variants (10.2, 10.6.2).
 - **The white inner city.** A light-dominant environment against figures that are half band 1. Either the midband keeps committed darks or the character rules bend for one variant (10.6).
 - **Overworld camera.** The one exemption from section 4 in the whole guide. Vista or high-above, one convention or per area (10.4.1).
-- **Adventure's scene light.** Ember dusk was reserved for expeditions, but Adventure now derives its look from the variant a run starts in. Both cannot hold (10.7.4).
 - **One POI language or two.** The overview screens (10.4.2) and the Adventure map (10.7.2) both need clickable points with states. Answering them separately teaches the player two vocabularies.
 - **Model and settings lock.** Not yet recorded (18).
 - **Rarity colors versus accent colors.** Two color-identity systems competing for the same player attention (11.5).

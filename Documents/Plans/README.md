@@ -3,14 +3,6 @@
 One document per topic, sized so each can be executed and reviewed as an isolated
 body of work.
 
-Suggested order (dependencies noted inside each plan):
-
-1. `Plan_Battle_Visual_Bands.md` — context-aware battle stages built from the four
-   visual bands: a per-variant resource chain, an authored slot rig in `battle.tscn`,
-   and a seeded composer that picks elements from the variant's pool. Soft dependency
-   on `Plan_Lighting.md`, which owns the `LightingProfile` the variant resource points
-   at; output also fills the `Not yet written` stubs in `Art_Style_Guide.md` 10.3.
-
 Design-only plans (no code; can run at any time):
 
 - `Plan_Encounter_Solution_Design.md` — the long-run encounter content plan:

@@ -181,17 +181,33 @@ Representative scenes:
 |---|---|---|
 | `Scenes/ui/Battle_UI/battle.tscn` | `Node2D` (`battle.gd`) | 3-versus-3 combat arena |
 | `Scenes/ui/Battle_UI/battle_ui.tscn` | `Control` (`battle_ui.gd`) | In-combat UI overlay, instanced under `battle.tscn`'s `CanvasLayer` |
+| `Scenes/Battle_Stages/*.tscn` | `Node2D` (`battle_stage.gd`) | One hand-authored battle stage, instanced under `battle.tscn`'s `Stage_Anchor` |
 | `Scenes/Adventure_Scenes/Adventure.tscn` | `Control` (`adventure_ui.gd`) | Adventure run / node graph |
 | `Scenes/Hubs/Reclaimed_City_Scene/Reclaimed_City.tscn` | `Control` (`hub_menu.gd`) | Home base / resources |
 | `Scenes/ui/MainMenu.tscn` | `Control` | Top-level navigation |
 | `Scenes/Characters/Character.tscn` | `Node2D` (`character.gd`) | Character logic node |
 | `Scenes/Characters/Character_Battle_Repr.tscn` | `Node2D` | Visual battle representation |
 
-`battle.tscn` holds one `Camera2D` (world space: parallax bands, character representations,
+`battle.tscn` holds one `Camera2D` (world space: the stage, character representations,
 the turn indicator) and one `CanvasLayer` holding `battle_ui.tscn` (screen space, so camera
 shake never moves the UI). `Battle.WorldToUI()` converts a world position through
 `get_viewport().get_canvas_transform()` for the one place they meet: combat text spawn
 points (`Battle.CombatTextPosition()`).
+
+**The stage seam.** A battle's visual environment is a separate scene rooted in
+`BattleStage`, laying out the four visual bands of `Art_Style_Guide.md` 10.3 as authored
+nodes. `Battle.BuildStage()` instances the one named by `Context_Battle._stage_scene` under
+`Stage_Anchor`, falling back to `battle_stage_default.tscn`; `AdventureGenerator` stamps a
+stage picked from `BiomeData.stage_scenes` onto each generated encounter. The characters
+live in `battle.tscn` rather than in the stage, so the stage's foreground band carries
+`z_index = 10` to draw over them, and `Weather_Anchor` — where the context's
+`_environment_effects` play — sits above that again at `15`.
+
+The one thing the stage decides at runtime is floor clutter: `BattleStage.GenerateClutter`
+passes the characters' foot positions to `StageClutterView`, which draws what
+`StageClutterGenerator` scatters from the stage's authored rules, seeded from
+`Battle.BattleSeed()` so a re-entered fight scatters identically. The generator is pure and
+node-free, like `AdventureBackgroundGenerator`, and shares its `DecorPlacement` result type.
 
 A key split: **`Character` (logic) is separate from `CharacterRepresentation` (visuals).** The
 `battle.gd` orchestrator holds `_characters: Dictionary[int, Character]` for game state and an
@@ -251,7 +267,7 @@ Transition flow (`Main_Instance.change_scene` → `_deferred_change_scene`):
 
 `Static_Context` (`Scripts/Worldview/static_context.gd`) is the base for typed scene payloads;
 `Context_Battle` (`Scripts/Worldview/Context_Battle.gd`) extends it with battle-specific data
-(location texture, lighting, enemy waves, environment effects, loot table). Combat reads this in
+(stage scene, lighting, enemy waves, environment effects, loot table). Combat reads this in
 `Battle.Init()` via `p_context._static_context as Context_Battle`.
 
 This is a **one-way initialization** contract: the scene receives a context once at load and does
@@ -279,7 +295,8 @@ load time. There is a consistent **preset (template) vs instance (runtime)** spl
 | `EquipmentPreset` | `Scripts/Gear/equipment_preset.gd` | Gear template: slot, rarity, attribute composition |
 | `LootTable` | `Scripts/Battle/loot_table.gd` | Encounter rewards: primary (guaranteed) and secondary (weighted) loot |
 | `AdventureTemplate` | `Scripts/Adventure_Scripts/adventure_template.gd` | Adventure generation parameters |
-| `BiomeData` | `Scripts/Adventure_Scripts/biome_data.gd` | Biome enemy pools and boss definitions |
+| `BiomeData` | `Scripts/Adventure_Scripts/biome_data.gd` | Biome enemy pools, boss definitions, and the battle stages its encounters draw from |
+| `StageClutterEntry` | `Scripts/Battle/Visuals/stage_clutter_entry.gd` | One floor-clutter scatter rule, authored on a stage's `StageClutterView` |
 | `CharacterTrait` | `Scripts/Character/character_traits/character_trait.gd` | Base class for character special abilities (see [Section 9](#9-trait-hook-system)) |
 | `StatusEffectData` | `Scripts/Battle/status_effect_data.gd` | Buff/debuff definition: magnitude, magnitude kind, default duration, overwrite/stack rules, self-tick behavior, icon |
 | `ReagentData` | `Scripts/Battle/reagent_data.gd` | Reagent definition (one rarity tier per resource): effect kind, target kind, rarity, binary flag, magnitude(s), icon |
@@ -724,7 +741,8 @@ combat formulas, see `Concept_Document.md`; this section describes the *code pat
 
 ### 7.1. Setup (`Battle.Init`)
 
-1. Reads `Context_Battle` from the container: background, lighting, enemy wave, loot table.
+1. Reads `Context_Battle` from the container: stage, lighting, enemy wave, loot table, and
+   builds the stage through `BuildStage()` (section 4).
 2. Builds `CombatSides` from the fielded rosters and constructs the `BattleResolver` over the
    shared characters dictionary, connecting `result_produced` to the scene's renderer. When the
    encounter comes from a generated adventure, the resolver is seeded from the adventure's
