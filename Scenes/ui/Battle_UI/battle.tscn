@@ -2,21 +2,16 @@
 
 [ext_resource type="Script" uid="uid://g08boofygabn" path="res://Scripts/Battle/battle.gd" id="1_oxf17"]
 [ext_resource type="PackedScene" uid="uid://dy5q1foc8kon5" path="res://Scenes/ui/Battle_UI/battle_ui.tscn" id="2_1ruyk"]
-[ext_resource type="Material" uid="uid://c2o3yn3aa3lf0" path="res://Assets/Champ_Collector/Material/battle_floor.tres" id="2_nax57"]
-[ext_resource type="Texture2D" uid="uid://n1b55anwfwtk" path="res://Assets/Champ_Collector/Scenery/Troll battle area/Troll_battle_area_2.jpg" id="2_qeyqd"]
-[ext_resource type="Texture2D" uid="uid://0s8rmq2i2vg6" path="res://Assets/Champ_Collector/Scenery/Troll battle area/Troll_battle_area_2_Normal_Map.jpg" id="3_k7mbx"]
 [ext_resource type="PackedScene" uid="uid://dvvopn2yuy4wr" path="res://Scenes/Characters/Character_Battle_Representation.tscn" id="3_ww2ai"]
 [ext_resource type="Texture2D" uid="uid://cjcnam176bh58" path="res://Assets/Champ_Collector/Icons/Indicator_Arrow/Indicator_Arrow_0001.png" id="5_pd5xk"]
 [ext_resource type="Texture2D" uid="uid://byq61tt3abjd8" path="res://Assets/Champ_Collector/Light/Point_Light.tres" id="6_lrv64"]
 [ext_resource type="Material" uid="uid://2tvv2h51laxc" path="res://Assets/Champ_Collector/Material/Unshaded.tres" id="6_qeyqd"]
 
-[sub_resource type="CanvasTexture" id="CanvasTexture_heh15"]
-diffuse_texture = ExtResource("2_qeyqd")
-normal_texture = ExtResource("3_k7mbx")
-
-[node name="Battle" type="Node2D" unique_id=1214121318 node_paths=PackedStringArray("_character_representations")]
+[node name="Battle" type="Node2D" unique_id=1214121318 node_paths=PackedStringArray("_character_representations", "_stage_anchor", "_weather_anchor")]
 script = ExtResource("1_oxf17")
 _character_representations = [NodePath("Character_1"), NodePath("Character_2"), NodePath("Character_3"), NodePath("Enemy_1"), NodePath("Enemy_2"), NodePath("Enemy_3")]
+_stage_anchor = NodePath("Stage_Anchor")
+_weather_anchor = NodePath("Weather_Anchor")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=565446239]
 position = Vector2(640, 360)
@@ -32,69 +27,43 @@ visibility_layer = 1024
 blend_mode = 1
 height = 0.3
 
-[node name="ColorRect_Background" type="ColorRect" parent="." unique_id=1636767270]
-offset_right = 1280.0
-offset_bottom = 283.0
-color = Color(0, 0.3131988, 0.31352088, 1)
-
-[node name="ColorRect_Midband" type="ColorRect" parent="." unique_id=649298879]
-offset_top = 284.0
-offset_right = 1280.0
-offset_bottom = 430.0
-color = Color(0, 0, 0, 1)
-
-[node name="ColorRect_Floor" type="ColorRect" parent="." unique_id=2042130957]
-material = ExtResource("2_nax57")
-offset_top = 430.0
-offset_right = 1280.0
-offset_bottom = 600.0
-
-[node name="ColorRect_Floor2" type="ColorRect" parent="." unique_id=1324772136]
-visible = false
-offset_top = 430.0
-offset_right = 1280.0
-offset_bottom = 600.0
-color = Color(0.7500893, 0.6749447, 0.521887, 1)
-
-[node name="ColorRect_Foreground" type="ColorRect" parent="." unique_id=132481484]
-offset_top = 600.0
-offset_right = 1280.0
-offset_bottom = 720.0
-color = Color(0.1202142, 0.11726541, 1.2032688e-08, 1)
-
-[node name="BattleBackground" type="TextureRect" parent="." unique_id=2046228740]
-unique_name_in_owner = true
-visible = false
-offset_right = 1280.0
-offset_bottom = 720.0
-texture = SubResource("CanvasTexture_heh15")
-expand_mode = 1
+[node name="Stage_Anchor" type="Node2D" parent="." unique_id=1975065901]
 
 [node name="Enemy_1" parent="." unique_id=1908700306 instance=ExtResource("3_ww2ai")]
+visible = false
 position = Vector2(870, 260)
 _target_ID = 3
 
 [node name="Enemy_2" parent="." unique_id=485644758 instance=ExtResource("3_ww2ai")]
+visible = false
 position = Vector2(695, 205)
 _target_ID = 4
 
 [node name="Enemy_3" parent="." unique_id=1432082750 instance=ExtResource("3_ww2ai")]
+visible = false
 position = Vector2(1045, 315)
 _target_ID = 5
 
 [node name="Character_1" parent="." unique_id=1413518322 instance=ExtResource("3_ww2ai")]
+visible = false
 position = Vector2(15, 315)
 _target_ID = 0
 
 [node name="Character_2" parent="." unique_id=1865707769 instance=ExtResource("3_ww2ai")]
+visible = false
 position = Vector2(215, 260)
 _target_ID = 1
 
 [node name="Character_3" parent="." unique_id=1425478554 instance=ExtResource("3_ww2ai")]
+visible = false
 position = Vector2(400, 205)
 _target_ID = 2
 
+[node name="Weather_Anchor" type="Node2D" parent="." unique_id=944025685]
+z_index = 15
+
 [node name="Turn_Indicator" type="TextureRect" parent="." unique_id=1253183384]
+z_index = 20
 material = ExtResource("6_qeyqd")
 offset_left = -100.0
 offset_right = -50.0

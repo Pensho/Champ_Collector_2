@@ -148,7 +148,7 @@ Archetype scenes (`Scenes/Lighting/Archetypes/`): `Torch_Light.tscn`,
 - [ ] **Context and data migration** — `Scripts/Worldview/Context_Battle.gd` (add
   `_lighting_profile`, remove the three loose fields),
   `Scripts/Battle/battle.gd` (single `Apply` call with default-profile fallback),
-  migrate all five `Data/Battle_Variants/*.tres`. Watch for: each variant's current
+  migrate every `Data/Battle_Variants/*.tres`. Watch for: each variant's current
   light/darkness colors must be preserved into its new profile resource.
   Status: needed.
 

@@ -54,7 +54,7 @@ func test_serialize_roundtrip() -> void:
 
 func test_serialize_roundtrip_through_json_preserves_completion_and_active_state() -> void:
 	_state.template = load("res://Data/Adventure_Data/template_default.tres")
-	_state.biome = load("res://Data/Adventure_Data/Biome_Types/biome_reclaimed_city.tres")
+	_state.biome = load("res://Data/Adventure_Data/Biome_Types/biome_reclaimed_city_jungle.tres")
 	_state.difficulty = 1
 	_state._generation_seed = 42
 	seed(_state._generation_seed)

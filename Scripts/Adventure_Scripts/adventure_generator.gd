@@ -158,6 +158,7 @@ static func _PopulateNodeContexts(p_nodes: Array[NodeData], p_biome: BiomeData) 
 					_WeightedRandomPick(p_biome.possible_opponents),
 				]
 				ctx._loot_table = p_biome.combat_rewards
+				ctx._stage_scene = _PickStageScene(p_biome)
 				node.scene_context = ctx
 			NodeData.Node_Type.BOSS:
 				if p_biome.possible_bosses.is_empty():
@@ -165,6 +166,7 @@ static func _PopulateNodeContexts(p_nodes: Array[NodeData], p_biome: BiomeData) 
 				var ctx := Context_Battle.new()
 				ctx._enemies_wave_1 = [p_biome.possible_bosses.pick_random()]
 				ctx._loot_table = p_biome.boss_rewards if p_biome.boss_rewards != null else p_biome.combat_rewards
+				ctx._stage_scene = _PickStageScene(p_biome)
 				node.scene_context = ctx
 			NodeData.Node_Type.REST_STOP:
 				var rest_ctx := ContextRestStop.new()
@@ -198,6 +200,10 @@ static func _RandomDebuffType() -> Types.Debuff_Type:
 	values.erase(Types.Debuff_Type.Invalid)
 	return values.pick_random()
 
+static func _PickStageScene(p_biome: BiomeData) -> PackedScene:
+	if p_biome.stage_scenes.is_empty():
+		return null
+	return p_biome.stage_scenes.pick_random()
 
 static func _WeightedRandomPick(p_pool: Dictionary[CharacterPreset, int]) -> CharacterPreset:
 	var total: int = 0

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="Context_Battle" load_steps=5 format=3]
+[gd_resource type="Resource" script_class="Context_Battle" format=3 uid="uid://cxdmvnai74wnd"]
 
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="1_preset"]
 [ext_resource type="Resource" uid="uid://c44bvlmv6s6ux" path="res://Data/Character_Enemy_Variants/Statue_Boots.tres" id="2_boots"]
@@ -8,6 +8,5 @@
 [resource]
 script = ExtResource("3_battle")
 _enemies_wave_1 = Array[ExtResource("1_preset")]([ExtResource("2_boots")])
-_location = "res://Assets/Champ_Collector/Scenery/Statue_Battle_Area/Statue_Battle_Area_1.jpg"
 _loot_table = ExtResource("4_loot")
 metadata/_custom_type_script = "uid://bjtnao6fgl8go"

@@ -1,0 +1,26 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://b1cu2hkd0gs6h"]
+
+[ext_resource type="Shader" uid="uid://cs8scm26owb4b" path="res://Assets/Champ_Collector/Shaders/battle_floor.gdshader" id="1_ktk18"]
+[ext_resource type="Texture2D" uid="uid://bcfcl26p85xgl" path="res://Assets/Battle_Visual_Elements/floor_noise_2.tres" id="2_ytndc"]
+
+[resource]
+shader = ExtResource("1_ktk18")
+shader_parameter/base_color = Color(0.24, 0.42, 0.2, 1)
+shader_parameter/mottle_color = Color(0.32, 0.5, 0.24, 1)
+shader_parameter/noise_texture = ExtResource("2_ytndc")
+shader_parameter/noise_strength = 0.6
+shader_parameter/noise_steps = 5
+shader_parameter/noise_scale = Vector2(1, 0.9)
+shader_parameter/noise_offset = Vector2(0, 0)
+shader_parameter/noise_detail_scale = 1.44900006556762
+shader_parameter/noise_detail_weight = 0.1330000063175
+shader_parameter/far_y = 430.0
+shader_parameter/near_y = 590.0
+shader_parameter/horizon_y = 324.0
+shader_parameter/cells_across = 8.0000003325
+shader_parameter/depth_density = 2.65
+shader_parameter/scroll = Vector2(0, 0)
+shader_parameter/grid_line_width = 0.0
+shader_parameter/grid_color = Color(0, 0.22352941, 0, 0.6039216)
+shader_parameter/haze_color = Color(0.05, 0.1, 0.06, 1)
+shader_parameter/haze_strength = 0.350000016625

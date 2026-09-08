@@ -1,7 +1,7 @@
 extends Control
 
 const BIOME_RESOURCES: Array[BiomeData] = [
-	preload("res://Data/Adventure_Data/Biome_Types/biome_reclaimed_city.tres"), # biome_reclaimed_city
+	preload("res://Data/Adventure_Data/Biome_Types/biome_reclaimed_city_jungle.tres"),
 ]
 
 @export var _difficulty_option: OptionButton

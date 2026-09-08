@@ -1,0 +1,64 @@
+[gd_scene format=3 uid="uid://c7tnkaylhob7o"]
+
+[ext_resource type="Script" uid="uid://bgrws18jjx0kk" path="res://Scripts/Battle/Visuals/battle_stage.gd" id="1_stage"]
+[ext_resource type="Material" uid="uid://c2o3yn3aa3lf0" path="res://Assets/Champ_Collector/Material/battle_floor.tres" id="2_floor"]
+[ext_resource type="Script" uid="uid://d8q8mpntpgm0" path="res://Scripts/Battle/Visuals/stage_clutter_view.gd" id="3_clutter"]
+[ext_resource type="Texture2D" uid="uid://bcbp68jcl55wr" path="res://Assets/Battle_Visual_Elements/Placeholders/clutter_grass.tres" id="4_grass"]
+[ext_resource type="Texture2D" uid="uid://c3ua7e3gu2he4" path="res://Assets/Battle_Visual_Elements/Placeholders/clutter_leaf.tres" id="6_edkhu"]
+[ext_resource type="Texture2D" uid="uid://cmmknc8yrkh3u" path="res://Assets/Battle_Visual_Elements/Placeholders/clutter_rock.tres" id="6_rock"]
+[ext_resource type="Script" uid="uid://bt8h4n6yxx4ih" path="res://Scripts/Battle/Visuals/stage_clutter_entry.gd" id="7_entry"]
+
+[sub_resource type="Resource" id="Resource_ground"]
+script = ExtResource("7_entry")
+textures = Array[Texture2D]([ExtResource("4_grass"), ExtResource("6_edkhu"), ExtResource("6_rock")])
+density = 0.12
+scale_min = 0.7
+scale_max = 1.2
+rotation_jitter_degrees = 8.0
+character_avoidance_radius = 90.0
+
+[node name="Battle_Stage_Default" type="Node2D" unique_id=1947786225 node_paths=PackedStringArray("_floor_clutter")]
+script = ExtResource("1_stage")
+_floor_clutter = NodePath("Band_Floor/Clutter")
+
+[node name="Band_Background" type="Node2D" parent="." unique_id=622762292]
+
+[node name="Placeholder_Fill" type="ColorRect" parent="Band_Background" unique_id=2022133681]
+offset_right = 1280.0
+offset_bottom = 283.0
+color = Color(0, 0.3131988, 0.31352088, 1)
+
+[node name="Band_Midband" type="Node2D" parent="." unique_id=535630371]
+
+[node name="Placeholder_Fill" type="ColorRect" parent="Band_Midband" unique_id=939373440]
+offset_top = 284.0
+offset_right = 1280.0
+offset_bottom = 430.0
+color = Color(0, 0, 0, 1)
+
+[node name="Band_Floor" type="Node2D" parent="." unique_id=787324837]
+
+[node name="Floor_Surface" type="ColorRect" parent="Band_Floor" unique_id=526872955]
+material = ExtResource("2_floor")
+offset_top = 430.0
+offset_right = 1280.0
+offset_bottom = 600.0
+
+[node name="Clutter" type="Control" parent="Band_Floor" unique_id=868188528]
+layout_mode = 3
+anchors_preset = 0
+offset_top = 430.0
+offset_right = 1280.0
+offset_bottom = 600.0
+mouse_filter = 2
+script = ExtResource("3_clutter")
+entries = Array[ExtResource("7_entry")]([SubResource("Resource_ground")])
+
+[node name="Band_Foreground" type="Node2D" parent="." unique_id=981562280]
+z_index = 10
+
+[node name="Placeholder_Fill" type="ColorRect" parent="Band_Foreground" unique_id=9117353]
+offset_top = 600.0
+offset_right = 1280.0
+offset_bottom = 720.0
+color = Color(0.1202142, 0.11726541, 1.2032688e-08, 1)

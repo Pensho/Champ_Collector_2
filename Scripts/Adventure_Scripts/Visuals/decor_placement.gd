@@ -1,7 +1,8 @@
 class_name DecorPlacement extends RefCounted
 
-## Pure result of one scenery element placement, produced by AdventureBackgroundGenerator.
-## Holds no node/scene references so the generator stays unit-testable.
+## Pure result of one scenery element placement, produced by AdventureBackgroundGenerator
+## and by StageClutterGenerator. Holds no node/scene references so the generators stay
+## unit-testable.
 
 var texture: Texture2D
 var position: Vector2

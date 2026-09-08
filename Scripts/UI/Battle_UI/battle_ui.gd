@@ -29,7 +29,6 @@ var _spawn_timer: float = 0.0
 
 var _battle_duration := 0.0
 var _skill_textures: Dictionary[String, Texture2D]
-var _environment_effects: Array[Node]
 var _reagent_confirm: ButtonWithOptions
 var _pending_reagent_index: int = -1
 
@@ -43,12 +42,10 @@ var _pending_graft_target_ID: int = -1
 @onready var _turn_bar: TurnBar = $PlayerInfoBox
 @warning_ignore_restore("unused_private_class_variable")
 
-func Init(p_environment_effects: Array[PackedScene]) -> void:
+func Init() -> void:
 	SKILL_GLOW_POS_1 = Vector2(_skill_buttons[0].position.x - 15.0, _skill_buttons[0].position.y - 15.0)
 	SKILL_GLOW_POS_2 = Vector2(_skill_buttons[1].position.x - 15.0, _skill_buttons[1].position.y - 15.0)
 	SKILL_GLOW_POS_3 = Vector2(_skill_buttons[2].position.x - 15.0, _skill_buttons[2].position.y - 15.0)
-	for i in p_environment_effects:
-		_environment_effects.append(i.instantiate())
 
 	_reagent_confirm = BUTTON_WITH_OPTIONS_SCENE.instantiate()
 	add_child(_reagent_confirm)

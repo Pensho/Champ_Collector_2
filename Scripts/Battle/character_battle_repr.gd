@@ -4,6 +4,10 @@ signal battle_target_selected(p_target_ID: int)
 
 const TRAIT_UI_ELEMENT_BLANK = preload("uid://cdwqpx4sgt42a")
 
+## Size of the character sprite in this scene. The node's own position is the sprite's
+## top-left, so the ground contact sits a full sprite height below it.
+const SPRITE_SIZE: Vector2 = Vector2(250.0, 250.0)
+
 @export var _trait_icons: Array[TextureRect]
 @export var _trait_tooltips: Array[ToolTip]
 @export var _target_ID: int = -1
@@ -26,6 +30,11 @@ var _status_effect_counter: int = 0
 
 func _on_button_target_button_up() -> void:
 	battle_target_selected.emit(_target_ID)
+
+## Where this character meets the ground, in global space — the point floor clutter keeps
+## clear of. Scale matters here because bosses are scaled up.
+func FootPosition() -> Vector2:
+	return global_position + Vector2(SPRITE_SIZE.x * 0.5, SPRITE_SIZE.y) * scale
 
 func AddStatusEffect(
 		p_effect_texture: Texture, p_duration: int, p_title: String, p_description: String) -> int:

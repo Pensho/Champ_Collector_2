@@ -25,7 +25,14 @@ const ENEMY_ID_OFFSET: int = 3
 # valve so a long cascade cannot stall the battle, not a budget a normal burst should hit.
 const PRESENTATION_DEADLINE: float = 2.0
 
+# Covers an encounter that names no stage of its own.
+const DEFAULT_STAGE_SCENE: PackedScene = preload(
+		"res://Scenes/Battle_Stages/battle_stage_default.tscn")
+
 @export var _character_representations: Array[CharacterRepresentation]
+
+@export var _stage_anchor: Node2D
+@export var _weather_anchor: Node2D
 
 var _self_context: ContextContainer
 var _battlecontext: Context_Battle
@@ -55,7 +62,6 @@ var _presentation_deadline: float = 0.0
 var _shake_tween: Tween
 
 @onready var _battle_ui: BattleUI = $"CanvasLayer/Battle UI"
-@onready var _background: TextureRect = %BattleBackground
 @onready var _turn_indicator: TextureRect = $Turn_Indicator
 @onready var _camera: Camera2D = $Camera2D
 @onready var _characters: Dictionary[int, Character]
@@ -107,13 +113,35 @@ func BattleSeed() -> int:
 				_self_context._adventure_state.current_node_index]))
 	return -1
 
-func Init(p_context: ContextContainer) -> void:
-	_battlecontext = p_context._static_context as Context_Battle
-	_background.texture = load(_battlecontext._location)
+func BuildStage() -> void:
 	_global_scene_darkness.color = _battlecontext._global_scene_darkness
 	_global_scene_darkness.height = _battlecontext._scene_darkness_height
 	_global_scene_light.color = _battlecontext._global_scene_light
+
+	var stage_scene: PackedScene = _battlecontext._stage_scene
+	if stage_scene == null:
+		stage_scene = DEFAULT_STAGE_SCENE
+	var stage: BattleStage = stage_scene.instantiate() as BattleStage
+	if stage == null:
+		push_warning("Stage scene %s does not have a BattleStage root." % stage_scene.resource_path)
+	else:
+		_stage_anchor.add_child(stage)
+		stage.GenerateClutter(_CharacterFootPositions(), BattleSeed())
+
+	for effect: PackedScene in _battlecontext._environment_effects:
+		if effect != null:
+			_weather_anchor.add_child(effect.instantiate())
+
+func _CharacterFootPositions() -> Array[Vector2]:
+	var positions: Array[Vector2] = []
+	for representation: CharacterRepresentation in _character_representations:
+		positions.append(representation.FootPosition())
+	return positions
+
+func Init(p_context: ContextContainer) -> void:
+	_battlecontext = p_context._static_context as Context_Battle
 	_self_context = p_context
+	BuildStage()
 
 	if(_battlecontext._enemies_wave_1.is_empty()):
 		print("Accidental load to battle scene without enemies, terminating application")
@@ -181,7 +209,7 @@ func Init(p_context: ContextContainer) -> void:
 				_reagent_loadout.AddBrewed(brew_key, _characters[i]._trait.GetBrewPotencyBonus())
 			_characters[i]._trait.RefreshVisuals(_character_representations[i])
 
-	_battle_ui.Init(_battlecontext._environment_effects)
+	_battle_ui.Init()
 	_battle_ui._turn_bar.Init(_characters, _on_turn_bar_zone_selected, _sides.player)
 	RefreshTurnBarSpeeds()
 	_state = BattleState.Advancing
