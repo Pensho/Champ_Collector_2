@@ -58,7 +58,7 @@ section states an explicit, named exception.*
 
 ## 1. The non-negotiables
 
-Every asset in the game obeys these. If an output breaks one, reject it regardless of how good it otherwise looks.
+Every asset for character or battle visual element in the game obeys these. If an output breaks one, reject it regardless of how good it otherwise looks.
 
 1. **Very thick uniform black contour outline on the outer silhouette**, and that silhouette edge stays clean and uninterrupted. Fussy, nibbled edges turn to mush at phone size.
 2. **Flat color fields, hard-edged shadows, four value bands.** No gradients, no soft shading, no ambient occlusion. Four bands is a **value** rule, not a color-count rule — see section 2.
@@ -76,7 +76,7 @@ The seventh rule is a tool constraint rather than a style rule, and it is stated
 
 ### 2.1 The four bands
 
-Value structure is what makes the style cohere. Hue variety is what makes it not depressing. These are separate axes and the old "four values, three colors" rule conflated them, which is what produced flat sepia figures that sank into their backgrounds.
+Value structure is what makes the style cohere. Hue variety is what makes it not depressing. These are separate axes and the old "four values, three colors" rule conflated them, which is what produced flat sepia figures that sank into their backgrounds. This is for character and battle visual element designs, not overworld or other environment design.
 
 **Four value bands, measured in L\*:**
 
@@ -276,17 +276,28 @@ When an attractor lands, rewrite the costume from a different occupation rather 
 
 ### 5.4 Counts, not adjectives
 
-**Always use numeric counts, never adjectives.** "Three or four wrap bands" is a target the model can hit. "Moderate detail" is not, and it will revert to maximalism. This holds for background elements and icon interiors exactly as it holds for costume detail.
+**Use numeric counts, never adjectives.** "Three or four wrap bands" is a target the model can hit. "Moderate detail" is not, and it will revert to maximalism. This holds for icons and character designs, not for environment design.
 
 ### 5.5 Detail has to survive the pipeline
 
 Ask for *structural* detail — shapes large enough to survive quantization to four bands and downscaling to target size. Texture words (grime, stains, grease, fine hatching) cost prompt budget and return nothing after post-processing. The test is the round-trip in section 6, and it is the same test for a costume, a wall, a sword and an icon.
 
+### 5.6 Depth without gradients
+
+No gradients means no atmospheric haze, so distance is built from
+**overlapping flat planes, each one step darker than the one in front,
+receding into black.** Five planes is the working number for a full plate.
+Dark recession rather than pale is the finding — it reads as a place that
+continues past the lit part, which is exactly what a selection panel is
+selling. State the furthest plane as nearly gone rather than merely small.
+The technique is stated here rather than in section 10 because effects (14)
+and any future large plate will need it.
+
 ---
 
 ## 6. Post-processing — applied to every asset
 
-Uniformity of this pass matters more than any individual generation. Run it even on assets that already look right.
+Uniformity of this pass matters more than any individual generation. Run it even on assets that already look right. Selection panels (10.8.6) take the overlay and the LUT only. The quantize step targets the chroma those panels are built on. Every other asset takes the full pass.
 
 1. Quantize to the fixed value ramp from section 2
 2. Mask the accent region and correct its saturation to the section 8.9 hex
@@ -355,6 +366,25 @@ Run before any asset enters the project. Section 7.1 applies to everything; the 
 ### 7.7 UI
 
 > **Not yet written.** Frame weight consistent, no gradient creep from templates, legible over both light and dark area LUTs.
+
+### 7.8 Selection panels
+
+- [ ] The way in ends before the frame does — path bends out of sight, or interior goes dark before its back wall
+- [ ] Entry side is offset, not centered
+- [ ] Nearest masses cropped by both side edges; top of the structure or canopy out of frame
+- [ ] Vertical relief present — rise, fall, drop or stair
+- [ ] Five depth planes distinguishable, each darker than the one in front
+- [ ] Six to eight bands, no shading within a hue
+- [ ] Mass low saturation, incident chroma under roughly 10% of area
+- [ ] No element reads as a character accent
+- [ ] Dark mass low in frame for the label
+- [ ] Judged beside its pair panel at half-screen size, never alone
+- [ ] Overlay and LUT applied, quantize step skipped
+
+Note that 7.1's universal list contains four checks a panel cannot pass — ground
+line and light direction, four bands, and the full post-processing pass. Either
+7.1 gains a scope line or 7.8 states its overrides. Recommend the former, since
+the overworld class will need the same treatment.
 
 ---
 
@@ -626,7 +656,7 @@ Enemies inherit everything in Part I and most of section 8. What follows is the 
 
 ## 10. Environments
 
-There are **two kinds of environment art**, and they do not share a camera.
+There are **three kinds of environment art**, and they do not share a camera.
 
 **Battle stages** (10.3) obey the perspective spec in section 4 exactly, because
 characters stand in them. They are built from four draw-order bands.
@@ -639,9 +669,7 @@ it is bounded: everything else in Part I still binds, and the value ramp,
 outline weight and post-processing pass are what keep an overworld reading as
 the same game as the battle it leads into.
 
-Both kinds sit inside an **area** (10.6). An area owns a scene light, a hub, at
-least one overview screen, and a catalog of elements its battle bands are
-assembled from.
+**Environment selection panels** (10.8) are for screens to depict the viewpoint of characters, to see what a possible area could look like, to inspire and give mystery for what could be found if explored. It should often be epic and use much verticality. It by design breaks some rules that it doesn't hinder the games design as other elements will not be present or compared next to it.
 
 ### 10.1 Rules
 
@@ -831,10 +859,9 @@ on its own.
 
 ### 10.7 Adventure — the derived overview
 
-Adventure is not a fifth area. It is a feature reached from each of the four
-hubs, and a run starts in one of that area's two variants (10.6), taking its
-look from there. Every variant therefore owes Adventure an element set, and
-**eight sets are in scope, not one.**
+Adventure is a feature reached from each of the four
+hubs, and a run starts in one of that area's two variants (10.6) and the screen where the player chooses the area shows two panels that together covers the screen, half each. Each panel depicting the area taking its look from the biome. Every variant therefore owes Adventure an element set, and
+**eight sets are in scope.**
 
 It is a third camera case rather than a third kind of environment. Like an
 overview (10.4) it shows a region the player clicks through, but it is not a
@@ -861,6 +888,166 @@ in section 7 and the assembled map still fail.
 A run keeps the scene light of the variant it starts in (10.2). Adventure has no
 light of its own: an expedition reads as a journey through that variant, and the
 eight element sets stay eight places.
+
+---
+
+### 10.8 Selection panels — the third environment class
+
+There are three kinds of environment art. Battle stages (10.3) are
+inhabited. Overworld views (10.4) are navigated. **Selection panels are looked
+into and not entered** — they are the plate a player chooses a place *from*,
+and their job is to make that place worth choosing.
+
+The first pair is the Adventure biome selector (`Concept_Document.md` 5.1): two
+panels, each covering half the screen, one per variant of the area the run
+starts in. Eight panels are in scope for the same reason eight Adventure element
+sets are (10.7).
+
+A panel is a **window at standing height**, framed as if the party has stopped
+on the path and is looking in. That framing is the whole class — everything
+below follows from it.
+
+#### 10.8.1 What this class is exempt from
+
+This is the second named exemption in the guide, after the overworld camera in
+10.4, and it is wider. Granted here and nowhere else:
+
+- **Section 4 entirely.** No fixed horizon fraction, no orthographic
+  projection, no single ground line, no chest-height camera. A panel recedes,
+  and recession is the point.
+- **Light from upper left.** A panel may take its key light from a source
+  inside the scene — the Magic Ruins panel is lit by the candlelight in its own
+  doorway. The source must be visible or its opening must be, so the light
+  reads as belonging to the place.
+- **The four value bands of 2.1.** See 10.8.3.
+- **The section 6 post-processing pass.** See 10.8.6.
+
+What still binds: hard-edged shadows, no gradients, committed dark mass,
+structural detail over texture (5.5), and no figures or creatures.
+
+#### 10.8.2 Composition
+
+- **State the entry side.** The path or threshold enters from a named edge —
+  right, left, or underfoot — rather than being centered. A centered path reads
+  as a poster; an offset one reads as somewhere you are standing.
+- **The way in ends before the frame does.** The Jungle path bends out of sight
+  into darkness; the Ruins interior stops at the second column. This is the
+  single most load-bearing rule in the section. A panel that shows you the whole
+  place has nothing left to offer the player who picks it.
+- **Crop the scale out of frame.** Nearest masses cut by both side edges, the
+  canopy or facade leaving the top edge unseen. Grandeur comes from what does
+  not fit.
+- **Vertical relief.** Trail rising and falling, stairs, a ravine, a drop. A
+  flat ground plane costs the panel most of its scale even when everything else
+  is right.
+- **Tall vertical composition**, roughly half of the target screen. The inner
+  edge meets the other panel, so weight the composition toward the outer edge
+  and leave a dark mass low in frame for the label.
+- The two panels of a pair are judged **side by side at target size**, never
+  individually. They must read as two different places and as one screen.
+
+#### 10.8.3 Value bands at plate scale
+
+Four bands is a character and icon rule. It exists so eight material fills read
+as a flat woodcut at 300 px, and a panel has neither eight fills nor that size.
+
+**Panels state six to eight bands.** Approved: six for Jungle, eight for Magic
+Ruins. Below six the depth planes collapse into each other; above eight the
+model starts shading within a hue and the woodcut read is gone.
+
+#### 10.8.4 Depth without gradients
+
+Atmospheric haze is a gradient and cannot be used. Panels build depth from
+**overlapping flat planes, each one darker than the one in front, receding into
+black.** Five planes is the working number.
+
+This inverts the usual print convention, where distance goes pale. Dark
+recession is what makes both panels read as a place that continues past what is
+lit, and it is why the guide's earlier instinct — planes stepping lighter toward
+the back — was wrong for this class.
+
+State the furthest plane as almost gone: *a distant mossy stone shape almost
+completely fading into the black*.
+
+#### 10.8.5 Saturation by role
+
+The panel palette splits by what a thing is doing, not by material:
+
+- **Mass is low saturation.** Trunks, canopy, masonry, roots — the bulk of the
+  frame, held subdued so it can carry the value structure.
+- **Incident is wide-range.** Blooms, water, fungus, flame, spilled light — a
+  small share of the area, permitted full chroma.
+
+This is the 3.5 lever restated for environments and it is what stopped the
+panels arriving as four-color prints. It also keeps 10.1's no-accent rule
+intact: the saturated incidents are scattered and multi-hued, so none of them
+reads as a character accent.
+
+Scene light (10.2) still sets the panel's cast — teal-green for Jungle, violet
+for Ruins — but at panel scale it is one hue among a range rather than a flat
+field.
+
+#### 10.8.6 Post-processing
+
+**Panels do not take the section 6 pass.** The quantize step targets the
+four-band ramp and would strip the extra bands and the incident chroma straight
+out, which is the entire content of 10.8.3 and 10.8.5.
+
+Panels take instead: the shared grain or paper overlay at the same settings as
+everything else, and the area LUT. Nothing else. The overlay is what keeps a
+panel in the same game as the screen it sits on.
+
+#### 10.8.7 Approved prompts
+
+Recorded verbatim as generated. The two were built differently and the
+divergence is unresolved — see 10.8.8.
+
+**Jungle (Reclaimed City)**
+
+```
+A bold woodcut illustration of a colossal jungle, hard-edged shadows, six color value
+bands, a wide dirt path entering from the right side and winding away
+between cathedral-scale trees that twist and turn with buttress roots arching over it, the path
+bending out of sight into the darkness on the left side of the screen, the nearest trunks cropped by both frame edges, canopy
+leaving the top of the frame unseen, massive fantasy blooms, the trail going up and down, fungi growing on roots, a distant mossy stone shape almost completely fading into the black of the deep jungle, no figures, no creatures. Each layer quickly growing darker, fading into the black of the jungle. A large ravine splitting along the path, water falling down into the deep abyss. Trees in a subdued low saturated green, while flowers and water hold a wide color range
+```
+
+**Magic Ruins (Reclaimed City)**
+
+```
+bold woodcut illustration of a vast ruined stone temple, hard-edged shadows, eight value
+bands, an enormous carved doorway viewed from a side angle three stories tall filling
+the center with warm amber candlelight spilling out as flat hard-edged
+shapes, forty small candle flames as bone white dots receding between two
+rows of broken columns, the facade cropped by the top of the frame so its
+height is unseen, five overlapping depth planes, colossal jungle roots cracking the
+masonry in eight heavy coils, twenty relief carvings cut as large simple
+shapes, a toppled statue half-buried in ferns, aubergine-black, cold violet,
+moss green, teal, amber and rust all held to four values, tall vertical
+composition, no figures, no creatures
+```
+
+#### 10.8.8 Open items for this section
+
+- **The two panels use different palette methods.** Ruins names six hues
+  explicitly and closes with *all held to four values*; Jungle names no hues and
+  instead states the saturation split of 10.8.5. Both worked. Before the next
+  six panels, generate one variant each way for the same place and decide which
+  is the house method, because eight panels built two ways will not read as a
+  set.
+- **Ruins asks for eight bands and then for four values in the same prompt.**
+  The contradiction may be doing real work — the first clause buying interior
+  modelling, the second holding the palette — or it may be inert. Test by
+  removing the tail clause alone.
+- **Counts are used heavily in Ruins** (forty flames, eight coils, twenty
+  carvings) **and almost not at all in Jungle**. See amendment C4.
+- Scene light hexes in 10.2 were specified for flat sky fields and no panel uses
+  them as such. Decide whether the table now means "the panel's dominant cast"
+  or stays a battle-stage spec with panels reading from it loosely.
+- Remaining six panels unbuilt. Clockwork Spire and Iron Ledger inner city have
+  no scene light assigned at all (10.2), and the inner city's white-plate
+  problem (10.6) hits a panel harder than a stage, since a panel is mostly dark
+  mass by construction.
 
 ---
 
