@@ -189,18 +189,27 @@ func ShowSelectedCharacter(p_instance_ID: int) -> void:
 				main.GetInstance()._item_collection.GetItemTexture(weapon_ID))
 		_item_slots_equipped[0].SetTextureOutline(_item_collection[weapon_ID]._rarity)
 		_item_slots_equipped[0].level.text = str(_item_collection[weapon_ID]._level)
+	else:
+		_item_slots_equipped[0].SetHeldObjectTexture(null)
+		_item_slots_equipped[0].level.text = ""
 	if(_character_collection[p_instance_ID]._held_items.has(Types.Slot.OffHand)):
 		var off_hand_ID: int = _character_collection[p_instance_ID]._held_items[Types.Slot.OffHand]
 		_item_slots_equipped[1].SetHeldObjectTexture(
 				main.GetInstance()._item_collection.GetItemTexture(off_hand_ID))
 		_item_slots_equipped[1].SetTextureOutline(_item_collection[off_hand_ID]._rarity)
 		_item_slots_equipped[1].level.text = str(_item_collection[off_hand_ID]._level)
+	else:
+		_item_slots_equipped[1].SetHeldObjectTexture(null)
+		_item_slots_equipped[1].level.text = ""
 	if(_character_collection[p_instance_ID]._held_items.has(Types.Slot.Boots)):
 		var boots_ID: int = _character_collection[p_instance_ID]._held_items[Types.Slot.Boots]
 		_item_slots_equipped[2].SetHeldObjectTexture(
 				main.GetInstance()._item_collection.GetItemTexture(boots_ID))
 		_item_slots_equipped[2].SetTextureOutline(_item_collection[boots_ID]._rarity)
 		_item_slots_equipped[2].level.text = str(_item_collection[boots_ID]._level)
+	else:
+		_item_slots_equipped[2].SetHeldObjectTexture(null)
+		_item_slots_equipped[2].level.text = ""
 
 	if(1 == _tab_bar_gear_skills.tab_count):
 		_tab_bar_gear_skills.add_tab(_skills_tab_title)
