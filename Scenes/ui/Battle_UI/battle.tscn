@@ -30,32 +30,26 @@ height = 0.3
 [node name="Stage_Anchor" type="Node2D" parent="." unique_id=1975065901]
 
 [node name="Enemy_1" parent="." unique_id=1908700306 instance=ExtResource("3_ww2ai")]
-visible = false
-position = Vector2(870, 260)
+position = Vector2(865, 260)
 _target_ID = 3
 
 [node name="Enemy_2" parent="." unique_id=485644758 instance=ExtResource("3_ww2ai")]
-visible = false
-position = Vector2(695, 205)
+position = Vector2(690, 205)
 _target_ID = 4
 
 [node name="Enemy_3" parent="." unique_id=1432082750 instance=ExtResource("3_ww2ai")]
-visible = false
-position = Vector2(1045, 315)
+position = Vector2(1040, 315)
 _target_ID = 5
 
 [node name="Character_1" parent="." unique_id=1413518322 instance=ExtResource("3_ww2ai")]
-visible = false
 position = Vector2(15, 315)
 _target_ID = 0
 
 [node name="Character_2" parent="." unique_id=1865707769 instance=ExtResource("3_ww2ai")]
-visible = false
 position = Vector2(215, 260)
 _target_ID = 1
 
 [node name="Character_3" parent="." unique_id=1425478554 instance=ExtResource("3_ww2ai")]
-visible = false
 position = Vector2(400, 205)
 _target_ID = 2
 

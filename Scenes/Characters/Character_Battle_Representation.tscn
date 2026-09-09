@@ -100,6 +100,7 @@ _pivot = NodePath("../Sprite_Pivot")
 _sprite = NodePath("../Sprite_Pivot/TextureRect")
 
 [node name="DamageTrailBar" type="ProgressBar" parent="." unique_id=132554162]
+z_index = 16
 material = ExtResource("2_7qair")
 offset_left = 25.0
 offset_top = 250.0
@@ -112,6 +113,7 @@ show_percentage = false
 script = ExtResource("7_dmgtrl")
 
 [node name="ProgressBar" type="ProgressBar" parent="." unique_id=132554160]
+z_index = 16
 material = ExtResource("2_7qair")
 offset_left = 25.0
 offset_top = 250.0
@@ -124,6 +126,7 @@ show_percentage = false
 
 [node name="BarrierBar" type="ProgressBar" parent="." unique_id=132554161]
 visible = false
+z_index = 16
 material = ExtResource("2_7qair")
 offset_left = 25.0
 offset_top = 250.0
@@ -135,6 +138,7 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_barrier_fill")
 show_percentage = false
 
 [node name="Label" type="Label" parent="." unique_id=1533858800]
+z_index = 16
 material = ExtResource("2_7qair")
 offset_left = 60.0
 offset_top = 238.0
@@ -148,6 +152,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=1190600553]
+z_index = 16
 material = ExtResource("2_7qair")
 offset_top = 250.0
 offset_right = 25.0
@@ -195,6 +200,7 @@ offset_right = 205.0
 offset_bottom = 250.0
 
 [node name="HBoxContainer_Status_Effects" type="HBoxContainer" parent="." unique_id=409708871]
+z_index = 16
 offset_top = 275.0
 offset_right = 225.0
 offset_bottom = 300.0
@@ -337,6 +343,7 @@ horizontal_alignment = 2
 vertical_alignment = 2
 
 [node name="VBoxContainer_Trait_Elements" type="VBoxContainer" parent="." unique_id=770228792]
+z_index = 16
 offset_left = 190.0
 offset_right = 250.0
 offset_bottom = 250.0

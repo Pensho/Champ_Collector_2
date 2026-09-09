@@ -200,8 +200,10 @@ nodes. `Battle.BuildStage()` instances the one named by `Context_Battle._stage_s
 `Stage_Anchor`, falling back to `battle_stage_default.tscn`; `AdventureGenerator` stamps a
 stage picked from `BiomeData.stage_scenes` onto each generated encounter. The characters
 live in `battle.tscn` rather than in the stage, so the stage's foreground band carries
-`z_index = 10` to draw over them, and `Weather_Anchor` — where the context's
-`_environment_effects` play — sits above that again at `15`.
+`z_index = 10` to draw over their sprite, and `Weather_Anchor` — where the context's
+`_environment_effects` play — sits above that again at `15`. A character's life bars,
+barrier bar, and status/trait icons carry `z_index = 16`, clearing both bands so they
+always read as UI.
 
 The one thing the stage decides at runtime is floor clutter: `BattleStage.GenerateClutter`
 passes the characters' foot positions to `StageClutterView`, which draws what
