@@ -443,6 +443,7 @@ func _on_resolver_result_produced(p_result: CombatResult) -> void:
 			if(p_result.is_buff and Types.Buff_Type.Barrier == p_result.buff_type):
 				_barrier_status_ID[p_result.target_ID] = p_result.status_ID
 				SetBarrierBar(p_result.target_ID, p_result.amount)
+			UpdateLifeBar(p_result.target_ID)
 		CombatResult.Kind.Status_Duration:
 			if(_status_visual_IDs.has(p_result.status_ID)):
 				_character_representations[p_result.target_ID].SetStatusEffectDuration(
@@ -457,11 +458,13 @@ func _on_resolver_result_produced(p_result: CombatResult) -> void:
 					_barrier_status_ID.erase(p_result.target_ID)
 					SetBarrierBar(p_result.target_ID, 0)
 			_character_representations[p_result.target_ID].RemoveStatusEffects(repr_effect_IDs)
+			UpdateLifeBar(p_result.target_ID)
 		CombatResult.Kind.Statuses_Cleared:
 			_character_representations[p_result.target_ID].ClearAllStatusEffects()
 			if(_barrier_status_ID.has(p_result.target_ID)):
 				_barrier_status_ID.erase(p_result.target_ID)
 				SetBarrierBar(p_result.target_ID, 0)
+			UpdateLifeBar(p_result.target_ID)
 		CombatResult.Kind.Barrier_Absorbed:
 			if(p_result.amount > 0):
 				_battle_ui.SpawnCombatText(
@@ -537,8 +540,7 @@ func ShowStatusApplied(p_result: CombatResult) -> void:
 				p_result.text, CombatTextPosition(p_result.target_ID), text_color, _cascade_instance_ordinal)
 
 func _MaxHealthDisplay(p_characterID: int) -> int:
-	return (_characters[p_characterID].GetTotalAttribute(Types.Attribute.Health) *
-			Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
+	return _resolver.GetMaxHealth(p_characterID)
 
 func _RefreshHealthLabel(p_characterID: int) -> void:
 	var repr: CharacterRepresentation = _character_representations[p_characterID]
@@ -551,7 +553,10 @@ func _RefreshHealthLabel(p_characterID: int) -> void:
 # Display-only: combat mutation (clamping, death handling) happens in the resolver.
 func UpdateLifeBar(p_characterID: int) -> void:
 	var current_health: int = _characters[p_characterID]._current_health
+	var max_health: int = _MaxHealthDisplay(p_characterID)
+	_character_representations[p_characterID]._lifebar.max_value = max_health
 	_character_representations[p_characterID]._lifebar.value = current_health
+	_character_representations[p_characterID]._damage_trail_bar.max_value = max_health
 	_character_representations[p_characterID]._damage_trail_bar.Follow(current_health)
 	_RefreshHealthLabel(p_characterID)
 
