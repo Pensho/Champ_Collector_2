@@ -563,7 +563,8 @@ func SetBarrierBar(p_characterID: int, p_barrier: int) -> void:
 func VisualizeCharacter(p_characterID: int) -> void:
 	_character_representations[p_characterID]._level.text = str(_characters[p_characterID]._level)
 	var character_canvas_texture = CanvasTexture.new()
-	if(_sides.player.Has(p_characterID)):
+	var is_player: bool = _sides.player.Has(p_characterID)
+	if(is_player):
 		character_canvas_texture.diffuse_texture = (main.GetInstance()._character_collection
 				.GetCharacterTexture(_characters[p_characterID]._name))
 	else:
@@ -571,6 +572,7 @@ func VisualizeCharacter(p_characterID: int) -> void:
 	if("" != _characters[p_characterID]._normal_map):
 		character_canvas_texture.normal_texture = load(_characters[p_characterID]._normal_map)
 	_character_representations[p_characterID]._character_texture.texture = character_canvas_texture
+	_character_representations[p_characterID]._character_texture.flip_h = not is_player
 	var max_health: int = _MaxHealthDisplay(p_characterID)
 	_character_representations[p_characterID]._lifebar.max_value = max_health
 	_character_representations[p_characterID]._damage_trail_bar.max_value = max_health
