@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dnt4ha0b4y18i"
-path="res://.godot/imported/Boarding_Strike_1.jpg-05016e5d4546305c6b7f363d9f525531.ctex"
+uid="uid://cnkkhurt8vlej"
+path="res://.godot/imported/burning_bolas_3.jpg-e81c89e472b34cf6068ff182027b91d1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Boarding_Strike/Boarding_Strike_1.jpg"
-dest_files=["res://.godot/imported/Boarding_Strike_1.jpg-05016e5d4546305c6b7f363d9f525531.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Burning_Bolas/burning_bolas_3.jpg"
+dest_files=["res://.godot/imported/burning_bolas_3.jpg-e81c89e472b34cf6068ff182027b91d1.ctex"]
 
 [params]
 

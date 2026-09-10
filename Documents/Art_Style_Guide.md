@@ -36,7 +36,7 @@ the content is missing.
 9. Enemies and bosses
 10. Environments
 11. Items, gear and reagents
-12. Icons
+12. Icons (active skill art: 12.4)
 13. UI art
 14. Effects and VFX
 15. Animation
@@ -58,7 +58,7 @@ section states an explicit, named exception.*
 
 ## 1. The non-negotiables
 
-Every asset for character or battle visual element in the game obeys these. If an output breaks one, reject it regardless of how good it otherwise looks.
+Every asset for character or battle visual element in the game obeys these. If an output breaks one, reject it regardless of how good it otherwise looks. Active skill art (12.4) is the named exception: it follows its own print technique and is exempt from rules 1, 2, 3 and 6.
 
 1. **Very thick uniform black contour outline on the outer silhouette**, and that silhouette edge stays clean and uninterrupted. Fussy, nibbled edges turn to mush at phone size.
 2. **Flat color fields, hard-edged shadows, four value bands.** No gradients, no soft shading, no ambient occlusion. Four bands is a **value** rule, not a color-count rule — see section 2.
@@ -380,6 +380,19 @@ Run before any asset enters the project. Section 7.1 applies to everything; the 
 - [ ] Dark mass low in frame for the label
 - [ ] Judged beside its pair panel at half-screen size, never alone
 - [ ] Overlay and LUT applied, quantize step skipped
+
+### 7.9 Active skill art
+
+Replaces 7.1 for this class; see 12.4.1 for why.
+
+- [ ] Reads as a chiaroscuro woodcut: a black key block carrying the line work, two flat tone blocks beneath it, highlights as bare cream paper
+- [ ] Detail lives in the carved line (hatching, contour, gouge strokes), not in color modelling or soft shading
+- [ ] Exactly two tone-block colors, one of them the caster's accent family (12.4.4)
+- [ ] One subject, caught in the act of the skill, on a diagonal or arc
+- [ ] Background held in the darker tone and carried by sparse lines, so the subject stands forward
+- [ ] Paper color, key-block line weight and registration offset match the approved set (12.4.6) when viewed side by side
+- [ ] Chiaroscuro structure (dark key, mid tone, paper highlight) still reads at the display size, even where individual hatching lines do not
+- [ ] Shared overlay applied; quantize step skipped
 
 Note that 7.1's universal list contains four checks a panel cannot pass — ground
 line and light direction, four bands, and the full post-processing pass. Either
@@ -1089,7 +1102,9 @@ Icons are where the style either works or fails, because they are the smallest t
 - **One idea per icon.** A single object, centered, filling the frame.
 - **Silhouette must survive being filled black.**
 - **Outline gets proportionally thicker**, not thinner, as size drops.
-- **Node type icons carry no accent** — they are map furniture. **Skill icons carry the caster's accent**, and here the accent may run to 30% because there is nothing else competing.
+- **Node type icons carry no accent** — they are map furniture.
+
+These rules and the pattern in 12.2 govern map nodes, status, currency and resource icons. **Active skill art does not follow them** — it was tried and failed (17), and it now has its own class in 12.4.
 
 ### 12.2 Prompt pattern
 
@@ -1102,13 +1117,104 @@ black, bone white and one mid grey[, with {ACCENT} as the single flat accent
 on {PLACEMENT}], plain flat background, no scenery.
 ```
 
+This pattern predates section 5.1 and contradicts it: "no fine linework, no small marks, no scenery" are exclusions in a field with no negative prompt. Positive phrasings that were used instead during the skill pilot: *every mark as thick as the outline* and *isolated on a plain flat background of one uniform color*. Rewrite the pattern before the next icon batch.
+
 ### 12.3 Node icon subjects (Expeditions map)
 
 Keep these to one unmistakable object each: Fight — crossed blades; Boss — a horned skull; Rest Stop — a campfire with three logs; Hint — an open eye; Gamble — a pair of dice; Escalate — an upward arrow through a broken ring.
 
-### 12.4 Active skill icons
+### 12.4 Active skill art — the chiaroscuro print class
 
-> **Not yet written.** The largest icon set in the game, one or more per skill across twenty Roles. Needs a subject convention (what an icon depicts — the effect, the gesture, or the tool), how the caster's accent is applied at 30%, and how skills that share a mechanic stay visually related without becoming interchangeable.
+The largest art set in the game, one or more per skill across twenty Roles. Skill art is **not** built in the Lit Woodcut character style. It is built as a **chiaroscuro woodcut** — the sixteenth-century technique (Burgkmair, Ugo da Carpi) of printing one detailed black line block over two or three flat tone blocks.
+
+The class was found by piloting three skills: Burning Bolas (Jester), Boarding Strike and Corsair's Reckoning (Tidal Corsair). All three were approved, and they read as prints from one workshop, which is the thing a skill set has to do.
+
+#### 12.4.1 Why skill art left the icon rules
+
+The first pilot put Burning Bolas through 12.1 and 12.2: three values, flat fields, large simple shapes, every mark as thick as the outline. All three variants came back too simple — flat color planes with no texture and no level of detail, reading as cartoon rather than woodcut (17).
+
+The diagnosis: **the icon rules removed the carving.** A real woodcut gets its richness from the density and direction of cut marks, not from color or shading. Flat fields with no texture describe a woodcut with the cutting taken out, which is a vector cartoon.
+
+Five print traditions were then generated on the same subject: Renaissance black-line, white-line wood engraving, chiaroscuro, ukiyo-e and expressionist. Chiaroscuro was chosen. It is also the closest to this guide's own foundations: its tone blocks *are* a small number of flat value bands, and its key block restores the "engraved structural linework" that the character block in 8.6 already asks for and the icon template dropped.
+
+#### 12.4.2 What this class is exempt from
+
+The third named exemption in the guide, after the overworld camera (10.4) and selection panels (10.8.1). Granted here and nowhere else:
+
+- **Non-negotiables 1–3 and 6.** No thick uniform contour requirement, no four-band rule, no 15–20% accent budget, no perspective spec. Skill art is a framed illustration, not a battle element, and never composites against a champion.
+- **Section 12.1 and 12.2 entirely.**
+- **"Wear is shape, not texture" (5.5, 8.5)** as far as line work goes. Carved hatching and visible wood grain are the content of this class. The rule still holds for *asked-for grime* — dirt and stain words remain wasted budget.
+- **Light from upper left.** Light may come from a source named in the scene — moonlight glinting on the blade, morning light behind a wave — as long as the source reads as belonging to it.
+- **The quantize step of section 6.** See 12.4.5.
+
+What still binds: no gradients in the tone blocks, one idea per piece, section 5's prompting method (positive phrasing, counts not adjectives, genre attractors), and the caster's accent (12.4.4).
+
+#### 12.4.3 The technique block
+
+Word for word in every skill prompt, closing it. The repetition is what makes three different subjects read as one set.
+
+```
+a detailed black key block with engraved hatching and contour lines
+printed over two overlapping tone blocks in {TONE A} and {TONE B},
+{HIGHLIGHTS} cut away to bare cream paper, slight registration offset
+between blocks, visible wood grain in the tone blocks
+```
+
+And one phrase opening it: `chiaroscuro woodcut print,`
+
+**The subject block** sits between the two and follows these conventions:
+
+- **Subject convention: the tool in the act of the skill.** A weapon mid-thrust, a thrown object mid-flight, a summoned form mid-leap. Not the caster's portrait, and not an abstract effect symbol. Where the Role's kit names a concept (Corsair's Reckoning spends Sea and Steel stacks), let the subject *be* that concept — a dolphin of seawater carrying swords.
+- **Motion on a diagonal or arc**, toward the right where there is a direction, matching the battle layout. Speed is shown as *curved gouge strokes trailing the arc*, never blur.
+- **Partial figures are allowed.** A hand and a striped sleeve gripping the cutlass, the rest beyond the frame. The Role is signalled by a costume detail at the frame edge, not by a face.
+- **Highlights are cut to paper.** Name what glows or gleams — flames, a blade edge, foam and spray — and cut it away to bare cream paper. This is where the "light" in the old prompts went.
+- **Background is optional and sparse.** When present, it is carried by sparse cut lines and held in the darker tone so the subject stands forward. Bolas used a sky of horizontal cut lines; the Corsair pieces carry a ship's deck and a beach. See 12.4.7.
+- **Count the elements that create density.** In Corsair's Reckoning the sword count is what drives line clutter; five was approved, three is the first cut if a variant tangles.
+- **Transparency is replaced by breaking through.** Carved lines of a see-through form compete with the carved lines of what is inside it. Put objects *in* the form with their ends breaking out through its surface.
+
+#### 12.4.4 Accent in the tone blocks
+
+**One tone block carries the caster's accent family.** It stays a tone block — flat, sharing the print with the second tone — not a spot color. This is how 8.9's identity system reaches skill art.
+
+The second tone is free, and is chosen for the scene: a warm/cool pair where the subject calls for one (Boarding Strike's moonlight teal against lantern amber).
+
+Status in the pilot: the Corsair pieces carry sea teal explicitly. Burning Bolas used warm ochre and deep rust, which sits near the Jester's saffron but was not specified as the accent. Regenerate Bolas with saffron named in one block before treating the rule as confirmed.
+
+#### 12.4.5 Post-processing
+
+Skill art takes **the shared overlay only**. The quantize step would strip the hatching and tone-block range that are the whole class, as it would for panels (10.8.6). The area LUT does not apply: skill art is shown in UI, not in an area's scene light.
+
+#### 12.4.6 Approved prompts
+
+Recorded verbatim as generated. These are the reference set; a new piece is judged side by side against all three.
+
+**Burning Bolas (Jester)**
+
+```
+chiaroscuro woodcut print, burning bolas thrown through the air in a spinning arc toward the right, two heavy iron balls joined by a thick twisted rope, each ball wreathed in curling flames, a detailed black key block with engraved hatching and contour lines printed over two overlapping tone blocks in warm ochre and deep rust, highlights cut away to bare cream paper, flames glowing where the paper shows through, curved gouge strokes trailing the arc, slight registration offset between blocks, visible wood grain in the tone blocks
+```
+
+**Boarding Strike (Tidal Corsair)**
+
+```
+chiaroscuro woodcut print, a curved pirate cutlass thrust in from the left edge on a hard diagonal across the frame toward the upper right, a broad crescent-shaped blade ending in a sharp point, a cupped guard of pierced metal around the grip, a woman's hand in a firm grip on the hilt, only her forearm visible in a sleeve of bold horizontal stripes, the rest of her beyond the frame, a detailed black key block with engraved hatching and contour lines printed over two overlapping tone blocks in deep sea teal and warm lantern amber, the blade's edge and point cut away to bare cream paper as a gleam of moonlight, behind it a ship's deck at night carved in sparse lines, rigging, a mast and two hanging lanterns glowing amber, a moonlit sea of horizontal cut lines, the background held in the darker tone so the blade stands forward, slight registration offset between blocks, visible wood grain in the tone blocks
+```
+
+**Corsair's Reckoning (Tidal Corsair)**
+
+```
+chiaroscuro woodcut print, a dolphin formed entirely of seawater leaping out of a breaking wave toward the viewer, its body built from curling carved current lines and swirling eddies, five cutlasses and sabres caught inside the water at different angles, their hilts and blade tips breaking out through its back and flanks, a great wave curling behind it with claw-like foam crests, a detailed black key block with engraved hatching and contour lines printed over two overlapping tone blocks in sea teal and pale sand ochre, foam, spray and the sword edges cut away to bare cream paper, a strip of beach and distant sea below in sparse horizontal cut lines, morning light from behind the wave, flying droplets as small gouged marks, slight registration offset between blocks, visible wood grain in the tone blocks
+```
+
+The Bolas prompt predates the fixed technique block and words it slightly differently (*highlights cut away* rather than naming them, and the trail phrase after the block). Its result was approved, so it is kept as generated; new prompts use the 12.4.3 order.
+
+#### 12.4.7 Open items for this class
+
+- **Display size is unverified.** The pilot was judged at full resolution. Skill art shows in the skill bar and tooltips; decide the sizes, then check whether the chiaroscuro structure survives where the hatching does not. If it fails at the skill-bar size, the likely answer is two assets per skill — this illustration for tooltips and cards, and a cropped or simplified icon for the bar — rather than a return to 12.1.
+- **Background convention.** Bolas has almost none; both Corsair pieces carry a scene. Decide one convention for the set, or state when a scene is earned.
+- **Accent rule on a clashing element.** The pilot never forced a conflict: Jester fire sits near saffron, Corsair sea is teal. Test a skill whose element fights its Role's accent — a Sorcerer fire skill under cobalt — to settle whether element color or caster accent wins the accent block.
+- **Status icon collision.** Burning (12.5) will want flames too. The status icon must not look like a crop of the Bolas art.
+- **Relationship to VFX (14).** The in-battle effect for a skill is in the Lit Woodcut battle style; the skill art is not. Decide whether that split is accepted, or whether VFX borrow anything from the print (gouge-stroke motion, paper-cut highlights).
 
 ### 12.5 Status effect icons
 
@@ -1230,6 +1336,8 @@ Recorded so they are not retried. Each of these was generated and judged, not re
 - **Jester with a soft floppy cap, wide grin and a wiry build.** Cartoon. `wiry` shrinks the body and makes the head read as oversized.
 - **Sorcerer as a field surveyor in a travel coat, gaiters and pack roll.** Competent and legible, and completely bland — modern hiking gear with no fantasy content, and the staff came back as a plain walking pole. Fleeing the wizard basin with travel vocabulary lands in the outdoorsman basin.
 - **Sorcerer with hollow cheeks, shelf brow, hooked nose and a hard-set jaw.** Four nouns from one cluster, no stated age: returned the model's default forty-year-old handsome man, indistinguishable from the other male heads in the set.
+- **Skill art on the flat icon rules (12.1–12.2).** Burning Bolas generated three ways — three values, flat fields, large simple shapes. All three came back too simple, with no level of detail, and read as cartoon. The rules had removed the carved line that makes woodcut rich. Replaced by the chiaroscuro class in 12.4.
+- **Skill art in four other print traditions.** Renaissance black-line, white-line wood engraving, ukiyo-e and expressionist woodcut were generated on the Bolas subject alongside chiaroscuro. Not failures, but chiaroscuro was clearly best and is the one closest to this guide's flat-band foundations. Revisit only if chiaroscuro fails at display size.
 - **Desaturated garment main as an unwritten default.** Not a generation failure but a documentation one — six characters were built on a rule nobody had written, and the roster came out as grades of beige with one muted accent each. See 3.5.
 
 ---
@@ -1260,3 +1368,5 @@ Collected so they are visible in one place rather than buried in the sections th
 - **One POI language or two.** The overview screens (10.4.2) and the Adventure map (10.7.2) both need clickable points with states. Answering them separately teaches the player two vocabularies.
 - **Model and settings lock.** Not yet recorded (18).
 - **Rarity colors versus accent colors.** Two color-identity systems competing for the same player attention (11.5).
+- **Skill art display size.** One illustration per skill or two assets (tooltip art plus bar icon), decided once the skill-bar size is known (12.4.7).
+- **Element color or caster accent** in the skill art accent block, when the two clash (12.4.7).

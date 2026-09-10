@@ -14,6 +14,6 @@ damage_scaling = Dictionary[int, float]({
 script = ExtResource("1_ybmev")
 name = "Boarding Strike"
 description = "Slashes an opponent to create a Steel Stack. Based on attack."
-icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Boarding_Strike/Boarding_Strike_1.jpg"
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Boarding_Strike/boarding_strike_2.jpg"
 effects = Array[ExtResource("1_8bl8o")]([SubResource("Resource_aikjm")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

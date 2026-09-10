@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://detvew46ghl3a"
-path="res://.godot/imported/Corsairs_Reckoning_1.jpg-0cfabef38c0f7cd48a39ea6cfba8f250.ctex"
+uid="uid://bjwek3gf01r1c"
+path="res://.godot/imported/boarding_strike_2.jpg-cd117f78e4d58ed8cd3568a1994dd56c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Corsairs_Reckoning/Corsairs_Reckoning_1.jpg"
-dest_files=["res://.godot/imported/Corsairs_Reckoning_1.jpg-0cfabef38c0f7cd48a39ea6cfba8f250.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Boarding_Strike/boarding_strike_2.jpg"
+dest_files=["res://.godot/imported/boarding_strike_2.jpg-cd117f78e4d58ed8cd3568a1994dd56c.ctex"]
 
 [params]
 
