@@ -37,7 +37,7 @@ the content is missing.
 10. Environments
 11. Items, gear and reagents
 12. Icons (active skill art: 12.4)
-13. UI art
+13. UI art (turn bar zones: 13.3.1)
 14. Effects and VFX
 15. Animation
 16. Marketing and out-of-game art
@@ -58,7 +58,7 @@ section states an explicit, named exception.*
 
 ## 1. The non-negotiables
 
-Every asset for character or battle visual element in the game obeys these. If an output breaks one, reject it regardless of how good it otherwise looks. Active skill art (12.4) is the named exception: it follows its own print technique and is exempt from rules 1, 2, 3 and 6.
+Every asset for character or battle visual element in the game obeys these. If an output breaks one, reject it regardless of how good it otherwise looks. Active skill art (12.4) is the named exception: it follows its own print technique and is exempt from rules 1, 2, 3 and 6. Turn bar zone art (13.3.1) is the second: it is built to recede and is exempt from rules 1, 2 and 3.
 
 1. **Very thick uniform black contour outline on the outer silhouette**, and that silhouette edge stays clean and uninterrupted. Fussy, nibbled edges turn to mush at phone size.
 2. **Flat color fields, hard-edged shadows, four value bands.** No gradients, no soft shading, no ambient occlusion. Four bands is a **value** rule, not a color-count rule — see section 2.
@@ -393,6 +393,19 @@ Replaces 7.1 for this class; see 12.4.1 for why.
 - [ ] Paper color, key-block line weight and registration offset match the approved set (12.4.6) when viewed side by side
 - [ ] Chiaroscuro structure (dark key, mid tone, paper highlight) still reads at the display size, even where individual hatching lines do not
 - [ ] Shared overlay applied; quantize step skipped
+
+### 7.10 Turn bar zone art
+
+Replaces 7.1 for this class; see 13.3.1.
+
+- [ ] Judged in the actual turn bar section (248 × 80 px), with the tint field, planned opacity and a character marker standing in it — never alone or at full resolution
+- [ ] The character marker is the first thing the eye goes to; the zone still reads as its subject second
+- [ ] Outlines are darker shades of each fill color, not ink black
+- [ ] Soft, muted, low-contrast fills; flat fields with no gradients
+- [ ] Palette ties to the placing Role (accent family in the body color)
+- [ ] Centerpiece fits the section with rocking or motion headroom; the pivot edge is clean
+- [ ] Particle sprites read as the same object at 20–32 px
+- [ ] Background keyed out cleanly, with no key color fringing into light edges
 
 Note that 7.1's universal list contains four checks a panel cannot pass — ground
 line and light direction, four bands, and the full post-processing pass. Either
@@ -1250,6 +1263,82 @@ The Bolas prompt predates the fixed technique block and words it slightly differ
 
 > **Not yet written.** Health and resource bars, turn order, damage numbers, and the Echo sequence presentation required by `Concept_Document.md` 1.1.5. Damage numbers carry the caster's accent (8.9), so they are style assets, not engine defaults.
 
+#### 13.3.1 Turn bar zones — the receding class
+
+Zones (`Concept_Document.md` 3.2.4.1) sit in sections of the turn bar, and character markers move through them. The zone has to say *what* occupies a section and *whose* it is, while the markers stay the first thing the player reads. Every rule in this class follows from that ranking: **characters lead, zones recede.**
+
+Piloted on The Gilded Deck (Tidal Corsair, placed by Corsair's Reckoning). Its assets were implemented in the engine and approved.
+
+##### What is an asset and what is the engine
+
+A zone is assembled in Godot from a small number of generated sprites. Only the sprites are art assets.
+
+| Layer (back to front) | Made in | Gilded Deck example |
+|---|---|---|
+| Tint field | Engine — `ColorRect` or shader, alpha set in engine | Pale blue field over the whole section |
+| Particles | Asset sprites, driven by a particle node | Wave crests drifting within the section |
+| Centerpiece | Asset sprite, animated by tween | Pirate ship rocking back and forth |
+| Character markers | Existing HUD | Always in front of every zone layer |
+
+Transparency is always applied in the engine, never baked into the asset. The asset is delivered opaque on a key color and keyed out (see *Generation* below).
+
+##### Dimensions
+
+- **Turn bar section:** 248 × 80 px. Height is the binding limit.
+- **Centerpiece:** around 100 × 60 px. Leave vertical headroom for motion — a 6–8° rock adds several pixels of height, and a centerpiece that fits 80 px when level will clip when tilted. Generate in a landscape aspect (3:2) so the subject comes out wide and low.
+- **Particles:** 20–32 px each.
+- At these sizes a carved line lands at about one pixel. Keep interior line counts to three or four on the centerpiece and one or two per particle.
+
+##### What this class is exempt from
+
+- **Non-negotiable 1, the ink black outline.** Outlines are drawn in **a darker shade of each fill color**. This keeps the woodcut contour while removing the heaviest attention-grabbing mark in the style.
+- **Non-negotiable 2, four value bands.** Fills are soft, muted and low in contrast. Flat fields and no gradients still hold.
+- **Non-negotiable 3, the accent budget.** The Role's accent family may be the main body color, because the whole zone is already at low opacity.
+- **Light from upper left (4.1).** The objects are too small for a cast shadow to matter. Keep any shading flat and minimal.
+- **14.1's black outline and black/white generation background**, for zone particles.
+
+What still binds: **orthographic pure side profile** (4.1), one idea per sprite, flat fields, and section 5's prompting method.
+
+##### Color
+
+- **The palette ties to the placing Role.** The Gilded Deck's hull is sea teal, the Corsair's accent family. This keeps zones inside the existing color-identity system rather than starting a separate one.
+- **One named detail carries the zone's identity.** For the Gilded Deck it is the gold gilded trim on the rail and stern — the "Gilded" in the name — and nothing else competes with it.
+- **Particles take a simple two-color scheme** that fits the element: soft sea blue bodies with a white foam lip.
+- **The tint field is an engine value.** Its color and alpha are tuned live in Godot. What the tint *means* is an open decision (see below).
+
+##### Generation
+
+- **Key color: flat magenta.** It appears in neither the Gilded Deck's teal, gold and off-white nor its blue and white waves. If magenta fringes into light edges (foam, sails), switch to plain bright green. Use a transparent-background output instead if the model offers one.
+- **Particles as a sheet.** Ask for five separate shapes spaced apart in a row. The sheet slices cleanly and gives the particle system variety.
+- **Centerpiece with a clean pivot edge.** Anything that rocks or bobs needs a flat, straight edge at its pivot — the Gilded Deck's hull is cut straight along the waterline. Set the rotation pivot at the waterline in the engine, not at the sprite's center.
+- **Post-processing.** Key out, then downscale to target. The quantize step and the accent correction of section 6 do not apply, since this class is not built on the four-band ramp. The area LUT does not apply either, because the turn bar is HUD and does not sit in scene light.
+
+##### Approved prompts
+
+The Gilded Deck, recorded as generated.
+
+**Ship (centerpiece)**
+
+```
+woodcut print style illustration of a small pirate ship in pure side profile facing right, a wide low hull with two masts and three square sails in weathered off-white canvas, hull of deep sea teal painted wood with one band of gold gilded trim along the rail and a gilded ornament on the stern, one small teal flag on the main mast, the hull cut straight and flat along the waterline at the bottom, flat color fields with three or four carved lines for planks and sail folds, soft muted colors, gentle low contrast, outlines drawn in darker shades of each color, large simple shapes readable at very small size, the whole ship centered, isolated on a plain flat solid magenta background
+```
+
+**Waves (particle sheet)**
+
+```
+woodcut print style illustration, a sheet of five small separate curling wave crests spaced apart in a row, each a different shape, bodies in soft sea blue with a white foam lip along each curl, one or two carved lines following each curl, flat color fields, outlines drawn in a darker shade of blue, soft muted colors, large simple shapes readable at very small size, isolated on a plain flat solid magenta background
+```
+
+A single-ink version of both (dark ink on white, recolored in the engine) was tried first and not chosen; see 17.
+
+##### Open items for this class
+
+- **Lore family language.** Every zone belongs to the order, unstable or momentum family, and that family defines its visual language (`Concept_Document.md` 3.2.4.1). The Gilded Deck's family has not been recorded here, and neither has which of its choices are family language (field treatment, how particles move) and which belong to this zone alone (the ship). Decide before the second zone of that family, or the first zone becomes the family by accident.
+- **What the tint means.** The Deck's tint is pale blue. Either the tint derives from the placing Role's accent — keeping one color-identity system — or it signals ally versus enemy ownership, which is a second system and needs the explicit decision the concept document asks for.
+- **Enemy-placed zones.** Enemies place zones too. Decide whether ownership is shown at all, and if so whether by tint, a marker, or nothing.
+- **Charge readout.** A zone holds charges. Whether remaining charges show as a number, as particle density, or both is not decided.
+- **Arrival and dissipation.** How a zone appears when placed and leaves when its last charge is consumed. Engine animation, but it should be one convention across all zones.
+
 ### 13.4 Layout and screen inventory
 
 > **Not yet written.** One entry per screen, each with its grey-box (4.3) before any art is generated.
@@ -1266,6 +1355,7 @@ Effects are the one place the accent may exceed its budget, because they are tra
 - **Shape over glow.** Radiating lines, chunky sparks, solid smoke masses, cracked rings. Not soft bloom.
 - **Effects inherit the caster's accent color.** This is the single strongest reinforcement of the identity color system.
 - Generate on **plain black or plain white**, keyed out afterward, never on a scene.
+- **Turn bar zone particles are not VFX** for these rules. They follow 13.3.1: tonal outlines, muted fills, magenta key.
 
 ### 14.2 Where the juice actually comes from
 
@@ -1337,6 +1427,7 @@ Recorded so they are not retried. Each of these was generated and judged, not re
 - **Sorcerer as a field surveyor in a travel coat, gaiters and pack roll.** Competent and legible, and completely bland — modern hiking gear with no fantasy content, and the staff came back as a plain walking pole. Fleeing the wizard basin with travel vocabulary lands in the outdoorsman basin.
 - **Sorcerer with hollow cheeks, shelf brow, hooked nose and a hard-set jaw.** Four nouns from one cluster, no stated age: returned the model's default forty-year-old handsome man, indistinguishable from the other male heads in the set.
 - **Skill art on the flat icon rules (12.1–12.2).** Burning Bolas generated three ways — three values, flat fields, large simple shapes. All three came back too simple, with no level of detail, and read as cartoon. The rules had removed the carved line that makes woodcut rich. Replaced by the chiaroscuro class in 12.4.
+- **Zone art as single-ink shapes.** Gilded Deck ship and waves as one-color woodcut silhouettes, recolored in the engine by `modulate`. Technically flexible, but the result lacked the color the zone needed — waves are expected to be blue and white and the ship colored. Replaced by muted multi-color fills with tonal outlines (13.3.1).
 - **Skill art in four other print traditions.** Renaissance black-line, white-line wood engraving, ukiyo-e and expressionist woodcut were generated on the Bolas subject alongside chiaroscuro. Not failures, but chiaroscuro was clearly best and is the one closest to this guide's flat-band foundations. Revisit only if chiaroscuro fails at display size.
 - **Desaturated garment main as an unwritten default.** Not a generation failure but a documentation one — six characters were built on a rule nobody had written, and the roster came out as grades of beige with one muted accent each. See 3.5.
 
@@ -1370,3 +1461,5 @@ Collected so they are visible in one place rather than buried in the sections th
 - **Rarity colors versus accent colors.** Two color-identity systems competing for the same player attention (11.5).
 - **Skill art display size.** One illustration per skill or two assets (tooltip art plus bar icon), decided once the skill-bar size is known (12.4.7).
 - **Element color or caster accent** in the skill art accent block, when the two clash (12.4.7).
+- **Zone tint meaning.** Caster accent or ally/enemy ownership (13.3.1).
+- **Zone lore family language.** Which Gilded Deck choices belong to its family and which to the zone alone (13.3.1).
