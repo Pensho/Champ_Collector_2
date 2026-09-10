@@ -1,16 +1,15 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://kxdl3pcp2ila"]
 
 [ext_resource type="Script" uid="uid://bak1t404v5t50" path="res://Scripts/UI/Battle_UI/turn_bar_zone_container.gd" id="1_gilded"]
+[ext_resource type="Texture2D" uid="uid://didik3tcrg4gv" path="res://Assets/Champ_Collector/Icons/Turn_Bar/Gilded_Deck/gilded_deck_02.png" id="2_ef5vj"]
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="2_gilded"]
+[ext_resource type="Texture2D" uid="uid://kg1wcmpuavhp" path="res://Assets/Champ_Collector/Icons/Turn_Bar/Gilded_Deck/waves_sheet.png" id="3_ojqgu"]
 
-[sub_resource type="Gradient" id="Gradient_up1"]
-offsets = PackedFloat32Array(0, 0.15137614, 1)
-colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_up1"]
-gradient = SubResource("Gradient_up1")
-fill = 1
-fill_from = Vector2(0.5, 0.5)
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_aspjf"]
+particles_animation = true
+particles_anim_h_frames = 5
+particles_anim_v_frames = 1
+particles_anim_loop = false
 
 [sub_resource type="Gradient" id="Gradient_up2"]
 offsets = PackedFloat32Array(0, 0.10550459, 1)
@@ -32,7 +31,69 @@ fill = 1
 fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(0.8, 0.5)
 
-[node name="TurnBarGildedDeck" type="Node2D" node_paths=PackedStringArray("background", "cpu_particles_2d_up_1", "cpu_particles_2d_up_2", "cpu_particles_2d_side_1", "label")]
+[sub_resource type="Animation" id="Animation_ojqgu"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D_Ship:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D_Ship:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_ef5vj"]
+resource_name = "rock"
+length = 4.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D_Ship:rotation")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1, 3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.0, -0.06981317, 0.06981317]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D_Ship:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 2, 4),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0, -3), Vector2(0, 0), Vector2(0, -3)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ojqgu"]
+_data = {
+&"RESET": SubResource("Animation_ojqgu"),
+&"rock": SubResource("Animation_ef5vj")
+}
+
+[node name="TurnBarGildedDeck" type="Node2D" unique_id=466380459 node_paths=PackedStringArray("background", "cpu_particles_2d_up_1", "cpu_particles_2d_up_2", "cpu_particles_2d_side_1", "label")]
 script = ExtResource("1_gilded")
 background = NodePath("Background")
 cpu_particles_2d_up_1 = NodePath("CPUParticles2D_Up_1")
@@ -40,17 +101,18 @@ cpu_particles_2d_up_2 = NodePath("CPUParticles2D_Up_2")
 cpu_particles_2d_side_1 = NodePath("CPUParticles2D_Side_1")
 label = NodePath("Label")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="ColorRect" parent="." unique_id=927739291]
 offset_right = 40.0
 offset_bottom = 40.0
 size_flags_horizontal = 0
 size_flags_vertical = 0
 mouse_filter = 2
-color = Color(0.75, 0.6, 0.2, 0.24705882)
+color = Color(0.32081777, 0.8859772, 0.9097335, 0.24705882)
 
-[node name="CPUParticles2D_Up_1" type="CPUParticles2D" parent="."]
+[node name="CPUParticles2D_Up_1" type="CPUParticles2D" parent="." unique_id=1963646835]
+material = SubResource("CanvasItemMaterial_aspjf")
 position = Vector2(0, -25)
-texture = SubResource("GradientTexture2D_up1")
+texture = ExtResource("3_ojqgu")
 lifetime = 2.0
 emission_shape = 3
 emission_rect_extents = Vector2(200, 25)
@@ -61,9 +123,11 @@ initial_velocity_min = 20.0
 initial_velocity_max = 20.0
 scale_amount_min = 0.2
 scale_amount_max = 0.2
-color = Color(0.85, 0.7, 0.3, 1)
+color = Color(1, 1, 1, 0.80784315)
+anim_offset_max = 1.0
 
-[node name="CPUParticles2D_Up_2" type="CPUParticles2D" parent="."]
+[node name="CPUParticles2D_Up_2" type="CPUParticles2D" parent="." unique_id=1520717556]
+visible = false
 position = Vector2(0, -25)
 texture = SubResource("GradientTexture2D_up2")
 lifetime = 2.0
@@ -78,7 +142,8 @@ scale_amount_min = 0.2
 scale_amount_max = 0.2
 color = Color(0.2, 0.45, 0.55, 1)
 
-[node name="CPUParticles2D_Side_1" type="CPUParticles2D" parent="."]
+[node name="CPUParticles2D_Side_1" type="CPUParticles2D" parent="." unique_id=1057674107]
+visible = false
 position = Vector2(-100, -50)
 texture = SubResource("GradientTexture2D_side")
 emission_shape = 3
@@ -89,7 +154,14 @@ initial_velocity_min = 100.0
 initial_velocity_max = 200.0
 color = Color(0.85, 0.7, 0.3, 1)
 
-[node name="Label" type="Label" parent="."]
+[node name="Sprite2D_Ship" type="Sprite2D" parent="." unique_id=1601307475]
+self_modulate = Color(1, 1, 1, 0.81960785)
+visibility_layer = 1016769
+texture = ExtResource("2_ef5vj")
+centered = false
+offset = Vector2(-32, -72)
+
+[node name="Label" type="Label" parent="." unique_id=104198286]
 self_modulate = Color(1, 1, 1, 0.75686276)
 offset_right = 40.0
 offset_bottom = 30.0
@@ -100,3 +172,7 @@ theme_override_constants/shadow_offset_x = 3
 theme_override_constants/shadow_offset_y = 3
 theme_override_constants/outline_size = 5
 theme_override_constants/shadow_outline_size = 1
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=176608946]
+libraries/ = SubResource("AnimationLibrary_ojqgu")
+autoplay = &"rock"
