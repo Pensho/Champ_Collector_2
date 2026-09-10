@@ -274,6 +274,8 @@ When an attractor lands, rewrite the costume from a different occupation rather 
 
 **The two basins on either side of a magic Role are close together.** Fleeing the generic-wizard basin with surveyor and travel vocabulary lands in the modern-outdoorsman basin, which is the same failure as the Bloodmage's plain working coat: the fantasy content is gone and there is nothing a player wants to field. The Sorcerer escaped by taking his nouns from the ruins themselves — ruin masonry, ruin ironwork, a shoulder yoke, a chained slab — rather than from either travel gear or wizardry.
 
+**Historical accuracy is a basin too.** It does not show up as a genre, so it is easy to fall into without noticing: a Role researched from its real-world counterpart gets that counterpart's real props, and the result is competent, legible and mundane. The Plague Doctor's first pass — a straight lancet cane, a hand bellows, a chest rack of vials — was all of that, and the vials also collided with the Alchemist. The fix is the same as for any attractor: change the vocabulary wholesale, here by replacing real objects with the Role's one element from outside reality (8.1).
+
 ### 5.4 Counts, not adjectives
 
 **Use numeric counts, never adjectives.** "Three or four wrap bands" is a target the model can hit. "Moderate detail" is not, and it will revert to maximalism. This holds for icons and character designs, not for environment design.
@@ -345,6 +347,8 @@ Run before any asset enters the project. Section 7.1 applies to everything; the 
 - [ ] Eyes hand-placed and consistent with the last approved character
 - [ ] Limbs carry light detail, not blank
 - [ ] The Role's occupation is legible from the costume alone, with no name attached
+- [ ] One element on the figure could not exist in our world, reads in the silhouette, and derives from the kit (8.1)
+- [ ] No signature prop shares a type with another Role's (vials, books, lanterns and similar)
 - [ ] Silhouette family is not shared with another fielded Role
 
 ### 7.3 Enemies
@@ -431,6 +435,16 @@ Three characters cost several rounds each because the prompt was being rewritten
 **Check the concept for internal conflict.** "Shunned outcast" and "cool playable champion" pull against each other, because low status is what outcast looks like. No wording resolves that. Either the status changes (feared instead of shunned) or the visual reading of it does.
 
 **Flavour text is not a costume brief.** "Hides from the Iron Ledger" taken literally produced a man in a plain working coat with no fantasy content and nothing for a player to want. Concealment survives as *style* — a brand showing at an open collar, dye that will not wash off — not as ordinary clothing.
+
+**Every character carries one element from outside reality.** An occupation makes a figure legible; it does not make it fantasy. Left to itself, every design drifts toward the historically plausible version of its job — a real cane, a real bellows, a real rack of vials — and a roster of accurate period costumes is a roster with nothing in it a player could not see in a museum. Before writing the prompt, name the one thing on this figure that could not exist in our world, and make it large enough to matter in the silhouette.
+
+- **Derive it from the kit, and the world.** The element should be the Role's mechanic made physical, built from what that Role's area contains. The Plague Doctor's Septic Lance became the curved stinger of a giant jungle insect and her chest piece a caged, breathing seed-pod, because the Reclaimed City's forest is monstrous and she builds her tools from what she cuts out of it.
+- **Put it on the tool or the focal region.** A weapon is the cheapest place: it is already the strongest shape in the pose, and a straight, simple object is the least interesting silhouette available. A curve, a barb, an organic or impossible material does more than any amount of costume detail.
+- **One, not several.** It is a single anchor, held to the counted-group budget like everything else. A figure where everything is strange reads as a creature, not a person with a job.
+- **Harvested, worn or wielded — not grown.** Unless growth is the Role's identity (the Symbiote), the strange thing is something the character has taken, caged, strapped on or carries. That keeps the person legible and keeps Roles out of each other's lanes.
+- **Choose its vocabulary against the attractors.** Bone, hide and antler nouns summon the shaman and barbarian basins (5.3). Insect, plant, ruin-stone and impossible-mechanism nouns are less used and have held so far.
+
+The Architect is the approved reference for this. Treat a figure with no such element as unfinished, however well it passes every other check.
 
 ### 8.2 Decide the silhouette and the pose before anything else
 
@@ -1430,6 +1444,7 @@ Recorded so they are not retried. Each of these was generated and judged, not re
 - **Zone art as single-ink shapes.** Gilded Deck ship and waves as one-color woodcut silhouettes, recolored in the engine by `modulate`. Technically flexible, but the result lacked the color the zone needed — waves are expected to be blue and white and the ship colored. Replaced by muted multi-color fills with tonal outlines (13.3.1).
 - **Skill art in four other print traditions.** Renaissance black-line, white-line wood engraving, ukiyo-e and expressionist woodcut were generated on the Bolas subject alongside chiaroscuro. Not failures, but chiaroscuro was clearly best and is the one closest to this guide's flat-band foundations. Revisit only if chiaroscuro fails at display size.
 - **Desaturated garment main as an unwritten default.** Not a generation failure but a documentation one — six characters were built on a rule nobody had written, and the roster came out as grades of beige with one muted accent each. See 3.5.
+- **Plague Doctor with historically accurate props.** A straight lancet-tipped cane, a hand bellows and a chest rack of vials. Legible, but clean, mundane and with no fantasy content; the cane was the least interesting shape in the figure, and the vial rack duplicated the Alchemist's chest. Replaced by a giant insect stinger and a caged seed-pod. This is the case that produced the 8.1 rule on elements from outside reality.
 
 ---
 
@@ -1452,6 +1467,7 @@ Recorded so they are not retried. Each of these was generated and judged, not re
 Collected so they are visible in one place rather than buried in the sections that raise them.
 
 - **The pre-lever five.** Five characters were approved under the old arithmetic and either get regenerated or the roster carries a visible split. See 3.5; act on it at six characters rather than at fifteen.
+- **Approved Roles without an element from outside reality.** Only the Architect clearly carries one. The rest of the approved roster predates the 8.1 rule and either gets a revised tool or focal element or carries a visible split — the same decision as the pre-lever five, and cheapest to settle alongside it.
 - **Warlord accent.** `#6B7A88` is a neutral, not an accent. Either it becomes a real color or this Role is declared the drab one on purpose (8.9.1).
 - **Clockwork Spire scene light.** Unassigned for both variants (10.2, 10.6.2).
 - **The white inner city.** A light-dominant environment against figures that are half band 1. Either the midband keeps committed darks or the character rules bend for one variant (10.6).
