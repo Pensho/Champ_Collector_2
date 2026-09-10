@@ -438,13 +438,13 @@ Three characters cost several rounds each because the prompt was being rewritten
 
 **Every character carries one element from outside reality.** An occupation makes a figure legible; it does not make it fantasy. Left to itself, every design drifts toward the historically plausible version of its job — a real cane, a real bellows, a real rack of vials — and a roster of accurate period costumes is a roster with nothing in it a player could not see in a museum. Before writing the prompt, name the one thing on this figure that could not exist in our world, and make it large enough to matter in the silhouette.
 
-- **Derive it from the kit, and the world.** The element should be the Role's mechanic made physical, built from what that Role's area contains. The Plague Doctor's Septic Lance became the curved stinger of a giant jungle insect and her chest piece a caged, breathing seed-pod, because the Reclaimed City's forest is monstrous and she builds her tools from what she cuts out of it.
+- **Derive it from the kit, and the world.** The element should be the Role's mechanic made physical, built from what that Role's area contains. The Plague Doctor's Septic Lance and Miasma became one object — an iron-shod pole levelled like a lance, carrying a caged giant tree gall that vents solid smoke — because the Reclaimed City's forest is monstrous and she builds her tools from what she cuts out of it. See 8.8.1.
 - **Put it on the tool or the focal region.** A weapon is the cheapest place: it is already the strongest shape in the pose, and a straight, simple object is the least interesting silhouette available. A curve, a barb, an organic or impossible material does more than any amount of costume detail.
 - **One, not several.** It is a single anchor, held to the counted-group budget like everything else. A figure where everything is strange reads as a creature, not a person with a job.
 - **Harvested, worn or wielded — not grown.** Unless growth is the Role's identity (the Symbiote), the strange thing is something the character has taken, caged, strapped on or carries. That keeps the person legible and keeps Roles out of each other's lanes.
 - **Choose its vocabulary against the attractors.** Bone, hide and antler nouns summon the shaman and barbarian basins (5.3). Insect, plant, ruin-stone and impossible-mechanism nouns are less used and have held so far.
 
-The Architect is the approved reference for this. Treat a figure with no such element as unfinished, however well it passes every other check.
+The Architect and the Plague Doctor (8.8.1) are the approved references for this. Treat a figure with no such element as unfinished, however well it passes every other check.
 
 ### 8.2 Decide the silhouette and the pose before anything else
 
@@ -476,6 +476,7 @@ Each Role must be identifiable in pure black at 300 px. Assign a distinct silhou
 | Top-heavy | Alchemist | loaded chest, narrow legs |
 | Narrow and vertical | Thief, Diviner | tight outline, no shoulder mass |
 | Planted diagonal | Sorcerer | mid-calf hem over boots, yoke across the back, rod planted forward across the figure |
+| Forward wedge | Plague Doctor | weight forward, beak projecting right at head height, a pole levelled forward in parallel with a caged mass at its end, high hair knot as the only vertical at the head |
 
 **Robed Roles are crowded.** Cultist, Diviner and Sorcerer are all robed, and the Sorcerer stays out of that family on two cues: the hem is cut at mid-calf over visible boots rather than falling to the ankle, and the planted rod puts a hard diagonal through a silhouette the other two hold as a clean vertical. Giving up the ankle hem is the single cheapest separation available to any robed character.
 
@@ -489,6 +490,8 @@ The pose is a *held* combat stance, not a moment inside an action,
 and it has to keep the face lit and the accent visible.
 
 If two fielded Roles share a family, that is a design problem, not a prompt problem. Architect and Emissary are the pair to composite side by side early, and their material neutrals must not converge.
+
+**Three Roles now hold a long shaft forward.** Lancer, Sorcerer and Plague Doctor separate on angle and on what ends the shaft: the Lancer's lance is braced diagonally from a low squat, the Sorcerer's rod is planted into the ground line, and the Plague Doctor's pole is levelled horizontal, clear of the ground, and ends in a round mass rather than a point. Keep all three of those cues when revising any of them, and composite them in pure black before a fourth Role takes a shaft weapon.
 
 ### 8.4 Faces and proportion
 
@@ -612,6 +615,29 @@ Counted groups: glyph scars at the temple, reagent chunks at the chest, iron tee
 
 Architect and Alchemist subject blocks follow the same pattern with their own slot assignments; both are generated and approved under the pre-lever rules.
 
+#### 8.8.1 Reference example — Plague Doctor (post-levers, approved)
+
+The first Role built under the 8.1 rule on elements from outside reality, and the working example of a partial mask that keeps 8.4 intact. Three hues — saturated dark mustard garment, aubergine-black band 1, moss accent — with the shadow tinted against the garment main as 2.2 recommends: purple under yellow, so band 1 buys a real third hue instead of reinforcing the second.
+
+Slots: garment main saturated dark mustard ochre waxed oilcloth, material neutral warm sand-buff linen, leather oxblood, shadow black aubergine-black, accent deep moss on the gall's cracked interior, the goggle lenses and the collar lining, focal region the beak and the caged gall. Occupation: a quarantine physician in the Reclaimed City's jungle who builds her tools from what she cuts out of it.
+
+Decisions recorded with it:
+
+- **Half-beak, not full mask.** The beak covers only nose and mouth; goggles are pushed up onto the forehead, so the accent reaches the head without landing on the eyes (8.9). The mouth line is lost as an expression tool, and brow plus tilt carry it. A full mask was rejected under 8.4.5 — concealment is not this Role's identity; the beak is.
+- **One object carries the kit.** The pole is Septic Lance, the venting gall is Miasma. Nothing on the chest holds containers, which is what keeps her clear of the Alchemist.
+- **A gall, not a fungus.** A fungal mass in moss green would sit beside the Symbiote's fungal accent in an adjacent hue. A plant tumour is also closer to a disease Role.
+- **Young face from the narrow, fine cluster.** Early thirties, avoiding the Sorcerer's smooth-and-lean nouns. The neck vein marks are kit-derived wear (8.5), and on a young face they read as a story, not age (8.4.2).
+- **No hat.** A high hair knot gives the head its vertical against the horizontal beak (8.4.3).
+
+Recorded whole, general block included, as generated:
+
+```
+bold woodcut illustration with engraved structural linework, very thick uniform black contour outline on the outer silhouette, clean uninterrupted silhouette edge, flat color fields, hard-edged shadows, high contrast with large areas of solid shadow in a deep aubergine-black, that shadow mass and the outline sitting at the same value, colors assigned by material: warm tan skin, a saturated dark mustard ochre waxed oilcloth jerkin, warm sand-buff linen wraps and cord, oxblood leather straps and boots, dull pewter grey metal fittings, all flat and unmodulated, warm bone white reserved for small highlight shapes and the eyes, outline black tinted slightly toward blue-violet, light from the upper left casting a narrow bone white edge along the upper left contour, the chitin beak and the caged gall at the end of the pole carrying the heaviest engraved detail and reading as the focal point of the figure, the rest of the body held as large flat angular panels with only sparse structural marks, all marks large and structural, with saturated deep moss green as the single accent covering roughly a fifth of the figure, flat and uniform with little texture, used only on the cracked-open interior of the gall, the round goggle lenses and the lining of the high collar, hand-carved edge quality.
+full body character, a grim woman in her early thirties who works as a quarantine physician in a jungle of monstrous growth, building her tools from what she has cut out of it, forward-leaning wedge silhouette, weight forward on the front foot, both hands gripping a long iron-shod pole longer than she is tall, levelled forward toward the right like a lance and slightly raised, at its far end an iron cage of three curved prongs holding a giant warty tree gall the size of her head, a tumour-like growth cut from a jungle tree, cracked open along one jagged seam and venting one thick solid plume of smoke that curls up and back over her head, a hooked black chitin beak cut from a jungle creature strapped over only her nose and mouth and projecting forward to a point, a pair of round goggles pushed up onto her forehead, the upper half of the face fully open and lit, realistic adult head proportion, face lit with no shadow across the eyes, shadow falling on the side of the head away from the light and beneath the jaw, eyes as two bone white almond shapes each with a solid ink black pupil looking to the right, sized to read clearly but no larger than an adult eye, a narrow fine-boned face with a straight thin nose and a small pointed chin, a stern hard stare, narrow straight brows drawn hard together, chin tucked, head tilted toward the gall, black hair pulled back tight into one high knot at the crown as one flat mass, three ink black vein marks creeping up the side of her neck from beneath the collar, a fitted high-collared waxed oilcloth jerkin laced down one side, forearms bound tight in linen wraps from wrist to elbow, oxblood leather gloves, a skirt of four heavy blackened oilcloth panels split to the hip and hanging to mid-calf above tall laced boots, each panel ending in a ragged hard-edged hem, the panels and the lower right side of the figure falling into solid aubergine-black shadow, boots with a simple sole division, in contact with a single flat ground line, three-quarter view facing right, eye-level camera at chest height, orthographic, isolated on a plain flat background of one uniform color, full figure visible with headroom.
+```
+
+Counted groups: three cage prongs at the weapon head, four skirt panels at the hem, three vein marks at the neck — three, in three regions, with the two goggles as a small fourth. If a variant comes back busy, cut the ragged hems before touching the counts.
+
 ### 8.9 Accent registry
 
 One color per Role, no sharing. Hue alone cannot separate twenty entries at phone size, so **value** and **placement** carry the same signal in parallel.
@@ -628,7 +654,7 @@ One color per Role, no sharing. Hue alone cannot separate twenty entries at phon
 | Scholar | ledger parchment | #DCCFA8 | lightest | open ledger at chest, spectacle rims |
 | Alchemist | acid chartreuse | #A8BF3A | light | flask contents, apron spill stain |
 | Symbiote | verdant green | #4E8C3F | mid | fungal mass on shoulder and skull |
-| Plague Doctor | deep moss | #2F5D3A | dark | beak lenses, vial rack |
+| Plague Doctor | deep moss | #2F5D3A | dark | cracked interior of the caged gall, goggle lenses on the forehead, collar lining |
 | Tidal Corsair | sea teal | #2E8C8C | mid | coat sash, pistol furniture |
 | Chronophage | ice cyan | #8FD4DC | light | clock-face at chest |
 | Sorcerer | unstable cobalt | #2F52C4 | mid | slab inscriptions at the chest, hood lining, stone in the rod crown |
@@ -1444,13 +1470,16 @@ Recorded so they are not retried. Each of these was generated and judged, not re
 - **Zone art as single-ink shapes.** Gilded Deck ship and waves as one-color woodcut silhouettes, recolored in the engine by `modulate`. Technically flexible, but the result lacked the color the zone needed — waves are expected to be blue and white and the ship colored. Replaced by muted multi-color fills with tonal outlines (13.3.1).
 - **Skill art in four other print traditions.** Renaissance black-line, white-line wood engraving, ukiyo-e and expressionist woodcut were generated on the Bolas subject alongside chiaroscuro. Not failures, but chiaroscuro was clearly best and is the one closest to this guide's flat-band foundations. Revisit only if chiaroscuro fails at display size.
 - **Desaturated garment main as an unwritten default.** Not a generation failure but a documentation one — six characters were built on a rule nobody had written, and the roster came out as grades of beige with one muted accent each. See 3.5.
-- **Plague Doctor with historically accurate props.** A straight lancet-tipped cane, a hand bellows and a chest rack of vials. Legible, but clean, mundane and with no fantasy content; the cane was the least interesting shape in the figure, and the vial rack duplicated the Alchemist's chest. Replaced by a giant insect stinger and a caged seed-pod. This is the case that produced the 8.1 rule on elements from outside reality.
+- **Plague Doctor with historically accurate props.** A straight lancet-tipped cane, a hand bellows and a chest rack of vials. Legible, but clean, mundane and with no fantasy content; the cane was the least interesting shape in the figure, and the vial rack duplicated the Alchemist's chest. This is the case that produced the 8.1 rule on elements from outside reality.
+- **Plague Doctor with a hat, an insect stinger and a chest seed-pod.** Not a failure — the second pass was strong and proved the 8.1 rule — but superseded. A woman in her fifties did not fit the intended character, the chest pod still sat in the region the Alchemist owns, and smoke from beak vents split the kit across two objects. Replaced by the version in 8.8.1. The stinger remains a good weapon for a future Role from the same jungle.
 
 ---
 
 ## 18. Operational notes
 
 **Lock the model and settings.** Same Leonardo model, same Style Reference / Elements, same generation settings across the whole set. Record them here once chosen. Changing model mid-roster is the single fastest way to break cohesion.
+
+**Pass and record prompts whole.** A subject block sent without the general block in front of it loses the entire woodcut style — this happened once on the Plague Doctor and produced an unrelated image. Every prompt handed over for generation, and every prompt recorded as approved, includes the general block in full. Where a reference example abbreviates it as `[GENERAL BLOCK]`, expand it before use.
 
 **Composite early.** Perspective and value problems are obvious in a composite and nearly invisible when looking at assets one at a time in a browser tab. Never accept a character without dropping it into the battle scene next to one already approved.
 
@@ -1467,7 +1496,7 @@ Recorded so they are not retried. Each of these was generated and judged, not re
 Collected so they are visible in one place rather than buried in the sections that raise them.
 
 - **The pre-lever five.** Five characters were approved under the old arithmetic and either get regenerated or the roster carries a visible split. See 3.5; act on it at six characters rather than at fifteen.
-- **Approved Roles without an element from outside reality.** Only the Architect clearly carries one. The rest of the approved roster predates the 8.1 rule and either gets a revised tool or focal element or carries a visible split — the same decision as the pre-lever five, and cheapest to settle alongside it.
+- **Approved Roles without an element from outside reality.** Only the Architect and the Plague Doctor clearly carry one. The rest of the approved roster predates the 8.1 rule and either gets a revised tool or focal element or carries a visible split — the same decision as the pre-lever five, and cheapest to settle alongside it.
 - **Warlord accent.** `#6B7A88` is a neutral, not an accent. Either it becomes a real color or this Role is declared the drab one on purpose (8.9.1).
 - **Clockwork Spire scene light.** Unassigned for both variants (10.2, 10.6.2).
 - **The white inner city.** A light-dominant environment against figures that are half band 1. Either the midband keeps committed darks or the character rules bend for one variant (10.6).

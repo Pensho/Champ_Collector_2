@@ -14,8 +14,7 @@
 [resource]
 script = ExtResource("2_preset")
 _name = "Plague Doctor"
-_texture = "res://Assets/Champ_Collector/Creatures/Jester/Jester_0001.png"
-_normal_map = "res://Assets/Champ_Collector/Creatures/Jester/Jester_0001_Normal_Map.png"
+_texture = "res://Assets/Champ_Collector/Creatures/Plague_Doctor/plague_doctor.png"
 _rarity = 2
 _role = 20
 _skills = Array[ExtResource("1_skill")]([ExtResource("3_septic_lance"), ExtResource("4_outbreak"), ExtResource("5_miasma")])

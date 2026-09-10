@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dfkjsgbiepn8a"
-path="res://.godot/imported/Jester_0013.png-cd8c656cdfcc8aa33d5004da8ed719cc.ctex"
+uid="uid://fj16yeai8jof"
+path="res://.godot/imported/plague_doctor.png-9a2a99c55ec20c073f2032b1e8e70594.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Creatures/Jester/Jester_0013.png"
-dest_files=["res://.godot/imported/Jester_0013.png-cd8c656cdfcc8aa33d5004da8ed719cc.ctex"]
+source_file="res://Assets/Champ_Collector/Creatures/Plague_Doctor/plague_doctor.png"
+dest_files=["res://.godot/imported/plague_doctor.png-9a2a99c55ec20c073f2032b1e8e70594.ctex"]
 
 [params]
 
