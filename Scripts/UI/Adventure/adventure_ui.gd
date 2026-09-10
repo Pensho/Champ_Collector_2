@@ -10,10 +10,12 @@ extends Control
 
 var _state: AdventureState
 var _hub_scene: String
+var _act: ActData
 
 func Init(p_context: ContextContainer) -> void:
 	_state = p_context._adventure_state
 	_hub_scene = p_context._arguments.get("Hub_Scene", "")
+	_act = p_context._arguments.get("Act")
 	_state.CheckDailyActivity()
 	_UpdateHeader()
 	if _state.biome != null:
@@ -105,6 +107,7 @@ func _on_finish_adventure_button_up() -> void:
 	var context_container: ContextContainer = ContextContainer.new()
 	context_container._scene = "uid://cwjabuf3kdtft"
 	context_container._previous_scene = _hub_scene
+	context_container._arguments["Act"] = _act
 	main.GetInstance().change_scene(context_container)
 
 func _on_hub_button_up() -> void:

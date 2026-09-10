@@ -18,6 +18,7 @@ func _on_adventure_button_up() -> void:
 	var context_container: ContextContainer = ContextContainer.new()
 	context_container._scene = "uid://cwjabuf3kdtft"
 	context_container._previous_scene = "uid://df6f1b4xoipjq"
+	context_container._arguments["Act"] = load("res://Data/Adventure_Data/Acts/act_reclaimed_city.tres")
 	main.GetInstance().change_scene(context_container)
 
 func _on_experience_quests_button_up() -> void:
