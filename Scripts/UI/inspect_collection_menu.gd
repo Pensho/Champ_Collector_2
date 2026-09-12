@@ -1,5 +1,7 @@
 class_name InspectCollectionMenu extends Control
 
+enum RosterSlotState {Filled, Empty, Unavailable}
+
 const MENU_ITEM_SLOT = preload("uid://di0y70sbai3yw")
 const BUTTON_WITH_OPTIONS_SCENE = preload("uid://c7smqpmfvs0ih")
 const ROSTER_SLOT_PLUS_TEXTURE = preload("uid://cavc4wk33n2m")
@@ -78,21 +80,21 @@ func Init(_p_context_container: ContextContainer) -> void:
 		_available_items[i].ConnectButton(AvailableItemButton)
 	RefreshDisplayedItems()
 
-	_available_characters.resize(_character_collection.size())
-	_displayed_character_ids.resize(_available_characters.size())
-	for i in _character_collection.size():
-		var character_slot: MenuItemSlot = MENU_ITEM_SLOT.instantiate()
-		_grid_container_characters.add_child(character_slot)
-		_available_characters[i] = character_slot
-		_available_characters[i]._ID = i
-		_available_characters[i].ConnectButton(AvailableCharacterButton)
+	for character_slot: MenuItemSlot in GetMenuItemSlotChildren(_grid_container_characters):
+		if(character_slot == _buy_roster_slot):
+			continue
+		character_slot._ID = _available_characters.size()
+		character_slot.ConnectButton(AvailableCharacterButton)
+		_available_characters.append(character_slot)
+	if(_available_characters.size() < Game_Balance.COLLECTION_LIMIT):
+		push_error("The character grid holds %d slots, fewer than the roster cap of %d."
+				% [_available_characters.size(), Game_Balance.COLLECTION_LIMIT])
 	ApplyCharacterSort()
 
 	_buy_roster_slot.SetHeldObjectTexture(ROSTER_SLOT_PLUS_TEXTURE)
 	_buy_roster_slot.ConnectButton(BuyRosterSlotButton)
 	_buy_roster_slot.SetToolTip("Expand Roster", "Increase your roster capacity by "
 			+ str(Game_Balance.COLLECTION_SIZE_INCREMENT) + " for Silver.")
-	_grid_container_characters.move_child(_buy_roster_slot, _grid_container_characters.get_child_count() - 1)
 
 	_item_slots_equipped.append_array(GetMenuItemSlotChildren(v_box_container_equipped_items))
 	for i in _item_slots_equipped.size():
@@ -297,26 +299,42 @@ static func GetSlotModulate(p_slot_character_id: int, p_selected_character_id: i
 		return Color(0.45, 0.45, 0.45, 1.0)
 	return Color(1.0, 1.0, 1.0, 1.0)
 
+static func GetRosterSlotState(
+		p_slot_number: int, p_character_count: int, p_roster_capacity: int) -> RosterSlotState:
+	if(p_slot_number < p_character_count):
+		return RosterSlotState.Filled
+	if(p_slot_number < p_roster_capacity):
+		return RosterSlotState.Empty
+	return RosterSlotState.Unavailable
+
+static func ClearCharacterSlot(p_slot: MenuItemSlot) -> void:
+	p_slot.SetHeldObjectTexture(null)
+	p_slot.ClearTextureOutline()
+	p_slot.level.text = ""
+	p_slot.ClearRenownPips()
+	p_slot.SetHeldObjectModulate(Color(1.0, 1.0, 1.0, 1.0))
+
 func RefreshCharacterGrid() -> void:
+	var roster_capacity: int = main.GetInstance()._character_collection._current_max_amount
 	for slot_nr in _available_characters.size():
-		if(slot_nr < _displayed_character_ids.size()):
-			_available_characters[slot_nr].show()
-			_available_characters[slot_nr].SetHeldObjectTexture(
-					main.GetInstance()._character_collection.GetCharacterTexture(
-						_character_collection[_displayed_character_ids[slot_nr]]._name))
-			_available_characters[slot_nr].SetTextureOutline(
-					_character_collection[_displayed_character_ids[slot_nr]]._rarity)
-			_available_characters[slot_nr].level.text = str(
-					_character_collection[_displayed_character_ids[slot_nr]]._level)
-			_available_characters[slot_nr].SetRenownRank(
-					_character_collection[_displayed_character_ids[slot_nr]].GetRenownRank())
-			_available_characters[slot_nr].SetHeldObjectModulate(
-					GetSlotModulate(_displayed_character_ids[slot_nr], _selected_character_ID))
-		else:
-			_available_characters[slot_nr].SetHeldObjectTexture(null)
-			_available_characters[slot_nr].level.text = ""
-			_available_characters[slot_nr].ClearRenownPips()
-			_available_characters[slot_nr].hide()
+		var slot: MenuItemSlot = _available_characters[slot_nr]
+		match GetRosterSlotState(slot_nr, _displayed_character_ids.size(), roster_capacity):
+			RosterSlotState.Filled:
+				var character_id: int = _displayed_character_ids[slot_nr]
+				var character: Character = _character_collection[character_id]
+				slot.show()
+				slot.SetHeldObjectTexture(
+						main.GetInstance()._character_collection.GetCharacterTexture(character._name))
+				slot.SetTextureOutline(character._rarity)
+				slot.level.text = str(character._level)
+				slot.SetRenownRank(character.GetRenownRank())
+				slot.SetHeldObjectModulate(GetSlotModulate(character_id, _selected_character_ID))
+			RosterSlotState.Empty:
+				ClearCharacterSlot(slot)
+				slot.show()
+			RosterSlotState.Unavailable:
+				ClearCharacterSlot(slot)
+				slot.hide()
 
 func _on_button_sort_level_button_up() -> void:
 	_sort_level_descending = not _sort_level_descending
@@ -446,9 +464,7 @@ func RefreshSacrificeGrid() -> void:
 			_available_characters[slot_nr].SetRenownRank(_character_collection[candidate_id].GetRenownRank())
 			_available_characters[slot_nr].SetHeldObjectModulate(Color(1.0, 1.0, 1.0, 1.0))
 		else:
-			_available_characters[slot_nr].SetHeldObjectTexture(null)
-			_available_characters[slot_nr].level.text = ""
-			_available_characters[slot_nr].ClearRenownPips()
+			ClearCharacterSlot(_available_characters[slot_nr])
 			_available_characters[slot_nr].hide()
 
 func SacrificeCharacterButton(p_slot_ID: int) -> void:
@@ -599,9 +615,12 @@ func BuyRosterSlot() -> void:
 	var price: int = CharacterCollection.GetRosterSlotPrice(collection._current_max_amount)
 	if(main.GetInstance()._resources.SpendSilver(price)):
 		collection.IncreaseCollectionSize()
+		RefreshCharacterGrid()
 	_confirm_option.hide()
 
 func AvailableCharacterButton(p_slot_ID: int) -> void:
+	if(p_slot_ID >= _displayed_character_ids.size()):
+		return
 	_selected_character_ID = _displayed_character_ids[p_slot_ID]
 	ShowSelectedCharacter(_displayed_character_ids[p_slot_ID])
 	RefreshCharacterGrid()

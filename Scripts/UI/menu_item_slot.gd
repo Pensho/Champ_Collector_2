@@ -45,6 +45,9 @@ func SetHeldObjectTexture(p_texture: Texture) -> void:
 func SetHeldObjectModulate(p_color: Color) -> void:
 	self.modulate = p_color
 
+func ClearTextureOutline() -> void:
+	texture_rect.material.set("shader_parameter/color", Color(0.0, 0.0, 0.0, 0.0))
+
 func SetTextureOutline(p_rarity: Types.Rarity) -> void:
 	var col: Color = Color(0.0, 0.0, 0.0, 0.0)
 	match p_rarity:
