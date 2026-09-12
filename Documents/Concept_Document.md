@@ -1236,29 +1236,11 @@ Notable groups within these factions:
 #### 4.3.1. Reclaimed City
 A city built on the edge of a vast forest, where originally nobels invested heavily to forage and claim valuable magical resources from the forest. However the strong and harsh growth of the forest eventually proved too much for the city to handle, reaping too few rewards for further investment. The city was eventually abandoned and left to the forest, turning into ruin. Until recently when adventurers and scavengers have started to reclaim parts of the city to gather its resources once more. Today it runs on a scavenger "Gold Rush" economy: the shunned Symbiote Slums, whose workers bond with forest organisms to survive the toxic spores, and the "Green-Market" black market for magical reagents (World_Building.md 1.2.1). The Fae quietly work to regrow the forest into the human outposts (World_Building.md 4.6.1), and the ruin known as the Ossuary of Stolen Hues lies deep within the city (World_Building.md 5.4.1).
 
-Associated characters:
-- Symbiote
-- Plague Doctor
-- Alchemist
-- Diviner
-- Appraiser
-
 #### 4.3.2. The Pirate Coves
 A series of hidden coves along a treacherous coastline, serving as a haven for pirates and smugglers. These coves are notorious for their labyrinthine tunnels and secret passages, making them difficult to navigate for outsiders. The Pirate Coves are a hub of illicit trade, where anything from rare magical artifacts to forbidden knowledge can be bought and sold. The area is also known for its lawlessness, with various pirate factions vying for control over the lucrative smuggling routes. Politically the coves operate as the Free-Trade Coalition, "The Gilded Wake" — a functional, if violent, society built on bypassing the Iron Ledger's taxes, governed by the loose Council of Coves (World_Building.md 1.2.2, 4.2).
 
-Associated characters:
-- Tidal Corsair
-- Thief
-- Bar Brawler
-- Jester
-
 #### 4.3.3. The Clockwork Spire
 A towering structure located in the heart of a sprawling desert, the Clockwork Spire is a marvel of engineering and arcane technology. Built by a long-lost civilization, the spire is filled with intricate gears, pulleys, and mechanisms that power its various functions. Once a research facility for scholars and inventors, the spire now functions as a factory: trade guilds of the Merchant-States fight for control over its "Logic-Chains" (ancient automated assembly lines) to produce high-end gear, while the Scholar Caste hoards knowledge of its mechanics to keep a monopoly on technology (World_Building.md 1.1.2). However, the spire is also home to dangerous traps and guardians, making it a perilous destination for those who dare to explore its depths. Beneath it sprawl the Grease-Pits of the Under-Spire, a slum in the shadow of the Great Gears and home to the Filter-Folk (World_Building.md 5.1).
-
-Associated characters:
-- Architect
-- Chronophage
-- Scholar
 
 #### 4.3.4. The god of rules holy city (The Iron Ledger)
 A city dedicated to the worship of the God of Rules, where order and structure are paramount.
@@ -1268,28 +1250,14 @@ Known as **The Iron Ledger**, the city is not just a place of worship but the wo
 
 The city's hub area is located in **the Margins**, the slums pressed between the last audited district and the city wall, where the Adventurer's Guild hall stands as neutral ground; the district and its native gang, the Arrears, are detailed in World_Building.md 5.5 and 6.3.
 
-Associated characters:
-- Emissary
-
 #### 4.3.5. The god of adventures caravan
 A nomadic settlement that travels across the land, following the whims of the God of Adventure.
 The caravan is a vibrant and eclectic community, filled with adventurers, performers, and thrill-seekers. The Centaurs of the Khasar Fleet are closely tied to the caravan culture, escorting and tolling the Great Caravans along their migration cycles (World_Building.md 6.2 and 7).
-
-Associated characters:
-- Warlord
-- Lancer
-- Tactician
 
 #### 4.3.6. The various ruins of the god of magic
 Scattered across the world are ancient ruins that were once dedicated to the worship of the God of Magic. These ruins are remnants of a bygone era, when magic was a dominant force in the world. The ruins are often hidden in remote and dangerous locations, protected by powerful enchantments and guardians. Inside the ruins, adventurers can find forgotten knowledge, powerful artifacts, and clues to the god's imprisonment. However, the ruins are also fraught with peril, as many have been corrupted by dark magic or overrun by hostile creatures.
 
 In the present day these ruins are less places of pilgrimage than strip-mines: a "Gold Rush" mentality has formed around their reagents, with the Iron Ledger classifying them as "Hazardous Waste Sites" to seize artifacts as contraband while the pirates hire unlicensed mages to haul out materials (World_Building.md 2, 5.4). Within them, Chants act as physical keys — reciting the correct ancient phrase reshapes the ruins' geometry. Notable named ruins are the Ossuary of Stolen Hues and the Vault of Recursive Seconds (World_Building.md 5.4.1, 5.4.2).
-
-Associated characters:
-- Bloodmage
-- Cultist
-- Sorcerer
-- Herald of the loom
 
 #### 4.3.7. Other notable locations
 Developed in World_Building.md section 5; listed here for reference:
@@ -1381,14 +1349,43 @@ When the first adventure is completed they should also be directed to the newly 
 
 Last in the Act is to use the Caravan to navigate the Overworld and move into the next Act of Clockwork Spire.
 
+Associated characters:
+- Symbiote
+- Plague Doctor
+- Alchemist
+- Diviner
+- Appraiser
+- Sorcerer
+
 #### 5.6. Act 2 Clockwork Spire
 
+
+Associated characters:
+- Architect
+- Chronophage
+- Scholar
+- Symbiote
+- Herald of the loom
 
 #### 5.7. Act 3 Pirate Coves
 
 
+Associated characters:
+- Tidal Corsair
+- Thief
+- Bar Brawler
+- Jester
+- Bloodmage
+
 #### 5.8 Act 4 Iron Ledger
 
+
+Associated characters:
+- Emissary
+- Cultist
+- Warlord
+- Lancer
+- Tactician
 
 
 ## 6. Development tools
