@@ -181,7 +181,7 @@ This section exists because six characters in, every figure was arriving as a di
 
 **What is *not* the fix:** the scene-light LUT (section 6). It tints everything uniformly, so it moves area mood without touching the sameness *within* a figure. Keep it as the mood dial it is.
 
-**Open decision.** The five characters approved before these levers were built under the old arithmetic. Either they get regenerated or the roster carries a visible split. Composite any new lever-built character next to the approved Bar Brawler before going further: if the new one sings and the Brawler now reads as a placeholder, that is the answer, and it is much cheaper to act on at six characters than at fifteen.
+**Open decision.** The five characters approved before these levers were built under the old arithmetic. The three strongest outputs on the roster so far are the Symbiote and the Architect, both pre-lever, and the Plague Doctor, lever-built (8.8.1–8.8.3) — so the split is not yet costing what this section assumed, and regenerating the five is not the default. Composite a lever-built character next to the approved Bar Brawler before going further: if the new one sings and the Brawler now reads as a placeholder, regenerate; if the pre-lever figures keep holding their own, the levers are a permission rather than a requirement and the old arithmetic stays legal. Cheaper to settle at six characters than at fifteen.
 
 ### 3.6 Watch for cool-neutral drift
 
@@ -576,6 +576,8 @@ character. The test is size, not vocabulary: any mark that survives the round-tr
 
 **Always use numeric counts, never adjectives.** "Three or four wrap bands" is a target the model can hit. "Moderate detail" is not, and it will revert to maximalism.
 
+**The three strongest outputs so far are the Plague Doctor (8.8.1), the Symbiote (8.8.2) and the Architect (8.8.3).** Two of the three are pre-lever, and each breaks something in this chapter: the Symbiote and the Architect carry an untinted band 1 and spread detail rather than holding a focal region, and the Symbiote's accent lands on the head. Those rules are the ones to relax first when a figure fights them — see the open decision in 3.5. The concealed face in 8.4.5 is not among them; it stays a strict exception the Architect earns and the next Role has to earn again.
+
 ### 8.7 Reference example — Bar Brawler (pre-levers)
 
 Kept as the reference for the subject block's shape. Its slot assignments predate section 3.5 and should not be copied.
@@ -613,7 +615,7 @@ full body character, a young ruin-breaker who pries relics out of dead temples, 
 
 Counted groups: glyph scars at the temple, reagent chunks at the chest, iron teeth on the rod crown — three, in three regions. The mended hem panels are a borderline fourth and are the first cut if a variant comes back busy.
 
-Architect and Alchemist subject blocks follow the same pattern with their own slot assignments; both are generated and approved under the pre-lever rules.
+The Alchemist subject block follows the same pattern with its own slot assignments, generated and approved under the pre-lever rules.
 
 #### 8.8.1 Reference example — Plague Doctor (post-levers, approved)
 
@@ -637,6 +639,88 @@ full body character, a grim woman in her early thirties who works as a quarantin
 ```
 
 Counted groups: three cage prongs at the weapon head, four skirt panels at the hem, three vein marks at the neck — three, in three regions, with the two goggles as a small fourth. If a variant comes back busy, cut the ragged hems before touching the counts.
+
+#### 8.8.2 Reference example — Symbiote (pre-levers, approved)
+
+The working example of 8.3: the fungal shelf over one shoulder and the bloomed limb make the silhouette strongly asymmetric, and the accent sits on exactly those two masses. It is also the earliest prompt to name a focal point and hold the clothing and limbs as empty flat panels.
+
+Slots: garment main peat brown-black waxed canvas, material neutral sand tan sackcloth, leather dark brown, band 1 untinted ink black, accent verdant green `#4E8C3F` on the shoulder growth and the temple bloom. Occupation: a Symbiote Slums harvester bonded to a forest organism to survive the spores.
+
+Recorded whole, general block included, as generated:
+
+```
+bold woodcut illustration with engraved structural linework, very thick
+uniform black contour outline on the outer silhouette, clean uninterrupted
+silhouette edge, flat color fields, hard-edged shadows, high contrast with
+large areas of solid ink black, colors assigned by material: warm tan skin,
+a peat brown-black waxed canvas harvesting smock, sand tan sackcloth wraps
+and hood lining, dark brown leather straps and boots, dull pewter grey metal
+fittings, all flat and unmodulated, warm bone white reserved for small
+highlight shapes and the eyes, ink black tinted slightly toward blue-violet,
+light from the upper left casting a narrow bone white edge along the upper
+left contour, two levels of detail: the torso, clothing and face carry
+moderate engraved detail through seams, folds, straps and panel divisions;
+the limbs carry light detail through wraps and fold lines rather than being
+left empty, detail spread evenly across the body rather than concentrated in
+one area, all marks large and structural, with saturated verdant green as the
+single accent covering roughly a fifth of the figure, flat and uniform with
+little texture, used only on the shelf growth over the right shoulder and the
+bloom across the right temple, hand-carved edge quality.
+full body character, hunched human host, fungal mass over one shoulder and
+half the head rendered with fine engraved gill texture and hatching as the
+focal point, crisp linework, ragged clothing and limbs as large flat angular
+panels with no interior detail, strongly asymmetric silhouette, one human
+hand and one bloomed limb ending a fungi claw, standing on a flat ground
+line, three-quarter view facing right, eye-level camera at chest height,
+orthographic, isolated on plain neutral background, full figure visible with
+headroom.
+```
+
+The subject block is the shortest of the approved set and still carries the silhouette, which is what makes it the reference for a Role whose identity is one shape rather than a set of carried objects.
+
+#### 8.8.3 Reference example — Architect (pre-levers, approved)
+
+The working example of a narrow vertical silhouette, and the approved case of a face concealed under 8.4.5 — the hat brim, not the features, carries the read.
+
+Slots: garment main cold ash grey coat over dark blue-grey underlayers, material neutral bone white rolled plans, leather dark brown, band 1 untinted ink black, accent muted brass `#C69A4B` on the chest drafting instruments, the hat band and the armature joints. Occupation: a surveyor aligned with the God of Rules who measures a structure before rebuilding it.
+
+Recorded whole, general block included, as generated:
+
+```
+Bold woodcut illustration with engraved structural linework, very thick
+uniform black contour outline on the outer silhouette, clean uninterrupted
+silhouette edge, flat color fields, hard-edged shadows, high contrast with
+large areas of solid ink black, colors assigned by material: pale cool skin,
+a cold ash grey coat, dark blue-grey underlayers, dark brown leather straps
+and boots, all flat and unmodulated, warm bone white reserved for small
+highlight shapes, the rolled plans and the eyes, ink black tinted slightly
+toward blue-violet, light from the upper left casting a narrow bone white
+edge along the upper left contour, two levels of detail: the torso and
+clothing carry moderate engraved detail through seams, folds, straps and
+panel divisions; the limbs carry light detail through wraps and fold lines
+rather than being left empty, detail spread evenly across the body rather
+than concentrated in one area, all marks large and structural, with
+saturated muted brass as the single accent covering roughly a fifth of the
+figure, flat and uniform with little texture, used only on the drafting
+instruments across the chest, the hat band and the joints of the measuring
+armature, hand-carved edge quality.
+full body woman character, gaunt tall angular figure in a long tattered
+surveyor's coat, narrow vertical silhouette with the coat falling in three
+or four heavy vertical fold lines, realistic adult head proportion, face
+hidden beneath a wide flat-brimmed hat, narrow features, hair as one flat
+mass at the shoulders, brass drafting tools and three rolled plans strapped
+across the chest with two visible strap divisions, coat with a panel
+division down the front and a visible collar, coat falling into solid black
+shadow along the lower right side, one arm ending in a jointed measuring
+armature showing three counted joints, other arm with two fold lines at the
+sleeve, boots with a simple sole division, posture stiff and precise, weight
+evenly on both feet, standing on a flat ground line, three-quarter view
+facing right, eye-level camera at chest height, orthographic, isolated on a
+plain flat background of one uniform color, full figure visible with
+headroom.
+```
+
+Counted groups: three or four coat fold lines, three rolled plans at the chest, three armature joints — three, in three regions, on a figure with no face to compete with them.
 
 ### 8.9 Accent registry
 
@@ -1495,7 +1579,7 @@ Recorded so they are not retried. Each of these was generated and judged, not re
 
 Collected so they are visible in one place rather than buried in the sections that raise them.
 
-- **The pre-lever five.** Five characters were approved under the old arithmetic and either get regenerated or the roster carries a visible split. See 3.5; act on it at six characters rather than at fifteen.
+- **The pre-lever five.** Whether the levers are a requirement or a permission, and what happens to the five characters approved under the old arithmetic. See 3.5; act on it at six characters rather than at fifteen.
 - **Approved Roles without an element from outside reality.** Only the Architect and the Plague Doctor clearly carry one. The rest of the approved roster predates the 8.1 rule and either gets a revised tool or focal element or carries a visible split — the same decision as the pre-lever five, and cheapest to settle alongside it.
 - **Warlord accent.** `#6B7A88` is a neutral, not an accent. Either it becomes a real color or this Role is declared the drab one on purpose (8.9.1).
 - **Clockwork Spire scene light.** Unassigned for both variants (10.2, 10.6.2).
