@@ -15,12 +15,26 @@ shader_parameter/pattern = 0
 shader_parameter/inside = false
 shader_parameter/add_margins = true
 
-[node name="MenuItemSlot" type="Control" unique_id=891749718 node_paths=PackedStringArray("_tooltip")]
+[node name="MenuItemSlot" type="Control" unique_id=891749718 node_paths=PackedStringArray("_tooltip", "texture_rect", "button", "level", "_renown_pips_row", "_renown_pips")]
 custom_minimum_size = Vector2(100, 150)
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_vybhe")
 _tooltip = NodePath("TextureRect/Button/ToolTipArea")
+texture_rect = NodePath("TextureRect2")
+button = NodePath("TextureRect/Button")
+level = NodePath("TextureRect/Label")
+_renown_pips_row = NodePath("TextureRect/HBoxContainer_Renown_Pips")
+_renown_pips = [NodePath("TextureRect/HBoxContainer_Renown_Pips/Pip_0"), NodePath("TextureRect/HBoxContainer_Renown_Pips/Pip_1"), NodePath("TextureRect/HBoxContainer_Renown_Pips/Pip_2"), NodePath("TextureRect/HBoxContainer_Renown_Pips/Pip_3"), NodePath("TextureRect/HBoxContainer_Renown_Pips/Pip_4")]
+
+[node name="TextureRect2" type="TextureRect" parent="." unique_id=648801008]
+material = SubResource("ShaderMaterial_e5jka")
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 0
+offset_top = 35.0
+offset_right = 100.0
+offset_bottom = 135.0
+expand_mode = 1
 
 [node name="TextureRect" type="TextureRect" parent="." unique_id=1234920]
 custom_minimum_size = Vector2(100, 100)
@@ -28,15 +42,6 @@ layout_mode = 0
 offset_right = 100.0
 offset_bottom = 150.0
 texture = ExtResource("2_n5d1g")
-expand_mode = 1
-
-[node name="TextureRect" type="TextureRect" parent="TextureRect" unique_id=648801008]
-material = SubResource("ShaderMaterial_e5jka")
-custom_minimum_size = Vector2(100, 100)
-layout_mode = 0
-offset_top = 35.0
-offset_right = 100.0
-offset_bottom = 135.0
 expand_mode = 1
 
 [node name="Label" type="Label" parent="TextureRect" unique_id=1026314887]
@@ -58,48 +63,7 @@ offset_right = 8.0
 offset_bottom = 8.0
 theme = ExtResource("2_vybhe")
 
-[node name="HBoxContainer_Renown_Pips" type="HBoxContainer" parent="TextureRect"]
-visible = false
-layout_mode = 0
-offset_left = 5.0
-offset_top = 137.0
-offset_right = 95.0
-offset_bottom = 145.0
-mouse_filter = 2
-alignment = 1
-theme_override_constants/separation = 1
-
-[node name="Pip_0" type="TextureRect" parent="TextureRect/HBoxContainer_Renown_Pips"]
-custom_minimum_size = Vector2(6, 6)
-layout_mode = 2
-mouse_filter = 2
-expand_mode = 1
-
-[node name="Pip_1" type="TextureRect" parent="TextureRect/HBoxContainer_Renown_Pips"]
-custom_minimum_size = Vector2(6, 6)
-layout_mode = 2
-mouse_filter = 2
-expand_mode = 1
-
-[node name="Pip_2" type="TextureRect" parent="TextureRect/HBoxContainer_Renown_Pips"]
-custom_minimum_size = Vector2(6, 6)
-layout_mode = 2
-mouse_filter = 2
-expand_mode = 1
-
-[node name="Pip_3" type="TextureRect" parent="TextureRect/HBoxContainer_Renown_Pips"]
-custom_minimum_size = Vector2(6, 6)
-layout_mode = 2
-mouse_filter = 2
-expand_mode = 1
-
-[node name="Pip_4" type="TextureRect" parent="TextureRect/HBoxContainer_Renown_Pips"]
-custom_minimum_size = Vector2(6, 6)
-layout_mode = 2
-mouse_filter = 2
-expand_mode = 1
-
-[node name="ToolTipArea" type="Control" parent="TextureRect/Button"]
+[node name="ToolTipArea" type="Control" parent="TextureRect/Button" unique_id=489986199]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -109,3 +73,44 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
 script = ExtResource("4_tooltip")
+
+[node name="HBoxContainer_Renown_Pips" type="HBoxContainer" parent="TextureRect" unique_id=1533113992]
+visible = false
+layout_mode = 0
+offset_left = 5.0
+offset_top = 137.0
+offset_right = 95.0
+offset_bottom = 145.0
+mouse_filter = 2
+theme_override_constants/separation = 1
+alignment = 1
+
+[node name="Pip_0" type="TextureRect" parent="TextureRect/HBoxContainer_Renown_Pips" unique_id=339473355]
+custom_minimum_size = Vector2(6, 6)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+
+[node name="Pip_1" type="TextureRect" parent="TextureRect/HBoxContainer_Renown_Pips" unique_id=183649185]
+custom_minimum_size = Vector2(6, 6)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+
+[node name="Pip_2" type="TextureRect" parent="TextureRect/HBoxContainer_Renown_Pips" unique_id=1725602887]
+custom_minimum_size = Vector2(6, 6)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+
+[node name="Pip_3" type="TextureRect" parent="TextureRect/HBoxContainer_Renown_Pips" unique_id=346844132]
+custom_minimum_size = Vector2(6, 6)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+
+[node name="Pip_4" type="TextureRect" parent="TextureRect/HBoxContainer_Renown_Pips" unique_id=627030895]
+custom_minimum_size = Vector2(6, 6)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1

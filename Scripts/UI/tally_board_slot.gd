@@ -17,7 +17,7 @@ var _entry: Dictionary
 func Setup(p_entry: Dictionary) -> void:
 	_entry = p_entry
 	var preset: CharacterPreset = load(p_entry["preset_path"])
-	_texture_rect_icon.texture = load(preset._texture)
+	_texture_rect_icon.texture = TextureCache.GetHeadshot(preset._texture, preset._headshot_region)
 	_texture_rect_icon_darken.texture = _texture_rect_icon.texture
 	_label_name.text = preset._name
 	_texture_rect_tally.texture = ResourceHandler.TALLY_TEXTURE

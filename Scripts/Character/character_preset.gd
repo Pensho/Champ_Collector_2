@@ -4,6 +4,8 @@ class_name CharacterPreset extends Resource
 
 @export var _name: String
 @export var _texture: String
+## Normalized (0-1) sub-rectangle of _texture drawn where a headshot is wanted.
+@export var _headshot_region: Rect2 = Rect2(0.0, 0.0, 1.0, 1.0)
 @export var _normal_map: String
 @export var _rarity: Types.Rarity
 @export var _faction: Types.Faction

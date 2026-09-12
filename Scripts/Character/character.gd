@@ -3,6 +3,7 @@ class_name Character extends RefCounted
 # Preset Data
 var _name: String = ""
 var _texture: String = ""
+var _headshot_region: Rect2 = Rect2(0.0, 0.0, 1.0, 1.0)
 var _normal_map: String = ""
 
 var _rarity: Types.Rarity
@@ -60,6 +61,7 @@ func InstantiateNew(p_preset: CharacterPreset, p_instance_ID: int) -> void:
 	
 	_name = p_preset._name
 	_texture = p_preset._texture
+	_headshot_region = p_preset._headshot_region
 	_normal_map = p_preset._normal_map
 	_rarity = p_preset._rarity
 	_faction = p_preset._faction

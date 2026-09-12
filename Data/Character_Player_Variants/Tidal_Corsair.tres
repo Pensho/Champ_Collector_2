@@ -17,6 +17,7 @@
 script = ExtResource("2_vqjbp")
 _name = "Tidal Corsair"
 _texture = "res://Assets/Champ_Collector/Creatures/Tidal_Corsair/tidal_corsair_0004.png"
+_headshot_region = Rect2(0.3, 0, 0.4, 0.4)
 _rarity = 2
 _faction = 2
 _role = 19

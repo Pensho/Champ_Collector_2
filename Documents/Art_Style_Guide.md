@@ -772,7 +772,11 @@ Generate accents as flat uniform fills so they can be masked and boosted in post
 
 ### 8.10 Portrait and card crops
 
-> **Not yet written.** Roster, party-select and card UI show champions at a different crop and size from the battle sprite. Needs: crop rectangle relative to the full figure, minimum face size in px, whether the accent budget is recomputed for the crop, and whether portraits are generated separately or cut from the approved full figure.
+Portraits are **cut from the approved full figure**, not generated separately. Each character preset carries a `_headshot_region` — a crop rectangle in normalized (0–1) coordinates of its own art file, so it survives a re-export at another resolution. Left at the full `0, 0, 1, 1`, the character shows its whole figure.
+
+The crop is what small slots draw: the roster and sacrifice grids, party-select slots, post-battle results, and tally board. The full figure is what the inspect-menu character portrait, the turn bar, the opponent preview, and the battle sprite draw.
+
+Compose the figure so a head-and-shoulders crop is available without the accent falling outside it. Minimum face size in the crop, and whether the accent budget is recounted within it, are open.
 
 ---
 

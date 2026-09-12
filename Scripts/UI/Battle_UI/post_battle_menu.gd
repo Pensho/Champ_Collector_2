@@ -56,7 +56,7 @@ func Init(p_context_container: ContextContainer) -> void:
 	for character_ID in _context._player_battle_characters.size():
 		_character_result_UI[character_ID].SetName(_context._player_battle_characters[character_ID]._name)
 		_character_result_UI[character_ID].SetTexture(
-				main.GetInstance()._character_collection.GetCharacterTexture(
+				main.GetInstance()._character_collection.GetCharacterHeadshotTexture(
 					_context._player_battle_characters[character_ID]._name))
 		_character_result_UI[character_ID].SetDamageDealt(
 				_context._arguments["character_dmg_" + str(character_ID)], total_damage_dealt)

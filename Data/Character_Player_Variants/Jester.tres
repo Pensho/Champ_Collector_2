@@ -18,6 +18,7 @@
 script = ExtResource("3_7g6n5")
 _name = "Jester"
 _texture = "res://Assets/Champ_Collector/Creatures/Jester/jester_0006.png"
+_headshot_region = Rect2(0.3, 0, 0.4, 0.4)
 _rarity = 2
 _role = 11
 _skills = Array[ExtResource("1_r2vnm")]([ExtResource("2_pratfall"), ExtResource("2_centerstage"), ExtResource("3_efesd")])

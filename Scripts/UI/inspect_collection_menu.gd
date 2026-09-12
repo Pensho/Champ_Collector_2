@@ -324,7 +324,8 @@ func RefreshCharacterGrid() -> void:
 				var character: Character = _character_collection[character_id]
 				slot.show()
 				slot.SetHeldObjectTexture(
-						main.GetInstance()._character_collection.GetCharacterTexture(character._name))
+						main.GetInstance()._character_collection.GetCharacterHeadshotTexture(
+							character._name))
 				slot.SetTextureOutline(character._rarity)
 				slot.level.text = str(character._level)
 				slot.SetRenownRank(character.GetRenownRank())
@@ -457,7 +458,7 @@ func RefreshSacrificeGrid() -> void:
 			var candidate_id: int = _picker_candidate_ids[slot_nr]
 			_available_characters[slot_nr].show()
 			_available_characters[slot_nr].SetHeldObjectTexture(
-					main.GetInstance()._character_collection.GetCharacterTexture(
+					main.GetInstance()._character_collection.GetCharacterHeadshotTexture(
 						_character_collection[candidate_id]._name))
 			_available_characters[slot_nr].SetTextureOutline(_character_collection[candidate_id]._rarity)
 			_available_characters[slot_nr].level.text = str(_character_collection[candidate_id]._level)

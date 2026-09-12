@@ -139,7 +139,8 @@ func _BuildCharacterGrid() -> void:
 		slot._ID = i
 		slot.ConnectButton(_on_add_char_button_up)
 		slot.SetHeldObjectTexture(
-				main.GetInstance()._character_collection.GetCharacterTexture(_character_collection[i]._name))
+				main.GetInstance()._character_collection.GetCharacterHeadshotTexture(
+					_character_collection[i]._name))
 		slot.level.text = str(_character_collection[i]._level)
 		slot.SetRenownRank(_character_collection[i].GetRenownRank())
 		_available_character_slots.append(slot)

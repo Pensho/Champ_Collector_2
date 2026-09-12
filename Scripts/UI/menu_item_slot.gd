@@ -6,17 +6,11 @@ const PIP_EMPTY_TEXTURE = preload("uid://b5din3anosuf2")
 @export var _ID: int = -1
 @export var _tooltip: ToolTip
 
-@onready var texture_rect: TextureRect = $TextureRect/TextureRect
-@onready var button: Button = $TextureRect/Button
-@onready var level: Label = $TextureRect/Label
-@onready var _renown_pips_row: HBoxContainer = $TextureRect/HBoxContainer_Renown_Pips
-@onready var _renown_pips: Array[TextureRect] = [
-	$TextureRect/HBoxContainer_Renown_Pips/Pip_0,
-	$TextureRect/HBoxContainer_Renown_Pips/Pip_1,
-	$TextureRect/HBoxContainer_Renown_Pips/Pip_2,
-	$TextureRect/HBoxContainer_Renown_Pips/Pip_3,
-	$TextureRect/HBoxContainer_Renown_Pips/Pip_4,
-]
+@export var texture_rect: TextureRect
+@export var button: Button
+@export var level: Label
+@export var _renown_pips_row: HBoxContainer
+@export var _renown_pips: Array[TextureRect] 
 
 func SetRenownRank(p_rank: int) -> void:
 	_renown_pips_row.show()

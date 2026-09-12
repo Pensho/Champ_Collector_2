@@ -2,7 +2,8 @@ class_name CharacterCollection extends Node
 
 var _characters: Dictionary[int, Character] = {}
 var _current_max_amount: int = Game_Balance.COLLECTION_START_ROSTER_SIZE
-var _collected_types: Dictionary[String, String]
+## Character name -> {"texture": path, "headshot_region": Rect2}
+var _collected_types: Dictionary[String, Dictionary]
 var _used_character_textures: Dictionary[String, Texture]
 var _next_ID: int = 0
 
@@ -83,10 +84,14 @@ func Deserialize(p_data: Dictionary) -> void:
 func LoadTextures() -> void:
 	for type in _collected_types.keys():
 		if(!_used_character_textures.has(type)):
-			_used_character_textures[type] = load(_collected_types[type])
+			_used_character_textures[type] = load(_collected_types[type]["texture"])
 
 func GetCharacterTexture(p_character_name: String) -> Texture:
 	return _used_character_textures[p_character_name]
+
+func GetCharacterHeadshotTexture(p_character_name: String) -> Texture:
+	var type: Dictionary = _collected_types[p_character_name]
+	return TextureCache.GetHeadshot(type["texture"], type["headshot_region"])
 
 func Add(preset: CharacterPreset) -> void:
 	if(not IsTheCollectionFull()):
@@ -95,7 +100,10 @@ func Add(preset: CharacterPreset) -> void:
 		_characters[new_character._instance_ID] = new_character
 		
 		if(!_collected_types.has(new_character._name)):
-			_collected_types[new_character._name] = new_character._texture
+			_collected_types[new_character._name] = {
+				"texture": new_character._texture,
+				"headshot_region": new_character._headshot_region,
+			}
 			_used_character_textures[new_character._name] = load(new_character._texture)
 
 func Remove(instanceID: int) -> void:
