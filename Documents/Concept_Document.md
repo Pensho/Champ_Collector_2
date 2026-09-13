@@ -970,6 +970,11 @@ One type of consumable could include some types to alter items, e.g. increase th
       optional additional surcharge (e.g. adventure tier cost stacks on top of the base).
       Half of the total cost (rounded down) is refunded if the player loses. Starting an
       encounter is blocked if the player cannot afford the total cost.
+- Tallies
+    - The champion sink currency: the only source is Releasing champions in the Armory
+      (section 3.6.2) and the only use is the Tally Board (section 3.6.3), so surplus
+      and duplicate champions convert into a champion of the player's choosing.
+      Releasing a Common champion yields none.
 - Fortune’s Favor
     - Used in Adventurer's guild locations in hubs.
     - Comes in three tiers — Bone, Brass, and Parchment — each tracked as a separate
