@@ -10,6 +10,7 @@ class Effect:
 	# Character ID that applied this effect, or -1 when there is no combatant source
 	# (e.g. adventure-map effects). Used to attribute damage-over-time back to its caster.
 	var source_ID: int = -1
+	var applied_on_turn_ordinal: int = -1
 
 	var trait_riders: Dictionary[StringName, Variant] = {}
 

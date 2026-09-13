@@ -814,11 +814,9 @@ refreshes trait visuals, hides the skill UI, and returns to `Advancing` (or ends
    battle-long reagent attribute bonus + active statuses, see section 6.1).
 2. Fire the `OnSkillCast` trait hook → returns a `TraitSkillResult` carrying a damage multiplier
    and turn-bar bump.
-3. Tick the caster's own active debuffs and buffs — per-turn effects (e.g. Burning deals 4% of
-   max HP, reported as a `Debuff_Tick` result with a per-source damage split; Regeneration heals
-   4% of max HP, reported as `Heal`) and duration decrements (reported as `Status_Duration` /
-   `Statuses_Removed` results). Attribute modifiers are no longer applied here — they were already
-   folded in at step 1.
+3. Run the caster's own status per-turn effects (e.g. Burning deals 4% of max HP, reported as a
+   `Debuff_Tick` result with a per-source damage split; Regeneration heals 4% of max HP, reported
+   as `Heal`). Attribute modifiers are applied at step 1, durations at step 9.
 4. Compute this cast's use count (`_SkillUseCount`, per (caster, skill name), read by
    `DamageEffect`'s ramp and `AlternatingEffect`'s rotation), build a `SkillCastContext`, then run
    the skill's own effects:
@@ -844,6 +842,13 @@ refreshes trait visuals, hides the skill UI, and returns to `Advancing` (or ends
    placement already happened inside step 4's loop, a zone placed this same cast can immediately
    trigger here if a character other than the caster already occupies its section (see
    [Section 7.5](#75-zones)).
+9. `StatusEffectResolver.TickStatusDurations()` counts the caster's statuses down and clears the
+   ones that run out (reported as `Status_Duration` / `Statuses_Removed`). Running last is what
+   makes a status hold for the whole turn it lapses on: a Severance holder casting on Severance's
+   final turn is still blocked from gaining the buffs. Each status carries the
+   `applied_on_turn_ordinal` it was placed on (`BattleResolver.GetTurnOrdinal()`, advanced by
+   `BeginTurn`) and skips the tick of that turn, so a self-buff keeps its full count of later
+   turns.
 
 **The effect loop and cast context.** `SkillCastContext`
 (`Scripts/Battle/Skill_Effects/skill_cast_context.gd`, `RefCounted`) carries the read-only inputs

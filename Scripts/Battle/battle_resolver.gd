@@ -58,6 +58,9 @@ var _batch_depth: int = 0
 var _turn_bar_progress: Dictionary[int, float] = {}
 var _turn_bar_damage_remainder: Dictionary[int, float] = {}
 
+var _turn_ordinal: int = 0
+var _turn_ordinal_opened: bool = false
+
 # The turn-bar section a player just clicked, consumed once by the next ZoneEffect
 # placement in the skill they cast it for; -1 when nothing is pending (an enemy's own
 # zone skill has no player choice to consume, so it falls back to a random section).
@@ -164,19 +167,27 @@ func IsTheBattleOver() -> Winner:
 	return Winner.Ongoing
 
 
+func GetTurnOrdinal() -> int:
+	return _turn_ordinal
+
+func _OpenTurnOrdinal() -> void:
+	_turn_ordinal += 1
+	_turn_ordinal_opened = true
+
 ## Fires the active character's start-of-turn trait hook and returns its results.
 func BeginTurn(p_character_ID: int) -> Array[CombatResult]:
 	_BeginBatch()
+	_OpenTurnOrdinal()
 	var character: Character = _characters[p_character_ID]
 	for active_trait: CharacterTrait in Skills.ActiveHooks(character, Types.Combat_Event.Start_Turn):
 		active_trait.StartOfTurn(p_character_ID, self)
 	return _EndBatch()
 
-
-## The core sequence: trait hook, caster status ticks, skill effect, per-target
-## resolution, cooldowns, zone triggers, and the end-of-turn trait hook.
 func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -> Array[CombatResult]:
 	_BeginBatch()
+	if(not _turn_ordinal_opened):
+		_OpenTurnOrdinal()
+	_turn_ordinal_opened = false
 	var caster: Character = _characters[p_caster_ID]
 	var cast_skill: Skill = caster._skills[p_skill_ID]
 	var caster_attributes: Dictionary[Types.Attribute, int] = GetEffectiveAttributes(p_caster_ID)
@@ -223,13 +234,16 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 	if(caster._current_health > 0):
 		for end_turn_trait: CharacterTrait in Skills.ActiveHooks(caster, Types.Combat_Event.End_Turn):
 			end_turn_trait.EndOfTurn(p_caster_ID, self)
+
+	_status_resolver.TickStatusDurations(p_caster_ID)
+	_cascade_resolver.Drain()
 	return _EndBatch()
 
-
-## A Stun-affected character's turn: still ticks their own statuses (so Stun's own
-## duration decrements and clears itself) and zones, but casts no skill.
 func ResolveStunTurn(p_caster_ID: int) -> Array[CombatResult]:
 	_BeginBatch()
+	if(not _turn_ordinal_opened):
+		_OpenTurnOrdinal()
+	_turn_ordinal_opened = false
 	var caster: Character = _characters[p_caster_ID]
 	var caster_attributes: Dictionary[Types.Attribute, int] = GetEffectiveAttributes(p_caster_ID)
 	if(not caster._active_debuffs.is_empty()):
@@ -242,6 +256,8 @@ func ResolveStunTurn(p_caster_ID: int) -> Array[CombatResult]:
 	if(caster._current_health > 0):
 		for end_turn_trait: CharacterTrait in Skills.ActiveHooks(caster, Types.Combat_Event.End_Turn):
 			end_turn_trait.EndOfTurn(p_caster_ID, self)
+	_status_resolver.TickStatusDurations(p_caster_ID)
+	_cascade_resolver.Drain()
 	var result: CombatResult = CombatResult.new(CombatResult.Kind.Turn_Skipped)
 	result.target_ID = p_caster_ID
 	_Emit(result)

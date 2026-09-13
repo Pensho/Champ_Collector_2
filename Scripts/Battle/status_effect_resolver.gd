@@ -175,9 +175,6 @@ func _IsBuffExpired(p_buff: StatusEffects.Buff) -> bool:
 	var data: StatusEffectData = StatusEffectRegistry.BuffData(p_buff.type)
 	if(null != data and data.permanent):
 		return false
-	# Both DamageMultiplier and Borrowed Time are one-shot, consumed-on-use buffs meant
-	# to survive the holder's own next cast's start-of-cast decrement, not expire before
-	# that cast's Skill_Resolved cascade gets a chance to consume them.
 	if(null != data and (StatusEffectData.MagnitudeKind.DamageMultiplier == data.magnitude_kind
 			or Types.Buff_Type.Borrowed_Time == p_buff.type)):
 		return p_buff.duration < 0
@@ -352,6 +349,7 @@ func _DeferredMirrorCoat(p_event: CascadeEvent) -> void:
 	mirrored.source_ID = holder_ID
 	mirrored.value = SnapshotStatusValue(data, holder_ID, attacker_ID)
 	mirrored.ID = _resolver._NextStatusID()
+	mirrored.applied_on_turn_ordinal = _resolver.GetTurnOrdinal()
 	_resolver._characters[attacker_ID]._active_debuffs.append(mirrored)
 	_EmitDebuffApplied(attacker_ID, mirrored, "")
 
@@ -361,20 +359,6 @@ func _TriggerExistingCasterDebuffs(
 		p_caster_attributes: Dictionary[Types.Attribute, int]) -> void:
 	var caster: Character = _resolver._characters[p_caster_ID]
 	var tick: Dictionary = _ComputeDebuffTickDamage(caster, p_caster_attributes)
-	var status_IDs_to_be_removed: Array[int] = []
-	for debuff in caster._active_debuffs:
-		debuff.duration -= 1
-		_EmitStatusDuration(p_caster_ID, debuff.ID, debuff.duration)
-		if(debuff.duration <= 0):
-			status_IDs_to_be_removed.append(debuff.ID)
-
-	caster._active_debuffs = caster._active_debuffs.filter(func(debuff): return debuff.duration > 0)
-	if(not status_IDs_to_be_removed.is_empty()):
-		var removed: CombatResult = CombatResult.new(CombatResult.Kind.Statuses_Removed)
-		removed.target_ID = p_caster_ID
-		removed.status_IDs = status_IDs_to_be_removed
-		_resolver._Emit(removed)
-
 	_EmitDebuffTickIfAny(p_caster_ID, tick)
 	_PostDebuffTick(p_caster_ID, tick)
 
@@ -557,8 +541,6 @@ func _TriggerExistingCasterBuffs(
 	var caster: Character = _resolver._characters[p_caster_ID]
 	var heal_total: int = 0
 	var self_cost_total: int = 0
-	var expiring_overflows: Array[StatusEffects.Buff] = []
-	var expiring_rush_count: int = 0
 
 	for buff in caster._active_buffs:
 		var data: StatusEffectData = StatusEffectRegistry.BuffData(buff.type)
@@ -578,35 +560,6 @@ func _TriggerExistingCasterBuffs(
 						(p_caster_attributes[Types.Attribute.Health]
 								* GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER) * data.self_tick_max_health_cost_percent))
 
-		if(null != data and data.permanent):
-			continue
-		buff.duration -= 1
-		_EmitStatusDuration(p_caster_ID, buff.ID, buff.duration)
-		if(buff.duration <= 0):
-			if(Types.Buff_Type.Overflow == buff.type):
-				expiring_overflows.append(buff)
-			elif(Types.Buff_Type.Rush == buff.type):
-				expiring_rush_count += 1
-
-	_ExpireBuffs(p_caster_ID)
-
-	# instance_count carries how many expired, rather than one Post per entry — the
-	# once-per-(mechanic, subject) dedup rule would otherwise collapse a second Post for
-	# the same holder down to a single instance.
-	if(not expiring_overflows.is_empty()):
-		var overflow_event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Status_Expired)
-		overflow_event.subject_ID = p_caster_ID
-		overflow_event.buff_type = Types.Buff_Type.Overflow
-		overflow_event.instance_count = expiring_overflows.size()
-		_resolver.GetCascadeResolver().Post(overflow_event)
-
-	if(expiring_rush_count > 0):
-		var rush_event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Status_Expired)
-		rush_event.subject_ID = p_caster_ID
-		rush_event.buff_type = Types.Buff_Type.Rush
-		rush_event.instance_count = expiring_rush_count
-		_resolver.GetCascadeResolver().Post(rush_event)
-
 	if(heal_total > 0):
 		var healed: int = _resolver._ApplyHeal(p_caster_ID, heal_total)
 		var heal_result: CombatResult = CombatResult.new(CombatResult.Kind.Heal)
@@ -620,6 +573,66 @@ func _TriggerExistingCasterBuffs(
 		cost_result.target_ID = p_caster_ID
 		cost_result.amount = actual_self_cost
 		_resolver._Emit(cost_result)
+
+func TickStatusDurations(p_caster_ID: int) -> void:
+	var caster: Character = _resolver._characters[p_caster_ID]
+	var current_ordinal: int = _resolver.GetTurnOrdinal()
+
+	# Collected as objects, not IDs: a debuff placed straight onto the Character never passes
+	# through _NextStatusID, so IDs are not dependable as identity here.
+	var expired_debuffs: Array[StatusEffects.Debuff] = []
+	var expired_debuff_IDs: Array[int] = []
+	for debuff in caster._active_debuffs:
+		if(debuff.applied_on_turn_ordinal == current_ordinal):
+			continue
+		debuff.duration -= 1
+		_EmitStatusDuration(p_caster_ID, debuff.ID, debuff.duration)
+		if(debuff.duration <= 0):
+			expired_debuffs.append(debuff)
+			expired_debuff_IDs.append(debuff.ID)
+
+	if(not expired_debuffs.is_empty()):
+		caster._active_debuffs = caster._active_debuffs.filter(
+				func(debuff): return not expired_debuffs.has(debuff))
+		var removed: CombatResult = CombatResult.new(CombatResult.Kind.Statuses_Removed)
+		removed.target_ID = p_caster_ID
+		removed.status_IDs = expired_debuff_IDs
+		_resolver._Emit(removed)
+
+	var expiring_overflow_count: int = 0
+	var expiring_rush_count: int = 0
+	for buff in caster._active_buffs:
+		var data: StatusEffectData = StatusEffectRegistry.BuffData(buff.type)
+		if(null != data and data.permanent):
+			continue
+		if(buff.applied_on_turn_ordinal == current_ordinal):
+			continue
+		buff.duration -= 1
+		_EmitStatusDuration(p_caster_ID, buff.ID, buff.duration)
+		if(buff.duration <= 0):
+			if(Types.Buff_Type.Overflow == buff.type):
+				expiring_overflow_count += 1
+			elif(Types.Buff_Type.Rush == buff.type):
+				expiring_rush_count += 1
+
+	_ExpireBuffs(p_caster_ID)
+
+	# instance_count carries how many expired, rather than one Post per entry — the
+	# once-per-(mechanic, subject) dedup rule would otherwise collapse a second Post for
+	# the same holder down to a single instance.
+	if(expiring_overflow_count > 0):
+		var overflow_event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Status_Expired)
+		overflow_event.subject_ID = p_caster_ID
+		overflow_event.buff_type = Types.Buff_Type.Overflow
+		overflow_event.instance_count = expiring_overflow_count
+		_resolver.GetCascadeResolver().Post(overflow_event)
+
+	if(expiring_rush_count > 0):
+		var rush_event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Status_Expired)
+		rush_event.subject_ID = p_caster_ID
+		rush_event.buff_type = Types.Buff_Type.Rush
+		rush_event.instance_count = expiring_rush_count
+		_resolver.GetCascadeResolver().Post(rush_event)
 
 
 func _BlockedBySequenceLock(p_data: StatusEffectData, p_target: Character) -> bool:
@@ -702,6 +715,7 @@ func _InsertOrRefresh(
 					if(p_always_refresh_duration or p_duration > active[i].duration):
 						active[i].duration = p_duration
 						active[i].trait_riders = p_trait_riders
+						active[i].applied_on_turn_ordinal = _resolver.GetTurnOrdinal()
 						_EmitStatusDuration(p_target_ID, active[i].ID, p_duration)
 				return null
 
@@ -714,6 +728,7 @@ func _InsertOrRefresh(
 		new_buff.source_ID = p_source_ID
 		new_buff.trait_riders = p_trait_riders
 		new_buff.ID = _resolver._NextStatusID()
+		new_buff.applied_on_turn_ordinal = _resolver.GetTurnOrdinal()
 		target._active_buffs.append(new_buff)
 		_EmitBuffApplied(p_target_ID, new_buff, p_display_name)
 		return new_buff
@@ -726,6 +741,7 @@ func _InsertOrRefresh(
 	new_debuff.value = p_value
 	new_debuff.trait_riders = p_trait_riders
 	new_debuff.ID = _resolver._NextStatusID()
+	new_debuff.applied_on_turn_ordinal = _resolver.GetTurnOrdinal()
 	target._active_debuffs.append(new_debuff)
 	_EmitDebuffApplied(p_target_ID, new_debuff, p_display_name)
 	return new_debuff
