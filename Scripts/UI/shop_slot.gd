@@ -93,7 +93,7 @@ func _CategoryName(p_category: Types.Category) -> String:
 func _NameFor(p_entry: Dictionary) -> String:
 	match p_entry["category"]:
 		Types.Category.Gear:
-			return EquipmentPresetRegistry.Get(p_entry["payload"])._name
+			return GearPresetFor(p_entry)._name
 		Types.Category.Reagent:
 			return ReagentRegistry.Get(p_entry["payload"]).display_name
 		Types.Category.Supplies:
@@ -105,7 +105,7 @@ func _NameFor(p_entry: Dictionary) -> String:
 func _IconFor(p_entry: Dictionary) -> Texture2D:
 	match p_entry["category"]:
 		Types.Category.Gear:
-			return load(EquipmentPresetRegistry.Get(p_entry["payload"])._texture_path)
+			return load(GearPresetFor(p_entry)._texture_path)
 		Types.Category.Reagent:
 			return ReagentRegistry.Get(p_entry["payload"]).icon
 		Types.Category.Supplies:
@@ -126,8 +126,14 @@ func _DescriptionFor(p_entry: Dictionary) -> String:
 			return "Used to recruit new champions."
 	return ""
 
+static func GearPresetFor(p_entry: Dictionary) -> EquipmentPreset:
+	var item_type: int = p_entry.get("item_type", Types.Item_Type.Standard)
+	if(Types.Item_Type.Relic == item_type):
+		return EquipmentPresetRegistry.GetRelic(p_entry["payload"])
+	return EquipmentPresetRegistry.Get(p_entry["payload"])
+
 func _GearDescription(p_entry: Dictionary) -> String:
-	var preset: EquipmentPreset = EquipmentPresetRegistry.Get(p_entry["payload"])
+	var preset: EquipmentPreset = GearPresetFor(p_entry)
 	var lines: Array[String] = []
 	for attribute_name in p_entry["attributes"].keys():
 		lines.append(attribute_name + " +" + str(p_entry["attributes"][attribute_name]))
