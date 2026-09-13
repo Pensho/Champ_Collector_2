@@ -14,3 +14,4 @@ func SetCount(p_text: String) -> void:
 func SetToolTip(p_title: String, p_description: String) -> void:
 	_tooltip.title_text = p_title
 	_tooltip.description_text = p_description
+	_tooltip.show_on_press = true

@@ -17,7 +17,6 @@ _h_box_container_items = NodePath("VBoxContainer/MarginContainer/HBoxContainer/H
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1277893763]
 layout_mode = 0
 anchor_right = 1.0
-offset_right = 0.0
 
 [node name="Label_Heading" type="Label" parent="VBoxContainer" unique_id=1448781913]
 layout_mode = 2
@@ -27,7 +26,7 @@ theme_override_font_sizes/font_size = 24
 text = "Rewards"
 horizontal_alignment = 1
 
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer" unique_id=1647591534]
 layout_mode = 2
 theme_override_constants/margin_left = 353
 

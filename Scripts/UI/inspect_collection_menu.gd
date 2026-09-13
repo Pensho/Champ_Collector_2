@@ -5,6 +5,9 @@ enum RosterSlotState {Filled, Empty, Unavailable}
 const MENU_ITEM_SLOT = preload("uid://di0y70sbai3yw")
 const BUTTON_WITH_OPTIONS_SCENE = preload("uid://c7smqpmfvs0ih")
 const ROSTER_SLOT_PLUS_TEXTURE = preload("uid://cavc4wk33n2m")
+const COLLECTION_TAB_CHARACTERS: int = 0
+const COLLECTION_TAB_GEAR: int = 1
+const COLLECTION_TAB_REAGENTS: int = 2
 
 @export var _attribute_labels: Dictionary[Types.Attribute, Label]
 @export var _attribute_renown_labels: Dictionary[Types.Attribute, Label]
@@ -173,7 +176,10 @@ func ShowSelectedCharacter(p_instance_ID: int) -> void:
 	_selected_char_label.text = _character_collection[p_instance_ID]._name
 	_selected_char_level.text = "Level: " + str(_character_collection[p_instance_ID]._level)
 	UpdateSelectedCharacterRenownPips(_character_collection[p_instance_ID].GetRenownRank())
-	_ascend_button.disabled = not _character_collection[p_instance_ID].CanGainRenown()
+	if(not _character_collection[p_instance_ID].CanGainRenown()):
+		_ascend_button.hide()
+	else:
+		_ascend_button.show()
 	_selected_char_nature.text = "Nature: " + str(_character_collection[p_instance_ID]._attributes_weights._name)
 	_selected_char_nature_tooltip.title_text = str(
 			_character_collection[p_instance_ID]._attributes_weights._name) + " Nature"
@@ -248,8 +254,14 @@ func _on_tab_bar_gear_skills_tab_changed(p_tab: int) -> void:
 func _on_tab_bar_collection_tab_changed(p_tab: int) -> void:
 	for i in _collection_tab_pages.size():
 		_collection_tab_pages[i].visible = (i == p_tab)
-	if(2 == p_tab):
+	if(COLLECTION_TAB_REAGENTS == p_tab):
 		RefreshReagentGrid()
+
+func SetCollectionTab(p_tab: int) -> void:
+	if(_tab_bar_collection.current_tab == p_tab or _tab_bar_collection.is_tab_disabled(p_tab)):
+		return
+	_tab_bar_collection.current_tab = p_tab
+	_on_tab_bar_collection_tab_changed(p_tab)
 
 func RefreshItemGrid() -> void:
 	for slot in _available_items.size():
@@ -628,10 +640,14 @@ func AvailableCharacterButton(p_slot_ID: int) -> void:
 		return
 	_selected_character_ID = _displayed_character_ids[p_slot_ID]
 	ShowSelectedCharacter(_displayed_character_ids[p_slot_ID])
+	SetCollectionTab(COLLECTION_TAB_GEAR)
 	RefreshCharacterGrid()
 	RefreshItemGrid()
 	_release_button.show()
-	_ascend_button.show()
+	if(not _character_collection[_displayed_character_ids[p_slot_ID]].CanGainRenown()):
+		_ascend_button.hide()
+	else:
+		_ascend_button.show()
 
 func TriggerEquipItem() -> void:
 	var item_id: int = _displayed_item_ids[_selected_item_slot_ID]
@@ -726,6 +742,7 @@ func _on_button_deselect_char_button_up() -> void:
 	_selected_character_ID = -1
 	_release_button.hide()
 	_ascend_button.hide()
+	SetCollectionTab(COLLECTION_TAB_CHARACTERS)
 	RefreshCharacterGrid()
 
 func _on_exit_button_up() -> void:

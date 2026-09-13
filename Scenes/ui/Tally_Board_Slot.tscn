@@ -41,12 +41,12 @@ horizontal_alignment = 2
 
 [node name="TextureRect_Icon" type="TextureRect" parent="." unique_id=897666339]
 material = SubResource("ShaderMaterial_tally_board_slot")
-custom_minimum_size = Vector2(110, 98)
+custom_minimum_size = Vector2(100, 120)
 layout_mode = 0
 offset_left = 8.0
-offset_top = 24.0
+offset_top = 10.0
 offset_right = 118.0
-offset_bottom = 122.0
+offset_bottom = 130.0
 expand_mode = 1
 
 [node name="TextureRect_IconDarken" type="TextureRect" parent="." unique_id=643747641]
@@ -80,12 +80,12 @@ vertical_alignment = 1
 autowrap_mode = 2
 
 [node name="TextureRect_Tally" type="TextureRect" parent="Content" unique_id=234701008]
-custom_minimum_size = Vector2(20, 20)
+custom_minimum_size = Vector2(30, 30)
 layout_mode = 0
 offset_left = 8.0
-offset_top = 138.0
-offset_right = 28.0
-offset_bottom = 158.0
+offset_top = 135.0
+offset_right = 38.0
+offset_bottom = 165.0
 expand_mode = 1
 
 [node name="Label_Price" type="Label" parent="Content" unique_id=752698782]

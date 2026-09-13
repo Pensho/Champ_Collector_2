@@ -112,10 +112,10 @@ vertical_alignment = 1
 
 [node name="Button_Buy" type="Button" parent="Content" unique_id=1873686719]
 layout_mode = 0
-offset_left = 250.0
-offset_top = 136.0
-offset_right = 372.0
-offset_bottom = 164.0
+offset_left = 257.0
+offset_top = 128.0
+offset_right = 379.0
+offset_bottom = 170.0
 theme = ExtResource("2_theme")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
@@ -128,6 +128,7 @@ offset_right = 380.0
 offset_bottom = 170.0
 mouse_filter = 2
 script = ExtResource("4_tooltip")
+show_on_press = true
 
 [node name="Label_Cooldown" type="Label" parent="." unique_id=1547839022]
 visible = false
