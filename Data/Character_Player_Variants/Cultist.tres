@@ -15,7 +15,7 @@
 script = ExtResource("2_preset")
 _name = "Cultist"
 _texture = "res://Assets/Champ_Collector/Creatures/Cultist/cultist.png"
-_headshot_region = Rect2(0.35, 0, 0.4, 0.4)
+_headshot_region = Rect2(0.35, 0, 0.4, 0.48)
 _rarity = 2
 _role = 12
 _skills = Array[ExtResource("1_skill")]([ExtResource("3_desecrated_blade"), ExtResource("4_devour"), ExtResource("5_severance")])

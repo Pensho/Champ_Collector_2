@@ -18,7 +18,7 @@
 script = ExtResource("2_8awhw")
 _name = "Bloodmage"
 _texture = "res://Assets/Champ_Collector/Creatures/Bloodmage/bloodmage_0009.png"
-_headshot_region = Rect2(0.3, 0, 0.4, 0.4)
+_headshot_region = Rect2(0.3, 0, 0.4, 0.48)
 _rarity = 2
 _faction = 2
 _role = 15

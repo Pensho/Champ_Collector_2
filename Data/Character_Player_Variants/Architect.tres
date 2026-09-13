@@ -18,7 +18,7 @@
 script = ExtResource("2_mo6rh")
 _name = "Architect"
 _texture = "res://Assets/Champ_Collector/Creatures/Architect/architect_0005.png"
-_headshot_region = Rect2(0.3, 0, 0.4, 0.4)
+_headshot_region = Rect2(0.3, 0, 0.4, 0.48)
 _rarity = 3
 _faction = 1
 _role = 18

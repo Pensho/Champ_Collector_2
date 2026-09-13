@@ -256,7 +256,7 @@ func RefreshAvailableReagents() -> void:
 		slot._ID = _displayed_reagent_keys.size()
 		slot.ConnectButton(_on_add_reagent_button_up)
 		slot.SetHeldObjectTexture(reagent_data.icon)
-		slot.SetTextureOutline(reagent_data.rarity)
+		slot.SetRarityBackdrop(reagent_data.rarity)
 		slot.SetToolTip(reagent_data.display_name, reagent_data.description)
 		slot.level.text = str(owned[reagent_key])
 		_available_reagent_slots.append(slot)
@@ -285,7 +285,7 @@ func _on_add_reagent_button_up(p_reagent_slot: int) -> void:
 		if (!_chosen_reagents.has(i)):
 			_chosen_reagents[i] = reagent_key
 			_chosen_reagent_slots[i].SetHeldObjectTexture(reagent_data.icon)
-			_chosen_reagent_slots[i].SetTextureOutline(reagent_data.rarity)
+			_chosen_reagent_slots[i].SetRarityBackdrop(reagent_data.rarity)
 			_chosen_reagent_slots[i].SetToolTip(reagent_data.display_name, reagent_data.description)
 			if (RemainingAvailableCount(reagent_key) <= 0):
 				_available_reagent_slots[p_reagent_slot].SetHeldObjectModulate(CHARACTER_CHOSEN_COLOR)
@@ -298,6 +298,7 @@ func _on_remove_reagent_button_up(p_reagent_slot: int) -> void:
 	var reagent_key: String = _chosen_reagents[p_reagent_slot]
 	_chosen_reagents.erase(p_reagent_slot)
 	_chosen_reagent_slots[p_reagent_slot].SetHeldObjectTexture(null)
+	_chosen_reagent_slots[p_reagent_slot].ClearRarityBackdrop()
 	_chosen_reagent_slots[p_reagent_slot].ClearToolTip()
 	for i in _displayed_reagent_keys.size():
 		if (_displayed_reagent_keys[i] == reagent_key):

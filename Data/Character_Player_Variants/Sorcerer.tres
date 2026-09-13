@@ -15,7 +15,7 @@
 script = ExtResource("2_preset")
 _name = "Sorcerer"
 _texture = "res://Assets/Champ_Collector/Creatures/Sorcerer/sorcerer.png"
-_headshot_region = Rect2(0.3, 0, 0.4, 0.4)
+_headshot_region = Rect2(0.3, 0, 0.4, 0.48)
 _rarity = 4
 _faction = 2
 _role = 5

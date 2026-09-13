@@ -18,7 +18,7 @@
 script = ExtResource("2_dhkqx")
 _name = "Bar Brawler"
 _texture = "res://Assets/Champ_Collector/Creatures/Bar brawler/bar_brawler_0002.png"
-_headshot_region = Rect2(0.3, 0, 0.4, 0.4)
+_headshot_region = Rect2(0.3, 0, 0.4, 0.48)
 _rarity = 2
 _role = 14
 _skills = Array[ExtResource("1_ct0uv")]([ExtResource("3_f0b57"), ExtResource("3_headbutt"), ExtResource("3_liquid_courage")])

@@ -10,7 +10,8 @@ const PIP_EMPTY_TEXTURE = preload("uid://b5din3anosuf2")
 @export var button: Button
 @export var level: Label
 @export var _renown_pips_row: HBoxContainer
-@export var _renown_pips: Array[TextureRect] 
+@export var _renown_pips: Array[TextureRect]
+@export var _rarity_backdrop: ColorRect
 
 func SetRenownRank(p_rank: int) -> void:
 	_renown_pips_row.show()
@@ -39,10 +40,10 @@ func SetHeldObjectTexture(p_texture: Texture) -> void:
 func SetHeldObjectModulate(p_color: Color) -> void:
 	self.modulate = p_color
 
-func ClearTextureOutline() -> void:
-	texture_rect.material.set("shader_parameter/color", Color(0.0, 0.0, 0.0, 0.0))
+func ClearRarityBackdrop() -> void:
+	_rarity_backdrop.material.set_shader_parameter("rarity_color", Color(0.0, 0.0, 0.0, 0.0))
 
-func SetTextureOutline(p_rarity: Types.Rarity) -> void:
+func SetRarityBackdrop(p_rarity: Types.Rarity) -> void:
 	var col: Color = Color(0.0, 0.0, 0.0, 0.0)
 	match p_rarity:
 		Types.Rarity.Common:
@@ -57,4 +58,4 @@ func SetTextureOutline(p_rarity: Types.Rarity) -> void:
 			col = Color(0.651, 0.381, 0.0, 1.0)
 		_:
 			col = Color(0.0, 0.0, 0.0, 0.0)
-	texture_rect.material.set("shader_parameter/color", col)
+	_rarity_backdrop.material.set_shader_parameter("rarity_color", col)

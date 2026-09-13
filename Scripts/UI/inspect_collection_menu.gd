@@ -189,28 +189,31 @@ func ShowSelectedCharacter(p_instance_ID: int) -> void:
 		var weapon_ID: int = _character_collection[p_instance_ID]._held_items[Types.Slot.Weapon]
 		_item_slots_equipped[0].SetHeldObjectTexture(
 				main.GetInstance()._item_collection.GetItemTexture(weapon_ID))
-		_item_slots_equipped[0].SetTextureOutline(_item_collection[weapon_ID]._rarity)
+		_item_slots_equipped[0].SetRarityBackdrop(_item_collection[weapon_ID]._rarity)
 		_item_slots_equipped[0].level.text = str(_item_collection[weapon_ID]._level)
 	else:
 		_item_slots_equipped[0].SetHeldObjectTexture(null)
+		_item_slots_equipped[0].ClearRarityBackdrop()
 		_item_slots_equipped[0].level.text = ""
 	if(_character_collection[p_instance_ID]._held_items.has(Types.Slot.OffHand)):
 		var off_hand_ID: int = _character_collection[p_instance_ID]._held_items[Types.Slot.OffHand]
 		_item_slots_equipped[1].SetHeldObjectTexture(
 				main.GetInstance()._item_collection.GetItemTexture(off_hand_ID))
-		_item_slots_equipped[1].SetTextureOutline(_item_collection[off_hand_ID]._rarity)
+		_item_slots_equipped[1].SetRarityBackdrop(_item_collection[off_hand_ID]._rarity)
 		_item_slots_equipped[1].level.text = str(_item_collection[off_hand_ID]._level)
 	else:
 		_item_slots_equipped[1].SetHeldObjectTexture(null)
+		_item_slots_equipped[1].ClearRarityBackdrop()
 		_item_slots_equipped[1].level.text = ""
 	if(_character_collection[p_instance_ID]._held_items.has(Types.Slot.Boots)):
 		var boots_ID: int = _character_collection[p_instance_ID]._held_items[Types.Slot.Boots]
 		_item_slots_equipped[2].SetHeldObjectTexture(
 				main.GetInstance()._item_collection.GetItemTexture(boots_ID))
-		_item_slots_equipped[2].SetTextureOutline(_item_collection[boots_ID]._rarity)
+		_item_slots_equipped[2].SetRarityBackdrop(_item_collection[boots_ID]._rarity)
 		_item_slots_equipped[2].level.text = str(_item_collection[boots_ID]._level)
 	else:
 		_item_slots_equipped[2].SetHeldObjectTexture(null)
+		_item_slots_equipped[2].ClearRarityBackdrop()
 		_item_slots_equipped[2].level.text = ""
 
 	if(1 == _tab_bar_gear_skills.tab_count):
@@ -255,10 +258,11 @@ func RefreshItemGrid() -> void:
 			_available_items[slot].show()
 			_available_items[slot].SetHeldObjectTexture(
 					main.GetInstance()._item_collection.GetItemTexture(item_id))
-			_available_items[slot].SetTextureOutline(_item_collection[item_id]._rarity)
+			_available_items[slot].SetRarityBackdrop(_item_collection[item_id]._rarity)
 			_available_items[slot].level.text = str(_item_collection[item_id]._level)
 		else:
 			_available_items[slot].SetHeldObjectTexture(null)
+			_available_items[slot].ClearRarityBackdrop()
 			_available_items[slot].level.text = ""
 			_available_items[slot].hide()
 
@@ -309,7 +313,7 @@ static func GetRosterSlotState(
 
 static func ClearCharacterSlot(p_slot: MenuItemSlot) -> void:
 	p_slot.SetHeldObjectTexture(null)
-	p_slot.ClearTextureOutline()
+	p_slot.ClearRarityBackdrop()
 	p_slot.level.text = ""
 	p_slot.ClearRenownPips()
 	p_slot.SetHeldObjectModulate(Color(1.0, 1.0, 1.0, 1.0))
@@ -326,7 +330,7 @@ func RefreshCharacterGrid() -> void:
 				slot.SetHeldObjectTexture(
 						main.GetInstance()._character_collection.GetCharacterHeadshotTexture(
 							character._name))
-				slot.SetTextureOutline(character._rarity)
+				slot.SetRarityBackdrop(character._rarity)
 				slot.level.text = str(character._level)
 				slot.SetRenownRank(character.GetRenownRank())
 				slot.SetHeldObjectModulate(GetSlotModulate(character_id, _selected_character_ID))
@@ -460,7 +464,7 @@ func RefreshSacrificeGrid() -> void:
 			_available_characters[slot_nr].SetHeldObjectTexture(
 					main.GetInstance()._character_collection.GetCharacterHeadshotTexture(
 						_character_collection[candidate_id]._name))
-			_available_characters[slot_nr].SetTextureOutline(_character_collection[candidate_id]._rarity)
+			_available_characters[slot_nr].SetRarityBackdrop(_character_collection[candidate_id]._rarity)
 			_available_characters[slot_nr].level.text = str(_character_collection[candidate_id]._level)
 			_available_characters[slot_nr].SetRenownRank(_character_collection[candidate_id].GetRenownRank())
 			_available_characters[slot_nr].SetHeldObjectModulate(Color(1.0, 1.0, 1.0, 1.0))
@@ -567,7 +571,7 @@ func RefreshReagentGrid() -> void:
 		slot._ID = _displayed_reagent_keys.size()
 		slot.ConnectButton(ReagentSlotButton)
 		slot.SetHeldObjectTexture(reagent_data.icon)
-		slot.SetTextureOutline(reagent_data.rarity)
+		slot.SetRarityBackdrop(reagent_data.rarity)
 		slot.level.text = str(owned[reagent_key])
 		_reagent_slots.append(slot)
 		_displayed_reagent_keys.append(reagent_key)
@@ -717,6 +721,7 @@ func _on_button_deselect_char_button_up() -> void:
 	_on_tab_bar_gear_skills_tab_changed(0)
 	for i in _item_slots_equipped.size():
 		_item_slots_equipped[i].SetHeldObjectTexture(null)
+		_item_slots_equipped[i].ClearRarityBackdrop()
 		_item_slots_equipped[i].level.text = ""
 	_selected_character_ID = -1
 	_release_button.hide()

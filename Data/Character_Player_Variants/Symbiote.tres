@@ -15,7 +15,7 @@
 script = ExtResource("2_preset")
 _name = "Symbiote"
 _texture = "res://Assets/Champ_Collector/Creatures/Symbiote/symbiote_0004.png"
-_headshot_region = Rect2(0.3, 0, 0.4, 0.4)
+_headshot_region = Rect2(0.3, 0, 0.4, 0.48)
 _rarity = 3
 _faction = 3
 _role = 10
