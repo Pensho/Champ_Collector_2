@@ -1,10 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://cxq26hwryxtsy"]
+[gd_scene format=3 uid="uid://cxq26hwryxtsy"]
 
 [ext_resource type="Script" uid="uid://c3l6xnigq6xdb" path="res://Scripts/UI/resource_ui_slot.gd" id="1_4uax3"]
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="2_4uax3"]
 [ext_resource type="Script" uid="uid://bumae467d28vx" path="res://Scripts/UI/tooltip.gd" id="3_tooltip"]
 
-[node name="ResourceUISlot" type="Control" node_paths=PackedStringArray("_texture", "_label", "_tooltip")]
+[node name="ResourceUISlot" type="Control" unique_id=750085224 node_paths=PackedStringArray("_texture", "_label", "_tooltip")]
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_4uax3")
@@ -12,13 +12,13 @@ _texture = NodePath("ColorRect/MarginContainer/TextureRect")
 _label = NodePath("ColorRect/MarginContainer/Label")
 _tooltip = NodePath("ToolTipArea")
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1856832039]
 layout_mode = 0
 offset_right = 120.0
 offset_bottom = 40.0
 color = Color(0, 0, 0, 0.6666667)
 
-[node name="MarginContainer" type="MarginContainer" parent="ColorRect"]
+[node name="MarginContainer" type="MarginContainer" parent="ColorRect" unique_id=1579021972]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -30,13 +30,13 @@ theme_override_constants/margin_top = 3
 theme_override_constants/margin_right = 3
 theme_override_constants/margin_bottom = 3
 
-[node name="TextureRect" type="TextureRect" parent="ColorRect/MarginContainer"]
+[node name="TextureRect" type="TextureRect" parent="ColorRect/MarginContainer" unique_id=999911714]
 custom_minimum_size = Vector2(35, 35)
 layout_mode = 2
 size_flags_horizontal = 0
 expand_mode = 1
 
-[node name="Label" type="Label" parent="ColorRect/MarginContainer"]
+[node name="Label" type="Label" parent="ColorRect/MarginContainer" unique_id=1569848239]
 layout_mode = 2
 size_flags_horizontal = 8
 theme = ExtResource("2_4uax3")
@@ -46,15 +46,7 @@ theme_override_font_sizes/font_size = 20
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="ToolTipArea" type="Control" parent="."]
-custom_minimum_size = Vector2(120, 40)
-layout_mode = 0
-offset_right = 120.0
-offset_bottom = 40.0
-mouse_filter = 1
-script = ExtResource("3_tooltip")
-
-[node name="ReferenceRect" type="ReferenceRect" parent="ColorRect"]
+[node name="ReferenceRect" type="ReferenceRect" parent="ColorRect" unique_id=1204058880]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -64,3 +56,12 @@ grow_vertical = 2
 mouse_filter = 2
 border_color = Color(1, 1, 1, 1)
 editor_only = false
+
+[node name="ToolTipArea" type="Control" parent="." unique_id=1540260669]
+custom_minimum_size = Vector2(120, 40)
+anchors_preset = 0
+offset_right = 120.0
+offset_bottom = 40.0
+mouse_filter = 1
+script = ExtResource("3_tooltip")
+show_on_press = true
