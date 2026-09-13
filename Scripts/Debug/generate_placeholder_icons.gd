@@ -305,6 +305,8 @@ const SKILL_ICON_TABLE: Array = [
 	# Opponent skills (Opponent_Active_Skills)
 	{ "folder": "Abilities/Opponent_Active_Skills/Wind_the_Mainspring", "base_name": "Wind_the_Mainspring", "size": 64,
 			"color": Color(0.70, 0.55, 0.20, 1.0) },
+	{ "folder": "Abilities/Opponent_Active_Skills/Escapement_Kick", "base_name": "Escapement_Kick", "size": 64,
+			"color": Color(0.60, 0.50, 0.30, 1.0) },
 	{ "folder": "Abilities/Opponent_Active_Skills/Overwhelming_Blow", "base_name": "Overwhelming_Blow", "size": 64,
 			"color": Color(0.65, 0.30, 0.15, 1.0) },
 	{ "folder": "Abilities/Opponent_Active_Skills/Rally_the_Crew", "base_name": "Rally_the_Crew", "size": 64,

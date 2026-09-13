@@ -21,11 +21,15 @@ Concept Document 3.2.3 catalog.
     * Effect: A blunt tackle dealing damage to a single target, scaling
       with Attack, and applies the Expose Weakness debuff for 2 turns (see
       Concept Document 3.2.3.2).
+* Escapement Kick
+    * Type: Damage (basic skill, no cooldown)
+    * Effect: Deals damage to a single target enemy, scaling with Speed.
 * Wind the Mainspring
-    * Type: Damage, Buff (basic skill, no cooldown)
-    * Effect: Deals damage to a single target enemy, scaling with Speed,
-      and the user gains the Haste buff for 2 turns (see Concept Document
-      3.2.3.2; Haste stacks, so an uninterrupted user ramps steadily faster).
+    * Type: Buff, Debuff
+    * Cooldown: 3 turns
+    * Effect: The user gains the Haste buff and every enemy gains the Slow
+      debuff, both for 2 turns (see Concept Document 3.2.3.2). Neither status
+      stacks, so each cast refreshes rather than compounds.
 * Sporeburst Mend
     * Type: Heal (basic skill, no cooldown)
     * Effect: Restores Health to all allies, scaling with the user's Mysticism
@@ -224,19 +228,23 @@ Concept Document).
 
 - **Tier:** Mini-boss.
 - **Enemy composition:** one Reanimating Statue — Boots.
-- **Mechanics:** Wind the Mainspring (section 1) — the statue re-applies Haste
-  to itself every turn, stacking into an ever-faster attack cadence. Onset:
-  noticeable from enemy turn 2, dangerous from enemy turn 4 onward.
+- **Mechanics:** Wind the Mainspring (section 1) — every fourth turn the statue
+  hastes itself and slows the whole party, opening a two-turn window where it
+  acts far more often than the players. Escapement Kick (section 1) fills the
+  turns between and scales on Speed, so the hasted window is also the
+  hard-hitting one. Onset: the first cast lands on enemy turn 1, the gap at its
+  widest across enemy turns 2 and 3.
 - **Intended solutions:** Severance (e.g. the Cultist's Rite of Severance)
-  blocks new Haste instances and halts the ramp; buff-duration stripping (e.g.
-  the Emissary's Signed Writ) shears stacks off; turn-bar pressure (e.g. the
-  Chronophage's Temporal Sinkhole zone, the Bar Brawler's Dead Weight) claws the
-  tempo back. Sequence Lock is a natural future answer, but no kit or reagent
-  carries it yet (see the coverage ledger in
+  blocks the Haste half outright; buff-duration stripping (e.g. the Emissary's
+  Signed Writ) cuts the window short; turn-bar pressure (e.g. the Chronophage's
+  Temporal Sinkhole zone, the Bar Brawler's Dead Weight) claws tempo back against
+  either half. The Slow half is a resistible debuff, so a high-Resistance front
+  line absorbs part of it. No kit carries a debuff cleanse, and Sequence Lock
+  remains uncarried (see the coverage ledger in
   `Plans/Plan_Encounter_Solution_Design.md`).
-- **Unsolved texture:** the statue's turns arrive faster and faster and the
-  fight becomes a race against an accelerating attacker — roughly double length
-  with mounting damage taken, but no hard wall.
+- **Unsolved texture:** the fight pulses — a stretch of even trading, then a
+  burst where the statue takes several turns to the party's one. Roughly double
+  length with the damage arriving in clumps, but no hard wall.
 - **Reward hook (deferred):** currently the Boots gear drop per Concept 5.2.2;
   final hook assigned at placement.
 
@@ -407,7 +415,7 @@ skill (Concept Document 1.1.2).
 | Encounter | Intended answers (channel) | Verdict |
 |---|---|---|
 | The Ashen Oracle | Suppress (Thread Lash) [Channel 1]; Mana Burn (Tithe of Vitality) [Enabler]; Hexed (Ill Omen) [Enabler] | has a payoff |
-| Reanimating Statues 1 (Boots) | Severance (Rite of Severance) [Channel 1 + Enabler]; buff-duration strip (Signed Writ) [Enabler]; turn-bar pressure (Temporal Sinkhole [Enabler], Dead Weight via Headbutt [Channel 1 + Enabler]) | has a payoff |
+| Reanimating Statues 1 (Boots) | Severance (Rite of Severance) [Channel 1 + Enabler]; buff-duration strip (Signed Writ) [Enabler]; turn-bar pressure (Temporal Sinkhole [Enabler], Dead Weight via Headbutt [Channel 1 + Enabler]); Resistance against the Slow half (attribute, untagged) | has a payoff |
 | Reanimating Statues 2 (Weapon) | Enfeeble (Disarm) [Channel 1]; Fortify (Hold the Line) [Channel 1] / Barrier (Raise the Frame, Transfusion) [Enabler] | has a payoff |
 | Reanimating Statues 3 (Off-hands) | Expose Weakness (Final Calculation, 4-6 charges) [Channel 1 + Channel 2 + Enabler]; Burning (Burning Bolas) [Channel 1 + Enabler] | has a payoff |
 

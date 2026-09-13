@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://bmqtglyyora7q" path="res://Scripts/Battle/Skill_Effects/skill_effect.gd" id="1_6gci8"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
 [ext_resource type="Script" uid="uid://bay8tvxoeo0tu" path="res://Scripts/Battle/Skill_Effects/apply_buff_effect.gd" id="2_pbotk"]
-[ext_resource type="Script" uid="uid://bn0n72opjy7sb" path="res://Scripts/Battle/Skill_Effects/damage_effect.gd" id="3_2ycpj"]
+[ext_resource type="Script" uid="uid://bonwfsp34aafb" path="res://Scripts/Battle/Skill_Effects/apply_debuff_effect.gd" id="3_slow"]
 
 [sub_resource type="Resource" id="Resource_6rk0n"]
 script = ExtResource("2_pbotk")
@@ -11,16 +11,17 @@ buff_type = 6
 duration = 2
 target = 13
 
-[sub_resource type="Resource" id="Resource_88vt4"]
-script = ExtResource("3_2ycpj")
-damage_scaling = Dictionary[int, float]({
-1: 1.0
-})
+[sub_resource type="Resource" id="Resource_slow"]
+script = ExtResource("3_slow")
+debuff_type = 4
+duration = 2
 
 [resource]
 script = ExtResource("1_skill")
 name = "Wind the Mainspring"
-description = "Deals damage to a single enemy, scaled by Speed, and grants the caster the Haste buff for 2 turns."
+description = "Grants the caster the Haste buff and applies the Slow debuff to all enemies for 2 turns."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Opponent_Active_Skills/Wind_the_Mainspring/Wind_the_Mainspring.png"
-effects = Array[ExtResource("1_6gci8")]([SubResource("Resource_6rk0n"), SubResource("Resource_88vt4")])
+target = 1
+cooldown = 3
+effects = Array[ExtResource("1_6gci8")]([SubResource("Resource_6rk0n"), SubResource("Resource_slow")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

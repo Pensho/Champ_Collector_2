@@ -556,7 +556,7 @@ special case beside Barrier's "keep the larger one" rule (both bypass the standa
 overwritable/stackable pair, which can express "replace" or "duplicate" but not "accumulate in
 place"). It finds an existing Sea Legs buff and increments its stack count and value in place, up
 to a 4-stack cap, rather than creating a second instance — the runtime's usual stacking shape (a new
-independent instance per application, e.g. Burning, Haste) would otherwise cost each stack its own
+independent instance per application, e.g. Burning) would otherwise cost each stack its own
 slot against the shared 8-status cap. Restacking re-emits `Status_Applied` under the buff's own
 existing `status_ID`, so `battle.gd`'s `ShowStatusApplied` now checks `_status_visual_IDs` and calls
 `CharacterRepresentation.UpdateStatusEffect` (new, alongside `AddStatusEffect`) rather than

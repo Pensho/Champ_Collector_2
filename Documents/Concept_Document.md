@@ -520,7 +520,7 @@ Buffs:
 * Luck [Enabler]: Roll every chance roll in combat twice and take the better result (the damage-variance roll is not favored either way — its spread is too small to matter).
 * Phalanx Guard [Channel 1]: Gain bonus defense.
 * Attune [Channel 1]: Increases Mysticism by 30%.
-* Haste [Channel 1]: Increases Speed by 20%, including how fast the character advances on the turn bar; Haste stacks, so repeated applications add independent instances up to the status-effect cap.
+* Haste [Channel 1]: Increases Speed by 20%, including how fast the character advances on the turn bar.
 * True Aim [Channel 1]: Increases Accuracy by 30%.
 * Clarity [Channel 1]: Increases Resistance by 30%.
 * Keen Edge [Channel 1]: Increases Critical Chance by the applier's own Critical Chance, snapshotted at application.

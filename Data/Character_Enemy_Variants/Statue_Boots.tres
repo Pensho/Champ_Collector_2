@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_p62yr"]
 [ext_resource type="Resource" uid="uid://bskvmtf181qhi" path="res://Data/Character_Skill_Variants/Attack_Skills/Wind_the_Mainspring.tres" id="2_d65ud"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_u4t3b"]
+[ext_resource type="Resource" path="res://Data/Character_Skill_Variants/Attack_Skills/Escapement_Kick.tres" id="3_kick"]
 
 [resource]
 script = ExtResource("2_u4t3b")
@@ -12,10 +13,10 @@ _texture = "res://Assets/Champ_Collector/Creatures/Opponents/Gear_Statues/Statue
 _rarity = 4
 _faction = 4
 _role = 13
-_skills = Array[ExtResource("1_nk3ru")]([ExtResource("2_d65ud"), ExtResource("2_d65ud"), ExtResource("2_d65ud")])
-_thematic_hint = "Winding up, turn by turn, toward something faster."
+_skills = Array[ExtResource("1_nk3ru")]([ExtResource("3_kick"), ExtResource("2_d65ud")])
+_thematic_hint = "Winds itself tight, then spends the spring all at once."
 _health = 260
-_speed = 90
+_speed = 80
 _attack = 40
 _defence = 70
 _accuracy = 40
