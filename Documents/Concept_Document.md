@@ -228,7 +228,7 @@ Current roles, their identity and purpose exist as follows:
     - Purpose: Damage
     - Passive: Couched Lance [Channel 2] - Rending Charge deals x% more damage per turn-bar section between the Lancer and its target (counting both their own sections, so the same section is 1 and opposite ends of the bar is 5), then throws the Lancer back 10% of the turn bar per section charged.
         - +9% per turn-bar section Uncommon, +12% Rare, +15% Epic, +18% Legendary
-    - Fielded by: `Centaur_Lancer.tres`, `Knight.tres`
+    - Fielded by: `Centaur_Lancer.tres`, `Knight.tres`. `Hunter.tres`
 - Alchemist
     - A support character that focuses on buffing allies and debuffing enemies through various concoctions. Signature zone: Catalyst Cloud (see section 3.2.4.1). Primary attributes: Knowledge, Mysticism.
     - Purpose: Debuffer, Buffer

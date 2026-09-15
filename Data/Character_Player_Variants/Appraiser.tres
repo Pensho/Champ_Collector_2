@@ -14,8 +14,8 @@
 [resource]
 script = ExtResource("2_preset")
 _name = "Appraiser"
-_texture = "res://Assets/Champ_Collector/Creatures/Thief/Thief_0001.png"
-_normal_map = "res://Assets/Champ_Collector/Creatures/Thief/Thief_0001_Normal_Map.png"
+_texture = "res://Assets/Champ_Collector/Creatures/Appraiser/appraiser.png"
+_headshot_region = Rect2(0.3, 0, 0.4, 0.48)
 _rarity = 2
 _role = 8
 _skills = Array[ExtResource("1_skill")]([ExtResource("3_sizing_cut"), ExtResource("4_flaw_analysis"), ExtResource("5_full_appraisal")])
