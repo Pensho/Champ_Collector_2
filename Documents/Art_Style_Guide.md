@@ -138,12 +138,17 @@ Color is assigned by **what a thing is made of**, not by a global palette limit.
 | Shadow black | — | per character | Band 1 fill. Same value as the outline, own hue. See 2.2. |
 | Bone white | `#EFE6D2` | — | Highlights and eyes only. |
 | Metal, pewter | `#6E727A` | `#3F444B` | Non-accent hardware. Buckles, fittings, plain blades. |
-| Skin, warm | `#C08A63` | `#7E5238` | The default. |
-| Skin, pale variant | `#D6BBA0` | `#937059` | Earned by concept, not chosen for looks. The Bloodmage uses it. |
+| Skin, pale | `#D6BBA0` | `#937059` | The lightest row. The Bloodmage uses it. |
+| Skin, warm mid | `#C08A63` | `#7E5238` | Was the default; it is now one row of five. |
+| Skin, olive | `#A8875A` | `#6B5335` | Yellow-green cast rather than red. |
+| Skin, brown | `#8C5A3A` | `#4F3122` | |
+| Skin, deep brown | `#6A4028` | `#3A2318` | Dark row. Read 8.4.1 before using it. |
+
+All five rows are shared slots and none of them is a default. Measure each to L\* before use and keep the pair inside two adjacent bands like any other material. The ramp is continuous — a row between two of these is legal, and the table exists so that a character picks a stated position on it rather than inheriting whatever the model returns.
 
 Leather **left the shared slot list** — see 3.4.
 
-The two skin rows were previously specified only in `Concept_Document.md` 7.1 even though the acceptance checklist and the general block both treat skin as a shared slot. They are recorded here now and the concept document no longer holds them.
+The skin rows were previously specified only in `Concept_Document.md` 7.1 even though the acceptance checklist and the general block both treat skin as a shared slot. They are recorded here now and the concept document no longer holds them.
 
 ### 3.3 Per-subject slots — where the variety lives
 
@@ -343,6 +348,8 @@ Run before any asset enters the project. Section 7.1 applies to everything; the 
 - [ ] Accent has not bled onto skin, hair or background
 - [ ] Face is lit, eyes are visible, head proportion is adult
 - [ ] An age is stated and the face nouns are not the last character's cluster
+- [ ] Skin row named from 3.2, face-structure cluster and hair mass all stated, and none repeats the last three approved characters (8.4.6)
+- [ ] No region, nationality or people name anywhere in the prompt
 - [ ] Expression reads through brow, tilt or mouth line
 - [ ] Eyes hand-placed and consistent with the last approved character
 - [ ] Limbs carry light detail, not blank
@@ -430,6 +437,8 @@ the overworld class will need the same treatment.
 
 Three characters cost several rounds each because the prompt was being rewritten when the concept was the thing that was undecided. So start by settling who/what the character is, what is their place in the world, what do they do?
 
+**A Role is a class, and a character is a person holding it.** Several characters can field the same Role — the Lancer is held by a knight, a centaur outrider and a forest hunter — so the two own different things and this chapter is written about characters throughout. The **Role** owns the kit, the accent registry entry (8.9), the silhouette family (8.3) and the element from outside reality, because all four are the mechanics made visible. The **character** owns the occupation, the costume, the materials in its per-subject slots, the face, the skin row and the hair (8.4.6). Where a section below says Role and means the figure in front of you, read character.
+
 **Every character needs an occupation.** Bar Brawler, Architect and Alchemist worked on the first or second attempt because each names a job, and a job comes with clothes, tools and a posture. "Bloodmage" names a magic system and left the person unspecified, which is why it took five attempts. Before writing a prompt, answer: *what does this person do for a living, and who employs or shuns them?*
 
 **Check the concept for internal conflict.** "Shunned outcast" and "cool playable champion" pull against each other, because low status is what outcast looks like. No wording resolves that. Either the status changes (feared instead of shunned) or the visual reading of it does.
@@ -502,8 +511,10 @@ This section exists because every failure mode here was expensive to find.
 - **The face is lit.** Shadow falls on the side of the head away from the light and beneath the jaw, never across the eyes.
 - **Eyes are two bone white almond shapes, each with a solid ink black pupil.** Sized to read clearly at 300 px, but **no larger than an adult eye**.
 - **Realistic adult head proportion.** State it explicitly in the prompt.
-- **The head is the lightest region of the figure.** One bright area in a mostly dark figure pulls the eye straight to the face at any size.
+- **The head is the highest-contrast region of the figure.** The lit plane of the face sits a full band above everything touching it, band 1 never crosses it, and the eyes carry bone white. That is what pulls the eye to the face at any size.
 - **Hair and beard are single flat masses.** No interior detail.
+
+**On the previous wording.** This rule used to read *the head is the lightest region of the figure*, which was true of every figure built on the two skin rows the guide had at the time and stopped being true the moment 3.2 gained a dark row. It was always a local-contrast rule wearing a value rule's clothes. A figure on the deep brown row satisfies it by keeping the shadow mass off the face and letting the coat, the hair and the collar fall to band 1 around it, so the face is the light shape in its own neighbourhood without being the lightest thing on the canvas. State the surrounding darkness in the prompt when the skin row is dark; left unsaid, the model lights the chest instead and the face sinks.
 
 #### 8.4.2 State an age, and vary the noun cluster
 
@@ -536,6 +547,37 @@ A hidden face is permitted only when concealment **is** the character's identity
 A hood is not automatically a concealed face. Worn up but pushed back off the brow, it keeps the silhouette and the accent placement while leaving the whole face open and lit — this is how the Sorcerer keeps his hood.
 
 Fodder enemies are the one place faces stay dark and anonymous, which is a free legibility win and matches the reduced detail tier in section 9.1.
+
+#### 8.4.6 Appearance is stated, or the model picks it
+
+Left unstated, Leonardo returns one recurring head across the whole roster: mid-brown skin, straight black hair, broad flat cheekbones, a strong straight nose. It is not a bad head. The problem is that it arrived on character after character without anyone choosing it, so a roster that is meant to be drawn from four factions and half a dozen regions reads as one extended family from one place. This is the same failure as 8.4.2's forty-year-old handsome man, one level deeper: age was being stated by then, and the figures still converged.
+
+**Appearance belongs to the character, not to the Role.** A Role is a class, and a class is held by several characters from different walks of life — the Lancer is fielded by a knight, a centaur outrider and a forest hunter, and nothing about the kit says what any of them looks like. So appearance is assigned in the character's own subject block, alongside its occupation and costume, and it is never recorded in the accent registry or anywhere else that is keyed by Role. Two characters on the same Role should look less alike than two characters on different ones.
+
+**Specify with feature nouns, never with a label.** Region, nationality and people names behave exactly like the genre attractors in 5.3: they carry costume, props and setting along with the face, and they will quietly overwrite the occupation the character was built on. A named origin also imports a real-world culture into a world that has its own. Three nouns do the work with none of that:
+
+1. **The skin row**, named from the 3.2 table.
+2. **The face structure** — two or three nouns for the shape of the skull and features, from a cluster no recently approved character used.
+3. **The hair as a mass** — length, how it is bound, and the shape of its outline, since 8.4.3 makes hair a silhouette tool and it carries as much of the read as the face does at 300 px.
+
+Worked examples of the third element, which is the one most often left vague: tight coiled hair cropped close reads as a rounded mass hugging the skull; the same hair grown out reads as a wide soft dome and is one of the strongest head silhouettes available. Straight hair takes a hard-edged mass with a clean parting line. Loose curls take a broken outline, which is the one to avoid on a figure whose silhouette is already busy. All of them stay flat inside, as 8.4.1 requires.
+
+**Face-structure clusters, for rotation.** Pick one per character and check the last three approved characters before writing:
+
+| Cluster | Nouns |
+|---|---|
+| Round and heavy | round jaw, full cheeks, short snub nose, low brow ridge |
+| Narrow and fine | narrow face, straight thin nose, small pointed chin, fine brow |
+| Broad and flat | wide cheekbones, broad flat nose, heavy jaw, shallow brow |
+| Long and angular | long face, high narrow bridge, hollow cheek, square chin |
+| Gaunt and severe | shelf brow, hooked nose, hard-set jaw, hollow cheek |
+| Young and unmarked | soft jawline, smooth unlined skin, even features, wide-set eyes |
+
+The gaunt-severe row is the model's own favourite and needs a stated age pushing against it every time (8.4.2). Broad-and-flat is close to the unstated default described above, so a character on it should be there on purpose.
+
+**Rule of thumb: no more than a third of the fielded roster on any one skin row, and no two of the next three approved characters on the same row.** The check that matters is the same one 3.6 uses for cool neutrals — a running count, looked at when a new character is designed, not a quota applied to the whole roster at once. Only three champions are fielded at a time, so what the player actually sees is any three of them standing together.
+
+**What does not change.** The accent never lands on skin, at any row (8.9). Scarring, brands and glyph marks are band 1 shapes, which means they read as silhouette against a light skin row and need to sit on the lit plane or against an edge to read at all on a dark one (8.5). Hair and beard stay flat masses with no interior detail. And the head still carries the heaviest light on the figure, by the contrast rule in 8.4.1 rather than by being pale.
 
 ### 8.5 Wear is shape, not texture
 
@@ -1557,6 +1599,7 @@ Recorded so they are not retried. Each of these was generated and judged, not re
 - **Skill art on the flat icon rules (12.1–12.2).** Burning Bolas generated three ways — three values, flat fields, large simple shapes. All three came back too simple, with no level of detail, and read as cartoon. The rules had removed the carved line that makes woodcut rich. Replaced by the chiaroscuro class in 12.4.
 - **Zone art as single-ink shapes.** Gilded Deck ship and waves as one-color woodcut silhouettes, recolored in the engine by `modulate`. Technically flexible, but the result lacked the color the zone needed — waves are expected to be blue and white and the ship colored. Replaced by muted multi-color fills with tonal outlines (13.3.1).
 - **Skill art in four other print traditions.** Renaissance black-line, white-line wood engraving, ukiyo-e and expressionist woodcut were generated on the Bolas subject alongside chiaroscuro. Not failures, but chiaroscuro was clearly best and is the one closest to this guide's flat-band foundations. Revisit only if chiaroscuro fails at display size.
+- **Unstated appearance.** Not a generation failure but a documentation one, and the second of its kind after the desaturated garment below. With no skin row, face cluster or hair mass in the prompt, the model returns the same head every time — mid-brown skin, straight black hair, broad flat cheekbones — and the roster converged on one look while every individual output passed its checklist. See 8.4.6.
 - **Desaturated garment main as an unwritten default.** Not a generation failure but a documentation one — six characters were built on a rule nobody had written, and the roster came out as grades of beige with one muted accent each. See 3.5.
 - **Plague Doctor with historically accurate props.** A straight lancet-tipped cane, a hand bellows and a chest rack of vials. Legible, but clean, mundane and with no fantasy content; the cane was the least interesting shape in the figure, and the vial rack duplicated the Alchemist's chest. This is the case that produced the 8.1 rule on elements from outside reality.
 - **Plague Doctor with a hat, an insect stinger and a chest seed-pod.** Not a failure — the second pass was strong and proved the 8.1 rule — but superseded. A woman in her fifties did not fit the intended character, the chest pod still sat in the region the Alchemist owns, and smoke from beak vents split the kit across two objects. Replaced by the version in 8.8.1. The stinger remains a good weapon for a future Role from the same jungle.
@@ -1585,6 +1628,7 @@ Collected so they are visible in one place rather than buried in the sections th
 
 - **The pre-lever five.** Whether the levers are a requirement or a permission, and what happens to the five characters approved under the old arithmetic. See 3.5; act on it at six characters rather than at fifteen.
 - **Approved Roles without an element from outside reality.** Only the Architect and the Plague Doctor clearly carry one. The rest of the approved roster predates the 8.1 rule and either gets a revised tool or focal element or carries a visible split — the same decision as the pre-lever five, and cheapest to settle alongside it.
+- **Characters approved before 8.4.6.** The existing roster was generated without a stated skin row or face cluster and sits mostly on the model's default head. Recommendation is to leave them and apply 8.4.6 from here, exactly as with the pre-lever five in 3.5, and to revisit once three characters built under the rule can be composited beside three that were not. Regenerating before that comparison exists is guessing.
 - **Warlord accent.** `#6B7A88` is a neutral, not an accent. Either it becomes a real color or this Role is declared the drab one on purpose (8.9.1).
 - **Clockwork Spire scene light.** Unassigned for both variants (10.2, 10.6.2).
 - **The white inner city.** A light-dominant environment against figures that are half band 1. Either the midband keeps committed darks or the character rules bend for one variant (10.6).
