@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="CharacterPreset" format=3 uid="uid://b68hmmppqg4nq"]
+
+[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_65hoj"]
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="2_5g4o6"]
+[ext_resource type="Resource" uid="uid://bdxe6eob3xgsh" path="res://Data/Attribute_Weights/Fierce.tres" id="2_em26y"]
+[ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="3_52fwd"]
+[ext_resource type="Resource" uid="uid://i4pibjinfd3x" path="res://Data/Attribute_Weights/Gluttonous.tres" id="3_pwj0y"]
+[ext_resource type="Resource" uid="uid://bvo4uj38cgjg3" path="res://Data/Attribute_Weights/Calculating.tres" id="4_2vooj"]
+[ext_resource type="Resource" uid="uid://c60oh3whnodsm" path="res://Data/Attribute_Weights/Resilient.tres" id="5_jwk2c"]
+[ext_resource type="Resource" uid="uid://bejf1a62v41gq" path="res://Data/Attribute_Weights/Marksman.tres" id="6_ldgrk"]
+[ext_resource type="Resource" uid="uid://dr1jii8xbnp26" path="res://Data/Character_Skill_Variants/Attack_Skills/Lance_Thrust.tres" id="8_0hn67"]
+[ext_resource type="Resource" uid="uid://dvsuv0ji1ueq7" path="res://Data/Character_Skill_Variants/Attack_Skills/Disarm.tres" id="9_jqf8d"]
+[ext_resource type="Resource" uid="uid://m3ioadmwsktt" path="res://Data/Character_Skill_Variants/Attack_Skills/Rending_Charge.tres" id="10_0gkp1"]
+[ext_resource type="Resource" uid="uid://dlancertr3sc0" path="res://Data/Character_Traits/Lancer_Trait.tres" id="11_7jct6"]
+
+[resource]
+script = ExtResource("3_52fwd")
+_name = "Hunter"
+_texture = "res://Assets/Champ_Collector/Creatures/Hunter/hunter.png"
+_headshot_region = Rect2(0.3, 0.05, 0.4, 0.48)
+_rarity = 2
+_faction = 2
+_role = 3
+_skills = Array[ExtResource("2_5g4o6")]([ExtResource("8_0hn67"), ExtResource("9_jqf8d"), ExtResource("10_0gkp1")])
+_health = 75
+_speed = 50
+_attack = 60
+_defence = 60
+_accuracy = 40
+_resistance = 40
+_mysticism = 10
+_knowledge = 30
+_attribute_weight_types_available = Array[ExtResource("1_65hoj")]([ExtResource("2_em26y"), ExtResource("3_pwj0y"), ExtResource("4_2vooj"), ExtResource("5_jwk2c"), ExtResource("6_ldgrk")])
+_trait = ExtResource("11_7jct6")
+_preset_path = "res://Data/Character_Player_Variants/Hunter.tres"
+metadata/_custom_type_script = "uid://ftdwxfh8y3n1"
