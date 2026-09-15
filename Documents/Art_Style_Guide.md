@@ -184,6 +184,8 @@ This section exists because six characters in, every figure was arriving as a di
 
 **Saturating the material neutral as well is a third step, and it is not free.** It was taken on the Sorcerer and it worked, because garment, neutral and accent sat at three clearly separated values. But it removes the thing the accent pushes against, and it is the first change to roll back if a figure comes back noisy or if the accent stops reading at 300 px. Treat it as per-character permission, not as a new default.
 
+**What is *not* the fix either:** lowering the accent cap's opposite — spending more of the figure on the accent. A figure that reads flat is usually a *detail* budget problem, not a color one; see 8.6.1 before touching non-negotiable 3.
+
 **What is *not* the fix:** the scene-light LUT (section 6). It tints everything uniformly, so it moves area mood without touching the sameness *within* a figure. Keep it as the mood dial it is.
 
 **Open decision.** The five characters approved before these levers were built under the old arithmetic. The three strongest outputs on the roster so far are the Symbiote and the Architect, both pre-lever, and the Plague Doctor, lever-built (8.8.1–8.8.3) — so the split is not yet costing what this section assumed, and regenerating the five is not the default. Composite a lever-built character next to the approved Bar Brawler before going further: if the new one sings and the Brawler now reads as a placeholder, regenerate; if the pre-lever figures keep holding their own, the levers are a permission rather than a requirement and the old arithmetic stays legal. Cheaper to settle at six characters than at fifteen.
@@ -274,6 +276,8 @@ Attractors hit so far, with the words that summoned them:
 | Modern outdoorsman | travel coat, gaiters, pack roll, tarp, harness, staff as walking pole |
 | Generic wizard | robe, hood, staff, tome, wand, "sorcerer" |
 | Cartoon | soft floppy cap, wide grin, `wiry`, large head relative to body |
+| Roman / legionary | close-cropped grey hair, sleeveless tabard over a linen tunic, laced boots, panel divisions down the front |
+| Wuxia sage | long beard, topknot, flowing robe, a large round weapon, an old man |
 
 When an attractor lands, rewrite the costume from a different occupation rather than negating. The Bloodmage escaped Dracula by becoming a debt collector in a uniform; nothing about the words "not a vampire" would have done it.
 
@@ -333,7 +337,7 @@ Run before any asset enters the project. Section 7.1 applies to everything; the 
 - [ ] Bone white is under 5% and is not doing area work
 - [ ] Ground line, horizon, camera height and light direction match the spec
 - [ ] Wear and detail are structural, not textural
-- [ ] Detail concentrated in one focal region, not spread evenly
+- [ ] Detail is tiered rather than uniform, and no region of the asset is left empty
 - [ ] Post-processing pass applied with the same settings as everything else
 - [ ] Viewed at final in-game size, not full resolution
 - [ ] Composited into the actual scene alongside an existing asset before acceptance
@@ -349,10 +353,13 @@ Run before any asset enters the project. Section 7.1 applies to everything; the 
 - [ ] Face is lit, eyes are visible, head proportion is adult
 - [ ] An age is stated and the face nouns are not the last character's cluster
 - [ ] Skin row named from 3.2, face-structure cluster and hair mass all stated, and none repeats the last three approved characters (8.4.6)
-- [ ] No region, nationality or people name anywhere in the prompt
+- [ ] Face clause states a skin row, a face-structure cluster and a hair mass, with a region label where one is wanted (8.4.6)
 - [ ] Expression reads through brow, tilt or mouth line
 - [ ] Eyes hand-placed and consistent with the last approved character
-- [ ] Limbs carry light detail, not blank
+- [ ] Three levels of detail present: focal region, garments, limbs — none of them left empty (8.6.1)
+- [ ] Skin carries four engraved lines at most, each at contour weight (8.4.1)
+- [ ] Counted groups within budget, or over it deliberately with a cut order recorded (8.6.2)
+- [ ] Nothing hanging at the belt or hip breaks the outer silhouette (8.5.1)
 - [ ] The Role's occupation is legible from the costume alone, with no name attached
 - [ ] One element on the figure could not exist in our world, reads in the silhouette, and derives from the kit (8.1)
 - [ ] No signature prop shares a type with another Role's (vials, books, lanterns and similar)
@@ -486,6 +493,7 @@ Each Role must be identifiable in pure black at 300 px. Assign a distinct silhou
 | Narrow and vertical | Thief, Diviner | tight outline, no shoulder mass |
 | Planted diagonal | Sorcerer | mid-calf hem over boots, yoke across the back, rod planted forward across the figure |
 | Forward wedge | Plague Doctor | weight forward, beak projecting right at head height, a pole levelled forward in parallel with a caged mass at its end, high hair knot as the only vertical at the head |
+| Wide column with a disc | Appraiser | heavy square shoulder mass, straight upright stance, a great toothed wheel almost his own height standing behind the figure and breaking the outline above and to both sides |
 
 **Robed Roles are crowded.** Cultist, Diviner and Sorcerer are all robed, and the Sorcerer stays out of that family on two cues: the hem is cut at mid-calf over visible boots rather than falling to the ankle, and the planted rod puts a hard diagonal through a silhouette the other two hold as a clean vertical. Giving up the ankle hem is the single cheapest separation available to any robed character.
 
@@ -513,6 +521,8 @@ This section exists because every failure mode here was expensive to find.
 - **Realistic adult head proportion.** State it explicitly in the prompt.
 - **The head is the highest-contrast region of the figure.** The lit plane of the face sits a full band above everything touching it, band 1 never crosses it, and the eyes carry bone white. That is what pulls the eye to the face at any size.
 - **Hair and beard are single flat masses.** No interior detail.
+- **Skin is a counted tier, not a flat field and not free.** Face, neck and bare limbs carry **no more than four engraved lines in total**, each cut as thick as the contour line. Anything thinner than the outline is texture: it reads as noise at 300 px and dies in the quantize step. Scars and brands are band 1 shapes (8.5) and are counted separately.
+- **Age is carried by structure first, by lines second.** The jaw, the neck, the build and the hair mass do most of it. The permitted marks are a supplement, not the method — an older face that needs more than four lines to read as old has the wrong head shape.
 
 **On the previous wording.** This rule used to read *the head is the lightest region of the figure*, which was true of every figure built on the two skin rows the guide had at the time and stopped being true the moment 3.2 gained a dark row. It was always a local-contrast rule wearing a value rule's clothes. A figure on the deep brown row satisfies it by keeping the shadow mass off the face and letting the coat, the hair and the collar fall to band 1 around it, so the face is the light shape in its own neighbourhood without being the lightest thing on the canvas. State the surrounding darkness in the prompt when the skin row is dark; left unsaid, the model lights the chest instead and the face sinks.
 
@@ -554,11 +564,22 @@ Left unstated, Leonardo returns one recurring head across the whole roster: mid-
 
 **Appearance belongs to the character, not to the Role.** A Role is a class, and a class is held by several characters from different walks of life — the Lancer is fielded by a knight, a centaur outrider and a forest hunter, and nothing about the kit says what any of them looks like. So appearance is assigned in the character's own subject block, alongside its occupation and costume, and it is never recorded in the accent registry or anywhere else that is keyed by Role. Two characters on the same Role should look less alike than two characters on different ones.
 
-**Specify with feature nouns, never with a label.** Region, nationality and people names behave exactly like the genre attractors in 5.3: they carry costume, props and setting along with the face, and they will quietly overwrite the occupation the character was built on. A named origin also imports a real-world culture into a world that has its own. Three nouns do the work with none of that:
+**Specify with three nouns, and add a region label where one is wanted.**
 
 1. **The skin row**, named from the 3.2 table.
 2. **The face structure** — two or three nouns for the shape of the skull and features, from a cluster no recently approved character used.
 3. **The hair as a mass** — length, how it is bound, and the shape of its outline, since 8.4.3 makes hair a silhouette tool and it carries as much of the read as the face does at 300 px.
+4. **A region or origin label, when the character is meant to read as from somewhere.** Alongside the nouns, not instead of them.
+
+**On the label.** This section previously banned region, nationality and people names outright, on the reasoning that they behave like the genre attractors in 5.3 and drag costume and props along with the face. That was never generated and judged — it was inferred from the attractor table — and when it was finally tested on the Appraiser (8.8.4) it failed both halves.
+
+The nouns alone did not work. A full cluster — wide flat cheekbones, broad flat nose, heavy square jaw, shallow brow — with a stated age and a stated hair mass returned a face reading as Roman, and no rewriting of the noun list moved it. The intended read was reached only by adding the label, and it was reached immediately.
+
+The costume did not drift. Two generations were run differing in that phrase alone. The tabard, boots, collar, wheel and hip trinkets came back unchanged; only the head moved. So in the face clause, a region label does not behave like a genre attractor, and the analogy this section was built on does not hold in that position.
+
+**How to use it.** Put the label inside the face clause with the feature nouns, not as a standalone sentence, and check the costume at acceptance like any other clause. Keep the nouns — the label sets the read and the nouns keep the character off the model's default within it. One caution that survives from the old rule and is separate from the generation question: a named origin imports a real-world culture into a world with its own four factions. The prompt is a private document, so a label in it only reaches the fiction if it is allowed through into the character's name, dress or dialogue. Keep player-facing vocabulary in the world's own terms.
+
+**Confidence.** Tested on one character. Watch the next two before treating it as settled, and record it in 17 if a costume does drift.
 
 Worked examples of the third element, which is the one most often left vague: tight coiled hair cropped close reads as a rounded mass hugging the skull; the same hair grown out reads as a wide soft dome and is one of the strongest head silhouettes available. Straight hair takes a hard-edged mass with a clean parting line. Loose curls take a broken outline, which is the one to avoid on a figure whose silhouette is already busy. All of them stay flat inside, as 8.4.1 requires.
 
@@ -589,6 +610,23 @@ Wear that reads at 300 px is structural: a sleeve burned off at the elbow, a hem
 
 **Scarring is band 1, never the accent.** Accent on skin breaks the acceptance checklist. Burn marks, brands and glyph scars are solid ink black shapes.
 
+#### 8.5.1 Layering, and history carried as structure
+
+Kit-derived wear (above) says how a character fights. It does not say where they came from, and a roster where every figure's only story is its job is thin in a way the accent budget gets blamed for and is not responsible for (8.6.1).
+
+**Layer the clothing.** A single garment over a tunic gives one hem, one collar and one closure, and there is nothing else for the eye to do. Two or three garments in different materials give overlapping hems, an asymmetric closure, a border where one meets another, and a second garment hue that costs nothing from the accent. The Appraiser's single-shoulder quilted mantle over a mid-calf tabard over a sash is the worked example (8.8.4).
+
+**Four kinds of history, all of them structural.** Each is a shape at 300 px, not a texture, and none of them is the accent:
+
+- **Kept for warmth or protection.** A garment carried long past its season or its life — a heavy mantle worn on one shoulder indoors, a padded layer under a working garment. It says the character has been somewhere cold, or expects to be.
+- **Cultural or inherited cut and motif.** A border band with a repeated geometric motif, an unusual closure — wrapped and fastened at the hip rather than buttoned down the front — a hem or sleeve cut nobody else on the roster wears. This is the cheapest of the four and it carries the furthest, because a cut reads in silhouette.
+- **Symbolic objects the character keeps on them.** Held to the counted-group budget and clustered in one region. Not the accent color, or they compete with the identity system.
+- **Repair rather than damage.** A patch in a *different weave* sewn in with hard angular stitching reads as something mended and kept; a tear reads as something merely worn out. The first says the garment mattered to someone; the second says nothing.
+
+**Do not spend the accent on any of this.** The accent is the identity signal (8.9), and it has to stay clustered in the head and chest region at 15–20% to keep working on the card border, damage numbers and skill art. Richness comes from a second garment hue, from layering, and from these four — not from scattering the accent down the figure. If a figure still reads thin after all of that, the next lever is extending the accent to one further region, named explicitly; it is never spreading it evenly.
+
+**Hanging objects and the silhouette.** Anything on a chain or a cord at the hip or the belt is exactly what nibbles the outer contour, which is a reject under 7.1 however good the rest is. State that the cluster hangs in front of the garment and clear of the outline, and check that edge first in the output.
+
 ### 8.6 The canonical general block
 
 Substitute the bracketed slots from section 3. Everything else is identical in every character prompt, word for word. The repetition is doing most of the consistency work.
@@ -603,10 +641,12 @@ skin, {GARMENT MAIN}, {MATERIAL NEUTRAL}, {LEATHER} leather straps and
 boots, dull pewter grey metal fittings, all flat and unmodulated, warm bone
 white reserved for small highlight shapes and the eyes, outline black
 tinted slightly toward blue-violet, light from the upper left casting a
-narrow bone white edge along the upper left contour, {FOCAL REGION}
-carrying the heaviest engraved detail and reading as the focal point of the
-figure, the rest of the body held as large flat angular panels with only
-sparse structural marks, all marks large and structural, with saturated
+narrow bone white edge along the upper left contour, three levels of
+detail: {FOCAL REGION} carrying the heaviest engraved detail and reading as
+the focal point of the figure; {GARMENTS} carrying moderate engraved detail
+through seams, panel divisions, border bands and fastenings; the limbs and
+boots carrying light detail through wraps and fold lines rather than being
+left empty, all marks large and structural, with saturated
 {ACCENT} as the single accent covering roughly a fifth of the figure, flat
 and uniform with little texture, used only on {PLACEMENT}, hand-carved edge
 quality.
@@ -617,6 +657,24 @@ this Role's own trade and materials rather than reusing the list from the last
 character. The test is size, not vocabulary: any mark that survives the round-trip in section 6 qualifies.
 
 **Always use numeric counts, never adjectives.** "Three or four wrap bands" is a target the model can hit. "Moderate detail" is not, and it will revert to maximalism.
+
+#### 8.6.1 The detail budget, and what was actually flattening the figures
+
+The block previously read `the rest of the body held as large flat angular panels with only sparse structural marks`. It has been replaced by the three-level spec above, and the reason is worth recording because it was misdiagnosed for a while.
+
+Figures kept arriving with nothing to look at except the weapon, the face and one accent, and the accent cap (non-negotiable 3) was the suspected cause. It was not. That clause is a *detail* budget, not a color one, and it was instructing the model to empty every part of the figure the focal region did not name. A single focal region plus empty panels everywhere else gives exactly two or three things per character, which is what the outputs showed.
+
+The evidence was already in this chapter. The Symbiote (8.8.2) and the Architect (8.8.3) are two of the three strongest outputs on the roster, and both use a two-level spec — moderate detail across torso and clothing, light detail on the limbs — rather than the flat-panel clause. 8.6 already listed that as one of the rules to relax first. The three-level version above keeps the focal region those two lack while restoring the middle tier they had.
+
+**The accent cap stays.** It is not what was flattening the figures, and dropping it costs the identity system (8.5.1, 8.9) for a problem it was not causing.
+
+**The spec has one side effect, and it is skin.** The flat-panel clause suppressed face and limb detail as a by-product of suppressing everything, so no skin rule was ever needed and 8.4.1 did not have one. Remove the clause and a stated age above fifty is read as licence to carve every wrinkle. The Appraiser arrived that way in-game. The rule now lives in 8.4.1, and it took three passes to find because the first two reached for adjectives: fully detailed, then completely flat, neither of which is what the rest of the roster does. The fix was the one 5.4 already prescribes for everything else — state a number, and state the mark weight. Figures with a stated age above fifty, or with unusually large areas of bare skin, need it in the subject block as well as the general block.
+
+#### 8.6.2 Counted groups
+
+Three counted groups in three regions was the working budget through the first seven characters, and it remains the default. It is a budget, not a limit: the Appraiser (8.8.4) carries five deliberately, because the trinkets at his hip *are* his occupation and cutting them to three would cut the character.
+
+**When a figure goes over, write the cut order down with the prompt.** A variant that comes back busy is then one edit away from a fix instead of a fresh judgement call. Cut smallest and least meaningful first — decorative counts before kit-derived ones, and the groups carrying history (8.5.1) last.
 
 **The three strongest outputs so far are the Plague Doctor (8.8.1), the Symbiote (8.8.2) and the Architect (8.8.3).** Two of the three are pre-lever, and each breaks something in this chapter: the Symbiote and the Architect carry an untinted band 1 and spread detail rather than holding a focal region, and the Symbiote's accent lands on the head. Those rules are the ones to relax first when a figure fights them — see the open decision in 3.5. The concealed face in 8.4.5 is not among them; it stays a strict exception the Architect earns and the next Role has to earn again.
 
@@ -764,6 +822,33 @@ headroom.
 
 Counted groups: three or four coat fold lines, three rolled plans at the chest, three armature joints — three, in three regions, on a figure with no face to compete with them.
 
+#### 8.8.4 Reference example — Appraiser (post-levers, approved)
+
+The working example of four things this chapter learned late: the region label in the face clause (8.4.6), the three-level detail spec (8.6.1), history carried as structure (8.5.1), and a counted-group budget deliberately exceeded with a cut order recorded (8.6.2). It is also the first figure built on two saturated garment hues at once — deep madder tabard under a deep indigo mantle — which is the 3.5 third step taken on purpose rather than by drift.
+
+Slots: garment main saturated deep madder red sleeveless assayer's tabard, second garment deep indigo quilted mantle, material neutral bone buff heavy linen, leather tar-dark blackened, shadow black ash-blue-black, skin olive, accent antique gold on the lens ring at the wheel hub, the stamped collar plates and one gold gauge disc among the hip trinkets, focal region the wheel hub and the trinket cluster. Occupation: a guild assayer who prices salvage hauled out of dead ruins.
+
+Decisions recorded with it:
+
+- **Act placement is unresolved.** `Concept_Document.md` 5.5 lists the Appraiser among Act 1 Reclaimed City characters, and the toothed wheel is Clockwork Spire vocabulary. The figure was built as a Reclaimed City guild assayer carrying an instrument nobody alive can make, which reads, but the concept document has not been updated either way.
+- **The wheel is dark pewter iron, never brass.** A disc that size in brass eats the whole accent budget and collides with the Architect's brass (8.9). Gold is confined to the hub ring, the collar and one hip disc.
+- **The build needed naming twice.** `heavy broad-built`, `barrel chest` and a round-and-heavy face cluster together returned fat rather than powerful. `Thickset`, `wrestler's build`, `slabbed shoulders` and weight carried high in the shoulders and back is the phrasing that worked, and it avoids `hard muscle` and `bare chest`, which are the barbarian basin (5.3).
+- **A fourth long-shaft Role was avoided** by carrying the wheel on the back rather than on a pole (8.3).
+- **No apron and no chest rack.** Apron is Bar Brawler and Alchemist; the chest is Alchemist and Architect. The hip was unclaimed and is where the trinkets went.
+- **History without the accent.** The single-shoulder mantle is warmth kept past its life, the elbow patch is a different weave sewn in, the stepped-square border is an inherited cut, and the knotted wrist cord is a personal count. None of them is gold.
+- **Skin marks counted, three stated against a permitted four.** The gap is deliberate: it gives the model somewhere to put a fourth mark rather than doubling one of the three. This is the figure the 8.4.1 skin rule was found on, and it has more bare skin than anyone on the roster — sleeveless tabard, sleeves pushed above the elbow, bare hands. If a future figure fights the four-line budget, check whether it is carrying that much skin before changing the number.
+
+Recorded whole, general block included, as generated:
+
+```
+bold woodcut illustration with engraved structural linework, very thick uniform black contour outline on the outer silhouette, clean uninterrupted silhouette edge, flat color fields, hard-edged shadows, high contrast with large areas of solid shadow in a deep ash-blue-black, that shadow mass and the outline sitting at the same value, colors assigned by material: olive skin, a saturated deep madder red sleeveless assayer's tabard, a deep indigo quilted mantle, bone buff heavy linen under-tunic and wraps, tar-dark blackened leather straps, sash and boots, dull pewter grey metal fittings, all flat and unmodulated, warm bone white reserved for small highlight shapes and the eyes, outline black tinted slightly toward blue-violet, light from the upper left casting a narrow bone white edge along the upper left contour, three levels of detail: the hub of the wheel and the cluster of trinkets at his left hip carry the heaviest engraved detail and read as the focal points of the figure; the mantle, tabard and sash carry moderate engraved detail through quilting seams, panel divisions, border bands and strap fastenings; the limbs and boots carry light detail through wraps and fold lines rather than being left empty; all skin — the face, neck, forearms and hands — held as flat unbroken color carrying no more than four engraved lines in total, each one large and structural, all marks large and structural, with saturated antique gold as the single accent covering roughly a fifth of the figure, flat and uniform with little texture, used only on the lens ring at the hub of the wheel, the stamped plates of the collar at his throat and a single gold gauge disc among the hip trinkets, hand-carved edge quality.
+full body character, a thickset powerfully built man in his sixties with a wrestler's build, heavy slabbed shoulders, a deep chest and a thick neck, the weight carried high in the shoulders and back, standing in a straight strong posture, a great toothed wheel of dark pewter iron almost as tall as his own height carried on his back, his right hand as a fist held in his left hand, the wheel's rim carrying cutting teeth each cut as a different faceted gem shape with four of them caught out of line with the rest as though the wheel had turned itself, realistic adult head proportion, face lit with no shadow across the eyes, shadow falling on the side of the head away from the light and beneath the jaw, eyes as two bone white almond shapes each with a solid ink black pupil, sized to read clearly but no larger than an adult eye, a broad East Asian face with wide flat cheekbones, a broad flat nose, a heavy square jaw and a shallow brow, the lit plane of the face broken only by two deep lines from the nose to the mouth corners and one heavy line across the brow, each cut as thick as the contour line, the rest of the face flat and unbroken, the neck, forearms and hands carrying no interior lines at all, his age carried in the heavy jaw, the thick neck and the iron grey hair rather than in carved lines, long iron grey hair pulled back and bound low at the nape as one flat mass with a clean hard edge, mouth set flat, chin tucked, a half-collar of five stamped gold tally plates fastened at his throat, a heavy quilted indigo mantle worn over the left shoulder only and fastened under the right arm, its quilting running in six broad vertical channels, its hem and collar edged with a woven border band of a repeated stepped-square motif, the mantle patched at the left elbow with a square of a different weave sewn in with hard angular stitching, beneath it a sleeveless deep madder tabard falling to mid-calf, closed across the body with an overlapping front panel fastened at the right hip, a wide blackened leather sash wrapped twice around his waist carrying six appraiser's trinkets hung on short chains along his left hip, each a large simple shape in dull pewter, gold and bone: a plumb bob, a pierced gauge disc, a hand bell, a set of three stacked weights, a small barred cage and a bundle of notched tally sticks, all hanging clear of each other and held in front of the tabard so none breaks the outer silhouette, a knotted bone buff cord looped twice around his left wrist with three hard knots, heavy linen under-tunic with the sleeves pushed above the elbow showing thick bare forearms, bare hands with heavy knuckles, the right shoulder of the tabard reinforced with a thick padded blackened leather pad worn down where the wheel rides, the mantle and tabard falling into solid ash-blue-black shadow on the lower right side, tall blackened boots with a simple sole division, in contact with a single flat ground line, three-quarter view facing right, eye-level camera at chest height, orthographic, isolated on a plain flat background of one uniform color, full figure visible with headroom.
+```
+
+Counted groups: five tally plates at the throat, four out-of-line teeth at the wheel rim, six quilting channels on the mantle, six trinkets at the hip, three knots at the wrist — five groups, over the default budget and there on purpose (8.6.2). **Cut order if a variant comes back busy:** the wrist knots first, then the quilting channels to three, then the trinkets to four. The elbow patch and the border band are cut last; they are the history.
+
+Two failure modes to check on any revision. The indigo and the madder are both saturated and close in value — if they merge into one mass, move the madder a full value band darker rather than desaturating either (3.5). And the hip cluster is the silhouette risk: hanging objects nibble the outer contour, which is a reject under 7.1 no matter how good the rest looks.
+
 ### 8.9 Accent registry
 
 One color per Role, no sharing. Hue alone cannot separate twenty entries at phone size, so **value** and **placement** carry the same signal in parallel.
@@ -776,7 +861,7 @@ One color per Role, no sharing. Hue alone cannot separate twenty entries at phon
 | Lancer | flame copper | #E07B2C | light | lance pennant, helmet crest |
 | Jester | saffron | #EDB431 | light | cap bells, collar motley, wrapped knife grips |
 | Architect | muted brass | #C69A4B | mid-light | drafting instruments on chest, hat band |
-| Appraiser | antique gold | #8F7326 | dark | loupe, scale beam, tally gorget |
+| Appraiser | antique gold | #8F7326 | dark | lens ring at the wheel hub, stamped collar plates at the throat, one gauge disc among the hip trinkets |
 | Scholar | ledger parchment | #DCCFA8 | lightest | open ledger at chest, spectacle rims |
 | Alchemist | acid chartreuse | #A8BF3A | light | flask contents, apron spill stain |
 | Symbiote | verdant green | #4E8C3F | mid | fungal mass on shoulder and skull |
@@ -1599,6 +1684,12 @@ Recorded so they are not retried. Each of these was generated and judged, not re
 - **Skill art on the flat icon rules (12.1–12.2).** Burning Bolas generated three ways — three values, flat fields, large simple shapes. All three came back too simple, with no level of detail, and read as cartoon. The rules had removed the carved line that makes woodcut rich. Replaced by the chiaroscuro class in 12.4.
 - **Zone art as single-ink shapes.** Gilded Deck ship and waves as one-color woodcut silhouettes, recolored in the engine by `modulate`. Technically flexible, but the result lacked the color the zone needed — waves are expected to be blue and white and the ship colored. Replaced by muted multi-color fills with tonal outlines (13.3.1).
 - **Skill art in four other print traditions.** Renaissance black-line, white-line wood engraving, ukiyo-e and expressionist woodcut were generated on the Bolas subject alongside chiaroscuro. Not failures, but chiaroscuro was clearly best and is the one closest to this guide's flat-band foundations. Revisit only if chiaroscuro fails at display size.
+- **The ban on region labels in the face clause.** Not a generation failure but a rule failure, and the third documentation error of its kind. 8.4.6 forbade region, nationality and people names on the reasoning that they act like the genre attractors in 5.3. It was never tested. On the Appraiser the feature nouns alone could not reach the intended read at all, the label reached it immediately, and a controlled pair differing in that phrase alone showed no costume drift whatsoever. Rule revoked; see 8.4.6.
+- **`the rest of the body held as large flat angular panels with only sparse structural marks`.** The clause that was emptying every part of the figure the focal region did not name, producing characters with two or three things on them and nothing else. Misattributed to the accent cap for several characters. Replaced by the three-level detail spec in 8.6, which is the two-level spec the Symbiote and Architect were already using plus a focal region. See 8.6.1.
+- **Appraiser as heavy and broad with a round-and-heavy face.** `heavy broad-built`, `barrel chest` and full cheeks together returned fat rather than powerful. Replaced by `thickset`, `wrestler's build`, `slabbed shoulders` and weight carried high in the shoulders and back — which reaches strength without `hard muscle` or `bare chest`, the barbarian triggers.
+- **Appraiser with unconstrained skin detail.** The first figure generated after the flat-panel clause was removed (8.6.1). Passed every check at full resolution and came back wrong in-game: a face carved with wrinkles and modelling while the rest of the roster holds flat or near-flat skin. The clause had been doing skin's detail budget by accident and nothing replaced it.
+- **Appraiser with skin as a fully flat field.** The overcorrection. `no wrinkles, creases or interior linework` on all skin removed every means of reading age and left a sixty-year-old with a young man's face. Both endpoints were reached by adjective; the answer was a count (8.4.1, 5.4).
+- **Appraiser as a wheel on a pole.** Rejected on paper rather than generated: it would have made a fourth Role holding a long shaft forward (8.3) and put a round mass at the end of it, which is the Plague Doctor's silhouette. The wheel went onto his back instead.
 - **Unstated appearance.** Not a generation failure but a documentation one, and the second of its kind after the desaturated garment below. With no skin row, face cluster or hair mass in the prompt, the model returns the same head every time — mid-brown skin, straight black hair, broad flat cheekbones — and the roster converged on one look while every individual output passed its checklist. See 8.4.6.
 - **Desaturated garment main as an unwritten default.** Not a generation failure but a documentation one — six characters were built on a rule nobody had written, and the roster came out as grades of beige with one muted accent each. See 3.5.
 - **Plague Doctor with historically accurate props.** A straight lancet-tipped cane, a hand bellows and a chest rack of vials. Legible, but clean, mundane and with no fantasy content; the cane was the least interesting shape in the figure, and the vial rack duplicated the Alchemist's chest. This is the case that produced the 8.1 rule on elements from outside reality.
@@ -1629,6 +1720,9 @@ Collected so they are visible in one place rather than buried in the sections th
 - **The pre-lever five.** Whether the levers are a requirement or a permission, and what happens to the five characters approved under the old arithmetic. See 3.5; act on it at six characters rather than at fifteen.
 - **Approved Roles without an element from outside reality.** Only the Architect and the Plague Doctor clearly carry one. The rest of the approved roster predates the 8.1 rule and either gets a revised tool or focal element or carries a visible split — the same decision as the pre-lever five, and cheapest to settle alongside it.
 - **Characters approved before 8.4.6.** The existing roster was generated without a stated skin row or face cluster and sits mostly on the model's default head. Recommendation is to leave them and apply 8.4.6 from here, exactly as with the pre-lever five in 3.5, and to revisit once three characters built under the rule can be composited beside three that were not. Regenerating before that comparison exists is guessing.
+- **Characters approved before the three-level detail spec.** The whole roster except the Appraiser was built on the flat-panel clause (8.6.1), and it is the main reason those figures carry two or three things each. This is the cheapest of the retrofit questions to answer, because it is a one-clause change rather than a redesign — composite one rebuilt character beside its own earlier version before deciding whether the rest follow.
+- **Whether the region label holds.** 8.4.6 was revoked on one character's evidence. Watch the next two: if either shows costume drift from the label, record it in 17 and narrow the rule rather than restoring the ban wholesale.
+- **Appraiser act placement.** `Concept_Document.md` 5.5 lists him under Act 1 Reclaimed City; his toothed wheel is Spire vocabulary. Either the concept document moves him to Act 2 or it records the guild-assayer framing that reconciles the two (8.8.4).
 - **Warlord accent.** `#6B7A88` is a neutral, not an accent. Either it becomes a real color or this Role is declared the drab one on purpose (8.9.1).
 - **Clockwork Spire scene light.** Unassigned for both variants (10.2, 10.6.2).
 - **The white inner city.** A light-dominant environment against figures that are half band 1. Either the midband keeps committed darks or the character rules bend for one variant (10.6).
