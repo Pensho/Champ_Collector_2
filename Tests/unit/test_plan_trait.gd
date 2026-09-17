@@ -69,5 +69,5 @@ func test_threshold_queried_matches_rarity() -> void:
 
 	_trait.StartOfTurn(0, _resolver)
 
-	assert_eq(_positions.last_behind_query, [0, 0.20],
-		"Epic rarity should query the turn positions with a 20% threshold")
+	assert_eq(_positions.last_behind_query, [0, 0.27],
+		"Epic rarity should query the turn positions with a 27% threshold")
