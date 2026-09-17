@@ -20,7 +20,10 @@ const IMPLEMENTED_RELIC_KEYS: Array[String] = [
 ## use when they roll a Relic drop.
 static func grant_all_implemented_relics(p_item_collection: ItemCollection, p_rarity: Types.Rarity) -> void:
 	for key in IMPLEMENTED_RELIC_KEYS:
-		var preset: EquipmentPreset = EquipmentPresetRegistry.GetRelic(key).duplicate(true)
+		var registered_preset: EquipmentPreset = EquipmentPresetRegistry.GetRelic(key)
+		if(null == registered_preset):
+			continue
+		var preset: EquipmentPreset = registered_preset.duplicate(true)
 		preset._rarity = p_rarity
 		preset.Setup()
 		p_item_collection.AddPreset(preset)

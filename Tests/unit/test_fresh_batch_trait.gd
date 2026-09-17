@@ -63,6 +63,13 @@ func test_brew_reagent_key_never_returns_an_out_of_pool_key() -> void:
 		var key: String = _trait.BrewReagentKey(_random)
 		assert_true(full_pool.has(key), "Unexpected brew key: %s" % key)
 
+func test_brew_reagent_key_only_draws_registered_brews() -> void:
+	_trait.Init(Types.Rarity.Legendary)
+	for i in 30:
+		var key: String = _trait.BrewReagentKey(_random)
+		assert_true(key.is_empty() or ReagentRegistry.REAGENTS.has(key),
+			"A brew key must be registered or empty, got: %s" % key)
+
 # --- Team-wide channel 2 factor ---
 
 func _has_buff(p_character: Character, p_type: Types.Buff_Type) -> bool:

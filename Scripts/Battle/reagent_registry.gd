@@ -89,4 +89,6 @@ static func GetRandomKeyForRarity(p_rarity: Types.Rarity) -> String:
 	for reagent_key in REAGENTS.keys():
 		if(REAGENTS[reagent_key].rarity == p_rarity and not REAGENTS[reagent_key].brew_only):
 			matching_keys.append(reagent_key)
+	if(matching_keys.is_empty()):
+		return ""
 	return matching_keys[randi_range(0, matching_keys.size() - 1)]

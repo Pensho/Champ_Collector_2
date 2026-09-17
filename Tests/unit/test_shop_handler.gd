@@ -143,3 +143,33 @@ func test_serialize_deserialize_round_trip_survives_json() -> void:
 			"Rolled gear attributes should round-trip through JSON")
 	shop.free()
 	shop2.free()
+
+
+func test_deserialize_skips_entries_whose_payload_is_no_longer_registered() -> void:
+	var stock: Array = [
+		{"category": Types.Category.Gear, "rarity": Types.Rarity.Rare, "item_type": Types.Item_Type.Relic,
+			"price": 10, "sold_out": false, "payload": "Relic_That_Does_Not_Exist", "amount": 1, "attributes": {}},
+		{"category": Types.Category.Reagent, "rarity": Types.Rarity.Rare, "price": 10, "sold_out": false,
+			"payload": "Reagent_That_Does_Not_Exist", "amount": 1, "attributes": {}},
+		{"category": Types.Category.Gear, "rarity": Types.Rarity.Rare, "item_type": Types.Item_Type.Standard,
+			"price": 10, "sold_out": false, "payload": "Red_Boots", "amount": 1, "attributes": {}},
+		{"category": Types.Category.Supplies, "rarity": 0, "price": 10, "sold_out": false,
+			"payload": "", "amount": 5, "attributes": {}},
+	]
+	var shop: ShopHandler = ShopHandler.new()
+
+	shop.Deserialize({"stock": stock})
+
+	assert_eq(shop._stock.size(), 2, "Only the entries that still resolve should load")
+	assert_eq(shop._stock[0]["payload"], "Red_Boots", "A registered gear entry should load")
+	assert_eq(shop._stock[1]["category"], Types.Category.Supplies, "Entries without a registry payload should load")
+	shop.free()
+
+
+func test_is_payload_registered_rejects_unknown_gear_and_reagent_keys() -> void:
+	assert_false(ShopHandler.IsPayloadRegistered(Types.Category.Gear, "Missing", Types.Item_Type.Relic),
+			"An unknown Relic key should not resolve")
+	assert_false(ShopHandler.IsPayloadRegistered(Types.Category.Reagent, "Missing", Types.Item_Type.Standard),
+			"An unknown reagent key should not resolve")
+	assert_true(ShopHandler.IsPayloadRegistered(Types.Category.Gear, "Kiln_Brand", Types.Item_Type.Relic),
+			"A registered Relic key should resolve")

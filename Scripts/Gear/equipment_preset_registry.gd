@@ -42,6 +42,8 @@ static func Get(p_id: String) -> EquipmentPreset:
 
 static func GetRandomKey() -> String:
 	var preset_keys: Array[String] = PRESETS.keys()
+	if(preset_keys.is_empty()):
+		return ""
 	return preset_keys[randi_range(0, preset_keys.size() - 1)]
 
 static func GetRelic(p_id: String) -> EquipmentPreset:
@@ -49,6 +51,8 @@ static func GetRelic(p_id: String) -> EquipmentPreset:
 
 static func GetRandomRelicKey() -> String:
 	var relic_keys: Array[String] = RELIC_PRESETS.keys()
+	if(relic_keys.is_empty()):
+		return ""
 	return relic_keys[randi_range(0, relic_keys.size() - 1)]
 
 static func GetRandomRelicKeyForSlot(p_slot: Types.Slot) -> String:

@@ -76,3 +76,7 @@ func test_random_key_for_rarity_never_returns_a_brew_only_key() -> void:
 			var key: String = ReagentRegistry.GetRandomKeyForRarity(rarity)
 			assert_false(BREW_ONLY_KEYS.has(key),
 				"GetRandomKeyForRarity(%s) must never return a brew-only key, got %s" % [rarity, key])
+
+func test_random_key_for_rarity_returns_empty_when_no_reagent_matches() -> void:
+	assert_eq(ReagentRegistry.GetRandomKeyForRarity(Types.Rarity.Common), "",
+		"A rarity no reagent carries should yield an empty key instead of an out-of-range pick")

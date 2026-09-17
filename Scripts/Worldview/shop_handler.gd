@@ -49,9 +49,9 @@ static func RollStock(p_budget: int) -> Array[Dictionary]:
 		var preset_key: String = (
 				EquipmentPresetRegistry.GetRandomRelicKey() if Types.Item_Type.Relic == item_type
 				else EquipmentPresetRegistry.GetRandomKey())
-		var base_preset: EquipmentPreset = (
-				EquipmentPresetRegistry.GetRelic(preset_key) if Types.Item_Type.Relic == item_type
-				else EquipmentPresetRegistry.Get(preset_key))
+		var base_preset: EquipmentPreset = _GearPresetFor(preset_key, item_type)
+		if(null == base_preset):
+			continue
 		var preset: EquipmentPreset = base_preset.duplicate(true)
 		preset._rarity = rarity
 		preset.Setup()
@@ -68,15 +68,17 @@ static func RollStock(p_budget: int) -> Array[Dictionary]:
 
 	var reagent_best_rarity: int = LootManager.GetBestRarityForReagent(p_budget)
 	var reagent_rarity: Types.Rarity = LootManager.RollRarityForReagent(reagent_best_rarity, Types.Rarity.Legendary)
-	stock.append({
-		"category": Types.Category.Reagent,
-		"rarity": reagent_rarity,
-		"price": GetReagentPrice(reagent_rarity),
-		"sold_out": false,
-		"payload": ReagentRegistry.GetRandomKeyForRarity(reagent_rarity),
-		"amount": 1,
-		"attributes": {},
-	})
+	var reagent_key: String = ReagentRegistry.GetRandomKeyForRarity(reagent_rarity)
+	if(not reagent_key.is_empty()):
+		stock.append({
+			"category": Types.Category.Reagent,
+			"rarity": reagent_rarity,
+			"price": GetReagentPrice(reagent_rarity),
+			"sold_out": false,
+			"payload": reagent_key,
+			"amount": 1,
+			"attributes": {},
+		})
 
 	stock.append({
 		"category": Types.Category.Supplies,
@@ -152,6 +154,10 @@ func Deserialize(p_data: Dictionary) -> void:
 		var attributes: Dictionary = {}
 		for attribute_name in entry.get("attributes", {}).keys():
 			attributes[attribute_name] = int(entry["attributes"][attribute_name])
+		if(not IsPayloadRegistered(int(entry["category"]), String(entry["payload"]),
+				int(entry.get("item_type", Types.Item_Type.Standard)))):
+			print("Skipping shop stock entry with unregistered payload from save: ", entry["payload"])
+			continue
 		_stock.append({
 			"category": int(entry["category"]),
 			"rarity": int(entry["rarity"]),
@@ -165,13 +171,24 @@ func Deserialize(p_data: Dictionary) -> void:
 	_restock_anchor_unix = int(p_data.get("restock_anchor_unix", 0))
 	_favor_purchase_unix = int(p_data.get("favor_purchase_unix", 0))
 
+static func IsPayloadRegistered(p_category: int, p_payload: String, p_item_type: int) -> bool:
+	match p_category:
+		Types.Category.Gear:
+			return null != _GearPresetFor(p_payload, p_item_type)
+		Types.Category.Reagent:
+			return ReagentRegistry.REAGENTS.has(p_payload)
+	return true
+
+static func _GearPresetFor(p_key: String, p_item_type: int) -> EquipmentPreset:
+	if(Types.Item_Type.Relic == p_item_type):
+		return EquipmentPresetRegistry.GetRelic(p_key)
+	return EquipmentPresetRegistry.Get(p_key)
+
 func _grant(p_entry: Dictionary) -> void:
 	match p_entry["category"]:
 		Types.Category.Gear:
 			var item_type: Types.Item_Type = p_entry.get("item_type", Types.Item_Type.Standard) as Types.Item_Type
-			var base_preset: EquipmentPreset = (
-					EquipmentPresetRegistry.GetRelic(p_entry["payload"]) if Types.Item_Type.Relic == item_type
-					else EquipmentPresetRegistry.Get(p_entry["payload"]))
+			var base_preset: EquipmentPreset = _GearPresetFor(p_entry["payload"], item_type)
 			var preset: EquipmentPreset = base_preset.duplicate(true)
 			preset._rarity = p_entry["rarity"]
 			for attribute_name in p_entry["attributes"].keys():

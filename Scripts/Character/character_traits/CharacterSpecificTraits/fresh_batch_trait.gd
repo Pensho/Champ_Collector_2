@@ -46,9 +46,15 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_team_damage_buff.value = 1.0 + _team_damage_bonus
 
 func BrewReagentKey(p_random: RandomNumberGenerator) -> String:
-	var pool: Array[String] = BASE_POOL.duplicate()
+	var candidates: Array[String] = BASE_POOL.duplicate()
 	if(Types.Rarity.Epic == _owner_rarity or Types.Rarity.Legendary == _owner_rarity):
-		pool.append(PURGING_BREW)
+		candidates.append(PURGING_BREW)
+	var pool: Array[String] = []
+	for brew_key in candidates:
+		if(ReagentRegistry.REAGENTS.has(brew_key)):
+			pool.append(brew_key)
+	if(pool.is_empty()):
+		return ""
 	return pool[p_random.randi_range(0, pool.size() - 1)]
 
 func GetBrewPotencyBonus() -> float:

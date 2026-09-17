@@ -83,8 +83,10 @@ func test_grant_all_implemented_relics_adds_one_of_each_at_the_requested_rarity(
 
 	DebugActions.grant_all_implemented_relics(collection, Types.Rarity.Uncommon)
 
-	assert_eq(collection._items.size(), DebugActions.IMPLEMENTED_RELIC_KEYS.size(),
-		"Should add exactly one item per implemented Relic key")
+	var registered_count: int = DebugActions.IMPLEMENTED_RELIC_KEYS.filter(
+			func(key: String) -> bool: return EquipmentPresetRegistry.RELIC_PRESETS.has(key)).size()
+	assert_eq(collection._items.size(), registered_count,
+		"Should add exactly one item per implemented Relic key that is still registered")
 	for item: Equipment in collection._items.values():
 		assert_eq(item._item_type, Types.Item_Type.Relic, "Every granted item should be a Relic")
 		assert_eq(item._rarity, Types.Rarity.Uncommon, "Every granted item should be the requested rarity")

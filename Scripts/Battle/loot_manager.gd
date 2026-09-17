@@ -187,7 +187,9 @@ static func DistributeRewards(
 					var best_rarity_outcome: int = GetBestRarityForReagent(p_loot_table._budget)
 					var rarity: Types.Rarity = RollRarityForReagent(best_rarity_outcome, p_loot_table._reagent_max_rarity)
 					var cost: int = int(pow(LOOT_VALUE[LootType.Reagent], 1.0 + (best_rarity_outcome as float * RARITY_VALUE_POWER)))
-					p_loot_table._drop_result._reagents.append(ReagentRegistry.GetRandomKeyForRarity(rarity))
+					var reagent_key: String = ReagentRegistry.GetRandomKeyForRarity(rarity)
+					if(not reagent_key.is_empty()):
+						p_loot_table._drop_result._reagents.append(reagent_key)
 					p_loot_table._budget -= cost
 			_:
 				print("Invalid reward type specified while trying to distribute rewards!")
@@ -214,7 +216,9 @@ static func DistributeRewards(
 			LootType.Reagent:
 				var best_rarity_outcome: int = GetBestRarityForReagent(p_loot_table._budget)
 				var rarity: Types.Rarity = RollRarityForReagent(best_rarity_outcome, p_loot_table._reagent_max_rarity)
-				p_loot_table._drop_result._reagents.append(ReagentRegistry.GetRandomKeyForRarity(rarity))
+				var reagent_key: String = ReagentRegistry.GetRandomKeyForRarity(rarity)
+				if(not reagent_key.is_empty()):
+					p_loot_table._drop_result._reagents.append(reagent_key)
 				p_loot_table._budget -= LOOT_VALUE[LootType.Reagent]
 			_:
 				print("Invalid reward type specified while trying to distribute rewards!")
