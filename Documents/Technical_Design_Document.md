@@ -303,6 +303,7 @@ load time. There is a consistent **preset (template) vs instance (runtime)** spl
 | `StatusEffectData` | `Scripts/Battle/status_effect_data.gd` | Buff/debuff definition: magnitude, magnitude kind, default duration, overwrite/stack rules, self-tick behavior, icon |
 | `ReagentData` | `Scripts/Battle/reagent_data.gd` | Reagent definition (one rarity tier per resource): effect kind, target kind, rarity, binary flag, magnitude(s), icon |
 | `ReagentCollection` | `Scripts/Gear/reagent_collection.gd` | Persistent player-owned reagent counts, keyed by `ReagentRegistry` identifier string |
+| `ContentPool` | `Scripts/Battle/content_pool.gd` | Build content allowlist, active only in builds carrying the `playtest` feature tag: the reagent families and Relic keys random draws (loot, shop) may produce, the champions `FortuneFavorTier.RecruitableChampions()` may offer, and the starting roster. Key lookups, save loading and debug tools always read the full registries |
 
 `Skill` holds only what the UI and turn machinery read directly — everything a skill *does* is an
 ordered array of self-resolving `SkillEffect` resources instead of an optional flat field per

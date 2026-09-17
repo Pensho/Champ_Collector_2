@@ -49,16 +49,22 @@ static func GetRandomKey() -> String:
 static func GetRelic(p_id: String) -> EquipmentPreset:
 	return RELIC_PRESETS.get(p_id)
 
-static func GetRandomRelicKey() -> String:
-	var relic_keys: Array[String] = RELIC_PRESETS.keys()
+static func GetRandomRelicKey(p_content_pool: ContentPool = ContentPool.Active()) -> String:
+	var relic_keys: Array[String] = []
+	for key in RELIC_PRESETS.keys():
+		if(null == p_content_pool or p_content_pool.AllowsRelic(key)):
+			relic_keys.append(key)
 	if(relic_keys.is_empty()):
 		return ""
 	return relic_keys[randi_range(0, relic_keys.size() - 1)]
 
-static func GetRandomRelicKeyForSlot(p_slot: Types.Slot) -> String:
+static func GetRandomRelicKeyForSlot(
+		p_slot: Types.Slot, p_content_pool: ContentPool = ContentPool.Active()) -> String:
 	var matching_keys: Array[String] = []
 	for key in RELIC_PRESETS.keys():
-		if(p_slot == RELIC_PRESETS[key]._slot):
+		if(p_slot != RELIC_PRESETS[key]._slot):
+			continue
+		if(null == p_content_pool or p_content_pool.AllowsRelic(key)):
 			matching_keys.append(key)
 	if(matching_keys.is_empty()):
 		return ""

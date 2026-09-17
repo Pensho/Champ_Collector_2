@@ -63,34 +63,39 @@ func Init() -> void:
 
 	var context_container: ContextContainer = ContextContainer.new()
 
-	_character_collection.Add(HUNTER.duplicate(true))
-	_character_collection.Add(THIEF.duplicate(true))
-	_character_collection.Add(BAR_BRAWLER.duplicate(true))
-	_character_collection.Add(JESTER.duplicate(true))
-	_character_collection.Add(CHRONOPHAGE.duplicate(true))
-	_character_collection.Add(TIDAL_CORSAIR.duplicate(true))
-	_character_collection.Add(CENTAUR_LANCER.duplicate(true))
-	_character_collection.Add(CENTAUR_ARCHIVIST.duplicate(true))
-	_character_collection.Add(TACTICIAN.duplicate(true))
-	_character_collection.Add(BLOODMAGE.duplicate(true))
-	_character_collection.Add(SORCERER.duplicate(true))
-	_character_collection.Add(SYMBIOTE.duplicate(true))
-	_character_collection.Add(DIVINER.duplicate(true))
-	_character_collection.Add(APPRAISER.duplicate(true))
-	_character_collection.Add(EMISSARY.duplicate(true))
-	_character_collection.Add(CULTIST.duplicate(true))
-	_character_collection.Add(PLAGUE_DOCTOR.duplicate(true))
-	_character_collection.Add(WARLORD.duplicate(true))
-	_character_collection.Add(ALCHEMIST.duplicate(true))
-	_character_collection.Add(ARCHITECT.duplicate(true))
-	_character_collection.Add(HERALD_OF_THE_LOOM.duplicate(true))
+	var content_pool: ContentPool = ContentPool.Active()
+	if(null != content_pool):
+		for preset: CharacterPreset in content_pool.starting_champions:
+			_character_collection.Add(preset.duplicate(true))
+	else:
+		_character_collection.Add(HUNTER.duplicate(true))
+		_character_collection.Add(THIEF.duplicate(true))
+		_character_collection.Add(BAR_BRAWLER.duplicate(true))
+		_character_collection.Add(JESTER.duplicate(true))
+		_character_collection.Add(CHRONOPHAGE.duplicate(true))
+		_character_collection.Add(TIDAL_CORSAIR.duplicate(true))
+		_character_collection.Add(CENTAUR_LANCER.duplicate(true))
+		_character_collection.Add(CENTAUR_ARCHIVIST.duplicate(true))
+		_character_collection.Add(TACTICIAN.duplicate(true))
+		_character_collection.Add(BLOODMAGE.duplicate(true))
+		_character_collection.Add(SORCERER.duplicate(true))
+		_character_collection.Add(SYMBIOTE.duplicate(true))
+		_character_collection.Add(DIVINER.duplicate(true))
+		_character_collection.Add(APPRAISER.duplicate(true))
+		_character_collection.Add(EMISSARY.duplicate(true))
+		_character_collection.Add(CULTIST.duplicate(true))
+		_character_collection.Add(PLAGUE_DOCTOR.duplicate(true))
+		_character_collection.Add(WARLORD.duplicate(true))
+		_character_collection.Add(ALCHEMIST.duplicate(true))
+		_character_collection.Add(ARCHITECT.duplicate(true))
+		_character_collection.Add(HERALD_OF_THE_LOOM.duplicate(true))
 
-	var reagent_keys: Array[String] = []
-	for reagent_key in ReagentRegistry.REAGENTS.keys():
-		if(not ReagentRegistry.REAGENTS[reagent_key].brew_only):
-			reagent_keys.append(reagent_key)
-	for i in 3:
-		_reagent_collection.Add(reagent_keys[randi_range(0, reagent_keys.size() - 1)])
+		var reagent_keys: Array[String] = []
+		for reagent_key in ReagentRegistry.REAGENTS.keys():
+			if(not ReagentRegistry.REAGENTS[reagent_key].brew_only):
+				reagent_keys.append(reagent_key)
+		for i in 3:
+			_reagent_collection.Add(reagent_keys[randi_range(0, reagent_keys.size() - 1)])
 
 	context_container._scene = "uid://c6c1o3oabj0pf"
 	change_scene(context_container)

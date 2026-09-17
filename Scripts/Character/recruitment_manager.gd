@@ -82,7 +82,7 @@ static func BuildRewards(
 		if(not champion_won and p_champion_gate[i]):
 			champion_won = true
 			var champion: CharacterPreset = PickChampionWithPity(
-					p_tier.recruitable_champions, LootManager.RARITY_WEIGHTING, p_owned_names, p_pity_bonus)
+					p_tier.RecruitableChampions(), LootManager.RARITY_WEIGHTING, p_owned_names, p_pity_bonus)
 			rewards.append({"type": RewardType.CHAMPION, "champion": champion, "amount": 1})
 		else:
 			match RollFiller(p_tier.silver_weight, p_tier.supplies_weight):

@@ -84,11 +84,15 @@ const REAGENTS: Dictionary[String, ReagentData] = {
 static func Get(p_id: String) -> ReagentData:
 	return REAGENTS.get(p_id)
 
-static func GetRandomKeyForRarity(p_rarity: Types.Rarity) -> String:
+static func GetRandomKeyForRarity(
+		p_rarity: Types.Rarity, p_content_pool: ContentPool = ContentPool.Active()) -> String:
 	var matching_keys: Array[String] = []
 	for reagent_key in REAGENTS.keys():
-		if(REAGENTS[reagent_key].rarity == p_rarity and not REAGENTS[reagent_key].brew_only):
-			matching_keys.append(reagent_key)
+		if(REAGENTS[reagent_key].rarity != p_rarity or REAGENTS[reagent_key].brew_only):
+			continue
+		if(null != p_content_pool and not p_content_pool.AllowsReagent(reagent_key, p_rarity)):
+			continue
+		matching_keys.append(reagent_key)
 	if(matching_keys.is_empty()):
 		return ""
 	return matching_keys[randi_range(0, matching_keys.size() - 1)]

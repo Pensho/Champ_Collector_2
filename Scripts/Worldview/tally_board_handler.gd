@@ -30,7 +30,7 @@ static func GetRecruitableChampions() -> Array[CharacterPreset]:
 	var seen_names: Dictionary[String, bool] = {}
 	var champions: Array[CharacterPreset] = []
 	for tier: FortuneFavorTier in [BONE_TIER, BRASS_TIER, PARCHMENT_TIER]:
-		for preset: CharacterPreset in tier.recruitable_champions:
+		for preset: CharacterPreset in tier.RecruitableChampions():
 			if(not seen_names.has(preset._name)):
 				seen_names[preset._name] = true
 				champions.append(preset)

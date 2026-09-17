@@ -65,7 +65,7 @@ func BuildTierSection(p_tier: FortuneFavorTier) -> VBoxContainer:
 	header.add_theme_font_size_override("font_size", 18)
 	section.add_child(header)
 
-	var grouped: Dictionary[Types.Rarity, Array] = RecruitmentManager.GroupByRarity(p_tier.recruitable_champions)
+	var grouped: Dictionary[Types.Rarity, Array] = RecruitmentManager.GroupByRarity(p_tier.RecruitableChampions())
 	var rarity_rates: Dictionary[Types.Rarity, float] = LootManager.GetRarityRates(grouped)
 	for rarity in rarity_rates.keys():
 		var row: Label = Label.new()
@@ -86,7 +86,7 @@ func RefreshPity() -> void:
 	for tier in [BONE_TIER, BRASS_TIER, PARCHMENT_TIER]:
 		var counter: int = main.GetInstance()._resources.GetFortunesFavorPity(tier.tier_type)
 		var bonus: float = RecruitmentManager.PityBonus(counter)
-		var unowned_count: int = RecruitmentManager.UnownedPresets(tier.recruitable_champions, owned_names).size()
+		var unowned_count: int = RecruitmentManager.UnownedPresets(tier.RecruitableChampions(), owned_names).size()
 
 		pity_rows[tier.tier_type].text = PityRowText(
 				FortuneFavorTier.TierType.keys()[tier.tier_type], counter, bonus, unowned_count)
