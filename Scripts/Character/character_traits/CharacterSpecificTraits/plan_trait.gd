@@ -1,10 +1,10 @@
 class_name PlanTrait extends CharacterTrait
 
 const PERCENT_BEHIND_THRESHOLD: Dictionary[Types.Rarity, float] = {
-	Types.Rarity.Uncommon: 0.10,
-	Types.Rarity.Rare: 0.15,
-	Types.Rarity.Epic: 0.20,
-	Types.Rarity.Legendary: 0.25,
+	Types.Rarity.Uncommon: 0.21,
+	Types.Rarity.Rare: 0.24,
+	Types.Rarity.Epic: 0.27,
+	Types.Rarity.Legendary: 0.30,
 }
 
 var _start_of_turn_buff: StatusEffects.Buff
