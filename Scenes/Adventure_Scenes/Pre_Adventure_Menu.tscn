@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://c3vkcybscrqwm" path="res://Scripts/UI/Adventure/pre_adventure_menu.gd" id="2_premenu"]
 [ext_resource type="PackedScene" uid="uid://dqxk8n3wj4bpt" path="res://Scenes/Adventure_Scenes/Biome_Selection_Panel.tscn" id="3_panel"]
 
-[node name="PreAdventure" type="Control" unique_id=470668109 node_paths=PackedStringArray("_difficulty_option")]
+[node name="PreAdventure" type="Control" unique_id=470668109 node_paths=PackedStringArray("_difficulty_option", "_panel_left", "_panel_right")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -13,6 +13,8 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("2_premenu")
 _difficulty_option = NodePath("MarginContainer/VBoxContainer/HBoxContainer_Difficulty/OptionButton_Difficulty")
+_panel_left = NodePath("HBoxContainer_Panels/Panel_Left")
+_panel_right = NodePath("HBoxContainer_Panels/Panel_Right")
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=1153682165]
 layout_mode = 1
