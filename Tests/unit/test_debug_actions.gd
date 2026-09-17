@@ -42,11 +42,11 @@ func _make_character_with_weights() -> Character:
 func test_set_character_level_raises_level_and_attributes() -> void:
 	var c: Character = _make_character_with_weights()
 	c._level = 1
-	var attack_before: int = c._attributes[Types.Attribute.Attack]
+	var health_before: int = c._attributes[Types.Attribute.Health]
 	DebugActions.set_character_level(c, 2)
 	assert_eq(c._level, 2, "Level should reach the target")
-	assert_gt(c._attributes[Types.Attribute.Attack], attack_before,
-		"Real level-up reward should increase an attribute")
+	assert_gt(c._attributes[Types.Attribute.Health], health_before,
+		"Real level-up reward should increase Health, the one attribute every level-up raises")
 
 func test_set_character_level_raises_multiple_levels() -> void:
 	var c: Character = _make_character_with_weights()
