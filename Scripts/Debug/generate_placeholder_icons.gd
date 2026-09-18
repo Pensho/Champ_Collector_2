@@ -197,7 +197,7 @@ const SKILL_ICON_TABLE: Array = [
 	{ "folder": "Abilities/Role_Active_Skills/Cut_the_Cloth", "base_name": "Cut_the_Cloth", "size": 64,
 			"color": Color(0.30, 0.65, 0.60, 1.0) },
 	# Thief
-	{ "folder": "Abilities/Role_Active_Skills/Weigh_the_Mark", "base_name": "Weigh_the_Mark", "size": 64,
+	{ "folder": "Abilities/Role_Active_Skills/Cut_Purse", "base_name": "cut_purse", "size": 64,
 			"color": Color(0.45, 0.25, 0.55, 1.0) },
 	# Alchemist
 	{ "folder": "Abilities/Role_Active_Skills/Acrid_Splash", "base_name": "Acrid_Splash", "size": 64,

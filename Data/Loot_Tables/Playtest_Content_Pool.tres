@@ -1,6 +1,6 @@
-[gd_resource type="Resource" script_class="ContentPool" format=3]
+[gd_resource type="Resource" script_class="ContentPool" format=3 uid="uid://d3eutj5rj6xo5"]
 
-[ext_resource type="Script" path="res://Scripts/Battle/content_pool.gd" id="1_content_pool"]
+[ext_resource type="Script" uid="uid://82lplqimf6tb" path="res://Scripts/Battle/content_pool.gd" id="1_content_pool"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="2_preset"]
 [ext_resource type="Resource" uid="uid://bm0sqmepyeoam" path="res://Data/Character_Player_Variants/Thief.tres" id="3_thief"]
 [ext_resource type="Resource" uid="uid://dp21n8t5rkmsf" path="res://Data/Character_Player_Variants/Diviner.tres" id="4_diviner"]

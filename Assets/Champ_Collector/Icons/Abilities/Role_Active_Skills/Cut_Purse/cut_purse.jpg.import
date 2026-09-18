@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c3vl5mq3s0t5t"
-path="res://.godot/imported/Weigh_the_Mark.png-baa8a7b92ab57058c95424915eb5416c.ctex"
+uid="uid://ru71emy3ik8j"
+path="res://.godot/imported/cut_purse.jpg-c3ecd4d4b632f555c14cac143b4f06ba.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Weigh_the_Mark/Weigh_the_Mark.png"
-dest_files=["res://.godot/imported/Weigh_the_Mark.png-baa8a7b92ab57058c95424915eb5416c.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Cut_Purse/cut_purse.jpg"
+dest_files=["res://.godot/imported/cut_purse.jpg-c3ecd4d4b632f555c14cac143b4f06ba.ctex"]
 
 [params]
 

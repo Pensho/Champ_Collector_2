@@ -36,7 +36,7 @@ the content is missing.
 9. Enemies and bosses
 10. Environments
 11. Items, gear and reagents
-12. Icons (active skill art: 12.4)
+12. Icons (active skill art: 12.4, passive icons: 12.6)
 13. UI art (turn bar zones: 13.3.1)
 14. Effects and VFX
 15. Animation
@@ -380,6 +380,21 @@ Run before any asset enters the project. Section 7.1 applies to everything; the 
 ### 7.6 Icons
 
 > **Not yet written.** Judged at exact target px, three values, one idea, survives being filled black, accent policy correct for the icon class.
+
+#### 7.6.1 Passive icons
+
+Replaces 7.6 for this class; see 12.6.
+
+- [ ] Judged at exactly 40 × 40 px with the round mask applied — never at full resolution, never square
+- [ ] The key shape (the gap, the opening, the thing the passive does) reads first; engraved detail reads second as texture on top of it, never instead of it
+- [ ] Three levels of detail present: focal point, moderate on the main masses, light on the tool (12.6.3)
+- [ ] Every engraved group was stated as a count, and a cut order is recorded with the prompt
+- [ ] Four values; no gradients; outline ink black `#14121A`
+- [ ] Exactly one accent, flat, on the Role's tool, matching the placement in 8.9
+- [ ] Subject sits inside the circle with the four corners empty; nothing important is lost to the mask
+- [ ] Silhouette survives being filled black inside the circle
+- [ ] Does not repeat the subject of the Role's active skill art for the same mechanic (12.6.2)
+- [ ] Post-processing per 12.6.5
 
 ### 7.7 UI
 
@@ -1372,7 +1387,7 @@ Icons are where the style either works or fails, because they are the smallest t
 - **Outline gets proportionally thicker**, not thinner, as size drops.
 - **Node type icons carry no accent** — they are map furniture.
 
-These rules and the pattern in 12.2 govern map nodes, status, currency and resource icons. **Active skill art does not follow them** — it was tried and failed (17), and it now has its own class in 12.4.
+These rules and the pattern in 12.2 govern map nodes, status, currency and resource icons. **Active skill art does not follow them** — it was tried and failed (17), and it now has its own class in 12.4. **Passive icons do not follow them either** — the same failure repeated at 40 px (17), and the class is in 12.6.
 
 ### 12.2 Prompt pattern
 
@@ -1488,9 +1503,78 @@ The Bolas prompt predates the fixed technique block and words it slightly differ
 
 > **Not yet written.** Eight simultaneous slots (`Concept_Document.md` 1.1.4), so these are read in a row at the smallest size in the game. Needs a buff/debuff distinction that is not color alone, a stack-count treatment, and a shared shape language across the status list in 3.2.3.
 
-### 12.6 Passive and identity buttons
+### 12.6 Passive icons — the engraved icon class
 
-> **Not yet written.** Passive skills, grafting, thread stance switching. These are persistent UI affordances rather than one-shot icons and may belong with 13.1 instead — decide which.
+Every Role has one passive, and it is shown as a small round icon: **40 × 40 px, masked to a circle**. That is smaller than any skill art and close to status icon size, so this class sits between the two others in this chapter. It keeps the icon rules' scale discipline — one idea, thick outline, high contrast — and takes back the engraved line that 12.1 removes.
+
+Piloted on Between the Plates (Thief). The second round was approved; the first was rejected for reading too flat and plain (17).
+
+Grafting and thread-stance buttons were also listed under this heading. They are not covered by this class yet — see 12.6.7.
+
+#### 12.6.1 Why passives left both existing classes
+
+**The flat icon rules came back too plain.** Round one of the pilot followed 12.1 and 12.2: three values, every mark as thick as the outline, three shapes in total. The idea read, but the result was flat and did not look like it belonged to the game. It is the same finding as the Burning Bolas pilot in 12.4.1, reached independently at a much smaller size: removing the carving removes the style.
+
+**Chiaroscuro was rejected on paper.** At 40 px a hatching line in a key block lands below one pixel, and two tone blocks with a registration offset turn into a smear. The 12.4 class was never generated for a passive.
+
+What works is the character block's own vocabulary (8.6) cut down to one object: **engraved structural linework over four values, with the detail tiered and counted.** At 40 px many individual lines will not resolve on their own; together they read as worn-metal grit over the key shapes, which is what makes the icon read as part of the set instead of as a vector glyph.
+
+#### 12.6.2 Subject convention: the mechanic already working
+
+- **Show the state, not the strike.** Active skill art catches the tool *in the act* (12.4.3). A passive is always on, so its icon shows the effect **already in progress** — the blade already wedged in and twisting, not the thrust that put it there.
+- **Keep clear of the Role's active skill for the same mechanic.** Between the Plates and Pierce Weakness both ignore Defense. The thrust belongs to Pierce Weakness; the passive shows the prying. The two should read as setup and follow-through, never as the same image twice.
+- **Three large shapes carry the idea.** Between the Plates is two plates and a blade. Hands, cuffs and costume details at the frame edge — the way skill art signals the Role — do not survive 40 px and are left out. The accent does the Role signalling instead (12.6.4).
+- **The key shape is the highest-contrast shape.** Give the idea one solid ink black mass against a light one: the wedge-shaped gap under the lifted plate is what reads first. State it as wide — a thin gap vanishes at size.
+- **Motion on a diagonal toward the upper right**, entering from the lower left, as elsewhere in the game.
+
+#### 12.6.3 Detail — tiered and counted
+
+The three-level spec from 8.6, applied to one object:
+
+1. **Focal point, heaviest detail.** Where the mechanic happens. Between the Plates: the seam where the blade bites, with the metal edge bent and curling up around the blade tip and three scratched grooves cut where the blade has worked the seam.
+2. **Main masses, moderate detail.** Between the Plates: three hammered dents, one chipped notch in the rim, two rivets on each plate, parallel hatching across the shadow sides.
+3. **The tool, light detail.** Between the Plates: one groove down the blade.
+
+**Grit is structural wear, not grime.** Dents, notches, scratched grooves, gouge marks and bent edges are shapes and survive the pipeline; dirt, stains and rust spots are texture words and do not (5.5, 8.5). Where a wear mark can show the mechanic — the grooves at the seam are the prying made visible — it belongs in the focal tier.
+
+**Every group is a count** (5.4), and **every prompt records its cut order.** If a variant turns to mush at 40 px, cut the moderate-tier groups first, starting with the hatching, and keep the focal-tier marks until last. For Between the Plates: hatching, then dents, then rivets; the curled metal and the grooves are never cut.
+
+#### 12.6.4 Values and color
+
+- **Four values, not three.** Ink black, one mid neutral with its shadow side, bone white on one broad edge.
+- **One broad bone white edge**, on the rim of the focal mass along the upper left, from light at the upper left. It separates the key shape from its neighbour at size.
+- **The accent goes on the Role's tool** and follows its placement in 8.9 where the registry names one. The Thief's registry placement is blade edges, so the stiletto blade carries rust orange `#C25A1E`. One accent, flat and uniform. Unlike node icons (12.1), passives carry the accent: a passive is Role identity, not map furniture.
+- **No material slots and no tinted band 1**, as in 12.1.
+
+#### 12.6.5 Frame, generation and post-processing
+
+- **The circle is applied in the engine, not baked into the art.** Generate square at 1:1 on a plain flat background of one uniform color, with the subject compact and centered and the four corners empty. The mask and any rim or frame are UI (13.1).
+- **Post-processing:** quantize to the four-band ramp, correct the accent mask to the 8.9 hex, apply the shared overlay, downscale to 40 px, then judge inside the mask. The area LUT does not apply; passives are shown in UI, not in scene light. The pilot was approved on the generation itself; this pass has not yet been run on a passive — see 12.6.7.
+
+#### 12.6.6 Approved prompt
+
+Recorded verbatim as generated. New passive icons are judged side by side against it at 40 px.
+
+**Between the Plates (Thief)**
+
+```
+bold woodcut icon with engraved structural linework, very thick black contour outline on the outer silhouette, hard-edged shadows, four values, hand-carved edge quality with visible gouge marks, a close-up of two overlapping curved steel armor plates, battered from long use, with a single narrow stiletto blade wedged into the seam between them and twisted, the blade entering from the lower left, the upper plate levered up and away on a diagonal toward the upper right, one wide solid ink black gap opening beneath the lifted plate, three levels of detail: the seam where the blade bites carries the heaviest engraved detail and reads as the focal point, with the metal edge bent and curling up around the blade tip and three short scratched grooves cut where the blade has worked the seam; the plates carry moderate engraved detail through three hammered dents, one chipped notch in the rim, two rivets on each plate and parallel hatching lines across their shadow sides; the blade carries light detail through a single groove running down its length, all marks bold and structural, the whole subject compact and centered inside a circle with open space in all four corners, light from the upper left, the plates in dull pewter grey falling into ink black shadow on their lower right, one broad bone white edge along the rim of the lifted plate, with saturated rust orange as the single flat accent on the stiletto blade, isolated on a plain flat background of one uniform color
+```
+
+Counted groups: three grooves and the curled edge at the seam, three dents, one notch, four rivets and the hatching across the plates, one groove on the blade. **Cut order:** hatching, then dents, then rivets.
+
+Fixes found during the pilot, for when a variant fails:
+
+- **The gap does not read.** Widen it explicitly — *a wide dark gap, as wide as the blade is long*.
+- **The plates read as a shell or a book.** Rivets are the cheapest cue that says armor; add or keep them.
+- **The blade reads as a cartoon knife.** *Stiletto* or *thin spike blade* instead of *dagger* pushes it toward precision.
+
+#### 12.6.7 Open items for this class
+
+- **Post-processing pass unverified.** The quantize and accent-correction steps have not been run on a passive icon. Check that quantizing does not flatten the engraved grit that is the point of this class; if it does, passives take the overlay only, as skill art does (12.4.5).
+- **Frame and rim.** Whether the UI circle carries a rim, and whether that rim is ink black at contour weight or tinted to the Role's accent. Belongs to 13.1 once written.
+- **Grafting and thread-stance buttons.** The Symbiote's graft and the Herald's thread switch were listed here as identity buttons. They are persistent UI affordances rather than descriptions of a mechanic, and may belong with 13.1. Decide whether they take this class, get their own, or move.
+- **Confirmed on one Role.** Watch the next two passives, especially one whose mechanic has no natural object (Plague Doctor's Comorbidity, Emissary's Standing Record), before treating the subject convention as settled.
 
 ### 12.7 Item and reagent icons
 
@@ -1682,6 +1766,8 @@ Recorded so they are not retried. Each of these was generated and judged, not re
 - **Sorcerer as a field surveyor in a travel coat, gaiters and pack roll.** Competent and legible, and completely bland — modern hiking gear with no fantasy content, and the staff came back as a plain walking pole. Fleeing the wizard basin with travel vocabulary lands in the outdoorsman basin.
 - **Sorcerer with hollow cheeks, shelf brow, hooked nose and a hard-set jaw.** Four nouns from one cluster, no stated age: returned the model's default forty-year-old handsome man, indistinguishable from the other male heads in the set.
 - **Skill art on the flat icon rules (12.1–12.2).** Burning Bolas generated three ways — three values, flat fields, large simple shapes. All three came back too simple, with no level of detail, and read as cartoon. The rules had removed the carved line that makes woodcut rich. Replaced by the chiaroscuro class in 12.4.
+- **Passive icons on the flat icon rules (12.1–12.2).** Between the Plates round one: three values, every mark as thick as the outline, three shapes in total, no hand or cuff. The idea read, but the result was too flat and plain and did not fit the game's style — the Bolas finding again, at 40 px. Replaced by the engraved icon class in 12.6.
+- **Passive icons as chiaroscuro prints.** Rejected on paper rather than generated: at 40 px the key block's hatching falls below one pixel and the tone blocks smear. Revisit only if passives ever get a larger display.
 - **Zone art as single-ink shapes.** Gilded Deck ship and waves as one-color woodcut silhouettes, recolored in the engine by `modulate`. Technically flexible, but the result lacked the color the zone needed — waves are expected to be blue and white and the ship colored. Replaced by muted multi-color fills with tonal outlines (13.3.1).
 - **Skill art in four other print traditions.** Renaissance black-line, white-line wood engraving, ukiyo-e and expressionist woodcut were generated on the Bolas subject alongside chiaroscuro. Not failures, but chiaroscuro was clearly best and is the one closest to this guide's flat-band foundations. Revisit only if chiaroscuro fails at display size.
 - **The ban on region labels in the face clause.** Not a generation failure but a rule failure, and the third documentation error of its kind. 8.4.6 forbade region, nationality and people names on the reasoning that they act like the genre attractors in 5.3. It was never tested. On the Appraiser the feature nouns alone could not reach the intended read at all, the label reached it immediately, and a controlled pair differing in that phrase alone showed no costume drift whatsoever. Rule revoked; see 8.4.6.
@@ -1734,3 +1820,5 @@ Collected so they are visible in one place rather than buried in the sections th
 - **Element color or caster accent** in the skill art accent block, when the two clash (12.4.7).
 - **Zone tint meaning.** Caster accent or ally/enemy ownership (13.3.1).
 - **Zone lore family language.** Which Gilded Deck choices belong to its family and which to the zone alone (13.3.1).
+- **Passive icon post-processing.** Full pass or overlay only, once the quantize step has been tried on engraved grit at 40 px (12.6.7).
+- **Grafting and thread-stance buttons.** Passive icon class, their own class, or UI chrome under 13.1 (12.6.7).
