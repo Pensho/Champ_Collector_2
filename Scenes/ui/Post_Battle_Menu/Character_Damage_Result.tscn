@@ -35,7 +35,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="TextureRect" type="TextureRect" parent="VBoxContainer" unique_id=1137753494]
-custom_minimum_size = Vector2(100, 100)
+custom_minimum_size = Vector2(100, 120)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0

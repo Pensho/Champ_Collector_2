@@ -304,6 +304,34 @@ selling. State the furthest plane as nearly gone rather than merely small.
 The technique is stated here rather than in section 10 because effects (14)
 and any future large plate will need it.
 
+### 5.7 The prompt describes the figure, not the story
+
+Every clause in a prompt should describe something the model can draw. Lore
+and narrative clauses — what the character does for a living, who employs
+them, what they are thinking about — cost prompt budget and return nothing a
+viewer can see. "Who walks point for salvage crews, reading omens to know
+which path kills" was written into a Diviner draft and describes no shape,
+colour or material on the figure.
+
+**The occupation belongs to the design, not to the prompt.** 8.1 still
+requires one, because a job is what supplies the clothes, the tools and the
+posture. Those are what go into the prompt; the job title stays in the
+design notes recorded with the reference example. The acceptance check in 7.2
+— the occupation legible from the costume alone — is the test that the
+translation was done.
+
+**On the reference examples.** Every approved prompt in 8.7–8.8.4 carries an
+occupation clause, because they are recorded as generated. They are not a
+pattern to copy on that point. The Diviner (8.8.5) is the first recorded
+without one.
+
+**Stock phrasing is the same failure in a different form.** A clause that
+worked on one character gets carried into the next by habit rather than
+chosen for it — brow asymmetry spread this way from the Sorcerer's prompt into
+every draft after it. See 8.4.4. Every phrase in the subject block should be
+there because this character needs it; only the general block (8.6) and the
+composition tail (4.2) are repeated word for word.
+
 ---
 
 ## 6. Post-processing — applied to every asset
@@ -354,7 +382,8 @@ Run before any asset enters the project. Section 7.1 applies to everything; the 
 - [ ] An age is stated and the face nouns are not the last character's cluster
 - [ ] Skin row named from 3.2, face-structure cluster and hair mass all stated, and none repeats the last three approved characters (8.4.6)
 - [ ] Face clause states a skin row, a face-structure cluster and a hair mass, with a region label where one is wanted (8.4.6)
-- [ ] Expression reads through brow, tilt or mouth line
+- [ ] Expression reads through brow, tilt or mouth line, and was chosen for this character rather than carried over (8.4.4)
+- [ ] The subject block describes only what can be seen — no occupation, lore or narrative clauses (5.7)
 - [ ] Eyes hand-placed and consistent with the last approved character
 - [ ] Three levels of detail present: focal region, garments, limbs — none of them left empty (8.6.1)
 - [ ] Skin carries four engraved lines at most, each at contour weight (8.4.1)
@@ -474,8 +503,9 @@ Three characters cost several rounds each because the prompt was being rewritten
 - **One, not several.** It is a single anchor, held to the counted-group budget like everything else. A figure where everything is strange reads as a creature, not a person with a job.
 - **Harvested, worn or wielded — not grown.** Unless growth is the Role's identity (the Symbiote), the strange thing is something the character has taken, caged, strapped on or carries. That keeps the person legible and keeps Roles out of each other's lanes.
 - **Choose its vocabulary against the attractors.** Bone, hide and antler nouns summon the shaman and barbarian basins (5.3). Insect, plant, ruin-stone and impossible-mechanism nouns are less used and have held so far.
+- **Make it strange by arrangement or behaviour, not by added parts.** A real object made impossible by what it does keeps one shape language: the Diviner's crystal ball is six raw jagged shards hovering in the shape of a ball, held together by nothing (8.8.5). Bolting a second shape language onto a real object does not work — a jagged raw crystal with smooth perfect spheres grown out of it is unnatural, but reads as a rock with growths on it rather than as a designed prop (17). One shape language, and at most one deliberate break in it.
 
-The Architect and the Plague Doctor (8.8.1) are the approved references for this. Treat a figure with no such element as unfinished, however well it passes every other check.
+The Architect, the Plague Doctor (8.8.1) and the Diviner (8.8.5) are the references for this. Treat a figure with no such element as unfinished, however well it passes every other check.
 
 ### 8.2 Decide the silhouette and the pose before anything else
 
@@ -512,6 +542,8 @@ Each Role must be identifiable in pure black at 300 px. Assign a distinct silhou
 
 **Robed Roles are crowded.** Cultist, Diviner and Sorcerer are all robed, and the Sorcerer stays out of that family on two cues: the hem is cut at mid-calf over visible boots rather than falling to the ankle, and the planted rod puts a hard diagonal through a silhouette the other two hold as a clean vertical. Giving up the ankle hem is the single cheapest separation available to any robed character.
 
+The Diviner (8.8.5) takes the same exit a different way: her wrap-coat is kilted up into the sash to the knee on the near side and falls to mid-calf on the far side, an asymmetric hem nobody else on the roster wears, over wrapped shins and tall boots. She holds the narrow vertical against the Thief — the other Role in her family — on two cues: a long veil falling straight down her back from the crown to the backs of the knees, and one hand raised open-palmed at shoulder height with the shard ball hovering above it. Composite the two in pure black before either is revised.
+
 **Pose is the cheapest silhouette tool available.**
 A squatting Lancer, a braced shield stance, a kneeling reload and a
 standing column are four unmistakable black shapes at 300 px; four standing
@@ -541,6 +573,8 @@ This section exists because every failure mode here was expensive to find.
 
 **On the previous wording.** This rule used to read *the head is the lightest region of the figure*, which was true of every figure built on the two skin rows the guide had at the time and stopped being true the moment 3.2 gained a dark row. It was always a local-contrast rule wearing a value rule's clothes. A figure on the deep brown row satisfies it by keeping the shadow mass off the face and letting the coat, the hair and the collar fall to band 1 around it, so the face is the light shape in its own neighbourhood without being the lightest thing on the canvas. State the surrounding darkness in the prompt when the skin row is dark; left unsaid, the model lights the chest instead and the face sinks.
 
+**A light accent must not touch a darker face.** The same local-contrast rule catches accent placement. On the brown and deep brown rows, a light accent — the Diviner's pale lilac, the Chronophage's ice cyan, the Scholar's parchment — sits above the lit plane of the face in value, so an accent trim framing the face out-lights it and the face drops back. Keep a dark mass between the two: the Diviner's veil border sits at the crown behind a dome of black hair, and her throat sigil sits on a blackened collar band, so neither shares an edge with skin (8.8.5).
+
 #### 8.4.2 State an age, and vary the noun cluster
 
 Left unstated, Leonardo returns its average man: roughly forty, conventionally handsome, and identical from character to character. Two rules follow.
@@ -565,11 +599,19 @@ Three things carry expression at four values with no interior modelling. Everyth
 
 Chin up reads as interest; chin tucked reads as caution. Curiosity is brow plus tilt plus a slightly parted mouth. Note that a young face with a raised brow and parted lips sits close to the cartoon attractor (5.3) — if it goes goofy, cut the parted lips first and keep the brow and the tilt.
 
+**These are tools, not a default.** Choose the expression from the character, and do not carry the last character's phrasing forward. Brow asymmetry was used on the Sorcerer and then drifted into every draft after it by habit, which is the expression version of the noun-cluster convergence in 8.4.2 — a roster where everyone raises one eyebrow has one expression. Check the last three approved characters' expressions the same way as their face clusters. Recorded so far: Sorcerer, raised brow, parted lips, chin up; Plague Doctor, brows drawn hard together, chin tucked; Appraiser, mouth set flat, chin tucked; Diviner, calm level brows, chin raised slightly.
+
+**When the mouth is covered,** as on the Plague Doctor and the Diviner, brow and tilt carry everything, and the choice between them matters more.
+
 #### 8.4.5 Concealed faces are an exception, not a tier
 
 A hidden face is permitted only when concealment **is** the character's identity, and it costs that Role its most direct expression tool. The Architect earns it through the hat brim; most Roles do not. When in doubt, show the face.
 
 A hood is not automatically a concealed face. Worn up but pushed back off the brow, it keeps the silhouette and the accent placement while leaving the whole face open and lit — this is how the Sorcerer keeps his hood.
+
+**Partial coverage of the lower face is permitted** when the eyes and the upper face stay open and lit, because the eyes are what non-negotiable 5 protects. The Plague Doctor's half-beak (8.8.1) and the Diviner's veil (8.8.5) both hold it. Each costs the mouth line as an expression tool (8.4.4).
+
+**Semi-transparency in flat bands.** The style has no translucency — no gradients, no soft overlay — and "sheer" on its own summons a soft blur. What worked on the Diviner is to describe the effect in woodcut terms: the veil's upper edge as one hard straight line across the bridge of the nose beneath the eyes, and the nose, lips and jaw showing through it as one flat shape a full band darker than the lit upper face. The quantize pass (6) flattens whatever softness the model still adds. Keep any light accent off the veil's upper edge — it runs across the face and falls under 8.4.1. If a variant blurs, the fallback is a coarse open net with a few large diamond openings, which is untested.
 
 Fodder enemies are the one place faces stay dark and anonymous, which is a free legibility win and matches the reduced detail tier in section 9.1.
 
@@ -864,6 +906,36 @@ Counted groups: five tally plates at the throat, four out-of-line teeth at the w
 
 Two failure modes to check on any revision. The indigo and the madder are both saturated and close in value — if they merge into one mass, move the madder a full value band darker rather than desaturating either (3.5). And the hip cluster is the silhouette risk: hanging objects nibble the outer contour, which is a reject under 7.1 no matter how good the rest looks.
 
+#### 8.8.5 Reference example — Diviner (post-levers, pending composite)
+
+Generated and judged good; not yet composited against an approved character, which 18 requires before it is marked approved. Composite against the Plague Doctor (the other Act 1 woman with her lower face covered) and the Thief (the other narrow vertical, 8.3).
+
+The first prompt recorded with no occupation or lore clause (5.7), the working example of a partial semi-transparent veil (8.4.5), of a light accent kept off a brown-row face (8.4.1), and of an element from outside reality made strange by arrangement rather than by added parts (8.1).
+
+Slots: garment main saturated deep burnt sienna wrap-coat, material neutral warm sand-tan linen, leather tar-dark blackened, shadow black green-black — tinted against the garment main as 2.2 recommends, so band 1 buys a green third hue under the warm garment — skin brown row, accent pale lilac `#B9A5D9` on the lit faces of the crystal shards, the veil border at the crown and the sigil plate at the throat, focal region the shard ball and the upper face. Occupation, for the design only: an omen-walker who walks point for salvage crews into the Reclaimed City's jungle, hired through the Green-Market because the Iron Ledger treats divination as unlicensed magic.
+
+Decisions recorded with it:
+
+- **The crystal ball is six floating raw shards.** Jagged, unpolished, like ore from a mine, hovering over an open palm in the shape of a ball, with narrow gaps between them. It keeps the ball read and one shape language, and it is impossible by arrangement alone (8.1). Alternatives rejected on paper are in 17.
+- **The veil is split in function.** Pinned at the back of the crown and falling straight down her back to the knees, it gives the narrow vertical a rear mass that separates her from the Thief's hood without shoulder width. Drawn across the nose and mouth as a sheer layer, it keeps the stereotypical diviner read while the eyes and upper face stay lit (8.4.5).
+- **Accent kept off the face.** The registry's veil trim was moved to the crown edge, behind the hair dome, because pale lilac out-lights a brown-row face (8.4.1). Nothing light touches the veil's edge across the nose.
+- **Combat read from a tool, not a weapon.** A short hooked jungle blade held low and close at the thigh, pewter, hook turned outward. No long shaft, so the three-shaft count in 8.3 is unchanged.
+- **Robed-Role exit through the hem.** Kilted up to the knee on the near side, mid-calf on the far side (8.3).
+- **Face and appearance.** Brown skin row, long-and-angular cluster, late thirties, tight coiled black hair grown out into a high rounded dome — none repeating the last three approved characters (8.4.6). No region label was used.
+- **Expression chosen for her** — calm level brows, chin raised slightly, head tilted toward the shards — with the mouth covered, so brow and tilt carry it (8.4.4).
+- **Vocabulary.** "Fortune teller", "crystal ball", "robe", "headscarf" and coins were kept out of the prompt, on the suspicion that stereotypical diviner vocabulary is a basin of its own and imports a real-world costume stereotype. Untested; not added to 5.3.
+
+Recorded whole, general block included, as generated:
+
+```
+bold woodcut illustration with engraved structural linework, very thick uniform black contour outline on the outer silhouette, clean uninterrupted silhouette edge, flat color fields, hard-edged shadows, high contrast with large areas of solid shadow in a deep green-black, that shadow mass and the outline sitting at the same value, colors assigned by material: brown skin, a saturated deep burnt sienna wrap-coat, warm sand-tan linen trousers and wraps, tar-dark blackened leather straps, bracers, gloves and boots, dull pewter grey metal fittings, all flat and unmodulated, warm bone white reserved for small highlight shapes and the eyes, outline black tinted slightly toward blue-violet, light from the upper left casting a narrow bone white edge along the upper left contour, three levels of detail: the floating crystal shards above her raised hand and her upper face carry the heaviest engraved detail and read as the focal point of the figure; the wrap-coat, sash and veil carry moderate engraved detail through seams, panel divisions, border bands and wrapped fastenings; the limbs and boots carry light detail through wraps and fold lines rather than being left empty; the face and neck held as flat unbroken color carrying no more than four engraved lines in total, each one large and structural, all marks large and structural, with saturated pale lilac as the single accent covering roughly a fifth of the figure, flat and uniform with little texture, used only on the lit faces of the crystal shards, the border band of the veil at her crown and the sigil plate at her throat, hand-carved edge quality.
+full body character, a woman in her late thirties, narrow tall vertical silhouette with a tight outline and no shoulder mass, standing upright in a guarded ready stance with her weight settled on the rear foot and the front foot pointed toward the right, one arm raised with the elbow tucked close to her side, the gloved hand held open palm up at shoulder height forward and clear of her face, above the open palm six large jagged raw crystal shards hovering in a tight cluster arranged into the shape of a ball the size of her head, each shard rough and unpolished with broken angular faces like ore fresh from a mine, the shards separated by narrow gaps and read together as one round mass with a jagged outer edge, the lit faces of the shards pale lilac and their shadow faces green-black, her other hand low and close against her thigh gripping a short hooked jungle blade of dull pewter with the hook turned outward, realistic adult head proportion, face lit with no shadow across the eyes, shadow falling on the side of the head away from the light and beneath the jaw, eyes as two bone white almond shapes each with a solid ink black pupil looking toward the shards, sized to read clearly but no larger than an adult eye, a long angular face with a high narrow bridge, a square chin and a hollow beneath the cheekbone, the lit upper face set against the dark hair and dark veil around it, a sheer near-black green gauze veil drawn across her nose and mouth and fastened behind the ears, its upper edge one hard straight line across the bridge of the nose beneath the eyes, her nose, lips and jaw visible through it as one flat shape a full band darker than the lit upper face, calm level brows, chin raised slightly, head tilted toward the shards, tight coiled black hair grown out into a wide high rounded dome as one flat mass, the veil continuing from the back of the crown behind the hair and falling straight down her back close to the body to the backs of her knees, its edge at the crown bound in a pale lilac border band, a high blackened leather collar band at her throat carrying one flat pale lilac sigil plate cut in the shape of an open eye, a fitted burnt sienna wrap-coat closed across the body and fastened with a knotted sash at the hip, the coat skirt kilted up into the sash to the knee on the near side and falling to mid-calf on the far side, the hem edged with a woven border band of five large repeated diamond motifs, the sleeves bound close to the forearms with blackened leather bracers, sand-tan linen trousers bound from ankle to knee in four heavy wrap bands, a square patch of a different weave sewn onto one knee of the wrappings with hard angular stitching, the coat and the lower right side of the figure falling into solid green-black shadow, tall blackened boots with a simple sole division, in contact with a single flat ground line, three-quarter view facing right, eye-level camera at chest height, orthographic, isolated on a plain flat background of one uniform color, full figure visible with headroom.
+```
+
+Counted groups: six shards at the raised hand, five diamond motifs at the hem, four wrap bands on the shins — three, in three regions. **Cut order if a variant comes back busy:** the diamond motifs first. The knee patch is the history and is cut last.
+
+Three failure modes to check on any revision. **Shard spacing:** if the gaps widen and the cluster scatters, go to five shards and hairline gaps; if the shards fuse into one rock, the float is lost — widen the gaps slightly. Either way the cluster's outer edge is the silhouette risk under 7.1. **Accent coverage:** six lilac-faced shards is the largest accent area on the figure; if it runs over a fifth, keep lilac on the upper faces only. **Hue adjacency:** the burnt sienna garment sits near the Thief's rust orange accent. It holds because one is a garment and the other an accent, and they are in different Acts, but check it in the composite.
+
 ### 8.9 Accent registry
 
 One color per Role, no sharing. Hue alone cannot separate twenty entries at phone size, so **value** and **placement** carry the same signal in parallel.
@@ -885,7 +957,7 @@ One color per Role, no sharing. Hue alone cannot separate twenty entries at phon
 | Chronophage | ice cyan | #8FD4DC | light | clock-face at chest |
 | Sorcerer | unstable cobalt | #2F52C4 | mid | slab inscriptions at the chest, hood lining, stone in the rod crown |
 | Emissary | ink indigo | #26326B | dark | seal wax on chest documents, badge |
-| Diviner | pale lilac | #B9A5D9 | light | veil trim, throat sigil |
+| Diviner | pale lilac | #B9A5D9 | light | lit faces of the floating crystal shards, veil border at the crown, throat sigil |
 | Cultist | deep amethyst | #5B2A78 | dark | throat brand, robe lining, stained fingers |
 | Herald of the Loom | violet magenta | #8E3A91 | mid | active thread through chest loom-frame |
 | Tactician | rose magenta | #C2447A | mid | map case, marker rods |
@@ -1780,6 +1852,10 @@ Recorded so they are not retried. Each of these was generated and judged, not re
 - **Desaturated garment main as an unwritten default.** Not a generation failure but a documentation one — six characters were built on a rule nobody had written, and the roster came out as grades of beige with one muted accent each. See 3.5.
 - **Plague Doctor with historically accurate props.** A straight lancet-tipped cane, a hand bellows and a chest rack of vials. Legible, but clean, mundane and with no fantasy content; the cane was the least interesting shape in the figure, and the vial rack duplicated the Alchemist's chest. This is the case that produced the 8.1 rule on elements from outside reality.
 - **Plague Doctor with a hat, an insect stinger and a chest seed-pod.** Not a failure — the second pass was strong and proved the 8.1 rule — but superseded. A woman in her fifties did not fit the intended character, the chest pod still sat in the region the Alchemist owns, and smoke from beak vents split the kit across two objects. Replaced by the version in 8.8.1. The stinger remains a good weapon for a future Role from the same jungle.
+- **Diviner's crystal as a jagged raw crystal with smooth spheres grown out of it.** Rejected on paper. Unnatural, which was the intent, but two shape languages with nothing joining them read as a rock with bubbles or growths on it rather than as a designed prop. Produced the arrangement-not-added-parts bullet in 8.1.
+- **Diviner's crystal as a cluster of small spheres in rope netting.** Rejected on paper. Many small spheres are detail that dies in the quantize step, and a round mass held in netting is the Plague Doctor's caged gall (7.2).
+- **Diviner's crystal as spheres strung together and held.** Rejected on paper. A trailing or hanging strand nibbles the outer contour (7.1), and a held strand reads as prayer beads. Two joined spheres were rejected on the same pass — at 300 px they read as a dumbbell or binoculars.
+- **Diviner's crystal as a giant moth compound eye.** Superseded rather than failed, before generation. The owner wanted a crystal read, not a creature part, and it would have made a second Act 1 woman carrying a harvested jungle-creature part beside the Plague Doctor.
 
 ---
 
@@ -1822,3 +1898,5 @@ Collected so they are visible in one place rather than buried in the sections th
 - **Zone lore family language.** Which Gilded Deck choices belong to its family and which to the zone alone (13.3.1).
 - **Passive icon post-processing.** Full pass or overlay only, once the quantize step has been tried on engraved grit at 40 px (12.6.7).
 - **Grafting and thread-stance buttons.** Passive icon class, their own class, or UI chrome under 13.1 (12.6.7).
+- **Diviner composite.** Pending against the Plague Doctor and the Thief before she is marked approved (8.8.5, 18).
+- **Occupation clauses in the approved prompts.** 5.7 says they do not belong in prompts; 8.7–8.8.4 all carry one. Leave them as recorded-as-generated, or strip them on the next revision of each character.
