@@ -1,20 +1,52 @@
 [gd_scene format=3 uid="uid://di0y70sbai3yw"]
 
 [ext_resource type="Script" uid="uid://dql0n3rqcrd15" path="res://Scripts/UI/menu_item_slot.gd" id="1_vybhe"]
-[ext_resource type="Texture2D" uid="uid://bs4q3kt7agwa6" path="res://Assets/Champ_Collector/Icons/Character_Frames/Character_Frame_1.png" id="2_n5d1g"]
+[ext_resource type="Shader" uid="uid://bfxy8p1d7jnyy" path="res://Assets/Champ_Collector/Shaders/rarity_noise_backdrop.gdshader" id="2_e5jka"]
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="2_vybhe"]
-[ext_resource type="Shader" uid="uid://d06wqb63c4rfv" path="res://Assets/Champ_Collector/Shaders/rarity_backdrop.gdshader" id="3_n5d1g"]
+[ext_resource type="Texture2D" uid="uid://bxywwu2a6q5ev" path="res://Assets/Champ_Collector/Icons/Character_Frames/character_frame_3.png" id="3_e5jka"]
 [ext_resource type="Script" uid="uid://bumae467d28vx" path="res://Scripts/UI/tooltip.gd" id="4_tooltip"]
+
+[sub_resource type="Curve" id="Curve_noise_remap"]
+_data = [Vector2(0, 0), 0.0, 1.0, 0, 1, Vector2(1, 1), 1.0, 0.0, 1, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_noise_remap"]
+curve = SubResource("Curve_noise_remap")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_rarity"]
+frequency = 0.03
+fractal_octaves = 4
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_6mhvk"]
+width = 128
+height = 128
+noise = SubResource("FastNoiseLite_rarity")
+seamless = true
+
+[sub_resource type="Curve" id="Curve_vertical_shade"]
+_data = [Vector2(0, 0.05084753), 0.0, 0.0, 0, 0, Vector2(0.96428573, 0.28813565), 0.57097405, 0.57097405, 0, 0, Vector2(1, 0.95), 1.5, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_vertical_shade"]
+curve = SubResource("Curve_vertical_shade")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_e5jka"]
 resource_local_to_scene = true
-shader = ExtResource("3_n5d1g")
+shader = ExtResource("2_e5jka")
 shader_parameter/rarity_color = Color(0, 0, 0, 0)
-shader_parameter/edge_darkening = 0.90000004275
 shader_parameter/alpha = 1.0
+shader_parameter/noise_texture = SubResource("NoiseTexture2D_6mhvk")
+shader_parameter/noise_scale = Vector2(2, 2)
+shader_parameter/noise_offset = Vector2(0, 0)
+shader_parameter/noise_contrast = 2.018000095855
+shader_parameter/noise_curve = SubResource("CurveTexture_noise_remap")
+shader_parameter/use_noise_curve = true
+shader_parameter/noise_darkening = 0.4850000230375
+shader_parameter/shade_curve = SubResource("CurveTexture_vertical_shade")
+shader_parameter/shade_strength = 1.0
 
-[node name="MenuItemSlot" type="Control" unique_id=891749718 node_paths=PackedStringArray("_tooltip", "texture_rect", "button", "level", "_renown_pips_row", "_renown_pips", "_rarity_backdrop")]
-custom_minimum_size = Vector2(100, 150)
+[node name="MenuItemSlot" type="Control" unique_id=891749718 node_paths=PackedStringArray("_tooltip", "texture_rect", "button", "level", "_renown_pips_row", "_renown_pips", "_rarity_backdrop", "_frame")]
+custom_minimum_size = Vector2(100, 120)
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_vybhe")
@@ -25,38 +57,37 @@ level = NodePath("Label")
 _renown_pips_row = NodePath("HBoxContainer_Renown_Pips")
 _renown_pips = [NodePath("HBoxContainer_Renown_Pips/Pip_0"), NodePath("HBoxContainer_Renown_Pips/Pip_1"), NodePath("HBoxContainer_Renown_Pips/Pip_2"), NodePath("HBoxContainer_Renown_Pips/Pip_3"), NodePath("HBoxContainer_Renown_Pips/Pip_4")]
 _rarity_backdrop = NodePath("RarityBackdrop")
+_frame = NodePath("TextureRect_Frame")
 
 [node name="RarityBackdrop" type="ColorRect" parent="." unique_id=648801009]
 material = SubResource("ShaderMaterial_e5jka")
 custom_minimum_size = Vector2(100, 120)
 layout_mode = 0
-offset_top = 30.0
 offset_right = 100.0
-offset_bottom = 150.0
+offset_bottom = 120.0
 mouse_filter = 2
 
 [node name="TextureRect2" type="TextureRect" parent="." unique_id=648801008]
 custom_minimum_size = Vector2(100, 120)
 layout_mode = 0
-offset_top = 30.0
 offset_right = 100.0
-offset_bottom = 150.0
+offset_bottom = 120.0
 expand_mode = 1
 
-[node name="TextureRect" type="TextureRect" parent="." unique_id=1234920]
+[node name="TextureRect_Frame" type="TextureRect" parent="." unique_id=1234920]
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 0
 offset_right = 100.0
-offset_bottom = 150.0
-texture = ExtResource("2_n5d1g")
+offset_bottom = 120.0
+texture = ExtResource("3_e5jka")
 expand_mode = 1
 
 [node name="Label" type="Label" parent="." unique_id=1026314887]
 layout_mode = 0
 offset_left = 6.0
-offset_top = 25.0
+offset_top = -3.0
 offset_right = 46.0
-offset_bottom = 56.0
+offset_bottom = 28.0
 theme = ExtResource("2_vybhe")
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
@@ -65,10 +96,10 @@ theme_override_constants/shadow_outline_size = 1
 theme_override_font_sizes/font_size = 24
 
 [node name="Button" type="Button" parent="." unique_id=803586343]
-custom_minimum_size = Vector2(100, 150)
+custom_minimum_size = Vector2(100, 120)
 layout_mode = 0
 offset_right = 100.0
-offset_bottom = 150.0
+offset_bottom = 120.0
 theme = ExtResource("2_vybhe")
 
 [node name="ToolTipArea" type="Control" parent="Button" unique_id=489986199]
@@ -85,9 +116,9 @@ script = ExtResource("4_tooltip")
 [node name="HBoxContainer_Renown_Pips" type="HBoxContainer" parent="." unique_id=1533113992]
 layout_mode = 0
 offset_left = 5.0
-offset_top = 135.0
+offset_top = 105.0
 offset_right = 95.0
-offset_bottom = 145.0
+offset_bottom = 115.0
 mouse_filter = 2
 theme_override_constants/separation = 1
 alignment = 1

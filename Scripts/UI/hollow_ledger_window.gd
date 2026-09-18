@@ -18,14 +18,6 @@ const NATURE_PRESETS: Array[AttributeWeightPreset] = [
 	preload("res://Data/Attribute_Weights/Sturdy.tres"),
 ]
 
-const RARITY_COLORS: Dictionary[Types.Rarity, Color] = {
-	Types.Rarity.Common: Color(0.384, 0.384, 0.384, 1.0),
-	Types.Rarity.Uncommon: Color(0.0, 0.73, 0.253, 1.0),
-	Types.Rarity.Rare: Color(0.178, 0.515, 1.0, 1.0),
-	Types.Rarity.Epic: Color(0.582, 0.136, 1.0, 1.0),
-	Types.Rarity.Legendary: Color(0.934, 0.254, 0.0, 1.0),
-}
-
 @export var _tier_list: VBoxContainer
 @export var _background: ColorRect
 @export var _nature_option_button: OptionButton
@@ -70,7 +62,7 @@ func BuildTierSection(p_tier: FortuneFavorTier) -> VBoxContainer:
 	for rarity in rarity_rates.keys():
 		var row: Label = Label.new()
 		row.text = "    %s: %.1f%%" % [Types.RarityName(rarity), rarity_rates[rarity]]
-		row.add_theme_color_override("font_color", RARITY_COLORS[rarity])
+		row.add_theme_color_override("font_color", RarityColors.TEXT[rarity])
 		section.add_child(row)
 
 	return section

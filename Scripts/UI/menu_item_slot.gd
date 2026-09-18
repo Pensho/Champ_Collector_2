@@ -12,6 +12,7 @@ const PIP_EMPTY_TEXTURE = preload("uid://b5din3anosuf2")
 @export var _renown_pips_row: HBoxContainer
 @export var _renown_pips: Array[TextureRect]
 @export var _rarity_backdrop: ColorRect
+@export var _frame: TextureRect
 
 func SetRenownRank(p_rank: int) -> void:
 	_renown_pips_row.show()
@@ -41,21 +42,9 @@ func SetHeldObjectModulate(p_color: Color) -> void:
 	self.modulate = p_color
 
 func ClearRarityBackdrop() -> void:
-	_rarity_backdrop.material.set_shader_parameter("rarity_color", Color(0.0, 0.0, 0.0, 0.0))
+	_rarity_backdrop.material.set_shader_parameter("rarity_color", RarityColors.UNKNOWN)
 
 func SetRarityBackdrop(p_rarity: Types.Rarity) -> void:
-	var col: Color = Color(0.0, 0.0, 0.0, 0.0)
-	match p_rarity:
-		Types.Rarity.Common:
-			col = Color(0.384, 0.384, 0.384, 1.0)
-		Types.Rarity.Uncommon:
-			col = Color(0.0, 0.544, 0.313, 1.0)
-		Types.Rarity.Rare:
-			col = Color(0.003, 0.152, 0.701, 1.0)
-		Types.Rarity.Epic:
-			col = Color(0.413, 0.0, 0.484, 1.0)
-		Types.Rarity.Legendary:
-			col = Color(0.651, 0.381, 0.0, 1.0)
-		_:
-			col = Color(0.0, 0.0, 0.0, 0.0)
-	_rarity_backdrop.material.set_shader_parameter("rarity_color", col)
+	_rarity_backdrop.material.set_shader_parameter("rarity_color", RarityColors.GetFill(p_rarity))
+	var fill: Color = RarityColors.GetFill(p_rarity)
+	_frame.self_modulate = Color(fill.r * 1.8, fill.g * 1.8, fill.b * 1.8, fill.a)

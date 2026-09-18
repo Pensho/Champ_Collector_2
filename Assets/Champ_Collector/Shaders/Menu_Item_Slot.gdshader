@@ -5,7 +5,7 @@ uniform sampler2D texture_albedo;
 void fragment() {
     vec4 color = texture(texture_albedo, UV);
 
-    if ((color.r < 0.001) && (color.g < 0.001) && (color.b < 0.001)) {
+    if ((color.r < 0.1) && (color.g < 0.1) && (color.b < 0.1)) {
         // If the color is pure black, set the alpha channel to 0.0 (fully transparent).
         color.a = 0.0;
     }

@@ -21,7 +21,7 @@ func Setup(p_entry: Dictionary) -> void:
 	_texture_rect_icon_darken.texture = _texture_rect_icon.texture
 	_label_name.text = preset._name
 	_texture_rect_tally.texture = ResourceHandler.TALLY_TEXTURE
-	_texture_rect_icon.material.set("shader_parameter/color", _RarityColor(p_entry["rarity"]))
+	_texture_rect_icon.material.set("shader_parameter/color", RarityColors.GetFill(p_entry["rarity"]))
 	_label_ribbon.text = Types.RarityName(p_entry["rarity"])
 	_tooltip.title_text = preset._name
 	_tooltip.description_text = "Recruits with a randomly rolled Nature."
@@ -44,18 +44,3 @@ func SetSoldOut(p_sold_out: bool) -> void:
 
 func ConnectButton(p_callback: Callable) -> void:
 	_button_buy.connect("button_up", p_callback.bind(_ID))
-
-func _RarityColor(p_rarity: int) -> Color:
-	var color: Color = Color(0.0, 0.0, 0.0, 0.0)
-	match p_rarity:
-		Types.Rarity.Common:
-			color = Color(0.384, 0.384, 0.384, 1.0)
-		Types.Rarity.Uncommon:
-			color = Color(0.0, 0.544, 0.313, 1.0)
-		Types.Rarity.Rare:
-			color = Color(0.003, 0.152, 0.701, 1.0)
-		Types.Rarity.Epic:
-			color = Color(0.413, 0.0, 0.484, 1.0)
-		Types.Rarity.Legendary:
-			color = Color(0.651, 0.381, 0.0, 1.0)
-	return color

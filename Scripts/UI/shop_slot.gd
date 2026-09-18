@@ -27,7 +27,7 @@ func Setup(p_entry: Dictionary) -> void:
 	_texture_rect_icon_darken.texture = _texture_rect_icon.texture
 	_label_name.text = _NameFor(p_entry)
 	_texture_rect_silver.texture = ResourceHandler.SILVER_COIN_TEXTURE
-	_texture_rect_icon.material.set("shader_parameter/color", _RarityColor(p_entry["rarity"]))
+	_texture_rect_icon.material.set("shader_parameter/color", RarityColors.GetFill(p_entry["rarity"]))
 	_SetRarityLabel(p_entry)
 	_tooltip.title_text = _label_name.text
 	ClearSoldOut()
@@ -140,18 +140,3 @@ func _GearDescription(p_entry: Dictionary) -> String:
 	if(lines.is_empty()):
 		return Types.Slot.keys()[preset._slot] + " with no attribute bonus."
 	return Types.Slot.keys()[preset._slot] + "\n" + "\n".join(lines)
-
-func _RarityColor(p_rarity: int) -> Color:
-	var col: Color = Color(0.0, 0.0, 0.0, 0.0)
-	match p_rarity:
-		Types.Rarity.Common:
-			col = Color(0.384, 0.384, 0.384, 1.0)
-		Types.Rarity.Uncommon:
-			col = Color(0.0, 0.544, 0.313, 1.0)
-		Types.Rarity.Rare:
-			col = Color(0.003, 0.152, 0.701, 1.0)
-		Types.Rarity.Epic:
-			col = Color(0.413, 0.0, 0.484, 1.0)
-		Types.Rarity.Legendary:
-			col = Color(0.651, 0.381, 0.0, 1.0)
-	return col

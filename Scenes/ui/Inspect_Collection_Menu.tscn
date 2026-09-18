@@ -943,29 +943,27 @@ tab_0/title = "Gear"
 tab_1/title = "Skills"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer2" unique_id=1678650511]
-custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 alignment = 1
 
 [node name="Weapon_Slot" parent="MarginContainer/HBoxContainer2/VBoxContainer2/HBoxContainer" unique_id=569422811 instance=ExtResource("4_xwg4m")]
-custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 
 [node name="Empty_Slot_Silhouette" type="TextureRect" parent="MarginContainer/HBoxContainer2/VBoxContainer2/HBoxContainer/Weapon_Slot" unique_id=588322690]
 show_behind_parent = true
 material = SubResource("ShaderMaterial_u3wy6")
 layout_mode = 0
-offset_left = 10.0
-offset_top = 40.0
-offset_right = 90.0
-offset_bottom = 120.0
+offset_left = 11.0
+offset_top = 23.0
+offset_right = 91.0
+offset_bottom = 103.0
 mouse_filter = 2
 texture = ExtResource("6_0ed3m")
+expand_mode = 1
 
 [node name="Shield_Slot" parent="MarginContainer/HBoxContainer2/VBoxContainer2/HBoxContainer" unique_id=1250095819 instance=ExtResource("4_xwg4m")]
-custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 
 [node name="Empty_Slot_Silhouette" type="TextureRect" parent="MarginContainer/HBoxContainer2/VBoxContainer2/HBoxContainer/Shield_Slot" unique_id=1086887396]
@@ -973,11 +971,12 @@ show_behind_parent = true
 material = SubResource("ShaderMaterial_2jco1")
 layout_mode = 0
 offset_left = 10.0
-offset_top = 40.0
+offset_top = 22.0
 offset_right = 90.0
-offset_bottom = 120.0
+offset_bottom = 102.0
 mouse_filter = 2
 texture = ExtResource("7_lgjj3")
+expand_mode = 1
 
 [node name="Boots_Slot" parent="MarginContainer/HBoxContainer2/VBoxContainer2" unique_id=1663287261 instance=ExtResource("4_xwg4m")]
 layout_mode = 2
@@ -988,9 +987,9 @@ show_behind_parent = true
 material = SubResource("ShaderMaterial_0ed3m")
 layout_mode = 0
 offset_left = 10.0
-offset_top = 40.0
+offset_top = 23.0
 offset_right = 90.0
-offset_bottom = 120.0
+offset_bottom = 103.0
 mouse_filter = 2
 texture = ExtResource("6_35r4v")
 expand_mode = 1
