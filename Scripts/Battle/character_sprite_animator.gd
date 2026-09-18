@@ -24,6 +24,7 @@ var _idle_phase: float = randf() * TAU
 var _idle_enabled: bool = true
 var _dead: bool = false
 
+var _base_scale: Vector2 = Vector2.ONE
 var _reaction_offset: Vector2 = Vector2.ZERO
 var _reaction_scale: Vector2 = Vector2.ONE
 var _reaction_skew: float = 0.0
@@ -45,7 +46,10 @@ func _process(p_delta: float) -> void:
 		idle_scale_y = 1.0 + (IDLE_SCALE_AMOUNT * wave)
 	_pivot.position = _reaction_offset
 	_pivot.skew = _reaction_skew
-	_sprite.scale = Vector2(_reaction_scale.x, idle_scale_y * _reaction_scale.y)
+	_sprite.scale = _base_scale * Vector2(_reaction_scale.x, idle_scale_y * _reaction_scale.y)
+
+func SetBaseScale(p_scale: Vector2) -> void:
+	_base_scale = p_scale
 
 func SetIdleEnabled(p_enabled: bool) -> void:
 	_idle_enabled = p_enabled

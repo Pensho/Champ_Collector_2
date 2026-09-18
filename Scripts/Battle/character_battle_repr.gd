@@ -104,3 +104,6 @@ func GetVisualEffects() -> CharacterVisualEffects:
 
 func GetSpriteAnimator() -> CharacterSpriteAnimator:
 	return _sprite_animator
+
+func ScaleArt(p_scale: Vector2) -> void:
+	_sprite_animator.SetBaseScale(p_scale)

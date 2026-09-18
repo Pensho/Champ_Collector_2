@@ -186,9 +186,7 @@ func Init(p_context: ContextContainer) -> void:
 		var is_boss: bool = p_context._arguments.has("Boss_Scale")
 		if (is_boss):
 			var boss_scale: float = p_context._arguments["Boss_Scale"]
-			_character_representations[enemy_ID].scale = Vector2(boss_scale, boss_scale)
-			_character_representations[enemy_ID].position.y -= (
-					_character_representations[enemy_ID].position.y * boss_scale) * 0.5
+			_character_representations[enemy_ID].ScaleArt(Vector2(boss_scale, boss_scale))
 		# One levelling call carrying the boss flag, so the ×1.5 boss multiplier is
 		# actually applied instead of being pre-empted by an earlier no-op call.
 		LevelSystem.SetOpponentLevel(_characters[enemy_ID], difficulty, is_boss)

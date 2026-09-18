@@ -34,6 +34,22 @@ func test_disabling_idle_settles_the_pivot_at_the_origin() -> void:
 	assert_eq(_pivot.position, Vector2.ZERO)
 	assert_eq(_sprite.scale, Vector2.ONE)
 
+func test_base_scale_persists_across_frames() -> void:
+	_animator.SetIdleEnabled(false)
+	_animator.SetBaseScale(Vector2(1.5, 1.5))
+	await wait_frames(2)
+	assert_eq(_sprite.scale, Vector2(1.5, 1.5))
+
+func test_impact_returns_to_the_base_scale_once_it_settles() -> void:
+	_animator.SetIdleEnabled(false)
+	_animator.SetBaseScale(Vector2(2.0, 2.0))
+	_animator.PlayImpact(1.0, 1.0)
+	await wait_frames(2)
+	assert_true(_sprite.scale.y > 2.0, "The stretch should apply on top of the base scale.")
+	await wait_seconds(0.3)
+	assert_almost_eq(_sprite.scale.x, 2.0, 0.001)
+	assert_almost_eq(_sprite.scale.y, 2.0, 0.001)
+
 func test_impact_grows_taller_and_knocks_back_then_returns_to_base() -> void:
 	_animator.SetIdleEnabled(false)
 	_animator.PlayImpact(1.0, 1.0)
