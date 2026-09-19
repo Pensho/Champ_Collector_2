@@ -43,6 +43,7 @@ func SetHeldObjectModulate(p_color: Color) -> void:
 
 func ClearRarityBackdrop() -> void:
 	_rarity_backdrop.material.set_shader_parameter("rarity_color", RarityColors.UNKNOWN)
+	_frame.self_modulate = Color.WHITE
 
 func SetRarityBackdrop(p_rarity: Types.Rarity) -> void:
 	_rarity_backdrop.material.set_shader_parameter("rarity_color", RarityColors.GetFill(p_rarity))

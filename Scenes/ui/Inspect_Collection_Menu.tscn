@@ -1294,8 +1294,8 @@ theme_override_constants/separation = 4
 
 [node name="Passive_Row" parent="MarginContainer/HBoxContainer2/VBoxContainer2/SkillsPanel/MarginContainer/VBoxContainer/VBoxContainer_Passives" unique_id=508433586 instance=ExtResource("10_skillrow")]
 layout_mode = 2
-show_on_press = true
 show_icon_border = false
+show_on_press = true
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer" unique_id=1082317516]
 layout_mode = 2
