@@ -22,6 +22,6 @@ target = 14
 script = ExtResource("1_skill")
 name = "Fateful Glimpse"
 description = "Deals damage to a single enemy, scaled by Mysticism, and restores Health to the most injured ally."
-icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Fateful_Glimpse/Fateful_Glimpse.png"
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Fateful_Glimpse/fateful_glimpse.jpg"
 effects = Array[ExtResource("1_76l2e")]([SubResource("Resource_0lykd"), SubResource("Resource_n81kv")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

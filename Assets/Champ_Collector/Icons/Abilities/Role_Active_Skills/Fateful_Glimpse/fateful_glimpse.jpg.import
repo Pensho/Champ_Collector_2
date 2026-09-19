@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://n1j5snehn5ff"
-path="res://.godot/imported/Ill_Omen.png-5c53bdc4648ecd32afd352f424ad07e2.ctex"
+uid="uid://djbklol1t7cy6"
+path="res://.godot/imported/fateful_glimpse.jpg-91d55daa58def6653af90e981c60a621.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Ill_Omen/Ill_Omen.png"
-dest_files=["res://.godot/imported/Ill_Omen.png-5c53bdc4648ecd32afd352f424ad07e2.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Fateful_Glimpse/fateful_glimpse.jpg"
+dest_files=["res://.godot/imported/fateful_glimpse.jpg-91d55daa58def6653af90e981c60a621.ctex"]
 
 [params]
 

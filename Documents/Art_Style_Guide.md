@@ -289,6 +289,8 @@ When an attractor lands, rewrite the costume from a different occupation rather 
 
 **Use numeric counts, never adjectives.** "Three or four wrap bands" is a target the model can hit. "Moderate detail" is not, and it will revert to maximalism. This holds for icons and character designs, not for environment design.
 
+**Name each element individually; a collective reference re-opens the count.** A counted group stated once and then referred to collectively later in the same prompt gives the number back. Fateful Glimpse (12.4.6) named one beam entering and two leaving, then closed with *all three shafts cut away to bare cream paper* — and Leonardo drew more shafts than three. The summary clause was read as a licence to decide how many "all" was. The fix was to name each shape and its origin separately: the beam entering from the upper left, and the two leaving *from the same point on the shard*. One pass, corrected. Treat "all the light", "the blades", "the shards" as an instruction to invent, and repeat the members instead.
+
 ### 5.5 Detail has to survive the pipeline
 
 Ask for *structural* detail — shapes large enough to survive quantization to four bands and downscaling to target size. Texture words (grime, stains, grease, fine hatching) cost prompt budget and return nothing after post-processing. The test is the round-trip in section 6, and it is the same test for a costume, a wall, a sword and an icon.
@@ -331,6 +333,25 @@ chosen for it — brow asymmetry spread this way from the Sorcerer's prompt into
 every draft after it. See 8.4.4. Every phrase in the subject block should be
 there because this character needs it; only the general block (8.6) and the
 composition tail (4.2) are repeated word for word.
+
+### 5.8 One object, one state
+
+**An object described twice is drawn twice.** Where it came from and what
+happened to it are two clauses, and the model reads them as two entries in a
+list rather than as one event in sequence. A Premonition draft (12.4.6) named
+a crossbow bolt *entering from the upper left on a hard diagonal and striking
+a dense drifting mass of pale lilac vapor*, and then *broken cleanly in two,
+its two halves thrown apart*. The result had an intact bolt in flight and a
+broken one in the same frame, and made no sense as a picture.
+
+Name the object once, in the state the piece is about — here, already broken.
+The history goes to other elements: gouge strokes trailing the path it came
+in on, and background cut lines running along that same path, both ending at
+the break. They carry the direction without a second bolt, which is what they
+were already there to do (12.4.3).
+
+This is the mirror of the under-naming failure in 5.4. Count the objects,
+name each one once.
 
 ---
 
@@ -1525,6 +1546,8 @@ And one phrase opening it: `chiaroscuro woodcut print,`
 - **Highlights are cut to paper.** Name what glows or gleams — flames, a blade edge, foam and spray — and cut it away to bare cream paper. This is where the "light" in the old prompts went.
 - **Background is optional and sparse.** When present, it is carried by sparse cut lines and held in the darker tone so the subject stands forward. Bolas used a sky of horizontal cut lines; the Corsair pieces carry a ship's deck and a beach. See 12.4.7.
 - **Count the elements that create density.** In Corsair's Reckoning the sword count is what drives line clutter; five was approved, three is the first cut if a variant tangles.
+- **Name every light shape separately, and say where it starts.** This class carries more light shapes than any other, and they are the first thing a summary clause inflates (5.4). One beam, then the two leaving it, each anchored to its origin — never "all the light in the frame".
+- **One object, one state** (5.8). A thrown thing is shown either in flight or arrived, never both in one prompt. The trailing gouge strokes are what carry where it came from.
 - **Transparency is replaced by breaking through.** Carved lines of a see-through form compete with the carved lines of what is inside it. Put objects *in* the form with their ends breaking out through its surface.
 
 #### 12.4.4 Accent in the tone blocks
@@ -1534,6 +1557,12 @@ And one phrase opening it: `chiaroscuro woodcut print,`
 The second tone is free, and is chosen for the scene: a warm/cool pair where the subject calls for one (Boarding Strike's moonlight teal against lantern amber).
 
 Status in the pilot: the Corsair pieces carry sea teal explicitly. Burning Bolas used warm ochre and deep rust, which sits near the Jester's saffron but was not specified as the accent. Regenerate Bolas with saffron named in one block before treating the rule as confirmed.
+
+**Confirmed by the Diviner set.** All three of her skills name pale lilac in one block, with deep burnt sienna as the free second tone — her garment main (8.8.5), so the plate carries two of the Role's three identity colors and still gets a warm/cool pair. This is the first set where the accent was chosen before the first prompt rather than noticed afterwards, and it held on all three pieces without any of them reading as recolors of each other. Bolas is still the outstanding regeneration.
+
+**Prefer the Role's garment main as the free tone.** It is already chosen, already tested against the accent on the figure, and it ties the print to the character without putting the character in it. Use a scene-driven second tone (Boarding Strike's lantern amber) when the subject genuinely calls for one.
+
+**Vary the accent's coverage across a set, never its hue.** The three Diviner plates carry different amounts of lilac on purpose — most in Premonition, where the vapor mass *is* the accent; least in Ill Omen, where it is held to the lit shard faces and their trailing strokes; Fateful Glimpse between them. Across a set that reads as range. Three plates at the same saturation read as one plate printed three times.
 
 #### 12.4.5 Post-processing
 
@@ -1561,15 +1590,65 @@ chiaroscuro woodcut print, a curved pirate cutlass thrust in from the left edge 
 chiaroscuro woodcut print, a dolphin formed entirely of seawater leaping out of a breaking wave toward the viewer, its body built from curling carved current lines and swirling eddies, five cutlasses and sabres caught inside the water at different angles, their hilts and blade tips breaking out through its back and flanks, a great wave curling behind it with claw-like foam crests, a detailed black key block with engraved hatching and contour lines printed over two overlapping tone blocks in sea teal and pale sand ochre, foam, spray and the sword edges cut away to bare cream paper, a strip of beach and distant sea below in sparse horizontal cut lines, morning light from behind the wave, flying droplets as small gouged marks, slight registration offset between blocks, visible wood grain in the tone blocks
 ```
 
+**Fateful Glimpse (Diviner)** — damage plus a heal on the most injured ally
+
+```
+chiaroscuro woodcut print, one large jagged raw crystal shard hovering alone at the center of the frame, tilted on a diagonal, rough and unpolished with five broken angular faces like ore fresh from a mine, one narrow hard-edged shaft of light entering from the upper left and striking its upper face, two shafts of light leaving the shard toward the lower right coming from the same point from the crystal shard, the first a narrow beam tapering to a sharp point, the second a wide fan of four broad bands spreading open beneath it, both the bean coming from the top left and the two exiting on the other side cut away to bare cream paper as hard-edged straight shapes, six short gouged marks bursting at the point where the entering light strikes the shard, the background a sparse field of straight cut lines radiating outward from the shard and held in the darker tone so the shard and the light stand forward, a detailed black key block with engraved hatching and contour lines printed over two overlapping tone blocks in pale lilac and deep burnt sienna, highlights cut away to bare cream paper, slight registration offset between blocks, visible wood grain in the tone blocks
+```
+
+Two outputs from one skill, in one object: a single shard used as a prism, with the cut beam and the mending fan leaving the same point. They separate by **shape, not softness** — narrow and tapering against a wide fan of broad bands — because this class has no blur or gradient to separate them with. Recorded as sent, including its typo (*bean*); the result was approved and the Bolas precedent below applies.
+
+Counted groups: five faces, four bands in the fan, six gouged marks. Cut order: background radiating lines first, then the fan to three bands, then the gouged marks to four. The five faces and the two-beam split are never cut.
+
+**Ill Omen (Diviner)** — damage plus Hexed
+
+```
+chiaroscuro woodcut print, seven jagged raw crystal shards driving downward through the air on a hard diagonal toward the lower right like a volley of sharp hail, rough and unpolished with broken angular faces like ore fresh from a mine, the three nearest shards large and cropped by the upper left edge of the frame, the four furthest small and tightly grouped, each shard trailed by two long curved gouge strokes following its path, the leading points of the three nearest shards cut away to bare cream paper as small hard-edged shapes, the background a sparse field of steep diagonal cut lines running with the volley and held in the darker tone so the shards stand forward, a detailed black key block with engraved hatching and contour lines printed over two overlapping tone blocks in pale lilac and deep burnt sienna, the lilac held to the lit faces of the shards and their trailing strokes only, highlights cut away to bare cream paper, slight registration offset between blocks, visible wood grain in the tone blocks
+```
+
+First pass, no revisions. The near/far split — three shards cropped by the frame edge, four small and grouped behind — is what gives depth with no scene and no gradient (5.6 at plate scale). The light trails were carried over from Fateful Glimpse and judged not strictly necessary on this piece; they were kept because they work, not because the class requires them.
+
+Counted groups: seven shards (three near, four far), two gouge strokes each, three cut-to-paper points. Cut order: background diagonals first, then the trails to one stroke per shard, then the volley to five shards. The near/far split and the paper points are never cut.
+
+**Premonition (Diviner)** — an ally's incoming attack misses and is answered
+
+```
+chiaroscuro woodcut print, a single heavy iron crossbow bolt broken into pieces against a dense drifting mass of pale lilac vapor at the center of the frame, its parts thrown apart and tumbling down, the vapor mass irregular and offset from center with a hard torn edge, built from six large carved curls with no soft edges anywhere, the mass parting where the halves meet it, eight short gouged marks bursting outward at the break, three long curved gouge strokes running down from the upper left and ending at the break, marking the path the bolt came in on, the broken ends and the iron head cut away to bare cream paper as hard-edged shapes, the background a sparse field of straight cut lines running along that same path and held in the darker tone so the halves and the mass stand forward, a detailed black key block with engraved hatching and contour lines printed over two overlapping tone blocks in pale lilac and deep burnt sienna, the lilac held to the vapor mass and the burst at the break, highlights cut away to bare cream paper, slight registration offset between blocks, visible wood grain in the tone blocks
+```
+
+Three findings are recorded in this one piece, and it took three passes.
+
+- **A failure with no cause in frame does not read.** The first design had the bolt breaking against empty air, which is the most accurate statement of what the skill does and an unreadable image. Give the failure something to happen against.
+- **The barrier is built as smoke, not as a force field.** A clean dome or disc reads as science fiction, and a round lilac mass would have collided with the Diviner's own shard ball. Built instead the way 14.1 builds smoke — a solid mass with a hard torn edge and carved curls inside it, irregular and offset from center. *Vapor* held; *solid smoke* or *carved cloud mass* is the fallback phrasing if a variant comes back soft.
+- **The lilac mass is how the caster is present in a skill that resolves on someone else.** Premonition lands on an ally and the counter is theirs. Nothing of the Diviner's is in the frame except the tone block, which is enough.
+
+The final pass also loosened *broken cleanly in two, its two halves thrown apart and tumbling back* to *broken into pieces, its parts thrown apart and tumbling down*, which looked more natural. That is a per-piece wording choice, not a rule: the reversal against the incoming path is still what a variant of this subject should aim for.
+
+Counted groups: six carved curls, eight burst marks, three trail strokes. Cut order: background lines first, then the trail to two strokes, then the burst to five marks, then the curls to four. The torn edge is never cut.
+
 The Bolas prompt predates the fixed technique block and words it slightly differently (*highlights cut away* rather than naming them, and the trail phrase after the block). Its result was approved, so it is kept as generated; new prompts use the 12.4.3 order.
 
 #### 12.4.7 Open items for this class
 
 - **Display size is unverified.** The pilot was judged at full resolution. Skill art shows in the skill bar and tooltips; decide the sizes, then check whether the chiaroscuro structure survives where the hatching does not. If it fails at the skill-bar size, the likely answer is two assets per skill — this illustration for tooltips and cards, and a cropped or simplified icon for the bar — rather than a return to 12.1.
-- **Background convention.** Bolas has almost none; both Corsair pieces carry a scene. Decide one convention for the set, or state when a scene is earned.
+- **Background convention.** Bolas has almost none; both Corsair pieces carry a scene. All three Diviner pieces take a third option — no scene at all, a sparse field of cut lines running with the motion and held in the darker tone, which is also the first thing cut when a variant tangles. That is now the majority practice and the cheapest to repeat. Decide whether it is the default and a scene is the thing that has to be earned.
 - **Accent rule on a clashing element.** The pilot never forced a conflict: Jester fire sits near saffron, Corsair sea is teal. Test a skill whose element fights its Role's accent — a Sorcerer fire skill under cobalt — to settle whether element color or caster accent wins the accent block.
 - **Status icon collision.** Burning (12.5) will want flames too. The status icon must not look like a crop of the Bolas art.
 - **Relationship to VFX (14).** The in-battle effect for a skill is in the Lit Woodcut battle style; the skill art is not. Decide whether that split is accepted, or whether VFX borrow anything from the print (gouge-stroke motion, paper-cut highlights).
+
+#### 12.4.8 Building a Role's whole set
+
+The pilot in 12.4.6 was three pieces across two Roles. The Diviner is the first Role built as a set — three actives plus a passive (12.6) — and a set has a failure mode a single piece cannot show: **every skill reaches for the Role's signature element by default, and four assets built on one prop are one image four times.** The Diviner's six floating shards would have carried all four unopposed.
+
+**Decide the split before the first prompt, not after the first piece.** What the set shares and what varies has to be settled up front, because it decides whether the opening piece is even allowed to show the whole prop. Fateful Glimpse was drafted around the full cluster and built around a single shard instead, once it was clear Ill Omen needed the cluster.
+
+- **Pick one shared vocabulary and one variable.** For the Diviner the shards are the vocabulary and **the light is the variable**: Fateful Glimpse splits it, Ill Omen trails it, Premonition stops it. The pieces read as one workshop without repeating a composition.
+- **Vary the count of the shared element, not just its arrangement.** One shard, then seven. A single object and a volley are different subjects before any other choice is made.
+- **Not every skill gets the prop.** A skill that resolves on someone else is not the caster's moment — Premonition happens to an ally and is answered by the ally, so putting the Diviner's shards in it would put her in a frame she is not in. Her presence there is the tone block alone (12.4.4), which is enough.
+- **Reserve something for the passive.** 12.6.2 forbids the passive repeating its Role's active art for the same mechanic, and it is the last of the four to be made, so it inherits whatever is left. Two actives on the prop and one off it leaves the passive free.
+- **Judge a new piece against its own set first, then against 12.4.6.** Within-set sameness is the risk the reference set cannot catch.
+
+Where a Role's kit has no single signature element, the vocabulary can be the *motion* instead — the Corsair pieces share an arc into the right of the frame and a water-and-steel pairing rather than one object.
 
 ### 12.5 Status effect icons
 
@@ -1899,4 +1978,6 @@ Collected so they are visible in one place rather than buried in the sections th
 - **Passive icon post-processing.** Full pass or overlay only, once the quantize step has been tried on engraved grit at 40 px (12.6.7).
 - **Grafting and thread-stance buttons.** Passive icon class, their own class, or UI chrome under 13.1 (12.6.7).
 - **Diviner composite.** Pending against the Plague Doctor and the Thief before she is marked approved (8.8.5, 18).
+- **Foresight passive subject.** Her three actives deliberately leave the crystal shards free of the passive (12.4.8), and no replacement subject has been chosen (12.6.2).
+- **Background convention for skill art.** Three pieces with no scene now outnumber two with one; either make the sparse cut-line field the default or state what earns a scene (12.4.7).
 - **Occupation clauses in the approved prompts.** 5.7 says they do not belong in prompts; 8.7–8.8.4 all carry one. Leave them as recorded-as-generated, or strip them on the next revision of each character.

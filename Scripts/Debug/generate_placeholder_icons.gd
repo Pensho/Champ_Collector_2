@@ -217,13 +217,6 @@ const SKILL_ICON_TABLE: Array = [
 			"color": Color(0.20, 0.55, 0.80, 1.0) },
 	{ "folder": "Abilities/Role_Active_Skills/Refutation", "base_name": "Refutation", "size": 64,
 			"color": Color(0.30, 0.50, 0.70, 1.0) },
-	# Diviner
-	{ "folder": "Abilities/Role_Active_Skills/Ill_Omen", "base_name": "Ill_Omen", "size": 64,
-			"color": Color(0.30, 0.35, 0.65, 1.0) },
-	{ "folder": "Abilities/Role_Active_Skills/Premonition", "base_name": "Premonition", "size": 64,
-			"color": Color(0.35, 0.60, 0.80, 1.0) },
-	{ "folder": "Abilities/Role_Active_Skills/Fateful_Glimpse", "base_name": "Fateful_Glimpse", "size": 64,
-			"color": Color(0.40, 0.55, 0.75, 1.0) },
 	# Appraiser
 	{ "folder": "Abilities/Role_Active_Skills/Sizing_Cut", "base_name": "Sizing_Cut", "size": 64,
 			"color": Color(0.80, 0.60, 0.20, 1.0) },

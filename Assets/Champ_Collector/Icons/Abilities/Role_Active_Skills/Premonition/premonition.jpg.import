@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dmwbhsl7cwxbd"
-path="res://.godot/imported/Fateful_Glimpse.png-a3879030ea69d6a7bd674bf5a2d66b2c.ctex"
+uid="uid://tt01n0sqr7kh"
+path="res://.godot/imported/premonition.jpg-20d77cc66b9209e73956ef4a62d40e9c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Fateful_Glimpse/Fateful_Glimpse.png"
-dest_files=["res://.godot/imported/Fateful_Glimpse.png-a3879030ea69d6a7bd674bf5a2d66b2c.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Premonition/premonition.jpg"
+dest_files=["res://.godot/imported/premonition.jpg-20d77cc66b9209e73956ef4a62d40e9c.ctex"]
 
 [params]
 

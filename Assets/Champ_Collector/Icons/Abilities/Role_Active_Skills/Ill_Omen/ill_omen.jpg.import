@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://drmqvfkp3e0p1"
-path="res://.godot/imported/Premonition.png-64ec3dd66c6d8ccca6f56ad9d3f41eca.ctex"
+uid="uid://0vmurmpi7jga"
+path="res://.godot/imported/ill_omen.jpg-dd3b11df9e059c8ed1150d9e72f17edb.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Premonition/Premonition.png"
-dest_files=["res://.godot/imported/Premonition.png-64ec3dd66c6d8ccca6f56ad9d3f41eca.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Ill_Omen/ill_omen.jpg"
+dest_files=["res://.godot/imported/ill_omen.jpg-dd3b11df9e059c8ed1150d9e72f17edb.ctex"]
 
 [params]
 
