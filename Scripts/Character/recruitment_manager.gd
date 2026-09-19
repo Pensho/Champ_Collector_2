@@ -51,6 +51,8 @@ static func PickChampionByRarity(
 		cumulative_weights[rarity] = current_sum
 	var total_weight: int = current_sum
 
+	assert(not cumulative_weights.is_empty(),
+			"PickChampionByRarity: champion pool is empty (no rarity in it is present in p_rarity_weights)")
 	var roll: int = randi_range(1, total_weight)
 	var chosen_rarity: Types.Rarity = cumulative_weights.keys()[0]
 	for rarity in cumulative_weights.keys():

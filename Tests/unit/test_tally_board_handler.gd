@@ -90,11 +90,15 @@ func test_purchase_deducts_tallies_exactly_once_on_success() -> void:
 	board._offers = TallyBoardHandler.RollOffers()
 	var price: int = board._offers[0]["price"]
 	main.GetInstance()._resources._tallies = price
+	var collection: CharacterCollection = main.GetInstance()._character_collection
+	collection._current_max_amount = collection.Size() + 2
 
 	assert_true(board.Purchase(0), "Purchase should succeed with exactly enough Tallies")
 	assert_eq(main.GetInstance()._resources.GetTallies(), 0, "Tallies should be spent exactly once")
 	assert_true(board._offers[0]["sold_out"], "A successful purchase should mark the offer sold out")
 	assert_false(board.Purchase(0), "A second purchase of the same slot should refuse")
+
+	collection._current_max_amount = GameBalance.COLLECTION_START_ROSTER_SIZE
 
 
 func test_serialize_deserialize_round_trip_survives_json() -> void:

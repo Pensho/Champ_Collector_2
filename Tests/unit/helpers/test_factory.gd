@@ -314,6 +314,16 @@ static func make_context(
 	return SkillCastContext.new(p_resolver, p_caster_ID, p_target_IDs, p_skill, caster_attributes,
 			p_use_count, trait_result)
 
+## Pins ContentPool.Active() to the unrestricted (no pool) mode for the calling test,
+## regardless of the run's build mode. Pair with unpin_content_pool(), typically in
+## after_each, so the run's actual build mode applies to every other test.
+static func pin_unrestricted_content_pool() -> void:
+	ContentPool.PinForTest(null)
+
+## Restores ContentPool.Active() to reading the run's actual build mode.
+static func unpin_content_pool() -> void:
+	ContentPool.ClearPin()
+
 static func make_loot_table() -> LootTable:
 	return LootTable.new()
 

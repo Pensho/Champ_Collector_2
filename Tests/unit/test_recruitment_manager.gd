@@ -1,9 +1,15 @@
 extends GutTest
 
+const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
+
 var _tier: FortuneFavorTier
 
 
 func before_each() -> void:
+	# These presets are in-memory and carry no resource_path, so they cannot match
+	# any real content pool's entries; pin the unrestricted mode so RecruitableChampions()
+	# returns them regardless of the run's build mode.
+	TestFactory.pin_unrestricted_content_pool()
 	_tier = FortuneFavorTier.new()
 	_tier.reward_count = 3
 	_tier.silver_weight = 40
@@ -11,6 +17,10 @@ func before_each() -> void:
 	_tier.supplies_weight = 30
 	_tier.supplies_amount = 10
 	_tier.recruitable_champions = _build_preset_pool()
+
+
+func after_each() -> void:
+	TestFactory.unpin_content_pool()
 
 
 func _build_preset_pool() -> Array[CharacterPreset]:

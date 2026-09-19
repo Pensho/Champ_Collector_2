@@ -12,7 +12,24 @@ Run headlessly from the project root:
 `Tests/run_tests.sh` wraps the `gut_cmdln.gd` invocation and prints only GUT's run
 summary — failing tests with their assert texts and line numbers, plus the totals.
 Arguments are passed through to GUT, so `./Tests/run_tests.sh -gtest=res://Tests/unit/test_foo.gd`
-runs a single file.
+runs a single file. `--mode <name>` (e.g. `--mode playtest`) additionally runs the
+suite under that build mode's content pool, on top of the always-run full game.
+
+## Build modes
+
+A build mode (full game, or a `ContentPool` such as playtest) is resolved by
+`ContentPool.Active()`. No test is written per mode. Every test is one of:
+
+- **Mode-pinned** — built from synthetic input (in-memory presets, hand-made pools).
+  Pins the unrestricted mode with `TestFactory.pin_unrestricted_content_pool()` /
+  `unpin_content_pool()`, so it gives the same result under every mode.
+- **Mode-aware** — uses real content or `main.GetInstance()` state and derives its
+  expectations from the active pool rather than from full-game constants.
+
+`test_content_pool_sweep.gd` iterates every `ContentPool` resource under
+`Data/Loot_Tables/` and asserts each is usable (names only registered content,
+starting roster fits the roster cap, every recruitment tier can still offer a
+champion). A new mode is covered by adding its content pool resource.
 
 ## What we test
 
