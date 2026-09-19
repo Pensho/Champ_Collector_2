@@ -1,3 +1,4 @@
+@tool
 class_name StageClutterEntry extends Resource
 
 ## One scatter rule for floor clutter, mirroring DecorLayerData but placed against the

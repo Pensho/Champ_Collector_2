@@ -14,6 +14,11 @@ class_name StageClutterView extends Control
 		entries = value
 		_Regenerate()
 
+@export_tool_button("Regenerate Clutter", "Reload")
+var regenerate_clutter_button: Callable:
+	get:
+		return _Regenerate
+
 var _character_positions: Array[Vector2] = []
 var _generation_seed: int = -1
 var _placements: Array[DecorPlacement] = []

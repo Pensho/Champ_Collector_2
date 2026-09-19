@@ -1,3 +1,4 @@
+@tool
 class_name StageClutterGenerator extends RefCounted
 
 ## Pure static scatter for the floor band's ground clutter, deterministic for a given seed.

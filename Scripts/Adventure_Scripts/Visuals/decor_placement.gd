@@ -1,3 +1,4 @@
+@tool
 class_name DecorPlacement extends RefCounted
 
 ## Pure result of one scenery element placement, produced by AdventureBackgroundGenerator
