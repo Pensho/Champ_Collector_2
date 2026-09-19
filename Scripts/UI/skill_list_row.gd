@@ -1,8 +1,15 @@
 class_name SkillListRow extends ToolTip
 
+@export var show_icon_border: bool = true
+
 @onready var _icon: TextureRect = $MarginContainer/HBoxContainer/TextureRect
+@onready var _icon_border: Panel = $MarginContainer/HBoxContainer/TextureRect/Icon_Border
 @onready var _name_label: Label = $MarginContainer/HBoxContainer/Label_Name
 @onready var _cooldown_label: Label = $MarginContainer/HBoxContainer/Label_Cooldown
+
+func _ready() -> void:
+	super()
+	_icon_border.visible = show_icon_border
 
 func SetSkill(p_skill: Skill) -> void:
 	if("" != p_skill.icon_path):
