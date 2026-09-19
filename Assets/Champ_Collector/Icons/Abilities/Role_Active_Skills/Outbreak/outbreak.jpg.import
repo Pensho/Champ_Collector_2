@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d2p5lv5c2pdks"
-path="res://.godot/imported/Septic_Lance.png-acabd8fd906290e2dcb6ccf113bf8ab8.ctex"
+uid="uid://b5ev30fotpoyv"
+path="res://.godot/imported/outbreak.jpg-01667e301ba374236f4080358844d3e2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Septic_Lance/Septic_Lance.png"
-dest_files=["res://.godot/imported/Septic_Lance.png-acabd8fd906290e2dcb6ccf113bf8ab8.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Outbreak/outbreak.jpg"
+dest_files=["res://.godot/imported/outbreak.jpg-01667e301ba374236f4080358844d3e2.ctex"]
 
 [params]
 

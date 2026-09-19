@@ -265,13 +265,6 @@ const SKILL_ICON_TABLE: Array = [
 			"color": Color(0.60, 0.45, 0.30, 1.0) },
 	{ "folder": "Abilities/Role_Active_Skills/Rending_Charge", "base_name": "Rending_Charge", "size": 64,
 			"color": Color(0.65, 0.35, 0.20, 1.0) },
-	# Plague Doctor
-	{ "folder": "Abilities/Role_Active_Skills/Septic_Lance", "base_name": "Septic_Lance", "size": 64,
-			"color": Color(0.35, 0.45, 0.25, 1.0) },
-	{ "folder": "Abilities/Role_Active_Skills/Quarantine_Breach", "base_name": "Quarantine_Breach", "size": 64,
-			"color": Color(0.30, 0.50, 0.30, 1.0) },
-	{ "folder": "Abilities/Role_Active_Skills/Miasma", "base_name": "Miasma", "size": 64,
-			"color": Color(0.25, 0.45, 0.20, 1.0) },
 	# Warlord
 	{ "folder": "Abilities/Role_Active_Skills/Shield_Slam", "base_name": "Shield_Slam", "size": 64,
 			"color": Color(0.35, 0.45, 0.60, 1.0) },

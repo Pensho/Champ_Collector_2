@@ -14,6 +14,6 @@ damage_scaling = Dictionary[int, float]({
 script = ExtResource("1_skill")
 name = "Septic Lance"
 description = "Deals damage to a single enemy, scaled by Mysticism."
-icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Septic_Lance/Septic_Lance.png"
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Septic_Lance/septic_lance.jpg"
 effects = Array[ExtResource("1_fgkw6")]([SubResource("Resource_o33fx")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

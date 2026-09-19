@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bax5jlx0ajpfb"
-path="res://.godot/imported/Quarantine_Breach.png-26ec02be1483cc6334daf5c45ed8dc08.ctex"
+uid="uid://2q28ivm4c6sl"
+path="res://.godot/imported/miasma.jpg-f22ee517ed550107b09c8dcd0db47912.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Quarantine_Breach/Quarantine_Breach.png"
-dest_files=["res://.godot/imported/Quarantine_Breach.png-26ec02be1483cc6334daf5c45ed8dc08.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Miasma/miasma.jpg"
+dest_files=["res://.godot/imported/miasma.jpg-f22ee517ed550107b09c8dcd0db47912.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://xco3pdy61ida"
-path="res://.godot/imported/Miasma.png-b015e04132e78bb11060eee65d9b97a0.ctex"
+uid="uid://d1jmxerlxmvof"
+path="res://.godot/imported/septic_lance.jpg-931d3068256aec475f073714409dc729.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Miasma/Miasma.png"
-dest_files=["res://.godot/imported/Miasma.png-b015e04132e78bb11060eee65d9b97a0.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Septic_Lance/septic_lance.jpg"
+dest_files=["res://.godot/imported/septic_lance.jpg-931d3068256aec475f073714409dc729.ctex"]
 
 [params]
 
