@@ -139,31 +139,33 @@ texture = SubResource("GradientTexture2D_6lbqc")
 
 [node name="Skill_1" parent="." unique_id=1278959153 instance=ExtResource("5_nm010")]
 layout_mode = 0
-offset_left = 943.0
+offset_left = 912.0
 offset_top = 10.0
-offset_right = 1068.0
+offset_right = 1037.0
 offset_bottom = 135.0
 
 [node name="Skill_2" parent="." unique_id=1094189333 instance=ExtResource("5_nm010")]
 layout_mode = 0
-offset_left = 1087.0
-offset_top = 46.0
-offset_right = 1212.0
-offset_bottom = 171.0
+offset_left = 1055.0
+offset_top = 31.0
+offset_right = 1180.0
+offset_bottom = 156.0
 
 [node name="Skill_3" parent="." unique_id=206559452 instance=ExtResource("5_nm010")]
 layout_mode = 0
-offset_left = 1137.0
-offset_top = 181.0
-offset_right = 1262.0
-offset_bottom = 306.0
+offset_left = 1144.0
+offset_top = 140.0
+offset_right = 1269.0
+offset_bottom = 265.0
 
 [node name="Label_Battle_Duration" type="Label" parent="." unique_id=2087459621]
-layout_mode = 0
-offset_left = 15.0
-offset_top = 15.0
-offset_right = 69.0
-offset_bottom = 45.0
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -54.0
+offset_bottom = 42.0
+grow_horizontal = 0
 theme = ExtResource("10_rvbdk")
 
 [node name="Graft_Focus" type="TextureRect" parent="." unique_id=347484168]
