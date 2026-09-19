@@ -65,7 +65,7 @@ func Init(p_characters: Dictionary[int, Character], p_zone_callable: Callable, p
 		self.add_child(_zone_dividers[i])
 	
 	DisableZones(true)
-	SetupPlanReachOverlays(p_characters, p_player_team)
+	SetupTraitReachOverlays(p_characters, p_player_team)
 
 # Normalizes each character's speed against the fastest one, so the leader advances
 # at 1.0 and everyone else in proportion. Both the maximum and the normalization must
@@ -86,10 +86,10 @@ static func NormalizeSpeeds(p_speeds: Dictionary[int, int]) -> Dictionary[int, f
 func RefreshSpeeds(p_speeds: Dictionary[int, int]) -> void:
 	_characters_normalized_speed = NormalizeSpeeds(p_speeds)
 
-func SetupPlanReachOverlays(p_characters: Dictionary[int, Character], p_player_team: CombatTeam) -> void:
+func SetupTraitReachOverlays(p_characters: Dictionary[int, Character], p_player_team: CombatTeam) -> void:
 	var owner_ids: Array[int]
 	for i in p_characters.keys():
-		if (_GetReachThreshold(p_characters[i]) > 0.0):
+		if (null != p_characters[i]._trait and null != p_characters[i]._trait._turn_bar_reach):
 			owner_ids.append(i)
 	if (owner_ids.is_empty()):
 		return
@@ -106,33 +106,14 @@ func SetupPlanReachOverlays(p_characters: Dictionary[int, Character], p_player_t
 		var tint: Color = Color.WHITE
 		if (has_player_owner and has_enemy_owner):
 			tint = Color(0.6, 1.0, 0.6) if p_player_team.Has(id) else Color(1.0, 0.6, 0.6)
-		var threshold: float = _GetReachThreshold(p_characters[id])
-		_AddPlanReachOverlay(id, threshold, tint, p_characters[id], false)
-		if (_HasBidirectionalReach(p_characters[id])):
-			_AddPlanReachOverlay(id, threshold, tint, p_characters[id], true)
+		_AddTraitReachOverlay(id, tint, p_characters[id], false)
+		if (p_characters[id]._trait._turn_bar_reach._both_directions):
+			_AddTraitReachOverlay(id, tint, p_characters[id], true)
 
-func _AddPlanReachOverlay(
-		p_owner_ID: int, p_threshold: float, p_tint: Color, p_owner: Character, p_ahead: bool) -> void:
-	var overlay := PlanReachOverlay.new()
+func _AddTraitReachOverlay(p_owner_ID: int, p_tint: Color, p_owner: Character, p_ahead: bool) -> void:
+	var overlay := TraitReachOverlay.new()
 	self.add_child(overlay)
-	overlay.Setup(_character_turn_markers[p_owner_ID], p_threshold * self.size.x, p_tint, p_owner,
-			self.size.y, self.size.x, p_ahead)
-
-func _GetReachThreshold(p_character: Character) -> float:
-	if (p_character._trait is PlanTrait):
-		return PlanTrait.GetReachThreshold(p_character._rarity)
-	if (p_character._trait is ForesightTrait):
-		return ForesightTrait.GetReachThreshold(p_character._rarity)
-	if (p_character._trait is ShieldWallTrait):
-		return ShieldWallTrait.GetReachThreshold(p_character._rarity)
-	if (p_character._trait is ContagionBondGraft):
-		return ContagionBondGraft.GetReachThreshold(p_character._rarity)
-	if (p_character._trait is GraviticRotGraft):
-		return GraviticRotGraft.GetReachThreshold(p_character._rarity)
-	return 0.0
-
-func _HasBidirectionalReach(p_character: Character) -> bool:
-	return p_character._trait is ShieldWallTrait or p_character._trait is ContagionBondGraft
+	overlay.Setup(_character_turn_markers[p_owner_ID], p_tint, p_owner, self.size.y, self.size.x, p_ahead)
 
 func SpawnZoneEffect(p_zone_ID: int, p_charges: int, p_allySide: bool, p_visual_scene: PackedScene):
 	if(null == p_visual_scene):

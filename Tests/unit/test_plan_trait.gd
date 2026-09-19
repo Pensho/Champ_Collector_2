@@ -25,6 +25,14 @@ func _InitTrait(p_rarity: Types.Rarity) -> void:
 	_owner._rarity = p_rarity
 	_trait.Init(p_rarity)
 
+# --- Turn bar reach ---
+
+func test_turn_bar_reach_is_the_rarity_threshold_behind_only() -> void:
+	for rarity: Types.Rarity in PlanTrait.PERCENT_BEHIND_THRESHOLD:
+		_InitTrait(rarity)
+		assert_eq(_trait._turn_bar_reach._threshold, PlanTrait.PERCENT_BEHIND_THRESHOLD[rarity])
+		assert_false(_trait._turn_bar_reach._both_directions)
+
 # --- The Tactician itself is never buffed ---
 
 func test_owner_is_never_empowered() -> void:

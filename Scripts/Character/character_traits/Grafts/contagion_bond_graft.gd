@@ -22,6 +22,10 @@ static func GetReachThreshold(p_rarity: Types.Rarity) -> float:
 func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
 	_width = GetReachThreshold(p_rarity)
+	# Placeholder until Contagion Bond has its own turn bar art.
+	_turn_bar_reach = TurnBarReach.new(_width, load(
+			"res://Assets/Champ_Collector/Icons/Abilities/Passives/Plan_Trait/Plan_Trait_Turnbar_Texture_2.jpg"),
+			TurnBarReach.DEFAULT_OPACITY, true)
 	_title = "Contagion Bond"
 	_body = ("When it gains a buff, the nearest ally within " + str(roundi(_width * 100))
 			+ "% of the turn bar gains a copy for 1 turn. When a debuff lands on it, the"

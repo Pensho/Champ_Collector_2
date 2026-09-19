@@ -23,6 +23,14 @@ func _InitTrait(p_rarity: Types.Rarity) -> void:
 	_owner._rarity = p_rarity
 	_trait.Init(p_rarity)
 
+# --- Turn bar reach ---
+
+func test_turn_bar_reach_is_the_rarity_threshold_behind_only() -> void:
+	for rarity: Types.Rarity in ForesightTrait.PERCENT_BEHIND_THRESHOLD:
+		_InitTrait(rarity)
+		assert_eq(_trait._turn_bar_reach._threshold, ForesightTrait.PERCENT_BEHIND_THRESHOLD[rarity])
+		assert_false(_trait._turn_bar_reach._both_directions)
+
 # --- Enemies within threshold are debuffed at every rarity ---
 
 func test_enemy_within_threshold_is_enfeebled_at_low_rarity() -> void:

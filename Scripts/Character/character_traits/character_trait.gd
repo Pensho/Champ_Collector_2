@@ -4,6 +4,7 @@ class_name CharacterTrait extends Resource
 @warning_ignore_start("unused_private_class_variable")
 var _execution_steps: Dictionary[Types.Combat_Event, Callable]
 var _trait_texture: Texture2D
+var _turn_bar_reach: TurnBarReach = null
 var _title: String = "Title"
 var _body: String = "Body"
 var _owner_rarity: Types.Rarity = Types.Rarity.Common

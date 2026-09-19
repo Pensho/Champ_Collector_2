@@ -17,16 +17,14 @@ var _redirect_fraction: float = 0.0
 static func GetRedirectFraction(p_rarity: Types.Rarity) -> float:
 	return REDIRECT_FRACTION.get(p_rarity, 0.0)
 
-## The proximity window doesn't scale by rarity; this matches the
-## PlanTrait/ForesightTrait GetReachThreshold shape so the turn bar can dispatch to
-## it the same way.
-static func GetReachThreshold(_p_rarity: Types.Rarity) -> float:
-	return PROXIMITY_WINDOW
-
 func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
 	_redirect_fraction = GetRedirectFraction(p_rarity)
 	_trait_texture = load("res://Assets/Champ_Collector/Icons/Abilities/Passives/Shield_Wall_Trait/shield_wall_trait.png")
+	# Placeholder until Shield Wall has its own turn bar art.
+	_turn_bar_reach = TurnBarReach.new(PROXIMITY_WINDOW, load(
+			"res://Assets/Champ_Collector/Icons/Abilities/Passives/Plan_Trait/Plan_Trait_Turnbar_Texture_2.jpg"),
+			TurnBarReach.DEFAULT_OPACITY, true)
 	_execution_steps[Types.Combat_Event.Ally_Damage_Taken] = Callable(self, "OnAllyDamageTaken")
 	_execution_steps[Types.Combat_Event.Skill_Cast] = Callable(self, "OnSkillCast")
 

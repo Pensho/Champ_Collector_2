@@ -12,12 +12,12 @@ const SPEED_DRAWBACK: float = -0.10
 
 var _drain: float = 0.0
 
-static func GetReachThreshold(_p_rarity: Types.Rarity) -> float:
-	return REAR_PROXIMITY
-
 func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
 	_drain = TURN_BAR_DRAIN_PER_RARITY.get(p_rarity, 0.0)
+	# Placeholder until Gravitic Rot has its own turn bar art.
+	_turn_bar_reach = TurnBarReach.new(REAR_PROXIMITY, load(
+			"res://Assets/Champ_Collector/Icons/Abilities/Passives/Plan_Trait/Plan_Trait_Turnbar_Texture_2.jpg"))
 	_title = "Gravitic Rot"
 	_body = ("At the start of its turn, every enemy within "
 			+ str(roundi(REAR_PROXIMITY * 100)) + "% behind on the turn bar loses "

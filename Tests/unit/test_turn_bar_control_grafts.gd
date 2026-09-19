@@ -77,10 +77,11 @@ func test_caravan_cadence_does_nothing_with_no_allies_behind() -> void:
 
 # --- Gravitic Rot ---
 
-func test_gravitic_rot_reach_threshold_matches_the_rear_window_across_rarities() -> void:
+func test_gravitic_rot_turn_bar_reach_is_the_rear_window_behind_only_across_rarities() -> void:
 	for rarity: Types.Rarity in GraviticRotGraft.TURN_BAR_DRAIN_PER_RARITY:
-		assert_eq(GraviticRotGraft.GetReachThreshold(rarity), GraviticRotGraft.REAR_PROXIMITY,
-				"The rear window doesn't scale by rarity, matching Plan/Foresight's flat-window siblings")
+		var reach: TurnBarReach = _make_gravitic_rot(rarity)._turn_bar_reach
+		assert_eq(reach._threshold, GraviticRotGraft.REAR_PROXIMITY)
+		assert_false(reach._both_directions)
 
 func test_gravitic_rot_drains_every_enemy_behind_and_ignores_allies() -> void:
 	var roster: Dictionary = TestFactory.make_full_roster()
@@ -112,10 +113,11 @@ func test_gravitic_rot_queries_the_20_percent_rear_window() -> void:
 
 # --- Contagion Bond ---
 
-func test_contagion_bond_reach_threshold_matches_the_width_table() -> void:
+func test_contagion_bond_turn_bar_reach_is_the_width_in_both_directions() -> void:
 	for rarity: Types.Rarity in ContagionBondGraft.CONTAGION_WIDTH_PER_RARITY:
-		assert_eq(ContagionBondGraft.GetReachThreshold(rarity), ContagionBondGraft.CONTAGION_WIDTH_PER_RARITY[rarity],
-				"GetReachThreshold should surface the same per-rarity width the turn bar overlay reads")
+		var reach: TurnBarReach = _make_contagion_bond(rarity)._turn_bar_reach
+		assert_eq(reach._threshold, ContagionBondGraft.CONTAGION_WIDTH_PER_RARITY[rarity])
+		assert_true(reach._both_directions)
 
 func test_contagion_bond_copies_a_gained_buff_to_the_first_ally_returned() -> void:
 	var roster: Dictionary = TestFactory.make_full_roster()

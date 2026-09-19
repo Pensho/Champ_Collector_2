@@ -16,6 +16,14 @@ func before_each() -> void:
 func _InitTrait(p_rarity: Types.Rarity) -> void:
 	_trait.Init(p_rarity)
 
+# --- Turn bar reach ---
+
+func test_turn_bar_reach_is_the_proximity_window_in_both_directions() -> void:
+	_InitTrait(Types.Rarity.Uncommon)
+
+	assert_eq(_trait._turn_bar_reach._threshold, ShieldWallTrait.PROXIMITY_WINDOW)
+	assert_true(_trait._turn_bar_reach._both_directions)
+
 # --- Direct hook behavior ---
 
 func test_on_ally_damage_taken_returns_fraction_when_ally_within_proximity() -> void:

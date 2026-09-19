@@ -1,9 +1,6 @@
-class_name PlanReachOverlay extends TextureRect
+class_name TraitReachOverlay extends TextureRect
 
-const PLAN_TRAIT_TURNBAR_TEXTURE = preload(
-	"res://Assets/Champ_Collector/Icons/Abilities/Passives/Plan_Trait/Plan_Trait_Turnbar_Texture_2.jpg"
-)
-const PLAN_REACH_SHADER = preload("res://Assets/Champ_Collector/Shaders/plan_reach_overlay.gdshader")
+const TRAIT_REACH_SHADER = preload("res://Assets/Champ_Collector/Shaders/trait_reach_overlay.gdshader")
 
 var _owner_icon: TextureRect
 var _reach_px: float
@@ -16,29 +13,29 @@ var _atlas_texture: AtlasTexture
 var _texture_width: float
 var _texture_height: float
 
-## p_ahead mirrors the overlay to cover the span in front of the owner instead of
-## behind it (e.g. Shield Wall's both-directions proximity, alongside a second,
-## unmirrored instance covering behind).
+## Draws p_owner's trait's TurnBarReach. p_ahead covers the span in front of the owner
+## instead of behind it.
 func Setup(
 		p_owner_icon: TextureRect,
-		p_reach_px: float,
 		p_tint: Color,
 		p_owner: Character,
 		p_bar_height: float,
 		p_bar_width: float,
 		p_ahead: bool = false) -> void:
+	var reach: TurnBarReach = p_owner._trait._turn_bar_reach
 	_owner_icon = p_owner_icon
-	_reach_px = p_reach_px
+	_reach_px = reach._threshold * p_bar_width
 	_owner = p_owner
 	_bar_height = p_bar_height
 	_bar_width = p_bar_width
 	_ahead = p_ahead
 
-	_texture_width = PLAN_TRAIT_TURNBAR_TEXTURE.get_width()
-	_texture_height = PLAN_TRAIT_TURNBAR_TEXTURE.get_height()
+	var turn_bar_texture: Texture2D = reach._texture
+	_texture_width = turn_bar_texture.get_width()
+	_texture_height = turn_bar_texture.get_height()
 
 	_atlas_texture = AtlasTexture.new()
-	_atlas_texture.atlas = PLAN_TRAIT_TURNBAR_TEXTURE
+	_atlas_texture.atlas = turn_bar_texture
 	self.texture = _atlas_texture
 	self.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	self.stretch_mode = TextureRect.STRETCH_KEEP
@@ -46,8 +43,9 @@ func Setup(
 	self.z_index = 5
 
 	var shader_material := ShaderMaterial.new()
-	shader_material.shader = PLAN_REACH_SHADER
+	shader_material.shader = TRAIT_REACH_SHADER
 	shader_material.set_shader_parameter("tint", p_tint)
+	shader_material.set_shader_parameter("base_alpha", reach._opacity)
 	self.material = shader_material
 	show()
 
