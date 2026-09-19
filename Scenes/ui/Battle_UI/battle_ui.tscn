@@ -163,8 +163,10 @@ layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -54.0
-offset_bottom = 42.0
+offset_left = -58.0
+offset_top = 4.0
+offset_right = -4.0
+offset_bottom = 46.0
 grow_horizontal = 0
 theme = ExtResource("10_rvbdk")
 
@@ -202,6 +204,7 @@ offset_left = 19.0
 offset_top = 16.0
 offset_right = 94.0
 offset_bottom = 91.0
+icon = null
 
 [node name="Reagent_2" parent="." unique_id=347484171 instance=ExtResource("11_reagent")]
 visible = false
@@ -211,6 +214,7 @@ offset_left = 99.0
 offset_top = 16.0
 offset_right = 174.0
 offset_bottom = 91.0
+icon = null
 
 [node name="Reagent_3" parent="." unique_id=347484172 instance=ExtResource("11_reagent")]
 visible = false
@@ -220,6 +224,7 @@ offset_left = 19.0
 offset_top = 96.0
 offset_right = 94.0
 offset_bottom = 171.0
+icon = null
 
 [node name="Reagent_4" parent="." unique_id=347484173 instance=ExtResource("11_reagent")]
 visible = false
@@ -229,6 +234,7 @@ offset_left = 99.0
 offset_top = 96.0
 offset_right = 174.0
 offset_bottom = 171.0
+icon = null
 
 [connection signal="button_up" from="Skill_1" to="." method="_on_skill_1_button_up"]
 [connection signal="button_up" from="Skill_2" to="." method="_on_skill_2_button_up"]
