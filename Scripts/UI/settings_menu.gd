@@ -9,6 +9,7 @@ const LOCALE_BY_LANGUAGE_ID: Dictionary[int, String] = {
 @export var _music_volume_slider: HSlider
 @export var _sound_effects_volume_slider: HSlider
 @export var _screen_shake_check_box: CheckBox
+@export var _targeting_help_check_box: CheckBox
 @export var _fullscreen_check_box: CheckBox
 @export var _language_option_button: OptionButton
 
@@ -25,6 +26,7 @@ func Init() -> void:
 	_music_volume_slider.value = settings.music_volume
 	_sound_effects_volume_slider.value = settings.sound_effects_volume
 	_screen_shake_check_box.button_pressed = settings.screen_shake_enabled
+	_targeting_help_check_box.button_pressed = settings.targeting_help_enabled
 	_fullscreen_check_box.button_pressed = settings.fullscreen
 	_fullscreen_check_box.visible = not OS.has_feature("mobile")
 
@@ -57,6 +59,11 @@ func _on_screen_shake_toggled(p_pressed: bool) -> void:
 	if _populating:
 		return
 	_get_settings().SetScreenShakeEnabled(p_pressed)
+
+func _on_targeting_help_toggled(p_pressed: bool) -> void:
+	if _populating:
+		return
+	_get_settings().SetTargetingHelpEnabled(p_pressed)
 
 func _on_fullscreen_toggled(p_pressed: bool) -> void:
 	if _populating:

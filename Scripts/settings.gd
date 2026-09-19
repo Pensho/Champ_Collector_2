@@ -7,6 +7,7 @@ const DEFAULT_MASTER_VOLUME: float = 1.0
 const DEFAULT_MUSIC_VOLUME: float = 1.0
 const DEFAULT_SOUND_EFFECTS_VOLUME: float = 1.0
 const DEFAULT_SCREEN_SHAKE_ENABLED: bool = true
+const DEFAULT_TARGETING_HELP_ENABLED: bool = true
 const DEFAULT_FULLSCREEN: bool = false
 const DEFAULT_LOCALE: String = "en"
 
@@ -14,6 +15,7 @@ var master_volume: float = DEFAULT_MASTER_VOLUME
 var music_volume: float = DEFAULT_MUSIC_VOLUME
 var sound_effects_volume: float = DEFAULT_SOUND_EFFECTS_VOLUME
 var screen_shake_enabled: bool = DEFAULT_SCREEN_SHAKE_ENABLED
+var targeting_help_enabled: bool = DEFAULT_TARGETING_HELP_ENABLED
 var fullscreen: bool = DEFAULT_FULLSCREEN
 var locale: String = DEFAULT_LOCALE
 
@@ -32,6 +34,8 @@ func Load() -> void:
 			CONFIG_SECTION, "sound_effects_volume", DEFAULT_SOUND_EFFECTS_VOLUME)
 	screen_shake_enabled = config.get_value(
 			CONFIG_SECTION, "screen_shake_enabled", DEFAULT_SCREEN_SHAKE_ENABLED)
+	targeting_help_enabled = config.get_value(
+			CONFIG_SECTION, "targeting_help_enabled", DEFAULT_TARGETING_HELP_ENABLED)
 	fullscreen = config.get_value(CONFIG_SECTION, "fullscreen", DEFAULT_FULLSCREEN)
 	locale = config.get_value(CONFIG_SECTION, "locale", DEFAULT_LOCALE)
 
@@ -41,6 +45,7 @@ func Save() -> void:
 	config.set_value(CONFIG_SECTION, "music_volume", music_volume)
 	config.set_value(CONFIG_SECTION, "sound_effects_volume", sound_effects_volume)
 	config.set_value(CONFIG_SECTION, "screen_shake_enabled", screen_shake_enabled)
+	config.set_value(CONFIG_SECTION, "targeting_help_enabled", targeting_help_enabled)
 	config.set_value(CONFIG_SECTION, "fullscreen", fullscreen)
 	config.set_value(CONFIG_SECTION, "locale", locale)
 	config.save(CONFIG_PATH)
@@ -71,6 +76,10 @@ func SetScreenShakeEnabled(p_enabled: bool) -> void:
 	screen_shake_enabled = p_enabled
 	Save()
 
+func SetTargetingHelpEnabled(p_enabled: bool) -> void:
+	targeting_help_enabled = p_enabled
+	Save()
+
 func SetFullscreen(p_enabled: bool) -> void:
 	fullscreen = p_enabled
 	_apply_fullscreen()
@@ -86,6 +95,7 @@ func ResetToDefaults() -> void:
 	music_volume = DEFAULT_MUSIC_VOLUME
 	sound_effects_volume = DEFAULT_SOUND_EFFECTS_VOLUME
 	screen_shake_enabled = DEFAULT_SCREEN_SHAKE_ENABLED
+	targeting_help_enabled = DEFAULT_TARGETING_HELP_ENABLED
 	fullscreen = DEFAULT_FULLSCREEN
 	locale = DEFAULT_LOCALE
 	ApplyAll()

@@ -15,6 +15,7 @@ func test_defaults_match_documented_values() -> void:
 	assert_eq(_settings.music_volume, Settings.DEFAULT_MUSIC_VOLUME)
 	assert_eq(_settings.sound_effects_volume, Settings.DEFAULT_SOUND_EFFECTS_VOLUME)
 	assert_eq(_settings.screen_shake_enabled, Settings.DEFAULT_SCREEN_SHAKE_ENABLED)
+	assert_eq(_settings.targeting_help_enabled, Settings.DEFAULT_TARGETING_HELP_ENABLED)
 	assert_eq(_settings.fullscreen, Settings.DEFAULT_FULLSCREEN)
 	assert_eq(_settings.locale, Settings.DEFAULT_LOCALE)
 
@@ -23,6 +24,7 @@ func test_reset_to_defaults_restores_defaults_after_mutation() -> void:
 	_settings.music_volume = 0.3
 	_settings.sound_effects_volume = 0.4
 	_settings.screen_shake_enabled = false
+	_settings.targeting_help_enabled = false
 	_settings.fullscreen = true
 	_settings.locale = "en"
 
@@ -32,6 +34,7 @@ func test_reset_to_defaults_restores_defaults_after_mutation() -> void:
 	assert_eq(_settings.music_volume, Settings.DEFAULT_MUSIC_VOLUME)
 	assert_eq(_settings.sound_effects_volume, Settings.DEFAULT_SOUND_EFFECTS_VOLUME)
 	assert_eq(_settings.screen_shake_enabled, Settings.DEFAULT_SCREEN_SHAKE_ENABLED)
+	assert_eq(_settings.targeting_help_enabled, Settings.DEFAULT_TARGETING_HELP_ENABLED)
 	assert_eq(_settings.fullscreen, Settings.DEFAULT_FULLSCREEN)
 
 func test_save_then_load_round_trips_values() -> void:
@@ -39,6 +42,7 @@ func test_save_then_load_round_trips_values() -> void:
 	_settings.music_volume = 0.25
 	_settings.sound_effects_volume = 0.75
 	_settings.screen_shake_enabled = false
+	_settings.targeting_help_enabled = false
 	_settings.fullscreen = true
 
 	_settings.Save()
@@ -50,6 +54,7 @@ func test_save_then_load_round_trips_values() -> void:
 	assert_almost_eq(loaded.music_volume, 0.25, 0.0001)
 	assert_almost_eq(loaded.sound_effects_volume, 0.75, 0.0001)
 	assert_eq(loaded.screen_shake_enabled, false)
+	assert_eq(loaded.targeting_help_enabled, false)
 	assert_eq(loaded.fullscreen, true)
 	loaded.free()
 

@@ -2,6 +2,7 @@ class_name TurnBar extends Panel
 
 const DEFAULT_THEME = preload("uid://c8irweh6md2jy")
 const GRAYSCALE = preload("uid://ia57lns0336p")
+const TARGETING_HELP_PULSE = preload("res://Assets/Champ_Collector/Shaders/targeting_help_pulse.gdshader")
 const NO_CHARACTERS_TURN: int = -1
 
 @export var _character_turn_markers: Array[TextureRect]
@@ -13,6 +14,7 @@ var _characters_turn_id = -1
 var _zone_dividers: Array[ColorRect]
 var _zone_buttons: Array[Button]
 var _zone_effects: Array[Node2D]
+var _section_highlights: Array[ColorRect]
 
 func Init(p_characters: Dictionary[int, Character], p_zone_callable: Callable, p_player_team: CombatTeam):
 	var speeds: Dictionary[int, int] = {}
@@ -40,6 +42,19 @@ func Init(p_characters: Dictionary[int, Character], p_zone_callable: Callable, p
 		stylebox.bg_color = Color(0.0, 0.0, 0.0, 0.196)
 		_zone_buttons[i].add_theme_stylebox_override("normal", stylebox)
 		self.add_child(_zone_buttons[i])
+
+	var pulse_material: ShaderMaterial = ShaderMaterial.new()
+	pulse_material.shader = TARGETING_HELP_PULSE
+	_section_highlights.resize(Game_Balance.NUMBER_OF_TURN_BAR_ZONES)
+	for i in _section_highlights.size():
+		_section_highlights[i] = ColorRect.new()
+		_section_highlights[i].position = _zone_buttons[i].position
+		_section_highlights[i].size = _zone_buttons[i].size
+		_section_highlights[i].color = Color.WHITE
+		_section_highlights[i].material = pulse_material
+		_section_highlights[i].mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_section_highlights[i].hide()
+		self.add_child(_section_highlights[i])
 	
 	_zone_dividers.resize(Game_Balance.NUMBER_OF_TURN_BAR_ZONES - 1)
 	for i in range(_zone_dividers.size()):
@@ -176,6 +191,14 @@ func GetActiveTurnID() -> int:
 func DisableZones(p_disable: bool):
 	for button in _zone_buttons:
 		button.disabled = p_disable
+
+func ShowSectionHighlights(p_section_IDs: Array[int]) -> void:
+	for i in _section_highlights.size():
+		_section_highlights[i].visible = p_section_IDs.has(i)
+
+func HideSectionHighlights() -> void:
+	for highlight in _section_highlights:
+		highlight.hide()
 
 func TurnCompleteForCharacter(p_character_ID, p_reset_percent: float = 0.0) -> void:
 	_character_turn_markers[p_character_ID].position.x = self.size.x * p_reset_percent

@@ -139,7 +139,7 @@ It is referenced both as the autoload `Game_Balance.X` and, in a few files, by t
 
 ### 3.4. `Game_Settings` (`class_name Settings`)
 
-`Scripts/settings.gd` owns user preferences (audio volumes, screen shake, fullscreen, locale),
+`Scripts/settings.gd` owns user preferences (audio volumes, screen shake, targeting help, fullscreen, locale),
 persisted to `user://settings.cfg` via `ConfigFile`. This is deliberately separate from
 `SaveManager`'s per-profile `user://profile_<slot>.save` files: settings apply regardless of
 which save slot is active. On `_ready()` it loads the config and applies every value to the

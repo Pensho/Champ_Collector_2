@@ -15,6 +15,8 @@ const LUNGE_BACK_SECONDS: float = 0.12
 
 const DEATH_SECONDS: float = 0.3
 
+const TARGET_OUTLINE_WIDTH_PIXELS: float = 3.0
+
 @export var _pivot: Node2D
 @export var _sprite: TextureRect
 
@@ -92,6 +94,7 @@ func PlayDeath() -> void:
 	if(_dead):
 		return
 	_dead = true
+	SetTargetOutline(false)
 	if(_reaction_tween):
 		_reaction_tween.kill()
 	_reaction_scale = Vector2.ONE
@@ -112,6 +115,16 @@ func Revive() -> void:
 	if(_grayscale_tween):
 		_grayscale_tween.kill()
 	_sprite_material.set_shader_parameter("grayscale_amount", 0.0)
+
+func SetTargetOutline(p_enabled: bool) -> void:
+	var enabled: bool = p_enabled and not _dead and null != _sprite.texture
+	_sprite_material.set_shader_parameter("outline_enabled", enabled)
+	if(not enabled):
+		return
+	_sprite_material.set_shader_parameter("rect_size", _sprite.size)
+	_sprite_material.set_shader_parameter("outline_margin", TARGET_OUTLINE_WIDTH_PIXELS)
+	_sprite_material.set_shader_parameter("outline_width_texels",
+			TARGET_OUTLINE_WIDTH_PIXELS * _sprite.texture.get_width() / _sprite.size.x)
 
 func _PlayFlash(p_intensity: float) -> void:
 	if(_flash_tween):

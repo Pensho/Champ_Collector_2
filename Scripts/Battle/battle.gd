@@ -305,6 +305,7 @@ func StartTurn() -> void:
 				_battle_ui._thread_switch_button.RefreshVisual(herald_trait.GetCurrentThread())
 				_battle_ui._thread_switch_button.show()
 		_state = BattleState.Awaiting_Player_Input
+		_RefreshTargetingHelp()
 	elif(_sides.enemy.Has(_turn_character_ID)):
 		_state = BattleState.Enemy_Acting
 		HandleEnemyTurn()
@@ -361,6 +362,7 @@ func ResolveTurn(p_target_IDs: Array[int]) -> void:
 	_battle_ui.HideReagentUI()
 	_battle_ui.HideGraftUI()
 	_battle_ui.HideThreadSwitchUI()
+	_RefreshTargetingHelp()
 	if(not p_target_IDs.is_empty()):
 		_PlayAttackLunge(_turn_character_ID, p_target_IDs[0])
 	_resolver.ResolveSkill(_turn_character_ID, p_target_IDs, _selected_skill_ID)
@@ -652,9 +654,7 @@ func _OnReagentTargetSelected(p_target_ID: int) -> void:
 		print("Invalid target for reagent, target is dead.")
 		return
 	var reagent: ReagentData = ReagentRegistry.Get(_reagent_loadout.KeyAt(_selected_reagent_index))
-	var mapped_target: Types.Skill_Target = (
-			Types.Skill_Target.Single_Ally if ReagentData.TargetKind.One_Ally == reagent.target_kind
-			else Types.Skill_Target.Single_Enemy)
+	var mapped_target: Types.Skill_Target = TargetingHelp.ReagentTargetType(reagent.target_kind)
 	var target_IDs: Array[int] = _resolver.FindSkillTargets(p_target_ID, _turn_character_ID, mapped_target)
 	if(target_IDs.is_empty()):
 		print("Invalid target for reagent")
@@ -678,6 +678,7 @@ func _LeaveGraftTargeting() -> void:
 	_battle_ui.HideGraftHighlight()
 	_battle_ui.ShowSkillButtons()
 	_battle_ui.ActiveSkillGlow(_selected_skill_ID)
+	_RefreshTargetingHelp()
 
 func _on_battle_ui_battle_skill_selected(p_skill_ID: int) -> void:
 	if(BattleState.Awaiting_Player_Input != _state and BattleState.Selecting_Zone != _state):
@@ -695,6 +696,7 @@ func _on_battle_ui_battle_skill_selected(p_skill_ID: int) -> void:
 	else:
 		_state = BattleState.Awaiting_Player_Input
 		_battle_ui._turn_bar.DisableZones(true)
+	_RefreshTargetingHelp()
 
 func _on_turn_bar_zone_selected(p_zone_ID: int) -> void:
 	if(BattleState.Selecting_Reagent_Zone == _state):
@@ -733,6 +735,7 @@ func _on_battle_ui_reagent_confirmed(p_reagent_index: int) -> void:
 			_selected_reagent_index = p_reagent_index
 			_state = BattleState.Selecting_Reagent_Zone
 			_battle_ui._turn_bar.DisableZones(false)
+	_RefreshTargetingHelp()
 
 func _on_battle_ui_battle_graft_selected() -> void:
 	if(BattleState.Awaiting_Player_Input != _state):
@@ -744,6 +747,7 @@ func _on_battle_ui_battle_graft_selected() -> void:
 	_battle_ui.ShowGraftHighlight()
 	_battle_ui.HideSkillFocus()
 	_battle_ui.HideSkillButtons()
+	_RefreshTargetingHelp()
 
 func _on_battle_ui_graft_confirmed(p_target_ID: int) -> void:
 	_ResolveGraft(_turn_character_ID, p_target_ID)
@@ -769,6 +773,7 @@ func _ResolveGraft(p_symbiote_ID: int, p_target_enemy_ID: int) -> void:
 		active_trait.StartOfBattle(p_symbiote_ID, _resolver)
 	RefreshAllTraitVisuals()
 	_state = BattleState.Awaiting_Player_Input
+	_RefreshTargetingHelp()
 
 func _ResolveReagentConsumption(p_reagent_index: int, p_target_ID: int) -> void:
 	var was_brewed: bool = _reagent_loadout.IsBrewed(p_reagent_index)
@@ -790,6 +795,7 @@ func _ResolveReagentConsumption(p_reagent_index: int, p_target_ID: int) -> void:
 	_selected_reagent_index = -1
 	_state = BattleState.Awaiting_Player_Input
 	_battle_ui._turn_bar.DisableZones(true)
+	_RefreshTargetingHelp()
 
 func PlayImpactReaction(p_target_ID: int, p_amount: int) -> void:
 	var intensity: float = ImpactIntensity.Normalize(p_amount, _MaxHealthDisplay(p_target_ID))
@@ -816,6 +822,30 @@ func _PlayScreenShake(p_intensity: float) -> void:
 				Vector2(randf_range(-step_amplitude, step_amplitude), randf_range(-step_amplitude, step_amplitude)),
 				step_duration)
 	_shake_tween.tween_property(_camera, "offset", Vector2.ZERO, step_duration)
+
+func _RefreshTargetingHelp() -> void:
+	_battle_ui._turn_bar.HideSectionHighlights()
+	for representation: CharacterRepresentation in _character_representations:
+		representation.GetSpriteAnimator().SetTargetOutline(false)
+	if(not _GetSettings().targeting_help_enabled or not _sides.player.Has(_turn_character_ID)):
+		return
+	match _state:
+		BattleState.Awaiting_Player_Input:
+			_ShowTargetOutlines(_characters[_turn_character_ID]._skills[_selected_skill_ID].target)
+		BattleState.Selecting_Reagent_Target:
+			var reagent: ReagentData = ReagentRegistry.Get(_reagent_loadout.KeyAt(_selected_reagent_index))
+			_ShowTargetOutlines(TargetingHelp.ReagentTargetType(reagent.target_kind))
+		BattleState.Selecting_Zone:
+			_battle_ui._turn_bar.ShowSectionHighlights(
+					TargetingHelp.HighlightedSections(_clearing_zone_mode, _resolver.GetZoneResolver()))
+		BattleState.Selecting_Reagent_Zone:
+			_battle_ui._turn_bar.ShowSectionHighlights(
+					TargetingHelp.HighlightedSections(true, _resolver.GetZoneResolver()))
+
+func _ShowTargetOutlines(p_target_type: Types.Skill_Target) -> void:
+	for character_ID in TargetingHelp.HighlightedCharacters(
+			p_target_type, _turn_character_ID, _characters, _sides, _resolver.GetMaxHealth):
+		_character_representations[character_ID].GetSpriteAnimator().SetTargetOutline(true)
 
 func _GetSettings() -> Settings:
 	return get_node("/root/Game_Settings")

@@ -23,7 +23,7 @@ corner_radius_top_right = 2
 corner_radius_bottom_right = 2
 corner_radius_bottom_left = 2
 
-[node name="SettingsMenu" type="Control" unique_id=1938529509 node_paths=PackedStringArray("_background", "_master_volume_slider", "_music_volume_slider", "_sound_effects_volume_slider", "_screen_shake_check_box", "_fullscreen_check_box", "_language_option_button")]
+[node name="SettingsMenu" type="Control" unique_id=1938529509 node_paths=PackedStringArray("_background", "_master_volume_slider", "_music_volume_slider", "_sound_effects_volume_slider", "_screen_shake_check_box", "_targeting_help_check_box", "_fullscreen_check_box", "_language_option_button")]
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_script")
@@ -32,6 +32,7 @@ _master_volume_slider = NodePath("ColorRect/MarginContainer/VBoxContainer/Row_Ma
 _music_volume_slider = NodePath("ColorRect/MarginContainer/VBoxContainer/Row_Music_Volume/HSlider_Music_Volume")
 _sound_effects_volume_slider = NodePath("ColorRect/MarginContainer/VBoxContainer/Row_Sound_Effects_Volume/HSlider_Sound_Effects_Volume")
 _screen_shake_check_box = NodePath("ColorRect/MarginContainer/VBoxContainer/CheckBox_Screen_Shake")
+_targeting_help_check_box = NodePath("ColorRect/MarginContainer/VBoxContainer/CheckBox_Targeting_Help")
 _fullscreen_check_box = NodePath("ColorRect/MarginContainer/VBoxContainer/CheckBox_Fullscreen")
 _language_option_button = NodePath("ColorRect/MarginContainer/VBoxContainer/Row_Language/OptionButton_Language")
 
@@ -163,6 +164,13 @@ theme_override_font_sizes/font_size = 18
 text = "Screen Shake"
 button_pressed = true
 
+[node name="CheckBox_Targeting_Help" type="CheckBox" parent="ColorRect/MarginContainer/VBoxContainer" unique_id=100000040]
+layout_mode = 2
+theme = ExtResource("1_theme")
+theme_override_font_sizes/font_size = 18
+text = "Targeting Help"
+button_pressed = true
+
 [node name="CheckBox_Fullscreen" type="CheckBox" parent="ColorRect/MarginContainer/VBoxContainer" unique_id=100000031]
 layout_mode = 2
 theme = ExtResource("1_theme")
@@ -215,6 +223,7 @@ text = "Back"
 [connection signal="value_changed" from="ColorRect/MarginContainer/VBoxContainer/Row_Music_Volume/HSlider_Music_Volume" to="." method="_on_music_volume_changed"]
 [connection signal="value_changed" from="ColorRect/MarginContainer/VBoxContainer/Row_Sound_Effects_Volume/HSlider_Sound_Effects_Volume" to="." method="_on_sound_effects_volume_changed"]
 [connection signal="toggled" from="ColorRect/MarginContainer/VBoxContainer/CheckBox_Screen_Shake" to="." method="_on_screen_shake_toggled"]
+[connection signal="toggled" from="ColorRect/MarginContainer/VBoxContainer/CheckBox_Targeting_Help" to="." method="_on_targeting_help_toggled"]
 [connection signal="toggled" from="ColorRect/MarginContainer/VBoxContainer/CheckBox_Fullscreen" to="." method="_on_fullscreen_toggled"]
 [connection signal="item_selected" from="ColorRect/MarginContainer/VBoxContainer/Row_Language/OptionButton_Language" to="." method="_on_language_selected"]
 [connection signal="button_up" from="ColorRect/MarginContainer/VBoxContainer/Row_Bottom_Buttons/Button_Reset" to="." method="_on_reset_pressed"]
