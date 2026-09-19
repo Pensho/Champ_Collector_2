@@ -1,15 +1,15 @@
-[gd_resource type="ShaderMaterial" format=3 uid="uid://c2o3yn3aa3lf0"]
+[gd_resource type="ShaderMaterial" format=3 uid="uid://cahavnq1youvr"]
 
-[ext_resource type="Shader" uid="uid://cs8scm26owb4b" path="res://Assets/Champ_Collector/Shaders/battle_floor.gdshader" id="1_floor"]
-[ext_resource type="Texture2D" uid="uid://bcfcl26p85xgl" path="res://Assets/Battle_Visual_Elements/floor_noise_2.tres" id="2_n85nk"]
+[ext_resource type="Shader" uid="uid://cs8scm26owb4b" path="res://Assets/Champ_Collector/Shaders/battle_floor.gdshader" id="1_b21lh"]
+[ext_resource type="Texture2D" uid="uid://bcfcl26p85xgl" path="res://Assets/Battle_Visual_Elements/floor_noise_2.tres" id="2_hdner"]
 
 [resource]
-shader = ExtResource("1_floor")
-shader_parameter/base_color = Color(0.40963003, 0.69, 0.37259996, 1)
-shader_parameter/mottle_color = Color(0.3029462, 0.43607652, 0.17544273, 1)
-shader_parameter/noise_texture = ExtResource("2_n85nk")
+shader = ExtResource("1_b21lh")
+shader_parameter/base_color = Color(0.24986678, 0.44508564, 0.227779, 1)
+shader_parameter/mottle_color = Color(0.15693977, 0.23661712, 0.08172963, 1)
+shader_parameter/noise_texture = ExtResource("2_hdner")
 shader_parameter/noise_strength = 0.6
-shader_parameter/noise_steps = 5
+shader_parameter/noise_steps = 6
 shader_parameter/noise_scale = Vector2(1, 0.9)
 shader_parameter/noise_offset = Vector2(0, 0)
 shader_parameter/noise_detail_scale = 1.44900006556762

@@ -210,7 +210,7 @@ Note that 3.5 relieves some of this pressure: with a saturated garment main and 
 - Camera at **character chest height, straight on**. No tilt, ever.
 - **Horizon line at a fixed screen fraction.** Pick one (45% from the top is a reasonable default), write it down, never move it.
 - **Orthographic, no vanishing point.** State it explicitly. Models still cheat, but less.
-- **One ground line.** Depth in the battle layout comes from scale and overlap, not from moving figures up the screen.
+- **One thin ground plane.** Depth in the battle layout comes from scale and overlap, not from moving figures up the screen.
 - **Light from upper left**, in every single asset. Mismatched light reads to players as a perspective error even when the geometry is fine.
 
 ### 4.2 Composition tail
@@ -1064,11 +1064,9 @@ the same game as the battle it leads into.
 
 Applies to battle stages. Overworld views take the last two bullets only.
 
-- **Shallow stage.** A wall or skyline, a thin floor strip, almost nothing in between. This is what makes perspective mismatch impossible to see.
-- **Empty center**, sized for the character line.
+- **Shallow stage.** A wall or skyline, a thin floor strip. This is what makes perspective mismatch impossible to see.
 - **No figures, no creatures** — state both.
 - **Flat horizon low in frame**, at the fixed screen fraction from section 4.
-- **Backgrounds carry no character accent.** Accent belongs to characters and effects.
 
 ### 10.2 Scene light — the mood dial
 
@@ -1497,7 +1495,7 @@ This pattern predates section 5.1 and contradicts it: "no fine linework, no smal
 
 ### 12.3 Node icon subjects (Expeditions map)
 
-Keep these to one unmistakable object each: Fight — crossed blades; Boss — a horned skull; Rest Stop — a campfire with three logs; Hint — an open eye; Gamble — a pair of dice; Escalate — an upward arrow through a broken ring.
+Keep these to one unmistakable object each: Fight — crossed blades; Boss — a skull; Rest Stop — a tent; Hint — a closed gate; Gamble — a bag of coins and some dice; Escalate — a bloodied parchement contract.
 
 ### 12.4 Active skill art — the chiaroscuro print class
 

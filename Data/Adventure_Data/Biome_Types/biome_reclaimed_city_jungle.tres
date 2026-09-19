@@ -11,7 +11,7 @@
 [ext_resource type="Resource" uid="uid://dkpr2hnmtcodx" path="res://Data/Character_Player_Variants/Jester.tres" id="9_3533o"]
 [ext_resource type="Resource" uid="uid://dnup7y7ax8jck" path="res://Data/Character_Player_Variants/Bar_Brawler.tres" id="10_8bbm1"]
 [ext_resource type="Script" uid="uid://dk7f1bo3kh54l" path="res://Scripts/Adventure_Scripts/biome_data.gd" id="11_7u541"]
-[ext_resource type="PackedScene" uid="uid://c7tnkaylhob7o" path="res://Scenes/Battle_Stages/battle_stage_default.tscn" id="12_pyjoy"]
+[ext_resource type="PackedScene" uid="uid://bn26eqxi7k4oc" path="res://Scenes/Battle_Stages/battle_stage_jungle.tscn" id="12_launh"]
 [ext_resource type="Resource" uid="uid://c26mbm7i0xh7x" path="res://Data/Adventure_Data/Biome_Visuals/visuals_reclaimed_city.tres" id="13_cakum"]
 
 [resource]
@@ -29,5 +29,5 @@ boss_rewards = ExtResource("1_launh")
 hint_rewards = ExtResource("4_c3w72")
 escalate_rewards = ExtResource("3_kofhi")
 visual_data = ExtResource("13_cakum")
-stage_scenes = Array[PackedScene]([ExtResource("12_pyjoy")])
+stage_scenes = Array[PackedScene]([ExtResource("12_launh")])
 metadata/_custom_type_script = "uid://dk7f1bo3kh54l"

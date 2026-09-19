@@ -12,3 +12,9 @@ class_name StageClutterEntry extends Resource
 @export var allow_horizontal_flip: bool = true
 @export var tint: Color = Color.WHITE
 @export var character_avoidance_radius: float = 20.0
+
+@export_group("Ground Shadow")
+@export var shadow_width_ratio: float = 0.0
+@export var shadow_height: float = 16.0
+@export var shadow_color: Color = Color("07060aff")
+@export var shadow_vertical_offset: float = 5.0

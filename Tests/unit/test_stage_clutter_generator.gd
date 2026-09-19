@@ -105,3 +105,36 @@ func test_empty_input_returns_no_placements() -> void:
 			[_BuildEntry()] as Array[StageClutterEntry],
 			Rect2(Vector2.ZERO, Vector2.ZERO), characters, 3).size(), 0,
 			"an empty floor rect scatters nothing")
+
+
+func test_shadow_width_follows_the_texture_and_height_is_fixed() -> void:
+	var entry: StageClutterEntry = _BuildEntry()
+	var texture := PlaceholderTexture2D.new()
+	texture.size = Vector2(80, 40)
+	entry.textures = [texture]
+	entry.shadow_width_ratio = 0.5
+	entry.shadow_height = 10.0
+	entry.shadow_vertical_offset = 3.0
+	var entries: Array[StageClutterEntry] = [entry]
+	var characters: Array[Vector2] = []
+
+	var placements: Array[DecorPlacement] = StageClutterGenerator.Generate(
+			entries, _floor_rect, characters, 7)
+
+	assert_gt(placements.size(), 0)
+	for placement: DecorPlacement in placements:
+		assert_eq(placement.shadow_rect.size, Vector2(40, 10))
+		assert_eq(placement.shadow_rect.get_center(), Vector2(0, -3))
+		assert_eq(placement.shadow_color, entry.shadow_color)
+
+
+func test_zero_shadow_width_draws_no_shadow() -> void:
+	var entries: Array[StageClutterEntry] = [_BuildEntry()]
+	var characters: Array[Vector2] = []
+
+	var placements: Array[DecorPlacement] = StageClutterGenerator.Generate(
+			entries, _floor_rect, characters, 7)
+
+	assert_gt(placements.size(), 0)
+	for placement: DecorPlacement in placements:
+		assert_false(placement.shadow_rect.has_area())

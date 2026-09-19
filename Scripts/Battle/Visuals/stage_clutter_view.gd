@@ -8,6 +8,8 @@ class_name StageClutterView extends Control
 ## the editor so clutter is visible while a stage's bands are being laid out — there with
 ## no characters to keep clear of.
 
+const SHADOW_SEGMENTS: int = 32
+
 ## This stage's scatter rules, authored in the inspector.
 @export var entries: Array[StageClutterEntry]:
 	set(value):
@@ -43,7 +45,24 @@ func _notification(p_what: int) -> void:
 
 func _draw() -> void:
 	for placement: DecorPlacement in _placements:
+		_DrawShadow(placement)
+	for placement: DecorPlacement in _placements:
 		_DrawPlacement(placement)
+
+func _DrawShadow(p_placement: DecorPlacement) -> void:
+	if not p_placement.shadow_rect.has_area():
+		return
+	var center: Vector2 = p_placement.shadow_rect.get_center()
+	var radii: Vector2 = p_placement.shadow_rect.size * 0.5
+	var points := PackedVector2Array()
+	points.resize(SHADOW_SEGMENTS)
+	for index in SHADOW_SEGMENTS:
+		var angle: float = TAU * index / SHADOW_SEGMENTS
+		points[index] = center + Vector2(cos(angle), sin(angle)) * radii
+
+	draw_set_transform(p_placement.position, 0.0, Vector2.ONE * p_placement.scale)
+	draw_colored_polygon(points, p_placement.shadow_color)
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 func _DrawPlacement(p_placement: DecorPlacement) -> void:
 	if p_placement.texture == null:

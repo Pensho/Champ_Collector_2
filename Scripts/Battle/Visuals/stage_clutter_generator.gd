@@ -77,6 +77,14 @@ static func _BuildPlacement(
 			-p_entry.rotation_jitter_degrees, p_entry.rotation_jitter_degrees)
 	placement.flip_h = p_entry.allow_horizontal_flip and p_rng.randf() < 0.5
 	placement.tint = p_entry.tint
+	if placement.texture != null and p_entry.shadow_width_ratio > 0.0:
+		var shadow_width: float = placement.texture.get_width() * p_entry.shadow_width_ratio
+		var shadow_size := Vector2(shadow_width, p_entry.shadow_height)
+		placement.shadow_rect = Rect2(
+				Vector2(-shadow_size.x * 0.5,
+						-p_entry.shadow_vertical_offset - shadow_size.y * 0.5),
+				shadow_size)
+		placement.shadow_color = p_entry.shadow_color
 	return placement
 
 
