@@ -36,8 +36,8 @@ the content is missing.
 9. Enemies and bosses
 10. Environments
 11. Items, gear and reagents
-12. Icons (active skill art: 12.4, passive icons: 12.6)
-13. UI art (turn bar zones: 13.3.1)
+12. Icons
+13. UI art
 14. Effects and VFX
 15. Animation
 16. Marketing and out-of-game art
@@ -210,7 +210,7 @@ Note that 3.5 relieves some of this pressure: with a saturated garment main and 
 - Camera at **character chest height, straight on**. No tilt, ever.
 - **Horizon line at a fixed screen fraction.** Pick one (45% from the top is a reasonable default), write it down, never move it.
 - **Orthographic, no vanishing point.** State it explicitly. Models still cheat, but less.
-- **One thin ground plane.** Depth in the battle layout comes from scale and overlap, not from moving figures up the screen.
+- **One ground plane, 170 px of the 720 px frame.** Not a line. Figures stand at different heights within that band, and the band is where all the depth in the layout lives — see 10.3.3 for what that costs the art, which is nothing.
 - **Light from upper left**, in every single asset. Mismatched light reads to players as a perspective error even when the geometry is fine.
 
 ### 4.2 Composition tail
@@ -222,6 +222,11 @@ in contact with a single flat ground line, three-quarter view facing right,
 eye-level camera at chest height, orthographic, isolated on a plain flat
 background of one uniform color, full figure visible with headroom.
 ```
+**The single ground line in the tail is a generation instruction, not a scene
+fact.** Every asset is generated standing on one flat line so its bottom edge
+is clean; the scene then places that line anywhere in the 170 px band (10.3.3).
+The two do not conflict and the tail does not change.
+
 The tail constrains the camera and the ground plane only. Squatting, kneeling,
 braced, seated and leaning are all compatible with it. "Eye-level camera at
 chest height" means the standing chest height the figure would have — it does
@@ -289,6 +294,23 @@ When an attractor lands, rewrite the costume from a different occupation rather 
 
 **Use numeric counts, never adjectives.** "Three or four wrap bands" is a target the model can hit. "Moderate detail" is not, and it will revert to maximalism. This holds for icons and character designs, not for environment design.
 
+**Why organic environment elements are the exception.** A counted spec is a
+description of a made object — a buckle has a number of straps because
+somebody put them there. Grass does not. The first Jungle grass tufts were
+written the character way (*a wide low spray of eleven blades splaying
+outward, four of them bent at the tips*) and came back stiff and artificial:
+every blade placed, nothing growing. Rewritten loosely — *a broad low spray
+of coarse jungle grass, wider than it is tall, splaying out loosely to both
+sides and sagging at the outer tips* — they came back immediately. The
+counted form removes the model's own sense of how a plant distributes itself,
+and there is nothing in the design that needs the number defended.
+
+The dividing line is **grown versus built, not character versus environment.**
+A ruin's ironwork, a crate, a lantern, a wheel or a stair takes counts wherever
+it appears; foliage, stone, fungus, water and debris masses do not. Detail
+*tiers* still apply to both (8.6.1): loose does not mean undirected, and the
+element still states where its heaviest carving goes.
+
 **Name each element individually; a collective reference re-opens the count.** A counted group stated once and then referred to collectively later in the same prompt gives the number back. Fateful Glimpse (12.4.6) named one beam entering and two leaving, then closed with *all three shafts cut away to bare cream paper* — and Leonardo drew more shafts than three. The summary clause was read as a licence to decide how many "all" was. The fix was to name each shape and its origin separately: the beam entering from the upper left, and the two leaving *from the same point on the shard*. One pass, corrected. Treat "all the light", "the blades", "the shards" as an instruction to invent, and repeat the members instead.
 
 ### 5.5 Detail has to survive the pipeline
@@ -305,6 +327,22 @@ continues past the lit part, which is exactly what a selection panel is
 selling. State the furthest plane as nearly gone rather than merely small.
 The technique is stated here rather than in section 10 because effects (14)
 and any future large plate will need it.
+
+**At element scale the clause is per material class, not universal.** Five
+receding planes is a plate instruction; a knee-high prop has no distance to
+recede through, and asking for flat fields without saying where the values go
+returns one fill per shape and a cutout. What the value bands are *for* differs
+by material, so the depth clause is written per class and never carried over
+by habit (5.7):
+
+| Class | Depth comes from |
+|---|---|
+| Foliage, fungus, any mass of parts | Layers of parts overlapping, nearest lightest, each layer behind a full band darker into near-black |
+| Stone, wood, any solid mass | The mass breaking into facets at different values, with one side falling away into near-black |
+
+Both were found on the Jungle floor set (10.6.1). Getting the wrong one is
+visible instantly: layered grass on a boulder reads as stripes, and facets on
+a grass clump read as folded paper.
 
 ### 5.7 The prompt describes the figure, not the story
 
@@ -421,7 +459,35 @@ Run before any asset enters the project. Section 7.1 applies to everything; the 
 
 ### 7.4 Environments
 
-> **Not yet written.** Empty-center sizing, scene-light conformance, no accent bleed, band separation, composite against a fielded team of three.
+Applies to battle stages and their elements. Overworld views (10.4) take the
+last four only.
+
+**Per element**
+
+- [ ] Upright billboard in side elevation — nothing in it lies on the ground or carries perspective of its own (10.3.3.1)
+- [ ] Reads at sizes it was not drawn at, since scale is applied on placement (10.3.3)
+- [ ] Bottom edge is cut flat and straight, with no ground, shadow or base baked in (10.3.8)
+- [ ] Depth clause matches the material class, and the element does not read as a flat cutout (5.6)
+- [ ] Engraved linework present — flat fields alone return a vector cartoon (10.3.7)
+- [ ] No bone white highlight edge (10.3.7)
+- [ ] Organic subjects described loosely, built subjects counted (5.4)
+- [ ] Generated as a sheet of three variants, sliceable without overlap (10.3.7)
+- [ ] Silhouette distinct from the other elements in its band, not a rescale of one
+
+**Per band**
+
+- [ ] Floor clutter sits under sprite height and holds its clear radius around every character's feet (10.3.3)
+- [ ] Floor mass is low contrast; any saturated shape on the plane is small and does not pull the eye off a champion standing beside it (10.3.9)
+- [ ] Midband behind the six character slots stays a band or two off the figures (10.1)
+- [ ] Foreground reads as pure band 1 and crosses no character slot (10.3.4)
+- [ ] Background carries the variant's sky field from 10.2
+
+**Per stage**
+
+- [ ] Composited against a fielded team of three, at target size, before acceptance
+- [ ] Scene light conforms to the variant's row in 10.2
+- [ ] Ground line, horizon and light direction match section 4
+- [ ] Post-processing pass applied with the same settings as everything else
 
 ### 7.5 Items, gear and reagents
 
@@ -1062,15 +1128,49 @@ the same game as the battle it leads into.
 
 ### 10.1 Rules
 
-Applies to battle stages. Overworld views take the last two bullets only.
+Applies to battle stages. Overworld views take the second and third bullets
+only.
 
-- **Shallow stage.** A wall or skyline, a thin floor strip. This is what makes perspective mismatch impossible to see.
+- **Shallow stage.** A wall or skyline, and a floor plane of 170 px. Shallow is about how little sits between those two, not about the floor being thin — an early version of this section called the floor a strip, which it is not (17).
 - **No figures, no creatures** — state both.
 - **Flat horizon low in frame**, at the fixed screen fraction from section 4.
+- **Contrast budget behind the character line.** Whatever sits behind the six character slots stays a band or two off the figures. Density is free; value proximity is not.
+
+#### 10.1.1 The contrast budget, and the empty-center rule it replaced
+
+This section previously required an **empty center sized for the character
+line**, stage-wide. It was wrong, and it was wrong in a way worth recording,
+because it was never generated and judged — it was inferred from the floor's
+clear-radius rule (10.3.3) and promoted to the whole stage. Applied to the
+midband it produces a hollow stage: a dense biome like Jungle cannot be built
+at all, and the variants that can are the ones that had nothing to say anyway.
+
+The real constraint is **value, not space.** Characters are roughly half band 1
+(2.1), so a champion in front of a band 3 foliage mass reads cleanly, and the
+same champion in front of a band 1 trunk becomes a silhouette inside a
+silhouette. The midband may therefore be packed wall to wall, as long as the
+region behind the character slots holds the mids and leaves band 1 to the
+bands that have no figures in front of them — the foreground and the far
+skyline. That is a budget the layout spends, and it is checked in the grey-box
+step (4.3, 10.3.5) rather than enforced by a rule the engine knows about.
+
+The floor keeps its own version, which is a genuine spatial rule and the one
+the old text was generalized from: the scatter holds a clear radius around
+every character's feet (10.3.3).
+
+**The accent-collision rule was cut on the same pass.** This section also
+required that backgrounds carry no character accent, which would have put
+Act 1's two greens off limits to a jungle. Accent identity is carried by card
+borders, damage numbers, skill art and the map icon, and a character's accent
+is a flat 15–20% mass at mid-to-high chroma against a stage that is dark by
+construction (10.2). Hue exclusivity is not what the accent system rests on.
+What survives is the contrast budget above: if a saturated mid-value mass
+lands directly behind a champion's accent, it is a value collision to fix in
+the layout, not a reason to restrict the palette.
 
 ### 10.2 Scene light — the mood dial
 
-Each variant gets a **scene light color** — one per variant, not one per area, since a jungle and a ruin under the same sickly teal-green read as the same place. It is not a Role accent and never appears on a character's costume. It lives in the sky field, the haze band between bands, and the tint of the floor strip.
+Each variant gets a **scene light color** — one per variant, not one per area, since a jungle and a ruin under the same sickly teal-green read as the same place. It is not a Role accent and never appears on a character's costume. It lives in the sky field, the haze band between bands, and the tint of the floor plane.
 
 | Area | Variant | Sky field | Ground / skyline |
 |---|---|---|---|
@@ -1085,6 +1185,10 @@ Each variant gets a **scene light color** — one per variant, not one per area,
 
 **Characters now carry saturated hue of their own** (3.5), so check each new variant against a fielded team of three: a saturated garment main can collide with a scene light in a way a beige one never did. The fix is the variant, not the character.
 
+**A shared hue is not a collision; a shared value is.** The check is run on a
+composite at target size, and it fails when a figure stops separating from what
+is behind it — not when a jungle and a Role are both green (10.1.1).
+
 ### 10.3 Battle stages — the four bands
 
 Every battle stage is a scene authored by hand, laying its elements out across
@@ -1093,7 +1197,7 @@ band does not appear in another, which is what lets elements be reused across
 stages within an area.
 
 They draw in the order **Background, Floor, Midband, characters, Foreground**.
-Midband elements stand on the ground, so their bases must cover the floor's top
+Midband elements stand on the ground, so their bases must cover the floor's far
 edge; drawing the floor after them cuts a hard horizontal line across every
 trunk and shrub.
 
@@ -1111,29 +1215,80 @@ scroll (10.3.5), so the sky and the far masses are one asset.
 #### 10.3.2 Midband
 
 The visible surroundings of the combat: buildings, trees, foliage, rocks, walls,
-waterfalls. This is the band that says which area the player is in, and the band
-where the empty-center rule in 10.1 is actually enforced.
+waterfalls. This is the band that says which area the player is in, and the
+band that carries the stage's density.
 
-Assembled from keyed elements, placed one by one in the stage scene. The empty
-center is guaranteed by that placement rather than by a rule the engine
-enforces, so it is checked against the character line while the stage is laid
-out (10.3.5).
+Assembled from keyed elements, placed one by one in the stage scene. The band
+may run full width with no gap; what it owes is the contrast budget in 10.1 —
+mids behind the character slots, committed darks left to the foreground and
+the far skyline. Because that is a value judgement rather than a placement
+rule, it is judged on the grey-box against the six character positions
+(10.3.5) and again on the first composite.
 
-> **Not yet written.** Detail budget relative to a champion, and how the empty center is composed rather than merely left blank.
+**Density is cheapest from above and behind.** Elements that hang from the top
+edge — vine falls, aerial root curtains, a canopy underside strip closing the
+top of the frame — fill the stage without adding mass at character height,
+which is the one place mass costs readability. Adding ground-level bulk to
+reach the same density is how a stage ends up unreadable.
+
+> **Not yet written.** Detail budget for a midband element relative to a champion standing in front of it — the element sets generated so far are floor clutter, which is held deliberately quiet (10.3.9), and the midband has no equivalent finding yet.
 
 #### 10.3.3 Floor
 
-Characters are drawn on top of this band. It is deliberately not a clean plane:
-small ground clutter — rocks, grass tufts, dirt piles, trash — breaks the strip
-up. Everything here must sit below the ground line established in section 4, and
-clutter must not compete with a character's silhouette for the same value.
+**The floor is a plane, 170 px of the 720 px frame**, not a strip and not a
+line. It was originally specified as near enough to a line — the thinking being
+that a floor with no visible depth cannot be caught out on perspective — but
+characters do not fit a stage laid out that way, so the band opens up and
+**a character's Y position within it is their depth.**
 
-The strip itself is one shader-driven surface. The clutter over it is not baked
+Everything about that is handled in the engine and **no art accounts for it.**
+Scale by depth is applied on placement, so an element is authored once at one
+size and drawn at whatever size its Y calls for; draw order within the band
+follows Y for the same reason. The art's only obligation is to survive being
+placed at a size it was not drawn at, which is section 5.5's structural-detail
+test doing its usual job.
+
+Clutter must not compete with a character's silhouette for the same value.
+
+The plane itself is one shader-driven surface. The clutter over it is not baked
 in: it is scattered by the engine from a small element set, authored per stage
 as scatter rules — an element's textures, its density, its scale and rotation
 jitter, and the radius it holds clear around every character's feet, which is
-what keeps the empty center (10.1) open on a band nobody places by hand. The
-scatter is seeded per battle, so the same fight re-entered looks the same.
+the band's own spatial rule and the one 10.1.1 was mistakenly generalized from.
+The scatter is seeded per battle, so the same fight re-entered looks the same.
+
+##### 10.3.3.1 Every element is an upright billboard
+
+**Nothing generated for this band lies on the ground.** Every element is an
+upright billboard in side elevation, cut flat along the bottom (10.3.7), and
+that holds for the midband and foreground too.
+
+The reason is the tool, not the camera. The plane is 170 px deep and a flat
+thing lying on it would be plainly visible — the constraint is that **a
+generator cannot be made to hold a consistent foreshortening.** A puddle, a
+paving slab or a fallen leaf drawn to the plane's angle has to match every
+other ground-lying element in the scene and match it again at the next
+placement depth, and no phrasing enforces that. One decal drawn at the wrong
+angle breaks the plane for everything standing on it, which is a worse failure
+than not having the element at all.
+
+So the ground-lying reads that a jungle floor might want are not element art:
+
+| Wanted | Where it goes |
+|---|---|
+| Mud pools, puddles, standing water, wet patches | Floor shader |
+| Paving, tile, cracked ground, scorch marks, worn paths | Floor shader |
+| Contact shadows under elements and characters | Engine, drawn (10.3.8) |
+| Fungus rings, scattered leaf litter, root runs | Not used, or re-formed as something standing |
+
+**The shader owns the plane; the element set owns what stands on it.** That
+line survives from the earlier version of this section unchanged — it was the
+one part of it that was right.
+
+Re-forming is usually available and usually better. A leaf lying flat becomes a
+litter mound or a frond on a standing stem (10.6.1.2); flat debris becomes a
+slab tipped up or a broken stub; a fungus ring becomes a cluster growing up out
+of the ground. Ask what the element is *for* before writing it off.
 
 #### 10.3.4 Foreground
 
@@ -1174,6 +1329,112 @@ Elements are keyed individually rather than cut from a generated plate, since a
 stage places them one at a time and at its own scale.
 
 > **Not yet written.** How many elements a variant needs before its stages stop reading as the same place, and the rule for what may be reused across the two variants inside an area.
+
+#### 10.3.7 Authoring a stage element
+
+Everything in 10.3.1–10.3.4 says what a band contains. This says how a single
+keyed element is generated. Piloted on the Jungle floor set (10.6.1); the
+findings are craft rather than biome, and apply to every band and every
+variant.
+
+**The general block.** Appended to nothing and prepended to everything, the way
+8.6 works for characters. Two clauses are placeholders filled per element.
+
+```
+bold woodcut illustration with engraved structural linework and visible
+gouge marks, thick black contour outline on the outer silhouette, flat color
+fields, hard-edged shadows, no gradients, orthographic side elevation seen
+straight on at eye level, no highlight edge anywhere, [DEPTH CLAUSE],
+[DETAIL CLAUSE], hand-carved edge quality, three separate [SUBJECTS] standing
+far apart in a row with empty background between them, each cut off flat and
+straight along the bottom edge, isolated on a plain flat solid white
+background
+```
+
+**Flat fields need the engraved line, or the element reads as a comic.** The
+first mossed rocks were generated on *flat color fields* with no linework
+clause and came back looking like vector cartoon props. This is the third
+independent recording of one finding — Burning Bolas at skill-art size
+(12.4.1), Between the Plates at 40 px (12.6.1), and now a knee-high floor prop.
+**Flat fields and engraved linework are a pair; removing the carving removes
+the style.** Nothing in this guide should ever ask for one without the other.
+
+**No highlight edge on environment elements.** The bone white upper-left rim
+that separates a focal mass in an icon (12.6.4) reads as comic-book inking on
+small scatter props, and against a black contour it is the single strongest
+cartoon cue available. The light direction is still upper left and still
+carried by which side falls into shadow; it just gets no drawn rim. Bone white
+in this band is spent on the midband's lit masses, if anywhere.
+
+**The depth clause is per material class** (5.6) — layers for masses of parts,
+facets for solids. It is the clause that stops an element reading as a wooden
+cutout, and it is also the clause to strengthen when one still does: push it
+to *three distinct depth layers, the back layer almost lost in black* rather
+than adding detail elsewhere.
+
+**Grit is structural** (12.6.3, 5.5). On stone that means fracture lines,
+chipped edges, pocked hollows, gouge marks and parallel hatching along the
+shadow side. *Rough*, *weathered* and *mossy-looking* return nothing. On a soft
+mass the opposite holds: the Jungle moss caps are deliberately left flat and
+uncarved, and the contrast against all that cutting is what makes the stone
+read as hard.
+
+**Organic subjects are described loosely** (5.4). Counts belong to built
+objects — a crate, a lantern, a ruin's ironwork — wherever they appear.
+
+**Three variants per sheet, in one generation.** Each element is generated as
+three of its kind spaced far apart in a row, described as *each a different
+kind* with one loose phrase per variant. One generation gives three slices and
+a choice, and the three read as siblings because they came out of the same
+pass. When the variants drift together and merge at the bases, *far apart* is
+the phrase to strengthen; falling back to one prompt per variant is the only
+thing separate generations actually buy.
+
+**Key color is flat white.** Magenta and bright green were both tried and both
+are wrong for this style: the contour is ink black and the fills are muted, so
+a saturated key fringes every edge it touches, and green bleeds into foliage
+specifically. Where a pale element fringes against white, drop the element's
+front layer a band rather than changing the key color back.
+
+#### 10.3.8 Grounding is an engine problem — settled
+
+Elements are cut flat along the bottom, which leaves them sitting on the plane
+with a visible seam. **The join is made in the engine and never baked into the
+art.** Settled on the Jungle set and closed as a decision:
+
+- **A contact shadow** drawn between the floor plane and the element — a flat band 1 shape with a hard edge, offset down-right to agree with the upper-left light, scaled per element. Drawn in engine rather than generated, for the same reason the zone tint is (13.3.1): it is a flat shape with no interior detail, it costs nothing to draw, and it can be tuned live.
+- **Sinking** the element a few pixels below the plane's near edge so the surface covers the cut.
+- **Scatter bias** — the floor set placed in front of other elements' bases, which is the scatter rules (10.3.3) already doing the work with one added bias toward bases rather than away from them.
+
+The contact shadow does a second job on a 170 px plane: it is the cue that says
+*where in the band* an element is standing. Elements are billboards and carry no
+perspective of their own (10.3.3.1), so the shadow and the Y position are the
+only depth information the floor has.
+
+**Baked ground patches are rejected** (17). A patch has a fixed width, value
+and silhouette, so the same element lands wrong on every floor it was not drawn
+for, every future element owes one, and it trades the sprite's hard bottom edge
+for the patch's hard outer edge.
+
+#### 10.3.9 Color policy for the floor band
+
+The floor is the band the player least needs to look at, and the one closest to
+their eye. Both pull the same way: **keep it quiet.** But quiet is a contrast
+instruction, not a saturation one, and taking it as saturation is how a jungle
+floor comes out grey and dead — recorded in 17, reached twice on one set.
+
+The policy is 10.8.5's, applied at element scale: **mass is low saturation,
+incident is wide range.** The bulk of an element — stalks, stone, blade mass,
+dry matter — sits muted and low in contrast. Small parts of it — a cap, a
+bloom, a cut face — may carry real chroma, and should, because they are small
+enough that the plane stays calm. Different hues across the set, so no single
+one reads as a Role's accent.
+
+The check is the composite: a saturated shape low in the frame is doing the
+same job a character's accent does. If a cluster pulls the eye off a champion
+standing beside it, **drop that element a value band rather than desaturating
+it** — value is what competes here, and desaturating is what killed the set
+the first time.
 
 ### 10.4 Overworld and navigation views
 
@@ -1230,7 +1491,167 @@ on its own.
 
 #### 10.6.1 Reclaimed City
 
-> **Not yet written.** Per variant: scene light, band vocabulary (10.3.1–10.3.4), approved plates.
+**Variant A — Jungle.** Scene light assigned (10.2): sky field sickly
+teal-green `#2E5A50`, ground and skyline `#0E1614`. The intended read is a
+semi-dark dense jungle — very tall trees, thick bushes, vines hanging
+everywhere, vibrant flowers. This is the variant the density argument in
+10.1.1 was fought over, and it is the reason the empty-center rule was cut.
+
+**Foliage color direction.** The foliage *mass* is desaturated blue-green and
+teal-green; mid-chroma yellow-green is kept out of large areas, where it flips
+the biome from dark jungle to daylit. Chroma is carried by the flowers,
+blooms and fungus caps, spread across several hues so no single one reads as a
+Role's identity color (10.3.9). Act 1 fields two green Roles — Symbiote
+`#4E8C3F` and Plague Doctor `#2F5D3A` — and that is not a problem in itself;
+see 10.1.1.
+
+**Variant B — Ruins.** Scene light assigned: violet `#3A2A52` / `#120E1A`. No
+catalog yet. Several Jungle elements are drawn to carry straight over —
+the ruin masses in the background, and the swallowed ruin fragments in the
+midband — which is the first concrete case for the cross-variant reuse
+question left open in 10.3.6.
+
+##### 10.6.1.1 Jungle band vocabulary
+
+Status is per band. The floor set is generated and approved; the rest is the
+planned catalog, sized against 10.3.6 but not yet generated.
+
+**Background** — one plate per stage, 2–3 stages. *Planned.*
+
+Flat teal-green sky field with no gradient; one bone white moon disc, hard
+edged, upper left, partly occluded by the far canopy; three or four hard-edged
+straight shafts cutting down through the canopy, each a flat fill a band up
+from the sky, stated as cut shapes rather than as glow; a far canopy skyline of
+colossal trunks and crowns in pure silhouette, crowns leaving the top of the
+frame; two or three far ruin masses in silhouette — a stepped temple shoulder,
+a leaning column, a carved stone head half-swallowed; one vertical ravine or
+waterfall notch breaking the skyline.
+
+**Midband** — ~14 keyed elements. *Planned.*
+
+Colossal trunks with buttress roots, four variants, at least one standing
+inside the frame with its roots readable on both sides rather than only
+cropping at an edge; one leaning trunk; one dead snag pierced with holes. Six
+bush masses, each with a different outline language — broad-leaf clump, fern
+fan, spiked palm crown, low tangled briar, tall reed clump, broad low mound —
+since outline variety is what stops six bushes reading as one bush. Five
+hanging masses, aerial root curtains and vine falls at different lengths and
+densities: the band's main density tool, per 10.3.2. One canopy underside
+strip, foliage intruding down across the full frame width, which closes the
+top of the stage and sells density harder than anything at ground level. Three
+giant blooms — a trumpet bloom on a tall stalk, a ground-level cabbage bloom, a
+hanging pod-flower cluster — carrying the chroma. Two fungus shelf clusters
+sized to attach to a trunk. Three swallowed ruin fragments — cracked wall
+segment, toppled column with roots through it, low stepped plinth — shared with
+Ruins.
+
+Every midband element needs a base that covers the floor plane's far edge
+(10.3.2).
+
+**Floor** — four elements, three variants each. **Approved**, prompts in
+10.6.1.2. Grass tufts, mossed rocks, dead fronds, ground mushrooms. Weather is
+not in the catalog: it is a particle scene chosen per encounter (10.3.4) —
+drifting spore motes, light rain through the shafts, falling leaves, low
+drifting mist.
+
+**Foreground** — ~7 elements, pure band 1. *Planned.*
+
+One full-height cropped trunk at a side edge, which is the cheapest depth in
+the stage; three split-leaf clusters intruding from the bottom corners with
+distinct outlines; one fern fan, bottom left; one buttress root arc, bottom
+right; two thin vine strands crossing the top edge only; one drooping bloom
+chosen for a shape that still reads when filled black.
+
+##### 10.6.1.2 Approved floor prompts
+
+Recorded verbatim as generated, per 18. New floor elements for any variant are
+judged side by side against these at target size. All four take the general
+block in 10.3.7 expanded in full — it is written into each prompt below rather
+than abbreviated.
+
+**Grass tufts (3 variants)**
+
+```
+bold woodcut illustration, thick black contour outline on the outer
+silhouette, flat color fields, hard-edged shadows, no gradients, orthographic
+side elevation seen straight on at eye level, no highlight edge anywhere,
+depth built from overlapping layers of blades at different values, the
+nearest blades lightest and each layer behind them a full value band darker
+receding into near-black, hand-carved edge quality, all in desaturated dark
+blue-green, three separate clumps of wild jungle grass standing far apart in
+a row with empty background between them, each a different shape: a tall
+narrow upright clump with blades shooting up and crossing over one another
+at uneven angles, a broad low spray wider than it is tall splaying out
+loosely to both sides and sagging at the outer tips, and a ragged clump
+tallest at one side and falling away to the other with several blades bent
+and drooping over, each clump cut off flat and straight along the bottom
+edge, isolated on a plain flat solid white background
+```
+
+Generated before the engraved-linework finding (10.3.7) and before the color
+policy (10.3.9), and approved as it stands. Regenerate with the linework
+clause if the tufts read flat beside a carved rock once the midband is in.
+
+**Mossed rocks (3 variants)**
+
+```
+bold woodcut illustration with engraved structural linework and visible
+gouge marks cut into the stone, thick black contour outline on the outer
+silhouette, flat color fields, hard-edged shadows, no gradients, orthographic
+side elevation seen straight on at eye level, no highlight edge anywhere,
+depth built from the stone breaking into facets at different values, one
+side of each rock falling away into near-black, the stone carrying heavy
+engraved detail through fracture lines, chipped edges, pocked hollows and
+parallel hatching along its shadow side, hand-carved edge quality, three
+separate mossed rocks standing far apart in a row with empty background
+between them, each a different shape: a broad low boulder much wider than it
+is tall, worn and rounded with its stone cracked unevenly, a narrower
+upright wedge leaning to one side with harder angular breaks, and a squat
+split rock broken open down its middle with the halves settled apart, all in
+dull grey-green stone, a thick uneven cap of dark moss sitting over the top
+of each and spilling raggedly down one side, the moss as one flat mass with
+a torn lower edge and no interior detail, each rock cut off flat and
+straight along the bottom edge, isolated on a plain flat solid white
+background
+```
+
+The moss is deliberately the one uncarved mass in the prompt. If it stops
+reading as moss and starts reading as a dark patch of the rock, the phrase to
+strengthen is the torn lower edge — that hard ragged boundary is what says a
+soft thing growing over a hard one. Cut order if the element mushes at target
+size: hatching, then pocked hollows, then chipped edges; the fracture lines
+and the moss edge are never cut.
+
+**Ground mushrooms (3 variants)**
+
+```
+bold woodcut illustration with engraved structural linework and visible
+gouge marks, thick black contour outline on the outer silhouette, flat color
+fields, hard-edged shadows, no gradients, orthographic side elevation seen
+straight on at eye level, no highlight edge anywhere, depth built from the
+caps and stalks overlapping each other at different values, the nearest
+lightest and those behind falling away into near-black, engraved detail
+through the gill lines beneath the caps and the fibres running down the
+stalks, hand-carved edge quality, three separate clusters of strange jungle
+mushrooms growing up out of the ground, standing far apart in a row with
+empty background between them, none taller than a man's knee, each cluster a
+different kind: one a huddle of squat heavy mushrooms with thick stalks and
+broad caps sagging and split at their rims, one a tall slender bunch whose
+caps are stacked in several tiers up each stalk like narrow pagodas, and one
+a low spread of small bulbous mushrooms with caps curling upward at the
+edges into shallow cups, the stalks in muted damp earth tones, the caps in
+rich saturated colour each cluster a different hue, deep coral red, vivid
+amber orange and bright violet, their undersides dropping into deep shadow
+of the same hue, each cluster cut off flat and straight along the bottom
+edge, isolated on a plain flat solid white background
+```
+
+Invented forms are permitted here and the tiered variant is one — but the
+weirdness stays in silhouette and structure. A floor prop that looks *active*
+or magical reads as something the player should be able to click, and that
+lane belongs to the Magic Ruins vocabulary rather than to scatter. This is the
+element that carries the set's chroma (10.3.9); watch it against a fielded
+team before the set is locked.
 
 #### 10.6.2 Clockwork Spire
 
@@ -1932,6 +2353,19 @@ Recorded so they are not retried. Each of these was generated and judged, not re
 - **Diviner's crystal as a jagged raw crystal with smooth spheres grown out of it.** Rejected on paper. Unnatural, which was the intent, but two shape languages with nothing joining them read as a rock with bubbles or growths on it rather than as a designed prop. Produced the arrangement-not-added-parts bullet in 8.1.
 - **Diviner's crystal as a cluster of small spheres in rope netting.** Rejected on paper. Many small spheres are detail that dies in the quantize step, and a round mass held in netting is the Plague Doctor's caged gall (7.2).
 - **Diviner's crystal as spheres strung together and held.** Rejected on paper. A trailing or hanging strand nibbles the outer contour (7.1), and a held strand reads as prayer beads. Two joined spheres were rejected on the same pass — at 300 px they read as a dumbbell or binoculars.
+- **Floor clutter on flat color fields with no engraved linework.** The first Jungle mossed rocks. Correct silhouettes, correct values, and the result read as a vector cartoon prop. The third independent recording of the Bolas finding (12.4.1) and the Between the Plates finding (12.6.1), this time at knee height in an environment. Flat fields and engraved line are a pair; see 10.3.7.
+- **A bone white highlight edge on floor clutter.** Carried over from the icon classes (12.6.4) into the first grass and rock prompts. Against a thick black contour at small size it is a comic-book ink cue and it made the props look like they came from a different game. Light direction is now carried by the shadow side alone on environment elements (10.3.7).
+- **Organic environment elements written with counts.** The first grass tufts: *seven blades*, *eleven blades splaying outward to both sides*, *four of them bent at the tips*. Every blade placed and nothing growing. Counts are for built objects; grown ones are described loosely. See 5.4.
+- **The floor as a near-invisible strip.** The original specification, on the reasoning that a floor with no visible depth cannot be caught out on perspective. Characters do not fit a stage laid out that way. The floor is a 170 px plane and a character's Y within it is their depth (10.3.3). The strip language survived in several sections after the layout had already changed, which is how 10.3.3.1 came to be written on it.
+- **Ground-lying floor elements as generated art.** Mud pools, paving and tile fragments, fungus rings, root runs and flat-lying leaves. Not ruled out because the plane cannot be seen — it is 170 px deep and plainly visible — but because **a generator cannot be held to a consistent foreshortening**, and one decal at the wrong angle breaks the plane for everything standing on it. Flat ground reads go to the floor shader; everything generated is an upright billboard (10.3.3.1).
+- **10.3.3.1 as first written, "the floor is seen edge-on".** The right rule reached from a wrong fact, and the fifth documentation error in this record. It inferred the camera from the stale strip language rather than checking the layout, and would have propagated further wrong conclusions — that contact shadows cannot read, that the band cannot hold depth at all. Rewritten with the tool as the reason. Worth noting that the rule itself did not change: the failure was invisible from the output, which is the argument for recording reasons and not only rules.
+- **The oversized fallen leaf, propped or leaning.** Two failures in one element. Lying flat it is a dark dash a few pixels tall; propped or leaning it needs something to lean on, which the scatter system does not and will not provide, and the outputs read as a leaf photographed somewhere else and pasted in. The dry ochre it needed in order to be legible at all was the tell — the only way to make a flat dash read is chroma or value contrast, which is exactly the attention the floor must not take. Cut rather than rewritten; replaced by the dead frond on a standing stem (10.6.1.2).
+- **Shelf fungi as a floor element.** Correct in form and generated well, and wrong for the band: brackets growing off a wood stub is midband vocabulary that wants a trunk to attach to. Kept for the midband catalog; the floor took ground-growing mushrooms instead.
+- **Floor clutter desaturated wholesale to keep it quiet.** The overcorrection after the ochre leaf. Greying the whole element gave a jungle floor of grey, dead-looking plants. Quiet is a contrast instruction, not a saturation one; the fix is muted mass with chroma in the small incident parts (10.3.9).
+- **Baked ground patches under floor elements.** Considered as the fix for the flat cut bottom edge and rejected before generation: a patch has a fixed width, value and silhouette, so it lands wrong on every floor it was not drawn for, it owes one to every future element, and it trades the sprite's hard bottom edge for the patch's hard outer edge. Grounding is made in the engine (10.3.8).
+- **Magenta and bright green as the key color for environment elements.** Both fringe a muted palette under a black contour, and green bleeds into foliage specifically. Flat white throughout (10.3.7).
+- **The stage-wide empty-center rule.** Not a generation failure but a documentation one, and the fourth of its kind. The floor's clear-radius rule was generalized to the whole stage without being tested, which made a dense biome impossible to build. Replaced by the contrast budget in 10.1.1.
+- **Backgrounds carrying no character accent.** The same pass, the same kind of error: a hue-exclusivity rule protecting an accent system that is not carried by hue exclusivity. It would have put Act 1's two greens off limits to the Jungle. See 10.1.1.
 - **Diviner's crystal as a giant moth compound eye.** Superseded rather than failed, before generation. The owner wanted a crystal read, not a creature part, and it would have made a second Act 1 woman carrying a harvested jungle-creature part beside the Plague Doctor.
 
 ---
@@ -1964,6 +2398,12 @@ Collected so they are visible in one place rather than buried in the sections th
 - **Appraiser act placement.** `Concept_Document.md` 5.5 lists him under Act 1 Reclaimed City; his toothed wheel is Spire vocabulary. Either the concept document moves him to Act 2 or it records the guild-assayer framing that reconciles the two (8.8.4).
 - **Warlord accent.** `#6B7A88` is a neutral, not an accent. Either it becomes a real color or this Role is declared the drab one on purpose (8.9.1).
 - **Clockwork Spire scene light.** Unassigned for both variants (10.2, 10.6.2).
+- **Band draw order.** This guide says Background, Floor, Midband, characters, Foreground, so midband bases cover the floor's top edge (10.3.2). The order used in practice on the Jungle stage is Background, Midband, Floor, Foreground. Now that grounding is made in the engine (10.3.8) the second order may be the better one — a contact shadow drawn over a midband base is exactly the join that order gives — but the two are recorded in conflict and one of them is wrong. Settle it on the first Jungle composite.
+- **The contrast budget is untested.** 10.1.1 replaced a rule that had never been generated with another rule that has never been generated. The Jungle midband is the first stage dense enough to test it; if a band-3 foliage mass behind a champion turns out not to be enough separation at target size, the budget needs a stated minimum rather than "a band or two".
+- **Midband detail budget.** 10.3.2 still has no finding for how much detail a midband element carries relative to a champion standing in front of it. The floor set is deliberately quiet and gives no guidance here.
+- **Retrofitting the floor set.** The grass tufts predate both the engraved-linework finding and the color policy (10.6.1.2). Same shape of question as the pre-lever five in 3.5 — composite them beside the rocks and mushrooms before regenerating.
+- **Whether the floor shader owes the reads the element set gave up.** Puddles, wet patches, paving and worn paths were all ruled out as generated art (10.3.3.1) and handed to the shader, which has no specification yet. Decide what the shader actually draws before the Jungle stage is called finished, or the band ends up as bare fill plus four standing elements.
+- **Whether the floor set is biome-specific.** Four elements at three variants is twelve slices for one variant, and eight variants are in scope (10.6). Decide how much of a floor set is generic ground clutter recolored per variant and how much is drawn fresh, before generating the second one.
 - **The white inner city.** A light-dominant environment against figures that are half band 1. Either the midband keeps committed darks or the character rules bend for one variant (10.6).
 - **Overworld camera.** The one exemption from section 4 in the whole guide. Vista or high-above, one convention or per area (10.4.1).
 - **One POI language or two.** The overview screens (10.4.2) and the Adventure map (10.7.2) both need clickable points with states. Answering them separately teaches the player two vocabularies.
