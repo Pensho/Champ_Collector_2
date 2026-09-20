@@ -30,6 +30,10 @@ Types="*res://Scripts/common_enums.gd"
 Game_Settings="*res://Scripts/settings.gd"
 Notification_Handler="*res://Scripts/UI/notification_handler.gd"
 
+[champ_collector]
+
+build/content_pool_mode="full_game"
+
 [display]
 
 window/size/viewport_width=1280
@@ -43,7 +47,7 @@ version_control/autoload_on_startup=true
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/gut/plugin.cfg")
+enabled=PackedStringArray("res://addons/game_mode_setting/plugin.cfg", "res://addons/gut/plugin.cfg")
 
 [file_customization]
 

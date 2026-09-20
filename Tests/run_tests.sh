@@ -7,8 +7,10 @@
 # Pass --mode <name> (e.g. --mode playtest) to also run the suite under that build
 # mode's content pool, on top of the always-run full game. The mode is passed to
 # Godot as an environment variable, not a command-line argument: GUT's own CLI parser
-# hard-quits on any argument it does not recognize. See ContentPool.Active() and
-# Documents/Test_Design_Document.md.
+# hard-quits on any argument it does not recognize. The full-game leg names its mode
+# explicitly so the project's editor build-mode setting cannot redirect it; the name is the
+# one declared by Data/Game_Modes/Full_Game_Content_Pool.tres. See GameModeRegistry.Active()
+# and Documents/Test_Design_Document.md.
 set -o pipefail
 
 case "$(uname -s)" in
@@ -55,12 +57,12 @@ run_suite() {
 }
 
 if [ -z "$MODE" ]; then
-	run_suite ""
+	run_suite "full_game"
 	exit $?
 fi
 
 echo "== Full game =="
-run_suite ""
+run_suite "full_game"
 full_game_status=$?
 echo
 echo "== Build mode: $MODE =="

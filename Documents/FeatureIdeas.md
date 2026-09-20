@@ -83,6 +83,16 @@ Effort: **S** = hours, **M** = days, **L** = week+
 
 ---
 
+## Build & Tooling
+
+- **Export-Time Content Stripping per Game Mode** *(Priority: Medium | Effort: L)*
+  An `EditorExportPlugin` that ships only the content the exported mode's `ContentPool` names, so a demo or playtest build cannot be data-mined for unreleased content. `_export_begin()` picks the mode from the `champ_collector/build/content_pool_mode` setting the export carries; `_export_file()` calls `skip()` on every resource outside that pool's dependency closure, walked with `ResourceLoader.get_dependencies()`. Blocked by **Data-Driven Content Registries** below — `preload` is a compile-time dependency, so a skipped file both breaks the script that preloads it and gets pulled into the export anyway. `GameModeRegistry.POOLS` preloads every mode, which makes all listed content reachable from a const chain, so the plugin must swap or rewrite `POOLS` for the target mode rather than rely on reachability. Scope limit worth knowing before committing: GDScript compiles into the binary, so `Types.Role` entries, per-character trait scripts and any code naming absent content still ship. What the plugin protects is stats, skill data, portraits and playability — not the existence of a name.
+
+- **Data-Driven Content Registries** *(Priority: Medium | Effort: L)*
+  Replace the hand-maintained `preload` dictionaries with mode-driven `load()`: 121 calls today, 22 in `main_instance.gd`, 27 in `equipment_preset_registry.gd`, 72 in `reagent_registry.gd`. Each one hard-wires its resource into the compiled script, which is what makes a `ContentPool` a runtime filter rather than a definition of what the build contains. Converting them is the prerequisite for export-time stripping and worth doing on its own: adding content would stop meaning editing a dictionary. Must preserve the constraint the registry comments already state — runtime `DirAccess` discovery is unsafe on the Android export — so the replacement is a generated manifest or a per-mode preload list, not a folder scan.
+
+---
+
 ## World & Narrative
 
 - **Faction Reputation Meter** *(Priority: Low | Effort: M)*

@@ -314,15 +314,18 @@ static func make_context(
 	return SkillCastContext.new(p_resolver, p_caster_ID, p_target_IDs, p_skill, caster_attributes,
 			p_use_count, trait_result)
 
-## Pins ContentPool.Active() to the unrestricted (no pool) mode for the calling test,
-## regardless of the run's build mode. Pair with unpin_content_pool(), typically in
-## after_each, so the run's actual build mode applies to every other test.
-static func pin_unrestricted_content_pool() -> void:
-	ContentPool.PinForTest(null)
+## Pins GameModeRegistry.Active() to a pool that allows exactly p_presets, so a test built
+## from in-memory presets sees them offered regardless of the run's build mode. Pair with
+## unpin_content_pool(), typically in after_each, so the run's actual build mode applies to
+## every other test.
+static func pin_content_pool_allowing_champions(p_presets: Array[CharacterPreset]) -> void:
+	var pool: ContentPool = ContentPool.new()
+	pool.recruitable_champions = p_presets
+	GameModeRegistry.PinForTest(pool)
 
-## Restores ContentPool.Active() to reading the run's actual build mode.
+## Restores GameModeRegistry.Active() to reading the run's actual build mode.
 static func unpin_content_pool() -> void:
-	ContentPool.ClearPin()
+	GameModeRegistry.ClearPin()
 
 static func make_loot_table() -> LootTable:
 	return LootTable.new()

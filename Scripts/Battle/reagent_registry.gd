@@ -85,12 +85,12 @@ static func Get(p_id: String) -> ReagentData:
 	return REAGENTS.get(p_id)
 
 static func GetRandomKeyForRarity(
-		p_rarity: Types.Rarity, p_content_pool: ContentPool = ContentPool.Active()) -> String:
+		p_rarity: Types.Rarity, p_content_pool: ContentPool = GameModeRegistry.Active()) -> String:
 	var matching_keys: Array[String] = []
 	for reagent_key in REAGENTS.keys():
 		if(REAGENTS[reagent_key].rarity != p_rarity or REAGENTS[reagent_key].brew_only):
 			continue
-		if(null != p_content_pool and not p_content_pool.AllowsReagent(reagent_key, p_rarity)):
+		if(not p_content_pool.AllowsReagent(reagent_key, p_rarity)):
 			continue
 		matching_keys.append(reagent_key)
 	if(matching_keys.is_empty()):

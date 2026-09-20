@@ -6,10 +6,6 @@ var _tier: FortuneFavorTier
 
 
 func before_each() -> void:
-	# These presets are in-memory and carry no resource_path, so they cannot match
-	# any real content pool's entries; pin the unrestricted mode so RecruitableChampions()
-	# returns them regardless of the run's build mode.
-	TestFactory.pin_unrestricted_content_pool()
 	_tier = FortuneFavorTier.new()
 	_tier.reward_count = 3
 	_tier.silver_weight = 40
@@ -17,6 +13,10 @@ func before_each() -> void:
 	_tier.supplies_weight = 30
 	_tier.supplies_amount = 10
 	_tier.recruitable_champions = _build_preset_pool()
+	# These presets are in-memory and carry no resource_path, so they cannot match any
+	# shipped pool's entries; pin a pool allowing exactly them so RecruitableChampions()
+	# returns them regardless of the run's build mode.
+	TestFactory.pin_content_pool_allowing_champions(_tier.recruitable_champions)
 
 
 func after_each() -> void:

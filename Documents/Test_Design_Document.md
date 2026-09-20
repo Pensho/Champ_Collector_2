@@ -27,7 +27,7 @@ A build mode (full game, or a `ContentPool` such as playtest) is resolved by
   expectations from the active pool rather than from full-game constants.
 
 `test_content_pool_sweep.gd` iterates every `ContentPool` resource under
-`Data/Loot_Tables/` and asserts each is usable (names only registered content,
+`Data/Game_Modes/` and asserts each is usable (names only registered content,
 starting roster fits the roster cap, every recruitment tier can still offer a
 champion). A new mode is covered by adding its content pool resource.
 

@@ -1,49 +1,25 @@
 class_name ContentPool extends Resource
 
-## Restricts the content a build offers: which reagents and Relics random draws (loot drops,
-## shop stock) may produce, which champions recruitment may offer, and the starting roster.
+## One game mode's content: which reagents and Relics random draws (loot drops, shop stock)
+## may produce, which champions recruitment may offer, and what a new game starts with.
+## Every mode has a pool, including the full game, so a mode is a resource rather than a
+## branch. GameModeRegistry selects the one this run obeys.
 ## Lookups by key, save loading and debug tools always see the full registries.
 
-const PLAYTEST_FEATURE_TAG: String = "playtest"
-const PLAYTEST_POOL_PATH: String = "res://Data/Loot_Tables/Playtest_Content_Pool.tres"
-## Selects a build mode for a headless run (Tests/run_tests.sh's --mode flag sets
-## this). Not a command-line argument: GUT's own CLI parser hard-quits on any
-## argument it does not recognize, including one passed after "--".
-const BUILD_MODE_ENV_VAR: String = "CHAMP_COLLECTOR_BUILD_MODE"
-
-## Test-only override for Active(); see PinForTest() / ClearPin().
-static var _pin_active: bool = false
-static var _pinned_pool: ContentPool = null
-
+## This mode's name wherever a mode can be selected: the build mode environment variable,
+## the build mode project setting, and an export preset's custom feature tag.
+@export var mode_name: String = ""
+## The mode every unset selection source falls back to, and the one an unrecognized mode
+## name falls back to. Exactly one shipped pool sets this.
+@export var is_default_mode: bool = false
 ## Reagent family names: a registry key without its rarity suffix, e.g. "Mending_Icon".
 @export var reagent_families: Array[String] = []
 @export var relic_keys: Array[String] = []
 @export var starting_champions: Array[CharacterPreset] = []
 ## Narrows each Fortune's Favor tier to the champions it already lists that also appear here.
 @export var recruitable_champions: Array[CharacterPreset] = []
-
-static func PinForTest(p_pool: ContentPool) -> void:
-	_pin_active = true
-	_pinned_pool = p_pool
-
-static func ClearPin() -> void:
-	_pin_active = false
-	_pinned_pool = null
-
-## The pool random draws obey in this build, or null when nothing is restricted.
-## Resolution order: a test pin (PinForTest), the BUILD_MODE_ENV_VAR environment
-## variable, then the "playtest" feature tag.
-static func Active() -> ContentPool:
-	if(_pin_active):
-		return _pinned_pool
-	if(not _IsPlaytestMode()):
-		return null
-	return load(PLAYTEST_POOL_PATH)
-
-static func _IsPlaytestMode() -> bool:
-	if(OS.get_environment(BUILD_MODE_ENV_VAR) == PLAYTEST_FEATURE_TAG):
-		return true
-	return OS.has_feature(PLAYTEST_FEATURE_TAG)
+## How many reagents a new game starts with, drawn from this pool's own families.
+@export var starting_reagent_count: int = 0
 
 func AllowsReagent(p_key: String, p_rarity: Types.Rarity) -> bool:
 	var rarity_suffix: String = "_" + Types.Rarity.find_key(p_rarity)
@@ -57,3 +33,15 @@ func AllowsChampion(p_preset: CharacterPreset) -> bool:
 		if(allowed.resource_path == p_preset.resource_path):
 			return true
 	return false
+
+## starting_reagent_count draws, with repetition, from p_candidate_keys. The caller supplies
+## the candidates rather than this resource reading ReagentRegistry: a pool's script must not
+## depend on a registry that resolves a pool, or the pools preloaded by GameModeRegistry can
+## load before this script does and arrive without it.
+func RollStartingReagentKeys(p_candidate_keys: Array[String]) -> Array[String]:
+	var drawn_keys: Array[String] = []
+	if(starting_reagent_count <= 0 or p_candidate_keys.is_empty()):
+		return drawn_keys
+	for i: int in starting_reagent_count:
+		drawn_keys.append(p_candidate_keys[randi_range(0, p_candidate_keys.size() - 1)])
+	return drawn_keys

@@ -1,27 +1,5 @@
 class_name Main_Instance extends Node
 
-const HUNTER = preload("res://Data/Character_Player_Variants/Hunter.tres")
-#const KNIGHT = preload("res://Data/Character_Player_Variants/Knight.tres")
-const JESTER = preload("res://Data/Character_Player_Variants/Jester.tres")
-const BAR_BRAWLER = preload("res://Data/Character_Player_Variants/Bar_Brawler.tres")
-const HERALD_OF_THE_LOOM = preload("res://Data/Character_Player_Variants/Herald_of_the_loom.tres")
-const THIEF = preload("res://Data/Character_Player_Variants/Thief.tres")
-const CHRONOPHAGE = preload("uid://wofv42g341ac")
-const BLOODMAGE = preload("uid://7adgp1emx6yk")
-const TIDAL_CORSAIR = preload("uid://bmqvx8opoocu7")
-const CENTAUR_LANCER = preload("uid://cgpw0pv0l4wn4")
-const CENTAUR_ARCHIVIST = preload("uid://dkdgfkpt6si8y")
-const TACTICIAN = preload("uid://dy22lp5h48s5f")
-const SYMBIOTE = preload("uid://2mmrc7vnsrqw")
-const SORCERER = preload("uid://cd3taeihyjuh3")
-const DIVINER = preload("res://Data/Character_Player_Variants/Diviner.tres")
-const APPRAISER = preload("res://Data/Character_Player_Variants/Appraiser.tres")
-const EMISSARY = preload("res://Data/Character_Player_Variants/Emissary.tres")
-const CULTIST = preload("res://Data/Character_Player_Variants/Cultist.tres")
-const PLAGUE_DOCTOR = preload("res://Data/Character_Player_Variants/Plague_Doctor.tres")
-const WARLORD = preload("res://Data/Character_Player_Variants/Warlord.tres")
-const ALCHEMIST = preload("res://Data/Character_Player_Variants/Alchemist.tres")
-const ARCHITECT = preload("res://Data/Character_Player_Variants/Architect.tres")
 
 
 var _current_scene = null
@@ -63,42 +41,26 @@ func Init() -> void:
 
 	var context_container: ContextContainer = ContextContainer.new()
 
-	var content_pool: ContentPool = ContentPool.Active()
-	if(null != content_pool):
-		for preset: CharacterPreset in content_pool.starting_champions:
-			_character_collection.Add(preset.duplicate(true))
-	else:
-		_character_collection.Add(HUNTER.duplicate(true))
-		_character_collection.Add(THIEF.duplicate(true))
-		_character_collection.Add(BAR_BRAWLER.duplicate(true))
-		_character_collection.Add(JESTER.duplicate(true))
-		_character_collection.Add(CHRONOPHAGE.duplicate(true))
-		_character_collection.Add(TIDAL_CORSAIR.duplicate(true))
-		_character_collection.Add(CENTAUR_LANCER.duplicate(true))
-		_character_collection.Add(CENTAUR_ARCHIVIST.duplicate(true))
-		_character_collection.Add(TACTICIAN.duplicate(true))
-		_character_collection.Add(BLOODMAGE.duplicate(true))
-		_character_collection.Add(SORCERER.duplicate(true))
-		_character_collection.Add(SYMBIOTE.duplicate(true))
-		_character_collection.Add(DIVINER.duplicate(true))
-		_character_collection.Add(APPRAISER.duplicate(true))
-		_character_collection.Add(EMISSARY.duplicate(true))
-		_character_collection.Add(CULTIST.duplicate(true))
-		_character_collection.Add(PLAGUE_DOCTOR.duplicate(true))
-		_character_collection.Add(WARLORD.duplicate(true))
-		_character_collection.Add(ALCHEMIST.duplicate(true))
-		_character_collection.Add(ARCHITECT.duplicate(true))
-		_character_collection.Add(HERALD_OF_THE_LOOM.duplicate(true))
-
-		var reagent_keys: Array[String] = []
-		for reagent_key in ReagentRegistry.REAGENTS.keys():
-			if(not ReagentRegistry.REAGENTS[reagent_key].brew_only):
-				reagent_keys.append(reagent_key)
-		for i in 3:
-			_reagent_collection.Add(reagent_keys[randi_range(0, reagent_keys.size() - 1)])
+	var content_pool: ContentPool = GameModeRegistry.Active()
+	print("build mode: ", content_pool.mode_name)
+	for preset: CharacterPreset in content_pool.starting_champions:
+		_character_collection.Add(preset.duplicate(true))
+	for reagent_key: String in content_pool.RollStartingReagentKeys(StartingReagentCandidates(content_pool)):
+		_reagent_collection.Add(reagent_key)
 
 	context_container._scene = "uid://c6c1o3oabj0pf"
 	change_scene(context_container)
+
+## The reagents a new game may start with under p_content_pool: everything the pool allows
+## that is not brew-only.
+static func StartingReagentCandidates(p_content_pool: ContentPool) -> Array[String]:
+	var candidate_keys: Array[String] = []
+	for reagent_key: String in ReagentRegistry.REAGENTS.keys():
+		var reagent: ReagentData = ReagentRegistry.REAGENTS[reagent_key]
+		if(reagent.brew_only or not p_content_pool.AllowsReagent(reagent_key, reagent.rarity)):
+			continue
+		candidate_keys.append(reagent_key)
+	return candidate_keys
 
 func change_scene(p_context: ContextContainer) -> void:
 	_deferred_change_scene(p_context)

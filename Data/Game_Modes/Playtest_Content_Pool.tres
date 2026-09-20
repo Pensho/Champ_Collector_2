@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="ContentPool" format=3 uid="uid://d3eutj5rj6xo5"]
+
+[ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="1_hf85e"]
+[ext_resource type="Resource" uid="uid://dnup7y7ax8jck" path="res://Data/Character_Player_Variants/Bar_Brawler.tres" id="2_36jck"]
+[ext_resource type="Resource" uid="uid://dkpr2hnmtcodx" path="res://Data/Character_Player_Variants/Jester.tres" id="3_clbbf"]
+[ext_resource type="Resource" uid="uid://b68hmmppqg4nq" path="res://Data/Character_Player_Variants/Hunter.tres" id="4_43sx2"]
+[ext_resource type="Resource" uid="uid://dy22lp5h48s5f" path="res://Data/Character_Player_Variants/Tactician.tres" id="5_0dnrj"]
+[ext_resource type="Resource" uid="uid://bm0sqmepyeoam" path="res://Data/Character_Player_Variants/Thief.tres" id="6_p16ow"]
+[ext_resource type="Resource" uid="uid://bmqvx8opoocu7" path="res://Data/Character_Player_Variants/Tidal_Corsair.tres" id="7_cq3sk"]
+[ext_resource type="Resource" uid="uid://dp21n8t5rkmsf" path="res://Data/Character_Player_Variants/Diviner.tres" id="8_eo2o0"]
+[ext_resource type="Resource" uid="uid://dxe33tjshfp4r" path="res://Data/Character_Player_Variants/Appraiser.tres" id="9_xs1wl"]
+[ext_resource type="Resource" uid="uid://c6472w8kgtiw5" path="res://Data/Character_Player_Variants/Plague_Doctor.tres" id="10_0u3fg"]
+[ext_resource type="Resource" uid="uid://bq7rxhgujqk6t" path="res://Data/Character_Player_Variants/Warlord.tres" id="11_ifaso"]
+[ext_resource type="Script" uid="uid://82lplqimf6tb" path="res://Scripts/Battle/content_pool.gd" id="12_3u2i6"]
+
+[resource]
+script = ExtResource("12_3u2i6")
+mode_name = "playtest"
+reagent_families = Array[String](["Mending_Icon", "Absolving_Tablet", "Thiefs_Regret", "Unbinding_Shard", "Second_Wind_Chime"])
+relic_keys = Array[String](["The_Long_Furrow", "Kiln_Brand", "Sunderplate_Nail", "Signatorys_Seal", "Prism_of_Small_Favors", "The_Quiet_Mass", "The_Sealed_Docket", "The_Planted_Heel", "The_Even_Tread", "Mercy_Stitch"])
+starting_champions = Array[ExtResource("1_hf85e")]([ExtResource("6_p16ow"), ExtResource("8_eo2o0"), ExtResource("10_0u3fg")])
+recruitable_champions = Array[ExtResource("1_hf85e")]([ExtResource("2_36jck"), ExtResource("3_clbbf"), ExtResource("4_43sx2"), ExtResource("5_0dnrj"), ExtResource("6_p16ow"), ExtResource("7_cq3sk"), ExtResource("8_eo2o0"), ExtResource("9_xs1wl"), ExtResource("10_0u3fg"), ExtResource("11_ifaso")])

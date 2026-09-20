@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="ContentPool" format=3]
+
+[ext_resource type="Script" path="res://Scripts/Character/character_preset.gd" id="1_lygl8"]
+[ext_resource type="Resource" path="res://Data/Character_Player_Variants/Alchemist.tres" id="2_vboal"]
+[ext_resource type="Resource" path="res://Data/Character_Player_Variants/Appraiser.tres" id="3_5lp4r"]
+[ext_resource type="Resource" path="res://Data/Character_Player_Variants/Architect.tres" id="4_nmlty"]
+[ext_resource type="Resource" path="res://Data/Character_Player_Variants/Bar_Brawler.tres" id="5_pvw37"]
+[ext_resource type="Resource" path="res://Data/Character_Player_Variants/Bloodmage.tres" id="6_3d45y"]
+[ext_resource type="Resource" path="res://Data/Character_Player_Variants/Centaur_Archivist.tres" id="7_1hx0y"]
+[ext_resource type="Resource" path="res://Data/Character_Player_Variants/Centaur_Lancer.tres" id="8_8qe8l"]
+[ext_resource type="Resource" path="res://Data/Character_Player_Variants/Chronophage.tres" id="9_p6u1m"]
+[ext_resource type="Resource" path="res://Data/Character_Player_Variants/Cultist.tres" id="10_yy7ar"]
+[ext_resource type="Resource" path="res://Data/Character_Player_Variants/Diviner.tres" id="11_raxis"]
+[ext_resource type="Resource" path="res://Data/Character_Player_Variants/Emissary.tres" id="12_lore1"]
+[ext_resource type="Resource" path="res://Data/Character_Player_Variants/Herald_of_the_loom.tres" id="13_dkm0g"]
+[ext_resource type="Resource" path="res://Data/Character_Player_Variants/Hunter.tres" id="14_2rq1r"]
+[ext_resource type="Resource" path="res://Data/Character_Player_Variants/Jester.tres" id="15_woy0j"]
+[ext_resource type="Resource" path="res://Data/Character_Player_Variants/Knight.tres" id="16_x7cw5"]
+[ext_resource type="Resource" path="res://Data/Character_Player_Variants/Plague_Doctor.tres" id="17_80m4a"]
+[ext_resource type="Resource" path="res://Data/Character_Player_Variants/Sorcerer.tres" id="18_44ept"]
+[ext_resource type="Resource" path="res://Data/Character_Player_Variants/Symbiote.tres" id="19_nrtdi"]
+[ext_resource type="Resource" path="res://Data/Character_Player_Variants/Tactician.tres" id="20_pm63u"]
+[ext_resource type="Resource" path="res://Data/Character_Player_Variants/Thief.tres" id="21_ajmxn"]
+[ext_resource type="Resource" path="res://Data/Character_Player_Variants/Tidal_Corsair.tres" id="22_xoiuf"]
+[ext_resource type="Resource" path="res://Data/Character_Player_Variants/Warlord.tres" id="23_txhcj"]
+[ext_resource type="Script" path="res://Scripts/Battle/content_pool.gd" id="24_i02pl"]
+
+[resource]
+script = ExtResource("24_i02pl")
+mode_name = "full_game"
+is_default_mode = true
+reagent_families = Array[String](["Absolving_Tablet", "Chaotic_Blessing", "Fractured_Idol", "Lesser_Barrier_Brew", "Lesser_Purging_Brew", "Lesser_Restorative_Brew", "Lesser_Tincture", "Mending_Icon", "Rewinding_Cog", "Second_Wind_Chime", "Sigil_Accuracy", "Sigil_Attack", "Sigil_CritChance", "Sigil_CritDamage", "Sigil_Defence", "Sigil_Knowledge", "Sigil_Mysticism", "Sigil_Resistance", "Sigil_Speed", "Thiefs_Regret", "Unbinding_Shard"])
+relic_keys = Array[String](["The_Long_Furrow", "Remnant_Fed_Edge", "Threefold_Bite", "The_Closed_Wound", "The_Planted_Heel", "Lantern_of_the_Standing_Ward", "The_Answering_Boss", "The_Sealed_Docket", "The_Unguarded_Glass", "The_Ossuary_Ledger", "The_Frayed_Hour", "Kiln_Brand", "Sunderplate_Nail", "The_Even_Tread", "Prism_of_Small_Favors", "Signatorys_Seal", "The_Solvent_Mark", "Quorum_Bell", "Ceded_Ground", "The_Quiet_Mass", "Mercy_Stitch", "The_Long_Second", "Understudys_Coat", "Laden_Coffer"])
+starting_champions = Array[ExtResource("1_lygl8")]([ExtResource("14_2rq1r"), ExtResource("21_ajmxn"), ExtResource("5_pvw37"), ExtResource("15_woy0j"), ExtResource("9_p6u1m"), ExtResource("22_xoiuf"), ExtResource("8_8qe8l"), ExtResource("7_1hx0y"), ExtResource("20_pm63u"), ExtResource("6_3d45y"), ExtResource("18_44ept"), ExtResource("19_nrtdi"), ExtResource("11_raxis"), ExtResource("3_5lp4r"), ExtResource("12_lore1"), ExtResource("10_yy7ar"), ExtResource("17_80m4a"), ExtResource("23_txhcj"), ExtResource("2_vboal"), ExtResource("4_nmlty")])
+recruitable_champions = Array[ExtResource("1_lygl8")]([ExtResource("2_vboal"), ExtResource("3_5lp4r"), ExtResource("4_nmlty"), ExtResource("5_pvw37"), ExtResource("6_3d45y"), ExtResource("7_1hx0y"), ExtResource("8_8qe8l"), ExtResource("9_p6u1m"), ExtResource("10_yy7ar"), ExtResource("11_raxis"), ExtResource("12_lore1"), ExtResource("13_dkm0g"), ExtResource("14_2rq1r"), ExtResource("15_woy0j"), ExtResource("16_x7cw5"), ExtResource("17_80m4a"), ExtResource("18_44ept"), ExtResource("19_nrtdi"), ExtResource("20_pm63u"), ExtResource("21_ajmxn"), ExtResource("22_xoiuf"), ExtResource("23_txhcj")])
+starting_reagent_count = 3
