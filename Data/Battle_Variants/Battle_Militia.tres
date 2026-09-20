@@ -4,7 +4,7 @@
 [ext_resource type="Resource" uid="uid://b37nmpv7mries" path="res://Data/Character_Enemy_Variants/Militia.tres" id="2_f440i"]
 [ext_resource type="Script" uid="uid://bjtnao6fgl8go" path="res://Scripts/Worldview/Context_Battle.gd" id="3_6vl8o"]
 [ext_resource type="Resource" uid="uid://dauwp8sbf3ga" path="res://Data/Loot_Tables/Experience_Quest.tres" id="3_f440i"]
-[ext_resource type="PackedScene" uid="uid://c7tnkaylhob7o" path="res://Scenes/Battle_Stages/battle_stage_default.tscn" id="4_6vl8o"]
+[ext_resource type="PackedScene" uid="uid://bn26eqxi7k4oc" path="res://Scenes/Battle_Stages/battle_stage_jungle.tscn" id="4_6vl8o"]
 
 [resource]
 script = ExtResource("3_6vl8o")

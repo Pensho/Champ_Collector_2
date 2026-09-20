@@ -4,9 +4,11 @@
 [ext_resource type="Script" uid="uid://bjtnao6fgl8go" path="res://Scripts/Worldview/Context_Battle.gd" id="2_2ck73"]
 [ext_resource type="Resource" uid="uid://dflefeodbvqyy" path="res://Data/Character_Enemy_Variants/Statue_Shield.tres" id="2_i5snp"]
 [ext_resource type="Resource" uid="uid://bpomxijnhuk6t" path="res://Data/Loot_Tables/Statue_Shield_Loot.tres" id="3_i5snp"]
+[ext_resource type="PackedScene" uid="uid://bn26eqxi7k4oc" path="res://Scenes/Battle_Stages/battle_stage_jungle.tscn" id="4_2k8r3"]
 
 [resource]
 script = ExtResource("2_2ck73")
 _enemies_wave_1 = Array[ExtResource("1_aexo6")]([ExtResource("2_i5snp")])
+_stage_scene = ExtResource("4_2k8r3")
 _loot_table = ExtResource("3_i5snp")
 metadata/_custom_type_script = "uid://bjtnao6fgl8go"

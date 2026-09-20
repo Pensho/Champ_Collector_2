@@ -3,10 +3,12 @@
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="1_preset"]
 [ext_resource type="Resource" uid="uid://c44bvlmv6s6ux" path="res://Data/Character_Enemy_Variants/Statue_Boots.tres" id="2_boots"]
 [ext_resource type="Script" uid="uid://bjtnao6fgl8go" path="res://Scripts/Worldview/Context_Battle.gd" id="3_battle"]
+[ext_resource type="PackedScene" uid="uid://bn26eqxi7k4oc" path="res://Scenes/Battle_Stages/battle_stage_jungle.tscn" id="4_4lsqu"]
 [ext_resource type="Resource" path="res://Data/Loot_Tables/Statue_Boots_Loot.tres" id="4_loot"]
 
 [resource]
 script = ExtResource("3_battle")
 _enemies_wave_1 = Array[ExtResource("1_preset")]([ExtResource("2_boots")])
+_stage_scene = ExtResource("4_4lsqu")
 _loot_table = ExtResource("4_loot")
 metadata/_custom_type_script = "uid://bjtnao6fgl8go"
