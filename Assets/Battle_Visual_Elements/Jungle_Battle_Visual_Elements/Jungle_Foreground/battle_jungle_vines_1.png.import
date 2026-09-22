@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bp0whtn13pdj0"
-path="res://.godot/imported/frond_stub_1.png-44f211ef377b56f21d358559c48a07d8.ctex"
+uid="uid://bqhmjr24o7f5d"
+path="res://.godot/imported/battle_jungle_vines_1.png-d5429d53dd2c4cb15beb636863918621.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/frond_stub_1.png"
-dest_files=["res://.godot/imported/frond_stub_1.png-44f211ef377b56f21d358559c48a07d8.ctex"]
+source_file="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/Jungle_Foreground/battle_jungle_vines_1.png"
+dest_files=["res://.godot/imported/battle_jungle_vines_1.png-d5429d53dd2c4cb15beb636863918621.ctex"]
 
 [params]
 

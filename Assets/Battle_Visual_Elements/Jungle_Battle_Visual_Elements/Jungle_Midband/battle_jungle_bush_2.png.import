@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ckvyx52kt4qun"
-path="res://.godot/imported/fungi_battle_1.png-4ce6f8ea0925385e0ae1522ae54a046f.ctex"
+uid="uid://dldga87saj5t"
+path="res://.godot/imported/battle_jungle_bush_2.png-d95620526e2b0b86d667d2a923c1bb81.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/fungi_battle_1.png"
-dest_files=["res://.godot/imported/fungi_battle_1.png-4ce6f8ea0925385e0ae1522ae54a046f.ctex"]
+source_file="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/Jungle_Midband/battle_jungle_bush_2.png"
+dest_files=["res://.godot/imported/battle_jungle_bush_2.png-d95620526e2b0b86d667d2a923c1bb81.ctex"]
 
 [params]
 

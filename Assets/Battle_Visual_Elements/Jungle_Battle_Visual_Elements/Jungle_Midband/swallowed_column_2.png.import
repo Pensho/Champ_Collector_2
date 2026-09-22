@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://pf2ioprmjjdv"
-path="res://.godot/imported/rock_battle_1.png-f224b63ea12426ec983bea5fbfa02c73.ctex"
+uid="uid://bl52q4s7ghniy"
+path="res://.godot/imported/swallowed_column_2.png-66055fc75a118ec255d5c46d735f3fc6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/rock_battle_1.png"
-dest_files=["res://.godot/imported/rock_battle_1.png-f224b63ea12426ec983bea5fbfa02c73.ctex"]
+source_file="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/Jungle_Midband/swallowed_column_2.png"
+dest_files=["res://.godot/imported/swallowed_column_2.png-66055fc75a118ec255d5c46d735f3fc6.ctex"]
 
 [params]
 

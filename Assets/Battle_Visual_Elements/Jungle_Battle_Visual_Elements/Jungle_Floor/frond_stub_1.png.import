@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dpor5jaqmu0sk"
-path="res://.godot/imported/grass_battle_1.png-7034187e382831215119a1e47011f692.ctex"
+uid="uid://bp0whtn13pdj0"
+path="res://.godot/imported/frond_stub_1.png-11f42d91cce0100faa004412ea776d3b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/grass_battle_1.png"
-dest_files=["res://.godot/imported/grass_battle_1.png-7034187e382831215119a1e47011f692.ctex"]
+source_file="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/Jungle_Floor/frond_stub_1.png"
+dest_files=["res://.godot/imported/frond_stub_1.png-11f42d91cce0100faa004412ea776d3b.ctex"]
 
 [params]
 

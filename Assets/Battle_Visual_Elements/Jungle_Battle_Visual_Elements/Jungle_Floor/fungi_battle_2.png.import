@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://u6lovrlrftwv"
-path="res://.godot/imported/grass_battle_2.png-f18a524db5d8d14a12dd70cd7478aea3.ctex"
+uid="uid://b7hbchviwgysj"
+path="res://.godot/imported/fungi_battle_2.png-968458c2b6dc79dfd576a4fb1c90cb75.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/grass_battle_2.png"
-dest_files=["res://.godot/imported/grass_battle_2.png-f18a524db5d8d14a12dd70cd7478aea3.ctex"]
+source_file="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/Jungle_Floor/fungi_battle_2.png"
+dest_files=["res://.godot/imported/fungi_battle_2.png-968458c2b6dc79dfd576a4fb1c90cb75.ctex"]
 
 [params]
 

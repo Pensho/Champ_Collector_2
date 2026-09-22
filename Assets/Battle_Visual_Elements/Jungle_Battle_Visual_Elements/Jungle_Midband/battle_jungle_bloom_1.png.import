@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dy2hb28iyu6o"
-path="res://.godot/imported/grass_battle_3.png-7fd4492bf20b7840a295da296ce34077.ctex"
+uid="uid://csdf2iwql2wjf"
+path="res://.godot/imported/battle_jungle_bloom_1.png-9c55dde856b9ed9802c36c6429af2d4b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/grass_battle_3.png"
-dest_files=["res://.godot/imported/grass_battle_3.png-7fd4492bf20b7840a295da296ce34077.ctex"]
+source_file="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/Jungle_Midband/battle_jungle_bloom_1.png"
+dest_files=["res://.godot/imported/battle_jungle_bloom_1.png-9c55dde856b9ed9802c36c6429af2d4b.ctex"]
 
 [params]
 

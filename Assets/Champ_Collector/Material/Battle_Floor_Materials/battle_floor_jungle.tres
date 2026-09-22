@@ -5,8 +5,8 @@
 
 [resource]
 shader = ExtResource("1_b21lh")
-shader_parameter/base_color = Color(0.24986678, 0.44508564, 0.227779, 1)
-shader_parameter/mottle_color = Color(0.15693977, 0.23661712, 0.08172963, 1)
+shader_parameter/base_color = Color(0.27608633, 0.48317093, 0.25071356, 1)
+shader_parameter/mottle_color = Color(0.17218894, 0.25625768, 0.09233939, 1)
 shader_parameter/noise_texture = ExtResource("2_hdner")
 shader_parameter/noise_strength = 0.6
 shader_parameter/noise_steps = 6
@@ -23,4 +23,4 @@ shader_parameter/scroll = Vector2(0, 0)
 shader_parameter/grid_line_width = 0.0
 shader_parameter/grid_color = Color(0, 0.22352941, 0, 0.6039216)
 shader_parameter/haze_color = Color(0.055, 0.086, 0.078, 1)
-shader_parameter/haze_strength = 0.350000016625
+shader_parameter/haze_strength = 1.0

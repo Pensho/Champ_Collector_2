@@ -1,24 +1,37 @@
 [gd_scene format=3 uid="uid://bn26eqxi7k4oc"]
 
 [ext_resource type="Script" uid="uid://bgrws18jjx0kk" path="res://Scripts/Battle/Visuals/battle_stage.gd" id="1_uyjrb"]
+[ext_resource type="PackedScene" uid="uid://b84mc5tr7821c" path="res://Scenes/Battle_Stages/Battle_Cloud_Shadows.tscn" id="2_sybmg"]
 [ext_resource type="Material" uid="uid://cahavnq1youvr" path="res://Assets/Champ_Collector/Material/Battle_Floor_Materials/battle_floor_jungle.tres" id="2_uyjrb"]
+[ext_resource type="Texture2D" uid="uid://cr8aipuwyimct" path="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/Jungle_Midband/battle_jungle_bloom_2.png" id="3_6dmjr"]
 [ext_resource type="Script" uid="uid://d8q8mpntpgm0" path="res://Scripts/Battle/Visuals/stage_clutter_view.gd" id="3_dtqn3"]
+[ext_resource type="Texture2D" uid="uid://dhacyt8jpxgkm" path="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/Jungle_Midband/swallowed_wall_segment_2.png" id="3_p3rbx"]
+[ext_resource type="Texture2D" uid="uid://7ucqgwch66pn" path="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/Jungle_Midband/swallowed_wall_segment_1.png" id="3_we0cy"]
+[ext_resource type="Texture2D" uid="uid://beh4n27maisna" path="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/Jungle_Midband/battle_jungle_trunk_1.png" id="4_st4s7"]
 [ext_resource type="Script" uid="uid://bt8h4n6yxx4ih" path="res://Scripts/Battle/Visuals/stage_clutter_entry.gd" id="4_tw7t6"]
-[ext_resource type="Texture2D" uid="uid://dpor5jaqmu0sk" path="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/grass_battle_1.png" id="5_uyjrb"]
-[ext_resource type="Texture2D" uid="uid://u6lovrlrftwv" path="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/grass_battle_2.png" id="6_v86a8"]
-[ext_resource type="Texture2D" uid="uid://dy2hb28iyu6o" path="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/grass_battle_3.png" id="7_dtqn3"]
-[ext_resource type="Texture2D" uid="uid://pf2ioprmjjdv" path="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/rock_battle_1.png" id="8_dtqn3"]
-[ext_resource type="Texture2D" uid="uid://dvfvby43mepah" path="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/rock_battle_2.png" id="9_tw7t6"]
-[ext_resource type="Texture2D" uid="uid://bp0whtn13pdj0" path="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/frond_stub_1.png" id="10_tw7t6"]
-[ext_resource type="Texture2D" uid="uid://ckvyx52kt4qun" path="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/fungi_battle_1.png" id="11_hqb8i"]
-[ext_resource type="Texture2D" uid="uid://b7hbchviwgysj" path="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/fungi_battle_2.png" id="12_sybmg"]
-[ext_resource type="Texture2D" uid="uid://cj0x3884hpt7u" path="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/fungi_battle_3.png" id="13_h3e5t"]
+[ext_resource type="Texture2D" uid="uid://b6v8483fvmevr" path="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/Jungle_Midband/swallowed_column_1.png" id="5_tqv43"]
+[ext_resource type="Texture2D" uid="uid://dpor5jaqmu0sk" path="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/Jungle_Floor/grass_battle_1.png" id="5_uyjrb"]
+[ext_resource type="Texture2D" uid="uid://bl52q4s7ghniy" path="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/Jungle_Midband/swallowed_column_2.png" id="6_6dmjr"]
+[ext_resource type="Texture2D" uid="uid://u6lovrlrftwv" path="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/Jungle_Floor/grass_battle_2.png" id="6_v86a8"]
+[ext_resource type="Texture2D" uid="uid://dy2hb28iyu6o" path="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/Jungle_Floor/grass_battle_3.png" id="7_dtqn3"]
+[ext_resource type="Texture2D" uid="uid://dldga87saj5t" path="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/Jungle_Midband/battle_jungle_bush_2.png" id="7_p8808"]
+[ext_resource type="Texture2D" uid="uid://csdf2iwql2wjf" path="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/Jungle_Midband/battle_jungle_bloom_1.png" id="7_st4s7"]
+[ext_resource type="Texture2D" uid="uid://pf2ioprmjjdv" path="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/Jungle_Floor/rock_battle_1.png" id="8_dtqn3"]
+[ext_resource type="Texture2D" uid="uid://bo3nkjbnnshka" path="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/Jungle_Midband/battle_jungle_trunk_2.png" id="8_tqv43"]
+[ext_resource type="Texture2D" uid="uid://dvfvby43mepah" path="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/Jungle_Floor/rock_battle_2.png" id="9_tw7t6"]
+[ext_resource type="Texture2D" uid="uid://bp0whtn13pdj0" path="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/Jungle_Floor/frond_stub_1.png" id="10_tw7t6"]
+[ext_resource type="Texture2D" uid="uid://ckvyx52kt4qun" path="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/Jungle_Floor/fungi_battle_1.png" id="11_hqb8i"]
+[ext_resource type="Texture2D" uid="uid://c4vdqfg4kacel" path="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/Jungle_Midband/battle_jungle_bush_1.png" id="11_ih3u5"]
+[ext_resource type="Texture2D" uid="uid://b7hbchviwgysj" path="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/Jungle_Floor/fungi_battle_2.png" id="12_sybmg"]
+[ext_resource type="Texture2D" uid="uid://cj0x3884hpt7u" path="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/Jungle_Floor/fungi_battle_3.png" id="13_h3e5t"]
+[ext_resource type="Texture2D" uid="uid://bqhmjr24o7f5d" path="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/Jungle_Foreground/battle_jungle_vines_1.png" id="25_dgorl"]
+[ext_resource type="Texture2D" uid="uid://xed02o3ks2n6" path="res://Assets/Battle_Visual_Elements/Jungle_Battle_Visual_Elements/Jungle_Foreground/battle_jungle_vines_2.png" id="26_rsuvi"]
 
 [sub_resource type="Resource" id="Resource_ground"]
 script = ExtResource("4_tw7t6")
 textures = Array[Texture2D]([ExtResource("5_uyjrb"), ExtResource("7_dtqn3")])
-density = 0.3
-scale_min = 0.6
+density = 0.2
+scale_min = 0.4
 scale_max = 0.9
 rotation_jitter_degrees = 6.0
 tint = Color(0.4228729, 0.70304024, 0.38606787, 1)
@@ -46,7 +59,7 @@ script = ExtResource("4_tw7t6")
 textures = Array[Texture2D]([ExtResource("6_v86a8")])
 density = 0.2
 scale_min = 0.2
-scale_max = 0.8
+scale_max = 0.6
 rotation_jitter_degrees = 6.0
 tint = Color(0.42352942, 0.7019608, 0.38431373, 1)
 character_avoidance_radius = 60.0
@@ -72,10 +85,10 @@ metadata/_custom_type_script = "uid://bt8h4n6yxx4ih"
 script = ExtResource("4_tw7t6")
 textures = Array[Texture2D]([ExtResource("11_hqb8i"), ExtResource("12_sybmg"), ExtResource("13_h3e5t")])
 density = 0.1
-scale_min = 0.4
-scale_max = 0.8
+scale_min = 0.2
+scale_max = 0.6
 rotation_jitter_degrees = 3.0
-tint = Color(0.7176471, 0.8784314, 0.69411767, 1)
+tint = Color(0.56154096, 0.75199986, 0.5339308, 1)
 character_avoidance_radius = 60.0
 shadow_width_ratio = 0.8
 shadow_color = Color(0.02745098, 0.023529412, 0.039215688, 0.79607844)
@@ -90,15 +103,128 @@ _floor_clutter = NodePath("Band_Floor/Clutter")
 [node name="Placeholder_Fill" type="ColorRect" parent="Band_Background" unique_id=2022133681]
 offset_right = 1280.0
 offset_bottom = 283.0
-color = Color(0, 0.3131988, 0.31352088, 1)
+color = Color(0, 0.3715577, 0.37155762, 1)
+
+[node name="BattleCloudShadows" parent="Band_Background" unique_id=508332131 instance=ExtResource("2_sybmg")]
+self_modulate = Color(0, 0, 0, 1)
+position = Vector2(640, 100)
 
 [node name="Band_Midband" type="Node2D" parent="." unique_id=535630371]
+modulate = Color(0.65834004, 0.6583399, 0.6583399, 1)
 
 [node name="Placeholder_Fill" type="ColorRect" parent="Band_Midband" unique_id=939373440]
 offset_top = 284.0
 offset_right = 1280.0
 offset_bottom = 430.0
 color = Color(0, 0, 0, 1)
+
+[node name="Black_Layer" type="Control" parent="Band_Midband" unique_id=634522164]
+modulate = Color(0.07683582, 0.07683582, 0.0768358, 1)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="BattleJungleTrunk4" type="Sprite2D" parent="Band_Midband/Black_Layer" unique_id=339983365]
+position = Vector2(610.75, 151.23077)
+scale = Vector2(0.61094666, 0.6109467)
+texture = ExtResource("8_tqv43")
+
+[node name="BattleJungleBush2" type="Sprite2D" parent="Band_Midband/Black_Layer" unique_id=503811748]
+position = Vector2(866, 282)
+texture = ExtResource("7_p8808")
+
+[node name="BattleJungleTrunk5" type="Sprite2D" parent="Band_Midband/Black_Layer" unique_id=1687158931]
+position = Vector2(233.00002, 108)
+scale = Vector2(0.42557803, 0.425578)
+texture = ExtResource("4_st4s7")
+
+[node name="BattleJungleBush1" type="Sprite2D" parent="Band_Midband/Black_Layer" unique_id=1091290852]
+position = Vector2(742.1452, 92.75)
+scale = Vector2(0.8526971, 0.8526971)
+texture = ExtResource("11_ih3u5")
+
+[node name="Dark_Layer" type="Control" parent="Band_Midband" unique_id=663660620]
+modulate = Color(0.3403393, 0.34033933, 0.3403393, 1)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="SwallowedWallSegment1" type="Sprite2D" parent="Band_Midband/Dark_Layer" unique_id=1253728301]
+position = Vector2(448, 301)
+texture = ExtResource("3_we0cy")
+
+[node name="BattleJungleTrunk4" type="Sprite2D" parent="Band_Midband/Dark_Layer" unique_id=1172642756]
+self_modulate = Color(0.8217887, 0.82178867, 0.82178867, 1)
+position = Vector2(1016, 214)
+texture = ExtResource("8_tqv43")
+flip_h = true
+
+[node name="BattleJungleTrunk5" type="Sprite2D" parent="Band_Midband/Dark_Layer" unique_id=73597371]
+self_modulate = Color(0.8217887, 0.82178867, 0.82178867, 1)
+position = Vector2(88, 129)
+texture = ExtResource("4_st4s7")
+flip_h = true
+
+[node name="BattleJungleBloom2" type="Sprite2D" parent="Band_Midband/Dark_Layer" unique_id=1593613880]
+position = Vector2(0, 182)
+texture = ExtResource("3_6dmjr")
+
+[node name="BattleJungleBush2" type="Sprite2D" parent="Band_Midband/Dark_Layer" unique_id=1803002157]
+position = Vector2(578, 294)
+texture = ExtResource("7_p8808")
+
+[node name="BattleJungleBloom2" type="Sprite2D" parent="Band_Midband" unique_id=183897057]
+self_modulate = Color(0.581033, 0.58103293, 0.5810329, 1)
+position = Vector2(894, 284)
+scale = Vector2(0.61926603, 0.61926603)
+texture = ExtResource("3_6dmjr")
+flip_h = true
+
+[node name="BattleJungleBloom1" type="Sprite2D" parent="Band_Midband" unique_id=449857137]
+self_modulate = Color(0.43529412, 0.8666667, 0.56078434, 1)
+position = Vector2(532, 394)
+scale = Vector2(0.535503, 0.535503)
+texture = ExtResource("7_st4s7")
+
+[node name="SwallowedWallSegment2" type="Sprite2D" parent="Band_Midband" unique_id=392296975]
+self_modulate = Color(0.52906704, 0.52906656, 0.5290667, 1)
+position = Vector2(149, 278)
+texture = ExtResource("3_p3rbx")
+
+[node name="BattleJungleTrunk1" type="Sprite2D" parent="Band_Midband" unique_id=2098945845]
+self_modulate = Color(0.6052743, 0.6052744, 0.6052741, 1)
+position = Vector2(361.25, 216.54872)
+scale = Vector2(0.84248555, 0.87128407)
+texture = ExtResource("4_st4s7")
+
+[node name="SwallowedColumn1" type="Sprite2D" parent="Band_Midband" unique_id=1598272212]
+self_modulate = Color(0.43134022, 0.43134025, 0.43134025, 1)
+position = Vector2(1073, 343)
+texture = ExtResource("5_tqv43")
+
+[node name="BattleJungleBush1" type="Sprite2D" parent="Band_Midband" unique_id=1680518752]
+self_modulate = Color(0.6255971, 0.6255971, 0.6255971, 1)
+position = Vector2(253.00003, 356)
+scale = Vector2(0.70746887, 0.70746887)
+texture = ExtResource("11_ih3u5")
+
+[node name="SwallowedColumn2" type="Sprite2D" parent="Band_Midband" unique_id=1352698884]
+self_modulate = Color(0.62967473, 0.62967473, 0.6296747, 1)
+position = Vector2(1264, 195)
+texture = ExtResource("6_6dmjr")
+
+[node name="BattleJungleTrunk2" type="Sprite2D" parent="Band_Midband" unique_id=121123153]
+self_modulate = Color(0.70380783, 0.70380783, 0.70380783, 1)
+position = Vector2(1134, 182)
+texture = ExtResource("4_st4s7")
+
+[node name="BattleJungleTrunk3" type="Sprite2D" parent="Band_Midband" unique_id=756888514]
+self_modulate = Color(0.8217887, 0.82178867, 0.82178867, 1)
+position = Vector2(716, 218.35503)
+scale = Vector2(0.8579882, 0.8579882)
+texture = ExtResource("8_tqv43")
 
 [node name="Band_Floor" type="Node2D" parent="." unique_id=787324837]
 
@@ -107,6 +233,96 @@ material = ExtResource("2_uyjrb")
 offset_top = 430.0
 offset_right = 1280.0
 offset_bottom = 600.0
+
+[node name="Hide_Floor_Line" type="Control" parent="Band_Floor" unique_id=686595432]
+modulate = Color(0.6706895, 0.6706895, 0.6706895, 1)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="GrassBattle4" type="Sprite2D" parent="Band_Floor/Hide_Floor_Line" unique_id=477875609]
+modulate = Color(0.42352942, 0.7019608, 0.38431373, 1)
+position = Vector2(1213, 396)
+texture = ExtResource("6_v86a8")
+
+[node name="RockBattle2" type="Sprite2D" parent="Band_Floor/Hide_Floor_Line" unique_id=33570969]
+self_modulate = Color(0.529371, 0.6016579, 0.519938, 1)
+position = Vector2(379, 404)
+texture = ExtResource("9_tw7t6")
+
+[node name="GrassBattle2" type="Sprite2D" parent="Band_Floor/Hide_Floor_Line" unique_id=183154963]
+modulate = Color(0.42352942, 0.7019608, 0.38431373, 1)
+position = Vector2(791, 395)
+texture = ExtResource("6_v86a8")
+
+[node name="GrassBattle7" type="Sprite2D" parent="Band_Floor/Hide_Floor_Line" unique_id=2057589659]
+modulate = Color(0.42352942, 0.7019608, 0.38431373, 1)
+position = Vector2(875.0909, 414.5)
+scale = Vector2(0.67045456, 0.67045456)
+texture = ExtResource("6_v86a8")
+flip_h = true
+
+[node name="FrondStub1" type="Sprite2D" parent="Band_Floor/Hide_Floor_Line" unique_id=2080741776]
+self_modulate = Color(0.529371, 0.6016579, 0.519938, 1)
+position = Vector2(-1, 407)
+texture = ExtResource("10_tw7t6")
+
+[node name="GrassBattle3" type="Sprite2D" parent="Band_Floor/Hide_Floor_Line" unique_id=934159483]
+self_modulate = Color(0.42352942, 0.7019608, 0.38431373, 1)
+position = Vector2(159, 403)
+texture = ExtResource("7_dtqn3")
+
+[node name="RockBattle1" type="Sprite2D" parent="Band_Floor/Hide_Floor_Line" unique_id=1859548661]
+self_modulate = Color(0.529371, 0.6016579, 0.519938, 1)
+position = Vector2(1249, 426)
+texture = ExtResource("8_dtqn3")
+
+[node name="RockBattle3" type="Sprite2D" parent="Band_Floor/Hide_Floor_Line" unique_id=1842048234]
+self_modulate = Color(0.529371, 0.6016579, 0.519938, 1)
+position = Vector2(1130.9231, 421.75)
+scale = Vector2(0.65384614, 0.65384614)
+texture = ExtResource("8_dtqn3")
+flip_h = true
+
+[node name="GrassBattle1" type="Sprite2D" parent="Band_Floor/Hide_Floor_Line" unique_id=1142794486]
+self_modulate = Color(0.42352942, 0.7019608, 0.38431373, 1)
+position = Vector2(486.75, 400.7561)
+scale = Vector2(0.597561, 0.59756094)
+texture = ExtResource("5_uyjrb")
+
+[node name="GrassBattle5" type="Sprite2D" parent="Band_Floor/Hide_Floor_Line" unique_id=1423228337]
+modulate = Color(0.42352942, 0.7019608, 0.38431373, 1)
+position = Vector2(30, 411)
+scale = Vector2(0.5568182, 0.5568182)
+texture = ExtResource("6_v86a8")
+flip_h = true
+
+[node name="RockBattle4" type="Sprite2D" parent="Band_Floor/Hide_Floor_Line" unique_id=931881855]
+self_modulate = Color(0.529371, 0.6016579, 0.519938, 1)
+position = Vector2(558.20514, 422.25)
+scale = Vector2(0.75641024, 0.75641024)
+texture = ExtResource("8_dtqn3")
+flip_h = true
+
+[node name="RockBattle5" type="Sprite2D" parent="Band_Floor/Hide_Floor_Line" unique_id=908191149]
+self_modulate = Color(0.529371, 0.6016579, 0.519938, 1)
+position = Vector2(722, 417)
+scale = Vector2(0.7619048, 0.7619048)
+texture = ExtResource("9_tw7t6")
+flip_h = true
+
+[node name="RockBattle6" type="Sprite2D" parent="Band_Floor/Hide_Floor_Line" unique_id=2007356848]
+self_modulate = Color(0.529371, 0.6016579, 0.519938, 1)
+position = Vector2(591, 426)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("8_dtqn3")
+
+[node name="GrassBattle6" type="Sprite2D" parent="Band_Floor/Hide_Floor_Line" unique_id=1675337691]
+self_modulate = Color(0.42352942, 0.7019608, 0.38431373, 1)
+position = Vector2(1002, 406.00003)
+scale = Vector2(0.5, 0.49999997)
+texture = ExtResource("5_uyjrb")
 
 [node name="Clutter" type="Control" parent="Band_Floor" unique_id=868188528]
 layout_mode = 3
@@ -121,8 +337,29 @@ entries = Array[ExtResource("4_tw7t6")]([SubResource("Resource_ground"), SubReso
 [node name="Band_Foreground" type="Node2D" parent="." unique_id=981562280]
 z_index = 10
 
+[node name="BattleJungleBush2" type="Sprite2D" parent="Band_Foreground" unique_id=1301386803]
+self_modulate = Color(0.103743516, 0.10374353, 0.103743516, 1)
+position = Vector2(1310, 620)
+texture = ExtResource("7_p8808")
+
+[node name="BattleJungleBush1" type="Sprite2D" parent="Band_Foreground" unique_id=217179359]
+self_modulate = Color(0.2159017, 0.21590173, 0.2159017, 1)
+position = Vector2(-58, 603.00006)
+scale = Vector2(0.59958506, 0.59958506)
+texture = ExtResource("11_ih3u5")
+
 [node name="Placeholder_Fill" type="ColorRect" parent="Band_Foreground" unique_id=9117353]
 offset_top = 600.0
 offset_right = 1280.0
 offset_bottom = 720.0
-color = Color(0.1202142, 0.11726541, 1.2032688e-08, 1)
+color = Color(0.067274846, 0.06455918, 0, 1)
+
+[node name="BattleJungleVines1" type="Sprite2D" parent="Band_Foreground" unique_id=1260596579]
+self_modulate = Color(0, 0.19607843, 0, 1)
+position = Vector2(140, 95)
+texture = ExtResource("25_dgorl")
+
+[node name="BattleJungleVines2" type="Sprite2D" parent="Band_Foreground" unique_id=961258675]
+self_modulate = Color(0, 0.19607843, 0, 1)
+position = Vector2(1142, 57)
+texture = ExtResource("26_rsuvi")
