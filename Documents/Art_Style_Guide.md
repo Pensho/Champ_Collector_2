@@ -634,7 +634,8 @@ Replaces 7.1 for this class; see 12.4.
 
 - [ ] Reads as a chiaroscuro woodcut: a black key block carrying the line work, two flat tone blocks beneath it, highlights as bare cream paper
 - [ ] Detail lives in the carved line (hatching, contour, gouge strokes), not in color modelling or soft shading
-- [ ] Exactly two tone-block colors, one of them the caster's accent family (12.4.4)
+- [ ] Exactly two tone-block colors: the caster's accent family and the Role's partner tone (12.4.4)
+- [ ] The two tones read as two different colors, one light and one dark, and not as two shades of one hue
 - [ ] One subject, caught in the act of the skill, on a diagonal or arc
 - [ ] Background held in the darker tone and carried by sparse lines, so the subject stands forward
 - [ ] Paper color, key-block line weight and registration offset match the approved set (12.4.6) when viewed side by side
@@ -2392,21 +2393,39 @@ different subjects read as one set.
 
 ```
 a detailed black key block with engraved hatching and contour lines
-printed over two overlapping tone blocks in {TONE A} and {TONE B},
+printed over two overlapping tone blocks of clearly different colors,
+a light tone block in {LIGHT TONE} carrying the lit masses and a dark
+tone block in {DARK TONE} carrying the shadows and background,
 {HIGHLIGHTS} cut away to bare cream paper, slight registration offset
 between blocks, visible wood grain in the tone blocks
 ```
 
 And one phrase opening it: `chiaroscuro woodcut print,`
 
+**Name each tone's job.** Given only `two tone blocks in X and Y`, Leonardo
+merges two related colors into one, and the print comes back as a single color at
+four values. Assigning one tone to the lit masses and the other to the shadows,
+and stating that they differ, is what keeps both. Which slot the accent takes is
+set per Role in 12.4.4.
+
+The three approved prompts in 12.4.6 predate this wording and are recorded as
+generated (18).
+
 #### 12.4.2 Subject conventions
 
 The subject block sits between the two.
 
-- **The tool in the act of the skill.** A weapon mid-thrust, a thrown object
-  mid-flight, a summoned form mid-leap. Not the caster's portrait, and not an
-  abstract effect symbol. Where the Role's kit names a concept, let the subject
-  *be* that concept — a dolphin of seawater carrying swords.
+- **Any subject that carries the skill, caught in the act.** The subject is
+  whatever makes the mechanic readable, and the Role's tool is only one option:
+  - **The tool** — a weapon mid-thrust, a thrown object mid-flight.
+  - **The caster, whole or in part** — the body doing the skill, a stance, a
+    lunge, a figure braced under a weight.
+  - **The target or the consequence** — what the skill does to someone or
+    something, with the caster absent or at the edge.
+  - **A concept or thematic image** — the skill's idea made into a carved
+    subject: a dolphin of seawater carrying swords, a heap, a scale tipping.
+  Choose per skill, not per Role. What is ruled out is a UI glyph — a flat
+  symbol with no carving, no action and nothing to look at.
 - **Motion on a diagonal or arc**, toward the right where there is a direction,
   matching the battle layout. Speed is shown as *curved gouge strokes trailing the
   arc*, never blur.
@@ -2446,10 +2465,64 @@ back soft.
 flat, sharing the print with the second tone — not a spot color. This is how 8.9's
 identity system reaches skill art.
 
-**Prefer the Role's garment main as the free tone.** It is already chosen, already
-tested against the accent on the figure, and it ties the print to the character
-without putting the character in it. Use a scene-driven second tone when the
-subject genuinely calls for one.
+**The second tone is the Role's partner tone**, fixed per Role in the table
+below. A single-color print has too little contrast to read at small sizes: the
+subject, the background and the lit masses merge into one shape. The partner has
+to differ from the accent on two axes:
+
+- **Value: the opposite end.** A light accent gets a dark partner, and a dark
+  accent gets a light one. A mid accent can go either way, and the table fixes
+  which. The print then has four distinct steps: black key, dark tone, light
+  tone, paper.
+- **Hue: roughly opposite temperature.** At minimum, the two are never neighbors
+  on the wheel. Two shades of one hue family fail even when their values are far
+  apart. Warm ochre and deep rust is the case on record (12.4.6).
+
+**All partners come from one muted print palette** of earthen, stone and ink
+tones, like those used in historical chiaroscuro prints. The accent stays the only
+saturated color in the print. That keeps skill art identifiable by its accent,
+stops a partner from reading as another Role's accent, and makes the whole set look
+like it came from one print shop.
+
+**The garment main is no longer the default second tone.** Several garment mains
+sit next to their own accent's hue. On the figure, 3.5 separates them by value
+band, but a two-block print has no room for that separation. Use the garment main
+only where it passes both axes, as the Plague Doctor's does.
+
+| Role | Accent (value) | Accent block | Partner tone | Starting hex | Rationale |
+|---|---|---|---|---|---|
+| Thief | rust orange (mid) | light | dark slate blue-grey | `#3A4652` | complement; night work |
+| Bloodmage | crimson (dark) | dark | pale cold blue-grey | `#B8C4CC` | blood against the bloodless |
+| Bar Brawler | terracotta (mid) | light | deep bottle green | `#22382C` | tavern glass; red/green complement |
+| Lancer | flame copper (light) | light | deep blue-violet charcoal | `#2E2F48` | heraldic dark field under the pennant |
+| Jester | saffron (light) | light | deep muted plum | `#3A2A3E` | classic motley complement |
+| Architect | muted brass (mid-light) | light | dark verdigris | `#2D4A44` | brass and its own oxidation |
+| Appraiser | antique gold (dark) | dark | pale dove indigo | `#A9B0C8` | taken from his mantle |
+| Scholar | ledger parchment (lightest) | light | deep oxide teal | `#2F4A4A` | see the warning below |
+| Alchemist | acid chartreuse (light) | light | deep oxblood | `#4E1F24` | yellow-green against red |
+| Symbiote | verdant green (mid) | dark | pale dusty flesh rose | `#D2A89C` | host flesh under the fungus |
+| Plague Doctor | deep moss (dark) | dark | pale mustard sand | `#D8B866` | lightened garment main family |
+| Tidal Corsair | sea teal (mid) | dark | pale sand ochre | `#D9C28E` | approved in 12.4.6 |
+| Chronophage | ice cyan (light) | light | deep burnt umber | `#4A2A1C` | warm against frozen |
+| Sorcerer | unstable cobalt (mid) | dark | pale apricot | `#E0B48A` | blue/orange complement |
+| Emissary | ink indigo (dark) | dark | pale seal-wax vermilion | `#D99A84` | ink and wax |
+| Diviner | pale lilac (light) | light | deep burnt sienna | `#6B3520` | approved in 12.4.6 |
+| Cultist | deep amethyst (dark) | dark | pale ash sage | `#BFC4A0` | purple against yellow-green |
+| Herald of the Loom | violet magenta (mid) | dark | pale straw thread | `#DDCC96` | the loom's thread |
+| Tactician | rose magenta (mid) | light | deep campaign olive | `#3D4428` | field map under the marker rods |
+| Warlord | steel blue-grey (mid) | light | deep brick red | `#5E2A1E` | the partner carries the color |
+
+The hexes are starting points to measure against, not lock values. The prompt
+names the color in words; the hex is what the output is judged against.
+
+- **Scholar.** Parchment `#DCCFA8` is almost the cream paper, so the accent block
+  disappears into the highlights and the print comes back as a single color
+  whatever the partner is. Settle 8.9.1 for this Role before building its set.
+- **Warlord.** The accent is a neutral, so the partner carries all of the print's
+  color. Brick red holds until 8.9.1 is settled.
+- **Thief and Lancer** both get dark blue-greys, because blue is the complement of
+  every orange accent. The accent separates them, but check any composite that
+  puts the two side by side.
 
 **Choose the accent before the first prompt of a set, not after the first piece.**
 
@@ -2460,25 +2533,17 @@ plates at the same saturation read as one plate printed three times.
 
 #### 12.4.5 Building a Role's whole set
 
-A set has a failure mode a single piece cannot show: **every skill reaches for the
-Role's signature element by default, and four assets built on one prop are one
+A set has a failure mode a single piece cannot show: **four assets built on one prop are one
 image four times.**
 
 **Decide the split before the first prompt.** What the set shares and what varies
 decides whether the opening piece is even allowed to show the whole prop.
 
-- **Pick one shared vocabulary and one variable.** For the Diviner the shards are
-  the vocabulary and the light is the variable: one piece splits it, one trails it,
-  one stops it. The pieces read as one workshop without repeating a composition.
-- **Vary the count of the shared element, not just its arrangement.** One shard,
-  then seven. A single object and a volley are different subjects before any other
-  choice is made.
-- **Not every skill gets the prop.** A skill that resolves on someone else is not
+- **Not every skill gets the same prop.** A skill that resolves on someone else is not
   the caster's moment. The caster's presence there is the tone block alone
   (12.4.4), which is enough.
-- **Reserve something for the passive.** 12.6.2 forbids the passive repeating its
-  Role's active art for the same mechanic, and it is the last of the four to be
-  made, so it inherits whatever is left. Two actives on the prop and one off it
+- **Reserve something for the passive.** 12.6.2 dissuades the passive repeating its
+  Role's active art for the same mechanic. Two actives on a prop and one off it
   leaves the passive free.
 - **Judge a new piece against its own set first, then against 12.4.6.**
   Within-set sameness is the risk the reference set cannot catch.
@@ -2499,8 +2564,11 @@ chiaroscuro woodcut print, burning bolas thrown through the air in a spinning ar
 ```
 
 The reference for a subject carried with no background at all, and for flames as
-the paper showing through. Its warm ochre and deep rust are the Jester's saffron
-family read as a tone-block pair (12.4.4).
+the paper showing through. Its warm ochre and deep rust are both in the Jester's
+saffron family. The piece predates the partner-tone rule (12.4.4), and those two
+tones are the single-hue pairing that rule replaces. Keep it as the reference for
+subject and background treatment only. On regeneration, it becomes saffron and
+deep muted plum.
 
 **Corsair's Reckoning (Tidal Corsair)**
 
@@ -2542,7 +2610,13 @@ gouged marks to four. The five faces and the two-beam split are never cut.
 - **Accent rule on a clashing element.** Nothing has yet forced a conflict: Jester
   fire sits near saffron, Corsair sea is teal. Test a skill whose element fights
   its Role's accent — a Sorcerer fire skill under cobalt — to settle whether
-  element color or caster accent wins the accent block.
+  element color or caster accent wins the accent block. The partner tone may make
+  the conflict smaller: it is chosen near the accent's complement, and the
+  Sorcerer's pale apricot can already carry fire.
+- **Partner tones are unproven.** Only the Corsair and Diviner pairings have been
+  generated. Generate one piece per new pairing and judge it at display size
+  before locking its hex. Where a pairing still returns a single color, fix the
+  wording of the technique block before changing the hue.
 - **Status icon collision.** Burning (12.5) will want flames too. The status icon
   must not look like a crop of the Bolas art.
 - **Relationship to VFX (14).** The in-battle effect for a skill is in the Lit
@@ -2976,6 +3050,10 @@ line is a trap, not a history; the rule it produced lives in the section named.
 - Skill art in Renaissance black-line, white-line wood engraving, ukiyo-e or
   expressionist woodcut. Not failures, but chiaroscuro is closest to this guide's
   flat-band foundations. Revisit only if chiaroscuro fails at display size (12.4).
+- Skill art tone blocks from one hue family, such as warm ochre and deep rust, or
+  the accent paired with a garment main next to it on the wheel. Leonardo merges
+  them and returns a single-color print that loses contrast at small sizes
+  (12.4.4).
 - Zone art as single-ink shapes recolored by `modulate`. Technically flexible, but
   waves are expected blue and white and the ship colored (13.3.1).
 
@@ -3134,6 +3212,9 @@ together, at six characters rather than at fifteen.
   art plus bar icon — decided once the skill-bar size is known (12.4.7).
 - **Element color or caster accent** in the skill art accent block, when the two
   clash (12.4.7).
+- **Partner tone lock.** Eighteen of the twenty pairings in 12.4.4 have not been
+  generated yet. Lock each hex after its first piece, and settle Scholar and
+  Warlord in 8.9.1 first (12.4.7).
 - **Background convention for skill art.** Make the sparse cut-line field the
   default, or state what earns a scene (12.4.7).
 - **Foresight passive subject.** The Diviner's actives deliberately leave the
