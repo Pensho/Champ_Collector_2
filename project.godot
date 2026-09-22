@@ -15,7 +15,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 [application]
 
 config/name="JonasSpel"
-config/version="0.0.10"
+config/version="0.0.11"
 run/main_scene="uid://knp34r3jmafv"
 config/features=PackedStringArray("4.7", "Mobile")
 run/max_fps=60
@@ -32,7 +32,7 @@ Notification_Handler="*res://Scripts/UI/notification_handler.gd"
 
 [champ_collector]
 
-build/content_pool_mode="full_game"
+build/content_pool_mode="playtest"
 
 [display]
 
