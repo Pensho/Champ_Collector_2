@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://da03e5uq28gm7"
-path="res://.godot/imported/lancer_trait.png-fad8c8013d742917f9fb7729483c24e8.ctex"
+uid="uid://cyisoyp6u8xql"
+path="res://.godot/imported/lance_thrust_1.jpg-e504a4a414333e76f1f54fb37f446c8b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Abilities/Passives/Lancer_Trait/lancer_trait.png"
-dest_files=["res://.godot/imported/lancer_trait.png-fad8c8013d742917f9fb7729483c24e8.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Lance_Thrust/lance_thrust_1.jpg"
+dest_files=["res://.godot/imported/lance_thrust_1.jpg-e504a4a414333e76f1f54fb37f446c8b.ctex"]
 
 [params]
 

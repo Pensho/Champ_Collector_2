@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cchu7qdqdmw3h"
-path="res://.godot/imported/Lance_Thrust.png-4635e05ffe6f70947e6df4ccd6980a9b.ctex"
+uid="uid://dt8d2a16e1isj"
+path="res://.godot/imported/disarm_1.jpg-64a5aea6562bcfa11329d77ef1ab7f23.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Lance_Thrust/Lance_Thrust.png"
-dest_files=["res://.godot/imported/Lance_Thrust.png-4635e05ffe6f70947e6df4ccd6980a9b.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Disarm/disarm_1.jpg"
+dest_files=["res://.godot/imported/disarm_1.jpg-64a5aea6562bcfa11329d77ef1ab7f23.ctex"]
 
 [params]
 

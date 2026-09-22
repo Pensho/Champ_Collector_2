@@ -14,6 +14,6 @@ damage_scaling = Dictionary[int, float]({
 script = ExtResource("1_skill")
 name = "Lance Thrust"
 description = "Deals damage to a single enemy, scaled by Attack."
-icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Lance_Thrust/Lance_Thrust.png"
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Lance_Thrust/lance_thrust_1.jpg"
 effects = Array[ExtResource("1_0opea")]([SubResource("Resource_4fjqg")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

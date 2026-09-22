@@ -16,7 +16,7 @@ var _charge_span: int = 0
 func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
 	_bonus_per_section = CHARGE_BONUS_PER_SECTION.get(p_rarity, 0.0)
-	_trait_texture = load("res://Assets/Champ_Collector/Icons/Abilities/Passives/Lancer_Trait/lancer_trait.png")
+	_trait_texture = load("res://Assets/Champ_Collector/Icons/Abilities/Passives/Lancer_Trait/couched_lance.png")
 	_title = "Couched Lance"
 	_body = ("Rending Charge deals " + str(roundi(_bonus_per_section * 100)) + "% more damage per " +
 			"turn-bar section between the Lancer and its target, then throws the Lancer back " +

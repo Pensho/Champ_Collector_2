@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bws7uvnnniy6r"
-path="res://.godot/imported/Rending_Charge.png-8fda85fb8b1f12c2997e00015201a8d0.ctex"
+uid="uid://r8a5y7b8go0i"
+path="res://.godot/imported/rending_charge_1.jpg-b2e79fdf8aa288567a7009239b86bfc8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Rending_Charge/Rending_Charge.png"
-dest_files=["res://.godot/imported/Rending_Charge.png-8fda85fb8b1f12c2997e00015201a8d0.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Rending_Charge/rending_charge_1.jpg"
+dest_files=["res://.godot/imported/rending_charge_1.jpg-b2e79fdf8aa288567a7009239b86bfc8.ctex"]
 
 [params]
 
