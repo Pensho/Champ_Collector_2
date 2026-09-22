@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bgynu4650hote"
-path="res://.godot/imported/Liquid_Courage.png-c57087474495ff1fbf8fb67ab095c1a2.ctex"
+uid="uid://c31i4cfe2cg5h"
+path="res://.godot/imported/headbutt_1.jpg-5c072802ca62a3b831f3062f60f227a9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Liquid_Courage/Liquid_Courage.png"
-dest_files=["res://.godot/imported/Liquid_Courage.png-c57087474495ff1fbf8fb67ab095c1a2.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Headbutt/headbutt_1.jpg"
+dest_files=["res://.godot/imported/headbutt_1.jpg-5c072802ca62a3b831f3062f60f227a9.ctex"]
 
 [params]
 

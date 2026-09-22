@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://by2ipx1ry0ftd"
-path="res://.godot/imported/Heap_On_2.jpg-8ec49366a2c470d4b839f3afffbe0b62.ctex"
+uid="uid://bgv6hiph0hni1"
+path="res://.godot/imported/heap_on_1.jpg-642079bf920d74027b7f5170f92e3e4c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Heap_On/Heap_On_2.jpg"
-dest_files=["res://.godot/imported/Heap_On_2.jpg-8ec49366a2c470d4b839f3afffbe0b62.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Heap_On/heap_on_1.jpg"
+dest_files=["res://.godot/imported/heap_on_1.jpg-642079bf920d74027b7f5170f92e3e4c.ctex"]
 
 [params]
 
