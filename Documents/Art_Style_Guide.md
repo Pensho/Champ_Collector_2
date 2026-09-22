@@ -567,7 +567,8 @@ per-stage list only.
 - [ ] Engraved linework present — flat fields alone return a vector cartoon (10.3.7)
 - [ ] No bone white highlight edge (10.3.7)
 - [ ] Organic subjects described loosely, built subjects counted (5.4)
-- [ ] Generated as a sheet of three variants, sliceable without overlap (10.3.7)
+- [ ] Small elements generated as a sheet of three, sliceable without overlap; large elements one per image, whole, with nothing cropped by the image edge (10.3.7)
+- [ ] An element of two materials takes both depth clauses, and the one meant to dominate is the head noun (5.6, 10.3.7)
 - [ ] Silhouette distinct from the other elements in its band, not a rescale of one
 
 **Per band**
@@ -575,6 +576,7 @@ per-stage list only.
 - [ ] Floor clutter sits under sprite height and holds its clear radius around every character's feet (10.3.3)
 - [ ] Floor mass is low contrast; any saturated shape on the plane is small and does not pull the eye off a champion standing beside it (10.3.9)
 - [ ] Midband behind the six character slots stays a band or two off the figures (10.1)
+- [ ] Midband mass is muted and its chroma sits in growth, blooms and fungus on it, with hues spread across the band rather than one repeated (10.3.10)
 - [ ] Foreground reads as pure band 1 and crosses no character slot (10.3.4)
 - [ ] Background carries the variant's sky field from 10.2
 
@@ -1458,9 +1460,11 @@ band does not appear in another, which is what lets elements be reused across
 stages within an area.
 
 They draw in the order **Background, Floor, Midband, characters, Foreground**.
-Midband elements stand on the ground, so their bases must cover the floor's far
-edge; drawing the floor after them cuts a hard horizontal line across every trunk
-and shrub.
+A midband element that *stands on the ground* — a trunk, a shrub, a ruin — needs
+its base to cover the floor's far edge; drawing the floor after it would cut a hard
+horizontal line across it. This is a draw-order note for standing elements only.
+Hanging masses, canopy strips and anything else that does not reach the ground owe
+nothing to the floor edge.
 
 #### 10.3.1 Background
 
@@ -1490,6 +1494,9 @@ composite.
 edge — vine falls, aerial root curtains, a canopy underside strip closing the top
 of the frame — fill the stage without adding mass at character height, which is
 the one place mass costs readability.
+
+**Midband elements are generated one per image** (10.3.7), and their color policy
+is their own (10.3.10) — the floor's quiet rule does not carry up.
 
 > **Not yet written.** Detail budget for a midband element relative to a champion
 > standing in front of it. The floor set is held deliberately quiet (10.3.9) and
@@ -1592,18 +1599,33 @@ generated. The findings are craft rather than biome, and apply to every band and
 every variant.
 
 **The general block.** Prepended to every element prompt, the way 8.6 works for
-characters. Two clauses are placeholders filled per element.
+characters. The bracketed clauses are filled per element.
 
 ```
 bold woodcut illustration with engraved structural linework and visible
 gouge marks, thick black contour outline on the outer silhouette, flat color
 fields, hard-edged shadows, no gradients, orthographic side elevation seen
 straight on at eye level, no highlight edge anywhere, [DEPTH CLAUSE],
-[DETAIL CLAUSE], hand-carved edge quality, three separate [SUBJECTS] standing
-far apart in a row with empty background between them, each cut off flat and
-straight along the bottom edge, isolated on a plain flat solid white
-background
+[DETAIL CLAUSE], hand-carved edge quality, [FRAMING CLAUSE], [SUBJECT],
+[FRAMING TAIL]
 ```
+
+The framing clause and tail depend on how many subjects go on one image:
+
+| Element size | Framing clause | Framing tail |
+|---|---|---|
+| Small — floor clutter, anything knee height | *three separate [subjects] standing far apart in a row with empty background between them* | *each cut off flat and straight along the bottom edge* |
+| Large — anything tall enough to crowd a sheet of three (most of the midband) | *one single [subject] shown whole and complete with clear empty space on all sides, nothing cut off by the edges of the image* | *cut off flat and straight along the bottom edge, the whole subject visible with headroom above and margin to both sides* |
+
+A subject that is meant to leave the frame says so for that part only and asks for
+margin everywhere else — a hanging cluster's stem *runs up and out through the
+top edge of the image*, and a trunk is *cut off cleanly along a straight
+horizontal break at the top* (10.6.1.3).
+
+**Background.** Generate with Leonardo's transparency setting and leave the
+background clause out entirely. The earlier approved prompts end in *isolated on a
+plain flat solid white background*, which is what a generation without
+transparency still needs; see *Key color* below.
 
 **Flat fields need the engraved line, or the element reads as a comic.** Flat
 fields and engraved linework are a pair; removing the carving removes the style.
@@ -1631,17 +1653,53 @@ makes the stone read as hard.
 **Organic subjects are described loosely** (5.4). Counts belong to built objects —
 a crate, a lantern, a ruin's ironwork — wherever they appear.
 
-**Three variants per sheet, in one generation.** Each element is generated as
-three of its kind spaced far apart in a row, described as *each a different kind*
-with one loose phrase per variant. One generation gives three slices and a choice,
-and the three read as siblings because they came out of the same pass. When the
-variants drift together and merge at the bases, *far apart* is the phrase to
-strengthen.
+**An element of two materials takes both depth clauses**, each tied to its own
+material — layers for the foliage, facets for the stone showing through it; facets
+for a trunk, layers for the growth clinging to it. The carving follows the same
+split: engraved detail on the solid, the soft mass flat and uncarved. If the solid
+starts reading as holes punched in the soft mass, the facet clause is losing — push
+the solid's own value contrast up a band rather than enlarging it.
 
-**Key color is flat white.** The contour is ink black and the fills are muted, so
-a saturated key fringes every edge it touches. Where a pale element fringes
-against white, drop the element's front layer a band rather than changing the key
-color.
+**The head noun sets the proportion.** Whatever the subject clause names is what
+gets drawn, and everything described after it becomes decoration on it. *Broken
+stone wall segments* with growth added afterwards returns a clean ruin with a
+little moss, and *heavily overgrown* does not move it, for the same reason
+*moderate detail* fails (5.4). To flip the proportion, flip the noun: name the
+dominant mass first and the other thing as what is inside it — *dense masses of
+jungle growth, each swallowing the remains of a stone wall almost entirely*. State
+the minor part by how much of it is left showing, counted if it is built, so it
+does not vanish altogether.
+
+**Give the minor part the one shape the major part cannot make.** A swallowed ruin
+stays a ruin, rather than becoming another bush, because a straight edge or a right
+angle breaks its outer silhouette, which foliage cannot fake. When a variant comes
+back as pure foliage, strengthen the hard-edge clause rather than raising the count.
+
+**Small elements: three variants per sheet, in one generation.** A floor element
+is generated as three of its kind spaced far apart in a row, described as *each a
+different kind* with one loose phrase per variant. One generation gives three
+slices and a choice, and the three read as siblings because they came out of the
+same pass. When the variants drift together and merge at the bases, *far apart* is
+the phrase to strengthen.
+
+**Large elements: one per image.** Three colossal trunks on one sheet leaves each a
+narrow column, and the model crops their sides to make them fit. A narrow column
+also has no room for anything living on the subject, so a trunk comes back as a
+bare shaft. Variants of a large element are separate generations of one prompt,
+with the variant's shape wording swapped between them.
+
+**Ask for the whole subject, never for a filled frame.** *Filling the frame* reads
+as an instruction to push the subject past the edges, and every bloom generated
+with it came back cropped. The large-element framing above is what fixed it. If a
+subject still crops, weaken the scale words next — *enormous*, *taller than a man*
+push outward on their own, and an element's scale comes from placement in the
+engine anyway (10.3.3). *That last step is untested.*
+
+**Key color, when transparency is not used, is flat white.** The contour is ink
+black and the fills are muted, so a saturated key fringes every edge it touches.
+Where a pale element fringes against white, drop the element's front layer a band
+rather than changing the key color. With the transparency setting (above) there is
+no key to fringe against.
 
 #### 10.3.8 Grounding is an engine problem
 
@@ -1680,6 +1738,41 @@ Role's accent.
 The check is the composite: a saturated shape low in the frame is doing the same
 job a character's accent does. If a cluster pulls the eye off a champion standing
 beside it, **drop that element a value band rather than desaturating it.**
+
+#### 10.3.10 Color policy for the midband
+
+The floor is kept quiet because it is the band least worth looking at. The midband
+is the opposite: it is the band that says which area the player is in (10.3.2), so
+it is **not** held to 10.3.9. A trunk authored under the floor's rule came back
+grey-brown from edge to edge and read as dead wood, not a jungle tree.
+
+**The mass is muted; the chroma lives on it.** The structural mass of an element —
+bark, stone, the bulk of a foliage clump — stays in the variant's mass direction
+(10.6.1.1 for Jungle) and is the element's value anchor. The color arrives as
+things *growing on or out of* that mass: epiphytes in the crooks, bromeliads in the
+bark hollows, small blooms scattered through the growth, the coloured underside of
+a leaf. That puts chroma on the element without asking for more carving on its
+mass, which the quantize step would not keep anyway.
+
+A dedicated chroma element — a giant bloom — is the opposite case: the petals are
+the subject and carry saturated color at full area, while the stalk and leaves
+stay in the mass direction.
+
+**Spread hues across the set.** Each dedicated chroma element takes a different
+hue so the band shows range rather than one color repeated, and no single hue reads
+as a Role's accent. Small incident color — the blooms on a trunk — may borrow from
+those hues. Where a midband hue repeats one from the floor set, check the
+composite: two same-hue shapes landing in the same part of the frame means one of
+them moves.
+
+**The value rule still binds.** Chroma does not buy value. An element big enough to
+sit entirely behind a character slot keeps its mass at bands 2–3, with near-black
+confined to recesses and shadow sides (10.1.1). When one comes back too dark, cut
+the dark growth patches before touching the mass — they are the cheapest area of
+band 1 on the element.
+
+> **Not yet decided.** Which band carries the stage's loudest chroma — the giant
+> blooms, the growth on the trunks or the ground mushrooms (19.3).
 
 ### 10.4 Overworld and navigation views
 
@@ -1759,14 +1852,16 @@ fungus caps, spread across several hues so no single one reads as a Role's
 identity color (10.3.9).
 
 **Variant B — Ruins.** Scene light: violet `#3A2A52` / `#120E1A`. No catalog yet.
-Several Jungle elements are drawn to carry straight over — the ruin masses in the
-background, and the swallowed ruin fragments in the midband — which is the first
-concrete case for the cross-variant reuse question in 10.3.6.
+The ruin masses in the Jungle background were planned to carry straight over, and
+so were the swallowed ruin fragments in the midband. The fragments as approved are
+now mostly jungle growth with stone showing through (10.6.1.3), so whether they
+still belong in Ruins is open (19.3). This is the first concrete case for the
+cross-variant reuse question in 10.3.6.
 
 ##### 10.6.1.1 Jungle band vocabulary
 
-Status is per band. The floor set is generated and approved; the rest is the
-planned catalog, sized against 10.3.6 but not yet generated.
+Status is per band. The floor set and the first midband set are generated and
+approved; the rest is planned but not yet generated.
 
 **Background** — one plate per stage, 2–3 stages. *Planned.*
 
@@ -1779,23 +1874,36 @@ far ruin masses in silhouette — a stepped temple shoulder, a leaning column, a
 carved stone head half-swallowed; one vertical ravine or waterfall notch breaking
 the skyline.
 
-**Midband** — ~14 keyed elements. *Planned.*
+**Midband** — keyed elements, one per image (10.3.7).
 
-Colossal trunks with buttress roots, four variants, at least one standing inside
-the frame with its roots readable on both sides rather than only cropping at an
-edge; one leaning trunk; one dead snag pierced with holes. Six bush masses, each
-with a different outline language — broad-leaf clump, fern fan, spiked palm crown,
-low tangled briar, tall reed clump, broad low mound — since outline variety is
-what stops six bushes reading as one bush. Five hanging masses, aerial root
-curtains and vine falls at different lengths and densities: the band's main
-density tool, per 10.3.2. One canopy underside strip, foliage intruding down
-across the full frame width, which closes the top of the stage. Three giant blooms
-— a trumpet bloom on a tall stalk, a ground-level cabbage bloom, a hanging
-pod-flower cluster — carrying the chroma. Two fungus shelf clusters sized to
-attach to a trunk. Three swallowed ruin fragments — cracked wall segment, toppled
-column with roots through it, low stepped plinth — shared with Ruins.
+*Approved*, two slices kept of each; example prompts in 10.6.1.3:
 
-Every midband element needs a base that covers the floor plane's far edge (10.3.2).
+- **Swallowed ruin fragments** — a swallowed wall and a swallowed column: jungle
+  growth with the ruin nearly hidden inside it, a hard stone edge breaking the
+  silhouette (10.3.7).
+- **Buttress-root colossi** — trunk sections cut off above head height, crown
+  unseen, carrying epiphytes, bromeliads and small blooms (10.3.10). Three shape
+  variants: straight, tapering, hollowed at the base.
+- **Giant blooms** — trumpet bloom on a tall stalk (coral red), ground-level
+  cabbage bloom (violet), hanging pod-flower cluster (amber orange).
+- **Bushes** — broad-leaf clump and spiked palm crown, the two outline languages
+  furthest apart.
+
+*Planned, not generated:*
+
+- A leaning trunk and a dead snag pierced with holes.
+- Further bush masses, each with its own outline language — fern fan, low tangled
+  briar, tall reed clump, broad low mound are candidates. Outline variety is what
+  stops several bushes reading as one bush.
+- Hanging masses — aerial root curtains and vine falls at different lengths and
+  densities, the band's main density tool (10.3.2).
+- A canopy underside strip, foliage intruding down across the full frame width,
+  which closes the top of the stage.
+- Fungus shelf clusters sized to attach to a trunk.
+- A low stepped plinth, the third ruin fragment. Its first prompt predates the
+  swallowed-ruin finding (10.3.7) and has to be rewritten the same way before it is
+  generated.
+
 
 **Floor** — three elements, three variants each. **Approved**, prompts in
 10.6.1.2. Grass tufts, mossed rocks, ground mushrooms. Weather is not in the
@@ -1893,11 +2001,104 @@ edge, isolated on a plain flat solid white background
 ```
 
 Invented forms are permitted here and the tiered variant is one — but the
-weirdness stays in silhouette and structure. A floor prop that looks *active* or
-magical reads as something the player should be able to click, and that lane
-belongs to the Magic Ruins vocabulary rather than to scatter. This is the element
+weirdness stays in silhouette and structure. This is the element
 that carries the set's chroma (10.3.9); watch it against a fielded team before the
 set is locked.
+
+##### 10.6.1.3 Midband example prompts
+
+Three working examples from the approved midband set, one per finding they
+demonstrate: the swallowed wall for the head-noun rule and mixed materials, the
+trunk for midband color (10.3.10), and the trumpet bloom for whole-subject framing
+(10.3.7). They are examples, not the full record. Each ends in the white-background
+clause; generated with transparency, that clause is left off and nothing else
+changes.
+
+**Swallowed wall (3 variants)**
+
+```
+bold woodcut illustration with engraved structural linework and visible gouge
+marks, thick black contour outline on the outer silhouette, flat color fields,
+hard-edged shadows, no gradients, orthographic side elevation seen straight on
+at eye level, no highlight edge anywhere, depth built from overlapping layers
+of foliage at different values, the nearest leaves lightest and each layer
+behind them a full value band darker receding into near-black, and from the
+stone that shows through breaking into facets at different values with one
+side falling away into near-black, the exposed stone carrying heavy engraved
+detail through fracture lines, chipped edges and parallel hatching along its
+shadow side while the growth stays flat and uncarved, hand-carved edge
+quality, three separate dense masses of jungle growth standing far apart in a
+row with empty background between them, each swallowing the remains of a stone
+wall almost entirely, the growth piled thick over and across the stone and
+spilling loosely down both sides and sagging at the outer edges, only a few
+patches of bare masonry left visible anywhere on each, each mass a different
+shape: a tall mass with one straight vertical corner of stone standing clear
+of the foliage at the top and three exposed blocks below it, a broad low mound
+with one long straight course of stone running horizontally out of the growth
+at one side and two chipped blocks showing near the base, and a leaning mass
+with a single hard square opening cut through the foliage where a window
+survives and four blocks framing it, the straight stone edges cutting hard
+across the ragged outline of the growth, the growth in desaturated dark
+blue-green and the exposed stone in dull cool grey, each mass cut off flat and
+straight along the bottom edge, isolated on a plain flat solid white
+background
+```
+
+**Buttress-root colossus**
+
+```
+bold woodcut illustration with engraved structural linework and visible gouge
+marks cut into the bark, thick black contour outline on the outer silhouette,
+flat color fields, hard-edged shadows, no gradients, orthographic side
+elevation seen straight on at eye level, no highlight edge anywhere, depth
+built from the trunk and its buttress fins breaking into facets at different
+values, the forward-facing faces lightest and the recesses between the fins
+falling away into near-black, and from the growth clinging to it built as
+overlapping layers at different values, the nearest leaves lightest and each
+layer behind a full value band darker into near-black, the bark carrying heavy
+engraved detail through deep vertical fissures, ridged ropes of bark, knots
+and healed scars and parallel hatching along its shadow side while the growth
+stays flat and uncarved, hand-carved edge quality, one single colossal jungle
+tree trunk filling the frame, far thicker than a man, cut off cleanly along a
+straight horizontal break at the top well above head height so the crown is
+unseen, standing straight and rising from a spread of towering buttress roots
+that flare out wide at the base and arch down to the ground, their fins
+spreading evenly and readable on both sides, the root edges wandering rather
+than running straight, the bark in muted warm brown, the trunk carrying a
+whole hanging garden of life growing on it: broad clumps of dark blue-green
+epiphytes wedged in the crooks where the fins meet the trunk, spiky rosettes
+of teal-green bromeliads sitting in the bark hollows further up, long strands
+of trailing growth hanging loosely down from them and swaying away from the
+trunk, a few shelf fungi stepping out from the shadow side, and small vivid
+blooms scattered among the growth in deep coral red and bright violet, their
+undersides dropping into deep shadow of the same hue, the whole trunk cut off
+flat and straight along the bottom edge, isolated on a plain flat solid white
+background
+```
+
+**Trumpet bloom on a tall stalk**
+
+```
+bold woodcut illustration with engraved structural linework and visible gouge
+marks, thick black contour outline on the outer silhouette, flat color fields,
+hard-edged shadows, no gradients, orthographic side elevation seen straight on
+at eye level, no highlight edge anywhere, depth built from overlapping layers
+of petals and leaves at different values, the nearest lightest and each layer
+behind a full value band darker receding into near-black, engraved detail
+through the veins running down the petal throats and the ribs along the stalk
+and leaves, hand-carved edge quality, one single enormous jungle flower shown
+whole and complete with clear empty space on all sides, nothing cut off by the
+edges of the image, taller than a man, a long thick stalk rising and bending
+over under the weight of the bloom at its top, the bloom a deep trumpet
+opening toward the viewer and slightly to one side, its mouth wide and its
+petal edges curling back and splitting unevenly, the throat of the trumpet
+dropping away into deep shadow of its own hue, a few heavy leaves sagging
+outward low on the stalk, the petals in rich saturated deep coral red, the
+stalk and leaves in desaturated dark blue-green, cut off flat and straight
+along the bottom edge, the whole subject visible with headroom above and
+margin to both sides, isolated on a plain flat solid white background
+```
+
 
 #### 10.6.2 Clockwork Spire
 
@@ -2799,6 +3000,14 @@ line is a trap, not a history; the rule it produced lives in the section named.
   was not drawn for and trades one hard edge for another (10.3.8).
 - Magenta or bright green as the key color for environment elements. Both fringe a
   muted palette under a black contour (10.3.7).
+- A ruin named as the subject with growth described on top of it. Returns a clean
+  ruin with a little moss; *heavily overgrown* does not move it (10.3.7).
+- Three colossal subjects on one sheet. The model crops their sides to fit them,
+  and a narrow column leaves no room for growth on the subject (10.3.7).
+- *Filling the frame* on a subject meant to be seen whole. Returns it cropped at
+  the edges (10.3.7).
+- A midband element muted from edge to edge under the floor's quiet rule. A jungle
+  trunk comes back grey-brown and dead (10.3.10).
 
 ---
 
@@ -2807,6 +3016,12 @@ line is a trap, not a history; the rule it produced lives in the section named.
 **Lock the model and settings.** Same Leonardo model, same Style Reference /
 Elements, same generation settings across the whole set. Record them here once
 chosen. Changing model mid-roster is the fastest way to break cohesion.
+
+**Transparent background for keyed elements.** Leonardo's transparency setting
+returns environment elements already cut out, with the background clause left out
+of the prompt, and is the default for environment elements going forward
+(10.3.7). Not yet tried on characters, whose composition tail (4.2) still asks
+for a flat background.
 
 **Pass and record prompts whole.** A subject block sent without the general block
 in front of it loses the entire woodcut style. Every prompt handed over for
@@ -2877,6 +3092,22 @@ together, at six characters rather than at fifteen.
   or two".
 - **Midband detail budget.** No finding yet for how much detail a midband element
   carries relative to a champion standing in front of it (10.3.2).
+- **Where the stage's loudest chroma sits.** The ground mushrooms, the growth on
+  the trunks and the giant blooms all carry saturated color, and coral red and
+  violet appear in all three. The proposal is blooms loudest, trunk growth a step
+  below, mushrooms as they are; the composite decides it (10.3.10).
+- **The trunks against the contrast budget.** A colossus is the one midband element
+  large enough to sit entirely behind a champion. It is the first thing to check on
+  the Jungle composite (10.3.10).
+- **Swallowed ruin fragments in Ruins.** They were planned to carry over, but as
+  approved they are mostly jungle growth. Either that reads correctly for a ruin
+  the forest swallowed, or Ruins gets its own fragments with the growth dropped.
+  The stone is a neutral cool grey rather than the floor rocks' grey-green, so that
+  it can sit under the violet light; whether the LUT reconciles it with the rocks
+  on the Jungle stage is unchecked (10.6.1).
+- **World-specific midband elements.** Seven candidates are listed in 10.6.1.1 and
+  none is chosen. Without at least one, the Jungle catalog is a plausible real
+  jungle and nothing in it could only grow in this world.
 - **What the floor shader owes.** Puddles, wet patches, paving and worn paths were
   all handed to the shader (10.3.3.1), which has no specification yet. Decide what
   it draws before the Jungle stage is called finished, or the band ends up as bare
