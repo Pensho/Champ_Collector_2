@@ -11,18 +11,18 @@ func Refresh() -> void:
 	PopulateRosterList()
 
 func PopulateAvailableList() -> void:
-	for catalog in [DebugCatalog.PLAYER_CHARACTER_PRESETS, DebugCatalog.ENEMY_CHARACTER_PRESETS]:
-		for preset_name in catalog.keys():
-			var row: HBoxContainer = HBoxContainer.new()
-			var label: Label = Label.new()
-			label.text = preset_name
-			label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			var add_button: Button = Button.new()
-			add_button.text = "Add to Roster"
-			add_button.pressed.connect(_on_add_preset_pressed.bind(catalog[preset_name]))
-			row.add_child(label)
-			row.add_child(add_button)
-			_available_list.add_child(row)
+	var catalog: Dictionary[String, CharacterPreset] = DebugCatalog.GetPlayerCharacterPresets()
+	for preset_name in catalog.keys():
+		var row: HBoxContainer = HBoxContainer.new()
+		var label: Label = Label.new()
+		label.text = preset_name
+		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var add_button: Button = Button.new()
+		add_button.text = "Add to Roster"
+		add_button.pressed.connect(_on_add_preset_pressed.bind(catalog[preset_name]))
+		row.add_child(label)
+		row.add_child(add_button)
+		_available_list.add_child(row)
 
 func PopulateRosterList() -> void:
 	for child in _roster_list.get_children():

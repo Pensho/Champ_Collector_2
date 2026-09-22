@@ -6,30 +6,6 @@ const BATTLE_SCENE_UID: String = "uid://cc883blynrgq2"
 ## Scene UID returned to from the post-battle screen after a debug-launched battle.
 const MAIN_MENU_SCENE_UID: String = "uid://c6c1o3oabj0pf"
 
-const PLAYER_CHARACTER_PRESETS: Dictionary[String, CharacterPreset] = {
-	"Knight": preload("res://Data/Character_Player_Variants/Knight.tres"),
-	"Thief": preload("res://Data/Character_Player_Variants/Thief.tres"),
-	"Bar Brawler": preload("res://Data/Character_Player_Variants/Bar_Brawler.tres"),
-	"Jester": preload("res://Data/Character_Player_Variants/Jester.tres"),
-	"Herald of the Loom": preload("res://Data/Character_Player_Variants/Herald_of_the_loom.tres"),
-	"Bloodmage": preload("res://Data/Character_Player_Variants/Bloodmage.tres"),
-	"Tidal Corsair": preload("res://Data/Character_Player_Variants/Tidal_Corsair.tres"),
-	"Centaur Lancer": preload("res://Data/Character_Player_Variants/Centaur_Lancer.tres"),
-	"Centaur Archivist": preload("res://Data/Character_Player_Variants/Centaur_Archivist.tres"),
-	"Tactician": preload("res://Data/Character_Player_Variants/Tactician.tres"),
-	"Architect": preload("res://Data/Character_Player_Variants/Architect.tres"),
-	"Chronophage": preload("res://Data/Character_Player_Variants/Chronophage.tres"),
-	"Sorcerer": preload("res://Data/Character_Player_Variants/Sorcerer.tres"),
-	"Symbiote": preload("res://Data/Character_Player_Variants/Symbiote.tres"),
-	"Diviner": preload("res://Data/Character_Player_Variants/Diviner.tres"),
-	"Appraiser": preload("res://Data/Character_Player_Variants/Appraiser.tres"),
-	"Emissary": preload("res://Data/Character_Player_Variants/Emissary.tres"),
-	"Cultist": preload("res://Data/Character_Player_Variants/Cultist.tres"),
-	"Plague Doctor": preload("res://Data/Character_Player_Variants/Plague_Doctor.tres"),
-	"Warlord": preload("res://Data/Character_Player_Variants/Warlord.tres"),
-	"Alchemist": preload("res://Data/Character_Player_Variants/Alchemist.tres"),
-}
-
 const ENEMY_CHARACTER_PRESETS: Dictionary[String, CharacterPreset] = {
 	"Militia": preload("res://Data/Character_Enemy_Variants/Militia.tres"),
 	"Troll": preload("res://Data/Character_Enemy_Variants/Troll.tres"),
@@ -88,6 +64,17 @@ const ITEM_SLOT_TEXTURES: Dictionary[Types.Slot, String] = {
 	Types.Slot.OffHand: "res://Assets/Champ_Collector/Icons/Items/Shield/Shield_0002.png",
 	Types.Slot.Boots: "res://Assets/Champ_Collector/Icons/Items/Red_Boot/Red_Boot_0003.png",
 }
+
+## The player champions the debug pages may add, keyed by name: every champion the running
+## game mode starts with or can recruit, so debug rosters cannot build what the mode omits.
+static func GetPlayerCharacterPresets() -> Dictionary[String, CharacterPreset]:
+	var presets: Dictionary[String, CharacterPreset] = {}
+	var pool: ContentPool = GameModeRegistry.Active()
+	for source: Array in [pool.recruitable_champions]:
+		for preset: CharacterPreset in source:
+			if(null != preset):
+				presets[preset._name] = preset
+	return presets
 
 static func GetItemTextureForSlot(p_slot: Types.Slot) -> String:
 	if(ITEM_SLOT_TEXTURES.has(p_slot)):
