@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c1lea64nnqfkv"
-path="res://.godot/imported/Center_Stage.png-ffe17c8015312265725739b675f61926.ctex"
+uid="uid://6nvdlq3mlbht"
+path="res://.godot/imported/pratfall_sting.jpg-f8c67eabc1468f2b256e53cdad3c498b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Center_Stage/Center_Stage.png"
-dest_files=["res://.godot/imported/Center_Stage.png-ffe17c8015312265725739b675f61926.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Pratfall_Sting/pratfall_sting.jpg"
+dest_files=["res://.godot/imported/pratfall_sting.jpg-f8c67eabc1468f2b256e53cdad3c498b.ctex"]
 
 [params]
 

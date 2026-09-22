@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bsc0g6dg1wdk2"
-path="res://.godot/imported/Pratfall_Sting.png-777372fb7daa168db2ee0838d05b9219.ctex"
+uid="uid://ccl1gqthgmp8w"
+path="res://.godot/imported/double_the_fun_1.png-75014b3b8f875fc8b4dd2c05a882322c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Pratfall_Sting/Pratfall_Sting.png"
-dest_files=["res://.godot/imported/Pratfall_Sting.png-777372fb7daa168db2ee0838d05b9219.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Abilities/Passives/Double_The_Fun_Trait/double_the_fun_1.png"
+dest_files=["res://.godot/imported/double_the_fun_1.png-75014b3b8f875fc8b4dd2c05a882322c.ctex"]
 
 [params]
 

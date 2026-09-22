@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dad2gftk0ctm4"
-path="res://.godot/imported/Double_The_Fun.png-eff85734a1139272848876a49239f1b2.ctex"
+uid="uid://dhh2l88mhb6rh"
+path="res://.godot/imported/center_stage_1.jpg-0bac1215a9f7b827518864b8a7cc447a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Abilities/Passives/Double_The_Fun_Trait/Double_The_Fun.png"
-dest_files=["res://.godot/imported/Double_The_Fun.png-eff85734a1139272848876a49239f1b2.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Center_Stage/center_stage_1.jpg"
+dest_files=["res://.godot/imported/center_stage_1.jpg-0bac1215a9f7b827518864b8a7cc447a.ctex"]
 
 [params]
 

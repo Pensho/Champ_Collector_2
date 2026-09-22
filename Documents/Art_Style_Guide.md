@@ -2491,26 +2491,26 @@ only where it passes both axes, as the Plague Doctor's does.
 
 | Role | Accent (value) | Accent block | Partner tone | Starting hex | Rationale |
 |---|---|---|---|---|---|
-| Thief | rust orange (mid) | light | dark slate blue-grey | `#3A4652` | complement; night work |
-| Bloodmage | crimson (dark) | dark | pale cold blue-grey | `#B8C4CC` | blood against the bloodless |
-| Bar Brawler | terracotta (mid) | light | deep bottle green | `#22382C` | tavern glass; red/green complement |
-| Lancer | flame copper (light) | light | deep blue-violet charcoal | `#2E2F48` | heraldic dark field under the pennant |
-| Jester | saffron (light) | light | deep muted plum | `#3A2A3E` | classic motley complement |
-| Architect | muted brass (mid-light) | light | dark verdigris | `#2D4A44` | brass and its own oxidation |
-| Appraiser | antique gold (dark) | dark | pale dove indigo | `#A9B0C8` | taken from his mantle |
-| Scholar | ledger parchment (lightest) | light | deep oxide teal | `#2F4A4A` | see the warning below |
-| Alchemist | acid chartreuse (light) | light | deep oxblood | `#4E1F24` | yellow-green against red |
-| Symbiote | verdant green (mid) | dark | pale dusty flesh rose | `#D2A89C` | host flesh under the fungus |
-| Plague Doctor | deep moss (dark) | dark | pale mustard sand | `#D8B866` | lightened garment main family |
-| Tidal Corsair | sea teal (mid) | dark | pale sand ochre | `#D9C28E` | approved in 12.4.6 |
-| Chronophage | ice cyan (light) | light | deep burnt umber | `#4A2A1C` | warm against frozen |
-| Sorcerer | unstable cobalt (mid) | dark | pale apricot | `#E0B48A` | blue/orange complement |
-| Emissary | ink indigo (dark) | dark | pale seal-wax vermilion | `#D99A84` | ink and wax |
-| Diviner | pale lilac (light) | light | deep burnt sienna | `#6B3520` | approved in 12.4.6 |
-| Cultist | deep amethyst (dark) | dark | pale ash sage | `#BFC4A0` | purple against yellow-green |
-| Herald of the Loom | violet magenta (mid) | dark | pale straw thread | `#DDCC96` | the loom's thread |
-| Tactician | rose magenta (mid) | light | deep campaign olive | `#3D4428` | field map under the marker rods |
-| Warlord | steel blue-grey (mid) | light | deep brick red | `#5E2A1E` | the partner carries the color |
+| Thief | rust orange (mid) | light | dark slate blue-grey | #3A4652 | complement; night work |
+| Bloodmage | crimson (dark) | dark | pale cold blue-grey | #B8C4CC | blood against the bloodless |
+| Bar Brawler | terracotta (mid) | light | deep bottle green | #22382C | tavern glass; red/green complement |
+| Lancer | flame copper (light) | light | deep blue-violet charcoal | #2E2F48 | heraldic dark field under the pennant |
+| Jester | saffron (light) | light | deep muted plum | #3A2A3E | classic motley complement |
+| Architect | muted brass (mid-light) | light | dark verdigris | #2D4A44 | brass and its own oxidation |
+| Appraiser | antique gold (dark) | dark | pale dove indigo | #A9B0C8 | taken from his mantle |
+| Scholar | ledger parchment (lightest) | light | deep oxide teal | #2F4A4A | see the warning below |
+| Alchemist | acid chartreuse (light) | light | deep oxblood | #4E1F24 | yellow-green against red |
+| Symbiote | verdant green (mid) | dark | pale dusty flesh rose | #D2A89C | host flesh under the fungus |
+| Plague Doctor | deep moss (dark) | dark | pale mustard sand | #D8B866 | lightened garment main family |
+| Tidal Corsair | sea teal (mid) | dark | pale sand ochre | #D9C28E | approved in 12.4.6 |
+| Chronophage | ice cyan (light) | light | deep burnt umber | #4A2A1C | warm against frozen |
+| Sorcerer | unstable cobalt (mid) | dark | pale apricot | #E0B48A | blue/orange complement |
+| Emissary | ink indigo (dark) | dark | pale seal-wax vermilion | #D99A84 | ink and wax |
+| Diviner | pale lilac (light) | light | deep burnt sienna | #6B3520 | approved in 12.4.6 |
+| Cultist | deep amethyst (dark) | dark | pale ash sage | #BFC4A0 | purple against yellow-green |
+| Herald of the Loom | violet magenta (mid) | dark | pale straw thread | #DDCC96 | the loom's thread |
+| Tactician | rose magenta (mid) | light | deep campaign olive | #3D4428 | field map under the marker rods |
+| Warlord | steel blue-grey (mid) | light | deep brick red | #5E2A1E | the partner carries the color |
 
 The hexes are starting points to measure against, not lock values. The prompt
 names the color in words; the hex is what the output is judged against.
