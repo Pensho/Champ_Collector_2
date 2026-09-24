@@ -14,7 +14,8 @@
 [resource]
 script = ExtResource("2_preset")
 _name = "Warlord"
-_texture = "res://Assets/Champ_Collector/Creatures/Knight/Knight_0002.png"
+_texture = "res://Assets/Champ_Collector/Creatures/Warlord/warlord.png"
+_headshot_region = Rect2(0.3, 0, 0.4, 0.48)
 _rarity = 2
 _role = 21
 _skills = Array[ExtResource("1_skill")]([ExtResource("3_shield_slam"), ExtResource("4_hold_the_line"), ExtResource("5_brace_for_impact")])
