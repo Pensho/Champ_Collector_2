@@ -235,6 +235,15 @@ value band moves.
 Nothing requires the garment main to be desaturated. The temperature rule in 3.3
 applies to the material neutral only.
 
+**The garment's hue comes from the character's world first.** Contrast against
+the accent decides the garment's *value*; it does not choose its hue. Pick the hue
+from the character's faction and area palette (10.6) and from the Role's identity
+colors — its accent (8.9) and its skill-art partner tone (12.4.4) — and only then
+check it against the accent. The garment main is the largest colored area on the
+figure, so a hue picked for contrast alone becomes what the character reads as. A
+saturated bottle green chosen to make a red accent pop turned the Warlord into
+the green one and imported a color the Iron Ledger does not use (8.7.4).
+
 **Saturating the material neutral as well is a third step, and it is not free.**
 It works where garment, neutral and accent sit at three clearly separated values,
 but it removes the thing the accent pushes against. It is the first change to
@@ -373,8 +382,8 @@ yoke, a chained slab.
 easy to fall into without noticing: a Role researched from its real-world
 counterpart gets that counterpart's real props, and the result is competent,
 legible and mundane. The fix is the same as for any attractor — change the
-vocabulary wholesale, replacing real objects with the Role's one element from
-outside reality (8.1).
+vocabulary wholesale, replacing real objects with the character's one element
+from outside reality (8.1).
 
 ### 5.4 Counts, not adjectives
 
@@ -544,9 +553,10 @@ them.
 - [ ] Counted groups within budget, or over it deliberately with a cut order recorded (8.6.2)
 - [ ] Nothing hanging at the belt or hip breaks the outer silhouette (8.5.1)
 - [ ] The Role's occupation is legible from the costume alone, with no name attached
-- [ ] Where the figure carries an element from outside reality, it reads in the silhouette and derives from the kit (8.1)
+- [ ] Where the figure carries an element from outside reality, it reads in the silhouette, and its strangeness is visible in the still image
+- [ ] Garment hue belongs to the character's faction and Role colors, not only chosen for contrast with the accent (3.5)
 - [ ] No signature prop shares a type with another Role's (vials, books, lanterns and similar)
-- [ ] Silhouette family is not shared with another fielded Role
+- [ ] Filled pure black, separates from the approved characters it can be fielded beside — judged by composite, not by silhouette family label (8.3)
 
 ### 7.3 Enemies
 
@@ -670,11 +680,12 @@ before a word of the prompt exists. A prompt cannot be rewritten into a concept.
 
 **A Role is a class, and a character is a person holding it.** Several characters
 can field the same Role — the Lancer is held by a knight, a centaur outrider and
-a forest hunter. The **Role** owns the kit, the accent registry entry (8.9), the
-silhouette family (8.3) and the element from outside reality, because all four
-are the mechanics made visible. The **character** owns the occupation, the
-costume, the materials in its per-subject slots, the face, the skin row and the
-hair (8.4.6). Where a section below says Role and means the figure in front of
+a forest hunter. The **Role** owns the kit and the accent registry entry (8.9),
+because both are the mechanics made visible, and the element
+from outside reality is *for*. The **character** owns the occupation, the
+costume, the silhouette and pose (8.3), the materials in its per-subject slots,
+the face, the skin row and the hair (8.4.6), and what the element is made of and
+shaped like. Where a section below says Role and means the figure in front of
 you, read character.
 
 **Every character needs an occupation.** A job comes with clothes, tools and a
@@ -690,16 +701,38 @@ or the visual reading of it does.
 brand showing at an open collar, dye that will not wash off — not as ordinary
 clothing.
 
+**Where the character lives sets their finish.** A city character with standing
+in a wealthy faction keeps up appearances as much as function: clean cuts, strong
+shapes, ornament and deliberate layers. A wilderness or slum character carries
+the wear. Settle this with the occupation, because it decides whether the costume
+is maintained at all (8.5).
+
 **An element from outside reality is the strongest thing a character can
 carry.** An occupation makes a figure legible; it does not make it fantasy. Left
 to itself, every design drifts toward the historically plausible version of its
 job, and a roster of accurate period costumes is a roster with nothing in it a
-player could not see in a museum. Where a character can carry one thing that
-could not exist in our world, make it large enough to matter in the silhouette.
-It is encouraged on every figure and required on none.
+player could not see in a museum. Where a character can carry one thing our
+world never made, make it large enough to matter in the silhouette. It is
+encouraged on every figure and required on none.
+
+**Outside reality does not mean magic.** Two kinds qualify, and both are equally
+valid:
+
+- **Impossible by behaviour** — the thing does what nothing real can do: the
+  Diviner's shards hovering as a ball (8.7.3).
+- **Unreal by design** — the thing is ordinary in physics but no culture ever
+  made it: a shape no smith forged, a material nobody would use for the job, or
+  one our world does not have. The Warlord's shield of stained glass in iron
+  tracery (8.7.4) is the working example.
+
+Either way, **the strangeness has to be visible in a still image.** A real object
+with an invisible property — a door that pulls blades onto itself, a stone that is
+warm — shows only the real object; the viewer cannot infer the intent, and the
+design reads as mundane. If it cannot be seen at 300 px it is lore, and 5.7 keeps
+lore out of the prompt.
 
 - **Derive it from the kit, and the world.** The element is the Role's mechanic
-  made physical, built from what that Role's area contains. The Plague Doctor's
+  made physical, built from what the character's area and faction contain. The Plague Doctor's
   Septic Lance and Miasma became one object — an iron-shod pole levelled like a
   lance, carrying a caged giant tree gall that vents solid smoke (8.7.1).
 - **Put it on the tool or the focal region.** A weapon is the cheapest place: it
@@ -740,12 +773,24 @@ composition tail in 4.2.
 
 ### 8.3 Silhouette discipline
 
-Each Role must be identifiable in pure black at 300 px. Assign a distinct
-silhouette family and hold to it:
+**The test is the composite, not the label.** Any three characters that can be
+fielded together must separate when filled pure black. That is the whole
+rule. Pose and specific shapes — what the figure holds, where its mass sits, what
+breaks the outline — are what pass it.
+
+**Silhouette families are vocabulary, not allocations.** With several characters
+per Role and a growing roster, two-word families such as "wide and low" will be
+shared by many figures, and that is not a problem in itself. Never reject or
+redesign a character because its family is already in the table; composite it
+against the figures it could stand beside and judge what you see.
+
+The table records what each approved figure's outline is built from, so a new
+design can be checked against it and composited early:
 
 | Family | Roles | Cue |
 |---|---|---|
-| Wide and low | Bar Brawler, Warlord | bulk at the waist, short stance |
+| Wide and low | Bar Brawler | bulk at the waist, short stance |
+| Forward slab with a bristle | Warlord (Ledger bailiff) | a tall ornate shield planted in front with the shoulder set into it, weight forward, a bundle of weapon hafts rising close above the far shoulder |
 | Tall and angular | Architect, Emissary | gaunt vertical, hard corners |
 | Squared column | Bloodmage | heavy square shoulders, long straight coat to the knee |
 | Narrow vertical, high shouldered | Cultist | layered robes, raised shoulder line, ankle hem |
@@ -774,9 +819,10 @@ costumes. Give every Role a pose that is doing work. The pose is a *held* combat
 stance, not a moment inside an action, and it has to keep the face lit and the
 accent visible.
 
-If two fielded Roles share a family, that is a design problem, not a prompt
-problem. Composite the pair side by side early, and keep their material neutrals
-apart.
+When two figures that can be fielded together come close in pure black, that is
+settled by the composite: change a pose, a held object or where the mass sits,
+and keep their material neutrals apart. Sharing a family label is not by itself
+a finding.
 
 **Three Roles hold a long shaft forward.** Lancer, Sorcerer and Plague Doctor
 separate on angle and on what ends the shaft: the Lancer's lance is braced
@@ -861,7 +907,8 @@ check the last three approved characters' expressions the same way as their face
 clusters, or the roster ends up with one expression. Recorded so far: Sorcerer,
 raised brow, parted lips, chin up; Plague Doctor, brows drawn hard together, chin
 tucked; Appraiser, mouth set flat, chin tucked; Diviner, calm level brows, chin
-raised slightly.
+raised slightly; Warlord, level unimpressed brows, chin up with the head tilted
+back, one corner of the mouth drawn back.
 
 **When the mouth is covered,** brow and tilt carry everything, and the choice
 between them matters more.
@@ -1086,8 +1133,8 @@ kit-derived ones, and the groups carrying history (8.5.1) last.
 ---
 ### 8.7 Reference examples
 
-Three approved characters, recorded whole and verbatim per 18. A new character is
-judged side by side against them.
+A new character is judged side by side against these. **At most three prompts
+are recorded here.** Adding one means removing another's prompt block.
 
 #### 8.7.1 Plague Doctor
 
@@ -1134,62 +1181,8 @@ This prompt carries the flat-panel clause and an occupation clause, both of whic
 8.6.1 and 5.7 have since replaced. Recorded as generated; do not copy those two
 clauses forward.
 
-#### 8.7.2 Appraiser
 
-The working example of the region label in the face clause (8.4.6), the
-three-level detail spec (8.6.1), history carried as structure (8.5.1), and a
-counted-group budget deliberately exceeded with a cut order recorded (8.6.2). It
-is also the first figure built on two saturated garment hues at once — deep madder
-tabard under a deep indigo mantle — which is the 3.5 third step taken on purpose.
-
-Slots: garment main saturated deep madder red sleeveless assayer's tabard, second
-garment deep indigo quilted mantle, material neutral bone buff heavy linen,
-leather tar-dark blackened, shadow black ash-blue-black, skin olive, accent
-antique gold on the lens ring at the wheel hub, the stamped collar plates and one
-gold gauge disc among the hip trinkets, focal region the wheel hub and the trinket
-cluster. Occupation: a guild assayer who prices salvage hauled out of dead ruins.
-
-Decisions recorded with it:
-
-- **The wheel is dark pewter iron, never brass.** A disc that size in brass eats
-  the whole accent budget and collides with the Architect's brass (8.9). Gold is
-  confined to the hub ring, the collar and one hip disc.
-- **The build needed naming twice.** `Thickset`, `wrestler's build`, `slabbed
-  shoulders` and weight carried high in the shoulders and back is the phrasing
-  that reaches powerful rather than fat, and it avoids `hard muscle` and `bare
-  chest`, which are the barbarian basin (5.3).
-- **The wheel rides on his back, not on a pole**, so he is not a fourth
-  long-shaft Role (8.3).
-- **No apron and no chest rack.** Apron is Bar Brawler and Alchemist; the chest is
-  Alchemist and Architect. The hip was unclaimed and is where the trinkets went.
-- **History without the accent.** The single-shoulder mantle is warmth kept past
-  its life, the elbow patch is a different weave sewn in, the stepped-square
-  border is an inherited cut, and the knotted wrist cord is a personal count. None
-  of them is gold.
-- **Skin marks counted, three stated against a permitted four.** The gap is
-  deliberate: it gives the model somewhere to put a fourth mark rather than
-  doubling one of the three. He has more bare skin than anyone on the roster, so
-  if a future figure fights the four-line budget, check whether it is carrying
-  that much skin before changing the number.
-
-```
-bold woodcut illustration with engraved structural linework, very thick uniform black contour outline on the outer silhouette, clean uninterrupted silhouette edge, flat color fields, hard-edged shadows, high contrast with large areas of solid shadow in a deep ash-blue-black, that shadow mass and the outline sitting at the same value, colors assigned by material: olive skin, a saturated deep madder red sleeveless assayer's tabard, a deep indigo quilted mantle, bone buff heavy linen under-tunic and wraps, tar-dark blackened leather straps, sash and boots, dull pewter grey metal fittings, all flat and unmodulated, warm bone white reserved for small highlight shapes and the eyes, outline black tinted slightly toward blue-violet, light from the upper left casting a narrow bone white edge along the upper left contour, three levels of detail: the hub of the wheel and the cluster of trinkets at his left hip carry the heaviest engraved detail and read as the focal points of the figure; the mantle, tabard and sash carry moderate engraved detail through quilting seams, panel divisions, border bands and strap fastenings; the limbs and boots carry light detail through wraps and fold lines rather than being left empty; all skin — the face, neck, forearms and hands — held as flat unbroken color carrying no more than four engraved lines in total, each one large and structural, all marks large and structural, with saturated antique gold as the single accent covering roughly a fifth of the figure, flat and uniform with little texture, used only on the lens ring at the hub of the wheel, the stamped plates of the collar at his throat and a single gold gauge disc among the hip trinkets, hand-carved edge quality.
-full body character, a thickset powerfully built man in his sixties with a wrestler's build, heavy slabbed shoulders, a deep chest and a thick neck, the weight carried high in the shoulders and back, standing in a straight strong posture, a great toothed wheel of dark pewter iron almost as tall as his own height carried on his back, his right hand as a fist held in his left hand, the wheel's rim carrying cutting teeth each cut as a different faceted gem shape with four of them caught out of line with the rest as though the wheel had turned itself, realistic adult head proportion, face lit with no shadow across the eyes, shadow falling on the side of the head away from the light and beneath the jaw, eyes as two bone white almond shapes each with a solid ink black pupil, sized to read clearly but no larger than an adult eye, a broad East Asian face with wide flat cheekbones, a broad flat nose, a heavy square jaw and a shallow brow, the lit plane of the face broken only by two deep lines from the nose to the mouth corners and one heavy line across the brow, each cut as thick as the contour line, the rest of the face flat and unbroken, the neck, forearms and hands carrying no interior lines at all, his age carried in the heavy jaw, the thick neck and the iron grey hair rather than in carved lines, long iron grey hair pulled back and bound low at the nape as one flat mass with a clean hard edge, mouth set flat, chin tucked, a half-collar of five stamped gold tally plates fastened at his throat, a heavy quilted indigo mantle worn over the left shoulder only and fastened under the right arm, its quilting running in six broad vertical channels, its hem and collar edged with a woven border band of a repeated stepped-square motif, the mantle patched at the left elbow with a square of a different weave sewn in with hard angular stitching, beneath it a sleeveless deep madder tabard falling to mid-calf, closed across the body with an overlapping front panel fastened at the right hip, a wide blackened leather sash wrapped twice around his waist carrying six appraiser's trinkets hung on short chains along his left hip, each a large simple shape in dull pewter, gold and bone: a plumb bob, a pierced gauge disc, a hand bell, a set of three stacked weights, a small barred cage and a bundle of notched tally sticks, all hanging clear of each other and held in front of the tabard so none breaks the outer silhouette, a knotted bone buff cord looped twice around his left wrist with three hard knots, heavy linen under-tunic with the sleeves pushed above the elbow showing thick bare forearms, bare hands with heavy knuckles, the right shoulder of the tabard reinforced with a thick padded blackened leather pad worn down where the wheel rides, the mantle and tabard falling into solid ash-blue-black shadow on the lower right side, tall blackened boots with a simple sole division, in contact with a single flat ground line, three-quarter view facing right, eye-level camera at chest height, orthographic, isolated on a plain flat background of one uniform color, full figure visible with headroom.
-```
-
-Counted groups: five tally plates at the throat, four out-of-line teeth at the
-wheel rim, six quilting channels on the mantle, six trinkets at the hip, three
-knots at the wrist — five groups, over the default budget and there on purpose
-(8.6.2). **Cut order:** the wrist knots first, then the quilting channels to
-three, then the trinkets to four. The elbow patch and the border band are cut
-last; they are the history.
-
-Two failure modes on any revision. The indigo and the madder are both saturated
-and close in value — if they merge into one mass, move the madder a full value
-band darker rather than desaturating either (3.5). And the hip cluster is the
-silhouette risk under 7.1.
-
-#### 8.7.3 Diviner
+#### 8.7.2 Diviner
 
 Generated and judged good; not yet composited against an approved character,
 which 18 requires before she is marked approved. Composite against the Plague
@@ -1252,6 +1245,39 @@ largest accent area on the figure; if it runs over a fifth, keep lilac on the
 upper faces only. **Hue adjacency:** the burnt sienna garment sits near the
 Thief's rust orange accent — check it in the composite.
 
+#### 8.7.3 Warlord
+
+
+Slots: garment main warm ivory parchment tabard, material neutral steel blue-grey
+quilted doublet, leather bark-brown, shadow ash-blue-black, skin pale, accent deep
+brick red on the standing collar, pauldron trim and baldric tags. Occupation, for
+the design only: an Iron Ledger bailiff who fights with confiscated gear.
+
+- **Seized arsenal.** "Master of none" as five hafts with different heads and
+  three armor pieces from three suits, inventoried rather than scavenged (8.1).
+  Runner-up occupation, kept for a second Warlord: a Margins barricade warden.
+- **Stained glass shield** as the element, unreal by design (8.1).
+
+```
+bold woodcut illustration with engraved structural linework, very thick uniform black contour outline on the outer silhouette, clean uninterrupted silhouette edge, flat color fields, hard-edged shadows, high contrast with large areas of solid shadow in a deep ash-blue-black, that shadow mass and the outline sitting at the same value, colors assigned by material: pale skin, a warm ivory parchment tabard, a steel blue-grey quilted doublet, bark-brown leather straps, baldric and boots, dull pewter grey metal fittings, all flat and unmodulated, warm bone white reserved for small highlight shapes and the eyes, outline black tinted slightly toward blue-violet, light from the upper left casting a narrow bone white edge along the upper left contour, three levels of detail: the stained glass shield and the pauldron carry the heaviest engraved detail and read as the focal points of the figure; the tabard, doublet and baldric carry moderate engraved detail through quilting seams, panel divisions, border bands and strap fastenings; the limbs and boots carry light detail through wraps and fold lines rather than being left empty; the face and neck held as flat unbroken color carrying no more than four engraved lines in total, each one large and structural, all marks large and structural, with saturated deep brick red as the single accent covering roughly a fifth of the figure, flat and uniform with little texture, used only on the whole standing collar, the trim of the pauldron and the tags along the baldric, hand-carved edge quality.
+full body character, a broad-shouldered solidly built man in his mid-forties, standing planted behind a tall ornate shield with his weight driven forward onto the front foot and his near shoulder set against the back of the shield, the shield standing on the ground line in front of him on the side toward the right, its top reaching his chest, his near forearm through its straps and his far hand gripping its upper edge, the shield wide at the top and rising to a pointed arch crowned by three short iron spires, its sides pinched inward at the middle and flaring out wide again at the base into two curled iron hooks that bite into the ground, a heavy black iron rim running around its whole outline, its face a stained glass design of twelve bold flat panes of colored glass held in thick black iron tracery with curling scrollwork, a round rose of panes at its center, the panes in deep sapphire blue, warm amber and dusky violet with a few pale clear panes among them, each pane one flat color, a bundle of five weapon hafts strapped diagonally across his back and rising in a tight bundle close above his far shoulder, each ending in a different head: an axe blade, a hook, a flanged mace, a spear point and a hammer, realistic adult head proportion, face lit with no shadow across the eyes, shadow falling on the side of the head away from the light and beneath the jaw, eyes as two bone white almond shapes each with a solid ink black pupil looking to the right, sized to read clearly but no larger than an adult eye, a round heavy face with a round jaw, full cheeks, a short snub nose and a low brow ridge, dark brown hair cropped close to the skull as one flat mass, a short squared dark brown beard as one flat mass, level unimpressed brows, chin up and head tilted slightly back, one corner of the mouth drawn back, a stiff standing collar at the throat, a steel blue-grey quilted doublet with clean square seams and a row of six pewter buttons down its front, over it a sleeveless ivory parchment tabard cut in four long panels falling to the knee, each panel ending in a scalloped hem, the hem and armholes edged with a border band of three hard parallel ruled lines, one large squared fluted pewter pauldron on the near shoulder, its edge trimmed in brick red, a bark-brown leather baldric running across the chest from the far shoulder carrying four flat brick red tags in a row, three mismatched armor pieces each from a different suit: a dented dark blued iron vambrace on the far forearm, a battered pale steel knee cop on the rear knee and a riveted blackened iron elbow cop on the far arm, the tabard and the whole lower right side of the figure falling into solid ash-blue-black shadow, tall square-toed bark-brown boots with a simple sole division, in contact with a single flat ground line, three-quarter view facing right, eye-level camera at chest height, orthographic, isolated on a plain flat background of one uniform color, full figure visible with headroom.
+```
+
+
+Fixes, if a revision fails:
+
+- **Goes pale:** replace `the tabard and the whole lower right side` with `the far
+  half of the tabard, the doublet sleeves and the whole lower right side`.
+- **Glass competes with the accent:** replace `with a few pale clear panes among
+  them` with `mostly in deep sapphire blue with only a few amber and violet panes`.
+- **Reads as a window:** replace `rising to a pointed arch crowned by three short
+  iron spires` with `rising to a sharp central point flanked by two swept-back iron
+  horns`.
+- **Tabard reads as a monk's habit:** replace `cut in four long panels falling to
+  the knee` with `cut short and square at the knee, stiff and flared like plate`.
+- **Build comes back fat:** replace `a broad-shouldered solidly built man` with `a
+  broad-shouldered hard-bodied man with a thick neck and heavy forearms`.
+
 ### 8.8 Portrait and card crops
 
 Portraits are **cut from the approved full figure**, not generated separately.
@@ -1295,7 +1321,7 @@ size, so **value** and **placement** carry the same signal in parallel.
 | Cultist | deep amethyst | #5B2A78 | dark | throat brand, robe lining, stained fingers |
 | Herald of the Loom | violet magenta | #8E3A91 | mid | active thread through chest loom-frame |
 | Tactician | rose magenta | #C2447A | mid | map case, marker rods |
-| Warlord | steel blue-grey | #6B7A88 | mid | shield device, helmet plume |
+| Warlord | steel blue-grey & deep brick red | #6B7A88 #7E3222 | mid/dark | whole standing collar, pauldron trim, tags along the baldric |
 
 **Watch these three pairs:** Architect brass / Appraiser gold, Sorcerer cobalt /
 Emissary indigo, Cultist amethyst / Herald magenta. The value gap does the
@@ -1321,8 +1347,7 @@ forms within an hour or two of play when the same color appears in four places.
 
 A dull accent on a dull garment gives a figure with no vibrancy anywhere:
 
-- **Warlord `#6B7A88`** is a neutral, not an accent. It needs a real color or an
-  explicit decision that this Role is the drab one.
+- **Warlord** — resolved: steel blue-grey paired with deep brick red (8.7.4).
 - **Appraiser `#8F7326`** and **Scholar `#DCCFA8`** are both close to being
   materials rather than accents. Raise chroma and let value and placement keep
   doing the separating.
@@ -2115,6 +2140,11 @@ margin to both sides, isolated on a plain flat solid white background
 > **Not yet written.** Per variant: scene light, band vocabulary, approved plates.
 > Resolve the white-plate problem in 10.6 before generating.
 
+**Faction palette, stated so far.** Bone white & ivory parchment belong to the Iron Ledger; green does not. The Ledger is wealthy, and
+its made things carry style and ornament as well as function — stained glass in
+iron tracery, fluting, scalloped hems. Established on the Warlord (8.7.4); binds
+Ledger characters, and is the starting point for the stages when they are written.
+
 ### 10.7 Adventure — the derived overview
 
 Adventure is reached from each of the four hubs, and a run starts in one of that
@@ -2510,7 +2540,7 @@ only where it passes both axes, as the Plague Doctor's does.
 | Cultist | deep amethyst (dark) | dark | pale ash sage | #BFC4A0 | purple against yellow-green |
 | Herald of the Loom | violet magenta (mid) | dark | pale straw thread | #DDCC96 | the loom's thread |
 | Tactician | rose magenta (mid) | light | deep campaign olive | #3D4428 | field map under the marker rods |
-| Warlord | steel blue-grey (mid) | light | deep brick red | #5E2A1E | the partner carries the color |
+| Warlord | steel blue-grey (mid) & deep brick red (dark) | light & dark | steel blue-grey | #6B7A88 #7E3222 | taken from his doublet |
 
 The hexes are starting points to measure against, not lock values. The prompt
 names the color in words; the hex is what the output is judged against.
@@ -2518,8 +2548,6 @@ names the color in words; the hex is what the output is judged against.
 - **Scholar.** Parchment `#DCCFA8` is almost the cream paper, so the accent block
   disappears into the highlights and the print comes back as a single color
   whatever the partner is. Settle 8.9.1 for this Role before building its set.
-- **Warlord.** The accent is a neutral, so the partner carries all of the print's
-  color. Brick red holds until 8.9.1 is settled.
 - **Thief and Lancer** both get dark blue-greys, because blue is the complement of
   every orange accent. The accent separates them, but check any composite that
   puts the two side by side.
@@ -3021,6 +3049,14 @@ line is a trap, not a history; the rule it produced lives in the section named.
   spheres in rope netting; spheres strung together and held. Two shape languages
   read as growths on a rock; small spheres die in the quantize step; a hanging
   strand nibbles the contour (8.1).
+- A real object given an invisible property — a seized vault door that pulls
+  enemy blades onto itself. Shows only a door with blades in it; the intent
+  cannot be inferred from the image and it does not intrigue (8.1).
+- Leaded glass panes in an iron lattice on a squared slab. Returns a window, not
+  a shield (5.3, 8.1).
+- A garment hue chosen for contrast with the accent alone — a saturated bottle
+  green tabard under a red accent on an Iron Ledger figure. The green became the
+  character's color and is off-faction (3.5).
 
 **Prompt and rule failures**
 
@@ -3038,6 +3074,11 @@ line is a trap, not a history; the rule it produced lives in the section named.
   the accent system rests on (10.1.1).
 - The floor as a near-invisible strip. Characters do not fit a stage laid out that
   way (10.3.3).
+- One silhouette family per Role, with any shared family treated as a design
+  problem. Two-word families cannot stay unique across a roster with several
+  characters per Role; the composite in pure black is the test (8.3).
+- Reading "element from outside reality" as magic only. A shape or material no
+  culture made qualifies just as well (8.1).
 
 **Icons and skill art**
 
@@ -3154,13 +3195,18 @@ together, at six characters rather than at fifteen.
   Reclaimed City; his toothed wheel is Clockwork Spire vocabulary. Either the
   concept document moves him to Act 2 or it records the guild-assayer framing that
   reconciles the two (8.7.2).
-- **Warlord accent.** `#6B7A88` is a neutral, not an accent. Either it becomes a
-  real color or this Role is declared the drab one on purpose (8.9.1).
 - **Diviner composite.** Pending against the Plague Doctor and the Thief before she
   is marked approved (8.7.3).
+- **Warlord composite.** Pending against the Bloodmage, Bar Brawler, Jester and
+  Scholar before he is marked approved (8.7.4). The Jester check also decides
+  whether 2.2's "one light-dominant Role" holds with a parchment-tabard Warlord on
+  the roster, or needs the same composite-first wording 8.3 now has.
+- **Silhouette table retrofit.** The families in 8.3 were written as allocations.
+  They are now a record; entries for Roles with no approved character are
+  placeholders and can be rewritten from the figure when it is approved.
 - **Occupation clauses in the approved prompts.** 5.7 says they do not belong in
-  prompts; 8.7.1 and 8.7.2 both carry one. Leave them as recorded-as-generated, or
-  strip them on the next revision of each character.
+  prompts; 8.7.1 carries one. Leave it as recorded-as-generated, or
+  strip it on the next revision.
 
 ### 19.3 Environments
 
@@ -3213,8 +3259,8 @@ together, at six characters rather than at fifteen.
 - **Element color or caster accent** in the skill art accent block, when the two
   clash (12.4.7).
 - **Partner tone lock.** Eighteen of the twenty pairings in 12.4.4 have not been
-  generated yet. Lock each hex after its first piece, and settle Scholar and
-  Warlord in 8.9.1 first (12.4.7).
+  generated yet. Lock each hex after its first piece, and settle Scholar in 8.9.1
+  first (12.4.7).
 - **Background convention for skill art.** Make the sparse cut-line field the
   default, or state what earns a scene (12.4.7).
 - **Foresight passive subject.** The Diviner's actives deliberately leave the
