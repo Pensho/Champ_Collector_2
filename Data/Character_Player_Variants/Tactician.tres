@@ -15,7 +15,8 @@
 [resource]
 script = ExtResource("3_gmjmg")
 _name = "Tactician"
-_texture = "res://Assets/Champ_Collector/Creatures/Tactician/Tactician_0005.png"
+_texture = "res://Assets/Champ_Collector/Creatures/Tactician/tactician_slums.png"
+_headshot_region = Rect2(0.3, 0, 0.4, 0.48)
 _rarity = 2
 _role = 9
 _skills = Array[ExtResource("2_id3hb")]([ExtResource("3_signal_strike"), ExtResource("4_u2c7t"), ExtResource("4_battle_orders")])

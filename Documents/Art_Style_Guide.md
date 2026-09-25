@@ -2540,7 +2540,7 @@ only where it passes both axes, as the Plague Doctor's does.
 | Cultist | deep amethyst (dark) | dark | pale ash sage | #BFC4A0 | purple against yellow-green |
 | Herald of the Loom | violet magenta (mid) | dark | pale straw thread | #DDCC96 | the loom's thread |
 | Tactician | rose magenta (mid) | light | deep campaign olive | #3D4428 | field map under the marker rods |
-| Warlord | steel blue-grey (mid) & deep brick red (dark) | light & dark | steel blue-grey | #6B7A88 #7E3222 | taken from his doublet |
+| Warlord | deep brick red (dark) | dark | steel blue-grey | #7E3222 | taken from his doublet |
 
 The hexes are starting points to measure against, not lock values. The prompt
 names the color in words; the hex is what the output is judged against.
