@@ -33,6 +33,7 @@ func test_non_zero_rewards_show_their_labels_with_written_out_text() -> void:
 	drop_result._silver = 10
 	drop_result._supplies = 2
 	summary.SetRewards(drop_result)
+	summary._count_up_tween.custom_step(RewardSummaryUI.COUNT_UP_SECONDS)
 
 	assert_true(summary._label_experience.visible)
 	assert_eq(summary._label_experience.text, "Experience: 24")
@@ -40,6 +41,29 @@ func test_non_zero_rewards_show_their_labels_with_written_out_text() -> void:
 	assert_eq(summary._label_silver.text, "Silver: 10")
 	assert_true(summary._label_supplies.visible)
 	assert_eq(summary._label_supplies.text, "Supplies: 2")
+
+
+func test_numeric_rewards_count_up_from_zero() -> void:
+	var drop_result: LootTable.DropResult = _EmptyDropResult()
+	drop_result._silver = 10
+	summary.SetRewards(drop_result)
+	assert_eq(summary._label_silver.text, "Silver: 0")
+
+	summary._count_up_tween.custom_step(RewardSummaryUI.COUNT_UP_SECONDS / 2.0)
+	assert_eq(summary._label_silver.text, "Silver: 5")
+
+
+func test_resetting_rewards_restarts_the_count_up() -> void:
+	var drop_result: LootTable.DropResult = _EmptyDropResult()
+	drop_result._silver = 10
+	summary.SetRewards(drop_result)
+	summary._count_up_tween.custom_step(RewardSummaryUI.COUNT_UP_SECONDS / 2.0)
+
+	drop_result._silver = 20
+	summary.SetRewards(drop_result)
+	assert_eq(summary._label_silver.text, "Silver: 0")
+	summary._count_up_tween.custom_step(RewardSummaryUI.COUNT_UP_SECONDS)
+	assert_eq(summary._label_silver.text, "Silver: 20")
 
 
 func test_all_empty_drop_result_hides_the_widget() -> void:

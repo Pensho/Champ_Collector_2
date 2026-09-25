@@ -189,7 +189,7 @@ scale = Vector2(0.535503, 0.535503)
 texture = ExtResource("7_st4s7")
 
 [node name="SwallowedWallSegment2" type="Sprite2D" parent="Band_Midband" unique_id=392296975]
-self_modulate = Color(0.52906704, 0.52906656, 0.5290667, 1)
+self_modulate = Color(0.8089985, 0.80899817, 0.80899817, 1)
 position = Vector2(149, 278)
 texture = ExtResource("3_p3rbx")
 
@@ -211,7 +211,7 @@ scale = Vector2(0.70746887, 0.70746887)
 texture = ExtResource("11_ih3u5")
 
 [node name="SwallowedColumn2" type="Sprite2D" parent="Band_Midband" unique_id=1352698884]
-self_modulate = Color(0.62967473, 0.62967473, 0.6296747, 1)
+self_modulate = Color(0.8217887, 0.8217887, 0.8217885, 1)
 position = Vector2(1264, 195)
 texture = ExtResource("6_6dmjr")
 
@@ -221,7 +221,6 @@ position = Vector2(1134, 182)
 texture = ExtResource("4_st4s7")
 
 [node name="BattleJungleTrunk3" type="Sprite2D" parent="Band_Midband" unique_id=756888514]
-self_modulate = Color(0.8217887, 0.82178867, 0.82178867, 1)
 position = Vector2(716, 218.35503)
 scale = Vector2(0.8579882, 0.8579882)
 texture = ExtResource("8_tqv43")
@@ -245,6 +244,13 @@ offset_bottom = 40.0
 modulate = Color(0.42352942, 0.7019608, 0.38431373, 1)
 position = Vector2(1213, 396)
 texture = ExtResource("6_v86a8")
+
+[node name="GrassBattle8" type="Sprite2D" parent="Band_Floor/Hide_Floor_Line" unique_id=208848079]
+modulate = Color(0.42352942, 0.7019608, 0.38431373, 1)
+position = Vector2(647.00006, 412.50003)
+scale = Vector2(0.625, 0.625)
+texture = ExtResource("6_v86a8")
+flip_h = true
 
 [node name="RockBattle2" type="Sprite2D" parent="Band_Floor/Hide_Floor_Line" unique_id=33570969]
 self_modulate = Color(0.529371, 0.6016579, 0.519938, 1)

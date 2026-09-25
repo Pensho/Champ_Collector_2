@@ -6,13 +6,19 @@ const FORTUNES_FAVOR_ICONS: Dictionary[FortuneFavorTier.TierType, Texture2D] = {
 	FortuneFavorTier.TierType.BRASS: ResourceHandler.FORTUNES_FAVOR_BRASS_1,
 	FortuneFavorTier.TierType.PARCHMENT: ResourceHandler.FORTUNES_FAVOR_PARCHMENT_1,
 }
+const COUNT_UP_SECONDS: float = 0.8
 
 @export var _label_experience: Label
 @export var _label_silver: Label
 @export var _label_supplies: Label
 @export var _h_box_container_items: HBoxContainer
 
+var _count_up_tween: Tween
+
 func SetRewards(p_drop_result: LootTable.DropResult) -> void:
+	if _count_up_tween:
+		_count_up_tween.kill()
+		_count_up_tween = null
 	_SetOptionalLabel(_label_experience, "Experience: ", p_drop_result._experience)
 	_SetOptionalLabel(_label_silver, "Silver: ", p_drop_result._silver)
 	_SetOptionalLabel(_label_supplies, "Supplies: ", p_drop_result._supplies)
@@ -47,7 +53,16 @@ func _HasAnyFortunesFavor(p_drop_result: LootTable.DropResult) -> bool:
 
 func _SetOptionalLabel(p_label: Label, p_prefix: String, p_value: int) -> void:
 	p_label.visible = 0 < p_value
-	p_label.text = p_prefix + str(p_value)
+	_SetCountedLabelText(0.0, p_label, p_prefix)
+	if(not p_label.visible):
+		return
+	if(null == _count_up_tween):
+		_count_up_tween = create_tween().set_parallel()
+	_count_up_tween.tween_method(
+			_SetCountedLabelText.bind(p_label, p_prefix), 0.0, float(p_value), COUNT_UP_SECONDS)
+
+func _SetCountedLabelText(p_value: float, p_label: Label, p_prefix: String) -> void:
+	p_label.text = p_prefix + str(roundi(p_value))
 
 func _AddEquipmentSlot(p_equipment: EquipmentPreset) -> void:
 	var slot: RewardItemSlotUI = REWARD_ITEM_SLOT_SCENE.instantiate()
