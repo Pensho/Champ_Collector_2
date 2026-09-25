@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cdntbrqg1qsb7"
-path="res://.godot/imported/Full_Appraisal.png-f2f0c1e74ada2af1ab4d404a0ee60f39.ctex"
+uid="uid://bayr2h0l3lk11"
+path="res://.godot/imported/full_appraisal.jpg-3c4d88f6b8b5e71b0c173688164e96e9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Full_Appraisal/Full_Appraisal.png"
-dest_files=["res://.godot/imported/Full_Appraisal.png-f2f0c1e74ada2af1ab4d404a0ee60f39.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Full_Appraisal/full_appraisal.jpg"
+dest_files=["res://.godot/imported/full_appraisal.jpg-3c4d88f6b8b5e71b0c173688164e96e9.ctex"]
 
 [params]
 

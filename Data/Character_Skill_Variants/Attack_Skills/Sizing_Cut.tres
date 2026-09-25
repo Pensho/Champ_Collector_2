@@ -20,6 +20,6 @@ duration = 1
 script = ExtResource("1_skill")
 name = "Sizing Cut"
 description = "Deals damage to a single enemy, scaled by Knowledge, and applies Exposed Facet for 1 turn."
-icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Sizing_Cut/Sizing_Cut.png"
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Sizing_Cut/sizing_cut.jpg"
 effects = Array[ExtResource("1_0ojqo")]([SubResource("Resource_dhgj1"), SubResource("Resource_exposed")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

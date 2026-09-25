@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dygo0xetp5kj7"
-path="res://.godot/imported/Sizing_Cut.png-f907e6396d44a90a2b19b60d9dc46762.ctex"
+uid="uid://ciyj2gul4gty0"
+path="res://.godot/imported/flaw_analysis.jpg-8636aefb0763ab3ef7f71ddbb36a3ab5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Sizing_Cut/Sizing_Cut.png"
-dest_files=["res://.godot/imported/Sizing_Cut.png-f907e6396d44a90a2b19b60d9dc46762.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Flaw_Analysis/flaw_analysis.jpg"
+dest_files=["res://.godot/imported/flaw_analysis.jpg-8636aefb0763ab3ef7f71ddbb36a3ab5.ctex"]
 
 [params]
 
