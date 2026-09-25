@@ -14,6 +14,6 @@ damage_scaling = Dictionary[int, float]({
 script = ExtResource("1_skill")
 name = "Shield Slam"
 description = "Deals damage to a single enemy, scaled by Defense."
-icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Shield_Slam/Shield_Slam.png"
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Shield_Slam/shield_slam.jpg"
 effects = Array[ExtResource("1_2vt7n")]([SubResource("Resource_2t6ev")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

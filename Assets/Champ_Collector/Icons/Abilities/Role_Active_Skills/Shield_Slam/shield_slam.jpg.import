@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://upf4yp4rct3b"
-path="res://.godot/imported/Brace_for_Impact.png-3050f8f8082eff2210891a0e050ed640.ctex"
+uid="uid://jiao5yd7juwt"
+path="res://.godot/imported/shield_slam.jpg-fdf682b68a5c8f2dd8ec71e1686875af.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Brace_for_Impact/Brace_for_Impact.png"
-dest_files=["res://.godot/imported/Brace_for_Impact.png-3050f8f8082eff2210891a0e050ed640.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Shield_Slam/shield_slam.jpg"
+dest_files=["res://.godot/imported/shield_slam.jpg-fdf682b68a5c8f2dd8ec71e1686875af.ctex"]
 
 [params]
 
