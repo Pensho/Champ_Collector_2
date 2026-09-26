@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ck72a2yribvyj"
-path="res://.godot/imported/The_Even_Tread.png-0598a144e8c59952bd2f72bcac6eb128.ctex"
+uid="uid://bq246pp17nqbj"
+path="res://.godot/imported/signatorys_seal.png-1a0b6c88e52b42e30d5bf144603b5136.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Items/Relics/The_Even_Tread/The_Even_Tread.png"
-dest_files=["res://.godot/imported/The_Even_Tread.png-0598a144e8c59952bd2f72bcac6eb128.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Items/Relics/signatorys_seal.png"
+dest_files=["res://.godot/imported/signatorys_seal.png-1a0b6c88e52b42e30d5bf144603b5136.ctex"]
 
 [params]
 

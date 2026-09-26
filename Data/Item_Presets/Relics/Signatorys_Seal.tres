@@ -12,6 +12,6 @@ _name = "Signatory's Seal"
 _slot = 2
 _rarity = 1
 _item_type = 1
-_texture_path = "res://Assets/Champ_Collector/Icons/Items/Relics/Signatorys_Seal/Signatorys_Seal.png"
+_texture_path = "res://Assets/Champ_Collector/Icons/Items/Relics/signatorys_seal.png"
 _preset_path = "res://Data/Item_Presets/Relics/Signatorys_Seal.tres"
 _relic_effect = SubResource("SubResource_1")

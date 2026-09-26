@@ -12,6 +12,6 @@ _name = "Prism of Small Favors"
 _slot = 2
 _rarity = 1
 _item_type = 1
-_texture_path = "res://Assets/Champ_Collector/Icons/Items/Relics/Prism_of_Small_Favors/Prism_of_Small_Favors.png"
+_texture_path = "res://Assets/Champ_Collector/Icons/Items/Relics/prism_of_small_favors.png"
 _preset_path = "res://Data/Item_Presets/Relics/Prism_of_Small_Favors.tres"
 _relic_effect = SubResource("SubResource_1")

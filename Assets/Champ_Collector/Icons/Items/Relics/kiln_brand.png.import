@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bmr1uhfw41s8o"
-path="res://.godot/imported/The_Closed_Wound.png-006bb29022d2de31f5127d55a32f9992.ctex"
+uid="uid://c2npvy35tqujh"
+path="res://.godot/imported/kiln_brand.png-dd5e25e69c301ea00dca93c63bdd721f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Items/Relics/The_Closed_Wound/The_Closed_Wound.png"
-dest_files=["res://.godot/imported/The_Closed_Wound.png-006bb29022d2de31f5127d55a32f9992.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Items/Relics/kiln_brand.png"
+dest_files=["res://.godot/imported/kiln_brand.png-dd5e25e69c301ea00dca93c63bdd721f.ctex"]
 
 [params]
 

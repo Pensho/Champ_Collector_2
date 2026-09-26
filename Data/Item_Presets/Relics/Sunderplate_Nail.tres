@@ -12,6 +12,6 @@ _name = "Sunderplate Nail"
 _slot = 1
 _rarity = 1
 _item_type = 1
-_texture_path = "res://Assets/Champ_Collector/Icons/Items/Relics/Sunderplate_Nail/Sunderplate_Nail.png"
+_texture_path = "res://Assets/Champ_Collector/Icons/Items/Relics/sunderplate_nail.png"
 _preset_path = "res://Data/Item_Presets/Relics/Sunderplate_Nail.tres"
 _relic_effect = SubResource("SubResource_1")

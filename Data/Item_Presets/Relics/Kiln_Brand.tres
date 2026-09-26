@@ -12,6 +12,6 @@ _name = "Kiln Brand"
 _slot = 1
 _rarity = 1
 _item_type = 1
-_texture_path = "res://Assets/Champ_Collector/Icons/Items/Relics/Kiln_Brand/Kiln_Brand.png"
+_texture_path = "res://Assets/Champ_Collector/Icons/Items/Relics/kiln_brand.png"
 _preset_path = "res://Data/Item_Presets/Relics/Kiln_Brand.tres"
 _relic_effect = SubResource("SubResource_1")
