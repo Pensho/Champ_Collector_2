@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="EquipmentPreset" format=3 uid="uid://cixojc5wn6df6"]
 
-[ext_resource type="Script" uid="uid://uj8sdntvdbwt" path="res://Scripts/Character/character_traits/Relics/remnant_fed_edge_relic.gd" id="1_2opfo"]
+[ext_resource type="Script" uid="uid://dj7qekwt2ben4" path="res://Scripts/Character/character_traits/Relics/remnant_fed_edge_relic.gd" id="1_2opfo"]
 [ext_resource type="Script" uid="uid://8knbs7yij5eh" path="res://Scripts/Gear/equipment_preset.gd" id="1_preset"]
 
 [sub_resource type="Resource" id="Resource_2opfo"]
