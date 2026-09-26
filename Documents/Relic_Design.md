@@ -42,7 +42,9 @@ Rending Charge cast at 4 or 5 sections of turn-bar distance Echoes once, at
 
 The catalog's one exception to the mechanic-vocabulary rule: it reads a named skill.
 
-**Appearance:**
+**Appearance:** a lance head set in the jaws of a bronze ox, ending in a pierced, gilded
+ploughshare with a blunt rounded tip — no point, for the drawback. A smaller ultramarine copy of
+the share floats ahead of it, attached to nothing: the Echo.
 
 ### Remnant-Fed Edge
 
@@ -72,7 +74,9 @@ Damaging skills deal +25 / 30 / 35 / 45 / 60% damage.
 
 **Compositional drawback:** no one on the wearer's team can be healed, by any source.
 
-**Appearance:**
+**Appearance:** a round iron buckler with a clenched-fist boss, its face torn by a jagged gash
+clamped shut with iron staples. A thin vermilion line shows through the seam: a wound that will
+never close.
 
 ### The Planted Heel
 

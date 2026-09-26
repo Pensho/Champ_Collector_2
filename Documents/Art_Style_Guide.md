@@ -90,6 +90,7 @@ Part I whole, and no section grants an exemption this table does not carry.
 | Active skill art | Non-negotiables 1, 2, 3 and 6; sections 12.1–12.2; the section 6 quantize step | 12.4 |
 | Passive icons | The material slots of section 3 | 12.6 |
 | Turn bar zone art | Non-negotiables 1, 2 and 3; section 4's light direction; 14.1's outline and key background | 13.3.1 |
+| Gear icons | Non-negotiable 3; section 4's camera, ground line and composition tail; the material slots of section 3 | 11.1 |
 | Effects and VFX | Non-negotiable 3's coverage cap only | 14.1 |
 
 ---
@@ -499,6 +500,7 @@ on assets that already look right.
 | Active skill art (12.4) | Overlay only — quantize would strip the hatching and tone-block range; no LUT, since skill art is UI and not in scene light |
 | Passive icons (12.6) | Quantize, accent correction, overlay, downscale to 40 px; no LUT |
 | Turn bar zone art (13.3.1) | Key out, then downscale; no quantize, no accent correction, no LUT |
+| Gear icons (11.1) | Crop, quantize, overlay, downscale to 100 × 120; no accent correction, no LUT. Quantize untested (19.4) |
 
 **The quantize step must snap L\* while preserving hue.** A greyscale-ramp
 implementation strips the tinted band 1 (2.2) and the saturated garment (3.5)
@@ -598,8 +600,16 @@ per-stage list only.
 
 ### 7.5 Items, gear and reagents
 
-> **Not yet written.** Reads at inventory-cell size, silhouette distinct from
-> other items in its slot, rarity signal present and legible.
+See 11.
+
+- [ ] Judged at exactly 100 × 120 px in a mocked inventory row, never at full resolution
+- [ ] On the lower-right to upper-left diagonal; only a handle or shaft leaves the frame (11.1)
+- [ ] Three levels of detail, every group counted, cut order recorded
+- [ ] Four values; no gradients; outline ink black `#14121A`; one broad bone white edge
+- [ ] No Role accent
+- [ ] Silhouette survives being filled black
+- [ ] Relics: one strange element visible in the still image, plus an ornate made finish (11.6)
+- [ ] Rarity signal — not yet defined (11.5)
 
 ### 7.6 Icons
 
@@ -2317,20 +2327,48 @@ composition, no figures, no creatures
 
 ## 11. Items, gear and reagents
 
-> **Not yet written.** The largest gap in the guide. Gear is a core loop
-> (`Concept_Document.md` 3.3) and has no visual spec.
+Gear is shown as an icon in an inventory cell, and that icon is the only item art
+(12.7). The rules below were established on two Relics (11.6); standard gear has
+not been generated yet.
 
-### 11.1 Shared conventions
+### 11.1 Gear icons — shared conventions
 
-> **Not yet written.** Which value bands and slots items use, whether items carry
-> an accent, the camera treatment (items are objects, not figures, so 4.2's
-> composition tail does not apply), and the presentation angle.
+**100 × 120 px, portrait, inventory cell only.** Judge every candidate at exactly
+that size, in a mocked inventory row beside an existing item.
+
+The class is the engraved icon of 12.6 at a larger size: engraved structural
+linework over four values, detail tiered and counted. The extra room over a 40 px
+passive is spent on more counted groups and on pierced openings, which read as
+silhouette where lines alone blur.
+
+- **Diagonal from lower right to upper left.** The object's working end points to
+  the upper left; any handle or shaft runs out through the lower right. Light
+  stays upper left (4.1), so the working end sits in the lit corner.
+- **Crop to the distinguishing part.** A long weapon shows its head, and only the
+  handle end leaves the frame, stated for that part alone with margin everywhere
+  else (10.3.7). A small or compact object is shown whole.
+- **A whole object comes back small.** Crop the output in from the right and
+  bottom edges afterwards rather than asking for a filled frame (10.3.7).
+- **Three levels of detail** as 12.6.2: a focal region with the heaviest
+  engraving, moderate on the main masses, light on the handle or strap. Every group
+  counted, a cut order recorded with the prompt.
+- **Materials named per part** — blued iron, dull bronze, bark-brown wood,
+  oxblood leather. No shared-slot system and no tinted band 1, as in 12.1.
+- **One broad bone white edge** along the upper rim of the main mass (12.6.3).
+- **No Role accent.** Gear is not owned by a Role, so no 8.9 hex appears on it.
+- **Generate with the transparency setting** and no background clause (18).
+- **Prompt describes the object only** — no mechanic, name or lore (5.7). The
+  design notes carry why the object looks as it does.
 
 ### 11.2 Weapons, off-hands and boots
 
-> **Not yet written.** One silhouette convention per equipment slot so an item is
-> identifiable as a weapon or a boot at inventory-cell size before it is
-> identified as which one.
+- **Weapons:** the head or blade, cropped (11.1).
+- **Off-hands:** usually small enough to show whole, tilted on the 11.1 diagonal.
+- **Boots:** not yet generated. Decide whether a pair or a single boot reads at
+  100 × 120 before the first prompt (19.4).
+
+Whether each slot needs its own silhouette convention, so a weapon reads as a
+weapon before it reads as which one, is open until standard gear exists.
 
 ### 11.3 Reagents
 
@@ -2350,6 +2388,44 @@ composition, no figures, no creatures
 > This competes with the champion accent system for the player's color vocabulary
 > — decide the priority.
 
+### 11.6 Relics
+
+A Relic (`Concept_Document.md` 3.3.1) must look like a find, not like a slightly
+magical version of standard gear. Two things together do that; either alone reads
+as common.
+
+- **One element from outside reality** (8.1), derived from the Relic's effect and
+  drawback, and visible in the still image.
+- **An ornate made finish.** Sculpted fittings, pierced tracery, inlay in a second
+  metal, an engraved border band. The made parts carry the richness, not only the
+  strange one.
+
+**One saturated material**, flat, on the strange element or the part that shows
+it. Provisional: whether it reads as rarity, as a Role, or as neither is part of
+11.5.
+
+#### 11.6.1 Approved prompts
+
+**The Long Furrow (Weapon).** Ploughshare head with no point for the no-crit
+drawback; the floating second share is the Echo.
+
+```
+bold woodcut icon with engraved structural linework, very thick black contour outline on the outer silhouette, hard-edged shadows, four values, hand-carved edge quality with visible gouge marks, the head of an ornate heavy lance on a diagonal from the lower right toward the upper left, the wooden shaft running out through the lower right edge of the frame, the lance head set into a socket cast in bronze as the head of an ox, the blade held in its open jaws, two long curved horns sweeping back from the ox head along the shaft, in place of a point the lance ends in a broad curved ploughshare blade with a blunt rounded tip and a thick unsharpened edge, three large pierced openings cut through the blade in a row, a thin gilded inlay line following the edge of the blade, a second smaller ploughshare blade of the same shape floating well ahead of it along the same diagonal, attached to nothing, pierced with the same three openings, a wide empty gap between the two blades, three levels of detail: the ox head carries the heaviest engraved detail and reads as the focal point, through its brow ridges, flared nostrils and a ring through its nose; the blades carry moderate engraved detail through the pierced openings, one chipped notch in the rim of the larger blade and parallel hatching lines across their shadow sides; the shaft carries light detail through four bands of cord binding, all marks bold and structural, the larger blade in dark blued iron falling into ink black shadow on its lower left, the ox head and horns in warm dull bronze, the shaft in bark-brown wood, the floating blade in flat saturated deep ultramarine, one broad bone white edge along the upper rim of the larger blade, light from the upper left, the whole head visible with margin on all sides except where the shaft leaves the frame
+```
+
+**Cut order:** hatching, cord bands, nose ring. The openings, horns and gap are
+never cut.
+
+**The Closed Wound (Off-Hand).** A metal shield with a wound stapled shut, for
+healing denied to the team.
+
+```
+bold woodcut icon with engraved structural linework, very thick black contour outline on the outer silhouette, hard-edged shadows, four values, hand-carved edge quality with visible gouge marks, a small round buckler shield shown whole, facing the viewer and tilted on a diagonal with its top leaning toward the upper left, a long jagged gash torn across the face of the shield from the lower right toward the upper left, the gash clamped shut by six heavy iron staples driven across it at uneven intervals, the edges of the gash buckled and pulled tight against the staples, a thin flat line of saturated deep vermilion showing through the closed seam between the staples, a raised domed boss at the center of the shield cast as a clenched fist, three levels of detail: the gash and its staples carry the heaviest engraved detail and read as the focal point, through the torn metal lips of the gash, the staple heads and the puckered metal around each one; the boss and the rim carry moderate engraved detail through the knuckles of the fist, a border band of ten repeated triangular motifs running around the rim and parallel hatching lines across the shadow side of the shield; the back edge of the shield visible at the lower right carries light detail through a single leather strap, all marks bold and structural, the shield face in dark blued iron falling into ink black shadow on its lower right, the boss and the rim band in warm dull bronze, the strap in oxblood leather, one broad bone white edge along the upper left rim of the shield, light from the upper left, the whole shield visible with margin on all sides
+```
+
+Cropped in from the right and bottom after generation (11.1). **Cut order:**
+hatching, then rim motifs to six. The staples and the seam are never cut.
+
 ---
 
 ## 12. Icons
@@ -2359,8 +2435,9 @@ thing on screen.
 
 ### 12.1 Rules
 
-Governs map nodes, status, currency and resource icons. Active skill art (12.4)
-and passive icons (12.6) are separate classes and do not follow these.
+Governs map nodes, status, currency and resource icons. Active skill art (12.4),
+passive icons (12.6) and gear icons (11.1) are separate classes and do not follow
+these.
 
 - **Target size first.** Decide the pixel size (map nodes ~48–64 px, skill icons
   ~64–96 px) and judge every candidate at exactly that size, never at full
@@ -2772,8 +2849,8 @@ Fixes for when a variant fails:
 
 ### 12.7 Item and reagent icons
 
-> **Not yet written.** The inventory-cell rendering of section 11. State whether
-> these are separate assets from the item art or downscales of it.
+Gear: the icon is the item art, one asset, specified in 11.1. Reagents: not yet
+written (11.3).
 
 ### 12.8 Currency and resource icons
 
@@ -3097,6 +3174,8 @@ line is a trap, not a history; the rule it produced lives in the section named.
   (12.4.4).
 - Zone art as single-ink shapes recolored by `modulate`. Technically flexible, but
   waves are expected blue and white and the ship colored (13.3.1).
+- A Relic as a plain object with one strange trick. Reads as a lesser magical
+  item, not a find; it needs the ornate finish as well (11.6).
 
 **Environment elements**
 
@@ -3253,7 +3332,13 @@ together, at six characters rather than at fifteen.
 ### 19.4 Icons, UI and pipeline
 
 - **Rarity colors versus accent colors.** Two color-identity systems competing for
-  the same player attention (11.5).
+  the same player attention (11.5). Relics add a third candidate: their one
+  saturated material (11.6).
+- **Standard gear.** Not yet generated. The plain finish that sets it apart from a
+  Relic, and whether slots need their own silhouette conventions (11.2).
+- **Boots.** Pair or single boot at 100 × 120 (11.2).
+- **Gear icon post-processing.** Whether quantize keeps the engraved detail and
+  pierced openings (6).
 - **Skill art display size.** One illustration per skill or two assets — tooltip
   art plus bar icon — decided once the skill-bar size is known (12.4.7).
 - **Element color or caster accent** in the skill art accent block, when the two
