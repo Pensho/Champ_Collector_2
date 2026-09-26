@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c1o47tl012ym7"
-path="res://.godot/imported/Battle_Orders.png-6ba248552cedbf16a0043082b83f1f5e.ctex"
+uid="uid://dwp23aa8jggv5"
+path="res://.godot/imported/fatal_flaw.jpg-edde1ceaf56e9adef3c233487c34c6ec.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Battle_Orders/Battle_Orders.png"
-dest_files=["res://.godot/imported/Battle_Orders.png-6ba248552cedbf16a0043082b83f1f5e.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Fatal_Flaw/fatal_flaw.jpg"
+dest_files=["res://.godot/imported/fatal_flaw.jpg-edde1ceaf56e9adef3c233487c34c6ec.ctex"]
 
 [params]
 

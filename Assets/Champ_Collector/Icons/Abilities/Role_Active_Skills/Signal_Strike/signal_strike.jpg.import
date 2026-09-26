@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://davrei3x0xwm6"
-path="res://.godot/imported/Signal_Strike.png-b9047d67b0719a6ae826955a85c41e59.ctex"
+uid="uid://bqu2wgjk8y435"
+path="res://.godot/imported/signal_strike.jpg-a3a45de985e7410201475224ed32061a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Signal_Strike/Signal_Strike.png"
-dest_files=["res://.godot/imported/Signal_Strike.png-b9047d67b0719a6ae826955a85c41e59.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Signal_Strike/signal_strike.jpg"
+dest_files=["res://.godot/imported/signal_strike.jpg-a3a45de985e7410201475224ed32061a.ctex"]
 
 [params]
 
