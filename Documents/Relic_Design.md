@@ -188,7 +188,9 @@ Buffs the wearer applies are 50 / 55 / 60 / 70 / 85% stronger.
 
 **Compositional drawback:** the wearer's allies cannot critically hit.
 
-**Appearance:**
+**Appearance:** a pair of tall riding boots with bronze toe caps and ruled cuffs, standing on
+heels cut as emerald plumb bobs — the mason's weight for true vertical. Measured and level, with
+no peaks.
 
 ### Prism of Small Favors
 

@@ -609,6 +609,8 @@ See 11.
 - [ ] No Role accent
 - [ ] Silhouette survives being filled black
 - [ ] Relics: one strange element visible in the still image, plus an ornate made finish (11.6)
+- [ ] Still reads as its item type — footwear, weapon, off-hand — at a glance (11.6)
+- [ ] Boots shown as a pair, unless the item is not footwear (11.2)
 - [ ] Rarity signal — not yet defined (11.5)
 
 ### 7.6 Icons
@@ -2328,7 +2330,8 @@ composition, no figures, no creatures
 ## 11. Items, gear and reagents
 
 Gear is shown as an icon in an inventory cell, and that icon is the only item art
-(12.7). The rules below were established on two Relics (11.6); standard gear has
+(12.7). The rules below were established on three Relics, one per slot (11.6);
+standard gear has
 not been generated yet.
 
 ### 11.1 Gear icons — shared conventions
@@ -2364,8 +2367,9 @@ silhouette where lines alone blur.
 
 - **Weapons:** the head or blade, cropped (11.1).
 - **Off-hands:** usually small enough to show whole, tilted on the 11.1 diagonal.
-- **Boots:** not yet generated. Decide whether a pair or a single boot reads at
-  100 × 120 before the first prompt (19.4).
+- **Boots:** always a pair, unless the item is not footwear. The near boot stands
+  in front, the far boot offset toward the upper left and partly hidden; detail
+  goes on the near boot only, so the pair does not double the busyness.
 
 Whether each slot needs its own silhouette convention, so a weapon reads as a
 weapon before it reads as which one, is open until standard gear exists.
@@ -2400,11 +2404,18 @@ as common.
   metal, an engraved border band. The made parts carry the richness, not only the
   strange one.
 
+**It stays its item type.** The strangeness sits on one part — a heel, a boss, a
+blade — never on the item's basic shape. A boot must still be something a
+character could put on; a mirrored boot with a toe at each end stopped reading as
+footwear.
+
 **One saturated material**, flat, on the strange element or the part that shows
 it. Provisional: whether it reads as rarity, as a Role, or as neither is part of
 11.5.
 
 #### 11.6.1 Approved prompts
+
+At most three, one per slot. Adding one means removing another's prompt.
 
 **The Long Furrow (Weapon).** Ploughshare head with no point for the no-crit
 drawback; the floating second share is the Echo.
@@ -2425,6 +2436,15 @@ bold woodcut icon with engraved structural linework, very thick black contour ou
 
 Cropped in from the right and bottom after generation (11.1). **Cut order:**
 hatching, then rim motifs to six. The staples and the seam are never cut.
+
+**The Even Tread (Boots).** Plumb-bob heels, the measured and level made physical.
+
+```
+bold woodcut icon with engraved structural linework, very thick black contour outline on the outer silhouette, hard-edged shadows, four values, hand-carved edge quality with visible gouge marks, a matched pair of tall ornate riding boots shown whole in side profile, both toes pointing toward the left, the near boot standing in front and the far boot set just behind it offset toward the upper left, the far boot partly hidden by the near one, each boot with a pointed toe capped in cast bronze and a stiff leather shaft rising to below the knee, each shaft ending in a cuff folded down over its top, each boot with a flat sole sitting level on the ground and a short squat heel carved as a plumb bob, a faceted stone weight no taller than the toe cap, tapering to a blunt point just beneath the back of the sole, the near boot's plumb bob heel and the far boot's plumb bob heel identical, the near boot's shaft wrapped by two leather straps each fastened with a square bronze buckle, three levels of detail: the two plumb bob heels carry the heaviest engraved detail and read as the focal point, through their cut facets and a thin bronze collar where each meets the sole; the near boot's cuff and toe cap carry moderate engraved detail through a border band of six repeated ruled square motifs around the cuff and parallel hatching lines across the shadow side of the shaft; the straps carry light detail through the buckles alone, all marks bold and structural, the boots in bark-brown leather falling into ink black shadow on their lower right, the toe caps, border band, collars and buckles in warm dull bronze, the two plumb bob heels in flat saturated deep emerald, one broad bone white edge along the upper rim of the near boot's cuff, light from the upper left, both boots visible with margin on all sides
+```
+
+A heel described as *tapering to a sharp point* returns a stiletto; the flat-sole
+clause and the height cap against the toe cap hold it.
 
 ---
 
@@ -3176,6 +3196,7 @@ line is a trap, not a history; the rule it produced lives in the section named.
   waves are expected blue and white and the ship colored (13.3.1).
 - A Relic as a plain object with one strange trick. Reads as a lesser magical
   item, not a find; it needs the ornate finish as well (11.6).
+- A single boot for a Boots item. Boots are a pair (11.2).
 
 **Environment elements**
 
@@ -3336,7 +3357,6 @@ together, at six characters rather than at fifteen.
   saturated material (11.6).
 - **Standard gear.** Not yet generated. The plain finish that sets it apart from a
   Relic, and whether slots need their own silhouette conventions (11.2).
-- **Boots.** Pair or single boot at 100 × 120 (11.2).
 - **Gear icon post-processing.** Whether quantize keeps the engraved detail and
   pierced openings (6).
 - **Skill art display size.** One illustration per skill or two assets — tooltip
