@@ -12,6 +12,6 @@ _name = "The Closed Wound"
 _slot = 2
 _rarity = 1
 _item_type = 1
-_texture_path = "res://Assets/Champ_Collector/Icons/Items/Relics/The_Closed_Wound/The_Closed_Wound.png"
+_texture_path = "res://Assets/Champ_Collector/Icons/Items/Relics/the_closed_wound.png"
 _preset_path = "res://Data/Item_Presets/Relics/The_Closed_Wound.tres"
 _relic_effect = SubResource("SubResource_1")

@@ -12,6 +12,6 @@ _name = "The Long Furrow"
 _slot = 1
 _rarity = 1
 _item_type = 1
-_texture_path = "res://Assets/Champ_Collector/Icons/Items/Relics/The_Long_Furrow/The_Long_Furrow.png"
+_texture_path = "res://Assets/Champ_Collector/Icons/Items/Relics/the_long_furrow.png"
 _preset_path = "res://Data/Item_Presets/Relics/The_Long_Furrow.tres"
 _relic_effect = SubResource("SubResource_1")
