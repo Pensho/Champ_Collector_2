@@ -941,6 +941,8 @@ the first encounter. The shop's gear slots roll the same
 chance (section 3.6.4). Every Relic in the current catalog is a general drop; boss-specific
 Relics are a later addition, once bosses exist to carry them.
 
+Relic catalog (effects, drawbacks and slots in `Relic_Design.md`)
+
 At the ceiling — a fully-geared Legendary loadout (Weapon, Off-Hand, Boots), every item rolled
 and then fully upgraded (ten times each) — gear raises a
 champion's relevant attribute by 3.1x, which comes out to a 4.2x-5.3x contrast ratio against

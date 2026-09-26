@@ -27,11 +27,13 @@ drawback attached.
 Entries are grouped by what the upside pays out in, and each carries one of the three live slots —
 Weapon, Off-Hand, Boots. Slot is the stacking control: see *Slots and stacking* below.
 
+**Appearance** describes the Relic's icon, drawn to `Art_Style_Guide.md`.
+
 ## Damage
 
 ### The Long Furrow
 
-*Audience: Lancer.* **Weapon.** [Channel 3 — Cascade]  hook `OnSkillCast`
+*Audience: Lancer.* **Weapon.** [Channel 3 — Cascade]
 
 Rending Charge cast at 4 or 5 sections of turn-bar distance Echoes once, at
 25 / 30 / 35 / 45 / 55% strength.
@@ -40,62 +42,73 @@ Rending Charge cast at 4 or 5 sections of turn-bar distance Echoes once, at
 
 The catalog's one exception to the mechanic-vocabulary rule: it reads a named skill.
 
+**Appearance:**
+
 ### Remnant-Fed Edge
 
-*Audience: Sorcerer, Alchemist.* **Weapon.** [Channel 2]  hook `OnReagentConsumed`
+*Audience: Sorcerer, Alchemist.* **Weapon.** [Channel 2]
 
 The first damaging skill cast after consuming a reagent deals +25 / 30 / 35 / 45 / 60% damage.
 
 **Drawback:** reagents the wearer consumes have 40% less effect.
 
+**Appearance:**
+
 ### Threefold Bite
 
-*Audience: Herald of the Loom, Plague Doctor, Sorcerer.* **Weapon.** [Channel 3 — Cascade]  hook
-`GetOutgoingDamageBonus`
+*Audience: Herald of the Loom, Plague Doctor, Sorcerer.* **Weapon.** [Channel 3 — Cascade]
 
 Every third Echo a single action produces deals +60 / 80 / 100 / 130 / 170% damage.
 
 **Drawback:** damage that is not an Echo is reduced by 30%.
 
+**Appearance:**
+
 ### The Closed Wound
 
-*Audience: Bloodmage, Cultist.* **Off-Hand.** [Channel 2]  hook `GetOutgoingDamageBonus`
+*Audience: Bloodmage, Cultist.* **Off-Hand.** [Channel 2]
 
 Damaging skills deal +25 / 30 / 35 / 45 / 60% damage.
 
 **Compositional drawback:** no one on the wearer's team can be healed, by any source.
 
+**Appearance:**
+
 ### The Planted Heel
 
-*Audience: Warlord, Bar Brawler, Symbiote.* **Boots.** [Channel 2]  hook `OnSkillCast`
+*Audience: Warlord, Bar Brawler, Symbiote.* **Boots.** [Channel 2]
 
 After the wearer takes a single hit exceeding 15% of their max Health, their next damaging skill
 deals +30 / 35 / 40 / 50 / 65% damage.
 
 **Drawback:** enemies target the wearer at 1.5x weight, permanently.
 
+**Appearance:**
+
 ### Lantern of the Standing Ward
 
-*Audience: Chronophage, Architect, Plague Doctor, Tidal Corsair.* **Off-Hand.** [Channel 3 — Cascade]  hook
-`OnZoneConstructed`, `OnZoneUsed`
+*Audience: Chronophage, Architect, Plague Doctor, Tidal Corsair.* **Off-Hand.** [Channel 3 — Cascade]
 
 Each zone the wearer places Echoes once for the first charge spent, at
 40 / 45 / 50 / 60 / 75% strength.
 
 **Compositional drawback:** every reagent consumed by anyone on the wearer's team has half effect.
 
+**Appearance:**
+
 ### The Answering Boss
 
-*Audience: Warlord, Symbiote, Bar Brawler.* **Off-Hand.** [Channel 2]  hook `GetOutgoingDamageBonus`
+*Audience: Warlord, Symbiote, Bar Brawler.* **Off-Hand.** [Channel 2]
 
 While the wearer holds a Barrier, damaging skills deal +25 / 30 / 35 / 45 / 60% damage.
 
 **Drawback:** the wearer's max Health is reduced by 30%.
 
+**Appearance:**
+
 ### The Sealed Docket
 
-*Audience: Architect, Diviner, Emissary, Lancer, Tidal Corsair.* **Off-Hand.** [Channel 2]  hooks
-`GetOutgoingDamageBonus`, `Start_Combat`
+*Audience: Architect, Diviner, Emissary, Lancer, Tidal Corsair.* **Off-Hand.** [Channel 2]
 
 While the target carries four or more distinct debuff types, damaging skills deal
 +35 / 42 / 50 / 62 / 80% damage.
@@ -103,10 +116,11 @@ While the target carries four or more distinct debuff types, damaging skills dea
 **Compositional drawback:** Echoes produced by anyone on the wearer's team resolve at
 half strength.
 
+**Appearance:**
+
 ### The Unguarded Glass
 
-*Audience: Thief, Tidal Corsair, Lancer.* **Off-Hand.** [Channel 2 — crit path]  hooks `OnBuffGained`,
-`OnCriticalHit`
+*Audience: Thief, Tidal Corsair, Lancer.* **Off-Hand.** [Channel 2 — crit path]
 
 While the wearer holds a buff granted by an ally, critical hits deal +35 / 45 / 55 / 70 / 80%
 Critical Damage.
@@ -114,34 +128,41 @@ Critical Damage.
 **Drawback:** the wearer can hold at most one buff at a time — a new buff replaces the one they
 hold.
 
+**Appearance:**
+
 ### The Ossuary Ledger
 
-*Audience: Cultist, Bloodmage, Jester.* **Off-Hand.** [Channel 2]  hook `OnAllyDeath`
+*Audience: Cultist, Bloodmage, Jester.* **Off-Hand.** [Channel 2]
 
 When an ally dies, the wearer deals +25 / 30 / 35 / 45 / 60% damage for the rest of the battle.
 
 **Drawback:** the wearer can never gain a buff, from any source (Severance, permanently).
 
+**Appearance:**
+
 ### The Frayed Hour
 
-*Audience: Herald of the Loom.* **Boots.** [Channel 2]  hook `GetAppliedStatusValue`
+*Audience: Herald of the Loom.* **Boots.** [Channel 2]
 
 Temporal Leak applied by the wearer has +200 / 250 / 275 / 300 / 350% its effect.
 
 **Compositional drawback:** Barriers on the wearer's team have 25% effect.
 
+**Appearance:**
+
 ### Kiln Brand
 
-*Audience: Tidal Corsair, Thief.* **Weapon.** [Channel 2]  hook `OnSkillCast`
+*Audience: Tidal Corsair, Thief.* **Weapon.** [Channel 2]
 
 Skills carrying a cooldown deal +20 / 30 / 40 / 50 / 65% damage.
 
 **Drawback:** the wearer's damaging skills that can apply a debuff deal 40% less damage.
 
+**Appearance:**
+
 ### Sunderplate Nail
 
-*Audience: Thief, Lancer, Bloodmage.* **Weapon.** [Channel 1]  hooks `GetOutgoingDefenceIgnoreFactor`,
-`OnBuffGained`
+*Audience: Thief, Lancer, Bloodmage.* **Weapon.** [Channel 1]
 
 The wearer's damaging skills treat the target's Defence as 18 / 20 / 23 / 27 / 32% lower.
 
@@ -151,50 +172,57 @@ The multiplicative lever, never the wearer's base ignore rate: a rate belongs to
 Between the Plates, and granting one both hands out that Role's identity and multiplies into
 Pierce Weakness's 2.5x.
 
+**Appearance:**
+
 ## Buff
 
 ### The Even Tread
 
-*Audience: Tactician, Scholar, Warlord.* **Boots.** [Enabler]  hooks `OnBuffGained`, `GetAppliedStatusValue`
+*Audience: Tactician, Scholar, Warlord.* **Boots.** [Enabler]
 
 Buffs the wearer applies are 50 / 55 / 60 / 70 / 85% stronger.
 
 **Compositional drawback:** the wearer's allies cannot critically hit.
 
+**Appearance:**
+
 ### Prism of Small Favors
 
-*Audience: Appraiser, Bloodmage, Cultist, Jester, Lancer, Thief, Tidal Corsair.* **Off-Hand.** [Channel 2 — crit
-path]  hooks `OnBuffGained`, `GetAttributeDelta`, `GetAppliedStatusValue`
+*Audience: Appraiser, Bloodmage, Cultist, Jester, Lancer, Thief, Tidal Corsair.* **Off-Hand.** [Channel 2 — crit path]
 
 Each buff the wearer holds, up to 2 / 2 / 3 / 3 / 4 of them, grants +12 percentage points Critical
 Chance.
 
 **Drawback:** buffs the wearer holds have half their magnitude.
 
+**Appearance:**
+
 ## Debuff
 
 ### Signatory's Seal
 
-*Audience: Emissary, Plague Doctor, Diviner.* **Off-Hand.** [Enabler]  hook `OnDebuffApplied`
+*Audience: Emissary, Plague Doctor, Diviner.* **Off-Hand.** [Enabler]
 
 The first 2 / 2 / 3 / 3 / 4 debuffs applied to each enemy in a battle cannot be resisted.
 
 **Drawback:** the wearer cannot resist debuffs (Signed Writ, permanently).
 
+**Appearance:**
+
 ### The Solvent Mark
 
-*Audience: Alchemist, Architect, Plague Doctor.* **Off-Hand.** [Enabler]  hooks `GetAppliedStatusValue`,
-`OnDebuffReceived`
+*Audience: Alchemist, Architect, Plague Doctor.* **Off-Hand.** [Enabler]
 
 Unravel, Expose Weakness, Blight and Blind applied by the wearer are 45 / 50 / 55 / 60 / 70%
 stronger, and none of the four can be applied to the wearer.
 
 **Drawback:** debuffs affecting the wearer have double magnitude.
 
+**Appearance:**
+
 ### Quorum Bell
 
-*Audience: Scholar, Emissary, Tactician.* **Weapon.** [Enabler]  hooks
-`GetAppliedAttributeAmplification`, `GetConditionCount`, `OnSkillCast`, `GetOutgoingDamageBonus`
+*Audience: Scholar, Emissary, Tactician.* **Weapon.** [Enabler]
 
 While at least one zone stands on the turn bar, attribute buffs and debuffs the wearer applies are
 11 / 13 / 15 / 17 / 20 percentage points stronger, adding to any other attribute amplification the
@@ -203,11 +231,13 @@ team supplies rather than replacing it. Defence, Critical Chance and Critical Da
 **Compositional drawback:** damaging skills carrying no cooldown deal 30% less damage, for everyone
 on the wearer's team.
 
+**Appearance:**
+
 ## Sustain
 
 ### Ceded Ground
 
-*Audience: Appraiser, Tactician, Warlord.* **Boots.** [Enabler]  hooks `OnCriticalHit`, `GetAttributeDelta`
+*Audience: Appraiser, Tactician, Warlord.* **Boots.** [Enabler]
 
 When an ally holding a buff the wearer applied lands a critical hit, that ally heals for
 8 / 10 / 12 / 14 / 17% of the damage dealt.
@@ -215,38 +245,44 @@ When an ally holding a buff the wearer applied lands a critical hit, that ally h
 **Drawback:** the healing is paid out of the wearer's own Health, and the wearer's Mysticism is
 reduced by 50%.
 
+**Appearance:**
+
 ### The Quiet Mass
 
-*Audience: Bar Brawler, Bloodmage, Warlord.* **Off-Hand.** [Enabler]  hook `GetAttributeDelta`
+*Audience: Bar Brawler, Bloodmage, Warlord.* **Off-Hand.** [Enabler]
 
 Gain 25 / 30 / 35 / 40 / 50% max Health.
 
 **Drawback:** the wearer's targeting weight is multiplied by 0.45 / 0.4 / 0.35 / 0.3 / 0.25.
 
+**Appearance:**
+
 ### Mercy Stitch
 
-*Audience: Jester, Symbiote, Sorcerer, Bar Brawler.* **Boots.** [Enabler]  hooks `OnDamageTaken`,
-`GetOutgoingDamageBonus`
+*Audience: Jester, Symbiote, Sorcerer, Bar Brawler.* **Boots.** [Enabler]
 
 Once per battle, damage that would take the wearer below 25% Health instead leaves them there, and
 heals them for 20 / 25 / 30 / 35 / 45% of max Health.
 
 **Drawback:** while at or below 40% Health, the wearer's damaging skills deal 40% less damage.
 
+**Appearance:**
+
 ## Control
 
 ### The Long Second
 
-*Audience: Chronophage.* **Boots.** [Enabler]  hook `OnAllyTurnBarIncreased`
+*Audience: Chronophage.* **Boots.** [Enabler]
 
 Forward turn-bar bumps the wearer grants an ally gain 20 / 25 / 30 / 35 / 45% increased effect.
 
 **Compositional drawback:** buffs placed by the wearer's team have 30% reduced magnitude.
 
+**Appearance:**
+
 ### Understudy's Coat
 
-*Audience: Jester, Symbiote, Bar Brawler.* **Off-Hand.** [Enabler]  hooks `OnAllyDamageTaken`,
-`GetOutgoingDamageBonus`
+*Audience: Jester, Symbiote, Bar Brawler.* **Off-Hand.** [Enabler]
 
 Enemy single-target skills aimed at any other ally with the lowest current Health redirect
 85 / 80 / 75 / 70 / 60% of the damage to the wearer, mitigated by the wearer's own Defence; the
@@ -254,16 +290,20 @@ rest still lands on the original target.
 
 **Drawback:** the wearer's damaging skills deal 35% less damage.
 
+**Appearance:**
+
 ## Auxiliary
 
 ### Laden Coffer
 
-*Audience: every Role.* **Boots.** [Out of combat]  hooks `GetRewardMultiplier`, `GetAttributeDelta`
+*Audience: every Role.* **Boots.** [Out of combat]
 
 Rewards from a battle the wearer fought in are increased by 10 / 15 / 20 / 25 / 35%. Only the
 largest bonus among the fielded team applies; copies do not add.
 
 **Drawback:** the wearer's Speed is reduced by 30%.
+
+**Appearance:**
 
 ## Slots and stacking
 
@@ -362,42 +402,6 @@ What the upside reads. Two entries sharing a surface is a duplication to justify
 | Zone standing on the turn bar | Quorum Bell (at least one) |
 | None — always on | The Closed Wound, The Quiet Mass, Sunderplate Nail, Laden Coffer |
 
-### Hook tally
-
-| Hook | Count | Entries |
-|---|---|---|
-| `GetOutgoingDamageBonus` | 9 | Kiln Brand, The Closed Wound, The Planted Heel, The Answering Boss, The Sealed Docket, Quorum Bell, Mercy Stitch, Understudy's Coat, Threefold Bite |
-| `OnBuffGained` | 5 | The Answering Boss, The Unguarded Glass, The Even Tread, Sunderplate Nail, Prism of Small Favors |
-| `OnSkillCast` | 3 | The Long Furrow, Kiln Brand, Quorum Bell |
-| `OnSkillEffectsResolved` | 1 | The Long Furrow |
-| `OnReagentConsumed` | 1 | Remnant-Fed Edge |
-| `OnCascadeInstanceResolved` | 0 | — |
-| `OnDamageTaken` | 2 | The Planted Heel, Mercy Stitch |
-| `OnZoneUsed` | 1 | Lantern of the Standing Ward |
-| `OnCriticalHit` | 2 | The Unguarded Glass, Ceded Ground |
-| `OnAllyDeath` | 1 | The Ossuary Ledger |
-| `OnDebuffApplied` | 1 | Signatory's Seal |
-| `OnDebuffReceived` | 1 | The Solvent Mark |
-| `GetAppliedStatusValue` | 4 | The Even Tread, The Frayed Hour, The Solvent Mark, Prism of Small Favors |
-| `GetAppliedAttributeAmplification` | 1 | Quorum Bell |
-| `GetConditionCount` | 1 | Quorum Bell |
-| `GetAttributeDelta` | 4 | The Quiet Mass, Prism of Small Favors, Laden Coffer, Ceded Ground |
-| `GetIncomingHealMultiplier` | 0 | — |
-| `OnAllyTurnBarIncreased` | 1 | The Long Second |
-| `GetOutgoingDefenceIgnoreFactor` | 1 | Sunderplate Nail |
-| `GetRewardMultiplier` | 1 | Laden Coffer |
-| `GetBaseDefenceIgnoreRate` | 0 | — |
-| `StartOfTurn` | 0 | — |
-| `EndOfTurn` | 0 | — |
-| `OnKill` | 0 | — |
-| `OnDeath` | 0 | — |
-| `OnDefend` | 0 | — |
-| `OnAllyDamageTaken` | 1 | Understudy's Coat |
-| `OnEnemyTurnBarReduced` | 0 | — |
-| `OnZoneConstructed` | 1 | Lantern of the Standing Ward |
-| `OnAffectedByZone` | 0 | — |
-| `GetZoneChargeBonus` | 0 | — |
-
 ### Status and mechanic surface
 
 | Status or mechanic | Direction | Entries |
@@ -436,3 +440,4 @@ What the upside reads. Two entries sharing a surface is a duplication to justify
 Signed Writ and Severance are on `Role_Kit_Design.md` section 10.1's *unclaimed by policy* list.
 They are admissible here only because they land on the wearer as the fixed cost — no entry aims a
 policy-locked status at an enemy.
+
