@@ -82,6 +82,7 @@ Game_Balance          = "*res://Scripts/game_balance.gd"
 Types                 = "*res://Scripts/common_enums.gd"
 Game_Settings         = "*res://Scripts/settings.gd"
 Notification_Handler  = "*res://Scripts/UI/notification_handler.gd"
+Frames_Per_Second_Overlay = "*res://Scenes/ui/General_UI/Frames_Per_Second_Overlay.tscn"
 ```
 
 ### 3.1. `main` → `Main_Instance`
@@ -139,16 +140,20 @@ It is referenced both as the autoload `Game_Balance.X` and, in a few files, by t
 
 ### 3.4. `Game_Settings` (`class_name Settings`)
 
-`Scripts/settings.gd` owns user preferences (audio volumes, screen shake, targeting help, fullscreen, locale),
+`Scripts/settings.gd` owns user preferences (audio volumes, screen shake, targeting help, fullscreen, frames-per-second overlay, V-Sync, frame rate limit, locale),
 persisted to `user://settings.cfg` via `ConfigFile`. This is deliberately separate from
 `SaveManager`'s per-profile `user://profile_<slot>.save` files: settings apply regardless of
 which save slot is active. On `_ready()` it loads the config and applies every value to the
-engine (`AudioServer` bus volumes for the `Master`/`Music`/`Sound Effects` buses, window mode via
-`DisplayServer`, locale via `TranslationServer`). Each setter applies its side effect immediately
+engine (`AudioServer` bus volumes for the `Master`/`Music`/`Sound Effects` buses, window mode and V-Sync via
+`DisplayServer`, frame rate limit via `Engine.max_fps`, locale via `TranslationServer`). Each setter applies its side effect immediately
 and re-saves, so the settings menu (`Scenes/ui/Settings_Menu.tscn`,
 `Scripts/UI/settings_menu.gd`) is a thin view over this autoload. The menu itself is an overlay
 `Control` instantiated by `MainMenu` and toggled with `show()`/`hide()`, following the same
 pattern as `HollowLedgerWindow`.
+
+The `Frames_Per_Second_Overlay` autoload (`Scripts/UI/frames_per_second_overlay.gd`) is a
+`CanvasLayer` label in the top-left corner, shown and processed only while
+`frames_per_second_overlay_enabled` is on; it follows `Settings.frames_per_second_overlay_changed`.
 
 The autoload key (`Game_Settings`) intentionally differs from the class name (`Settings`) —
 matching `Game_Balance`/`GameBalance` — because an autoload's registered name shadows a

@@ -18,7 +18,7 @@ config/name="JonasSpel"
 config/version="0.0.11"
 run/main_scene="uid://knp34r3jmafv"
 config/features=PackedStringArray("4.7", "Mobile")
-run/max_fps=60
+run/max_fps=180
 boot_splash/image="uid://cc7qs58pswref"
 config/icon="uid://cxe2lffkbra47"
 
@@ -29,6 +29,7 @@ Game_Balance="*res://Scripts/game_balance.gd"
 Types="*res://Scripts/common_enums.gd"
 Game_Settings="*res://Scripts/settings.gd"
 Notification_Handler="*res://Scripts/UI/notification_handler.gd"
+Frames_Per_Second_Overlay="*res://Scenes/ui/General_UI/Frames_Per_Second_Overlay.tscn"
 
 [champ_collector]
 

@@ -11,6 +11,9 @@ const LOCALE_BY_LANGUAGE_ID: Dictionary[int, String] = {
 @export var _screen_shake_check_box: CheckBox
 @export var _targeting_help_check_box: CheckBox
 @export var _fullscreen_check_box: CheckBox
+@export var _frames_per_second_overlay_check_box: CheckBox
+@export var _vertical_sync_check_box: CheckBox
+@export var _maximum_frame_rate_option_button: OptionButton
 @export var _language_option_button: OptionButton
 
 var _populating: bool = false
@@ -29,6 +32,9 @@ func Init() -> void:
 	_targeting_help_check_box.button_pressed = settings.targeting_help_enabled
 	_fullscreen_check_box.button_pressed = settings.fullscreen
 	_fullscreen_check_box.visible = not OS.has_feature("mobile")
+	_frames_per_second_overlay_check_box.button_pressed = settings.frames_per_second_overlay_enabled
+	_vertical_sync_check_box.button_pressed = settings.vertical_sync_enabled
+	_maximum_frame_rate_option_button.select(_maximum_frame_rate_option_button.get_item_index(settings.maximum_frame_rate))
 
 	for language_id in LOCALE_BY_LANGUAGE_ID:
 		if LOCALE_BY_LANGUAGE_ID[language_id] == settings.locale:
@@ -69,6 +75,21 @@ func _on_fullscreen_toggled(p_pressed: bool) -> void:
 	if _populating:
 		return
 	_get_settings().SetFullscreen(p_pressed)
+
+func _on_frames_per_second_overlay_toggled(p_pressed: bool) -> void:
+	if _populating:
+		return
+	_get_settings().SetFramesPerSecondOverlayEnabled(p_pressed)
+
+func _on_vertical_sync_toggled(p_pressed: bool) -> void:
+	if _populating:
+		return
+	_get_settings().SetVerticalSyncEnabled(p_pressed)
+
+func _on_maximum_frame_rate_selected(p_index: int) -> void:
+	if _populating:
+		return
+	_get_settings().SetMaximumFrameRate(_maximum_frame_rate_option_button.get_item_id(p_index))
 
 func _on_language_selected(p_index: int) -> void:
 	if _populating:
