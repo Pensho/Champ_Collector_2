@@ -609,6 +609,7 @@ See 11.
 - [ ] No Role accent
 - [ ] Silhouette survives being filled black
 - [ ] Relics: one strange element visible in the still image, plus an ornate made finish (11.6)
+- [ ] Relics: parts integrated into one made object, with no complete object set on another (11.6)
 - [ ] Still reads as its item type — footwear, weapon, off-hand — at a glance (11.6)
 - [ ] Boots shown as a pair, unless the item is not footwear (11.2)
 - [ ] Rarity signal — not yet defined (11.5)
@@ -2330,9 +2331,8 @@ composition, no figures, no creatures
 ## 11. Items, gear and reagents
 
 Gear is shown as an icon in an inventory cell, and that icon is the only item art
-(12.7). The rules below were established on three Relics, one per slot (11.6);
-standard gear has
-not been generated yet.
+(12.7). The rules below were established on seven Relics across all three slots
+(11.6); standard gear has not been generated yet.
 
 ### 11.1 Gear icons — shared conventions
 
@@ -2370,6 +2370,19 @@ silhouette where lines alone blur.
 - **Boots:** always a pair, unless the item is not footwear. The near boot stands
   in front, the far boot offset toward the upper left and partly hidden; detail
   goes on the near boot only, so the pair does not double the busyness.
+
+**Choose the item type before the concept, and spread it across the set.** Left
+open, the concept defaults to a knife: two of the first three weapons came back as
+one, and a knife in the Off-Hand slot reads as a weapon. The folllowing list is not complete but examples, other types are welcome too.
+
+- **Weapons:** swords, maces, flails, spears, axes, halberds, staffs, wands,
+  magical tools, worked horn or bone.
+- **Off-hands:** spell-book, buckler, tower shield, lantern, totem, vial, prayer
+  beads, rope, machine gear, root shield.
+
+**A shield needs a shape only a shield takes.** A round disc facing the viewer
+reads as a coin, medallion or seal. Turn it three-quarter so its thickness and
+straps show, and prefer a heater, kite or tower outline.
 
 Whether each slot needs its own silhouette convention, so a weapon reads as a
 weapon before it reads as which one, is open until standard gear exists.
@@ -2411,7 +2424,17 @@ footwear.
 
 **One saturated material**, flat, on the strange element or the part that shows
 it. Provisional: whether it reads as rarity, as a Role, or as neither is part of
-11.5.
+11.5. Spread the hue across the catalog; the Appearance lines in
+`Relic_Design.md` record what is taken.
+
+**Integrate, never stack.** Borrow elements from the second object and work them
+into the item. Two complete objects set one on the other read as assembled: a
+whole kiln as a knife's guard. A plate roundel drawn out into a nail, or wax poured
+into a shield's iron rim as its mould, reads as one made thing.
+
+**Its form must read as what it is** (8.1). Amber glaze running in drips read as
+honey. A color reads as its cause when it appears at its source too — fire along
+an edge and inside the kiln it came from reads as heat.
 
 #### 11.6.1 Approved prompts
 
@@ -3197,6 +3220,7 @@ line is a trap, not a history; the rule it produced lives in the section named.
 - A Relic as a plain object with one strange trick. Reads as a lesser magical
   item, not a find; it needs the ornate finish as well (11.6).
 - A single boot for a Boots item. Boots are a pair (11.2).
+- A knife as an Off-Hand. Reads as a weapon (11.2).
 
 **Environment elements**
 
@@ -3357,6 +3381,8 @@ together, at six characters rather than at fifteen.
   saturated material (11.6).
 - **Standard gear.** Not yet generated. The plain finish that sets it apart from a
   Relic, and whether slots need their own silhouette conventions (11.2).
+- **Kiln Brand's guard.** Kept for now, but a whole kiln stacked on a knife (11.6).
+  Rework with kiln elements worked into the guard.
 - **Gear icon post-processing.** Whether quantize keeps the engraved detail and
   pierced openings (6).
 - **Skill art display size.** One illustration per skill or two assets — tooltip

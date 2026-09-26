@@ -162,7 +162,9 @@ Skills carrying a cooldown deal +20 / 30 / 40 / 50 / 65% damage.
 
 **Drawback:** the wearer's damaging skills that can apply a debuff deal 40% less damage.
 
-**Appearance:**
+**Appearance:** a long knife with a fired stoneware blade crazed with cooling cracks, drawn from a
+small iron kiln that forms the guard. The edge still sears with the fire showing through the kiln's
+vents: it cauterizes as it cuts, for the drawback.
 
 ### Sunderplate Nail
 
@@ -176,7 +178,9 @@ The multiplicative lever, never the wearer's base ignore rate: a rate belongs to
 Between the Plates, and granting one both hands out that Role's identity and multiplies into
 Pierce Weakness's 2.5x.
 
-**Appearance:**
+**Appearance:** a rondel dagger forged from one roundel of violet-enamelled armour plate, its
+centre drawn out into a long square nail and torn open where it stretched. The pommel is the
+nail's head, beaten into burrs that curl back at the hand, for the drawback.
 
 ## Buff
 
@@ -201,7 +205,9 @@ Chance.
 
 **Drawback:** buffs the wearer holds have half their magnitude.
 
-**Appearance:**
+**Appearance:** a string of bronze prayer beads threaded through a long rose crystal prism. One
+cord goes in and two come out, carrying beads half the size: every favour is halved, for the
+drawback.
 
 ## Debuff
 
@@ -213,7 +219,9 @@ The first 2 / 2 / 3 / 3 / 4 debuffs applied to each enemy in a battle cannot be 
 
 **Drawback:** the wearer cannot resist debuffs (Signed Writ, permanently).
 
-**Appearance:**
+**Appearance:** an iron-rimmed heater shield faced with poured crimson sealing wax, pressed with a
+ruled ledger and a band of lettering. Its arm straps hang below the point as a writ's forked
+ribbon tags: the seal binds its bearer too, for the drawback.
 
 ### The Solvent Mark
 
