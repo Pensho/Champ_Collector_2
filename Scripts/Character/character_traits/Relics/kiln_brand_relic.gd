@@ -4,8 +4,6 @@ const DEBUFF_SKILL_PENALTY: float = 0.40
 
 func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
-	_trait_texture = RelicEffect.LoadIcon("res://Assets/Champ_Collector/Icons/Items/Relics/Kiln_Brand/Kiln_Brand.png")
-	_title = "Kiln Brand"
 	_magnitude_by_rarity = [0.20, 0.30, 0.40, 0.50, 0.65]
 	_body = ("Skills that can go on cooldown deal +" + str(roundi(Magnitude() * 100)) +
 			"% damage.\n" +

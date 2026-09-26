@@ -41,6 +41,8 @@ func InstantiateNew(preset: EquipmentPreset, instance_ID: int) -> void:
 	if(null != preset._relic_effect):
 		_relic_effect = preset._relic_effect.duplicate(true)
 		_relic_effect.Init(_rarity)
+		_relic_effect._title = _name
+		_relic_effect._trait_texture = RelicEffect.LoadIcon(_texture)
 
 	_attributes[Types.Attribute.Health] = preset._attributes[Types.Attribute.Health]
 	_attributes[Types.Attribute.Speed] = preset._attributes[Types.Attribute.Speed]

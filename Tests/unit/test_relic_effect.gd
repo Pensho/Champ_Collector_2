@@ -41,6 +41,19 @@ func test_relic_effect_instantiates_at_equipping_rarity() -> void:
 		"The Long Furrow's Legendary step should be 55%, per Relic_Design.md")
 	equipment.free()
 
+func test_relic_effect_takes_title_and_icon_from_its_preset() -> void:
+	var preset: EquipmentPreset = EquipmentPresetRegistry.GetRelic("The_Long_Furrow").duplicate(true)
+	preset._name = "Renamed Furrow"
+	preset._texture_path = "res://Assets/Champ_Collector/Icons/Items/Relics/Kiln_Brand/Kiln_Brand.png"
+
+	var equipment: Equipment = Equipment.new()
+	equipment.InstantiateNew(preset, 0)
+
+	assert_eq(equipment._relic_effect._title, "Renamed Furrow", "The effect's title should come from the preset's name")
+	assert_eq(equipment._relic_effect._trait_texture, load(preset._texture_path),
+		"The effect's icon should come from the preset's texture path")
+	equipment.free()
+
 func test_relic_effect_ladder_scales_with_rarity() -> void:
 	var preset: EquipmentPreset = EquipmentPresetRegistry.GetRelic("The_Long_Furrow").duplicate(true)
 
