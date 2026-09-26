@@ -6,7 +6,7 @@ class_name DebugActions extends Node
 ## a "does it override anything" runtime check, since a stub is a valid, inspectable
 ## RelicEffect too.
 const IMPLEMENTED_RELIC_KEYS: Array[String] = [
-	"The_Quiet_Mass", "The_Planted_Heel", "The_Answering_Boss", "Kiln_Brand",
+	"The_Quiet_Mass", "Flintbrace", "The_Answering_Boss", "Kiln_Brand",
 	"Sunderplate_Nail", "The_Ossuary_Ledger",
 	"The_Even_Tread", "The_Frayed_Hour", "The_Solvent_Mark", "Signatorys_Seal",
 	"Quorum_Bell", "Prism_of_Small_Favors",

@@ -78,9 +78,9 @@ Damaging skills deal +25 / 30 / 35 / 45 / 60% damage.
 clamped shut with iron staples. A thin vermilion line shows through the seam: a wound that will
 never close.
 
-### The Planted Heel
+### The Flintbrace
 
-*Audience: Warlord, Bar Brawler, Symbiote.* **Boots.** [Channel 2]
+*Audience: Warlord, Bar Brawler, Symbiote.* **Off-Hand.** [Channel 2]
 
 After the wearer takes a single hit exceeding 15% of their max Health, their next damaging skill
 deals +30 / 35 / 40 / 50 / 65% damage.
@@ -217,7 +217,7 @@ The first 2 / 2 / 3 / 3 / 4 debuffs applied to each enemy in a battle cannot be 
 
 ### The Solvent Mark
 
-*Audience: Alchemist, Architect, Plague Doctor.* **Off-Hand.** [Enabler]
+*Audience: Alchemist, Architect, Plague Doctor.* **Weapon.** [Enabler]
 
 Unravel, Expose Weakness, Blight and Blind applied by the wearer are 45 / 50 / 55 / 60 / 70%
 stronger, and none of the four can be applied to the wearer.
@@ -228,7 +228,7 @@ stronger, and none of the four can be applied to the wearer.
 
 ### Quorum Bell
 
-*Audience: Scholar, Emissary, Tactician.* **Weapon.** [Enabler]
+*Audience: Scholar, Emissary, Tactician.* **Off-Hand.** [Enabler]
 
 While at least one zone stands on the turn bar, attribute buffs and debuffs the wearer applies are
 11 / 13 / 15 / 17 / 20 percentage points stronger, adding to any other attribute amplification the
@@ -255,7 +255,7 @@ reduced by 50%.
 
 ### The Quiet Mass
 
-*Audience: Bar Brawler, Bloodmage, Warlord.* **Off-Hand.** [Enabler]
+*Audience: Bar Brawler, Bloodmage, Warlord.* **Boots.** [Enabler]
 
 Gain 25 / 30 / 35 / 40 / 50% max Health.
 
@@ -328,9 +328,9 @@ added to the catalog is checked against that figure by its audience, not by its 
 
 | Slot | Count | Entries |
 |---|---|---|
-| Weapon | 6 | The Long Furrow, Remnant-Fed Edge, Threefold Bite, Kiln Brand, Sunderplate Nail, Quorum Bell |
-| Off-Hand | 11 | The Closed Wound, Lantern of the Standing Ward, The Answering Boss, The Sealed Docket, The Unguarded Glass, The Ossuary Ledger, Prism of Small Favors, Signatory's Seal, The Solvent Mark, The Quiet Mass, Understudy's Coat |
-| Boots | 7 | The Planted Heel, The Frayed Hour, The Even Tread, Ceded Ground, Mercy Stitch, The Long Second, Laden Coffer |
+| Weapon | 6 | The Long Furrow, Remnant-Fed Edge, Threefold Bite, Kiln Brand, Sunderplate Nail, The Solvent Mark |
+| Off-Hand | 11 | The Closed Wound, Flintbrace, Lantern of the Standing Ward, The Answering Boss, The Sealed Docket, The Unguarded Glass, The Ossuary Ledger, Prism of Small Favors, Signatory's Seal, Quorum Bell, Understudy's Coat |
+| Boots | 7 | The Frayed Hour, The Even Tread, Ceded Ground, The Quiet Mass, Mercy Stitch, The Long Second, Laden Coffer |
 
 ## Coverage
 
@@ -353,7 +353,7 @@ Five entries is the soft ceiling on any one Role's audience, checked whenever an
 | Alchemist | Remnant-Fed Edge, The Solvent Mark | Kiln Brand | Lantern of the Standing Ward, The Closed Wound, The Frayed Hour, The Long Second |
 | Appraiser | Prism of Small Favors, Ceded Ground | — | The Even Tread |
 | Architect | Lantern of the Standing Ward, The Sealed Docket, The Solvent Mark | Kiln Brand | The Frayed Hour |
-| Bar Brawler | The Planted Heel, The Answering Boss, The Quiet Mass, Mercy Stitch, Understudy's Coat | The Ossuary Ledger, The Unguarded Glass | The Closed Wound, The Long Second |
+| Bar Brawler | Flintbrace, The Answering Boss, The Quiet Mass, Mercy Stitch, Understudy's Coat | The Ossuary Ledger, The Unguarded Glass | The Closed Wound, The Long Second |
 | Bloodmage | Prism of Small Favors, Sunderplate Nail, The Closed Wound, The Ossuary Ledger, The Quiet Mass | — | Sunderplate Nail, The Frayed Hour |
 | Chronophage | Lantern of the Standing Ward, The Long Second | — | The Sealed Docket |
 | Cultist | Prism of Small Favors, The Closed Wound, The Ossuary Ledger | Kiln Brand | — |
@@ -365,11 +365,11 @@ Five entries is the soft ceiling on any one Role's audience, checked whenever an
 | Plague Doctor | Threefold Bite, Signatory's Seal, Lantern of the Standing Ward, The Solvent Mark | Kiln Brand | The Sealed Docket |
 | Scholar | The Even Tread, Quorum Bell | Kiln Brand | Sunderplate Nail, The Long Second |
 | Sorcerer | Remnant-Fed Edge, Threefold Bite, Mercy Stitch | — | Lantern of the Standing Ward, The Sealed Docket |
-| Symbiote | The Planted Heel, The Answering Boss, Mercy Stitch, Understudy's Coat | The Ossuary Ledger, The Unguarded Glass | The Closed Wound, The Long Second |
+| Symbiote | Flintbrace, The Answering Boss, Mercy Stitch, Understudy's Coat | The Ossuary Ledger, The Unguarded Glass | The Closed Wound, The Long Second |
 | Tactician | The Even Tread, Ceded Ground, Quorum Bell | — | Sunderplate Nail, The Long Second |
 | Thief | Kiln Brand, Prism of Small Favors, Sunderplate Nail, The Unguarded Glass | — | Quorum Bell |
 | Tidal Corsair | Kiln Brand, Prism of Small Favors, Lantern of the Standing Ward, The Sealed Docket, The Unguarded Glass | — | Quorum Bell |
-| Warlord | The Even Tread, The Planted Heel, The Answering Boss, Ceded Ground, The Quiet Mass | — | Sunderplate Nail, The Long Second |
+| Warlord | The Even Tread, Flintbrace, The Answering Boss, Ceded Ground, The Quiet Mass | — | Sunderplate Nail, The Long Second |
 
 **Roster-wide entries, listed here instead of in every row.** Laden Coffer pays out in currency
 rather than in a battle effect, so every Role is its audience. Threefold Bite's −30% on non-Echo
@@ -383,7 +383,7 @@ no-cooldown skill.
 | Channel | Count | Entries |
 |---|---|---|
 | Channel 1 | 1 | Sunderplate Nail |
-| Channel 2 | 8 | Remnant-Fed Edge, Kiln Brand, The Closed Wound, The Planted Heel, The Answering Boss, The Sealed Docket, The Ossuary Ledger, The Frayed Hour |
+| Channel 2 | 8 | Remnant-Fed Edge, Kiln Brand, The Closed Wound, Flintbrace, The Answering Boss, The Sealed Docket, The Ossuary Ledger, The Frayed Hour |
 | Channel 2 — crit path | 2 | The Unguarded Glass, Prism of Small Favors |
 | Channel 3 — Cascade | 3 | The Long Furrow, Threefold Bite, Lantern of the Standing Ward |
 | Enabler | 9 | Signatory's Seal, The Solvent Mark, Quorum Bell, The Even Tread, Ceded Ground, The Quiet Mass, Mercy Stitch, The Long Second, Understudy's Coat |
@@ -399,7 +399,7 @@ What the upside reads. Two entries sharing a surface is a duplication to justify
 | Target's state | The Sealed Docket (4+ distinct debuff types) |
 | Resource consumed | Remnant-Fed Edge (reagent), Lantern of the Standing Ward (zone charge) |
 | Event count within the battle | Threefold Bite (every third Echo), Signatory's Seal (first N debuffs per enemy) |
-| Incoming event | The Planted Heel (hit above 15% max Health), The Ossuary Ledger (ally death), Mercy Stitch (damage crossing 25% of the wearer's max Health) |
+| Incoming event | Flintbrace (hit above 15% max Health), The Ossuary Ledger (ally death), Mercy Stitch (damage crossing 25% of the wearer's max Health) |
 | Turn-bar distance | The Long Furrow (4 or 5 sections) |
 | Application the wearer makes | The Even Tread (any buff applied), The Frayed Hour (Temporal Leak applied), The Solvent Mark (Unravel, Expose Weakness, Blight or Blind applied), The Long Second (forward bump granted to an ally) |
 | Ally holding the wearer's buff | Ceded Ground (that ally's critical hits) |
@@ -430,7 +430,7 @@ What the upside reads. Two entries sharing a surface is a duplication to justify
 | Damaging skills, unconditionally | suppressed | Understudy's Coat (wearer) |
 | Enemy target selection | redirected onto the wearer | Understudy's Coat |
 | Critical hits | amplified / denied / read | The Unguarded Glass, Prism of Small Favors / The Long Furrow, The Even Tread / Ceded Ground |
-| Enemy targeting weight | raised / lowered | The Planted Heel / The Quiet Mass |
+| Enemy targeting weight | raised / lowered | Flintbrace / The Quiet Mass |
 | Max Health | raised / reduced | The Quiet Mass / The Answering Boss |
 | Temporal Leak | amplified | The Frayed Hour |
 | Turn-bar bumps (forward, ally) | amplified | The Long Second |

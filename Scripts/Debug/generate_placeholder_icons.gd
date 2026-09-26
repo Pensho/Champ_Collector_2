@@ -399,7 +399,7 @@ const RELIC_ICON_TABLE: Array = [
 			"color": Color(0.55, 0.20, 0.19, 1.0) },
 	{ "folder": "Items/Relics/The_Closed_Wound", "base_name": "The_Closed_Wound", "size": 64,
 			"color": Color(0.62, 0.30, 0.28, 1.0) },
-	{ "folder": "Items/Relics/The_Planted_Heel", "base_name": "The_Planted_Heel", "size": 64,
+	{ "folder": "Items/Relics/Flintbrace", "base_name": "Flintbrace", "size": 64,
 			"color": Color(0.70, 0.31, 0.28, 1.0) },
 	{ "folder": "Items/Relics/Lantern_of_the_Standing_Ward", "base_name": "Lantern_of_the_Standing_Ward", "size": 64,
 			"color": Color(0.55, 0.23, 0.19, 1.0) },

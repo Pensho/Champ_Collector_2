@@ -15,7 +15,7 @@ const RELIC_PRESETS: Dictionary[String, EquipmentPreset] = {
 	"Remnant_Fed_Edge": preload("res://Data/Item_Presets/Relics/Remnant_Fed_Edge.tres"),
 	"Threefold_Bite": preload("res://Data/Item_Presets/Relics/Threefold_Bite.tres"),
 	"The_Closed_Wound": preload("res://Data/Item_Presets/Relics/The_Closed_Wound.tres"),
-	"The_Planted_Heel": preload("res://Data/Item_Presets/Relics/The_Planted_Heel.tres"),
+	"Flintbrace": preload("res://Data/Item_Presets/Relics/Flintbrace.tres"),
 	"Lantern_of_the_Standing_Ward": preload("res://Data/Item_Presets/Relics/Lantern_of_the_Standing_Ward.tres"),
 	"The_Answering_Boss": preload("res://Data/Item_Presets/Relics/The_Answering_Boss.tres"),
 	"The_Sealed_Docket": preload("res://Data/Item_Presets/Relics/The_Sealed_Docket.tres"),
