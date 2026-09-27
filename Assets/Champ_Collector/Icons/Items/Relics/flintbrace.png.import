@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://kgixybcltdel"
-path="res://.godot/imported/The_Planted_Heel.png-df7f4807fe162e097740acf82ac5ee60.ctex"
+uid="uid://be1rr0udjyntq"
+path="res://.godot/imported/flintbrace.png-d211402ebcb52dc24bbb227f18009e7f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Items/Relics/The_Planted_Heel/The_Planted_Heel.png"
-dest_files=["res://.godot/imported/The_Planted_Heel.png-df7f4807fe162e097740acf82ac5ee60.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Items/Relics/flintbrace.png"
+dest_files=["res://.godot/imported/flintbrace.png-d211402ebcb52dc24bbb227f18009e7f.ctex"]
 
 [params]
 

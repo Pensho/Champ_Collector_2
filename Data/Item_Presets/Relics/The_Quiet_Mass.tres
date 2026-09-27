@@ -12,6 +12,6 @@ _name = "The Quiet Mass"
 _slot = 5
 _rarity = 1
 _item_type = 1
-_texture_path = "res://Assets/Champ_Collector/Icons/Items/Relics/The_Quiet_Mass/The_Quiet_Mass.png"
+_texture_path = "res://Assets/Champ_Collector/Icons/Items/Relics/the_quiet_mass.png"
 _preset_path = "res://Data/Item_Presets/Relics/The_Quiet_Mass.tres"
 _relic_effect = SubResource("SubResource_1")

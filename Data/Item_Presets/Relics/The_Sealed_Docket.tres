@@ -12,6 +12,6 @@ _name = "The Sealed Docket"
 _slot = 2
 _rarity = 1
 _item_type = 1
-_texture_path = "res://Assets/Champ_Collector/Icons/Items/Relics/The_Sealed_Docket/The_Sealed_Docket.png"
+_texture_path = "res://Assets/Champ_Collector/Icons/Items/Relics/the_sealed_docket.png"
 _preset_path = "res://Data/Item_Presets/Relics/The_Sealed_Docket.tres"
 _relic_effect = SubResource("SubResource_1")

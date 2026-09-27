@@ -1,4 +1,4 @@
-class_name ThePlantedHeelRelic extends RelicEffect
+class_name FlintbraceRelic extends RelicEffect
 
 const BIG_HIT_FRACTION: float = 0.15
 const TARGETING_DRAWBACK: float = 1.5

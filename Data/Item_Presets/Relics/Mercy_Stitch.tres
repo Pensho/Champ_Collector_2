@@ -12,6 +12,6 @@ _name = "Mercy Stitch"
 _slot = 5
 _rarity = 1
 _item_type = 1
-_texture_path = "res://Assets/Champ_Collector/Icons/Items/Relics/Mercy_Stitch/Mercy_Stitch.png"
+_texture_path = "res://Assets/Champ_Collector/Icons/Items/Relics/mercy_stitch.png"
 _preset_path = "res://Data/Item_Presets/Relics/Mercy_Stitch.tres"
 _relic_effect = SubResource("SubResource_1")

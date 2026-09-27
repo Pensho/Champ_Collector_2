@@ -87,7 +87,7 @@ deals +30 / 35 / 40 / 50 / 65% damage.
 
 **Drawback:** enemies target the wearer at 1.5x weight, permanently.
 
-**Appearance:**
+**Appearance:** A massive forearm bracer of four knapped flint plates overlapping like scales in a blued iron frame, one plate freshly chipped by a blow: it takes the hit so the next strike can answer it.
 
 ### Lantern of the Standing Ward
 
@@ -120,7 +120,7 @@ While the target carries four or more distinct debuff types, damaging skills dea
 **Compositional drawback:** Echoes produced by anyone on the wearer's team resolve at
 half strength.
 
-**Appearance:**
+**Appearance:** The upper half of a thick oxblood docket book, sawn clean across, held shut by four clasps of four different makes: buckle, hook, padlock and knotted cord. The cut face shows the sulphur yellow page block: whatever repeats does so at half, for the drawback.
 
 ### The Unguarded Glass
 
@@ -269,7 +269,7 @@ Gain 25 / 30 / 35 / 40 / 50% max Health.
 
 **Drawback:** the wearer's targeting weight is multiplied by 0.45 / 0.4 / 0.35 / 0.3 / 0.25.
 
-**Appearance:**
+**Appearance:** A pair of short, massive boots in weathered slate-grey leather, moulded into flying-buttress ribs capped in bronze, with deep teal pointed-arch panels sunk between them. The collars bulge from long wear: built to bear weight.
 
 ### Mercy Stitch
 
@@ -280,7 +280,7 @@ heals them for 20 / 25 / 30 / 35 / 45% of max Health.
 
 **Drawback:** while at or below 40% Health, the wearer's damaging skills deal 40% less damage.
 
-**Appearance:**
+**Appearance:** A pair of tall boots in pale celadon-glazed porcelain, shattered and mended with raised seams of gold, held in blackened leather cuffs. Whole again, and plainly one blow from breaking, for the drawback.
 
 ## Control
 

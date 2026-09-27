@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://xto5p2nhyflx"
-path="res://.godot/imported/The_Quiet_Mass.png-9d777c08f00dc69ad2184f6b9a4e4a7e.ctex"
+uid="uid://cmxjf5urof1vs"
+path="res://.godot/imported/the_quiet_mass.png-c5860a3c4eb57b7d4fa86b04a6de5f77.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Items/Relics/The_Quiet_Mass/The_Quiet_Mass.png"
-dest_files=["res://.godot/imported/The_Quiet_Mass.png-9d777c08f00dc69ad2184f6b9a4e4a7e.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Items/Relics/the_quiet_mass.png"
+dest_files=["res://.godot/imported/the_quiet_mass.png-c5860a3c4eb57b7d4fa86b04a6de5f77.ctex"]
 
 [params]
 
