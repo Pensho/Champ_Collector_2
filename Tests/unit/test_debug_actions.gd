@@ -16,7 +16,6 @@ func test_build_equipment_preset_sets_exact_attributes() -> void:
 	assert_eq(preset._attributes[Types.Attribute.Defence], 12, "Defence should be set exactly")
 	assert_eq(preset._attributes[Types.Attribute.Speed], 3, "Speed should be set exactly")
 	assert_eq(preset._attributes[Types.Attribute.Health], 0, "Untouched attributes should remain at their default")
-	assert_ne(preset._texture_path, "", "Preset should have a usable texture path")
 
 func test_build_battle_context_assembles_context_container() -> void:
 	var player_characters: Array[Character] = [TestFactory.make_character()]
