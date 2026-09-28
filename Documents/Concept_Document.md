@@ -1443,3 +1443,11 @@ each resolution landing one at a time, attributed to its source, escalating
 through the cascade — is a VFX and HUD specification as much as a combat one.
 `Art_Style_Guide.md` sections 13.3 and 14.4 own the visual side; neither is
 written yet.
+
+## 8. Localization
+
+The player picks the language in Settings; it applies to all player-facing text.
+English is the source language.
+
+- **Tier 1:** English, German, Spanish, French. Swedish is optional.
+- **Tier 2 (optional follow-up):** Chinese, Japanese, Korean, Russian.

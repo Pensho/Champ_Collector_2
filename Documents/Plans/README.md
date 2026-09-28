@@ -29,6 +29,13 @@ Design-only plans (no code; can run at any time):
   soft ties to `Plan_Particle_Effects.md` (paired light/emitter scenes) and
   `Adventure_Background_Visuals_Checklist.md` (glow-accent props).
 
+Code plans:
+
+- `Plan_Localization.md` — the six-step localization rollout and its conventions. Each
+  step gets a detailed plan when the step before it completes.
+- `Plan_Localization_Text_Preparation.md` — step 1: every player-facing string routed
+  through translation.
+
 Held (revise before scheduling):
 
 - `Plan_Story_Mode_Systems.md` — the systems that deliver story mode (story state
