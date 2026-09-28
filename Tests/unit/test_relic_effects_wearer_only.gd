@@ -212,7 +212,7 @@ func test_planted_heel_boosts_the_next_damaging_skill_after_a_big_hit_at_two_rar
 	for rarity_and_expected in [[Types.Rarity.Uncommon, 0.35], [Types.Rarity.Legendary, 0.65]]:
 		var wearer: Character = TestFactory.make_character()
 		wearer._current_health = wearer._attributes[Types.Attribute.Health] * GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER
-		var relic: ThePlantedHeelRelic = ThePlantedHeelRelic.new()
+		var relic: FlintbraceRelic = FlintbraceRelic.new()
 		relic.Init(rarity_and_expected[0])
 		wearer._trait = relic
 		wearer._skills = [TestFactory.make_strike_skill()]
@@ -233,7 +233,7 @@ func test_planted_heel_boosts_the_next_damaging_skill_after_a_big_hit_at_two_rar
 func test_planted_heel_gives_no_bonus_without_a_big_hit() -> void:
 	var wearer: Character = TestFactory.make_character()
 	wearer._current_health = wearer._attributes[Types.Attribute.Health] * GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER
-	var relic: ThePlantedHeelRelic = ThePlantedHeelRelic.new()
+	var relic: FlintbraceRelic = FlintbraceRelic.new()
 	relic.Init(Types.Rarity.Legendary)
 	wearer._trait = relic
 	wearer._skills = [TestFactory.make_strike_skill()]
@@ -246,7 +246,7 @@ func test_planted_heel_gives_no_bonus_without_a_big_hit() -> void:
 	assert_almost_eq(result._damage_multiplier, 1.0, 0.0001)
 
 func test_planted_heel_increases_targeting_priority() -> void:
-	var relic: ThePlantedHeelRelic = ThePlantedHeelRelic.new()
+	var relic: FlintbraceRelic = FlintbraceRelic.new()
 	relic.Init(Types.Rarity.Legendary)
 
 	assert_almost_eq(relic.GetTargetingPriorityMultiplier(), 1.5, 0.0001)

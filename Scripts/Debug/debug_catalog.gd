@@ -70,7 +70,7 @@ const ITEM_SLOT_TEXTURES: Dictionary[Types.Slot, String] = {
 static func GetPlayerCharacterPresets() -> Dictionary[String, CharacterPreset]:
 	var presets: Dictionary[String, CharacterPreset] = {}
 	var pool: ContentPool = GameModeRegistry.Active()
-	for source: Array in [pool.recruitable_champions]:
+	for source: Array in [pool.starting_champions, pool.recruitable_champions]:
 		for preset: CharacterPreset in source:
 			if(null != preset):
 				presets[preset._name] = preset

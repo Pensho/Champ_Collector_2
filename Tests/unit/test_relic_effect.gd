@@ -44,7 +44,7 @@ func test_relic_effect_instantiates_at_equipping_rarity() -> void:
 func test_relic_effect_takes_title_and_icon_from_its_preset() -> void:
 	var preset: EquipmentPreset = EquipmentPresetRegistry.GetRelic("The_Long_Furrow").duplicate(true)
 	preset._name = "Renamed Furrow"
-	preset._texture_path = "res://Assets/Champ_Collector/Icons/Items/Relics/Kiln_Brand/Kiln_Brand.png"
+	preset._texture_path = "res://Assets/Champ_Collector/Icons/Items/Relics/kiln_brand.png"
 
 	var equipment: Equipment = Equipment.new()
 	equipment.InstantiateNew(preset, 0)
