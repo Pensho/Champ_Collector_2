@@ -929,7 +929,7 @@ const MANIFEST: Dictionary = {
 							"Sea, no damage bucket; a mixed hand (Boarding Party) adds no bucket " +
 							"contribution (Steel damages at the skill's own base rate), raises or " +
 							"resupplies the Deck at 1 charge per Sea (2 max), and grants every other " +
-							"living ally Slipstream and Empower (2 turns). The Gilded Deck's own Sea " +
+							"living ally Slipstream (2 turns) and Haste (1 turn). The Gilded Deck's own Sea " +
 							"Legs grant is not declared here (Role_Kit_Design.md section 11): it is a " +
 							"stacking, zone-delivered, per-holder-attribute grant, a shape " +
 							"granted_attribute_buff cannot represent (fixed one-shot, fixed attribute) " +
@@ -1035,9 +1035,11 @@ const MANIFEST: Dictionary = {
 					"citation": "Shield_Slam.tres:6-11"},
 			{"name": "Hold the Line", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Channel1,
-					"precondition": "Grants All Allies Fortify (2 turns, +30% Defence). No damage.",
-					"citation": "Hold_the_Line.tres:6-11",
-					"granted_attribute_buff": {"attributes": [Types.Attribute.Defence], "magnitude": 0.3}},
+					"precondition": "Grants all other allies Fortify (2 turns, +30% Defence); the " +
+							"Warlord takes Fortify at double strength and Slow (1 turn). No damage.",
+					"citation": "Hold_the_Line.tres:8-18",
+					"granted_attribute_buff": {"attributes": [Types.Attribute.Defence], "magnitude": 0.3,
+							"buff_type": Types.Buff_Type.Fortify}},
 			{"name": "Brace for Impact", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Channel1,
 					"precondition": "Grants self Rush (1 turn: +30% all primary attributes except " +

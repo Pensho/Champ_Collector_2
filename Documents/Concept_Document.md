@@ -322,7 +322,7 @@ Current roles, their identity and purpose exist as follows:
     - Damage dealer. Primary attributes: Attack, Speed.
     - The Tidal Corsair is a Combo character where you plan your moves ahead, highly mobile but not inherently strong unless you set up your attacks correctly.
     - Purpose: Damage
-    - Passive: Wrangle the Sea [Channel 2 + Enabler] - Boarding Strike grants a Steel stack, Saltwater Shot grants a Sea stack (up to 3 held). Corsair's Reckoning consumes all stacks and resolves by composition: Steel only (Broadside) adds bonus damage per Steel stack; Sea only (Bring Her Alongside) raises or resupplies The Gilded Deck at 2 charges per Sea; mixed (Boarding Party) deals base damage, adds 1 Deck charge per Sea (capped at 2), and grants every other living ally Slipstream and Empower for 2 turns. An ally whose turn starts on the Deck gains a permanent Sea Legs stack, boosting their own highest primary attribute (not Health), scaled by the Corsair's Knowledge, capped at 4.
+    - Passive: Wrangle the Sea [Channel 2 + Enabler] - Boarding Strike grants a Steel stack, Saltwater Shot grants a Sea stack (up to 3 held). Corsair's Reckoning consumes all stacks and resolves by composition: Steel only (Broadside) adds bonus damage per Steel stack; Sea only (Bring Her Alongside) raises or resupplies The Gilded Deck at 2 charges per Sea; mixed (Boarding Party) deals base damage, adds 1 Deck charge per Sea (capped at 2), and grants every other living ally Slipstream for 2 turns and Haste for 1 turn. An ally whose turn starts on the Deck gains a permanent Sea Legs stack, boosting their own highest primary attribute (not Health), scaled by the Corsair's Knowledge, capped at 4.
         - Damage per Steel stack: 45% Uncommon, 50% Rare, 55% Epic, 60% Legendary
         - Sea Legs bonus per stack: 5% Uncommon, 6% Rare, 7% Epic, 8% Legendary
         - Known bug: the in-combat Sea Legs tooltip has been observed showing a lower percent on a
@@ -414,6 +414,7 @@ Contest = Caster's Accuracy * Random_Multiplier_A vs Target's Resistance * Rando
   makes a debuff land (or resist) with effective certainty. Encounters that rely on a debuff as
   the intended solution must be tuned so that counter-play's Accuracy beats the target's
   Resistance.
+- A debuff a character places on itself skips the contest and always lands; Aegis still blocks it.
 
 Accuracy is therefore a key stat for the Emissary and Jester, who rely on disrupting enemies rather than on raw damage, and high Resistance is what keeps a tank like the Warlord from being crippled by debuffs.
 
@@ -635,7 +636,7 @@ the fix belongs in the data or the document.
 * Disarm
     * Type: Damage, Debuff
     * Cooldown: 2 turns
-    * Effect: [Channel 1] Deals damage to a single enemy and applies the Enfeeble debuff for 2 turns.
+    * Effect: [Channel 1 + Enabler] Deals damage to a single enemy, applies the Enfeeble debuff for 2 turns, and pushes them backward 10% on the turn bar.
 
 ###### Alchemist
 * Acrid Splash
@@ -687,7 +688,7 @@ the fix belongs in the data or the document.
 * Ill Omen
     * Type: Damage, Debuff
     * Cooldown: 3 turns
-    * Effect: [Channel 1 + Enabler] Deals damage to a single enemy, scaling with Mysticism, and applies the Hexed debuff for 2 turns.
+    * Effect: [Channel 1 + Enabler] Deals damage to a single enemy, scaling with Mysticism, and applies the Hexed debuff for 2 turns and the Slow debuff for 1 turn.
 
 ###### Appraiser
 * Sizing Cut
@@ -713,7 +714,7 @@ the fix belongs in the data or the document.
 * Battle Orders
     * Type: Buff (Turn Bar)
     * Cooldown: 4 turns
-    * Effect: [Enabler] One ally gains the Battle Orders turn bar buff for 2 turns.
+    * Effect: [Enabler] One ally gains the Battle Orders turn bar buff for 2 turns and the Haste buff for 1 turn.
 
 ###### Symbiote
 * Spore Lash
@@ -726,7 +727,7 @@ the fix belongs in the data or the document.
 * Grafted Flesh
     * Type: Buff, Heal
     * Cooldown: 4 turns
-    * Effect: [Enabler] The Symbiote loses 10% of its max Health; one ally gains the Regeneration buff for 4 turns.
+    * Effect: [Enabler] The Symbiote loses 10% of its max Health and gains the Slow debuff for 1 turn; one ally gains the Regeneration buff for 4 turns and moves forward 12% on the turn bar.
 
 ###### Jester
 * Pratfall Sting
@@ -765,7 +766,7 @@ the fix belongs in the data or the document.
 * Headbutt
     * Type: Damage, Debuff (Turn Bar)
     * Cooldown: 3 turns
-    * Effect: [Channel 1 + Enabler] Deals damage to a single enemy, scaling with Health, and applies the Dead Weight debuff for 2 turns.
+    * Effect: [Channel 1 + Enabler] Deals damage to a single enemy, scaling with Health, applies the Dead Weight debuff for 2 turns, and pushes them backward 5% on the turn bar.
 
 ###### Bloodmage
 * Blood Bolt
@@ -787,7 +788,7 @@ the fix belongs in the data or the document.
 * Pull the Thread
     * Type: Damage, Debuff, Turn Bar
     * Cooldown: 4 turns
-    * Effect: [Enabler] Deals damage to a single enemy, scaling with Mysticism, pushes them backward 15% on the turn bar, and applies the Temporal Leak debuff for 3 turns. Grants the Herald 2 Tension, regardless of the currently held thread (see the Weft and Warp passive).
+    * Effect: [Enabler] Deals damage to a single enemy, scaling with Mysticism, pushes them backward 12% on the turn bar, and applies the Temporal Leak debuff for 3 turns. Grants the Herald 2 Tension, regardless of the currently held thread (see the Weft and Warp passive).
 * Cut the Cloth
     * Type: Damage
     * Cooldown: 4 turns
@@ -800,7 +801,7 @@ the fix belongs in the data or the document.
 * Flicker Zone
     * Type: Turn Bar (Zone)
     * Cooldown: 2 turns
-    * Effect: [Enabler] Affected allies move 15% further on the turn bar. Holds 5 charges.
+    * Effect: [Enabler] Affected allies move 20% further on the turn bar. Holds 5 charges.
 * Temporal Sinkhole
     * Type: Turn Bar (Zone)
     * Cooldown: 4 turns
@@ -829,7 +830,7 @@ the fix belongs in the data or the document.
 * Corsair's Reckoning
     * Type: Damage
     * Cooldown: 3 turns
-    * Effect: [Channel 1 + Channel 2 + Enabler] Consumes all held Stacks. Steel only: bonus damage per Steel. Sea only: raises or resupplies The Gilded Deck. Mixed: base damage, fewer Deck charges, and Slipstream plus Empower for every other ally. Rates per the Wrangle the Sea passive (section 3.1.3).
+    * Effect: [Channel 1 + Channel 2 + Enabler] Consumes all held Stacks. Steel only: bonus damage per Steel. Sea only: raises or resupplies The Gilded Deck. Mixed: base damage, fewer Deck charges, and Slipstream plus Haste for every other ally. Rates per the Wrangle the Sea passive (section 3.1.3).
 
 ###### Plague Doctor
 * Septic Lance
@@ -851,7 +852,7 @@ the fix belongs in the data or the document.
 * Hold the Line
     * Type: Buff
     * Cooldown: 3 turns
-    * Effect: [Enabler] All allies gain the Fortify buff for 2 turns.
+    * Effect: [Enabler] All other allies gain the Fortify buff for 2 turns. The Warlord gains Fortify at double strength for 2 turns and the Slow debuff for 1 turn.
 * Brace for Impact
     * Type: Buff
     * Cooldown: 4 turns
@@ -1044,6 +1045,8 @@ Families — one entry per rarity tier — tagged using the same bracket vocabul
   currently on cooldown by (1/1/1/2) turns, set by rarity.
 * Second Wind Chime [Enabler]: after the consumer's current turn ends, their turn bar resets to
   15/20/25/30% (by rarity) instead of 0. Self-only.
+* Pilgrim's Waystone [Enabler]: a carved road-marker from a ruined shrine path; moves one ally
+  forward 15/18/21/24% (by rarity) on the turn bar. God of Adventure lore family.
 
 Singletons:
 * Unbinding Shard (Binary) [Enabler]: clears one targeted zone section (one of the two

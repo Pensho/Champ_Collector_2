@@ -493,6 +493,45 @@ func test_apply_debuff_effect_applies_a_debuff_with_its_own_duration() -> void:
 	assert_eq(_roster[3]._active_debuffs[0].type, Types.Debuff_Type.Bleed)
 	assert_eq(_roster[3]._active_debuffs[0].duration, 3)
 
+func test_apply_buff_effect_magnitude_multiplier_scales_the_buff_value() -> void:
+	var plain: ApplyBuffEffect = ApplyBuffEffect.new()
+	plain.buff_type = Types.Buff_Type.Fortify
+	plain.duration = 2
+	var doubled: ApplyBuffEffect = ApplyBuffEffect.new()
+	doubled.buff_type = Types.Buff_Type.Fortify
+	doubled.duration = 2
+	doubled.magnitude_multiplier = 2.0
+
+	plain.Resolve(TestFactory.make_context(_resolver, 0, [1], TestFactory.make_empty_skill()))
+	doubled.Resolve(TestFactory.make_context(_resolver, 0, [0], TestFactory.make_empty_skill()))
+
+	assert_almost_eq(_roster[0]._active_buffs[0].value, 2.0 * _roster[1]._active_buffs[0].value, 0.0001)
+
+func test_a_self_applied_debuff_skips_the_resist_roll() -> void:
+	_roster[0]._attributes[Types.Attribute.Accuracy] = 0
+	_roster[0]._attributes[Types.Attribute.Resistance] = 10000
+	var effect: ApplyDebuffEffect = ApplyDebuffEffect.new()
+	effect.debuff_type = Types.Debuff_Type.Slow
+	effect.duration = 1
+	effect.target = Types.Skill_Target.Self
+
+	effect.Resolve(TestFactory.make_context(_resolver, 0, [0], TestFactory.make_empty_skill()))
+
+	assert_eq(_roster[0]._active_debuffs.size(), 1, "A cost the caster places on itself must never be resisted")
+	assert_true(_kinds(CombatResult.Kind.Debuff_Resisted).is_empty())
+
+func test_a_self_applied_debuff_is_still_blocked_by_aegis() -> void:
+	_resolver.GetStatusResolver().ApplyBuff(0, _buff(Types.Buff_Type.Aegis, 1))
+	var effect: ApplyDebuffEffect = ApplyDebuffEffect.new()
+	effect.debuff_type = Types.Debuff_Type.Slow
+	effect.duration = 1
+	effect.target = Types.Skill_Target.Self
+
+	effect.Resolve(TestFactory.make_context(_resolver, 0, [0], TestFactory.make_empty_skill()))
+
+	assert_true(_roster[0]._active_debuffs.is_empty(), "Aegis blocks a self-applied debuff like any other")
+	assert_eq(_kinds(CombatResult.Kind.Debuff_Blocked).size(), 1)
+
 # --- BarrierEffect ---
 
 func test_barrier_effect_sources_from_health_paid() -> void:

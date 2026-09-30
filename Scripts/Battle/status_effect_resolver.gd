@@ -312,6 +312,8 @@ func _RollsResistDebuff(
 		p_defender_resistance: int,
 		p_attacker_ID: int,
 		p_attacker_accuracy: int) -> bool:
+	if(p_defender_ID == p_attacker_ID):
+		return false
 	if(_resolver._HasDebuff(p_defender_ID, Types.Debuff_Type.Signed_Writ)):
 		return false
 	var attacker: Character = _resolver._characters.get(p_attacker_ID)

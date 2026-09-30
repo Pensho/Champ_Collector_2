@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://bmqtglyyora7q" path="res://Scripts/Battle/Skill_Effects/skill_effect.gd" id="1_xaiq1"]
 [ext_resource type="Script" uid="uid://bonwfsp34aafb" path="res://Scripts/Battle/Skill_Effects/apply_debuff_effect.gd" id="2_h2ibw"]
 [ext_resource type="Script" uid="uid://bn0n72opjy7sb" path="res://Scripts/Battle/Skill_Effects/damage_effect.gd" id="3_tarsp"]
+[ext_resource type="Script" uid="uid://clxlmr6ebfll7" path="res://Scripts/Battle/Skill_Effects/turn_bar_effect.gd" id="9_tbar"]
 
 [sub_resource type="Resource" id="Resource_h6x4g"]
 script = ExtResource("2_h2ibw")
@@ -17,11 +18,15 @@ damage_scaling = Dictionary[int, float]({
 2: 0.8
 })
 
+[sub_resource type="Resource" id="Resource_push"]
+script = ExtResource("9_tbar")
+fraction = -0.1
+
 [resource]
 script = ExtResource("1_0dpkm")
 name = "Disarm"
-description = "Puts the opponent into a stance that is tough to attack from. Based on Attack."
+description = "Deals damage to a single enemy, scaled by Attack, applies Enfeeble for 2 turns, and pushes them backward 10% on the turn bar."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Disarm/disarm_1.jpg"
 cooldown = 2
-effects = Array[ExtResource("1_xaiq1")]([SubResource("Resource_h6x4g"), SubResource("Resource_m0ay8")])
+effects = Array[ExtResource("1_xaiq1")]([SubResource("Resource_h6x4g"), SubResource("Resource_m0ay8"), SubResource("Resource_push")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

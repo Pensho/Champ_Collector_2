@@ -3,19 +3,33 @@
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_oj3d8"]
 [ext_resource type="Script" uid="uid://bmqtglyyora7q" path="res://Scripts/Battle/Skill_Effects/skill_effect.gd" id="1_xba5q"]
 [ext_resource type="Script" uid="uid://bay8tvxoeo0tu" path="res://Scripts/Battle/Skill_Effects/apply_buff_effect.gd" id="2_gcre5"]
+[ext_resource type="Script" uid="uid://bonwfsp34aafb" path="res://Scripts/Battle/Skill_Effects/apply_debuff_effect.gd" id="9_dbf"]
 
 [sub_resource type="Resource" id="Resource_6dom1"]
 script = ExtResource("2_gcre5")
 buff_type = 2
 duration = 2
-target = 4
+target = 12
+
+[sub_resource type="Resource" id="Resource_self_fortify"]
+script = ExtResource("2_gcre5")
+buff_type = 2
+duration = 2
+magnitude_multiplier = 2.0
+target = 13
+
+[sub_resource type="Resource" id="Resource_slow"]
+script = ExtResource("9_dbf")
+debuff_type = 4
+duration = 1
+target = 13
 
 [resource]
 script = ExtResource("1_oj3d8")
 name = "Hold the Line"
-description = "Grants all allies the Fortify buff for 2 turns."
+description = "Grants all other allies the Fortify buff for 2 turns. The caster gains Fortify at double strength for 2 turns and Slow for 1 turn."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Hold_the_Line/hold_the_line.jpg"
 target = 4
 cooldown = 3
-effects = Array[ExtResource("1_xba5q")]([SubResource("Resource_6dom1")])
+effects = Array[ExtResource("1_xba5q")]([SubResource("Resource_6dom1"), SubResource("Resource_self_fortify"), SubResource("Resource_slow")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

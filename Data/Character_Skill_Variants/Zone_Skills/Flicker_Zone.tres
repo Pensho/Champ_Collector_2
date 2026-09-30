@@ -8,7 +8,7 @@
 
 [sub_resource type="Resource" id="Resource_bump"]
 script = ExtResource("3_turnb")
-fraction = 0.15
+fraction = 0.2
 
 [sub_resource type="Resource" id="Resource_gx4yy"]
 script = ExtResource("2_ivtng")

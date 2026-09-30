@@ -10,12 +10,18 @@ buff_type = 29
 duration = 2
 target = 3
 
+[sub_resource type="Resource" id="Resource_haste"]
+script = ExtResource("2_wab8h")
+buff_type = 6
+duration = 1
+target = 3
+
 [resource]
 script = ExtResource("1_skill")
 name = "Battle Orders"
-description = "Grants a single ally the Battle Orders buff for 2 turns."
+description = "Grants a single ally the Battle Orders buff for 2 turns and Haste for 1 turn."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Battle_Orders/battle_orders.jpg"
 target = 3
 cooldown = 4
-effects = Array[ExtResource("1_pur5l")]([SubResource("Resource_w61wi")])
+effects = Array[ExtResource("1_pur5l")]([SubResource("Resource_w61wi"), SubResource("Resource_haste")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

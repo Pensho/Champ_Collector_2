@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ReagentData" format=3]
+
+[ext_resource type="Script" uid="uid://t3vvjqg3kas0" path="res://Scripts/Battle/reagent_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://Assets/Champ_Collector/Icons/Reagents/Pilgrims_Waystone/Pilgrims_Waystone_Legendary.png" id="2_icon"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "Pilgrim's Waystone"
+description = "Moves an ally forward 24% on the turn bar."
+icon = ExtResource("2_icon")
+rarity = 5
+effect_kind = 11
+target_kind = 1
+magnitude = 24.0

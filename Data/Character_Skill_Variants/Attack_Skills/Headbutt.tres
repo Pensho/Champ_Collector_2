@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
 [ext_resource type="Script" uid="uid://bonwfsp34aafb" path="res://Scripts/Battle/Skill_Effects/apply_debuff_effect.gd" id="2_04bwq"]
 [ext_resource type="Script" uid="uid://bn0n72opjy7sb" path="res://Scripts/Battle/Skill_Effects/damage_effect.gd" id="3_oytc1"]
+[ext_resource type="Script" uid="uid://clxlmr6ebfll7" path="res://Scripts/Battle/Skill_Effects/turn_bar_effect.gd" id="9_tbar"]
 
 [sub_resource type="Resource" id="Resource_0m7xi"]
 script = ExtResource("2_04bwq")
@@ -17,11 +18,15 @@ damage_scaling = Dictionary[int, float]({
 0: 0.9
 })
 
+[sub_resource type="Resource" id="Resource_push"]
+script = ExtResource("9_tbar")
+fraction = -0.05
+
 [resource]
 script = ExtResource("1_skill")
 name = "Headbutt"
-description = "Deals damage to a single enemy, scaled by Health, and applies Dead Weight for 2 turns."
+description = "Deals damage to a single enemy, scaled by Health, applies Dead Weight for 2 turns, and pushes them backward 5% on the turn bar."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Headbutt/headbutt_1.jpg"
 cooldown = 3
-effects = Array[ExtResource("1_0exni")]([SubResource("Resource_0m7xi"), SubResource("Resource_cgse2")])
+effects = Array[ExtResource("1_0exni")]([SubResource("Resource_0m7xi"), SubResource("Resource_cgse2"), SubResource("Resource_push")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

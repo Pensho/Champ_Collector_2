@@ -53,6 +53,16 @@ func test_reduce_cooldown_lowers_every_skill_on_the_target_floored_at_zero() -> 
 
 	assert_eq(target._skills[0].cooldown_left, 0)
 
+func test_turn_bar_bump_moves_the_targeted_ally_forward_by_the_reagent_percent() -> void:
+	var resolver: BattleResolver = _make_resolver()
+	var results: Array[CombatResult] = resolver.ResolveReagent(0, "Pilgrims_Waystone_Rare", 1)
+
+	var bumps: Array[CombatResult] = results.filter(
+			func(r: CombatResult) -> bool: return CombatResult.Kind.Turn_Bar_Bump == r.kind)
+	assert_eq(bumps.size(), 1)
+	assert_eq(bumps[0].target_ID, 1)
+	assert_almost_eq(bumps[0].fraction, ReagentRegistry.Get("Pilgrims_Waystone_Rare").magnitude / 100.0, 0.0001)
+
 func test_remove_debuffs_removes_up_to_the_reagent_count() -> void:
 	var resolver: BattleResolver = _make_resolver()
 	var target: Character = resolver.GetCharacters()[1]

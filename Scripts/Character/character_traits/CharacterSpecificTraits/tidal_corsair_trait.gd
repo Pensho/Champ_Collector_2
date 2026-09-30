@@ -14,6 +14,7 @@ const CHARGES_PER_SEA_PURE: int = 2
 const CHARGES_PER_SEA_MIXED: int = 1
 const MIXED_HAND_CHARGE_CAP: int = 2
 const CREW_BUFF_DURATION: int = 2
+const CREW_HASTE_DURATION: int = 1
 
 const DAMAGE_PER_STEEL_STACK: Dictionary[Types.Rarity, float] = {
 	Types.Rarity.Uncommon: 0.45,
@@ -159,9 +160,9 @@ func _GrantCrewBuffs(p_owner_ID: int, p_resolver: BattleResolver) -> void:
 		slipstream.source_ID = p_owner_ID
 		status_resolver.ApplyBuff(ally_ID, slipstream)
 
-		var empower: StatusEffects.Buff = StatusEffects.Buff.new()
-		empower.type = Types.Buff_Type.Empower
-		empower.duration = CREW_BUFF_DURATION
-		empower.name = "Empower"
-		empower.source_ID = p_owner_ID
-		status_resolver.ApplyBuff(ally_ID, empower)
+		var haste: StatusEffects.Buff = StatusEffects.Buff.new()
+		haste.type = Types.Buff_Type.Haste
+		haste.duration = CREW_HASTE_DURATION
+		haste.name = "Haste"
+		haste.source_ID = p_owner_ID
+		status_resolver.ApplyBuff(ally_ID, haste)

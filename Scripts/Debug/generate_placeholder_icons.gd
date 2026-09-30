@@ -50,6 +50,8 @@ const REAGENT_FAMILY_TABLE: Array = [
 			"color": Color(0.80, 0.65, 0.20, 1.0) },
 	{ "folder": "Reagents/Second_Wind_Chime", "base_name": "Second_Wind_Chime", "size": 64,
 			"color": Color(0.40, 0.70, 0.90, 1.0) },
+	{ "folder": "Reagents/Pilgrims_Waystone", "base_name": "Pilgrims_Waystone", "size": 64,
+			"color": Color(0.85, 0.80, 0.45, 1.0) },
 	{ "folder": "Reagents/Unbinding_Shard", "base_name": "Unbinding_Shard", "size": 64,
 			"color": Color(0.60, 0.60, 0.60, 1.0) },
 	{ "folder": "Reagents/Chaotic_Blessing", "base_name": "Chaotic_Blessing", "size": 64,
@@ -217,18 +219,6 @@ const SKILL_ICON_TABLE: Array = [
 			"color": Color(0.20, 0.55, 0.80, 1.0) },
 	{ "folder": "Abilities/Role_Active_Skills/Refutation", "base_name": "Refutation", "size": 64,
 			"color": Color(0.30, 0.50, 0.70, 1.0) },
-	# Appraiser
-	{ "folder": "Abilities/Role_Active_Skills/Sizing_Cut", "base_name": "Sizing_Cut", "size": 64,
-			"color": Color(0.80, 0.60, 0.20, 1.0) },
-	{ "folder": "Abilities/Role_Active_Skills/Flaw_Analysis", "base_name": "Flaw_Analysis", "size": 64,
-			"color": Color(0.75, 0.50, 0.15, 1.0) },
-	{ "folder": "Abilities/Role_Active_Skills/Full_Appraisal", "base_name": "Full_Appraisal", "size": 64,
-			"color": Color(0.85, 0.70, 0.30, 1.0) },
-	# Tactician
-	{ "folder": "Abilities/Role_Active_Skills/Signal_Strike", "base_name": "Signal_Strike", "size": 64,
-			"color": Color(0.30, 0.55, 0.45, 1.0) },
-	{ "folder": "Abilities/Role_Active_Skills/Battle_Orders", "base_name": "Battle_Orders", "size": 64,
-			"color": Color(0.25, 0.60, 0.40, 1.0) },
 	# Symbiote
 	{ "folder": "Abilities/Role_Active_Skills/Spore_Lash", "base_name": "Spore_Lash", "size": 64,
 			"color": Color(0.45, 0.55, 0.30, 1.0) },
@@ -236,11 +226,6 @@ const SKILL_ICON_TABLE: Array = [
 			"color": Color(0.50, 0.45, 0.25, 1.0) },
 	{ "folder": "Abilities/Role_Active_Skills/Grafted_Flesh", "base_name": "Grafted_Flesh", "size": 64,
 			"color": Color(0.40, 0.50, 0.35, 1.0) },
-	# Jester
-	{ "folder": "Abilities/Role_Active_Skills/Pratfall_Sting", "base_name": "Pratfall_Sting", "size": 64,
-			"color": Color(0.75, 0.30, 0.55, 1.0) },
-	{ "folder": "Abilities/Role_Active_Skills/Center_Stage", "base_name": "Center_Stage", "size": 64,
-			"color": Color(0.85, 0.35, 0.60, 1.0) },
 	# Cultist
 	{ "folder": "Abilities/Role_Active_Skills/Desecrated_Blade", "base_name": "Desecrated_Blade", "size": 64,
 			"color": Color(0.45, 0.15, 0.35, 1.0) },
@@ -248,11 +233,6 @@ const SKILL_ICON_TABLE: Array = [
 			"color": Color(0.50, 0.10, 0.30, 1.0) },
 	{ "folder": "Abilities/Role_Active_Skills/Rite_of_Severance", "base_name": "Rite_of_Severance", "size": 64,
 			"color": Color(0.40, 0.10, 0.40, 1.0) },
-	# Bar Brawler
-	{ "folder": "Abilities/Role_Active_Skills/Headbutt", "base_name": "Headbutt", "size": 64,
-			"color": Color(0.70, 0.40, 0.20, 1.0) },
-	{ "folder": "Abilities/Role_Active_Skills/Liquid_Courage", "base_name": "Liquid_Courage", "size": 64,
-			"color": Color(0.75, 0.45, 0.25, 1.0) },
 	# Bloodmage
 	{ "folder": "Abilities/Role_Active_Skills/Blood_Bolt", "base_name": "Blood_Bolt", "size": 64,
 			"color": Color(0.65, 0.10, 0.15, 1.0) },
@@ -260,18 +240,6 @@ const SKILL_ICON_TABLE: Array = [
 			"color": Color(0.55, 0.15, 0.20, 1.0) },
 	{ "folder": "Abilities/Role_Active_Skills/Tithe_of_Vitality", "base_name": "Tithe_of_Vitality", "size": 64,
 			"color": Color(0.60, 0.10, 0.25, 1.0) },
-	# Lancer
-	{ "folder": "Abilities/Role_Active_Skills/Lance_Thrust", "base_name": "Lance_Thrust", "size": 64,
-			"color": Color(0.60, 0.45, 0.30, 1.0) },
-	{ "folder": "Abilities/Role_Active_Skills/Rending_Charge", "base_name": "Rending_Charge", "size": 64,
-			"color": Color(0.65, 0.35, 0.20, 1.0) },
-	# Warlord
-	{ "folder": "Abilities/Role_Active_Skills/Shield_Slam", "base_name": "Shield_Slam", "size": 64,
-			"color": Color(0.35, 0.45, 0.60, 1.0) },
-	# Hold the Line reuses Stalwart_Hymn.tres's real hand-authored art (renamed
-	# Hold_the_Line.jpg), so it needs no placeholder row here.
-	{ "folder": "Abilities/Role_Active_Skills/Brace_for_Impact", "base_name": "Brace_for_Impact", "size": 64,
-			"color": Color(0.40, 0.50, 0.65, 1.0) },
 	# Chronophage
 	{ "folder": "Abilities/Role_Active_Skills/Temporal_Sinkhole", "base_name": "Temporal_Sinkhole", "size": 64,
 			"color": Color(0.35, 0.20, 0.50, 1.0) },
@@ -391,78 +359,32 @@ const CREATURE_PLACEHOLDER_TABLE: Array = [
 # icon reads as its payout group at a glance while staying individually distinct.
 #   folder, base_name, size, color
 const RELIC_ICON_TABLE: Array = [
-	{ "folder": "Items/Relics/The_Long_Furrow", "base_name": "The_Long_Furrow", "size": 64,
-			"color": Color(0.62, 0.28, 0.29, 1.0) },
 	{ "folder": "Items/Relics/Remnant_Fed_Edge", "base_name": "Remnant_Fed_Edge", "size": 64,
 			"color": Color(0.70, 0.28, 0.28, 1.0) },
 	{ "folder": "Items/Relics/Threefold_Bite", "base_name": "Threefold_Bite", "size": 64,
 			"color": Color(0.55, 0.20, 0.19, 1.0) },
-	{ "folder": "Items/Relics/The_Closed_Wound", "base_name": "The_Closed_Wound", "size": 64,
-			"color": Color(0.62, 0.30, 0.28, 1.0) },
-	{ "folder": "Items/Relics/Flintbrace", "base_name": "Flintbrace", "size": 64,
-			"color": Color(0.70, 0.31, 0.28, 1.0) },
 	{ "folder": "Items/Relics/Lantern_of_the_Standing_Ward", "base_name": "Lantern_of_the_Standing_Ward", "size": 64,
 			"color": Color(0.55, 0.23, 0.19, 1.0) },
 	{ "folder": "Items/Relics/The_Answering_Boss", "base_name": "The_Answering_Boss", "size": 64,
 			"color": Color(0.62, 0.32, 0.28, 1.0) },
-	{ "folder": "Items/Relics/The_Sealed_Docket", "base_name": "The_Sealed_Docket", "size": 64,
-			"color": Color(0.70, 0.34, 0.28, 1.0) },
 	{ "folder": "Items/Relics/The_Unguarded_Glass", "base_name": "The_Unguarded_Glass", "size": 64,
 			"color": Color(0.55, 0.25, 0.19, 1.0) },
 	{ "folder": "Items/Relics/The_Ossuary_Ledger", "base_name": "The_Ossuary_Ledger", "size": 64,
 			"color": Color(0.62, 0.35, 0.28, 1.0) },
 	{ "folder": "Items/Relics/The_Frayed_Hour", "base_name": "The_Frayed_Hour", "size": 64,
 			"color": Color(0.70, 0.37, 0.28, 1.0) },
-	{ "folder": "Items/Relics/Kiln_Brand", "base_name": "Kiln_Brand", "size": 64,
-			"color": Color(0.55, 0.28, 0.19, 1.0) },
-	{ "folder": "Items/Relics/Sunderplate_Nail", "base_name": "Sunderplate_Nail", "size": 64,
-			"color": Color(0.62, 0.37, 0.28, 1.0) },
-	{ "folder": "Items/Relics/The_Even_Tread", "base_name": "The_Even_Tread", "size": 64,
-			"color": Color(0.28, 0.62, 0.33, 1.0) },
-	{ "folder": "Items/Relics/Prism_of_Small_Favors", "base_name": "Prism_of_Small_Favors", "size": 64,
-			"color": Color(0.28, 0.70, 0.46, 1.0) },
-	{ "folder": "Items/Relics/Signatorys_Seal", "base_name": "Signatorys_Seal", "size": 64,
-			"color": Color(0.46, 0.28, 0.62, 1.0) },
 	{ "folder": "Items/Relics/The_Solvent_Mark", "base_name": "The_Solvent_Mark", "size": 64,
 			"color": Color(0.57, 0.28, 0.70, 1.0) },
 	{ "folder": "Items/Relics/Quorum_Bell", "base_name": "Quorum_Bell", "size": 64,
 			"color": Color(0.49, 0.19, 0.55, 1.0) },
 	{ "folder": "Items/Relics/Ceded_Ground", "base_name": "Ceded_Ground", "size": 64,
 			"color": Color(0.28, 0.57, 0.62, 1.0) },
-	{ "folder": "Items/Relics/The_Quiet_Mass", "base_name": "The_Quiet_Mass", "size": 64,
-			"color": Color(0.28, 0.57, 0.70, 1.0) },
-	{ "folder": "Items/Relics/Mercy_Stitch", "base_name": "Mercy_Stitch", "size": 64,
-			"color": Color(0.19, 0.39, 0.55, 1.0) },
 	{ "folder": "Items/Relics/The_Long_Second", "base_name": "The_Long_Second", "size": 64,
 			"color": Color(0.62, 0.46, 0.28, 1.0) },
 	{ "folder": "Items/Relics/Understudys_Coat", "base_name": "Understudys_Coat", "size": 64,
 			"color": Color(0.70, 0.62, 0.28, 1.0) },
 	{ "folder": "Items/Relics/Laden_Coffer", "base_name": "Laden_Coffer", "size": 64,
 			"color": Color(0.62, 0.50, 0.28, 1.0) },
-]
-
-# One row per non-art resource currency icon.
-#   folder, base_name, size, color
-const RESOURCE_ICON_TABLE: Array = [
-	{ "folder": "Resources/Tally", "base_name": "Tally", "size": 64,
-			"color": Color(0.55, 0.55, 0.60, 1.0) },
-]
-
-# Roster expansion "+" tile (Armory buy-a-slot affordance). Drawn as a cross rather than
-# a flat fill so it reads as an add action even as a placeholder.
-#   folder, base_name, size, color
-const ROSTER_SLOT_ICON_TABLE: Array = [
-	{ "folder": "Character_Frames/Roster_Slot_Plus", "base_name": "Roster_Slot_Plus", "size": 64,
-			"color": Color(0.85, 0.85, 0.85, 1.0) },
-]
-
-# Renown rank pip icons: one filled, one empty.
-#   folder, base_name, size, color
-const RENOWN_ICON_TABLE: Array = [
-	{ "folder": "Renown/Renown_Pip_Filled", "base_name": "Renown_Pip_Filled", "size": 32,
-			"color": Color(0.85, 0.70, 0.20, 1.0) },
-	{ "folder": "Renown/Renown_Pip_Empty", "base_name": "Renown_Pip_Empty", "size": 32,
-			"color": Color(0.30, 0.30, 0.32, 1.0) },
 ]
 
 # Rarity tier order, tint color, and blend strength (how far the base hue shifts
@@ -509,15 +431,6 @@ func _run() -> void:
 	var relic_counts: Vector2i = _write_flat_icon_table(RELIC_ICON_TABLE)
 	written_count += relic_counts.x
 	skipped_count += relic_counts.y
-	var resource_counts: Vector2i = _write_flat_icon_table(RESOURCE_ICON_TABLE)
-	written_count += resource_counts.x
-	skipped_count += resource_counts.y
-	var renown_counts: Vector2i = _write_flat_icon_table(RENOWN_ICON_TABLE)
-	written_count += renown_counts.x
-	skipped_count += renown_counts.y
-	var roster_slot_counts: Vector2i = _write_plus_icon_table(ROSTER_SLOT_ICON_TABLE)
-	written_count += roster_slot_counts.x
-	skipped_count += roster_slot_counts.y
 	var creature_counts: Vector2i = _write_flat_icon_table(CREATURE_PLACEHOLDER_TABLE, CREATURE_ROOT)
 	written_count += creature_counts.x
 	skipped_count += creature_counts.y

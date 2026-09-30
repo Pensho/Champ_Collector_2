@@ -4,6 +4,8 @@
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
 [ext_resource type="Script" uid="uid://cdtqrch6g28ma" path="res://Scripts/Battle/Skill_Effects/health_change_effect.gd" id="2_055cd"]
 [ext_resource type="Script" uid="uid://bay8tvxoeo0tu" path="res://Scripts/Battle/Skill_Effects/apply_buff_effect.gd" id="3_ojla5"]
+[ext_resource type="Script" uid="uid://bonwfsp34aafb" path="res://Scripts/Battle/Skill_Effects/apply_debuff_effect.gd" id="9_dbf"]
+[ext_resource type="Script" uid="uid://clxlmr6ebfll7" path="res://Scripts/Battle/Skill_Effects/turn_bar_effect.gd" id="9_tbar"]
 
 [sub_resource type="Resource" id="Resource_5djor"]
 script = ExtResource("2_055cd")
@@ -16,12 +18,23 @@ buff_type = 15
 duration = 4
 target = 3
 
+[sub_resource type="Resource" id="Resource_bump"]
+script = ExtResource("9_tbar")
+fraction = 0.12
+target = 3
+
+[sub_resource type="Resource" id="Resource_slow"]
+script = ExtResource("9_dbf")
+debuff_type = 4
+duration = 1
+target = 13
+
 [resource]
 script = ExtResource("1_skill")
 name = "Grafted Flesh"
-description = "The caster loses 10% of its max Health; one ally gains the Regeneration buff for 4 turns."
+description = "The caster loses 10% of its max Health; one ally gains the Regeneration buff for 4 turns and moves forward 12% on the turn bar. The caster gains Slow for 1 turn."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Grafted_Flesh/Grafted_Flesh.png"
 target = 3
 cooldown = 4
-effects = Array[ExtResource("1_aohpt")]([SubResource("Resource_5djor"), SubResource("Resource_44xr2")])
+effects = Array[ExtResource("1_aohpt")]([SubResource("Resource_5djor"), SubResource("Resource_44xr2"), SubResource("Resource_bump"), SubResource("Resource_slow")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

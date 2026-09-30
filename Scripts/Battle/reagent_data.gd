@@ -20,6 +20,7 @@ enum EffectKind {
 	Barrier,                   # magnitude: flat absorb amount granted as a Barrier buff
 	Random_Attribute_Buff,     # magnitude: percent (as a fraction) overriding one random pool
 	# buff's standard value; duration fixed at 3 turns (see ReagentResolver.ATTRIBUTE_BUFFS)
+	Turn_Bar_Bump,             # magnitude: percent of the turn bar the target moves forward
 }
 
 enum TargetKind

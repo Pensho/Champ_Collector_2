@@ -21,6 +21,7 @@ const VALID_TARGET_KINDS_BY_EFFECT: Dictionary[ReagentData.EffectKind, Array] = 
 	# Self_Target: the brewed Lesser Barrier Brew.
 	ReagentData.EffectKind.Barrier: [ReagentData.TargetKind.One_Ally, ReagentData.TargetKind.Self_Target],
 	ReagentData.EffectKind.Random_Attribute_Buff: [ReagentData.TargetKind.Self_Target],
+	ReagentData.EffectKind.Turn_Bar_Bump: [ReagentData.TargetKind.One_Ally],
 }
 
 const BREW_ONLY_KEYS: Array[String] = [

@@ -118,14 +118,18 @@ func test_mixed_hand_raises_the_deck_at_one_charge_per_sea_capped_at_two() -> vo
 	assert_eq(zones.size(), 1)
 	assert_eq(zones.values()[0]._charges, 2)
 
-func test_mixed_hand_grants_slipstream_and_empower_to_other_living_allies() -> void:
+func test_mixed_hand_grants_slipstream_and_haste_to_other_living_allies() -> void:
 	_InitTrait(Types.Rarity.Legendary)
 	_fill_hand(1, 1)
 	_trait.OnSkillCast(0, [], "Corsairs Reckoning", {}, _resolver)
 	for ally_ID in [1, 2]:
 		var buff_types: Array = _characters[ally_ID]._active_buffs.map(func(b): return b.type)
 		assert_true(buff_types.has(Types.Buff_Type.Slipstream), "Ally %d should gain Slipstream" % ally_ID)
-		assert_true(buff_types.has(Types.Buff_Type.Empower), "Ally %d should gain Empower" % ally_ID)
+		assert_true(buff_types.has(Types.Buff_Type.Haste), "Ally %d should gain Haste" % ally_ID)
+		assert_false(buff_types.has(Types.Buff_Type.Empower), "Ally %d should not gain Empower" % ally_ID)
+		for buff in _characters[ally_ID]._active_buffs:
+			if(Types.Buff_Type.Haste == buff.type):
+				assert_eq(buff.duration, TidalCorsairTrait.CREW_HASTE_DURATION)
 
 func test_mixed_hand_does_not_buff_the_corsair_itself() -> void:
 	_InitTrait(Types.Rarity.Legendary)

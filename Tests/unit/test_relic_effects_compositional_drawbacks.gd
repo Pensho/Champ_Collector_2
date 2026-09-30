@@ -67,6 +67,20 @@ func test_long_second_amplifies_a_forward_bump_granted_to_an_ally_at_two_raritie
 		assert_almost_eq(amplification, rarity_and_expected[1], 0.0001,
 			"Rarity %s should grant its own ladder step" % Types.RarityName(rarity_and_expected[0]))
 
+func test_long_second_amplifies_a_bump_reagent_the_wearer_consumes_on_an_ally() -> void:
+	var setup: Dictionary = _wearer_and_ally()
+	var relic: TheLongSecondRelic = TheLongSecondRelic.new()
+	relic.Init(Types.Rarity.Legendary)
+	setup.wearer._trait = relic
+	var base_fraction: float = ReagentRegistry.Get("Pilgrims_Waystone_Uncommon").magnitude / 100.0
+
+	var results: Array[CombatResult] = setup.resolver.ResolveReagent(0, "Pilgrims_Waystone_Uncommon", 1)
+
+	var bumps: Array = results.filter(func(r: CombatResult) -> bool:
+		return CombatResult.Kind.Turn_Bar_Bump == r.kind and 1 == r.target_ID)
+	assert_eq(bumps.size(), 1)
+	assert_almost_eq(bumps[0].fraction, base_fraction * (1.0 + relic.Magnitude()), 0.0001)
+
 func test_long_second_reduces_a_teammates_applied_buff_magnitude() -> void:
 	var setup: Dictionary = _wearer_and_ally()
 	var relic: TheLongSecondRelic = TheLongSecondRelic.new()

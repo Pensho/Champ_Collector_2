@@ -7,9 +7,9 @@ authority for what each Role's kit does) does not carry. Supersedes the older
 `Plan_Role_Skill_Kits.md` in that role.
 
 **Status:** channel identity allocation, contribution direction, and pairing web settled; all four
-batches designed and all 20 Roles settled — 19 with a section 9 entry, the Tactician kept unchanged
-in section 7's table. **All 20 implemented**: 17 kits changed, and the Tactician, Symbiote (§9.17)
-and Bar Brawler (§9.18) settled as kept, owing no code. **Final sweep**
+batches designed and all 20 Roles settled — 19 with a section 9 entry, the Tactician in section 7's
+table. **All 20 implemented**: 17 kits changed, and the Tactician, Symbiote (§9.17)
+and Bar Brawler (§9.18) settled as kept. **Final sweep**
 (`Tests/manual/team_corpus_sweep.gd`): combined-modifier-product median 1.95x, 90th percentile
 4.68x, ceiling 16.24x; contrast-ratio ceiling 21.12x; top decile (114 teams) across **10 distinct
 pairings**, meeting section 4's roster-shape target.
@@ -231,7 +231,9 @@ says whether a team is good. Two rules follow:
 * **Base attributes stay tame** — growth belongs in channels 2 and 3.
 * **Skill and passive description length is soft-capped** (`Concept_Document.md` 3.2.4).
 * Existing anti-overlap rules: identity effects to one Role, commodity buffs/debuffs to at most
-  two, turn-bar effects to one, zones stay signature.
+  two, named turn-bar statuses (`Concept_Document.md` 3.2.3.1) to one each, zones stay signature.
+* **Turn-bar bumps are open to every Role.** No other Role's bump on another character reaches the
+  Chronophage's largest in the same direction.
 * **Accumulate-then-spend stays at its current claimants** — Tidal Corsair, Architect, Herald,
   Sorcerer. A legitimate RPG idiom and a fair allocation at four; no further Role takes it
   absent new information. The Lancer left when its passive settled onto a positional gate (§9.11). Cultist's per-cast bonus and Bar Brawler's Heap On ramp are continuous
@@ -285,7 +287,7 @@ A Role's basic skill is always self-facing; direction describes the declared-ide
 | Tidal Corsair | Damage | **Channel 2** | Self | §9.13, confirming this row. Corsair's Reckoning resolves by the composition of the stacks it consumes; Sea's turn-bar push retires and Sea instead raises The Gilded Deck, a signature zone granting boarding allies permanent Sea Legs stacks (Batch 3). |
 | Thief | Damage | **Channel 1** | Self | §9.12, confirming this row. Pilfer retired for Between the Plates, a passive bypass reading a fraction of a debuff-free reference Defence, so a teammate's Defence shred compounds with it instead of being eaten by it; Weigh the Mark rebuilt as Cut Purse. |
 | Lancer | Damage | **Channel 2** | Self | §9.11, moved off this table's Phase 1 proposal of Channel 1. Momentum and Phalanx Guard retire for Couched Lance: the charge scales with the turn-bar sections it touches and throws the Lancer back half that distance. The Role reads turn-bar position rather than accumulating stacks, so it is no longer route D's second anchor (Batch 3). |
-| Tactician | Buffer | **Channel 1** | Exported | **Settled: kept as shipped.** A second hook was explored (Batch 3) and shelved — no addition fit without a clearer read on the Role's team fantasy than a sweep figure can give; open to revisiting outside this plan. |
+| Tactician | Buffer | **Channel 1** | Exported | **Settled.** Kept as shipped, except that Battle Orders also grants Haste for 1 turn. |
 | Bloodmage | Sustain, Damage | **Channel 1** | Exported | §9.4. Hemoclarity's missing-Health Mysticism curve is already Channel 1 by mechanism; the kit's weight lands in Sanguine Pact (on the carrier) and Hemorrhage (on the boss, readable by every attacker) rather than on the Bloodmage's own cast. |
 | Scholar | Debuffer, Buffer | **Channel 2** | Exported | §9.14, confirming this row. Opportunist stays the modifier-bucket anchor; the passive is replaced with an amplifier on every attribute modification the team applies, giving the roster its first reader of the Channel 1 attribute layer, and the basic gains a zone-gated Suppress rider (Batch 3). |
 | Diviner | Sustain, Debuffer | **Enabler** | Exported | Redeclared from Channel 1 at Batch 4 (§9.16): Enfeeble, Premonition and Hexed are all mitigation and denial, and the kit owes no damage factor. Measured on the collapse test. |
@@ -445,7 +447,7 @@ into the next turn until changed again. Max Tension is a constant 7 at every rar
 | Slot | Skill | Effect | Channel |
 |---|---|---|---|
 | Basic | Thread Snap | Mysticism-scaled damage to one enemy; applies Suppress for 1 turn. | 1 |
-| Signature | Pull the Thread | Mysticism-scaled damage to one enemy, pushes them backward 15% on the turn bar, applies Temporal Leak for 3 turns, and grants the Herald 2 Tension (stance-independent). | 2 |
+| Signature | Pull the Thread | Mysticism-scaled damage to one enemy, pushes them backward 12% on the turn bar, applies Temporal Leak for 3 turns, and grants the Herald 2 Tension (stance-independent). | 2 |
 | Signature | Cut the Cloth | Damage to one enemy at 90% of a normal Mysticism-scaled hit, resolved once for the base cast plus once more per Tension held (minimum once, at zero Tension), then consumes all Tension. | 3 |
 
 **Projected numbers.** Using `Skills.MitigatedDamageUnrounded`'s formula (`skills.gd:298-307`):
@@ -865,8 +867,8 @@ Vessel death stays something the drain produces rather than something a skill ex
 **Status:** Implemented. Batch 2.
 
 **Identity: Channel 3, exported — with no damage factor of its own.** The Chronophage brings no
-damage to the table; its entire contribution is an extra resolution on a teammate's skill. Zap,
-Flicker Zone and Temporal Sinkhole all ship unchanged, and the whole kit change is one passive
+damage to the table; its entire contribution is an extra resolution on a teammate's skill. Zap and
+Temporal Sinkhole ship unchanged, Flicker Zone's bump is 20%, and the kit change is one passive
 clause plus one new buff.
 
 **Passive: Time Tithe.** The existing half is unchanged — time stolen from enemies converts into
@@ -984,7 +986,7 @@ position and never writes to it, which is what keeps it clear of the Chronophage
 |---|---|---|---|
 | Basic | Lance Thrust | Kept as-is. Attack-scaled damage to one enemy — the cheap action taken while riding back into position. | 1 |
 | Signature | Rending Charge | Kept, and now the passive's only reader: Attack-scaled damage carrying the per-section bonus in its own bucket, plus Bleed for 2 turns. Cooldown 3. | 1 + 2 |
-| Signature | Disarm | Kept as-is. Attack-scaled damage, applies Enfeeble for 2 turns. Cooldown 3. | 1 + Enabler |
+| Signature | Disarm | Attack-scaled damage, applies Enfeeble for 2 turns, pushes the target backward 10% on the turn bar. Cooldown 3. | 1 + Enabler |
 
 **Composition hooks.** The passive reads the turn-bar gap, so anything that pushes an enemy back
 lengthens the Lancer's run-up — Sea stacks, stolen time, Dead Weight, Temporal Leak — with no skill
@@ -1000,7 +1002,7 @@ returns to unclaimed, and the accumulate-then-spend idiom drops from five claima
 
 **Projected numbers.** **1.18x** at one section, **1.54x** at three, **1.90x** at five — one factor,
 inside section 1's contract, in the same bucket-product kind as Architect (1.84x) and Tidal Corsair
-(2.80x). The kit needs nothing further to pass, which is why Disarm keeps its shipped payload.
+(2.80x). The kit needs nothing further to pass.
 
 **Implementation.**
 
@@ -1032,10 +1034,8 @@ top decile (114 teams) **gains a ninth distinct pairing**: Lancer/Rending Charge
 Sorcerer/Cataclysm, Tidal Corsair/Corsairs Reckoning, Architect/Final Calculation,
 Emissary/Citation, Diviner/Ill Omen, Cultist/Devour Blessing, Bar Brawler/Headbutt.
 
-**Judgment calls made while settling, listed so they can be overruled:** Disarm keeps its shipped
-payload rather than gaining a deliberate distance lever, since the passive already carries the loop
-and the kit clears its contract without a second one; and the recoil is a fixed half of the span
-rather than an amount the player chooses at cast time.
+**Judgment calls made while settling, listed so they can be overruled:** the recoil is a fixed half
+of the span rather than an amount the player chooses at cast time.
 
 ### 9.12 Thief — between the plates
 
@@ -1131,7 +1131,7 @@ rarity). The per-Sea turn-bar push retires.
 |---|---|---|---|
 | Steel only | **Broadside** | Per-Steel rate 0.60; 3 Steel = **2.80x**. No ship. | 1 + 2 |
 | Sea only | **Bring Her Alongside** | No damage bonus. The Gilded Deck is raised or resupplied, **2 charges per Sea** — 6 at three. | Enabler |
-| Mixed | **Boarding Party** | Steel damages at the base rate, **1 charge per Sea** (2 maximum), and every other living ally gains Slipstream and Empower for 2 turns. | 1 + Enabler |
+| Mixed | **Boarding Party** | Steel damages at the base rate, **1 charge per Sea** (2 maximum), and every other living ally gains Slipstream for 2 turns and Haste for 1 turn. | 1 + Enabler |
 
 Three time horizons rather than three sizes: the Corsair's spike now, the team's window now, the
 team's growth for the rest of the fight.
@@ -1204,7 +1204,7 @@ attempts have not isolated. A latent, likely-unrelated ID mismatch in
 expected) was found and fixed alongside this, but does not explain the percent discrepancy.
 
 **Judgment calls made while settling, listed so they can be overruled:** the mixed mode keeps the
-Slipstream and Empower grants rather than only a reduced charge count, which is a third clause on
+Slipstream and Haste grants rather than only a reduced charge count, which is a third clause on
 one mode but is what makes it a distinct choice rather than a blend; the direction row stays
 self-facing on the strength of Broadside being the declared contribution; and the three
 implementation-time calls above (one-instance Sea Legs, the generic rider dictionary, Boarding Party
@@ -1385,7 +1385,7 @@ every enemy within 10/15/20/25% turn-bar-behind reach by rarity.
 |---|---|---|---|
 | Basic | Fateful Glimpse | Kept as-is. Mysticism-scaled damage plus a heal to the most injured ally. | 1 |
 | Signature | Premonition | Kept, plus a clause: the attack the holder avoids is answered by an **immediate counter-attack with the holder's basic skill**. One ally, 1 turn, cooldown 3. | Enabler |
-| Signature | Ill Omen | Kept as-is. Mysticism-scaled damage plus Hexed, 2 turns. Cooldown 3. | 1 + Enabler |
+| Signature | Ill Omen | Mysticism-scaled damage plus Hexed, 2 turns, and Slow, 1 turn. Cooldown 3. | 1 + Enabler |
 
 **The counter pays a correct read.** Premonition's decision is predicting who the enemy attacks —
 a readable, repeatable call, not a guess, since targeting follows gear and stats rather than
@@ -1440,7 +1440,8 @@ primary attribute except Health — and it points inward: Symbiotic Overdrive ta
 not an ally. Section 5's row is corrected on direction only. Post-graft the kit may read either way,
 which is what the graft pool is for.
 
-Passive Graft, Spore Lash, Symbiotic Overdrive and Grafted Flesh all keep exactly as they ship. The
+Passive Graft, Spore Lash and Symbiotic Overdrive keep exactly as they ship; Grafted Flesh also moves
+its ally forward 12% on the turn bar and Slows the Symbiote for 1 turn. The
 Role's variety is meant to come from the graft pool, not from its three fixed slots, and §1's
 contract is met without touching them.
 
@@ -1466,7 +1467,8 @@ comparable only to §9.14's kind. No bucket key, by design.
 **Identity: Channel 2, self-facing**, confirming section 5's row on both axes. Heap On's ramp is the
 bucket anchor; On the House is Enabler content beside it, not the Role's identity.
 
-Passive On the House!, Heap On, Liquid Courage and Headbutt all keep exactly as they ship.
+Passive On the House!, Heap On and Liquid Courage keep exactly as they ship; Headbutt also pushes its
+target backward 5% on the turn bar.
 
 **Heap On's ramp is a sanctioned exception, on the rule of cool.** It is an unconditional Channel 2
 key on a no-cooldown cast (§1.2's one forbidden shape) and it is uncapped (§4). Both stand: the
@@ -1495,7 +1497,7 @@ attack damage redirected to the Warlord by rarity, re-mitigated against his own 
 | Slot | Skill | Effect | Channel |
 |---|---|---|---|
 | Basic | Shield Slam | Kept as-is. Defence-scaled single-target damage. | 1 |
-| Signature | Hold the Line | Kept as-is. All allies gain Fortify, 2 turns. Cooldown 3. | Enabler |
+| Signature | Hold the Line | All other allies gain Fortify, 2 turns; the Warlord gains Fortify at double strength, 2 turns, and Slow, 1 turn. Cooldown 3. | Enabler |
 | Signature | Brace for Impact | Kept, plus a clause: while it holds, any enemy whose attack lands on the Warlord — **including damage redirected to him by Shield Wall** — gains **Enfeeble for 2 turns**, rolled against the Warlord's own Accuracy like any other applied debuff. Rush and Aegis 1 turn each, Rush's expiry self-Stun kept as the price. Cooldown 4. | Enabler |
 
 **The reactive form is the design.** An all-enemies Enfeeble would be a generic debuff button; keying
@@ -1561,7 +1563,7 @@ Role's rows in the same edit, not after.
 
 **Turn bar effects** — Dead Weight (Bar Brawler), Battle Orders (Tactician), Temporal Leak (Herald
 of the loom, Pull the Thread), Slipstream (Tidal Corsair, Corsair's Reckoning — **implemented**,
-section 9.13, granted alongside Empower on the mixed hand rather than costing a slot); Anchor,
+section 9.13, granted alongside Haste on the mixed hand rather than costing a slot); Anchor,
 Steadfast, Resonance unclaimed.
 
 **Debuffs** (rows that changed this batch; all others unchanged from the archived pass — see
@@ -1581,12 +1583,14 @@ Steadfast, Resonance unclaimed.
 | Cracked Facet | Appraiser (Flaw Analysis) — **implemented** (section 9.5); moved off the retired Strike the Flaw passive, now scaled by the applier's Knowledge |
 | Confound | Scholar (Expose Fallacy), Appraiser (Flaw Analysis) — **implemented** (section 9.5). Second claimant, within the commodity-debuff limit of two |
 | Hexed | Diviner (Ill Omen), Jester (Burning Bolas) — **implemented** (section 9.6). Second claimant, at the commodity-debuff limit of two, so no later Role may take it. Scope now covers every chance roll in combat except damage variance |
+| Slow | Diviner (Ill Omen). Symbiote (Grafted Flesh) and Warlord (Hold the Line) apply it only to themselves, as a cost, which is no claim |
 | Enfeeble | Lancer (Disarm, shipped before this ledger's commodity-debuff limit was adopted), Diviner (Foresight), Warlord (Brace for Impact's reactive clause) — **implemented** (section 9.19). Three claimants, one over the commodity-debuff limit of two; no later Role may take it |
 | Unravel | Alchemist (Dissolving Agent) — unchanged claimant; the skill keeps it alongside a second debuff — **implemented** (section 9.15) |
 | Expose Weakness | Architect (Calibration), Alchemist (Dissolving Agent) — **implemented** (section 9.15). Second claimant, at the commodity-debuff limit of two, and its first skill source |
 | Burning | Jester (Burning Bolas), Lava Zone — unchanged claimants. Tick rolls 2-10% of max Health per stack roster-wide — **implemented** (section 9.6) |
 
-**Buffs** — Sea Legs is a new buff, claimed by Tidal Corsair (The Gilded Deck) — **implemented**
+**Buffs** — Haste is claimed by Tactician (Battle Orders) and Tidal Corsair (Corsair's Reckoning's
+mixed hand), at the commodity-buff limit of two. Sea Legs is a new buff, claimed by Tidal Corsair (The Gilded Deck) — **implemented**
 (section 9.13); no prior claimant, and the roster's only permanent stacking attribute grant, sized
 per holder rather than by a fixed attribute. Borrowed Time is a new buff, claimed by Chronophage
 (Time Tithe) — **implemented** (section 9.9); no prior claimant, and the only buff in the roster
@@ -1601,7 +1605,7 @@ by Appraiser (Full Appraisal), re-authored as consigned applier-scaled grants �
 **Unclaimed inventory**, as of this review — "unclaimed" means *nothing in the game applies it*.
 Refresh in the same edit that lands a batch.
 
-* **No source — debuffs:** Slow, Blind, Refracted, Mana Burn.
+* **No source — debuffs:** Blind, Refracted, Mana Burn.
 * **Unclaimed by policy, not available to claim:** Fatigue, Stun, Sequence Lock, Signed Writ,
   Severance. Fights are puzzles, and a status that freezes an enemy's cooldowns, turns, or ability
   to resist can break one single-handedly. No Role applies these without a severe drawback, and
@@ -1610,10 +1614,8 @@ Refresh in the same edit that lands a batch.
 * **No source — buffs:** True Aim, Clarity, Insight, Mirror Coat, Rehearsed, Wanderlust, Overflow,
   Phalanx Guard.
   Turn bar buffs Anchor, Steadfast, Resonance are listed above.
-* **Enemy-only:** Frenzy, Haste, Deathward.
-* **Trait code only, never a skill:** Empower (Plan; Tidal Corsair's Corsair's Reckoning becomes a
-  second claimant and its first skill source when 9.13 lands, within the commodity-buff limit of
-  two), Attune (Chosen Vessel), Expose Weakness
+* **Enemy-only:** Frenzy, Deathward.
+* **Trait code only, never a skill:** Empower (Plan), Attune (Chosen Vessel), Expose Weakness
   (Calibration, charge-scaled — gains its first skill source when 9.15 lands).
 
 ### 10.2 Damage-channel bucket keys in use

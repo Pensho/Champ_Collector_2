@@ -17,11 +17,17 @@ damage_scaling = Dictionary[int, float]({
 6: 1.2
 })
 
+[sub_resource type="Resource" id="Resource_slow"]
+script = ExtResource("2_cl6xs")
+debuff_type = 4
+duration = 1
+target = 0
+
 [resource]
 script = ExtResource("1_skill")
 name = "Ill Omen"
-description = "Deals damage to a single enemy, scaled by Mysticism, and applies Hexed for 2 turns."
+description = "Deals damage to a single enemy, scaled by Mysticism, and applies Hexed for 2 turns and Slow for 1 turn."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Ill_Omen/ill_omen.jpg"
 cooldown = 3
-effects = Array[ExtResource("1_8g8s7")]([SubResource("Resource_ria2k"), SubResource("Resource_n32js")])
+effects = Array[ExtResource("1_8g8s7")]([SubResource("Resource_ria2k"), SubResource("Resource_n32js"), SubResource("Resource_slow")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

@@ -181,6 +181,22 @@ func test_an_ally_forward_bump_grants_borrowed_time_when_alone_in_its_section() 
 
 	assert_true(_has_borrowed_time(_roster[4]), "Flicker-Zone-style ally bump should grant Borrowed Time")
 
+func test_a_bump_reagent_the_holder_consumes_grants_borrowed_time() -> void:
+	_InitTrait(Types.Rarity.Legendary)
+	_resolver = _make_fake_resolver({4: 2})
+
+	_resolver.ResolveReagent(3, "Pilgrims_Waystone_Uncommon", 4)
+
+	assert_true(_has_borrowed_time(_roster[4]), "A reagent bump is the consumer's own effect, like a skill bump")
+
+func test_a_bump_reagent_another_ally_consumes_grants_nothing() -> void:
+	_InitTrait(Types.Rarity.Legendary)
+	_resolver = _make_fake_resolver({4: 2})
+
+	_resolver.ResolveReagent(5, "Pilgrims_Waystone_Uncommon", 4)
+
+	assert_false(_has_borrowed_time(_roster[4]))
+
 func test_no_grant_on_a_negative_ally_bump() -> void:
 	_InitTrait(Types.Rarity.Legendary)
 	_roster[3]._skills.append(_ally_push_skill(-0.15))

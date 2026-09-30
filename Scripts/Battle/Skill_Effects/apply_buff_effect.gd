@@ -6,6 +6,7 @@ class_name ApplyBuffEffect extends SkillEffect
 
 @export var buff_type: Types.Buff_Type = Types.Buff_Type.Invalid
 @export var duration: int = 0
+@export var magnitude_multiplier: float = 1.0
 
 func Resolve(p_context: SkillCastContext) -> void:
 	var status_resolver: StatusEffectResolver = p_context.resolver.GetStatusResolver()
@@ -21,6 +22,11 @@ func Resolve(p_context: SkillCastContext) -> void:
 				caster, p_context.caster_ID, target_ID, buff_type, p_context.resolver)
 		if(value_override >= 0.0):
 			buff.value = value_override
+		if(1.0 != magnitude_multiplier):
+			if(value_override < 0.0):
+				buff.value = status_resolver.SnapshotStatusValue(
+						StatusEffectRegistry.BuffData(buff_type), p_context.caster_ID, target_ID)
+			buff.value *= magnitude_multiplier
 		if(p_context.is_zone_trigger):
 			var data: StatusEffectData = StatusEffectRegistry.BuffData(buff_type)
 			if(null != data):

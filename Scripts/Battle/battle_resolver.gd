@@ -579,6 +579,9 @@ func _ResolveReagentEffect(
 			buff.duration = 3
 			buff.value = ReagentResolver.PercentFraction(p_reagent.magnitude, p_potency)
 			_status_resolver.ApplyBuff(p_target_ID, buff)
+		ReagentData.EffectKind.Turn_Bar_Bump:
+			_EmitTurnBarBump(p_target_ID, ReagentResolver.PercentFraction(p_reagent.magnitude, p_potency),
+					p_consumer_ID)
 		var invalid_kind:
 			print("Invalid reagent effect kind: ", invalid_kind)
 
