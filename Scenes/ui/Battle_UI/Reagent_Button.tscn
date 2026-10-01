@@ -2,12 +2,99 @@
 
 [ext_resource type="Script" uid="uid://bsp7bqg31k4v0" path="res://Scripts/UI/Battle_UI/reagent_button.gd" id="2_script"]
 [ext_resource type="Script" uid="uid://bumae467d28vx" path="res://Scripts/UI/tooltip.gd" id="3_tooltip"]
+[ext_resource type="Shader" uid="uid://bfxy8p1d7jnyy" path="res://Assets/Champ_Collector/Shaders/rarity_noise_backdrop.gdshader" id="4_backdrop"]
 
-[node name="Reagent_1" type="Button" unique_id=324898106]
+[sub_resource type="Curve" id="Curve_noise_remap"]
+_data = [Vector2(0, 0), 0.0, 1.0, 0, 1, Vector2(1, 1), 1.0, 0.0, 1, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_noise_remap"]
+curve = SubResource("Curve_noise_remap")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_rarity"]
+frequency = 0.03
+fractal_octaves = 4
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_rarity"]
+width = 128
+height = 128
+noise = SubResource("FastNoiseLite_rarity")
+seamless = true
+
+[sub_resource type="Curve" id="Curve_vertical_shade"]
+_data = [Vector2(0, 0.05084753), 0.0, 0.0, 0, 0, Vector2(0.96428573, 0.28813565), 0.57097405, 0.57097405, 0, 0, Vector2(1, 0.95), 1.5, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_vertical_shade"]
+curve = SubResource("Curve_vertical_shade")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rarity"]
+resource_local_to_scene = true
+shader = ExtResource("4_backdrop")
+shader_parameter/rarity_color = Color(0, 0, 0, 0)
+shader_parameter/alpha = 1.0
+shader_parameter/noise_texture = SubResource("NoiseTexture2D_rarity")
+shader_parameter/noise_scale = Vector2(2, 2)
+shader_parameter/noise_offset = Vector2(0, 0)
+shader_parameter/noise_contrast = 2.018000095855
+shader_parameter/noise_curve = SubResource("CurveTexture_noise_remap")
+shader_parameter/use_noise_curve = true
+shader_parameter/noise_darkening = 0.4850000230375
+shader_parameter/shade_curve = SubResource("CurveTexture_vertical_shade")
+shader_parameter/shade_strength = 1.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_frame"]
+draw_center = false
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[node name="Reagent_1" type="Button" unique_id=324898106 node_paths=PackedStringArray("_rarity_backdrop", "_icon_rect", "_frame")]
 offset_right = 100.0
 offset_bottom = 100.0
 expand_icon = true
 script = ExtResource("2_script")
+_rarity_backdrop = NodePath("RarityBackdrop")
+_icon_rect = NodePath("TextureRect_Icon")
+_frame = NodePath("Panel_Frame")
+
+[node name="RarityBackdrop" type="ColorRect" parent="." unique_id=1702938451]
+material = SubResource("ShaderMaterial_rarity")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="TextureRect_Icon" type="TextureRect" parent="." unique_id=1902834776]
+clip_contents = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Panel_Frame" type="Panel" parent="." unique_id=1387462905]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_frame")
 
 [node name="Control" type="Control" parent="." unique_id=512641455]
 custom_minimum_size = Vector2(100, 100)

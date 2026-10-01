@@ -138,12 +138,13 @@ func SetSkill(p_texture_path: String, p_title: String, p_description: String, p_
 	_skill_buttons[p_slot].icon = _skill_textures[p_texture_path]
 	_skill_buttons[p_slot].SetToolTip(p_title, p_description)
 
-func SetReagent(p_icon: Texture, p_title: String, p_description: String, p_slot: int) -> void:
+func SetReagent(p_icon: Texture2D, p_rarity: Types.Rarity, p_title: String, p_description: String,
+		p_slot: int) -> void:
 	if(p_slot < 0 or p_slot >= _reagent_buttons.size()):
 		print("attempting to set a reagent out of bounds: ", p_slot)
 		return
 
-	_reagent_buttons[p_slot].icon = p_icon
+	_reagent_buttons[p_slot].SetReagentIcon(p_icon, p_rarity)
 	_reagent_buttons[p_slot].SetToolTip(p_title, p_description)
 
 func ShowReagentConfirm(p_reagent_index: int, p_title: String, p_description: String) -> void:

@@ -292,7 +292,7 @@ func StartTurn() -> void:
 		_battle_ui.ActiveSkillGlow(_selected_skill_ID)
 		for i in mini(_reagent_loadout.Size(), _battle_ui._reagent_buttons.size()):
 			var reagent: ReagentData = ReagentRegistry.Get(_reagent_loadout.KeyAt(i))
-			_battle_ui.SetReagent(reagent.icon, reagent.display_name, reagent.description, i)
+			_battle_ui.SetReagent(reagent.icon, reagent.rarity, reagent.display_name, reagent.description, i)
 			_battle_ui._reagent_buttons[i].show()
 			if(_reagent_loadout.IsSpent(i)):
 				_battle_ui._reagent_buttons[i].MarkSpent()
@@ -787,7 +787,7 @@ func _ResolveReagentConsumption(p_reagent_index: int, p_target_ID: int) -> void:
 	if(_resolver.TryRefundBrew(_reagent_loadout, p_reagent_index, _turn_character_ID, had_catalyst, was_brewed)):
 		var refunded_reagent: ReagentData = ReagentRegistry.Get(_reagent_loadout.KeyAt(p_reagent_index))
 		_battle_ui._reagent_buttons[p_reagent_index].ClearSpent()
-		_battle_ui.SetReagent(refunded_reagent.icon, refunded_reagent.display_name,
+		_battle_ui.SetReagent(refunded_reagent.icon, refunded_reagent.rarity, refunded_reagent.display_name,
 				refunded_reagent.description, p_reagent_index)
 	else:
 		_battle_ui._reagent_buttons[p_reagent_index].MarkSpent()
