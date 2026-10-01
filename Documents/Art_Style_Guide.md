@@ -91,7 +91,7 @@ Part I whole, and no section grants an exemption this table does not carry.
 | Active skill art | Non-negotiables 1, 2, 3 and 6; sections 12.1–12.2; the section 6 quantize step | 12.4 |
 | Passive icons | The material slots of section 3 | 12.6 |
 | Turn bar zone art | Non-negotiables 1, 2 and 3; section 4's light direction; 14.1's outline and key background | 13.3.1 |
-| Gear icons | Non-negotiable 3; section 4's camera, ground line and composition tail; the material slots of section 3 | 11.1 |
+| Gear and reagent icons | Non-negotiable 3; section 4's camera, ground line and composition tail; the material slots of section 3 | 11.1, 11.3 |
 | Effects and VFX | Non-negotiable 3's coverage cap only | 14.1 |
 
 ---
@@ -501,7 +501,7 @@ on assets that already look right.
 | Active skill art (12.4) | Overlay only — quantize would strip the hatching and tone-block range; no LUT, since skill art is UI and not in scene light |
 | Passive icons (12.6) | Quantize, accent correction, overlay, downscale to 40 px; no LUT |
 | Turn bar zone art (13.3.1) | Key out, then downscale; no quantize, no accent correction, no LUT |
-| Gear icons (11.1) | Crop, quantize, overlay, downscale to 100 × 120; no accent correction, no LUT. Quantize untested (19.4) |
+| Gear and reagent icons (11.1, 11.3) | Crop, quantize, overlay, downscale to 100 × 120; no accent correction, no LUT. Quantize untested (19.4) |
 
 **The quantize step must snap L\* while preserving hue.** A greyscale-ramp
 implementation strips the tinted band 1 (2.2) and the saturated garment (3.5)
@@ -613,7 +613,8 @@ See 11.
 - [ ] Relics: parts integrated into one made object, with no complete object set on another (11.6)
 - [ ] Still reads as its item type — footwear, weapon, off-hand — at a glance (11.6)
 - [ ] Boots shown as a pair, unless the item is not footwear (11.2)
-- [ ] Rarity signal — not yet defined (11.5)
+- [ ] Rarity signal — not yet defined for gear (11.5); reagents carry none in the art (11.3)
+- [ ] Reagents: an object, not a powder or potion; material and kind of strangeness differ from the reagents beside it (11.3)
 
 ### 7.6 Icons
 
@@ -2390,9 +2391,71 @@ weapon before it reads as which one, is open until standard gear exists.
 
 ### 11.3 Reagents
 
-> **Not yet written.** Reagents are consumed and appear in kit text, so they need
-> to be identifiable at very small size and in quantity. Decide whether they are
-> icons (12) or objects (11).
+Reagents are objects, drawn as gear icons (11.1): same cell, diagonal, tiered and
+counted detail, one broad bone white edge, no Role accent. What differs is below.
+
+- **A remnant of the God of Magic's era.** A trinket, tablet, seal, chime, idol,
+  key or marker dug out of a ruin (`Concept_Document.md` 3.3.3). Never a powder,
+  potion, herb or spice. The Alchemist's brews are the one exception and are not
+  yet designed.
+- **One image per reagent.** Rarity is an engine background behind the icon,
+  never a variant of the art.
+- **One element from outside reality** (8.1), derived from the effect and visible
+  in the still image. A Relic's ornate finish (11.6) is not required.
+- **One saturated material**, on the strange element. Spread the hue across the
+  catalog, as for Relics.
+- **Vary the material across the set.** Stone, clay, iron, bronze, crystal, wood,
+  parchment, glass, wax, glazed ceramic, cord. Three of the first five came back
+  stone before this rule existed.
+- **Vary the kind of strangeness too.** A figure leaving its object, material
+  peeling or bending, parts floating free, impossible balance. Three reagents in a
+  row with parts held by nothing read as one trick.
+- **Smooth materials come back flat.** Crystal and polished stone invite plain
+  planes. Ask for each facet at a different value, carve glyphs into the faces, and
+  give the moderate and light tiers objects to carry: a band, a cord, a token.
+
+| Reagent | Material | Strange element | Saturated |
+|---|---|---|---|
+| Mending Icon | soapstone | figure stepped out of its panel | coral |
+| Absolving Tablet | fired clay | inlaid script peeling out of its grooves | cerulean |
+| Thief's Regret | iron | key bit crumbling into drifting chips | lime |
+| Unbinding Shard | slate | chain cut clean at the shard's edge, halves floating | magenta |
+| Second Wind Chime | bronze | chime plate spreading into lifting feathers | turquoise |
+| Pilgrim's Waystone | crystal | cairn stepping out past any balance | citrine |
+
+#### 11.3.1 Approved prompts
+
+At most three. Adding one means removing another's prompt.
+
+**Mending Icon.** The icon's figure has left it to mend you; the empty panel is
+what is left once it is spent.
+
+```
+bold woodcut icon with engraved structural linework, very thick black contour outline on the outer silhouette, hard-edged shadows, four values, hand-carved edge quality with visible gouge marks, a small ancient hinged stone icon of three panels shown whole and opened, tilted on a diagonal with its top leaning toward the upper left, the two side wings angled toward the viewer on bronze hinges, the central panel taller than the wings and rising to a rounded arch, a figure-shaped opening cut cleanly through the central panel in the exact outline of a standing robed figure with both arms held open, empty space showing through the opening, in front of the central panel a small carved statuette of that same robed figure with both arms held open, the same outline as the opening, stepping forward and down off the panel's lower ledge toward the lower right with one foot still resting on the ledge, three levels of detail: the opening and the statuette carry the heaviest engraved detail and read as the focal point, through the sharp cut edges of the opening and the robe folds and open hands of the statuette; the central panel and the arch carry moderate engraved detail through a border band of seven repeated spiral motifs around the arch and parallel hatching lines across the shadow side of the panel; the side wings carry light detail through three rows of carved angular script on each wing, all marks bold and structural, the panels in dull grey-green soapstone falling into ink black shadow on their lower right, the hinges in warm dull bronze, the statuette in flat saturated coral, one broad bone white edge along the upper rim of the arch, light from the upper left, the whole icon visible with margin on all sides
+```
+
+**Cut order:** hatching, script rows to two, spirals to five. The opening and the
+statuette are never cut.
+
+**Thief's Regret.** A key that ruins whatever it opens. A heftier, bulkier
+version was tried and the slimmer original kept.
+
+```
+bold woodcut icon with engraved structural linework, very thick black contour outline on the outer silhouette, hard-edged shadows, four values, hand-carved edge quality with visible gouge marks, a single ancient ornate key shown whole on a diagonal, the bit at the upper left and the bow at the lower right, the bow a heavy pierced ring of four rounded lobes around a four-pointed opening, the shank long and straight with two raised collars, the bit at the far end crumbling apart: its first tooth broken down to a jagged stub, its second tooth cracked through and splitting away from the shank, its third tooth still whole, six small angular chips breaking off the bit and drifting away from it toward the upper left, the nearest chip almost touching the bit and each following chip further away and smaller, every broken face of the bit and every chip in flat saturated lime green, the rest of the key in dark iron, three levels of detail: the crumbling bit and its chips carry the heaviest engraved detail and read as the focal point, through the jagged fracture edges, the crack splitting the second tooth and the hard angular facets of each chip; the bow carries moderate engraved detail through a border band of eight repeated notched motifs around its lobes and parallel hatching lines across its shadow side; the shank carries light detail through its two collars alone, all marks bold and structural, the key in dark blued iron falling into ink black shadow on its lower right, one broad bone white edge along the upper rim of the bow, light from the upper left, the whole key and its drifting chips visible with margin on all sides
+```
+
+**Cut order:** hatching, bow motifs to five, chips to four. The stub, the cracked
+tooth and the lime faces are never cut.
+
+**Pilgrim's Waystone.** The working example of a smooth material given enough
+carving to read.
+
+```
+bold woodcut icon with heavy engraved structural linework deeply cut into every surface, very thick black contour outline on the outer silhouette, hard-edged shadows, four values, hand-carved edge quality with visible gouge marks, a single small ancient trail cairn of five stacked crystal stones shown whole, each stone a chunk of clouded crystal broken into hard flat facets, each facet a different value so every stone reads as cut and solid, the stack stepping forward along a diagonal from the lower right toward the upper left: the first stone a broad heavy base, the second resting on it shifted a little forward, the third shifted further forward, the fourth jutting out well past the edge of the third, the fifth and smallest stone jutting out furthest of all over empty space far beyond any point it could balance, each stone resting on only a thin sliver at the back edge of the one beneath it, the first four stones in pale smoke-grey crystal, the fifth stone in flat saturated citrine yellow, three levels of detail: the fifth stone carries the heaviest engraved detail and reads as the focal point, through its sharp facet edges, one carved glyph of a walking foot cut deep into its lit face, and three fracture lines running into it from the thin contact edge where it rests on the fourth stone; the second, third and fourth stones carry moderate engraved detail, each with one deep carved trail glyph on its front face, the third wrapped by a band of warm dull bronze stamped with a row of five small square marks, the second wrapped by three turns of oxblood cord knotted at the front with two small cast pewter pilgrim tokens hanging close against the stone, and parallel hatching lines cut across the shadow facets of all three; the base stone carries light detail through four carved notches along its front edge as trail marks and two chipped corners, all marks bold and structural, the crystal falling into ink black shadow on the lower right of each stone, one broad bone white edge along the upper rim of the fifth stone, light from the upper left, the whole cairn visible with margin on all sides
+```
+
+**Cut order:** hatching, bronze band marks, pewter tokens, chipped corners. The
+overhang, the citrine stone and its glyph are never cut.
 
 ### 11.4 Currencies and consumables
 
@@ -2405,6 +2468,9 @@ weapon before it reads as which one, is open until standard gear exists.
 > the work, and how a gear set stays recognisable across three equipment slots.
 > This competes with the champion accent system for the player's color vocabulary
 > — decide the priority.
+
+Reagents take rarity from an engine background behind the icon (11.3). Whether
+gear uses the same mechanism is open.
 
 ### 11.6 Relics
 
@@ -2908,8 +2974,8 @@ Fixes for when a variant fails:
 
 ### 12.7 Item and reagent icons
 
-Gear: the icon is the item art, one asset, specified in 11.1. Reagents: not yet
-written (11.3).
+Gear: the icon is the item art, one asset, specified in 11.1. Reagents: the same
+class, specified in 11.3.
 
 ### 12.8 Currency and resource icons
 
@@ -3237,6 +3303,8 @@ line is a trap, not a history; the rule it produced lives in the section named.
   item, not a find; it needs the ornate finish as well (11.6).
 - A single boot for a Boots item. Boots are a pair (11.2).
 - A knife as an Off-Hand. Reads as a weapon (11.2).
+- A reagent as a carved pointing hand on a waymarker post, its finger stretched
+  long. Generated and rejected (11.3).
 
 **Environment elements**
 
@@ -3397,6 +3465,10 @@ together, at six characters rather than at fifteen.
   saturated material (11.6).
 - **Standard gear.** Not yet generated. The plain finish that sets it apart from a
   Relic, and whether slots need their own silhouette conventions (11.2).
+- **Alchemist brews.** The one reagent exception to the object rule (11.3); no
+  visual direction yet.
+- **Reagent and Relic hues.** Both catalogs spread one saturated material across
+  their entries; whether they must avoid each other's hues is undecided (11.3, 11.6).
 - **Kiln Brand's guard.** Kept for now, but a whole kiln stacked on a knife (11.6).
   Rework with kiln elements worked into the guard.
 - **Gear icon post-processing.** Whether quantize keeps the engraved detail and
