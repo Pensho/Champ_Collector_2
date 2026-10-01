@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://de848june22qi"
-path="res://.godot/imported/Second_Wind_Chime_Legendary.png-a718dbb490ac72c1685df0f9ec193300.ctex"
+uid="uid://x0rcm2vhag5x"
+path="res://.godot/imported/mending_icon.png-ce9ed3f756601e841ef1fce0b67851c5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Reagents/Second_Wind_Chime/Second_Wind_Chime_Legendary.png"
-dest_files=["res://.godot/imported/Second_Wind_Chime_Legendary.png-a718dbb490ac72c1685df0f9ec193300.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Reagents/mending_icon.png"
+dest_files=["res://.godot/imported/mending_icon.png-ce9ed3f756601e841ef1fce0b67851c5.ctex"]
 
 [params]
 

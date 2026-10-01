@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="ReagentData" format=3 uid="uid://bos8ymmndnjg"]
 
 [ext_resource type="Script" uid="uid://t3vvjqg3kas0" path="res://Scripts/Battle/reagent_data.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://d3xqa7bqf52wt" path="res://Assets/Champ_Collector/Icons/Reagents/Second_Wind_Chime/Second_Wind_Chime_Epic.png" id="2_icon"]
+[ext_resource type="Texture2D" uid="uid://cpskmpw7dw4l6" path="res://Assets/Champ_Collector/Icons/Reagents/second_wind_chime.png" id="2_icon"]
 
 [resource]
 script = ExtResource("1_script")

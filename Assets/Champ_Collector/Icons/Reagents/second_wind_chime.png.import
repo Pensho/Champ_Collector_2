@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cpgbqa212m0mi"
-path="res://.godot/imported/Pilgrims_Waystone_Epic.png-12aa7a0f733bf4c8f1a6fd1544205de1.ctex"
+uid="uid://cpskmpw7dw4l6"
+path="res://.godot/imported/second_wind_chime.png-13bc37f49e8c102375bf6ca339b1062a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Reagents/Pilgrims_Waystone/Pilgrims_Waystone_Epic.png"
-dest_files=["res://.godot/imported/Pilgrims_Waystone_Epic.png-12aa7a0f733bf4c8f1a6fd1544205de1.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Reagents/second_wind_chime.png"
+dest_files=["res://.godot/imported/second_wind_chime.png-13bc37f49e8c102375bf6ca339b1062a.ctex"]
 
 [params]
 

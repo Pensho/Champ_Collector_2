@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dbrxirgy4batf"
-path="res://.godot/imported/Unbinding_Shard_Uncommon.png-2ac50d3fd8ea5fac2a6af9afdd09f3d4.ctex"
+uid="uid://cpdva4djtbfnu"
+path="res://.godot/imported/pilgrims_waystone.png-fc7e3ed244a3c347b214a98c56f9293f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Reagents/Unbinding_Shard/Unbinding_Shard_Uncommon.png"
-dest_files=["res://.godot/imported/Unbinding_Shard_Uncommon.png-2ac50d3fd8ea5fac2a6af9afdd09f3d4.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Reagents/pilgrims_waystone.png"
+dest_files=["res://.godot/imported/pilgrims_waystone.png-fc7e3ed244a3c347b214a98c56f9293f.ctex"]
 
 [params]
 

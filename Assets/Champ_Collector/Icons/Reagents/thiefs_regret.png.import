@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://t701v2q24a8m"
-path="res://.godot/imported/Mending_Icon_Uncommon.png-0bcfc4b22b002401dc02ce71c7d373a2.ctex"
+uid="uid://hqcc6ogicw2n"
+path="res://.godot/imported/thiefs_regret.png-30f8758ddc19dc1a312470fe98f661cd.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Reagents/Mending_Icon/Mending_Icon_Uncommon.png"
-dest_files=["res://.godot/imported/Mending_Icon_Uncommon.png-0bcfc4b22b002401dc02ce71c7d373a2.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Reagents/thiefs_regret.png"
+dest_files=["res://.godot/imported/thiefs_regret.png-30f8758ddc19dc1a312470fe98f661cd.ctex"]
 
 [params]
 

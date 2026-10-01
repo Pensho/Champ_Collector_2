@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="ReagentData" format=3 uid="uid://e4oanleqo81m"]
 
 [ext_resource type="Script" uid="uid://t3vvjqg3kas0" path="res://Scripts/Battle/reagent_data.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://o2fy3pepexs6" path="res://Assets/Champ_Collector/Icons/Reagents/Thiefs_Regret/Thiefs_Regret_Uncommon.png" id="2_icon"]
+[ext_resource type="Texture2D" uid="uid://hqcc6ogicw2n" path="res://Assets/Champ_Collector/Icons/Reagents/thiefs_regret.png" id="2_icon"]
 
 [resource]
 script = ExtResource("1_script")

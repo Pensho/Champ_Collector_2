@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://tsk3pcbsh8ho"
-path="res://.godot/imported/Absolving_Tablet_Uncommon.png-827d6f7a030e5e93a50c1b926fc438fb.ctex"
+uid="uid://b1ipkvu1nyx5o"
+path="res://.godot/imported/absolving_tablet.png-2d93bb087dc39554323a8d7540b27b92.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Reagents/Absolving_Tablet/Absolving_Tablet_Uncommon.png"
-dest_files=["res://.godot/imported/Absolving_Tablet_Uncommon.png-827d6f7a030e5e93a50c1b926fc438fb.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Reagents/absolving_tablet.png"
+dest_files=["res://.godot/imported/absolving_tablet.png-2d93bb087dc39554323a8d7540b27b92.ctex"]
 
 [params]
 
