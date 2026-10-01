@@ -1003,6 +1003,7 @@ func _EmitBuffApplied(p_target_ID: int, p_buff: StatusEffects.Buff, p_display_na
 	result.is_buff = true
 	result.buff_type = p_buff.type
 	result.duration = p_buff.duration
+	result.stacks = int(p_buff.trait_riders.get(&"stacks", 0))
 	result.amount = int(p_buff.value)
 	var buff_data: StatusEffectData = StatusEffectRegistry.BuffData(p_buff.type)
 	result.fraction = (Skills.DisplayedAttributeModifierFraction(buff_data, p_buff.value, p_buff.trait_riders)
@@ -1034,6 +1035,7 @@ func _EmitDebuffApplied(p_target_ID: int, p_debuff: StatusEffects.Debuff, p_disp
 	result.is_buff = false
 	result.debuff_type = p_debuff.type
 	result.duration = p_debuff.duration
+	result.stacks = int(p_debuff.trait_riders.get(&"stacks", 0))
 	result.source_ID = p_debuff.source_ID
 	result.amount = int(p_debuff.value)
 	var debuff_data: StatusEffectData = StatusEffectRegistry.DebuffData(p_debuff.type)

@@ -13,6 +13,7 @@ const SPRITE_SIZE: Vector2 = Vector2(250.0, 250.0)
 @export var _target_ID: int = -1
 @export var _status_effect_textures: Array[TextureRect]
 @export var _status_effect_tooltips: Array[ToolTip]
+@export var _status_effect_stack_labels: Array[Label]
 
 var _status_effect: Dictionary[int, int]
 var _status_effect_counter: int = 0
@@ -37,7 +38,11 @@ func FootPosition() -> Vector2:
 	return global_position + Vector2(SPRITE_SIZE.x * 0.5, SPRITE_SIZE.y) * scale
 
 func AddStatusEffect(
-		p_effect_texture: Texture, p_duration: int, p_title: String, p_description: String) -> int:
+		p_effect_texture: Texture,
+		p_duration: int,
+		p_stacks: int,
+		p_title: String,
+		p_description: String) -> int:
 	for slot in _status_effect_textures.size():
 		if (not _status_effect_textures[slot].is_visible_in_tree()):
 			_status_effect_textures[slot].texture = p_effect_texture
@@ -45,6 +50,7 @@ func AddStatusEffect(
 			_status_effect_counter += 1
 			_status_effect_textures[slot].show()
 			SetStatusEffectDuration(_status_effect_counter - 1, p_duration)
+			_SetStatusEffectStacks(slot, p_stacks)
 			_status_effect_tooltips[slot].title_text = p_title
 			_status_effect_tooltips[slot].description_text = p_description
 			return _status_effect_counter - 1
@@ -53,18 +59,24 @@ func AddStatusEffect(
 
 func SetStatusEffectDuration(p_effect_ID: int, p_duration: int) -> void:
 	if(_status_effect.has(p_effect_ID)):
-		_status_effect_textures[_status_effect[p_effect_ID]].get_child(0).text = str(p_duration)
+		var duration_label: Label = _status_effect_textures[_status_effect[p_effect_ID]].get_child(0)
+		duration_label.text = str(p_duration) if p_duration > 0 else ""
 	else:
 		print("No status effect found at ID: ", p_effect_ID)
 
-func UpdateStatusEffect(p_effect_ID: int, p_duration: int, p_title: String, p_description: String) -> void:
+func UpdateStatusEffect(
+		p_effect_ID: int, p_duration: int, p_stacks: int, p_title: String, p_description: String) -> void:
 	if(not _status_effect.has(p_effect_ID)):
 		print("No status effect found at ID: ", p_effect_ID)
 		return
 	var slot: int = _status_effect[p_effect_ID]
 	SetStatusEffectDuration(p_effect_ID, p_duration)
+	_SetStatusEffectStacks(slot, p_stacks)
 	_status_effect_tooltips[slot].title_text = p_title
 	_status_effect_tooltips[slot].description_text = p_description
+
+func _SetStatusEffectStacks(p_slot: int, p_stacks: int) -> void:
+	_status_effect_stack_labels[p_slot].text = str(p_stacks) if p_stacks > 0 else ""
 
 func RemoveStatusEffects(p_effect_IDs: Array[int]) -> void:
 	for effect_ID in p_effect_IDs:

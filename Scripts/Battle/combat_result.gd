@@ -38,6 +38,7 @@ var is_buff: bool = false
 var buff_type: Types.Buff_Type = Types.Buff_Type.Invalid
 var debuff_type: Types.Debuff_Type = Types.Debuff_Type.Invalid
 var duration: int = 0
+var stacks: int = 0
 var text: String = ""
 var color: Color = Color.WHITE
 var zone_ID: int = -1

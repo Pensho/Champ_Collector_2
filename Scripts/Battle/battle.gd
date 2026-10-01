@@ -531,10 +531,11 @@ func ShowStatusApplied(p_result: CombatResult) -> void:
 			.replace("{percent_decimal}", ("%.1f" % (p_result.fraction * 100.0)))
 	var repr: CharacterRepresentation = _character_representations[p_result.target_ID]
 	if(_status_visual_IDs.has(p_result.status_ID)):
-		repr.UpdateStatusEffect(_status_visual_IDs[p_result.status_ID], p_result.duration, title, description)
+		repr.UpdateStatusEffect(
+				_status_visual_IDs[p_result.status_ID], p_result.duration, p_result.stacks, title, description)
 	else:
 		_status_visual_IDs[p_result.status_ID] = repr.AddStatusEffect(
-				data.icon, p_result.duration, title, description)
+				data.icon, p_result.duration, p_result.stacks, title, description)
 	if("" != p_result.text):
 		_battle_ui.SpawnCombatText(
 				p_result.text, CombatTextPosition(p_result.target_ID), text_color, _cascade_instance_ordinal)

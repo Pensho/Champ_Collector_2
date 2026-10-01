@@ -86,7 +86,8 @@ Part I whole, and no section grants an exemption this table does not carry.
 | Fodder enemies | Non-negotiable 3; the full detail tier | 9.1 |
 | Overworld views | Section 4; non-negotiable 2 | 10.4 |
 | Selection panels | Section 4; non-negotiable 2; the section 6 quantize step | 10.8 |
-| Node, status and currency icons | Non-negotiable 2 (three values); the material slots of section 3 | 12.1 |
+| Node and currency icons | Non-negotiable 2 (three values); the material slots of section 3 | 12.1 |
+| Status effect icons | Non-negotiables 1, 2, 3 and 6; sections 12.1–12.2; the material slots of section 3 | 12.5 |
 | Active skill art | Non-negotiables 1, 2, 3 and 6; sections 12.1–12.2; the section 6 quantize step | 12.4 |
 | Passive icons | The material slots of section 3 | 12.6 |
 | Turn bar zone art | Non-negotiables 1, 2 and 3; section 4's light direction; 14.1's outline and key background | 13.3.1 |
@@ -2478,9 +2479,9 @@ thing on screen.
 
 ### 12.1 Rules
 
-Governs map nodes, status, currency and resource icons. Active skill art (12.4),
-passive icons (12.6) and gear icons (11.1) are separate classes and do not follow
-these.
+Governs map nodes, currency and resource icons. Active skill art (12.4), status
+effect icons (12.5), passive icons (12.6) and gear icons (11.1) are separate
+classes and do not follow these.
 
 - **Target size first.** Decide the pixel size (map nodes ~48–64 px, skill icons
   ~64–96 px) and judge every candidate at exactly that size, never at full
@@ -2774,10 +2775,25 @@ gouged marks to four. The five faces and the two-beam split are never cut.
 
 ### 12.5 Status effect icons
 
-> **Not yet written.** Eight simultaneous slots (`Concept_Document.md` 1.1.4), so
-> these are read in a row at the smallest size in the game. Needs a buff/debuff
-> distinction that is not color alone, a stack-count treatment, and a shared shape
-> language across the status list in 3.2.3.
+Eight slots sit in 2 rows (`Concept_Document.md` 1.1.4) at 25 × 25 px. Author at
+64 × 64 px and judge at 25 px.
+
+- **Two flat colors, no outline:** a background field and one motif on top.
+- **The background carries polarity in both color and shape.** Buff: `#2F5D8C`,
+  full square. Debuff: `#9E2B25`, square with 45° clipped corners (12 px at
+  64 px).
+- **The motif is bone white `#EFE6D2` on every icon**, so the silhouette alone
+  names the status. One chunky silhouette in the upper center, no interior lines,
+  both bottom corners left clear.
+- **A buff and the debuff that opposes it share one motif** (Empower and
+  Enfeeble, Haste and Slow); the background tells them apart.
+
+The UI draws the counters over the icon; they are never painted into it.
+
+- **Duration**, bottom right: bone white number with an ink black `#14121A`
+  outline. Hidden on a status with no duration.
+- **Stack count**, bottom left, for a status that stacks inside one slot: ink
+  black number with a bone white outline. Hidden when the status has no stacks.
 
 ### 12.6 Passive icons — the engraved icon class
 

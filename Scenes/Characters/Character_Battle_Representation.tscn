@@ -45,12 +45,13 @@ fill = 1
 fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(0.9, 0)
 
-[node name="Character" type="Node2D" unique_id=1722979971 node_paths=PackedStringArray("_trait_icons", "_trait_tooltips", "_status_effect_textures", "_status_effect_tooltips")]
+[node name="Character" type="Node2D" unique_id=1722979971 node_paths=PackedStringArray("_trait_icons", "_trait_tooltips", "_status_effect_textures", "_status_effect_tooltips", "_status_effect_stack_labels")]
 script = ExtResource("1_hd4xr")
 _trait_icons = [NodePath("VBoxContainer_Trait_Elements/TextureRect"), NodePath("VBoxContainer_Trait_Elements/TextureRect2"), NodePath("VBoxContainer_Trait_Elements/TextureRect3")]
 _trait_tooltips = [NodePath("VBoxContainer_Trait_Elements/TextureRect"), NodePath("VBoxContainer_Trait_Elements/TextureRect2"), NodePath("VBoxContainer_Trait_Elements/TextureRect3")]
 _status_effect_textures = [NodePath("HBoxContainer_Status_Effects/Effect_1"), NodePath("HBoxContainer_Status_Effects/Effect_2"), NodePath("HBoxContainer_Status_Effects/Effect_3"), NodePath("HBoxContainer_Status_Effects/Effect_4"), NodePath("HBoxContainer_Status_Effects/Effect_5"), NodePath("HBoxContainer_Status_Effects/Effect_6"), NodePath("HBoxContainer_Status_Effects/Effect_7"), NodePath("HBoxContainer_Status_Effects/Effect_8")]
 _status_effect_tooltips = [NodePath("HBoxContainer_Status_Effects/Effect_1"), NodePath("HBoxContainer_Status_Effects/Effect_2"), NodePath("HBoxContainer_Status_Effects/Effect_3"), NodePath("HBoxContainer_Status_Effects/Effect_4"), NodePath("HBoxContainer_Status_Effects/Effect_5"), NodePath("HBoxContainer_Status_Effects/Effect_6"), NodePath("HBoxContainer_Status_Effects/Effect_7"), NodePath("HBoxContainer_Status_Effects/Effect_8")]
+_status_effect_stack_labels = [NodePath("HBoxContainer_Status_Effects/Effect_1/Stack_Label"), NodePath("HBoxContainer_Status_Effects/Effect_2/Stack_Label"), NodePath("HBoxContainer_Status_Effects/Effect_3/Stack_Label"), NodePath("HBoxContainer_Status_Effects/Effect_4/Stack_Label"), NodePath("HBoxContainer_Status_Effects/Effect_5/Stack_Label"), NodePath("HBoxContainer_Status_Effects/Effect_6/Stack_Label"), NodePath("HBoxContainer_Status_Effects/Effect_7/Stack_Label"), NodePath("HBoxContainer_Status_Effects/Effect_8/Stack_Label")]
 
 [node name="VisualEffects" type="Node2D" parent="." unique_id=360040870 node_paths=PackedStringArray("_source_texture_rect", "_echo_textures")]
 script = ExtResource("6_echovx")
@@ -217,10 +218,22 @@ script = ExtResource("5_7k67v")
 layout_mode = 0
 offset_right = 25.0
 offset_bottom = 25.0
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0.9372549, 0.9019608, 0.8235294, 1)
+theme_override_colors/font_outline_color = Color(0.078431375, 0.07058824, 0.101960786, 1)
 theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 12
 horizontal_alignment = 2
+vertical_alignment = 2
+
+[node name="Stack_Label" type="Label" parent="HBoxContainer_Status_Effects/Effect_1" unique_id=729097167]
+layout_mode = 0
+offset_left = 1.0
+offset_right = 26.0
+offset_bottom = 25.0
+theme_override_colors/font_color = Color(0.078431375, 0.07058824, 0.101960786, 1)
+theme_override_colors/font_outline_color = Color(0.9372549, 0.9019608, 0.8235294, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 12
 vertical_alignment = 2
 
 [node name="Effect_2" type="TextureRect" parent="HBoxContainer_Status_Effects" unique_id=307024267]
@@ -234,10 +247,22 @@ script = ExtResource("5_7k67v")
 layout_mode = 0
 offset_right = 25.0
 offset_bottom = 25.0
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0.9372549, 0.9019608, 0.8235294, 1)
+theme_override_colors/font_outline_color = Color(0.078431375, 0.07058824, 0.101960786, 1)
 theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 12
 horizontal_alignment = 2
+vertical_alignment = 2
+
+[node name="Stack_Label" type="Label" parent="HBoxContainer_Status_Effects/Effect_2" unique_id=1298807604]
+layout_mode = 0
+offset_left = 1.0
+offset_right = 26.0
+offset_bottom = 25.0
+theme_override_colors/font_color = Color(0.078431375, 0.07058824, 0.101960786, 1)
+theme_override_colors/font_outline_color = Color(0.9372549, 0.9019608, 0.8235294, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 12
 vertical_alignment = 2
 
 [node name="Effect_3" type="TextureRect" parent="HBoxContainer_Status_Effects" unique_id=234114527]
@@ -251,10 +276,22 @@ script = ExtResource("5_7k67v")
 layout_mode = 0
 offset_right = 25.0
 offset_bottom = 25.0
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0.9372549, 0.9019608, 0.8235294, 1)
+theme_override_colors/font_outline_color = Color(0.078431375, 0.07058824, 0.101960786, 1)
 theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 12
 horizontal_alignment = 2
+vertical_alignment = 2
+
+[node name="Stack_Label" type="Label" parent="HBoxContainer_Status_Effects/Effect_3" unique_id=146284986]
+layout_mode = 0
+offset_left = 1.0
+offset_right = 26.0
+offset_bottom = 25.0
+theme_override_colors/font_color = Color(0.078431375, 0.07058824, 0.101960786, 1)
+theme_override_colors/font_outline_color = Color(0.9372549, 0.9019608, 0.8235294, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 12
 vertical_alignment = 2
 
 [node name="Effect_4" type="TextureRect" parent="HBoxContainer_Status_Effects" unique_id=396163916]
@@ -268,10 +305,22 @@ script = ExtResource("5_7k67v")
 layout_mode = 0
 offset_right = 25.0
 offset_bottom = 25.0
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0.9372549, 0.9019608, 0.8235294, 1)
+theme_override_colors/font_outline_color = Color(0.078431375, 0.07058824, 0.101960786, 1)
 theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 12
 horizontal_alignment = 2
+vertical_alignment = 2
+
+[node name="Stack_Label" type="Label" parent="HBoxContainer_Status_Effects/Effect_4" unique_id=482029241]
+layout_mode = 0
+offset_left = 1.0
+offset_right = 26.0
+offset_bottom = 25.0
+theme_override_colors/font_color = Color(0.078431375, 0.07058824, 0.101960786, 1)
+theme_override_colors/font_outline_color = Color(0.9372549, 0.9019608, 0.8235294, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 12
 vertical_alignment = 2
 
 [node name="Effect_5" type="TextureRect" parent="HBoxContainer_Status_Effects" unique_id=858902880]
@@ -285,10 +334,22 @@ script = ExtResource("5_7k67v")
 layout_mode = 0
 offset_right = 25.0
 offset_bottom = 25.0
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0.9372549, 0.9019608, 0.8235294, 1)
+theme_override_colors/font_outline_color = Color(0.078431375, 0.07058824, 0.101960786, 1)
 theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 12
 horizontal_alignment = 2
+vertical_alignment = 2
+
+[node name="Stack_Label" type="Label" parent="HBoxContainer_Status_Effects/Effect_5" unique_id=1233587099]
+layout_mode = 0
+offset_left = 1.0
+offset_right = 26.0
+offset_bottom = 25.0
+theme_override_colors/font_color = Color(0.078431375, 0.07058824, 0.101960786, 1)
+theme_override_colors/font_outline_color = Color(0.9372549, 0.9019608, 0.8235294, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 12
 vertical_alignment = 2
 
 [node name="Effect_6" type="TextureRect" parent="HBoxContainer_Status_Effects" unique_id=1015242076]
@@ -302,10 +363,22 @@ script = ExtResource("5_7k67v")
 layout_mode = 0
 offset_right = 25.0
 offset_bottom = 25.0
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0.9372549, 0.9019608, 0.8235294, 1)
+theme_override_colors/font_outline_color = Color(0.078431375, 0.07058824, 0.101960786, 1)
 theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 12
 horizontal_alignment = 2
+vertical_alignment = 2
+
+[node name="Stack_Label" type="Label" parent="HBoxContainer_Status_Effects/Effect_6" unique_id=450631549]
+layout_mode = 0
+offset_left = 1.0
+offset_right = 26.0
+offset_bottom = 25.0
+theme_override_colors/font_color = Color(0.078431375, 0.07058824, 0.101960786, 1)
+theme_override_colors/font_outline_color = Color(0.9372549, 0.9019608, 0.8235294, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 12
 vertical_alignment = 2
 
 [node name="Effect_7" type="TextureRect" parent="HBoxContainer_Status_Effects" unique_id=1739495247]
@@ -319,10 +392,22 @@ script = ExtResource("5_7k67v")
 layout_mode = 0
 offset_right = 25.0
 offset_bottom = 25.0
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0.9372549, 0.9019608, 0.8235294, 1)
+theme_override_colors/font_outline_color = Color(0.078431375, 0.07058824, 0.101960786, 1)
 theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 12
 horizontal_alignment = 2
+vertical_alignment = 2
+
+[node name="Stack_Label" type="Label" parent="HBoxContainer_Status_Effects/Effect_7" unique_id=1952946683]
+layout_mode = 0
+offset_left = 1.0
+offset_right = 26.0
+offset_bottom = 25.0
+theme_override_colors/font_color = Color(0.078431375, 0.07058824, 0.101960786, 1)
+theme_override_colors/font_outline_color = Color(0.9372549, 0.9019608, 0.8235294, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 12
 vertical_alignment = 2
 
 [node name="Effect_8" type="TextureRect" parent="HBoxContainer_Status_Effects" unique_id=515042062]
@@ -336,10 +421,22 @@ script = ExtResource("5_7k67v")
 layout_mode = 0
 offset_right = 25.0
 offset_bottom = 25.0
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0.9372549, 0.9019608, 0.8235294, 1)
+theme_override_colors/font_outline_color = Color(0.078431375, 0.07058824, 0.101960786, 1)
 theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 12
 horizontal_alignment = 2
+vertical_alignment = 2
+
+[node name="Stack_Label" type="Label" parent="HBoxContainer_Status_Effects/Effect_8" unique_id=1180949021]
+layout_mode = 0
+offset_left = 1.0
+offset_right = 26.0
+offset_bottom = 25.0
+theme_override_colors/font_color = Color(0.078431375, 0.07058824, 0.101960786, 1)
+theme_override_colors/font_outline_color = Color(0.9372549, 0.9019608, 0.8235294, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 12
 vertical_alignment = 2
 
 [node name="VBoxContainer_Trait_Elements" type="VBoxContainer" parent="." unique_id=770228792]

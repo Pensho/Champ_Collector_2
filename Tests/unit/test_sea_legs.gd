@@ -134,3 +134,18 @@ func test_restacking_reports_the_same_status_id_with_the_updated_value() -> void
 		"Restacking must report the same status_ID, not a new one, so the UI updates in place")
 	assert_almost_eq(second_applied.fraction, 0.08 * 2, 0.0001,
 		"The reported value must reflect the new stack count for the {percent} tooltip token")
+
+func test_applied_result_reports_the_stack_count() -> void:
+	_place_deck(0.08)
+	var is_sea_legs_applied: Callable = func(r: CombatResult) -> bool:
+		return (CombatResult.Kind.Status_Applied == r.kind and r.is_buff
+				and Types.Buff_Type.Sea_Legs == r.buff_type)
+
+	var first_applied: CombatResult = _resolver.GetZoneResolver().TriggerZones(0).filter(is_sea_legs_applied)[0]
+	_positions.occupants_by_zone[0] = []
+	_resolver.GetZoneResolver().TriggerZones(0)
+	_positions.occupants_by_zone[0] = [1]
+	var second_applied: CombatResult = _resolver.GetZoneResolver().TriggerZones(0).filter(is_sea_legs_applied)[0]
+
+	assert_eq(first_applied.stacks, 1)
+	assert_eq(second_applied.stacks, 2)
