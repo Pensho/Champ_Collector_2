@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://nt8w4k2pflu"
-path="res://.godot/imported/Dead_Weight.png-09f9cef4b6cfe28317bfcc5b5a9ddcb4.ctex"
+uid="uid://d0eixdjejgupi"
+path="res://.godot/imported/luck.png-b52032a0e201a96915d82d61eb45eef5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Status_Effects/Dead_Weight/Dead_Weight.png"
-dest_files=["res://.godot/imported/Dead_Weight.png-09f9cef4b6cfe28317bfcc5b5a9ddcb4.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Status_Effects/luck.png"
+dest_files=["res://.godot/imported/luck.png-b52032a0e201a96915d82d61eb45eef5.ctex"]
 
 [params]
 

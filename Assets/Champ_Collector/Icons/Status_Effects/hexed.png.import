@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c27rhoh568a0t"
-path="res://.godot/imported/Blight.png-fd58c07de812bec8bba385d0e04af499.ctex"
+uid="uid://bi7xgi3g5hcpd"
+path="res://.godot/imported/hexed.png-3e889e0a72d7d9544cb33f88be6beaad.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Status_Effects/Blight/Blight.png"
-dest_files=["res://.godot/imported/Blight.png-fd58c07de812bec8bba385d0e04af499.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Status_Effects/hexed.png"
+dest_files=["res://.godot/imported/hexed.png-3e889e0a72d7d9544cb33f88be6beaad.ctex"]
 
 [params]
 

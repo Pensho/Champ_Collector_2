@@ -1,10 +1,10 @@
 [gd_resource type="Resource" script_class="StatusEffectData" format=3 uid="uid://b7nnwj37v7iwj"]
 
+[ext_resource type="Texture2D" uid="uid://d0eixdjejgupi" path="res://Assets/Champ_Collector/Icons/Status_Effects/luck.png" id="1_n1cgb"]
 [ext_resource type="Script" uid="uid://sqkdniv48rkg" path="res://Scripts/Battle/status_effect_data.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://dxom5h23fplhw" path="res://Assets/Champ_Collector/Icons/Status_Effects/Luck/Luck.png" id="2_icon"]
 
 [resource]
 script = ExtResource("1_script")
 applies_on_self_tick = false
-icon = ExtResource("2_icon")
+icon = ExtResource("1_n1cgb")
 description = "Roll calculations twice and take the better result."

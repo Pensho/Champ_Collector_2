@@ -1,10 +1,10 @@
 [gd_resource type="Resource" script_class="StatusEffectData" format=3 uid="uid://bss364neb2qv5"]
 
+[ext_resource type="Texture2D" uid="uid://bi7xgi3g5hcpd" path="res://Assets/Champ_Collector/Icons/Status_Effects/hexed.png" id="1_7lcg7"]
 [ext_resource type="Script" uid="uid://sqkdniv48rkg" path="res://Scripts/Battle/status_effect_data.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://chcfc5nyfmj42" path="res://Assets/Champ_Collector/Icons/Status_Effects/Hexed/Hexed.png" id="2_icon"]
 
 [resource]
 script = ExtResource("1_script")
 applies_on_self_tick = false
-icon = ExtResource("2_icon")
+icon = ExtResource("1_7lcg7")
 description = "Roll calculations twice and take the worse result."
