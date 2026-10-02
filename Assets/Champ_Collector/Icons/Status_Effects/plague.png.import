@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://4yvw4r7eryxf"
-path="res://.godot/imported/Vigor.png-7ced103096ab664abfb4ced4143f9679.ctex"
+uid="uid://uplfee5tn4wn"
+path="res://.godot/imported/plague.png-295475d1ab3f37cce07c364d44c8f1e8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Status_Effects/Vigor/Vigor.png"
-dest_files=["res://.godot/imported/Vigor.png-7ced103096ab664abfb4ced4143f9679.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Status_Effects/plague.png"
+dest_files=["res://.godot/imported/plague.png-295475d1ab3f37cce07c364d44c8f1e8.ctex"]
 
 [params]
 

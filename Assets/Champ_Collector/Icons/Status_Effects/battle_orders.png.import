@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://yx8u8njpejc5"
-path="res://.godot/imported/Plague.png-70fd23f5e9705ec0d7b4bb757ad7fb3e.ctex"
+uid="uid://ct50xl5pepy8m"
+path="res://.godot/imported/battle_orders.png-aa82bcc3af9d324cb6faba1b49415da9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Status_Effects/Plague/Plague.png"
-dest_files=["res://.godot/imported/Plague.png-70fd23f5e9705ec0d7b4bb757ad7fb3e.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Status_Effects/battle_orders.png"
+dest_files=["res://.godot/imported/battle_orders.png-aa82bcc3af9d324cb6faba1b49415da9.ctex"]
 
 [params]
 

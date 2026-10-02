@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="StatusEffectData" format=3 uid="uid://c8ywhuufq8obs"]
 
+[ext_resource type="Texture2D" uid="uid://uplfee5tn4wn" path="res://Assets/Champ_Collector/Icons/Status_Effects/plague.png" id="1_4bm6i"]
 [ext_resource type="Script" uid="uid://sqkdniv48rkg" path="res://Scripts/Battle/status_effect_data.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://yx8u8njpejc5" path="res://Assets/Champ_Collector/Icons/Status_Effects/Plague/Plague.png" id="2_icon"]
 
 [resource]
 script = ExtResource("1_script")
@@ -11,5 +11,5 @@ attribute_modifiers = Dictionary[int, float]({
 })
 magnitude = 0.3
 stackable = true
-icon = ExtResource("2_icon")
+icon = ExtResource("1_4bm6i")
 description = "Deals damage each turn equal to 30% of the caster's Mysticism, snapshotted at the moment of application. Multiple stacks tick independently."

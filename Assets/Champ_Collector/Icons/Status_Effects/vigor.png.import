@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bmt3nrsyvfahx"
-path="res://.godot/imported/Battle_Orders.png-64eb2d41bdd387017723aea22e8be580.ctex"
+uid="uid://b8nklybh2ais2"
+path="res://.godot/imported/vigor.png-151fb5db4c1fccd0c3d9835ff9aaff75.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Status_Effects/Battle_Orders/Battle_Orders.png"
-dest_files=["res://.godot/imported/Battle_Orders.png-64eb2d41bdd387017723aea22e8be580.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Status_Effects/vigor.png"
+dest_files=["res://.godot/imported/vigor.png-151fb5db4c1fccd0c3d9835ff9aaff75.ctex"]
 
 [params]
 
