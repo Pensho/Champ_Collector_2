@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="StatusEffectData" format=3 uid="uid://d01jgu25bl31c"]
 
 [ext_resource type="Script" uid="uid://sqkdniv48rkg" path="res://Scripts/Battle/status_effect_data.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://beylpf876g6ns" path="res://Assets/Champ_Collector/Icons/Status_Effects/Fortify/Fortify.jpg" id="2_icon"]
+[ext_resource type="Texture2D" uid="uid://dkqbhvk2go5rb" path="res://Assets/Champ_Collector/Icons/Status_Effects/fortify.png" id="1_tlk0o"]
 
 [resource]
 script = ExtResource("1_script")
@@ -10,5 +10,5 @@ attribute_modifiers = Dictionary[int, float]({
 })
 magnitude = 0.3
 applies_on_target_snapshot = true
-icon = ExtResource("2_icon")
+icon = ExtResource("1_tlk0o")
 description = "Increases Defense by {percent}%."

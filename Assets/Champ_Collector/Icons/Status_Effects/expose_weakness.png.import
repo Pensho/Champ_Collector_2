@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://beylpf876g6ns"
-path="res://.godot/imported/Fortify.jpg-53ba4cf9e919ba40cace720b909cd423.ctex"
+uid="uid://3d8q5jr3k2j"
+path="res://.godot/imported/expose_weakness.png-24da6e6f1e00caad1979f59cd45d0b60.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Status_Effects/Fortify/Fortify.jpg"
-dest_files=["res://.godot/imported/Fortify.jpg-53ba4cf9e919ba40cace720b909cd423.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Status_Effects/expose_weakness.png"
+dest_files=["res://.godot/imported/expose_weakness.png-24da6e6f1e00caad1979f59cd45d0b60.ctex"]
 
 [params]
 

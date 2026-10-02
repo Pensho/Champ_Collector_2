@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="StatusEffectData" format=3 uid="uid://q53qvu8bpctv"]
 
 [ext_resource type="Script" uid="uid://sqkdniv48rkg" path="res://Scripts/Battle/status_effect_data.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://cxuqhrk2fw4jn" path="res://Assets/Champ_Collector/Icons/Status_Effects/Expose_weakness/broken-shield.svg" id="2_icon"]
+[ext_resource type="Texture2D" uid="uid://3d8q5jr3k2j" path="res://Assets/Champ_Collector/Icons/Status_Effects/expose_weakness.png" id="1_wjt5u"]
 
 [resource]
 script = ExtResource("1_script")
@@ -10,5 +10,5 @@ attribute_modifiers = Dictionary[int, float]({
 })
 magnitude = 0.3
 applies_on_target_snapshot = true
-icon = ExtResource("2_icon")
+icon = ExtResource("1_wjt5u")
 description = "Reduces Defense by {percent}%."

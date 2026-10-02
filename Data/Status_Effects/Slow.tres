@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="StatusEffectData" format=3 uid="uid://slo7yyg12qvv"]
 
+[ext_resource type="Texture2D" uid="uid://ddpxwq07aidfo" path="res://Assets/Champ_Collector/Icons/Status_Effects/slow.png" id="1_aeqwq"]
 [ext_resource type="Script" uid="uid://sqkdniv48rkg" path="res://Scripts/Battle/status_effect_data.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://d2tobm8y7an56" path="res://Assets/Champ_Collector/Icons/Status_Effects/Slow/Slow.png" id="2_icon"]
 
 [resource]
 script = ExtResource("1_script")
@@ -9,5 +9,5 @@ attribute_modifiers = Dictionary[int, float]({
 1: -1.0
 })
 magnitude = 0.15
-icon = ExtResource("2_icon")
+icon = ExtResource("1_aeqwq")
 description = "Reduces Speed by {percent}%."
