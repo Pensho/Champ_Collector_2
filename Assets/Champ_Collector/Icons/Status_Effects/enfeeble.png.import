@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cj5g1swti64mb"
-path="res://.godot/imported/Insight.png-1852e229644bb467de74c8d5f5d012a7.ctex"
+uid="uid://dmmqxg8xnvej7"
+path="res://.godot/imported/enfeeble.png-2852cf0a3567b50b19a09495cb81bf8d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Status_Effects/Insight/Insight.png"
-dest_files=["res://.godot/imported/Insight.png-1852e229644bb467de74c8d5f5d012a7.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Status_Effects/enfeeble.png"
+dest_files=["res://.godot/imported/enfeeble.png-2852cf0a3567b50b19a09495cb81bf8d.ctex"]
 
 [params]
 

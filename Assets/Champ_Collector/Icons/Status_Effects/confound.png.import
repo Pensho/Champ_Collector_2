@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://draoxm3ufuil6"
-path="res://.godot/imported/Empower.jpg-da4bc57fd66b75bb626c3fb3528a10db.ctex"
+uid="uid://1nylljxipj1n"
+path="res://.godot/imported/confound.png-4a3c335566388985c00823e24426d982.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Status_Effects/Empower/Empower.jpg"
-dest_files=["res://.godot/imported/Empower.jpg-da4bc57fd66b75bb626c3fb3528a10db.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Status_Effects/confound.png"
+dest_files=["res://.godot/imported/confound.png-4a3c335566388985c00823e24426d982.ctex"]
 
 [params]
 

@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="StatusEffectData" format=3 uid="uid://cuf067888c0f3"]
 
+[ext_resource type="Texture2D" uid="uid://dmmqxg8xnvej7" path="res://Assets/Champ_Collector/Icons/Status_Effects/enfeeble.png" id="1_0t7dl"]
 [ext_resource type="Script" uid="uid://sqkdniv48rkg" path="res://Scripts/Battle/status_effect_data.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://bp4np186uj7gw" path="res://Assets/Champ_Collector/Icons/Status_Effects/Enfeeble/shattered-sword.svg" id="2_icon"]
 
 [resource]
 script = ExtResource("1_script")
@@ -9,5 +9,5 @@ attribute_modifiers = Dictionary[int, float]({
 2: -1.0
 })
 magnitude = 0.3
-icon = ExtResource("2_icon")
+icon = ExtResource("1_0t7dl")
 description = "Reduces Attack by {percent}%."

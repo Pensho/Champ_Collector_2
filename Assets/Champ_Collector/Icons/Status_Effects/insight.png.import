@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://mdc8ddmqhmv6"
-path="res://.godot/imported/Slipstream.png-36474fbab3467ccc1a843bd9b8e0104c.ctex"
+uid="uid://c6wn251gfu5ho"
+path="res://.godot/imported/insight.png-e2e4a0ba393d17ddc04da5b10a361b70.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Status_Effects/Slipstream/Slipstream.png"
-dest_files=["res://.godot/imported/Slipstream.png-36474fbab3467ccc1a843bd9b8e0104c.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Status_Effects/insight.png"
+dest_files=["res://.godot/imported/insight.png-e2e4a0ba393d17ddc04da5b10a361b70.ctex"]
 
 [params]
 

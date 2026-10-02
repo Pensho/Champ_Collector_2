@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bidxfno2exh1t"
-path="res://.godot/imported/Confound.png-9a255b6cfc923fc504aa501b5513a119.ctex"
+uid="uid://3302vcj8jah3"
+path="res://.godot/imported/slipstream.png-7b456869d3a1940d04b8135897537aa3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Status_Effects/Confound/Confound.png"
-dest_files=["res://.godot/imported/Confound.png-9a255b6cfc923fc504aa501b5513a119.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Status_Effects/slipstream.png"
+dest_files=["res://.godot/imported/slipstream.png-7b456869d3a1940d04b8135897537aa3.ctex"]
 
 [params]
 

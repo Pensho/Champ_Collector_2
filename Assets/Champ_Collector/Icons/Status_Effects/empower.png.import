@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bp4np186uj7gw"
-path="res://.godot/imported/shattered-sword.svg-34a76495b4534ed399a28ee599bdcc80.ctex"
+uid="uid://ccy7dr3tmsmwk"
+path="res://.godot/imported/empower.png-eeb4de7a87b3b38bf259ec238a8bdf5f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Status_Effects/Enfeeble/shattered-sword.svg"
-dest_files=["res://.godot/imported/shattered-sword.svg-34a76495b4534ed399a28ee599bdcc80.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Status_Effects/empower.png"
+dest_files=["res://.godot/imported/empower.png-eeb4de7a87b3b38bf259ec238a8bdf5f.ctex"]
 
 [params]
 
@@ -38,6 +38,3 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
-svg/scale=1.0
-editor/scale_with_editor_scale=false
-editor/convert_colors_with_editor_theme=false
