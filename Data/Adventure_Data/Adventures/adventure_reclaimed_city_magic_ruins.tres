@@ -1,6 +1,6 @@
-[gd_resource type="Resource" script_class="AdventureData" format=3]
+[gd_resource type="Resource" script_class="AdventureData" format=3 uid="uid://cqdm10nqrxk0e"]
 
-[ext_resource type="Script" path="res://Scripts/Adventure_Scripts/adventure_data.gd" id="1_adventure"]
+[ext_resource type="Script" uid="uid://yxl15ofvlhuk" path="res://Scripts/Adventure_Scripts/adventure_data.gd" id="1_adventure"]
 [ext_resource type="Texture2D" uid="uid://cklk3vko6ul2m" path="res://Assets/Adventure/Biome_Selection/biome_magic_ruins.jpg" id="2_texture"]
 [ext_resource type="Resource" uid="uid://bqk4emurlihv2" path="res://Data/Adventure_Data/Layouts/layout_default.tres" id="3_layout"]
 [ext_resource type="Resource" uid="uid://cpi1whtc518ok" path="res://Data/Adventure_Data/Biome_Types/biome_reclaimed_city_jungle.tres" id="4_biome"]
