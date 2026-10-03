@@ -44,3 +44,31 @@ func test_pity_row_text_with_active_bonus() -> void:
 func test_pity_row_text_fully_owned_tier_omits_bonus() -> void:
 	var text: String = HollowLedgerWindow.PityRowText("Parchment", 12, 1.0, 0)
 	assert_eq(text, "Parchment - 12 duplicates in a row (all Champions owned)")
+
+func _StatusData(p_kind: StatusEffectData.MagnitudeKind, p_magnitude: float, p_description: String) -> StatusEffectData:
+	var data: StatusEffectData = StatusEffectData.new()
+	data.magnitude_kind = p_kind
+	data.magnitude = p_magnitude
+	data.attribute_modifiers = {Types.Attribute.Attack: 1.0}
+	data.description = p_description
+	return data
+
+func test_glossary_description_fills_percent_with_default_magnitude() -> void:
+	var data: StatusEffectData = _StatusData(StatusEffectData.MagnitudeKind.AttributePercent, 0.3,
+			"Up by {percent}%, down by {percent}%.")
+	assert_eq(HollowLedgerWindow.GlossaryDescription(data), "Up by 30%, down by 30%.")
+
+func test_glossary_description_shows_damage_multiplier_as_bonus_fraction() -> void:
+	var data: StatusEffectData = _StatusData(StatusEffectData.MagnitudeKind.DamageMultiplier, 1.2,
+			"Deals +{percent}% damage.")
+	assert_eq(HollowLedgerWindow.GlossaryDescription(data), "Deals +20% damage.")
+
+func test_glossary_description_drops_parenthetical_value_token() -> void:
+	var data: StatusEffectData = _StatusData(StatusEffectData.MagnitudeKind.AttributePercentagePointAdd, 1.0,
+			"Increases Critical Chance by the applier's own ({value} percentage points).")
+	assert_eq(HollowLedgerWindow.GlossaryDescription(data), "Increases Critical Chance by the applier's own.")
+
+func test_glossary_description_without_default_reads_variable_amount() -> void:
+	var data: StatusEffectData = _StatusData(StatusEffectData.MagnitudeKind.HighestBasePrimaryAttributePercent,
+			0.0, "Boosts an attribute by {percent_decimal}%. Stacks.")
+	assert_eq(HollowLedgerWindow.GlossaryDescription(data), "Boosts an attribute by a variable amount. Stacks.")

@@ -186,16 +186,26 @@ func BuildGlossaryRow(p_data: StatusEffectData, p_display_name: String) -> HBoxC
 		name_label.add_theme_color_override("font_color", KeyWordColors.KEYWORDS[p_display_name])
 	text_column.add_child(name_label)
 
-	# A plain autowrap Label, not a RichTextLabel: dozens of fit_content
-	# RichTextLabels inside this nested ScrollContainer chain blow out Godot's
-	# deferred-update message queue and crash the engine.
 	var description_label: Label = Label.new()
-	description_label.text = p_data.description
+	description_label.text = GlossaryDescription(p_data)
 	description_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	text_column.add_child(description_label)
 
 	row.add_child(text_column)
 	return row
+
+static func GlossaryDescription(p_data: StatusEffectData) -> String:
+	var description: String = p_data.description
+	if 0.0 != p_data.magnitude:
+		var no_riders: Dictionary[StringName, Variant] = {}
+		var fraction: float = Skills.DisplayedAttributeModifierFraction(p_data, 0.0, no_riders)
+		description = description.replace("{percent}", str(roundi(fraction * 100.0))) \
+				.replace("{percent_decimal}", "%.1f" % (fraction * 100.0))
+	var parenthetical_token: RegEx = RegEx.create_from_string(
+			"\\s*\\([^()]*\\{(value|percent|percent_decimal)\\}[^()]*\\)")
+	description = parenthetical_token.sub(description, "", true)
+	var bare_token: RegEx = RegEx.create_from_string("\\+?\\{(value|percent|percent_decimal)\\}%?")
+	return bare_token.sub(description, "a variable amount", true)
 
 func _on_nature_selected(p_index: int) -> void:
 	BuildNatureList(NATURE_PRESETS[p_index])
