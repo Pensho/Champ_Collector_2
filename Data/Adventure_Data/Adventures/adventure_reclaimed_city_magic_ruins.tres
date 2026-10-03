@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="AdventureData" format=3]
+
+[ext_resource type="Script" path="res://Scripts/Adventure_Scripts/adventure_data.gd" id="1_adventure"]
+[ext_resource type="Texture2D" uid="uid://cklk3vko6ul2m" path="res://Assets/Adventure/Biome_Selection/biome_magic_ruins.jpg" id="2_texture"]
+[ext_resource type="Resource" uid="uid://bqk4emurlihv2" path="res://Data/Adventure_Data/Layouts/layout_default.tres" id="3_layout"]
+[ext_resource type="Resource" uid="uid://cpi1whtc518ok" path="res://Data/Adventure_Data/Biome_Types/biome_reclaimed_city_jungle.tres" id="4_biome"]
+[ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="5_iokba"]
+[ext_resource type="Resource" uid="uid://cq2rkhiba5033" path="res://Data/Character_Enemy_Variants/Obsidian_Stallion.tres" id="6_bubi0"]
+[ext_resource type="Resource" uid="uid://b37nmpv7mries" path="res://Data/Character_Enemy_Variants/Militia.tres" id="7_x0p53"]
+[ext_resource type="Resource" uid="uid://bm0sqmepyeoam" path="res://Data/Character_Player_Variants/Thief.tres" id="8_8556r"]
+[ext_resource type="Resource" uid="uid://dkpr2hnmtcodx" path="res://Data/Character_Player_Variants/Jester.tres" id="9_3533o"]
+[ext_resource type="Resource" uid="uid://dnup7y7ax8jck" path="res://Data/Character_Player_Variants/Bar_Brawler.tres" id="10_8bbm1"]
+[ext_resource type="Resource" uid="uid://ckmtp8rvhbx3a" path="res://Data/Loot_Tables/Adventure_Boss_Loot.tres" id="11_launh"]
+[ext_resource type="Resource" uid="uid://dauwp8sbf3ga" path="res://Data/Loot_Tables/Experience_Quest.tres" id="12_lh4g1"]
+[ext_resource type="Resource" uid="uid://wg8ohcii0wix" path="res://Data/Loot_Tables/Adventure_Escalate_Loot.tres" id="13_kofhi"]
+[ext_resource type="Resource" path="res://Data/Loot_Tables/Adventure_Hint_Loot.tres" id="14_c3w72"]
+
+[resource]
+script = ExtResource("1_adventure")
+display_name = "Magic Ruins"
+selection_texture = ExtResource("2_texture")
+layout = ExtResource("3_layout")
+biome = ExtResource("4_biome")
+possible_opponents = Dictionary[ExtResource("5_iokba"), int]({
+ExtResource("7_x0p53"): 100,
+ExtResource("8_8556r"): 40,
+ExtResource("9_3533o"): 20,
+ExtResource("10_8bbm1"): 20
+})
+possible_bosses = Array[ExtResource("5_iokba")]([ExtResource("6_bubi0")])
+combat_rewards = ExtResource("12_lh4g1")
+boss_rewards = ExtResource("11_launh")
+hint_rewards = ExtResource("14_c3w72")
+escalate_rewards = ExtResource("13_kofhi")

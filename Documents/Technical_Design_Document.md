@@ -301,8 +301,10 @@ load time. There is a consistent **preset (template) vs instance (runtime)** spl
 | `AttributeWeightPreset` | `Scripts/Character/attribute_weight_preset.gd` | Per-attribute weight distribution used at level-up |
 | `EquipmentPreset` | `Scripts/Gear/equipment_preset.gd` | Gear template: slot, rarity, attribute composition |
 | `LootTable` | `Scripts/Battle/loot_table.gd` | Encounter rewards: primary (guaranteed) and secondary (weighted) loot |
-| `AdventureTemplate` | `Scripts/Adventure_Scripts/adventure_template.gd` | Adventure generation parameters |
-| `BiomeData` | `Scripts/Adventure_Scripts/biome_data.gd` | Biome enemy pools, boss definitions, and the battle stages its encounters draw from |
+| `ActData` | `Scripts/Adventure_Scripts/act_data.gd` | An act's two selectable `AdventureData` |
+| `AdventureData` | `Scripts/Adventure_Scripts/adventure_data.gd` | One selectable adventure: selection name and texture, `AdventureLayout`, `BiomeData`, opponent and boss pools, reward tables; its `resource_path` keys difficulty progress and the saved run |
+| `AdventureLayout` | `Scripts/Adventure_Scripts/adventure_layout.gd` | Depth range and node-type frequencies |
+| `BiomeData` | `Scripts/Adventure_Scripts/biome_data.gd` | An adventure's look: `BiomeVisualData` and the battle stages its encounters draw from |
 | `StageClutterEntry` | `Scripts/Battle/Visuals/stage_clutter_entry.gd` | One floor-clutter scatter rule, authored on a stage's `StageClutterView` |
 | `CharacterTrait` | `Scripts/Character/character_traits/character_trait.gd` | Base class for character special abilities (see [Section 9](#9-trait-hook-system)) |
 | `StatusEffectData` | `Scripts/Battle/status_effect_data.gd` | Buff/debuff definition: magnitude, magnitude kind, default duration, overwrite/stack rules, self-tick behavior, icon |
@@ -1873,16 +1875,14 @@ Serialization roundtrips are covered by `test_collection_serialization.gd`
 
 The adventure (run) system lives in `Scripts/Adventure_Scripts/`:
 
-- `adventure_generator.gd` builds a node graph from an `AdventureTemplate` and `BiomeData`
-  (biome-aware enemy pools, a boss node, controlled branching).
+- `adventure_generator.gd` builds a node graph from an `AdventureData` (its layout, enemy pools,
+  a boss node, controlled branching).
 - `adventure_state.gd` / `adventure_state_handler.gd` track current progress, supply-cost tiers,
   daily reset, and serialization; the handler is in the `"saveable"` group.
-- `biome_data.gd` deliberately avoids `DirAccess`-based loading in favor of preloads, for Android
-  export compatibility.
 - Rewards flow through `LootManager` (`Scripts/Battle/loot_manager.gd`) and `LootTable` resources:
   a difficulty-scaled budget feeds primary (guaranteed) and secondary (weighted) loot.
 
-Coverage: `test_adventure_state.gd`, `test_adventure_generator.gd`, `test_biome_loading.gd`,
+Coverage: `test_adventure_state.gd`, `test_adventure_generator.gd`, `test_act_data.gd`,
 `test_loot_manager.gd` (see `Test_Design_Document.md`).
 
 ---

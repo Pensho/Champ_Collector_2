@@ -1285,12 +1285,12 @@ Intended to be adventures aimed to span days to complete.
 When a player enters the adventure screen they should be met with 2 options that cover the left and correspondingly the right side of the screen.
 In the top right an Exit button.
 Centered there should be a difficulty option if the first one has been completed and a start button.
-The player should be expected to click on either the left or right side to choose adventure biome, then difficulty if available and lastly the start button. If an adventure is already in progress darken the difficulty option and do not allow edits, only to show which was the current difficulty.
+The player should be expected to click on either the left or right side to choose an adventure, then difficulty if available and lastly the start button. If an adventure is already in progress darken the difficulty option and do not allow edits, only to show which was the current difficulty.
 
 An adventures content is a series of connected nodes of various types where the player has to unlock following nodes by completing a currently available one. It will have branching paths of nodes and end in a boss battle to complete the Adventure at which point new difficulties will unlock and the player may start a new one.
 A failed encounter in Adventure will not affect the state of the Adventure and the state is persistent over sessions.
 
-#### 5.1.1. Adventure biomes
+#### 5.1.1. Adventures
 
 ##### 5.1.1.1. Jungle (Reclaimed City)
 
@@ -1341,7 +1341,16 @@ The overworld shows the 4 different acts in order:
 * 3. Pirate Coves
 * 4. The Iron Ledger
 
-Each Act holds a hub and its own adventure consisting of 2 biomes.
+Each Act holds a hub and the two adventures offered in section 5.1:
+
+```
+Act
+ └─ Adventure ×2
+     ├─ Layout     — length and how often each node type appears
+     ├─ Biome      — scenery and battle stages
+     ├─ Opponents  — regular enemies, boss, and their rewards
+     └─ Difficulty — unlocked per adventure by completing it, chosen at start
+```
 
 #### 5.5. Act 1 Reclaimed City
 
@@ -1351,10 +1360,10 @@ In the Reclaimed City adventures one unlock node should be made mandatory until 
 
 Unlocks via nodes in order:
 1. Shopkeeper (makes the shop available in the Reclaimed city hub)
-2. Magic Ruins biome
+2. Magic Ruins adventure
 3. Caravan to the overworld unlocks the next Act (Clockwork Spire)
 
-Only one biome should be available and the other greyed out until unlocked.
+Only one adventure should be available and the other greyed out until unlocked.
 When the first adventure is completed they should also be directed to the newly opened Adventurers guild and taught how to get new characters.
 
 Last in the Act is to use the Caravan to navigate the Overworld and move into the next Act of Clockwork Spire.

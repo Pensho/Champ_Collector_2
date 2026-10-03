@@ -1,41 +1,30 @@
 extends GutTest
 
 var _act: ActData
-var _jungle_biome: BiomeData
-var _ruins_biome: BiomeData
+var _jungle: AdventureData
+var _ruins: AdventureData
 
 func before_each() -> void:
-	_jungle_biome = BiomeData.new()
-	_ruins_biome = BiomeData.new()
-	var jungle_entry: ActBiomeEntry = ActBiomeEntry.new()
-	jungle_entry.biome = _jungle_biome
-	var ruins_entry: ActBiomeEntry = ActBiomeEntry.new()
-	ruins_entry.biome = _jungle_biome
+	_jungle = AdventureData.new()
+	_ruins = AdventureData.new()
 	_act = ActData.new()
-	var entries: Array[ActBiomeEntry] = [jungle_entry, ruins_entry]
-	_act.biome_entries = entries
+	var adventures: Array[AdventureData] = [_jungle, _ruins]
+	_act.adventures = adventures
 
-func test_find_entry_index_for_biome_returns_matching_index() -> void:
-	assert_eq(_act.FindEntryIndexForBiome(_jungle_biome), 0,
-		"Should return the first entry whose biome matches.")
+func test_find_adventure_index_returns_matching_index() -> void:
+	assert_eq(_act.FindAdventureIndex(_ruins), 1, "Should return the index of the matching adventure.")
 
-func test_find_entry_index_for_biome_returns_negative_one_when_absent() -> void:
-	assert_eq(_act.FindEntryIndexForBiome(_ruins_biome), -1,
-		"Should return -1 when no entry's biome matches.")
+func test_find_adventure_index_returns_negative_one_when_absent() -> void:
+	assert_eq(_act.FindAdventureIndex(AdventureData.new()), -1,
+		"Should return -1 when the act does not hold the adventure.")
 
-func test_find_entry_index_for_biome_returns_negative_one_when_empty() -> void:
-	_act.biome_entries = []
-	assert_eq(_act.FindEntryIndexForBiome(_jungle_biome), -1,
-		"Should return -1 when there are no entries to search.")
+func test_find_adventure_index_returns_negative_one_for_null() -> void:
+	assert_eq(_act.FindAdventureIndex(null), -1,
+		"Should return -1 for an inactive state with no adventure.")
 
-func test_find_entry_index_for_biome_returns_first_of_shared_biome() -> void:
-	# Act 1's placeholder shape: two entries pointing at the same biome.
-	var shared: ActData = ActData.new()
-	var first_entry: ActBiomeEntry = ActBiomeEntry.new()
-	first_entry.biome = _jungle_biome
-	var second_entry: ActBiomeEntry = ActBiomeEntry.new()
-	second_entry.biome = _jungle_biome
-	var shared_entries: Array[ActBiomeEntry] = [first_entry, second_entry]
-	shared.biome_entries = shared_entries
-	assert_eq(shared.FindEntryIndexForBiome(_jungle_biome), 0,
-		"Should return the first matching entry when multiple entries share a biome.")
+func test_adventures_sharing_a_biome_stay_distinct() -> void:
+	var shared_biome: BiomeData = BiomeData.new()
+	_jungle.biome = shared_biome
+	_ruins.biome = shared_biome
+	assert_eq(_act.FindAdventureIndex(_ruins), 1,
+		"Adventures that share a biome must still resolve to their own index.")

@@ -46,19 +46,18 @@ func test_serialize_roundtrip() -> void:
 	var restored: AdventureState = AdventureState.new()
 	restored.Deserialize(data)
 	# is_active is intentionally not asserted: Deserialize forces it false when
-	# no template/biome paths are resolvable (correct behaviour for a test state).
+	# no adventure path is resolvable (correct behaviour for a test state).
 	assert_eq(restored.current_node_index, 7, "current_node_index must survive serialization.")
 	assert_eq(restored.steps_taken_today, 2, "steps_taken_today must survive serialization.")
 	assert_eq(restored.difficulty, 2, "difficulty must survive serialization.")
 	assert_eq(restored.last_palayed_date, "2026-05-26", "last_palayed_date must survive serialization.")
 
 func test_serialize_roundtrip_through_json_preserves_completion_and_active_state() -> void:
-	_state.template = load("res://Data/Adventure_Data/template_default.tres")
-	_state.biome = load("res://Data/Adventure_Data/Biome_Types/biome_reclaimed_city_jungle.tres")
+	_state.adventure = load("res://Data/Adventure_Data/Adventures/adventure_reclaimed_city_jungle.tres")
 	_state.difficulty = 1
 	_state._generation_seed = 42
 	seed(_state._generation_seed)
-	_state.nodes = AdventureGenerator.GenerateAdventure(_state.template, _state.biome)
+	_state.nodes = AdventureGenerator.GenerateAdventure(_state.adventure)
 	_state.is_active = true
 	_state.current_node_index = _state.nodes[0].index
 	_state.nodes[0].is_complete = true
@@ -72,6 +71,9 @@ func test_serialize_roundtrip_through_json_preserves_completion_and_active_state
 	restored.Deserialize(json_data)
 
 	assert_true(restored.is_active, "is_active must survive a save/load cycle with real resources.")
+	assert_eq(restored.adventure, _state.adventure, "The adventure must survive a save/load cycle.")
+	assert_eq(restored.nodes.size(), _state.nodes.size(),
+		"The graph must regenerate from the adventure and seed to the same size.")
 	assert_true(restored.nodes[0].is_complete,
 		"Completed nodes must stay completed after a JSON save/load cycle, " +
 		"otherwise the adventure graph looks like a fresh start.")

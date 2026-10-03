@@ -1,14 +1,15 @@
 class_name AdventureGenerator extends Node
 
 
-static func GenerateAdventure(p_template: AdventureTemplate, p_biome: BiomeData) -> Array[NodeData]:
-	var target_depth: int = randi_range(p_template.MIN_DEPTH, p_template.MAX_DEPTH)
+static func GenerateAdventure(p_adventure: AdventureData) -> Array[NodeData]:
+	var layout: AdventureLayout = p_adventure.layout
+	var target_depth: int = randi_range(layout.MIN_DEPTH, layout.MAX_DEPTH)
 
 	var spine: Array[NodeData] = _BuildSpine(target_depth)
-	_InsertSpecialNodes(spine, NodeData.Node_Type.REST_STOP, SetRestNumber(p_template.rest_stops))
-	_InsertSpecialNodes(spine, NodeData.Node_Type.HINT, SetRestNumber(p_template.hint_nodes))
-	_InsertSpecialNodes(spine, NodeData.Node_Type.GAMBLE, SetRestNumber(p_template.gamble_nodes))
-	_InsertSpecialNodes(spine, NodeData.Node_Type.ESCALATE, SetRestNumber(p_template.escalate_nodes))
+	_InsertSpecialNodes(spine, NodeData.Node_Type.REST_STOP, SetRestNumber(layout.rest_stops))
+	_InsertSpecialNodes(spine, NodeData.Node_Type.HINT, SetRestNumber(layout.hint_nodes))
+	_InsertSpecialNodes(spine, NodeData.Node_Type.GAMBLE, SetRestNumber(layout.gamble_nodes))
+	_InsertSpecialNodes(spine, NodeData.Node_Type.ESCALATE, SetRestNumber(layout.escalate_nodes))
 
 	var boss: NodeData = NodeData.new()
 	boss.node_type = NodeData.Node_Type.BOSS
@@ -16,7 +17,7 @@ static func GenerateAdventure(p_template: AdventureTemplate, p_biome: BiomeData)
 	spine[-1].next_node.append(boss)
 	boss.previous_node.append(spine[-1])
 
-	var branch_nodes: Array[NodeData] = _AddBranches(spine, p_template.branching_paths)
+	var branch_nodes: Array[NodeData] = _AddBranches(spine, layout.branching_paths)
 
 	var all_nodes: Array[NodeData]
 	all_nodes.append_array(spine)
@@ -26,7 +27,7 @@ static func GenerateAdventure(p_template: AdventureTemplate, p_biome: BiomeData)
 	for i in all_nodes.size():
 		all_nodes[i].index = i
 
-	_PopulateNodeContexts(all_nodes, p_biome)
+	_PopulateNodeContexts(all_nodes, p_adventure)
 	return all_nodes
 
 
@@ -55,7 +56,7 @@ static func _InsertSpecialNodes(p_spine: Array[NodeData], p_node_type: NodeData.
 
 
 static func _AddBranches(
-		p_spine: Array[NodeData], p_frequency: AdventureTemplate.Mechanic_Frequency) -> Array[NodeData]:
+		p_spine: Array[NodeData], p_frequency: AdventureLayout.Mechanic_Frequency) -> Array[NodeData]:
 	var branch_count: int = SetNumberOfBranchingPaths(p_frequency)
 	var all_branch_nodes: Array[NodeData]
 	var used_start_indices: Array[int]
@@ -109,64 +110,64 @@ static func CreateParallelBranch(p_start: NodeData, p_end: NodeData, p_length: i
 	return branch
 
 
-static func SetRestNumber(p_frequency: AdventureTemplate.Mechanic_Frequency) -> int:
+static func SetRestNumber(p_frequency: AdventureLayout.Mechanic_Frequency) -> int:
 	match p_frequency:
-		AdventureTemplate.Mechanic_Frequency.LOW:
+		AdventureLayout.Mechanic_Frequency.LOW:
 			return randi_range(0, 1)
-		AdventureTemplate.Mechanic_Frequency.MEDIUM:
+		AdventureLayout.Mechanic_Frequency.MEDIUM:
 			return randi_range(2, 3)
-		AdventureTemplate.Mechanic_Frequency.HIGH:
+		AdventureLayout.Mechanic_Frequency.HIGH:
 			return randi_range(3, 5)
-		AdventureTemplate.Mechanic_Frequency.NONE, _:
+		AdventureLayout.Mechanic_Frequency.NONE, _:
 			return 0
 
 
-static func SetNumberOfBranchingPaths(p_frequency: AdventureTemplate.Mechanic_Frequency) -> int:
+static func SetNumberOfBranchingPaths(p_frequency: AdventureLayout.Mechanic_Frequency) -> int:
 	match p_frequency:
-		AdventureTemplate.Mechanic_Frequency.LOW:
+		AdventureLayout.Mechanic_Frequency.LOW:
 			return randi_range(2, 3)
-		AdventureTemplate.Mechanic_Frequency.MEDIUM:
+		AdventureLayout.Mechanic_Frequency.MEDIUM:
 			return randi_range(4, 6)
-		AdventureTemplate.Mechanic_Frequency.HIGH:
+		AdventureLayout.Mechanic_Frequency.HIGH:
 			return randi_range(7, 9)
-		AdventureTemplate.Mechanic_Frequency.NONE, _:
+		AdventureLayout.Mechanic_Frequency.NONE, _:
 			return 0
 
 
-static func SetBranchLength(p_frequency: AdventureTemplate.Mechanic_Frequency) -> int:
+static func SetBranchLength(p_frequency: AdventureLayout.Mechanic_Frequency) -> int:
 	match p_frequency:
-		AdventureTemplate.Mechanic_Frequency.LOW:
+		AdventureLayout.Mechanic_Frequency.LOW:
 			return randi_range(3, 5)
-		AdventureTemplate.Mechanic_Frequency.MEDIUM:
+		AdventureLayout.Mechanic_Frequency.MEDIUM:
 			return randi_range(2, 4)
-		AdventureTemplate.Mechanic_Frequency.HIGH:
+		AdventureLayout.Mechanic_Frequency.HIGH:
 			return randi_range(2, 3)
-		AdventureTemplate.Mechanic_Frequency.NONE, _:
+		AdventureLayout.Mechanic_Frequency.NONE, _:
 			return 0
 
 
-static func _PopulateNodeContexts(p_nodes: Array[NodeData], p_biome: BiomeData) -> void:
+static func _PopulateNodeContexts(p_nodes: Array[NodeData], p_adventure: AdventureData) -> void:
 	for node in p_nodes:
 		match node.node_type:
 			NodeData.Node_Type.FIGHT:
-				if p_biome.possible_opponents.is_empty():
+				if p_adventure.possible_opponents.is_empty():
 					continue
 				var ctx := Context_Battle.new()
 				ctx._enemies_wave_1 = [
-					_WeightedRandomPick(p_biome.possible_opponents),
-					_WeightedRandomPick(p_biome.possible_opponents),
-					_WeightedRandomPick(p_biome.possible_opponents),
+					_WeightedRandomPick(p_adventure.possible_opponents),
+					_WeightedRandomPick(p_adventure.possible_opponents),
+					_WeightedRandomPick(p_adventure.possible_opponents),
 				]
-				ctx._loot_table = p_biome.combat_rewards
-				ctx._stage_scene = _PickStageScene(p_biome)
+				ctx._loot_table = p_adventure.combat_rewards
+				ctx._stage_scene = _PickStageScene(p_adventure.biome)
 				node.scene_context = ctx
 			NodeData.Node_Type.BOSS:
-				if p_biome.possible_bosses.is_empty():
+				if p_adventure.possible_bosses.is_empty():
 					continue
 				var ctx := Context_Battle.new()
-				ctx._enemies_wave_1 = [p_biome.possible_bosses.pick_random()]
-				ctx._loot_table = p_biome.boss_rewards if p_biome.boss_rewards != null else p_biome.combat_rewards
-				ctx._stage_scene = _PickStageScene(p_biome)
+				ctx._enemies_wave_1 = [p_adventure.possible_bosses.pick_random()]
+				ctx._loot_table = p_adventure.boss_rewards if p_adventure.boss_rewards != null else p_adventure.combat_rewards
+				ctx._stage_scene = _PickStageScene(p_adventure.biome)
 				node.scene_context = ctx
 			NodeData.Node_Type.REST_STOP:
 				var rest_ctx := ContextRestStop.new()
@@ -174,8 +175,8 @@ static func _PopulateNodeContexts(p_nodes: Array[NodeData], p_biome: BiomeData) 
 				node.scene_context = rest_ctx
 			NodeData.Node_Type.HINT:
 				var hint_ctx := ContextHint.new()
-				if p_biome.hint_rewards != null:
-					hint_ctx._loot_table = p_biome.hint_rewards.duplicate(true)
+				if p_adventure.hint_rewards != null:
+					hint_ctx._loot_table = p_adventure.hint_rewards.duplicate(true)
 				node.scene_context = hint_ctx
 			NodeData.Node_Type.GAMBLE:
 				var gamble_ctx := ContextGamble.new()
@@ -184,8 +185,8 @@ static func _PopulateNodeContexts(p_nodes: Array[NodeData], p_biome: BiomeData) 
 				node.scene_context = gamble_ctx
 			NodeData.Node_Type.ESCALATE:
 				var escalate_ctx := ContextEscalate.new()
-				if p_biome.escalate_rewards != null:
-					escalate_ctx._loot_table = p_biome.escalate_rewards.duplicate(true)
+				if p_adventure.escalate_rewards != null:
+					escalate_ctx._loot_table = p_adventure.escalate_rewards.duplicate(true)
 				node.scene_context = escalate_ctx
 
 
@@ -201,7 +202,7 @@ static func _RandomDebuffType() -> Types.Debuff_Type:
 	return values.pick_random()
 
 static func _PickStageScene(p_biome: BiomeData) -> PackedScene:
-	if p_biome.stage_scenes.is_empty():
+	if p_biome == null or p_biome.stage_scenes.is_empty():
 		return null
 	return p_biome.stage_scenes.pick_random()
 

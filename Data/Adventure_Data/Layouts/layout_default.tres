@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="AdventureLayout" format=3 uid="uid://bqk4emurlihv2"]
+
+[ext_resource type="Script" uid="uid://cwcowgmtcq1ca" path="res://Scripts/Adventure_Scripts/adventure_layout.gd" id="1_templ"]
+
+[resource]
+script = ExtResource("1_templ")
+MAX_DEPTH = 28
+branching_paths = 2
+rest_stops = 2
+hint_nodes = 1
+gamble_nodes = 2
+escalate_nodes = 2
+metadata/_custom_type_script = "uid://cwcowgmtcq1ca"

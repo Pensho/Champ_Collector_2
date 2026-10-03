@@ -19,9 +19,9 @@ func _ready() -> void:
 	_panel_material.set_shader_parameter("grayscale_amount", _grayscale_amount)
 	_texture_button.material = _panel_material
 
-func Populate(p_entry: ActBiomeEntry) -> void:
-	_texture_button.texture_normal = p_entry.selection_texture
-	_label_name.text = p_entry.display_name
+func Populate(p_adventure: AdventureData) -> void:
+	_texture_button.texture_normal = p_adventure.selection_texture
+	_label_name.text = p_adventure.display_name
 
 func SetSelected(p_is_selected: bool) -> void:
 	var target: float = 0.0 if p_is_selected else 1.0

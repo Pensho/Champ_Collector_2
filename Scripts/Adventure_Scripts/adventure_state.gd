@@ -1,7 +1,6 @@
 class_name AdventureState extends Resource
 
-var biome: BiomeData
-var template: AdventureTemplate
+var adventure: AdventureData
 var difficulty: int = 0
 var is_active: bool = false
 var current_node_index: int
@@ -71,8 +70,7 @@ func Serialize() -> Dictionary:
 		"completed_nodes": completion_map,
 		"is_active": is_active,
 		"difficulty": difficulty,
-		"template_path": template.resource_path if template else "",
-		"biome_path": biome.resource_path if biome else "",
+		"adventure_path": adventure.resource_path if adventure else "",
 		"generation_seed": _generation_seed,
 		"active_buffs": active_buffs,
 		"active_debuffs": active_debuffs,
@@ -85,17 +83,14 @@ func Deserialize(p_data: Dictionary) -> void:
 	is_active = p_data.get("is_active", false)
 	difficulty = p_data.get("difficulty", 0)
 
-	var template_path: String = p_data.get("template_path", "")
-	var biome_path: String = p_data.get("biome_path", "")
-	if not template_path.is_empty() and ResourceLoader.exists(template_path):
-		template = load(template_path)
-	if not biome_path.is_empty() and ResourceLoader.exists(biome_path):
-		biome = load(biome_path)
+	var adventure_path: String = p_data.get("adventure_path", "")
+	if not adventure_path.is_empty() and ResourceLoader.exists(adventure_path):
+		adventure = load(adventure_path)
 
 	_generation_seed = p_data.get("generation_seed", -1)
-	if template != null and biome != null and _generation_seed >= 0:
+	if adventure != null and _generation_seed >= 0:
 		seed(_generation_seed)
-		nodes = AdventureGenerator.GenerateAdventure(template, biome)
+		nodes = AdventureGenerator.GenerateAdventure(adventure)
 	else:
 		is_active = false
 

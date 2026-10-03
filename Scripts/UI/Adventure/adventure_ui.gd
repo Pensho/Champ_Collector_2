@@ -18,8 +18,8 @@ func Init(p_context: ContextContainer) -> void:
 	_act = p_context._arguments.get("Act")
 	_state.CheckDailyActivity()
 	_UpdateHeader()
-	if _state.biome != null:
-		_graph_ui.SetBiomeVisuals(_state.biome.visual_data, _state._generation_seed)
+	if _state.adventure != null and _state.adventure.biome != null:
+		_graph_ui.SetBiomeVisuals(_state.adventure.biome.visual_data, _state._generation_seed)
 	_graph_ui.Populate(_state.nodes)
 	_graph_ui.node_selected.connect(_on_node_selected)
 	_preview.engage_confirmed.connect(_on_engage_confirmed)
@@ -60,7 +60,7 @@ func _on_engage_confirmed(p_node: NodeData) -> void:
 	var completed: int = _state.nodes.filter(func(n: NodeData) -> bool: return n.is_complete).size()
 	context_container._arguments["Difficulty"] = AdventureState.CalculateScaledDifficulty(
 			_state.difficulty, completed, _state.nodes.size())
-	context_container._arguments["Biome_Path"] = _state.biome.resource_path if _state.biome else ""
+	context_container._arguments["Adventure_Path"] = _state.adventure.resource_path if _state.adventure else ""
 	context_container._arguments["Is_Boss"] = p_node.node_type == NodeData.Node_Type.BOSS
 	var difficulty: int = context_container._arguments["Difficulty"]
 	match p_node.node_type:

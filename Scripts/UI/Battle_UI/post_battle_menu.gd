@@ -30,12 +30,12 @@ func Init(p_context_container: ContextContainer) -> void:
 		if(null != _reward_summary):
 			_reward_summary.hide()
 	elif(p_context_container._arguments["Battle_Result"] == "Victory"):
-		var biome_path: String = _context._arguments.get("Biome_Path", "")
-		if biome_path.is_empty():
+		var adventure_path: String = _context._arguments.get("Adventure_Path", "")
+		if adventure_path.is_empty():
 			main.GetInstance()._progress.MarkDifficultyCompleted(
 					_context._static_context.resource_path, _context._arguments["Difficulty"])
 		elif _context._arguments.get("Is_Boss", false):
-			main.GetInstance()._progress.MarkDifficultyCompleted(biome_path, _context._arguments["Difficulty"])
+			main.GetInstance()._progress.MarkDifficultyCompleted(adventure_path, _context._arguments["Difficulty"])
 		var battle_context: Context_Battle = p_context_container._static_context as Context_Battle
 		for tier in battle_context._loot_table._drop_result._fortunes_favor.keys():
 			main.GetInstance()._resources.AddFortunesFavor(tier, battle_context._loot_table._drop_result._fortunes_favor[tier])

@@ -23,13 +23,13 @@ func Init(p_context: ContextContainer) -> void:
 		_act = DEFAULT_ACT
 	_panels.assign([_panel_left, _panel_right])
 	for i in range(_panels.size()):
-		_panels[i].Populate(_act.biome_entries[i])
+		_panels[i].Populate(_act.adventures[i])
 		_panels[i].pressed.connect(_on_panel_pressed)
 		_panels[i].hover_changed.connect(_on_panel_hover_changed)
 
 	var handler: AdventureStateHandler = main.GetInstance()._adventure_state_handler
 	if handler._state.is_active:
-		var active_index: int = _act.FindEntryIndexForBiome(handler._state.biome)
+		var active_index: int = _act.FindAdventureIndex(handler._state.adventure)
 		_selected_index = active_index if active_index != -1 else 0
 		_difficulty_option.disabled = true
 		for panel in _panels:
@@ -55,8 +55,8 @@ func _ApplySplit(p_expanded_index: int) -> void:
 
 func _RefreshDifficultyOptions() -> void:
 	_difficulty_option.clear()
-	var biome: BiomeData = _act.biome_entries[_selected_index].biome
-	var max_diff: int = main.GetInstance()._progress.GetCurrentEncounterDifficulty(biome.resource_path)
+	var adventure: AdventureData = _act.adventures[_selected_index]
+	var max_diff: int = main.GetInstance()._progress.GetCurrentEncounterDifficulty(adventure.resource_path)
 	for i in range(1, max_diff + 1):
 		_difficulty_option.add_item("Difficulty " + str(i), i)
 	_difficulty_option.select(_difficulty_option.item_count - 1)
@@ -85,16 +85,12 @@ func _on_difficulty_item_selected(_index: int) -> void:
 func _on_start_button_up() -> void:
 	var handler: AdventureStateHandler = main.GetInstance()._adventure_state_handler
 	if not handler._state.is_active:
-		var biome: BiomeData = _act.biome_entries[_selected_index].biome
-		var template: AdventureTemplate = load("res://Data/Adventure_Data/template_default.tres")
-		template.difficulty = _self_context._arguments.get("Difficulty", 1)
 		var state: AdventureState = AdventureState.new()
-		state.biome = biome
-		state.template = template
-		state.difficulty = template.difficulty
+		state.adventure = _act.adventures[_selected_index]
+		state.difficulty = _self_context._arguments.get("Difficulty", 1)
 		state._generation_seed = randi()
 		seed(state._generation_seed)
-		state.nodes = AdventureGenerator.GenerateAdventure(template, biome)
+		state.nodes = AdventureGenerator.GenerateAdventure(state.adventure)
 		state.is_active = true
 		handler._state = state
 	var context_container: ContextContainer = ContextContainer.new()

@@ -1,15 +1,5 @@
 class_name BiomeData extends Resource
 
-@export var factions: Types.Faction
-
-# Each type of opponent shall be assigned a weight for how often/likely they should appear
-@export var possible_opponents: Dictionary[CharacterPreset, int]
-@export var possible_bosses: Array[CharacterPreset]
-
-@export var combat_rewards: LootTable
-@export var boss_rewards: LootTable
-@export var hint_rewards: LootTable
-@export var escalate_rewards: LootTable
 @export var visual_data: BiomeVisualData
 @export var stage_scenes: Array[PackedScene]
 

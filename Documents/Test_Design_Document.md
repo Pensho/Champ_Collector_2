@@ -137,5 +137,5 @@ Tests that involve randomness must use one of these approaches:
 
 ## Known issues / flags
 
-- `last_palayed_date` is a misspelled field name in `AdventureState` (and `AdventureTemplate`). The serialization key is `last_played_date`. Renaming is a deliberate refactor — do it in a separate approved change.
+- `last_palayed_date` is a misspelled field name in `AdventureState`. The serialization key is `last_played_date`. Renaming is a deliberate refactor — do it in a separate approved change.
 - `test_battle_over.gd` produces orphan-node warnings on every test from `ContextContainer` (`extends Node`). These are pre-existing and out of scope here. `Character` and `TraitSkillResult` orphans are resolved — both now extend `RefCounted` and are constructed via `.new()`.
