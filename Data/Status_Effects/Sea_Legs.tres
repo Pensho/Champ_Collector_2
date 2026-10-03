@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="StatusEffectData" format=3 uid="uid://dp7y2pglu268g"]
 
 [ext_resource type="Script" uid="uid://sqkdniv48rkg" path="res://Scripts/Battle/status_effect_data.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://4knipyqjpcl7" path="res://Assets/Champ_Collector/Icons/Status_Effects/Sea_Legs/Sea_Legs.png" id="2_icon"]
+[ext_resource type="Texture2D" uid="uid://cdomiva7djllm" path="res://Assets/Champ_Collector/Icons/Status_Effects/sea_legs.png" id="2_icon"]
 
 [resource]
 script = ExtResource("1_script")
