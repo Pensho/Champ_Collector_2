@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="StatusEffectData" format=3 uid="uid://o0qssecwb7ya"]
 
 [ext_resource type="Script" uid="uid://sqkdniv48rkg" path="res://Scripts/Battle/status_effect_data.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://5t4s6kq7g5ch" path="res://Assets/Champ_Collector/Icons/Status_Effects/Lethal_Precision/Lethal_Precision.png" id="2_icon"]
+[ext_resource type="Texture2D" uid="uid://tdnqvlmhr5on" path="res://Assets/Champ_Collector/Icons/Status_Effects/lethal_precision.png" id="1_xxji6"]
 
 [resource]
 script = ExtResource("1_script")
@@ -11,5 +11,5 @@ attribute_modifiers = Dictionary[int, float]({
 })
 magnitude = 1.0
 caster_scaled = true
-icon = ExtResource("2_icon")
+icon = ExtResource("1_xxji6")
 description = "Increases Critical Damage by the applier's own Critical Damage ({value} percentage points)."

@@ -1,10 +1,10 @@
 [gd_resource type="Resource" script_class="StatusEffectData" format=3 uid="uid://cmyenrfxpi48i"]
 
+[ext_resource type="Texture2D" uid="uid://yool4hm2sggj" path="res://Assets/Champ_Collector/Icons/Status_Effects/aegis.png" id="1_00m6r"]
 [ext_resource type="Script" uid="uid://sqkdniv48rkg" path="res://Scripts/Battle/status_effect_data.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://bvnodyf157oaq" path="res://Assets/Champ_Collector/Icons/Status_Effects/Aegis/Aegis.png" id="2_icon"]
 
 [resource]
 script = ExtResource("1_script")
 applies_on_self_tick = false
-icon = ExtResource("2_icon")
+icon = ExtResource("1_00m6r")
 description = "Blocks the next debuff that would land on the character, then the buff is consumed."

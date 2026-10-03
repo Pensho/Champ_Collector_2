@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="StatusEffectData" format=3 uid="uid://cmlx1pa4sq2e1"]
 
+[ext_resource type="Texture2D" uid="uid://f58a7wvph4ob" path="res://Assets/Champ_Collector/Icons/Status_Effects/spotlight.png" id="1_4kryw"]
 [ext_resource type="Script" uid="uid://sqkdniv48rkg" path="res://Scripts/Battle/status_effect_data.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://b2xiik4tsalo2" path="res://Assets/Champ_Collector/Icons/Status_Effects/Spotlight/Spotlight.png" id="2_icon"]
 
 [resource]
 script = ExtResource("1_script")
@@ -9,5 +9,5 @@ magnitude_kind = 16
 magnitude = 0.2
 applies_on_self_tick = false
 targeting_weight_multiplier = 1.5
-icon = ExtResource("2_icon")
+icon = ExtResource("1_4kryw")
 description = "The character is much more likely to be targeted by enemies and takes 20% less damage."

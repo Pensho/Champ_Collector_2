@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dbb3kgmunodui"
-path="res://.godot/imported/Cracked_Facet.png-f52d5b2896f0ba15cb746ccdc056f5ce.ctex"
+uid="uid://clpdeqbm30dn"
+path="res://.godot/imported/keen_edge.png-3bbf395f11e1ba9f3160fb7572ce0ca1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Status_Effects/Cracked_Facet/Cracked_Facet.png"
-dest_files=["res://.godot/imported/Cracked_Facet.png-f52d5b2896f0ba15cb746ccdc056f5ce.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Status_Effects/keen_edge.png"
+dest_files=["res://.godot/imported/keen_edge.png-3bbf395f11e1ba9f3160fb7572ce0ca1.ctex"]
 
 [params]
 

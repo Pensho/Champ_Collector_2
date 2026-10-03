@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="StatusEffectData" format=3 uid="uid://dui0gkim76rad"]
 
+[ext_resource type="Texture2D" uid="uid://dvllv2qevpe4s" path="res://Assets/Champ_Collector/Icons/Status_Effects/cracked_facet.png" id="1_ernfk"]
 [ext_resource type="Script" uid="uid://sqkdniv48rkg" path="res://Scripts/Battle/status_effect_data.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://dbb3kgmunodui" path="res://Assets/Champ_Collector/Icons/Status_Effects/Cracked_Facet/Cracked_Facet.png" id="2_icon"]
 
 [resource]
 script = ExtResource("1_script")
@@ -12,5 +12,5 @@ attribute_modifiers = Dictionary[int, float]({
 magnitude = 0.6
 caster_scaled = true
 applies_on_self_tick = false
-icon = ExtResource("2_icon")
+icon = ExtResource("1_ernfk")
 description = "Critical hits against the character deal bonus Critical Damage equal to 60% of the applier's Knowledge ({value}%)."

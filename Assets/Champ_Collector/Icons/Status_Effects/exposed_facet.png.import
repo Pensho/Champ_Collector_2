@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://5t4s6kq7g5ch"
-path="res://.godot/imported/Lethal_Precision.png-f0839e4cfe989b25c42c1b1ec826ca23.ctex"
+uid="uid://tjwdmo2riec1"
+path="res://.godot/imported/exposed_facet.png-3410d2f6454f5947b765d6286a947021.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Status_Effects/Lethal_Precision/Lethal_Precision.png"
-dest_files=["res://.godot/imported/Lethal_Precision.png-f0839e4cfe989b25c42c1b1ec826ca23.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Status_Effects/exposed_facet.png"
+dest_files=["res://.godot/imported/exposed_facet.png-3410d2f6454f5947b765d6286a947021.ctex"]
 
 [params]
 

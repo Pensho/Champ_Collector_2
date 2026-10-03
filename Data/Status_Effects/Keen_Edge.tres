@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="StatusEffectData" format=3 uid="uid://dbv0h2o6pjcmh"]
 
 [ext_resource type="Script" uid="uid://sqkdniv48rkg" path="res://Scripts/Battle/status_effect_data.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://b6xxgj5txly80" path="res://Assets/Champ_Collector/Icons/Status_Effects/Keen_Edge/Keen_Edge.png" id="2_icon"]
+[ext_resource type="Texture2D" uid="uid://clpdeqbm30dn" path="res://Assets/Champ_Collector/Icons/Status_Effects/keen_edge.png" id="1_x6hrv"]
 
 [resource]
 script = ExtResource("1_script")
@@ -11,5 +11,5 @@ attribute_modifiers = Dictionary[int, float]({
 })
 magnitude = 1.0
 caster_scaled = true
-icon = ExtResource("2_icon")
+icon = ExtResource("1_x6hrv")
 description = "Increases Critical Chance by the applier's own Critical Chance ({value} percentage points)."
