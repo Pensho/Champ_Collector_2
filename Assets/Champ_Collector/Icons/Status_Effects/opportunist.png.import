@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://4knipyqjpcl7"
-path="res://.godot/imported/Sea_Legs.png-9cd52df9d7d64e921ddffc3a0767367d.ctex"
+uid="uid://dkjq57ve04hs0"
+path="res://.godot/imported/opportunist.png-c2badefa78f1e2a62919cbb0899a297c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Status_Effects/Sea_Legs/Sea_Legs.png"
-dest_files=["res://.godot/imported/Sea_Legs.png-9cd52df9d7d64e921ddffc3a0767367d.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Status_Effects/opportunist.png"
+dest_files=["res://.godot/imported/opportunist.png-c2badefa78f1e2a62919cbb0899a297c.ctex"]
 
 [params]
 

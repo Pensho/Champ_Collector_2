@@ -1,12 +1,12 @@
 [gd_resource type="Resource" script_class="StatusEffectData" format=3 uid="uid://dl5kq6xbs33qv"]
 
+[ext_resource type="Texture2D" uid="uid://dkjq57ve04hs0" path="res://Assets/Champ_Collector/Icons/Status_Effects/opportunist.png" id="1_fmcb5"]
 [ext_resource type="Script" uid="uid://sqkdniv48rkg" path="res://Scripts/Battle/status_effect_data.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://d7ljqaaentul" path="res://Assets/Champ_Collector/Icons/Status_Effects/Opportunist/Opportunist.png" id="2_icon"]
 
 [resource]
 script = ExtResource("1_script")
 magnitude_kind = 6
 magnitude = 0.1
 applies_on_self_tick = false
-icon = ExtResource("2_icon")
+icon = ExtResource("1_fmcb5")
 description = "The character's attacks deal +10% damage per debuff on the target."

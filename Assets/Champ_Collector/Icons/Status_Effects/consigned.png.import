@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://beuy834yppgfu"
-path="res://.godot/imported/Consigned.png-1b50702ce1e91aa25a0b431840c7b592.ctex"
+uid="uid://dspeplxk2o4p1"
+path="res://.godot/imported/consigned.png-b88da9a4e57f1e458bdd583fd431c299.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Status_Effects/Consigned/Consigned.png"
-dest_files=["res://.godot/imported/Consigned.png-1b50702ce1e91aa25a0b431840c7b592.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Status_Effects/consigned.png"
+dest_files=["res://.godot/imported/consigned.png-b88da9a4e57f1e458bdd583fd431c299.ctex"]
 
 [params]
 

@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="StatusEffectData" format=3]
+[gd_resource type="Resource" script_class="StatusEffectData" format=3 uid="uid://xgo8fyjy4hkr"]
 
+[ext_resource type="Texture2D" uid="uid://dspeplxk2o4p1" path="res://Assets/Champ_Collector/Icons/Status_Effects/consigned.png" id="1_0uy73"]
 [ext_resource type="Script" uid="uid://sqkdniv48rkg" path="res://Scripts/Battle/status_effect_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://Assets/Champ_Collector/Icons/Status_Effects/Consigned/Consigned.png" id="2_icon"]
 
 [resource]
 script = ExtResource("1_script")
@@ -12,5 +12,5 @@ attribute_modifiers = Dictionary[int, float]({
 magnitude = 1.0
 duration_default = 3
 applies_on_self_tick = false
-icon = ExtResource("2_icon")
-description = "Critical Chance and Critical Damage are zero while this holder's crit attributes are loaned out."
+icon = ExtResource("1_0uy73")
+description = "Critical Chance and Critical Damage are zero."
