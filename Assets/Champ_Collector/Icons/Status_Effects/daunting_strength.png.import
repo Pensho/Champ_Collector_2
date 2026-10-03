@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://e2xsk3n3aa6m"
-path="res://.godot/imported/Stun.png-94dd85f5eff9be01740b8538f9b19084.ctex"
+uid="uid://chbjr40dcquxl"
+path="res://.godot/imported/daunting_strength.png-16e4fe35db8da40f0a468522b5664e91.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Status_Effects/Stun/Stun.png"
-dest_files=["res://.godot/imported/Stun.png-94dd85f5eff9be01740b8538f9b19084.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Status_Effects/daunting_strength.png"
+dest_files=["res://.godot/imported/daunting_strength.png-16e4fe35db8da40f0a468522b5664e91.ctex"]
 
 [params]
 

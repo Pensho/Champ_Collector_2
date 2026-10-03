@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="StatusEffectData" format=3 uid="uid://b6am20kf75gb3"]
 
+[ext_resource type="Texture2D" uid="uid://c0cw40dwheinx" path="res://Assets/Champ_Collector/Icons/Status_Effects/rush.png" id="1_lks87"]
 [ext_resource type="Script" uid="uid://sqkdniv48rkg" path="res://Scripts/Battle/status_effect_data.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://djek7rm1144eo" path="res://Assets/Champ_Collector/Icons/Status_Effects/Rush/Rush.png" id="2_icon"]
 
 [resource]
 script = ExtResource("1_script")
@@ -18,5 +18,5 @@ attribute_modifiers = Dictionary[int, float]({
 })
 magnitude = 0.3
 applies_on_target_snapshot = true
-icon = ExtResource("2_icon")
+icon = ExtResource("1_lks87")
 description = "Increases all primary attributes except Health by {percent}%. When the buff expires, it applies Stun to the character for 1 turn; this Stun cannot be resisted."

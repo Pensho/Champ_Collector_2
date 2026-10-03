@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://djek7rm1144eo"
-path="res://.godot/imported/Rush.png-18e531bdf1aff08ae0ffc8922ac9384b.ctex"
+uid="uid://c2dlroaq71eku"
+path="res://.godot/imported/stun.png-7c62176bba0d9f309f13766b695693f7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Status_Effects/Rush/Rush.png"
-dest_files=["res://.godot/imported/Rush.png-18e531bdf1aff08ae0ffc8922ac9384b.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Status_Effects/stun.png"
+dest_files=["res://.godot/imported/stun.png-7c62176bba0d9f309f13766b695693f7.ctex"]
 
 [params]
 

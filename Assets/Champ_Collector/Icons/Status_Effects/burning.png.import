@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dnwdidc6oohi"
-path="res://.godot/imported/flame.svg-ac5b076848e3a9a6ed8a6300f8374b1f.ctex"
+uid="uid://bfp8hytti7qbu"
+path="res://.godot/imported/burning.png-b9862bb0b89f1dfa752cb97e38366373.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Status_Effects/Burning/flame.svg"
-dest_files=["res://.godot/imported/flame.svg-ac5b076848e3a9a6ed8a6300f8374b1f.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Status_Effects/burning.png"
+dest_files=["res://.godot/imported/burning.png-b9862bb0b89f1dfa752cb97e38366373.ctex"]
 
 [params]
 
@@ -38,6 +38,3 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
-svg/scale=1.0
-editor/scale_with_editor_scale=false
-editor/convert_colors_with_editor_theme=false

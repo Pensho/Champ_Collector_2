@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="StatusEffectData" format=3 uid="uid://dg5bxfjijn3na"]
 
+[ext_resource type="Texture2D" uid="uid://bfp8hytti7qbu" path="res://Assets/Champ_Collector/Icons/Status_Effects/burning.png" id="1_dr0hv"]
 [ext_resource type="Script" uid="uid://sqkdniv48rkg" path="res://Scripts/Battle/status_effect_data.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://dnwdidc6oohi" path="res://Assets/Champ_Collector/Icons/Status_Effects/Burning/flame.svg" id="2_icon"]
 
 [resource]
 script = ExtResource("1_script")
@@ -10,5 +10,5 @@ magnitude = 0.02
 magnitude_max = 0.1
 overwritable = false
 stackable = true
-icon = ExtResource("2_icon")
-description = "Deals 2-10% of max Health as damage per stack each turn (rolled, biased by Luck or Hexed)."
+icon = ExtResource("1_dr0hv")
+description = "Deals 2-10% of max Health as damage per stack each turn."
