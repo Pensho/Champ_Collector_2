@@ -88,19 +88,7 @@ func SetTargetingOrder() -> void:
 	var sorted_keys = _characters.keys()
 
 	sorted_keys.sort_custom(func(key_a, key_b):
-		var obj_a = _characters[key_a]
-		var obj_b = _characters[key_b]
-
-		var priority_a: float = (obj_a.GetTotalAttribute(Types.Attribute.Health)
-				+ obj_a.GetTotalAttribute(Types.Attribute.Defence))
-		priority_a *= Skills.TargetingPriorityMultiplier(obj_a)
-		priority_a *= Skills.TargetingWeightMultiplier(obj_a)
-		var priority_b: float = (obj_b.GetTotalAttribute(Types.Attribute.Health)
-				+ obj_b.GetTotalAttribute(Types.Attribute.Defence))
-		priority_b *= Skills.TargetingPriorityMultiplier(obj_b)
-		priority_b *= Skills.TargetingWeightMultiplier(obj_b)
-
-		return priority_a > priority_b
+		return Skills.TargetingPriority(_characters[key_a]) > Skills.TargetingPriority(_characters[key_b])
 		)
 	_targeting_order = sorted_keys
 

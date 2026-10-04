@@ -430,6 +430,8 @@ static func FindSkillTargets(
 		Types.Skill_Target.Most_Injured_Enemy:
 			return SingleTargetArray(
 					MostInjured(p_sides.EnemiesOf(p_caster_ID).members, p_characters, p_max_health))
+		Types.Skill_Target.Lowest_Priority_Enemy:
+			return SingleTargetArray(LowestPriority(p_sides.EnemiesOf(p_caster_ID).members, p_characters))
 		Types.Skill_Target.Left_Most_Enemy:
 			return SingleTargetArray(EdgeMostAlive(p_sides.EnemiesOf(p_caster_ID).AliveMembers(p_characters), true))
 		Types.Skill_Target.Right_Most_Enemy:
@@ -483,6 +485,18 @@ static func MostInjured(p_IDs: Array[int], p_characters: Dictionary[int, Charact
 			best_ID = id
 	return best_ID
 
+static func LowestPriority(p_IDs: Array[int], p_characters: Dictionary[int, Character]) -> int:
+	var best_ID: int = -1
+	var best_priority: float = INF
+	for id in p_IDs:
+		if(not p_characters.has(id) or p_characters[id]._current_health <= 0):
+			continue
+		var priority: float = TargetingPriority(p_characters[id])
+		if(priority < best_priority or (priority == best_priority and id < best_ID)):
+			best_priority = priority
+			best_ID = id
+	return best_ID
+
 static func MostBuffed(p_IDs: Array[int], p_characters: Dictionary[int, Character]) -> int:
 	var most_buffs_character_ID: int = -1
 	var most_buffs_count: int = -1
@@ -504,6 +518,14 @@ static func EdgeMostAlive(p_alive_IDs_left_to_right: Array[int], p_want_left: bo
 
 ## The combined enemy-AI targeting-weight multiplier from all of a character's active
 ## buffs (e.g. Spotlight's 1.5x). 1.0 when none apply.
+## Enemy-AI targeting priority: durability scaled by trait and buff multipliers.
+static func TargetingPriority(p_character: Character) -> float:
+	var priority: float = (p_character.GetTotalAttribute(Types.Attribute.Health)
+			+ p_character.GetTotalAttribute(Types.Attribute.Defence))
+	priority *= TargetingPriorityMultiplier(p_character)
+	priority *= TargetingWeightMultiplier(p_character)
+	return priority
+
 static func TargetingWeightMultiplier(p_character: Character) -> float:
 	var multiplier: float = 1.0
 	for buff in p_character._active_buffs:

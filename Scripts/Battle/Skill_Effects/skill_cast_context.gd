@@ -143,6 +143,9 @@ static func ResolveIndependentGroup(
 					Skills.MostInjured(sides.AlliesOf(p_caster_ID).members, characters, max_health))
 		Types.Skill_Target.Most_Buffed_Ally:
 			group_IDs = Skills.SingleTargetArray(Skills.MostBuffed(sides.AlliesOf(p_caster_ID).members, characters))
+		Types.Skill_Target.Lowest_Priority_Enemy:
+			group_IDs = Skills.SingleTargetArray(
+					Skills.LowestPriority(sides.EnemiesOf(p_caster_ID).members, characters))
 		_:
 			print("Skill target enum has no caster-relative resolution for a secondary status group: ", p_target_type)
 	return group_IDs

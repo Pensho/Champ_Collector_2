@@ -170,7 +170,8 @@ const _ALL_ALLIES_TARGETS: Array[Types.Skill_Target] = [Types.Skill_Target.All_A
 const _ENEMY_FACING_TARGETS: Array[Types.Skill_Target] = [
 	Types.Skill_Target.Single_Enemy, Types.Skill_Target.All_Enemies, Types.Skill_Target.Random_Enemy,
 	Types.Skill_Target.ZoneAll, Types.Skill_Target.ZoneEnemy, Types.Skill_Target.Left_Most_Enemy,
-	Types.Skill_Target.Right_Most_Enemy, Types.Skill_Target.Most_Injured_Enemy]
+	Types.Skill_Target.Right_Most_Enemy, Types.Skill_Target.Most_Injured_Enemy,
+	Types.Skill_Target.Lowest_Priority_Enemy]
 const _ANYONE_TARGETS: Array[Types.Skill_Target] = [
 	Types.Skill_Target.Single_Ally, Types.Skill_Target.Random_Ally,
 	Types.Skill_Target.Most_Injured_Ally, Types.Skill_Target.Most_Buffed_Ally]

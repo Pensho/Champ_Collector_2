@@ -29,6 +29,8 @@ static func HighlightedCharacters(
 			return Skills.SingleTargetArray(Skills.MostInjured(allies, p_characters, p_max_health))
 		Types.Skill_Target.Most_Injured_Enemy:
 			return Skills.SingleTargetArray(Skills.MostInjured(enemies, p_characters, p_max_health))
+		Types.Skill_Target.Lowest_Priority_Enemy:
+			return Skills.SingleTargetArray(Skills.LowestPriority(enemies, p_characters))
 		Types.Skill_Target.Most_Buffed_Ally:
 			return Skills.SingleTargetArray(Skills.MostBuffed(allies, p_characters))
 		Types.Skill_Target.Left_Most_Enemy:

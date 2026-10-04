@@ -99,6 +99,7 @@ enum Skill_Target
 	Most_Injured_Enemy,
 	Most_Buffed_Ally,
 	Skill_Default,
+	Lowest_Priority_Enemy,
 }
 
 enum Attribute
