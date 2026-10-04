@@ -156,7 +156,7 @@ func FindSkillTargets(p_target_ID: int, p_caster_ID: int, p_target_type: Types.S
 		if(redirected_ID != -1):
 			EmitTraitText(p_target_ID, "Refracted!")
 			return [redirected_ID]
-	return Skills.FindSkillTargets(p_target_ID, p_caster_ID, effective_type, _characters, _sides, _random, _MaxHealth)
+	return Skills.FindSkillTargets(p_target_ID, p_caster_ID, effective_type, _characters, _sides, _random, GetMaxHealth)
 
 
 func IsTheBattleOver() -> Winner:

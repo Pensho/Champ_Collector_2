@@ -137,6 +137,14 @@ func test_most_injured_enemy_ignores_a_dead_enemy() -> void:
 	assert_false(targets.has(4), "Most_Injured_Enemy must not select a dead enemy")
 	assert_eq(targets.size(), 1)
 
+func test_most_injured_enemy_resolves_through_battle_resolver() -> void:
+	var characters: Dictionary[int, Character] = {}
+	characters.assign(_roster)
+	characters[1]._current_health = 3
+	var resolver: BattleResolver = TestFactory.make_resolver(characters, _sides)
+	var targets: Array[int] = resolver.FindSkillTargets(0, 3, Types.Skill_Target.Most_Injured_Enemy)
+	assert_eq(targets, [1], "The resolver should resolve Most_Injured_Enemy for an enemy caster")
+
 # --- Dead / missing target exclusion ---
 
 func test_all_enemies_excludes_dead_enemy() -> void:
