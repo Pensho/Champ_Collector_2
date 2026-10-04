@@ -30,6 +30,12 @@ class_name CharacterPreset extends Resource
 @export var _trait: CharacterTrait = null
 @export var _graft_effect: GraftEffect = null
 
+## Phase 2 kit, swapped in once at 50% Health: the full skill list, a trait that replaces
+## the current one (null keeps it), and the combat text announcing the transition.
+@export var _phase_two_skills: Array[Skill]
+@export var _phase_two_trait: CharacterTrait = null
+@export var _phase_two_text: String = ""
+
 @export var _preset_path: String
 
 @warning_ignore_restore("unused_private_class_variable")

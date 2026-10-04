@@ -493,6 +493,16 @@ func _on_resolver_result_produced(p_result: CombatResult) -> void:
 			_battle_ui._turn_bar.ShowCharacterAsDead(p_result.target_ID)
 			_character_representations[p_result.target_ID].GetSpriteAnimator().PlayDeath()
 			UpdateLifeBar(p_result.target_ID)
+		CombatResult.Kind.Phase_Changed:
+			if("" != p_result.text):
+				_battle_ui.SpawnCombatText(
+						p_result.text, CombatTextPosition(p_result.target_ID), Color(0.9, 0.45, 0.1, 1.0),
+						_cascade_instance_ordinal)
+			for skill: Skill in _characters[p_result.target_ID]._skills:
+				_battle_ui.LoadSkillTexture(skill.icon_path)
+			if(null != _characters[p_result.target_ID]._trait):
+				_characters[p_result.target_ID]._trait.RefreshVisuals(
+						_character_representations[p_result.target_ID])
 		CombatResult.Kind.Cascade_Triggered:
 			# Emitted immediately before each burst instance's own results (a real cascade
 			# instance or a trait-local repeat routed through EmitBurstInstance), so the

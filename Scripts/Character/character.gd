@@ -44,6 +44,11 @@ var _trait: CharacterTrait
 ## The effect this character offers to a Symbiote that grafts onto it (enemies only).
 var _graft_effect: GraftEffect = null
 
+var _phase_two_skills: Array[Skill] = []
+var _phase_two_trait: CharacterTrait = null
+var _phase_two_text: String = ""
+var _in_phase_two: bool = false
+
 ## The effect this character has received by grafting onto something else (Symbiotes only).
 var _graft: GraftEffect = null
 var _graft_UID: String = ""
@@ -93,6 +98,32 @@ func InstantiateNew(p_preset: CharacterPreset, p_instance_ID: int) -> void:
 	if(null != p_preset._trait):
 		_trait = p_preset._trait.duplicate(true)
 		_trait.Init(_rarity)
+
+	_phase_two_skills = []
+	for skill: Skill in p_preset._phase_two_skills:
+		_phase_two_skills.append(skill.duplicate(true))
+	_phase_two_trait = p_preset._phase_two_trait
+	_phase_two_text = p_preset._phase_two_text
+
+func HasPhaseTwo() -> bool:
+	return not _phase_two_skills.is_empty() or null != _phase_two_trait
+
+## Swaps in the phase 2 kit. A phase 2 skill sharing a name with a current skill keeps that
+## skill's cooldown. Returns whether the trait was replaced.
+func EnterPhaseTwo() -> bool:
+	_in_phase_two = true
+	if(not _phase_two_skills.is_empty()):
+		var cooldowns: Dictionary[String, int] = {}
+		for skill: Skill in _skills:
+			cooldowns[skill.name] = skill.cooldown_left
+		for skill: Skill in _phase_two_skills:
+			skill.cooldown_left = cooldowns.get(skill.name, skill.cooldown_left)
+		_skills = _phase_two_skills
+	if(null == _phase_two_trait):
+		return false
+	_trait = _phase_two_trait.duplicate(true)
+	_trait.Init(_rarity)
+	return true
 
 func GetEquipmentBonus(p_attribute: Types.Attribute) -> int:
 	var bonus_stat: int = 0

@@ -24,6 +24,7 @@ enum Kind {
 	Turn_Skipped,
 	Status_Effect_Denied,
 	Cascade_Triggered,
+	Phase_Changed,
 }
 
 var kind: Kind

@@ -759,7 +759,24 @@ func _ApplyHealthLoss(p_character_ID: int, p_amount: int, p_attacker_ID: int = N
 		_Emit(heal_result)
 	if(was_alive and character._current_health <= 0):
 		_HandleDeath(p_character_ID)
+	elif(character._current_health > 0):
+		_TryEnterPhaseTwo(p_character_ID)
 	return remaining
+
+
+func _TryEnterPhaseTwo(p_character_ID: int) -> void:
+	var character: Character = _characters[p_character_ID]
+	if(not character.HasPhaseTwo() or character._in_phase_two
+			or character._current_health * 2 > _MaxHealth(character)):
+		return
+	if(character.EnterPhaseTwo()):
+		character._trait.ResetForBattle()
+		if(character._trait._execution_steps.has(Types.Combat_Event.Start_Combat)):
+			character._trait.StartOfBattle(p_character_ID, self)
+	var changed: CombatResult = CombatResult.new(CombatResult.Kind.Phase_Changed)
+	changed.target_ID = p_character_ID
+	changed.text = character._phase_two_text
+	_Emit(changed)
 
 
 ## Returns the Health actually gained, after any healing-reduction debuff and clamping.
