@@ -155,6 +155,7 @@ enum Buff_Type
 	Sanguine_Pact,
 	Borrowed_Time,
 	Sea_Legs,
+	Momentum,
 }
 
 enum Debuff_Type

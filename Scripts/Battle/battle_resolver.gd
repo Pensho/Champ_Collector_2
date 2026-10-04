@@ -809,7 +809,7 @@ func _SkillUseCount(p_caster_ID: int, p_skill: Skill) -> int:
 	return uses
 
 
-## Contributes the caster's persistent channel-2 factors (trait bonus, reagent/graft bonus,
+## Contributes the caster's persistent channel-2 factors (trait bonus, reagent/graft bonus, Momentum,
 ## Opportunist) into the modifier — shared by attack resolution and any tick needing the
 ## caster's damage-scaling state. Excludes DamageMultiplier buffs, consumed by an attack.
 func _ContributePersistentCasterFactors(
@@ -824,6 +824,10 @@ func _ContributePersistentCasterFactors(
 			_status_resolver._OpportunistDamageFactors(p_caster_ID, target))
 	for key: StringName in opportunist_factors:
 		p_modifier.Contribute(key, opportunist_factors[key])
+	var outgoing_factors: Dictionary[StringName, float] = (
+			_status_resolver._OutgoingDamagePercentFactors(p_caster_ID))
+	for key: StringName in outgoing_factors:
+		p_modifier.Contribute(key, outgoing_factors[key])
 	var missing_health_factors: Dictionary[StringName, float] = (
 			_status_resolver._MissingHealthDamageFactors(p_caster_ID, p_target_ID, target))
 	for key: StringName in missing_health_factors:

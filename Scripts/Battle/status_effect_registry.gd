@@ -41,6 +41,7 @@ const BUFFS: Dictionary[Types.Buff_Type, StatusEffectData] = {
 	Types.Buff_Type.Sanguine_Pact: preload("res://Data/Status_Effects/Sanguine_Pact.tres"),
 	Types.Buff_Type.Borrowed_Time: preload("res://Data/Status_Effects/Borrowed_Time.tres"),
 	Types.Buff_Type.Sea_Legs: preload("res://Data/Status_Effects/Sea_Legs.tres"),
+	Types.Buff_Type.Momentum: preload("res://Data/Status_Effects/Momentum.tres"),
 }
 
 const DEBUFFS: Dictionary[Types.Debuff_Type, StatusEffectData] = {

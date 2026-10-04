@@ -5,7 +5,7 @@ class_name StatusEffectResolver extends RefCounted
 ## and health paths need. Holds a back-reference to its owning BattleResolver for the
 ## shared batch/emit/snapshot services status effects need, mirroring ZoneResolver.
 
-const MAX_SEA_LEGS_STACKS: int = 4
+const STOLEN_PERMANENT_BUFF_DURATION: int = 3
 
 var _resolver: BattleResolver
 
@@ -80,32 +80,29 @@ func ApplyDebuff(p_target_ID: int, p_debuff_template: StatusEffects.Debuff) -> A
 			p_debuff_template.source_ID, p_debuff_template.trait_riders, false, p_debuff_template.name)
 	return _resolver._EndBatch()
 
-func ApplySeaLegs(
-		p_target_ID: int,
-		p_source_ID: int,
-		p_attribute: Types.Attribute,
-		p_value_per_stack: float) -> Array[CombatResult]:
+func ApplyStackingBuff(p_target_ID: int, p_buff_template: StatusEffects.Buff) -> Array[CombatResult]:
 	_resolver._BeginBatch()
 	var target: Character = _resolver._characters[p_target_ID]
+	var data: StatusEffectData = StatusEffectRegistry.BuffData(p_buff_template.type)
+	var value_per_stack: float = p_buff_template.value if 0.0 != p_buff_template.value else data.magnitude
 	for buff in target._active_buffs:
-		if(Types.Buff_Type.Sea_Legs == buff.type):
+		if(p_buff_template.type == buff.type):
 			var stacks: int = int(buff.trait_riders.get(&"stacks", 1))
-			if(stacks >= MAX_SEA_LEGS_STACKS):
+			if(stacks >= data.max_stacks_in_place):
 				return _resolver._EndBatch()
-			stacks += 1
-			buff.trait_riders[&"stacks"] = stacks
-			buff.value = p_value_per_stack * stacks
+			buff.trait_riders[&"stacks"] = stacks + 1
+			buff.value = value_per_stack * (stacks + 1)
 			_EmitBuffApplied(p_target_ID, buff, buff.name)
 			return _resolver._EndBatch()
 	if(Skills.HasMaxStatusEffects(target)):
-		_EmitStatusEffectDenied(p_target_ID, true, Types.Buff_Type.Sea_Legs)
+		_EmitStatusEffectDenied(p_target_ID, true, p_buff_template.type)
 		return _resolver._EndBatch()
-	if(_BlockedBySeverance(target)):
+	if(_BlockedBySequenceLock(data, target) or _BlockedBySeverance(target)):
 		return _resolver._EndBatch()
-	var trait_riders: Dictionary[StringName, Variant] = {&"attribute": p_attribute, &"stacks": 1}
-	_InsertOrRefresh(p_target_ID, true, Types.Buff_Type.Sea_Legs,
-			StatusEffectRegistry.BuffData(Types.Buff_Type.Sea_Legs), p_value_per_stack, 0,
-			p_source_ID, trait_riders, false, "Sea Legs")
+	var trait_riders: Dictionary[StringName, Variant] = p_buff_template.trait_riders.duplicate()
+	trait_riders[&"stacks"] = 1
+	_InsertOrRefresh(p_target_ID, true, p_buff_template.type, data, value_per_stack, p_buff_template.duration,
+			p_buff_template.source_ID, trait_riders, false, p_buff_template.name)
 	return _resolver._EndBatch()
 
 func RemoveBuff(p_target_ID: int, p_buff: StatusEffects.Buff) -> Array[CombatResult]:
@@ -148,10 +145,19 @@ func StealBuff(p_from_ID: int, p_to_ID: int, p_duration: int = -1, p_duration_bo
 	var stolen: StatusEffects.Buff = StatusEffects.Buff.new()
 	stolen.type = buff.type
 	stolen.value = buff.value
-	stolen.duration = (p_duration if p_duration >= 0 else buff.duration) + p_duration_bonus
 	stolen.name = buff.name
+	stolen.trait_riders = buff.trait_riders.duplicate()
+	if(_IsPermanent(buff)):
+		stolen.duration = STOLEN_PERMANENT_BUFF_DURATION
+		stolen.trait_riders[&"expires"] = true
+	else:
+		stolen.duration = (p_duration if p_duration >= 0 else buff.duration) + p_duration_bonus
 	ApplyBuff(p_to_ID, stolen)
 	return true
+
+func _IsPermanent(p_buff: StatusEffects.Buff) -> bool:
+	var data: StatusEffectData = StatusEffectRegistry.BuffData(p_buff.type)
+	return null != data and data.permanent and not p_buff.trait_riders.get(&"expires", false)
 
 func _ExpireBuffs(p_target_ID: int, p_source_ID: int = -1) -> void:
 	var target: Character = _resolver._characters[p_target_ID]
@@ -172,9 +178,9 @@ func _ExpireBuffs(p_target_ID: int, p_source_ID: int = -1) -> void:
 		_resolver.BroadcastEvent(Types.Combat_Event.Resource_Depleted)
 
 func _IsBuffExpired(p_buff: StatusEffects.Buff) -> bool:
-	var data: StatusEffectData = StatusEffectRegistry.BuffData(p_buff.type)
-	if(null != data and data.permanent):
+	if(_IsPermanent(p_buff)):
 		return false
+	var data: StatusEffectData = StatusEffectRegistry.BuffData(p_buff.type)
 	if(null != data and (StatusEffectData.MagnitudeKind.DamageMultiplier == data.magnitude_kind
 			or Types.Buff_Type.Borrowed_Time == p_buff.type)):
 		return p_buff.duration < 0
@@ -606,8 +612,7 @@ func TickStatusDurations(p_caster_ID: int) -> void:
 	var expiring_overflow_count: int = 0
 	var expiring_rush_count: int = 0
 	for buff in caster._active_buffs:
-		var data: StatusEffectData = StatusEffectRegistry.BuffData(buff.type)
-		if(null != data and data.permanent):
+		if(_IsPermanent(buff)):
 			continue
 		if(buff.applied_on_turn_ordinal == current_ordinal):
 			continue
@@ -891,6 +896,17 @@ func _OpportunistDamageFactors(p_caster_ID: int, p_target: Character) -> Diction
 	for debuff_type in debuff_types_present:
 		var key: StringName = StringName(Types.Debuff_Type.keys()[debuff_type])
 		factors[key] = factors.get(key, 0.0) + opportunist_value
+	return factors
+
+func _OutgoingDamagePercentFactors(p_caster_ID: int) -> Dictionary[StringName, float]:
+	var factors: Dictionary[StringName, float] = {}
+	if(not _resolver._characters.has(p_caster_ID)):
+		return factors
+	for buff in _resolver._characters[p_caster_ID]._active_buffs:
+		var data: StatusEffectData = StatusEffectRegistry.BuffData(buff.type)
+		if(null != data and StatusEffectData.MagnitudeKind.OutgoingDamagePercent == data.magnitude_kind):
+			var key: StringName = StringName(Types.Buff_Type.keys()[buff.type])
+			factors[key] = factors.get(key, 0.0) + buff.value
 	return factors
 
 func _MissingHealthFraction(p_character_ID: int) -> float:

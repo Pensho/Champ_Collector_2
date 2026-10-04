@@ -8,6 +8,7 @@ script = ExtResource("1_script")
 magnitude_kind = 19
 overwritable = false
 permanent = true
+max_stacks_in_place = 4
 applies_on_self_tick = false
 icon = ExtResource("2_icon")
 description = "Boosts the holder's own highest attribute other than Health by {percent_decimal}%. Gained by starting a turn on The Gilded Deck, up to 4 times."

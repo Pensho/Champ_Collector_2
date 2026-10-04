@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="StatusEffectData" format=3]
+
+[ext_resource type="Script" uid="uid://sqkdniv48rkg" path="res://Scripts/Battle/status_effect_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://bw2jhx6i5wv60" path="res://Assets/Champ_Collector/Icons/Status_Effects/momentum.png" id="2_icon"]
+
+[resource]
+script = ExtResource("1_script")
+magnitude_kind = 20
+magnitude = 0.15
+permanent = true
+max_stacks_in_place = 10
+applies_on_self_tick = false
+icon = ExtResource("2_icon")
+description = "Increases damage dealt by 15% per stack. Stacks up to 10 times."

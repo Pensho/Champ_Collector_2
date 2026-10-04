@@ -15,9 +15,13 @@ func Resolve(p_context: SkillCastContext) -> void:
 
 func _Board(p_target_ID: int, p_context: SkillCastContext) -> void:
 	var target: Character = p_context.resolver.GetCharacters()[p_target_ID]
-	var attribute: Types.Attribute = _HighestBasePrimaryAttribute(target)
-	p_context.resolver.GetStatusResolver().ApplySeaLegs(
-			p_target_ID, p_context.caster_ID, attribute, per_stack_rate * p_context.zone_magnitude)
+	var sea_legs: StatusEffects.Buff = StatusEffects.Buff.new()
+	sea_legs.type = Types.Buff_Type.Sea_Legs
+	sea_legs.name = "Sea Legs"
+	sea_legs.source_ID = p_context.caster_ID
+	sea_legs.value = per_stack_rate * p_context.zone_magnitude
+	sea_legs.trait_riders = {&"attribute": _HighestBasePrimaryAttribute(target)}
+	p_context.resolver.GetStatusResolver().ApplyStackingBuff(p_target_ID, sea_legs)
 
 func _HighestBasePrimaryAttribute(p_character: Character) -> Types.Attribute:
 	var base_attributes: Dictionary[Types.Attribute, int] = p_character.GetBaseAttributes()

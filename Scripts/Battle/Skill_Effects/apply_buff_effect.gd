@@ -31,9 +31,16 @@ func Resolve(p_context: SkillCastContext) -> void:
 			var data: StatusEffectData = StatusEffectRegistry.BuffData(buff_type)
 			if(null != data):
 				buff.value = data.magnitude * p_context.zone_magnitude
-			var results: Array[CombatResult] = status_resolver.ApplyBuff(target_ID, buff)
+			var results: Array[CombatResult] = _Apply(status_resolver, target_ID, buff)
 			p_context.status_effect_attempted = true
 			if(results.any(func(r: CombatResult) -> bool: return CombatResult.Kind.Status_Effect_Denied != r.kind)):
 				p_context.status_effect_landed = true
 		else:
-			status_resolver.ApplyBuff(target_ID, buff)
+			_Apply(status_resolver, target_ID, buff)
+
+func _Apply(
+		p_status_resolver: StatusEffectResolver, p_target_ID: int, p_buff: StatusEffects.Buff) -> Array[CombatResult]:
+	var data: StatusEffectData = StatusEffectRegistry.BuffData(buff_type)
+	if(null != data and data.max_stacks_in_place > 0):
+		return p_status_resolver.ApplyStackingBuff(p_target_ID, p_buff)
+	return p_status_resolver.ApplyBuff(p_target_ID, p_buff)
