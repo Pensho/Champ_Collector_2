@@ -7,15 +7,15 @@
 [sub_resource type="Resource" id="Resource_jdfw5"]
 script = ExtResource("2_eg1bs")
 scaling = Dictionary[int, float]({
-6: 0.2
+6: 0.6
 })
-target = 4
+target = 12
 
 [resource]
 script = ExtResource("1_skill")
 name = "Sporeburst Mend"
 description = "Restores Health to all allies, scaled by Mysticism."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Opponent_Active_Skills/Sporeburst_Mend/Sporeburst_Mend.png"
-target = 4
+target = 12
 effects = Array[ExtResource("1_yxsct")]([SubResource("Resource_jdfw5")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"
