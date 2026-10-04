@@ -41,10 +41,15 @@ Concept Document 3.2.3 catalog.
 * March Cadence
     * Type: Buff, Turn Bar (basic skill, no cooldown)
     * Effect: All other allies gain 10% turn bar progress.
+* Spotting Shot
+    * Type: Damage, Debuff (basic skill, no cooldown)
+    * Effect: Deals damage to a single target enemy, scaling with Attack,
+      and applies the Spotted debuff for 2 turns to the lowest-priority
+      enemy (see Concept Document 3.2.3.2).
 * Aimed Shot
     * Type: Damage
     * Cooldown: 2 turns
-    * Effect: Deals heavy damage to the most injured enemy, scaling
+    * Effect: Deals heavy damage to a single target enemy, scaling
       with Attack (starting point: 200% of a basic hit).
 * Flank Cut
     * Type: Damage (basic skill, no cooldown)
@@ -53,8 +58,8 @@ Concept Document 3.2.3 catalog.
 * Breaching Charge
     * Type: Damage (basic skill, no cooldown)
     * Effect: Deals damage to the left-most enemy (positional
-      targeting, see Concept Document 3.2.4), scaling with Attack; each use
-      increases this skill's damage by 15% for the rest of the battle.
+      targeting, see Concept Document 3.2.4), scaling with Attack, and grants
+      the user one Momentum stack (see Concept Document 3.2.3.2).
 * Cinder Spit
     * Type: Damage (basic skill, no cooldown)
     * Effect: Deals damage to a single target enemy, scaling with
@@ -114,6 +119,20 @@ Concept Document 3.2.3 catalog.
     * Type: Passive
     * Effect: When an ally dies, the user gains the Frenzy buff for the rest
       of the battle (see Concept Document 3.2.3.2).
+* Size Up
+    * Type: Damage, Debuff (basic skill, no cooldown)
+    * Effect: Deals damage to a single target enemy, scaling with Attack,
+      and applies the Spotted debuff for 2 turns to the lowest-priority
+      enemy.
+* Cash In
+    * Type: Damage
+    * Cooldown: 3 turns
+    * Effect: Deals heavy damage to a single target enemy, scaling with
+      Attack (starting point: 220% of a basic hit).
+* Press the Advantage
+    * Type: Passive (boss phase 2)
+    * Effect: Whenever an allied attack hits a Spotted enemy, the user gains
+      one Momentum stack.
 
 ## 2. Encounters
 
@@ -168,11 +187,13 @@ Document 3.2.4.3).
 
 - **Composition:** two Scavenger Skirmishers, one Ridge Marksman. **Theme:**
   Reclaimed City.
-- **Mechanic:** the Marksman's Aimed Shot (section 1) fires a heavy hit at the
-  most injured champion every other turn. Onset: enemy turn 2.
-- **Answers:** Premonition (e.g. the Diviner's Premonition) blanks the shot;
-  Barrier (e.g. the Architect's Raise the Frame, the Bloodmage's Transfusion)
-  absorbs it.
+  The Marksman carries high Accuracy so Spotted lands reliably.
+- **Mechanic:** the Marksman's Spotting Shot (section 1) Spots the
+  lowest-priority champion, and every single-target attack — Aimed Shot's heavy
+  hit every other turn included — follows the mark. Onset: enemy turn 2.
+- **Answers:** Premonition (e.g. the Diviner's Premonition) on the Spotted
+  champion blanks the shot; healing (e.g. the Diviner's Fateful Glimpse) keeps
+  them standing; Resistance shrugs off the mark.
 
 #### Flank Cutter
 
@@ -194,6 +215,18 @@ Document 3.2.4.3).
 - **Answers:** Enfeeble (e.g. the Lancer's Disarm) blunts the ramp; Barrier
   (e.g. the Bloodmage's Transfusion) absorbs the spikes; party order decides
   who takes the charge.
+
+#### Clearing Crew
+
+- **Composition:** one Rubble Breaker, one Vinecutter. **Theme:** Reclaimed
+  City.
+- **Mechanic:** a pincer — the Breaker's Breaching Charge (section 1) hits the
+  left-most champion and builds Momentum, the Vinecutter's Flank Cut (section 1)
+  hits the right-most; the middle slot is safe. Onset: enemy turn 1, the
+  Breaker noticeable by turn 3.
+- **Answers:** party order — bruisers on both ends, the carry in the middle;
+  buff theft (e.g. the Thief's Cut Purse) takes the Momentum stack; Enfeeble
+  (e.g. the Diviner's Foresight) blunts either end.
 
 ### 2.2. Mini-bosses
 
@@ -374,6 +407,33 @@ Concept Document).
   while Vault Slams grind the party backward down the bar.
 - **Reward hook (deferred):** assigned at placement.
 
+#### Salvage Baron
+
+- **Tier:** Boss, light mechanical weight. **Theme:** Reclaimed City.
+- **Enemy composition:** the Salvage Baron — high Defense and Accuracy; two
+  Scavenger Skirmishers — universal Stab, whose mechanical reason is feeding
+  Press the Advantage: every hit they land on the Spotted champion is a
+  Momentum stack for the Baron, so killing them slows the ramp.
+- **Mechanics:** builds on Ridge Marksmen, then Clearing Crew. Phase 1: Size Up
+  (section 1) Spots the lowest-priority champion and the crew focuses them;
+  Cash In (section 1) lands the heavy hit. Onset: enemy turn 1, Cash In from
+  turn 2. Phase 2: Press the Advantage (section 1, passive) — every hit on the
+  Spotted champion grants the Baron Momentum, so the focus ramps until it
+  deletes its target. Onset: the 50% Health transition.
+- **Intended solutions (configurations):** (1) the Diviner and the Thief —
+  Premonition on the Spotted champion blanks Cash In and counters, Fateful
+  Glimpse heals the mark; in phase 2 Cut Purse steals the Momentum stack,
+  resetting the Baron and arming the Thief, whose Defense bypass cuts the
+  Baron's armor; (2) the Diviner and the Plague Doctor — the Diviner holds
+  phase 1, then Ill Omen, Foresight, Outbreak, and Miasma stack five debuff
+  types for a Comorbidity burst that ends phase 2 before Momentum builds.
+- **Burst expectation:** configuration (1) lands on the Thief — stolen Momentum
+  [Channel 1] times Opportunist [Channel 2] reading the Diviner's debuffs;
+  configuration (2) on the Plague Doctor's Comorbidity cascade [Channel 3].
+- **Unsolved texture:** hard wall — the Spotted champion falls in phase 1, and
+  each phase 2 kill hands the next mark to a Baron already carrying Momentum.
+- **Reward hook (deferred):** assigned at placement.
+
 ## 3. Channel audit
 
 One row per catalog entry, added by the now-deleted `Plan_Encounter_Blowout_Retrofit.md`
@@ -403,9 +463,10 @@ Phase 2 preamble above.
 | Wake Skimmers | buff-duration strip (Signed Writ) [Enabler]; buff theft (Pilfer) [Enabler] | enabler-only |
 | Ledger Clerks | Unravel (Dissolving Agent) [Channel 1]; Signed Writ debuff (Signed Writ) [Enabler] | has a payoff |
 | Plains Outriders | turn-bar strip (Corsair's Reckoning) [Channel 1 + Channel 2 + Enabler]; Temporal Sinkhole zone [Enabler] | has a payoff |
-| Ridge Marksmen | Premonition [Enabler]; Barrier (Raise the Frame, Transfusion) [Enabler] | enabler-only |
+| Ridge Marksmen | Premonition [Enabler]; healing (Fateful Glimpse) [Channel 1] | has a payoff |
 | Flank Cutter | Fortify (Hold the Line) [Channel 1]; Barrier (Raise the Frame) [Enabler]; party order (positional, untagged) | has a payoff |
 | Line Breaker | Enfeeble (Disarm) [Channel 1]; Barrier (Transfusion) [Enabler]; party order (positional, untagged) | has a payoff |
+| Clearing Crew | party order (positional, untagged); buff theft (Cut Purse) [Channel 1 + Enabler]; Enfeeble (Foresight) [Enabler] | has a payoff |
 
 ### 3.2. Mini-bosses
 
@@ -429,6 +490,7 @@ damage dealt (Concept Document 1.1.2).
 | The Glyphbound Archivist | (1) Refutation [Channel 1 + Enabler], incidental per-charge damage, not a burst-scale contributor; (2) Unbinding Shards [Enabler]; (3) Fortify (Hold the Line) [Channel 1] / durable-front sustain (Liquid Courage [Channel 1], Headbutt [Channel 1 + Enabler]) — all three configurations are zone-clearing or sustain, none assembles a burst | **enabler-only** |
 | The Collector of Debts | (1) Devour Blessing [Channel 1 + Channel 2], used here as buff-denial rather than a burst hit; (2) Signed Writ [Enabler], Pilfer [Enabler]; (3) reagent roster — Sigils [Channel 1], no named channel-2/3 payoff yet configured onto this boss | **enabler-only** |
 | The Warden of the Reliquary | (1) Rite of Severance [Channel 1 + Enabler]; (2) Signed Writ [Enabler]; (3) Daunting Strength (Tactician) [Channel 2] + Full Appraisal — Keen Edge, Lethal Precision (Appraiser) [Channel 1], breaking the Barrier and killing into the Deathward in one crit round | has a payoff — the catalog's reference shape |
+| Salvage Baron | (1) Premonition [Enabler] + Cut Purse [Channel 1 + Enabler] with stolen Momentum [Channel 1], Opportunist [Channel 2]; (2) Ill Omen [Channel 1 + Enabler] + Outbreak [Channel 2], Comorbidity [Channel 3] | has a payoff |
 
 Two Boss-tier `enabler-only` verdicts stand: The Glyphbound Archivist and The Collector
 of Debts. Both are carried into Phase 3 for configuration rework.

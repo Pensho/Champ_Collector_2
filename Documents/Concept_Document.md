@@ -63,7 +63,7 @@ behind each tag.
 
 #### 1.1.4. Rules the channels must obey
 
-* **Stack ceilings:** cap what accrues automatically; leave uncapped what costs the player an action or a resource. The existing capped passives (Momentum, Arcane Instability, Steel and Sea stacks) are correct as written — they accrue on their own. A resource the player deliberately builds may run without a ceiling.
+* **Stack ceilings:** cap what accrues automatically; leave uncapped what costs the player an action or a resource. The existing capped passives (Arcane Instability, Steel and Sea stacks) are correct as written — they accrue on their own. A resource the player deliberately builds may run without a ceiling.
 * **Cascade termination:** every cascade must terminate, under two independent bounds. **Depth** bounds chain length — an effect triggered from inside an Echo sits one level deeper, and a chain able to re-enter itself is a defect, not a large number. **Fan-out** bounds how many Echoes one originating action may release in total, which depth does not constrain: many Echoes at the same level are breadth, not depth. The two do not substitute for each other.
 * **A trigger fires once; the Echoes it yields are not separately re-triggered.** Each trigger source fires at most once per originating action, and that single firing yields an Echo count. Repetition is therefore expressible without re-entry — an effect may deliberately resolve once per point of a status's remaining duration or once per remaining zone charge, and repeat Echoes are what make Echo count multiply against the other two channels rather than add to them. A count read from a live quantity is fixed when the trigger fires, not re-read as the Echoes drain it.
 * **Every Channel 3 contribution to the same cascade adds into one Echo count.** A contribution is either an **enabler**, which can create a cascade where the action had none, or an **extender**, which only adds to a cascade an enabler already created — an extender contributes nothing when nothing else enabled. The same mechanic can be either depending on what it lands on.
@@ -510,6 +510,7 @@ Debuffs:
 * Signed Writ [Enabler]: The character cannot resist debuffs.
 * Sanction [Channel 2]: Attacks against the character deal +2x the applier's Standing Record rate per Infraction on the target, and all primary attributes except Health are reduced by 0.5x that rate, both set at the moment of application (see the Emissary's passive in section 3.1.3). Readable by any attacker, not only the applier's.
 * Hemorrhage [Channel 2]: Attacks against the character deal +6% damage per 10% of the character's own missing Health. Readable by any attacker, not only the applier's.
+* Spotted [Enabler]: Opposing single-target skills must target the character; positional and area skills are unaffected. A new application replaces the old one.
 
 Buffs:
 * Empower [Channel 1]: Increases Attack by 30%.
@@ -542,6 +543,7 @@ Buffs:
 * Rehearsed [Enabler]: The character's next non-basic skill does not go on cooldown, then the buff is consumed.
 * Sanguine Pact [Channel 2, granted]: Increases the holder's damage by 12% per 10% of the holder's own missing Health, and redirects 30% of damage the holder takes to whoever applied the Pact instead.
 * Borrowed Time [Channel 3 — Cascade, granted]: The holder's next damaging skill resolves one additional time, at 30-60% strength by the applier's rarity. Does not stack. Consumed only by a damaging cast; a non-damaging skill leaves it untouched for a later one. An enabler on a cast with no Echo of its own, an extender on one that already has one.
+* Momentum [Channel 1]: Increases damage dealt by 15% per stack. Permanent. Stacks in place up to 10 times.
 * Sea Legs [Channel 1, granted]: Boosts the holder's own highest primary attribute other than Health, by an amount its applier sets. Permanent; never expires. Stacks in place up to 4 times rather than as separate instances, each stack recomputing the boost against the current stack count.
 
 #### 3.2.4. Skills
@@ -565,6 +567,7 @@ Skill targeting types:
 * Right-most Enemy
 * Most Injured Ally
 * Most Injured Enemy
+* Lowest Priority Enemy
 
 Positional targeting (Left-most Enemy, Right-most Enemy) is absolute: it follows the left-to-right party order (see section 3.2) and is not redirected by targeting-weight effects such as Spotlight.
 
@@ -622,8 +625,8 @@ the fix belongs in the data or the document.
     * Type: Damage, Buff
     * Cooldown: 3 turns
     * Effect: [Channel 1 + Enabler] Deals damage to a single enemy, scaling with Attack. Steals one
-      of its buffs, which lasts one extra turn on the Thief, and grants the Thief the Opportunist
-      buff for 2 turns.
+      of its buffs, which lasts one extra turn on the Thief (a permanent buff lasts 3 turns), and
+      grants the Thief the Opportunist buff for 2 turns.
 
 ###### Lancer
 * Lance Thrust
@@ -1294,6 +1297,14 @@ A failed encounter in Adventure will not affect the state of the Adventure and t
 
 ##### 5.1.1.1. Jungle (Reclaimed City)
 
+Fodder encounters
+- Sporeback Pack
+- Ridge Marksmen
+- Clearing Crew
+
+Boss
+- Salvage Baron
+
 ##### 5.1.1.2. Magic Ruins (Reclaimed City)
 
 ##### 5.1.1.3. Factory (Clockwork Spire)
@@ -1326,6 +1337,7 @@ Every battle encounter belongs to one of three tiers. Expected fight length is a
 * **Fodder** — no dedicated burst; blowout here is overkill on trash. 3–4 rounds.
 * **Mini-boss** — one realisation, a partial burst, around 10x the champion's own basic skill. The threat curve peaks before it. 6–10 rounds solved, roughly double unsolved.
 * **Boss** — layered realisations, a full burst at 30–50x carrying 60–80% of total damage dealt. The threat curve peaks before the burst, not after. 10–12 rounds solved; unsolved is a wall, not merely slow.
+    * Every boss has two phases. At 50% Health its full kit activates — new skills, or existing skills expanded. The transition does not interrupt or cap incoming damage, and is announced with sound, a visual effect, and combat text.
 
 Every mechanic states its onset — by which enemy turn it becomes relevant — and that onset must fall inside its tier's expected kill window.
 

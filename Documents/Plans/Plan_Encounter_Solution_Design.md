@@ -195,7 +195,8 @@ that tier can be produced in bulk without padding.
   states its mechanical reason.
 - **Mechanics:** expressed as opponent skills, passives, or zones. Each mechanic
   states its onset (by which enemy turn it becomes relevant), which must fall
-  inside the tier's expected kill window. Each new opponent skill is added to the
+  inside the tier's expected kill window; bosses state which mechanics open at
+  the phase 2 transition (Concept 5.3). Each new opponent skill is added to the
   opponent skill catalog in `Encounter_Design_Document.md` in the same edit; each
   new status effect to Concept 3.2.3.
 - **Intended solutions:** effect names plus example carrier roles; for bosses, the

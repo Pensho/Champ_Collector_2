@@ -31,6 +31,10 @@ Design-only plans (no code; can run at any time):
 
 Code plans:
 
+- `Plan_Jungle_Adventure_Encounters.md` — adventures roll battle variants, the
+  Spotted debuff and Lowest Priority Enemy target, the Momentum buff, universal boss
+  phase 2, and the jungle's Ridge Marksmen, Clearing Crew, and Salvage Baron.
+
 - `Plan_Localization.md` — the six-step localization rollout and its conventions. Each
   step gets a detailed plan when the step before it completes.
 - `Plan_Localization_Text_Preparation.md` — step 1: every player-facing string routed
