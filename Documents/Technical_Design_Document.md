@@ -2229,7 +2229,12 @@ players and enemies always face each other across a fixed left/right split. A `S
 unique per character (`Assets/Champ_Collector/Shaders/character_sprite.gdshader`, `flash_amount`
 and `grayscale_amount` uniforms) replaced the shared grayscale material the death handler used to
 assign; `Revive()` (used by the in-battle debug page) resets both the shader and the transform.
-`CharacterRepresentation` exposes the component via `GetSpriteAnimator()`.
+`CharacterRepresentation` exposes the component via `GetSpriteAnimator()`. It also owns
+`Silhouette_Outline`, a child of the sprite `TextureRect` drawn behind it
+(`character_silhouette_outline.gdshader`). This flat black dilated silhouette separates the
+character from the stage. `Battle.VisualizeCharacter` syncs its texture via
+`SyncSilhouetteOutline()`. It hides while the targeting outline shows and fades with the
+death grayscale.
 
 `Battle.PlayImpactReaction(target_ID, amount)` is called directly from
 `_on_resolver_result_produced`, alongside `UpdateLifeBar`, rather than gated on the paced combat

@@ -95,10 +95,22 @@ pivot_offset = Vector2(125, 250)
 expand_mode = 1
 metadata/_edit_use_anchors_ = true
 
-[node name="SpriteAnimator" type="Node2D" parent="." unique_id=994506693 node_paths=PackedStringArray("_pivot", "_sprite")]
+[node name="Silhouette_Outline" type="TextureRect" parent="Sprite_Pivot/TextureRect" unique_id=994506695]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+
+[node name="SpriteAnimator" type="Node2D" parent="." unique_id=994506693 node_paths=PackedStringArray("_pivot", "_sprite", "_silhouette_outline")]
 script = ExtResource("8_sprtan")
 _pivot = NodePath("../Sprite_Pivot")
 _sprite = NodePath("../Sprite_Pivot/TextureRect")
+_silhouette_outline = NodePath("../Sprite_Pivot/TextureRect/Silhouette_Outline")
 
 [node name="DamageTrailBar" type="ProgressBar" parent="." unique_id=132554162]
 z_index = 16

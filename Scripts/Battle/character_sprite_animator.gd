@@ -1,6 +1,8 @@
 class_name CharacterSpriteAnimator extends Node2D
 
 const SPRITE_SHADER = preload("res://Assets/Champ_Collector/Shaders/character_sprite.gdshader")
+const SILHOUETTE_OUTLINE_SHADER = preload(
+		"res://Assets/Champ_Collector/Shaders/character_silhouette_outline.gdshader")
 
 const IDLE_SCALE_AMOUNT: float = 0.0
 const IDLE_PERIOD_SECONDS: float = 2.4
@@ -19,8 +21,11 @@ const TARGET_OUTLINE_WIDTH_PIXELS: float = 3.0
 
 @export var _pivot: Node2D
 @export var _sprite: TextureRect
+@export var _silhouette_outline: TextureRect
+@export_range(1.0, 3.0, 1.0) var _silhouette_outline_width_pixels: float = 1.0
 
 var _sprite_material: ShaderMaterial
+var _silhouette_outline_material: ShaderMaterial
 
 var _idle_phase: float = randf() * TAU
 var _idle_enabled: bool = true
@@ -39,6 +44,9 @@ func _ready() -> void:
 	_sprite_material = ShaderMaterial.new()
 	_sprite_material.shader = SPRITE_SHADER
 	_sprite.material = _sprite_material
+	_silhouette_outline_material = ShaderMaterial.new()
+	_silhouette_outline_material.shader = SILHOUETTE_OUTLINE_SHADER
+	_silhouette_outline.material = _silhouette_outline_material
 
 func _process(p_delta: float) -> void:
 	var idle_scale_y: float = 1.0
@@ -106,6 +114,7 @@ func PlayDeath() -> void:
 	_grayscale_tween.tween_method(
 			func(v: float): _sprite_material.set_shader_parameter("grayscale_amount", v),
 			0.0, 1.0, DEATH_SECONDS)
+	_grayscale_tween.parallel().tween_property(_silhouette_outline, "modulate:a", 0.0, DEATH_SECONDS)
 
 func Revive() -> void:
 	_dead = false
@@ -115,16 +124,31 @@ func Revive() -> void:
 	if(_grayscale_tween):
 		_grayscale_tween.kill()
 	_sprite_material.set_shader_parameter("grayscale_amount", 0.0)
+	_silhouette_outline.modulate.a = 1.0
+
+# Call after the sprite's texture or flip changes.
+func SyncSilhouetteOutline() -> void:
+	_silhouette_outline.texture = _sprite.texture
+	_silhouette_outline.flip_h = _sprite.flip_h
+	if(null == _sprite.texture):
+		return
+	_silhouette_outline_material.set_shader_parameter("rect_size", _sprite.size)
+	_silhouette_outline_material.set_shader_parameter("outline_margin", _silhouette_outline_width_pixels)
+	_silhouette_outline_material.set_shader_parameter("outline_width_texels",
+			_PixelsToTexels(_silhouette_outline_width_pixels))
 
 func SetTargetOutline(p_enabled: bool) -> void:
 	var enabled: bool = p_enabled and not _dead and null != _sprite.texture
 	_sprite_material.set_shader_parameter("outline_enabled", enabled)
+	_silhouette_outline.visible = not enabled
 	if(not enabled):
 		return
 	_sprite_material.set_shader_parameter("rect_size", _sprite.size)
 	_sprite_material.set_shader_parameter("outline_margin", TARGET_OUTLINE_WIDTH_PIXELS)
-	_sprite_material.set_shader_parameter("outline_width_texels",
-			TARGET_OUTLINE_WIDTH_PIXELS * _sprite.texture.get_width() / _sprite.size.x)
+	_sprite_material.set_shader_parameter("outline_width_texels", _PixelsToTexels(TARGET_OUTLINE_WIDTH_PIXELS))
+
+func _PixelsToTexels(p_pixels: float) -> float:
+	return p_pixels * _sprite.texture.get_width() / _sprite.size.x
 
 func _PlayFlash(p_intensity: float) -> void:
 	if(_flash_tween):

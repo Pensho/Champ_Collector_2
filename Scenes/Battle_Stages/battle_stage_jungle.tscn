@@ -119,7 +119,7 @@ offset_bottom = 430.0
 color = Color(0, 0, 0, 1)
 
 [node name="Black_Layer" type="Control" parent="Band_Midband" unique_id=634522164]
-modulate = Color(0.07683582, 0.07683582, 0.0768358, 1)
+modulate = Color(0.004526655, 0.13872042, 0.15584624, 1)
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
@@ -145,7 +145,7 @@ scale = Vector2(0.8526971, 0.8526971)
 texture = ExtResource("11_ih3u5")
 
 [node name="Dark_Layer" type="Control" parent="Band_Midband" unique_id=663660620]
-modulate = Color(0.3403393, 0.34033933, 0.3403393, 1)
+modulate = Color(0.3078, 0.38, 0.37398332, 1)
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0

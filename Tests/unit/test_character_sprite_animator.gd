@@ -8,14 +8,18 @@ extends GutTest
 var _animator: CharacterSpriteAnimator
 var _pivot: Node2D
 var _sprite: TextureRect
+var _silhouette_outline: TextureRect
 
 func before_each() -> void:
 	_pivot = Node2D.new()
 	_sprite = TextureRect.new()
 	_pivot.add_child(_sprite)
+	_silhouette_outline = TextureRect.new()
+	_sprite.add_child(_silhouette_outline)
 	_animator = CharacterSpriteAnimator.new()
 	_animator._pivot = _pivot
 	_animator._sprite = _sprite
+	_animator._silhouette_outline = _silhouette_outline
 	_animator.add_child(_pivot)
 	add_child_autofree(_animator)
 
@@ -95,6 +99,35 @@ func test_revive_after_death_re_enables_idle_bob() -> void:
 	assert_eq(_pivot.position, Vector2.ZERO)
 	assert_true(_sprite.scale.y >= 1.0 and
 			_sprite.scale.y <= 1.0 + CharacterSpriteAnimator.IDLE_SCALE_AMOUNT + 0.001)
+
+func test_silhouette_outline_follows_the_sprite_texture_and_flip() -> void:
+	_sprite.size = Vector2(100, 100)
+	_sprite.texture = _MakeTexture(400)
+	_sprite.flip_h = true
+	_animator.SyncSilhouetteOutline()
+	assert_eq(_silhouette_outline.texture, _sprite.texture)
+	assert_true(_silhouette_outline.flip_h)
+	var expected_texels: float = _animator._silhouette_outline_width_pixels * 4.0
+	assert_almost_eq(_silhouette_outline.material.get_shader_parameter("outline_width_texels"),
+			expected_texels, 0.001)
+
+func test_silhouette_outline_hides_while_the_target_outline_shows() -> void:
+	_sprite.size = Vector2(100, 100)
+	_sprite.texture = _MakeTexture(100)
+	_animator.SetTargetOutline(true)
+	assert_false(_silhouette_outline.visible)
+	_animator.SetTargetOutline(false)
+	assert_true(_silhouette_outline.visible)
+
+func test_silhouette_outline_fades_on_death_and_returns_on_revive() -> void:
+	_animator.PlayDeath()
+	await wait_seconds(CharacterSpriteAnimator.DEATH_SECONDS + 0.05)
+	assert_almost_eq(_silhouette_outline.modulate.a, 0.0, 0.001)
+	_animator.Revive()
+	assert_eq(_silhouette_outline.modulate.a, 1.0)
+
+func _MakeTexture(p_width: int) -> ImageTexture:
+	return ImageTexture.create_from_image(Image.create(p_width, p_width, false, Image.FORMAT_RGBA8))
 
 func IDLE_PERIOD() -> float:
 	return CharacterSpriteAnimator.IDLE_PERIOD_SECONDS
