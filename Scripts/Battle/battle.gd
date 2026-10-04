@@ -322,17 +322,19 @@ func _HasClearZoneEffect(p_skill: Skill) -> bool:
 			return true
 	return false
 
-# Reverse-iterates the skills for the first one off cooldown, skipping zone skills
-# when no turn-bar zone is free (or, for a clearing skill, when there is no zone to
-# clear); skill 0 is the fallback.
 func SelectEnemySkillID() -> int:
 	var skills: Array[Skill] = _characters[_turn_character_ID]._skills
 	for i in range(skills.size() - 1, -1, -1):
 		if(0 < skills[i].cooldown_left):
 			continue
-		if(_HasZoneEffect(skills[i]) and _resolver.GetZoneResolver().AvailableZoneIDs().is_empty()):
-			continue
-		if(_HasClearZoneEffect(skills[i]) and _resolver.GetZoneResolver().GetZones().is_empty()):
+		if(_HasZoneEffect(skills[i])):
+			if(_resolver.GetZoneResolver().AvailableZoneIDs().is_empty()):
+				continue
+		elif(_HasClearZoneEffect(skills[i])):
+			if(_resolver.GetZoneResolver().GetZones().is_empty()):
+				continue
+		elif(not Skills.HasLivingTarget(_turn_character_ID, skills[i].target, _characters, _sides,
+				_resolver.GetMaxHealth)):
 			continue
 		return i
 	return 0

@@ -438,6 +438,20 @@ static func FindSkillTargets(
 			print("Invalid argument for skill target enum passed: ", INVALID_TYPE)
 	return FilterAliveTargets(target_IDs, p_characters)
 
+static func HasLivingTarget(
+					p_caster_ID: int,
+					p_target_type: Types.Skill_Target,
+					p_characters: Dictionary[int, Character],
+					p_sides: CombatSides,
+					p_max_health: Callable = Callable()) -> bool:
+	for id in p_sides.AllMembers():
+		if(not p_characters.has(id) or p_characters[id]._current_health < 1):
+			continue
+		if(not FindSkillTargets(id, p_caster_ID, p_target_type, p_characters, p_sides,
+				null, p_max_health).is_empty()):
+			return true
+	return false
+
 static func FilterAliveTargets(
 					p_ids: Array[int],
 					p_characters: Dictionary[int, Character]) -> Array[int]:

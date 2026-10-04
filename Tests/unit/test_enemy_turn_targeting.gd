@@ -32,3 +32,26 @@ func test_targeting_loop_skips_self_ahead_in_order() -> void:
 	var targets: Array[int] = _simulate_single_enemy_targeting(targeting_order, 3)
 	assert_eq(targets.size(), 1, "Should skip self and find a player target")
 	assert_eq(targets[0], 0)
+
+# Battle.SelectEnemySkillID skips a skill with no living target the same way it skips
+# one on cooldown, so an other-allies heal with every ally dead falls back to skill 0.
+func test_other_allies_skill_has_no_target_once_allies_are_dead() -> void:
+	var roster: Dictionary[int, Character] = TestFactory.make_full_roster()
+	var sides: CombatSides = TestFactory.make_full_sides()
+	roster[4]._current_health = 0
+	roster[5]._current_health = 0
+	assert_false(Skills.HasLivingTarget(3, Types.Skill_Target.All_Other_Allies, roster, sides),
+			"With every other ally dead, an other-allies skill has no target")
+	assert_false(Skills.HasLivingTarget(3, Types.Skill_Target.Ally_Not_Self, roster, sides),
+			"With every other ally dead, an ally-not-self skill has no target")
+	assert_true(Skills.HasLivingTarget(3, Types.Skill_Target.Single_Enemy, roster, sides),
+			"Living players remain valid enemy targets")
+	assert_true(Skills.HasLivingTarget(3, Types.Skill_Target.Self, roster, sides),
+			"A living caster can always target itself")
+
+func test_other_allies_skill_has_target_while_an_ally_lives() -> void:
+	var roster: Dictionary[int, Character] = TestFactory.make_full_roster()
+	var sides: CombatSides = TestFactory.make_full_sides()
+	roster[4]._current_health = 0
+	assert_true(Skills.HasLivingTarget(3, Types.Skill_Target.All_Other_Allies, roster, sides),
+			"One living ally keeps an other-allies skill castable")
