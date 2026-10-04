@@ -485,6 +485,31 @@ static func MostInjured(p_IDs: Array[int], p_characters: Dictionary[int, Charact
 			best_ID = id
 	return best_ID
 
+static func SpottedOpponent(
+		p_caster_ID: int, p_characters: Dictionary[int, Character], p_sides: CombatSides) -> int:
+	for id in p_sides.EnemiesOf(p_caster_ID).AliveMembers(p_characters):
+		for debuff in p_characters[id]._active_debuffs:
+			if(Types.Debuff_Type.Spotted == debuff.type):
+				return id
+	return -1
+
+static func SpottedForbidsTarget(p_target_ID: int, p_caster_ID: int, p_target_type: Types.Skill_Target,
+		p_characters: Dictionary[int, Character], p_sides: CombatSides) -> bool:
+	if(Types.Skill_Target.Single_Enemy != p_target_type):
+		return false
+	var spotted_ID: int = SpottedOpponent(p_caster_ID, p_characters, p_sides)
+	return -1 != spotted_ID and spotted_ID != p_target_ID
+
+static func EnemyTargetOrder(p_order: Array[int], p_caster_ID: int,
+		p_characters: Dictionary[int, Character], p_sides: CombatSides) -> Array[int]:
+	var spotted_ID: int = SpottedOpponent(p_caster_ID, p_characters, p_sides)
+	if(-1 == spotted_ID):
+		return p_order
+	var order: Array[int] = p_order.duplicate()
+	order.erase(spotted_ID)
+	order.push_front(spotted_ID)
+	return order
+
 static func LowestPriority(p_IDs: Array[int], p_characters: Dictionary[int, Character]) -> int:
 	var best_ID: int = -1
 	var best_priority: float = INF

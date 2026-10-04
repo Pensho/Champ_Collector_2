@@ -352,6 +352,8 @@ func _DeferredMirrorCoat(p_event: CascadeEvent) -> void:
 	mirrored.value = SnapshotStatusValue(data, holder_ID, attacker_ID)
 	mirrored.ID = _resolver._NextStatusID()
 	mirrored.applied_on_turn_ordinal = _resolver.GetTurnOrdinal()
+	if(Types.Debuff_Type.Spotted == debuff_type):
+		_RemoveSpottedFromAllies(attacker_ID)
 	_resolver._characters[attacker_ID]._active_debuffs.append(mirrored)
 	_EmitDebuffApplied(attacker_ID, mirrored, "")
 
@@ -697,6 +699,8 @@ func _InsertOrRefresh(
 	var target: Character = _resolver._characters[p_target_ID]
 	var active: Array = target._active_buffs if p_is_buff else target._active_debuffs
 
+	if(not p_is_buff and Types.Debuff_Type.Spotted == p_type):
+		_RemoveSpottedFromAllies(p_target_ID)
 	if(not p_is_buff and p_duration > 0):
 		p_duration += Skills.IncomingDebuffDurationBonus(target, p_target_ID)
 
@@ -747,6 +751,25 @@ func _InsertOrRefresh(
 	target._active_debuffs.append(new_debuff)
 	_EmitDebuffApplied(p_target_ID, new_debuff, p_display_name)
 	return new_debuff
+
+
+func _RemoveSpottedFromAllies(p_holder_ID: int) -> void:
+	for ally_ID in _resolver.GetSides().AlliesOf(p_holder_ID).members:
+		if(ally_ID == p_holder_ID or not _resolver._characters.has(ally_ID)):
+			continue
+		var ally: Character = _resolver._characters[ally_ID]
+		var removed_IDs: Array[int] = []
+		for debuff in ally._active_debuffs:
+			if(Types.Debuff_Type.Spotted == debuff.type):
+				removed_IDs.append(debuff.ID)
+		if(removed_IDs.is_empty()):
+			continue
+		ally._active_debuffs = ally._active_debuffs.filter(
+				func(debuff): return Types.Debuff_Type.Spotted != debuff.type)
+		var removed: CombatResult = CombatResult.new(CombatResult.Kind.Statuses_Removed)
+		removed.target_ID = ally_ID
+		removed.status_IDs = removed_IDs
+		_resolver._Emit(removed)
 
 
 func _KeepsExistingBarrier(p_target_ID: int, p_target: Character, p_new_value: float) -> bool:

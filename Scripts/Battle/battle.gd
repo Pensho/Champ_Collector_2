@@ -335,7 +335,7 @@ func HandleEnemyTurn() -> void:
 		print(_characters[_turn_character_ID]._name, " used skill with ID: ", _selected_skill_ID)
 		ResolveTurn([])
 		return
-	for i in _targeting_order:
+	for i in Skills.EnemyTargetOrder(_targeting_order, _turn_character_ID, _characters, _sides):
 		if(_characters[i]._current_health < 1):
 			continue
 		var target_IDs: Array[int] = _resolver.FindSkillTargets(i, _turn_character_ID, cast_skill.target)
@@ -632,10 +632,11 @@ func _on_character_battle_target_selected(p_target_ID: int) -> void:
 	if(_characters[p_target_ID]._current_health <= 0):
 		print("Invalid target for skill, target is dead.")
 		return
-	var target_IDs: Array[int] = _resolver.FindSkillTargets(
-			p_target_ID,
-			_turn_character_ID,
-			_characters[_turn_character_ID]._skills[_selected_skill_ID].target)
+	var target_type: Types.Skill_Target = _characters[_turn_character_ID]._skills[_selected_skill_ID].target
+	if(Skills.SpottedForbidsTarget(p_target_ID, _turn_character_ID, target_type, _characters, _sides)):
+		print("Invalid target for skill, a Spotted enemy must be targeted.")
+		return
+	var target_IDs: Array[int] = _resolver.FindSkillTargets(p_target_ID, _turn_character_ID, target_type)
 	if(target_IDs.size() > 0):
 		ResolveTurn(target_IDs)
 	else:

@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="StatusEffectData" format=3 uid="uid://vhltxuimjt4p"]
+
+[ext_resource type="Texture2D" uid="uid://c3w32vn06ti51" path="res://Assets/Champ_Collector/Icons/Status_Effects/spotted.png" id="1_n7vue"]
+[ext_resource type="Script" uid="uid://sqkdniv48rkg" path="res://Scripts/Battle/status_effect_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+applies_on_self_tick = false
+icon = ExtResource("1_n7vue")
+description = "Opposing single-target skills must target this character."

@@ -187,6 +187,7 @@ enum Debuff_Type
 	Anchor,
 	Hemorrhage,
 	Consigned,
+	Spotted,
 	Invalid,
 }
 

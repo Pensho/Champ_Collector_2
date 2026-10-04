@@ -13,7 +13,10 @@ static func HighlightedCharacters(
 	var allies: Array[int] = p_sides.AlliesOf(p_caster_ID).AliveMembers(p_characters)
 	var enemies: Array[int] = p_sides.EnemiesOf(p_caster_ID).AliveMembers(p_characters)
 	match p_target_type:
-		Types.Skill_Target.Single_Enemy, Types.Skill_Target.All_Enemies, Types.Skill_Target.Random_Enemy:
+		Types.Skill_Target.Single_Enemy:
+			var spotted_ID: int = Skills.SpottedOpponent(p_caster_ID, p_characters, p_sides)
+			return Skills.SingleTargetArray(spotted_ID) if -1 != spotted_ID else enemies
+		Types.Skill_Target.All_Enemies, Types.Skill_Target.Random_Enemy:
 			return enemies
 		Types.Skill_Target.Single_Ally, Types.Skill_Target.All_Allies, Types.Skill_Target.Random_Ally:
 			return allies

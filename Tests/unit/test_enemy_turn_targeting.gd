@@ -26,6 +26,24 @@ func test_targeting_loop_skips_ally_ahead_in_order() -> void:
 	assert_eq(targets.size(), 1, "Should skip the ally and find a player target")
 	assert_eq(targets[0], 0, "Should land on the first player in the order")
 
+func test_targeting_loop_reaches_a_spotted_player_last_in_priority() -> void:
+	var roster: Dictionary[int, Character] = {}
+	roster.assign(TestFactory.make_full_roster())
+	var sides: CombatSides = TestFactory.make_full_sides()
+	var spotted: StatusEffects.Debuff = StatusEffects.Debuff.new()
+	spotted.type = Types.Debuff_Type.Spotted
+	spotted.duration = 2
+	roster[2]._active_debuffs.append(spotted)
+	var targeting_order: Array[int] = [4, 3, 0, 1, 2]
+	for i in Skills.EnemyTargetOrder(targeting_order, 3, roster, sides):
+		var target_IDs: Array[int] = Skills.FindSkillTargets(
+				i, 3, Types.Skill_Target.Single_Enemy, roster, sides)
+		if(target_IDs.is_empty()):
+			continue
+		assert_eq(target_IDs, [2] as Array[int], "The reordered loop should land on the Spotted player first")
+		return
+	fail_test("The reordered loop should find a target")
+
 func test_targeting_loop_skips_self_ahead_in_order() -> void:
 	# Caster itself sorts first in the order (it is the tankiest character).
 	var targeting_order: Array[int] = [3, 4, 0, 1, 2]

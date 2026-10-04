@@ -72,6 +72,7 @@ const DEBUFFS: Dictionary[Types.Debuff_Type, StatusEffectData] = {
 	Types.Debuff_Type.Anchor: preload("res://Data/Status_Effects/Anchor.tres"),
 	Types.Debuff_Type.Hemorrhage: preload("res://Data/Status_Effects/Hemorrhage.tres"),
 	Types.Debuff_Type.Consigned: preload("res://Data/Status_Effects/Consigned.tres"),
+	Types.Debuff_Type.Spotted: preload("res://Data/Status_Effects/Spotted.tres"),
 }
 
 static func BuffData(p_type: Types.Buff_Type) -> StatusEffectData:
