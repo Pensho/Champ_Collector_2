@@ -144,6 +144,18 @@ position = Vector2(742.1452, 92.75)
 scale = Vector2(0.8526971, 0.8526971)
 texture = ExtResource("11_ih3u5")
 
+[node name="BattleJungleVines1" type="Sprite2D" parent="Band_Midband/Black_Layer" unique_id=965156122]
+self_modulate = Color(0, 0.19607843, 0, 1)
+position = Vector2(470, 32)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("25_dgorl")
+
+[node name="BattleJungleVines2" type="Sprite2D" parent="Band_Midband/Black_Layer" unique_id=1346858813]
+self_modulate = Color(0, 0.19607843, 0, 1)
+position = Vector2(875, 26)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("26_rsuvi")
+
 [node name="Dark_Layer" type="Control" parent="Band_Midband" unique_id=663660620]
 modulate = Color(0.3078, 0.38, 0.37398332, 1)
 layout_mode = 3
@@ -156,13 +168,11 @@ position = Vector2(448, 301)
 texture = ExtResource("3_we0cy")
 
 [node name="BattleJungleTrunk4" type="Sprite2D" parent="Band_Midband/Dark_Layer" unique_id=1172642756]
-self_modulate = Color(0.8217887, 0.82178867, 0.82178867, 1)
 position = Vector2(1016, 214)
 texture = ExtResource("8_tqv43")
 flip_h = true
 
 [node name="BattleJungleTrunk5" type="Sprite2D" parent="Band_Midband/Dark_Layer" unique_id=73597371]
-self_modulate = Color(0.8217887, 0.82178867, 0.82178867, 1)
 position = Vector2(88, 129)
 texture = ExtResource("4_st4s7")
 flip_h = true
@@ -189,34 +199,32 @@ scale = Vector2(0.535503, 0.535503)
 texture = ExtResource("7_st4s7")
 
 [node name="SwallowedWallSegment2" type="Sprite2D" parent="Band_Midband" unique_id=392296975]
-self_modulate = Color(0.8089985, 0.80899817, 0.80899817, 1)
 position = Vector2(149, 278)
 texture = ExtResource("3_p3rbx")
 
 [node name="BattleJungleTrunk1" type="Sprite2D" parent="Band_Midband" unique_id=2098945845]
-self_modulate = Color(0.6052743, 0.6052744, 0.6052741, 1)
+self_modulate = Color(0.79199904, 0.79199916, 0.7919989, 1)
 position = Vector2(361.25, 216.54872)
 scale = Vector2(0.84248555, 0.87128407)
 texture = ExtResource("4_st4s7")
 
 [node name="SwallowedColumn1" type="Sprite2D" parent="Band_Midband" unique_id=1598272212]
-self_modulate = Color(0.43134022, 0.43134025, 0.43134025, 1)
+self_modulate = Color(0.71629643, 0.71629614, 0.7162962, 1)
 position = Vector2(1073, 343)
 texture = ExtResource("5_tqv43")
 
 [node name="BattleJungleBush1" type="Sprite2D" parent="Band_Midband" unique_id=1680518752]
-self_modulate = Color(0.6255971, 0.6255971, 0.6255971, 1)
+self_modulate = Color(0.737193, 0.7371929, 0.7371929, 1)
 position = Vector2(253.00003, 356)
 scale = Vector2(0.70746887, 0.70746887)
 texture = ExtResource("11_ih3u5")
 
 [node name="SwallowedColumn2" type="Sprite2D" parent="Band_Midband" unique_id=1352698884]
-self_modulate = Color(0.8217887, 0.8217887, 0.8217885, 1)
 position = Vector2(1264, 195)
 texture = ExtResource("6_6dmjr")
 
 [node name="BattleJungleTrunk2" type="Sprite2D" parent="Band_Midband" unique_id=121123153]
-self_modulate = Color(0.70380783, 0.70380783, 0.70380783, 1)
+self_modulate = Color(0.74558026, 0.7455802, 0.7455802, 1)
 position = Vector2(1134, 182)
 texture = ExtResource("4_st4s7")
 
