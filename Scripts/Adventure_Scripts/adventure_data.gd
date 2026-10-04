@@ -6,9 +6,9 @@ class_name AdventureData extends Resource
 @export var layout: AdventureLayout
 @export var biome: BiomeData
 
-# Each type of opponent shall be assigned a weight for how often/likely they should appear
-@export var possible_opponents: Dictionary[CharacterPreset, int]
-@export var possible_bosses: Array[CharacterPreset]
+# Each battle variant is assigned a weight for how likely it is to appear on a FIGHT node
+@export var battle_variants: Dictionary[Context_Battle, int]
+@export var boss_battle_variants: Array[Context_Battle]
 
 @export var combat_rewards: LootTable
 @export var boss_rewards: LootTable

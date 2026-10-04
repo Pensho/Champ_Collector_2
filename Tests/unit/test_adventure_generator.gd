@@ -52,9 +52,22 @@ func test_no_branching_when_none() -> void:
 		assert_lte(node.next_node.size(), 1, "NONE branching should produce no branch splits.")
 
 
+func _MakeVariant(p_enemies: Array[CharacterPreset]) -> Context_Battle:
+	var variant := Context_Battle.new()
+	variant._enemies_wave_1 = p_enemies
+	return variant
+
+
+func _FightContexts(p_nodes: Array[NodeData]) -> Array[Context_Battle]:
+	var contexts: Array[Context_Battle]
+	for node in p_nodes:
+		if node.node_type == NodeData.Node_Type.FIGHT:
+			contexts.append(node.scene_context as Context_Battle)
+	return contexts
+
+
 func test_fight_nodes_have_battle_context() -> void:
-	var preset := CharacterPreset.new()
-	_adventure.possible_opponents[preset] = 1
+	_adventure.battle_variants[_MakeVariant([CharacterPreset.new()])] = 1
 	var nodes: Array[NodeData] = AdventureGenerator.GenerateAdventure(_adventure)
 	for node in nodes:
 		if node.node_type == NodeData.Node_Type.FIGHT:
@@ -62,32 +75,71 @@ func test_fight_nodes_have_battle_context() -> void:
 			assert_true(node.scene_context is Context_Battle, "FIGHT scene_context should be a Context_Battle.")
 
 
-func test_fight_nodes_have_three_enemies() -> void:
-	var preset := CharacterPreset.new()
-	_adventure.possible_opponents[preset] = 1
+func test_fight_node_fields_exactly_one_variant_composition() -> void:
+	var preset_a := CharacterPreset.new()
+	var preset_b := CharacterPreset.new()
+	var composition_a: Array[CharacterPreset] = [preset_a, preset_a, preset_a]
+	var composition_b: Array[CharacterPreset] = [preset_b, preset_b]
+	_adventure.battle_variants[_MakeVariant(composition_a)] = 1
+	_adventure.battle_variants[_MakeVariant(composition_b)] = 1
 	var nodes: Array[NodeData] = AdventureGenerator.GenerateAdventure(_adventure)
-	for node in nodes:
-		if node.node_type == NodeData.Node_Type.FIGHT:
-			var ctx := node.scene_context as Context_Battle
-			assert_eq(ctx._enemies_wave_1.size(), 3, "FIGHT node should have exactly 3 enemies in wave 1.")
+	for context in _FightContexts(nodes):
+		assert_true(context._enemies_wave_1 == composition_a or context._enemies_wave_1 == composition_b,
+			"A FIGHT node's wave should be one variant's whole composition, never a per-slot mix.")
 
 
-func test_boss_node_has_one_enemy_from_pool() -> void:
+func test_fight_node_uses_adventure_loot_over_variant_loot() -> void:
+	var variant := _MakeVariant([CharacterPreset.new()])
+	variant._loot_table = LootTable.new()
+	_adventure.battle_variants[variant] = 1
+	var adventure_loot := LootTable.new()
+	_adventure.combat_rewards = adventure_loot
+	var nodes: Array[NodeData] = AdventureGenerator.GenerateAdventure(_adventure)
+	for context in _FightContexts(nodes):
+		assert_eq(context._loot_table, adventure_loot, "The adventure's loot table should override the variant's.")
+
+
+func test_mutating_node_context_leaves_variant_untouched() -> void:
+	var variant_loot := LootTable.new()
+	var variant := _MakeVariant([CharacterPreset.new()])
+	variant._loot_table = variant_loot
+	_adventure.battle_variants[variant] = 1
+	_adventure.combat_rewards = LootTable.new()
+	var nodes: Array[NodeData] = AdventureGenerator.GenerateAdventure(_adventure)
+	var context: Context_Battle = _FightContexts(nodes)[0]
+	assert_ne(context, variant, "A FIGHT node should hold a copy of the variant, not the variant itself.")
+	context._enemies_wave_1.append(CharacterPreset.new())
+	assert_eq(variant._enemies_wave_1.size(), 1, "Changing a node's wave should not change the variant's wave.")
+	assert_eq(variant._loot_table, variant_loot, "Overriding a node's loot table should not change the variant's.")
+
+
+func test_regenerating_with_same_seed_rolls_same_variants() -> void:
+	for i in 4:
+		_adventure.battle_variants[_MakeVariant([CharacterPreset.new()])] = 1
+	seed(1234)
+	var first_waves: Array = _FightContexts(AdventureGenerator.GenerateAdventure(_adventure)).map(
+		func(context: Context_Battle) -> CharacterPreset: return context._enemies_wave_1[0])
+	seed(1234)
+	var second_waves: Array = _FightContexts(AdventureGenerator.GenerateAdventure(_adventure)).map(
+		func(context: Context_Battle) -> CharacterPreset: return context._enemies_wave_1[0])
+	assert_eq(second_waves, first_waves, "A regenerated adventure should roll the same variant on every node.")
+
+
+func test_boss_node_fields_boss_variant_composition() -> void:
 	var boss_preset := CharacterPreset.new()
-	_adventure.possible_bosses.append(boss_preset)
+	_adventure.boss_battle_variants.append(_MakeVariant([boss_preset]))
 	var nodes: Array[NodeData] = AdventureGenerator.GenerateAdventure(_adventure)
 	for node in nodes:
 		if node.node_type == NodeData.Node_Type.BOSS:
 			assert_not_null(node.scene_context, "BOSS node should have a scene_context.")
 			var ctx := node.scene_context as Context_Battle
-			assert_eq(ctx._enemies_wave_1.size(), 1, "BOSS node should have exactly 1 enemy in wave 1.")
-			assert_eq(ctx._enemies_wave_1[0], boss_preset, "BOSS enemy should come from possible_bosses.")
+			assert_eq(ctx._enemies_wave_1.size(), 1, "BOSS node should field the boss variant's composition.")
+			assert_eq(ctx._enemies_wave_1[0], boss_preset, "BOSS enemy should come from boss_battle_variants.")
 
 
 func test_rest_stop_nodes_have_rest_stop_context() -> void:
 	_layout.rest_stops = AdventureLayout.Mechanic_Frequency.HIGH
-	var preset := CharacterPreset.new()
-	_adventure.possible_opponents[preset] = 1
+	_adventure.battle_variants[_MakeVariant([CharacterPreset.new()])] = 1
 	var nodes: Array[NodeData] = AdventureGenerator.GenerateAdventure(_adventure)
 	for node in nodes:
 		if node.node_type == NodeData.Node_Type.REST_STOP:
@@ -95,8 +147,7 @@ func test_rest_stop_nodes_have_rest_stop_context() -> void:
 
 
 func test_boss_node_uses_boss_rewards_when_set() -> void:
-	var boss_preset := CharacterPreset.new()
-	_adventure.possible_bosses.append(boss_preset)
+	_adventure.boss_battle_variants.append(_MakeVariant([CharacterPreset.new()]))
 	var boss_loot := LootTable.new()
 	_adventure.boss_rewards = boss_loot
 	var nodes: Array[NodeData] = AdventureGenerator.GenerateAdventure(_adventure)
@@ -107,8 +158,7 @@ func test_boss_node_uses_boss_rewards_when_set() -> void:
 
 
 func test_boss_node_falls_back_to_combat_rewards_when_boss_rewards_null() -> void:
-	var boss_preset := CharacterPreset.new()
-	_adventure.possible_bosses.append(boss_preset)
+	_adventure.boss_battle_variants.append(_MakeVariant([CharacterPreset.new()]))
 	var fallback_loot := LootTable.new()
 	_adventure.combat_rewards = fallback_loot
 	_adventure.boss_rewards = null
@@ -121,10 +171,10 @@ func test_boss_node_falls_back_to_combat_rewards_when_boss_rewards_null() -> voi
 
 func test_no_crash_with_empty_adventure_pools() -> void:
 	var nodes: Array[NodeData] = AdventureGenerator.GenerateAdventure(_adventure)
-	assert_gt(nodes.size(), 0, "Should still generate nodes with empty opponent pools.")
+	assert_gt(nodes.size(), 0, "Should still generate nodes with empty variant pools.")
 	for node in nodes:
 		if node.node_type == NodeData.Node_Type.FIGHT or node.node_type == NodeData.Node_Type.BOSS:
-			assert_null(node.scene_context, "FIGHT/BOSS nodes should have null scene_context when opponent pools are empty.")
+			assert_null(node.scene_context, "FIGHT/BOSS nodes should have null scene_context when variant pools are empty.")
 
 
 # --- New interactive node types ---
@@ -184,17 +234,24 @@ func test_fight_nodes_draw_stage_from_adventure_biome() -> void:
 	var stage := PackedScene.new()
 	_adventure.biome = BiomeData.new()
 	_adventure.biome.stage_scenes.append(stage)
-	_adventure.possible_opponents[CharacterPreset.new()] = 1
+	_adventure.battle_variants[_MakeVariant([CharacterPreset.new()])] = 1
 	var nodes: Array[NodeData] = AdventureGenerator.GenerateAdventure(_adventure)
-	for node in nodes:
-		if node.node_type == NodeData.Node_Type.FIGHT:
-			assert_eq((node.scene_context as Context_Battle)._stage_scene, stage,
-				"FIGHT nodes should use a stage from the adventure's biome.")
+	for context in _FightContexts(nodes):
+		assert_eq(context._stage_scene, stage, "FIGHT nodes should use a stage from the adventure's biome.")
+
+func test_variant_stage_wins_over_biome_stage() -> void:
+	var variant_stage := PackedScene.new()
+	_adventure.biome = BiomeData.new()
+	_adventure.biome.stage_scenes.append(PackedScene.new())
+	var variant := _MakeVariant([CharacterPreset.new()])
+	variant._stage_scene = variant_stage
+	_adventure.battle_variants[variant] = 1
+	var nodes: Array[NodeData] = AdventureGenerator.GenerateAdventure(_adventure)
+	for context in _FightContexts(nodes):
+		assert_eq(context._stage_scene, variant_stage, "A variant's own stage should be kept over the biome's.")
 
 func test_fight_nodes_have_no_stage_without_biome() -> void:
-	_adventure.possible_opponents[CharacterPreset.new()] = 1
+	_adventure.battle_variants[_MakeVariant([CharacterPreset.new()])] = 1
 	var nodes: Array[NodeData] = AdventureGenerator.GenerateAdventure(_adventure)
-	for node in nodes:
-		if node.node_type == NodeData.Node_Type.FIGHT:
-			assert_null((node.scene_context as Context_Battle)._stage_scene,
-				"FIGHT nodes should fall back to no stage when the adventure has no biome.")
+	for context in _FightContexts(nodes):
+		assert_null(context._stage_scene, "FIGHT nodes should fall back to no stage when the adventure has no biome.")

@@ -150,25 +150,17 @@ static func _PopulateNodeContexts(p_nodes: Array[NodeData], p_adventure: Adventu
 	for node in p_nodes:
 		match node.node_type:
 			NodeData.Node_Type.FIGHT:
-				if p_adventure.possible_opponents.is_empty():
+				if p_adventure.battle_variants.is_empty():
 					continue
-				var ctx := Context_Battle.new()
-				ctx._enemies_wave_1 = [
-					_WeightedRandomPick(p_adventure.possible_opponents),
-					_WeightedRandomPick(p_adventure.possible_opponents),
-					_WeightedRandomPick(p_adventure.possible_opponents),
-				]
-				ctx._loot_table = p_adventure.combat_rewards
-				ctx._stage_scene = _PickStageScene(p_adventure.biome)
-				node.scene_context = ctx
+				node.scene_context = _BuildBattleContext(
+					_WeightedRandomPick(p_adventure.battle_variants), p_adventure.combat_rewards, p_adventure.biome)
 			NodeData.Node_Type.BOSS:
-				if p_adventure.possible_bosses.is_empty():
+				if p_adventure.boss_battle_variants.is_empty():
 					continue
-				var ctx := Context_Battle.new()
-				ctx._enemies_wave_1 = [p_adventure.possible_bosses.pick_random()]
-				ctx._loot_table = p_adventure.boss_rewards if p_adventure.boss_rewards != null else p_adventure.combat_rewards
-				ctx._stage_scene = _PickStageScene(p_adventure.biome)
-				node.scene_context = ctx
+				var boss_loot: LootTable = (
+					p_adventure.boss_rewards if p_adventure.boss_rewards != null else p_adventure.combat_rewards)
+				node.scene_context = _BuildBattleContext(
+					p_adventure.boss_battle_variants.pick_random(), boss_loot, p_adventure.biome)
 			NodeData.Node_Type.REST_STOP:
 				var rest_ctx := ContextRestStop.new()
 				rest_ctx.granted_buff = _RandomBuffType()
@@ -206,13 +198,23 @@ static func _PickStageScene(p_biome: BiomeData) -> PackedScene:
 		return null
 	return p_biome.stage_scenes.pick_random()
 
-static func _WeightedRandomPick(p_pool: Dictionary[CharacterPreset, int]) -> CharacterPreset:
+# The node gets its own copy, wave arrays included, so per-node changes never write back into the
+# shared variant resource. Presets stay shared.
+static func _BuildBattleContext(
+		p_variant: Context_Battle, p_loot_table: LootTable, p_biome: BiomeData) -> Context_Battle:
+	var context: Context_Battle = p_variant.duplicate_deep(Resource.DEEP_DUPLICATE_NONE)
+	context._loot_table = p_loot_table
+	if context._stage_scene == null:
+		context._stage_scene = _PickStageScene(p_biome)
+	return context
+
+static func _WeightedRandomPick(p_pool: Dictionary[Context_Battle, int]) -> Context_Battle:
 	var total: int = 0
 	for w in p_pool.values():
 		total += w
 	var roll: int = randi_range(0, total - 1)
 	var cumulative: int = 0
-	for key: CharacterPreset in p_pool.keys():
+	for key: Context_Battle in p_pool.keys():
 		cumulative += p_pool[key]
 		if roll < cumulative:
 			return key
