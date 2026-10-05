@@ -28,11 +28,11 @@ func test_heal_restores_health_without_ending_the_turn() -> void:
 func test_heal_never_exceeds_max_health() -> void:
 	var resolver: BattleResolver = _make_resolver()
 	var target: Character = resolver.GetCharacters()[0]
-	target._current_health = 39
+	var max_health: int = target.GetTotalAttribute(Types.Attribute.Health) * GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER
+	target._current_health = max_health - 1
 
 	resolver.ResolveReagent(0, "Mending_Icon_Legendary", 0)
 
-	var max_health: int = target.GetTotalAttribute(Types.Attribute.Health) * GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER
 	assert_eq(target._current_health, max_health)
 
 func test_clear_zone_removes_a_placed_zone() -> void:

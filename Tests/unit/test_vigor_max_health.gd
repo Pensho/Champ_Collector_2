@@ -17,12 +17,13 @@ func test_vigor_raises_the_clamp_bound_current_health_can_heal_into() -> void:
 	var roster: Dictionary[int, Character] = TestFactory.make_full_roster()
 	roster[0]._skills.append(TestFactory.make_empty_skill())
 	var resolver: BattleResolver = TestFactory.make_resolver(roster, TestFactory.make_full_sides())
-	# Base Health is 10 -> base max is 40 (x4). Vigor adds 30%.
-	var baseline_max: int = 10 * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
+	# Vigor adds 30% to the Health attribute before the max-Health multiplier.
+	var base_health: int = roster[0]._attributes[Types.Attribute.Health]
+	var baseline_max: int = base_health * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
 	roster[0]._active_buffs.append(_vigor_buff(5))
-	resolver.SetCurrentHealth(0, 1000)
+	resolver.SetCurrentHealth(0, 1000000)
 
-	assert_eq(roster[0]._current_health, int(ceilf(10 * 1.3)) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER,
+	assert_eq(roster[0]._current_health, int(ceilf(base_health * 1.3)) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER,
 		"SetCurrentHealth should clamp to Vigor's raised max, not the base max (%d)" % baseline_max)
 
 func test_vigor_is_amplified_by_the_scholars_field_of_study() -> void:
@@ -32,20 +33,20 @@ func test_vigor_is_amplified_by_the_scholars_field_of_study() -> void:
 	var vigor: StatusEffects.Buff = _vigor_buff(5)
 	vigor.trait_riders[&"attribute_amplification"] = FieldOfStudyTrait.GetAmplification(Types.Rarity.Legendary)
 	roster[0]._active_buffs.append(vigor)
-	resolver.SetCurrentHealth(0, 1000)
+	resolver.SetCurrentHealth(0, 1000000)
 
-	# Base Health is 10 -> base max is 40 (x4). Vigor's own 30% plus Legendary Field of
-	# Study's 11 percentage points is 41%: ceil(10 * 1.41) * 4.
-	assert_eq(roster[0]._current_health, int(ceilf(10 * 1.41)) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
+	# Vigor's own 30% plus Legendary Field of Study's 11 percentage points is 41%.
+	var base_health: int = roster[0]._attributes[Types.Attribute.Health]
+	assert_eq(roster[0]._current_health, int(ceilf(base_health * 1.41)) * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
 
 func test_vigor_expiry_reclamps_current_health_to_the_lower_max() -> void:
 	var roster: Dictionary[int, Character] = TestFactory.make_full_roster()
 	roster[0]._skills.append(TestFactory.make_empty_skill())
 	var resolver: BattleResolver = TestFactory.make_resolver(roster, TestFactory.make_full_sides())
 	roster[0]._active_buffs.append(_vigor_buff(1))
-	resolver.SetCurrentHealth(0, 1000)
+	resolver.SetCurrentHealth(0, 1000000)
 	var raised_health: int = roster[0]._current_health
-	var base_max: int = 10 * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
+	var base_max: int = roster[0]._attributes[Types.Attribute.Health] * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
 	assert_gt(raised_health, base_max, "Sanity check: health should exceed the base max while Vigor is active")
 
 	resolver.ResolveSkill(0, [], 0)

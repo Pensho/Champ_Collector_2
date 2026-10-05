@@ -223,7 +223,7 @@ static func make_character() -> Character:
 	c._name = "TestCharacter"
 	c._level = 1
 	c._experience = 0
-	c._attributes[Types.Attribute.Health] = 10
+	c._attributes[Types.Attribute.Health] = 250
 	c._attributes[Types.Attribute.Speed] = 5
 	c._attributes[Types.Attribute.Attack] = 8
 	c._attributes[Types.Attribute.Defence] = 6
@@ -235,13 +235,13 @@ static func make_character() -> Character:
 	c._attributes[Types.Attribute.CritDamage] = 150
 	return c
 
-## Builds a full 6-slot battle roster (players 0-2, monsters 3-5), all alive.
+## Builds a full 6-slot battle roster (players 0-2, monsters 3-5), all at full Health.
 ## Handy for exercising FindSkillTargets, which now filters on existence and health.
 static func make_full_roster() -> Dictionary:
 	var roster: Dictionary[int, Character] = {}
 	for id in range(6):
 		var c: Character = make_character()
-		c._current_health = c._attributes[Types.Attribute.Health]
+		c._current_health = c._attributes[Types.Attribute.Health] * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER
 		roster[id] = c
 	return roster
 

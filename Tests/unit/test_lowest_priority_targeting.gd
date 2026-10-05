@@ -21,7 +21,9 @@ func _spotlight() -> StatusEffects.Buff:
 	return buff
 
 func test_priority_is_health_plus_defence() -> void:
-	assert_eq(Skills.TargetingPriority(_roster[0]), 16.0, "Priority should be Health 10 + Defence 6")
+	var expected: float = (_roster[0]._attributes[Types.Attribute.Health]
+			+ _roster[0]._attributes[Types.Attribute.Defence])
+	assert_eq(Skills.TargetingPriority(_roster[0]), expected, "Priority should be Health + Defence")
 
 func test_picks_the_enemy_with_the_lowest_health_plus_defence() -> void:
 	_roster[1]._attributes[Types.Attribute.Defence] = 1

@@ -34,7 +34,7 @@ func test_premonition_negates_one_hit_then_is_removed() -> void:
 	assert_eq(_results_of_kind(results, CombatResult.Kind.Attack_Missed).size(), 1)
 	assert_eq(_results_of_kind(results, CombatResult.Kind.Damage).size(), 0)
 	assert_eq(_roster[0]._active_buffs.size(), 0, "Premonition should be consumed after negating the hit")
-	assert_eq(_roster[0]._current_health, _roster[0]._attributes[Types.Attribute.Health],
+	assert_eq(_roster[0]._current_health, _resolver.GetMaxHealth(0),
 		"The negated hit must not have reduced the holder's Health")
 
 func test_premonition_counter_damages_the_attacker_with_the_holders_basic() -> void:
@@ -48,7 +48,7 @@ func test_premonition_counter_damages_the_attacker_with_the_holders_basic() -> v
 	assert_eq(counter_damage.size(), 1, "The negated attack should be answered by one counter hit")
 	assert_eq(counter_damage[0].source_ID, 0, "The counter is dealt by the Premonition holder")
 	assert_eq(counter_damage[0].target_ID, 3, "The counter targets the original attacker")
-	assert_eq(_roster[0]._current_health, _roster[0]._attributes[Types.Attribute.Health],
+	assert_eq(_roster[0]._current_health, _resolver.GetMaxHealth(0),
 		"The negated hit must not have reduced the holder's own Health")
 
 func test_premonition_counter_resolves_the_basics_non_damage_effects() -> void:
