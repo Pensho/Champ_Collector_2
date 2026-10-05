@@ -1194,7 +1194,7 @@ for a passive whose rate didn't move and a ship the scorer cannot see.
 
 **Known bug, unresolved.** In live play, the Sea Legs tooltip's displayed percent does not track
 the stack count correctly — a report of 6% on the first stack followed by 5% on the second, on the
-same standing deck with no re-raise. `StatusEffectResolver.ApplySeaLegs`'s own math and the
+same standing deck with no re-raise. `StatusEffectResolver.ApplyStackingBuff`'s own math and the
 `CombatResult` it emits are confirmed correct by both the unit suite and a direct headless
 simulation of the same scenario (linearly increasing: 6%, 12%, 18%), so the defect is somewhere
 between that emitted result and the live tooltip's rendered text — a surface `Tests/unit/` cannot

@@ -295,14 +295,14 @@ load time. There is a consistent **preset (template) vs instance (runtime)** spl
 
 | Class | File | Role |
 |---|---|---|
-| `CharacterPreset` | `Scripts/Character/character_preset.gd` | Champion archetype: base stats, skills, available attribute-weight presets, trait, `_preset_path`, `_thematic_hint` (vague pre-battle tooltip text for enemy variants), `_headshot_region` (normalized crop drawn by `TextureCache.GetHeadshot` where slots want a face rather than the full figure) |
+| `CharacterPreset` | `Scripts/Character/character_preset.gd` | Champion archetype: base stats, skills, available attribute-weight presets, trait, `_preset_path`, `_thematic_hint` (vague pre-battle tooltip text for enemy variants), `_headshot_region` (normalized crop drawn by `TextureCache.GetHeadshot` where slots want a face rather than the full figure), `_phase_two_skills`/`_phase_two_trait`/`_phase_two_text` (a boss's phase 2 kit, see 7.3) |
 | `Skill` | `Scripts/Character/skill_data.gd` | Skill definition: name/description/icon, default target, type, cooldown, and an ordered `effects` array |
 | `SkillEffect` | `Scripts/Battle/Skill_Effects/skill_effect.gd` | Base class for one self-resolving skill effect (see [Section 7.4](#74-skill-resolution-battleresolverresolveskill)) |
 | `AttributeWeightPreset` | `Scripts/Character/attribute_weight_preset.gd` | Per-attribute weight distribution used at level-up |
 | `EquipmentPreset` | `Scripts/Gear/equipment_preset.gd` | Gear template: slot, rarity, attribute composition |
 | `LootTable` | `Scripts/Battle/loot_table.gd` | Encounter rewards: primary (guaranteed) and secondary (weighted) loot |
 | `ActData` | `Scripts/Adventure_Scripts/act_data.gd` | An act's two selectable `AdventureData` |
-| `AdventureData` | `Scripts/Adventure_Scripts/adventure_data.gd` | One selectable adventure: selection name and texture, `AdventureLayout`, `BiomeData`, opponent and boss pools, reward tables; its `resource_path` keys difficulty progress and the saved run |
+| `AdventureData` | `Scripts/Adventure_Scripts/adventure_data.gd` | One selectable adventure: selection name and texture, `AdventureLayout`, `BiomeData`, weighted `battle_variants` and `boss_battle_variants` (`Context_Battle` resources), reward tables; its `resource_path` keys difficulty progress and the saved run |
 | `AdventureLayout` | `Scripts/Adventure_Scripts/adventure_layout.gd` | Depth range and node-type frequencies |
 | `BiomeData` | `Scripts/Adventure_Scripts/biome_data.gd` | An adventure's look: `BiomeVisualData` and the battle stages its encounters draw from |
 | `StageClutterEntry` | `Scripts/Battle/Visuals/stage_clutter_entry.gd` | One floor-clutter scatter rule, authored on a stage's `StageClutterView` |
@@ -371,7 +371,7 @@ The effect subclasses, all under `Scripts/Battle/Skill_Effects/`:
 | `AlternatingEffect` | `effects: Array[SkillEffect]` | Cycles through `effects` by this cast's use count, so a skill can behave differently on alternating (or any N-way rotating) casts |
 | `ZoneEffect` | `charges`, `section` (`Player_Chosen`/`Left_Most_Empty`/`Random_Empty`/`Most_Allies`), `on_trigger: Array[SkillEffect]`, `visual_scene: PackedScene` | Resolves a turn-bar section (see [Section 7.5](#75-zones)) and calls `ZoneResolver.PlaceZone` with itself; an ordinary effect in the effect loop like any other, so a skill can place a zone alongside a direct effect (e.g. Inscribe's damage-plus-glyph) |
 | `BarrierZoneEffect` | *(none)* | The Architect's charge-scaled turn-bar Barrier (`Skills.ApplyBarrierZone`), kept as its own effect rather than a generic `BarrierEffect` zone case so the Calibration trait's charge-investment bonus and `Zone_Used` hook stay intact |
-| `SeaLegsZoneEffect` | `per_stack_rate: float` | The Gilded Deck's own payload: grants the boarding character one Sea Legs stack sized on *their own* highest base primary attribute (Health excluded, `FieldOfStudyTrait.PRIMARY_ATTRIBUTES`' own list and tie order), via `StatusEffectResolver.ApplySeaLegs`. Constructed by `tidal_corsair_trait.gd` with the rarity's own rate, not authored on a `.tres` |
+| `SeaLegsZoneEffect` | `per_stack_rate: float` | The Gilded Deck's own payload: grants the boarding character one Sea Legs stack sized on *their own* highest base primary attribute (Health excluded, `FieldOfStudyTrait.PRIMARY_ATTRIBUTES`' own list and tie order), via `StatusEffectResolver.ApplyStackingBuff`. Constructed by `tidal_corsair_trait.gd` with the rarity's own rate, not authored on a `.tres` |
 | `ClearZoneEffect` | `damage_scaling_per_charge: Dictionary[Types.Attribute, float]`, `cooldown_reduction` | Removes one zone from the turn bar (Refutation): a player-chosen or random occupied section; damages the placing enemy scaled by remaining charges, or reduces the placing ally's zone skill's cooldown |
 
 There are 81 `.tres` files under `Data/Character_Skill_Variants/` (skill variants, mostly split
@@ -393,7 +393,7 @@ enum MagnitudeKind {
     IncomingHealReduction, TurnBarMovementDamagePercent, DamageAbsorb, RandomAttributePercent,
     SelfTurnBarLossOnDamage, AllyTurnBarGainOnDamage, IncomingDamageReduction,
     HolderMissingHealthDamagePercent, AttackerDamagePerHolderMissingHealth,
-    HighestBasePrimaryAttributePercent,
+    HighestBasePrimaryAttributePercent, OutgoingDamagePercent,
 }
 @export var magnitude_kind: MagnitudeKind
 @export var attribute_modifiers: Dictionary[Types.Attribute, float] = {}  # attribute -> sign
@@ -430,7 +430,9 @@ enum MagnitudeKind {
                                                              # targeting priority, independent of
                                                              # magnitude_kind (Spotlight, 1.5x)
 @export var permanent: bool = false                         # never expires or ticks its duration
-                                                             # down (Sea Legs)
+                                                             # down (Sea Legs, Momentum)
+@export var max_stacks_in_place: int = 0                    # > 0: re-apply adds a stack to the one
+                                                             # instance, up to this cap
 @export var icon: Texture2D
 ```
 
@@ -560,11 +562,11 @@ onto whichever debuff triggered it, read by `Skills.ApplyWeaknessRider` wherever
 shape for a rider not yet attached to an applied instance — Comorbidity's flag, read off the trait
 hook's own result by `ApplyDebuffEffect` before the debuff is cast.
 
-Sea Legs also needed its own resolver entry point, `StatusEffectResolver.ApplySeaLegs` — a second
-special case beside Barrier's "keep the larger one" rule (both bypass the standard
-overwritable/stackable pair, which can express "replace" or "duplicate" but not "accumulate in
-place"). It finds an existing Sea Legs buff and increments its stack count and value in place, up
-to a 4-stack cap, rather than creating a second instance — the runtime's usual stacking shape (a new
+A buff whose `max_stacks_in_place` is above 0 (Sea Legs, Momentum) goes through
+`StatusEffectResolver.ApplyStackingBuff`, beside Barrier's "keep the larger one" rule (both bypass
+the standard overwritable/stackable pair, which can express "replace" or "duplicate" but not
+"accumulate in place"). It finds the existing instance and increments its stack count and value in
+place, up to the data's cap, rather than creating a second instance — the runtime's usual stacking shape (a new
 independent instance per application, e.g. Burning) would otherwise cost each stack its own
 slot against the shared 8-status cap. Restacking re-emits `Status_Applied` under the buff's own
 existing `status_ID`, so `battle.gd`'s `ShowStatusApplied` now checks `_status_visual_IDs` and calls
@@ -762,7 +764,8 @@ combat formulas, see `Concept_Document.md`; this section describes the *code pat
 3. Loads player characters into `_characters[0..2]`, setting `_current_health` to scaled max HP,
    and applies adventure buffs/debuffs through `resolver.GetStatusResolver().ApplyBuff`/`ApplyDebuff`.
 4. Computes `_targeting_order` via `SetTargetingOrder()` — characters sorted by
-   `Health + Defence` descending (used by enemy AI to pick "tankiest valid" targets).
+   `Skills.TargetingPriority` descending (Concept Document 3.2.1), used by enemy AI to pick the
+   highest-priority valid target. `Lowest_Priority_Enemy` targets read the same value.
 5. Instantiates enemies into `_characters[3..5]`, jitters their speed by `randi_range(-3,3)` on
    the **resolver's** generator, and scales them to the encounter difficulty with
    `LevelSystem.SetOpponentLevel()` (boss variant if `_arguments["Boss_Scale"]` is present).
@@ -801,19 +804,27 @@ base class doubling as the headless default for tests. Long term the positions b
   enemy-turn handling entirely, then arms the same presentation wait `ResolveTurn` does (see 7.9)
   rather than calling `CompleteTurn()` inline.
 - **Player turn** (`_sides.player.Has(ID)`): populates the skill buttons (icon, name,
-  description, cooldown) and enters `Awaiting_Player_Input`. Selecting a zone skill enters
+  description, cooldown) and enters `Awaiting_Player_Input`. While an enemy is Spotted,
+  `Skills.SpottedForbidsTarget` rejects a single-enemy skill aimed at anyone else. Selecting a zone skill enters
   `Selecting_Zone` and enables the zone buttons; selecting a non-zone skill returns to
   `Awaiting_Player_Input`.
 - **Enemy turn** (`_sides.enemy.Has(ID)`): enters `Enemy_Acting` and calls `HandleEnemyTurn()`,
   which selects the first off-cooldown skill via `SelectEnemySkillID()` (skipping zone skills when
   no zone is free), then either places a random free zone (`resolver.PlaceZone`, rolled on the
-  resolver's generator) or walks `_targeting_order` for a living valid target via
-  `resolver.FindSkillTargets()`.
+  resolver's generator) or walks `Skills.EnemyTargetOrder(_targeting_order, ...)` — the order with
+  a Spotted opponent moved to the front — for a living valid target via `resolver.FindSkillTargets()`.
 
 Every resolution path funnels through `Battle.ResolveTurn(target_IDs)`: it enters `Resolving`,
 calls `resolver.ResolveSkill`, then arms a presentation wait rather than completing the turn
 inline (see 7.9). Once that wait ends, `CompleteTurn()` marks the turn complete on the bar,
 refreshes trait visuals, hides the skill UI, and returns to `Advancing` (or ends the battle).
+
+**Boss phase 2.** After any Health loss that leaves a character alive, `BattleResolver._TryEnterPhaseTwo`
+checks a character with phase 2 data: once, at or below 50% max Health, `Character.EnterPhaseTwo`
+swaps in the phase 2 skills (a skill sharing a name keeps its cooldown) and, when set, the phase 2
+trait, whose `ResetForBattle` and `StartOfBattle` then run. It emits `Phase_Changed` carrying the
+preset's `_phase_two_text`, which the battle shows as combat text. A lethal hit takes the death path
+instead, so damage is never capped.
 
 ### 7.4. Skill resolution (`BattleResolver.ResolveSkill`)
 
@@ -905,7 +916,7 @@ each read live conditions rather than a stored product.
 additive one: it scales the caster's pre-mitigation damage aggregate as a ramp, and keeping it
 separate preserves the same multiplicative relationship to the skill's other contributions that
 existed before unification. Folding the ramp into the same additive bucket instead would have cost
-Heap On, Breaching Charge, and Cinder Sermon between 5% and 26% of their ramped damage, growing
+Heap On and Cinder Sermon between 5% and 26% of their ramped damage, growing
 with both use count and target Defence, because the ramp's pre-mitigation placement also improves
 Defence penetration (mitigation rises with attack size, so `mitigation(S) < mitigation(S·R)`).
 Every other `bonus_per` source (`Buffs_On_Caster`, `Buffs_Consumed`, `Trait_Condition`,
@@ -922,6 +933,8 @@ combined_damage_modifier.Contribute(trait_damage_bonus, Skills.OutgoingDamageBon
 combined_damage_modifier.Contribute(reagent_damage_bonus, damage_dealt_bonus[caster])
 for key in OpportunistDamageFactors(caster, target):  # one bucket per debuff *type* present on target
     combined_damage_modifier.Contribute(key, opportunist_factors[key])
+for key in OutgoingDamagePercentFactors(caster):     # one bucket per OutgoingDamagePercent buff type (Momentum)
+    combined_damage_modifier.Contribute(key, outgoing_factors[key])
 for key in ConsumeDamageMultiplierFactors(caster):    # one bucket per DamageMultiplier buff type, consumed here
     combined_damage_modifier.Contribute(key, damage_multiplier_factors[key])
 caster_scaled = (Σ over attrs ( damage_scaling[attr] * caster[attr] )) * combined_damage_modifier.Product()
@@ -1614,6 +1627,7 @@ provides default (no-op, debug-printing) implementations of each hook. The comba
 | `OnReagentConsumed(consumer_ID, reagent, resolver)` | `Reagent_Consumed` | in `ResolveReagent`, for non-binary reagents only; returns an additive potency contribution (0.0 base) | `float` |
 | `OnCriticalHit(owner_ID, target_ID, resolver)` | `Critical_Hit` | in `_ResolveDamage`, after a critical hit lands, on the caster's trait | — |
 | `OnDamageDealt(owner_ID, target_ID, amount, resolver)` | `Damage_Dealt` | in `_ResolveDamage`, after damage lands (unconditionally, not only on a crit), on the caster's trait | — |
+| `OnAllyAttackLanded(owner_ID, attacker_ID, target_ID, resolver)` | `Ally_Attack_Landed` | in `_ResolveDamage`, once a damaging effect is past the Premonition miss check, after the hit's persistent damage factors are read and before any Health loss, on every living ally of the attacker, the attacker included | — |
 | `OnAllyDeath(owner_ID, dead_ally_ID, resolver)` | `Ally_Death` | in `_HandleDeath`, on every living ally of the character who just died | — |
 | `OnAllyDamageTaken(owner_ID, damaged_ally_ID, resolver)` | `Ally_Damage_Taken` | in `_ResolveDamage`, polled on the target's living allies before mitigation; returns the fraction of the incoming hit this owner redirects to itself (0.0 base) | `float` |
 
@@ -1875,8 +1889,11 @@ Serialization roundtrips are covered by `test_collection_serialization.gd`
 
 The adventure (run) system lives in `Scripts/Adventure_Scripts/`:
 
-- `adventure_generator.gd` builds a node graph from an `AdventureData` (its layout, enemy pools,
-  a boss node, controlled branching).
+- `adventure_generator.gd` builds a node graph from an `AdventureData` (its layout, a boss node,
+  controlled branching). Each FIGHT node rolls one weighted `battle_variants` entry and the BOSS
+  node one `boss_battle_variants` entry; the node gets a copy of it
+  (`duplicate_deep(DEEP_DUPLICATE_NONE)`, so its enemy lists are its own) carrying the adventure's
+  loot table, and the biome's stage when the variant names none.
 - `adventure_state.gd` / `adventure_state_handler.gd` track current progress, supply-cost tiers,
   daily reset, and serialization; the handler is in the `"saveable"` group.
 - Rewards flow through `LootManager` (`Scripts/Battle/loot_manager.gd`) and `LootTable` resources:
