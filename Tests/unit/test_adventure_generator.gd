@@ -255,3 +255,42 @@ func test_fight_nodes_have_no_stage_without_biome() -> void:
 	var nodes: Array[NodeData] = AdventureGenerator.GenerateAdventure(_adventure)
 	for context in _FightContexts(nodes):
 		assert_null(context._stage_scene, "FIGHT nodes should fall back to no stage when the adventure has no biome.")
+
+func _PoolBuffs(p_nodes: Array[NodeData], p_node_type: NodeData.Node_Type) -> Array[Types.Buff_Type]:
+	var buffs: Array[Types.Buff_Type]
+	for node in p_nodes:
+		if node.node_type != p_node_type:
+			continue
+		if node.scene_context is ContextRestStop:
+			buffs.append((node.scene_context as ContextRestStop).granted_buff)
+		else:
+			buffs.append((node.scene_context as ContextGamble).win_buff)
+	return buffs
+
+func _AssertBuffsDrawnFromPool(p_node_type: NodeData.Node_Type) -> void:
+	var pool := AdventureBuffPool.new()
+	pool.buffs = [Types.Buff_Type.Fortify, Types.Buff_Type.Haste]
+	_adventure.buff_pool = pool
+	for _run in 10:
+		var buffs: Array[Types.Buff_Type] = _PoolBuffs(AdventureGenerator.GenerateAdventure(_adventure), p_node_type)
+		assert_false(buffs.is_empty(), "HIGH frequency should generate at least one node of type %s." % p_node_type)
+		for buff in buffs:
+			assert_true(pool.buffs.has(buff), "Buff %s is outside the adventure's buff pool." % buff)
+
+func test_rest_stop_buffs_drawn_from_adventure_pool() -> void:
+	_layout.rest_stops = AdventureLayout.Mechanic_Frequency.HIGH
+	_AssertBuffsDrawnFromPool(NodeData.Node_Type.REST_STOP)
+
+func test_gamble_win_buffs_drawn_from_adventure_pool() -> void:
+	_layout.rest_stops = AdventureLayout.Mechanic_Frequency.NONE
+	_layout.gamble_nodes = AdventureLayout.Mechanic_Frequency.HIGH
+	_AssertBuffsDrawnFromPool(NodeData.Node_Type.GAMBLE)
+
+func test_empty_buff_pool_falls_back_to_any_buff() -> void:
+	_layout.rest_stops = AdventureLayout.Mechanic_Frequency.HIGH
+	_adventure.buff_pool = AdventureBuffPool.new()
+	var buffs: Array[Types.Buff_Type] = _PoolBuffs(
+			AdventureGenerator.GenerateAdventure(_adventure), NodeData.Node_Type.REST_STOP)
+	assert_false(buffs.is_empty(), "HIGH rest_stops frequency should generate at least one REST_STOP node.")
+	for buff in buffs:
+		assert_ne(buff, Types.Buff_Type.Invalid, "Fallback buff should not be Invalid.")

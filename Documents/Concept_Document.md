@@ -1158,13 +1158,14 @@ An adventure is a generated graph of nodes the player steps through. Besides the
 **Fight** and **Boss** combat nodes, the following interactive node types resolve
 directly in the adventure scene without entering battle:
 
-- **Rest Stop**: each Rest Stop is generated with one fixed buff. The player chooses
+- **Rest Stop**: each Rest Stop is generated with one fixed buff, drawn from the
+  adventure's curated buff pool. The player chooses
   how long to receive it: 0 Supplies for the next combat, 6 Supplies for the next 3
   combats, or 18 Supplies for the rest of the adventure.
 - **Hint**: a placeholder node that shows a configured hint (text and/or image) meant
   to assist with an out-of-game puzzle, and grants a small Silver/Supplies reward
   (5% of the encounter's reward budget) on acknowledgement. No puzzle backend exists yet.
-- **Gamble**: a 50/50 choice. On a win, the player receives a buff lasting 4 combats;
+- **Gamble**: a 50/50 choice. On a win, the player receives a buff from the same pool lasting 4 combats;
   on a loss, a debuff lasting 2 combats.
 - **Escalate**: offers Silver and/or Supplies (15% of the encounter's reward budget) plus a
   guaranteed reagent (Uncommon-Epic; Legendary is boss-exclusive, see section 3.3.3) in

@@ -302,7 +302,7 @@ load time. There is a consistent **preset (template) vs instance (runtime)** spl
 | `EquipmentPreset` | `Scripts/Gear/equipment_preset.gd` | Gear template: slot, rarity, attribute composition |
 | `LootTable` | `Scripts/Battle/loot_table.gd` | Encounter rewards: primary (guaranteed) and secondary (weighted) loot |
 | `ActData` | `Scripts/Adventure_Scripts/act_data.gd` | An act's two selectable `AdventureData` |
-| `AdventureData` | `Scripts/Adventure_Scripts/adventure_data.gd` | One selectable adventure: selection name and texture, `AdventureLayout`, `BiomeData`, weighted `battle_variants` and `boss_battle_variants` (`Context_Battle` resources), reward tables; its `resource_path` keys difficulty progress and the saved run |
+| `AdventureData` | `Scripts/Adventure_Scripts/adventure_data.gd` | One selectable adventure: selection name and texture, `AdventureLayout`, `BiomeData`, weighted `battle_variants` and `boss_battle_variants` (`Context_Battle` resources), reward tables, an `AdventureBuffPool` (the buffs its Rest Stops and Gamble wins roll from; none falls back to every buff); its `resource_path` keys difficulty progress and the saved run |
 | `AdventureLayout` | `Scripts/Adventure_Scripts/adventure_layout.gd` | Depth range and node-type frequencies |
 | `BiomeData` | `Scripts/Adventure_Scripts/biome_data.gd` | An adventure's look: `BiomeVisualData` and the battle stages its encounters draw from |
 | `StageClutterEntry` | `Scripts/Battle/Visuals/stage_clutter_entry.gd` | One floor-clutter scatter rule, authored on a stage's `StageClutterView` |

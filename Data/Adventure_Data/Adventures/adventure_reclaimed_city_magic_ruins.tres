@@ -11,6 +11,7 @@
 [ext_resource type="Resource" uid="uid://dauwp8sbf3ga" path="res://Data/Loot_Tables/Experience_Quest.tres" id="12_lh4g1"]
 [ext_resource type="Resource" uid="uid://wg8ohcii0wix" path="res://Data/Loot_Tables/Adventure_Escalate_Loot.tres" id="13_kofhi"]
 [ext_resource type="Resource" path="res://Data/Loot_Tables/Adventure_Hint_Loot.tres" id="14_c3w72"]
+[ext_resource type="Resource" path="res://Data/Adventure_Data/Buff_Pools/buff_pool_default.tres" id="15_buff_pool"]
 
 [resource]
 script = ExtResource("1_adventure")
@@ -26,3 +27,4 @@ combat_rewards = ExtResource("12_lh4g1")
 boss_rewards = ExtResource("11_launh")
 hint_rewards = ExtResource("14_c3w72")
 escalate_rewards = ExtResource("13_kofhi")
+buff_pool = ExtResource("15_buff_pool")

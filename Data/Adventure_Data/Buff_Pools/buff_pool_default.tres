@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="AdventureBuffPool" format=3 uid="uid://kd0gwx05dibq"]
+
+[ext_resource type="Script" uid="uid://c3b4hg1teymob" path="res://Scripts/Adventure_Scripts/adventure_buff_pool.gd" id="1_pool"]
+
+[resource]
+script = ExtResource("1_pool")
+buffs = Array[int]([1, 2, 6, 9, 10, 11, 12, 15, 19, 22, 14])

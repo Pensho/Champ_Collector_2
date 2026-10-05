@@ -163,7 +163,7 @@ static func _PopulateNodeContexts(p_nodes: Array[NodeData], p_adventure: Adventu
 					p_adventure.boss_battle_variants.pick_random(), boss_loot, p_adventure.biome)
 			NodeData.Node_Type.REST_STOP:
 				var rest_ctx := ContextRestStop.new()
-				rest_ctx.granted_buff = _RandomBuffType()
+				rest_ctx.granted_buff = _PoolBuffType(p_adventure.buff_pool)
 				node.scene_context = rest_ctx
 			NodeData.Node_Type.HINT:
 				var hint_ctx := ContextHint.new()
@@ -172,7 +172,7 @@ static func _PopulateNodeContexts(p_nodes: Array[NodeData], p_adventure: Adventu
 				node.scene_context = hint_ctx
 			NodeData.Node_Type.GAMBLE:
 				var gamble_ctx := ContextGamble.new()
-				gamble_ctx.win_buff = _RandomBuffType()
+				gamble_ctx.win_buff = _PoolBuffType(p_adventure.buff_pool)
 				gamble_ctx.loss_debuff = _RandomDebuffType()
 				node.scene_context = gamble_ctx
 			NodeData.Node_Type.ESCALATE:
@@ -186,6 +186,12 @@ static func _RandomBuffType() -> Types.Buff_Type:
 	var values: Array = Types.Buff_Type.values()
 	values.erase(Types.Buff_Type.Invalid)
 	return values.pick_random()
+
+
+static func _PoolBuffType(p_pool: AdventureBuffPool) -> Types.Buff_Type:
+	if p_pool == null or p_pool.buffs.is_empty():
+		return _RandomBuffType()
+	return p_pool.buffs.pick_random()
 
 
 static func _RandomDebuffType() -> Types.Debuff_Type:
