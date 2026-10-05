@@ -6,7 +6,7 @@ const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 # gains one Momentum stack (Encounter_Design_Document.md section 1). A hit is a damaging effect
 # that lands: misses do not count, lethal and fully absorbed hits do.
 
-const BARON_ID: int = 3
+const HOLDER_ID: int = 3
 
 var _roster: Dictionary[int, Character] = {}
 var _resolver: BattleResolver = null
@@ -17,7 +17,7 @@ func before_each() -> void:
 		_roster[id]._skills.append(TestFactory.make_strike_skill())
 	var press_the_advantage: PressTheAdvantageTrait = PressTheAdvantageTrait.new()
 	press_the_advantage.Init(Types.Rarity.Common)
-	_roster[BARON_ID]._trait = press_the_advantage
+	_roster[HOLDER_ID]._trait = press_the_advantage
 	_resolver = TestFactory.make_resolver(_roster, TestFactory.make_full_sides())
 
 func _spot(p_holder_ID: int) -> void:
@@ -34,7 +34,7 @@ func _buff(p_type: Types.Buff_Type, p_value: float = 0.0) -> StatusEffects.Buff:
 	return buff
 
 func _momentum_stacks() -> int:
-	for buff in _roster[BARON_ID]._active_buffs:
+	for buff in _roster[HOLDER_ID]._active_buffs:
 		if(Types.Buff_Type.Momentum == buff.type):
 			return int(buff.trait_riders.get(&"stacks", 0))
 	return 0
@@ -51,12 +51,21 @@ func test_a_hit_on_anyone_else_does_not_add_a_stack() -> void:
 	_resolver.ResolveSkill(4, [1], 0)
 	assert_eq(_momentum_stacks(), 0)
 
-func test_the_barons_own_hit_counts() -> void:
+func test_the_holders_own_hit_counts() -> void:
 	_spot(0)
-	_resolver.ResolveSkill(BARON_ID, [0], 0)
+	_resolver.ResolveSkill(HOLDER_ID, [0], 0)
 	assert_eq(_momentum_stacks(), 1)
 
-func test_an_opposing_hit_on_a_spotted_ally_of_the_baron_does_not_count() -> void:
+func test_the_stack_a_hit_earns_does_not_boost_that_hit() -> void:
+	_spot(0)
+	var results: Array[CombatResult] = _resolver.ResolveSkill(HOLDER_ID, [0], 0)
+	var damage: Array = results.filter(
+			func(result: CombatResult) -> bool: return CombatResult.Kind.Damage == result.kind)
+	assert_eq(_momentum_stacks(), 1, "Sanity check: the hit should earn a stack")
+	assert_eq(damage[0].combined_damage_modifier.Buckets().get(&"Momentum", 0.0), 0.0,
+			"The stack applies from the next hit on")
+
+func test_an_opposing_hit_on_a_spotted_ally_of_the_holder_does_not_count() -> void:
 	_spot(5)
 	_resolver.ResolveSkill(1, [5], 0)
 	assert_eq(_momentum_stacks(), 0, "Only allied attacks feed Press the Advantage")
