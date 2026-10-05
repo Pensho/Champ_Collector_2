@@ -31,9 +31,6 @@ Design-only plans (no code; can run at any time):
 
 Code plans:
 
-- `Plan_Jungle_Adventure_Encounters.md` — adventures roll battle variants, the
-  Spotted debuff and Lowest Priority Enemy target, the Momentum buff, universal boss
-  phase 2, and the jungle's Ridge Marksmen, Clearing Crew, and Salvage Baron.
 - `Plan_Character_Data_Structure.md` — splits `CharacterPreset` and `Character` so champion-,
   opponent-, and boss-only fields live only on their own type.
 
