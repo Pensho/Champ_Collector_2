@@ -554,8 +554,6 @@ static func EdgeMostAlive(p_alive_IDs_left_to_right: Array[int], p_want_left: bo
 		return -1
 	return p_alive_IDs_left_to_right.front() if p_want_left else p_alive_IDs_left_to_right.back()
 
-## The combined enemy-AI targeting-weight multiplier from all of a character's active
-## buffs (e.g. Spotlight's 1.5x). 1.0 when none apply.
 ## Enemy-AI targeting priority: durability scaled by trait and buff multipliers.
 static func TargetingPriority(p_character: Character) -> float:
 	var priority: float = (p_character.GetTotalAttribute(Types.Attribute.Health)
@@ -564,6 +562,8 @@ static func TargetingPriority(p_character: Character) -> float:
 	priority *= TargetingWeightMultiplier(p_character)
 	return priority
 
+## The combined enemy-AI targeting-weight multiplier from all of a character's active
+## buffs (e.g. Spotlight's 1.5x). 1.0 when none apply.
 static func TargetingWeightMultiplier(p_character: Character) -> float:
 	var multiplier: float = 1.0
 	for buff in p_character._active_buffs:
