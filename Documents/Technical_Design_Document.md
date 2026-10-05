@@ -2279,3 +2279,13 @@ Ownership lives solely in `Character._held_items`, and the two must be unwound t
 *Impact:* any path that removes a character has to know to unequip through `ItemCollection` as well,
 or the gear stays permanently hidden.
 *Direction:* store the holding character's instance ID, and derive the item list from it.
+
+### 15.4. `CharacterTrait` grows one public method per hook
+
+Every trait event is a virtual method on `CharacterTrait`, which Relics and grafts also extend,
+so each new hook widens the interface every subclass inherits. The `max-public-methods` limit in
+`gdlintrc` has been raised to keep pace.
+
+*Impact:* the base class is the largest public surface in the project, and the lint limit no longer
+constrains it.
+*Direction:* route events through fewer, event-typed entry points.

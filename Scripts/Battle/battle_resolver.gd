@@ -911,6 +911,7 @@ func _ResolveDamage(
 
 	if(_status_resolver.ConsumePremonitionIfPresent(p_target_ID, p_caster_ID)):
 		return
+	Skills.TriggerAllyAttackLandedHook(_sides, _characters, p_caster_ID, p_target_ID, self)
 
 	var target: Character = _characters[p_target_ID]
 	var crit_roll: float = RollFavoring(p_caster_ID, 1.0, 100.0, false)
