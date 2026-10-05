@@ -96,7 +96,7 @@ The core gameplay follows a cyclical "Prepare, Engage, Reward, Grow" loop design
 
 **Preparation & Management:** The player manages their roster, equipping gear (Weapons, Off-hands, Boots) and selecting a team of characters whose Roles and Attributes (like Speed and Mysticism) complement each other.
 
-**Resource Expenditure:** Players spend Energy (Food/Supplies) to enter different combat nodes, such as routine "Grind" maps, high-stakes Boss encounters, or God-themed Events.
+**Engagement Choice:** Players pick combat nodes to enter, such as routine "Grind" maps, high-stakes Boss encounters, or God-themed Events, and may spend Supplies where content offers it to temporarily empower their team.
 
 **Turn-Based Engagement:** Players engage in combat where the Speed attribute determines turn order on the "turn bar."
 
@@ -111,7 +111,7 @@ The core gameplay follows a cyclical "Prepare, Engage, Reward, Grow" loop design
 ### 2.2. Short-Term vs. Long-Term Loops
 | Loop Type | Focus | Primary Activity |
 |-----------|-------|------------------|
-| Short-Term (Daily) | Efficiency | Spending Energy on routine fights to gather crafting materials and XP; completing daily God-themed events. |
+| Short-Term (Daily) | Efficiency | Running routine fights to gather crafting materials and XP; completing daily God-themed events. |
 | Mid-Term (Weekly) | Strategy | Solving "Puzzle" encounters and bosses to acquire Role-specific gear or rare Relics; participating in rotating God events (e.g., God of Rules’ floor dungeon). |
 | Long-Term (Monthly) | Collection | Using Commissions of guilds to acquire new characters, completing faction-specific synergies, and uncovering the "Forgotten God" through world exploration. |
 
@@ -124,7 +124,7 @@ The core gameplay follows a cyclical "Prepare, Engage, Reward, Grow" loop design
 - Bosses
 - Gearing characters
 - Upgrading character skills
-- Energy system to restrict daily player activity
+- Supplies, a spendable resource for temporary empowerment
 - Applying effects onto the turn bar. If a character stops within applied zones of the bar, certain effects trigger. The turn bar is split into a set of "zones" that can have effects applied to them through skills.
 - Central hub area to manage characters, gear and access different game modes.
 
@@ -1137,10 +1137,8 @@ tier Favor for a fixed Silver price. Stock restocks on a one-hour real-world tim
 Favor slot instead waits out its own three-day cooldown after purchase. A purchased slot
 stays sold out until its next restock (or, for Favor, until its cooldown ends).
 
-### 3.7 Energy Systems
-To limit daily player activity, an energy system will be implemented. Players will have a set amount of Energy (Supplies) that depletes when entering combat nodes. Supplies regenerate over time at a rate of +10 per 10 real-world minutes, up to a cap of 100, and can also be replenished through in-game actions or purchases. Regeneration is offline-aware: elapsed real time is applied on load, with partial progress toward the next +10 preserved.
-
-This is up for change, the energy system might not be helpful for the game. Consider changing this to a spendable resource to help in certain types of content or another use.
+### 3.7 Supplies
+Supplies are a spendable resource with no cap and no regeneration over time; a new save starts with 0. Encounters and adventure nodes are free to enter. Supplies are spent only where a mechanic asks for them, such as the Rest Stop (section 3.9), to temporarily empower the team.
 
 ### 3.8 Reward structure
 The idea is to have every encounter hold a "loot table" of possible drops. Some drops may always drop for certain encounters.
@@ -1151,7 +1149,7 @@ Then each drop is given a "reward value", where e.g.
   the same as the standard item of its rarity, since item type is rolled outside the budget
   (section 3.3.1)
 
-Then every encounter will be given a reward value points buffer depending on difficulty and cost of supplies to engage.
+Then every encounter will be given a reward value points buffer depending on difficulty.
 
 When a victory is achieved, rewards will be randomly selected from the loot table and subtract that value from the reward value points buffer. Note that some drops may be guaranteed and will be picked out first before random selection. This goes on until the buffer is spent or if the remaining value is too small to equate another reward.
 

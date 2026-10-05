@@ -4,12 +4,11 @@ signal engage_confirmed(p_node: NodeData)
 signal cancelled
 
 @export var _label_type: Label
-@export var _label_cost: Label
 @export var _label_desc: Label
 
 var _node_data: NodeData
 
-func Show(p_node: NodeData, p_supply_cost: int) -> void:
+func Show(p_node: NodeData) -> void:
 	_node_data = p_node
 	match p_node.node_type:
 		NodeData.Node_Type.FIGHT:
@@ -24,11 +23,6 @@ func Show(p_node: NodeData, p_supply_cost: int) -> void:
 			_label_type.text = "Gamble"
 		NodeData.Node_Type.ESCALATE:
 			_label_type.text = "Escalate Challenge"
-	match p_node.node_type:
-		NodeData.Node_Type.FIGHT, NodeData.Node_Type.BOSS:
-			_label_cost.text = "Cost: " + str(p_supply_cost) + " Supplies"
-		_:
-			_label_cost.text = ""
 	_label_desc.text = ""
 	visible = true
 

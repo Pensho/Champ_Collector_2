@@ -124,7 +124,7 @@ code, including:
   `MINIMUM_CRIT_DAMAGE = 125.0`, `ATTRIBUTE_HEALTH_MULTIPLIER = 4`.
 - Progression: the experience-curve constants (`EXPERIENCE_FACTOR`, `EXPERIENCE_EXPONENT`,
   `EXPERIENCE_CONSTANT_1..3`), `LEVEL_UP_POINTS_TO_DISTRIBUTE = 20`.
-- Collections, items, adventure energy costs, and the `ITEM_TYPE_ATTRIBUTES` map describing
+- Collections, items, adventure Rest Stop costs, and the `ITEM_TYPE_ATTRIBUTES` map describing
   which attributes each gear slot can roll.
 
 It is referenced both as the autoload `Game_Balance.X` and, in a few files, by the class name
@@ -1894,8 +1894,8 @@ The adventure (run) system lives in `Scripts/Adventure_Scripts/`:
   node one `boss_battle_variants` entry; the node gets a copy of it
   (`duplicate_deep(DEEP_DUPLICATE_NONE)`, so its enemy lists are its own) carrying the adventure's
   loot table, and the biome's stage when the variant names none.
-- `adventure_state.gd` / `adventure_state_handler.gd` track current progress, supply-cost tiers,
-  daily reset, and serialization; the handler is in the `"saveable"` group.
+- `adventure_state.gd` / `adventure_state_handler.gd` track current progress, adventure-spanning
+  effects, and serialization; the handler is in the `"saveable"` group.
 - Rewards flow through `LootManager` (`Scripts/Battle/loot_manager.gd`) and `LootTable` resources:
   a difficulty-scaled budget feeds primary (guaranteed) and secondary (weighted) loot.
 

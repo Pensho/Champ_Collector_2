@@ -4,15 +4,13 @@ const SILVER_TITLE: String = "Silver"
 const SILVER_DESCRIPTION: String = "Earned from battles and used to purchase items and upgrades."
 
 const SUPPLIES_TITLE: String = "Supplies"
-const SUPPLIES_DESCRIPTION: String = "Spend to run content. Half are refunded if the player loses a battle."
+const SUPPLIES_DESCRIPTION: String = "Spent at Rest Stops to temporarily empower your champions."
 
 const FORTUNES_FAVOR_TITLE: String = "Fortune's Favor"
 const FORTUNES_FAVOR_DESCRIPTION: String = "Used to recruit new champions."
 
 const TALLY_TITLE: String = "Tallies"
 const TALLY_DESCRIPTION: String = "Earned by releasing champions. Spent at the Tally Board."
-
-const SUPPLY_REGEN_COUNTDOWN_COLOR: String = "#E6D29E" # pale gold
 
 @export var _fortunes_favor_UI: FortunesFavorUISlot
 @export var _silver_UI: ResourceUISlot
@@ -23,12 +21,6 @@ func _ready() -> void:
 	Refresh()
 	main.GetInstance()._resources.resources_changed.connect(Refresh)
 
-	var tooltip_timer: Timer = Timer.new()
-	tooltip_timer.wait_time = 1.0
-	tooltip_timer.autostart = true
-	tooltip_timer.timeout.connect(_RefreshSuppliesTooltip)
-	add_child(tooltip_timer)
-
 func Refresh() -> void:
 	var resources: ResourceHandler = main.GetInstance()._resources
 
@@ -36,9 +28,9 @@ func Refresh() -> void:
 	_silver_UI.SetTexture(resources.SILVER_COIN_TEXTURE)
 	_silver_UI.SetToolTip(SILVER_TITLE, SILVER_DESCRIPTION)
 
-	_supplies_UI.SetText(str(resources._supplies) + "/" + str(GameBalance.MAX_SUPPLIES))
+	_supplies_UI.SetText(str(resources._supplies))
 	_supplies_UI.SetTexture(resources.SUPPLIES_TEXTURE)
-	_RefreshSuppliesTooltip()
+	_supplies_UI.SetToolTip(SUPPLIES_TITLE, SUPPLIES_DESCRIPTION)
 
 	_tallies_UI.SetText(str(resources.GetTallies()))
 	_tallies_UI.SetTexture(resources.TALLY_TEXTURE)
@@ -67,15 +59,3 @@ func Refresh() -> void:
 			str(resources.GetFortunesFavor(FortuneFavorTier.TierType.PARCHMENT)),
 			resources.FORTUNES_FAVOR_PARCHMENT_1,
 			"Parchment Fortune's Favor", FORTUNES_FAVOR_DESCRIPTION)
-
-func _RefreshSuppliesTooltip() -> void:
-	var resources: ResourceHandler = main.GetInstance()._resources
-	var description: String = SUPPLIES_DESCRIPTION
-	var seconds_left: int = resources.GetSecondsUntilNextSupply()
-	if seconds_left > 0:
-		@warning_ignore("integer_division")
-		var minutes: int = seconds_left / 60
-		var seconds: int = seconds_left % 60
-		description += "\n[color=%s]Next +%d in %02d:%02d[/color]" % [
-				SUPPLY_REGEN_COUNTDOWN_COLOR, GameBalance.SUPPLY_REGEN_AMOUNT, minutes, seconds]
-	_supplies_UI.SetToolTip(SUPPLIES_TITLE, description)

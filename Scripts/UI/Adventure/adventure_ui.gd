@@ -3,8 +3,6 @@ extends Control
 @export var _graph_ui: AdventureGraphUi
 @export var _preview: AdventureNodePreview
 @export var _interaction_panel: AdventureInteractionPanel
-#@export var _label_supplies: Label
-@export var _label_steps: Label
 @export var _label_effects: Label
 @export var _button_finish: Button
 
@@ -16,7 +14,6 @@ func Init(p_context: ContextContainer) -> void:
 	_state = p_context._adventure_state
 	_hub_scene = p_context._arguments.get("Hub_Scene", "")
 	_act = p_context._arguments.get("Act")
-	_state.CheckDailyActivity()
 	_UpdateHeader()
 	if _state.adventure != null and _state.adventure.biome != null:
 		_graph_ui.SetBiomeVisuals(_state.adventure.biome.visual_data, _state._generation_seed)
@@ -29,9 +26,6 @@ func Init(p_context: ContextContainer) -> void:
 		_button_finish.show()
 
 func _UpdateHeader() -> void:
-	#_label_supplies.text = "Supplies: " + str(main.GetInstance()._resources._supplies)
-	#		+ "/" + str(GameBalance.MAX_SUPPLIES)
-	_label_steps.text = "Steps taken today: " + str(_state.steps_taken_today)
 	var effect_parts: Array[String] = []
 	for type: Types.Buff_Type in _state.active_buffs:
 		var combats: int = _state.active_buffs[type]
@@ -44,18 +38,15 @@ func _UpdateHeader() -> void:
 	_label_effects.text = "Active effects: " + ", ".join(effect_parts) if not effect_parts.is_empty() else ""
 
 func _on_node_selected(p_node: NodeData) -> void:
-	_preview.Show(p_node, _state.GetNodeSupplyCost())
+	_preview.Show(p_node)
 
 func _on_engage_confirmed(p_node: NodeData) -> void:
-	var supply_cost: int = _state.GetNodeSupplyCost()
-	_state.TakeStep()
 	_state.current_node_index = p_node.index
 	_UpdateHeader()
 	var context_container: ContextContainer = ContextContainer.new()
 	context_container._static_context = p_node.scene_context
 	context_container._previous_scene = "uid://mtv6bnpp8kjx"
 	context_container._arguments["Hub_Scene"] = _hub_scene
-	context_container._arguments["Supply_Cost"] = supply_cost
 	context_container._adventure_state = _state
 	var completed: int = _state.nodes.filter(func(n: NodeData) -> bool: return n.is_complete).size()
 	context_container._arguments["Difficulty"] = AdventureState.CalculateScaledDifficulty(

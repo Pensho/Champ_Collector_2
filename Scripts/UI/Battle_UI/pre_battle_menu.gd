@@ -194,12 +194,6 @@ func _on_start_button_up() -> void:
 		print("Trying to start a battle without any selected characters.")
 		return
 
-	var total: int = int(_self_context._arguments.get("Supply_Cost", GameBalance.ENCOUNTER_BASE_SUPPLY_COST))
-	if not main.GetInstance()._resources.SpendSupplies(total):
-		print("Not enough supplies to start this encounter.")
-		return
-	_self_context._arguments["Supply_Cost_Paid"] = total
-
 	if _self_context._adventure_state == null:
 		_self_context._arguments["Difficulty"] = _difficulty_option.get_selected_id()
 	_self_context._scene = "uid://cc883blynrgq2"

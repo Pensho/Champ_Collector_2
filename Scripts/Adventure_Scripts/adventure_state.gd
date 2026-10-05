@@ -4,8 +4,6 @@ var adventure: AdventureData
 var difficulty: int = 0
 var is_active: bool = false
 var current_node_index: int
-var last_palayed_date: String
-var steps_taken_today: int
 var nodes: Array[NodeData]
 
 # Adventure-spanning effects: type -> combats remaining (ADVENTURE_PERMANENT_EFFECT = rest of adventure)
@@ -19,10 +17,6 @@ static func CalculateScaledDifficulty(p_base: int, p_completed: int, p_total: in
 		return p_base
 	var tier: int = mini(int(floor(float(p_completed) * 3.0 / float(p_total))), 2)
 	return p_base + tier
-
-func GetNodeSupplyCost() -> int:
-	var tier: int = floor(float(steps_taken_today) / GameBalance.ADVENTURE_DAILY_TIER_THRESHOLD)
-	return GameBalance.ENCOUNTER_BASE_SUPPLY_COST + tier * GameBalance.ADVENTURE_SUPPLY_COST_TIER_INCREASE
 
 func MarkCurrentNodeComplete() -> void:
 	for node in nodes:
@@ -50,14 +44,6 @@ func DecrementAdventureEffects() -> void:
 		if active_debuffs[type] <= 0:
 			active_debuffs.erase(type)
 
-func TakeStep():
-	steps_taken_today += 1
-
-func CheckDailyActivity():
-	if (last_palayed_date != Time.get_date_string_from_system()):
-		steps_taken_today = 0
-		last_palayed_date = Time.get_date_string_from_system()
-
 func Serialize() -> Dictionary:
 	var completion_map: Dictionary[int, bool]
 	for node in nodes:
@@ -65,8 +51,6 @@ func Serialize() -> Dictionary:
 			completion_map[node.index] = true
 	return {
 		"current_node_index": current_node_index,
-		"steps_taken_today": steps_taken_today,
-		"last_played_date": last_palayed_date,
 		"completed_nodes": completion_map,
 		"is_active": is_active,
 		"difficulty": difficulty,
@@ -78,8 +62,6 @@ func Serialize() -> Dictionary:
 
 func Deserialize(p_data: Dictionary) -> void:
 	current_node_index = p_data.get("current_node_index", 0)
-	steps_taken_today = p_data.get("steps_taken_today", 0)
-	last_palayed_date = p_data.get("last_played_date", "")
 	is_active = p_data.get("is_active", false)
 	difficulty = p_data.get("difficulty", 0)
 

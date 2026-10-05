@@ -25,8 +25,6 @@ func Init(p_context_container: ContextContainer) -> void:
 		_texture_rect_background.size.x = 1280
 		_texture_rect_background.size.y = 720
 		_heading.text = "Lost"
-		var paid: int = int(_context._arguments.get("Supply_Cost_Paid", GameBalance.ENCOUNTER_BASE_SUPPLY_COST))
-		main.GetInstance()._resources.AddSupplies(paid / 2)
 		if(null != _reward_summary):
 			_reward_summary.hide()
 	elif(p_context_container._arguments["Battle_Result"] == "Victory"):
@@ -76,12 +74,6 @@ func _on_button_end_button_up() -> void:
 	main.GetInstance().change_scene(_context)
 
 func _on_button_replay_button_up() -> void:
-	var total: int = int(_context._arguments.get("Supply_Cost", GameBalance.ENCOUNTER_BASE_SUPPLY_COST))
-	if not main.GetInstance()._resources.SpendSupplies(total):
-		print("Not enough supplies to replay this encounter.")
-		return
-	_context._arguments["Supply_Cost_Paid"] = total
-
 	_context._scene = "uid://cc883blynrgq2"
 	main.GetInstance().change_scene(_context)
 

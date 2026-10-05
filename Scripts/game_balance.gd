@@ -138,13 +138,6 @@ const MINIMUM_CRIT_DAMAGE: float = 125.0
 # Sentinel duration for "active for the rest of the battle" (never decremented within it).
 const BATTLE_PERMANENT_EFFECT: int = 999999
 
-# Resources
-const MAX_SUPPLIES: int = 100
-const SUPPLY_REGEN_AMOUNT: int = 10
-const SUPPLY_REGEN_INTERVAL_SECONDS: int = 600
-const ENCOUNTER_BASE_SUPPLY_COST: int = 6 # base; surcharges (e.g. adventure tier) add on top
-const ADVENTURE_SUPPLY_COST_TIER_INCREASE: int = 3
-
 # Shop
 const SHOP_SLOT_COUNT: int = 6
 const SHOP_GEAR_SLOTS: int = 3
@@ -155,11 +148,6 @@ const SHOP_RELIC_MARKUP_MULTIPLIER: float = 3.0
 const SHOP_SUPPLIES_BUNDLE_AMOUNT: int = 25
 const SHOP_SUPPLIES_PRICE: int = 400
 const SHOP_FORTUNES_FAVOR_PRICE: int = 1200
-
-# Adventure
-const ADVENTURE_DAILY_TIER_THRESHOLD: int = 3
-const ADVENTURE_ENERGY_COST_TIER_2_MULTIPLIER: int = 2
-const ADVENTURE_MAX_DAILY_STEPS: int = 6
 
 # Adventure-spanning effects
 # Sentinel value for "active for the rest of the adventure" (never decremented).

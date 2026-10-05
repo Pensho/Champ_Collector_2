@@ -14,7 +14,7 @@ content_margin_right = 8.0
 content_margin_bottom = 6.0
 bg_color = Color(0, 0, 0, 0.3019608)
 
-[node name="Adventure" type="Control" unique_id=93246272 node_paths=PackedStringArray("_graph_ui", "_preview", "_interaction_panel", "_label_steps", "_label_effects", "_button_finish")]
+[node name="Adventure" type="Control" unique_id=93246272 node_paths=PackedStringArray("_graph_ui", "_preview", "_interaction_panel", "_label_effects", "_button_finish")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -25,7 +25,6 @@ script = ExtResource("2_advui")
 _graph_ui = NodePath("MarginContainer/VBoxContainer/AdventureGraphUi")
 _preview = NodePath("AdventureNodePreview")
 _interaction_panel = NodePath("AdventureInteractionPanel")
-_label_steps = NodePath("MarginContainer/VBoxContainer/PanelContainer_Header/VBoxContainer_Header/HBoxContainer_Header/Label_Steps")
 _label_effects = NodePath("MarginContainer/VBoxContainer/PanelContainer_Header/VBoxContainer_Header/Label_Effects")
 _button_finish = NodePath("MarginContainer/VBoxContainer/Button_Finish")
 
@@ -66,17 +65,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_theme")
 
-[node name="Label_Steps" type="Label" parent="MarginContainer/VBoxContainer/PanelContainer_Header/VBoxContainer_Header/HBoxContainer_Header" unique_id=200000004]
-layout_mode = 2
-size_flags_horizontal = 3
-theme = ExtResource("1_theme")
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.40392157)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 3
-theme_override_constants/shadow_offset_y = 3
-theme_override_constants/outline_size = 2
-text = "Steps taken today: 0"
-
 [node name="HBoxContainer_Back" type="HBoxContainer" parent="MarginContainer/VBoxContainer/PanelContainer_Header/VBoxContainer_Header/HBoxContainer_Header" unique_id=200000013]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -113,12 +101,12 @@ text = "Finish Adventure"
 
 [node name="ResourceBar" parent="." unique_id=200000012 instance=ExtResource("6_resourcebar")]
 layout_mode = 1
-anchors_preset = -1
+anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -193.0
+offset_left = -259.5
 offset_top = 5.0
-offset_right = 193.0
+offset_right = 259.5
 offset_bottom = 45.0
 grow_horizontal = 2
 

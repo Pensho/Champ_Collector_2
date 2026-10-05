@@ -4,53 +4,18 @@ var _state: AdventureState
 
 func before_each() -> void:
 	_state = AdventureState.new()
-	_state.steps_taken_today = 0
-
-func test_supply_cost_tiers() -> void:
-	var expected: Dictionary[int, int] = {
-		0: 0,
-		GameBalance.ADVENTURE_DAILY_TIER_THRESHOLD: 1,
-		GameBalance.ADVENTURE_DAILY_TIER_THRESHOLD * 2: 2,
-	}
-	for steps_taken_today: int in expected:
-		_state.steps_taken_today = steps_taken_today
-		var cost: int = _state.GetNodeSupplyCost()
-		var expected_cost: int = GameBalance.ENCOUNTER_BASE_SUPPLY_COST + \
-			expected[steps_taken_today] * GameBalance.ADVENTURE_SUPPLY_COST_TIER_INCREASE
-		assert_eq(cost, expected_cost,
-			"Supply cost at %d steps taken today should be base + %d tier increases." %
-				[steps_taken_today, expected[steps_taken_today]])
-
-func test_daily_reset() -> void:
-	_state.steps_taken_today = 4
-	# Set last_palayed_date to yesterday
-	var yesterday: Dictionary = Time.get_datetime_dict_from_system()
-	yesterday["day"] -= 1
-	_state.last_palayed_date = "%04d-%02d-%02d" % [yesterday["year"], yesterday["month"], yesterday["day"]]
-	_state.CheckDailyActivity()
-	assert_eq(_state.steps_taken_today, 0, "Steps should reset when a new day is detected.")
-
-func test_no_reset_same_day() -> void:
-	_state.steps_taken_today = 3
-	_state.last_palayed_date = Time.get_date_string_from_system()
-	_state.CheckDailyActivity()
-	assert_eq(_state.steps_taken_today, 3, "Steps should not reset on the same day.")
 
 func test_serialize_roundtrip() -> void:
 	_state.current_node_index = 7
-	_state.steps_taken_today = 2
 	_state.is_active = true
 	_state.difficulty = 2
-	_state.last_palayed_date = "2026-05-26"
 	var data: Dictionary = _state.Serialize()
 	var restored: AdventureState = AdventureState.new()
 	restored.Deserialize(data)
 	# is_active is intentionally not asserted: Deserialize forces it false when
 	# no adventure path is resolvable (correct behaviour for a test state).
 	assert_eq(restored.current_node_index, 7, "current_node_index must survive serialization.")
-	assert_eq(restored.steps_taken_today, 2, "steps_taken_today must survive serialization.")
 	assert_eq(restored.difficulty, 2, "difficulty must survive serialization.")
-	assert_eq(restored.last_palayed_date, "2026-05-26", "last_palayed_date must survive serialization.")
 
 func test_serialize_roundtrip_through_json_preserves_completion_and_active_state() -> void:
 	_state.adventure = load("res://Data/Adventure_Data/Adventures/adventure_reclaimed_city_jungle.tres")
