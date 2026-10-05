@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cjt1ioy83qgqy"
-path="res://.godot/imported/Ridge_Marksman.png-d31491b404ea0e6062a504fec8b6cb2f.ctex"
+uid="uid://c1hqut432dqlw"
+path="res://.godot/imported/rubble_breaker.png-a698ec3ca33ba875bf4cef4f5b8506fb.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Creatures/Opponents/Ridge_Marksman/Ridge_Marksman.png"
-dest_files=["res://.godot/imported/Ridge_Marksman.png-d31491b404ea0e6062a504fec8b6cb2f.ctex"]
+source_file="res://Assets/Champ_Collector/Creatures/Opponents/rubble_breaker.png"
+dest_files=["res://.godot/imported/rubble_breaker.png-a698ec3ca33ba875bf4cef4f5b8506fb.ctex"]
 
 [params]
 

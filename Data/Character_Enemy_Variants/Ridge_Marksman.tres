@@ -9,7 +9,7 @@
 [resource]
 script = ExtResource("1_preset")
 _name = "Ridge Marksman"
-_texture = "res://Assets/Champ_Collector/Creatures/Opponents/Ridge_Marksman/Ridge_Marksman.png"
+_texture = "res://Assets/Champ_Collector/Creatures/Opponents/ridge_marksman.png"
 _faction = 4
 _role = 13
 _skills = Array[ExtResource("1_skill")]([ExtResource("2_stab"), ExtResource("3_aimed")])

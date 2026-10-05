@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bugrkedqke53q"
-path="res://.godot/imported/Scavenger_Skirmisher.png-1326e44ffe09bbd57aafcf589af203ab.ctex"
+uid="uid://den660jbvte3u"
+path="res://.godot/imported/ridge_marksman.png-b1684fd7e3d4f8568162eaa90564f9c0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Creatures/Opponents/Scavenger_Skirmisher/Scavenger_Skirmisher.png"
-dest_files=["res://.godot/imported/Scavenger_Skirmisher.png-1326e44ffe09bbd57aafcf589af203ab.ctex"]
+source_file="res://Assets/Champ_Collector/Creatures/Opponents/ridge_marksman.png"
+dest_files=["res://.godot/imported/ridge_marksman.png-b1684fd7e3d4f8568162eaa90564f9c0.ctex"]
 
 [params]
 
