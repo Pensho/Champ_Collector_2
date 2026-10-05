@@ -227,7 +227,11 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 
 	_TickCooldowns(caster)
 	if(not (is_non_basic and _status_resolver._ConsumeRehearsedIfPresent(p_caster_ID))):
-		caster._skills[p_skill_ID].cooldown_left = caster._skills[p_skill_ID].cooldown
+		# Matched by name: a phase 2 transition mid-cast replaces the skill list.
+		for skill: Skill in caster._skills:
+			if(skill.name == cast_skill.name):
+				skill.cooldown_left = skill.cooldown
+				break
 
 	_zone_resolver.TriggerZones(p_caster_ID)
 

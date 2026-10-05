@@ -100,6 +100,25 @@ func test_a_shared_skill_keeps_its_cooldown() -> void:
 	assert_eq(skills[0].cooldown_left, 2, "Size Up is in both kits, so its cooldown carries over")
 	assert_eq(skills[1].cooldown_left, 0, "Cash In is new and starts ready")
 
+func test_a_transition_mid_cast_puts_the_cooldown_on_the_cast_skill() -> void:
+	var boss: Character = _roster[BOSS_ID]
+	var cash_in: Skill = _skill("Cash In")
+	cash_in.cooldown = 4
+	boss._skills = [cash_in, _skill("Size Up")]
+	var phase_two_cash_in: Skill = _skill("Cash In")
+	phase_two_cash_in.cooldown = 4
+	boss._phase_two_skills = [_skill("Size Up"), phase_two_cash_in]
+	boss._current_health = _max_health / 2 + 1
+	var burning: StatusEffects.Debuff = StatusEffects.Debuff.new()
+	burning.type = Types.Debuff_Type.Burning
+	burning.duration = 3
+	burning.source_ID = 0
+	boss._active_debuffs.append(burning)
+	_resolver.ResolveSkill(BOSS_ID, [0], 0)
+	assert_true(boss._in_phase_two, "Sanity check: the Burning tick should trigger the transition")
+	assert_eq(boss._skills[0].cooldown_left, 0, "Size Up was not cast")
+	assert_eq(boss._skills[1].cooldown_left, 4, "Cash In was cast, so its phase 2 version goes on cooldown")
+
 func test_a_null_phase_two_trait_keeps_the_current_trait() -> void:
 	var current_trait: CharacterTrait = RecordingTrait.new()
 	_roster[BOSS_ID]._trait = current_trait
