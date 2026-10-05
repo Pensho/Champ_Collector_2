@@ -261,11 +261,6 @@ const CREATURE_PLACEHOLDER_TABLE: Array = [
 			"color": Color(0.65, 0.50, 0.25, 1.0) },
 	{ "folder": "War_Drummer", "base_name": "War_Drummer", "size": 128,
 			"color": Color(0.60, 0.45, 0.20, 1.0) },
-	# Ridge Marksmen
-	{ "folder": "Scavenger_Skirmisher", "base_name": "Scavenger_Skirmisher", "size": 128,
-			"color": Color(0.55, 0.40, 0.30, 1.0) },
-	{ "folder": "Ridge_Marksman", "base_name": "Ridge_Marksman", "size": 128,
-			"color": Color(0.50, 0.35, 0.25, 1.0) },
 	# Flank Cutter
 	{ "folder": "Flank_Cutter", "base_name": "Flank_Cutter", "size": 128,
 			"color": Color(0.70, 0.25, 0.20, 1.0) },
