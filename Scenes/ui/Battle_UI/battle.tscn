@@ -29,15 +29,15 @@ height = 0.3
 
 [node name="Stage_Anchor" type="Node2D" parent="." unique_id=1975065901]
 
-[node name="Enemy_1" parent="." unique_id=1908700306 instance=ExtResource("3_ww2ai")]
-visible = false
-position = Vector2(865, 260)
-_target_ID = 3
-
 [node name="Enemy_2" parent="." unique_id=485644758 instance=ExtResource("3_ww2ai")]
 visible = false
 position = Vector2(690, 205)
 _target_ID = 4
+
+[node name="Enemy_1" parent="." unique_id=1908700306 instance=ExtResource("3_ww2ai")]
+visible = false
+position = Vector2(865, 260)
+_target_ID = 3
 
 [node name="Enemy_3" parent="." unique_id=1432082750 instance=ExtResource("3_ww2ai")]
 visible = false
@@ -87,8 +87,8 @@ height = 35.0
 [connection signal="graft_confirmed" from="CanvasLayer/Battle UI" to="." method="_on_battle_ui_graft_confirmed"]
 [connection signal="reagent_confirmed" from="CanvasLayer/Battle UI" to="." method="_on_battle_ui_reagent_confirmed"]
 [connection signal="thread_switch_selected" from="CanvasLayer/Battle UI" to="." method="_on_battle_ui_thread_switch_selected"]
-[connection signal="battle_target_selected" from="Enemy_1" to="." method="_on_character_battle_target_selected"]
 [connection signal="battle_target_selected" from="Enemy_2" to="." method="_on_character_battle_target_selected"]
+[connection signal="battle_target_selected" from="Enemy_1" to="." method="_on_character_battle_target_selected"]
 [connection signal="battle_target_selected" from="Enemy_3" to="." method="_on_character_battle_target_selected"]
 [connection signal="battle_target_selected" from="Character_1" to="." method="_on_character_battle_target_selected"]
 [connection signal="battle_target_selected" from="Character_2" to="." method="_on_character_battle_target_selected"]

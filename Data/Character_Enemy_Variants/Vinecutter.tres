@@ -1,5 +1,6 @@
-[gd_resource type="Resource" script_class="CharacterPreset" format=3]
+[gd_resource type="Resource" script_class="CharacterPreset" format=3 uid="uid://d16vneh4sqans"]
 
+[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_pbtuq"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="1_preset"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
 [ext_resource type="Resource" uid="uid://dn1j0tcepmp1r" path="res://Data/Character_Skill_Variants/Attack_Skills/Flank_Cut.tres" id="2_skill"]
@@ -12,9 +13,9 @@ _faction = 4
 _role = 13
 _skills = Array[ExtResource("1_skill")]([ExtResource("2_skill")])
 _thematic_hint = "Fast, and working the far edge of the line."
-_health = 140
-_speed = 90
-_attack = 70
+_health = 120
+_speed = 70
+_attack = 80
 _defence = 40
 _accuracy = 30
 _resistance = 20
