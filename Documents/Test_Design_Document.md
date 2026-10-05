@@ -10,7 +10,8 @@ Run headlessly from the project root:
 ```
 
 `Tests/run_tests.sh` wraps the `gut_cmdln.gd` invocation and prints only GUT's run
-summary — failing tests with their assert texts and line numbers, plus the totals.
+summary — failing tests with their assert texts and line numbers, plus the totals — followed
+by any test script that failed to load, which fails the run.
 Arguments are passed through to GUT, so `./Tests/run_tests.sh -gtest=res://Tests/unit/test_foo.gd`
 runs a single file. `--mode <name>` (e.g. `--mode playtest`) additionally runs the
 suite under that build mode's content pool, on top of the always-run full game.

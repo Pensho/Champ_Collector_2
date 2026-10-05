@@ -50,10 +50,28 @@ else
 	SELECTION=(-gdir=res://Tests/unit/ -gprefix=test_ -gsuffix=.gd)
 fi
 
+# A test script that fails to parse is skipped by GUT and missing from the totals, so its
+# load error (printed before the summary) is reported separately and fails the run.
 run_suite() {
-	CHAMP_COLLECTOR_BUILD_MODE="$1" "$GODOT" --headless -s addons/gut/gut_cmdln.gd "${SELECTION[@]}" -gexit 2>&1 |
+	local output
+	output="$(CHAMP_COLLECTOR_BUILD_MODE="$1" "$GODOT" --headless -s addons/gut/gut_cmdln.gd \
+		"${SELECTION[@]}" -gexit 2>&1)"
+	local status=$?
+	printf '%s\n' "$output" |
 		sed -n '/= Run Summary/,$p' |
 		grep -vE '^(WARNING|ERROR):|^   at: '
+	local failed_loads
+	failed_loads="$(printf '%s\n' "$output" |
+		grep -oE 'Failed to load script "res://Tests/[^"]+"' |
+		sed -E 's/.*"(res:[^"]+)"/\1/' |
+		sort -u)"
+	if [ -n "$failed_loads" ]; then
+		echo
+		echo "---- Test scripts that failed to load (not counted above) ----"
+		printf '  %s\n' $failed_loads
+		return 1
+	fi
+	return $status
 }
 
 if [ -z "$MODE" ]; then
