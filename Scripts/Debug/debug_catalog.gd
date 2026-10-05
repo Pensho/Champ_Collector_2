@@ -49,10 +49,12 @@ const BATTLE_CONTEXTS: Dictionary[String, Context_Battle] = {
 	"Ridge Marksmen": preload("res://Data/Battle_Variants/Battle_Ridge_Marksmen.tres"),
 	"Flank Cutter": preload("res://Data/Battle_Variants/Battle_Flank_Cutter.tres"),
 	"Line Breaker": preload("res://Data/Battle_Variants/Battle_Line_Breaker.tres"),
+	"Clearing Crew": preload("res://Data/Battle_Variants/Battle_Clearing_Crew.tres"),
 	"Ashen Oracle": preload("res://Data/Battle_Variants/Battle_Ashen_Oracle.tres"),
 	"Glyphbound Archivist": preload("res://Data/Battle_Variants/Battle_Glyphbound_Archivist.tres"),
 	"Collector of Debts": preload("res://Data/Battle_Variants/Battle_Collector_of_Debts.tres"),
 	"Warden of the Reliquary": preload("res://Data/Battle_Variants/Battle_Warden_of_the_Reliquary.tres"),
+	"Salvage Baron": preload("res://Data/Battle_Variants/Battle_Salvage_Baron.tres"),
 }
 
 ## Used when constructing a debug item for a slot that has no dedicated icon.

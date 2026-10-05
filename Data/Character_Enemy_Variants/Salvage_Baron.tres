@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="CharacterPreset" format=3 uid="uid://5syaawhghivy"]
+
+[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_f7s6q"]
+[ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="1_preset"]
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Resource" uid="uid://bdedgdr48gdle" path="res://Data/Character_Skill_Variants/Attack_Skills/Size_Up.tres" id="2_size_up"]
+[ext_resource type="Resource" uid="uid://bjosnq00sfyoy" path="res://Data/Character_Skill_Variants/Attack_Skills/Cash_In.tres" id="3_cash_in"]
+[ext_resource type="Resource" path="res://Data/Character_Traits/Enemy_Traits/Press_the_Advantage_Trait.tres" id="4_trait"]
+
+[resource]
+script = ExtResource("1_preset")
+_name = "Salvage Baron"
+_texture = "res://Assets/Champ_Collector/Creatures/Opponents/salvage_baron.png"
+_faction = 4
+_role = 13
+_skills = Array[ExtResource("1_skill")]([ExtResource("2_size_up"), ExtResource("3_cash_in")])
+_thematic_hint = "Sizing up the party for whoever is worth the least."
+_health = 400
+_speed = 45
+_attack = 70
+_defence = 70
+_accuracy = 65
+_resistance = 40
+_mysticism = 20
+_knowledge = 30
+_phase_two_trait = ExtResource("4_trait")
+_phase_two_text = "Time to collect!"
+metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

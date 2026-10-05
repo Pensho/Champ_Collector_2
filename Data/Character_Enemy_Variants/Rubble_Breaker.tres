@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="CharacterPreset" format=3]
+
+[ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="1_preset"]
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Resource" uid="uid://dkponwva6f3ai" path="res://Data/Character_Skill_Variants/Attack_Skills/Breaching_Charge.tres" id="2_skill"]
+
+[resource]
+script = ExtResource("1_preset")
+_name = "Rubble Breaker"
+_texture = "res://Assets/Champ_Collector/Creatures/Opponents/rubble_breaker.png"
+_faction = 4
+_role = 13
+_skills = Array[ExtResource("1_skill")]([ExtResource("2_skill")])
+_thematic_hint = "Clearing a path through whoever stands at the near end."
+_health = 110
+_speed = 45
+_attack = 70
+_defence = 35
+_accuracy = 25
+_resistance = 15
+_mysticism = 10
+_knowledge = 10
+metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

@@ -18,3 +18,6 @@ func OnAllyAttackLanded(
 	momentum.name = "Momentum"
 	momentum.source_ID = p_owner_ID
 	p_resolver.GetStatusResolver().ApplyStackingBuff(p_owner_ID, momentum)
+
+func RefreshVisuals(_p_character_repr: CharacterRepresentation) -> void:
+	pass

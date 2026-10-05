@@ -60,6 +60,15 @@ const EXPECTED_COMPOSITIONS: Dictionary[String, Array] = {
 	"res://Data/Battle_Variants/Battle_Statue_Boots.tres": [
 		"res://Data/Character_Enemy_Variants/Statue_Boots.tres",
 	],
+	"res://Data/Battle_Variants/Battle_Clearing_Crew.tres": [
+		"res://Data/Character_Enemy_Variants/Rubble_Breaker.tres",
+		"res://Data/Character_Enemy_Variants/Vinecutter.tres",
+	],
+	"res://Data/Battle_Variants/Battle_Salvage_Baron.tres": [
+		"res://Data/Character_Enemy_Variants/Scavenger_Skirmisher.tres",
+		"res://Data/Character_Enemy_Variants/Salvage_Baron.tres",
+		"res://Data/Character_Enemy_Variants/Scavenger_Skirmisher.tres",
+	],
 }
 
 ## Enemy preset -> cataloged mechanic skill name(s) it must hold (Encounter Design
@@ -69,7 +78,7 @@ const EXPECTED_SKILLS_BY_PRESET: Dictionary[String, Array] = {
 	"res://Data/Character_Enemy_Variants/Sporeback_Matron.tres": ["Sporeburst Mend"],
 	"res://Data/Character_Enemy_Variants/Bosun.tres": ["Rally the Crew"],
 	"res://Data/Character_Enemy_Variants/War_Drummer.tres": ["March Cadence"],
-	"res://Data/Character_Enemy_Variants/Ridge_Marksman.tres": ["Aimed Shot"],
+	"res://Data/Character_Enemy_Variants/Ridge_Marksman.tres": ["Spotting Shot", "Aimed Shot"],
 	"res://Data/Character_Enemy_Variants/Flank_Cutter.tres": ["Flank Cut"],
 	"res://Data/Character_Enemy_Variants/Plains_Charger.tres": ["Breaching Charge"],
 	"res://Data/Character_Enemy_Variants/Ashen_Oracle.tres": ["Cinder Spit", "Cinder Sermon"],
@@ -80,7 +89,23 @@ const EXPECTED_SKILLS_BY_PRESET: Dictionary[String, Array] = {
 	"res://Data/Character_Enemy_Variants/Reliquary_Core.tres": ["Reliquary Ward"],
 	"res://Data/Character_Enemy_Variants/Statue_Boots.tres": ["Wind the Mainspring"],
 	"res://Data/Character_Enemy_Variants/Statue_Weapon.tres": ["Break Guard", "Crush"],
+	"res://Data/Character_Enemy_Variants/Rubble_Breaker.tres": ["Breaching Charge"],
+	"res://Data/Character_Enemy_Variants/Vinecutter.tres": ["Flank Cut"],
+	"res://Data/Character_Enemy_Variants/Salvage_Baron.tres": ["Size Up", "Cash In"],
 }
+
+const ADVENTURES_DIRECTORY: String = "res://Data/Adventure_Data/Adventures/"
+
+## Adventures whose boss is a placeholder awaiting its own encounter design, so it has no
+## phase 2 yet.
+const PLACEHOLDER_BOSS_ADVENTURES: Array[String] = [
+	"res://Data/Adventure_Data/Adventures/adventure_reclaimed_city_magic_ruins.tres",
+]
+
+const SPOTTING_SKILLS: Array[String] = [
+	"res://Data/Character_Skill_Variants/Attack_Skills/Spotting_Shot.tres",
+	"res://Data/Character_Skill_Variants/Attack_Skills/Size_Up.tres",
+]
 
 
 func test_every_battle_variant_fields_one_to_three_enemies() -> void:
@@ -119,3 +144,62 @@ func test_enemies_carrying_a_cataloged_mechanic_hold_that_skill() -> void:
 			assert_true(held_skill_names.has(expected_skill_name),
 					"%s: missing expected skill %s (has %s)" %
 							[preset_path, expected_skill_name, held_skill_names])
+
+
+func test_spotting_skills_damage_the_chosen_enemy_and_spot_the_lowest_priority_one() -> void:
+	for skill_path in SPOTTING_SKILLS:
+		var skill: Skill = load(skill_path)
+		assert_eq(skill.target, Types.Skill_Target.Single_Enemy, "%s: damages a chosen enemy" % skill_path)
+		var spotted_effects: Array = skill.effects.filter(
+				func(effect: SkillEffect) -> bool:
+					return effect is ApplyDebuffEffect and Types.Debuff_Type.Spotted == effect.debuff_type)
+		assert_eq(spotted_effects.size(), 1, "%s: carries one Spotted application" % skill_path)
+		if(spotted_effects.size() == 1):
+			assert_eq(spotted_effects[0].target, Types.Skill_Target.Lowest_Priority_Enemy)
+			assert_eq(spotted_effects[0].duration, 2)
+
+
+func test_aimed_shot_follows_the_chosen_target() -> void:
+	var aimed_shot: Skill = load("res://Data/Character_Skill_Variants/Attack_Skills/Aimed_Shot.tres")
+	assert_eq(aimed_shot.target, Types.Skill_Target.Single_Enemy,
+			"Aimed Shot must take the chosen target so it follows Spotted")
+
+
+func test_salvage_baron_gains_press_the_advantage_in_phase_two() -> void:
+	var baron: CharacterPreset = load("res://Data/Character_Enemy_Variants/Salvage_Baron.tres")
+	assert_true(baron._phase_two_trait is PressTheAdvantageTrait)
+
+
+func test_every_placed_boss_has_a_phase_two() -> void:
+	var dir := DirAccess.open(ADVENTURES_DIRECTORY)
+	assert_not_null(dir)
+	if dir == null:
+		return
+	for file_name in dir.get_files():
+		if not file_name.ends_with(".tres"):
+			continue
+		var adventure_path: String = ADVENTURES_DIRECTORY.path_join(file_name)
+		if PLACEHOLDER_BOSS_ADVENTURES.has(adventure_path):
+			continue
+		var adventure: AdventureData = load(adventure_path)
+		for boss_battle: Context_Battle in adventure.boss_battle_variants:
+			var phased: bool = boss_battle._enemies_wave_1.any(
+					func(preset: CharacterPreset) -> bool:
+						return not preset._phase_two_skills.is_empty() or null != preset._phase_two_trait)
+			assert_true(phased, "%s: boss battle %s has no phase 2 boss" % [file_name, boss_battle.resource_path])
+
+
+func test_ridge_marksmans_spotting_shot_spots_the_lowest_priority_champion() -> void:
+	var TestFactory = load("res://Tests/unit/helpers/test_factory.gd")
+	var roster: Dictionary[int, Character] = {}
+	roster.assign(TestFactory.make_full_roster())
+	roster[2]._attributes[Types.Attribute.Defence] = 1
+	var marksman: Character = Character.new()
+	marksman.InstantiateNew(load("res://Data/Character_Enemy_Variants/Ridge_Marksman.tres"), 3)
+	marksman._current_health = 1000
+	roster[3] = marksman
+	var resolver: BattleResolver = TestFactory.make_resolver(roster, TestFactory.make_full_sides())
+	resolver.ResolveSkill(3, [0], 0)
+	var spotted: bool = roster[2]._active_debuffs.any(
+			func(debuff: StatusEffects.Debuff) -> bool: return Types.Debuff_Type.Spotted == debuff.type)
+	assert_true(spotted, "Spotting Shot should Spot the lowest-priority champion, not the one it hit")

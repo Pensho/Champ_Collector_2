@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_igkpp"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="1_preset"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
-[ext_resource type="Resource" uid="uid://dvgwxvsovsldc" path="res://Data/Character_Skill_Variants/Attack_Skills/Stab.tres" id="2_stab"]
+[ext_resource type="Resource" path="res://Data/Character_Skill_Variants/Attack_Skills/Spotting_Shot.tres" id="2_spotting"]
 [ext_resource type="Resource" uid="uid://beas40vltkngn" path="res://Data/Character_Skill_Variants/Attack_Skills/Aimed_Shot.tres" id="3_aimed"]
 
 [resource]
@@ -12,13 +12,13 @@ _name = "Ridge Marksman"
 _texture = "res://Assets/Champ_Collector/Creatures/Opponents/ridge_marksman.png"
 _faction = 4
 _role = 13
-_skills = Array[ExtResource("1_skill")]([ExtResource("2_stab"), ExtResource("3_aimed")])
+_skills = Array[ExtResource("1_skill")]([ExtResource("2_spotting"), ExtResource("3_aimed")])
 _thematic_hint = "Watching for whoever looks weakest."
 _health = 75
 _speed = 45
 _attack = 65
 _defence = 25
-_accuracy = 25
+_accuracy = 60
 _resistance = 10
 _mysticism = 10
 _knowledge = 10

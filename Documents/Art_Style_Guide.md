@@ -1025,6 +1025,11 @@ sees is any three of them standing together.
 Dirt, grime, stains and grease do not survive the post-processing pass — four
 flat value bands quantize a smudge into nothing.
 
+**Stain blotches, under test.** Structural wear alone left the Scavenger Skirmisher
+looking new; `blotches of stains across` the garments and `dried bug blood on` the
+weapons made him look used. *Blotches* asks for shapes, which may be why it works.
+Confirm after the quantize step (19.2).
+
 Wear that reads at 300 px is structural: a sleeve burned off at the elbow, a hem
 torn and re-panelled, a mended patch with hard angular edges, a strap replaced
 with the wrong material, a scar as a solid band 1 shape.
@@ -1378,6 +1383,10 @@ the mask does not.
 Enemies inherit everything in Part I and most of section 8. What follows is the
 difference.
 
+**Enemies face left.** Champions face right, so enemies are generated facing left
+with the light still from the upper left — never mirrored in the engine, which
+moves the light. Their tail is 4.2 with `three-quarter view facing left`.
+
 ### 9.1 Detail tier by content tier
 
 - **Player Roles** — the block as written.
@@ -1389,15 +1398,41 @@ difference.
 
 ### 9.2 Fodder
 
-> **Not yet written.** How many distinct fodder bodies exist per area, whether
-> recolours are permitted and on which slot, and how a fodder silhouette stays
-> separable from a champion's at 300 px.
+The 8.6 block at the 9.1 tier: `three values only`, `minimal interior detail,
+large simple shapes`, one named region carrying the only engraved detail, and
+`no accent color`.
+
+- **Dress for the biome.** Clothing, tools and protection are what the place
+  demands. The fantasy layer is protection against its wildlife, harvested from
+  its creatures and heaviest on the figures who fight up close. Gear from ordinary
+  real objects alone reads as a farmer (8.1).
+- **Hide the face with the biome** — a brim, a creature-shell helmet, a
+  creature-eye lens — never with a garment from another climate.
+- **Worn, not new.** Structural wear (8.5) plus stain blotches and creature blood
+  on weapons.
+- **One garment hue per encounter**, from dyes the biome supplies, chosen fresh
+  each time and kept off the champion accents (8.9).
+- **Separate the bodies of one encounter in pure black** — the Skirmisher's low X
+  against the Marksman's tall bow.
+
+**Jungle kit:** thin long sleeves cinched at the wrist, trousers tucked into tall
+laced boots, palm fibre, beetle carapace, split-cane shin splints, mud as one
+hard-edged mass to the shin.
+
+> **Not yet written.** Fodder bodies per area, and whether recolours are allowed.
 
 ### 9.3 Mini-bosses and bosses
 
-> **Not yet written.** Scale relative to champions, how the additional counted
-> focal element is chosen, and whether bosses carry an accent registered like a
-> Role's or borrow the area scene light.
+- **The face is shown**, under the full 8.4 rules.
+- **Scale is set in the engine**, not the prompt (9.1).
+- **The extra focal element may be a creature the boss commands** — the Salvage
+  Baron's chained wasp, which is also his element from outside reality (8.1).
+- **Menace is aggression aimed at the player.** Brows crushed low, head pushed
+  forward, a glare from beneath the brow, a snarl; a pose with intent, weapon
+  raised and weight forward; the companion let loose. A resting weapon reads calm
+  whatever the face. Enlarged eyes push toward cartoon (17).
+
+> **Not yet written.** Mini-boss rules.
 
 ### 9.4 Non-humanoid and creature forms
 
@@ -1411,6 +1446,9 @@ difference.
 > **Not yet written.** Whether enemies draw from the champion accent registry,
 > from the area scene light, or from a separate reserved set — and how enemy color
 > avoids being read as a champion's identity color during a fight.
+
+**Stated so far.** Fodder carries no accent (9.2). The Salvage Baron's amber is
+the first boss accent, between Jester saffron and Lancer copper (19.2).
 
 ---
 ## 10. Environments

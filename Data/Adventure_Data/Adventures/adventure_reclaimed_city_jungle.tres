@@ -7,7 +7,8 @@
 [ext_resource type="Script" uid="uid://bjtnao6fgl8go" path="res://Scripts/Worldview/Context_Battle.gd" id="5_battle"]
 [ext_resource type="Resource" uid="uid://bu4n7icb8yyp6" path="res://Data/Battle_Variants/Battle_Sporeback_Pack.tres" id="6_sporeback"]
 [ext_resource type="Resource" uid="uid://32emvn26v7mv" path="res://Data/Battle_Variants/Battle_Ridge_Marksmen.tres" id="7_marksmen"]
-[ext_resource type="Resource" uid="uid://dbc3pmbr82wcc" path="res://Data/Battle_Variants/Battle_Obsidian_Stallion.tres" id="8_stallion"]
+[ext_resource type="Resource" path="res://Data/Battle_Variants/Battle_Clearing_Crew.tres" id="8_clearing_crew"]
+[ext_resource type="Resource" path="res://Data/Battle_Variants/Battle_Salvage_Baron.tres" id="9_baron"]
 [ext_resource type="Resource" uid="uid://ckmtp8rvhbx3a" path="res://Data/Loot_Tables/Adventure_Boss_Loot.tres" id="11_launh"]
 [ext_resource type="Resource" uid="uid://dauwp8sbf3ga" path="res://Data/Loot_Tables/Experience_Quest.tres" id="12_lh4g1"]
 [ext_resource type="Resource" uid="uid://wg8ohcii0wix" path="res://Data/Loot_Tables/Adventure_Escalate_Loot.tres" id="13_kofhi"]
@@ -21,9 +22,10 @@ layout = ExtResource("3_layout")
 biome = ExtResource("4_biome")
 battle_variants = Dictionary[ExtResource("5_battle"), int]({
 ExtResource("6_sporeback"): 100,
-ExtResource("7_marksmen"): 100
+ExtResource("7_marksmen"): 100,
+ExtResource("8_clearing_crew"): 100
 })
-boss_battle_variants = Array[ExtResource("5_battle")]([ExtResource("8_stallion")])
+boss_battle_variants = Array[ExtResource("5_battle")]([ExtResource("9_baron")])
 combat_rewards = ExtResource("12_lh4g1")
 boss_rewards = ExtResource("11_launh")
 hint_rewards = ExtResource("14_c3w72")

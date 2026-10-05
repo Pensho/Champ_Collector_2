@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="Skill" format=3 uid="uid://bmqbevtdj0smi"]
+
+[ext_resource type="Script" uid="uid://bmqtglyyora7q" path="res://Scripts/Battle/Skill_Effects/skill_effect.gd" id="1_effect"]
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Script" uid="uid://bn0n72opjy7sb" path="res://Scripts/Battle/Skill_Effects/damage_effect.gd" id="2_damage"]
+[ext_resource type="Script" uid="uid://bonwfsp34aafb" path="res://Scripts/Battle/Skill_Effects/apply_debuff_effect.gd" id="3_debuff"]
+
+[sub_resource type="Resource" id="Resource_damage"]
+script = ExtResource("2_damage")
+damage_scaling = Dictionary[int, float]({
+2: 0.7
+})
+
+[sub_resource type="Resource" id="Resource_spotted"]
+script = ExtResource("3_debuff")
+debuff_type = 28
+duration = 2
+target = 20
+
+[resource]
+script = ExtResource("1_skill")
+name = "Spotting Shot"
+description = "Deals damage to a single enemy, scaled by Attack, and applies Spotted for 2 turns to the lowest-priority enemy."
+effects = Array[ExtResource("1_effect")]([SubResource("Resource_damage"), SubResource("Resource_spotted")])
+metadata/_custom_type_script = "uid://glh06y3wvchj"
