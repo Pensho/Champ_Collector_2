@@ -83,6 +83,13 @@ func test_a_second_landed_application_moves_the_mark() -> void:
 	assert_true(_is_spotted(1), "The second application should land on the new target")
 	assert_false(_is_spotted(0), "The old holder should lose Spotted when it moves")
 
+func test_a_lowest_priority_application_spots_that_enemy_not_the_one_hit() -> void:
+	_roster[2]._attributes[Types.Attribute.Defence] = 1
+	_roster[3]._skills[0].effects[0].target = Types.Skill_Target.Lowest_Priority_Enemy
+	_resolver.ResolveSkill(3, [0], 0)
+	assert_true(_is_spotted(2), "The lowest-priority enemy should be Spotted")
+	assert_false(_is_spotted(0), "The chosen target should not be Spotted")
+
 func test_a_resisted_application_leaves_the_old_holder_spotted() -> void:
 	_resolver.ResolveSkill(3, [0], 0)
 	_roster[3]._attributes[Types.Attribute.Accuracy] = 1
