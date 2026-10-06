@@ -1,4 +1,4 @@
-# Game Concept Document: Character Collector (Temporary name)
+# Game Concept Document: Writborn Uprising
 
 ---
 
@@ -1276,6 +1276,15 @@ Developed in World_Building.md section 5; listed here for reference:
 - **The Churning Marches and the Glass Weald** — the geographical "scar" of the God of Magic's betrayal, a forest of razor-sharp glass trees where those who linger become "Refracted" (World_Building.md 5.3).
 - **The Frozen Ledger (The Glacial Archives)** — northern mountain vaults of "Inert Information" guarded by the Silent Monks of the Abacus (World_Building.md 5.2).
 - **The Under-Spire (The Grease-Pits and the Sinking Sluices)** — the slums beneath the Clockwork Spire, home to the Filter-Folk (World_Building.md 5.1).
+
+### 4.4. Story
+
+The player starts with a few characters struggling to make a living through the Reclaimed city, an ancient overgrown ruin in the middle of a dense jungle, they scavenge magical artifacts that are sold elsewhere.
+Noticing the value of these artifacts and wanting to break out of this dangerously structured way of life enforced on them to survive they travel to the Clockwork Spire where they find out that the artifacts refer to something beyond the God of Adventure and the God of Structure and that the City of the Iron Ledger secretly imports them.
+
+It seems to be deliberately hidden by the ruling religion of the God of Structure and its massive authority, held in the city of the capital city; The Iron Ledger. However they cannot simply enter the city, so they go out to find the ones transporting and smuggling the artifacts into the city; the pirates (no other name made for them yet so pirates my be a placeholder). And have them make forged papers for entry so that they can enter the city.
+
+When finally entering the Iron Ledger they come in through the slums (called The Margins) where they join up with a revolutionary group to break free from the enforced structure and for the player to reveal the secrets of the artifacts. The revolutionary army betrays the player for a good standing in the city leaving the player to a desperate fight to finally defeat the high priest of the God of Structure to reveal the hidden presence of the God of Magic, whom had been locked away by the God of Structure & God of Adventure, leaving only magical artifacts around the world as their trail and remnant of their old past. In the process also breaking free from the structure placed bringing some amount of chaos into the world.
 
 
 ## 5. Playable content
