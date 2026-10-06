@@ -40,7 +40,7 @@ func _UpdateHeader() -> void:
 func _on_node_selected(p_node: NodeData) -> void:
 	_preview.Show(p_node)
 
-func _on_engage_confirmed(p_node: NodeData) -> void:
+func _on_engage_confirmed(p_node: NodeData, p_preparation: CombatPreparation.Choice) -> void:
 	_state.current_node_index = p_node.index
 	_UpdateHeader()
 	var context_container: ContextContainer = ContextContainer.new()
@@ -57,6 +57,10 @@ func _on_engage_confirmed(p_node: NodeData) -> void:
 	match p_node.node_type:
 		NodeData.Node_Type.FIGHT, NodeData.Node_Type.BOSS:
 			context_container._scene = "uid://d3hg8jxy8xj8n"
+			var preparation: CombatPreparation.Choice = CombatPreparation.Purchase(
+					p_preparation, main.GetInstance()._resources)
+			context_container._arguments[CombatPreparation.ARGUMENT_KEY] = preparation
+			context_container._arguments["Difficulty"] = difficulty + CombatPreparation.DifficultyIncrease(preparation)
 		NodeData.Node_Type.REST_STOP, NodeData.Node_Type.HINT, NodeData.Node_Type.GAMBLE, NodeData.Node_Type.ESCALATE:
 			_preview.visible = false
 			_GrantNodeLoot(p_node, difficulty)

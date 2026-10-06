@@ -2,8 +2,9 @@
 
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="1_theme"]
 [ext_resource type="Script" uid="uid://ckre4eoeabpnu" path="res://Scripts/UI/Adventure/adventure_node_preview.gd" id="2_preview"]
+[ext_resource type="PackedScene" path="res://Scenes/Adventure_Scenes/Preparation_Card.tscn" id="3_card"]
 
-[node name="AdventureNodePreview" type="Control" unique_id=100000001 node_paths=PackedStringArray("_label_type", "_label_desc")]
+[node name="AdventureNodePreview" type="Control" unique_id=100000001 node_paths=PackedStringArray("_label_type", "_label_desc", "_preparation_row", "_card_prepare", "_card_bait", "_button_engage")]
 visible = false
 layout_mode = 3
 anchors_preset = 15
@@ -14,6 +15,10 @@ grow_vertical = 2
 script = ExtResource("2_preview")
 _label_type = NodePath("ColorRect/PanelContainer/MarginContainer/VBoxContainer/Label_Type")
 _label_desc = NodePath("ColorRect/PanelContainer/MarginContainer/VBoxContainer/Label_Description")
+_preparation_row = NodePath("ColorRect/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer_Preparation")
+_card_prepare = NodePath("ColorRect/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer_Preparation/Card_Prepare")
+_card_bait = NodePath("ColorRect/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer_Preparation/Card_Bait")
+_button_engage = NodePath("ColorRect/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Button_Engage")
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=100000002]
 layout_mode = 1
@@ -22,7 +27,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 0.6)
+color = Color(0, 0, 0, 0.72156864)
 
 [node name="PanelContainer" type="PanelContainer" parent="ColorRect" unique_id=100000003]
 custom_minimum_size = Vector2(600, 320)
@@ -57,6 +62,18 @@ theme = ExtResource("1_theme")
 text = "Description"
 autowrap_mode = 3
 
+[node name="HBoxContainer_Preparation" type="HBoxContainer" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer" unique_id=100000020]
+layout_mode = 2
+theme = ExtResource("1_theme")
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="Card_Prepare" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer_Preparation" unique_id=100000021 instance=ExtResource("3_card")]
+layout_mode = 2
+
+[node name="Card_Bait" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer_Preparation" unique_id=100000022 instance=ExtResource("3_card")]
+layout_mode = 2
+
 [node name="HBoxContainer" type="HBoxContainer" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer" unique_id=100000009]
 layout_mode = 2
 size_flags_vertical = 10
@@ -77,5 +94,7 @@ size_flags_vertical = 8
 theme = ExtResource("1_theme")
 text = "Close"
 
+[connection signal="pressed" from="ColorRect/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer_Preparation/Card_Prepare" to="." method="_on_prepare_pressed"]
+[connection signal="pressed" from="ColorRect/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer_Preparation/Card_Bait" to="." method="_on_bait_pressed"]
 [connection signal="button_up" from="ColorRect/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Button_Engage" to="." method="_on_engage_button_up"]
 [connection signal="button_up" from="ColorRect/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Button_Close" to="." method="_on_back_button_up"]

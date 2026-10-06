@@ -84,6 +84,14 @@ func ApplyAdventureEffects(p_character_ID: int) -> void:
 		debuff.name = Types.Debuff_Type.keys()[debuff_type]
 		_resolver.GetStatusResolver().ApplyDebuff(p_character_ID, debuff)
 
+func ApplyPreparationHeadStart(p_player_IDs: Array[int]) -> void:
+	var fraction: float = CombatPreparation.StartingTurnBarFraction(
+			_self_context._arguments.get(CombatPreparation.ARGUMENT_KEY, CombatPreparation.Choice.NONE))
+	if fraction <= 0.0:
+		return
+	for character_ID in p_player_IDs:
+		_battle_ui._turn_bar.BumpCharacter(character_ID, fraction)
+
 func SetTargetingOrder() -> void:
 	var sorted_keys = _characters.keys()
 
@@ -197,6 +205,7 @@ func Init(p_context: ContextContainer) -> void:
 
 	_battle_ui.Init()
 	_battle_ui._turn_bar.Init(_characters, _on_turn_bar_zone_selected, _sides.player)
+	ApplyPreparationHeadStart(player_IDs)
 	RefreshTurnBarSpeeds()
 	_state = BattleState.Advancing
 	_initialized = true

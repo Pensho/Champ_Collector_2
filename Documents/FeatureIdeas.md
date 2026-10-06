@@ -75,6 +75,9 @@ Effort: **S** = hours, **M** = days, **L** = week+
 - **Run Multiplier** *(Priority: Medium | Effort: S)*
   Let the player select a multiplier (e.g. x3, x5) before entering a repeatable encounter to auto-run it that many times and batch the rewards. Reduces friction for grinding.
 
+- **Caravan Node** *(Priority: Medium | Effort: M)*
+  An adventure node themed on the God of Adventure's caravan, selling 3 rolled offers for Supplies: a borrowed reagent in an extra slot that is lost when the adventure ends (5), +15% to one champion's highest primary attribute for 3 combats (8), or removal of an active Gamble or Escalate debuff (6). Needs a new node type, a small shop panel, and adventure-spanning effects that can target a single champion.
+
 ---
 
 ## UI & Quality of Life

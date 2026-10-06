@@ -971,11 +971,7 @@ One type of consumable could include some types to alter items, e.g. increase th
 
 #### 3.3.2. Currencies
 - Area unlock currency
-- Supplies
-    - Used to run playable content. Every encounter costs a base of 6 supplies, plus an
-      optional additional surcharge (e.g. adventure tier cost stacks on top of the base).
-      Half of the total cost (rounded down) is refunded if the player loses. Starting an
-      encounter is blocked if the player cannot afford the total cost.
+- Supplies (section 3.7)
 - Tallies
     - The champion sink currency: the only source is Releasing champions in the Armory
       (section 3.6.2) and the only use is the Tally Board (section 3.6.3), so surplus
@@ -1138,7 +1134,7 @@ Favor slot instead waits out its own three-day cooldown after purchase. A purcha
 stays sold out until its next restock (or, for Favor, until its cooldown ends).
 
 ### 3.7 Supplies
-Supplies are a spendable resource with no cap and no regeneration over time; a new save starts with 0. Encounters and adventure nodes are free to enter. Supplies are spent only where a mechanic asks for them, such as the Rest Stop (section 3.9), to temporarily empower the team.
+Supplies are a spendable resource with no cap and no regeneration over time; a new save starts with 0. Encounters and adventure nodes are free to enter. Supplies are spent only where a mechanic asks for them: the Rest Stop and the Prepare / Bait choice before a combat node (section 3.9).
 
 ### 3.8 Reward structure
 The idea is to have every encounter hold a "loot table" of possible drops. Some drops may always drop for certain encounters.
@@ -1171,6 +1167,13 @@ directly in the adventure scene without entering battle:
   guaranteed reagent (Uncommon-Epic; Legendary is boss-exclusive, see section 3.3.3) in
   exchange for a permanent +1 to the adventure's difficulty for its remainder.
 - **Unique**: This nodes intent is mainly to be used for game progression purposes like unlocking future content. This node type is supposed to be instantiated by multiple variants but each variant should be a appear once only if completed, hence "unique".
+
+Before entering a combat node, the player may spend Supplies on at most one of:
+
+- **Prepare** (any combat node): 6 Supplies; the team starts that combat with +40% turn bar.
+- **Bait** (Boss and mini-boss nodes): 10 Supplies; that combat runs at +2 difficulty, raising
+  both the opponents' level and the loot budget (section 3.8). The Supplies are spent whether
+  or not the combat is won.
 
 Buffs and debuffs granted by these nodes are **adventure-spanning effects**: they are
 tracked on `AdventureState` as combats-remaining (rather than turns) and are applied to

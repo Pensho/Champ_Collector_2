@@ -33,7 +33,11 @@ func Init(p_context_container: ContextContainer) -> void:
 			main.GetInstance()._progress.MarkDifficultyCompleted(
 					_context._static_context.resource_path, _context._arguments["Difficulty"])
 		elif _context._arguments.get("Is_Boss", false):
-			main.GetInstance()._progress.MarkDifficultyCompleted(adventure_path, _context._arguments["Difficulty"])
+			# Bait raises the fight, not the player's adventure progress.
+			var bait_increase: int = CombatPreparation.DifficultyIncrease(
+					_context._arguments.get(CombatPreparation.ARGUMENT_KEY, CombatPreparation.Choice.NONE))
+			main.GetInstance()._progress.MarkDifficultyCompleted(
+					adventure_path, _context._arguments["Difficulty"] - bait_increase)
 		var battle_context: Context_Battle = p_context_container._static_context as Context_Battle
 		for tier in battle_context._loot_table._drop_result._fortunes_favor.keys():
 			main.GetInstance()._resources.AddFortunesFavor(tier, battle_context._loot_table._drop_result._fortunes_favor[tier])

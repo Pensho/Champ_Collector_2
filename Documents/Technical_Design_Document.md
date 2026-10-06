@@ -124,7 +124,7 @@ code, including:
   `MINIMUM_CRIT_DAMAGE = 125.0`, `ATTRIBUTE_HEALTH_MULTIPLIER = 4`.
 - Progression: the experience-curve constants (`EXPERIENCE_FACTOR`, `EXPERIENCE_EXPONENT`,
   `EXPERIENCE_CONSTANT_1..3`), `LEVEL_UP_POINTS_TO_DISTRIBUTE = 20`.
-- Collections, items, adventure Rest Stop costs, and the `ITEM_TYPE_ATTRIBUTES` map describing
+- Collections, items, adventure Rest Stop, Prepare and Bait values, and the `ITEM_TYPE_ATTRIBUTES` map describing
   which attributes each gear slot can roll.
 
 It is referenced both as the autoload `Game_Balance.X` and, in a few files, by the class name
@@ -773,7 +773,8 @@ combat formulas, see `Concept_Document.md`; this section describes the *code pat
    calls `trait.BrewReagentKey()`/`GetBrewPotencyBonus()` — a no-op for every trait except the
    Alchemist's Fresh Batch, which adds a brewed slot to `_reagent_loadout` here (section 7.7) —
    and paints the initial trait visuals via `trait.RefreshVisuals(repr)`, then initializes the
-   battle UI and turn bar.
+   battle UI and turn bar, bumping the player champions forward if the adventure node was
+   entered with Prepare (`CombatPreparation`, `Scripts/Adventure_Scripts/combat_preparation.gd`).
 
 ### 7.2. Turn order (the turn bar)
 
@@ -2281,7 +2282,7 @@ The headless combat core leaves turn-bar *positions* on the view side, reached t
 ### 15.2. Stringly-typed cross-scene arguments
 
 `ContextContainer._arguments` passes data between scenes as untyped string keys
-(`"Difficulty"`, `"Boss_Scale"`, `"character_dmg_<i>"`, `"Battle_Result"`).
+(`"Difficulty"`, `"Boss_Scale"`, `"Combat_Preparation"`, `"character_dmg_<i>"`, `"Battle_Result"`).
 
 *Impact:* no compile-time safety; typos surface only at runtime.
 *Direction:* promote the recurring keys to typed fields on `Static_Context` subclasses (as
