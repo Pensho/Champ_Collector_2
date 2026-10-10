@@ -106,8 +106,8 @@ offset_bottom = 283.0
 color = Color(0, 0.3715577, 0.37155762, 1)
 
 [node name="BattleCloudShadows" parent="Band_Background" unique_id=508332131 instance=ExtResource("2_sybmg")]
-self_modulate = Color(0, 0, 0, 1)
 position = Vector2(640, 100)
+amount = 20
 
 [node name="Band_Midband" type="Node2D" parent="." unique_id=535630371]
 modulate = Color(0.65834004, 0.6583399, 0.6583399, 1)
@@ -192,12 +192,6 @@ scale = Vector2(0.61926603, 0.61926603)
 texture = ExtResource("3_6dmjr")
 flip_h = true
 
-[node name="BattleJungleBloom1" type="Sprite2D" parent="Band_Midband" unique_id=449857137]
-self_modulate = Color(0.43529412, 0.8666667, 0.56078434, 1)
-position = Vector2(532, 394)
-scale = Vector2(0.535503, 0.535503)
-texture = ExtResource("7_st4s7")
-
 [node name="SwallowedWallSegment2" type="Sprite2D" parent="Band_Midband" unique_id=392296975]
 position = Vector2(149, 278)
 texture = ExtResource("3_p3rbx")
@@ -228,10 +222,22 @@ self_modulate = Color(0.74558026, 0.7455802, 0.7455802, 1)
 position = Vector2(1134, 182)
 texture = ExtResource("4_st4s7")
 
+[node name="SwallowedWallSegment3" type="Sprite2D" parent="Band_Midband" unique_id=1131838048]
+position = Vector2(547, 335.99997)
+scale = Vector2(0.7, 0.7)
+texture = ExtResource("3_p3rbx")
+flip_h = true
+
 [node name="BattleJungleTrunk3" type="Sprite2D" parent="Band_Midband" unique_id=756888514]
 position = Vector2(716, 218.35503)
 scale = Vector2(0.8579882, 0.8579882)
 texture = ExtResource("8_tqv43")
+
+[node name="BattleJungleBloom1" type="Sprite2D" parent="Band_Midband" unique_id=449857137]
+self_modulate = Color(0.43529412, 0.8666667, 0.56078434, 1)
+position = Vector2(440, 391)
+scale = Vector2(0.535503, 0.535503)
+texture = ExtResource("7_st4s7")
 
 [node name="Band_Floor" type="Node2D" parent="." unique_id=787324837]
 

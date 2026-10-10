@@ -31,12 +31,12 @@ height = 0.3
 
 [node name="Enemy_2" parent="." unique_id=485644758 instance=ExtResource("3_ww2ai")]
 visible = false
-position = Vector2(690, 205)
+position = Vector2(662, 205)
 _target_ID = 4
 
 [node name="Enemy_1" parent="." unique_id=1908700306 instance=ExtResource("3_ww2ai")]
 visible = false
-position = Vector2(865, 260)
+position = Vector2(860, 260)
 _target_ID = 3
 
 [node name="Enemy_3" parent="." unique_id=1432082750 instance=ExtResource("3_ww2ai")]

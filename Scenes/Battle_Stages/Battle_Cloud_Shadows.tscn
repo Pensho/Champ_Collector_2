@@ -31,7 +31,7 @@ color_ramp = SubResource("GradientTexture1D_ramp")
 anim_offset_max = 1.0
 
 [node name="BattleCloudShadows" type="GPUParticles2D" unique_id=508332131]
-self_modulate = Color(0.5211406, 0.5211406, 0.5211405, 1)
+self_modulate = Color(0, 0, 0, 1)
 material = SubResource("CanvasItemMaterial_cloud")
 position = Vector2(640, 360)
 amount = 10
