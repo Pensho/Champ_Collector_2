@@ -68,7 +68,7 @@ static func LevelUpReward(p_character: Character) -> void:
 	
 	print("character ", p_character._name, " just leveled up to ", p_character._level)
 
-static func SetOpponentLevel(p_character: Character, p_level: int, p_boss: bool = false) -> void:
+static func SetOpponentLevel(p_character: Character, p_level: int) -> void:
 	if(p_level < 1 or p_level > 999):
 		print("Cannot set opponent level below 1 or above 999")
 		return
@@ -91,8 +91,6 @@ static func SetOpponentLevel(p_character: Character, p_level: int, p_boss: bool 
 			points = Game_Balance.LEVEL_UP_POINTS_TO_DISTRIBUTE + float(p_character._level * 2)
 		else:
 			points = Game_Balance.LEVEL_UP_POINTS_TO_DISTRIBUTE + float(pow(p_character._level * 3, 1.2))
-		if(p_boss):
-			points *= 1.5
 		var points_gained = weight * points * total_levels_gained
 		p_character._attributes[attribute] = int(round(base_value + points_gained))
 	

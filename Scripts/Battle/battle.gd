@@ -179,13 +179,10 @@ func Init(p_context: ContextContainer) -> void:
 		_characters[enemy_ID] = Character.new()
 		_characters[enemy_ID].InstantiateNew(_battlecontext._enemies_wave_1[i], -1)
 		_characters[enemy_ID]._attributes[Types.Attribute.Speed] += _resolver.GetRandom().randi_range(-3, 3)
-		var is_boss: bool = p_context._arguments.has("Boss_Scale")
-		if (is_boss):
+		if (p_context._arguments.has("Boss_Scale")):
 			var boss_scale: float = p_context._arguments["Boss_Scale"]
 			_character_representations[enemy_ID].ScaleArt(Vector2(boss_scale, boss_scale))
-		# One levelling call carrying the boss flag, so the ×1.5 boss multiplier is
-		# actually applied instead of being pre-empted by an earlier no-op call.
-		LevelSystem.SetOpponentLevel(_characters[enemy_ID], difficulty, is_boss)
+		LevelSystem.SetOpponentLevel(_characters[enemy_ID], difficulty)
 		_characters[enemy_ID]._current_health = (_characters[enemy_ID].GetTotalAttribute(Types.Attribute.Health) *
 				Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)
 		VisualizeCharacter(enemy_ID)

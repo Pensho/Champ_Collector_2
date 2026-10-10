@@ -123,25 +123,6 @@ func test_set_opponent_level_increases_attributes() -> void:
 		"Attack should increase when levelling up")
 
 
-func test_set_opponent_level_boss_scales_higher_than_non_boss() -> void:
-	# The boss branch multiplies distributed points by 1.5, so at the same target
-	# level a boss must end up with a higher attribute total than a non-boss.
-	var non_boss: Character = TestFactory.make_character()
-	var boss: Character = TestFactory.make_character()
-	non_boss._level = 1
-	boss._level = 1
-	LevelSystem.SetOpponentLevel(non_boss, 10, false)
-	LevelSystem.SetOpponentLevel(boss, 10, true)
-
-	var non_boss_total: int = 0
-	var boss_total: int = 0
-	for attribute in non_boss._attributes.keys():
-		non_boss_total += non_boss._attributes[attribute]
-		boss_total += boss._attributes[attribute]
-	assert_gt(boss_total, non_boss_total,
-		"A boss opponent should have a higher attribute total than a non-boss at the same level")
-
-
 func test_set_opponent_level_speed_scales_differently() -> void:
 	# Speed uses a linear scale; all other attributes use a polynomial scale.
 	# At high levels the polynomial factor dominates, so non-speed stats grow

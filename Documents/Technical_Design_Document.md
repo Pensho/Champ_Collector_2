@@ -768,7 +768,7 @@ combat formulas, see `Concept_Document.md`; this section describes the *code pat
    highest-priority valid target. `Lowest_Priority_Enemy` targets read the same value.
 5. Instantiates enemies into `_characters[3..5]`, jitters their speed by `randi_range(-3,3)` on
    the **resolver's** generator, and scales them to the encounter difficulty with
-   `LevelSystem.SetOpponentLevel()` (boss variant if `_arguments["Boss_Scale"]` is present).
+   `LevelSystem.SetOpponentLevel()`.
 6. Fires each character's `StartOfBattle` trait hook (logic reset only), then unconditionally
    calls `trait.BrewReagentKey()`/`GetBrewPotencyBonus()` — a no-op for every trait except the
    Alchemist's Fresh Batch, which adds a brewed slot to `_reagent_loadout` here (section 7.7) —
@@ -1594,10 +1594,9 @@ documented in the file's own header no longer compiles (see "Entry paths" above)
   `LevelUpReward` raises Health by a flat 2, then distributes
   `LEVEL_UP_POINTS_TO_DISTRIBUTE + floor(level^1.1)` points randomly, weighted by the character's
   `AttributeWeightPreset` (built into a cumulative-weight table for weighted sampling).
-- **Opponent scaling** — `SetOpponentLevel(character, level, boss=false)` raises an enemy to the
+- **Opponent scaling** — `SetOpponentLevel(character, level)` raises an enemy to the
   encounter level, distributing points proportional to each attribute's current share of the
-  total. Speed scales faster (`+level*2`) than other attributes (`+(level*3)^1.1`); bosses receive
-  a ×1.5 multiplier.
+  total. Speed scales faster (`+level*2`) than other attributes (`+(level*3)^1.1`).
 
 Test coverage for these formulas is described in `Test_Design_Document.md` (`test_level_system.gd`).
 
