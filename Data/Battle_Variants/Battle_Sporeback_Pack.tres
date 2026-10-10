@@ -8,6 +8,6 @@
 
 [resource]
 script = ExtResource("2_battle")
-_enemies_wave_1 = Array[ExtResource("1_preset")]([ExtResource("3_hound"), ExtResource("3_hound"), ExtResource("4_matron")])
+_enemies_wave_1 = Array[ExtResource("1_preset")]([ExtResource("3_hound"), ExtResource("4_matron"), ExtResource("3_hound")])
 _loot_table = ExtResource("5_loot")
 metadata/_custom_type_script = "uid://bjtnao6fgl8go"

@@ -9,7 +9,7 @@
 [resource]
 script = ExtResource("1_preset")
 _name = "Sporeback Matron"
-_texture = "res://Assets/Champ_Collector/Creatures/Opponents/Sporeback_Matron/Sporeback_Matron.png"
+_texture = "res://Assets/Champ_Collector/Creatures/Opponents/sporeback_matron.png"
 _faction = 4
 _role = 13
 _skills = Array[ExtResource("1_skill")]([ExtResource("3_stab"), ExtResource("2_mend")])
