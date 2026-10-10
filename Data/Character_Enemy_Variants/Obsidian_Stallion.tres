@@ -10,6 +10,7 @@
 script = ExtResource("2_hvruf")
 _name = "Obsidian Stallion"
 _texture = "res://Assets/Champ_Collector/Creatures/Obsidian_Stallion/Obsidian_Stallion.png"
+_art_scale = 1.2
 _rarity = 4
 _faction = 4
 _role = 13

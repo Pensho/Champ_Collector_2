@@ -5,7 +5,7 @@
 [ext_resource type="Material" uid="uid://2tvv2h51laxc" path="res://Assets/Champ_Collector/Material/Unshaded.tres" id="2_7qair"]
 [ext_resource type="Texture2D" uid="uid://cdwqpx4sgt42a" path="res://Assets/Champ_Collector/Icons/Trait_UI_Element_Blank.png" id="4_wjchg"]
 [ext_resource type="Script" uid="uid://bumae467d28vx" path="res://Scripts/UI/tooltip.gd" id="5_7k67v"]
-[ext_resource type="Script" path="res://Scripts/Battle/character_visual_effects.gd" id="6_echovx"]
+[ext_resource type="Script" uid="uid://2re1qsu3nr22" path="res://Scripts/Battle/character_visual_effects.gd" id="6_echovx"]
 [ext_resource type="Script" uid="uid://dbranfugtf4s5" path="res://Scripts/UI/Battle_UI/damage_trail_bar.gd" id="7_dmgtrl"]
 [ext_resource type="Script" uid="uid://bbvo728rdy2xv" path="res://Scripts/Battle/character_sprite_animator.gd" id="8_sprtan"]
 

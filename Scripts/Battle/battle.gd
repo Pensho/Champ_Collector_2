@@ -179,9 +179,8 @@ func Init(p_context: ContextContainer) -> void:
 		_characters[enemy_ID] = Character.new()
 		_characters[enemy_ID].InstantiateNew(_battlecontext._enemies_wave_1[i], -1)
 		_characters[enemy_ID]._attributes[Types.Attribute.Speed] += _resolver.GetRandom().randi_range(-3, 3)
-		if (p_context._arguments.has("Boss_Scale")):
-			var boss_scale: float = p_context._arguments["Boss_Scale"]
-			_character_representations[enemy_ID].ScaleArt(Vector2(boss_scale, boss_scale))
+		var art_scale: float = _battlecontext._enemies_wave_1[i]._art_scale
+		_character_representations[enemy_ID].ScaleArt(Vector2(art_scale, art_scale))
 		LevelSystem.SetOpponentLevel(_characters[enemy_ID], difficulty)
 		_characters[enemy_ID]._current_health = (_characters[enemy_ID].GetTotalAttribute(Types.Attribute.Health) *
 				Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER)

@@ -768,7 +768,7 @@ combat formulas, see `Concept_Document.md`; this section describes the *code pat
    highest-priority valid target. `Lowest_Priority_Enemy` targets read the same value.
 5. Instantiates enemies into `_characters[3..5]`, jitters their speed by `randi_range(-3,3)` on
    the **resolver's** generator, and scales them to the encounter difficulty with
-   `LevelSystem.SetOpponentLevel()`.
+   `LevelSystem.SetOpponentLevel()`, and sizes its sprite by the preset's `_art_scale`.
 6. Fires each character's `StartOfBattle` trait hook (logic reset only), then unconditionally
    calls `trait.BrewReagentKey()`/`GetBrewPotencyBonus()` — a no-op for every trait except the
    Alchemist's Fresh Batch, which adds a brewed slot to `_reagent_loadout` here (section 7.7) —
@@ -2281,7 +2281,7 @@ The headless combat core leaves turn-bar *positions* on the view side, reached t
 ### 15.2. Stringly-typed cross-scene arguments
 
 `ContextContainer._arguments` passes data between scenes as untyped string keys
-(`"Difficulty"`, `"Boss_Scale"`, `"Combat_Preparation"`, `"character_dmg_<i>"`, `"Battle_Result"`).
+(`"Difficulty"`, `"Is_Boss"`, `"Combat_Preparation"`, `"character_dmg_<i>"`, `"Battle_Result"`).
 
 *Impact:* no compile-time safety; typos surface only at runtime.
 *Direction:* promote the recurring keys to typed fields on `Static_Context` subclasses (as

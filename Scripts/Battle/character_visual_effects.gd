@@ -10,3 +10,8 @@ func SetSpriteEchoes(p_count: int) -> void:
 			_echo_textures[index].show()
 		else:
 			_echo_textures[index].hide()
+
+func SetEchoScale(p_scale: Vector2) -> void:
+	for echo in _echo_textures:
+		echo.pivot_offset = _source_texture_rect.pivot_offset
+		echo.scale = p_scale

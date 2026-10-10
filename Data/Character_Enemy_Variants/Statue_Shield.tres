@@ -28,6 +28,7 @@ metadata/_custom_type_script = "uid://glh06y3wvchj"
 script = ExtResource("2_w1xr5")
 _name = "Bor Bulwark"
 _texture = "res://Assets/Champ_Collector/Creatures/Opponents/Gear_Statues/Statue_Shield.png"
+_art_scale = 1.2
 _rarity = 4
 _faction = 4
 _role = 13

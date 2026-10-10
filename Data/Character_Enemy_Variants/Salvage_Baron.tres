@@ -11,6 +11,7 @@
 script = ExtResource("1_preset")
 _name = "Salvage Baron"
 _texture = "res://Assets/Champ_Collector/Creatures/Opponents/salvage_baron.png"
+_art_scale = 1.4
 _faction = 4
 _role = 13
 _skills = Array[ExtResource("1_skill")]([ExtResource("2_size_up"), ExtResource("3_cash_in")])

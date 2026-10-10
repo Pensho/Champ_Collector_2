@@ -9,6 +9,7 @@
 script = ExtResource("1_preset")
 _name = "Scavenger Skirmisher"
 _texture = "res://Assets/Champ_Collector/Creatures/Opponents/scavenger_skirmisher.png"
+_art_scale = 0.8
 _faction = 4
 _role = 13
 _skills = Array[ExtResource("1_skill")]([ExtResource("2_stab")])
