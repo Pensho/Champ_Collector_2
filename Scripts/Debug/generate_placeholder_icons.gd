@@ -244,8 +244,6 @@ const SKILL_ICON_TABLE: Array = [
 #   folder, base_name, size, color
 const CREATURE_PLACEHOLDER_TABLE: Array = [
 	# Sporeback Pack
-	{ "folder": "Spore_Hound", "base_name": "Spore_Hound", "size": 128,
-			"color": Color(0.45, 0.55, 0.30, 1.0) },
 	{ "folder": "Sporeback_Matron", "base_name": "Sporeback_Matron", "size": 128,
 			"color": Color(0.40, 0.60, 0.35, 1.0) },
 	# Wake Skimmers

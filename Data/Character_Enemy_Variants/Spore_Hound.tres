@@ -8,7 +8,8 @@
 [resource]
 script = ExtResource("1_preset")
 _name = "Spore Hound"
-_texture = "res://Assets/Champ_Collector/Creatures/Opponents/Spore_Hound/Spore_Hound.png"
+_texture = "res://Assets/Champ_Collector/Creatures/Opponents/spore_hound.png"
+_art_scale = 0.8
 _faction = 4
 _role = 13
 _skills = Array[ExtResource("1_skill")]([ExtResource("2_stab")])
