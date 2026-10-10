@@ -3,8 +3,6 @@ class_name Context_Battle extends Static_Context
 @warning_ignore_start("unused_private_class_variable")
 
 @export var _enemies_wave_1: Array[CharacterPreset]
-@export var _enemies_wave_2: Array[CharacterPreset]
-@export var _enemies_wave_3: Array[CharacterPreset]
 @export var _stage_scene: PackedScene
 @export var _environment_effects: Array[PackedScene]
 @export var _global_scene_light: Color = Color(1.0, 1.0, 1.0)
