@@ -4,6 +4,11 @@ const KEYWORD_COLORS = preload("uid://bgywi0cu4mkig")
 const TOOLTIP_SCENE = preload("uid://cne3qgmdo3t1u")
 const PRESSED_TIME: float = 0.3
 
+## Shared by every tooltip: whether the press in progress opened one, so the control
+## underneath can ignore the release that ends the hold.
+static var _press_consumed: bool = false
+static var _consumed_on_frame: int = -1
+
 @export var title_text: String = "Item Title"
 @export var description_text: String = "This is a detailed description that will wrap automatically."
 ## When true a press inside this control opens the tooltip immediately instead of
@@ -14,6 +19,19 @@ var visuals: PanelContainer
 var timer: Timer
 var active_tooltip: PopupPanel
 var _tap_gesture: TapGesture = TapGesture.new()
+
+static func ConsumedPress() -> bool:
+	return _press_consumed
+
+static func MarkPressConsumed() -> void:
+	_press_consumed = true
+	_consumed_on_frame = Engine.get_process_frames()
+
+static func RegisterPress() -> void:
+	# Every visible tooltip registers the same press; skip the reset if a show_on_press
+	# tooltip already consumed it this frame.
+	if _consumed_on_frame != Engine.get_process_frames():
+		_press_consumed = false
 
 func _ready() -> void:
 	# Connect the timer to a function that spawns the tooltip
@@ -32,16 +50,21 @@ func _input(event: InputEvent) -> void:
 		if not _tap_gesture.IsTap():
 			timer.stop()
 	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		if event.pressed:
+			RegisterPress()
 		var is_over_me = get_global_rect().has_point(get_global_mouse_position())
 		if event.pressed and is_over_me:
 			if show_on_press:
-				_show_tooltip()
+				# Deferred so the press reaches the control underneath before it is released.
+				_show_tooltip.call_deferred()
 			else:
 				timer.start()
 		else:
 			timer.stop()
 
 func _show_tooltip() -> void:
+	MarkPressConsumed()
+	_ReleaseHeldControl()
 	if not active_tooltip:
 		active_tooltip = TOOLTIP_SCENE.instantiate()
 		add_child(active_tooltip)
@@ -65,6 +88,16 @@ func _show_tooltip() -> void:
 		mouse_position.x -= popup_width
 	
 	_animate_entrance()
+
+## The popup swallows the hold's real release, which would leave the pressed button stuck
+## until some later click fires its button_up. Release it now, while the press is consumed.
+func _ReleaseHeldControl() -> void:
+	var release: InputEventMouseButton = InputEventMouseButton.new()
+	release.button_index = MOUSE_BUTTON_LEFT
+	release.pressed = false
+	release.position = get_viewport().get_mouse_position()
+	release.global_position = release.position
+	get_viewport().push_input(release, true)
 
 func _animate_entrance() -> void:
 	visuals = active_tooltip.get_node("MainVisuals")

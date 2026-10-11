@@ -78,6 +78,8 @@ func _on_countdown_tick() -> void:
 	_label_restock.text = "Restocks in " + ShopMenu.FormatRestockCountdown(seconds_left)
 
 func _on_slot_pressed(p_slot_index: int) -> void:
+	if ToolTip.ConsumedPress():
+		return
 	var board: TallyBoardHandler = main.GetInstance()._tally_board
 	var entry: Dictionary = board._offers[p_slot_index]
 	if(entry["sold_out"]):

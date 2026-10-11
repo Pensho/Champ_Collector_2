@@ -22,8 +22,8 @@ func _ready() -> void:
 	button.pressed.connect(_on_button_pressed)
 
 func _on_button_pressed() -> void:
-	# A press that turned into a ScrollContainer swipe must not activate the slot.
-	if _callback.is_valid() and _tap_gesture.IsTap():
+	# A press that turned into a ScrollContainer swipe or a tooltip hold must not activate the slot.
+	if _callback.is_valid() and _tap_gesture.IsTap() and not ToolTip.ConsumedPress():
 		_callback.call(_ID)
 
 func SetRenownRank(p_rank: int) -> void:

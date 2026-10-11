@@ -178,6 +178,8 @@ func HideThreadSwitchUI() -> void:
 	_thread_switch_button.hide()
 
 func _on_thread_switch_button_button_up() -> void:
+	if ToolTip.ConsumedPress():
+		return
 	thread_switch_selected.emit()
 
 func ShowGraftHighlight() -> void:
@@ -220,28 +222,44 @@ func HideReagentUI() -> void:
 		button.hide()
 
 func _on_skill_1_button_up() -> void:
+	if ToolTip.ConsumedPress():
+		return
 	skill_focus.position = SKILL_GLOW_POS_1
 	battle_skill_selected.emit(0)
 
 func _on_skill_2_button_up() -> void:
+	if ToolTip.ConsumedPress():
+		return
 	skill_focus.position = SKILL_GLOW_POS_2
 	battle_skill_selected.emit(1)
 
 func _on_skill_3_button_up() -> void:
+	if ToolTip.ConsumedPress():
+		return
 	skill_focus.position = SKILL_GLOW_POS_3
 	battle_skill_selected.emit(2)
 
 func _on_reagent_1_button_up() -> void:
+	if ToolTip.ConsumedPress():
+		return
 	battle_reagent_selected.emit(0)
 
 func _on_reagent_2_button_up() -> void:
+	if ToolTip.ConsumedPress():
+		return
 	battle_reagent_selected.emit(1)
 
 func _on_reagent_3_button_up() -> void:
+	if ToolTip.ConsumedPress():
+		return
 	battle_reagent_selected.emit(2)
 
 func _on_reagent_4_button_up() -> void:
+	if ToolTip.ConsumedPress():
+		return
 	battle_reagent_selected.emit(3)
 
 func _on_graft_button_button_up() -> void:
+	if ToolTip.ConsumedPress():
+		return
 	battle_graft_selected.emit()
