@@ -13,6 +13,7 @@ const PRESSED_TIME: float = 0.3
 var visuals: PanelContainer
 var timer: Timer
 var active_tooltip: PopupPanel
+var _tap_gesture: TapGesture = TapGesture.new()
 
 func _ready() -> void:
 	# Connect the timer to a function that spawns the tooltip
@@ -25,7 +26,12 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
 	if not is_visible_in_tree():
 		return
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+	_tap_gesture.HandleEvent(event)
+	if event is InputEventMouseMotion:
+		# A hold that becomes a scroll swipe should not open the tooltip mid-scroll.
+		if not _tap_gesture.IsTap():
+			timer.stop()
+	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		var is_over_me = get_global_rect().has_point(get_global_mouse_position())
 		if event.pressed and is_over_me:
 			if show_on_press:

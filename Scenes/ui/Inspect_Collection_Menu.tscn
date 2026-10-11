@@ -299,6 +299,7 @@ text = "Cancel"
 [node name="ScrollContainer_Characters" type="ScrollContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer_Collection" unique_id=2084637322]
 layout_mode = 2
 size_flags_vertical = 3
+scroll_deadzone = 12
 
 [node name="GridContainer" type="GridContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer_Collection/ScrollContainer_Characters" unique_id=1499657250]
 layout_mode = 2
@@ -911,6 +912,7 @@ layout_mode = 2
 visible = false
 layout_mode = 2
 size_flags_vertical = 3
+scroll_deadzone = 12
 
 [node name="GridContainer" type="GridContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer_Collection/ScrollContainer_Items" unique_id=205271624]
 layout_mode = 2
@@ -920,6 +922,7 @@ columns = 4
 visible = false
 layout_mode = 2
 size_flags_vertical = 3
+scroll_deadzone = 12
 
 [node name="GridContainer" type="GridContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer_Collection/ScrollContainer_Reagents" unique_id=900000303]
 layout_mode = 2

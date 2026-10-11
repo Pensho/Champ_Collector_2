@@ -172,6 +172,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(0, 420)
 layout_mode = 2
 size_flags_vertical = 3
+scroll_deadzone = 12
 
 [node name="GridContainer" type="GridContainer" parent="Part_Team/MarginContainer/VBoxContainer/ScrollContainer_Characters" unique_id=555991057]
 layout_mode = 2
@@ -225,6 +226,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(0, 420)
 layout_mode = 2
 size_flags_vertical = 3
+scroll_deadzone = 12
 
 [node name="GridContainer" type="GridContainer" parent="Part_Reagents/MarginContainer/VBoxContainer/ScrollContainer_Reagents" unique_id=1168852071]
 layout_mode = 2

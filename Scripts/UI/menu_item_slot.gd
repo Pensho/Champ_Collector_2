@@ -14,6 +14,18 @@ const PIP_EMPTY_TEXTURE = preload("uid://b5din3anosuf2")
 @export var _rarity_backdrop: ColorRect
 @export var _frame: TextureRect
 
+var _tap_gesture: TapGesture = TapGesture.new()
+var _callback: Callable
+
+func _ready() -> void:
+	button.gui_input.connect(_tap_gesture.HandleEvent)
+	button.pressed.connect(_on_button_pressed)
+
+func _on_button_pressed() -> void:
+	# A press that turned into a ScrollContainer swipe must not activate the slot.
+	if _callback.is_valid() and _tap_gesture.IsTap():
+		_callback.call(_ID)
+
 func SetRenownRank(p_rank: int) -> void:
 	_renown_pips_row.show()
 	for i in _renown_pips.size():
@@ -23,9 +35,7 @@ func ClearRenownPips() -> void:
 	_renown_pips_row.hide()
 
 func ConnectButton(p_callback: Callable) -> void:
-	for connection in button.get_signal_connection_list("button_up"):
-		button.disconnect("button_up", connection["callable"])
-	button.connect("button_up", p_callback.bind(_ID))
+	_callback = p_callback
 
 func SetToolTip(p_title: String, p_description: String) -> void:
 	_tooltip.title_text = p_title

@@ -49,6 +49,7 @@ shader_parameter/shade_strength = 1.0
 custom_minimum_size = Vector2(100, 120)
 layout_mode = 3
 anchors_preset = 0
+mouse_filter = 1
 script = ExtResource("1_vybhe")
 _tooltip = NodePath("Button/ToolTipArea")
 texture_rect = NodePath("TextureRect2")
@@ -100,6 +101,7 @@ custom_minimum_size = Vector2(100, 120)
 layout_mode = 0
 offset_right = 100.0
 offset_bottom = 120.0
+mouse_filter = 1
 theme = ExtResource("2_vybhe")
 
 [node name="ToolTipArea" type="Control" parent="Button" unique_id=489986199]
