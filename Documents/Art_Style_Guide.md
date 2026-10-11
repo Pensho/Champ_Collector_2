@@ -83,7 +83,7 @@ Part I whole, and no section grants an exemption this table does not carry.
 
 | Class | Exempt from | Substitute rules in |
 |---|---|---|
-| Fodder enemies | Non-negotiable 3; the full detail tier | 9.1 |
+| Fodder enemies | Non-negotiable 3 | 9.1 |
 | Overworld views | Section 4; non-negotiable 2 | 10.4 |
 | Selection panels | Section 4; non-negotiable 2; the section 6 quantize step | 10.8 |
 | Node and currency icons | Non-negotiable 2 (three values); the material slots of section 3 | 12.1 |
@@ -952,9 +952,6 @@ softness the model still adds. Keep any light accent off the veil's upper edge �
 it runs across the face and falls under 8.4.1. If a variant blurs, the untested
 fallback is a coarse open net with a few large diamond openings.
 
-Fodder enemies are the one place faces stay dark and anonymous, which is a free
-legibility win and matches the reduced detail tier in 9.1.
-
 #### 8.4.6 Appearance is stated, or the model picks it
 
 Left unstated, Leonardo returns one recurring head across the whole roster:
@@ -1027,8 +1024,9 @@ flat value bands quantize a smudge into nothing.
 
 **Stain blotches, under test.** Structural wear alone left the Scavenger Skirmisher
 looking new; `blotches of stains across` the garments and `dried bug blood on` the
-weapons made him look used. *Blotches* asks for shapes, which may be why it works.
-Confirm after the quantize step (19.2).
+weapons made him look used, and the same wording held on the Sporeback Matron
+(9.6.1). *Blotches* asks for shapes, which may be why it works. Confirm after the
+quantize step (19.2).
 
 Wear that reads at 300 px is structural: a sleeve burned off at the elbow, a hem
 torn and re-panelled, a mended patch with hard angular edges, a strap replaced
@@ -1390,24 +1388,24 @@ moves the light. Their tail is 4.2 with `three-quarter view facing left`.
 ### 9.1 Detail tier by content tier
 
 - **Player Roles** — the block as written.
-- **Fodder enemies** — drop to `minimal interior detail, large simple shapes,
-  three values`, faces dark and anonymous, no accent or a heavily reduced one.
+- **Fodder enemies** — the block as written, four values and the three-level
+  detail spec (8.6.1), with no accent. The old tier of `minimal interior detail,
+  large simple shapes, three values` returned figures with two features each.
 - **Bosses** — same block as player Roles plus one additional counted focal
   element. Do not raise the detail ceiling. Distinguish bosses by scale and by the
   extra focal element.
 
 ### 9.2 Fodder
 
-The 8.6 block at the 9.1 tier: `three values only`, `minimal interior detail,
-large simple shapes`, one named region carrying the only engraved detail, and
-`no accent color`.
+The 8.6 block with `no accent color` (9.1). Creature fodder follows 9.4 as well.
 
 - **Dress for the biome.** Clothing, tools and protection are what the place
   demands. The fantasy layer is protection against its wildlife, harvested from
   its creatures and heaviest on the figures who fight up close. Gear from ordinary
   real objects alone reads as a farmer (8.1).
-- **Hide the face with the biome** — a brim, a creature-shell helmet, a
-  creature-eye lens — never with a garment from another climate.
+- **Faces may be shown.** A brim or creature-shell helmet is a costume choice,
+  not a fodder rule; when used, it comes from the biome, never from another
+  climate.
 - **Worn, not new.** Structural wear (8.5) plus stain blotches and creature blood
   on weapons.
 - **One garment hue per encounter**, from dyes the biome supplies, chosen fresh
@@ -1436,10 +1434,29 @@ hard-edged mass to the shin.
 
 ### 9.4 Non-humanoid and creature forms
 
-> **Not yet written.** The guide assumes a humanoid figure throughout. Beasts,
-> constructs and statues need their own answers on band 1 coverage, the face rule
-> (8.4 assumes eyes), and where the accent sits when there is no head-and-chest
-> region.
+Creatures are mutations of their biome's wildlife — never a real animal, and
+never carrying an embedded artifact or stone. A familiar base such as a hound is
+fine when the twist is visible in the still image.
+
+- **The mutation is the element from outside reality** (8.1): a body plan no
+  animal has — six stilt legs, rows of eyes, fungus growing as part of the body.
+- **One encounter, one family, separate body plans.** Share hide, markings,
+  fungus and eyes. Separate members by body plan, never by age, size or pose; a
+  grown version of the same creature comes back as the same creature.
+- **Adapted, not starved.** A thin ribby beast reads as a city stray.
+- **The environment is on them** (8.5): mud caked to the knee as one hard-edged
+  mass, debris snagged on the legs and growth, claw scars, a crusted wound with
+  dried blood, stain blotches. Wear takes the moderate and light tiers (8.6.1).
+- **Faces are shown**, eyes per 8.4.1. Mouth and head carriage carry the role —
+  closed and mild on a support creature, open on an attacker. A gaping split jaw
+  reads as horror.
+- **Anatomy is counted, growth is loose** (5.4): legs and eyes take numbers,
+  fungus and foliage on the body do not.
+- **Camera:** the 4.2 tail with `eye-level camera` in place of `eye-level camera
+  at chest height`.
+
+> **Not yet written.** Band 1 coverage and accent placement on creatures, and
+> constructs and statues.
 
 ### 9.5 Enemy color policy
 
@@ -1449,6 +1466,32 @@ hard-edged mass to the shin.
 
 **Stated so far.** Fodder carries no accent (9.2). The Salvage Baron's amber is
 the first boss accent, between Jester saffron and Lancer copper (19.2).
+
+### 9.6 Reference examples
+
+Enemies keep their own budget of **at most three prompts**, separate from 8.7,
+since they follow different rules from champions. Adding one means removing
+another's prompt block.
+
+#### 9.6.1 Sporeback Matron
+
+The working example of 9.4. Fodder healer of the Sporeback Pack, beside two Spore
+Hounds: a different body plan from the hounds, sharing only the blotched teal hide,
+the coral fungus and the three-eye rows.
+
+- **Six stilt legs and a back garden** are the mutation; the garden's spore puffs
+  are Sporeburst Mend made visible.
+- **Mild closed face** for a support creature that never attacks.
+- **World-wear gets its own tier**: mud, snagged debris, scars, the crusted wound.
+
+```
+bold woodcut illustration with engraved structural linework, very thick uniform black contour outline on the outer silhouette, clean uninterrupted silhouette edge, flat color fields, hard-edged shadows, four values, high contrast with large areas of solid shadow in a deep green-black, that shadow mass and the outline sitting at the same value, colors assigned by material: saturated deep teal-green hide broken by bold green-black blotches, saturated coral fungus, desaturated dark blue-green ferns and moss, dull umber mud, all flat and unmodulated, warm bone white reserved for small highlight shapes and the eyes, outline black tinted slightly toward blue-violet, light from the upper left casting a narrow edge along the upper left contour, three levels of detail: the garden on her back and her head carry the heaviest engraved detail and read as the focal point; the body and neck carry moderate engraved detail through matted fur clumps, scars and stain blotches; the six legs carry light detail through mud, joints and hanging debris rather than being left empty, all marks large and structural, no accent color, hand-carved edge quality.
+full body creature, a tall slow towering jungle beast standing high on six long thin jointed legs, its body a short heavy barrel carried well off the ground, a long drooping neck hanging forward and low ending in a small long-faced head with a mild calm expression, three small bone white eyes with ink black pupils set in a row along each side of the head, the hide teal-green with large irregular blotches like a frog's markings, the fur along the neck and shoulders matted into thick clumps with moss growing in them, her whole back a living garden: tall coral fungus stalks with broad flat caps rising like a small canopy, ferns and spiky bromeliads crowded between their bases, long strands of vine trailing down her flanks, several coral caps breaking open and releasing round clumped puffs of spores drifting upward, three old parallel claw scars torn across the near flank, a crusted wound on the shoulder with dried blood blotched down from it, blotches of stains across the belly, thick dried mud caked on every leg from the foot to the knee as one hard-edged mass, snapped vine strands and torn leaves snagged on the legs and hanging from the belly, the belly, the far legs and the underside of the neck falling into solid green-black shadow, in contact with a single flat ground line, three-quarter view facing left, eye-level camera, orthographic, isolated on a plain flat background of one uniform color, full figure visible with headroom.
+```
+
+Counted groups: six legs, three eyes per side, three claw scars. **Cut order:**
+the ferns and bromeliads first, then the claw scars. The garden, the mud and the
+wound are never cut.
 
 ---
 ## 10. Environments
@@ -3344,6 +3387,14 @@ line is a trap, not a history; the rule it produced lives in the section named.
 - A reagent as a carved pointing hand on a waymarker post, its finger stretched
   long. Generated and rejected (11.3).
 
+**Creatures**
+
+- Magic artifacts or ruin stone embedded in a creature. Reads as a prop stuck on
+  an animal, not a mutation (9.4).
+- A lower jaw split into gaping mandibles. Reads as stock horror (9.4).
+- The old fodder tier — `minimal interior detail, large simple shapes, three
+  values`. Returns a barren figure with two features (9.1).
+
 **Environment elements**
 
 - Flat color fields with no engraved linework. Reads as a vector cartoon prop
@@ -3453,6 +3504,8 @@ together, at six characters rather than at fifteen.
 - **Occupation clauses in the approved prompts.** 5.7 says they do not belong in
   prompts; 8.7.1 carries one. Leave it as recorded-as-generated, or
   strip it on the next revision.
+- **Spore Hound at the new tier.** Approved under the old three-value fodder
+  tier; regenerate with the 9.1 detail spec and world-wear (9.4) before locking.
 
 ### 19.3 Environments
 
