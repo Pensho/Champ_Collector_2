@@ -30,6 +30,32 @@ func test_allows_relic_matches_listed_keys_only() -> void:
 	assert_true(pool.AllowsRelic("Kiln_Brand"))
 	assert_false(pool.AllowsRelic("Quorum_Bell"))
 
+func test_allows_status_effects_matches_listed_names_only() -> void:
+	var pool: ContentPool = _make_pool([], [])
+	pool.buff_names = ["Haste"]
+	pool.debuff_names = ["Bleed"]
+	assert_true(pool.AllowsBuff(Types.Buff_Type.Haste))
+	assert_false(pool.AllowsBuff(Types.Buff_Type.Empower))
+	assert_false(pool.AllowsBuff(Types.Buff_Type.Invalid))
+	assert_true(pool.AllowsDebuff(Types.Debuff_Type.Bleed))
+	assert_false(pool.AllowsDebuff(Types.Debuff_Type.Burning))
+
+func test_grant_starting_resources_adds_the_pool_amounts() -> void:
+	var pool: ContentPool = _make_pool([], [])
+	pool.starting_silver = 120
+	pool.starting_supplies = 30
+	pool.starting_fortunes_favor_bone = 4
+	pool.starting_fortunes_favor_brass = 2
+	pool.starting_fortunes_favor_parchment = 1
+	var resources: ResourceHandler = ResourceHandler.new()
+	Main_Instance.GrantStartingResources(resources, pool)
+	assert_eq(resources.GetSilver(), 120)
+	assert_eq(resources.GetSupplies(), 30)
+	assert_eq(resources.GetFortunesFavor(FortuneFavorTier.TierType.BONE), 4)
+	assert_eq(resources.GetFortunesFavor(FortuneFavorTier.TierType.BRASS), 2)
+	assert_eq(resources.GetFortunesFavor(FortuneFavorTier.TierType.PARCHMENT), 1)
+	resources.free()
+
 func test_pin_overrides_the_launch_environment() -> void:
 	var pool: ContentPool = _make_pool(["Mending_Icon"], [])
 	GameModeRegistry.PinForTest(pool)

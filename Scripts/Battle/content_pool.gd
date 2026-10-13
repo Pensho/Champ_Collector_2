@@ -20,6 +20,14 @@ class_name ContentPool extends Resource
 @export var recruitable_champions: Array[CharacterPreset] = []
 ## How many reagents a new game starts with, drawn from this pool's own families.
 @export var starting_reagent_count: int = 0
+@export var starting_silver: int = 0
+@export var starting_supplies: int = 0
+@export var starting_fortunes_favor_bone: int = 0
+@export var starting_fortunes_favor_brass: int = 0
+@export var starting_fortunes_favor_parchment: int = 0
+## Buff and debuff names (Types enum keys, e.g. "Haste") the Hollow Ledger glossary lists.
+@export var buff_names: Array[String] = []
+@export var debuff_names: Array[String] = []
 
 func AllowsReagent(p_key: String, p_rarity: Types.Rarity) -> bool:
 	var rarity_suffix: String = "_" + Types.Rarity.find_key(p_rarity)
@@ -27,6 +35,12 @@ func AllowsReagent(p_key: String, p_rarity: Types.Rarity) -> bool:
 
 func AllowsRelic(p_key: String) -> bool:
 	return relic_keys.has(p_key)
+
+func AllowsBuff(p_type: Types.Buff_Type) -> bool:
+	return buff_names.has(Types.Buff_Type.find_key(p_type))
+
+func AllowsDebuff(p_type: Types.Debuff_Type) -> bool:
+	return debuff_names.has(Types.Debuff_Type.find_key(p_type))
 
 func AllowsChampion(p_preset: CharacterPreset) -> bool:
 	for allowed: CharacterPreset in recruitable_champions:

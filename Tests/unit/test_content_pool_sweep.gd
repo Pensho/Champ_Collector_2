@@ -38,6 +38,15 @@ func test_the_default_pool_lists_every_registered_relic() -> void:
 	for relic_key: String in EquipmentPresetRegistry.RELIC_PRESETS.keys():
 		assert_true(default_pool.AllowsRelic(relic_key), "The default pool omits Relic %s" % relic_key)
 
+func test_the_default_pool_lists_every_status_effect() -> void:
+	var default_pool: ContentPool = GameModeRegistry.DefaultPool()
+	for buff_type: Types.Buff_Type in StatusEffectRegistry.BUFFS.keys():
+		assert_true(default_pool.AllowsBuff(buff_type),
+				"The default pool omits buff %s" % Types.Buff_Type.find_key(buff_type))
+	for debuff_type: Types.Debuff_Type in StatusEffectRegistry.DEBUFFS.keys():
+		assert_true(default_pool.AllowsDebuff(debuff_type),
+				"The default pool omits debuff %s" % Types.Debuff_Type.find_key(debuff_type))
+
 func test_the_default_pool_lists_every_champion_preset() -> void:
 	var default_pool: ContentPool = GameModeRegistry.DefaultPool()
 	var paths: Array[String] = []
@@ -57,6 +66,13 @@ func test_every_content_pool_names_only_registered_content() -> void:
 		for family in pool.reagent_families:
 			assert_true(_IsRegisteredReagentFamily(family),
 					"%s: unregistered reagent family %s" % [pool.resource_path, family])
+		for buff_name in pool.buff_names:
+			assert_true(Types.Buff_Type.has(buff_name) and StatusEffectRegistry.BUFFS.has(Types.Buff_Type[buff_name]),
+					"%s: unregistered buff %s" % [pool.resource_path, buff_name])
+		for debuff_name in pool.debuff_names:
+			assert_true(Types.Debuff_Type.has(debuff_name)
+					and StatusEffectRegistry.DEBUFFS.has(Types.Debuff_Type[debuff_name]),
+					"%s: unregistered debuff %s" % [pool.resource_path, debuff_name])
 
 func test_every_content_pool_starting_roster_fits_the_roster_cap() -> void:
 	var pools: Array[ContentPool] = _CollectContentPools()

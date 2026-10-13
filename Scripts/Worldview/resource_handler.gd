@@ -27,9 +27,6 @@ func _ready() -> void:
 	self.name = self.get_script().get_global_name()
 	add_to_group(SaveManager.GROUP_SAVEABLE)
 
-	_fortunes_favor[FortuneFavorTier.TierType.BONE] = 3
-	_fortunes_favor[FortuneFavorTier.TierType.BRASS] = 1
-
 func Serialize() -> Dictionary:
 	return {
 		"silver": _silver,

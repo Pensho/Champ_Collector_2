@@ -144,10 +144,11 @@ func BuildGlossary() -> void:
 	for child in _glossary_list.get_children():
 		child.queue_free()
 
+	var content_pool: ContentPool = GameModeRegistry.Active()
 	_glossary_list.add_child(BuildGlossaryHeader("Buffs"))
 	for buff_name in Types.Buff_Type.keys():
 		var buff_type: Types.Buff_Type = Types.Buff_Type[buff_name]
-		if(Types.Buff_Type.Invalid == buff_type):
+		if(not content_pool.AllowsBuff(buff_type)):
 			continue
 		_glossary_list.add_child(BuildGlossaryRow(
 				StatusEffectRegistry.BuffData(buff_type), Types.BuffName(buff_type)))
@@ -155,7 +156,7 @@ func BuildGlossary() -> void:
 	_glossary_list.add_child(BuildGlossaryHeader("Debuffs"))
 	for debuff_name in Types.Debuff_Type.keys():
 		var debuff_type: Types.Debuff_Type = Types.Debuff_Type[debuff_name]
-		if(Types.Debuff_Type.Invalid == debuff_type):
+		if(not content_pool.AllowsDebuff(debuff_type)):
 			continue
 		_glossary_list.add_child(BuildGlossaryRow(
 				StatusEffectRegistry.DebuffData(debuff_type), Types.DebuffName(debuff_type)))

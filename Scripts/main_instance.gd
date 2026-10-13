@@ -47,6 +47,7 @@ func Init() -> void:
 		_character_collection.Add(preset.duplicate(true))
 	for reagent_key: String in content_pool.RollStartingReagentKeys(StartingReagentCandidates(content_pool)):
 		_reagent_collection.Add(reagent_key)
+	GrantStartingResources(_resources, content_pool)
 
 	context_container._scene = "uid://c6c1o3oabj0pf"
 	change_scene(context_container)
@@ -61,6 +62,14 @@ static func StartingReagentCandidates(p_content_pool: ContentPool) -> Array[Stri
 			continue
 		candidate_keys.append(reagent_key)
 	return candidate_keys
+
+static func GrantStartingResources(p_resources: ResourceHandler, p_content_pool: ContentPool) -> void:
+	p_resources.AddSilver(p_content_pool.starting_silver)
+	p_resources.AddSupplies(p_content_pool.starting_supplies)
+	p_resources.AddFortunesFavor(FortuneFavorTier.TierType.BONE, p_content_pool.starting_fortunes_favor_bone)
+	p_resources.AddFortunesFavor(FortuneFavorTier.TierType.BRASS, p_content_pool.starting_fortunes_favor_brass)
+	p_resources.AddFortunesFavor(
+			FortuneFavorTier.TierType.PARCHMENT, p_content_pool.starting_fortunes_favor_parchment)
 
 func change_scene(p_context: ContextContainer) -> void:
 	_deferred_change_scene(p_context)
