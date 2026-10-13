@@ -14,8 +14,8 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 
 [application]
 
-config/name="Writborn Uprising"
-config/version="0.0.11"
+config/name="Writborn"
+config/version="0.0.13"
 run/main_scene="uid://knp34r3jmafv"
 config/features=PackedStringArray("4.7", "Mobile")
 run/max_fps=180
