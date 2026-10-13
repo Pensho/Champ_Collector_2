@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d2tbjajtjd6cy"
-path="res://.godot/imported/Regeneration.png-92e362fa0406db40b66370cc9bff29f0.ctex"
+uid="uid://chp72utnif2nt"
+path="res://.godot/imported/signed_writ.png-4c541c011c316f74e2abb406fe92a023.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Icons/Status_Effects/Regeneration/Regeneration.png"
-dest_files=["res://.godot/imported/Regeneration.png-92e362fa0406db40b66370cc9bff29f0.ctex"]
+source_file="res://Assets/Champ_Collector/Icons/Status_Effects/signed_writ.png"
+dest_files=["res://.godot/imported/signed_writ.png-4c541c011c316f74e2abb406fe92a023.ctex"]
 
 [params]
 

@@ -74,8 +74,6 @@ const STATUS_EFFECT_TABLE: Array = [
 			"color": Color(0.35, 0.80, 0.75, 1.0) },
 	{ "folder": "Status_Effects/Frenzy", "base_name": "Frenzy", "size": 64,
 			"color": Color(0.60, 0.75, 0.20, 1.0) },
-	{ "folder": "Status_Effects/Regeneration", "base_name": "Regeneration", "size": 64,
-			"color": Color(0.25, 0.80, 0.45, 1.0) },
 	{ "folder": "Status_Effects/Exhert", "base_name": "Exhert", "size": 64,
 			"color": Color(0.15, 0.60, 0.55, 1.0) },
 	{ "folder": "Status_Effects/Mana_Burn", "base_name": "Mana_Burn", "size": 64,
@@ -99,8 +97,6 @@ const STATUS_EFFECT_TABLE: Array = [
 			"color": Color(0.55, 0.15, 0.50, 1.0) },
 	{ "folder": "Status_Effects/Warped", "base_name": "Warped", "size": 64,
 			"color": Color(0.40, 0.10, 0.60, 1.0) },
-	{ "folder": "Status_Effects/Signed_Writ", "base_name": "Signed_Writ", "size": 64,
-			"color": Color(0.60, 0.20, 0.20, 1.0) },
 	{ "folder": "Status_Effects/Severance", "base_name": "Severance", "size": 64,
 			"color": Color(0.35, 0.05, 0.35, 1.0) },
 	{ "folder": "Status_Effects/Sanction", "base_name": "Sanction", "size": 64,
@@ -243,9 +239,6 @@ const SKILL_ICON_TABLE: Array = [
 # encounter with a distinct base hue.
 #   folder, base_name, size, color
 const CREATURE_PLACEHOLDER_TABLE: Array = [
-	# Sporeback Pack
-	{ "folder": "Sporeback_Matron", "base_name": "Sporeback_Matron", "size": 128,
-			"color": Color(0.40, 0.60, 0.35, 1.0) },
 	# Wake Skimmers
 	{ "folder": "Skimmer_Cutthroat", "base_name": "Skimmer_Cutthroat", "size": 128,
 			"color": Color(0.20, 0.45, 0.60, 1.0) },
