@@ -829,6 +829,14 @@ func _SkillUseCount(p_caster_ID: int, p_skill: Skill) -> int:
 	_skill_use_counts[key] = uses + 1
 	return uses
 
+func SkillRampBonus(p_caster_ID: int, p_skill: Skill) -> float:
+	var uses: int = _skill_use_counts.get("%d:%s" % [p_caster_ID, p_skill.name], 0)
+	var bonus: float = 0.0
+	for effect: SkillEffect in p_skill.effects:
+		var damage_effect: DamageEffect = effect as DamageEffect
+		if(null != damage_effect):
+			bonus += damage_effect.RampBonus(uses)
+	return bonus
 
 ## Contributes the caster's persistent channel-2 factors (trait bonus, reagent/graft bonus, Momentum,
 ## Opportunist) into the modifier — shared by attack resolution and any tick needing the

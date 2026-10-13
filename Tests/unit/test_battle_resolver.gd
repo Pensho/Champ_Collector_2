@@ -172,6 +172,26 @@ func test_heap_on_state_is_per_resolver_not_global() -> void:
 	assert_eq(first_cast_a, first_cast_b,
 		"A fresh resolver must start with clean Heap-On state (no static leakage)")
 
+func test_skill_ramp_bonus_reports_next_cast_without_advancing() -> void:
+	var heap_on_skill: Skill = Skill.new()
+	heap_on_skill.name = "Heap On"
+	heap_on_skill.target = Types.Skill_Target.Single_Enemy
+	var heap_on_effect: DamageEffect = DamageEffect.new()
+	heap_on_effect.damage_scaling = {Types.Attribute.Health: 1.0}
+	heap_on_effect.bonus_per = {Types.Trait_Count_Source.Uses_This_Battle: 0.2}
+	heap_on_skill.effects = [heap_on_effect]
+	var roster: Dictionary[int, Character] = _make_roster()
+	roster[0]._skills[0] = heap_on_skill
+	var resolver: BattleResolver = TestFactory.make_resolver(
+			roster, TestFactory.make_full_sides(), null, BATTLE_SEED)
+
+	assert_almost_eq(resolver.SkillRampBonus(0, heap_on_skill), 0.0, 0.0001, "No bonus before the first cast")
+	resolver.ResolveSkill(0, [3], 0)
+	resolver.ResolveSkill(0, [3], 0)
+	assert_almost_eq(resolver.SkillRampBonus(0, heap_on_skill), 0.4, 0.0001, "Two prior casts give +40%")
+	assert_almost_eq(resolver.SkillRampBonus(0, heap_on_skill), 0.4, 0.0001, "Reading the bonus must not advance it")
+	assert_almost_eq(resolver.SkillRampBonus(1, heap_on_skill), 0.0, 0.0001, "Stacks are per caster")
+
 func test_ramp_per_use_grows_damage_and_is_permanent_for_the_battle() -> void:
 	var ramping_skill: Skill = Skill.new()
 	ramping_skill.name = "Breaching Charge"

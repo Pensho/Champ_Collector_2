@@ -50,11 +50,11 @@ func _AllowCritical(p_context: SkillCastContext) -> bool:
 	var caster: Character = p_context.resolver.GetCharacters().get(p_context.caster_ID)
 	return not Skills.OwnCriticalHitSuppressed(caster, p_context.caster_ID, p_context.skill.name)
 
+func RampBonus(p_use_count: int) -> float:
+	return bonus_per.get(Types.Trait_Count_Source.Uses_This_Battle, 0.0) * float(p_use_count)
+
 func _RampMultiplier(p_context: SkillCastContext) -> float:
-	var per_use: float = bonus_per.get(Types.Trait_Count_Source.Uses_This_Battle, 0.0)
-	if(0.0 == per_use):
-		return 1.0
-	return 1.0 + per_use * float(p_context.use_count)
+	return 1.0 + RampBonus(p_context.use_count)
 
 ## The skill (or, in zone-trigger mode where there is no cast Skill, the triggering
 ## zone's source) this effect belongs to — the mechanic identity its non-ramp bonus_per

@@ -274,7 +274,7 @@ func StartTurn() -> void:
 			_battle_ui.SetSkill(
 				_characters[_turn_character_ID]._skills[i].icon_path,
 				_characters[_turn_character_ID]._skills[i].name,
-				_characters[_turn_character_ID]._skills[i].description,
+				_SkillTooltipDescription(_turn_character_ID, _characters[_turn_character_ID]._skills[i]),
 				i)
 			_battle_ui._skill_buttons[i].show()
 			if(_characters[_turn_character_ID]._skills[i].cooldown_left > 0):
@@ -302,6 +302,12 @@ func StartTurn() -> void:
 	elif(_sides.enemy.Has(_turn_character_ID)):
 		_state = BattleState.Enemy_Acting
 		HandleEnemyTurn()
+
+func _SkillTooltipDescription(p_caster_ID: int, p_skill: Skill) -> String:
+	var ramp_bonus: float = _resolver.SkillRampBonus(p_caster_ID, p_skill)
+	if(ramp_bonus <= 0.0):
+		return p_skill.description
+	return "%s\nCurrent bonus: +%d%% damage." % [p_skill.description, roundi(ramp_bonus * 100.0)]
 
 func _HasZoneEffect(p_skill: Skill) -> bool:
 	for effect in p_skill.effects:
