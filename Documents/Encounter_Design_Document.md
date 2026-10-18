@@ -434,6 +434,60 @@ Concept Document).
   each phase 2 kill hands the next mark to a Baron already carrying Momentum.
 - **Reward hook (deferred):** assigned at placement.
 
+#### The Hue-Eater (draft, parked)
+
+- **Status:** parked mid-design, 2026-10-18. Settled: keys, threats, locks, readability,
+  and solved states for both mechanics. Open: payoff (waiting on a roster check of thin
+  kits), roster sweep, precise numbers, phase 2, composition, and a fantasy pass. The
+  mechanics below move into section 1 as opponent skills once settled.
+- **Tier:** Boss, weight not yet set. Intended for the Magic Ruins adventure (Act 1),
+  the first adventure after the Adventurer's Guild opens. **Theme:** Ruins of the God of
+  Magic, the Ossuary of Stolen Hues (World_Building.md 5.4.1).
+- **Fantasy (to be iterated):** a Refracted being that has lost its own colour and
+  gathers light from everything around it.
+- **Enemy composition:** assumed the Hue-Eater alone; not yet decided.
+- **Mechanics:**
+    - **Translucent (passive).** She takes heavily reduced damage (starting point: -75%)
+      unless she holds Hexed. Shown only visually: translucent while active, solid while
+      Hexed. No status icon and no number shown to the player. It is deliberately not a
+      buff, so Cut Purse cannot steal it.
+    - **Prismatic beams (skill, name open).** A multi-beam attack (working number: 5
+      beams). Each beam rolls 60% to hit its target, otherwise it bends back. A bent beam
+      passes through her while she is translucent and hits her while she is solid. Hexed
+      rolls twice and keeps the worse, lowering each beam to 36%. Readability: beams
+      resolve one at a time, each visibly wavers before committing, and a beam that
+      Hexed flipped shows a "Hexed" callout (needs engine support, see `FeatureIdeas.md`,
+      Luck and Hexed roll callout). Cooldown open.
+    - **Gathered Light (passive).** Six hexagon slices rotate above her. She gains one at
+      the start of each of her turns, starting from 0. A completed hexagon is a heavy hit
+      on the party (meant to be survivable), then it resets. Each Enfeeble that lands on
+      her is consumed and removes 2 slices. When it lands, the Enfeeble icon is pulled
+      into the hexagon, with a sound cue and combat text naming Enfeeble. Its onset may
+      move to phase 2 when tuning.
+- **Keys:**
+    - **Hexed (hard check):** the Diviner's Ill Omen, the Jester's Burning Bolas. Makes
+      her solid and bends most beams into her.
+    - **Enfeeble (soft check):** the Lancer Role's Disarm (Hunter) and the Warlord's
+      Brace for Impact. Brace for Impact also triggers on beam damage redirected by Shield
+      Wall, and is meant to be able to clear the whole hexagon in one cast. The Diviner's
+      Foresight also applies Enfeeble, incidentally.
+    - **Tension:** Hexed lowers how many beams land on the Warlord, and so how many
+      Enfeebles Brace for Impact applies. This is a timing decision, not a defect.
+- **Solved state:** while Hexed is up she is solid and most of each cast bends back into
+  her; Enfeeble keeps the hexagon from completing.
+- **Unsolved texture:** without Hexed she is near-invulnerable while beams land at 60%,
+  which is a wall. Without Enfeeble the hexagon's heavy hit lands every sixth turn of hers.
+- **Open items:**
+    - **Payoff:** none yet. Every key except the Hunter comes from an Enabler kit. The
+      burst must come from player skills: boss mechanics and boss attacks never carry
+      player multipliers, though effects on her (such as reduced Defence) do count.
+    - **Parked idea, Luck on her:** with Luck alone her beams always hit; with Luck and
+      Hexed, or neither, they hit at 60%; with Hexed alone, 36%. Set aside because it
+      makes Cut Purse a key, repeating the Salvage Baron's Thief solution.
+    - **Hidden odds:** make the true odds kinder than they look (e.g. never the same
+      good roll for her twice in a row) so the chance does not feel cheating.
+    - Roster sweep, beam count and damage, Translucent's value, cooldowns, and phase 2.
+
 ## 3. Channel audit
 
 One row per catalog entry, added by the now-deleted `Plan_Encounter_Blowout_Retrofit.md`

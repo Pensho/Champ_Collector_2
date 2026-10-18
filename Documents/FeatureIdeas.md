@@ -85,6 +85,9 @@ Effort: **S** = hours, **M** = days, **L** = week+
 - **Enemy Passive Reveal-on-Trigger with Bestiary** *(Priority: Medium | Effort: L)*
   Enemy passives show only a name and a flavor line until the effect triggers once, then the full mechanical text unlocks — for the rest of the battle and permanently in a bestiary, so knowledge transfers across encounters re-using the variant. Upgrade path from the current rule (enemy passives not inspectable at all, Concept_Document 3.2); needs investigation of screen-space budget and reveal handling first.
 
+- **Luck and Hexed roll callout** *(Priority: Medium | Effort: S)*
+  Show "Lucky" or "Hexed" combat text when the second roll from Luck or Hexed changed an outcome (a dodge, a crit, a resist, a beam's hit roll), so these statuses visibly matter. `BattleResolver.RollFavoring` returns only the kept value today, so it needs to report whether the second roll decided the outcome. Needed by the Hue-Eater draft (Encounter_Design_Document.md 2.3).
+
 - **Desktop Window Size Option** *(Priority: Low | Effort: S)*
   A window-size dropdown in settings for Windows/Linux windowed mode, clamped to the screen size and persisted in `settings.gd`. Add if playtesters ask for it. Switching the stretch aspect from `keep` to `expand` (no letterboxing on non-16:9 screens) is a separate, larger decision: every UI scene's anchors must hold, and `post_battle_menu.gd` hard-codes a 1280×720 background.
 

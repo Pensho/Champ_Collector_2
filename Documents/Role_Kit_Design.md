@@ -378,6 +378,33 @@ collapse-test payload without inventing new gating mechanics.
   Bloodmage's missing-Health hook are batch-time authoring decisions, not Phase 1 commitments.
 * The contrast baseline (bursting champion's own basic vs. team's average per-action output)
   remains open per the plan; not touched by this document.
+* **Proposed (2026-10-18, not settled): Bar Brawler rework.** Raised by a roster check for thin
+  kits; reopens §9.18's "kept". Headbutt is replaced, Liquid Courage gains a clause, Heap On and
+  On the House are unchanged.
+    * **Bar Fight** (replaces Headbutt, working name). Applies Dead Weight to one enemy for 2
+      turns, then every living ally, the Bar Brawler included, uses their basic skill against
+      that enemy at full strength. The resolutions are free, like Premonition's counter (§9.16):
+      each one is a real use of the basic, so the Bar Brawler's own resolution ramps Heap On.
+      Dead Weight goes first so that every hit pushes the target back. Headbutt's 5% push is
+      dropped. The intended decision is timing: delaying a dangerous enemy's turn, or lining up
+      with Daunting Strength or a debuff window. Cooldown 4. An ally under crowd control (today
+      only Stun) does not join. Tagged **Channel 1 + Enabler**: the basics carry their own
+      channels (Channel 1 by default) and Dead Weight is an Enabler. It is not Channel 3, since
+      §3's test counts extra resolutions of a skill that already resolved, and these are each
+      ally's first resolution. Like Premonition's counter (§9.16), it is a minor exported
+      instance count, not a cascade anchor.
+    * **Liquid Courage** gains: removes one random debuff from the Bar Brawler. This is the roster's
+      first kit-carried debuff cleanse (the Reanimating Statues 1 entry in
+      `Encounter_Design_Document.md` records its absence). Self-only, so it is not a team-wide
+      answer, and it gives the player a reason to hold the skill rather than cast it on cooldown.
+* **Ally attack and plain basics.** Bar Fight is worth only what the fielded basics carry, and 9
+  of 20 basics are plain damage (Stab, Lance Thrust, Acrid Splash, Septic Lance, Signal Strike,
+  Spore Lash, Zap, Shield Slam, Blood Bolt). That runs against §1.2's "most basics stay plain";
+  whether to revise that policy is open.
+* **Thin slots from the same roster check, not yet addressed:** Pierce Weakness (does one thing,
+  pressed on cooldown), the Symbiote's Symbiotic Overdrive and Grafted Flesh (upkeep; §9.17), and
+  Spotlight (1.5x targeting weight may not pull fire from a real tank, since priority is
+  (Health + Defence) times multipliers).
 
 ## 9. Settled kit designs
 
