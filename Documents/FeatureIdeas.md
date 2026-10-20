@@ -91,6 +91,9 @@ Effort: **S** = hours, **M** = days, **L** = week+
 - **Desktop Window Size Option** *(Priority: Low | Effort: S)*
   A window-size dropdown in settings for Windows/Linux windowed mode, clamped to the screen size and persisted in `settings.gd`. Add if playtesters ask for it. Switching the stretch aspect from `keep` to `expand` (no letterboxing on non-16:9 screens) is a separate, larger decision: every UI scene's anchors must hold, and `post_battle_menu.gd` hard-codes a 1280×720 background.
 
+- **Adventure map layers authored in a scene** *(Priority: Low | Effort: M)*
+  `adventure_graph_ui.gd` builds its map layers (`AdventureGround`, `AdventureEdgeLayer`, `AdventureBackground`, cloud shadows) with `.new()`/`instantiate()` and `add_child` on every Populate, against the UI scene conventions in `CLAUDE.md`. Decide whether they become static nodes in `Adventure.tscn` that Populate resizes and regenerates.
+
 
 
 ---
