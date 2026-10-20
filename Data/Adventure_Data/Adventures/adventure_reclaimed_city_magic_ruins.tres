@@ -11,7 +11,8 @@
 [ext_resource type="Resource" uid="uid://dauwp8sbf3ga" path="res://Data/Loot_Tables/Experience_Quest.tres" id="12_lh4g1"]
 [ext_resource type="Resource" uid="uid://wg8ohcii0wix" path="res://Data/Loot_Tables/Adventure_Escalate_Loot.tres" id="13_kofhi"]
 [ext_resource type="Resource" path="res://Data/Loot_Tables/Adventure_Hint_Loot.tres" id="14_c3w72"]
-[ext_resource type="Resource" path="res://Data/Adventure_Data/Buff_Pools/buff_pool_default.tres" id="15_buff_pool"]
+[ext_resource type="Resource" uid="uid://kd0gwx05dibq" path="res://Data/Adventure_Data/Buff_Pools/buff_pool_default.tres" id="15_buff_pool"]
+[ext_resource type="AudioStream" uid="uid://ddpr0hbi4wlku" path="res://Assets/Champ_Collector/Sound/Music/JDSherbert - Ambiences Music Pack - Swamp of Digeridoos.mp3" id="16_music"]
 
 [resource]
 script = ExtResource("1_adventure")
@@ -19,6 +20,7 @@ display_name = "Magic Ruins"
 selection_texture = ExtResource("2_texture")
 layout = ExtResource("3_layout")
 biome = ExtResource("4_biome")
+music_track = ExtResource("16_music")
 battle_variants = Dictionary[ExtResource("5_battle"), int]({
 ExtResource("6_militia"): 100
 })

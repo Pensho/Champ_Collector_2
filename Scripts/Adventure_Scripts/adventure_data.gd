@@ -5,6 +5,7 @@ class_name AdventureData extends Resource
 
 @export var layout: AdventureLayout
 @export var biome: BiomeData
+@export var music_track: AudioStream
 
 # Each battle variant is assigned a weight for how likely it is to appear on a FIGHT node
 @export var battle_variants: Dictionary[Context_Battle, int]

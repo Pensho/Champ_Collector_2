@@ -1,5 +1,6 @@
 class_name Main_Instance extends Node
 
+const MUSIC_FADE_SECONDS: float = 1.5
 
 
 var _current_scene = null
@@ -84,3 +85,7 @@ func _deferred_change_scene(p_context: ContextContainer) -> void:
 	add_child(_current_scene)
 	print("current scene is: ", _current_scene)
 	_current_scene.Init(p_context)
+	var music_track: AudioStream = null
+	if p_context._adventure_state != null and p_context._adventure_state.adventure != null:
+		music_track = p_context._adventure_state.adventure.music_track
+	Audio_Handler.PlayMusic(music_track, MUSIC_FADE_SECONDS)
