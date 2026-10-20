@@ -77,6 +77,7 @@ Declared in `project.godot`:
 
 ```
 [autoload]
+Audio_Handler         = "*res://Scripts/Audio/audio_handler.gd"
 main                  = "*res://Scripts/main.gd"
 Game_Balance          = "*res://Scripts/game_balance.gd"
 Types                 = "*res://Scripts/common_enums.gd"
@@ -172,6 +173,35 @@ and frees itself, emitting `finished` so the handler can promote the next queued
 Centring uses `get_viewport().get_visible_rect().size`, the `CanvasLayer` equivalent of
 the `get_viewport_rect().size` convention documented in
 [Section 4.1](#41-ui-positioning-and-viewport-space).
+
+### 3.6. `Audio_Handler` (`class_name AudioHandler`)
+
+`Scripts/Audio/audio_handler.gd` plays every sound. It is registered before `main`, whose
+first scene change already starts music. All sound is non-positional stereo.
+
+- **Cues.** Code plays a `SoundCue` resource (`stream`, `bus`, `volume_db`,
+  `maximum_simultaneous`, `minimum_interval`), never a raw `AudioStream`. Owners hold typed
+  `@export var x: SoundCue` fields; cue resources live in `Data/Sound_Cues/`. A `null` cue or
+  stream is a silent no-op. Variants and pitch or volume spread come from an
+  `AudioStreamRandomizer` stream, not from code.
+- **Pool.** `_ready` creates a fixed pool of `AudioStreamPlayer`s, never freed or grown.
+  `Play(cue, pitch_scale)` is one-shot; `PlayLoop(cue)` returns a handle (`-1` if refused) for
+  `StopLoop(handle, fade_seconds)`, and a stale handle is a no-op. `SoundPlaybackRules` decides
+  each request: a cue over its simultaneous limit or inside its interval is dropped; a player is
+  chosen idle-first, else the oldest non-looping one is stolen. Players belong to the autoload, so
+  a sound survives the scene change it triggers.
+- **Music.** Two players on the `Music` bus crossfade. `PlayMusic(track, fade_seconds)` is a
+  no-op for the track already playing, and `null` fades to silence. After each scene's `Init`,
+  `Main_Instance._deferred_change_scene` plays the incoming context's
+  `_adventure_state.adventure.music_track`, or `null` without one: music runs from the Adventure
+  map through battle and fades out on leaving. One area has one track, and every track is
+  imported with `loop=true`.
+- **Buttons.** Button sounds are opt-in: a scene's one `UISounds` node
+  (`Scripts/Audio/ui_sounds.gd`) lists its sounding buttons as
+  `buttons: Dictionary[NodePath, ButtonSoundProfile]`, and an entry without a profile uses
+  `Data/Sound_Cues/button_standard.tres`. A listed button plays its profile's `hover_cue` on
+  `mouse_entered`, and on `focus_entered` unless the mouse is over it (a click focuses the
+  button it hovers); it plays `press_cue` on `pressed`, and nothing while disabled.
 
 ---
 

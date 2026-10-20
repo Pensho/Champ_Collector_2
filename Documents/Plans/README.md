@@ -38,10 +38,6 @@ Code plans:
   static layer nodes, refreshes only node states, and moves ambient particles onto
   `BiomeVisualData`.
 
-- `Plan_Audio_Foundation.md` — `AudioHandler` autoload (pooled one-shot and looping sound
-  effects, crossfaded music), the `SoundCue` resource, Adventure music, and the
-  `ButtonSounds` component.
-
 - `Plan_Battle_Presentation_Timeline.md` — holds an action's results in the view and
   releases them on markers from the skill's effect scene; result stamps, `SkillPresentation`,
   the effect scene contract, the instance pool, and the skip setting.
