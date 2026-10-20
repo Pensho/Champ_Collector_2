@@ -14,21 +14,20 @@ layer = ExtResource("3_tree")
 [sub_resource type="Resource" id="Resource_grass"]
 script = ExtResource("2_entry")
 layer = ExtResource("4_grass")
-density_multiplier = 0.8
+density_multiplier = 0.9
 
 [sub_resource type="Resource" id="Resource_bush"]
 script = ExtResource("2_entry")
 layer = ExtResource("5_bush")
-density_multiplier = 0.6
+density_multiplier = 0.8
 
 [sub_resource type="Resource" id="Resource_lwp7c"]
 script = ExtResource("2_entry")
 layer = ExtResource("5_o67e6")
-density_multiplier = 0.3
+density_multiplier = 0.4
 
 [resource]
 script = ExtResource("1_region")
 name = "Forest"
-selection_weight = 0.45
 tint = Color(0.92, 1, 0.9, 1)
 decor = Array[ExtResource("2_entry")]([SubResource("Resource_tree"), SubResource("Resource_grass"), SubResource("Resource_bush"), SubResource("Resource_lwp7c")])

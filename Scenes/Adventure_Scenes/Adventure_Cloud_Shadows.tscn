@@ -10,7 +10,7 @@ particles_anim_loop = false
 
 [sub_resource type="Gradient" id="Gradient_ramp"]
 offsets = PackedFloat32Array(0, 0.15, 0.85, 1)
-colors = PackedColorArray(0, 0, 0, 0, 0, 0, 0, 0.35, 0, 0, 0, 0.35, 0, 0, 0, 0)
+colors = PackedColorArray(0, 0, 0, 0, 0, 0, 0, 0.47058824, 0, 0, 0, 0.47058824, 0, 0, 0, 0)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_ramp"]
 gradient = SubResource("Gradient_ramp")
