@@ -103,10 +103,10 @@ noise:
   pure static function returning `Array[DecorPlacement]` — no nodes, no drawing, fully
   unit-tested in `Tests/unit/test_adventure_background_generator.gd`. Node-type props from
   `node_props` are appended once per node at a small seeded offset.
-- `Scripts/UI/Adventure/adventure_background.gd` (`Control`) is the thin view: it draws a
-  `GradientTexture2D` background then each placement via `_draw()`. `adventure_graph_ui.gd`
-  adds it as the first child of `_graph_canvas`, ahead of `AdventureEdgeLayer`, so it
-  renders behind edges and node UI. The noise seeds and all placement jitter derive from
+- `Scripts/UI/Adventure/adventure_ground.gd` (`AdventureGround`) is the bottom layer: the
+  biome's gradient, mottled by its optional `ground_material` (`adventure_ground.gdshader`,
+  noise tiled in pixel space). `Scripts/UI/Adventure/adventure_background.gd` (`Control`)
+  draws each placement via `_draw()` above it and above `AdventureEdgeLayer`. The noise seeds and all placement jitter derive from
   `AdventureState._generation_seed`, so the same adventure always renders identical
   scenery.
 

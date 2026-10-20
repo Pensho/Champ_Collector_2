@@ -11,6 +11,7 @@ class_name BiomeVisualData extends Resource
 # Base background
 @export var background_top_color: Color
 @export var background_bottom_color: Color   # vertical gradient; equal = flat
+@export var ground_material: ShaderMaterial  # adventure_ground.gdshader mottle; none = plain gradient
 
 @export var detail_noise: FastNoiseLite      # high-frequency, per-element placement
 @export var region_noise: FastNoiseLite      # low-frequency, picks the zone per coarse cell

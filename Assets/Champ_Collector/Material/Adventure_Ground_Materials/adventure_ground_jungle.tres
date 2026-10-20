@@ -1,0 +1,16 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://cdqgiidp0lkou"]
+
+[ext_resource type="Shader" uid="uid://b0mdlpyedrv07" path="res://Assets/Champ_Collector/Shaders/adventure_ground.gdshader" id="1_shader"]
+[ext_resource type="Texture2D" uid="uid://b8e0msxlimvm0" path="res://Assets/Adventure/Background/Shared/adventure_ground_noise.tres" id="2_noise"]
+
+[resource]
+shader = ExtResource("1_shader")
+shader_parameter/mottle_tint = Color(0.62, 0.53, 0.37, 1)
+shader_parameter/noise_texture = ExtResource("2_noise")
+shader_parameter/noise_strength = 0.800000038
+shader_parameter/noise_steps = 3
+shader_parameter/step_blend = 0.400000019
+shader_parameter/noise_tile_size = Vector2(1024, 1024)
+shader_parameter/noise_offset = Vector2(0, 0)
+shader_parameter/noise_detail_scale = 1.449
+shader_parameter/noise_detail_weight = 0.133

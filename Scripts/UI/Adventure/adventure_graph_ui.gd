@@ -2,7 +2,7 @@ class_name AdventureGraphUi extends Control
 
 signal node_selected(p_node: NodeData)
 
-const GroundGradientScene := preload("res://Scripts/UI/Adventure/adventure_ground_gradient.gd")
+const GroundScene := preload("res://Scripts/UI/Adventure/adventure_ground.gd")
 const EdgeLayerScene := preload("res://Scripts/UI/Adventure/adventure_edge_layer.gd")
 const BackgroundScene := preload("res://Scripts/UI/Adventure/adventure_background.gd")
 const CloudShadowsScene := preload("res://Scenes/Adventure_Scenes/Adventure_Cloud_Shadows.tscn")
@@ -69,10 +69,10 @@ func Populate(p_nodes: Array[NodeData]) -> void:
 			_node_positions[node] = Vector2(x, y)
 
 	if _visual_data != null:
-		var ground_gradient := GroundGradientScene.new()
-		_graph_canvas.add_child(ground_gradient)
-		ground_gradient.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-		ground_gradient.Generate(_visual_data)
+		var ground := GroundScene.new()
+		_graph_canvas.add_child(ground)
+		ground.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		ground.Generate(_visual_data, _generation_seed)
 
 	var edges: Array = []
 	for node in p_nodes:

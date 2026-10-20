@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="BiomeVisualData" format=3 uid="uid://c26mbm7i0xh7x"]
 
 [ext_resource type="Script" path="res://Scripts/Adventure_Scripts/Visuals/biome_region_data.gd" id="0_region_type"]
+[ext_resource type="Material" uid="uid://cdqgiidp0lkou" path="res://Assets/Champ_Collector/Material/Adventure_Ground_Materials/adventure_ground_jungle.tres" id="1_k4peq"]
 [ext_resource type="Script" uid="uid://d38jy6bjotsgw" path="res://Scripts/Adventure_Scripts/Visuals/biome_visual_data.gd" id="1_visual"]
 [ext_resource type="Resource" uid="uid://bqc3x7ifs6ij2" path="res://Data/Adventure_Data/Biome_Visuals/Regions/region_reclaimed_city_forest.tres" id="2_forest"]
 [ext_resource type="Resource" uid="uid://bxtvm8prqlvku" path="res://Data/Adventure_Data/Biome_Visuals/Regions/region_reclaimed_city_clearing.tres" id="3_clearing"]
@@ -26,6 +27,7 @@ domain_warp_amplitude = 40.0
 script = ExtResource("1_visual")
 background_top_color = Color(0.09019608, 0.18039216, 0.101960786, 1)
 background_bottom_color = Color(0.18039216, 0.32156864, 0.16078432, 1)
+ground_material = ExtResource("1_k4peq")
 detail_noise = SubResource("FastNoiseLite_detail")
 region_noise = SubResource("FastNoiseLite_region")
 regions = Array[ExtResource("0_region_type")]([ExtResource("2_forest"), ExtResource("3_clearing"), ExtResource("4_rubble")])
