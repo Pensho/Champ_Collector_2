@@ -116,17 +116,12 @@ There is currently no way to show any of the above: `Skills.gd` resolves effects
 the only visual feedback is floating combat text (`battle_ui.gd::SpawnCombatText`),
 status icons on the character representation, turn-bar particles, and the sprite-echo
 system (`Scripts/Battle/character_visual_effects.gd`). Decisions, at requirement
-level — this section becomes its own implementation plan when picked up:
+level:
 
-- **Mapping data:** skills and status effects reference an archetype scene plus
-  variation parameters (color ramp, texture, scale) as resource data, consistent with
-  the project's data-driven `.tres` pattern — either a field on `Skill`
-  (`Scripts/Character/skill_data.gd`) or a lookup table keyed by skill/status
-  identifiers. Status-effect mappings can live directly on `StatusEffectData`
+- **Skill effects:** mapping, spawning and timing are owned by
+  `Plan_Battle_Presentation_Timeline.md`.
+- **Status-effect mappings** live on `StatusEffectData`
   (`Scripts/Battle/status_effect_data.gd`).
-- **Spawner hook:** the resolve path (`Skills.gd::ResolveSkillEffect` /
-  `ResolveZoneEffect`, driven by `battle.gd`) spawns the mapped archetype at the
-  target's `Character_Battle_Repr`, alongside the existing `SpawnCombatText` calls.
 - **Persistent emitters:** duration effects (Burning, future Barrier) attach an
   emitter to the character representation for their lifetime, not just an application
   burst — added and removed where status icons are added and removed today

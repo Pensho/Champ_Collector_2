@@ -1317,7 +1317,7 @@ Boss
 - Salvage Baron
 
 Music
-swamp of digeridoos or Dark Dark Woods
+swamp of digeridoos
 
 ##### 5.1.1.2. Magic Ruins (Reclaimed City)
 
