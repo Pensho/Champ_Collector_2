@@ -34,6 +34,10 @@ Code plans:
 - `Plan_Character_Data_Structure.md` — splits `CharacterPreset` and `Character` so champion-,
   opponent-, and boss-only fields live only on their own type.
 
+- `Plan_Adventure_Map_Scene_Layers.md` — builds the Adventure map once per scene from
+  static layer nodes, refreshes only node states, and moves ambient particles onto
+  `BiomeVisualData`.
+
 - `Plan_Localization.md` — the six-step localization rollout and its conventions. Each
   step gets a detailed plan when the step before it completes.
 - `Plan_Localization_Text_Preparation.md` — step 1: every player-facing string routed
