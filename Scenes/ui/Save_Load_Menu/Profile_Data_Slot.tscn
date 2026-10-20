@@ -1,7 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://cr3osdcoith57"]
+[gd_scene format=3 uid="uid://cr3osdcoith57"]
 
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="1_5wvtp"]
 [ext_resource type="Script" uid="uid://cqdt6hg5f837a" path="res://Scripts/UI/profile_data_slot.gd" id="1_w5ruj"]
+[ext_resource type="Script" uid="uid://brborf0wdvmjy" path="res://Scripts/Audio/ui_sounds.gd" id="3_edvkk"]
+[ext_resource type="Script" uid="uid://853wrgpde68y" path="res://Scripts/Audio/button_sound_profile.gd" id="4_uvf1v"]
+[ext_resource type="Resource" path="res://Data/Sound_Cues/button_standard.tres" id="5_7ks5d"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_selection"]
 bg_color = Color(0, 0, 0, 0)
@@ -15,7 +18,7 @@ corner_radius_top_right = 3
 corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 
-[node name="ProfileDataSlot" type="Control" node_paths=PackedStringArray("_button", "_name_input", "_saved_at_label", "_selection_outline")]
+[node name="ProfileDataSlot" type="Control" unique_id=1407362007 node_paths=PackedStringArray("_button", "_name_input", "_saved_at_label", "_selection_outline")]
 custom_minimum_size = Vector2(400, 150)
 layout_mode = 3
 anchors_preset = 0
@@ -25,13 +28,13 @@ _name_input = NodePath("MarginContainer/VBoxContainer/HBoxContainer/LineEdit")
 _saved_at_label = NodePath("MarginContainer/VBoxContainer/Label_Saved_At")
 _selection_outline = NodePath("SelectionOutline")
 
-[node name="Button" type="Button" parent="."]
+[node name="Button" type="Button" parent="." unique_id=166486678]
 custom_minimum_size = Vector2(400, 150)
 layout_mode = 0
 offset_right = 8.0
 offset_bottom = 8.0
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=975234532]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -44,28 +47,28 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=2128674002]
 layout_mode = 2
 mouse_filter = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=327826169]
 layout_mode = 2
 mouse_filter = 2
 
-[node name="LineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="LineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=219532987]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_5wvtp")
 placeholder_text = "Save slot X"
 max_length = 16
 
-[node name="Label_Saved_At" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="Label_Saved_At" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1479928180]
 layout_mode = 2
 theme = ExtResource("1_5wvtp")
 theme_override_font_sizes/font_size = 14
 text = "Empty"
 
-[node name="SelectionOutline" type="Panel" parent="."]
+[node name="SelectionOutline" type="Panel" parent="." unique_id=669209249]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -75,3 +78,10 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_selection")
+
+[node name="UISounds" type="Node" parent="." unique_id=2090428454]
+script = ExtResource("3_edvkk")
+buttons = Dictionary[NodePath, ExtResource("4_uvf1v")]({
+NodePath("../Button"): ExtResource("5_7ks5d")
+})
+metadata/_custom_type_script = "uid://brborf0wdvmjy"

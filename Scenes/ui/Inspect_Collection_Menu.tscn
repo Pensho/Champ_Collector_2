@@ -11,6 +11,9 @@
 [ext_resource type="Script" uid="uid://bumae467d28vx" path="res://Scripts/UI/tooltip.gd" id="9_lgjj3"]
 [ext_resource type="PackedScene" uid="uid://di4m8t74hovq0" path="res://Scenes/ui/Skill_List_Row.tscn" id="10_skillrow"]
 [ext_resource type="PackedScene" uid="uid://cfmbg0g334eri" path="res://Scenes/ui/Renown_Window.tscn" id="11_renown"]
+[ext_resource type="Script" uid="uid://brborf0wdvmjy" path="res://Scripts/Audio/ui_sounds.gd" id="12_ou6ko"]
+[ext_resource type="Script" uid="uid://853wrgpde68y" path="res://Scripts/Audio/button_sound_profile.gd" id="13_rbfub"]
+[ext_resource type="Resource" path="res://Data/Sound_Cues/button_standard.tres" id="14_7ugud"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_u3wy6"]
 shader = ExtResource("5_lsdxp")
@@ -1346,6 +1349,16 @@ _attribute_buttons = {
 6: NodePath("ColorRect_Card/MarginContainer/VBoxContainer/VBoxContainer_Attributes/Button_Mysticism"),
 7: NodePath("ColorRect_Card/MarginContainer/VBoxContainer/VBoxContainer_Attributes/Button_Knowledge")
 }
+
+[node name="UISounds" type="Node" parent="." unique_id=502799524]
+script = ExtResource("12_ou6ko")
+buttons = Dictionary[NodePath, ExtResource("13_rbfub")]({
+NodePath("../MarginContainer/ColorRect2/Button_Deselect_Char"): ExtResource("14_7ugud"),
+NodePath("../MarginContainer/HBoxContainer/Exit"): ExtResource("14_7ugud"),
+NodePath("../MarginContainer/HBoxContainer_Bottom_Actions/Button_Release"): ExtResource("14_7ugud"),
+NodePath("../MarginContainer/HBoxContainer_Bottom_Actions/Button_Ascend"): ExtResource("14_7ugud")
+})
+metadata/_custom_type_script = "uid://brborf0wdvmjy"
 
 [connection signal="button_up" from="MarginContainer/ColorRect2/Button_Deselect_Char" to="." method="_on_button_deselect_char_button_up"]
 [connection signal="tab_changed" from="MarginContainer/HBoxContainer2/VBoxContainer_Collection/HBoxContainer_Collection_Header/TabBar_Collection" to="." method="_on_tab_bar_collection_tab_changed"]

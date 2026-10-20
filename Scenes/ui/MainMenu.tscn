@@ -5,6 +5,9 @@
 [ext_resource type="Texture2D" uid="uid://cxe2lffkbra47" path="res://Assets/Champ_Collector/Scenery/Grasslands.png" id="3_h3tiw"]
 [ext_resource type="Texture2D" uid="uid://c3tw8gto5ffkw" path="res://Assets/Champ_Collector/UI/Logo_Writborn_Uprising.png" id="4_blk0r"]
 [ext_resource type="Texture2D" uid="uid://bn1o3x3kxre57" path="res://Assets/Champ_Collector/Particles/Leaves_sheet.png" id="4_o060j"]
+[ext_resource type="Script" uid="uid://brborf0wdvmjy" path="res://Scripts/Audio/ui_sounds.gd" id="6_o060j"]
+[ext_resource type="Script" uid="uid://853wrgpde68y" path="res://Scripts/Audio/button_sound_profile.gd" id="7_v2r0b"]
+[ext_resource type="Resource" path="res://Data/Sound_Cues/button_standard.tres" id="8_ibf7x"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_8774k"]
 particles_animation = true
@@ -164,6 +167,16 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
 theme_override_font_sizes/font_size = 45
 text = "Exit"
+
+[node name="UISounds" type="Node" parent="." unique_id=349035571]
+script = ExtResource("6_o060j")
+buttons = Dictionary[NodePath, ExtResource("7_v2r0b")]({
+NodePath("../MarginContainer/VBoxContainer/Control2/ButtonsVBox/Button_StartGame"): ExtResource("8_ibf7x"),
+NodePath("../MarginContainer/VBoxContainer/Control2/ButtonsVBox/Button_Save_Load"): ExtResource("8_ibf7x"),
+NodePath("../MarginContainer/VBoxContainer/Control2/ButtonsVBox/Button_Settings"): ExtResource("8_ibf7x"),
+NodePath("../MarginContainer/VBoxContainer/Control2/ButtonsVBox/Button_QuitGame"): ExtResource("8_ibf7x")
+})
+metadata/_custom_type_script = "uid://brborf0wdvmjy"
 
 [connection signal="button_up" from="MarginContainer/VBoxContainer/Control2/ButtonsVBox/Button_StartGame" to="." method="_on_start_game_button_pressed"]
 [connection signal="button_up" from="MarginContainer/VBoxContainer/Control2/ButtonsVBox/Button_Save_Load" to="." method="_on_save_load_button_up"]

@@ -2,6 +2,9 @@
 
 [ext_resource type="Script" uid="uid://brrp21ilua4un" path="res://Scripts/UI/hollow_ledger_window.gd" id="1_script"]
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="1_theme"]
+[ext_resource type="Script" uid="uid://brborf0wdvmjy" path="res://Scripts/Audio/ui_sounds.gd" id="3_pb38e"]
+[ext_resource type="Script" uid="uid://853wrgpde68y" path="res://Scripts/Audio/button_sound_profile.gd" id="4_845im"]
+[ext_resource type="Resource" path="res://Data/Sound_Cues/button_standard.tres" id="5_rhwkw"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_close"]
 
@@ -241,6 +244,13 @@ theme = ExtResource("1_theme")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
 text = "Close"
+
+[node name="UISounds" type="Node" parent="." unique_id=1109441571]
+script = ExtResource("3_pb38e")
+buttons = Dictionary[NodePath, ExtResource("4_845im")]({
+NodePath("../ColorRect/MarginContainer/VBoxContainer/Button_Close_Bottom"): ExtResource("5_rhwkw")
+})
+metadata/_custom_type_script = "uid://brborf0wdvmjy"
 
 [connection signal="button_up" from="Button_Close" to="." method="_on_close_button_up"]
 [connection signal="item_selected" from="ColorRect/MarginContainer/VBoxContainer/TabContainer/Natures/Natures_Content/Nature_Option_Button" to="." method="_on_nature_selected"]

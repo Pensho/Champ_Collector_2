@@ -8,6 +8,9 @@
 [ext_resource type="PackedScene" uid="uid://n8p43lcdr31e" path="res://Scenes/Hubs/Reclaimed_City_Scene/reclaimed_city_fire_particle.tscn" id="6_gm8ir"]
 [ext_resource type="Texture2D" uid="uid://bn1o3x3kxre57" path="res://Assets/Champ_Collector/Particles/Leaves_sheet.png" id="7_41sf0"]
 [ext_resource type="PackedScene" uid="uid://bm6xwrr37gevr" path="res://Scenes/ui/Resources/Resource_Bar.tscn" id="8_vvjq3"]
+[ext_resource type="Script" uid="uid://brborf0wdvmjy" path="res://Scripts/Audio/ui_sounds.gd" id="9_x7q6s"]
+[ext_resource type="Script" uid="uid://853wrgpde68y" path="res://Scripts/Audio/button_sound_profile.gd" id="10_hyame"]
+[ext_resource type="Resource" path="res://Data/Sound_Cues/button_standard.tres" id="11_p5var"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_vvjq3"]
 particles_animation = true
@@ -176,6 +179,17 @@ offset_left = 298.0
 offset_top = 20.0
 offset_right = 298.0
 offset_bottom = 20.0
+
+[node name="UISounds" type="Node" parent="." unique_id=1851882621]
+script = ExtResource("9_x7q6s")
+buttons = Dictionary[NodePath, ExtResource("10_hyame")]({
+NodePath("../Navigation_Buttons/Button_Adventure_guild"): ExtResource("11_p5var"),
+NodePath("../Navigation_Buttons/Button_Shop"): ExtResource("11_p5var"),
+NodePath("../Navigation_Buttons/Button_Armory"): ExtResource("11_p5var"),
+NodePath("../Navigation_Buttons/Button_War_Room"): ExtResource("11_p5var"),
+NodePath("../Navigation_Buttons/Button_Quit"): ExtResource("11_p5var")
+})
+metadata/_custom_type_script = "uid://brborf0wdvmjy"
 
 [connection signal="button_up" from="Navigation_Buttons/Button_Adventure_guild" to="." method="_on_adventure_guild_button_up"]
 [connection signal="button_up" from="Navigation_Buttons/Button_Shop" to="." method="_on_button_shop_button_up"]

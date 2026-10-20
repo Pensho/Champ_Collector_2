@@ -4,6 +4,9 @@
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="2_theme"]
 [ext_resource type="Shader" uid="uid://pqr1x86j3fq5" path="res://Assets/Champ_Collector/Shaders/outline.gdshader" id="3_outline"]
 [ext_resource type="Script" uid="uid://bumae467d28vx" path="res://Scripts/UI/tooltip.gd" id="4_tooltip"]
+[ext_resource type="Script" uid="uid://brborf0wdvmjy" path="res://Scripts/Audio/ui_sounds.gd" id="5_l6bis"]
+[ext_resource type="Script" uid="uid://853wrgpde68y" path="res://Scripts/Audio/button_sound_profile.gd" id="6_dxdtf"]
+[ext_resource type="Resource" path="res://Data/Sound_Cues/button_standard.tres" id="7_4j311"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_shop_slot"]
 resource_local_to_scene = true
@@ -152,3 +155,10 @@ theme_override_font_sizes/font_size = 32
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
+
+[node name="UISounds" type="Node" parent="." unique_id=1503708340]
+script = ExtResource("5_l6bis")
+buttons = Dictionary[NodePath, ExtResource("6_dxdtf")]({
+NodePath("../Content/Button_Buy"): ExtResource("7_4j311")
+})
+metadata/_custom_type_script = "uid://brborf0wdvmjy"

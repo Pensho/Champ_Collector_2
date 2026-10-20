@@ -6,6 +6,9 @@
 [ext_resource type="Texture2D" uid="uid://be4d7es1t3q0k" path="res://Data/Texture_Data/Button_hover_highligt.tres" id="3_8g887"]
 [ext_resource type="Theme" uid="uid://bcg5pku1fyhst" path="res://Assets/Champ_Collector/Themes/hub_theme.tres" id="4_75jl7"]
 [ext_resource type="PackedScene" uid="uid://bm6xwrr37gevr" path="res://Scenes/ui/Resources/Resource_Bar.tscn" id="6_14bt2"]
+[ext_resource type="Script" uid="uid://brborf0wdvmjy" path="res://Scripts/Audio/ui_sounds.gd" id="7_mglws"]
+[ext_resource type="Script" uid="uid://853wrgpde68y" path="res://Scripts/Audio/button_sound_profile.gd" id="8_w4dpd"]
+[ext_resource type="Resource" path="res://Data/Sound_Cues/button_standard.tres" id="9_jmeda"]
 
 [node name="AdventurersGuild" type="Control" unique_id=560039847]
 layout_mode = 3
@@ -119,6 +122,16 @@ offset_top = 20.0
 offset_right = 193.0
 offset_bottom = 60.0
 grow_horizontal = 2
+
+[node name="UISounds" type="Node" parent="." unique_id=1409717734]
+script = ExtResource("7_mglws")
+buttons = Dictionary[NodePath, ExtResource("8_w4dpd")]({
+NodePath("../Navigation_Buttons/Button_Town"): ExtResource("9_jmeda"),
+NodePath("../Navigation_Buttons/Button_Recuitment"): ExtResource("9_jmeda"),
+NodePath("../Navigation_Buttons/Button_Drop_Rates"): ExtResource("9_jmeda"),
+NodePath("../Navigation_Buttons/Button_Tally_Board"): ExtResource("9_jmeda")
+})
+metadata/_custom_type_script = "uid://brborf0wdvmjy"
 
 [connection signal="button_up" from="Navigation_Buttons/Button_Recuitment" to="." method="_on_fortunes_favor_button_up"]
 [connection signal="button_up" from="Navigation_Buttons/Button_Drop_Rates" to="." method="_on_drop_rates_button_up"]

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="SoundCue" format=3 uid="uid://wthfvgj2cpeu"]
+
+[ext_resource type="Script" uid="uid://bx5nmajah7det" path="res://Scripts/Audio/sound_cue.gd" id="1_script"]
+[ext_resource type="AudioStream" uid="uid://bd2eq2yn0qbdg" path="res://Assets/Champ_Collector/Sound/Sound_Effects/soft_tick.wav" id="2_tick"]
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_tick"]
+random_pitch = 1.08
+streams_count = 1
+stream_0/stream = ExtResource("2_tick")
+
+[resource]
+script = ExtResource("1_script")
+stream = SubResource("AudioStreamRandomizer_tick")
+volume_db = -4.0
+minimum_interval = 0.05

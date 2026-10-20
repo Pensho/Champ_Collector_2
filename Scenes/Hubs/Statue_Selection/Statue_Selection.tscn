@@ -6,6 +6,9 @@
 [ext_resource type="PackedScene" uid="uid://sn6vu3g2r0ba" path="res://Scenes/Hubs/Statue_Selection/Statue_Selection_fire_particle.tscn" id="4_2sxm1"]
 [ext_resource type="Theme" uid="uid://bcg5pku1fyhst" path="res://Assets/Champ_Collector/Themes/hub_theme.tres" id="5_3ig1m"]
 [ext_resource type="Texture2D" uid="uid://be4d7es1t3q0k" path="res://Data/Texture_Data/Button_hover_highligt.tres" id="6_ipk2o"]
+[ext_resource type="Script" uid="uid://brborf0wdvmjy" path="res://Scripts/Audio/ui_sounds.gd" id="7_il8hw"]
+[ext_resource type="Script" uid="uid://853wrgpde68y" path="res://Scripts/Audio/button_sound_profile.gd" id="8_g0xu4"]
+[ext_resource type="Resource" path="res://Data/Sound_Cues/button_standard.tres" id="9_yji68"]
 
 [node name="StatueSelection" type="Control" unique_id=96270140]
 layout_mode = 3
@@ -104,6 +107,16 @@ theme_override_constants/shadow_offset_y = 3
 text = "Ulfrac"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="UISounds" type="Node" parent="." unique_id=1791303727]
+script = ExtResource("7_il8hw")
+buttons = Dictionary[NodePath, ExtResource("8_g0xu4")]({
+NodePath("../Button_Back"): ExtResource("9_yji68"),
+NodePath("../Button_Shield"): ExtResource("9_yji68"),
+NodePath("../Button_Boots"): ExtResource("9_yji68"),
+NodePath("../Button_Weapon"): ExtResource("9_yji68")
+})
+metadata/_custom_type_script = "uid://brborf0wdvmjy"
 
 [connection signal="button_up" from="Button_Back" to="." method="_on_back_button_up"]
 [connection signal="button_up" from="Button_Shield" to="." method="_on_shield_button_up"]

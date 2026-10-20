@@ -5,6 +5,9 @@
 [ext_resource type="Script" uid="uid://cpeob6aj52f4r" path="res://Scripts/UI/Battle_UI/pre_battle_menu.gd" id="1_i4o5r"]
 [ext_resource type="PackedScene" uid="uid://di0y70sbai3yw" path="res://Scenes/ui/Menu_Item_Slot.tscn" id="5_1jdpx"]
 [ext_resource type="PackedScene" path="res://Scenes/ui/Battle_UI/Opponent_Preview.tscn" id="6_opponent"]
+[ext_resource type="Script" uid="uid://brborf0wdvmjy" path="res://Scripts/Audio/ui_sounds.gd" id="6_rw35u"]
+[ext_resource type="Script" uid="uid://853wrgpde68y" path="res://Scripts/Audio/button_sound_profile.gd" id="7_4lwp5"]
+[ext_resource type="Resource" path="res://Data/Sound_Cues/button_standard.tres" id="8_atwry"]
 
 [node name="PreBattleMenu" type="Control" unique_id=1325280994 node_paths=PackedStringArray("_difficulty_option", "_chosen_character_slots", "_chosen_reagent_slots", "_grid_container_characters", "_grid_container_reagents", "_opponent_slots", "_h_box_container_drops", "_part_briefing", "_part_team", "_part_reagents", "_footer", "_button_back", "_button_next", "_button_start")]
 layout_mode = 3
@@ -277,6 +280,17 @@ theme = ExtResource("1_fbx8u")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
 text = "Start Battle"
+
+[node name="UISounds" type="Node" parent="." unique_id=1205510804]
+script = ExtResource("6_rw35u")
+buttons = Dictionary[NodePath, ExtResource("7_4lwp5")]({
+NodePath("../Part_Briefing/OptionButton_Difficulty"): ExtResource("8_atwry"),
+NodePath("../Footer/Back"): ExtResource("8_atwry"),
+NodePath("../Footer/Exit"): ExtResource("8_atwry"),
+NodePath("../Footer/Next"): ExtResource("8_atwry"),
+NodePath("../Footer/Start"): ExtResource("8_atwry")
+})
+metadata/_custom_type_script = "uid://brborf0wdvmjy"
 
 [connection signal="gui_input" from="Part_Briefing" to="." method="_on_part_briefing_gui_input"]
 [connection signal="item_selected" from="Part_Briefing/OptionButton_Difficulty" to="." method="_on_difficulty_option_item_selected"]

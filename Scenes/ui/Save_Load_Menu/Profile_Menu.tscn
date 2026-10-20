@@ -4,8 +4,11 @@
 [ext_resource type="Texture2D" uid="uid://2cqmliidmlr7" path="res://Assets/Champ_Collector/UI/Pre_Battle_Screen/Pre_Battle_2.png" id="2_etxva"]
 [ext_resource type="PackedScene" uid="uid://cr3osdcoith57" path="res://Scenes/ui/Save_Load_Menu/Profile_Data_Slot.tscn" id="3_0tvep"]
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="4_xt7wm"]
-[ext_resource type="Script" path="res://Scripts/UI/profile_details_panel.gd" id="5_details"]
+[ext_resource type="Script" uid="uid://cutvrlxfx0lql" path="res://Scripts/UI/profile_details_panel.gd" id="5_details"]
 [ext_resource type="PackedScene" uid="uid://b7uy4gm5xk3q1" path="res://Scenes/ui/Save_Load_Menu/Confirm_Delete_Dialog.tscn" id="6_confirm"]
+[ext_resource type="Script" uid="uid://brborf0wdvmjy" path="res://Scripts/Audio/ui_sounds.gd" id="7_di3o6"]
+[ext_resource type="Script" uid="uid://853wrgpde68y" path="res://Scripts/Audio/button_sound_profile.gd" id="8_1bkgv"]
+[ext_resource type="Resource" path="res://Data/Sound_Cues/button_standard.tres" id="9_qdh4v"]
 
 [node name="ProfileMenu" type="Control" unique_id=1842347494 node_paths=PackedStringArray("_profiles", "_details_panel", "_button_save", "_button_load", "_button_delete")]
 layout_mode = 3
@@ -76,108 +79,108 @@ theme_override_constants/margin_top = 12
 theme_override_constants/margin_right = 12
 theme_override_constants/margin_bottom = 12
 
-[node name="Label_Empty" type="Label" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer"]
+[node name="Label_Empty" type="Label" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer" unique_id=1752289141]
 layout_mode = 2
 theme = ExtResource("4_xt7wm")
 theme_override_font_sizes/font_size = 18
 text = "No save data"
 
-[node name="VBoxContainer_Stats" type="VBoxContainer" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer"]
+[node name="VBoxContainer_Stats" type="VBoxContainer" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer" unique_id=1188766878]
 visible = false
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="HBoxContainer_Difficulty" type="HBoxContainer" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats"]
+[node name="HBoxContainer_Difficulty" type="HBoxContainer" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats" unique_id=2087278154]
 layout_mode = 2
 
-[node name="Label_Name" type="Label" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats/HBoxContainer_Difficulty"]
+[node name="Label_Name" type="Label" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats/HBoxContainer_Difficulty" unique_id=1964336419]
 custom_minimum_size = Vector2(160, 0)
 layout_mode = 2
 theme = ExtResource("4_xt7wm")
 theme_override_font_sizes/font_size = 18
 text = "Highest difficulty"
 
-[node name="Label_Value" type="Label" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats/HBoxContainer_Difficulty"]
+[node name="Label_Value" type="Label" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats/HBoxContainer_Difficulty" unique_id=266038906]
 layout_mode = 2
 theme = ExtResource("4_xt7wm")
 theme_override_font_sizes/font_size = 18
 text = "—"
 
-[node name="HBoxContainer_HighestLevel" type="HBoxContainer" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats"]
+[node name="HBoxContainer_HighestLevel" type="HBoxContainer" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats" unique_id=1551125453]
 layout_mode = 2
 
-[node name="Label_Name" type="Label" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats/HBoxContainer_HighestLevel"]
+[node name="Label_Name" type="Label" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats/HBoxContainer_HighestLevel" unique_id=1722569364]
 custom_minimum_size = Vector2(160, 0)
 layout_mode = 2
 theme = ExtResource("4_xt7wm")
 theme_override_font_sizes/font_size = 18
 text = "Highest champion"
 
-[node name="Label_Value" type="Label" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats/HBoxContainer_HighestLevel"]
+[node name="Label_Value" type="Label" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats/HBoxContainer_HighestLevel" unique_id=1234897119]
 layout_mode = 2
 theme = ExtResource("4_xt7wm")
 theme_override_font_sizes/font_size = 18
 text = "—"
 
-[node name="HBoxContainer_CharacterCount" type="HBoxContainer" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats"]
+[node name="HBoxContainer_CharacterCount" type="HBoxContainer" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats" unique_id=876164782]
 layout_mode = 2
 
-[node name="Label_Name" type="Label" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats/HBoxContainer_CharacterCount"]
+[node name="Label_Name" type="Label" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats/HBoxContainer_CharacterCount" unique_id=1482324992]
 custom_minimum_size = Vector2(160, 0)
 layout_mode = 2
 theme = ExtResource("4_xt7wm")
 theme_override_font_sizes/font_size = 18
 text = "Champions"
 
-[node name="Label_Value" type="Label" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats/HBoxContainer_CharacterCount"]
+[node name="Label_Value" type="Label" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats/HBoxContainer_CharacterCount" unique_id=291662643]
 layout_mode = 2
 theme = ExtResource("4_xt7wm")
 theme_override_font_sizes/font_size = 18
 text = "—"
 
-[node name="HBoxContainer_UniqueCharacters" type="HBoxContainer" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats"]
+[node name="HBoxContainer_UniqueCharacters" type="HBoxContainer" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats" unique_id=2070398862]
 layout_mode = 2
 
-[node name="Label_Name" type="Label" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats/HBoxContainer_UniqueCharacters"]
+[node name="Label_Name" type="Label" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats/HBoxContainer_UniqueCharacters" unique_id=1669607019]
 custom_minimum_size = Vector2(160, 0)
 layout_mode = 2
 theme = ExtResource("4_xt7wm")
 theme_override_font_sizes/font_size = 18
 text = "Unique champions"
 
-[node name="Label_Value" type="Label" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats/HBoxContainer_UniqueCharacters"]
+[node name="Label_Value" type="Label" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats/HBoxContainer_UniqueCharacters" unique_id=695231]
 layout_mode = 2
 theme = ExtResource("4_xt7wm")
 theme_override_font_sizes/font_size = 18
 text = "—"
 
-[node name="HBoxContainer_Silver" type="HBoxContainer" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats"]
+[node name="HBoxContainer_Silver" type="HBoxContainer" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats" unique_id=1377677103]
 layout_mode = 2
 
-[node name="Label_Name" type="Label" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats/HBoxContainer_Silver"]
+[node name="Label_Name" type="Label" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats/HBoxContainer_Silver" unique_id=1972526715]
 custom_minimum_size = Vector2(160, 0)
 layout_mode = 2
 theme = ExtResource("4_xt7wm")
 theme_override_font_sizes/font_size = 18
 text = "Silver"
 
-[node name="Label_Value" type="Label" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats/HBoxContainer_Silver"]
+[node name="Label_Value" type="Label" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats/HBoxContainer_Silver" unique_id=1569296668]
 layout_mode = 2
 theme = ExtResource("4_xt7wm")
 theme_override_font_sizes/font_size = 18
 text = "—"
 
-[node name="HBoxContainer_Supplies" type="HBoxContainer" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats"]
+[node name="HBoxContainer_Supplies" type="HBoxContainer" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats" unique_id=169569203]
 layout_mode = 2
 
-[node name="Label_Name" type="Label" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats/HBoxContainer_Supplies"]
+[node name="Label_Name" type="Label" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats/HBoxContainer_Supplies" unique_id=944269055]
 custom_minimum_size = Vector2(160, 0)
 layout_mode = 2
 theme = ExtResource("4_xt7wm")
 theme_override_font_sizes/font_size = 18
 text = "Supplies"
 
-[node name="Label_Value" type="Label" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats/HBoxContainer_Supplies"]
+[node name="Label_Value" type="Label" parent="TextureRect/HBoxContainer/ColorRect_Save_Details/MarginContainer/VBoxContainer_Stats/HBoxContainer_Supplies" unique_id=1636513051]
 layout_mode = 2
 theme = ExtResource("4_xt7wm")
 theme_override_font_sizes/font_size = 18
@@ -209,26 +212,26 @@ theme_override_constants/separation = 20
 
 [node name="Button_Save" type="Button" parent="HBoxContainer_Actions" unique_id=1440139862]
 layout_mode = 2
-disabled = true
 theme = ExtResource("4_xt7wm")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
+disabled = true
 text = "Save"
 
 [node name="Button_Load" type="Button" parent="HBoxContainer_Actions" unique_id=1440139863]
 layout_mode = 2
-disabled = true
 theme = ExtResource("4_xt7wm")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
+disabled = true
 text = "Load"
 
 [node name="Button_Delete" type="Button" parent="HBoxContainer_Actions" unique_id=1440139864]
 layout_mode = 2
-disabled = true
 theme = ExtResource("4_xt7wm")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
+disabled = true
 text = "Delete"
 
 [node name="Button_Back" type="Button" parent="." unique_id=379839095]
@@ -243,8 +246,18 @@ theme_override_constants/outline_size = 3
 text = "Back"
 
 [node name="ConfirmDeleteDialog" parent="." unique_id=1440139865 instance=ExtResource("6_confirm")]
-layout_mode = 1
 visible = false
+layout_mode = 1
+
+[node name="UISounds" type="Node" parent="." unique_id=215511393]
+script = ExtResource("7_di3o6")
+buttons = Dictionary[NodePath, ExtResource("8_1bkgv")]({
+NodePath("../HBoxContainer_Actions/Button_Save"): ExtResource("9_qdh4v"),
+NodePath("../HBoxContainer_Actions/Button_Load"): ExtResource("9_qdh4v"),
+NodePath("../HBoxContainer_Actions/Button_Delete"): ExtResource("9_qdh4v"),
+NodePath("../Button_Back"): ExtResource("9_qdh4v")
+})
+metadata/_custom_type_script = "uid://brborf0wdvmjy"
 
 [connection signal="button_up" from="HBoxContainer_Actions/Button_Save" to="." method="_on_save_button_up"]
 [connection signal="button_up" from="HBoxContainer_Actions/Button_Load" to="." method="_on_load_button_up"]

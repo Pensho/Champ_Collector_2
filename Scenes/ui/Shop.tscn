@@ -5,6 +5,9 @@
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="3_theme"]
 [ext_resource type="PackedScene" uid="uid://bm6xwrr37gevr" path="res://Scenes/ui/Resources/Resource_Bar.tscn" id="4_resource_bar"]
 [ext_resource type="Texture2D" uid="uid://cxe2lffkbra47" path="res://Assets/Champ_Collector/Scenery/Grasslands.png" id="5_shopkeeper"]
+[ext_resource type="Script" uid="uid://brborf0wdvmjy" path="res://Scripts/Audio/ui_sounds.gd" id="6_q10i1"]
+[ext_resource type="Script" uid="uid://853wrgpde68y" path="res://Scripts/Audio/button_sound_profile.gd" id="7_j7us8"]
+[ext_resource type="Resource" path="res://Data/Sound_Cues/button_standard.tres" id="8_tdgyo"]
 
 [node name="ShopMenu" type="Control" unique_id=873498712]
 layout_mode = 3
@@ -63,6 +66,7 @@ anchor_right = 1.0
 offset_left = -80.0
 offset_top = 20.0
 offset_bottom = 60.0
+grow_horizontal = 0
 theme = ExtResource("3_theme")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 6
@@ -95,5 +99,12 @@ layout_mode = 2
 theme_override_constants/h_separation = 20
 theme_override_constants/v_separation = 20
 columns = 2
+
+[node name="UISounds" type="Node" parent="." unique_id=1090488434]
+script = ExtResource("6_q10i1")
+buttons = Dictionary[NodePath, ExtResource("7_j7us8")]({
+NodePath("../Button_Back"): ExtResource("8_tdgyo")
+})
+metadata/_custom_type_script = "uid://brborf0wdvmjy"
 
 [connection signal="button_up" from="Button_Back" to="." method="_on_back_button_up"]

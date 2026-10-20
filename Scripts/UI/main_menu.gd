@@ -28,10 +28,6 @@ func _ready() -> void:
 	_settings_menu.position = Vector2i((get_viewport_rect().size * 0.5) - (_settings_menu.GetSize() * 0.5))
 	_settings_menu.hide()
 
-	if(OS.get_name() == "Android" or OS.get_name() == "IOS"):
-		return
-	focus_button()
-
 @warning_ignore("unused_parameter") # Main menu requires nothing from the ContextContainer.
 func Init(_p_context_container: ContextContainer) -> void:
 	pass

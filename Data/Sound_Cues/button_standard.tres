@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="ButtonSoundProfile" format=3]
+
+[ext_resource type="Script" path="res://Scripts/Audio/button_sound_profile.gd" id="1_script"]
+[ext_resource type="Resource" path="res://Data/Sound_Cues/ui_hover_tick.tres" id="2_hover"]
+
+[resource]
+script = ExtResource("1_script")
+hover_cue = ExtResource("2_hover")
