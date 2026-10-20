@@ -38,7 +38,7 @@ func test_regeneration_heals_4_percent_max_health_at_turn_start() -> void:
 	_roster[0]._active_buffs.append(_regeneration_buff())
 	var health_before: int = _roster[0]._current_health
 
-	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [], 0)
+	var results: Array[CombatResult] = _resolver.BeginTurn(0)
 
 	var expected: int = int(floor((100 * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER) * 0.04))
 	assert_eq(_roster[0]._current_health, health_before + expected)
@@ -52,7 +52,7 @@ func test_blight_halves_regeneration_healing() -> void:
 	_roster[0]._active_debuffs.append(_blight_debuff())
 	var health_before: int = _roster[0]._current_health
 
-	_resolver.ResolveSkill(0, [], 0)
+	_resolver.BeginTurn(0)
 
 	var full_heal: int = int(floor((100 * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER) * 0.04))
 	var expected: int = int(floor(full_heal * 0.5))

@@ -37,7 +37,7 @@ func test_damage_under_the_barrier_value_is_fully_absorbed() -> void:
 	var tick_damage: int = _apply_self_bleed(0, 100)  # 40 damage
 	var health_before: int = _roster[0]._current_health
 
-	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [], 0)
+	var results: Array[CombatResult] = _resolver.BeginTurn(0)
 
 	assert_eq(_roster[0]._current_health, health_before, "Damage under the Barrier value must not touch Health")
 	assert_eq(_roster[0]._active_buffs.size(), 1, "The Barrier should survive a hit smaller than its value")
@@ -50,7 +50,7 @@ func test_damage_exceeding_the_barrier_value_consumes_it_and_the_remainder_reach
 	var tick_damage: int = _apply_self_bleed(0, 30)  # 12 damage, less than the holder's 10 Health
 	var health_before: int = _roster[0]._current_health
 
-	_resolver.ResolveSkill(0, [], 0)
+	_resolver.BeginTurn(0)
 
 	assert_eq(_roster[0]._current_health, health_before - (tick_damage - 5),
 		"Only the remainder past the Barrier's value should reach Health")

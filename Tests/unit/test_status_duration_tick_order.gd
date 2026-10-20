@@ -116,7 +116,8 @@ func test_a_debuff_on_its_last_turn_still_deals_its_tick_damage() -> void:
 	_roster[0]._skills.append(_self_buff_skill())
 	_resolver = TestFactory.make_resolver(_roster, TestFactory.make_full_sides())
 
-	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [0], 0)
+	var results: Array[CombatResult] = _resolver.BeginTurn(0)
+	results.append_array(_resolver.ResolveSkill(0, [0], 0))
 
 	assert_gt(results.filter(func(r): return CombatResult.Kind.Debuff_Tick == r.kind).size(), 0,
 		"Burning should still tick on the turn it expires")

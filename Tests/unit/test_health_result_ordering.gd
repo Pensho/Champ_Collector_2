@@ -53,7 +53,7 @@ func test_debuff_tick_result_reports_health_already_reduced() -> void:
 	_roster[0]._active_debuffs.append(debuff)
 	var health_before: int = _roster[0]._current_health
 
-	_resolver.ResolveSkill(0, [], 0)
+	_resolver.BeginTurn(0)
 
 	assert_lt(_health_at_emit(CombatResult.Kind.Debuff_Tick, 0), health_before,
 		"Health must already be reduced when the Debuff_Tick result fires")
@@ -67,7 +67,7 @@ func test_exhert_self_cost_damage_result_reports_health_already_reduced() -> voi
 	_roster[0]._active_buffs.append(buff)
 	var health_before: int = _roster[0]._current_health
 
-	_resolver.ResolveSkill(0, [3], 0)
+	_resolver.BeginTurn(0)
 
 	assert_lt(_health_at_emit(CombatResult.Kind.Damage, 0), health_before,
 		"Health must already be reduced when Exhert's self-cost Damage result fires")
@@ -97,7 +97,7 @@ func test_heal_result_reports_health_already_increased() -> void:
 	_roster[0]._active_buffs.append(buff)
 	var health_before: int = _roster[0]._current_health
 
-	_resolver.ResolveSkill(0, [], 0)
+	_resolver.BeginTurn(0)
 
 	assert_gt(_health_at_emit(CombatResult.Kind.Heal, 0), health_before,
 		"Health must already be increased when the Heal result fires")

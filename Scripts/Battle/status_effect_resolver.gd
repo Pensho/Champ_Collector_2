@@ -560,9 +560,6 @@ func _TriggerExistingCasterBuffs(
 					heal_total += int(floor(
 							(p_caster_attributes[Types.Attribute.Health]
 									* GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER) * data.magnitude))
-				StatusEffectData.MagnitudeKind.RandomAttributePercent:
-					var attribute: Types.Attribute = ReagentResolver.RandomTinctureAttribute(_resolver._random)
-					p_caster_attributes[attribute] += int(ceilf(p_caster_attributes[attribute] * data.magnitude))
 				_:
 					pass
 			if(data.self_tick_max_health_cost_percent > 0.0):
@@ -583,6 +580,17 @@ func _TriggerExistingCasterBuffs(
 		cost_result.target_ID = p_caster_ID
 		cost_result.amount = actual_self_cost
 		_resolver._Emit(cost_result)
+
+func _RollCastAttributeBuffs(
+		p_caster_ID: int,
+		p_caster_attributes: Dictionary[Types.Attribute, int]) -> void:
+	for buff in _resolver._characters[p_caster_ID]._active_buffs:
+		var data: StatusEffectData = StatusEffectRegistry.BuffData(buff.type)
+		if(null == data or not data.applies_on_self_tick
+				or StatusEffectData.MagnitudeKind.RandomAttributePercent != data.magnitude_kind):
+			continue
+		var attribute: Types.Attribute = ReagentResolver.RandomTinctureAttribute(_resolver._random)
+		p_caster_attributes[attribute] += int(ceilf(p_caster_attributes[attribute] * data.magnitude))
 
 func TickStatusDurations(p_caster_ID: int) -> void:
 	var caster: Character = _resolver._characters[p_caster_ID]

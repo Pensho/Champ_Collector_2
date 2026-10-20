@@ -41,7 +41,7 @@ func test_exhert_costs_5_percent_max_health_on_the_holders_own_turn() -> void:
 	_roster[0]._current_health = max_health
 	_roster[0]._active_buffs.append(_exhert_buff())
 
-	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [3], 0)
+	var results: Array[CombatResult] = _resolver.BeginTurn(0)
 
 	var expected_cost: int = int(ceil(max_health * 0.05))
 	assert_eq(_roster[0]._current_health, max_health - expected_cost,

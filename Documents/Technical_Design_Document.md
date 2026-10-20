@@ -595,8 +595,8 @@ expiry hook, dealing Mysticism-scaled damage (30%) to every living enemy through
 `ResolveTraitDamage` entry point when the buff's duration lapses — one instance per expiry, which
 is why `Concept_Document.md` 3.2.3 tags it Channel 1 despite it resolving through the cascade
 listener machinery. Wanderlust's
-`RandomAttributePercent` case lives in the ordinary self-tick `match` block, picking one attribute
-each tick via `ReagentResolver.RandomTinctureAttribute()` (the same random-primary-attribute pool
+`RandomAttributePercent` case lives in `_RollCastAttributeBuffs`, called from `ResolveSkill`, picking
+one attribute each cast via `ReagentResolver.RandomTinctureAttribute()` (the same random-primary-attribute pool
 reagents already use) and applying it only to that turn's `p_caster_attributes` copy — never
 written back to the `Character`, so the bonus does not persist. Mana Burn is cast-triggered, not
 tick-triggered: `ResolveSkill` computes `is_non_basic := cast_skill.cooldown > 0` once and a
@@ -629,9 +629,9 @@ and — once real Health is lost — `_TriggerDamageTakenReactions` fires Dead W
 Battle Orders' ally-bump (excluding the holder) through `_EmitTurnBarBump`, gated on `_ApplyHealthLoss`
 receiving a real attacker ID (the same `-1` sentinel `_TriggerAttackerDebuffOnDamage` already used),
 so DOT ticks and self-inflicted Health costs never trigger them. Stun's
-turn-skip needed a resolver entry point outside `ResolveSkill`: `ResolveStunTurn()` still ticks the
-caster's existing buffs/debuffs (so Stun's own duration decrements and clears itself, and other
-DOTs/heals still fire) and cooldowns/zones/`EndOfTurn`, but casts no skill, reporting a new
+turn-skip needed a resolver entry point outside `ResolveSkill`: `ResolveStunTurn()` still counts
+the caster's statuses down (so Stun's own duration decrements and clears itself) and ticks
+cooldowns/zones/`EndOfTurn`, but casts no skill, reporting a new
 `CombatResult.Kind.Turn_Skipped`; `Battle.StartTurn` checks the active character's debuffs directly
 (the same direct `_active_debuffs` access `EndBattle` already uses) rather than adding another
 public resolver method, and a factored-out `Battle.CompleteTurn()` is shared between the stun-skip
@@ -799,9 +799,14 @@ base class doubling as the headless default for tests. Long term the positions b
 ### 7.3. Taking a turn (`StartTurn` and the state machine)
 
 - Positions the turn indicator over the active character and calls `resolver.BeginTurn(ID)`,
-  which fires the `StartOfTurn` trait hook (e.g. the Plan trait's reach-based Empower).
-- If the active character holds Stun, `StartTurn` calls `resolver.ResolveStunTurn(ID)` (still ticks
-  their own statuses and cooldowns/zones, but casts no skill), skipping skill-button population and
+  which runs the character's own status per-turn effects (e.g. Burning deals 4% of max HP,
+  reported as a `Debuff_Tick` result with a per-source damage split; Regeneration heals 4% of max
+  HP, reported as `Heal`) and drains their cascades, then fires the `StartOfTurn` trait hook (e.g.
+  the Plan trait's reach-based Empower) if the character survived.
+- If the active character died at turn start, `StartTurn` arms the presentation wait (see 7.9)
+  and the turn completes without a skill.
+- If the active character holds Stun, `StartTurn` calls `resolver.ResolveStunTurn(ID)` (ticks
+  cooldowns/zones, but casts no skill), skipping skill-button population and
   enemy-turn handling entirely, then arms the same presentation wait `ResolveTurn` does (see 7.9)
   rather than calling `CompleteTurn()` inline.
 - **Player turn** (`_sides.player.Has(ID)`): populates the skill buttons (icon, name,
@@ -835,9 +840,9 @@ instead, so damage is never capped.
    battle-long reagent attribute bonus + active statuses, see section 6.1).
 2. Fire the `OnSkillCast` trait hook → returns a `TraitSkillResult` carrying a damage multiplier
    and turn-bar bump.
-3. Run the caster's own status per-turn effects (e.g. Burning deals 4% of max HP, reported as a
-   `Debuff_Tick` result with a per-source damage split; Regeneration heals 4% of max HP, reported
-   as `Heal`). Attribute modifiers are applied at step 1, durations at step 9.
+3. Roll each `RandomAttributePercent` buff (Wanderlust) onto this cast's attributes
+   (`_RollCastAttributeBuffs`). Attribute modifiers are applied at step 1, per-turn effects in
+   `BeginTurn` (7.3), durations at step 9.
 4. Compute this cast's use count (`_SkillUseCount`, per (caster, skill name), read by
    `DamageEffect`'s ramp and `AlternatingEffect`'s rotation), build a `SkillCastContext`, then run
    the skill's own effects:
@@ -1225,8 +1230,8 @@ flat union record in the `CombatResult` style: `trigger`, `subject_ID`, `origin_
 `debuff_type`, `zone_ID`, `fraction`, `amount`, `instance_count`, `depth`) and calls
 `CascadeResolver.Post(event)`, which stamps `depth` and enqueues — it does not resolve inline.
 `Drain()` runs the pending queue iteratively (a plain `while` loop, not call-stack recursion).
-`BattleResolver.ResolveSkill`/`ResolveStunTurn` call it explicitly after each phase that can post
-(the caster's own debuff tick, buff tick, and effect loop) so a cascade still resolves relative to
+`BattleResolver.BeginTurn`/`ResolveSkill`/`ResolveStunTurn` call it explicitly after each phase
+that can post (the character's own status ticks, and the effect loop) so a cascade still resolves relative to
 the rest of the cast the way the branches it replaces did — deferring every cascade to the end of
 the action would read post-cast attributes and reorder results past effects meant to precede them.
 `_EndBatch` also calls `Drain()` at the `_batch_depth` 1→0 transition as a catch-all (a no-op if
@@ -1618,7 +1623,7 @@ provides default (no-op, debug-printing) implementations of each hook. The comba
 |---|---|---|---|
 | `ResetForBattle()` | — (unconditional, not gated by `_execution_steps`) | during `Battle.Init`, before `StartOfBattle`, on every hook source | — |
 | `StartOfBattle(owner_ID, resolver)` | `Start_Combat` | during `Battle.Init`, once per character; also re-fires mid-battle when a graft lands on a symbiote | — |
-| `StartOfTurn(owner_ID, resolver)` | `Start_Turn` | in `BeginTurn` for the active character | — |
+| `StartOfTurn(owner_ID, resolver)` | `Start_Turn` | in `BeginTurn` for the active character, after their status ticks, if alive | — |
 | `EndOfTurn(owner_ID, resolver)` | `End_Turn` | at the end of `ResolveSkill` | — |
 | `OnSkillCast(owner_ID, target_IDs, skill_name, caster_attributes, resolver)` | `Skill_Cast` | at the start of `ResolveSkill` | `TraitSkillResult` |
 | `OnDefend(defender_ID, defender_attributes, characters)` | `Defend` | when snapshotting a target's attributes | — |

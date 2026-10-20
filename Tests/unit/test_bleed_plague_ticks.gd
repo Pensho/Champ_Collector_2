@@ -33,7 +33,7 @@ func test_bleed_tick_snapshots_the_appliers_attack_at_application() -> void:
 	# Changing the source's Attack after application must not affect the already-snapshotted tick.
 	_roster[1]._attributes[Types.Attribute.Attack] = 9999
 
-	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [], 0)
+	var results: Array[CombatResult] = _resolver.BeginTurn(0)
 	var tick: CombatResult = _debuff_ticks(results)[0]
 	var expected: int = int(floor(100 * StatusEffectRegistry.DebuffData(Types.Debuff_Type.Bleed).magnitude))
 	assert_eq(tick.amount, expected, "Bleed's tick damage should use the Attack snapshotted at application")
@@ -49,7 +49,7 @@ func test_bleed_tick_is_scaled_by_the_appliers_persistent_damage_factors_at_appl
 	# change the already-ticking Bleed.
 	_resolver.AggregateDamageMultipliers(1, 2.0)
 
-	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [], 0)
+	var results: Array[CombatResult] = _resolver.BeginTurn(0)
 	var tick: CombatResult = _debuff_ticks(results)[0]
 	var expected: int = int(floor(100 * StatusEffectRegistry.DebuffData(Types.Debuff_Type.Bleed).magnitude * 1.5))
 	assert_eq(tick.amount, expected,
@@ -59,7 +59,7 @@ func test_plague_tick_scales_with_the_appliers_mysticism() -> void:
 	_roster[1]._attributes[Types.Attribute.Mysticism] = 50
 	_apply_debuff(Types.Debuff_Type.Plague, 0, 1)
 
-	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [], 0)
+	var results: Array[CombatResult] = _resolver.BeginTurn(0)
 	var tick: CombatResult = _debuff_ticks(results)[0]
 	var expected: int = int(floor(50 * StatusEffectRegistry.DebuffData(Types.Debuff_Type.Plague).magnitude))
 	assert_eq(tick.amount, expected, "Plague's tick damage should scale with the applier's snapshotted Mysticism")

@@ -30,7 +30,7 @@ func _resolver_with_burning(p_seed: int, p_status: Variant = null) -> BattleReso
 	return TestFactory.make_resolver(roster, TestFactory.make_full_sides(), null, p_seed)
 
 func _tick_amount(p_resolver: BattleResolver) -> int:
-	var results: Array[CombatResult] = p_resolver.ResolveSkill(0, [], 0)
+	var results: Array[CombatResult] = p_resolver.BeginTurn(0)
 	for r in results:
 		if(r.kind == CombatResult.Kind.Debuff_Tick):
 			return r.amount
@@ -61,7 +61,7 @@ func _two_stack_tick(p_seed: int) -> CombatResult:
 		debuff.source_ID = source
 		roster[0]._active_debuffs.append(debuff)
 	var resolver: BattleResolver = TestFactory.make_resolver(roster, TestFactory.make_full_sides(), null, p_seed)
-	var results: Array[CombatResult] = resolver.ResolveSkill(0, [], 0)
+	var results: Array[CombatResult] = resolver.BeginTurn(0)
 	return results.filter(func(r): return r.kind == CombatResult.Kind.Debuff_Tick)[0]
 
 func test_two_stacks_roll_independently() -> void:

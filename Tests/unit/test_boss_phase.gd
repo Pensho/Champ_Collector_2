@@ -109,13 +109,16 @@ func test_a_transition_mid_cast_puts_the_cooldown_on_the_cast_skill() -> void:
 	phase_two_cash_in.cooldown = 4
 	boss._phase_two_skills = [_skill("Size Up"), phase_two_cash_in]
 	boss._current_health = _max_health / 2 + 1
-	var burning: StatusEffects.Debuff = StatusEffects.Debuff.new()
-	burning.type = Types.Debuff_Type.Burning
-	burning.duration = 3
-	burning.source_ID = 0
-	boss._active_debuffs.append(burning)
+	# Mana Burn hits the caster after a non-basic skill's effects, before its cooldown is set.
+	var mana_burn_magnitude: float = StatusEffectRegistry.DebuffData(Types.Debuff_Type.Mana_Burn).magnitude
+	boss._attributes[Types.Attribute.Mysticism] = int(ceil(2.0 / mana_burn_magnitude))
+	var mana_burn: StatusEffects.Debuff = StatusEffects.Debuff.new()
+	mana_burn.type = Types.Debuff_Type.Mana_Burn
+	mana_burn.duration = 3
+	mana_burn.source_ID = 0
+	boss._active_debuffs.append(mana_burn)
 	_resolver.ResolveSkill(BOSS_ID, [0], 0)
-	assert_true(boss._in_phase_two, "Sanity check: the Burning tick should trigger the transition")
+	assert_true(boss._in_phase_two, "Sanity check: the Mana Burn hit should trigger the transition")
 	assert_eq(boss._skills[0].cooldown_left, 0, "Size Up was not cast")
 	assert_eq(boss._skills[1].cooldown_left, 4, "Cash In was cast, so its phase 2 version goes on cooldown")
 

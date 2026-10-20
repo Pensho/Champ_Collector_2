@@ -27,11 +27,12 @@ func test_resolve_stun_turn_decrements_and_clears_a_one_turn_stun() -> void:
 	assert_eq(results.filter(func(r): return r.kind == CombatResult.Kind.Turn_Skipped).size(), 1,
 		"ResolveStunTurn should report the skip")
 
-func test_resolve_stun_turn_still_ticks_other_debuffs() -> void:
+func test_a_stunned_character_still_ticks_other_debuffs_at_turn_start() -> void:
 	_roster[0]._active_debuffs.append(_debuff(Types.Debuff_Type.Stun, 1))
 	_roster[0]._active_debuffs.append(_debuff(Types.Debuff_Type.Burning, 2))
 	var health_before: int = _roster[0]._current_health
 
+	_resolver.BeginTurn(0)
 	_resolver.ResolveStunTurn(0)
 
 	assert_true(_roster[0]._current_health < health_before,

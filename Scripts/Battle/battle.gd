@@ -263,6 +263,11 @@ func StartTurn() -> void:
 	if (CheckAndHandleBattleOver()):
 		return
 
+	if(_characters[_turn_character_ID]._current_health <= 0):
+		_state = BattleState.Resolving
+		_presentation_deadline = PRESENTATION_DEADLINE
+		return
+
 	if(IsStunned(_turn_character_ID)):
 		_state = BattleState.Resolving
 		_resolver.ResolveStunTurn(_turn_character_ID)

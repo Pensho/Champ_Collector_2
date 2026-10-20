@@ -174,13 +174,19 @@ func _OpenTurnOrdinal() -> void:
 	_turn_ordinal += 1
 	_turn_ordinal_opened = true
 
-## Fires the active character's start-of-turn trait hook and returns its results.
 func BeginTurn(p_character_ID: int) -> Array[CombatResult]:
 	_BeginBatch()
 	_OpenTurnOrdinal()
 	var character: Character = _characters[p_character_ID]
-	for active_trait: CharacterTrait in Skills.ActiveHooks(character, Types.Combat_Event.Start_Turn):
-		active_trait.StartOfTurn(p_character_ID, self)
+	var attributes: Dictionary[Types.Attribute, int] = GetEffectiveAttributes(p_character_ID)
+	if(not character._active_debuffs.is_empty()):
+		_status_resolver._TriggerExistingCasterDebuffs(p_character_ID, attributes)
+	if(not character._active_buffs.is_empty()):
+		_status_resolver._TriggerExistingCasterBuffs(p_character_ID, attributes)
+	_cascade_resolver.Drain()  # so a tick-triggered cascade precedes the start-of-turn hooks
+	if(character._current_health > 0):
+		for active_trait: CharacterTrait in Skills.ActiveHooks(character, Types.Combat_Event.Start_Turn):
+			active_trait.StartOfTurn(p_character_ID, self)
 	return _EndBatch()
 
 func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -> Array[CombatResult]:
@@ -195,12 +201,7 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 	var trait_result: TraitSkillResult = Skills.DispatchSkillCast(
 			caster, p_caster_ID, p_target_IDs, cast_skill.name, caster_attributes, self)
 
-	if(not caster._active_debuffs.is_empty()):
-		_status_resolver._TriggerExistingCasterDebuffs(p_caster_ID, caster_attributes)
-
-	if(not caster._active_buffs.is_empty()):
-		_status_resolver._TriggerExistingCasterBuffs(p_caster_ID, caster_attributes)
-	_cascade_resolver.Drain()  # so a tick-triggered cascade precedes the effects below
+	_status_resolver._RollCastAttributeBuffs(p_caster_ID, caster_attributes)
 
 	var use_count: int = _SkillUseCount(p_caster_ID, cast_skill)
 	var context := SkillCastContext.new(self, p_caster_ID, p_target_IDs, cast_skill, caster_attributes,
@@ -249,12 +250,6 @@ func ResolveStunTurn(p_caster_ID: int) -> Array[CombatResult]:
 		_OpenTurnOrdinal()
 	_turn_ordinal_opened = false
 	var caster: Character = _characters[p_caster_ID]
-	var caster_attributes: Dictionary[Types.Attribute, int] = GetEffectiveAttributes(p_caster_ID)
-	if(not caster._active_debuffs.is_empty()):
-		_status_resolver._TriggerExistingCasterDebuffs(p_caster_ID, caster_attributes)
-	if(not caster._active_buffs.is_empty()):
-		_status_resolver._TriggerExistingCasterBuffs(p_caster_ID, caster_attributes)
-	_cascade_resolver.Drain()
 	_TickCooldowns(caster)
 	_zone_resolver.TriggerZones(p_caster_ID)
 	if(caster._current_health > 0):

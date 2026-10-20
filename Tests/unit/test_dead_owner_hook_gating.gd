@@ -69,20 +69,22 @@ func before_each() -> void:
 func test_end_of_turn_hook_does_not_fire_when_the_caster_dies_during_their_own_turn() -> void:
 	var recorder: FakeEndOfTurnRecorder = FakeEndOfTurnRecorder.new()
 	_roster[0]._trait = recorder
-	_roster[0]._skills.append(TestFactory.make_empty_skill())
+	var non_basic_skill: Skill = TestFactory.make_empty_skill()
+	non_basic_skill.cooldown = 2
+	_roster[0]._skills.append(non_basic_skill)
 	_roster[0]._current_health = 1
-	# A Bleed sourced from a high-Attack caster ticks for lethal damage during
-	# _TriggerExistingCasterDebuffs, before ResolveSkill's own End_Turn dispatch.
-	_roster[1]._attributes[Types.Attribute.Attack] = 9999
-	var bleed: StatusEffects.Debuff = StatusEffects.Debuff.new()
-	bleed.type = Types.Debuff_Type.Bleed
-	bleed.duration = 2
-	bleed.source_ID = 1
-	_resolver.GetStatusResolver().ApplyDebuff(0, bleed)
+	# Mana Burn hits the caster after a non-basic skill's effects, before ResolveSkill's own
+	# End_Turn dispatch; a high Mysticism makes that hit lethal.
+	_roster[0]._attributes[Types.Attribute.Mysticism] = 9999
+	var mana_burn: StatusEffects.Debuff = StatusEffects.Debuff.new()
+	mana_burn.type = Types.Debuff_Type.Mana_Burn
+	mana_burn.duration = 2
+	mana_burn.source_ID = 1
+	_roster[0]._active_debuffs.append(mana_burn)
 
 	_resolver.ResolveSkill(0, [], 0)
 
-	assert_eq(_roster[0]._current_health, 0, "The Bleed tick must actually be lethal for this test to be meaningful")
+	assert_eq(_roster[0]._current_health, 0, "The Mana Burn hit must actually be lethal for this test to be meaningful")
 	assert_eq(recorder.call_count, 0, "A caster who died this turn must not receive End_Turn")
 
 func test_end_of_turn_hook_does_not_fire_on_a_stunned_turn_for_an_already_dead_caster() -> void:

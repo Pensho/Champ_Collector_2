@@ -5,8 +5,8 @@ const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 # Coverage for Burning ticks through the resolver: a tick must be reported as a
 # Debuff_Tick result (the view renders it as combat text), and must carry its damage
 # keyed by the source that applied it, so the post-battle screen can credit the
-# applier. Ticks run when the burning character acts, so the tests resolve an
-# effect-free skill for the burning character.
+# applier. Ticks run at the start of the burning character's turn, so the tests begin
+# that character's turn.
 
 var _roster: Dictionary[int, Character] = {}
 var _resolver: BattleResolver = null
@@ -40,14 +40,14 @@ func _burning_ticks(p_results: Array[CombatResult]) -> Array[CombatResult]:
 func test_burning_tick_produces_burning_result() -> void:
 	_set_max_health(0, 100)
 	_add_burning(0, 1)
-	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [], 0)
+	var results: Array[CombatResult] = _resolver.BeginTurn(0)
 	assert_eq(_burning_ticks(results).size(), 1, "A burning character's action should report one Debuff_Tick")
 
 func test_burning_tick_reduces_health_within_rolled_bounds() -> void:
 	_set_max_health(0, 100)
 	_add_burning(0, 1)
 	var health_before: int = _roster[0]._current_health
-	_resolver.ResolveSkill(0, [], 0)
+	_resolver.BeginTurn(0)
 	var lost: int = health_before - _roster[0]._current_health
 	assert_between(lost, _min_tick(100), _max_tick(100),
 		"Burning should reduce health by 2-10% of max Health")
@@ -55,7 +55,7 @@ func test_burning_tick_reduces_health_within_rolled_bounds() -> void:
 func test_burning_damage_attributed_to_source() -> void:
 	_set_max_health(0, 100)
 	_add_burning(0, 1)
-	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [], 0)
+	var results: Array[CombatResult] = _resolver.BeginTurn(0)
 	var tick: CombatResult = _burning_ticks(results)[0]
 	assert_true(tick.amount_by_source.has(1), "Damage should be keyed by the applying source ID")
 	assert_between(tick.amount_by_source[1], _min_tick(100), _max_tick(100),
@@ -65,7 +65,7 @@ func test_stacked_burning_from_same_source_accumulates() -> void:
 	_set_max_health(0, 100)
 	_add_burning(0, 2)
 	_add_burning(0, 2)
-	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [], 0)
+	var results: Array[CombatResult] = _resolver.BeginTurn(0)
 	var tick: CombatResult = _burning_ticks(results)[0]
 	assert_between(tick.amount_by_source[2], _min_tick(100) * 2, _max_tick(100) * 2,
 		"Two Burning stacks from one source should sum in that source's attribution")
@@ -74,7 +74,7 @@ func test_stacked_burning_from_different_sources_kept_separate() -> void:
 	_set_max_health(0, 100)
 	_add_burning(0, 3)
 	_add_burning(0, 4)
-	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [], 0)
+	var results: Array[CombatResult] = _resolver.BeginTurn(0)
 	var tick: CombatResult = _burning_ticks(results)[0]
 	assert_between(tick.amount_by_source[3], _min_tick(100), _max_tick(100), "Source 3 credited with its own stack")
 	assert_between(tick.amount_by_source[4], _min_tick(100), _max_tick(100), "Source 4 credited with its own stack")
@@ -84,7 +84,7 @@ func test_non_damaging_debuff_reports_no_burning_tick() -> void:
 	debuff.type = Types.Debuff_Type.Enfeeble
 	debuff.duration = 2
 	_roster[0]._active_debuffs.append(debuff)
-	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [], 0)
+	var results: Array[CombatResult] = _resolver.BeginTurn(0)
 	assert_eq(_burning_ticks(results).size(), 0,
 		"A non-damaging debuff should report no Burning tick")
 
@@ -98,7 +98,7 @@ func test_burning_tick_report_matches_actual_health_lost_under_spotlight() -> vo
 	spotlight.duration = 2
 	_roster[0]._active_buffs.append(spotlight)
 	var health_before: int = _roster[0]._current_health
-	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [], 0)
+	var results: Array[CombatResult] = _resolver.BeginTurn(0)
 	var tick: CombatResult = _burning_ticks(results)[0]
 	var health_lost: int = health_before - _roster[0]._current_health
 	assert_eq(tick.amount, health_lost,
@@ -108,7 +108,7 @@ func test_burning_can_kill_and_reports_death() -> void:
 	_set_max_health(0, 100)
 	_add_burning(0, 1)
 	_roster[0]._current_health = 1
-	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [], 0)
+	var results: Array[CombatResult] = _resolver.BeginTurn(0)
 	var deaths: Array[CombatResult] = results.filter(
 		func(result): return result.kind == CombatResult.Kind.Death)
 	assert_eq(deaths.size(), 1, "A lethal Burning tick should report the death")
