@@ -1316,20 +1316,43 @@ Fodder encounters
 Boss
 - Salvage Baron
 
+Music
+swamp of digeridoos or Dark Dark Woods
+
 ##### 5.1.1.2. Magic Ruins (Reclaimed City)
+
+Music
+swamp of digeridoos
 
 ##### 5.1.1.3. Factory (Clockwork Spire)
 
+Music
+Cosmic Stars
+
 ##### 5.1.1.4. Greese-Pits (Clockwork Spire)
+
+Music
+Cosmic Stars
 
 ##### 5.1.1.5. Shanty town (Pirate Coves)
 
+Music
+underwater city
+
 ##### 5.1.1.6. Islands (Pirate Coves)
+
+Music
+underwater city
 
 ##### 5.1.1.7. Slums (Iron Ledger)
 
+Music
+Bloodrat Sewers
+
 ##### 5.1.1.8. Inner city (Iron Ledger)
 
+Music
+Undecided
 
 ### 5.2. Shortform
 Intended to be singlular encounters with specific, targetable and grindable rewards.
