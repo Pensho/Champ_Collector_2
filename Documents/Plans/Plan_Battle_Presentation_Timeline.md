@@ -2,113 +2,150 @@
 
 `BattleResolver` produces and applies every `CombatResult` of an action in one frame, and
 `Battle._on_resolver_result_produced` presents each one as it arrives. Only floating combat
-text is paced (`Technical_Design_Document.md` 7.9). Health bars, status icons and the impact
-reaction land the moment the skill is chosen. This plan holds an action's results in the view
-and releases them on markers fired by a skill's effect scene, so damage lands when the effect
-visibly hits.
+text is paced (`Technical_Design_Document.md` 7.9). This plan holds an action's results in the
+view and releases them on markers fired by the skill's effect scene, so damage lands when the
+effect visibly hits, and releases a cascade one echo at a time, each with its own effect.
 
-Prerequisite: caster status ticks fire at the start of the turn, as `Concept_Document.md`
-3.2.3.2 states, not inside `ResolveSkill`. That bug fix ships separately, before step 1.
+Effects are built cheaply: a few archetype scenes reused through per-skill variants, with a
+default derived for every skill that has none. The archetype inventory and its skill and
+status mappings live in `Plan_Particle_Effects.md`; this plan builds the mechanism.
+
+Already in place: `CombatResult` carries `phase`, `effect_index`, `target_health_after` and
+`target_max_health_after`; `PresentationTimeline`, `SkillPresentation` and `SkillEffectScene`
+exist in a first form that the steps below reshape.
 
 ## Conventions
 
 - **The resolver stays headless and synchronous** (7.8). The timeline is view-only. It
   changes when a result is shown, never when it is applied.
 - **A released result drives all of its visuals together:** combat text, bars, status icon,
-  impact reaction and death.
-- **Results are released immediately, as today, when** the skill has no presentation, the
-  skip setting is on, the turn is a Stun turn, or the action is a reagent or graft. Step 5 can
-  land with no visible change.
+  impact reaction, flash, reaction particles, sounds and death.
+- **Results are released immediately when** the skip setting is on, the turn is a Stun turn,
+  the action is a reagent or graft, the action has no effect instance, or the skill's derived
+  default archetype is not built yet. Each step can land with no visible change.
 - **Hit-stop stays out** (9.3).
+- **Pooled, never instanced mid-battle.** Every effect scene a battle can play is instanced
+  at `Battle.Init`; variants are applied at play time.
 
 ## Steps
 
-### 1. Stamp results with presentation facts
-`_Emit` already stamps `cascade_depth`. It now also stamps:
-- `phase: Presentation_Phase` — `Skill_Effects` (from the start of `ResolveSkill` through
-  the `Skill_Resolved` drain) or `Post_Cast` (everything after). `ResolveSkill` sets the
-  resolver's current phase around each section.
-- `effect_index: int = -1` — the top-level index into `Skill.effects` while that effect
-  resolves. Nested effects inherit their parent's index.
-- `target_health_after` and `target_max_health_after` — the target's values as they stand
-  right after this result, so the bars can show each hit's own state.
-
-Tests: `Tests/unit/test_combat_result_presentation_stamps.gd` covers the phase per section,
-the effect index (including a nested effect), and the health snapshot across a two-hit skill.
+### 1. Archetype scenes and variants
+- `EffectVariant` (`Scripts/Battle/effect_variant.gd`, `Resource`): `texture`,
+  `particle_texture`, `tint`, `scale`, `cast_cue`, `impact_cue`. Null fields keep the
+  archetype's own look.
+- `SkillEffectScene` gains:
+  - `anchor: Anchor` (`Caster`, `Caster_Feet`, `Target`, `Target_Feet`, `Field_Center`) and
+    `aim_at_target: bool`. `Play` places the scene at its anchor and rotates it toward the
+    target when aiming, or mirrors it to face away from the caster otherwise.
+  - `variant_sprites` and `variant_particles` exports, which `Play` hands the variant's
+    texture, particle texture and tint.
+  - `PlayCastSound()` and `PlayImpactSound()` method keys, which play the variant's cues, so
+    the archetype sets the timing and the variant the sound. `PlaySound(cue)` stays for
+    bespoke scenes.
+  - A scale argument on `Play`, multiplied with the variant's scale.
+- Character views expose a feet point for the `_Feet` anchors.
 
 ### 2. Presentation data
-- `SkillPresentation` (`Scripts/Battle/skill_presentation.gd`, `extends Resource`):
-  `effect_scene: PackedScene`; `spawn_mode: Spawn_Mode` (`Per_Target`,
-  `Per_Target_Staggered`, `Field_Wide`); `stagger_seconds: float`.
-- `Skill.presentation: SkillPresentation`. Leaving it `null` means immediate release.
-- `SkillEffect.impact: int = 0` — the impact marker that releases this effect's results.
+- `SkillPresentation`: `archetype: PackedScene` (a `SkillEffectScene`), `variant`,
+  `spawn_mode`, `stagger_seconds`, and `echo_archetype` plus `echo_variant` for the skill's
+  echoes. A bespoke scene is an archetype with no variant. A null echo archetype replays the
+  skill's own.
+- `StatusEffectData` gains `echo_archetype` and `echo_variant`. A null echo archetype plays
+  the generic echo pulse with the status's icon as its texture.
+- `CharacterPreset` gains `_hurt_cue`, `_death_cue` (null is silent) and
+  `_vocal_pitch: float = 1.0`, carried onto `Character` like `_texture`.
 
-### 3. Effect scene contract
-`SkillEffectScene` (`Scripts/Battle/skill_effect_scene.gd`, `extends Node2D`) is the root of
-every effect scene. Its `AnimationPlayer` holds one animation, and its method tracks call:
-- `Impact(index: int)` → emits `impact_reached(index)`
-- `CasterLunge()` → emits `lunge_requested`
-- `PlaySound(cue: SoundCue)`, `StartLoop(cue: SoundCue, key: StringName)`,
-  `StopLoop(key: StringName)` → `Audio_Handler`. Open loops stop when the animation ends.
+### 3. Defaults
+`PresentationDefaults` (`Scripts/Battle/presentation_defaults.gd`, static) reads a defaults
+resource (`Data/Presentation/Presentation_Defaults.tres`) holding one archetype per category
+in `Plan_Particle_Effects.md`'s library, plus the generic echo pulse. A null slot is an
+archetype not built yet.
+- `ForSkill(skill)` returns `skill.presentation`, or derives one: the first damage effect
+  picks the physical or arcane impact by its scaling attributes; otherwise the first heal,
+  barrier, buff or debuff effect picks its category. Spawn mode `Per_Target`.
+- `ForSkillEcho(skill)` and `ForStatusEcho(status)` resolve the echo archetype and variant.
 
-`Play(caster_position: Vector2, target_position: Vector2)` positions the scene and starts the
-animation. `finished` is emitted when the animation ends. `ImpactCount()` scans the
-animation's method track for `Impact` keys. `Length()` returns the animation length.
+Tests: `Tests/unit/test_presentation_defaults.gd` covers each category, precedence when a
+skill mixes effects, an explicit presentation winning, and a null slot.
 
-### 4. `PresentationTimeline`
-`Scripts/Battle/presentation_timeline.gd`, `RefCounted`, no nodes. Built from one action's
-results, the skill's per-effect `impact` values, the spawn mode, the instance targets, and
-the impact count. Every query returns results in their original order, and returns each
-result exactly once:
-- `ResultsForImpact(instance_target_ID, impact_index)` — `Skill_Effects` results outside any
-  cascade, whose effect's `impact` matches and whose target matches the instance (any target
-  for `Field_Wide`). An `impact` past the last marker counts as the last marker. Results
-  with `effect_index == -1`, or whose target has no instance, go with the final impact of the
-  final instance.
-- `ResultsAfterFinalImpact()` — `Skill_Effects` cascade results, with their
-  `Cascade_Triggered` brackets, so `BurstPacing` keeps escalating them.
-- `RemainingResults()` — `Post_Cast`, plus anything not yet released. This is used at
-  `finished` and at the deadline.
+### 4. Echo identity
+`Cascade_Triggered` results name what the instance echoes: the skill (`source_ID` plus a
+skill index) or the status type. `CascadeContribution` supplies it per instance, the way
+`origin_for_instance` supplies the origin, and `BeginEchoInstance` stamps it.
 
-Tests: `Tests/unit/test_presentation_timeline.gd` covers each query, the three spawn modes,
-clamping past the last impact, unmatched targets, cascade grouping, order preservation, and
-a deadline flush after partial release.
+Tests: extend `Tests/unit/test_cascade_resolution.gd` with a skill echo (Borrowed Time) and a
+status echo (Comorbidity).
 
-### 5. Wire it into `Battle`
-- Split the body of `_on_resolver_result_produced` into `PresentResult(result)`. While an
-  action with a presentation is resolving, the handler buffers results; otherwise it calls
-  `PresentResult` directly.
-- `ResolveTurn` with a presentation: buffer, resolve, build the timeline, start the instances (staggered by index for `Per_Target_Staggered`),
-  and route their signals to the timeline queries. `lunge_requested` replaces the immediate
-  `_PlayAttackLunge`. Without a presentation, today's lunge stays.
-- `UpdateLifeBar` takes the health values from the result being presented, instead of reading
-  live state.
-- `Resolving` completes once every instance has finished and `IsPresenting()` is false. The
-  deadline becomes `PRESENTATION_DEADLINE` plus the longest instance's `Length()` plus its
-  stagger. On the deadline, release `RemainingResults()`, stop the instances, and flush the
-  combat text.
+### 5. Timeline rules
+`PresentationTimeline` changes:
+- A result whose target has no instance releases at its own effect's impact, on the final
+  instance. Only `effect_index == -1` results go with the final impact of the final instance.
+- `ResultsAfterFinalImpact()` is replaced by `EchoCount()` and `ResultsForEcho(ordinal)`: the
+  ordinal-th `Cascade_Triggered` bracket in emission order and the results up to the next
+  bracket.
 
-### 6. Effect instance pool
-- A `Battle_Effect_Layer` node is authored in the battle scene.
-- At `Battle.Init`, for each distinct `effect_scene` among every combatant's skills
-  (including phase 2 skills), instance one copy per possible target (the larger side's size)
-  under the layer, hidden. Instances are reused and reset on `finished`; none are freed
-  during battle.
+`BurstPacing.EffectScaleForStep(step)` grows an echo effect's scale per echo, bounded like
+the other curves.
 
-### 7. Skip setting
+Tests: update `Tests/unit/test_presentation_timeline.gd` for both rules, nested echo
+brackets, and the effect scale curve in `Tests/unit/test_burst_pacing.gd`.
+
+### 6. Result reactions
+A `ResultReactions` resource (`Data/Presentation/Result_Reactions.tres`) maps Damage, Heal,
+Death, buff applied and debuff applied to a flash color, a reaction archetype and variant, and
+a sound cue. `PresentResult` plays the row for each released result at the target, plus the
+target's hurt cue (on Damage and Debuff_Tick with an amount) or death cue at
+`_vocal_pitch`. `CharacterSpriteAnimator` takes the flash color; a heal flashes without the
+squash and knockback.
+
+Tests: the row lookup per result kind, in `Tests/unit/test_result_reactions.gd`.
+
+### 7. Wire it into `Battle`
+- Split the body of `_on_resolver_result_produced` into `PresentResult(result)`. While a
+  presented action resolves, the handler buffers results; otherwise it calls `PresentResult`.
+- `ResolveTurn`: buffer, resolve, resolve the presentation through `PresentationDefaults`,
+  build the timeline, and start the instances per spawn mode (staggered by index for
+  `Per_Target_Staggered`). Only the first instance's `lunge_requested` lunges the caster.
+  Without a presentation, today's lunge stays.
+- After the final instance's final impact, release echoes one at a time,
+  `BurstPacing.DelayForStep` apart: each plays its echo effect on the bracket's subject at
+  `EffectScaleForStep` and releases `ResultsForEcho`.
+- `UpdateLifeBar` and the barrier arithmetic take values from the presented result.
+- `Resolving` completes once every instance has finished, every echo is released, and
+  `IsPresenting()` is false; then `RemainingResults()` is released. The deadline becomes
+  `PRESENTATION_DEADLINE` plus the longest instance's `Length()` plus its stagger. On the
+  deadline, release `RemainingResults()`, stop the instances, and flush the combat text.
+
+### 8. Effect pool
+A `Battle_Effect_Layer` node is authored in the battle scene. At `Battle.Init`, for each
+distinct archetype among every combatant's resolved presentations (phase 2 skills included),
+their echoes, and the reaction rows, instance:
+- skill archetypes: one per possible target (the larger side's size);
+- echo archetypes: enough to cover overlap, its `Length()` over `BurstPacing.MINIMUM_DELAY`,
+  capped at `CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION`;
+- reaction archetypes: one per combatant.
+
+Instances are hidden, reset on `finished`, and never freed during battle.
+
+### 9. Skip setting
 `Settings.skip_skill_effects` (persisted, default `false`), with a check box row in
 `Settings_Menu.tscn` wired in `settings_menu.gd`. When on, every skill releases immediately.
 
-### 8. Placeholder effect
-`Scenes/Battle_Visual_Effects/placeholder_strike.tscn`: a `SkillEffectScene` with no art, a
-`CasterLunge` key, one `Impact(0)` key and a short tail. Assign it to Stab so the path can be
-checked in game. The first archetype replaces it.
+### 10. First archetypes
+- `Scenes/Battle_Visual_Effects/slash.tscn`: anchor `Caster`, aimed; `PlayCastSound` and
+  `CasterLunge` at the start, the sprite fading in and out quickly, `Impact(0)` at full
+  opacity. Stab gets a variant on it, and the defaults resource's physical impact slot
+  points at it.
+- `Scenes/Battle_Visual_Effects/echo_pulse.tscn`: the generic echo pulse.
 
-### 9. Documentation
-- `Technical_Design_Document.md`: rewrite 7.9 around the timeline (bars and reactions land on
-  release); update 9.3 (lunge from the marker, reaction on release), 7.4 (result stamps) and
-  3.4 (skip setting).
-- `Concept_Document.md` 1.1.5: a skill's results land when its effect visibly hits.
+### 11. Documentation
+- `Technical_Design_Document.md`: rewrite 7.9 around the timeline and echo release; update
+  9.3 (lunge from the marker, reactions on release), 7.4 (result stamps), 7.8 (echo
+  identity), 6.1 (`StatusEffectData` echo fields) and 3.4 (skip setting).
+- `Concept_Document.md` 1.1.5: a skill's results land when its effect visibly hits, and each
+  echo lands with its own effect, growing through the cascade.
+- `Plan_Particle_Effects.md`: point its infrastructure section at the Technical Design
+  Document.
 - Delete this plan per `Documents/Plans/README.md`.
 
 ## Watch for
@@ -117,7 +154,9 @@ checked in game. The first archetype replaces it.
   `Phase_Changed`'s skill list) must use the released result's own values.
 - Traits subscribed to `result_produced` (Flintbrace, Standing Record) react on emission,
   not release. Buffering must not change that.
-- Buffering is active only inside `ResolveTurn`. Reagent, graft and debug paths present
-  immediately.
+- Buffering is active only inside `ResolveTurn`. Start-of-turn, reagent, graft and debug
+  results present immediately.
+- An echo's combat text spawns with its release; the text queue's own delay must not stack
+  on top of the echo spacing.
 - The battle-over check stays in `CompleteTurn`, after everything is released.
 - `gdlint Scripts/` passes. No plan or step references in code comments.

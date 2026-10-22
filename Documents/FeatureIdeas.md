@@ -46,6 +46,9 @@ Effort: **S** = hours, **M** = days, **L** = week+
 - **Per-Source Burst Attribution** *(Priority: Medium | Effort: M)*
   Concept_Document.md 1.1.5 asks for each Echo to land "attributed to its source", but nothing in battle names a source: floating combat text spawns at the target with no label, and there is no combat log. The `Debuff_Tick` branch in `battle.gd` even collapses `amount_by_source` into one aggregate number despite the per-source breakdown already being on the result — splitting that is the cheapest first step. Fuller options (source-labelled floating text, a per-Echo mechanic banner naming the `Cascade_Triggered` mechanic key, or a scrolling combat log) each add a new UI surface with a screen-space cost, so none were taken alongside the tempo and magnitude escalation.
 
+- **Boss Presentation Set Pieces** *(Priority: Medium | Effort: L)*
+  Bosses get bespoke presentation beyond the skill archetype library: trait visuals that persist and react to released results, and effects fired by traits rather than casts. The Hue-Eater's Gathered Light is the first case — six hexagon slices gathering above her, an Enfeeble icon pulled into the hexagon, and the completed hexagon flying at the party at the start of her turn.
+
 ---
 
 ## Characters & Progression
