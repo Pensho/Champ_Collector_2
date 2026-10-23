@@ -92,6 +92,9 @@ func ApplyAdventureEffects(p_character_ID: int) -> void:
 		debuff.duration = GameBalance.ADVENTURE_BUFF_COMBAT_DURATION
 		debuff.name = Types.Debuff_Type.keys()[debuff_type]
 		_resolver.GetStatusResolver().ApplyDebuff(p_character_ID, debuff)
+	_characters[p_character_ID]._current_health = _resolver.GetMaxHealth(p_character_ID)
+	_character_representations[p_character_ID]._damage_trail_bar.SnapTo(_characters[p_character_ID]._current_health)
+	UpdateLifeBar(p_character_ID)
 
 func ApplyPreparationHeadStart(p_player_IDs: Array[int]) -> void:
 	var fraction: float = CombatPreparation.StartingTurnBarFraction(
