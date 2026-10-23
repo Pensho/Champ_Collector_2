@@ -10,17 +10,12 @@ var _result_option: ButtonWithOptions
 var _pending_slot_index: int = -1
 var _favor_slot: ShopSlot
 
-@onready var _background: TextureRect = $Background
 @onready var _texture_rect_shopkeeper: TextureRect = $TextureRect_Shopkeeper
 @onready var _label_restock: Label = $Label_Restock
 @onready var _grid_container: GridContainer = $GridArea/GridContainer
 
 func Init(p_context_container: ContextContainer) -> void:
 	_self_context = p_context_container
-
-	var background_path: String = p_context_container._arguments.get("Background_Texture", "")
-	if(not background_path.is_empty()):
-		_background.texture = load(background_path)
 
 	var shopkeeper_path: String = p_context_container._arguments.get("Shopkeeper_Texture", "")
 	if(not shopkeeper_path.is_empty()):

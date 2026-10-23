@@ -87,6 +87,7 @@ Part I whole, and no section grants an exemption this table does not carry.
 | Overworld views | Section 4; non-negotiable 2 | 10.4 |
 | Selection panels | Section 4; non-negotiable 2; the section 6 quantize step | 10.8 |
 | Hub screens | Section 4; non-negotiable 2; 5.6's dark recession; the section 6 quantize step | 10.5 |
+| Place screens and their figures | As hub screens, plus non-negotiable 3 and all of section 8 | 10.5.6, 10.5.7 |
 | Node and currency icons | Non-negotiable 2 (three values); the material slots of section 3 | 12.1 |
 | Status effect icons | Non-negotiables 1, 2, 3 and 6; sections 12.1–12.2; the material slots of section 3 | 12.5 |
 | Active skill art | Non-negotiables 1, 2, 3 and 6; sections 12.1–12.2; the section 6 quantize step | 12.4 |
@@ -500,6 +501,7 @@ on assets that already look right.
 | Characters, enemies, environment elements, effects | Full |
 | Selection panels (10.8) | Overlay and LUT only — quantize would strip the extra bands and incident chroma |
 | Hub screens (10.5) | Overlay only, as selection panels for the same reason; no LUT, since the hub carries its own light. Untested (19.3) |
+| Place screens and scene figures (10.5.6) | As hub screens. Untested (19.3) |
 | Active skill art (12.4) | Overlay only — quantize would strip the hatching and tone-block range; no LUT, since skill art is UI and not in scene light |
 | Passive icons (12.6) | Quantize, accent correction, overlay, downscale to 40 px; no LUT |
 | Turn bar zone art (13.3.1) | Key out, then downscale; no quantize, no accent correction, no LUT |
@@ -2036,6 +2038,49 @@ bold woodcut illustration with engraved structural linework and visible gouge ma
 - **Too dark to read:** replace `cool slate blue and blue-black` with `cool slate
   blue and steel blue`.
 
+#### 10.5.6 Place screens
+
+Each hub place opens its own 1280 × 720 screen, built around its UI. The shop is
+the first: items from x420 rightward, currency and back buttons above y100.
+
+- **UI regions are one flat middle-value field** with a few broad lines. Middle,
+  not dark or pale: gear icons carry an ink black contour and a bone white edge
+  (11.1), and a dark or pale field swallows one of them.
+- **Camera at standing eye level.** Mood as 10.5.1, with warm light from a source
+  in the scene.
+- **The plate matches its landmark on the hub** (10.5) — the shop is the
+  rotunda's striped awning, seen from inside.
+- **Plate and figure are generated separately** and composited in the engine,
+  because the tool cannot place to the pixel.
+
+#### 10.5.7 Scene figures
+
+A figure who belongs to a place rather than the roster is written in the plate's
+rule set, not section 8: the plate's outline, value bands, muted hues and shadow
+color, lit by the plate's light. No accent.
+
+- **No counts or detail budget.** Load the figure with gear, described loosely
+  and clustered near the face.
+- **Close framing, facing the viewer.** A foreground prop between viewer and
+  figure carries the crop.
+- **Only one side may crop.** A prop leaves the frame only on the side the engine
+  crops. On the visible side it ends in a complete corner with clear space beyond
+  it.
+
+**Reclaimed City shopkeeper.** Shown at the left of the shop screen, inside
+x0–410, left edge at the screen edge.
+
+```
+bold woodcut illustration with engraved structural linework and visible gouge marks, thick black contour outline on every mass, flat color fields, hard-edged shadows, no gradients, seven value bands, seen straight on from standing eye level, a close waist-up view of a lean hard-bodied old shopkeeper in his early seventies in a scavenger market stall inside a ruined jungle rotunda, a stack of rough wooden crates in the near foreground between the viewer and him, the crate stack running out through the left edge of the image and ending on the right in one complete squared corner, its whole outer side edge visible, with clear empty space between that corner and the right edge of the image, the crate fronts cut off by the bottom edge, his body hidden below the waist by the crates, facing the viewer straight on and leaning in toward the viewer over the crates, one elbow planted on the crate top with his weight on it and that hand raised loosely near his jaw, his other forearm laid flat along the crate top, looking directly at the viewer with a dry appraising half-smile, a gaunt weathered face with a heavy brow and a hooked nose, a long scar across one cheek and a notch missing from one ear, white hair gathered into a short thick braid, a short squared white beard, a battered wide-brimmed palm-fibre hat pushed back on his head with a stub of pencil and a bright jungle feather tucked in its band, a long-sleeved shirt in muted dusky teal with the sleeves rolled to the elbow, forearms crossed with old scars and wrapped in frayed linen, a sleeveless woven palm-fibre vest in muted sand stuffed full: rolled scraps of parchment and a folded ledger poking out of its pockets, a brass jeweller's loupe hanging on a cord at his chest beside a heavy ring of mismatched old keys, small carved stone charms, a cracked wax seal and a little bronze bell strung together on knotted cords around his neck, a leather bandolier across his chest crowded with buttoned pouches, a sheathed knife hilt and two scuffed brass tags, a dented beetle-carapace pauldron strapped on one shoulder, several mismatched rings on his fingers, blotches of stains across his vest and shirt, a patch of a different weave sewn onto one sleeve, on the crate top in front of him a small brass coin scale and a scatter of coins, warm amber lantern light falling on him from the upper left as flat hard-edged lit shapes across his face, hat brim, shoulder and the crate tops, the side of him away from the light falling into the same dark dusky teal shadow as the stall around him, his clothing in the same muted hues as the stall, held as large flat fields with a few broad fold lines, the heaviest carving on his face and the clutter at his chest, his hat near the top of the image with a little space above it, isolated on a plain flat background of one uniform color
+```
+
+- **Comes back full body:** replace `a close waist-up view` with `a close
+  head-and-shoulders and chest view, cropped at the waist`.
+- **Cut on the right:** replace `his hat near the top of the image with a little
+  space above it` with `his hat near the top of the image with a little space
+  above it, his whole figure clear of the right edge of the image with empty
+  space beside him`.
+
 ### 10.6 Area catalog
 
 Four areas are planned. Each has **two variants**, one hub (10.5), at least one
@@ -3541,6 +3586,10 @@ line is a trap, not a history; the rule it produced lives in the section named.
   Nothing drawable separates them; enclosures and their own light do (10.5.4).
 - Engraved detail asked of every mass on a hub. The places sink into the rock
   around them (10.5.4).
+- A scene figure built on the champion rules (section 8). Reads as pasted onto
+  the plate (10.5.7).
+- A foreground prop cropped by both side edges. The visible edge shows a box
+  cut in half in game (10.5.7).
 
 ---
 
@@ -3671,7 +3720,7 @@ together, at six characters rather than at fifteen.
   the answer with 10.4.2 and 10.7.2.
 - **Hubs for the Spire and the Iron Ledger.** The ceiling rule held from canopy to
   cave roof; whether it carries to a desert and to an open city is untested (10.5.2).
-- **Hub post-processing.** Overlay only is untested (6).
+- **Hub and place screen post-processing.** Overlay only is untested (6).
 
 ### 19.4 Icons, UI and pipeline
 
