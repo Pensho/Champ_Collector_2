@@ -27,6 +27,13 @@ enum Kind {
 	Phase_Changed,
 }
 
+enum Presentation_Phase {
+	Skill_Effects,
+	Post_Cast,
+}
+
+const NO_HEALTH_SNAPSHOT: int = -1
+
 var kind: Kind
 var source_ID: int = -1
 var target_ID: int = -1
@@ -34,6 +41,8 @@ var amount: int = 0
 var critical: bool = false
 var fraction: float = 0.0
 var status_ID: int = -1
+## Cascade_Triggered: the caster's skill index a skill echo repeats; -1 otherwise.
+var skill_ID: int = -1
 var status_IDs: Array[int] = []
 var is_buff: bool = false
 var buff_type: Types.Buff_Type = Types.Buff_Type.Invalid
@@ -49,6 +58,12 @@ var amount_by_source: Dictionary[int, int] = {}
 var combined_damage_modifier: CombinedDamageModifier = null
 var cascade_depth: int = 0
 var cascade_trigger: Types.Cascade_Trigger = Types.Cascade_Trigger.Status_Expired
+var phase: Presentation_Phase = Presentation_Phase.Post_Cast
+## The top-level Skill.effects index resolving when this result was emitted; -1 outside one.
+var effect_index: int = -1
+## The target's Health as it stood right after this result, so the view can show each hit's own state.
+var target_health_after: int = NO_HEALTH_SNAPSHOT
+var target_max_health_after: int = NO_HEALTH_SNAPSHOT
 
 
 func _init(p_kind: Kind) -> void:

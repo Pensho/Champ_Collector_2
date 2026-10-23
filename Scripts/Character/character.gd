@@ -5,6 +5,11 @@ var _name: String = ""
 var _texture: String = ""
 var _headshot_region: Rect2 = Rect2(0.0, 0.0, 1.0, 1.0)
 var _normal_map: String = ""
+@warning_ignore_start("unused_private_class_variable")
+var _hurt_cue: SoundCue = null
+var _death_cue: SoundCue = null
+var _vocal_pitch: float = 1.0
+@warning_ignore_restore("unused_private_class_variable")
 
 var _rarity: Types.Rarity
 var _faction: Types.Faction
@@ -68,6 +73,9 @@ func InstantiateNew(p_preset: CharacterPreset, p_instance_ID: int) -> void:
 	_texture = p_preset._texture
 	_headshot_region = p_preset._headshot_region
 	_normal_map = p_preset._normal_map
+	_hurt_cue = p_preset._hurt_cue
+	_death_cue = p_preset._death_cue
+	_vocal_pitch = p_preset._vocal_pitch
 	_rarity = p_preset._rarity
 	_faction = p_preset._faction
 	_role = p_preset._role

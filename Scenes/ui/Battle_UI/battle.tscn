@@ -6,12 +6,18 @@
 [ext_resource type="Texture2D" uid="uid://cjcnam176bh58" path="res://Assets/Champ_Collector/Icons/Indicator_Arrow/Indicator_Arrow_0001.png" id="5_pd5xk"]
 [ext_resource type="Texture2D" uid="uid://byq61tt3abjd8" path="res://Assets/Champ_Collector/Light/Point_Light.tres" id="6_lrv64"]
 [ext_resource type="Material" uid="uid://2tvv2h51laxc" path="res://Assets/Champ_Collector/Material/Unshaded.tres" id="6_qeyqd"]
+[ext_resource type="Script" uid="uid://bhpyhgicbgl7v" path="res://Scripts/Battle/battle_effect_layer.gd" id="7_effects"]
+[ext_resource type="Resource" path="res://Data/Presentation/Presentation_Archetypes.tres" id="8_archetypes"]
+[ext_resource type="Resource" path="res://Data/Presentation/Result_Reactions.tres" id="9_reactions"]
 
-[node name="Battle" type="Node2D" unique_id=1214121318 node_paths=PackedStringArray("_character_representations", "_stage_anchor", "_weather_anchor")]
+[node name="Battle" type="Node2D" unique_id=1214121318 node_paths=PackedStringArray("_character_representations", "_stage_anchor", "_weather_anchor", "_effect_layer")]
 script = ExtResource("1_oxf17")
 _character_representations = [NodePath("Character_1"), NodePath("Character_2"), NodePath("Character_3"), NodePath("Enemy_1"), NodePath("Enemy_2"), NodePath("Enemy_3")]
 _stage_anchor = NodePath("Stage_Anchor")
 _weather_anchor = NodePath("Weather_Anchor")
+_effect_layer = NodePath("Battle_Effect_Layer")
+_presentation_archetypes = ExtResource("8_archetypes")
+_result_reactions = ExtResource("9_reactions")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=565446239]
 position = Vector2(640, 360)
@@ -61,6 +67,10 @@ _target_ID = 2
 
 [node name="Weather_Anchor" type="Node2D" parent="." unique_id=944025685]
 z_index = 15
+
+[node name="Battle_Effect_Layer" type="Node2D" parent="." unique_id=1500000001]
+z_index = 10
+script = ExtResource("7_effects")
 
 [node name="Turn_Indicator" type="TextureRect" parent="." unique_id=1253183384]
 z_index = 20

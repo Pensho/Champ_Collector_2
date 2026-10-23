@@ -65,7 +65,7 @@ func SetIdleEnabled(p_enabled: bool) -> void:
 	_idle_enabled = p_enabled
 
 # p_direction: which way to knock the target back, sign only (positive = knocked toward +x).
-func PlayImpact(p_intensity: float, p_direction: float) -> void:
+func PlayImpact(p_intensity: float, p_direction: float, p_flash_color: Color = Color.WHITE) -> void:
 	if(_dead):
 		return
 	var stretch: float = ImpactIntensity.SquashForIntensity(p_intensity)
@@ -83,7 +83,7 @@ func PlayImpact(p_intensity: float, p_direction: float) -> void:
 			.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)
 	_reaction_tween.chain().parallel().tween_property(self, "_reaction_offset", Vector2.ZERO, IMPACT_SETTLE_SECONDS) \
 			.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)
-	_PlayFlash(p_intensity)
+	PlayFlash(p_flash_color, p_intensity)
 
 func PlayLunge(p_direction: float) -> void:
 	if(_dead):
@@ -150,9 +150,13 @@ func SetTargetOutline(p_enabled: bool) -> void:
 func _PixelsToTexels(p_pixels: float) -> float:
 	return p_pixels * _sprite.texture.get_width() / _sprite.size.x
 
-func _PlayFlash(p_intensity: float) -> void:
+## A flash with no squash or knockback, e.g. a heal.
+func PlayFlash(p_color: Color, p_intensity: float) -> void:
+	if(_dead):
+		return
 	if(_flash_tween):
 		_flash_tween.kill()
+	_sprite_material.set_shader_parameter("flash_color", p_color)
 	_sprite_material.set_shader_parameter("flash_amount", 1.0)
 	_flash_tween = create_tween()
 	_flash_tween.tween_method(

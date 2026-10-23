@@ -10,6 +10,8 @@ class_name SkillEffect extends Resource
 @export var condition_test: Types.Condition_Test = Types.Condition_Test.At_Least
 @export var condition_threshold: float = 0.0
 @export var chance: float = 1.0
+## Which Impact(index) key in the effect scene releases this effect's results.
+@export var impact_index: int = 0
 
 func Resolve(_p_context: SkillCastContext) -> void:
 	pass

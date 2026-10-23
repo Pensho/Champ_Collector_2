@@ -39,6 +39,9 @@ func _on_button_target_button_up() -> void:
 func FootPosition() -> Vector2:
 	return global_position + Vector2(SPRITE_SIZE.x * 0.5, SPRITE_SIZE.y) * scale
 
+func CenterPosition() -> Vector2:
+	return global_position + SPRITE_SIZE * 0.5 * scale
+
 func AddStatusEffect(
 		p_effect_texture: Texture,
 		p_duration: int,

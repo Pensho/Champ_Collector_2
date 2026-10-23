@@ -11,5 +11,7 @@ const Statuses = preload("uid://bp3pvvar4437")
 
 ## Ordered, self-resolving effects.
 @export var effects: Array[SkillEffect]
+## Null releases the skill's results as soon as they are produced.
+@export var presentation: SkillPresentation
 
 var cooldown_left: int = 0

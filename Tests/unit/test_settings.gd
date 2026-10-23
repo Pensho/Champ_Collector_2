@@ -17,6 +17,7 @@ func test_defaults_match_documented_values() -> void:
 	assert_eq(_settings.sound_effects_volume, Settings.DEFAULT_SOUND_EFFECTS_VOLUME)
 	assert_eq(_settings.screen_shake_enabled, Settings.DEFAULT_SCREEN_SHAKE_ENABLED)
 	assert_eq(_settings.targeting_help_enabled, Settings.DEFAULT_TARGETING_HELP_ENABLED)
+	assert_eq(_settings.skip_skill_effects, Settings.DEFAULT_SKIP_SKILL_EFFECTS)
 	assert_eq(_settings.fullscreen, Settings.DEFAULT_FULLSCREEN)
 	assert_false(_settings.frames_per_second_overlay_enabled)
 	assert_true(_settings.vertical_sync_enabled)
@@ -29,6 +30,7 @@ func test_reset_to_defaults_restores_defaults_after_mutation() -> void:
 	_settings.sound_effects_volume = 0.4
 	_settings.screen_shake_enabled = false
 	_settings.targeting_help_enabled = false
+	_settings.skip_skill_effects = true
 	_settings.fullscreen = true
 	_settings.frames_per_second_overlay_enabled = true
 	_settings.vertical_sync_enabled = false
@@ -42,6 +44,7 @@ func test_reset_to_defaults_restores_defaults_after_mutation() -> void:
 	assert_eq(_settings.sound_effects_volume, Settings.DEFAULT_SOUND_EFFECTS_VOLUME)
 	assert_eq(_settings.screen_shake_enabled, Settings.DEFAULT_SCREEN_SHAKE_ENABLED)
 	assert_eq(_settings.targeting_help_enabled, Settings.DEFAULT_TARGETING_HELP_ENABLED)
+	assert_eq(_settings.skip_skill_effects, Settings.DEFAULT_SKIP_SKILL_EFFECTS)
 	assert_eq(_settings.fullscreen, Settings.DEFAULT_FULLSCREEN)
 	assert_eq(_settings.frames_per_second_overlay_enabled, Settings.DEFAULT_FRAMES_PER_SECOND_OVERLAY_ENABLED)
 	assert_eq(_settings.vertical_sync_enabled, Settings.DEFAULT_VERTICAL_SYNC_ENABLED)
@@ -54,6 +57,7 @@ func test_save_then_load_round_trips_values() -> void:
 	_settings.sound_effects_volume = 0.75
 	_settings.screen_shake_enabled = false
 	_settings.targeting_help_enabled = false
+	_settings.skip_skill_effects = true
 	_settings.fullscreen = true
 	_settings.frames_per_second_overlay_enabled = true
 	_settings.vertical_sync_enabled = false
@@ -69,6 +73,7 @@ func test_save_then_load_round_trips_values() -> void:
 	assert_almost_eq(loaded.sound_effects_volume, 0.75, 0.0001)
 	assert_eq(loaded.screen_shake_enabled, false)
 	assert_eq(loaded.targeting_help_enabled, false)
+	assert_eq(loaded.skip_skill_effects, true)
 	assert_eq(loaded.fullscreen, true)
 	assert_eq(loaded.frames_per_second_overlay_enabled, true)
 	assert_false(loaded.vertical_sync_enabled)

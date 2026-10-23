@@ -3,6 +3,7 @@ shader_type canvas_item;
 #include "res://Assets/Champ_Collector/Shaders/targeting_help_pulse.gdshaderinc"
 
 uniform float flash_amount : hint_range(0.0, 1.0) = 0.0;
+uniform vec4 flash_color : source_color = vec4(1.0);
 uniform float grayscale_amount : hint_range(0.0, 1.0) = 0.0;
 
 uniform bool outline_enabled = false;
@@ -40,7 +41,7 @@ void fragment() {
 
 	vec3 grayscale = vec3(0.299 * COLOR.r + 0.587 * COLOR.g + 0.114 * COLOR.b);
 	COLOR.rgb = mix(COLOR.rgb, grayscale, grayscale_amount);
-	COLOR.rgb = mix(COLOR.rgb, vec3(1.0), flash_amount);
+	COLOR.rgb = mix(COLOR.rgb, flash_color.rgb, flash_amount);
 
 	if (outline_enabled && COLOR.a <= 0.0) {
 		// Samples a circle of outline_width_texels around this transparent pixel; any

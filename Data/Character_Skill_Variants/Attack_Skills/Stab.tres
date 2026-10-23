@@ -3,6 +3,9 @@
 [ext_resource type="Script" uid="uid://bmqtglyyora7q" path="res://Scripts/Battle/Skill_Effects/skill_effect.gd" id="1_g2f3e"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_rci34"]
 [ext_resource type="Script" uid="uid://bn0n72opjy7sb" path="res://Scripts/Battle/Skill_Effects/damage_effect.gd" id="2_52kps"]
+[ext_resource type="Script" uid="uid://4bw820sjhiip" path="res://Scripts/Battle/skill_presentation.gd" id="3_presentation"]
+[ext_resource type="Script" uid="uid://dwlqv2iu3qwgd" path="res://Scripts/Battle/effect_variant.gd" id="4_variant"]
+[ext_resource type="PackedScene" path="res://Scenes/Battle_Visual_Effects/slash.tscn" id="5_slash"]
 
 [sub_resource type="Resource" id="Resource_7x3lf"]
 script = ExtResource("2_52kps")
@@ -10,9 +13,19 @@ damage_scaling = Dictionary[int, float]({
 2: 0.7
 })
 
+[sub_resource type="Resource" id="Resource_stab_variant"]
+script = ExtResource("4_variant")
+tint = Color(0.85, 0.9, 1, 1)
+
+[sub_resource type="Resource" id="Resource_stab_presentation"]
+script = ExtResource("3_presentation")
+archetype = ExtResource("5_slash")
+variant = SubResource("Resource_stab_variant")
+
 [resource]
 script = ExtResource("1_rci34")
 name = "Stab"
 description = "Plunge you weapon against an enemy. Based on attack."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Stab/Stab_3.jpg"
 effects = Array[ExtResource("1_g2f3e")]([SubResource("Resource_7x3lf")])
+presentation = SubResource("Resource_stab_presentation")

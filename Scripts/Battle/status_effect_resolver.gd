@@ -466,7 +466,20 @@ func _ContributeComorbidity(p_event: CascadeEvent) -> CascadeContribution:
 			func(e: CascadeEvent) -> void: _CascadeComorbidityRetick(e, e.origin_ID))
 	contribution.origin_for_instance = (
 			func(i: int) -> int: return repeating_source_ids[i / extra_instances])
+	var echoed_debuffs: Array[Types.Debuff_Type] = []
+	for source_ID: int in repeating_source_ids:
+		echoed_debuffs.append(_FirstRepeatingDebuff(target, source_ID))
+	contribution.echoed_debuff_for_instance = (
+			func(i: int) -> Types.Debuff_Type: return echoed_debuffs[i / extra_instances])
 	return contribution
+
+## The first of p_source_ID's repeats_per_distinct_debuff-flagged debuffs on p_target, which
+## stands for the whole retick when the battle view picks an echo effect.
+func _FirstRepeatingDebuff(p_target: Character, p_source_ID: int) -> Types.Debuff_Type:
+	for debuff in p_target._active_debuffs:
+		if(debuff.source_ID == p_source_ID and debuff.trait_riders.get(&"repeats_per_distinct_debuff", false)):
+			return debuff.type
+	return Types.Debuff_Type.Invalid
 
 ## Resolves one Comorbidity cascade instance: re-ticks only p_source_ID's own
 ## repeats_per_distinct_debuff-flagged debuffs on p_event.subject_ID, at their own unmultiplied

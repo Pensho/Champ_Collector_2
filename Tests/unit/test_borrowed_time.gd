@@ -48,6 +48,17 @@ func test_the_repeat_is_a_depth_1_cascade_instance() -> void:
 	var damage_results: Array[CombatResult] = _damage_results(results, 3)
 	assert_eq(damage_results[1].cascade_depth, 1, "The repeat is a depth-1 cascade instance")
 
+func test_the_repeat_names_the_cast_skill_it_echoes() -> void:
+	_grant_borrowed_time(0, 0.5)
+	_roster[0]._skills.append(TestFactory.make_strike_skill())
+
+	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [3], 0)
+
+	var brackets: Array = results.filter(func(r): return r.kind == CombatResult.Kind.Cascade_Triggered)
+	assert_eq(brackets.size(), 1)
+	assert_eq(brackets[0].skill_ID, 0, "A skill echo names the caster's skill index")
+	assert_eq(brackets[0].debuff_type, Types.Debuff_Type.Invalid)
+
 func test_the_buff_is_consumed_and_does_not_fire_on_a_later_cast() -> void:
 	_grant_borrowed_time(0, 0.5)
 	_roster[0]._skills.append(TestFactory.make_strike_skill())

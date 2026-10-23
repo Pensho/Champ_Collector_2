@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="PresentationArchetypes" format=3 uid="uid://xewlokxahng5"]
+
+[ext_resource type="Script" uid="uid://hod0icpmedy0" path="res://Scripts/Battle/presentation_archetypes.gd" id="1_archetypes"]
+[ext_resource type="PackedScene" path="res://Scenes/Battle_Visual_Effects/slash.tscn" id="2_slash"]
+[ext_resource type="PackedScene" path="res://Scenes/Battle_Visual_Effects/echo_pulse.tscn" id="3_echo_pulse"]
+
+[resource]
+script = ExtResource("1_archetypes")
+physical_impact = ExtResource("2_slash")
+echo_pulse = ExtResource("3_echo_pulse")

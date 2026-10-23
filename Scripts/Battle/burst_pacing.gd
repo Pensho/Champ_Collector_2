@@ -17,6 +17,9 @@ const FULL_RED_STEP: int = 5
 const BASE_OVERSHOOT: float = 1.4
 const OVERSHOOT_GROWTH: float = 0.15
 const MAXIMUM_OVERSHOOT: float = 5.0
+const BASE_EFFECT_SCALE: float = 1.0
+const EFFECT_SCALE_GROWTH: float = 0.15
+const MAXIMUM_EFFECT_SCALE: float = 2.5
 
 
 static func DelayForStep(p_step: int) -> float:
@@ -31,6 +34,14 @@ static func ScaleForStep(p_step: int) -> float:
 		return BASE_SCALE
 	var scale: float = BASE_SCALE + SCALE_GROWTH * p_step
 	return minf(scale, MAXIMUM_SCALE)
+
+
+## The size of an echo's effect scene, growing through the cascade.
+static func EffectScaleForStep(p_step: int) -> float:
+	if p_step <= 0:
+		return BASE_EFFECT_SCALE
+	var scale: float = BASE_EFFECT_SCALE + EFFECT_SCALE_GROWTH * p_step
+	return minf(scale, MAXIMUM_EFFECT_SCALE)
 
 
 static func OvershootForStep(p_step: int) -> float:

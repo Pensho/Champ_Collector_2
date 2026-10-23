@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ResultReactions" format=3 uid="uid://d1uklspun2b5i"]
+
+[ext_resource type="Script" uid="uid://bndtfkvkvbdla" path="res://Scripts/Battle/result_reactions.gd" id="1_reactions"]
+[ext_resource type="Script" uid="uid://c4xbvyo3cq3uy" path="res://Scripts/Battle/result_reaction.gd" id="2_reaction"]
+
+[sub_resource type="Resource" id="Resource_damage"]
+script = ExtResource("2_reaction")
+
+[sub_resource type="Resource" id="Resource_heal"]
+script = ExtResource("2_reaction")
+flash_color = Color(0.3, 1, 0.4, 1)
+
+[resource]
+script = ExtResource("1_reactions")
+damage = SubResource("Resource_damage")
+heal = SubResource("Resource_heal")

@@ -45,6 +45,20 @@ func test_scale_increases_strictly_until_it_holds_at_the_maximum() -> void:
 		previous_scale = scale
 	assert_true(reached_maximum, "The maximum should be reached within MAX_STEP steps.")
 
+func test_effect_scale_increases_strictly_until_it_holds_at_the_maximum() -> void:
+	assert_almost_eq(BurstPacing.EffectScaleForStep(0), BurstPacing.BASE_EFFECT_SCALE, 0.0001)
+	var previous_scale: float = BurstPacing.EffectScaleForStep(1)
+	var reached_maximum: bool = false
+	for step in range(2, MAX_STEP + 1):
+		var scale: float = BurstPacing.EffectScaleForStep(step)
+		if(reached_maximum):
+			assert_almost_eq(scale, BurstPacing.MAXIMUM_EFFECT_SCALE, 0.0001)
+		else:
+			assert_true(scale > previous_scale, "Step %d should grow past step %d" % [step, step - 1])
+			reached_maximum = is_equal_approx(scale, BurstPacing.MAXIMUM_EFFECT_SCALE)
+		previous_scale = scale
+	assert_true(reached_maximum, "The maximum should be reached within MAX_STEP steps.")
+
 func test_overshoot_increases_strictly_or_holds_at_the_maximum() -> void:
 	var previous_overshoot: float = BurstPacing.OvershootForStep(1)
 	for step in range(2, MAX_STEP + 1):

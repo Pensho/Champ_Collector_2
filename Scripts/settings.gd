@@ -10,6 +10,7 @@ const DEFAULT_MUSIC_VOLUME: float = 1.0
 const DEFAULT_SOUND_EFFECTS_VOLUME: float = 1.0
 const DEFAULT_SCREEN_SHAKE_ENABLED: bool = true
 const DEFAULT_TARGETING_HELP_ENABLED: bool = true
+const DEFAULT_SKIP_SKILL_EFFECTS: bool = false
 const DEFAULT_FULLSCREEN: bool = false
 const DEFAULT_FRAMES_PER_SECOND_OVERLAY_ENABLED: bool = false
 const DEFAULT_VERTICAL_SYNC_ENABLED: bool = true
@@ -21,6 +22,7 @@ var music_volume: float = DEFAULT_MUSIC_VOLUME
 var sound_effects_volume: float = DEFAULT_SOUND_EFFECTS_VOLUME
 var screen_shake_enabled: bool = DEFAULT_SCREEN_SHAKE_ENABLED
 var targeting_help_enabled: bool = DEFAULT_TARGETING_HELP_ENABLED
+var skip_skill_effects: bool = DEFAULT_SKIP_SKILL_EFFECTS
 var fullscreen: bool = DEFAULT_FULLSCREEN
 var frames_per_second_overlay_enabled: bool = DEFAULT_FRAMES_PER_SECOND_OVERLAY_ENABLED
 var vertical_sync_enabled: bool = DEFAULT_VERTICAL_SYNC_ENABLED
@@ -44,6 +46,7 @@ func Load() -> void:
 			CONFIG_SECTION, "screen_shake_enabled", DEFAULT_SCREEN_SHAKE_ENABLED)
 	targeting_help_enabled = config.get_value(
 			CONFIG_SECTION, "targeting_help_enabled", DEFAULT_TARGETING_HELP_ENABLED)
+	skip_skill_effects = config.get_value(CONFIG_SECTION, "skip_skill_effects", DEFAULT_SKIP_SKILL_EFFECTS)
 	fullscreen = config.get_value(CONFIG_SECTION, "fullscreen", DEFAULT_FULLSCREEN)
 	frames_per_second_overlay_enabled = config.get_value(
 			CONFIG_SECTION, "frames_per_second_overlay_enabled", DEFAULT_FRAMES_PER_SECOND_OVERLAY_ENABLED)
@@ -59,6 +62,7 @@ func Save() -> void:
 	config.set_value(CONFIG_SECTION, "sound_effects_volume", sound_effects_volume)
 	config.set_value(CONFIG_SECTION, "screen_shake_enabled", screen_shake_enabled)
 	config.set_value(CONFIG_SECTION, "targeting_help_enabled", targeting_help_enabled)
+	config.set_value(CONFIG_SECTION, "skip_skill_effects", skip_skill_effects)
 	config.set_value(CONFIG_SECTION, "fullscreen", fullscreen)
 	config.set_value(CONFIG_SECTION, "frames_per_second_overlay_enabled", frames_per_second_overlay_enabled)
 	config.set_value(CONFIG_SECTION, "vertical_sync_enabled", vertical_sync_enabled)
@@ -99,6 +103,10 @@ func SetTargetingHelpEnabled(p_enabled: bool) -> void:
 	targeting_help_enabled = p_enabled
 	Save()
 
+func SetSkipSkillEffects(p_enabled: bool) -> void:
+	skip_skill_effects = p_enabled
+	Save()
+
 func SetFullscreen(p_enabled: bool) -> void:
 	fullscreen = p_enabled
 	_apply_fullscreen()
@@ -130,6 +138,7 @@ func ResetToDefaults() -> void:
 	sound_effects_volume = DEFAULT_SOUND_EFFECTS_VOLUME
 	screen_shake_enabled = DEFAULT_SCREEN_SHAKE_ENABLED
 	targeting_help_enabled = DEFAULT_TARGETING_HELP_ENABLED
+	skip_skill_effects = DEFAULT_SKIP_SKILL_EFFECTS
 	fullscreen = DEFAULT_FULLSCREEN
 	frames_per_second_overlay_enabled = DEFAULT_FRAMES_PER_SECOND_OVERLAY_ENABLED
 	vertical_sync_enabled = DEFAULT_VERTICAL_SYNC_ENABLED

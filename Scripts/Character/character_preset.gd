@@ -9,6 +9,10 @@ class_name CharacterPreset extends Resource
 ## Battle sprite size as a multiple of the 250 px player sprite; read for opponents only.
 @export var _art_scale: float = 1.0
 @export var _normal_map: String
+## Non-verbal hurt and death sounds; null is silent. Characters share cues at different pitches.
+@export var _hurt_cue: SoundCue
+@export var _death_cue: SoundCue
+@export var _vocal_pitch: float = 1.0
 @export var _rarity: Types.Rarity
 @export var _faction: Types.Faction
 @export var _role: Types.Role

@@ -17,6 +17,9 @@ var kind: Kind = Kind.Base
 var resolve: Callable
 ## (int instance_index) -> int: the instance's producer, if it differs from p_event.subject_ID.
 var origin_for_instance: Callable
+## (int instance_index) -> Types.Debuff_Type: the status an instance echoes, so the battle
+## view can play its echo effect. Unset on a Skill_Resolved event echoes the cast skill.
+var echoed_debuff_for_instance: Callable
 
 
 func _init(

@@ -1,0 +1,127 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" uid="uid://cf2qx7nmqiwib" path="res://Scripts/Battle/skill_effect_scene.gd" id="1_scene"]
+
+[sub_resource type="Gradient" id="Gradient_streak"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_streak"]
+gradient = SubResource("Gradient_streak")
+width = 128
+height = 128
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="Animation" id="Animation_reset"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Streak:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Streak:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(60, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_slash"]
+length = 0.35
+tracks/0/type = "method"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.12),
+"transitions": PackedFloat32Array(1, 1),
+"values": [{
+"args": [],
+"method": &"PlayCastSound"
+}, {
+"args": [0],
+"method": &"Impact"
+}]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.12),
+"transitions": PackedFloat32Array(1, 1),
+"values": [{
+"args": [],
+"method": &"CasterLunge"
+}, {
+"args": [],
+"method": &"PlayImpactSound"
+}]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Streak:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.12, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Streak:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(0.5, 1),
+"update": 0,
+"values": [Vector2(60, 0), Vector2(260, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_slash"]
+_data = {
+&"RESET": SubResource("Animation_reset"),
+&"slash": SubResource("Animation_slash")
+}
+
+[node name="Slash" type="Node2D" node_paths=PackedStringArray("animation_player", "variant_sprites")]
+script = ExtResource("1_scene")
+animation_player = NodePath("AnimationPlayer")
+anchor = 0
+aim_at_target = true
+variant_sprites = [NodePath("Streak")]
+
+[node name="Streak" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0)
+position = Vector2(60, 0)
+scale = Vector2(3, 0.25)
+texture = SubResource("GradientTexture2D_streak")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_slash")
+}

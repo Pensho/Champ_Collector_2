@@ -57,4 +57,7 @@ enum MagnitudeKind {
 @export var attacker_damage_value_multiple: float = 0.0
 @export var targeting_weight_multiplier: float = 1.0
 @export var icon: Texture2D
+## Played when a cascade echoes this status; null plays the generic echo pulse showing the icon.
+@export var echo_archetype: PackedScene
+@export var echo_variant: EffectVariant
 @export_multiline var description: String = ""

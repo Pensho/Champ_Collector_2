@@ -13,6 +13,7 @@ enum BattleState
 	Selecting_Reagent_Zone,
 	Selecting_Graft_Target,
 	Enemy_Acting,
+	Presenting_Turn_Start,
 	Resolving,
 	Battle_Over,
 }
@@ -33,6 +34,9 @@ const DEFAULT_STAGE_SCENE: PackedScene = preload(
 
 @export var _stage_anchor: Node2D
 @export var _weather_anchor: Node2D
+@export var _effect_layer: BattleEffectLayer
+@export var _presentation_archetypes: PresentationArchetypes
+@export var _result_reactions: ResultReactions
 
 var _self_context: ContextContainer
 var _battlecontext: Context_Battle
@@ -56,10 +60,15 @@ var _clearing_zone_mode: bool = false
 # Cascade instance ordinal within the current action, stamped onto every SpawnCombatText
 # call so BurstPacing can escalate delay/scale/color across a cascade; 0 outside one.
 var _cascade_instance_ordinal: int = 0
-# Counts down while BattleState.Resolving; the turn completes when it reaches zero or the
-# combat text queue drains, whichever comes first.
+# Counts down while held results are presented; the turn moves on when it reaches zero or
+# everything is presented and the combat text queue drains, whichever comes first.
 var _presentation_deadline: float = 0.0
 var _shake_tween: Tween
+# True while the resolver runs an action whose results are presented later, by
+# _action_presentation, instead of as they are produced.
+var _holding_results: bool = false
+var _action_presentation: ActionPresentation = null
+var _action_target_IDs: Array[int] = []
 
 @onready var _battle_ui: BattleUI = $"CanvasLayer/Battle UI"
 @onready var _turn_indicator: TextureRect = $Turn_Indicator
@@ -199,6 +208,7 @@ func Init(p_context: ContextContainer) -> void:
 				_reagent_loadout.AddBrewed(brew_key, _characters[i]._trait.GetBrewPotencyBonus())
 			_characters[i]._trait.RefreshVisuals(_character_representations[i])
 
+	_ReservePresentationPool()
 	_battle_ui.Init()
 	_battle_ui._turn_bar.Init(_characters, _on_turn_bar_zone_selected, _sides.player)
 	ApplyPreparationHeadStart(player_IDs)
@@ -222,10 +232,11 @@ func _process(p_delta: float) -> void:
 		BattleState.Awaiting_Player_Input, BattleState.Selecting_Zone:
 			_turn_indicator.position.y = (_character_representations[_turn_character_ID].position.y -
 					_turn_indicator.size.y + (sin(Time.get_ticks_msec() * 0.005) * 5))
+		BattleState.Presenting_Turn_Start:
+			if(_AdvancePresentation(p_delta)):
+				ContinueTurn()
 		BattleState.Resolving:
-			_presentation_deadline -= p_delta
-			if(_presentation_deadline <= 0.0 or not _battle_ui.IsPresenting()):
-				_battle_ui.FlushCombatText()
+			if(_AdvancePresentation(p_delta)):
 				CompleteTurn()
 		_:
 			pass
@@ -256,7 +267,17 @@ func StartTurn() -> void:
 	_turn_indicator.position.y = _character_representations[_turn_character_ID].position.y - _turn_indicator.size.y
 	_turn_indicator.show()
 
-	_resolver.BeginTurn(_turn_character_ID)
+	_holding_results = true
+	var results: Array[CombatResult] = _resolver.BeginTurn(_turn_character_ID)
+	_holding_results = false
+	if(_PresentHeldResults(results)):
+		_state = BattleState.Presenting_Turn_Start
+		_presentation_deadline = PRESENTATION_DEADLINE
+		return
+	ContinueTurn()
+
+# The rest of StartTurn, once the start-of-turn results have been presented.
+func ContinueTurn() -> void:
 	SetTargetingOrder()
 	RefreshAllTraitVisuals()
 
@@ -369,10 +390,207 @@ func ResolveTurn(p_target_IDs: Array[int]) -> void:
 	_battle_ui.HideGraftUI()
 	_battle_ui.HideThreadSwitchUI()
 	_RefreshTargetingHelp()
-	if(not p_target_IDs.is_empty()):
-		_PlayAttackLunge(_turn_character_ID, p_target_IDs[0])
-	_resolver.ResolveSkill(_turn_character_ID, p_target_IDs, _selected_skill_ID)
+	var cast_skill: Skill = _characters[_turn_character_ID]._skills[_selected_skill_ID]
+	_action_target_IDs = p_target_IDs
+	_holding_results = true
+	var results: Array[CombatResult] = _resolver.ResolveSkill(_turn_character_ID, p_target_IDs, _selected_skill_ID)
+	_holding_results = false
 	_presentation_deadline = PRESENTATION_DEADLINE
+	if(not _PresentWithEffect(cast_skill, results, p_target_IDs)):
+		if(not p_target_IDs.is_empty()):
+			_PlayAttackLunge(_turn_character_ID, p_target_IDs[0])
+		_PresentHeldResults(results)
+
+# Starts the skill's effect instances and hands its held results to them. False when the
+# skill shows no effect: no presentation, the skip setting, or nowhere to play it.
+func _PresentWithEffect(p_skill: Skill, p_results: Array[CombatResult], p_target_IDs: Array[int]) -> bool:
+	if(_GetSettings().skip_skill_effects):
+		return false
+	var presentation: SkillPresentation = PresentationDefaults.ForSkill(p_skill, _presentation_archetypes)
+	if(null == presentation):
+		return false
+	var sample: SkillEffectScene = _effect_layer.Peek(presentation.archetype)
+	var field_wide: bool = SkillPresentation.Spawn_Mode.Field_Wide == presentation.spawn_mode
+	var instance_target_IDs: Array[int] = []
+	if(field_wide):
+		instance_target_IDs.append(p_target_IDs[0] if not p_target_IDs.is_empty() else -1)
+	else:
+		instance_target_IDs = p_target_IDs
+	if(null == sample or instance_target_IDs.is_empty()):
+		return false
+	var stagger: float = (presentation.stagger_seconds
+			if SkillPresentation.Spawn_Mode.Per_Target_Staggered == presentation.spawn_mode else 0.0)
+	var starts: Array[ActionPresentation.InstanceStart] = []
+	for index in instance_target_IDs.size():
+		var target_ID: int = instance_target_IDs[index]
+		var start: ActionPresentation.InstanceStart = ActionPresentation.InstanceStart.new()
+		start.archetype = presentation.archetype
+		start.variant = presentation.variant
+		start.target_ID = target_ID
+		start.caster_position = _character_representations[_turn_character_ID].CenterPosition()
+		start.target_position = (_FieldCenter(_turn_character_ID, target_ID) if field_wide
+				else _character_representations[target_ID].CenterPosition())
+		start.origin = _AnchorPoint(sample.anchor, _turn_character_ID, target_ID)
+		start.delay = stagger * index
+		starts.append(start)
+	var effect_impact_indices: Array[int] = []
+	for effect: SkillEffect in p_skill.effects:
+		effect_impact_indices.append(effect.impact_index)
+	var timeline: PresentationTimeline = PresentationTimeline.new(p_results, effect_impact_indices,
+			presentation.spawn_mode, instance_target_IDs, sample.ImpactCount())
+	var caster_ID: int = _turn_character_ID
+	var lunge_target_ID: int = instance_target_IDs[0]
+	_action_presentation = ActionPresentation.new(timeline, starts, sample.ImpactCount(), _effect_layer,
+			_PresentReleasedResults,
+			func() -> void:
+				if(lunge_target_ID >= 0):
+					_PlayAttackLunge(caster_ID, lunge_target_ID))
+	_presentation_deadline = PRESENTATION_DEADLINE + sample.Length() + stagger * (starts.size() - 1)
+	return true
+
+# Presents results the resolver produced while they were held: at once, or with the cascade
+# released one echo at a time. True when an ActionPresentation now owns the release.
+func _PresentHeldResults(p_results: Array[CombatResult]) -> bool:
+	var timeline: PresentationTimeline = PresentationTimeline.new(p_results)
+	if(0 == timeline.EchoCount()):
+		for result: CombatResult in p_results:
+			_PresentHeldResult(result)
+		return false
+	var starts: Array[ActionPresentation.InstanceStart] = []
+	_action_presentation = ActionPresentation.new(
+			timeline, starts, 1, _effect_layer, _PresentReleasedResults)
+	return true
+
+# A released batch lands together, its combat text included.
+func _PresentReleasedResults(p_results: Array[CombatResult]) -> void:
+	for result: CombatResult in p_results:
+		_PresentHeldResult(result)
+	_battle_ui.FlushCombatText()
+
+# Counts down the presentation deadline and advances the held results. True once everything
+# is presented and the combat text has drained, or the deadline has passed.
+func _AdvancePresentation(p_delta: float) -> bool:
+	_presentation_deadline -= p_delta
+	if(_presentation_deadline <= 0.0):
+		if(null != _action_presentation):
+			_action_presentation.Flush()
+		_action_presentation = null
+		_battle_ui.FlushCombatText()
+		return true
+	if(null != _action_presentation):
+		_action_presentation.Advance(p_delta)
+		if(not _action_presentation.IsDone()):
+			return false
+		_action_presentation = null
+	if(_battle_ui.IsPresenting()):
+		return false
+	_battle_ui.FlushCombatText()
+	return true
+
+func _AnchorPoint(p_anchor: SkillEffectScene.Anchor, p_caster_ID: int, p_target_ID: int) -> Vector2:
+	var caster: CharacterRepresentation = _character_representations[p_caster_ID]
+	var has_target: bool = p_target_ID >= 0
+	match p_anchor:
+		SkillEffectScene.Anchor.Caster:
+			return caster.CenterPosition()
+		SkillEffectScene.Anchor.Caster_Feet:
+			return caster.FootPosition()
+		SkillEffectScene.Anchor.Target:
+			if(has_target):
+				return _character_representations[p_target_ID].CenterPosition()
+		SkillEffectScene.Anchor.Target_Feet:
+			if(has_target):
+				return _character_representations[p_target_ID].FootPosition()
+	return _FieldCenter(p_caster_ID, p_target_ID)
+
+# The middle of the target's side, or of the caster's enemies when there is no target.
+func _FieldCenter(p_caster_ID: int, p_target_ID: int) -> Vector2:
+	var side: CombatTeam = _sides.SideOf(p_target_ID) if p_target_ID >= 0 else _sides.EnemiesOf(p_caster_ID)
+	var total: Vector2 = Vector2.ZERO
+	for member_ID in side.members:
+		total += _character_representations[member_ID].CenterPosition()
+	return total / maxf(1.0, float(side.members.size()))
+
+func _PlayEffect(
+		p_archetype: PackedScene, p_variant: EffectVariant, p_caster_ID: int, p_target_ID: int,
+		p_scale: float = 1.0) -> void:
+	var instance: SkillEffectScene = _effect_layer.Peek(p_archetype)
+	if(null == instance):
+		return
+	instance.Play(_AnchorPoint(instance.anchor, p_caster_ID, p_target_ID),
+			_character_representations[p_caster_ID].CenterPosition(),
+			_character_representations[p_target_ID].CenterPosition(), p_variant, p_scale)
+
+# Each echo plays its own effect, growing through the cascade: the cast skill's echo on the
+# action's targets, or the echoed status's on its subject.
+func _PlayEchoEffect(p_bracket: CombatResult) -> void:
+	if(_GetSettings().skip_skill_effects or not _characters.has(p_bracket.target_ID)):
+		return
+	var echo_scale: float = BurstPacing.EffectScaleForStep(_cascade_instance_ordinal)
+	var subject_ID: int = p_bracket.target_ID
+	var skills: Array[Skill] = _characters[subject_ID]._skills
+	if(p_bracket.skill_ID >= 0 and p_bracket.skill_ID < skills.size()):
+		var skill_echo: SkillPresentation = PresentationDefaults.ForSkillEcho(
+				skills[p_bracket.skill_ID], _presentation_archetypes)
+		if(null == skill_echo):
+			return
+		var target_IDs: Array[int] = [subject_ID]
+		if(not _action_target_IDs.is_empty()):
+			target_IDs = _action_target_IDs
+		for target_ID in target_IDs:
+			_PlayEffect(skill_echo.archetype, skill_echo.variant, subject_ID, target_ID, echo_scale)
+		return
+	var status: StatusEffectData = (StatusEffectRegistry.DebuffData(p_bracket.debuff_type)
+			if Types.Debuff_Type.Invalid != p_bracket.debuff_type else null)
+	var status_echo: SkillPresentation = PresentationDefaults.ForStatusEcho(status, _presentation_archetypes)
+	if(null != status_echo):
+		_PlayEffect(status_echo.archetype, status_echo.variant, subject_ID, subject_ID, echo_scale)
+
+# The shared reaction to a presented result, plus the target's own hurt or death cue.
+func _PlayResultReaction(p_result: CombatResult) -> void:
+	if(not _characters.has(p_result.target_ID)):
+		return
+	var reaction: ResultReaction = (_result_reactions.ReactionFor(p_result)
+			if null != _result_reactions else null)
+	if(null != reaction):
+		if(CombatResult.Kind.Heal == p_result.kind):
+			var intensity: float = ImpactIntensity.Normalize(p_result.amount, _MaxHealthDisplay(p_result.target_ID))
+			_character_representations[p_result.target_ID].GetSpriteAnimator().PlayFlash(
+					reaction.flash_color, intensity)
+		if(null != reaction.archetype):
+			_PlayEffect(reaction.archetype, reaction.variant, p_result.target_ID, p_result.target_ID)
+		if(null != reaction.cue):
+			Audio_Handler.Play(reaction.cue)
+	var target: Character = _characters[p_result.target_ID]
+	var vocal_cue: SoundCue = ResultReactions.VocalCueFor(p_result, target)
+	if(null != vocal_cue):
+		Audio_Handler.Play(vocal_cue, target._vocal_pitch)
+
+# Instances every effect scene this battle can play, so none is created mid-battle.
+func _ReservePresentationPool() -> void:
+	if(null == _presentation_archetypes):
+		_presentation_archetypes = PresentationArchetypes.new()
+	var side_size: int = maxi(_sides.player.members.size(), _sides.enemy.members.size())
+	for character_ID in _characters.keys():
+		var skills: Array[Skill] = []
+		skills.append_array(_characters[character_ID]._skills)
+		skills.append_array(_characters[character_ID]._phase_two_skills)
+		for skill: Skill in skills:
+			var presentation: SkillPresentation = PresentationDefaults.ForSkill(skill, _presentation_archetypes)
+			if(null != presentation):
+				_effect_layer.Reserve(presentation.archetype, side_size)
+			var skill_echo: SkillPresentation = PresentationDefaults.ForSkillEcho(skill, _presentation_archetypes)
+			if(null != skill_echo):
+				_effect_layer.ReserveForEchoes(skill_echo.archetype)
+	_effect_layer.ReserveForEchoes(_presentation_archetypes.echo_pulse)
+	for status: StatusEffectData in StatusEffectRegistry.DEBUFFS.values():
+		_effect_layer.ReserveForEchoes(status.echo_archetype)
+	if(null == _result_reactions):
+		return
+	for reaction: ResultReaction in [_result_reactions.damage, _result_reactions.heal, _result_reactions.death,
+			_result_reactions.buff_applied, _result_reactions.debuff_applied]:
+		if(null != reaction):
+			_effect_layer.Reserve(reaction.archetype, _characters.size())
 
 func _PlayAttackLunge(p_caster_ID: int, p_target_ID: int) -> void:
 	var caster_position: Vector2 = _character_representations[p_caster_ID].position
@@ -394,6 +612,7 @@ func CompleteTurn() -> void:
 		_battle_ui._turn_bar.TurnCompleteForCharacter(_turn_character_ID)
 	RefreshAllTraitVisuals()
 	_turn_character_ID = NO_CHARACTERS_TURN
+	_action_target_IDs = []
 	_turn_indicator.hide()
 	_battle_ui.HideSkillUI()
 	_battle_ui.HideReagentUI()
@@ -413,8 +632,26 @@ func WorldToUI(p_world_position: Vector2) -> Vector2:
 func CombatTextPosition(p_character_ID: int) -> Vector2:
 	return WorldToUI(_character_representations[p_character_ID].position + _battle_ui.COMBAT_TEXT_SPAWN_POINT)
 
-# Translates one resolver result into visuals (and post-battle damage attribution).
 func _on_resolver_result_produced(p_result: CombatResult) -> void:
+	if(not _holding_results or _ChangesTurnBar(p_result)):
+		PresentResult(p_result)
+
+# The turn bar is still combat state the resolver reads (TurnBarPositions: zone presence and
+# marker positions), so these results apply as they are produced, even while held.
+func _ChangesTurnBar(p_result: CombatResult) -> bool:
+	match p_result.kind:
+		CombatResult.Kind.Turn_Bar_Bump, CombatResult.Kind.Zone_Placed, CombatResult.Kind.Zone_Triggered, \
+				CombatResult.Kind.Zone_Charges_Changed, CombatResult.Kind.Zone_Cleared:
+			return true
+	return false
+
+# Presents a held result, skipping what already applied when it was produced.
+func _PresentHeldResult(p_result: CombatResult) -> void:
+	if(not _ChangesTurnBar(p_result)):
+		PresentResult(p_result)
+
+# Translates one resolver result into visuals (and post-battle damage attribution).
+func PresentResult(p_result: CombatResult) -> void:
 	match p_result.kind:
 		CombatResult.Kind.Damage:
 			if(p_result.critical):
@@ -427,7 +664,7 @@ func _on_resolver_result_produced(p_result: CombatResult) -> void:
 						Color(1.0, 1.0, 1.0, 1.0), _cascade_instance_ordinal)
 				PlayImpactReaction(p_result.target_ID, p_result.amount)
 				AttributeDamage(p_result.source_ID, p_result.amount)
-			UpdateLifeBar(p_result.target_ID)
+			UpdateLifeBar(p_result.target_ID, p_result)
 		CombatResult.Kind.Debuff_Tick:
 			_battle_ui.SpawnCombatText(
 					str(p_result.amount), CombatTextPosition(p_result.target_ID), Color(1.0, 0.45, 0.1, 1.0),
@@ -435,7 +672,7 @@ func _on_resolver_result_produced(p_result: CombatResult) -> void:
 			PlayImpactReaction(p_result.target_ID, p_result.amount)
 			for source_ID in p_result.amount_by_source.keys():
 				AttributeDamage(source_ID, p_result.amount_by_source[source_ID])
-			UpdateLifeBar(p_result.target_ID)
+			UpdateLifeBar(p_result.target_ID, p_result)
 		CombatResult.Kind.Debuff_Resisted:
 			_battle_ui.SpawnCombatText(
 					"Resisted debuff!", CombatTextPosition(p_result.target_ID), Color(0.801, 0.0, 0.0, 1.0),
@@ -449,7 +686,7 @@ func _on_resolver_result_produced(p_result: CombatResult) -> void:
 			if(p_result.is_buff and Types.Buff_Type.Barrier == p_result.buff_type):
 				_barrier_status_ID[p_result.target_ID] = p_result.status_ID
 				SetBarrierBar(p_result.target_ID, p_result.amount)
-			UpdateLifeBar(p_result.target_ID)
+			UpdateLifeBar(p_result.target_ID, p_result)
 		CombatResult.Kind.Status_Duration:
 			if(_status_visual_IDs.has(p_result.status_ID)):
 				_character_representations[p_result.target_ID].SetStatusEffectDuration(
@@ -464,13 +701,13 @@ func _on_resolver_result_produced(p_result: CombatResult) -> void:
 					_barrier_status_ID.erase(p_result.target_ID)
 					SetBarrierBar(p_result.target_ID, 0)
 			_character_representations[p_result.target_ID].RemoveStatusEffects(repr_effect_IDs)
-			UpdateLifeBar(p_result.target_ID)
+			UpdateLifeBar(p_result.target_ID, p_result)
 		CombatResult.Kind.Statuses_Cleared:
 			_character_representations[p_result.target_ID].ClearAllStatusEffects()
 			if(_barrier_status_ID.has(p_result.target_ID)):
 				_barrier_status_ID.erase(p_result.target_ID)
 				SetBarrierBar(p_result.target_ID, 0)
-			UpdateLifeBar(p_result.target_ID)
+			UpdateLifeBar(p_result.target_ID, p_result)
 		CombatResult.Kind.Barrier_Absorbed:
 			if(p_result.amount > 0):
 				_battle_ui.SpawnCombatText(
@@ -497,7 +734,7 @@ func _on_resolver_result_produced(p_result: CombatResult) -> void:
 				_battle_ui.SpawnCombatText(
 						str(p_result.amount), CombatTextPosition(p_result.target_ID), Color(0.2, 0.85, 0.3, 1.0),
 						_cascade_instance_ordinal)
-			UpdateLifeBar(p_result.target_ID)
+			UpdateLifeBar(p_result.target_ID, p_result)
 		CombatResult.Kind.Trait_Text:
 			_battle_ui.SpawnCombatText(
 					p_result.text, CombatTextPosition(p_result.target_ID), p_result.color, _cascade_instance_ordinal)
@@ -508,7 +745,7 @@ func _on_resolver_result_produced(p_result: CombatResult) -> void:
 		CombatResult.Kind.Death:
 			_battle_ui._turn_bar.ShowCharacterAsDead(p_result.target_ID)
 			_character_representations[p_result.target_ID].GetSpriteAnimator().PlayDeath()
-			UpdateLifeBar(p_result.target_ID)
+			UpdateLifeBar(p_result.target_ID, p_result)
 		CombatResult.Kind.Phase_Changed:
 			if("" != p_result.text):
 				_battle_ui.SpawnCombatText(
@@ -524,6 +761,8 @@ func _on_resolver_result_produced(p_result: CombatResult) -> void:
 			# instance or a trait-local repeat routed through EmitBurstInstance), so the
 			# ordinal is already correct when those results arrive and drive BurstPacing.
 			_cascade_instance_ordinal += 1
+			_PlayEchoEffect(p_result)
+	_PlayResultReaction(p_result)
 
 # Credits damage to the player who dealt it, for the post-battle totals.
 func AttributeDamage(p_source_ID: int, p_amount: int) -> void:
@@ -559,18 +798,22 @@ func ShowStatusApplied(p_result: CombatResult) -> void:
 func _MaxHealthDisplay(p_characterID: int) -> int:
 	return _resolver.GetMaxHealth(p_characterID)
 
+# Reads the bars rather than live state, so it shows what has been presented so far.
 func _RefreshHealthLabel(p_characterID: int) -> void:
 	var repr: CharacterRepresentation = _character_representations[p_characterID]
 	if(repr._barrier_bar.visible and repr._barrier_bar.value > 0):
 		repr._lifebar_text.text = str(int(repr._barrier_bar.value))
 	else:
-		repr._lifebar_text.text = (
-				str(_characters[p_characterID]._current_health) + "/" + str(_MaxHealthDisplay(p_characterID)))
+		repr._lifebar_text.text = str(int(repr._lifebar.value)) + "/" + str(int(repr._lifebar.max_value))
 
-# Display-only: combat mutation (clamping, death handling) happens in the resolver.
-func UpdateLifeBar(p_characterID: int) -> void:
+# Display-only: combat mutation (clamping, death handling) happens in the resolver. Shows
+# p_result's own Health snapshot when it carries one, otherwise live state.
+func UpdateLifeBar(p_characterID: int, p_result: CombatResult = null) -> void:
 	var current_health: int = _characters[p_characterID]._current_health
 	var max_health: int = _MaxHealthDisplay(p_characterID)
+	if(null != p_result and CombatResult.NO_HEALTH_SNAPSHOT != p_result.target_health_after):
+		current_health = p_result.target_health_after
+		max_health = p_result.target_max_health_after
 	_character_representations[p_characterID]._lifebar.max_value = max_health
 	_character_representations[p_characterID]._lifebar.value = current_health
 	_character_representations[p_characterID]._damage_trail_bar.max_value = max_health
@@ -818,7 +1061,10 @@ func _ResolveReagentConsumption(p_reagent_index: int, p_target_ID: int) -> void:
 func PlayImpactReaction(p_target_ID: int, p_amount: int) -> void:
 	var intensity: float = ImpactIntensity.Normalize(p_amount, _MaxHealthDisplay(p_target_ID))
 	var knockback_direction: float = -1.0 if _sides.player.Has(p_target_ID) else 1.0
-	_character_representations[p_target_ID].GetSpriteAnimator().PlayImpact(intensity, knockback_direction)
+	var flash_color: Color = (_result_reactions.damage.flash_color
+			if null != _result_reactions and null != _result_reactions.damage else Color.WHITE)
+	_character_representations[p_target_ID].GetSpriteAnimator().PlayImpact(
+			intensity, knockback_direction, flash_color)
 	_PlayScreenShake(intensity)
 
 func _PlayScreenShake(p_intensity: float) -> void:

@@ -10,6 +10,7 @@ const LOCALE_BY_LANGUAGE_ID: Dictionary[int, String] = {
 @export var _sound_effects_volume_slider: HSlider
 @export var _screen_shake_check_box: CheckBox
 @export var _targeting_help_check_box: CheckBox
+@export var _skip_skill_effects_check_box: CheckBox
 @export var _fullscreen_check_box: CheckBox
 @export var _frames_per_second_overlay_check_box: CheckBox
 @export var _vertical_sync_check_box: CheckBox
@@ -30,6 +31,7 @@ func Init() -> void:
 	_sound_effects_volume_slider.value = settings.sound_effects_volume
 	_screen_shake_check_box.button_pressed = settings.screen_shake_enabled
 	_targeting_help_check_box.button_pressed = settings.targeting_help_enabled
+	_skip_skill_effects_check_box.button_pressed = settings.skip_skill_effects
 	_fullscreen_check_box.button_pressed = settings.fullscreen
 	_fullscreen_check_box.visible = not OS.has_feature("mobile")
 	_frames_per_second_overlay_check_box.button_pressed = settings.frames_per_second_overlay_enabled
@@ -70,6 +72,11 @@ func _on_targeting_help_toggled(p_pressed: bool) -> void:
 	if _populating:
 		return
 	_get_settings().SetTargetingHelpEnabled(p_pressed)
+
+func _on_skip_skill_effects_toggled(p_pressed: bool) -> void:
+	if _populating:
+		return
+	_get_settings().SetSkipSkillEffects(p_pressed)
 
 func _on_fullscreen_toggled(p_pressed: bool) -> void:
 	if _populating:

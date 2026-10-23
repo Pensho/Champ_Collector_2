@@ -66,6 +66,9 @@ var _turn_ordinal_opened: bool = false
 # zone skill has no player choice to consume, so it falls back to a random section).
 var _pending_zone_section: int = -1
 
+var _presentation_phase: CombatResult.Presentation_Phase = CombatResult.Presentation_Phase.Post_Cast
+var _presentation_effect_index: int = -1
+
 
 ## Pass a non-negative p_seed for reproducible rolls (e.g. from the encounter); negative randomizes.
 func _init(
@@ -191,6 +194,7 @@ func BeginTurn(p_character_ID: int) -> Array[CombatResult]:
 
 func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -> Array[CombatResult]:
 	_BeginBatch()
+	_presentation_phase = CombatResult.Presentation_Phase.Skill_Effects
 	if(not _turn_ordinal_opened):
 		_OpenTurnOrdinal()
 	_turn_ordinal_opened = false
@@ -206,9 +210,12 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 	var use_count: int = _SkillUseCount(p_caster_ID, cast_skill)
 	var context := SkillCastContext.new(self, p_caster_ID, p_target_IDs, cast_skill, caster_attributes,
 			use_count, trait_result)
-	for effect in cast_skill.effects:
+	for effect_index in cast_skill.effects.size():
+		var effect: SkillEffect = cast_skill.effects[effect_index]
+		_presentation_effect_index = effect_index
 		if(context.ConditionMet(effect)):
 			effect.Resolve(context)
+	_presentation_effect_index = -1
 
 	if(caster._current_health > 0):
 		for skill_effects_resolved_trait: CharacterTrait in Skills.ActiveHooks(
@@ -218,6 +225,7 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 
 	_cascade_resolver.Post(CascadeEvent.ForSkillResolved(p_caster_ID, p_skill_ID, p_target_IDs))
 	_cascade_resolver.Drain()  # catches Mirror Coat (from CastDebuff above) and Skill_Resolved listeners
+	_presentation_phase = CombatResult.Presentation_Phase.Post_Cast
 	var is_non_basic: bool = cast_skill.cooldown > 0
 	_status_resolver._TriggerManaBurn(p_caster_ID, caster_attributes, is_non_basic)
 
@@ -373,19 +381,26 @@ func EmitTraitText(p_target_ID: int, p_text: String, p_color: Color = Color.WHIT
 func EmitBurstInstance(
 		p_mechanic_key: StringName,
 		p_subject_ID: int,
-		p_trigger: Types.Cascade_Trigger) -> void:
+		p_trigger: Types.Cascade_Trigger,
+		p_echoed_skill_ID: int = -1,
+		p_echoed_debuff: Types.Debuff_Type = Types.Debuff_Type.Invalid) -> void:
 	var result: CombatResult = CombatResult.new(CombatResult.Kind.Cascade_Triggered)
 	result.target_ID = p_subject_ID
 	result.text = String(p_mechanic_key)
 	result.cascade_trigger = p_trigger
+	result.skill_ID = p_echoed_skill_ID
+	result.debuff_type = p_echoed_debuff
 	_Emit(result)
 
+## p_echoed_skill_ID or p_echoed_debuff names what the instance repeats, for its echo effect.
 func BeginEchoInstance(
 		p_mechanic_key: StringName,
 		p_subject_ID: int,
 		p_trigger: Types.Cascade_Trigger,
 		p_depth: int = 0,
-		p_strength_contributions: Dictionary[StringName, float] = {}) -> bool:
+		p_strength_contributions: Dictionary[StringName, float] = {},
+		p_echoed_skill_ID: int = -1,
+		p_echoed_debuff: Types.Debuff_Type = Types.Debuff_Type.Invalid) -> bool:
 	if(_echoes_this_action >= CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION):
 		return false
 	_echoes_this_action += 1
@@ -393,7 +408,7 @@ func BeginEchoInstance(
 	_echo_depth = p_depth if 0 != p_depth else _echo_depth + 1
 	_echo_strength_stack.append(_echo_strength_contributions)
 	_echo_strength_contributions = p_strength_contributions
-	EmitBurstInstance(p_mechanic_key, p_subject_ID, p_trigger)
+	EmitBurstInstance(p_mechanic_key, p_subject_ID, p_trigger, p_echoed_skill_ID, p_echoed_debuff)
 	return true
 
 func EndEchoInstance() -> void:
@@ -633,6 +648,12 @@ func _EndBatch() -> Array[CombatResult]:
 
 func _Emit(p_result: CombatResult) -> void:
 	p_result.cascade_depth = _echo_depth
+	p_result.phase = _presentation_phase
+	p_result.effect_index = _presentation_effect_index
+	var target: Character = _characters.get(p_result.target_ID)
+	if(null != target):
+		p_result.target_health_after = target._current_health
+		p_result.target_max_health_after = _MaxHealth(target)
 	_batch.append(p_result)
 	result_produced.emit(p_result)
 
