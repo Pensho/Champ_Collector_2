@@ -1,6 +1,6 @@
 # Role Kit Design
 
-Archived design record for the Blowout pillar's kit layer, produced by the completed
+Archived design record for the Damage Engine pillar's kit layer, produced by the completed
 `Plan_Role_Kit_Rework.md` and kept as the balancing reference for every kit's channel contract,
 synergy grammar, and coverage ledger — the content `Concept_Document.md` 3.2.4.2 (the current
 authority for what each Role's kit does) does not carry. Supersedes the older

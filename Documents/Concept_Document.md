@@ -5,13 +5,11 @@
 ## 1. Introduction
 This game is a turn based combat RPG. The main idea is to collect characters that the player can use in combat, each of them with slightly different skill sets to manage to defeat enemy encounters.
 
-### 1.1. Design Pillar: The Blowout
+### 1.1. Design Pillar: Building a Damage Engine
 
-This section outranks every other part of this document. Where another section conflicts with it, this section wins and the other section is wrong.
+Sections 1.1 and 1.2 outrank every other part of this document. Where another section conflicts with them, they win and the other section is wrong.
 
-**The target emotion:** when a player assembles the right team and plays it correctly, they should suspect they broke the game. The reward for solving an encounter is not a comfortable win — it is an outcome so far past the requirement that it reads as a mistake in the player's favour.
-
-There are two accepted forms of this, and they are sequential rather than alternative. The **realisation** ("that combination works together?") is the discovery; the **blowout** (the numbers it produces) is the payoff for executing it. An encounter delivers the realisation as its lock and the blowout as its reward. Neither is a substitute for the other, and an encounter that offers a realisation with no payoff has not met the pillar.
+**The target experience** has two halves. Out of battle, the player works out which champions form a damage engine and wants to try combinations to test that composition. In battle, the player builds that engine over several turns and releases it. The **blowout** is the payoff: numbers so far past the encounter's requirement that the player suspects they broke the game through composition and execution.
 
 #### 1.1.1. Fight shape
 
@@ -19,10 +17,7 @@ Expected fight lengths in section 5.3 are unchanged: the pillar changes how dama
 
 A solved encounter therefore runs as **pressure and burst**: most of its rounds are spent building — placing effects, accumulating conditions, holding position — at unremarkable numbers, followed by one resolution that ends the fight. On a solved boss the burst accounts for the majority of total damage dealt, targeting 60–80%.
 
-Two properties follow and must hold:
-
-* **The threat curve peaks before the burst, not after.** The tension is "can I survive to the trigger", not "can I out-damage it". A burst that is guaranteed once set up is a cutscene.
-* **Unsolved is a wall, not a slow fight, at Boss tier.** Without the combination there is no burst, and the remaining chip damage cannot finish the encounter inside its round budget. Fodder and mini-boss keep their own texture, per 5.3 — which is the tie-breaker on this bullet specifically, despite this section otherwise outranking the document.
+**The threat curve peaks before the burst, not after.** The tension is "can I survive to the trigger", not "can I out-damage it". A burst that is guaranteed once set up is a cutscene.
 
 #### 1.1.2. Where the blowout is legible
 
@@ -39,6 +34,8 @@ These ratios are confirmed reachable through kit design. Against the Boss refere
 Enemy Health is deferred: an absolute value means nothing until progression and gear tiers exist, so no boss or mini-boss Health attribute is sized against these ratios yet.
 
 `Scripts/Debug/blowout_calibration.gd` holds the reference profiles (`REFERENCE_PROFILES`) and the basic-skill baseline (`CASTER_SCALED_BASE`) these ratios are measured against — declared constants that correspond to no shipped champion or enemy, so a roster change never moves the ruler — and recomputes all of the above when the formula or the profiles change.
+
+Each engine is also measured in **build steps**, read against the tier's round budget in 5.3: **turns-to-threshold** is the number of player turns an uninterrupted ideal sequence takes until one resolution reaches the tier's ratio, and **fragility** is the turns lost when one step of that sequence is interrupted. A slow engine and a fast one can both be correct; the readout informs tuning and lock design (1.2).
 
 #### 1.1.3. The three damage channels
 
@@ -86,6 +83,33 @@ Applied to every new mechanic, skill, item, and encounter:
 A mechanic passes one of two ways: by feeding one of the three channels in a way that multiplies with something else in the game, or by gating a burst that fails without it. A mechanic that only makes an existing number somewhat larger is rejected regardless of how well it fits the theme.
 
 The second route is the enabler class in section 1.1.3, and it is held to the **collapse test**: removing the mechanic has to make the fight go materially differently — the burst does not happen, or does not survive to happen. An enabler that is merely useful to have fails, the same as a linear damage bump does.
+
+#### 1.1.7. Engine anatomy and build steps
+
+An engine is assembled from four parts, supplied across the team's kits; no single kit needs all of them:
+
+* **Accumulator** — builds a resource over turns: stacks, charges, a skill that grows with use.
+* **Accelerator** — makes another source's accumulator grow faster.
+* **Threshold trigger** — fires once a condition has been met: an accumulator reaching a count, or a set of conditions standing together.
+* **Protector** — keeps the build-up and its window intact; the enabler class in 1.1.3.
+
+A **step** is a player action whose value depends on what earlier actions set up. Waiting out a cooldown is not a step. A team's engine should show at least two of these properties across its kits:
+
+* **Ordering** — doing A before B gives a different result than B before A.
+* **Cash-out timing** — a real choice between converting now and building further.
+* **Interruptible build-up** — the opponent can damage the build-up, giving an engine-targeting lock (1.2) something to hit.
+* **External input** — another kit can feed it.
+
+A sequence the player cannot read fails this guidance. A correct sequence may work in many encounters but not in every one; how often encounters contest it scales with its output, so a low-output engine may run uncontested.
+
+### 1.2. Design Pillar: Key and Lock
+
+**The target experience:** the player works out what an encounter demands, matching key champions to its lock mechanic. The **realisation** ("that combination works together?") is the moment the key is found.
+
+* A **lock** is an encounter mechanic that defeats a team lacking its answer. It either targets the engine, disrupting its build-up or its window, or stands independent of it.
+* A **key** answers a lock. It is most often an enabler, and sometimes a specific damage engine.
+* **Unsolved is a wall at Boss tier.** An encounter is solved when the team brings a key to each lock. Without one, the lock prevents the engine from ever resolving. A team with the key but no engine has a slow fight: the key leaves the opponent's damage untouched, so the team is usually overrun before its chip damage finishes the encounter. Fodder and mini-boss keep their own texture, per 5.3, which is the tie-breaker on this bullet.
+* **A lock is taught before it is tested.** Most Fodder encounters on an Adventure carry light versions of that Adventure's boss lock, so the player meets the mechanic in part before the boss demands its key.
 
 ---
 
