@@ -19,8 +19,7 @@ Design-only plans (no code; can run at any time):
   `Plan_Encounter_Solution_Design.md`.
 - `Plan_Particle_Effects.md` — living inventory of battle and environmental
   particle effects (archetype library, Adventure map overlays, hub ambience).
-  Mostly design; skill-effect infrastructure lives in
-  `Plan_Battle_Presentation_Timeline.md`. Soft ties to the completed data-driven status effects work (status-effect
+  Mostly design; skill-effect infrastructure is in `Technical_Design_Document.md` 7.9. Soft ties to the completed data-driven status effects work (status-effect
   mapping home, see `StatusEffectData`) and `Adventure_Background_Visuals_Checklist.md`
   (fog and campfire props).
 - `Plan_Lighting.md` — systemized 2D lighting for battles, the Adventure map, and
@@ -37,10 +36,6 @@ Code plans:
 - `Plan_Adventure_Map_Scene_Layers.md` — builds the Adventure map once per scene from
   static layer nodes, refreshes only node states, and moves ambient particles onto
   `BiomeVisualData`.
-
-- `Plan_Battle_Presentation_Timeline.md` — holds an action's results in the view and
-  releases them on markers from the skill's effect scene; result stamps, `SkillPresentation`,
-  the effect scene contract, the instance pool, and the skip setting.
 
 - `Plan_Localization.md` — the six-step localization rollout and its conventions. Each
   step gets a detailed plan when the step before it completes.

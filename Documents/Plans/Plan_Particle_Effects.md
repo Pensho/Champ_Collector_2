@@ -110,16 +110,11 @@ Burning, Enfeeble, Expose Weakness). Catalog-only skills are mapped in the backl
   (order / unstable / momentum, Concept 3.2.4.1).
   Serves: Flicker Zone, Lava Zone. Status: needed.
 
-## Battle effect infrastructure (future code work)
+## Battle effect infrastructure
 
-There is currently no way to show any of the above: `Skills.gd` resolves effects and
-the only visual feedback is floating combat text (`battle_ui.gd::SpawnCombatText`),
-status icons on the character representation, turn-bar particles, and the sprite-echo
-system (`Scripts/Battle/character_visual_effects.gd`). Decisions, at requirement
-level:
-
-- **Skill effects:** mapping, spawning and timing are owned by
-  `Plan_Battle_Presentation_Timeline.md`.
+- **Skill effects:** archetype scenes, variants, defaults, echo effects, spawning and
+  timing are described in `Technical_Design_Document.md` 7.9; this inventory maps skills
+  and statuses onto archetypes.
 - **Status-effect mappings** live on `StatusEffectData`
   (`Scripts/Battle/status_effect_data.gd`).
 - **Persistent emitters:** duration effects (Burning, future Barrier) attach an

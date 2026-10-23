@@ -75,7 +75,7 @@ behind each tag.
 
 #### 1.1.5. Resolution and presentation
 
-The burst is a mechanic, not an effect layer applied afterwards — how it resolves on screen carries as much of the emotion as the numbers do. A burst resolves as a **visible sequence**: each Echo lands one at a time, attributed to its source, with the tempo and magnitude escalating through the cascade rather than flushing at once.
+The burst is a mechanic, not an effect layer applied afterwards — how it resolves on screen carries as much of the emotion as the numbers do. A burst resolves as a **visible sequence**: each Echo lands one at a time, attributed to its source, with the tempo and magnitude escalating through the cascade rather than flushing at once. A skill's results land when its effect visibly hits, and each Echo lands with its own effect, growing through the cascade.
 
 #### 1.1.6. Rejection test
 

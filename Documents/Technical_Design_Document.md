@@ -141,7 +141,7 @@ It is referenced both as the autoload `Game_Balance.X` and, in a few files, by t
 
 ### 3.4. `Game_Settings` (`class_name Settings`)
 
-`Scripts/settings.gd` owns user preferences (audio volumes, screen shake, targeting help, fullscreen, frames-per-second overlay, V-Sync, frame rate limit, locale),
+`Scripts/settings.gd` owns user preferences (audio volumes, screen shake, targeting help, skip skill effects (7.9), fullscreen, frames-per-second overlay, V-Sync, frame rate limit, locale),
 persisted to `user://settings.cfg` via `ConfigFile`. This is deliberately separate from
 `SaveManager`'s per-profile `user://profile_<slot>.save` files: settings apply regardless of
 which save slot is active. On `_ready()` it loads the config and applies every value to the
@@ -325,9 +325,13 @@ load time. There is a consistent **preset (template) vs instance (runtime)** spl
 
 | Class | File | Role |
 |---|---|---|
-| `CharacterPreset` | `Scripts/Character/character_preset.gd` | Champion archetype: base stats, skills, available attribute-weight presets, trait, `_preset_path`, `_thematic_hint` (vague pre-battle tooltip text for enemy variants), `_headshot_region` (normalized crop drawn by `TextureCache.GetHeadshot` where slots want a face rather than the full figure), `_phase_two_skills`/`_phase_two_trait`/`_phase_two_text` (a boss's phase 2 kit, see 7.3) |
-| `Skill` | `Scripts/Character/skill_data.gd` | Skill definition: name/description/icon, default target, type, cooldown, and an ordered `effects` array |
-| `SkillEffect` | `Scripts/Battle/Skill_Effects/skill_effect.gd` | Base class for one self-resolving skill effect (see [Section 7.4](#74-skill-resolution-battleresolverresolveskill)) |
+| `CharacterPreset` | `Scripts/Character/character_preset.gd` | Champion archetype: base stats, skills, available attribute-weight presets, trait, `_preset_path`, `_thematic_hint` (vague pre-battle tooltip text for enemy variants), `_headshot_region` (normalized crop drawn by `TextureCache.GetHeadshot` where slots want a face rather than the full figure), `_phase_two_skills`/`_phase_two_trait`/`_phase_two_text` (a boss's phase 2 kit, see 7.3), `_hurt_cue`/`_death_cue`/`_vocal_pitch` (non-verbal cues, null is silent, see 9.3) |
+| `Skill` | `Scripts/Character/skill_data.gd` | Skill definition: name/description/icon, default target, type, cooldown, an ordered `effects` array, and an optional `presentation` |
+| `SkillEffect` | `Scripts/Battle/Skill_Effects/skill_effect.gd` | Base class for one self-resolving skill effect (see [Section 7.4](#74-skill-resolution-battleresolverresolveskill)); `impact_index` picks the effect scene marker that releases its results (7.9) |
+| `SkillPresentation` | `Scripts/Battle/skill_presentation.gd` | A skill's effect: archetype scene, `EffectVariant`, spawn mode, stagger, echo archetype and variant (7.9) |
+| `EffectVariant` | `Scripts/Battle/effect_variant.gd` | A skill's look on a shared archetype: textures, tint, scale, cast and impact cues |
+| `PresentationArchetypes` | `Scripts/Battle/presentation_archetypes.gd` | The default archetype per category plus the generic echo pulse, read by `PresentationDefaults` (`Data/Presentation/Presentation_Archetypes.tres`) |
+| `ResultReactions` / `ResultReaction` | `Scripts/Battle/result_reactions.gd`, `result_reaction.gd` | The shared reaction to a hit, heal, death or status landing: flash color, archetype, variant, cue (`Data/Presentation/Result_Reactions.tres`, see 9.3) |
 | `AttributeWeightPreset` | `Scripts/Character/attribute_weight_preset.gd` | Per-attribute weight distribution used at level-up |
 | `EquipmentPreset` | `Scripts/Gear/equipment_preset.gd` | Gear template: slot, rarity, attribute composition |
 | `LootTable` | `Scripts/Battle/loot_table.gd` | Encounter rewards: primary (guaranteed) and secondary (weighted) loot |
@@ -337,7 +341,7 @@ load time. There is a consistent **preset (template) vs instance (runtime)** spl
 | `BiomeData` | `Scripts/Adventure_Scripts/biome_data.gd` | An adventure's look: `BiomeVisualData` and the battle stages its encounters draw from |
 | `StageClutterEntry` | `Scripts/Battle/Visuals/stage_clutter_entry.gd` | One floor-clutter scatter rule, authored on a stage's `StageClutterView` |
 | `CharacterTrait` | `Scripts/Character/character_traits/character_trait.gd` | Base class for character special abilities (see [Section 9](#9-trait-hook-system)) |
-| `StatusEffectData` | `Scripts/Battle/status_effect_data.gd` | Buff/debuff definition: magnitude, magnitude kind, default duration, overwrite/stack rules, self-tick behavior, icon |
+| `StatusEffectData` | `Scripts/Battle/status_effect_data.gd` | Buff/debuff definition: magnitude, magnitude kind, default duration, overwrite/stack rules, self-tick behavior, icon, echo archetype and variant (7.9) |
 | `ReagentData` | `Scripts/Battle/reagent_data.gd` | Reagent definition (one rarity tier per resource): effect kind, target kind, rarity, binary flag, magnitude(s), icon |
 | `ReagentCollection` | `Scripts/Gear/reagent_collection.gd` | Persistent player-owned reagent counts, keyed by `ReagentRegistry` identifier string |
 | `ContentPool` | `Scripts/Battle/content_pool.gd` | One game mode's content, as a resource under `Data/Game_Modes/`: its `mode_name`, whether it `is_default_mode`, the reagent families and Relic keys random draws (loot, shop) may produce, the champions `FortuneFavorTier.RecruitableChampions()` may offer, the starting roster, reagent count, silver, supplies and Fortune's Favor, and the buffs and debuffs the Hollow Ledger glossary lists. The full game is one of these, not the absence of one. Key lookups, save loading and debug tools always read the full registries |
@@ -775,7 +779,8 @@ Combat is split across two layers:
 - **`Battle`** (`Scripts/Battle/battle.gd`, `extends Node2D`) — the scene. It feeds input into the
   resolver and renders the results: life bars, combat text, status icons, turn-bar effects, the
   turn indicator. Turn flow is an explicit `BattleState` state machine (`Advancing`,
-  `Awaiting_Player_Input`, `Selecting_Zone`, `Enemy_Acting`, `Resolving`, `Battle_Over`); zone
+  `Awaiting_Player_Input`, `Selecting_Zone`, `Enemy_Acting`, `Presenting_Turn_Start`, `Resolving`,
+  `Battle_Over`); zone
   selection is a sub-state of player input, not a boolean.
 
 Stateless helpers (targeting, zone-target checks, status-effect rules, attribute-snapshot
@@ -832,7 +837,9 @@ base class doubling as the headless default for tests. Long term the positions b
   which runs the character's own status per-turn effects (e.g. Burning deals 4% of max HP,
   reported as a `Debuff_Tick` result with a per-source damage split; Regeneration heals 4% of max
   HP, reported as `Heal`) and drains their cascades, then fires the `StartOfTurn` trait hook (e.g.
-  the Plan trait's reach-based Empower) if the character survived.
+  the Plan trait's reach-based Empower) if the character survived. These results are held; when
+  they include a cascade, the turn waits in `Presenting_Turn_Start` while its echoes release (see
+  7.9), and `ContinueTurn()` runs the steps below.
 - If the active character died at turn start, `StartTurn` arms the presentation wait (see 7.9)
   and the turn completes without a skill.
 - If the active character holds Stun, `StartTurn` calls `resolver.ResolveStunTurn(ID)` (ticks
@@ -905,6 +912,13 @@ instead, so damage is never capped.
    `applied_on_turn_ordinal` it was placed on (`BattleResolver.GetTurnOrdinal()`, advanced by
    `BeginTurn`) and skips the tick of that turn, so a self-buff keeps its full count of later
    turns.
+
+**Result stamps.** `_Emit` stamps every result with `cascade_depth` (7.8), `phase`
+(`Skill_Effects` from the start of `ResolveSkill` through its `Skill_Resolved` drain, `Post_Cast`
+after it and outside `ResolveSkill`), `effect_index` (the top-level `Skill.effects` index
+resolving, inherited by nested effects, -1 outside one), and `target_health_after` /
+`target_max_health_after` (`NO_HEALTH_SNAPSHOT` without a target). The battle view's timeline
+reads them (7.9).
 
 **The effect loop and cast context.** `SkillCastContext`
 (`Scripts/Battle/Skill_Effects/skill_cast_context.gd`, `RefCounted`) carries the read-only inputs
@@ -1309,8 +1323,10 @@ read from a live quantity is fixed at `Post` time, immune to that quantity drain
 instances resolve.
 
 **Stream shape.** Each instance is bracketed by a `CombatResult.Kind.Cascade_Triggered` result
-(mechanic identity in `text`, the firing `Types.Cascade_Trigger` in `cascade_trigger`) emitted
-immediately before it resolves; every result produced by an instance carries the same
+(mechanic identity in `text`, the firing `Types.Cascade_Trigger` in `cascade_trigger`, and what
+the instance repeats: `skill_ID` for a `Skill_Resolved` echo of the cast skill, or `debuff_type`
+from `CascadeContribution.echoed_debuff_for_instance`, where Comorbidity names the first flagged
+debuff it re-ticks) emitted immediately before it resolves; every result produced by an instance carries the same
 `cascade_depth` via `BattleResolver._echo_depth`, stamped centrally in `_Emit` rather
 than by each result's own construction site.
 
@@ -1452,29 +1468,72 @@ contribution for it is registered inline in `_RegisterDeferredTriggers` (`Debuff
 no condition of its own, only the trigger), `resolve` is `_ForceExtraDebuffTick`. Both now consume
 fan-out budget, are visible to Golden Thread, and no longer take Threefold Bite's non-Echo penalty.
 
-### 7.9. Burst presentation pacing
+### 7.9. Battle presentation timeline
 
-The presentation half of Concept Document 1.1.5's cascade requirement — a burst must resolve as a
-visible sequence, tempo and magnitude escalating through the cascade rather than flushing at once —
-sits entirely in the view. `BattleResolver` stays headless and synchronous (see 7.8): every
-`CombatResult` from a cascade is still produced and applied to game state in one frame, in the
-`Cascade_Triggered`-bracketed stream 7.8 describes. This layer paces only the floating combat text
-that presents those results, not the state changes themselves — health bars and status icons still
-land instantly, ahead of the numbers describing them. The impact reaction (stretch, flash, shake;
-see 9.3) fires alongside the state change instead, not the paced number: an early attempt gated
-it on the same queue release as its combat text and, on any simultaneous multi-target hit (an
-AoE, not only a genuine cascade), every target's bar dropped in the same frame while the
-reactions still drained through the queue one at a time — bars and numbers in sync, the physical
-hit reaction visibly lagging behind both by however long the backlog took to clear.
+`BattleResolver` stays headless and synchronous (see 7.8): every `CombatResult` of an action is
+produced and applied to game state in one frame. The battle view decides when each is shown. A
+released result drives all of its visuals together: combat text, bars (from the result's own
+Health snapshot, 7.4), status icon, impact reaction and reaction effects (9.3), and death.
+
+**Held results.** `Battle` sets `_holding_results` around `ResolveSkill` (in `ResolveTurn`) and
+`BeginTurn` (in `StartTurn`), so `_on_resolver_result_produced` skips their results and the
+returned batch is presented later. Turn-bar results (`Turn_Bar_Bump`, `Zone_Placed`,
+`Zone_Triggered`, `Zone_Charges_Changed`, `Zone_Cleared`) present as they are produced even
+while held: `TurnBarPositions` reads zone presence and marker positions from the turn bar node,
+so the bar is combat state. Reagent, graft, Stun-turn, turn-bar-movement and debug results present
+immediately.
+
+**Effect scenes.** `SkillEffectScene` (`Scripts/Battle/skill_effect_scene.gd`, `Node2D`) is the
+root of every effect scene. Its `AnimationPlayer` holds one animation whose method tracks call
+`Impact(index)`, `CasterLunge()`, `PlayCastSound()`/`PlayImpactSound()` (the variant's cues),
+`PlaySound(cue)` and `StartLoop`/`StopLoop` (loops stop when the animation ends). `anchor`
+(`Caster`, `Caster_Feet`, `Target`, `Target_Feet`, `Field_Center`) places it and `aim_at_target`
+rotates it toward the target; otherwise it mirrors to face away from the caster.
+`variant_sprites` and `variant_particles` take an `EffectVariant`'s texture, particle texture and
+tint, and a pooled instance restores its own look wherever the variant leaves a field null. A
+`SkillPresentation` names the archetype scene, the variant, the spawn mode (`Per_Target`,
+`Per_Target_Staggered`, `Field_Wide`), the stagger, and an echo archetype and variant;
+`SkillEffect.impact_index` picks the `Impact` marker that releases that effect's results.
+`PresentationDefaults.ForSkill` returns a skill's own presentation or derives one from its
+effects against `Data/Presentation/Presentation_Archetypes.tres`: a damage effect picks the
+physical or arcane impact by its scaling attributes, otherwise the first heal, barrier, buff or
+debuff effect picks its slot. A null slot means the skill shows no effect. The archetype
+inventory lives in `Plans/Plan_Particle_Effects.md`.
+
+**Release order.** `ActionPresentation` (`Scripts/Battle/action_presentation.gd`, one per action,
+advanced by `Battle._process`) starts the instances (one per target, staggered for
+`Per_Target_Staggered`, one for `Field_Wide`) and releases
+`PresentationTimeline.ResultsForImpact` as each reaches a marker. A result whose target has no
+instance releases at its own effect's impact on the final instance, a result outside any effect at
+the final impact of the final instance, and an impact past the last marker counts as the last.
+Only the first instance's lunge moves the caster. After the final impact, echoes release one
+`Cascade_Triggered` bracket at a time, `BurstPacing.DelayForStep` apart, each with anything still
+held from before it; then the remainder. With no instance (no presentation, the
+`skip_skill_effects` setting, or no targets) the caster lunges as before, the results before the
+first echo show at once, and echoes still pace. A start-of-turn cascade holds the turn in
+`BattleState.Presenting_Turn_Start` until it is released. Every release flushes the combat text
+queue, so numbers land with their bars.
+
+**Echo effects.** Each `Cascade_Triggered` names what it repeats (7.8). The view plays the skill's
+echo (`PresentationDefaults.ForSkillEcho`: its echo archetype, or its own) on the action's
+targets, or the status's (`StatusEffectData.echo_archetype`, or the generic `echo_pulse` showing
+its icon) on the subject, scaled by `BurstPacing.EffectScaleForStep`.
+
+**Effect pool.** `BattleEffectLayer` (`Battle_Effect_Layer` in `battle.tscn`) reserves every effect
+scene at `Battle.Init`: each skill archetype (phase 2 skills included) once per possible target,
+each echo archetype enough times to overlap at `BurstPacing.MINIMUM_DELAY` pace, and each
+reaction archetype once per combatant. Instances stay hidden until played and are never freed
+during battle.
 
 **Escalation curve.** `BurstPacing` (`Scripts/Battle/burst_pacing.gd`, static functions only) maps
-an Echo ordinal to a per-item spawn delay, text scale, spawn-pop overshoot, and color
-shift toward red, each independently bounded (`DelayForStep` floors at `MINIMUM_DELAY`,
+an Echo ordinal to a per-item spawn delay, text scale, spawn-pop overshoot, color shift toward red,
+and echo effect scale, each independently bounded (`DelayForStep` floors at `MINIMUM_DELAY`,
 `ScaleForStep` caps at `MAXIMUM_SCALE`, `OvershootForStep` caps at `MAXIMUM_OVERSHOOT`,
+`EffectScaleForStep` caps at `MAXIMUM_EFFECT_SCALE`,
 `ColorForStep` clamps to `Color.RED` from `FULL_RED_STEP` on). Step `0` — outside any cascade —
 returns each function's unescalated base value, so ordinary combat text is unaffected. The ordinal
 is bounded by construction: `Battle._cascade_instance_ordinal` increments once per
-`Cascade_Triggered` result (`Battle._on_resolver_result_produced`, `Scripts/Battle/battle.gd`),
+`Cascade_Triggered` result (`Battle.PresentResult`, `Scripts/Battle/battle.gd`),
 which is itself bounded by `CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION`.
 
 **Spawn queue.** `BattleUI` (`Scripts/UI/Battle_UI/battle_ui.gd`) already queued combat text and
@@ -1492,15 +1551,16 @@ instance punches in harder on top of being larger and redder. The scene's
 `LabelContainer:scale` itself; it retains only the modulate fade and the `remove()` method track
 that defines the 2.0s lifetime.
 
-**Turn gating.** `Battle.ResolveTurn` and the stunned-turn path in `StartTurn` no longer call
-`CompleteTurn()` inline. Both leave `_state` at `BattleState.Resolving` and arm a
-`_presentation_deadline` of `PRESENTATION_DEADLINE` (2.0s). The `_process` `Resolving` branch counts
-that deadline down each frame and holds while `BattleUI.IsPresenting()` reports queued text; once
-the queue drains or the deadline expires — whichever comes first — it calls
-`BattleUI.FlushCombatText()` (releasing everything remaining in one frame) and then `CompleteTurn()`,
-unchanged from before. The deadline is a ceiling against a stalled battle, not a pacing budget: at
-the curve's current constants a full sixteen-instance cascade totals under two seconds of spawn
-delay on its own.
+**Turn gating.** `Battle._AdvancePresentation` counts down `_presentation_deadline`
+(`PRESENTATION_DEADLINE`, 2.0s, plus the longest instance's `Length()` and its stagger when the
+action has an effect) and finishes once the `ActionPresentation` is done and the text queue has
+drained. At the deadline it flushes both, stopping the instances. `Resolving` then calls
+`CompleteTurn()` and `Presenting_Turn_Start` calls `ContinueTurn()`, so the battle-over check runs
+after everything is released.
+
+Coverage: `test_combat_result_presentation_stamps.gd`, `test_presentation_timeline.gd`,
+`test_action_presentation.gd`, `test_presentation_defaults.gd`, `test_result_reactions.gd` and
+`test_burst_pacing.gd`.
 
 ### 7.10. Burst reachability scoring
 
@@ -2278,8 +2338,8 @@ grows the sprite taller (not the original shrink-on-y squash — that read as th
 crushed rather than hit) and knocks it back horizontally along `direction`; `Battle` derives that
 direction from which side of the arena the target is on, not a tracked attacker position, since
 players and enemies always face each other across a fixed left/right split. A `ShaderMaterial`
-unique per character (`Assets/Champ_Collector/Shaders/character_sprite.gdshader`, `flash_amount`
-and `grayscale_amount` uniforms) replaced the shared grayscale material the death handler used to
+unique per character (`Assets/Champ_Collector/Shaders/character_sprite.gdshader`, `flash_amount`,
+`flash_color` and `grayscale_amount` uniforms) replaced the shared grayscale material the death handler used to
 assign; `Revive()` (used by the in-battle debug page) resets both the shader and the transform.
 `CharacterRepresentation` exposes the component via `GetSpriteAnimator()`. It also owns
 `Silhouette_Outline`, a child of the sprite `TextureRect` drawn behind it
@@ -2288,15 +2348,19 @@ character from the stage. `Battle.VisualizeCharacter` syncs its texture via
 `SyncSilhouetteOutline()`. It hides while the targeting outline shows and fades with the
 death grayscale.
 
-`Battle.PlayImpactReaction(target_ID, amount)` is called directly from
-`_on_resolver_result_produced`, alongside `UpdateLifeBar`, rather than gated on the paced combat
-text describing the hit (see 7.9 for why an earlier version coupled the two). Screen shake tweens
-`Battle`'s `Camera2D.offset` (see the scene-architecture note in section 4) and is gated on
-`Settings.screen_shake_enabled`. Attack lunge fires from `Battle.ResolveTurn` when a
-skill has a target, not from a `CombatResult`, since nothing in the result stream represents
-"a skill is about to resolve."
+`Battle.PlayImpactReaction(target_ID, amount)` fires when a hit's result is released (7.9),
+alongside `UpdateLifeBar`. Screen shake tweens `Battle`'s `Camera2D.offset` (see the
+scene-architecture note in section 4) and is gated on `Settings.screen_shake_enabled`. The attack
+lunge fires from the effect scene's `CasterLunge` key, or from `Battle.ResolveTurn` when the skill
+shows no effect and has a target.
 
-Coverage: `test_impact_intensity.gd` (the curve) and `test_character_sprite_animator.gd` (idle
+Every released result also plays its row of `ResultReactions` (`Battle._PlayResultReaction`): a
+flash in the row's color (a heal uses `PlayFlash(color, intensity)`, a flash without stretch or
+knockback), the row's reaction archetype at the target, and its cue; then the target's own
+`_hurt_cue` (a hit or tick with an amount) or `_death_cue`, at `_vocal_pitch`.
+
+Coverage: `test_impact_intensity.gd` (the curve), `test_result_reactions.gd` (the row and cue
+lookup) and `test_character_sprite_animator.gd` (idle
 bob, reaction settle-and-return, interrupted-reaction cleanup, death/revive), both built directly
 rather than through the packed scene, matching `test_burst_pacing.gd`/`test_damage_trail_bar.gd`.
 
