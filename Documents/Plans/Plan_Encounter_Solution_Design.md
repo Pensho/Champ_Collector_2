@@ -60,7 +60,8 @@ answered by Steadfast/Anchor) was set aside because those effects have no kit
 carrier yet — same situation as Sequence Lock. The existing Obsidian Stallion
 enemy (Lava Zone placer) stays a mini-boss covering the simple zone-hazard
 space below the Archivist; it still needs thematic flavor. With this, all
-three proving batches are complete. Next up: volume batches.
+three proving batches are complete. Next up: key and lock alignment (step 3), then
+volume batches.
 
 Depends on the Role kits (complete): an encounter's intended solutions may only
 reference effects that at least one designed kit in 3.2.4.2 or a reagent in 3.3.3
@@ -201,12 +202,13 @@ that tier can be produced in bulk without padding.
   new status effect to Concept 3.2.3.
 - **Intended solutions:** effect names plus example carrier roles; for bosses, the
   2–3 valid configurations spelled out.
-- **Burst expectation (mini-boss and boss only):** which channel (1.1.3) the intended
-  answers feed and where the payoff lands in the configuration set. The Warden of the
-  Reliquary's configuration (3), the Tactician plus Appraiser crit round, is the
-  reference shape.
-- **Unsolved texture:** what the fight looks like when the player ignores the
-  mechanic (slower, riskier, or a hard wall — hard walls are boss-only).
+- **Lock and key (mini-boss and boss only):** per mechanic, whether the lock targets the
+  engine or stands independent of it (Concept 1.2); per configuration, whether the key is an
+  enabler or a specific engine.
+- **Preview (mini-boss and boss only):** the fodder entry carrying a light version of the
+  lock, or "gap" when none exists yet.
+- **Unsolved texture:** what the fight looks like without the key (slower, riskier, or a
+  hard wall — hard walls are boss-only), and, for bosses, with the key but no engine.
 - **Reward hook (deferred):** assigned during the placement pass, per Concept 5.2.
 
 ## Rules
@@ -220,10 +222,9 @@ that tier can be produced in bulk without padding.
 - **Solutions must exist:** an encounter must never require an answer that no
   designed kit or reagent carries, and no encounter's only answer may be a universal
   skill (none exist by design).
-- **A boss answer set must end in a payoff:** per `Concept_Document.md` 1.1.6's rejection
-  test, a boss whose intended answers are all enabler-only is rejected. An enabler answer
-  elsewhere in the set is held to the collapse test (1.1.6) instead of being converted
-  into damage (1.1.3).
+- **A configuration is a key; the payoff is the player's engine:** an all-enabler
+  configuration is valid. Each enabler answer is held to the collapse test (1.1.6). Boss
+  pressure is sized so a team holding the key without an engine is overrun (Concept 1.2).
 - **Answer diversity:** every mechanic names at least two distinct answers; every
   boss names 2–3 distinct valid configurations.
 - **Enemies never use reagents** (3.3.3).
@@ -329,13 +330,18 @@ rather than authoring a duplicate Overwhelming Blow.
 2. **Proving batches:** one single-tier batch per tier — the fodder batch (done:
    five encounters), then one mini-boss, then one boss — via the per-batch
    procedure. Purpose: prove the templates and the ledger work end to end.
-3. **Volume batches:** repeat the per-batch procedure toward the volume floors.
+3. **Key and lock alignment:** fill the Lock and key and Preview fields for every
+   existing mini-boss and boss entry; replace `Encounter_Design_Document.md` section 3's
+   channel audit with a lock-and-key audit (one row per entry: lock type per mechanic, key
+   kind per configuration, preview); list preview gaps as fodder briefs for the next
+   volume batch.
+4. **Volume batches:** repeat the per-batch procedure toward the volume floors.
    Every batch is single-tier (3–5 fodder, or one mini-boss, or one boss) and
    stays placement-agnostic; themes are optional tags.
-4. **Placement pass (later, once progression settles):** fit designed encounters to
+5. **Placement pass (later, once progression settles):** fit designed encounters to
    game modes, locations, and progression; assign reward hooks; tune stats to the
-   placement's expected power. Placement rule: fodder sharing a boss's mechanic
-   vocabulary is placed ahead of that boss, so fodder teaches what the boss demands.
+   placement's expected power. Each boss's Preview fodder is placed on the same
+   Adventure ahead of it (Concept 1.2).
 
 ## Watch for
 
