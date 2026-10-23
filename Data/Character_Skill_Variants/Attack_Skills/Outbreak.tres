@@ -23,7 +23,7 @@ bonus_per = Dictionary[int, float]({
 [resource]
 script = ExtResource("1_skill")
 name = "Outbreak"
-description = "Deals damage to a single enemy, scaled by Mysticism, +8% per distinct debuff on the target (any source, uncapped), and applies a stack of Plague for 3 turns."
+description = "Applies Plague for 3 turns & deals damage to a single enemy, scaled by Mysticism, +8% per distinct debuff on the target."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Outbreak/outbreak.jpg"
 cooldown = 4
 effects = Array[ExtResource("1_effect")]([SubResource("Resource_debuff"), SubResource("Resource_damage")])
