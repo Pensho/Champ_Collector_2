@@ -50,10 +50,10 @@ text = "Shop"
 
 [node name="Label_Restock" type="Label" parent="." unique_id=939291887]
 layout_mode = 0
-offset_left = 17.0
-offset_top = 46.0
-offset_right = 317.0
-offset_bottom = 88.0
+offset_left = 697.0
+offset_top = 676.0
+offset_right = 997.0
+offset_bottom = 718.0
 theme = ExtResource("3_theme")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
