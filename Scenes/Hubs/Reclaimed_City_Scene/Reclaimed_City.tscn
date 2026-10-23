@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://cfdrcdtsx2jh7"]
 
-[ext_resource type="Texture2D" uid="uid://buloq01pashmn" path="res://Assets/Champ_Collector/Hubs/Reclaimed_City/Reclaimed_1.jpg" id="1_feqxn"]
 [ext_resource type="Script" uid="uid://u58ywhc4xsod" path="res://Scripts/UI/hub_menu.gd" id="1_sbf57"]
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="2_sbf57"]
+[ext_resource type="Texture2D" uid="uid://cyj5inxouwcoh" path="res://Assets/Champ_Collector/Hubs/Reclaimed_City/reclaimed_city_2.jpg" id="2_x7q6s"]
 [ext_resource type="Theme" uid="uid://bcg5pku1fyhst" path="res://Assets/Champ_Collector/Themes/hub_theme.tres" id="4_62xir"]
 [ext_resource type="Texture2D" uid="uid://be4d7es1t3q0k" path="res://Data/Texture_Data/Button_hover_highligt.tres" id="5_5dym2"]
 [ext_resource type="PackedScene" uid="uid://n8p43lcdr31e" path="res://Scenes/Hubs/Reclaimed_City_Scene/reclaimed_city_fire_particle.tscn" id="6_gm8ir"]
@@ -49,12 +49,19 @@ script = ExtResource("1_sbf57")
 
 [node name="Background" type="TextureRect" parent="." unique_id=1375399691]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-texture = ExtResource("1_feqxn")
+offset_right = 1280.0
+offset_bottom = 720.0
+texture = ExtResource("2_x7q6s")
+expand_mode = 1
 
 [node name="ReclaimedCityFireParticle" parent="." unique_id=1524760976 instance=ExtResource("6_gm8ir")]
-position = Vector2(984, 536)
+position = Vector2(594, 622)
+
+[node name="ReclaimedCityFireParticle2" parent="." unique_id=806699057 instance=ExtResource("6_gm8ir")]
+position = Vector2(124, 396)
+
+[node name="ReclaimedCityFireParticle3" parent="." unique_id=1607429861 instance=ExtResource("6_gm8ir")]
+position = Vector2(270, 380)
 
 [node name="GPUParticles2D" type="GPUParticles2D" parent="." unique_id=179570366]
 material = SubResource("CanvasItemMaterial_vvjq3")
@@ -74,20 +81,20 @@ offset_bottom = 401.0
 
 [node name="Button_Adventure_guild" type="TextureButton" parent="Navigation_Buttons" unique_id=227111686]
 layout_mode = 0
-offset_left = -363.0
-offset_top = 66.0
-offset_right = -141.00002
-offset_bottom = 266.0
+offset_left = -146.0
+offset_top = 120.0
+offset_right = 75.999985
+offset_bottom = 320.0
 scale = Vector2(1.2, 1.2)
 theme = ExtResource("2_sbf57")
 texture_hover = ExtResource("5_5dym2")
 
 [node name="Label_Adventureres_guild" type="Label" parent="Navigation_Buttons" unique_id=421766185]
 layout_mode = 0
-offset_left = -374.0
-offset_top = 2.0
-offset_right = -104.0
-offset_bottom = 32.0
+offset_left = -132.0
+offset_top = 131.0
+offset_right = 138.0
+offset_bottom = 173.0
 theme = ExtResource("2_sbf57")
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.64705884)
 theme_override_constants/shadow_offset_x = 4
@@ -96,19 +103,19 @@ text = "Adventurers Guild"
 
 [node name="Button_Shop" type="TextureButton" parent="Navigation_Buttons" unique_id=338063886]
 layout_mode = 0
-offset_left = 308.0
-offset_top = 76.0
-offset_right = 508.0
-offset_bottom = 276.0
+offset_left = -292.0
+offset_top = -291.0
+offset_right = -92.0
+offset_bottom = -91.0
 theme = ExtResource("4_62xir")
 texture_hover = ExtResource("5_5dym2")
 
 [node name="Label_Shop" type="Label" parent="Navigation_Buttons" unique_id=254097262]
 layout_mode = 1
-offset_left = 346.0
-offset_top = 24.0
-offset_right = 440.0
-offset_bottom = 54.0
+offset_left = -250.0
+offset_top = -141.0
+offset_right = -156.0
+offset_bottom = -99.0
 theme = ExtResource("2_sbf57")
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.64705884)
 theme_override_constants/shadow_offset_x = 4
@@ -118,20 +125,20 @@ horizontal_alignment = 1
 
 [node name="Button_Armory" type="TextureButton" parent="Navigation_Buttons" unique_id=359404257]
 layout_mode = 0
-offset_left = -4.0
-offset_top = -260.0
-offset_right = 196.0
-offset_bottom = -60.0
+offset_left = -480.99997
+offset_top = -61.000015
+offset_right = -280.99997
+offset_bottom = 138.99998
 scale = Vector2(0.8, 0.8)
 theme = ExtResource("2_sbf57")
 texture_hover = ExtResource("5_5dym2")
 
 [node name="Label_Armory" type="Label" parent="Navigation_Buttons" unique_id=805408916]
 layout_mode = 1
-offset_left = -39.0
-offset_top = -160.0
-offset_right = 69.0
-offset_bottom = -130.0
+offset_left = -469.0
+offset_top = -100.0
+offset_right = -361.0
+offset_bottom = -58.0
 theme = ExtResource("2_sbf57")
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.64705884)
 theme_override_constants/shadow_offset_x = 4
@@ -141,20 +148,20 @@ horizontal_alignment = 1
 
 [node name="Button_War_Room" type="TextureButton" parent="Navigation_Buttons" unique_id=1368983676]
 layout_mode = 0
-offset_left = 247.0
-offset_top = -268.0
-offset_right = 447.0
-offset_bottom = -68.0
+offset_left = 288.0
+offset_top = -322.0
+offset_right = 488.0
+offset_bottom = -122.0
 scale = Vector2(0.7, 0.8)
 theme = ExtResource("2_sbf57")
 texture_hover = ExtResource("5_5dym2")
 
 [node name="Label_Adventure" type="Label" parent="Navigation_Buttons" unique_id=872951480]
 layout_mode = 1
-offset_left = 245.0
-offset_top = -315.0
-offset_right = 399.0
-offset_bottom = -285.0
+offset_left = 274.0
+offset_top = -186.0
+offset_right = 428.0
+offset_bottom = -144.0
 theme = ExtResource("2_sbf57")
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.64705884)
 theme_override_constants/shadow_offset_x = 4

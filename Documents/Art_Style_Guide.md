@@ -86,6 +86,7 @@ Part I whole, and no section grants an exemption this table does not carry.
 | Fodder enemies | Non-negotiable 3 | 9.1 |
 | Overworld views | Section 4; non-negotiable 2 | 10.4 |
 | Selection panels | Section 4; non-negotiable 2; the section 6 quantize step | 10.8 |
+| Hub screens | Section 4; non-negotiable 2; 5.6's dark recession; the section 6 quantize step | 10.5 |
 | Node and currency icons | Non-negotiable 2 (three values); the material slots of section 3 | 12.1 |
 | Status effect icons | Non-negotiables 1, 2, 3 and 6; sections 12.1–12.2; the material slots of section 3 | 12.5 |
 | Active skill art | Non-negotiables 1, 2, 3 and 6; sections 12.1–12.2; the section 6 quantize step | 12.4 |
@@ -498,6 +499,7 @@ on assets that already look right.
 |---|---|
 | Characters, enemies, environment elements, effects | Full |
 | Selection panels (10.8) | Overlay and LUT only — quantize would strip the extra bands and incident chroma |
+| Hub screens (10.5) | Overlay only, as selection panels for the same reason; no LUT, since the hub carries its own light. Untested (19.3) |
 | Active skill art (12.4) | Overlay only — quantize would strip the hatching and tone-block range; no LUT, since skill art is UI and not in scene light |
 | Passive icons (12.6) | Quantize, accent correction, overlay, downscale to 40 px; no LUT |
 | Turn bar zone art (13.3.1) | Key out, then downscale; no quantize, no accent correction, no LUT |
@@ -678,6 +680,17 @@ Replaces 7.1 for this class; see 13.3.1.
 - [ ] Centerpiece fits the section with rocking or motion headroom; the pivot edge is clean
 - [ ] Particle sprites read as the same object at 20–32 px
 - [ ] Background keyed out cleanly, with no key color fringing into light edges
+
+### 7.11 Hub screens
+
+See 10.5.
+
+- [ ] Camera inside the biome beneath its ceiling; light shafts have a visible cause
+- [ ] Verticality reads as terrain, with masses rising out of the frame
+- [ ] Every place found at a glance at screen size, by its enclosure and its own light
+- [ ] Places spread across depth and height, not bunched
+- [ ] Far planes paler than near ones; the plate is not bleak
+- [ ] Warm light and signs of occupation present; places carry one landmark, not contents
 
 ---
 # Part II — Asset domains
@@ -1496,7 +1509,7 @@ wound are never cut.
 ---
 ## 10. Environments
 
-There are **three kinds of environment art**, and they do not share a camera.
+There are **four kinds of environment art**, and they do not share a camera.
 
 **Battle stages** (10.3) obey section 4 exactly, because characters stand in
 them. They are built from four draw-order bands.
@@ -1513,6 +1526,10 @@ battle it leads into. What the ramp becomes instead is 10.4.3.
 they have not entered — what could be found if it were explored. Often epic, with
 much verticality. They are exempt from section 4 as well (1.1), and they earn it
 because nothing else is present beside them for the break to show against.
+
+**Hub screens** (10.5) are home base — one plate per area, looked across from
+inside the biome, with the hub's places on it as clickable regions. Exempt from
+section 4 for the same reason as selection panels (1.1).
 
 ### 10.1 Rules
 
@@ -1923,14 +1940,73 @@ One or more per area (10.6), used to navigate by clicking points of interest.
 
 ### 10.5 Hub screens
 
-One per area (10.6). The hub is where the war room, Armory, Adventurer's Guild and
-shop live (`Concept_Document.md` 3.6).
+One per area (10.6). The hub is where the gate out of town, Armory,
+Adventurer's Guild and shop live (`Concept_Document.md` 3.6).
 
-> **Not yet written.** Decide first whether a hub is an illustrated plate with
-> clickable regions, UI panels over a plate, or an icon-driven menu — that
-> decision sets how much art exists at all. Then: whether a hub reuses its area's
-> battle-band elements or is generated as its own composition, and how the four
-> hubs stay distinguishable at a glance.
+**A hub is one illustrated plate with clickable regions**, generated as its own
+composition. Each place is a landmark on the plate; its own screen is a separate
+image. The plate gives each place one recognisable shape and leaves its contents
+to that image, so the two never contradict each other.
+
+Exempt from section 4, non-negotiable 2, 5.6's dark recession and the quantize
+step (1.1). The outline, hard-edged shadows, no gradients and engraved line still
+bind.
+
+#### 10.5.1 Mood — lit and lived in
+
+A hub is home base, not a fight. It does not take the variant's scene light
+(10.2), and since no champion stands in front of it, neither the contrast budget
+(10.1.1) nor the white-plate problem (10.6) applies. Daylight, saturated growth,
+pale stone, and warm light in every place.
+
+Lived in is shown by signs of occupation, not by people: patched awnings, lantern
+strings, cooking smoke.
+
+#### 10.5.2 Camera — inside the biome, beneath its ceiling
+
+For the Jungle: high in the forest just beneath the canopy, looking out across a
+ravine valley. The canopy closes the top of the frame, the tallest trunks rise out
+of it, and the nearest are cropped by the side edges. Light shafts then have a
+visible cause.
+
+State verticality as terrain — ravine, hills, cliffs, ridge — and as masses taller
+than any building.
+
+#### 10.5.3 Depth
+
+Overlapping planes, **each flatter and paler than the one in front**, the most
+distant only pale flat shapes. The near frame stays dark. This is 5.6 reversed:
+dark recession made the plate bleak.
+
+#### 10.5.4 Places
+
+- **Spread across the depth and the heights** — valley floor, hilltop, cliff side,
+  highest ridge, one side of the valley. Bunched places blend.
+- **Each enclosed by a boundary of its own material** — palisade, ring of columns,
+  balustrade, tower walls, outer wall with its gate. Distinct outlines are what make
+  each read as a separate place.
+- **Each lit by its own shaft of sunlight or fire.** The light points the eye at it.
+- **One landmark per place, contents minimal** (5.7).
+- No figures, no creatures, so far (19.3).
+
+#### 10.5.5 Approved prompt
+
+**Reclaimed City (Jungle).** Judged good enough to set the direction; not yet
+composited at screen size or post-processed.
+
+```
+bold woodcut illustration with engraved structural linework and visible gouge marks, thick black contour outline on every mass, flat color fields, hard-edged shadows, no gradients, seven value bands, warm daylight, a wide view from high in a giant jungle just beneath the canopy, looking out across a deep ravine valley of steep hills and cliffs, the canopy closing across the top of the frame, colossal jungle trees far taller than any building rising from the valley floor up out of the top of the frame, their nearest trunks cropped by the left and right edges, the ruins of a vast noble city scattered through the valley at many heights, tall broken towers and arches of pale warm limestone half swallowed by the jungle, depth built from overlapping planes each flatter and paler than the one in front, the most distant towering ruins and trees only pale flat shapes, the city lived in by scavengers: patched cloth awnings in ochre, rust red and teal, strings of lanterns along the walkways, smoke rising from cooking fires, five separate walled-off places spread far apart across the valley, each lit by its own shaft of sunlight or fire: on the valley floor below, a camp enclosed by a ring of sharpened wooden palisade around the roots of one giant ancient tree, with three tents and two large campfires; on a hilltop in the middle distance, a round rotunda enclosed by its own ring of standing columns, half its dome fallen in, a striped market awning inside; high on the side of a cliff, a broad flat stone balcony enclosed by a stone balustrade, jutting out over the ravine with a stone table and two burning braziers; on the highest ridge, the tallest ruined tower, its roof broken open, orange forge light glowing from its windows and a shaft of sunlight falling into it; at one side of the valley, one large arched stone gate in a broken outer wall with a road leading out into the jungle, the places joined by long winding wooden walkways, sagging rope bridges across the ravine and stairs cut into the cliffs, the jungle in deep saturated green with vivid blooms in coral red, violet and amber, broad hard-edged straight shafts of sunlight cutting down through the canopy as flat cut shapes, no figures, no creatures
+```
+
+Fixes, if a revision fails:
+
+- **A place is lost in the distance:** move it forward, e.g. replace `on a hilltop
+  in the middle distance` with `on a hilltop in the near middle ground`.
+- **Too crowded:** replace `at one side of the valley, one large arched stone gate
+  in a broken outer wall with a road leading out into the jungle` with `a road
+  leading out through the edge of the frame into the jungle`.
+- **Places blend into each other:** give each enclosure its own floor — packed earth,
+  tiled floor, flagstones. *Untested.*
 
 ### 10.6 Area catalog
 
@@ -3425,6 +3501,17 @@ line is a trap, not a history; the rule it produced lives in the section named.
 - A midband element muted from edge to edge under the floor's quiet rule. A jungle
   trunk comes back grey-brown and dead (10.3.10).
 
+**Hub screens**
+
+- The battle-stage mood on a hub — Jungle scene light, dark recession, muted grey
+  stone. Bleak and empty, not lived in (10.5.1).
+- A hub camera at character chest height. Reads as setting out, not overview
+  (10.5.2).
+- A hub camera above the canopy. Flattens the tiers into a map, and the light
+  shafts lose their cause (10.5.2).
+- Places told apart by wording such as *standing clear against darker growth*.
+  Nothing drawable separates them; enclosures and their own light do (10.5.4).
+
 ---
 
 ## 18. Operational notes
@@ -3548,6 +3635,13 @@ together, at six characters rather than at fifteen.
   separately teaches the player two vocabularies.
 - **Selection panel palette method.** Named hues or a stated saturation split
   (10.8.6).
+- **Hub figures.** Whether a few tiny distant figures improve the lived-in read,
+  or the hub keeps the no-figures rule (10.5.4).
+- **Hub click affordance.** How a place shows it is clickable and its states; share
+  the answer with 10.4.2 and 10.7.2.
+- **Hubs for the other three areas.** Whether *beneath the biome's ceiling* carries
+  over — the Spire is a desert and the Iron Ledger inner city has no canopy (10.5.2).
+- **Hub post-processing.** Overlay only is untested (6).
 
 ### 19.4 Icons, UI and pipeline
 
