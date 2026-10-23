@@ -11,5 +11,5 @@ magnitude_max = 0.1
 overwritable = false
 stackable = true
 icon = ExtResource("1_dr0hv")
-description = "Deals 2-10% of max Health as damage per stack each turn."
 effect_moment = 1
+description = "Deals 2-10% of max Health as damage per stack each turn."

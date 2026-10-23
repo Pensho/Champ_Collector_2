@@ -8,5 +8,5 @@ script = ExtResource("1_script")
 magnitude_kind = 1
 magnitude = 0.04
 icon = ExtResource("1_k8bai")
-description = "Heals 4% of max Health at the start of each turn."
 effect_moment = 1
+description = "Heals 4% of max Health at the start of each turn."

@@ -8,5 +8,5 @@ script = ExtResource("1_script")
 magnitude = 0.3
 applies_on_self_tick = false
 icon = ExtResource("2_icon")
-description = "Deals damage whenever the target uses a non-basic skill, scaling with the target's Mysticism."
 effect_moment = 1
+description = "Deals damage whenever the target uses a non-basic skill, scaling with the target's Mysticism."
