@@ -49,6 +49,7 @@ func test_exhert_costs_5_percent_max_health_on_the_holders_own_turn() -> void:
 	var self_damage: Array = results.filter(
 		func(r): return r.kind == CombatResult.Kind.Damage and r.target_ID == 0 and r.amount == expected_cost)
 	assert_eq(self_damage.size(), 1, "The self-cost should be reported as a Damage result")
+	assert_eq(self_damage[0].triggered_by, [StatusEffectRegistry.BuffData(Types.Buff_Type.Exhert)])
 
 func test_exhert_increases_effective_defence_by_20_percent() -> void:
 	var character: Character = TestFactory.make_character()

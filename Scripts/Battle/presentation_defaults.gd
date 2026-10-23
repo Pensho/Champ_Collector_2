@@ -1,8 +1,7 @@
 class_name PresentationDefaults extends RefCounted
 
-## Resolves the presentation a skill, a skill echo or a status echo plays. A skill's own
-## presentation wins; otherwise one is derived from its effects. Null means release the
-## results immediately.
+## Resolves the effect a skill or a status plays. A skill's own presentation wins; otherwise
+## one is derived from its effects, and null means the skill shows no effect.
 
 const PHYSICAL_ATTRIBUTES: Array[Types.Attribute] = [
 	Types.Attribute.Attack,
@@ -22,33 +21,22 @@ static func ForSkill(p_skill: Skill, p_archetypes: PresentationArchetypes) -> Sk
 	return presentation
 
 
-## Returns a presentation carrying only the echo's archetype and variant.
-static func ForSkillEcho(p_skill: Skill, p_archetypes: PresentationArchetypes) -> SkillPresentation:
-	var skill_presentation: SkillPresentation = ForSkill(p_skill, p_archetypes)
-	var echo: SkillPresentation = SkillPresentation.new()
-	if(null != skill_presentation and null != skill_presentation.echo_archetype):
-		echo.archetype = skill_presentation.echo_archetype
-		echo.variant = skill_presentation.echo_variant
-	elif(null != skill_presentation):
-		echo.archetype = skill_presentation.archetype
-		echo.variant = skill_presentation.variant
-	else:
-		echo.archetype = p_archetypes.echo_pulse
-	return echo if null != echo.archetype else null
+## The status's own effect, or the default status effect.
+static func StatusArchetype(p_status: StatusEffectData, p_archetypes: PresentationArchetypes) -> PackedScene:
+	if(null != p_status and null != p_status.effect_archetype):
+		return p_status.effect_archetype
+	return p_archetypes.status_effect
 
 
-## Returns a presentation carrying only the echo's archetype and variant.
-static func ForStatusEcho(
-		p_status: StatusEffectData, p_archetypes: PresentationArchetypes) -> SkillPresentation:
-	var echo: SkillPresentation = SkillPresentation.new()
-	if(null != p_status and null != p_status.echo_archetype):
-		echo.archetype = p_status.echo_archetype
-		echo.variant = p_status.echo_variant
-	else:
-		echo.archetype = p_archetypes.echo_pulse
-		echo.variant = EffectVariant.new()
-		echo.variant.texture = p_status.icon if null != p_status else null
-	return echo if null != echo.archetype else null
+## The status's own variant; on the default status effect, one showing the status's icon.
+static func StatusVariant(p_status: StatusEffectData) -> EffectVariant:
+	if(null == p_status):
+		return null
+	if(null != p_status.effect_archetype):
+		return p_status.effect_variant
+	var variant: EffectVariant = EffectVariant.new()
+	variant.texture = p_status.icon
+	return variant
 
 
 static func _DerivedArchetype(p_skill: Skill, p_archetypes: PresentationArchetypes) -> PackedScene:

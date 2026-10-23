@@ -31,6 +31,13 @@ enum MagnitudeKind {
 	OutgoingDamagePercent,          # +value fraction to every hit the holder deals, never consumed
 }
 
+## When the status's effect plays: Triggered for a status that deals damage or heals, each time
+## it does; Applied for every other status, each time it is applied or refreshed.
+enum Effect_Moment {
+	Applied,
+	Triggered,
+}
+
 @export var magnitude_kind: MagnitudeKind
 # Attributes this effect touches, mapped to their sign (+1.0 / -1.0). Applied with the
 # shared `magnitude` below by AttributePercent and AttributePercentagePointAdd.
@@ -57,7 +64,8 @@ enum MagnitudeKind {
 @export var attacker_damage_value_multiple: float = 0.0
 @export var targeting_weight_multiplier: float = 1.0
 @export var icon: Texture2D
-## Played when a cascade echoes this status; null plays the generic echo pulse showing the icon.
-@export var echo_archetype: PackedScene
-@export var echo_variant: EffectVariant
+## Null plays the default status effect showing the icon.
+@export var effect_archetype: PackedScene
+@export var effect_variant: EffectVariant
+@export var effect_moment: Effect_Moment = Effect_Moment.Applied
 @export_multiline var description: String = ""

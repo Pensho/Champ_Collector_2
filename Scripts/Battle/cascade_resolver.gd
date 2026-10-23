@@ -135,14 +135,11 @@ func _ResolveContributions(p_event: CascadeEvent) -> void:
 		for i in base.instances:
 			p_event.origin_ID = (base.origin_for_instance.call(i) if base.origin_for_instance.is_valid()
 					else p_event.subject_ID)
-			var echoed_debuff: Types.Debuff_Type = (base.echoed_debuff_for_instance.call(i)
-					if base.echoed_debuff_for_instance.is_valid() else Types.Debuff_Type.Invalid)
 			var echoed_skill_ID: int = (p_event.skill_ID
-					if Types.Cascade_Trigger.Skill_Resolved == p_event.trigger
-							and Types.Debuff_Type.Invalid == echoed_debuff else -1)
+					if Types.Cascade_Trigger.Skill_Resolved == p_event.trigger else -1)
 			if(not _resolver.BeginEchoInstance(
 					base.mechanic_key, p_event.subject_ID, p_event.trigger, p_event.depth,
-					_StrengthContributionsFor(p_event), echoed_skill_ID, echoed_debuff)):
+					_StrengthContributionsFor(p_event), echoed_skill_ID)):
 				return
 			if(base.resolve.is_valid()):
 				base.resolve.call(p_event)

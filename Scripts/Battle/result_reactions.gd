@@ -1,13 +1,11 @@
 class_name ResultReactions extends Resource
 
-## The shared reaction table: every character reacts the same way to a hit, a heal, a death
-## or a status landing. Their own hurt and death cues play on top.
+## The shared reaction table: every character reacts the same way to a hit, a heal or a death.
+## Their own hurt and death cues play on top; a status landing plays the status's own effect.
 
 @export var damage: ResultReaction
 @export var heal: ResultReaction
 @export var death: ResultReaction
-@export var buff_applied: ResultReaction
-@export var debuff_applied: ResultReaction
 
 
 ## Null when the result kind has no reaction.
@@ -19,8 +17,6 @@ func ReactionFor(p_result: CombatResult) -> ResultReaction:
 			return heal if p_result.amount > 0 else null
 		CombatResult.Kind.Death:
 			return death
-		CombatResult.Kind.Status_Applied:
-			return buff_applied if p_result.is_buff else debuff_applied
 	return null
 
 

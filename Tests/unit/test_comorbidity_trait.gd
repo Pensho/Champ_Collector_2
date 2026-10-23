@@ -132,15 +132,18 @@ func test_repeats_once_per_other_distinct_debuff_type_as_cascade_instances() -> 
 	assert_between(total, _min_tick(100) * 3, _max_tick(100) * 3,
 		"Total damage over the turn sums three independently rolled ticks")
 
-func test_each_repeat_names_the_flagged_debuff_it_echoes() -> void:
+func test_the_base_tick_and_each_repeat_name_the_debuff_that_ticked() -> void:
 	_set_max_health(0, 100)
 	_add_debuff(0, Types.Debuff_Type.Enfeeble, 1, 2)
 	_add_debuff(0, Types.Debuff_Type.Burning, 1, 2, true)
 	var results: Array[CombatResult] = _resolver.BeginTurn(0)
-	assert_eq(_cascade_triggers(results).size(), 1)
-	for bracket in _cascade_triggers(results):
-		assert_eq(bracket.debuff_type, Types.Debuff_Type.Burning)
-		assert_eq(bracket.skill_ID, -1, "A status echo names no skill")
+	var ticks: Array[CombatResult] = []
+	ticks.assign(_burning_ticks(results))
+	assert_eq(ticks.size(), 2, "One base tick and one repeat")
+	for tick in ticks:
+		assert_eq(tick.triggered_by, [StatusEffectRegistry.DebuffData(Types.Debuff_Type.Burning)],
+				"Enfeeble does not tick, so only Burning triggered")
+	assert_eq(_cascade_triggers(results)[0].skill_ID, -1, "A status echo names no skill")
 
 func test_count_is_distinct_types_not_raw_instance_count() -> void:
 	_set_max_health(0, 100)

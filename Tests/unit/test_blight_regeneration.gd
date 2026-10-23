@@ -45,6 +45,7 @@ func test_regeneration_heals_4_percent_max_health_at_turn_start() -> void:
 	var heals: Array = results.filter(func(r): return r.kind == CombatResult.Kind.Heal)
 	assert_eq(heals.size(), 1, "Regeneration should report one Heal result")
 	assert_eq(heals[0].amount, expected)
+	assert_eq(heals[0].triggered_by, [StatusEffectRegistry.BuffData(Types.Buff_Type.Regeneration)])
 
 func test_blight_halves_regeneration_healing() -> void:
 	_set_max_health(0, 100)

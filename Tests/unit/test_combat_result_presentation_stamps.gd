@@ -73,6 +73,11 @@ func test_results_outside_an_effect_have_no_effect_index() -> void:
 
 	assert_eq(_of_kind(results, CombatResult.Kind.Status_Duration)[0].effect_index, -1)
 
+func test_a_skills_own_hit_is_not_triggered_by_a_status() -> void:
+	var results: Array[CombatResult] = _cast([_damage_effect()])
+
+	assert_eq(_of_kind(results, CombatResult.Kind.Damage)[0].triggered_by, [])
+
 func test_each_hit_snapshots_the_targets_health_right_after_it() -> void:
 	var health_before: int = _roster[TARGET_ID]._current_health
 

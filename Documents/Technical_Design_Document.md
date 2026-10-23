@@ -328,10 +328,10 @@ load time. There is a consistent **preset (template) vs instance (runtime)** spl
 | `CharacterPreset` | `Scripts/Character/character_preset.gd` | Champion archetype: base stats, skills, available attribute-weight presets, trait, `_preset_path`, `_thematic_hint` (vague pre-battle tooltip text for enemy variants), `_headshot_region` (normalized crop drawn by `TextureCache.GetHeadshot` where slots want a face rather than the full figure), `_phase_two_skills`/`_phase_two_trait`/`_phase_two_text` (a boss's phase 2 kit, see 7.3), `_hurt_cue`/`_death_cue`/`_vocal_pitch` (non-verbal cues, null is silent, see 9.3) |
 | `Skill` | `Scripts/Character/skill_data.gd` | Skill definition: name/description/icon, default target, type, cooldown, an ordered `effects` array, and an optional `presentation` |
 | `SkillEffect` | `Scripts/Battle/Skill_Effects/skill_effect.gd` | Base class for one self-resolving skill effect (see [Section 7.4](#74-skill-resolution-battleresolverresolveskill)); `impact_index` picks the effect scene marker that releases its results (7.9) |
-| `SkillPresentation` | `Scripts/Battle/skill_presentation.gd` | A skill's effect: archetype scene, `EffectVariant`, spawn mode, stagger, echo archetype and variant (7.9) |
+| `SkillPresentation` | `Scripts/Battle/skill_presentation.gd` | A skill's effect: archetype scene, `EffectVariant`, spawn mode, stagger (7.9) |
 | `EffectVariant` | `Scripts/Battle/effect_variant.gd` | A skill's look on a shared archetype: textures, tint, scale, cast and impact cues |
 | `PresentationArchetypes` | `Scripts/Battle/presentation_archetypes.gd` | The default archetype per category plus the generic echo pulse, read by `PresentationDefaults` (`Data/Presentation/Presentation_Archetypes.tres`) |
-| `ResultReactions` / `ResultReaction` | `Scripts/Battle/result_reactions.gd`, `result_reaction.gd` | The shared reaction to a hit, heal, death or status landing: flash color, archetype, variant, cue (`Data/Presentation/Result_Reactions.tres`, see 9.3) |
+| `ResultReactions` / `ResultReaction` | `Scripts/Battle/result_reactions.gd`, `result_reaction.gd` | The shared reaction to a hit, heal or death: flash color, archetype, variant, cue (`Data/Presentation/Result_Reactions.tres`, see 9.3) |
 | `AttributeWeightPreset` | `Scripts/Character/attribute_weight_preset.gd` | Per-attribute weight distribution used at level-up |
 | `EquipmentPreset` | `Scripts/Gear/equipment_preset.gd` | Gear template: slot, rarity, attribute composition |
 | `LootTable` | `Scripts/Battle/loot_table.gd` | Encounter rewards: primary (guaranteed) and secondary (weighted) loot |
@@ -341,7 +341,7 @@ load time. There is a consistent **preset (template) vs instance (runtime)** spl
 | `BiomeData` | `Scripts/Adventure_Scripts/biome_data.gd` | An adventure's look: `BiomeVisualData` and the battle stages its encounters draw from |
 | `StageClutterEntry` | `Scripts/Battle/Visuals/stage_clutter_entry.gd` | One floor-clutter scatter rule, authored on a stage's `StageClutterView` |
 | `CharacterTrait` | `Scripts/Character/character_traits/character_trait.gd` | Base class for character special abilities (see [Section 9](#9-trait-hook-system)) |
-| `StatusEffectData` | `Scripts/Battle/status_effect_data.gd` | Buff/debuff definition: magnitude, magnitude kind, default duration, overwrite/stack rules, self-tick behavior, icon, echo archetype and variant (7.9) |
+| `StatusEffectData` | `Scripts/Battle/status_effect_data.gd` | Buff/debuff definition: magnitude, magnitude kind, default duration, overwrite/stack rules, self-tick behavior, icon, its own effect (archetype, variant) and `effect_moment` (7.9) |
 | `ReagentData` | `Scripts/Battle/reagent_data.gd` | Reagent definition (one rarity tier per resource): effect kind, target kind, rarity, binary flag, magnitude(s), icon |
 | `ReagentCollection` | `Scripts/Gear/reagent_collection.gd` | Persistent player-owned reagent counts, keyed by `ReagentRegistry` identifier string |
 | `ContentPool` | `Scripts/Battle/content_pool.gd` | One game mode's content, as a resource under `Data/Game_Modes/`: its `mode_name`, whether it `is_default_mode`, the reagent families and Relic keys random draws (loot, shop) may produce, the champions `FortuneFavorTier.RecruitableChampions()` may offer, the starting roster, reagent count, silver, supplies and Fortune's Favor, and the buffs and debuffs the Hollow Ledger glossary lists. The full game is one of these, not the absence of one. Key lookups, save loading and debug tools always read the full registries |
@@ -917,7 +917,9 @@ instead, so damage is never capped.
 (`Skill_Effects` from the start of `ResolveSkill` through its `Skill_Resolved` drain, `Post_Cast`
 after it and outside `ResolveSkill`), `effect_index` (the top-level `Skill.effects` index
 resolving, inherited by nested effects, -1 outside one), and `target_health_after` /
-`target_max_health_after` (`NO_HEALTH_SNAPSHOT` without a target). The battle view's timeline
+`target_max_health_after` (`NO_HEALTH_SNAPSHOT` without a target). A status's own damage or heal
+(a tick, Mana Burn, Temporal Leak, Overflow, Exhert's cost, Regeneration) also names the status in
+`triggered_by`, set by the site that builds the result. The battle view's timeline
 reads them (7.9).
 
 **The effect loop and cast context.** `SkillCastContext`
@@ -1323,10 +1325,8 @@ read from a live quantity is fixed at `Post` time, immune to that quantity drain
 instances resolve.
 
 **Stream shape.** Each instance is bracketed by a `CombatResult.Kind.Cascade_Triggered` result
-(mechanic identity in `text`, the firing `Types.Cascade_Trigger` in `cascade_trigger`, and what
-the instance repeats: `skill_ID` for a `Skill_Resolved` echo of the cast skill, or `debuff_type`
-from `CascadeContribution.echoed_debuff_for_instance`, where Comorbidity names the first flagged
-debuff it re-ticks) emitted immediately before it resolves; every result produced by an instance carries the same
+(mechanic identity in `text`, the firing `Types.Cascade_Trigger` in `cascade_trigger`, and
+`skill_ID`, the cast skill a `Skill_Resolved` echo repeats) emitted immediately before it resolves; every result produced by an instance carries the same
 `cascade_depth` via `BattleResolver._echo_depth`, stamped centrally in `_Emit` rather
 than by each result's own construction site.
 
@@ -1492,7 +1492,7 @@ rotates it toward the target; otherwise it mirrors to face away from the caster.
 `variant_sprites` and `variant_particles` take an `EffectVariant`'s texture, particle texture and
 tint, and a pooled instance restores its own look wherever the variant leaves a field null. A
 `SkillPresentation` names the archetype scene, the variant, the spawn mode (`Per_Target`,
-`Per_Target_Staggered`, `Field_Wide`), the stagger, and an echo archetype and variant;
+`Per_Target_Staggered`, `Field_Wide`) and the stagger;
 `SkillEffect.impact_index` picks the `Impact` marker that releases that effect's results.
 `PresentationDefaults.ForSkill` returns a skill's own presentation or derives one from its
 effects against `Data/Presentation/Presentation_Archetypes.tres`: a damage effect picks the
@@ -1514,15 +1514,22 @@ first echo show at once, and echoes still pace. A start-of-turn cascade holds th
 `BattleState.Presenting_Turn_Start` until it is released. Every release flushes the combat text
 queue, so numbers land with their bars.
 
-**Echo effects.** Each `Cascade_Triggered` names what it repeats (7.8). The view plays the skill's
-echo (`PresentationDefaults.ForSkillEcho`: its echo archetype, or its own) on the action's
-targets, or the status's (`StatusEffectData.echo_archetype`, or the generic `echo_pulse` showing
-its icon) on the subject, scaled by `BurstPacing.EffectScaleForStep`.
+**Status effects.** Every status has an effect: `StatusEffectData.effect_archetype` and
+`effect_variant`, or the `status_effect` default (`status_icon_burst.tscn`) showing its icon. A
+status that deals damage or heals is `Effect_Moment.Triggered` and plays its effect on each result
+naming it in `triggered_by` (7.4), at the character hit or healed; every other status is
+`Applied` and plays on each `Status_Applied`, refreshes included.
+
+**Echo effects.** A skill echo's `Cascade_Triggered` names the cast skill (7.8), and the view
+replays that skill's effect on the action's targets. A status echo is a re-tick naming the status,
+so it plays the status's own effect. Both scale by `BurstPacing.EffectScaleForStep` through the
+cascade.
 
 **Effect pool.** `BattleEffectLayer` (`Battle_Effect_Layer` in `battle.tscn`) reserves every effect
 scene at `Battle.Init`: each skill archetype (phase 2 skills included) once per possible target,
-each echo archetype enough times to overlap at `BurstPacing.MINIMUM_DELAY` pace, and each
-reaction archetype once per combatant. Instances stay hidden until played and are never freed
+each skill and `Triggered` status effect enough times to overlap echoes at
+`BurstPacing.MINIMUM_DELAY` pace, each status effect once per combatant, and each reaction
+archetype once per combatant. Instances stay hidden until played and are never freed
 during battle.
 
 **Escalation curve.** `BurstPacing` (`Scripts/Battle/burst_pacing.gd`, static functions only) maps

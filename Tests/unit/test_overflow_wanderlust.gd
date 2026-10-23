@@ -31,6 +31,8 @@ func test_overflow_expiry_damages_every_living_enemy_and_no_ally() -> void:
 	assert_true(3 in damaged_targets and 4 in damaged_targets and 5 in damaged_targets,
 		"Overflow must damage every living enemy")
 	assert_false(1 in damaged_targets or 2 in damaged_targets, "Overflow must not damage allies")
+	for result: CombatResult in damage:
+		assert_eq(result.triggered_by, [StatusEffectRegistry.BuffData(Types.Buff_Type.Overflow)])
 	assert_eq(_roster[0]._active_buffs.size(), 0, "Overflow should be gone after expiring")
 
 func test_wanderlust_boosts_the_seeded_random_attribute_on_self_tick() -> void:

@@ -68,6 +68,10 @@ var _pending_zone_section: int = -1
 
 var _presentation_phase: CombatResult.Presentation_Phase = CombatResult.Presentation_Phase.Post_Cast
 var _presentation_effect_index: int = -1
+# Set by ResolveTraitDamage for a status's own hit (Overflow): the status, and the source whose
+# damage results it marks.
+var _status_hit: StatusEffectData = null
+var _status_hit_source_ID: int = -1
 
 
 ## Pass a non-negative p_seed for reproducible rolls (e.g. from the encounter); negative randomizes.
@@ -305,6 +309,7 @@ func AccumulateTurnBarMovement(p_character_ID: int, p_fraction_moved: float) -> 
 			result.source_ID = leak.source_ID
 			result.target_ID = p_character_ID
 			result.amount = actual_damage
+			result.triggered_by = [data]
 			_Emit(result)
 	_turn_bar_progress[p_character_ID] = progress
 	_turn_bar_damage_remainder[p_character_ID] = remainder
@@ -382,25 +387,22 @@ func EmitBurstInstance(
 		p_mechanic_key: StringName,
 		p_subject_ID: int,
 		p_trigger: Types.Cascade_Trigger,
-		p_echoed_skill_ID: int = -1,
-		p_echoed_debuff: Types.Debuff_Type = Types.Debuff_Type.Invalid) -> void:
+		p_echoed_skill_ID: int = -1) -> void:
 	var result: CombatResult = CombatResult.new(CombatResult.Kind.Cascade_Triggered)
 	result.target_ID = p_subject_ID
 	result.text = String(p_mechanic_key)
 	result.cascade_trigger = p_trigger
 	result.skill_ID = p_echoed_skill_ID
-	result.debuff_type = p_echoed_debuff
 	_Emit(result)
 
-## p_echoed_skill_ID or p_echoed_debuff names what the instance repeats, for its echo effect.
+## p_echoed_skill_ID names the skill a skill echo repeats, for its echo effect.
 func BeginEchoInstance(
 		p_mechanic_key: StringName,
 		p_subject_ID: int,
 		p_trigger: Types.Cascade_Trigger,
 		p_depth: int = 0,
 		p_strength_contributions: Dictionary[StringName, float] = {},
-		p_echoed_skill_ID: int = -1,
-		p_echoed_debuff: Types.Debuff_Type = Types.Debuff_Type.Invalid) -> bool:
+		p_echoed_skill_ID: int = -1) -> bool:
 	if(_echoes_this_action >= CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION):
 		return false
 	_echoes_this_action += 1
@@ -408,7 +410,7 @@ func BeginEchoInstance(
 	_echo_depth = p_depth if 0 != p_depth else _echo_depth + 1
 	_echo_strength_stack.append(_echo_strength_contributions)
 	_echo_strength_contributions = p_strength_contributions
-	EmitBurstInstance(p_mechanic_key, p_subject_ID, p_trigger, p_echoed_skill_ID, p_echoed_debuff)
+	EmitBurstInstance(p_mechanic_key, p_subject_ID, p_trigger, p_echoed_skill_ID)
 	return true
 
 func EndEchoInstance() -> void:
@@ -520,8 +522,13 @@ func ResolveTraitDamage(
 		p_target_IDs: Array[int],
 		p_caster_attributes: Dictionary[Types.Attribute, int],
 		p_damage_scaling: Dictionary[Types.Attribute, float],
-		p_allow_critical: bool = true) -> Array[CombatResult]:
+		p_allow_critical: bool = true,
+		p_triggered_by: StatusEffectData = null) -> Array[CombatResult]:
 	_BeginBatch()
+	var outer_status_hit: StatusEffectData = _status_hit
+	var outer_status_hit_source_ID: int = _status_hit_source_ID
+	_status_hit = p_triggered_by
+	_status_hit_source_ID = p_caster_ID
 	var target_attributes: Dictionary[Types.Attribute, int]
 	for target_ID in p_target_IDs:
 		if(not _characters.has(target_ID) or _characters[target_ID]._current_health <= 0):
@@ -529,6 +536,8 @@ func ResolveTraitDamage(
 		target_attributes = GetEffectiveAttributes(target_ID)
 		_ResolveDamage(p_caster_ID, target_ID, p_caster_attributes, target_attributes,
 				p_damage_scaling, 1.0, CombinedDamageModifier.new(), p_allow_critical)
+	_status_hit = outer_status_hit
+	_status_hit_source_ID = outer_status_hit_source_ID
 	return _EndBatch()
 
 
@@ -1019,6 +1028,8 @@ func _EmitDamageResult(
 	result.amount = p_amount
 	result.critical = p_critical
 	result.combined_damage_modifier = p_combined_damage_modifier
+	if(null != _status_hit and p_source_ID == _status_hit_source_ID):
+		result.triggered_by = [_status_hit]
 	if(DEBUG_PRINT_ECHO_DAMAGE):
 		_DebugPrintEchoDamage(p_source_ID, p_target_ID, p_amount, p_critical, p_combined_damage_modifier)
 	_Emit(result)

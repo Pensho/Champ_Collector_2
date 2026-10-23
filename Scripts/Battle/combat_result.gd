@@ -64,6 +64,9 @@ var effect_index: int = -1
 ## The target's Health as it stood right after this result, so the view can show each hit's own state.
 var target_health_after: int = NO_HEALTH_SNAPSHOT
 var target_max_health_after: int = NO_HEALTH_SNAPSHOT
+## The statuses whose own damage or heal this result is (a tick, Mana Burn, Overflow), so the
+## battle view can play their effects.
+var triggered_by: Array[StatusEffectData] = []
 
 
 func _init(p_kind: Kind) -> void:

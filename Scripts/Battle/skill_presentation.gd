@@ -15,6 +15,3 @@ enum Spawn_Mode {
 @export var spawn_mode: Spawn_Mode = Spawn_Mode.Per_Target
 ## Per_Target_Staggered only: seconds between one target's instance and the next.
 @export var stagger_seconds: float = 0.0
-## Played when a cascade echoes this skill; null replays the skill's own archetype and variant.
-@export var echo_archetype: PackedScene
-@export var echo_variant: EffectVariant

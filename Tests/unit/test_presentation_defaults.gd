@@ -1,7 +1,7 @@
 extends GutTest
 
 # A skill without its own presentation falls back on a shared archetype picked from its
-# effects; echoes fall back on the skill's own look or the generic echo pulse.
+# effects; a status without its own effect falls back on the default showing its icon.
 
 var _archetypes: PresentationArchetypes
 
@@ -13,7 +13,7 @@ func before_each() -> void:
 	_archetypes.barrier = PackedScene.new()
 	_archetypes.buff = PackedScene.new()
 	_archetypes.debuff = PackedScene.new()
-	_archetypes.echo_pulse = PackedScene.new()
+	_archetypes.status_effect = PackedScene.new()
 
 func _skill(p_effects: Array[SkillEffect]) -> Skill:
 	var skill: Skill = Skill.new()
@@ -68,19 +68,15 @@ func test_an_unbuilt_archetype_means_no_presentation() -> void:
 	_archetypes.heal = null
 	assert_null(PresentationDefaults.ForSkill(_skill([_heal()]), _archetypes))
 
-func test_a_skill_echo_replays_the_skills_own_look_unless_it_has_an_echo_archetype() -> void:
-	var skill: Skill = _skill([])
-	skill.presentation = SkillPresentation.new()
-	skill.presentation.archetype = PackedScene.new()
-	skill.presentation.variant = EffectVariant.new()
-	assert_eq(PresentationDefaults.ForSkillEcho(skill, _archetypes).variant, skill.presentation.variant)
-
-	skill.presentation.echo_archetype = PackedScene.new()
-	assert_eq(PresentationDefaults.ForSkillEcho(skill, _archetypes).archetype, skill.presentation.echo_archetype)
-
-func test_a_status_without_an_echo_archetype_plays_the_pulse_with_its_icon() -> void:
+func test_a_status_without_its_own_effect_plays_the_default_showing_its_icon() -> void:
 	var status: StatusEffectData = StatusEffectData.new()
 	status.icon = PlaceholderTexture2D.new()
-	var echo: SkillPresentation = PresentationDefaults.ForStatusEcho(status, _archetypes)
-	assert_eq(echo.archetype, _archetypes.echo_pulse)
-	assert_eq(echo.variant.texture, status.icon)
+	assert_eq(PresentationDefaults.StatusArchetype(status, _archetypes), _archetypes.status_effect)
+	assert_eq(PresentationDefaults.StatusVariant(status).texture, status.icon)
+
+func test_a_status_with_its_own_effect_plays_it() -> void:
+	var status: StatusEffectData = StatusEffectData.new()
+	status.effect_archetype = PackedScene.new()
+	status.effect_variant = EffectVariant.new()
+	assert_eq(PresentationDefaults.StatusArchetype(status, _archetypes), status.effect_archetype)
+	assert_eq(PresentationDefaults.StatusVariant(status), status.effect_variant)

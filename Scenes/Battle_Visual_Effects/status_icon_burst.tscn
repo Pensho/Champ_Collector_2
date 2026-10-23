@@ -29,7 +29,7 @@ tracks/0/keys = {
 "values": [Color(1, 1, 1, 0)]
 }
 
-[sub_resource type="Animation" id="Animation_pulse"]
+[sub_resource type="Animation" id="Animation_burst"]
 length = 0.45
 tracks/0/type = "method"
 tracks/0/imported = false
@@ -82,13 +82,13 @@ tracks/3/keys = {
 "values": [Vector2(0.4, 0.4), Vector2(1, 1), Vector2(1.1, 1.1)]
 }
 
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_pulse"]
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_burst"]
 _data = {
 &"RESET": SubResource("Animation_reset"),
-&"pulse": SubResource("Animation_pulse")
+&"burst": SubResource("Animation_burst")
 }
 
-[node name="Echo_Pulse" type="Node2D" node_paths=PackedStringArray("animation_player", "variant_sprites")]
+[node name="Status_Icon_Burst" type="Node2D" node_paths=PackedStringArray("animation_player", "variant_sprites")]
 modulate = Color(1, 1, 1, 0)
 script = ExtResource("1_scene")
 animation_player = NodePath("AnimationPlayer")
@@ -104,5 +104,5 @@ scale = Vector2(0.4, 0.4)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
-&"": SubResource("AnimationLibrary_pulse")
+&"": SubResource("AnimationLibrary_burst")
 }

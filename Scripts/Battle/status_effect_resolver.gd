@@ -384,6 +384,7 @@ func _ComputeDebuffTickDamage(
 	var tick_damage_by_source: Dictionary[int, int] = {}
 	var tick_damage_total: int = 0
 	var repeating_source_ids: Dictionary[int, bool] = {}
+	var ticking_statuses: Array[StatusEffectData] = []
 	for debuff in p_target._active_debuffs:
 		if(p_only_repeating_source_id >= 0
 				and (not debuff.trait_riders.get(&"repeats_per_distinct_debuff", false)
@@ -413,11 +414,14 @@ func _ComputeDebuffTickDamage(
 			repeating_source_ids[debuff.source_ID] = true
 		tick_damage_total += tick_damage
 		tick_damage_by_source[debuff.source_ID] = tick_damage_by_source.get(debuff.source_ID, 0) + tick_damage
+		if(not ticking_statuses.has(data)):
+			ticking_statuses.append(data)
 	return {
 		"total": tick_damage_total,
 		"by_source": tick_damage_by_source,
 		"distinct_count": _DistinctDebuffTypeCount(p_target),
 		"repeating_source_ids": repeating_source_ids.keys(),
+		"statuses": ticking_statuses,
 	}
 
 func _DistinctDebuffTypeCount(p_character: Character) -> int:
@@ -435,6 +439,7 @@ func _EmitDebuffTickIfAny(p_target_ID: int, p_tick: Dictionary) -> void:
 	result.target_ID = p_target_ID
 	result.amount = actual_total
 	result.amount_by_source = p_tick.get("by_source", {})
+	result.triggered_by.assign(p_tick.get("statuses", []))
 	_resolver._Emit(result)
 
 func _PostDebuffTick(p_target_ID: int, p_tick: Dictionary) -> void:
@@ -466,20 +471,7 @@ func _ContributeComorbidity(p_event: CascadeEvent) -> CascadeContribution:
 			func(e: CascadeEvent) -> void: _CascadeComorbidityRetick(e, e.origin_ID))
 	contribution.origin_for_instance = (
 			func(i: int) -> int: return repeating_source_ids[i / extra_instances])
-	var echoed_debuffs: Array[Types.Debuff_Type] = []
-	for source_ID: int in repeating_source_ids:
-		echoed_debuffs.append(_FirstRepeatingDebuff(target, source_ID))
-	contribution.echoed_debuff_for_instance = (
-			func(i: int) -> Types.Debuff_Type: return echoed_debuffs[i / extra_instances])
 	return contribution
-
-## The first of p_source_ID's repeats_per_distinct_debuff-flagged debuffs on p_target, which
-## stands for the whole retick when the battle view picks an echo effect.
-func _FirstRepeatingDebuff(p_target: Character, p_source_ID: int) -> Types.Debuff_Type:
-	for debuff in p_target._active_debuffs:
-		if(debuff.source_ID == p_source_ID and debuff.trait_riders.get(&"repeats_per_distinct_debuff", false)):
-			return debuff.type
-	return Types.Debuff_Type.Invalid
 
 ## Resolves one Comorbidity cascade instance: re-ticks only p_source_ID's own
 ## repeats_per_distinct_debuff-flagged debuffs on p_event.subject_ID, at their own unmultiplied
@@ -513,6 +505,7 @@ func _ApplyEchoStrength(p_tick: Dictionary) -> Dictionary:
 		"by_source": scaled_by_source,
 		"distinct_count": p_tick.get("distinct_count", 0),
 		"repeating_source_ids": p_tick.get("repeating_source_ids", []),
+		"statuses": p_tick.get("statuses", []),
 	}
 
 func _CastSkillHasDamageEffect(p_caster_ID: int, p_skill_ID: int) -> bool:
@@ -564,6 +557,8 @@ func _TriggerExistingCasterBuffs(
 	var caster: Character = _resolver._characters[p_caster_ID]
 	var heal_total: int = 0
 	var self_cost_total: int = 0
+	var healing_statuses: Array[StatusEffectData] = []
+	var costing_statuses: Array[StatusEffectData] = []
 
 	for buff in caster._active_buffs:
 		var data: StatusEffectData = StatusEffectRegistry.BuffData(buff.type)
@@ -573,18 +568,23 @@ func _TriggerExistingCasterBuffs(
 					heal_total += int(floor(
 							(p_caster_attributes[Types.Attribute.Health]
 									* GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER) * data.magnitude))
+					if(not healing_statuses.has(data)):
+						healing_statuses.append(data)
 				_:
 					pass
 			if(data.self_tick_max_health_cost_percent > 0.0):
 				self_cost_total += int(ceil(
 						(p_caster_attributes[Types.Attribute.Health]
 								* GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER) * data.self_tick_max_health_cost_percent))
+				if(not costing_statuses.has(data)):
+					costing_statuses.append(data)
 
 	if(heal_total > 0):
 		var healed: int = _resolver._ApplyHeal(p_caster_ID, heal_total)
 		var heal_result: CombatResult = CombatResult.new(CombatResult.Kind.Heal)
 		heal_result.target_ID = p_caster_ID
 		heal_result.amount = healed
+		heal_result.triggered_by = healing_statuses
 		_resolver._Emit(heal_result)
 
 	if(self_cost_total > 0 and caster._current_health > 0):
@@ -592,6 +592,7 @@ func _TriggerExistingCasterBuffs(
 		var cost_result: CombatResult = CombatResult.new(CombatResult.Kind.Damage)
 		cost_result.target_ID = p_caster_ID
 		cost_result.amount = actual_self_cost
+		cost_result.triggered_by = costing_statuses
 		_resolver._Emit(cost_result)
 
 func _RollCastAttributeBuffs(
@@ -826,6 +827,7 @@ func _TriggerManaBurn(
 				result.source_ID = debuff.source_ID
 				result.target_ID = p_caster_ID
 				result.amount = actual_damage
+				result.triggered_by = [data]
 				_resolver._Emit(result)
 			return
 
@@ -836,7 +838,7 @@ func _DeferredOverflow(p_event: CascadeEvent) -> void:
 		return
 	var data: StatusEffectData = StatusEffectRegistry.BuffData(Types.Buff_Type.Overflow)
 	_resolver.ResolveTraitDamage(holder_ID, side.AliveMembers(_resolver._characters),
-			_resolver.GetEffectiveAttributes(holder_ID), {Types.Attribute.Mysticism: data.magnitude})
+			_resolver.GetEffectiveAttributes(holder_ID), {Types.Attribute.Mysticism: data.magnitude}, true, data)
 
 func _DeferredRushStun(p_event: CascadeEvent) -> void:
 	var holder_ID: int = p_event.subject_ID

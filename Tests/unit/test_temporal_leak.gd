@@ -48,6 +48,7 @@ func test_damage_procs_once_at_the_trigger_fraction() -> void:
 	var ticks: Array = results.filter(func(r): return r.kind == CombatResult.Kind.Debuff_Tick)
 	assert_eq(ticks.size(), 1)
 	assert_eq(ticks[0].amount, _expected_tick(20))
+	assert_eq(ticks[0].triggered_by, [StatusEffectRegistry.DebuffData(Types.Debuff_Type.Temporal_Leak)])
 
 func test_large_movement_can_proc_multiple_times_in_one_call() -> void:
 	_roster[0]._attributes[Types.Attribute.Speed] = 20

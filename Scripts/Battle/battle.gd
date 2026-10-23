@@ -521,30 +521,46 @@ func _PlayEffect(
 			_character_representations[p_caster_ID].CenterPosition(),
 			_character_representations[p_target_ID].CenterPosition(), p_variant, p_scale)
 
-# Each echo plays its own effect, growing through the cascade: the cast skill's echo on the
-# action's targets, or the echoed status's on its subject.
+# A skill echo replays the cast skill's effect on the action's targets, growing through the
+# cascade. A status echo needs nothing here: its re-tick result plays the status's own effect.
 func _PlayEchoEffect(p_bracket: CombatResult) -> void:
 	if(_GetSettings().skip_skill_effects or not _characters.has(p_bracket.target_ID)):
 		return
-	var echo_scale: float = BurstPacing.EffectScaleForStep(_cascade_instance_ordinal)
 	var subject_ID: int = p_bracket.target_ID
 	var skills: Array[Skill] = _characters[subject_ID]._skills
-	if(p_bracket.skill_ID >= 0 and p_bracket.skill_ID < skills.size()):
-		var skill_echo: SkillPresentation = PresentationDefaults.ForSkillEcho(
-				skills[p_bracket.skill_ID], _presentation_archetypes)
-		if(null == skill_echo):
-			return
-		var target_IDs: Array[int] = [subject_ID]
-		if(not _action_target_IDs.is_empty()):
-			target_IDs = _action_target_IDs
-		for target_ID in target_IDs:
-			_PlayEffect(skill_echo.archetype, skill_echo.variant, subject_ID, target_ID, echo_scale)
+	if(p_bracket.skill_ID < 0 or p_bracket.skill_ID >= skills.size()):
 		return
-	var status: StatusEffectData = (StatusEffectRegistry.DebuffData(p_bracket.debuff_type)
-			if Types.Debuff_Type.Invalid != p_bracket.debuff_type else null)
-	var status_echo: SkillPresentation = PresentationDefaults.ForStatusEcho(status, _presentation_archetypes)
-	if(null != status_echo):
-		_PlayEffect(status_echo.archetype, status_echo.variant, subject_ID, subject_ID, echo_scale)
+	var presentation: SkillPresentation = PresentationDefaults.ForSkill(
+			skills[p_bracket.skill_ID], _presentation_archetypes)
+	if(null == presentation):
+		return
+	var target_IDs: Array[int] = [subject_ID]
+	if(not _action_target_IDs.is_empty()):
+		target_IDs = _action_target_IDs
+	var echo_scale: float = BurstPacing.EffectScaleForStep(_cascade_instance_ordinal)
+	for target_ID in target_IDs:
+		_PlayEffect(presentation.archetype, presentation.variant, subject_ID, target_ID, echo_scale)
+
+# A status's own effect at its moment: each time an Applied status lands or refreshes, and on
+# each damage or heal a Triggered status deals, growing inside a cascade.
+func _PlayStatusEffects(p_result: CombatResult) -> void:
+	if(not _characters.has(p_result.target_ID)):
+		return
+	if(CombatResult.Kind.Status_Applied == p_result.kind):
+		var applied: StatusEffectData = (StatusEffectRegistry.BuffData(p_result.buff_type) if p_result.is_buff
+				else StatusEffectRegistry.DebuffData(p_result.debuff_type))
+		if(null != applied and StatusEffectData.Effect_Moment.Applied == applied.effect_moment):
+			_PlayStatusEffect(applied, p_result.target_ID, 1.0)
+		return
+	var effect_scale: float = (BurstPacing.EffectScaleForStep(_cascade_instance_ordinal)
+			if p_result.cascade_depth > 0 else 1.0)
+	for status: StatusEffectData in p_result.triggered_by:
+		if(StatusEffectData.Effect_Moment.Triggered == status.effect_moment):
+			_PlayStatusEffect(status, p_result.target_ID, effect_scale)
+
+func _PlayStatusEffect(p_status: StatusEffectData, p_target_ID: int, p_scale: float) -> void:
+	_PlayEffect(PresentationDefaults.StatusArchetype(p_status, _presentation_archetypes),
+			PresentationDefaults.StatusVariant(p_status), p_target_ID, p_target_ID, p_scale)
 
 # The shared reaction to a presented result, plus the target's own hurt or death cue.
 func _PlayResultReaction(p_result: CombatResult) -> void:
@@ -579,16 +595,18 @@ func _ReservePresentationPool() -> void:
 			var presentation: SkillPresentation = PresentationDefaults.ForSkill(skill, _presentation_archetypes)
 			if(null != presentation):
 				_effect_layer.Reserve(presentation.archetype, side_size)
-			var skill_echo: SkillPresentation = PresentationDefaults.ForSkillEcho(skill, _presentation_archetypes)
-			if(null != skill_echo):
-				_effect_layer.ReserveForEchoes(skill_echo.archetype)
-	_effect_layer.ReserveForEchoes(_presentation_archetypes.echo_pulse)
-	for status: StatusEffectData in StatusEffectRegistry.DEBUFFS.values():
-		_effect_layer.ReserveForEchoes(status.echo_archetype)
+				_effect_layer.ReserveForEchoes(presentation.archetype)
+	var statuses: Array[StatusEffectData] = []
+	statuses.append_array(StatusEffectRegistry.BUFFS.values())
+	statuses.append_array(StatusEffectRegistry.DEBUFFS.values())
+	for status: StatusEffectData in statuses:
+		var archetype: PackedScene = PresentationDefaults.StatusArchetype(status, _presentation_archetypes)
+		if(StatusEffectData.Effect_Moment.Triggered == status.effect_moment):
+			_effect_layer.ReserveForEchoes(archetype)
+		_effect_layer.Reserve(archetype, _characters.size())
 	if(null == _result_reactions):
 		return
-	for reaction: ResultReaction in [_result_reactions.damage, _result_reactions.heal, _result_reactions.death,
-			_result_reactions.buff_applied, _result_reactions.debuff_applied]:
+	for reaction: ResultReaction in [_result_reactions.damage, _result_reactions.heal, _result_reactions.death]:
 		if(null != reaction):
 			_effect_layer.Reserve(reaction.archetype, _characters.size())
 
@@ -763,6 +781,7 @@ func PresentResult(p_result: CombatResult) -> void:
 			_cascade_instance_ordinal += 1
 			_PlayEchoEffect(p_result)
 	_PlayResultReaction(p_result)
+	_PlayStatusEffects(p_result)
 
 # Credits damage to the player who dealt it, for the post-battle totals.
 func AttributeDamage(p_source_ID: int, p_amount: int) -> void:

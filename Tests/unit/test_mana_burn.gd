@@ -37,6 +37,7 @@ func test_non_basic_cast_damages_the_holder_scaled_by_their_own_mysticism() -> v
 	assert_eq(damage.size(), 1)
 	assert_eq(damage[0].amount, expected)
 	assert_eq(damage[0].source_ID, 3)
+	assert_eq(damage[0].triggered_by, [StatusEffectRegistry.DebuffData(Types.Debuff_Type.Mana_Burn)])
 
 func test_basic_skill_cast_does_not_trigger_mana_burn() -> void:
 	_roster[0]._attributes[Types.Attribute.Mysticism] = 100

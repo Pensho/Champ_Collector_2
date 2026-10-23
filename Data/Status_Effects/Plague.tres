@@ -13,3 +13,4 @@ magnitude = 0.3
 stackable = true
 icon = ExtResource("1_4bm6i")
 description = "Deals damage each turn equal to 30% of the caster's Mysticism, snapshotted at the moment of application. Multiple stacks tick independently."
+effect_moment = 1
