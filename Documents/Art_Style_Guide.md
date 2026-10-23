@@ -691,6 +691,7 @@ See 10.5.
 - [ ] Places spread across depth and height, not bunched
 - [ ] Far planes paler than near ones; the plate is not bleak
 - [ ] Warm light and signs of occupation present; places carry one landmark, not contents
+- [ ] Each place in its own color; natural masses flat, places carrying the detail
 
 ---
 # Part II — Asset domains
@@ -1940,8 +1941,10 @@ One or more per area (10.6), used to navigate by clicking points of interest.
 
 ### 10.5 Hub screens
 
-One per area (10.6). The hub is where the gate out of town, Armory,
-Adventurer's Guild and shop live (`Concept_Document.md` 3.6).
+One per area (10.6). The hub holds four places: the gate out of town, the Armory,
+the Adventurer's Guild and the shop (`Concept_Document.md` 3.6). The gate is shaped
+by where the area leads — a road through a wall in the Jungle, a sea arch in the
+Pirate Coves.
 
 **A hub is one illustrated plate with clickable regions**, generated as its own
 composition. Each place is a landmark on the plate; its own screen is a separate
@@ -1956,18 +1959,22 @@ bind.
 
 A hub is home base, not a fight. It does not take the variant's scene light
 (10.2), and since no champion stands in front of it, neither the contrast budget
-(10.1.1) nor the white-plate problem (10.6) applies. Daylight, saturated growth,
-pale stone, and warm light in every place.
+(10.1.1) nor the white-plate problem (10.6) applies.
+
+**One cool cast over the environment, warm light only from the places.** Day or
+night both work: the Jungle is daylit, the Pirate Coves cave is blue night. Either
+way the plate is lit, never bleak.
 
 Lived in is shown by signs of occupation, not by people: patched awnings, lantern
 strings, cooking smoke.
 
 #### 10.5.2 Camera — inside the biome, beneath its ceiling
 
-For the Jungle: high in the forest just beneath the canopy, looking out across a
-ravine valley. The canopy closes the top of the frame, the tallest trunks rise out
-of it, and the nearest are cropped by the side edges. Light shafts then have a
-visible cause.
+High inside the biome, just beneath its own ceiling, looking out across it. The
+ceiling closes the top of the frame, the nearest masses are cropped by the side
+edges, and an opening in the ceiling supplies the light shafts. Jungle: the canopy,
+light through the leaves. Pirate Coves: the cave roof, moonlight through a jagged
+opening.
 
 State verticality as terrain — ravine, hills, cliffs, ridge — and as masses taller
 than any building.
@@ -1985,14 +1992,24 @@ dark recession made the plate bleak.
 - **Each enclosed by a boundary of its own material** — palisade, ring of columns,
   balustrade, tower walls, outer wall with its gate. Distinct outlines are what make
   each read as a separate place.
-- **Each lit by its own shaft of sunlight or fire.** The light points the eye at it.
+- **Each lit by its own shaft of light or fire.** The light points the eye at it.
+- **Each in a color of its own, used nowhere in the environment.** The environment
+  stays in one hue family; amber, green, red-orange and gold split the Coves places.
+- **Natural masses stay flat; the places carry the detail.** Rock and foliage take
+  large flat masses with a few broad lines, and the heaviest engraving goes on the
+  built places — 10.3.7's flat soft mass at plate scale.
+- **Described as built** — straight planks, beams, cut stone, hard right angles,
+  roofs, towers, pennants. The shape natural masses cannot make (10.3.7).
 - **One landmark per place, contents minimal** (5.7).
 - No figures, no creatures, so far (19.3).
 
-#### 10.5.5 Approved prompt
+#### 10.5.5 Approved prompts
 
-**Reclaimed City (Jungle).** Judged good enough to set the direction; not yet
-composited at screen size or post-processed.
+Neither is yet composited at screen size or post-processed.
+
+**Reclaimed City (Jungle).** Predates the color and flat-mass rules in 10.5.4 and
+the gate-for-war-room change; worked without them, likely because pale limestone
+against green separated the places on its own. Add them on the next revision.
 
 ```
 bold woodcut illustration with engraved structural linework and visible gouge marks, thick black contour outline on every mass, flat color fields, hard-edged shadows, no gradients, seven value bands, warm daylight, a wide view from high in a giant jungle just beneath the canopy, looking out across a deep ravine valley of steep hills and cliffs, the canopy closing across the top of the frame, colossal jungle trees far taller than any building rising from the valley floor up out of the top of the frame, their nearest trunks cropped by the left and right edges, the ruins of a vast noble city scattered through the valley at many heights, tall broken towers and arches of pale warm limestone half swallowed by the jungle, depth built from overlapping planes each flatter and paler than the one in front, the most distant towering ruins and trees only pale flat shapes, the city lived in by scavengers: patched cloth awnings in ochre, rust red and teal, strings of lanterns along the walkways, smoke rising from cooking fires, five separate walled-off places spread far apart across the valley, each lit by its own shaft of sunlight or fire: on the valley floor below, a camp enclosed by a ring of sharpened wooden palisade around the roots of one giant ancient tree, with three tents and two large campfires; on a hilltop in the middle distance, a round rotunda enclosed by its own ring of standing columns, half its dome fallen in, a striped market awning inside; high on the side of a cliff, a broad flat stone balcony enclosed by a stone balustrade, jutting out over the ravine with a stone table and two burning braziers; on the highest ridge, the tallest ruined tower, its roof broken open, orange forge light glowing from its windows and a shaft of sunlight falling into it; at one side of the valley, one large arched stone gate in a broken outer wall with a road leading out into the jungle, the places joined by long winding wooden walkways, sagging rope bridges across the ravine and stairs cut into the cliffs, the jungle in deep saturated green with vivid blooms in coral red, violet and amber, broad hard-edged straight shafts of sunlight cutting down through the canopy as flat cut shapes, no figures, no creatures
@@ -2007,6 +2024,17 @@ Fixes, if a revision fails:
   leading out through the edge of the frame into the jungle`.
 - **Places blend into each other:** give each enclosure its own floor — packed earth,
   tiled floor, flagstones. *Untested.*
+
+**Pirate Coves.** The working example of every rule in 10.5.4.
+
+```
+bold woodcut illustration with engraved structural linework and visible gouge marks, thick black contour outline on every mass, flat color fields, hard-edged shadows, no gradients, seven value bands, deep blue night, a wide view from high inside a colossal vertical sea cave just beneath its rocky roof, looking out and down across the cavern, the roof closing across the top of the frame with long stalactites hanging down from it, one jagged opening in the roof letting broad hard-edged shafts of pale blue moonlight fall straight down through the cave as flat cut shapes, sheer cliffs and rock pillars rising from dark blue water far below, the nearest rock walls cropped by the left and right edges, the rock held as large flat masses of cool slate blue and blue-black with only a few broad fracture lines, all the heaviest engraved detail on the built places, depth built from overlapping planes each flatter and paler blue than the one in front, the most distant cliffs only pale blue flat shapes, the cave lived in by pirates: strings of lanterns along the walkways, washing hung on ropes between ledges, small boats moored along the water, four separate walled-off places spread far apart across the cave at different heights, each built of straight planks, beams and cut stone with hard right angles standing out against the rough rock, each glowing in its own warm color: at the water's edge below, a ramshackle two-storey wooden tavern on stilts with a pitched plank roof, a crooked chimney and a hanging sign, enclosed by its own railed pier, every window and the pier lanterns glowing warm amber; halfway up one cliff, a market built into a side grotto, its mouth framed by a square timber gateway under a striped awning of red and cream sailcloth, stacked crates inside lit by vivid green lanterns; high on the upper cliffs, a forge on a rock ledge enclosed by a low cut-stone wall, a tall square stone chimney and a plank roof, red-orange forge fire and sparks spilling out of its open front; at the far end of the cave, one great natural sea arch opening onto the moonlit sea, closed by a heavy chained timber sea gate between two square wooden watchtowers flying long pennants, golden torches burning along the tops of both towers, a single ship moored inside it, the places joined by long precarious rope bridges, pulley lifts with hanging platforms and plank stairs, no figures, no creatures
+```
+
+- **Rock still competes:** replace `with only a few broad fracture lines` with `left
+  flat and uncarved`.
+- **Too dark to read:** replace `cool slate blue and blue-black` with `cool slate
+  blue and steel blue`.
 
 ### 10.6 Area catalog
 
@@ -3511,6 +3539,8 @@ line is a trap, not a history; the rule it produced lives in the section named.
   shafts lose their cause (10.5.2).
 - Places told apart by wording such as *standing clear against darker growth*.
   Nothing drawable separates them; enclosures and their own light do (10.5.4).
+- Engraved detail asked of every mass on a hub. The places sink into the rock
+  around them (10.5.4).
 
 ---
 
@@ -3639,8 +3669,8 @@ together, at six characters rather than at fifteen.
   or the hub keeps the no-figures rule (10.5.4).
 - **Hub click affordance.** How a place shows it is clickable and its states; share
   the answer with 10.4.2 and 10.7.2.
-- **Hubs for the other three areas.** Whether *beneath the biome's ceiling* carries
-  over — the Spire is a desert and the Iron Ledger inner city has no canopy (10.5.2).
+- **Hubs for the Spire and the Iron Ledger.** The ceiling rule held from canopy to
+  cave roof; whether it carries to a desert and to an open city is untested (10.5.2).
 - **Hub post-processing.** Overlay only is untested (6).
 
 ### 19.4 Icons, UI and pipeline
