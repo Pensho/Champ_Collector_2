@@ -37,6 +37,45 @@ corner_radius_top_right = 2
 corner_radius_bottom_right = 2
 corner_radius_bottom_left = 2
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tab_disabled"]
+content_margin_left = 10.0
+content_margin_top = 4.0
+content_margin_right = 10.0
+content_margin_bottom = 4.0
+bg_color = Color(0.05, 0.05, 0.05, 0.6)
+border_width_left = 1
+border_width_right = 1
+border_color = Color(0.175, 0.175, 0.175, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tab_hovered"]
+content_margin_left = 10.0
+content_margin_top = 4.0
+content_margin_right = 10.0
+content_margin_bottom = 4.0
+bg_color = Color(0.08, 0.08, 0.08, 0.92)
+border_width_left = 1
+border_width_right = 1
+border_color = Color(0.175, 0.175, 0.175, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tab_selected"]
+content_margin_left = 10.0
+content_margin_top = 4.0
+content_margin_right = 10.0
+content_margin_bottom = 4.0
+bg_color = Color(0.14, 0.14, 0.14, 0.92)
+border_width_top = 2
+border_color = Color(1, 1, 1, 0.75)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tab_unselected"]
+content_margin_left = 10.0
+content_margin_top = 4.0
+content_margin_right = 10.0
+content_margin_bottom = 4.0
+bg_color = Color(0, 0, 0, 0.92)
+border_width_left = 1
+border_width_right = 1
+border_color = Color(0.175, 0.175, 0.175, 1)
+
 [resource]
 default_font = ExtResource("1_sbo1l")
 default_font_size = 32
@@ -56,3 +95,7 @@ PopupMenu/font_sizes/font_size = 20
 PopupMenu/font_sizes/title_font_size = 22
 ProgressBar/styles/background = SubResource("StyleBoxFlat_dnldn")
 ProgressBar/styles/fill = SubResource("StyleBoxFlat_tm3gc")
+TabBar/styles/tab_disabled = SubResource("StyleBoxFlat_tab_disabled")
+TabBar/styles/tab_hovered = SubResource("StyleBoxFlat_tab_hovered")
+TabBar/styles/tab_selected = SubResource("StyleBoxFlat_tab_selected")
+TabBar/styles/tab_unselected = SubResource("StyleBoxFlat_tab_unselected")

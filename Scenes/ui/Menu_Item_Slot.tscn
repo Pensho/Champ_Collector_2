@@ -60,6 +60,15 @@ _renown_pips = [NodePath("HBoxContainer_Renown_Pips/Pip_0"), NodePath("HBoxConta
 _rarity_backdrop = NodePath("RarityBackdrop")
 _frame = NodePath("TextureRect_Frame")
 
+[node name="Background" type="ColorRect" parent="." unique_id=1873402561]
+show_behind_parent = true
+custom_minimum_size = Vector2(100, 120)
+layout_mode = 0
+offset_right = 100.0
+offset_bottom = 120.0
+mouse_filter = 2
+color = Color(0, 0, 0, 0.92)
+
 [node name="RarityBackdrop" type="ColorRect" parent="." unique_id=648801009]
 material = SubResource("ShaderMaterial_e5jka")
 custom_minimum_size = Vector2(100, 120)

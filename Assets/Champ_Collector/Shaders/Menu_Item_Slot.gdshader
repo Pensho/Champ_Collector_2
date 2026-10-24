@@ -1,6 +1,7 @@
 shader_type canvas_item;
 
 uniform sampler2D texture_albedo;
+uniform vec4 silhouette_color : source_color = vec4(0.5, 0.5, 0.5, 0.6);
 
 void fragment() {
     vec4 color = texture(texture_albedo, UV);
@@ -10,8 +11,7 @@ void fragment() {
         color.a = 0.0;
     }
 	else {
-		color.rgb = vec3(0.0, 0.0, 0.0);
-		color.a = 0.6;
+		color = silhouette_color;
 	}
 
     COLOR = color;

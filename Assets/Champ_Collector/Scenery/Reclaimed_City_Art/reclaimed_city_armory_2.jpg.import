@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bygakphuxv3ur"
-path="res://.godot/imported/reclaimed_city_tally_board.jpg-858d4532ce0889fea450f8b0a637aae8.ctex"
+uid="uid://bowo0cxtnmh5k"
+path="res://.godot/imported/reclaimed_city_armory_2.jpg-ea1aaba43c4fc21b525aad6d1b0241ae.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Scenery/Reclaimed_City_Art/reclaimed_city_tally_board.jpg"
-dest_files=["res://.godot/imported/reclaimed_city_tally_board.jpg-858d4532ce0889fea450f8b0a637aae8.ctex"]
+source_file="res://Assets/Champ_Collector/Scenery/Reclaimed_City_Art/reclaimed_city_armory_2.jpg"
+dest_files=["res://.godot/imported/reclaimed_city_armory_2.jpg-ea1aaba43c4fc21b525aad6d1b0241ae.ctex"]
 
 [params]
 
