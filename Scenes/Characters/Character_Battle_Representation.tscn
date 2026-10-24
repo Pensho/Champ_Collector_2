@@ -53,10 +53,11 @@ _status_effect_textures = [NodePath("HBoxContainer_Status_Effects/Effect_1"), No
 _status_effect_tooltips = [NodePath("HBoxContainer_Status_Effects/Effect_1"), NodePath("HBoxContainer_Status_Effects/Effect_2"), NodePath("HBoxContainer_Status_Effects/Effect_3"), NodePath("HBoxContainer_Status_Effects/Effect_4"), NodePath("HBoxContainer_Status_Effects/Effect_5"), NodePath("HBoxContainer_Status_Effects/Effect_6"), NodePath("HBoxContainer_Status_Effects/Effect_7"), NodePath("HBoxContainer_Status_Effects/Effect_8")]
 _status_effect_stack_labels = [NodePath("HBoxContainer_Status_Effects/Effect_1/Stack_Label"), NodePath("HBoxContainer_Status_Effects/Effect_2/Stack_Label"), NodePath("HBoxContainer_Status_Effects/Effect_3/Stack_Label"), NodePath("HBoxContainer_Status_Effects/Effect_4/Stack_Label"), NodePath("HBoxContainer_Status_Effects/Effect_5/Stack_Label"), NodePath("HBoxContainer_Status_Effects/Effect_6/Stack_Label"), NodePath("HBoxContainer_Status_Effects/Effect_7/Stack_Label"), NodePath("HBoxContainer_Status_Effects/Effect_8/Stack_Label")]
 
-[node name="VisualEffects" type="Node2D" parent="." unique_id=360040870 node_paths=PackedStringArray("_source_texture_rect", "_echo_textures")]
+[node name="VisualEffects" type="Node2D" parent="." unique_id=360040870 node_paths=PackedStringArray("_source_texture_rect", "_echo_textures", "_phase_pulse")]
 script = ExtResource("6_echovx")
 _source_texture_rect = NodePath("../Sprite_Pivot/TextureRect")
 _echo_textures = [NodePath("Echo_1"), NodePath("Echo_2"), NodePath("Echo_3")]
+_phase_pulse = NodePath("Phase_Pulse")
 
 [node name="Echo_1" type="TextureRect" parent="VisualEffects" unique_id=-2050298495]
 visible = false
@@ -82,6 +83,15 @@ self_modulate = Color(1, 1, 1, 0.3)
 offset_left = 70.0
 offset_right = 320.0
 offset_bottom = 250.0
+mouse_filter = 2
+expand_mode = 1
+
+[node name="Phase_Pulse" type="TextureRect" parent="VisualEffects" unique_id=1638204417]
+visible = false
+texture_filter = 1
+offset_right = 250.0
+offset_bottom = 250.0
+pivot_offset = Vector2(125, 250)
 mouse_filter = 2
 expand_mode = 1
 

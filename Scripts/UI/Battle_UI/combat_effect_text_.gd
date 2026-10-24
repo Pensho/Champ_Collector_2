@@ -18,6 +18,8 @@ var _spread: float
 var _base_color: Color = Color(1.0, 1.0, 1.0, 1.0)
 var _base_font_size: int = 0
 var _base_outline_size: int = 0
+var _size_scale: float = 1.0
+var _duration_scale: float = 1.0
 var _position_tween: Tween
 var _scale_tween: Tween
 
@@ -26,9 +28,13 @@ func SetValue(
 		p_position: Vector2,
 		p_height: float,
 		p_spread: float,
-		p_color: Color = Color(1.0, 1.0, 1.0, 1.0)) -> void:
+		p_color: Color = Color(1.0, 1.0, 1.0, 1.0),
+		p_size_scale: float = 1.0,
+		p_duration_scale: float = 1.0) -> void:
 	label.text = p_text
 	_base_color = p_color
+	_size_scale = p_size_scale
+	_duration_scale = p_duration_scale
 	if(_base_font_size == 0):
 		_base_font_size = label.get_theme_font_size(&"font_size")
 		_base_outline_size = label.get_theme_constant(&"outline_size")
@@ -41,12 +47,13 @@ func SetValue(
 
 func ApplyEscalation(p_step: int) -> void:
 	escalation_step = p_step
-	var size_scale: float = BurstPacing.ScaleForStep(p_step)
+	var size_scale: float = BurstPacing.ScaleForStep(p_step) * _size_scale
 	label.add_theme_color_override("font_color", BurstPacing.ColorForStep(_base_color, p_step))
 	label.add_theme_font_size_override("font_size", int(round(_base_font_size * size_scale)))
 	label.add_theme_constant_override("outline_size", maxi(1, int(round(_base_outline_size * size_scale))))
 
 func Animate() -> void:
+	animation_player.speed_scale = 1.0 / _duration_scale
 	animation_player.play("Damage_Number_Animation")
 
 	if(_position_tween):
@@ -55,7 +62,7 @@ func Animate() -> void:
 		_scale_tween.kill()
 
 	var end_position = Vector2(randf_range(-_spread, _spread), -_height) + _position
-	var tween_length = animation_player.get_animation("Damage_Number_Animation").length
+	var tween_length = animation_player.get_animation("Damage_Number_Animation").length * _duration_scale
 
 	_position_tween = create_tween()
 	_position_tween.tween_property(label_container, "position", end_position, tween_length).from(_position)

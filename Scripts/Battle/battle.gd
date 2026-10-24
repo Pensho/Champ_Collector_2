@@ -25,6 +25,8 @@ const ENEMY_ID_OFFSET: int = 3
 # Presentation wait ceiling for Concept_Document.md 1.1.5's cascade sequencing: a safety
 # valve so a long cascade cannot stall the battle, not a budget a normal burst should hit.
 const PRESENTATION_DEADLINE: float = 2.0
+const PHASE_TEXT_SIZE_SCALE: float = 1.5
+const PHASE_TEXT_DURATION_SCALE: float = 1.8
 
 # Covers an encounter that names no stage of its own.
 const DEFAULT_STAGE_SCENE: PackedScene = preload(
@@ -769,10 +771,11 @@ func PresentResult(p_result: CombatResult) -> void:
 			_character_representations[p_result.target_ID].GetSpriteAnimator().PlayDeath()
 			UpdateLifeBar(p_result.target_ID, p_result)
 		CombatResult.Kind.Phase_Changed:
+			_character_representations[p_result.target_ID].GetVisualEffects().PlayPhasePulse()
 			if("" != p_result.text):
 				_battle_ui.SpawnCombatText(
 						p_result.text, CombatTextPosition(p_result.target_ID), Color(0.9, 0.45, 0.1, 1.0),
-						text_step)
+						text_step, PHASE_TEXT_SIZE_SCALE, PHASE_TEXT_DURATION_SCALE)
 			for skill: Skill in _characters[p_result.target_ID]._skills:
 				_battle_ui.LoadSkillTexture(skill.icon_path)
 			if(null != _characters[p_result.target_ID]._trait):

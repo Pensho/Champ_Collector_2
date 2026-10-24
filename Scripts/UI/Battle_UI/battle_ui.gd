@@ -102,10 +102,12 @@ func SpawnCombatText(
 		p_value: String,
 		p_position: Vector2,
 		p_color: Color = Color(1.0, 1.0, 1.0, 1.0),
-		p_escalation_step: int = 0) -> void:
+		p_escalation_step: int = 0,
+		p_size_scale: float = 1.0,
+		p_duration_scale: float = 1.0) -> void:
 	if (_allow_new_effects):
 		var text: CombatEffectText = GetDamageNumber()
-		text.SetValue(p_value, p_position, 100.0, 10.0, p_color)
+		text.SetValue(p_value, p_position, 100.0, 10.0, p_color, p_size_scale, p_duration_scale)
 		text.escalation_step = p_escalation_step
 		_spawn_queue.append(text)
 
