@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://bx1wl65s4cu0j"]
 
 [ext_resource type="Script" uid="uid://4ve02sd2rom6" path="res://Scripts/UI/adventurers_guild_menu.gd" id="1_8g887"]
-[ext_resource type="Texture2D" uid="uid://b12fxr5wjhc44" path="res://Assets/Champ_Collector/Scenery/Adventurers_Guild/Adventurers_Guild_1.jpg" id="1_ibbvk"]
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="2_75jl7"]
+[ext_resource type="Texture2D" uid="uid://3jg4vb8gvdfu" path="res://Assets/Champ_Collector/Scenery/Reclaimed_City_Art/reclaimed_city_adventurers_guild.jpg" id="2_mglws"]
 [ext_resource type="Texture2D" uid="uid://be4d7es1t3q0k" path="res://Data/Texture_Data/Button_hover_highligt.tres" id="3_8g887"]
 [ext_resource type="Theme" uid="uid://bcg5pku1fyhst" path="res://Assets/Champ_Collector/Themes/hub_theme.tres" id="4_75jl7"]
 [ext_resource type="PackedScene" uid="uid://bm6xwrr37gevr" path="res://Scenes/ui/Resources/Resource_Bar.tscn" id="6_14bt2"]
@@ -21,9 +21,10 @@ script = ExtResource("1_8g887")
 
 [node name="Background" type="TextureRect" parent="." unique_id=1392077514]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-texture = ExtResource("1_ibbvk")
+offset_right = 1280.0
+offset_bottom = 720.0
+texture = ExtResource("2_mglws")
+expand_mode = 1
 
 [node name="Navigation_Buttons" type="Control" parent="." unique_id=1761380540]
 anchors_preset = 0
@@ -32,19 +33,20 @@ offset_bottom = 40.0
 
 [node name="Button_Recuitment" type="TextureButton" parent="Navigation_Buttons" unique_id=826988593]
 layout_mode = 0
-offset_left = 246.0
-offset_top = 496.0
-offset_right = 446.0
-offset_bottom = 696.0
+offset_left = 768.0
+offset_top = 337.0
+offset_right = 1082.0
+offset_bottom = 651.0
 theme = ExtResource("4_75jl7")
 texture_hover = ExtResource("3_8g887")
+stretch_mode = 0
 
 [node name="Label_Recuitment" type="Label" parent="Navigation_Buttons" unique_id=313374422]
 layout_mode = 0
-offset_left = 177.0
-offset_top = 438.0
-offset_right = 415.0
-offset_bottom = 468.0
+offset_left = 798.0
+offset_top = 595.0
+offset_right = 1036.0
+offset_bottom = 637.0
 theme = ExtResource("2_75jl7")
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.64705884)
 theme_override_constants/shadow_offset_x = 4
@@ -55,19 +57,19 @@ vertical_alignment = 1
 
 [node name="Button_Drop_Rates" type="TextureButton" parent="Navigation_Buttons" unique_id=584273779]
 layout_mode = 0
-offset_left = 715.0
-offset_top = 304.0
-offset_right = 915.0
-offset_bottom = 504.0
+offset_left = 492.0
+offset_top = 181.0
+offset_right = 692.0
+offset_bottom = 381.0
 theme = ExtResource("4_75jl7")
 texture_hover = ExtResource("3_8g887")
 
 [node name="Label_Drop_Rates" type="Label" parent="Navigation_Buttons" unique_id=1724104083]
 layout_mode = 0
-offset_left = 729.0
-offset_top = 294.0
-offset_right = 887.0
-offset_bottom = 324.0
+offset_left = 499.0
+offset_top = 187.0
+offset_right = 691.0
+offset_bottom = 229.0
 theme = ExtResource("2_75jl7")
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.64705884)
 theme_override_constants/shadow_offset_x = 4
@@ -78,19 +80,20 @@ vertical_alignment = 1
 
 [node name="Button_Tally_Board" type="TextureButton" parent="Navigation_Buttons" unique_id=826988594]
 layout_mode = 0
-offset_left = 379.0
-offset_top = 288.0
-offset_right = 579.0
-offset_bottom = 488.0
+offset_left = 152.0
+offset_top = 228.0
+offset_right = 397.0
+offset_bottom = 473.0
 theme = ExtResource("4_75jl7")
 texture_hover = ExtResource("3_8g887")
+stretch_mode = 0
 
 [node name="Label_Tally_Board" type="Label" parent="Navigation_Buttons" unique_id=313374423]
 layout_mode = 0
-offset_left = 286.0
-offset_top = 296.0
-offset_right = 524.0
-offset_bottom = 338.0
+offset_left = 159.0
+offset_top = 229.0
+offset_right = 397.0
+offset_bottom = 271.0
 theme = ExtResource("2_75jl7")
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.64705884)
 theme_override_constants/shadow_offset_x = 4

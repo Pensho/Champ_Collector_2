@@ -1,14 +1,15 @@
 [gd_scene format=3 uid="uid://c1ulirph1xhq"]
 
 [ext_resource type="Script" uid="uid://vn7d6dp8jbsx" path="res://Scripts/UI/tally_board_menu.gd" id="1_tally_board_menu"]
-[ext_resource type="Texture2D" uid="uid://b12fxr5wjhc44" path="res://Assets/Champ_Collector/Scenery/Adventurers_Guild/Adventurers_Guild_1.jpg" id="2_background"]
+[ext_resource type="Texture2D" uid="uid://b3ymy1j1m8ege" path="res://Assets/Champ_Collector/Scenery/Reclaimed_City_Art/reclaimed_city_tally_board_2.jpg" id="2_p8upo"]
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="3_theme"]
 [ext_resource type="PackedScene" uid="uid://bm6xwrr37gevr" path="res://Scenes/ui/Resources/Resource_Bar.tscn" id="4_resource_bar"]
+[ext_resource type="PackedScene" uid="uid://dgq6dbtifjlib" path="res://Scenes/ui/Tally_Board_Slot.tscn" id="5_bosa0"]
 [ext_resource type="Script" uid="uid://brborf0wdvmjy" path="res://Scripts/Audio/ui_sounds.gd" id="5_p8upo"]
 [ext_resource type="Script" uid="uid://853wrgpde68y" path="res://Scripts/Audio/button_sound_profile.gd" id="6_bosa0"]
 [ext_resource type="Resource" path="res://Data/Sound_Cues/button_standard.tres" id="7_akqm5"]
 
-[node name="TallyBoardMenu" type="Control" unique_id=645125921]
+[node name="TallyBoardMenu" type="Control" unique_id=645125921 node_paths=PackedStringArray("_tally_board_slots")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -16,12 +17,14 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_tally_board_menu")
+_tally_board_slots = [NodePath("TallyBoardSlot"), NodePath("TallyBoardSlot2"), NodePath("TallyBoardSlot3")]
 
 [node name="Background" type="TextureRect" parent="." unique_id=1983761923]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-texture = ExtResource("2_background")
+offset_right = 1280.0
+offset_bottom = 720.0
+texture = ExtResource("2_p8upo")
+expand_mode = 1
 
 [node name="ResourceBar" parent="." unique_id=1417547554 instance=ExtResource("4_resource_bar")]
 layout_mode = 0
@@ -71,7 +74,29 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 6
 text = "Back"
 
+[node name="TallyBoardSlot" parent="." unique_id=1655328538 instance=ExtResource("5_bosa0")]
+layout_mode = 0
+offset_left = 140.0
+offset_top = 200.0
+offset_right = 440.0
+offset_bottom = 600.0
+
+[node name="TallyBoardSlot2" parent="." unique_id=1647427460 instance=ExtResource("5_bosa0")]
+layout_mode = 0
+offset_left = 494.0
+offset_top = 200.0
+offset_right = 794.0
+offset_bottom = 600.0
+
+[node name="TallyBoardSlot3" parent="." unique_id=2031353146 instance=ExtResource("5_bosa0")]
+layout_mode = 0
+offset_left = 849.0
+offset_top = 200.0
+offset_right = 1149.0
+offset_bottom = 600.0
+
 [node name="GridArea" type="CenterContainer" parent="." unique_id=1730935455]
+visible = false
 layout_mode = 0
 anchor_top = 0.15
 anchor_right = 1.0

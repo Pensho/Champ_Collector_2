@@ -3,6 +3,8 @@ class_name TallyBoardMenu extends Control
 const BUTTON_WITH_OPTIONS_SCENE: PackedScene = preload("uid://c7smqpmfvs0ih")
 const TALLY_BOARD_SLOT_SCENE: PackedScene = preload("uid://dgq6dbtifjlib")
 
+@export var _tally_board_slots: Array[TallyBoardSlot]
+
 var _self_context: ContextContainer
 var _confirm_option: ButtonWithOptions
 var _insufficient_option: ButtonWithOptions
@@ -62,12 +64,10 @@ func RefreshGrid() -> void:
 	var board: TallyBoardHandler = main.GetInstance()._tally_board
 	for i in board._offers.size():
 		var entry: Dictionary = board._offers[i]
-		var slot: TallyBoardSlot = TALLY_BOARD_SLOT_SCENE.instantiate()
-		_grid_container.add_child(slot)
-		slot._ID = i
-		slot.Setup(entry)
-		slot.SetSoldOut(entry["sold_out"])
-		slot.ConnectButton(_on_slot_pressed)
+		_tally_board_slots[i]._ID = i
+		_tally_board_slots[i].Setup(entry)
+		_tally_board_slots[i].SetSoldOut(entry["sold_out"])
+		_tally_board_slots[i].ConnectButton(_on_slot_pressed)
 
 func _on_countdown_tick() -> void:
 	var board: TallyBoardHandler = main.GetInstance()._tally_board
