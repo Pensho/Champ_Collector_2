@@ -36,12 +36,10 @@ fill_to = Vector2(0.8, 0.5)
 offsets = PackedFloat32Array(0, 0.10091743, 1)
 colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0)
 
-[node name="TurnBarLava" type="Node2D" node_paths=PackedStringArray("background", "cpu_particles_2d_up_1", "cpu_particles_2d_up_2", "cpu_particles_2d_side_1", "label")]
+[node name="TurnBarLava" type="Node2D" node_paths=PackedStringArray("background", "particles", "label")]
 script = ExtResource("1_k5lct")
 background = NodePath("Background")
-cpu_particles_2d_up_1 = NodePath("CPUParticles2D_Up_1")
-cpu_particles_2d_up_2 = NodePath("CPUParticles2D_Up_2")
-cpu_particles_2d_side_1 = NodePath("CPUParticles2D_Side_1")
+particles = [NodePath("CPUParticles2D_Up_1"), NodePath("CPUParticles2D_Up_2"), NodePath("CPUParticles2D_Side_1")]
 label = NodePath("Label")
 
 [node name="Background" type="ColorRect" parent="."]

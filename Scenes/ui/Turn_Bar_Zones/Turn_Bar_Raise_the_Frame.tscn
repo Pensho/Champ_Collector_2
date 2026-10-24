@@ -13,27 +13,10 @@ colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0)
 offsets = PackedFloat32Array(0, 0.10550459, 1)
 colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 0.6862745, 1, 1, 1, 0)
 
-[sub_resource type="Gradient" id="Gradient_iv02o"]
-offsets = PackedFloat32Array(0, 0.6216216)
-colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_lxcu4"]
-gradient = SubResource("Gradient_iv02o")
-height = 16
-fill = 1
-fill_from = Vector2(0.5, 0.5)
-fill_to = Vector2(0.8, 0.5)
-
-[sub_resource type="Gradient" id="Gradient_by2im"]
-offsets = PackedFloat32Array(0, 0.10091743, 1)
-colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0)
-
-[node name="TurnBarBumpGood" type="Node2D" unique_id=419039601 node_paths=PackedStringArray("background", "cpu_particles_2d_up_1", "cpu_particles_2d_up_2", "cpu_particles_2d_side_1", "label")]
+[node name="TurnBarRaiseTheFrame" type="Node2D" unique_id=419039601 node_paths=PackedStringArray("background", "particles", "label")]
 script = ExtResource("1_7lhvl")
 background = NodePath("Background")
-cpu_particles_2d_up_1 = NodePath("CPUParticles2D_Up_1")
-cpu_particles_2d_up_2 = NodePath("CPUParticles2D_Up_2")
-cpu_particles_2d_side_1 = NodePath("CPUParticles2D_Side_1")
+particles = [NodePath("CPUParticles2D_Up_1"), NodePath("CPUParticles2D_Up_2")]
 label = NodePath("Label")
 
 [node name="Background" type="ColorRect" parent="." unique_id=1637806190]
@@ -75,19 +58,6 @@ scale_amount_min = 0.2
 scale_amount_max = 0.2
 color = Color(0.41, 0.24394998, 0.18859999, 1)
 color_ramp = SubResource("Gradient_3u2qy")
-
-[node name="CPUParticles2D_Side_1" type="CPUParticles2D" parent="." unique_id=428256808]
-visible = false
-position = Vector2(-100, -50)
-texture = SubResource("GradientTexture2D_lxcu4")
-emission_shape = 3
-emission_rect_extents = Vector2(100, 50)
-spread = 0.0
-gravity = Vector2(0, 0)
-initial_velocity_min = 100.0
-initial_velocity_max = 200.0
-color = Color(1, 1, 0, 1)
-color_ramp = SubResource("Gradient_by2im")
 
 [node name="Label" type="Label" parent="." unique_id=37831657]
 self_modulate = Color(1, 1, 1, 0.75686276)

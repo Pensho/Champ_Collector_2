@@ -120,33 +120,36 @@ func SpawnZoneEffect(p_zone_ID: int, p_charges: int, p_allySide: bool, p_visual_
 		print("Zone placed with no visual scene assigned")
 		return
 	var effect: TurnBarContainer = p_visual_scene.instantiate()
-	effect.background.position = Vector2(-(_zone_buttons[p_zone_ID].size.x * 0.5), -_zone_buttons[p_zone_ID].size.y)
-	effect.background.size = _zone_buttons[p_zone_ID].size
-	effect.cpu_particles_2d_up_1.emission_rect_extents.x = _zone_buttons[p_zone_ID].size.x * 0.5
-	effect.cpu_particles_2d_up_2.emission_rect_extents.x = _zone_buttons[p_zone_ID].size.x * 0.5
-	if(null != effect.cpu_particles_2d_side_1):
-		effect.cpu_particles_2d_side_1.emission_rect_extents.x = _zone_buttons[p_zone_ID].size.x * 0.5
+	var zone_size: Vector2 = _zone_buttons[p_zone_ID].size
+	if(null != effect.background):
+		effect.background.position = Vector2(-(zone_size.x * 0.5), -zone_size.y)
+		effect.background.size = zone_size
+	for emitter in effect.particles:
+		if(null != emitter):
+			emitter.emission_rect_extents.x = zone_size.x * 0.5
 	_zone_effects[p_zone_ID] = effect
-	_zone_effects[p_zone_ID].z_index = 10
-	_zone_effects[p_zone_ID].position = Vector2(
-		_zone_buttons[p_zone_ID].position.x + (_zone_buttons[p_zone_ID].size.x * 0.5),
-		_zone_buttons[p_zone_ID].position.y + _zone_buttons[p_zone_ID].size.y)
-	self.add_child(_zone_effects[p_zone_ID])
+	effect.z_index = 10
+	effect.position = Vector2(
+		_zone_buttons[p_zone_ID].position.x + (zone_size.x * 0.5),
+		_zone_buttons[p_zone_ID].position.y + zone_size.y)
+	self.add_child(effect)
 
-	if(0 > p_charges):
-		_zone_effects[p_zone_ID].label.text = "inf"
-	else:
-		_zone_effects[p_zone_ID].label.text = str(p_charges)
-	if(p_allySide):
-		_zone_effects[p_zone_ID].label.position = Vector2(
-			-(_zone_buttons[p_zone_ID].size.x * 0.25), -(_zone_buttons[p_zone_ID].size.y * 0.95))
-		_zone_effects[p_zone_ID].label.modulate = Color(0.0, 0.653, 0.0, 1.0)
-	else:
-		_zone_effects[p_zone_ID].label.position = Vector2(
-			(_zone_buttons[p_zone_ID].size.x * 0.15), -(_zone_buttons[p_zone_ID].size.y * 0.95))
-		_zone_effects[p_zone_ID].label.modulate = Color(0.85, 0.0, 0.0, 1.0)
-	
-	_zone_effects[p_zone_ID].show()
+	if(null != effect.label):
+		if(p_allySide):
+			effect.label.position = Vector2(-(zone_size.x * 0.25), -(zone_size.y * 0.95))
+			effect.label.modulate = Color(0.0, 0.653, 0.0, 1.0)
+		else:
+			effect.label.position = Vector2((zone_size.x * 0.15), -(zone_size.y * 0.95))
+			effect.label.modulate = Color(0.85, 0.0, 0.0, 1.0)
+	_SetZoneChargesText(p_zone_ID, p_charges)
+
+	effect.show()
+
+func _SetZoneChargesText(p_zone_ID: int, p_charges: int) -> void:
+	var label: Label = _zone_effects[p_zone_ID].label
+	if(null == label):
+		return
+	label.text = "inf" if (0 > p_charges) else str(p_charges)
 
 func RemoveZoneEffect(p_zone_ID: int):
 	# Natural expiry reports both Zone_Triggered(charges=0) and Zone_Cleared for the same
@@ -161,10 +164,7 @@ func ZoneTriggered(p_zone_ID: int, p_charges: int):
 	if(0 == p_charges):
 		RemoveZoneEffect(p_zone_ID)
 		return
-	if(0 > p_charges):
-		_zone_effects[p_zone_ID].label.text = "inf"
-	else:
-		_zone_effects[p_zone_ID].label.text = str(p_charges)
+	_SetZoneChargesText(p_zone_ID, p_charges)
 
 func GetActiveTurnID() -> int:
 	return _characters_turn_id

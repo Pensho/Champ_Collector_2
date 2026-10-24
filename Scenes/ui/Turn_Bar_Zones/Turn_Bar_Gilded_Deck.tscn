@@ -93,12 +93,10 @@ _data = {
 &"rock": SubResource("Animation_ef5vj")
 }
 
-[node name="TurnBarGildedDeck" type="Node2D" unique_id=466380459 node_paths=PackedStringArray("background", "cpu_particles_2d_up_1", "cpu_particles_2d_up_2", "cpu_particles_2d_side_1", "label")]
+[node name="TurnBarGildedDeck" type="Node2D" unique_id=466380459 node_paths=PackedStringArray("background", "particles", "label")]
 script = ExtResource("1_gilded")
 background = NodePath("Background")
-cpu_particles_2d_up_1 = NodePath("CPUParticles2D_Up_1")
-cpu_particles_2d_up_2 = NodePath("CPUParticles2D_Up_2")
-cpu_particles_2d_side_1 = NodePath("CPUParticles2D_Side_1")
+particles = [NodePath("CPUParticles2D_Up_1"), NodePath("CPUParticles2D_Up_2"), NodePath("CPUParticles2D_Side_1")]
 label = NodePath("Label")
 
 [node name="Background" type="ColorRect" parent="." unique_id=927739291]

@@ -36,15 +36,13 @@ fill_to = Vector2(0.8, 0.5)
 offsets = PackedFloat32Array(0, 0.10091743, 1)
 colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0)
 
-[node name="TurnBarBumpGood" type="Node2D" node_paths=PackedStringArray("background", "cpu_particles_2d_up_1", "cpu_particles_2d_up_2", "cpu_particles_2d_side_1", "label")]
+[node name="TurnBarFlicker" type="Node2D" unique_id=77463498 node_paths=PackedStringArray("background", "particles", "label")]
 script = ExtResource("1_e34nk")
 background = NodePath("Background")
-cpu_particles_2d_up_1 = NodePath("CPUParticles2D_Up_1")
-cpu_particles_2d_up_2 = NodePath("CPUParticles2D_Up_2")
-cpu_particles_2d_side_1 = NodePath("CPUParticles2D_Side_1")
+particles = [NodePath("CPUParticles2D_Up_1"), NodePath("CPUParticles2D_Up_2"), NodePath("CPUParticles2D_Side_1")]
 label = NodePath("Label")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="ColorRect" parent="." unique_id=1210696971]
 offset_right = 40.0
 offset_bottom = 40.0
 size_flags_horizontal = 0
@@ -52,7 +50,7 @@ size_flags_vertical = 0
 mouse_filter = 2
 color = Color(1, 1, 0, 0.15686275)
 
-[node name="CPUParticles2D_Up_1" type="CPUParticles2D" parent="."]
+[node name="CPUParticles2D_Up_1" type="CPUParticles2D" parent="." unique_id=1379975095]
 position = Vector2(0, -25)
 texture = SubResource("GradientTexture2D_5qfag")
 lifetime = 2.0
@@ -68,7 +66,7 @@ scale_amount_max = 0.2
 color = Color(1, 1, 0, 1)
 color_ramp = SubResource("Gradient_eoyxc")
 
-[node name="CPUParticles2D_Up_2" type="CPUParticles2D" parent="."]
+[node name="CPUParticles2D_Up_2" type="CPUParticles2D" parent="." unique_id=1907133502]
 position = Vector2(0, -25)
 texture = ExtResource("2_t56vp")
 lifetime = 2.0
@@ -84,7 +82,7 @@ scale_amount_max = 0.03
 color = Color(1, 1, 0, 1)
 color_ramp = SubResource("Gradient_3u2qy")
 
-[node name="CPUParticles2D_Side_1" type="CPUParticles2D" parent="."]
+[node name="CPUParticles2D_Side_1" type="CPUParticles2D" parent="." unique_id=199603753]
 position = Vector2(-100, -50)
 texture = SubResource("GradientTexture2D_lxcu4")
 emission_shape = 3
@@ -96,7 +94,7 @@ initial_velocity_max = 200.0
 color = Color(1, 1, 0, 1)
 color_ramp = SubResource("Gradient_by2im")
 
-[node name="Label" type="Label" parent="."]
+[node name="Label" type="Label" parent="." unique_id=2053667282]
 self_modulate = Color(1, 1, 1, 0.75686276)
 offset_right = 40.0
 offset_bottom = 30.0
