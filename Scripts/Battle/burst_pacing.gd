@@ -22,6 +22,9 @@ const EFFECT_SCALE_GROWTH: float = 0.15
 const MAXIMUM_EFFECT_SCALE: float = 2.5
 
 
+static func StepForDepth(p_ordinal: int, p_cascade_depth: int) -> int:
+	return p_ordinal if p_cascade_depth > 0 else 0
+
 static func DelayForStep(p_step: int) -> float:
 	if p_step <= 0:
 		return BASE_DELAY

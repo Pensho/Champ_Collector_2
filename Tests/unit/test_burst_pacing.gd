@@ -13,6 +13,11 @@ func test_step_zero_is_the_unescalated_base_case() -> void:
 	var base_color: Color = Color(0.298, 0.565, 0.871, 1.0)
 	assert_eq(BurstPacing.ColorForStep(base_color, 0), base_color)
 
+func test_step_follows_the_ordinal_only_inside_a_cascade() -> void:
+	assert_eq(BurstPacing.StepForDepth(3, 1), 3)
+	assert_eq(BurstPacing.StepForDepth(3, 2), 3)
+	assert_eq(BurstPacing.StepForDepth(3, 0), 0, "A result after the cascade ends should be unescalated.")
+
 func test_delay_decreases_strictly_until_it_holds_at_the_floor() -> void:
 	var previous_delay: float = BurstPacing.DelayForStep(1)
 	var reached_floor: bool = is_equal_approx(previous_delay, BurstPacing.MINIMUM_DELAY)

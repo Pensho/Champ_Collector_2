@@ -555,8 +555,8 @@ func _PlayStatusEffects(p_result: CombatResult) -> void:
 		if(null != applied and StatusEffectData.Effect_Moment.Applied == applied.effect_moment):
 			_PlayStatusEffect(applied, p_result.target_ID, 1.0)
 		return
-	var effect_scale: float = (BurstPacing.EffectScaleForStep(_cascade_instance_ordinal)
-			if p_result.cascade_depth > 0 else 1.0)
+	var effect_scale: float = BurstPacing.EffectScaleForStep(
+			BurstPacing.StepForDepth(_cascade_instance_ordinal, p_result.cascade_depth))
 	for status: StatusEffectData in p_result.triggered_by:
 		if(StatusEffectData.Effect_Moment.Triggered == status.effect_moment):
 			_PlayStatusEffect(status, p_result.target_ID, effect_scale)
@@ -673,23 +673,24 @@ func _PresentHeldResult(p_result: CombatResult) -> void:
 
 # Translates one resolver result into visuals (and post-battle damage attribution).
 func PresentResult(p_result: CombatResult) -> void:
+	var text_step: int = BurstPacing.StepForDepth(_cascade_instance_ordinal, p_result.cascade_depth)
 	match p_result.kind:
 		CombatResult.Kind.Damage:
 			if(p_result.critical):
 				_battle_ui.SpawnCombatText(
 						"Critical Strike!", CombatTextPosition(p_result.target_ID), Color(1.0, 0.729, 0.0, 1.0),
-						_cascade_instance_ordinal)
+						text_step)
 			if(p_result.amount > 0):
 				_battle_ui.SpawnCombatText(
 						str(p_result.amount), CombatTextPosition(p_result.target_ID),
-						Color(1.0, 1.0, 1.0, 1.0), _cascade_instance_ordinal)
+						Color(1.0, 1.0, 1.0, 1.0), text_step)
 				PlayImpactReaction(p_result.target_ID, p_result.amount)
 				AttributeDamage(p_result.source_ID, p_result.amount)
 			UpdateLifeBar(p_result.target_ID, p_result)
 		CombatResult.Kind.Debuff_Tick:
 			_battle_ui.SpawnCombatText(
 					str(p_result.amount), CombatTextPosition(p_result.target_ID), Color(1.0, 0.45, 0.1, 1.0),
-					_cascade_instance_ordinal)
+					text_step)
 			PlayImpactReaction(p_result.target_ID, p_result.amount)
 			for source_ID in p_result.amount_by_source.keys():
 				AttributeDamage(source_ID, p_result.amount_by_source[source_ID])
@@ -697,11 +698,11 @@ func PresentResult(p_result: CombatResult) -> void:
 		CombatResult.Kind.Debuff_Resisted:
 			_battle_ui.SpawnCombatText(
 					"Resisted debuff!", CombatTextPosition(p_result.target_ID), Color(0.801, 0.0, 0.0, 1.0),
-					_cascade_instance_ordinal)
+					text_step)
 		CombatResult.Kind.Status_Effect_Denied:
 			_battle_ui.SpawnCombatText(
 					"Status Effects Full!", CombatTextPosition(p_result.target_ID), Color(0.6, 0.6, 0.6, 1.0),
-					_cascade_instance_ordinal)
+					text_step)
 		CombatResult.Kind.Status_Applied:
 			ShowStatusApplied(p_result)
 			if(p_result.is_buff and Types.Buff_Type.Barrier == p_result.buff_type):
@@ -733,7 +734,7 @@ func PresentResult(p_result: CombatResult) -> void:
 			if(p_result.amount > 0):
 				_battle_ui.SpawnCombatText(
 						str(p_result.amount), CombatTextPosition(p_result.target_ID), Color(0.298, 0.565, 0.871, 1.0),
-						_cascade_instance_ordinal)
+						text_step)
 			SetBarrierBar(p_result.target_ID,
 					int(_character_representations[p_result.target_ID]._barrier_bar.value) - p_result.amount)
 		CombatResult.Kind.Turn_Bar_Bump:
@@ -754,15 +755,15 @@ func PresentResult(p_result: CombatResult) -> void:
 			if(p_result.amount > 0):
 				_battle_ui.SpawnCombatText(
 						str(p_result.amount), CombatTextPosition(p_result.target_ID), Color(0.2, 0.85, 0.3, 1.0),
-						_cascade_instance_ordinal)
+						text_step)
 			UpdateLifeBar(p_result.target_ID, p_result)
 		CombatResult.Kind.Trait_Text:
 			_battle_ui.SpawnCombatText(
-					p_result.text, CombatTextPosition(p_result.target_ID), p_result.color, _cascade_instance_ordinal)
+					p_result.text, CombatTextPosition(p_result.target_ID), p_result.color, text_step)
 		CombatResult.Kind.Turn_Skipped:
 			_battle_ui.SpawnCombatText(
 					"Stunned!", CombatTextPosition(p_result.target_ID), Color(0.801, 0.68, 0.0, 1.0),
-					_cascade_instance_ordinal)
+					text_step)
 		CombatResult.Kind.Death:
 			_battle_ui._turn_bar.ShowCharacterAsDead(p_result.target_ID)
 			_character_representations[p_result.target_ID].GetSpriteAnimator().PlayDeath()
@@ -771,7 +772,7 @@ func PresentResult(p_result: CombatResult) -> void:
 			if("" != p_result.text):
 				_battle_ui.SpawnCombatText(
 						p_result.text, CombatTextPosition(p_result.target_ID), Color(0.9, 0.45, 0.1, 1.0),
-						_cascade_instance_ordinal)
+						text_step)
 			for skill: Skill in _characters[p_result.target_ID]._skills:
 				_battle_ui.LoadSkillTexture(skill.icon_path)
 			if(null != _characters[p_result.target_ID]._trait):
@@ -815,7 +816,8 @@ func ShowStatusApplied(p_result: CombatResult) -> void:
 				data.icon, p_result.duration, p_result.stacks, title, description)
 	if("" != p_result.text):
 		_battle_ui.SpawnCombatText(
-				p_result.text, CombatTextPosition(p_result.target_ID), text_color, _cascade_instance_ordinal)
+				p_result.text, CombatTextPosition(p_result.target_ID), text_color,
+				BurstPacing.StepForDepth(_cascade_instance_ordinal, p_result.cascade_depth))
 
 func _MaxHealthDisplay(p_characterID: int) -> int:
 	return _resolver.GetMaxHealth(p_characterID)
