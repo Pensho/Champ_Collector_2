@@ -20,3 +20,12 @@ var depth: int
 
 # set by the generator that gets it from the biomes list
 var modifier
+
+func IsEligible() -> bool:
+	if previous_node.is_empty():
+		return true
+	for previous in previous_node:
+		if previous.is_complete and not previous.next_node.any(
+				func(p_next: NodeData) -> bool: return p_next.is_complete):
+			return true
+	return false

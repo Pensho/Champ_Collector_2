@@ -62,6 +62,47 @@ func test_victory_marks_only_current_node_complete() -> void:
 	assert_false(node_3.is_complete, "Non-current node must not be marked complete")
 
 
+func _Link(p_from: NodeData, p_to: NodeData) -> void:
+	p_from.next_node.append(p_to)
+	p_to.previous_node.append(p_from)
+
+# fork -> left_1 -> left_2 -> merge, fork -> right -> merge
+func _BuildFork() -> Dictionary:
+	var graph: Dictionary = {}
+	for key: String in ["fork", "left_1", "left_2", "right", "merge"]:
+		graph[key] = NodeData.new()
+	_Link(graph["fork"], graph["left_1"])
+	_Link(graph["left_1"], graph["left_2"])
+	_Link(graph["left_2"], graph["merge"])
+	_Link(graph["fork"], graph["right"])
+	_Link(graph["right"], graph["merge"])
+	return graph
+
+func test_both_sides_of_fork_eligible_before_choice() -> void:
+	var graph: Dictionary = _BuildFork()
+	graph["fork"].is_complete = true
+	assert_true(graph["left_1"].IsEligible(), "Each side of a fork is open until one is completed.")
+	assert_true(graph["right"].IsEligible(), "Each side of a fork is open until one is completed.")
+	assert_false(graph["merge"].IsEligible(), "The merge waits for a completed branch.")
+
+func test_completing_one_side_of_fork_locks_the_other() -> void:
+	var graph: Dictionary = _BuildFork()
+	graph["fork"].is_complete = true
+	graph["left_1"].is_complete = true
+	assert_false(graph["right"].IsEligible(), "Completing one side of a fork must lock the other side.")
+	assert_true(graph["left_2"].IsEligible(), "The chosen branch continues.")
+
+func test_merge_eligible_after_chosen_branch_completes() -> void:
+	var graph: Dictionary = _BuildFork()
+	graph["fork"].is_complete = true
+	graph["right"].is_complete = true
+	assert_false(graph["left_1"].IsEligible(), "The abandoned branch stays locked.")
+	assert_true(graph["merge"].IsEligible(), "Completing the chosen branch opens the merge node.")
+
+func test_root_node_is_eligible() -> void:
+	assert_true(NodeData.new().IsEligible(), "A node with no previous node is the adventure's start.")
+
+
 func test_nodes_start_incomplete() -> void:
 	var node := NodeData.new()
 	node.index = 1

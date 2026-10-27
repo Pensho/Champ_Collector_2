@@ -119,7 +119,7 @@ func Populate(p_nodes: Array[NodeData]) -> void:
 
 	var eligible_y: float = canvas_height
 	for node in p_nodes:
-		var is_eligible: bool = _IsEligible(node)
+		var is_eligible: bool = node.IsEligible()
 		var node_ui: AdventureNodeUi = _node_ui_scene.instantiate()
 		_graph_canvas.add_child(node_ui)
 		node_ui.position = _node_positions[node]
@@ -130,11 +130,3 @@ func Populate(p_nodes: Array[NodeData]) -> void:
 
 	await get_tree().process_frame
 	_scroll_container.scroll_vertical = int(eligible_y - _scroll_container.size.y * 0.6)
-
-func _IsEligible(p_node: NodeData) -> bool:
-	if p_node.previous_node.is_empty():
-		return true
-	for prev in p_node.previous_node:
-		if prev.is_complete:
-			return true
-	return false

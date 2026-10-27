@@ -1325,7 +1325,7 @@ In the top right an Exit button.
 Centered there should be a difficulty option if the first one has been completed and a start button.
 The player should be expected to click on either the left or right side to choose an adventure, then difficulty if available and lastly the start button. If an adventure is already in progress darken the difficulty option and do not allow edits, only to show which was the current difficulty.
 
-An adventures content is a series of connected nodes of various types where the player has to unlock following nodes by completing a currently available one. It will have branching paths of nodes and end in a boss battle to complete the Adventure at which point new difficulties will unlock and the player may start a new one.
+An adventures content is a series of connected nodes of various types where the player has to unlock following nodes by completing a currently available one. It will have branching paths of nodes, where completing a node on one path locks the other paths of that fork, and end in a boss battle to complete the Adventure at which point new difficulties will unlock and the player may start a new one.
 A failed encounter in Adventure will not affect the state of the Adventure and the state is persistent over sessions.
 
 #### 5.1.1. Adventures
