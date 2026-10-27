@@ -27,6 +27,6 @@ script = ExtResource("1_0dpkm")
 name = "Disarm"
 description = "Deals damage to a single enemy, scaled by Attack, applies Enfeeble for 2 turns, and pushes them backward 10% on the turn bar."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Disarm/disarm_1.jpg"
-cooldown = 2
+cooldown = 3
 effects = Array[ExtResource("1_xaiq1")]([SubResource("Resource_h6x4g"), SubResource("Resource_m0ay8"), SubResource("Resource_push")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"
