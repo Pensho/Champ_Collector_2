@@ -26,7 +26,7 @@ func Init(p_rarity: Types.Rarity) -> void:
 
 	_title = "Standing Record"
 	_body = "Every enemy has a personal Infraction tally, up to 9, that grows whenever they" \
-			+ " gain a buff, place a zone, or land a debuff on an ally."
+			+ " gain a buff, place a zone, land a debuff on an ally, or lose a buff to Signed Writ."
 
 func StartOfBattle(p_owner_ID: int, p_resolver: BattleResolver) -> void:
 	_owner_ID = p_owner_ID
