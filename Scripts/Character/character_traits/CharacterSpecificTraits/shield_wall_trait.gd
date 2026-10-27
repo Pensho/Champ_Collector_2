@@ -23,7 +23,7 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_trait_texture = load("res://Assets/Champ_Collector/Icons/Abilities/Passives/Shield_Wall_Trait/shield_wall_trait.png")
 	# Placeholder until Shield Wall has its own turn bar art.
 	_turn_bar_reach = TurnBarReach.new(PROXIMITY_WINDOW, load(
-			"res://Assets/Champ_Collector/Icons/Abilities/Passives/Plan_Trait/Plan_Trait_Turnbar_Texture_2.jpg"),
+			"res://Assets/Champ_Collector/Icons/Abilities/Passives/Shield_Wall_Trait/shield_wall_turnbar_texture.jpg"),
 			TurnBarReach.DEFAULT_OPACITY, true)
 	_execution_steps[Types.Combat_Event.Ally_Damage_Taken] = Callable(self, "OnAllyDamageTaken")
 	_execution_steps[Types.Combat_Event.Skill_Cast] = Callable(self, "OnSkillCast")

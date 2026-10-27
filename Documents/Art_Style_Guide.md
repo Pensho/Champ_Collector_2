@@ -95,6 +95,7 @@ Part I whole, and no section grants an exemption this table does not carry.
 | Turn bar zone art | Non-negotiables 1, 2 and 3; section 4's light direction; 14.1's outline and key background | 13.3.1 |
 | Gear and reagent icons | Non-negotiable 3; section 4's camera, ground line and composition tail; the material slots of section 3 | 11.1, 11.3 |
 | Effects and VFX | Non-negotiable 3's coverage cap only | 14.1 |
+| Turn bar passive overlays | As turn bar zone art | 13.3.2 |
 
 ---
 
@@ -3348,6 +3349,34 @@ woodcut print style illustration, a sheet of five small separate curling wave cr
 - **Arrival and dissipation.** How a zone appears when placed and leaves when its
   last charge is consumed. Engine animation, but one convention across all zones.
 
+#### 13.3.2 Turn bar passive overlays
+
+A passive that acts on a stretch of the turn bar around its holder — the
+Warlord's Shield Wall, the Diviner's Foresight, the Tactician's Plan — shows
+that stretch as an overlay. It takes 13.3.1's ranking and substitute rules;
+what differs is below.
+
+- **An area, not an object.** The overlay fills the whole covered stretch edge
+  to edge, so the player reads every pixel of it as affected. No centerpiece,
+  no particles, and no background, so no key color is needed.
+- **The far end is the boundary.** One heavy shape closes the outer edge.
+  The holder's edge stays open.
+- **One half, mirrored in the engine.** Author the side that extends to the
+  left of the holder, holder at the right edge; the engine mirrors it for a
+  two-sided passive. Nothing is drawn along the holder's edge, or the mirrored
+  pair shows a doubled line through the holder. A one-sided passive uses the
+  half alone.
+- **Size.** Turn bar 1240 px; each half is its percentage of that by 74 px
+  (Shield Wall, 15%: 186 × 74). Generate at 8× and downscale.
+- **The motif is the character's element from outside reality** (8.1), reduced
+  to a few large shapes in the Role's accent family. Opacity is set in the
+  engine.
+
+**Shield Wall (Warlord).** Generated as the right-hand half and flipped
+horizontally afterwards.
+
+woodcut print style illustration, a flat panel of leaded stained glass filling the entire image edge to edge, seen straight on, shaped as one half of a rose window: five straight lead lines radiating out from the middle of the left edge and fanning across the panel toward the right, crossed by one curved lead line arcing from the top edge to the bottom edge halfway across, dividing the glass into twelve large panes, the panes alternating soft muted pale steel blue-grey and pale ash grey, the outermost panes along the right side in muted pale brick red, the right edge closed by one thick upright bar of dark iron running from the top edge to the bottom edge, painted muted deep brick red, its top and bottom ends each finished in a small curled hook turning inward, two or three carved lines across the larger panes, lead lines and outlines drawn in darker shades of each color, flat color fields, soft muted colors, gentle low contrast, large simple shapes readable at very small size, the glass cut off flat and straight along the left, top and bottom edges of the image
+
 ### 13.4 Layout and screen inventory
 
 > **Not yet written.** One entry per screen, each with its grey-box (4.3) before
@@ -3599,11 +3628,10 @@ line is a trap, not a history; the rule it produced lives in the section named.
 Elements, same generation settings across the whole set. Record them here once
 chosen. Changing model mid-roster is the fastest way to break cohesion.
 
-**Transparent background for keyed elements.** Leonardo's transparency setting
-returns environment elements already cut out, with the background clause left out
-of the prompt, and is the default for environment elements going forward
-(10.3.7). Not yet tried on characters, whose composition tail (4.2) still asks
-for a flat background.
+**Transparent background.** Not offered on the project's current model.
+Elements, gear and reagents go back to the white key in 10.3.7, and zone art to
+13.3.1's magenta. Wherever a section below says to generate with transparency,
+read the white key until a model with it is locked (above).
 
 **Pass and record prompts whole.** A subject block sent without the general block
 in front of it loses the entire woodcut style. Every prompt handed over for
