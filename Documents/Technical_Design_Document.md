@@ -1080,7 +1080,6 @@ var _on_trigger: Array[SkillEffect] = []        # the zone's effect, as ordinary
 var _visual_scene: PackedScene
 var _affected_since_entry: Array[int] = []      # character IDs already affected this visit
 var _source_name: String = ""                   # placing skill, or graft/trait; see below
-var _damage_multiplier: float = 1.0             # ZoneResolver.AmplifyZoneDamage, see below
 ```
 
 **Placement.** A `ZoneEffect` (see [Section 6.1](#61-resource-templates)) is an ordinary
@@ -1154,13 +1153,6 @@ multiply by `zone_magnitude`, which is `1.0` outside a zone trigger, so non-zone
 unaffected. `GetIncomingZoneEffectMultiplier` (default `1.0`) lets a character's own trait amplify
 or dampen what they receive from *any* zone, independent of the owner's Knowledge (e.g.
 `RootfeederGraft` at 150% against enemy-owned zones).
-
-**Damage amplification.** `ZoneResolver.AmplifyZoneDamage(zone_ID, factor)` multiplies
-`Zone._damage_multiplier` in place (so repeated calls compound), read into
-`context.zone_damage_multiplier` by `_ResolveZoneEffect` and contributed by `DamageEffect.Resolve`
-as its own `"<source> (amplified)"` `CombinedDamageModifier` bucket whenever it is not `1.0` — a
-distinct bucket from the zone's own trigger key, so the two multiply rather than collide. Generic
-plumbing, not authored on any specific zone, with no caller.
 
 **Visuals.** `ZoneEffect.visual_scene` is an exported `PackedScene`, resolved when the `.tres` loads
 at battle setup; `SpawnZoneEffect` only pays `instantiate()`, no per-placement `load()`. The three
@@ -1896,7 +1888,7 @@ zone's own `on_trigger` effects against one character at a fraction of their nor
 zone-side counterpart to a skill repeat's Echo, and the one entry point a trait uses rather than
 assembling a zone `SkillCastContext` itself. `_ResolveZoneEffect`'s `p_strength_multiplier` scales
 both `zone_magnitude` (what every status and turn-bar zone effect reads) and
-`zone_damage_multiplier` (what `DamageEffect` and `BarrierZoneEffect` read), since a scaled repeat
+`zone_strength_multiplier` (what `DamageEffect` and `BarrierZoneEffect` read), since a scaled repeat
 owes the same fraction whatever kind of effect the zone carries. `Skills.ApplyBarrierZone`'s
 `p_magnitude_multiplier` (default `1.0`) is how the Barrier arm receives it.
 

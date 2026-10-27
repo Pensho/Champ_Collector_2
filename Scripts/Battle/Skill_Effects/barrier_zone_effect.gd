@@ -5,8 +5,7 @@ class_name BarrierZoneEffect extends SkillEffect
 ## trait's charge-investment bonus and its Zone_Used charge-grant hook stay intact.
 ## It reads zone_strength_multiplier — not a Barrier's own scaling, but the scalar a
 ## repeat resolution of the whole zone carries (ZoneResolver.ResolveZoneEffectEcho), which
-## the Barrier owes the same as a damage zone owes its own. zone_damage_multiplier is
-## DamageEffect-only, so a Barrier no longer inherits Sorcerer damage amplification.
+## the Barrier owes the same as a damage zone owes its own.
 
 func Resolve(p_context: SkillCastContext) -> void:
 	for target_ID in p_context.TargetsFor(self):

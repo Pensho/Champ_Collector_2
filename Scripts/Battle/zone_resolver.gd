@@ -126,11 +126,6 @@ func ReplenishZoneCharge(p_zone_ID: int, p_amount: int, p_max_charges: int) -> v
 		return
 	SetZoneCharges(p_zone_ID, mini(_zones[p_zone_ID]._charges + p_amount, p_max_charges))
 
-func AmplifyZoneDamage(p_zone_ID: int, p_factor: float) -> void:
-	if(not _zones.has(p_zone_ID)):
-		return
-	_zones[p_zone_ID]._damage_multiplier *= p_factor
-
 func SectionWithMostAllies(p_owner_ID: int) -> int:
 	var available: Array[int] = AvailableZoneIDs()
 	if(available.is_empty()):
@@ -173,7 +168,6 @@ func _ResolveZoneEffect(
 	context.zone_magnitude = (Skills.ZoneMagnitude(1.0, p_zone._owner_knowledge)
 			* effect_multiplier * p_strength_multiplier)
 	context.zone_source_name = p_zone._source_name
-	context.zone_damage_multiplier = p_zone._damage_multiplier
 	context.zone_strength_multiplier = p_strength_multiplier
 	for effect in p_zone._on_trigger:
 		if(context.ConditionMet(effect)):

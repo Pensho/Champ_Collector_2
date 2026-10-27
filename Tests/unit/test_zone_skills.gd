@@ -266,27 +266,6 @@ func test_same_zone_kind_in_two_sections_gets_one_key() -> void:
 	assert_eq(first_key, second_key,
 		"The same zone kind placed in a different section should reuse the same bucket key")
 
-func test_amplify_zone_damage_contributes_its_own_bucket_on_the_next_trigger() -> void:
-	TestFactory.place_zone(_resolver, 0, 0, _damage_zone_effect(), Types.Skill_Target.ZoneAll, "Unstable Rift")
-	_resolver.GetZoneResolver().AmplifyZoneDamage(0, 1.15)
-	_positions.occupants_by_zone[0] = [3]
-	var results: Array[CombatResult] = _resolver.GetZoneResolver().TriggerZones(0)
-
-	var modifier: CombinedDamageModifier = _first_damage_modifier(results)
-	assert_almost_eq(modifier.Buckets().get(&"Zone: Unstable Rift (amplified)", 0.0), 0.15, 0.0001,
-		"AmplifyZoneDamage should contribute its own bucket, additive with the zone's own key")
-
-func test_amplify_zone_damage_compounds_across_repeated_calls() -> void:
-	TestFactory.place_zone(_resolver, 0, 0, _damage_zone_effect(), Types.Skill_Target.ZoneAll, "Unstable Rift")
-	_resolver.GetZoneResolver().AmplifyZoneDamage(0, 1.15)
-	_resolver.GetZoneResolver().AmplifyZoneDamage(0, 1.15)
-	_positions.occupants_by_zone[0] = [3]
-	var results: Array[CombatResult] = _resolver.GetZoneResolver().TriggerZones(0)
-
-	var modifier: CombinedDamageModifier = _first_damage_modifier(results)
-	assert_almost_eq(modifier.Buckets().get(&"Zone: Unstable Rift (amplified)", 0.0), 0.3225, 0.0001,
-		"Repeated AmplifyZoneDamage calls should compound (1.15^2 - 1.0)")
-
 func test_inscription_surge_deals_more_damage_with_zones_standing_on_the_bar() -> void:
 	_boost_caster_and_targets()
 	var baseline_before: int = _roster[3]._current_health
