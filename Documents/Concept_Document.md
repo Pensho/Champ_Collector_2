@@ -60,7 +60,7 @@ behind each tag.
 
 #### 1.1.4. Rules the channels must obey
 
-* **Stack ceilings:** cap what accrues automatically; leave uncapped what costs the player an action or a resource. The existing capped passives (Arcane Instability, Steel and Sea stacks) are correct as written — they accrue on their own. A resource the player deliberately builds may run without a ceiling.
+* **Stack ceilings:** watch automatic accrual: an uncapped stack that accrues on its own is flagged for review when its growth could outrun the fight's numbers, and is capped only when it does. A resource the player deliberately builds may run without a ceiling.
 * **Cascade termination:** every cascade must terminate, under two independent bounds. **Depth** bounds chain length — an effect triggered from inside an Echo sits one level deeper, and a chain able to re-enter itself is a defect, not a large number. **Fan-out** bounds how many Echoes one originating action may release in total, which depth does not constrain: many Echoes at the same level are breadth, not depth. The two do not substitute for each other.
 * **A trigger fires once; the Echoes it yields are not separately re-triggered.** Each trigger source fires at most once per originating action, and that single firing yields an Echo count. Repetition is therefore expressible without re-entry — an effect may deliberately resolve once per point of a status's remaining duration or once per remaining zone charge, and repeat Echoes are what make Echo count multiply against the other two channels rather than add to them. A count read from a live quantity is fixed when the trigger fires, not re-read as the Echoes drain it.
 * **Every Channel 3 contribution to the same cascade adds into one Echo count.** A contribution is either an **enabler**, which can create a cascade where the action had none, or an **extender**, which only adds to a cascade an enabler already created — an extender contributes nothing when nothing else enabled. The same mechanic can be either depending on what it lands on.
@@ -264,7 +264,7 @@ Current roles, their identity and purpose exist as follows:
 - Sorcerer
     - A damage dealer that harnesses the power of magic to deal Area of Effect damage and control the battlefield. Wields the unstable, shunned magic left behind by the God of Magic, and excels at drawing power from reagents scavenged from that era's ruins. Signature zone: Unstable Rift (see section 3.2.4.1). Primary attributes: Mysticism, Knowledge.
     - Purpose: Damage, Debuffer, Control
-    - Passive: Arcane Instability (implemented) [Channel 3] - Using any skill grants one Instability stack (maximum 5); stacks do not persist between combats. Consuming a reagent grants two stacks, amplifies the reagent's effect, and grants one Echo charge. At maximum stacks the next skill also releases a Surge — damage to every character, the Sorcerer included, scaling 1.4x with the Sorcerer's Mysticism, never a critical hit — then stacks reset and one Echo charge is granted, banked for the following cast. Each Echo charge makes the next skill repeat once more, all charges consumed when it does, each Echo compounding on the previous; a repeated debuff or zone charge is not reapplied, only the damage. A cast that placed a zone instead has each Echo amplify that zone (see Unstable Rift, section 3.2.4.2).
+    - Passive: Arcane Instability (implemented) [Channel 3] - Each skill grants one Instability after it resolves, Echoes included (maximum 5); Instability does not persist between combats. Consuming a reagent grants two and amplifies the reagent's effect. A gain that would carry Instability past 5 releases a Surge — damage to every character, the Sorcerer included, scaling 1.4x with the Sorcerer's Mysticism, never a critical hit — and resets Instability to 0. Only a Surge lowers Instability. Cataclysm Echoes once per Instability held when cast, the first Echo at 50% and each later one compounding on the previous; a repeated debuff is not reapplied, only the damage.
         - Echo compounding: 1.40 Uncommon, 1.50 Rare, 1.60 Epic, 1.70 Legendary
         - Reagent amplification: 20% Uncommon, 30% Rare, 40% Epic, 50% Legendary
         - First Echo fraction: 50% at every rarity
@@ -325,7 +325,7 @@ Current roles, their identity and purpose exist as follows:
 - Herald of the loom
     - A stance character whose three threads shape how its Echoes and debuffs behave. Primary attributes: Mysticism, Accuracy.
     - Purpose: Debuffer, Buffer
-    - Passive: Weft and Warp [Channel 3 — Cascade] - The Herald always holds exactly one thread, starting on Silver at battle start; switching is a free action available any number of times during the Herald's own turn, and the active thread persists as ordinary trait state (not a status effect) until changed again. Golden Thread: gain 1 Tension (capped at 7) whenever an Echo resolves on an enemy, Cut the Cloth's own Echoes excluded. Silver Thread: the Herald's own applied debuffs cannot be resisted and last 1 turn longer. Black Thread: extends the cascade the Herald's own action produces by one Echo (an extender — it adds nothing on a cast that has no Echo of its own). Echoes the Herald produces deal bonus damage.
+    - Passive: Weft and Warp [Channel 3 — Cascade] - The Herald always holds exactly one thread, starting on Silver at battle start; switching is a free action available any number of times during the Herald's own turn, and the active thread persists as ordinary trait state (not a status effect) until changed again. Golden Thread: gain 1 Tension (capped at 7) once per action of another ally that resolves an Echo on an enemy. Silver Thread: the Herald's own applied debuffs cannot be resisted and last 1 turn longer. Black Thread: extends the cascade the Herald's own action produces by one Echo (an extender — it adds nothing on a cast that has no Echo of its own). Echoes the Herald produces deal bonus damage.
         - Self-bonus: +5% Uncommon, +10% Rare, +15% Epic, +20% Legendary
         - Starting Tension: 0 Uncommon/Rare, 1 Epic/Legendary. Tension does not persist between combats.
     - Fielded by: `Herald_of_the_loom.tres`
@@ -346,7 +346,7 @@ Current roles, their identity and purpose exist as follows:
     - Damage dealer. Primary attributes: Attack, Speed.
     - The Tidal Corsair is a Combo character where you plan your moves ahead, highly mobile but not inherently strong unless you set up your attacks correctly.
     - Purpose: Damage
-    - Passive: Wrangle the Sea [Channel 2 + Enabler] - Boarding Strike grants a Steel stack, Saltwater Shot grants a Sea stack (up to 3 held). Corsair's Reckoning consumes all stacks and resolves by composition: Steel only (Broadside) adds bonus damage per Steel stack; Sea only (Bring Her Alongside) raises or resupplies The Gilded Deck at 2 charges per Sea; mixed (Boarding Party) deals base damage, adds 1 Deck charge per Sea (capped at 2), and grants every other living ally Slipstream for 2 turns and Haste for 1 turn. An ally whose turn starts on the Deck gains a permanent Sea Legs stack, boosting their own highest primary attribute (not Health), scaled by the Corsair's Knowledge, capped at 4.
+    - Passive: Wrangle the Sea [Channel 2 + Enabler] - Boarding Strike grants a Steel stack, Saltwater Shot grants a Sea stack (up to 3 held). Corsair's Reckoning consumes all stacks and resolves by composition: Steel only (Broadside) adds bonus damage per Steel stack; Sea only (Bring Her Alongside) raises or resupplies The Gilded Deck at 2 charges per Sea; mixed (Boarding Party) deals base damage, adds 1 Deck charge per Sea, and grants every other living ally Slipstream for 2 turns and Haste for 1 turn. An ally whose turn starts on the Deck gains a permanent Sea Legs stack, boosting their own highest primary attribute (not Health), scaled by the Corsair's Knowledge, capped at 4.
         - Damage per Steel stack: 45% Uncommon, 50% Rare, 55% Epic, 60% Legendary
         - Sea Legs bonus per stack: 5% Uncommon, 6% Rare, 7% Epic, 8% Legendary
         - Known bug: the in-combat Sea Legs tooltip has been observed showing a lower percent on a
@@ -685,11 +685,11 @@ the fix belongs in the data or the document.
 * Unstable Rift
     * Type: Turn Bar (Zone)
     * Cooldown: 3 turns
-    * Effect: [Channel 1 / Enabler] All affected characters, allies and enemies alike, gain the Warped debuff for 2 turns and take damage scaling with the Sorcerer's Mysticism — enemies take 30% of a standard hit, allies 15%. Holds 5 charges. Echoes amplify this zone rather than repeating its damage (see Arcane Instability, section 3.1.3).
+    * Effect: [Channel 1 / Enabler] All affected characters, allies and enemies alike, gain the Warped debuff for 2 turns and take damage scaling with the Sorcerer's Mysticism — enemies take 30% of a standard hit, allies 15%. Holds 5 charges.
 * Cataclysm
     * Type: Damage (AoE)
     * Cooldown: 4 turns
-    * Effect: [Channel 1 + Channel 2] Deals damage to all enemies, scaling with Mysticism. Targets currently affected by the Warped debuff take 30% increased damage.
+    * Effect: [Channel 1 + Channel 2 + Channel 3 — Cascade] Deals damage to all enemies, scaling with Mysticism, and Echoes once per Instability held (see Arcane Instability, section 3.1.3). Targets currently affected by the Warped debuff take 30% increased damage.
 
 ###### Scholar
 * Sharp Rebuttal

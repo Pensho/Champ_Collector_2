@@ -35,7 +35,8 @@ target = 8
 [resource]
 script = ExtResource("1_skill")
 name = "Inscribe"
-description = "Deals damage to a single enemy, scaling with Mysticism, and writes a Wild Glyph zone into the left-most empty turn bar section, if any. Affected enemies take damage scaling with Mysticism and gain the Warped debuff."
+description = "Deals damage to a single enemy, scaling with Mysticism, and writes a Wild Glyph zone into the left-most empty turn bar section, if any.
+Affected enemies take damage scaling with Mysticism and gain the Warped debuff."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Opponent_Active_Skills/Inscribe/Inscribe.png"
 effects = Array[ExtResource("1_effect")]([SubResource("Resource_hit"), SubResource("Resource_zone")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

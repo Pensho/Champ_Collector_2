@@ -60,6 +60,8 @@ var _turn_bar_damage_remainder: Dictionary[int, float] = {}
 
 var _turn_ordinal: int = 0
 var _turn_ordinal_opened: bool = false
+# Advances once per outermost batch, so one skill or reagent reads as one action.
+var _action_ordinal: int = 0
 
 # The turn-bar section a player just clicked, consumed once by the next ZoneEffect
 # placement in the skill they cast it for; -1 when nothing is pending (an enemy's own
@@ -176,6 +178,9 @@ func IsTheBattleOver() -> Winner:
 
 func GetTurnOrdinal() -> int:
 	return _turn_ordinal
+
+func GetActionOrdinal() -> int:
+	return _action_ordinal
 
 func _OpenTurnOrdinal() -> void:
 	_turn_ordinal += 1
@@ -638,6 +643,7 @@ func _RemoveStatuses(p_statuses: Array, p_target_ID: int, p_count: int) -> void:
 func _BeginBatch() -> void:
 	if(_batch_depth == 0):
 		_batch = []
+		_action_ordinal += 1
 	_batch_depth += 1
 
 

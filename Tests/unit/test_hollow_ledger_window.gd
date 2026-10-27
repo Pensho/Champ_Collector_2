@@ -72,3 +72,8 @@ func test_glossary_description_without_default_reads_variable_amount() -> void:
 	var data: StatusEffectData = _StatusData(StatusEffectData.MagnitudeKind.HighestBasePrimaryAttributePercent,
 			0.0, "Boosts an attribute by {percent_decimal}%. Stacks.")
 	assert_eq(HollowLedgerWindow.GlossaryDescription(data), "Boosts an attribute by a variable amount. Stacks.")
+
+func test_glossary_description_without_default_covers_attribute_and_attacker_damage_tokens() -> void:
+	var data: StatusEffectData = _StatusData(StatusEffectData.MagnitudeKind.AttributePercent, 0.0,
+			"Deals {attacker_damage_percent}% more, reduced by {attribute_percent}%.")
+	assert_eq(HollowLedgerWindow.GlossaryDescription(data), "Deals a variable amount more, reduced by a variable amount.")

@@ -607,8 +607,11 @@ existing `status_ID`, so `battle.gd`'s `ShowStatusApplied` now checks `_status_v
 `CharacterRepresentation.UpdateStatusEffect` (new, alongside `AddStatusEffect`) rather than
 allocating a second icon slot for a status that, in combat state, never left the character — the
 same one-instance-per-`status_ID` assumption `SetStatusEffectDuration`/`RemoveStatusEffects` already
-made. The tooltip's `{percent}` token now reads `CombatResult.fraction`, which `_EmitBuffApplied`
-stamps from the buff's own `value` the same way `_EmitDebuffApplied` already did for debuffs.
+made. `StatusEffectData.FormatDescription` fills the tooltip's tokens: `{percent}` reads
+`CombatResult.fraction`, which `_EmitBuffApplied` and `_EmitDebuffApplied` stamp from the status's
+own `value`; `{attribute_percent}` scales that fraction by `attribute_modifiers`' own weight; and
+`{attacker_damage_percent}` reads `CombatResult.status_value`, the raw `value` before attribute
+amplification, times `attacker_damage_value_multiple` (Sanction carries both).
 
 The consumed and event-triggered effects: two more `MagnitudeKind` values
 (`DamageAbsorb` for Barrier, `RandomAttributePercent` for Wanderlust) and three more
@@ -1157,10 +1160,7 @@ or dampen what they receive from *any* zone, independent of the owner's Knowledg
 `context.zone_damage_multiplier` by `_ResolveZoneEffect` and contributed by `DamageEffect.Resolve`
 as its own `"<source> (amplified)"` `CombinedDamageModifier` bucket whenever it is not `1.0` — a
 distinct bucket from the zone's own trigger key, so the two multiply rather than collide. Generic
-plumbing, not authored on any specific zone; the Sorcerer's Echo is the first caller (see 7.1's
-`SkillCastContext.repeat_bonus`), amplifying a zone its own cast placed instead of repeating the
-zone's damage directly, since the zone's damage lives in `on_trigger`, not the skill's own
-top-level effects.
+plumbing, not authored on any specific zone, with no caller.
 
 **Visuals.** `ZoneEffect.visual_scene` is an exported `PackedScene`, resolved when the `.tres` loads
 at battle setup; `SpawnZoneEffect` only pays `instantiate()`, no per-placement `load()`. The three
@@ -1374,9 +1374,7 @@ drained event, then:
 **The canonical skill replay.** `BattleResolver.ResolveSkillEcho(caster_ID, skill_ID, target_IDs,
 strength_multiplier)` builds a fresh `SkillCastContext` (use count 0, new `TraitSkillResult`), sets
 `repeat_bonus = strength_multiplier - 1.0`, and re-resolves only the `DamageEffect` entries whose
-`ConditionMet` holds. It is the default `resolve` for any Base contribution that supplies none. The
-Sorcerer's zone-amplification branch (below) is the one contributor whose `resolve` does something
-other than replay the skill.
+`ConditionMet` holds. It is the default `resolve` for any Base contribution that supplies none.
 
 **The strength channel.** `BeginEchoInstance` takes a fifth argument,
 `p_strength_contributions: Dictionary[StringName, float]`, keyed by contributing mechanic so
@@ -1402,17 +1400,18 @@ contributions. `repeat_bonus` keeps its own job, the *intrinsic* strength a mech
 own Echoes; external scalars go through this channel instead.
 
 **The five skill-replay mechanics as contributors.** Cut the Cloth (`WeftAndWarpTrait`), the
-Sorcerer's Echo charges, The Long Furrow, Borrowed Time and Comorbidity all register a Base
+Sorcerer's Cataclysm Echoes, The Long Furrow, Borrowed Time and Comorbidity all register a Base
 contributor rather than running a private loop:
 - **Cut the Cloth.** `OnSkillCast` banks `_pending_cut_the_cloth_instances = _tension` and zeros
   Tension; a Base contributor on `Skill_Resolved` (matched on `subject_ID == owner_ID`) returns
   those instances at strength 1.0, consuming the pending count — the skill's own 90% scaling lives
   on `Cut_the_Cloth.tres`, not the contribution.
-- **Sorcerer.** A Base contributor returns `_echoes_for_this_cast` instances with its own `resolve`
+- **Sorcerer.** `OnSkillCast` sets `_echoes_for_this_cast` to the Instability held when the cast is
+  Cataclysm, 0 otherwise; a Base contributor returns that many instances with its own `resolve`
   (`_OnSkillResolvedRepeat`), since each Echo's strength compounds by index
   (`REPEAT_FRACTION * ECHO_COMPOUNDING^i`) — genuinely the mechanic's own business rather than a
-  flat `strength_multiplier`. That `resolve` either amplifies a zone this same cast placed
-  (`ZoneResolver.AmplifyZoneDamage`, see 7.5) or replays the cast's `DamageEffect`s directly.
+  flat `strength_multiplier`. The cast's Instability gain runs in `EndOfTurn`, after the cascade
+  drains, so a gain past the maximum releases the Surge after the cast's own Echoes.
 - **The Long Furrow.** A Base contributor returns 1 instance at `Magnitude()`, gated on the
   charge-span check already computed in `OnSkillCast`.
 - **Borrowed Time.** A Base contributor on `Skill_Resolved`, gated on the holder carrying the buff
@@ -1435,10 +1434,10 @@ contributor rather than running a private loop:
 queried only for `Skill_Resolved` and need a Base, so it cannot inflate Comorbidity (`Debuff_Ticked`);
 Mirror Coat and Overflow are deferred triggers, unreachable by any contributor at all.
 
-**Golden Thread and the generic self-bonus.** `CascadeEvent.mechanic_key`, stamped by
-`_ResolveContributions`/`_ResolveEvent` right before `_NotifyCascadeInstanceResolved`, is what
-`OnCascadeInstanceResolved` checks to exclude Cut the Cloth's own instances from feeding Golden
-Thread — an explicit exclusion rather than an accident of which paths called `Post`. The Herald's
+**Golden Thread and the generic self-bonus.** `OnCascadeInstanceResolved` grants Tension only for
+an instance whose `origin_ID` is another ally of the Herald, and at most once per
+`BattleResolver.GetActionOrdinal()` — an ordinal `_BeginBatch` advances once per outermost batch, so
+one skill or reagent reads as one action however many Echoes it releases. The Herald's
 self-bonus is a `SubscribeStrengthModifier` scoped to `origin_ID == owner_ID`, so it applies to
 any Echo the Herald produces regardless of mechanic, not only Cut the Cloth's.
 

@@ -66,7 +66,7 @@ const LIVE_CASES: Array[Dictionary] = [
 	# --- Tier 2: instance counts (a repeat mechanic's real resolution count) ---
 	{"name": "Herald of the Loom Cut the Cloth (7 Tension into 8 total resolutions)",
 			"setup": "_case_herald_cut_the_cloth_instances"},
-	{"name": "Sorcerer Arc Lash (one Echo charge into 2 total resolutions)",
+	{"name": "Sorcerer Cataclysm (2 Instability into 3 total resolutions)",
 			"setup": "_case_sorcerer_echo_instances"},
 	{"name": "Chronophage Borrowed Time (an ally alone in its section gains a second resolution)",
 			"setup": "_case_chronophage_borrowed_time_instances"},
@@ -575,7 +575,7 @@ func _case_herald_cut_the_cloth_instances(p_name: String) -> void:
 			"%s: 7 Tension must produce 8 total resolutions (1 base cast + 7), the manifest's declared ceiling" %
 			p_name)
 
-# --- Tier 2: Sorcerer — one Echo charge doubling Arc Lash's resolution count ---
+# --- Tier 2: Sorcerer — Instability held setting Cataclysm's resolution count ---
 
 func _case_sorcerer_echo_instances(p_name: String) -> void:
 	var roster: Dictionary[int, Character] = _build_roster({0: SORCERER})
@@ -586,21 +586,18 @@ func _case_sorcerer_echo_instances(p_name: String) -> void:
 	# never fires regardless of how many charges are banked.
 	(sorcerer._trait as SorcererTrait).StartOfBattle(0, resolver)
 
-	# One reagent consumption grants exactly one Echo charge (sorcerer_trait.gd's
-	# OnReagentConsumed) without also crossing the 5-stack Surge threshold — a reduced,
-	# structurally faithful proof of the repeat mechanism (N charges -> N+1 resolutions)
-	# rather than a reproduction of Role_Kit_Design.md 9.3's full 4-charge figure, which
-	# would also trigger a Surge and complicate the resolution count.
+	# One reagent consumption grants 2 Instability without reaching the Surge — a reduced,
+	# structurally faithful proof of the repeat mechanism (N Instability -> N+1 resolutions).
 	resolver.ResolveReagent(0, "Mending_Icon_Rare", 0)
 
-	var arc_lash_index: int = _skill_index(sorcerer, "Arc Lash")
-	var results: Array[CombatResult] = resolver.ResolveSkill(0, [3], arc_lash_index)
+	var cataclysm_index: int = _skill_index(sorcerer, "Cataclysm")
+	var results: Array[CombatResult] = resolver.ResolveSkill(0, [3], cataclysm_index)
 	var damage_count: int = 0
 	for result: CombatResult in results:
-		if(CombatResult.Kind.Damage == result.kind):
+		if(CombatResult.Kind.Damage == result.kind and 3 == result.target_ID):
 			damage_count += 1
-	assert_eq(damage_count, 2,
-			"%s: one banked Echo charge must produce 2 total resolutions (1 original + 1 Echo)" % p_name)
+	assert_eq(damage_count, 3,
+			"%s: 2 Instability must produce 3 total resolutions (1 original + 2 Echoes)" % p_name)
 
 # --- Tier 2: Chronophage — Borrowed Time's external repeat, driven through FakeTurnPositions ---
 

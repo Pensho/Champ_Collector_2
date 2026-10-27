@@ -39,9 +39,9 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_expose_weakness_debuff.name = "Expose Weakness"
 
 	_title = "Calibration"
-	_body = ("Gain Calibration charges with basic skills and spend them with others for effects." +
-			"\n\nFinisher skills consume all held charges for " +
-			str(roundi(100.0 * _per_charge_potency)) + "% bonus damage per charge, beyond their own effects.")
+	_body = ("Cornerstone and each use of your zone grant 1 Calibration charge, up to %d.\n" % MAX_CHARGES +
+			"Each charge spent adds %d%% to the skill spending it. " % roundi(100.0 * _per_charge_potency) +
+			"Raise the Frame spends up to %d; Final Calculation spends all." % RAISE_THE_FRAME_CONSUME_CAP)
 
 func StartOfBattle(_p_owner_ID: int, _p_resolver: BattleResolver) -> void:
 	_charges = 0

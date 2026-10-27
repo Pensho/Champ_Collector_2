@@ -13,7 +13,7 @@ target = 0
 [resource]
 script = ExtResource("1_skill")
 name = "Levied Sanction"
-description = "Applies the Sanction debuff to a single enemy for 2 turns; its potency is set by the target's Infraction tally at the moment of application."
+description = "Applies Sanction to a single enemy for 2 turns, scaled by its Infractions when applied."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Levied_Sanction/Levied_Sanction.png"
 cooldown = 4
 effects = Array[ExtResource("1_hiaon")]([SubResource("Resource_icnaw")])

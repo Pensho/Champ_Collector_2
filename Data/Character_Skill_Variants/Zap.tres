@@ -13,7 +13,8 @@ damage_scaling = Dictionary[int, float]({
 [resource]
 script = ExtResource("1_8dsqx")
 name = "Zap"
-description = "Attacks one enemy. Based on speed"
+description = "Attacks one enemy.
+Based on speed"
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Zap/Zap_2.jpg"
 effects = Array[ExtResource("1_hk5ff")]([SubResource("Resource_jegpu")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

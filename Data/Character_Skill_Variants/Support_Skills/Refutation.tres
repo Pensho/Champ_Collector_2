@@ -10,7 +10,10 @@ script = ExtResource("2_clear")
 [resource]
 script = ExtResource("1_skill")
 name = "Refutation"
-description = "Removes one zone of your choice from the turn bar. If enemy-placed, deal damage to the caster scaling with Knowledge. 10% damage increase per charge remaining. If ally-placed, the placing ally's zone skill has its cooldown reduced by 2."
+description = "Removes one zone of your choice from the turn bar.
+If enemy-placed, deal damage to the caster scaling with Knowledge.
+10% damage increase per charge remaining.
+If ally-placed, the placing ally's zone skill has its cooldown reduced by 2."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Refutation/Refutation.png"
 cooldown = 3
 effects = Array[ExtResource("1_effect")]([SubResource("Resource_clear")])

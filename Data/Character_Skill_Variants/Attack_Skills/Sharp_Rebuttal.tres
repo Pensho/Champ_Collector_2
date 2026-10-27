@@ -22,7 +22,8 @@ damage_scaling = Dictionary[int, float]({
 [resource]
 script = ExtResource("1_skill")
 name = "Sharp Rebuttal"
-description = "Deals damage to a single enemy, scaled by Knowledge. If any zone stands on the turn bar, also applies Suppress for 1 turn."
+description = "Deals damage to a single enemy, scaled by Knowledge.
+If any zone stands on the turn bar, also applies Suppress for 1 turn."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Sharp_Rebuttal/Sharp_Rebuttal.png"
 effects = Array[ExtResource("1_ja2i2")]([SubResource("Resource_dbf"), SubResource("Resource_l5lrx")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

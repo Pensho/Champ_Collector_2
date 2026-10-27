@@ -16,7 +16,8 @@ bonus_per = Dictionary[int, float]({
 [resource]
 script = ExtResource("1_skill")
 name = "Desecrated Blade"
-description = "Deals damage to a single enemy, scaled by Attack. +25% damage while the Vessel is below half max Health."
+description = "Deals damage to a single enemy, scaled by Attack.
++25% damage while the Vessel is below half max Health."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Desecrated_Blade/Desecrated_Blade.png"
 effects = Array[ExtResource("1_fup4h")]([SubResource("Resource_wixkm")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

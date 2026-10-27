@@ -20,7 +20,8 @@ chance = 0.25
 [resource]
 script = ExtResource("1_skill")
 name = "Arc Lash"
-description = "Deals damage to a single enemy, scaled by Mysticism. 25% chance to apply Warped for 1 turn."
+description = "Deals damage to a single enemy, scaled by Mysticism.
+25% chance to apply Warped for 1 turn."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Arc_Lash/Arc_Lash.png"
 effects = Array[ExtResource("1_pqbme")]([SubResource("Resource_3j2pa"), SubResource("Resource_warped")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

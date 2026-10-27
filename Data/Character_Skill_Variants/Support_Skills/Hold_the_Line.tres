@@ -27,7 +27,8 @@ target = 13
 [resource]
 script = ExtResource("1_oj3d8")
 name = "Hold the Line"
-description = "Grants all other allies the Fortify buff for 2 turns. The caster gains Fortify at double strength for 2 turns and Slow for 1 turn."
+description = "Grants all other allies the Fortify buff for 2 turns.
+The caster gains Fortify at double strength for 2 turns and Slow for 1 turn."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Hold_the_Line/hold_the_line.jpg"
 target = 4
 cooldown = 3

@@ -203,9 +203,10 @@ static func GlossaryDescription(p_data: StatusEffectData) -> String:
 		description = description.replace("{percent}", str(roundi(fraction * 100.0))) \
 				.replace("{percent_decimal}", "%.1f" % (fraction * 100.0))
 	var parenthetical_token: RegEx = RegEx.create_from_string(
-			"\\s*\\([^()]*\\{(value|percent|percent_decimal)\\}[^()]*\\)")
+			"\\s*\\([^()]*\\{(value|percent|percent_decimal|attribute_percent|attacker_damage_percent)\\}[^()]*\\)")
 	description = parenthetical_token.sub(description, "", true)
-	var bare_token: RegEx = RegEx.create_from_string("\\+?\\{(value|percent|percent_decimal)\\}%?")
+	var bare_token: RegEx = RegEx.create_from_string(
+			"\\+?\\{(value|percent|percent_decimal|attribute_percent|attacker_damage_percent)\\}%?")
 	return bare_token.sub(description, "a variable amount", true)
 
 func _on_nature_selected(p_index: int) -> void:

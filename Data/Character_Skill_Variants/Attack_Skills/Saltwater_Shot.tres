@@ -13,7 +13,7 @@ damage_scaling = Dictionary[int, float]({
 [resource]
 script = ExtResource("1_msr0v")
 name = "Saltwater Shot"
-description = "Shoots an enemy and creates a Sea Stack, spent by Corsair's Reckoning to raise or resupply The Gilded Deck. Based on Attack."
+description = "Deals damage to a single enemy, scaled by Attack, and gains a Sea stack."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Saltwater_Shot/saltwater_shot_3.jpg"
 effects = Array[ExtResource("1_flais")]([SubResource("Resource_axw41")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

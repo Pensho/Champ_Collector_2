@@ -198,8 +198,8 @@ crit-path multiplier, mitigation-term factor (§9.12's bypass, §9.10's Defence 
 aggregate-term factor (§9.14's attribute-modifier amplification), exported factor on a carrier. One
 ranked column across all of them is not a measurement.
 
-**Current state: bimodal.** Instance counts: Herald 9.72x, Sorcerer 6.25x at its gated ceiling (1.5x
-steady state), Plague Doctor's Comorbidity never projected (§9.1). Bucket products: Architect,
+**Current state: bimodal.** Instance counts: Herald 9.64x, Sorcerer 10.43x at its 5-Instability
+ceiling, Plague Doctor's Comorbidity never projected (§9.1). Bucket products: Architect,
 Tactician, Tidal Corsair, Bloodmage at 1.7-2.2x, Lancer at 1.54-1.90x; Emissary, Alchemist, Scholar at 1.3-1.5x.
 Appraiser's ≈5.58x is the only crit-path figure. Closing this runs one way: **a Role above the band
 is pulled down at its own batch; a Role below it is not raised to match** — a low figure is first a
@@ -275,7 +275,7 @@ A Role's basic skill is always self-facing; direction describes the declared-ide
 | Role | Purpose (unchanged) | Primary identity | Direction | Composition hook |
 |---|---|---|---|---|
 | Plague Doctor | Debuffer | **Channel 3** | Self | §9.1. Debuff density on the target feeds Echo count — the deepest identity claim in the roster. |
-| Sorcerer | Damage, Debuffer, Control | **Channel 3** | Self | §9.3. Reagent-triggered repeat re-resolves channels 1 and 2 as a fresh instance; the second, independently-gated cascade anchor. |
+| Sorcerer | Damage, Debuffer, Control | **Channel 3** | Self | §9.3. Cataclysm's Instability-count repeat re-resolves channels 1 and 2 as a fresh instance; the second, independently-gated cascade anchor. |
 | Herald of the Loom | Debuffer, Buffer | **Channel 3** | Self | §9.2, which replaced this row's Phase 1 sketch of a status-expiry cascade. Weft and Warp's three threads carry the identity, and Cut the Cloth resolves once more per Tension held — the roster's deepest instance count. |
 | Chronophage | Control | **Channel 3** | Exported | §9.9, confirming this row without the threshold-crossing trigger it originally proposed — a boundary-counting gate reads as arithmetic the player cannot see. Instead the passive grants Borrowed Time to an ally it boosts alone, and that ally's next skill resolves once more. The Role fields no damage factor of its own (Batch 2). |
 | Emissary | Debuffer, Control | **Channel 2** | Exported | §9.7, confirming this row. Sanction carries a snapshotted per-Infraction damage multiplier every attacker on the team reads, and stays a distinct debuff type feeding the density count (Batch 2). |
@@ -457,16 +457,15 @@ battle start. Switching is a free action available any number of times during th
 turn (before or after using a skill, in any order) — not a once-per-turn cap, and not a status
 effect with a duration: the active thread is ordinary persistent trait state that carries as-is
 into the next turn until changed again. Max Tension is a constant 7 at every rarity.
-* Golden Thread — gain 1 Tension when an Echo resolves on an enemy (Cut the Cloth's own
-  instances excluded by an explicit mechanic-key check on `CascadeEvent`, to avoid a self-feed
-  loop).
+* Golden Thread — gain 1 Tension once per action of another ally that resolves an Echo on an
+  enemy. Echoes the Herald originates never count, so Cut the Cloth cannot feed its own Tension.
 * Silver Thread — the Herald's debuffs cannot be resisted and last 1 turn longer.
 * Black Thread — an Extender: adds one Echo to whatever cascade the Herald's own action
   produced (Cut the Cloth's Tension repeats included), contributing nothing on a cast with no
   Echo of its own. Self-only and once per action, since the Herald casts at most one skill per
   turn.
-* Echoes cast by this champion deal bonus damage: +5% Uncommon, +10% Rare, +15% Epic,
-  +20% Legendary. (Generic wording deliberately — applies to any Echo the Herald
+* Echoes cast by this champion deal bonus damage: +10% Uncommon, +13% Rare, +16% Epic,
+  +19% Legendary. (Generic wording deliberately — applies to any Echo the Herald
   produces, names no skill, so the passive and the skills stay decoupled.)
 * Starting Tension: 0 Uncommon/Rare, 1 Epic/Legendary. Tension does not persist between combats
   (matches Arcane Instability's precedent).
@@ -481,15 +480,15 @@ into the next turn until changed again. Max Tension is a constant 7 at every rar
 since mitigation depends only on defence and cancels identically between the basic-skill baseline
 and the burst (no defense-ignore in this kit), contrast ratio reduces to `(skill aggregate ratio) ×
 (combined modifier product) × (instance count)`, independent of which boss is used. At Legendary
-(9 instances — base cast, 7 Tension, and Black Thread's extension, 90% per-instance strength, +20%
+(9 instances — base cast, 7 Tension, and Black Thread's extension, 90% per-instance strength, +19%
 self bonus) against an illustrative team product of 5.5 (roughly matching section 4's "two
-independent factors per champion" shape), contrast ratio ≈ **53.5x** for that whole team. Against a
-more modest team (product ≈3.0), ≈29.2x. At Uncommon (same 9-instance ceiling — rarity affects
-tempo via starting Tension and the smaller +5% self bonus, not the ceiling itself, since max
-Tension is now rarity-flat) the same strong-team scenario gives ≈46.8x.
+independent factors per champion" shape), contrast ratio ≈ **53.0x** for that whole team. Against a
+more modest team (product ≈3.0), ≈28.9x. At Uncommon (same 9-instance ceiling — rarity affects
+tempo via starting Tension and the smaller +10% self bonus, not the ceiling itself, since max
+Tension is now rarity-flat) the same strong-team scenario gives ≈49.0x.
 
 **These are team figures, not the Herald's own contribution** (section 4). The Herald's own factor
-is the instance count: **9.72x at Legendary**, which is well above section 4's per-Role ~2x target.
+is the instance count: **9.64x at Legendary**, which is well above section 4's per-Role ~2x target.
 That is a flag on this kit, not a bar for the next one. Cut the Cloth's 90% strength
 (rather than a Sorcerer-style 50% discount) reflects that the setup tax is Tension's multi-turn
 build time rather than a second discount on the payoff.
@@ -498,71 +497,53 @@ build time rather than a second discount on the payoff.
 `Cut_the_Cloth.tres` (new), `Herald_of_the_loom.tres` (rewired), `Thread_Switch_Button.tscn` (shares
 the Symbiote graft button's slot — the two are mutually exclusive by whose turn it is).
 
-### 9.3 Sorcerer — Echo charges and the Surge that feeds them
+### 9.3 Sorcerer — Instability that only the Surge resets
 
-**Status:** Implemented. Batch 1.
+**Status:** Implemented.
 
-**Passive: Arcane Instability.** Four clauses, each doing one job:
+**Passive: Arcane Instability.** Three clauses, each doing one job:
 
-* Using any skill grants 1 Instability stack, maximum 5. Stacks do not persist between combats.
-* Consuming a reagent grants 2 Instability stacks, amplifies the reagent's effect, and grants
-  1 **Echo** charge.
-* At maximum stacks the next skill also releases a **Surge**: damage to all characters, allies and
-  the Sorcerer included, scaling 1.4x the Sorcerer's Mysticism, never a critical hit — then all
-  stacks reset and the Sorcerer gains 1 Echo charge.
-* Each Echo charge held makes the Sorcerer's next skill repeat one additional time; all charges are
-  consumed when it does. The first Echo deals 50% of the skill's damage and each further Echo
-  compounds on the previous. Each Echo assembles its own combined
-  damage modifier; a repeated debuff or zone charge is not reapplied, only the damage.
+* Each skill grants 1 Instability after it resolves, Echoes included, maximum 5. Consuming a
+  reagent grants 2 and amplifies the reagent's effect. Instability does not persist between combats.
+* A gain that would carry Instability past 5 releases a **Surge**: damage to all characters, allies
+  and the Sorcerer included, scaling 1.4x the Sorcerer's Mysticism, never a critical hit — then
+  Instability resets to 0. Nothing else lowers Instability.
+* Cataclysm **Echoes** once per Instability held when cast. The first Echo deals 50% of the skill's
+  damage and each further Echo compounds on the previous. Each Echo assembles its own combined
+  damage modifier; a repeated debuff is not reapplied, only the damage.
 
 Rarity scales only on the passive, never on the kit's skills: Echo compounding 1.40 Uncommon /
-1.50 Rare / 1.60 Epic / 1.70 Legendary; reagent amplification 20 / 30 / 40 / 50% (unchanged).
-Instability stacks carry no attribute scaling — they are purely the Surge's counter, so the
-per-stack Mysticism ramp of the shipped passive is dropped and the Role's growth lives entirely in
-the channel it anchors.
+1.50 Rare / 1.60 Epic / 1.70 Legendary; reagent amplification 20 / 30 / 40 / 50%. Instability
+carries no attribute scaling.
 
-The Surge is the second Echo source, which is what makes the friendly fire load-bearing rather
-than a flavor tax: the uncontrolled discharge is what widens the next chain. Echo is gated on
-reagent scarcity (3 brought per battle, `Concept_Document.md` 3.3.3, consumable as free actions
-with no per-turn limit) and on the Surge's 5-stack build — independent of Herald's Tension and
-Plague Doctor's debuff count.
+The player steers when Cataclysm lands on the Instability cycle but cannot stop the cycle: Cataclysm
+at 5 Instability takes all five Echoes and its own gain then releases the Surge. If Cataclysm's
+4-turn cooldown misses the window, another skill releases the Surge and the build-up is lost.
+Reagents speed the cycle and can tip it early.
 
 | Slot | Skill | Effect | Channel |
 |---|---|---|---|
 | Basic | Arc Lash | Mysticism-scaled damage to one enemy; 25% chance to apply Warped for 1 turn. The rider is Enabler-weight and carries no bucket key — it seeds Cataclysm's condition occasionally, leaving Unstable Rift the reliable Warped source. | 1 |
-| Signature | Cataclysm | Mysticism-scaled damage to all enemies; +30% against targets carrying Warped. Cooldown 4. Renamed from Cataclysmic Surge so "Surge" names only the passive's discharge. | 2 |
-| Signature | Unstable Rift | Zone, 5 charges. On trigger, all affected characters gain Warped for 2 turns and take Mysticism-scaled damage (0.3 enemies / 0.15 allies). When Echoes resolve on a cast that placed a zone, each Echo instead multiplies that zone's on-trigger damage by x1.15, compounding, for the zone's remaining life. | 3 (Enabler-classed by the scorer — section 11) |
-
-The Rift's Echo clause closes the shipped kit's documented no-op (the skill's damage lives in
-`ZoneEffect.on_trigger`, so the repeat had no top-level `DamageEffect` to re-run) without
-converting the zone into a direct cast — the turn-bar object stays a turn-bar object, and the Echo
-makes it more dangerous to the Sorcerer's own team, the same identity clause as the Surge.
+| Signature | Cataclysm | Mysticism-scaled damage to all enemies; +30% against targets carrying Warped; Echoes once per Instability held. Cooldown 4. | 2 + 3 |
+| Signature | Unstable Rift | Zone, 5 charges. On trigger, all affected characters gain Warped for 2 turns and take Mysticism-scaled damage (0.3 enemies / 0.15 allies). | 1 (Enabler-classed by the scorer — section 11) |
 
 **Projected numbers.** Using `Skills.MitigatedDamageUnrounded` (`skills.gd:298-307`) per section
-9.2's methodology: mitigation cancels between the basic-skill baseline and the burst (no
-defence-ignore in this kit) and there is no attribute-ramp term, so contrast reduces to
-`(combined modifier product) x (instance multiplier)`. Echo ceiling is **4**: three banked reagents
-consumed as free actions in the burst turn, plus one charge carried in from the previous cast's
-Surge. At Legendary the four Echoes deal 50 / 85 / 144.5 / 245.65% — 5.25x in repeats, **6.25x**
-total including the original cast.
+9.2's methodology: mitigation cancels between the basic-skill baseline and the burst and there is
+no attribute-ramp term, so contrast reduces to `(combined modifier product) x (instance
+multiplier)`. Echo ceiling is **5**, the Instability maximum. At Legendary the five Echoes deal
+50 / 85 / 144.5 / 245.65 / 417.6% — 9.43x in repeats, **10.43x** total including the original cast.
 
 | Scenario | Team contrast ratio |
 |---|---|
-| Legendary, 4 Echoes, strong team (product 5.5) | **34.4x** |
-| Legendary, 4 Echoes, modest team (product 3.0) | 18.8x |
-| Legendary, 1 Echo (steady state, no reagents banked) | 8.3x |
-| Uncommon, 4 Echoes, strong team | 25.0x |
+| Legendary, 5 Echoes, strong team (product 5.5) | **57.4x** |
+| Legendary, 5 Echoes, modest team (product 3.0) | 31.3x |
+| Legendary, 4 Echoes (Cataclysm one skill early) | 34.4x |
+| Uncommon, 5 Echoes, strong team | 35.6x |
 
 **These are team figures, not the Sorcerer's own contribution** (section 4). The Sorcerer's own
-factor is the Echo multiplier: **6.25x at the 4-Echo ceiling**, 1.5x in the 1-Echo steady state —
-above section 4's per-Role ~2x target at the ceiling, which is the deliberate shape of a Channel 3
-anchor whose ceiling is gated behind spending three banked reagents in one turn.
-
-The 1.70 compounding factor is steeper than a flat-instance design would need precisely because
-the per-stack Mysticism ramp was dropped: that ramp was worth a flat 1.5x on the aggregate, and
-moving its weight into the compounding curve puts the ceiling in Channel 3 where the Role's
-identity claims it. Peak 4 Echoes plus the Surge in one action, well inside
-`CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION = 16`.
+factor is the Echo multiplier: **10.43x at the 5-Echo ceiling**, reachable once per Instability
+cycle — well above section 4's per-Role ~2x target. Peak 5 Echoes plus the Surge in one action,
+well inside `CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION = 16`.
 
 ### 9.4 Bloodmage — the missing-Health surface, caster-side and exported
 
@@ -925,7 +906,7 @@ it. It names no Role and reads only turn-bar position, so a kit authored later b
 either side knowing about the other.
 
 **Projected numbers.** Instance-count factor **1.6x** at Legendary, landing on whichever teammate
-holds the buff — below §9.2's Herald (9.72x) and §9.3's Sorcerer (6.25x), which is correct: those
+holds the buff — below §9.2's Herald (9.64x) and §9.3's Sorcerer (10.43x), which is correct: those
 are self-facing counts a champion builds toward across a fight, and this is a free extra resolution
 handed to someone else once per boost. In the exported kind it sits alongside §9.4's Sanguine Pact
 (1.60-1.96x) and Hemorrhage (1.30-1.48x). The Chronophage's own damage is Zap and stays where it
@@ -1734,7 +1715,7 @@ current encounter fields it.
 | Thief | Cut Purse's Opportunist reads debuff density on the Thief's attacks for 2 turns | — | — | — | Cut Purse's steal: enemy buffs | Ordering: the team's debuffs land before the Opportunist window. Interruptible: a debuff cleanse cuts density. External input: any kit's distinct debuff types |
 | Lancer | Rending Charge reads the turn-bar section span at cast | — | Rending Charge's Bleed, Disarm's Enfeeble: debuff density | — | Disarm's Enfeeble: enemy damage during the window | Ordering: Disarm's push-back before Rending Charge. Interruptible: enemy turn-bar gains close the gap. External input: any push-back on the target widens the span |
 | Alchemist | Fresh Batch's Volatile Mixture, re-armed by every reagent consumed, refreshed rather than stacked | — | Fresh Batch's brew, Catalyst Cloud's refund: reagent-fed accumulators; Dissolving Agent: debuff density (two types) | — | Fresh Batch's brew: enemy damage and debuffs on the team (random pool) | Ordering: Catalyst Cloud before reagent use, reagents before the burst cast. Interruptible: a buff strip removes Volatile Mixture before it is consumed |
-| Sorcerer | Every Sorcerer skill spends Echo charges; Cataclysm reads Warped; Unstable Rift reads Echoes as zone amplification | Arcane Instability: Instability stacks, automatic, capped at 5; Echo charges from reagents and Surge, uncapped, all spent by the next skill | Reagent consumption: Instability and Echo charges *(own)*; Echo repeats: Echo-fed accumulators; Unstable Rift, Arc Lash's Warped: debuff density; Surge, Unstable Rift: ally missing Health by friendly fire *(incidental)* | Arcane Instability: Surge at 5 stacks, automatic; its payload is damage plus an Echo charge | — | Ordering: Unstable Rift before Cataclysm, reagents before the charged cast, the Surge cast before the cast taking its charge. Cash-out timing: which skill takes the charges, and whether to spend every reagent in one turn. Interruptible: a debuff cleanse removes Warped; enemies contesting zone sections. External input: reagent supply feeds Echo charges |
+| Sorcerer | Cataclysm Echoes once per Instability held; Cataclysm reads Warped | Arcane Instability: Instability, automatic, capped at 5, reset only by the Surge | Reagent consumption: Instability *(own)*; Echo repeats: Echo-fed accumulators; Unstable Rift, Arc Lash's Warped: debuff density; Surge, Unstable Rift: ally missing Health by friendly fire *(incidental)* | Arcane Instability: Surge on a gain past 5, automatic; its payload is damage | — | Ordering: Unstable Rift before Cataclysm, reagents to line Instability up with Cataclysm's cooldown. Cash-out timing: Cataclysm now, or one skill later at higher Instability before the Surge. Interruptible: a debuff cleanse removes Warped; enemies contesting zone sections. External input: reagent supply feeds Instability |
 | Scholar | Expose Fallacy's Opportunist reads debuff density on every ally's attacks for 2 turns | — | Expose Fallacy's Confound, Sharp Rebuttal's Suppress: debuff density | — | Refutation: enemy zones | Ordering: the team's debuffs land before the Opportunist window; a zone stands before Sharp Rebuttal. Interruptible: a debuff cleanse cuts density. External input: any kit's distinct debuff types; any side's zone arms Sharp Rebuttal's rider |
 | Diviner | — | — | Foresight's Enfeeble, Ill Omen's Hexed and Slow: debuff density; Premonition's counter: per-cast accumulators (a full basic cast) | — | Premonition: an attack on a key piece; Foresight's Enfeeble: enemy damage during the window; Ill Omen's Hexed: enemy chance rolls | Ordering: Premonition before the predicted attack |
 | Appraiser | Any ally's critical hit reads the crit terms Full Appraisal, Exposed Facet and Cracked Facet assemble | — | Sizing Cut's Exposed Facet, Flaw Analysis's Confound and Cracked Facet: debuff density | No Wasted Margin: an ally's Critical Chance passing 100 converts the excess to Critical Damage | — | Ordering: Full Appraisal and Flaw Analysis before the carrier's attack, Sizing Cut's 1-turn Exposed Facet just before it. Interruptible: a debuff cleanse removes the Facets; a buff strip removes Keen Edge and Lethal Precision. External input: any kit's Critical Chance feeds the conversion |
@@ -1744,7 +1725,7 @@ current encounter fields it.
 | Cultist | Devour Blessing consumes and reads the buffs on one ally; Chosen Vessel's Devotion reads dead Vessels | Chosen Vessel: Devotion per dead Vessel, permanent, bounded by the party; the Vessel's missing Health | Chosen Vessel's drain: ally missing Health *(own)*; Rite of Severance: debuff density | Desecrated Blade: the Vessel passing half Health; Chosen Vessel: the Vessel's death grants Devotion and Attune | Rite of Severance: enemy buffs | Ordering: drain the Vessel below half before Desecrated Blade; buffs on an ally before Devour Blessing. Cash-out timing: Devour Blessing now, or let buffs pile up. Interruptible: an enemy buff strip on the ally. External input: any kit's buffs on allies; any damage to the Vessel |
 | Bar Brawler | Heap On reads its own use count | Heap On: uses this battle, uncapped (sanctioned in section 9.18) | Headbutt's Dead Weight: debuff density | — | On the House!: sustained enemy damage; Headbutt's Dead Weight and push-back: enemy tempo | External input: any extra basic cast advances the ramp |
 | Bloodmage | Tithe of Vitality reads allies below half Health; Hemoclarity reads the Bloodmage's missing Health; Sanguine Pact reads its holder's missing Health; Hemorrhage reads the enemy's missing Health for every attacker | Hemoclarity: the Bloodmage's missing Health, capped at 80% | Blood Bolt's cost, Transfusion's sacrifice: the Bloodmage's missing Health *(own)*; Tithe of Vitality's drain: ally missing Health; Hemorrhage: debuff density | Tithe of Vitality: each ally passing half Health | Transfusion's Barrier: burst enemy damage on allies; Sanguine Pact's redirect: damage to its holder | Ordering: wound allies before Tithe of Vitality, and Sanguine Pact before its holder's burst. Interruptible: a buff strip removes Sanguine Pact; a debuff cleanse removes Hemorrhage. External input: any kit wounding allies |
-| Herald of the Loom | Cut the Cloth resolves once per Tension and consumes it; Black Thread adds one Echo to the Herald's own cascade | Weft and Warp: Tension, capped at 7, from Echoes on enemies under Golden Thread | Pull the Thread: Tension *(own)*; Thread Snap's Suppress, Pull the Thread's Temporal Leak, Silver Thread's unresistable debuffs: debuff density | — | Pull the Thread's push-back: enemy tempo | Ordering: Golden Thread before Echo-producing casts, Black Thread before Cut the Cloth. Cash-out timing: Cut the Cloth now, or build Tension further. External input: any kit's Echoes on enemies under Golden Thread |
+| Herald of the Loom | Cut the Cloth resolves once per Tension and consumes it; Black Thread adds one Echo to the Herald's own cascade | Weft and Warp: Tension, capped at 7, once per Echoing ally action on enemies under Golden Thread | Pull the Thread: Tension *(own)*; Thread Snap's Suppress, Pull the Thread's Temporal Leak, Silver Thread's unresistable debuffs: debuff density | — | Pull the Thread's push-back: enemy tempo | Ordering: Golden Thread before Echo-producing casts, Black Thread before Cut the Cloth. Cash-out timing: Cut the Cloth now, or build Tension further. External input: any other kit's Echoing actions on enemies under Golden Thread |
 | Chronophage | — | — | Time Tithe's Borrowed Time: Echo-fed accumulators; Flicker Zone: per-turn and per-cast accumulators (tempo) | Time Tithe: an ally the Chronophage moves forward while alone in its section gains Borrowed Time | Temporal Sinkhole: enemy tempo | Ordering: the ally alone in a section before Flicker Zone moves it, and Borrowed Time before the holder's burst cast. Interruptible: a buff strip removes Borrowed Time |
 | Architect | Final Calculation consumes all Calibration charges, in tiers | Calibration: charges, capped at 12, from Cornerstone and from each character using Raise the Frame | Raise the Frame: Calibration *(own)*; Final Calculation's Expose Weakness: debuff density | Final Calculation: Expose Weakness at 5 charges, Raise the Frame re-erected at 9 | Raise the Frame's Barrier: burst enemy damage on allies | Ordering: Raise the Frame before allies pass through it. Cash-out timing: Final Calculation now or at a higher tier, and Raise the Frame's Barrier spending charges against the finisher. Interruptible: enemies contesting zone sections. External input: any character using Raise the Frame |
 | Tidal Corsair | Corsair's Reckoning consumes Steel and Sea stacks; each ally's damage reads its Sea Legs | Wrangle the Sea: Steel and Sea stacks, 3 slots; Sea Legs stacks on each ally whose turn starts on The Gilded Deck, capped at 4, permanent | Boarding Party's Haste: per-turn and per-cast accumulators (tempo) | — | Boarding Party's Slipstream: enemy zones | Ordering: the hand's composition before Corsair's Reckoning, and The Gilded Deck raised early. Cash-out timing: which hand to spend, and when. Interruptible: enemies occupying every free section deny The Gilded Deck. External input: any kit's tempo that starts allies' turns on the Deck |
@@ -1807,10 +1788,10 @@ did not exist. What the manifest carries now:
   for `"separate_instance"`/`"sustained_ticks"` folds: each declared instance contributes
   `(1.0 + magnitude) * instance_compounding^i`, `i` 0-based
   (`BurstReachability._MultiInstanceContrastRatio`). Verified in
-  `Tests/unit/test_burst_reachability.gd` against this document's own projections: Echo (4
-  instances, −0.5, 1.70 compounding) reproduces section 9.3's 5.2515x; Cut the Cloth (9 instances,
-  +0.08 at Legendary — the 90% base strength and the passive's own self-bonus folded into one net
-  per-instance multiplier — flat) reproduces section 9.2's 9.72 curve.
+  `Tests/unit/test_burst_reachability.gd` against this document's own projections: Echo (5
+  instances, −0.5, 1.70 compounding) reproduces section 9.3's 9.43x; Cut the Cloth (9 instances,
+  +0.071 at Legendary — the 90% base strength and the passive's own self-bonus folded into one net
+  per-instance multiplier — flat) reproduces section 9.2's 9.64 curve.
 * **Zone-trigger damage** is no longer invisible: a skill with no top-level `DamageEffect` is now
   enumerated off its enemy-facing `ZoneEffect.on_trigger` `DamageEffect`s instead
   (`_ZoneTriggerEnemyDamageEffects`) — an ally-facing payload in the same zone (Unstable Rift's own

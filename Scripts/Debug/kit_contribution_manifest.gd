@@ -338,17 +338,14 @@ const MANIFEST: Dictionary = {
 			{"name": "Arcane Instability", "bucket_key": "", "magnitude": 0.0, "stack_cap": 5,
 					"class": Contribution_Class.Channel3_Cascade,
 					"precondition": "Passive carries no Channel-1 attribute mutation and no bucket of " +
-							"its own — its whole contribution is the Echo charges it grants, scored on the " +
-							"skills below. On every Skill_Cast gains 1 Instability stack (max 5, no effect " +
-							"of its own). Consuming a reagent grants 2 stacks and 1 Echo charge. At 5 " +
-							"stacks the NEXT cast instead fires a Surge via " +
-							"ResolveTraitDamage(..., CombinedDamageModifier.new()) — an empty modifier, so " +
-							"the Surge hit contributes to NO CombinedDamageModifier bucket at all (no " +
-							"reagent bonus, no Opportunist, no trait_resource) — then stacks reset to 0 and " +
-							"1 Echo charge is granted, banked for the FOLLOWING cast (the Surge's own cast " +
-							"does not repeat itself from this charge).",
-					"citation": "sorcerer_trait.gd (OnSkillCast, OnReagentConsumed, _ReleaseSurge); " +
-							"battle_resolver.gd:390-404 (ResolveTraitDamage's empty modifier)"},
+							"its own — its whole contribution is Cataclysm's Echoes, scored on that skill " +
+							"below. Each skill gains 1 Instability at its End_Turn, after its Echoes drain " +
+							"(max 5). Consuming a reagent grants 2. A gain that would pass 5 instead fires a " +
+							"Surge via ResolveTraitDamage(..., CombinedDamageModifier.new()) — an empty " +
+							"modifier, so the Surge hit contributes to NO CombinedDamageModifier bucket at all " +
+							"(no reagent bonus, no Opportunist, no trait_resource) — and resets Instability to 0.",
+					"citation": "sorcerer_trait.gd (OnSkillCast, EndOfTurn, OnReagentConsumed, _GainInstability, " +
+							"_ReleaseSurge); battle_resolver.gd ResolveTraitDamage (empty modifier)"},
 		],
 		"skills": [
 			{"name": "Arc Lash", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
@@ -356,25 +353,7 @@ const MANIFEST: Dictionary = {
 					"precondition": "damage_scaling Mysticism 1.0, no bonus_per. Carries a 25% chance to " +
 							"apply Warped for 1 turn (Enabler-weight, no bucket key of its own — seeds " +
 							"Cataclysm's condition occasionally).",
-					"citation": "Arc_Lash.tres:6-19",
-					"gated_bonus": {"bucket_key": "Arc Lash (repeat)", "magnitude": -0.5,
-							"class": Contribution_Class.Channel3_Cascade, "fold": "separate_instance",
-							"gate": &"reagent_consumed", "instances": 4, "instance_compounding": 1.70,
-							"precondition": "One Echo per charge held (reagents consumed as free actions " +
-									"before the cast, or a Surge's own carried-in charge), all consumed by " +
-									"this cast. The real resolver re-resolves Arc Lash's DamageEffects as an " +
-									"independent CombinedDamageModifier and ResolveEffectDamage call per Echo " +
-									"(verified live in test_burst_reachability_live.gd), so this entry is " +
-									"'fold: separate_instance' and is scored into " +
-									"CandidateResult.repeat_contrast_ratio instead of the shared " +
-									"buckets/product. Magnitude is the first Echo's fraction minus 1.0 " +
-									"(REPEAT_FRACTION - 1.0); instance_compounding is Legendary's " +
-									"ECHO_COMPOUNDING (1.70); instances: 4 is the design's own ceiling (three " +
-									"banked reagents plus one carried Surge charge, Role_Kit_Design.md " +
-									"section 9.3) — reproduces its 5.2515x figure.",
-							"citation": "sorcerer_trait.gd (ECHO_COMPOUNDING, REPEAT_FRACTION, " +
-									"_OnSkillResolvedRepeat); skill_cast_context.gd; damage_effect.gd; " +
-									"battle_resolver.gd:739-744"}},
+					"citation": "Arc_Lash.tres:6-19"},
 			{"name": "Cataclysm", "bucket_key": "Warped", "magnitude": 0.3, "stack_cap": 0,
 					"class": Contribution_Class.Channel2,
 					"precondition": "+30% (fixed, not rarity-scaled) only against targets currently " +
@@ -384,11 +363,16 @@ const MANIFEST: Dictionary = {
 					"citation": "Cataclysm.tres:6-17; damage_effect.gd:60-65",
 					"gated_bonus": {"bucket_key": "Cataclysm (repeat)", "magnitude": -0.5,
 							"class": Contribution_Class.Channel3_Cascade, "fold": "separate_instance",
-							"gate": &"reagent_consumed", "instances": 4, "instance_compounding": 1.70,
-							"precondition": "Same Echo mechanic as Arc Lash (see that entry), re-resolving " +
-									"Cataclysm's own DamageEffect (its own Warped bonus included, since each " +
-									"Echo replays the whole effect against the same targets) as its own " +
-									"separate instances.",
+							"gate": &"instability_held", "instances": 5, "instance_compounding": 1.70,
+							"precondition": "One Echo per Instability held when cast (max 5); Cataclysm reads " +
+									"Instability without spending it. The real resolver re-resolves Cataclysm's " +
+									"DamageEffect (its own Warped bonus included, since each Echo replays the " +
+									"whole effect against the same targets) as an independent " +
+									"CombinedDamageModifier per Echo, so this entry is 'fold: separate_instance' " +
+									"and is scored into CandidateResult.repeat_contrast_ratio. Magnitude is the " +
+									"first Echo's fraction minus 1.0 (REPEAT_FRACTION - 1.0); " +
+									"instance_compounding is Legendary's ECHO_COMPOUNDING (1.70); instances: 5 " +
+									"is the Instability maximum.",
 							"citation": "sorcerer_trait.gd (ECHO_COMPOUNDING, REPEAT_FRACTION, " +
 									"_OnSkillResolvedRepeat); skill_cast_context.gd; damage_effect.gd; " +
 									"battle_resolver.gd:739-744"}},
@@ -401,15 +385,8 @@ const MANIFEST: Dictionary = {
 							"effects is a single ZoneEffect, no top-level DamageEffect — the scorer now " +
 							"enumerates this skill as a candidate off the enemy-facing on_trigger " +
 							"DamageEffect (0.3 Mysticism) directly, excluding the 0.15 ally-facing one (see " +
-							"burst_reachability.gd's _ZoneTriggerEnemyDamageEffects). An Echo on a cast that " +
-							"placed this zone amplifies its on_trigger damage by a flat 15% (Contribution_" +
-							"Class.Enabler), compounding across Echoes and persisting for the zone's " +
-							"remaining life — not modeled here: the skill's gated_bonus slot below is " +
-							"already the remaining-charges sustained_ticks entry, and this scorer has no " +
-							"second slot for a per-Echo zone multiplier. A known gap, not an oversight " +
-							"(Role_Kit_Design.md section 11).",
-					"citation": "Unstable_Rift.tres:6-29,32-42; damage_effect.gd:43-46; zone_effect.gd:17-19; " +
-							"sorcerer_trait.gd (OnZoneConstructed, _OnSkillResolvedRepeat)",
+							"burst_reachability.gd's _ZoneTriggerEnemyDamageEffects).",
+					"citation": "Unstable_Rift.tres:6-29,32-42; damage_effect.gd:43-46; zone_effect.gd:17-19",
 					"gated_bonus": {"bucket_key": "", "magnitude": 0.0, "class": Contribution_Class.Channel1,
 							"fold": "sustained_ticks", "gate": &"zone_charges_consumed", "instances": 4,
 							"precondition": "The candidate's own contrast_ratio already counts one trigger " +
@@ -784,15 +761,15 @@ const MANIFEST: Dictionary = {
 					"class": Contribution_Class.Channel3_Cascade,
 					"precondition": "Always holds exactly one of three threads, freely switchable " +
 							"during the Herald's own turn (persistent trait state, not a status effect). " +
-							"Golden: +1 Tension (capped at 7) whenever a cascade instance resolves on an " +
-							"enemy, via the generic Cascade_Instance_Resolved hook (excluded for Cut the " +
-							"Cloth's own instances by an explicit mechanic_key check, so the Herald cannot " +
-							"feed its own Tension). Silver: this Herald's own applied debuffs cannot be " +
+							"Golden: +1 Tension (capped at 7) once per action of another ally that resolves " +
+							"a cascade instance on an enemy, via the generic Cascade_Instance_Resolved hook " +
+							"and BattleResolver.GetActionOrdinal (instances the Herald originates never " +
+							"count, so the Herald cannot feed its own Tension). Silver: this Herald's own applied debuffs cannot be " +
 							"resisted and last 1 turn longer (GetOutgoingDebuffDurationBonus/" +
 							"DebuffsCannotBeResisted). Black: an Extender contribution that adds one " +
 							"instance to whatever cascade the Herald's own action produced (Cut the Cloth's " +
 							"Tension repeats included — the two now compose). Cascade instances this Herald " +
-							"produces deal +20% damage (Legendary), scored on Cut the Cloth's own entry below.",
+							"produces deal +19% damage (Legendary), scored on Cut the Cloth's own entry below.",
 					"citation": "weft_and_warp_trait.gd; cascade_resolver.gd " +
 							"(SubscribeCascadeContributor, Cascade_Instance_Resolved)"},
 		],
@@ -820,16 +797,16 @@ const MANIFEST: Dictionary = {
 							"cascade instead of running as isolated repeats.",
 					"citation": "Cut_the_Cloth.tres:6-16; weft_and_warp_trait.gd " +
 							"(OnSkillCast, SubscribeCascadeContributor)",
-					"gated_bonus": {"bucket_key": "", "magnitude": 0.08,
+					"gated_bonus": {"bucket_key": "", "magnitude": 0.071,
 							"class": Contribution_Class.Channel3_Cascade, "fold": "separate_instance",
 							"gate": &"tension_spent", "instances": 9,
 							"precondition": "Net per-instance multiplier folding both dials into one: 90% " +
-									"base strength times the passive's own +20% (Legendary) self-bonus on " +
-									"every cascade instance this Herald produces, 0.9*1.20-1 = +0.08. At " +
-									"Uncommon (5% self-bonus): 0.9*1.05-1 = -0.055. Flat across all 9 " +
+									"base strength times the passive's own +19% (Legendary) self-bonus on " +
+									"every cascade instance this Herald produces, 0.9*1.19-1 = +0.071. At " +
+									"Uncommon (10% self-bonus): 0.9*1.10-1 = -0.01. Flat across all 9 " +
 									"instances (base cast plus 7 Tension plus Black Thread's extension, no " +
 									"instance_compounding) — reproduces Role_Kit_Design.md section 9.2's own " +
-									"worked figures (9*1.08=9.72 -> ~53.5x at Legendary against an " +
+									"worked figures (9*1.071=9.639 -> ~53.0x at Legendary against an " +
 									"illustrative 5.5 team product).",
 							"citation": "weft_and_warp_trait.gd (SELF_BONUS_BY_RARITY)"}},
 		],

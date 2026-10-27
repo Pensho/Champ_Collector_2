@@ -69,3 +69,20 @@ enum Effect_Moment {
 @export var effect_variant: EffectVariant
 @export var effect_moment: Effect_Moment = Effect_Moment.Applied
 @export_multiline var description: String = ""
+
+## Fills the description's placeholders for one applied instance. {percent} shows the displayed
+## fraction; {attribute_percent} scales it by attribute_modifiers' own weight, and
+## {attacker_damage_percent} shows the attacker damage bucket built from the raw value.
+func FormatDescription(p_amount: int, p_fraction: float, p_status_value: float) -> String:
+	return (description.replace("{value}", str(p_amount))
+			.replace("{attribute_percent}", str(roundi(p_fraction * AttributeModifierWeight() * 100.0)))
+			.replace("{attacker_damage_percent}",
+					str(roundi(p_status_value * attacker_damage_value_multiple * 100.0)))
+			.replace("{percent}", str(roundi(p_fraction * 100.0)))
+			.replace("{percent_decimal}", "%.1f" % (p_fraction * 100.0)))
+
+## The magnitude of attribute_modifiers' weight, 1.0 for the usual +/-1.0 sign entries.
+func AttributeModifierWeight() -> float:
+	if(attribute_modifiers.is_empty()):
+		return 1.0
+	return absf(attribute_modifiers.values()[0])

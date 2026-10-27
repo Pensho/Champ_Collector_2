@@ -12,7 +12,6 @@ const GILDED_DECK_VISUAL_SCENE: PackedScene = preload(
 		"res://Scenes/ui/Turn_Bar_Zones/Turn_Bar_Gilded_Deck.tscn")
 const CHARGES_PER_SEA_PURE: int = 2
 const CHARGES_PER_SEA_MIXED: int = 1
-const MIXED_HAND_CHARGE_CAP: int = 2
 const CREW_BUFF_DURATION: int = 2
 const CREW_HASTE_DURATION: int = 1
 
@@ -55,16 +54,17 @@ func Init(p_rarity: Types.Rarity) -> void:
 
 	_steel_description = StackDescription.new()
 	_steel_description._title = "Steel Stack"
-	_steel_description._body = ("On a Steel-only Corsair's Reckoning, adds +" +
-			str(roundi(100.0 * _damage_per_steel_stack)) + "% damage per Steel stack.")
+	_steel_description._body = ("When Corsair's Reckoning spends only Steel, +%d%% damage per Steel stack." %
+			roundi(100.0 * _damage_per_steel_stack))
 
 	_sea_description = StackDescription.new()
 	_sea_description._title = "Sea Stack"
-	_sea_description._body = "Consumed by Corsair's Reckoning to raise or resupply The Gilded Deck."
+	_sea_description._body = ("Corsair's Reckoning spends it for Gilded Deck charges. " +
+			"If no Deck stands, it is raised on the section holding the most allies.")
 
 	_blank_description = StackDescription.new()
 	_blank_description._title = "Empty Stack"
-	_blank_description._body = "Use an ability that grants stacks to fill this slot."
+	_blank_description._body = "Boarding Strike and Saltwater Shot fill this slot."
 
 func StartOfBattle(_p_owner_ID: int, _p_resolver: BattleResolver) -> void:
 	_held_stacks = [Stack_Type.Empty, Stack_Type.Empty, Stack_Type.Empty]
@@ -121,8 +121,7 @@ func _ResolveReckoning(
 	elif(0 == steel_count):
 		_RaiseOrResupplyDeck(p_owner_ID, sea_count * CHARGES_PER_SEA_PURE, p_resolver)
 	else:
-		_RaiseOrResupplyDeck(
-				p_owner_ID, mini(sea_count * CHARGES_PER_SEA_MIXED, MIXED_HAND_CHARGE_CAP), p_resolver)
+		_RaiseOrResupplyDeck(p_owner_ID, sea_count * CHARGES_PER_SEA_MIXED, p_resolver)
 		_GrantCrewBuffs(p_owner_ID, p_resolver)
 
 func _RaiseOrResupplyDeck(p_owner_ID: int, p_charges: int, p_resolver: BattleResolver) -> void:

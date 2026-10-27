@@ -37,7 +37,8 @@ condition_threshold = 6.0
 [resource]
 script = ExtResource("1_skill")
 name = "Signed Writ"
-description = "Reduces the durations of the target's buffs by 1 turn and applies the Signed Writ debuff for 1 turn. At 6 or more Infractions on the target, both affect 2 turns instead."
+description = "Shortens the target's buffs by 1 turn and applies Signed Writ for 1 turn.
+At 6+ Infractions: shortens by 2 turns, and Signed Writ lasts 2 turns."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Signed_Writ/Signed_Writ.png"
 cooldown = 3
 effects = Array[ExtResource("1_30xkv")]([SubResource("Resource_iywe2"), SubResource("Resource_4tge4"), SubResource("Resource_env50"), SubResource("Resource_ppdl1")])

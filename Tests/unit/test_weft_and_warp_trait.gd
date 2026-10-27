@@ -95,49 +95,80 @@ func test_pull_the_thread_tension_caps_at_max() -> void:
 	_trait.OnSkillCast(0, [], "Pull the Thread", {}, _resolver)
 	assert_eq(_trait._tension, WeftAndWarpTrait.TENSION_MAX)
 
-# --- Golden Thread: Tension from cascade instances ---
+# --- Golden Thread: Tension once per action of another ally ---
 
-func test_golden_gains_tension_when_a_cascade_instance_resolves_on_an_enemy() -> void:
+## The Herald (0), an ally (2) whose actions originate the Echoes, and an enemy (1).
+func _make_golden_resolver() -> BattleResolver:
+	_characters[1] = TestFactory.make_character()
+	_characters[2] = TestFactory.make_character()
+	return TestFactory.make_resolver(_characters, CombatSides.new([0, 2], [1]))
+
+func _echo_on(p_target_ID: int, p_origin_ID: int) -> CascadeEvent:
+	var event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Skill_Resolved)
+	event.subject_ID = p_origin_ID
+	event.origin_ID = p_origin_ID
+	event.target_IDs = [p_target_ID]
+	return event
+
+func test_golden_gains_tension_when_an_ally_action_echoes_on_an_enemy() -> void:
 	_InitTrait(Types.Rarity.Uncommon)
 	_trait.AdvanceThread()  # Golden
-	var enemy: Character = TestFactory.make_character()
-	_characters[1] = enemy
-	var sided_resolver: BattleResolver = TestFactory.make_resolver(_characters, CombatSides.new([0], [1]))
-	var event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Skill_Resolved)
-	event.subject_ID = 5
-	event.target_IDs = [1]
-
-	_trait.OnCascadeInstanceResolved(0, event, sided_resolver)
-
+	var resolver: BattleResolver = _make_golden_resolver()
+	resolver._BeginBatch()
+	_trait.OnCascadeInstanceResolved(0, _echo_on(1, 2), resolver)
+	resolver._EndBatch()
 	assert_eq(_trait._tension, 1)
 
-func test_golden_ignores_instances_not_concerning_an_enemy() -> void:
+func test_golden_gains_once_per_action_however_many_echoes_it_releases() -> void:
 	_InitTrait(Types.Rarity.Uncommon)
 	_trait.AdvanceThread()  # Golden
-	var ally: Character = TestFactory.make_character()
-	_characters[1] = ally
-	var sided_resolver: BattleResolver = TestFactory.make_resolver(_characters, CombatSides.new([0, 1], []))
-	var event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Skill_Resolved)
-	event.subject_ID = 5
-	event.target_IDs = [1]
+	var resolver: BattleResolver = _make_golden_resolver()
+	resolver._BeginBatch()
+	for i in 5:
+		_trait.OnCascadeInstanceResolved(0, _echo_on(1, 2), resolver)
+	resolver._EndBatch()
+	assert_eq(_trait._tension, 1, "Five Echoes from one action grant one Tension")
 
-	_trait.OnCascadeInstanceResolved(0, event, sided_resolver)
+	resolver._BeginBatch()
+	_trait.OnCascadeInstanceResolved(0, _echo_on(1, 2), resolver)
+	resolver._EndBatch()
+	assert_eq(_trait._tension, 2, "The next action grants Tension again")
 
+func test_golden_ignores_the_heralds_own_echoes() -> void:
+	_InitTrait(Types.Rarity.Uncommon)
+	_trait.AdvanceThread()  # Golden
+	var resolver: BattleResolver = _make_golden_resolver()
+	resolver._BeginBatch()
+	_trait.OnCascadeInstanceResolved(0, _echo_on(1, 0), resolver)
+	resolver._EndBatch()
+	assert_eq(_trait._tension, 0)
+
+func test_golden_ignores_enemy_originated_echoes() -> void:
+	_InitTrait(Types.Rarity.Uncommon)
+	_trait.AdvanceThread()  # Golden
+	var resolver: BattleResolver = _make_golden_resolver()
+	resolver._BeginBatch()
+	_trait.OnCascadeInstanceResolved(0, _echo_on(1, 1), resolver)
+	resolver._EndBatch()
+	assert_eq(_trait._tension, 0)
+
+func test_golden_ignores_echoes_not_concerning_an_enemy() -> void:
+	_InitTrait(Types.Rarity.Uncommon)
+	_trait.AdvanceThread()  # Golden
+	var resolver: BattleResolver = _make_golden_resolver()
+	resolver._BeginBatch()
+	_trait.OnCascadeInstanceResolved(0, _echo_on(0, 2), resolver)
+	resolver._EndBatch()
 	assert_eq(_trait._tension, 0)
 
 func test_golden_tension_caps_at_max() -> void:
 	_InitTrait(Types.Rarity.Uncommon)
 	_trait.AdvanceThread()  # Golden
 	_trait._tension = WeftAndWarpTrait.TENSION_MAX
-	var enemy: Character = TestFactory.make_character()
-	_characters[1] = enemy
-	var sided_resolver: BattleResolver = TestFactory.make_resolver(_characters, CombatSides.new([0], [1]))
-	var event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Skill_Resolved)
-	event.subject_ID = 5
-	event.target_IDs = [1]
-
-	_trait.OnCascadeInstanceResolved(0, event, sided_resolver)
-
+	var resolver: BattleResolver = _make_golden_resolver()
+	resolver._BeginBatch()
+	_trait.OnCascadeInstanceResolved(0, _echo_on(1, 2), resolver)
+	resolver._EndBatch()
 	assert_eq(_trait._tension, WeftAndWarpTrait.TENSION_MAX)
 
 func test_golden_gains_no_tension_from_a_plain_debuff_tick_with_no_contributor() -> void:
@@ -170,17 +201,12 @@ func test_overflow_expiry_does_not_feed_golden_thread() -> void:
 	assert_eq(_trait._tension, 0,
 		"Overflow is a deferred trigger, not a Channel 3 Echo, so its expiry must not feed Golden Thread")
 
-func test_non_golden_threads_do_not_gain_tension_from_cascade_instances() -> void:
+func test_non_golden_threads_do_not_gain_tension_from_ally_echoes() -> void:
 	_InitTrait(Types.Rarity.Uncommon)  # Silver
-	var enemy: Character = TestFactory.make_character()
-	_characters[1] = enemy
-	var sided_resolver: BattleResolver = TestFactory.make_resolver(_characters, CombatSides.new([0], [1]))
-	var event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Skill_Resolved)
-	event.subject_ID = 5
-	event.target_IDs = [1]
-
-	_trait.OnCascadeInstanceResolved(0, event, sided_resolver)
-
+	var resolver: BattleResolver = _make_golden_resolver()
+	resolver._BeginBatch()
+	_trait.OnCascadeInstanceResolved(0, _echo_on(1, 2), resolver)
+	resolver._EndBatch()
 	assert_eq(_trait._tension, 0)
 
 # --- Black Thread: instance-count modifier via CascadeResolver ---

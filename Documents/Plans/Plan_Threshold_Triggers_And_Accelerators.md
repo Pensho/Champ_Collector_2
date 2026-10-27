@@ -31,8 +31,7 @@ Drawn from the `Role_Kit_Design.md` 10.4 ledger and a read of the teams in
 - **(own) accelerators:** six of twenty — Emissary (Signed Writ's strip), Sorcerer (reagents),
   Cultist (the Vessel drain), Bloodmage (self-costs), Herald of the Loom (Pull the Thread),
   Architect (Raise the Frame). Each also takes external input.
-- **Symbiote grafts:** Detritivore holds the pool's only accumulator, and its Scrap stacks
-  accrue automatically without a cap, against `Concept_Document.md` 1.1.4. Nine of eighteen
+- **Symbiote grafts:** Detritivore holds the pool's only accumulator. Nine of eighteen
   grafts supply no engine part.
 
 **Step properties.**
@@ -53,7 +52,7 @@ Drawn from the `Role_Kit_Design.md` 10.4 ledger and a read of the teams in
 
 | Team | Tier | Linked accumulators | Threshold triggers | Step properties |
 |---|---|---|---|---|
-| Sorcerer, Scholar, Tactician | Intent | Instability and Echo charges, fed by the Tactician's tempo; debuff density, from Sorcerer and Scholar, read by Opportunist | Surge | Ordering, Cash-out timing, Interruptible, External input |
+| Sorcerer, Scholar, Tactician | Intent | Instability, fed by the Tactician's tempo; debuff density, from Sorcerer and Scholar, read by Opportunist | Surge | Ordering, Cash-out timing, Interruptible, External input |
 | Tidal Corsair, Cultist, Warlord | Intent | Steel and Sea, Sea Legs, fed by the Corsair's Haste; Devotion and the Vessel's missing Health; buffs on one ally, from Fortify, Haste and Slipstream, read by Devour Blessing | Desecrated Blade, Vessel death | all four |
 | Bar Brawler, Tactician, Tidal Corsair | Intent | Heap On, Steel and Sea, Sea Legs, all fed by tempo | — | all four |
 | Symbiote, Tactician, Tidal Corsair | Intent | Steel and Sea, Sea Legs, fed by tempo | — | all four |
@@ -79,7 +78,7 @@ Drawn from the `Role_Kit_Design.md` 10.4 ledger and a read of the teams in
 - Coupling stays indirect (`Role_Kit_Design.md` section 2): a threshold reads a mechanic class,
   and an accelerator feeds a mechanic class, never a named Role or skill.
 - Concept 1.1.4 governs: a threshold whose payoff feeds its own accumulator is re-entry; a
-  trigger fires once per originating action; automatic accrual is capped.
+  trigger fires once per originating action; automatic accrual follows its stack-ceiling rule.
 - An accumulator held as a status takes one of the eight status slots; prefer a trait resource
   unless the slot cost is the point.
 - New sources interact with existing readers uniformly; no carve-outs for player sources.

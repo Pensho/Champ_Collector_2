@@ -40,6 +40,8 @@ var target_ID: int = -1
 var amount: int = 0
 var critical: bool = false
 var fraction: float = 0.0
+## Status_Applied: the status instance's own value, before display adjustments in `fraction`.
+var status_value: float = 0.0
 var status_ID: int = -1
 ## Cascade_Triggered: the caster's skill index a skill echo repeats; -1 otherwise.
 var skill_ID: int = -1

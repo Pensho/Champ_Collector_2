@@ -256,8 +256,8 @@ func test_threefold_bite_penalizes_damage_outside_a_cascade() -> void:
 
 	assert_almost_eq(bonus, -0.30, 0.0001, "Damage outside any cascade instance is not an Echo")
 
-## End-to-end through a real Echo producer: a Sorcerer holding three Echo charges repeats its
-## cast three times, and only the third repeat's damage carries the Relic's bonus bucket.
+## End-to-end through a real Echo producer: a Sorcerer holding three Instability Echoes its
+## Cataclysm three times, and only the third Echo's damage carries the Relic's bonus bucket.
 func test_threefold_bite_bonuses_the_third_echo_of_a_real_sorcerer_cast() -> void:
 	var caster: Character = TestFactory.make_character()
 	caster._current_health = 10
@@ -265,7 +265,7 @@ func test_threefold_bite_bonuses_the_third_echo_of_a_real_sorcerer_cast() -> voi
 	var sorcerer_trait: SorcererTrait = SorcererTrait.new()
 	sorcerer_trait.Init(Types.Rarity.Rare)
 	caster._trait = sorcerer_trait
-	caster._skills = [_strike_skill("Bolt")]
+	caster._skills = [_strike_skill(SorcererTrait.ECHOING_SKILL_NAME)]
 	var relic: ThreefoldBiteRelic = ThreefoldBiteRelic.new()
 	relic.Init(Types.Rarity.Legendary)
 	_equip_relic(caster, Types.Slot.Weapon, relic)
@@ -275,9 +275,8 @@ func test_threefold_bite_bonuses_the_third_echo_of_a_real_sorcerer_cast() -> voi
 	var characters: Dictionary[int, Character] = {0: caster, 1: enemy}
 	var resolver: BattleResolver = TestFactory.make_resolver(characters, CombatSides.new([0], [1]))
 	resolver.BroadcastEvent(Types.Combat_Event.Start_Combat)
-	# Banked directly rather than through three reagents, which would also max Instability and
-	# fire a Surge — an extra non-Echo damage instance unrelated to what this asserts.
-	sorcerer_trait._echo_charges = 3
+	# Set directly: three Instability stays under the Surge threshold after the cast's own gain.
+	sorcerer_trait._instability_stacks = 3
 
 	var results: Array[CombatResult] = resolver.ResolveSkill(0, [1], 0)
 

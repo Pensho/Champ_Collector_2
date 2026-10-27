@@ -13,7 +13,8 @@ damage_scaling = Dictionary[int, float]({
 [resource]
 script = ExtResource("1_7g5jm")
 name = "Crush"
-description = "A very strong single target hit. Based on attack."
+description = "A very strong single target hit.
+Based on attack."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Stab/Stab_3.jpg"
 cooldown = 2
 effects = Array[ExtResource("1_7xia2")]([SubResource("Resource_7fokf")])

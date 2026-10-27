@@ -16,7 +16,8 @@ bonus_per = Dictionary[int, float]({
 [resource]
 script = ExtResource("3_v5vho")
 name = "Heap On"
-description = "Slams the opponent with your full weight, increasing damage per use. Based on Health."
+description = "Slams the opponent with your full weight, increasing damage per use.
+Based on Health."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Heap_On/heap_on_1.jpg"
 effects = Array[ExtResource("1_e4h7k")]([SubResource("Resource_krpnt")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

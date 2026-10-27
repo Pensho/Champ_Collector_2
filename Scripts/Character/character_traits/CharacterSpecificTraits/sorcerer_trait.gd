@@ -15,12 +15,10 @@ const REAGENT_AMPLIFICATION: Dictionary[Types.Rarity, float] = {
 }
 
 const MAX_INSTABILITY_STACKS: int = 5
+const REAGENT_INSTABILITY: int = 2
 const SURGE_MYSTICISM_SCALING: float = 1.4
 const REPEAT_FRACTION: float = 0.5
-
-# Flat, non-rarity-scaled per-Echo multiplier applied to a zone this cast placed,
-# compounding across Echoes via repeated ZoneResolver.AmplifyZoneDamage calls.
-const ECHO_ZONE_AMPLIFICATION: float = 1.15
+const ECHOING_SKILL_NAME: String = "Cataclysm"
 
 # Cascade mechanic identity for the Skill_Resolved subscription (Concept_Document.md
 # 1.1.3's composition-law currency) — a trait resource, not this Sorcerer's character
@@ -30,11 +28,11 @@ const _CASCADE_MECHANIC_KEY: StringName = &"SorcererTrait"
 var _instability_stacks: int = 0
 var _echo_compounding: float = 1.0
 var _reagent_amplification: float = 0.0
-var _echo_charges: int = 0
 var _echoes_for_this_cast: int = 0
 # 0-based counter driving each Echo's own compounding fraction within one cast's repeat.
 var _echo_index: int = 0
-var _placed_zone_ID_this_cast: int = -1
+# A cast's Instability is gained at its End_Turn, after its Echoes have drained.
+var _skill_gain_pending: bool = false
 
 func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
@@ -44,24 +42,24 @@ func Init(p_rarity: Types.Rarity) -> void:
 		"res://Assets/Champ_Collector/Icons/Abilities/Passives/Arcane_Instability/arcane_instability_trait.png"
 	)
 	_title = "Arcane Instability"
-	_body = ("Using a skill grants a stack, maximum %d.\nA reagent grants two, " %
-				MAX_INSTABILITY_STACKS +
-			"is amplified by " + str(_reagent_amplification * 100.0) + "%, and grants a charge.\n" +
-			"At maximum stacks the next skill also releases a Surge: damaging everyone.\n" +
-			"Stacks reset and a charge is gained.\n" +
-			"Each charge makes the next skill Echo once more, spending all of them.\n" +
-			"Every Echo hits " + str((_echo_compounding - 1.0) * 100.0) + "% harder than the last.")
+	_body = ("After each skill, gain 1 Instability, up to %d. " % MAX_INSTABILITY_STACKS +
+			"Consuming a reagent grants %d and makes the reagent %d%% stronger.\n" %
+				[REAGENT_INSTABILITY, roundi(_reagent_amplification * 100.0)] +
+			"Gaining Instability at %d releases a Surge that damages everyone, " % MAX_INSTABILITY_STACKS +
+			"then resets Instability to 0.\n" +
+			"%s Echoes once per Instability held. " % ECHOING_SKILL_NAME +
+			"The first Echo hits at %d%%, each later one %d%% harder." %
+				[roundi(REPEAT_FRACTION * 100.0), roundi((_echo_compounding - 1.0) * 100.0)])
 	_execution_steps[Types.Combat_Event.Start_Combat] = Callable(self, "StartOfBattle")
 	_execution_steps[Types.Combat_Event.Skill_Cast] = Callable(self, "OnSkillCast")
+	_execution_steps[Types.Combat_Event.End_Turn] = Callable(self, "EndOfTurn")
 	_execution_steps[Types.Combat_Event.Reagent_Consumed] = Callable(self, "OnReagentConsumed")
-	_execution_steps[Types.Combat_Event.Zone_Constructed] = Callable(self, "OnZoneConstructed")
 
 func StartOfBattle(p_owner_ID: int, p_resolver: BattleResolver) -> void:
 	_instability_stacks = 0
-	_echo_charges = 0
 	_echoes_for_this_cast = 0
 	_echo_index = 0
-	_placed_zone_ID_this_cast = -1
+	_skill_gain_pending = false
 	# Re-subscribed every battle: p_resolver (and its CascadeResolver) is fresh per combat,
 	# so there is nothing to unsubscribe from a previous one.
 	p_resolver.GetCascadeResolver().SubscribeCascadeContributor(
@@ -74,53 +72,45 @@ func StartOfBattle(p_owner_ID: int, p_resolver: BattleResolver) -> void:
 			Types.Cascade_Trigger.Skill_Resolved)
 
 func RefreshVisuals(p_character_repr: CharacterRepresentation) -> void:
-	var body_with_state: String = (_body + "\n" +
-			"Current Stacks: " + str(_instability_stacks) + "\n" +
-			"Current Charges: " + str(_echo_charges))
+	var body_with_state: String = _body + "\n" + "Current Instability: " + str(_instability_stacks)
 	p_character_repr.SetTraitElement(_trait_texture, 0)
 	p_character_repr.SetTraitElementToolTip(_title, body_with_state, 0)
 
 func OnSkillCast(
-		p_owner_ID: int,
+		_p_owner_ID: int,
 		_p_target_IDs: Array[int],
-		_p_skill_name: String,
-		p_caster_attributes: Dictionary[Types.Attribute, int],
-		p_resolver: BattleResolver) -> TraitSkillResult:
-	var result: TraitSkillResult = TraitSkillResult.new()
-	_echoes_for_this_cast = _echo_charges
-	_echo_charges = 0
+		p_skill_name: String,
+		_p_caster_attributes: Dictionary[Types.Attribute, int],
+		_p_resolver: BattleResolver) -> TraitSkillResult:
+	_echoes_for_this_cast = _instability_stacks if ECHOING_SKILL_NAME == p_skill_name else 0
 	_echo_index = 0
-	_placed_zone_ID_this_cast = -1
-	var releases_surge: bool = _instability_stacks >= MAX_INSTABILITY_STACKS
+	_skill_gain_pending = true
+	return TraitSkillResult.new()
 
-	if not releases_surge:
-		_instability_stacks = min(_instability_stacks + 1, MAX_INSTABILITY_STACKS)
-
-	if releases_surge:
-		_ReleaseSurge(p_owner_ID, p_caster_attributes, p_resolver)
-		_instability_stacks = 0
-		_echo_charges += 1
-
-	return result
+func EndOfTurn(p_owner_ID: int, p_resolver: BattleResolver) -> void:
+	if(not _skill_gain_pending):
+		return
+	_skill_gain_pending = false
+	_GainInstability(p_owner_ID, 1, p_resolver)
 
 func OnReagentConsumed(
-		_p_consumer_ID: int, _p_reagent: ReagentData, _p_resolver: BattleResolver) -> float:
-	_instability_stacks = min(_instability_stacks + 2, MAX_INSTABILITY_STACKS)
-	_echo_charges += 1
+		p_consumer_ID: int, _p_reagent: ReagentData, p_resolver: BattleResolver) -> float:
+	_GainInstability(p_consumer_ID, REAGENT_INSTABILITY, p_resolver)
 	return _reagent_amplification
 
-func OnZoneConstructed(_p_owner_ID: int, p_zone_ID: int, _p_resolver: BattleResolver) -> void:
-	_placed_zone_ID_this_cast = p_zone_ID
+## A gain that would carry Instability past the maximum releases the Surge instead.
+func _GainInstability(p_owner_ID: int, p_amount: int, p_resolver: BattleResolver) -> void:
+	if(_instability_stacks + p_amount <= MAX_INSTABILITY_STACKS):
+		_instability_stacks += p_amount
+		return
+	_instability_stacks = 0
+	_ReleaseSurge(p_owner_ID, p_resolver.GetEffectiveAttributes(p_owner_ID), p_resolver)
 
 func _OnSkillResolvedRepeat(p_owner_ID: int, p_event: CascadeEvent, p_resolver: BattleResolver) -> void:
 	var index: int = _echo_index
 	_echo_index += 1
 	if(index + 1 >= _echoes_for_this_cast):
 		_echoes_for_this_cast = 0
-
-	if(-1 != _placed_zone_ID_this_cast and p_resolver.GetZoneResolver().HasZone(_placed_zone_ID_this_cast)):
-		p_resolver.GetZoneResolver().AmplifyZoneDamage(_placed_zone_ID_this_cast, ECHO_ZONE_AMPLIFICATION)
-		return
 
 	var characters: Dictionary[int, Character] = p_resolver.GetCharacters()
 	if(not characters.has(p_owner_ID)):

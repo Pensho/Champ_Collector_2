@@ -25,7 +25,8 @@ variant = SubResource("Resource_stab_variant")
 [resource]
 script = ExtResource("1_rci34")
 name = "Stab"
-description = "Plunge you weapon against an enemy. Based on attack."
+description = "Plunge you weapon against an enemy.
+Based on attack."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Stab/Stab_3.jpg"
 effects = Array[ExtResource("1_g2f3e")]([SubResource("Resource_7x3lf")])
 presentation = SubResource("Resource_stab_presentation")

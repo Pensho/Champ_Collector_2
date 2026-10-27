@@ -16,7 +16,8 @@ bonus_per_debuff_on_target = Dictionary[int, float]({
 [resource]
 script = ExtResource("1_skill")
 name = "Cataclysm"
-description = "Deals damage to all enemies, scaling with Mysticism. Targets currently affected by the Warped debuff take 30% increased damage."
+description = "Deals damage to all enemies, scaled by Mysticism, and Echoes with Instability.
+Warped targets take 30% more damage."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Cataclysm/Cataclysm.png"
 target = 1
 cooldown = 4

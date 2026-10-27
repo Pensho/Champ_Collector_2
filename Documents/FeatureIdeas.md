@@ -79,7 +79,7 @@ Effort: **S** = hours, **M** = days, **L** = week+
   A powerful boss that only appears during special real-time windows (e.g. weekends or seasonal events). Ties into the God-themed event rotation from the concept doc.
 
 - **Echo-Disrupting Boss** *(Priority: Medium | Effort: M)*
-  A boss mechanic that targets Echo build-up — draining banked Echo charges or cutting a cascade short — giving engine-targeting locks (Concept 1.2) a Channel 3 target.
+  A boss mechanic that targets Echo build-up — draining the resources Echo counts read (Instability, Tension) or cutting a cascade short — giving engine-targeting locks (Concept 1.2) a Channel 3 target.
 
 - **Run Multiplier** *(Priority: Medium | Effort: S)*
   Let the player select a multiplier (e.g. x3, x5) before entering a repeatable encounter to auto-run it that many times and batch the rewards. Reduces friction for grinding.
@@ -96,6 +96,9 @@ Effort: **S** = hours, **M** = days, **L** = week+
 
 - **Luck and Hexed roll callout** *(Priority: Medium | Effort: S)*
   Show "Lucky" or "Hexed" combat text when the second roll from Luck or Hexed changed an outcome (a dodge, a crit, a resist, a beam's hit roll), so these statuses visibly matter. `BattleResolver.RollFavoring` returns only the kept value today, so it needs to report whether the second roll decided the outcome. Needed by the Hue-Eater draft (Encounter_Design_Document.md 2.3).
+
+- **On-character trait state markers** *(Priority: Medium | Effort: M)*
+  Show trait state on the character representations instead of in passive tooltips: the Cultist's Vessel, marked by a start-of-combat passive effect; each enemy's Infraction tally; and the stack and charge counts passives write into their tooltip today (Instability, Calibration, Tension, Devotion).
 
 - **Desktop Window Size Option** *(Priority: Low | Effort: S)*
   A window-size dropdown in settings for Windows/Linux windowed mode, clamped to the screen size and persisted in `settings.gd`. Add if playtesters ask for it. Switching the stretch aspect from `keep` to `expand` (no letterboxing on non-16:9 screens) is a separate, larger decision: every UI scene's anchors must hold, and `post_battle_menu.gd` hard-codes a 1280×720 background.

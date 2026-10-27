@@ -40,14 +40,24 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_execution_steps[Types.Combat_Event.Ally_Death] = Callable(self, "OnAllyDeath")
 
 	_title = "Chosen Vessel"
-	_body = "At the start of combat, marks a random ally as the Vessel. Every non-basic" \
-			+ " skill drains 5% of the Vessel's max Health for a " + str(_power_bonus * 100) + "% damage bonus." \
-			+ " If the Vessel dies, the Cultist gains Attune for 3 turns, a new Vessel is marked, and" \
-			+ " the Cultist permanently gains " + str(_devotion_bonus * 100) + "% damage for the rest of the fight."
+	_body = ("Marks another random ally as your Vessel. Skills that drain it deal %d%% more damage, " %
+				roundi(_power_bonus * 100.0) +
+			"and the drain can kill.\n" +
+			"When the Vessel dies, gain Attune for %d turns and +%d%% damage for the rest of the fight, " %
+				[ATTUNE_DURATION, roundi(_devotion_bonus * 100.0)] +
+			"then mark a new Vessel.")
 
 func StartOfBattle(p_owner_ID: int, p_resolver: BattleResolver) -> void:
 	_devotion_count = 0
 	_MarkNewVessel(p_owner_ID, p_resolver)
+
+func RefreshVisuals(p_character_repr: CharacterRepresentation) -> void:
+	var body_with_state: String = _body
+	if(_devotion_count > 0):
+		body_with_state += "\n\nDevotion: %d (+%d%% damage)" % [
+				_devotion_count, roundi(_devotion_bonus * _devotion_count * 100.0)]
+	p_character_repr.SetTraitElement(_trait_texture, 0)
+	p_character_repr.SetTraitElementToolTip(_title, body_with_state, 0)
 
 func OnSkillCast(
 		p_owner_ID: int,

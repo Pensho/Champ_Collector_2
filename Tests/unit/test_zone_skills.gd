@@ -152,7 +152,7 @@ func test_miasmas_forced_tick_also_cascades_a_comorbidity_flagged_debuff() -> vo
 
 ## Miasma's forced tick now goes through CascadeResolver like any other Echo, so it must be
 ## visible to a mechanic entirely unrelated to Comorbidity: the Herald of the Loom's Golden
-## Thread, which gains Tension from any real cascade instance concerning an enemy.
+## Thread, which gains Tension when another ally's action Echoes on an enemy.
 func test_miasmas_forced_tick_is_seen_as_an_echo_by_golden_thread() -> void:
 	_positions.occupants_by_zone[0] = [3]
 	_roster[3]._attributes[Types.Attribute.Health] = 100000
@@ -165,7 +165,7 @@ func test_miasmas_forced_tick_is_seen_as_an_echo_by_golden_thread() -> void:
 	var herald_trait: WeftAndWarpTrait = WeftAndWarpTrait.new()
 	herald_trait.Init(Types.Rarity.Uncommon)
 	herald_trait.AdvanceThread()  # Golden
-	_roster[0]._trait = herald_trait
+	_roster[2]._trait = herald_trait
 
 	_cast(0, "res://Data/Character_Skill_Variants/Zone_Skills/Miasma.tres", [], 0)
 

@@ -20,7 +20,8 @@ damage_scaling = Dictionary[int, float]({
 [resource]
 script = ExtResource("1_r123n")
 name = "Break Guard"
-description = "A blunt tackle to break and throw the enemy off their balance, lowers Defense. Based on Attack."
+description = "A blunt tackle to break and throw the enemy off their balance, lowers Defense.
+Based on Attack."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Opponent_Active_Skills/Break_Guard/Break_Guard.jpg"
 cooldown = 2
 effects = Array[ExtResource("1_cupar")]([SubResource("Resource_t2jo4"), SubResource("Resource_qqcgo")])

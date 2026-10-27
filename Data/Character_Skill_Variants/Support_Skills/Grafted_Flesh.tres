@@ -32,7 +32,8 @@ target = 13
 [resource]
 script = ExtResource("1_skill")
 name = "Grafted Flesh"
-description = "The caster loses 10% of its max Health; one ally gains the Regeneration buff for 4 turns and moves forward 12% on the turn bar. The caster gains Slow for 1 turn."
+description = "The caster loses 10% of its max Health; one ally gains the Regeneration buff for 4 turns and moves forward 12% on the turn bar.
+The caster gains Slow for 1 turn."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Grafted_Flesh/Grafted_Flesh.png"
 target = 3
 cooldown = 4

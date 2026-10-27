@@ -35,7 +35,8 @@ visual_scene = ExtResource("5_visual")
 [resource]
 script = ExtResource("1_skill")
 name = "Unstable Rift"
-description = "Creates a zone on the turn bar. All affected characters, allies and enemies alike, gain the Warped debuff and take damage scaling with Mysticism. Enemies take more than allies."
+description = "Creates a zone.
+Every character it affects, ally or enemy, gains Warped for 2 turns and takes damage scaled by Mysticism; allies take half as much."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Unstable_Rift/Unstable_Rift.png"
 target = 6
 cooldown = 3

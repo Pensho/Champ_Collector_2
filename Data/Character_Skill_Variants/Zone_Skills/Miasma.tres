@@ -24,7 +24,8 @@ visual_scene = ExtResource("5_tjpeb")
 [resource]
 script = ExtResource("1_skill")
 name = "Miasma"
-description = "Creates a zone on the turn bar. Enemies caught by the trigger have all their active debuffs tick again immediately, without losing a turn of duration, and gain Blight for 2 turns."
+description = "Creates a zone on the turn bar.
+Enemies caught by the trigger have all their active debuffs tick again immediately, without losing a turn of duration, and gain Blight for 2 turns."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Miasma/miasma.jpg"
 target = 8
 cooldown = 3

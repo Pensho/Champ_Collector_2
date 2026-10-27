@@ -19,7 +19,8 @@ damage_scaling = Dictionary[int, float]({
 [resource]
 script = ExtResource("1_skill")
 name = "Blood Bolt"
-description = "Deals damage to a single enemy, scaled by Mysticism. Costs 3% of the casters max Health."
+description = "Deals damage to a single enemy, scaled by Mysticism.
+Costs 3% of the casters max Health."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Blood_Bolt/Blood_Bolt.png"
 effects = Array[ExtResource("1_6rexx")]([SubResource("Resource_duvwb"), SubResource("Resource_tkxii")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

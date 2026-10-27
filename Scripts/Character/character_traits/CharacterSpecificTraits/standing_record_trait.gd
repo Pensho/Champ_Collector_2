@@ -25,8 +25,9 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_execution_steps[Types.Combat_Event.Start_Combat] = Callable(self, "StartOfBattle")
 
 	_title = "Standing Record"
-	_body = "Every enemy has a personal Infraction tally, up to 9, that grows whenever they" \
-			+ " gain a buff, place a zone, land a debuff on an ally, or lose a buff to Signed Writ."
+	_body = ("Every enemy keeps an Infraction tally, up to %d. It grows when they gain a buff, " % INFRACTION_CAP +
+			"place a zone, debuff one of your allies, or lose a buff to Signed Writ.\n" +
+			"Each Infraction is worth %.1f%% to Citation and Sanction." % (_rate_per_infraction * 100.0))
 
 func StartOfBattle(p_owner_ID: int, p_resolver: BattleResolver) -> void:
 	_owner_ID = p_owner_ID

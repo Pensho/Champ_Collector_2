@@ -16,7 +16,8 @@ bonus_per = Dictionary[int, float]({
 [resource]
 script = ExtResource("1_skill")
 name = "Cinder Sermon"
-description = "Deals damage to all enemies, scaled by Mysticism. Each cast becomes 20% stronger."
+description = "Deals damage to all enemies, scaled by Mysticism.
+Each cast becomes 20% stronger."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Opponent_Active_Skills/Cinder_Sermon/Cinder_Sermon.png"
 target = 1
 cooldown = 2

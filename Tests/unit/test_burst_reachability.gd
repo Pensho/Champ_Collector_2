@@ -195,26 +195,18 @@ func test_sorcerer_scholar_tactician_bursting_cataclysm_is_pinned() -> void:
 	# repeat_contrast_ratio instead of product.
 	assert_almost_eq(pinned.product, 2.8, 0.01,
 		"Regression pin: composed product for this team bursting Cataclysm")
-	assert_true(pinned.reagent_assumed,
+	assert_true(pinned.assumed_gates.has(&"instability_held"),
 		"The Echoes are assumed reachable even though they do not change this candidate's own product")
-	# Cataclysm's own Warped bucket (Channel2) multiplies into every Echo replay too, so
-	# this candidate's own repeat_contrast_ratio runs higher than Arc Lash's own 5.2515x
-	# figure (Role_Kit_Design.md section 9.3) — see the dedicated Arc Lash test below.
 	assert_gt(pinned.repeat_contrast_ratio, 0.0,
 		"The Sorcerer's Echoes must contribute a nonzero, separately-tracked contrast ratio")
 	assert_almost_eq(pinned.total_contrast_ratio, pinned.contrast_ratio + pinned.repeat_contrast_ratio, 0.0001,
 		"total_contrast_ratio must be exactly contrast_ratio plus the Echoes' own contribution")
 
-func test_sorcerer_arc_lash_echoes_match_role_kit_designs_own_figure() -> void:
-	# Role_Kit_Design.md section 9.3's own methodology measures the Echo curve against the
-	# basic skill's baseline, where no other bucket (Cataclysm's Warped bonus, Arc Lash has
-	# none) inflates the repeat — 4 Echoes at Legendary compounding (1.70) deal
-	# 50/85/144.5/245.65% — 5.2515x in repeats alone.
+func test_sorcerer_arc_lash_never_echoes() -> void:
 	var result: BurstReachability.TeamResult = BurstReachability.ScoreTeam(_sorcerer_scholar_tactician())
 	var pinned: BurstReachability.CandidateResult = result.Pinned(0, "Arc Lash")
 	assert_not_null(pinned, "Sorcerer's Arc Lash must be a scored candidate")
-	assert_almost_eq(pinned.repeat_contrast_ratio, 5.2515, 0.01,
-		"The Sorcerer's Echoes must reproduce Role_Kit_Design.md section 9.3's own 5.2515x figure")
+	assert_almost_eq(pinned.repeat_contrast_ratio, 0.0, 0.0001, "Only Cataclysm Echoes with Instability")
 
 # --- Manifest override plumbing: a modeled kit change reaches the scorer without editing
 # the real manifest or the scorer's own logic (used by Tests/manual/prescription_sweep.gd) ---
@@ -303,17 +295,17 @@ func test_scholars_field_of_study_amplifies_a_teammates_granted_attribute_buff()
 # --- gated_bonus instance curve (_MultiInstanceContrastRatio, _GatedContrastRatios) ---
 
 func test_multi_instance_contrast_ratio_compounds_across_declared_instances() -> void:
-	# Role_Kit_Design.md 9.3's Echo curve: 4 instances at -0.5 magnitude, 1.70 compounding.
-	# factor_sum = 0.5 * (1 + 1.70 + 1.70^2 + 1.70^3) = 5.2515, matching the settled kit's
-	# own 5.25x projection. Fixed defence cancels between skill_aggregate and baseline_damage
+	# Role_Kit_Design.md 9.3's Echo curve: 5 instances at -0.5 magnitude, 1.70 compounding.
+	# factor_sum = 0.5 * (1 + 1.70 + 1.70^2 + 1.70^3 + 1.70^4) = 9.42755, matching the kit's
+	# own 9.43x projection. Fixed defence cancels between skill_aggregate and baseline_damage
 	# (Skills.MitigatedDamageUnrounded is linear in the aggregate), so the ratio reduces to
 	# own_bucket_factor * factor_sum exactly.
 	var skill_entry: Dictionary = {"class": KitContributionManifest.Contribution_Class.Channel1, "magnitude": 0.0}
-	var bonus: Dictionary = {"magnitude": -0.5, "instances": 4, "instance_compounding": 1.70}
+	var bonus: Dictionary = {"magnitude": -0.5, "instances": 5, "instance_compounding": 1.70}
 	var baseline_damage: float = Skills.MitigatedDamageUnrounded(100.0, 100.0, 1.0, 1.0)
 	var ratio: float = BurstReachability._MultiInstanceContrastRatio(
 			skill_entry, bonus, 100.0, 100.0, baseline_damage, 1.0)
-	assert_almost_eq(ratio, 5.2515, 0.0001,
+	assert_almost_eq(ratio, 9.42755, 0.0001,
 		"A compounding gated_bonus must sum (1+magnitude)*compounding^i across its declared instances")
 
 func test_multi_instance_contrast_ratio_is_flat_when_compounding_is_omitted() -> void:
@@ -329,9 +321,9 @@ func test_multi_instance_contrast_ratio_is_flat_when_compounding_is_omitted() ->
 
 func test_cut_the_cloth_manifest_entry_reproduces_its_projected_legendary_curve() -> void:
 	# Role_Kit_Design.md 9.2's own worked figure: 9 instances (base cast + 7 Tension + Black
-	# Thread's extra instance) at 0.9 base strength * 1.20 (Legendary self-bonus) - 1 = +0.08
-	# magnitude, flat (no instance_compounding) -> 9 * 1.08 = 9.72, reproducing the doc's
-	# ~53.5x contrast ratio against an illustrative 5.5 team product (9.72 * 5.5 ~= 53.5).
+	# Thread's extra instance) at 0.9 base strength * 1.19 (Legendary self-bonus) - 1 = +0.071
+	# magnitude, flat (no instance_compounding) -> 9 * 1.071 = 9.639, reproducing the doc's
+	# ~53.0x contrast ratio against an illustrative 5.5 team product (9.639 * 5.5 ~= 53.0).
 	var herald_entry: Dictionary = KitContributionManifest.MANIFEST[Types.Role.Herald_Of_The_Loom]
 	var cut_the_cloth: Dictionary = {}
 	for skill: Dictionary in herald_entry["skills"]:
@@ -340,14 +332,14 @@ func test_cut_the_cloth_manifest_entry_reproduces_its_projected_legendary_curve(
 	assert_true(cut_the_cloth.has("gated_bonus"), "Cut the Cloth must declare a gated_bonus")
 	var bonus: Dictionary = cut_the_cloth["gated_bonus"]
 	assert_eq(bonus["instances"], 9)
-	assert_almost_eq(bonus["magnitude"], 0.08, 0.0001)
+	assert_almost_eq(bonus["magnitude"], 0.071, 0.0001)
 	assert_eq(bonus["fold"], "separate_instance")
 
 	var baseline_damage: float = Skills.MitigatedDamageUnrounded(100.0, 100.0, 1.0, 1.0)
 	var ratio: float = BurstReachability._MultiInstanceContrastRatio(
 			cut_the_cloth, bonus, 100.0, 100.0, baseline_damage, 1.0)
-	assert_almost_eq(ratio, 9.72, 0.0001,
-		"Cut the Cloth's manifest entry should reproduce Role_Kit_Design.md 9.2's 9*1.08 curve")
+	assert_almost_eq(ratio, 9.639, 0.0001,
+		"Cut the Cloth's manifest entry should reproduce Role_Kit_Design.md 9.2's 9*1.071 curve")
 
 func test_multi_instance_contrast_ratio_clamps_instances_to_the_cascade_cap() -> void:
 	var skill_entry: Dictionary = {"class": KitContributionManifest.Contribution_Class.Channel1, "magnitude": 0.0}
