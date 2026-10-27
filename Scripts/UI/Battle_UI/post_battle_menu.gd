@@ -2,6 +2,8 @@ extends Control
 
 @export var _character_result_UI: Array[CharacterDamageResultUI]
 @export var _reward_summary: RewardSummaryUI
+@export var _button_edit_team: Button
+@export var _button_replay: Button
 
 var _context: ContextContainer = ContextContainer.new()
 
@@ -29,6 +31,11 @@ func Init(p_context_container: ContextContainer) -> void:
 			_reward_summary.hide()
 	elif(p_context_container._arguments["Battle_Result"] == "Victory"):
 		var adventure_path: String = _context._arguments.get("Adventure_Path", "")
+		if not adventure_path.is_empty():
+			# A won Adventure encounter is complete and cannot be refought.
+			_button_edit_team.hide()
+			_button_replay.hide()
+			focus_button()
 		if adventure_path.is_empty():
 			main.GetInstance()._progress.MarkDifficultyCompleted(
 					_context._static_context.resource_path, _context._arguments["Difficulty"])
@@ -66,8 +73,10 @@ func Init(p_context_container: ContextContainer) -> void:
 
 func focus_button() -> void:
 	if _h_box_container:
-		var button: Button = _h_box_container.get_child(0)
-		button.grab_focus()
+		for button: Button in _h_box_container.get_children():
+			if button.visible:
+				button.grab_focus()
+				return
 
 func _on_visibility_changed() -> void:
 	if visible:
