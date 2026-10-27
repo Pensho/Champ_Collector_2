@@ -17,9 +17,6 @@ Design-only plans (no code; can run at any time):
   and an integration pass. Output lands in a new `Story_Design_Document.md` plus
   `Concept_Document.md` 3.4.1; story battles route through
   `Plan_Encounter_Solution_Design.md`.
-- `Plan_Damage_Engine_Audit.md` — sweeps every kit against Concept 1.1.7's engine parts and
-  step properties; output is a `Role_Kit_Design.md` 10.4 ledger and the gap list that opens
-  `Plan_Threshold_Triggers_And_Accelerators.md`.
 - `Plan_Particle_Effects.md` — living inventory of battle and environmental
   particle effects (archetype library, Adventure map overlays, hub ambience).
   Mostly design; skill-effect infrastructure is in `Technical_Design_Document.md` 7.9. Soft ties to the completed data-driven status effects work (status-effect
@@ -41,7 +38,7 @@ Code plans:
   `BiomeVisualData`.
 
 - `Plan_Threshold_Triggers_And_Accelerators.md` — design then code: threshold triggers and
-  cross-kit accelerators added to existing kits. Waits on `Plan_Damage_Engine_Audit.md`.
+  cross-kit accelerators added to existing kits, opening with the engine gap list.
 
 - `Plan_Engine_Build_Step_Metric.md` — turns-to-threshold and fragility per team (Concept
   1.1.2), extending the burst reachability tooling with a turn dimension.

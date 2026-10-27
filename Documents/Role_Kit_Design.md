@@ -1698,6 +1698,84 @@ check against a new kit accidentally claiming a second one. State as of Batch 1.
 Seven player-facing zones across six Roles, Chronophage holding two — the one existing exception to
 the one-per-Role rule, and consistent with its turn-bar identity.
 
+### 10.4 Engine parts
+
+Each Role's kit classified by the engine parts and step properties of `Concept_Document.md` 1.1.7.
+An entry is listed only if it changes the damage of some burst resolution, directly or through one
+link, and it names that link. Entries of one kind share a cell, separated by semicolons; `—` means
+none. A disagreement between the manifest and the Concept Document gets a `†n` marker in the cell
+and a numbered note under the table.
+
+- **Payoff:** the resolution that turns build-up into damage, naming what it reads.
+- **Accumulator:** a quantity that grows across turns and is read by a payoff. A positional
+  quantity the turn bar can shrink is a condition, not an accumulator. Debuff density (read
+  through `Target_Debuff_Count` and Opportunist), ally missing Health (read through
+  `Wounded_Allies` and Sanguine Pact) and the buffs on one ally (read by Devour Blessing) are
+  accumulators no single kit owns.
+- **Accelerator:** makes an accumulator grow faster than its own accrual, naming the mechanic
+  class it feeds, never a Role (section 2). *(own)* marks a Role feeding its own accumulator;
+  *(incidental)* marks an interaction that works by accident.
+- **Threshold trigger:** turns on at a discrete point — an accumulator reaching a count, a
+  quantity passing a value, or two or more conditions standing together — and what turns on is
+  damage or feeds an accumulator. A rider gated on one condition is not one.
+- **Protector:** answers a class of opponent threat to the build-up, the window, or the team
+  surviving to the trigger; held to the collapse test (`Concept_Document.md` 1.1.6).
+- **Step properties:** each property the Role can contribute and the part that supplies it.
+  Cash-out timing needs a payoff that consumes or resets an accumulator. Interruptible build-up
+  needs an opponent action that reduces the accumulator, removes what the payoff reads, or
+  denies the payoff's window.
+
+Protector and Interruptible build-up are judged by class of opponent action, whether or not a
+current encounter fields it.
+
+| Role | Payoff | Accumulator | Accelerator | Threshold trigger | Protector | Step properties |
+|---|---|---|---|---|---|---|
+| Emissary | Citation and Levied Sanction read Infractions; Sanction exports its factor to every attacker | Standing Record: Infractions per enemy, capped at 9, from the enemy's own actions, never consumed | Signed Writ's strip: Infractions *(own)*; Levied Sanction: debuff density | — | Signed Writ: enemy buffs | Ordering: Signed Writ before Levied Sanction's snapshot. Interruptible: a debuff cleanse removes Sanction |
+| Thief | Cut Purse's Opportunist reads debuff density on the Thief's attacks for 2 turns | — | — | — | Cut Purse's steal: enemy buffs | Ordering: the team's debuffs land before the Opportunist window. Interruptible: a debuff cleanse cuts density. External input: any kit's distinct debuff types |
+| Lancer | Rending Charge reads the turn-bar section span at cast | — | Rending Charge's Bleed, Disarm's Enfeeble: debuff density | — | Disarm's Enfeeble: enemy damage during the window | Ordering: Disarm's push-back before Rending Charge. Interruptible: enemy turn-bar gains close the gap. External input: any push-back on the target widens the span |
+| Alchemist | Fresh Batch's Volatile Mixture, re-armed by every reagent consumed, refreshed rather than stacked | — | Fresh Batch's brew, Catalyst Cloud's refund: reagent-fed accumulators; Dissolving Agent: debuff density (two types) | — | Fresh Batch's brew: enemy damage and debuffs on the team (random pool) | Ordering: Catalyst Cloud before reagent use, reagents before the burst cast. Interruptible: a buff strip removes Volatile Mixture before it is consumed |
+| Sorcerer | Every Sorcerer skill spends Echo charges; Cataclysm reads Warped; Unstable Rift reads Echoes as zone amplification | Arcane Instability: Instability stacks, automatic, capped at 5; Echo charges from reagents and Surge, uncapped, all spent by the next skill | Reagent consumption: Instability and Echo charges *(own)*; Echo repeats: Echo-fed accumulators; Unstable Rift, Arc Lash's Warped: debuff density; Surge, Unstable Rift: ally missing Health by friendly fire *(incidental)* | Arcane Instability: Surge at 5 stacks, automatic; its payload is damage plus an Echo charge | — | Ordering: Unstable Rift before Cataclysm, reagents before the charged cast, the Surge cast before the cast taking its charge. Cash-out timing: which skill takes the charges, and whether to spend every reagent in one turn. Interruptible: a debuff cleanse removes Warped; enemies contesting zone sections. External input: reagent supply feeds Echo charges |
+| Scholar | Expose Fallacy's Opportunist reads debuff density on every ally's attacks for 2 turns | — | Expose Fallacy's Confound, Sharp Rebuttal's Suppress: debuff density | — | Refutation: enemy zones | Ordering: the team's debuffs land before the Opportunist window; a zone stands before Sharp Rebuttal. Interruptible: a debuff cleanse cuts density. External input: any kit's distinct debuff types; any side's zone arms Sharp Rebuttal's rider |
+| Diviner | — | — | Foresight's Enfeeble, Ill Omen's Hexed and Slow: debuff density; Premonition's counter: per-cast accumulators (a full basic cast) | — | Premonition: an attack on a key piece; Foresight's Enfeeble: enemy damage during the window; Ill Omen's Hexed: enemy chance rolls | Ordering: Premonition before the predicted attack |
+| Appraiser | Any ally's critical hit reads the crit terms Full Appraisal, Exposed Facet and Cracked Facet assemble | — | Sizing Cut's Exposed Facet, Flaw Analysis's Confound and Cracked Facet: debuff density | No Wasted Margin: an ally's Critical Chance passing 100 converts the excess to Critical Damage | — | Ordering: Full Appraisal and Flaw Analysis before the carrier's attack, Sizing Cut's 1-turn Exposed Facet just before it. Interruptible: a debuff cleanse removes the Facets; a buff strip removes Keen Edge and Lethal Precision. External input: any kit's Critical Chance feeds the conversion |
+| Tactician | — | — | Battle Orders, Haste: per-turn and per-cast accumulators (tempo) | — | — | Ordering: Fatal Flaw before the allies' burst turn. Interruptible: a buff strip removes Daunting Strength |
+| Symbiote | — (plus one graft, below) | — | Symbiotic Overdrive's Exhert tick, Grafted Flesh's Health cost: ally missing Health; Grafted Flesh's push: per-turn and per-cast accumulators (tempo) | — | Grafted Flesh's Regeneration: sustained enemy damage | — |
+| Jester | — | — | Burning Bolas's Burning and Hexed: debuff density; Hexed also lands the team's debuffs against the enemy's resist rolls | — | Center Stage's Spotlight and Luck, Double the fun!: focused fire on the burst carrier; Hexed: enemy chance rolls | Ordering: Hexed before the team's debuffs |
+| Cultist | Devour Blessing consumes and reads the buffs on one ally; Chosen Vessel's Devotion reads dead Vessels | Chosen Vessel: Devotion per dead Vessel, permanent, bounded by the party; the Vessel's missing Health | Chosen Vessel's drain: ally missing Health *(own)*; Rite of Severance: debuff density | Desecrated Blade: the Vessel passing half Health; Chosen Vessel: the Vessel's death grants Devotion and Attune | Rite of Severance: enemy buffs | Ordering: drain the Vessel below half before Desecrated Blade; buffs on an ally before Devour Blessing. Cash-out timing: Devour Blessing now, or let buffs pile up. Interruptible: an enemy buff strip on the ally. External input: any kit's buffs on allies; any damage to the Vessel |
+| Bar Brawler | Heap On reads its own use count | Heap On: uses this battle, uncapped (sanctioned in section 9.18) | Headbutt's Dead Weight: debuff density | — | On the House!: sustained enemy damage; Headbutt's Dead Weight and push-back: enemy tempo | External input: any extra basic cast advances the ramp |
+| Bloodmage | Tithe of Vitality reads allies below half Health; Hemoclarity reads the Bloodmage's missing Health; Sanguine Pact reads its holder's missing Health; Hemorrhage reads the enemy's missing Health for every attacker | Hemoclarity: the Bloodmage's missing Health, capped at 80% | Blood Bolt's cost, Transfusion's sacrifice: the Bloodmage's missing Health *(own)*; Tithe of Vitality's drain: ally missing Health; Hemorrhage: debuff density | Tithe of Vitality: each ally passing half Health | Transfusion's Barrier: burst enemy damage on allies; Sanguine Pact's redirect: damage to its holder | Ordering: wound allies before Tithe of Vitality, and Sanguine Pact before its holder's burst. Interruptible: a buff strip removes Sanguine Pact; a debuff cleanse removes Hemorrhage. External input: any kit wounding allies |
+| Herald of the Loom | Cut the Cloth resolves once per Tension and consumes it; Black Thread adds one Echo to the Herald's own cascade | Weft and Warp: Tension, capped at 7, from Echoes on enemies under Golden Thread | Pull the Thread: Tension *(own)*; Thread Snap's Suppress, Pull the Thread's Temporal Leak, Silver Thread's unresistable debuffs: debuff density | — | Pull the Thread's push-back: enemy tempo | Ordering: Golden Thread before Echo-producing casts, Black Thread before Cut the Cloth. Cash-out timing: Cut the Cloth now, or build Tension further. External input: any kit's Echoes on enemies under Golden Thread |
+| Chronophage | — | — | Time Tithe's Borrowed Time: Echo-fed accumulators; Flicker Zone: per-turn and per-cast accumulators (tempo) | Time Tithe: an ally the Chronophage moves forward while alone in its section gains Borrowed Time | Temporal Sinkhole: enemy tempo | Ordering: the ally alone in a section before Flicker Zone moves it, and Borrowed Time before the holder's burst cast. Interruptible: a buff strip removes Borrowed Time |
+| Architect | Final Calculation consumes all Calibration charges, in tiers | Calibration: charges, capped at 12, from Cornerstone and from each character using Raise the Frame | Raise the Frame: Calibration *(own)*; Final Calculation's Expose Weakness: debuff density | Final Calculation: Expose Weakness at 5 charges, Raise the Frame re-erected at 9 | Raise the Frame's Barrier: burst enemy damage on allies | Ordering: Raise the Frame before allies pass through it. Cash-out timing: Final Calculation now or at a higher tier, and Raise the Frame's Barrier spending charges against the finisher. Interruptible: enemies contesting zone sections. External input: any character using Raise the Frame |
+| Tidal Corsair | Corsair's Reckoning consumes Steel and Sea stacks; each ally's damage reads its Sea Legs | Wrangle the Sea: Steel and Sea stacks, 3 slots; Sea Legs stacks on each ally whose turn starts on The Gilded Deck, capped at 4, permanent | Boarding Party's Haste: per-turn and per-cast accumulators (tempo) | — | Boarding Party's Slipstream: enemy zones | Ordering: the hand's composition before Corsair's Reckoning, and The Gilded Deck raised early. Cash-out timing: which hand to spend, and when. Interruptible: enemies occupying every free section deny The Gilded Deck. External input: any kit's tempo that starts allies' turns on the Deck |
+| Plague Doctor | Outbreak reads debuff density; Comorbidity's Echo count reads debuff density on each flagged tick; Miasma re-ticks every debuff on the target | — | Outbreak's Plague, Miasma's Blight: debuff density; Comorbidity's Echoes: Echo-fed accumulators | — | Miasma's Blight: enemy healing | Ordering: the team's debuffs before Outbreak and before Plague ticks, Miasma before the enemy reaches its section. Interruptible: a debuff cleanse cuts density. External input: any kit's distinct debuff types |
+| Warlord | — | — | Brace for Impact's Enfeeble on attackers: debuff density | — | Shield Wall: damage to allies in the window; Hold the Line's Fortify: enemy damage; Brace for Impact's Aegis: a debuff on the Warlord, and its Enfeeble: enemy damage | — |
+
+**Symbiote grafts.** A Symbiote carries exactly one graft (`Symbiote_Graft_Pool.md`), so a team
+reads the Symbiote row plus one row below, never several. Spore Lash scales with Resistance, so a
+graft's Resistance reaches damage and its Defence does not.
+
+| Graft | Payoff | Accumulator | Accelerator | Threshold trigger | Protector | Step properties |
+|---|---|---|---|---|---|---|
+| Spreading Rot | — | — | Blight on the Symbiote's attacks: debuff density | — | Blight: enemy healing | — |
+| Hollow Hunger | — | — | — | — | — | — |
+| Carrion Bloom | — | — | — | — | Lowest-Health ally healed each turn: sustained enemy damage | — |
+| Caravan Cadence | — | — | Push on the ally furthest behind: per-turn and per-cast accumulators (tempo) | — | — | — |
+| Glass Refraction | — | — | — | — | — | — |
+| Living Bloom | — | — | Spore Bloom's Blight: debuff density | — | Spore Bloom's Blight: enemy healing; its Regeneration: sustained enemy damage | — |
+| Rootfeeder | — | — | — | — | — | — |
+| Gravitic Rot | — | — | — | — | Turn-bar drain on enemies behind: enemy tempo | — |
+| Contagion Bond | — | — | Debuffs landing on the Symbiote copied to an enemy: debuff density | — | — | External input: enemy debuffs on the Symbiote |
+| Symbiotic Anchor | — | — | — | — | — | — |
+| Bloodscent | — | — | — | — | — | — |
+| Reactive Plating | — | — | — | — | — | — |
+| Undertow | — | — | — | — | Attacker pulled back on the turn bar: enemy tempo | — |
+| Wretched Conscript | — | — | — | — | — | — |
+| Strength in Numbers | — | — | — | — | — | — |
+| Detritivore | Spore Lash reads Scrap's Resistance | Scrap stacks from any reagent consumed, buff expired or zone dissipated, uncapped, automatic, permanent | — | — | — | External input: any kit's reagents, buffs and zones |
+| Overgrowth | — | — | — | — | Team Regeneration at 6 Overgrowth stacks: sustained enemy damage | — |
+| Glamour | — | — | — | — | — | — |
+
 ## 11. Scorer plumbing for Channel 3 payloads
 
 `Scripts/Debug/burst_reachability.gd` and `kit_contribution_manifest.gd` are the authority the

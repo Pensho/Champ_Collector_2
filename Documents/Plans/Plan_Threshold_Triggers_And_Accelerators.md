@@ -2,12 +2,73 @@
 
 Give the roster the engine parts `Concept_Document.md` 1.1.7 names but the kits barely carry:
 threshold triggers, and accelerators that feed another kit's accumulator. Design first, then
-code. Opens with the gap list from `Plan_Damage_Engine_Audit.md`; do not start step 2 before
-that list exists.
+code.
 
 ## Gap list
 
-Written by `Plan_Damage_Engine_Audit.md` step 4.
+Drawn from the `Role_Kit_Design.md` 10.4 ledger and a read of the teams in
+`Scripts/Debug/team_corpus.gd`.
+
+**Parts missing or thin.**
+
+- **Threshold triggers:** seven, in six Roles. Two fire automatically (the Sorcerer's Surge,
+  the Appraiser's Critical Chance conversion past 100); three are ally missing Health crossing a
+  line (the Cultist's Desecrated Blade and Vessel death, the Bloodmage's Tithe of Vitality); the
+  Architect's Final Calculation tiers read a charge count; the Chronophage's Borrowed Time reads
+  turn-bar position.
+- **Accumulators:** eight of twenty Roles own one. Thief, Lancer, Alchemist, Scholar, Diviner,
+  Appraiser, Tactician, Jester, Chronophage, Plague Doctor, Warlord and the ungrafted Symbiote
+  own none; the Lancer's payoff reads a positional condition.
+- **Debuff density:** fed by fifteen of twenty Roles; read by Thief and Scholar through
+  Opportunist and by the Plague Doctor.
+- **Echo-fed accumulators:** the Herald of the Loom's Tension is the only one; Sorcerer,
+  Chronophage and Plague Doctor feed it.
+- **Tempo accelerators:** Tactician, Symbiote, Chronophage, Tidal Corsair and Caravan Cadence
+  speed per-turn and per-cast accumulators: the Sorcerer's Instability, the Bar Brawler's Heap
+  On, the Architect's Calibration, and Sea Legs.
+- **Ally missing Health:** fed by Symbiote, Cultist, Bloodmage, and the Sorcerer incidentally;
+  read by Bloodmage and Cultist.
+- **(own) accelerators:** six of twenty — Emissary (Signed Writ's strip), Sorcerer (reagents),
+  Cultist (the Vessel drain), Bloodmage (self-costs), Herald of the Loom (Pull the Thread),
+  Architect (Raise the Frame). Each also takes external input.
+- **Symbiote grafts:** Detritivore holds the pool's only accumulator, and its Scrap stacks
+  accrue automatically without a cap, against `Concept_Document.md` 1.1.4. Nine of eighteen
+  grafts supply no engine part.
+
+**Step properties.**
+
+- **Cash-out timing:** five of twenty Roles — Sorcerer, Cultist (Devour Blessing), Herald of the
+  Loom (Cut the Cloth), Architect (Final Calculation), Tidal Corsair (Corsair's Reckoning).
+- **Interruptible build-up:** opponent actions reach only what a payoff reads (debuffs, buffs,
+  turn-bar position, zone sections); none reaches an accumulator itself.
+- **The two-property guidance:** every corpus team meets it, the three Control teams included.
+  Ordering and Interruptible build-up come with any payoff that reads a status, and the Appraiser,
+  Chronophage, Warlord team meets it with no accumulator at all.
+
+**Only a single-snapshot factor:** Tactician (Daunting Strength).
+
+**Full passes:** Jester, Diviner and Warlord, Enabler identities supplying Protector parts.
+
+**Team read**, Symbiote ungrafted. A part counts only when the team holds what it feeds or reads.
+
+| Team | Tier | Linked accumulators | Threshold triggers | Step properties |
+|---|---|---|---|---|
+| Sorcerer, Scholar, Tactician | Intent | Instability and Echo charges, fed by the Tactician's tempo; debuff density, from Sorcerer and Scholar, read by Opportunist | Surge | Ordering, Cash-out timing, Interruptible, External input |
+| Tidal Corsair, Cultist, Warlord | Intent | Steel and Sea, Sea Legs, fed by the Corsair's Haste; Devotion and the Vessel's missing Health; buffs on one ally, from Fortify, Haste and Slipstream, read by Devour Blessing | Desecrated Blade, Vessel death | all four |
+| Bar Brawler, Tactician, Tidal Corsair | Intent | Heap On, Steel and Sea, Sea Legs, all fed by tempo | — | all four |
+| Symbiote, Tactician, Tidal Corsair | Intent | Steel and Sea, Sea Legs, fed by tempo | — | all four |
+| Scholar, Chronophage, Symbiote | Control | debuff density, from the Scholar alone | Borrowed Time | Ordering, Interruptible, External input |
+| Alchemist, Scholar, Chronophage | Control | debuff density, from Alchemist and Scholar | Borrowed Time | Ordering, Interruptible, External input |
+| Appraiser, Chronophage, Warlord | Control | — | Critical Chance conversion, Borrowed Time | Ordering, Interruptible |
+
+- **Accelerators left without a target:** debuff density with no reader (teams 2, 3, 7);
+  Echo-fed (teams 1, 5, 6, 7); reagent-fed (team 6); ally missing Health (teams 1, 4, 5).
+- **Devour Blessing consumes permanent buffs,** so in team 2 the Cultist spends the Tidal
+  Corsair's Sea Legs; Shield Wall diverts damage off a nearby Vessel and slows the Cultist's
+  thresholds.
+- **Corpus coverage:** 11 of 20 Roles appear and three of four Intent teams are built on the
+  Tidal Corsair. Emissary, Thief, Lancer, Diviner, Jester, Bloodmage, Herald of the Loom,
+  Architect and Plague Doctor never appear.
 
 ## Design constraints
 
