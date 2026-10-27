@@ -78,6 +78,9 @@ Effort: **S** = hours, **M** = days, **L** = week+
 - **World Boss (Timed)** *(Priority: Medium | Effort: L)*
   A powerful boss that only appears during special real-time windows (e.g. weekends or seasonal events). Ties into the God-themed event rotation from the concept doc.
 
+- **Echo-Disrupting Boss** *(Priority: Medium | Effort: M)*
+  A boss mechanic that targets Echo build-up — draining banked Echo charges or cutting a cascade short — giving engine-targeting locks (Concept 1.2) a Channel 3 target.
+
 - **Run Multiplier** *(Priority: Medium | Effort: S)*
   Let the player select a multiplier (e.g. x3, x5) before entering a repeatable encounter to auto-run it that many times and batch the rewards. Reduces friction for grinding.
 
