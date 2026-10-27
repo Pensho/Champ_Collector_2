@@ -180,7 +180,7 @@ multiply the Role's own factors by an assumed teammate product (§9.2 and §9.3 
 show the kit *composing*. The resulting number belongs to the illustrative team, not to the Role,
 and is never a bar another Role is expected to match.
 * Current roster baseline (`Tests/manual/team_corpus_sweep.gd`): combined-modifier-product median
-  **1.62x**, 90th percentile **2.80x**, ceiling **7.22x**; contrast-ratio ceiling **9.39x**. Every
+  **2.00x**, 90th percentile **4.68x**, ceiling **16.24x**; contrast-ratio ceiling **23.70x**. Every
   batch records its delta against this baseline as the distribution's *shape* (median, 90th
   percentile, ceiling, count of distinct top-decile pairings), not only the maximum.
 
