@@ -662,7 +662,7 @@ the fix belongs in the data or the document.
     * Effect: [Channel 1 + Channel 2] Deals heavy damage to a single enemy, scaling with Attack and the Couched Lance passive, and applies the Bleed debuff for 2 turns.
 * Disarm
     * Type: Damage, Debuff
-    * Cooldown: 2 turns
+    * Cooldown: 3 turns
     * Effect: [Channel 1 + Enabler] Deals damage to a single enemy, applies the Enfeeble debuff for 2 turns, and pushes them backward 10% on the turn bar.
 
 ###### Alchemist
