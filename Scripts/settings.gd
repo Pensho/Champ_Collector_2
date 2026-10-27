@@ -5,6 +5,9 @@ signal frames_per_second_overlay_changed(p_enabled: bool)
 const CONFIG_PATH: String = "user://settings.cfg"
 const CONFIG_SECTION: String = "settings"
 
+## Linear Music bus gain at a full music slider; the slider scales within it.
+const MAXIMUM_MUSIC_VOLUME: float = 0.8
+
 const DEFAULT_MASTER_VOLUME: float = 1.0
 const DEFAULT_MUSIC_VOLUME: float = 1.0
 const DEFAULT_SOUND_EFFECTS_VOLUME: float = 1.0
@@ -72,7 +75,7 @@ func Save() -> void:
 
 func ApplyAll() -> void:
 	_apply_bus_volume("Master", master_volume)
-	_apply_bus_volume("Music", music_volume)
+	_apply_bus_volume("Music", music_volume * MAXIMUM_MUSIC_VOLUME)
 	_apply_bus_volume("Sound Effects", sound_effects_volume)
 	_apply_fullscreen()
 	_apply_vertical_sync()
@@ -87,7 +90,7 @@ func SetMasterVolume(p_value: float) -> void:
 
 func SetMusicVolume(p_value: float) -> void:
 	music_volume = p_value
-	_apply_bus_volume("Music", music_volume)
+	_apply_bus_volume("Music", music_volume * MAXIMUM_MUSIC_VOLUME)
 	Save()
 
 func SetSoundEffectsVolume(p_value: float) -> void:

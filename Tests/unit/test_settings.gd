@@ -87,13 +87,26 @@ func test_zero_volume_mutes_the_bus() -> void:
 	assert_true(AudioServer.is_bus_mute(bus_index))
 
 func test_positive_volume_unmutes_the_bus_and_sets_zero_db_at_full_value() -> void:
-	AudioServer.set_bus_mute(AudioServer.get_bus_index("Music"), true)
+	AudioServer.set_bus_mute(AudioServer.get_bus_index("Sound Effects"), true)
 
+	_settings.SetSoundEffectsVolume(1.0)
+
+	var bus_index: int = AudioServer.get_bus_index("Sound Effects")
+	assert_false(AudioServer.is_bus_mute(bus_index))
+	assert_almost_eq(AudioServer.get_bus_volume_db(bus_index), 0.0, 0.001)
+
+func test_full_music_volume_caps_the_bus_at_the_maximum_music_volume() -> void:
 	_settings.SetMusicVolume(1.0)
 
 	var bus_index: int = AudioServer.get_bus_index("Music")
-	assert_false(AudioServer.is_bus_mute(bus_index))
-	assert_almost_eq(AudioServer.get_bus_volume_db(bus_index), 0.0, 0.001)
+	assert_almost_eq(AudioServer.get_bus_volume_db(bus_index), linear_to_db(Settings.MAXIMUM_MUSIC_VOLUME), 0.001)
+
+func test_music_volume_scales_within_the_maximum_music_volume() -> void:
+	_settings.SetMusicVolume(0.5)
+
+	var bus_index: int = AudioServer.get_bus_index("Music")
+	assert_almost_eq(
+			AudioServer.get_bus_volume_db(bus_index), linear_to_db(0.5 * Settings.MAXIMUM_MUSIC_VOLUME), 0.001)
 
 func test_set_locale_updates_the_translation_server() -> void:
 	_settings.SetLocale("en")
