@@ -58,12 +58,12 @@ func test_zone_used_capped_at_max() -> void:
 # --- Final Calculation consumption ---
 
 func test_final_calculation_damage_multiplier_scales_with_charges_and_rarity() -> void:
-	_InitTrait(Types.Rarity.Legendary)  # 7% per charge
+	_InitTrait(Types.Rarity.Legendary)  # 10% per charge
 	for i in 3:
 		_trait.OnSkillCast(0, [], "Cornerstone", {}, _resolver)
 	var result: TraitSkillResult = _trait.OnSkillCast(0, [1], "Final Calculation", {}, _resolver)
-	assert_almost_eq(result._damage_multiplier, 1.0 + 3 * 0.07, 0.0001,
-		"Three charges at Legendary should add 3 x 7% to the base multiplier")
+	assert_almost_eq(result._damage_multiplier, 1.0 + 3 * 0.10, 0.0001,
+		"Three charges at Legendary should add 3 x 10% to the base multiplier")
 
 func test_final_calculation_below_threshold_applies_no_debuff() -> void:
 	_InitTrait(Types.Rarity.Epic)
@@ -251,7 +251,7 @@ func test_get_zone_charge_bonus_scales_with_invested_charges_and_potency() -> vo
 		_trait.OnSkillCast(0, [], "Cornerstone", {}, _resolver)
 	var zone_effect: ZoneEffect = TestFactory.make_zone_effect(5, [BarrierZoneEffect.new()])
 	TestFactory.place_zone(_resolver, 0, 0, zone_effect, Types.Skill_Target.ZoneAlly)
-	assert_almost_eq(_trait.GetZoneChargeBonus(0), CalibrationTrait.RAISE_THE_FRAME_CONSUME_CAP * 0.07, 0.0001)
+	assert_almost_eq(_trait.GetZoneChargeBonus(0), CalibrationTrait.RAISE_THE_FRAME_CONSUME_CAP * 0.10, 0.0001)
 
 func test_get_zone_charge_bonus_is_zero_for_unknown_zone() -> void:
 	_InitTrait(Types.Rarity.Legendary)

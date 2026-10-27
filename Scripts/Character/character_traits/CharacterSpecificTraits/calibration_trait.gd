@@ -14,9 +14,9 @@ const RAISE_THE_FRAME_VISUAL_SCENE: PackedScene = preload(
 
 const PER_CHARGE_POTENCY: Dictionary[Types.Rarity, float] = {
 	Types.Rarity.Uncommon: 0.04,
-	Types.Rarity.Rare: 0.05,
-	Types.Rarity.Epic: 0.06,
-	Types.Rarity.Legendary: 0.07,
+	Types.Rarity.Rare: 0.06,
+	Types.Rarity.Epic: 0.08,
+	Types.Rarity.Legendary: 0.10,
 }
 
 var _charges: int = 0

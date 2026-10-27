@@ -964,7 +964,7 @@ burst outright.
 Cornerstone, Raise the Frame and Final Calculation all ship as they are; the only change is Expose
 Weakness's magnitude, and the rest of this entry records what the kit already does.
 
-**Why it passes unchanged.** Final Calculation's charge bucket is **1.84x** at 12 charges (0.07 per
+**Why it passes unchanged.** Final Calculation's charge bucket is **2.20x** at 12 charges (0.10 per
 charge at Legendary), inside section 4's contract and its 1.7-2.2x bucket-product group. Route D is
 independent of Tidal Corsair by construction — charges come from the Architect's own basic and its
 own zone's use, sharing nothing. And the Buffer purpose is served with a decision attached rather
@@ -983,7 +983,7 @@ a distinct debuff type feeding route A's density count.
 `DEFENCE_SCALE_CONSTANT = 100.0`), Expose Weakness is worth **1.16x** at -30% and **1.25x** at -44%,
 for the whole team. Phase 0 is what created this factor: under the old formula Defence lost its
 weight at burst scale and the debuff was build-up pressure only. The Architect's own declared
-contribution is unchanged at 1.84x.
+contribution is unchanged at 2.20x.
 
 **Judgment calls made while settling, listed so they can be overruled:** the 9-12 tier's free zone
 re-erect is left as the only reward for a maximum spend beyond raw magnitude, rather than gaining an
@@ -1028,7 +1028,7 @@ Role's Damage purpose (`Concept_Document.md` 3.1.3) is finally what its passive 
 returns to unclaimed, and the accumulate-then-spend idiom drops from five claimants to four.
 
 **Projected numbers.** **1.18x** at one section, **1.54x** at three, **1.90x** at five — one factor,
-inside section 1's contract, in the same bucket-product kind as Architect (1.84x) and Tidal Corsair
+inside section 1's contract, in the same bucket-product kind as Architect (2.20x) and Tidal Corsair
 (2.80x). The kit needs nothing further to pass.
 
 **Implementation.**

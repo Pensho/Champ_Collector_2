@@ -528,7 +528,7 @@ func _case_architect_calibration(p_name: String) -> void:
 	var declared: float = (
 			KitContributionManifest.MANIFEST[Types.Role.Architect]["passive"][0]["magnitude"])
 	assert_almost_eq(modifier.Buckets().get(CombinedDamageModifier.TRAIT_RESOURCE_KEY, 0.0), declared, 0.001,
-			"%s: 12 real basic casts must reproduce the manifest's declared 12-charge ceiling (0.84)" % p_name)
+			"%s: 12 real basic casts must reproduce the manifest's declared 12-charge ceiling (1.2)" % p_name)
 
 # --- Tier 1: Plague Doctor — Outbreak's Target_Debuff_Count bonus_per at the minimum count ---
 
