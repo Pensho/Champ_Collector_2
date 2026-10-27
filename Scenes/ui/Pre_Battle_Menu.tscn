@@ -9,7 +9,7 @@
 [ext_resource type="Script" uid="uid://853wrgpde68y" path="res://Scripts/Audio/button_sound_profile.gd" id="7_4lwp5"]
 [ext_resource type="Resource" path="res://Data/Sound_Cues/button_standard.tres" id="8_atwry"]
 
-[node name="PreBattleMenu" type="Control" unique_id=1325280994 node_paths=PackedStringArray("_difficulty_option", "_chosen_character_slots", "_chosen_reagent_slots", "_grid_container_characters", "_grid_container_reagents", "_opponent_slots", "_h_box_container_drops", "_part_briefing", "_part_team", "_part_reagents", "_footer", "_button_back", "_button_next", "_button_start")]
+[node name="PreBattleMenu" type="Control" unique_id=1325280994 node_paths=PackedStringArray("_difficulty_option", "_chosen_character_slots", "_chosen_reagent_slots", "_grid_container_characters", "_grid_container_reagents", "_opponent_slots", "_h_box_container_drops", "_part_briefing", "_part_team", "_part_reagents", "_footer", "_button_next", "_button_start")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -28,7 +28,6 @@ _part_briefing = NodePath("Part_Briefing")
 _part_team = NodePath("Part_Team")
 _part_reagents = NodePath("Part_Reagents")
 _footer = NodePath("Footer")
-_button_back = NodePath("Footer/Back")
 _button_next = NodePath("Footer/Next")
 _button_start = NodePath("Footer/Start")
 
@@ -253,12 +252,6 @@ offset_bottom = 688.0
 theme_override_constants/separation = 32
 alignment = 2
 
-[node name="Back" type="Button" parent="Footer" unique_id=2028651255]
-layout_mode = 2
-theme = ExtResource("1_fbx8u")
-theme_override_constants/outline_size = 5
-text = "Back"
-
 [node name="Exit" type="Button" parent="Footer" unique_id=1791402004]
 layout_mode = 2
 theme = ExtResource("1_fbx8u")
@@ -294,7 +287,6 @@ metadata/_custom_type_script = "uid://brborf0wdvmjy"
 
 [connection signal="gui_input" from="Part_Briefing" to="." method="_on_part_briefing_gui_input"]
 [connection signal="item_selected" from="Part_Briefing/OptionButton_Difficulty" to="." method="_on_difficulty_option_item_selected"]
-[connection signal="button_up" from="Footer/Back" to="." method="_on_back_button_up"]
 [connection signal="button_up" from="Footer/Exit" to="." method="_on_exit_button_up"]
 [connection signal="button_up" from="Footer/Next" to="." method="_on_next_button_up"]
 [connection signal="button_up" from="Footer/Start" to="." method="_on_start_button_up"]

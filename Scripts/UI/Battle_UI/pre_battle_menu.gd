@@ -28,7 +28,6 @@ const TAP_MAX_HOLD_MS: int = int(ToolTip.PRESSED_TIME * 1000.0)
 @export var _part_team: Control
 @export var _part_reagents: Control
 @export var _footer: Control
-@export var _button_back: Button
 @export var _button_next: Button
 @export var _button_start: Button
 
@@ -155,7 +154,6 @@ func _ShowPart(p_part: Part) -> void:
 	if(Part.Briefing == p_part):
 		return
 
-	_button_back.visible = true
 	var has_reagents: bool = ShouldShowReagentStep(_reagent_collection.GetAllOwned())
 	_button_next.visible = (Part.Team == p_part) and has_reagents
 	_button_start.visible = (Part.Reagents == p_part) or (Part.Team == p_part and not has_reagents)
@@ -178,12 +176,6 @@ func _on_difficulty_option_item_selected(_index: int) -> void:
 
 func _on_next_button_up() -> void:
 	_ShowPart(Part.Reagents)
-
-func _on_back_button_up() -> void:
-	if(Part.Reagents == _current_part):
-		_ShowPart(Part.Team)
-	elif(Part.Team == _current_part):
-		_ShowPart(Part.Briefing)
 
 func _on_exit_button_up() -> void:
 	# Backing out of an adventure combat returns the Supplies spent on Prepare or Bait.
