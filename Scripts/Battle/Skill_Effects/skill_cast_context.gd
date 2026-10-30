@@ -18,6 +18,8 @@ var health_paid: int = 0
 ## Buffs consumed this cast, written by ConsumeBuffsEffect and read by a damage effect
 ## scaling off Buffs_Consumed.
 var buffs_consumed: int = 0
+## DamageMultiplier factors this cast's hits consumed.
+var damage_multipliers_consumed: Dictionary[StringName, float] = {}
 
 ## True when this context represents a zone triggering against the single character
 ## in target_IDs, rather than a caster resolving a Skill against its cast targets — in
@@ -37,6 +39,9 @@ var status_effect_attempted: bool = false
 var status_effect_landed: bool = false
 
 var repeat_bonus: float = 0.0
+
+## Factors a replay repeats on its first hit, mirroring the hit that consumed them.
+var _damage_multipliers_to_repeat: Dictionary[StringName, float] = {}
 
 func _init(
 		p_resolver: BattleResolver,
@@ -61,6 +66,12 @@ func InheritCastResults(p_source_cast: SkillCastContext) -> void:
 	trait_result = p_source_cast.trait_result
 	health_paid = p_source_cast.health_paid
 	buffs_consumed = p_source_cast.buffs_consumed
+	_damage_multipliers_to_repeat = p_source_cast.damage_multipliers_consumed
+
+func TakeDamageMultipliersToRepeat() -> Dictionary[StringName, float]:
+	var factors: Dictionary[StringName, float] = _damage_multipliers_to_repeat
+	_damage_multipliers_to_repeat = {}
+	return factors
 
 ## Resolves a target_type to caster-relative Character IDs, filtered to those alive:
 ## this cast's own targets when p_target_type is the skill's own target, otherwise

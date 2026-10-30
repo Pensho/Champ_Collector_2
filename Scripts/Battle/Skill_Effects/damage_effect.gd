@@ -38,9 +38,11 @@ func Resolve(p_context: SkillCastContext) -> void:
 			combined_damage_modifier.Contribute(_RepeatKey(p_context), p_context.zone_strength_multiplier - 1.0)
 		combined_damage_modifier.Contribute(_SkillKey(p_context), _SkillCountBonus(p_context, target_ID))
 		_ContributeDebuffFactors(p_context, target_ID, combined_damage_modifier)
+		combined_damage_modifier.ContributeAll(p_context.TakeDamageMultipliersToRepeat())
 		p_context.resolver.ResolveEffectDamage(p_context.caster_ID, target_ID, p_context.caster_attributes,
 				damage_scaling, defence_ignore_multiple, combined_damage_modifier, _AllowCritical(p_context),
 				defence_ignore_factor)
+		p_context.damage_multipliers_consumed.merge(combined_damage_modifier.ConsumedFactors())
 
 func _AllowCritical(p_context: SkillCastContext) -> bool:
 	if(not allow_critical or p_context.is_zone_trigger or null == p_context.skill):

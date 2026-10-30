@@ -980,10 +980,7 @@ func _ResolveDamage(
 	_ContributePersistentCasterFactors(p_caster_ID, p_target_ID, p_combined_damage_modifier)
 	# After this hit's factors are read, so a stack the hit earns applies from the next hit on.
 	Skills.TriggerAllyAttackLandedHook(_sides, _characters, p_caster_ID, p_target_ID, self)
-	var damage_multiplier_factors: Dictionary[StringName, float] = (
-			_status_resolver.ConsumeDamageMultiplierFactors(p_caster_ID))
-	for key: StringName in damage_multiplier_factors:
-		p_combined_damage_modifier.Contribute(key, damage_multiplier_factors[key])
+	p_combined_damage_modifier.ContributeConsumed(_status_resolver.ConsumeDamageMultiplierFactors(p_caster_ID))
 	caster_scaled_attribute_aggregate *= p_combined_damage_modifier.Product()
 
 	var effective_defence: float = _EffectiveDefenceAfterIgnore(

@@ -12,6 +12,16 @@ class_name CombinedDamageModifier extends RefCounted
 const TRAIT_RESOURCE_KEY: StringName = &"trait_resource"
 
 var _buckets: Dictionary[StringName, float] = {}
+var _consumed_factors: Dictionary[StringName, float] = {}
+
+## Contributes factors whose source was spent on this resolution, keeping them readable
+## so a later replay of the cast can repeat them.
+func ContributeConsumed(p_factors: Dictionary[StringName, float]) -> void:
+	ContributeAll(p_factors)
+	_consumed_factors = p_factors
+
+func ConsumedFactors() -> Dictionary[StringName, float]:
+	return _consumed_factors
 
 ## Adds p_fraction into p_key's bucket. A bucket clamps at -1.0 so a damage-reducing
 ## contribution cannot invert the sign of its (1 + bucket) factor.

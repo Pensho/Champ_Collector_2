@@ -141,6 +141,43 @@ func test_replay_repeats_the_bonus_for_buffs_consumed_without_consuming_again() 
 	_assert_full_strength_replay(results, "The replay should keep the per-buff bonus")
 	assert_gt(_damage_results(results, 3)[0].amount, 8, "The cast should have consumed buffs")
 
+func test_replay_repeats_a_consumed_daunting_strength() -> void:
+	_roster[0]._skills.append(_plain_skill("Strike"))
+	var plain_results: Array[CombatResult] = _resolver.ResolveSkill(0, [3], 0)
+	var plain_damage: int = _damage_results(plain_results, 3)[0].amount
+	_roster[3]._current_health = _roster[3]._attributes[Types.Attribute.Health]
+	var daunting_strength: StatusEffects.Buff = StatusEffects.Buff.new()
+	daunting_strength.type = Types.Buff_Type.Daunting_Strength
+	daunting_strength.duration = 1
+	daunting_strength.value = StatusEffectRegistry.BuffData(Types.Buff_Type.Daunting_Strength).magnitude
+	_resolver.GetStatusResolver().ApplyBuff(0, daunting_strength)
+	_grant_borrowed_time(0, 1.0)
+
+	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [3], 0)
+
+	_assert_full_strength_replay(results, "The replay should keep the Daunting Strength the cast spent")
+	assert_gt(_damage_results(results, 3)[1].amount, plain_damage, "The replay should carry the doubling")
+	assert_false(_roster[0]._active_buffs.any(
+			func(b: StatusEffects.Buff) -> bool: return Types.Buff_Type.Daunting_Strength == b.type))
+
+func test_replay_on_several_targets_repeats_a_daunting_strength_on_one_hit() -> void:
+	var skill: Skill = _plain_skill("Sweep")
+	skill.target = Types.Skill_Target.All_Enemies
+	_roster[0]._skills.append(skill)
+	var daunting_strength: StatusEffects.Buff = StatusEffects.Buff.new()
+	daunting_strength.type = Types.Buff_Type.Daunting_Strength
+	daunting_strength.duration = 1
+	daunting_strength.value = StatusEffectRegistry.BuffData(Types.Buff_Type.Daunting_Strength).magnitude
+	_resolver.GetStatusResolver().ApplyBuff(0, daunting_strength)
+	_grant_borrowed_time(0, 1.0)
+	for target_ID: int in [3, 4, 5]:
+		_roster[target_ID]._current_health = 1000
+
+	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [3, 4, 5], 0)
+
+	assert_gt(_damage_results(results, 3)[1].amount, _damage_results(results, 4)[1].amount,
+			"Only the replay's first hit should repeat the doubling, as only the cast's first hit had it")
+
 func test_replay_repeats_the_use_count_ramp() -> void:
 	var skill: Skill = _plain_skill("Ramp")
 	skill.effects[0].bonus_per[Types.Trait_Count_Source.Uses_This_Battle] = 1.0
