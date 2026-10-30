@@ -272,7 +272,7 @@ Concept Document).
   Signed Writ) cuts the window short; turn-bar pressure (e.g. the Chronophage's
   Temporal Sinkhole zone, the Bar Brawler's Dead Weight) claws tempo back against
   either half. The Slow half is a resistible debuff, so a high-Resistance front
-  line absorbs part of it. No kit carries a debuff cleanse, and Sequence Lock
+  line absorbs part of it. The Bar Brawler's Liquid Courage is the only kit debuff cleanse, self-only, and Sequence Lock
   remains uncarried (see the coverage ledger in
   `Plans/Plan_Encounter_Solution_Design.md`).
 - **Unsolved texture:** the fight pulses — a stretch of even trading, then a
@@ -530,7 +530,7 @@ skill (Concept Document 1.1.2).
 | Encounter | Intended answers (channel) | Verdict |
 |---|---|---|
 | The Ashen Oracle | Suppress (Thread Lash) [Channel 1]; Mana Burn (Tithe of Vitality) [Enabler]; Hexed (Ill Omen) [Enabler] | has a payoff |
-| Reanimating Statues 1 (Boots) | Severance (Rite of Severance) [Channel 1 + Enabler]; buff-duration strip (Signed Writ) [Enabler]; turn-bar pressure (Temporal Sinkhole [Enabler], Dead Weight via Headbutt [Channel 1 + Enabler]); Resistance against the Slow half (attribute, untagged) | has a payoff |
+| Reanimating Statues 1 (Boots) | Severance (Rite of Severance) [Channel 1 + Enabler]; buff-duration strip (Signed Writ) [Enabler]; turn-bar pressure (Temporal Sinkhole [Enabler], Dead Weight via Bar Fight [Channel 1 + Enabler]); Resistance against the Slow half (attribute, untagged) | has a payoff |
 | Reanimating Statues 2 (Weapon) | Enfeeble (Disarm) [Channel 1]; Fortify (Hold the Line) [Channel 1] / Barrier (Raise the Frame, Transfusion) [Enabler] | has a payoff |
 | Reanimating Statues 3 (Off-hands) | Expose Weakness (Final Calculation, 4-6 charges) [Channel 1 + Channel 2 + Enabler]; Burning (Burning Bolas) [Channel 1 + Enabler] | has a payoff |
 
@@ -541,7 +541,7 @@ damage dealt (Concept Document 1.1.2).
 
 | Encounter | Intended answers (channel) | Verdict |
 |---|---|---|
-| The Glyphbound Archivist | (1) Refutation [Channel 1 + Enabler], incidental per-charge damage, not a burst-scale contributor; (2) Unbinding Shards [Enabler]; (3) Fortify (Hold the Line) [Channel 1] / durable-front sustain (Liquid Courage [Channel 1], Headbutt [Channel 1 + Enabler]) — all three configurations are zone-clearing or sustain, none assembles a burst | **enabler-only** |
+| The Glyphbound Archivist | (1) Refutation [Channel 1 + Enabler], incidental per-charge damage, not a burst-scale contributor; (2) Unbinding Shards [Enabler]; (3) Fortify (Hold the Line) [Channel 1] / durable-front sustain (Liquid Courage [Channel 1 + Enabler], Bar Fight [Channel 1 + Enabler]) — all three configurations are zone-clearing or sustain, none assembles a burst | **enabler-only** |
 | The Collector of Debts | (1) Devour Blessing [Channel 1 + Channel 2], used here as buff-denial rather than a burst hit; (2) Signed Writ [Enabler], Pilfer [Enabler]; (3) reagent roster — Sigils [Channel 1], no named channel-2/3 payoff yet configured onto this boss | **enabler-only** |
 | The Warden of the Reliquary | (1) Rite of Severance [Channel 1 + Enabler]; (2) Signed Writ [Enabler]; (3) Daunting Strength (Tactician) [Channel 2] + Full Appraisal — Keen Edge, Lethal Precision (Appraiser) [Channel 1], breaking the Barrier and killing into the Deathward in one crit round | has a payoff — the catalog's reference shape |
 | Salvage Baron | (1) Premonition [Enabler] + Cut Purse [Channel 1 + Enabler] with stolen Momentum [Channel 1], Opportunist [Channel 2]; (2) Ill Omen [Channel 1 + Enabler] + Outbreak [Channel 2], Comorbidity [Channel 3] | has a payoff |

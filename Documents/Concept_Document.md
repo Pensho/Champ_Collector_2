@@ -308,9 +308,9 @@ Current roles, their identity and purpose exist as follows:
 - Cultist
     - Consumes ally buffs or health to empower their own skills, dealing damage or applying debuffs. Primary attributes: Mysticism, Attack.
     - Purpose: Debuffer, Damage
-    - Passive: Chosen Vessel [Channel 1 + Channel 2] - At the start of combat the Cultist marks a random ally (the Cultist excluded) as their Vessel. Whenever the Cultist uses a non-basic skill, the Vessel loses 5% of their max Health and the skill gains a rarity-dependent power bonus. The drain can kill the Vessel. When the Vessel dies (from any source), the Cultist gains the Attune buff for 3 turns (see section 3.2.3.2), a new random ally is marked as the Vessel if any is alive, and the Cultist permanently gains Devotion: a rarity-dependent damage bonus for the rest of the fight, in its own bucket, uncapped and never spent. If all allies are dead then nothing happens.
+    - Passive: Chosen Vessel [Channel 1 + Channel 2] - At the start of combat the Cultist marks a random ally (the Cultist excluded) as their Vessel. Whenever the Cultist uses a non-basic skill, the Vessel loses 10% of their max Health and the skill gains a rarity-dependent power bonus. The drain can kill the Vessel. When the Vessel dies (from any source), the Cultist gains the Attune buff for 3 turns (see section 3.2.3.2), a new random ally is marked as the Vessel if any is alive, and the Cultist permanently gains Devotion: a rarity-dependent damage bonus for the rest of the fight, in its own bucket, uncapped and never spent. If all allies are dead then nothing happens.
         - Power bonus: 15% Uncommon, 20% Rare, 25% Epic, 30% Legendary
-        - Devotion bonus: 10% Uncommon, 13% Rare, 16% Epic, 20% Legendary
+        - Devotion bonus: 65% Uncommon, 75% Rare, 85% Epic, 100% Legendary
     - Fielded by: `Cultist.tres`
 - Bar Brawler
     - A health focused character, dealing damage, tanking and applying a few buffs. Attacks scales of health primarily. Primary attributes: Health.
@@ -359,7 +359,7 @@ Current roles, their identity and purpose exist as follows:
 - Plague Doctor
     - A debuff focused character, applying various damage over time and stat reducing debuffs to enemies. Signature zone: Miasma (see section 3.2.4.1). Primary attributes: Mysticism, Resistance.
     - Purpose: Debuffer
-    - Passive: Comorbidity [Channel 3] - An enabler: a debuff placed by the Plague Doctor's skills enables a cascade whose Echo count is every distinct debuff type present on the target beyond itself (any source, uncapped, subject to the shared cascade fan-out cap in section 1.1.4), damaging or not — a non-damaging debuff type raises the count without echoing itself. Total damage per turn is unchanged from a flat multiplier — the difference is that each repeat resolves as its own Echo, visible to other Channel 3 effects that react to Echoes.
+    - Passive: Comorbidity [Channel 2 + Channel 3] - An enabler: a debuff placed by the Plague Doctor's skills enables a cascade whose Echo count is every distinct debuff type present on the target beyond itself (any source, uncapped, subject to the shared cascade fan-out cap in section 1.1.4), damaging or not — a non-damaging debuff type raises the count without echoing itself. Each repeat resolves as its own Echo, visible to other Channel 3 effects that react to Echoes. Every tick of these debuffs, Echoes and forced ticks included, raises the damage of their later ticks on that target by 10% for the rest of the battle, each further rise smaller than the last.
         - Known gap: the zone-trigger debuff path (used by Miasma's Blight) does not thread the
           Comorbidity flag, so Blight itself never repeats — only debuffs placed by non-zone
           skills (e.g. Outbreak's Plague) do. See `Scripts/Debug/kit_contribution_manifest.gd`
@@ -368,12 +368,12 @@ Current roles, their identity and purpose exist as follows:
 - Warlord
     - A buffing tank character, applying various buffs to self and allies while being able to take a lot of damage. Primary attributes: Health, Defense.
     - Purpose: Sustain
-    - Passive: Shield Wall [Enabler] - When an ally within 15% of the Warlord on the turn bar (in front or behind) takes attack damage, a portion of that damage is redirected to the Warlord instead. Proximity is checked at the moment the damage lands. Redirected damage is mitigated by the Warlord's Defense, not the ally's. AoE attacks are soaked separately for each affected ally within the window.
+    - Passive: Shield Wall [Enabler] - When an ally within 15% of the Warlord on the turn bar (in front or behind) takes attack damage, a portion of that damage is redirected to the Warlord instead. Proximity is checked at the moment the damage lands. Redirected damage is mitigated by the Warlord's Defense, not the ally's. AoE attacks are soaked separately for each affected ally within the window. A debuff from an enemy that lands on an ally within the window passes 1 turn of its duration to the Warlord, leaving the ally at least 1 turn.
         - Redirected portion: 15% Uncommon, 20% Rare, 25% Epic, 30% Legendary
     - Fielded by: `Warlord.tres`
 
 ### 3.2. Combat
-The player fields a team of up to 3 characters in a battle, at most one per Role. The party is ordered left to right, in the order the characters are picked in the pre-battle menu; some skills target by battlefield position (see the targeting types in section 3.2.4). Combat is turn based, using the Speed attribute of each character to move a representation across a "turn bar". When a characters representation has crossed the entire bar, the game will pause for input to resolve their turn and then finish by putting the representation of the character back to the beginning. Then the system keeps going.
+The player fields a team of up to 3 characters in a battle, at most one per Role, and every character starts each battle at full Health. The party is ordered left to right, in the order the characters are picked in the pre-battle menu; some skills target by battlefield position (see the targeting types in section 3.2.4). Combat is turn based, using the Speed attribute of each character to move a representation across a "turn bar". When a characters representation has crossed the entire bar, the game will pause for input to resolve their turn and then finish by putting the representation of the character back to the beginning. Then the system keeps going.
 
 <br/>
 
@@ -782,7 +782,7 @@ the fix belongs in the data or the document.
 * Rite of Severance
     * Type: Damage, Debuff
     * Cooldown: 4 turns
-    * Effect: [Channel 1 + Enabler] Deals damage to a single enemy, scaled by Mysticism and applies the Severance debuff for 2 turns.
+    * Effect: [Channel 1 + Enabler] Deals damage to a single enemy, scaled by Mysticism and applies the Severance debuff for 2 turns. The Vessel loses 25% of their max Health in place of Chosen Vessel's usual loss.
 
 ###### Bar Brawler
 * Heap on
@@ -791,11 +791,11 @@ the fix belongs in the data or the document.
 * Liquid Courage
     * Type: Buff, Heal
     * Cooldown: 3 turns
-    * Effect: [Channel 1] The Bar Brawler gains the Vigor buff for 2 turns and heals 15% of max Health.
-* Headbutt
-    * Type: Damage, Debuff (Turn Bar)
-    * Cooldown: 3 turns
-    * Effect: [Channel 1 + Enabler] Deals damage to a single enemy, scaling with Health, applies the Dead Weight debuff for 2 turns, and pushes them backward 5% on the turn bar.
+    * Effect: [Channel 1 + Enabler] The Bar Brawler gains the Vigor buff for 2 turns, heals 15% of max Health, and removes one random debuff from himself.
+* Bar Fight
+    * Type: Debuff, Damage (Turn Bar)
+    * Cooldown: 4 turns
+    * Effect: [Channel 1 + Enabler] Applies the Dead Weight debuff to one enemy for 2 turns, then every living ally, the Bar Brawler included, uses their basic skill against that enemy at no cost. An ally under crowd control does not join.
 
 ###### Bloodmage
 * Blood Bolt
@@ -881,11 +881,11 @@ the fix belongs in the data or the document.
 * Hold the Line
     * Type: Buff
     * Cooldown: 3 turns
-    * Effect: [Enabler] All other allies gain the Fortify buff for 2 turns. The Warlord gains Fortify at double strength for 2 turns and the Slow debuff for 1 turn.
+    * Effect: [Enabler] The Warlord gains the Slow debuff for 1 turn and Fortify at double strength for 2 turns. All other allies gain the Fortify buff for 2 turns. All allies gain the Aegis buff for 1 turn.
 * Brace for Impact
     * Type: Buff
     * Cooldown: 4 turns
-    * Effect: [Enabler] The Warlord gains the Rush buff and the Aegis buff for 1 turn each. When Rush expires, the Warlord receives the Stun debuff per the Rush effect. While either buff holds, any enemy whose attack lands on the Warlord — including damage redirected to him by Shield Wall — gains the Enfeeble debuff for 2 turns, rolled against the Warlord's Accuracy like any other applied debuff.
+    * Effect: [Enabler] The Warlord gains the Rush buff for 1 turn. When Rush expires, the Warlord receives the Stun debuff per the Rush effect. While it holds, all attacks on allies hit the Warlord instead, he takes 50% less damage, and any enemy whose attack lands on him gains the Enfeeble debuff for 2 turns, rolled against the Warlord's Accuracy like any other applied debuff.
 
 ##### 3.2.4.3 Unassigned / Generic Skills
 Not yet tied to a specific Role, grouped by mechanical type for lookup.

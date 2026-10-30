@@ -292,7 +292,7 @@ A Role's basic skill is always self-facing; direction describes the declared-ide
 | Scholar | Debuffer, Buffer | **Channel 2** | Exported | §9.14, confirming this row. Opportunist stays the modifier-bucket anchor; the passive is replaced with an amplifier on every attribute modification the team applies, giving the roster its first reader of the Channel 1 attribute layer, and the basic gains a zone-gated Suppress rider (Batch 3). |
 | Diviner | Sustain, Debuffer | **Enabler** | Exported | Redeclared from Channel 1 at Batch 4 (§9.16): Enfeeble, Premonition and Hexed are all mitigation and denial, and the kit owes no damage factor. Measured on the collapse test. |
 | Symbiote | Sustain, Buffer | **Channel 1** | Self | Exhert's attribute buff is the baseline anchor, present from the ungrafted state on, and it lands on the Symbiote itself. Direction corrected from Exported at Batch 4 (§9.17); post-graft the kit may read either way depending on which graft the player binds (pool-dependent, `Symbiote_Graft_Pool.md`), and the ungrafted baseline is what fixes the declaration. |
-| Bar Brawler | Sustain, Buffer | **Channel 2** | Self | §9.18, kept as shipped. Heap On already grows stronger with every use — the basic skill itself is the modifier-bucket anchor. On the House's heal-on-buff stays an Enabler-tagged skill within the kit, not the Role's identity. |
+| Bar Brawler | Sustain, Buffer | **Channel 2** | Self | §9.18. Heap On already grows stronger with every use — the basic skill itself is the modifier-bucket anchor. On the House's heal-on-buff stays an Enabler-tagged skill within the kit, not the Role's identity. |
 | Warlord | Sustain | **Enabler** | Exported | Redeclared from Channel 1 at Batch 4 (§9.19): Fortify raises Defence, which is no damage term, and the whole kit is mitigation. The weight is the window it holds open — Shield Wall's redirection, Hold the Line's Fortify, Brace for Impact's Enfeeble. Measured on the collapse test. |
 
 ## 6. The pairing web
@@ -378,25 +378,6 @@ collapse-test payload without inventing new gating mechanics.
   Bloodmage's missing-Health hook are batch-time authoring decisions, not Phase 1 commitments.
 * The contrast baseline (bursting champion's own basic vs. team's average per-action output)
   remains open per the plan; not touched by this document.
-* **Proposed (2026-10-18, not settled): Bar Brawler rework.** Raised by a roster check for thin
-  kits; reopens §9.18's "kept". Headbutt is replaced, Liquid Courage gains a clause, Heap On and
-  On the House are unchanged.
-    * **Bar Fight** (replaces Headbutt, working name). Applies Dead Weight to one enemy for 2
-      turns, then every living ally, the Bar Brawler included, uses their basic skill against
-      that enemy at full strength. The resolutions are free, like Premonition's counter (§9.16):
-      each one is a real use of the basic, so the Bar Brawler's own resolution ramps Heap On.
-      Dead Weight goes first so that every hit pushes the target back. Headbutt's 5% push is
-      dropped. The intended decision is timing: delaying a dangerous enemy's turn, or lining up
-      with Daunting Strength or a debuff window. Cooldown 4. An ally under crowd control (today
-      only Stun) does not join. Tagged **Channel 1 + Enabler**: the basics carry their own
-      channels (Channel 1 by default) and Dead Weight is an Enabler. It is not Channel 3, since
-      §3's test counts extra resolutions of a skill that already resolved, and these are each
-      ally's first resolution. Like Premonition's counter (§9.16), it is a minor exported
-      instance count, not a cascade anchor.
-    * **Liquid Courage** gains: removes one random debuff from the Bar Brawler. This is the roster's
-      first kit-carried debuff cleanse (the Reanimating Statues 1 entry in
-      `Encounter_Design_Document.md` records its absence). Self-only, so it is not a team-wide
-      answer, and it gives the player a reason to hold the skill rather than cast it on cooldown.
 * **Ally attack and plain basics.** Bar Fight is worth only what the fielded basics carry, and 9
   of 20 basics are plain damage (Stab, Lance Thrust, Acrid Splash, Septic Lance, Signal Strike,
   Spore Lash, Zap, Shield Slam, Blood Bolt). That runs against §1.2's "most basics stay plain";
@@ -422,17 +403,21 @@ Format per entry: Status, Passive, Skills (name / effect / channel), Projected n
 
 ### 9.1 Plague Doctor — debuff-density damage and cascade-breadth passive
 
-**Status:** Implemented (`aca439b`). Batch 1.
+**Status:** Implemented (`aca439b`) except the tick growth. Batch 1.
 
 **Passive: Comorbidity.** An enabler: a debuff placed by this Role's skills enables a cascade
-(`Types.Cascade_Trigger.Debuff_Ticked`) whose Echo count is (every other distinct debuff type on
-the target, any source) times (the number of independently repeating Comorbidity sources present),
-uncapped, bounded by the shared `MAX_CASCADE_INSTANCES_PER_ACTION` fan-out cap — a non-damaging
-debuff type raises the count without echoing itself, and each source's own flagged debuffs re-tick
-independently at their own unmultiplied magnitude. Each repeat is a real Echo — its own
-`Cascade_Triggered` marker and its own `Cascade_Instance_Resolved` broadcast — rather than a
-multiplier folded into one aggregated tick number, so the passive is a genuine Channel 3 anchor,
-not Channel 2 dressed as one.
+(`Types.Cascade_Trigger.Debuff_Ticked`) whose Echo count is every other distinct debuff type on
+the target, any source, uncapped, bounded by the shared `MAX_CASCADE_INSTANCES_PER_ACTION` fan-out
+cap — a non-damaging debuff type raises the count without echoing itself. Each repeat is a real
+Echo — its own `Cascade_Triggered` marker and its own `Cascade_Instance_Resolved` broadcast.
+
+**Tick growth.** Flagged ticks on a target deal `1 + 4n / (n + 39)` times their damage, where `n`
+counts the flagged tick resolutions so far on that target, Echoes and forced ticks included. A
+resolution counts once however many Plague stacks it carries. The count is trait state, takes no
+status slot, has no name or display, and lasts the battle: a lapse of Plague or a cleanse keeps it.
+The Echo count stays fixed when the trigger fires; the factor rises through the Echoes. The player
+never sees the formula. Tooltip sentence: "Each time these debuffs deal damage, their later damage
+on that target grows by 10%, with each increase smaller than the last."
 
 | Slot | Skill | Effect | Channel |
 |---|---|---|---|
@@ -806,27 +791,29 @@ zone would have to displace Levied Sanction, which is where the export now lives
 
 ### 9.8 Cultist — the sacrifice pays out
 
-**Status:** Implemented. Batch 2.
+**Status:** Implemented except the 10% drain, Devotion's 65/75/85/100% ladder and Rite of
+Severance's 25% sacrifice and 1.6 scaling. Batch 2.
 
 **Identity: Channel 2, self-facing.** Confirms section 5's proposal on both axes. **Exporting is
 against the Role's pillar** — the Cultist profits from what allies lose, so no clause in this kit
-puts a factor on a teammate's sheet. An **adaptation**: Devour Blessing and Rite of Severance are
-untouched, and the passive keeps its existing per-cast multiplier.
+puts a factor on a teammate's sheet. An **adaptation**: Devour Blessing is untouched, and the
+passive keeps its existing per-cast multiplier.
 
-**Passive: Chosen Vessel.** The existing mechanism is unchanged — marks a random ally at combat
-start, drains 5% of the Vessel's max Health on every non-basic cast, that cast gains a **flat**
+**Passive: Chosen Vessel.** Marks a random ally at combat
+start, drains 10% of the Vessel's max Health on every non-basic cast, that cast gains a **flat**
 power bonus (15/20/25/30% by rarity), and Vessel death grants Attune for 3 turns and re-marks a new
 Vessel. **The per-cast bonus stays flat**: an automatic ramp is a timer to strength, not a decision.
 
 Added — **Devotion**: each Vessel that dies grants the Cultist a permanent damage bonus for the rest
-of the fight, **10/13/16/20% by rarity**, in its own bucket. Never expires and is never spent. It
-has no cap of its own; the party is the cap, so a full team affords two.
+of the fight, **65/75/85/100% by rarity**, in its own bucket. Never expires and is never spent. It
+has no cap of its own; the party is the cap, so a full team affords two. A drain that kills the
+Vessel counts Devotion on that same cast, which makes the Vessel's death the Role's peak.
 
 | Slot | Skill | Effect | Channel |
 |---|---|---|---|
 | Basic | Desecrated Blade | Attack-scaled damage to one enemy, **+25% while the Vessel is below half Health**. | 1 + 2 (conditional) |
-| Signature | Devour Blessing | Kept as-is. Consumes all buffs on the ally holding the most; Attack-scaled damage to one enemy, +25% per buff consumed. Cooldown 3. | 1 + 2 |
-| Signature | Rite of Severance | Kept as-is. Mysticism-scaled damage to one enemy, applies Severance for 2 turns. Cooldown 4. | 1 + Enabler |
+| Signature | Devour Blessing | Kept as-is. Consumes all buffs on the ally holding the most, the Cultist included; Attack-scaled damage to one enemy, +25% per buff consumed. Cooldown 3. | 1 + 2 |
+| Signature | Rite of Severance | Mysticism-scaled damage (1.6) to one enemy, applies Severance for 2 turns. The Vessel loses 25% of max Health in place of the 10% drain. Cooldown 4. | 1 + Enabler |
 
 **What the kit now reads.** Vessel death stops being a consolation event and becomes the
 transaction the Role is built on — the sacrifice has a price the player pays and a payout they
@@ -835,12 +822,13 @@ tax now moves the basic across a line the player can aim at. Both surfaces are t
 Health, distinct from §9.4's caster-own and enemy-own reads, so route E's two anchors multiply
 rather than share a key.
 
-**Projected numbers.** Chosen Vessel's per-cast 1.30x is unchanged. Devotion adds **1.20x** per
-dead Vessel in a distinct bucket — 1.56x combined with one Vessel spent, 1.87x with two, at which
-point the Cultist is the last champion standing and the team's other terms are gone. Desecrated
-Blade's conditional 1.25x is on the basic and is not the declared contribution. Devour Blessing's 1.25x per
-buff consumed is unchanged. Inside section 1's contract; the ceiling is self-limiting by
-construction.
+**Projected numbers.** Chosen Vessel's per-cast 1.30x is unchanged. Devotion is **2.00x** with one
+dead Vessel and 3.00x with two at Legendary, in a distinct bucket; at two the Cultist is the last
+champion standing and the team's other terms are gone. Desecrated Blade's conditional 1.25x is on
+the basic and is not the declared contribution. Devour Blessing's 1.25x per buff consumed is
+unchanged. By hand, a Vessel-killing Devour Blessing with Cultist, Tactician, Warlord reaches 13x
+at 3 buffs, 17x at 5, and 22x with Plan's Empower; the same cast without a death reaches 8.5-11x
+from round 2. The peak lands below 30x because Devotion keeps paying for the rest of the battle.
 
 **Implementation.**
 
@@ -857,7 +845,7 @@ construction.
 * `kit_contribution_manifest.gd` — Chosen Vessel's entry gains Devotion as a `gated_bonus` (not a
   second passive row — `burst_reachability.gd` reads only a Role's first passive entry, so a
   second row would be invisible to the scorer) with `reach: "self"`, `bucket_key:
-  "ChosenVesselTrait"`, magnitude 0.20, gated on "a Vessel has died"; Desecrated Blade's entry gains
+  "ChosenVesselTrait"`, magnitude 1.00, gated on "a Vessel has died"; Desecrated Blade's entry gains
   `bucket_key: "Desecrated Blade"`, magnitude 0.25, with its condition stated. `burst_reachability.gd`
   gained `_ContributeGatedCasterPassiveBonus`, the self-reach counterpart to the existing
   team-reach `_ContributeGatedTeamBonuses`, to read it.
@@ -865,9 +853,7 @@ construction.
   entry (the threshold rider) updated.
 
 **Judgment calls made while settling, listed so they can be overruled:** the party is Devotion's
-only cap, which is honest but means a wipe-adjacent team reads as the Cultist's strongest state;
-Rite of Severance keeps its plain-damage payload rather than gaining a Vessel-consuming clause, so
-Vessel death stays something the drain produces rather than something a skill executes.
+only cap, which is honest but means a wipe-adjacent team reads as the Cultist's strongest state.
 
 ### 9.9 Chronophage — time given away, not spent
 
@@ -1464,15 +1450,28 @@ route E is built on. The hook already exists and needed only naming.
 **Projected numbers.** Exhert's +20% is an aggregate-term contribution on the Symbiote's own sheet,
 comparable only to §9.14's kind. No bucket key, by design.
 
-### 9.18 Bar Brawler — kept, Heap On sanctioned
+### 9.18 Bar Brawler — Bar Fight, Heap On sanctioned
 
-**Status:** Settled as kept, unchanged. Batch 4.
+**Status:** Heap On and On the House! implemented; Bar Fight and Liquid Courage's cleanse are not.
+Batch 4.
 
 **Identity: Channel 2, self-facing**, confirming section 5's row on both axes. Heap On's ramp is the
 bucket anchor; On the House is Enabler content beside it, not the Role's identity.
 
-Passive On the House!, Heap On and Liquid Courage keep exactly as they ship; Headbutt also pushes its
-target backward 5% on the turn bar.
+Passive On the House! and Heap On keep exactly as they ship.
+
+| Slot | Skill | Effect | Channel |
+|---|---|---|---|
+| Basic | Heap On | Kept as-is. Health-scaled damage (0.4) to one enemy, +20% per prior use. | 1 + 2 |
+| Signature | Liquid Courage | Vigor for 2 turns, heals 15% of max Health, removes one random debuff from himself. Cooldown 3. | 1 + Enabler |
+| Signature | Bar Fight | Dead Weight on one enemy for 2 turns, then every living ally, the Bar Brawler included, uses their basic skill against that enemy. Cooldown 4. | 1 + Enabler |
+
+**Bar Fight's resolutions** follow Premonition's counter (§9.16): each is a free, real use of the
+basic, so the Bar Brawler's own resolution advances Heap On. Dead Weight goes first so that every
+hit pushes the target back. An ally under crowd control (today only Stun) does not join. The basics
+carry their own channels, and these are each ally's first resolution, so Bar Fight is a minor
+exported instance count, not a cascade anchor. The decision is timing: delaying a dangerous enemy's
+turn, or lining up with Daunting Strength or a debuff window.
 
 **Heap On's ramp is a sanctioned exception, on the rule of cool.** It is an unconditional Channel 2
 key on a no-cooldown cast (§1.2's one forbidden shape) and it is uncapped (§4). Both stand: the
@@ -1485,30 +1484,41 @@ Buffer kit in the roster feeds it without either side naming the other. Liquid C
 own trigger for it.
 
 **Projected numbers.** Heap On's bucket is +20% per use with no ceiling, so it has no fixed figure
-to place in section 4's distribution — the only entry in the roster of which that is true.
+to place in section 4's distribution — the only entry in the roster of which that is true. By hand,
+preset attributes against Heap On's first use, Bar Fight at round 9: Tactician and Diviner 9.3x in
+total (Heap On 6.0x); Tactician and Chronophage 9.1x (Heap On 5.8x); Tactician and Appraiser 18.5x
+on a Heap On crit (Heap On 16.1x), with 10x from round 3 and 15x from round 7.
 
 ### 9.19 Warlord — everything that strikes the wall pays for it
 
-**Status:** Implemented. Batch 4.
+**Status:** Implemented except Shield Wall's debuff split, Hold the Line's Aegis and Brace for
+Impact's redirect and damage reduction. Batch 4.
 
 **Identity: Enabler, exported**, redeclaring section 5's Channel 1 row. Fortify raises Defence, which
 is no damage term; redirection, Fortify and Aegis are all mitigation. An **adaptation**: one slot
 gains a clause.
 
 **Passive: Shield Wall** (kept). Allies within 15% turn-bar proximity have 15/20/25/30% of incoming
-attack damage redirected to the Warlord by rarity, re-mitigated against his own Defence.
+attack damage redirected to the Warlord by rarity, re-mitigated against his own Defence. A debuff
+from an enemy that lands on such an ally passes 1 turn of its duration to him, leaving the ally at
+least 1 turn, so a 2-turn debuff lasts 1 turn on each and a 1-turn debuff passes nothing. The passed
+turn needs no new contest; Aegis and the status cap apply to it as usual. Spotted's replacement rule
+moves it to him outright. Tooltip sentence: "Debuffs from enemies on allies in range pass 1 turn to
+the Warlord, leaving the ally at least 1."
 
 | Slot | Skill | Effect | Channel |
 |---|---|---|---|
 | Basic | Shield Slam | Kept as-is. Defence-scaled single-target damage. | 1 |
-| Signature | Hold the Line | All other allies gain Fortify, 2 turns; the Warlord gains Fortify at double strength, 2 turns, and Slow, 1 turn. Cooldown 3. | Enabler |
-| Signature | Brace for Impact | Kept, plus a clause: while it holds, any enemy whose attack lands on the Warlord — **including damage redirected to him by Shield Wall** — gains **Enfeeble for 2 turns**, rolled against the Warlord's own Accuracy like any other applied debuff. Rush and Aegis 1 turn each, Rush's expiry self-Stun kept as the price. Cooldown 4. | Enabler |
+| Signature | Hold the Line | The Warlord gains Slow, 1 turn, then Fortify at double strength, 2 turns; all other allies gain Fortify, 2 turns. All allies then gain Aegis, 1 turn, after the Slow so that his own Aegis is kept. Cooldown 3. | Enabler |
+| Signature | Brace for Impact | Rush for 1 turn, its expiry self-Stun kept as the price. While it holds, **all attacks on allies hit the Warlord instead** at any turn-bar distance, ahead of other redirects, and he takes **50% less damage**. Any enemy whose attack lands on him, redirected or not, gains **Enfeeble for 2 turns**, rolled against his own Accuracy like any other applied debuff. Cooldown 4. | Enabler |
 
 **The reactive form is the design.** An all-enemies Enfeeble would be a generic debuff button; keying
 it to attackers makes it proportional to the pressure the team is actually under, and Shield Wall
 already guarantees the trigger by making the Warlord the thing being hit. Counting redirected damage
-closes the kit into one loop: proximity pulls the hit, the hit taxes the attacker, Fortify and Aegis
-hold him through it. It also completes the mitigation triangle — Fortify raises the team's Defence,
+closes the kit into one loop: proximity pulls the hit, the hit taxes the attacker, Fortify and the
+damage reduction hold him through it. Enemies target the highest Health plus Defence by default, so
+Shield Wall mainly answers attacks and debuffs that bypass that order; Brace for Impact is the
+deliberate answer to a barrage from any source. Hold the Line's Aegis protects the team's engine from a debuff. It also completes the mitigation triangle — Fortify raises the team's Defence,
 Shield Wall moves the damage, Enfeeble cuts it at the source — and discharges §10.1's reservation of
 Enfeeble's second Role source.
 
@@ -1522,9 +1532,9 @@ follow-up.
 **Composition hooks.** Enfeeble is world state any kit can read, and the redirection window is the
 exported one: an ally standing inside it survives a resolution it otherwise would not.
 
-**Damage redirection stays claimed twice**, closing §8's open item at the batch it named. This kit
-does not lean harder on redirection, so Shield Wall and Bloodmage's Sanguine Pact remain
-distinguishable — one redirects to protect, the other prices a damage buff.
+**Damage redirection stays claimed twice**, closing §8's open item at the batch it named. The two
+remain distinguishable: this kit redirects to protect, and Bloodmage's Sanguine Pact prices a damage
+buff.
 
 **Projected numbers.** None. The kit fields no damage factor and is measured on the collapse test,
 absent from the sweep's ranking by design (§4).
@@ -1718,15 +1728,15 @@ current encounter fields it.
 | Tactician | — | — | Battle Orders, Haste: per-turn and per-cast accumulators (tempo) | — | — | Ordering: Fatal Flaw before the allies' burst turn. Interruptible: a buff strip removes Daunting Strength |
 | Symbiote | — (plus one graft, below) | — | Symbiotic Overdrive's Exhert tick, Grafted Flesh's Health cost: ally missing Health; Grafted Flesh's push: per-turn and per-cast accumulators (tempo) | — | Grafted Flesh's Regeneration: sustained enemy damage | — |
 | Jester | — | — | Burning Bolas's Burning and Hexed: debuff density; Hexed also lands the team's debuffs against the enemy's resist rolls | — | Center Stage's Spotlight and Luck, Double the fun!: focused fire on the burst carrier; Hexed: enemy chance rolls | Ordering: Hexed before the team's debuffs |
-| Cultist | Devour Blessing consumes and reads the buffs on one ally; Chosen Vessel's Devotion reads dead Vessels | Chosen Vessel: Devotion per dead Vessel, permanent, bounded by the party; the Vessel's missing Health | Chosen Vessel's drain: ally missing Health *(own)*; Rite of Severance: debuff density | Desecrated Blade: the Vessel passing half Health; Chosen Vessel: the Vessel's death grants Devotion and Attune | Rite of Severance: enemy buffs | Ordering: drain the Vessel below half before Desecrated Blade; buffs on an ally before Devour Blessing. Cash-out timing: Devour Blessing now, or let buffs pile up. Interruptible: an enemy buff strip on the ally. External input: any kit's buffs on allies; any damage to the Vessel |
-| Bar Brawler | Heap On reads its own use count | Heap On: uses this battle, uncapped (sanctioned in section 9.18) | Headbutt's Dead Weight: debuff density | — | On the House!: sustained enemy damage; Headbutt's Dead Weight and push-back: enemy tempo | External input: any extra basic cast advances the ramp |
+| Cultist | Devour Blessing consumes and reads the buffs on one ally; Chosen Vessel's Devotion reads dead Vessels | Chosen Vessel: Devotion per dead Vessel, permanent, bounded by the party; the Vessel's missing Health | Chosen Vessel's drain, Rite of Severance's sacrifice: ally missing Health *(own)*; Rite of Severance: debuff density | Desecrated Blade: the Vessel passing half Health; Chosen Vessel: the Vessel's death grants Devotion and Attune | Rite of Severance: enemy buffs | Ordering: drain the Vessel below half before Desecrated Blade; buffs on an ally before Devour Blessing. Cash-out timing: Devour Blessing now, or let buffs pile up; kill the Vessel now, or keep it alive. Interruptible: an enemy buff strip on the ally. External input: any kit's buffs on allies; any damage to the Vessel |
+| Bar Brawler | Heap On reads its own use count | Heap On: uses this battle, uncapped (sanctioned in section 9.18) | Bar Fight: Heap On's use count *(own)*; Bar Fight's Dead Weight: debuff density | — | On the House!: sustained enemy damage; Liquid Courage's cleanse: enemy debuffs on himself; Bar Fight's Dead Weight: enemy tempo | Ordering: Daunting Strength or a debuff window before Bar Fight. External input: any extra basic cast advances the ramp; Bar Fight resolves every ally's basic |
 | Bloodmage | Tithe of Vitality reads allies below half Health; Hemoclarity reads the Bloodmage's missing Health; Sanguine Pact reads its holder's missing Health; Hemorrhage reads the enemy's missing Health for every attacker | Hemoclarity: the Bloodmage's missing Health, capped at 80% | Blood Bolt's cost, Transfusion's sacrifice: the Bloodmage's missing Health *(own)*; Tithe of Vitality's drain: ally missing Health; Hemorrhage: debuff density | Tithe of Vitality: each ally passing half Health | Transfusion's Barrier: burst enemy damage on allies; Sanguine Pact's redirect: damage to its holder | Ordering: wound allies before Tithe of Vitality, and Sanguine Pact before its holder's burst. Interruptible: a buff strip removes Sanguine Pact; a debuff cleanse removes Hemorrhage. External input: any kit wounding allies |
 | Herald of the Loom | Cut the Cloth resolves once per Tension and consumes it; Black Thread adds one Echo to the Herald's own cascade | Weft and Warp: Tension, capped at 7, from the first ally action between the Herald's turns under Golden Thread | Pull the Thread: Tension *(own)*; Thread Snap's Suppress, Pull the Thread's Temporal Leak, Silver Thread's unresistable debuffs: debuff density | — | Pull the Thread's push-back: enemy tempo | Ordering: Golden Thread before allies act, Black Thread before Cut the Cloth. Cash-out timing: Cut the Cloth now, or build Tension further. External input: any ally's action under Golden Thread |
 | Chronophage | — | — | Flicker Zone: per-turn and per-cast accumulators (tempo) | Time Tithe: an ally the Chronophage moves forward while alone in its section gains Borrowed Time | Temporal Sinkhole: enemy tempo | Ordering: the ally alone in a section before Flicker Zone moves it, and Borrowed Time before the holder's burst cast. Interruptible: a buff strip removes Borrowed Time |
 | Architect | Final Calculation consumes all Calibration charges, in tiers | Calibration: charges, capped at 12, from Cornerstone and from each character using Raise the Frame | Raise the Frame: Calibration *(own)*; Final Calculation's Expose Weakness: debuff density | Final Calculation: Expose Weakness at 5 charges, Raise the Frame re-erected at 9 | Raise the Frame's Barrier: burst enemy damage on allies | Ordering: Raise the Frame before allies pass through it. Cash-out timing: Final Calculation now or at a higher tier, and Raise the Frame's Barrier spending charges against the finisher. Interruptible: enemies contesting zone sections. External input: any character using Raise the Frame |
 | Tidal Corsair | Corsair's Reckoning consumes Steel and Sea stacks; each ally's damage reads its Sea Legs | Wrangle the Sea: Steel and Sea stacks, 3 slots; Sea Legs stacks on each ally whose turn starts on The Gilded Deck, capped at 4, permanent | Boarding Party's Haste: per-turn and per-cast accumulators (tempo) | — | Boarding Party's Slipstream: enemy zones | Ordering: the hand's composition before Corsair's Reckoning, and The Gilded Deck raised early. Cash-out timing: which hand to spend, and when. Interruptible: enemies occupying every free section deny The Gilded Deck. External input: any kit's tempo that starts allies' turns on the Deck |
-| Plague Doctor | Outbreak reads debuff density; Comorbidity's Echo count reads debuff density on each flagged tick; Miasma re-ticks every debuff on the target | — | Outbreak's Plague, Miasma's Blight: debuff density | — | Miasma's Blight: enemy healing | Ordering: the team's debuffs before Outbreak and before Plague ticks, Miasma before the enemy reaches its section. Interruptible: a debuff cleanse cuts density. External input: any kit's distinct debuff types |
-| Warlord | — | — | Brace for Impact's Enfeeble on attackers: debuff density | — | Shield Wall: damage to allies in the window; Hold the Line's Fortify: enemy damage; Brace for Impact's Aegis: a debuff on the Warlord, and its Enfeeble: enemy damage | — |
+| Plague Doctor | Outbreak reads debuff density; Comorbidity's Echo count reads debuff density on each flagged tick; Miasma re-ticks every debuff on the target; flagged ticks read the tick growth | Comorbidity's tick growth: per target, never consumed | Outbreak's Plague, Miasma's Blight: debuff density; Miasma's forced tick: tick growth *(own)* | — | Miasma's Blight: enemy healing | Ordering: the team's debuffs before Outbreak and before Plague ticks, Miasma before the enemy reaches its section. Interruptible: a debuff cleanse cuts density. External input: any kit's distinct debuff types |
+| Warlord | — | — | Brace for Impact's Enfeeble on attackers: debuff density | — | Shield Wall: damage to allies in the window and debuff duration on them; Hold the Line's Fortify: enemy damage, and its Aegis: a debuff on any ally; Brace for Impact: every attack on allies, and its Enfeeble: enemy damage | Ordering: Hold the Line before a debuff lands; Brace for Impact before a barrage |
 
 **Symbiote grafts.** A Symbiote carries exactly one graft (`Symbiote_Graft_Pool.md`), so a team
 reads the Symbiote row plus one row below, never several. Spore Lash scales with Resistance, so a

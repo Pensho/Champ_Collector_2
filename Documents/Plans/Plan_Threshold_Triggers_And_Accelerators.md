@@ -17,11 +17,11 @@ rounds; secondary payoffs target 10-15x.
 | Sorcerer | Primary | 6 rounds | 20-27x | None |
 | Herald of the Loom | Primary | 4-5 rounds | 19x | Flat curve per Tension |
 | Tidal Corsair | Primary | 4 rounds | 9x | Stacks capped at 3 |
-| Cultist | Primary | 2 rounds | 6x | Buffs expire; linear per-buff curve |
-| Plague Doctor | Primary | Spread out | 6x | No payoff skill; debuff density is its weakest input |
+| Cultist | Primary | 2 rounds; Vessel death later | 6x | Settled: 10% drain, Devotion ladder, Rite of Severance's sacrifice; awaiting implementation. Measure the Vessel-killing cast, 17-22x by hand |
+| Plague Doctor | Primary | Spread out | 6x | Settled: tick growth, no single payoff; awaiting implementation. Measure density 6 with 3x persistent team factors, which hand figures put at 30x by round 3 |
 | Architect | Secondary | 5 rounds | 15x, 18x at 12 charges | None; no change |
-| Lancer | Secondary | 3-4 rounds, from teammates | 9.8x | No stored build-up |
-| Bar Brawler | Secondary | 3 rounds by Headbutt, 10 by Heap On | 10.5-12x | No payoff moment; Headbutt outdamages the ramp until round 8-9 |
+| Lancer | Secondary | 2-4 rounds, from teammates | 10-11x by hand, 22x on a crit | None; no change |
+| Bar Brawler | Secondary | 10 rounds by Heap On | 9-19x by hand | Settled: Bar Fight replaces Headbutt, Liquid Courage cleanses; awaiting implementation |
 
 The Thief is steady damage, not a payoff, and is unchanged.
 
@@ -30,12 +30,15 @@ the only other partners are Tactician, Emissary and Alchemist. Check each kit ch
 A fully wounded Bloodmage team reaches 47x with the Sorcerer, above the 30x target.
 
 **Next, in order:**
-1. Design the Plague Doctor, then the Cultist's curve, then the Bar Brawler (the Bar Fight proposal
-   in `Role_Kit_Design.md` section 8) and the Lancer, one Role at a time.
-2. Fix the sweep's undercount of Echo teams (its repeat contrast excludes team factors), rerun it,
+1. Fix the sweep's undercount of Echo teams (its repeat contrast excludes team factors), rerun it,
    and update the `Role_Kit_Design.md` section 4 baselines and the primary rows above.
-3. Rebuild `Scripts/Debug/team_corpus.gd` with the drafted teams, each naming its payoff, setup,
+2. Rebuild `Scripts/Debug/team_corpus.gd` with the drafted teams, each naming its payoff, setup,
    protection and sequence, and a "looks right, doesn't work" tier.
+3. From those results, decide whether to redistribute power among the supports: Tactician, Bloodmage
+   and Appraiser appear in the strongest hand-drafted teams.
+
+**Also settled, for step 4:** the Warlord's Hold the Line and Brace for Impact
+(`Role_Kit_Design.md` 9.19).
 
 **Clean-up:** settle Concept 1.1.2's "confirmed reachable" against the measured figures;
 `Technical_Design_Document.md` 15.5 and 15.6; `Role_Kit_Design.md` 9.11 still lists Sea stacks as
@@ -53,9 +56,9 @@ Drawn from the `Role_Kit_Design.md` 10.4 ledger and a read of the teams in
   line (the Cultist's Desecrated Blade and Vessel death, the Bloodmage's Tithe of Vitality); the
   Architect's Final Calculation tiers read a charge count; the Chronophage's Borrowed Time reads
   turn-bar position.
-- **Accumulators:** eight of twenty Roles own one. Thief, Lancer, Alchemist, Scholar, Diviner,
-  Appraiser, Tactician, Jester, Chronophage, Plague Doctor, Warlord and the ungrafted Symbiote
-  own none; the Lancer's payoff reads a positional condition.
+- **Accumulators:** nine of twenty Roles own one. Thief, Lancer, Alchemist, Scholar, Diviner,
+  Appraiser, Tactician, Jester, Chronophage, Warlord and the ungrafted Symbiote own none; the
+  Lancer's payoff reads a positional condition.
 - **Debuff density:** fed by fifteen of twenty Roles; read by Thief and Scholar through
   Opportunist and by the Plague Doctor.
 - **Tempo accelerators:** Tactician, Symbiote, Chronophage, Tidal Corsair and Caravan Cadence
@@ -63,9 +66,10 @@ Drawn from the `Role_Kit_Design.md` 10.4 ledger and a read of the teams in
   On, the Architect's Calibration, and Sea Legs.
 - **Ally missing Health:** fed by Symbiote, Cultist, Bloodmage, and the Sorcerer incidentally;
   read by Bloodmage and Cultist.
-- **(own) accelerators:** six of twenty — Emissary (Signed Writ's strip), Sorcerer (reagents),
+- **(own) accelerators:** seven of twenty — Emissary (Signed Writ's strip), Sorcerer (reagents),
   Cultist (the Vessel drain), Bloodmage (self-costs), Herald of the Loom (Pull the Thread),
-  Architect (Raise the Frame). Each also takes external input.
+  Architect (Raise the Frame), Plague Doctor (Miasma's forced tick). Each also takes external
+  input.
 - **Symbiote grafts:** Detritivore holds the pool's only accumulator. Nine of eighteen
   grafts supply no engine part.
 
