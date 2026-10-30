@@ -232,7 +232,9 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 			skill_effects_resolved_trait.OnSkillEffectsResolved(
 					p_caster_ID, p_target_IDs, cast_skill.name, caster_attributes, self)
 
-	_cascade_resolver.Post(CascadeEvent.ForSkillResolved(p_caster_ID, p_skill_ID, p_target_IDs))
+	var skill_resolved: CascadeEvent = CascadeEvent.ForSkillResolved(p_caster_ID, p_skill_ID, p_target_IDs)
+	skill_resolved.cast_context = context
+	_cascade_resolver.Post(skill_resolved)
 	_cascade_resolver.Drain()  # catches Mirror Coat (from CastDebuff above) and Skill_Resolved listeners
 	_presentation_phase = CombatResult.Presentation_Phase.Post_Cast
 	var is_non_basic: bool = cast_skill.cooldown > 0
@@ -441,7 +443,8 @@ func ResolveSkillEcho(
 		p_caster_ID: int,
 		p_skill_ID: int,
 		p_target_IDs: Array[int],
-		p_strength_multiplier: float) -> void:
+		p_strength_multiplier: float,
+		p_replayed_cast: SkillCastContext = null) -> void:
 	if(not _characters.has(p_caster_ID)):
 		return
 	var caster: Character = _characters[p_caster_ID]
@@ -454,6 +457,8 @@ func ResolveSkillEcho(
 	context.repeat_bonus = p_strength_multiplier - 1.0
 	for effect in cast_skill.effects:
 		if(effect is DamageEffect and context.ConditionMet(effect)):
+	if(null != p_replayed_cast):
+		context.InheritCastResults(p_replayed_cast)
 			effect.Resolve(context)
 
 ## Sets health directly (debug tools), running the same clamp and death handling as

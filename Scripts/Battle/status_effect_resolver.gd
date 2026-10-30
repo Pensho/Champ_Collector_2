@@ -537,7 +537,8 @@ func _ResolveBorrowedTime(p_event: CascadeEvent, p_fraction: float) -> void:
 		if(Types.Buff_Type.Borrowed_Time == buff.type):
 			RemoveBuff(p_event.subject_ID, buff)
 			break
-	_resolver.ResolveSkillEcho(p_event.subject_ID, p_event.skill_ID, p_event.target_IDs, p_fraction)
+	_resolver.ResolveSkillEcho(
+			p_event.subject_ID, p_event.skill_ID, p_event.target_IDs, p_fraction, p_event.cast_context)
 
 
 func _ForceExtraDebuffTick(p_event: CascadeEvent) -> void:

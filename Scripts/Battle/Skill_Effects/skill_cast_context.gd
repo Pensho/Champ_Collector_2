@@ -54,6 +54,14 @@ func _init(
 	use_count = p_use_count
 	trait_result = p_trait_result
 
+## Takes what p_source_cast consumed or read, so a replay repeats those bonuses without
+## paying for them again.
+func InheritCastResults(p_source_cast: SkillCastContext) -> void:
+	use_count = p_source_cast.use_count
+	trait_result = p_source_cast.trait_result
+	health_paid = p_source_cast.health_paid
+	buffs_consumed = p_source_cast.buffs_consumed
+
 ## Resolves a target_type to caster-relative Character IDs, filtered to those alive:
 ## this cast's own targets when p_target_type is the skill's own target, otherwise
 ## resolved independently. The instance-friendly entry point for effects and other

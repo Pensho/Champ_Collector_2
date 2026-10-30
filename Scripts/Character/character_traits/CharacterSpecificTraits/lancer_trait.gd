@@ -51,7 +51,6 @@ func OnSkillEffectsResolved(
 		p_resolver: BattleResolver) -> void:
 	if(CHARGE_SKILL_NAME == p_skill_name and _charge_span > 0):
 		p_resolver.BumpTurnBar(p_owner_ID, -RECOIL_PER_SECTION * _charge_span, p_owner_ID)
-	_charge_span = 0
 
 func GetConditionCount(
 		_p_owner_ID: int,

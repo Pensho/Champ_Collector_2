@@ -17,6 +17,8 @@ var instance_count: int = 1
 ## resolved target IDs, so a listener can re-resolve that skill's effects.
 var skill_ID: int = -1
 var target_IDs: Array[int] = []
+## The cast a Skill_Resolved event came from, for a replay that repeats its bonuses.
+var cast_context: SkillCastContext = null
 var distinct_debuff_type_count: int = 0
 var repeating_source_ids: Array[int] = []
 ## Stamped by CascadeResolver.Post; never set by the poster. 0 means "not part of a

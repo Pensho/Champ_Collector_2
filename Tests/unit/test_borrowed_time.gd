@@ -94,3 +94,79 @@ func test_a_non_damaging_skill_consumes_nothing() -> void:
 
 	assert_true(_has_borrowed_time(0),
 			"Casting a non-damaging skill must leave a held Borrowed Time for a later damaging one")
+
+# --- The replay repeats what the cast consumed or read ---
+
+func _plain_skill(p_name: String) -> Skill:
+	var skill: Skill = TestFactory.make_strike_skill()
+	skill.name = p_name
+	skill.effects[0].allow_critical = false
+	return skill
+
+func _assert_full_strength_replay(p_results: Array[CombatResult], p_message: String) -> void:
+	var damage_results: Array[CombatResult] = _damage_results(p_results, 3)
+	assert_eq(damage_results.size(), 2)
+	# The damage-variance roll can move a full-strength replay by a point or two.
+	assert_almost_eq(damage_results[1].amount, damage_results[0].amount, 2, p_message)
+
+func test_replay_repeats_a_three_steel_reckoning() -> void:
+	var corsair: TidalCorsairTrait = TidalCorsairTrait.new()
+	corsair.Init(Types.Rarity.Legendary)
+	_roster[0]._trait = corsair
+	for i in 3:
+		corsair.OnSkillCast(0, [], "Boarding Strike", {}, _resolver)
+	_grant_borrowed_time(0, 1.0)
+	_roster[0]._skills.append(_plain_skill("Corsairs Reckoning"))
+
+	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [3], 0)
+
+	_assert_full_strength_replay(results, "The replay should keep the Steel the cast spent")
+	assert_eq(corsair._held_stacks[0], TidalCorsairTrait.Stack_Type.Empty, "The replay must not refill the hand")
+
+func test_replay_repeats_the_bonus_for_buffs_consumed_without_consuming_again() -> void:
+	var skill: Skill = _plain_skill("Devour")
+	skill.effects[0].bonus_per[Types.Trait_Count_Source.Buffs_Consumed] = 0.25
+	var consume: ConsumeBuffsEffect = ConsumeBuffsEffect.new()
+	consume.target = Types.Skill_Target.Most_Buffed_Ally
+	skill.effects.push_front(consume)
+	_roster[0]._skills.append(skill)
+	for buff_type: Types.Buff_Type in [Types.Buff_Type.Fortify, Types.Buff_Type.Haste, Types.Buff_Type.Empower]:
+		var buff: StatusEffects.Buff = StatusEffects.Buff.new()
+		buff.type = buff_type
+		buff.duration = 3
+		_resolver.GetStatusResolver().ApplyBuff(1, buff)
+	_grant_borrowed_time(0, 1.0)
+	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [3], 0)
+
+	_assert_full_strength_replay(results, "The replay should keep the per-buff bonus")
+	assert_gt(_damage_results(results, 3)[0].amount, 8, "The cast should have consumed buffs")
+
+func test_replay_repeats_the_use_count_ramp() -> void:
+	var skill: Skill = _plain_skill("Ramp")
+	skill.effects[0].bonus_per[Types.Trait_Count_Source.Uses_This_Battle] = 1.0
+	_roster[0]._skills.append(skill)
+	_resolver.ResolveSkill(0, [3], 0)
+	_grant_borrowed_time(0, 1.0)
+
+	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [3], 0)
+
+	_assert_full_strength_replay(results, "The replay should keep the cast's own ramp")
+
+func test_replay_repeats_a_charge_span_bonus_with_one_recoil() -> void:
+	var positions: TestFactory.FakeTurnPositions = TestFactory.FakeTurnPositions.new()
+	positions.sections_by_character = {0: 0, 3: 2}
+	_resolver = TestFactory.make_resolver(_roster, TestFactory.make_full_sides(), positions)
+	var lancer: LancerTrait = LancerTrait.new()
+	lancer.Init(Types.Rarity.Legendary)
+	_roster[0]._trait = lancer
+	var skill: Skill = _plain_skill("Rending Charge")
+	skill.effects[0].bonus_per[Types.Trait_Count_Source.Turn_Bar_Section_Span] = 1.0
+	_roster[0]._skills.append(skill)
+	_grant_borrowed_time(0, 1.0)
+
+	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [3], 0)
+
+	_assert_full_strength_replay(results, "The replay should keep the section span the cast read")
+	var bumps: Array[CombatResult] = results.filter(
+			func(r: CombatResult) -> bool: return CombatResult.Kind.Turn_Bar_Bump == r.kind and 0 == r.target_ID)
+	assert_eq(bumps.size(), 1, "The replay must not throw the Lancer back again")

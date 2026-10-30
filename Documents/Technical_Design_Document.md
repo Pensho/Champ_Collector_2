@@ -1408,7 +1408,8 @@ contributor rather than running a private loop:
   charge-span check already computed in `OnSkillCast`.
 - **Borrowed Time.** A Base contributor on `Skill_Resolved`, gated on the holder carrying the buff
   and the cast skill carrying a `DamageEffect` (`_CastSkillHasDamageEffect`); its own `resolve`
-  consumes the buff and calls `ResolveSkillEcho` at the buff's fraction. Being a Base rather than an
+  consumes the buff and calls `ResolveSkillEcho` at the buff's fraction, passing the event's
+  `cast_context` so the replay inherits the cast's trait result, use count and consumed counts. Being a Base rather than an
   Extender, it enables on a plain attacker and extends on a Herald with no code distinguishing the
   two cases.
 - **Comorbidity.** A Base contributor on `Debuff_Ticked`. Every debuff tick posts `Debuff_Ticked`

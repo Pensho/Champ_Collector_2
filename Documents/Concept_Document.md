@@ -568,7 +568,7 @@ Buffs:
 * Premonition [Enabler]: The next attack against the character automatically misses, the buff is consumed, and the character immediately answers with their own basic skill against the attacker, at full strength and at no cost.
 * Rehearsed [Enabler]: The character's next non-basic skill does not go on cooldown, then the buff is consumed.
 * Sanguine Pact [Channel 2, granted]: Increases the holder's damage by 12% per 10% of the holder's own missing Health, and redirects 30% of damage the holder takes to whoever applied the Pact instead.
-* Borrowed Time [Channel 3 — Cascade, granted]: The holder's next damaging skill resolves one additional time, at 30-60% strength by the applier's rarity. Does not stack. Consumed only by a damaging cast; a non-damaging skill leaves it untouched for a later one. An enabler on a cast with no Echo of its own, an extender on one that already has one.
+* Borrowed Time [Channel 3 — Cascade, granted]: The holder's next damaging skill resolves one additional time, at 30-60% strength by the applier's rarity, with every bonus that cast consumed or read and without consuming anything again. Does not stack. Consumed only by a damaging cast; a non-damaging skill leaves it untouched for a later one. An enabler on a cast with no Echo of its own, an extender on one that already has one.
 * Momentum [Channel 1]: Increases damage dealt by 15% per stack. Permanent. Stacks in place up to 10 times.
 * Sea Legs [Channel 1, granted]: Boosts the holder's own highest primary attribute other than Health, by an amount its applier sets. Permanent; never expires. Stacks in place up to 4 times rather than as separate instances, each stack recomputing the boost against the current stack count.
 
