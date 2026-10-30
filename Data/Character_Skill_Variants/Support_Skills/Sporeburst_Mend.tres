@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
 [ext_resource type="Script" uid="uid://bmqtglyyora7q" path="res://Scripts/Battle/Skill_Effects/skill_effect.gd" id="1_yxsct"]
 [ext_resource type="Script" uid="uid://cdtqrch6g28ma" path="res://Scripts/Battle/Skill_Effects/health_change_effect.gd" id="2_eg1bs"]
+[ext_resource type="Script" uid="uid://bay8tvxoeo0tu" path="res://Scripts/Battle/Skill_Effects/apply_buff_effect.gd" id="3_eg1bs"]
 
 [sub_resource type="Resource" id="Resource_jdfw5"]
 script = ExtResource("2_eg1bs")
@@ -11,11 +12,18 @@ scaling = Dictionary[int, float]({
 })
 target = 12
 
+[sub_resource type="Resource" id="Resource_ajkda"]
+script = ExtResource("3_eg1bs")
+buff_type = 15
+duration = 1
+target = 13
+metadata/_custom_type_script = "uid://bay8tvxoeo0tu"
+
 [resource]
 script = ExtResource("1_skill")
 name = "Sporeburst Mend"
 description = "Restores Health to all allies, scaled by Mysticism."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Opponent_Active_Skills/Sporeburst_Mend/Sporeburst_Mend.png"
 target = 12
-effects = Array[ExtResource("1_yxsct")]([SubResource("Resource_jdfw5")])
+effects = Array[ExtResource("1_yxsct")]([SubResource("Resource_jdfw5"), SubResource("Resource_ajkda")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"
