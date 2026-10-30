@@ -36,6 +36,8 @@ func Deserialize(p_data: Dictionary) -> void:
 	
 	_next_ID = 0
 	_characters.clear()
+	_collected_types.clear()
+	_used_character_textures.clear()
 	if(p_data.has("max_amount")):
 		_current_max_amount = p_data["max_amount"]
 	
@@ -60,8 +62,9 @@ func Deserialize(p_data: Dictionary) -> void:
 					new_character._attributes_weights = attribute_weight_type.duplicate(true)
 					break
 		
-		_next_ID = max(_next_ID, new_character._instance_ID)
-		
+		_next_ID = max(_next_ID, new_character._instance_ID + 1)
+		_CollectType(new_character)
+
 		for attribute in character_data["attributes"].keys():
 			new_character._attributes[attribute as int] = character_data["attributes"][attribute] as int
 
@@ -78,13 +81,16 @@ func Deserialize(p_data: Dictionary) -> void:
 
 		_characters[new_character._instance_ID] = new_character
 	
-	LoadTextures()
+	_next_ID = max(_next_ID, int(p_data.get("next_ID", 0)))
 	print("Calling Deserialize for CharacterCollection")
 
-func LoadTextures() -> void:
-	for type in _collected_types.keys():
-		if(!_used_character_textures.has(type)):
-			_used_character_textures[type] = load(_collected_types[type]["texture"])
+func _CollectType(p_character: Character) -> void:
+	if(!_collected_types.has(p_character._name)):
+		_collected_types[p_character._name] = {
+			"texture": p_character._texture,
+			"headshot_region": p_character._headshot_region,
+		}
+		_used_character_textures[p_character._name] = load(p_character._texture)
 
 func GetCharacterTexture(p_character_name: String) -> Texture:
 	return _used_character_textures[p_character_name]
@@ -98,13 +104,7 @@ func Add(preset: CharacterPreset) -> void:
 		var new_character: Character = Character.new()
 		new_character.InstantiateNew(preset, CreateNextInstanceID())
 		_characters[new_character._instance_ID] = new_character
-		
-		if(!_collected_types.has(new_character._name)):
-			_collected_types[new_character._name] = {
-				"texture": new_character._texture,
-				"headshot_region": new_character._headshot_region,
-			}
-			_used_character_textures[new_character._name] = load(new_character._texture)
+		_CollectType(new_character)
 
 func Remove(instanceID: int) -> void:
 	if(!_characters.erase(instanceID)):

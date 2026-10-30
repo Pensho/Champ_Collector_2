@@ -1,6 +1,7 @@
 extends GutTest
 
 const KNIGHT_PRESET = preload("res://Data/Character_Player_Variants/Knight.tres")
+const BAR_BRAWLER_PRESET = preload("res://Data/Character_Player_Variants/Bar_Brawler.tres")
 const RED_BOOTS_PRESET = preload("uid://c3g7cshxhg0rw")
 
 # --- ItemCollection ---
@@ -219,6 +220,53 @@ func test_character_collection_deserialize_missing_renown_defaults_to_rank_zero(
 	assert_eq(restored.GetRenownRank(), 0, "A save with no 'renown' key must load at rank 0")
 
 	col2.free()
+
+func test_character_collection_load_collects_the_types_of_the_saved_characters() -> void:
+	var saved_collection: CharacterCollection = autofree(CharacterCollection.new())
+	saved_collection.Add(BAR_BRAWLER_PRESET.duplicate(true))
+	var data: Dictionary = JSON.parse_string(JSON.stringify(saved_collection.Serialize()))
+
+	var loading_collection: CharacterCollection = autofree(CharacterCollection.new())
+	loading_collection.Add(KNIGHT_PRESET.duplicate(true))
+	loading_collection.Deserialize(data)
+
+	assert_not_null(loading_collection.GetCharacterHeadshotTexture(BAR_BRAWLER_PRESET._name),
+		"A loaded character's headshot must resolve without the type being added this session")
+	assert_not_null(loading_collection.GetCharacterTexture(BAR_BRAWLER_PRESET._name),
+		"A loaded character's full texture must resolve without the type being added this session")
+	assert_eq(loading_collection.GetCollectedTypeCount(), 1,
+		"Types from before the load must not count towards the loaded save")
+
+func _SavedKnightsData(p_instance_IDs: Array[int], p_next_ID: int) -> Dictionary:
+	var character_data: Array = []
+	for instance_ID: int in p_instance_IDs:
+		character_data.append({
+			"preset_path": KNIGHT_PRESET._preset_path,
+			"experience": 0,
+			"level": 1,
+			"attributes": {},
+			"held_items": {},
+			"instance_ID": instance_ID,
+		})
+	return {"characters": character_data, "next_ID": p_next_ID}
+
+func test_character_collection_add_after_load_keeps_a_saved_character_at_the_saved_next_ID() -> void:
+	var collection: CharacterCollection = autofree(CharacterCollection.new())
+	collection.Deserialize(_SavedKnightsData([0, 5], 5))
+
+	var saved_character: Character = collection.GetCharacter(5)
+	collection.Add(KNIGHT_PRESET.duplicate(true))
+
+	assert_eq(collection.Size(), 3, "A recruit after loading must not replace a saved character")
+	assert_same(collection.GetCharacter(5), saved_character,
+		"The saved character must keep its instance ID")
+
+func test_character_collection_add_after_load_continues_from_the_saved_next_ID() -> void:
+	var collection: CharacterCollection = autofree(CharacterCollection.new())
+	collection.Deserialize(_SavedKnightsData([0], 4))
+
+	assert_eq(collection.CreateNextInstanceID(), 4,
+		"IDs of characters removed before saving must not be handed out again")
 
 func test_character_collection_empty_roundtrip() -> void:
 	var col1: CharacterCollection = CharacterCollection.new()
