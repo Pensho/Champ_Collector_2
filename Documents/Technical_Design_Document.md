@@ -2402,5 +2402,20 @@ so each new hook widens the interface every subclass inherits. The `max-public-m
 `gdlintrc` has been raised to keep pace.
 
 *Impact:* the base class is the largest public surface in the project, and the lint limit no longer
+
+### 15.5. Unused cascade instance hook
+
+`Combat_Event.Cascade_Instance_Resolved`, `CharacterTrait.OnCascadeInstanceResolved` and
+`BattleResolver.GetActionOrdinal` have no shipped trait using them; only a test observes the hook.
+
+*Direction:* remove them in a clean-up session, or keep them if a new trait needs them first.
+
+### 15.6. `Ally_*` hooks differ on whether they include the owner
+
+`Ally_Critical_Hit` and `Ally_Damage_Taken` skip the character the event is about, while
+`Ally_Reagent_Consumed` and `Ally_Attack_Landed` include them. `Other_Ally_Skill_Cast` names the
+exclusion.
+
+*Direction:* rename the hooks that skip that character to the `Other_Ally_` form.
 constrains it.
 *Direction:* route events through fewer, event-typed entry points.
