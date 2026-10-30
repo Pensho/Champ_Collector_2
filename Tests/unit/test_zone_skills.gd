@@ -1,5 +1,15 @@
 extends GutTest
 
+class InstanceWatcher extends CharacterTrait:
+	var instances: int = 0
+
+	func _init() -> void:
+		_execution_steps[Types.Combat_Event.Cascade_Instance_Resolved] = Callable(self, "OnCascadeInstanceResolved")
+
+	func OnCascadeInstanceResolved(
+			_p_owner_ID: int, _p_event: CascadeEvent, _p_resolver: BattleResolver) -> void:
+		instances += 1
+
 const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 
 ## Coverage for the zone-placement and zone-scaling skills (Catalyst Cloud, Unstable
@@ -150,10 +160,9 @@ func test_miasmas_forced_tick_also_cascades_a_comorbidity_flagged_debuff() -> vo
 	assert_eq(ticks[1].cascade_depth, 2, "Comorbidity's repeat nests one level deeper than the forced tick")
 	assert_eq(ticks[2].cascade_depth, 2, "Comorbidity's second repeat is at the same nested depth as the first")
 
-## Miasma's forced tick now goes through CascadeResolver like any other Echo, so it must be
-## visible to a mechanic entirely unrelated to Comorbidity: the Herald of the Loom's Golden
-## Thread, which gains Tension when another ally's action Echoes on an enemy.
-func test_miasmas_forced_tick_is_seen_as_an_echo_by_golden_thread() -> void:
+## Miasma's forced tick goes through CascadeResolver like any other Echo, so a trait
+## listening for cascade instances must see it.
+func test_miasmas_forced_tick_is_seen_as_a_cascade_instance() -> void:
 	_positions.occupants_by_zone[0] = [3]
 	_roster[3]._attributes[Types.Attribute.Health] = 100000
 	_roster[3]._current_health = 100000
@@ -162,15 +171,12 @@ func test_miasmas_forced_tick_is_seen_as_an_echo_by_golden_thread() -> void:
 	plague.duration = 3
 	plague.source_ID = 1
 	_resolver.GetStatusResolver().ApplyDebuff(3, plague)
-	var herald_trait: WeftAndWarpTrait = WeftAndWarpTrait.new()
-	herald_trait.Init(Types.Rarity.Uncommon)
-	herald_trait.AdvanceThread()  # Golden
-	_roster[2]._trait = herald_trait
+	var watcher: InstanceWatcher = InstanceWatcher.new()
+	_roster[2]._trait = watcher
 
 	_cast(0, "res://Data/Character_Skill_Variants/Zone_Skills/Miasma.tres", [], 0)
 
-	assert_eq(herald_trait._tension, 1,
-		"The forced tick is a real cascade instance concerning an enemy, so Golden Thread should gain Tension")
+	assert_eq(watcher.instances, 1, "The forced tick is a real cascade instance")
 
 func test_weight_of_law_stuns_the_enemy_standing_in_it() -> void:
 	_positions.occupants_by_zone[0] = [3]

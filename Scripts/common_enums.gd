@@ -221,6 +221,7 @@ enum Combat_Event
 	Cascade_Instance_Resolved,
 	Skill_Effects_Resolved,
 	Ally_Attack_Landed,
+	Other_Ally_Skill_Cast,
 }
 
 ## Source a DamageEffect's bonus_per fraction, or a SkillEffect's condition, scales

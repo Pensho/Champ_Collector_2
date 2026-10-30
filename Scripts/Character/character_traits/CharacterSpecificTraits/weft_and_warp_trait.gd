@@ -32,7 +32,7 @@ var _current_thread: Thread_Type = Thread_Type.Silver
 var _tension: int = 0
 var _self_bonus: float = 0.0
 var _pending_cut_the_cloth_instances: int = 0
-var _last_tension_action_ordinal: int = -1
+var _gained_tension_since_own_turn: bool = false
 
 func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
@@ -41,19 +41,20 @@ func Init(p_rarity: Types.Rarity) -> void:
 		"res://Assets/Champ_Collector/Icons/Abilities/Passives/Weft_And_Warp_Trait/weft_and_warp_trait.png")
 	_title = "Weft and Warp"
 	_body = ("Holds one thread; switch freely during your turn.\n" +
-			"Golden: gain 1 Tension, up to %d, whenever another ally's action Echoes on an enemy.\n" % TENSION_MAX +
+			"Golden: gain 1 Tension, up to %d, the first time another ally acts between your turns.\n" % TENSION_MAX +
 			"Silver: your debuffs can't be resisted and last 1 turn longer.\n" +
 			"Black: Cut the Cloth Echoes once more.\n" +
 			"Your Echoes deal %d%% more damage." % roundi(100.0 * _self_bonus))
 	_execution_steps[Types.Combat_Event.Start_Combat] = Callable(self, "StartOfBattle")
 	_execution_steps[Types.Combat_Event.Skill_Cast] = Callable(self, "OnSkillCast")
-	_execution_steps[Types.Combat_Event.Cascade_Instance_Resolved] = Callable(self, "OnCascadeInstanceResolved")
+	_execution_steps[Types.Combat_Event.Start_Turn] = Callable(self, "StartOfTurn")
+	_execution_steps[Types.Combat_Event.Other_Ally_Skill_Cast] = Callable(self, "OnOtherAllySkillCast")
 
 func StartOfBattle(p_owner_ID: int, p_resolver: BattleResolver) -> void:
 	_current_thread = Thread_Type.Silver
 	_tension = STARTING_TENSION_BY_RARITY.get(_owner_rarity, 0)
 	_pending_cut_the_cloth_instances = 0
-	_last_tension_action_ordinal = -1
+	_gained_tension_since_own_turn = false
 	# Re-subscribed every battle: p_resolver (and its CascadeResolver) is fresh per combat.
 	var cascade: CascadeResolver = p_resolver.GetCascadeResolver()
 	cascade.SubscribeCascadeContributor(
@@ -106,19 +107,13 @@ func GetOutgoingDebuffDurationBonus(_p_owner_ID: int) -> int:
 func DebuffsCannotBeResisted(_p_owner_ID: int, _p_target_ID: int) -> bool:
 	return Thread_Type.Silver == _current_thread
 
-## Golden Thread gains once per action of another ally, however many Echoes that action releases.
-func OnCascadeInstanceResolved(
-		p_owner_ID: int, p_event: CascadeEvent, p_resolver: BattleResolver) -> void:
-	if(Thread_Type.Golden != _current_thread):
+func StartOfTurn(_p_owner_ID: int, _p_resolver: BattleResolver) -> void:
+	_gained_tension_since_own_turn = false
+
+func OnOtherAllySkillCast(_p_owner_ID: int, _p_caster_ID: int, _p_resolver: BattleResolver) -> void:
+	if(Thread_Type.Golden != _current_thread or _gained_tension_since_own_turn):
 		return
-	if(p_event.origin_ID == p_owner_ID or not p_resolver.GetSides().AreAllies(p_owner_ID, p_event.origin_ID)):
-		return
-	if(not _EventConcernsEnemyOf(p_owner_ID, p_event, p_resolver)):
-		return
-	var action_ordinal: int = p_resolver.GetActionOrdinal()
-	if(action_ordinal == _last_tension_action_ordinal):
-		return
-	_last_tension_action_ordinal = action_ordinal
+	_gained_tension_since_own_turn = true
 	_tension = mini(_tension + 1, TENSION_MAX)
 
 func OnSkillCast(

@@ -327,8 +327,8 @@ Current roles, their identity and purpose exist as follows:
 - Herald of the loom
     - A stance character whose three threads shape how its Echoes and debuffs behave. Primary attributes: Mysticism, Accuracy.
     - Purpose: Debuffer, Buffer
-    - Passive: Weft and Warp [Channel 3 — Cascade] - The Herald always holds exactly one thread, starting on Silver at battle start; switching is a free action available any number of times during the Herald's own turn, and the active thread persists as ordinary trait state (not a status effect) until changed again. Golden Thread: gain 1 Tension (capped at 7) once per action of another ally that resolves an Echo on an enemy. Silver Thread: the Herald's own applied debuffs cannot be resisted and last 1 turn longer. Black Thread: extends the cascade the Herald's own action produces by one Echo (an extender — it adds nothing on a cast that has no Echo of its own). Echoes the Herald produces deal bonus damage.
-        - Self-bonus: +5% Uncommon, +10% Rare, +15% Epic, +20% Legendary
+    - Passive: Weft and Warp [Channel 3 — Cascade] - The Herald always holds exactly one thread, starting on Silver at battle start; switching is a free action available any number of times during the Herald's own turn, and the active thread persists as ordinary trait state (not a status effect) until changed again. Golden Thread: gain 1 Tension (capped at 7) the first time another ally acts between the Herald's turns. Silver Thread: the Herald's own applied debuffs cannot be resisted and last 1 turn longer. Black Thread: extends the cascade the Herald's own action produces by one Echo (an extender — it adds nothing on a cast that has no Echo of its own). Echoes the Herald produces deal bonus damage.
+        - Self-bonus: +10% Uncommon, +13% Rare, +16% Epic, +19% Legendary
         - Starting Tension: 0 Uncommon/Rare, 1 Epic/Legendary. Tension does not persist between combats.
     - Fielded by: `Herald_of_the_loom.tres`
 - Chronophage

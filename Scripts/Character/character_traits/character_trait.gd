@@ -171,10 +171,13 @@ func OnAllyTurnBarIncreased(
 
 ## Fires once per real cascade instance (one loop iteration of a matched
 ## CascadeResolver listener), for every living character, regardless of whose
-## mechanic actually produced it — lets a passive react to instance count itself
-## (e.g. the Herald of the Loom's Golden Thread).
+## mechanic actually produced it — lets a passive react to instance count itself.
 func OnCascadeInstanceResolved(
 		_p_owner_ID: int, _p_event: CascadeEvent, _p_resolver: BattleResolver) -> void:
+	pass
+
+## Fires when another living ally casts a skill.
+func OnOtherAllySkillCast(_p_owner_ID: int, _p_caster_ID: int, _p_resolver: BattleResolver) -> void:
 	pass
 
 func OnZoneConstructed(_p_owner_ID: int, _p_zone_ID: int, _p_resolver: BattleResolver) -> void:

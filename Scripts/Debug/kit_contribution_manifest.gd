@@ -761,10 +761,9 @@ const MANIFEST: Dictionary = {
 					"class": Contribution_Class.Channel3_Cascade,
 					"precondition": "Always holds exactly one of three threads, freely switchable " +
 							"during the Herald's own turn (persistent trait state, not a status effect). " +
-							"Golden: +1 Tension (capped at 7) once per action of another ally that resolves " +
-							"a cascade instance on an enemy, via the generic Cascade_Instance_Resolved hook " +
-							"and BattleResolver.GetActionOrdinal (instances the Herald originates never " +
-							"count, so the Herald cannot feed its own Tension). Silver: this Herald's own applied debuffs cannot be " +
+							"Golden: +1 Tension (capped at 7) the first time another ally casts a skill " +
+							"between the Herald's turns, via the Other_Ally_Skill_Cast hook. " +
+							"Silver: this Herald's own applied debuffs cannot be " +
 							"resisted and last 1 turn longer (GetOutgoingDebuffDurationBonus/" +
 							"DebuffsCannotBeResisted). Black: an Extender contribution that adds one " +
 							"instance to whatever cascade the Herald's own action produced (Cut the Cloth's " +

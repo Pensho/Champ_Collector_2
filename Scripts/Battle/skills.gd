@@ -676,6 +676,15 @@ static func DispatchAllyTurnBarIncreased(
 	for active_trait: CharacterTrait in ActiveHooks(source_character, Types.Combat_Event.Ally_Turn_Bar_Increased):
 		active_trait.OnAllyTurnBarIncreased(p_source_ID, p_target_ID, p_fraction, p_resolver)
 
+static func DispatchOtherAllySkillCast(
+		p_caster_ID: int, p_characters: Dictionary[int, Character], p_sides: CombatSides,
+		p_resolver: BattleResolver) -> void:
+	for ally_ID: int in p_sides.AlliesOf(p_caster_ID).AliveMembers(p_characters):
+		if(p_caster_ID == ally_ID):
+			continue
+		for active_trait: CharacterTrait in ActiveHooks(p_characters[ally_ID], Types.Combat_Event.Other_Ally_Skill_Cast):
+			active_trait.OnOtherAllySkillCast(ally_ID, p_caster_ID, p_resolver)
+
 ## Fires an applier's Debuff_Applied trait hook when their debuff lands on someone
 ## else — the applier-side counterpart to _EmitBuffApplied's target-side dispatch.
 static func DispatchDebuffApplied(

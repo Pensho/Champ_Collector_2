@@ -214,6 +214,8 @@ func ResolveSkill(p_caster_ID: int, p_target_IDs: Array[int], p_skill_ID: int) -
 	var trait_result: TraitSkillResult = Skills.DispatchSkillCast(
 			caster, p_caster_ID, p_target_IDs, cast_skill.name, caster_attributes, self)
 
+	Skills.DispatchOtherAllySkillCast(p_caster_ID, _characters, GetSides(), self)
+
 	_status_resolver._RollCastAttributeBuffs(p_caster_ID, caster_attributes)
 
 	var use_count: int = _SkillUseCount(p_caster_ID, cast_skill)
@@ -455,10 +457,10 @@ func ResolveSkillEcho(
 	var context := SkillCastContext.new(
 			self, p_caster_ID, p_target_IDs, cast_skill, caster_attributes, 0, TraitSkillResult.new())
 	context.repeat_bonus = p_strength_multiplier - 1.0
-	for effect in cast_skill.effects:
-		if(effect is DamageEffect and context.ConditionMet(effect)):
 	if(null != p_replayed_cast):
 		context.InheritCastResults(p_replayed_cast)
+	for effect in cast_skill.effects:
+		if(effect is DamageEffect and context.ConditionMet(effect)):
 			effect.Resolve(context)
 
 ## Sets health directly (debug tools), running the same clamp and death handling as

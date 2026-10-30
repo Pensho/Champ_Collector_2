@@ -21,8 +21,6 @@ Drawn from the `Role_Kit_Design.md` 10.4 ledger and a read of the teams in
   own none; the Lancer's payoff reads a positional condition.
 - **Debuff density:** fed by fifteen of twenty Roles; read by Thief and Scholar through
   Opportunist and by the Plague Doctor.
-- **Echo-fed accumulators:** the Herald of the Loom's Tension is the only one; Sorcerer,
-  Chronophage and Plague Doctor feed it.
 - **Tempo accelerators:** Tactician, Symbiote, Chronophage, Tidal Corsair and Caravan Cadence
   speed per-turn and per-cast accumulators: the Sorcerer's Instability, the Bar Brawler's Heap
   On, the Architect's Calibration, and Sea Legs.
@@ -61,7 +59,7 @@ Drawn from the `Role_Kit_Design.md` 10.4 ledger and a read of the teams in
 | Appraiser, Chronophage, Warlord | Control | — | Critical Chance conversion, Borrowed Time | Ordering, Interruptible |
 
 - **Accelerators left without a target:** debuff density with no reader (teams 2, 3, 7);
-  Echo-fed (teams 1, 5, 6, 7); reagent-fed (team 6); ally missing Health (teams 1, 4, 5).
+  reagent-fed (team 6); ally missing Health (teams 1, 4, 5).
 - **Devour Blessing consumes permanent buffs,** so in team 2 the Cultist spends the Tidal
   Corsair's Sea Legs; Shield Wall diverts damage off a nearby Vessel and slows the Cultist's
   thresholds.

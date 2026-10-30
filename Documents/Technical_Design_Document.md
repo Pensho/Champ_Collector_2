@@ -1427,10 +1427,8 @@ contributor rather than running a private loop:
 queried only for `Skill_Resolved` and need a Base, so it cannot inflate Comorbidity (`Debuff_Ticked`);
 Mirror Coat and Overflow are deferred triggers, unreachable by any contributor at all.
 
-**Golden Thread and the generic self-bonus.** `OnCascadeInstanceResolved` grants Tension only for
-an instance whose `origin_ID` is another ally of the Herald, and at most once per
-`BattleResolver.GetActionOrdinal()` — an ordinal `_BeginBatch` advances once per outermost batch, so
-one skill or reagent reads as one action however many Echoes it releases. The Herald's
+**Golden Thread and the generic self-bonus.** `OnOtherAllySkillCast` (`Combat_Event.Other_Ally_Skill_Cast`,
+dispatched at the start of `ResolveSkill`) grants Tension once, and `StartOfTurn` reopens the gain. The Herald's
 self-bonus is a `SubscribeStrengthModifier` scoped to `origin_ID == owner_ID`, so it applies to
 any Echo the Herald produces regardless of mechanic, not only Cut the Cloth's.
 
@@ -1458,7 +1456,7 @@ a plain "resolve this zone against this character at this strength", with no bou
 of its own. `TriggerDebuffTicksEffect` posts a `Debuff_Tick_Forced` event per target; the Base
 contribution for it is registered inline in `_RegisterDeferredTriggers` (`Debuff_Tick_Forced` has
 no condition of its own, only the trigger), `resolve` is `_ForceExtraDebuffTick`. Both now consume
-fan-out budget, are visible to Golden Thread, and no longer take Threefold Bite's non-Echo penalty.
+fan-out budget and no longer take Threefold Bite's non-Echo penalty.
 
 ### 7.9. Battle presentation timeline
 
@@ -2402,6 +2400,8 @@ so each new hook widens the interface every subclass inherits. The `max-public-m
 `gdlintrc` has been raised to keep pace.
 
 *Impact:* the base class is the largest public surface in the project, and the lint limit no longer
+constrains it.
+*Direction:* route events through fewer, event-typed entry points.
 
 ### 15.5. Unused cascade instance hook
 
@@ -2417,5 +2417,3 @@ so each new hook widens the interface every subclass inherits. The `max-public-m
 exclusion.
 
 *Direction:* rename the hooks that skip that character to the `Other_Ally_` form.
-constrains it.
-*Direction:* route events through fewer, event-typed entry points.
