@@ -67,10 +67,8 @@ class_name KitContributionManifest extends RefCounted
 ##                        future turns rather than the one action being scored (Comorbidity's
 ##                        extra debuff tick, Unstable Rift's un-triggered zone charges) —
 ##                        scored into CandidateResult.sustained_contrast_ratio, never folded into
-##                        the single-action total_contrast_ratio, but counted in
-##                        combined_contrast_ratio — the field TeamResult.Best() and TeamSweep
-##                        actually rank by, so a sustained payload competes with a direct-damage
-##                        combo rather than being invisible to that ranking.
+##                        the single-action total_contrast_ratio that TeamResult.Best() and
+##                        TeamSweep rank by.
 ##                    `reach` ("team" reaches every candidate on the roster the way
 ##                    Ally_Reagent_Consumed's own broadcast does; absent/anything else means
 ##                    "only this entry's own skill/caster") applies to every fold: a
@@ -394,8 +392,7 @@ const MANIFEST: Dictionary = {
 									"deal the same enemy-facing hit again on a future turn as the zone is " +
 									"walked into — scored into sustained_contrast_ratio, not product, since it " +
 									"spans several of the boss's own turns rather than the one action " +
-									"total_contrast_ratio measures (still counted in combined_contrast_ratio, " +
-									"the ranking key).",
+									"total_contrast_ratio measures.",
 							"citation": "Unstable_Rift.tres:6-29; zone_resolver.gd"}},
 		],
 	},
@@ -439,7 +436,8 @@ const MANIFEST: Dictionary = {
 	Types.Role.Diviner: {
 		"preset": "Data/Character_Player_Variants/Diviner.tres",
 		"passive": [
-			{"name": "Foresight", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
+			{"name": "Foresight", "applied_debuffs": [Types.Debuff_Type.Enfeeble],
+					"bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Enabler,
 					"precondition": "At Start_Turn, applies a fixed 1-turn Enfeeble (not rarity-scaled " +
 							"by the trait) to any enemy within 25% turn-bar-behind range (Legendary " +
@@ -850,7 +848,8 @@ const MANIFEST: Dictionary = {
 	Types.Role.Architect: {
 		"preset": "Data/Character_Player_Variants/Architect.tres",
 		"passive": [
-			{"name": "Calibration", "bucket_key": CombinedDamageModifier.TRAIT_RESOURCE_KEY,
+			{"name": "Calibration", "applied_debuffs": [Types.Debuff_Type.Expose_Weakness],
+					"bucket_key": CombinedDamageModifier.TRAIT_RESOURCE_KEY,
 					"magnitude": 1.2, "stack_cap": 12,
 					"class": Contribution_Class.Channel2,
 					"bucket_applies": {"kind": "skill_index", "skill_index": 2},
@@ -960,7 +959,7 @@ const MANIFEST: Dictionary = {
 							"Comorbidity's tick flag is set on this cast but never consumed.",
 					"citation": "Septic_Lance.tres:6-11"},
 			{"name": "Outbreak", "bucket_key": "Outbreak", "magnitude": 0.08, "stack_cap": 0,
-					"class": Contribution_Class.Channel2,
+					"class": Contribution_Class.Channel2, "per_debuff_type": true,
 					"precondition": "damage_scaling Mysticism 1.2, bonus_per Target_Debuff_Count 0.08 " +
 							"per distinct debuff on the target (any source, uncapped — an uncapped " +
 							"per-instance rate, not a ceiling, per this manifest's own convention), plus " +
@@ -970,16 +969,10 @@ const MANIFEST: Dictionary = {
 					"citation": "Outbreak.tres:6-24",
 					"gated_bonus": {"bucket_key": "", "magnitude": -0.75,
 							"class": Contribution_Class.Channel3_Cascade, "fold": "sustained_ticks",
-							"gate": &"debuff_count", "instances": 3,
-							"precondition": "Comorbidity's own retick (see the passive entry above), " +
-									"approximated relative to Outbreak's own cast: each of Plague's 3 turns " +
-									"retriggers once at the minimum reachable distinct-debuff-type count (1 — " +
-									"Plague itself), each retick dealing Plague's own DoT magnitude " +
-									"(Mysticism 0.3) rather than Outbreak's cast magnitude (Mysticism 1.2), " +
-									"i.e. 0.3/1.2 = 25% per instance (magnitude -0.75). A different damage " +
-									"instance from Outbreak's own cast, approximated against the same " +
-									"skill_aggregate baseline for lack of a separate DoT-scaling model in this " +
-									"scorer — see sustained_contrast_ratio.",
+							"gate": &"debuff_count", "instances": 6, "per_debuff_type": true,
+							"precondition": "Plague's own tick (Mysticism 0.3, 0.3/1.2 = 25% of Outbreak's " +
+									"aggregate, magnitude -0.75) resolving once per distinct debuff type, " +
+									"over 3 natural ticks and 3 Miasma forced ticks, one per Plague turn.",
 							"citation": "comorbidity_trait.gd; status_effect_resolver.gd " +
 									"(_ComputeDebuffTickDamage); Plague.tres"}},
 			{"name": "Miasma", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
@@ -997,7 +990,8 @@ const MANIFEST: Dictionary = {
 	Types.Role.Warlord: {
 		"preset": "Data/Character_Player_Variants/Warlord.tres",
 		"passive": [
-			{"name": "Shield Wall", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
+			{"name": "Shield Wall", "applied_debuffs": [Types.Debuff_Type.Enfeeble],
+					"bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Enabler,
 					"precondition": "On Ally_Damage_Taken within 15% turn-bar proximity (fixed, not " +
 							"rarity-scaled), redirects 30% (Legendary) of that ally's incoming attack " +

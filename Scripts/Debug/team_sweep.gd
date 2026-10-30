@@ -55,7 +55,6 @@ static func ScoreAllTeams(
 						"repeat_contrast_ratio": best.repeat_contrast_ratio,
 						"sustained_contrast_ratio": best.sustained_contrast_ratio,
 						"total_contrast_ratio": best.total_contrast_ratio,
-						"combined_contrast_ratio": best.combined_contrast_ratio,
 						"crit_chance": best.crit_chance,
 						"crit_damage_multiplier": best.crit_damage_multiplier,
 						"crit_factor": best.crit_factor,

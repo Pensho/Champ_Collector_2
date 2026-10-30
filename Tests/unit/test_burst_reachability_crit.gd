@@ -158,7 +158,7 @@ func test_crit_chance_change_cancels_out_of_contrast_ratio_for_a_symmetric_skill
 	# DamageEffect involved allows crit (true for every current .tres) — it cancels out of the
 	# ratio contrast_ratio measures. This guards that cancellation rather than being surprised
 	# by it: a real crit-chance difference (proven by the sibling test above) must still leave
-	# combined_contrast_ratio untouched here.
+	# total_contrast_ratio untouched here.
 	var with_appraiser: BurstReachability.TeamResult = BurstReachability.ScoreTeam(_appraiser_emissary_warlord())
 	var without_appraiser_crit: BurstReachability.TeamResult = BurstReachability.ScoreTeam(
 			_appraiser_emissary_warlord(), 0, _manifest_without_appraiser_crit_grants())
@@ -173,8 +173,8 @@ func test_crit_chance_change_cancels_out_of_contrast_ratio_for_a_symmetric_skill
 	assert_almost_eq(with_pinned.contrast_ratio, without_pinned.contrast_ratio, 0.0001,
 		"contrast_ratio must be unaffected by a caster-level crit_chance change when every " +
 		"DamageEffect involved allows crit, since the same factor mitigates numerator and denominator")
-	assert_almost_eq(with_pinned.combined_contrast_ratio, without_pinned.combined_contrast_ratio, 0.0001,
-		"combined_contrast_ratio must be unaffected for the same reason")
+	assert_almost_eq(with_pinned.total_contrast_ratio, without_pinned.total_contrast_ratio, 0.0001,
+		"total_contrast_ratio must be unaffected for the same reason")
 
 func test_full_appraisal_grant_scales_with_the_appraisers_own_crit_attributes() -> void:
 	# Keen Edge/Lethal Precision are "source_attribute" grants: they must scale with whichever
@@ -206,5 +206,5 @@ func test_non_appraiser_pinned_product_is_unaffected_by_crit_scoring() -> void:
 	var result: BurstReachability.TeamResult = BurstReachability.ScoreTeam(sorcerer_scholar_tactician)
 	var pinned: BurstReachability.CandidateResult = result.Pinned(0, "Cataclysm")
 	assert_not_null(pinned, "Sorcerer's Cataclysm must be a scored candidate")
-	assert_almost_eq(pinned.product, 2.8, 0.01,
+	assert_almost_eq(pinned.product, 3.388, 0.01,
 		"Regression pin, unchanged by crit scoring: composed product for this team bursting Cataclysm")

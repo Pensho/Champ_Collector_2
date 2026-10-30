@@ -175,6 +175,12 @@ func _case_cataclysm(p_name: String) -> void:
 	warped.type = Types.Debuff_Type.Warped
 	warped.duration = 2
 	target._active_debuffs.append(warped)
+	# The Scholar's other debuff types, which the scorer's density assumes standing.
+	for debuff_type: Types.Debuff_Type in [Types.Debuff_Type.Confound, Types.Debuff_Type.Suppress]:
+		var scholar_debuff: StatusEffects.Debuff = StatusEffects.Debuff.new()
+		scholar_debuff.type = debuff_type
+		scholar_debuff.duration = 2
+		target._active_debuffs.append(scholar_debuff)
 
 	var resolver: BattleResolver = _resolver_for(roster, [0])
 	var cataclysm_index: int = _skill_index(sorcerer, "Cataclysm")
@@ -188,8 +194,8 @@ func _case_cataclysm(p_name: String) -> void:
 	assert_almost_eq(modifier.Product(), predicted.product, 0.0001,
 			"%s: The real resolver's composed product must match the manifest-derived prediction " %
 			p_name + "for this precondition set")
-	assert_almost_eq(modifier.Product(), 2.8, 0.01,
-			"%s: Regression guard: this is the same 2.8x pinned in test_burst_reachability.gd" % p_name)
+	assert_almost_eq(modifier.Product(), 3.388, 0.01,
+			"%s: Regression guard: this is the same 3.388x pinned in test_burst_reachability.gd" % p_name)
 
 # --- Shape 2: the shared trait_resource key, fed by internal trait stack state rather than
 # a StatusEffects buff/debuff ---

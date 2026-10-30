@@ -105,21 +105,19 @@ func test_best_candidate_is_not_necessarily_the_first_skill_on_the_first_champio
 	assert_false(result.candidates.is_empty(), "The team must produce at least one damaging-skill candidate")
 	var best: BurstReachability.CandidateResult = result.Best()
 	for candidate in result.candidates:
-		assert_gte(best.combined_contrast_ratio, candidate.combined_contrast_ratio,
-			"Best() must be the highest combined contrast ratio among all candidates, not index 0")
+		assert_gte(best.total_contrast_ratio, candidate.total_contrast_ratio,
+			"Best() must be the highest total contrast ratio among all candidates, not index 0")
 	assert_true(result.candidates.size() > 1, "A 3-champion team must enumerate more than one damaging skill")
 
 func test_candidates_are_sorted_best_first() -> void:
 	var result: BurstReachability.TeamResult = BurstReachability.ScoreTeam(_corsair_cultist_warlord())
 	for i in result.candidates.size() - 1:
-		assert_gte(result.candidates[i].combined_contrast_ratio, result.candidates[i + 1].combined_contrast_ratio,
-			"Candidates must be sorted by combined contrast ratio, best first")
+		assert_gte(result.candidates[i].total_contrast_ratio, result.candidates[i + 1].total_contrast_ratio,
+			"Candidates must be sorted by total contrast ratio, best first")
 
-func test_best_prefers_a_weaker_single_action_candidate_whose_sustained_payload_wins_overall() -> void:
-	# Proves the fix directly: a candidate with a modest single-action burst but a large
-	# sustained_ticks payload must outrank a candidate with a stronger single-action burst and
-	# no sustained payload — a DoT/zone-charge combo competing with a direct-damage combo on
-	# equal footing, per Role_Kit_Design.md section 11.
+func test_best_ignores_a_large_sustained_payload() -> void:
+	# A multi-turn total is not comparable to one action, so a large sustained_ticks payload must
+	# not outrank a stronger single-action burst.
 	var presets: Array[CharacterPreset] = [EMISSARY, THIEF, WARLORD]
 	var modified_manifest: Dictionary = KitContributionManifest.MANIFEST.duplicate(true)
 
@@ -141,10 +139,10 @@ func test_best_prefers_a_weaker_single_action_candidate_whose_sustained_payload_
 	assert_not_null(sustained_driven, "The modified Thief entry must still be a scored candidate")
 	assert_gt(strong_single_action.total_contrast_ratio, sustained_driven.total_contrast_ratio,
 		"Sanity: the single-action candidate must win on total_contrast_ratio alone")
-	assert_gt(sustained_driven.combined_contrast_ratio, strong_single_action.combined_contrast_ratio,
-		"The sustained-payload candidate must overtake it once sustained_contrast_ratio is counted")
-	assert_eq(result.Best(), sustained_driven,
-		"Best() must pick the sustained-payload candidate, not the stronger single-action one")
+	assert_gt(sustained_driven.sustained_contrast_ratio, strong_single_action.total_contrast_ratio,
+		"Sanity: the sustained payload must be larger than the single action")
+	assert_eq(result.Best(), strong_single_action,
+		"Best() must pick the stronger single action, not the sustained payload")
 
 # --- Base term / modifier term separation (Concept_Document.md 1.1.6) ---
 
@@ -189,11 +187,12 @@ func test_sorcerer_scholar_tactician_bursting_cataclysm_is_pinned() -> void:
 	# Opportunist (0.1, anchored to the same Warped debuff Cataclysm already
 	# requires) land in the SAME bucket and add: 0.3 + 0.1 = 0.4. Tactician's Fatal
 	# Flaw grants Daunting_Strength unconditionally: a distinct bucket at 1.0. Product:
-	# (1 + 0.4) * (1 + 1.0) = 2.8, unchanged — the Sorcerer's Echoes are separate
+	# Opportunist also adds its own factor for Confound and Suppress, the Scholar's other debuff
+	# types: (1 + 0.4) * 1.1 * 1.1 * (1 + 1.0) = 3.388 — the Sorcerer's Echoes are separate
 	# CombinedDamageModifier instances in the real resolver (never folded into this one;
 	# see kit_contribution_manifest.gd's "fold" field), so they land in
 	# repeat_contrast_ratio instead of product.
-	assert_almost_eq(pinned.product, 2.8, 0.01,
+	assert_almost_eq(pinned.product, 3.388, 0.01,
 		"Regression pin: composed product for this team bursting Cataclysm")
 	assert_true(pinned.assumed_gates.has(&"instability_held"),
 		"The Echoes are assumed reachable even though they do not change this candidate's own product")
@@ -484,3 +483,70 @@ func test_thief_pierce_weakness_gains_contrast_from_the_architects_exported_shre
 	assert_not_null(shredded, "Pierce weakness must be a scored candidate with the Architect")
 	assert_gt(shredded.contrast_ratio, baseline.contrast_ratio,
 		"The Architect's exported Defence shred must raise the Thief's own contrast ratio")
+
+# --- Echo modifier (_EchoModifierProduct) ---
+
+func test_own_cascade_echo_keeps_standing_factors_but_not_what_the_cast_spent() -> void:
+	var buckets: Dictionary = {&"Opportunist": 0.5, &"Daunting_Strength": 1.0,
+			CombinedDamageModifier.TRAIT_RESOURCE_KEY: 0.3}
+	assert_almost_eq(BurstReachability._EchoModifierProduct(buckets, false), 1.5, 0.0001,
+		"A skill's own Echo must re-read standing factors and lose consumed ones")
+
+func test_replaying_echo_repeats_what_the_cast_spent() -> void:
+	var buckets: Dictionary = {&"Opportunist": 0.5, &"Daunting_Strength": 1.0}
+	assert_almost_eq(BurstReachability._EchoModifierProduct(buckets, true), 3.0, 0.0001,
+		"A replayed cast must repeat consumed factors as well as standing ones")
+
+func test_borrowed_time_echo_scales_with_the_whole_cast_for_team_factors() -> void:
+	var presets: Array[CharacterPreset] = [
+			load("res://Data/Character_Player_Variants/Thief.tres"),
+			load("res://Data/Character_Player_Variants/Tactician.tres"),
+			load("res://Data/Character_Player_Variants/Chronophage.tres")]
+	var candidate: BurstReachability.CandidateResult = BurstReachability.ScoreTeam(presets).Pinned(0, "Stab")
+	assert_almost_eq(candidate.repeat_contrast_ratio, candidate.contrast_ratio * 0.6, 0.0001,
+		"Borrowed Time's Echo must carry Daunting Strength at the granter's own strength")
+
+# --- Debuff density and tick payloads ---
+
+func _characters_for(p_paths: Array[String]) -> Array[Character]:
+	var characters: Array[Character] = []
+	for path in p_paths:
+		var character: Character = Character.new()
+		character.InstantiateNew(load(path), characters.size())
+		characters.append(character)
+		autofree(character)
+	return characters
+
+func test_team_debuff_types_ignore_self_targeted_debuffs_and_read_zone_triggers() -> void:
+	var characters: Array[Character] = _characters_for(
+			["res://Data/Character_Player_Variants/Plague_Doctor.tres",
+			"res://Data/Character_Player_Variants/Warlord.tres"])
+	var types: Array[StringName] = BurstReachability._TeamDebuffTypes(characters, KitContributionManifest.MANIFEST)
+	assert_true(types.has(&"Blight"), "A zone's on-trigger debuff must count")
+	assert_true(types.has(&"Plague"), "A skill's debuff on an enemy must count")
+	assert_true(types.has(&"Enfeeble"), "A passive's applied_debuffs must count")
+	assert_false(types.has(&"Slow"), "A debuff the Warlord places on himself must not count")
+
+func test_debuff_tick_ratio_resolves_once_per_debuff_type_without_defence() -> void:
+	var bonus: Dictionary = {"magnitude": -0.75, "instances": 3}
+	assert_almost_eq(BurstReachability._DebuffTickContrastRatio(bonus, 100.0, 50.0, 1.0, 4), 6.0, 0.0001,
+		"3 ticks at 4 resolutions of 25 damage each against a 50 baseline must be 6x")
+
+func test_debuff_tick_growth_rises_with_each_resolution() -> void:
+	var bonus: Dictionary = {"magnitude": 0.0, "instances": 2, "tick_growth": {"maximum": 4.0, "half_count": 39.0}}
+	assert_almost_eq(BurstReachability._DebuffTickContrastRatio(bonus, 100.0, 100.0, 1.0, 1), 2.1, 0.0001,
+		"The first resolution must be flat and the second +10%")
+
+func test_snapshot_product_drops_spent_factors_and_the_skills_own_bucket() -> void:
+	var buckets: Dictionary = {&"Outbreak": 0.5, &"Daunting_Strength": 1.0, &"Hemorrhage": 0.3}
+	assert_almost_eq(BurstReachability._SnapshotModifierProduct(buckets, {"bucket_key": "Outbreak"}), 1.3, 0.0001,
+		"A snapshot must keep only standing factors")
+
+func test_outbreak_reads_the_teams_debuff_density() -> void:
+	var presets: Array[CharacterPreset] = [
+			load("res://Data/Character_Player_Variants/Plague_Doctor.tres"),
+			load("res://Data/Character_Player_Variants/Warlord.tres"),
+			load("res://Data/Character_Player_Variants/Symbiote.tres")]
+	var candidate: BurstReachability.CandidateResult = BurstReachability.ScoreTeam(presets).Pinned(0, "Outbreak")
+	assert_almost_eq(candidate.buckets[&"Outbreak"], 0.24, 0.0001,
+		"Plague, Blight and Enfeeble must give Outbreak three types at +8% each")

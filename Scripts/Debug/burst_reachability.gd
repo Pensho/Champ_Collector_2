@@ -3,9 +3,9 @@ class_name BurstReachability extends RefCounted
 ## Given three CharacterPreset instances and nothing else, enumerates every damaging skill
 ## across the team as a candidate burst resolution, composes
 ## Scripts/Debug/kit_contribution_manifest.gd's reachable Channel-2/3 contributions at each,
-## and returns them ranked by combined_contrast_ratio — every reachable channel counted, sustained
-## payload included, so a DoT/zone-charge combo (Plague Doctor's Comorbidity, Unstable Rift's
-## remaining charges) competes for Best() on equal footing with a pure single-action combo
+## and returns them ranked by total_contrast_ratio, the single-action burst a candidate reaches. A
+## multi-turn payload (Plague Doctor's Comorbidity, Unstable Rift's remaining charges) is reported
+## beside it in sustained_contrast_ratio and never ranks. Compare with a pure single-action combo
 ## (Tidal Corsair plus Tactician). Which champion bursts and which skill they burst with are
 ## OUTPUTS: every damaging skill on the team is scored, never assumed in advance.
 ##
@@ -24,7 +24,7 @@ class_name BurstReachability extends RefCounted
 ##                                 against Concept_Document.md 1.1.2's 30x burst target —
 ##                                 it never includes sustained_contrast_ratio, so a multi-turn
 ##                                 payload cannot inflate the "one action" contract number.
-## The third feeds into the fourth, which is what this file actually ranks and selects Best() by:
+## The third is what this file actually ranks and selects Best() by:
 ##   Total contrast ratio       - contrast_ratio plus repeat_contrast_ratio: the full
 ##                                 single-action burst a candidate reaches, a separate-instance
 ##                                 Channel-3 repeat included. Concept_Document.md 1.1.3 counts
@@ -40,18 +40,6 @@ class_name BurstReachability extends RefCounted
 ##                                 existed to expose it. Still a one-action figure; still what
 ##                                 gets checked wherever a candidate's single-action burst matters
 ##                                 on its own.
-##   Combined contrast ratio    - total_contrast_ratio plus sustained_contrast_ratio: what
-##                                 TeamResult.Best() and TeamSweep actually rank by. Excluding
-##                                 sustained payload from ranking made every DoT/zone-charge combo
-##                                 structurally invisible next to a direct-damage combo when
-##                                 comparing team compositions — the two are different shapes of
-##                                 damage output, not different tiers of it, and a scorer meant to
-##                                 answer "what combination reaches what damage output" has to
-##                                 compare them on the same footing. total_contrast_ratio (and the
-##                                 30x contract it's checked against) stays a pure single-action
-##                                 figure regardless; combined_contrast_ratio is deliberately a
-##                                 separate field so the two questions — "does this fit the burst
-##                                 band" and "which team wins" — never collapse into one number.
 ##   Crit factor                - the caster's own EXPECTED critical-strike multiplier on the
 ##                                 candidate's scaled aggregate: 1 + (crit_chance / 100) *
 ##                                 (crit_damage_multiplier - 1), mirroring battle_resolver.gd's
@@ -79,10 +67,11 @@ class_name BurstReachability extends RefCounted
 ##
 ## Six stated simplifications:
 ##   - Manifest sources documented as an uncapped per-instance rate (Heap On's ramp,
-##     Devour Blessing's bonus_per, an Opportunist debuff-count) are scored at the minimum
-##     reachable count: exactly one instance/precondition satisfied. There is no battle
-##     simulation here to count real ones; a live-verification pass against the actual
-##     resolver, where the true count is whatever the fight produces, is the way to check this.
+##     Devour Blessing's bonus_per) are scored at the minimum reachable count: exactly one
+##     instance/precondition satisfied. There is no battle simulation here to count real ones; a
+##     live-verification pass against the actual resolver, where the true count is whatever the
+##     fight produces, is the way to check this. Debuff density is the exception: every reader
+##     takes the team's distinct enemy-facing debuff types (_TeamDebuffTypes), all assumed standing.
 ##   - Caster attributes are each preset's own base values (Character._attributes right after
 ##     InstantiateNew), plus any manifest "granted_attribute_buff" reaching the caster
 ##     (_ContributeGrantedAttributeBuffs) — fixed one-shot grants (Empower, Attune, Rush,
@@ -106,15 +95,12 @@ class_name BurstReachability extends RefCounted
 ##         would make that field diverge from what the live-verification suite checks against
 ##         the real resolver, so it is scored into repeat_contrast_ratio / total_contrast_ratio
 ##         instead, deliberately excluded from product/contrast_ratio but fully counted in
-##         total_contrast_ratio (the third contract quantity above) and, downstream,
-##         combined_contrast_ratio (the fourth).
+##         total_contrast_ratio (the third contract quantity above).
 ##       - "sustained_ticks": damage spread across several of the boss's own future turns
 ##         (Comorbidity's extra debuff tick, Unstable Rift's un-triggered zone charges) rather
 ##         than the one action total_contrast_ratio measures — scored into its own
 ##         sustained_contrast_ratio, excluded from total_contrast_ratio (which stays a pure
-##         one-action figure) but included in combined_contrast_ratio, so a multi-turn payload
-##         is visible to team-comparison ranking without corrupting the single-action contract
-##         number.
+##         one-action figure) so a multi-turn total never ranks against a single action.
 ##     "separate_instance" and "sustained_ticks" entries may also declare "instances" (default
 ##     1) and "instance_compounding" (default 1.0, flat): each of the declared instances
 ##     contributes (1.0 + magnitude) * instance_compounding^i, i 0-based — see
@@ -160,6 +146,11 @@ const ASSUMED_UNCAPPED_INSTANCES: int = 1
 ## live Sides and character dictionary this scorer does not have, so the reachability rule is
 ## re-derived structurally here from the granting SkillEffect's own target instead of assumed.
 const _SELF_ONLY_TARGETS: Array[Types.Skill_Target] = [Types.Skill_Target.Self]
+const _ENEMY_TARGETS: Array[Types.Skill_Target] = [
+	Types.Skill_Target.Single_Enemy, Types.Skill_Target.All_Enemies, Types.Skill_Target.Random_Enemy,
+	Types.Skill_Target.ZoneAll, Types.Skill_Target.ZoneEnemy, Types.Skill_Target.Left_Most_Enemy,
+	Types.Skill_Target.Right_Most_Enemy, Types.Skill_Target.Most_Injured_Enemy,
+	Types.Skill_Target.Lowest_Priority_Enemy]
 const _OTHER_ALLIES_TARGETS: Array[Types.Skill_Target] = [
 	Types.Skill_Target.All_Other_Allies, Types.Skill_Target.Ally_Not_Self]
 const _ALL_ALLIES_TARGETS: Array[Types.Skill_Target] = [Types.Skill_Target.All_Allies, Types.Skill_Target.All]
@@ -209,8 +200,7 @@ class CandidateResult:
 	## basic-skill baseline, deliberately excluded from total_contrast_ratio: it spans several
 	## of the boss's own future turns rather than the one action total_contrast_ratio measures,
 	## so folding it in there would mix two different meanings of "burst" into one single-action
-	## contract number. Included in combined_contrast_ratio instead, below. 0.0 when this
-	## candidate has no such contribution.
+	## contract number. 0.0 when this candidate has no such contribution.
 	var sustained_contrast_ratio: float = 0.0
 	## contrast_ratio + repeat_contrast_ratio: the total single-action burst this candidate's
 	## action deals, across both the original cast and its separate-instance repeat, if any. A
@@ -218,14 +208,8 @@ class CandidateResult:
 	## definition) and must count toward it the same as Channels 1 and 2, even though it cannot
 	## be folded into the single CombinedDamageModifier product/contrast_ratio represent (see
 	## repeat_contrast_ratio's own docs). This is the figure checked against 1.1.2's 30x
-	## burst target; it is no longer the ranking key (see combined_contrast_ratio).
+	## burst target and the key Best() and TeamSweep rank by.
 	var total_contrast_ratio: float = 0.0
-	## total_contrast_ratio + sustained_contrast_ratio: the ranking key Best()/TeamSweep use.
-	## Folding sustained payload back in here (after deliberately excluding it from
-	## total_contrast_ratio above) is what lets a DoT/zone-charge combo compete against a
-	## direct-damage combo for "which team composition wins" — the question TeamSweep exists to
-	## answer — without redefining what total_contrast_ratio's own 30x contract check means.
-	var combined_contrast_ratio: float = 0.0
 	## The caster's own reachable Critical Chance, percentage points, after every fraction and
 	## point grant reaching this candidate (Full Appraisal's Keen Edge, Flaw Analysis's Exposed
 	## Facet, ...) — clamped to [0, 100] the same way the resolver's crit roll saturates.
@@ -250,17 +234,14 @@ class CandidateResult:
 	## crit_factor is, and is penalized relative to a crit-eligible skill of the same base power.
 	var burst_crit_factor: float = 1.0
 
-## All candidates for one 3-preset team, ranked best (highest combined_contrast_ratio, i.e.
-## every reachable channel including a separate-instance repeat and sustained payload) first.
+## All candidates for one 3-preset team, ranked best (highest total_contrast_ratio, a
+## separate-instance repeat included) first.
 class TeamResult:
 	var candidates: Array[CandidateResult] = []
 	var enabler_count: int
 	var is_viable: bool
 
-	## This team's best reachable damage output, combined_contrast_ratio included — not
-	## necessarily the candidate with the highest single-action total_contrast_ratio, if some
-	## other candidate's sustained payload (a DoT retick, un-triggered zone charges) pushes its
-	## combined total higher.
+	## This team's strongest single action.
 	func Best() -> CandidateResult:
 		return candidates[0] if not candidates.is_empty() else null
 
@@ -315,14 +296,10 @@ static func ScoreTeam(
 			if(null != candidate and result.is_viable):
 				result.candidates.append(candidate)
 
-	# combined_contrast_ratio, not total_contrast_ratio: a Channel-3 repeat or sustained payload
-	# is part of what a team composition's damage output is (Concept_Document.md 1.1.3) and must
-	# be able to win Best() like any other channel, even though neither can be folded into the
-	# single-hit product/contrast_ratio pair, or the single-action total_contrast_ratio, those
-	# fields protect (see CandidateResult.combined_contrast_ratio's own docs).
+	# A multi-turn total is not comparable to one action, so sustained payload does not rank.
 	result.candidates.sort_custom(
 			func(a: CandidateResult, b: CandidateResult) -> bool:
-				return a.combined_contrast_ratio > b.combined_contrast_ratio)
+				return a.total_contrast_ratio > b.total_contrast_ratio)
 	return result
 
 
@@ -437,6 +414,38 @@ static func _AnchorDebuffKey(p_skill_entry: Dictionary) -> StringName:
 	return &""
 
 
+## Every distinct debuff type the team can place on an enemy, read from its skill data (zone
+## triggers included) and any passive's "applied_debuffs", capped by the shared status limit.
+static func _TeamDebuffTypes(p_characters: Array[Character], p_manifest: Dictionary) -> Array[StringName]:
+	var types: Array[StringName] = []
+	for character in p_characters:
+		for skill: Skill in character._skills:
+			_CollectEnemyDebuffTypes(skill.effects, skill.target, types)
+		var role_entry: Dictionary = p_manifest.get(character._role, {})
+		for passive_entry: Dictionary in role_entry.get("passive", []):
+			for debuff_type: Types.Debuff_Type in passive_entry.get("applied_debuffs", []):
+				_AppendDebuffKey(types, debuff_type)
+	return types.slice(0, GameBalance.MAX_STATUS_EFFECTS)
+
+
+static func _CollectEnemyDebuffTypes(
+		p_effects: Array, p_skill_target: Types.Skill_Target, p_types: Array[StringName]) -> void:
+	for effect in p_effects:
+		if(effect is ZoneEffect):
+			_CollectEnemyDebuffTypes(effect.on_trigger, p_skill_target, p_types)
+		elif(effect is ApplyDebuffEffect):
+			var target: Types.Skill_Target = (p_skill_target if Types.Skill_Target.Skill_Default == effect.target
+					else effect.target)
+			if(_ENEMY_TARGETS.has(target)):
+				_AppendDebuffKey(p_types, effect.debuff_type)
+
+
+static func _AppendDebuffKey(p_types: Array[StringName], p_debuff_type: Types.Debuff_Type) -> void:
+	var key: StringName = StringName(Types.Debuff_Type.keys()[p_debuff_type])
+	if(not p_types.has(key)):
+		p_types.append(key)
+
+
 ## True if the manifest names an enum member exactly matching p_key — the structural test
 ## for "is this bucket a status effect" the status cap (GameBalance.MAX_STATUS_EFFECTS)
 ## applies to, as opposed to a skill name, ramp key, or trait-resource key.
@@ -517,21 +526,22 @@ static func _ContributeGatedCasterPassiveBonus(
 ## CombinedDamageModifier and ResolveEffectDamage call(s), never folded into the original
 ## cast's own product — folding it in here would make CandidateResult.product diverge from
 ## what Tests/unit/test_burst_reachability_live.gd's replay of the real resolver assembles for
-## the ORIGINAL cast alone. Deliberately excludes any team/granted factor (Volatile Mixture,
-## Opportunist, ...), since those are already contributed to (and, for a DamageMultiplier
-## buff, consumed by) the ORIGINAL cast in the real resolver (battle_resolver.gd:739-744's
-## per-instance ConsumeDamageMultiplierFactors call) and would double-count here otherwise.
+## the ORIGINAL cast alone. p_modifier_product is the combined modifier each instance resolves
+## with (_EchoModifierProduct); left negative, only the skill's own bucket applies, which is
+## the sustained_ticks shape.
 ## p_crit_factor is the burst skill's own expected crit factor (BurstReachability._CritFactor,
 ## blended by allow_critical share) — a separate-instance repeat is its own damage resolution
 ## in the real resolver and rolls its own crit the same way the original cast does, so it is
 ## mitigated through the same expected factor rather than 1.0.
 static func _MultiInstanceContrastRatio(
 		p_skill_entry: Dictionary, p_bonus: Dictionary, p_skill_aggregate: float, p_defence: float,
-		p_baseline_damage: float, p_crit_factor: float) -> float:
-	var own_bucket_factor: float = 1.0
-	if(Manifest.Contribution_Class.Channel2 == p_skill_entry.get("class") \
+		p_baseline_damage: float, p_crit_factor: float, p_modifier_product: float = -1.0) -> float:
+	var modifier_factor: float = 1.0
+	if(p_modifier_product >= 0.0):
+		modifier_factor = p_modifier_product
+	elif(Manifest.Contribution_Class.Channel2 == p_skill_entry.get("class") \
 			or Manifest.Contribution_Class.Channel3_Cascade == p_skill_entry.get("class")):
-		own_bucket_factor = 1.0 + _MagnitudeFor(p_skill_entry)
+		modifier_factor = 1.0 + _MagnitudeFor(p_skill_entry)
 	var magnitude: float = p_bonus.get("magnitude", 0.0)
 	var compounding: float = p_bonus.get("instance_compounding", 1.0)
 	var instances: int = mini(int(p_bonus.get("instances", 1)), CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION)
@@ -539,23 +549,81 @@ static func _MultiInstanceContrastRatio(
 	for i in instances:
 		factor_sum += (1.0 + magnitude) * pow(compounding, float(i))
 	var repeat_damage: float = Skills.MitigatedDamageUnrounded(
-			p_defence, p_skill_aggregate * own_bucket_factor * factor_sum, p_crit_factor, 1.0)
+			p_defence, p_skill_aggregate * modifier_factor * factor_sum, p_crit_factor, 1.0)
 	return repeat_damage / p_baseline_damage
+
+
+## The combined modifier one Echo resolves with. Every Echo re-reads the standing factors in
+## p_buckets. A consumed factor (Daunting Strength) and the cast's own trait result are spent
+## by the original cast, so only a replay of that cast (p_replays_cast, Borrowed Time) repeats
+## them; a skill's own Cascade (Cataclysm, Cut the Cloth) does not.
+static func _EchoModifierProduct(p_buckets: Dictionary, p_replays_cast: bool) -> float:
+	var modifier: CombinedDamageModifier = CombinedDamageModifier.new()
+	for key: StringName in p_buckets:
+		if(not p_replays_cast and _IsSpentByOriginalCast(key)):
+			continue
+		modifier.Contribute(key, p_buckets[key])
+	return modifier.Product()
+
+
+## A Comorbidity-style tick payload: each declared tick resolves once per distinct debuff type,
+## at the snapshotted persistent factors, with no Defence and no crit. p_bonus's "tick_growth"
+## {maximum, half_count} raises each resolution by maximum * n / (n + half_count), n being the
+## resolutions so far.
+static func _DebuffTickContrastRatio(
+		p_bonus: Dictionary, p_skill_aggregate: float, p_baseline_damage: float,
+		p_persistent_product: float, p_debuff_type_count: int) -> float:
+	var echoes: int = mini(maxi(0, p_debuff_type_count - 1), CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION)
+	var resolutions: int = int(p_bonus.get("instances", 1)) * (1 + echoes)
+	var growth: Dictionary = p_bonus.get("tick_growth", {})
+	var factor_sum: float = 0.0
+	for count in resolutions:
+		var growth_bonus: float = 0.0
+		if(not growth.is_empty()):
+			growth_bonus = growth["maximum"] * float(count) / (float(count) + growth["half_count"])
+		factor_sum += 1.0 + growth_bonus
+	var tick_damage: float = p_skill_aggregate * (1.0 + p_bonus.get("magnitude", 0.0)) * p_persistent_product
+	return tick_damage * factor_sum / p_baseline_damage
+
+
+## What a status snapshots at application: every standing factor, without what the cast spends
+## or the casting skill's own bucket.
+static func _SnapshotModifierProduct(p_buckets: Dictionary, p_skill_entry: Dictionary) -> float:
+	var own_key: StringName = StringName(String(p_skill_entry.get("bucket_key", "")))
+	var modifier: CombinedDamageModifier = CombinedDamageModifier.new()
+	for key: StringName in p_buckets:
+		if(key != own_key and not _IsSpentByOriginalCast(key)):
+			modifier.Contribute(key, p_buckets[key])
+	return modifier.Product()
+
+
+static func _IsSpentByOriginalCast(p_key: StringName) -> bool:
+	if(CombinedDamageModifier.TRAIT_RESOURCE_KEY == p_key):
+		return true
+	var buff_index: int = Types.Buff_Type.keys().find(String(p_key))
+	if(buff_index < 0):
+		return false
+	var data: StatusEffectData = StatusEffectRegistry.BuffData(Types.Buff_Type.values()[buff_index])
+	return null != data and StatusEffectData.MagnitudeKind.DamageMultiplier == data.magnitude_kind
 
 
 ## Splits a skill entry's gated_bonus into [repeat_contrast_ratio, sustained_contrast_ratio] —
 ## mutually exclusive folds, so at most one of the two is ever nonzero.
 static func _GatedContrastRatios(
 		p_skill_entry: Dictionary, p_skill_aggregate: float, p_defence: float,
-		p_baseline_damage: float, p_crit_factor: float) -> Array[float]:
+		p_baseline_damage: float, p_crit_factor: float, p_buckets: Dictionary = {},
+		p_debuff_type_count: int = 1) -> Array[float]:
 	var bonus: Dictionary = p_skill_entry.get("gated_bonus", {})
 	if(bonus.is_empty() or _IsSameInstanceFold(bonus)):
 		return [0.0, 0.0]
-	var ratio: float = _MultiInstanceContrastRatio(
-			p_skill_entry, bonus, p_skill_aggregate, p_defence, p_baseline_damage, p_crit_factor)
+	if(bonus.get("per_debuff_type", false)):
+		return [0.0, _DebuffTickContrastRatio(bonus, p_skill_aggregate, p_baseline_damage,
+				_SnapshotModifierProduct(p_buckets, p_skill_entry), p_debuff_type_count)]
 	if("separate_instance" == bonus.get("fold", "same_instance")):
-		return [ratio, 0.0]
-	return [0.0, ratio]
+		return [_MultiInstanceContrastRatio(p_skill_entry, bonus, p_skill_aggregate, p_defence,
+				p_baseline_damage, p_crit_factor, _EchoModifierProduct(p_buckets, false)), 0.0]
+	return [0.0, _MultiInstanceContrastRatio(
+			p_skill_entry, bonus, p_skill_aggregate, p_defence, p_baseline_damage, p_crit_factor)]
 
 
 ## External gated_bonus entries reaching a candidate from a TEAMMATE's own passive (the
@@ -563,15 +631,15 @@ static func _GatedContrastRatios(
 ## _GatedContrastRatios, which only reads the candidate's own skill entry. Walks every
 ## character but the candidate's own caster (a granter cannot grant itself the instance),
 ## taking each granter's passive gated_bonus where the fold is not same_instance and
-## reach == "team". The existing _MultiInstanceContrastRatio already splits own_bucket_factor
-## (supplied by the CANDIDATE's own skill entry — Borrowed Time re-resolves the ally's whole
-## skill, buckets included) from the granter's own magnitude/instances/compounding, so no new
+## reach == "team". The existing _MultiInstanceContrastRatio already splits the modifier
+## (the CANDIDATE's own buckets — Borrowed Time re-resolves the ally's whole skill and replays
+## what the cast consumed) from the granter's own magnitude/instances/compounding, so no new
 ## curve-walk is needed, only routing an external bonus through it. Sums across granters per
 ## fold and collects every granter's own gate, matching _GatedContrastRatios' two-slot shape.
 static func _ExternalGatedContrastRatios(
 		p_characters: Array[Character], p_caster_index: int, p_skill_entry: Dictionary,
 		p_skill_aggregate: float, p_defence: float, p_baseline_damage: float, p_crit_factor: float,
-		p_manifest: Dictionary) -> Dictionary:
+		p_manifest: Dictionary, p_buckets: Dictionary = {}) -> Dictionary:
 	var repeat_ratio: float = 0.0
 	var sustained_ratio: float = 0.0
 	var gates: Array[StringName] = []
@@ -587,12 +655,12 @@ static func _ExternalGatedContrastRatios(
 			var bonus: Dictionary = passive_entry.get("gated_bonus", {})
 			if(bonus.is_empty() or _IsSameInstanceFold(bonus) or "team" != bonus.get("reach", "")):
 				continue
-			var ratio: float = _MultiInstanceContrastRatio(
-					p_skill_entry, bonus, p_skill_aggregate, p_defence, p_baseline_damage, p_crit_factor)
 			if("separate_instance" == bonus.get("fold", "same_instance")):
-				repeat_ratio += ratio
+				repeat_ratio += _MultiInstanceContrastRatio(p_skill_entry, bonus, p_skill_aggregate, p_defence,
+						p_baseline_damage, p_crit_factor, _EchoModifierProduct(p_buckets, true))
 			else:
-				sustained_ratio += ratio
+				sustained_ratio += _MultiInstanceContrastRatio(
+						p_skill_entry, bonus, p_skill_aggregate, p_defence, p_baseline_damage, p_crit_factor)
 			gates.append(StringName(String(bonus.get("gate", ""))))
 	return {"repeat": repeat_ratio, "sustained": sustained_ratio, "gates": gates}
 
@@ -757,10 +825,12 @@ static func _ScoreCandidate(
 		if(_PassiveBucketApplies(passive_entry, p_skill, p_skill_index)):
 			_Contribute(buckets, StringName(String(passive_entry.get("bucket_key", ""))),
 					_MagnitudeFor(passive_entry))
+	var team_debuff_types: Array[StringName] = _TeamDebuffTypes(p_characters, p_manifest)
 	if(Manifest.Contribution_Class.Channel2 == p_skill_entry.get("class") \
 			or Manifest.Contribution_Class.Channel3_Cascade == p_skill_entry.get("class")):
+		var density: float = float(team_debuff_types.size()) if p_skill_entry.get("per_debuff_type", false) else 1.0
 		_Contribute(buckets, StringName(String(p_skill_entry.get("bucket_key", ""))),
-				_MagnitudeFor(p_skill_entry))
+				_MagnitudeFor(p_skill_entry) * density)
 
 	var assumed_gates: Array[StringName] = []
 	var skill_gate: StringName = _ContributeGatedSkillBonus(buckets, p_skill_entry)
@@ -776,7 +846,8 @@ static func _ScoreCandidate(
 		assumed_gates.append(gate)
 
 	var anchor_debuff_key: StringName = _AnchorDebuffKey(p_skill_entry)
-	_ContributeGrantedStatuses(p_characters, p_caster_index, buckets, anchor_debuff_key, p_manifest)
+	_ContributeGrantedStatuses(p_characters, p_caster_index, buckets, anchor_debuff_key, p_manifest,
+			team_debuff_types)
 
 	var dropped: Array[StringName] = _EnforceStatusCap(buckets)
 
@@ -819,7 +890,8 @@ static func _ScoreCandidate(
 	var burst_damage: float = Skills.MitigatedDamageUnrounded(
 			burst_defence, skill_aggregate * product, burst_crit_factor, 1.0)
 	var gated_ratios: Array[float] = _GatedContrastRatios(
-			p_skill_entry, skill_aggregate, burst_defence, baseline_damage, burst_crit_factor)
+			p_skill_entry, skill_aggregate, burst_defence, baseline_damage, burst_crit_factor, buckets,
+			team_debuff_types.size())
 	var repeat_contrast_ratio: float = gated_ratios[0]
 	var sustained_contrast_ratio: float = gated_ratios[1]
 	if(0.0 != repeat_contrast_ratio or 0.0 != sustained_contrast_ratio):
@@ -828,7 +900,7 @@ static func _ScoreCandidate(
 			assumed_gates.append(gate)
 	var external_ratios: Dictionary = _ExternalGatedContrastRatios(
 			p_characters, p_caster_index, p_skill_entry, skill_aggregate, burst_defence, baseline_damage,
-			burst_crit_factor, p_manifest)
+			burst_crit_factor, p_manifest, buckets)
 	repeat_contrast_ratio += float(external_ratios.get("repeat", 0.0))
 	sustained_contrast_ratio += float(external_ratios.get("sustained", 0.0))
 	for gate: StringName in external_ratios.get("gates", []):
@@ -859,7 +931,6 @@ static func _ScoreCandidate(
 	result.repeat_contrast_ratio = repeat_contrast_ratio
 	result.sustained_contrast_ratio = sustained_contrast_ratio
 	result.total_contrast_ratio = result.contrast_ratio + repeat_contrast_ratio
-	result.combined_contrast_ratio = result.total_contrast_ratio + sustained_contrast_ratio
 	return result
 
 
@@ -939,7 +1010,8 @@ static func _GrantReachesCandidate(
 
 static func _ContributeGrantedStatuses(
 		p_characters: Array[Character], p_candidate_index: int, p_buckets: Dictionary,
-		p_anchor_debuff_key: StringName, p_manifest: Dictionary) -> void:
+		p_anchor_debuff_key: StringName, p_manifest: Dictionary,
+		p_team_debuff_types: Array[StringName] = []) -> void:
 	for granter_index in p_characters.size():
 		var granter: Character = p_characters[granter_index]
 		var role_entry: Dictionary = p_manifest.get(granter._role, {})
@@ -955,9 +1027,11 @@ static func _ContributeGrantedStatuses(
 						granting_skill, granter_index, p_candidate_index, grant.get("buff_type"))):
 					continue
 			if(grant.get("per_debuff_anchored", false)):
-				if(&"" != p_anchor_debuff_key):
-					_Contribute(p_buckets, p_anchor_debuff_key,
-							grant.get("magnitude", 0.0) * float(ASSUMED_UNCAPPED_INSTANCES))
+				var debuff_keys: Array[StringName] = p_team_debuff_types.duplicate()
+				if(&"" != p_anchor_debuff_key and not debuff_keys.has(p_anchor_debuff_key)):
+					debuff_keys.append(p_anchor_debuff_key)
+				for debuff_key: StringName in debuff_keys:
+					_Contribute(p_buckets, debuff_key, grant.get("magnitude", 0.0) * float(ASSUMED_UNCAPPED_INSTANCES))
 			else:
 				_Contribute(p_buckets, StringName(String(grant.get("bucket_key", ""))), grant.get("magnitude", 0.0))
 
