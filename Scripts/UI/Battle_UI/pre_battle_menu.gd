@@ -211,6 +211,12 @@ func _on_remove_char_button_up(p_char_slot: int) -> void:
 	else:
 		print("trying to remove a character from an empty slot nr: ", p_char_slot)
 
+static func RoleAlreadyChosen(p_chosen: Dictionary[int, Character], p_candidate: Character) -> bool:
+	for chosen: Character in p_chosen.values():
+		if (chosen._role == p_candidate._role):
+			return true
+	return false
+
 func _on_add_char_button_up(p_char_slot: int) -> void:
 	if (_chosen_characters.size() >= NR_OF_CHARACTERS_IN_BATTLE):
 		print("Trying to add a character when the roster is full.")
@@ -222,9 +228,10 @@ func _on_add_char_button_up(p_char_slot: int) -> void:
 		if (_chosen_characters[i]._instance_ID == _character_collection[p_char_slot]._instance_ID):
 			print("Trying to add a character already in the chosen roster.")
 			return
-		if (_chosen_characters[i]._name == _character_collection[p_char_slot]._name):
-			print("Trying to add two of the same type of character.")
-			return
+	if (RoleAlreadyChosen(_chosen_characters, _character_collection[p_char_slot])):
+		Notification_Handler.Notify(
+				"Only one character of each type per battle", Types.Notification_Kind.Info)
+		return
 	for i in NR_OF_CHARACTERS_IN_BATTLE:
 		if (!_chosen_characters.has(i)):
 			_chosen_characters[i] = _character_collection[p_char_slot]

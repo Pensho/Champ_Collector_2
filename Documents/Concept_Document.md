@@ -373,7 +373,7 @@ Current roles, their identity and purpose exist as follows:
     - Fielded by: `Warlord.tres`
 
 ### 3.2. Combat
-The player fields a team of up to 3 characters in a battle. The party is ordered left to right, in the order the characters are picked in the pre-battle menu; some skills target by battlefield position (see the targeting types in section 3.2.4). Combat is turn based, using the Speed attribute of each character to move a representation across a "turn bar". When a characters representation has crossed the entire bar, the game will pause for input to resolve their turn and then finish by putting the representation of the character back to the beginning. Then the system keeps going.
+The player fields a team of up to 3 characters in a battle, at most one per Role. The party is ordered left to right, in the order the characters are picked in the pre-battle menu; some skills target by battlefield position (see the targeting types in section 3.2.4). Combat is turn based, using the Speed attribute of each character to move a representation across a "turn bar". When a characters representation has crossed the entire bar, the game will pause for input to resolve their turn and then finish by putting the representation of the character back to the beginning. Then the system keeps going.
 
 <br/>
 
