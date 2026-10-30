@@ -10,4 +10,4 @@ overwritable = true
 stackable = false
 applies_on_self_tick = false
 icon = ExtResource("2_icon")
-description = "The holder's next damaging skill resolves one additional time, at a fraction of its strength."
+description = "The holder's next Non-Echo damaging skill Echoes once, at reduced strength, repeating the bonuses it spent."

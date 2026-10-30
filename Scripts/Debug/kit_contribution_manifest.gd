@@ -792,8 +792,8 @@ const MANIFEST: Dictionary = {
 							"0 Uncommon/Rare start, 1 Epic/Legendary, max 7 flat every rarity), then " +
 							"consumes all Tension — up to 8 total resolves at max Tension, 9 with Black " +
 							"Thread's extra instance. A CascadeContribution Base on Skill_Resolved, so Black " +
-							"Thread (an Extender) and Borrowed Time (a Base of its own) can add to the same " +
-							"cascade instead of running as isolated repeats.",
+							"Thread (an Extender) can add to the same cascade instead of running as an " +
+							"isolated repeat.",
 					"citation": "Cut_the_Cloth.tres:6-16; weft_and_warp_trait.gd " +
 							"(OnSkillCast, SubscribeCascadeContributor)",
 					"gated_bonus": {"bucket_key": "", "magnitude": 0.071,
@@ -820,10 +820,11 @@ const MANIFEST: Dictionary = {
 							"progress. A turn-bar mechanic, no CombinedDamageModifier bucket. Added: " +
 							"when the Chronophage moves an ally forward and no other ally (the " +
 							"Chronophage included) shares that ally's turn-bar section, the ally " +
-							"gains Borrowed Time — its next damaging skill resolves once more at " +
-							"60% strength (Legendary). Read by burst_reachability.gd's " +
+							"gains Borrowed Time — its next damaging skill with no Cascade of its own " +
+							"Echoes once at 60% strength (Legendary). Read by burst_reachability.gd's " +
 							"_ExternalGatedContrastRatios: every non-Chronophage candidate on the team " +
-							"gains this repeat, since the granter cannot grant itself the instance.",
+							"without its own Cascade gains this repeat, since the granter cannot grant " +
+							"itself the instance.",
 					"gated_bonus": {"bucket_key": "", "magnitude": -0.40,
 							"class": Contribution_Class.Channel3_Cascade, "fold": "separate_instance",
 							"reach": "team", "instances": 1, "gate": &"ally_boosted_alone_in_section",

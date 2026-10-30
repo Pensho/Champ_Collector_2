@@ -76,6 +76,9 @@ func RefreshVisuals(p_character_repr: CharacterRepresentation) -> void:
 	p_character_repr.SetTraitElement(_trait_texture, 0)
 	p_character_repr.SetTraitElementToolTip(_title, body_with_state, 0)
 
+func SkillHasOwnCascade(p_skill_name: String) -> bool:
+	return ECHOING_SKILL_NAME == p_skill_name
+
 func OnSkillCast(
 		_p_owner_ID: int,
 		_p_target_IDs: Array[int],

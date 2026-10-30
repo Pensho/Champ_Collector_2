@@ -99,6 +99,8 @@ func _ResolveContributions(p_event: CascadeEvent) -> void:
 	var extenders_allowed: bool = Types.Cascade_Trigger.Skill_Resolved == p_event.trigger
 	var bases: Array[CascadeContribution] = []
 	var base_keys: Array[String] = []
+	var sole_bases: Array[CascadeContribution] = []
+	var sole_base_keys: Array[String] = []
 	var extra_instances: int = 0
 	var extender_keys: Array[String] = []
 	var claimed_this_call: Dictionary[String, bool] = {}
@@ -117,9 +119,15 @@ func _ResolveContributions(p_event: CascadeEvent) -> void:
 		if(CascadeContribution.Kind.Base == contribution.kind):
 			bases.append(contribution)
 			base_keys.append(key)
+		elif(CascadeContribution.Kind.Sole_Base == contribution.kind):
+			sole_bases.append(contribution)
+			sole_base_keys.append(key)
 		else:
 			extra_instances += contribution.instances
 			extender_keys.append(key)
+	if(bases.is_empty()):
+		bases = sole_bases
+		base_keys = sole_base_keys
 	if(bases.is_empty()):
 		return
 	for key: String in base_keys:

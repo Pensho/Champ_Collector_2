@@ -116,6 +116,9 @@ func OnOtherAllySkillCast(_p_owner_ID: int, _p_caster_ID: int, _p_resolver: Batt
 	_gained_tension_since_own_turn = true
 	_tension = mini(_tension + 1, TENSION_MAX)
 
+func SkillHasOwnCascade(p_skill_name: String) -> bool:
+	return String(_CASCADE_MECHANIC_KEY) == p_skill_name
+
 func OnSkillCast(
 		_p_owner_ID: int,
 		_p_target_IDs: Array[int],

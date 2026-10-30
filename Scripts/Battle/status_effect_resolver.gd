@@ -521,14 +521,17 @@ func _ContributeBorrowedTime(p_event: CascadeEvent) -> CascadeContribution:
 	if(not _resolver._HasBuff(p_event.subject_ID, Types.Buff_Type.Borrowed_Time)
 			or not _CastSkillHasDamageEffect(p_event.subject_ID, p_event.skill_ID)):
 		return null
+	var holder: Character = _resolver._characters[p_event.subject_ID]
+	if(null != holder._trait and holder._trait.SkillHasOwnCascade(holder._skills[p_event.skill_ID].name)):
+		return null
 	var fraction: float = 0.0
-	for buff in _resolver._characters[p_event.subject_ID]._active_buffs:
+	for buff in holder._active_buffs:
 		if(Types.Buff_Type.Borrowed_Time == buff.type):
 			fraction = buff.value
 			break
 	return CascadeContribution.new(
 			StringName(Types.Buff_Type.keys()[Types.Buff_Type.Borrowed_Time]), 1,
-			CascadeContribution.Kind.Base, 1.0,
+			CascadeContribution.Kind.Sole_Base, 1.0,
 			func(e: CascadeEvent) -> void: _ResolveBorrowedTime(e, fraction))
 
 func _ResolveBorrowedTime(p_event: CascadeEvent, p_fraction: float) -> void:

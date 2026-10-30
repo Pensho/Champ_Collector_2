@@ -29,8 +29,9 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_title = "Time Tithe"
 	_body = ("Stealing turn bar from an enemy absorbs " + str(roundi(_tithe_fraction * 100)) +
 			"% of it as own progress.\nMoving an ally forward, with no other ally in their " +
-			"turn-bar section, grants Borrowed Time: their next damaging skill resolves once " +
-			"more at " + str(roundi(_borrowed_time_fraction * 100)) + "% strength.")
+			"turn-bar section, grants Borrowed Time: their next damaging non-Echo skill Echoes " +
+			"once at " + str(roundi(_borrowed_time_fraction * 100)) + "% strength, repeating " +
+			"the bonuses it spent.")
 	_execution_steps[Types.Combat_Event.Enemy_Turn_Bar_Reduced] = Callable(self, "OnEnemyTurnBarReduced")
 	_execution_steps[Types.Combat_Event.Ally_Turn_Bar_Increased] = Callable(self, "OnAllyTurnBarIncreased")
 

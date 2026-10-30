@@ -887,10 +887,7 @@ The two halves follow the fiction in opposite directions: time taken from an ene
 thief, time given to an ally stays with that ally. Nothing grants a bystander a payout for an
 enemy being drained.
 
-**Borrowed Time** (new buff): the holder's next damaging skill resolves **one additional time**, at
-**30/40/50/60%** strength by the applier's rarity. Does not stack. An enabler on a cast with no
-Echo of its own, an extender on one that already has one — nothing about the buff distinguishes
-the two cases.
+**Borrowed Time** (new buff): defined in `Concept_Document.md` section 3.2.3.
 
 **The alone-clause is the design, not a balance gate.** The roster already pays champions to bunch
 up on the turn bar — three separate passives grant to whoever sits close behind or within a window
@@ -918,9 +915,9 @@ off a new `Combat_Event.Ally_Turn_Bar_Increased` hook (`Skills.DispatchAllyTurnB
 positive/ally mirror of the existing tithe's `TurnBarTithe`), checked against a new
 `TurnPositions.GetSectionIndex` query (the base class returns -1 for "unknown", which declines the
 grant rather than assuming aloneness). The Chronophage counts as an occupant of its own section. The
-replay itself is a `Cascade_Trigger.Skill_Resolved` Base `CascadeContribution` in
+replay itself is a `Cascade_Trigger.Skill_Resolved` `Sole_Base` `CascadeContribution` in
 `StatusEffectResolver`, gated on the holder carrying Borrowed Time *and* the cast skill carrying a
-`DamageEffect` — so a non-damaging cast leaves the buff untouched for a later damaging one, matching
+`DamageEffect` with no Cascade of its own — so any other cast leaves the buff untouched, matching
 Daunting Strength's own
 `ConsumeDamageMultiplierFactors` semantics. The one-turn buff needed `_IsBuffExpired`'s existing
 `DamageMultiplier` one-shot survival rule (`duration < 0` rather than `<= 0`) widened to cover

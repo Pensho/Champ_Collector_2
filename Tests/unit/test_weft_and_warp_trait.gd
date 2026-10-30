@@ -448,55 +448,45 @@ func test_overflow_expiry_does_not_reduce_the_echo_budget_available_to_a_cut_the
 		"Overflow's expiry uses the deferred path's own fan-out bound, not Channel 3's, so it " +
 		"must not shrink the budget Cut the Cloth's repeats draw from")
 
-func test_cut_the_cloth_combines_with_black_thread_and_borrowed_time() -> void:
+func test_cut_the_cloth_with_black_thread_leaves_borrowed_time_held() -> void:
 	var setup: Dictionary = _make_cut_the_cloth_setup()
 	var herald_trait: WeftAndWarpTrait = setup["trait"]
 	var resolver: BattleResolver = setup["resolver"]
 	herald_trait._tension = 3
 	herald_trait.AdvanceThread()  # Golden
 	herald_trait.AdvanceThread()  # Black
-	var buff: StatusEffects.Buff = StatusEffects.Buff.new()
-	buff.type = Types.Buff_Type.Borrowed_Time
-	buff.duration = 1
-	buff.value = 0.4
-	resolver.GetStatusResolver().ApplyBuff(0, buff)
+	_grant_borrowed_time(resolver)
 
 	var results: Array[CombatResult] = resolver.ResolveSkill(0, [1], 0)
 
-	var markers: Array[CombatResult] = results.filter(
-			func(r: CombatResult) -> bool: return CombatResult.Kind.Cascade_Triggered == r.kind)
-	assert_eq(markers.size(), 5,
-		"3 Tension + Black Thread's extra Cut the Cloth Echo + Borrowed Time's own Echo = 5 markers")
-	for marker in markers:
-		assert_eq(marker.cascade_depth, 1, "Every contribution to this cast shares one cascade")
+	assert_eq(_damage_results_against(results, 1).size(), 1 + 4,
+		"The base cast, 3 Tension and Black Thread's Echo, with none from Borrowed Time")
+	assert_true(resolver.GetStatusResolver().HasBuffOfType(0, Types.Buff_Type.Borrowed_Time))
 
-	var damage_results: Array[CombatResult] = _damage_results_against(results, 1)
-	assert_eq(damage_results.size(), 6, "The base cast plus those 5 Echoes should each deal damage")
-	for damage_result in damage_results.slice(1):
-		assert_eq(damage_result.cascade_depth, 1, "Every Echo's damage shares the cast's cascade depth")
+func test_black_thread_extends_a_cascade_borrowed_time_created() -> void:
+	var setup: Dictionary = _make_cut_the_cloth_setup()
+	var herald_trait: WeftAndWarpTrait = setup["trait"]
+	var resolver: BattleResolver = setup["resolver"]
+	resolver.GetCharacters()[0]._skills[0].name = "Thread Snap"
+	herald_trait.AdvanceThread()  # Golden
+	herald_trait.AdvanceThread()  # Black
+	_grant_borrowed_time(resolver)
 
-	var borrowed_time_echoes: Array[CombatResult] = damage_results.filter(
-			func(r: CombatResult) -> bool: return r.combined_damage_modifier.Buckets().has(&"Cut the Cloth (repeat)"))
-	assert_eq(borrowed_time_echoes.size(), 1,
-		"Only Borrowed Time's own Echo carries a repeat bucket — Black Thread's Echo inherits " +
-		"Cut the Cloth's dominant strength (1.0, no bucket) instead of Borrowed Time's fraction")
-	assert_almost_eq(borrowed_time_echoes[0].combined_damage_modifier.Buckets()[&"Cut the Cloth (repeat)"],
-		0.4 - 1.0, 0.0001, "Borrowed Time's Echo resolves at its own buff fraction, not the dominant Base's")
+	var results: Array[CombatResult] = resolver.ResolveSkill(0, [1], 0)
 
-func test_max_tension_combined_with_black_thread_and_borrowed_time_still_respects_the_fan_out_cap() -> void:
+	assert_eq(_damage_results_against(results, 1).size(), 1 + 2,
+		"The base cast, Borrowed Time's Echo and Black Thread's Echo")
+	assert_false(resolver.GetStatusResolver().HasBuffOfType(0, Types.Buff_Type.Borrowed_Time))
+
+func test_max_tension_combined_with_black_thread_still_respects_the_fan_out_cap() -> void:
 	var setup: Dictionary = _make_cut_the_cloth_setup()
 	var herald_trait: WeftAndWarpTrait = setup["trait"]
 	var resolver: BattleResolver = setup["resolver"]
 	herald_trait._tension = WeftAndWarpTrait.TENSION_MAX
 	herald_trait.AdvanceThread()  # Golden
 	herald_trait.AdvanceThread()  # Black
-	var buff: StatusEffects.Buff = StatusEffects.Buff.new()
-	buff.type = Types.Buff_Type.Borrowed_Time
-	buff.duration = 1
-	buff.value = 0.4
-	resolver.GetStatusResolver().ApplyBuff(0, buff)
-	# 7 Tension + Black Thread's extra + Borrowed Time's own Echo request 9 instances, still
-	# under MAX_CASCADE_INSTANCES_PER_ACTION on its own; consuming most of the shared budget
+	# 7 Tension + Black Thread's extra request 8 instances, still under
+	# MAX_CASCADE_INSTANCES_PER_ACTION on its own; consuming most of the shared budget
 	# beforehand forces the cap to actually bind.
 	resolver._echoes_this_action = CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION - 4
 
@@ -504,6 +494,13 @@ func test_max_tension_combined_with_black_thread_and_borrowed_time_still_respect
 
 	assert_eq(_damage_results_against(results, 1).size(), 1 + 4,
 		"The base cast plus only the instances the remaining shared Echo budget allowed")
+
+func _grant_borrowed_time(p_resolver: BattleResolver) -> void:
+	var buff: StatusEffects.Buff = StatusEffects.Buff.new()
+	buff.type = Types.Buff_Type.Borrowed_Time
+	buff.duration = 1
+	buff.value = 0.4
+	p_resolver.GetStatusResolver().ApplyBuff(0, buff)
 
 func test_self_bonus_applies_to_echo_damage_but_not_the_base_cast() -> void:
 	var setup: Dictionary = _make_cut_the_cloth_setup()

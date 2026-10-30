@@ -575,6 +575,9 @@ static func _ExternalGatedContrastRatios(
 	var repeat_ratio: float = 0.0
 	var sustained_ratio: float = 0.0
 	var gates: Array[StringName] = []
+	# A granted Echo only creates a Cascade, so a skill with its own gains nothing.
+	if(Manifest.Contribution_Class.Channel3_Cascade == p_skill_entry.get("gated_bonus", {}).get("class", -1)):
+		return {"repeat": repeat_ratio, "sustained": sustained_ratio, "gates": gates}
 	for granter_index in p_characters.size():
 		if(granter_index == p_caster_index):
 			continue

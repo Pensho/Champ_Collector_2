@@ -107,6 +107,9 @@ func OnCriticalHit(_p_owner_ID: int, _p_target_ID: int, _p_resolver: BattleResol
 func SuppressesOwnCriticalHit(_p_owner_ID: int, _p_skill_name: String) -> bool:
 	return false
 
+func SkillHasOwnCascade(_p_skill_name: String) -> bool:
+	return false
+
 func OnDamageDealt(
 		_p_owner_ID: int, _p_target_ID: int, _p_amount: int, _p_resolver: BattleResolver) -> void:
 	pass

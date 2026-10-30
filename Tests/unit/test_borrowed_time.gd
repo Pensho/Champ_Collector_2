@@ -1,7 +1,7 @@
 extends GutTest
 
-## The Borrowed Time buff (Time Tithe's second half): its holder's next
-## damaging skill resolves once more at the buff's own fraction, then the buff is gone.
+## The Borrowed Time buff (Time Tithe's second half): its holder's next damaging skill with
+## no Cascade of its own gains one Echo at the buff's own fraction, then the buff is gone.
 ## Grant-side gating (the alone-in-section clause) is covered by test_time_tithe_trait.gd.
 
 const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
@@ -177,6 +177,29 @@ func test_replay_on_several_targets_repeats_a_daunting_strength_on_one_hit() -> 
 
 	assert_gt(_damage_results(results, 3)[1].amount, _damage_results(results, 4)[1].amount,
 			"Only the replay's first hit should repeat the doubling, as only the cast's first hit had it")
+
+func _cast_cataclysm_holding_borrowed_time(p_instability: int) -> Array[CombatResult]:
+	var sorcerer: SorcererTrait = SorcererTrait.new()
+	sorcerer.Init(Types.Rarity.Legendary)
+	_roster[0]._trait = sorcerer
+	sorcerer.StartOfBattle(0, _resolver)
+	sorcerer._instability_stacks = p_instability
+	_roster[3]._current_health = 100000
+	_roster[0]._skills.append(_plain_skill(SorcererTrait.ECHOING_SKILL_NAME))
+	_grant_borrowed_time(0, 1.0)
+	return _resolver.ResolveSkill(0, [3], 0)
+
+func test_a_cascade_skill_gains_no_echo_and_leaves_the_buff_held() -> void:
+	var results: Array[CombatResult] = _cast_cataclysm_holding_borrowed_time(2)
+
+	assert_eq(_damage_results(results, 3).size(), 3, "The cast and its two Instability Echoes only")
+	assert_true(_has_borrowed_time(0), "A skill Borrowed Time cannot affect must not spend it")
+
+func test_a_cascade_skill_with_no_echoes_this_cast_still_does_not_interact() -> void:
+	var results: Array[CombatResult] = _cast_cataclysm_holding_borrowed_time(0)
+
+	assert_eq(_damage_results(results, 3).size(), 1)
+	assert_true(_has_borrowed_time(0))
 
 func test_replay_repeats_the_use_count_ramp() -> void:
 	var skill: Skill = _plain_skill("Ramp")

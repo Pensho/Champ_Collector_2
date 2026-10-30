@@ -92,9 +92,7 @@ func test_long_furrow_does_not_echo_at_span_three() -> void:
 	assert_eq(_damage_results_against(results, 1).size(), 1,
 		"A span outside 4-5 should not Echo")
 
-## Two enablers on the same cast combine into one cascade of two Echoes instead of two
-## separate one-Echo cascades.
-func test_long_furrow_combines_with_borrowed_time_into_one_two_echo_cascade() -> void:
+func test_borrowed_time_stays_out_of_a_cascade_the_long_furrow_created() -> void:
 	var setup: Dictionary = _make_long_furrow_setup(Types.Rarity.Common, 0, 3)  # span 4
 	var resolver: BattleResolver = setup["resolver"]
 	var caster: Character = resolver.GetCharacters()[0]
@@ -106,14 +104,9 @@ func test_long_furrow_combines_with_borrowed_time_into_one_two_echo_cascade() ->
 
 	var results: Array[CombatResult] = resolver.ResolveSkill(0, [1], 0)
 
-	var markers: Array[CombatResult] = results.filter(
-			func(r: CombatResult) -> bool: return CombatResult.Kind.Cascade_Triggered == r.kind)
-	assert_eq(markers.size(), 2,
-		"The Long Furrow and Borrowed Time should both enable, combining into one two-Echo cascade")
-	assert_eq(_damage_results_against(results, 1).size(), 3,
-		"The base cast plus both enablers' Echoes should each deal damage")
-	assert_true(caster._active_buffs.all(func(b: StatusEffects.Buff) -> bool: return Types.Buff_Type.Borrowed_Time != b.type),
-		"Borrowed Time should be consumed once it enables")
+	assert_eq(_damage_results_against(results, 1).size(), 2, "The base cast and The Long Furrow's Echo")
+	assert_true(caster._active_buffs.any(func(b: StatusEffects.Buff) -> bool: return Types.Buff_Type.Borrowed_Time == b.type),
+		"Borrowed Time should stay held when another mechanic created the cascade")
 
 func test_long_furrow_suppresses_critical_hits_on_rending_charge_only() -> void:
 	var relic: TheLongFurrowRelic = TheLongFurrowRelic.new()

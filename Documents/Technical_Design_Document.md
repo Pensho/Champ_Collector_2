@@ -1345,15 +1345,15 @@ fails the suite instead of shipping a sixth isolated handler.
 trigger: Variant = null)` registers a callback. An omitted `trigger` means queried
 for every posted event; a given `trigger` filters to that one, so callbacks no longer hand-roll
 their own `p_event.trigger` check. A `CascadeContribution` (`Scripts/Battle/cascade_contribution.gd`)
-carries `mechanic_key`, `instances`, `strength_multiplier`, a `Kind` (`Base` or `Extender`), and an
+carries `mechanic_key`, `instances`, `strength_multiplier`, a `Kind` (`Base`, `Extender` or `Sole_Base`), and an
 optional `resolve` Callable — an unset `resolve` means the canonical skill replay
 (`ResolveSkillEcho`, below). `_ResolveContributions` queries every applicable contributor for the
 drained event, then:
 1. Sums `Base` instances and `Extender` instances separately, applying the same once-per-action
    dedup (`"mechanic_key:subject_ID"`) contributors and deferred triggers share.
 2. **If no Base contributed, Extenders contribute nothing** — an extender extends, it cannot enable.
-   This is what makes Black Thread a pure extender and Borrowed Time enabler-or-extender depending
-   on what it lands on.
+   This is what makes Black Thread a pure extender. A `Sole_Base` counts as a Base only when no
+   Base contributed.
 3. **Extenders are queried only for `Skill_Resolved`** — the one restriction that keeps Black
    Thread off Comorbidity, the only status-triggered contributor. Overflow, Rush and Mirror Coat
    never reach Black Thread at all: they are deferred triggers, not contributors.
@@ -1410,9 +1410,9 @@ contributor rather than running a private loop:
   and the cast skill carrying a `DamageEffect` (`_CastSkillHasDamageEffect`); its own `resolve`
   consumes the buff and calls `ResolveSkillEcho` at the buff's fraction, passing the event's
   `cast_context` so the replay inherits the cast's trait result, use count, consumed counts and
-  consumed `DamageMultiplier` factors (repeated on the replay's first hit). Being a Base rather than an
-  Extender, it enables on a plain attacker and extends on a Herald with no code distinguishing the
-  two cases.
+  consumed `DamageMultiplier` factors (repeated on the replay's first hit). A `Sole_Base`, it stays
+  out of a cast where a Base contributed, and returns null on a skill whose trait answers
+  `SkillHasOwnCascade` (Cataclysm, Cut the Cloth) whatever its Echo count; either way the buff stays held.
 - **Comorbidity.** A Base contributor on `Debuff_Ticked`. Every debuff tick posts `Debuff_Ticked`
   (`StatusEffectResolver._PostDebuffTick`, called from both the natural tick path and
   `_ForceExtraDebuffTick`), carrying the tick's `distinct_debuff_type_count` and

@@ -3,10 +3,11 @@ class_name CascadeContribution extends RefCounted
 ## A Channel 3 contribution to a cascade (Concept_Document.md 1.1.3/1.1.4), returned by a
 ## callback registered with CascadeResolver.SubscribeCascadeContributor. A Base creates a
 ## cascade where the action had none; an Extender adds Echoes to a cascade a Base already
-## created and contributes nothing on its own. Null, or an instances count of 0 or less,
-## means the mechanic does not apply to this event.
+## created and contributes nothing on its own. A Sole_Base creates a cascade only when no
+## Base contributed, and otherwise stays out of it unspent. Null, or an instances count of 0
+## or less, means the mechanic does not apply to this event.
 
-enum Kind { Base, Extender }
+enum Kind { Base, Extender, Sole_Base }
 
 var mechanic_key: StringName
 var instances: int = 0
