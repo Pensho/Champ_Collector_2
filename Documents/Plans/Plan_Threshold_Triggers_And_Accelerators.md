@@ -1,8 +1,45 @@
 # Plan: Threshold Triggers and Accelerators
 
-Give the roster the engine parts `Concept_Document.md` 1.1.7 names but the kits barely carry:
-threshold triggers, and accelerators that feed another kit's accumulator. Design first, then
-code.
+Most kits are cast whenever a skill comes off cooldown. The goal is teams that build over several
+rounds toward a big payoff, with Enabler Roles opening the target or protecting the engine until it
+lands; whole-kit Enablers stay correct. Threshold triggers and accelerators (`Concept_Document.md`
+1.1.7) are means to that goal, and a kit changes only when a drafted team shows it must. Design
+first, then code.
+
+## Payoff drafts
+
+Hand-drafted best teams at Legendary. Secondary rows are measured against the Role's own basic
+skill; primary rows are older hand figures awaiting the same baseline. Boss build target is 4-6
+rounds; secondary payoffs target 10-15x.
+
+| Payoff | Tier | Build length | Best draft team | Gap |
+|---|---|---|---|---|
+| Sorcerer | Primary | 6 rounds | 20-27x | None |
+| Herald of the Loom | Primary | 4-5 rounds | 19x | Flat curve per Tension |
+| Tidal Corsair | Primary | 4 rounds | 9x | Stacks capped at 3 |
+| Cultist | Primary | 2 rounds | 6x | Buffs expire; linear per-buff curve |
+| Plague Doctor | Primary | Spread out | 6x | No payoff skill; debuff density is its weakest input |
+| Architect | Secondary | 5 rounds | 15x, 18x at 12 charges | None; no change |
+| Lancer | Secondary | 3-4 rounds, from teammates | 9.8x | No stored build-up |
+| Bar Brawler | Secondary | 3 rounds by Headbutt, 10 by Heap On | 10.5-12x | No payoff moment; Headbutt outdamages the ramp until round 8-9 |
+
+The Thief is steady damage, not a payoff, and is unchanged.
+
+**Team variety:** in the sweep's top three teams per payoff, the Bloodmage fills all 27 slots and
+the only other partners are Tactician, Emissary and Alchemist. Check each kit change against this.
+A fully wounded Bloodmage team reaches 47x with the Sorcerer, above the 30x target.
+
+**Next, in order:**
+1. Design the Plague Doctor, then the Cultist's curve, then the Bar Brawler (the Bar Fight proposal
+   in `Role_Kit_Design.md` section 8) and the Lancer, one Role at a time.
+2. Fix the sweep's undercount of Echo teams (its repeat contrast excludes team factors), rerun it,
+   and update the `Role_Kit_Design.md` section 4 baselines and the primary rows above.
+3. Rebuild `Scripts/Debug/team_corpus.gd` with the drafted teams, each naming its payoff, setup,
+   protection and sequence, and a "looks right, doesn't work" tier.
+
+**Clean-up:** settle Concept 1.1.2's "confirmed reachable" against the measured figures;
+`Technical_Design_Document.md` 15.5 and 15.6; `Role_Kit_Design.md` 9.11 still lists Sea stacks as
+push-back and states magnitude 0.45 where the manifest has 0.54.
 
 ## Gap list
 
@@ -104,7 +141,8 @@ tags in Concept 1.1.3, or stay ledger-only in `Role_Kit_Design.md` 10.4. Decided
 and 1.1.7's accelerator and threshold definitions widened to match 10.4.
 
 ### 2. Design batches
-One `/brainstorm` batch per gap cluster, three to five Roles each. The user picks; accepted
+One `/brainstorm` per Role, stating the observed problem, whether the Role must change, whether the
+change is a new skill, a replacement or an amendment, and its before and after text. The user picks; accepted
 designs are written into Concept 3.1.3 / 3.2.4.2 and the Role's `Role_Kit_Design.md` section 9
 entry in the same edit, and the 10.4 ledger row is updated.
 
