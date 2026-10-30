@@ -100,9 +100,10 @@ in. Rejected shapes:
 
 ## Steps
 
-### 1. Settle the vocabulary
+### 1. Settle the vocabulary — done
 Decide with the user whether 1.1.7's parts become tags on kit entries alongside the channel
-tags in Concept 1.1.3, or stay ledger-only in `Role_Kit_Design.md` 10.4.
+tags in Concept 1.1.3, or stay ledger-only in `Role_Kit_Design.md` 10.4. Decided: ledger-only,
+and 1.1.7's accelerator and threshold definitions widened to match 10.4.
 
 ### 2. Design batches
 One `/brainstorm` batch per gap cluster, three to five Roles each. The user picks; accepted

@@ -103,7 +103,7 @@ specific roster picks matter most at the top tier.
   over-leveled roster (per Concept 3.2). Boss mechanics may demand role-signature
   answers — for example a zone only the Scholar's Refutation or Unbinding
   Shard can remove, or a window that only a specific reagent opens. A solved
-  configuration ends in a full burst, 30–50x carrying 60–80% of total damage
+  configuration ends in a full burst, 30x carrying 60–80% of total damage
   dealt, with the threat curve peaking before it, not after; unsolved is a wall,
   not merely slow (`Concept_Document.md` 1.1.1, 1.1.2).
 

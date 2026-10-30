@@ -38,7 +38,7 @@ const BURST_SHARE_OF_BOSS: float = 0.7
 
 const FACTOR_SIZES: Array[float] = [1.25, 1.5, 2.0, 3.0]
 const FACTOR_COUNTS: Array[int] = [2, 3, 4, 5, 6, 8]
-const TARGET_RATIOS: Array[float] = [30.0, 50.0]
+const TARGET_RATIOS: Array[float] = [30.0]
 
 
 func _initialize() -> void:

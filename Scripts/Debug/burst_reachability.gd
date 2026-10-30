@@ -21,7 +21,7 @@ class_name BurstReachability extends RefCounted
 ##                                 contributes once run through Skills.MitigatedDamage) so a
 ##                                 skill cannot pass 1.1.6's rejection test purely by having a
 ##                                 fatter Channel-1 base. This is the ONE-ACTION figure checked
-##                                 against Concept_Document.md 1.1.2's 30-50x burst-band target —
+##                                 against Concept_Document.md 1.1.2's 30x burst target —
 ##                                 it never includes sustained_contrast_ratio, so a multi-turn
 ##                                 payload cannot inflate the "one action" contract number.
 ## The third feeds into the fourth, which is what this file actually ranks and selects Best() by:
@@ -48,7 +48,7 @@ class_name BurstReachability extends RefCounted
 ##                                 damage output, not different tiers of it, and a scorer meant to
 ##                                 answer "what combination reaches what damage output" has to
 ##                                 compare them on the same footing. total_contrast_ratio (and the
-##                                 30-50x contract it's checked against) stays a pure single-action
+##                                 30x contract it's checked against) stays a pure single-action
 ##                                 figure regardless; combined_contrast_ratio is deliberately a
 ##                                 separate field so the two questions — "does this fit the burst
 ##                                 band" and "which team wins" — never collapse into one number.
@@ -217,14 +217,14 @@ class CandidateResult:
 	## Channel-3 repeat is part of what "burst" means (Concept_Document.md 1.1.3's cascade
 	## definition) and must count toward it the same as Channels 1 and 2, even though it cannot
 	## be folded into the single CombinedDamageModifier product/contrast_ratio represent (see
-	## repeat_contrast_ratio's own docs). This is the figure checked against 1.1.2's 30-50x
-	## burst-band target; it is no longer the ranking key (see combined_contrast_ratio).
+	## repeat_contrast_ratio's own docs). This is the figure checked against 1.1.2's 30x
+	## burst target; it is no longer the ranking key (see combined_contrast_ratio).
 	var total_contrast_ratio: float = 0.0
 	## total_contrast_ratio + sustained_contrast_ratio: the ranking key Best()/TeamSweep use.
 	## Folding sustained payload back in here (after deliberately excluding it from
 	## total_contrast_ratio above) is what lets a DoT/zone-charge combo compete against a
 	## direct-damage combo for "which team composition wins" — the question TeamSweep exists to
-	## answer — without redefining what total_contrast_ratio's own 30-50x contract check means.
+	## answer — without redefining what total_contrast_ratio's own 30x contract check means.
 	var combined_contrast_ratio: float = 0.0
 	## The caster's own reachable Critical Chance, percentage points, after every fraction and
 	## point grant reaching this candidate (Full Appraisal's Keen Edge, Flaw Analysis's Exposed

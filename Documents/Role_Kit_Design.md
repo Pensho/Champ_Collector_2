@@ -16,9 +16,9 @@ pairings**, meeting section 4's roster-shape target.
 
 ## 1. The per-Role kit contract
 
-**The 30-50x burst figure is not a per-Role target** — it is a team figure, and section 4 owns the
+**The 30x burst figure is not a per-Role target** — it is a team figure, and section 4 owns the
 distinction. **The figure a kit is designed and checked against is a factor of roughly 2x, one or
-two of them.** No Role is required to reach 30-50x, on its own cast or at all; a kit that does is
+two of them.** No Role is required to reach 30x, on its own cast or at all; a kit that does is
 carrying the team's whole burst by itself, which is the monoculture this document exists to
 prevent.
 
@@ -162,20 +162,20 @@ and its `Post()` call site when a batch's design earns it.
 
 **Two different figures, never interchangeable.**
 
-* **The team figure — 30-50x.** A boss-tier burst resolution deals 30-50x the champion's own basic,
-  preferring 50x (`Concept_Document.md` 1.1.2). This is a property of a **team in an encounter at
+* **The team figure — 30x.** A boss-tier burst resolution deals 30x the champion's own basic
+  (`Concept_Document.md` 1.1.2). This is a property of a **team in an encounter at
   the moment of one resolution**, never of a Role. Nothing is designed against it directly; the
   sweep reports it, and it is the only place the number belongs.
 * **The per-Role figure — roughly 2x, one or two factors.** Against a boss-tier Defence of 120
   (Defence's mitigation ratio is taken against the fixed `GameBalance.DEFENCE_SCALE_CONSTANT =
   100.0`, per `Concept_Document.md` 1.1.4, so it keeps its full percentage weight at burst scale),
-  a 50x burst needs a 50x multiplier on the scaled attribute aggregate — which 1.1.2 decomposes as
-  "about six independent factors of 2x, ten of 1.5x, or four of 3x", spread across three champions.
+  a 30x burst needs a 30x multiplier on the scaled attribute aggregate — which 1.1.2 decomposes as
+  "about five independent factors of 2x, eight of 1.5x, or three of 3x", spread across three champions.
   **This is the figure a kit is designed and checked against.** A Role landing one or two factors
   in the 1.5-3x range has met the target; a Role declaring an Enabler identity (section 1.2) meets
   it with no damage factor at all.
 
-**A per-Role projection in section 9 that reads 30-50x is a team figure.** Those projections
+**A per-Role projection in section 9 that reads 30x or more is a team figure.** Those projections
 multiply the Role's own factors by an assumed teammate product (§9.2 and §9.3 both assume 5.5) to
 show the kit *composing*. The resulting number belongs to the illustrative team, not to the Role,
 and is never a bar another Role is expected to match.
@@ -208,7 +208,7 @@ question about whether the Role's declared identity is honest (section 1.2).
 ### What the sweep measures
 
 The sweep is a sanity check on one calculable factor — single-action damage against a boss. It
-reports whether the burst band is reachable and through how many distinct pairings, and whether a
+reports whether the burst target is reachable and through how many distinct pairings, and whether a
 kit lands far outside the band. It holds no survival, turn-count, or encounter term, so it never
 says whether a team is good. Two rules follow:
 
@@ -234,10 +234,10 @@ says whether a team is good. Two rules follow:
   two, named turn-bar statuses (`Concept_Document.md` 3.2.3.1) to one each, zones stay signature.
 * **Turn-bar bumps are open to every Role.** No other Role's bump on another character reaches the
   Chronophage's largest in the same direction.
-* **Accumulate-then-spend stays at its current claimants** — Tidal Corsair, Architect, Herald,
-  Sorcerer. A legitimate RPG idiom and a fair allocation at four; no further Role takes it
-  absent new information. The Lancer left when its passive settled onto a positional gate (§9.11). Cultist's per-cast bonus and Bar Brawler's Heap On ramp are continuous
-  growth, not build-then-spend, and are not counted here.
+* **A Role's own accumulate-then-spend meter is a distinct identity.** Tidal Corsair, Architect,
+  Herald and Sorcerer hold one; a further Role takes one when its kit's design states the reason.
+  A payoff that spends what the team builds carries no such limit. Cultist's per-cast bonus and Bar
+  Brawler's Heap On ramp are continuous growth, not build-then-spend, and are not counted here.
 
 ## 5. Channel identity allocation
 
@@ -1771,7 +1771,7 @@ did not exist. What the manifest carries now:
   several of the boss's own future turns rather than the one action being scored, reported into a
   new `CandidateResult.sustained_contrast_ratio` and deliberately excluded from
   `total_contrast_ratio` (which stays a pure single-action figure, still what gets checked against
-  `Concept_Document.md` 1.1.2's 30-50x burst-band target). A new **`combined_contrast_ratio`**
+  `Concept_Document.md` 1.1.2's 30x burst target). A new **`combined_contrast_ratio`**
   (`total_contrast_ratio + sustained_contrast_ratio`) is what `TeamResult.Best()` and `TeamSweep`
   actually rank by — folding sustained payload out of the burst-band contract number but back into
   the ranking key is what lets a DoT/zone-charge combo (Plague Doctor, Unstable Rift) compete
@@ -1844,7 +1844,7 @@ unclamped for the overflow term while the roll's own probability still saturates
 Facet all read this way now.
 
 **Consequence for measurement.** `total_contrast_ratio` stays the pure single-action figure the
-30-50x burst-band target is checked against; `combined_contrast_ratio` is the separate figure
+30x burst target is checked against; `combined_contrast_ratio` is the separate figure
 `Best()` and the sweep's top-decile selection actually rank by, sustained payload included. Reading
 `total_contrast_ratio` alone for a sustained-heavy kit understates its actual standing in the
 roster — `Tests/manual/team_corpus_sweep.gd`'s top-decile report prints both, plus a

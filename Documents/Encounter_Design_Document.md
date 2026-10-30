@@ -536,7 +536,7 @@ skill (Concept Document 1.1.2).
 
 ### 3.3. Bosses
 
-Burst target: layered realisations, a full burst at 30–50x carrying 60–80% of total
+Burst target: layered realisations, a full burst at 30x carrying 60–80% of total
 damage dealt (Concept Document 1.1.2).
 
 | Encounter | Intended answers (channel) | Verdict |

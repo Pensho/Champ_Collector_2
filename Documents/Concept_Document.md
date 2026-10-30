@@ -23,19 +23,19 @@ A solved encounter therefore runs as **pressure and burst**: most of its rounds 
 
 Enemy Health scales alongside player power, so the burst is never large relative to the enemy's Health bar. The contrast is read **inside the fight**, against the numbers the player saw during the build-up.
 
-The calibration target is that a burst resolution deals **30 to 50 times** a declared reference basic-skill output, aiming at the upper end of that band. Per tier:
+The calibration target is that a burst resolution deals **30 times** a declared reference basic-skill output. Per tier:
 
 * **Fodder:** no dedicated burst. Blowout here is overkill on trash — encounters die to routine kit output.
 * **Mini-boss:** one realisation, a partial burst, target around 10x.
-* **Boss:** layered realisations, full burst, target 30–50x, preferring 50x.
+* **Boss:** layered realisations, full burst, target 30x.
 
-These ratios are confirmed reachable through kit design. Against the Boss reference profile's Defence of 120, a 50x burst needs a 50x multiplier on the scaled attribute aggregate — about six independent factors of 2x, ten of 1.5x, or four of 3x. Spread across a three-champion team under the composition law below, that is roughly two factors per champion, which normal kits can carry.
+These ratios are confirmed reachable through kit design. Against the Boss reference profile's Defence of 120, a 30x burst needs a 30x multiplier on the scaled attribute aggregate — about five independent factors of 2x, eight of 1.5x, or three of 3x. Spread across a three-champion team under the composition law below, that is roughly two factors per champion, which normal kits can carry.
 
 Enemy Health is deferred: an absolute value means nothing until progression and gear tiers exist, so no boss or mini-boss Health attribute is sized against these ratios yet.
 
 `Scripts/Debug/blowout_calibration.gd` holds the reference profiles (`REFERENCE_PROFILES`) and the basic-skill baseline (`CASTER_SCALED_BASE`) these ratios are measured against — declared constants that correspond to no shipped champion or enemy, so a roster change never moves the ruler — and recomputes all of the above when the formula or the profiles change.
 
-Each engine is also measured in **build steps**, read against the tier's round budget in 5.3: **turns-to-threshold** is the number of player turns an uninterrupted ideal sequence takes until one resolution reaches the tier's ratio, and **fragility** is the turns lost when one step of that sequence is interrupted. A slow engine and a fast one can both be correct; the readout informs tuning and lock design (1.2).
+Each engine is also measured in **build steps**, read against the tier's round budget in 5.3: **turns-to-threshold** is the number of player turns an uninterrupted ideal sequence takes until one resolution reaches the tier's ratio, and **fragility** is the turns lost when one step of that sequence is interrupted. A boss engine builds for 4–6 rounds before its payoff, so a fight has room for two payoffs; the readout informs tuning and lock design (1.2).
 
 #### 1.1.3. The three damage channels
 
@@ -89,8 +89,8 @@ The second route is the enabler class in section 1.1.3, and it is held to the **
 An engine is assembled from four parts, supplied across the team's kits; no single kit needs all of them:
 
 * **Accumulator** — builds a resource over turns: stacks, charges, a skill that grows with use.
-* **Accelerator** — makes another source's accumulator grow faster.
-* **Threshold trigger** — fires once a condition has been met: an accumulator reaching a count, or a set of conditions standing together.
+* **Accelerator** — makes an accumulator grow faster than its own accrual.
+* **Threshold trigger** — fires once a condition has been met: an accumulator reaching a count, a quantity passing a value, or a set of conditions standing together.
 * **Protector** — keeps the build-up and its window intact; the enabler class in 1.1.3.
 
 A **step** is a player action whose value depends on what earlier actions set up. Waiting out a cooldown is not a step. A team's engine should show at least two of these properties across its kits:
@@ -101,6 +101,8 @@ A **step** is a player action whose value depends on what earlier actions set up
 * **External input** — another kit can feed it.
 
 A sequence the player cannot read fails this guidance. A correct sequence may work in many encounters but not in every one; how often encounters contest it scales with its output, so a low-output engine may run uncontested.
+
+`Role_Kit_Design.md` 10.4 classifies every kit by these parts and properties.
 
 ### 1.2. Design Pillar: Key and Lock
 
@@ -1394,7 +1396,7 @@ Every battle encounter belongs to one of three tiers. Expected fight length is a
 
 * **Fodder** — no dedicated burst; blowout here is overkill on trash. 3–4 rounds.
 * **Mini-boss** — one realisation, a partial burst, around 10x the champion's own basic skill. The threat curve peaks before it. 6–10 rounds solved, roughly double unsolved.
-* **Boss** — layered realisations, a full burst at 30–50x carrying 60–80% of total damage dealt. The threat curve peaks before the burst, not after. 10–12 rounds solved; unsolved is a wall, not merely slow.
+* **Boss** — layered realisations, a full burst at 30x carrying 60–80% of total damage dealt. The threat curve peaks before the burst, not after. 10–12 rounds solved; unsolved is a wall, not merely slow.
     * Every boss has two phases. At 50% Health its full kit activates — new skills, or existing skills expanded. The transition does not interrupt or cap incoming damage, and is announced with sound, a visual effect, and combat text.
 
 Every mechanic states its onset — by which enemy turn it becomes relevant — and that onset must fall inside its tier's expected kill window.
