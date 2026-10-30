@@ -8,37 +8,30 @@ first, then code.
 
 ## Payoff drafts
 
-Hand-drafted best teams at Legendary. Secondary rows are measured against the Role's own basic
-skill; primary rows are older hand figures awaiting the same baseline. Boss build target is 4-6
-rounds; secondary payoffs target 10-15x.
+Best teams at Legendary, against the Role's own basic skill. Sorcerer, Herald, Tidal Corsair and
+Plague Doctor are sweep figures on shipped kits; the rest are hand figures pending implementation.
+Boss build target is 4-6 rounds; secondary payoffs target 10-15x.
 
 | Payoff | Tier | Build length | Best draft team | Gap |
 |---|---|---|---|---|
-| Sorcerer | Primary | 6 rounds | 20-27x | None |
-| Herald of the Loom | Primary | 4-5 rounds | 19x | Flat curve per Tension |
-| Tidal Corsair | Primary | 4 rounds | 9x | Stacks capped at 3 |
+| Sorcerer | Primary | 6 rounds | 68x with Bloodmage, 35x without | Settled: Echo ladder, Sanguine Pact off Echoes, 28x by hand; awaiting implementation |
+| Herald of the Loom | Primary | 4-5 rounds | 53x with Bloodmage, 28x without | Sanguine Pact off Echoes brings it to 29.5x by hand |
+| Tidal Corsair | Primary | 4 rounds | 21x | Stacks capped at 3 |
 | Cultist | Primary | 2 rounds; Vessel death later | 6x | Settled: 10% drain, Devotion ladder, Rite of Severance's sacrifice; awaiting implementation. Measure the Vessel-killing cast, 17-22x by hand |
-| Plague Doctor | Primary | Spread out | 6x | Settled: tick growth, no single payoff; awaiting implementation. Measure density 6 with 3x persistent team factors, which hand figures put at 30x by round 3 |
+| Plague Doctor | Primary | Spread out | 7x per tick action at 6 types | Settled: tick growth, no single payoff; awaiting implementation. With it, about 15x per tick action on average, 32x with Bloodmage and Emissary |
 | Architect | Secondary | 5 rounds | 15x, 18x at 12 charges | None; no change |
 | Lancer | Secondary | 2-4 rounds, from teammates | 10-11x by hand, 22x on a crit | None; no change |
 | Bar Brawler | Secondary | 10 rounds by Heap On | 9-19x by hand | Settled: Bar Fight replaces Headbutt, Liquid Courage cleanses; awaiting implementation |
 
 The Thief is steady damage, not a payoff, and is unchanged.
 
-**Team variety:** in the sweep's top three teams per payoff, the Bloodmage fills all 27 slots and
-the only other partners are Tactician, Emissary and Alchemist. Check each kit change against this.
-A fully wounded Bloodmage team reaches 47x with the Sorcerer, above the 30x target.
+**Team variety:** 35 of the 36 single-action results at 30x or above include the Bloodmage. Sweep
+figures assume its factors at full strength. Check each kit change against this.
 
-**Next, in order:**
-1. Fix the sweep's undercount of Echo teams (its repeat contrast excludes team factors), rerun it,
-   and update the `Role_Kit_Design.md` section 4 baselines and the primary rows above.
-2. Rebuild `Scripts/Debug/team_corpus.gd` with the drafted teams, each naming its payoff, setup,
-   protection and sequence, and a "looks right, doesn't work" tier.
-3. From those results, decide whether to redistribute power among the supports: Tactician, Bloodmage
-   and Appraiser appear in the strongest hand-drafted teams.
+**Next:** implement the settled kits, then remeasure with `Tests/manual/team_corpus_sweep.gd`.
 
 **Also settled, for step 4:** the Warlord's Hold the Line and Brace for Impact
-(`Role_Kit_Design.md` 9.19).
+(`Role_Kit_Design.md` 9.19), the Sorcerer's ladder (9.3) and Sanguine Pact on Echoes (9.4).
 
 **Clean-up:** settle Concept 1.1.2's "confirmed reachable" against the measured figures;
 `Technical_Design_Document.md` 15.5 and 15.6; `Role_Kit_Design.md` 9.11 still lists Sea stacks as
@@ -46,8 +39,7 @@ push-back and states magnitude 0.45 where the manifest has 0.54.
 
 ## Gap list
 
-Drawn from the `Role_Kit_Design.md` 10.4 ledger and a read of the teams in
-`Scripts/Debug/team_corpus.gd`.
+Drawn from the `Role_Kit_Design.md` 10.4 ledger and a read of teams from the previous corpus.
 
 **Parts missing or thin.**
 
@@ -104,9 +96,6 @@ Drawn from the `Role_Kit_Design.md` 10.4 ledger and a read of the teams in
 - **Devour Blessing consumes permanent buffs,** so in team 2 the Cultist spends the Tidal
   Corsair's Sea Legs; Shield Wall diverts damage off a nearby Vessel and slows the Cultist's
   thresholds.
-- **Corpus coverage:** 11 of 20 Roles appear and three of four Intent teams are built on the
-  Tidal Corsair. Emissary, Thief, Lancer, Diviner, Jester, Bloodmage, Herald of the Loom,
-  Architect and Plague Doctor never appear.
 
 ## Design constraints
 
@@ -144,7 +133,7 @@ Decide with the user whether 1.1.7's parts become tags on kit entries alongside 
 tags in Concept 1.1.3, or stay ledger-only in `Role_Kit_Design.md` 10.4. Decided: ledger-only,
 and 1.1.7's accelerator and threshold definitions widened to match 10.4.
 
-### 2. Design batches
+### 2. Design batches — done
 One `/brainstorm` per Role, stating the observed problem, whether the Role must change, whether the
 change is a new skill, a replacement or an amendment, and its before and after text. The user picks; accepted
 designs are written into Concept 3.1.3 / 3.2.4.2 and the Role's `Role_Kit_Design.md` section 9

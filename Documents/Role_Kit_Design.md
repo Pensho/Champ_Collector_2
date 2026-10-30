@@ -180,7 +180,7 @@ multiply the Role's own factors by an assumed teammate product (§9.2 and §9.3 
 show the kit *composing*. The resulting number belongs to the illustrative team, not to the Role,
 and is never a bar another Role is expected to match.
 * Current roster baseline (`Tests/manual/team_corpus_sweep.gd`): combined-modifier-product median
-  **2.00x**, 90th percentile **4.68x**, ceiling **16.24x**; contrast-ratio ceiling **23.70x**. Every
+  **2.20x**, 90th percentile **4.82x**, ceiling **16.24x**; contrast-ratio ceiling **23.70x**, or **67.64x** counting Echoes, each with its own combined modifier. Every
   batch records its delta against this baseline as the distribution's *shape* (median, 90th
   percentile, ceiling, count of distinct top-decile pairings), not only the maximum.
 
@@ -198,8 +198,8 @@ crit-path multiplier, mitigation-term factor (§9.12's bypass, §9.10's Defence 
 aggregate-term factor (§9.14's attribute-modifier amplification), exported factor on a carrier. One
 ranked column across all of them is not a measurement.
 
-**Current state: bimodal.** Instance counts: Herald 9.64x, Sorcerer 10.43x at its 5-Instability
-ceiling, Plague Doctor's Comorbidity never projected (§9.1). Bucket products: Architect,
+**Current state: bimodal.** Instance counts: Herald 9.64x, Sorcerer 7.59x at its 5-Instability
+ceiling, Plague Doctor's Comorbidity one resolution per debuff type (§9.1). Bucket products: Architect,
 Tactician, Tidal Corsair, Bloodmage at 1.7-2.2x, Lancer at 1.54-1.90x; Emissary, Alchemist, Scholar at 1.3-1.5x.
 Appraiser's ≈5.58x is the only crit-path figure. Closing this runs one way: **a Role above the band
 is pulled down at its own batch; a Role below it is not raised to match** — a low figure is first a
@@ -430,8 +430,8 @@ multi-turn tick repetition is scored on Outbreak's own manifest entry via a `"su
 `gated_bonus` (section 11), reported in `sustained_contrast_ratio` rather than folded into the
 single-cast product — `bucket_key` stays empty on both entries, since the mechanism never lands in
 a `CombinedDamageModifier` bucket. Miasma's own forced retick still carries no independent score
-(no `DamageEffect` of its own to attach a `gated_bonus` to); its pressure is real and
-resolver-tested in play, layered on top of whatever Comorbidity already scores.
+(no `DamageEffect` of its own to attach a `gated_bonus` to); Outbreak's entry counts it as 3 forced
+ticks alongside Plague's 3 natural ticks.
 
 ### 9.2 Herald of the Loom — The Echo Loom
 
@@ -483,7 +483,7 @@ the Symbiote graft button's slot — the two are mutually exclusive by whose tur
 
 ### 9.3 Sorcerer — Instability that only the Surge resets
 
-**Status:** Implemented.
+**Status:** Implemented except the Echo compounding ladder.
 
 **Passive: Arcane Instability.** Three clauses, each doing one job:
 
@@ -496,8 +496,8 @@ the Symbiote graft button's slot — the two are mutually exclusive by whose tur
   damage and each further Echo compounds on the previous. Each Echo assembles its own combined
   damage modifier; a repeated debuff is not reapplied, only the damage.
 
-Rarity scales only on the passive, never on the kit's skills: Echo compounding 1.40 Uncommon /
-1.50 Rare / 1.60 Epic / 1.70 Legendary; reagent amplification 20 / 30 / 40 / 50%. Instability
+Rarity scales only on the passive, never on the kit's skills: Echo compounding 1.20 Uncommon /
+1.30 Rare / 1.40 Epic / 1.50 Legendary; reagent amplification 20 / 30 / 40 / 50%. Instability
 carries no attribute scaling.
 
 The player steers when Cataclysm lands on the Instability cycle but cannot stop the cycle: Cataclysm
@@ -515,23 +515,23 @@ Reagents speed the cycle and can tip it early.
 9.2's methodology: mitigation cancels between the basic-skill baseline and the burst and there is
 no attribute-ramp term, so contrast reduces to `(combined modifier product) x (instance
 multiplier)`. Echo ceiling is **5**, the Instability maximum. At Legendary the five Echoes deal
-50 / 85 / 144.5 / 245.65 / 417.6% — 9.43x in repeats, **10.43x** total including the original cast.
+50 / 75 / 112.5 / 168.75 / 253.1% — 6.59x in repeats, **7.59x** total including the original cast.
 
 | Scenario | Team contrast ratio |
 |---|---|
-| Legendary, 5 Echoes, strong team (product 5.5) | **57.4x** |
-| Legendary, 5 Echoes, modest team (product 3.0) | 31.3x |
-| Legendary, 4 Echoes (Cataclysm one skill early) | 34.4x |
-| Uncommon, 5 Echoes, strong team | 35.6x |
+| Legendary, 5 Echoes, strong team (product 5.5) | **41.7x** |
+| Legendary, 5 Echoes, modest team (product 3.0) | 22.8x |
+| Legendary, 4 Echoes (Cataclysm one skill early) | 27.8x |
+| Uncommon, 5 Echoes, strong team | 26.0x |
 
 **These are team figures, not the Sorcerer's own contribution** (section 4). The Sorcerer's own
-factor is the Echo multiplier: **10.43x at the 5-Echo ceiling**, reachable once per Instability
+factor is the Echo multiplier: **7.59x at the 5-Echo ceiling**, reachable once per Instability
 cycle — well above section 4's per-Role ~2x target. Peak 5 Echoes plus the Surge in one action,
 well inside `CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION = 16`.
 
 ### 9.4 Bloodmage — the missing-Health surface, caster-side and exported
 
-**Status:** Implemented. Batch 1 complete.
+**Status:** Implemented except Sanguine Pact's Echo exclusion. Batch 1 complete.
 
 **Passive: Hemoclarity.** Changed from a below-50% cliff to a continuous curve, and widened past
 damage: for every 1% of max Health the Bloodmage is missing, gain +1% Mysticism (0.7/0.8/0.9/1.0%
@@ -549,7 +549,7 @@ missing Health — every skill below reads someone else's.
 
 * **Sanguine Pact** (buff, Channel 2, granted — lands in the holder's own bucket, not the
   Bloodmage's): the holder's damage is increased by 12% per 10% of *the holder's own* missing
-  Health, and 30% of damage the holder takes is redirected to the Bloodmage instead. Two clauses,
+  Health, Echoes excepted, and 30% of damage the holder takes is redirected to the Bloodmage instead. Two clauses,
   read off two different quantities (the holder's own missing Health for the damage bonus; the
   holder's incoming damage for the redirect) — the Bloodmage's own missing Health feeds nothing in
   this status, keeping the composition law's "distinct keys multiply" clean.
@@ -888,7 +888,7 @@ it. It names no Role and reads only turn-bar position, so a kit authored later b
 either side knowing about the other.
 
 **Projected numbers.** Instance-count factor **1.6x** at Legendary, landing on whichever teammate
-holds the buff — below §9.2's Herald (9.64x) and §9.3's Sorcerer (10.43x), which is correct: those
+holds the buff — below §9.2's Herald (9.64x) and §9.3's Sorcerer (7.59x), which is correct: those
 are self-facing counts a champion builds toward across a fight, and this is a free extra resolution
 handed to someone else once per boost. In the exported kind it sits alongside §9.4's Sanguine Pact
 (1.60-1.96x) and Hemorrhage (1.30-1.48x). The Chronophage's own damage is Zap and stays where it
@@ -1018,7 +1018,7 @@ inside section 1's contract, in the same bucket-product kind as Architect (2.20x
   Charge entry updated to match.
 
 Post-Lancer sweep: median 1.95x, 90th percentile 4.68x, ceiling 16.24x — unchanged, as expected
-since the gate's contribution lands in `combined_contrast_ratio`, not the shared bucket product. The
+since the gate's contribution does not land in the shared bucket product. The
 top decile (114 teams) **gains a ninth distinct pairing**: Lancer/Rending Charge (2 teams,
 10.45x-12.15x, both `charge_distance`-gated) joins Herald of the Loom/Cut the Cloth,
 Sorcerer/Cataclysm, Tidal Corsair/Corsairs Reckoning, Architect/Final Calculation,
@@ -1777,12 +1777,8 @@ did not exist. What the manifest carries now:
   several of the boss's own future turns rather than the one action being scored, reported into a
   new `CandidateResult.sustained_contrast_ratio` and deliberately excluded from
   `total_contrast_ratio` (which stays a pure single-action figure, still what gets checked against
-  `Concept_Document.md` 1.1.2's 30x burst target). A new **`combined_contrast_ratio`**
-  (`total_contrast_ratio + sustained_contrast_ratio`) is what `TeamResult.Best()` and `TeamSweep`
-  actually rank by — folding sustained payload out of the burst-band contract number but back into
-  the ranking key is what lets a DoT/zone-charge combo (Plague Doctor, Unstable Rift) compete
-  against a direct-damage combo (Tidal Corsair + Tactician) for "which team wins" at all, rather
-  than being structurally invisible to that comparison.
+  `Concept_Document.md` 1.1.2's 30x burst target, and what `TeamResult.Best()` and `TeamSweep` rank
+  by).
 * **`gate`** (`StringName`) replaces the reagent-specific `reagent_assumed_available` framing,
   naming the precondition axis itself (`&"reagent_consumed"`, `&"debuff_count"`,
   `&"zone_charges_consumed"`, ...). Every gate a candidate's score depended on is surfaced on
@@ -1804,16 +1800,11 @@ did not exist. What the manifest carries now:
   0.15 Mysticism ally hit) is excluded, since this scorer measures damage against the boss. The
   zone's own first trigger lands in the candidate's ordinary `contrast_ratio`; its remaining
   charges are declared as a `"sustained_ticks"` `gated_bonus` (`gate: &"zone_charges_consumed"`).
-* **Sustained tick repetition** (Comorbidity, section 9.1) is scored the same way: a
-  `"sustained_ticks"` `gated_bonus` on Outbreak's own manifest entry (the skill that places the
-  debuff the tick rides on), approximated against Outbreak's own scaled aggregate since this
-  scorer has no separate DoT-scaling model — `bucket_key` stays empty, matching the field's
-  existing convention that a mechanism which never reaches a `CombinedDamageModifier` bucket
-  claims no key. Miasma's own forced retick remains unscored: it has no `DamageEffect` of its
-  own, top-level or zone-trigger, so it never becomes a candidate at all — and even a
-  passive-scoped external `gated_bonus` (the shape added for the Chronophage's Time Tithe below)
-  would still need a defensible magnitude for a retick this scorer has no battle state to size,
-  so it stays undeclared rather than guessed.
+* **Sustained tick repetition** (Comorbidity, section 9.1) is a `"sustained_ticks"` `gated_bonus` on
+  Outbreak's manifest entry with `"per_debuff_type"`: each of 3 natural and 3 Miasma-forced ticks
+  resolves once per distinct debuff type the team can place (`_TeamDebuffTypes`), at the snapshotted
+  persistent factors, with no Defence and no crit. An optional `"tick_growth"` adds a rising factor.
+  `bucket_key` stays empty, since the mechanism never reaches a `CombinedDamageModifier` bucket.
 
 **Closed implementing §9.14.** A new `attribute_amplification` manifest field
 (`kit_contribution_manifest.gd`) and `_AttributeAmplification` (highest-wins across the team, mirroring
@@ -1850,11 +1841,8 @@ unclamped for the overflow term while the roll's own probability still saturates
 Facet all read this way now.
 
 **Consequence for measurement.** `total_contrast_ratio` stays the pure single-action figure the
-30x burst target is checked against; `combined_contrast_ratio` is the separate figure
-`Best()` and the sweep's top-decile selection actually rank by, sustained payload included. Reading
-`total_contrast_ratio` alone for a sustained-heavy kit understates its actual standing in the
-roster — `Tests/manual/team_corpus_sweep.gd`'s top-decile report prints both, plus a
-`sustained_driven` flag per row, so which figure moved is visible rather than conflated.
+30x burst target is checked against and the ranking key. `sustained_contrast_ratio` is reported
+beside it per row in `Tests/manual/team_corpus_sweep.gd`.
 
 **Open gap, found implementing §9.13.** `granted_attribute_buff` only models a fixed one-shot grant
 on a fixed attribute. The Gilded Deck's Sea Legs is stacking, zone-delivered, and sized on whichever
