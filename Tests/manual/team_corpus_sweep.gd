@@ -84,8 +84,8 @@ func test_sweep_prints_top_and_bottom_teams_by_contrast_ratio() -> void:
 ## resolution the sweep uses — a pinned row resolves to its named candidate, an unpinned row
 ## to its best.
 func test_corpus_table_prints_every_row_scored() -> void:
-	gut.p("=== Team corpus (%d rows) ===" % TeamCorpus.PROVISIONAL_ROWS.size())
-	for row: Dictionary in TeamCorpus.PROVISIONAL_ROWS:
+	gut.p("=== Team corpus (%d rows) ===" % TeamCorpus.ROWS.size())
+	for row: Dictionary in TeamCorpus.ROWS:
 		var presets: Array[CharacterPreset] = []
 		for preset in row["presets"]:
 			presets.append(preset)
@@ -101,11 +101,12 @@ func test_corpus_table_prints_every_row_scored() -> void:
 			names.append((preset as CharacterPreset).resource_path.get_file())
 		gut.p(("%s  tier=%s  caster=%d skill=%s  product=%.2fx ratio=%.2fx " +
 				"(base=%.2fx mod=%.2fx)  crit=%.0f%%/%.2fx (factor=%.3fx burst=%.3fx)  " +
-				"keys=%d enablers=%d reagent_assumed=%s")
+				"repeat=%.2fx sustained=%.2fx total=%.2fx  keys=%d enablers=%d reagent_assumed=%s")
 				% [names, TeamCorpus.Tier.keys()[row["tier"]], candidate.caster_index, candidate.skill_name,
 				candidate.product, candidate.contrast_ratio, candidate.base_term, candidate.modifier_term,
 				candidate.crit_chance, candidate.crit_damage_multiplier, candidate.crit_factor,
-				candidate.burst_crit_factor, candidate.distinct_key_count, candidate.enabler_count,
+				candidate.burst_crit_factor, candidate.repeat_contrast_ratio, candidate.sustained_contrast_ratio,
+				candidate.total_contrast_ratio, candidate.distinct_key_count, candidate.enabler_count,
 				candidate.reagent_assumed])
 
 
@@ -156,24 +157,17 @@ func test_full_roster_sweep_reports_distribution_and_ceiling() -> void:
 ## (the same failure mode the corpus's existing "equally inert third slot" rows already record
 ## for Bar Brawler/Symbiote next to Tidal Corsair + Tactician).
 ##
-## Ranked by _rows's own combined_contrast_ratio: BurstReachability.ScoreTeam's Best() ranks
-## candidates by combined_contrast_ratio (total_contrast_ratio, itself contrast_ratio plus a
-## separate-instance Channel-3 repeat, plus sustained_contrast_ratio) — a DoT/zone-charge combo
-## (Plague Doctor's Comorbidity, Unstable Rift's remaining charges) competes for top decile on
-## the same footing as a direct-damage combo (Tidal Corsair + Tactician) rather than being
-## structurally invisible to this ranking (Role_Kit_Design.md section 11). _rows's Best()-derived
-## rows are therefore already the right thing to rank by here.
+## Ranked by total_contrast_ratio, the single-action burst ScoreTeam's Best() ranks by.
 func test_full_roster_sweep_finds_a_second_distinct_ceiling_pairing() -> void:
-	var by_combined: Array[Dictionary] = _rows.duplicate()
-	by_combined.sort_custom(func(a, b): return a["combined_contrast_ratio"] > b["combined_contrast_ratio"])
-	var top_decile_count: int = maxi(1, int(ceil(0.1 * by_combined.size())))
+	var by_total: Array[Dictionary] = _rows.duplicate()
+	by_total.sort_custom(func(a, b): return a["total_contrast_ratio"] > b["total_contrast_ratio"])
+	var top_decile_count: int = maxi(1, int(ceil(0.1 * by_total.size())))
 
 	var found_sorcerer_repeat_pairing: bool = false
 	var found_tidal_tactician: bool = false
-	var found_sustained_driven_pairing: bool = false
-	gut.p("=== Top decile by best-candidate combined contrast ratio (%d teams) ===" % top_decile_count)
+	gut.p("=== Top decile by best-candidate total contrast ratio (%d teams) ===" % top_decile_count)
 	for i in top_decile_count:
-		var row: Dictionary = by_combined[i]
+		var row: Dictionary = by_total[i]
 		var names: Array = row["names"]
 		var is_sorcerer_repeat: bool = (Types.Role.Sorcerer == row["caster_role"] and names.has("Alchemist.tres")
 				and row["repeat_contrast_ratio"] > 0.0)
@@ -181,33 +175,31 @@ func test_full_roster_sweep_finds_a_second_distinct_ceiling_pairing() -> void:
 		var is_sustained_driven: bool = row["sustained_contrast_ratio"] > 0.0
 		found_sorcerer_repeat_pairing = found_sorcerer_repeat_pairing or is_sorcerer_repeat
 		found_tidal_tactician = found_tidal_tactician or has_tidal_tactician
-		found_sustained_driven_pairing = found_sustained_driven_pairing or is_sustained_driven
 		# Role.find_key(), not Role.keys()[value]: Types.Role's members carry explicit,
 		# non-sequential integer values (a gap at 1, Thief=2), so keys()[value] silently
 		# mis-indexes past that gap.
-		gut.p(("%s  caster_role=%s skill=%s  combined_ratio=%.2fx (single_action=%.2fx repeat=%.2fx " +
+		gut.p(("%s  caster_role=%s skill=%s  total_ratio=%.2fx (single_action=%.2fx repeat=%.2fx " +
 				"sustained=%.2fx)  assumed_gates=%s  sorcerer_repeat_driven=%s  sustained_driven=%s  " +
 				"tidal+tactician=%s")
-				% [names, Types.Role.find_key(row["caster_role"]), row["skill_name"], row["combined_contrast_ratio"],
+				% [names, Types.Role.find_key(row["caster_role"]), row["skill_name"], row["total_contrast_ratio"],
 				row["contrast_ratio"], row["repeat_contrast_ratio"], row["sustained_contrast_ratio"],
 				row["assumed_gates"], is_sorcerer_repeat, is_sustained_driven, has_tidal_tactician])
 
 	gut.p("--- Pairing summary ---")
 	gut.p(("Sorcerer-repeat-driven Alchemist pairing reaches top decile: %s   " +
-			"Sustained-payload-driven team reaches top decile: %s   " +
-			"Tidal Corsair+Tactician reaches top decile: %s")
-			% [found_sorcerer_repeat_pairing, found_sustained_driven_pairing, found_tidal_tactician])
+						"Tidal Corsair+Tactician reaches top decile: %s")
+			% [found_sorcerer_repeat_pairing, found_tidal_tactician])
 	var expected_team_count: int = 1140  # C(20,3)
-	assert_eq(by_combined.size(), expected_team_count, "Every 3-preset combination must produce a scored team")
+	assert_eq(by_total.size(), expected_team_count, "Every 3-preset combination must produce a scored team")
 	assert_true(found_tidal_tactician,
 			"Sanity: the pre-existing Tidal Corsair+Tactician pairing must still reach the top decile")
-	# Whether a Sorcerer-repeat-driven or sustained-payload-driven pairing ALSO reaches the top
+	# Whether a Sorcerer-repeat-driven pairing ALSO reaches the top
 	# decile is recorded as a finding rather than asserted: whether either mechanic is tuned
 	# strongly enough to actually contend for the roster's ceiling is a balance question, not
 	# something this scorer should force to pass.
 
 
-# --- CSV export: every team, ranked best-first by combined_contrast_ratio ---
+# --- CSV export: every team, ranked best-first by total_contrast_ratio ---
 
 ## CSV-quotes one field: wraps in double quotes and doubles any internal double quote, per
 ## RFC 4180 — safe even though none of these fields are expected to contain a comma today.
@@ -233,13 +225,13 @@ func _FormatBuckets(p_buckets: Dictionary) -> String:
 	return ";".join(parts)
 
 
-## Writes every scored team to CSV_OUTPUT_PATH, best combined_contrast_ratio first — the full
+## Writes every scored team to CSV_OUTPUT_PATH, best total_contrast_ratio first — the full
 ## ranking test_sweep_prints_top_and_bottom_teams_by_contrast_ratio and the top-decile test
 ## above only ever show a slice of, opened easily in a spreadsheet for sorting/filtering
 ## beyond what a fixed top-N or top-decile print can show.
 func test_export_full_roster_ranking_to_csv() -> void:
 	var ranked: Array[Dictionary] = _rows.duplicate()
-	ranked.sort_custom(func(a, b): return a["combined_contrast_ratio"] > b["combined_contrast_ratio"])
+	ranked.sort_custom(func(a, b): return a["total_contrast_ratio"] > b["total_contrast_ratio"])
 
 	var output_dir: String = CSV_OUTPUT_PATH.get_base_dir()
 	DirAccess.make_dir_recursive_absolute(output_dir)
@@ -250,7 +242,7 @@ func test_export_full_roster_ranking_to_csv() -> void:
 
 	file.store_line(_CSVRow(["rank", "champion_1", "champion_2", "champion_3", "caster_role",
 			"caster_index", "skill_name", "product", "contrast_ratio", "repeat_contrast_ratio",
-			"sustained_contrast_ratio", "combined_contrast_ratio", "crit_chance", "crit_damage_multiplier",
+			"sustained_contrast_ratio", "total_contrast_ratio", "crit_chance", "crit_damage_multiplier",
 			"crit_factor", "burst_crit_factor", "distinct_key_count", "enabler_count",
 			"assumed_gates", "buckets"]))
 	for i in ranked.size():
@@ -259,7 +251,7 @@ func test_export_full_roster_ranking_to_csv() -> void:
 		file.store_line(_CSVRow([i + 1, names[0], names[1], names[2],
 				Types.Role.find_key(row["caster_role"]), row["caster_index"], row["skill_name"],
 				"%.4f" % row["product"], "%.4f" % row["contrast_ratio"], "%.4f" % row["repeat_contrast_ratio"],
-				"%.4f" % row["sustained_contrast_ratio"], "%.4f" % row["combined_contrast_ratio"],
+				"%.4f" % row["sustained_contrast_ratio"], "%.4f" % row["total_contrast_ratio"],
 				"%.2f" % row["crit_chance"], "%.4f" % row["crit_damage_multiplier"],
 				"%.4f" % row["crit_factor"], "%.4f" % row["burst_crit_factor"],
 				row["distinct_key_count"], row["enabler_count"],

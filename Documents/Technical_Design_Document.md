@@ -1621,12 +1621,9 @@ each with one job:
   damage is scored from its enemy-facing payload only; and a caster-side crit buff is excluded from
   the shared status cap while a target-side crit facet debuff is scored as granted regardless of
   the boss's own state.
-* **`Scripts/Debug/team_corpus.gd`** (`TeamCorpus`) — a pluggable input, not a fixed list: three
-  presets, a `Tier` (`Intent`, `Plausible_But_Wrong`, `Control`), and an optional one-sentence note,
-  per row. The bursting champion and skill are never row fields — the scorer derives them, so a row
-  can never assert which resolution should win. `PROVISIONAL_ROWS` seeds this today with the top
-  teams the full-roster sweep found, the two hand-computed teams from the (deleted) kit-rework
-  plan, and three controls, each marked `"provisional": true`; struck once real curated sets exist.
+* **`Scripts/Debug/team_corpus.gd`** (`TeamCorpus`) — the curated teams: three presets, a `Tier`
+  (`Intent`, `Plausible_But_Wrong`, `Control`), and the team's payoff, setup, protection and
+  sequence, per row. The scorer derives the bursting champion and skill unless a row pins them.
   The scorer reads this file and nothing else knows it exists.
 * **`Scripts/Debug/blowout_calibration.gd`** (`BlowoutCalibration`) — the calibration harness for
   Concept Document 1.1's contrast targets, gained one public entry point:
