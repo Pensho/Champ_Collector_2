@@ -212,9 +212,9 @@ func _ExerciseHooks(p_instance: CharacterTrait, p_owner_ID: int, p_other_ID: int
 	p_instance.OnKill(p_owner_ID, p_other_ID, _resolver)
 	var outgoing_bonus: float = p_instance.GetOutgoingDamageBonus(p_owner_ID, p_other_ID, _resolver)
 	assert_true(outgoing_bonus >= -1.0, "%s GetOutgoingDamageBonus must not imply negative damage" % p_path)
-	var redirect_fraction: float = p_instance.OnAllyDamageTaken(p_owner_ID, p_other_ID, _resolver)
+	var redirect_fraction: float = p_instance.OnOtherAllyDamageTaken(p_owner_ID, p_other_ID, _resolver)
 	assert_true(redirect_fraction >= 0.0 and redirect_fraction <= 1.0,
-			"%s OnAllyDamageTaken must return a fraction" % p_path)
+			"%s OnOtherAllyDamageTaken must return a fraction" % p_path)
 	p_instance.BrewReagentKey(RandomNumberGenerator.new())
 	p_instance.GetBrewPotencyBonus()
 	p_instance.OnBuffGained(p_owner_ID, buff, _resolver)

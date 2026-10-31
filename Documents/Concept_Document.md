@@ -29,7 +29,7 @@ The calibration target is that a burst resolution deals **30 times** a declared 
 * **Mini-boss:** one realisation, a partial burst, target around 10x.
 * **Boss:** layered realisations, full burst, target 30x.
 
-These ratios are confirmed reachable through kit design. Against the Boss reference profile's Defence of 120, a 30x burst needs a 30x multiplier on the scaled attribute aggregate — about five independent factors of 2x, eight of 1.5x, or three of 3x. Spread across a three-champion team under the composition law below, that is roughly two factors per champion, which normal kits can carry.
+Kit structures bring these ratios within tuning distance; `Role_Kit_Design.md` section 4 holds the measured figures. Against the Boss reference profile's Defence of 120, a 30x burst needs a 30x multiplier on the scaled attribute aggregate — about five independent factors of 2x, eight of 1.5x, or three of 3x. Spread across a three-champion team under the composition law below, that is roughly two factors per champion, which normal kits can carry.
 
 Enemy Health is deferred: an absolute value means nothing until progression and gear tiers exist, so no boss or mini-boss Health attribute is sized against these ratios yet.
 
@@ -266,7 +266,7 @@ Current roles, their identity and purpose exist as follows:
 - Sorcerer
     - A damage dealer that harnesses the power of magic to deal Area of Effect damage and control the battlefield. Wields the unstable, shunned magic left behind by the God of Magic, and excels at drawing power from reagents scavenged from that era's ruins. Signature zone: Unstable Rift (see section 3.2.4.1). Primary attributes: Mysticism, Knowledge.
     - Purpose: Damage, Debuffer, Control
-    - Passive: Arcane Instability (implemented) [Channel 3] - Each skill grants one Instability after it resolves, Echoes included (maximum 5); Instability does not persist between combats. Consuming a reagent grants two and amplifies the reagent's effect. A gain that would carry Instability past 5 releases a Surge — damage to every character, the Sorcerer included, scaling 1.4x with the Sorcerer's Mysticism, never a critical hit — and resets Instability to 0. Only a Surge lowers Instability. Cataclysm Echoes once per Instability held when cast, the first Echo at 50% and each later one compounding on the previous; a repeated debuff is not reapplied, only the damage.
+    - Passive: Arcane Instability (implemented) [Channel 3] - Each skill grants one Instability after it resolves, once its Echoes finish (maximum 5); a skill used outside the Sorcerer's turn grants its own at once; Instability does not persist between combats. Consuming a reagent grants two and amplifies the reagent's effect. A gain that would carry Instability past 5 releases a Surge — damage to every character, the Sorcerer included, scaling 1.4x with the Sorcerer's Mysticism, never a critical hit — and resets Instability to 0. Only a Surge lowers Instability. Cataclysm Echoes once per Instability held when cast, the first Echo at 50% and each later one compounding on the previous; a repeated debuff is not reapplied, only the damage.
         - Echo compounding: 1.20 Uncommon, 1.30 Rare, 1.40 Epic, 1.50 Legendary
         - Reagent amplification: 20% Uncommon, 30% Rare, 40% Epic, 50% Legendary
         - First Echo fraction: 50% at every rarity
@@ -347,9 +347,9 @@ Current roles, their identity and purpose exist as follows:
     - Damage dealer. Primary attributes: Attack, Speed.
     - The Tidal Corsair is a Combo character where you plan your moves ahead, highly mobile but not inherently strong unless you set up your attacks correctly.
     - Purpose: Damage
-    - Passive: Wrangle the Sea [Channel 2 + Enabler] - Boarding Strike grants a Steel stack, Saltwater Shot grants a Sea stack (up to 3 held). Corsair's Reckoning consumes all stacks and resolves by composition: Steel only (Broadside) adds bonus damage per Steel stack; Sea only (Bring Her Alongside) raises or resupplies The Gilded Deck at 2 charges per Sea; mixed (Boarding Party) deals base damage, adds 1 Deck charge per Sea, and grants every other living ally Slipstream for 2 turns and Haste for 1 turn. An ally whose turn starts on the Deck gains a permanent Sea Legs stack, boosting their own highest primary attribute (not Health), scaled by the Corsair's Knowledge, capped at 4.
+    - Passive: Wrangle the Sea [Channel 2 + Enabler] - Boarding Strike grants a Steel stack, Saltwater Shot grants a Sea stack (up to 3 held). Corsair's Reckoning consumes all stacks and resolves by composition: Steel only (Broadside) adds bonus damage per Steel stack; Sea only (Bring Her Alongside) raises or resupplies The Gilded Deck at 3 charges per Sea; mixed (Boarding Party) deals base damage, adds 1 Deck charge per Sea, and grants every other living ally Slipstream for 2 turns and Haste for 1 turn. An ally whose turn starts on the Deck gains a permanent Sea Legs stack, boosting their own highest primary attribute (not Health), scaled by the Corsair's Knowledge, capped at 5.
         - Damage per Steel stack: 45% Uncommon, 50% Rare, 55% Epic, 60% Legendary
-        - Sea Legs bonus per stack: 5% Uncommon, 6% Rare, 7% Epic, 8% Legendary
+        - Sea Legs bonus per stack: 6% Uncommon, 8% Rare, 10% Epic, 12% Legendary
         - Known bug: the in-combat Sea Legs tooltip has been observed showing a lower percent on a
           later stack than an earlier one on the same standing deck. The resolver's own stacking
           math and emitted `CombatResult` are confirmed correct (`Role_Kit_Design.md` section 9.13);
@@ -358,7 +358,7 @@ Current roles, their identity and purpose exist as follows:
 - Plague Doctor
     - A debuff focused character, applying various damage over time and stat reducing debuffs to enemies. Signature zone: Miasma (see section 3.2.4.1). Primary attributes: Mysticism, Resistance.
     - Purpose: Debuffer
-    - Passive: Comorbidity [Channel 2 + Channel 3] - An enabler: a debuff placed by the Plague Doctor's skills enables a cascade whose Echo count is every distinct debuff type present on the target beyond itself (any source, uncapped, subject to the shared cascade fan-out cap in section 1.1.4), damaging or not — a non-damaging debuff type raises the count without echoing itself. Each repeat resolves as its own Echo, visible to other Channel 3 effects that react to Echoes. Every tick of these debuffs, Echoes and forced ticks included, raises the damage of their later ticks on that target by 10% for the rest of the battle, each further rise smaller than the last.
+    - Passive: Comorbidity [Channel 2 + Channel 3] - An enabler: a debuff placed by the Plague Doctor's skills enables a cascade whose Echo count is every distinct debuff type present on the target beyond itself (any source, uncapped, subject to the shared cascade fan-out cap in section 1.1.4), damaging or not — a non-damaging debuff type raises the count without echoing itself. Each repeat resolves as its own Echo, visible to other Channel 3 effects that react to Echoes. Every tick of these debuffs, Echoes and forced ticks included, raises the damage of their later ticks on that target for the rest of the battle: 7/8/9/10% by rarity at first, each further rise smaller than the last.
         - Known gap: the zone-trigger debuff path (used by Miasma's Blight) does not thread the
           Comorbidity flag, so Blight itself never repeats — only debuffs placed by non-zone
           skills (e.g. Outbreak's Plague) do. See `Scripts/Debug/kit_contribution_manifest.gd`
@@ -561,7 +561,7 @@ Buffs:
 * Catalyst [Enabler, provisional]: The next reagent the character consumes has +50% effect. Stacks additively with other reagent potency modifiers; has no effect on binary reagents (see section 3.3.3). Passes the collapse test only if reagents gate a burst — ratified by the itemization channels work.
 * Wanderlust [Channel 1]: At the start of each of the character's turns, gain +20% to one random primary stat until their next turn.
 * Overflow [Channel 1]: When this buff expires, it deals damage to all enemies, scaling with the holder's Mysticism. Resolves through the cascade machinery but always yields exactly one resolution, never an Echo count that can vary, so it multiplies nothing (section 1.1.3) — a delayed area hit, not a cascade contribution.
-* Vigor [Channel 1]: Increases max Health by 30%.
+* Vigor [Channel 1]: Increases max Health by 30%; anything scaling with Health reads the raised value.
 * Lethal Precision [Channel 1]: Increases Critical Damage by the applier's own Critical Damage, snapshotted at application.
 * Spotlight [Enabler]: The character is much more likely to be targeted by enemies (1.5x targeting weight) and takes 20% less damage. Both halves are one survival tool — drawing focused fire away from the pieces a burst depends on, and taking less of what lands.
 * Premonition [Enabler]: The next attack against the character automatically misses, the buff is consumed, and the character immediately answers with their own basic skill against the attacker, at full strength and at no cost.
@@ -569,7 +569,7 @@ Buffs:
 * Sanguine Pact [Channel 2, granted]: Increases the holder's damage by 12% per 10% of the holder's own missing Health, and redirects 30% of damage the holder takes to whoever applied the Pact instead. Echoes do not benefit.
 * Borrowed Time [Channel 3 — Cascade, granted]: An enabler only. The holder's next damaging skill with no Cascade gains a Cascade of one Echo, at 30-60% strength by the applier's rarity, repeating every bonus the cast consumed or read without consuming anything again. A skill with a Cascade of its own (Cataclysm, Cut the Cloth), at any Echo count, or a cast another effect gives a Cascade, does not interact with it. Does not stack. Consumed only when it creates a Cascade; any other cast leaves it for a later one.
 * Momentum [Channel 1]: Increases damage dealt by 15% per stack. Permanent. Stacks in place up to 10 times.
-* Sea Legs [Channel 1, granted]: Boosts the holder's own highest primary attribute other than Health, by an amount its applier sets. Permanent; never expires. Stacks in place up to 4 times rather than as separate instances, each stack recomputing the boost against the current stack count.
+* Sea Legs [Channel 1, granted]: Boosts the holder's own highest primary attribute other than Health, by an amount its applier sets. Permanent; never expires. Stacks in place up to 5 times rather than as separate instances, each stack recomputing the boost against the current stack count.
 
 #### 3.2.4. Skills
 Skills can be categorized into three main types: Turn Bar Skills, Role Specific Skills, and Universal Skills.

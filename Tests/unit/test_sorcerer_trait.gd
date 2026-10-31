@@ -175,6 +175,40 @@ func test_cataclysm_echoes_once_per_instability_held_with_compounding() -> void:
 	assert_eq(damage[1].cascade_depth, 1)
 	assert_eq(caster_trait._instability_stacks, 4, "Cataclysm reads Instability; it does not spend it")
 
+# --- Skills used outside the Sorcerer's turn ---
+
+func test_a_free_basic_grants_its_own_instability_at_once() -> void:
+	var setup: Dictionary = _make_echo_setup()
+	var caster_trait: SorcererTrait = setup["trait"]
+	var resolver: BattleResolver = setup["resolver"]
+	resolver.GetStatusResolver().ResolveFreeBasic(0, 1)
+	assert_eq(caster_trait._instability_stacks, 1, "The gain does not wait for his next turn")
+	resolver.GetStatusResolver().ResolveFreeBasic(0, 1)
+	assert_eq(caster_trait._instability_stacks, 2, "Each free basic grants its own")
+
+func test_a_free_basic_does_not_merge_with_the_next_cast() -> void:
+	var setup: Dictionary = _make_echo_setup()
+	var caster_trait: SorcererTrait = setup["trait"]
+	var resolver: BattleResolver = setup["resolver"]
+	resolver.GetStatusResolver().ResolveFreeBasic(0, 1)
+	resolver.ResolveSkill(0, [1], 1)
+	assert_eq(caster_trait._instability_stacks, 2)
+
+func test_a_free_basic_past_the_maximum_releases_the_surge() -> void:
+	var setup: Dictionary = _make_echo_setup()
+	var caster_trait: SorcererTrait = setup["trait"]
+	var resolver: BattleResolver = setup["resolver"]
+	caster_trait._instability_stacks = SorcererTrait.MAX_INSTABILITY_STACKS
+	resolver.GetStatusResolver().ResolveFreeBasic(0, 1)
+	assert_eq(caster_trait._instability_stacks, 0)
+
+func test_echo_compounding_steps_up_the_rarity_ladder() -> void:
+	var expected: Dictionary[Types.Rarity, float] = {Types.Rarity.Uncommon: 1.20, Types.Rarity.Rare: 1.30,
+			Types.Rarity.Epic: 1.40, Types.Rarity.Legendary: 1.50}
+	for rarity: Types.Rarity in expected:
+		_InitTrait(rarity)
+		assert_eq(_trait._echo_compounding, expected[rarity])
+
 func test_first_echo_bucket_carries_the_repeat_fraction() -> void:
 	var setup: Dictionary = _make_echo_setup()
 	var caster_trait: SorcererTrait = setup["trait"]

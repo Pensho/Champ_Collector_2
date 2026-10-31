@@ -10,7 +10,7 @@ enum Stack_Type
 const MAX_STACKS: int = 3
 const GILDED_DECK_VISUAL_SCENE: PackedScene = preload(
 		"res://Scenes/ui/Turn_Bar_Zones/Turn_Bar_Gilded_Deck.tscn")
-const CHARGES_PER_SEA_PURE: int = 2
+const CHARGES_PER_SEA_PURE: int = 3
 const CHARGES_PER_SEA_MIXED: int = 1
 const CREW_BUFF_DURATION: int = 2
 const CREW_HASTE_DURATION: int = 1
@@ -23,10 +23,10 @@ const DAMAGE_PER_STEEL_STACK: Dictionary[Types.Rarity, float] = {
 }
 
 const SEA_LEGS_RATE_PER_STACK: Dictionary[Types.Rarity, float] = {
-	Types.Rarity.Uncommon: 0.05,
-	Types.Rarity.Rare: 0.06,
-	Types.Rarity.Epic: 0.07,
-	Types.Rarity.Legendary: 0.08,
+	Types.Rarity.Uncommon: 0.06,
+	Types.Rarity.Rare: 0.08,
+	Types.Rarity.Epic: 0.10,
+	Types.Rarity.Legendary: 0.12,
 }
 
 class StackDescription:

@@ -6,16 +6,6 @@ const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 # repeat as a cascade instance per distinct debuff type on the target), and the resolver's
 # cascade-driven retick of any debuff carrying that flag.
 
-class FakeCascadeInstanceListenerTrait extends CharacterTrait:
-	var _notified_count: int = 0
-
-	func _init() -> void:
-		_execution_steps[Types.Combat_Event.Cascade_Instance_Resolved] = Callable(self, "OnCascadeInstanceResolved")
-
-	func OnCascadeInstanceResolved(
-			_p_owner_ID: int, _p_event: CascadeEvent, _p_resolver: BattleResolver) -> void:
-		_notified_count += 1
-
 var _roster: Dictionary[int, Character] = {}
 var _resolver: BattleResolver = null
 var _cascade: CascadeResolver = null
@@ -219,15 +209,102 @@ func test_a_target_killed_by_the_base_tick_produces_no_cascade_instances() -> vo
 
 	assert_eq(_cascade_triggers(results).size(), 0)
 
-func test_instances_are_visible_to_the_cascade_instance_resolved_hook() -> void:
-	_set_max_health(0, 100)
-	var listener: FakeCascadeInstanceListenerTrait = FakeCascadeInstanceListenerTrait.new()
-	listener.Init(Types.Rarity.Common)
-	_roster[3]._trait = listener
+# --- Rolled ticks read the target's battle ID ---
 
-	_add_debuff(0, Types.Debuff_Type.Burning, 1, 2, true)
-	_add_debuff(0, Types.Debuff_Type.Enfeeble, 1, 2)
-	_add_debuff(0, Types.Debuff_Type.Suppress, 1, 2)
-	_resolver.BeginTurn(0)
+func _rolled_burning_tick(p_status: StatusEffects.Effect) -> int:
+	_roster.assign(TestFactory.make_full_roster())
+	for id in _roster.keys():
+		_roster[id]._skills.append(TestFactory.make_empty_skill())
+	_resolver = TestFactory.make_resolver(_roster, TestFactory.make_full_sides())
+	_set_max_health(3, 100000)
+	_add_debuff(3, Types.Debuff_Type.Burning, 0, 5)
+	if(p_status is StatusEffects.Buff):
+		_roster[3]._active_buffs.append(p_status)
+	elif(p_status is StatusEffects.Debuff):
+		_roster[3]._active_debuffs.append(p_status)
+	return _burning_ticks(_resolver.BeginTurn(3))[0].amount
 
-	assert_eq(listener._notified_count, 2, "One notification per real cascade instance (2 repeats)")
+func test_luck_and_hexed_on_the_target_favor_its_rolled_tick() -> void:
+	var luck: StatusEffects.Buff = StatusEffects.Buff.new()
+	luck.type = Types.Buff_Type.Luck
+	luck.duration = 5
+	var hexed: StatusEffects.Debuff = StatusEffects.Debuff.new()
+	hexed.type = Types.Debuff_Type.Hexed
+	hexed.duration = 5
+	assert_lt(_rolled_burning_tick(luck), _rolled_burning_tick(hexed),
+		"Luck keeps the lower roll and Hexed the higher, whatever the character's roster ID")
+
+# --- Tick growth ---
+
+func _add_snapshot_tick(p_target_ID: int, p_flagged: bool, p_value: float = 1000.0) -> void:
+	_add_debuff(p_target_ID, Types.Debuff_Type.Plague, 0, 9, p_flagged)
+	_roster[p_target_ID]._active_debuffs.back().value = p_value
+	_roster[p_target_ID]._active_debuffs.back().trait_riders[StatusEffectResolver.TICK_GROWTH_SCALE_RIDER_KEY] = 4.0
+
+func _tick_once(p_target_ID: int) -> int:
+	_set_max_health(p_target_ID, 100000)
+	var ticks: Array[CombatResult] = _burning_ticks(_resolver.BeginTurn(p_target_ID))
+	return ticks[0].amount
+
+func test_flagged_tick_grows_with_each_resolution_on_its_target() -> void:
+	_add_snapshot_tick(3, true)
+	assert_eq(_tick_once(3), 1000, "The first resolution is flat")
+	assert_eq(_tick_once(3), 1100, "1 + 4*1/(1+39) after one resolution")
+	assert_eq(_tick_once(3), 1195, "1 + 4*2/(2+39) after two resolutions")
+
+func test_stacks_in_one_resolution_count_once_and_share_its_factor() -> void:
+	_add_snapshot_tick(3, true)
+	_add_snapshot_tick(3, true)
+	assert_eq(_tick_once(3), 2000, "Two stacks at the flat first factor")
+	assert_eq(_tick_once(3), 2200, "Both stacks at the factor of one resolution")
+
+func test_growth_reads_the_rarity_of_the_debuffs_source() -> void:
+	var expected_second_tick: Dictionary[Types.Rarity, int] = {Types.Rarity.Uncommon: 1070, Types.Rarity.Rare: 1080,
+			Types.Rarity.Epic: 1090, Types.Rarity.Legendary: 1100}
+	for rarity: Types.Rarity in expected_second_tick:
+		before_each()
+		var comorbidity_trait: ComorbidityTrait = ComorbidityTrait.new()
+		comorbidity_trait.Init(rarity)
+		_add_snapshot_tick(3, true)
+		_roster[3]._active_debuffs.back().trait_riders = comorbidity_trait.OnSkillCast(
+				0, [], "", {}, _resolver)._trait_riders
+		_tick_once(3)
+		assert_eq(_tick_once(3), expected_second_tick[rarity])
+
+func test_growth_counts_echoes_and_rises_through_them() -> void:
+	_add_snapshot_tick(3, true)
+	_add_debuff(3, Types.Debuff_Type.Blight, 0, 9)
+	_set_max_health(3, 100000)
+	var amounts: Array = _burning_ticks(_resolver.BeginTurn(3)).map(
+			func(result: CombatResult) -> int: return result.amount)
+	assert_eq(amounts, [1000, 1100], "The Echo reads the factor the base tick raised")
+
+func test_growth_is_per_target() -> void:
+	_add_snapshot_tick(3, true)
+	_add_snapshot_tick(4, true)
+	_tick_once(3)
+	assert_eq(_tick_once(4), 1000, "Another target's resolutions must not raise this one")
+
+func test_growth_survives_a_lapse_of_the_debuff() -> void:
+	_add_snapshot_tick(3, true)
+	_tick_once(3)
+	_roster[3]._active_debuffs.clear()
+	_add_snapshot_tick(3, true)
+	assert_eq(_tick_once(3), 1100, "A lapse or cleanse keeps the count")
+
+func test_unflagged_debuffs_neither_grow_nor_count() -> void:
+	_add_snapshot_tick(3, false)
+	_tick_once(3)
+	assert_eq(_tick_once(3), 1000, "An unflagged tick stays flat")
+	_add_snapshot_tick(3, true)
+	assert_eq(_tick_once(3), 2000, "Unflagged resolutions must not have advanced the count")
+	assert_eq(_tick_once(3), 2100, "Only the flagged half of a mixed tick grows")
+
+func test_manifest_tick_growth_matches_the_resolver() -> void:
+	var outbreak: Dictionary = {}
+	for skill: Dictionary in KitContributionManifest.MANIFEST[Types.Role.Plague_Doctor]["skills"]:
+		if("Outbreak" == skill["name"]):
+			outbreak = skill
+	var growth: Dictionary = outbreak["gated_bonus"]["tick_growth"]
+	assert_eq(growth["scale"], ComorbidityTrait.TICK_GROWTH_SCALE[Types.Rarity.Legendary])
+	assert_eq(growth["half_count"], StatusEffectResolver.TICK_GROWTH_HALF_COUNT)

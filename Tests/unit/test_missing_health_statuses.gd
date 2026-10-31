@@ -54,6 +54,31 @@ func test_sanguine_pact_has_no_effect_when_holder_is_at_full_health() -> void:
 	assert_false(modifier.Buckets().has(&"Sanguine_Pact"),
 		"No missing Health means no Sanguine Pact contribution")
 
+func test_sanguine_pact_does_not_raise_an_echo_but_hemorrhage_still_does() -> void:
+	var roster: Dictionary = _roster_with_strike(0)
+	var pact: StatusEffects.Buff = StatusEffects.Buff.new()
+	pact.type = Types.Buff_Type.Sanguine_Pact
+	pact.value = StatusEffectRegistry.BuffData(Types.Buff_Type.Sanguine_Pact).magnitude
+	pact.duration = 3
+	pact.source_ID = 1
+	roster[0]._active_buffs.append(pact)
+	_wound(roster[0], 0.5)
+	var hemorrhage: StatusEffects.Debuff = StatusEffects.Debuff.new()
+	hemorrhage.type = Types.Debuff_Type.Hemorrhage
+	hemorrhage.value = StatusEffectRegistry.DebuffData(Types.Debuff_Type.Hemorrhage).magnitude
+	hemorrhage.duration = 3
+	hemorrhage.source_ID = 1
+	roster[3]._active_debuffs.append(hemorrhage)
+	_wound(roster[3], 0.5)
+	var resolver: BattleResolver = TestFactory.make_resolver(roster, TestFactory.make_full_sides())
+
+	resolver.BeginEchoInstance(&"TestEcho", 0, Types.Cascade_Trigger.Skill_Resolved)
+	var buckets: Dictionary[StringName, float] = _damage_modifier(resolver.ResolveSkill(0, [3], 0)).Buckets()
+	resolver.EndEchoInstance()
+
+	assert_false(buckets.has(&"Sanguine_Pact"), "An Echo must not read Sanguine Pact")
+	assert_almost_eq(buckets[&"Hemorrhage"], 0.3, 0.0001, "An Echo still reads Hemorrhage")
+
 func test_hemorrhage_scales_every_attackers_damage_with_targets_own_missing_health() -> void:
 	var roster: Dictionary = _roster_with_strike(0)
 	var hemorrhage: StatusEffects.Debuff = StatusEffects.Debuff.new()

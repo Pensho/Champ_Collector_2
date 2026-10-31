@@ -9,9 +9,9 @@ func Init(p_rarity: Types.Rarity) -> void:
 			"current Health redirect " + str(roundi(Magnitude() * 100)) +
 			"% of the damage to the wearer.\n" +
 			"The wearer's damaging skills deal 35% less damage.")
-	_execution_steps[Types.Combat_Event.Ally_Damage_Taken] = Callable(self, "OnAllyDamageTaken")
+	_execution_steps[Types.Combat_Event.Other_Ally_Damage_Taken] = Callable(self, "OnOtherAllyDamageTaken")
 
-func OnAllyDamageTaken(
+func OnOtherAllyDamageTaken(
 		p_owner_ID: int, p_damaged_ally_ID: int, p_resolver: BattleResolver) -> float:
 	if(p_owner_ID == p_damaged_ally_ID):
 		return 0.0

@@ -275,7 +275,7 @@ dedicated pass. Fodder cells are tagged for completeness but carry no burst expe
 | Symbiote | — | — | — |
 | Jester | — | Reanimating Statues 3 (Burning Bolas → Burning) [Channel 1 + Enabler] | — |
 | Cultist | — | Reanimating Statues 1 (Rite of Severance → Severance halts the Haste ramp) [Channel 1 + Enabler] | The Collector of Debts (Devour Blessing → buff economy) [Channel 1 + Channel 2]; The Warden of the Reliquary (Rite of Severance → blocks the protection grants) [Channel 1 + Enabler] |
-| Bar Brawler | — | Reanimating Statues 1 (Headbutt → Dead Weight) [Channel 1 + Enabler] | The Glyphbound Archivist (charge-burn sustain) [Channel 1] |
+| Bar Brawler | — | Reanimating Statues 1 (Bar Fight → Dead Weight) [Channel 1 + Enabler] | The Glyphbound Archivist (charge-burn sustain) [Channel 1] |
 | Bloodmage | Ridge Marksmen, Line Breaker (Barrier) [Enabler] | Reanimating Statues 2 (Transfusion → Barrier) [Enabler]; The Ashen Oracle (Tithe of Vitality → Mana Burn) [Enabler] | — |
 | Herald of the loom | Sporeback Pack (Thread Lash → Suppress) [Channel 1] | The Ashen Oracle (Thread Lash → Suppress) [Channel 1] | — |
 | Chronophage | Plains Outriders (Temporal Sinkhole) [Enabler] | Reanimating Statues 1 (Temporal Sinkhole → turn-bar pressure) [Enabler] | — |

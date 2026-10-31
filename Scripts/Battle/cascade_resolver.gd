@@ -154,8 +154,6 @@ func _ResolveContributions(p_event: CascadeEvent) -> void:
 			else:
 				_resolver.ResolveSkillEcho(
 						p_event.subject_ID, p_event.skill_ID, p_event.target_IDs, base.strength_multiplier)
-			p_event.mechanic_key = base.mechanic_key
-			_NotifyCascadeInstanceResolved(p_event)
 			_resolver.EndEchoInstance()
 
 func _StrengthContributionsFor(p_event: CascadeEvent) -> Dictionary[StringName, float]:
@@ -167,13 +165,4 @@ func _StrengthContributionsFor(p_event: CascadeEvent) -> Dictionary[StringName, 
 		contributions[strength.mechanic_key] = (
 				contributions.get(strength.mechanic_key, 0.0) + strength.multiplier - 1.0)
 	return contributions
-
-func _NotifyCascadeInstanceResolved(p_event: CascadeEvent) -> void:
-	for character_ID: int in _resolver.GetCharacters().keys():
-		var character: Character = _resolver.GetCharacters()[character_ID]
-		if(character._current_health <= 0):
-			continue
-		for active_trait: CharacterTrait in Skills.ActiveHooks(
-				character, Types.Combat_Event.Cascade_Instance_Resolved):
-			active_trait.OnCascadeInstanceResolved(character_ID, p_event, _resolver)
 

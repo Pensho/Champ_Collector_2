@@ -6,8 +6,13 @@ class_name StatusEffectResolver extends RefCounted
 ## shared batch/emit/snapshot services status effects need, mirroring ZoneResolver.
 
 const STOLEN_PERMANENT_BUFF_DURATION: int = 3
+const TICK_GROWTH_SCALE_RIDER_KEY: StringName = &"tick_growth_scale"
+const TICK_GROWTH_HALF_COUNT: float = 39.0
+const DAMAGE_REDUCTION_RIDER_KEY: StringName = &"incoming_damage_reduction"
 
 var _resolver: BattleResolver
+# Target battle ID to flagged tick resolutions so far. Outlives the debuffs themselves.
+var _flagged_tick_resolutions: Dictionary[int, int] = {}
 
 func _init(p_resolver: BattleResolver) -> void:
 	_resolver = p_resolver
@@ -118,6 +123,13 @@ func RemoveBuff(p_target_ID: int, p_buff: StatusEffects.Buff) -> Array[CombatRes
 	_resolver._Emit(result)
 	return _resolver._EndBatch()
 
+func RemoveDebuff(p_target_ID: int, p_debuff: StatusEffects.Debuff) -> void:
+	_resolver._characters[p_target_ID]._active_debuffs.erase(p_debuff)
+	var result: CombatResult = CombatResult.new(CombatResult.Kind.Statuses_Removed)
+	result.target_ID = p_target_ID
+	result.status_IDs = [p_debuff.ID]
+	_resolver._Emit(result)
+
 func ReduceBuffDurations(p_target_ID: int, p_amount: int, p_source_ID: int = -1) -> void:
 	if(p_amount <= 0):
 		return
@@ -195,38 +207,35 @@ func ConsumePremonitionIfPresent(p_target_ID: int, p_caster_ID: int) -> bool:
 			missed.target_ID = p_target_ID
 			missed.source_ID = p_caster_ID
 			_resolver._Emit(missed)
-			_ResolvePremonitionCounter(p_target_ID, p_caster_ID)
+			ResolveFreeBasic(p_target_ID, p_caster_ID)
 			return true
 	return false
 
-## Answers the attack Premonition just negated with an immediate resolution of the
-## holder's own basic skill against the attacker (Role_Kit_Design.md 9.16) — a full first
-## resolution (trait hook, real use count, every effect), not the stripped repeat shape
-## Borrowed Time and the Sorcerer's Echo use, since Premonition is generic across holders
-## and its counter has to be faithful to whatever basic it triggers on. Everything past
-## the effect loop in BattleResolver.ResolveSkill is deliberately skipped, which is what
-## makes the counter cost the holder nothing: no cooldown, no turn-bar movement, no turn.
-func _ResolvePremonitionCounter(p_holder_ID: int, p_attacker_ID: int) -> void:
-	var holder: Character = _resolver._characters.get(p_holder_ID)
-	if(null == holder or holder._current_health <= 0):
+func ResolveFreeBasic(p_user_ID: int, p_target_ID: int) -> void:
+	var user: Character = _resolver._characters.get(p_user_ID)
+	if(null == user or user._current_health <= 0):
 		return
-	var attacker: Character = _resolver._characters.get(p_attacker_ID)
-	if(null == attacker or attacker._current_health <= 0):
+	var target: Character = _resolver._characters.get(p_target_ID)
+	if(null == target or target._current_health <= 0):
 		return
-	var basic: Skill = Skills.BasicSkill(holder)
+	var basic: Skill = Skills.BasicSkill(user)
 	if(null == basic):
 		return
 
-	var attributes: Dictionary[Types.Attribute, int] = _resolver.GetEffectiveAttributes(p_holder_ID)
+	var attributes: Dictionary[Types.Attribute, int] = _resolver.GetEffectiveAttributes(p_user_ID)
 	var trait_result: TraitSkillResult = Skills.DispatchSkillCast(
-			holder, p_holder_ID, [p_attacker_ID], basic.name, attributes, _resolver)
+			user, p_user_ID, [p_target_ID], basic.name, attributes, _resolver)
 
-	var use_count: int = _resolver._SkillUseCount(p_holder_ID, basic)
+	var use_count: int = _resolver._SkillUseCount(p_user_ID, basic)
 	var context := SkillCastContext.new(
-			_resolver, p_holder_ID, [p_attacker_ID], basic, attributes, use_count, trait_result)
+			_resolver, p_user_ID, [p_target_ID], basic, attributes, use_count, trait_result)
 	for effect in basic.effects:
 		if(context.ConditionMet(effect)):
 			effect.Resolve(context)
+
+	if(user._current_health > 0):
+		for active_trait: CharacterTrait in Skills.ActiveHooks(user, Types.Combat_Event.Free_Basic_Resolved):
+			active_trait.OnFreeBasicResolved(p_user_ID, _resolver)
 
 ## Saves a character from a fatal hit by consuming their Deathward buff, if any.
 func ConsumeDeathwardIfPresent(p_character_ID: int) -> bool:
@@ -305,6 +314,8 @@ func CastDebuff(
 	var created: StatusEffects.Effect = _InsertOrRefresh(p_target_ID, false, p_debuff_template.type, data, value,
 			duration, p_caster_ID, p_trait_riders, p_always_refresh_duration,
 			Types.Debuff_Type.keys()[p_debuff_template.type])
+	if(null != created):
+		_PassDebuffTurnToGuard(p_target_ID, created as StatusEffects.Debuff, p_caster_ID)
 	if(p_trigger_mirror_coat and null != created):
 		var event: CascadeEvent = CascadeEvent.new(Types.Cascade_Trigger.Status_Landed)
 		event.subject_ID = p_target_ID
@@ -312,6 +323,25 @@ func CastDebuff(
 		event.debuff_type = p_debuff_template.type
 		_resolver.GetCascadeResolver().Post(event)
 	return _resolver._EndBatch()
+
+## The passed turn needs no new contest; ApplyDebuff's Aegis and status cap apply to it. Spotted's
+## replacement rule then moves it off the ally outright.
+func _PassDebuffTurnToGuard(p_target_ID: int, p_debuff: StatusEffects.Debuff, p_caster_ID: int) -> void:
+	if(p_debuff.duration < 2 or not _resolver.GetSides().AreEnemies(p_caster_ID, p_target_ID)):
+		return
+	var guard_ID: int = Skills.FindDebuffTurnGuard(_resolver, p_target_ID)
+	if(-1 == guard_ID):
+		return
+	p_debuff.duration -= 1
+	_EmitStatusDuration(p_target_ID, p_debuff.ID, p_debuff.duration)
+	var passed: StatusEffects.Debuff = StatusEffects.Debuff.new()
+	passed.type = p_debuff.type
+	passed.duration = 1
+	passed.value = p_debuff.value
+	passed.source_ID = p_debuff.source_ID
+	passed.trait_riders = p_debuff.trait_riders
+	passed.name = p_debuff.name
+	ApplyDebuff(guard_ID, passed)
 
 func _RollsResistDebuff(
 		p_defender_ID: int,
@@ -367,25 +397,21 @@ func _DeferredMirrorCoat(p_event: CascadeEvent) -> void:
 func _TriggerExistingCasterDebuffs(
 		p_caster_ID: int,
 		p_caster_attributes: Dictionary[Types.Attribute, int]) -> void:
-	var caster: Character = _resolver._characters[p_caster_ID]
-	var tick: Dictionary = _ComputeDebuffTickDamage(caster, p_caster_attributes)
+	var tick: Dictionary = _ComputeDebuffTickDamage(p_caster_ID, p_caster_attributes)
 	_EmitDebuffTickIfAny(p_caster_ID, tick)
 	_PostDebuffTick(p_caster_ID, tick)
 
-## Sums tick damage across p_target's active debuffs. With p_only_repeating_source_id left at
-## -1, sums every ticking debuff at its own (unmultiplied) magnitude — Comorbidity's repeat is a
-## separate cascade instance (see _CascadeComorbidityRetick), not a multiplier on this sum. Pass
-## a source ID to instead sum only that source's Comorbidity-flagged debuffs, for resolving a
-## single repeat instance.
 func _ComputeDebuffTickDamage(
-		p_target: Character,
+		p_target_ID: int,
 		p_target_attributes: Dictionary[Types.Attribute, int],
 		p_only_repeating_source_id: int = -1) -> Dictionary:
 	var tick_damage_by_source: Dictionary[int, int] = {}
 	var tick_damage_total: int = 0
 	var repeating_source_ids: Dictionary[int, bool] = {}
 	var ticking_statuses: Array[StatusEffectData] = []
-	for debuff in p_target._active_debuffs:
+	var target: Character = _resolver._characters[p_target_ID]
+	var flagged_tick_resolved: bool = false
+	for debuff in target._active_debuffs:
 		if(p_only_repeating_source_id >= 0
 				and (not debuff.trait_riders.get(&"repeats_per_distinct_debuff", false)
 						or debuff.source_ID != p_only_repeating_source_id)):
@@ -399,7 +425,7 @@ func _ComputeDebuffTickDamage(
 				var rolled_magnitude: float = data.magnitude
 				if(data.magnitude_max > data.magnitude):
 					rolled_magnitude = _resolver.RollFavoring(
-							p_target._instance_ID, data.magnitude, data.magnitude_max, false)
+							p_target_ID, data.magnitude, data.magnitude_max, false)
 				tick_damage = int(floor(
 						(p_target_attributes[Types.Attribute.Health]
 								* GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER) * rolled_magnitude))
@@ -409,20 +435,29 @@ func _ComputeDebuffTickDamage(
 				pass
 		if(tick_damage <= 0):
 			continue
-		if(p_only_repeating_source_id < 0
-				and debuff.trait_riders.get(&"repeats_per_distinct_debuff", false)):
-			repeating_source_ids[debuff.source_ID] = true
+		if(debuff.trait_riders.get(&"repeats_per_distinct_debuff", false)):
+			flagged_tick_resolved = true
+			tick_damage = int(floor(tick_damage * _FlaggedTickGrowthFactor(
+					p_target_ID, debuff.trait_riders.get(TICK_GROWTH_SCALE_RIDER_KEY, 0.0))))
+			if(p_only_repeating_source_id < 0):
+				repeating_source_ids[debuff.source_ID] = true
 		tick_damage_total += tick_damage
 		tick_damage_by_source[debuff.source_ID] = tick_damage_by_source.get(debuff.source_ID, 0) + tick_damage
 		if(not ticking_statuses.has(data)):
 			ticking_statuses.append(data)
+	if(flagged_tick_resolved):
+		_flagged_tick_resolutions[p_target_ID] = _flagged_tick_resolutions.get(p_target_ID, 0) + 1
 	return {
 		"total": tick_damage_total,
 		"by_source": tick_damage_by_source,
-		"distinct_count": _DistinctDebuffTypeCount(p_target),
+		"distinct_count": _DistinctDebuffTypeCount(target),
 		"repeating_source_ids": repeating_source_ids.keys(),
 		"statuses": ticking_statuses,
 	}
+
+func _FlaggedTickGrowthFactor(p_target_ID: int, p_scale: float) -> float:
+	var resolutions: float = float(_flagged_tick_resolutions.get(p_target_ID, 0))
+	return 1.0 + p_scale * resolutions / (resolutions + TICK_GROWTH_HALF_COUNT)
 
 func _DistinctDebuffTypeCount(p_character: Character) -> int:
 	var distinct_types: Dictionary[Types.Debuff_Type, bool] = {}
@@ -483,7 +518,7 @@ func _CascadeComorbidityRetick(p_event: CascadeEvent, p_source_ID: int) -> void:
 	if(null == target or target._current_health <= 0):
 		return
 	var attributes: Dictionary[Types.Attribute, int] = _resolver.GetEffectiveAttributes(p_event.subject_ID)
-	var tick: Dictionary = _ApplyEchoStrength(_ComputeDebuffTickDamage(target, attributes, p_source_ID))
+	var tick: Dictionary = _ApplyEchoStrength(_ComputeDebuffTickDamage(p_event.subject_ID, attributes, p_source_ID))
 	_EmitDebuffTickIfAny(p_event.subject_ID, tick)
 
 func _ApplyEchoStrength(p_tick: Dictionary) -> Dictionary:
@@ -550,7 +585,7 @@ func _ForceExtraDebuffTick(p_event: CascadeEvent) -> void:
 	if(null == target or target._current_health <= 0):
 		return
 	var attributes: Dictionary[Types.Attribute, int] = _resolver.GetEffectiveAttributes(target_ID)
-	var tick: Dictionary = _ApplyEchoStrength(_ComputeDebuffTickDamage(target, attributes))
+	var tick: Dictionary = _ApplyEchoStrength(_ComputeDebuffTickDamage(target_ID, attributes))
 	_EmitDebuffTickIfAny(target_ID, tick)
 	_PostDebuffTick(target_ID, tick)
 
@@ -946,7 +981,7 @@ func _MissingHealthFraction(p_character_ID: int) -> float:
 func _MissingHealthDamageFactors(
 		p_caster_ID: int, p_target_ID: int, p_target: Character) -> Dictionary[StringName, float]:
 	var factors: Dictionary[StringName, float] = {}
-	if(_resolver._characters.has(p_caster_ID)):
+	if(_resolver._characters.has(p_caster_ID) and not _resolver.IsResolvingEcho()):
 		for buff in _resolver._characters[p_caster_ID]._active_buffs:
 			var data: StatusEffectData = StatusEffectRegistry.BuffData(buff.type)
 			if(null != data and StatusEffectData.MagnitudeKind.HolderMissingHealthDamagePercent == data.magnitude_kind):
@@ -984,6 +1019,7 @@ func _DamageTakenMultiplier(p_character: Character) -> float:
 		var data: StatusEffectData = StatusEffectRegistry.BuffData(buff.type)
 		if(null != data and StatusEffectData.MagnitudeKind.IncomingDamageReduction == data.magnitude_kind):
 			multiplier -= (buff.value if 0.0 != buff.value else data.magnitude)
+		multiplier -= buff.trait_riders.get(DAMAGE_REDUCTION_RIDER_KEY, 0.0)
 	return maxf(multiplier, 0.0)
 
 

@@ -27,11 +27,10 @@ const AGGREGATE_TARGET: float = 26.0
 ## already in the roster.
 const STANDARD_HOOK_MAGNITUDE: float = 0.3
 
-## Four Channel1-only damaging skills (kit_contribution_manifest.gd), one per role, that a
+## Three Channel1-only damaging skills (kit_contribution_manifest.gd), one per role, that a
 ## bonus_per_debuff_on_target hook could be added to. Skill index is the position in that
 ## role's own "skills" array.
 const HOOK_SKILL_INDEX_BY_ROLE: Dictionary = {
-	Types.Role.Bar_Brawler: 1,  # Headbutt
 	Types.Role.Symbiote: 0,  # Spore Lash
 	Types.Role.Alchemist: 0,  # Acrid Splash
 	Types.Role.Thief: 0,  # Stab
@@ -153,21 +152,21 @@ func test_prescription_spread_debuff_anchored_hooks() -> void:
 		_PrintStatsRow("N=%d hooks" % n, last_stats)
 
 	# The mechanism itself does reach the scorer — verified directly on the one team it
-	# composes best on (Bar_Brawler's Headbutt plus Tactician's unconditionally granted
+	# composes best on (Thief's Stab plus Tactician's unconditionally granted
 	# Daunting_Strength) — but (1+0.3)*(1+1.0)=2.6x never crosses the roster's 90th-percentile
 	# threshold (2.80x), so the aggregate stats above correctly stay flat at every N.
 	var one_hook_manifest: Dictionary = KitContributionManifest.MANIFEST.duplicate(true)
-	var bar_brawler_entry: Dictionary = one_hook_manifest[Types.Role.Bar_Brawler]["skills"][1]
-	bar_brawler_entry["bucket_key"] = "Prescribed Hook: Bar_Brawler"
-	bar_brawler_entry["magnitude"] = STANDARD_HOOK_MAGNITUDE
-	bar_brawler_entry["class"] = KitContributionManifest.Contribution_Class.Channel2
+	var thief_entry: Dictionary = one_hook_manifest[Types.Role.Thief]["skills"][0]
+	thief_entry["bucket_key"] = "Prescribed Hook: Thief"
+	thief_entry["magnitude"] = STANDARD_HOOK_MAGNITUDE
+	thief_entry["class"] = KitContributionManifest.Contribution_Class.Channel2
 	var team: Array[CharacterPreset] = [
-		load("res://Data/Character_Player_Variants/Bar_Brawler.tres"),
+		load("res://Data/Character_Player_Variants/Thief.tres"),
 		load("res://Data/Character_Player_Variants/Tactician.tres"),
 		load("res://Data/Character_Player_Variants/Chronophage.tres"),
 	]
-	var without_hook: float = BurstReachability.ScoreTeam(team).Pinned(0, "Headbutt").product
-	var with_hook: float = BurstReachability.ScoreTeam(team, 0, one_hook_manifest).Pinned(0, "Headbutt").product
+	var without_hook: float = BurstReachability.ScoreTeam(team).Pinned(0, "Stab").product
+	var with_hook: float = BurstReachability.ScoreTeam(team, 0, one_hook_manifest).Pinned(0, "Stab").product
 	assert_gt(with_hook, without_hook,
 			"The hook must reach the scorer for the one team it composes best on")
 	assert_almost_eq(last_stats["max"], _baseline_stats["max"], 0.0001,

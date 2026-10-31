@@ -37,9 +37,6 @@ Code plans:
   static layer nodes, refreshes only node states, and moves ambient particles onto
   `BiomeVisualData`.
 
-- `Plan_Threshold_Triggers_And_Accelerators.md` — design then code: threshold triggers and
-  cross-kit accelerators added to existing kits, opening with the engine gap list.
-
 - `Plan_Engine_Build_Step_Metric.md` — turns-to-threshold and fragility per team (Concept
   1.1.2), extending the burst reachability tooling with a turn dimension.
 

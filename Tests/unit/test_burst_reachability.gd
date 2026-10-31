@@ -242,17 +242,42 @@ func test_tidal_corsair_cultist_warlord_bursting_corsairs_reckoning_is_pinned() 
 	assert_almost_eq(pinned.product, 2.8, 0.01,
 		"Regression pin: composed product for this team bursting Corsairs Reckoning")
 
+func _team_with_corsair_and_without(p_caster_path: String, p_skill_name: String) -> Array:
+	var presets: Array[CharacterPreset] = [load(p_caster_path), TIDAL_CORSAIR,
+			load("res://Data/Character_Player_Variants/Warlord.tres")]
+	var without_sea_legs: Dictionary = KitContributionManifest.MANIFEST.duplicate(true)
+	without_sea_legs[Types.Role.Tidal_Corsair]["passive"][0].erase("granted_attribute_buff")
+	return [BurstReachability.ScoreTeam(presets).Pinned(0, p_skill_name),
+			BurstReachability.ScoreTeam(presets, 0, without_sea_legs).Pinned(0, p_skill_name)]
+
+func test_sea_legs_raises_a_teammates_burst_on_their_highest_attribute() -> void:
+	var results: Array = _team_with_corsair_and_without(
+			"res://Data/Character_Player_Variants/Sorcerer.tres", "Cataclysm")
+	# Three stacks at +12%, scaled by the Corsair's Knowledge of 20 (1 + 20 * 0.005).
+	assert_almost_eq(results[0].contrast_ratio / results[1].contrast_ratio, 1.396, 0.001,
+		"Sea Legs raises the burst and leaves the reference basic alone")
+	assert_true(results[0].assumed_gates.has(&"sea_legs_held"), "The stack assumption must be surfaced")
+
+func test_sea_legs_raises_the_corsairs_own_reckoning() -> void:
+	var presets: Array[CharacterPreset] = [TIDAL_CORSAIR]
+	var without_sea_legs: Dictionary = KitContributionManifest.MANIFEST.duplicate(true)
+	without_sea_legs[Types.Role.Tidal_Corsair]["passive"][0].erase("granted_attribute_buff")
+	var with_grant: float = BurstReachability.ScoreTeam(presets).Pinned(0, "Corsairs Reckoning").contrast_ratio
+	var without_grant: float = BurstReachability.ScoreTeam(
+			presets, 0, without_sea_legs).Pinned(0, "Corsairs Reckoning").contrast_ratio
+	assert_almost_eq(with_grant / without_grant, 1.396, 0.001)
+
 func test_cultist_devotion_gated_bonus_multiplies_with_the_per_cast_trait_resource_bucket() -> void:
 	# Devotion (Role_Kit_Design.md section 9.8) is a self-reach gated_bonus on Chosen Vessel's
 	# own manifest entry, landing in a distinct ChosenVesselTrait bucket from both the shared
 	# trait_resource key (Chosen Vessel's per-cast bonus) and Devour Blessing's own "Devour
-	# Blessing" bucket — three distinct buckets multiply: (1+0.30) * (1+0.20) * (1+0.25) = 1.95.
+	# Blessing" bucket — three distinct buckets multiply: (1+0.30) * (1+1.00) * (1+0.25) = 3.25.
 	var result: BurstReachability.TeamResult = BurstReachability.ScoreTeam(_corsair_cultist_warlord())
 	var pinned: BurstReachability.CandidateResult = result.Pinned(1, "Devour Blessing")
 	assert_not_null(pinned, "Cultist's Devour Blessing must be a scored candidate")
 	assert_true(pinned.assumed_gates.has(&"a Vessel has died"),
 		"Devotion's gate must be surfaced on assumed_gates")
-	assert_almost_eq(pinned.product, 1.95, 0.01,
+	assert_almost_eq(pinned.product, 3.25, 0.01,
 		"Chosen Vessel's trait_resource, Devotion, and Devour Blessing buckets must all multiply")
 
 # --- Channel-1 attribute-buff crediting (_ContributeGrantedAttributeBuffs) ---
@@ -294,17 +319,17 @@ func test_scholars_field_of_study_amplifies_a_teammates_granted_attribute_buff()
 # --- gated_bonus instance curve (_MultiInstanceContrastRatio, _GatedContrastRatios) ---
 
 func test_multi_instance_contrast_ratio_compounds_across_declared_instances() -> void:
-	# Role_Kit_Design.md 9.3's Echo curve: 5 instances at -0.5 magnitude, 1.70 compounding.
-	# factor_sum = 0.5 * (1 + 1.70 + 1.70^2 + 1.70^3 + 1.70^4) = 9.42755, matching the kit's
-	# own 9.43x projection. Fixed defence cancels between skill_aggregate and baseline_damage
+	# Role_Kit_Design.md 9.3's Echo curve: 5 instances at -0.5 magnitude, 1.50 compounding.
+	# factor_sum = 0.5 * (1 + 1.50 + 1.50^2 + 1.50^3 + 1.50^4) = 6.59375, matching the kit's
+	# own 6.59x projection. Fixed defence cancels between skill_aggregate and baseline_damage
 	# (Skills.MitigatedDamageUnrounded is linear in the aggregate), so the ratio reduces to
 	# own_bucket_factor * factor_sum exactly.
 	var skill_entry: Dictionary = {"class": KitContributionManifest.Contribution_Class.Channel1, "magnitude": 0.0}
-	var bonus: Dictionary = {"magnitude": -0.5, "instances": 5, "instance_compounding": 1.70}
+	var bonus: Dictionary = {"magnitude": -0.5, "instances": 5, "instance_compounding": 1.50}
 	var baseline_damage: float = Skills.MitigatedDamageUnrounded(100.0, 100.0, 1.0, 1.0)
 	var ratio: float = BurstReachability._MultiInstanceContrastRatio(
 			skill_entry, bonus, 100.0, 100.0, baseline_damage, 1.0)
-	assert_almost_eq(ratio, 9.42755, 0.0001,
+	assert_almost_eq(ratio, 6.59375, 0.0001,
 		"A compounding gated_bonus must sum (1+magnitude)*compounding^i across its declared instances")
 
 func test_multi_instance_contrast_ratio_is_flat_when_compounding_is_omitted() -> void:
@@ -497,6 +522,13 @@ func test_replaying_echo_repeats_what_the_cast_spent() -> void:
 	assert_almost_eq(BurstReachability._EchoModifierProduct(buckets, true), 3.0, 0.0001,
 		"A replayed cast must repeat consumed factors as well as standing ones")
 
+func test_echoes_do_not_read_sanguine_pact() -> void:
+	var buckets: Dictionary = {&"Opportunist": 0.5, &"Sanguine_Pact": 0.96}
+	assert_almost_eq(BurstReachability._EchoModifierProduct(buckets, false), 1.5, 0.0001,
+		"A skill's own Echo must not read Sanguine Pact")
+	assert_almost_eq(BurstReachability._EchoModifierProduct(buckets, true), 1.5, 0.0001,
+		"A replayed cast's Echo must not read Sanguine Pact")
+
 func test_borrowed_time_echo_scales_with_the_whole_cast_for_team_factors() -> void:
 	var presets: Array[CharacterPreset] = [
 			load("res://Data/Character_Player_Variants/Thief.tres"),
@@ -533,7 +565,7 @@ func test_debuff_tick_ratio_resolves_once_per_debuff_type_without_defence() -> v
 		"3 ticks at 4 resolutions of 25 damage each against a 50 baseline must be 6x")
 
 func test_debuff_tick_growth_rises_with_each_resolution() -> void:
-	var bonus: Dictionary = {"magnitude": 0.0, "instances": 2, "tick_growth": {"maximum": 4.0, "half_count": 39.0}}
+	var bonus: Dictionary = {"magnitude": 0.0, "instances": 2, "tick_growth": {"scale": 4.0, "half_count": 39.0}}
 	assert_almost_eq(BurstReachability._DebuffTickContrastRatio(bonus, 100.0, 100.0, 1.0, 1), 2.1, 0.0001,
 		"The first resolution must be flat and the second +10%")
 

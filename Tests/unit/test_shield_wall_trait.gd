@@ -34,7 +34,7 @@ func test_on_ally_damage_taken_returns_fraction_when_ally_within_proximity() -> 
 			characters, CombatSides.new([0, 1], []), positions)
 	_InitTrait(Types.Rarity.Uncommon)
 
-	var fraction: float = _trait.OnAllyDamageTaken(0, 1, resolver)
+	var fraction: float = _trait.OnOtherAllyDamageTaken(0, 1, resolver)
 
 	assert_eq(fraction, 0.15)
 	assert_eq(positions.last_proximity_query, [0, ShieldWallTrait.PROXIMITY_WINDOW])
@@ -47,7 +47,7 @@ func test_on_ally_damage_taken_returns_zero_when_ally_outside_proximity() -> voi
 			characters, CombatSides.new([0, 1], []), positions)
 	_InitTrait(Types.Rarity.Uncommon)
 
-	var fraction: float = _trait.OnAllyDamageTaken(0, 1, resolver)
+	var fraction: float = _trait.OnOtherAllyDamageTaken(0, 1, resolver)
 
 	assert_eq(fraction, 0.0)
 
@@ -60,7 +60,7 @@ func test_on_ally_damage_taken_returns_zero_when_warlord_is_dead() -> void:
 	_InitTrait(Types.Rarity.Uncommon)
 	_owner._current_health = 0
 
-	var fraction: float = _trait.OnAllyDamageTaken(0, 1, resolver)
+	var fraction: float = _trait.OnOtherAllyDamageTaken(0, 1, resolver)
 
 	assert_eq(fraction, 0.0)
 

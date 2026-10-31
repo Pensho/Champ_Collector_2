@@ -74,14 +74,14 @@ func test_stacks_accumulate_and_value_scales_with_stack_count() -> void:
 	assert_eq(_sea_legs_buff().trait_riders[&"stacks"], 2)
 	assert_almost_eq(_sea_legs_buff().value, 0.08 * 2, 0.0001)
 
-func test_stacks_cap_at_four() -> void:
+func test_stacks_cap_at_five() -> void:
 	_roster[0]._attributes[Types.Attribute.Knowledge] = 0  # zone_magnitude = 1.0
 	_place_deck(0.08)
 	_resolver.GetZoneResolver().TriggerZones(0)
-	for i in 5:
+	for i in 6:
 		_board_again()
-	assert_eq(_sea_legs_buff().trait_riders[&"stacks"], 4, "Sea Legs must not exceed 4 stacks")
-	assert_almost_eq(_sea_legs_buff().value, 0.08 * 4, 0.0001)
+	assert_eq(_sea_legs_buff().trait_riders[&"stacks"], 5, "Sea Legs must not exceed 5 stacks")
+	assert_almost_eq(_sea_legs_buff().value, 0.08 * 5, 0.0001)
 
 func test_only_one_sea_legs_instance_is_ever_held() -> void:
 	_place_deck()

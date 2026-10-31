@@ -1,10 +1,10 @@
 class_name SorcererTrait extends CharacterTrait
 
 const ECHO_COMPOUNDING: Dictionary[Types.Rarity, float] = {
-	Types.Rarity.Uncommon: 1.40,
-	Types.Rarity.Rare: 1.50,
-	Types.Rarity.Epic: 1.60,
-	Types.Rarity.Legendary: 1.70,
+	Types.Rarity.Uncommon: 1.20,
+	Types.Rarity.Rare: 1.30,
+	Types.Rarity.Epic: 1.40,
+	Types.Rarity.Legendary: 1.50,
 }
 
 const REAGENT_AMPLIFICATION: Dictionary[Types.Rarity, float] = {
@@ -31,8 +31,9 @@ var _reagent_amplification: float = 0.0
 var _echoes_for_this_cast: int = 0
 # 0-based counter driving each Echo's own compounding fraction within one cast's repeat.
 var _echo_index: int = 0
-# A cast's Instability is gained at its End_Turn, after its Echoes have drained.
-var _skill_gain_pending: bool = false
+# A cast's Instability is gained at its End_Turn, after its Echoes have drained; a free basic has
+# no End_Turn and settles its own gain in OnFreeBasicResolved.
+var _skill_gains_pending: int = 0
 
 func Init(p_rarity: Types.Rarity) -> void:
 	super.Init(p_rarity)
@@ -53,13 +54,14 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_execution_steps[Types.Combat_Event.Start_Combat] = Callable(self, "StartOfBattle")
 	_execution_steps[Types.Combat_Event.Skill_Cast] = Callable(self, "OnSkillCast")
 	_execution_steps[Types.Combat_Event.End_Turn] = Callable(self, "EndOfTurn")
+	_execution_steps[Types.Combat_Event.Free_Basic_Resolved] = Callable(self, "OnFreeBasicResolved")
 	_execution_steps[Types.Combat_Event.Reagent_Consumed] = Callable(self, "OnReagentConsumed")
 
 func StartOfBattle(p_owner_ID: int, p_resolver: BattleResolver) -> void:
 	_instability_stacks = 0
 	_echoes_for_this_cast = 0
 	_echo_index = 0
-	_skill_gain_pending = false
+	_skill_gains_pending = 0
 	# Re-subscribed every battle: p_resolver (and its CascadeResolver) is fresh per combat,
 	# so there is nothing to unsubscribe from a previous one.
 	p_resolver.GetCascadeResolver().SubscribeCascadeContributor(
@@ -87,14 +89,17 @@ func OnSkillCast(
 		_p_resolver: BattleResolver) -> TraitSkillResult:
 	_echoes_for_this_cast = _instability_stacks if ECHOING_SKILL_NAME == p_skill_name else 0
 	_echo_index = 0
-	_skill_gain_pending = true
+	_skill_gains_pending += 1
 	return TraitSkillResult.new()
 
 func EndOfTurn(p_owner_ID: int, p_resolver: BattleResolver) -> void:
-	if(not _skill_gain_pending):
+	if(_skill_gains_pending <= 0):
 		return
-	_skill_gain_pending = false
+	_skill_gains_pending -= 1
 	_GainInstability(p_owner_ID, 1, p_resolver)
+
+func OnFreeBasicResolved(p_owner_ID: int, p_resolver: BattleResolver) -> void:
+	EndOfTurn(p_owner_ID, p_resolver)
 
 func OnReagentConsumed(
 		p_consumer_ID: int, _p_reagent: ReagentData, p_resolver: BattleResolver) -> float:

@@ -10,19 +10,12 @@ buff_type = 30
 duration = 1
 target = 13
 
-[sub_resource type="Resource" id="Resource_bisby"]
-script = ExtResource("2_3b7kf")
-buff_type = 19
-duration = 1
-target = 13
-
 [resource]
 script = ExtResource("1_skill")
 name = "Brace for Impact"
-description = "Grants the caster the Rush and Aegis buffs for 1 turn.
-While it holds, any enemy whose attack lands on the caster - gains Enfeeble for 2 turns."
+description = "Gain Rush for 1 turn. Until it ends, this character takes every attack on allies at 50% damage, and attackers gain Enfeeble for 2 turns."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Brace_for_Impact/brace_for_impact.jpg"
 target = 13
 cooldown = 4
-effects = Array[ExtResource("1_ahs63")]([SubResource("Resource_5wokx"), SubResource("Resource_bisby")])
+effects = Array[ExtResource("1_ahs63")]([SubResource("Resource_5wokx")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

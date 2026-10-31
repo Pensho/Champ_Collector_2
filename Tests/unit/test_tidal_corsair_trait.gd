@@ -71,14 +71,14 @@ func test_broadside_raises_no_deck() -> void:
 
 # --- Bring Her Alongside (Sea only) ---
 
-func test_sea_only_raises_the_deck_at_two_charges_per_sea() -> void:
+func test_sea_only_raises_the_deck_at_three_charges_per_sea() -> void:
 	_InitTrait(Types.Rarity.Legendary)
 	_fill_hand(0, 2)
 	var result: TraitSkillResult = _trait.OnSkillCast(0, [], "Corsairs Reckoning", {}, _resolver)
 	assert_almost_eq(result._damage_multiplier, 1.0, 0.0001, "A pure Sea hand adds no damage bonus")
 	var zones: Dictionary[int, Zone] = _resolver.GetZoneResolver().GetZones()
 	assert_eq(zones.size(), 1)
-	assert_eq(zones.values()[0]._charges, 4)
+	assert_eq(zones.values()[0]._charges, 6)
 
 func test_sea_only_resupplies_rather_than_raising_a_second_deck() -> void:
 	_InitTrait(Types.Rarity.Legendary)
@@ -88,7 +88,7 @@ func test_sea_only_resupplies_rather_than_raising_a_second_deck() -> void:
 	_trait.OnSkillCast(0, [], "Corsairs Reckoning", {}, _resolver)
 	var zones: Dictionary[int, Zone] = _resolver.GetZoneResolver().GetZones()
 	assert_eq(zones.size(), 1, "A second Sea-only Reckoning should resupply, not raise a second deck")
-	assert_eq(zones.values()[0]._charges, 4)
+	assert_eq(zones.values()[0]._charges, 6)
 
 func test_sea_only_with_all_sections_occupied_raises_no_deck() -> void:
 	_InitTrait(Types.Rarity.Legendary)

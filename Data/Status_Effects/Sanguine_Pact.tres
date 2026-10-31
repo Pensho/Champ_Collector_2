@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="StatusEffectData" format=3]
+[gd_resource type="Resource" script_class="StatusEffectData" format=3 uid="uid://byxkjwku6i6mg"]
 
 [ext_resource type="Script" uid="uid://sqkdniv48rkg" path="res://Scripts/Battle/status_effect_data.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://d04ki2tkaq07m" path="res://Assets/Champ_Collector/Icons/Status_Effects/Sanguine_Pact/Sanguine_Pact.png" id="2_icon"]
@@ -11,4 +11,4 @@ duration_default = 3
 applies_on_self_tick = false
 damage_redirect_to_applier_fraction = 0.3
 icon = ExtResource("2_icon")
-description = "The holder's damage is increased by 12% per 10% of the holder's own missing Health. 30% of damage the holder takes is redirected to whoever applied this Pact."
+description = "Damage rises 12% per 10% of missing Health, Echoes excepted. 30% of damage taken goes to whoever applied this Pact."

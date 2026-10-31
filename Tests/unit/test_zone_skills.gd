@@ -1,15 +1,5 @@
 extends GutTest
 
-class InstanceWatcher extends CharacterTrait:
-	var instances: int = 0
-
-	func _init() -> void:
-		_execution_steps[Types.Combat_Event.Cascade_Instance_Resolved] = Callable(self, "OnCascadeInstanceResolved")
-
-	func OnCascadeInstanceResolved(
-			_p_owner_ID: int, _p_event: CascadeEvent, _p_resolver: BattleResolver) -> void:
-		instances += 1
-
 const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 
 ## Coverage for the zone-placement and zone-scaling skills (Catalyst Cloud, Unstable
@@ -132,6 +122,7 @@ func test_miasmas_forced_tick_also_cascades_a_comorbidity_flagged_debuff() -> vo
 	plague.duration = 3
 	plague.source_ID = 1
 	plague.trait_riders[&"repeats_per_distinct_debuff"] = true
+	plague.trait_riders[StatusEffectResolver.TICK_GROWTH_SCALE_RIDER_KEY] = 4.0
 	plague.value = floor(50 * StatusEffectRegistry.DebuffData(Types.Debuff_Type.Plague).magnitude)
 	_roster[3]._active_debuffs.append(plague)
 	var enfeeble: StatusEffects.Debuff = StatusEffects.Debuff.new()
@@ -148,9 +139,12 @@ func test_miasmas_forced_tick_also_cascades_a_comorbidity_flagged_debuff() -> vo
 	# Blight (applies_on_self_tick=false) deals no tick damage of its own, but Miasma's own
 	# on_trigger list applies it before the forced tick's cascade drains, so it still counts
 	# toward Comorbidity's distinct-type tally: Plague, Enfeeble, Blight => 1 base tick plus
-	# 2 cascade repeats of Plague (the only repeats_per_distinct_debuff-flagged debuff).
+	# 2 cascade repeats of Plague (the only repeats_per_distinct_debuff-flagged debuff), each
+	# resolution raising the next through the tick growth.
 	var plague_tick: int = int(floor(50 * StatusEffectRegistry.DebuffData(Types.Debuff_Type.Plague).magnitude))
-	assert_eq(health_before - _roster[3]._current_health, plague_tick * 3,
+	var expected_drain: int = (plague_tick + int(floor(plague_tick * (1.0 + 4.0 / 40.0)))
+			+ int(floor(plague_tick * (1.0 + 8.0 / 41.0))))
+	assert_eq(health_before - _roster[3]._current_health, expected_drain,
 		"Miasma's forced tick should drain and resolve a Comorbidity cascade instance per distinct debuff type")
 
 	var ticks: Array[CombatResult] = received.filter(
@@ -171,12 +165,15 @@ func test_miasmas_forced_tick_is_seen_as_a_cascade_instance() -> void:
 	plague.duration = 3
 	plague.source_ID = 1
 	_resolver.GetStatusResolver().ApplyDebuff(3, plague)
-	var watcher: InstanceWatcher = InstanceWatcher.new()
-	_roster[2]._trait = watcher
+	var received: Array[CombatResult] = []
+	_resolver.result_produced.connect(func(r: CombatResult) -> void: received.append(r))
 
 	_cast(0, "res://Data/Character_Skill_Variants/Zone_Skills/Miasma.tres", [], 0)
 
-	assert_eq(watcher.instances, 1, "The forced tick is a real cascade instance")
+	var markers: Array[CombatResult] = received.filter(func(r: CombatResult) -> bool:
+		return (CombatResult.Kind.Cascade_Triggered == r.kind
+				and Types.Cascade_Trigger.Debuff_Tick_Forced == r.cascade_trigger))
+	assert_eq(markers.size(), 1, "The forced tick is a real cascade instance")
 
 func test_weight_of_law_stuns_the_enemy_standing_in_it() -> void:
 	_positions.occupants_by_zone[0] = [3]

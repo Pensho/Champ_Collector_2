@@ -4,20 +4,9 @@ const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 
 # Coverage for CascadeResolver's own plumbing (Concept_Document.md 1.1.3/1.1.4): the two
 # termination bounds, the once-per-action dedup rule, instance-count snapshotting, the
-# Cascade_Triggered stream marker, the contributor/attribution model, and the per-instance
-# Cascade_Instance_Resolved notification. The three ported effects' own behavior (Overflow,
+# Cascade_Triggered stream marker, and the contributor/attribution model. The three ported effects' own behavior (Overflow,
 # Rush, Mirror Coat) stays covered by their existing suites — this file is the architecture,
 # not the content.
-
-class FakeCascadeInstanceListenerTrait extends CharacterTrait:
-	var _notified_count: int = 0
-
-	func _init() -> void:
-		_execution_steps[Types.Combat_Event.Cascade_Instance_Resolved] = Callable(self, "OnCascadeInstanceResolved")
-
-	func OnCascadeInstanceResolved(
-			_p_owner_ID: int, _p_event: CascadeEvent, _p_resolver: BattleResolver) -> void:
-		_notified_count += 1
 
 var _roster: Dictionary[int, Character] = {}
 var _resolver: BattleResolver = null
@@ -395,30 +384,7 @@ func test_begin_echo_instance_is_called_only_from_cascade_resolver() -> void:
 		"Only cascade_resolver.gd may call BeginEchoInstance; a Channel 3 mechanic must " +
 		"declare a CascadeContribution instead of opening its own Echo loop")
 
-func test_cascade_instance_resolved_notifies_every_living_characters_trait() -> void:
-	for id in _roster.keys():
-		_roster[id]._trait = FakeCascadeInstanceListenerTrait.new()
-		_roster[id]._trait.Init(Types.Rarity.Common)
-	_roster[4]._current_health = 0
-	_cascade.SubscribeCascadeContributor(func(_p_event: CascadeEvent) -> CascadeContribution:
-		return CascadeContribution.new(&"Notifier", 2, CascadeContribution.Kind.Base,
-				1.0, func(_e: CascadeEvent) -> void: pass))
-
-	_resolver._BeginBatch()
-	_cascade.Post(CascadeEvent.ForSkillResolved(0, 0, []))
-	_resolver._EndBatch()
-
-	for id in _roster.keys():
-		var observed: int = (_roster[id]._trait as FakeCascadeInstanceListenerTrait)._notified_count
-		if(id == 4):
-			assert_eq(observed, 0, "A dead character's trait must not be notified")
-		else:
-			assert_eq(observed, 2, "Every living character's trait should be notified once per real instance")
-
-func test_deferred_trigger_does_not_notify_cascade_instance_resolved() -> void:
-	for id in _roster.keys():
-		_roster[id]._trait = FakeCascadeInstanceListenerTrait.new()
-		_roster[id]._trait.Init(Types.Rarity.Common)
+func test_deferred_trigger_emits_no_cascade_marker() -> void:
 	_cascade.SubscribeDeferredTrigger(Types.Cascade_Trigger.Status_Expired, &"DeferredNotifier",
 			func(_p_event: CascadeEvent) -> bool: return true,
 			func(_p_event: CascadeEvent) -> void: pass)
@@ -428,9 +394,7 @@ func test_deferred_trigger_does_not_notify_cascade_instance_resolved() -> void:
 	event.subject_ID = 0
 	event.instance_count = 2
 	_cascade.Post(event)
-	_resolver._EndBatch()
+	var results: Array[CombatResult] = _resolver._EndBatch()
 
-	for id in _roster.keys():
-		var observed: int = (_roster[id]._trait as FakeCascadeInstanceListenerTrait)._notified_count
-		assert_eq(observed, 0,
-			"A deferred trigger produces no Echo, so it must never fire Cascade_Instance_Resolved")
+	assert_false(results.any(func(r: CombatResult) -> bool: return CombatResult.Kind.Cascade_Triggered == r.kind),
+		"A deferred trigger produces no Echo, so it must never emit a Cascade_Triggered marker")

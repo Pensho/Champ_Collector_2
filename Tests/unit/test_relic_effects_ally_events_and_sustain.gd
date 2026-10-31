@@ -34,7 +34,7 @@ func test_ceded_ground_heals_an_ally_holding_the_wearers_buff_at_two_rarities() 
 		var wearer_health_before: int = setup.wearer._current_health
 		var ally_health_before: int = setup.ally._current_health
 
-		relic.OnAllyCriticalHit(0, 1, 3, 1000, setup.resolver)
+		relic.OnOtherAllyCriticalHit(0, 1, 3, 1000, setup.resolver)
 
 		var expected_heal: int = int(floor(1000 * rarity_and_expected[1]))
 		assert_eq(setup.ally._current_health, ally_health_before + expected_heal,
@@ -49,7 +49,7 @@ func test_ceded_ground_does_nothing_without_the_wearers_buff() -> void:
 	var wearer_health_before: int = setup.wearer._current_health
 	var ally_health_before: int = setup.ally._current_health
 
-	relic.OnAllyCriticalHit(0, 1, 3, 1000, setup.resolver)
+	relic.OnOtherAllyCriticalHit(0, 1, 3, 1000, setup.resolver)
 
 	assert_eq(setup.ally._current_health, ally_health_before)
 	assert_eq(setup.wearer._current_health, wearer_health_before)
@@ -66,7 +66,7 @@ func test_ceded_ground_charges_the_wearer_nothing_when_the_ally_is_already_at_fu
 	setup.ally._current_health = setup.resolver.GetMaxHealth(1)
 	var wearer_health_before: int = setup.wearer._current_health
 
-	relic.OnAllyCriticalHit(0, 1, 3, 1000, setup.resolver)
+	relic.OnOtherAllyCriticalHit(0, 1, 3, 1000, setup.resolver)
 
 	assert_eq(setup.wearer._current_health, wearer_health_before,
 		"The wearer should not pay when the ally is already at full Health and gains nothing")
@@ -194,7 +194,7 @@ func test_understudys_coat_redirects_a_hit_on_the_lowest_health_ally_at_two_rari
 		setup.resolver.GetCharacters()[2] = other_ally
 		setup.ally._current_health = 1  # the lowest-Health ally
 
-		var fraction: float = relic.OnAllyDamageTaken(0, 1, setup.resolver)
+		var fraction: float = relic.OnOtherAllyDamageTaken(0, 1, setup.resolver)
 
 		assert_almost_eq(fraction, rarity_and_expected[1], 0.0001,
 			"Rarity %s should redirect its own ladder step for the lowest-Health ally" % Types.RarityName(rarity_and_expected[0]))
@@ -208,7 +208,7 @@ func test_understudys_coat_does_not_redirect_a_higher_health_ally() -> void:
 	other_ally._current_health = 1  # the lowest-Health ally, not setup.ally
 	setup.resolver.GetCharacters()[2] = other_ally
 
-	assert_eq(relic.OnAllyDamageTaken(0, 1, setup.resolver), 0.0,
+	assert_eq(relic.OnOtherAllyDamageTaken(0, 1, setup.resolver), 0.0,
 		"An ally who isn't the lowest-Health one should not be redirected")
 
 func test_understudys_coat_does_not_redirect_a_hit_on_the_wearer() -> void:
@@ -217,7 +217,7 @@ func test_understudys_coat_does_not_redirect_a_hit_on_the_wearer() -> void:
 	relic.Init(Types.Rarity.Legendary)
 	setup.wearer._trait = relic
 
-	assert_eq(relic.OnAllyDamageTaken(0, 0, setup.resolver), 0.0,
+	assert_eq(relic.OnOtherAllyDamageTaken(0, 0, setup.resolver), 0.0,
 		"The wearer can't redirect a hit on themself")
 
 func test_understudys_coat_reduces_damage() -> void:

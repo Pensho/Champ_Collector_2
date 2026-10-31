@@ -79,6 +79,8 @@ class_name BurstReachability extends RefCounted
 ##     excluded: self-accumulated stack mechanics (Arcane Instability's stacks, Hemoclarity's
 ##     Health-gated bonus), which need a battle-state assumption this function has no basis
 ##     for — the manifest tags those Channel1 too, but with no granted_attribute_buff entry.
+##     A grant of kind "build_up_highest_primary" (Sea Legs) raises the burst only, since its
+##     stacks accrue during the build-up the contrast is read against.
 ##   - A manifest entry's "gated_bonus" (the Sorcerer's repeat, the Alchemist's team factor,
 ##     Plague Doctor's Comorbidity retick, Unstable Rift's remaining zone charges) is scored as
 ##     though its precondition was met — a reagent consumed, a debuff present, a zone charge
@@ -556,19 +558,27 @@ static func _MultiInstanceContrastRatio(
 ## The combined modifier one Echo resolves with. Every Echo re-reads the standing factors in
 ## p_buckets. A consumed factor (Daunting Strength) and the cast's own trait result are spent
 ## by the original cast, so only a replay of that cast (p_replays_cast, Borrowed Time) repeats
-## them; a skill's own Cascade (Cataclysm, Cut the Cloth) does not.
+## them; a skill's own Cascade (Cataclysm, Cut the Cloth) does not. No Echo reads Sanguine Pact.
 static func _EchoModifierProduct(p_buckets: Dictionary, p_replays_cast: bool) -> float:
 	var modifier: CombinedDamageModifier = CombinedDamageModifier.new()
 	for key: StringName in p_buckets:
-		if(not p_replays_cast and _IsSpentByOriginalCast(key)):
+		if(_IsSkippedByEchoes(key) or (not p_replays_cast and _IsSpentByOriginalCast(key))):
 			continue
 		modifier.Contribute(key, p_buckets[key])
 	return modifier.Product()
 
 
+static func _IsSkippedByEchoes(p_key: StringName) -> bool:
+	var buff_index: int = Types.Buff_Type.keys().find(String(p_key))
+	if(buff_index < 0):
+		return false
+	var data: StatusEffectData = StatusEffectRegistry.BuffData(Types.Buff_Type.values()[buff_index])
+	return null != data and StatusEffectData.MagnitudeKind.HolderMissingHealthDamagePercent == data.magnitude_kind
+
+
 ## A Comorbidity-style tick payload: each declared tick resolves once per distinct debuff type,
 ## at the snapshotted persistent factors, with no Defence and no crit. p_bonus's "tick_growth"
-## {maximum, half_count} raises each resolution by maximum * n / (n + half_count), n being the
+## {scale, half_count} raises each resolution by scale * n / (n + half_count), n being the
 ## resolutions so far.
 static func _DebuffTickContrastRatio(
 		p_bonus: Dictionary, p_skill_aggregate: float, p_baseline_damage: float,
@@ -580,7 +590,7 @@ static func _DebuffTickContrastRatio(
 	for count in resolutions:
 		var growth_bonus: float = 0.0
 		if(not growth.is_empty()):
-			growth_bonus = growth["maximum"] * float(count) / (float(count) + growth["half_count"])
+			growth_bonus = growth["scale"] * float(count) / (float(count) + growth["half_count"])
 		factor_sum += 1.0 + growth_bonus
 	var tick_damage: float = p_skill_aggregate * (1.0 + p_bonus.get("magnitude", 0.0)) * p_persistent_product
 	return tick_damage * factor_sum / p_baseline_damage
@@ -817,7 +827,11 @@ static func _ScoreCandidate(
 	var basic_aggregate: float = _ScaledAggregate(basic_skill, caster, fractions, points)
 	if(0.0 == basic_aggregate):
 		return null
-	var skill_aggregate: float = _ScaledAggregate(p_skill, caster, fractions, points)
+	var burst_fractions: Dictionary = fractions.duplicate()
+	var build_up_fractions: Dictionary = attribute_bonus.get("build_up_fractions", {})
+	for attribute: Types.Attribute in build_up_fractions:
+		burst_fractions[attribute] = burst_fractions.get(attribute, 0.0) + build_up_fractions[attribute]
+	var skill_aggregate: float = _ScaledAggregate(p_skill, caster, burst_fractions, points)
 
 	var buckets: Dictionary = {}
 	var caster_role_entry: Dictionary = p_manifest.get(caster._role, {})
@@ -863,7 +877,7 @@ static func _ScoreCandidate(
 	var baseline_crit_factor: float = _EffectiveCritFactor(
 			basic_skill, caster, fractions, basic_aggregate, crit.get("factor"), points)
 	var burst_crit_factor: float = _EffectiveCritFactor(
-			p_skill, caster, fractions, skill_aggregate, crit.get("factor"), points)
+			p_skill, caster, burst_fractions, skill_aggregate, crit.get("factor"), points)
 
 	var caster_skill_entries: Array = caster_role_entry.get("skills", [])
 	var basic_skill_index: int = caster._skills.find(basic_skill)
@@ -1062,6 +1076,7 @@ static func _NormalizeGrantList(p_field: Variant) -> Array[Dictionary]:
 static func _ContributeGrantedAttributeBuffs(
 		p_characters: Array[Character], p_candidate_index: int, p_manifest: Dictionary) -> Dictionary:
 	var fractions: Dictionary = {}
+	var build_up_fractions: Dictionary = {}
 	var points: Dictionary = {}
 	var gates: Array[StringName] = []
 	var amplification: float = _AttributeAmplification(p_characters, p_manifest)
@@ -1070,7 +1085,14 @@ static func _ContributeGrantedAttributeBuffs(
 		var role_entry: Dictionary = p_manifest.get(granter._role, {})
 		for passive_entry: Dictionary in role_entry.get("passive", []):
 			for grant: Dictionary in _NormalizeGrantList(passive_entry.get("granted_attribute_buff", {})):
-				if("team" == grant.get("reach", "")):
+				if("build_up_highest_primary" == grant.get("kind", "")):
+					var attribute: Types.Attribute = SeaLegsZoneEffect.HighestBasePrimaryAttribute(
+							p_characters[p_candidate_index])
+					build_up_fractions[attribute] = build_up_fractions.get(attribute, 0.0) + amplification + (
+							Skills.ZoneMagnitude(grant.get("magnitude", 0.0), granter._attributes[Types.Attribute.Knowledge])
+							* int(grant.get("stacks", 1)))
+					_AppendGate(gates, grant)
+				elif("team" == grant.get("reach", "")):
 					_AccumulateAttributeBuff(fractions, points, grant, granter, amplification)
 					_AppendGate(gates, grant)
 		var skill_entries: Array = role_entry.get("skills", [])
@@ -1088,7 +1110,7 @@ static func _ContributeGrantedAttributeBuffs(
 						granting_skill, granter_index, p_candidate_index, grant.get("buff_type"))):
 					_AccumulateAttributeBuff(fractions, points, grant, granter, amplification)
 					_AppendGate(gates, grant)
-	return {"fractions": fractions, "points": points, "gates": gates}
+	return {"fractions": fractions, "build_up_fractions": build_up_fractions, "points": points, "gates": gates}
 
 
 ## Routes a grant's magnitude into p_fractions (the default "percentage" kind, a multiplicative

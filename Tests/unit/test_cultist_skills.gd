@@ -79,9 +79,9 @@ func test_devotion_and_the_per_cast_bonus_land_in_distinct_buckets_and_multiply(
 
 	var modifier: CombinedDamageModifier = _damage_modifier(resolver.ResolveSkill(0, [3], 2))
 
-	assert_almost_eq(modifier.Buckets()[&"trait_damage_bonus"], 0.20, 0.0001,
+	assert_almost_eq(modifier.Buckets()[&"trait_damage_bonus"], 1.00, 0.0001,
 		"Devotion should land in its own bucket, independent of the per-cast bonus")
 	assert_almost_eq(modifier.Buckets()[CombinedDamageModifier.TRAIT_RESOURCE_KEY], 0.30, 0.0001,
 		"The per-cast bonus should still land in the shared trait_resource bucket")
-	assert_almost_eq(modifier.Product(), 1.30 * 1.20, 0.0001,
+	assert_almost_eq(modifier.Product(), 1.30 * 2.00, 0.0001,
 		"Two distinct buckets must multiply rather than add")

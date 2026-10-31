@@ -255,8 +255,8 @@ static func TriggerAllyCriticalHitHook(
 	for ally_ID in team.AliveMembers(p_characters):
 		if(ally_ID == p_caster_ID):
 			continue
-		for ally_trait: CharacterTrait in ActiveHooks(p_characters[ally_ID], Types.Combat_Event.Ally_Critical_Hit):
-			ally_trait.OnAllyCriticalHit(ally_ID, p_caster_ID, p_target_ID, p_amount, p_resolver)
+		for ally_trait: CharacterTrait in ActiveHooks(p_characters[ally_ID], Types.Combat_Event.Other_Ally_Critical_Hit):
+			ally_trait.OnOtherAllyCriticalHit(ally_ID, p_caster_ID, p_target_ID, p_amount, p_resolver)
 
 static func TriggerAllyAttackLandedHook(
 		p_sides: CombatSides,
@@ -756,18 +756,30 @@ static func FindDamageRedirect(
 	if(not p_resolver.GetSides().AreEnemies(p_caster_ID, p_target_ID)):
 		return [-1, 0.0]
 	var characters: Dictionary[int, Character] = p_resolver.GetCharacters()
-	var status_redirect: Array = _FindStatusDamageRedirect(characters, p_target_ID)
-	if(-1 != status_redirect[0]):
-		return status_redirect
+	var trait_redirect: Array = [-1, 0.0]
 	for ally_ID in p_resolver.GetSides().AlliesOf(p_target_ID).AliveMembers(characters):
 		if(ally_ID == p_target_ID):
 			continue
 		var ally: Character = characters[ally_ID]
-		for active_trait: CharacterTrait in ActiveHooks(ally, Types.Combat_Event.Ally_Damage_Taken):
-			var fraction: float = active_trait.OnAllyDamageTaken(ally_ID, p_target_ID, p_resolver)
-			if(fraction > 0.0):
-				return [ally_ID, fraction]
-	return [-1, 0.0]
+		for active_trait: CharacterTrait in ActiveHooks(ally, Types.Combat_Event.Other_Ally_Damage_Taken):
+			var fraction: float = active_trait.OnOtherAllyDamageTaken(ally_ID, p_target_ID, p_resolver)
+			if(fraction > trait_redirect[1]):
+				trait_redirect = [ally_ID, fraction]
+	# A full redirect goes ahead of every other redirect.
+	if(trait_redirect[1] >= 1.0):
+		return trait_redirect
+	var status_redirect: Array = _FindStatusDamageRedirect(characters, p_target_ID)
+	return status_redirect if -1 != status_redirect[0] else trait_redirect
+
+static func FindDebuffTurnGuard(p_resolver: BattleResolver, p_target_ID: int) -> int:
+	var characters: Dictionary[int, Character] = p_resolver.GetCharacters()
+	for ally_ID in p_resolver.GetSides().AlliesOf(p_target_ID).AliveMembers(characters):
+		if(ally_ID == p_target_ID):
+			continue
+		for active_trait: CharacterTrait in ActiveHooks(characters[ally_ID], Types.Combat_Event.Other_Ally_Debuff_Landed):
+			if(active_trait.TakesOtherAllyDebuffTurn(ally_ID, p_target_ID, p_resolver)):
+				return ally_ID
+	return -1
 
 static func _FindStatusDamageRedirect(
 		p_characters: Dictionary[int, Character], p_target_ID: int) -> Array:

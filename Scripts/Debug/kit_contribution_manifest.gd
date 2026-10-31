@@ -102,6 +102,10 @@ class_name KitContributionManifest extends RefCounted
 ##                        own attribute (`source_attribute`, required) rather than a fixed number
 ##                        — Keen Edge, Lethal Precision, and Cracked Facet all snapshot off the
 ##                        applier's attributes at runtime (StatusEffectData.caster_scaled).
+##                      - "build_up_highest_primary": a permanent stack gained during the fight
+##                        (Sea Legs): `stacks` at `magnitude` each, scaled by the granter's
+##                        Knowledge, on the candidate's highest base primary attribute. It raises
+##                        the burst but not the basic the burst is measured against.
 ##                    `gate` (StringName, optional) names a precondition this grant depends on
 ##                    beyond "was the granting skill/passive triggered", surfaced on
 ##                    CandidateResult.assumed_gates the same way a skill's own gated_bonus is.
@@ -361,7 +365,7 @@ const MANIFEST: Dictionary = {
 					"citation": "Cataclysm.tres:6-17; damage_effect.gd:60-65",
 					"gated_bonus": {"bucket_key": "Cataclysm (repeat)", "magnitude": -0.5,
 							"class": Contribution_Class.Channel3_Cascade, "fold": "separate_instance",
-							"gate": &"instability_held", "instances": 5, "instance_compounding": 1.70,
+							"gate": &"instability_held", "instances": 5, "instance_compounding": 1.50,
 							"precondition": "One Echo per Instability held when cast (max 5); Cataclysm reads " +
 									"Instability without spending it. The real resolver re-resolves Cataclysm's " +
 									"DamageEffect (its own Warped bonus included, since each Echo replays the " +
@@ -369,7 +373,7 @@ const MANIFEST: Dictionary = {
 									"CombinedDamageModifier per Echo, so this entry is 'fold: separate_instance' " +
 									"and is scored into CandidateResult.repeat_contrast_ratio. Magnitude is the " +
 									"first Echo's fraction minus 1.0 (REPEAT_FRACTION - 1.0); " +
-									"instance_compounding is Legendary's ECHO_COMPOUNDING (1.70); instances: 5 " +
+									"instance_compounding is Legendary's ECHO_COMPOUNDING (1.50); instances: 5 " +
 									"is the Instability maximum.",
 							"citation": "sorcerer_trait.gd (ECHO_COMPOUNDING, REPEAT_FRACTION, " +
 									"_OnSkillResolvedRepeat); skill_cast_context.gd; damage_effect.gd; " +
@@ -629,7 +633,8 @@ const MANIFEST: Dictionary = {
 					"class": Contribution_Class.Channel2,
 					"bucket_applies": {"kind": "non_basic_cast"},
 					"precondition": "TRAP (shared bucket): on any non-basic (cooldown > 0) Skill_Cast " +
-							"with a living Vessel, drains 5% of the Vessel's max Health and sets " +
+							"with a living Vessel, drains 10% of the Vessel's max Health (Rite of " +
+							"Severance: 25%) and sets " +
 							"_damage_multiplier=1.30 (Legendary) — lands in the SHARED trait_resource " +
 							"key, the same bucket used by Calibration's Final Calculation and Tidal " +
 							"Corsair's Corsairs Reckoning; only actually collides if two such traits' " +
@@ -638,13 +643,13 @@ const MANIFEST: Dictionary = {
 							"Cultist gains Attune (3 turns, +30% Mysticism, Channel 1), a new Vessel " +
 							"is marked, and Devotion (see gated_bonus) permanently increments.",
 					"citation": "chosen_vessel_trait.gd:3-16,55-90; damage_effect.gd:25-27",
-					"gated_bonus": {"bucket_key": "ChosenVesselTrait", "magnitude": 0.20,
+					"gated_bonus": {"bucket_key": "ChosenVesselTrait", "magnitude": 1.00,
 							"class": Contribution_Class.Channel2, "reach": "self",
 							"gate": "a Vessel has died",
-							"precondition": "Permanent +20% (Legendary) per dead Vessel, in its own " +
+							"precondition": "Permanent +100% (Legendary) per dead Vessel, in its own " +
 									"ChosenVesselTrait bucket via GetOutgoingDamageBonus — distinct from " +
 									"the per-cast trait_resource bucket above, so the two multiply " +
-									"(1.30 * 1.20 = 1.56x with one Vessel spent). Never expires or is " +
+									"(1.30 * 2.00 = 2.60x with one Vessel spent). Never expires or is " +
 									"spent; the party is the only cap (two dead Vessels on a full team).",
 							"citation": "chosen_vessel_trait.gd:59-64,80-83; battle_resolver.gd:705-726"}},
 		],
@@ -666,9 +671,10 @@ const MANIFEST: Dictionary = {
 					"citation": "Devour_Blessing.tres:6-20; damage_effect.gd:52-58"},
 			{"name": "Rite of Severance", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Channel1,
-					"precondition": "damage_scaling Mysticism 1.2 (no bonus_per) plus Severance (2 " +
+					"precondition": "damage_scaling Mysticism 1.6 (no bonus_per) plus Severance (2 " +
 							"turns, blocks new buffs). Non-basic (cooldown 4) — also triggers Chosen " +
-							"Vessel's shared trait_resource bucket (+30% Legendary) on the same cast.",
+							"Vessel's shared trait_resource bucket (+30% Legendary) on the same cast, " +
+							"draining 25% in place of the 10%.",
 					"citation": "Rite_of_Severance.tres:6-19"},
 		],
 	},
@@ -690,16 +696,21 @@ const MANIFEST: Dictionary = {
 							"use_count 0-indexed. Magnitude shown is the per-use rate, not a ceiling — no " +
 							"coded stack cap; grows unbounded with repeated casts across the battle.",
 					"citation": "Heap_On.tres:6-13; damage_effect.gd:33-37,49-50; battle_resolver.gd:672-676"},
-			{"name": "Headbutt", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
-					"class": Contribution_Class.Channel1,
-					"precondition": "damage_scaling Health 0.9 (no bonus_per) plus Dead Weight (2 " +
-							"turns: -3% turn bar on taking damage).",
-					"citation": "Headbutt.tres:6-19"},
+			{"name": "Bar Fight", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
+					"class": Contribution_Class.Enabler,
+					"precondition": "Dead Weight (2 turns: -3% turn bar on taking damage), then every " +
+							"living ally not under crowd control resolves their basic against the " +
+							"target at no cost, each advancing its own use count. No DamageEffect of " +
+							"its own; a minor exported instance count, not a cascade.",
+					"citation": "Bar_Fight.tres; ally_basics_effect.gd; status_effect_resolver.gd " +
+							"(ResolveFreeBasic)"},
 			{"name": "Liquid Courage", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Channel1,
-					"precondition": "Grants self Vigor (2 turns, +30% max Health) and heals self 15% " +
-							"max Health.",
-					"citation": "Liquid_Courage.tres:6-16"},
+					"precondition": "Grants self Vigor (2 turns, +30% max Health), heals self 15% " +
+							"max Health, and removes one random debuff from self. Health-scaled damage " +
+							"reads the raised Health.",
+					"citation": "Liquid_Courage.tres; battle_resolver.gd (GetEffectiveAttributes)",
+					"granted_attribute_buff": {"attributes": [Types.Attribute.Health], "magnitude": 0.3}},
 		],
 	},
 	Types.Role.Bloodmage: {
@@ -732,7 +743,8 @@ const MANIFEST: Dictionary = {
 							"citation": "Data/Status_Effects/Sanguine_Pact.tres:8-9 (magnitude_kind " +
 									"HolderMissingHealthDamagePercent, magnitude 1.2 per 10% missing, " +
 									"ceiling at 80% missing = 0.96); status_effect_resolver.gd " +
-									"_MissingHealthDamageFactors. Also carries a 30% incoming-damage " +
+									"_MissingHealthDamageFactors, skipped while an Echo resolves. Also " +
+										"carries a 30% incoming-damage " +
 									"redirect to the applier (skills.gd FindDamageRedirect), not itself " +
 									"a damage-modifier contribution."}},
 			{"name": "Tithe of Vitality", "bucket_key": "Tithe of Vitality", "magnitude": 0.70,
@@ -768,7 +780,7 @@ const MANIFEST: Dictionary = {
 							"Tension repeats included — the two now compose). Cascade instances this Herald " +
 							"produces deal +19% damage (Legendary), scored on Cut the Cloth's own entry below.",
 					"citation": "weft_and_warp_trait.gd; cascade_resolver.gd " +
-							"(SubscribeCascadeContributor, Cascade_Instance_Resolved)"},
+							"(SubscribeCascadeContributor)"},
 		],
 		"skills": [
 			{"name": "Thread Snap", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
@@ -901,18 +913,15 @@ const MANIFEST: Dictionary = {
 							"Corsairs Reckoning consumes all 3 and dispatches by composition: a Steel-only " +
 							"hand (Broadside) adds 0.60 (Legendary) per Steel to the shared trait_resource " +
 							"bucket (up to +180% at 3 Steel, the figure scored here); a Sea-only hand " +
-							"(Bring Her Alongside) raises or resupplies The Gilded Deck at 2 charges per " +
+							"(Bring Her Alongside) raises or resupplies The Gilded Deck at 3 charges per " +
 							"Sea, no damage bucket; a mixed hand (Boarding Party) adds no bucket " +
 							"contribution (Steel damages at the skill's own base rate), raises or " +
 							"resupplies the Deck at 1 charge per Sea (2 max), and grants every other " +
-							"living ally Slipstream (2 turns) and Haste (1 turn). The Gilded Deck's own Sea " +
-							"Legs grant is not declared here (Role_Kit_Design.md section 11): it is a " +
-							"stacking, zone-delivered, per-holder-attribute grant, a shape " +
-							"granted_attribute_buff cannot represent (fixed one-shot, fixed attribute) " +
-							"without either misrepresenting which attribute it scales or perturbing " +
-							"unrelated base-term/modifier-term invariants for every team that carries " +
-							"this Role.",
-					"citation": "tidal_corsair_trait.gd"},
+							"living ally Slipstream (2 turns) and Haste (1 turn). Sea Legs is scored at 3 " +
+							"stacks, one full deck across three allies.",
+					"citation": "tidal_corsair_trait.gd; sea_legs_zone_effect.gd",
+					"granted_attribute_buff": {"kind": "build_up_highest_primary", "magnitude": 0.12,
+							"stacks": 3, "reach": "team", "gate": &"sea_legs_held"}},
 		],
 		"skills": [
 			{"name": "Boarding Strike", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
@@ -970,6 +979,7 @@ const MANIFEST: Dictionary = {
 					"gated_bonus": {"bucket_key": "", "magnitude": -0.75,
 							"class": Contribution_Class.Channel3_Cascade, "fold": "sustained_ticks",
 							"gate": &"debuff_count", "instances": 6, "per_debuff_type": true,
+						"tick_growth": {"scale": 4.0, "half_count": 39.0},
 							"precondition": "Plague's own tick (Mysticism 0.3, 0.3/1.2 = 25% of Outbreak's " +
 									"aggregate, magnitude -0.75) resolving once per distinct debuff type, " +
 									"over 3 natural ticks and 3 Miasma forced ticks, one per Plague turn.",
@@ -993,11 +1003,13 @@ const MANIFEST: Dictionary = {
 			{"name": "Shield Wall", "applied_debuffs": [Types.Debuff_Type.Enfeeble],
 					"bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Enabler,
-					"precondition": "On Ally_Damage_Taken within 15% turn-bar proximity (fixed, not " +
+					"precondition": "On Other_Ally_Damage_Taken within 15% turn-bar proximity (fixed, not " +
 							"rarity-scaled), redirects 30% (Legendary) of that ally's incoming attack " +
-							"damage to the Warlord, re-mitigated against the Warlord's own Defence. No " +
-							"CombinedDamageModifier bucket.",
-					"citation": "shield_wall_trait.gd:3-10,20-21,34-42; battle_resolver.gd:750-763"},
+							"damage to the Warlord, re-mitigated against the Warlord's own Defence, and " +
+							"an enemy's debuff landing on that ally passes 1 turn to the Warlord, " +
+							"leaving the ally at least 1. No CombinedDamageModifier bucket.",
+					"citation": "shield_wall_trait.gd; battle_resolver.gd (_ResolveDamage); " +
+							"status_effect_resolver.gd (_PassDebuffTurnToGuard)"},
 		],
 		"skills": [
 			{"name": "Shield Slam", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
@@ -1007,18 +1019,19 @@ const MANIFEST: Dictionary = {
 			{"name": "Hold the Line", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Channel1,
 					"precondition": "Grants all other allies Fortify (2 turns, +30% Defence); the " +
-							"Warlord takes Fortify at double strength and Slow (1 turn). No damage.",
-					"citation": "Hold_the_Line.tres:8-18",
+							"Warlord takes Slow (1 turn), then Fortify at double strength; all allies " +
+							"then gain Aegis (1 turn). No damage.",
+					"citation": "Hold_the_Line.tres",
 					"granted_attribute_buff": {"attributes": [Types.Attribute.Defence], "magnitude": 0.3,
 							"buff_type": Types.Buff_Type.Fortify}},
 			{"name": "Brace for Impact", "bucket_key": "", "magnitude": 0.0, "stack_cap": 0,
 					"class": Contribution_Class.Channel1,
 					"precondition": "Grants self Rush (1 turn: +30% all primary attributes except " +
-							"Health, then an unresistable Stun on expiry) and Aegis (1 turn: blocks the " +
-							"next debuff). While either buff holds, any enemy whose attack lands on the " +
-							"Warlord - direct or redirected to him by Shield Wall - gains a fixed 2-turn " +
+							"Health, then an unresistable Stun on expiry). While it holds, all attacks on " +
+							"allies hit the Warlord at any distance, ahead of other redirects, he takes " +
+							"50% less damage, and any enemy whose attack lands on him gains a fixed 2-turn " +
 							"Enfeeble (normal resist roll against the Warlord's Accuracy). No damage.",
-					"citation": "Brace_for_Impact.tres:6-16; shield_wall_trait.gd (OnSkillCast); " +
+					"citation": "Brace_for_Impact.tres; shield_wall_trait.gd (OnSkillCast); " +
 							"status_effect_resolver.gd (_TriggerAttackerDebuffOnDamage)",
 					"granted_attribute_buff": {"attributes": ALL_ATTRIBUTES_EXCEPT_HEALTH, "magnitude": 0.3}},
 		],

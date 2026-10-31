@@ -15,8 +15,8 @@ script = ExtResource("1_c405q")
 name = "Corsairs Reckoning"
 description = "Deals damage to a single enemy, scaled by Attack, and spends all stacks.
 Steel only: bonus damage per Steel stack.
-Sea only: 2 Gilded Deck charges per Sea stack.
-Mixed: 1 Gilded Deck charge per Sea stack, and every other ally gains Slipstream for 2 turns and Haste for 1."
+Sea only: 3 Gilded Deck charges per Sea stack.
+Mixed: 1 Gilded Deck charge per Sea stack, and other allies gain Slipstream for 2 turns and Haste for 1."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Corsairs_Reckoning/corsairs_reckoning_2.jpg"
 cooldown = 3
 effects = Array[ExtResource("1_vtysj")]([SubResource("Resource_ef0if")])

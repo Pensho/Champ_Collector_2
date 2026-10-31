@@ -91,6 +91,9 @@ Effort: **S** = hours, **M** = days, **L** = week+
 
 ## UI & Quality of Life
 
+- **Show a character's Role** *(Priority: Medium | Effort: S)*
+  The UI never shows a Role, so the one-per-Role notification does not explain Knight against Centaur Lancer.
+
 - **Enemy Passive Reveal-on-Trigger with Bestiary** *(Priority: Medium | Effort: L)*
   Enemy passives show only a name and a flavor line until the effect triggers once, then the full mechanical text unlocks — for the rest of the battle and permanently in a bestiary, so knowledge transfers across encounters re-using the variant. Upgrade path from the current rule (enemy passives not inspectable at all, Concept_Document 3.2); needs investigation of screen-space budget and reveal handling first.
 

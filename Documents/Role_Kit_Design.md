@@ -8,11 +8,8 @@ authority for what each Role's kit does) does not carry. Supersedes the older
 
 **Status:** channel identity allocation, contribution direction, and pairing web settled; all four
 batches designed and all 20 Roles settled — 19 with a section 9 entry, the Tactician in section 7's
-table. **All 20 implemented**: 17 kits changed, and the Tactician, Symbiote (§9.17)
-and Bar Brawler (§9.18) settled as kept. **Final sweep**
-(`Tests/manual/team_corpus_sweep.gd`): combined-modifier-product median 1.95x, 90th percentile
-4.68x, ceiling 16.24x; contrast-ratio ceiling 21.12x; top decile (114 teams) across **10 distinct
-pairings**, meeting section 4's roster-shape target.
+table. **All 20 implemented**: 18 kits changed, and the Tactician and Symbiote (§9.17) settled as
+kept. Sweep figures: section 4.
 
 ## 1. The per-Role kit contract
 
@@ -180,9 +177,23 @@ multiply the Role's own factors by an assumed teammate product (§9.2 and §9.3 
 show the kit *composing*. The resulting number belongs to the illustrative team, not to the Role,
 and is never a bar another Role is expected to match.
 * Current roster baseline (`Tests/manual/team_corpus_sweep.gd`): combined-modifier-product median
-  **2.20x**, 90th percentile **4.82x**, ceiling **16.24x**; contrast-ratio ceiling **23.70x**, or **67.64x** counting Echoes, each with its own combined modifier. Every
+  **2.34x**, 90th percentile **5.59x**, ceiling **18.86x**; contrast-ratio ceiling **27.55x**, or **29.53x** counting Echoes, each with its own combined modifier. Every
   batch records its delta against this baseline as the distribution's *shape* (median, 90th
   percentile, ceiling, count of distinct top-decile pairings), not only the maximum.
+
+Best drafted payoffs at Legendary, against the Role's own basic. Figures marked by hand are what the
+sweep does not score; sweep figures assume the Bloodmage's factors at full strength.
+
+| Payoff | Tier | Build length | With Bloodmage | Without |
+|---|---|---|---|---|
+| Herald of the Loom | Primary | 4-5 rounds | 29.5x | 28.3x |
+| Sorcerer | Primary | 6 rounds | 28.3x | 25.8x |
+| Tidal Corsair | Primary | 8 rounds with one deck; 12 with two | 27.6x; 31.8x at the 5-stack cap | 16.3x; 18.9x at the cap |
+| Cultist | Primary | 2 rounds; Vessel death later | 27.2x at one buff consumed; 17-22x by hand at 5 buffs on a preset team | 16.1x |
+| Plague Doctor | Primary | Spread out | 32x per tick action, with Emissary; about 10x on average | 24x per tick action |
+| Architect | Secondary | 5 rounds | 23.7x | 14.1x |
+| Lancer | Secondary | 2-4 rounds, from teammates | 12.9x; 22x on a crit by hand | 7.7x |
+| Bar Brawler | Secondary | 10 rounds by Heap On | 9-19x by hand | 9-19x by hand |
 
 ### The roster-level distribution of per-Role factors
 
@@ -387,6 +398,22 @@ collapse-test payload without inventing new gating mechanics.
   Spotlight (1.5x targeting weight may not pull fire from a real tank, since priority is
   (Health + Defence) times multipliers).
 
+* **Watch in play:**
+  * The Plague Doctor with Bloodmage and Emissary, above 30x per tick action.
+  * Crit teams against the Lancer's and Bar Brawler's 10-15x, more when geared. Heap On stays at +20%
+    per use until this resolves.
+  * Non-crit Bar Brawler teams, about 9x by round 9.
+  * Stacking debuffs filling the Warlord's status slots through Shield Wall's split.
+  * Uncommon Sorcerer, 4.7x from Echoes.
+  * A high-Knowledge Tidal Corsair: Sea Legs at the cap is +96% on every ally's highest attribute at
+    Knowledge 120.
+  * The Cultist's kill line, which depends on enemy damage to the Vessel and on Rite of Severance.
+* **Decided by playtests:** whether to redistribute power among the supports, the Bloodmage's general
+  power included; the Herald's 10/12/14/17% ladder returns only if asked for.
+* **The Warlord's Fortify stays weak,** and default targeting reduces Shield Wall's role. Enemy attacks
+  and debuffs that bypass that targeting are what make the Role worth picking.
+* **Most Buffed Ally ties break by party order;** ties should roll randomly.
+
 ## 9. Settled kit designs
 
 One entry per Role once its kit is **settled** (brainstormed, picked, and projected against
@@ -403,21 +430,21 @@ Format per entry: Status, Passive, Skills (name / effect / channel), Projected n
 
 ### 9.1 Plague Doctor — debuff-density damage and cascade-breadth passive
 
-**Status:** Implemented (`aca439b`) except the tick growth. Batch 1.
+**Status:** Implemented. Batch 1.
 
 **Passive: Comorbidity.** An enabler: a debuff placed by this Role's skills enables a cascade
 (`Types.Cascade_Trigger.Debuff_Ticked`) whose Echo count is every other distinct debuff type on
 the target, any source, uncapped, bounded by the shared `MAX_CASCADE_INSTANCES_PER_ACTION` fan-out
 cap — a non-damaging debuff type raises the count without echoing itself. Each repeat is a real
-Echo — its own `Cascade_Triggered` marker and its own `Cascade_Instance_Resolved` broadcast.
+Echo, with its own `Cascade_Triggered` marker.
 
-**Tick growth.** Flagged ticks on a target deal `1 + 4n / (n + 39)` times their damage, where `n`
+**Tick growth.** Flagged ticks on a target deal `1 + sn / (n + 39)` times their damage, `s`
+2.8/3.2/3.6/4.0 by rarity so the first rise is 7/8/9/10%, where `n`
 counts the flagged tick resolutions so far on that target, Echoes and forced ticks included. A
 resolution counts once however many Plague stacks it carries. The count is trait state, takes no
 status slot, has no name or display, and lasts the battle: a lapse of Plague or a cleanse keeps it.
 The Echo count stays fixed when the trigger fires; the factor rises through the Echoes. The player
-never sees the formula. Tooltip sentence: "Each time these debuffs deal damage, their later damage
-on that target grows by 10%, with each increase smaller than the last."
+never sees the formula.
 
 | Slot | Skill | Effect | Channel |
 |---|---|---|---|
@@ -483,11 +510,12 @@ the Symbiote graft button's slot — the two are mutually exclusive by whose tur
 
 ### 9.3 Sorcerer — Instability that only the Surge resets
 
-**Status:** Implemented except the Echo compounding ladder.
+**Status:** Implemented.
 
 **Passive: Arcane Instability.** Three clauses, each doing one job:
 
-* Each skill grants 1 Instability after it resolves, Echoes included, maximum 5. Consuming a
+* Each skill grants 1 Instability after it resolves, once its Echoes finish, maximum 5; a skill
+  used outside the Sorcerer's turn grants its own at once. Consuming a
   reagent grants 2 and amplifies the reagent's effect. Instability does not persist between combats.
 * A gain that would carry Instability past 5 releases a **Surge**: damage to all characters, allies
   and the Sorcerer included, scaling 1.4x the Sorcerer's Mysticism, never a critical hit — then
@@ -531,7 +559,7 @@ well inside `CascadeResolver.MAX_CASCADE_INSTANCES_PER_ACTION = 16`.
 
 ### 9.4 Bloodmage — the missing-Health surface, caster-side and exported
 
-**Status:** Implemented except Sanguine Pact's Echo exclusion. Batch 1 complete.
+**Status:** Implemented. Batch 1 complete.
 
 **Passive: Hemoclarity.** Changed from a below-50% cliff to a continuous curve, and widened past
 damage: for every 1% of max Health the Bloodmage is missing, gain +1% Mysticism (0.7/0.8/0.9/1.0%
@@ -791,8 +819,7 @@ zone would have to displace Levied Sanction, which is where the export now lives
 
 ### 9.8 Cultist — the sacrifice pays out
 
-**Status:** Implemented except the 10% drain, Devotion's 65/75/85/100% ladder and Rite of
-Severance's 25% sacrifice and 1.6 scaling. Batch 2.
+**Status:** Implemented. Batch 2.
 
 **Identity: Channel 2, self-facing.** Confirms section 5's proposal on both axes. **Exporting is
 against the Role's pillar** — the Cultist profits from what allies lose, so no clause in this kit
@@ -979,7 +1006,7 @@ position and never writes to it, which is what keeps it clear of the Chronophage
 | Signature | Disarm | Attack-scaled damage, applies Enfeeble for 2 turns, pushes the target backward 10% on the turn bar. Cooldown 3. | 1 + Enabler |
 
 **Composition hooks.** The passive reads the turn-bar gap, so anything that pushes an enemy back
-lengthens the Lancer's run-up — Sea stacks, stolen time, Dead Weight, Temporal Leak — with no skill
+lengthens the Lancer's run-up — stolen time, Dead Weight, Temporal Leak — with no skill
 in this kit naming any of them. Bleed is a distinct debuff type feeding any `Target_Debuff_Count`
 reader, and it snapshots the caster's damage factors at application, so a full-bar charge writes its
 own size into every subsequent tick. Enfeeble is the kit's Enabler clause: it blunts what the team
@@ -1012,8 +1039,8 @@ inside section 1's contract, in the same bucket-product kind as Architect (2.20x
   other bump.
 * `kit_contribution_manifest.gd` — Reckless Momentum's entry is Couched Lance; Rending Charge's own
   entry carries `bucket_key: ""` (magnitude folded entirely into its `gated_bonus`, to avoid double-
-  counting the same bucket) with `gated_bonus.bucket_key: "Rending Charge"`, `magnitude: 0.45`
-  (`gate: &"charge_distance"`, an assumed three-section span at Epic rarity: 3 * 0.15).
+  counting the same bucket) with `gated_bonus.bucket_key: "Rending Charge"`, `magnitude: 0.54`
+  (`gate: &"charge_distance"`, an assumed three-section span at Legendary rarity: 3 * 0.18).
 * `Concept_Document.md` 3.1.3's Lancer entry, 3.2.3.2's Phalanx Guard entry, and 3.2.4.2's Rending
   Charge entry updated to match.
 
@@ -1120,7 +1147,7 @@ rarity). The per-Sea turn-bar push retires.
 | Hand | Mode | Effect (Legendary) | Channel |
 |---|---|---|---|
 | Steel only | **Broadside** | Per-Steel rate 0.60; 3 Steel = **2.80x**. No ship. | 1 + 2 |
-| Sea only | **Bring Her Alongside** | No damage bonus. The Gilded Deck is raised or resupplied, **2 charges per Sea** — 6 at three. | Enabler |
+| Sea only | **Bring Her Alongside** | No damage bonus. The Gilded Deck is raised or resupplied, **3 charges per Sea** — 9 at three. | Enabler |
 | Mixed | **Boarding Party** | Steel damages at the base rate, **1 charge per Sea** (2 maximum), and every other living ally gains Slipstream for 2 turns and Haste for 1 turn. | 1 + Enabler |
 
 Three time horizons rather than three sizes: the Corsair's spike now, the team's window now, the
@@ -1134,9 +1161,9 @@ deals its damage and no ship is raised. One deck stands at a time — further Se
 than raising a second.
 
 **Sea Legs** is a new permanent buff. An ally whose turn starts on the deck gains one stack:
-**+5/6/7/8% by rarity to that character's highest base primary attribute, Health excluded**, scaled
+**+6/8/10/12% by rarity to that character's highest base primary attribute, Health excluded**, scaled
 by the Corsair's Knowledge through the existing ally-zone rule
-(`GameBalance.ZONE_KNOWLEDGE_SCALING`). Never expires, never spent, capped at 4 stacks per
+(`GameBalance.ZONE_KNOWLEDGE_SCALING`). Never expires, never spent, capped at 5 stacks per
 character. Health is excluded because its values run 270-330 against roughly 100-200 for every other
 attribute, so it would otherwise always be the highest.
 
@@ -1146,15 +1173,15 @@ nothing to most of any team, making the Corsair a Role that only pays off beside
 Attack Roles — the opposite of a ship the whole crew boards.
 
 **Composition hooks.** The deck reads nothing and names no Role: any ally advancing into it boards.
-Sea Legs lands entirely on teammates' sheets and scales with the Corsair's own Knowledge, so a
+Sea Legs lands on every ally's sheet, the Corsair's included, and scales with the Corsair's own Knowledge, so a
 Knowledge-built Corsair doubles what the crew gets while giving up its own Attack scaling. The kit
 closes route D as the self-facing half against the Architect's exported one.
 
 **Projected numbers.** Broadside 2.80x, unchanged from what ships and inside section 4's band. The
 ship is an aggregate contribution rather than a modifier-product one, landing in the same term as
-Empower and Attune: at Corsair Knowledge 120 (multiplier 1.60) a full deck gives each ally 2 stacks
-at +12.8% on their highest attribute, and a second full deck reaches the 4-stack cap at +51%. Two
-pure-Sea Reckonings is the price, which is why the investment is only correct early.
+Empower and Attune: at Corsair Knowledge 120 (multiplier 1.60) a full deck gives each ally 3 stacks
+at +19.2% each on their highest attribute, +58%, and a second full deck reaches the 5-stack cap at
++96%. Two pure-Sea Reckonings is the price, which is why the investment is only correct early.
 
 **Implementation.** `tidal_corsair_trait.gd`'s Reckoning branch counts the consumed hand and
 dispatches; `_turn_bar_bump` is gone. Sea Legs holds as **one buff instance carrying a stack count**
@@ -1173,14 +1200,7 @@ zone-placement kind are new; the deck's payload is `SeaLegsZoneEffect`, construc
 the rarity's own per-stack rate. Boarding Party raises a fresh deck when none stands, not only
 resupplying one that does. Saltwater Shot gained no new payload of its own — the settled kit's
 "gains a new payload" line for it does not match the hand table, where every mode-specific effect is
-trait-side; only its description changed, to say what a Sea stack now buys. The deck's Sea Legs
-grant is not declared in `kit_contribution_manifest.gd` as a `granted_attribute_buff`: the shape
-(stacking, zone-delivered, per-holder-attribute) doesn't fit the field's fixed-attribute,
-one-shot contract, and forcing an approximation onto one attribute both misrepresents the mechanic
-and perturbed an unrelated base-term/modifier-term invariant in the scorer's own test suite — left
-as an explicit gap in section 11 instead. Post-implementation sweep: median 1.95x, 90th percentile
-4.68x, ceiling 16.24x, 114 teams across 10 distinct top-decile pairings — all unchanged, as predicted
-for a passive whose rate didn't move and a ship the scorer cannot see.
+trait-side; only its description changed, to say what a Sea stack now buys.
 
 **Known bug, unresolved.** In live play, the Sea Legs tooltip's displayed percent does not track
 the stack count correctly — a report of 6% on the first stack followed by 5% on the second, on the
@@ -1260,7 +1280,7 @@ the Scholar's own sheet.
 `_IdentifyWeakness`/`_weakness_by_enemy` along with `Skills.ApplyWeaknessRider` and its call site — the
 old passive's defective "identifies each enemy's *weakest* attribute" description (the code and
 `Concept_Document.md` both said highest) is moot. `PRIMARY_ATTRIBUTES` stayed on the class: Tidal
-Corsair's `SeaLegsZoneEffect._HighestBasePrimaryAttribute` reads it too (section 9.13), an external
+Corsair's `SeaLegsZoneEffect.HighestBasePrimaryAttribute` reads it too (section 9.13), an external
 dependency the original settle missed.
 
 A new `CharacterTrait.GetAppliedAttributeAmplification()` virtual (default 0.0) and
@@ -1403,8 +1423,8 @@ a claim on one term, not a ceiling on the rest of the kit.
 **Projected numbers.** None. The kit fields no damage factor and is measured on the collapse test,
 absent from the sweep's ranking by design (§4).
 
-**Implementation.** `ConsumePremonitionIfPresent` (`status_effect_resolver.gd`) calls a new
-`_ResolvePremonitionCounter`, which is a **full first resolution of the holder's basic skill**
+**Implementation.** `ConsumePremonitionIfPresent` (`status_effect_resolver.gd`) calls
+`ResolveFreeBasic`, which is a **full first resolution of the holder's basic skill**
 against the attacker — the holder's `Skill_Cast` trait hook, a real (advancing)
 `_SkillUseCount`, and every effect the basic carries, not the stripped repeat-only shape Borrowed
 Time and the Sorcerer's Echo use. Full fidelity is load-bearing here rather than optional: Premonition
@@ -1452,8 +1472,7 @@ comparable only to §9.14's kind. No bucket key, by design.
 
 ### 9.18 Bar Brawler — Bar Fight, Heap On sanctioned
 
-**Status:** Heap On and On the House! implemented; Bar Fight and Liquid Courage's cleanse are not.
-Batch 4.
+**Status:** Implemented. Batch 4.
 
 **Identity: Channel 2, self-facing**, confirming section 5's row on both axes. Heap On's ramp is the
 bucket anchor; On the House is Enabler content beside it, not the Role's identity.
@@ -1491,8 +1510,7 @@ on a Heap On crit (Heap On 16.1x), with 10x from round 3 and 15x from round 7.
 
 ### 9.19 Warlord — everything that strikes the wall pays for it
 
-**Status:** Implemented except Shield Wall's debuff split, Hold the Line's Aegis and Brace for
-Impact's redirect and damage reduction. Batch 4.
+**Status:** Implemented. Batch 4.
 
 **Identity: Enabler, exported**, redeclaring section 5's Channel 1 row. Fortify raises Defence, which
 is no damage term; redirection, Fortify and Aegis are all mitigation. An **adaptation**: one slot
@@ -1503,8 +1521,7 @@ attack damage redirected to the Warlord by rarity, re-mitigated against his own 
 from an enemy that lands on such an ally passes 1 turn of its duration to him, leaving the ally at
 least 1 turn, so a 2-turn debuff lasts 1 turn on each and a 1-turn debuff passes nothing. The passed
 turn needs no new contest; Aegis and the status cap apply to it as usual. Spotted's replacement rule
-moves it to him outright. Tooltip sentence: "Debuffs from enemies on allies in range pass 1 turn to
-the Warlord, leaving the ally at least 1."
+moves it to him outright.
 
 | Slot | Skill | Effect | Channel |
 |---|---|---|---|
@@ -1543,7 +1560,7 @@ absent from the sweep's ranking by design (§4).
 reuses `StatusEffects.Effect.trait_riders` (already generalized for Comorbidity and Field of Study).
 `shield_wall_trait.gd` gains an `OnSkillCast` hook that, only when the cast is Brace for Impact, sets
 an `&"attacker_debuff_on_damage"` rider (Enfeeble, 2 turns) on `TraitSkillResult`, threaded onto the
-Rush and Aegis buffs the cast applies (`apply_buff_effect.gd` now copies `trait_result._trait_riders`
+Rush buff the cast applies (`apply_buff_effect.gd` now copies `trait_result._trait_riders`
 onto every buff template, the missing symmetric half of the debuff path). `_ApplyHealthLoss`
 (`battle_resolver.gd`) gained an `p_attacker_ID` parameter, passed at both the direct-hit and
 Shield-Wall-soaker call sites — the one place both paths already converge — forwarded into
@@ -1734,7 +1751,7 @@ current encounter fields it.
 | Herald of the Loom | Cut the Cloth resolves once per Tension and consumes it; Black Thread adds one Echo to the Herald's own cascade | Weft and Warp: Tension, capped at 7, from the first ally action between the Herald's turns under Golden Thread | Pull the Thread: Tension *(own)*; Thread Snap's Suppress, Pull the Thread's Temporal Leak, Silver Thread's unresistable debuffs: debuff density | — | Pull the Thread's push-back: enemy tempo | Ordering: Golden Thread before allies act, Black Thread before Cut the Cloth. Cash-out timing: Cut the Cloth now, or build Tension further. External input: any ally's action under Golden Thread |
 | Chronophage | — | — | Flicker Zone: per-turn and per-cast accumulators (tempo) | Time Tithe: an ally the Chronophage moves forward while alone in its section gains Borrowed Time | Temporal Sinkhole: enemy tempo | Ordering: the ally alone in a section before Flicker Zone moves it, and Borrowed Time before the holder's burst cast. Interruptible: a buff strip removes Borrowed Time |
 | Architect | Final Calculation consumes all Calibration charges, in tiers | Calibration: charges, capped at 12, from Cornerstone and from each character using Raise the Frame | Raise the Frame: Calibration *(own)*; Final Calculation's Expose Weakness: debuff density | Final Calculation: Expose Weakness at 5 charges, Raise the Frame re-erected at 9 | Raise the Frame's Barrier: burst enemy damage on allies | Ordering: Raise the Frame before allies pass through it. Cash-out timing: Final Calculation now or at a higher tier, and Raise the Frame's Barrier spending charges against the finisher. Interruptible: enemies contesting zone sections. External input: any character using Raise the Frame |
-| Tidal Corsair | Corsair's Reckoning consumes Steel and Sea stacks; each ally's damage reads its Sea Legs | Wrangle the Sea: Steel and Sea stacks, 3 slots; Sea Legs stacks on each ally whose turn starts on The Gilded Deck, capped at 4, permanent | Boarding Party's Haste: per-turn and per-cast accumulators (tempo) | — | Boarding Party's Slipstream: enemy zones | Ordering: the hand's composition before Corsair's Reckoning, and The Gilded Deck raised early. Cash-out timing: which hand to spend, and when. Interruptible: enemies occupying every free section deny The Gilded Deck. External input: any kit's tempo that starts allies' turns on the Deck |
+| Tidal Corsair | Corsair's Reckoning consumes Steel and Sea stacks; each ally's damage reads its Sea Legs | Wrangle the Sea: Steel and Sea stacks, 3 slots; Sea Legs stacks on each ally whose turn starts on The Gilded Deck, capped at 5, permanent | Boarding Party's Haste: per-turn and per-cast accumulators (tempo) | — | Boarding Party's Slipstream: enemy zones | Ordering: the hand's composition before Corsair's Reckoning, and The Gilded Deck raised early. Cash-out timing: which hand to spend, and when. Interruptible: enemies occupying every free section deny The Gilded Deck. External input: any kit's tempo that starts allies' turns on the Deck |
 | Plague Doctor | Outbreak reads debuff density; Comorbidity's Echo count reads debuff density on each flagged tick; Miasma re-ticks every debuff on the target; flagged ticks read the tick growth | Comorbidity's tick growth: per target, never consumed | Outbreak's Plague, Miasma's Blight: debuff density; Miasma's forced tick: tick growth *(own)* | — | Miasma's Blight: enemy healing | Ordering: the team's debuffs before Outbreak and before Plague ticks, Miasma before the enemy reaches its section. Interruptible: a debuff cleanse cuts density. External input: any kit's distinct debuff types |
 | Warlord | — | — | Brace for Impact's Enfeeble on attackers: debuff density | — | Shield Wall: damage to allies in the window and debuff duration on them; Hold the Line's Fortify: enemy damage, and its Aegis: a debuff on any ally; Brace for Impact: every attack on allies, and its Enfeeble: enemy damage | Ordering: Hold the Line before a debuff lands; Brace for Impact before a barrage |
 
@@ -1791,7 +1808,7 @@ did not exist. What the manifest carries now:
   `(1.0 + magnitude) * instance_compounding^i`, `i` 0-based
   (`BurstReachability._MultiInstanceContrastRatio`). Verified in
   `Tests/unit/test_burst_reachability.gd` against this document's own projections: Echo (5
-  instances, −0.5, 1.70 compounding) reproduces section 9.3's 9.43x; Cut the Cloth (9 instances,
+  instances, −0.5, 1.50 compounding) reproduces section 9.3's 6.59x; Cut the Cloth (9 instances,
   +0.071 at Legendary — the 90% base strength and the passive's own self-bonus folded into one net
   per-instance multiplier — flat) reproduces section 9.2's 9.64 curve.
 * **Zone-trigger damage** is no longer invisible: a skill with no top-level `DamageEffect` is now
@@ -1844,11 +1861,10 @@ Facet all read this way now.
 30x burst target is checked against and the ranking key. `sustained_contrast_ratio` is reported
 beside it per row in `Tests/manual/team_corpus_sweep.gd`.
 
-**Open gap, found implementing §9.13.** `granted_attribute_buff` only models a fixed one-shot grant
-on a fixed attribute. The Gilded Deck's Sea Legs is stacking, zone-delivered, and sized on whichever
-attribute is highest on the *holder* — a shape the field cannot represent without either naming a
-wrong attribute or forcing an aggregate contribution that isn't there for most teams. Left
-undeclared; the Tidal Corsair's contribution to the sweep is Broadside's bucket only.
+**Sea Legs** is a `granted_attribute_buff` of `kind: "build_up_highest_primary"`, at an assumed 3
+stacks (one full deck, gate `sea_legs_held`). It raises the burst on each ally's highest base primary
+attribute and leaves the reference basic alone, because the stacks accrue during the build-up that
+Concept 1.1.2 reads the contrast against.
 
 **Open gap, found implementing §9.15.** The scorer has no model of the reagent economy at all — no
 notion of a consumption count, a shared slot, or a refund. Catalyst Cloud's payload raises how many

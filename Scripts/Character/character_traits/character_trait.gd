@@ -134,9 +134,15 @@ func GetBaseDefenceIgnoreRate(_p_owner_ID: int) -> float:
 
 ## Returns the fraction of an ally's incoming attack damage this owner redirects to
 ## itself (0.0 = no redirect).
-func OnAllyDamageTaken(
+func OnOtherAllyDamageTaken(
 		_p_owner_ID: int, _p_damaged_ally_ID: int, _p_resolver: BattleResolver) -> float:
 	return 0.0
+
+func OnFreeBasicResolved(_p_owner_ID: int, _p_resolver: BattleResolver) -> void:
+	pass
+
+func TakesOtherAllyDebuffTurn(_p_owner_ID: int, _p_ally_ID: int, _p_resolver: BattleResolver) -> bool:
+	return false
 
 func BrewReagentKey(_p_random: RandomNumberGenerator) -> String:
 	return ""
@@ -170,13 +176,6 @@ func OnZoneUsed(_p_owner_ID: int, _p_user_ID: int, _p_zone_ID: int, _p_resolver:
 
 func OnAllyTurnBarIncreased(
 		_p_owner_ID: int, _p_target_ID: int, _p_fraction: float, _p_resolver: BattleResolver) -> void:
-	pass
-
-## Fires once per real cascade instance (one loop iteration of a matched
-## CascadeResolver listener), for every living character, regardless of whose
-## mechanic actually produced it — lets a passive react to instance count itself.
-func OnCascadeInstanceResolved(
-		_p_owner_ID: int, _p_event: CascadeEvent, _p_resolver: BattleResolver) -> void:
 	pass
 
 ## Fires when another living ally casts a skill.
@@ -256,7 +255,7 @@ func GetTeamAppliedBuffMultiplier() -> float:
 func GetOutgoingAllyTurnBarBumpAmplification(_p_owner_ID: int) -> float:
 	return 0.0
 
-func OnAllyCriticalHit(
+func OnOtherAllyCriticalHit(
 		_p_owner_ID: int, _p_ally_ID: int, _p_target_ID: int, _p_amount: int, _p_resolver: BattleResolver) -> void:
 	pass
 

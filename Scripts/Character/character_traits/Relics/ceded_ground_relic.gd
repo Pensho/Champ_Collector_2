@@ -10,9 +10,9 @@ func Init(p_rarity: Types.Rarity) -> void:
 			"dealt.\n" +
 			"The healing is paid out of the wearer's own Health, and the wearer's " +
 			"Mysticism is reduced by 50%.")
-	_execution_steps[Types.Combat_Event.Ally_Critical_Hit] = Callable(self, "OnAllyCriticalHit")
+	_execution_steps[Types.Combat_Event.Other_Ally_Critical_Hit] = Callable(self, "OnOtherAllyCriticalHit")
 
-func OnAllyCriticalHit(
+func OnOtherAllyCriticalHit(
 		p_owner_ID: int, p_ally_ID: int, _p_target_ID: int, p_amount: int, p_resolver: BattleResolver) -> void:
 	var ally: Character = p_resolver.GetCharacters().get(p_ally_ID)
 	if(null == ally):

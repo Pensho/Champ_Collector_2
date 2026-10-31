@@ -401,6 +401,8 @@ The effect subclasses, all under `Scripts/Battle/Skill_Effects/`:
 | `StealBuffEffect` | `count`, `to`, `duration_override` | Steals `count` buffs from the target group and re-applies them to one recipient rolled once from the `to` group |
 | `ConsumeBuffsEffect` | `count` (`-1` = all) | Consumes buffs from the target group, adding the removed count to `context.buffs_consumed` |
 | `ReduceBuffDurationsEffect` | `amount` | Shaves `amount` turns off every buff already on the target group |
+| `AllyBasicsEffect` | *(none)* | Every living ally of the caster not under crowd control resolves their basic against the target through `StatusEffectResolver.ResolveFreeBasic` (Bar Fight) |
+| `RemoveRandomDebuffEffect` | *(none)* | Removes one random active debuff from each target (Liquid Courage) |
 | `TurnBarEffect` | `fraction` | Bumps the target group's turn bar by the skill's own contribution, independent of any trait turn-bar bump |
 | `AlternatingEffect` | `effects: Array[SkillEffect]` | Cycles through `effects` by this cast's use count, so a skill can behave differently on alternating (or any N-way rotating) casts |
 | `ZoneEffect` | `charges`, `section` (`Player_Chosen`/`Left_Most_Empty`/`Random_Empty`/`Most_Allies`), `on_trigger: Array[SkillEffect]`, `visual_scene: PackedScene` | Resolves a turn-bar section (see [Section 7.5](#75-zones)) and calls `ZoneResolver.PlaceZone` with itself; an ordinary effect in the effect loop like any other, so a skill can place a zone alongside a direct effect (e.g. Inscribe's damage-plus-glyph) |
@@ -1279,8 +1281,7 @@ once depth actually reaches 0, so multiple `Drain()` calls within one action sha
 
 **Deferred triggers.** `SubscribeDeferredTrigger(trigger, mechanic_key, matches, callback)`
 registers a callback that resolves after its matched event but produces no Echo — no
-`BeginEchoInstance`, no `Cascade_Triggered` marker, no `Cascade_Instance_Resolved` notification, no
-Echo strength. `trigger` alone is not enough to dispatch on — every status that can expire shares
+`BeginEchoInstance`, no `Cascade_Triggered` marker, no Echo strength. `trigger` alone is not enough to dispatch on — every status that can expire shares
 `Status_Expired`, for instance — so `matches(event)` is checked before any dedup or fan-out
 accounting runs. Overflow's expiry AoE and Rush's expiry self-Stun (both `Status_Expired`, matched
 on `buff_type`) and Mirror Coat's reflection (`Status_Landed`, posted from `CastDebuff`, matched
@@ -1334,8 +1335,8 @@ effect — skill repeat, status re-tick, zone re-trigger — declares a contribu
 never its own loop. `BattleResolver.BeginEchoInstance`/`EndEchoInstance` are called from exactly one
 place, `CascadeResolver._ResolveContributions`, and resolve only Channel 3 contributions — the
 deferred-trigger loop above calls neither, and nothing else calls them, which is what makes the
-fan-out bound, the depth bound, the `Cascade_Triggered` marker, `IsResolvingEcho()`, the strength
-channel (below) and the `Cascade_Instance_Resolved` broadcast unbypassable rather than merely
+fan-out bound, the depth bound, the `Cascade_Triggered` marker, `IsResolvingEcho()` and the strength
+channel (below) unbypassable rather than merely
 conventional. `Tests/unit/test_cascade_resolution.gd` scans `Scripts/` and fails if any file other
 than `cascade_resolver.gd` calls `BeginEchoInstance`, so a kit reaching for a private repeat loop
 fails the suite instead of shipping a sixth isolated handler.
@@ -1403,7 +1404,8 @@ contributor rather than running a private loop:
   (`_OnSkillResolvedRepeat`), since each Echo's strength compounds by index
   (`REPEAT_FRACTION * ECHO_COMPOUNDING^i`) — genuinely the mechanic's own business rather than a
   flat `strength_multiplier`. The cast's Instability gain runs in `EndOfTurn`, after the cascade
-  drains, so a gain past the maximum releases the Surge after the cast's own Echoes.
+  drains, so a gain past the maximum releases the Surge after the cast's own Echoes. A free basic has
+  no `End_Turn`, so `OnFreeBasicResolved` settles its gain at once.
 - **The Long Furrow.** A Base contributor returns 1 instance at `Magnitude()`, gated on the
   charge-span check already computed in `OnSkillCast`.
 - **Borrowed Time.** A Base contributor on `Skill_Resolved`, gated on the holder carrying the buff
@@ -1719,7 +1721,9 @@ provides default (no-op, debug-printing) implementations of each hook. The comba
 | `OnDamageDealt(owner_ID, target_ID, amount, resolver)` | `Damage_Dealt` | in `_ResolveDamage`, after damage lands (unconditionally, not only on a crit), on the caster's trait | — |
 | `OnAllyAttackLanded(owner_ID, attacker_ID, target_ID, resolver)` | `Ally_Attack_Landed` | in `_ResolveDamage`, once a damaging effect is past the Premonition miss check, after the hit's persistent damage factors are read and before any Health loss, on every living ally of the attacker, the attacker included | — |
 | `OnAllyDeath(owner_ID, dead_ally_ID, resolver)` | `Ally_Death` | in `_HandleDeath`, on every living ally of the character who just died | — |
-| `OnAllyDamageTaken(owner_ID, damaged_ally_ID, resolver)` | `Ally_Damage_Taken` | in `_ResolveDamage`, polled on the target's living allies before mitigation; returns the fraction of the incoming hit this owner redirects to itself (0.0 base) | `float` |
+| `OnOtherAllyDamageTaken(owner_ID, damaged_ally_ID, resolver)` | `Other_Ally_Damage_Taken` | in `_ResolveDamage`, polled on the target's living allies before mitigation; returns the fraction of the incoming hit this owner redirects to itself (0.0 base) | `float` |
+| `TakesOtherAllyDebuffTurn(owner_ID, ally_ID, resolver)` | `Other_Ally_Debuff_Landed` | in `CastDebuff`, once an enemy's debuff has landed with at least 2 turns on the owner's ally; true takes 1 turn of it through `ApplyDebuff` (Shield Wall) |
+| `OnFreeBasicResolved(owner_ID, resolver)` | `Free_Basic_Resolved` | in `ResolveFreeBasic` once the basic's effects finish and the owner is alive (Premonition's counter, Bar Fight) |
 
 `StartOfBattle`'s `owner_ID`/`resolver` parameters were added specifically so traits can subscribe
 to resolver signals (`resolver.result_produced`) or apply battle-start status effects (e.g. the
@@ -1912,6 +1916,7 @@ own missing Health raises any attacker's damage against it) — share one comput
 (`StatusEffectResolver._MissingHealthDamageFactors`, called from
 `_ContributePersistentCasterFactors` alongside the existing Opportunist read), each keyed to its
 own status type name so the two stack as distinct `CombinedDamageModifier` buckets rather than one.
+Sanguine Pact's read is skipped while `IsResolvingEcho()`.
 A third field, `StatusEffectData.attacker_damage_value_multiple` (Sanction), contributes a debuff's
 own snapshotted value as a fixed multiple into the same kind of `CombinedDamageModifier` bucket,
 independent of `magnitude_kind`, via a sibling `StatusEffectResolver._DebuffValueDamageFactors` read
@@ -2401,17 +2406,9 @@ so each new hook widens the interface every subclass inherits. The `max-public-m
 constrains it.
 *Direction:* route events through fewer, event-typed entry points.
 
-### 15.5. Unused cascade instance hook
+### 15.5. Debug battles skip the one-per-Role check
 
-`Combat_Event.Cascade_Instance_Resolved`, `CharacterTrait.OnCascadeInstanceResolved` and
-`BattleResolver.GetActionOrdinal` have no shipped trait using them; only a test observes the hook.
+`battle_launcher_page.gd` builds its team without `PreBattleMenu.RoleAlreadyChosen`, so a debug battle
+can field two Plague Doctors. `CascadeEvent.repeating_source_ids` exists only to serve that case.
 
-*Direction:* remove them in a clean-up session, or keep them if a new trait needs them first.
-
-### 15.6. `Ally_*` hooks differ on whether they include the owner
-
-`Ally_Critical_Hit` and `Ally_Damage_Taken` skip the character the event is about, while
-`Ally_Reagent_Consumed` and `Ally_Attack_Landed` include them. `Other_Ally_Skill_Cast` names the
-exclusion.
-
-*Direction:* rename the hooks that skip that character to the `Other_Ally_` form.
+*Direction:* apply the check in the launcher, then remove `repeating_source_ids`.

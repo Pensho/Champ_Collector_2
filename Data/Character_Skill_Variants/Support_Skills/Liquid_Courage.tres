@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
 [ext_resource type="Script" uid="uid://bay8tvxoeo0tu" path="res://Scripts/Battle/Skill_Effects/apply_buff_effect.gd" id="2_egheh"]
 [ext_resource type="Script" uid="uid://cdtqrch6g28ma" path="res://Scripts/Battle/Skill_Effects/health_change_effect.gd" id="3_cl44d"]
+[ext_resource type="Script" uid="uid://b7r21tjjefx0t" path="res://Scripts/Battle/Skill_Effects/remove_random_debuff_effect.gd" id="4_cleanse"]
 
 [sub_resource type="Resource" id="Resource_yrah2"]
 script = ExtResource("2_egheh")
@@ -16,12 +17,16 @@ script = ExtResource("3_cl44d")
 fraction = 0.15
 target = 13
 
+[sub_resource type="Resource" id="Resource_cleanse"]
+script = ExtResource("4_cleanse")
+target = 13
+
 [resource]
 script = ExtResource("1_skill")
 name = "Liquid Courage"
-description = "Gain the Vigor buff for 2 turns and heals 15% of max Health."
+description = "Gain Vigor for 2 turns, heal 15% of max Health, and remove one random debuff."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Liquid_Courage/liquid_courage_1.jpg"
 target = 13
 cooldown = 3
-effects = Array[ExtResource("1_lamrk")]([SubResource("Resource_yrah2"), SubResource("Resource_24qgc")])
+effects = Array[ExtResource("1_lamrk")]([SubResource("Resource_yrah2"), SubResource("Resource_24qgc"), SubResource("Resource_cleanse")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

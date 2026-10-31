@@ -65,14 +65,24 @@ func test_basic_skill_does_not_drain_the_vessel() -> void:
 
 # --- Non-basic skills drain and empower ---
 
-func test_non_basic_skill_drains_five_percent_of_the_vessels_max_health() -> void:
+func test_non_basic_skill_drains_ten_percent_of_the_vessels_max_health() -> void:
 	_InitTrait(Types.Rarity.Uncommon)
 	_trait._vessel_ID = 1
 
 	_trait.OnSkillCast(0, [], "Burning Bolas", {}, _resolver)
 
-	# Max Health = 10 (Health attribute) x 4 (ATTRIBUTE_HEALTH_MULTIPLIER) = 40; 5% = 2.
-	assert_eq(_ally_a._current_health, 8)
+	# Max Health = 10 (Health attribute) x 4 (ATTRIBUTE_HEALTH_MULTIPLIER) = 40; 10% = 4.
+	assert_eq(_ally_a._current_health, 6)
+
+func test_rite_of_severance_drains_a_quarter_in_place_of_the_ten_percent() -> void:
+	_InitTrait(Types.Rarity.Uncommon)
+	_trait._vessel_ID = 1
+	_ally_a._current_health = 20
+	_owner._skills.append(_make_skill(ChosenVesselTrait.SACRIFICE_SKILL_NAME, 4))
+
+	_trait.OnSkillCast(0, [], ChosenVesselTrait.SACRIFICE_SKILL_NAME, {}, _resolver)
+
+	assert_eq(_ally_a._current_health, 10, "25% of 40 max Health, not 25% plus 10%")
 
 func test_non_basic_skill_reports_trait_text_on_the_vessel() -> void:
 	_InitTrait(Types.Rarity.Uncommon)
@@ -149,7 +159,7 @@ func test_devotion_increments_when_the_drain_kills_the_vessel() -> void:
 	_trait.OnSkillCast(0, [], "Burning Bolas", {}, _resolver)
 
 	assert_eq(_trait._devotion_count, 1)
-	assert_eq(_trait.GetOutgoingDamageBonus(0, 3, _resolver), 0.20)
+	assert_eq(_trait.GetOutgoingDamageBonus(0, 3, _resolver), 1.00)
 
 func test_devotion_increments_when_an_outside_source_kills_the_vessel() -> void:
 	_InitTrait(Types.Rarity.Legendary)
@@ -158,7 +168,7 @@ func test_devotion_increments_when_an_outside_source_kills_the_vessel() -> void:
 	_resolver.SetCurrentHealth(1, 0)
 
 	assert_eq(_trait._devotion_count, 1)
-	assert_eq(_trait.GetOutgoingDamageBonus(0, 3, _resolver), 0.20)
+	assert_eq(_trait.GetOutgoingDamageBonus(0, 3, _resolver), 1.00)
 
 func test_devotion_stacks_across_multiple_vessel_deaths() -> void:
 	_InitTrait(Types.Rarity.Legendary)
@@ -168,7 +178,7 @@ func test_devotion_stacks_across_multiple_vessel_deaths() -> void:
 	_resolver.SetCurrentHealth(2, 0)
 
 	assert_eq(_trait._devotion_count, 2)
-	assert_eq(_trait.GetOutgoingDamageBonus(0, 3, _resolver), 0.40)
+	assert_eq(_trait.GetOutgoingDamageBonus(0, 3, _resolver), 2.00)
 
 func test_devotion_resets_at_start_of_battle() -> void:
 	_InitTrait(Types.Rarity.Legendary)
@@ -184,7 +194,7 @@ func test_devotion_bonus_scales_by_rarity() -> void:
 
 	_resolver.SetCurrentHealth(1, 0)
 
-	assert_eq(_trait.GetOutgoingDamageBonus(0, 3, _resolver), 0.10)
+	assert_eq(_trait.GetOutgoingDamageBonus(0, 3, _resolver), 0.65)
 
 # --- Trait_Condition: the Vessel below half Health ---
 

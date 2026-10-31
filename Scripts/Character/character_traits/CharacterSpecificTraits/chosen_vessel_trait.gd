@@ -8,13 +8,15 @@ const POWER_BONUS: Dictionary[Types.Rarity, float] = {
 }
 
 const DEVOTION_BONUS: Dictionary[Types.Rarity, float] = {
-	Types.Rarity.Uncommon: 0.10,
-	Types.Rarity.Rare: 0.13,
-	Types.Rarity.Epic: 0.16,
-	Types.Rarity.Legendary: 0.20,
+	Types.Rarity.Uncommon: 0.65,
+	Types.Rarity.Rare: 0.75,
+	Types.Rarity.Epic: 0.85,
+	Types.Rarity.Legendary: 1.00,
 }
 
-const DRAIN_FRACTION: float = 0.05
+const DRAIN_FRACTION: float = 0.10
+const SACRIFICE_DRAIN_FRACTION: float = 0.25
+const SACRIFICE_SKILL_NAME: String = "Rite of Severance"
 const ATTUNE_DURATION: int = 3
 
 var _power_bonus: float = 0.0
@@ -70,7 +72,8 @@ func OnSkillCast(
 		return result
 
 	var vessel: Character = p_resolver.GetCharacters()[_vessel_ID]
-	var drain: int = int(ceil(p_resolver.GetMaxHealth(_vessel_ID) * DRAIN_FRACTION))
+	var drain_fraction: float = SACRIFICE_DRAIN_FRACTION if SACRIFICE_SKILL_NAME == p_skill_name else DRAIN_FRACTION
+	var drain: int = int(ceil(p_resolver.GetMaxHealth(_vessel_ID) * drain_fraction))
 	p_resolver.SetCurrentHealth(_vessel_ID, vessel._current_health - drain)
 	p_resolver.EmitTraitText(_vessel_ID, "Sacrificed", Color(0.5, 0.0, 0.3, 1.0))
 	result._damage_multiplier = 1.0 + _power_bonus

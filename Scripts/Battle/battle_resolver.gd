@@ -61,7 +61,6 @@ var _turn_bar_damage_remainder: Dictionary[int, float] = {}
 var _turn_ordinal: int = 0
 var _turn_ordinal_opened: bool = false
 # Advances once per outermost batch, so one skill or reagent reads as one action.
-var _action_ordinal: int = 0
 
 # The turn-bar section a player just clicked, consumed once by the next ZoneEffect
 # placement in the skill they cast it for; -1 when nothing is pending (an enemy's own
@@ -146,6 +145,7 @@ func GetEffectiveAttributes(
 	character.ApplyTraitAttributeBonus(attributes)
 	_ApplyLongAttributeBonus(p_character_ID, attributes)
 	Skills.ApplyActiveAttributeModifiers(character, attributes, p_include_debuffs)
+	attributes[Types.Attribute.Health] = _WithMaxHealthBuffs(character, attributes[Types.Attribute.Health])
 	return attributes
 
 func _ApplyLongAttributeBonus(p_character_ID: int, p_attributes: Dictionary[Types.Attribute, int]) -> void:
@@ -178,9 +178,6 @@ func IsTheBattleOver() -> Winner:
 
 func GetTurnOrdinal() -> int:
 	return _turn_ordinal
-
-func GetActionOrdinal() -> int:
-	return _action_ordinal
 
 func _OpenTurnOrdinal() -> void:
 	_turn_ordinal += 1
@@ -650,7 +647,6 @@ func _RemoveStatuses(p_statuses: Array, p_target_ID: int, p_count: int) -> void:
 func _BeginBatch() -> void:
 	if(_batch_depth == 0):
 		_batch = []
-		_action_ordinal += 1
 	_batch_depth += 1
 
 
@@ -693,6 +689,9 @@ func _HasBuff(p_character_ID: int, p_type: Types.Buff_Type) -> bool:
 			return true
 	return false
 
+
+func IsCrowdControlled(p_character_ID: int) -> bool:
+	return _HasDebuff(p_character_ID, Types.Debuff_Type.Stun)
 
 func _HasDebuff(p_character_ID: int, p_type: Types.Debuff_Type) -> bool:
 	if(not _characters.has(p_character_ID)):
@@ -768,13 +767,17 @@ func _BlockedByFatigue(p_character: Character) -> bool:
 
 
 func _MaxHealth(p_character: Character) -> int:
-	var health: int = p_character.GetTotalAttribute(Types.Attribute.Health)
+	return (_WithMaxHealthBuffs(p_character, p_character.GetTotalAttribute(Types.Attribute.Health))
+			* GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER)
+
+func _WithMaxHealthBuffs(p_character: Character, p_health: int) -> int:
+	var health: int = p_health
 	for buff in p_character._active_buffs:
 		var data: StatusEffectData = StatusEffectRegistry.BuffData(buff.type)
 		if(null != data and StatusEffectData.MagnitudeKind.MaxHealthAttributePercent == data.magnitude_kind):
 			var amplified_value: float = buff.value + buff.trait_riders.get(&"attribute_amplification", 0.0)
 			health += int(ceilf(health * amplified_value))
-	return health * GameBalance.ATTRIBUTE_HEALTH_MULTIPLIER
+	return health
 
 func _ApplyHealthLoss(p_character_ID: int, p_amount: int, p_attacker_ID: int = NO_ATTACKER) -> int:
 	var reduced_amount: int = int(floor(

@@ -204,9 +204,9 @@ enum Combat_Event
 	Reagent_Consumed,
 	Critical_Hit,
 	Ally_Death,
-	Ally_Damage_Taken,
+	Other_Ally_Damage_Taken,
 	Ally_Reagent_Consumed,
-	Ally_Critical_Hit,
+	Other_Ally_Critical_Hit,
 	Buff_Applied,
 	Debuff_Applied,
 	Debuff_Received,
@@ -218,10 +218,11 @@ enum Combat_Event
 	On_Kill,
 	Zone_Affected,
 	Resource_Depleted,
-	Cascade_Instance_Resolved,
 	Skill_Effects_Resolved,
 	Ally_Attack_Landed,
 	Other_Ally_Skill_Cast,
+	Other_Ally_Debuff_Landed,
+	Free_Basic_Resolved,
 }
 
 ## Source a DamageEffect's bonus_per fraction, or a SkillEffect's condition, scales
