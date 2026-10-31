@@ -84,6 +84,13 @@ func Deserialize(p_data: Dictionary) -> void:
 	_next_ID = max(_next_ID, int(p_data.get("next_ID", 0)))
 	print("Calling Deserialize for CharacterCollection")
 
+func Reset() -> void:
+	_characters.clear()
+	_collected_types.clear()
+	_used_character_textures.clear()
+	_current_max_amount = Game_Balance.COLLECTION_START_ROSTER_SIZE
+	_next_ID = 0
+
 func _CollectType(p_character: Character) -> void:
 	if(!_collected_types.has(p_character._name)):
 		_collected_types[p_character._name] = {

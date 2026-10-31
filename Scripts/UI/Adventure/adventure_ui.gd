@@ -84,12 +84,13 @@ func _GrantNodeLoot(p_node: NodeData, p_difficulty: int) -> void:
 	if loot_table == null:
 		return
 	loot_table._budget = int(LootManager.CalculateBudget(p_difficulty) * fraction)
-	LootManager.DistributeRewards(loot_table, p_difficulty)
+	_state.DistributeNodeRewards(p_node, loot_table, p_difficulty)
 
 func _on_interaction_resolved() -> void:
 	_state.MarkCurrentNodeComplete()
 	_graph_ui.Populate(_state.nodes)
 	_UpdateHeader()
+	main.GetInstance()._save_manager.RequestAutosave()
 
 func _IsBossComplete() -> bool:
 	for node in _state.nodes:
@@ -99,6 +100,7 @@ func _IsBossComplete() -> bool:
 
 func _on_finish_adventure_button_up() -> void:
 	main.GetInstance()._adventure_state_handler._state = AdventureState.new()
+	main.GetInstance()._save_manager.RequestAutosave()
 	var context_container: ContextContainer = ContextContainer.new()
 	context_container._scene = "uid://cwjabuf3kdtft"
 	context_container._previous_scene = _hub_scene

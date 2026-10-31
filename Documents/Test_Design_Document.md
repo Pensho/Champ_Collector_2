@@ -47,7 +47,8 @@ thoroughness belongs: if a rule can be stated about the engine, its cases live h
 Exemplars: `test_skill_effects.gd` (one section per `SkillEffect` subclass),
 `test_status_effect_hooks.gd`, `test_skill_effect_order.gd`, `test_graft.gd`,
 `test_targeting_order.gd`, `test_skills.gd`, the `test_turn_bar_*` family,
-`test_battle_resolver.gd`.
+`test_battle_resolver.gd`, `test_save_manager.gd` (saves to its own directory through
+`UseSaveDirectory`, never the real `user://`).
 
 A new mechanism gets a new Tier 1 file. A new *case* of an existing mechanism gets a new
 test inside the existing file.

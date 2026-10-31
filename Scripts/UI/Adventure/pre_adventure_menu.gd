@@ -91,8 +91,10 @@ func _on_start_button_up() -> void:
 		state._generation_seed = randi()
 		seed(state._generation_seed)
 		state.nodes = AdventureGenerator.GenerateAdventure(state.adventure)
+		randomize()
 		state.is_active = true
 		handler._state = state
+		main.GetInstance()._save_manager.RequestAutosave()
 	var context_container: ContextContainer = ContextContainer.new()
 	context_container._adventure_state = handler._state
 	context_container._previous_scene = "uid://mtv6bnpp8kjx"

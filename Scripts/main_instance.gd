@@ -35,12 +35,31 @@ func Init() -> void:
 	add_child(_tally_board)
 	_save_manager = SaveManager.new()
 	add_child(_save_manager)
+	_save_manager.PrepareSaveDirectory()
 	_adventure_state_handler = AdventureStateHandler.new()
 	_adventure_state_handler.name = "AdventureStateHandler"
 	add_child(_adventure_state_handler)
 	_adventure_state_handler.add_to_group(SaveManager.GROUP_SAVEABLE)
 
+	_shop.stock_changed.connect(_save_manager.RequestAutosave)
+	_tally_board.stock_changed.connect(_save_manager.RequestAutosave)
+
+	StartNewGame()
+
 	var context_container: ContextContainer = ContextContainer.new()
+	context_container._scene = "uid://c6c1o3oabj0pf"
+	change_scene(context_container)
+
+func StartNewGame() -> void:
+	_character_collection.Reset()
+	_item_collection.Reset()
+	_reagent_collection.Reset()
+	_resources.Reset()
+	_progress.Reset()
+	_shop.Reset()
+	_tally_board.Reset()
+	_adventure_state_handler.Reset()
+	_save_manager.ClearSession()
 
 	var content_pool: ContentPool = GameModeRegistry.Active()
 	print("build mode: ", content_pool.mode_name)
@@ -50,7 +69,9 @@ func Init() -> void:
 		_reagent_collection.Add(reagent_key)
 	GrantStartingResources(_resources, content_pool)
 
-	context_container._scene = "uid://c6c1o3oabj0pf"
+func EnterHub() -> void:
+	var context_container: ContextContainer = ContextContainer.new()
+	context_container._scene = "uid://cfdrcdtsx2jh7"
 	change_scene(context_container)
 
 ## The reagents a new game may start with under p_content_pool: everything the pool allows

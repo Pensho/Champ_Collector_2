@@ -7,6 +7,7 @@ const GRASSLANDS_NIGHT = preload("uid://bsmrvv2vuny5")
 const SETTINGS_MENU_SCENE = preload("res://Scenes/ui/Settings_Menu.tscn")
 
 @export var _background: TextureRect
+@export var _top_button: Button
 
 var _settings_menu: SettingsMenu
 
@@ -28,14 +29,28 @@ func _ready() -> void:
 	_settings_menu.position = Vector2i((get_viewport_rect().size * 0.5) - (_settings_menu.GetSize() * 0.5))
 	_settings_menu.hide()
 
+static func TopButtonText(p_continue_slot: int) -> String:
+	return "Start Game" if p_continue_slot == SaveManager.NO_SLOT else "Continue"
+
 @warning_ignore("unused_parameter") # Main menu requires nothing from the ContextContainer.
 func Init(_p_context_container: ContextContainer) -> void:
-	pass
+	_top_button.text = TopButtonText(main.GetInstance()._save_manager.GetContinueSlot())
 
 func _on_start_game_button_pressed() -> void:
-	var context_container: ContextContainer = ContextContainer.new()
-	context_container._scene = "uid://cfdrcdtsx2jh7"
-	main.GetInstance().change_scene(context_container)
+	var save_manager: SaveManager = main.GetInstance()._save_manager
+	var continue_slot: int = save_manager.GetContinueSlot()
+	var is_ready: bool = false
+	if (continue_slot == SaveManager.NO_SLOT):
+		main.GetInstance().StartNewGame()
+		is_ready = save_manager.Save(save_manager.GetLowestEmptySlot())
+		if (not is_ready):
+			Notification_Handler.Notify("Could not save the game", Types.Notification_Kind.Failure)
+	else:
+		is_ready = save_manager.Load(continue_slot)
+		if (not is_ready):
+			Notification_Handler.Notify("Could not load the game", Types.Notification_Kind.Failure)
+	if (is_ready):
+		main.GetInstance().EnterHub()
 
 func _on_quit_button_pressed() -> void:
 	get_tree().quit()

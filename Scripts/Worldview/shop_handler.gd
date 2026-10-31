@@ -171,6 +171,11 @@ func Deserialize(p_data: Dictionary) -> void:
 	_restock_anchor_unix = int(p_data.get("restock_anchor_unix", 0))
 	_favor_purchase_unix = int(p_data.get("favor_purchase_unix", 0))
 
+func Reset() -> void:
+	_stock.clear()
+	_restock_anchor_unix = 0
+	_favor_purchase_unix = 0
+
 static func IsPayloadRegistered(p_category: int, p_payload: String, p_item_type: int) -> bool:
 	match p_category:
 		Types.Category.Gear:

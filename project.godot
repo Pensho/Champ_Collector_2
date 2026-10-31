@@ -15,7 +15,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 [application]
 
 config/name="Writborn"
-config/version="0.0.14"
+config/version="0.0.15"
 run/main_scene="uid://knp34r3jmafv"
 config/features=PackedStringArray("4.7", "Mobile")
 run/max_fps=180
@@ -36,6 +36,7 @@ Frames_Per_Second_Overlay="*res://Scenes/ui/General_UI/Frames_Per_Second_Overlay
 [champ_collector]
 
 build/content_pool_mode="playtest"
+build/use_blank_saves=true
 
 [display]
 

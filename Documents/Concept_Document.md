@@ -1218,6 +1218,13 @@ as zone decor — so every node's surroundings vary while still reading clearly 
 
 A node might be tagged as Mandatory, many Unique type nodes will need the tag so an Adventure always gets a permanent progress node included per run if available.
 
+### 3.10 Saving
+
+The game saves itself after every lasting change, silently unless a save fails. Quitting never undoes a roll, a purchase, or a resource spent once a battle has started.
+
+The main menu's top button reads Start Game until a save exists, then Continue, which loads the last active slot and enters the hub. Saving or loading a slot makes it the last active slot; if that slot is gone, Continue uses the most recently saved one. Start Game saves to the lowest empty slot.
+
+The Save/Load menu starts a new game on a selected empty slot. Deleting the active slot resets the game in memory. Each slot keeps its previous version as a backup, restored with a notice when the save cannot be read.
 
 ---
 

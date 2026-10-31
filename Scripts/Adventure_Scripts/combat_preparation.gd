@@ -46,3 +46,7 @@ static func Purchase(p_choice: Choice, p_resources: ResourceHandler) -> Choice:
 static func Refund(p_choice: Choice, p_resources: ResourceHandler) -> void:
 	if p_choice != Choice.NONE:
 		p_resources.AddSupplies(Cost(p_choice))
+
+static func RefundIfUnfought(p_arguments: Dictionary, p_resources: ResourceHandler) -> void:
+	if not p_arguments.has("Battle_Result"):
+		Refund(p_arguments.get(ARGUMENT_KEY, Choice.NONE), p_resources)

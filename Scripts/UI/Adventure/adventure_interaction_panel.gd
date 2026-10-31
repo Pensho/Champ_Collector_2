@@ -117,6 +117,9 @@ func _on_gamble_resolved(p_context: ContextGamble) -> void:
 		_state.AddAdventureDebuff(p_context.loss_debuff, p_context.debuff_combats)
 		_label_description.text = "You lost! Afflicted with %s for %d combats." % [
 			Types.Debuff_Type.keys()[p_context.loss_debuff], p_context.debuff_combats]
+	# Complete before saving, so a restart cannot reopen the node and roll again.
+	_state.MarkCurrentNodeComplete()
+	main.GetInstance()._save_manager.RequestAutosave()
 	_button_primary.hide()
 	_button_secondary.text = "Continue"
 	_button_secondary.disabled = false

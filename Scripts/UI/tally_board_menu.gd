@@ -101,6 +101,7 @@ func _on_confirm_buy() -> void:
 		_insufficient_option.show()
 		return
 
+	main.GetInstance()._save_manager.RequestAutosave()
 	_result_option.SetText("Recruitment Complete", "The champion has joined your roster.")
 	_result_option.show()
 	RefreshGrid()

@@ -54,6 +54,15 @@ func Deserialize(p_data: Dictionary) -> void:
 	_fortunes_favor_pity[FortuneFavorTier.TierType.BRASS] = p_data.get("fortunes_favor_pity_brass", 0)
 	_fortunes_favor_pity[FortuneFavorTier.TierType.PARCHMENT] = p_data.get("fortunes_favor_pity_parchment", 0)
 
+func Reset() -> void:
+	_silver = 0
+	_supplies = 0
+	_tallies = 0
+	for tier_type: FortuneFavorTier.TierType in _fortunes_favor.keys():
+		_fortunes_favor[tier_type] = 0
+		_fortunes_favor_pity[tier_type] = 0
+	resources_changed.emit()
+
 func SpendSupplies(amount: int) -> bool:
 	if (_supplies >= amount):
 		_supplies -= amount

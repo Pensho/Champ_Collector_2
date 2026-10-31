@@ -122,6 +122,7 @@ func _on_confirm_buy() -> void:
 		_insufficient_option.show()
 		return
 
+	main.GetInstance()._save_manager.RequestAutosave()
 	_result_option.SetText("Purchase Complete", "The item has been added to your inventory.")
 	_result_option.show()
 	RefreshGrid()

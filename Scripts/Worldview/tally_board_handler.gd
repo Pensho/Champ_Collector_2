@@ -93,3 +93,7 @@ func Deserialize(p_data: Dictionary) -> void:
 			"sold_out": bool(entry["sold_out"]),
 		})
 	_restock_anchor_unix = int(p_data.get("restock_anchor_unix", 0))
+
+func Reset() -> void:
+	_offers.clear()
+	_restock_anchor_unix = 0

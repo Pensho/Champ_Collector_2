@@ -1060,6 +1060,7 @@ func _ResolveGraft(p_symbiote_ID: int, p_target_enemy_ID: int) -> void:
 	RefreshAllTraitVisuals()
 	_state = BattleState.Awaiting_Player_Input
 	_RefreshTargetingHelp()
+	main.GetInstance()._save_manager.RequestAutosave()
 
 func _ResolveReagentConsumption(p_reagent_index: int, p_target_ID: int) -> void:
 	var was_brewed: bool = _reagent_loadout.IsBrewed(p_reagent_index)
@@ -1082,6 +1083,7 @@ func _ResolveReagentConsumption(p_reagent_index: int, p_target_ID: int) -> void:
 	_state = BattleState.Awaiting_Player_Input
 	_battle_ui._turn_bar.DisableZones(true)
 	_RefreshTargetingHelp()
+	main.GetInstance()._save_manager.RequestAutosave()
 
 func PlayImpactReaction(p_target_ID: int, p_amount: int) -> void:
 	var intensity: float = ImpactIntensity.Normalize(p_amount, _MaxHealthDisplay(p_target_ID))

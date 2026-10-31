@@ -18,6 +18,9 @@ func Deserialize(p_data: Dictionary) -> void:
 	for key in p_data["stage_difficulty"]:
 		_stage_difficulty[key] = int(p_data["stage_difficulty"][key])
 
+func Reset() -> void:
+	_stage_difficulty.clear()
+
 func RegisterEncounter(p_encounter_ID: String) -> void:
 	print("RegisterEncounter for: ", p_encounter_ID)
 	if (_stage_difficulty.has(p_encounter_ID)):

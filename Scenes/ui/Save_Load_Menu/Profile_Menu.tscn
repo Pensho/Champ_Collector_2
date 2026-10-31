@@ -10,7 +10,7 @@
 [ext_resource type="Script" uid="uid://853wrgpde68y" path="res://Scripts/Audio/button_sound_profile.gd" id="8_1bkgv"]
 [ext_resource type="Resource" path="res://Data/Sound_Cues/button_standard.tres" id="9_qdh4v"]
 
-[node name="ProfileMenu" type="Control" unique_id=1842347494 node_paths=PackedStringArray("_profiles", "_details_panel", "_button_save", "_button_load", "_button_delete")]
+[node name="ProfileMenu" type="Control" unique_id=1842347494 node_paths=PackedStringArray("_profiles", "_details_panel", "_button_save", "_button_load", "_button_delete", "_button_new_game")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -23,6 +23,7 @@ _details_panel = NodePath("TextureRect/HBoxContainer/ColorRect_Save_Details")
 _button_save = NodePath("HBoxContainer_Actions/Button_Save")
 _button_load = NodePath("HBoxContainer_Actions/Button_Load")
 _button_delete = NodePath("HBoxContainer_Actions/Button_Delete")
+_button_new_game = NodePath("HBoxContainer_Actions/Button_NewGame")
 
 [node name="TextureRect" type="TextureRect" parent="." unique_id=330437269]
 layout_mode = 0
@@ -234,6 +235,14 @@ theme_override_constants/outline_size = 3
 disabled = true
 text = "Delete"
 
+[node name="Button_NewGame" type="Button" parent="HBoxContainer_Actions" unique_id=1440139866]
+layout_mode = 2
+theme = ExtResource("4_xt7wm")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+disabled = true
+text = "New Game"
+
 [node name="Button_Back" type="Button" parent="." unique_id=379839095]
 layout_mode = 0
 offset_left = 1176.0
@@ -255,6 +264,7 @@ buttons = Dictionary[NodePath, ExtResource("8_1bkgv")]({
 NodePath("../HBoxContainer_Actions/Button_Save"): ExtResource("9_qdh4v"),
 NodePath("../HBoxContainer_Actions/Button_Load"): ExtResource("9_qdh4v"),
 NodePath("../HBoxContainer_Actions/Button_Delete"): ExtResource("9_qdh4v"),
+NodePath("../HBoxContainer_Actions/Button_NewGame"): ExtResource("9_qdh4v"),
 NodePath("../Button_Back"): ExtResource("9_qdh4v")
 })
 metadata/_custom_type_script = "uid://brborf0wdvmjy"
@@ -262,4 +272,5 @@ metadata/_custom_type_script = "uid://brborf0wdvmjy"
 [connection signal="button_up" from="HBoxContainer_Actions/Button_Save" to="." method="_on_save_button_up"]
 [connection signal="button_up" from="HBoxContainer_Actions/Button_Load" to="." method="_on_load_button_up"]
 [connection signal="button_up" from="HBoxContainer_Actions/Button_Delete" to="." method="_on_delete_button_up"]
+[connection signal="button_up" from="HBoxContainer_Actions/Button_NewGame" to="." method="_on_new_game_button_up"]
 [connection signal="button_up" from="Button_Back" to="." method="_on_back_button_up"]

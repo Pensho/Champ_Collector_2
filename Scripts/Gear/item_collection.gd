@@ -73,6 +73,10 @@ static func _LoadItemTexture(p_path: String) -> Texture:
 		return load(p_path)
 	return null
 
+func Reset() -> void:
+	_items.clear()
+	_next_id = 0
+
 func _CachedTexture(p_path: String) -> Texture:
 	if(not _texture_cache.has(p_path)):
 		_texture_cache[p_path] = _LoadItemTexture(p_path)

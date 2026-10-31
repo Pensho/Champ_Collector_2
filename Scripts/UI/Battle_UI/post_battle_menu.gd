@@ -71,6 +71,8 @@ func Init(p_context_container: ContextContainer) -> void:
 				_context._arguments["character_dmg_" + str(character_ID)], total_damage_dealt)
 		_character_result_UI[character_ID].show()
 
+	main.GetInstance()._save_manager.RequestAutosave()
+
 func focus_button() -> void:
 	if _h_box_container:
 		for button: Button in _h_box_container.get_children():

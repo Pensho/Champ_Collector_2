@@ -9,6 +9,15 @@ extends EditorPlugin
 
 func _enter_tree() -> void:
 	_RegisterBuildModeSetting()
+	_RegisterBlankSavesSetting()
+
+func _RegisterBlankSavesSetting() -> void:
+	var setting_name: String = SaveManager.BLANK_SAVES_SETTING
+	if(not ProjectSettings.has_setting(setting_name)):
+		ProjectSettings.set_setting(setting_name, false)
+	ProjectSettings.set_initial_value(setting_name, false)
+	ProjectSettings.set_as_basic(setting_name, true)
+	ProjectSettings.add_property_info({"name": setting_name, "type": TYPE_BOOL})
 
 func _RegisterBuildModeSetting() -> void:
 	var setting_name: String = GameModeRegistry.BUILD_MODE_SETTING

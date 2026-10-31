@@ -24,6 +24,11 @@ func MarkCurrentNodeComplete() -> void:
 			node.is_complete = true
 			break
 
+func DistributeNodeRewards(p_node: NodeData, p_loot_table: LootTable, p_difficulty: int) -> void:
+	seed(hash([_generation_seed, p_node.index]))
+	LootManager.DistributeRewards(p_loot_table, p_difficulty)
+	randomize()
+
 func AddAdventureBuff(p_type: Types.Buff_Type, p_combats: int) -> void:
 	active_buffs[p_type] = maxi(active_buffs.get(p_type, 0), p_combats)
 
@@ -73,6 +78,7 @@ func Deserialize(p_data: Dictionary) -> void:
 	if adventure != null and _generation_seed >= 0:
 		seed(_generation_seed)
 		nodes = AdventureGenerator.GenerateAdventure(adventure)
+		randomize()
 	else:
 		is_active = false
 

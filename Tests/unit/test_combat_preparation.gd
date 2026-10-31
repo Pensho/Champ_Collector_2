@@ -62,3 +62,16 @@ func test_refund_returns_the_purchase_cost() -> void:
 	var bought: Choice = CombatPreparation.Purchase(Choice.PREPARE, _resources)
 	CombatPreparation.Refund(bought, _resources)
 	assert_eq(_resources.GetSupplies(), 10)
+
+func test_leaving_before_the_battle_refunds_the_purchase() -> void:
+	_resources.AddSupplies(10)
+	var bought: Choice = CombatPreparation.Purchase(Choice.PREPARE, _resources)
+	CombatPreparation.RefundIfUnfought({CombatPreparation.ARGUMENT_KEY: bought}, _resources)
+	assert_eq(_resources.GetSupplies(), 10)
+
+func test_leaving_after_a_lost_battle_refunds_nothing() -> void:
+	_resources.AddSupplies(10)
+	var bought: Choice = CombatPreparation.Purchase(Choice.PREPARE, _resources)
+	var arguments: Dictionary = {CombatPreparation.ARGUMENT_KEY: bought, "Battle_Result": "Loss"}
+	CombatPreparation.RefundIfUnfought(arguments, _resources)
+	assert_eq(_resources.GetSupplies(), 10 - GameBalance.ADVENTURE_PREPARE_COST)

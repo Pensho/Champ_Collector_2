@@ -101,7 +101,7 @@ main.GetInstance()._item_collection   # etc.
   `ResourceHandler`, `ProgressHandler`, `ShopHandler`, `TallyBoardHandler`, `SaveManager`,
   `AdventureStateHandler`.
 - Adds `AdventureStateHandler` to the `SaveManager.GROUP_SAVEABLE` group.
-- Seeds a default roster by duplicating preloaded `CharacterPreset` resources (Lancer, Thief,
+- Calls `StartNewGame()`, which resets every saveable node and seeds a default roster by duplicating preloaded `CharacterPreset` resources (Lancer, Thief,
   Bar Brawler, Jester, Chronophage, Tidal Corsair, Centaur Lancer, Centaur Archivist, Tactician,
   Bloodmage, Sorcerer, Symbiote, Diviner, Appraiser, Emissary, Cultist, Plague Doctor, Warlord,
   Alchemist) — one preset per currently fielded champion, not one per Role: a Role can be
@@ -1960,15 +1960,17 @@ a restock anchor in wall-clock unix seconds (`Concept_Document.md` 3.6.3).
 `SaveManager` (`Scripts/Worldview/save_manager.gd`) implements **group-based serialization**.
 Saveable nodes join the `"saveable"` group (`GROUP_SAVEABLE`); on `Save(slot)` the manager walks
 the group, calls each node's `Serialize()`, attaches a metadata block, and writes the whole thing
-as JSON to `user://profile_<slot>.save`.
+as JSON to a temporary file. It then renames a readable `user://profile_<slot>.save` to its
+`.backup` and the temporary file to the slot. A slot exists if either file does; `Load` and `GetSlotMetadata` read
+the backup when the slot file is missing or unreadable.
 
 `Load(slot)` parses the JSON and deserializes with a deliberate ordering constraint: **items load
 before characters**, so that gear referenced by a character's `_held_items` already exists in the
 `ItemCollection` when the character is restored. `_deserialize_group_by_type` is used to force this
 order, and remaining saveable nodes are deserialized afterward.
 
-Both `Save(slot)` and `Load(slot)` return `bool` (`false` on a missing slot, an unopenable
-file, or unparsable JSON) so callers can report success or failure to the player via
+Both `Save(slot)` and `Load(slot)` return `bool` (`false` on a failed write, or on a slot with no
+readable file) so callers can report success or failure to the player via
 [`Notification_Handler`](#35-notification_handler-class_name-notificationhandler).
 
 What persists: per-character `_preset_path`, level, experience, attributes, and held-item IDs;
@@ -1977,6 +1979,24 @@ rebuilt from their preset's `res://` path and then have their saved progression 
 
 Serialization roundtrips are covered by `test_collection_serialization.gd`
 (see `Test_Design_Document.md`).
+
+### 10.3. Auto-save
+
+A successful `Save` or `Load` sets the **active slot**, the slot the game in session saves to, and
+persists it to `last_active_slot.cfg` as the **last active slot** `GetContinueSlot()` reads. The
+active slot is unset at launch and by `ClearSession()`, and `RequestAutosave()` does nothing while
+it is unset.
+
+`RequestAutosave()` coalesces a frame's requests into one deferred `Save`. Every action that
+changes serialized state calls it once the whole action finishes, from the menu or scene running
+the action: rewards land in `PostBattleMenu.Init`, and `_resources._silver +=` bypasses
+`resources_changed`, so handler mutators and resource signals are never triggers. The exception is
+restocking, which saves through `stock_changed`. Graft and reagent saves run mid-battle, so battle
+code does not write to serialized `Character` fields.
+
+The project setting `champ_collector/build/use_blank_saves` (registered by the `game_mode_setting`
+plugin, honored in editor runs only) makes `PrepareSaveDirectory()` empty `user://blank_saves/` at
+launch and use it in place of `user://`.
 
 ---
 
@@ -1988,7 +2008,9 @@ The adventure (run) system lives in `Scripts/Adventure_Scripts/`:
   controlled branching). Each FIGHT node rolls one weighted `battle_variants` entry and the BOSS
   node one `boss_battle_variants` entry; the node gets a copy of it
   (`duplicate_deep(DEEP_DUPLICATE_NONE)`, so its enemy lists are its own) carrying the adventure's
-  loot table, and the biome's stage when the variant names none.
+  loot table, and the biome's stage when the variant names none. A run's seed decides its map and
+  its Hint and Escalate rewards (`AdventureState.DistributeNodeRewards`); every `seed()` call is
+  followed by `randomize()`, so nothing else rolls from it.
 - `adventure_state.gd` / `adventure_state_handler.gd` track current progress, adventure-spanning
   effects, and serialization; the handler is in the `"saveable"` group.
 - Rewards flow through `LootManager` (`Scripts/Battle/loot_manager.gd`) and `LootTable` resources:

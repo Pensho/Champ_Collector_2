@@ -406,6 +406,7 @@ func SellItem() -> void:
 	var item_id: int = _displayed_item_ids[_selected_item_slot_ID]
 	main.GetInstance()._resources._silver += LootManager.GetSellValue(_item_collection[item_id]._rarity)
 	main.GetInstance()._item_collection.Remove(item_id)
+	main.GetInstance()._save_manager.RequestAutosave()
 	RefreshDisplayedItems()
 	RefreshItemGrid()
 	_confirm_option.hide()
@@ -436,6 +437,7 @@ func ReleaseCharacter() -> void:
 	main.GetInstance()._item_collection.UnequipAllHeldItems(character)
 	main.GetInstance()._character_collection.Remove(_selected_character_ID)
 	_character_collection.erase(_selected_character_ID)
+	main.GetInstance()._save_manager.RequestAutosave()
 	RefreshDisplayedItems()
 
 	_confirm_option.hide()
@@ -511,6 +513,7 @@ func ConsumeSacrificeCandidate() -> void:
 func _on_renown_window_attribute_selected(p_attribute: Types.Attribute) -> void:
 	_character_collection[_selected_character_ID].AddRenown(p_attribute)
 	ConsumeSacrificeCandidate()
+	main.GetInstance()._save_manager.RequestAutosave()
 	_renown_window.hide()
 	ShowSelectedCharacter(_selected_character_ID)
 
@@ -562,6 +565,7 @@ func UpgradeItem() -> void:
 		return
 
 	item.Upgrade()
+	main.GetInstance()._save_manager.RequestAutosave()
 	if(-1 != _selected_item_slot_ID):
 		_available_items[_selected_item_slot_ID].level.text = str(item._level)
 	if(-1 != _selected_character_ID):
@@ -605,6 +609,7 @@ func SellReagent() -> void:
 	var reagent_data: ReagentData = ReagentRegistry.Get(_selected_reagent_key)
 	main.GetInstance()._resources.AddSilver(LootManager.GetReagentSellValue(reagent_data.rarity))
 	_reagent_collection.Consume(_selected_reagent_key)
+	main.GetInstance()._save_manager.RequestAutosave()
 	RefreshReagentGrid()
 	_reagent_confirm_option.hide()
 	_reagent_select_option.hide()
@@ -632,6 +637,7 @@ func BuyRosterSlot() -> void:
 	var price: int = CharacterCollection.GetRosterSlotPrice(collection._current_max_amount)
 	if(main.GetInstance()._resources.SpendSilver(price)):
 		collection.IncreaseCollectionSize()
+		main.GetInstance()._save_manager.RequestAutosave()
 		RefreshCharacterGrid()
 	_confirm_option.hide()
 
@@ -658,6 +664,7 @@ func TriggerEquipItem() -> void:
 
 	_character_collection[_selected_character_ID].EquipItem(item_id)
 	main.GetInstance()._item_collection.EquipCollectionItem(item_id)
+	main.GetInstance()._save_manager.RequestAutosave()
 	RefreshDisplayedItems()
 	RefreshItemGrid()
 	ShowSelectedCharacter(_selected_character_ID)
@@ -680,6 +687,7 @@ func TriggerUnequipItem(p_item_type: Types.Slot) -> void:
 
 	main.GetInstance()._item_collection.UnequipCollectionItem(held_item_ID)
 	_character_collection[_selected_character_ID].UnequipItem(p_item_type)
+	main.GetInstance()._save_manager.RequestAutosave()
 
 	RefreshDisplayedItems()
 	RefreshItemGrid()

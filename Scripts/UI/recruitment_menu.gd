@@ -78,6 +78,7 @@ func _on_confirm_recruit() -> void:
 		return
 
 	var rewards: Array[Dictionary] = RecruitmentManager.ResolveUse(_pending_tier)
+	main.GetInstance()._save_manager.RequestAutosave()
 	var reward_descriptions: Array[String] = []
 	for reward in rewards:
 		match reward["type"]:

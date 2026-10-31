@@ -178,10 +178,7 @@ func _on_next_button_up() -> void:
 	_ShowPart(Part.Reagents)
 
 func _on_exit_button_up() -> void:
-	# Backing out of an adventure combat returns the Supplies spent on Prepare or Bait.
-	CombatPreparation.Refund(
-			_self_context._arguments.get(CombatPreparation.ARGUMENT_KEY, CombatPreparation.Choice.NONE),
-			main.GetInstance()._resources)
+	CombatPreparation.RefundIfUnfought(_self_context._arguments, main.GetInstance()._resources)
 	_self_context._arguments.erase(CombatPreparation.ARGUMENT_KEY)
 	_self_context._scene = _self_context._previous_scene
 	main.GetInstance().change_scene(_self_context)
@@ -197,6 +194,7 @@ func _on_start_button_up() -> void:
 	_self_context._player_battle_characters = _chosen_characters.values()
 	_self_context._battle_reagents.assign(_chosen_reagents.values())
 
+	main.GetInstance()._save_manager.RequestAutosave()
 	main.GetInstance().change_scene(_self_context)
 	hide()
 

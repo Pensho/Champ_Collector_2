@@ -5,13 +5,14 @@ extends Control
 @export var _button_save: Button
 @export var _button_load: Button
 @export var _button_delete: Button
+@export var _button_new_game: Button
 
 var _confirm_delete_dialog: ConfirmDeleteDialog
 var _selected_slot: int = -1
 
 @warning_ignore("unused_parameter") # Main menu requires nothing from the ContextContainer.
 func Init(_p_context_container: ContextContainer) -> void:
-	for i in _profiles.size():
+	for i in SaveManager.SLOT_COUNT:
 		_profiles[i].ConnectButton(_on_profile_button.bind(i))
 		UpdateProfileDataSlot(i)
 
@@ -43,12 +44,15 @@ func _UpdateActionButtons() -> void:
 		_button_save.disabled = true
 		_button_load.disabled = true
 		_button_delete.disabled = true
+		_button_new_game.disabled = true
 		return
 
 	var has_save: bool = main.GetInstance()._save_manager.HasSaveSlot(_selected_slot)
-	_button_save.disabled = false
+	# With no game in session, memory holds a blank start that must not overwrite a slot.
+	_button_save.disabled = not main.GetInstance()._save_manager.HasActiveGame()
 	_button_load.disabled = not has_save
 	_button_delete.disabled = not has_save
+	_button_new_game.disabled = has_save
 
 func _on_save_button_up() -> void:
 	var entered_name: String = _profiles[_selected_slot].GetEnteredName()
@@ -71,6 +75,16 @@ func _on_load_button_up() -> void:
 		Notification_Handler.Notify("Game loaded")
 	else:
 		Notification_Handler.Notify("Could not load the game", Types.Notification_Kind.Failure)
+	_UpdateActionButtons()
+
+func _on_new_game_button_up() -> void:
+	var entered_name: String = _profiles[_selected_slot].GetEnteredName()
+	main.GetInstance().StartNewGame()
+	main.GetInstance()._save_manager._active_profile_name = entered_name
+	if (main.GetInstance()._save_manager.Save(_selected_slot)):
+		main.GetInstance().EnterHub()
+	else:
+		Notification_Handler.Notify("Could not save the game", Types.Notification_Kind.Failure)
 
 func _on_delete_button_up() -> void:
 	_confirm_delete_dialog.Init(_profiles[_selected_slot].GetEnteredName())
@@ -78,9 +92,12 @@ func _on_delete_button_up() -> void:
 	_confirm_delete_dialog.show()
 
 func _on_delete_confirmed(p_slot: int) -> void:
+	var was_active: bool = main.GetInstance()._save_manager.GetActiveSlot() == p_slot
 	var succeeded: bool = main.GetInstance()._save_manager.DeleteSave(p_slot)
 	if (succeeded):
 		Notification_Handler.Notify("Profile deleted")
+		if (was_active):
+			main.GetInstance().StartNewGame()
 	else:
 		Notification_Handler.Notify("Could not delete the profile", Types.Notification_Kind.Failure)
 
@@ -89,4 +106,4 @@ func _on_delete_confirmed(p_slot: int) -> void:
 		_details_panel.Clear()
 		_profiles[p_slot].SetSelected(false)
 		_selected_slot = -1
-		_UpdateActionButtons()
+	_UpdateActionButtons()

@@ -39,7 +39,7 @@ color = Color(0.74558026, 0.7455802, 0.7455802, 1)
 color_ramp = SubResource("GradientTexture1D_1ilth")
 anim_offset_max = 1.0
 
-[node name="MainMenu" type="Control" unique_id=530331282 node_paths=PackedStringArray("_background")]
+[node name="MainMenu" type="Control" unique_id=530331282 node_paths=PackedStringArray("_background", "_top_button")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -49,6 +49,7 @@ grow_vertical = 2
 theme = ExtResource("1_hnwi1")
 script = ExtResource("2_hnwi1")
 _background = NodePath("TextureRect")
+_top_button = NodePath("MarginContainer/VBoxContainer/Control2/ButtonsVBox/Button_StartGame")
 
 [node name="TextureRect" type="TextureRect" parent="." unique_id=1184415766]
 unique_name_in_owner = true

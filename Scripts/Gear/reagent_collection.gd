@@ -9,6 +9,9 @@ func _ready() -> void:
 	self.name = self.get_script().get_global_name()
 	add_to_group(SaveManager.GROUP_SAVEABLE)
 
+func Reset() -> void:
+	_reagent_counts.clear()
+
 func Add(p_reagent_key: String, p_amount: int = 1) -> void:
 	_reagent_counts[p_reagent_key] = _reagent_counts.get(p_reagent_key, 0) + p_amount
 
