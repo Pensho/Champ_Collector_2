@@ -35,7 +35,7 @@ Enemy Health is deferred: an absolute value means nothing until progression and 
 
 `Scripts/Debug/blowout_calibration.gd` holds the reference profiles (`REFERENCE_PROFILES`) and the basic-skill baseline (`CASTER_SCALED_BASE`) these ratios are measured against — declared constants that correspond to no shipped champion or enemy, so a roster change never moves the ruler — and recomputes all of the above when the formula or the profiles change.
 
-Each engine is also measured in **build steps**, read against the tier's round budget in 5.3: **turns-to-threshold** is the number of player turns an uninterrupted ideal sequence takes until one resolution reaches the tier's ratio, and **fragility** is the turns lost when one step of that sequence is interrupted. A boss engine builds for 4–6 rounds before its payoff, so a fight has room for two payoffs; the readout informs tuning and lock design (1.2).
+A boss engine builds for 4–6 rounds before its payoff, so a fight has room for two payoffs; `Role_Kit_Design.md` section 4 holds each payoff's estimated build length.
 
 #### 1.1.3. The three damage channels
 

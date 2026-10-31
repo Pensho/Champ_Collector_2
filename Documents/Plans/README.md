@@ -37,9 +37,6 @@ Code plans:
   static layer nodes, refreshes only node states, and moves ambient particles onto
   `BiomeVisualData`.
 
-- `Plan_Engine_Build_Step_Metric.md` — turns-to-threshold and fragility per team (Concept
-  1.1.2), extending the burst reachability tooling with a turn dimension.
-
 - `Plan_Localization.md` — the six-step localization rollout and its conventions. Each
   step gets a detailed plan when the step before it completes.
 - `Plan_Localization_Text_Preparation.md` — step 1: every player-facing string routed
