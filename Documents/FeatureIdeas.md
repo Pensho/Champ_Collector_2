@@ -98,7 +98,7 @@ Effort: **S** = hours, **M** = days, **L** = week+
   Enemy passives show only a name and a flavor line until the effect triggers once, then the full mechanical text unlocks — for the rest of the battle and permanently in a bestiary, so knowledge transfers across encounters re-using the variant. Upgrade path from the current rule (enemy passives not inspectable at all, Concept_Document 3.2); needs investigation of screen-space budget and reveal handling first.
 
 - **Luck and Hexed roll callout** *(Priority: Medium | Effort: S)*
-  Show "Lucky" or "Hexed" combat text when the second roll from Luck or Hexed changed an outcome (a dodge, a crit, a resist, a beam's hit roll), so these statuses visibly matter. `BattleResolver.RollFavoring` returns only the kept value today, so it needs to report whether the second roll decided the outcome. Needed by the Hue-Eater draft (Encounter_Design_Document.md 2.3).
+  Show "Lucky" or "Hexed" combat text when the second roll from Luck or Hexed changed an outcome (a dodge, a crit, a resist, a beam's hit roll), so these statuses visibly matter. `BattleResolver.RollFavoring` returns only the kept value today, so it needs to report whether the second roll decided the outcome. Needed by the Hue-Eater draft (Encounter_Design_Document.md 2.2).
 
 - **On-character trait state markers** *(Priority: Medium | Effort: M)*
   Show trait state on the character representations instead of in passive tooltips: the Cultist's Vessel, marked by a start-of-combat passive effect; each enemy's Infraction tally; and the stack and charge counts passives write into their tooltip today (Instability, Calibration, Tension, Devotion).

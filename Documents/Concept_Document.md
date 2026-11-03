@@ -1392,10 +1392,6 @@ Intended to be singlular encounters with specific, targetable and grindable rewa
 #### 5.2.1. Quest Board
 The quest board shall be a board to house both guidance for permanent progress, most often tied to Adventures and also small randomized single encounters to yield randomized rewards (silver, gear, experience and maybe other)
 
-#### 5.2.2. Reanimating Statues 1, 2 and 3 (Gear encounter)
-There now is 3 encounters to choose from for gear farming, one per equippable item: Reanimating Statues 1 (Boots), 2 (Weapons), and 3 (Off-hands). All three are Mini-boss tier (see section 5.3); their mechanics, compositions, and intended solutions are cataloged in `Encounter_Design_Document.md` section 2.2.
-This is subject to change, to divert the way to engage with gear encounters. These 3 statues might become part of a corresponding type of node for Clockwork Spire, other Acts will have need to access this via another mean.
-
 ### 5.3. Encounter tiers
 
 Every battle encounter belongs to one of three tiers. Expected fight length is a tier parameter, measured in rounds — one round is each fielded champion acting once. The round targets are starting points, to be tuned as content is placed.
