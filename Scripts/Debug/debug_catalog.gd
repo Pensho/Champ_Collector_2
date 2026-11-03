@@ -78,6 +78,30 @@ static func GetPlayerCharacterPresets() -> Dictionary[String, CharacterPreset]:
 				presets[preset._name] = preset
 	return presets
 
+## Every reagent family in the full registry, keys stripped of their rarity suffix. Brew-only
+## reagents are left out, since they exist only inside a battle's brew pool.
+static func GetReagentFamilies() -> Array[String]:
+	var families: Array[String] = []
+	for reagent_key in ReagentRegistry.REAGENTS.keys():
+		var reagent: ReagentData = ReagentRegistry.REAGENTS[reagent_key]
+		if(reagent.brew_only):
+			continue
+		var family: String = reagent_key.trim_suffix("_" + Types.Rarity.find_key(reagent.rarity))
+		if(not families.has(family)):
+			families.append(family)
+	families.sort()
+	return families
+
+static func GetReagentRarities(p_family: String) -> Array[Types.Rarity]:
+	var rarities: Array[Types.Rarity] = []
+	for rarity in Types.Rarity.values():
+		if(ReagentRegistry.REAGENTS.has(GetReagentKey(p_family, rarity))):
+			rarities.append(rarity)
+	return rarities
+
+static func GetReagentKey(p_family: String, p_rarity: Types.Rarity) -> String:
+	return p_family + "_" + Types.Rarity.find_key(p_rarity)
+
 static func GetItemTextureForSlot(p_slot: Types.Slot) -> String:
 	if(ITEM_SLOT_TEXTURES.has(p_slot)):
 		return ITEM_SLOT_TEXTURES[p_slot]

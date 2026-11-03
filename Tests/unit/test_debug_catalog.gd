@@ -33,3 +33,18 @@ func test_player_presets_list_a_champion_in_both_lists_once() -> void:
 	var champion: CharacterPreset = _make_preset("Champion")
 	GameModeRegistry.PinForTest(_make_pool([champion], [champion]))
 	assert_eq(DebugCatalog.GetPlayerCharacterPresets().size(), 1)
+
+func test_reagent_families_strip_the_rarity_suffix() -> void:
+	var families: Array[String] = DebugCatalog.GetReagentFamilies()
+	assert_true(families.has("Sigil_Speed"), "A family should be listed once, without its rarity suffix")
+	assert_false(families.has("Sigil_Speed_Rare"), "Rarity-suffixed keys should not be listed as families")
+	assert_eq(families.count("Sigil_Speed"), 1, "Each family should appear once across its rarities")
+
+func test_reagent_families_exclude_brew_only_reagents() -> void:
+	assert_false(DebugCatalog.GetReagentFamilies().has("Lesser_Tincture"),
+			"Brew-only reagents exist only inside a battle's brew pool")
+
+func test_reagent_rarities_list_only_registered_tiers() -> void:
+	var rarities: Array[Types.Rarity] = DebugCatalog.GetReagentRarities("Sigil_Speed")
+	assert_true(rarities.has(Types.Rarity.Legendary), "A registered tier should be offered")
+	assert_false(rarities.has(Types.Rarity.Common), "A tier with no reagent resource should not be offered")

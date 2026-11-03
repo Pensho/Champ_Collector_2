@@ -91,3 +91,15 @@ func test_grant_all_implemented_relics_adds_one_of_each_at_the_requested_rarity(
 		assert_eq(item._rarity, Types.Rarity.Uncommon, "Every granted item should be the requested rarity")
 		assert_not_null(item._relic_effect, "Every granted item should carry its effect resource")
 
+
+func test_grant_reagent_adds_the_quantity_at_the_chosen_rarity() -> void:
+	var collection: ReagentCollection = ReagentCollection.new()
+	assert_true(DebugActions.grant_reagent(collection, "Sigil_Speed", Types.Rarity.Epic, 3))
+	assert_eq(collection.GetCount("Sigil_Speed_Epic"), 3, "The chosen quantity should land on the rarity's key")
+	collection.free()
+
+func test_grant_reagent_rejects_a_rarity_the_family_lacks() -> void:
+	var collection: ReagentCollection = ReagentCollection.new()
+	assert_false(DebugActions.grant_reagent(collection, "Sigil_Speed", Types.Rarity.Common, 3))
+	assert_true(collection.GetAllOwned().is_empty(), "An unregistered key should add nothing")
+	collection.free()

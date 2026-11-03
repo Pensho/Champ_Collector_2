@@ -1,0 +1,82 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/Debug/pages/reagents_page.gd" id="1_script"]
+
+[node name="ReagentsPage" type="Control" node_paths=PackedStringArray("_family_option", "_rarity_option", "_quantity_spin", "_owned_label")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+_family_option = NodePath("MarginContainer/ScrollContainer/VBoxContainer/SelectionRow/OptionButton_Family")
+_rarity_option = NodePath("MarginContainer/ScrollContainer/VBoxContainer/SelectionRow/OptionButton_Rarity")
+_quantity_spin = NodePath("MarginContainer/ScrollContainer/VBoxContainer/SelectionRow/SpinBox_Quantity")
+_owned_label = NodePath("MarginContainer/ScrollContainer/VBoxContainer/Label_Owned")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 12
+
+[node name="SelectionRow" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Label_Family" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/SelectionRow"]
+layout_mode = 2
+text = "Reagent"
+
+[node name="OptionButton_Family" type="OptionButton" parent="MarginContainer/ScrollContainer/VBoxContainer/SelectionRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label_Rarity" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/SelectionRow"]
+layout_mode = 2
+text = "Rarity"
+
+[node name="OptionButton_Rarity" type="OptionButton" parent="MarginContainer/ScrollContainer/VBoxContainer/SelectionRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label_Quantity" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/SelectionRow"]
+layout_mode = 2
+text = "Quantity"
+
+[node name="SpinBox_Quantity" type="SpinBox" parent="MarginContainer/ScrollContainer/VBoxContainer/SelectionRow"]
+layout_mode = 2
+value = 1.0
+
+[node name="Button_AddToInventory" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+text = "Add to Inventory"
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label_OwnedTitle" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+text = "Owned"
+
+[node name="Label_Owned" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+text = "No reagents owned."
+
+[connection signal="item_selected" from="MarginContainer/ScrollContainer/VBoxContainer/SelectionRow/OptionButton_Family" to="." method="_on_family_selected"]
+[connection signal="button_up" from="MarginContainer/ScrollContainer/VBoxContainer/Button_AddToInventory" to="." method="_on_add_to_inventory_button_up"]

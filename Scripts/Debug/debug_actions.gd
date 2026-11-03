@@ -28,6 +28,15 @@ static func grant_all_implemented_relics(p_item_collection: ItemCollection, p_ra
 		preset.Setup()
 		p_item_collection.AddPreset(preset)
 
+## Returns false, adding nothing, when the family has no reagent at that rarity.
+static func grant_reagent(p_reagent_collection: ReagentCollection, p_family: String,
+		p_rarity: Types.Rarity, p_quantity: int) -> bool:
+	var reagent_key: String = DebugCatalog.GetReagentKey(p_family, p_rarity)
+	if(not ReagentRegistry.REAGENTS.has(reagent_key) or p_quantity <= 0):
+		return false
+	p_reagent_collection.Add(reagent_key, p_quantity)
+	return true
+
 ## Builds an equipment preset with exact attribute values, bypassing the
 ## random rolls in EquipmentPreset.Setup(), so the debug item construction
 ## page can hand the collection an item with precisely chosen stats.
