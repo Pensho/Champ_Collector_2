@@ -1,0 +1,20 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/Battle/hue_eater_visuals.gd" id="1_visuals"]
+[ext_resource type="PackedScene" path="res://Scenes/Battle_Visual_Effects/gathered_light_hexagon.tscn" id="2_hexagon"]
+[ext_resource type="PackedScene" path="res://Scenes/Battle_Visual_Effects/prism.tscn" id="3_prism"]
+
+[node name="Hue_Eater_Visuals" type="Node2D" node_paths=PackedStringArray("_hexagon_marker", "_hexagon", "_prism_marker", "_prism")]
+script = ExtResource("1_visuals")
+_hexagon_marker = NodePath("Hexagon")
+_hexagon = NodePath("Hexagon/Gathered_Light_Hexagon")
+_prism_marker = NodePath("Prism")
+_prism = NodePath("Prism/Prism_Body")
+
+[node name="Hexagon" type="Marker2D" parent="."]
+
+[node name="Gathered_Light_Hexagon" parent="Hexagon" instance=ExtResource("2_hexagon")]
+
+[node name="Prism" type="Marker2D" parent="."]
+
+[node name="Prism_Body" parent="Prism" instance=ExtResource("3_prism")]

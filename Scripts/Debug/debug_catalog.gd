@@ -32,6 +32,7 @@ const ENEMY_CHARACTER_PRESETS: Dictionary[String, CharacterPreset] = {
 	"Warded Notary": preload("res://Data/Character_Enemy_Variants/Warded_Notary.tres"),
 	"Vault Warden": preload("res://Data/Character_Enemy_Variants/Vault_Warden.tres"),
 	"Reliquary Core": preload("res://Data/Character_Enemy_Variants/Reliquary_Core.tres"),
+	"Hue-Eater": preload("res://Data/Character_Enemy_Variants/Hue_Eater.tres"),
 }
 
 ## Pre-made enemy wave layouts the battle launcher debug page can pick from.
@@ -55,6 +56,7 @@ const BATTLE_CONTEXTS: Dictionary[String, Context_Battle] = {
 	"Collector of Debts": preload("res://Data/Battle_Variants/Battle_Collector_of_Debts.tres"),
 	"Warden of the Reliquary": preload("res://Data/Battle_Variants/Battle_Warden_of_the_Reliquary.tres"),
 	"Salvage Baron": preload("res://Data/Battle_Variants/Battle_Salvage_Baron.tres"),
+	"Hue-Eater": preload("res://Data/Battle_Variants/Battle_Hue_Eater.tres"),
 }
 
 ## Used when constructing a debug item for a slot that has no dedicated icon.

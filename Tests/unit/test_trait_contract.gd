@@ -26,6 +26,7 @@ const UNGATED_GETTERS: Array[String] = [
 	"GetAppliedStatusValue", "GetAppliedBuffValue", "GetConditionCount", "GetAppliedAttributeAmplification",
 	"GetOutgoingDefenceIgnoreFactor", "GetRewardMultiplier", "GetTeamCooldownlessDamagePenalty",
 	"DeniesAlliesCriticalHits", "GetTeamBarrierMultiplier", "BlocksIncomingDebuffType",
+	"GetIncomingHealthLossMultiplier",
 ]
 
 const RARITIES: Array[Types.Rarity] = [
@@ -156,7 +157,7 @@ func _GetterArgs(p_getter_name: String, p_owner_ID: int, p_other_ID: int) -> Arr
 				"GetAppliedAttributeAmplification", "GetRewardMultiplier", \
 				"GetTeamCooldownlessDamagePenalty", "DeniesAlliesCriticalHits", "GetTeamBarrierMultiplier":
 			return []
-		"GetOutgoingRestorationMultiplier", "GetTeamReagentPotencyBonus":
+		"GetOutgoingRestorationMultiplier", "GetTeamReagentPotencyBonus", "GetIncomingHealthLossMultiplier":
 			return [p_owner_ID, _resolver]
 		"SuppressesOwnCriticalHit":
 			return [p_owner_ID, "Some Skill"]

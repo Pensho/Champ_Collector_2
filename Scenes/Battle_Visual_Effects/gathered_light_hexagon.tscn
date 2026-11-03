@@ -1,0 +1,74 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/Battle/gathered_light_hexagon.gd" id="1_hexagon"]
+[ext_resource type="Shader" path="res://Assets/Champ_Collector/Shaders/screen_grayscale.gdshader" id="2_grey"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_grey"]
+shader = ExtResource("2_grey")
+
+[node name="Gathered_Light_Hexagon" type="Node2D" node_paths=PackedStringArray("_slices")]
+visible = false
+script = ExtResource("1_hexagon")
+_slices = [NodePath("Shape/Slice_1"), NodePath("Shape/Slice_2"), NodePath("Shape/Slice_3"), NodePath("Shape/Slice_4"), NodePath("Shape/Slice_5"), NodePath("Shape/Slice_6")]
+
+[node name="Shape" type="Node2D" parent="."]
+
+[node name="Slice_1" type="Polygon2D" parent="Shape"]
+material = SubResource("ShaderMaterial_grey")
+polygon = PackedVector2Array(0, 0, 0.00, -48.00, 41.57, -24.00)
+
+[node name="Outline" type="Line2D" parent="Shape/Slice_1"]
+points = PackedVector2Array(0, 0, 0.00, -48.00, 41.57, -24.00)
+closed = true
+width = 3.0
+default_color = Color(1, 0.9, 0.55, 1)
+
+[node name="Slice_2" type="Polygon2D" parent="Shape"]
+material = SubResource("ShaderMaterial_grey")
+polygon = PackedVector2Array(0, 0, 41.57, -24.00, 41.57, 24.00)
+
+[node name="Outline" type="Line2D" parent="Shape/Slice_2"]
+points = PackedVector2Array(0, 0, 41.57, -24.00, 41.57, 24.00)
+closed = true
+width = 3.0
+default_color = Color(1, 0.9, 0.55, 1)
+
+[node name="Slice_3" type="Polygon2D" parent="Shape"]
+material = SubResource("ShaderMaterial_grey")
+polygon = PackedVector2Array(0, 0, 41.57, 24.00, 0.00, 48.00)
+
+[node name="Outline" type="Line2D" parent="Shape/Slice_3"]
+points = PackedVector2Array(0, 0, 41.57, 24.00, 0.00, 48.00)
+closed = true
+width = 3.0
+default_color = Color(1, 0.9, 0.55, 1)
+
+[node name="Slice_4" type="Polygon2D" parent="Shape"]
+material = SubResource("ShaderMaterial_grey")
+polygon = PackedVector2Array(0, 0, 0.00, 48.00, -41.57, 24.00)
+
+[node name="Outline" type="Line2D" parent="Shape/Slice_4"]
+points = PackedVector2Array(0, 0, 0.00, 48.00, -41.57, 24.00)
+closed = true
+width = 3.0
+default_color = Color(1, 0.9, 0.55, 1)
+
+[node name="Slice_5" type="Polygon2D" parent="Shape"]
+material = SubResource("ShaderMaterial_grey")
+polygon = PackedVector2Array(0, 0, -41.57, 24.00, -41.57, -24.00)
+
+[node name="Outline" type="Line2D" parent="Shape/Slice_5"]
+points = PackedVector2Array(0, 0, -41.57, 24.00, -41.57, -24.00)
+closed = true
+width = 3.0
+default_color = Color(1, 0.9, 0.55, 1)
+
+[node name="Slice_6" type="Polygon2D" parent="Shape"]
+material = SubResource("ShaderMaterial_grey")
+polygon = PackedVector2Array(0, 0, -41.57, -24.00, 0.00, -48.00)
+
+[node name="Outline" type="Line2D" parent="Shape/Slice_6"]
+points = PackedVector2Array(0, 0, -41.57, -24.00, 0.00, -48.00)
+closed = true
+width = 3.0
+default_color = Color(1, 0.9, 0.55, 1)

@@ -10,6 +10,7 @@ const CASTER: int = 0
 const PER_TARGET: SkillPresentation.Spawn_Mode = SkillPresentation.Spawn_Mode.Per_Target
 const STAGGERED: SkillPresentation.Spawn_Mode = SkillPresentation.Spawn_Mode.Per_Target_Staggered
 const FIELD_WIDE: SkillPresentation.Spawn_Mode = SkillPresentation.Spawn_Mode.Field_Wide
+const PER_EFFECT: SkillPresentation.Spawn_Mode = SkillPresentation.Spawn_Mode.Per_Effect
 
 func _result(
 		p_target_ID: int,
@@ -67,6 +68,38 @@ func test_field_wide_releases_every_target_on_its_single_instance() -> void:
 			[first_hit, second_hit], [0], FIELD_WIDE, [FIRST_TARGET], 1)
 
 	assert_eq(timeline.ResultsForImpact(FIRST_TARGET, 0), [first_hit, second_hit])
+
+func test_per_effect_instances_release_their_own_effects_results_even_on_a_shared_target() -> void:
+	var first_beam: CombatResult = _result(FIRST_TARGET, 0)
+	var second_beam: CombatResult = _result(FIRST_TARGET, 1)
+	var third_beam: CombatResult = _result(SECOND_TARGET, 2)
+	var timeline: PresentationTimeline = _timeline(
+			[first_beam, second_beam, third_beam], [0, 0, 0], PER_EFFECT, [0, 1, 2], 1)
+
+	assert_eq(timeline.ResultsForImpact(1, 0), [second_beam])
+	assert_eq(timeline.ResultsForImpact(0, 0), [first_beam])
+	assert_eq(timeline.ResultsForImpact(2, 0), [third_beam])
+
+func test_per_effect_plans_one_instance_per_effect_aimed_at_its_first_result() -> void:
+	var first_beam: CombatResult = _result(FIRST_TARGET, 0)
+	var first_beam_rider: CombatResult = _result(SECOND_TARGET, 0)
+	var second_beam: CombatResult = _result(CASTER, 1)
+	var post_cast: CombatResult = _result(SECOND_TARGET, 2, CombatResult.Presentation_Phase.Post_Cast)
+	var keys: Array[int] = []
+	var target_IDs: Array[int] = []
+	PresentationTimeline.PlanInstances(PER_EFFECT, [first_beam, first_beam_rider, second_beam, post_cast],
+			[FIRST_TARGET, SECOND_TARGET], keys, target_IDs)
+
+	assert_eq(keys, [0, 1] as Array[int])
+	assert_eq(target_IDs, [FIRST_TARGET, CASTER] as Array[int])
+
+func test_per_target_plans_one_instance_per_cast_target_keyed_by_target() -> void:
+	var keys: Array[int] = []
+	var target_IDs: Array[int] = []
+	PresentationTimeline.PlanInstances(PER_TARGET, [], [FIRST_TARGET, SECOND_TARGET], keys, target_IDs)
+
+	assert_eq(target_IDs, [FIRST_TARGET, SECOND_TARGET] as Array[int])
+	assert_eq(keys, target_IDs)
 
 func test_an_impact_past_the_last_marker_counts_as_the_last_marker() -> void:
 	var late_hit: CombatResult = _result(FIRST_TARGET, 0)
@@ -187,3 +220,14 @@ func test_a_deadline_flush_after_partial_release_returns_only_the_unreleased_res
 
 	assert_eq(timeline.RemainingResults(), [second_hit, echo, tick])
 	assert_eq(timeline.RemainingResults(), [], "Each result is released once")
+
+func test_a_trait_effect_splits_the_results_just_after_itself() -> void:
+	var post_cast: CombatResult.Presentation_Phase = CombatResult.Presentation_Phase.Post_Cast
+	var text: CombatResult = _result(CASTER, -1, post_cast, 0, CombatResult.Kind.Trait_Text)
+	var effect: CombatResult = _result(FIRST_TARGET, -1, post_cast, 0, CombatResult.Kind.Trait_Effect)
+	var hit: CombatResult = _result(FIRST_TARGET, -1, post_cast)
+
+	assert_eq(PresentationTimeline.TraitEffectEnd([text, effect, hit]), 2)
+
+func test_results_without_a_trait_effect_do_not_split() -> void:
+	assert_eq(PresentationTimeline.TraitEffectEnd([_result(FIRST_TARGET, 0)]), 0)

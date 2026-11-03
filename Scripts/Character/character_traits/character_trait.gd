@@ -8,6 +8,8 @@ var _turn_bar_reach: TurnBarReach = null
 var _title: String = "Title"
 var _body: String = "Body"
 var _owner_rarity: Types.Rarity = Types.Rarity.Common
+## Every effect scene the trait emits through BattleResolver.EmitTraitEffect, reserved at battle setup.
+var _effect_archetypes: Array[PackedScene] = []
 @warning_ignore_restore("unused_private_class_variable")
 
 func Init(p_rarity: Types.Rarity) -> void:
@@ -80,6 +82,9 @@ func OnDeath() -> void:
 ## (Health + Defence), not just its Defence component — a value above 1.0 makes
 ## the owner more likely to be chosen as a target, below 1.0 less likely.
 func GetTargetingPriorityMultiplier() -> float:
+	return 1.0
+
+func GetIncomingHealthLossMultiplier(_p_owner_ID: int, _p_resolver: BattleResolver) -> float:
 	return 1.0
 
 ## Permanent multiplier this owner's trait applies to healing it receives

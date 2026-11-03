@@ -1,0 +1,62 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/Battle/gathered_light_launch.gd" id="1_launch"]
+[ext_resource type="PackedScene" path="res://Scenes/Battle_Visual_Effects/gathered_light_hexagon.tscn" id="2_hexagon"]
+
+[sub_resource type="Animation" id="Animation_reset"]
+length = 0.001
+
+[sub_resource type="Animation" id="Animation_launch"]
+length = 0.6
+tracks/0/type = "method"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.6),
+"transitions": PackedFloat32Array(1, 1),
+"values": [{
+"args": [],
+"method": &"PlayCastSound"
+}, {
+"args": [0],
+"method": &"Impact"
+}]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.6),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"PlayImpactSound"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_launch"]
+_data = {
+&"RESET": SubResource("Animation_reset"),
+&"gathered_light_launch": SubResource("Animation_launch")
+}
+
+[node name="Gathered_Light_Launch" type="Node2D" node_paths=PackedStringArray("_hexagon", "animation_player")]
+script = ExtResource("1_launch")
+_hexagon = NodePath("Gathered_Light_Hexagon")
+animation_player = NodePath("AnimationPlayer")
+anchor = 5
+anchor_marker = &"Hexagon"
+aim_at_target = true
+
+[node name="Gathered_Light_Hexagon" parent="." instance=ExtResource("2_hexagon")]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_launch")
+}

@@ -385,6 +385,14 @@ func EmitTraitText(p_target_ID: int, p_text: String, p_color: Color = Color.WHIT
 	result.color = p_color
 	_Emit(result)
 
+## Plays p_archetype from p_source_ID toward p_target_ID's side before the results that follow.
+func EmitTraitEffect(p_source_ID: int, p_target_ID: int, p_archetype: PackedScene) -> void:
+	var result: CombatResult = CombatResult.new(CombatResult.Kind.Trait_Effect)
+	result.source_ID = p_source_ID
+	result.target_ID = p_target_ID
+	result.visual_scene = p_archetype
+	_Emit(result)
+
 
 ## Emits the presentation-only marker that precedes one burst instance's results, so the
 ## battle view can escalate their combat text (Concept_Document.md 1.1.5). Emitted by
@@ -780,13 +788,13 @@ func _WithMaxHealthBuffs(p_character: Character, p_health: int) -> int:
 	return health
 
 func _ApplyHealthLoss(p_character_ID: int, p_amount: int, p_attacker_ID: int = NO_ATTACKER) -> int:
-	var reduced_amount: int = int(floor(
-			float(p_amount) * _status_resolver._DamageTakenMultiplier(_characters[p_character_ID])))
+	var character: Character = _characters[p_character_ID]
+	var reduced_amount: int = int(floor(float(p_amount) * _status_resolver._DamageTakenMultiplier(character)
+			* Skills.IncomingHealthLossMultiplier(character, p_character_ID, self)))
 	var remaining: int = _status_resolver._AbsorbWithBarrier(p_character_ID, reduced_amount)
 	if(remaining <= 0):
 		return 0
 	_status_resolver._TriggerDamageTakenReactions(p_character_ID, p_attacker_ID)
-	var character: Character = _characters[p_character_ID]
 	var was_alive: bool = character._current_health > 0
 	var new_health: int = clampi(character._current_health - remaining, 0, _MaxHealth(character))
 	var floor_health: int = Skills.DamageTakenHealthFloor(character, p_character_ID, new_health, _MaxHealth(character))

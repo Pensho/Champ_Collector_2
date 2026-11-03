@@ -26,6 +26,8 @@ enum Kind {
 	Cascade_Triggered,
 	Phase_Changed,
 	Free_Basic_Used,
+	## A trait's own effect scene (visual_scene); the results after it land when the scene ends.
+	Trait_Effect,
 }
 
 enum Presentation_Phase {

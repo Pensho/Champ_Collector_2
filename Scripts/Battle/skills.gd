@@ -85,6 +85,15 @@ static func DamageTakenMultiplier(
 		multiplier *= source.OnDamageTaken(p_owner_ID, p_attacker_ID, p_resolver)
 	return multiplier
 
+static func IncomingHealthLossMultiplier(
+		p_character: Character, p_owner_ID: int, p_resolver: BattleResolver) -> float:
+	var multiplier: float = 1.0
+	if(null == p_character):
+		return multiplier
+	for source: CharacterTrait in p_character.HookSources():
+		multiplier *= source.GetIncomingHealthLossMultiplier(p_owner_ID, p_resolver)
+	return multiplier
+
 static func IncomingHealMultiplier(p_character: Character, p_owner_ID: int) -> float:
 	var multiplier: float = 1.0
 	if(null == p_character):

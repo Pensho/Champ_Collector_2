@@ -15,6 +15,8 @@ enum Anchor {
 	Target,
 	Target_Feet,
 	Field_Center,
+	## The caster's anchor_marker, a Marker2D in its trait visuals; the caster's centre without one.
+	Caster_Marker,
 }
 
 const IMPACT_METHOD: StringName = &"Impact"
@@ -22,6 +24,8 @@ const RESET_ANIMATION: StringName = &"RESET"
 
 @export var animation_player: AnimationPlayer
 @export var anchor: Anchor = Anchor.Target
+## Caster_Marker only: the name of the Marker2D to start from.
+@export var anchor_marker: StringName
 ## Rotates the scene toward the target; otherwise it is mirrored to face away from the caster.
 @export var aim_at_target: bool = false
 ## Receive the variant's texture and tint.

@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="CharacterPreset" format=3 uid="uid://bsd0nr1c23vxv"]
+
+[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_cnoao"]
+[ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="1_preset"]
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Resource" uid="uid://jdkpqau7gx1v" path="res://Data/Character_Skill_Variants/Attack_Skills/Leech_Light.tres" id="2_leech_light"]
+[ext_resource type="Resource" uid="uid://xodo0l4weufy" path="res://Data/Character_Skill_Variants/Attack_Skills/Prismatic_Rain.tres" id="3_prismatic_rain"]
+[ext_resource type="Resource" path="res://Data/Character_Traits/Enemy_Traits/Hue_Eater_Trait.tres" id="4_trait"]
+
+[resource]
+script = ExtResource("1_preset")
+_name = "Hue-Eater"
+_texture = "res://Assets/Champ_Collector/Creatures/Opponents/Hue_Eater/hue_eater.png"
+_art_scale = 1.4
+_faction = 4
+_role = 13
+_skills = Array[ExtResource("1_skill")]([ExtResource("2_leech_light"), ExtResource("3_prismatic_rain")])
+_thematic_hint = "A Refracted being gathering the colour it has lost."
+_health = 420
+_speed = 45
+_attack = 20
+_defence = 50
+_accuracy = 70
+_resistance = 30
+_mysticism = 60
+_knowledge = 30
+_trait = ExtResource("4_trait")
+_phase_two_skills = Array[ExtResource("1_skill")]([ExtResource("2_leech_light"), ExtResource("3_prismatic_rain")])
+_phase_two_text = "The light bends to me!"
+metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

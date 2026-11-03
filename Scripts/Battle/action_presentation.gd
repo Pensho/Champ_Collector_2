@@ -9,10 +9,15 @@ class InstanceStart:
 	var archetype: PackedScene
 	var variant: EffectVariant
 	var target_ID: int = -1
+	## The timeline's key for this instance's results; -1 keys it by target_ID.
+	var instance_key: int = -1
 	var origin: Vector2
 	var caster_position: Vector2
 	var target_position: Vector2
 	var delay: float = 0.0
+
+	func Key() -> int:
+		return instance_key if instance_key >= 0 else target_ID
 
 var _timeline: PresentationTimeline
 var _layer: BattleEffectLayer
@@ -22,7 +27,7 @@ var _lunge: Callable
 var _pending: Array[InstanceStart] = []
 var _playing: Array[SkillEffectScene] = []
 var _connections: Dictionary[SkillEffectScene, Array] = {}
-var _final_target_ID: int = -1
+var _final_key: int = -1
 var _final_impact: int = 0
 var _lunged: bool = false
 var _echoes_started: bool = false
@@ -46,7 +51,7 @@ func _init(
 	_lunge = p_lunge
 	_final_impact = maxi(p_impact_count, 1) - 1
 	if(not p_starts.is_empty()):
-		_final_target_ID = p_starts.back().target_ID
+		_final_key = p_starts.back().Key()
 		return
 	if(_timeline.EchoCount() > 0):
 		_Present(_timeline.ResultsBeforeEcho(0))
@@ -93,8 +98,8 @@ func _Start(p_start: InstanceStart) -> void:
 	var instance: SkillEffectScene = _layer.Peek(p_start.archetype)
 	if(null == instance):
 		return
-	var on_impact: Callable = func(p_index: int) -> void: _OnImpact(p_start.target_ID, p_index)
-	var on_finished: Callable = func() -> void: _OnFinished(instance, p_start.target_ID)
+	var on_impact: Callable = func(p_index: int) -> void: _OnImpact(p_start.Key(), p_index)
+	var on_finished: Callable = func() -> void: _OnFinished(instance, p_start.Key())
 	instance.impact_reached.connect(on_impact)
 	instance.lunge_requested.connect(_OnLunge)
 	instance.finished.connect(on_finished)
@@ -103,9 +108,9 @@ func _Start(p_start: InstanceStart) -> void:
 	instance.Play(p_start.origin, p_start.caster_position, p_start.target_position, p_start.variant)
 
 
-func _OnImpact(p_target_ID: int, p_index: int) -> void:
-	_Present(_timeline.ResultsForImpact(p_target_ID, p_index))
-	if(p_target_ID == _final_target_ID and p_index >= _final_impact):
+func _OnImpact(p_key: int, p_index: int) -> void:
+	_Present(_timeline.ResultsForImpact(p_key, p_index))
+	if(p_key == _final_key and p_index >= _final_impact):
 		_StartEchoes()
 
 
@@ -115,9 +120,9 @@ func _OnLunge() -> void:
 	_lunged = true
 
 
-func _OnFinished(p_instance: SkillEffectScene, p_target_ID: int) -> void:
+func _OnFinished(p_instance: SkillEffectScene, p_key: int) -> void:
 	_Release(p_instance)
-	if(p_target_ID == _final_target_ID):
+	if(p_key == _final_key):
 		_StartEchoes()
 
 

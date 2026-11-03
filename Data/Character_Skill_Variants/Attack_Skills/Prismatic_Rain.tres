@@ -1,0 +1,54 @@
+[gd_resource type="Resource" script_class="Skill" format=3 uid="uid://xodo0l4weufy"]
+
+[ext_resource type="Script" uid="uid://bmqtglyyora7q" path="res://Scripts/Battle/Skill_Effects/skill_effect.gd" id="1_effect"]
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Script" uid="uid://b75mdrisawmcy" path="res://Scripts/Battle/Skill_Effects/prismatic_beam_effect.gd" id="2_beam"]
+[ext_resource type="Script" uid="uid://4bw820sjhiip" path="res://Scripts/Battle/skill_presentation.gd" id="3_presentation"]
+[ext_resource type="PackedScene" path="res://Scenes/Battle_Visual_Effects/prism_beam.tscn" id="4_prism_beam"]
+
+[sub_resource type="Resource" id="Resource_beam_1"]
+script = ExtResource("2_beam")
+damage_scaling = Dictionary[int, float]({
+6: 0.35
+})
+
+[sub_resource type="Resource" id="Resource_beam_2"]
+script = ExtResource("2_beam")
+damage_scaling = Dictionary[int, float]({
+6: 0.35
+})
+
+[sub_resource type="Resource" id="Resource_beam_3"]
+script = ExtResource("2_beam")
+damage_scaling = Dictionary[int, float]({
+6: 0.35
+})
+
+[sub_resource type="Resource" id="Resource_beam_4"]
+script = ExtResource("2_beam")
+damage_scaling = Dictionary[int, float]({
+6: 0.35
+})
+
+[sub_resource type="Resource" id="Resource_beam_5"]
+script = ExtResource("2_beam")
+damage_scaling = Dictionary[int, float]({
+6: 0.35
+})
+
+[sub_resource type="Resource" id="Resource_presentation"]
+script = ExtResource("3_presentation")
+archetype = ExtResource("4_prism_beam")
+spawn_mode = 3
+stagger_seconds = 0.35
+
+[resource]
+script = ExtResource("1_skill")
+name = "Prismatic Rain"
+description = "Five beams strike a spinning prism; each hits a random enemy or bends back at the caster."
+icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Opponent_Active_Skills/Cinder_Sermon/Cinder_Sermon.png"
+target = 1
+cooldown = 2
+effects = Array[ExtResource("1_effect")]([SubResource("Resource_beam_1"), SubResource("Resource_beam_2"), SubResource("Resource_beam_3"), SubResource("Resource_beam_4"), SubResource("Resource_beam_5")])
+presentation = SubResource("Resource_presentation")
+metadata/_custom_type_script = "uid://glh06y3wvchj"

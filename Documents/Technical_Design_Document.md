@@ -1481,13 +1481,21 @@ immediately.
 root of every effect scene. Its `AnimationPlayer` holds one animation whose method tracks call
 `Impact(index)`, `CasterLunge()`, `PlayCastSound()`/`PlayImpactSound()` (the variant's cues),
 `PlaySound(cue)` and `StartLoop`/`StopLoop` (loops stop when the animation ends). `anchor`
-(`Caster`, `Caster_Feet`, `Target`, `Target_Feet`, `Field_Center`) places it and `aim_at_target`
+(`Caster`, `Caster_Feet`, `Target`, `Target_Feet`, `Field_Center`, `Caster_Marker` — the
+`Marker2D` named by the scene's `anchor_marker` in the caster's trait visuals, the caster's centre
+without one) places it and `aim_at_target`
 rotates it toward the target; otherwise it mirrors to face away from the caster.
 `variant_sprites` and `variant_particles` take an `EffectVariant`'s texture, particle texture and
 tint, and a pooled instance restores its own look wherever the variant leaves a field null. A
 `SkillPresentation` names the archetype scene, the variant, the spawn mode (`Per_Target`,
-`Per_Target_Staggered`, `Field_Wide`) and the stagger;
+`Per_Target_Staggered`, `Field_Wide`, `Per_Effect`) and the stagger. `Per_Effect` serves a skill whose
+effects each pick their own target (Prismatic Rain): `PresentationTimeline.PlanInstances` starts one
+instance per top-level effect that produced a result, aimed at that effect's first result, and the
+timeline keys those instances by effect index (`InstanceStart.instance_key`) instead of by target;
 `SkillEffect.impact_index` picks the `Impact` marker that releases that effect's results.
+A trait plays its own effect scene with `BattleResolver.EmitTraitEffect` (a `Trait_Effect` result
+naming the archetype, reserved through `CharacterTrait._effect_archetypes`): the results before it
+land at once, the rest when the scene ends.
 `PresentationDefaults.ForSkill` returns a skill's own presentation or derives one from its
 effects against `Data/Presentation/Presentation_Archetypes.tres`: a damage effect picks the
 physical or arcane impact by its scaling attributes, otherwise the first heal, barrier, buff or
@@ -1751,7 +1759,9 @@ rather than firing a single trait, so a trait only pays for the hooks it opts in
 reaches every hook the same way its wearer's trait does. A hook returning a value composes across
 however many sources fired: `Skills.OutgoingDamageBonus`/`IncomingDebuffDurationBonus`/
 `OutgoingDebuffDurationBonus` sum; `Skills.OutgoingDefenceIgnoreFactor`/`DamageTakenMultiplier`/
-`IncomingHealMultiplier`/`TargetingPriorityMultiplier`/`IncomingZoneEffectMultiplier` multiply;
+`IncomingHealMultiplier`/`TargetingPriorityMultiplier`/`IncomingZoneEffectMultiplier`/
+`IncomingHealthLossMultiplier` multiply — the last read in `BattleResolver._ApplyHealthLoss`, so it
+covers ticks and trait damage as well as hits (the Hue-Eater's Translucent);
 `Skills.DebuffsCannotBeResisted(character, owner_ID, target_ID)`/`BlocksForwardTurnBarBump` are
 true if any source says so — the former takes the debuff's target as well as its owner, since a
 source's opinion can be scoped to one target rather than blanket (Signatory's Seal's first-N-per-
@@ -2094,7 +2104,18 @@ exposes the component via `GetVisualEffects()`. The first consumer is `DoubleThe
 ([Section 9](#9-trait-hook-system)), which sets the echo count to its avoidance-stack count and
 clears it on a successful avoidance, battle start, or the character's own death (`OnDeath` hook).
 This is intended as the home for future trait-driven battlefield visuals (auras, etc.), not
-specific to this one trait.
+specific to this one trait. `SetTranslucent` fades the sprite and hides the silhouette outline,
+which fills the whole silhouette behind it.
+
+**Trait visuals.** Props belonging to one character live in that character's own scene, never in
+this component. `TraitVisuals(scene)` instances the scene into the `Trait_Visuals` mount on the
+first call and returns it afterwards; the trait preloads its scene and drives it from
+`RefreshVisuals`. `SpritePoint(fraction, offset)` places a prop on the sprite box off the art scale
+alone, so it holds still while the sprite breathes, and `MarkerPosition(name, fallback)` exposes a
+`Marker2D` in the mounted scene to `SkillEffectScene.Anchor.Caster_Marker`. The Hue-Eater's
+`hue_eater_visuals.tscn` is the first: Gathered Light's hexagon right of her under the `Hexagon`
+marker its launch starts from, and the prism left of her under the `Prism` marker her beams start
+from.
 
 ### 9.2. The Graft passive: `GraftEffect`
 

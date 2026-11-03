@@ -228,11 +228,12 @@ answers. Enemies without a listed skill fall back on the universal Stab and Zap
   gathers light from everything around it.
 - **Enemy composition:** the Hue-Eater alone; revisited when the fight is prototyped.
   Speed: about the party median.
-- **Presentation:** she stands on the right of the screen, the prism near the centre.
+- **Presentation:** she stands on the right of the screen; the prism stands to her left at
+  half her height, always visible and slowly spinning.
   Grey patches shift shape on the ground around her.
 - **Mechanics:**
-    - **Translucent (passive).** She takes heavily reduced damage (starting point: -75%)
-      unless she holds Hexed. Shown only visually: translucent while active, solid while
+    - **Translucent (passive).** She takes heavily reduced damage from every source, damage
+      over time included (starting point: -75%), unless she holds Hexed. Shown only visually: translucent while active, solid while
       Hexed. No status icon and no number shown to the player. It is deliberately not a
       buff, so Cut Purse cannot steal it.
     - **Basic attack.** Single target, 100% of a standard hit, scaling with Mysticism.
@@ -245,11 +246,12 @@ answers. Enemies without a listed skill fall back on the universal Stab and Zap
       while she is solid. Hexed rolls twice and keeps the worse, lowering each beam to
       36%. A Hexed glyph covers the whole prism as a hint; while she holds Hexed, a third
       face takes her colour, and applying Hexed plays a sound cue.
-    - **Gathered Light (passive).** A hexagon of six slices builds above her, each
+    - **Gathered Light (passive).** A hexagon of six slices builds to her right at half her height, each
       transparent with a glowing outline, turning the background seen through it
       greyscale. She gains one slice at the start of each of her turns, starting from 0.
-      The completed hexagon flies onto the party (starting point: 150% of a standard hit
-      on every champion, meant to be survivable), then resets. Each Enfeeble that lands on
+      A full hexagon hovers for one turn, then flies onto the party at the start of her next
+      (starting point: 150% of a standard hit on every champion, meant to be survivable)
+      and resets. Each Enfeeble that lands on
       her is consumed and removes 2 slices: the Enfeeble icon is pulled into the hexagon,
       with a sound cue and combat text naming Enfeeble, and the two slices crack off and
       fall as Prism-Salt crystals at her feet.
@@ -269,8 +271,8 @@ answers. Enemies without a listed skill fall back on the universal Stab and Zap
 - **Solved state:** while Hexed is up she is solid and most of each cast bends back into
   her; Enfeeble keeps the hexagon from completing.
 - **Unsolved texture:** without Hexed she is near-invulnerable while beams land at 60%,
-  which is a wall. Without Enfeeble the hexagon's heavy hit lands every sixth turn of hers
-  in phase 1, and every two to three in phase 2.
+  which is a wall. Without Enfeeble the hexagon's heavy hit lands every seventh turn of hers
+  in phase 1, and every three to four in phase 2.
 - **Open items:**
     - **Parked idea, Luck on her:** with Luck alone her beams always hit; with Luck and
       Hexed, or neither, they hit at 60%; with Hexed alone, 36%. Set aside because it

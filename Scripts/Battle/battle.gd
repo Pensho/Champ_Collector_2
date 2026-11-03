@@ -282,9 +282,9 @@ func StartTurn() -> void:
 	_holding_results = true
 	var results: Array[CombatResult] = _resolver.BeginTurn(_turn_character_ID)
 	_holding_results = false
+	_presentation_deadline = PRESENTATION_DEADLINE
 	if(_PresentHeldResults(results)):
 		_state = BattleState.Presenting_Turn_Start
-		_presentation_deadline = PRESENTATION_DEADLINE
 		return
 	ContinueTurn()
 
@@ -425,33 +425,25 @@ func _PresentWithEffect(p_skill: Skill, p_results: Array[CombatResult], p_target
 		return false
 	var sample: SkillEffectScene = _effect_layer.Peek(presentation.archetype)
 	var field_wide: bool = SkillPresentation.Spawn_Mode.Field_Wide == presentation.spawn_mode
+	var instance_keys: Array[int] = []
 	var instance_target_IDs: Array[int] = []
-	if(field_wide):
-		instance_target_IDs.append(p_target_IDs[0] if not p_target_IDs.is_empty() else -1)
-	else:
-		instance_target_IDs = p_target_IDs
+	PresentationTimeline.PlanInstances(presentation.spawn_mode, p_results, p_target_IDs, instance_keys,
+			instance_target_IDs)
 	if(null == sample or instance_target_IDs.is_empty()):
 		return false
-	var stagger: float = (presentation.stagger_seconds
-			if SkillPresentation.Spawn_Mode.Per_Target_Staggered == presentation.spawn_mode else 0.0)
+	var stagger: float = presentation.StaggerSeconds()
 	var starts: Array[ActionPresentation.InstanceStart] = []
 	for index in instance_target_IDs.size():
-		var target_ID: int = instance_target_IDs[index]
-		var start: ActionPresentation.InstanceStart = ActionPresentation.InstanceStart.new()
-		start.archetype = presentation.archetype
-		start.variant = presentation.variant
-		start.target_ID = target_ID
-		start.caster_position = _character_representations[_turn_character_ID].CenterPosition()
-		start.target_position = (_FieldCenter(_turn_character_ID, target_ID) if field_wide
-				else _character_representations[target_ID].CenterPosition())
-		start.origin = _AnchorPoint(sample.anchor, _turn_character_ID, target_ID)
+		var start: ActionPresentation.InstanceStart = _InstanceStart(sample, presentation.archetype,
+				presentation.variant, _turn_character_ID, instance_target_IDs[index], field_wide)
+		start.instance_key = instance_keys[index]
 		start.delay = stagger * index
 		starts.append(start)
 	var effect_impact_indices: Array[int] = []
 	for effect: SkillEffect in p_skill.effects:
 		effect_impact_indices.append(effect.impact_index)
 	var timeline: PresentationTimeline = PresentationTimeline.new(p_results, effect_impact_indices,
-			presentation.spawn_mode, instance_target_IDs, sample.ImpactCount())
+			presentation.spawn_mode, instance_keys, sample.ImpactCount())
 	var caster_ID: int = _turn_character_ID
 	var lunge_target_ID: int = instance_target_IDs[0]
 	_action_presentation = ActionPresentation.new(timeline, starts, sample.ImpactCount(), _effect_layer,
@@ -462,9 +454,40 @@ func _PresentWithEffect(p_skill: Skill, p_results: Array[CombatResult], p_target
 	_presentation_deadline = PRESENTATION_DEADLINE + sample.Length() + stagger * (starts.size() - 1)
 	return true
 
+func _InstanceStart(p_sample: SkillEffectScene, p_archetype: PackedScene, p_variant: EffectVariant,
+		p_caster_ID: int, p_target_ID: int, p_field_wide: bool) -> ActionPresentation.InstanceStart:
+	var start: ActionPresentation.InstanceStart = ActionPresentation.InstanceStart.new()
+	start.archetype = p_archetype
+	start.variant = p_variant
+	start.target_ID = p_target_ID
+	start.caster_position = _character_representations[p_caster_ID].CenterPosition()
+	start.target_position = (_FieldCenter(p_caster_ID, p_target_ID) if p_field_wide
+			else _character_representations[p_target_ID].CenterPosition())
+	start.origin = _AnchorPoint(p_sample, p_caster_ID, p_target_ID)
+	return start
+
+# Presents everything up to a trait effect at once, then holds the rest until its scene ends.
+func _PresentTraitEffect(p_results: Array[CombatResult]) -> bool:
+	var split: int = PresentationTimeline.TraitEffectEnd(p_results)
+	if(0 == split or _GetSettings().skip_skill_effects):
+		return false
+	var effect: CombatResult = p_results[split - 1]
+	var sample: SkillEffectScene = _effect_layer.Peek(effect.visual_scene)
+	if(null == sample):
+		return false
+	_PresentReleasedResults(p_results.slice(0, split))
+	var starts: Array[ActionPresentation.InstanceStart] = [
+			_InstanceStart(sample, effect.visual_scene, null, effect.source_ID, effect.target_ID, true)]
+	_action_presentation = ActionPresentation.new(PresentationTimeline.new(p_results.slice(split)), starts,
+			sample.ImpactCount(), _effect_layer, _PresentReleasedResults)
+	_presentation_deadline += sample.Length()
+	return true
+
 # Presents results the resolver produced while they were held: at once, or with the cascade
 # released one echo at a time. True when an ActionPresentation now owns the release.
 func _PresentHeldResults(p_results: Array[CombatResult]) -> bool:
+	if(_PresentTraitEffect(p_results)):
+		return true
 	var timeline: PresentationTimeline = PresentationTimeline.new(p_results)
 	if(0 == timeline.EchoCount()):
 		for result: CombatResult in p_results:
@@ -501,10 +524,10 @@ func _AdvancePresentation(p_delta: float) -> bool:
 	_battle_ui.FlushCombatText()
 	return true
 
-func _AnchorPoint(p_anchor: SkillEffectScene.Anchor, p_caster_ID: int, p_target_ID: int) -> Vector2:
+func _AnchorPoint(p_scene: SkillEffectScene, p_caster_ID: int, p_target_ID: int) -> Vector2:
 	var caster: CharacterRepresentation = _character_representations[p_caster_ID]
 	var has_target: bool = p_target_ID >= 0
-	match p_anchor:
+	match p_scene.anchor:
 		SkillEffectScene.Anchor.Caster:
 			return caster.CenterPosition()
 		SkillEffectScene.Anchor.Caster_Feet:
@@ -515,6 +538,8 @@ func _AnchorPoint(p_anchor: SkillEffectScene.Anchor, p_caster_ID: int, p_target_
 		SkillEffectScene.Anchor.Target_Feet:
 			if(has_target):
 				return _character_representations[p_target_ID].FootPosition()
+		SkillEffectScene.Anchor.Caster_Marker:
+			return caster.GetVisualEffects().MarkerPosition(p_scene.anchor_marker, caster.CenterPosition())
 	return _FieldCenter(p_caster_ID, p_target_ID)
 
 # The middle of the target's side, or of the caster's enemies when there is no target.
@@ -531,7 +556,7 @@ func _PlayEffect(
 	var instance: SkillEffectScene = _effect_layer.Peek(p_archetype)
 	if(null == instance):
 		return
-	instance.Play(_AnchorPoint(instance.anchor, p_caster_ID, p_target_ID),
+	instance.Play(_AnchorPoint(instance, p_caster_ID, p_target_ID),
 			_character_representations[p_caster_ID].CenterPosition(),
 			_character_representations[p_target_ID].CenterPosition(), p_variant, p_scale)
 
@@ -635,8 +660,12 @@ func _ReservePresentationPool() -> void:
 		for skill: Skill in skills:
 			var presentation: SkillPresentation = PresentationDefaults.ForSkill(skill, _presentation_archetypes)
 			if(null != presentation):
-				_effect_layer.Reserve(presentation.archetype, side_size)
+				_effect_layer.Reserve(presentation.archetype, maxi(side_size, skill.effects.size())
+						if SkillPresentation.Spawn_Mode.Per_Effect == presentation.spawn_mode else side_size)
 				_effect_layer.ReserveForEchoes(presentation.archetype)
+		if(null != _characters[character_ID]._trait):
+			for archetype: PackedScene in _characters[character_ID]._trait._effect_archetypes:
+				_effect_layer.Reserve(archetype, 1)
 	var statuses: Array[StatusEffectData] = []
 	statuses.append_array(StatusEffectRegistry.BUFFS.values())
 	statuses.append_array(StatusEffectRegistry.DEBUFFS.values())
@@ -828,6 +857,8 @@ func PresentResult(p_result: CombatResult) -> void:
 			_PlayEchoEffect(p_result)
 		CombatResult.Kind.Free_Basic_Used:
 			_QueueFreeBasic(p_result)
+		CombatResult.Kind.Trait_Effect:
+			RefreshAllTraitVisuals()
 	_PlayResultReaction(p_result)
 	_PlayStatusEffects(p_result)
 

@@ -33,6 +33,9 @@ Code plans:
 - `Plan_Character_Data_Structure.md` — splits `CharacterPreset` and `Character` so champion-,
   opponent-, and boss-only fields live only on their own type.
 
+- `Plan_Battle_Presentation_Split.md` — moves result presentation and effect-scene orchestration
+  out of `battle.gd`, then restores its 1200-line limit.
+
 - `Plan_Adventure_Map_Scene_Layers.md` — builds the Adventure map once per scene from
   static layer nodes, refreshes only node states, and moves ambient particles onto
   `BiomeVisualData`.

@@ -5,7 +5,7 @@
 [ext_resource type="Script" uid="uid://bn0n72opjy7sb" path="res://Scripts/Battle/Skill_Effects/damage_effect.gd" id="2_52kps"]
 [ext_resource type="Script" uid="uid://4bw820sjhiip" path="res://Scripts/Battle/skill_presentation.gd" id="3_presentation"]
 [ext_resource type="Script" uid="uid://dwlqv2iu3qwgd" path="res://Scripts/Battle/effect_variant.gd" id="4_variant"]
-[ext_resource type="PackedScene" path="res://Scenes/Battle_Visual_Effects/slash.tscn" id="5_slash"]
+[ext_resource type="PackedScene" uid="uid://bt02ltox5nqa0" path="res://Scenes/Battle_Visual_Effects/slash.tscn" id="5_slash"]
 
 [sub_resource type="Resource" id="Resource_7x3lf"]
 script = ExtResource("2_52kps")
