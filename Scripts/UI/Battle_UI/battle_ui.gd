@@ -47,6 +47,12 @@ func Init() -> void:
 	SKILL_GLOW_POS_2 = Vector2(_skill_buttons[1].position.x - 15.0, _skill_buttons[1].position.y - 15.0)
 	SKILL_GLOW_POS_3 = Vector2(_skill_buttons[2].position.x - 15.0, _skill_buttons[2].position.y - 15.0)
 
+	# The scene shows every element for editing; battle start hides the turn-dependent ones.
+	HideSkillButtons()
+	HideReagentUI()
+	HideGraftUI()
+	HideThreadSwitchUI()
+
 	_reagent_confirm = BUTTON_WITH_OPTIONS_SCENE.instantiate()
 	add_child(_reagent_confirm)
 	_reagent_confirm.SetLeftButton("Use", _on_reagent_confirm_use_button_up)
