@@ -14,6 +14,7 @@ const COMBAT_TEXT_SPAWN_POINT: Vector2 = Vector2(100, 70)
 
 @export var _skill_buttons: Array[SkillButton]
 @export var _reagent_buttons: Array[ReagentButton]
+@export var _reagent_pouch: ReagentPouch
 @export var _graft_button: GraftButton
 @export var _thread_switch_button: ThreadSwitchButton
 @export var _battle_duration_label: Label
@@ -225,9 +226,14 @@ func HideSkillUI() -> void:
 	skill_focus.position = SKILL_GLOW_POS_HIDDEN
 	_turn_bar.DisableZones(true)
 
+func ShowReagentUI() -> void:
+	_reagent_pouch.show()
+
 func HideReagentUI() -> void:
 	for button in _reagent_buttons:
 		button.hide()
+	_reagent_pouch.CloseInstantly()
+	_reagent_pouch.hide()
 
 func _on_skill_1_button_up() -> void:
 	if ToolTip.ConsumedPress():

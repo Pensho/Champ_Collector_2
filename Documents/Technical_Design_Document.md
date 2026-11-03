@@ -1247,7 +1247,8 @@ cooldown, never fires `Start_Turn`/`End_Turn`, and never advances the turn bar.
 - **Battle scene wiring.** `BattleUI` exposes up to 4 `ReagentButton`s (the fourth for a brewed
   slot, shown only when one exists) — a simpler sibling of
   `SkillButton` — no cooldown countdown, just an available/permanently-spent state via
-  `MarkSpent()`), shown alongside the skill buttons on the player's turn. Selecting one
+  `MarkSpent()`), held in a `ReagentPouch` shown on the player's turn, whose button slides
+  them out of and back into the pouch, with mouse input disabled mid-slide. Selecting one
   branches on `ReagentData.target_kind`: `Self_Target` resolves immediately; `One_Ally`/
   `One_Enemy` enters a new `BattleState.Selecting_Reagent_Target` that reuses the existing
   character-click signal (`_on_character_battle_target_selected`); `Zone_Section` enters

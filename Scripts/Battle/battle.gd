@@ -320,6 +320,8 @@ func ContinueTurn() -> void:
 			_battle_ui._reagent_buttons[i].show()
 			if(_reagent_loadout.IsSpent(i)):
 				_battle_ui._reagent_buttons[i].MarkSpent()
+		if(_reagent_loadout.Size() > 0):
+			_battle_ui.ShowReagentUI()
 		if(Types.Role.Symbiote == _characters[_turn_character_ID]._role and
 				null == _characters[_turn_character_ID]._graft):
 			_battle_ui._graft_button.show()
