@@ -15,6 +15,7 @@
 [ext_resource type="Texture2D" uid="uid://bifshu5nn25ex" path="res://Assets/Champ_Collector/Icons/Reagent_Pouch/reagent_pouch_open_2.png" id="16_backdrop"]
 [ext_resource type="Shader" uid="uid://dopsnd7qqgjdf" path="res://Assets/Champ_Collector/Shaders/horizontal_reveal.gdshader" id="17_reveal"]
 [ext_resource type="Shader" uid="uid://pqr1x86j3fq5" path="res://Assets/Champ_Collector/Shaders/outline.gdshader" id="18_outline"]
+[ext_resource type="PackedScene" path="res://Scenes/ui/Battle_UI/Battle_Menu.tscn" id="19_battle_menu"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4blpl"]
 bg_color = Color(0.635797, 0.5513, 0.269355, 0.482353)
@@ -54,7 +55,7 @@ shader_parameter/pattern = 1
 shader_parameter/inside = false
 shader_parameter/add_margins = true
 
-[node name="Battle UI" type="Control" unique_id=2001000775 node_paths=PackedStringArray("_skill_buttons", "_reagent_buttons", "_reagent_pouch", "_graft_button", "_thread_switch_button", "_battle_duration_label")]
+[node name="Battle UI" type="Control" unique_id=2001000775 node_paths=PackedStringArray("_skill_buttons", "_reagent_buttons", "_reagent_pouch", "_graft_button", "_thread_switch_button", "_battle_duration_label", "_menu_button", "_battle_menu")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -69,6 +70,8 @@ _reagent_pouch = NodePath("Reagent_Pouch")
 _graft_button = NodePath("Graft_Button")
 _thread_switch_button = NodePath("Thread_Switch_Button")
 _battle_duration_label = NodePath("Label_Battle_Duration")
+_menu_button = NodePath("Menu_Button")
+_battle_menu = NodePath("Battle_Menu")
 
 [node name="PlayerInfoBox" type="Panel" parent="." unique_id=1195450184 node_paths=PackedStringArray("_character_turn_markers")]
 material = ExtResource("2_d07u5")
@@ -315,6 +318,21 @@ texture = ExtResource("15_pouch_icon")
 expand_mode = 1
 stretch_mode = 5
 
+[node name="Menu_Button" type="Button" parent="."]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 110.0
+offset_bottom = 56.0
+focus_mode = 0
+theme = ExtResource("10_rvbdk")
+theme_override_font_sizes/font_size = 24
+text = "Menu"
+
+[node name="Battle_Menu" parent="." instance=ExtResource("19_battle_menu")]
+visible = false
+layout_mode = 1
+
 [connection signal="button_up" from="Skill_1" to="." method="_on_skill_1_button_up"]
 [connection signal="button_up" from="Skill_2" to="." method="_on_skill_2_button_up"]
 [connection signal="button_up" from="Skill_3" to="." method="_on_skill_3_button_up"]
@@ -325,3 +343,6 @@ stretch_mode = 5
 [connection signal="button_up" from="Reagent_Pouch/Reagent_List/Reagent_3" to="." method="_on_reagent_3_button_up"]
 [connection signal="button_up" from="Reagent_Pouch/Reagent_List/Reagent_4" to="." method="_on_reagent_4_button_up"]
 [connection signal="button_up" from="Reagent_Pouch/Pouch_Button" to="Reagent_Pouch" method="_on_pouch_button_button_up"]
+[connection signal="button_up" from="Menu_Button" to="." method="_on_menu_button_button_up"]
+[connection signal="status_list_requested" from="Battle_Menu" to="." method="_on_battle_menu_status_list_requested"]
+[connection signal="leave_confirmed" from="Battle_Menu" to="." method="_on_battle_menu_leave_confirmed"]

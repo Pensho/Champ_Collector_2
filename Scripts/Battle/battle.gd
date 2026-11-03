@@ -53,6 +53,7 @@ var _sides: CombatSides
 var _status_visual_IDs: Dictionary[int, int] = {}
 # Maps a character ID to the status-effect ID of its active Barrier, if any.
 var _barrier_status_ID: Dictionary[int, int] = {}
+var _status_list: BattleStatusList = BattleStatusList.new()
 var _reagent_loadout: ReagentLoadout
 var _selected_reagent_index: int = -1
 var _pending_turn_bar_reset: Dictionary[int, float] = {}
@@ -714,12 +715,14 @@ func PresentResult(p_result: CombatResult) -> void:
 				SetBarrierBar(p_result.target_ID, p_result.amount)
 			UpdateLifeBar(p_result.target_ID, p_result)
 		CombatResult.Kind.Status_Duration:
+			_status_list.SetDuration(p_result.status_ID, p_result.duration)
 			if(_status_visual_IDs.has(p_result.status_ID)):
 				_character_representations[p_result.target_ID].SetStatusEffectDuration(
 						_status_visual_IDs[p_result.status_ID], p_result.duration)
 		CombatResult.Kind.Statuses_Removed:
 			var repr_effect_IDs: Array[int] = []
 			for status_ID in p_result.status_IDs:
+				_status_list.Remove(status_ID)
 				if(_status_visual_IDs.has(status_ID)):
 					repr_effect_IDs.append(_status_visual_IDs[status_ID])
 					_status_visual_IDs.erase(status_ID)
@@ -729,6 +732,7 @@ func PresentResult(p_result: CombatResult) -> void:
 			_character_representations[p_result.target_ID].RemoveStatusEffects(repr_effect_IDs)
 			UpdateLifeBar(p_result.target_ID, p_result)
 		CombatResult.Kind.Statuses_Cleared:
+			_status_list.ClearCharacter(p_result.target_ID)
 			_character_representations[p_result.target_ID].ClearAllStatusEffects()
 			if(_barrier_status_ID.has(p_result.target_ID)):
 				_barrier_status_ID.erase(p_result.target_ID)
@@ -810,6 +814,8 @@ func ShowStatusApplied(p_result: CombatResult) -> void:
 		title = Types.DebuffName(p_result.debuff_type)
 		text_color = Color(0.681, 0.152, 0.31, 1.0)
 	var description: String = data.FormatDescription(p_result.amount, p_result.fraction, p_result.status_value)
+	_status_list.Record(
+			p_result.status_ID, p_result.target_ID, data.icon, title, description, p_result.duration, p_result.stacks)
 	var repr: CharacterRepresentation = _character_representations[p_result.target_ID]
 	if(_status_visual_IDs.has(p_result.status_ID)):
 		repr.UpdateStatusEffect(
@@ -883,6 +889,7 @@ func CheckAndHandleBattleOver() -> bool:
 
 func EndBattle(p_winner: BattleResolver.Winner) -> void:
 	_state = BattleState.Battle_Over
+	_battle_ui.DisableBattleMenu()
 	_battle_ui.CleanUp()
 
 	if(p_winner == BattleResolver.Winner.Monsters_Won):
@@ -1048,6 +1055,18 @@ func _on_battle_ui_thread_switch_selected() -> void:
 		return
 	herald_trait.AdvanceThread()
 	_battle_ui._thread_switch_button.RefreshVisual(herald_trait.GetCurrentThread())
+
+func _on_battle_ui_status_list_requested() -> void:
+	var living_names: Dictionary[int, String] = {}
+	for character_ID: int in _characters.keys():
+		if(_characters[character_ID]._current_health > 0):
+			living_names[character_ID] = _characters[character_ID]._name
+	_battle_ui.ShowBattleStatuses(_status_list.Sections(living_names))
+
+func _on_battle_ui_battle_left() -> void:
+	if(BattleState.Battle_Over == _state):
+		return
+	EndBattle(BattleResolver.Winner.Monsters_Won)
 
 func _ResolveGraft(p_symbiote_ID: int, p_target_enemy_ID: int) -> void:
 	var symbiote: Character = _characters[p_symbiote_ID]

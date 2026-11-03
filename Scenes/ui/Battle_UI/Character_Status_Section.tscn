@@ -1,0 +1,50 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/UI/Battle_UI/character_status_section.gd" id="1_script"]
+[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="2_theme"]
+[ext_resource type="PackedScene" path="res://Scenes/ui/Battle_UI/Status_Row.tscn" id="3_row"]
+
+[node name="Character_Status_Section" type="VBoxContainer" node_paths=PackedStringArray("_name_label", "_rows")]
+offset_right = 680.0
+offset_bottom = 120.0
+size_flags_horizontal = 3
+mouse_filter = 1
+theme = ExtResource("2_theme")
+theme_override_constants/separation = 8
+script = ExtResource("1_script")
+_name_label = NodePath("Name")
+_rows = [NodePath("Status_Row_1"), NodePath("Status_Row_2"), NodePath("Status_Row_3"), NodePath("Status_Row_4"), NodePath("Status_Row_5"), NodePath("Status_Row_6"), NodePath("Status_Row_7"), NodePath("Status_Row_8")]
+
+[node name="Name" type="Label" parent="."]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.843, 0.4, 1)
+theme_override_font_sizes/font_size = 28
+text = "Character Name"
+
+[node name="Separator" type="HSeparator" parent="."]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Status_Row_1" parent="." instance=ExtResource("3_row")]
+layout_mode = 2
+
+[node name="Status_Row_2" parent="." instance=ExtResource("3_row")]
+layout_mode = 2
+
+[node name="Status_Row_3" parent="." instance=ExtResource("3_row")]
+layout_mode = 2
+
+[node name="Status_Row_4" parent="." instance=ExtResource("3_row")]
+layout_mode = 2
+
+[node name="Status_Row_5" parent="." instance=ExtResource("3_row")]
+layout_mode = 2
+
+[node name="Status_Row_6" parent="." instance=ExtResource("3_row")]
+layout_mode = 2
+
+[node name="Status_Row_7" parent="." instance=ExtResource("3_row")]
+layout_mode = 2
+
+[node name="Status_Row_8" parent="." instance=ExtResource("3_row")]
+layout_mode = 2

@@ -1,0 +1,226 @@
+[gd_scene format=3 uid="uid://bsxklbdcc8n20"]
+
+[ext_resource type="Script" uid="uid://ddpktgn15ftrf" path="res://Scripts/UI/Battle_UI/battle_menu.gd" id="1_script"]
+[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="2_theme"]
+[ext_resource type="PackedScene" path="res://Scenes/ui/Battle_UI/Character_Status_Section.tscn" id="3_section"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_page"]
+content_margin_left = 20.0
+content_margin_top = 16.0
+content_margin_right = 20.0
+content_margin_bottom = 16.0
+bg_color = Color(0.1, 0.08, 0.06, 0.95)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="Battle_Menu" type="Control" unique_id=539309263 node_paths=PackedStringArray("_main_page", "_status_page", "_leave_page", "_status_scroll", "_status_sections", "_no_statuses_label")]
+z_index = 100
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("2_theme")
+script = ExtResource("1_script")
+_main_page = NodePath("Main_Page")
+_status_page = NodePath("Status_Page")
+_leave_page = NodePath("Leave_Page")
+_status_scroll = NodePath("Status_Page/Layout/Status_Scroll")
+_status_sections = [NodePath("Status_Page/Layout/Status_Scroll/Sections/Character_Status_Section_1"), NodePath("Status_Page/Layout/Status_Scroll/Sections/Character_Status_Section_2"), NodePath("Status_Page/Layout/Status_Scroll/Sections/Character_Status_Section_3"), NodePath("Status_Page/Layout/Status_Scroll/Sections/Character_Status_Section_4"), NodePath("Status_Page/Layout/Status_Scroll/Sections/Character_Status_Section_5"), NodePath("Status_Page/Layout/Status_Scroll/Sections/Character_Status_Section_6")]
+_no_statuses_label = NodePath("Status_Page/Layout/Status_Scroll/Sections/No_Statuses")
+
+[node name="Dimmer" type="ColorRect" parent="." unique_id=99437249]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0.5)
+
+[node name="Outside_Button" type="Button" parent="." unique_id=1465080412]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 0
+flat = true
+
+[node name="Main_Page" type="PanelContainer" parent="." unique_id=1405533617]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -190.0
+offset_top = -150.0
+offset_right = 190.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_page")
+
+[node name="Layout" type="VBoxContainer" parent="Main_Page" unique_id=1157504279]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="Title" type="Label" parent="Main_Page/Layout" unique_id=169227599]
+layout_mode = 2
+text = "Battle Menu"
+horizontal_alignment = 1
+
+[node name="ColorRect" type="ColorRect" parent="Main_Page/Layout" unique_id=581802140]
+custom_minimum_size = Vector2(0, 1)
+layout_mode = 2
+
+[node name="Return_Button" type="Button" parent="Main_Page/Layout" unique_id=1830841501]
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+text = "Return to Battle"
+
+[node name="Statuses_Button" type="Button" parent="Main_Page/Layout" unique_id=1121787197]
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+text = "Status Effects"
+
+[node name="Leave_Button" type="Button" parent="Main_Page/Layout" unique_id=685157494]
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+text = "Leave Battle"
+
+[node name="Status_Page" type="PanelContainer" parent="." unique_id=1076141863]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -380.0
+offset_top = -310.0
+offset_right = 380.0
+offset_bottom = 310.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_page")
+
+[node name="Layout" type="VBoxContainer" parent="Status_Page" unique_id=1460171756]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="Status_Page/Layout" unique_id=820974028]
+layout_mode = 2
+text = "Status Effects"
+horizontal_alignment = 1
+
+[node name="Status_Scroll" type="ScrollContainer" parent="Status_Page/Layout" unique_id=1996267596]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="Sections" type="VBoxContainer" parent="Status_Page/Layout/Status_Scroll" unique_id=637531265]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_constants/separation = 20
+
+[node name="No_Statuses" type="Label" parent="Status_Page/Layout/Status_Scroll/Sections" unique_id=1839467514]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "No active status effects."
+horizontal_alignment = 1
+
+[node name="Character_Status_Section_1" parent="Status_Page/Layout/Status_Scroll/Sections" unique_id=373309894 instance=ExtResource("3_section")]
+layout_mode = 2
+
+[node name="Character_Status_Section_2" parent="Status_Page/Layout/Status_Scroll/Sections" unique_id=645856727 instance=ExtResource("3_section")]
+layout_mode = 2
+
+[node name="Character_Status_Section_3" parent="Status_Page/Layout/Status_Scroll/Sections" unique_id=1483932265 instance=ExtResource("3_section")]
+layout_mode = 2
+
+[node name="Character_Status_Section_4" parent="Status_Page/Layout/Status_Scroll/Sections" unique_id=1040292985 instance=ExtResource("3_section")]
+layout_mode = 2
+
+[node name="Character_Status_Section_5" parent="Status_Page/Layout/Status_Scroll/Sections" unique_id=239624876 instance=ExtResource("3_section")]
+layout_mode = 2
+
+[node name="Character_Status_Section_6" parent="Status_Page/Layout/Status_Scroll/Sections" unique_id=684952153 instance=ExtResource("3_section")]
+layout_mode = 2
+
+[node name="Back_Button" type="Button" parent="Status_Page/Layout" unique_id=749211637]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 26
+text = "Back"
+
+[node name="Leave_Page" type="PanelContainer" parent="." unique_id=1550546840]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -220.0
+offset_top = -110.0
+offset_right = 220.0
+offset_bottom = 110.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_page")
+
+[node name="Layout" type="VBoxContainer" parent="Leave_Page" unique_id=723319266]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="Title" type="Label" parent="Leave_Page/Layout" unique_id=2041421626]
+layout_mode = 2
+text = "Leave Battle"
+horizontal_alignment = 1
+
+[node name="Warning" type="Label" parent="Leave_Page/Layout" unique_id=1219567455]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "Leaving counts as a loss."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Buttons" type="HBoxContainer" parent="Leave_Page/Layout" unique_id=462749839]
+layout_mode = 2
+theme_override_constants/separation = 24
+alignment = 1
+
+[node name="Leave_Confirm_Button" type="Button" parent="Leave_Page/Layout/Buttons" unique_id=1254979900]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.4, 0.4, 1)
+theme_override_font_sizes/font_size = 26
+text = "Leave"
+
+[node name="Back_Button" type="Button" parent="Leave_Page/Layout/Buttons" unique_id=1535994695]
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+text = "Back"
+
+[connection signal="button_up" from="Outside_Button" to="." method="_on_outside_button_up"]
+[connection signal="button_up" from="Main_Page/Layout/Return_Button" to="." method="_on_return_button_up"]
+[connection signal="button_up" from="Main_Page/Layout/Statuses_Button" to="." method="_on_statuses_button_up"]
+[connection signal="button_up" from="Main_Page/Layout/Leave_Button" to="." method="_on_leave_button_up"]
+[connection signal="button_up" from="Status_Page/Layout/Back_Button" to="." method="_on_back_button_up"]
+[connection signal="button_up" from="Leave_Page/Layout/Buttons/Leave_Confirm_Button" to="." method="_on_leave_confirm_button_up"]
+[connection signal="button_up" from="Leave_Page/Layout/Buttons/Back_Button" to="." method="_on_back_button_up"]

@@ -97,6 +97,8 @@ height = 35.0
 [connection signal="graft_confirmed" from="CanvasLayer/Battle UI" to="." method="_on_battle_ui_graft_confirmed"]
 [connection signal="reagent_confirmed" from="CanvasLayer/Battle UI" to="." method="_on_battle_ui_reagent_confirmed"]
 [connection signal="thread_switch_selected" from="CanvasLayer/Battle UI" to="." method="_on_battle_ui_thread_switch_selected"]
+[connection signal="status_list_requested" from="CanvasLayer/Battle UI" to="." method="_on_battle_ui_status_list_requested"]
+[connection signal="battle_left" from="CanvasLayer/Battle UI" to="." method="_on_battle_ui_battle_left"]
 [connection signal="battle_target_selected" from="Enemy_2" to="." method="_on_character_battle_target_selected"]
 [connection signal="battle_target_selected" from="Enemy_1" to="." method="_on_character_battle_target_selected"]
 [connection signal="battle_target_selected" from="Enemy_3" to="." method="_on_character_battle_target_selected"]

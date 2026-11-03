@@ -6,6 +6,8 @@ signal reagent_confirmed(p_reagent_index: int)
 signal battle_graft_selected
 signal graft_confirmed(p_target_ID: int)
 signal thread_switch_selected
+signal status_list_requested
+signal battle_left
 
 const COMBAT_EFFECT_TEXT_TEMPLATE = preload("uid://caq22aj34qk1f")
 const BUTTON_WITH_OPTIONS_SCENE = preload("uid://c7smqpmfvs0ih")
@@ -18,6 +20,8 @@ const COMBAT_TEXT_SPAWN_POINT: Vector2 = Vector2(100, 70)
 @export var _graft_button: GraftButton
 @export var _thread_switch_button: ThreadSwitchButton
 @export var _battle_duration_label: Label
+@export var _menu_button: Button
+@export var _battle_menu: BattleMenu
 
 var SKILL_GLOW_POS_1: Vector2
 var SKILL_GLOW_POS_2: Vector2
@@ -75,8 +79,13 @@ func Init() -> void:
 			(get_viewport_rect().size * 0.5) - (_graft_permanence_confirm.GetSize() * 0.5))
 	_graft_permanence_confirm.hide()
 
-	_thread_switch_button.SetToolTip("Switch Stance", "A toggle to change stance in order of;\n" + 
+	_thread_switch_button.SetToolTip("Switch Stance", "A toggle to change stance in order of;\n" +
 	"Silver -> Gold -> Black -> Silver")
+
+	# The confirm windows above are added after the scene's nodes; keep the menu last so it
+	# takes input before them.
+	move_child(_battle_menu, -1)
+	_battle_menu.Close()
 
 func _process(delta: float) -> void:
 	_battle_duration += delta
@@ -178,6 +187,22 @@ func _on_graft_description_confirmed() -> void:
 func _on_graft_permanence_confirmed() -> void:
 	_graft_permanence_confirm.hide()
 	graft_confirmed.emit(_pending_graft_target_ID)
+
+func ShowBattleStatuses(p_sections: Array[BattleStatusList.Section]) -> void:
+	_battle_menu.ShowStatuses(p_sections)
+
+func DisableBattleMenu() -> void:
+	_menu_button.disabled = true
+	_battle_menu.Close()
+
+func _on_menu_button_button_up() -> void:
+	_battle_menu.Open()
+
+func _on_battle_menu_status_list_requested() -> void:
+	status_list_requested.emit()
+
+func _on_battle_menu_leave_confirmed() -> void:
+	battle_left.emit()
 
 func HideGraftUI() -> void:
 	_graft_button.hide()
