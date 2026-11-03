@@ -218,15 +218,15 @@ answers. Enemies without a listed skill fall back on the universal Stab and Zap
 
 ### 2.2. Reclaimed City — Magic Ruins adventure
 
-#### The Hue-Eater (draft)
+#### The Hue-Eater
 
-- **Status:** designed, ready to prototype. Every number is a starting point. The mechanics below move into section 1 as
+- **Status:** prototyped, in implementation. Every number is a starting point. The mechanics below move into section 1 as
   opponent skills once settled.
 - **Tier:** Boss, weight not yet set; the first adventure after the Adventurer's Guild
   opens. **Setting:** the Ossuary of Stolen Hues (World_Building.md 5.4.1).
 - **Fantasy (to be iterated):** a Refracted being that has lost its own colour and
   gathers light from everything around it.
-- **Enemy composition:** the Hue-Eater alone; revisited when the fight is prototyped.
+- **Enemy composition:** the Hue-Eater alone.
   Speed: about the party median.
 - **Presentation:** she stands on the right of the screen; the prism stands to her left at
   half her height, always visible and slowly spinning.
@@ -277,8 +277,6 @@ answers. Enemies without a listed skill fall back on the universal Stab and Zap
     - **Parked idea, Luck on her:** with Luck alone her beams always hit; with Luck and
       Hexed, or neither, they hit at 60%; with Hexed alone, 36%. Set aside because it
       makes Cut Purse a key, repeating the Salvage Baron's Thief solution.
-    - **Hidden odds:** make the true odds kinder than they look (e.g. never the same
-      good roll for her twice in a row) so the chance does not feel cheating.
 
 ### 2.3. Unplaced
 

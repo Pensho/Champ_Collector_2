@@ -33,6 +33,9 @@ Code plans:
 - `Plan_Character_Data_Structure.md` — splits `CharacterPreset` and `Character` so champion-,
   opponent-, and boss-only fields live only on their own type.
 
+- `Plan_Hue_Eater_Implementation.md` — finishes the prototyped Hue-Eater: art, effects, sound,
+  placement and text.
+
 - `Plan_Battle_Presentation_Split.md` — moves result presentation and effect-scene orchestration
   out of `battle.gd`, then restores its 1200-line limit.
 
