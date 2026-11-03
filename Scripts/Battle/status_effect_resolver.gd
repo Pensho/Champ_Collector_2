@@ -222,6 +222,12 @@ func ResolveFreeBasic(p_user_ID: int, p_target_ID: int) -> void:
 	if(null == basic):
 		return
 
+	var used: CombatResult = CombatResult.new(CombatResult.Kind.Free_Basic_Used)
+	used.source_ID = p_user_ID
+	used.target_ID = p_target_ID
+	used.skill_ID = user._skills.find(basic)
+	_resolver._Emit(used)
+
 	var attributes: Dictionary[Types.Attribute, int] = _resolver.GetEffectiveAttributes(p_user_ID)
 	var trait_result: TraitSkillResult = Skills.DispatchSkillCast(
 			user, p_user_ID, [p_target_ID], basic.name, attributes, _resolver)

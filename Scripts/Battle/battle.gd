@@ -27,6 +27,8 @@ const ENEMY_ID_OFFSET: int = 3
 const PRESENTATION_DEADLINE: float = 2.0
 const PHASE_TEXT_SIZE_SCALE: float = 1.5
 const PHASE_TEXT_DURATION_SCALE: float = 1.8
+const FREE_BASIC_STAGGER_DURATION_MIN: float = 0.04
+const FREE_BASIC_STAGGER_DURATION_MAX: float = 0.12
 
 # Covers an encounter that names no stage of its own.
 const DEFAULT_STAGE_SCENE: PackedScene = preload(
@@ -72,6 +74,9 @@ var _shake_tween: Tween
 var _holding_results: bool = false
 var _action_presentation: ActionPresentation = null
 var _action_target_IDs: Array[int] = []
+# Free_Basic_Used results waiting to play, each with its remaining delay at the same index.
+var _pending_free_basics: Array[CombatResult] = []
+var _pending_free_basic_delays: Array[float] = []
 
 @onready var _battle_ui: BattleUI = $"CanvasLayer/Battle UI"
 @onready var _turn_indicator: TextureRect = $Turn_Indicator
@@ -232,6 +237,7 @@ func RefreshTurnBarSpeeds() -> void:
 func _process(p_delta: float) -> void:
 	if(not _initialized):
 		return
+	_AdvancePendingFreeBasics(p_delta)
 	match _state:
 		BattleState.Advancing:
 			AdvanceTurnBar(p_delta)
@@ -549,6 +555,33 @@ func _PlayEchoEffect(p_bracket: CombatResult) -> void:
 	for target_ID in target_IDs:
 		_PlayEffect(presentation.archetype, presentation.variant, subject_ID, target_ID, echo_scale)
 
+func _QueueFreeBasic(p_result: CombatResult) -> void:
+	var delay: float = 0.0
+	if(not _pending_free_basic_delays.is_empty()):
+		delay = _pending_free_basic_delays.back() + randf_range(
+				FREE_BASIC_STAGGER_DURATION_MIN, FREE_BASIC_STAGGER_DURATION_MAX)
+	_pending_free_basics.append(p_result)
+	_pending_free_basic_delays.append(delay)
+
+func _AdvancePendingFreeBasics(p_delta: float) -> void:
+	for index in _pending_free_basic_delays.size():
+		_pending_free_basic_delays[index] -= p_delta
+	while(not _pending_free_basics.is_empty() and _pending_free_basic_delays[0] <= 0.0):
+		_PlayFreeBasic(_pending_free_basics.pop_front())
+		_pending_free_basic_delays.pop_front()
+
+func _PlayFreeBasic(p_result: CombatResult) -> void:
+	if(not _characters.has(p_result.source_ID) or not _characters.has(p_result.target_ID)):
+		return
+	_PlayAttackLunge(p_result.source_ID, p_result.target_ID)
+	var skills: Array[Skill] = _characters[p_result.source_ID]._skills
+	if(_GetSettings().skip_skill_effects or p_result.skill_ID < 0 or p_result.skill_ID >= skills.size()):
+		return
+	var presentation: SkillPresentation = PresentationDefaults.ForSkill(
+			skills[p_result.skill_ID], _presentation_archetypes)
+	if(null != presentation):
+		_PlayEffect(presentation.archetype, presentation.variant, p_result.source_ID, p_result.target_ID)
+
 # A status's own effect at its moment: each time an Applied status lands or refreshes, and on
 # each damage or heal a Triggered status deals, growing inside a cascade.
 func _PlayStatusEffects(p_result: CombatResult) -> void:
@@ -793,6 +826,8 @@ func PresentResult(p_result: CombatResult) -> void:
 			# ordinal is already correct when those results arrive and drive BurstPacing.
 			_cascade_instance_ordinal += 1
 			_PlayEchoEffect(p_result)
+		CombatResult.Kind.Free_Basic_Used:
+			_QueueFreeBasic(p_result)
 	_PlayResultReaction(p_result)
 	_PlayStatusEffects(p_result)
 

@@ -25,6 +25,7 @@ enum Kind {
 	Status_Effect_Denied,
 	Cascade_Triggered,
 	Phase_Changed,
+	Free_Basic_Used,
 }
 
 enum Presentation_Phase {
@@ -43,7 +44,8 @@ var fraction: float = 0.0
 ## Status_Applied: the status instance's own value, before display adjustments in `fraction`.
 var status_value: float = 0.0
 var status_ID: int = -1
-## Cascade_Triggered: the caster's skill index a skill echo repeats; -1 otherwise.
+## Cascade_Triggered: the caster's skill index a skill echo repeats. Free_Basic_Used: the
+## user's basic skill index. -1 otherwise.
 var skill_ID: int = -1
 var status_IDs: Array[int] = []
 var is_buff: bool = false

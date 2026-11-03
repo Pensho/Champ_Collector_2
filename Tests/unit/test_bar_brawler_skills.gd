@@ -32,6 +32,21 @@ func test_bar_fight_has_every_living_ally_use_their_basic_on_the_target() -> voi
 	var sources: Array = _sources_of_damage(_resolver.ResolveSkill(0, [3], 1))
 	assert_eq(sources, [0, 1, 2], "The Bar Brawler and both allies each hit once")
 
+func test_bar_fight_announces_each_ally_basic_before_its_hit() -> void:
+	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [3], 1)
+	var users: Array = []
+	for index in results.size():
+		var result: CombatResult = results[index]
+		if(CombatResult.Kind.Free_Basic_Used != result.kind):
+			continue
+		users.append(result.source_ID)
+		assert_eq(result.target_ID, 3)
+		assert_eq(result.skill_ID, _roster[result.source_ID]._skills.find(Skills.BasicSkill(_roster[result.source_ID])))
+		var next_hit: CombatResult = results.slice(index).filter(
+				func(r: CombatResult) -> bool: return CombatResult.Kind.Damage == r.kind)[0]
+		assert_eq(next_hit.source_ID, result.source_ID, "The announced user's hit follows its announcement")
+	assert_eq(users, [0, 1, 2], "Every joining ally is announced so the view can animate them")
+
 func test_bar_fight_applies_dead_weight_before_the_hits() -> void:
 	var results: Array[CombatResult] = _resolver.ResolveSkill(0, [3], 1)
 	var dead_weight_index: int = results.find_custom(
