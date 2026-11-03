@@ -11,6 +11,12 @@ Entry template: `Plans/Plan_Encounter_Solution_Design.md`.
 they count as coverage when designing new encounters. Unplaced encounters and their
 opponent skills are ideas: any part of their kit or identity may be reused or remade.
 
+**Design basis.** Every encounter is designed through the two pillars, in this order:
+the key and lock (Concept Document 1.2) sets the hard requirement on the team the
+player brings; the Damage Engine (1.1) is the player's own expression in how they
+beat it. The encounter's Act sets how strict either requirement may be, against the
+roster expected by then (Concept Document 5.4.1).
+
 ## 1. Opponent skills
 
 Skills authored for enemies. Any status effect referenced here must exist in the
@@ -212,35 +218,43 @@ answers. Enemies without a listed skill fall back on the universal Stab and Zap
 
 ### 2.2. Reclaimed City — Magic Ruins adventure
 
-#### The Hue-Eater (draft, parked)
+#### The Hue-Eater (draft)
 
-- **Status:** parked mid-design, 2026-10-18. Settled: keys, threats, locks, readability,
-  and solved states for both mechanics. Open: payoff, roster sweep, precise numbers,
-  phase 2, composition, and a fantasy pass. The mechanics below move into section 1 as
+- **Status:** designed, ready to prototype. Every number is a starting point. The mechanics below move into section 1 as
   opponent skills once settled.
 - **Tier:** Boss, weight not yet set; the first adventure after the Adventurer's Guild
   opens. **Setting:** the Ossuary of Stolen Hues (World_Building.md 5.4.1).
 - **Fantasy (to be iterated):** a Refracted being that has lost its own colour and
   gathers light from everything around it.
-- **Enemy composition:** assumed the Hue-Eater alone; not yet decided.
+- **Enemy composition:** the Hue-Eater alone; revisited when the fight is prototyped.
+  Speed: about the party median.
+- **Presentation:** she stands on the right of the screen, the prism near the centre.
+  Grey patches shift shape on the ground around her.
 - **Mechanics:**
     - **Translucent (passive).** She takes heavily reduced damage (starting point: -75%)
       unless she holds Hexed. Shown only visually: translucent while active, solid while
       Hexed. No status icon and no number shown to the player. It is deliberately not a
       buff, so Cut Purse cannot steal it.
-    - **Prismatic beams (skill, name open).** A multi-beam attack (working number: 5
-      beams). Each beam rolls 60% to hit its target, otherwise it bends back. A bent beam
-      passes through her while she is translucent and hits her while she is solid. Hexed
-      rolls twice and keeps the worse, lowering each beam to 36%. Readability: beams
-      resolve one at a time, each visibly wavers before committing, and a beam that
-      Hexed flipped shows a "Hexed" callout (needs engine support, see `FeatureIdeas.md`,
-      Luck and Hexed roll callout). Cooldown open.
-    - **Gathered Light (passive).** Six hexagon slices rotate above her. She gains one at
-      the start of each of her turns, starting from 0. A completed hexagon is a heavy hit
-      on the party (meant to be survivable), then it resets. Each Enfeeble that lands on
-      her is consumed and removes 2 slices. When it lands, the Enfeeble icon is pulled
-      into the hexagon, with a sound cue and combat text naming Enfeeble. Its onset may
-      move to phase 2 when tuning.
+    - **Basic attack.** Single target, 100% of a standard hit, scaling with Mysticism.
+    - **Prismatic Rain (skill, cooldown 2 turns).** Five beams fall from above onto a
+      spinning prism, one at a time, each at 35% of a standard hit. The prism has five
+      faces, each coloured for its outcome: three for the party, two for bending back at
+      her. Each beam takes the face turned forward when it lands: 60% to hit its target,
+      otherwise it bends back. A bent beam passes through her and off the right of the
+      screen while she is translucent, and hits her as her attack would hit a champion
+      while she is solid. Hexed rolls twice and keeps the worse, lowering each beam to
+      36%. A Hexed glyph covers the whole prism as a hint; while she holds Hexed, a third
+      face takes her colour, and applying Hexed plays a sound cue.
+    - **Gathered Light (passive).** A hexagon of six slices builds above her, each
+      transparent with a glowing outline, turning the background seen through it
+      greyscale. She gains one slice at the start of each of her turns, starting from 0.
+      The completed hexagon flies onto the party (starting point: 150% of a standard hit
+      on every champion, meant to be survivable), then resets. Each Enfeeble that lands on
+      her is consumed and removes 2 slices: the Enfeeble icon is pulled into the hexagon,
+      with a sound cue and combat text naming Enfeeble, and the two slices crack off and
+      fall as Prism-Salt crystals at her feet.
+    - **Phase 2 (50% Health).** Each Prismatic Rain beam that lands on a champion also
+      adds one Gathered Light slice.
 - **Keys:**
     - **Hexed (hard check):** the Diviner's Ill Omen, the Jester's Burning Bolas. Makes
       her solid and bends most beams into her.
@@ -250,20 +264,19 @@ answers. Enemies without a listed skill fall back on the universal Stab and Zap
       Foresight also applies Enfeeble, incidentally.
     - **Tension:** Hexed lowers how many beams land on the Warlord, and so how many
       Enfeebles Brace for Impact applies. This is a timing decision, not a defect.
+- **Designed compositions (coverage, not requirements):** Jester, Lancer, Architect;
+  Diviner, Architect, Thief. Any other Damage Engine may win (Concept Document 5.4.1).
 - **Solved state:** while Hexed is up she is solid and most of each cast bends back into
   her; Enfeeble keeps the hexagon from completing.
 - **Unsolved texture:** without Hexed she is near-invulnerable while beams land at 60%,
-  which is a wall. Without Enfeeble the hexagon's heavy hit lands every sixth turn of hers.
+  which is a wall. Without Enfeeble the hexagon's heavy hit lands every sixth turn of hers
+  in phase 1, and every two to three in phase 2.
 - **Open items:**
-    - **Payoff:** none yet. Every key except the Hunter comes from an Enabler kit. The
-      burst must come from player skills: boss mechanics and boss attacks never carry
-      player multipliers, though effects on her (such as reduced Defence) do count.
     - **Parked idea, Luck on her:** with Luck alone her beams always hit; with Luck and
       Hexed, or neither, they hit at 60%; with Hexed alone, 36%. Set aside because it
       makes Cut Purse a key, repeating the Salvage Baron's Thief solution.
     - **Hidden odds:** make the true odds kinder than they look (e.g. never the same
       good roll for her twice in a row) so the chance does not feel cheating.
-    - Roster sweep, beam count and damage, Translucent's value, cooldowns, and phase 2.
 
 ### 2.3. Unplaced
 
@@ -491,7 +504,8 @@ Phase 2. The channel tag on each answer is read directly from `Concept_Document.
 **has a payoff** means at least one answer carries a Channel 1, 2, or 3 tag; **enabler-only**
 means every answer is tagged Enabler alone.
 
-Only a **Boss-tier** `enabler-only` verdict on a placed encounter is a defect. Fodder
+Only a **Boss-tier** `enabler-only` verdict on a placed encounter whose Act sets a Damage
+Engine requirement (Concept Document 5.4.1) is a defect. Fodder
 carries no burst expectation by definition (1.1.2). A mini-boss `enabler-only` verdict is a
 correct result when paired with a genuine partial-burst answer elsewhere in the encounter —
 record it, do not rework it.

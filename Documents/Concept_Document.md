@@ -1426,6 +1426,17 @@ Act
      └─ Difficulty — unlocked per adventure by completing it, chosen at start
 ```
 
+#### 5.4.1. Roster expectation per Act
+
+A Role's rarity loosely mirrors how late the player is expected to recruit it. Encounters are designed against the roster expected at their Act, and what they may demand of the team (section 1.2's key and lock, section 1.1's Damage Engine) grows stricter with it:
+
+| Act | Expected roster | Encounter demands |
+|---|---|---|
+| 1 | Most Uncommons, a few Rares | Designed around Uncommons. A key and lock only; any Damage Engine the player builds may win. |
+| 2 | Uncommons and Rares; a few Epics, not reliably | Designed around Rares, mostly key and lock. The second boss may pair an easy key and lock with a light Damage Engine requirement. |
+| 3 | All Uncommons, most Rares, some Epics | Designed around Rares and some Epics. Both key and lock and Damage Engine requirements, held loosely. |
+| 4 | Most of the roster | Tests the player's knowledge: encounters require specific teams for both key and lock and Damage Engine. Legendaries are re-evaluated closer to Act 4. |
+
 #### 5.5. Act 1 Reclaimed City
 
 At first the Adventurers guild & shop is closed. to not diverge the attention of the player too wide yet. And the progression lies in its adventures.
