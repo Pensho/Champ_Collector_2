@@ -15,7 +15,7 @@
 script = ExtResource("2_preset")
 _name = "Emissary"
 _texture = "res://Assets/Champ_Collector/Creatures/Emissary/Emissary_0001.png"
-_rarity = 2
+_rarity = 3
 _faction = 1
 _skills = Array[ExtResource("1_skill")]([ExtResource("3_citation"), ExtResource("4_signed_writ"), ExtResource("5_levied_sanction")])
 _health = 55

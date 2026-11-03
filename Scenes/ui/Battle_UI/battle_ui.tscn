@@ -15,7 +15,7 @@
 [ext_resource type="Texture2D" uid="uid://bifshu5nn25ex" path="res://Assets/Champ_Collector/Icons/Reagent_Pouch/reagent_pouch_open_2.png" id="16_backdrop"]
 [ext_resource type="Shader" uid="uid://dopsnd7qqgjdf" path="res://Assets/Champ_Collector/Shaders/horizontal_reveal.gdshader" id="17_reveal"]
 [ext_resource type="Shader" uid="uid://pqr1x86j3fq5" path="res://Assets/Champ_Collector/Shaders/outline.gdshader" id="18_outline"]
-[ext_resource type="PackedScene" path="res://Scenes/ui/Battle_UI/Battle_Menu.tscn" id="19_battle_menu"]
+[ext_resource type="PackedScene" uid="uid://bsxklbdcc8n20" path="res://Scenes/ui/Battle_UI/Battle_Menu.tscn" id="19_battle_menu"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4blpl"]
 bg_color = Color(0.635797, 0.5513, 0.269355, 0.482353)
@@ -318,7 +318,7 @@ texture = ExtResource("15_pouch_icon")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Menu_Button" type="Button" parent="."]
+[node name="Menu_Button" type="Button" parent="." unique_id=833851076]
 layout_mode = 0
 offset_left = 10.0
 offset_top = 10.0
@@ -329,7 +329,7 @@ theme = ExtResource("10_rvbdk")
 theme_override_font_sizes/font_size = 24
 text = "Menu"
 
-[node name="Battle_Menu" parent="." instance=ExtResource("19_battle_menu")]
+[node name="Battle_Menu" parent="." unique_id=169084745 instance=ExtResource("19_battle_menu")]
 visible = false
 layout_mode = 1
 
@@ -344,5 +344,5 @@ layout_mode = 1
 [connection signal="button_up" from="Reagent_Pouch/Reagent_List/Reagent_4" to="." method="_on_reagent_4_button_up"]
 [connection signal="button_up" from="Reagent_Pouch/Pouch_Button" to="Reagent_Pouch" method="_on_pouch_button_button_up"]
 [connection signal="button_up" from="Menu_Button" to="." method="_on_menu_button_button_up"]
-[connection signal="status_list_requested" from="Battle_Menu" to="." method="_on_battle_menu_status_list_requested"]
 [connection signal="leave_confirmed" from="Battle_Menu" to="." method="_on_battle_menu_leave_confirmed"]
+[connection signal="status_list_requested" from="Battle_Menu" to="." method="_on_battle_menu_status_list_requested"]
