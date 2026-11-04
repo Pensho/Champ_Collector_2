@@ -1471,6 +1471,12 @@ fine when the twist is visible in the still image.
   fungus and foliage on the body do not.
 - **Camera:** the 4.2 tail with `eye-level camera` in place of `eye-level camera
   at chest height`.
+- **Humanoid creatures.** A human body plan described by material and color
+  alone returns a person with odd skin. The inhuman part has to break the
+  silhouette: the material failing at joints, digits and hems (shards, splits),
+  one stretched proportion, and `full body creature` as the subject opener. Name a
+  solid mass on the head as what it is, not as hair; the noun brings strands back.
+  Humanoid creatures keep the 4.2 tail at chest height.
 
 > **Not yet written.** Band 1 coverage and accent placement on creatures, and
 > constructs and statues.
@@ -1509,6 +1515,28 @@ full body creature, a tall slow towering jungle beast standing high on six long 
 Counted groups: six legs, three eyes per side, three claw scars. **Cut order:**
 the ferns and bromeliads first, then the claw scars. The garden, the mud and the
 wound are never cut.
+
+#### 9.6.2 Hue-Eater
+
+The working example of a humanoid creature (9.4) and of a boss with no baked
+accent (9.5): her color is the prism, a separate code-tinted layer, as is her
+translucency (a shader), so the sprite is her solid state.
+
+- **Smooth glass shattered at the joints** is the mutation: shards at shoulders
+  and elbows, finger points, a shattered hem. One shape language, one break.
+- **Sensual by pose, not vocabulary**: an S-curve and a long neck; the face
+  carries the menace (9.3).
+- **Reads as stone or crystal, not glass** (17). Accepted.
+
+```
+bold woodcut illustration with engraved structural linework, very thick uniform black contour outline on the outer silhouette, clean uninterrupted silhouette edge, flat color fields, hard-edged shadows, four values, high contrast with large areas of solid shadow in a deep aubergine-black, that shadow mass and the outline sitting at the same value, colors assigned by material: pale grey glass with a cool green cast like old window glass for her body, a gown of the same glass a full value darker, near-black smoked glass for the mass on her head, every broken edge showing a thick pale green-grey rim where the glass is seen edge-on, all flat and unmodulated, warm bone white reserved for small angular glints and the eyes, outline black tinted slightly toward blue-violet, light from the upper left catching as small hard angular bone white glints on the shard tips and along the upper left edges, three levels of detail: the head, the shoulder shards and the glass mass on her head carry the heaviest engraved detail and read as the focal point of the figure; the gown and its shattered hem carry moderate engraved detail through long hard-edged folds and fracture lines; the arms carry light detail through long curved engraved lines following their form rather than being left empty; the face held as flat unbroken color carrying no more than four engraved lines in total, each one large and structural, all marks large and structural, no accent color, hand-carved edge quality.
+full body creature, a tall slender woman-shaped being made of smooth seamless glass that has shattered at its joints, standing in a slow S-curve with her weight sunk onto one hip, arms longer than a human's, her far arm hanging loose with its hand reaching below the knee, her near hand raised before her chest with its fingers spread, every finger drawn out into a long tapering point of glass twice the length of a human finger, a cluster of three jagged glass shards breaking out of the near shoulder and two out of the far shoulder, pointing up and back, one long jagged shard breaking out of the back of each elbow, each shard a sharp-edged splinter of broken pane glass, long elegant neck, realistic adult head proportion, the face of a woman in her late twenties, a long oval face with high sharp cheekbones, a narrow straight nose and a small closed mouth, one thin crack running from her hairline down across one cheek, face lit with no shadow across the eyes, shadow falling on the side of the head away from the light and beneath the jaw, eyes as two solid bone white almond shapes with no pupils, sized to read clearly but no larger than an adult eye, head tilted slightly down, watching from beneath a level brow, one corner of the mouth drawn up, in place of hair one solid poured mass of smoked glass with a smooth unbroken surface, swept back from her brow in one single wave like molten glass frozen mid-flow and falling down her back to the backs of her knees, its end snapped off in one hard jagged broken edge, a sleeveless glass gown cut straight across the collarbones, fitted close from the chest to the hips, then falling straight and pooling on the ground line in four long hard folds, its hem shattered into jagged broken shards splayed along the ground line, the far side of the gown, the far arm and the underside of the glass mass falling into solid aubergine-black shadow, in contact with a single flat ground line, three-quarter view facing left, eye-level camera at chest height, orthographic, isolated on a plain flat background of one uniform color, full figure visible with headroom.
+```
+
+Counted groups: five shoulder shards, two elbow shards, ten finger points, one
+facial crack. **Cut order:** the far shoulder shards first, then the near hand's
+raised pose. The finger points, elbow shards, head mass and shattered hem are
+never cut.
 
 ---
 ## 10. Environments
@@ -3540,6 +3568,9 @@ line is a trap, not a history; the rule it produced lives in the section named.
   characters per Role; the composite in pure black is the test (8.3).
 - Reading "element from outside reality" as magic only. A shape or material no
   culture made qualifies just as well (8.1).
+- A design that depends on reading as glass. Without transparency the woodcut
+  returns stone or crystal; leave transparency to an engine shader, or accept a
+  crystal reading (9.6.2).
 
 **Icons and skill art**
 
@@ -3572,6 +3603,8 @@ line is a trap, not a history; the rule it produced lives in the section named.
 - A lower jaw split into gaping mandibles. Reads as stock horror (9.4).
 - The old fodder tier — `minimal interior detail, large simple shapes, three
   values`. Returns a barren figure with two features (9.1).
+- A humanoid creature told apart from a person by material and color only.
+  Returns a human with odd skin (9.4).
 
 **Environment elements**
 

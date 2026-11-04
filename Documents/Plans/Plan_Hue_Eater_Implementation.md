@@ -8,7 +8,7 @@ Open balance questions live in `Playtest_Checklist.md`, not here.
 
 ### 1. Art
 - **Hue-Eater sprite.** Replaces the placeholder violet silhouette. A clean alpha edge and a strong
-  silhouette, so the translucency shader (step 2) reads.
+  silhouette, so the translucency shader (step 2) reads. (done)
 - **Prism.** Layered, so code keeps owning the colours: one greyscale face wedge placed five times
   and tinted per face, a frame spinning with the wedges, a static top-lit highlight, and a Hexed
   glyph overlay covering the whole prism.

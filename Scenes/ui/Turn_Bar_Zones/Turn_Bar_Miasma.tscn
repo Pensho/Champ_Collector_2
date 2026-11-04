@@ -64,11 +64,11 @@ color = Color(0.14509805, 0.4117647, 0.08627451, 1)
 color_ramp = SubResource("Gradient_eoyxc")
 
 [node name="CPUParticles2D_Side_1" type="CPUParticles2D" parent="." unique_id=1153391345]
-position = Vector2(0, -40)
+position = Vector2(-30, -40)
 texture = SubResource("GradientTexture2D_lxcu4")
 lifetime = 3.5
 emission_shape = 3
-emission_rect_extents = Vector2(100, 40)
+emission_rect_extents = Vector2(60, 40)
 spread = 0.0
 gravity = Vector2(0, 0)
 initial_velocity_min = 15.0

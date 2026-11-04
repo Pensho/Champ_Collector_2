@@ -10,7 +10,7 @@
 [resource]
 script = ExtResource("1_preset")
 _name = "Hue-Eater"
-_texture = "res://Assets/Champ_Collector/Creatures/Opponents/Hue_Eater/hue_eater.png"
+_texture = "res://Assets/Champ_Collector/Creatures/Opponents/hue_eater.png"
 _art_scale = 1.4
 _faction = 4
 _role = 13

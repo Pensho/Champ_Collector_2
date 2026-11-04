@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bn28evjwym1ie"
-path="res://.godot/imported/hue_eater.png-7d1f87666404d4ddca77b9ffde67ec5b.ctex"
+uid="uid://my837lglip0w"
+path="res://.godot/imported/hue_eater.png-584f6d64a1ee946b920574d417ff94ef.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Creatures/Opponents/Hue_Eater/hue_eater.png"
-dest_files=["res://.godot/imported/hue_eater.png-7d1f87666404d4ddca77b9ffde67ec5b.ctex"]
+source_file="res://Assets/Champ_Collector/Creatures/Opponents/hue_eater.png"
+dest_files=["res://.godot/imported/hue_eater.png-584f6d64a1ee946b920574d417ff94ef.ctex"]
 
 [params]
 
