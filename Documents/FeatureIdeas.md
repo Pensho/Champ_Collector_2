@@ -116,6 +116,9 @@ Effort: **S** = hours, **M** = days, **L** = week+
 - **Data-Driven Content Registries** *(Priority: Medium | Effort: L)*
   Replace the hand-maintained `preload` dictionaries with mode-driven `load()`: 121 calls today, 22 in `main_instance.gd`, 27 in `equipment_preset_registry.gd`, 72 in `reagent_registry.gd`. Each one hard-wires its resource into the compiled script, which is what makes a `ContentPool` a runtime filter rather than a definition of what the build contains. Converting them is the prerequisite for export-time stripping and worth doing on its own: adding content would stop meaning editing a dictionary. Must preserve the constraint the registry comments already state — runtime `DirAccess` discovery is unsafe on the Android export — so the replacement is a generated manifest or a per-mode preload list, not a folder scan.
 
+- **Tuning Values in Resources** *(Priority: Medium | Effort: L)*
+  Move trait, Relic and Graft tuning constants, rarity ladders included, out of their scripts into `@export` fields set in each `.tres`, so every tunable number lives in a resource. Script defaults stay neutral (0 or empty), because the editor drops a `.tres` value equal to the default; the Gathered Light, Hue-Eater and Slab Toss traits already follow this. Decide whether `Scripts/game_balance.gd` moves too.
+
 ---
 
 ## World & Narrative
