@@ -90,7 +90,7 @@ func test_a_self_applied_buff_keeps_its_full_duration_through_the_turn_it_lands(
 
 func test_a_buff_from_an_ally_ticks_on_the_holders_next_turn() -> void:
 	_roster[1]._skills.append(_ally_buff_skill(2))
-	_roster[0]._skills.append(_self_buff_skill())
+	_roster[0]._skills.append(TestFactory.make_strike_skill())
 	_resolver = TestFactory.make_resolver(_roster, TestFactory.make_full_sides())
 
 	_resolver.ResolveSkill(1, [0], 0)
@@ -98,7 +98,7 @@ func test_a_buff_from_an_ally_ticks_on_the_holders_next_turn() -> void:
 	assert_not_null(empower, "The ally's buff should land")
 	assert_eq(empower.duration, 2, "The ally's turn should not count down a buff it just placed")
 
-	_resolver.ResolveSkill(0, [0], 0)
+	_resolver.ResolveSkill(0, [3], 0)
 	assert_eq(empower.duration, 1, "The holder's own next turn should count it down")
 
 func test_a_stun_turn_still_counts_statuses_down() -> void:

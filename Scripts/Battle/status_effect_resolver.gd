@@ -790,7 +790,7 @@ func _InsertOrRefresh(
 		for i in active.size():
 			if(active[i].type == p_type):
 				if(null == p_data or p_data.overwritable):
-					if(p_always_refresh_duration or p_duration > active[i].duration):
+					if(p_always_refresh_duration or p_duration >= active[i].duration):
 						active[i].duration = p_duration
 						active[i].trait_riders = p_trait_riders
 						active[i].applied_on_turn_ordinal = _resolver.GetTurnOrdinal()
