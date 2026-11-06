@@ -33,7 +33,7 @@ func test_generate_without_ground_material_leaves_plain_gradient() -> void:
 
 func test_generate_offsets_a_copy_and_leaves_the_biome_material_untouched() -> void:
 	var shared_material := ShaderMaterial.new()
-	shared_material.shader = load("res://Assets/Champ_Collector/Shaders/adventure_ground.gdshader")
+	shared_material.shader = load("res://Assets/Champ_Collector/Shaders/Adventure_Shaders/adventure_ground.gdshader")
 	var ground: AdventureGround = autofree(AdventureGround.new())
 	ground.Generate(_BuildVisualData(shared_material), 42)
 

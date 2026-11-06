@@ -2,7 +2,8 @@ class_name TurnBar extends Panel
 
 const DEFAULT_THEME = preload("uid://c8irweh6md2jy")
 const GRAYSCALE = preload("uid://ia57lns0336p")
-const TARGETING_HELP_PULSE = preload("res://Assets/Champ_Collector/Shaders/targeting_help_pulse.gdshader")
+const TARGETING_HELP_PULSE = preload(
+		"res://Assets/Champ_Collector/Shaders/Character_Shaders/targeting_help_pulse.gdshader")
 const NO_CHARACTERS_TURN: int = -1
 
 @export var _character_turn_markers: Array[TextureRect]

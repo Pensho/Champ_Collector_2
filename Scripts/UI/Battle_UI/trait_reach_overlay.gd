@@ -1,6 +1,6 @@
 class_name TraitReachOverlay extends TextureRect
 
-const TRAIT_REACH_SHADER = preload("res://Assets/Champ_Collector/Shaders/trait_reach_overlay.gdshader")
+const TRAIT_REACH_SHADER = preload("res://Assets/Champ_Collector/Shaders/Battle_Shaders/trait_reach_overlay.gdshader")
 
 var _owner_icon: TextureRect
 var _reach_px: float

@@ -1,8 +1,8 @@
 class_name CharacterSpriteAnimator extends Node2D
 
-const SPRITE_SHADER = preload("res://Assets/Champ_Collector/Shaders/character_sprite.gdshader")
+const SPRITE_SHADER = preload("res://Assets/Champ_Collector/Shaders/Character_Shaders/character_sprite.gdshader")
 const SILHOUETTE_OUTLINE_SHADER = preload(
-		"res://Assets/Champ_Collector/Shaders/character_silhouette_outline.gdshader")
+		"res://Assets/Champ_Collector/Shaders/Character_Shaders/character_silhouette_outline.gdshader")
 
 const IDLE_SCALE_AMOUNT: float = 0.0
 const IDLE_PERIOD_SECONDS: float = 2.4

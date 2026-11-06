@@ -1,6 +1,6 @@
 shader_type canvas_item;
 
-#include "res://Assets/Champ_Collector/Shaders/targeting_help_pulse.gdshaderinc"
+#include "res://Assets/Champ_Collector/Shaders/Character_Shaders/targeting_help_pulse.gdshaderinc"
 
 uniform float flash_amount : hint_range(0.0, 1.0) = 0.0;
 uniform vec4 flash_color : source_color = vec4(1.0);

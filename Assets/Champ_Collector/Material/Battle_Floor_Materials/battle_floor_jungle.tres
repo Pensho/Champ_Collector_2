@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://cahavnq1youvr"]
 
-[ext_resource type="Shader" uid="uid://cs8scm26owb4b" path="res://Assets/Champ_Collector/Shaders/battle_floor.gdshader" id="1_b21lh"]
+[ext_resource type="Shader" uid="uid://cs8scm26owb4b" path="res://Assets/Champ_Collector/Shaders/Battle_Shaders/battle_floor.gdshader" id="1_b21lh"]
 [ext_resource type="Texture2D" uid="uid://bcfcl26p85xgl" path="res://Assets/Battle_Visual_Elements/floor_noise_2.tres" id="2_hdner"]
 
 [resource]

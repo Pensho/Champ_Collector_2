@@ -13,8 +13,8 @@
 [ext_resource type="Script" uid="uid://cygyun33ftffc" path="res://Scripts/UI/Battle_UI/reagent_pouch.gd" id="14_reagent_pouch"]
 [ext_resource type="Texture2D" uid="uid://d22t4mmb6u3p2" path="res://Assets/Champ_Collector/Icons/Reagent_Pouch/reagent_pouch.png" id="15_pouch_icon"]
 [ext_resource type="Texture2D" uid="uid://bifshu5nn25ex" path="res://Assets/Champ_Collector/Icons/Reagent_Pouch/reagent_pouch_open_2.png" id="16_backdrop"]
-[ext_resource type="Shader" uid="uid://dopsnd7qqgjdf" path="res://Assets/Champ_Collector/Shaders/horizontal_reveal.gdshader" id="17_reveal"]
-[ext_resource type="Shader" uid="uid://pqr1x86j3fq5" path="res://Assets/Champ_Collector/Shaders/outline.gdshader" id="18_outline"]
+[ext_resource type="Shader" uid="uid://dopsnd7qqgjdf" path="res://Assets/Champ_Collector/Shaders/UI_Shaders/horizontal_reveal.gdshader" id="17_reveal"]
+[ext_resource type="Shader" uid="uid://pqr1x86j3fq5" path="res://Assets/Champ_Collector/Shaders/UI_Shaders/outline.gdshader" id="18_outline"]
 [ext_resource type="PackedScene" uid="uid://bsxklbdcc8n20" path="res://Scenes/ui/Battle_UI/Battle_Menu.tscn" id="19_battle_menu"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4blpl"]

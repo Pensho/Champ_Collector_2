@@ -1,6 +1,6 @@
 [gd_scene format=3]
 
-[ext_resource type="Script" path="res://Scripts/Battle/hue_eater_prism.gd" id="1_prism"]
+[ext_resource type="Script" path="res://Scripts/Battle/Hue_Eater/hue_eater_prism.gd" id="1_prism"]
 
 [sub_resource type="Animation" id="Animation_spin"]
 resource_name = "spin"

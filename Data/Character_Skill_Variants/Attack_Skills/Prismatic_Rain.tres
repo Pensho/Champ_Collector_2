@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
 [ext_resource type="Script" uid="uid://b75mdrisawmcy" path="res://Scripts/Battle/Skill_Effects/prismatic_beam_effect.gd" id="2_beam"]
 [ext_resource type="Script" uid="uid://4bw820sjhiip" path="res://Scripts/Battle/skill_presentation.gd" id="3_presentation"]
-[ext_resource type="PackedScene" path="res://Scenes/Battle_Visual_Effects/prism_beam.tscn" id="4_prism_beam"]
+[ext_resource type="PackedScene" path="res://Scenes/Battle_Visual_Effects/Hue_Eater_Visual_Effects/prism_beam.tscn" id="4_prism_beam"]
 
 [sub_resource type="Resource" id="Resource_beam_1"]
 script = ExtResource("2_beam")

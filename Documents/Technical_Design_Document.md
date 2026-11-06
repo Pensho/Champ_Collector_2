@@ -2382,7 +2382,7 @@ grows the sprite taller (not the original shrink-on-y squash — that read as th
 crushed rather than hit) and knocks it back horizontally along `direction`; `Battle` derives that
 direction from which side of the arena the target is on, not a tracked attacker position, since
 players and enemies always face each other across a fixed left/right split. A `ShaderMaterial`
-unique per character (`Assets/Champ_Collector/Shaders/character_sprite.gdshader`, `flash_amount`,
+unique per character (`Assets/Champ_Collector/Shaders/Character_Shaders/character_sprite.gdshader`, `flash_amount`,
 `flash_color` and `grayscale_amount` uniforms) replaced the shared grayscale material the death handler used to
 assign; `Revive()` (used by the in-battle debug page) resets both the shader and the transform.
 `CharacterRepresentation` exposes the component via `GetSpriteAnimator()`. It also owns

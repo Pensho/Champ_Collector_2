@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://fru271mdno5c"]
 
-[ext_resource type="Script" uid="uid://bbkhe5cnkl6ll" path="res://Scripts/Battle/gathered_light_hexagon.gd" id="1_hexagon"]
-[ext_resource type="Shader" uid="uid://bjvl6p26rudwn" path="res://Assets/Champ_Collector/Shaders/gathered_light_slice.gdshader" id="2_slice"]
-[ext_resource type="PackedScene" path="res://Scenes/Battle_Visual_Effects/gathered_light_motes.tscn" id="3_motes"]
-[ext_resource type="PackedScene" path="res://Scenes/Battle_Visual_Effects/gathered_light_drips.tscn" id="4_drips"]
+[ext_resource type="Script" uid="uid://bbkhe5cnkl6ll" path="res://Scripts/Battle/Hue_Eater/gathered_light_hexagon.gd" id="1_hexagon"]
+[ext_resource type="Shader" uid="uid://bjvl6p26rudwn" path="res://Assets/Champ_Collector/Shaders/Hue_Eater_Shaders/gathered_light_slice.gdshader" id="2_slice"]
+[ext_resource type="PackedScene" path="res://Scenes/Battle_Visual_Effects/Hue_Eater_Visual_Effects/gathered_light_motes.tscn" id="3_motes"]
+[ext_resource type="PackedScene" path="res://Scenes/Battle_Visual_Effects/Hue_Eater_Visual_Effects/gathered_light_drips.tscn" id="4_drips"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_slice"]
 shader = ExtResource("2_slice")

@@ -54,8 +54,7 @@ No hard dependency on other plans. Soft relationships:
   (`Test_Design_Document.md`). A scripted effect's generator/placement logic is pure and
   does get a unit test, same as `AdventureBackgroundGenerator`; the node that turns its
   output into visuals still doesn't.
-- **File locations:** battle effect scenes in `Scenes/Battle_Visual_Effects/`
-  (currently holds the `burning_environment.tscn` stub); environmental effect scenes
+- **File locations:** battle effect scenes in `Scenes/Battle_Visual_Effects/`; environmental effect scenes
   next to the hub scene they belong to; shared particle textures in
   `Assets/Champ_Collector/Particles/`.
 - **Entry template.** Every effect entry records: **name**, **archetype** (battle) or
@@ -84,8 +83,7 @@ Burning, Enfeeble, Expose Weakness). Catalog-only skills are mapped in the backl
 - [ ] **Fire ignition + burning tick** — ignition flare on application, plus a small
   persistent flame emitter on the character while Burning lasts (reuse
   `Fire_Particle.png`; palette from the campfire scenes).
-  Serves: Burning debuff — applied by Burning Bolas and Lava Zone. The
-  `burning_environment.tscn` stub is the natural home for the persistent part.
+  Serves: Burning debuff — applied by Burning Bolas and Lava Zone.
   Status: needed.
 - [ ] **Buff application shimmer** — upward-drifting motes around the recipient,
   color-coded per buff (align colors with the status icons in

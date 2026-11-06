@@ -1,7 +1,7 @@
 [gd_scene format=3]
 
-[ext_resource type="Script" path="res://Scripts/Battle/gathered_light_launch.gd" id="1_launch"]
-[ext_resource type="PackedScene" path="res://Scenes/Battle_Visual_Effects/gathered_light_hexagon.tscn" id="2_hexagon"]
+[ext_resource type="Script" path="res://Scripts/Battle/Hue_Eater/gathered_light_launch.gd" id="1_launch"]
+[ext_resource type="PackedScene" path="res://Scenes/Battle_Visual_Effects/Hue_Eater_Visual_Effects/gathered_light_hexagon.tscn" id="2_hexagon"]
 
 [sub_resource type="Animation" id="Animation_reset"]
 length = 0.001

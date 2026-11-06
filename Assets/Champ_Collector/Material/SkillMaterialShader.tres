@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://btoxlv6hhnxp6"]
 
-[ext_resource type="Shader" uid="uid://bxqgowk0maklx" path="res://Assets/Champ_Collector/Shaders/battle_ui_button.gdshader" id="1_ye1pi"]
+[ext_resource type="Shader" uid="uid://bxqgowk0maklx" path="res://Assets/Champ_Collector/Shaders/UI_Shaders/battle_ui_button.gdshader" id="1_ye1pi"]
 
 [resource]
 shader = ExtResource("1_ye1pi")

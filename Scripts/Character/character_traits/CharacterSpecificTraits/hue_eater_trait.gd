@@ -6,8 +6,10 @@ class_name HueEaterTrait extends CharacterTrait
 const LAUNCH_TEXT: String = "Gathered Light"
 const ENFEEBLE_TEXT: String = "Enfeeble"
 const ENFEEBLE_TEXT_COLOR: Color = Color(0.75, 0.55, 1.0)
-const VISUALS_SCENE: PackedScene = preload("res://Scenes/Battle_Visual_Effects/hue_eater_visuals.tscn")
-const LAUNCH_SCENE: PackedScene = preload("res://Scenes/Battle_Visual_Effects/gathered_light_launch.tscn")
+const VISUALS_SCENE: PackedScene = preload(
+		"res://Scenes/Battle_Visual_Effects/Hue_Eater_Visual_Effects/hue_eater_visuals.tscn")
+const LAUNCH_SCENE: PackedScene = preload(
+		"res://Scenes/Battle_Visual_Effects/Hue_Eater_Visual_Effects/gathered_light_launch.tscn")
 
 @export var _translucent_health_loss_multiplier: float = 0.25
 @export var _slices_to_complete: int = 6

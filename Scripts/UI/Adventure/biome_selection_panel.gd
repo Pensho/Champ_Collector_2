@@ -3,7 +3,7 @@ class_name BiomeSelectionPanel extends Control
 signal pressed(p_panel: BiomeSelectionPanel)
 signal hover_changed(p_panel: BiomeSelectionPanel, p_is_hovered: bool)
 
-const GRAYSCALE_SHADER = preload("res://Assets/Champ_Collector/Shaders/grayscale.gdshader")
+const GRAYSCALE_SHADER = preload("res://Assets/Champ_Collector/Shaders/UI_Shaders/grayscale.gdshader")
 const SELECTION_TWEEN_SECONDS: float = 0.2
 
 @export var _texture_button: TextureButton

@@ -1,8 +1,8 @@
 [gd_scene format=3]
 
-[ext_resource type="Script" path="res://Scripts/Battle/hue_eater_visuals.gd" id="1_visuals"]
-[ext_resource type="PackedScene" path="res://Scenes/Battle_Visual_Effects/gathered_light_hexagon.tscn" id="2_hexagon"]
-[ext_resource type="PackedScene" path="res://Scenes/Battle_Visual_Effects/prism.tscn" id="3_prism"]
+[ext_resource type="Script" path="res://Scripts/Battle/Hue_Eater/hue_eater_visuals.gd" id="1_visuals"]
+[ext_resource type="PackedScene" path="res://Scenes/Battle_Visual_Effects/Hue_Eater_Visual_Effects/gathered_light_hexagon.tscn" id="2_hexagon"]
+[ext_resource type="PackedScene" path="res://Scenes/Battle_Visual_Effects/Hue_Eater_Visual_Effects/prism.tscn" id="3_prism"]
 
 [node name="Hue_Eater_Visuals" type="Node2D" node_paths=PackedStringArray("_hexagon_marker", "_hexagon", "_prism_marker", "_prism")]
 script = ExtResource("1_visuals")

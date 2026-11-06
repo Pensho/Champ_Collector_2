@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://di0y70sbai3yw"]
 
 [ext_resource type="Script" uid="uid://dql0n3rqcrd15" path="res://Scripts/UI/menu_item_slot.gd" id="1_vybhe"]
-[ext_resource type="Shader" uid="uid://bfxy8p1d7jnyy" path="res://Assets/Champ_Collector/Shaders/rarity_noise_backdrop.gdshader" id="2_e5jka"]
+[ext_resource type="Shader" uid="uid://bfxy8p1d7jnyy" path="res://Assets/Champ_Collector/Shaders/UI_Shaders/rarity_noise_backdrop.gdshader" id="2_e5jka"]
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="2_vybhe"]
 [ext_resource type="Texture2D" uid="uid://bxywwu2a6q5ev" path="res://Assets/Champ_Collector/Icons/Character_Frames/character_frame_3.png" id="3_e5jka"]
 [ext_resource type="Script" uid="uid://bumae467d28vx" path="res://Scripts/UI/tooltip.gd" id="4_tooltip"]
