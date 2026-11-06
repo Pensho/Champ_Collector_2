@@ -1,0 +1,46 @@
+[gd_scene format=3 uid="uid://df0hi4rip7cnc"]
+
+[sub_resource type="Gradient" id="Gradient_drip"]
+offsets = PackedFloat32Array(0, 0.49603173, 1)
+colors = PackedColorArray(0.8, 0.8, 0.8, 0.7, 0.8, 0.8, 0.8, 0.7019608, 0.8, 0.8, 0.8, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_drip"]
+gradient = SubResource("Gradient_drip")
+width = 3
+height = 16
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="Curve" id="Curve_drip_fall"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 1, Vector2(0.7, 0), 0.0, 0.0, 1, 1, Vector2(0.72, 1), 0.0, 0.0, 1, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 4
+
+[sub_resource type="Curve" id="Curve_drip_form"]
+_data = [Vector2(0, 0.2), 0.0, 0.0, 0, 1, Vector2(0.4, 0.2), 0.0, 0.0, 1, 1, Vector2(0.7, 1), 0.0, 0.0, 1, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 4
+
+[sub_resource type="Gradient" id="Gradient_drip_life"]
+offsets = PackedFloat32Array(0, 0.4, 0.6, 0.9, 1)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0)
+
+[node name="Gathered_Light_Drips" type="CPUParticles2D" unique_id=1130404333]
+self_modulate = Color(1, 1, 1, 0.20784314)
+amount = 2
+texture = SubResource("GradientTexture2D_drip")
+lifetime = 3.0
+randomness = 0.3
+emission_shape = 1
+emission_sphere_radius = 30.0
+particle_flag_align_y = true
+direction = Vector2(0, 1)
+spread = 0.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 1.0
+initial_velocity_max = 1.0
+linear_accel_min = 400.0
+linear_accel_max = 400.0
+linear_accel_curve = SubResource("Curve_drip_fall")
+scale_amount_min = 0.6
+scale_amount_curve = SubResource("Curve_drip_form")
+color_ramp = SubResource("Gradient_drip_life")

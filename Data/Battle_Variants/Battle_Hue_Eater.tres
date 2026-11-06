@@ -1,12 +1,14 @@
-[gd_resource type="Resource" script_class="Context_Battle" format=3]
+[gd_resource type="Resource" script_class="Context_Battle" format=3 uid="uid://b805ihvf6ay54"]
 
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="1_preset"]
 [ext_resource type="Script" uid="uid://bjtnao6fgl8go" path="res://Scripts/Worldview/Context_Battle.gd" id="2_battle"]
-[ext_resource type="Resource" path="res://Data/Character_Enemy_Variants/Hue_Eater.tres" id="3_hue_eater"]
+[ext_resource type="Resource" uid="uid://bsd0nr1c23vxv" path="res://Data/Character_Enemy_Variants/Hue_Eater.tres" id="3_hue_eater"]
+[ext_resource type="PackedScene" uid="uid://d1a5eu4gy0psq" path="res://Scenes/Battle_Stages/battle_stage_jungle_2.tscn" id="4_fj0jj"]
 [ext_resource type="Resource" uid="uid://dauwp8sbf3ga" path="res://Data/Loot_Tables/Experience_Quest.tres" id="4_loot"]
 
 [resource]
 script = ExtResource("2_battle")
 _enemies_wave_1 = Array[ExtResource("1_preset")]([ExtResource("3_hue_eater")])
+_stage_scene = ExtResource("4_fj0jj")
 _loot_table = ExtResource("4_loot")
 metadata/_custom_type_script = "uid://bjtnao6fgl8go"

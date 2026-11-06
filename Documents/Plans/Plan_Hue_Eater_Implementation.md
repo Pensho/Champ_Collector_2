@@ -13,7 +13,7 @@ Open balance questions live in `Playtest_Checklist.md`, not here.
   and tinted per face, a frame spinning with the wedges, a static top-lit highlight, and a Hexed
   glyph overlay covering the whole prism.
 - **Hexagon.** No texture: each slice stays a polygon drawing the background behind it in greyscale,
-  with a glowing outline per slice. Polish the glow.
+  with a glowing outline per slice. Polish the glow. (done)
 - **Grey patches.** A shader at her feet greying the ground through a shifting noise mask; one or
   two noise textures at most.
 

@@ -102,7 +102,6 @@ expand_mode = 1
 [node name="Sprite_Pivot" type="Node2D" parent="." unique_id=994506691]
 
 [node name="TextureRect" type="TextureRect" parent="Sprite_Pivot" unique_id=994506692]
-texture_filter = 1
 offset_right = 250.0
 offset_bottom = 250.0
 pivot_offset = Vector2(125, 250)

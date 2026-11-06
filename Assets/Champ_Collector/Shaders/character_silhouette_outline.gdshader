@@ -2,7 +2,8 @@ shader_type canvas_item;
 render_mode unshaded;
 
 // Draws the sprite's silhouette dilated by outline_width_texels in one flat color. The node
-// sits behind the sprite, so only the ring outside the art stays visible.
+// sits behind the sprite, so only the ring outside the art stays visible. Its coverage is the
+// highest filtered alpha nearby, so the edge fades over a texel instead of stepping.
 uniform vec4 outline_color : source_color = vec4(0.0, 0.0, 0.0, 1.0);
 uniform float outline_width_texels = 1.0;
 // The same thickness in the rect's local pixels: the quad grows by this on every side
@@ -21,18 +22,17 @@ void vertex() {
 void fragment() {
 	vec2 margin_fraction = vec2(outline_margin) / rect_size;
 	vec2 uv = (UV * (1.0 + 2.0 * margin_fraction)) - margin_fraction;
-	float width = outline_width_texels;
-	bool near_opaque = false;
-	for (float i = -ceil(width); i <= ceil(width) && !near_opaque; i++) {
-		float x = clamp(i, -width, width);
-		float offset = floor(sqrt(pow(width + 0.5, 2.0) - x * x));
+	float outline_coverage = 0.0;
+	for (float i = -ceil(outline_width_texels); i <= ceil(outline_width_texels); i++) {
+		float x = clamp(i, -outline_width_texels, outline_width_texels);
+		float offset = floor(sqrt(pow(outline_width_texels + 0.5, 2.0) - x * x));
 		for (float j = -ceil(offset); j <= ceil(offset); j++) {
 			vec2 xy = uv + TEXTURE_PIXEL_SIZE * vec2(x, clamp(j, -offset, offset));
-			if (xy == clamp(xy, vec2(0.0), vec2(1.0)) && texture(TEXTURE, xy).a > 0.0) {
-				near_opaque = true;
-				break;
+			if (xy == clamp(xy, vec2(0.0), vec2(1.0))) {
+				outline_coverage = max(outline_coverage, texture(TEXTURE, xy).a);
 			}
 		}
 	}
-	COLOR = near_opaque ? outline_color * vertex_color : vec4(0.0);
+	COLOR = outline_color * vertex_color;
+	COLOR.a *= outline_coverage;
 }

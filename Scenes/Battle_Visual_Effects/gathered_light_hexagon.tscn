@@ -1,74 +1,88 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://fru271mdno5c"]
 
-[ext_resource type="Script" path="res://Scripts/Battle/gathered_light_hexagon.gd" id="1_hexagon"]
-[ext_resource type="Shader" path="res://Assets/Champ_Collector/Shaders/screen_grayscale.gdshader" id="2_grey"]
+[ext_resource type="Script" uid="uid://bbkhe5cnkl6ll" path="res://Scripts/Battle/gathered_light_hexagon.gd" id="1_hexagon"]
+[ext_resource type="Shader" uid="uid://bjvl6p26rudwn" path="res://Assets/Champ_Collector/Shaders/gathered_light_slice.gdshader" id="2_slice"]
+[ext_resource type="PackedScene" path="res://Scenes/Battle_Visual_Effects/gathered_light_motes.tscn" id="3_motes"]
+[ext_resource type="PackedScene" path="res://Scenes/Battle_Visual_Effects/gathered_light_drips.tscn" id="4_drips"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_grey"]
-shader = ExtResource("2_grey")
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_slice"]
+shader = ExtResource("2_slice")
+shader_parameter/radius = 90.0
+shader_parameter/gap = 6.0
+shader_parameter/outline_color = Color(0.7, 0.7, 0.7, 0.5058824)
+shader_parameter/outline_width = 1.0
 
-[node name="Gathered_Light_Hexagon" type="Node2D" node_paths=PackedStringArray("_slices")]
+[node name="Gathered_Light_Hexagon" type="Node2D" unique_id=1402269877 node_paths=PackedStringArray("_shape", "_slices", "_slice_motes", "_slice_drips")]
 visible = false
 script = ExtResource("1_hexagon")
+_shape = NodePath("Shape")
 _slices = [NodePath("Shape/Slice_1"), NodePath("Shape/Slice_2"), NodePath("Shape/Slice_3"), NodePath("Shape/Slice_4"), NodePath("Shape/Slice_5"), NodePath("Shape/Slice_6")]
+_slice_motes = [NodePath("Shape/Slice_1_Motes"), NodePath("Shape/Slice_2_Motes"), NodePath("Shape/Slice_3_Motes"), NodePath("Shape/Slice_4_Motes"), NodePath("Shape/Slice_5_Motes"), NodePath("Shape/Slice_6_Motes")]
+_slice_drips = [NodePath("Shape/Slice_1_Drips"), NodePath("Shape/Slice_2_Drips"), NodePath("Shape/Slice_3_Drips"), NodePath("Shape/Slice_4_Drips"), NodePath("Shape/Slice_5_Drips"), NodePath("Shape/Slice_6_Drips")]
 
-[node name="Shape" type="Node2D" parent="."]
+[node name="Shape" type="Node2D" parent="." unique_id=1353687149]
 
-[node name="Slice_1" type="Polygon2D" parent="Shape"]
-material = SubResource("ShaderMaterial_grey")
-polygon = PackedVector2Array(0, 0, 0.00, -48.00, 41.57, -24.00)
+[node name="Slice_1" type="Polygon2D" parent="Shape" unique_id=2049674917]
+material = SubResource("ShaderMaterial_slice")
+polygon = PackedVector2Array(-8, -88, 78, -88, 78, 8, -8, 8)
 
-[node name="Outline" type="Line2D" parent="Shape/Slice_1"]
-points = PackedVector2Array(0, 0, 0.00, -48.00, 41.57, -24.00)
-closed = true
-width = 3.0
-default_color = Color(1, 0.9, 0.55, 1)
+[node name="Slice_2" type="Polygon2D" parent="Shape" unique_id=1458895502]
+material = SubResource("ShaderMaterial_slice")
+rotation = 1.0471976
+polygon = PackedVector2Array(-8, -88, 78, -88, 78, 8, -8, 8)
 
-[node name="Slice_2" type="Polygon2D" parent="Shape"]
-material = SubResource("ShaderMaterial_grey")
-polygon = PackedVector2Array(0, 0, 41.57, -24.00, 41.57, 24.00)
+[node name="Slice_3" type="Polygon2D" parent="Shape" unique_id=1538751667]
+material = SubResource("ShaderMaterial_slice")
+rotation = 2.0943952
+polygon = PackedVector2Array(-8, -88, 78, -88, 78, 8, -8, 8)
 
-[node name="Outline" type="Line2D" parent="Shape/Slice_2"]
-points = PackedVector2Array(0, 0, 41.57, -24.00, 41.57, 24.00)
-closed = true
-width = 3.0
-default_color = Color(1, 0.9, 0.55, 1)
+[node name="Slice_4" type="Polygon2D" parent="Shape" unique_id=1409978873]
+material = SubResource("ShaderMaterial_slice")
+rotation = 3.1415927
+polygon = PackedVector2Array(-8, -88, 78, -88, 78, 8, -8, 8)
 
-[node name="Slice_3" type="Polygon2D" parent="Shape"]
-material = SubResource("ShaderMaterial_grey")
-polygon = PackedVector2Array(0, 0, 41.57, 24.00, 0.00, 48.00)
+[node name="Slice_5" type="Polygon2D" parent="Shape" unique_id=446601638]
+material = SubResource("ShaderMaterial_slice")
+rotation = 4.1887903
+polygon = PackedVector2Array(-8, -88, 78, -88, 78, 8, -8, 8)
 
-[node name="Outline" type="Line2D" parent="Shape/Slice_3"]
-points = PackedVector2Array(0, 0, 41.57, 24.00, 0.00, 48.00)
-closed = true
-width = 3.0
-default_color = Color(1, 0.9, 0.55, 1)
+[node name="Slice_6" type="Polygon2D" parent="Shape" unique_id=1395466820]
+material = SubResource("ShaderMaterial_slice")
+rotation = 5.2359877
+polygon = PackedVector2Array(-8, -88, 78, -88, 78, 8, -8, 8)
 
-[node name="Slice_4" type="Polygon2D" parent="Shape"]
-material = SubResource("ShaderMaterial_grey")
-polygon = PackedVector2Array(0, 0, 0.00, 48.00, -41.57, 24.00)
+[node name="Slice_1_Motes" parent="Shape" instance=ExtResource("3_motes")]
+position = Vector2(25.98, -45)
 
-[node name="Outline" type="Line2D" parent="Shape/Slice_4"]
-points = PackedVector2Array(0, 0, 0.00, 48.00, -41.57, 24.00)
-closed = true
-width = 3.0
-default_color = Color(1, 0.9, 0.55, 1)
+[node name="Slice_2_Motes" parent="Shape" instance=ExtResource("3_motes")]
+position = Vector2(51.96, 0)
 
-[node name="Slice_5" type="Polygon2D" parent="Shape"]
-material = SubResource("ShaderMaterial_grey")
-polygon = PackedVector2Array(0, 0, -41.57, 24.00, -41.57, -24.00)
+[node name="Slice_3_Motes" parent="Shape" instance=ExtResource("3_motes")]
+position = Vector2(25.98, 45)
 
-[node name="Outline" type="Line2D" parent="Shape/Slice_5"]
-points = PackedVector2Array(0, 0, -41.57, 24.00, -41.57, -24.00)
-closed = true
-width = 3.0
-default_color = Color(1, 0.9, 0.55, 1)
+[node name="Slice_4_Motes" parent="Shape" instance=ExtResource("3_motes")]
+position = Vector2(-25.98, 45)
 
-[node name="Slice_6" type="Polygon2D" parent="Shape"]
-material = SubResource("ShaderMaterial_grey")
-polygon = PackedVector2Array(0, 0, -41.57, -24.00, 0.00, -48.00)
+[node name="Slice_5_Motes" parent="Shape" instance=ExtResource("3_motes")]
+position = Vector2(-51.96, 0)
 
-[node name="Outline" type="Line2D" parent="Shape/Slice_6"]
-points = PackedVector2Array(0, 0, -41.57, -24.00, 0.00, -48.00)
-closed = true
-width = 3.0
-default_color = Color(1, 0.9, 0.55, 1)
+[node name="Slice_6_Motes" parent="Shape" instance=ExtResource("3_motes")]
+position = Vector2(-25.98, -45)
+
+[node name="Slice_1_Drips" parent="Shape" instance=ExtResource("4_drips")]
+position = Vector2(25.98, -45)
+
+[node name="Slice_2_Drips" parent="Shape" instance=ExtResource("4_drips")]
+position = Vector2(51.96, 0)
+
+[node name="Slice_3_Drips" parent="Shape" instance=ExtResource("4_drips")]
+position = Vector2(25.98, 45)
+
+[node name="Slice_4_Drips" parent="Shape" instance=ExtResource("4_drips")]
+position = Vector2(-25.98, 45)
+
+[node name="Slice_5_Drips" parent="Shape" instance=ExtResource("4_drips")]
+position = Vector2(-51.96, 0)
+
+[node name="Slice_6_Drips" parent="Shape" instance=ExtResource("4_drips")]
+position = Vector2(-25.98, -45)
