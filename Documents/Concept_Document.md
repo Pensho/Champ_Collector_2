@@ -913,6 +913,14 @@ The two entries below are shipped and functional but referenced by no Character 
 ##### 3.2.4.4 Opponent Skills
 Skills authored for enemies are cataloged in `Encounter_Design_Document.md` section 1 (Break Guard moved there). Any status effect they reference must exist in the 3.2.3 catalog.
 
+#### 3.2.4. Terms used in combat
+
+* Cascade
+A Cascade is a sequence of Echoes (described below).
+
+* Echo
+An Echo is a repetition of a cast skill, repeating it.
+
 ### 3.3. Items and Resources
 
 #### 3.3.1. Itemization
@@ -1183,9 +1191,9 @@ directly in the adventure scene without entering battle:
   adventure's curated buff pool. The player chooses
   how long to receive it: 0 Supplies for the next combat, 6 Supplies for the next 3
   combats, or 18 Supplies for the rest of the adventure.
-- **Hint**: a placeholder node that shows a configured hint (text and/or image) meant
-  to assist with an out-of-game puzzle, and grants a small Silver/Supplies reward
-  (5% of the encounter's reward budget) on acknowledgement. No puzzle backend exists yet.
+- **Hint**: shows a configured hint (text and/or image) toward how the adventure's
+  boss works, and grants a small Silver/Supplies reward (5% of the encounter's reward
+  budget) on acknowledgement.
 - **Gamble**: a 50/50 choice. On a win, the player receives a buff from the same pool lasting 4 combats;
   on a loss, a debuff lasting 2 combats.
 - **Escalate**: offers Silver and/or Supplies (15% of the encounter's reward budget) plus a

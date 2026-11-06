@@ -29,10 +29,6 @@ func Init(p_rarity: Types.Rarity) -> void:
 	_execution_steps[Types.Combat_Event.End_Turn] = Callable(self, "EndOfTurn")
 	_execution_steps[Types.Combat_Event.Debuff_Received] = Callable(self, "OnDebuffReceived")
 	_execution_steps[Types.Combat_Event.Ally_Attack_Landed] = Callable(self, "OnAllyAttackLanded")
-
-	_title = "Hue-Eater"
-	_body = "Translucent unless Hexed. Gathers light into a hexagon that Enfeeble breaks apart."
-
 func ResetForBattle() -> void:
 	_slices = 0
 	_casting_beams = false

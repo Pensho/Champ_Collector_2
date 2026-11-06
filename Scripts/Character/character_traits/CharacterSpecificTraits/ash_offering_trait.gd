@@ -13,11 +13,6 @@ func Init(p_rarity: Types.Rarity) -> void:
 	)
 	_execution_steps[Types.Combat_Event.Ally_Death] = Callable(self, "OnAllyDeath")
 	_execution_steps[Types.Combat_Event.Skill_Cast] = Callable(self, "OnSkillCast")
-
-	_title = "Ash Offering"
-	_body = "When an ally Cinder Husk dies, the user's next Cinder Sermon deals +40% damage." \
-			+ " Multiple deaths stack; the bonus is consumed by that one Sermon."
-
 func RefreshVisuals(_p_character_repr: CharacterRepresentation) -> void:
 	pass
 

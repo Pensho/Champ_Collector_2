@@ -12,11 +12,6 @@ func Init(p_rarity: Types.Rarity) -> void:
 	)
 	_execution_steps[Types.Combat_Event.Start_Combat] = Callable(self, "StartOfBattle")
 	_execution_steps[Types.Combat_Event.Start_Turn] = Callable(self, "StartOfTurn")
-
-	_title = "Lien"
-	_body = "At the start of the user's turn, if they hold no buffs, they gain" \
-			+ " Empower for 2 turns. Triggers at most once every 4 turns."
-
 func RefreshVisuals(_p_character_repr: CharacterRepresentation) -> void:
 	pass
 

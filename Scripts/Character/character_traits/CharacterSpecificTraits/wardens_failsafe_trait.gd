@@ -6,10 +6,6 @@ func Init(p_rarity: Types.Rarity) -> void:
 		"res://Assets/Champ_Collector/Icons/Abilities/Passives/Wardens_Failsafe/Wardens_Failsafe.png"
 	)
 	_execution_steps[Types.Combat_Event.Ally_Death] = Callable(self, "OnAllyDeath")
-
-	_title = "Warden's Failsafe"
-	_body = "When an ally dies, the user gains the Frenzy buff for the rest of the battle."
-
 func RefreshVisuals(_p_character_repr: CharacterRepresentation) -> void:
 	pass
 

@@ -17,6 +17,21 @@ player brings; the Damage Engine (1.1) is the player's own expression in how the
 beat it. The encounter's Act sets how strict either requirement may be, against the
 roster expected by then (Concept Document 5.4.1).
 
+**Boss design process.** A boss is built in six steps:
+
+1. Design the mechanics.
+2. Prototype them: the intended compositions win and unintended ones lose.
+3. Design the teaching. For each mechanic, list what the player must learn: notice the
+   problem, see its cause, recognise the key, and find that key on their roster. Then
+   place hints carrying each link: the opponent's pre-battle tooltip, Hint nodes,
+   in-battle hints, and the adventure's fodder (Concept Document 1.2). Fodder may bring
+   the key itself, showing it working on its own side.
+4. Prototype the fodder and hints, with their tests and the visuals the teaching needs.
+5. Playtest the teaching with players who do not know the solution. If they do not
+   engage with the mechanics as intended, return to step 3; if the teaching cannot be
+   made to work, return to step 1.
+6. Make the remaining art, sound and effects, and polish.
+
 ## 1. Opponent skills
 
 Skills authored for enemies. Any status effect referenced here must exist in the
@@ -228,8 +243,9 @@ answers. Enemies without a listed skill fall back on the universal Stab and Zap
   gathers light from everything around it.
 - **Enemy composition:** the Hue-Eater alone.
   Speed: about the party median.
-- **Presentation:** she stands on the right of the screen; the prism stands to her left at
-  half her height, always visible and slowly spinning.
+- **Presentation:** she stands on the right of the screen; a crystal die stands to her left
+  at half her height, always visible and slowly spinning: colourless, red while she holds
+  Hexed.
   Grey patches shift shape on the ground around her.
 - **Mechanics:**
     - **Translucent (passive).** She takes heavily reduced damage from every source, damage
@@ -237,15 +253,12 @@ answers. Enemies without a listed skill fall back on the universal Stab and Zap
       Hexed. No status icon and no number shown to the player. It is deliberately not a
       buff, so Cut Purse cannot steal it.
     - **Basic attack.** Single target, 100% of a standard hit, scaling with Mysticism.
-    - **Prismatic Rain (skill, cooldown 2 turns).** Five beams fall from above onto a
-      spinning prism, one at a time, each at 35% of a standard hit. The prism has five
-      faces, each coloured for its outcome: three for the party, two for bending back at
-      her. Each beam takes the face turned forward when it lands: 60% to hit its target,
-      otherwise it bends back. A bent beam passes through her and off the right of the
-      screen while she is translucent, and hits her as her attack would hit a champion
-      while she is solid. Hexed rolls twice and keeps the worse, lowering each beam to
-      36%. A Hexed glyph covers the whole prism as a hint; while she holds Hexed, a third
-      face takes her colour, and applying Hexed plays a sound cue.
+    - **Prismatic Rain (skill, cooldown 2 turns).** Five beams fall from above onto the
+      die, one at a time, each at 35% of a standard hit. Each beam has a 60% chance to hit
+      its target, otherwise it bends back. A bent beam passes through her and off the right
+      of the screen while she is translucent, and hits her as her attack would hit a
+      champion while she is solid. Hexed rolls twice and keeps the worse, lowering each
+      beam to 36%. Applying Hexed plays a sound cue.
     - **Gathered Light (passive).** A hexagon of six slices builds to her right at half her height, each
       transparent with a glowing outline, turning the background seen through it
       greyscale. She gains one slice at the start of each of her turns, starting from 0.
@@ -273,10 +286,41 @@ answers. Enemies without a listed skill fall back on the universal Stab and Zap
 - **Unsolved texture:** without Hexed she is near-invulnerable while beams land at 60%,
   which is a wall. Without Enfeeble the hexagon's heavy hit lands every seventh turn of hers
   in phase 1, and every three to four in phase 2.
+- **Teaching:**
+    - **Pre-battle tooltip** (battle choice and inspecting her): "Light slips through her;
+      only ill fortune makes her whole. The light she gathers is only as strong as she is."
+    - **Hint node:** "Nothing touched it until the curse took hold. Each time we weakened
+      it, its hoarded light cracked and fell like salt."
+    - **Combat text,** once per battle, after 3 consecutive Prismatic Rains cast without
+      Hexed on her: "All colour and chance falls to me."
+    - **Fodder:** Slab Tossers (Hexed and chance), Chanter and Gatherers (Enfeeble and
+      a gathered shape).
 - **Open items:**
     - **Parked idea, Luck on her:** with Luck alone her beams always hit; with Luck and
       Hexed, or neither, they hit at 60%; with Hexed alone, 36%. Set aside because it
       makes Cut Purse a key, repeating the Salvage Baron's Thief solution.
+
+#### Slab Tossers
+
+- **Tier:** Fodder. **Composition:** three Slab Tossers (working name), each holding a
+  magical slab found in the ruins.
+- **Mechanic:** every attack tosses the slab (starting point: 50%). The good side lands
+  the attack with +1 Echo; the bad side lands a weak hit and Hexes the tosser for 1 turn.
+  The slab arcs up and flips by squashing through its vertical scale. A good landing
+  flashes yellow and gives off slowly rising glowing motes; a bad landing stays plain
+  grey. Onset: enemy turn 1.
+- **Answers:** Hexed (e.g. the Diviner's Ill Omen) turns their tosses grey.
+
+#### Chanter and Gatherers
+
+- **Tier:** Fodder. **Composition:** one Chanter, two Gatherers.
+- **Mechanic:** each Gatherer builds a triangle of three parts, drawn like the
+  Hue-Eater's hexagon, starting at one part; a full triangle flies onto the party as a
+  light hit. The Chanter's chant Enfeebles every character, both sides. On a Gatherer,
+  an Enfeeble is consumed and clears its triangle, with the Hue-Eater's effect and sound.
+  Onset: enemy turn 1, the chant on the Chanter's first turn.
+- **Answers:** Enfeeble on the Gatherers (e.g. the Lancer Role's Disarm); killing the
+  Chanter stops the party's Enfeeble but lets the triangles complete.
 
 ### 2.3. Unplaced
 

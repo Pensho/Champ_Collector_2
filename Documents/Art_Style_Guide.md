@@ -1519,7 +1519,7 @@ wound are never cut.
 #### 9.6.2 Hue-Eater
 
 The working example of a humanoid creature (9.4) and of a boss with no baked
-accent (9.5): her color is the prism, a separate code-tinted layer, as is her
+accent (9.5): her color is the crystal die, a separate code-tinted layer, as is her
 translucency (a shader), so the sprite is her solid state.
 
 - **Smooth glass shattered at the joints** is the mutation: shards at shoulders
