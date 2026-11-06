@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_templ")
 MIN_DEPTH = 16
-MAX_DEPTH = 20
+MAX_DEPTH = 18
 branching_paths = 2
 rest_stops = 2
 gamble_nodes = 2
