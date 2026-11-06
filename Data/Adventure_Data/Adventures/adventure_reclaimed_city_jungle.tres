@@ -14,7 +14,7 @@
 [ext_resource type="Resource" uid="uid://wg8ohcii0wix" path="res://Data/Loot_Tables/Adventure_Escalate_Loot.tres" id="13_kofhi"]
 [ext_resource type="Resource" path="res://Data/Loot_Tables/Adventure_Hint_Loot.tres" id="14_c3w72"]
 [ext_resource type="Resource" uid="uid://kd0gwx05dibq" path="res://Data/Adventure_Data/Buff_Pools/buff_pool_default.tres" id="15_buff_pool"]
-[ext_resource type="AudioStream" uid="uid://ddpr0hbi4wlku" path="res://Assets/Champ_Collector/Sound/Music/JDSherbert - Ambiences Music Pack - Swamp of Digeridoos.mp3" id="16_music"]
+[ext_resource type="AudioStream" uid="uid://3g6mjhqeimix" path="res://Assets/Audio/Music/Reclaimed_City/veil_of_the_forgotten_ones.mp3" id="16_music"]
 
 [resource]
 script = ExtResource("1_adventure")

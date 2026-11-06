@@ -8,7 +8,7 @@ const CONFIG_SECTION: String = "settings"
 ## Linear Music bus gain at a full music slider; the slider scales within it.
 const MAXIMUM_MUSIC_VOLUME: float = 0.8
 
-const DEFAULT_MASTER_VOLUME: float = 1.0
+const DEFAULT_MASTER_VOLUME: float = 0.8
 const DEFAULT_MUSIC_VOLUME: float = 1.0
 const DEFAULT_SOUND_EFFECTS_VOLUME: float = 1.0
 const DEFAULT_SCREEN_SHAKE_ENABLED: bool = true

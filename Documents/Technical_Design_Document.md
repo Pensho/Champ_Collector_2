@@ -192,10 +192,12 @@ first scene change already starts music. All sound is non-positional stereo.
   a sound survives the scene change it triggers.
 - **Music.** Two players on the `Music` bus crossfade. `PlayMusic(track, fade_seconds)` is a
   no-op for the track already playing, and `null` fades to silence. After each scene's `Init`,
-  `Main_Instance._deferred_change_scene` plays the incoming context's
-  `_adventure_state.adventure.music_track`, or `null` without one: music runs from the Adventure
-  map through battle and fades out on leaving. One area has one track, and every track is
-  imported with `loop=true`.
+  `Main_Instance._deferred_change_scene` plays `MusicTrackFor(context, HUB_ACT)`: the context's
+  `_adventure_state.adventure.music_track`, else `null` for the main menu and save/load screens,
+  else the hub `ActData.music_track`. `HUB_ACT` is fixed to Reclaimed City. One area has one
+  track, and every track is imported with `loop=true`. Audio files live in
+  `Assets/Audio/Music/<Region>/` (unused tracks in `Music/Unassigned/`) and
+  `Assets/Audio/Sound_Effects/<UI|Battle>/`.
 - **Buttons.** Button sounds are opt-in: a scene's one `UISounds` node
   (`Scripts/Audio/ui_sounds.gd`) lists its sounding buttons as
   `buttons: Dictionary[NodePath, ButtonSoundProfile]`, and an entry without a profile uses

@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://bd2eq2yn0qbdg"
-path="res://.godot/imported/soft_tick.wav-357be435db300fff555f8e64a89f6684.sample"
+path="res://.godot/imported/soft_tick.wav-455a26c3bbbfa62a6947234c30f63b79.sample"
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/Sound/Sound_Effects/soft_tick.wav"
-dest_files=["res://.godot/imported/soft_tick.wav-357be435db300fff555f8e64a89f6684.sample"]
+source_file="res://Assets/Audio/Sound_Effects/UI/soft_tick.wav"
+dest_files=["res://.godot/imported/soft_tick.wav-455a26c3bbbfa62a6947234c30f63b79.sample"]
 
 [params]
 

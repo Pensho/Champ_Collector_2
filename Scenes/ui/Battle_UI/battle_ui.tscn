@@ -13,8 +13,11 @@
 [ext_resource type="Script" uid="uid://cygyun33ftffc" path="res://Scripts/UI/Battle_UI/reagent_pouch.gd" id="14_reagent_pouch"]
 [ext_resource type="Texture2D" uid="uid://d22t4mmb6u3p2" path="res://Assets/Champ_Collector/Icons/Reagent_Pouch/reagent_pouch.png" id="15_pouch_icon"]
 [ext_resource type="Texture2D" uid="uid://bifshu5nn25ex" path="res://Assets/Champ_Collector/Icons/Reagent_Pouch/reagent_pouch_open_2.png" id="16_backdrop"]
+[ext_resource type="Script" uid="uid://brborf0wdvmjy" path="res://Scripts/Audio/ui_sounds.gd" id="17_4nlar"]
 [ext_resource type="Shader" uid="uid://dopsnd7qqgjdf" path="res://Assets/Champ_Collector/Shaders/UI_Shaders/horizontal_reveal.gdshader" id="17_reveal"]
+[ext_resource type="Script" uid="uid://853wrgpde68y" path="res://Scripts/Audio/button_sound_profile.gd" id="18_8gx3u"]
 [ext_resource type="Shader" uid="uid://pqr1x86j3fq5" path="res://Assets/Champ_Collector/Shaders/UI_Shaders/outline.gdshader" id="18_outline"]
+[ext_resource type="Resource" path="res://Data/Sound_Cues/button_standard.tres" id="19_6ipoj"]
 [ext_resource type="PackedScene" uid="uid://bsxklbdcc8n20" path="res://Scenes/ui/Battle_UI/Battle_Menu.tscn" id="19_battle_menu"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4blpl"]
@@ -332,6 +335,15 @@ text = "Menu"
 [node name="Battle_Menu" parent="." unique_id=169084745 instance=ExtResource("19_battle_menu")]
 visible = false
 layout_mode = 1
+
+[node name="UISounds" type="Node" parent="." unique_id=27725243]
+script = ExtResource("17_4nlar")
+buttons = Dictionary[NodePath, ExtResource("18_8gx3u")]({
+NodePath("../Skill_1"): ExtResource("19_6ipoj"),
+NodePath("../Skill_2"): ExtResource("19_6ipoj"),
+NodePath("../Skill_3"): ExtResource("19_6ipoj")
+})
+metadata/_custom_type_script = "uid://brborf0wdvmjy"
 
 [connection signal="button_up" from="Skill_1" to="." method="_on_skill_1_button_up"]
 [connection signal="button_up" from="Skill_2" to="." method="_on_skill_2_button_up"]

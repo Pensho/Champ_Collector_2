@@ -1291,11 +1291,17 @@ Notable groups within these factions:
 #### 4.3.1. Reclaimed City
 A city built on the edge of a vast forest, where originally nobels invested heavily to forage and claim valuable magical resources from the forest. However the strong and harsh growth of the forest eventually proved too much for the city to handle, reaping too few rewards for further investment. The city was eventually abandoned and left to the forest, turning into ruin. Until recently when adventurers and scavengers have started to reclaim parts of the city to gather its resources once more. Today it runs on a scavenger "Gold Rush" economy: the shunned Symbiote Slums, whose workers bond with forest organisms to survive the toxic spores, and the "Green-Market" black market for magical reagents (World_Building.md 1.2.1). The Fae quietly work to regrow the forest into the human outposts (World_Building.md 4.6.1), and the ruin known as the Ossuary of Stolen Hues lies deep within the city (World_Building.md 5.4.1).
 
+Hub music: Far from Home.
+
 #### 4.3.2. The Pirate Coves
 A series of hidden coves along a treacherous coastline, serving as a haven for pirates and smugglers. These coves are notorious for their labyrinthine tunnels and secret passages, making them difficult to navigate for outsiders. The Pirate Coves are a hub of illicit trade, where anything from rare magical artifacts to forbidden knowledge can be bought and sold. The area is also known for its lawlessness, with various pirate factions vying for control over the lucrative smuggling routes. Politically the coves operate as the Free-Trade Coalition, "The Gilded Wake" — a functional, if violent, society built on bypassing the Iron Ledger's taxes, governed by the loose Council of Coves (World_Building.md 1.2.2, 4.2).
 
+Hub music (Shanty Town): Hidden Booty.
+
 #### 4.3.3. The Clockwork Spire
 A towering structure located in the heart of a sprawling desert, the Clockwork Spire is a marvel of engineering and arcane technology. Built by a long-lost civilization, the spire is filled with intricate gears, pulleys, and mechanisms that power its various functions. Once a research facility for scholars and inventors, the spire now functions as a factory: trade guilds of the Merchant-States fight for control over its "Logic-Chains" (ancient automated assembly lines) to produce high-end gear, while the Scholar Caste hoards knowledge of its mechanics to keep a monopoly on technology (World_Building.md 1.1.2). However, the spire is also home to dangerous traps and guardians, making it a perilous destination for those who dare to explore its depths. Beneath it sprawl the Grease-Pits of the Under-Spire, a slum in the shadow of the Great Gears and home to the Filter-Folk (World_Building.md 5.1).
+
+Hub music (Wall Town): Solara.
 
 #### 4.3.4. The god of rules holy city (The Iron Ledger)
 A city dedicated to the worship of the God of Rules, where order and structure are paramount.
@@ -1303,7 +1309,7 @@ The city is a bastion of law and discipline, with strict regulations governing e
 
 Known as **The Iron Ledger**, the city is not just a place of worship but the world's central bank and legal capital: the God of Rules has been reinterpreted as the Divine Auditor, citizens are taxed on their "predictability", and the ruling council of Grand Auditors interprets the Ancient Statutes (World_Building.md 1.1.1, 4.1). Its Emissaries are not priests but high-ranking lawyers and adjudicators who enforce the god's will as field agents, treating an enemy's existence as a clerical error to be corrected. The city also secretly hosts House Aethelgard, its "shadow bank" (World_Building.md 6.1).
 
-The city's hub area is located in **the Margins**, the slums pressed between the last audited district and the city wall, where the Adventurer's Guild hall stands as neutral ground; the district and its native gang, the Arrears, are detailed in World_Building.md 5.5 and 6.3.
+The city's hub area is located in **the Margins**, the slums pressed between the last audited district and the city wall, where the Adventurer's Guild hall stands as neutral ground; the district and its native gang, the Arrears, are detailed in World_Building.md 5.5 and 6.3. Hub music (Slums Encampment): Foggy Shores.
 
 #### 4.3.5. The god of adventures caravan
 A nomadic settlement that travels across the land, following the whims of the God of Adventure.
@@ -1357,37 +1363,37 @@ Boss
 - Salvage Baron
 
 Music
-swamp of digeridoos
+Veil of the Forgotten Ones
 
 ##### 5.1.1.2. Magic Ruins (Reclaimed City)
 
 Music
-swamp of digeridoos
+Labyrinth of Despair
 
 ##### 5.1.1.3. Factory (Clockwork Spire)
 
 Music
-Cosmic Stars
+Undecided
 
 ##### 5.1.1.4. Greese-Pits (Clockwork Spire)
 
 Music
-Cosmic Stars
+Strange Tower
 
 ##### 5.1.1.5. Shanty town (Pirate Coves)
 
 Music
-underwater city
+Undecided
 
 ##### 5.1.1.6. Islands (Pirate Coves)
 
 Music
-underwater city
+Tempest Call
 
 ##### 5.1.1.7. Slums (Iron Ledger)
 
 Music
-Bloodrat Sewers
+The Iron Revenant
 
 ##### 5.1.1.8. Inner city (Iron Ledger)
 

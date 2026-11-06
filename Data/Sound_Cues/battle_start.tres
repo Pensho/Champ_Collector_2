@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="SoundCue" format=3]
+
+[ext_resource type="Script" uid="uid://bx5nmajah7det" path="res://Scripts/Audio/sound_cue.gd" id="1_script"]
+[ext_resource type="AudioStream" uid="uid://qm3lcbc5fj2w" path="res://Assets/Audio/Sound_Effects/Battle/danger_nearby.mp3" id="2_danger"]
+
+[resource]
+script = ExtResource("1_script")
+stream = ExtResource("2_danger")
+maximum_simultaneous = 1

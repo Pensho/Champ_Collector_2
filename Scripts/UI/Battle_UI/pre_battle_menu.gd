@@ -30,6 +30,7 @@ const TAP_MAX_HOLD_MS: int = int(ToolTip.PRESSED_TIME * 1000.0)
 @export var _footer: Control
 @export var _button_next: Button
 @export var _button_start: Button
+@export var _battle_start_cue: SoundCue
 
 var _chosen_characters: Dictionary[int, Character]
 var _character_collection: Array[Character]
@@ -195,6 +196,7 @@ func _on_start_button_up() -> void:
 	_self_context._battle_reagents.assign(_chosen_reagents.values())
 
 	main.GetInstance()._save_manager.RequestAutosave()
+	Audio_Handler.Play(_battle_start_cue)
 	main.GetInstance().change_scene(_self_context)
 	hide()
 

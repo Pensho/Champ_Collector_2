@@ -2,10 +2,12 @@
 
 [ext_resource type="Script" uid="uid://db27iijleab1x" path="res://Scripts/Adventure_Scripts/act_data.gd" id="1_act_data"]
 [ext_resource type="Script" uid="uid://yxl15ofvlhuk" path="res://Scripts/Adventure_Scripts/adventure_data.gd" id="2_adventure_data"]
-[ext_resource type="Resource" path="res://Data/Adventure_Data/Adventures/adventure_reclaimed_city_jungle.tres" id="3_jungle"]
-[ext_resource type="Resource" path="res://Data/Adventure_Data/Adventures/adventure_reclaimed_city_magic_ruins.tres" id="4_magic_ruins"]
+[ext_resource type="Resource" uid="uid://b6kb1b0dt57tw" path="res://Data/Adventure_Data/Adventures/adventure_reclaimed_city_jungle.tres" id="3_jungle"]
+[ext_resource type="Resource" uid="uid://cqdm10nqrxk0e" path="res://Data/Adventure_Data/Adventures/adventure_reclaimed_city_magic_ruins.tres" id="4_magic_ruins"]
+[ext_resource type="AudioStream" uid="uid://fif7n18hj21q" path="res://Assets/Audio/Music/Reclaimed_City/far_from_home.mp3" id="5_music"]
 
 [resource]
 script = ExtResource("1_act_data")
 display_name = "Reclaimed City"
 adventures = Array[ExtResource("2_adventure_data")]([ExtResource("3_jungle"), ExtResource("4_magic_ruins")])
+music_track = ExtResource("5_music")
