@@ -117,7 +117,7 @@ func _IconFor(p_entry: Dictionary) -> Texture2D:
 func _DescriptionFor(p_entry: Dictionary) -> String:
 	match p_entry["category"]:
 		Types.Category.Gear:
-			return _GearDescription(p_entry)
+			return GearDescription(p_entry)
 		Types.Category.Reagent:
 			return ReagentRegistry.Get(p_entry["payload"]).description
 		Types.Category.Supplies:
@@ -132,11 +132,16 @@ static func GearPresetFor(p_entry: Dictionary) -> EquipmentPreset:
 		return EquipmentPresetRegistry.GetRelic(p_entry["payload"])
 	return EquipmentPresetRegistry.Get(p_entry["payload"])
 
-func _GearDescription(p_entry: Dictionary) -> String:
+static func GearDescription(p_entry: Dictionary) -> String:
 	var preset: EquipmentPreset = GearPresetFor(p_entry)
 	var lines: Array[String] = []
 	for attribute_name in p_entry["attributes"].keys():
 		lines.append(attribute_name + " +" + str(p_entry["attributes"][attribute_name]))
+	var description_text: String = Types.Slot.keys()[preset._slot]
 	if(lines.is_empty()):
-		return Types.Slot.keys()[preset._slot] + " with no attribute bonus."
-	return Types.Slot.keys()[preset._slot] + "\n" + "\n".join(lines)
+		description_text += " with no attribute bonus."
+	else:
+		description_text += "\n" + "\n".join(lines)
+	if(null != preset._relic_effect):
+		description_text += "\n\n" + preset._relic_effect._body
+	return description_text
