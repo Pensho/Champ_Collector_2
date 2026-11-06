@@ -33,6 +33,9 @@ const ENEMY_CHARACTER_PRESETS: Dictionary[String, CharacterPreset] = {
 	"Vault Warden": preload("res://Data/Character_Enemy_Variants/Vault_Warden.tres"),
 	"Reliquary Core": preload("res://Data/Character_Enemy_Variants/Reliquary_Core.tres"),
 	"Hue-Eater": preload("res://Data/Character_Enemy_Variants/Hue_Eater.tres"),
+	"Slab Tosser": preload("res://Data/Character_Enemy_Variants/Slab_Tosser.tres"),
+	"Chanter": preload("res://Data/Character_Enemy_Variants/Chanter.tres"),
+	"Gatherer": preload("res://Data/Character_Enemy_Variants/Gatherer.tres"),
 }
 
 ## Pre-made enemy wave layouts the battle launcher debug page can pick from.
@@ -57,6 +60,8 @@ const BATTLE_CONTEXTS: Dictionary[String, Context_Battle] = {
 	"Warden of the Reliquary": preload("res://Data/Battle_Variants/Battle_Warden_of_the_Reliquary.tres"),
 	"Salvage Baron": preload("res://Data/Battle_Variants/Battle_Salvage_Baron.tres"),
 	"Hue-Eater": preload("res://Data/Battle_Variants/Battle_Hue_Eater.tres"),
+	"Slab Tossers": preload("res://Data/Battle_Variants/Battle_Slab_Tossers.tres"),
+	"Chanter and Gatherers": preload("res://Data/Battle_Variants/Battle_Chanter_and_Gatherers.tres"),
 }
 
 ## Used when constructing a debug item for a slot that has no dedicated icon.

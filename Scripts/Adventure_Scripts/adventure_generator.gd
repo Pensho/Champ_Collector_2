@@ -147,6 +147,8 @@ static func SetBranchLength(p_frequency: AdventureLayout.Mechanic_Frequency) -> 
 
 
 static func _PopulateNodeContexts(p_nodes: Array[NodeData], p_adventure: AdventureData) -> void:
+	var boss_variant: Context_Battle = (
+		null if p_adventure.boss_battle_variants.is_empty() else p_adventure.boss_battle_variants.pick_random())
 	for node in p_nodes:
 		match node.node_type:
 			NodeData.Node_Type.FIGHT:
@@ -155,18 +157,19 @@ static func _PopulateNodeContexts(p_nodes: Array[NodeData], p_adventure: Adventu
 				node.scene_context = _BuildBattleContext(
 					_WeightedRandomPick(p_adventure.battle_variants), p_adventure.combat_rewards, p_adventure.biome)
 			NodeData.Node_Type.BOSS:
-				if p_adventure.boss_battle_variants.is_empty():
+				if boss_variant == null:
 					continue
 				var boss_loot: LootTable = (
 					p_adventure.boss_rewards if p_adventure.boss_rewards != null else p_adventure.combat_rewards)
-				node.scene_context = _BuildBattleContext(
-					p_adventure.boss_battle_variants.pick_random(), boss_loot, p_adventure.biome)
+				node.scene_context = _BuildBattleContext(boss_variant, boss_loot, p_adventure.biome)
 			NodeData.Node_Type.REST_STOP:
 				var rest_ctx := ContextRestStop.new()
 				rest_ctx.granted_buff = _PoolBuffType(p_adventure.buff_pool)
 				node.scene_context = rest_ctx
 			NodeData.Node_Type.HINT:
 				var hint_ctx := ContextHint.new()
+				if boss_variant != null:
+					hint_ctx.hint_text = boss_variant._hint_text
 				if p_adventure.hint_rewards != null:
 					hint_ctx._loot_table = p_adventure.hint_rewards.duplicate(true)
 				node.scene_context = hint_ctx

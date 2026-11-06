@@ -109,7 +109,7 @@ _data = {
 script = ExtResource("1_scene")
 animation_player = NodePath("AnimationPlayer")
 anchor = 5
-anchor_marker = &"Prism"
+anchor_marker = &"Die"
 aim_at_target = true
 variant_sprites = [NodePath("Streak")]
 

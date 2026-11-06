@@ -11,5 +11,7 @@ class_name Context_Battle extends Static_Context
 @export var _scene_darkness_height: float = 0.3
 
 @export var _loot_table: LootTable
+## A boss battle's teaching text, shown on its adventure's Hint nodes.
+@export_multiline var _hint_text: String = ""
 
 @warning_ignore_restore("unused_private_class_variable")

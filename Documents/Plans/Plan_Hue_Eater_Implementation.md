@@ -18,7 +18,7 @@ Playable from the debug catalog.
 Recorded in `Encounter_Design_Document.md` 2.2: her Teaching entry, the crystal die, Slab Tossers,
 and Chanter and Gatherers.
 
-### 4. Teaching prototype
+### 4. Teaching prototype (done)
 Build, with tests:
 - **Crystal die** replacing the prism's coloured faces: colourless, tinted red while she holds Hexed.
 - **Luck line** combat text: its trigger and its once-per-battle limit.
@@ -27,8 +27,7 @@ Build, with tests:
 - **Chanter and Gatherers:** the chant's Enfeeble on every character, and a three-part triangle
   starting at one part. Generalise the Hue-Eater's hexagon scene and trait logic to a part count
   rather than copying them.
-- **Pre-battle tooltip:** opponents have no description field yet; add one, shown on the battle
-  choice and when inspecting her.
+- **Pre-battle tooltip:** her text in `_thematic_hint`, shown on the pre-battle menu.
 - **Hint node** carrying her text.
 
 ### 5. Teaching playtest

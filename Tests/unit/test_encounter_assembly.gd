@@ -7,12 +7,6 @@ const BATTLE_VARIANTS_DIRECTORY: String = "res://Data/Battle_Variants/"
 
 const ADVENTURES_DIRECTORY: String = "res://Data/Adventure_Data/Adventures/"
 
-## Adventures whose boss is a placeholder awaiting its own encounter design, so it has no
-## phase 2 yet.
-const PLACEHOLDER_BOSS_ADVENTURES: Array[String] = [
-	"res://Data/Adventure_Data/Adventures/adventure_reclaimed_city_magic_ruins.tres",
-]
-
 
 func test_every_battle_variant_fields_one_to_three_enemies() -> void:
 	var dir := DirAccess.open(BATTLE_VARIANTS_DIRECTORY)
@@ -39,8 +33,6 @@ func test_every_placed_boss_has_a_phase_two() -> void:
 		if not file_name.ends_with(".tres"):
 			continue
 		var adventure_path: String = ADVENTURES_DIRECTORY.path_join(file_name)
-		if PLACEHOLDER_BOSS_ADVENTURES.has(adventure_path):
-			continue
 		var adventure: AdventureData = load(adventure_path)
 		for boss_battle: Context_Battle in adventure.boss_battle_variants:
 			var phased: bool = boss_battle._enemies_wave_1.any(

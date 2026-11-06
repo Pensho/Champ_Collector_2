@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="Skill" format=3 uid="uid://5e31yuj0mif3"]
+
+[ext_resource type="Script" uid="uid://bmqtglyyora7q" path="res://Scripts/Battle/Skill_Effects/skill_effect.gd" id="1_effect"]
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Script" uid="uid://bn0n72opjy7sb" path="res://Scripts/Battle/Skill_Effects/damage_effect.gd" id="2_damage"]
+[ext_resource type="Script" uid="uid://4bw820sjhiip" path="res://Scripts/Battle/skill_presentation.gd" id="3_presentation"]
+[ext_resource type="Script" uid="uid://dwlqv2iu3qwgd" path="res://Scripts/Battle/effect_variant.gd" id="4_variant"]
+[ext_resource type="PackedScene" uid="uid://bt02ltox5nqa0" path="res://Scenes/Battle_Visual_Effects/slash.tscn" id="5_slash"]
+
+[sub_resource type="Resource" id="Resource_damage"]
+script = ExtResource("2_damage")
+damage_scaling = Dictionary[int, float]({
+2: 0.7
+})
+
+[sub_resource type="Resource" id="Resource_variant"]
+script = ExtResource("4_variant")
+tint = Color(0.8, 0.8, 0.82, 1)
+
+[sub_resource type="Resource" id="Resource_presentation"]
+script = ExtResource("3_presentation")
+archetype = ExtResource("5_slash")
+variant = SubResource("Resource_variant")
+
+[resource]
+script = ExtResource("1_skill")
+name = "Slab Toss"
+description = "Tosses its slab and strikes an enemy. A lucky toss strikes again; an unlucky one strikes weakly and leaves it Hexed."
+effects = Array[ExtResource("1_effect")]([SubResource("Resource_damage")])
+presentation = SubResource("Resource_presentation")
+metadata/_custom_type_script = "uid://glh06y3wvchj"

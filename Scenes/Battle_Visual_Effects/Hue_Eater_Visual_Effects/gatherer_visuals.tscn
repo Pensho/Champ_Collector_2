@@ -1,0 +1,13 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/Battle/Hue_Eater/gatherer_visuals.gd" id="1_visuals"]
+[ext_resource type="PackedScene" path="res://Scenes/Battle_Visual_Effects/Hue_Eater_Visual_Effects/gathered_light_triangle.tscn" id="2_triangle"]
+
+[node name="Gatherer_Visuals" type="Node2D" node_paths=PackedStringArray("_triangle_marker", "_triangle")]
+script = ExtResource("1_visuals")
+_triangle_marker = NodePath("Triangle")
+_triangle = NodePath("Triangle/Gathered_Light_Triangle")
+
+[node name="Triangle" type="Marker2D" parent="."]
+
+[node name="Gathered_Light_Triangle" parent="Triangle" instance=ExtResource("2_triangle")]

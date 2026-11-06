@@ -1,10 +1,12 @@
 shader_type canvas_item;
-// One Gathered Light slice, a wedge from the origin to the 12 and 2 o'clock hexagon corners:
-// greys what lies behind it, inside a bright outline. Both edges are antialiased.
+// One Gathered Light slice, a wedge from the origin to the 12 o'clock corner and the next corner
+// clockwise of a part_count-sided shape: greys what lies behind it, inside a bright outline. Both
+// edges are antialiased.
 render_mode blend_premul_alpha;
 
 uniform sampler2D screen_texture : hint_screen_texture, filter_linear;
 uniform float radius = 80.0;
+uniform int part_count = 6;
 uniform float gap = 12.0;
 uniform vec4 outline_color : source_color = vec4(0.92, 0.92, 0.92, 1.0);
 uniform float outline_width = 1.0;
@@ -35,7 +37,8 @@ float TriangleDistance(vec2 p, vec2 a, vec2 b, vec2 c) {
 
 void fragment() {
 	vec2 top = vec2(0.0, -radius);
-	vec2 right = vec2(radius * 0.866025, -radius * 0.5);
+	float wedge = TAU / float(part_count);
+	vec2 right = vec2(radius * sin(wedge), -radius * cos(wedge));
 	// Shrinking a triangle's distance field keeps its corners sharp, so gaps stay even.
 	float distance_to_edge = TriangleDistance(local_position, vec2(0.0), top, right) + gap * 0.5;
 	float pixel = max(fwidth(distance_to_edge), 0.0001);

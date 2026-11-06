@@ -5,7 +5,7 @@
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
 [ext_resource type="Resource" uid="uid://jdkpqau7gx1v" path="res://Data/Character_Skill_Variants/Attack_Skills/Leech_Light.tres" id="2_leech_light"]
 [ext_resource type="Resource" uid="uid://xodo0l4weufy" path="res://Data/Character_Skill_Variants/Attack_Skills/Prismatic_Rain.tres" id="3_prismatic_rain"]
-[ext_resource type="Resource" path="res://Data/Character_Traits/Enemy_Traits/Hue_Eater_Trait.tres" id="4_trait"]
+[ext_resource type="Resource" uid="uid://dsi3fxn624fty" path="res://Data/Character_Traits/Enemy_Traits/Hue_Eater_Trait.tres" id="4_trait"]
 
 [resource]
 script = ExtResource("1_preset")
@@ -15,7 +15,7 @@ _art_scale = 1.4
 _faction = 4
 _role = 13
 _skills = Array[ExtResource("1_skill")]([ExtResource("2_leech_light"), ExtResource("3_prismatic_rain")])
-_thematic_hint = "A Refracted being gathering the colour it has lost."
+_thematic_hint = "Light slips through her; only ill fortune makes her whole. The light she gathers is only as strong as she is."
 _health = 420
 _speed = 45
 _attack = 20

@@ -231,3 +231,19 @@ func test_a_trait_effect_splits_the_results_just_after_itself() -> void:
 
 func test_results_without_a_trait_effect_do_not_split() -> void:
 	assert_eq(PresentationTimeline.TraitEffectEnd([_result(FIRST_TARGET, 0)]), 0)
+
+func test_a_trait_effect_emitted_at_cast_is_found() -> void:
+	var text: CombatResult = _result(CASTER, -1, CombatResult.Presentation_Phase.Skill_Effects, 0, CombatResult.Kind.Trait_Text)
+	var effect: CombatResult = _result(CASTER, -1, CombatResult.Presentation_Phase.Skill_Effects, 0,
+			CombatResult.Kind.Trait_Effect)
+	assert_eq(PresentationTimeline.CastTraitEffect([text, effect, _result(FIRST_TARGET, 0)]), effect)
+
+func test_a_trait_effect_after_the_first_skill_effect_is_not_a_cast_effect() -> void:
+	var effect: CombatResult = _result(CASTER, -1, CombatResult.Presentation_Phase.Skill_Effects, 0,
+			CombatResult.Kind.Trait_Effect)
+	assert_null(PresentationTimeline.CastTraitEffect([_result(FIRST_TARGET, 0), effect]))
+
+func test_a_post_cast_trait_effect_is_not_a_cast_effect() -> void:
+	var effect: CombatResult = _result(CASTER, -1, CombatResult.Presentation_Phase.Post_Cast, 0,
+			CombatResult.Kind.Trait_Effect)
+	assert_null(PresentationTimeline.CastTraitEffect([effect]))

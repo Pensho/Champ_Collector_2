@@ -304,7 +304,8 @@ Transition flow (`Main_Instance.change_scene` → `_deferred_change_scene`):
 
 `Static_Context` (`Scripts/Worldview/static_context.gd`) is the base for typed scene payloads;
 `Context_Battle` (`Scripts/Worldview/Context_Battle.gd`) extends it with battle-specific data
-(stage scene, lighting, enemy waves, environment effects, loot table). Combat reads this in
+(stage scene, lighting, enemy waves, environment effects, loot table, and a boss's hint text,
+which `AdventureGenerator` copies onto every Hint node of the adventure whose boss it picked). Combat reads this in
 `Battle.Init()` via `p_context._static_context as Context_Battle`.
 
 This is a **one-way initialization** contract: the scene receives a context once at load and does
@@ -1495,7 +1496,9 @@ timeline keys those instances by effect index (`InstanceStart.instance_key`) ins
 `SkillEffect.impact_index` picks the `Impact` marker that releases that effect's results.
 A trait plays its own effect scene with `BattleResolver.EmitTraitEffect` (a `Trait_Effect` result
 naming the archetype, reserved through `CharacterTrait._effect_archetypes`): the results before it
-land at once, the rest when the scene ends.
+land at once, the rest when the scene ends. One emitted from `OnSkillCast`, before any skill effect
+(`PresentationTimeline.CastTraitEffect`), plays ahead of the skill's own instances, which wait its
+length.
 `PresentationDefaults.ForSkill` returns a skill's own presentation or derives one from its
 effects against `Data/Presentation/Presentation_Archetypes.tres`: a damage effect picks the
 physical or arcane impact by its scaling attributes, otherwise the first heal, barrier, buff or
@@ -2114,8 +2117,8 @@ first call and returns it afterwards; the trait preloads its scene and drives it
 alone, so it holds still while the sprite breathes, and `MarkerPosition(name, fallback)` exposes a
 `Marker2D` in the mounted scene to `SkillEffectScene.Anchor.Caster_Marker`. The Hue-Eater's
 `hue_eater_visuals.tscn` is the first: Gathered Light's hexagon right of her under the `Hexagon`
-marker its launch starts from, and the prism left of her under the `Prism` marker her beams start
-from.
+marker its launch starts from, and the crystal die left of her under the `Die` marker her beams
+start from. `GatheredLightShape` draws any part count; a Gatherer's triangle uses it too.
 
 ### 9.2. The Graft passive: `GraftEffect`
 

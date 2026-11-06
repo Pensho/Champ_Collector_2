@@ -79,6 +79,25 @@ func test_impact_results_wait_for_the_marker() -> void:
 
 	assert_eq(_presented, [hit])
 
+func test_an_instance_played_for_show_releases_nothing() -> void:
+	var hit: CombatResult = _result(TARGET)
+	var lead_in: ActionPresentation.InstanceStart = _start(TARGET)
+	lead_in.releases_results = false
+	var presentation: ActionPresentation = _presentation([hit], [lead_in, _start(TARGET, 1.0)], [TARGET])
+	presentation.Advance(0.0)
+	var lead_in_instance: SkillEffectScene = _playing_instances()[0]
+
+	lead_in_instance.impact_reached.emit(0)
+	lead_in_instance.finished.emit()
+	presentation.Advance(0.0)
+	assert_eq(_presented, [], "The lead-in's impact and end release nothing")
+
+	presentation.Advance(1.0)
+	var skill_instances: Array[SkillEffectScene] = _playing_instances().filter(
+			func(instance: SkillEffectScene) -> bool: return lead_in_instance != instance)
+	skill_instances[0].impact_reached.emit(0)
+	assert_eq(_presented, [hit], "The skill's own instance releases the hit")
+
 func test_echoes_release_one_at_a_time_after_the_final_impact_then_the_rest() -> void:
 	var hit: CombatResult = _result(TARGET)
 	var first_bracket: CombatResult = _result(TARGET, 1, CombatResult.Kind.Cascade_Triggered)

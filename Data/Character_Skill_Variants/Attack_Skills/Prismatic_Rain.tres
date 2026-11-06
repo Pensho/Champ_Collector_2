@@ -45,7 +45,7 @@ stagger_seconds = 0.35
 [resource]
 script = ExtResource("1_skill")
 name = "Prismatic Rain"
-description = "Five beams strike a spinning prism; each hits a random enemy or bends back at the caster."
+description = "Five beams strike a spinning crystal die; each hits a random enemy or bends back at the caster."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Opponent_Active_Skills/Cinder_Sermon/Cinder_Sermon.png"
 target = 1
 cooldown = 2

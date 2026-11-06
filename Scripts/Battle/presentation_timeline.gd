@@ -67,6 +67,18 @@ static func TraitEffectEnd(p_results: Array[CombatResult]) -> int:
 		return CombatResult.Kind.Trait_Effect == p_result.kind)
 
 
+## The Trait_Effect a trait emitted as the skill was cast, before any of its effects resolved, or
+## null. Its scene plays ahead of the skill's own effect.
+static func CastTraitEffect(p_results: Array[CombatResult]) -> CombatResult:
+	for result: CombatResult in p_results:
+		if(CombatResult.Presentation_Phase.Skill_Effects != result.phase or result.effect_index >= 0
+				or result.cascade_depth > 0):
+			return null
+		if(CombatResult.Kind.Trait_Effect == result.kind):
+			return result
+	return null
+
+
 func ResultsForImpact(p_instance_key: int, p_impact_index: int) -> Array[CombatResult]:
 	return _Release(func(p_index: int) -> bool:
 		var result: CombatResult = _results[p_index]

@@ -15,6 +15,9 @@ class InstanceStart:
 	var caster_position: Vector2
 	var target_position: Vector2
 	var delay: float = 0.0
+	## False for a scene played only for show, such as a trait effect ahead of the skill's effect:
+	## its impacts and its end release nothing.
+	var releases_results: bool = true
 
 	func Key() -> int:
 		return instance_key if instance_key >= 0 else target_ID
@@ -98,8 +101,14 @@ func _Start(p_start: InstanceStart) -> void:
 	var instance: SkillEffectScene = _layer.Peek(p_start.archetype)
 	if(null == instance):
 		return
-	var on_impact: Callable = func(p_index: int) -> void: _OnImpact(p_start.Key(), p_index)
-	var on_finished: Callable = func() -> void: _OnFinished(instance, p_start.Key())
+	var on_impact: Callable = func(p_index: int) -> void:
+		if(p_start.releases_results):
+			_OnImpact(p_start.Key(), p_index)
+	var on_finished: Callable = func() -> void:
+		if(p_start.releases_results):
+			_OnFinished(instance, p_start.Key())
+		else:
+			_Release(instance)
 	instance.impact_reached.connect(on_impact)
 	instance.lunge_requested.connect(_OnLunge)
 	instance.finished.connect(on_finished)

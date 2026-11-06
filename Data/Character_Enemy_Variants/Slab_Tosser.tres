@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="CharacterPreset" format=3 uid="uid://bk76h2cxxfgg8"]
+
+[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_p33aw"]
+[ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="1_preset"]
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="1_skill"]
+[ext_resource type="Resource" uid="uid://5e31yuj0mif3" path="res://Data/Character_Skill_Variants/Attack_Skills/Slab_Toss.tres" id="2_slab_toss"]
+[ext_resource type="Resource" path="res://Data/Character_Traits/Enemy_Traits/Slab_Toss_Trait.tres" id="3_trait"]
+
+[resource]
+script = ExtResource("1_preset")
+_name = "Slab Tosser"
+_texture = "res://Assets/Champ_Collector/Creatures/Opponents/scavenger_skirmisher.png"
+_art_scale = 0.8
+_faction = 4
+_role = 13
+_skills = Array[ExtResource("1_skill")]([ExtResource("2_slab_toss")])
+_thematic_hint = "Every toss of its slab is a gamble with luck."
+_health = 120
+_speed = 50
+_attack = 60
+_defence = 40
+_accuracy = 30
+_resistance = 40
+_mysticism = 60
+_knowledge = 10
+_trait = ExtResource("3_trait")
+metadata/_custom_type_script = "uid://ftdwxfh8y3n1"

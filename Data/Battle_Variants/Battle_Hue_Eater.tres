@@ -11,4 +11,5 @@ script = ExtResource("2_battle")
 _enemies_wave_1 = Array[ExtResource("1_preset")]([ExtResource("3_hue_eater")])
 _stage_scene = ExtResource("4_fj0jj")
 _loot_table = ExtResource("4_loot")
+_hint_text = "Nothing touched it until the curse took hold. Each time we weakened it, its hoarded light cracked and fell like salt."
 metadata/_custom_type_script = "uid://bjtnao6fgl8go"

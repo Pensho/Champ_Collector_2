@@ -46,9 +46,9 @@ _data = {
 &"gathered_light_launch": SubResource("Animation_launch")
 }
 
-[node name="Gathered_Light_Launch" type="Node2D" node_paths=PackedStringArray("_hexagon", "animation_player")]
+[node name="Gathered_Light_Launch" type="Node2D" node_paths=PackedStringArray("_shape", "animation_player")]
 script = ExtResource("1_launch")
-_hexagon = NodePath("Gathered_Light_Hexagon")
+_shape = NodePath("Gathered_Light_Hexagon")
 animation_player = NodePath("AnimationPlayer")
 anchor = 5
 anchor_marker = &"Hexagon"

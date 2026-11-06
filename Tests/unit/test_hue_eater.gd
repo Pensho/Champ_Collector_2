@@ -5,8 +5,10 @@ const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 # Coverage for the Hue-Eater (Encounter_Design_Document.md 2.2): Translucent cuts every Health
 # loss unless she holds Hexed; Prismatic Rain's beams hit, pass through her, or bend into her
 # while Hexed; Gathered Light fills a slice a turn, hovers when full and launches next turn;
-# Enfeeble landing on her is consumed for slices; in phase 2, landed beams add slices.
+# Enfeeble landing on her is consumed for slices; in phase 2, landed beams add slices; her luck
+# line follows three Prismatic Rains cast in a row without Hexed on her, once per battle.
 
+const HUE_EATER_TRAIT: HueEaterTrait = preload("res://Data/Character_Traits/Enemy_Traits/Hue_Eater_Trait.tres")
 const BOSS_ID: int = 3
 const PARTY_IDS: Array[int] = [0, 1, 2]
 
@@ -20,7 +22,7 @@ func before_each() -> void:
 	_trait = _install_trait(_roster, _resolver)
 
 func _install_trait(p_roster: Dictionary[int, Character], p_resolver: BattleResolver) -> HueEaterTrait:
-	var hue_eater_trait: HueEaterTrait = HueEaterTrait.new()
+	var hue_eater_trait: HueEaterTrait = HUE_EATER_TRAIT.duplicate(true)
 	hue_eater_trait.Init(Types.Rarity.Common)
 	p_roster[BOSS_ID]._trait = hue_eater_trait
 	hue_eater_trait.StartOfBattle(BOSS_ID, p_resolver)
@@ -134,14 +136,14 @@ func test_a_bent_beam_hits_a_hexed_caster() -> void:
 
 func test_gathered_light_gains_a_slice_each_turn() -> void:
 	_start_turns(3)
-	assert_eq(_trait.GetSlices(), 3)
+	assert_eq(_trait.GetParts(), 3)
 
 func test_a_full_hexagon_hovers_a_turn_then_launches_at_the_party() -> void:
 	_start_turns(6)
-	assert_eq(_trait.GetSlices(), 6)
+	assert_eq(_trait.GetParts(), 6)
 	var before: Array[int] = _party_health()
 	_start_turns(1)
-	assert_eq(_trait.GetSlices(), 0, "The launch empties the hexagon")
+	assert_eq(_trait.GetParts(), 0, "The launch empties the hexagon")
 	assert_eq(_party_damaged(before), PARTY_IDS.size(), "The launch hits every champion")
 
 func test_the_launch_effect_precedes_the_launch_damage() -> void:
@@ -161,7 +163,7 @@ func test_the_hexagon_does_not_launch_before_it_is_full() -> void:
 func test_an_enfeeble_landing_on_her_is_consumed_for_two_slices() -> void:
 	_start_turns(4)
 	_resolver.GetStatusResolver().ApplyDebuff(BOSS_ID, _debuff(Types.Debuff_Type.Enfeeble))
-	assert_eq(_trait.GetSlices(), 2)
+	assert_eq(_trait.GetParts(), 2)
 	assert_false(_roster[BOSS_ID]._active_debuffs.any(
 			func(debuff: StatusEffects.Debuff) -> bool: return Types.Debuff_Type.Enfeeble == debuff.type),
 			"The Enfeeble should be consumed")
@@ -169,41 +171,41 @@ func test_an_enfeeble_landing_on_her_is_consumed_for_two_slices() -> void:
 func test_an_enfeeble_never_takes_the_hexagon_below_empty() -> void:
 	_start_turns(1)
 	_resolver.GetStatusResolver().ApplyDebuff(BOSS_ID, _debuff(Types.Debuff_Type.Enfeeble))
-	assert_eq(_trait.GetSlices(), 0)
+	assert_eq(_trait.GetParts(), 0)
 
 func test_a_resisted_enfeeble_removes_no_slices() -> void:
 	_start_turns(4)
 	_roster[0]._attributes[Types.Attribute.Accuracy] = 1
 	_roster[BOSS_ID]._attributes[Types.Attribute.Resistance] = 1000
 	_resolver.GetStatusResolver().CastDebuff(BOSS_ID, _debuff(Types.Debuff_Type.Enfeeble), 0)
-	assert_eq(_trait.GetSlices(), 4)
+	assert_eq(_trait.GetParts(), 4)
 
 func test_in_phase_two_each_landed_beam_adds_a_slice() -> void:
 	_roster[BOSS_ID]._in_phase_two = true
 	_cast(_beam_skill(1.0, 3))
-	assert_eq(_trait.GetSlices(), 3)
+	assert_eq(_trait.GetParts(), 3)
 
 func test_landed_beams_add_no_slices_before_phase_two() -> void:
 	_cast(_beam_skill(1.0, 3))
-	assert_eq(_trait.GetSlices(), 0)
+	assert_eq(_trait.GetParts(), 0)
 
 func test_beam_fed_slices_stop_at_a_full_hexagon() -> void:
 	_roster[BOSS_ID]._in_phase_two = true
 	_start_turns(4)
 	_cast(_beam_skill(1.0, 5))
-	assert_eq(_trait.GetSlices(), 6)
+	assert_eq(_trait.GetParts(), 6)
 
 func test_her_basic_attack_adds_no_slices_in_phase_two() -> void:
 	_roster[BOSS_ID]._in_phase_two = true
 	_roster[BOSS_ID]._skills = [TestFactory.make_strike_skill()]
 	_resolver.ResolveSkill(BOSS_ID, [0], 0)
-	assert_eq(_trait.GetSlices(), 0)
+	assert_eq(_trait.GetParts(), 0)
 
 func test_beams_bent_into_her_add_no_slices_in_phase_two() -> void:
 	_roster[BOSS_ID]._in_phase_two = true
 	_hex_the_boss()
 	_cast(_beam_skill(0.0, 3))
-	assert_eq(_trait.GetSlices(), 0)
+	assert_eq(_trait.GetParts(), 0)
 
 func test_the_hexagon_carries_through_the_phase_two_transition() -> void:
 	var boss: Character = _roster[BOSS_ID]
@@ -213,4 +215,35 @@ func test_the_hexagon_carries_through_the_phase_two_transition() -> void:
 	_health_loss(floori(boss._current_health * 0.5) + 1)
 	assert_true(boss._in_phase_two, "Sanity check: the hit should cross half Health")
 	assert_eq(boss._trait, _trait, "Her trait is kept through the transition")
-	assert_eq(_trait.GetSlices(), 3)
+	assert_eq(_trait.GetParts(), 3)
+
+func _luck_lines(p_results: Array[CombatResult]) -> int:
+	return p_results.filter(func(result: CombatResult) -> bool:
+		return CombatResult.Kind.Trait_Text == result.kind and HueEaterTrait.LUCK_LINE == result.text).size()
+
+func _rains(p_count: int) -> int:
+	var lines: int = 0
+	for cast in p_count:
+		lines += _luck_lines(_cast(_beam_skill(1.0)))
+	return lines
+
+func test_the_luck_line_follows_the_third_rain_without_hexed() -> void:
+	assert_eq(_rains(2), 0)
+	assert_eq(_rains(1), 1)
+
+func test_the_luck_line_is_spoken_once_per_battle() -> void:
+	assert_eq(_rains(6), 1)
+
+func test_a_rain_cast_while_hexed_restarts_the_count() -> void:
+	_rains(2)
+	_hex_the_boss()
+	_rains(1)
+	_roster[BOSS_ID]._active_debuffs.clear()
+	assert_eq(_rains(2), 0)
+	assert_eq(_rains(1), 1)
+
+func test_basic_attacks_leave_the_count_alone() -> void:
+	_rains(2)
+	_roster[BOSS_ID]._skills = [TestFactory.make_strike_skill()]
+	_resolver.ResolveSkill(BOSS_ID, [0], 0)
+	assert_eq(_rains(1), 1)

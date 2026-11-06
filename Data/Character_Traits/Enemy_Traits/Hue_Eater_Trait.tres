@@ -1,6 +1,13 @@
-[gd_resource type="Resource" script_class="HueEaterTrait" format=3]
+[gd_resource type="Resource" script_class="HueEaterTrait" format=3 uid="uid://dsi3fxn624fty"]
 
-[ext_resource type="Script" path="res://Scripts/Character/character_traits/CharacterSpecificTraits/hue_eater_trait.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://bxhpwihpdsafp" path="res://Scripts/Character/character_traits/CharacterSpecificTraits/hue_eater_trait.gd" id="1_script"]
 
 [resource]
 script = ExtResource("1_script")
+_translucent_health_loss_multiplier = 0.25
+_rains_before_luck_line = 3
+_parts_to_complete = 6
+_parts_per_enfeeble = 2
+_launch_damage_scaling = Dictionary[int, float]({
+6: 1.5
+})

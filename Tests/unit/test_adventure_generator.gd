@@ -192,6 +192,18 @@ func test_hint_nodes_are_generated_with_context() -> void:
 			assert_not_null(ctx._loot_table, "HINT node should have a loot table when the adventure has hint_rewards configured.")
 	assert_true(found, "HIGH hint_nodes frequency should generate at least one HINT node.")
 
+func test_hint_nodes_carry_the_boss_hint_text() -> void:
+	_layout.hint_nodes = AdventureLayout.Mechanic_Frequency.HIGH
+	var boss_variant: Context_Battle = _MakeVariant([CharacterPreset.new()])
+	boss_variant._hint_text = "Boss hint"
+	_adventure.boss_battle_variants.append(boss_variant)
+	var nodes: Array[NodeData] = AdventureGenerator.GenerateAdventure(_adventure)
+	var hint_nodes: Array[NodeData] = nodes.filter(
+			func(node: NodeData) -> bool: return node.node_type == NodeData.Node_Type.HINT)
+	assert_false(hint_nodes.is_empty(), "HIGH hint_nodes frequency should generate at least one HINT node.")
+	for node in hint_nodes:
+		assert_eq((node.scene_context as ContextHint).hint_text, "Boss hint")
+
 func test_gamble_nodes_are_generated_with_context() -> void:
 	_layout.gamble_nodes = AdventureLayout.Mechanic_Frequency.HIGH
 	var nodes: Array[NodeData] = AdventureGenerator.GenerateAdventure(_adventure)

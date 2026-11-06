@@ -5,8 +5,9 @@
 [ext_resource type="Resource" uid="uid://bqk4emurlihv2" path="res://Data/Adventure_Data/Layouts/layout_default.tres" id="3_layout"]
 [ext_resource type="Resource" uid="uid://cpi1whtc518ok" path="res://Data/Adventure_Data/Biome_Types/biome_reclaimed_city_jungle.tres" id="4_biome"]
 [ext_resource type="Script" uid="uid://bjtnao6fgl8go" path="res://Scripts/Worldview/Context_Battle.gd" id="5_battle"]
-[ext_resource type="Resource" uid="uid://dstgijwmiqvo1" path="res://Data/Battle_Variants/Battle_Militia.tres" id="6_militia"]
-[ext_resource type="Resource" uid="uid://dbc3pmbr82wcc" path="res://Data/Battle_Variants/Battle_Obsidian_Stallion.tres" id="7_stallion"]
+[ext_resource type="Resource" path="res://Data/Battle_Variants/Battle_Slab_Tossers.tres" id="6_slab_tossers"]
+[ext_resource type="Resource" path="res://Data/Battle_Variants/Battle_Chanter_and_Gatherers.tres" id="7_chanter_and_gatherers"]
+[ext_resource type="Resource" uid="uid://b805ihvf6ay54" path="res://Data/Battle_Variants/Battle_Hue_Eater.tres" id="8_hue_eater"]
 [ext_resource type="Resource" uid="uid://ckmtp8rvhbx3a" path="res://Data/Loot_Tables/Adventure_Boss_Loot.tres" id="11_launh"]
 [ext_resource type="Resource" uid="uid://dauwp8sbf3ga" path="res://Data/Loot_Tables/Experience_Quest.tres" id="12_lh4g1"]
 [ext_resource type="Resource" uid="uid://wg8ohcii0wix" path="res://Data/Loot_Tables/Adventure_Escalate_Loot.tres" id="13_kofhi"]
@@ -22,9 +23,10 @@ layout = ExtResource("3_layout")
 biome = ExtResource("4_biome")
 music_track = ExtResource("16_music")
 battle_variants = Dictionary[ExtResource("5_battle"), int]({
-ExtResource("6_militia"): 100
+ExtResource("6_slab_tossers"): 100,
+ExtResource("7_chanter_and_gatherers"): 100
 })
-boss_battle_variants = Array[ExtResource("5_battle")]([ExtResource("7_stallion")])
+boss_battle_variants = Array[ExtResource("5_battle")]([ExtResource("8_hue_eater")])
 combat_rewards = ExtResource("12_lh4g1")
 boss_rewards = ExtResource("11_launh")
 hint_rewards = ExtResource("14_c3w72")

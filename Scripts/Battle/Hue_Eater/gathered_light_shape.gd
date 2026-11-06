@@ -1,12 +1,11 @@
-class_name GatheredLightHexagon extends Node2D
+class_name GatheredLightShape extends Node2D
 
-## Gathered Light's slices, shown beside the Hue-Eater and flown at the party by GatheredLightLaunch.
-
-const SLICE_COUNT: int = 6
+## A Gathered Light shape of equal wedge parts (the Hue-Eater's hexagon, a Gatherer's triangle),
+## shown beside its owner and flown at the party by GatheredLightLaunch.
 
 ## Radians per second; positive turns clockwise.
 @export var spin_speed: float = 0.125
-## A gained slice fades in while growing from this fraction of its size.
+## A gained part fades in while growing from this fraction of its size.
 @export var appear_start_scale: float = 0.5
 @export var appear_seconds: float = 0.8
 @export var _shape: Node2D
@@ -23,6 +22,9 @@ func _process(p_delta: float) -> void:
 	# Drops are born in their emitter's rotation, so the emitters stay upright as the shape spins.
 	for drips in _slice_drips:
 		drips.global_rotation = 0.0
+
+func PartCount() -> int:
+	return _slices.size()
 
 ## p_animate fades in and grows each slice that was hidden until now.
 func SetSlices(p_count: int, p_animate: bool = false) -> void:

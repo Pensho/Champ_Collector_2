@@ -1,0 +1,65 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" uid="uid://bbkhe5cnkl6ll" path="res://Scripts/Battle/Hue_Eater/gathered_light_shape.gd" id="1_shape"]
+[ext_resource type="Shader" uid="uid://bjvl6p26rudwn" path="res://Assets/Champ_Collector/Shaders/Hue_Eater_Shaders/gathered_light_slice.gdshader" id="2_slice"]
+[ext_resource type="PackedScene" path="res://Scenes/Battle_Visual_Effects/Hue_Eater_Visual_Effects/gathered_light_motes.tscn" id="3_motes"]
+[ext_resource type="PackedScene" path="res://Scenes/Battle_Visual_Effects/Hue_Eater_Visual_Effects/gathered_light_drips.tscn" id="4_drips"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_slice"]
+shader = ExtResource("2_slice")
+shader_parameter/radius = 45.0
+shader_parameter/part_count = 3
+shader_parameter/gap = 4.0
+shader_parameter/outline_color = Color(0.7, 0.7, 0.7, 0.5058824)
+shader_parameter/outline_width = 1.0
+
+[node name="Gathered_Light_Triangle" type="Node2D" node_paths=PackedStringArray("_shape", "_slices", "_slice_motes", "_slice_drips")]
+visible = false
+script = ExtResource("1_shape")
+_shape = NodePath("Shape")
+_slices = [NodePath("Shape/Slice_1"), NodePath("Shape/Slice_2"), NodePath("Shape/Slice_3")]
+_slice_motes = [NodePath("Shape/Slice_1_Motes"), NodePath("Shape/Slice_2_Motes"), NodePath("Shape/Slice_3_Motes")]
+_slice_drips = [NodePath("Shape/Slice_1_Drips"), NodePath("Shape/Slice_2_Drips"), NodePath("Shape/Slice_3_Drips")]
+
+[node name="Shape" type="Node2D" parent="."]
+
+[node name="Slice_1" type="Polygon2D" parent="Shape"]
+material = SubResource("ShaderMaterial_slice")
+polygon = PackedVector2Array(-8, -53, 47, -53, 47, 31, -8, 31)
+
+[node name="Slice_2" type="Polygon2D" parent="Shape"]
+material = SubResource("ShaderMaterial_slice")
+rotation = 2.0943952
+polygon = PackedVector2Array(-8, -53, 47, -53, 47, 31, -8, 31)
+
+[node name="Slice_3" type="Polygon2D" parent="Shape"]
+material = SubResource("ShaderMaterial_slice")
+rotation = 4.1887903
+polygon = PackedVector2Array(-8, -53, 47, -53, 47, 31, -8, 31)
+
+[node name="Slice_1_Motes" parent="Shape" instance=ExtResource("3_motes")]
+position = Vector2(12.99, -7.5)
+emission_ring_inner_radius = 40.0
+emission_ring_radius = 60.0
+
+[node name="Slice_2_Motes" parent="Shape" instance=ExtResource("3_motes")]
+position = Vector2(0, 15)
+emission_ring_inner_radius = 40.0
+emission_ring_radius = 60.0
+
+[node name="Slice_3_Motes" parent="Shape" instance=ExtResource("3_motes")]
+position = Vector2(-12.99, -7.5)
+emission_ring_inner_radius = 40.0
+emission_ring_radius = 60.0
+
+[node name="Slice_1_Drips" parent="Shape" instance=ExtResource("4_drips")]
+position = Vector2(12.99, -7.5)
+emission_sphere_radius = 15.0
+
+[node name="Slice_2_Drips" parent="Shape" instance=ExtResource("4_drips")]
+position = Vector2(0, 15)
+emission_sphere_radius = 15.0
+
+[node name="Slice_3_Drips" parent="Shape" instance=ExtResource("4_drips")]
+position = Vector2(-12.99, -7.5)
+emission_sphere_radius = 15.0

@@ -439,6 +439,7 @@ func _PresentWithEffect(p_skill: Skill, p_results: Array[CombatResult], p_target
 		start.instance_key = instance_keys[index]
 		start.delay = stagger * index
 		starts.append(start)
+	var lead_in_seconds: float = _PrependCastTraitEffect(p_results, starts)
 	var effect_impact_indices: Array[int] = []
 	for effect: SkillEffect in p_skill.effects:
 		effect_impact_indices.append(effect.impact_index)
@@ -451,8 +452,28 @@ func _PresentWithEffect(p_skill: Skill, p_results: Array[CombatResult], p_target
 			func() -> void:
 				if(lunge_target_ID >= 0):
 					_PlayAttackLunge(caster_ID, lunge_target_ID))
-	_presentation_deadline = PRESENTATION_DEADLINE + sample.Length() + stagger * (starts.size() - 1)
+	_presentation_deadline = (PRESENTATION_DEADLINE + lead_in_seconds + sample.Length()
+			+ stagger * (starts.size() - 1))
 	return true
+
+# Plays a trait effect emitted at cast ahead of the skill's own effect instances, which wait for
+# it. Returns the seconds they wait.
+func _PrependCastTraitEffect(
+		p_results: Array[CombatResult], p_starts: Array[ActionPresentation.InstanceStart]) -> float:
+	var effect: CombatResult = PresentationTimeline.CastTraitEffect(p_results)
+	if(null == effect):
+		return 0.0
+	var sample: SkillEffectScene = _effect_layer.Peek(effect.visual_scene)
+	if(null == sample):
+		return 0.0
+	var lead_in_seconds: float = sample.Length()
+	for start: ActionPresentation.InstanceStart in p_starts:
+		start.delay += lead_in_seconds
+	var lead_in: ActionPresentation.InstanceStart = _InstanceStart(
+			sample, effect.visual_scene, null, effect.source_ID, effect.target_ID, true)
+	lead_in.releases_results = false
+	p_starts.push_front(lead_in)
+	return lead_in_seconds
 
 func _InstanceStart(p_sample: SkillEffectScene, p_archetype: PackedScene, p_variant: EffectVariant,
 		p_caster_ID: int, p_target_ID: int, p_field_wide: bool) -> ActionPresentation.InstanceStart:
