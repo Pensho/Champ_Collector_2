@@ -96,6 +96,7 @@ Part I whole, and no section grants an exemption this table does not carry.
 | Gear and reagent icons | Non-negotiable 3; section 4's camera, ground line and composition tail; the material slots of section 3 | 11.1, 11.3 |
 | Effects and VFX | Non-negotiable 3's coverage cap only | 14.1 |
 | Turn bar passive overlays | As turn bar zone art | 13.3.2 |
+| Surface textures | Non-negotiable 1's outer silhouette; section 4 | 10.7.1 |
 
 ---
 
@@ -2436,9 +2437,52 @@ section 7 and the assembled map still fail.
 
 #### 10.7.1 Element set requirements
 
-> **Not yet written.** What runtime composition demands that a plate does not:
-> which elements tile or repeat without a visible seam, how many variations of
-> each are needed before repetition is legible, how density and placement are
+**Surface textures** — roads, paving, any ground drawn as a fill rather than
+placed as an element — are generated looking straight down. A straight-down view
+has no foreshortening to hold, so 10.3.3.1 does not bind them, and one texture
+can serve both the map and the battle floor shader.
+
+**Tiling comes from the prompt;** the locked model has no tiling option. Tested
+once (Ruins brick road), tiled first time:
+
+- The pattern runs off all four sides of the image, with no border or edge.
+- Evenly lit; light direction is carried by each unit's lower-right shadow edge,
+  never by shading across the surface.
+- Wear spread evenly with no single large feature — one distinctive mark makes
+  the repeat legible.
+- Built units counted (rows per image), which also sets the tile's scale (5.4).
+- A directional pattern points along the x-axis, which `Line2D` tiles along.
+
+Check seams with a 50% wrap-around offset; fix by hand, since blend filters leave
+gradients.
+
+**Ruins brick road**
+
+```
+bold woodcut illustration with engraved structural linework and visible gouge
+marks cut into the stone, flat color fields, hard-edged shadows, no gradients,
+all held to four values, seamless tileable texture seen from directly above
+looking straight down, orthographic with no perspective and no horizon, evenly
+lit across the whole image, no highlight edge anywhere, an endless old brick
+road surface filling the entire image edge to edge with the pattern running off
+all four sides, rectangular paving bricks each twice as long as it is wide, laid
+in a chevron pattern, the bricks meeting at a sharp point to form rows of nested
+V shapes all pointing to the right, seven rows of V shapes from top to bottom of
+the image, every brick bordered by a thick mortar joint in aubergine-black,
+depth built from each brick's flat face sitting a full value band above its
+lower right edge, which drops into a thin hard shadow, the stone carrying
+engraved detail through chipped corners, short fracture lines and parallel
+hatching along the shadow edges, the bricks slightly uneven in size and worn
+round at the edges, the wear spread evenly across the whole surface with no
+single large crack or feature, the bricks in a loose random mix of cool slate
+grey, dusty grey-violet and pale weathered beige sandstone, low contrast between
+neighbouring bricks, thin wisps of dark moss pushing up through the joints here
+and there
+```
+
+> **Not yet written.** The rest of what runtime composition demands that a plate
+> does not: how many variations of each element are needed before repetition is
+> legible, how density and placement are
 > driven, and how the outline weight survives elements being placed at differing
 > scales next to each other. The catalog is per variant and derives from that
 > variant's band vocabulary (10.3.6) rather than being drawn fresh.
@@ -3615,7 +3659,8 @@ line is a trap, not a history; the rule it produced lives in the section named.
 - Counts on organic elements. Every blade placed and nothing growing (5.4).
 - Ground-lying floor elements as generated art — mud pools, paving, fungus rings,
   root runs, flat leaves. A generator cannot be held to a consistent
-  foreshortening (10.3.3.1).
+  foreshortening (10.3.3.1). Straight-down tiling textures are a separate class
+  (10.7.1).
 - An oversized fallen leaf, lying, propped or leaning. Lying it is a dark dash;
   leaning it needs something to lean on that the scatter system will not provide
   (10.3.3.1).
