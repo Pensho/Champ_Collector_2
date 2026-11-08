@@ -1,0 +1,27 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://bbiwc2l2afikq"]
+
+[ext_resource type="Shader" uid="uid://bb0xqrqr50ng0" path="res://Assets/Champ_Collector/Shaders/Adventure_Shaders/adventure_ground_paved.gdshader" id="1_shader"]
+[ext_resource type="Texture2D" uid="uid://b8e0msxlimvm0" path="res://Assets/Adventure/Background/Shared/adventure_ground_noise.tres" id="2_noise"]
+[ext_resource type="Texture2D" uid="uid://p1c8bmh13tco" path="res://Assets/Adventure/Background/reclaimed_city/magic_ruins_floor_tiles_1.jpg" id="3_stone"]
+[ext_resource type="Texture2D" uid="uid://bdh5g78trffj" path="res://Assets/Adventure/Background/reclaimed_city/magic_ruins_floor_tiles_1_stone_map.png" id="4_stone_map"]
+
+[resource]
+shader = ExtResource("1_shader")
+shader_parameter/mottle_tint = Color(0.62, 0.53, 0.37, 1)
+shader_parameter/noise_texture = ExtResource("2_noise")
+shader_parameter/noise_strength = 0.8
+shader_parameter/noise_steps = 3
+shader_parameter/step_blend = 0.4
+shader_parameter/noise_tile_size = Vector2(1024, 1024)
+shader_parameter/noise_offset = Vector2(0, 0)
+shader_parameter/noise_detail_scale = 1.449
+shader_parameter/noise_detail_weight = 0.133
+shader_parameter/stone_texture = ExtResource("3_stone")
+shader_parameter/stone_map = ExtResource("4_stone_map")
+shader_parameter/stone_tile_size = Vector2(56, 56)
+shader_parameter/coverage_tile_size = Vector2(2048, 2048)
+shader_parameter/coverage_threshold = 0.5
+shader_parameter/stone_randomness = 0.25
+shader_parameter/wear_band = 0.12
+shader_parameter/wear_tint = Color(0.3, 0.38, 0.22, 1)
+shader_parameter/brightness_variation = 0.25
