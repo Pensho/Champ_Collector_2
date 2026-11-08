@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="BiomeData" format=3 uid="uid://5ilhhb5l8y6e"]
+
+[ext_resource type="Script" uid="uid://dk7f1bo3kh54l" path="res://Scripts/Adventure_Scripts/biome_data.gd" id="1_46456"]
+[ext_resource type="PackedScene" uid="uid://bn26eqxi7k4oc" path="res://Scenes/Battle_Stages/battle_stage_jungle.tscn" id="2_n7yoq"]
+[ext_resource type="PackedScene" uid="uid://d1a5eu4gy0psq" path="res://Scenes/Battle_Stages/battle_stage_jungle_2.tscn" id="3_btu3a"]
+[ext_resource type="Resource" uid="uid://bootjgwnnqoka" path="res://Data/Adventure_Data/Biome_Visuals/visuals_reclaimed_city_magic_ruins.tres" id="4_46456"]
+
+[resource]
+script = ExtResource("1_46456")
+visual_data = ExtResource("4_46456")
+stage_scenes = Array[PackedScene]([ExtResource("2_n7yoq"), ExtResource("3_btu3a")])
+metadata/_custom_type_script = "uid://dk7f1bo3kh54l"

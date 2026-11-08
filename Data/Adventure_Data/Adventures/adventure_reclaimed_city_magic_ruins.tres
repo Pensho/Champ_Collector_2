@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://yxl15ofvlhuk" path="res://Scripts/Adventure_Scripts/adventure_data.gd" id="1_adventure"]
 [ext_resource type="Texture2D" uid="uid://cklk3vko6ul2m" path="res://Assets/Adventure/Biome_Selection/biome_magic_ruins.jpg" id="2_texture"]
 [ext_resource type="Resource" uid="uid://bqk4emurlihv2" path="res://Data/Adventure_Data/Layouts/layout_default.tres" id="3_layout"]
-[ext_resource type="Resource" uid="uid://cpi1whtc518ok" path="res://Data/Adventure_Data/Biome_Types/biome_reclaimed_city_jungle.tres" id="4_biome"]
+[ext_resource type="Resource" uid="uid://5ilhhb5l8y6e" path="res://Data/Adventure_Data/Biome_Types/biome_reclaimed_city_magic_ruins.tres" id="4_eeoux"]
 [ext_resource type="Script" uid="uid://bjtnao6fgl8go" path="res://Scripts/Worldview/Context_Battle.gd" id="5_battle"]
 [ext_resource type="Resource" path="res://Data/Battle_Variants/Battle_Slab_Tossers.tres" id="6_slab_tossers"]
 [ext_resource type="Resource" path="res://Data/Battle_Variants/Battle_Chanter_and_Gatherers.tres" id="7_chanter_and_gatherers"]
@@ -20,7 +20,7 @@ script = ExtResource("1_adventure")
 display_name = "Magic Ruins"
 selection_texture = ExtResource("2_texture")
 layout = ExtResource("3_layout")
-biome = ExtResource("4_biome")
+biome = ExtResource("4_eeoux")
 music_track = ExtResource("16_music")
 battle_variants = Dictionary[ExtResource("5_battle"), int]({
 ExtResource("6_slab_tossers"): 100,
