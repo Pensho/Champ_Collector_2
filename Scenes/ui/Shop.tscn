@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://bi05kk2b3edhv" path="res://Assets/Champ_Collector/Scenery/Reclaimed_City_Art/reclaimed_city_shop_keeper.png" id="5_q10i1"]
 [ext_resource type="Script" uid="uid://brborf0wdvmjy" path="res://Scripts/Audio/ui_sounds.gd" id="6_q10i1"]
 [ext_resource type="Script" uid="uid://853wrgpde68y" path="res://Scripts/Audio/button_sound_profile.gd" id="7_j7us8"]
-[ext_resource type="Resource" path="res://Data/Sound_Cues/button_standard.tres" id="8_tdgyo"]
+[ext_resource type="Resource" uid="uid://1k7w3n5xbfw5" path="res://Data/Sound_Cues/Sound_Cue_Profiles/button_standard.tres" id="8_tdgyo"]
 
 [node name="ShopMenu" type="Control" unique_id=873498712]
 layout_mode = 3

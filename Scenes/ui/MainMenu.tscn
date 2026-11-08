@@ -7,7 +7,8 @@
 [ext_resource type="Texture2D" uid="uid://bn1o3x3kxre57" path="res://Assets/Champ_Collector/Particles/Leaves_sheet.png" id="4_o060j"]
 [ext_resource type="Script" uid="uid://brborf0wdvmjy" path="res://Scripts/Audio/ui_sounds.gd" id="6_o060j"]
 [ext_resource type="Script" uid="uid://853wrgpde68y" path="res://Scripts/Audio/button_sound_profile.gd" id="7_v2r0b"]
-[ext_resource type="Resource" path="res://Data/Sound_Cues/button_standard.tres" id="8_ibf7x"]
+[ext_resource type="Resource" uid="uid://srpvhwecybmu" path="res://Data/Sound_Cues/Sound_Cue_Profiles/button_start_game.tres" id="8_0yq4x"]
+[ext_resource type="Resource" uid="uid://1k7w3n5xbfw5" path="res://Data/Sound_Cues/Sound_Cue_Profiles/button_standard.tres" id="8_ibf7x"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_8774k"]
 particles_animation = true
@@ -172,7 +173,7 @@ text = "Exit"
 [node name="UISounds" type="Node" parent="." unique_id=349035571]
 script = ExtResource("6_o060j")
 buttons = Dictionary[NodePath, ExtResource("7_v2r0b")]({
-NodePath("../MarginContainer/VBoxContainer/Control2/ButtonsVBox/Button_StartGame"): ExtResource("8_ibf7x"),
+NodePath("../MarginContainer/VBoxContainer/Control2/ButtonsVBox/Button_StartGame"): ExtResource("8_0yq4x"),
 NodePath("../MarginContainer/VBoxContainer/Control2/ButtonsVBox/Button_Save_Load"): ExtResource("8_ibf7x"),
 NodePath("../MarginContainer/VBoxContainer/Control2/ButtonsVBox/Button_Settings"): ExtResource("8_ibf7x"),
 NodePath("../MarginContainer/VBoxContainer/Control2/ButtonsVBox/Button_QuitGame"): ExtResource("8_ibf7x")

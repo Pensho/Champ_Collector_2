@@ -201,7 +201,7 @@ first scene change already starts music. All sound is non-positional stereo.
 - **Buttons.** Button sounds are opt-in: a scene's one `UISounds` node
   (`Scripts/Audio/ui_sounds.gd`) lists its sounding buttons as
   `buttons: Dictionary[NodePath, ButtonSoundProfile]`, and an entry without a profile uses
-  `Data/Sound_Cues/button_standard.tres`. A listed button plays its profile's `hover_cue` on
+  `Data/Sound_Cues/Sound_Cue_Profiles/button_standard.tres`. A listed button plays its profile's `hover_cue` on
   `mouse_entered`, and on `focus_entered` unless the mouse is over it (a click focuses the
   button it hovers); it plays `press_cue` on `pressed`, and nothing while disabled.
 

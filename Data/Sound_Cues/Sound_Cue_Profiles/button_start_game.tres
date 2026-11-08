@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ButtonSoundProfile" format=3 uid="uid://srpvhwecybmu"]
+
+[ext_resource type="Resource" uid="uid://wthfvgj2cpeu" path="res://Data/Sound_Cues/ui_hover_tick_cue.tres" id="1_olbey"]
+[ext_resource type="Resource" uid="uid://dwqc4w2qskvae" path="res://Data/Sound_Cues/start_game_cue.tres" id="2_o57ia"]
+[ext_resource type="Script" uid="uid://853wrgpde68y" path="res://Scripts/Audio/button_sound_profile.gd" id="2_olbey"]
+
+[resource]
+script = ExtResource("2_olbey")
+hover_cue = ExtResource("1_olbey")
+press_cue = ExtResource("2_o57ia")

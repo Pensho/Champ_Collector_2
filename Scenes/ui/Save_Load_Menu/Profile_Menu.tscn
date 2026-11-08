@@ -8,7 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://b7uy4gm5xk3q1" path="res://Scenes/ui/Save_Load_Menu/Confirm_Delete_Dialog.tscn" id="6_confirm"]
 [ext_resource type="Script" uid="uid://brborf0wdvmjy" path="res://Scripts/Audio/ui_sounds.gd" id="7_di3o6"]
 [ext_resource type="Script" uid="uid://853wrgpde68y" path="res://Scripts/Audio/button_sound_profile.gd" id="8_1bkgv"]
-[ext_resource type="Resource" path="res://Data/Sound_Cues/button_standard.tres" id="9_qdh4v"]
+[ext_resource type="Resource" uid="uid://1k7w3n5xbfw5" path="res://Data/Sound_Cues/Sound_Cue_Profiles/button_standard.tres" id="9_qdh4v"]
 
 [node name="ProfileMenu" type="Control" unique_id=1842347494 node_paths=PackedStringArray("_profiles", "_details_panel", "_button_save", "_button_load", "_button_delete", "_button_new_game")]
 layout_mode = 3

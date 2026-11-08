@@ -4,7 +4,7 @@
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="1_theme"]
 [ext_resource type="Script" uid="uid://brborf0wdvmjy" path="res://Scripts/Audio/ui_sounds.gd" id="3_pb38e"]
 [ext_resource type="Script" uid="uid://853wrgpde68y" path="res://Scripts/Audio/button_sound_profile.gd" id="4_845im"]
-[ext_resource type="Resource" path="res://Data/Sound_Cues/button_standard.tres" id="5_rhwkw"]
+[ext_resource type="Resource" uid="uid://1k7w3n5xbfw5" path="res://Data/Sound_Cues/Sound_Cue_Profiles/button_standard.tres" id="5_rhwkw"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_close"]
 

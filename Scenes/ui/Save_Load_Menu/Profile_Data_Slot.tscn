@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://cqdt6hg5f837a" path="res://Scripts/UI/profile_data_slot.gd" id="1_w5ruj"]
 [ext_resource type="Script" uid="uid://brborf0wdvmjy" path="res://Scripts/Audio/ui_sounds.gd" id="3_edvkk"]
 [ext_resource type="Script" uid="uid://853wrgpde68y" path="res://Scripts/Audio/button_sound_profile.gd" id="4_uvf1v"]
-[ext_resource type="Resource" path="res://Data/Sound_Cues/button_standard.tres" id="5_7ks5d"]
+[ext_resource type="Resource" uid="uid://1k7w3n5xbfw5" path="res://Data/Sound_Cues/Sound_Cue_Profiles/button_standard.tres" id="5_7ks5d"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_selection"]
 bg_color = Color(0, 0, 0, 0)

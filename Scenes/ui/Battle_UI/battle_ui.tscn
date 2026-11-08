@@ -17,7 +17,7 @@
 [ext_resource type="Shader" uid="uid://dopsnd7qqgjdf" path="res://Assets/Champ_Collector/Shaders/UI_Shaders/horizontal_reveal.gdshader" id="17_reveal"]
 [ext_resource type="Script" uid="uid://853wrgpde68y" path="res://Scripts/Audio/button_sound_profile.gd" id="18_8gx3u"]
 [ext_resource type="Shader" uid="uid://pqr1x86j3fq5" path="res://Assets/Champ_Collector/Shaders/UI_Shaders/outline.gdshader" id="18_outline"]
-[ext_resource type="Resource" path="res://Data/Sound_Cues/button_standard.tres" id="19_6ipoj"]
+[ext_resource type="Resource" uid="uid://1k7w3n5xbfw5" path="res://Data/Sound_Cues/Sound_Cue_Profiles/button_standard.tres" id="19_6ipoj"]
 [ext_resource type="PackedScene" uid="uid://bsxklbdcc8n20" path="res://Scenes/ui/Battle_UI/Battle_Menu.tscn" id="19_battle_menu"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4blpl"]

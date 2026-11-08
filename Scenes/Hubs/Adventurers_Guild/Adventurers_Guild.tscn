@@ -8,7 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://bm6xwrr37gevr" path="res://Scenes/ui/Resources/Resource_Bar.tscn" id="6_14bt2"]
 [ext_resource type="Script" uid="uid://brborf0wdvmjy" path="res://Scripts/Audio/ui_sounds.gd" id="7_mglws"]
 [ext_resource type="Script" uid="uid://853wrgpde68y" path="res://Scripts/Audio/button_sound_profile.gd" id="8_w4dpd"]
-[ext_resource type="Resource" path="res://Data/Sound_Cues/button_standard.tres" id="9_jmeda"]
+[ext_resource type="Resource" uid="uid://1k7w3n5xbfw5" path="res://Data/Sound_Cues/Sound_Cue_Profiles/button_standard.tres" id="9_jmeda"]
 
 [node name="AdventurersGuild" type="Control" unique_id=560039847]
 layout_mode = 3

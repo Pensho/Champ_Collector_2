@@ -1,6 +1,6 @@
 class_name UISounds extends Node
 
-const DEFAULT_PROFILE: ButtonSoundProfile = preload("res://Data/Sound_Cues/button_standard.tres")
+const DEFAULT_PROFILE: ButtonSoundProfile = preload("uid://1k7w3n5xbfw5")
 
 ## Only the buttons listed here make sounds; an entry without a profile uses the default.
 @export var buttons: Dictionary[NodePath, ButtonSoundProfile] = {}

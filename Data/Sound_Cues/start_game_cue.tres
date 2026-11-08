@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="SoundCue" format=3 uid="uid://dwqc4w2qskvae"]
+
+[ext_resource type="Script" uid="uid://bx5nmajah7det" path="res://Scripts/Audio/sound_cue.gd" id="1_6sgc8"]
+[ext_resource type="AudioStream" uid="uid://qo6ehfifvagc" path="res://Assets/Audio/Sound_Effects/UI/Main_Menu_Start.wav" id="2_i3wkd"]
+
+[resource]
+script = ExtResource("1_6sgc8")
+stream = ExtResource("2_i3wkd")
+maximum_simultaneous = 5
+metadata/_custom_type_script = "uid://bx5nmajah7det"
