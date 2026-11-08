@@ -23,3 +23,10 @@ class_name BiomeVisualData extends Resource
 # Node-type prop clusters. Each node type maps to a NodePropCluster that scatters
 # a ring of themed props around every node of that type.
 @export var node_props: Dictionary[NodeData.Node_Type, NodePropCluster]
+
+## Scenes rooted in AdventureAmbientEffect; each one's follows_map picks map or screen.
+@export var ambient_effects: Array[PackedScene]
+
+## Tiling road strips; one is picked per road. Empty draws a plain untextured line.
+@export var road_textures: Array[Texture2D]
+@export var road_width: float = 0.0

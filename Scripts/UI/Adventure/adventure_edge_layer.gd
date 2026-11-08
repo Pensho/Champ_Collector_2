@@ -1,22 +1,14 @@
 class_name AdventureEdgeLayer extends Control
 
-## Draws node-to-node connections as winding dirt roads: one Line2D per edge, wound by
-## AdventureRoadGenerator and textured with a tiling dirt strip. Falls back to a straight
-## untextured line when no biome visual data is configured, so the graph still renders.
+## Draws node-to-node connections as winding roads: one Line2D per edge, wound by
+## AdventureRoadGenerator and textured from the biome's road_textures. Falls back to a
+## straight untextured line when no biome visual data is configured, so the graph still
+## renders.
 
 const FALLBACK_LINE_COLOR := Color(0.55, 0.55, 0.55, 0.85)
 const FALLBACK_LINE_WIDTH := 2.5
-const ROAD_WIDTH := 16.0
 const ROAD_COLOR := Color(0.8, 0.8, 0.8, 1.0)
 const NODE_HALF := Vector2(40.0, 40.0)
-
-## One is picked per edge (seeded, so it's stable across redraws) so neighbouring roads
-## don't all read as the exact same tiled strip.
-const ROAD_TEXTURES: Array[Texture2D] = [
-	preload("res://Assets/Adventure/Background/Shared/dirt_road_01.png"),
-	preload("res://Assets/Adventure/Background/Shared/dirt_road_02.png"),
-	preload("res://Assets/Adventure/Background/Shared/dirt_road_03.png"),
-]
 
 var _edges: Array = []
 var _visual_data: BiomeVisualData
@@ -51,12 +43,17 @@ func _BuildRoadLine(p_edge: Array) -> Line2D:
 	var to_index: int = p_edge[3]
 	var road_seed: int = hash([_generation_seed, from_index, to_index])
 	line.points = AdventureRoadGenerator.BuildRoadPoints(from_position, to_position, _visual_data.detail_noise, road_seed)
-	line.width = ROAD_WIDTH
-	line.default_color = ROAD_COLOR
-	line.texture = ROAD_TEXTURES[posmod(hash([road_seed, "texture"]), ROAD_TEXTURES.size())]
-	line.texture_mode = Line2D.LINE_TEXTURE_TILE
-	line.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
+	line.width = _visual_data.road_width if _visual_data.road_width > 0.0 else FALLBACK_LINE_WIDTH
 	line.joint_mode = Line2D.LINE_JOINT_ROUND
 	line.begin_cap_mode = Line2D.LINE_CAP_ROUND
 	line.end_cap_mode = Line2D.LINE_CAP_ROUND
+	var textures: Array[Texture2D] = _visual_data.road_textures
+	if textures.is_empty():
+		line.default_color = FALLBACK_LINE_COLOR
+		return line
+	# Picked per edge from the seed, so it is stable across redraws.
+	line.default_color = ROAD_COLOR
+	line.texture = textures[posmod(hash([road_seed, "texture"]), textures.size())]
+	line.texture_mode = Line2D.LINE_TEXTURE_TILE
+	line.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
 	return line

@@ -1,0 +1,48 @@
+[gd_resource type="Resource" script_class="BiomeVisualData" format=3 uid="uid://c26mbm7i0xh7x"]
+
+[ext_resource type="PackedScene" uid="uid://dqx6n0y8w3q4v" path="res://Scenes/Adventure_Scenes/Adventure_Cloud_Shadows.tscn" id="1_ep8xo"]
+[ext_resource type="Material" uid="uid://cdqgiidp0lkou" path="res://Assets/Champ_Collector/Material/Adventure_Ground_Materials/adventure_ground_jungle.tres" id="2_ejwjb"]
+[ext_resource type="Script" uid="uid://bwuf75nyssh3t" path="res://Scripts/Adventure_Scripts/Visuals/node_prop_cluster.gd" id="3_1kgvg"]
+[ext_resource type="Resource" uid="uid://xt35tgxgaknl" path="res://Data/Adventure_Data/Biome_Visuals/Node_Props/cluster_fight.tres" id="4_od6qc"]
+[ext_resource type="Resource" uid="uid://bpw4fmxchvw4j" path="res://Data/Adventure_Data/Biome_Visuals/Node_Props/cluster_rest_stop.tres" id="5_oxh7o"]
+[ext_resource type="Resource" uid="uid://cpn7y3uatumk8" path="res://Data/Adventure_Data/Biome_Visuals/Node_Props/cluster_boss.tres" id="6_grr4e"]
+[ext_resource type="Resource" uid="uid://d2hrxsyl25gwf" path="res://Data/Adventure_Data/Biome_Visuals/Node_Props/cluster_hint.tres" id="7_qw42e"]
+[ext_resource type="Resource" uid="uid://b0gepkb5m5ovq" path="res://Data/Adventure_Data/Biome_Visuals/Node_Props/cluster_gamble.tres" id="8_m34ki"]
+[ext_resource type="Resource" uid="uid://cogeyb303k628" path="res://Data/Adventure_Data/Biome_Visuals/Node_Props/cluster_escalate.tres" id="9_cgli5"]
+[ext_resource type="Script" path="res://Scripts/Adventure_Scripts/Visuals/biome_region_data.gd" id="10_6n45b"]
+[ext_resource type="Resource" uid="uid://bqc3x7ifs6ij2" path="res://Data/Adventure_Data/Biome_Visuals/Regions/region_reclaimed_city_forest.tres" id="11_bi1v0"]
+[ext_resource type="Resource" uid="uid://bxtvm8prqlvku" path="res://Data/Adventure_Data/Biome_Visuals/Regions/region_reclaimed_city_clearing.tres" id="12_asw4j"]
+[ext_resource type="Resource" uid="uid://xykcl26gxvrh" path="res://Data/Adventure_Data/Biome_Visuals/Regions/region_reclaimed_city_rubble.tres" id="13_yvlm5"]
+[ext_resource type="Script" uid="uid://d38jy6bjotsgw" path="res://Scripts/Adventure_Scripts/Visuals/biome_visual_data.gd" id="14_vl3x4"]
+[ext_resource type="Texture2D" uid="uid://dalsborwqpcvb" path="res://Assets/Adventure/Background/Shared/dirt_road_01.png" id="15_road1"]
+[ext_resource type="Texture2D" uid="uid://dv81ujrkfai8m" path="res://Assets/Adventure/Background/Shared/dirt_road_02.png" id="16_road2"]
+[ext_resource type="Texture2D" uid="uid://bby825bm75xae" path="res://Assets/Adventure/Background/Shared/dirt_road_03.png" id="17_road3"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_detail"]
+noise_type = 0
+frequency = 0.05
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_region"]
+frequency = 0.003
+domain_warp_enabled = true
+domain_warp_amplitude = 40.0
+
+[resource]
+script = ExtResource("14_vl3x4")
+background_top_color = Color(0.09019608, 0.18039216, 0.101960786, 1)
+background_bottom_color = Color(0.18039216, 0.32156864, 0.16078432, 1)
+ground_material = ExtResource("2_ejwjb")
+detail_noise = SubResource("FastNoiseLite_detail")
+region_noise = SubResource("FastNoiseLite_region")
+regions = Array[ExtResource("10_6n45b")]([ExtResource("11_bi1v0"), ExtResource("12_asw4j"), ExtResource("13_yvlm5")])
+node_props = Dictionary[int, ExtResource("3_1kgvg")]({
+0: ExtResource("4_od6qc"),
+1: ExtResource("5_oxh7o"),
+2: ExtResource("6_grr4e"),
+3: ExtResource("7_qw42e"),
+4: ExtResource("8_m34ki"),
+5: ExtResource("9_cgli5")
+})
+ambient_effects = Array[PackedScene]([ExtResource("1_ep8xo")])
+road_textures = Array[Texture2D]([ExtResource("15_road1"), ExtResource("16_road2"), ExtResource("17_road3")])
+road_width = 16.0

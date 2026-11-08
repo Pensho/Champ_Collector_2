@@ -5,13 +5,6 @@ signal node_selected(p_node: NodeData)
 const GroundScene := preload("res://Scripts/UI/Adventure/adventure_ground.gd")
 const EdgeLayerScene := preload("res://Scripts/UI/Adventure/adventure_edge_layer.gd")
 const BackgroundScene := preload("res://Scripts/UI/Adventure/adventure_background.gd")
-const CloudShadowsScene := preload("res://Scenes/Adventure_Scenes/Adventure_Cloud_Shadows.tscn")
-## Baseline amount the scene ships with, tuned for one screen height. Scaled up with the
-## generated canvas height so deep adventures don't read as empty above/below the fold.
-const CLOUD_SHADOWS_AMOUNT_PER_HEIGHT: float = 6.0 / 720.0
-## Extends the emission box past the canvas's left edge so clouds are sometimes already
-## drifting in from off-screen instead of only ever appearing already inside view.
-const CLOUD_SHADOWS_LEFT_SPAWN_MARGIN: float = 400.0
 const LAYER_HEIGHT: int = 180
 const NODE_SIZE:    int = 80
 const PADDING:      int = 30
@@ -24,6 +17,8 @@ const END_MARGIN: int = LAYER_HEIGHT
 @export var _node_ui_scene: PackedScene
 @export var _scroll_container: ScrollContainer
 @export var _graph_canvas: Control
+## Holds ambient effects that stay fixed on screen while the map scrolls beneath them.
+@export var _screen_effects_layer: Control
 
 var _node_positions: Dictionary = {}
 var _visual_data: BiomeVisualData
@@ -35,6 +30,8 @@ func SetBiomeVisuals(p_visual_data: BiomeVisualData, p_generation_seed: int) -> 
 
 func Populate(p_nodes: Array[NodeData]) -> void:
 	for child in _graph_canvas.get_children():
+		child.queue_free()
+	for child in _screen_effects_layer.get_children():
 		child.queue_free()
 	_node_positions.clear()
 
@@ -90,32 +87,7 @@ func Populate(p_nodes: Array[NodeData]) -> void:
 		_graph_canvas.add_child(background)
 		background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		background.Generate(_visual_data, _node_positions, _generation_seed)
-
-	## Scrolls with the map (child of `_graph_canvas`, not a fixed screen overlay), so it
-	## needs re-instancing every Populate and sizing to the generated canvas, which varies
-	## with adventure depth — unlike the fixed-size hub backgrounds this scene's precedent
-	## (the falling-leaves node) was built for.
-	var cloud_shadows: GPUParticles2D = CloudShadowsScene.instantiate()
-	_graph_canvas.add_child(cloud_shadows)
-	cloud_shadows.amount = int(clamp(canvas_height * CLOUD_SHADOWS_AMOUNT_PER_HEIGHT, 6.0, 40.0))
-
-	var cloud_material: ParticleProcessMaterial = cloud_shadows.process_material as ParticleProcessMaterial
-	var emission_width: float = canvas_width + CLOUD_SHADOWS_LEFT_SPAWN_MARGIN
-	var emission_center: Vector2 = Vector2((canvas_width - CLOUD_SHADOWS_LEFT_SPAWN_MARGIN) * 0.5, canvas_height * 0.5)
-	cloud_shadows.position = emission_center
-	cloud_material.emission_shape_scale = Vector3(emission_width, canvas_height, 1.0) * 0.5
-
-	## visibility_rect is local to the node and must cover the full emission area plus a
-	## margin for how far a scaled-up particle sprite extends past its own center — both
-	## vary per adventure (canvas height) and per current tuning (scale_max), so this is
-	## computed here rather than left as the fixed value the scene ships with, which would
-	## otherwise clip particles once the canvas grows taller or the sprite scale grows.
-	var canvas_material: CanvasItemMaterial = cloud_shadows.material as CanvasItemMaterial
-	var frame_count: float = maxf(1.0, float(canvas_material.particles_anim_h_frames))
-	var frame_size: Vector2 = cloud_shadows.texture.get_size() / Vector2(frame_count, 1.0)
-	var particle_margin: float = frame_size.length() * 0.5 * cloud_material.scale_max
-	var visibility_half_size: Vector2 = Vector2(emission_width, canvas_height) * 0.5 + Vector2.ONE * particle_margin
-	cloud_shadows.visibility_rect = Rect2(-visibility_half_size, visibility_half_size * 2.0)
+		_AddAmbientEffects(Vector2(canvas_width, canvas_height))
 
 	var eligible_y: float = canvas_height
 	for node in p_nodes:
@@ -130,3 +102,20 @@ func Populate(p_nodes: Array[NodeData]) -> void:
 
 	await get_tree().process_frame
 	_scroll_container.scroll_vertical = int(eligible_y - _scroll_container.size.y * 0.6)
+
+
+func _AddAmbientEffects(p_map_size: Vector2) -> void:
+	for effect_scene: PackedScene in _visual_data.ambient_effects:
+		if effect_scene == null:
+			continue
+		var instance: Node = effect_scene.instantiate()
+		var effect := instance as AdventureAmbientEffect
+		if effect == null:
+			push_error("Ambient effect %s is not rooted in AdventureAmbientEffect." % effect_scene.resource_path)
+			instance.free()
+			continue
+		if effect.follows_map:
+			_graph_canvas.add_child(effect)
+			effect.FitToMap(p_map_size)
+		else:
+			_screen_effects_layer.add_child(effect)

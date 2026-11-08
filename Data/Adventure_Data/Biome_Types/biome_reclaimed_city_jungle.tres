@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://d1a5eu4gy0psq" path="res://Scenes/Battle_Stages/battle_stage_jungle_2.tscn" id="3_i34ye"]
 [ext_resource type="Script" uid="uid://dk7f1bo3kh54l" path="res://Scripts/Adventure_Scripts/biome_data.gd" id="11_7u541"]
 [ext_resource type="PackedScene" uid="uid://bn26eqxi7k4oc" path="res://Scenes/Battle_Stages/battle_stage_jungle.tscn" id="12_launh"]
-[ext_resource type="Resource" uid="uid://c26mbm7i0xh7x" path="res://Data/Adventure_Data/Biome_Visuals/visuals_reclaimed_city.tres" id="13_cakum"]
+[ext_resource type="Resource" uid="uid://c26mbm7i0xh7x" path="res://Data/Adventure_Data/Biome_Visuals/visuals_reclaimed_city_jungle.tres" id="13_cakum"]
 
 [resource]
 script = ExtResource("11_7u541")
