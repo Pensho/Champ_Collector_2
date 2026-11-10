@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://r3imf5n4bxhr"
-path="res://.godot/imported/magic_ruins_wall_1.png-6606b2b56cdda656cc4d2fe1e3727067.ctex"
+uid="uid://dpmrn8yy22gd5"
+path="res://.godot/imported/wall_horizontal_inner.png-11932de5e378647dc66b70a1d030e5ce.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Adventure/Background/reclaimed_city/magic_ruins_wall_1.png"
-dest_files=["res://.godot/imported/magic_ruins_wall_1.png-6606b2b56cdda656cc4d2fe1e3727067.ctex"]
+source_file="res://Assets/Adventure/Background/reclaimed_city/wall_horizontal_inner.png"
+dest_files=["res://.godot/imported/wall_horizontal_inner.png-11932de5e378647dc66b70a1d030e5ce.ctex"]
 
 [params]
 

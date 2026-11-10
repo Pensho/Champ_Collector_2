@@ -3,6 +3,13 @@
 [ext_resource type="Script" uid="uid://c874u6k1fq1gw" path="res://Scripts/UI/Adventure/adventure_graph_ui.gd" id="1_graphui"]
 [ext_resource type="PackedScene" uid="uid://bssm5jp0ijped" path="res://Scenes/Adventure_Scenes/Adventure_Node_UI.tscn" id="2_nodeui"]
 
+[sub_resource type="Gradient" id="Gradient_edge_fade"]
+colors = PackedColorArray(0, 0, 0, 0.85, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_edge_fade"]
+gradient = SubResource("Gradient_edge_fade")
+fill_to = Vector2(1, 0)
+
 [node name="AdventureGraphUi" type="Control" unique_id=1198365855 node_paths=PackedStringArray("_scroll_container", "_graph_canvas", "_screen_effects_layer")]
 layout_mode = 3
 anchors_preset = 15
@@ -39,3 +46,27 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+
+[node name="EdgeFadeLeft" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 80.0
+grow_vertical = 2
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_edge_fade")
+expand_mode = 1
+
+[node name="EdgeFadeRight" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -80.0
+grow_horizontal = 0
+grow_vertical = 2
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_edge_fade")
+expand_mode = 1
+flip_h = true

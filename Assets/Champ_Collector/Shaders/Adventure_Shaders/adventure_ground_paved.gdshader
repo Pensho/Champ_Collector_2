@@ -4,7 +4,7 @@ shader_type canvas_item;
 render_mode unshaded;
 
 // Mottled ground partly covered by a tiling stone floor. Coverage noise is sampled at each
-// stone's centre (from the baked stone map), so stones are kept or dropped whole.
+// stone's centre (from the baked stone map), so stones are kept, faded or dropped whole.
 
 #include "res://Assets/Champ_Collector/Shaders/Adventure_Shaders/adventure_ground_mottle.gdshaderinc"
 
@@ -19,6 +19,11 @@ uniform vec2 stone_tile_size = vec2(256.0, 256.0);
 uniform vec2 coverage_tile_size = vec2(2048.0, 2048.0);
 // Higher leaves fewer stones.
 uniform float coverage_threshold : hint_range(0.0, 1.0) = 0.5;
+// Stones up to this far below the threshold fade into the ground instead of dropping out;
+// 0 drops them outright.
+uniform float fade_band : hint_range(0.0, 1.0) = 0.0;
+// Opacity of a fully kept stone; what lies beneath the ground shows through the rest.
+uniform float stone_opacity : hint_range(0.0, 1.0) = 0.5;
 // Random per-stone shift of the threshold; roughens the paving's outline.
 uniform float stone_randomness : hint_range(0.0, 1.0) = 0.25;
 // Stones within this band above the threshold are worn: wear_tint creeps in from their grout.
@@ -50,7 +55,10 @@ void fragment() {
 	float coverage = texture(noise_texture, stone_centre * stone_tile_size / coverage_tile_size
 		+ noise_offset + vec2(0.5, 0.25)).r;
 	coverage += (stone_random - 0.5) * stone_randomness;
-	if (coverage < coverage_threshold) {
+	float presence = fade_band > 0.0
+		? smoothstep(coverage_threshold - fade_band, coverage_threshold, coverage)
+		: step(coverage_threshold, coverage);
+	if (presence <= 0.0) {
 		COLOR = ground;
 	} else {
 		vec4 stone = texture(stone_texture, stone_uv);
@@ -58,6 +66,6 @@ void fragment() {
 		float wear = 1.0 - smoothstep(coverage_threshold, coverage_threshold + wear_band, coverage);
 		float creep = 1.0 - smoothstep(wear - 0.15, wear + 0.15, stone_data.b);
 		stone.rgb = mix(stone.rgb, stone.rgb * wear_tint.rgb, creep * wear);
-		COLOR = vec4(stone.rgb, ground.a * 0.5);
+		COLOR = mix(ground, vec4(stone.rgb, ground.a * stone_opacity), presence);
 	}
 }

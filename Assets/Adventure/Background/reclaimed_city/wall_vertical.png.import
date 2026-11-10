@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bima31osj1lim"
-path="res://.godot/imported/magic_ruins_pillar_3.png-4f330fc5b94058089f2e41d9b06497cc.ctex"
+uid="uid://gf63i7n1nrad"
+path="res://.godot/imported/wall_vertical.png-801ad8fc4ba052deaa90c73cb805a11e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Adventure/Background/reclaimed_city/magic_ruins_pillar_3.png"
-dest_files=["res://.godot/imported/magic_ruins_pillar_3.png-4f330fc5b94058089f2e41d9b06497cc.ctex"]
+source_file="res://Assets/Adventure/Background/reclaimed_city/wall_vertical.png"
+dest_files=["res://.godot/imported/wall_vertical.png-801ad8fc4ba052deaa90c73cb805a11e.ctex"]
 
 [params]
 

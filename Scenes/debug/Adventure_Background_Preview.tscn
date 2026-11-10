@@ -1,0 +1,59 @@
+[gd_scene format=3 uid="uid://bvm0ulyjxgpkx"]
+
+[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="1_theme"]
+[ext_resource type="Script" uid="uid://baggr6ifg4y53" path="res://Scripts/Debug/adventure_background_preview.gd" id="2_script"]
+[ext_resource type="PackedScene" uid="uid://c5vokw1b0pp1g" path="res://Scenes/Adventure_Scenes/Adventure_Graph_UI.tscn" id="3_graph"]
+[ext_resource type="Resource" uid="uid://cqdm10nqrxk0e" path="res://Data/Adventure_Data/Adventures/adventure_reclaimed_city_magic_ruins.tres" id="4_ruins"]
+[ext_resource type="Resource" uid="uid://b6kb1b0dt57tw" path="res://Data/Adventure_Data/Adventures/adventure_reclaimed_city_jungle.tres" id="5_jungle"]
+[ext_resource type="Script" uid="uid://yxl15ofvlhuk" path="res://Scripts/Adventure_Scripts/adventure_data.gd" id="6_data"]
+[ext_resource type="Script" uid="uid://bityuxcpkignx" path="res://Scripts/Debug/structure_layout_overlay.gd" id="7_overlay"]
+
+[node name="AdventureBackgroundPreview" type="Control" unique_id=1449663696 node_paths=PackedStringArray("_graph_ui", "_info_label", "_lot_overlay")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_theme")
+script = ExtResource("2_script")
+_adventures = Array[ExtResource("6_data")]([ExtResource("4_ruins"), ExtResource("5_jungle")])
+_graph_ui = NodePath("AdventureGraphUi")
+_info_label = NodePath("InfoPanel/InfoLabel")
+_lot_overlay = NodePath("LotOverlay")
+
+[node name="Backdrop" type="ColorRect" parent="." unique_id=1087459520]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="AdventureGraphUi" parent="." unique_id=976700470 instance=ExtResource("3_graph")]
+layout_mode = 1
+
+[node name="LotOverlay" type="Control" parent="." unique_id=246182969]
+visible = false
+clip_contents = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("7_overlay")
+
+[node name="InfoPanel" type="PanelContainer" parent="." unique_id=1294803602]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 420.0
+offset_bottom = 60.0
+mouse_filter = 2
+
+[node name="InfoLabel" type="Label" parent="InfoPanel" unique_id=1294627657]
+layout_mode = 2
+text = "Building..."

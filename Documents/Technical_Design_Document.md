@@ -2031,9 +2031,14 @@ The adventure (run) system lives in `Scripts/Adventure_Scripts/`:
   effects, and serialization; the handler is in the `"saveable"` group.
 - Rewards flow through `LootManager` (`Scripts/Battle/loot_manager.gd`) and `LootTable` resources:
   a difficulty-scaled budget feeds primary (guaranteed) and secondary (weighted) loot.
+- `Visuals/` holds the pure, seeded map-art generators: node placement, structure layout,
+  roads and background decor. `AdventureGraphUi` builds one shared `StructureLayout` for the
+  map's layers; see `Adventure_Background_Visuals_Checklist.md` "Rendering integration".
 
 Coverage: `test_adventure_state.gd`, `test_adventure_generator.gd`, `test_act_data.gd`,
-`test_loot_manager.gd` (see `Test_Design_Document.md`).
+`test_loot_manager.gd`, `test_adventure_node_placement.gd`,
+`test_structure_layout_generator.gd`, `test_adventure_road_generator.gd`,
+`test_adventure_background_generator.gd` (see `Test_Design_Document.md`).
 
 ---
 

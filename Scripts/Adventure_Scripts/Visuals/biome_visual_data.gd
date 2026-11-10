@@ -30,3 +30,6 @@ class_name BiomeVisualData extends Resource
 ## Tiling road strips; one is picked per road. Empty draws a plain untextured line.
 @export var road_textures: Array[Texture2D]
 @export var road_width: float = 0.0
+
+## Streets, lots and walls for constructed biomes. Null keeps organic scatter.
+@export var structure_layout: StructureLayoutData

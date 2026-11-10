@@ -388,3 +388,216 @@ func _ZoneIndexAt(p_visual_data: BiomeVisualData, p_coarse_x: int, p_coarse_y: i
 	var noise_sample: float = p_visual_data.region_noise.get_noise_2d(sample_position.x, sample_position.y)
 	noise_sample = clampf((noise_sample + 1.0) * 0.5, 0.0, 1.0)
 	return 0 if noise_sample < 0.5 else 1
+
+
+func _BuildStructuredVisuals(p_region: BiomeRegionData) -> BiomeVisualData:
+	var visual_data: BiomeVisualData = _BuildVisualData([p_region])
+	visual_data.structure_layout = StructureLayoutData.new()
+	return visual_data
+
+
+func _BuildLotLayout(p_rects: Array[Rect2], p_region: BiomeRegionData) -> StructureLayout:
+	var layout := StructureLayout.new()
+	for rect in p_rects:
+		layout.lots.append(StructureLayout.Lot.new(rect, p_region))
+	return layout
+
+
+func _BuildLotLayer(p_mode: DecorLayerData.Placement_Mode, p_texture_size: Vector2 = Vector2(16, 16)) -> DecorLayerData:
+	var layer: DecorLayerData = _BuildLayer(1.0, 0.0, 1.0)
+	var texture := PlaceholderTexture2D.new()
+	texture.size = p_texture_size
+	layer.textures = [texture]
+	layer.placement_mode = p_mode
+	return layer
+
+
+func _GenerateLots(p_layer: DecorLayerData, p_rects: Array[Rect2]) -> Array[DecorPlacement]:
+	var region: BiomeRegionData = _BuildZone("Built", 1.0, p_layer)
+	return AdventureBackgroundGenerator.Generate(
+			_BuildStructuredVisuals(region), Vector2(1000, 1000), {}, 5, _BuildLotLayout(p_rects, region))
+
+
+func test_edge_pieces_step_along_lot_sides() -> void:
+	var layer: DecorLayerData = _BuildLotLayer(DecorLayerData.Placement_Mode.LOT_EDGE)
+	layer.edge_spacing = 50.0
+	var rect := Rect2(100, 100, 200, 150)
+	var placements: Array[DecorPlacement] = _GenerateLots(layer, [rect])
+	assert_eq(placements.size(), 4 * 2 + 3 * 2, "200 wide fits 4 pieces per side, 150 tall fits 3.")
+	for placement in placements:
+		var on_horizontal_side: bool = is_equal_approx(placement.position.y, rect.position.y) or is_equal_approx(
+				placement.position.y, rect.end.y)
+		var on_vertical_side: bool = is_equal_approx(placement.position.x, rect.position.x) or is_equal_approx(
+				placement.position.x, rect.end.x)
+		assert_true(on_horizontal_side or on_vertical_side, "Edge pieces sit on the lot's outline.")
+		assert_eq(placement.rotation_degrees, 0.0, "Edge pieces are never rotated.")
+		assert_false(placement.flip_h, "Edge pieces are never flipped.")
+
+
+func test_edge_pieces_abut_at_their_spacing() -> void:
+	var layer: DecorLayerData = _BuildLotLayer(DecorLayerData.Placement_Mode.LOT_EDGE)
+	layer.edge_spacing = 50.0
+	layer.edge_orientation = DecorLayerData.Edge_Orientation.HORIZONTAL
+	var points: Array[Vector2] = AdventureBackgroundGenerator.EdgePoints(Rect2(0, 0, 230, 100), layer)
+	var top_x: Array[float] = []
+	for point in points:
+		if is_zero_approx(point.y):
+			top_x.append(point.x)
+	assert_eq(top_x, [40.0, 90.0, 140.0, 190.0] as Array[float], "Pieces are centred on the side, one spacing apart.")
+
+
+func test_edge_orientation_filters_sides() -> void:
+	var layer: DecorLayerData = _BuildLotLayer(DecorLayerData.Placement_Mode.LOT_EDGE)
+	layer.edge_spacing = 50.0
+	layer.edge_orientation = DecorLayerData.Edge_Orientation.VERTICAL
+	var rect := Rect2(0, 0, 200, 150)
+	for point in AdventureBackgroundGenerator.EdgePoints(rect, layer):
+		assert_true(is_zero_approx(point.x) or is_equal_approx(point.x, rect.end.x), "Vertical layers use side edges only.")
+	var lowest_y: float = rect.end.y
+	for point in AdventureBackgroundGenerator.EdgePoints(rect, layer):
+		lowest_y = minf(lowest_y, point.y)
+	assert_almost_eq(lowest_y, 50.0, 0.01, "Vertical pieces stack upward from their lower ends.")
+
+
+func test_edge_inset_moves_pieces_inside_the_lot() -> void:
+	var layer: DecorLayerData = _BuildLotLayer(DecorLayerData.Placement_Mode.LOT_EDGE)
+	layer.edge_spacing = 50.0
+	layer.edge_inset = 10.0
+	var rect := Rect2(0, 0, 200, 200)
+	for point in AdventureBackgroundGenerator.EdgePoints(rect, layer):
+		assert_true(rect.grow(-9.99).has_point(point), "Inset pieces stay inside the lot.")
+
+
+func test_corner_elements_sit_on_lot_corners() -> void:
+	var rect := Rect2(100, 100, 200, 150)
+	var placements: Array[DecorPlacement] = _GenerateLots(_BuildLotLayer(DecorLayerData.Placement_Mode.LOT_CORNER), [rect])
+	var expected: Array[Vector2] = [rect.position, Vector2(rect.end.x, rect.position.y),
+			Vector2(rect.position.x, rect.end.y), rect.end]
+	assert_eq(placements.size(), 4, "One element per corner.")
+	for placement in placements:
+		assert_has(expected, placement.position, "Corner elements sit exactly on corners.")
+
+
+func test_fill_places_one_element_that_fits_each_lot() -> void:
+	var layer: DecorLayerData = _BuildLotLayer(DecorLayerData.Placement_Mode.LOT_FILL, Vector2(100, 300))
+	layer.scale_min = 0.5
+	layer.scale_max = 2.0
+	var rects: Array[Rect2] = [Rect2(0, 400, 180, 100), Rect2(400, 400, 40, 100)]
+	var placements: Array[DecorPlacement] = _GenerateLots(layer, rects)
+	assert_eq(placements.size(), 1, "The narrow lot cannot fit the texture at its minimum scale.")
+	assert_lte(100.0 * placements[0].scale, 180.0, "The fill must fit the lot's width.")
+	assert_eq(placements[0].position, Vector2(90, 500), "Props stand centred on the lot's bottom edge.")
+
+
+func test_only_one_fill_claims_a_lot() -> void:
+	var first: DecorLayerData = _BuildLotLayer(DecorLayerData.Placement_Mode.LOT_FILL)
+	var second: DecorLayerData = _BuildLotLayer(DecorLayerData.Placement_Mode.LOT_FILL)
+	var region: BiomeRegionData = _BuildZone("Built", 1.0, first)
+	var second_entry := ZoneDecorEntry.new()
+	second_entry.layer = second
+	region.decor.append(second_entry)
+	var placements: Array[DecorPlacement] = AdventureBackgroundGenerator.Generate(_BuildStructuredVisuals(region),
+			Vector2(1000, 1000), {}, 5, _BuildLotLayout([Rect2(0, 0, 200, 200)], region))
+	assert_eq(placements.size(), 1, "A lot holds at most one fill element.")
+
+
+func test_fill_decal_fits_both_sides_and_centres() -> void:
+	var layer: DecorLayerData = _BuildLotLayer(DecorLayerData.Placement_Mode.LOT_FILL, Vector2(100, 100))
+	layer.z_index = -1
+	layer.scale_min = 0.1
+	layer.scale_max = 5.0
+	var rect := Rect2(0, 0, 400, 120)
+	var placements: Array[DecorPlacement] = _GenerateLots(layer, [rect])
+	assert_lte(100.0 * placements[0].scale, 120.0 + 0.01, "Decals fit the lot's height too.")
+	assert_eq(placements[0].position, rect.get_center(), "Decals sit centred in the lot.")
+
+
+func test_lot_scatter_stays_inside_its_lot() -> void:
+	var rect := Rect2(200, 300, 150, 120)
+	var placements: Array[DecorPlacement] = _GenerateLots(_BuildLotLayer(DecorLayerData.Placement_Mode.SCATTER), [rect])
+	assert_gt(placements.size(), 0, "Scatter should place inside the lot.")
+	for placement in placements:
+		assert_true(rect.has_point(placement.position), "Scatter never lands outside its lot.")
+
+
+func test_noise_band_removes_lot_elements() -> void:
+	var layer: DecorLayerData = _BuildLotLayer(DecorLayerData.Placement_Mode.LOT_EDGE)
+	layer.edge_spacing = 10.0
+	var full: int = _GenerateLots(layer, [Rect2(0, 0, 600, 600)]).size()
+	layer.noise_threshold_min = 0.5
+	var decayed: int = _GenerateLots(layer, [Rect2(0, 0, 600, 600)]).size()
+	assert_gt(decayed, 0, "Some pieces survive decay.")
+	assert_lt(decayed, full, "The noise band removes some pieces.")
+
+
+func test_street_region_decorates_only_open_ground() -> void:
+	var lot_layer: DecorLayerData = _BuildLotLayer(DecorLayerData.Placement_Mode.LOT_CORNER)
+	var region: BiomeRegionData = _BuildZone("Built", 1.0, lot_layer)
+	var visual_data: BiomeVisualData = _BuildStructuredVisuals(region)
+	var street_layer: DecorLayerData = _BuildLayer(1.0, 0.0, 1.0)
+	visual_data.structure_layout.street_region = _BuildZone("Street", 1.0, street_layer)
+	var lot_rect := Rect2(100, 100, 300, 300)
+	var layout: StructureLayout = _BuildLotLayout([lot_rect], region)
+	layout.plazas.append(Rect2(600, 600, 100, 100))
+	var placements: Array[DecorPlacement] = AdventureBackgroundGenerator.Generate(
+			visual_data, Vector2(800, 800), {}, 5, layout)
+	var street_count: int = 0
+	for placement in placements:
+		if placement.texture == street_layer.textures[0]:
+			street_count += 1
+			assert_false(lot_rect.has_point(placement.position), "Street decor stays off lots.")
+			assert_false(layout.plazas[0].has_point(placement.position), "Street decor stays off plazas.")
+	assert_gt(street_count, 0, "Open ground gets street decor.")
+
+
+func test_organic_biomes_skip_lot_layers() -> void:
+	var layer: DecorLayerData = _BuildLotLayer(DecorLayerData.Placement_Mode.LOT_EDGE)
+	layer.edge_spacing = 10.0
+	var visual_data: BiomeVisualData = _BuildVisualData([_BuildZone("Wild", 1.0, layer)])
+	assert_eq(AdventureBackgroundGenerator.Generate(visual_data, _canvas_size, _node_positions, 5).size(), 0,
+			"Lot layers place nothing without lots.")
+
+
+func test_top_and_bottom_orientations_use_one_side_each() -> void:
+	var layer: DecorLayerData = _BuildLotLayer(DecorLayerData.Placement_Mode.LOT_EDGE)
+	layer.edge_spacing = 50.0
+	var rect := Rect2(0, 0, 200, 150)
+	layer.edge_orientation = DecorLayerData.Edge_Orientation.TOP
+	for point in AdventureBackgroundGenerator.EdgePoints(rect, layer):
+		assert_eq(point.y, rect.position.y, "Top layers use the top side only.")
+	layer.edge_orientation = DecorLayerData.Edge_Orientation.BOTTOM
+	for point in AdventureBackgroundGenerator.EdgePoints(rect, layer):
+		assert_eq(point.y, rect.end.y, "Bottom layers use the bottom side only.")
+
+
+func test_sides_of_whole_spacings_are_covered_corner_to_corner() -> void:
+	var layer: DecorLayerData = _BuildLotLayer(DecorLayerData.Placement_Mode.LOT_EDGE)
+	layer.edge_spacing = 64.0
+	var rect := Rect2(128, 192, 256, 192)
+	var top_x: Array[float] = []
+	var left_y: Array[float] = []
+	for point in AdventureBackgroundGenerator.EdgePoints(rect, layer):
+		if is_equal_approx(point.y, rect.position.y):
+			top_x.append(point.x)
+		elif is_equal_approx(point.x, rect.position.x):
+			left_y.append(point.y)
+	assert_eq(top_x, [160.0, 224.0, 288.0, 352.0] as Array[float], "Top pieces span the side exactly.")
+	assert_eq(left_y, [384.0, 320.0, 256.0] as Array[float], "Side pieces stack from the bottom corner to the top.")
+
+
+func test_edge_overhang_measures_how_far_walls_rise_above_their_lot() -> void:
+	var standing: DecorLayerData = _BuildLotLayer(DecorLayerData.Placement_Mode.LOT_EDGE, Vector2(128, 128))
+	standing.scale_min = 0.5
+	standing.scale_max = 0.5
+	standing.edge_orientation = DecorLayerData.Edge_Orientation.TOP
+	var side: DecorLayerData = _BuildLotLayer(DecorLayerData.Placement_Mode.LOT_EDGE, Vector2(48, 222))
+	side.scale_min = 0.5
+	side.scale_max = 0.5
+	side.edge_spacing = 64.0
+	side.edge_orientation = DecorLayerData.Edge_Orientation.VERTICAL
+	var visual_data: BiomeVisualData = _BuildVisualData([_BuildZone("Top", 1.0, standing), _BuildZone("Side", 1.0, side)])
+	assert_almost_eq(AdventureBackgroundGenerator.EdgeOverhang(visual_data), 64.0, 0.01,
+			"A top wall rises its full height; a side wall rises its height past one step (47).")
+	standing.edge_orientation = DecorLayerData.Edge_Orientation.BOTTOM
+	assert_almost_eq(AdventureBackgroundGenerator.EdgeOverhang(visual_data), 47.0, 0.01,
+			"Bottom walls rise into their own lot, not above it.")

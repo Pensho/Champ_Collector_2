@@ -17,14 +17,14 @@ constants. A biome with no `BiomeVisualData` hides ground and background instead
 their creation.
 
 ### 2. Split `Populate` into `Build` and `Refresh`
-- `Build(p_nodes)`: computes positions and canvas size, calls `Generate` / `configure` /
-  `set_edges` on the static layers, instances one `AdventureNodeUi` per node and connects
+- `Build(p_nodes)`: computes positions and canvas size, builds the `StructureLayout`, calls
+  `Generate` / `configure` / `set_roads` on the static layers, instances one `AdventureNodeUi` per node and connects
   its `node_selected` once. Called once from `adventure_ui.gd` `Init`.
 - `Refresh()`: re-runs `AdventureNodeUi.Init` with the current eligibility for each built
   node and re-aims the scroll. Called from `Init` after `Build`, and from
   `_on_interaction_resolved` in place of `Populate`.
-- Move node placement into a static pure function (nodes plus canvas width → positions and
-  canvas height) so it can be tested.
+- Positions come from `AdventureNodePlacement.PlaceNodes`. The layout depends on canvas
+  size, so a resize rebuilds it with the background.
 
 The node UIs and road `Line2D`s are instanced at build time because their count follows
 the generated graph (`AdventureLayout.MAX_DEPTH` plus branches is data, not a fixed

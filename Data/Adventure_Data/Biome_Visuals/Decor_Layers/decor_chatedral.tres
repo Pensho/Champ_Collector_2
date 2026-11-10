@@ -2,10 +2,11 @@
 
 [ext_resource type="Script" uid="uid://c6250ti0wupfr" path="res://Scripts/Adventure_Scripts/Visuals/decor_layer_data.gd" id="1_pd5o5"]
 [ext_resource type="Texture2D" uid="uid://76vjk5jqdt80" path="res://Assets/Adventure/Background/reclaimed_city/magic_ruins_cathedral_1.png" id="2_vwqbd"]
+[ext_resource type="Texture2D" uid="uid://douomgdupxnu1" path="res://Assets/Adventure/Background/reclaimed_city/magic_ruins_cathedral_2.png" id="3_pd5o5"]
 
 [resource]
 script = ExtResource("1_pd5o5")
-textures = Array[Texture2D]([ExtResource("2_vwqbd")])
+textures = Array[Texture2D]([ExtResource("2_vwqbd"), ExtResource("3_pd5o5")])
 density = 0.1
 scale_min = 0.9
 rotation_jitter_degrees = 5.0

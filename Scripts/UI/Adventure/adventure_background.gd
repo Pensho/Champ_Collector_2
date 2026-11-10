@@ -8,21 +8,28 @@ class_name AdventureBackground extends Control
 var _visual_data: BiomeVisualData
 var _node_positions: Dictionary = {}
 var _generation_seed: int = -1
+var _layout: StructureLayout
 var _placements: Array[DecorPlacement] = []
 
 func _ready() -> void:
 	mouse_filter = MOUSE_FILTER_IGNORE
 
-func Generate(p_visual_data: BiomeVisualData, p_node_positions: Dictionary, p_generation_seed: int) -> void:
+func Generate(
+		p_visual_data: BiomeVisualData,
+		p_node_positions: Dictionary,
+		p_generation_seed: int,
+		p_layout: StructureLayout) -> void:
 	_visual_data = p_visual_data
 	_node_positions = p_node_positions
 	_generation_seed = p_generation_seed
+	_layout = p_layout
 	_Regenerate()
 
 func _Regenerate() -> void:
 	if _visual_data == null:
 		return
-	_placements = AdventureBackgroundGenerator.Generate(_visual_data, size, _node_positions, _generation_seed)
+	_placements = AdventureBackgroundGenerator.Generate(
+			_visual_data, size, _node_positions, _generation_seed, _layout)
 	queue_redraw()
 
 func _notification(p_what: int) -> void:
@@ -30,6 +37,10 @@ func _notification(p_what: int) -> void:
 		_Regenerate()
 
 func _draw() -> void:
+	if _layout != null:
+		for lot in _layout.lots:
+			if lot.region != null and lot.region.lot_interior_color.a > 0.0:
+				draw_rect(lot.rect, lot.region.lot_interior_color)
 	for placement in _placements:
 		_DrawPlacement(placement)
 

@@ -110,6 +110,25 @@ noise:
   `AdventureState._generation_seed`, so the same adventure always renders identical
   scenery.
 
+### Structured biomes
+
+A biome with a `StructureLayoutData` on `BiomeVisualData` is laid out as streets and lots
+instead of zone-grid scatter. `StructureLayoutGenerator.Build` computes one
+`StructureLayout` per canvas size (road polylines, lots, plazas, landmarks), and
+`AdventureGraphUi` hands it to `AdventureEdgeLayer` and `AdventureBackground`.
+
+- `AdventureNodePlacement` orders nodes within each row to reduce crossings, in every
+  biome; `node_vertical_jitter` replaces the default row jitter.
+- Roads run as streets: a vertical stub out of each node, one horizontal lane per row gap,
+  chamfered corners, and a diagonal when the gap's lanes do not fit.
+- `LandmarkData` layers are placed a set number of times per map before lots. Lots split
+  the rest of the canvas on `lot_grid_size`, clear of plazas, road corridors and
+  landmarks, and pick their region by `PickZoneAt` at their centre.
+- `DecorLayerData.placement_mode` places a layer by `SCATTER` (inside its lot),
+  `LOT_EDGE` (sides filtered by `edge_orientation`), `LOT_CORNER` or `LOT_FILL`.
+  `BiomeRegionData.lot_interior_color` fills a region's lots beneath decor;
+  `street_region` decorates open ground.
+
 ### Zone authoring
 
 Author one `BiomeRegionData` resource per zone under
@@ -119,6 +138,12 @@ set + placement rule) may be shared across multiple zones at different
 `density_multiplier` values — e.g. `decor_grass_tuft.tres` appears in both a biome's
 Forest and Clearing zones. Wire the finished `regions` array, `region_noise`, and
 `detail_noise` into the biome's `visuals_<biome_slug>.tres`.
+
+In a structured biome, author walls as `LOT_EDGE` layers whose `edge_spacing` is the
+rendered piece length and equals `lot_grid_size`, so they enclose each lot corner to
+corner; the top side gets its own `TOP` layer showing the face turned into the lot.
+`adventure_ground_paved.gdshader` paves open ground: `fade_band` fades stones into darker
+patches, `stone_opacity` sets the strength of the rest.
 
 ---
 

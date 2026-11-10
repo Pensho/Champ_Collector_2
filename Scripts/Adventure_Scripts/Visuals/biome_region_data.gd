@@ -8,3 +8,5 @@ class_name BiomeRegionData extends Resource
 @export var selection_weight: float = 1.0
 @export var tint: Color = Color.WHITE
 @export var decor: Array[ZoneDecorEntry]
+## Fills each lot of this region beneath its decor; transparent leaves lots open.
+@export var lot_interior_color: Color = Color.TRANSPARENT

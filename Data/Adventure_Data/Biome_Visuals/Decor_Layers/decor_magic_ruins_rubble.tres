@@ -13,4 +13,4 @@ scale_min = 0.8
 scale_max = 1.1
 rotation_jitter_degrees = 5.0
 tint = Color(0.54901963, 0.5058824, 0.56078434, 1)
-node_avoidance_radius = 5.0
+node_avoidance_radius = 25.0

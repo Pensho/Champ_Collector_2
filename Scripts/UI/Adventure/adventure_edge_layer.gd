@@ -1,16 +1,13 @@
 class_name AdventureEdgeLayer extends Control
 
-## Draws node-to-node connections as winding roads: one Line2D per edge, wound by
-## AdventureRoadGenerator and textured from the biome's road_textures. Falls back to a
-## straight untextured line when no biome visual data is configured, so the graph still
-## renders.
+## Draws the StructureLayout's roads, one Line2D per edge, textured from the biome's
+## road_textures. Falls back to a thin untextured line when no biome visual data is
+## configured, so the graph still renders.
 
 const FALLBACK_LINE_COLOR := Color(0.55, 0.55, 0.55, 0.85)
 const FALLBACK_LINE_WIDTH := 2.5
 const ROAD_COLOR := Color(0.8, 0.8, 0.8, 1.0)
-const NODE_HALF := Vector2(40.0, 40.0)
 
-var _edges: Array = []
 var _visual_data: BiomeVisualData
 var _generation_seed: int = -1
 
@@ -21,28 +18,18 @@ func configure(p_visual_data: BiomeVisualData, p_generation_seed: int) -> void:
 	_visual_data = p_visual_data
 	_generation_seed = p_generation_seed
 
-func set_edges(p_edges: Array) -> void:
-	_edges = p_edges
-	_Rebuild()
+func set_roads(p_layout: StructureLayout) -> void:
+	for road_key in p_layout.roads:
+		add_child(_BuildRoadLine(road_key, p_layout.roads[road_key]))
 
-func _Rebuild() -> void:
-	for edge in _edges:
-		add_child(_BuildRoadLine(edge))
-
-func _BuildRoadLine(p_edge: Array) -> Line2D:
-	var from_position: Vector2 = p_edge[0] + NODE_HALF
-	var to_position: Vector2 = p_edge[1] + NODE_HALF
+func _BuildRoadLine(p_road_key: Vector2i, p_points: PackedVector2Array) -> Line2D:
 	var line := Line2D.new()
+	line.points = p_points
 	if _visual_data == null:
-		line.points = PackedVector2Array([from_position, to_position])
 		line.width = FALLBACK_LINE_WIDTH
 		line.default_color = FALLBACK_LINE_COLOR
 		return line
 
-	var from_index: int = p_edge[2]
-	var to_index: int = p_edge[3]
-	var road_seed: int = hash([_generation_seed, from_index, to_index])
-	line.points = AdventureRoadGenerator.BuildRoadPoints(from_position, to_position, _visual_data.detail_noise, road_seed)
 	line.width = _visual_data.road_width if _visual_data.road_width > 0.0 else FALLBACK_LINE_WIDTH
 	line.joint_mode = Line2D.LINE_JOINT_ROUND
 	line.begin_cap_mode = Line2D.LINE_CAP_ROUND
@@ -53,6 +40,7 @@ func _BuildRoadLine(p_edge: Array) -> Line2D:
 		return line
 	# Picked per edge from the seed, so it is stable across redraws.
 	line.default_color = ROAD_COLOR
+	var road_seed: int = StructureLayoutGenerator.RoadSeed(_generation_seed, p_road_key)
 	line.texture = textures[posmod(hash([road_seed, "texture"]), textures.size())]
 	line.texture_mode = Line2D.LINE_TEXTURE_TILE
 	line.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED

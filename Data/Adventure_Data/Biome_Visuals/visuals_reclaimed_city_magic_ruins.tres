@@ -8,13 +8,13 @@
 [ext_resource type="Resource" uid="uid://d2hrxsyl25gwf" path="res://Data/Adventure_Data/Biome_Visuals/Node_Props/cluster_hint.tres" id="6_cpd0c"]
 [ext_resource type="Resource" uid="uid://b0gepkb5m5ovq" path="res://Data/Adventure_Data/Biome_Visuals/Node_Props/cluster_gamble.tres" id="7_xjfcx"]
 [ext_resource type="Resource" uid="uid://cogeyb303k628" path="res://Data/Adventure_Data/Biome_Visuals/Node_Props/cluster_escalate.tres" id="8_y7116"]
-[ext_resource type="Script" path="res://Scripts/Adventure_Scripts/Visuals/biome_region_data.gd" id="9_2yuu7"]
-[ext_resource type="Resource" uid="uid://b0jhwbqb1d1ux" path="res://Data/Adventure_Data/Biome_Visuals/Regions/region_magic_ruins_abyss_region.tres" id="11_58nid"]
+[ext_resource type="Script" uid="uid://btay6p6jc1rpo" path="res://Scripts/Adventure_Scripts/Visuals/biome_region_data.gd" id="9_2yuu7"]
 [ext_resource type="Resource" uid="uid://v0fjet76m8gt" path="res://Data/Adventure_Data/Biome_Visuals/Regions/region_magic_ruins_structures_region.tres" id="11_oc6kx"]
 [ext_resource type="Resource" uid="uid://bu2abcipwc01t" path="res://Data/Adventure_Data/Biome_Visuals/Regions/region_magic_ruins_rubble_region.tres" id="12_6xr64"]
 [ext_resource type="Texture2D" uid="uid://c8g1hrjsrgw4y" path="res://Assets/Adventure/Background/reclaimed_city/brick_road_5.png" id="12_gfk6x"]
 [ext_resource type="Script" uid="uid://d38jy6bjotsgw" path="res://Scripts/Adventure_Scripts/Visuals/biome_visual_data.gd" id="13_4ombh"]
 [ext_resource type="Texture2D" uid="uid://bcg5e1g7evj25" path="res://Assets/Adventure/Background/reclaimed_city/brick_road_6.png" id="13_oc6kx"]
+[ext_resource type="Resource" uid="uid://ci0ifhuk6h62y" path="res://Data/Adventure_Data/Biome_Visuals/structure_layout_magic_ruins.tres" id="14_layout"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_detail"]
 noise_type = 0
@@ -32,7 +32,7 @@ background_bottom_color = Color(0.13182133, 0.07384469, 0.120795585, 1)
 ground_material = ExtResource("1_gfk6x")
 detail_noise = SubResource("FastNoiseLite_detail")
 region_noise = SubResource("FastNoiseLite_region")
-regions = Array[ExtResource("9_2yuu7")]([ExtResource("11_58nid"), ExtResource("11_oc6kx"), ExtResource("12_6xr64")])
+regions = Array[ExtResource("9_2yuu7")]([ExtResource("11_oc6kx"), ExtResource("12_6xr64")])
 node_props = Dictionary[int, ExtResource("2_58nid")]({
 0: ExtResource("3_oc6kx"),
 1: ExtResource("4_6xr64"),
@@ -43,3 +43,4 @@ node_props = Dictionary[int, ExtResource("2_58nid")]({
 })
 road_textures = Array[Texture2D]([ExtResource("12_gfk6x"), ExtResource("13_oc6kx")])
 road_width = 16.0
+structure_layout = ExtResource("14_layout")

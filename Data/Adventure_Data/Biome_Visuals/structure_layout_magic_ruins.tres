@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="StructureLayoutData" format=3 uid="uid://ci0ifhuk6h62y"]
+
+[ext_resource type="Script" uid="uid://cgus8x53b7byu" path="res://Scripts/Adventure_Scripts/Visuals/structure_layout_data.gd" id="1_layout"]
+[ext_resource type="Script" uid="uid://ytp03muhicmw" path="res://Scripts/Adventure_Scripts/Visuals/landmark_data.gd" id="2_landmark"]
+[ext_resource type="Resource" uid="uid://cr17fxscm3mm3" path="res://Data/Adventure_Data/Biome_Visuals/Decor_Layers/decor_abyss.tres" id="3_abyss"]
+[ext_resource type="Resource" uid="uid://d3cibo2kb32o2" path="res://Data/Adventure_Data/Biome_Visuals/Decor_Layers/decor_chatedral.tres" id="4_cathedral"]
+
+[sub_resource type="Resource" id="Landmark_cathedral"]
+script = ExtResource("2_landmark")
+layer = ExtResource("4_cathedral")
+count_max = 2
+
+[sub_resource type="Resource" id="Landmark_abyss"]
+script = ExtResource("2_landmark")
+layer = ExtResource("3_abyss")
+count_min = 2
+count_max = 3
+
+[resource]
+script = ExtResource("1_layout")
+node_vertical_jitter = 10.0
+chamfer_size = 16.0
+lane_spacing = 28.0
+minimum_lane_spacing = 14.0
+street_clearance = 12.0
+lot_size_min = 64.0
+lot_size_max = 240.0
+street_width = 24.0
+lot_grid_size = 64.0
+plaza_margin = 24.0
+road_clearance = 8.0
+landmarks = Array[ExtResource("2_landmark")]([SubResource("Landmark_cathedral"), SubResource("Landmark_abyss")])

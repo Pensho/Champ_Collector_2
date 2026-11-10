@@ -5,14 +5,6 @@ signal node_selected(p_node: NodeData)
 const GroundScene := preload("res://Scripts/UI/Adventure/adventure_ground.gd")
 const EdgeLayerScene := preload("res://Scripts/UI/Adventure/adventure_edge_layer.gd")
 const BackgroundScene := preload("res://Scripts/UI/Adventure/adventure_background.gd")
-const LAYER_HEIGHT: int = 180
-const NODE_SIZE:    int = 80
-const PADDING:      int = 30
-const JITTER_MAX:   int = 55
-const JITTER_Y_MAX: int = 45
-## Empty map kept above the boss (last) node so it has the same decorated run-off as the
-## space below the first node. One extra layer past the boss, mirroring the bottom margin.
-const END_MARGIN: int = LAYER_HEIGHT
 
 @export var _node_ui_scene: PackedScene
 @export var _scroll_container: ScrollContainer
@@ -23,10 +15,17 @@ const END_MARGIN: int = LAYER_HEIGHT
 var _node_positions: Dictionary = {}
 var _visual_data: BiomeVisualData
 var _generation_seed: int = -1
+var _structure_layout: StructureLayout
 
 func SetBiomeVisuals(p_visual_data: BiomeVisualData, p_generation_seed: int) -> void:
 	_visual_data = p_visual_data
 	_generation_seed = p_generation_seed
+
+func GetStructureLayout() -> StructureLayout:
+	return _structure_layout
+
+func GetGraphCanvas() -> Control:
+	return _graph_canvas
 
 func Populate(p_nodes: Array[NodeData]) -> void:
 	for child in _graph_canvas.get_children():
@@ -35,35 +34,15 @@ func Populate(p_nodes: Array[NodeData]) -> void:
 		child.queue_free()
 	_node_positions.clear()
 
-	var by_depth: Dictionary = {}
-	var max_depth: int = 0
-	for node in p_nodes:
-		if not by_depth.has(node.depth):
-			by_depth[node.depth] = []
-		by_depth[node.depth].append(node)
-		if node.depth > max_depth:
-			max_depth = node.depth
-
 	await get_tree().process_frame
 
-	var canvas_width: float  = max(500.0, _scroll_container.size.x)
-	var canvas_height: float = (max_depth + 1) * LAYER_HEIGHT + PADDING * 2 + END_MARGIN
+	var canvas_width: float = maxf(500.0, _scroll_container.size.x)
+	var canvas_height: float = AdventureNodePlacement.CanvasHeight(p_nodes)
 	_graph_canvas.custom_minimum_size = Vector2(canvas_width, canvas_height)
-
-	for depth in by_depth:
-		var nodes_at_depth: Array = by_depth[depth]
-		var count: int = nodes_at_depth.size()
-		for i: int in range(count):
-			var node: NodeData = nodes_at_depth[i]
-			var slot_width: float = canvas_width / (count + 1)
-			var base_x: float    = (i + 1) * slot_width - NODE_SIZE / 2.0
-			var rng := RandomNumberGenerator.new()
-			rng.seed = node.index
-			var jitter_x: float  = rng.randf_range(-JITTER_MAX, JITTER_MAX)
-			var jitter_y: float  = rng.randf_range(-JITTER_Y_MAX, JITTER_Y_MAX)
-			var x: float         = clampf(base_x + jitter_x, PADDING, canvas_width - NODE_SIZE - PADDING)
-			var y: float         = (max_depth - node.depth) * LAYER_HEIGHT + PADDING + END_MARGIN + jitter_y
-			_node_positions[node] = Vector2(x, y)
+	var vertical_jitter: float = AdventureNodePlacement.DEFAULT_VERTICAL_JITTER
+	if _visual_data != null and _visual_data.structure_layout != null:
+		vertical_jitter = _visual_data.structure_layout.node_vertical_jitter
+	_node_positions.merge(AdventureNodePlacement.PlaceNodes(p_nodes, canvas_width, vertical_jitter))
 
 	if _visual_data != null:
 		var ground := GroundScene.new()
@@ -71,22 +50,19 @@ func Populate(p_nodes: Array[NodeData]) -> void:
 		ground.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		ground.Generate(_visual_data, _generation_seed)
 
-	var edges: Array = []
-	for node in p_nodes:
-		for next: NodeData in node.next_node:
-			edges.append([_node_positions[node], _node_positions[next], node.index, next.index])
-
+	_structure_layout = StructureLayoutGenerator.Build(
+			_visual_data, p_nodes, _node_positions, Vector2(canvas_width, canvas_height), _generation_seed)
 	var edge_layer := EdgeLayerScene.new()
 	_graph_canvas.add_child(edge_layer)
 	edge_layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	edge_layer.configure(_visual_data, _generation_seed)
-	edge_layer.set_edges(edges)
+	edge_layer.set_roads(_structure_layout)
 
 	if _visual_data != null:
 		var background: AdventureBackground = BackgroundScene.new()
 		_graph_canvas.add_child(background)
 		background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-		background.Generate(_visual_data, _node_positions, _generation_seed)
+		background.Generate(_visual_data, _node_positions, _generation_seed, _structure_layout)
 		_AddAmbientEffects(Vector2(canvas_width, canvas_height))
 
 	var eligible_y: float = canvas_height

@@ -3,20 +3,20 @@
 [ext_resource type="Script" path="res://Scripts/Adventure_Scripts/Visuals/zone_decor_entry.gd" id="1_32w0r"]
 [ext_resource type="Resource" uid="uid://4f08kck8tqmk" path="res://Data/Adventure_Data/Biome_Visuals/Decor_Layers/decor_magic_ruins_pillars.tres" id="3_711lb"]
 [ext_resource type="Resource" uid="uid://c8bonqa4552s2" path="res://Data/Adventure_Data/Biome_Visuals/Decor_Layers/decor_magic_ruins_rubble.tres" id="5_ovpjh"]
-[ext_resource type="Script" path="res://Scripts/Adventure_Scripts/Visuals/biome_region_data.gd" id="6_cxs1v"]
-
-[sub_resource type="Resource" id="Resource_edgro"]
-script = ExtResource("1_32w0r")
-layer = ExtResource("3_711lb")
-density_multiplier = 0.3
+[ext_resource type="Script" uid="uid://btay6p6jc1rpo" path="res://Scripts/Adventure_Scripts/Visuals/biome_region_data.gd" id="6_cxs1v"]
 
 [sub_resource type="Resource" id="Resource_je712"]
 script = ExtResource("1_32w0r")
 layer = ExtResource("5_ovpjh")
 
+[sub_resource type="Resource" id="Resource_3muqy"]
+script = ExtResource("1_32w0r")
+layer = ExtResource("3_711lb")
+density_multiplier = 0.6
+
 [resource]
 script = ExtResource("6_cxs1v")
-name = "Abyss"
-selection_weight = 0.7
+name = "Rubble"
+selection_weight = 0.3
 tint = Color(0.92, 0.9, 0.88, 1)
-decor = Array[ExtResource("1_32w0r")]([SubResource("Resource_edgro"), SubResource("Resource_je712")])
+decor = Array[ExtResource("1_32w0r")]([SubResource("Resource_je712"), SubResource("Resource_3muqy")])
