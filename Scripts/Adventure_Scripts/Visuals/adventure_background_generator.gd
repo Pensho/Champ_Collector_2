@@ -79,6 +79,7 @@ static func Generate(
 
 	_AppendNodeProps(p_visual_data, p_node_positions, p_canvas_size, placements, p_seed, node_center_list)
 
+	placements = _RemoveDecorOverlappingClearers(placements)
 	placements.sort_custom(_SortByZThenY)
 	return placements
 
@@ -113,24 +114,57 @@ static func _DecorClearsNodes(p_placement: DecorPlacement, p_node_centers: Array
 				return false
 		return true
 
-	var texture_size: Vector2 = p_placement.texture.get_size()
-	var half_width: float = texture_size.x * 0.5 * p_placement.scale
-	var height: float = texture_size.y * p_placement.scale
-	var decor_rect: Rect2
-	if p_placement.z_index >= 0:
-		decor_rect = Rect2(
-				p_placement.position.x - half_width, p_placement.position.y - height, half_width * 2.0, height)
-	else:
-		decor_rect = Rect2(
-				p_placement.position.x - half_width, p_placement.position.y - height * 0.5, half_width * 2.0, height)
-	decor_rect = decor_rect.grow(p_margin)
-
+	var decor_rect: Rect2 = _PlacementRect(p_placement).grow(p_margin)
 	for node_center in p_node_centers:
 		var node_rect := Rect2(
 				node_center - Vector2(NODE_HALF_SIZE, NODE_HALF_SIZE), Vector2(NODE_HALF_SIZE * 2.0, NODE_HALF_SIZE * 2.0))
 		if decor_rect.intersects(node_rect):
 			return false
 	return true
+
+
+## The placement's rendered bounding box, matching the pivot rules in adventure_background.gd:
+## bottom-centre pivot for z_index >= 0, centre pivot otherwise. Requires a texture.
+static func _PlacementRect(p_placement: DecorPlacement) -> Rect2:
+	var texture_size: Vector2 = p_placement.texture.get_size()
+	var half_width: float = texture_size.x * 0.5 * p_placement.scale
+	var height: float = texture_size.y * p_placement.scale
+	if p_placement.z_index >= 0:
+		return Rect2(p_placement.position.x - half_width, p_placement.position.y - height, half_width * 2.0, height)
+	return Rect2(p_placement.position.x - half_width, p_placement.position.y - height * 0.5, half_width * 2.0, height)
+
+
+## Runs after generation so filtering never shifts the seeded random sequence. Clearing
+## placements claim space in generation order; a later one overlapping a kept one is dropped.
+static func _RemoveDecorOverlappingClearers(p_placements: Array[DecorPlacement]) -> Array[DecorPlacement]:
+	var clearer_rects: Array[Rect2] = []
+	var kept_clearers: Dictionary[DecorPlacement, bool] = {}
+	for placement in p_placements:
+		if placement.clears_other_decor and placement.texture != null:
+			var placement_rect: Rect2 = _PlacementRect(placement)
+			if not _OverlapsAny(placement_rect, clearer_rects):
+				clearer_rects.append(placement_rect)
+				kept_clearers[placement] = true
+	if clearer_rects.is_empty():
+		return p_placements
+
+	var kept: Array[DecorPlacement] = []
+	for placement in p_placements:
+		if placement.texture == null:
+			kept.append(placement)
+		elif placement.clears_other_decor:
+			if kept_clearers.has(placement):
+				kept.append(placement)
+		elif not _OverlapsAny(_PlacementRect(placement), clearer_rects):
+			kept.append(placement)
+	return kept
+
+
+static func _OverlapsAny(p_rect: Rect2, p_others: Array[Rect2]) -> bool:
+	for other in p_others:
+		if p_rect.intersects(other):
+			return true
+	return false
 
 
 static func _BuildPlacement(
@@ -147,6 +181,7 @@ static func _BuildPlacement(
 	placement.flip_h = p_layer.allow_horizontal_flip and p_rng.randf() < 0.5
 	placement.tint = p_layer.tint * p_zone_tint
 	placement.z_index = p_layer.z_index
+	placement.clears_other_decor = p_layer.clears_other_decor
 	return placement
 
 

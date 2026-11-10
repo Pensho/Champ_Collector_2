@@ -316,6 +316,73 @@ func test_node_cluster_props_avoid_all_node_footprints() -> void:
 			assert_false(footprint.intersects(node_rect), "Cluster prop must not overlap any node footprint.")
 
 
+func _BuildClearerAndFillerVisualData(p_clears_other_decor: bool) -> BiomeVisualData:
+	var clearer: DecorLayerData = _BuildLayer(0.15, 0.0, 1.0)
+	var clearer_texture := PlaceholderTexture2D.new()
+	clearer_texture.size = Vector2(120, 90)
+	clearer.textures = [clearer_texture]
+	clearer.z_index = -1
+	clearer.clears_other_decor = p_clears_other_decor
+	var filler: DecorLayerData = _BuildLayer(1.0, 0.0, 1.0)
+	var zone: BiomeRegionData = _BuildZone("Only", 1.0, clearer)
+	var filler_entry := ZoneDecorEntry.new()
+	filler_entry.layer = filler
+	zone.decor.append(filler_entry)
+	return _BuildVisualData([zone])
+
+
+func _RenderedRect(p_placement: DecorPlacement) -> Rect2:
+	var size: Vector2 = p_placement.texture.get_size() * p_placement.scale
+	var top: float = p_placement.position.y - (size.y if p_placement.z_index >= 0 else size.y * 0.5)
+	return Rect2(p_placement.position.x - size.x * 0.5, top, size.x, size.y)
+
+
+func test_clearing_decor_removes_overlapping_decor() -> void:
+	var visual_data: BiomeVisualData = _BuildClearerAndFillerVisualData(true)
+
+	var placements: Array[DecorPlacement] = AdventureBackgroundGenerator.Generate(visual_data, _canvas_size, _node_positions, 5)
+
+	var clearer_rects: Array[Rect2] = []
+	for placement in placements:
+		if placement.clears_other_decor:
+			clearer_rects.append(_RenderedRect(placement))
+	assert_gt(clearer_rects.size(), 0, "The scenario needs at least one clearing placement.")
+	for placement in placements:
+		if placement.clears_other_decor:
+			continue
+		for clearer_rect in clearer_rects:
+			assert_false(_RenderedRect(placement).intersects(clearer_rect), "Non-clearing decor must not overlap clearing decor.")
+
+
+func test_clearing_decor_does_not_overlap_other_clearing_decor() -> void:
+	var clearer: DecorLayerData = _BuildLayer(1.0, 0.0, 1.0)
+	var clearer_texture := PlaceholderTexture2D.new()
+	clearer_texture.size = Vector2(120, 90)
+	clearer.textures = [clearer_texture]
+	clearer.clears_other_decor = true
+	var visual_data: BiomeVisualData = _BuildVisualData([_BuildZone("Only", 1.0, clearer)])
+
+	var placements: Array[DecorPlacement] = AdventureBackgroundGenerator.Generate(visual_data, _canvas_size, _node_positions, 5)
+
+	var clearers: Array[DecorPlacement] = placements.filter(
+			func(p_placement: DecorPlacement) -> bool: return p_placement.clears_other_decor)
+	assert_gt(clearers.size(), 1, "The scenario needs several clearing placements.")
+	for first_index in clearers.size():
+		for second_index in range(first_index + 1, clearers.size()):
+			assert_false(_RenderedRect(clearers[first_index]).intersects(_RenderedRect(clearers[second_index])),
+					"Clearing placements must not overlap each other.")
+
+
+func test_clearing_flag_only_removes_overlapping_decor() -> void:
+	var with_flag: Array[DecorPlacement] = AdventureBackgroundGenerator.Generate(
+			_BuildClearerAndFillerVisualData(true), _canvas_size, _node_positions, 5)
+	var without_flag: Array[DecorPlacement] = AdventureBackgroundGenerator.Generate(
+			_BuildClearerAndFillerVisualData(false), _canvas_size, _node_positions, 5)
+
+	assert_lt(with_flag.size(), without_flag.size(), "The flag should remove decor that overlapped a clearing placement.")
+	assert_gt(with_flag.size(), 0, "Decor away from clearing placements should survive.")
+
+
 func _ZoneIndexAt(p_visual_data: BiomeVisualData, p_coarse_x: int, p_coarse_y: int, p_coarse_size: float) -> int:
 	var sample_position: Vector2 = Vector2(p_coarse_x, p_coarse_y) * p_coarse_size
 	var noise_sample: float = p_visual_data.region_noise.get_noise_2d(sample_position.x, sample_position.y)

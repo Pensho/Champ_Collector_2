@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="DecorLayerData" format=3 uid="uid://cr17fxscm3mm3"]
+
+[ext_resource type="Script" uid="uid://c6250ti0wupfr" path="res://Scripts/Adventure_Scripts/Visuals/decor_layer_data.gd" id="1_5ranw"]
+[ext_resource type="Texture2D" uid="uid://csrnkxtymuw3j" path="res://Assets/Adventure/Background/reclaimed_city/magic_ruins_abyss_1.png" id="2_1tvbw"]
+[ext_resource type="Texture2D" uid="uid://ocsm2x5uly15" path="res://Assets/Adventure/Background/reclaimed_city/magic_ruins_abyss_2.png" id="3_5ranw"]
+
+[resource]
+script = ExtResource("1_5ranw")
+textures = Array[Texture2D]([ExtResource("2_1tvbw"), ExtResource("3_5ranw")])
+density = 0.05
+scale_min = 0.6
+scale_max = 0.8
+rotation_jitter_degrees = 5.0
+tint = Color(0.5935709, 0.57059306, 0.65539455, 1)
+z_index = -1
+node_avoidance_radius = 5.0
+clears_other_decor = true

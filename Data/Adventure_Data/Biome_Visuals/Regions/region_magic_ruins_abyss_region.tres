@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="BiomeRegionData" format=3 uid="uid://b0jhwbqb1d1ux"]
+
+[ext_resource type="Script" path="res://Scripts/Adventure_Scripts/Visuals/zone_decor_entry.gd" id="1_v7fkx"]
+[ext_resource type="Resource" uid="uid://cr17fxscm3mm3" path="res://Data/Adventure_Data/Biome_Visuals/Decor_Layers/decor_abyss.tres" id="2_4uoxo"]
+[ext_resource type="Script" path="res://Scripts/Adventure_Scripts/Visuals/biome_region_data.gd" id="5_8k3to"]
+[ext_resource type="Resource" uid="uid://d3cibo2kb32o2" path="res://Data/Adventure_Data/Biome_Visuals/Decor_Layers/decor_chatedral.tres" id="5_75gc1"]
+
+[sub_resource type="Resource" id="Resource_vine"]
+script = ExtResource("1_v7fkx")
+layer = ExtResource("2_4uoxo")
+density_multiplier = 0.3
+
+[sub_resource type="Resource" id="Resource_lg7nd"]
+script = ExtResource("1_v7fkx")
+layer = ExtResource("5_75gc1")
+density_multiplier = 0.25
+
+[resource]
+script = ExtResource("5_8k3to")
+name = "Abyss"
+tint = Color(0.92, 0.9, 0.88, 1)
+decor = Array[ExtResource("1_v7fkx")]([SubResource("Resource_vine"), SubResource("Resource_lg7nd")])

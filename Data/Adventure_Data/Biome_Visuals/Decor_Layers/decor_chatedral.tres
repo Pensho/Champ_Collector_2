@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="DecorLayerData" format=3 uid="uid://d3cibo2kb32o2"]
+
+[ext_resource type="Script" uid="uid://c6250ti0wupfr" path="res://Scripts/Adventure_Scripts/Visuals/decor_layer_data.gd" id="1_pd5o5"]
+[ext_resource type="Texture2D" uid="uid://76vjk5jqdt80" path="res://Assets/Adventure/Background/reclaimed_city/magic_ruins_cathedral_1.png" id="2_vwqbd"]
+
+[resource]
+script = ExtResource("1_pd5o5")
+textures = Array[Texture2D]([ExtResource("2_vwqbd")])
+density = 0.1
+scale_min = 0.9
+rotation_jitter_degrees = 5.0
+tint = Color(0.5935709, 0.57059306, 0.65539455, 1)
+node_avoidance_radius = 1.0
+clears_other_decor = true

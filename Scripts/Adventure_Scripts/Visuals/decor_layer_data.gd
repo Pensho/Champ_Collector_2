@@ -13,3 +13,4 @@ class_name DecorLayerData extends Resource
 @export var tint: Color = Color.WHITE
 @export var z_index: int = 0                  # ground decal (<0) vs prop (>0)
 @export var node_avoidance_radius: float = 60.0        # keep clear of node/edge positions
+@export var clears_other_decor: bool = false           # removes non-clearing decor overlapping it

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="DecorLayerData" format=3 uid="uid://byldgpmbna2b0"]
+
+[ext_resource type="Script" uid="uid://c6250ti0wupfr" path="res://Scripts/Adventure_Scripts/Visuals/decor_layer_data.gd" id="1_a5kdp"]
+[ext_resource type="Texture2D" uid="uid://bucxbpxu41ief" path="res://Assets/Adventure/Background/reclaimed_city/magic_ruins_wall_4.png" id="2_7vv6u"]
+[ext_resource type="Texture2D" uid="uid://cv4qgnifhkixt" path="res://Assets/Adventure/Background/reclaimed_city/magic_ruins_wall_5.png" id="3_cwnip"]
+[ext_resource type="Texture2D" uid="uid://cxhll4v1ywybv" path="res://Assets/Adventure/Background/reclaimed_city/magic_ruins_wall_6.png" id="4_vouw4"]
+
+[resource]
+script = ExtResource("1_a5kdp")
+textures = Array[Texture2D]([ExtResource("2_7vv6u"), ExtResource("3_cwnip"), ExtResource("4_vouw4")])
+density = 0.3
+scale_min = 0.6
+scale_max = 0.6
+rotation_jitter_degrees = 5.0
+tint = Color(0.5935709, 0.57059306, 0.65539455, 1)
+node_avoidance_radius = 5.0
+clears_other_decor = true
