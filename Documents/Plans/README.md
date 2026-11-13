@@ -43,10 +43,15 @@ Code plans:
   static layer nodes, refreshes only node states, and moves ambient particles onto
   `BiomeVisualData`.
 
+- `Plan_Gear_Sub_Types.md` — sub-types within each gear slot, each with its own attribute pool
+  and an implicit attribute line.
+
 - `Plan_Localization.md` — the six-step localization rollout and its conventions. Each
   step gets a detailed plan when the step before it completes.
 - `Plan_Localization_Text_Preparation.md` — step 1: every player-facing string routed
   through translation.
+- `Plan_Reagent_Attunement.md` — an account-wide Attunement experience track earned by
+  consuming reagents, capping obtainable reagent rarity, plus lower reagent sell values.
 
 Held (revise before scheduling):
 
