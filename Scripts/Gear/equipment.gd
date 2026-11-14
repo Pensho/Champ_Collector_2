@@ -12,6 +12,7 @@ var _rarity: Types.Rarity
 var _slot: Types.Slot
 var _item_type: Types.Item_Type = Types.Item_Type.Standard
 var _relic_effect: RelicEffect = null
+var _sub_type: ItemSubType = null
 
 var _preset_path: String = ""
 
@@ -37,6 +38,7 @@ func InstantiateNew(preset: EquipmentPreset, instance_ID: int) -> void:
 	_slot = preset._slot
 	_item_type = preset._item_type
 	_preset_path = preset._preset_path
+	_sub_type = preset._sub_type
 
 	if(null != preset._relic_effect):
 		_relic_effect = preset._relic_effect.duplicate(true)
@@ -58,20 +60,6 @@ func InstantiateNew(preset: EquipmentPreset, instance_ID: int) -> void:
 func CanUpgrade() -> bool:
 	return _level < Game_Balance.MAX_ITEM_LEVEL
 
-static func DescriptionText(
-		p_slot: Types.Slot,
-		p_attributes: Dictionary[Types.Attribute, int],
-		p_relic_effect: RelicEffect = null) -> String:
-	var description_text: String = Types.Slot.keys()[p_slot] + "\n"
-	for attribute in p_attributes.keys():
-		if(0 < p_attributes[attribute]):
-			description_text += Types.Attribute.keys()[attribute] + " +" + str(p_attributes[attribute]) + "\n"
-		elif(0 > p_attributes[attribute]):
-			description_text += Types.Attribute.keys()[attribute] + " -" + str(p_attributes[attribute]) + "\n"
-	if(null != p_relic_effect):
-		description_text += "\n" + p_relic_effect._body
-	return description_text
-
 static func SetupAttributeGain(p_item_type: Types.Item_Type) -> int:
 	if(Types.Item_Type.Relic == p_item_type):
 		return ceili(Game_Balance.ITEM_ATTRIBUTE_PER_RARITY / 2.0)
@@ -82,6 +70,14 @@ static func UpgradeAttributeGain(p_rarity: Types.Rarity, p_item_type: Types.Item
 	if(Types.Item_Type.Relic == p_item_type):
 		return ceili(gain / 2.0)
 	return gain
+
+## Derived from the sub-type and rarity, never stored in _attributes, so upgrades cannot roll onto it.
+func GetImplicitBonus(p_attribute: Types.Attribute) -> int:
+	var implicit: ItemImplicit = ItemSubType.ActiveImplicit(_sub_type, _item_type)
+	return 0 if null == implicit else implicit.AttributeBonus(p_attribute, _rarity)
+
+func GetItemText() -> ItemText:
+	return ItemText.Build(_slot, _item_type, _rarity, _attributes, _relic_effect, _sub_type)
 
 func GetUpgradeGain() -> int:
 	return Equipment.UpgradeAttributeGain(_rarity, _item_type)

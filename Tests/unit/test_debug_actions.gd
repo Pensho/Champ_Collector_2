@@ -7,11 +7,13 @@ func test_build_equipment_preset_sets_exact_attributes() -> void:
 		Types.Attribute.Defence: 12,
 		Types.Attribute.Speed: 3,
 	}
+	var base_preset: EquipmentPreset = EquipmentPresetRegistry.Get("Hueless_Slippers")
 	var preset: EquipmentPreset = DebugActions.build_equipment_preset(
-		"Debug Boots", Types.Slot.Boots, Types.Rarity.Epic, attributes)
+		"Debug Boots", base_preset, Types.Rarity.Epic, attributes)
 
 	assert_eq(preset._name, "Debug Boots", "Preset should keep the requested name")
-	assert_eq(preset._slot, Types.Slot.Boots, "Preset should keep the requested slot")
+	assert_eq(preset._slot, Types.Slot.Boots, "Preset should take its sub-type's slot")
+	assert_eq(preset._sub_type, base_preset._sub_type, "Preset should carry the chosen sub-type")
 	assert_eq(preset._rarity, Types.Rarity.Epic, "Preset should keep the requested rarity")
 	assert_eq(preset._attributes[Types.Attribute.Defence], 12, "Defence should be set exactly")
 	assert_eq(preset._attributes[Types.Attribute.Speed], 3, "Speed should be set exactly")

@@ -2,6 +2,11 @@ class_name ButtonWithOptions extends Control
 
 const KEYWORD_COLORS = preload("uid://bgywi0cu4mkig")
 
+## Shown only for an item: its type line, and its implicit between two separators.
+@export var _label_subtitle: Label
+@export var _rich_text_label_implicit: RichTextLabel
+@export var _separator_implicit: HSeparator
+
 @onready var base_rect: ColorRect = $ColorRect
 
 @onready var button_left: Button = $ColorRect/MarginContainer/VBoxContainer/HBoxContainer_Buttons/Button_Left
@@ -14,6 +19,18 @@ const KEYWORD_COLORS = preload("uid://bgywi0cu4mkig")
 func SetText(p_title: String, p_body: String) -> void:
 	label_title.text = p_title
 	rich_text_label_info.text = _apply_keyword_colors(p_body)
+	_label_subtitle.visible = false
+	_rich_text_label_implicit.visible = false
+	_separator_implicit.visible = false
+
+func SetItemText(p_title: String, p_item_text: ItemText) -> void:
+	label_title.text = p_title
+	_label_subtitle.text = p_item_text.subtitle
+	_label_subtitle.visible = not p_item_text.subtitle.is_empty()
+	_rich_text_label_implicit.text = "[center]" + _apply_keyword_colors(p_item_text.implicit) + "[/center]"
+	_rich_text_label_implicit.visible = not p_item_text.implicit.is_empty()
+	_separator_implicit.visible = _rich_text_label_implicit.visible
+	rich_text_label_info.text = "[center]" + _apply_keyword_colors(p_item_text.body) + "[/center]"
 
 func SetLeftButton(p_name: String, p_func_ptr: Callable, p_color: Color = Color.WHITE) -> void:
 	_disconnect_all(button_left, "button_up")
@@ -79,7 +96,7 @@ func _apply_keyword_colors(original_text: String) -> String:
 	processed_text = regex.sub(processed_text, "+[color=#44FF44]$1[/color]", true)
 
 	regex.compile("-(\\d+\\.?\\d*)")
-	processed_text = regex.sub(processed_text, "[color=#FF4444]$1[/color]", true)
+	processed_text = regex.sub(processed_text, "-[color=#FF4444]$1[/color]", true)
 
 	# Negative lookbehind (?<!\]) skips numbers already inside a color tag
 	regex.compile("(?<!\\])\\b(\\d+\\.?\\d*)\\b")

@@ -9,7 +9,7 @@
 [ext_resource type="Resource" uid="uid://d2hrxsyl25gwf" path="res://Data/Adventure_Data/Biome_Visuals/Node_Props/cluster_hint.tres" id="7_qw42e"]
 [ext_resource type="Resource" uid="uid://b0gepkb5m5ovq" path="res://Data/Adventure_Data/Biome_Visuals/Node_Props/cluster_gamble.tres" id="8_m34ki"]
 [ext_resource type="Resource" uid="uid://cogeyb303k628" path="res://Data/Adventure_Data/Biome_Visuals/Node_Props/cluster_escalate.tres" id="9_cgli5"]
-[ext_resource type="Script" path="res://Scripts/Adventure_Scripts/Visuals/biome_region_data.gd" id="10_6n45b"]
+[ext_resource type="Script" uid="uid://btay6p6jc1rpo" path="res://Scripts/Adventure_Scripts/Visuals/biome_region_data.gd" id="10_6n45b"]
 [ext_resource type="Resource" uid="uid://bqc3x7ifs6ij2" path="res://Data/Adventure_Data/Biome_Visuals/Regions/region_reclaimed_city_forest.tres" id="11_bi1v0"]
 [ext_resource type="Resource" uid="uid://bxtvm8prqlvku" path="res://Data/Adventure_Data/Biome_Visuals/Regions/region_reclaimed_city_clearing.tres" id="12_asw4j"]
 [ext_resource type="Resource" uid="uid://xykcl26gxvrh" path="res://Data/Adventure_Data/Biome_Visuals/Regions/region_reclaimed_city_rubble.tres" id="13_yvlm5"]

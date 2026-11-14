@@ -136,7 +136,8 @@ func EnterPhaseTwo() -> bool:
 func GetEquipmentBonus(p_attribute: Types.Attribute) -> int:
 	var bonus_stat: int = 0
 	for i: int in _held_items.values():
-		bonus_stat += main.GetInstance()._item_collection._items[i]._attributes[p_attribute]
+		var item: Equipment = main.GetInstance()._item_collection._items[i]
+		bonus_stat += item._attributes[p_attribute] + item.GetImplicitBonus(p_attribute)
 	return bonus_stat
 
 ## This character's own trait, if any, followed by every equipped item's Relic effect —

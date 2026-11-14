@@ -988,8 +988,8 @@ func EndBattle(p_winner: BattleResolver.Winner) -> void:
 		for player_ID in _sides.player.members:
 			fielded_team.append(_characters[player_ID])
 		LootManager.DistributeRewards(_battlecontext._loot_table, _self_context._arguments["Difficulty"], fielded_team)
-		if (null != _battlecontext._loot_table._drop_result._equipment):
-			main.GetInstance()._item_collection.AddPreset(_battlecontext._loot_table._drop_result._equipment)
+		for equipment in _battlecontext._loot_table._drop_result._equipment:
+			main.GetInstance()._item_collection.AddPreset(equipment)
 
 	for i in _characters.keys():
 		if(_sides.player.Has(i)):

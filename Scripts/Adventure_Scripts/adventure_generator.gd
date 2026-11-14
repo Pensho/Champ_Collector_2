@@ -155,13 +155,15 @@ static func _PopulateNodeContexts(p_nodes: Array[NodeData], p_adventure: Adventu
 				if p_adventure.battle_variants.is_empty():
 					continue
 				node.scene_context = _BuildBattleContext(
-					_WeightedRandomPick(p_adventure.battle_variants), p_adventure.combat_rewards, p_adventure.biome)
+					_WeightedRandomPick(p_adventure.battle_variants),
+					_WithGearPool(p_adventure.combat_rewards, p_adventure), p_adventure.biome)
 			NodeData.Node_Type.BOSS:
 				if boss_variant == null:
 					continue
 				var boss_loot: LootTable = (
 					p_adventure.boss_rewards if p_adventure.boss_rewards != null else p_adventure.combat_rewards)
-				node.scene_context = _BuildBattleContext(boss_variant, boss_loot, p_adventure.biome)
+				node.scene_context = _BuildBattleContext(
+					boss_variant, _WithGearPool(boss_loot, p_adventure), p_adventure.biome)
 			NodeData.Node_Type.REST_STOP:
 				var rest_ctx := ContextRestStop.new()
 				rest_ctx.granted_buff = _PoolBuffType(p_adventure.buff_pool)
@@ -171,7 +173,7 @@ static func _PopulateNodeContexts(p_nodes: Array[NodeData], p_adventure: Adventu
 				if boss_variant != null:
 					hint_ctx.hint_text = boss_variant._hint_text
 				if p_adventure.hint_rewards != null:
-					hint_ctx._loot_table = p_adventure.hint_rewards.duplicate(true)
+					hint_ctx._loot_table = _WithGearPool(p_adventure.hint_rewards, p_adventure)
 				node.scene_context = hint_ctx
 			NodeData.Node_Type.GAMBLE:
 				var gamble_ctx := ContextGamble.new()
@@ -181,9 +183,15 @@ static func _PopulateNodeContexts(p_nodes: Array[NodeData], p_adventure: Adventu
 			NodeData.Node_Type.ESCALATE:
 				var escalate_ctx := ContextEscalate.new()
 				if p_adventure.escalate_rewards != null:
-					escalate_ctx._loot_table = p_adventure.escalate_rewards.duplicate(true)
+					escalate_ctx._loot_table = _WithGearPool(p_adventure.escalate_rewards, p_adventure)
 				node.scene_context = escalate_ctx
 
+static func _WithGearPool(p_loot_table: LootTable, p_adventure: AdventureData) -> LootTable:
+	if(null == p_loot_table):
+		return null
+	var copy: LootTable = p_loot_table.duplicate(true)
+	copy._gear_pool = p_adventure.gear_pool.duplicate()
+	return copy
 
 static func _RandomBuffType() -> Types.Buff_Type:
 	var values: Array = Types.Buff_Type.values()

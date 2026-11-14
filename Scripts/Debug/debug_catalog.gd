@@ -64,16 +64,6 @@ const BATTLE_CONTEXTS: Dictionary[String, Context_Battle] = {
 	"Chanter and Gatherers": preload("res://Data/Battle_Variants/Battle_Chanter_and_Gatherers.tres"),
 }
 
-## Used when constructing a debug item for a slot that has no dedicated icon.
-const DEBUG_ITEM_TEXTURE_FALLBACK: String = "res://Assets/Champ_Collector/Icons/Items/Red_Boot/Red_Boot_0003.png"
-
-## Known item icons per slot, used so constructed debug items have a real texture.
-const ITEM_SLOT_TEXTURES: Dictionary[Types.Slot, String] = {
-	Types.Slot.Weapon: "res://Assets/Champ_Collector/Icons/Items/Spear/Spear_0002.png",
-	Types.Slot.OffHand: "res://Assets/Champ_Collector/Icons/Items/Shield/Shield_0002.png",
-	Types.Slot.Boots: "res://Assets/Champ_Collector/Icons/Items/Red_Boot/Red_Boot_0003.png",
-}
-
 ## The player champions the debug pages may add, keyed by name: every champion the running
 ## game mode starts with or can recruit, so debug rosters cannot build what the mode omits.
 static func GetPlayerCharacterPresets() -> Dictionary[String, CharacterPreset]:
@@ -108,8 +98,3 @@ static func GetReagentRarities(p_family: String) -> Array[Types.Rarity]:
 
 static func GetReagentKey(p_family: String, p_rarity: Types.Rarity) -> String:
 	return p_family + "_" + Types.Rarity.find_key(p_rarity)
-
-static func GetItemTextureForSlot(p_slot: Types.Slot) -> String:
-	if(ITEM_SLOT_TEXTURES.has(p_slot)):
-		return ITEM_SLOT_TEXTURES[p_slot]
-	return DEBUG_ITEM_TEXTURE_FALLBACK

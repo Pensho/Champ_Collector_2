@@ -99,7 +99,6 @@ const ITEM_TYPE_ATTRIBUTES: Dictionary = {
 		Types.Attribute.Accuracy,],
 		
 	Types.Slot.Boots: [
-		Types.Attribute.Speed,
 		Types.Attribute.Health,
 		Types.Attribute.Accuracy,
 		Types.Attribute.Knowledge,
@@ -110,6 +109,8 @@ const ITEM_TYPE_ATTRIBUTES: Dictionary = {
 const ITEM_COLLECTION_LIMIT: int = 400
 const MAX_ITEM_LEVEL: int = 10
 const ITEM_UPGRADE_FLAT_BONUS: int = 3
+# Scales an implicit's Common magnitude by rarity, Common first; upgrades never change it.
+const ITEM_IMPLICIT_RARITY_MULTIPLIER: Array[float] = [1.0, 1.33, 1.67, 2.0, 2.33]
 const BASE_ITEM_UPGRADE_COST: int = 25
 
 ## Skills

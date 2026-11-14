@@ -15,5 +15,6 @@ class_name AdventureData extends Resource
 @export var boss_rewards: LootTable
 @export var hint_rewards: LootTable
 @export var escalate_rewards: LootTable
+@export var gear_pool: Array[EquipmentPreset] = []
 
 @export var buff_pool: AdventureBuffPool

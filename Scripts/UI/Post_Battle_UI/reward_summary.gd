@@ -26,8 +26,8 @@ func SetRewards(p_drop_result: LootTable.DropResult) -> void:
 	for child in _h_box_container_items.get_children():
 		child.queue_free()
 
-	if(null != p_drop_result._equipment):
-		_AddEquipmentSlot(p_drop_result._equipment)
+	for equipment in p_drop_result._equipment:
+		_AddEquipmentSlot(equipment)
 	for tier in p_drop_result._fortunes_favor.keys():
 		_AddFortunesFavorSlot(tier, p_drop_result._fortunes_favor[tier])
 
@@ -41,7 +41,7 @@ func SetRewards(p_drop_result: LootTable.DropResult) -> void:
 			0 < p_drop_result._experience
 			or 0 < p_drop_result._silver
 			or 0 < p_drop_result._supplies
-			or null != p_drop_result._equipment
+			or not p_drop_result._equipment.is_empty()
 			or not reagent_counts.is_empty()
 			or _HasAnyFortunesFavor(p_drop_result))
 
@@ -69,9 +69,9 @@ func _AddEquipmentSlot(p_equipment: EquipmentPreset) -> void:
 	_h_box_container_items.add_child(slot)
 	slot.SetTexture(load(p_equipment._texture_path))
 	slot.SetCount("")
-	slot.SetToolTip(
+	slot.SetItemToolTip(
 			p_equipment._name + " (" + Types.RarityName(p_equipment._rarity) + ")",
-			Equipment.DescriptionText(p_equipment._slot, p_equipment._attributes, p_equipment._relic_effect))
+			ItemText.ForPreset(p_equipment, p_equipment._item_type, p_equipment._rarity, p_equipment._attributes))
 
 func _AddReagentSlot(p_reagent_key: String, p_count: int) -> void:
 	var reagent: ReagentData = ReagentRegistry.Get(p_reagent_key)

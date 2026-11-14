@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://Scripts/UI/Adventure/biome_selection_panel.gd" id="1_panel"]
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="2_theme"]
 
-[node name="BiomeSelectionPanel" type="Control" node_paths=PackedStringArray("_texture_button", "_label_name")]
+[node name="BiomeSelectionPanel" type="Control" node_paths=PackedStringArray("_texture_button", "_label_name", "_gear_pool_icons")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -14,6 +14,7 @@ clip_contents = true
 script = ExtResource("1_panel")
 _texture_button = NodePath("TextureButton")
 _label_name = NodePath("Label_Name")
+_gear_pool_icons = [NodePath("HBoxContainer_Gear_Pool/TextureRect_Gear_1"), NodePath("HBoxContainer_Gear_Pool/TextureRect_Gear_2"), NodePath("HBoxContainer_Gear_Pool/TextureRect_Gear_3")]
 
 [node name="TextureButton" type="TextureButton" parent="."]
 layout_mode = 1
@@ -46,6 +47,41 @@ theme_override_constants/shadow_outline_size = 5
 theme_override_font_sizes/font_size = 28
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="HBoxContainer_Gear_Pool" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -128.0
+offset_bottom = -72.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="TextureRect_Gear_1" type="TextureRect" parent="HBoxContainer_Gear_Pool"]
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect_Gear_2" type="TextureRect" parent="HBoxContainer_Gear_Pool"]
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect_Gear_3" type="TextureRect" parent="HBoxContainer_Gear_Pool"]
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
 
 [connection signal="mouse_entered" from="TextureButton" to="." method="_on_texture_button_mouse_entered"]
 [connection signal="mouse_exited" from="TextureButton" to="." method="_on_texture_button_mouse_exited"]

@@ -39,7 +39,11 @@ func ClearSoldOut() -> void:
 	_button_buy.text = "Buy"
 	_button_buy.disabled = false
 	_label_price.text = str(_entry["price"])
-	_tooltip.description_text = _DescriptionFor(_entry)
+	if(Types.Category.Gear == _entry["category"]):
+		_tooltip.SetItemText(_label_name.text, GearItemText(_entry))
+	else:
+		_tooltip.ClearItemText()
+		_tooltip.description_text = _DescriptionFor(_entry)
 
 func SetSoldOut(p_sold_out: bool) -> void:
 	if(not p_sold_out):
@@ -116,8 +120,6 @@ func _IconFor(p_entry: Dictionary) -> Texture2D:
 
 func _DescriptionFor(p_entry: Dictionary) -> String:
 	match p_entry["category"]:
-		Types.Category.Gear:
-			return GearDescription(p_entry)
 		Types.Category.Reagent:
 			return ReagentRegistry.Get(p_entry["payload"]).description
 		Types.Category.Supplies:
@@ -132,16 +134,10 @@ static func GearPresetFor(p_entry: Dictionary) -> EquipmentPreset:
 		return EquipmentPresetRegistry.GetRelic(p_entry["payload"])
 	return EquipmentPresetRegistry.Get(p_entry["payload"])
 
-static func GearDescription(p_entry: Dictionary) -> String:
-	var preset: EquipmentPreset = GearPresetFor(p_entry)
-	var lines: Array[String] = []
+static func GearItemText(p_entry: Dictionary) -> ItemText:
+	var attributes: Dictionary[Types.Attribute, int] = {}
 	for attribute_name in p_entry["attributes"].keys():
-		lines.append(attribute_name + " +" + str(p_entry["attributes"][attribute_name]))
-	var description_text: String = Types.Slot.keys()[preset._slot]
-	if(lines.is_empty()):
-		description_text += " with no attribute bonus."
-	else:
-		description_text += "\n" + "\n".join(lines)
-	if(null != preset._relic_effect):
-		description_text += "\n\n" + preset._relic_effect._body
-	return description_text
+		if(Types.Attribute.has(attribute_name)):
+			attributes[Types.Attribute[attribute_name]] = int(p_entry["attributes"][attribute_name])
+	var item_type: Types.Item_Type = p_entry.get("item_type", Types.Item_Type.Standard)
+	return ItemText.ForPreset(GearPresetFor(p_entry), item_type, p_entry["rarity"] as Types.Rarity, attributes)

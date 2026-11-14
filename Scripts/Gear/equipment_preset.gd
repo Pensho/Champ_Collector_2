@@ -9,6 +9,8 @@ class_name EquipmentPreset extends Resource
 @export var _texture_path: String = ""
 @export var _preset_path: String = ""
 @export var _relic_effect: RelicEffect = null
+## Set on every standard preset; null on a Relic.
+@export var _sub_type: ItemSubType = null
 
 var _attributes: Dictionary[Types.Attribute, int] = {
 	Types.Attribute.Health: 0,

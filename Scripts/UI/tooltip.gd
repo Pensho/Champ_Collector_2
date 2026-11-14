@@ -15,10 +15,27 @@ static var _consumed_on_frame: int = -1
 ## requiring a PRESSED_TIME hold.
 @export var show_on_press: bool = false
 
+## Item tooltips add a type line under the title and an implicit between two dividers, all centered.
+var subtitle_text: String = ""
+var implicit_text: String = ""
+var center_text: bool = false
+
 var visuals: PanelContainer
 var timer: Timer
 var active_tooltip: PopupPanel
 var _tap_gesture: TapGesture = TapGesture.new()
+
+func SetItemText(p_title: String, p_item_text: ItemText) -> void:
+	title_text = p_title
+	subtitle_text = p_item_text.subtitle
+	implicit_text = p_item_text.implicit
+	description_text = p_item_text.body
+	center_text = true
+
+func ClearItemText() -> void:
+	subtitle_text = ""
+	implicit_text = ""
+	center_text = false
 
 static func ConsumedPress() -> bool:
 	return _press_consumed
@@ -69,14 +86,20 @@ func _show_tooltip() -> void:
 		active_tooltip = TOOLTIP_SCENE.instantiate()
 		add_child(active_tooltip)
 	
-	# 1. Update the text
-	active_tooltip.get_node("MainVisuals/MarginContainer/VBoxContainer/Label_Title").text = title_text
-	
-	# 2. Process the Description for Keywords
-	var processed_desc = KEYWORD_COLORS.ApplyKeywordColors(description_text)
-	
-	# 3. Apply to RichTextLabel (Note: use .text or .append_text with BBCode)
-	active_tooltip.get_node("MainVisuals/MarginContainer/VBoxContainer/Label_Description").text = processed_desc
+	var box: String = "MainVisuals/MarginContainer/VBoxContainer/"
+	var label_title: Label = active_tooltip.get_node(box + "Label_Title")
+	label_title.text = title_text
+	label_title.horizontal_alignment = (
+			HORIZONTAL_ALIGNMENT_CENTER if center_text else HORIZONTAL_ALIGNMENT_LEFT)
+	var label_subtitle: Label = active_tooltip.get_node(box + "Label_Subtitle")
+	label_subtitle.text = subtitle_text
+	label_subtitle.visible = not subtitle_text.is_empty()
+	var label_implicit: RichTextLabel = active_tooltip.get_node(box + "RichTextLabel_Implicit")
+	label_implicit.text = _Centered(KEYWORD_COLORS.ApplyKeywordColors(implicit_text))
+	label_implicit.visible = not implicit_text.is_empty()
+	active_tooltip.get_node(box + "ColorRect_Implicit_Divider").visible = label_implicit.visible
+	active_tooltip.get_node(box + "Label_Description").text = _Centered(
+			KEYWORD_COLORS.ApplyKeywordColors(description_text))
 	
 	# Calculate Position
 	var mouse_position = get_global_mouse_position()
@@ -88,6 +111,9 @@ func _show_tooltip() -> void:
 		mouse_position.x -= popup_width
 	
 	_animate_entrance()
+
+func _Centered(p_text: String) -> String:
+	return "[center]" + p_text + "[/center]" if center_text else p_text
 
 ## The popup swallows the hold's real release, which would leave the pressed button stuck
 ## until some later click fires its button_up. Release it now, while the press is consumed.

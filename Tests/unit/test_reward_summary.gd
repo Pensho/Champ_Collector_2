@@ -80,7 +80,7 @@ func test_any_reward_shows_the_widget() -> void:
 
 func test_gear_drop_adds_one_icon_slot() -> void:
 	var drop_result: LootTable.DropResult = _EmptyDropResult()
-	drop_result._equipment = EquipmentPresetRegistry.Get("Red_Boots").duplicate(true)
+	drop_result._equipment.append(EquipmentPresetRegistry.Get("Scaled_Greaves").duplicate(true))
 	summary.SetRewards(drop_result)
 	assert_eq(summary._h_box_container_items.get_child_count(), 1)
 
@@ -97,7 +97,7 @@ func test_duplicate_reagent_keys_collapse_into_one_slot_with_a_count() -> void:
 
 func test_distinct_rewards_each_get_their_own_icon_slot() -> void:
 	var drop_result: LootTable.DropResult = _EmptyDropResult()
-	drop_result._equipment = EquipmentPresetRegistry.Get("Red_Boots").duplicate(true)
+	drop_result._equipment.append(EquipmentPresetRegistry.Get("Scaled_Greaves").duplicate(true))
 	drop_result._reagents = ["Lesser_Tincture"]
 	drop_result._fortunes_favor[FortuneFavorTier.TierType.BONE] = 1
 	summary.SetRewards(drop_result)

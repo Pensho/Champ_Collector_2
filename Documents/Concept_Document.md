@@ -942,8 +942,22 @@ standard item for it.
 | | Standard | Relic |
 |---|---|---|
 | Attribute contribution | full | half of a standard item at the same rarity — half the setup roll and half the per-upgrade gain, each rounded up |
+| Implicit | one, from its sub-type | none |
 | Unique effect | none | one, magnitude scaling with rarity |
 | Downside | none | one, magnitude may scale with rarity |
+
+**Sub-types:** every standard item belongs to a sub-type within its slot, which names the item
+and grants its **implicit**. Rarity steps and upgrades roll from the slot's attribute pool, and an
+implicit may name anything inside or outside that pool. Implicits grow in complexity by Act. Act 1
+sub-types carry a flat attribute line [Channel 1]. An implicit's size is set by the item's rarity
+and does not grow with upgrades. Each later Act
+may introduce one new kind of implicit, designed with that Act's Adventures and tagged in section
+1.1.3's vocabulary. Every implicit reads in a few words.
+
+**Gear pools:** each Act has a gear pool of the sub-types obtainable in it, and each Adventure
+drops from a subset of its Act's pool, so the player farms a sub-type by choosing the Adventure
+that carries it. Every Act's and every Adventure's pool covers Weapon, Off-Hand and Boots. The
+sub-type catalog and the pools live in data.
 
 **Gear verdict:** standard gear feeds the scaled attribute sum only. [Channel 1] Each step in
 rarity adds one attribute bonus for the equipping character; no affix contributes a factor to
@@ -982,7 +996,7 @@ Relic catalog (effects, drawbacks and slots in `Relic_Design.md`)
 
 At the ceiling — a fully-geared Legendary loadout (Weapon, Off-Hand, Boots), every item rolled
 and then fully upgraded (ten times each) — gear raises a
-champion's relevant attribute by 3.1x, which comes out to a 4.2x-5.3x contrast ratio against
+champion's relevant attribute by about 3.2x, which comes out to a 4.2x-5.3x contrast ratio against
 boss-tier Defence once the attribute's own effect on mitigation is included (see
 `Scripts/Debug/blowout_calibration.gd`'s `_ReportGearCeiling()` for the calibration and how
 that ratio was judged).
@@ -1158,7 +1172,8 @@ Nature.
 
 #### 3.6.4. The shop
 Six stock slots: 3 gear, 1 reagent, 1 Supplies bundle, 1 featured Fortune's Favor offer.
-Gear and reagent rarity scale with player progress. Each gear slot rolls its item type on the
+Gear and reagent rarity scale with player progress. Standard gear comes from the current Act's
+gear pool (section 3.3.1). Each gear slot rolls its item type on the
 same flat 5% chance a drop uses (section 3.3.1), so a Relic can appear in the shop at any
 progress level; a Relic is priced at a substantially higher markup than a standard item of its
 rarity. The Favor slot always offers a Bone
@@ -1433,10 +1448,12 @@ Each Act holds a hub and the two adventures offered in section 5.1:
 
 ```
 Act
+ ├─ Gear pool      — the sub-types obtainable in the Act (section 3.3.1)
  └─ Adventure ×2
      ├─ Layout     — length and how often each node type appears
      ├─ Biome      — scenery and battle stages
      ├─ Opponents  — regular enemies, boss, and their rewards
+     ├─ Gear pool  — the subset of the Act's pool it drops
      └─ Difficulty — unlocked per adventure by completing it, chosen at start
 ```
 

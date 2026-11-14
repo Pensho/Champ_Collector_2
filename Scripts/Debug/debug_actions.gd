@@ -37,19 +37,21 @@ static func grant_reagent(p_reagent_collection: ReagentCollection, p_family: Str
 	p_reagent_collection.Add(reagent_key, p_quantity)
 	return true
 
-## Builds an equipment preset with exact attribute values, bypassing the
-## random rolls in EquipmentPreset.Setup(), so the debug item construction
+## Builds a standard equipment preset of p_base_preset's sub-type with exact attribute values,
+## bypassing the random rolls in EquipmentPreset.Setup(), so the debug item construction
 ## page can hand the collection an item with precisely chosen stats.
 static func build_equipment_preset(
 		p_name: String,
-		p_slot: Types.Slot,
+		p_base_preset: EquipmentPreset,
 		p_rarity: Types.Rarity,
 		p_attributes: Dictionary[Types.Attribute, int]) -> EquipmentPreset:
 	var preset: EquipmentPreset = EquipmentPreset.new()
 	preset._name = p_name
-	preset._slot = p_slot
+	preset._slot = p_base_preset._slot
+	preset._sub_type = p_base_preset._sub_type
+	preset._texture_path = p_base_preset._texture_path
+	preset._preset_path = p_base_preset._preset_path
 	preset._rarity = p_rarity
-	preset._texture_path = DebugCatalog.GetItemTextureForSlot(p_slot)
 	for attribute in p_attributes.keys():
 		preset._attributes[attribute] = p_attributes[attribute]
 	return preset

@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" path="res://Scripts/Adventure_Scripts/Visuals/zone_decor_entry.gd" id="1_l00uo"]
 [ext_resource type="Script" uid="uid://btay6p6jc1rpo" path="res://Scripts/Adventure_Scripts/Visuals/biome_region_data.gd" id="6_bv60m"]
-[ext_resource type="Resource" path="res://Data/Adventure_Data/Biome_Visuals/Decor_Layers/decor_magic_ruins_wall_horizontal.tres" id="7_wallh"]
-[ext_resource type="Resource" path="res://Data/Adventure_Data/Biome_Visuals/Decor_Layers/decor_magic_ruins_wall_vertical.tres" id="8_wallv"]
-[ext_resource type="Resource" path="res://Data/Adventure_Data/Biome_Visuals/Decor_Layers/decor_magic_ruins_wall_inner_face.tres" id="9_inner"]
+[ext_resource type="Resource" uid="uid://dxvwtg70uuwwd" path="res://Data/Adventure_Data/Biome_Visuals/Decor_Layers/decor_magic_ruins_wall_horizontal.tres" id="7_wallh"]
+[ext_resource type="Resource" uid="uid://l2a228pslccf" path="res://Data/Adventure_Data/Biome_Visuals/Decor_Layers/decor_magic_ruins_wall_vertical.tres" id="8_wallv"]
+[ext_resource type="Resource" uid="uid://gbajdg4upac8" path="res://Data/Adventure_Data/Biome_Visuals/Decor_Layers/decor_magic_ruins_wall_inner_face.tres" id="9_inner"]
 
 [sub_resource type="Resource" id="Resource_inner"]
 script = ExtResource("1_l00uo")

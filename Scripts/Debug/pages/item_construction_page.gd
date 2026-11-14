@@ -17,14 +17,20 @@ const ATTRIBUTE_ORDER: Array[Types.Attribute] = [
 ]
 
 @export var _name_edit: LineEdit
-@export var _slot_option: OptionButton
+## Lists every standard preset by sub-type; the selected ID indexes _sub_type_keys.
+@export var _sub_type_option: OptionButton
 @export var _rarity_option: OptionButton
 @export var _attribute_spins: Array[SpinBox]
 
+var _sub_type_keys: Array[String] = []
+
 func _ready() -> void:
 	page_title = "Item Construction"
-	for slot_name in Types.Slot.keys():
-		_slot_option.add_item(slot_name, Types.Slot[slot_name])
+	for key in EquipmentPresetRegistry.PRESETS.keys():
+		var preset: EquipmentPreset = EquipmentPresetRegistry.PRESETS[key]
+		_sub_type_option.add_item(
+				"%s (%s)" % [preset._sub_type._name, Types.Slot.keys()[preset._slot]], _sub_type_keys.size())
+		_sub_type_keys.append(key)
 	for rarity_name in Types.Rarity.keys():
 		_rarity_option.add_item(rarity_name, Types.Rarity[rarity_name])
 	for spin in _attribute_spins:
@@ -40,9 +46,9 @@ func _on_add_to_collection_button_up() -> void:
 	if(item_name.is_empty()):
 		item_name = "Debug Item"
 
-	var slot: Types.Slot = _slot_option.get_selected_id() as Types.Slot
+	var base_preset: EquipmentPreset = EquipmentPresetRegistry.Get(_sub_type_keys[_sub_type_option.get_selected_id()])
 	var rarity: Types.Rarity = _rarity_option.get_selected_id() as Types.Rarity
-	var preset: EquipmentPreset = DebugActions.build_equipment_preset(item_name, slot, rarity, attributes)
+	var preset: EquipmentPreset = DebugActions.build_equipment_preset(item_name, base_preset, rarity, attributes)
 	main.GetInstance()._item_collection.AddPreset(preset)
 
 func _on_grant_all_relics_button_up() -> void:

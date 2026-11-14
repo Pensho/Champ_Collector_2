@@ -15,3 +15,7 @@ func SetToolTip(p_title: String, p_description: String) -> void:
 	_tooltip.title_text = p_title
 	_tooltip.description_text = p_description
 	_tooltip.show_on_press = true
+
+func SetItemToolTip(p_title: String, p_item_text: ItemText) -> void:
+	_tooltip.SetItemText(p_title, p_item_text)
+	_tooltip.show_on_press = true

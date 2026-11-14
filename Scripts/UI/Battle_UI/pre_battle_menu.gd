@@ -104,18 +104,23 @@ func _RefreshDrops() -> void:
 		return
 	var difficulty: int = int(_self_context._arguments.get("Difficulty", 1))
 	for entry in DropPreview.Entries(battle_context._loot_table, difficulty):
-		var slot: DropPreviewSlot = DROP_PREVIEW_SLOT_SCENE.instantiate()
-		_h_box_container_drops.add_child(slot)
-		slot.Setup(entry, _IconForEntry(entry, battle_context._loot_table))
+		if(LootManager.LootType.Equipment == entry["type"]):
+			for preset in battle_context._loot_table._gear_pool:
+				_AddDropPreviewSlot(entry, load(preset._texture_path), preset._name)
+		else:
+			_AddDropPreviewSlot(entry, _IconForEntry(entry))
 
-func _IconForEntry(p_entry: Dictionary, p_loot_table: LootTable) -> Texture:
+func _AddDropPreviewSlot(p_entry: Dictionary, p_icon: Texture, p_name: String = "") -> void:
+	var slot: DropPreviewSlot = DROP_PREVIEW_SLOT_SCENE.instantiate()
+	_h_box_container_drops.add_child(slot)
+	slot.Setup(p_entry, p_icon, p_name)
+
+func _IconForEntry(p_entry: Dictionary) -> Texture:
 	match p_entry["type"]:
 		LootManager.LootType.Silver:
 			return ResourceHandler.SILVER_COIN_TEXTURE
 		LootManager.LootType.Supplies:
 			return ResourceHandler.SUPPLIES_TEXTURE
-		LootManager.LootType.Equipment:
-			return load(p_loot_table._gear_loot._texture_path) if null != p_loot_table._gear_loot else null
 		LootManager.LootType.Fortunes_Favor:
 			return _FortuneFavorIcon(p_entry["rarity"])
 		_:

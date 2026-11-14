@@ -12,7 +12,7 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vj1of"]
 
-[node name="ButtonWithOptions" type="Control" unique_id=1338810815]
+[node name="ButtonWithOptions" type="Control" unique_id=1338810815 node_paths=PackedStringArray("_label_subtitle", "_rich_text_label_implicit", "_separator_implicit")]
 layout_mode = 3
 anchors_preset = 0
 offset_left = 5.0
@@ -20,6 +20,9 @@ offset_top = 5.0
 offset_right = 5.0
 offset_bottom = 5.0
 script = ExtResource("1_brdu4")
+_label_subtitle = NodePath("ColorRect/MarginContainer/VBoxContainer/Label_Subtitle")
+_rich_text_label_implicit = NodePath("ColorRect/MarginContainer/VBoxContainer/RichTextLabel_Implicit")
+_separator_implicit = NodePath("ColorRect/MarginContainer/VBoxContainer/HSeparator_Implicit")
 
 [node name="ColorRect2" type="ColorRect" parent="." unique_id=2088518971]
 layout_mode = 1
@@ -94,7 +97,27 @@ text = "Test Heading"
 horizontal_alignment = 1
 autowrap_mode = 3
 
+[node name="Label_Subtitle" type="Label" parent="ColorRect/MarginContainer/VBoxContainer" unique_id=845623558]
+visible = false
+layout_mode = 2
+theme = ExtResource("2_g4psy")
+theme_override_colors/font_color = Color(1, 1, 1, 0.7)
+theme_override_font_sizes/font_size = 17
+horizontal_alignment = 1
+
 [node name="HSeparator" type="HSeparator" parent="ColorRect/MarginContainer/VBoxContainer" unique_id=1344330554]
+layout_mode = 2
+
+[node name="RichTextLabel_Implicit" type="RichTextLabel" parent="ColorRect/MarginContainer/VBoxContainer" unique_id=1358055356]
+visible = false
+layout_mode = 2
+theme = ExtResource("2_g4psy")
+theme_override_font_sizes/normal_font_size = 17
+bbcode_enabled = true
+fit_content = true
+
+[node name="HSeparator_Implicit" type="HSeparator" parent="ColorRect/MarginContainer/VBoxContainer" unique_id=213658554]
+visible = false
 layout_mode = 2
 
 [node name="RichTextLabel_Info" type="RichTextLabel" parent="ColorRect/MarginContainer/VBoxContainer" unique_id=913572404]

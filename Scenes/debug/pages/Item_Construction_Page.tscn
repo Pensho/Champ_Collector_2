@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cupiwi42wvhxc" path="res://Scripts/Debug/pages/item_construction_page.gd" id="1_script"]
 
-[node name="ItemConstructionPage" type="Control" unique_id=120500628 node_paths=PackedStringArray("_name_edit", "_slot_option", "_rarity_option", "_attribute_spins")]
+[node name="ItemConstructionPage" type="Control" unique_id=120500628 node_paths=PackedStringArray("_name_edit", "_sub_type_option", "_rarity_option", "_attribute_spins")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -11,7 +11,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_script")
 _name_edit = NodePath("MarginContainer/ScrollContainer/VBoxContainer/NameRow/LineEdit_Name")
-_slot_option = NodePath("MarginContainer/ScrollContainer/VBoxContainer/SlotRarityRow/OptionButton_Slot")
+_sub_type_option = NodePath("MarginContainer/ScrollContainer/VBoxContainer/SlotRarityRow/OptionButton_Sub_Type")
 _rarity_option = NodePath("MarginContainer/ScrollContainer/VBoxContainer/SlotRarityRow/OptionButton_Rarity")
 _attribute_spins = [NodePath("MarginContainer/ScrollContainer/VBoxContainer/AttributeGrid/SpinBox_Health"), NodePath("MarginContainer/ScrollContainer/VBoxContainer/AttributeGrid/SpinBox_Speed"), NodePath("MarginContainer/ScrollContainer/VBoxContainer/AttributeGrid/SpinBox_Attack"), NodePath("MarginContainer/ScrollContainer/VBoxContainer/AttributeGrid/SpinBox_Defence"), NodePath("MarginContainer/ScrollContainer/VBoxContainer/AttributeGrid/SpinBox_Accuracy"), NodePath("MarginContainer/ScrollContainer/VBoxContainer/AttributeGrid/SpinBox_Resistance"), NodePath("MarginContainer/ScrollContainer/VBoxContainer/AttributeGrid/SpinBox_Mysticism"), NodePath("MarginContainer/ScrollContainer/VBoxContainer/AttributeGrid/SpinBox_Knowledge"), NodePath("MarginContainer/ScrollContainer/VBoxContainer/AttributeGrid/SpinBox_CritChance"), NodePath("MarginContainer/ScrollContainer/VBoxContainer/AttributeGrid/SpinBox_CritDamage")]
 
@@ -51,11 +51,11 @@ placeholder_text = "Debug Item"
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="Label_Slot" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/SlotRarityRow" unique_id=2073781578]
+[node name="Label_Sub_Type" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/SlotRarityRow" unique_id=2073781578]
 layout_mode = 2
-text = "Slot"
+text = "Sub-type"
 
-[node name="OptionButton_Slot" type="OptionButton" parent="MarginContainer/ScrollContainer/VBoxContainer/SlotRarityRow" unique_id=1276153804]
+[node name="OptionButton_Sub_Type" type="OptionButton" parent="MarginContainer/ScrollContainer/VBoxContainer/SlotRarityRow" unique_id=1276153804]
 layout_mode = 2
 size_flags_horizontal = 3
 

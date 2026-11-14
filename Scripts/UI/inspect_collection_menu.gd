@@ -361,22 +361,22 @@ func CanEquipFromMenuID(p_instance_ID: int) -> bool:
 	var selected_item_type: Types.Slot = _item_collection[p_instance_ID]._slot
 	return not _character_collection[_selected_character_ID]._held_items.has(selected_item_type)
 
-func GetItemDescriptionText(p_item: Equipment, p_compare_item: Equipment = null) -> String:
-	var description_text: String = ""
-	if(null != p_compare_item):
-		var differing_value: int = 0
-		for type in p_item._attributes.keys():
-			differing_value = p_item._attributes[type] - p_compare_item._attributes[type]
-			if(0 < differing_value):
-				description_text += Types.Attribute.keys()[type] + " +" + str(differing_value) + "\n"
-			elif(0 > differing_value):
-				description_text += Types.Attribute.keys()[type] + " -" + str(differing_value) + "\n"
-	else:
-		return Equipment.DescriptionText(p_item._slot, p_item._attributes, p_item._relic_effect)
-
+## With p_compare_item, the body lists the total attribute change against it instead.
+func GetItemText(p_item: Equipment, p_compare_item: Equipment = null) -> ItemText:
+	var item_text: ItemText = p_item.GetItemText()
+	if(null == p_compare_item):
+		return item_text
+	var lines: Array[String] = []
+	for type in p_item._attributes.keys():
+		var differing_value: int = (
+				p_item._attributes[type] + p_item.GetImplicitBonus(type)
+				- p_compare_item._attributes[type] - p_compare_item.GetImplicitBonus(type))
+		if(0 != differing_value):
+			lines.append(ItemText.AttributeLine(type, differing_value))
+	item_text.body = "\n".join(lines)
 	if(null != p_item._relic_effect):
-		description_text += "\n" + p_item._relic_effect._body
-	return description_text
+		item_text.body += "\n\n" + p_item._relic_effect._body
+	return item_text
 
 func AvailableItemButton(p_slot_ID: int) -> void:
 	var item: Equipment = _item_collection[_displayed_item_ids[p_slot_ID]]
@@ -384,7 +384,7 @@ func AvailableItemButton(p_slot_ID: int) -> void:
 	if(-1 != _selected_character_ID and _character_collection[_selected_character_ID]._held_items.has(item._slot)):
 		compare_item = _item_collection[_character_collection[_selected_character_ID]._held_items[item._slot]]
 
-	_select_item_option.SetText(item._name, GetItemDescriptionText(item, compare_item))
+	_select_item_option.SetItemText(item._name, GetItemText(item, compare_item))
 	if(-1 != _selected_character_ID):
 		_select_item_option.SetLeftButton("Equip", TriggerEquipItem)
 	else:
@@ -710,7 +710,7 @@ func EquipedItemSlotButton(p_slot_ID: int) -> void:
 	_selected_equipped_slot_type = slot_type
 	_selected_item_slot_ID = -1
 
-	_select_item_option.SetText(item._name, GetItemDescriptionText(item))
+	_select_item_option.SetItemText(item._name, GetItemText(item))
 	_select_item_option.SetLeftButton("Unequip", TriggerUnequipSelectedItem)
 	_select_item_option.HideMiddleButton()
 	_select_item_option.SetUpgradeButton("Upgrade", TryUpgrade)

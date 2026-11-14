@@ -39,7 +39,7 @@ static func GetGearPrice(p_rarity: Types.Rarity, p_item_type: Types.Item_Type = 
 static func GetReagentPrice(p_rarity: Types.Rarity) -> int:
 	return int(LootManager.GetReagentSellValue(p_rarity) * GameBalance.SHOP_BUY_MARKUP)
 
-static func RollStock(p_budget: int) -> Array[Dictionary]:
+static func RollStock(p_budget: int, p_gear_pool: Array[EquipmentPreset]) -> Array[Dictionary]:
 	var stock: Array[Dictionary] = []
 
 	for i in GameBalance.SHOP_GEAR_SLOTS:
@@ -48,7 +48,7 @@ static func RollStock(p_budget: int) -> Array[Dictionary]:
 		var item_type: Types.Item_Type = LootManager.RollItemType()
 		var preset_key: String = (
 				EquipmentPresetRegistry.GetRandomRelicKey() if Types.Item_Type.Relic == item_type
-				else EquipmentPresetRegistry.GetRandomKey())
+				else _RandomPoolKey(p_gear_pool))
 		var base_preset: EquipmentPreset = _GearPresetFor(preset_key, item_type)
 		if(null == base_preset):
 			continue
@@ -102,6 +102,11 @@ static func RollStock(p_budget: int) -> Array[Dictionary]:
 
 	return stock
 
+static func _RandomPoolKey(p_gear_pool: Array[EquipmentPreset]) -> String:
+	if(p_gear_pool.is_empty()):
+		return ""
+	return EquipmentPresetRegistry.KeyFor(p_gear_pool.pick_random())
+
 static func _AttributesToStock(p_attributes: Dictionary) -> Dictionary:
 	var result: Dictionary = {}
 	for attribute in p_attributes.keys():
@@ -114,7 +119,7 @@ func EnsureFresh() -> void:
 	if(not IsRestockDue(_restock_anchor_unix, now)):
 		return
 	var budget: int = LootManager.CalculateBudget(main.GetInstance()._progress.GetHighestDifficulty())
-	_stock = RollStock(budget)
+	_stock = RollStock(budget, Main_Instance.HUB_ACT.gear_pool)
 	_restock_anchor_unix = now
 	stock_changed.emit()
 

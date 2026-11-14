@@ -61,7 +61,7 @@ func test_favor_available_at_exactly_three_days() -> void:
 
 
 func test_roll_stock_returns_slot_count_with_expected_split() -> void:
-	var stock: Array[Dictionary] = ShopHandler.RollStock(5000)
+	var stock: Array[Dictionary] = ShopHandler.RollStock(5000, _AllStandardPresets())
 
 	assert_eq(stock.size(), GameBalance.SHOP_SLOT_COUNT, "Should build all six slots")
 	for i in range(0, GameBalance.SHOP_GEAR_SLOTS):
@@ -74,7 +74,7 @@ func test_roll_stock_returns_slot_count_with_expected_split() -> void:
 
 
 func test_roll_stock_gear_entries_have_already_rolled_attributes() -> void:
-	var stock: Array[Dictionary] = ShopHandler.RollStock(5000)
+	var stock: Array[Dictionary] = ShopHandler.RollStock(5000, _AllStandardPresets())
 
 	for i in range(0, GameBalance.SHOP_GEAR_SLOTS):
 		var entry: Dictionary = stock[i]
@@ -103,7 +103,7 @@ func test_roll_stock_can_produce_a_relic_gear_slot() -> void:
 	# never seeing a Relic vanishingly unlikely while staying a fast, non-hanging unit test.
 	var saw_relic: bool = false
 	for i in range(300):
-		var stock: Array[Dictionary] = ShopHandler.RollStock(5000)
+		var stock: Array[Dictionary] = ShopHandler.RollStock(5000, _AllStandardPresets())
 		for j in range(0, GameBalance.SHOP_GEAR_SLOTS):
 			var entry: Dictionary = stock[j]
 			if(Types.Item_Type.Relic == entry["item_type"]):
@@ -122,7 +122,7 @@ func test_reagent_price_matches_sell_value_times_markup() -> void:
 
 func test_serialize_deserialize_round_trip_survives_json() -> void:
 	var shop: ShopHandler = ShopHandler.new()
-	shop._stock = ShopHandler.RollStock(5000)
+	shop._stock = ShopHandler.RollStock(5000, _AllStandardPresets())
 	shop._stock[0]["sold_out"] = true
 	shop._restock_anchor_unix = int(Time.get_unix_time_from_system())
 	shop._favor_purchase_unix = shop._restock_anchor_unix - 1000
@@ -152,7 +152,7 @@ func test_deserialize_skips_entries_whose_payload_is_no_longer_registered() -> v
 		{"category": Types.Category.Reagent, "rarity": Types.Rarity.Rare, "price": 10, "sold_out": false,
 			"payload": "Reagent_That_Does_Not_Exist", "amount": 1, "attributes": {}},
 		{"category": Types.Category.Gear, "rarity": Types.Rarity.Rare, "item_type": Types.Item_Type.Standard,
-			"price": 10, "sold_out": false, "payload": "Red_Boots", "amount": 1, "attributes": {}},
+			"price": 10, "sold_out": false, "payload": "Scaled_Greaves", "amount": 1, "attributes": {}},
 		{"category": Types.Category.Supplies, "rarity": 0, "price": 10, "sold_out": false,
 			"payload": "", "amount": 5, "attributes": {}},
 	]
@@ -161,7 +161,7 @@ func test_deserialize_skips_entries_whose_payload_is_no_longer_registered() -> v
 	shop.Deserialize({"stock": stock})
 
 	assert_eq(shop._stock.size(), 2, "Only the entries that still resolve should load")
-	assert_eq(shop._stock[0]["payload"], "Red_Boots", "A registered gear entry should load")
+	assert_eq(shop._stock[0]["payload"], "Scaled_Greaves", "A registered gear entry should load")
 	assert_eq(shop._stock[1]["category"], Types.Category.Supplies, "Entries without a registry payload should load")
 	shop.free()
 
@@ -173,3 +173,16 @@ func test_is_payload_registered_rejects_unknown_gear_and_reagent_keys() -> void:
 			"An unknown reagent key should not resolve")
 	assert_true(ShopHandler.IsPayloadRegistered(Types.Category.Gear, "Kiln_Brand", Types.Item_Type.Relic),
 			"A registered Relic key should resolve")
+
+
+func _AllStandardPresets() -> Array[EquipmentPreset]:
+	var presets: Array[EquipmentPreset] = []
+	presets.assign(EquipmentPresetRegistry.PRESETS.values())
+	return presets
+
+func test_standard_stock_comes_only_from_the_given_pool() -> void:
+	var pool: Array[EquipmentPreset] = [EquipmentPresetRegistry.Get("Seed_Lantern")]
+	for i in range(30):
+		for entry in ShopHandler.RollStock(5000, pool):
+			if(Types.Category.Gear == entry["category"] and Types.Item_Type.Standard == entry["item_type"]):
+				assert_eq(entry["payload"], "Seed_Lantern", "Standard stock should come only from the pool")

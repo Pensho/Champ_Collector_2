@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemSubType" format=3]
+
+[ext_resource type="Script" path="res://Scripts/Gear/item_sub_type.gd" id="1_subtype"]
+[ext_resource type="Script" path="res://Scripts/Gear/attribute_implicit.gd" id="2_implicit"]
+
+[sub_resource type="Resource" id="AttributeImplicit_1"]
+script = ExtResource("2_implicit")
+_attribute = 6
+_base_value = 6
+
+[resource]
+script = ExtResource("1_subtype")
+_name = "Shard Pike"
+_slot = 1
+_implicit = SubResource("AttributeImplicit_1")

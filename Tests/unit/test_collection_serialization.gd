@@ -2,7 +2,7 @@ extends GutTest
 
 const KNIGHT_PRESET = preload("res://Data/Character_Player_Variants/Knight.tres")
 const BAR_BRAWLER_PRESET = preload("res://Data/Character_Player_Variants/Bar_Brawler.tres")
-const RED_BOOTS_PRESET = preload("uid://c3g7cshxhg0rw")
+const SCALED_GREAVES_PRESET = preload("uid://c3g7cshxhg0rw")
 
 # --- ItemCollection ---
 
@@ -11,7 +11,7 @@ func test_item_collection_serialize_roundtrip() -> void:
 	var eq: Equipment = Equipment.new()
 	eq._slot = Types.Slot.Boots
 	eq._rarity = Types.Rarity.Rare
-	eq._preset_path = "res://Data/Item_Presets/Red_Boots.tres"
+	eq._preset_path = "res://Data/Item_Presets/Scaled_Greaves.tres"
 	eq._texture = "res://Assets/Champ_Collector/Icons/Items/Red_Boot/Red_Boot_0003.png"
 	eq._attributes[Types.Attribute.Speed] = 42
 	eq._attributes[Types.Attribute.Defence] = 7
@@ -44,13 +44,38 @@ func test_item_collection_serialize_roundtrip() -> void:
 	col1.free()
 	col2.free()
 
+func test_item_collection_roundtrip_keeps_sub_type_and_implicit() -> void:
+	var col1: ItemCollection = ItemCollection.new()
+	var eq: Equipment = Equipment.new()
+	eq.InstantiateNew(SCALED_GREAVES_PRESET, 0)
+	eq._level = 3
+	col1._items[0] = eq
+	col1._next_id = 1
+
+	var col2: ItemCollection = ItemCollection.new()
+	col2.Deserialize(col1.Serialize())
+
+	var restored: Equipment = col2._items[0]
+	assert_eq(restored._sub_type._name, SCALED_GREAVES_PRESET._sub_type._name,
+		"Sub-type must resolve through the preset path")
+	assert_eq(restored.GetImplicitBonus(Types.Attribute.Health), eq.GetImplicitBonus(Types.Attribute.Health),
+		"Implicit must survive the roundtrip")
+	assert_gt(restored.GetImplicitBonus(Types.Attribute.Health), 0, "Scaled Greaves' Health implicit applies")
+	assert_eq(restored._attributes, eq._attributes, "The implicit must not be saved into attributes")
+
+	for item in col2._items.values():
+		item.free()
+	eq.free()
+	col1.free()
+	col2.free()
+
 func test_item_collection_serialize_roundtrip_preserves_item_type() -> void:
 	var col1: ItemCollection = ItemCollection.new()
 	var eq: Equipment = Equipment.new()
 	eq._slot = Types.Slot.Boots
 	eq._rarity = Types.Rarity.Rare
 	eq._item_type = Types.Item_Type.Relic
-	eq._preset_path = "res://Data/Item_Presets/Red_Boots.tres"
+	eq._preset_path = "res://Data/Item_Presets/Scaled_Greaves.tres"
 	eq._texture = "res://Assets/Champ_Collector/Icons/Items/Red_Boot/Red_Boot_0003.png"
 	eq._held_by = -1
 	eq._instance_ID = 0

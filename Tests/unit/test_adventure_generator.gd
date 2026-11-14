@@ -92,11 +92,12 @@ func test_fight_node_uses_adventure_loot_over_variant_loot() -> void:
 	var variant := _MakeVariant([CharacterPreset.new()])
 	variant._loot_table = LootTable.new()
 	_adventure.battle_variants[variant] = 1
-	var adventure_loot := LootTable.new()
+	var adventure_loot := _MarkedLootTable(7)
 	_adventure.combat_rewards = adventure_loot
 	var nodes: Array[NodeData] = AdventureGenerator.GenerateAdventure(_adventure)
 	for context in _FightContexts(nodes):
-		assert_eq(context._loot_table, adventure_loot, "The adventure's loot table should override the variant's.")
+		assert_eq(context._loot_table._primary_loot, adventure_loot._primary_loot,
+			"The adventure's loot table should override the variant's.")
 
 
 func test_mutating_node_context_leaves_variant_untouched() -> void:
@@ -148,25 +149,27 @@ func test_rest_stop_nodes_have_rest_stop_context() -> void:
 
 func test_boss_node_uses_boss_rewards_when_set() -> void:
 	_adventure.boss_battle_variants.append(_MakeVariant([CharacterPreset.new()]))
-	var boss_loot := LootTable.new()
+	var boss_loot := _MarkedLootTable(3)
+	_adventure.combat_rewards = _MarkedLootTable(1)
 	_adventure.boss_rewards = boss_loot
 	var nodes: Array[NodeData] = AdventureGenerator.GenerateAdventure(_adventure)
 	for node in nodes:
 		if node.node_type == NodeData.Node_Type.BOSS:
 			var ctx := node.scene_context as Context_Battle
-			assert_eq(ctx._loot_table, boss_loot, "BOSS node should use boss_rewards when set.")
+			assert_eq(ctx._loot_table._primary_loot, boss_loot._primary_loot, "BOSS node should use boss_rewards when set.")
 
 
 func test_boss_node_falls_back_to_combat_rewards_when_boss_rewards_null() -> void:
 	_adventure.boss_battle_variants.append(_MakeVariant([CharacterPreset.new()]))
-	var fallback_loot := LootTable.new()
+	var fallback_loot := _MarkedLootTable(5)
 	_adventure.combat_rewards = fallback_loot
 	_adventure.boss_rewards = null
 	var nodes: Array[NodeData] = AdventureGenerator.GenerateAdventure(_adventure)
 	for node in nodes:
 		if node.node_type == NodeData.Node_Type.BOSS:
 			var ctx := node.scene_context as Context_Battle
-			assert_eq(ctx._loot_table, fallback_loot, "BOSS node should fall back to combat_rewards when boss_rewards is null.")
+			assert_eq(ctx._loot_table._primary_loot, fallback_loot._primary_loot,
+				"BOSS node should fall back to combat_rewards when boss_rewards is null.")
 
 
 func test_no_crash_with_empty_adventure_pools() -> void:
@@ -306,3 +309,44 @@ func test_empty_buff_pool_falls_back_to_any_buff() -> void:
 	assert_false(buffs.is_empty(), "HIGH rest_stops frequency should generate at least one REST_STOP node.")
 	for buff in buffs:
 		assert_ne(buff, Types.Buff_Type.Invalid, "Fallback buff should not be Invalid.")
+
+
+# --- Gear pools ---
+
+func _MarkedLootTable(p_silver: int) -> LootTable:
+	var table := LootTable.new()
+	table._primary_loot[LootManager.LootType.Silver] = p_silver
+	return table
+
+func _NodeLootTables(p_nodes: Array[NodeData]) -> Array[LootTable]:
+	var tables: Array[LootTable] = []
+	for node in p_nodes:
+		if node.scene_context is Context_Battle:
+			tables.append((node.scene_context as Context_Battle)._loot_table)
+		elif node.scene_context is ContextHint:
+			tables.append((node.scene_context as ContextHint)._loot_table)
+		elif node.scene_context is ContextEscalate:
+			tables.append((node.scene_context as ContextEscalate)._loot_table)
+	return tables
+
+func test_every_loot_node_carries_the_adventure_gear_pool_on_a_copy() -> void:
+	_layout.hint_nodes = AdventureLayout.Mechanic_Frequency.HIGH
+	_layout.escalate_nodes = AdventureLayout.Mechanic_Frequency.HIGH
+	_adventure.battle_variants[_MakeVariant([CharacterPreset.new()])] = 1
+	_adventure.boss_battle_variants.append(_MakeVariant([CharacterPreset.new()]))
+	_adventure.combat_rewards = LootTable.new()
+	_adventure.boss_rewards = LootTable.new()
+	_adventure.hint_rewards = LootTable.new()
+	_adventure.escalate_rewards = LootTable.new()
+	var pool: Array[EquipmentPreset] = [
+		EquipmentPresetRegistry.Get("Briar_Staff"), EquipmentPresetRegistry.Get("Seed_Lantern")]
+	_adventure.gear_pool = pool
+
+	var tables: Array[LootTable] = _NodeLootTables(AdventureGenerator.GenerateAdventure(_adventure))
+
+	assert_gt(tables.size(), 3, "Fight, boss, hint and escalate nodes should all be generated")
+	for table in tables:
+		assert_eq(table._gear_pool, pool, "Every loot node should carry the adventure's gear pool")
+	for shared in [_adventure.combat_rewards, _adventure.boss_rewards,
+			_adventure.hint_rewards, _adventure.escalate_rewards]:
+		assert_true((shared as LootTable)._gear_pool.is_empty(), "The shared loot table must stay unchanged")

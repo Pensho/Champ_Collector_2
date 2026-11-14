@@ -26,6 +26,25 @@ func test_GetEquipmentBonus():
 		equipment_bonus = _character.GetEquipmentBonus(attr)
 		assert_eq(0, equipment_bonus, "Character by default should have 0 from equipment bonus.")
 
+func test_equipment_bonus_includes_the_implicit() -> void:
+	var implicit: AttributeImplicit = AttributeImplicit.new()
+	implicit._attribute = Types.Attribute.Health
+	implicit._base_value = 6
+	var sub_type: ItemSubType = ItemSubType.new()
+	sub_type._slot = Types.Slot.Boots
+	sub_type._implicit = implicit
+	var boots: Equipment = Equipment.new()
+	boots._slot = Types.Slot.Boots
+	boots._rarity = Types.Rarity.Rare
+	boots._sub_type = sub_type
+	boots._attributes[Types.Attribute.Health] = 5
+	_item_col._items[0] = boots
+	_character._held_items[Types.Slot.Boots] = 0
+	assert_eq(_character.GetEquipmentBonus(Types.Attribute.Health),
+		5 + implicit.Value(Types.Rarity.Rare),
+		"Equipment bonus should add the implicit to the rolled attribute")
+	boots.free()
+
 func test_get_battle_attribute_equals_base_when_no_equipment() -> void:
 	_character._attributes[Types.Attribute.Attack] = 25
 	assert_eq(_character.GetTotalAttribute(Types.Attribute.Attack), 25,

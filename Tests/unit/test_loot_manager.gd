@@ -134,7 +134,7 @@ func test_equipment_drop_costs_the_standard_rarity_price_regardless_of_item_type
 	# post-primary-loot secondary-loot loop never fires and the delta isolates the
 	# Equipment branch's own cost.
 	const STARTING_BUDGET: int = 100
-	var gear_loot: EquipmentPreset = EquipmentPresetRegistry.Get("Red_Boots")
+	var gear_loot: EquipmentPreset = EquipmentPresetRegistry.Get("Scaled_Greaves")
 	var best_rarity_outcome: int = LootManager.GetBestRarityForItem(STARTING_BUDGET)
 	var expected_cost: int = int(pow(
 			LootManager.LOOT_VALUE[LootManager.LootType.Equipment],
@@ -144,12 +144,12 @@ func test_equipment_drop_costs_the_standard_rarity_price_regardless_of_item_type
 	for i in range(300):
 		var table := LootTable.new()
 		table._primary_loot[LootManager.LootType.Equipment] = 1
-		table._gear_loot = gear_loot
+		table._gear_pool = [gear_loot]
 		table._budget = STARTING_BUDGET
 
 		LootManager.DistributeRewards(table, 1)
 
-		var equipment: EquipmentPreset = table._drop_result._equipment
+		var equipment: EquipmentPreset = table._drop_result._equipment[0]
 		assert_eq(STARTING_BUDGET - table._budget, expected_cost,
 			"Budget spent on an Equipment drop should equal the standard-rarity cost regardless of item type")
 		assert_eq(equipment._slot, gear_loot._slot,
@@ -190,3 +190,43 @@ func test_rarity_rates_only_include_present_rarities() -> void:
 	assert_false(rates.has(Types.Rarity.Uncommon), "Rarities absent from the pool should not appear in the rates")
 	assert_almost_eq(rates[Types.Rarity.Common], 80.0, 0.01, "Common (288) vs Rare (72) should split 80/20")
 	assert_almost_eq(rates[Types.Rarity.Rare], 20.0, 0.01, "Rare share should be 20%")
+
+
+func _PoolTable(p_pool: Array[EquipmentPreset], p_budget: int) -> LootTable:
+	var table := LootTable.new()
+	table._primary_loot[LootManager.LootType.Equipment] = 1
+	table._gear_pool = p_pool
+	table._budget = p_budget
+	return table
+
+func test_standard_drop_comes_from_the_gear_pool() -> void:
+	var pool: Array[EquipmentPreset] = [
+		EquipmentPresetRegistry.Get("Briar_Staff"), EquipmentPresetRegistry.Get("Hueless_Slippers")]
+	var pool_paths: Array[String] = [pool[0]._preset_path, pool[1]._preset_path]
+	var pool_slots: Array[Types.Slot] = [pool[0]._slot, pool[1]._slot]
+	for i in range(200):
+		var table: LootTable = _PoolTable(pool, 100)
+		LootManager.DistributeRewards(table, 1)
+		var equipment: EquipmentPreset = table._drop_result._equipment[0]
+		if(Types.Item_Type.Relic == equipment._item_type):
+			assert_true(pool_slots.has(equipment._slot), "A Relic drop should match a pool preset's slot")
+		else:
+			assert_true(pool_paths.has(equipment._preset_path), "A Standard drop should come from the pool")
+
+func test_empty_gear_pool_drops_nothing_but_spends_the_budget() -> void:
+	var table: LootTable = _PoolTable([], 100)
+	LootManager.DistributeRewards(table, 1)
+	assert_true(table._drop_result._equipment.is_empty(), "No pool means no gear")
+	assert_lt(table._budget, 100, "The drop's cost is still spent")
+
+func test_secondary_equipment_drops_from_the_pool_and_the_loop_ends() -> void:
+	var pool: Array[EquipmentPreset] = [EquipmentPresetRegistry.Get("Pew_Shield")]
+	var table := LootTable.new()
+	table._secondary_loot[LootManager.LootType.Equipment] = 1
+	table._gear_pool = pool
+	table._budget = LootManager.CalculateBudget(10)
+	LootManager.DistributeRewards(table, 10)
+	assert_false(table._drop_result._equipment.is_empty(), "A gear-only secondary table should drop gear")
+	for equipment in table._drop_result._equipment:
+		assert_eq(equipment._slot, Types.Slot.OffHand, "Every secondary drop should come from the pool's slot")
+	assert_true(table._budget <= 0, "The secondary loop should spend the budget and end")

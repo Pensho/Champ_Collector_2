@@ -1,11 +1,13 @@
 [gd_resource type="Resource" script_class="LootTable" format=3 uid="uid://ckmtp8rvhbx3a"]
 
 [ext_resource type="Script" uid="uid://cabwckgc7os5u" path="res://Scripts/Battle/loot_table.gd" id="1_j1fi4"]
+[ext_resource type="Script" uid="uid://8knbs7yij5eh" path="res://Scripts/Gear/equipment_preset.gd" id="1_yvfhy"]
 
 [resource]
 script = ExtResource("1_j1fi4")
 _primary_loot = Dictionary[int, int]({
 0: 2,
+2: 1,
 3: 1
 })
 _secondary_loot = Dictionary[int, int]({

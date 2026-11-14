@@ -1,13 +1,16 @@
 class_name EquipmentPresetRegistry extends Node
 
 ## Preload-based lookup from a stable identifier string (matching the .tres base file
-## name, e.g. "Red_Boots") to its EquipmentPreset, mirroring ReagentRegistry
+## name, e.g. "Scaled_Greaves") to its EquipmentPreset, mirroring ReagentRegistry
 ## (DirAccess-based discovery is unsafe on Android export).
 
 const PRESETS: Dictionary[String, EquipmentPreset] = {
-	"Red_Boots": preload("res://Data/Item_Presets/Red_Boots.tres"),
-	"Shield_Basic": preload("res://Data/Item_Presets/Shield_Basic.tres"),
-	"Weapon_Basic_Spear": preload("res://Data/Item_Presets/Weapon_Basic_Spear.tres"),
+	"Briar_Staff": preload("res://Data/Item_Presets/Briar_Staff.tres"),
+	"Shard_Pike": preload("res://Data/Item_Presets/Shard_Pike.tres"),
+	"Seed_Lantern": preload("res://Data/Item_Presets/Seed_Lantern.tres"),
+	"Pew_Shield": preload("res://Data/Item_Presets/Pew_Shield.tres"),
+	"Scaled_Greaves": preload("res://Data/Item_Presets/Scaled_Greaves.tres"),
+	"Hueless_Slippers": preload("res://Data/Item_Presets/Hueless_Slippers.tres"),
 }
 
 const RELIC_PRESETS: Dictionary[String, EquipmentPreset] = {
@@ -40,11 +43,11 @@ const RELIC_PRESETS: Dictionary[String, EquipmentPreset] = {
 static func Get(p_id: String) -> EquipmentPreset:
 	return PRESETS.get(p_id)
 
-static func GetRandomKey() -> String:
-	var preset_keys: Array[String] = PRESETS.keys()
-	if(preset_keys.is_empty()):
-		return ""
-	return preset_keys[randi_range(0, preset_keys.size() - 1)]
+static func KeyFor(p_preset: EquipmentPreset) -> String:
+	for key in PRESETS:
+		if(PRESETS[key]._preset_path == p_preset._preset_path):
+			return key
+	return ""
 
 static func GetRelic(p_id: String) -> EquipmentPreset:
 	return RELIC_PRESETS.get(p_id)
