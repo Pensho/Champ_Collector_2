@@ -103,6 +103,9 @@ Effort: **S** = hours, **M** = days, **L** = week+
 - **On-character trait state markers** *(Priority: Medium | Effort: M)*
   Show trait state on the character representations instead of in passive tooltips: the Cultist's Vessel, marked by a start-of-combat passive effect; each enemy's Infraction tally; and the stack and charge counts passives write into their tooltip today (Instability, Calibration, Tension, Devotion).
 
+- **Shop items use the rarity backdrop** *(Priority: Low | Effort: S)*
+  Shop slots mark rarity with an outline shader on the icon (`shop_slot.gd`); match the rarity backdrop the inspect screen's item slots use (`menu_item_slot.gd`).
+
 - **Desktop Window Size Option** *(Priority: Low | Effort: S)*
   A window-size dropdown in settings for Windows/Linux windowed mode, clamped to the screen size and persisted in `settings.gd`. Add if playtesters ask for it. Switching the stretch aspect from `keep` to `expand` (no letterboxing on non-16:9 screens) is a separate, larger decision: every UI scene's anchors must hold, and `post_battle_menu.gd` hard-codes a 1280×720 background.
 
