@@ -44,7 +44,7 @@ Code plans:
   `BiomeVisualData`.
 
 - `Plan_Gear_Sub_Types.md` — sub-types within each gear slot, each with its own attribute pool
-  and an implicit attribute line.
+  and an implicit that grows more complex by Act, dropped from per-Adventure gear pools.
 
 - `Plan_Localization.md` — the six-step localization rollout and its conventions. Each
   step gets a detailed plan when the step before it completes.
