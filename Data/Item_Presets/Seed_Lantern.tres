@@ -1,14 +1,14 @@
-[gd_resource type="Resource" script_class="EquipmentPreset" format=3]
+[gd_resource type="Resource" script_class="EquipmentPreset" format=3 uid="uid://bk3kcel7nlipa"]
 
 [ext_resource type="Script" uid="uid://8knbs7yij5eh" path="res://Scripts/Gear/equipment_preset.gd" id="1_preset"]
-[ext_resource type="Resource" path="res://Data/Item_Sub_Types/Seed_Lantern.tres" id="2_subtype"]
+[ext_resource type="Resource" uid="uid://cacv3mt751iwb" path="res://Data/Item_Sub_Types/Seed_Lantern.tres" id="2_subtype"]
 
 [resource]
 script = ExtResource("1_preset")
 _name = "Seed Lantern"
 _slot = 2
 _rarity = 2
-_texture_path = "res://Assets/Champ_Collector/Icons/Items/Crystal_Ball/Crystal_Ball_0001.png"
+_texture_path = "res://Assets/Champ_Collector/Icons/Items/seed_lantern.png"
 _preset_path = "res://Data/Item_Presets/Seed_Lantern.tres"
 _sub_type = ExtResource("2_subtype")
 metadata/_custom_type_script = "uid://8knbs7yij5eh"

@@ -1,14 +1,14 @@
-[gd_resource type="Resource" script_class="EquipmentPreset" format=3]
+[gd_resource type="Resource" script_class="EquipmentPreset" format=3 uid="uid://d0q3mg1mtkfc8"]
 
 [ext_resource type="Script" uid="uid://8knbs7yij5eh" path="res://Scripts/Gear/equipment_preset.gd" id="1_preset"]
-[ext_resource type="Resource" path="res://Data/Item_Sub_Types/Briar_Staff.tres" id="2_subtype"]
+[ext_resource type="Resource" uid="uid://cq17uek6lrr66" path="res://Data/Item_Sub_Types/Briar_Staff.tres" id="2_subtype"]
 
 [resource]
 script = ExtResource("1_preset")
 _name = "Briar Staff"
 _slot = 1
 _rarity = 2
-_texture_path = "res://Assets/Champ_Collector/Icons/Items/Sword_Icon.png"
+_texture_path = "res://Assets/Champ_Collector/Icons/Items/briar_staff.png"
 _preset_path = "res://Data/Item_Presets/Briar_Staff.tres"
 _sub_type = ExtResource("2_subtype")
 metadata/_custom_type_script = "uid://8knbs7yij5eh"

@@ -43,9 +43,6 @@ Code plans:
   static layer nodes, refreshes only node states, and moves ambient particles onto
   `BiomeVisualData`.
 
-- `Plan_Gear_Sub_Types.md` — sub-types within each gear slot, each with an implicit that grows
-  more complex by Act, dropped from per-Adventure gear pools.
-
 - `Plan_Localization.md` — the six-step localization rollout and its conventions. Each
   step gets a detailed plan when the step before it completes.
 - `Plan_Localization_Text_Preparation.md` — step 1: every player-facing string routed

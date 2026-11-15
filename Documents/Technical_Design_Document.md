@@ -336,10 +336,12 @@ load time. There is a consistent **preset (template) vs instance (runtime)** spl
 | `PresentationArchetypes` | `Scripts/Battle/presentation_archetypes.gd` | The default archetype per category plus the generic echo pulse, read by `PresentationDefaults` (`Data/Presentation/Presentation_Archetypes.tres`) |
 | `ResultReactions` / `ResultReaction` | `Scripts/Battle/result_reactions.gd`, `result_reaction.gd` | The shared reaction to a hit, heal or death: flash color, archetype, variant, cue (`Data/Presentation/Result_Reactions.tres`, see 9.3) |
 | `AttributeWeightPreset` | `Scripts/Character/attribute_weight_preset.gd` | Per-attribute weight distribution used at level-up |
-| `EquipmentPreset` | `Scripts/Gear/equipment_preset.gd` | Gear template: slot, rarity, attribute composition |
-| `LootTable` | `Scripts/Battle/loot_table.gd` | Encounter rewards: primary (guaranteed) and secondary (weighted) loot |
-| `ActData` | `Scripts/Adventure_Scripts/act_data.gd` | An act's two selectable `AdventureData` |
-| `AdventureData` | `Scripts/Adventure_Scripts/adventure_data.gd` | One selectable adventure: selection name and texture, `AdventureLayout`, `BiomeData`, weighted `battle_variants` and `boss_battle_variants` (`Context_Battle` resources), reward tables, an `AdventureBuffPool` (the buffs its Rest Stops and Gamble wins roll from; none falls back to every buff); its `resource_path` keys difficulty progress and the saved run |
+| `EquipmentPreset` | `Scripts/Gear/equipment_preset.gd` | Gear template: slot, rarity, attribute composition, `_sub_type` (null on a Relic) |
+| `ItemSubType` | `Scripts/Gear/item_sub_type.gd` | A standard item's kind within its slot: name, slot and `ItemImplicit` (`Data/Item_Sub_Types/`) |
+| `ItemImplicit` / `AttributeImplicit` | `Scripts/Gear/item_implicit.gd`, `attribute_implicit.gd` | An implicit's attribute bonus and text at a rarity; each kind is a subclass. `AttributeImplicit` is `_base_value` × `GameBalance.ITEM_IMPLICIT_RARITY_MULTIPLIER` on one attribute |
+| `LootTable` | `Scripts/Battle/loot_table.gd` | Encounter rewards: primary (guaranteed) and secondary (weighted) loot, and the `_gear_pool` a gear drop picks from |
+| `ActData` | `Scripts/Adventure_Scripts/act_data.gd` | An act's two selectable `AdventureData` and its `gear_pool` (the hub shop's standard stock) |
+| `AdventureData` | `Scripts/Adventure_Scripts/adventure_data.gd` | One selectable adventure: selection name and texture, `AdventureLayout`, `BiomeData`, weighted `battle_variants` and `boss_battle_variants` (`Context_Battle` resources), reward tables, a `gear_pool` (a subset of its Act's), an `AdventureBuffPool` (the buffs its Rest Stops and Gamble wins roll from; none falls back to every buff); its `resource_path` keys difficulty progress and the saved run |
 | `AdventureLayout` | `Scripts/Adventure_Scripts/adventure_layout.gd` | Depth range and node-type frequencies |
 | `BiomeData` | `Scripts/Adventure_Scripts/biome_data.gd` | An adventure's look: `BiomeVisualData` and the battle stages its encounters draw from |
 | `StageClutterEntry` | `Scripts/Battle/Visuals/stage_clutter_entry.gd` | One floor-clutter scatter rule, authored on a stage's `StageClutterView` |
@@ -757,11 +759,14 @@ Chant Fragment, Notarized Seal, Wayfarer's Compass.
   those the preset allows, duplicates the trait, and stores `_preset_path` for later save/restore.
   Equipped gear lives in `_held_items: Dictionary[Types.Slot, int]` (slot → item instance ID).
 - `Equipment` (`Scripts/Gear/equipment.gd`) is the runtime gear instance, holding its slot,
-  rarity, and rolled attributes.
+  rarity, sub-type and rolled attributes. Its implicit is derived (`GetImplicitBonus`), never
+  stored in `_attributes`. `GetItemText()` returns an `ItemText` (type line, implicit, body)
+  that item tooltips and popups lay out separately.
 
 **Attribute aggregation** is centralized: `Character.GetBattleAttribute()` /
 `GetBattleAttributes()` return base attributes plus equipment bonuses (the latter summed by
-`GetEquipmentBonus()`, which looks items up in the global `ItemCollection`). Combat always reads
+`GetEquipmentBonus()`, which looks items up in the global `ItemCollection` and adds each
+implicit). Combat always reads
 attributes through these methods so gear is automatically included. Note that effective HP is
 `Health * Game_Balance.ATTRIBUTE_HEALTH_MULTIPLIER` (×4), applied wherever current health is set.
 
@@ -1965,7 +1970,8 @@ and stale keys no longer in `ReagentRegistry.REAGENTS`.
 `ShopHandler` (`Scripts/Worldview/shop_handler.gd`) is likewise owned by `Main_Instance` and in
 the saveable group. It holds the six current stock entries plus a restock anchor and a Fortune's
 Favor purchase timestamp, both wall-clock unix seconds so restock and cooldown state survive
-offline time (`Concept_Document.md` 3.6.4).
+offline time (`Concept_Document.md` 3.6.4). Standard gear stock draws from the hub Act's
+`gear_pool`; Relic stock from every Relic.
 
 `TallyBoardHandler` (`Scripts/Worldview/tally_board_handler.gd`) mirrors `ShopHandler`'s shape:
 owned by `Main_Instance`, in the saveable group, holding its three current champion offers plus
@@ -2023,20 +2029,24 @@ The adventure (run) system lives in `Scripts/Adventure_Scripts/`:
 - `adventure_generator.gd` builds a node graph from an `AdventureData` (its layout, a boss node,
   controlled branching). Each FIGHT node rolls one weighted `battle_variants` entry and the BOSS
   node one `boss_battle_variants` entry; the node gets a copy of it
-  (`duplicate_deep(DEEP_DUPLICATE_NONE)`, so its enemy lists are its own) carrying the adventure's
-  loot table, and the biome's stage when the variant names none. A run's seed decides its map and
+  (`duplicate_deep(DEEP_DUPLICATE_NONE)`, so its enemy lists are its own) carrying a copy of the
+  adventure's loot table with its `gear_pool`, and the biome's stage when the variant names none.
+  Hint and Escalate nodes get the same loot-table copy. The copy draws no random numbers, so
+  seeded regeneration on load rebuilds the same nodes. A run's seed decides its map and
   its Hint and Escalate rewards (`AdventureState.DistributeNodeRewards`); every `seed()` call is
   followed by `randomize()`, so nothing else rolls from it.
 - `adventure_state.gd` / `adventure_state_handler.gd` track current progress, adventure-spanning
   effects, and serialization; the handler is in the `"saveable"` group.
 - Rewards flow through `LootManager` (`Scripts/Battle/loot_manager.gd`) and `LootTable` resources:
-  a difficulty-scaled budget feeds primary (guaranteed) and secondary (weighted) loot.
+  a difficulty-scaled budget feeds primary (guaranteed) and secondary (weighted) loot. A gear
+  drop picks a random `_gear_pool` preset, and a Relic roll swaps in a Relic for that slot;
+  `DropResult._equipment` is an array.
 - `Visuals/` holds the pure, seeded map-art generators: node placement, structure layout,
   roads and background decor. `AdventureGraphUi` builds one shared `StructureLayout` for the
   map's layers; see `Adventure_Background_Visuals_Checklist.md` "Rendering integration".
 
 Coverage: `test_adventure_state.gd`, `test_adventure_generator.gd`, `test_act_data.gd`,
-`test_loot_manager.gd`, `test_adventure_node_placement.gd`,
+`test_loot_manager.gd`, `test_gear_pool_invariants.gd`, `test_adventure_node_placement.gd`,
 `test_structure_layout_generator.gd`, `test_adventure_road_generator.gd`,
 `test_adventure_background_generator.gd` (see `Test_Design_Document.md`).
 

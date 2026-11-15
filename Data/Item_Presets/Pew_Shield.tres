@@ -1,14 +1,14 @@
 [gd_resource type="Resource" script_class="EquipmentPreset" format=3 uid="uid://deri0o1rplmuk"]
 
 [ext_resource type="Script" uid="uid://8knbs7yij5eh" path="res://Scripts/Gear/equipment_preset.gd" id="1_preset"]
-[ext_resource type="Resource" path="res://Data/Item_Sub_Types/Pew_Shield.tres" id="2_subtype"]
+[ext_resource type="Resource" uid="uid://3fd5i3tiu16l" path="res://Data/Item_Sub_Types/Pew_Shield.tres" id="2_subtype"]
 
 [resource]
 script = ExtResource("1_preset")
 _name = "Pew Shield"
 _slot = 2
 _rarity = 2
-_texture_path = "res://Assets/Champ_Collector/Icons/Items/Shield/Shield_0002.png"
+_texture_path = "res://Assets/Champ_Collector/Icons/Items/pew_shield.png"
 _preset_path = "res://Data/Item_Presets/Pew_Shield.tres"
 _sub_type = ExtResource("2_subtype")
 metadata/_custom_type_script = "uid://8knbs7yij5eh"

@@ -94,6 +94,7 @@ Part I whole, and no section grants an exemption this table does not carry.
 | Passive icons | The material slots of section 3 | 12.6 |
 | Turn bar zone art | Non-negotiables 1, 2 and 3; section 4's light direction; 14.1's outline and key background | 13.3.1 |
 | Gear and reagent icons | Non-negotiable 3; section 4's camera, ground line and composition tail; the material slots of section 3 | 11.1, 11.3 |
+| Standard gear's soft-color part | Non-negotiable 2's no-gradient rule, on that one part only | 11.7 |
 | Effects and VFX | Non-negotiable 3's coverage cap only | 14.1 |
 | Turn bar passive overlays | As turn bar zone art | 13.3.2 |
 | Surface textures | Non-negotiable 1's outer silhouette; section 4 | 10.7.1 |
@@ -507,7 +508,7 @@ on assets that already look right.
 | Active skill art (12.4) | Overlay only — quantize would strip the hatching and tone-block range; no LUT, since skill art is UI and not in scene light |
 | Passive icons (12.6) | Quantize, accent correction, overlay, downscale to 40 px; no LUT |
 | Turn bar zone art (13.3.1) | Key out, then downscale; no quantize, no accent correction, no LUT |
-| Gear and reagent icons (11.1, 11.3) | Crop, quantize, overlay, downscale to 100 × 120; no accent correction, no LUT. Quantize untested (19.4) |
+| Gear and reagent icons (11.1, 11.3) | Crop, quantize, overlay, downscale to 100 × 120; no accent correction, no LUT. A standard item's soft-color part (11.7) is masked out of quantize. Quantize untested (19.4) |
 
 **The quantize step must snap L\* while preserving hue.** A greyscale-ramp
 implementation strips the tinted band 1 (2.2) and the saturated garment (3.5)
@@ -612,11 +613,13 @@ See 11.
 - [ ] Judged at exactly 100 × 120 px in a mocked inventory row, never at full resolution
 - [ ] On the lower-right to upper-left diagonal; only a handle or shaft leaves the frame (11.1)
 - [ ] Three levels of detail, every group counted, cut order recorded
-- [ ] Four values; no gradients; outline ink black `#14121A`; one broad bone white edge
+- [ ] Four values; no gradients outside a standard item's one soft-color part (11.7); outline ink black `#14121A`; one broad bone white edge
 - [ ] No Role accent
 - [ ] Silhouette survives being filled black
 - [ ] Relics: one strange element visible in the still image, plus an ornate made finish (11.6)
 - [ ] Relics: parts integrated into one made object, with no complete object set on another (11.6)
+- [ ] Standard gear: plain worked finish, plus a standout part, a silhouette of its own and something hung or tied close against the form (11.7)
+- [ ] Standard gear: material and form do not promise a different attribute than the sub-type's implicit (11.7)
 - [ ] Still reads as its item type — footwear, weapon, off-hand — at a glance (11.6)
 - [ ] Boots shown as a pair, unless the item is not footwear (11.2)
 - [ ] Rarity signal — not yet defined for gear (11.5); reagents carry none in the art (11.3)
@@ -2637,7 +2640,7 @@ composition, no figures, no creatures
 
 Gear is shown as an icon in an inventory cell, and that icon is the only item art
 (12.7). The rules below were established on seven Relics across all three slots
-(11.6); standard gear has not been generated yet.
+(11.6) and six standard items (11.7).
 
 ### 11.1 Gear icons — shared conventions
 
@@ -2689,8 +2692,8 @@ one, and a knife in the Off-Hand slot reads as a weapon. The folllowing list is 
 reads as a coin, medallion or seal. Turn it three-quarter so its thickness and
 straps show, and prefer a heater, kite or tower outline.
 
-Whether each slot needs its own silhouette convention, so a weapon reads as a
-weapon before it reads as which one, is open until standard gear exists.
+No slot needs its own silhouette convention: the six standard items of 11.7 each
+read as their slot without one.
 
 ### 11.3 Reagents
 
@@ -2773,7 +2776,8 @@ overhang, the citrine stone and its glyph are never cut.
 > — decide the priority.
 
 Reagents take rarity from an engine background behind the icon (11.3). Whether
-gear uses the same mechanism is open.
+gear uses the same mechanism is open. A standard item is one image per sub-type,
+shown at every rarity (11.7), so its rarity cannot live in the art either.
 
 ### 11.6 Relics
 
@@ -2838,6 +2842,64 @@ bold woodcut icon with engraved structural linework, very thick black contour ou
 
 A heel described as *tapering to a sharp point* returns a stiletto; the flat-sole
 clause and the height cap against the toe cap hold it.
+
+### 11.7 Standard gear
+
+A standard item belongs to a sub-type (`Concept_Document.md` 3.3.1), and the
+sub-type is one image shown at every rarity, Common to Legendary. Pitch it between
+the two: neither junk nor a find.
+
+- **A plain worked finish** — lashings, rivets, cord, a bent band, a chipped
+  edge, a missing piece. No ornate finish: that is what separates it from a Relic
+  (11.6). Color and one strange but plausible part are allowed.
+- **A plain object alone comes back bland** and reads only as its type. Each item
+  needs a standout part, a silhouette of its own, and something hung or tied close
+  against the form (a cloth strip, a ring, a cord with a token).
+- **One soft-color part** (exempt in 1.1): iridescence, glow, mottling, a fade,
+  veins. Scope it in the prompt with *the X alone carrying this soft color* and
+  hold everything else in flat hard-edged fills. Vary the kind across the set.
+  Within one material, color as hard flat bands reads as several materials; a
+  color shift there needs the soft gradient. Mask the part out of quantize (6).
+- **Material and form must not contradict the implicit.** Plate promises
+  Defence, whatever the item's implicit says.
+- **Draw the materials from the Adventure that drops the item**, so the two halves
+  of an Act's gear pool look apart.
+
+#### 11.7.1 Approved prompts
+
+At most three, one per slot. Adding one means removing another's prompt.
+
+**Glaive (Weapon).** One iridescent crystal blade with a back spur, in a plain
+iron cage. A grey faceted shard read as worked stone; the color made it crystal.
+
+```
+bold woodcut icon with engraved structural linework, very thick black contour outline on the outer silhouette, hard-edged shadows, four values, hand-carved edge quality with visible gouge marks, the head of a sturdy glaive on a diagonal from the lower right toward the upper left, the wooden shaft running out through the lower right edge of the frame, the glaive head a single broad blade of crystal, single-edged, widening from the base toward the tip and curving gently to a sharp point at the upper left, the convex cutting edge along the upper side of the blade and the straight thick spine along its lower side, a long flat bevel running the full length of the cutting edge, a raised ridge running along the spine, one short hooked spur growing out of the middle of the spine and pointing back toward the lower left, the spur part of the same crystal as the blade, the whole blade one clear iridescent crystal whose color shifts softly through rose, violet, blue and teal across its surface, the colors melting into one another inside the crystal like oil on water, the blade alone carrying this soft shifting color, its edges, bevel and ridge cut sharp and hard so it reads as cut crystal, the base of the blade held in a cage of three forged iron bands wrapped tightly around it and riveted to the top of the shaft, the middle band slightly bent, below the cage a strip of faded ochre cloth knotted around the shaft with its torn tail hanging down close along the shaft, beside the knot two short cords hanging close against the shaft: the first cord holding a small pierced bronze disc, the second cord holding a small chip of the same crystal, three levels of detail: the crystal blade carries the heaviest engraved detail and reads as the focal point, through the sharp line of the bevel, the spine ridge, the hooked spur and two internal fracture planes cut as straight lines across the widest part of the blade; the iron cage, the cloth and the two hanging pieces carry moderate engraved detail through the rivet heads on the bands, the folds of the knot, the torn edge of the cloth tail, the hole through the bronze disc and parallel hatching lines across the shadow side of the cage; the shaft carries light detail through a single wrap of worn leather grip below the cloth, all marks bold and structural, the iron, cloth, bronze, cord and wood held in flat hard-edged fills, the cage in dark blackened iron falling into ink black shadow on its lower right, the cords in dull umber, the shaft in bark-brown wood, the grip in oxblood leather, one broad bone white edge along the cutting edge of the blade, light from the upper left, the whole head visible with margin on all sides except where the shaft leaves the frame
+```
+
+**Cut order:** hatching, leather grip, fracture planes, crystal chip. The blade's
+curve, bevel, spur and cage are never cut.
+
+**Pew Shield (Off-Hand).** A pew end cut down into a heater shield, old paint
+left in its carved recess.
+
+```
+bold woodcut icon with engraved structural linework, very thick black contour outline on the outer silhouette, hard-edged shadows, four values, hand-carved edge quality with visible gouge marks, a heater shield cut down from the carved end panel of an old temple bench shown whole, turned three-quarter so its thickness and the straps on its back show along the right edge, tilted on a diagonal with its top leaning toward the upper left, the shield face one thick wooden panel bowed gently outward, its sides curving inward to a point at the bottom, the top rising into a carved finial of three rounded lobes with the right lobe broken off at a jagged stump, a thick carved scroll curling outward from the upper left edge, a flat iron rim running around the whole edge of the shield from the finial down to the point, a domed iron boss in the lower center of the face, above the boss a small recessed pointed arch carved into the panel holding one carved trefoil, old paint left inside the recess, worn soft and patchy, in faded violet and faded gold, the paint alone soft and worn, kept inside the walls of the recess, a long split running down from the broken lobe toward the arch, on the back of the shield two leather arm straps and one leather hand grip showing past the right edge, from the point at the bottom a short iron chain of three links hanging down ending in a broken book clasp, three levels of detail: the finial, the scroll, the boss and the painted arch recess carry the heaviest engraved detail and read as the focal point, through the carved lobes, the jagged break, the curl of the scroll, the dome and rivet ring of the boss, the sharp walls of the recess and the trefoil; the face and the rim carry moderate engraved detail through the wood grain lines along the panel, six rivet heads spaced along the rim, the split and parallel hatching lines across the shadow side of the face; the straps, grip and chain carry light detail through the strap buckles alone, all marks bold and structural, the wood and iron held in flat hard-edged fills, the panel in dark aged oak falling into ink black shadow on its lower right, the rim, boss, rivets, chain and clasp in dark blackened iron, the straps and grip in oxblood leather, one broad bone white edge along the upper rim of the finial, light from the upper left, the whole shield visible with margin on all sides
+```
+
+Cropped in from the right and bottom after generation (11.1). **Cut order:**
+hatching, wood grain lines, chain. The outline, rim, boss, straps, finial and
+painted recess are never cut.
+
+**Hide boots (Boots).** Colorless hide drinking color up from the soles — a
+strange part that signals Resistance, on a plain made boot.
+
+```
+bold woodcut icon with engraved structural linework, very thick black contour outline on the outer silhouette, hard-edged shadows, four values, hand-carved edge quality with visible gouge marks, a matched pair of tall soft knee boots shown whole in side profile, both toes pointing toward the left, the near boot standing in front and the far boot set just behind it offset toward the upper left, the far boot partly hidden by the near one, each boot made of pale colorless hide with a rounded toe and a thick flat sole of dark leather, each shaft rising to the knee and ending in a wide cuff turned down over its top, the edge of each cuff cut into four rounded tongues, the near boot's shaft wrapped by three bands of thin cord, a stitched seam running up the back of the near boot, from the top cord band a short tassel of colorless hair hanging down close against the shaft, thin soft veins of color seeping up into the hide from the soles like ink wicking into paper, following the grain of the hide in coral, amber, sea green and violet, each vein fading softly into the pale hide as it climbs, gone before the middle of the shin, the veins alone carrying this soft color, three levels of detail: the lower part of the near boot where the veins enter the hide carries the heaviest engraved detail and reads as the focal point, through the grain lines of the hide, the edge of the sole and the creases across the ankle; the near boot's shaft and cuff carry moderate engraved detail through the four cuff tongues, the three cord bands, the back seam and parallel hatching lines across the shadow side of the shaft; the far boot and the tassel carry light detail through the outline of the far boot's cuff alone, all marks bold and structural, the hide, sole, cord and hair held in flat hard-edged fills apart from the veins, the hide in pale ash-grey falling into ink black shadow on its lower right, the soles in dark umber leather, the cord in dull grey fiber, the tassel in colorless grey hair, one broad bone white edge along the upper rim of the near boot's cuff, light from the upper left, both boots visible with margin on all sides
+```
+
+Cropped in from the right and bottom after generation (11.1). **Cut order:**
+hatching, back seam, cord bands to two. The veins, cuff tongues and dark soles
+are never cut.
 
 ---
 
@@ -3833,8 +3895,6 @@ together, at six characters rather than at fifteen.
 - **Rarity colors versus accent colors.** Two color-identity systems competing for
   the same player attention (11.5). Relics add a third candidate: their one
   saturated material (11.6).
-- **Standard gear.** Not yet generated. The plain finish that sets it apart from a
-  Relic, and whether slots need their own silhouette conventions (11.2).
 - **Alchemist brews.** The one reagent exception to the object rule (11.3); no
   visual direction yet.
 - **Reagent and Relic hues.** Both catalogs spread one saturated material across
@@ -3842,7 +3902,8 @@ together, at six characters rather than at fifteen.
 - **Kiln Brand's guard.** Kept for now, but a whole kiln stacked on a knife (11.6).
   Rework with kiln elements worked into the guard.
 - **Gear icon post-processing.** Whether quantize keeps the engraved detail and
-  pierced openings (6).
+  pierced openings, and whether masking a standard item's soft-color part out of
+  it leaves a visible seam (6, 11.7).
 - **Skill art display size.** One illustration per skill or two assets — tooltip
   art plus bar icon — decided once the skill-bar size is known (12.4.7).
 - **Element color or caster accent** in the skill art accent block, when the two

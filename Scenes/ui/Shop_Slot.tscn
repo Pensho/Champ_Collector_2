@@ -54,12 +54,12 @@ horizontal_alignment = 2
 
 [node name="TextureRect_Icon" type="TextureRect" parent="." unique_id=1771423758]
 material = SubResource("ShaderMaterial_shop_slot")
-custom_minimum_size = Vector2(110, 98)
+custom_minimum_size = Vector2(100, 120)
 layout_mode = 0
 offset_left = 8.0
 offset_top = 24.0
-offset_right = 118.0
-offset_bottom = 124.0
+offset_right = 108.0
+offset_bottom = 144.0
 expand_mode = 1
 
 [node name="TextureRect_IconDarken" type="TextureRect" parent="." unique_id=88361027]
@@ -68,8 +68,8 @@ modulate = Color(0, 0, 0, 0.65)
 layout_mode = 0
 offset_left = 8.0
 offset_top = 24.0
-offset_right = 118.0
-offset_bottom = 122.0
+offset_right = 108.0
+offset_bottom = 144.0
 mouse_filter = 2
 expand_mode = 1
 
@@ -81,7 +81,7 @@ mouse_filter = 2
 
 [node name="Label_Name" type="Label" parent="Content" unique_id=1678829635]
 layout_mode = 0
-offset_left = 126.0
+offset_left = 116.0
 offset_top = 24.0
 offset_right = 372.0
 offset_bottom = 122.0
@@ -95,17 +95,17 @@ autowrap_mode = 2
 [node name="TextureRect_Silver" type="TextureRect" parent="Content" unique_id=978043755]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 0
-offset_left = 8.0
+offset_left = 116.0
 offset_top = 138.0
-offset_right = 28.0
+offset_right = 136.0
 offset_bottom = 158.0
 expand_mode = 1
 
 [node name="Label_Price" type="Label" parent="Content" unique_id=708988405]
 layout_mode = 0
-offset_left = 32.0
+offset_left = 140.0
 offset_top = 136.0
-offset_right = 245.0
+offset_right = 249.0
 offset_bottom = 160.0
 theme = ExtResource("2_theme")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
@@ -129,8 +129,8 @@ custom_minimum_size = Vector2(1, 1)
 anchors_preset = 0
 offset_left = 8.0
 offset_top = 24.0
-offset_right = 118.0
-offset_bottom = 124.0
+offset_right = 108.0
+offset_bottom = 144.0
 mouse_filter = 2
 script = ExtResource("4_tooltip")
 show_on_press = true

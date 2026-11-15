@@ -32,7 +32,7 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 6
 text = "Title"
 
-[node name="Label_Subtitle" type="Label" parent="MainVisuals/MarginContainer/VBoxContainer"]
+[node name="Label_Subtitle" type="Label" parent="MainVisuals/MarginContainer/VBoxContainer" unique_id=1278598831]
 visible = false
 layout_mode = 2
 theme = ExtResource("1_i0vmh")
@@ -46,7 +46,7 @@ layout_mode = 2
 mouse_filter = 2
 color = Color(1, 1, 1, 0.49019608)
 
-[node name="RichTextLabel_Implicit" type="RichTextLabel" parent="MainVisuals/MarginContainer/VBoxContainer"]
+[node name="RichTextLabel_Implicit" type="RichTextLabel" parent="MainVisuals/MarginContainer/VBoxContainer" unique_id=1938161121]
 visible = false
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
@@ -56,7 +56,7 @@ theme_override_font_sizes/normal_font_size = 20
 bbcode_enabled = true
 fit_content = true
 
-[node name="ColorRect_Implicit_Divider" type="ColorRect" parent="MainVisuals/MarginContainer/VBoxContainer"]
+[node name="ColorRect_Implicit_Divider" type="ColorRect" parent="MainVisuals/MarginContainer/VBoxContainer" unique_id=1591368447]
 visible = false
 custom_minimum_size = Vector2(1, 1)
 layout_mode = 2
