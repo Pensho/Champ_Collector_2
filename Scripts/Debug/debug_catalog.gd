@@ -36,6 +36,8 @@ const ENEMY_CHARACTER_PRESETS: Dictionary[String, CharacterPreset] = {
 	"Slab Tosser": preload("res://Data/Character_Enemy_Variants/Slab_Tosser.tres"),
 	"Chanter": preload("res://Data/Character_Enemy_Variants/Chanter.tres"),
 	"Gatherer": preload("res://Data/Character_Enemy_Variants/Gatherer.tres"),
+	"Molten Glass Hound": preload("res://Data/Character_Enemy_Variants/Molten_Glass_Hound.tres"),
+	"Ossuary Keeper": preload("res://Data/Character_Enemy_Variants/Ossuary_Keeper.tres"),
 }
 
 ## Pre-made enemy wave layouts the battle launcher debug page can pick from.
@@ -62,6 +64,7 @@ const BATTLE_CONTEXTS: Dictionary[String, Context_Battle] = {
 	"Hue-Eater": preload("res://Data/Battle_Variants/Battle_Hue_Eater.tres"),
 	"Slab Tossers": preload("res://Data/Battle_Variants/Battle_Slab_Tossers.tres"),
 	"Chanter and Gatherers": preload("res://Data/Battle_Variants/Battle_Chanter_and_Gatherers.tres"),
+	"Burning Glass": preload("res://Data/Battle_Variants/Battle_Burning_Glass.tres"),
 }
 
 ## The player champions the debug pages may add, keyed by name: every champion the running

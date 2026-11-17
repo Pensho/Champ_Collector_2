@@ -23,5 +23,6 @@ name = "Lava Zone"
 description = "Burns enemies that stands in it."
 icon_path = "res://Assets/Champ_Collector/Icons/Abilities/Role_Active_Skills/Righteous_Fire/Righteous_Fire_1.jpg"
 target = 8
+cooldown = 3
 effects = Array[ExtResource("1_cq2sf")]([SubResource("Resource_3jaan")])
 metadata/_custom_type_script = "uid://glh06y3wvchj"

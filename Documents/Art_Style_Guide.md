@@ -281,6 +281,18 @@ option if cool is already crowded.
 shadow black carrying hue, the material neutral is no longer the only place
 variety can live.
 
+### 3.7 Materials that are already flat
+
+Stained glass, mosaic, enamel, painted tile and heraldry are flat color inside
+black lines already, which is what the general block asks for. Used as a whole
+body, the two flatnesses stack and the result reads as a coloring-book page;
+several jewel-bright hues make it cheerful as well.
+
+Used as an element on a figure — the Warlord's shield (8.7.3) — such a material
+holds. As a whole body: **dirty most of it** — soot-blackened, smoked, dulled —
+**let its color show only where the dirt breaks**, and put the brightest color
+where the threat or the mechanic is (9.6.3).
+
 ---
 
 ## 4. Perspective — identical everywhere
@@ -357,6 +369,13 @@ back lands on NPC. One of them against established bulk, a weapon and a wide
 stance is a posture, not a status, and `hunched` in particular is useful for
 getting weight into an asymmetric silhouette.
 
+**Name the mood, or there is none.** A subject block of structural description
+alone returns a neutral, harmless read, however aggressive its pose and parts. An
+asset meant to threaten says so near the front of the subject block —
+`menacing`, `monstrous`, `predatory`, `dangerous and poised to strike` — and the
+same holds for any other mood an asset must carry. Whether the words or the
+design did the work on the first case is untested (19.2).
+
 ### 5.3 Genre attractors
 
 Leonardo has strong genre basins, and a prompt that puts several of their
@@ -378,6 +397,12 @@ qualifiers reinforces the basin.
 
 When an attractor lands, rewrite the costume from a different occupation rather
 than negating.
+
+**Find the trigger before cutting a trait.** When an output reads cartoonish,
+check the face, the tone words (5.2) and the genre the vocabulary belongs to
+before blaming a proportion. A broad trait such as a thin build is rarely the
+cause — elongation can also be a horror tool — and removing it trades one design for
+another while the trigger stays.
 
 **The two basins on either side of a magic Role are close together.** Fleeing the
 generic-wizard basin with surveyor and travel vocabulary lands in the
@@ -1426,7 +1451,7 @@ The 8.6 block with `no accent color` (9.1). Creature fodder follows 9.4 as well.
   real objects alone reads as a farmer (8.1).
 - **Faces may be shown.** A brim or creature-shell helmet is a costume choice,
   not a fodder rule; when used, it comes from the biome, never from another
-  climate.
+  climate. Eyes are optional at this tier (9.4).
 - **Worn, not new.** Structural wear (8.5) plus stain blotches and creature blood
   on weapons.
 - **One garment hue per encounter**, from dyes the biome supplies, chosen fresh
@@ -1459,6 +1484,13 @@ Creatures are mutations of their biome's wildlife — never a real animal, and
 never carrying an embedded artifact or stone. A familiar base such as a hound is
 fine when the twist is visible in the still image.
 
+**The motif comes from the variant, not the area.** Two variants of one area
+share neither fauna nor theme (10.6): a jungle insect placed in the Ruins still
+reads as Jungle. Where a variant is made of things rather than wildlife — ruins,
+workshops, mines — the creature is built from the place's own materials and the
+forces at work in it. Check the motif against the variant's vocabulary before
+the prompt.
+
 - **The mutation is the element from outside reality** (8.1): a body plan no
   animal has — six stilt legs, rows of eyes, fungus growing as part of the body.
 - **One encounter, one family, separate body plans.** Share hide, markings,
@@ -1468,9 +1500,12 @@ fine when the twist is visible in the still image.
 - **The environment is on them** (8.5): mud caked to the knee as one hard-edged
   mass, debris snagged on the legs and growth, claw scars, a crusted wound with
   dried blood, stain blotches. Wear takes the moderate and light tiers (8.6.1).
-- **Faces are shown**, eyes per 8.4.1. Mouth and head carriage carry the role —
-  closed and mild on a support creature, open on an attacker. A gaping split jaw
-  reads as horror.
+- **Eyes are optional.** Round bone white eyes are the first thing to cut when a
+  creature reads cartoonish. Hide them in solid shadow beneath a brow, never
+  glowing out of it (17), or leave the head eyeless; head carriage and the mouth
+  then carry the menace. Where eyes are shown, 8.4.1. Mouth and head carriage
+  carry the role — closed and mild on a support creature, open on an attacker. A
+  gaping split jaw reads as horror.
 - **Anatomy is counted, growth is loose** (5.4): legs and eyes take numbers,
   fungus and foliage on the body do not.
 - **Camera:** the 4.2 tail with `eye-level camera` in place of `eye-level camera
@@ -1481,9 +1516,14 @@ fine when the twist is visible in the still image.
   one stretched proportion, and `full body creature` as the subject opener. Name a
   solid mass on the head as what it is, not as hair; the noun brings strands back.
   Humanoid creatures keep the 4.2 tail at chest height.
+- **Constructs.** A figure made of a decorative material reads as decoration, and
+  a built object given a face reads as animation (5.3). Give the construct a
+  hunting body plan of its own and let the material be its skin and skeleton,
+  shaped from the variant's architecture (9.6.3). Flat-by-nature materials follow
+  3.7.
 
 > **Not yet written.** Band 1 coverage and accent placement on creatures, and
-> constructs and statues.
+> statues.
 
 ### 9.5 Enemy color policy
 
@@ -1541,6 +1581,29 @@ Counted groups: five shoulder shards, two elbow shards, ten finger points, one
 facial crack. **Cut order:** the far shoulder shards first, then the near hand's
 raised pose. The finger points, elbow shards, head mass and shattered hem are
 never cut.
+
+#### 9.6.3 Stained-Glass Figure
+
+The working example of a construct (9.4), of a flat-by-nature material as a whole
+body (3.7), of named menace (5.2) and of an eyeless head. Fodder of the Burning
+Glass encounter, Ruins; places Lava Zone.
+
+- **Built from the variant's architecture.** Ruin window ironwork as the
+  skeleton, lancet arches as the ribs; a hunting four-legged body plan, not a
+  window or a person.
+- **Soot-dark glass**, ruby and amber only where the soot has flaked; ember orange
+  only at the molten belly and jaw, which is the mechanic.
+- **Blind head.** Menace from the low stalking carriage and the parted jaw.
+
+```
+bold woodcut illustration with engraved structural linework, very thick uniform black contour outline on the outer silhouette, clean uninterrupted silhouette edge, flat color fields, hard-edged shadows, four values, high contrast with large areas of solid shadow in a deep green-black, that shadow mass and the outline sitting at the same value, colors assigned by material: dark soot-blackened stained glass in smoky brown-black, deep ruby red and dull amber glass showing only where the soot has flaked away, one flat uniform ember orange for molten glass, thick black lead cames, blackened wrought iron, all flat and unmodulated, warm bone white reserved for small angular glints, outline black tinted slightly toward blue-violet, light from the upper left catching as small hard angular bone white glints along the upper left edges, three levels of detail: the head and the arched ribcage carry the heaviest engraved detail and read as the focal point of the figure; the body and spine carry moderate engraved detail through lead cames, iron finials, cracked panes and scorch blotches; the legs carry light detail through joints, rivets and stain blotches rather than being left empty, all marks large and structural, no accent color, hand-carved edge quality.
+full body creature, a menacing monstrous predator born from the ruined windows of a magic-warped temple, dangerous and stalking forward, a long low four-legged body with high angular shoulders and the head lowered beneath them toward the left, its skeleton built of blackened wrought iron window tracery, its ribcage a row of five tall pointed-arch window frames standing side by side along its flank like gothic lancet windows, each arch filled with flat stained glass panes divided by thick black lead cames, most panes blackened with soot, deep ruby and dull amber glass showing through only where the soot has flaked away, the panes nearest the belly flat ember orange, softened and sagging with heat, three thick drips of molten ember glass hanging from the belly, each ending in one round drop, a long narrow wedge-shaped head of iron tracery and soot-black glass, blind and eyeless, its face one smooth unbroken plane of black glass, its long jaw slightly open with ember orange glass inside, a ridge of seven short pointed iron finials running along its spine from the back of the skull to the hips, four long thin jointed legs of iron mullion bars, each ending in three hooked iron claws gripping the ground line, cracks running across several panes, two panes missing from the ribcage leaving open gaps, scorch blotches blackening the glass above the belly, blotches of rust stains down the legs, the far legs and the underside of the body falling into solid green-black shadow, in contact with a single flat ground line, three-quarter view facing left, eye-level camera, orthographic, isolated on a plain flat background of one uniform color, full figure visible with headroom.
+```
+
+Counted groups: five arch ribs, seven spine finials, four legs with three claws
+each, three drips, two missing panes. **Cut order:** the missing panes, then the
+finials. The arch ribs, the blind head, the ember belly and the drips are never
+cut.
 
 ---
 ## 10. Environments
@@ -3711,6 +3774,12 @@ line is a trap, not a history; the rule it produced lives in the section named.
   values`. Returns a barren figure with two features (9.1).
 - A humanoid creature told apart from a person by material and color only.
   Returns a human with odd skin (9.4).
+- Round bone white eyes on a creature. The cartoon cue that survived every other
+  fix (9.4).
+- A creature from the neighbouring variant's fauna — an insect in the Ruins.
+  Reads as the wrong place (9.4).
+- A subject block with no mood words. Returns a harmless figure whatever the
+  pose (5.2).
 
 **Environment elements**
 
@@ -3840,6 +3909,10 @@ together, at six characters rather than at fifteen.
   strip it on the next revision.
 - **Spore Hound at the new tier.** Approved under the old three-value fodder
   tier; regenerate with the 9.1 detail spec and world-wear (9.4) before locking.
+- **Mood words or design.** The Stained-Glass Figure gained its menace when mood
+  words, a predatory body plan and dark glass arrived together (9.6.3). Run the
+  9.6.3 prompt once with `a menacing monstrous predator` replaced by `a predator`;
+  if the menace holds, narrow 5.2's mood-word rule.
 
 ### 19.3 Environments
 

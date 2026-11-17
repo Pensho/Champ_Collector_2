@@ -8,6 +8,7 @@
 [ext_resource type="Resource" path="res://Data/Battle_Variants/Battle_Slab_Tossers.tres" id="6_slab_tossers"]
 [ext_resource type="Resource" path="res://Data/Battle_Variants/Battle_Chanter_and_Gatherers.tres" id="7_chanter_and_gatherers"]
 [ext_resource type="Resource" uid="uid://b805ihvf6ay54" path="res://Data/Battle_Variants/Battle_Hue_Eater.tres" id="8_hue_eater"]
+[ext_resource type="Resource" uid="uid://bbrk8oufxt6cb" path="res://Data/Battle_Variants/Battle_Burning_Glass.tres" id="9_burning_glass"]
 [ext_resource type="Resource" uid="uid://ckmtp8rvhbx3a" path="res://Data/Loot_Tables/Adventure_Boss_Loot.tres" id="11_launh"]
 [ext_resource type="Resource" path="res://Data/Loot_Tables/Adventure_Combat_Loot.tres" id="12_lh4g1"]
 [ext_resource type="Resource" uid="uid://wg8ohcii0wix" path="res://Data/Loot_Tables/Adventure_Escalate_Loot.tres" id="13_kofhi"]
@@ -17,7 +18,7 @@
 [ext_resource type="Script" uid="uid://8knbs7yij5eh" path="res://Scripts/Gear/equipment_preset.gd" id="20_preset_script"]
 [ext_resource type="Resource" uid="uid://byulx2i0268n3" path="res://Data/Item_Presets/Shard_Pike.tres" id="21_shard_pike"]
 [ext_resource type="Resource" uid="uid://deri0o1rplmuk" path="res://Data/Item_Presets/Pew_Shield.tres" id="22_pew_shield"]
-[ext_resource type="Resource" path="res://Data/Item_Presets/Hueless_Slippers.tres" id="23_hueless_slippers"]
+[ext_resource type="Resource" uid="uid://qt4nudon30jo" path="res://Data/Item_Presets/Hueless_Slippers.tres" id="23_hueless_slippers"]
 
 [resource]
 script = ExtResource("1_adventure")
@@ -28,7 +29,8 @@ biome = ExtResource("4_eeoux")
 music_track = ExtResource("16_music")
 battle_variants = Dictionary[ExtResource("5_battle"), int]({
 ExtResource("6_slab_tossers"): 100,
-ExtResource("7_chanter_and_gatherers"): 100
+ExtResource("7_chanter_and_gatherers"): 100,
+ExtResource("9_burning_glass"): 100
 })
 boss_battle_variants = Array[ExtResource("5_battle")]([ExtResource("8_hue_eater")])
 combat_rewards = ExtResource("12_lh4g1")

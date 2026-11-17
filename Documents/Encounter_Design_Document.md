@@ -78,6 +78,11 @@ Skills fielded by a placed encounter (section 2.1, 2.2).
     * Type: Passive (boss phase 2)
     * Effect: Whenever an allied attack hits a Spotted enemy, the user gains
       one Momentum stack.
+* Lava Zone
+    * Type: Turn Bar (Zone)
+    * Cooldown: 3 turns
+    * Effect: Places a zone: affected enemies gain the Burning debuff for 2 turns.
+      Holds 6 charges.
 
 ### 1.2. Unplaced
 
@@ -303,24 +308,37 @@ answers. Enemies without a listed skill fall back on the universal Stab and Zap
 #### Slab Tossers
 
 - **Tier:** Fodder. **Composition:** three Slab Tossers (working name), each holding a
-  magical slab found in the ruins.
+  slab.
+- **Presentation:** the slab is a magical one found in the ruins. It arcs up and flips by
+  squashing through its vertical scale. A good landing flashes yellow and gives off slowly
+  rising glowing motes; a bad landing stays plain grey.
 - **Mechanic:** every attack tosses the slab (starting point: 50%). The good side lands
   the attack with +1 Echo; the bad side lands a weak hit and Hexes the tosser for 1 turn.
-  The slab arcs up and flips by squashing through its vertical scale. A good landing
-  flashes yellow and gives off slowly rising glowing motes; a bad landing stays plain
-  grey. Onset: enemy turn 1.
-- **Answers:** Hexed (e.g. the Diviner's Ill Omen) turns their tosses grey.
+  Onset: enemy turn 1.
+- **Answers:** Hexed (e.g. the Diviner's Ill Omen) makes their tosses land on the bad
+  side.
 
 #### Chanter and Gatherers
 
 - **Tier:** Fodder. **Composition:** one Chanter, two Gatherers.
-- **Mechanic:** each Gatherer builds a triangle of three parts, drawn like the
-  Hue-Eater's hexagon, starting at one part; a full triangle flies onto the party as a
-  light hit. The Chanter's chant Enfeebles every character, both sides. On a Gatherer,
-  an Enfeeble is consumed and clears its triangle, with the Hue-Eater's effect and sound.
-  Onset: enemy turn 1, the chant on the Chanter's first turn.
+- **Presentation:** the triangle is drawn like the Hue-Eater's hexagon, flies onto the
+  party when full, and clears with the Hue-Eater's effect and sound.
+- **Mechanic:** each Gatherer builds a triangle of three parts, starting at one part; a
+  full triangle hits the party lightly. The Chanter's chant Enfeebles every character,
+  both sides. On a Gatherer, an Enfeeble is consumed and clears its triangle. Onset:
+  enemy turn 1, the chant on the Chanter's first turn.
 - **Answers:** Enfeeble on the Gatherers (e.g. the Lancer Role's Disarm); killing the
   Chanter stops the party's Enfeeble but lets the triangles complete.
+
+#### Burning Glass
+
+- **Tier:** Fodder. **Composition:** two Molten Glass Hounds carrying Lava Zone
+  (section 1); one Ossuary Keeper with the universal Stab.
+- **Presentation:** hounds of molten glass with red panes; the Keeper is a bone custodian tending them.
+- **Mechanic:** Places Lava Zones that apply the burning debuff.
+- **Answers:** Aegis (e.g. the Warlord's Hold the Line) blocks the Burning; Barrier
+  (e.g. the Architect's Raise the Frame) soaks it; Slipstream (e.g. the Tidal Corsair's
+  Corsair's Reckoning) walks past; the party's own zones cap how many fires stand.
 
 ### 2.3. Unplaced
 

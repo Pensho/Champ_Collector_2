@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="CharacterPreset" format=3 uid="uid://lo17ymqu3gia"]
+
+[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_5bxgo"]
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="2_n8qy0"]
+[ext_resource type="Resource" uid="uid://dvgwxvsovsldc" path="res://Data/Character_Skill_Variants/Attack_Skills/Stab.tres" id="3_v6534"]
+[ext_resource type="Resource" uid="uid://bq3ncvu0l6xtu" path="res://Data/Character_Skill_Variants/Zone_Skills/Lava_Zone.tres" id="4_dycxn"]
+[ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="5_qh86f"]
+
+[resource]
+script = ExtResource("5_qh86f")
+_name = "Molten Glass Hound"
+_texture = "res://Assets/Champ_Collector/Creatures/Opponents/molten_glass_hound.png"
+_faction = 4
+_role = 13
+_skills = Array[ExtResource("2_n8qy0")]([ExtResource("3_v6534"), ExtResource("4_dycxn")])
+_thematic_hint = "Light through its red pane sets the ground ablaze."
+_health = 80
+_speed = 50
+_attack = 40
+_defence = 50
+_accuracy = 60
+_resistance = 30
+_mysticism = 60
+_knowledge = 10
+metadata/_custom_type_script = "uid://ftdwxfh8y3n1"
