@@ -48,9 +48,8 @@ func _on_engage_confirmed(p_node: NodeData, p_preparation: CombatPreparation.Cho
 	context_container._previous_scene = "uid://mtv6bnpp8kjx"
 	context_container._arguments["Hub_Scene"] = _hub_scene
 	context_container._adventure_state = _state
-	var completed: int = _state.nodes.filter(func(n: NodeData) -> bool: return n.is_complete).size()
 	context_container._arguments["Difficulty"] = AdventureState.CalculateScaledDifficulty(
-			_state.difficulty, completed, _state.nodes.size())
+			_state.difficulty, p_node.depth, _state.BossDepth())
 	context_container._arguments["Adventure_Path"] = _state.adventure.resource_path if _state.adventure else ""
 	context_container._arguments["Is_Boss"] = p_node.node_type == NodeData.Node_Type.BOSS
 	var difficulty: int = context_container._arguments["Difficulty"]

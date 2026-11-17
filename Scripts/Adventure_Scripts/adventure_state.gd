@@ -12,11 +12,16 @@ var active_debuffs: Dictionary[Types.Debuff_Type, int]
 
 var _generation_seed: int = -1
 
-static func CalculateScaledDifficulty(p_base: int, p_completed: int, p_total: int) -> int:
-	if p_total <= 0:
+static func CalculateScaledDifficulty(p_base: int, p_depth: int, p_boss_depth: int) -> int:
+	if p_boss_depth <= 0:
 		return p_base
-	var tier: int = mini(int(floor(float(p_completed) * 3.0 / float(p_total))), 2)
-	return p_base + tier
+	return p_base + (1 if p_depth * 2 >= p_boss_depth else 0)
+
+func BossDepth() -> int:
+	var boss_depth: int = 0
+	for node in nodes:
+		boss_depth = maxi(boss_depth, node.depth)
+	return boss_depth
 
 func MarkCurrentNodeComplete() -> void:
 	for node in nodes:

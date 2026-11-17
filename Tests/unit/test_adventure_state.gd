@@ -112,19 +112,28 @@ func test_nodes_start_incomplete() -> void:
 # --- Progressive difficulty scaling ---
 
 func test_scaled_difficulty_table() -> void:
-	# Each row: [base_difficulty, completed_nodes, total_nodes, expected, message]
+	# Each row: [base_difficulty, node_depth, boss_depth, expected, message]
 	var cases: Array[Array] = [
-		[1, 0, 9, 1, "No nodes completed: difficulty unchanged."],
-		[1, 3, 9, 2, "One third completed: difficulty +1."],
-		[1, 6, 9, 3, "Two thirds completed: difficulty +2."],
-		[1, 9, 9, 3, "All nodes completed: capped at +2 tiers."],
+		[1, 0, 18, 1, "Start node: difficulty unchanged."],
+		[1, 8, 18, 1, "Just before halfway: difficulty unchanged."],
+		[1, 9, 18, 2, "Halfway depth: difficulty +1."],
+		[1, 18, 18, 2, "Boss depth: still only +1."],
+		[1, 9, 19, 1, "Odd boss depth: halfway rounds up."],
+		[1, 10, 19, 2, "Odd boss depth: past halfway is +1."],
 	]
 	for case: Array in cases:
 		assert_eq(AdventureState.CalculateScaledDifficulty(case[0], case[1], case[2]), case[3], case[4])
 
 func test_scaled_difficulty_empty_adventure() -> void:
 	assert_eq(AdventureState.CalculateScaledDifficulty(2, 0, 0), 2,
-		"Zero total nodes: returns base difficulty unchanged.")
+		"Zero boss depth: returns base difficulty unchanged.")
+
+func test_boss_depth_is_deepest_node() -> void:
+	for depth: int in [0, 5, 3]:
+		var node := NodeData.new()
+		node.depth = depth
+		_state.nodes.append(node)
+	assert_eq(_state.BossDepth(), 5, "Boss depth is the deepest node's depth.")
 
 
 # --- Adventure-spanning effects ---
