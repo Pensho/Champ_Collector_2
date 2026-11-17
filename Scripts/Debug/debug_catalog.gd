@@ -34,8 +34,8 @@ const ENEMY_CHARACTER_PRESETS: Dictionary[String, CharacterPreset] = {
 	"Reliquary Core": preload("res://Data/Character_Enemy_Variants/Reliquary_Core.tres"),
 	"Hue-Eater": preload("res://Data/Character_Enemy_Variants/Hue_Eater.tres"),
 	"Slab Tosser": preload("res://Data/Character_Enemy_Variants/Slab_Tosser.tres"),
-	"Chanter": preload("res://Data/Character_Enemy_Variants/Chanter.tres"),
-	"Gatherer": preload("res://Data/Character_Enemy_Variants/Gatherer.tres"),
+	"Vesper": preload("res://Data/Character_Enemy_Variants/Vesper.tres"),
+	"Almsbearer": preload("res://Data/Character_Enemy_Variants/Almsbearer.tres"),
 	"Molten Glass Hound": preload("res://Data/Character_Enemy_Variants/Molten_Glass_Hound.tres"),
 	"Ossuary Keeper": preload("res://Data/Character_Enemy_Variants/Ossuary_Keeper.tres"),
 }

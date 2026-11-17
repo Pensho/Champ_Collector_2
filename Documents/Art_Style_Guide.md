@@ -394,6 +394,7 @@ qualifiers reinforces the basin.
 | Cartoon | soft floppy cap, wide grin, `wiry`, large head relative to body |
 | Roman / legionary | close-cropped grey hair, sleeveless tabard over a linen tunic, laced boots, panel divisions down the front |
 | Wuxia sage | long beard, topknot, flowing robe, a large round weapon, an old man |
+| Body horror | skin stretched over bone, ribs pressing through, human limbs walking like legs, a blind featureless face, `eerie`, `creeping` |
 
 When an attractor lands, rewrite the costume from a different occupation rather
 than negating.
@@ -816,6 +817,12 @@ lore out of the prompt.
   together by nothing (8.7.3). Bolting a second shape language onto a real object
   reads as a rock with growths on it rather than as a designed prop. One shape
   language, and at most one deliberate break in it.
+
+**Real-world faiths stay out.** The world has none of ours. Temple, ossuary and
+reliquary craft is borrowed as craft — gilding, bells, busts, vestments — never as
+a faith's symbols: no crosses, angels or haloes in a design, and no faith terms in
+a player-facing name. A prompt word such as `saint` describes a look and stays in
+the prompt (8.4.6).
 
 ### 8.2 Decide the silhouette and the pose before anything else
 
@@ -1517,10 +1524,23 @@ the prompt.
   solid mass on the head as what it is, not as hair; the noun brings strands back.
   Humanoid creatures keep the 4.2 tail at chest height.
 - **Constructs.** A figure made of a decorative material reads as decoration, and
-  a built object given a face reads as animation (5.3). Give the construct a
+  a built object given a face reads as animation. Give the construct a
   hunting body plan of its own and let the material be its skin and skeleton,
   shaped from the variant's architecture (9.6.3). Flat-by-nature materials follow
   3.7.
+- **Familiar parts keep their real form.** A thing the viewer knows — a person,
+  a statue, a bell, a skull, a gilded bust — comes with an expectation of how it
+  looks. The model fuses parts with smooth seamless joins, and a familiar thing
+  deviating smoothly reads as a generation error, not a design. Keep each familiar
+  part whole and unaltered and let only the whole be invented; where two meet,
+  show the join as built — pins, brackets, lashings — or keep them apart. An
+  invented being has no expectation to break, so limb count and placement are
+  free there.
+- **Bone leans horror; offset it.** Against life — bone as armour on a living
+  creature — or against craft — gilding, brass fittings, velvet, as in ossuary
+  devotional art. On fodder, a compact rounded body tempers it further and lands
+  between cute and unsettling; move only the body dial, never head size with it
+  (17). A boss may keep the scarier archetype (9.3). Example: 9.6.4.
 
 > **Not yet written.** Band 1 coverage and accent placement on creatures, and
 > statues.
@@ -1584,9 +1604,10 @@ never cut.
 
 #### 9.6.3 Stained-Glass Figure
 
-The working example of a construct (9.4), of a flat-by-nature material as a whole
-body (3.7), of named menace (5.2) and of an eyeless head. Fodder of the Burning
-Glass encounter, Ruins; places Lava Zone.
+Design notes only; its prompt gave way to 9.6.4. The working example of a construct
+(9.4), of a flat-by-nature material as a whole body (3.7), of named menace (5.2)
+and of an eyeless head. Fodder of the Burning Glass encounter, Ruins; places Lava
+Zone.
 
 - **Built from the variant's architecture.** Ruin window ironwork as the
   skeleton, lancet arches as the ribs; a hunting four-legged body plan, not a
@@ -1595,15 +1616,27 @@ Glass encounter, Ruins; places Lava Zone.
   only at the molten belly and jaw, which is the mechanic.
 - **Blind head.** Menace from the low stalking carriage and the parted jaw.
 
+#### 9.6.4 Almsbearer
+
+The working example of familiar parts kept whole (9.4) and of bone offset by craft
+on a compact fodder body (9.4). Fodder of the Chanter and Gatherers encounter,
+Ruins, beside the Vesper; builds the triangle.
+
+- **A reliquary built to gather.** Bone frame, brass hinge pins, gold wire and
+  riveted bands; every join shown as made.
+- **The gold bust is intact and unaltered**, eyelids carved shut, mounted on a
+  brass rod — the face with no eye problem.
+- **Compact on purpose.** Barrel body and short legs, head at its own size; one
+  arm and one shard keep it simple.
+
 ```
-bold woodcut illustration with engraved structural linework, very thick uniform black contour outline on the outer silhouette, clean uninterrupted silhouette edge, flat color fields, hard-edged shadows, four values, high contrast with large areas of solid shadow in a deep green-black, that shadow mass and the outline sitting at the same value, colors assigned by material: dark soot-blackened stained glass in smoky brown-black, deep ruby red and dull amber glass showing only where the soot has flaked away, one flat uniform ember orange for molten glass, thick black lead cames, blackened wrought iron, all flat and unmodulated, warm bone white reserved for small angular glints, outline black tinted slightly toward blue-violet, light from the upper left catching as small hard angular bone white glints along the upper left edges, three levels of detail: the head and the arched ribcage carry the heaviest engraved detail and read as the focal point of the figure; the body and spine carry moderate engraved detail through lead cames, iron finials, cracked panes and scorch blotches; the legs carry light detail through joints, rivets and stain blotches rather than being left empty, all marks large and structural, no accent color, hand-carved edge quality.
-full body creature, a menacing monstrous predator born from the ruined windows of a magic-warped temple, dangerous and stalking forward, a long low four-legged body with high angular shoulders and the head lowered beneath them toward the left, its skeleton built of blackened wrought iron window tracery, its ribcage a row of five tall pointed-arch window frames standing side by side along its flank like gothic lancet windows, each arch filled with flat stained glass panes divided by thick black lead cames, most panes blackened with soot, deep ruby and dull amber glass showing through only where the soot has flaked away, the panes nearest the belly flat ember orange, softened and sagging with heat, three thick drips of molten ember glass hanging from the belly, each ending in one round drop, a long narrow wedge-shaped head of iron tracery and soot-black glass, blind and eyeless, its face one smooth unbroken plane of black glass, its long jaw slightly open with ember orange glass inside, a ridge of seven short pointed iron finials running along its spine from the back of the skull to the hips, four long thin jointed legs of iron mullion bars, each ending in three hooked iron claws gripping the ground line, cracks running across several panes, two panes missing from the ribcage leaving open gaps, scorch blotches blackening the glass above the belly, blotches of rust stains down the legs, the far legs and the underside of the body falling into solid green-black shadow, in contact with a single flat ground line, three-quarter view facing left, eye-level camera, orthographic, isolated on a plain flat background of one uniform color, full figure visible with headroom.
+bold woodcut illustration with engraved structural linework, very thick uniform black contour outline on the outer silhouette, clean uninterrupted silhouette edge, flat color fields, hard-edged shadows, four values, high contrast with large areas of solid shadow in a deep violet-black, that shadow mass and the outline sitting at the same value, colors assigned by material: aged ivory bone, hammered gold leaf, dull brass, faded oxblood velvet, flat pale cyan crystal, all flat and unmodulated, warm bone white reserved for small angular glints, outline black tinted slightly toward blue-violet, light from the upper left catching as small hard angular bone white glints along the upper left edges, three levels of detail: the gold reliquary head and the reaching hand with its crystal carry the heaviest engraved detail and read as the focal point of the figure; the ribcage and velvet cloth carry moderate engraved detail through wire bindings, rivets and a torn edge; the legs carry light detail through brass hinge pins and stain blotches rather than being left empty, all marks large and structural, no accent color, hand-carved edge quality.
+full body creature, a small compact reliquary construct built from ossuary bones, wary and dangerous, crouched low, a short round barrel-shaped ribcage for a body, its ribs bound with coils of gold wire and one riveted brass band, carried on four short sturdy legs of thick bones joined at the knee by visible brass hinge pins, a faded oxblood velvet cloth draped over its back, torn at one corner, a short neck of stacked vertebrae threaded on a brass rod, the head a hammered gold reliquary bust of a saint's head, intact and unaltered, a calm face with eyelids carved shut, a straight nose and a small closed mouth, held low and forward, gold leaf flaked away in patches, one arm of thick bones mounted on a brass hinge bracket at the shoulder reaching forward toward the left, its hand of brass-pinned finger bones curled like claws around one flat triangular shard of pale cyan crystal, green verdigris blotches on the brass, dark stain blotches across the bone, the far legs and the underside of the body falling into solid violet-black shadow, in contact with a single flat ground line, three-quarter view facing left, eye-level camera, orthographic, isolated on a plain flat background of one uniform color, full figure visible with headroom.
 ```
 
-Counted groups: five arch ribs, seven spine finials, four legs with three claws
-each, three drips, two missing panes. **Cut order:** the missing panes, then the
-finials. The arch ribs, the blind head, the ember belly and the drips are never
-cut.
+Counted groups: four legs, one arm, one shard — under budget deliberately. If it
+tips into cute, push the carriage (`crouched low and tense, the head pushed
+forward`), never the head size.
 
 ---
 ## 10. Environments
@@ -3780,6 +3813,10 @@ line is a trap, not a history; the rule it produced lives in the section named.
   Reads as the wrong place (9.4).
 - A subject block with no mood words. Returns a harmless figure whatever the
   pose (5.2).
+- Bone as corpse flesh on fodder — skin over bone, ribs pressing through, human
+  arms walking as legs. Body horror (5.3, 9.4).
+- Broken statue pieces blended into a beast. The seamless joins read as a
+  generation error, not a design (9.4).
 
 **Environment elements**
 
@@ -3911,8 +3948,8 @@ together, at six characters rather than at fifteen.
   tier; regenerate with the 9.1 detail spec and world-wear (9.4) before locking.
 - **Mood words or design.** The Stained-Glass Figure gained its menace when mood
   words, a predatory body plan and dark glass arrived together (9.6.3). Run the
-  9.6.3 prompt once with `a menacing monstrous predator` replaced by `a predator`;
-  if the menace holds, narrow 5.2's mood-word rule.
+  9.6.4 prompt once with `wary and dangerous, crouched low` replaced by `crouched
+  low`; if the threat holds, narrow 5.2's mood-word rule.
 
 ### 19.3 Environments
 

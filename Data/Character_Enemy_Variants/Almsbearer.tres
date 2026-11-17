@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="CharacterPreset" format=3 uid="uid://m0jtuv4fbhyr"]
+
+[ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_eso65"]
+[ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="2_lfvbh"]
+[ext_resource type="Resource" uid="uid://dvgwxvsovsldc" path="res://Data/Character_Skill_Variants/Attack_Skills/Stab.tres" id="3_c5mav"]
+[ext_resource type="Resource" path="res://Data/Character_Traits/Enemy_Traits/Gatherer_Trait.tres" id="4_slpbk"]
+[ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="5_ky7un"]
+
+[resource]
+script = ExtResource("5_ky7un")
+_name = "Almsbearer"
+_texture = "res://Assets/Champ_Collector/Creatures/Opponents/almsbearer.png"
+_faction = 4
+_role = 13
+_skills = Array[ExtResource("2_lfvbh")]([ExtResource("3_c5mav")])
+_thematic_hint = "Gathers light into a shape that strikes once whole. Weakness breaks it apart."
+_health = 100
+_speed = 60
+_attack = 55
+_defence = 45
+_accuracy = 20
+_resistance = 10
+_mysticism = 70
+_knowledge = 10
+_trait = ExtResource("4_slpbk")
+metadata/_custom_type_script = "uid://ftdwxfh8y3n1"
