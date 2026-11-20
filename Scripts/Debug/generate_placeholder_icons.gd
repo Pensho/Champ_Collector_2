@@ -239,45 +239,6 @@ const SKILL_ICON_TABLE: Array = [
 # encounter with a distinct base hue.
 #   folder, base_name, size, color
 const CREATURE_PLACEHOLDER_TABLE: Array = [
-	# Wake Skimmers
-	{ "folder": "Skimmer_Cutthroat", "base_name": "Skimmer_Cutthroat", "size": 128,
-			"color": Color(0.20, 0.45, 0.60, 1.0) },
-	{ "folder": "Bosun", "base_name": "Bosun", "size": 128,
-			"color": Color(0.15, 0.40, 0.55, 1.0) },
-	# Ledger Clerks
-	{ "folder": "Warded_Clerk", "base_name": "Warded_Clerk", "size": 128,
-			"color": Color(0.50, 0.50, 0.55, 1.0) },
-	# Plains Outriders
-	{ "folder": "Outrider_Lancer", "base_name": "Outrider_Lancer", "size": 128,
-			"color": Color(0.65, 0.50, 0.25, 1.0) },
-	{ "folder": "War_Drummer", "base_name": "War_Drummer", "size": 128,
-			"color": Color(0.60, 0.45, 0.20, 1.0) },
-	# Flank Cutter
-	{ "folder": "Flank_Cutter", "base_name": "Flank_Cutter", "size": 128,
-			"color": Color(0.70, 0.25, 0.20, 1.0) },
-	# Line Breaker
-	{ "folder": "Plains_Charger", "base_name": "Plains_Charger", "size": 128,
-			"color": Color(0.65, 0.35, 0.20, 1.0) },
-	{ "folder": "Drover", "base_name": "Drover", "size": 128,
-			"color": Color(0.60, 0.40, 0.25, 1.0) },
-	# The Ashen Oracle
-	{ "folder": "Cinder_Husk", "base_name": "Cinder_Husk", "size": 128,
-			"color": Color(0.55, 0.20, 0.15, 1.0) },
-	{ "folder": "Ashen_Oracle", "base_name": "Ashen_Oracle", "size": 128,
-			"color": Color(0.60, 0.25, 0.15, 1.0) },
-	# The Glyphbound Archivist
-	{ "folder": "Glyphbound_Archivist", "base_name": "Glyphbound_Archivist", "size": 128,
-			"color": Color(0.45, 0.20, 0.55, 1.0) },
-	# The Collector of Debts
-	{ "folder": "Collector_of_Debts", "base_name": "Collector_of_Debts", "size": 128,
-			"color": Color(0.40, 0.35, 0.15, 1.0) },
-	{ "folder": "Warded_Notary", "base_name": "Warded_Notary", "size": 128,
-			"color": Color(0.45, 0.40, 0.20, 1.0) },
-	# The Warden of the Reliquary
-	{ "folder": "Vault_Warden", "base_name": "Vault_Warden", "size": 128,
-			"color": Color(0.35, 0.35, 0.45, 1.0) },
-	{ "folder": "Reliquary_Core", "base_name": "Reliquary_Core", "size": 128,
-			"color": Color(0.30, 0.30, 0.50, 1.0) },
 ]
 
 # One row per Relic_Design.md catalog entry, grouped by payout group (Damage, Buff,
