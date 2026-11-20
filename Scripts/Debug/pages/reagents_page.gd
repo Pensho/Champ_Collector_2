@@ -41,7 +41,7 @@ func _RefreshRarityOptions() -> void:
 func _on_family_selected(_p_index: int) -> void:
 	_RefreshRarityOptions()
 
-func _on_add_to_inventory_button_up() -> void:
+func _on_add_to_inventory_pressed() -> void:
 	if(_families.is_empty() or _rarity_option.selected < 0):
 		return
 	DebugActions.grant_reagent(main.GetInstance()._reagent_collection, _families[_family_option.selected],

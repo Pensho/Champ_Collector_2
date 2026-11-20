@@ -14,9 +14,9 @@ func GetSize() -> Vector2:
 func ConnectConfirm(p_callable: Callable) -> void:
 	_confirm_func = p_callable
 
-func _on_confirm_button_up() -> void:
+func _on_confirm_pressed() -> void:
 	_confirm_func.call()
 	self.hide()
 
-func _on_cancel_button_up() -> void:
+func _on_cancel_pressed() -> void:
 	self.hide()

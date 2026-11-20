@@ -71,7 +71,7 @@ func _FormatCooldown(p_seconds_left: int) -> String:
 	return str(hours) + "h " + str(minutes) + "m"
 
 func ConnectButton(p_callback: Callable) -> void:
-	_button_buy.connect("button_up", p_callback.bind(_ID))
+	_button_buy.connect("pressed", p_callback.bind(_ID))
 
 func _SetRarityLabel(p_entry: Dictionary) -> void:
 	var has_rarity: bool = (

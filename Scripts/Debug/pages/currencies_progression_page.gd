@@ -35,7 +35,7 @@ func RefreshEncounterList() -> void:
 	else:
 		_encounters_label.text = "\n".join(lines)
 
-func _on_apply_currencies_button_up() -> void:
+func _on_apply_currencies_pressed() -> void:
 	var resources: ResourceHandler = main.GetInstance()._resources
 	resources._silver = int(_silver_spin.value)
 	resources._supplies = int(_supplies_spin.value)
@@ -44,7 +44,7 @@ func _on_apply_currencies_button_up() -> void:
 	resources._fortunes_favor[FortuneFavorTier.TierType.BRASS] = int(_fortunes_favor_brass_spin.value)
 	resources._fortunes_favor[FortuneFavorTier.TierType.PARCHMENT] = int(_fortunes_favor_parchment_spin.value)
 
-func _on_set_difficulty_button_up() -> void:
+func _on_set_difficulty_pressed() -> void:
 	var encounter_id: String = _encounter_id_edit.text.strip_edges()
 	if(encounter_id.is_empty()):
 		return

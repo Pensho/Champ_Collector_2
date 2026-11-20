@@ -45,7 +45,7 @@ func _on_character_toggled(p_pressed: bool, p_instance_id: int) -> void:
 	else:
 		_selected_instance_ids.erase(p_instance_id)
 
-func _on_launch_battle_button_up() -> void:
+func _on_launch_battle_pressed() -> void:
 	if(_selected_instance_ids.is_empty()):
 		_status_label.text = "Select at least one champion."
 		return

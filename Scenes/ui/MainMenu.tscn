@@ -180,7 +180,7 @@ NodePath("../MarginContainer/VBoxContainer/Control2/ButtonsVBox/Button_QuitGame"
 })
 metadata/_custom_type_script = "uid://brborf0wdvmjy"
 
-[connection signal="button_up" from="MarginContainer/VBoxContainer/Control2/ButtonsVBox/Button_StartGame" to="." method="_on_start_game_button_pressed"]
-[connection signal="button_up" from="MarginContainer/VBoxContainer/Control2/ButtonsVBox/Button_Save_Load" to="." method="_on_save_load_button_up"]
-[connection signal="button_up" from="MarginContainer/VBoxContainer/Control2/ButtonsVBox/Button_Settings" to="." method="_on_settings_button_up"]
-[connection signal="button_up" from="MarginContainer/VBoxContainer/Control2/ButtonsVBox/Button_QuitGame" to="." method="_on_quit_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Control2/ButtonsVBox/Button_StartGame" to="." method="_on_start_game_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Control2/ButtonsVBox/Button_Save_Load" to="." method="_on_save_load_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Control2/ButtonsVBox/Button_Settings" to="." method="_on_settings_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Control2/ButtonsVBox/Button_QuitGame" to="." method="_on_quit_button_pressed"]

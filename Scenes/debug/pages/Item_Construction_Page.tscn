@@ -159,5 +159,5 @@ text = "Add to Collection"
 layout_mode = 2
 text = "Grant All Implemented Relics (Uncommon)"
 
-[connection signal="button_up" from="MarginContainer/ScrollContainer/VBoxContainer/Button_AddToCollection" to="." method="_on_add_to_collection_button_up"]
-[connection signal="button_up" from="MarginContainer/ScrollContainer/VBoxContainer/Button_GrantAllRelics" to="." method="_on_grant_all_relics_button_up"]
+[connection signal="pressed" from="MarginContainer/ScrollContainer/VBoxContainer/Button_AddToCollection" to="." method="_on_add_to_collection_pressed"]
+[connection signal="pressed" from="MarginContainer/ScrollContainer/VBoxContainer/Button_GrantAllRelics" to="." method="_on_grant_all_relics_pressed"]

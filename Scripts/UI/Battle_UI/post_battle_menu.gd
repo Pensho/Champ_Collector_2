@@ -84,14 +84,14 @@ func _on_visibility_changed() -> void:
 	if visible:
 		focus_button()
 
-func _on_button_end_button_up() -> void:
+func _on_button_end_pressed() -> void:
 	_context._scene = _context._previous_scene
 	main.GetInstance().change_scene(_context)
 
-func _on_button_replay_button_up() -> void:
+func _on_button_replay_pressed() -> void:
 	_context._scene = "uid://cc883blynrgq2"
 	main.GetInstance().change_scene(_context)
 
-func _on_button_edit_team_button_up() -> void:
+func _on_button_edit_team_pressed() -> void:
 	_context._scene = "uid://d3hg8jxy8xj8n"
 	main.GetInstance().change_scene(_context)

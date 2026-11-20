@@ -7,7 +7,7 @@ signal cancelled
 
 func _ready() -> void:
 	for attribute: Types.Attribute in _attribute_buttons.keys():
-		_attribute_buttons[attribute].connect("button_up", _on_attribute_button_up.bind(attribute))
+		_attribute_buttons[attribute].connect("pressed", _on_attribute_pressed.bind(attribute))
 
 func Refresh(p_character: Character) -> void:
 	for attribute: Types.Attribute in Game_Balance.RENOWN_ATTRIBUTES:
@@ -18,8 +18,8 @@ func Refresh(p_character: Character) -> void:
 		button.text = "%s (Rank %d)   +%d%% -> +%d%%" % [
 				Types.Attribute.keys()[attribute], current_rank, current_percent, next_percent]
 
-func _on_attribute_button_up(p_attribute: Types.Attribute) -> void:
+func _on_attribute_pressed(p_attribute: Types.Attribute) -> void:
 	attribute_selected.emit(p_attribute)
 
-func _on_button_cancel_button_up() -> void:
+func _on_button_cancel_pressed() -> void:
 	cancelled.emit()

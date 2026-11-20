@@ -531,4 +531,4 @@ offset_bottom = 43.0
 mouse_filter = 2
 texture = SubResource("GradientTexture2D_h4qcs")
 
-[connection signal="button_up" from="Button_Target" to="." method="_on_button_target_button_up"]
+[connection signal="pressed" from="Button_Target" to="." method="_on_button_target_pressed"]

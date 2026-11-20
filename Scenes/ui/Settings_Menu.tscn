@@ -284,7 +284,7 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
 text = "Back"
 
-[connection signal="button_up" from="Button_Close" to="." method="_on_back_pressed"]
+[connection signal="pressed" from="Button_Close" to="." method="_on_back_pressed"]
 [connection signal="value_changed" from="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer_Settings/Row_Master_Volume/HSlider_Master_Volume" to="." method="_on_master_volume_changed"]
 [connection signal="value_changed" from="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer_Settings/Row_Music_Volume/HSlider_Music_Volume" to="." method="_on_music_volume_changed"]
 [connection signal="value_changed" from="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer_Settings/Row_Sound_Effects_Volume/HSlider_Sound_Effects_Volume" to="." method="_on_sound_effects_volume_changed"]
@@ -296,5 +296,5 @@ text = "Back"
 [connection signal="toggled" from="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer_Settings/CheckBox_Vertical_Sync" to="." method="_on_vertical_sync_toggled"]
 [connection signal="item_selected" from="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer_Settings/Row_Maximum_Frame_Rate/OptionButton_Maximum_Frame_Rate" to="." method="_on_maximum_frame_rate_selected"]
 [connection signal="item_selected" from="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer_Settings/Row_Language/OptionButton_Language" to="." method="_on_language_selected"]
-[connection signal="button_up" from="ColorRect/MarginContainer/VBoxContainer/Column_Bottom_Buttons/Button_Reset" to="." method="_on_reset_pressed"]
-[connection signal="button_up" from="ColorRect/MarginContainer/VBoxContainer/Column_Bottom_Buttons/Button_Back" to="." method="_on_back_pressed"]
+[connection signal="pressed" from="ColorRect/MarginContainer/VBoxContainer/Column_Bottom_Buttons/Button_Reset" to="." method="_on_reset_pressed"]
+[connection signal="pressed" from="ColorRect/MarginContainer/VBoxContainer/Column_Bottom_Buttons/Button_Back" to="." method="_on_back_pressed"]

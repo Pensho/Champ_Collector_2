@@ -116,5 +116,5 @@ layout_mode = 1
 [node name="AdventureInteractionPanel" parent="." unique_id=267918552 instance=ExtResource("5_interaction")]
 layout_mode = 1
 
-[connection signal="button_up" from="MarginContainer/VBoxContainer/PanelContainer_Header/VBoxContainer_Header/HBoxContainer_Header/HBoxContainer_Back/Button_Hub" to="." method="_on_hub_button_up"]
-[connection signal="button_up" from="MarginContainer/VBoxContainer/Button_Finish" to="." method="_on_finish_adventure_button_up"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/PanelContainer_Header/VBoxContainer_Header/HBoxContainer_Header/HBoxContainer_Back/Button_Hub" to="." method="_on_hub_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Button_Finish" to="." method="_on_finish_adventure_pressed"]

@@ -34,21 +34,21 @@ func _ShowPage(p_page: Control) -> void:
 	for page: Control in [_main_page, _status_page, _leave_page]:
 		page.visible = page == p_page
 
-func _on_outside_button_up() -> void:
+func _on_outside_pressed() -> void:
 	Close()
 
-func _on_return_button_up() -> void:
+func _on_return_pressed() -> void:
 	Close()
 
-func _on_statuses_button_up() -> void:
+func _on_statuses_pressed() -> void:
 	status_list_requested.emit()
 
-func _on_leave_button_up() -> void:
+func _on_leave_pressed() -> void:
 	_ShowPage(_leave_page)
 
-func _on_back_button_up() -> void:
+func _on_back_pressed() -> void:
 	_ShowPage(_main_page)
 
-func _on_leave_confirm_button_up() -> void:
+func _on_leave_confirm_pressed() -> void:
 	Close()
 	leave_confirmed.emit()

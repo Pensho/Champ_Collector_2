@@ -180,5 +180,5 @@ mouse_filter = 2
 border_color = Color(1, 1, 1, 1)
 editor_only = false
 
-[connection signal="button_up" from="Button_Close" to="." method="_on_cancel_button_up"]
-[connection signal="button_up" from="ColorRect/MarginContainer/VBoxContainer/HBoxContainer_Buttons/Button_Right" to="." method="_on_cancel_button_up"]
+[connection signal="pressed" from="Button_Close" to="." method="_on_cancel_pressed"]
+[connection signal="pressed" from="ColorRect/MarginContainer/VBoxContainer/HBoxContainer_Buttons/Button_Right" to="." method="_on_cancel_pressed"]

@@ -102,5 +102,5 @@ size_flags_horizontal = 3
 layout_mode = 2
 text = "Add Debuff"
 
-[connection signal="button_up" from="MarginContainer/VBoxContainer/StatusEffectSection/BuffRow/Button_AddBuff" to="." method="_on_add_buff_button_up"]
-[connection signal="button_up" from="MarginContainer/VBoxContainer/StatusEffectSection/DebuffRow/Button_AddDebuff" to="." method="_on_add_debuff_button_up"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/StatusEffectSection/BuffRow/Button_AddBuff" to="." method="_on_add_buff_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/StatusEffectSection/DebuffRow/Button_AddDebuff" to="." method="_on_add_debuff_pressed"]

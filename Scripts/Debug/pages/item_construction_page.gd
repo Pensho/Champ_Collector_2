@@ -37,7 +37,7 @@ func _ready() -> void:
 		spin.min_value = -ATTRIBUTE_RANGE
 		spin.max_value = ATTRIBUTE_RANGE
 
-func _on_add_to_collection_button_up() -> void:
+func _on_add_to_collection_pressed() -> void:
 	var attributes: Dictionary[Types.Attribute, int] = {}
 	for i in ATTRIBUTE_ORDER.size():
 		attributes[ATTRIBUTE_ORDER[i]] = int(_attribute_spins[i].value)
@@ -51,5 +51,5 @@ func _on_add_to_collection_button_up() -> void:
 	var preset: EquipmentPreset = DebugActions.build_equipment_preset(item_name, base_preset, rarity, attributes)
 	main.GetInstance()._item_collection.AddPreset(preset)
 
-func _on_grant_all_relics_button_up() -> void:
+func _on_grant_all_relics_pressed() -> void:
 	DebugActions.grant_all_implemented_relics(main.GetInstance()._item_collection, Types.Rarity.Uncommon)

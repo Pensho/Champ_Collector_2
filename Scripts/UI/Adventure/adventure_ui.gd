@@ -97,7 +97,7 @@ func _IsBossComplete() -> bool:
 			return true
 	return false
 
-func _on_finish_adventure_button_up() -> void:
+func _on_finish_adventure_pressed() -> void:
 	main.GetInstance()._adventure_state_handler._state = AdventureState.new()
 	main.GetInstance()._save_manager.RequestAutosave()
 	var context_container: ContextContainer = ContextContainer.new()
@@ -106,7 +106,7 @@ func _on_finish_adventure_button_up() -> void:
 	context_container._arguments["Act"] = _act
 	main.GetInstance().change_scene(context_container)
 
-func _on_hub_button_up() -> void:
+func _on_hub_pressed() -> void:
 	var context_container: ContextContainer = ContextContainer.new()
 	context_container._scene = _hub_scene
 	main.GetInstance().change_scene(context_container)

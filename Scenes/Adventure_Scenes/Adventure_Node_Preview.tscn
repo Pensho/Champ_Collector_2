@@ -96,5 +96,5 @@ text = "Close"
 
 [connection signal="pressed" from="ColorRect/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer_Preparation/Card_Prepare" to="." method="_on_prepare_pressed"]
 [connection signal="pressed" from="ColorRect/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer_Preparation/Card_Bait" to="." method="_on_bait_pressed"]
-[connection signal="button_up" from="ColorRect/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Button_Engage" to="." method="_on_engage_button_up"]
-[connection signal="button_up" from="ColorRect/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Button_Close" to="." method="_on_back_button_up"]
+[connection signal="pressed" from="ColorRect/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Button_Engage" to="." method="_on_engage_pressed"]
+[connection signal="pressed" from="ColorRect/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Button_Close" to="." method="_on_back_pressed"]

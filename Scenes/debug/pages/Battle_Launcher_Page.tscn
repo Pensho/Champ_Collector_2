@@ -77,4 +77,4 @@ text = "Launch Battle"
 layout_mode = 2
 text = ""
 
-[connection signal="button_up" from="MarginContainer/VBoxContainer/Button_LaunchBattle" to="." method="_on_launch_battle_button_up"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Button_LaunchBattle" to="." method="_on_launch_battle_pressed"]

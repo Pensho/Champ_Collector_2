@@ -64,11 +64,11 @@ func focus_button() -> void:
 		var button: Button = _buttons_v_box.get_child(0)
 		button.grab_focus()
 
-func _on_save_load_button_up() -> void:
+func _on_save_load_pressed() -> void:
 	var context_container: ContextContainer = ContextContainer.new()
 	context_container._scene = "uid://caviahtf8gtm4"
 	main.GetInstance().change_scene(context_container)
 
-func _on_settings_button_up() -> void:
+func _on_settings_pressed() -> void:
 	_settings_menu.Init()
 	_settings_menu.show()

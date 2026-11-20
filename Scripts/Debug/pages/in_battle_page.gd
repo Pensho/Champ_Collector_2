@@ -136,7 +136,7 @@ func _on_bump_turn_pressed(p_character_id: int, p_bump_spin: SpinBox) -> void:
 		return
 	battle._battle_ui._turn_bar.BumpCharacter(p_character_id, p_bump_spin.value)
 
-func _on_add_buff_button_up() -> void:
+func _on_add_buff_pressed() -> void:
 	var battle: Battle = GetBattle()
 	if(null == battle):
 		return
@@ -148,7 +148,7 @@ func _on_add_buff_button_up() -> void:
 	buff.duration = int(_status_duration_spin.value)
 	battle._resolver.GetStatusResolver().ApplyBuff(character_id, buff)
 
-func _on_add_debuff_button_up() -> void:
+func _on_add_debuff_pressed() -> void:
 	var battle: Battle = GetBattle()
 	if(null == battle):
 		return

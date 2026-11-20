@@ -127,6 +127,6 @@ func _on_confirm_buy() -> void:
 	_result_option.show()
 	RefreshGrid()
 
-func _on_back_button_up() -> void:
+func _on_back_pressed() -> void:
 	_self_context._scene = _self_context._previous_scene
 	main.GetInstance().change_scene(_self_context)

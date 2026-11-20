@@ -121,5 +121,5 @@ NodePath("../MarginContainer/Button_Exit"): ExtResource("6_au5p8")
 metadata/_custom_type_script = "uid://brborf0wdvmjy"
 
 [connection signal="item_selected" from="MarginContainer/VBoxContainer/HBoxContainer_Difficulty/OptionButton_Difficulty" to="." method="_on_difficulty_item_selected"]
-[connection signal="button_up" from="MarginContainer/VBoxContainer/Button_Start" to="." method="_on_start_button_up"]
-[connection signal="button_up" from="MarginContainer/Button_Exit" to="." method="_on_exit_button_up"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Button_Start" to="." method="_on_start_pressed"]
+[connection signal="pressed" from="MarginContainer/Button_Exit" to="." method="_on_exit_pressed"]

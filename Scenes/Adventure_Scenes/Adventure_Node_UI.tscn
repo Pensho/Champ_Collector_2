@@ -57,4 +57,4 @@ offset_bottom = 64.0
 expand_mode = 1
 stretch_mode = 5
 
-[connection signal="button_up" from="Button" to="." method="_on_button_up"]
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

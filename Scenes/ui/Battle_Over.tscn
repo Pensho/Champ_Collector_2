@@ -103,6 +103,6 @@ position = Vector2(0, 400)
 
 [node name="RewardSummary" parent="MarginContainer/VBoxContainer/Rewards" instance=ExtResource("5_rewards")]
 
-[connection signal="button_up" from="MarginContainer/VBoxContainer/HBoxContainer/Button_Replay" to="." method="_on_button_replay_button_up"]
-[connection signal="button_up" from="MarginContainer/VBoxContainer/HBoxContainer/Button_Edit_Team" to="." method="_on_button_edit_team_button_up"]
-[connection signal="button_up" from="MarginContainer/VBoxContainer/HBoxContainer/Button_End" to="." method="_on_button_end_button_up"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/Button_Replay" to="." method="_on_button_replay_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/Button_Edit_Team" to="." method="_on_button_edit_team_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/Button_End" to="." method="_on_button_end_pressed"]

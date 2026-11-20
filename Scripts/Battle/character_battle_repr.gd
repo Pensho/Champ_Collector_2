@@ -29,7 +29,7 @@ var _status_effect_counter: int = 0
 @onready var _sprite_animator: CharacterSpriteAnimator = $SpriteAnimator
 @warning_ignore_restore("unused_private_class_variable")
 
-func _on_button_target_button_up() -> void:
+func _on_button_target_pressed() -> void:
 	if ToolTip.ConsumedPress():
 		return
 	battle_target_selected.emit(_target_ID)

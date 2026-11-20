@@ -82,7 +82,7 @@ func _on_panel_hover_changed(p_panel: BiomeSelectionPanel, p_is_hovered: bool) -
 func _on_difficulty_item_selected(_index: int) -> void:
 	_self_context._arguments["Difficulty"] = _difficulty_option.get_selected_id()
 
-func _on_start_button_up() -> void:
+func _on_start_pressed() -> void:
 	var handler: AdventureStateHandler = main.GetInstance()._adventure_state_handler
 	if not handler._state.is_active:
 		var state: AdventureState = AdventureState.new()
@@ -103,7 +103,7 @@ func _on_start_button_up() -> void:
 	context_container._scene = "uid://mtv6bnpp8kjx"
 	main.GetInstance().change_scene(context_container)
 
-func _on_exit_button_up() -> void:
+func _on_exit_pressed() -> void:
 	var context_container: ContextContainer = ContextContainer.new()
 	context_container._scene = _self_context._previous_scene
 	main.GetInstance().change_scene(context_container)

@@ -79,4 +79,4 @@ layout_mode = 2
 text = "No reagents owned."
 
 [connection signal="item_selected" from="MarginContainer/ScrollContainer/VBoxContainer/SelectionRow/OptionButton_Family" to="." method="_on_family_selected"]
-[connection signal="button_up" from="MarginContainer/ScrollContainer/VBoxContainer/Button_AddToInventory" to="." method="_on_add_to_inventory_button_up"]
+[connection signal="pressed" from="MarginContainer/ScrollContainer/VBoxContainer/Button_AddToInventory" to="." method="_on_add_to_inventory_pressed"]

@@ -252,6 +252,6 @@ NodePath("../ColorRect/MarginContainer/VBoxContainer/Button_Close_Bottom"): ExtR
 })
 metadata/_custom_type_script = "uid://brborf0wdvmjy"
 
-[connection signal="button_up" from="Button_Close" to="." method="_on_close_button_up"]
+[connection signal="pressed" from="Button_Close" to="." method="_on_close_pressed"]
 [connection signal="item_selected" from="ColorRect/MarginContainer/VBoxContainer/TabContainer/Natures/Natures_Content/Nature_Option_Button" to="." method="_on_nature_selected"]
-[connection signal="button_up" from="ColorRect/MarginContainer/VBoxContainer/Button_Close_Bottom" to="." method="_on_close_button_up"]
+[connection signal="pressed" from="ColorRect/MarginContainer/VBoxContainer/Button_Close_Bottom" to="." method="_on_close_pressed"]

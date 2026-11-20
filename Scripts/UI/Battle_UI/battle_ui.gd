@@ -60,7 +60,7 @@ func Init() -> void:
 
 	_reagent_confirm = BUTTON_WITH_OPTIONS_SCENE.instantiate()
 	add_child(_reagent_confirm)
-	_reagent_confirm.SetLeftButton("Use", _on_reagent_confirm_use_button_up)
+	_reagent_confirm.SetLeftButton("Use", _on_reagent_confirm_use_pressed)
 	_reagent_confirm.position = Vector2i(
 			(get_viewport_rect().size * 0.5) - (_reagent_confirm.GetSize() * 0.5))
 	_reagent_confirm.hide()
@@ -170,7 +170,7 @@ func ShowReagentConfirm(p_reagent_index: int, p_title: String, p_description: St
 	_reagent_confirm.SetText(p_title, p_description)
 	_reagent_confirm.show()
 
-func _on_reagent_confirm_use_button_up() -> void:
+func _on_reagent_confirm_use_pressed() -> void:
 	_reagent_confirm.hide()
 	reagent_confirmed.emit(_pending_reagent_index)
 
@@ -195,7 +195,7 @@ func DisableBattleMenu() -> void:
 	_menu_button.disabled = true
 	_battle_menu.Close()
 
-func _on_menu_button_button_up() -> void:
+func _on_menu_button_pressed() -> void:
 	_battle_menu.Open()
 
 func _on_battle_menu_status_list_requested() -> void:
@@ -211,7 +211,7 @@ func HideGraftUI() -> void:
 func HideThreadSwitchUI() -> void:
 	_thread_switch_button.hide()
 
-func _on_thread_switch_button_button_up() -> void:
+func _on_thread_switch_button_pressed() -> void:
 	if ToolTip.ConsumedPress():
 		return
 	thread_switch_selected.emit()
@@ -260,45 +260,45 @@ func HideReagentUI() -> void:
 	_reagent_pouch.CloseInstantly()
 	_reagent_pouch.hide()
 
-func _on_skill_1_button_up() -> void:
+func _on_skill_1_pressed() -> void:
 	if ToolTip.ConsumedPress():
 		return
 	skill_focus.position = SKILL_GLOW_POS_1
 	battle_skill_selected.emit(0)
 
-func _on_skill_2_button_up() -> void:
+func _on_skill_2_pressed() -> void:
 	if ToolTip.ConsumedPress():
 		return
 	skill_focus.position = SKILL_GLOW_POS_2
 	battle_skill_selected.emit(1)
 
-func _on_skill_3_button_up() -> void:
+func _on_skill_3_pressed() -> void:
 	if ToolTip.ConsumedPress():
 		return
 	skill_focus.position = SKILL_GLOW_POS_3
 	battle_skill_selected.emit(2)
 
-func _on_reagent_1_button_up() -> void:
+func _on_reagent_1_pressed() -> void:
 	if ToolTip.ConsumedPress():
 		return
 	battle_reagent_selected.emit(0)
 
-func _on_reagent_2_button_up() -> void:
+func _on_reagent_2_pressed() -> void:
 	if ToolTip.ConsumedPress():
 		return
 	battle_reagent_selected.emit(1)
 
-func _on_reagent_3_button_up() -> void:
+func _on_reagent_3_pressed() -> void:
 	if ToolTip.ConsumedPress():
 		return
 	battle_reagent_selected.emit(2)
 
-func _on_reagent_4_button_up() -> void:
+func _on_reagent_4_pressed() -> void:
 	if ToolTip.ConsumedPress():
 		return
 	battle_reagent_selected.emit(3)
 
-func _on_graft_button_button_up() -> void:
+func _on_graft_button_pressed() -> void:
 	if ToolTip.ConsumedPress():
 		return
 	battle_graft_selected.emit()

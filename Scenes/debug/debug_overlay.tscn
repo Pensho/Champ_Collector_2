@@ -55,4 +55,4 @@ vertical_alignment = 1
 layout_mode = 2
 size_flags_vertical = 3
 
-[connection signal="button_up" from="Panel/VBoxContainer/HeaderHBox/Button_PrintSceneTree" to="." method="_on_print_scene_tree_button_up"]
+[connection signal="pressed" from="Panel/VBoxContainer/HeaderHBox/Button_PrintSceneTree" to="." method="_on_print_scene_tree_pressed"]

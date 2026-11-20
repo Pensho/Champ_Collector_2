@@ -5,26 +5,26 @@ extends Control
 func Init(_p_context_container: ContextContainer) -> void:
 	pass
 
-func _on_back_button_up() -> void:
+func _on_back_pressed() -> void:
 	var context_container: ContextContainer = ContextContainer.new()
 	context_container._scene = "uid://df6f1b4xoipjq"
 	main.GetInstance().change_scene(context_container)
 
-func _on_weapon_button_up() -> void:
+func _on_weapon_pressed() -> void:
 	var context_container: ContextContainer = ContextContainer.new()
 	context_container._static_context = load("uid://dd77irpwqu5o8")
 	context_container._previous_scene = "uid://d3kgucyfmcvip"
 	context_container._scene = "uid://d3hg8jxy8xj8n"
 	main.GetInstance().change_scene(context_container)
 
-func _on_shield_button_up() -> void:
+func _on_shield_pressed() -> void:
 	var context_container: ContextContainer = ContextContainer.new()
 	context_container._static_context = load("uid://comvft2e4h5kt")
 	context_container._previous_scene = "uid://d3kgucyfmcvip"
 	context_container._scene = "uid://d3hg8jxy8xj8n"
 	main.GetInstance().change_scene(context_container)
 
-func _on_button_boots_button_up() -> void:
+func _on_button_boots_pressed() -> void:
 	var context_container: ContextContainer = ContextContainer.new()
 	context_container._static_context = load("uid://cxdmvnai74wnd")
 	context_container._previous_scene = "uid://d3kgucyfmcvip"

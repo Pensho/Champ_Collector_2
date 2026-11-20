@@ -41,5 +41,5 @@ func RefreshPages() -> void:
 	for page in _pages:
 		page.Refresh()
 
-func _on_print_scene_tree_button_up() -> void:
+func _on_print_scene_tree_pressed() -> void:
 	print(get_tree().get_root().get_tree_string_pretty())

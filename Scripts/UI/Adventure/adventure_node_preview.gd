@@ -60,10 +60,10 @@ func _on_bait_pressed() -> void:
 	_preparation = CombatPreparation.Toggle(_preparation, CombatPreparation.Choice.BAIT)
 	_RefreshPreparationChosen()
 
-func _on_engage_button_up() -> void:
+func _on_engage_pressed() -> void:
 	engage_confirmed.emit(_node_data, _preparation)
 	visible = false
 
-func _on_back_button_up() -> void:
+func _on_back_pressed() -> void:
 	cancelled.emit()
 	visible = false

@@ -4,24 +4,24 @@ extends Control
 func Init(_p_context_container: ContextContainer) -> void:
 	pass
 
-func _on_town_button_up() -> void:
+func _on_town_pressed() -> void:
 	var context_container: ContextContainer = ContextContainer.new()
 	context_container._scene = "uid://cfdrcdtsx2jh7"
 	main.GetInstance().change_scene(context_container)
 
-func _on_statues_button_up() -> void:
+func _on_statues_pressed() -> void:
 	var context_container: ContextContainer = ContextContainer.new()
 	context_container._scene = "uid://d3kgucyfmcvip"
 	main.GetInstance().change_scene(context_container)
 
-func _on_adventure_button_up() -> void:
+func _on_adventure_pressed() -> void:
 	var context_container: ContextContainer = ContextContainer.new()
 	context_container._scene = "uid://cwjabuf3kdtft"
 	context_container._previous_scene = "uid://df6f1b4xoipjq"
 	context_container._arguments["Act"] = load("res://Data/Adventure_Data/Acts/act_reclaimed_city.tres")
 	main.GetInstance().change_scene(context_container)
 
-func _on_experience_quests_button_up() -> void:
+func _on_experience_quests_pressed() -> void:
 	var context_container: ContextContainer = ContextContainer.new()
 	context_container._static_context = load("uid://dstgijwmiqvo1") # Battle Variant, Battle_Context
 	context_container._previous_scene = "uid://df6f1b4xoipjq"

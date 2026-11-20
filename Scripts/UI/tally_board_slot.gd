@@ -43,4 +43,4 @@ func SetSoldOut(p_sold_out: bool) -> void:
 	_button_buy.disabled = true
 
 func ConnectButton(p_callback: Callable) -> void:
-	_button_buy.connect("button_up", p_callback.bind(_ID))
+	_button_buy.connect("pressed", p_callback.bind(_ID))

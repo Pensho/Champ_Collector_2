@@ -6,7 +6,7 @@ class_name ProfileDataSlot extends Control
 @export var _selection_outline: Panel
 
 func ConnectButton(p_callable: Callable) -> void:
-	_button.connect("button_up", p_callable)
+	_button.connect("pressed", p_callable)
 
 func SetProfile(p_slot_number: int, p_meta: Dictionary) -> void:
 	_name_input.placeholder_text = "Save slot " + str(p_slot_number + 1)

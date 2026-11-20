@@ -131,5 +131,5 @@ layout_mode = 2
 text = "No encounters registered yet."
 autowrap_mode = 2
 
-[connection signal="button_up" from="MarginContainer/ScrollContainer/VBoxContainer/Button_ApplyCurrencies" to="." method="_on_apply_currencies_button_up"]
-[connection signal="button_up" from="MarginContainer/ScrollContainer/VBoxContainer/ProgressionRow/Button_SetDifficulty" to="." method="_on_set_difficulty_button_up"]
+[connection signal="pressed" from="MarginContainer/ScrollContainer/VBoxContainer/Button_ApplyCurrencies" to="." method="_on_apply_currencies_pressed"]
+[connection signal="pressed" from="MarginContainer/ScrollContainer/VBoxContainer/ProgressionRow/Button_SetDifficulty" to="." method="_on_set_difficulty_pressed"]

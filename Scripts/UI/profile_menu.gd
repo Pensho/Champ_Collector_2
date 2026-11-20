@@ -27,7 +27,7 @@ func Init(_p_context_container: ContextContainer) -> void:
 func UpdateProfileDataSlot(p_slot: int) -> void:
 	_profiles[p_slot].SetProfile(p_slot, main.GetInstance()._save_manager.GetSlotMetadata(p_slot))
 
-func _on_back_button_up() -> void:
+func _on_back_pressed() -> void:
 	var context_container: ContextContainer = ContextContainer.new()
 	context_container._scene = "uid://c6c1o3oabj0pf"
 	main.GetInstance().change_scene(context_container)
@@ -54,7 +54,7 @@ func _UpdateActionButtons() -> void:
 	_button_delete.disabled = not has_save
 	_button_new_game.disabled = has_save
 
-func _on_save_button_up() -> void:
+func _on_save_pressed() -> void:
 	var entered_name: String = _profiles[_selected_slot].GetEnteredName()
 	if (not entered_name.is_empty()):
 		main.GetInstance()._save_manager._active_profile_name = entered_name
@@ -69,7 +69,7 @@ func _on_save_button_up() -> void:
 	_details_panel.SetProfile(main.GetInstance()._save_manager.GetSlotMetadata(_selected_slot))
 	_UpdateActionButtons()
 
-func _on_load_button_up() -> void:
+func _on_load_pressed() -> void:
 	var succeeded: bool = main.GetInstance()._save_manager.Load(_selected_slot)
 	if (succeeded):
 		Notification_Handler.Notify("Game loaded")
@@ -77,7 +77,7 @@ func _on_load_button_up() -> void:
 		Notification_Handler.Notify("Could not load the game", Types.Notification_Kind.Failure)
 	_UpdateActionButtons()
 
-func _on_new_game_button_up() -> void:
+func _on_new_game_pressed() -> void:
 	var entered_name: String = _profiles[_selected_slot].GetEnteredName()
 	main.GetInstance().StartNewGame()
 	main.GetInstance()._save_manager._active_profile_name = entered_name
@@ -86,7 +86,7 @@ func _on_new_game_button_up() -> void:
 	else:
 		Notification_Handler.Notify("Could not save the game", Types.Notification_Kind.Failure)
 
-func _on_delete_button_up() -> void:
+func _on_delete_pressed() -> void:
 	_confirm_delete_dialog.Init(_profiles[_selected_slot].GetEnteredName())
 	_confirm_delete_dialog.ConnectConfirm(_on_delete_confirmed.bind(_selected_slot))
 	_confirm_delete_dialog.show()

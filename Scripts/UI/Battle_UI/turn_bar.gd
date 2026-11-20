@@ -38,7 +38,7 @@ func Init(p_characters: Dictionary[int, Character], p_zone_callable: Callable, p
 		_zone_buttons[i].position = Vector2((self.size.x / Game_Balance.NUMBER_OF_TURN_BAR_ZONES) * i, 0.0)
 		_zone_buttons[i].size = Vector2(self.size.x / Game_Balance.NUMBER_OF_TURN_BAR_ZONES, self.size.y)
 		_zone_buttons[i].theme = DEFAULT_THEME
-		_zone_buttons[i].connect("button_up", p_zone_callable.bind(i))
+		_zone_buttons[i].connect("pressed", p_zone_callable.bind(i))
 		stylebox = _zone_buttons[i].get_theme_stylebox("normal")
 		stylebox.bg_color = Color(0.0, 0.0, 0.0, 0.196)
 		_zone_buttons[i].add_theme_stylebox_override("normal", stylebox)

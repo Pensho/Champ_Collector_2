@@ -116,7 +116,7 @@ func _Centered(p_text: String) -> String:
 	return "[center]" + p_text + "[/center]" if center_text else p_text
 
 ## The popup swallows the hold's real release, which would leave the pressed button stuck
-## until some later click fires its button_up. Release it now, while the press is consumed.
+## until some later click releases it. Release it now, while the press is consumed.
 func _ReleaseHeldControl() -> void:
 	var release: InputEventMouseButton = InputEventMouseButton.new()
 	release.button_index = MOUSE_BUTTON_LEFT

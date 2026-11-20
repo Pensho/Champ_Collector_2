@@ -60,12 +60,12 @@ func Init(p_context_container: ContextContainer) -> void:
 
 	for i in _chosen_character_slots.size():
 		_chosen_character_slots[i]._ID = i
-		_chosen_character_slots[i].ConnectButton(_on_remove_char_button_up)
+		_chosen_character_slots[i].ConnectButton(_on_remove_char_pressed)
 
 	_reagent_collection = main.GetInstance()._reagent_collection
 	for i in _chosen_reagent_slots.size():
 		_chosen_reagent_slots[i]._ID = i
-		_chosen_reagent_slots[i].ConnectButton(_on_remove_reagent_button_up)
+		_chosen_reagent_slots[i].ConnectButton(_on_remove_reagent_pressed)
 	RefreshAvailableReagents()
 
 	var encounter_id: String = _self_context._static_context.resource_path
@@ -142,7 +142,7 @@ func _BuildCharacterGrid() -> void:
 		var slot: MenuItemSlot = MENU_ITEM_SLOT.instantiate()
 		_grid_container_characters.add_child(slot)
 		slot._ID = i
-		slot.ConnectButton(_on_add_char_button_up)
+		slot.ConnectButton(_on_add_char_pressed)
 		slot.SetHeldObjectTexture(
 				main.GetInstance()._character_collection.GetCharacterHeadshotTexture(
 					_character_collection[i]._name))
@@ -180,16 +180,16 @@ func _on_difficulty_option_item_selected(_index: int) -> void:
 	_self_context._arguments["Difficulty"] = _difficulty_option.get_selected_id()
 	_RefreshDrops()
 
-func _on_next_button_up() -> void:
+func _on_next_pressed() -> void:
 	_ShowPart(Part.Reagents)
 
-func _on_exit_button_up() -> void:
+func _on_exit_pressed() -> void:
 	CombatPreparation.RefundIfUnfought(_self_context._arguments, main.GetInstance()._resources)
 	_self_context._arguments.erase(CombatPreparation.ARGUMENT_KEY)
 	_self_context._scene = _self_context._previous_scene
 	main.GetInstance().change_scene(_self_context)
 
-func _on_start_button_up() -> void:
+func _on_start_pressed() -> void:
 	if (_chosen_characters.size() <= 0):
 		print("Trying to start a battle without any selected characters.")
 		return
@@ -205,7 +205,7 @@ func _on_start_button_up() -> void:
 	main.GetInstance().change_scene(_self_context)
 	hide()
 
-func _on_remove_char_button_up(p_char_slot: int) -> void:
+func _on_remove_char_pressed(p_char_slot: int) -> void:
 	if (_chosen_characters.has(p_char_slot)):
 		_chosen_characters.erase(p_char_slot)
 		_chosen_character_slots[p_char_slot].SetHeldObjectTexture(null)
@@ -222,7 +222,7 @@ static func RoleAlreadyChosen(p_chosen: Dictionary[int, Character], p_candidate:
 			return true
 	return false
 
-func _on_add_char_button_up(p_char_slot: int) -> void:
+func _on_add_char_pressed(p_char_slot: int) -> void:
 	if (_chosen_characters.size() >= NR_OF_CHARACTERS_IN_BATTLE):
 		print("Trying to add a character when the roster is full.")
 		return
@@ -260,7 +260,7 @@ func RefreshAvailableReagents() -> void:
 		var slot: MenuItemSlot = MENU_ITEM_SLOT.instantiate()
 		_grid_container_reagents.add_child(slot)
 		slot._ID = _displayed_reagent_keys.size()
-		slot.ConnectButton(_on_add_reagent_button_up)
+		slot.ConnectButton(_on_add_reagent_pressed)
 		slot.SetHeldObjectTexture(reagent_data.icon)
 		slot.SetRarityBackdrop(reagent_data.rarity)
 		slot.SetToolTip(reagent_data.display_name, reagent_data.description)
@@ -275,7 +275,7 @@ func RemainingAvailableCount(p_reagent_key: String) -> int:
 			chosen_count += 1
 	return _reagent_collection.GetCount(p_reagent_key) - chosen_count
 
-func _on_add_reagent_button_up(p_reagent_slot: int) -> void:
+func _on_add_reagent_pressed(p_reagent_slot: int) -> void:
 	if (_chosen_reagents.size() >= NR_OF_REAGENTS_IN_BATTLE):
 		print("Trying to add a reagent when the loadout is full.")
 		return
@@ -297,7 +297,7 @@ func _on_add_reagent_button_up(p_reagent_slot: int) -> void:
 				_available_reagent_slots[p_reagent_slot].SetHeldObjectModulate(CHARACTER_CHOSEN_COLOR)
 			return
 
-func _on_remove_reagent_button_up(p_reagent_slot: int) -> void:
+func _on_remove_reagent_pressed(p_reagent_slot: int) -> void:
 	if (!_chosen_reagents.has(p_reagent_slot)):
 		print("trying to remove a reagent from an empty slot nr: ", p_reagent_slot)
 		return

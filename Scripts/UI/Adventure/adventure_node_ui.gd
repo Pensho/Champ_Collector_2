@@ -38,6 +38,6 @@ func Init(p_node: NodeData, p_is_eligible: bool) -> void:
 		NodeData.Node_Type.ESCALATE:
 			_icon.texture = NODE_ICON_ESCALATE
 
-func _on_button_up() -> void:
+func _on_button_pressed() -> void:
 	if not _node_data.is_complete:
 		node_selected.emit(_node_data)

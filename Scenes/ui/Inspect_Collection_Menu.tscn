@@ -1406,13 +1406,13 @@ NodePath("../MarginContainer/HBoxContainer_Bottom_Actions/Button_Ascend"): ExtRe
 })
 metadata/_custom_type_script = "uid://brborf0wdvmjy"
 
-[connection signal="button_up" from="MarginContainer/ColorRect2/Button_Deselect_Char" to="." method="_on_button_deselect_char_button_up"]
+[connection signal="pressed" from="MarginContainer/ColorRect2/Button_Deselect_Char" to="." method="_on_button_deselect_char_pressed"]
 [connection signal="tab_changed" from="MarginContainer/HBoxContainer2/VBoxContainer_Collection/HBoxContainer_Collection_Header/TabBar_Collection" to="." method="_on_tab_bar_collection_tab_changed"]
-[connection signal="button_up" from="MarginContainer/HBoxContainer2/VBoxContainer_Collection/HBoxContainer_Collection_Header/HBoxContainer_Sort/Button_Sort_Level" to="." method="_on_button_sort_level_button_up"]
-[connection signal="button_up" from="MarginContainer/HBoxContainer2/VBoxContainer_Collection/HBoxContainer_Collection_Header/HBoxContainer_Sort/Button_Cancel_Sacrifice" to="." method="_on_button_cancel_sacrifice_button_up"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer2/VBoxContainer_Collection/HBoxContainer_Collection_Header/HBoxContainer_Sort/Button_Sort_Level" to="." method="_on_button_sort_level_pressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer2/VBoxContainer_Collection/HBoxContainer_Collection_Header/HBoxContainer_Sort/Button_Cancel_Sacrifice" to="." method="_on_button_cancel_sacrifice_pressed"]
 [connection signal="tab_changed" from="MarginContainer/HBoxContainer2/VBoxContainer2/TabBar_GearSkills" to="." method="_on_tab_bar_gear_skills_tab_changed"]
-[connection signal="button_up" from="MarginContainer/HBoxContainer/Exit" to="." method="_on_exit_button_up"]
-[connection signal="button_up" from="MarginContainer/HBoxContainer_Bottom_Actions/Button_Release" to="." method="_on_button_release_button_up"]
-[connection signal="button_up" from="MarginContainer/HBoxContainer_Bottom_Actions/Button_Ascend" to="." method="_on_button_ascend_button_up"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/Exit" to="." method="_on_exit_pressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer_Bottom_Actions/Button_Release" to="." method="_on_button_release_pressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer_Bottom_Actions/Button_Ascend" to="." method="_on_button_ascend_pressed"]
 [connection signal="attribute_selected" from="RenownWindow" to="." method="_on_renown_window_attribute_selected"]
 [connection signal="cancelled" from="RenownWindow" to="." method="_on_renown_window_cancelled"]

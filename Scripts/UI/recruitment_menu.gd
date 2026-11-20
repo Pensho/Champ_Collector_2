@@ -41,21 +41,21 @@ func Refresh() -> void:
 	_brass_favor_count_label.text = str(resources.GetFortunesFavor(FortuneFavorTier.TierType.BRASS))
 	_parchment_favor_count_label.text = str(resources.GetFortunesFavor(FortuneFavorTier.TierType.PARCHMENT))
 
-func _on_back_button_up() -> void:
+func _on_back_pressed() -> void:
 	var context_container: ContextContainer = ContextContainer.new()
 	context_container._scene = "uid://bx1wl65s4cu0j"
 	main.GetInstance().change_scene(context_container)
 
-func _on_bone_favor_button_up() -> void:
-	_on_favor_button_up(BONE_TIER)
+func _on_bone_favor_pressed() -> void:
+	_on_favor_pressed(BONE_TIER)
 
-func _on_brass_favor_button_up() -> void:
-	_on_favor_button_up(BRASS_TIER)
+func _on_brass_favor_pressed() -> void:
+	_on_favor_pressed(BRASS_TIER)
 
-func _on_parchment_favor_button_up() -> void:
-	_on_favor_button_up(PARCHMENT_TIER)
+func _on_parchment_favor_pressed() -> void:
+	_on_favor_pressed(PARCHMENT_TIER)
 
-func _on_favor_button_up(p_tier: FortuneFavorTier) -> void:
+func _on_favor_pressed(p_tier: FortuneFavorTier) -> void:
 	var resources: ResourceHandler = main.GetInstance()._resources
 
 	if(main.GetInstance()._character_collection.IsTheCollectionFull()):

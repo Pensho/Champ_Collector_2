@@ -78,5 +78,5 @@ func _on_close_finished() -> void:
 	_reagent_list.hide()
 	_backdrop.hide()
 
-func _on_pouch_button_button_up() -> void:
+func _on_pouch_button_pressed() -> void:
 	Toggle()

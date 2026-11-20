@@ -212,5 +212,5 @@ static func GlossaryDescription(p_data: StatusEffectData) -> String:
 func _on_nature_selected(p_index: int) -> void:
 	BuildNatureList(NATURE_PRESETS[p_index])
 
-func _on_close_button_up() -> void:
+func _on_close_pressed() -> void:
 	self.hide()

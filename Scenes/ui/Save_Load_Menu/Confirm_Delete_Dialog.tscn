@@ -92,6 +92,6 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
 text = "Cancel"
 
-[connection signal="button_up" from="Button_Close" to="." method="_on_cancel_button_up"]
-[connection signal="button_up" from="ColorRect/MarginContainer/VBoxContainer/HBoxContainer/Button_Confirm" to="." method="_on_confirm_button_up"]
-[connection signal="button_up" from="ColorRect/MarginContainer/VBoxContainer/HBoxContainer/Button_Cancel" to="." method="_on_cancel_button_up"]
+[connection signal="pressed" from="Button_Close" to="." method="_on_cancel_pressed"]
+[connection signal="pressed" from="ColorRect/MarginContainer/VBoxContainer/HBoxContainer/Button_Confirm" to="." method="_on_confirm_pressed"]
+[connection signal="pressed" from="ColorRect/MarginContainer/VBoxContainer/HBoxContainer/Button_Cancel" to="." method="_on_cancel_pressed"]

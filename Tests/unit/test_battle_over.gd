@@ -194,7 +194,7 @@ func test_03_init_sets_loss_screen():
 
 func test_07_on_button_edit_team_changes_to_pre_battle_menu():
 	print(get_stack()[0]["function"])
-	screen._on_button_edit_team_button_up()
+	screen._on_button_edit_team_pressed()
 	
 	assert_call_count(MainMock_Instance, "change_scene", 1)
 	var parameters = get_call_parameters(MainMock_Instance, "change_scene")
@@ -205,14 +205,14 @@ func test_07_on_button_edit_team_changes_to_pre_battle_menu():
 
 func test_08_on_button_end_changes_scene():
 	print(get_stack()[0]["function"])
-	screen._on_button_end_button_up()
+	screen._on_button_end_pressed()
 	assert_call_count(MainMock_Instance, "change_scene", 1)
 	var params = get_call_parameters(MainMock_Instance, "change_scene")
 	assert_true(params[0] is ContextContainer)
 
 func test_09_on_button_replay_changes_scene():
 	print(get_stack()[0]["function"])
-	screen._on_button_replay_button_up()
+	screen._on_button_replay_pressed()
 	assert_call_count(MainMock_Instance, "change_scene", 1)
 	var params = get_call_parameters(MainMock_Instance, "change_scene")
 	assert_true(params[0] is ContextContainer)

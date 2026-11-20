@@ -353,7 +353,7 @@ func RefreshCharacterGrid() -> void:
 				ClearCharacterSlot(slot)
 				slot.hide()
 
-func _on_button_sort_level_button_up() -> void:
+func _on_button_sort_level_pressed() -> void:
 	_sort_level_descending = not _sort_level_descending
 	ApplyCharacterSort()
 
@@ -412,7 +412,7 @@ func SellItem() -> void:
 	_confirm_option.hide()
 	_select_item_option.hide()
 
-func _on_button_release_button_up() -> void:
+func _on_button_release_pressed() -> void:
 	TryRelease()
 
 func TryRelease() -> void:
@@ -442,9 +442,9 @@ func ReleaseCharacter() -> void:
 
 	_confirm_option.hide()
 	ApplyCharacterSort()
-	_on_button_deselect_char_button_up()
+	_on_button_deselect_char_pressed()
 
-func _on_button_ascend_button_up() -> void:
+func _on_button_ascend_pressed() -> void:
 	TryAscend()
 
 func TryAscend() -> void:
@@ -534,7 +534,7 @@ func ExitSacrificePicker() -> void:
 	RefreshItemGrid()
 	ShowSelectedCharacter(_selected_character_ID)
 
-func _on_button_cancel_sacrifice_button_up() -> void:
+func _on_button_cancel_sacrifice_pressed() -> void:
 	ExitSacrificePicker()
 
 func GetSelectedItemID() -> int:
@@ -721,7 +721,7 @@ func TriggerUnequipSelectedItem() -> void:
 	_selected_equipped_item_ID = -1
 	_select_item_option.hide()
 
-func _on_button_deselect_char_button_up() -> void:
+func _on_button_deselect_char_pressed() -> void:
 	if(_renown_window.visible):
 		return
 	if(_in_sacrifice_picker):
@@ -753,7 +753,7 @@ func _on_button_deselect_char_button_up() -> void:
 	SetCollectionTab(COLLECTION_TAB_CHARACTERS)
 	RefreshCharacterGrid()
 
-func _on_exit_button_up() -> void:
+func _on_exit_pressed() -> void:
 	var context_container: ContextContainer = ContextContainer.new()
 	context_container._scene = "uid://cfdrcdtsx2jh7"
 	main.GetInstance().change_scene(context_container)

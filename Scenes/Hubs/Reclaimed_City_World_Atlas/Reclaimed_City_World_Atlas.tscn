@@ -152,7 +152,7 @@ NodePath("../Navigation_Buttons/Button_Adventure"): ExtResource("9_tw051")
 })
 metadata/_custom_type_script = "uid://brborf0wdvmjy"
 
-[connection signal="button_up" from="Navigation_Buttons/Button_Experience_Quests" to="." method="_on_experience_quests_button_up"]
-[connection signal="button_up" from="Navigation_Buttons/Button_Town" to="." method="_on_town_button_up"]
-[connection signal="button_up" from="Navigation_Buttons/Button_Statues" to="." method="_on_statues_button_up"]
-[connection signal="button_up" from="Navigation_Buttons/Button_Adventure" to="." method="_on_adventure_button_up"]
+[connection signal="pressed" from="Navigation_Buttons/Button_Experience_Quests" to="." method="_on_experience_quests_pressed"]
+[connection signal="pressed" from="Navigation_Buttons/Button_Town" to="." method="_on_town_pressed"]
+[connection signal="pressed" from="Navigation_Buttons/Button_Statues" to="." method="_on_statues_pressed"]
+[connection signal="pressed" from="Navigation_Buttons/Button_Adventure" to="." method="_on_adventure_pressed"]

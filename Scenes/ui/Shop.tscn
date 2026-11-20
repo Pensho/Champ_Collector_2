@@ -108,4 +108,4 @@ NodePath("../Button_Back"): ExtResource("8_tdgyo")
 })
 metadata/_custom_type_script = "uid://brborf0wdvmjy"
 
-[connection signal="button_up" from="Button_Back" to="." method="_on_back_button_up"]
+[connection signal="pressed" from="Button_Back" to="." method="_on_back_pressed"]

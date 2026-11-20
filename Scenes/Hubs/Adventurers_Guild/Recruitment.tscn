@@ -139,7 +139,7 @@ text = "0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[connection signal="button_up" from="Button_Back" to="." method="_on_back_button_up"]
-[connection signal="button_up" from="Button_Bone_Favor" to="." method="_on_bone_favor_button_up"]
-[connection signal="button_up" from="Button_Brass_Favor" to="." method="_on_brass_favor_button_up"]
-[connection signal="button_up" from="Button_Parchment_Favor" to="." method="_on_parchment_favor_button_up"]
+[connection signal="pressed" from="Button_Back" to="." method="_on_back_pressed"]
+[connection signal="pressed" from="Button_Bone_Favor" to="." method="_on_bone_favor_pressed"]
+[connection signal="pressed" from="Button_Brass_Favor" to="." method="_on_brass_favor_pressed"]
+[connection signal="pressed" from="Button_Parchment_Favor" to="." method="_on_parchment_favor_pressed"]

@@ -116,4 +116,4 @@ layout_mode = 2
 theme = ExtResource("2_theme")
 text = "Cancel"
 
-[connection signal="button_up" from="ColorRect_Card/MarginContainer/VBoxContainer/Button_Cancel" to="." method="_on_button_cancel_button_up"]
+[connection signal="pressed" from="ColorRect_Card/MarginContainer/VBoxContainer/Button_Cancel" to="." method="_on_button_cancel_pressed"]

@@ -217,10 +217,10 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 26
 text = "Back"
 
-[connection signal="button_up" from="Outside_Button" to="." method="_on_outside_button_up"]
-[connection signal="button_up" from="Main_Page/Layout/Return_Button" to="." method="_on_return_button_up"]
-[connection signal="button_up" from="Main_Page/Layout/Statuses_Button" to="." method="_on_statuses_button_up"]
-[connection signal="button_up" from="Main_Page/Layout/Leave_Button" to="." method="_on_leave_button_up"]
-[connection signal="button_up" from="Status_Page/Layout/Back_Button" to="." method="_on_back_button_up"]
-[connection signal="button_up" from="Leave_Page/Layout/Buttons/Leave_Confirm_Button" to="." method="_on_leave_confirm_button_up"]
-[connection signal="button_up" from="Leave_Page/Layout/Buttons/Back_Button" to="." method="_on_back_button_up"]
+[connection signal="pressed" from="Outside_Button" to="." method="_on_outside_pressed"]
+[connection signal="pressed" from="Main_Page/Layout/Return_Button" to="." method="_on_return_pressed"]
+[connection signal="pressed" from="Main_Page/Layout/Statuses_Button" to="." method="_on_statuses_pressed"]
+[connection signal="pressed" from="Main_Page/Layout/Leave_Button" to="." method="_on_leave_pressed"]
+[connection signal="pressed" from="Status_Page/Layout/Back_Button" to="." method="_on_back_pressed"]
+[connection signal="pressed" from="Leave_Page/Layout/Buttons/Leave_Confirm_Button" to="." method="_on_leave_confirm_pressed"]
+[connection signal="pressed" from="Leave_Page/Layout/Buttons/Back_Button" to="." method="_on_back_pressed"]

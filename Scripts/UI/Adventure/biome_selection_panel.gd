@@ -48,5 +48,5 @@ func _on_texture_button_mouse_entered() -> void:
 func _on_texture_button_mouse_exited() -> void:
 	hover_changed.emit(self, false)
 
-func _on_texture_button_button_up() -> void:
+func _on_texture_button_pressed() -> void:
 	pressed.emit(self)
