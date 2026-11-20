@@ -2,6 +2,7 @@
 
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="1_dkyla"]
 [ext_resource type="Script" path="res://Scripts/UI/confirm_delete_dialog.gd" id="1_uf0c1"]
+[ext_resource type="Shortcut" path="res://Data/Cancel_Shortcut.tres" id="cancel_shortcut"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uf0c1"]
 
@@ -32,6 +33,8 @@ grow_vertical = 2
 color = Color(0, 0, 0, 0.33333334)
 
 [node name="Button_Close" type="Button" parent="."]
+shortcut = ExtResource("cancel_shortcut")
+shortcut_in_tooltip = false
 custom_minimum_size = Vector2(4000, 2000)
 layout_mode = 1
 anchors_preset = 15

@@ -13,6 +13,7 @@ const COMBAT_EFFECT_TEXT_TEMPLATE = preload("uid://caq22aj34qk1f")
 const BUTTON_WITH_OPTIONS_SCENE = preload("uid://c7smqpmfvs0ih")
 const SKILL_GLOW_POS_HIDDEN: Vector2 = Vector2(-2000.0, 0.0)
 const COMBAT_TEXT_SPAWN_POINT: Vector2 = Vector2(100, 70)
+const SKILL_HOTKEY_ACTIONS: Array[StringName] = [&"skill_1", &"skill_2", &"skill_3"]
 
 @export var _skill_buttons: Array[SkillButton]
 @export var _reagent_buttons: Array[ReagentButton]
@@ -260,23 +261,48 @@ func HideReagentUI() -> void:
 	_reagent_pouch.CloseInstantly()
 	_reagent_pouch.hide()
 
+func _unhandled_key_input(p_event: InputEvent) -> void:
+	var slot: int = SkillHotkeySlot(p_event)
+	if(slot < 0 or not CanUseSkillHotkey(slot)):
+		return
+	get_viewport().set_input_as_handled()
+	_SelectSkill(slot)
+
+static func SkillHotkeySlot(p_event: InputEvent) -> int:
+	for slot in SKILL_HOTKEY_ACTIONS.size():
+		if(p_event.is_action_pressed(SKILL_HOTKEY_ACTIONS[slot])):
+			return slot
+	return -1
+
+## A hotkey reaches only what a click could: a shown, enabled skill button with no window over it.
+func CanUseSkillHotkey(p_slot: int) -> bool:
+	var button: SkillButton = _skill_buttons[p_slot]
+	if(button.disabled or not button.is_visible_in_tree()):
+		return false
+	for window: Control in [_battle_menu, _reagent_confirm, _graft_description_window,
+			_graft_permanence_confirm]:
+		if(null != window and window.visible):
+			return false
+	return true
+
+func _SelectSkill(p_slot: int) -> void:
+	ActiveSkillGlow(p_slot)
+	battle_skill_selected.emit(p_slot)
+
 func _on_skill_1_pressed() -> void:
 	if ToolTip.ConsumedPress():
 		return
-	skill_focus.position = SKILL_GLOW_POS_1
-	battle_skill_selected.emit(0)
+	_SelectSkill(0)
 
 func _on_skill_2_pressed() -> void:
 	if ToolTip.ConsumedPress():
 		return
-	skill_focus.position = SKILL_GLOW_POS_2
-	battle_skill_selected.emit(1)
+	_SelectSkill(1)
 
 func _on_skill_3_pressed() -> void:
 	if ToolTip.ConsumedPress():
 		return
-	skill_focus.position = SKILL_GLOW_POS_3
-	battle_skill_selected.emit(2)
+	_SelectSkill(2)
 
 func _on_reagent_1_pressed() -> void:
 	if ToolTip.ConsumedPress():

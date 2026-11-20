@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://ddpktgn15ftrf" path="res://Scripts/UI/Battle_UI/battle_menu.gd" id="1_script"]
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="2_theme"]
 [ext_resource type="PackedScene" path="res://Scenes/ui/Battle_UI/Character_Status_Section.tscn" id="3_section"]
+[ext_resource type="Shortcut" path="res://Data/Cancel_Shortcut.tres" id="cancel_shortcut"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_page"]
 content_margin_left = 20.0
@@ -49,6 +50,8 @@ mouse_filter = 2
 color = Color(0, 0, 0, 0.5)
 
 [node name="Outside_Button" type="Button" parent="." unique_id=1465080412]
+shortcut = ExtResource("cancel_shortcut")
+shortcut_in_tooltip = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

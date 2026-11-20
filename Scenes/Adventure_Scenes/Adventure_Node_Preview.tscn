@@ -3,6 +3,7 @@
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="1_theme"]
 [ext_resource type="Script" uid="uid://ckre4eoeabpnu" path="res://Scripts/UI/Adventure/adventure_node_preview.gd" id="2_preview"]
 [ext_resource type="PackedScene" path="res://Scenes/Adventure_Scenes/Preparation_Card.tscn" id="3_card"]
+[ext_resource type="Shortcut" path="res://Data/Cancel_Shortcut.tres" id="cancel_shortcut"]
 
 [node name="AdventureNodePreview" type="Control" unique_id=100000001 node_paths=PackedStringArray("_label_type", "_label_desc", "_preparation_row", "_card_prepare", "_card_bait", "_button_engage")]
 visible = false
@@ -88,6 +89,8 @@ theme = ExtResource("1_theme")
 text = "Engage"
 
 [node name="Button_Close" type="Button" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=909910804]
+shortcut = ExtResource("cancel_shortcut")
+shortcut_in_tooltip = false
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 8

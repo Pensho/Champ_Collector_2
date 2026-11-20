@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://yruh34l1qcss" path="res://Scripts/UI/button_with_options.gd" id="1_brdu4"]
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="2_g4psy"]
 [ext_resource type="FontFile" uid="uid://yjb867fn5vve" path="res://Assets/Champ_Collector/Fonts/alagard.ttf" id="3_lfqi7"]
+[ext_resource type="Shortcut" path="res://Data/Cancel_Shortcut.tres" id="cancel_shortcut"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_taquw"]
 
@@ -40,6 +41,8 @@ grow_vertical = 2
 color = Color(0, 0, 0, 0.33333334)
 
 [node name="Button_Close" type="Button" parent="." unique_id=1778689236]
+shortcut = ExtResource("cancel_shortcut")
+shortcut_in_tooltip = false
 custom_minimum_size = Vector2(4000, 2000)
 layout_mode = 1
 anchors_preset = 15

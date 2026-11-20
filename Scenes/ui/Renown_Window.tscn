@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dokdwbp7vysw4" path="res://Scripts/UI/renown_window.gd" id="1_script"]
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="2_theme"]
+[ext_resource type="Shortcut" path="res://Data/Cancel_Shortcut.tres" id="cancel_shortcut"]
 
 [node name="RenownWindow" type="Control" unique_id=184608766 node_paths=PackedStringArray("_attribute_buttons")]
 visible = false
@@ -112,6 +113,8 @@ theme = ExtResource("2_theme")
 text = "Knowledge"
 
 [node name="Button_Cancel" type="Button" parent="ColorRect_Card/MarginContainer/VBoxContainer" unique_id=1735055052]
+shortcut = ExtResource("cancel_shortcut")
+shortcut_in_tooltip = false
 layout_mode = 2
 theme = ExtResource("2_theme")
 text = "Cancel"
