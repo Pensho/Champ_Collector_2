@@ -5,7 +5,7 @@
 [ext_resource type="Resource" uid="uid://bqk4emurlihv2" path="res://Data/Adventure_Data/Layouts/layout_default.tres" id="3_layout"]
 [ext_resource type="Resource" uid="uid://5ilhhb5l8y6e" path="res://Data/Adventure_Data/Biome_Types/biome_reclaimed_city_magic_ruins.tres" id="4_eeoux"]
 [ext_resource type="Script" uid="uid://bjtnao6fgl8go" path="res://Scripts/Worldview/Context_Battle.gd" id="5_battle"]
-[ext_resource type="Resource" path="res://Data/Battle_Variants/Battle_Slab_Tossers.tres" id="6_slab_tossers"]
+[ext_resource type="Resource" path="res://Data/Battle_Variants/Battle_Lotlings.tres" id="6_lotlings"]
 [ext_resource type="Resource" path="res://Data/Battle_Variants/Battle_Chanter_and_Gatherers.tres" id="7_chanter_and_gatherers"]
 [ext_resource type="Resource" uid="uid://b805ihvf6ay54" path="res://Data/Battle_Variants/Battle_Hue_Eater.tres" id="8_hue_eater"]
 [ext_resource type="Resource" uid="uid://bbrk8oufxt6cb" path="res://Data/Battle_Variants/Battle_Burning_Glass.tres" id="9_burning_glass"]
@@ -28,7 +28,7 @@ layout = ExtResource("3_layout")
 biome = ExtResource("4_eeoux")
 music_track = ExtResource("16_music")
 battle_variants = Dictionary[ExtResource("5_battle"), int]({
-ExtResource("6_slab_tossers"): 100,
+ExtResource("6_lotlings"): 100,
 ExtResource("7_chanter_and_gatherers"): 100,
 ExtResource("9_burning_glass"): 100
 })

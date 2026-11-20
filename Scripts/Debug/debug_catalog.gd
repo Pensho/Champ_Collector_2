@@ -16,7 +16,7 @@ const ENEMY_CHARACTER_PRESETS: Dictionary[String, CharacterPreset] = {
 	"Scavenger Skirmisher": preload("res://Data/Character_Enemy_Variants/Scavenger_Skirmisher.tres"),
 	"Ridge Marksman": preload("res://Data/Character_Enemy_Variants/Ridge_Marksman.tres"),
 	"Hue-Eater": preload("res://Data/Character_Enemy_Variants/Hue_Eater.tres"),
-	"Slab Tosser": preload("res://Data/Character_Enemy_Variants/Slab_Tosser.tres"),
+	"Lotling": preload("res://Data/Character_Enemy_Variants/Lotling.tres"),
 	"Vesper": preload("res://Data/Character_Enemy_Variants/Vesper.tres"),
 	"Almsbearer": preload("res://Data/Character_Enemy_Variants/Almsbearer.tres"),
 	"Molten Glass Hound": preload("res://Data/Character_Enemy_Variants/Molten_Glass_Hound.tres"),
@@ -34,7 +34,7 @@ const BATTLE_CONTEXTS: Dictionary[String, Context_Battle] = {
 	"Clearing Crew": preload("res://Data/Battle_Variants/Battle_Clearing_Crew.tres"),
 	"Salvage Baron": preload("res://Data/Battle_Variants/Battle_Salvage_Baron.tres"),
 	"Hue-Eater": preload("res://Data/Battle_Variants/Battle_Hue_Eater.tres"),
-	"Slab Tossers": preload("res://Data/Battle_Variants/Battle_Slab_Tossers.tres"),
+	"Lotlings": preload("res://Data/Battle_Variants/Battle_Lotlings.tres"),
 	"Chanter and Gatherers": preload("res://Data/Battle_Variants/Battle_Chanter_and_Gatherers.tres"),
 	"Burning Glass": preload("res://Data/Battle_Variants/Battle_Burning_Glass.tres"),
 }

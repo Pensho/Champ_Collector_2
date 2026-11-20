@@ -2,7 +2,7 @@ extends GutTest
 
 const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 
-# Coverage for the Slab Tossers (Encounter_Design_Document.md 2.2): each Slab Toss flips the slab
+# Coverage for the Lotlings (Encounter_Design_Document.md 2.2): each Slab Toss flips the slab
 # on a chance roll Hexed biases. The good side adds one Echo; the bad side weakens the hit and
 # Hexes the tosser for a turn. The flip's effect plays ahead of the hit.
 

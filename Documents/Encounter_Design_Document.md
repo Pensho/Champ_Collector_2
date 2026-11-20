@@ -298,17 +298,16 @@ answers. Enemies without a listed skill fall back on the universal Stab and Zap
       it, its hoarded light cracked and fell like salt."
     - **Combat text,** once per battle, after 3 consecutive Prismatic Rains cast without
       Hexed on her: "All colour and chance falls to me."
-    - **Fodder:** Slab Tossers (Hexed and chance), Chanter and Gatherers (Enfeeble and
+    - **Fodder:** Lotlings (Hexed and chance), Chanter and Gatherers (Enfeeble and
       a gathered shape).
 - **Open items:**
     - **Parked idea, Luck on her:** with Luck alone her beams always hit; with Luck and
       Hexed, or neither, they hit at 60%; with Hexed alone, 36%. Set aside because it
       makes Cut Purse a key, repeating the Salvage Baron's Thief solution.
 
-#### Slab Tossers
+#### Lotlings
 
-- **Tier:** Fodder. **Composition:** three Slab Tossers (working name), each holding a
-  slab.
+- **Tier:** Fodder. **Composition:** three Lotlings, each holding a slab.
 - **Presentation:** the slab is a magical one found in the ruins. It arcs up and flips by
   squashing through its vertical scale. A good landing flashes yellow and gives off slowly
   rising glowing motes; a bad landing stays plain grey.

@@ -8,8 +8,8 @@
 
 [resource]
 script = ExtResource("1_preset")
-_name = "Slab Tosser"
-_texture = "res://Assets/Champ_Collector/Creatures/Opponents/scavenger_skirmisher.png"
+_name = "Lotling"
+_texture = "res://Assets/Champ_Collector/Creatures/Opponents/lotling.png"
 _art_scale = 0.8
 _faction = 4
 _role = 13

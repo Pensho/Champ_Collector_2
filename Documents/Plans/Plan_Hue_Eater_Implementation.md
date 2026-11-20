@@ -15,14 +15,14 @@ Hexagon builds up from 0 to 6 parts over time and hits all player characters whe
 Playable from the debug catalog.
 
 ### 3. Teaching design (done)
-Recorded in `Encounter_Design_Document.md` 2.2: her Teaching entry, the crystal die, Slab Tossers,
+Recorded in `Encounter_Design_Document.md` 2.2: her Teaching entry, the crystal die, Lotlings,
 and Chanter and Gatherers.
 
 ### 4. Teaching prototype (done)
 Build, with tests:
 - **Crystal die** replacing the prism's coloured faces: colourless, tinted red while she holds Hexed.
 - **Luck line** combat text: its trigger and its once-per-battle limit.
-- **Slab Tossers:** the slab toss as a chance roll Hexed biases, +1 Echo on the good side, weak hit
+- **Lotlings:** the slab toss as a chance roll Hexed biases, +1 Echo on the good side, weak hit
   and 1-turn self-Hexed on the bad side, and the flip visual with its yellow flash and motes.
 - **Chanter and Gatherers:** the chant's Enfeeble on every character, and a three-part triangle
   starting at one part. Generalise the Hue-Eater's hexagon scene and trait logic to a part count
@@ -40,7 +40,7 @@ step 3, or to step 1.
 - **Hue-Eater sprite.** Replaces the placeholder violet silhouette. A clean alpha edge and a strong
   silhouette, so the translucency shader (6.2) reads. (done)
 - **Crystal die.** Greyscale, so code owns the red tint.
-- **Slab Tossers:** decide what they are (not necessarily human) and name them; their slab.
+- **Lotlings:** decide what they are (not necessarily human) and name them; their slab. (done)
 - **Hexagon.** No texture: each slice stays a polygon drawing the background behind it in greyscale,
   with a glowing outline per slice. Polish the glow. (done)
 - **Grey patches.** A shader at her feet greying the ground through a shifting noise mask; one or

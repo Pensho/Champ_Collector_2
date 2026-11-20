@@ -1,6 +1,6 @@
 class_name SlabTossTrait extends CharacterTrait
 
-## A Slab Tosser's slab (Encounter_Design_Document.md 2.2, Slab Tossers): each Slab Toss flips the
+## A Lotling's slab (Encounter_Design_Document.md 2.2, Lotlings): each Slab Toss flips the
 ## slab on a chance roll that Hexed and Luck bias. The good side lands the hit with one more Echo;
 ## the bad side weakens the hit and Hexes the tosser.
 
