@@ -1,6 +1,6 @@
-[gd_resource type="Resource" script_class="GathererTrait" format=3]
+[gd_resource type="Resource" script_class="GathererTrait" format=3 uid="uid://y2nwgs4ovlta"]
 
-[ext_resource type="Script" path="res://Scripts/Character/character_traits/CharacterSpecificTraits/gatherer_trait.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://3pesvg6xo4o5" path="res://Scripts/Character/character_traits/CharacterSpecificTraits/gatherer_trait.gd" id="1_script"]
 
 [resource]
 script = ExtResource("1_script")
@@ -8,5 +8,5 @@ _starting_parts = 1
 _parts_to_complete = 3
 _parts_per_enfeeble = 3
 _launch_damage_scaling = Dictionary[int, float]({
-6: 0.6
+6: 0.9
 })

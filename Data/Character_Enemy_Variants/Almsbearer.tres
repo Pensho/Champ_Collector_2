@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://bs3pmrrpk00vu" path="res://Scripts/Character/attribute_weight_preset.gd" id="1_eso65"]
 [ext_resource type="Script" uid="uid://glh06y3wvchj" path="res://Scripts/Character/skill_data.gd" id="2_lfvbh"]
 [ext_resource type="Resource" uid="uid://dvgwxvsovsldc" path="res://Data/Character_Skill_Variants/Attack_Skills/Stab.tres" id="3_c5mav"]
-[ext_resource type="Resource" path="res://Data/Character_Traits/Enemy_Traits/Gatherer_Trait.tres" id="4_slpbk"]
+[ext_resource type="Resource" uid="uid://y2nwgs4ovlta" path="res://Data/Character_Traits/Enemy_Traits/Gatherer_Trait.tres" id="4_slpbk"]
 [ext_resource type="Script" uid="uid://ftdwxfh8y3n1" path="res://Scripts/Character/character_preset.gd" id="5_ky7un"]
 
 [resource]
