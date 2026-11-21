@@ -1,7 +1,7 @@
 class_name HueEaterTrait extends GatheredLightTrait
 
-## The Hue-Eater's Translucent, her Gathered Light hexagon, and her luck line
-## (Encounter_Design_Document.md 2.2). Kept through the phase 2 transition, so the hexagon carries
+## The Hue-Eater's Translucent, her Gathered Light, and her luck line
+## (Encounter_Design_Document.md 2.2). Kept through the phase 2 transition, so the shape carries
 ## over.
 
 const LUCK_LINE: String = "All colour and chance falls to me."

@@ -2,9 +2,9 @@ extends GutTest
 
 const TestFactory = preload("res://Tests/unit/helpers/test_factory.gd")
 
-# Coverage for Chanter and Gatherers (Encounter_Design_Document.md 2.2): a Gatherer's triangle
+# Coverage for Chanter and Gatherers (Encounter_Design_Document.md 2.2): a Gatherer's shape
 # starts at one part, gains one a turn, hovers when full and launches at the party the turn after;
-# an Enfeeble landing on a Gatherer is consumed and empties its triangle; the Chanter's Chant
+# an Enfeeble landing on a Gatherer is consumed and empties its shape; the Chanter's Chant
 # Enfeebles every character on both sides.
 
 const GATHERER_TRAIT: GathererTrait = preload("res://Data/Character_Traits/Enemy_Traits/Gatherer_Trait.tres")
@@ -47,19 +47,19 @@ func _party_health() -> Array[int]:
 		health.append(_roster[party_ID]._current_health)
 	return health
 
-func test_a_triangle_starts_with_one_part() -> void:
+func test_a_gatherer_shape_starts_with_one_part() -> void:
 	assert_eq(_trait.GetParts(), 1)
 
-func test_a_full_triangle_hovers_a_turn_then_launches_at_the_party() -> void:
-	_start_turns(2)
-	assert_eq(_trait.GetParts(), 3)
+func test_a_full_shape_hovers_a_turn_then_launches_at_the_party() -> void:
+	_start_turns(_trait._parts_to_complete - _trait.GetParts())
+	assert_eq(_trait.GetParts(), _trait._parts_to_complete)
 	var before: Array[int] = _party_health()
 	_start_turns(1)
-	assert_eq(_trait.GetParts(), 0, "The launch empties the triangle")
+	assert_eq(_trait.GetParts(), 0, "The launch empties the shape")
 	for index in PARTY_IDS.size():
 		assert_lt(_roster[PARTY_IDS[index]]._current_health, before[index], "The launch hits every champion")
 
-func test_an_enfeeble_empties_the_triangle() -> void:
+func test_an_enfeeble_empties_the_shape() -> void:
 	_start_turns(1)
 	_resolver.GetStatusResolver().ApplyDebuff(GATHERER_ID, _enfeeble())
 	assert_eq(_trait.GetParts(), 0)
@@ -72,7 +72,7 @@ func test_a_consumed_enfeeble_is_announced_once() -> void:
 				or (CombatResult.Kind.Status_Applied == result.kind and not result.is_buff)))
 	assert_eq(announcements.size(), 1)
 
-func test_the_chant_enfeebles_every_character_and_empties_the_triangles() -> void:
+func test_the_chant_enfeebles_every_character_and_empties_the_shapes() -> void:
 	_roster[CHANTER_ID]._attributes[Types.Attribute.Accuracy] = 1000
 	_roster[CHANTER_ID]._skills = [CHANT]
 	_start_turns(1)

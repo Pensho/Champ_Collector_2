@@ -138,26 +138,26 @@ func test_gathered_light_gains_a_slice_each_turn() -> void:
 	_start_turns(3)
 	assert_eq(_trait.GetParts(), 3)
 
-func test_a_full_hexagon_hovers_a_turn_then_launches_at_the_party() -> void:
-	_start_turns(6)
-	assert_eq(_trait.GetParts(), 6)
+func test_a_full_shape_hovers_a_turn_then_launches_at_the_party() -> void:
+	_start_turns(_trait._parts_to_complete)
+	assert_eq(_trait.GetParts(), _trait._parts_to_complete)
 	var before: Array[int] = _party_health()
 	_start_turns(1)
-	assert_eq(_trait.GetParts(), 0, "The launch empties the hexagon")
+	assert_eq(_trait.GetParts(), 0, "The launch empties the shape")
 	assert_eq(_party_damaged(before), PARTY_IDS.size(), "The launch hits every champion")
 
 func test_the_launch_effect_precedes_the_launch_damage() -> void:
-	_start_turns(6)
+	_start_turns(_trait._parts_to_complete)
 	var results: Array[CombatResult] = _resolver.BeginTurn(BOSS_ID)
 	var split: int = PresentationTimeline.TraitEffectEnd(results)
 	assert_gt(split, 0, "The launch should emit its trait effect")
 	assert_false(results.slice(0, split).any(
 			func(result: CombatResult) -> bool: return CombatResult.Kind.Damage == result.kind),
-			"No launch damage may land before the hexagon flies")
+			"No launch damage may land before the shape flies")
 
-func test_the_hexagon_does_not_launch_before_it_is_full() -> void:
+func test_the_shape_does_not_launch_before_it_is_full() -> void:
 	var before: Array[int] = _party_health()
-	_start_turns(6)
+	_start_turns(_trait._parts_to_complete)
 	assert_eq(_party_damaged(before), 0)
 
 func test_an_enfeeble_landing_on_her_is_consumed_for_two_slices() -> void:
@@ -168,7 +168,7 @@ func test_an_enfeeble_landing_on_her_is_consumed_for_two_slices() -> void:
 			func(debuff: StatusEffects.Debuff) -> bool: return Types.Debuff_Type.Enfeeble == debuff.type),
 			"The Enfeeble should be consumed")
 
-func test_an_enfeeble_never_takes_the_hexagon_below_empty() -> void:
+func test_an_enfeeble_never_takes_the_shape_below_empty() -> void:
 	_start_turns(1)
 	_resolver.GetStatusResolver().ApplyDebuff(BOSS_ID, _debuff(Types.Debuff_Type.Enfeeble))
 	assert_eq(_trait.GetParts(), 0)
@@ -189,11 +189,11 @@ func test_landed_beams_add_no_slices_before_phase_two() -> void:
 	_cast(_beam_skill(1.0, 3))
 	assert_eq(_trait.GetParts(), 0)
 
-func test_beam_fed_slices_stop_at_a_full_hexagon() -> void:
+func test_beam_fed_slices_stop_at_a_full_shape() -> void:
 	_roster[BOSS_ID]._in_phase_two = true
-	_start_turns(4)
+	_start_turns(_trait._parts_to_complete - 1)
 	_cast(_beam_skill(1.0, 5))
-	assert_eq(_trait.GetParts(), 6)
+	assert_eq(_trait.GetParts(), _trait._parts_to_complete)
 
 func test_her_basic_attack_adds_no_slices_in_phase_two() -> void:
 	_roster[BOSS_ID]._in_phase_two = true
@@ -207,7 +207,7 @@ func test_beams_bent_into_her_add_no_slices_in_phase_two() -> void:
 	_cast(_beam_skill(0.0, 3))
 	assert_eq(_trait.GetParts(), 0)
 
-func test_the_hexagon_carries_through_the_phase_two_transition() -> void:
+func test_the_shape_carries_through_the_phase_two_transition() -> void:
 	var boss: Character = _roster[BOSS_ID]
 	boss._phase_two_skills = [_beam_skill(0.6)]
 	_start_turns(3)

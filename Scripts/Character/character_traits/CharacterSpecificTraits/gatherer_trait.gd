@@ -1,6 +1,6 @@
 class_name GathererTrait extends GatheredLightTrait
 
-## A Gatherer's Gathered Light: the Hue-Eater's mechanic on a triangle above its head
+## A Gatherer's Gathered Light: the Hue-Eater's mechanic on a shape above its head
 ## (Encounter_Design_Document.md 2.2, Chanter and Gatherers).
 
 const VISUALS_SCENE: PackedScene = preload(

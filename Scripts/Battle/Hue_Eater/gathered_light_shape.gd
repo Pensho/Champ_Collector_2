@@ -1,6 +1,6 @@
 class_name GatheredLightShape extends Node2D
 
-## A Gathered Light shape of equal wedge parts (the Hue-Eater's hexagon, a Gatherer's triangle),
+## A Gathered Light shape of equal wedge parts, one scene per part count,
 ## shown beside its owner and flown at the party by GatheredLightLaunch.
 
 ## Radians per second; positive turns clockwise.

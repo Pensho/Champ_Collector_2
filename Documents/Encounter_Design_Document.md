@@ -264,13 +264,13 @@ answers. Enemies without a listed skill fall back on the universal Stab and Zap
       of the screen while she is translucent, and hits her as her attack would hit a
       champion while she is solid. Hexed rolls twice and keeps the worse, lowering each
       beam to 36%. Applying Hexed plays a sound cue.
-    - **Gathered Light (passive).** A hexagon of six slices builds to her right at half her height, each
+    - **Gathered Light (passive).** A shape of five slices builds to her right at half her height, each
       transparent with a glowing outline, turning the background seen through it
       greyscale. She gains one slice at the start of each of her turns, starting from 0.
-      A full hexagon hovers for one turn, then flies onto the party at the start of her next
+      A full shape hovers for one turn, then flies onto the party at the start of her next
       (starting point: 150% of a standard hit on every champion, meant to be survivable)
       and resets. Each Enfeeble that lands on
-      her is consumed and removes 2 slices: the Enfeeble icon is pulled into the hexagon,
+      her is consumed and removes 2 slices: the Enfeeble icon is pulled into the shape,
       with a sound cue and combat text naming Enfeeble, and the two slices crack off and
       fall as Prism-Salt crystals at her feet.
     - **Phase 2 (50% Health).** Each Prismatic Rain beam that lands on a champion also
@@ -280,16 +280,16 @@ answers. Enemies without a listed skill fall back on the universal Stab and Zap
       her solid and bends most beams into her.
     - **Enfeeble (soft check):** the Lancer Role's Disarm (Hunter) and the Warlord's
       Brace for Impact. Brace for Impact also triggers on beam damage redirected by Shield
-      Wall, and is meant to be able to clear the whole hexagon in one cast. The Diviner's
+      Wall, and is meant to be able to clear the whole shape in one cast. The Diviner's
       Foresight also applies Enfeeble, incidentally.
     - **Tension:** Hexed lowers how many beams land on the Warlord, and so how many
       Enfeebles Brace for Impact applies. This is a timing decision, not a defect.
 - **Designed compositions (coverage, not requirements):** Jester, Lancer, Architect;
   Diviner, Architect, Thief. Any other Damage Engine may win (Concept Document 5.4.1).
 - **Solved state:** while Hexed is up she is solid and most of each cast bends back into
-  her; Enfeeble keeps the hexagon from completing.
+  her; Enfeeble keeps the shape from completing.
 - **Unsolved texture:** without Hexed she is near-invulnerable while beams land at 60%,
-  which is a wall. Without Enfeeble the hexagon's heavy hit lands every seventh turn of hers
+  which is a wall. Without Enfeeble the shape's heavy hit lands every sixth turn of hers
   in phase 1, and every three to four in phase 2.
 - **Teaching:**
     - **Pre-battle tooltip** (battle choice and inspecting her): "Light slips through her;
@@ -320,14 +320,14 @@ answers. Enemies without a listed skill fall back on the universal Stab and Zap
 #### Chanter and Gatherers
 
 - **Tier:** Fodder. **Composition:** one Chanter, two Gatherers.
-- **Presentation:** the triangle is drawn like the Hue-Eater's hexagon, flies onto the
+- **Presentation:** each Gatherer's shape is drawn like the Hue-Eater's, flies onto the
   party when full, and clears with the Hue-Eater's effect and sound.
-- **Mechanic:** each Gatherer builds a triangle of three parts, starting at one part; a
-  full triangle hits the party lightly. The Chanter's chant Enfeebles every character,
-  both sides. On a Gatherer, an Enfeeble is consumed and clears its triangle. Onset:
+- **Mechanic:** each Gatherer builds a shape of three parts, starting at one part; a
+  full shape hits the party lightly. The Chanter's chant Enfeebles every character,
+  both sides. On a Gatherer, an Enfeeble is consumed and clears its shape. Onset:
   enemy turn 1, the chant on the Chanter's first turn.
 - **Answers:** Enfeeble on the Gatherers (e.g. the Lancer Role's Disarm); killing the
-  Chanter stops the party's Enfeeble but lets the triangles complete.
+  Chanter stops the party's Enfeeble but lets the shapes complete.
 
 #### Burning Glass
 

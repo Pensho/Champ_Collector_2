@@ -2134,9 +2134,9 @@ first call and returns it afterwards; the trait preloads its scene and drives it
 `RefreshVisuals`. `SpritePoint(fraction, offset)` places a prop on the sprite box off the art scale
 alone, so it holds still while the sprite breathes, and `MarkerPosition(name, fallback)` exposes a
 `Marker2D` in the mounted scene to `SkillEffectScene.Anchor.Caster_Marker`. The Hue-Eater's
-`hue_eater_visuals.tscn` is the first: Gathered Light's hexagon right of her under the `Hexagon`
+`hue_eater_visuals.tscn` is the first: Gathered Light's shape right of her under the `Gathered_Light`
 marker its launch starts from, and the crystal die left of her under the `Die` marker her beams
-start from. `GatheredLightShape` draws any part count; a Gatherer's triangle uses it too.
+start from. `GatheredLightShape` drives one scene per part count; a Gatherer's shape uses it too.
 
 ### 9.2. The Graft passive: `GraftEffect`
 
