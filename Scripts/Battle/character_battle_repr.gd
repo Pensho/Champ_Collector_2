@@ -42,6 +42,18 @@ func FootPosition() -> Vector2:
 func CenterPosition() -> Vector2:
 	return global_position + SPRITE_SIZE * 0.5 * scale
 
+func TopPosition() -> Vector2:
+	return global_position + Vector2(SPRITE_SIZE.x * 0.5, 0.0) * scale
+
+## Where an effect scene anchored on this character as the target starts.
+func TargetAnchorPosition(p_anchor: SkillEffectScene.Anchor) -> Vector2:
+	match p_anchor:
+		SkillEffectScene.Anchor.Target_Feet:
+			return FootPosition()
+		SkillEffectScene.Anchor.Target_Top:
+			return TopPosition()
+	return CenterPosition()
+
 func AddStatusEffect(
 		p_effect_texture: Texture,
 		p_duration: int,

@@ -1,4 +1,4 @@
-[gd_resource type="Shortcut" format=3]
+[gd_resource type="Shortcut" format=3 uid="uid://o4dnvex7lacs"]
 
 [sub_resource type="InputEventAction" id="InputEventAction_cancel"]
 action = &"ui_cancel"

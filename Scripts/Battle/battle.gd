@@ -553,12 +553,9 @@ func _AnchorPoint(p_scene: SkillEffectScene, p_caster_ID: int, p_target_ID: int)
 			return caster.CenterPosition()
 		SkillEffectScene.Anchor.Caster_Feet:
 			return caster.FootPosition()
-		SkillEffectScene.Anchor.Target:
+		SkillEffectScene.Anchor.Target, SkillEffectScene.Anchor.Target_Feet, SkillEffectScene.Anchor.Target_Top:
 			if(has_target):
-				return _character_representations[p_target_ID].CenterPosition()
-		SkillEffectScene.Anchor.Target_Feet:
-			if(has_target):
-				return _character_representations[p_target_ID].FootPosition()
+				return _character_representations[p_target_ID].TargetAnchorPosition(p_scene.anchor)
 		SkillEffectScene.Anchor.Caster_Marker:
 			return caster.GetVisualEffects().MarkerPosition(p_scene.anchor_marker, caster.CenterPosition())
 	return _FieldCenter(p_caster_ID, p_target_ID)
@@ -697,7 +694,7 @@ func _ReservePresentationPool() -> void:
 		_effect_layer.Reserve(archetype, _characters.size())
 	if(null == _result_reactions):
 		return
-	for reaction: ResultReaction in [_result_reactions.damage, _result_reactions.heal, _result_reactions.death]:
+	for reaction: ResultReaction in _result_reactions.All():
 		if(null != reaction):
 			_effect_layer.Reserve(reaction.archetype, _characters.size())
 

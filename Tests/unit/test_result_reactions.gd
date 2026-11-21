@@ -10,6 +10,8 @@ func before_each() -> void:
 	_reactions.damage = ResultReaction.new()
 	_reactions.heal = ResultReaction.new()
 	_reactions.death = ResultReaction.new()
+	_reactions.buff_applied = ResultReaction.new()
+	_reactions.debuff_applied = ResultReaction.new()
 
 func _result(p_kind: CombatResult.Kind, p_amount: int = 0) -> CombatResult:
 	var result: CombatResult = CombatResult.new(p_kind)
@@ -30,8 +32,18 @@ func test_heal_and_death_rows() -> void:
 
 func test_other_kinds_have_no_reaction() -> void:
 	assert_null(_reactions.ReactionFor(_result(CombatResult.Kind.Turn_Bar_Bump)))
-	assert_null(_reactions.ReactionFor(_result(CombatResult.Kind.Status_Applied)),
-			"A status landing plays the status's own effect instead")
+
+func test_a_status_landing_uses_the_buff_or_debuff_row() -> void:
+	var buff: CombatResult = _result(CombatResult.Kind.Status_Applied)
+	buff.is_buff = true
+	var debuff: CombatResult = _result(CombatResult.Kind.Status_Applied)
+	debuff.is_buff = false
+	assert_eq(_reactions.ReactionFor(buff), _reactions.buff_applied)
+	assert_eq(_reactions.ReactionFor(debuff), _reactions.debuff_applied)
+
+func test_every_row_is_listed_for_reservation() -> void:
+	assert_eq(_reactions.All(), [_reactions.damage, _reactions.heal, _reactions.death,
+			_reactions.buff_applied, _reactions.debuff_applied])
 
 func test_the_target_hurts_on_a_hit_and_cries_out_on_death() -> void:
 	var character: Character = Character.new()

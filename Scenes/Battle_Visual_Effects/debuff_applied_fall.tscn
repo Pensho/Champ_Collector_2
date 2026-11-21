@@ -1,0 +1,163 @@
+[gd_scene format=3 uid="uid://clr4sgehn3q61"]
+
+[ext_resource type="Script" uid="uid://cf2qx7nmqiwib" path="res://Scripts/Battle/skill_effect_scene.gd" id="1_scene"]
+[ext_resource type="Texture2D" uid="uid://1ja3t0axqcr8" path="res://Assets/Champ_Collector/Particles/Debuff_Speck.png" id="2_speck"]
+[ext_resource type="Texture2D" uid="uid://cyt27tx2wu3h4" path="res://Assets/Champ_Collector/Particles/Debuff_Mote.png" id="3_mote"]
+
+[sub_resource type="Curve" id="Curve_shrink"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.2), -1.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="Gradient_fade"]
+offsets = PackedFloat32Array(0, 0.15, 0.6, 1)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0.8, 1, 1, 1, 0)
+
+[sub_resource type="Animation" id="Animation_reset"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Specks:emitting")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Motes:emitting")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_play"]
+length = 1.15
+tracks/0/type = "method"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Specks")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"restart"
+}]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Motes")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"restart"
+}]
+}
+tracks/2/type = "method"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"PlayCastSound"
+}]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Specks:emitting")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Motes:emitting")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_play"]
+_data = {
+&"RESET": SubResource("Animation_reset"),
+&"fall": SubResource("Animation_play")
+}
+
+[node name="Debuff_Applied_Fall" type="Node2D" unique_id=112164352 node_paths=PackedStringArray("animation_player", "variant_particles")]
+script = ExtResource("1_scene")
+animation_player = NodePath("AnimationPlayer")
+anchor = 6
+variant_particles = [NodePath("Specks"), NodePath("Motes")]
+
+[node name="Specks" type="CPUParticles2D" parent="." unique_id=884820102]
+emitting = false
+amount = 18
+texture = ExtResource("2_speck")
+lifetime = 0.85
+one_shot = true
+explosiveness = 0.5
+local_coords = true
+emission_shape = 3
+emission_rect_extents = Vector2(70, 6)
+direction = Vector2(0, 1)
+spread = 10.0
+gravity = Vector2(0, 490)
+initial_velocity_max = 10.0
+scale_amount_min = 0.4
+scale_amount_max = 0.6
+scale_amount_curve = SubResource("Curve_shrink")
+color = Color(0.9, 0.15, 0.2, 1)
+color_ramp = SubResource("Gradient_fade")
+
+[node name="Motes" type="CPUParticles2D" parent="." unique_id=397946905]
+emitting = false
+amount = 10
+texture = ExtResource("3_mote")
+lifetime = 0.9
+one_shot = true
+explosiveness = 0.6
+local_coords = true
+emission_shape = 3
+emission_rect_extents = Vector2(90, 8)
+direction = Vector2(0, 1)
+spread = 20.0
+gravity = Vector2(0, 250)
+initial_velocity_max = 5.0
+scale_amount_min = 0.5
+scale_amount_curve = SubResource("Curve_shrink")
+color = Color(0.9, 0.15, 0.2, 1)
+color_ramp = SubResource("Gradient_fade")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1456037758]
+libraries/ = SubResource("AnimationLibrary_play")

@@ -17,6 +17,7 @@ enum Anchor {
 	Field_Center,
 	## The caster's anchor_marker, a Marker2D in its trait visuals; the caster's centre without one.
 	Caster_Marker,
+	Target_Top,
 }
 
 const IMPACT_METHOD: StringName = &"Impact"

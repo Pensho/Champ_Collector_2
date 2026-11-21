@@ -89,11 +89,13 @@ Burning, Enfeeble, Expose Weakness). Catalog-only skills are mapped in the backl
   color-coded per buff (align colors with the status icons in
   `Assets/Champ_Collector/Icons/Status_Effects/`).
   Serves: Empower (Power Tide), Fortify (Stalwart Hymn), Daunting Strength
-  (Fatal Flaw), Phalanx Guard (no applying skill yet). Status: needed.
+  (Fatal Flaw), Phalanx Guard (no applying skill yet). Status: built as one shared blue
+  placeholder (`buff_applied_rise.tscn`); per-buff colors needed.
 - [ ] **Debuff application** — downward/cracking motes at the recipient, color-coded
   per debuff.
   Serves: Enfeeble (Disarm), Expose Weakness (Break Guard). Burning uses the fire
-  archetype instead. Status: needed.
+  archetype instead. Status: built as one shared red placeholder
+  (`debuff_applied_fall.tscn`); per-debuff colors needed.
 - [ ] **Heal/restore sparkle** — soft rising sparkles at the recipient. No
   implemented skill heals yet; first catalog carriers include Fateful Glimpse and
   Grafted Flesh. Status: needed (deferred until a heal is implemented).

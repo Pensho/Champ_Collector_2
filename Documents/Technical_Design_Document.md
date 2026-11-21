@@ -334,7 +334,7 @@ load time. There is a consistent **preset (template) vs instance (runtime)** spl
 | `SkillPresentation` | `Scripts/Battle/skill_presentation.gd` | A skill's effect: archetype scene, `EffectVariant`, spawn mode, stagger (7.9) |
 | `EffectVariant` | `Scripts/Battle/effect_variant.gd` | A skill's look on a shared archetype: textures, tint, scale, cast and impact cues |
 | `PresentationArchetypes` | `Scripts/Battle/presentation_archetypes.gd` | The default archetype per category plus the generic echo pulse, read by `PresentationDefaults` (`Data/Presentation/Presentation_Archetypes.tres`) |
-| `ResultReactions` / `ResultReaction` | `Scripts/Battle/result_reactions.gd`, `result_reaction.gd` | The shared reaction to a hit, heal or death: flash color, archetype, variant, cue (`Data/Presentation/Result_Reactions.tres`, see 9.3) |
+| `ResultReactions` / `ResultReaction` | `Scripts/Battle/result_reactions.gd`, `result_reaction.gd` | The shared reaction to a hit, heal, death or buff/debuff landing: flash color, archetype, variant, cue (`Data/Presentation/Result_Reactions.tres`, see 9.3) |
 | `AttributeWeightPreset` | `Scripts/Character/attribute_weight_preset.gd` | Per-attribute weight distribution used at level-up |
 | `EquipmentPreset` | `Scripts/Gear/equipment_preset.gd` | Gear template: slot, rarity, attribute composition, `_sub_type` (null on a Relic) |
 | `ItemSubType` | `Scripts/Gear/item_sub_type.gd` | A standard item's kind within its slot: name, slot and `ItemImplicit` (`Data/Item_Sub_Types/`) |
@@ -1489,9 +1489,9 @@ immediately.
 root of every effect scene. Its `AnimationPlayer` holds one animation whose method tracks call
 `Impact(index)`, `CasterLunge()`, `PlayCastSound()`/`PlayImpactSound()` (the variant's cues),
 `PlaySound(cue)` and `StartLoop`/`StopLoop` (loops stop when the animation ends). `anchor`
-(`Caster`, `Caster_Feet`, `Target`, `Target_Feet`, `Field_Center`, `Caster_Marker` — the
-`Marker2D` named by the scene's `anchor_marker` in the caster's trait visuals, the caster's centre
-without one) places it and `aim_at_target`
+(`Caster`, `Caster_Feet`, `Target`, `Target_Feet`, `Target_Top`, `Field_Center`, `Caster_Marker` —
+the `Marker2D` named by the scene's `anchor_marker` in the caster's trait visuals, the caster's
+centre without one) places it and `aim_at_target`
 rotates it toward the target; otherwise it mirrors to face away from the caster.
 `variant_sprites` and `variant_particles` take an `EffectVariant`'s texture, particle texture and
 tint, and a pooled instance restores its own look wherever the variant leaves a field null. A
@@ -1530,7 +1530,8 @@ queue, so numbers land with their bars.
 `effect_variant`, or the `status_effect` default (`status_icon_burst.tscn`) showing its icon. A
 status that deals damage or heals is `Effect_Moment.Triggered` and plays its effect on each result
 naming it in `triggered_by` (7.4), at the character hit or healed; every other status is
-`Applied` and plays on each `Status_Applied`, refreshes included.
+`Applied` and plays on each `Status_Applied`, refreshes included. Every `Status_Applied` also plays
+the `buff_applied` or `debuff_applied` reaction row (9.3).
 
 **Echo effects.** A skill echo's `Cascade_Triggered` names the cast skill (7.8), and the view
 replays that skill's effect on the action's targets. A status echo is a re-tick naming the status,
