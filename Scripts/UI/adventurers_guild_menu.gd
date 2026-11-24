@@ -11,9 +11,7 @@ func Init(_p_context_container: ContextContainer) -> void:
 	_hollow_ledger_window.hide()
 
 func _on_town_pressed() -> void:
-	var context_container: ContextContainer = ContextContainer.new()
-	context_container._scene = "uid://cfdrcdtsx2jh7"
-	main.GetInstance().change_scene(context_container)
+	main.GetInstance().EnterHub()
 
 func _on_fortunes_favor_pressed() -> void:
 	var context_container: ContextContainer = ContextContainer.new()

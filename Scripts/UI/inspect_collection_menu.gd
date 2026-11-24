@@ -754,6 +754,4 @@ func _on_button_deselect_char_pressed() -> void:
 	RefreshCharacterGrid()
 
 func _on_exit_pressed() -> void:
-	var context_container: ContextContainer = ContextContainer.new()
-	context_container._scene = "uid://cfdrcdtsx2jh7"
-	main.GetInstance().change_scene(context_container)
+	main.GetInstance().EnterHub()

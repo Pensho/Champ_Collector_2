@@ -1,7 +1,5 @@
 extends Control
 
-const DEFAULT_ACT: ActData = preload("res://Data/Adventure_Data/Acts/act_reclaimed_city.tres")
-
 const REST_STRETCH_RATIO: float = 1.0
 const EXPANDED_STRETCH_RATIO: float = 1.2
 const SPLIT_TWEEN_SECONDS: float = 0.5
@@ -18,9 +16,9 @@ var _split_tween: Tween
 
 func Init(p_context: ContextContainer) -> void:
 	_self_context = p_context
-	_act = p_context._arguments.get("Act", DEFAULT_ACT)
+	_act = p_context._arguments.get("Act", null)
 	if _act == null:
-		_act = DEFAULT_ACT
+		_act = main.GetInstance()._progress.GetCurrentAct()
 	_panels.assign([_panel_left, _panel_right])
 	for i in range(_panels.size()):
 		_panels[i].Populate(_act.adventures[i])

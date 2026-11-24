@@ -6,11 +6,19 @@
 [ext_resource type="Script" uid="uid://brborf0wdvmjy" path="res://Scripts/Audio/ui_sounds.gd" id="4_ui_sounds"]
 [ext_resource type="Script" uid="uid://853wrgpde68y" path="res://Scripts/Audio/button_sound_profile.gd" id="5_sound_profile"]
 [ext_resource type="Resource" uid="uid://1k7w3n5xbfw5" path="res://Data/Sound_Cues/Sound_Cue_Profiles/button_standard.tres" id="6_button_standard"]
+[ext_resource type="Resource" uid="uid://bda0rhrtu8ltw" path="res://Data/Adventure_Data/Acts/act_reclaimed_city.tres" id="7_reclaimed_city_act"]
+[ext_resource type="Resource" path="res://Data/Adventure_Data/Acts/act_clockwork_spire.tres" id="8_clockwork_spire_act"]
+[ext_resource type="Resource" path="res://Data/Adventure_Data/Acts/act_pirate_coves.tres" id="9_pirate_coves_act"]
+[ext_resource type="Resource" path="res://Data/Adventure_Data/Acts/act_iron_ledger.tres" id="10_iron_ledger_act"]
 
 [node name="Overworld" type="Control"]
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_overworld")
+_reclaimed_city_act = ExtResource("7_reclaimed_city_act")
+_clockwork_spire_act = ExtResource("8_clockwork_spire_act")
+_pirate_coves_act = ExtResource("9_pirate_coves_act")
+_iron_ledger_act = ExtResource("10_iron_ledger_act")
 
 [node name="Placeholder_Background" type="ColorRect" parent="."]
 layout_mode = 0

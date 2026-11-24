@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ActData" format=3]
+
+[ext_resource type="Script" uid="uid://db27iijleab1x" path="res://Scripts/Adventure_Scripts/act_data.gd" id="1_act_data"]
+[ext_resource type="AudioStream" uid="uid://8b08bu7krt0g" path="res://Assets/Audio/Music/Clockwork_Spire/solara.mp3" id="2_music"]
+
+[resource]
+script = ExtResource("1_act_data")
+display_name = "Clockwork Spire"
+music_track = ExtResource("2_music")
+hub_scene = "res://Scenes/Hubs/Clockwork_Spire/Clockwork_Spire.tscn"
+region_map_scene = "res://Scenes/Hubs/Region_Map/Clockwork_Spire_Region_Map.tscn"

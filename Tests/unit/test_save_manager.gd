@@ -333,6 +333,7 @@ func test_start_new_game_replaces_everything_in_memory() -> void:
 	instance._resources.AddTallies(7)
 	instance._resources.IncrementFortunesFavorPity(FortuneFavorTier.TierType.BONE)
 	instance._progress.RegisterEncounter("previous game")
+	instance._progress.SetCurrentAct(ActData.new())
 	instance._shop._stock.append({"sold_out": true})
 	instance._shop._restock_anchor_unix = 100
 	instance._tally_board._offers.append({"sold_out": true})
@@ -349,6 +350,7 @@ func test_start_new_game_replaces_everything_in_memory() -> void:
 	assert_eq(instance._resources.GetTallies(), 0)
 	assert_eq(instance._resources.GetFortunesFavorPity(FortuneFavorTier.TierType.BONE), 0)
 	assert_true(instance._progress._stage_difficulty.is_empty())
+	assert_eq(instance._progress.GetCurrentAct(), ProgressHandler.STARTING_ACT)
 	assert_true(instance._shop._stock.is_empty())
 	assert_eq(instance._shop._restock_anchor_unix, 0)
 	assert_true(instance._tally_board._offers.is_empty())

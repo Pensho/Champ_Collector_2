@@ -1,8 +1,6 @@
 class_name Main_Instance extends Node
 
 const MUSIC_FADE_SECONDS: float = 1.5
-## Reclaimed City is the only hub until acts are tracked as game state.
-const HUB_ACT: ActData = preload("res://Data/Adventure_Data/Acts/act_reclaimed_city.tres")
 const MAIN_MENU_SCENE: String = "uid://c6c1o3oabj0pf"
 const SAVE_LOAD_SCENE: String = "uid://caviahtf8gtm4"
 const SILENT_SCENES: Array[String] = [MAIN_MENU_SCENE, SAVE_LOAD_SCENE]
@@ -76,7 +74,12 @@ func StartNewGame() -> void:
 
 func EnterHub() -> void:
 	var context_container: ContextContainer = ContextContainer.new()
-	context_container._scene = "uid://cfdrcdtsx2jh7"
+	context_container._scene = _progress.GetCurrentAct().hub_scene
+	change_scene(context_container)
+
+func EnterRegionMap() -> void:
+	var context_container: ContextContainer = ContextContainer.new()
+	context_container._scene = _progress.GetCurrentAct().region_map_scene
 	change_scene(context_container)
 
 ## The reagents a new game may start with under p_content_pool: everything the pool allows
@@ -111,7 +114,7 @@ func _deferred_change_scene(p_context: ContextContainer) -> void:
 	add_child(_current_scene)
 	print("current scene is: ", _current_scene)
 	_current_scene.Init(p_context)
-	Audio_Handler.PlayMusic(MusicTrackFor(p_context, HUB_ACT), MUSIC_FADE_SECONDS)
+	Audio_Handler.PlayMusic(MusicTrackFor(p_context, _progress.GetCurrentAct()), MUSIC_FADE_SECONDS)
 
 static func MusicTrackFor(p_context: ContextContainer, p_hub_act: ActData) -> AudioStream:
 	if p_context._adventure_state != null and p_context._adventure_state.adventure != null:

@@ -6,9 +6,7 @@ func Init(_p_context_container: ContextContainer) -> void:
 	pass
 
 func _on_back_pressed() -> void:
-	var context_container: ContextContainer = ContextContainer.new()
-	context_container._scene = "uid://df6f1b4xoipjq"
-	main.GetInstance().change_scene(context_container)
+	main.GetInstance().EnterRegionMap()
 
 func _on_weapon_pressed() -> void:
 	var context_container: ContextContainer = ContextContainer.new()

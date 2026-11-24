@@ -10,9 +10,7 @@ func _on_adventure_guild_pressed() -> void:
 	main.GetInstance().change_scene(context_container)
 
 func _on_war_room_button_pressed() -> void:
-	var context_container: ContextContainer = ContextContainer.new()
-	context_container._scene = "uid://df6f1b4xoipjq"
-	main.GetInstance().change_scene(context_container)
+	main.GetInstance().EnterRegionMap()
 
 func _on_button_view_collection_pressed() -> void:
 	var context_container: ContextContainer = ContextContainer.new()

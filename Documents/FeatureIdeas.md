@@ -126,5 +126,8 @@ Effort: **S** = hours, **M** = days, **L** = week+
 
 ## World & Narrative
 
+- **Hub faction recruitment weighting** *(Priority: Low | Effort: M)*
+  A hub's ruling faction weights which Champions its Adventurers Guild offers (Concept_Document section 3.6).
+
 - **Faction Reputation Meter** *(Priority: Low | Effort: M)*
   Track player standing with each faction. Higher rep unlocks exclusive characters or gear in that faction's hub. Reinforces the faction/synergy system noted in Concept_Document section 3.1.2.

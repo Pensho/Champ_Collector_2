@@ -1,25 +1,47 @@
 class_name ProgressHandler extends Node
 
+const STARTING_ACT: ActData = preload("res://Data/Adventure_Data/Acts/act_reclaimed_city.tres")
+
 var _stage_difficulty: Dictionary[String, int]
+var _current_act: ActData = STARTING_ACT
 
 func _ready() -> void:
 	self.name = self.get_script().get_global_name()
 	add_to_group(SaveManager.GROUP_SAVEABLE)
 
 func Serialize() -> Dictionary:
-	return {"stage_difficulty": _stage_difficulty.duplicate(true)}
+	return {
+		"stage_difficulty": _stage_difficulty.duplicate(true),
+		"current_act": _current_act.resource_path,
+	}
 
 func Deserialize(p_data: Dictionary) -> void:
+	_current_act = ActFromPath(p_data.get("current_act", ""))
+
 	if(not p_data.has("stage_difficulty")):
 		print("No stage difficulty found in save slot.")
 		return
-	
+
 	_stage_difficulty.clear()
 	for key in p_data["stage_difficulty"]:
 		_stage_difficulty[key] = int(p_data["stage_difficulty"][key])
 
 func Reset() -> void:
 	_stage_difficulty.clear()
+	_current_act = STARTING_ACT
+
+## A missing or unreadable path (an older save, a removed act) falls back to the starting act.
+static func ActFromPath(p_path: String) -> ActData:
+	if(p_path.is_empty() or not ResourceLoader.exists(p_path)):
+		return STARTING_ACT
+	var act: ActData = load(p_path) as ActData
+	return act if act != null else STARTING_ACT
+
+func GetCurrentAct() -> ActData:
+	return _current_act
+
+func SetCurrentAct(p_act: ActData) -> void:
+	_current_act = p_act
 
 func RegisterEncounter(p_encounter_ID: String) -> void:
 	print("RegisterEncounter for: ", p_encounter_ID)

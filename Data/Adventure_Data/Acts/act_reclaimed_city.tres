@@ -19,3 +19,5 @@ display_name = "Reclaimed City"
 adventures = Array[ExtResource("2_adventure_data")]([ExtResource("3_jungle"), ExtResource("4_magic_ruins")])
 gear_pool = Array[ExtResource("6_preset_script")]([ExtResource("7_briar_staff"), ExtResource("8_seed_lantern"), ExtResource("9_scaled_greaves"), ExtResource("10_shard_pike"), ExtResource("11_pew_shield"), ExtResource("12_hueless_slippers")])
 music_track = ExtResource("5_music")
+hub_scene = "uid://cfdrcdtsx2jh7"
+region_map_scene = "uid://df6f1b4xoipjq"

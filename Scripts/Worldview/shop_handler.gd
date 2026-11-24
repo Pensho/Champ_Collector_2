@@ -118,8 +118,9 @@ func EnsureFresh() -> void:
 	var now: int = int(Time.get_unix_time_from_system())
 	if(not IsRestockDue(_restock_anchor_unix, now)):
 		return
-	var budget: int = LootManager.CalculateBudget(main.GetInstance()._progress.GetHighestDifficulty())
-	_stock = RollStock(budget, Main_Instance.HUB_ACT.gear_pool)
+	var progress: ProgressHandler = main.GetInstance()._progress
+	var budget: int = LootManager.CalculateBudget(progress.GetHighestDifficulty())
+	_stock = RollStock(budget, progress.GetCurrentAct().gear_pool)
 	_restock_anchor_unix = now
 	stock_changed.emit()
 
