@@ -27,7 +27,7 @@ func Init(p_node: NodeData, p_is_eligible: bool) -> void:
 	match p_node.node_type:
 		NodeData.Node_Type.FIGHT:
 			_icon.texture = ICON_FIGHT
-		NodeData.Node_Type.BOSS:
+		NodeData.Node_Type.BOSS, NodeData.Node_Type.MINI_BOSS:
 			_icon.texture = ICON_BOSS
 		NodeData.Node_Type.REST_STOP:
 			_icon.texture = NODE_ICON_REST

@@ -1,7 +1,9 @@
-[gd_resource type="Resource" script_class="ActData" format=3]
+[gd_resource type="Resource" script_class="ActData" format=3 uid="uid://6m7n5af1a6br"]
 
 [ext_resource type="Script" uid="uid://db27iijleab1x" path="res://Scripts/Adventure_Scripts/act_data.gd" id="1_act_data"]
+[ext_resource type="Script" uid="uid://yxl15ofvlhuk" path="res://Scripts/Adventure_Scripts/adventure_data.gd" id="1_b1g7x"]
 [ext_resource type="AudioStream" uid="uid://8b08bu7krt0g" path="res://Assets/Audio/Music/Clockwork_Spire/solara.mp3" id="2_music"]
+[ext_resource type="Script" uid="uid://8knbs7yij5eh" path="res://Scripts/Gear/equipment_preset.gd" id="2_wwiht"]
 
 [resource]
 script = ExtResource("1_act_data")

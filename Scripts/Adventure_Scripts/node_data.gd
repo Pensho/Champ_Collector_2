@@ -8,6 +8,7 @@ enum Node_Type
 	HINT,
 	GAMBLE,
 	ESCALATE,
+	MINI_BOSS,
 }
 
 var scene_context: Static_Context

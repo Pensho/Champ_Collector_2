@@ -350,3 +350,116 @@ func test_every_loot_node_carries_the_adventure_gear_pool_on_a_copy() -> void:
 	for shared in [_adventure.combat_rewards, _adventure.boss_rewards,
 			_adventure.hint_rewards, _adventure.escalate_rewards]:
 		assert_true((shared as LootTable)._gear_pool.is_empty(), "The shared loot table must stay unchanged")
+
+
+func _GearPreset(p_slot: Types.Slot) -> EquipmentPreset:
+	var preset := EquipmentPreset.new()
+	preset._slot = p_slot
+	return preset
+
+func _SetUpMiniBosses() -> void:
+	_layout.mini_boss_nodes = AdventureLayout.Mechanic_Frequency.HIGH
+	_adventure.mini_boss_battle_variants = {_MakeVariant([CharacterPreset.new()]): 1}
+	_adventure.gear_pool = [_GearPreset(Types.Slot.Weapon), _GearPreset(Types.Slot.Boots)]
+
+func _DropSlot(p_node: NodeData) -> Types.Slot:
+	return (p_node.scene_context as Context_Battle)._loot_table._gear_pool[0]._slot
+
+func _MiniBossNodes(p_nodes: Array[NodeData]) -> Array[NodeData]:
+	return p_nodes.filter(func(p_node: NodeData) -> bool: return p_node.node_type == NodeData.Node_Type.MINI_BOSS)
+
+func test_mini_boss_nodes_are_placed_with_variants_and_gear() -> void:
+	_SetUpMiniBosses()
+	var mini_bosses: Array[NodeData] = _MiniBossNodes(AdventureGenerator.GenerateAdventure(_adventure))
+	assert_gt(mini_bosses.size(), 0, "HIGH frequency should place mini-boss nodes.")
+	for node in mini_bosses:
+		assert_true(node.scene_context is Context_Battle, "A mini-boss node needs a battle context.")
+
+func test_no_mini_boss_nodes_without_variants() -> void:
+	_SetUpMiniBosses()
+	_adventure.mini_boss_battle_variants = {}
+	assert_eq(_MiniBossNodes(AdventureGenerator.GenerateAdventure(_adventure)).size(), 0)
+
+func test_no_mini_boss_nodes_without_gear_pool() -> void:
+	_SetUpMiniBosses()
+	_adventure.gear_pool = []
+	assert_eq(_MiniBossNodes(AdventureGenerator.GenerateAdventure(_adventure)).size(), 0)
+
+func test_mini_boss_loot_holds_only_its_drop_slot_and_guarantees_gear() -> void:
+	_SetUpMiniBosses()
+	for node in _MiniBossNodes(AdventureGenerator.GenerateAdventure(_adventure)):
+		var loot: LootTable = (node.scene_context as Context_Battle)._loot_table
+		assert_eq(loot._gear_pool.size(), 1, "Only the drop slot's gear stays in the pool.")
+		assert_true(loot._gear_pool[0]._slot in [Types.Slot.Weapon, Types.Slot.Boots], "The slot comes from the gear pool.")
+		assert_gte(loot._primary_loot.get(LootManager.LootType.Equipment, 0), 1, "Gear is a guaranteed drop.")
+
+func test_mini_boss_loot_keeps_a_larger_authored_gear_guarantee() -> void:
+	var authored := LootTable.new()
+	authored._primary_loot[LootManager.LootType.Equipment] = 2
+	var loot: LootTable = AdventureGenerator.MiniBossLoot(authored, [_GearPreset(Types.Slot.Weapon)], Types.Slot.Weapon)
+	assert_eq(loot._primary_loot[LootManager.LootType.Equipment], 2)
+	assert_eq(authored._gear_pool.size(), 0, "The authored table is left untouched.")
+
+func test_mini_boss_loot_without_a_table_still_guarantees_gear() -> void:
+	var loot: LootTable = AdventureGenerator.MiniBossLoot(null, [_GearPreset(Types.Slot.Weapon)], Types.Slot.Weapon)
+	assert_eq(loot._primary_loot[LootManager.LootType.Equipment], 1)
+
+func test_mini_boss_drop_lands_in_its_slot() -> void:
+	var pool: Array[EquipmentPreset] = [
+		load("res://Data/Item_Presets/Briar_Staff.tres"),
+		load("res://Data/Item_Presets/Seed_Lantern.tres"),
+		load("res://Data/Item_Presets/Scaled_Greaves.tres")]
+	var loot: LootTable = AdventureGenerator.MiniBossLoot(null, pool, Types.Slot.OffHand)
+	loot._budget = LootManager.CalculateBudget(5)
+	LootManager.DistributeRewards(loot, 5)
+	assert_gt(loot._drop_result._equipment.size(), 0)
+	for item in loot._drop_result._equipment:
+		assert_eq(item._slot, Types.Slot.OffHand)
+
+func test_regenerating_with_same_seed_rolls_same_drop_slots() -> void:
+	_SetUpMiniBosses()
+	seed(4242)
+	var first: Array = _MiniBossNodes(AdventureGenerator.GenerateAdventure(_adventure)).map(
+			func(p_node: NodeData) -> Array: return [p_node.index, _DropSlot(p_node)])
+	seed(4242)
+	var second: Array = _MiniBossNodes(AdventureGenerator.GenerateAdventure(_adventure)).map(
+			func(p_node: NodeData) -> Array: return [p_node.index, _DropSlot(p_node)])
+	randomize()
+	assert_eq(first, second)
+
+func _DepthCounts(p_nodes: Array[NodeData]) -> Dictionary:
+	var counts: Dictionary = {}
+	for node in p_nodes:
+		counts[node.depth] = counts.get(node.depth, 0) + 1
+	return counts
+
+func test_at_most_one_mini_boss_per_depth() -> void:
+	_SetUpMiniBosses()
+	for _run in 20:
+		var depths: Array = _MiniBossNodes(AdventureGenerator.GenerateAdventure(_adventure)).map(
+				func(p_node: NodeData) -> int: return p_node.depth)
+		for depth: int in depths:
+			assert_eq(depths.count(depth), 1, "Depth %d holds more than one mini-boss." % depth)
+
+func test_mini_bosses_prefer_forked_depths() -> void:
+	_SetUpMiniBosses()
+	_layout.mini_boss_nodes = AdventureLayout.Mechanic_Frequency.LOW
+	for _run in 20:
+		var nodes: Array[NodeData] = AdventureGenerator.GenerateAdventure(_adventure)
+		var counts: Dictionary = _DepthCounts(nodes)
+		for node in _MiniBossNodes(nodes):
+			assert_gt(counts[node.depth], 1, "A single mini-boss should sit where the player can route around it.")
+
+func test_mini_bosses_fall_back_to_unforked_depths_without_branches() -> void:
+	_SetUpMiniBosses()
+	_layout.branching_paths = AdventureLayout.Mechanic_Frequency.NONE
+	var nodes: Array[NodeData] = AdventureGenerator.GenerateAdventure(_adventure)
+	assert_gt(_MiniBossNodes(nodes).size(), 0)
+
+func test_place_mini_bosses_chooses_the_forked_depth() -> void:
+	var spine: Array[NodeData] = AdventureGenerator._BuildSpine(8)
+	var branch: Array[NodeData] = AdventureGenerator.CreateParallelBranch(spine[2], spine[4], 1)
+	AdventureGenerator._PlaceMiniBosses(spine + branch, 1)
+	var mini_bosses: Array[NodeData] = _MiniBossNodes(spine + branch)
+	assert_eq(mini_bosses.size(), 1)
+	assert_eq(mini_bosses[0].depth, 3, "Depth 3 is the only forked depth.")

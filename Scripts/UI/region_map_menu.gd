@@ -13,11 +13,6 @@ func Init(_p_context_container: ContextContainer) -> void:
 func _on_town_pressed() -> void:
 	main.GetInstance().EnterHub()
 
-func _on_statues_pressed() -> void:
-	var context_container: ContextContainer = ContextContainer.new()
-	context_container._scene = "uid://d3kgucyfmcvip"
-	main.GetInstance().change_scene(context_container)
-
 func _on_caravan_pressed() -> void:
 	var context_container: ContextContainer = ContextContainer.new()
 	context_container._scene = "res://Scenes/Hubs/Overworld/Overworld.tscn"

@@ -221,7 +221,7 @@ Representative scenes:
 | `Scenes/Battle_Stages/*.tscn` | `Node2D` (`battle_stage.gd`) | One hand-authored battle stage, instanced under `battle.tscn`'s `Stage_Anchor` |
 | `Scenes/Adventure_Scenes/Adventure.tscn` | `Control` (`adventure_ui.gd`) | Adventure run / node graph |
 | `Scenes/Hubs/Reclaimed_City_Scene/Reclaimed_City.tscn` | `Control` (`hub_menu.gd`) | Home base / resources; the Act 2–4 hubs (`Clockwork_Spire`, `Pirate_Coves`, `Iron_Ledger`) share its script and navigation |
-| `Scenes/Hubs/Region_Map/<Act>_Region_Map.tscn` | `Control` (`region_map_menu.gd`) | An act's navigation: its hub, Quests, Statues, Adventure, and the Caravan to the Overworld |
+| `Scenes/Hubs/Region_Map/<Act>_Region_Map.tscn` | `Control` (`region_map_menu.gd`) | An act's navigation: its hub, Quests, Adventure, and the Caravan to the Overworld |
 | `Scenes/Hubs/Overworld/Overworld.tscn` | `Control` (`overworld_menu.gd`) | Sets the current act and enters its hub |
 | `Scenes/ui/MainMenu.tscn` | `Control` | Top-level navigation |
 | `Scenes/Characters/Character.tscn` | `Node2D` (`character.gd`) | Character logic node |
@@ -343,7 +343,7 @@ load time. There is a consistent **preset (template) vs instance (runtime)** spl
 | `ItemImplicit` / `AttributeImplicit` | `Scripts/Gear/item_implicit.gd`, `attribute_implicit.gd` | An implicit's attribute bonus and text at a rarity; each kind is a subclass. `AttributeImplicit` is `_base_value` × `GameBalance.ITEM_IMPLICIT_RARITY_MULTIPLIER` on one attribute |
 | `LootTable` | `Scripts/Battle/loot_table.gd` | Encounter rewards: primary (guaranteed) and secondary (weighted) loot, and the `_gear_pool` a gear drop picks from |
 | `ActData` | `Scripts/Adventure_Scripts/act_data.gd` | An act's two selectable `AdventureData`, its `gear_pool` (the hub shop's standard stock), music, and its hub and Region Map scenes. `ProgressHandler` holds and saves the current act (Reclaimed City when unset or unreadable); `Main_Instance.EnterHub()` / `EnterRegionMap()` follow it |
-| `AdventureData` | `Scripts/Adventure_Scripts/adventure_data.gd` | One selectable adventure: selection name and texture, `AdventureLayout`, `BiomeData`, weighted `battle_variants` and `boss_battle_variants` (`Context_Battle` resources), reward tables, a `gear_pool` (a subset of its Act's), an `AdventureBuffPool` (the buffs its Rest Stops and Gamble wins roll from; none falls back to every buff); its `resource_path` keys difficulty progress and the saved run |
+| `AdventureData` | `Scripts/Adventure_Scripts/adventure_data.gd` | One selectable adventure: selection name and texture, `AdventureLayout`, `BiomeData`, weighted `battle_variants` and `mini_boss_battle_variants`, `boss_battle_variants` (`Context_Battle` resources), reward tables, a `gear_pool` (a subset of its Act's), an `AdventureBuffPool` (the buffs its Rest Stops and Gamble wins roll from; none falls back to every buff); its `resource_path` keys difficulty progress and the saved run |
 | `AdventureLayout` | `Scripts/Adventure_Scripts/adventure_layout.gd` | Depth range and node-type frequencies |
 | `BiomeData` | `Scripts/Adventure_Scripts/biome_data.gd` | An adventure's look: `BiomeVisualData` and the battle stages its encounters draw from |
 | `StageClutterEntry` | `Scripts/Battle/Visuals/stage_clutter_entry.gd` | One floor-clutter scatter rule, authored on a stage's `StageClutterView` |

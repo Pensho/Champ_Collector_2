@@ -6,12 +6,12 @@
 [ext_resource type="Resource" uid="uid://cqdm10nqrxk0e" path="res://Data/Adventure_Data/Adventures/adventure_reclaimed_city_magic_ruins.tres" id="4_magic_ruins"]
 [ext_resource type="AudioStream" uid="uid://fif7n18hj21q" path="res://Assets/Audio/Music/Reclaimed_City/far_from_home.mp3" id="5_music"]
 [ext_resource type="Script" uid="uid://8knbs7yij5eh" path="res://Scripts/Gear/equipment_preset.gd" id="6_preset_script"]
-[ext_resource type="Resource" path="res://Data/Item_Presets/Briar_Staff.tres" id="7_briar_staff"]
-[ext_resource type="Resource" path="res://Data/Item_Presets/Seed_Lantern.tres" id="8_seed_lantern"]
+[ext_resource type="Resource" uid="uid://d0q3mg1mtkfc8" path="res://Data/Item_Presets/Briar_Staff.tres" id="7_briar_staff"]
+[ext_resource type="Resource" uid="uid://bk3kcel7nlipa" path="res://Data/Item_Presets/Seed_Lantern.tres" id="8_seed_lantern"]
 [ext_resource type="Resource" uid="uid://c3g7cshxhg0rw" path="res://Data/Item_Presets/Scaled_Greaves.tres" id="9_scaled_greaves"]
 [ext_resource type="Resource" uid="uid://byulx2i0268n3" path="res://Data/Item_Presets/Shard_Pike.tres" id="10_shard_pike"]
 [ext_resource type="Resource" uid="uid://deri0o1rplmuk" path="res://Data/Item_Presets/Pew_Shield.tres" id="11_pew_shield"]
-[ext_resource type="Resource" path="res://Data/Item_Presets/Hueless_Slippers.tres" id="12_hueless_slippers"]
+[ext_resource type="Resource" uid="uid://qt4nudon30jo" path="res://Data/Item_Presets/Hueless_Slippers.tres" id="12_hueless_slippers"]
 
 [resource]
 script = ExtResource("1_act_data")

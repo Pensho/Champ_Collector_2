@@ -18,6 +18,8 @@ static func GenerateAdventure(p_adventure: AdventureData) -> Array[NodeData]:
 	boss.previous_node.append(spine[-1])
 
 	var branch_nodes: Array[NodeData] = _AddBranches(spine, layout.branching_paths)
+	var path_nodes: Array[NodeData] = spine + branch_nodes
+	_PlaceMiniBosses(path_nodes, _MiniBossCount(p_adventure))
 
 	var all_nodes: Array[NodeData]
 	all_nodes.append_array(spine)
@@ -53,6 +55,31 @@ static func _InsertSpecialNodes(p_spine: Array[NodeData], p_node_type: NodeData.
 		var index: int = interval * (i + 1)
 		if index < p_spine.size() - 1 and p_spine[index].node_type == NodeData.Node_Type.FIGHT:
 			p_spine[index].node_type = p_node_type
+
+
+static func _MiniBossCount(p_adventure: AdventureData) -> int:
+	if p_adventure.mini_boss_battle_variants.is_empty() or p_adventure.gear_pool.is_empty():
+		return 0
+	return SetRestNumber(p_adventure.layout.mini_boss_nodes)
+
+
+## One mini-boss per chosen depth, on a random Fight node. Forked depths are chosen first, so a
+## mini-boss is a path the player opts into rather than one every path must pass.
+static func _PlaceMiniBosses(p_nodes: Array[NodeData], p_count: int) -> void:
+	var fights_by_depth: Dictionary[int, Array] = {}
+	var node_count_by_depth: Dictionary[int, int] = {}
+	for node in p_nodes:
+		node_count_by_depth[node.depth] = node_count_by_depth.get(node.depth, 0) + 1
+		if node.node_type == NodeData.Node_Type.FIGHT and node.depth > 0:
+			fights_by_depth.get_or_add(node.depth, []).append(node)
+	var forked_depths: Array[int] = []
+	var unforked_depths: Array[int] = []
+	for depth: int in fights_by_depth:
+		(forked_depths if node_count_by_depth[depth] > 1 else unforked_depths).append(depth)
+	forked_depths.shuffle()
+	unforked_depths.shuffle()
+	for depth: int in (forked_depths + unforked_depths).slice(0, p_count):
+		(fights_by_depth[depth].pick_random() as NodeData).node_type = NodeData.Node_Type.MINI_BOSS
 
 
 static func _AddBranches(
@@ -157,6 +184,13 @@ static func _PopulateNodeContexts(p_nodes: Array[NodeData], p_adventure: Adventu
 				node.scene_context = _BuildBattleContext(
 					_WeightedRandomPick(p_adventure.battle_variants),
 					_WithGearPool(p_adventure.combat_rewards, p_adventure), p_adventure.biome)
+			NodeData.Node_Type.MINI_BOSS:
+				if p_adventure.mini_boss_battle_variants.is_empty() or p_adventure.gear_pool.is_empty():
+					continue
+				var drop_slot: Types.Slot = _RollDropSlot(p_adventure.gear_pool)
+				node.scene_context = _BuildBattleContext(
+					_WeightedRandomPick(p_adventure.mini_boss_battle_variants),
+					MiniBossLoot(p_adventure.combat_rewards, p_adventure.gear_pool, drop_slot), p_adventure.biome)
 			NodeData.Node_Type.BOSS:
 				if boss_variant == null:
 					continue
@@ -192,6 +226,22 @@ static func _WithGearPool(p_loot_table: LootTable, p_adventure: AdventureData) -
 	var copy: LootTable = p_loot_table.duplicate(true)
 	copy._gear_pool = p_adventure.gear_pool.duplicate()
 	return copy
+
+## A copy of p_loot_table whose gear comes only from p_slot, with at least one guaranteed gear drop.
+static func MiniBossLoot(p_loot_table: LootTable, p_gear_pool: Array[EquipmentPreset], p_slot: Types.Slot) -> LootTable:
+	var copy: LootTable = p_loot_table.duplicate(true) if p_loot_table != null else LootTable.new()
+	copy._gear_pool = p_gear_pool.filter(
+			func(p_preset: EquipmentPreset) -> bool: return p_preset._slot == p_slot)
+	copy._primary_loot[LootManager.LootType.Equipment] = maxi(
+			copy._primary_loot.get(LootManager.LootType.Equipment, 0), 1)
+	return copy
+
+static func _RollDropSlot(p_gear_pool: Array[EquipmentPreset]) -> Types.Slot:
+	var slots: Array[Types.Slot] = []
+	for preset in p_gear_pool:
+		if not slots.has(preset._slot):
+			slots.append(preset._slot)
+	return slots.pick_random()
 
 static func _RandomBuffType() -> Types.Buff_Type:
 	var values: Array = Types.Buff_Type.values()

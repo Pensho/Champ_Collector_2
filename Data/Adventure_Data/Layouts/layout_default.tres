@@ -4,10 +4,11 @@
 
 [resource]
 script = ExtResource("1_templ")
-MIN_DEPTH = 16
-MAX_DEPTH = 18
+MIN_DEPTH = 10
+MAX_DEPTH = 12
 branching_paths = 2
 rest_stops = 2
 gamble_nodes = 2
 escalate_nodes = 2
+mini_boss_nodes = 2
 metadata/_custom_type_script = "uid://cwcowgmtcq1ca"

@@ -28,6 +28,8 @@ func Show(p_node: NodeData) -> void:
 			_label_type.text = "Gamble"
 		NodeData.Node_Type.ESCALATE:
 			_label_type.text = "Escalate Challenge"
+		NodeData.Node_Type.MINI_BOSS:
+			_label_type.text = "Mini-boss"
 	_label_desc.text = ""
 	_preparation = CombatPreparation.Choice.NONE
 	_SetupPreparationCards()

@@ -12,10 +12,12 @@ func after_each() -> void:
 
 func test_prepare_is_offered_on_every_combat_node() -> void:
 	assert_true(CombatPreparation.IsOffered(Choice.PREPARE, NodeData.Node_Type.FIGHT))
+	assert_true(CombatPreparation.IsOffered(Choice.PREPARE, NodeData.Node_Type.MINI_BOSS))
 	assert_true(CombatPreparation.IsOffered(Choice.PREPARE, NodeData.Node_Type.BOSS))
 
-func test_bait_is_offered_only_on_boss_nodes() -> void:
+func test_bait_is_offered_only_on_boss_and_mini_boss_nodes() -> void:
 	assert_true(CombatPreparation.IsOffered(Choice.BAIT, NodeData.Node_Type.BOSS))
+	assert_true(CombatPreparation.IsOffered(Choice.BAIT, NodeData.Node_Type.MINI_BOSS))
 	assert_false(CombatPreparation.IsOffered(Choice.BAIT, NodeData.Node_Type.FIGHT))
 
 func test_nothing_is_offered_on_non_combat_nodes() -> void:

@@ -158,9 +158,6 @@ Archetype scenes (`Scenes/Lighting/Archetypes/`): `Torch_Light.tscn`,
   with `lighting_reclaimed_city_evening.tres`; a `Campfire_Light` goes inside
   `reclaimed_city_fire_particle.tscn`; navigation buttons and the resource bar get
   `Unshaded.tres` where not already protected. Status: needed.
-- [ ] **Statue Selection** — rig plus a `LivingLight` paired with
-  `Statue_Selection_fire_particle.tscn` (which the particle plan wires in);
-  consider a `Crystal_Glow_Light` pulse on the statues. Status: needed.
 - [ ] **Adventurers Guild** — rig with a warm interior profile; hearth light if the
   particle plan's hearth fire lands. Status: needed.
 

@@ -1150,8 +1150,8 @@ Maybe a rotating schedule composed of one type of event per god? E.g.
 The hub areas will be almost identical but for visual themes, minor differences in NPCs and decorations.
 The biggest differences will come along the theme of the hub as it can be either neutral or run by one or more factions. This will affect the recruitment weighting of characters.
 
-#### 3.6.1. TBD (Gate out of town etc)
-Transports the player to the Act's Region Map, where the player can access different playable encounters.
+#### 3.6.1. Region Map
+Reached from the hub. Leads to the Act's adventures (section 5.1) and to the Overworld (section 5.4).
 
 #### 3.6.2. The Armory
 Where players can manage their character roster, equip gear, and upgrade skills.
@@ -1198,9 +1198,12 @@ Then every encounter will be given a reward value points buffer depending on dif
 When a victory is achieved, rewards will be randomly selected from the loot table and subtract that value from the reward value points buffer. Note that some drops may be guaranteed and will be picked out first before random selection. This goes on until the buffer is spent or if the remaining value is too small to equate another reward.
 
 ### 3.9 Adventure node types
-An adventure is a generated graph of nodes the player steps through. Besides the
-**Fight** and **Boss** combat nodes, the following interactive node types resolve
-directly in the adventure scene without entering battle:
+An adventure is a generated graph of nodes the player steps through. Its combat nodes are
+**Fight**, **Mini-boss** and **Boss**. A Mini-boss node guarantees one gear drop from the
+adventure's gear pool, in a slot rolled at generation. Each Mini-boss takes a random Fight
+node at a depth of its own, preferring depths where the path forks so the player can route
+around it. The following
+interactive node types resolve directly in the adventure scene without entering battle:
 
 - **Rest Stop**: each Rest Stop is generated with one fixed buff, drawn from the
   adventure's curated buff pool. The player chooses
@@ -1364,6 +1367,7 @@ The player should be expected to click on either the left or right side to choos
 
 An adventures content is a series of connected nodes of various types where the player has to unlock following nodes by completing a currently available one. It will have branching paths of nodes, where completing a node on one path locks the other paths of that fork, and end in a boss battle to complete the Adventure at which point new difficulties will unlock and the player may start a new one.
 A failed encounter in Adventure will not affect the state of the Adventure and the state is persistent over sessions.
+An Abort button in the top left of the adventure screen ends the run in progress, so a new one can be started. Nothing spent in the run is refunded.
 
 #### 5.1.1. Adventures
 
@@ -1419,7 +1423,9 @@ Undecided
 Intended to be singlular encounters with specific, targetable and grindable rewards.
 
 #### 5.2.1. Quest Board
-The quest board shall be a board to house both guidance for permanent progress, most often tied to Adventures and also small randomized single encounters to yield randomized rewards (silver, gear, experience and maybe other)
+Each Act has a quest board of posted quests.
+* **Side quests** are single encounters started from the board and rewarded from their loot budget (section 3.8). A new one is posted on a real-world timer up to a cap, and a posted one stays until completed.
+* **Main quests** sit outside the timer and cap, and point to an objective elsewhere in the Act.
 
 ### 5.3. Encounter tiers
 
@@ -1444,15 +1450,18 @@ The overworld shows the 4 different acts in order:
 * 3. Pirate Coves
 * 4. The Iron Ledger
 
-Each Act holds a hub and the two adventures offered in section 5.1:
+Each Act holds:
 
 ```
 Act
+ ├─ Hub            — section 3.6
+ ├─ Region Map     — section 3.6.1
+ ├─ Quest board    — section 5.2.1
  ├─ Gear pool      — the sub-types obtainable in the Act (section 3.3.1)
- └─ Adventure ×2
+ └─ Adventure ×2   — section 5.1
      ├─ Layout     — length and how often each node type appears
      ├─ Biome      — scenery and battle stages
-     ├─ Opponents  — regular enemies, boss, and their rewards
+     ├─ Opponents  — regular enemies, mini-bosses, boss, and their rewards
      ├─ Gear pool  — the subset of the Act's pool it drops
      └─ Difficulty — unlocked per adventure by completing it, chosen at start
 ```

@@ -16,3 +16,4 @@ enum Mechanic_Frequency
 @export var hint_nodes: Mechanic_Frequency
 @export var gamble_nodes: Mechanic_Frequency
 @export var escalate_nodes: Mechanic_Frequency
+@export var mini_boss_nodes: Mechanic_Frequency

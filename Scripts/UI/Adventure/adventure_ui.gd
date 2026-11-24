@@ -5,6 +5,7 @@ extends Control
 @export var _interaction_panel: AdventureInteractionPanel
 @export var _label_effects: Label
 @export var _button_finish: Button
+@export var _abort_confirm: ButtonWithOptions
 
 var _state: AdventureState
 var _hub_scene: String
@@ -24,6 +25,9 @@ func Init(p_context: ContextContainer) -> void:
 	_interaction_panel.resolved.connect(_on_interaction_resolved)
 	if _IsBossComplete():
 		_button_finish.show()
+	_abort_confirm.SetText("Abort Adventure", "End this run?")
+	_abort_confirm.SetLeftButton("Abort", _on_abort_confirmed)
+	_abort_confirm.position = (get_viewport_rect().size - _abort_confirm.GetSize()) * 0.5
 
 func _UpdateHeader() -> void:
 	var effect_parts: Array[String] = []
@@ -54,7 +58,7 @@ func _on_engage_confirmed(p_node: NodeData, p_preparation: CombatPreparation.Cho
 	context_container._arguments["Is_Boss"] = p_node.node_type == NodeData.Node_Type.BOSS
 	var difficulty: int = context_container._arguments["Difficulty"]
 	match p_node.node_type:
-		NodeData.Node_Type.FIGHT, NodeData.Node_Type.BOSS:
+		NodeData.Node_Type.FIGHT, NodeData.Node_Type.MINI_BOSS, NodeData.Node_Type.BOSS:
 			context_container._scene = "uid://d3hg8jxy8xj8n"
 			var preparation: CombatPreparation.Choice = CombatPreparation.Purchase(
 					p_preparation, main.GetInstance()._resources)
@@ -98,7 +102,18 @@ func _IsBossComplete() -> bool:
 	return false
 
 func _on_finish_adventure_pressed() -> void:
-	main.GetInstance()._adventure_state_handler._state = AdventureState.new()
+	_EndRun()
+
+func _on_abort_pressed() -> void:
+	_abort_confirm.show()
+
+func _on_abort_confirmed() -> void:
+	_abort_confirm.hide()
+	_EndRun()
+
+## Clears the run and returns to the pre-adventure menu; difficulty progress is kept.
+func _EndRun() -> void:
+	main.GetInstance()._adventure_state_handler.Reset()
 	main.GetInstance()._save_manager.RequestAutosave()
 	var context_container: ContextContainer = ContextContainer.new()
 	context_container._scene = "uid://cwjabuf3kdtft"

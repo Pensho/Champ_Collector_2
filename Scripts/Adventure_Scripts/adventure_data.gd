@@ -10,6 +10,7 @@ class_name AdventureData extends Resource
 # Each battle variant is assigned a weight for how likely it is to appear on a FIGHT node
 @export var battle_variants: Dictionary[Context_Battle, int]
 @export var boss_battle_variants: Array[Context_Battle]
+@export var mini_boss_battle_variants: Dictionary[Context_Battle, int]
 
 @export var combat_rewards: LootTable
 @export var boss_rewards: LootTable

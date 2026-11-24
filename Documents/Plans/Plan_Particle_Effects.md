@@ -197,13 +197,6 @@ instance and the inline falling-leaves `GPUParticles2D`.
 - [ ] Hearth fire, if the background art has a plausible spot (reuse the shared
   campfire scene). Status: needed.
 
-**Statue Selection** (`Scenes/Hubs/Statue_Selection/`) —
-`Statue_Selection_fire_particle.tscn` exists but is **not instanced** in the scene.
-
-- [ ] Wire the existing fire particle scene into `Statue_Selection.tscn`.
-  Status: built, not wired in.
-- [ ] Ember drift / mystical shimmer around the statues. Status: needed.
-
 **Reclaimed City Region Map** (`Scenes/Hubs/Region_Map/`) — map
 screen; probably none. Kept as a section so a future idea has a home; remove entries
 freely.

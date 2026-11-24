@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://c8b05sjr2m25s" path="res://Scenes/Adventure_Scenes/Adventure_Node_Preview.tscn" id="4_preview"]
 [ext_resource type="PackedScene" path="res://Scenes/Adventure_Scenes/Adventure_Interaction_Panel.tscn" id="5_interaction"]
 [ext_resource type="PackedScene" uid="uid://bm6xwrr37gevr" path="res://Scenes/ui/Resources/Resource_Bar.tscn" id="6_resourcebar"]
+[ext_resource type="PackedScene" uid="uid://c7smqpmfvs0ih" path="res://Scenes/ui/General_UI/Button_With_Options.tscn" id="7_confirm"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_header"]
 content_margin_left = 8.0
@@ -14,7 +15,7 @@ content_margin_right = 8.0
 content_margin_bottom = 6.0
 bg_color = Color(0, 0, 0, 0.3019608)
 
-[node name="Adventure" type="Control" unique_id=93246272 node_paths=PackedStringArray("_graph_ui", "_preview", "_interaction_panel", "_label_effects", "_button_finish")]
+[node name="Adventure" type="Control" unique_id=93246272 node_paths=PackedStringArray("_graph_ui", "_preview", "_interaction_panel", "_label_effects", "_button_finish", "_abort_confirm")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -27,6 +28,7 @@ _preview = NodePath("AdventureNodePreview")
 _interaction_panel = NodePath("AdventureInteractionPanel")
 _label_effects = NodePath("MarginContainer/VBoxContainer/PanelContainer_Header/VBoxContainer_Header/Label_Effects")
 _button_finish = NodePath("MarginContainer/VBoxContainer/Button_Finish")
+_abort_confirm = NodePath("AbortConfirm")
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=395936223]
 layout_mode = 1
@@ -64,6 +66,13 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_theme")
+
+[node name="Button_Abort" type="Button" parent="MarginContainer/VBoxContainer/PanelContainer_Header/VBoxContainer_Header/HBoxContainer_Header" unique_id=200000016]
+layout_mode = 2
+theme = ExtResource("1_theme")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+text = "Abort"
 
 [node name="HBoxContainer_Back" type="HBoxContainer" parent="MarginContainer/VBoxContainer/PanelContainer_Header/VBoxContainer_Header/HBoxContainer_Header" unique_id=200000013]
 layout_mode = 2
@@ -116,5 +125,10 @@ layout_mode = 1
 [node name="AdventureInteractionPanel" parent="." unique_id=267918552 instance=ExtResource("5_interaction")]
 layout_mode = 1
 
+[node name="AbortConfirm" parent="." unique_id=200000017 instance=ExtResource("7_confirm")]
+visible = false
+layout_mode = 0
+
 [connection signal="pressed" from="MarginContainer/VBoxContainer/PanelContainer_Header/VBoxContainer_Header/HBoxContainer_Header/HBoxContainer_Back/Button_Hub" to="." method="_on_hub_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Button_Finish" to="." method="_on_finish_adventure_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/PanelContainer_Header/VBoxContainer_Header/HBoxContainer_Header/Button_Abort" to="." method="_on_abort_pressed"]

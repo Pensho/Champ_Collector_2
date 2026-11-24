@@ -89,29 +89,6 @@ text = "Caravan"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Button_Statues" type="TextureButton" parent="Navigation_Buttons" unique_id=2086452711]
-layout_mode = 0
-offset_left = 35.0
-offset_top = 157.0
-offset_right = 235.0
-offset_bottom = 357.0
-theme = ExtResource("4_75jl7")
-texture_hover = ExtResource("3_8g887")
-
-[node name="Label_Statues" type="Label" parent="Navigation_Buttons" unique_id=392278739]
-layout_mode = 0
-offset_left = 84.0
-offset_top = 149.0
-offset_right = 192.0
-offset_bottom = 179.0
-theme = ExtResource("2_75jl7")
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.64705884)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 3
-text = "Statues"
-horizontal_alignment = 1
-vertical_alignment = 1
-
 [node name="Button_Adventure" type="TextureButton" parent="Navigation_Buttons" unique_id=551077809]
 layout_mode = 0
 offset_left = 436.0
@@ -148,7 +125,6 @@ buttons = Dictionary[NodePath, ExtResource("8_b8286")]({
 NodePath("../Navigation_Buttons/Button_Experience_Quests"): ExtResource("9_tw051"),
 NodePath("../Navigation_Buttons/Button_Town"): ExtResource("9_tw051"),
 NodePath("../Navigation_Buttons/Button_Caravan"): ExtResource("9_tw051"),
-NodePath("../Navigation_Buttons/Button_Statues"): ExtResource("9_tw051"),
 NodePath("../Navigation_Buttons/Button_Adventure"): ExtResource("9_tw051")
 })
 metadata/_custom_type_script = "uid://brborf0wdvmjy"
@@ -156,5 +132,4 @@ metadata/_custom_type_script = "uid://brborf0wdvmjy"
 [connection signal="pressed" from="Navigation_Buttons/Button_Experience_Quests" to="." method="_on_experience_quests_pressed"]
 [connection signal="pressed" from="Navigation_Buttons/Button_Town" to="." method="_on_town_pressed"]
 [connection signal="pressed" from="Navigation_Buttons/Button_Caravan" to="." method="_on_caravan_pressed"]
-[connection signal="pressed" from="Navigation_Buttons/Button_Statues" to="." method="_on_statues_pressed"]
 [connection signal="pressed" from="Navigation_Buttons/Button_Adventure" to="." method="_on_adventure_pressed"]

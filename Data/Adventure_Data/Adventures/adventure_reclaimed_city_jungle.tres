@@ -16,9 +16,12 @@
 [ext_resource type="Resource" uid="uid://kd0gwx05dibq" path="res://Data/Adventure_Data/Buff_Pools/buff_pool_default.tres" id="15_buff_pool"]
 [ext_resource type="AudioStream" uid="uid://3g6mjhqeimix" path="res://Assets/Audio/Music/Reclaimed_City/veil_of_the_forgotten_ones.mp3" id="16_music"]
 [ext_resource type="Script" uid="uid://8knbs7yij5eh" path="res://Scripts/Gear/equipment_preset.gd" id="20_preset_script"]
-[ext_resource type="Resource" path="res://Data/Item_Presets/Briar_Staff.tres" id="21_briar_staff"]
-[ext_resource type="Resource" path="res://Data/Item_Presets/Seed_Lantern.tres" id="22_seed_lantern"]
+[ext_resource type="Resource" uid="uid://d0q3mg1mtkfc8" path="res://Data/Item_Presets/Briar_Staff.tres" id="21_briar_staff"]
+[ext_resource type="Resource" uid="uid://bk3kcel7nlipa" path="res://Data/Item_Presets/Seed_Lantern.tres" id="22_seed_lantern"]
 [ext_resource type="Resource" uid="uid://c3g7cshxhg0rw" path="res://Data/Item_Presets/Scaled_Greaves.tres" id="23_scaled_greaves"]
+[ext_resource type="Resource" uid="uid://cxdmvnai74wnd" path="res://Data/Battle_Variants/Battle_Statue_Boots.tres" id="30_statue_boots"]
+[ext_resource type="Resource" uid="uid://dd77irpwqu5o8" path="res://Data/Battle_Variants/Battle_Statue_Weapon.tres" id="31_statue_weapon"]
+[ext_resource type="Resource" uid="uid://comvft2e4h5kt" path="res://Data/Battle_Variants/Battle_Statue_Shield.tres" id="32_statue_shield"]
 
 [resource]
 script = ExtResource("1_adventure")
@@ -33,6 +36,11 @@ ExtResource("7_marksmen"): 100,
 ExtResource("8_clearing_crew"): 100
 })
 boss_battle_variants = Array[ExtResource("5_battle")]([ExtResource("9_baron")])
+mini_boss_battle_variants = Dictionary[ExtResource("5_battle"), int]({
+ExtResource("30_statue_boots"): 100,
+ExtResource("31_statue_weapon"): 100,
+ExtResource("32_statue_shield"): 100
+})
 combat_rewards = ExtResource("12_lh4g1")
 boss_rewards = ExtResource("11_launh")
 hint_rewards = ExtResource("14_c3w72")

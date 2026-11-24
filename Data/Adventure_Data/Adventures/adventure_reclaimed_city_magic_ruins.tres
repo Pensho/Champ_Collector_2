@@ -6,7 +6,7 @@
 [ext_resource type="Resource" uid="uid://5ilhhb5l8y6e" path="res://Data/Adventure_Data/Biome_Types/biome_reclaimed_city_magic_ruins.tres" id="4_eeoux"]
 [ext_resource type="Script" uid="uid://bjtnao6fgl8go" path="res://Scripts/Worldview/Context_Battle.gd" id="5_battle"]
 [ext_resource type="Resource" path="res://Data/Battle_Variants/Battle_Lotlings.tres" id="6_lotlings"]
-[ext_resource type="Resource" path="res://Data/Battle_Variants/Battle_Chanter_and_Gatherers.tres" id="7_chanter_and_gatherers"]
+[ext_resource type="Resource" uid="uid://biqcffbkbvfrn" path="res://Data/Battle_Variants/Battle_Chanter_and_Gatherers.tres" id="7_chanter_and_gatherers"]
 [ext_resource type="Resource" uid="uid://b805ihvf6ay54" path="res://Data/Battle_Variants/Battle_Hue_Eater.tres" id="8_hue_eater"]
 [ext_resource type="Resource" uid="uid://bbrk8oufxt6cb" path="res://Data/Battle_Variants/Battle_Burning_Glass.tres" id="9_burning_glass"]
 [ext_resource type="Resource" uid="uid://ckmtp8rvhbx3a" path="res://Data/Loot_Tables/Adventure_Boss_Loot.tres" id="11_launh"]
@@ -19,6 +19,9 @@
 [ext_resource type="Resource" uid="uid://byulx2i0268n3" path="res://Data/Item_Presets/Shard_Pike.tres" id="21_shard_pike"]
 [ext_resource type="Resource" uid="uid://deri0o1rplmuk" path="res://Data/Item_Presets/Pew_Shield.tres" id="22_pew_shield"]
 [ext_resource type="Resource" uid="uid://qt4nudon30jo" path="res://Data/Item_Presets/Hueless_Slippers.tres" id="23_hueless_slippers"]
+[ext_resource type="Resource" uid="uid://cxdmvnai74wnd" path="res://Data/Battle_Variants/Battle_Statue_Boots.tres" id="30_statue_boots"]
+[ext_resource type="Resource" uid="uid://dd77irpwqu5o8" path="res://Data/Battle_Variants/Battle_Statue_Weapon.tres" id="31_statue_weapon"]
+[ext_resource type="Resource" uid="uid://comvft2e4h5kt" path="res://Data/Battle_Variants/Battle_Statue_Shield.tres" id="32_statue_shield"]
 
 [resource]
 script = ExtResource("1_adventure")
@@ -33,6 +36,11 @@ ExtResource("7_chanter_and_gatherers"): 100,
 ExtResource("9_burning_glass"): 100
 })
 boss_battle_variants = Array[ExtResource("5_battle")]([ExtResource("8_hue_eater")])
+mini_boss_battle_variants = Dictionary[ExtResource("5_battle"), int]({
+ExtResource("30_statue_boots"): 100,
+ExtResource("31_statue_weapon"): 100,
+ExtResource("32_statue_shield"): 100
+})
 combat_rewards = ExtResource("12_lh4g1")
 boss_rewards = ExtResource("11_launh")
 hint_rewards = ExtResource("14_c3w72")

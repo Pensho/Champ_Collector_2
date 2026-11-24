@@ -10,9 +10,9 @@ const ARGUMENT_KEY: String = "Combat_Preparation"
 static func IsOffered(p_choice: Choice, p_node_type: NodeData.Node_Type) -> bool:
 	match p_choice:
 		Choice.PREPARE:
-			return p_node_type == NodeData.Node_Type.FIGHT or p_node_type == NodeData.Node_Type.BOSS
+			return p_node_type in [NodeData.Node_Type.FIGHT, NodeData.Node_Type.MINI_BOSS, NodeData.Node_Type.BOSS]
 		Choice.BAIT:
-			return p_node_type == NodeData.Node_Type.BOSS
+			return p_node_type in [NodeData.Node_Type.MINI_BOSS, NodeData.Node_Type.BOSS]
 		_:
 			return false
 
