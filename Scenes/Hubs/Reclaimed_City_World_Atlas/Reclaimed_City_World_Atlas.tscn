@@ -154,5 +154,6 @@ metadata/_custom_type_script = "uid://brborf0wdvmjy"
 
 [connection signal="pressed" from="Navigation_Buttons/Button_Experience_Quests" to="." method="_on_experience_quests_pressed"]
 [connection signal="pressed" from="Navigation_Buttons/Button_Town" to="." method="_on_town_pressed"]
+[connection signal="pressed" from="Navigation_Buttons/Button_Caravan" to="." method="_on_caravan_pressed"]
 [connection signal="pressed" from="Navigation_Buttons/Button_Statues" to="." method="_on_statues_pressed"]
 [connection signal="pressed" from="Navigation_Buttons/Button_Adventure" to="." method="_on_adventure_pressed"]

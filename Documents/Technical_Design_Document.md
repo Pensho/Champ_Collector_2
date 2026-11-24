@@ -220,7 +220,8 @@ Representative scenes:
 | `Scenes/ui/Battle_UI/battle_ui.tscn` | `Control` (`battle_ui.gd`) | In-combat UI overlay, instanced under `battle.tscn`'s `CanvasLayer` |
 | `Scenes/Battle_Stages/*.tscn` | `Node2D` (`battle_stage.gd`) | One hand-authored battle stage, instanced under `battle.tscn`'s `Stage_Anchor` |
 | `Scenes/Adventure_Scenes/Adventure.tscn` | `Control` (`adventure_ui.gd`) | Adventure run / node graph |
-| `Scenes/Hubs/Reclaimed_City_Scene/Reclaimed_City.tscn` | `Control` (`hub_menu.gd`) | Home base / resources |
+| `Scenes/Hubs/Reclaimed_City_Scene/Reclaimed_City.tscn` | `Control` (`hub_menu.gd`) | Home base / resources; the Act 2–4 hubs (`Clockwork_Spire`, `Pirate_Coves`, `Iron_Ledger`) share its script and navigation |
+| `Scenes/Hubs/Overworld/Overworld.tscn` | `Control` (`overworld_menu.gd`) | Travel between the four Act hubs, reached from the World Atlas Caravan |
 | `Scenes/ui/MainMenu.tscn` | `Control` | Top-level navigation |
 | `Scenes/Characters/Character.tscn` | `Node2D` (`character.gd`) | Character logic node |
 | `Scenes/Characters/Character_Battle_Repr.tscn` | `Node2D` | Visual battle representation |

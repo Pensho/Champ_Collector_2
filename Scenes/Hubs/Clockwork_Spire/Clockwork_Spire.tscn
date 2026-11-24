@@ -1,0 +1,166 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" uid="uid://u58ywhc4xsod" path="res://Scripts/UI/hub_menu.gd" id="1_hub_menu"]
+[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="2_theme"]
+[ext_resource type="Theme" uid="uid://bcg5pku1fyhst" path="res://Assets/Champ_Collector/Themes/hub_theme.tres" id="3_hub_theme"]
+[ext_resource type="Texture2D" uid="uid://be4d7es1t3q0k" path="res://Data/Texture_Data/Button_hover_highligt.tres" id="4_hover"]
+[ext_resource type="PackedScene" uid="uid://bm6xwrr37gevr" path="res://Scenes/ui/Resources/Resource_Bar.tscn" id="5_resource_bar"]
+[ext_resource type="Script" uid="uid://brborf0wdvmjy" path="res://Scripts/Audio/ui_sounds.gd" id="6_ui_sounds"]
+[ext_resource type="Script" uid="uid://853wrgpde68y" path="res://Scripts/Audio/button_sound_profile.gd" id="7_sound_profile"]
+[ext_resource type="Resource" uid="uid://1k7w3n5xbfw5" path="res://Data/Sound_Cues/Sound_Cue_Profiles/button_standard.tres" id="8_button_standard"]
+
+[node name="ClockworkSpire" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_hub_menu")
+
+[node name="Placeholder_Background" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+color = Color(0.36, 0.3, 0.22, 1)
+
+[node name="Label_Placeholder" type="Label" parent="."]
+layout_mode = 0
+offset_top = 640.0
+offset_right = 1280.0
+offset_bottom = 690.0
+theme = ExtResource("2_theme")
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.64705884)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 3
+text = "Clockwork Spire"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Navigation_Buttons" type="Control" parent="."]
+anchors_preset = 0
+offset_left = 598.0
+offset_top = 361.0
+offset_right = 638.0
+offset_bottom = 401.0
+
+[node name="Button_Adventure_guild" type="TextureButton" parent="Navigation_Buttons"]
+layout_mode = 0
+offset_left = -146.0
+offset_top = 120.0
+offset_right = 75.999985
+offset_bottom = 320.0
+scale = Vector2(1.2, 1.2)
+theme = ExtResource("2_theme")
+texture_hover = ExtResource("4_hover")
+
+[node name="Label_Adventureres_guild" type="Label" parent="Navigation_Buttons"]
+layout_mode = 0
+offset_left = -132.0
+offset_top = 131.0
+offset_right = 138.0
+offset_bottom = 173.0
+theme = ExtResource("2_theme")
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.64705884)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 3
+text = "Adventurers Guild"
+
+[node name="Button_Shop" type="TextureButton" parent="Navigation_Buttons"]
+layout_mode = 0
+offset_left = -292.0
+offset_top = -291.0
+offset_right = -92.0
+offset_bottom = -91.0
+theme = ExtResource("3_hub_theme")
+texture_hover = ExtResource("4_hover")
+
+[node name="Label_Shop" type="Label" parent="Navigation_Buttons"]
+layout_mode = 1
+offset_left = -250.0
+offset_top = -141.0
+offset_right = -156.0
+offset_bottom = -99.0
+theme = ExtResource("2_theme")
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.64705884)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 3
+text = "Shop"
+horizontal_alignment = 1
+
+[node name="Button_Armory" type="TextureButton" parent="Navigation_Buttons"]
+layout_mode = 0
+offset_left = -480.99997
+offset_top = -61.000015
+offset_right = -280.99997
+offset_bottom = 138.99998
+scale = Vector2(0.8, 0.8)
+theme = ExtResource("2_theme")
+texture_hover = ExtResource("4_hover")
+
+[node name="Label_Armory" type="Label" parent="Navigation_Buttons"]
+layout_mode = 1
+offset_left = -469.0
+offset_top = -100.0
+offset_right = -361.0
+offset_bottom = -58.0
+theme = ExtResource("2_theme")
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.64705884)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 3
+text = "Armory"
+horizontal_alignment = 1
+
+[node name="Button_War_Room" type="TextureButton" parent="Navigation_Buttons"]
+layout_mode = 0
+offset_left = 288.0
+offset_top = -322.0
+offset_right = 488.0
+offset_bottom = -122.0
+scale = Vector2(0.7, 0.8)
+theme = ExtResource("2_theme")
+texture_hover = ExtResource("4_hover")
+
+[node name="Label_Adventure" type="Label" parent="Navigation_Buttons"]
+layout_mode = 1
+offset_left = 274.0
+offset_top = -186.0
+offset_right = 428.0
+offset_bottom = -144.0
+theme = ExtResource("2_theme")
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.64705884)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 3
+text = "Adventure"
+horizontal_alignment = 1
+
+[node name="Button_Quit" type="Button" parent="Navigation_Buttons"]
+layout_mode = 0
+offset_left = -570.0
+offset_top = -334.0
+offset_right = -492.0
+offset_bottom = -274.0
+theme = ExtResource("2_theme")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+text = "Quit"
+
+[node name="ResourceBar" parent="." instance=ExtResource("5_resource_bar")]
+layout_mode = 0
+offset_left = 298.0
+offset_top = 20.0
+offset_right = 298.0
+offset_bottom = 20.0
+
+[node name="UISounds" type="Node" parent="."]
+script = ExtResource("6_ui_sounds")
+buttons = Dictionary[NodePath, ExtResource("7_sound_profile")]({
+NodePath("../Navigation_Buttons/Button_Adventure_guild"): ExtResource("8_button_standard"),
+NodePath("../Navigation_Buttons/Button_Shop"): ExtResource("8_button_standard"),
+NodePath("../Navigation_Buttons/Button_Armory"): ExtResource("8_button_standard"),
+NodePath("../Navigation_Buttons/Button_War_Room"): ExtResource("8_button_standard"),
+NodePath("../Navigation_Buttons/Button_Quit"): ExtResource("8_button_standard")
+})
+metadata/_custom_type_script = "uid://brborf0wdvmjy"
+
+[connection signal="pressed" from="Navigation_Buttons/Button_Adventure_guild" to="." method="_on_adventure_guild_pressed"]
+[connection signal="pressed" from="Navigation_Buttons/Button_Shop" to="." method="_on_button_shop_pressed"]
+[connection signal="pressed" from="Navigation_Buttons/Button_Armory" to="." method="_on_button_view_collection_pressed"]
+[connection signal="pressed" from="Navigation_Buttons/Button_War_Room" to="." method="_on_war_room_button_pressed"]
+[connection signal="pressed" from="Navigation_Buttons/Button_Quit" to="." method="_on_button_quit_pressed"]

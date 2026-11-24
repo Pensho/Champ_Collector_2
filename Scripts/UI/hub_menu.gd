@@ -22,7 +22,7 @@ func _on_button_view_collection_pressed() -> void:
 func _on_button_shop_pressed() -> void:
 	var context_container: ContextContainer = ContextContainer.new()
 	context_container._scene = "res://Scenes/ui/Shop.tscn"
-	context_container._previous_scene = "uid://cfdrcdtsx2jh7"
+	context_container._previous_scene = scene_file_path
 	context_container._arguments["Background_Texture"] = (
 			"res://Assets/Champ_Collector/Hubs/Reclaimed_City/Reclaimed_1.jpg")
 	main.GetInstance().change_scene(context_container)
