@@ -49,6 +49,10 @@ Code plans:
   through translation.
 - `Plan_Reagent_Attunement.md` — an account-wide Attunement experience track earned by
   consuming reagents, capping obtainable reagent rarity, plus lower reagent sell values.
+- `Plan_Act_Content.md` — what an Act contains: Statues area removed, mini-boss nodes with
+  a shown gear slot, an Adventure abort button, the quest board, the Unique node, and
+  design steps for the Hint node, new node types and Adventure modifiers. Access and
+  ordering are left to a later progression plan.
 
 Held (revise before scheduling):
 
