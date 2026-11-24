@@ -204,7 +204,7 @@ instance and the inline falling-leaves `GPUParticles2D`.
   Status: built, not wired in.
 - [ ] Ember drift / mystical shimmer around the statues. Status: needed.
 
-**Reclaimed City World Atlas** (`Scenes/Hubs/Reclaimed_City_World_Atlas/`) — map
+**Reclaimed City Region Map** (`Scenes/Hubs/Region_Map/`) — map
 screen; probably none. Kept as a section so a future idea has a home; remove entries
 freely.
 

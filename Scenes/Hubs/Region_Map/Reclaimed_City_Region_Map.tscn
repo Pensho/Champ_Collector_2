@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://df6f1b4xoipjq"]
 
-[ext_resource type="Script" uid="uid://su8xqv5pj4yg" path="res://Scripts/UI/reclaimed_city_world_atlas_menu.gd" id="1_8g887"]
+[ext_resource type="Script" uid="uid://su8xqv5pj4yg" path="res://Scripts/UI/region_map_menu.gd" id="1_8g887"]
 [ext_resource type="Texture2D" uid="uid://xfua5pu07bpc" path="res://Assets/Champ_Collector/UI/Atlas_Screen/Atlas_Screen.jpg" id="1_ibbvk"]
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="2_75jl7"]
 [ext_resource type="Texture2D" uid="uid://be4d7es1t3q0k" path="res://Data/Texture_Data/Button_hover_highligt.tres" id="3_8g887"]
@@ -10,7 +10,7 @@
 [ext_resource type="Script" uid="uid://853wrgpde68y" path="res://Scripts/Audio/button_sound_profile.gd" id="8_b8286"]
 [ext_resource type="Resource" uid="uid://1k7w3n5xbfw5" path="res://Data/Sound_Cues/Sound_Cue_Profiles/button_standard.tres" id="9_tw051"]
 
-[node name="ReclaimedCityWorldAtlas" type="Control" unique_id=795738096]
+[node name="ReclaimedCityRegionMap" type="Control" unique_id=795738096]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

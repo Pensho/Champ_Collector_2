@@ -1151,7 +1151,7 @@ The hub areas will be almost identical but for visual themes, minor differences 
 The biggest differences will come along the theme of the hub as it can be either neutral or run by one or more factions. This will affect the recruitment weighting of characters.
 
 #### 3.6.1. TBD (Gate out of town etc)
-Transports the player to a new screen, the world atlas. Where the player can access different playable encounters.
+Transports the player to the Act's Region Map, where the player can access different playable encounters.
 
 #### 3.6.2. The Armory
 Where players can manage their character roster, equip gear, and upgrade skills.

@@ -38,7 +38,7 @@ elements — no story node type, no story gating inside adventure graphs.
 - A reusable UI layer (scene under `Scenes/ui`, script under `Scripts/UI/`):
   speaker portrait, speaker name, line text, advance input, and optional choice
   buttons.
-- Playable from any scene — hubs, menus, world atlas, pre/post battle — not only
+- Playable from any scene — hubs, menus, Region Map, pre/post battle — not only
   hubs.
 - Data-driven: a dialogue is a resource holding an ordered list of entries
   (speaker, portrait, line, optional choices; a choice names the flags it sets).
@@ -63,8 +63,8 @@ elements — no story node type, no story gating inside adventure graphs.
 
 - Completing an act's closing beat unlocks the next hub/area directly; no
   currency is involved.
-- Unlock state is read from the story state handler; the world atlas and hub
-  travel UI consult it.
+- Unlock state is read from the story state handler; the Region Map and
+  Overworld consult it.
 - Flagged conflict, resolve before implementing: `Concept_Document.md` 3.3.2
   lists an "Area unlock currency" — its role once story completion unlocks areas
   directly is undecided.
