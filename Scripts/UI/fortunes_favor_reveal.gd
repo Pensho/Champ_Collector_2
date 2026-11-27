@@ -13,6 +13,7 @@ enum Phase
 	WAITING_TO_CLOSE,
 }
 
+@export var _backdrop: ColorRect
 ## The center panel goes last.
 @export var _panels: Array[FortunesFavorPanel]
 @export var _champion_art: TextureRect
@@ -56,6 +57,8 @@ func Play(p_tier: FortuneFavorTier, p_rewards: Array[Dictionary]) -> void:
 	_champion_rarity_label.hide()
 	_flash.modulate.a = 0.0
 	_skip_requested = false
+	_backdrop.show()
+	mouse_filter = Control.MOUSE_FILTER_STOP
 	show()
 
 	_phase = Phase.SLAMMING
@@ -92,8 +95,16 @@ func _gui_input(p_event: InputEvent) -> void:
 			_skip_requested = true
 		Phase.WAITING_TO_CLOSE:
 			_phase = Phase.IDLE
-			hide()
+			_Close()
 			finished.emit()
+
+## A won champion and its labels stay on screen, letting clicks through, until the next Play or scene change.
+func _Close() -> void:
+	if(not _champion_art.visible):
+		hide()
+		return
+	_backdrop.hide()
+	mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 func _PreparePanel(
 		p_panel: FortunesFavorPanel, p_entry: Dictionary, p_tier: FortuneFavorTier, p_filler_texture: Texture2D) -> void:

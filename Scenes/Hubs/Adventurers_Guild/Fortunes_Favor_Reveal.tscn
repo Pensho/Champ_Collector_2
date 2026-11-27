@@ -19,7 +19,7 @@
 offsets = PackedFloat32Array(0, 0.1, 1)
 colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0)
 
-[node name="FortunesFavorReveal" type="Control" unique_id=847503160 node_paths=PackedStringArray("_panels", "_champion_art", "_champion_name_label", "_champion_rarity_label", "_flash", "_burst_motes")]
+[node name="FortunesFavorReveal" type="Control" unique_id=847503160 node_paths=PackedStringArray("_backdrop", "_panels", "_champion_art", "_champion_name_label", "_champion_rarity_label", "_flash", "_burst_motes")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -27,6 +27,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_reveal")
+_backdrop = NodePath("Backdrop")
 _panels = [NodePath("Panels/TopLeft1"), NodePath("Panels/TopMiddle"), NodePath("Panels/TopRight"), NodePath("Panels/BottomRight"), NodePath("Panels/Bottom"), NodePath("Panels/BottomLeft"), NodePath("Panels/Left"), NodePath("Panels/TopLeft2"), NodePath("Panels/Middle")]
 _champion_art = NodePath("ChampionArt")
 _champion_name_label = NodePath("ChampionNameLabel")
