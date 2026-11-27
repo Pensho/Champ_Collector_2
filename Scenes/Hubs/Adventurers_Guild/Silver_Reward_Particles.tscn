@@ -1,0 +1,40 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" uid="uid://2vujtamjud84" path="res://Assets/Fortunes_Favor_Effects/coin_particles.png" id="1_coins"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_coin_frames"]
+particles_animation = true
+particles_anim_h_frames = 3
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="Gradient" id="Gradient_coin_fade"]
+offsets = PackedFloat32Array(0, 0.1, 0.75, 1)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0)
+
+[node name="SilverRewardParticles" type="Node2D"]
+
+[node name="Coins" type="CPUParticles2D" parent="."]
+material = SubResource("CanvasItemMaterial_coin_frames")
+emitting = false
+amount = 9
+texture = ExtResource("1_coins")
+lifetime = 1.6
+one_shot = true
+explosiveness = 0.85
+randomness = 0.4
+emission_shape = 3
+emission_rect_extents = Vector2(90, 30)
+direction = Vector2(0, -1)
+spread = 35.0
+gravity = Vector2(0, 700)
+initial_velocity_min = 150.0
+initial_velocity_max = 300.0
+angular_velocity_min = -360.0
+angular_velocity_max = 360.0
+angle_min = -180.0
+angle_max = 180.0
+scale_amount_min = 0.35
+scale_amount_max = 0.6
+color_ramp = SubResource("Gradient_coin_fade")
+anim_offset_max = 0.99

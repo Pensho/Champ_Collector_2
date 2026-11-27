@@ -7,8 +7,9 @@
 [ext_resource type="Texture2D" uid="uid://d3ribnb76plyc" path="res://Assets/Champ_Collector/Icons/Resources/Fortunes_Favor/Bone/Fortunes_Favor_Bone_1.png" id="5_favor_icon"]
 [ext_resource type="Texture2D" uid="uid://dq3fohqivkweb" path="res://Assets/Champ_Collector/Icons/Resources/Fortunes_Favor/Brass/Fortunes_Favor_Brass_1.png" id="6_brass_icon"]
 [ext_resource type="Texture2D" uid="uid://d1le2k5exvc1b" path="res://Assets/Champ_Collector/Icons/Resources/Fortunes_Favor/Parchment/Fortunes_Favor_Parchment_1.png" id="7_parchment_icon"]
+[ext_resource type="PackedScene" path="res://Scenes/Hubs/Adventurers_Guild/Fortunes_Favor_Reveal.tscn" id="8_reveal"]
 
-[node name="RecruitmentMenu" type="Control" unique_id=259832161 node_paths=PackedStringArray("_bone_favor_count_label", "_brass_favor_count_label", "_parchment_favor_count_label")]
+[node name="RecruitmentMenu" type="Control" unique_id=259832161 node_paths=PackedStringArray("_bone_favor_count_label", "_brass_favor_count_label", "_parchment_favor_count_label", "_reveal")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -19,6 +20,7 @@ script = ExtResource("1_recruitment")
 _bone_favor_count_label = NodePath("Label_Bone_Favor_Count")
 _brass_favor_count_label = NodePath("Label_Brass_Favor_Count")
 _parchment_favor_count_label = NodePath("Label_Parchment_Favor_Count")
+_reveal = NodePath("FortunesFavorReveal")
 
 [node name="Background" type="TextureRect" parent="." unique_id=68433673]
 layout_mode = 0
@@ -138,6 +140,9 @@ theme_override_font_sizes/font_size = 32
 text = "0"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="FortunesFavorReveal" parent="." instance=ExtResource("8_reveal")]
+layout_mode = 1
 
 [connection signal="pressed" from="Button_Back" to="." method="_on_back_pressed"]
 [connection signal="pressed" from="Button_Bone_Favor" to="." method="_on_bone_favor_pressed"]

@@ -1027,7 +1027,7 @@ One type of consumable could include some types to alter items, e.g. increase th
 - Fortune’s Favor
     - Used in Adventurer's guild locations in hubs.
     - Comes in three tiers — Bone, Brass, and Parchment — each tracked as a separate
-      balance. Higher tiers roll more reward slots (Bone 3, Brass 5, Parchment 9), which
+      balance. Higher tiers roll more reward slots (Bone 5, Brass 7, Parchment 9), which
       raises the odds of winning a champion since each slot independently has a chance
       to award one.
 

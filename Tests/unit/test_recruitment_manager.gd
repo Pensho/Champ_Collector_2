@@ -123,7 +123,7 @@ func test_build_rewards_parchment_tier_has_nine_rewards_and_at_most_one_champion
 
 func test_brass_tier_resource_loads_with_expected_reward_count_and_tier_type() -> void:
 	var tier: FortuneFavorTier = load("res://Data/Recruitment/Brass_Tier.tres")
-	assert_eq(tier.reward_count, 5, "Brass tier should have a reward count of 5")
+	assert_eq(tier.reward_count, 7, "Brass tier should have a reward count of 7")
 	assert_eq(tier.tier_type, FortuneFavorTier.TierType.BRASS, "Brass tier should have tier_type BRASS")
 
 
@@ -135,7 +135,7 @@ func test_parchment_tier_resource_loads_with_expected_reward_count_and_tier_type
 
 func test_bone_tier_resource_loads_with_expected_reward_count_and_tier_type() -> void:
 	var tier: FortuneFavorTier = load("res://Data/Recruitment/Bone_Tier.tres")
-	assert_eq(tier.reward_count, 3, "Bone tier should have a reward count of 3")
+	assert_eq(tier.reward_count, 5, "Bone tier should have a reward count of 5")
 	assert_eq(tier.tier_type, FortuneFavorTier.TierType.BONE, "Bone tier should have tier_type BONE")
 
 

@@ -1,0 +1,263 @@
+[gd_scene format=3 uid="uid://cyim3fnbx3k8a"]
+
+[ext_resource type="Script" uid="uid://dar6udvmxhviy" path="res://Scripts/UI/fortunes_favor_reveal.gd" id="1_reveal"]
+[ext_resource type="PackedScene" path="res://Scenes/Hubs/Adventurers_Guild/Fortunes_Favor_Panel.tscn" id="2_panel"]
+[ext_resource type="Texture2D" uid="uid://bffc5a2mpgbqw" path="res://Assets/Fortunes_Favor_Effects/character_reward.jpg" id="3_tease"]
+[ext_resource type="Texture2D" uid="uid://c0adpacnoav15" path="res://Assets/Champ_Collector/Particles/Buff_Mote.png" id="4_mote"]
+[ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="5_theme"]
+[ext_resource type="Texture2D" uid="uid://csoifgpsvko4e" path="res://Assets/Fortunes_Favor_Effects/FF_bottom.png" id="frame_Bottom"]
+[ext_resource type="Texture2D" uid="uid://bxs8eotu3hpu8" path="res://Assets/Fortunes_Favor_Effects/FF_bottom_left.png" id="frame_BottomLeft"]
+[ext_resource type="Texture2D" uid="uid://2x6id57k44yd" path="res://Assets/Fortunes_Favor_Effects/FF_bottom_right.png" id="frame_BottomRight"]
+[ext_resource type="Texture2D" uid="uid://ciwrmlp75bsjh" path="res://Assets/Fortunes_Favor_Effects/FF_left.png" id="frame_Left"]
+[ext_resource type="Texture2D" uid="uid://dgue8ncw2cb4t" path="res://Assets/Fortunes_Favor_Effects/FF_middle.png" id="frame_Middle"]
+[ext_resource type="Texture2D" uid="uid://dpp0e8qi4v245" path="res://Assets/Fortunes_Favor_Effects/FF_top_left_1.png" id="frame_TopLeft1"]
+[ext_resource type="Texture2D" uid="uid://bg0j08oca26o" path="res://Assets/Fortunes_Favor_Effects/FF_top_left_2.png" id="frame_TopLeft2"]
+[ext_resource type="Texture2D" uid="uid://c87sdkioe8dbo" path="res://Assets/Fortunes_Favor_Effects/FF_top_middle.png" id="frame_TopMiddle"]
+[ext_resource type="Texture2D" uid="uid://dbrgo6xct8hei" path="res://Assets/Fortunes_Favor_Effects/FF_top_right.png" id="frame_TopRight"]
+
+[sub_resource type="Gradient" id="Gradient_burst_fade"]
+offsets = PackedFloat32Array(0, 0.1, 1)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0)
+
+[node name="FortunesFavorReveal" type="Control" unique_id=847503160 node_paths=PackedStringArray("_panels", "_champion_art", "_champion_name_label", "_champion_rarity_label", "_flash", "_burst_motes")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_reveal")
+_panels = [NodePath("Panels/TopLeft1"), NodePath("Panels/TopMiddle"), NodePath("Panels/TopRight"), NodePath("Panels/BottomRight"), NodePath("Panels/Bottom"), NodePath("Panels/BottomLeft"), NodePath("Panels/Left"), NodePath("Panels/TopLeft2"), NodePath("Panels/Middle")]
+_champion_art = NodePath("ChampionArt")
+_champion_name_label = NodePath("ChampionNameLabel")
+_champion_rarity_label = NodePath("ChampionRarityLabel")
+_flash = NodePath("Flash")
+_burst_motes = NodePath("BurstMotes")
+_tease_texture = ExtResource("3_tease")
+_neutral_glow_color = Color(1, 0.85, 0.55, 1)
+_slam_interval = 1.0
+_slam_duration = 0.3
+_tease_hold = 1.6
+_burst_duration = 0.6
+_burst_distance = 1400.0
+_flash_duration = 0.5
+_name_label_gap = 16.0
+_name_fade_duration = 0.4
+
+[node name="Backdrop" type="ColorRect" parent="." unique_id=1054177236]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.03, 0.02, 0.05, 0.92)
+
+[node name="ChampionArt" type="TextureRect" parent="." unique_id=1610228380]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 3
+
+[node name="Panels" type="Node2D" parent="." unique_id=1788020669]
+
+[node name="TopLeft1" parent="Panels" unique_id=501588810 instance=ExtResource("2_panel")]
+position = Vector2(136, 164)
+
+[node name="Content" parent="Panels/TopLeft1" index="0"]
+polygon = PackedVector2Array(-114.9, -134.7, 35.4, -134.4, 107.2, 135.4, 98, 138.6, -121.9, 100.7)
+
+[node name="Frame" parent="Panels/TopLeft1" index="2"]
+texture = ExtResource("frame_TopLeft1")
+
+[node name="Motes" parent="Panels/TopLeft1" index="3"]
+emission_points = PackedVector2Array()
+emission_normals = PackedVector2Array()
+emission_colors = PackedColorArray()
+
+[node name="TopMiddle" parent="Panels" unique_id=253547836 instance=ExtResource("2_panel")]
+position = Vector2(544, 124)
+
+[node name="Content" parent="Panels/TopMiddle" index="0"]
+polygon = PackedVector2Array(-289.9, -93.4, 290.8, -92.8, 285.8, -86.7, 4.4, 105.2, -7.9, 104)
+
+[node name="Frame" parent="Panels/TopMiddle" index="2"]
+texture = ExtResource("frame_TopMiddle")
+
+[node name="Motes" parent="Panels/TopMiddle" index="3"]
+emission_points = PackedVector2Array()
+emission_normals = PackedVector2Array()
+emission_colors = PackedColorArray()
+
+[node name="TopRight" parent="Panels" unique_id=1884501999 instance=ExtResource("2_panel")]
+position = Vector2(972, 183)
+
+[node name="Content" parent="Panels/TopRight" index="0"]
+polygon = PackedVector2Array(-287.5, -18.6, -92.7, -153.4, 291.9, -133, 286.2, 138.6, 14.2, 165, -73.8, 165.3)
+
+[node name="Frame" parent="Panels/TopRight" index="2"]
+texture = ExtResource("frame_TopRight")
+
+[node name="Motes" parent="Panels/TopRight" index="3"]
+emission_points = PackedVector2Array()
+emission_normals = PackedVector2Array()
+emission_colors = PackedColorArray()
+
+[node name="BottomRight" parent="Panels" unique_id=820886761 instance=ExtResource("2_panel")]
+position = Vector2(984, 527)
+
+[node name="Content" parent="Panels/BottomRight" index="0"]
+polygon = PackedVector2Array(-70.2, -148, 282.7, -174.5, 280.7, 159.4, -246.1, 152.8)
+
+[node name="Frame" parent="Panels/BottomRight" index="2"]
+texture = ExtResource("frame_BottomRight")
+
+[node name="Motes" parent="Panels/BottomRight" index="3"]
+emission_points = PackedVector2Array()
+emission_normals = PackedVector2Array()
+emission_colors = PackedColorArray()
+
+[node name="Bottom" parent="Panels" unique_id=184976301 instance=ExtResource("2_panel")]
+position = Vector2(582, 611)
+
+[node name="Content" parent="Panels/Bottom" index="0"]
+polygon = PackedVector2Array(-115.2, -81.4, -105.8, -97.9, 175, -32.5, 108.3, 81.3, -171.4, 80.1)
+
+[node name="Frame" parent="Panels/Bottom" index="2"]
+texture = ExtResource("frame_Bottom")
+
+[node name="Motes" parent="Panels/Bottom" index="3"]
+emission_points = PackedVector2Array()
+emission_normals = PackedVector2Array()
+emission_colors = PackedColorArray()
+
+[node name="BottomLeft" parent="Panels" unique_id=41324400 instance=ExtResource("2_panel")]
+position = Vector2(234, 539)
+
+[node name="Content" parent="Panels/BottomLeft" index="0"]
+polygon = PackedVector2Array(-217.9, -50.4, 160.6, -164.6, 212.9, -36.3, 154.9, 132.2, -217.4, 144.5)
+
+[node name="Frame" parent="Panels/BottomLeft" index="2"]
+texture = ExtResource("frame_BottomLeft")
+
+[node name="Motes" parent="Panels/BottomLeft" index="3"]
+emission_points = PackedVector2Array()
+emission_normals = PackedVector2Array()
+emission_colors = PackedColorArray()
+
+[node name="Left" parent="Panels" unique_id=1877656159 instance=ExtResource("2_panel")]
+position = Vector2(207, 379)
+
+[node name="Content" parent="Panels/Left" index="0"]
+polygon = PackedVector2Array(-190.7, -81.1, -176.6, -80.2, 89, -34.7, 145, -21.4, -191.1, 80.1)
+
+[node name="Frame" parent="Panels/Left" index="2"]
+texture = ExtResource("frame_Left")
+
+[node name="Motes" parent="Panels/Left" index="3"]
+emission_points = PackedVector2Array()
+emission_normals = PackedVector2Array()
+emission_colors = PackedColorArray()
+
+[node name="TopLeft2" parent="Panels" unique_id=1038078293 instance=ExtResource("2_panel")]
+position = Vector2(364, 174)
+
+[node name="Content" parent="Panels/TopLeft2" index="0"]
+polygon = PackedVector2Array(-147.7, -134.8, -20.5, -56.4, 158.4, 70.4, 27.3, 160.1, -74.6, 141.3, -82, 124.2, -152.8, -130.8)
+
+[node name="Frame" parent="Panels/TopLeft2" index="2"]
+texture = ExtResource("frame_TopLeft2")
+
+[node name="Motes" parent="Panels/TopLeft2" index="3"]
+emission_points = PackedVector2Array()
+emission_normals = PackedVector2Array()
+emission_colors = PackedColorArray()
+
+[node name="Middle" parent="Panels" unique_id=654980401 instance=ExtResource("2_panel")]
+position = Vector2(652, 367)
+
+[node name="Content" parent="Panels/Middle" index="0"]
+polygon = PackedVector2Array(-235.5, -19.9, 14.4, -184.5, 161, -67.4, 234.5, 2.4, 128.6, 183.9, -180, 122.5)
+
+[node name="Frame" parent="Panels/Middle" index="2"]
+texture = ExtResource("frame_Middle")
+
+[node name="Motes" parent="Panels/Middle" index="3"]
+emission_points = PackedVector2Array()
+emission_normals = PackedVector2Array()
+emission_colors = PackedColorArray()
+
+[node name="ChampionNameLabel" type="Label" parent="." unique_id=1559266619]
+visible = false
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 50.0
+grow_horizontal = 2
+theme = ExtResource("5_theme")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 40
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ChampionRarityLabel" type="Label" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 40.0
+grow_horizontal = 2
+mouse_filter = 2
+theme = ExtResource("5_theme")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 30
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Flash" type="ColorRect" parent="." unique_id=95687156]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="BurstMotes" type="CPUParticles2D" parent="." unique_id=565852489]
+position = Vector2(640, 360)
+emitting = false
+amount = 120
+texture = ExtResource("4_mote")
+lifetime = 1.2
+one_shot = true
+explosiveness = 0.9
+emission_shape = 1
+emission_sphere_radius = 40.0
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 800.0
+initial_velocity_max = 1500.0
+damping_max = 100.0
+scale_amount_min = 0.6
+scale_amount_max = 1.6
+color_ramp = SubResource("Gradient_burst_fade")
+
+[editable path="Panels/TopLeft1"]
+[editable path="Panels/TopMiddle"]
+[editable path="Panels/TopRight"]
+[editable path="Panels/BottomRight"]
+[editable path="Panels/Bottom"]
+[editable path="Panels/BottomLeft"]
+[editable path="Panels/Left"]
+[editable path="Panels/TopLeft2"]
+[editable path="Panels/Middle"]

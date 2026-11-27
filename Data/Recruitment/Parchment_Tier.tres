@@ -24,6 +24,14 @@
 [ext_resource type="Resource" uid="uid://bq7rxhgujqk6t" path="res://Data/Character_Player_Variants/Warlord.tres" id="21_warlord"]
 [ext_resource type="Resource" uid="uid://84sxl2otcwbb" path="res://Data/Character_Player_Variants/Alchemist.tres" id="22_alchemist"]
 [ext_resource type="Resource" uid="uid://b68hmmppqg4nq" path="res://Data/Character_Player_Variants/Hunter.tres" id="23_hunter"]
+[ext_resource type="Texture2D" uid="uid://cafaa5b2ej77m" path="res://Assets/Fortunes_Favor_Effects/no_reward_1.jpg" id="reveal_empty_1"]
+[ext_resource type="Texture2D" uid="uid://cjxpbeu4rtnxp" path="res://Assets/Fortunes_Favor_Effects/no_reward_2.jpg" id="reveal_empty_2"]
+[ext_resource type="Texture2D" uid="uid://dh36f8y1x6eci" path="res://Assets/Fortunes_Favor_Effects/no_reward_3.jpg" id="reveal_empty_3"]
+[ext_resource type="Texture2D" uid="uid://nks16t6ksvkq" path="res://Assets/Fortunes_Favor_Effects/no_reward_4.jpg" id="reveal_empty_4"]
+[ext_resource type="Texture2D" uid="uid://d2cym7wflhv22" path="res://Assets/Fortunes_Favor_Effects/large_silver_reward.jpg" id="reveal_silver"]
+[ext_resource type="Texture2D" uid="uid://uxdubdc6sryv" path="res://Assets/Fortunes_Favor_Effects/large_supply_reward.jpg" id="reveal_supplies"]
+[ext_resource type="PackedScene" path="res://Scenes/Hubs/Adventurers_Guild/Silver_Reward_Particles.tscn" id="reveal_silver_particles"]
+[ext_resource type="PackedScene" path="res://Scenes/Hubs/Adventurers_Guild/Supplies_Reward_Particles.tscn" id="reveal_supplies_particles"]
 
 [resource]
 script = ExtResource("1_tier")
@@ -34,3 +42,8 @@ silver_amount = 40
 supplies_weight = 30
 supplies_amount = 20
 recruitable_champions = Array[ExtResource("1_preset")]([ExtResource("2_architect"), ExtResource("3_bar_brawler"), ExtResource("4_bloodmage"), ExtResource("5_centaur_archivist"), ExtResource("6_centaur_lancer"), ExtResource("7_chronophage"), ExtResource("8_herald_of_the_loom"), ExtResource("9_jester"), ExtResource("10_knight"), ExtResource("11_tactician"), ExtResource("12_thief"), ExtResource("13_tidal_corsair"), ExtResource("14_sorcerer"), ExtResource("15_symbiote"), ExtResource("16_diviner"), ExtResource("17_appraiser"), ExtResource("18_emissary"), ExtResource("19_cultist"), ExtResource("20_plague_doctor"), ExtResource("21_warlord"), ExtResource("22_alchemist"), ExtResource("23_hunter")])
+silver_texture = ExtResource("reveal_silver")
+supplies_texture = ExtResource("reveal_supplies")
+empty_textures = Array[Texture2D]([ExtResource("reveal_empty_1"), ExtResource("reveal_empty_2"), ExtResource("reveal_empty_3"), ExtResource("reveal_empty_4")])
+silver_particles = ExtResource("reveal_silver_particles")
+supplies_particles = ExtResource("reveal_supplies_particles")

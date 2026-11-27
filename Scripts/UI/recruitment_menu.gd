@@ -8,10 +8,10 @@ const BUTTON_WITH_OPTIONS_SCENE: PackedScene = preload("uid://c7smqpmfvs0ih")
 @export var _bone_favor_count_label: Label
 @export var _brass_favor_count_label: Label
 @export var _parchment_favor_count_label: Label
+@export var _reveal: FortunesFavorReveal
 
 var _info_option: ButtonWithOptions
 var _confirm_option: ButtonWithOptions
-var _result_option: ButtonWithOptions
 var _pending_tier: FortuneFavorTier
 
 func Init(_p_context_container: ContextContainer) -> void:
@@ -26,10 +26,6 @@ func Init(_p_context_container: ContextContainer) -> void:
 	_confirm_option.position = Vector2i((get_viewport_rect().size * 0.5) - (_confirm_option.GetSize() * 0.5))
 	_confirm_option.hide()
 
-	_result_option = BUTTON_WITH_OPTIONS_SCENE.instantiate()
-	add_child(_result_option)
-	_result_option.position = Vector2i((get_viewport_rect().size * 0.5) - (_result_option.GetSize() * 0.5))
-	_result_option.hide()
 
 func _ready() -> void:
 	Refresh()
@@ -79,15 +75,4 @@ func _on_confirm_recruit() -> void:
 
 	var rewards: Array[Dictionary] = RecruitmentManager.ResolveUse(_pending_tier)
 	main.GetInstance()._save_manager.RequestAutosave()
-	var reward_descriptions: Array[String] = []
-	for reward in rewards:
-		match reward["type"]:
-			RecruitmentManager.RewardType.CHAMPION:
-				reward_descriptions.append("Recruited the " + reward["champion"]._name)
-			RecruitmentManager.RewardType.SILVER:
-				reward_descriptions.append("+" + str(reward["amount"]) + " Silver")
-			RecruitmentManager.RewardType.SUPPLIES:
-				reward_descriptions.append("+" + str(reward["amount"]) + " Supplies")
-
-	_result_option.SetText("Recruitment Result", "You received: " + ", ".join(reward_descriptions) + ".")
-	_result_option.show()
+	_reveal.Play(_pending_tier, rewards)

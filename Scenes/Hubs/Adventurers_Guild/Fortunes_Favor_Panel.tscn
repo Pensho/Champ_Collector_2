@@ -1,0 +1,52 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/UI/fortunes_favor_panel.gd" id="1_panel"]
+[ext_resource type="Texture2D" uid="uid://c0adpacnoav15" path="res://Assets/Champ_Collector/Particles/Buff_Mote.png" id="2_mote"]
+
+[sub_resource type="Curve" id="Curve_mote_scale"]
+_data = [Vector2(0, 0.2), 0.0, 0.0, 0, 0, Vector2(0.2, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.3), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Gradient" id="Gradient_mote_fade"]
+offsets = PackedFloat32Array(0, 0.15, 0.7, 1)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0.6, 1, 1, 1, 0)
+
+[node name="FortunesFavorPanel" type="Node2D" node_paths=PackedStringArray("_content", "_glow", "_frame", "_motes", "_reward_particles_holder")]
+script = ExtResource("1_panel")
+_content = NodePath("Content")
+_glow = NodePath("Glow")
+_frame = NodePath("Frame")
+_motes = NodePath("Motes")
+_reward_particles_holder = NodePath("RewardParticles")
+_glow_inner_width = 22.0
+_glow_outer_width = 30.0
+_mote_emission_point_count = 48
+_slam_start_scale = 1.15
+_resting_glow_alpha = 0.35
+
+[node name="Content" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-100, -100, 100, -100, 100, 100, -100, 100)
+
+[node name="Glow" type="Polygon2D" parent="."]
+
+[node name="Frame" type="Sprite2D" parent="."]
+
+[node name="Motes" type="CPUParticles2D" parent="."]
+emitting = false
+amount = 40
+texture = ExtResource("2_mote")
+lifetime = 1.4
+randomness = 0.5
+emission_shape = 5
+spread = 20.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 30.0
+initial_velocity_max = 90.0
+damping_min = 10.0
+damping_max = 30.0
+scale_amount_min = 0.3
+scale_amount_max = 0.8
+scale_amount_curve = SubResource("Curve_mote_scale")
+color_ramp = SubResource("Gradient_mote_fade")
+
+[node name="RewardParticles" type="Node2D" parent="."]

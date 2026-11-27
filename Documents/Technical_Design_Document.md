@@ -226,6 +226,7 @@ Representative scenes:
 | `Scenes/ui/MainMenu.tscn` | `Control` | Top-level navigation |
 | `Scenes/Characters/Character.tscn` | `Node2D` (`character.gd`) | Character logic node |
 | `Scenes/Characters/Character_Battle_Repr.tscn` | `Node2D` | Visual battle representation |
+| `Scenes/Hubs/Adventurers_Guild/Fortunes_Favor_Reveal.tscn` | `Control` (`fortunes_favor_reveal.gd`) | Presents a spent Favor's rewards after `RecruitmentManager.ResolveUse()`; instanced in `Recruitment.tscn`. Nine `Fortunes_Favor_Panel.tscn` shards clip their reward image to a `Polygon2D`; panel assignment and geometry live in the static `FortunesFavorRevealLayout`. Reward art and particle scenes come from `FortuneFavorTier` |
 
 `battle.tscn` holds one `Camera2D` (world space: the stage, character representations,
 the turn indicator) and one `CanvasLayer` holding `battle_ui.tscn` (screen space, so camera
