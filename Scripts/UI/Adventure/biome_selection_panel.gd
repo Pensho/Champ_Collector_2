@@ -8,7 +8,6 @@ const SELECTION_TWEEN_SECONDS: float = 0.2
 
 @export var _texture_button: TextureButton
 @export var _label_name: Label
-@export var _gear_pool_icons: Array[TextureRect]
 
 var _panel_material: ShaderMaterial
 var _grayscale_tween: Tween
@@ -23,10 +22,6 @@ func _ready() -> void:
 func Populate(p_adventure: AdventureData) -> void:
 	_texture_button.texture_normal = p_adventure.selection_texture
 	_label_name.text = p_adventure.display_name
-	for i in _gear_pool_icons.size():
-		var has_entry: bool = i < p_adventure.gear_pool.size()
-		_gear_pool_icons[i].visible = has_entry
-		_gear_pool_icons[i].texture = load(p_adventure.gear_pool[i]._texture_path) if has_entry else null
 
 func SetSelected(p_is_selected: bool) -> void:
 	var target: float = 0.0 if p_is_selected else 1.0
