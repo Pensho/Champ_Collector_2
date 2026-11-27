@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://b03sym04k1f4d"]
 
 [ext_resource type="Script" uid="uid://cke22skwp0qbg" path="res://Scripts/UI/recruitment_menu.gd" id="1_recruitment"]
-[ext_resource type="Texture2D" uid="uid://b12fxr5wjhc44" path="res://Assets/Champ_Collector/Scenery/Adventurers_Guild/Adventurers_Guild_1.jpg" id="2_background"]
+[ext_resource type="Texture2D" uid="uid://c8qfjupp5x8hn" path="res://Assets/Champ_Collector/Scenery/Reclaimed_City_Art/reclaimed_city_recruitment_tent_2.jpg" id="2_bume3"]
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="3_theme"]
 [ext_resource type="PackedScene" uid="uid://bm6xwrr37gevr" path="res://Scenes/ui/Resources/Resource_Bar.tscn" id="4_resource_bar"]
 [ext_resource type="Texture2D" uid="uid://d3ribnb76plyc" path="res://Assets/Champ_Collector/Icons/Resources/Fortunes_Favor/Bone/Fortunes_Favor_Bone_1.png" id="5_favor_icon"]
@@ -17,16 +17,129 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_recruitment")
-_bone_favor_count_label = NodePath("Label_Bone_Favor_Count")
-_brass_favor_count_label = NodePath("Label_Brass_Favor_Count")
-_parchment_favor_count_label = NodePath("Label_Parchment_Favor_Count")
+_bone_favor_count_label = NodePath("ColorRect/Label_Bone_Favor_Count")
+_brass_favor_count_label = NodePath("ColorRect/Label_Brass_Favor_Count")
+_parchment_favor_count_label = NodePath("ColorRect/Label_Parchment_Favor_Count")
 _reveal = NodePath("FortunesFavorReveal")
 
 [node name="Background" type="TextureRect" parent="." unique_id=68433673]
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
-texture = ExtResource("2_background")
+texture = ExtResource("2_bume3")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=835437436]
+layout_mode = 0
+offset_left = 39.0
+offset_top = 202.0
+offset_right = 206.0
+offset_bottom = 593.0
+color = Color(0, 0, 0, 0.92156863)
+
+[node name="Button_Bone_Favor" type="TextureButton" parent="ColorRect" unique_id=1446255100]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -75.5
+offset_top = -176.5
+offset_right = 24.5
+offset_bottom = -76.5
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("5_favor_icon")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Label_Bone_Favor_Count" type="Label" parent="ColorRect" unique_id=778897152]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 2.5
+offset_top = 39.0
+offset_right = 102.5
+offset_bottom = 89.0
+grow_horizontal = 2
+theme = ExtResource("3_theme")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 32
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button_Brass_Favor" type="TextureButton" parent="ColorRect" unique_id=1392815342]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -75.5
+offset_top = -50.5
+offset_right = 24.5
+offset_bottom = 49.5
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("6_brass_icon")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Label_Brass_Favor_Count" type="Label" parent="ColorRect" unique_id=1212287068]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 2.5
+offset_top = 169.0
+offset_right = 102.5
+offset_bottom = 219.0
+grow_horizontal = 2
+theme = ExtResource("3_theme")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 32
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button_Parchment_Favor" type="TextureButton" parent="ColorRect" unique_id=1230054914]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -75.5
+offset_top = 75.5
+offset_right = 24.5
+offset_bottom = 175.5
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("7_parchment_icon")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Label_Parchment_Favor_Count" type="Label" parent="ColorRect" unique_id=280003464]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 2.5
+offset_top = 293.0
+offset_right = 102.5
+offset_bottom = 343.0
+grow_horizontal = 2
+theme = ExtResource("3_theme")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 32
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="ResourceBar" parent="." unique_id=1380831941 instance=ExtResource("4_resource_bar")]
 layout_mode = 0
@@ -51,101 +164,16 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 6
 text = "Back"
 
-[node name="Button_Bone_Favor" type="TextureButton" parent="." unique_id=1446255100]
-layout_mode = 0
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -200.0
-offset_top = -50.0
-offset_right = -100.0
-offset_bottom = 50.0
-texture_normal = ExtResource("5_favor_icon")
-ignore_texture_size = true
-stretch_mode = 5
-
-[node name="Label_Bone_Favor_Count" type="Label" parent="." unique_id=778897152]
-layout_mode = 0
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -200.0
-offset_top = 400.0
-offset_right = -100.0
-offset_bottom = 450.0
-theme = ExtResource("3_theme")
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 6
-theme_override_font_sizes/font_size = 32
-text = "0"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Button_Brass_Favor" type="TextureButton" parent="." unique_id=1392815342]
-layout_mode = 0
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -50.0
-offset_top = -50.0
-offset_right = 50.0
-offset_bottom = 50.0
-texture_normal = ExtResource("6_brass_icon")
-ignore_texture_size = true
-stretch_mode = 5
-
-[node name="Label_Brass_Favor_Count" type="Label" parent="." unique_id=1212287068]
-layout_mode = 0
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -50.0
-offset_top = 400.0
-offset_right = 50.0
-offset_bottom = 450.0
-theme = ExtResource("3_theme")
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 6
-theme_override_font_sizes/font_size = 32
-text = "0"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Button_Parchment_Favor" type="TextureButton" parent="." unique_id=1230054914]
-layout_mode = 0
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = 100.0
-offset_top = -50.0
-offset_right = 200.0
-offset_bottom = 50.0
-texture_normal = ExtResource("7_parchment_icon")
-ignore_texture_size = true
-stretch_mode = 5
-
-[node name="Label_Parchment_Favor_Count" type="Label" parent="." unique_id=280003464]
-layout_mode = 0
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = 100.0
-offset_top = 400.0
-offset_right = 200.0
-offset_bottom = 450.0
-theme = ExtResource("3_theme")
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 6
-theme_override_font_sizes/font_size = 32
-text = "0"
-horizontal_alignment = 1
-vertical_alignment = 1
-
 [node name="FortunesFavorReveal" parent="." unique_id=926866936 instance=ExtResource("8_reveal")]
 visible = false
 layout_mode = 1
 
+[node name="Panel" type="Panel" parent="." unique_id=1102054682]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[connection signal="pressed" from="ColorRect/Button_Bone_Favor" to="." method="_on_bone_favor_pressed"]
+[connection signal="pressed" from="ColorRect/Button_Brass_Favor" to="." method="_on_brass_favor_pressed"]
+[connection signal="pressed" from="ColorRect/Button_Parchment_Favor" to="." method="_on_parchment_favor_pressed"]
 [connection signal="pressed" from="Button_Back" to="." method="_on_back_pressed"]
-[connection signal="pressed" from="Button_Bone_Favor" to="." method="_on_bone_favor_pressed"]
-[connection signal="pressed" from="Button_Brass_Favor" to="." method="_on_brass_favor_pressed"]
-[connection signal="pressed" from="Button_Parchment_Favor" to="." method="_on_parchment_favor_pressed"]
