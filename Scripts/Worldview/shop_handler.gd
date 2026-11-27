@@ -44,7 +44,8 @@ static func RollStock(p_budget: int, p_gear_pool: Array[EquipmentPreset]) -> Arr
 
 	for i in GameBalance.SHOP_GEAR_SLOTS:
 		var best_rarity: int = LootManager.GetBestRarityForItem(p_budget)
-		var rarity: Types.Rarity = LootManager.RollRarityForItem(best_rarity)
+		var rarity: Types.Rarity = LootManager.RollRarityForItem(
+				best_rarity, maxi(best_rarity - LootManager.GEAR_RARITY_RANGE, Types.Rarity.Common))
 		var item_type: Types.Item_Type = LootManager.RollItemType()
 		var preset_key: String = (
 				EquipmentPresetRegistry.GetRandomRelicKey() if Types.Item_Type.Relic == item_type

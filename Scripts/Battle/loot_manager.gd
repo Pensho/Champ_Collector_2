@@ -24,8 +24,8 @@ const RARITY_WEIGHTING: Dictionary[Types.Rarity, int] = {
 }
 
 const RELIC_ROLL_CHANCE: float = 0.05
-const GEAR_RARITY_RANGE: int = 3
-const REAGENT_RARITY_RANGE: int = 3
+const GEAR_RARITY_RANGE: int = 2
+const REAGENT_RARITY_RANGE: int = 2
 const FORTUNE_FAVOR_TIER_RANGE: int = 2 # only 3 tiers exist, so range can cover all
 const FORTUNE_FAVOR_TIER_WEIGHTING: Dictionary[FortuneFavorTier.TierType, int] = {
 	FortuneFavorTier.TierType.BONE: 4,
@@ -64,13 +64,12 @@ static func RollItemType() -> Types.Item_Type:
 		return Types.Item_Type.Relic
 	return Types.Item_Type.Standard
 
-static func RollRarityForItem(p_best_outcome: int) -> Types.Rarity:
-	print("rarity for Equipment available: ", p_best_outcome)
-	
+static func RollRarityForItem(p_best_outcome: int, p_worst_outcome: int) -> Types.Rarity:
+	print("rarity for Equipment available: ", p_worst_outcome, " to ", p_best_outcome)
+
 	var cumulative_weights: Dictionary[Types.Rarity, int]
 	var current_sum: int = 0
-	var worst_outcome: int = max(p_best_outcome - GEAR_RARITY_RANGE, 1)
-	for i in range(worst_outcome, p_best_outcome + 1):
+	for i in range(p_worst_outcome, p_best_outcome + 1):
 		current_sum += RARITY_WEIGHTING[i as Types.Rarity]
 		cumulative_weights[i as Types.Rarity] = current_sum
 	var total_weight = current_sum
@@ -146,8 +145,10 @@ static func DistributeRewards(
 	p_loot_table._drop_result = LootTable.DropResult.new()
 	p_loot_table._budget = int(p_loot_table._budget * Skills.RewardMultiplier(p_fielded_team))
 	print("Loot budget from battle is: ", p_loot_table._budget)
+	var best_gear_rarity: int = GetBestRarityForItem(p_loot_table._budget)
+	var gear_floor: int = maxi(best_gear_rarity - GEAR_RARITY_RANGE, Types.Rarity.Common)
 	if(p_loot_table._equipment_chance > 0.0 and randf() < p_loot_table._equipment_chance):
-		_AddEquipment(p_loot_table, GetBestRarityForItem(p_loot_table._budget))
+		_AddEquipment(p_loot_table, best_gear_rarity, gear_floor)
 	for type in p_loot_table._primary_loot.keys():
 		match type:
 			LootType.Experience:
@@ -159,7 +160,7 @@ static func DistributeRewards(
 				p_loot_table._budget -= (float(LOOT_VALUE[LootType.Silver]) * (float(p_difficulty) * 0.85)) as int
 			LootType.Equipment:
 				for i in range(p_loot_table._primary_loot[type]):
-					_DropEquipment(p_loot_table)
+					_DropEquipment(p_loot_table, gear_floor)
 			LootType.Fortunes_Favor:
 				var ff_count: int = max(1, int(p_difficulty / 2.0))
 				var best_tier_outcome: int = GetBestFortuneFavorTier(p_loot_table._budget)
@@ -193,7 +194,7 @@ static func DistributeRewards(
 				p_loot_table._drop_result._silver += p_difficulty
 				p_loot_table._budget -= (float(LOOT_VALUE[LootType.Silver]) * (float(p_difficulty) * 0.85)) as int
 			LootType.Equipment:
-				_DropEquipment(p_loot_table)
+				_DropEquipment(p_loot_table, gear_floor)
 			LootType.Fortunes_Favor:
 				var best_tier_outcome: int = GetBestFortuneFavorTier(p_loot_table._budget)
 				var tier: FortuneFavorTier.TierType = RollFortuneFavorTier(best_tier_outcome)
@@ -228,13 +229,14 @@ static func DistributeRewards(
 	print(received_loot)
 
 ## Spends the rarity-scaled cost even when the pool is empty, so the secondary-loot loop still ends.
-static func _DropEquipment(p_loot_table: LootTable) -> void:
-	var best_rarity_outcome: int = GetBestRarityForItem(p_loot_table._budget)
+## p_gear_floor comes from the starting budget, so drops late in a drained budget stay above it.
+static func _DropEquipment(p_loot_table: LootTable, p_gear_floor: int) -> void:
+	var best_rarity_outcome: int = maxi(GetBestRarityForItem(p_loot_table._budget), p_gear_floor)
 	p_loot_table._budget -= int(pow(
 			LOOT_VALUE[LootType.Equipment], 1.0 + (best_rarity_outcome as float * RARITY_VALUE_POWER)))
-	_AddEquipment(p_loot_table, best_rarity_outcome)
+	_AddEquipment(p_loot_table, best_rarity_outcome, p_gear_floor)
 
-static func _AddEquipment(p_loot_table: LootTable, p_best_rarity_outcome: int) -> void:
+static func _AddEquipment(p_loot_table: LootTable, p_best_rarity_outcome: int, p_gear_floor: int) -> void:
 	if(p_loot_table._gear_pool.is_empty()):
 		return
 	var pool_preset: EquipmentPreset = p_loot_table._gear_pool.pick_random()
@@ -244,7 +246,7 @@ static func _AddEquipment(p_loot_table: LootTable, p_best_rarity_outcome: int) -
 	var preset: EquipmentPreset = (
 			EquipmentPresetRegistry.GetRelic(relic_key).duplicate(true)
 			if not relic_key.is_empty() else pool_preset.duplicate(true))
-	preset._rarity = RollRarityForItem(p_best_rarity_outcome)
+	preset._rarity = RollRarityForItem(p_best_rarity_outcome, p_gear_floor)
 	preset.Setup()
 	p_loot_table._drop_result._equipment.append(preset)
 

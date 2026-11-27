@@ -247,3 +247,21 @@ func test_zero_equipment_chance_drops_no_gear() -> void:
 	table._budget = LootManager.CalculateBudget(10)
 	LootManager.DistributeRewards(table, 10)
 	assert_true(table._drop_result._equipment.is_empty())
+
+func test_roll_rarity_for_item_stays_inside_its_window() -> void:
+	for i in range(300):
+		var rarity: Types.Rarity = LootManager.RollRarityForItem(Types.Rarity.Epic, Types.Rarity.Uncommon)
+		assert_between(rarity as int, Types.Rarity.Uncommon as int, Types.Rarity.Epic as int)
+
+func test_gear_never_falls_below_the_floor_set_by_the_starting_budget() -> void:
+	var budget: int = LootManager.CalculateBudget(20)
+	var floor_rarity: int = LootManager.GetBestRarityForItem(budget) - LootManager.GEAR_RARITY_RANGE
+	for run in range(20):
+		var table := LootTable.new()
+		table._secondary_loot[LootManager.LootType.Equipment] = 1
+		table._gear_pool = [EquipmentPresetRegistry.Get("Pew_Shield")]
+		table._budget = budget
+		LootManager.DistributeRewards(table, 20)
+		assert_gt(table._drop_result._equipment.size(), 1, "A drained budget should still drop several items")
+		for equipment in table._drop_result._equipment:
+			assert_gte(equipment._rarity as int, floor_rarity, "Late drops must not fall below the starting floor")

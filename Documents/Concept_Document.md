@@ -1199,6 +1199,8 @@ When a victory is achieved, rewards will be randomly selected from the loot tabl
 
 A loot table may also hold a flat gear chance, rolled once per victory outside the buffer: the item's rarity reads the buffer, but the item costs none of it.
 
+A gear drop rolls between the best rarity the remaining buffer affords and a floor two rarities below the best the starting buffer affords. As the buffer drains, later drops never fall below that floor.
+
 ### 3.9 Adventure node types
 An adventure is a generated graph of nodes the player steps through. Its combat nodes are
 **Fight**, **Mini-boss** and **Boss**. A Fight node drops gear only through a flat gear chance of

@@ -186,3 +186,11 @@ func test_standard_stock_comes_only_from_the_given_pool() -> void:
 		for entry in ShopHandler.RollStock(5000, pool):
 			if(Types.Category.Gear == entry["category"] and Types.Item_Type.Standard == entry["item_type"]):
 				assert_eq(entry["payload"], "Seed_Lantern", "Standard stock should come only from the pool")
+
+func test_shop_gear_rolls_within_the_progress_window() -> void:
+	var budget: int = LootManager.CalculateBudget(20)
+	var best: int = LootManager.GetBestRarityForItem(budget)
+	for run in range(30):
+		for i in range(0, GameBalance.SHOP_GEAR_SLOTS):
+			var rarity: int = ShopHandler.RollStock(budget, _AllStandardPresets())[i]["rarity"]
+			assert_between(rarity, best - LootManager.GEAR_RARITY_RANGE, best)
