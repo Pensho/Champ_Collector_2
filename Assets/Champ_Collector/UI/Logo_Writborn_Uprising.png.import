@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c3tw8gto5ffkw"
-path="res://.godot/imported/Logo_Turnspan_Uprising.png-b8a495353007f8b03f343c7fb0e702a2.ctex"
+path="res://.godot/imported/Logo_Writborn_Uprising.png-0e0ba52ad14acb53e489ca2ff693c0ac.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Champ_Collector/UI/Logo_Turnspan_Uprising.png"
-dest_files=["res://.godot/imported/Logo_Turnspan_Uprising.png-b8a495353007f8b03f343c7fb0e702a2.ctex"]
+source_file="res://Assets/Champ_Collector/UI/Logo_Writborn_Uprising.png"
+dest_files=["res://.godot/imported/Logo_Writborn_Uprising.png-0e0ba52ad14acb53e489ca2ff693c0ac.ctex"]
 
 [params]
 

@@ -3,7 +3,7 @@
 [ext_resource type="Theme" uid="uid://c8irweh6md2jy" path="res://Assets/Champ_Collector/Themes/default_theme.tres" id="1_hnwi1"]
 [ext_resource type="Script" uid="uid://cygusf5metdyh" path="res://Scripts/UI/main_menu.gd" id="2_hnwi1"]
 [ext_resource type="Texture2D" uid="uid://cxe2lffkbra47" path="res://Assets/Champ_Collector/Scenery/Grasslands.png" id="3_h3tiw"]
-[ext_resource type="Texture2D" uid="uid://c3tw8gto5ffkw" path="res://Assets/Champ_Collector/UI/Logo_Turnspan_Uprising.png" id="4_blk0r"]
+[ext_resource type="Texture2D" uid="uid://c3tw8gto5ffkw" path="res://Assets/Champ_Collector/UI/Logo_Writborn_Uprising.png" id="4_blk0r"]
 [ext_resource type="Texture2D" uid="uid://bn1o3x3kxre57" path="res://Assets/Champ_Collector/Particles/Leaves_sheet.png" id="4_o060j"]
 [ext_resource type="Script" uid="uid://brborf0wdvmjy" path="res://Scripts/Audio/ui_sounds.gd" id="6_o060j"]
 [ext_resource type="Script" uid="uid://853wrgpde68y" path="res://Scripts/Audio/button_sound_profile.gd" id="7_v2r0b"]
@@ -92,13 +92,13 @@ custom_minimum_size = Vector2(741, 263)
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="LogoTurnspanUprising" type="Sprite2D" parent="MarginContainer/VBoxContainer/Control" unique_id=1627012166]
+[node name="LogoWritbornUprising" type="Sprite2D" parent="MarginContainer/VBoxContainer/Control" unique_id=1627012166]
 self_modulate = Color(0, 0, 0, 1)
 position = Vector2(386.81213, 366.75)
 scale = Vector2(0.7163188, 0.7163188)
 texture = ExtResource("4_blk0r")
 
-[node name="LogoTurnspanUprising2" type="Sprite2D" parent="MarginContainer/VBoxContainer/Control" unique_id=1414614526]
+[node name="LogoWritbornUprising2" type="Sprite2D" parent="MarginContainer/VBoxContainer/Control" unique_id=1414614526]
 position = Vector2(385.81213, 365.75)
 scale = Vector2(0.7163188, 0.7163188)
 texture = ExtResource("4_blk0r")
