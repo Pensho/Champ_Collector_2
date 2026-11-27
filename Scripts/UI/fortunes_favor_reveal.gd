@@ -135,7 +135,7 @@ func _Burst(p_champion_entry: Dictionary) -> void:
 
 func _ShowChampionLabels(p_champion: CharacterPreset, p_art_height: float, p_rarity_color: Color) -> void:
 	var screen_height: float = get_viewport_rect().size.y
-	var art_top: float = (screen_height - p_art_height) * 0.5
+	var art_top: float = _champion_art.position.y + (_champion_art.size.y - p_art_height) * 0.5
 	var art_bottom: float = art_top + p_art_height
 
 	_champion_name_label.text = p_champion._name
