@@ -14,9 +14,7 @@ func _on_town_pressed() -> void:
 	main.GetInstance().EnterHub()
 
 func _on_caravan_pressed() -> void:
-	var context_container: ContextContainer = ContextContainer.new()
-	context_container._scene = "res://Scenes/Hubs/Overworld/Overworld.tscn"
-	main.GetInstance().change_scene(context_container)
+	Notification_Handler.Notify("Not available in demo.")
 
 func _on_adventure_pressed() -> void:
 	var context_container: ContextContainer = ContextContainer.new()
