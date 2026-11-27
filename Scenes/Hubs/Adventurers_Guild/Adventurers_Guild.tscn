@@ -51,7 +51,7 @@ theme = ExtResource("2_75jl7")
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.64705884)
 theme_override_constants/shadow_offset_x = 4
 theme_override_constants/shadow_offset_y = 3
-text = "Recuitment"
+text = "Recruitment"
 horizontal_alignment = 1
 vertical_alignment = 1
 

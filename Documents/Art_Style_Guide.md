@@ -98,6 +98,7 @@ Part I whole, and no section grants an exemption this table does not carry.
 | Effects and VFX | Non-negotiable 3's coverage cap only | 14.1 |
 | Turn bar passive overlays | As turn bar zone art | 13.3.2 |
 | Surface textures | Non-negotiable 1's outer silhouette; section 4 | 10.7.1 |
+| Reward reveal panels | As place screens; their effects also from 14.1's outline and shape-over-glow | 13.5 |
 
 ---
 
@@ -535,6 +536,7 @@ on assets that already look right.
 | Passive icons (12.6) | Quantize, accent correction, overlay, downscale to 40 px; no LUT |
 | Turn bar zone art (13.3.1) | Key out, then downscale; no quantize, no accent correction, no LUT |
 | Gear and reagent icons (11.1, 11.3) | Crop, quantize, overlay, downscale to 100 × 120; no accent correction, no LUT. A standard item's soft-color part (11.7) is masked out of quantize. Quantize untested (19.4) |
+| Reward reveal panels and particles (13.5) | Overlay only, as hub screens. Untested |
 
 **The quantize step must snap L\* while preserving hue.** A greyscale-ramp
 implementation strips the tinted band 1 (2.2) and the saturated garment (3.5)
@@ -725,6 +727,18 @@ See 10.5.
 - [ ] Far planes paler than near ones; the plate is not bleak
 - [ ] Warm light and signs of occupation present; places carry one landmark, not contents
 - [ ] Each place in its own color; natural masses flat, places carrying the detail
+
+### 7.12 Reward reveal panels
+
+See 13.5.
+
+- [ ] Judged inside its actual cell of the net, at screen size
+- [ ] Outer-cell art: the subject survives the two thinnest cells' crops
+- [ ] Center art: composed for the center cell's shape
+- [ ] Reward panels warm and festive; fillers cool grey with no reward object in them
+- [ ] Festive props not repeated from another panel, except within a small/big pair
+- [ ] Every object rests on something
+- [ ] Silver coins octagonal (11.4)
 
 ---
 # Part II — Asset domains
@@ -2763,7 +2777,7 @@ silhouette where lines alone blur.
   oxblood leather. No shared-slot system and no tinted band 1, as in 12.1.
 - **One broad bone white edge** along the upper rim of the main mass (12.6.3).
 - **No Role accent.** Gear is not owned by a Role, so no 8.9 hex appears on it.
-- **Generate with the transparency setting** and no background clause (18).
+- **White key background** — the current model has no transparency setting (18).
 - **Prompt describes the object only** — no mechanic, name or lore (5.7). The
   design notes carry why the object looks as it does.
 
@@ -2861,8 +2875,19 @@ overhang, the citrine stone and its glyph are never cut.
 
 ### 11.4 Currencies and consumables
 
-> **Not yet written.** Each currency in `Concept_Document.md` 3.3.2 needs one
-> unmistakable shape, held to the icon rules rather than the item rules.
+Each currency in `Concept_Document.md` 3.3.2 needs one unmistakable shape, held
+the same in every asset that shows it — icon, reward panel, particle (13.5).
+
+- **Silver.** An octagonal coin with straight flat edges and sharp corners, a
+  broad bevelled rim, a ring of small raised beads inside the rim and a carved
+  crown framed by a wreath at its center, in cool pale silver grey. Say
+  *octagonal* on every coin clause, tumbling and edge-on coins included, or the
+  model rounds them. Under warm light the coins print gold unless left pale
+  against it.
+- **Supplies.** Provisional: travel provisions — a canvas sack in pale oatmeal,
+  hard bread, rope, a waterskin, a pine crate. Settle against the remade icon.
+
+> **Not yet written.** Fortune's Favor tiers and Tallies.
 
 ### 11.5 Rarity and gear-set signalling
 
@@ -2874,6 +2899,9 @@ overhang, the citrine stone and its glyph are never cut.
 Reagents take rarity from an engine background behind the icon (11.3). Whether
 gear uses the same mechanism is open. A standard item is one image per sub-type,
 shown at every rarity (11.7), so its rarity cannot live in the art either.
+
+**Decided for champions:** the reveal burst (13.5) takes the champion's rarity
+color. Gear should use the same four hues; check them against 8.9 first.
 
 ### 11.6 Relics
 
@@ -3612,6 +3640,89 @@ woodcut print style illustration, a flat panel of leaded stained glass filling t
 > **Not yet written.** One entry per screen, each with its grey-box (4.3) before
 > any art is generated.
 
+### 13.5 Reward reveal panels
+
+Spending a Fortune's Favor (`Concept_Document.md` 3.6.3) fills the screen with
+nine irregular panels, one at a time: one per reward slot, fillers for the rest,
+the last always in the center. The last lands as a tease and resolves either into
+a large reward or into the champion reveal, where the panels blow outward.
+
+The rule set is the place screens' (10.5.6); exemptions in 1.1. The panels are
+the game world, not prints: chiaroscuro (12.4) was tried and set them apart from
+the champions and gear (17).
+
+#### 13.5.1 The panel net
+
+- **One generated image, cut into pieces.** Each cell gives a mask (its blank
+  interior) and a border (the selection grown by the border width). Shared lines
+  sit in both neighbours, so every shard flies off with its full edge.
+- **Name every cell separately** by position, shape and size, with a tilted
+  center panel slightly off center. A pattern word for the layout returns one cell
+  repeated (5.4).
+- **Borders continuous, closed and even; cells blank white**, so a cell
+  selection cannot leak. Generate wider than the screen.
+- **Engine:** the mask Sprite2D clips its content child (Clip Children "Clip
+  Only"), the border draws above it, particles sit outside the mask. Export pieces
+  at full canvas size so they align with no offsets, or trim and record offsets
+  where memory matters.
+
+#### 13.5.2 Panel art
+
+- **Square.** Outer-cell art may land in any cell, so the subject sits compact
+  inside the inscribed circle and the background runs to the edges. The center
+  cell's shape is known; the large rewards and the tease are composed for it.
+- **The place-screen opening block, seven bands, then the saturation split:**
+  the hall in low-saturation warm browns, the reward and festive objects the only
+  bright shapes, fine engraved hatching on shadow sides only. Dense hatching and
+  a dark tone carrying the background came back too dark to celebrate.
+- **Three large background shapes**, the hall pushed back behind the reward.
+  Hands and figures at the edges pull focus from it.
+- **Each panel its own festive props;** a small/big pair may share. Silver:
+  lanterns, bunting, tankards. Supplies: hearth, flower garland, fiddle; then
+  candle chandelier, painted banner, tapped barrel.
+- **State what everything rests on** — *every coin resting on the heap or the
+  table*. A loose object with nothing to throw it reads as an error.
+
+#### 13.5.3 Reward, filler and tease
+
+- **Reward:** warm lantern, fire or candle light in a festive hall.
+- **Filler:** the same hall the morning after — cool grey window light,
+  grey-browns and slate, the party's props spent (tipped tankards, burnt-down
+  candles, fallen bunting, a left fiddle). No reward object, ever.
+- **Tease:** a closed stage curtain, light at its gap and hem, darker than the
+  rewards but not grey. No figure, since it can resolve either way. A reward
+  crossfades in; a champion blows out from the gap.
+
+#### 13.5.4 Particles
+
+- **Sheets** on the place-screen opening block, white key (18), objects in a grid
+  with wide gaps. A flat icon block returned cheap, simple objects next to the
+  panels.
+- **Coins as flipbook rows:** face, half-tilted, edge-on. Equal canvas per frame,
+  centered on one point, driven by `CanvasItemMaterial` particle animation.
+- **Glow and motes are engine textures.** A champion's burst takes its rarity
+  color (11.5).
+
+#### 13.5.5 Approved prompts
+
+**Silver, large (center)**
+
+```
+bold woodcut illustration with engraved structural linework and visible gouge marks, thick black contour outline on every mass, flat color fields, hard-edged shadows, no gradients, seven value bands, the table, walls and rafters held in low-saturation warm browns, the lanterns, the bunting, the brass fittings and the coins as the only saturated or bright shapes, fine engraved hatching on the shadow sides of the strongbox and the table edge, a large open iron-bound wooden strongbox with brass corner fittings seen close up, filling most of the frame, on a heavy dark walnut tavern table, its lid thrown back, overflowing with a great heap of eight-sided octagonal silver coins with straight flat edges and sharp corners, the heap rising above the rim and sliding over its front edge, coins spilled across the table in a wide fan in front of it, two octagonal coins leaning on edge against the front of the strongbox showing their flat sides, every coin resting on the heap or the table, the coins in cool pale silver grey with bone white glints along their edges, behind it a brightly lit festive hall shown in three large shapes: a string of four round paper lanterns in warm saffron and vermilion sagging across the top of the frame, two broad swags of bunting flags in vermilion, teal and cream hanging from the rafters on both sides, and two pewter tankards standing at the far end of the table behind the strongbox, partly hidden by it, cream foam on their rims, the hall in warm amber lantern light with its shadows falling into deep plum, the hall pushed back behind the strongbox as large flat fields with a few broad lines, the heaviest carving on the coins and the strongbox, lantern light falling on the heap as flat hard-edged lit shapes
+```
+
+**Filler — tipped tankards**
+
+```
+bold woodcut illustration with engraved structural linework and visible gouge marks, thick black contour outline on every mass, flat color fields, hard-edged shadows, no gradients, seven value bands, everything held in low-saturation grey-browns and cool slate, a heavy dark walnut tavern table after a feast seen close up at the center of the frame, three empty pewter tankards tipped over on their sides, a pool of spilled ale spreading across the boards and dripping over the table edge, a stool knocked over on the floor beside the table, one crumpled napkin, pale grey morning light falling from a window at the upper left as flat hard-edged shapes across the table, the hall behind held as large flat quiet fields in cool slate with a few broad lines, the heaviest carving on the tankards and the spilled ale
+```
+
+**Tease (center)**
+
+```
+bold woodcut illustration with engraved structural linework and visible gouge marks, thick black contour outline on every mass, flat color fields, hard-edged shadows, no gradients, seven value bands, the floor, walls and rafters held in low-saturation warm browns falling into deep plum shadow, the curtain and the light as the only saturated or bright shapes, a small raised wooden stage at the end of the hall seen close up, filling most of the frame, closed by a heavy pair of drawn curtains in deep crimson velvet with a gold fringe along the hem and gold tasselled tiebacks hanging loose, the curtains falling in tall straight folds carved as flat hard-edged bands, one broad hard-edged beam of warm saffron light falling on the curtains from the upper left as a flat cut shape, a bright sliver of bone white light glowing through the narrow gap where the two curtains meet and spilling out beneath the hem across the stage boards, the faint outline of an unclear shape pressing against the cloth from behind, the hall around the stage held dark and quiet as large flat fields with a few broad lines, the heaviest carving on the curtain folds and the fringe, the stage boards catching the spilled light as flat hard-edged lit shapes
+```
+
 ---
 
 ## 14. Effects and VFX
@@ -3785,6 +3896,9 @@ line is a trap, not a history; the rule it produced lives in the section named.
 - Skill art in Renaissance black-line, white-line wood engraving, ukiyo-e or
   expressionist woodcut. Not failures, but chiaroscuro is closest to this guide's
   flat-band foundations. Revisit only if chiaroscuro fails at display size (12.4).
+- Chiaroscuro for champions or in-world scene art. Coherent as a print, but a
+  champion reads as a picture from a page rather than a figure acting, and comes
+  back monotone with no outline. Kept for skill art (12.4, 13.5).
 - Skill art tone blocks from one hue family, such as warm ochre and deep rust, or
   the accent paired with a garment main next to it on the wheel. Leonardo merges
   them and returns a single-color print that loses contrast at small sizes
@@ -4003,8 +4117,12 @@ together, at six characters rather than at fifteen.
 ### 19.4 Icons, UI and pipeline
 
 - **Rarity colors versus accent colors.** Two color-identity systems competing for
-  the same player attention (11.5). Relics add a third candidate: their one
+  the same player attention (11.5). Decided for the champion reveal: rarity color
+  (13.5). Gear is still open, and Relics add a third candidate: their one
   saturated material (11.6).
+- **The style split.** Skill art is chiaroscuro; champions, gear, environments and
+  the reward panels are full-color Lit Woodcut, and side by side they read as two
+  styles. A unified-look test is planned (12.4, 17).
 - **Alchemist brews.** The one reagent exception to the object rule (11.3); no
   visual direction yet.
 - **Reagent and Relic hues.** Both catalogs spread one saturated material across
