@@ -1197,10 +1197,14 @@ Then every encounter will be given a reward value points buffer depending on dif
 
 When a victory is achieved, rewards will be randomly selected from the loot table and subtract that value from the reward value points buffer. Note that some drops may be guaranteed and will be picked out first before random selection. This goes on until the buffer is spent or if the remaining value is too small to equate another reward.
 
+A loot table may also hold a flat gear chance, rolled once per victory outside the buffer: the item's rarity reads the buffer, but the item costs none of it.
+
 ### 3.9 Adventure node types
 An adventure is a generated graph of nodes the player steps through. Its combat nodes are
-**Fight**, **Mini-boss** and **Boss**. A Mini-boss node guarantees one gear drop from the
-adventure's gear pool, in a slot rolled at generation. Each Mini-boss takes a random Fight
+**Fight**, **Mini-boss** and **Boss**. A Fight node drops gear only through a flat gear chance of
+about 8%. A Mini-boss node has its own loot table with gear as the primary reward: one guaranteed
+drop from the adventure's gear pool, in a slot rolled at generation, and a budget weighted toward
+more gear. Each Mini-boss takes a random Fight
 node at a depth of its own, preferring depths where the path forks so the player can route
 around it. The following
 interactive node types resolve directly in the adventure scene without entering battle:

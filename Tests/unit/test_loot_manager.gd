@@ -230,3 +230,20 @@ func test_secondary_equipment_drops_from_the_pool_and_the_loop_ends() -> void:
 	for equipment in table._drop_result._equipment:
 		assert_eq(equipment._slot, Types.Slot.OffHand, "Every secondary drop should come from the pool's slot")
 	assert_true(table._budget <= 0, "The secondary loop should spend the budget and end")
+
+func test_equipment_chance_drops_gear_without_spending_the_budget() -> void:
+	var table := LootTable.new()
+	table._gear_pool = [EquipmentPresetRegistry.Get("Pew_Shield")]
+	table._equipment_chance = 1.0
+	table._budget = 0
+	LootManager.DistributeRewards(table, 5)
+	assert_eq(table._drop_result._equipment.size(), 1, "A certain chance should drop exactly one item")
+	assert_eq(table._budget, 0, "The chance roll costs no budget")
+
+func test_zero_equipment_chance_drops_no_gear() -> void:
+	var table := LootTable.new()
+	table._gear_pool = [EquipmentPresetRegistry.Get("Pew_Shield")]
+	table._secondary_loot[LootManager.LootType.Experience] = 1
+	table._budget = LootManager.CalculateBudget(10)
+	LootManager.DistributeRewards(table, 10)
+	assert_true(table._drop_result._equipment.is_empty())

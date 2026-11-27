@@ -190,7 +190,7 @@ static func _PopulateNodeContexts(p_nodes: Array[NodeData], p_adventure: Adventu
 				var drop_slot: Types.Slot = _RollDropSlot(p_adventure.gear_pool)
 				node.scene_context = _BuildBattleContext(
 					_WeightedRandomPick(p_adventure.mini_boss_battle_variants),
-					MiniBossLoot(p_adventure.combat_rewards, p_adventure.gear_pool, drop_slot), p_adventure.biome)
+					MiniBossLoot(p_adventure.mini_boss_rewards,p_adventure.gear_pool, drop_slot), p_adventure.biome)
 			NodeData.Node_Type.BOSS:
 				if boss_variant == null:
 					continue

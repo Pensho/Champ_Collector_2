@@ -78,3 +78,13 @@ func test_should_show_reagent_step_true_when_any_owned() -> void:
 	assert_true(
 			PreBattleMenu.ShouldShowReagentStep({"Mending_Icon_Common": 2}),
 			"Owning any reagent should require the reagent step")
+
+func test_equipment_chance_alone_lists_gear_as_not_guaranteed() -> void:
+	var table := LootTable.new()
+	table._secondary_loot[LootManager.LootType.Silver] = 1
+	table._equipment_chance = 0.08
+	var entries: Array[Dictionary] = DropPreview.Entries(table, 5)
+	var equipment: Array[Dictionary] = entries.filter(
+			func(p_entry: Dictionary) -> bool: return LootManager.LootType.Equipment == p_entry["type"])
+	assert_eq(equipment.size(), 1)
+	assert_false(equipment[0]["guaranteed"])

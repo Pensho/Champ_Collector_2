@@ -146,6 +146,8 @@ static func DistributeRewards(
 	p_loot_table._drop_result = LootTable.DropResult.new()
 	p_loot_table._budget = int(p_loot_table._budget * Skills.RewardMultiplier(p_fielded_team))
 	print("Loot budget from battle is: ", p_loot_table._budget)
+	if(p_loot_table._equipment_chance > 0.0 and randf() < p_loot_table._equipment_chance):
+		_AddEquipment(p_loot_table, GetBestRarityForItem(p_loot_table._budget))
 	for type in p_loot_table._primary_loot.keys():
 		match type:
 			LootType.Experience:
@@ -230,6 +232,9 @@ static func _DropEquipment(p_loot_table: LootTable) -> void:
 	var best_rarity_outcome: int = GetBestRarityForItem(p_loot_table._budget)
 	p_loot_table._budget -= int(pow(
 			LOOT_VALUE[LootType.Equipment], 1.0 + (best_rarity_outcome as float * RARITY_VALUE_POWER)))
+	_AddEquipment(p_loot_table, best_rarity_outcome)
+
+static func _AddEquipment(p_loot_table: LootTable, p_best_rarity_outcome: int) -> void:
 	if(p_loot_table._gear_pool.is_empty()):
 		return
 	var pool_preset: EquipmentPreset = p_loot_table._gear_pool.pick_random()
@@ -239,7 +244,7 @@ static func _DropEquipment(p_loot_table: LootTable) -> void:
 	var preset: EquipmentPreset = (
 			EquipmentPresetRegistry.GetRelic(relic_key).duplicate(true)
 			if not relic_key.is_empty() else pool_preset.duplicate(true))
-	preset._rarity = RollRarityForItem(best_rarity_outcome)
+	preset._rarity = RollRarityForItem(p_best_rarity_outcome)
 	preset.Setup()
 	p_loot_table._drop_result._equipment.append(preset)
 

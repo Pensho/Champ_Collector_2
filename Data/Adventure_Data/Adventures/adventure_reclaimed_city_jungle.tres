@@ -10,7 +10,8 @@
 [ext_resource type="Resource" path="res://Data/Battle_Variants/Battle_Clearing_Crew.tres" id="8_clearing_crew"]
 [ext_resource type="Resource" uid="uid://revjjt4xnbyi" path="res://Data/Battle_Variants/Battle_Salvage_Baron.tres" id="9_baron"]
 [ext_resource type="Resource" uid="uid://ckmtp8rvhbx3a" path="res://Data/Loot_Tables/Adventure_Boss_Loot.tres" id="11_launh"]
-[ext_resource type="Resource" path="res://Data/Loot_Tables/Adventure_Combat_Loot.tres" id="12_lh4g1"]
+[ext_resource type="Resource" uid="uid://o254g36w7qeo" path="res://Data/Loot_Tables/Adventure_Combat_Loot.tres" id="12_lh4g1"]
+[ext_resource type="Resource" path="res://Data/Loot_Tables/Adventure_Mini_Boss_Loot.tres" id="12_mini_boss_loot"]
 [ext_resource type="Resource" uid="uid://wg8ohcii0wix" path="res://Data/Loot_Tables/Adventure_Escalate_Loot.tres" id="13_kofhi"]
 [ext_resource type="Resource" path="res://Data/Loot_Tables/Adventure_Hint_Loot.tres" id="14_c3w72"]
 [ext_resource type="Resource" uid="uid://kd0gwx05dibq" path="res://Data/Adventure_Data/Buff_Pools/buff_pool_default.tres" id="15_buff_pool"]
@@ -42,6 +43,7 @@ ExtResource("31_statue_weapon"): 100,
 ExtResource("32_statue_shield"): 100
 })
 combat_rewards = ExtResource("12_lh4g1")
+mini_boss_rewards = ExtResource("12_mini_boss_loot")
 boss_rewards = ExtResource("11_launh")
 hint_rewards = ExtResource("14_c3w72")
 escalate_rewards = ExtResource("13_kofhi")

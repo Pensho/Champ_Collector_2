@@ -13,6 +13,7 @@ class_name AdventureData extends Resource
 @export var mini_boss_battle_variants: Dictionary[Context_Battle, int]
 
 @export var combat_rewards: LootTable
+@export var mini_boss_rewards: LootTable
 @export var boss_rewards: LootTable
 @export var hint_rewards: LootTable
 @export var escalate_rewards: LootTable

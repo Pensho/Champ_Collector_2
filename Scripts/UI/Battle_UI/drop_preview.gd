@@ -15,6 +15,8 @@ static func Entries(p_loot_table: LootTable, p_difficulty: int) -> Array[Diction
 			continue
 		entries.append(_BuildEntry(type, false, p_loot_table, budget))
 		seen[type] = true
+	if p_loot_table._equipment_chance > 0.0 and not seen.has(LootManager.LootType.Equipment):
+		entries.append(_BuildEntry(LootManager.LootType.Equipment, false, p_loot_table, budget))
 	return entries
 
 static func _BuildEntry(

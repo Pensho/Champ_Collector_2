@@ -9,6 +9,9 @@ const LOOTMANAGER = preload("uid://dgvom8pxqflsm")
 
 # Type as key and value is weight.
 @export var _secondary_loot: Dictionary[LOOTMANAGER.LootType, int]
+
+# Chance of one gear drop rolled before the budget is spent; its rarity reads the budget but costs none of it.
+@export_range(0.0, 1.0) var _equipment_chance: float = 0.0
 @export var _gear_pool: Array[EquipmentPreset] = []
 @export var _reagent_max_rarity: Types.Rarity = Types.Rarity.Epic
 

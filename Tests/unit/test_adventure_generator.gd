@@ -393,6 +393,16 @@ func test_mini_boss_loot_holds_only_its_drop_slot_and_guarantees_gear() -> void:
 		assert_true(loot._gear_pool[0]._slot in [Types.Slot.Weapon, Types.Slot.Boots], "The slot comes from the gear pool.")
 		assert_gte(loot._primary_loot.get(LootManager.LootType.Equipment, 0), 1, "Gear is a guaranteed drop.")
 
+func test_mini_boss_nodes_use_mini_boss_rewards_not_combat_rewards() -> void:
+	_SetUpMiniBosses()
+	_adventure.combat_rewards = LootTable.new()
+	_adventure.combat_rewards._secondary_loot[LootManager.LootType.Silver] = 1
+	_adventure.mini_boss_rewards = LootTable.new()
+	_adventure.mini_boss_rewards._secondary_loot[LootManager.LootType.Equipment] = 3
+	for node in _MiniBossNodes(AdventureGenerator.GenerateAdventure(_adventure)):
+		var loot: LootTable = (node.scene_context as Context_Battle)._loot_table
+		assert_eq(loot._secondary_loot, _adventure.mini_boss_rewards._secondary_loot)
+
 func test_mini_boss_loot_keeps_a_larger_authored_gear_guarantee() -> void:
 	var authored := LootTable.new()
 	authored._primary_loot[LootManager.LootType.Equipment] = 2
