@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="LootTable" load_steps=2 format=3 uid="uid://dauwp8sbf3ga"]
+[gd_resource type="Resource" script_class="LootTable" format=3 uid="uid://dauwp8sbf3ga"]
 
 [ext_resource type="Script" uid="uid://cabwckgc7os5u" path="res://Scripts/Battle/loot_table.gd" id="1_j1fi4"]
+[ext_resource type="Script" uid="uid://8knbs7yij5eh" path="res://Scripts/Gear/equipment_preset.gd" id="1_k7kbe"]
 
 [resource]
 script = ExtResource("1_j1fi4")
