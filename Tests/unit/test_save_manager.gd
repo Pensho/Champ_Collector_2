@@ -266,6 +266,11 @@ func test_top_button_text_follows_continue_slot() -> void:
 	assert_eq(MAIN_MENU_SCRIPT.TopButtonText(SaveManager.NO_SLOT), "Start Game")
 	assert_eq(MAIN_MENU_SCRIPT.TopButtonText(0), "Continue")
 
+func test_exit_button_hidden_on_web_and_android() -> void:
+	assert_false(MAIN_MENU_SCRIPT.ShowsExitButton(func(feature: String) -> bool: return feature == "web"))
+	assert_false(MAIN_MENU_SCRIPT.ShowsExitButton(func(feature: String) -> bool: return feature == "android"))
+	assert_true(MAIN_MENU_SCRIPT.ShowsExitButton(func(feature: String) -> bool: return feature == "windows"))
+
 func test_loading_a_slot_with_no_run_clears_the_run_in_memory() -> void:
 	var handler: AdventureStateHandler = AdventureStateHandler.new()
 	handler._state.is_active = true

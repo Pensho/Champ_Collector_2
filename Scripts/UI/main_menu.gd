@@ -5,9 +5,12 @@ const GRASSLANDS_DAY = preload("uid://bj3f2iipfovw8")
 const GRASSLANDS_DUSK = preload("uid://ba31cn3hmntgv")
 const GRASSLANDS_NIGHT = preload("uid://bsmrvv2vuny5")
 const SETTINGS_MENU_SCENE = preload("res://Scenes/ui/Settings_Menu.tscn")
+## Feature tags of platforms where the app does not quit itself (the browser tab or OS owns that).
+const PLATFORMS_WITHOUT_QUIT: Array[String] = ["web", "android"]
 
 @export var _background: TextureRect
 @export var _top_button: Button
+@export var _exit_button: Button
 
 var _settings_menu: SettingsMenu
 
@@ -24,6 +27,8 @@ func _ready() -> void:
 	else:
 		_background.texture = GRASSLANDS_DAY
 
+	_exit_button.visible = ShowsExitButton(OS.has_feature)
+
 	_settings_menu = SETTINGS_MENU_SCENE.instantiate()
 	add_child(_settings_menu)
 	_settings_menu.position = Vector2i((get_viewport_rect().size * 0.5) - (_settings_menu.GetSize() * 0.5))
@@ -31,6 +36,9 @@ func _ready() -> void:
 
 static func TopButtonText(p_continue_slot: int) -> String:
 	return "Start Game" if p_continue_slot == SaveManager.NO_SLOT else "Continue"
+
+static func ShowsExitButton(p_has_feature: Callable) -> bool:
+	return not PLATFORMS_WITHOUT_QUIT.any(p_has_feature)
 
 @warning_ignore("unused_parameter") # Main menu requires nothing from the ContextContainer.
 func Init(_p_context_container: ContextContainer) -> void:
